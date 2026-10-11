@@ -546,3 +546,68 @@ Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
 | `F3-T2-PACKAGE-AND-WRITER/R20261011T072116Z-aea0/acceptance.json` | `E2D88B56EFE95875…` | `a358e3afca4d` |
 | `F3-T2-PACKAGE-AND-WRITER/R20261011T072116Z-aea0/relay-record.json` | `DADB6C64777261FF…` | `83d3efefd16f` |
 | `F3-T2-PACKAGE-AND-WRITER/R20261011T072116Z-aea0/analysis.md` | `8E1AD8524B3DC7E5…` | `9f63150c9451` |
+
+## 29. F3-T2-PACKAGE-AND-WRITER — ejecución delegada (2026-10-11T08:37:13Z)
+
+Contrato reemitido (CD-I65-F3-11) sobre `AuthorityRevision` = `BaseSha` = `e0c1120b`; `MainSha` `bb0d5522` sin cambio.
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T072637Z-c92e` | PLANNING | Codex `gpt-6-luna`/`high` | paquete válido; seis colecciones idénticas; A1-A8 en `pass`; `claude-sonnet-5-5`/`high` (Deep) |
+| `R20261011T073019Z-5e40` | CONTROL nc4 | sin invocar | `REJECTED_BEFORE_INVOCATION`: A3 `fail`, el resto igual: **oráculo cumplido** |
+| `R20261011T073033Z-b3ec` | WORK | subagente `claude-sonnet-5-5`/`high` (181 mensajes) | `IMPLEMENTATION_COMPLETE`; RED `60014790`, GREEN `e3ae36d0`; 42 min 25 s; 103 llamadas |
+| `R20261011T081954Z-40b1` | VERIFICATION | Codex `gpt-6-luna`/`high` | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `e3ae36d0d6cb1f13de685ed0f9825d2b5a71ecf5` |
+| `R20261011T082548Z-d437` | CONTROL nc1 | Codex `gpt-6-luna`/`high` | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Identity`: **oráculo cumplido** |
+| `R20261011T082840Z-a841` | CONTROL nc2 | Codex `gpt-6-luna`/`high` | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Scope`: **oráculo cumplido** |
+| `R20261011T083227Z-37d6` | CONTROL nc3 | Codex `gpt-6-luna`/`high` | `EXECUTION_REWORK_REQUIRED/REWORK`, `FailureClass` = `FreeText`: **oráculo cumplido** |
+
+- **Cambios:** 12 archivos: `Providers/RamElements/RamBuildPayload.cs`, `RamBuildScriptTemplate.cs`, `RamBuildManifest.cs` y
+  `RamBuildPackageFactory.cs`; `StructuralAnalysis/StructuralPackageWriter.cs` (tipo `StructuralPackagePublisher`); siete archivos de prueba
+  `StructuralAnalysisRamElementsPackage*`.
+- **CI push:** RED `38123723750` = `failure` (Core); GREEN `38124008377` = `success`, 4/4. TRX Core GREEN 13483/13483; filtro 241/241;
+  TRX Core RED 230 fallidas, todas del filtro (11 superadas), sin errores de compilación.
+- **Golden:** la carga útil de `REF-CANT-01` reproduce el golden de RAM (diferencia máxima 1.4e-14).
+- **Disposiciones del Coordinator** previas a la verificación (texto en las entradas de la verificación; registradas en decisiones §20):
+  CD-I65-F3-12 (uso puntual de Python por el Worker, DEV-I65-F3-02, C-08 no activado), CD-I65-F3-13 (`StructuralPackagePublisher`),
+  CD-I65-F3-14 (lecturas no materiales y limitaciones de la lectura de vuelta).
+- **Simulacro del Coordinator** (fuera de la suite, NO es RAM Elements): [I-65-f3/coordinator-smoke/](I-65-f3/coordinator-smoke/README.md):
+  `py_compile` correcto; contra un módulo `ramelements` falso que imita P1: `READBACK OK` sin diferencias; sin sobrescritura; puertas sin
+  escritura ante modelo no vacío, versión distinta o función ausente; nombre desconocido → `FAILED — DISCARD MODEL`.
+- **Relevos:** `config.toml` sin cambio; los procesos vivos creados durante la cesión del Worker eran de **otras sesiones** (planificación
+  de I-64 sobre su propio worktree, kit de I-62, shells de otras sesiones), ninguno con la ruta de este worktree.
+- **Invocaciones de Codex en F3:** 11 de 14 (planificación rechazada incluida). `attempts` = 0.
+
+Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072637Z-c92e/gate-contract.json` | `3214737F9D590B95…` | `823f0eb98078` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072637Z-c92e/prompt.md` | `9C279DE7D8F07822…` | `e19159593117` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072637Z-c92e/delegation.json` | `FF31EC2AA14E0967…` | `28d8f20d1dba` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072637Z-c92e/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072637Z-c92e/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T072637Z-c92e/relay-record.json` | `95EC6AE6AB9FC8B1…` | `37cb5783d55e` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T073033Z-b3ec/prompt.md` | `3E0F0220634BF010…` | `16c8776ca6f8` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T073033Z-b3ec/worker-handoff.json` | `48A72F2166D43D8B…` | `789829f5885a` (fin de línea normalizado por Git) |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T073033Z-b3ec/relay-record.json` | `B60C6B65FFAEC285…` | `72e843555d98` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T081954Z-40b1/prompt.md` | `9E99061DB47BCC23…` | `d37f26c6b4dc` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T081954Z-40b1/controller-verification.json` | `02707DE26AFA2347…` | `85b5f8d53785` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T081954Z-40b1/relay-record.json` | `785966AA01AE6BAA…` | `4edc71ce1229` |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T081954Z-40b1/trx-summary.json` | `7C00AD6B38B6F041…` | `62c3d1d9498f` (fin de línea normalizado por Git) |
+| `F3-T2-PACKAGE-AND-WRITER/R20261011T081954Z-40b1/coordinator-dispositions-f3t2.md` | `DEF87EFA7BF56A0F…` | `8e0fa9a536b9` |
+| `F3-T2-PACKAGE-AND-WRITER-nc1/R20261011T082548Z-d437/prompt.md` | `2ED7165D7298C07B…` | `478884f370b2` |
+| `F3-T2-PACKAGE-AND-WRITER-nc1/R20261011T082548Z-d437/mutation.json` | `0FC7359FE2713141…` | `904d8945f6b9` (fin de línea normalizado por Git) |
+| `F3-T2-PACKAGE-AND-WRITER-nc1/R20261011T082548Z-d437/controller-verification.json` | `EC837B8A01351E25…` | `cf4090e2ce3a` |
+| `F3-T2-PACKAGE-AND-WRITER-nc1/R20261011T082548Z-d437/relay-record.json` | `09AA80EC37264DC8…` | `e65010ad0b34` |
+| `F3-T2-PACKAGE-AND-WRITER-nc2/R20261011T082840Z-a841/prompt.md` | `2F777A40C212DD6F…` | `62f90d1e63bc` |
+| `F3-T2-PACKAGE-AND-WRITER-nc2/R20261011T082840Z-a841/mutation.json` | `0D10D4E6AA4A840D…` | `c00f7f19d42f` (fin de línea normalizado por Git) |
+| `F3-T2-PACKAGE-AND-WRITER-nc2/R20261011T082840Z-a841/controller-verification.json` | `42FF299B561A326C…` | `4941bfa9165b` |
+| `F3-T2-PACKAGE-AND-WRITER-nc2/R20261011T082840Z-a841/relay-record.json` | `2F8F6801EF245973…` | `e8ce4b2845bd` |
+| `F3-T2-PACKAGE-AND-WRITER-nc2/R20261011T082840Z-a841/session-scope-check.json` | `B4407913461D1DA8…` | `efc90d1cb516` (fin de línea normalizado por Git) |
+| `F3-T2-PACKAGE-AND-WRITER-nc3/R20261011T083227Z-37d6/prompt.md` | `B91E52D4B81D1B8C…` | `d49ea94dd1ac` |
+| `F3-T2-PACKAGE-AND-WRITER-nc3/R20261011T083227Z-37d6/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F3-T2-PACKAGE-AND-WRITER-nc3/R20261011T083227Z-37d6/controller-verification.json` | `D6878BC17BD12522…` | `0a486d7f02e0` |
+| `F3-T2-PACKAGE-AND-WRITER-nc3/R20261011T083227Z-37d6/relay-record.json` | `406ED3C5FAF7A731…` | `0e752eb5df58` |
+| `F3-T2-PACKAGE-AND-WRITER-nc4/R20261011T073019Z-5e40/delegation.json` | `93B0A7018D782B00…` | `77d7770f4024` |
+| `F3-T2-PACKAGE-AND-WRITER-nc4/R20261011T073019Z-5e40/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F3-T2-PACKAGE-AND-WRITER-nc4/R20261011T073019Z-5e40/relay-record.json` | `CFF6DF730158D273…` | `d28d3d5c39a3` |

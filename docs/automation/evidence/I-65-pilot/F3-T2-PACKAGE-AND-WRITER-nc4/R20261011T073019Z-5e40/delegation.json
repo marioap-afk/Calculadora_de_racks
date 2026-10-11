@@ -1,0 +1,372 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "F3-T2-PACKAGE-AND-WRITER",
+  "RunId": "R20261011T072637Z-c92e",
+  "Initiative": "I-65",
+  "Unit": "I-65",
+  "Gate": "F3",
+  "Attempt": 0,
+  "AuthorityRevision": "e0c1120bcda13f90b7c4c8ad861ddd702c1ac891",
+  "MainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "BaseSha": "e0c1120bcda13f90b7c4c8ad861ddd702c1ac891",
+  "ExpectedBranch": "architecture/interop-analisis-estructural",
+  "ExpectedWorktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261011T072637Z-c92e"
+  },
+  "TaskClass": "Implementación transversal a capas (corta)",
+  "Dimensions": {
+    "Ambiguity": "High",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Medium",
+    "Horizon": "Medium"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagente de la sesion de escritorio",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "RoutingReason": "Planificación del 2026-10-11 según docs/automation/agent-execution/routing.md §§1–5. La tarea es implementación transversal corta: adaptador, plantilla y escritor neutral acotados a Application, con pruebas; effort Deep conforme a Proposal V1 §11 para «Adaptador y plantilla Python». Ambigüedad, sensibilidad arquitectónica y coste de fallo altos; el ajuste de routing queda limitado a Deep. Se selecciona la celda elegible de menor nivel adecuado que cubre lectura, uso de herramientas y write-commit-push. El catálogo registra claude-sonnet-5-5 en nivel Equilibrado, perfiles ROUTINE_IMPLEMENTATION y DEBUGGING, y esfuerzos medium/high medidos el 2026-09-30; la sonda U-04 y el piloto de G3 de I-61 verificaron modelo, esfuerzo, escritura, commit y push, con consumo cubierto y sin aviso de límite. Sus TestedEfforts del contrato incluyen high; datos vigentes en la fecha de planificación. Evidencia Git solicitada: rama architecture/interop-analisis-estructural; HEAD e0c1120bcda13f90b7c4c8ad861ddd702c1ac891; origin/main bb0d5522e8411f66a51fdfb3f1f0d0514b737453; los tres commits recientes son e0c1120b, d01df992 y 16fa9e76. origin/main coincide con MainSha. El preflight comparó con el contrato Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions, elemento a elemento y en orden; dio igualdad exacta, incluidas Path, Section y Class.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "required",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-65-proposal-v3.1.md",
+      "Section": "archivo completo (Frozen: yes); en especial D-01, D-08, D-09, D-10, D-12, D-13 y §3 (INV-04, 05, 10, 11 y 14)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-f3-ram-elements-adapter.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-f1-ref-cant-01.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65.md",
+      "Section": "archivo completo (en especial §17, §18 y §19)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65-owner-authorization-f3.original.txt",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-65-f0/p1-results.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-65-f0/p1-run/p1-report.json",
+      "Section": "archivo completo (paso E1_environment.core_functions y paso R1)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-65-f0/p1-run/ram-probe-p1.executed.py",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-interop-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/adr/0050-interoperabilidad-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0017-validacion-cargas-diferida-ram-elements.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "Objective": "Implementar la segunda tarea F3 autorizada de I-65 sobre la base de F3-T1 verificada en 16fa9e76: construir el paquete de construcción RAM Elements con carga útil ASCII, plantilla fija, manifiesto de procedencia, CreateRamBuildPackage con opciones y resultado, validación estricta previa y diagnósticos tipados; y añadir el escritor atómico neutral StructuralPackageWriter.cs. Añadir únicamente archivos nuevos de producción bajo src/RackCad.Application/StructuralAnalysis/Providers/RamElements/ (RamBuildPayload.cs, RamBuildScriptTemplate.cs, RamBuildManifest.cs y RamBuildPackageFactory.cs, incluyendo las opciones y resultado de CreateRamBuildPackage) y src/RackCad.Application/StructuralAnalysis/StructuralPackageWriter.cs. Añadir archivos nuevos de pruebas bajo tests/RackCad.Tests/StructuralAnalysis/ con namespace RackCad.Tests y clases que comiencen StructuralAnalysisRamElementsPackage: StructuralAnalysisRamElementsPackageContentTests.cs, StructuralAnalysisRamElementsPackagePayloadTests.cs, StructuralAnalysisRamElementsPackageTemplateTests.cs, StructuralAnalysisRamElementsPackageManifestTests.cs, StructuralAnalysisRamElementsPackageValidationTests.cs, StructuralAnalysisRamElementsPackageWriterTests.cs y StructuralAnalysisRamElementsPackageGoldenTests.cs. Las comprobaciones de plantilla que nombran el módulo proveedor o el intérprete deben estar solo en StructuralAnalysisRamElementsPackageTemplateTests.cs. No alterar las pruebas existentes. Respetar íntegramente Freeze, contrato, alcance permitido y condiciones de parada.",
+  "AllowedWriteScope": [
+    "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/",
+    "src/RackCad.Application/StructuralAnalysis/StructuralPackageWriter.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/",
+    "src/RackCad.Application/"
+  ],
+  "ForbiddenWriteScope": [
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCanonicalizerTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisFingerprintTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisLoadFileReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisMaterialProfileTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelBuilderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisOutcomeTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisUnitTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverFixtures.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverGoldenTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverIdealisationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.design.json",
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.loads.json",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsAssumptionsTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsAxesTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsFixtures.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsGuardTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsMapReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsProjectionTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsTranslationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs",
+    "src/RackCad.Application/Systems/",
+    "assets/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Workspace/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/CantileverSourceGuardTests.cs",
+    "tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs",
+    "tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs",
+    "tests/RackCad.Tests/LengthUnitsAuthorityGuardTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/Golden/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/"
+  ],
+  "Invariants": [
+    "D-09 y CD-I65-F3-08 (contenido del paquete): exactamente manifest.json, rackcad-ram-build.py y structural-loads.json (copia byte a byte del archivo de cargas usado, cuyo SHA-256 coincide con el del modelo); sin marcas de tiempo, sin nombres de equipo ni de usuario salvo la ruta absoluta de la carpeta del paquete embebida; UTF-8 sin BOM y LF; mismo modelo, mismas entradas y misma carpeta -> bytes identicos (prueba ejecutando dos veces); el script es solo ASCII",
+    "D-09 regla 2 (carga util): JSON solo ASCII rackcad-ram-build-payload/v1 con version del adaptador, par LB_IN, ruta absoluta de la carpeta, AnalysisInputFingerprint, caso REF1 con categoria de texto OTHER, nudos (id neutral, coordenadas de RAM, Restraints), miembros (id neutral, nudos, seccion y material de RAM no vacios, giro, l1, l2 y l3 esperados), cargas (miembro, GLOBAL_Y, valor, porcentaje), tolerancias de D-09 regla 9 y capacidades (version 0.1.0 y funciones del nucleo); se incrusta como literal de cadena Python decodificado por json.loads, sin base64; prueba de equivalencia de datos: la carga util decodificada del script de REF-CANT-01 reproduce el golden de RAM de la seccion 8 del documento con sus tolerancias",
+    "INV-10 y D-09 reglas 1, 3-10 (plantilla fija, guarda estatica con autoprueba sobre la plantilla y sobre el script generado): imports solo ramelements (y sus submodulos), json y math; sin os, sys, subprocess, threading, exec, eval, SystemExit, exit ni quit; sin save, save_as, new, analyze ni open de archivos del usuario: el unico archivo que se abre es ram-readback.json en modo exclusivo x dentro de la carpeta embebida, y se abre ANTES de la primera escritura en el modelo; puerta de capacidad (__version__ == 0.1.0 y presencia de las funciones del nucleo listadas) y puerta de modelo vacio (0 nudos, 0 miembros, como maximo un caso y sin REF1) antes de la primera escritura; units.set a LB_IN antes de escribir; categoria del caso como texto OTHER, nunca el miembro del enum; members.add siempre con material explicito; cardinal_point CENTROID fijado y leido; offsets, factores de rigidez, comportamiento axial, resortes y liberaciones solo leidos y comparados con los valores por defecto medidos en P1; sin setters de esos atributos; lectura de vuelta en LB_IN con las tolerancias de la regla 9; cualquier fallo -> estado FAILED - DISCARD MODEL (con la raya U+2014 escrita en el script como secuencia de escape) en consola y en ram-readback.json; quitar una puerta, anadir save_as o analyze, abrir otro archivo o pasar la categoria como enum hace fallar la guarda",
+    "CD-I65-F3-08 (API verificada): la plantilla solo usa las llamadas y atributos del documento seccion 7 (ejecutados en P1 o leidos de la fuente del paquete instalado, mas Restraints con banderas parciales); la lista de funciones del nucleo que exige la puerta de capacidad esta contenida en las 207 medidas en P1 (p1-report.json, E1_environment.core_functions), comprobado por prueba",
+    "D-12 y D-09 (manifiesto rackcad-ram-build-manifest/v1): adaptador y version; destino con la version del producto DECLARADA y no verificada, ramelements 0.1.0 y LB_IN; SourceRef y SourceFingerprint; AnalysisInputFingerprint calculada con la version del adaptador; archivo de cargas (nombre y SHA-256); filas de mapeo usadas completas y su hash; los siete supuestos con su enunciado y la advertencia literal de CD-I65-F3-09; las exclusiones de V1 de la seccion 1 del documento; archivos del paquete con SHA-256 salvo el manifiesto; la lectura de vuelta repite la AnalysisInputFingerprint; cambiar la version del adaptador, una fila de mapeo o el archivo de cargas cambia la huella y el manifiesto",
+    "D-08, D-13 y validacion estricta previa (CreateRamBuildPackage(modelo, opciones) -> resultado con contenido): solo con un StructuralModel Valid, una tabla Valid con filas verified para todas sus secciones, una traduccion sin diagnosticos bloqueantes, una ruta de carpeta absoluta y normalizada, los bytes del archivo de cargas cuyo SHA-256 coincide con el del modelo y una version de adaptador no vacia; cualquier otro caso -> diagnostico tipado bloqueante (Unsupported o Invalid, precedencia de CD-I65-F1-04) y SIN contenido parcial; con la tabla del producto tal como se entrega (filas proposed) el resultado es Unsupported; el adaptador no hace E/S de archivos (guarda de F3-T1)",
+    "D-08 e INV-05 (escritura atomica, neutral, src/RackCad.Application/StructuralAnalysis/StructuralPackageWriter.cs): solo crea una carpeta NUEVA cuyo padre existe; destino existente -> rechazo sin tocar nada (nunca sobrescribe); escribe en una carpeta temporal hermana y publica con un unico renombrado; cualquier fallo (inyectado en la escritura de cualquier archivo o en el renombrado) -> no queda carpeta de destino ni carpeta temporal; nombres de archivo simples, unicos y sin separadores ni ..; prueba con inyeccion de fallo: un escritor no atomico deja carpeta y hace fallar la prueba; sin nombres ni tipos de proveedor en el escritor",
+    "Restricciones del Owner y ADR-0017: ningun analisis, lectura de resultados, member_design, ratio, veredicto, guardado ni sobrescritura de modelos de RAM; ninguna afirmacion de validacion estructural; ningun tipo, identificador ni convencion de RAM fuera de Providers/RamElements/ (G1 y G2 en verde); sin literales de conversion en StructuralAnalysis/ (G4) ni de lb o gn fuera de sus propietarios (INV-16); ninguna inferencia de material o propiedad mecanica",
+    "INV-14 y forma del cambio: solo tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageTemplateTests.cs puede contener los tokens del modulo del proveedor y del interprete; ninguna prueba ejecuta Python ni RAM Elements ni lee la instalacion de RAM; pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/, namespace RackCad.Tests, clases cuyo nombre empieza por StructuralAnalysisRamElementsPackage; codigo nuevo con namespace igual a la carpeta y declaracion por bloque; cambios en los archivos de F3-T1 del proveedor solo aditivos, sin cambiar su comportamiento ni sus pruebas; solo BCL; ninguna prueba existente se modifica"
+  ],
+  "AcceptanceCriteria": [
+    "RED compilable primero: añadir el esqueleto de producción y las pruebas nuevas focalizadas del contrato; el proyecto compila y la selección FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElementsPackage ejecuta al menos 30 pruebas que fallan por aserción o excepción, no por errores de compilación. Empujar ese SHA RED en un push propio antes de implementar GREEN; la corrida push propia del SHA RED debe existir y su job Core debe fallar.",
+    "GREEN implementa el comportamiento dentro del alcance permitido sin modificar ningún archivo de pruebas del RED ni prueba existente. Ejecutar la suite Core completa y comprobar que pasa, incluidas las pruebas de F1, F3-T1 y las guardas existentes.",
+    "Producir exactamente manifest.json, rackcad-ram-build.py y structural-loads.json, con las reglas de bytes, encoding, contenido, ausencia de marcas temporales y determinismo del invariante D-09. La copia de structural-loads.json debe ser byte a byte y su SHA-256 coincidir con el modelo.",
+    "La carga útil decodificada del script generado para REF-CANT-01 reproduce el golden de RAM de la sección 8 del documento y sus tolerancias; si no coincide, parar con C-03 e informar la diferencia exacta sin ajustar golden ni traducción.",
+    "Comprobar estáticamente la plantilla y el script generado frente a INV-10 y D-09 reglas 1, 3–10. Ninguna prueba ejecuta Python, RAM Elements ni lee la instalación de RAM. Si para verificar la plantilla hiciera falta ejecutarla, parar con C-08.",
+    "Comprobar que las llamadas y atributos de plantilla están únicamente en la lista de la sección 7 del documento, y que las funciones del núcleo requeridas pertenecen a las 207 medidas en P1. Si hiciera falta una llamada o atributo fuera de la lista, parar con C-11.",
+    "El manifiesto cumple rackcad-ram-build-manifest/v1, D-12 y CD-I65-F3-09: procedencia, huellas, filas completas usadas y sus hashes, siete supuestos con advertencia literal, exclusiones V1, archivos con SHA-256 salvo el manifiesto y AnalysisInputFingerprint en lectura de vuelta. Verificar que los cambios de versión de adaptador, fila de mapeo y archivo de cargas cambian huellas y manifiesto.",
+    "CreateRamBuildPackage valida estrictamente todos los prerrequisitos antes de devolver contenido; solo el modelo Valid, tabla Valid con filas verified necesarias, traducción sin diagnósticos bloqueantes, ruta absoluta normalizada, bytes de cargas cuyo hash coincide y versión no vacía producen contenido. Los demás casos devuelven diagnóstico tipado bloqueante con precedencia CD-I65-F1-04 y sin contenido parcial; las filas proposed producen Unsupported. El adaptador no hace E/S de archivos.",
+    "StructuralPackageWriter es neutral y cumple INV-05: solo publica carpeta nueva si el padre existe; rechaza destino existente sin tocarlo; escribe en carpeta temporal hermana y publica con un único renombrado. Inyectar fallo en cada escritura y en el renombrado y comprobar que no quedan destino ni carpeta temporal. Rechazar nombres duplicados, separadores y ..; no incluir nombres ni tipos del proveedor.",
+    "Respetar las restricciones del Owner, ADR-0017, INV-14, BCL únicamente y las guardas G1, G2 y G4. Los cambios a archivos de F3-T1 son, si fueran necesarios, solo aditivos y conservan comportamiento; ninguna prueba existente se modifica. Si una condición congelada requiere reinterpretación, parar con la condición correspondiente.",
+    "El worker-handoff.json registra SHA RED y GREEN, trailer real, conteos del filtro para ambos estados, comparación de carga útil con golden y hashes SHA-256 de los tres archivos del paquete REF-CANT-01 con la tabla de fixture. El diff desde BaseSha queda dentro de AllowedWriteScope; el diff de tests contiene únicamente archivos nuevos bajo tests/RackCad.Tests/StructuralAnalysis/.",
+    "Empujar la rama sin force. La corrida push del SHA GREEN exacto termina con los cuatro jobs requeridos en success; la corrida push propia del SHA RED tiene el job Core en failure."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElementsPackage",
+      "MinSelected": 30,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED: esqueleto que compila (carga util, plantilla, manifiesto, CreateRamBuildPackage y escritor) y pruebas focales de contenido, determinismo, carga util y equivalencia con el golden de RAM, plantilla e INV-10, capacidades frente a P1, manifiesto y huellas, validacion estricta y diagnosticos, escritura atomica con inyeccion de fallo, que fallan por asercion o excepcion (sin errores de compilacion), con seleccion >= 30; push propio antes del GREEN",
+    "Commit GREEN: implementacion en el alcance permitido sin modificar ningun archivo de pruebas del RED ni pruebas existentes; suite Core completa en verde, incluidas todas las pruebas de F1 y de F3-T1 y las guardas",
+    "Comprobacion mecanica antes de aceptar EXECUTION_VERIFIED: git diff --name-only BaseSha..CurrentSha contenido en el AllowedWriteScope de la delegacion y sin interseccion con su ForbiddenWriteScope; git diff --name-status BaseSha..CurrentSha -- tests/ solo con altas bajo tests/RackCad.Tests/StructuralAnalysis/",
+    "worker-handoff.json conforme al esquema, con los SHA de RED y GREEN, el trailer real del Worker, los conteos del filtro en RED y GREEN y, en Evidence, la comparacion de la carga util con el golden de RAM y el SHA-256 de los tres archivos del paquete de REF-CANT-01 con la tabla de fixture",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success y corrida push del RED con el job Core en failure"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar algo fuera de AllowedWriteScope (Systems, assets, Units, StructuralSections, otros archivos de StructuralAnalysis fuera de Providers/RamElements/ y StructuralPackageWriter.cs, Domain, Plugin, UI, cualquier .csproj) o modificar una prueba existente"
+    },
+    {
+      "Id": "C-02",
+      "Text": "D-08, D-09, D-12, D-13, una concrecion CD-I65-F3-08..10 o el documento I-65-f3-ram-elements-adapter.md no puede implementarse tal como esta (requiere A-n, Architect u Owner)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "La carga util de REF-CANT-01 no reproduce el golden de RAM de la seccion 8 del documento; no se ajusta el golden ni la traduccion para forzar la igualdad: parada con la diferencia exacta"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52, o de tocar superficies de ID30 o Workspace"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un INV del contrato no puede mostrar un RED observable antes del cambio correcto"
+    },
+    {
+      "Id": "C-07",
+      "Text": "Hace falta inferir un material o una propiedad mecanica, rellenar valores de ingenieria, tratar una fila proposed como verified o producir contenido parcial"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta una dependencia binaria, un paquete NuGet nuevo, Python o RAM Elements para compilar o probar, o ejecutar RAM Elements o un interprete Python"
+    },
+    {
+      "Id": "C-09",
+      "Text": "Una guarda existente del repositorio falla por el cambio y la unica salida seria debilitarla"
+    },
+    {
+      "Id": "C-10",
+      "Text": "Aparece una cuestion material de arquitectura, autoridad o semantica congelada (se reconsidera la revision del Architect)"
+    },
+    {
+      "Id": "C-11",
+      "Text": "La plantilla necesitaria una llamada o atributo del paquete fuera de la lista del documento seccion 7, una funcion del nucleo fuera de las 207 de P1, o una escritura antes de las puertas"
+    }
+  ],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 3,
+  "ChainBaseSha": "e0c1120bcda13f90b7c4c8ad861ddd702c1ac891",
+  "ChainRedSha": null,
+  "ChainRedFiles": [],
+  "CorrectionOf": null,
+  "ExpectedHandoffPath": "artifacts/orchestration/I-65/F3-T2-PACKAGE-AND-WRITER/0/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion F3-T2, CONTROLLER_PLANNING)"
+}

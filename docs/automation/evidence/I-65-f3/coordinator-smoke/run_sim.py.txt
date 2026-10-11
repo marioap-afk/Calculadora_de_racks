@@ -1,0 +1,12 @@
+# Coordinator smoke harness (I-65 F3): runs a GENERATED build script against the FAKE ramelements package. Not RAM Elements.
+import os
+import runpy
+import sys
+
+here = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(here, "fake"))
+os.environ.setdefault("SIM_P1_REPORT", sys.argv[2])
+runpy.run_path(sys.argv[1], run_name="__main__")
+import ramelements as _rm
+_m = _rm.model()
+print("SIM model after run: nodes=%d members=%d cases=%s" % (len(_m.nodes), len(_m.members), [c.id for c in _m.load_condition]))

@@ -1,0 +1,52 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using RackCad.Application.Persistence;
+using RackCad.Application.StructuralAnalysis;
+using RackCad.Application.StructuralAnalysis.Providers.RamElements;
+using RackCad.Application.StructuralSections;
+using RackCad.Application.Systems.Cantilever;
+
+// Coordinator smoke harness (I-65 F3), outside the repository: builds the REF-CANT-01 package with FIXTURE rows and writes it.
+internal static class Program
+{
+    private static string Row(string sectionId, string ramName, string materialId, string ramMaterial) =>
+        "{ \"sectionId\": \"" + sectionId + "\", \"ramSection\": { \"name\": \"" + ramName + "\", \"table\": \"TEST-FIXTURE-TABLE\", \"country\": \"TEST-FIXTURE-COUNTRY\" },"
+        + " \"materialId\": \"" + materialId + "\", \"ramMaterial\": \"" + ramMaterial + "\","
+        + " \"expectedMaterial\": { \"elasticModulus\": { \"value\": 111.5, \"unit\": \"ksi\" }, \"poissonRatio\": 0.25, \"shearModulus\": null,"
+        + " \"unitWeight\": { \"value\": 222.5, \"unit\": \"pcf\" }, \"source\": \"TEST-FIXTURE-SOURCE\" },"
+        + " \"status\": \"verified\", \"verifiedBy\": \"TEST-FIXTURE\", \"verifiedOn\": \"2026-10-11\" }";
+
+    private static int Main(string[] args)
+    {
+        var repo = args[0];
+        var folder = args[1];
+        var sectionOverride = args.Length > 2 ? args[2] : "W 12X26";
+        var fixtures = Path.Combine(repo, "tests", "RackCad.Tests", "StructuralAnalysis", "Fixtures");
+        var designBytes = File.ReadAllBytes(Path.Combine(fixtures, "ref-cant-01.design.json"));
+        var loadBytes = File.ReadAllBytes(Path.Combine(fixtures, "ref-cant-01.loads.json"));
+        var design = new RackProjectStore().Deserialize(Encoding.UTF8.GetString(designBytes)).CantileverLineDesign;
+        var catalog = new CsvStructuralSectionCatalogProvider(Path.Combine(repo, "assets", "catalogs")).Load();
+        var tableJson = "{ \"schema\": \"rackcad-ram-elements-section-map/v1\", \"rows\": ["
+            + Row("AISC-W-W12X26", sectionOverride, "ASTM-A992-GR50", "A992 Gr50") + ", "
+            + Row("AISC-HSS-RECT-HSS4X4X_250", "HSS_SQR 4X4X1_4", "ASTM-A500-GRC", "A500 GrC rectangular") + "] }";
+        var tableResult = RamSectionMapReader.Read(tableJson);
+        Console.WriteLine("table " + tableResult.Outcome);
+        var loads = StructuralLoadFileReader.Read(loadBytes);
+        var scope = new StructuralScope("6f1c2a3e-65a1-4c0f-9e65-0000000000aa", "Cantilever", 0, designBytes);
+        var model = StructuralModelBuilder.BuildStructuralModel(new CantileverStructuralModelSource(design, catalog), scope, loads, tableResult.Table, catalog);
+        Console.WriteLine("model " + model.Outcome + " " + string.Join(",", model.Diagnostics.Select(d => d.Code)));
+        var package = RamBuildPackageFactory.CreateRamBuildPackage(model, new RamBuildPackageOptions(tableResult.Table, "f3-coordinator-smoke", folder, loadBytes));
+        Console.WriteLine("package " + package.Outcome + " " + string.Join(",", package.Diagnostics.Select(d => d.Code)));
+        if (package.Package == null)
+        {
+            return 1;
+        }
+
+        var write = new StructuralPackagePublisher().Write(folder, package.Package.Files);
+        Console.WriteLine("write " + write.Succeeded + " " + write.Code + " " + write.Detail);
+        Console.WriteLine("fingerprint " + package.Package.AnalysisInputFingerprint);
+        return write.Succeeded ? 0 : 2;
+    }
+}

@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F3-T2-PACKAGE-AND-WRITER",
+  "RunId": "R20261011T083227Z-37d6",
+  "DelegationRunId": "R20261011T072637Z-c92e",
+  "WorkRunId": "R20261011T073033Z-b3ec",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession.EndUtc=2026-10-11T08:15:43Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente. RunId=R20261011T073033Z-b3ec, DelegationRunId=R20261011T072637Z-c92e, TaskId=F3-T2-PACKAGE-AND-WRITER, Attempt=0 coinciden con la delegación; OutputWrittenUtc=08:14:47Z es posterior a Cession.StartUtc=07:31:56Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídas desde Git las autoridades de delegation.json: AuthorityRevision e0c1120bcda13f90b7c4c8ad861ddd702c1ac891 para I-65 y MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453 para las demás. Revisados AUTOMATION_PLAN §16, README de agent-execution §8, propuesta Frozen, concreción F3, decisiones I-65 §17–19, evidencias P1, ADR-0050 y AGENTS.md."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación elemento por elemento entre delegation.json y gate-contract.json: Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions coinciden. El contrato exige filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElementsPackage, mínimo 30 y ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Git confirma rama architecture/interop-analisis-estructural, worktree y ruta esperados. merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha dieron exit 0; HEAD y refs/remotes/origin/architecture/interop-analisis-estructural son e3ae36d0d6cb1f13de685ed0f9825d2b5a71ecf5."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "git ls-remote no pudo acceder a GitHub por restricción de red; según instrucción se usaron RemoteFacts del registro: LsRemoteSha=e3ae36d0d6cb1f13de685ed0f9825d2b5a71ecf5 y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, iguales a CurrentSha y MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lista 12 archivos, todos cubiertos por AllowedWriteScope de la delegación: src/RackCad.Application/StructuralAnalysis/Providers/RamElements/{RamBuildManifest.cs,RamBuildPackageFactory.cs,RamBuildPayload.cs,RamBuildScriptTemplate.cs}; src/RackCad.Application/StructuralAnalysis/StructuralPackageWriter.cs; tests/RackCad.Tests/StructuralAnalysis/{StructuralAnalysisRamElementsPackageContentTests.cs,StructuralAnalysisRamElementsPackageGoldenTests.cs,StructuralAnalysisRamElementsPackageManifestTests.cs,StructuralAnalysisRamElementsPackagePayloadTests.cs,StructuralAnalysisRamElementsPackageTemplateTests.cs,StructuralAnalysisRamElementsPackageValidationTests.cs,StructuralAnalysisRamElementsPackageWriterTests.cs}. Ningún archivo intersecta ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 vacío. git check-ignore -v para la ruta de inputs confirmó que artifacts/ está ignorado por .gitignore:3."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: run 38124008377, event=push, ref=refs/heads/architecture/interop-analisis-estructural, HeadSha=CurrentSha, completed/success; los cuatro jobs requeridos están en success. core.trx de CurrentSha: 13483 pasadas, 0 fallidas; ui.trx: 1637 pasadas, 0 fallidas, 17 NotExecuted (concordante con 1654 total y los 17 Skip). RemoteFacts.RedRun: run 38123723750, push en la misma ref y HeadSha=RedSha; job Core=failure. Su TRX muestra 230 fallos y no compilación fallida."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "El filtro RequiredTests selecciona 241 pruebas en ambos TRX Core: RED 11 pasadas/230 fallidas; GREEN 241 pasadas/0 fallidas. El RED falla por 220 NotImplementedException y fallos de aserción/excepción, no por compilación. git diff --name-only RedSha CurrentSha -- tests/ vacío; ChainRedFiles son los siete archivos nuevos StructuralAnalysisRamElementsPackage{Content,Golden,Manifest,Payload,Template,Validation,Writer}Tests.cs. Observados en git show CurrentSha y aprobados en el TRX: contenido/determinismo/copia byte a byte (Content); carga útil y 207 funciones P1 (Payload); equivalencia con golden de §8 (Golden); INV-10 y variantes que deben fallar (Template); advertencia, supuestos, exclusiones y huellas (Manifest); validación estricta, Unsupported/Invalid y ausencia de contenido/E/S parcial (Validation); INV-05, fallos inyectados y publicación atómica (Writer). Las guardas existentes del Core Full cubren ADR-0017, restricciones del Owner e INV-14. Las siete clases focales pasan: 14, 26, 5, 51, 31, 63 y 51 pruebas, respectivamente."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log BaseSha..CurrentSha --format=%B muestra ambos commits con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, coincidente literalmente con Worker.Trailer y con el modelo efectivo del registro."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "RoutingEnforcement=required. delegation.json asigna claude-sonnet-5-5/high; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "El escaneo de los campos cubiertos por AUTOMATION_PLAN §16.10 encontró una expresión reservada al final de WorkCompleted. La comprobación de texto libre falla."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra 0 denegaciones y 0 avisos de límite. Las notas registran un error de heredoc Bash con código 2, corregido durante el trabajo; no queda una orden fallida pendiente ni una denegación."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "WorkCompleted contiene una expresión reservada para la verificación de texto libre; es el único control fallido.",
+    "CD-I65-F3-12 clasifica como no bloqueante la lectura puntual de p1-report.json con Python y determina que C-08 no se activa; el producto y las pruebas no dependen de Python y la plantilla no se ejecutó.",
+    "CD-I65-F3-13 acepta StructuralPackagePublisher en StructuralPackageWriter.cs; la guarda de F1 permanece sin cambios.",
+    "La simulación adjunta usa un módulo RAM falso y no acredita ejecución real en RAM Elements; la entrega declara esa limitación para F4."
+  ],
+  "RecommendedNextAction": "Retirar la expresión reservada de WorkCompleted y reenviar la entrega para verificación."
+}

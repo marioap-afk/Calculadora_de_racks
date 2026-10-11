@@ -1,0 +1,16 @@
+{
+ "real": {
+  "files": 12,
+  "outside_allowed": [],
+  "in_forbidden": [],
+  "Scope": "pass"
+ },
+ "nc2": {
+  "files": 12,
+  "outside_allowed": [
+   "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamBuildManifest.cs"
+  ],
+  "in_forbidden": [],
+  "Scope": "fail"
+ }
+}

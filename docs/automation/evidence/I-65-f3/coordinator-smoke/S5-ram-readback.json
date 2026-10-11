@@ -1,0 +1,15 @@
+{
+  "adapterVersion": "f3-coordinator-smoke",
+  "analysisInputFingerprint": "3e7112d5bf3eb2b240a6650e58b7e05254bc168018d0b3e5eb5f21bc31616590",
+  "differences": [
+    "exception: ValueError: Section not found: W 99X999"
+  ],
+  "schema": "rackcad-ram-readback/v1",
+  "status": "FAILED \u2014 DISCARD MODEL",
+  "values": {
+    "loadCase": null,
+    "loads": [],
+    "members": [],
+    "nodes": []
+  }
+}

@@ -1,0 +1,17 @@
+# FAKE core bridge for the I-65 F3 smoke harness: exposes the 207 core function names measured in P1 (or fewer if asked).
+import json
+import os
+import types
+
+
+class _Core:
+    def __init__(self, names):
+        self._module = types.SimpleNamespace(**{name: (lambda *a, **k: None) for name in names})
+
+
+def get_core():
+    names = json.load(open(os.environ["SIM_P1_REPORT"], encoding="utf-8"))["steps"]["E1_environment"]["observed"]["core_functions"]
+    drop = os.environ.get("SIM_DROP_CORE")
+    if drop:
+        names = [n for n in names if n != drop]
+    return _Core(names)
