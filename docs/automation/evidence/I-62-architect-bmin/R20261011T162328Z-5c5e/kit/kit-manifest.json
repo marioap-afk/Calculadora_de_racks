@@ -1,0 +1,130 @@
+{
+ "Kit": "I-62: kit del ÚNICO dictamen independiente y acotado del Architect sobre la materialidad de B-min por claude-cli (decisiones §75, punto 4; Owner CLAUDE-CLI-I62 = A)",
+ "Ids": {
+  "RunId": "R20261011T162328Z-5c5e",
+  "InvocationId": "I20261011T162328Z-5c5e",
+  "LogicalReviewRequestId": "L20261011T162328Z-5c5e",
+  "AttemptSeq": 1
+ },
+ "PreviousAttempts": [],
+ "Commit": "9356edf141c795ea718a360e266334ded10d6a76",
+ "PkgCommit": "9356edf141c795ea718a360e266334ded10d6a76",
+ "BaseAtPreparation": "460665abd46e4f9f75c896eceecabe11689a6a40",
+ "Object": "docs/automation/evidence/I-62-F6/FX-02/bmin/ (30 archivos en el commit del paquete)",
+ "Package": "ninguno (no es la revisión formal de una enmienda (§75.4, última frase): no hay paquete del Architect; el prompt hace de paquete)",
+ "SessionId": "cd0a1e5c-605d-4363-9e49-57087fd26a47",
+ "Transport": "claude-cli 2.1.293 (%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe, SHA-256 8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa)",
+ "Auditor": "v5.1-bmin (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 127/127; mutation-result.json AllKilled True, 132/132)",
+ "Clone": "D:/r62-arch-bmin (git clone --no-local -c core.autocrlf=false --single-branch; HEAD separado en el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks)",
+ "Run": "D:/r62-arch-bmin-run (order.txt y prompt.md, idénticos byte a byte a las copias del kit)",
+ "TransportGate": "MEASURED (D-01; launch.py solo lanza en MEASURED o ACCEPTED)",
+ "Launch": "kit/launch.py, por la sesión principal, una sola vez (NO lanzado)",
+ "Files": {
+  "c3_analysis.py": {
+   "Bytes": 6070,
+   "Sha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7"
+  },
+  "clone-verification.json": {
+   "Bytes": 21436,
+   "Sha256": "09557421aa3e434bc7e05dbcf35bbc9465b31b40c13418b59ec0ce539da36e82"
+  },
+  "closure.json": {
+   "Bytes": 73434,
+   "Sha256": "73d4065d422f61600047779f4b2c958b3e859271cdf3588ae8dcfc09f31d125e"
+  },
+  "finish_kit.py": {
+   "Bytes": 4495,
+   "Sha256": "3b6c2735f0ce24eba02c33b7601511d6307346749fa6e839a74b2c616aa8fe60"
+  },
+  "kit-params.json": {
+   "Bytes": 1635,
+   "Sha256": "09d561f2d7b004fa45387bcb9935abdb4b04de05aae210600477496ab68081cb"
+  },
+  "launch.py": {
+   "Bytes": 18030,
+   "Sha256": "3c43a2b4cfab55bc42d331369e0bbd64178acb26f95e75b5bba4a11594849f36"
+  },
+  "make_closure.py": {
+   "Bytes": 42347,
+   "Sha256": "a7cdf348064b87b578dfe0be77641d1b98834d6fd1bde2220f70afbc2c25fb35"
+  },
+  "make_closure.py.pre-evidence-removal": {
+   "Bytes": 42177,
+   "Sha256": "ff6716439bb8b9c9589a09e3bd7308bb028f2705afbb29d9abfc98d6d3882466"
+  },
+  "make_manifest.py": {
+   "Bytes": 5583,
+   "Sha256": "cc2b6ec107222d713f9a291fb178e3b5f4bc2cfda02f5f57f1430c3cdae9d056"
+  },
+  "mutation-post-review.py": {
+   "Bytes": 5968,
+   "Sha256": "01cc19953ebcacb5aeeca83329b32bf1a84f0e4a87468df968531b0722c383ac"
+  },
+  "mutation-result.json": {
+   "Bytes": 34197,
+   "Sha256": "affb69fdcef69593827417982cba5118ad049dc01da9b8f2cde010f14a9c01f5"
+  },
+  "order.txt": {
+   "Bytes": 3288,
+   "Sha256": "21435cd1c0821d8c934117a10e850cb9fa124a06f8dd589719aff8f5b711d630"
+  },
+  "post-review.py": {
+   "Bytes": 49468,
+   "Sha256": "3910e024cc0ca6f34f4233fe6b4240f71eea0e66c0cf1222dcd5120b3d47b7c0"
+  },
+  "prepare_clone.py": {
+   "Bytes": 5831,
+   "Sha256": "ff46a4549592c8115a1f4316721be6520326a662d42e53d3af31e034a7167647"
+  },
+  "prompt.md": {
+   "Bytes": 29843,
+   "Sha256": "2e97f3f2927e053a605ee92a03795908a7b5ef936f920f31583b91b7d48be8f2"
+  },
+  "prompt.template.md": {
+   "Bytes": 18633,
+   "Sha256": "285bed872e829948a12091fbc8ea9bdb4048832fd29e3ee1e02f4f7fa3ffda04"
+  },
+  "read_fidelity.py": {
+   "Bytes": 4927,
+   "Sha256": "108d799691a8b339271f454dee59807189c4d1de46baf6654a13ac18b85da0a2"
+  },
+  "result.schema.json": {
+   "Bytes": 10573,
+   "Sha256": "b8d29e4a7b7100c1e90b882b88dc6fd3b49ce319a23180ab288a61e1dab1e9b0"
+  },
+  "selftest-post-review.py": {
+   "Bytes": 64952,
+   "Sha256": "26655729d96ae11111d447955769d79fa84afe1fc39794a6b0af5fa9a8b76036"
+  },
+  "selftest-result.json": {
+   "Bytes": 48152,
+   "Sha256": "179469311e678dcdc6dca46cebce9cdfcf5028d4244d2b7a2c157370646e4f46"
+  },
+  "transport-gate.json": {
+   "Bytes": 1602,
+   "Sha256": "c9b8cdf78d2dd8e5cf5f771c10b7e13da62a6f58b77492f64174510bd239b0f3"
+  },
+  "transport_gate.py": {
+   "Bytes": 18828,
+   "Sha256": "b05fedd17b9b6856d618d2ffcde88efc1ceafaa3e6c2d5373667919a718129c6"
+  },
+  "verify_clone.py": {
+   "Bytes": 10215,
+   "Sha256": "f7d8296c8ee5b83cb4244ea9632e3b7aced000f621272146886bb3af20c7605b"
+  }
+ },
+ "RunFiles": {
+  "order.txt": {
+   "Path": "D:\\r62-arch-bmin-run\\order.txt",
+   "Bytes": 3288,
+   "Sha256": "21435cd1c0821d8c934117a10e850cb9fa124a06f8dd589719aff8f5b711d630",
+   "IdenticalToKitCopy": true
+  },
+  "prompt.md": {
+   "Path": "D:\\r62-arch-bmin-run\\prompt.md",
+   "Bytes": 29843,
+   "Sha256": "2e97f3f2927e053a605ee92a03795908a7b5ef936f920f31583b91b7d48be8f2",
+   "IdenticalToKitCopy": true
+  }
+ }
+}

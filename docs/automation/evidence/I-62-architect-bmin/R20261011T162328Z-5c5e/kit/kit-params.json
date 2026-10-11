@@ -1,0 +1,31 @@
+{
+ "Schema": "rackcad-bmin-kit-params/0",
+ "Provisional": false,
+ "PkgCommit": "9356edf141c795ea718a360e266334ded10d6a76",
+ "CloneCommit": "9356edf141c795ea718a360e266334ded10d6a76",
+ "Clone": "D:\\r62-arch-bmin",
+ "Run": "D:\\r62-arch-bmin-run",
+ "Branch": "architecture/portabilidad-coordinador-principal",
+ "BranchTipAtClone": "9356edf141c795ea718a360e266334ded10d6a76",
+ "BaseAtPreparation": "460665abd46e4f9f75c896eceecabe11689a6a40",
+ "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+ "PreparedAt": "2026-10-11T18:57:03Z",
+ "PreconditionChecks": {
+  "PkgIsCommit": true,
+  "CloneCommitIsCommit": true,
+  "BaseStrictAncestorOfPkg": true,
+  "PkgAncestorOrEqualOfCloneCommit": true,
+  "CloneCommitReachableFromBranchTip": true,
+  "PackagePresentAtPkg": true
+ },
+ "Commands": [
+  "git clone -q --no-local -c core.autocrlf=false --single-branch --branch architecture/portabilidad-coordinador-principal %USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal D:\\r62-arch-bmin",
+  "git -C D:\\r62-arch-bmin checkout -q --detach 9356edf141c795ea718a360e266334ded10d6a76",
+  "git -C D:\\r62-arch-bmin branch -D architecture/portabilidad-coordinador-principal",
+  "git -C D:\\r62-arch-bmin remote remove origin",
+  "git -C D:\\r62-arch-bmin reflog expire --expire=now --all",
+  "git -C D:\\r62-arch-bmin gc -q --prune=now",
+  "copia byte a byte de kit/order.txt (= cuerpo §75) → D:\\r62-arch-bmin-run\\order.txt",
+  "copia byte a byte de kit/prompt.md (renderizado por make_closure.py --render-prompt) → D:\\r62-arch-bmin-run\\prompt.md (finish_kit.py)"
+ ]
+}

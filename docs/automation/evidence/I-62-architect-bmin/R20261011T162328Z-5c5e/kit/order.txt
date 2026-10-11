@@ -1,0 +1,74 @@
+I-62 — COORDINATOR DISPOSITION §75
+B-MIN PREPARATION / CONTROLLER RECOVERY
+1. Estrategia
+B-min = ACCEPTED FOR IMPLEMENTATION PREPARATION.
+B-ext = REJECTED.
+Mantener el adapter codex-cli para EXECUTION_CONTROLLER y la responsabilidad de verificación del Controller.
+No iniciar A-6 todavía.
+2. Preparación técnica
+Autorizar la construcción, en el worktree de I-62 y fuera del fixture operativo, de un paquete experimental B-min:
+
+* herramientas deterministas read-only;
+* entradas cerradas y fijadas por blob;
+* salidas JSON ASCII canónicas;
+* ninguna decisión PASS/FAIL/VERIFIED producida por la herramienta;
+* ninguna operación de escritura, red o modificación del sandbox;
+* pruebas unitarias, negativas y de mutación;
+* reproducción independiente R1–R10 por el aceptante.
+
+No incorporar estas herramientas a F_seed, F_norm ni a los contratos de producción.
+No ejecutar modelos durante la preparación.
+3. Separación de responsabilidades
+La herramienta calcula hechos reproducibles.
+El Controller los interpreta, contrasta y emite su resultado estructurado.
+El aceptante reproduce independientemente los controles requeridos y rechaza toda discrepancia.
+No compartir el oráculo de C-24 con el Controller.
+No utilizar probe_tools.py como instrumento del Controller.
+4. Materialidad
+Preparar una revisión independiente y acotada por Architect elegible, utilizando claude-cli dentro de la autoridad de revisión vigente.
+Pregunta principal:
+¿Puede B-min utilizarse como herramienta ACTION_COMPATIBLE con entradas canónicas fijadas por blob bajo el contrato vigente, o modifica materialmente AP 16.4/16.19/16.24, ADR-0046, D.3 o los contratos consumidos?
+Entregar:
+
+* cláusulas aplicables;
+* materialidad M-01..M-08;
+* superficies afectadas;
+* consecuencia sobre independencia;
+* necesidad o no de A-6;
+* decisiones OWNER-RESERVED, si las hay.
+
+No solicitar revisión formal de una enmienda que todavía no existe.
+5. Criterio de aceptación del paquete
+No basta con que las herramientas produzcan el resultado correcto.
+Exigir:
+
+* integridad de entradas;
+* cero escrituras;
+* resultados deterministas y reproducibles;
+* fidelidad UTF-8 por representación ASCII;
+* comprobaciones negativas;
+* implementación independiente para controles críticos;
+* evidencia del fallo cerrado ante datos ausentes o contradictorios.
+
+Resolver expresamente la divergencia MV-4/MV-7 sin alterar retrospectivamente las sondas.
+6. Fixture B1
+Mantener lista la solicitud de repositorio público con A-5 AGREED.
+No abrir FX-U2 mientras no exista una vía elegible para Controller.
+No trasladar resultados históricos como PASS de FX-U2.
+7. Recursos y presupuesto
+I-64 tiene prioridad.
+No ejecutar sondas Codex nuevas ni consumir sesiones Principal.
+No ampliar presupuestos congelados.
+Si la revisión declara B-min MATERIAL, preparar después únicamente el delta mínimo de A-6, condicionado a nueva disposición.
+8. Entrega
+Informar:
+
+1. commit del paquete B-min;
+2. resultados de pruebas y negativos;
+3. comprobaciones R1–R10;
+4. veredicto independiente de materialidad;
+5. necesidad concreta de A-6;
+6. posibilidad de medir B-min en una sola invocación;
+7. siguiente autorización necesaria para avanzar C-24.
+
+No declarar FX-02 PASS, F6 GATE PASS ni integración anticipadamente.

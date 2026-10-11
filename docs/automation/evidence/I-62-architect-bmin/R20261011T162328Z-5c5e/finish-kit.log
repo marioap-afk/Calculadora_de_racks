@@ -1,0 +1,231 @@
+== 1 prepare_clone (código 0)
+{"Written": ["kit-params.json", "D:\\r62-arch-bmin", "D:\\r62-arch-bmin-run\\order.txt"], "PkgCommit": "9356edf141c795ea718a360e266334ded10d6a76", "CloneCommit": "9356edf141c795ea718a360e266334ded10d6a76"}
+
+== 2 render prompt (código 0)
+{"Written": "prompt.md", "Bytes": 29843, "Lines": 258, "Sha256": "2e97f3f2927e053a605ee92a03795908a7b5ef936f920f31583b91b7d48be8f2"}
+
+== 3 prompt.md copiado al run
+== 4 closure (código 0)
+{
+ "ids": {
+  "RunId": "R20261011T162328Z-5c5e",
+  "InvocationId": "I20261011T162328Z-5c5e",
+  "LogicalReviewRequestId": "L20261011T162328Z-5c5e",
+  "AttemptSeq": 1
+ },
+ "provisional": false,
+ "canonical": 48,
+ "bytes": 1622498,
+ "package": 30,
+ "run": {
+  "order.txt": [
+   3288,
+   "21435cd1c082"
+  ],
+  "prompt.md": [
+   29843,
+   "2e97f3f2927e"
+  ]
+ },
+ "large": [
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/tests/test_bmin_facts.py",
+  "docs/AUTOMATION_PLAN.md",
+  "docs/initiatives/I-62-proposal-v14.md",
+  "docs/initiatives/I-62-A-4.md",
+  "docs/automation/agent-execution/README.md",
+  "docs/automation/decisions/I-62.md"
+ ],
+ "long": {
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json": [
+   1
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json": [
+   1
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json": [
+   1
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json": [
+   1
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json": [
+   1
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json": [
+   1
+  ],
+  "docs/initiatives/I-62-proposal-v14.md": [
+   2352,
+   2380,
+   2382
+  ],
+  "docs/automation/decisions/I-62.md": [
+   657,
+   734,
+   750,
+   768,
+   787,
+   805,
+   819
+  ]
+ }
+}
+
+== 5a gate init (código 0)
+{"Written": "transport-gate.json", "Status": "PENDING"}
+
+== 5b gate set MEASURED (código 0)
+{
+ "Written": "transport-gate.json",
+ "Status": "MEASURED",
+ "Sha256": "c9b8cdf78d2dd8e5cf5f771c10b7e13da62a6f58b77492f64174510bd239b0f3",
+ "Next": "python -B make_manifest.py --gate; después, custodiar el kit otra vez"
+}
+
+== 6 verify_clone (código 0)
+{"AllChecks": true, "Head": "9356edf141c795ea718a360e266334ded10d6a76", "PkgCommit": "9356edf141c795ea718a360e266334ded10d6a76", "Files": 3827, "Reparse": 0, "Run": ["order.txt", "prompt.md"], "ObjectFiles": 30}
+
+== 7 selftest (código 0)
+  PASS 
+76-fila-de-materialidad-sin-referencias            PASS 
+77-material-coherente-aceptado                     PASS 
+78-blocked-coherente-aceptado                      PASS 
+79-material-por-unknown-aceptado                   PASS 
+80-not-material-con-unknown                        PASS 
+81-extracto-de-mas-de-200                          PASS 
+82-referencia-absoluta                             PASS 
+83-referencia-mal-formada                          PASS 
+G00-medida-c3-valida                               PASS 
+G01-pendiente                                      PASS 
+G02-plantilla-de-la-compuerta                      PASS 
+G03-runid-de-la-compuerta                          PASS 
+G04-sin-registro                                   PASS 
+G05-registro-alterado                              PASS 
+G06-registro-ilegible                              PASS 
+G07-sin-binario-elegible                           PASS 
+G08-c1-otra-lista                                  PASS 
+G09-c1-salida                                      PASS 
+G10-stale                                          PASS 
+G11-architect-no-elegible                          PASS 
+G12-sin-c3                                         PASS 
+G13-c3-veredicto                                   PASS 
+G14-c3-plantilla-sin-add-dir                       PASS 
+G15-c3-argumentos                                  PASS 
+G16-c3-binario                                     PASS 
+G17-c3-salida                                      PASS 
+G18-c3-result                                      PASS 
+G19-c3-init                                        PASS 
+G20-c3-effort                                      PASS 
+G21-c3-lectura-anadida                             PASS 
+G22-c3-lectura-exterior                            PASS 
+G23-c3-denegaciones                                PASS 
+G24-sin-plantilla-medida                           PASS 
+G25-aceptada-valida                                PASS 
+G26-aceptacion-ausente                             PASS 
+G27-aceptacion-alterada                            PASS 
+G28-aceptacion-ilegible                            PASS 
+G29-aceptacion-Schema                              PASS 
+G30-aceptacion-RunId                               PASS 
+G31-aceptacion-Decision                            PASS 
+G32-aceptacion-UnmeasuredFlags                     PASS 
+G33-aceptacion-ArgsTemplate                        PASS 
+G34-aceptacion-BinarySha256                        PASS 
+G35-aceptacion-CharacterizationSha256              PASS 
+G36-aceptacion-AcceptedBy                          PASS 
+G37-aceptacion-Authority                           PASS 
+G38-sonda-lectura-anadida-denegada                 PASS 
+G39-sonda-lectura-exterior-entregada               PASS 
+G40-sonda-pass                                     PASS 
+clean True runfiles {'order.txt': True, 'prompt.md': True} listing ['order.txt', 'prompt.md'] all True {'Cases': 127, 'Pass': 127, 'AuditCases': 86, 'AuditPass': 86, 'GateCases': 41, 'GatePass': 41}
+
+== 8 mutation (código 0)
+referencias']
+post-review.py      810 KILLED ['69-no-evaluado-con-veredicto']
+post-review.py      813 KILLED ['17-not-material-con-disparador', '80-not-material-con-unknown']
+post-review.py      815 KILLED ['18b-not-material-con-a6']
+post-review.py      817 KILLED ['63-not-material-con-superficie-material']
+post-review.py      820 KILLED ['58-material-sin-disparador']
+post-review.py      822 KILLED ['18-material-sin-a6']
+post-review.py      824 KILLED ['59-blocked-sin-owner-reserved']
+post-review.py      826 KILLED ['20-not-accredited-sin-motivo']
+post-review.py      828 KILLED ['66-ids-de-invocacion']
+transport_gate.py   103 KILLED ['G07-sin-binario-elegible']
+transport_gate.py   106 KILLED ['G08-c1-otra-lista']
+transport_gate.py   108 KILLED ['G09-c1-salida']
+transport_gate.py   111 KILLED ['G10-stale']
+transport_gate.py   113 KILLED ['G11-architect-no-elegible']
+transport_gate.py   122 KILLED ['G12-sin-c3']
+transport_gate.py   125 KILLED ['G13-c3-veredicto', 'G38-sonda-lectura-anadida-denegada']
+transport_gate.py   127 KILLED ['G14-c3-plantilla-sin-add-dir']
+transport_gate.py   129 KILLED ['G15-c3-argumentos']
+transport_gate.py   132 KILLED ['G16-c3-binario']
+transport_gate.py   134 KILLED ['G17-c3-salida']
+transport_gate.py   137 KILLED ['G18-c3-result']
+transport_gate.py   141 KILLED ['G19-c3-init']
+transport_gate.py   143 KILLED ['G20-c3-effort']
+transport_gate.py   146 KILLED ['G21-c3-lectura-anadida', 'G38-sonda-lectura-anadida-denegada']
+transport_gate.py   149 KILLED ['G22-c3-lectura-exterior', 'G39-sonda-lectura-exterior-entregada']
+transport_gate.py   152 KILLED ['G23-c3-denegaciones']
+transport_gate.py   154 KILLED ['G24-sin-plantilla-medida']
+transport_gate.py   162 KILLED ['G29-aceptacion-Schema']
+transport_gate.py   164 KILLED ['G30-aceptacion-RunId']
+transport_gate.py   166 KILLED ['G31-aceptacion-Decision']
+transport_gate.py   168 KILLED ['G32-aceptacion-UnmeasuredFlags']
+transport_gate.py   170 KILLED ['G33-aceptacion-ArgsTemplate']
+transport_gate.py   172 KILLED ['G34-aceptacion-BinarySha256']
+transport_gate.py   174 KILLED ['G35-aceptacion-CharacterizationSha256']
+transport_gate.py   176 KILLED ['42-compuerta-aceptacion-invalida', 'G36-aceptacion-AcceptedBy']
+transport_gate.py   178 KILLED ['G37-aceptacion-Authority']
+transport_gate.py   192 KILLED ['38-compuerta-pendiente', 'G01-pendiente']
+transport_gate.py   194 KILLED ['G02-plantilla-de-la-compuerta']
+transport_gate.py   196 KILLED ['G03-runid-de-la-compuerta']
+transport_gate.py   201 KILLED ['40-compuerta-copia-ausente', 'G04-sin-registro']
+transport_gate.py   203 KILLED ['39-compuerta-copia-alterada', 'G05-registro-alterado']
+transport_gate.py   208 KILLED ['G06-registro-ilegible']
+transport_gate.py   216 KILLED ['G26-aceptacion-ausente']
+transport_gate.py   218 KILLED ['42-compuerta-aceptacion-invalida', 'G27-aceptacion-alterada']
+transport_gate.py   223 KILLED ['G28-aceptacion-ilegible']
+{"Baseline": true, "Totals": {"Mutants": 132, "Killed": 132}, "AllKilled": true}
+
+== 9 manifest (código 0)
+{"Written": "kit-manifest.json", "Files": 23, "Gate": "MEASURED", "Sha256": "b7ce5fda637b9586e9314e883161bfab229c5342a40324256241f2e0918b76e0"}
+
+== 10 launch --dry-run (código 2)
+: [],
+   "Remotes": [],
+   "BlobMismatches": [],
+   "ReparsePoints": 0
+  },
+  "7-RunFiles": {
+   "Ok": true,
+   "Listing": [
+    "order.txt",
+    "prompt.md"
+   ],
+   "Mismatches": []
+  },
+  "8-NewSession": {
+   "Ok": true,
+   "PriorTranscripts": 0,
+   "ProjectDirsForCloneOrRun": []
+  },
+  "9-CommandLine": {
+   "Ok": true,
+   "Chars": 8492
+  },
+  "10-TransportGate": {
+   "Ok": true,
+   "Status": "MEASURED",
+   "LaunchArgsMatchTemplate": true,
+   "CharacterizationSha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+   "AcceptanceSha256": null,
+   "Problems": []
+  }
+ }
+}
+
+{"KitReady": true, "KitManifestSha256": "b7ce5fda637b9586e9314e883161bfab229c5342a40324256241f2e0918b76e0", "NotRunInDryRun": ["4-Version", "5-Auth"], "Next": "custodiar el kit (commit de custodia) y lanzar una vez: python -B kit/launch.py"}
+rc=0
