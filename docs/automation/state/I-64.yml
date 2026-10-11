@@ -7,8 +7,8 @@ automation_state:
   state: waiting
   gate: none
   attempts: 3
-  next_action: "Sesion: revision formal del Architect (ARCHITECTURE_REVIEW, Deep) del objeto exacto de A-6 y del blob corregido de verify_freetext_bridge.py; despues STOP en COORDINATOR_A6_AGREEMENT_REQUIRED (evidencia §43)."
-  last_evidence_commit: 6a215c9cd0092c840defc0fcdab1491cde77a801
+  next_action: "Owner: decision P-01 sobre config.toml F909F480... (105 nombres sin cambio) y sobre el CLI de Codex 0.162.0-alpha.17.2 (el medido 0.162.0-alpha.2 ya no existe); hasta entonces ninguna invocacion de Codex; la revision del Architect de A-6 esta preparada y no lanzada (evidencia §44)."
+  last_evidence_commit: fd00924d0c23e74cf5573bf7846366888a31ca46
 execution_context:
   mode: manual
   automation_enabled: false
@@ -36,15 +36,15 @@ execution_context:
   f1_a6_status: "A-6 PROPUESTA, NO activa (docs/initiatives/I-64-A-6.md; M-04 YES, el resto NO); Owner SATISFIED (decision de A-5); Architect PENDIENTE; Coordinator PENDIENTE; verificador blob 3bc7869e (SHA-256 e7608588...); autoprueba 49/49; regresion contra A-5: FAIL 38/49"
   max_attempts: 3
   persistent_next_action:
-    NEXT_ROLE: "Sesion responsable (revision formal del Architect de A-6) y despues Coordinator (acuerdo de A-6)"
-    NEXT_ACTION: "una revision formal ARCHITECTURE_REVIEW / Deep (gpt-6.1-sol/high, solo lectura) del objeto exacto de A-6 con disposicion explicita de los 2 REQUIRED de A-5; con AGREED / 0 REQUIRED, STOP en COORDINATOR_A6_AGREEMENT_REQUIRED; con REQUIRED, STOP al Coordinator sin A-7"
-    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es 6a215c9cd0092c840defc0fcdab1491cde77a801"
+    NEXT_ROLE: "Owner (decision P-01: config.toml y CLI de Codex)"
+    NEXT_ACTION: "decidir sobre el config.toml F909F480... (tercer estado; inventario de 105 nombres igual) y sobre el CLI codex 0.162.0-alpha.17.2 (bin 2e5e00daee91c61d; el medido 0.162.0-alpha.2 ya no existe): aceptacion o sonda autorizada de gpt-6.1-sol/high antes de la revision del Architect de A-6"
+    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es fd00924d0c23e74cf5573bf7846366888a31ca46"
     GATE: F1 — Workspace Foundation
     TASK: F1-T2-BRIDGE (cierre de protocolo por A-5/A-6 pendiente)
-    INPUTS_REQUIRED: "docs/initiatives/I-64-A-5.md e I-64-A-6.md; docs/automation/evidence/I-64-protocol-bridge/{coordinator-decision-a6.md,tools/verify_freetext_bridge.py,tools/selftest_freetext_bridge.py,selftest-freetext-result-a6.json,regression-demo-a6-a5-verifier.json,architect-review/R20261011T022328Z-2809/}; evidencia §§41-43"
-    EXPECTED_RESULT: "Architect AGREED / 0 REQUIRED sobre A-6; despues acuerdo del Coordinator; solo entonces ejecucion de I64-FREETEXT-BRIDGE-01 contra T2 y cierre documental de T2"
+    INPUTS_REQUIRED: "evidencia §§43-44; docs/initiatives/I-64-A-6.md"
+    EXPECTED_RESULT: "decision del Owner sobre P-01 y el CLI; despues la revision del Architect de A-6 y STOP en COORDINATOR_A6_AGREEMENT_REQUIRED"
     REMAINING_BUDGET: "T2: planificacion, trabajo y verificacion consumidos; nc3 agotado (P-04); attempts 3 de 3; ningun presupuesto reiniciado"
-    STOP_CONDITION: "Architect con REQUIRED (sin A-7 autonoma); ejecutar el puente FreeText contra T2 antes de los acuerdos; usar entradas reales de T2 en pruebas; config.toml fuera del conjunto cerrado A/B (P-01); tocar src/ o tests/; nuevo Worker; F1-T3-HOST"
+    STOP_CONDITION: "cualquier invocacion de Codex antes de la decision del Owner (P-01); ejecutar el puente FreeText contra T2; usar entradas reales de T2; tocar src/ o tests/; nuevo Worker; F1-T3-HOST"
     OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR 0047; Owner Validation y smokes (Smoke-1 tras F1 PASS y RELEASE de I-52); cambio de config.toml (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad; reescritura destructiva de historia"
   protocol_debt:
     - FINDING: "El Controller gpt-6-luna/high, pese a leer correctamente una delegacion con AllowedWriteScope que excluye el unico archivo modificado, puede emitir Scope=pass despues de que falle su operacion auxiliar de comparacion (nc2 R20261002T184050Z-8415; mismo patron en nc2 R20261002T151201Z-abb1)."

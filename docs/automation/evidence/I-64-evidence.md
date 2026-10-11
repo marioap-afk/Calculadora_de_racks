@@ -2529,3 +2529,36 @@ Aunque llegue AGREED, el puente no se ejecuta contra T2 sin el acuerdo del Coord
 - Sin invocaciones de modelos en esta sección.
 - `config.toml` en la instantánea A del conjunto cerrado.
 - HEAD = remoto = `6a215c9c` antes de este commit; `main` `bb0d5522`.
+
+## 44. A-6 — STOP P-01 antes de la revisión del Architect: tercer hash de config.toml y cambio del CLI de Codex
+
+Sección nueva; las anteriores no se reescriben.
+
+**Hechos** (medidos por la sesión; nombres sin valores):
+- **`config.toml`:**
+  - nuevo hash `F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113`, escrito a las 02:52:55Z;
+  - inventario de 105 nombres de secciones y claves igual al conocido, en el mismo orden (diff de nombres vacío);
+  - no es ninguna de las dos instantáneas del conjunto cerrado de la cadena de T2 (A `73890CA3…`, B `64BEEBC7…`).
+- **Aplicación Codex del Owner:** se reinició a las 02:51:26Z con una versión nueva (paquete `OpenAI.Codex_26.1007.2314.0`; antes
+  `26.1002.7124.0`).
+  - La escritura de `config.toml` coincide con el arranque de sus procesos.
+- **CLI:**
+  - el binario medido `bin/9691020b546a15b2` (codex-cli 0.162.0-alpha.2) ya no existe;
+  - el binario disponible es `bin/2e5e00daee91c61d` (codex-cli 0.162.0-alpha.17.2), sin medir.
+  - Las celdas `gpt-6-luna`/`high` y `gpt-6.1-sol`/`high` se midieron con el CLI 0.162.0-alpha.2: sondas `R20261010T014704Z-97f8` y
+    `R20261010T024641Z-ed2c`.
+
+**Corrección de §43:** la nota «`config.toml` en la instantánea A del conjunto cerrado» describía el estado comprobado al redactarla.
+- El hash cambió a las 02:52:55Z, alrededor de un minuto antes del commit `fd00924d` de A-6. Ese commit no es una invocación de Codex.
+- La comprobación previa al commit ya mostró el hash nuevo; la sesión no se detuvo hasta la siguiente invocación de Codex.
+
+**Disposición:** STOP P-01, conforme a AUTOMATION_PLAN 16.4 y a la disposición del Owner/Coordinator del conjunto cerrado A/B («ANY hash
+other than A or B: STOP P-01»).
+- No se lanza la revisión del Architect de A-6 ni ninguna otra invocación de Codex hasta que decida el Owner.
+- La decisión del Owner tiene que cubrir el `config.toml` nuevo y la equivalencia o la sonda del CLI 0.162.0-alpha.17.2.
+
+**Estado:**
+- A-6 en `fd00924d` (CI 38106594897 4/4), NO activa;
+- puente FreeText no ejecutado;
+- ninguna entrada real de T2 usada en A-6;
+- T2 con el protocolo incompleto; F1-T3-HOST bloqueada.
