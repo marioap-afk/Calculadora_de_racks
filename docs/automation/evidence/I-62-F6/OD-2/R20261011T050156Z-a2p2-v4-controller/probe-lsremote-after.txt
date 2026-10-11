@@ -1,0 +1,9 @@
+fbe25347799e5b801ef708454212335537448bd1	HEAD
+7cf79ffcd02c3d55e6740225a6138d0c66e099e0	refs/heads/ci/smoke
+a9f6c929e74ef92edfee557c3572b090f48bc318	refs/heads/fixture/i62-norm
+95bdc29d428b35d2188a10e1c5462d6caf2be4df	refs/heads/fx/u1
+13654f96be6dd1effc167d883a8e18fa718dd8fe	refs/heads/fx/u1-fx05
+6b51b3787819b6be2cc410b2641415c5034c874f	refs/heads/fx/u1-fx05-r2
+fbe25347799e5b801ef708454212335537448bd1	refs/heads/main
+f38762375293d34d5cfefddadda8f770279db1cb	refs/tags/test-activation/I-62
+fbe25347799e5b801ef708454212335537448bd1	refs/tags/test-activation/I-62^{}

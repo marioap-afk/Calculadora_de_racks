@@ -1,0 +1,613 @@
+{
+ "Schema": "a2p2-v4-probe-comparison (propuesta de la supervisión; no es decisión)",
+ "Mode": "NATIVE_CONTROLLER",
+ "Verdict": "NOT_DEMONSTRATED",
+ "Operations": {
+  "OP_A_shell": true,
+  "OP_B_git_y_hashes": false,
+  "OP_C_fidelidad_de_entradas": false,
+  "OP_D_trx_y_ci": false,
+  "OP_E_mapa_I62": false,
+  "OP_F_esquemas_canonicos": false,
+  "OP_G_controles_negativos": false
+ },
+ "FailedKeys": {
+  "5:diff-red-head": {
+   "expected": [
+    ".github/workflows/fixture.yml",
+    ".gitignore",
+    "docs/automation/decisions/FX-U1.md",
+    "docs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json",
+    "docs/automation/evidence/FX-U1-agent/qh/state-r3.validation.json",
+    "docs/automation/evidence/FX-U1-agent/repair/B20261007T023706Z-5fdd.json",
+    "docs/automation/evidence/FX-U1-agent/repair/B20261007T023706Z-5fdd.validation.json",
+    "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.json",
+    "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.validation.json",
+    "docs/automation/evidence/FX-U1-agent/repair/qh/state-r5.validation.json",
+    "docs/automation/evidence/FX-U1-agent/repair/qr/B20261007T023706Z-5fdd.json",
+    "docs/automation/evidence/FX-U1-agent/repair/qr/B20261007T023706Z-5fdd.validation.json",
+    "docs/automation/evidence/FX-U1-agent/repair/qr/state-r4.validation.json",
+    "docs/automation/state/FX-U1.yml"
+   ],
+   "got": ".github/workflows/fixture.yml\n.gitignore\ndocs/automation/decisions/FX-U1-T1.gate-contract.json\ndocs/automation/decisions/FX-U1.md\ndocs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json\ndocs/automation/evidence/FX-U1-agent/qh/state-r3.validation.json\ndocs/automation/evidence/FX-U1-"
+  },
+  "5:rt": {
+   "expected": [],
+   "got": "tests/Fixture.Tests/CalculatorTests.cs"
+  },
+  "6:mb": {
+   "expected": "fbe25347799e5b801ef708454212335537448bd1",
+   "got": ""
+  },
+  "6:anc:ar-base": {
+   "expected": "yes",
+   "got": "no"
+  },
+  "7:blob-at-ar:docs/automation/state/FX-U1.yml": {
+   "expected": "52a3f7d77a4df1a2e70e5d443eece3384cebd670",
+   "got": "6b5ab0354bf901382f0e975797cde9ca7d567ff5"
+  },
+  "7:blob-at-ar:docs/automation/decisions/FX-U1-T1.gate-contract.json": {
+   "expected": "rc=128",
+   "got": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0"
+  },
+  "9:ls-remote:branch": {
+   "expected": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "got": ""
+  },
+  "9:ls-remote:main": {
+   "expected": "fbe25347799e5b801ef708454212335537448bd1",
+   "got": ""
+  },
+  "11:md-line": {
+   "expected": "**Lectura de este Coordinator.** «`protocol.g0_acceptance` cambia una sola vez» se refiere a la transición semántica de la aceptación (PENDING → ACCEPTED o",
+   "got": "**Lectura de este Coordinator.** �`protocol.g0_acceptance` cambia una sola vez� se refiere a la transici�n sem�ntica de la aceptaci�n (PENDING ɓ ACCEPTED o"
+  },
+  "11:md-nonascii-count": {
+   "expected": 6,
+   "got": ""
+  },
+  "11:md-nonascii-chars": {
+   "expected": "«=1;»=1;á=1;ó=2;→=1",
+   "got": ""
+  },
+  "13:json:Objective": {
+   "expected": "\"Añadir a Fixture.Lib la operación Calculator.Subtract(int a, int b) con su prueba en Fixture.Tests: primero la prueba en RED y después la implementación en GREEN.\"",
+   "got": "\"A�adir a Fixture.Lib la operaci�n Calculator.Subtract(int a, int b) con su prueba en Fixture.Tests: primero la prueba en RED y despu�s la implementaci�n en GREEN.\""
+  },
+  "13:json:Invariants": {
+   "expected": "[\"Calculator.Add conserva su firma y su comportamiento.\", \"Sin paquetes ni dependencias nuevas.\", \"P-16: ningún artefacto nombra, configura ni usa un repositorio o una unidad reales.\"]",
+   "got": "[\"Calculator.Add conserva su firma y su comportamiento.\",\"Sin paquetes ni dependencias nuevas.\",\"P-16: ning�n artefacto nombra, configura ni usa un repositorio o una unidad reales.\"]"
+  },
+  "13:json:Objective.nonascii-count": {
+   "expected": 4,
+   "got": ""
+  },
+  "13:len:ForbiddenWriteScope": {
+   "expected": 12,
+   "got": "14"
+  },
+  "14:trx:sha256": {
+   "expected": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+   "got": ""
+  },
+  "14:trx:total": {
+   "expected": 1,
+   "got": ""
+  },
+  "14:trx:executed": {
+   "expected": 1,
+   "got": ""
+  },
+  "14:trx:passed": {
+   "expected": 1,
+   "got": ""
+  },
+  "14:trx:failed": {
+   "expected": 0,
+   "got": ""
+  },
+  "14:trx:notExecuted": {
+   "expected": 0,
+   "got": ""
+  },
+  "14:trx:tests": {
+   "expected": [
+    "Fixture.Tests.CalculatorTests.AddSumsTwoIntegers"
+   ],
+   "got": ""
+  },
+  "14:trx:filter-selected": {
+   "expected": 0,
+   "got": ""
+  },
+  "14:trx:sha256-match": {
+   "expected": "yes",
+   "got": ""
+  },
+  "15:trxred:sha256": {
+   "expected": "aa2f6f9857a0bc14b0236cd34e00e813af186d498a6c8f07fd3c2ef711098cdf",
+   "got": ""
+  },
+  "15:trxred:total": {
+   "expected": 2,
+   "got": ""
+  },
+  "15:trxred:executed": {
+   "expected": 2,
+   "got": ""
+  },
+  "15:trxred:passed": {
+   "expected": 1,
+   "got": ""
+  },
+  "15:trxred:failed": {
+   "expected": 1,
+   "got": ""
+  },
+  "15:trxred:notExecuted": {
+   "expected": 0,
+   "got": ""
+  },
+  "15:trxred:tests": {
+   "expected": [
+    "Fixture.Tests.CalculatorTests.AddSumsTwoIntegers",
+    "Fixture.Tests.CalculatorTests.SubtractReturnsDifference"
+   ],
+   "got": ""
+  },
+  "15:trxred:failed-tests": {
+   "expected": [
+    "Fixture.Tests.CalculatorTests.SubtractReturnsDifference"
+   ],
+   "got": ""
+  },
+  "15:trxred:filter-selected": {
+   "expected": 1,
+   "got": ""
+  },
+  "15:trxred:sha256-match": {
+   "expected": "yes",
+   "got": "FALTA"
+  },
+  "15:trxred:filter-failed": {
+   "expected": 1,
+   "got": ""
+  },
+  "16:handoff:sha256": {
+   "expected": "0a4dd2637691b9b734b1a3b0a817ec278a2d5d8778002f488143f134f6811079",
+   "got": ""
+  },
+  "16:handoff:sha256-match": {
+   "expected": "yes",
+   "got": ""
+  },
+  "19:trailer-commits": {
+   "expected": [
+    "a9f6c929e74ef92edfee557c3572b090f48bc318"
+   ],
+   "got": ""
+  },
+  "19:fp-merges": {
+   "expected": [
+    "fbe25347799e5b801ef708454212335537448bd1"
+   ],
+   "got": ""
+  },
+  "19:EFF^1": {
+   "expected": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "got": ""
+  },
+  "19:EFF^2": {
+   "expected": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "got": ""
+  },
+  "19:pre-rows": {
+   "expected": 0,
+   "got": ""
+  },
+  "19:cid-in-pre": {
+   "expected": "no",
+   "got": ""
+  },
+  "20:classify:decision-blob-type": {
+   "expected": "blob",
+   "got": ""
+  },
+  "20:classify:markers": {
+   "expected": "yes",
+   "got": ""
+  },
+  "20:classify:P": {
+   "expected": "I62",
+   "got": ""
+  },
+  "21:workflow-blob": {
+   "expected": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "got": ""
+  },
+  "21:ap-blob": {
+   "expected": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "got": ""
+  },
+  "21:entry-count": {
+   "expected": 1,
+   "got": ""
+  },
+  "21:entry-line": {
+   "expected": 614,
+   "got": ""
+  },
+  "21:r-count": {
+   "expected": 1,
+   "got": ""
+  },
+  "21:r-line": {
+   "expected": 717,
+   "got": ""
+  },
+  "21:entry-names-r": {
+   "expected": "yes",
+   "got": ""
+  },
+  "22:map-blob": {
+   "expected": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "got": ""
+  },
+  "22:schema-blob": {
+   "expected": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "got": ""
+  },
+  "22:mv1": {
+   "expected": "pass",
+   "got": ""
+  },
+  "22:mv2": {
+   "expected": "pass",
+   "got": ""
+  },
+  "22:mv3": {
+   "expected": "fail",
+   "got": ""
+  },
+  "22:mv4": {
+   "expected": "fail",
+   "got": ""
+  },
+  "22:mv5": {
+   "expected": "pass",
+   "got": ""
+  },
+  "22:mv6": {
+   "expected": "fail",
+   "got": ""
+  },
+  "22:mv7": {
+   "expected": "fail",
+   "got": ""
+  },
+  "22:mv4-mismatches": {
+   "expected": 7,
+   "got": ""
+  },
+  "22:mv6-identical:docs/AUTOMATION_PLAN.md": {
+   "expected": "yes",
+   "got": "FALTA"
+  },
+  "22:mv6-identical:docs/INITIATIVE_LIFECYCLE.md": {
+   "expected": "yes",
+   "got": "FALTA"
+  },
+  "22:mv6-identical:docs/WORKFLOW.md": {
+   "expected": "yes",
+   "got": "FALTA"
+  },
+  "22:mv6-identical:docs/automation/agent-execution/README.md": {
+   "expected": "yes",
+   "got": "FALTA"
+  },
+  "22:mv6-identical:docs/automation/agent-execution/routing.md": {
+   "expected": "yes",
+   "got": "FALTA"
+  },
+  "22:mv6-identical:docs/initiatives/PROMPT_TEMPLATES.md": {
+   "expected": "missing",
+   "got": "FALTA"
+  },
+  "22:mv7-pointer-16": {
+   "expected": "yes",
+   "got": ""
+  },
+  "22:mv7-pointer-163": {
+   "expected": "yes",
+   "got": ""
+  },
+  "22:mv7-163-equal": {
+   "expected": "no",
+   "got": ""
+  },
+  "22:map-verdict": {
+   "expected": "MAP_INVALID",
+   "got": ""
+  },
+  "22:mv-failed": {
+   "expected": "MV-3,MV-4,MV-6,MV-7",
+   "got": ""
+  },
+  "23:res:mb": {
+   "expected": "fbe25347799e5b801ef708454212335537448bd1",
+   "got": ""
+  },
+  "23:res:ext-diff:AGENTS.md": {
+   "expected": [],
+   "got": "FALTA"
+  },
+  "23:res:ext-diff:docs/AUTOMATION_PLAN.md": {
+   "expected": [],
+   "got": "FALTA"
+  },
+  "23:res:ar-base-diff": {
+   "expected": [
+    "docs/automation/decisions/FX-U1.md",
+    "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.json",
+    "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.validation.json",
+    "docs/automation/evidence/FX-U1-agent/g0/state-r2.validation.json",
+    "docs/automation/state/FX-U1.yml"
+   ],
+   "got": ""
+  },
+  "23:res:ar-base-clean": {
+   "expected": "yes",
+   "got": ""
+  },
+  "25:nc1-field": {
+   "expected": "CurrentSha",
+   "got": ""
+  },
+  "25:nc1-rc": {
+   "expected": 128,
+   "got": ""
+  },
+  "25:nc1-Identity": {
+   "expected": "fail",
+   "got": ""
+  },
+  "26:nc2-field": {
+   "expected": "AllowedWriteScope",
+   "got": ""
+  },
+  "26:nc2-excluded": {
+   "expected": "docs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json",
+   "got": ""
+  },
+  "26:nc2-Scope": {
+   "expected": "fail",
+   "got": ""
+  },
+  "27:nc3-field": {
+   "expected": "WorkCompleted",
+   "got": ""
+  },
+  "27:nc3-term": {
+   "expected": "GATE PASS",
+   "got": ""
+  },
+  "27:nc3-FreeText": {
+   "expected": "fail",
+   "got": ""
+  },
+  "28:nc4-field": {
+   "expected": "AllowedWriteScope",
+   "got": ""
+  },
+  "28:nc4-extra": {
+   "expected": "docs/automation/state/",
+   "got": ""
+  },
+  "28:nc4-A3": {
+   "expected": "fail",
+   "got": ""
+  },
+  "30:n5-field": {
+   "expected": "RemoteFacts",
+   "got": ""
+  },
+  "31:n7a-field": {
+   "expected": "RunId",
+   "got": ""
+  },
+  "32:n7b-fields": {
+   "expected": "CurrentSha,RunId",
+   "got": ""
+  }
+ },
+ "PlanCanonicalChecks": {
+  "schema_valid": true,
+  "field:Schema": true,
+  "field:TaskId": true,
+  "field:RunId": true,
+  "field:Initiative": true,
+  "field:Unit": true,
+  "field:Gate": true,
+  "field:Attempt": true,
+  "field:AuthorityRevision": true,
+  "field:MainSha": true,
+  "field:BaseSha": false,
+  "field:ExpectedBranch": true,
+  "field:Owner": true,
+  "field:Model": true,
+  "field:RoutingEnforcement": true,
+  "field:Authorities": true,
+  "field:Objective": true,
+  "field:AllowedWriteScope": true,
+  "field:ForbiddenWriteScope": true,
+  "field:Invariants": true,
+  "field:RequiredTests": true,
+  "field:ExpectedEvidence": true,
+  "field:MaxReworkLoops": true,
+  "field:AttemptsRemaining": true,
+  "field:ChainBaseSha": false,
+  "field:ChainRedSha": true,
+  "field:ChainRedFiles": true,
+  "field:CorrectionOf": true,
+  "field:ExpectedHandoffPath": false,
+  "field:IssuedBy": true,
+  "field:RoleRequirements": true,
+  "field:SupersededCommits": true,
+  "field:ExpectedWorktree": true,
+  "field:StopConditions_contains_K": true,
+  "field:Executor": true,
+  "routing:TaskClass_in_routing_1": true,
+  "routing:PromptProfile": true,
+  "routing:Effort_semantic": true
+ },
+ "PlanSchemaErrors": [],
+ "VerifyCanonicalChecks": {
+  "schema_valid": true,
+  "field:Schema": true,
+  "field:TaskId": true,
+  "field:RunId": true,
+  "field:DelegationRunId": true,
+  "field:WorkRunId": true,
+  "field:Attempt": true,
+  "field:VerifiedSha": true,
+  "field:Verifier": true,
+  "field:Classification": true,
+  "field:Disposition": false,
+  "field:FailureClass": true,
+  "check:Termination": true,
+  "check:Handoff": true,
+  "check:Authority": true,
+  "check:Contract": true,
+  "check:Identity": true,
+  "check:Remote": true,
+  "check:Scope": true,
+  "check:CleanTree": true,
+  "check:Ci": true,
+  "check:Tests": true,
+  "check:Trailer": true,
+  "check:Routing": true,
+  "check:FreeText": true,
+  "check:Denials": true,
+  "check:Ci.RedPart": true,
+  "check:Tests.RedPart": true,
+  "check:Scope.Evidence_lists_diff": false,
+  "coherence_RAE_8": true
+ },
+ "VerifySchemaErrors": [],
+ "AuthorityResolutionMatch": false,
+ "Process": "exit=0 timed_out=no elapsed_s<=105",
+ "IdentityStable": true,
+ "HeadUnchanged": true,
+ "TrackedTreeUnchangedAndClean": true,
+ "IgnoredStatusUnchangedDuringRun": true,
+ "UnstageOk": true,
+ "RemoteReferenceStable": true,
+ "EventsCommandAudit": {
+  "commands": 4,
+  "cmd": 0,
+  "failed": 1,
+  "powershell": 4,
+  "interpreter": 0,
+  "unix_tool": 0,
+  "forbidden_completed": 3,
+  "git_write": 0,
+  "completed_ok": 3,
+  "git_write_completed": 0,
+  "network": 0,
+  "network_completed": 0,
+  "file_write": 0,
+  "file_write_completed": 0,
+  "shells": {
+   "pwsh-runtime": {
+    "total": 4,
+    "ok": 3
+   }
+  },
+  "default_shell": "pwsh-runtime",
+  "model_fallback": false,
+  "f6_obs03": {
+   "present": false,
+   "count": 0,
+   "shells": [],
+   "sample": null,
+   "in_stderr": false
+  },
+  "usage_limit_signal": false
+ },
+ "EventsCommands": [
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 2593,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1070,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1670,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 1,
+   "status": "failed",
+   "chars": 1237,
+   "shell": "pwsh-runtime"
+  }
+ ],
+ "NativeRoute": {
+  "DefaultShell": "pwsh-runtime",
+  "ShellsUsed": {
+   "pwsh-runtime": {
+    "total": 4,
+    "ok": 3
+   }
+  },
+  "RuntimePwshUsed": true,
+  "F6Obs03Signature": {
+   "present": false,
+   "count": 0,
+   "shells": [],
+   "sample": null,
+   "in_stderr": false
+  },
+  "ModelFallback": false,
+  "ShellLimitationPersists": false,
+  "CmdA41Opens": false,
+  "Note": "ShellLimitationPersists = firma de F6-OBS-03 en algún comando o en stderr (CreateProcessAsUserW / «Failed to create unified exec process»). Con ella, A4-1 abre la sonda CMD_A41 (reglas 3 y 4) y la vía normal del Controller no es elegible aunque el modelo haya recurrido por su cuenta a otra shell."
+ },
+ "UsageLimitSignal": false,
+ "ProcessResidue": {
+  "Observed": true,
+  "CodexProcessesAfter": 5,
+  "WithProbeDirAfter": 0,
+  "Names": []
+ },
+ "Reasons": [
+  "OP_B_git_y_hashes: no demostrado",
+  "OP_C_fidelidad_de_entradas: no demostrado",
+  "OP_D_trx_y_ci: no demostrado",
+  "OP_E_mapa_I62: no demostrado",
+  "OP_F_esquemas_canonicos: no demostrado",
+  "OP_G_controles_negativos: no demostrado"
+ ],
+ "Note": "ALL_OPERATIONS_DEMONSTRATED (sin firma de F6-OBS-03): la celda del Controller sería elegible por la vía normal de la receta 16.4, sin A4-1; lo declara el Coordinator. NOT_DEMONSTRATED con ShellLimitationPersists: abre CMD_A41 (A4-1, reglas 3 y 4), con su disposición y su consumo. NOT_DEMONSTRATED sin la firma: no elegible; A4-1 no se abre por esta causa. REFERENCE_UNSTABLE: lo dispone el Coordinator, sin reintento automático."
+}

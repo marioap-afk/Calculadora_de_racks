@@ -3592,3 +3592,25 @@ solo desde artefactos custodiados.
 - **Coordinator:** bloque A2-P2 autorizado; sonda 1 NATIVE_CONTROLLER en `A2` y, después, sonda 2 NATIVE_ARCHITECT en `arch-a2p2v4`; política de
   comandos; condiciones de parada; A4-1 solo con autorización aparte.
 - **Verificación previa (2026-10-11):** binario, app y huella iguales al par autorizado (un solo `codex.exe`). Par estable (A2-P2, regla 3): huella F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113 sin cambios en las observaciones 1 y 2 (03:47:57Z y 04:46:50Z) y en la verificación previa al bloque.
+
+## 128. Bloque A2-P2, sonda 1 NATIVE_CONTROLLER = NOT_DEMONSTRATED; la regresión de la shell ya no aparece; sonda 2 retenida (decisiones §69)
+
+- **Sonda 1** ([resultado](I-62-F6/OD-2/R20261011T050156Z-a2p2-v4-controller/README.md); [comparison.json](I-62-F6/OD-2/R20261011T050156Z-a2p2-v4-controller/comparison.json)):
+  - kit `7bcc48f5`, texto `f88d3313…`; celda observada `gpt-6-luna` / `high`; receta 16.4 literal; `-C D:\r62-fixture\A2`;
+  - salida 0 en ~105 s de 600; identidad (con los ejecutables acompañantes), `HEAD` y árbol sin cambios.
+- **Bloqueo eliminado:** F6-OBS-03 ya no aparece con el binario nuevo. El runtime usa su `pwsh`, sin la firma `CreateProcessAsUserW` y sin recurrir a
+  otra shell. CMD_A41 no se abre.
+- **Veredicto: NOT_DEMONSTRATED** (94 claves). La celda ejecutó 4 comandos y paró; no ejecutó la cadena de AP 16.13 ni los negativos y no leyó el TRX
+  ni la entrega. Además:
+  - diffs y ascendencia mal resueltos;
+  - la salida del `pwsh` del runtime deforma el UTF-8;
+  - `ls-remote` sigue bloqueado por el sandbox.
+
+  Los esquemas canónicos v2 se aceptan.
+- **Sonda 2 (NATIVE_ARCHITECT) retenida, sin lanzar.** Sigue autorizada (§69, punto 3), pero es la última del bloque y no se repite. Con el Controller
+  no elegible, la revisión del Architect (posterior al PASS) no desbloquea C-24. El Coordinator decide entre:
+  - (a) lanzarla como Architect, según §69;
+  - (b) dedicarla, con una disposición nueva, a una segunda medición del Controller pensada contra las causas observadas.
+
+  Identidad estable tras la sonda 1.
+

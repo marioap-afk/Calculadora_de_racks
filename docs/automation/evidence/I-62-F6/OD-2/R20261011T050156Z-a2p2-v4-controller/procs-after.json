@@ -1,0 +1,42 @@
+[
+  {
+    "Name": "codex-windows-sandbox-service.exe",
+    "ProcessId": 27556,
+    "ParentProcessId": 1256,
+    "CreationDateUtc": "2026-10-11T02:51:26Z",
+    "CommandLineReadable": false,
+    "CmdHasProbeDir": false
+  },
+  {
+    "Name": "codex.exe",
+    "ProcessId": 17280,
+    "ParentProcessId": 14540,
+    "CreationDateUtc": "2026-10-11T02:52:02Z",
+    "CommandLineReadable": true,
+    "CmdHasProbeDir": false
+  },
+  {
+    "Name": "codex-computer-use-swift.exe",
+    "ProcessId": 23836,
+    "ParentProcessId": 14540,
+    "CreationDateUtc": "2026-10-11T02:52:13Z",
+    "CommandLineReadable": true,
+    "CmdHasProbeDir": false
+  },
+  {
+    "Name": "codex-code-mode-host.exe",
+    "ProcessId": 16456,
+    "ParentProcessId": 17280,
+    "CreationDateUtc": "2026-10-11T02:55:13Z",
+    "CommandLineReadable": true,
+    "CmdHasProbeDir": false
+  },
+  {
+    "Name": "codex.exe",
+    "ProcessId": 40308,
+    "ParentProcessId": 14540,
+    "CreationDateUtc": "2026-10-11T04:30:17Z",
+    "CommandLineReadable": true,
+    "CmdHasProbeDir": false
+  }
+]

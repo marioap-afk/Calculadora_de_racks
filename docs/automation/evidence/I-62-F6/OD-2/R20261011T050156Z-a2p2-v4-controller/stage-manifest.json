@@ -1,0 +1,120 @@
+{
+ "Kit": "a2p2-v4",
+ "StageHead": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+ "Files": [
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T210000Z-a41a/delegation.json",
+   "Copy": "01-delegation.json",
+   "Sha256": "1420d63bf4a160685fe2993e4db0e9304563836562c092ea1c973e8d35a07afe",
+   "Bytes": 6452
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T211000Z-a41b/worker-handoff.json",
+   "Copy": "02-worker-handoff.json",
+   "Sha256": "0a4dd2637691b9b734b1a3b0a817ec278a2d5d8778002f488143f134f6811079",
+   "Bytes": 2665
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T211000Z-a41b/relay-facts.json",
+   "Copy": "03-relay-facts.json",
+   "Sha256": "5fb0934a8a926954b91deda183f45bfe807fb0b291f4804c0b8985a1b2c2190e",
+   "Bytes": 2601
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c/ci-current/fixture-tests.trx",
+   "Copy": "04-fixture-tests.trx",
+   "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+   "Bytes": 2772
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c/ci-red/fixture-tests.trx",
+   "Copy": "05-fixture-tests.trx",
+   "Sha256": "aa2f6f9857a0bc14b0236cd34e00e813af186d498a6c8f07fd3c2ef711098cdf",
+   "Bytes": 3866
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1-nc1/0/R20261009T213100Z-a4c1/worker-handoff.json",
+   "Copy": "06-worker-handoff.json",
+   "Sha256": "c2f7ffd8e1dc35db8ce0ea6169e68ec7729a289bdeb60e8a0a1479f3f8c1706b",
+   "Bytes": 2665
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1-nc2/0/R20261009T213200Z-a4c2/delegation.json",
+   "Copy": "07-delegation.json",
+   "Sha256": "1efa7be5c77298a919f0b96d40bc7d8fc2093ede82db9feac8a15bd43ba5c4fa",
+   "Bytes": 7132
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1-nc3/0/R20261009T213300Z-a4c3/worker-handoff.json",
+   "Copy": "08-worker-handoff.json",
+   "Sha256": "3fddd1c5d3edaaa582694f79140eb3d97fe97ef3f4990bd7ceeb8c372036f134",
+   "Bytes": 2676
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1-nc4/0/R20261009T213400Z-a4c4/delegation.json",
+   "Copy": "09-delegation.json",
+   "Sha256": "fc6ae5245787b3b67b1e7255984c115c7cb5cc63c57c2d10fc5be18dcdf3e67b",
+   "Bytes": 6480
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1-N4/0/R20261009T213500Z-a4c5/relay-facts.json",
+   "Copy": "10-relay-facts.json",
+   "Sha256": "5fb0934a8a926954b91deda183f45bfe807fb0b291f4804c0b8985a1b2c2190e",
+   "Bytes": 2601
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1-N5/0/R20261009T213600Z-a4c6/relay-facts.json",
+   "Copy": "11-relay-facts.json",
+   "Sha256": "114de084bdfdf40ab43129ec1608a5860b17b668cd1a3a492e7c9a4f8fdaf8c0",
+   "Bytes": 2601
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1-N7a/0/R20261009T213700Z-a4c7/worker-handoff.json",
+   "Copy": "12-worker-handoff.json",
+   "Sha256": "6ab46ce37fb50ebc5d0ff856a0c11668d0b7b7db38946c573f19e0f64f8cdedb",
+   "Bytes": 2665
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1-N7b/0/R20261009T213800Z-a4c8/worker-handoff.json",
+   "Copy": "13-worker-handoff.json",
+   "Sha256": "ef0cddc8847698c1446f37b564cda4b27fe0c41bf8979b994bc7ef499c92be50",
+   "Bytes": 2665
+  }
+ ],
+ "CreatedDirs": [
+  "artifacts",
+  "artifacts/orchestration",
+  "artifacts/orchestration/FX-U1",
+  "artifacts/orchestration/FX-U1/T1",
+  "artifacts/orchestration/FX-U1/T1/0",
+  "artifacts/orchestration/FX-U1/T1/0/R20261009T210000Z-a41a",
+  "artifacts/orchestration/FX-U1/T1/0/R20261009T211000Z-a41b",
+  "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c",
+  "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c/ci-current",
+  "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c/ci-red",
+  "artifacts/orchestration/FX-U1/T1-nc1",
+  "artifacts/orchestration/FX-U1/T1-nc1/0",
+  "artifacts/orchestration/FX-U1/T1-nc1/0/R20261009T213100Z-a4c1",
+  "artifacts/orchestration/FX-U1/T1-nc2",
+  "artifacts/orchestration/FX-U1/T1-nc2/0",
+  "artifacts/orchestration/FX-U1/T1-nc2/0/R20261009T213200Z-a4c2",
+  "artifacts/orchestration/FX-U1/T1-nc3",
+  "artifacts/orchestration/FX-U1/T1-nc3/0",
+  "artifacts/orchestration/FX-U1/T1-nc3/0/R20261009T213300Z-a4c3",
+  "artifacts/orchestration/FX-U1/T1-nc4",
+  "artifacts/orchestration/FX-U1/T1-nc4/0",
+  "artifacts/orchestration/FX-U1/T1-nc4/0/R20261009T213400Z-a4c4",
+  "artifacts/orchestration/FX-U1/T1-N4",
+  "artifacts/orchestration/FX-U1/T1-N4/0",
+  "artifacts/orchestration/FX-U1/T1-N4/0/R20261009T213500Z-a4c5",
+  "artifacts/orchestration/FX-U1/T1-N5",
+  "artifacts/orchestration/FX-U1/T1-N5/0",
+  "artifacts/orchestration/FX-U1/T1-N5/0/R20261009T213600Z-a4c6",
+  "artifacts/orchestration/FX-U1/T1-N7a",
+  "artifacts/orchestration/FX-U1/T1-N7a/0",
+  "artifacts/orchestration/FX-U1/T1-N7a/0/R20261009T213700Z-a4c7",
+  "artifacts/orchestration/FX-U1/T1-N7b",
+  "artifacts/orchestration/FX-U1/T1-N7b/0",
+  "artifacts/orchestration/FX-U1/T1-N7b/0/R20261009T213800Z-a4c8"
+ ]
+}
