@@ -3670,3 +3670,8 @@ solo desde artefactos custodiados.
   (`a5-guards-result-preview.json`, `out/candidate-commit.json`).
 - A-5 sigue PROPUESTA; ninguna revisión formal hasta una disposición nueva (§71, punto 7).
 
+## 133. Decisiones §72: revisión formal de A-5 por `claude-cli` autorizada; análisis del Controller sin invocaciones
+
+- **Objeto:** A-5 blob `ad94ceed` (commit de publicación `bf2cf857`, guardas `run` PASS); celda de revisión vigente (`claude-cli` 2.1.293 `8693c4a0…`,
+  CLAUDE-CLI-I62 = A). Se preparan el kit y la revisión, con los ocho temas de §72.2.
+- **Controller:** comparación de las opciones A, B y C con la evidencia ya custodiada; ninguna invocación; la sonda 2 sigue HELD.

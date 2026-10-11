@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §71; evidencia §132) — A-5 PROPUESTA (bf2cf857) con preflight PASS y guardas run PASS; esperar disposición del Coordinator para la revisión formal; sonda 2 HELD; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §72; evidencia §133) — kit y revisión formal de A-5 (ad94ceed) por claude-cli con los ocho temas de §72.2; en paralelo, análisis de opciones del Controller sin invocaciones; sonda 2 HELD; sin B1 ni FX-U2; sin F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
