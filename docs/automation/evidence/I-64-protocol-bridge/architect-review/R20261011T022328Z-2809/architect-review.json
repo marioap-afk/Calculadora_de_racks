@@ -1,0 +1,132 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261011T022328Z-2809",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "19255e98eb9579f18be52127415437684e00400f",
+    "AmendmentId": "A-5",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-5.md",
+      "Blob": "a61dc9d7a77e0eae624c1aa622180276d6d56501"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py",
+      "Blob": "48739ba6328cbee4c425d26ea94a7f471c021bdf"
+    },
+    "SelfTest": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_freetext_bridge.py",
+      "Blob": "146cd79e9ce86396819da774508d0a45e7cf04d0"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-freetext-result-a5.json",
+      "Blob": "56271645a6e52fe2f3e88c20835289e6f03b9c8e"
+    },
+    "OwnerDecision": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/owner-decision-a5-freetext.md",
+      "Blob": "518fbfd935dc77d1079c1161e22bab31d2c61d6e"
+    },
+    "CoordinatorOrder": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/coordinator-order-a5-freetext.md",
+      "Blob": "5a54f8f614a06dcbe3753ba7d7b33ff1eaba23bd"
+    }
+  },
+  "Answers": {
+    "Q01": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-5:183-196 declares M-04 YES. Substituting evidence for an exhausted mandatory nc3 changes failure/closure semantics under LIFECYCLE Sec.3; product behavior remains unchanged."
+    },
+    "Q02": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "owner-decision-a5-freetext.md explicitly authorizes this I-64-only substitute, conditional on Architect and Coordinator agreement before use. The Scope mandate, blob 4271dd7e128b001e5aaf8d1bbedcafbfc40faadd, is not relied upon."
+    },
+    "Q03": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "README and AUTOMATION_PLAN blobs equal those at bb0d5522: 64ae952b6fb01ce206200c64d2a1d8683b5a297d and 07b97bd3eef3a36bae3180bd7eb24b176b8049f0. A-4 and A-2 remain unchanged, blobs d587403e40243beda5db61779ef8e9687c480619 and de6f6088356b0dec0e7a33431c7d00d0ba0d396b."
+    },
+    "Q04": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "The FreeText detector scans exactly the seven authoritative fields using all 16 terms, case-insensitive whole-word/phrase matching, excluding Gate. The 36 synthetic cases matched expectations in memory. Mutation-demonstration blob eeee64cb906b2079dcf2b9ee9d39f2920a57602e records four detected weakened variants. Numeric evidence defects are addressed separately in Q05 and Q06."
+    },
+    "Q05": {
+      "Answer": "NO",
+      "Conforming": false,
+      "Evidence": "Synthetic execution of the exact verifier blob accepted REAL Attempt=1e999 and MUTATED Attempt=2e999, together with the authorized WorkCompleted append: exit 0, Result PASS, no reasons. Both numeric tokens become Infinity; parse_constant does not intercept exponent overflow."
+    },
+    "Q06": {
+      "Answer": "NO",
+      "Conforming": false,
+      "Evidence": "Synthetic execution accepted REAL Attempt=1.0 versus MUTATED Attempt=1.00000000000000001: exit 0, Result PASS, Identity.Attempt pass, ChangedFields=[WorkCompleted]. Binary floating-point parsing erases the additional numeric difference before same() compares it. An underflow case, 0.0 versus 1e-999, also passed."
+    },
+    "Q07": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Parsing the authoritative AUTOMATION_PLAN blob 07b97bd3eef3a36bae3180bd7eb24b176b8049f0 yielded all seven fields and 16 terms. Section SHA-256 is 767662276555c2fafffad3450fe9e264ad691e58e0ddb870e8b739c5dbf76864, matching the embedded self-test section. Matching preserves Sec.16.10 semantics."
+    },
+    "Q08": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-5 explicitly preserves all historical nc3 attempts as NOT PASSED/P-04 and refuses STOP as the nc3 oracle. All three inspected outputs have FreeText fail, FailureClass FreeText, and EXECUTION_BLOCKED/STOP; the other 13 check results match the real verification. Evidence Sec.41, blob b4ff385a3093f236bf40134ea4717699353877f2, records these distinctions."
+    },
+    "Q09": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "The explicit Owner exception permits independent substitute evidence without relabelling historical nc3 executions. These are distinct assertions and do not contradict README Sec.10. Actual satisfaction remains conditional on a conforming substitute; Q05 and Q06 currently prevent agreement."
+    },
+    "Q10": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Applies-to is I-64; authorization excludes other controls and initiatives, preserves exhausted budgets, and expires upon an integrated authoritative replacement. State blob 075f5c53b544a37b1f26db8a0d8b755e66a740a4 records A-5 as inactive and T3 blocked. Synthetic I-99 fixtures confer no authorization."
+    },
+    "Q11": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "No additional undeclared trigger was identified. Rule ownership and global protocol contracts remain unchanged; the tool and its output are unit-local evidence. The identified numeric defects fall within the already declared M-04 failure semantics."
+    },
+    "Q12": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "Freeze Sec.13 retains I-61 until I-62 integration. git log 819955d6..bb0d5522 shows I-63 integration, with no I-62 integration. Local I-62 tip 362bec126c688e3a12e8ceb97cdf1124960ad47f records controlled suspension and remains outside pinned main. A-5 relies on explicit Owner authority, not unintegrated I-62 authority."
+    }
+  },
+  "Findings": [
+    {
+      "Id": "I64-A5-NUMERIC-OVERFLOW-FAIL-OPEN",
+      "Severity": "REQUIRED",
+      "Question": "Q05",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py:84",
+      "Defect": "parse_constant rejects literal NaN/Infinity but not exponent overflow. JSON tokens 1e999 and 2e999 both become floating-point Infinity and survive load_handoff, schema_problems and same(). A synthetic pair containing those Attempt values and the authorized WorkCompleted append returned PASS/0 with no reasons. Non-finite, ambiguous numeric evidence is therefore accepted.",
+      "Authority": "owner-decision-a5-freetext.md:47 requires malformed, ambiguous or incomplete evidence to fail closed; coordinator-order-a5-freetext.md:109 requires Infinity rejection; I-64-A-5.md:103 freezes rejection of parse/evidence/identity ambiguity. LIFECYCLE Sec.5 makes an open failure path REQUIRED.",
+      "Correction": "Reject non-finite numeric results at every nesting level, including exponent overflow, before comparison. Add positive and negative overflow regressions that require FAIL/nonzero. Publish corrected verifier identity and self-test evidence through the next append-only A-n for review.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A5-LOSSY-NUMERIC-COMPARISON",
+      "Severity": "REQUIRED",
+      "Question": "Q06",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py:183",
+      "Defect": "same() compares values only after lossy binary floating-point decoding. Distinct finite JSON numbers can become identical values and identical json.dumps output. With REAL Attempt=1.0 and MUTATED Attempt=1.00000000000000001, the exact verifier returned PASS/0, Identity.Attempt pass and ChangedFields=[WorkCompleted]. The additional difference was hidden. Underflow from 1e-999 to 0.0 creates the same defect.",
+      "Authority": "owner-decision-a5-freetext.md:46 requires identity and non-FreeText fields unchanged; coordinator-order-a5-freetext.md:115 and :122-131 require identical Attempt, structural equivalence and no additional mutation. A-5 Sec.2 promises strict value/type equality and only WorkCompleted changed. LIFECYCLE Sec.5 requires a verifiable invariant.",
+      "Correction": "Preserve numeric values losslessly before comparison, or fail closed on unsupported numeric encodings. Compare exact values and types recursively without floating-point rounding or underflow masking differences. Add precision-loss and underflow regressions requiring FAIL/nonzero, and freeze the correction and new blob in the next A-n.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "RequiredCount": 2,
+  "OptionalCount": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "Limitations": [
+    "The filesystem-writing self-test runner was not launched. Its 36 cases were exercised in memory against the exact Git verifier bytes, with synthetic input reads and captured output. Additional numeric probes also used only synthetic inputs. No verifier execution used T2 deliveries.",
+    "git ls-remote failed through the configured proxy; retry without the proxy failed in schannel with SEC_E_NO_CREDENTIALS. Q12 uses pinned main and local branch history, not a freshly verified remote tip.",
+    "coordinator-classification.json is absent from nc3 directories R20261011T014150Z-3200 and R20261011T014542Z-0c58, confirmed by directory inventory. Their oracle-result.json files apply the recorded Coordinator rule; the first attempt's separate classification and the literal Coordinator order were available.",
+    "The earlier unauthorized T2 invocation disclosed in evidence Sec.41 was not repeated or used as substitute evidence."
+  ]
+}

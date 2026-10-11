@@ -2445,3 +2445,46 @@ verificador; parada en COORDINATOR_A5_AGREEMENT_REQUIRED. T2 sigue con el protoc
   - la planificación de §40.
 - Sin escrituras Git de la sesión desde `d5bdcb7a` hasta este commit.
 - HEAD = remoto = `e2f642b8` antes de este commit; `main` `bb0d5522`.
+
+## 42. A-5 — Revisión formal del Architect: CHANGES REQUIRED (2 REQUIRED); STOP al Coordinator
+
+Sección nueva; las anteriores no se reescriben.
+
+**Revisión** `R20261011T022328Z-2809`
+(`docs/automation/evidence/I-64-protocol-bridge/architect-review/R20261011T022328Z-2809/`):
+- **Cómo se hizo:** ARCHITECTURE_REVIEW, Deep, SEPARATE SESSION; `gpt-6.1-sol` / `high`, efectivo según el registro de sesión; solo
+  lectura.
+  - Objeto: el commit `19255e98` (A-5 blob `a61dc9d7`, verificador blob `48739ba6`); CI 38104769473 4/4.
+  - Duró de 02:23:46Z a 02:29:41Z, con 52 órdenes.
+  - `config.toml` en la instantánea A del conjunto cerrado A/B, tanto en la salida como en la entrada.
+  - No ejecutó el verificador contra entregas de T2. Ejercitó los 36 casos y sondas numéricas sintéticas en memoria, con los bytes
+    exactos del blob.
+- **Resultado: CHANGES REQUIRED, 2 REQUIRED, 0 OPTIONAL.**
+  - Q01-Q04 y Q07-Q10: YES, conformes.
+  - Q05 y Q06: NO, no conformes.
+  - Q11 (implicaciones M ocultas) y Q12 (autoridad de I-62): NO, conformes.
+- **I64-A5-NUMERIC-OVERFLOW-FAIL-OPEN** (Q05), `verify_freetext_bridge.py:84`:
+  - `parse_constant` rechaza `NaN` e `Infinity` literales, pero no el desbordamiento por exponente: `1e999` se convierte en `inf`;
+  - un par sintético con ese `Attempt` y el append autorizado dio PASS con código 0.
+  - No exige un cambio global de I-61 ni una decisión nueva del Owner.
+- **I64-A5-LOSSY-NUMERIC-COMPARISON** (Q06), `:183`:
+  - la comparación tras la decodificación a coma flotante pierde información: `1.0` frente a `1.00000000000000001`, y `1e-999` frente a
+    `0.0`;
+  - una diferencia adicional pasa como si solo hubiera cambiado `WorkCompleted`.
+  - No exige un cambio global de I-61 ni una decisión nueva del Owner.
+- **Limitaciones declaradas por el Architect:**
+  - `git ls-remote` sin red en el sandbox;
+  - `coordinator-classification.json` solo existe en el primer intento de nc3; los reintentos se clasificaron con la regla de la decisión,
+    registrada en `oracle-result.json` y en las notas.
+
+**Disposición:** por la orden del Coordinator («If REQUIRED: STOP Coordinator. Do not enter autonomous amendment loops unless separately
+authorized»):
+- STOP al Coordinator, sin corrección ni A-6 autónomas;
+- A-5 sigue PROPUESTA y NO activa;
+- I64-FREETEXT-BRIDGE-01 no se ejecuta contra T2;
+- T2 mantiene el protocolo incompleto y F1-T3-HOST sigue bloqueada.
+
+**Relevos:**
+- Una invocación de Codex (la revisión).
+- En la evidencia versionada, las rutas locales de las órdenes fallidas quedan redactadas.
+- HEAD = remoto = `19255e98` antes de este commit; `main` `bb0d5522`.
