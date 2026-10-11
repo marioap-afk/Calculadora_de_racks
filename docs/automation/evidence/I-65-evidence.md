@@ -193,3 +193,13 @@ Owner confirmó que no rechazó ningún permiso: la denegación apareció sola.
 
 Sin cambios de configuración, sin nuevas solicitudes de acceso, sin abrir RAM Elements. **P1 sigue sin ejecutarse**; F0 sigue bloqueado.
 
+## 17. P1 ejecutada (2026-10-11T02:43:00Z)
+
+- Único intento autorizado de Computer Use: **concedido** («RAM Elements 2026», nivel completo). La validación de licencia de RAM la
+  atendió el Owner fuera del alcance de Computer Use.
+- **P1 v3.2 se ejecutó** en un modelo nuevo y vacío por «Ejecutar archivo…»: 12 pasos `OK`, «Script ejecutado con éxito». Dos diálogos
+  modales «Los resultados del análisis … se perderán» se respondieron «Sí» (solo descartan resultados del modelo desechable). Cierre sin
+  guardar («No»); error gRPC benigno al cerrar. Ningún `.retx` guardado; RAM creó su archivo de trabajo `NoName.fem` en `ProgramData`.
+- Custodia en [p1-run/](I-65-f0/p1-run/) (informe, copia ejecutada, archivo de prueba y 7 capturas) y análisis en
+  [p1-results.md](I-65-f0/p1-results.md). Sin falla de clase STOP.
+- Siguen: adenda §14 de Discovery, Proposal V3, ADR-0050 (borrador final) y paquete de confirmación para el mismo Architect.

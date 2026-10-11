@@ -372,3 +372,23 @@ intérprete embebido podría cerrar la aplicación anfitriona); análisis primer
 orientaciones de la rebanada (vertical, ±Z de RAM, inclinado en Y-Z, invertido, giro 0°/90°); `__file__`, directorio actual,
 decodificadores, literal JSON ASCII, nombres de base de datos de otro país; valores por defecto de punto cardinal, offsets, factores de
 rigidez, comportamiento axial y resortes. La línea base de casos de carga de File > New la **registra** la propia sonda.
+
+## 14. Adenda F0-P1: resultados de la sonda en el entorno real (2026-10-11)
+
+La sonda P1 v3.2 se ejecutó en RAM Elements 26.00.01.015 (resultados completos, matriz de capacidades y problemas en
+[p1-results.md](../automation/evidence/I-65-f0/p1-results.md)). Las secciones 1-13 no se reescriben; esta adenda actualiza su estado:
+
+| Contradicción / UNKNOWN de §5 | Resultado medido |
+|---|---|
+| RC-01/RC-02 unidades | el par `LB_IN` lee de vuelta exacto; el cambio de par por la API conserva los valores físicos; la escala de longitud, fuerza y momento es correcta; los pares métricos de RAM tienen error propio (−3.2·10⁻⁸ longitud, −5.22·10⁻⁶ fuerza) |
+| RC-03/RC-08 eje vertical | **Y arriba** (peso propio `(0, −1, 0)`) |
+| RC-04/RC-09 ejes locales | regla medida (12 direcciones × 3 giros): no vertical `l3 = unit(l1 × Ŷ)`, vertical `l3 = +Ẑ`, `l2 = l3 × l1`, giro dextrógiro; peralte en `l2`, flexión fuerte `M33` |
+| RC-05 extensión de archivo | UNKNOWN (S9 retirado por condición del Owner); no la usa V1 |
+| RC-06 nombres desconocidos | `ValueError` explícito **y miembro huérfano** |
+| RC-10 categoría | el enum guarda `"LoadCategory.DEAD"` sin error: usar texto |
+| RC-11 seguridad | `threading` bloqueado; `os.makedirs`/`os.replace` anulados; `open()` permitido; `__file__` no existe |
+| Análisis y resultados | síncronos y legibles (solo caracterización); **escribir tras analizar abre un diálogo modal que bloquea el script** |
+
+Clasificación §3.3 actualizada: «Pedir análisis» y «Recuperar resultados» dentro de RAM pasan de SUPPORTED NOW (documentado) a
+**VERIFIED IN INSTALLED RAM**; desde RackCad siguen NOT EXPOSED. Ninguna falla de clase STOP. El candidato Cantilever de una cara sigue
+siendo viable: todas las direcciones y nombres que usa están verificados.

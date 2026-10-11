@@ -1,0 +1,1234 @@
+{
+  "probe": "I-65-F0-P1-v3.2",
+  "out_dir": "D:\\I65-P1\\run-20261011T014503Z",
+  "gate": {
+    "passed": true,
+    "reasons": [],
+    "baseline_load_cases": [
+      "CM"
+    ],
+    "title": "",
+    "initial_units": "kip-ft"
+  },
+  "steps": {
+    "E1_environment": {
+      "ok": true,
+      "observed": {
+        "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+        "ramelements_version": "0.1.0",
+        "core_functions": [
+          "analysis_get_dynamic",
+          "analysis_get_errors",
+          "analysis_get_modal_shapes",
+          "analysis_get_nonlinear",
+          "analysis_get_pdelta",
+          "analysis_get_time",
+          "analysis_get_warnings",
+          "analysis_run",
+          "analysis_set_modal_shapes",
+          "analysis_set_pdelta",
+          "design_get_code_conc",
+          "design_get_code_steel",
+          "design_get_codes",
+          "design_get_seismic",
+          "design_get_updated",
+          "design_member_crit_eqn",
+          "design_member_crit_location",
+          "design_member_crit_ratio",
+          "design_member_crit_status",
+          "design_member_global_ratio",
+          "design_member_global_status",
+          "design_run",
+          "design_set_code_conc",
+          "design_set_code_steel",
+          "design_set_seismic",
+          "design_single",
+          "design_update",
+          "design_update_all",
+          "design_update_selected",
+          "display_get",
+          "display_get_sub",
+          "display_set",
+          "display_set_sub",
+          "lc_add_case",
+          "lc_add_combo",
+          "lc_count",
+          "lc_enable_self_weight",
+          "lc_get_case_category",
+          "lc_get_categories",
+          "lc_get_current",
+          "lc_get_description",
+          "lc_get_id",
+          "lc_get_self_weight",
+          "lc_is_combo",
+          "lc_set_current",
+          "lc_set_self_weight",
+          "lc_term_count",
+          "lc_term_factor",
+          "lc_term_lc_index",
+          "load_areas_add",
+          "load_areas_count",
+          "load_areas_distribute",
+          "load_areas_get_bidirectional",
+          "load_areas_get_deck_direction",
+          "load_areas_get_description",
+          "load_areas_get_id",
+          "load_areas_get_nodes",
+          "load_areas_get_pressure",
+          "load_areas_set_bidirectional",
+          "load_areas_set_deck_direction",
+          "load_areas_set_description",
+          "load_areas_set_nodes",
+          "load_areas_set_pressure",
+          "members_add",
+          "members_add_distributed_load",
+          "members_add_point_load",
+          "members_count",
+          "members_get_axial_behavior",
+          "members_get_cable_data",
+          "members_get_cardinal_point",
+          "members_get_description",
+          "members_get_distributed_load",
+          "members_get_distributed_load_count",
+          "members_get_id",
+          "members_get_local_axes",
+          "members_get_material",
+          "members_get_nodes",
+          "members_get_point_load",
+          "members_get_point_load_count",
+          "members_get_pressure",
+          "members_get_pretension",
+          "members_get_releases",
+          "members_get_rigid_end_offset",
+          "members_get_rotation",
+          "members_get_rotational_stiffness",
+          "members_get_section",
+          "members_get_stiffness_factors",
+          "members_get_story",
+          "members_get_temperature",
+          "members_set_axial_behavior",
+          "members_set_cable_data",
+          "members_set_cardinal_point",
+          "members_set_description",
+          "members_set_material",
+          "members_set_nodes",
+          "members_set_pressure",
+          "members_set_pretension",
+          "members_set_releases",
+          "members_set_rigid_end_offset",
+          "members_set_rotation",
+          "members_set_rotational_stiffness",
+          "members_set_section",
+          "members_set_stiffness_factors",
+          "members_set_story",
+          "members_set_temperature",
+          "model_new",
+          "model_save",
+          "model_save_as",
+          "model_title",
+          "nodes_add",
+          "nodes_all_coordinates",
+          "nodes_count",
+          "nodes_find_nearest",
+          "nodes_get_coordinates",
+          "nodes_get_description",
+          "nodes_get_id",
+          "nodes_get_mass",
+          "nodes_get_prescribed_disp",
+          "nodes_get_restraints",
+          "nodes_get_rigid_floor",
+          "nodes_get_spring",
+          "nodes_set_coordinates",
+          "nodes_set_description",
+          "nodes_set_force",
+          "nodes_set_mass",
+          "nodes_set_prescribed_disp",
+          "nodes_set_restraints",
+          "nodes_set_rigid_floor",
+          "nodes_set_spring",
+          "openings_count",
+          "openings_get",
+          "openings_get_id",
+          "openings_set",
+          "openings_shell_add",
+          "results_member_displacements_at_station",
+          "results_member_end_forces",
+          "results_member_forces_at_station",
+          "results_node_disp",
+          "results_node_react",
+          "results_shell_corner_forces",
+          "results_shell_face_forces",
+          "results_shell_internal_forces",
+          "results_shell_stresses",
+          "selection_all",
+          "selection_connection_deselect",
+          "selection_connection_is_selected",
+          "selection_connection_select",
+          "selection_footing_deselect",
+          "selection_footing_is_selected",
+          "selection_footing_select",
+          "selection_interface_deselect",
+          "selection_interface_is_selected",
+          "selection_interface_select",
+          "selection_load_area_deselect",
+          "selection_load_area_is_selected",
+          "selection_load_area_select",
+          "selection_member_deselect",
+          "selection_member_is_selected",
+          "selection_member_select",
+          "selection_node_deselect",
+          "selection_node_is_selected",
+          "selection_node_select",
+          "selection_none",
+          "selection_opening_deselect",
+          "selection_opening_is_selected",
+          "selection_opening_select",
+          "selection_shell_deselect",
+          "selection_shell_is_selected",
+          "selection_shell_select",
+          "selection_wall_deselect",
+          "selection_wall_is_selected",
+          "selection_wall_select",
+          "shells_add",
+          "shells_add_edge_load",
+          "shells_add_variable_pressure",
+          "shells_count",
+          "shells_get_edge_load",
+          "shells_get_edge_load_count",
+          "shells_get_id",
+          "shells_get_interface",
+          "shells_get_interface_count",
+          "shells_get_intermediate_support",
+          "shells_get_local_axes",
+          "shells_get_material",
+          "shells_get_nodes",
+          "shells_get_pressure",
+          "shells_get_rotation",
+          "shells_get_stiffness_factors",
+          "shells_get_story",
+          "shells_get_temperature",
+          "shells_get_thickness",
+          "shells_get_type",
+          "shells_get_variable_pressure",
+          "shells_set_interface",
+          "shells_set_intermediate_support",
+          "shells_set_material",
+          "shells_set_nodes",
+          "shells_set_pressure",
+          "shells_set_rotation",
+          "shells_set_stiffness_factors",
+          "shells_set_story",
+          "shells_set_temperature",
+          "shells_set_thickness",
+          "shells_set_type",
+          "shells_set_variable_pressure",
+          "units_get",
+          "units_set"
+        ],
+        "__file__": "NameError",
+        "cwd": "C:\\Program Files\\Bentley\\Engineering\\RAM Elements"
+      }
+    },
+    "E2_sandbox": {
+      "ok": true,
+      "observed": {
+        "import_json": "ok",
+        "import_math": "ok",
+        "import_hashlib": "ok",
+        "import_base64": "ok",
+        "import_binascii": "ok",
+        "import_datetime": "ok",
+        "import_threading": "ImportError: threading is blocked by RAM Elements security policy",
+        "import_traceback": "ok",
+        "os.makedirs_is_none": true,
+        "os.replace_is_none": true,
+        "sha256_abc": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "open_x_in_out_dir": "ok",
+        "ascii_json_literal_roundtrip": {
+          "a": [
+            1.5,
+            "\u00f1"
+          ]
+        }
+      }
+    },
+    "C5_load_case_category_forms": {
+      "ok": true,
+      "observed": {
+        "P1N1": "ok (plain string)",
+        "P1N2": "ok (plain string)",
+        "P1L": "ok (plain string)",
+        "enum_member": {
+          "ok": true,
+          "category_read_back": "LoadCategory.DEAD"
+        },
+        "self_weight_default_P1N1": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "self_weight_enabled_P1SW": [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "self_weight_disabled_P1SW": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "N2_cantilever_scale_LB_IN": {
+      "ok": true,
+      "observed": {
+        "analysis": "AnalysisResult(OK, t=0.2s, warnings=0, errors=0)",
+        "tip_displacement": "NodeDisplacement(dx=0.0000e+00, dy=-4.4817e-02, dz=0.0000e+00, rx=0.0000e+00, ry=0.0000e+00, rz=-6.3387e-04)",
+        "reaction_base": "NodeReaction(fx=0.000, fy=1000.000, fz=0.000, mx=0.000, my=0.000, mz=100000.000)",
+        "end_forces": "MemberForces(axial=0.00/0.00, M33=100000.00/0.00)",
+        "local_axes": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "expected_in_strong": 0.042258282623394185,
+        "expected_in_weak": 0.12306480592680104
+      }
+    },
+    "N1_equilibrium_vertical_member": {
+      "ok": true,
+      "observed": {
+        "analysis": "AnalysisResult(OK, t=0.0s, warnings=0, errors=0)",
+        "reaction_foot": "NodeReaction(fx=-500.000, fy=0.000, fz=0.000, mx=0.000, my=0.000, mz=60000.000)",
+        "tip_displacement": "NodeDisplacement(dx=3.8046e-02, dy=0.0000e+00, dz=0.0000e+00, rx=0.0000e+00, ry=0.0000e+00, rz=-4.5639e-04)",
+        "local_axes": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "expected_in_if_load_bends_strong_axis": 0.036511156186612576,
+        "expected_in_if_load_bends_weak_axis": 0.1063279923207561
+      }
+    },
+    "U1_units_change_after_data": {
+      "ok": true,
+      "observed": {
+        "set_in_LB_IN": [
+          2000.0,
+          0.0,
+          0.0
+        ],
+        "read_in_N_MM": [
+          50799.99837440006,
+          0.0,
+          0.0
+        ],
+        "read_in_KIP_FT": [
+          166.66666666666669,
+          0.0,
+          0.0
+        ],
+        "N2_load_in_N_MM": "PointLoad(direction=<LoadDirection.GLOBAL_Y: 'Y'>, value=-4448.198375445641, distance=100.0, is_percentage=True, category=<PointLoadType.USER_DEFINED: 0>)",
+        "N2_load_in_KIP_FT": "PointLoad(direction=<LoadDirection.GLOBAL_Y: 'Y'>, value=-1.0, distance=100.0, is_percentage=True, category=<PointLoadType.USER_DEFINED: 0>)",
+        "read_back_in_LB_IN": [
+          2000.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "A1_orientation_coverage": {
+      "ok": true,
+      "observed": {
+        "vert_+Y-fwd": {
+          "rot0": [
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "rot90": [
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              -1.1102230246251565e-16,
+              0.0,
+              1.0
+            ],
+            [
+              1.0,
+              0.0,
+              1.1102230246251565e-16
+            ]
+          ],
+          "rot12.3456": [
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              -0.9768757204951959,
+              0.0,
+              0.2138079201222252
+            ],
+            [
+              0.2138079201222252,
+              0.0,
+              0.9768757204951959
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "vert_+Y-rev": {
+          "rot0": [
+            [
+              0.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "rot90": [
+            [
+              0.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.1102230246251565e-16,
+              0.0,
+              1.0
+            ],
+            [
+              -1.0,
+              0.0,
+              1.1102230246251565e-16
+            ]
+          ],
+          "rot12.3456": [
+            [
+              0.0,
+              -1.0,
+              0.0
+            ],
+            [
+              0.9768757204951959,
+              0.0,
+              0.2138079201222252
+            ],
+            [
+              -0.2138079201222252,
+              0.0,
+              0.9768757204951959
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "horiz_-Z-fwd": {
+          "rot0": [
+            [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "rot90": [
+            [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            [
+              1.0,
+              1.1102230246251565e-16,
+              0.0
+            ],
+            [
+              1.1102230246251565e-16,
+              -1.0,
+              0.0
+            ]
+          ],
+          "rot12.3456": [
+            [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            [
+              0.2138079201222252,
+              0.9768757204951959,
+              0.0
+            ],
+            [
+              0.9768757204951959,
+              -0.2138079201222252,
+              0.0
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "horiz_-Z-rev": {
+          "rot0": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "rot90": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              -1.0,
+              1.1102230246251565e-16,
+              0.0
+            ],
+            [
+              -1.1102230246251565e-16,
+              -1.0,
+              0.0
+            ]
+          ],
+          "rot12.3456": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              -0.2138079201222252,
+              0.9768757204951959,
+              0.0
+            ],
+            [
+              -0.9768757204951959,
+              -0.2138079201222252,
+              0.0
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "horiz_+Z-fwd": {
+          "rot0": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "rot90": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              -1.0,
+              1.1102230246251565e-16,
+              0.0
+            ],
+            [
+              -1.1102230246251565e-16,
+              -1.0,
+              0.0
+            ]
+          ],
+          "rot12.3456": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              -0.2138079201222252,
+              0.9768757204951959,
+              0.0
+            ],
+            [
+              -0.9768757204951959,
+              -0.2138079201222252,
+              0.0
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "horiz_+Z-rev": {
+          "rot0": [
+            [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "rot90": [
+            [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            [
+              1.0,
+              1.1102230246251565e-16,
+              0.0
+            ],
+            [
+              1.1102230246251565e-16,
+              -1.0,
+              0.0
+            ]
+          ],
+          "rot12.3456": [
+            [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            [
+              0.2138079201222252,
+              0.9768757204951959,
+              0.0
+            ],
+            [
+              0.9768757204951959,
+              -0.2138079201222252,
+              0.0
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "incl_YZ-fwd": {
+          "rot0": [
+            [
+              0.0,
+              0.043708189893615655,
+              -0.9990443404255007
+            ],
+            [
+              0.0,
+              0.9990443404255006,
+              0.043708189893615655
+            ],
+            [
+              1.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "rot90": [
+            [
+              0.0,
+              0.043708189893615655,
+              -0.9990443404255007
+            ],
+            [
+              1.0,
+              1.1091620293618438e-16,
+              4.852583878458067e-18
+            ],
+            [
+              1.1102230246251565e-16,
+              -0.9990443404255006,
+              -0.043708189893615655
+            ]
+          ],
+          "rot12.3456": [
+            [
+              0.0,
+              0.043708189893615655,
+              -0.9990443404255007
+            ],
+            [
+              0.2138079201222252,
+              0.9759421598598087,
+              0.04269746949386663
+            ],
+            [
+              0.9768757204951959,
+              -0.21360359253625658,
+              -0.009345157173461226
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "incl_YZ-rev": {
+          "rot0": [
+            [
+              0.0,
+              -0.043708189893615655,
+              0.9990443404255007
+            ],
+            [
+              0.0,
+              0.9990443404255006,
+              0.043708189893615655
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "rot90": [
+            [
+              0.0,
+              -0.043708189893615655,
+              0.9990443404255007
+            ],
+            [
+              -1.0,
+              1.1091620293618438e-16,
+              4.852583878458067e-18
+            ],
+            [
+              -1.1102230246251565e-16,
+              -0.9990443404255006,
+              -0.043708189893615655
+            ]
+          ],
+          "rot12.3456": [
+            [
+              0.0,
+              -0.043708189893615655,
+              0.9990443404255007
+            ],
+            [
+              -0.2138079201222252,
+              0.9759421598598087,
+              0.04269746949386663
+            ],
+            [
+              -0.9768757204951959,
+              -0.21360359253625658,
+              -0.009345157173461226
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "arm_Zup-fwd": {
+          "rot0": [
+            [
+              0.0,
+              0.9990443404255007,
+              0.043708189893615655
+            ],
+            [
+              0.0,
+              0.043708189893612345,
+              -0.9990443404255008
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "rot90": [
+            [
+              0.0,
+              0.9990443404255007,
+              0.043708189893615655
+            ],
+            [
+              -1.0,
+              4.8525838784577e-18,
+              -1.1091620293618441e-16
+            ],
+            [
+              -1.1102230246251565e-16,
+              -0.043708189893612345,
+              0.9990443404255008
+            ]
+          ],
+          "rot12.3456": [
+            [
+              0.0,
+              0.9990443404255007,
+              0.043708189893615655
+            ],
+            [
+              -0.2138079201222252,
+              0.042697469493863396,
+              -0.9759421598598089
+            ],
+            [
+              -0.9768757204951959,
+              -0.009345157173460518,
+              0.21360359253625663
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "arm_Zup-rev": {
+          "rot0": [
+            [
+              0.0,
+              -0.9990443404255007,
+              -0.043708189893615655
+            ],
+            [
+              0.0,
+              0.043708189893612345,
+              -0.9990443404255008
+            ],
+            [
+              1.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "rot90": [
+            [
+              0.0,
+              -0.9990443404255007,
+              -0.043708189893615655
+            ],
+            [
+              1.0,
+              4.8525838784577e-18,
+              -1.1091620293618441e-16
+            ],
+            [
+              1.1102230246251565e-16,
+              -0.043708189893612345,
+              0.9990443404255008
+            ]
+          ],
+          "rot12.3456": [
+            [
+              0.0,
+              -0.9990443404255007,
+              -0.043708189893615655
+            ],
+            [
+              0.2138079201222252,
+              0.042697469493863396,
+              -0.9759421598598089
+            ],
+            [
+              0.9768757204951959,
+              -0.009345157173460518,
+              0.21360359253625663
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "horiz_+X-fwd": {
+          "rot0": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "rot90": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.1102230246251565e-16,
+              1.0
+            ],
+            [
+              0.0,
+              -1.0,
+              1.1102230246251565e-16
+            ]
+          ],
+          "rot12.3456": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.9768757204951959,
+              0.2138079201222252
+            ],
+            [
+              0.0,
+              -0.2138079201222252,
+              0.9768757204951959
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        },
+        "horiz_+X-rev": {
+          "rot0": [
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              -1.0
+            ]
+          ],
+          "rot90": [
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.1102230246251565e-16,
+              -1.0
+            ],
+            [
+              0.0,
+              -1.0,
+              -1.1102230246251565e-16
+            ]
+          ],
+          "rot12.3456": [
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.9768757204951959,
+              -0.2138079201222252
+            ],
+            [
+              0.0,
+              -0.2138079201222252,
+              -0.9768757204951959
+            ]
+          ],
+          "rotation_read_back": 12.3456
+        }
+      }
+    },
+    "S1_names_and_orphans": {
+      "ok": true,
+      "observed": {
+        "w_known": {
+          "requested": [
+            "W 12X26",
+            "A992 Gr50"
+          ],
+          "read_back": [
+            "W 12X26",
+            "A992 Gr50"
+          ],
+          "members_added": 1
+        },
+        "hss_known": {
+          "requested": [
+            "HSS_SQR 4X4X1_4",
+            "A500 GrC rectangular"
+          ],
+          "read_back": [
+            "HSS_SQR 4X4X1_4",
+            "A500 GrC rectangular"
+          ],
+          "members_added": 1
+        },
+        "s_known": {
+          "requested": [
+            "S 10X35",
+            "A36"
+          ],
+          "read_back": [
+            "S 10X35",
+            "A36"
+          ],
+          "members_added": 1
+        },
+        "eu_name": {
+          "requested": [
+            "IPE 200",
+            "A36"
+          ],
+          "read_back": [
+            "IPE 200",
+            "A36"
+          ],
+          "members_added": 1
+        },
+        "unknown_section": {
+          "requested": [
+            "RACKCAD_PROBE_NO_SECTION",
+            "A36"
+          ],
+          "error": "ValueError: Section not found: \"RACKCAD_PROBE_NO_SECTION\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions.",
+          "members_added": 1
+        },
+        "unknown_material": {
+          "requested": [
+            "W 12X26",
+            "RACKCAD_PROBE_NO_MATERIAL"
+          ],
+          "error": "ValueError: Material not found: \"RACKCAD_PROBE_NO_MATERIAL\". Check your instructions for valid material names (e.g. \"A992 Gr50\", \"A36\").",
+          "members_added": 1
+        }
+      }
+    },
+    "R1_member_defaults_and_setters": {
+      "ok": true,
+      "observed": {
+        "cardinal_point": 0,
+        "offset_i": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "offset_j": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "stiffness_factors": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "axial_behavior": "<AxialBehavior.NORMAL: 0>",
+        "spring_i": 0.0,
+        "spring_j": 0.0,
+        "releases": "EndReleases(i_m33=False, i_m22=False, i_v2=False, i_v3=False, j_m33=False, j_m22=False, j_v2=False, j_v3=False, torsion=False, axial=False)",
+        "restraints_b": "Restraints(dxdydz)",
+        "cardinal_point_after_set": 0,
+        "setters": {
+          "offset_i": {
+            "ok": true,
+            "read_back": [
+              1.25,
+              0.0,
+              0.0
+            ]
+          },
+          "offset_i_reset": {
+            "ok": true,
+            "read_back": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "offset_j": {
+            "ok": true,
+            "read_back": [
+              0.0,
+              0.75,
+              0.0
+            ]
+          },
+          "offset_j_reset": {
+            "ok": true,
+            "read_back": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "stiffness_factors": {
+            "ok": true,
+            "read_back": [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          },
+          "stiffness_factors_reset": {
+            "ok": true,
+            "read_back": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "axial_behavior": {
+            "ok": true,
+            "read_back": "<AxialBehavior.NORMAL: 0>"
+          },
+          "spring_i": {
+            "ok": true,
+            "read_back": 10000000.0
+          },
+          "spring_i_reset": {
+            "ok": true,
+            "read_back": 0.0
+          },
+          "spring_j": {
+            "ok": true,
+            "read_back": 10000000.0
+          },
+          "spring_j_reset": {
+            "ok": true,
+            "read_back": 0.0
+          }
+        }
+      }
+    },
+    "L1_percent_point_load_readback": {
+      "ok": true,
+      "observed": {
+        "count": 2,
+        "load_y": "PointLoad(direction=<LoadDirection.GLOBAL_Y: 'Y'>, value=-1234.5, distance=37.5, is_percentage=True, category=<PointLoadType.USER_DEFINED: 0>)",
+        "load_z": "PointLoad(direction=<LoadDirection.GLOBAL_Z: 'Z'>, value=-987.25, distance=62.5, is_percentage=True, category=<PointLoadType.USER_DEFINED: 0>)"
+      }
+    },
+    "P2_precision_non_round_values": {
+      "ok": true,
+      "observed": {
+        "written": {
+          "node_a": [
+            6123.456789012,
+            12.345678901,
+            -7.654321098
+          ],
+          "rotation": 12.3456,
+          "load": [
+            -1234.56789,
+            37.123456
+          ]
+        },
+        "read_LB_IN": {
+          "node_a": [
+            6123.456789012,
+            12.345678901,
+            -7.654321098
+          ],
+          "rotation": 12.3456,
+          "load": "PointLoad(direction=<LoadDirection.GLOBAL_Y: 'Y'>, value=-1234.56789, distance=37.123456, is_percentage=True, category=<PointLoadType.USER_DEFINED: 0>)"
+        },
+        "read_N_MM": {
+          "node_a": [
+            155535.79746375929,
+            313.58023405083253,
+            -194.419749667768
+          ],
+          "rotation": 12.3456,
+          "load": "PointLoad(direction=<LoadDirection.GLOBAL_Y: 'Y'>, value=-5491.602882675354, distance=37.123456, is_percentage=True, category=<PointLoadType.USER_DEFINED: 0>)"
+        },
+        "read_back_LB_IN": {
+          "node_a": [
+            6123.456789012,
+            12.345678901,
+            -7.654321098
+          ],
+          "load": "PointLoad(direction=<LoadDirection.GLOBAL_Y: 'Y'>, value=-1234.56789, distance=37.123456, is_percentage=True, category=<PointLoadType.USER_DEFINED: 0>)"
+        }
+      }
+    }
+  }
+}

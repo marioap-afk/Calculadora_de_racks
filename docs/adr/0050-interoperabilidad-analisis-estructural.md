@@ -1,12 +1,12 @@
 # ADR-0050: Interoperabilidad de análisis estructural — modelo neutral derivado y adaptadores de proveedor
 
 - **Estado:** propuesto (borrador de F0; no aceptado)
-- **Fecha:** 2026-10-10 (borrador)
+- **Fecha:** 2026-10-10 (borrador); 2026-10-11 (borrador final tras la sonda P1)
 - **Decisores:** Owner del proyecto (acepta o rechaza; **pendiente**). Architect de I-65 (revisión pendiente sobre la versión
   congelable). Coordinator de I-65 (redacción).
 - **Iniciativa relacionada:** I-65 — `architecture/interop-analisis-estructural`
   ([contrato](../initiatives/I-65-interop-analisis-estructural.md), [Discovery](../initiatives/I-65-discovery.md),
-  [Proposal V2.1](../initiatives/I-65-proposal-v2.1.md)).
+  [Proposal V3](../initiatives/I-65-proposal-v3.md)).
 - **Consume sin reabrir:** [ADR-0017](0017-validacion-cargas-diferida-ram-elements.md). **Compatible con:**
   [ADR-0005](0005-estrategia-de-unidades.md), [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md) §10,
   [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md) D3,
@@ -39,12 +39,14 @@ RAM Elements 2026 es una API Python que corre solo dentro del programa, con docu
    identificador ni convención de un proveedor aparece fuera de esa carpeta (guardas de fuente). Un ensamblado propio solo si un
    proveedor trae una dependencia binaria.
 5. **Supuestos explícitos.** Idealización, apoyos, conexiones, fuente de propiedades y cargas son supuestos con identificador, listados
-   en el paquete exportado. Ninguno se elige en silencio.
+   en el paquete exportado. Ninguno se elige en silencio. Sirven para una **equivalencia de transferencia**; no constituyen ni sustituyen
+   una validación estructural de ingeniería, que queda fuera de RackCad.
 6. **Sin exportación parcial.** El resultado es `Valid | Unsupported | Invalid | Unavailable`; cualquier diagnóstico bloqueante impide
    producir el paquete, que se escribe de forma atómica en una carpeta nueva.
 7. **Primer proveedor: RAM Elements por su API Python oficial**, mediante un script de plantilla fija ejecutado por el ingeniero sobre un
    modelo vacío, que verifica por lectura de vuelta lo construido. No se automatiza la interfaz ni se usan formatos o servidores no
-   documentados.
+   documentados. Verificado en RAM Elements 26.00.01.015 (sonda P1): par de unidades `LB_IN` con lectura de vuelta exacta, eje vertical
+   Y, regla de ejes locales y giro medidos; el análisis automático desde RackCad no existe y no se promete.
 8. **Provenance.** Huella de la fuente y huella de entrada del análisis; un volcado o resultado cuya huella no coincide con la regenerada
    es `STALE` y no se presenta como vigente.
 9. **ADR-0017 se mantiene.** RackCad no calcula utilización, ratios ni veredictos de diseño. Presentarlos en RackCad requeriría un ADR
@@ -70,7 +72,7 @@ RAM Elements 2026 es una API Python que corre solo dentro del programa, con docu
 ## Referencias
 
 - [Mandato de I-65](../automation/decisions/I-65-owner-mandate.original.txt)
-- [Discovery de I-65](../initiatives/I-65-discovery.md), [Proposal V2.1](../initiatives/I-65-proposal-v2.1.md)
+- [Discovery de I-65](../initiatives/I-65-discovery.md), [Proposal V3](../initiatives/I-65-proposal-v3.md)
 - [ADR-0005](0005-estrategia-de-unidades.md), [ADR-0009](0009-identidad-guid-embebida-en-dwg.md),
   [ADR-0017](0017-validacion-cargas-diferida-ram-elements.md),
   [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md),

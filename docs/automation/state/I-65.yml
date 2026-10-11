@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F0
   attempts: 0
-  next_action: F0 BLOQUEADO por la ejecución de P1 v3.2. Acceso de Computer Use a RAM Elements denegado; carpeta D:/I65-P1/run-20261011T014503Z preparada (copia SHA-256 95378d87…); el Owner ejecuta a mano según p1-procedure.md o vuelve a conceder el acceso.
+  next_action: P1 v3.2 ejecutada (sin STOP). Revisión de confirmación del Architect sobre la Proposal V3; después, ADR-0050 final al Owner (Q-O6) y Freeze solo con AGREED; F1 solo con autorización expresa del Owner.
   last_evidence_commit: acaefc1da279c3573db37a9279a169f3ecaa43ce
 execution_context:
   mode: manual
@@ -15,7 +15,7 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F0
-  next_role: Owner (ejecutar P1 v3.2 a mano o conceder acceso de Computer Use a RAM Elements 2026)
+  next_role: Architect (confirmación de la Proposal V3, ronda 4)
   implementation_authorization: NO
-  owner_decisions_open: [ejecución de P1 v3.2 (manual o Computer Use), Q-O6 ADR-0050 (tras P1 y Architect), confirmación definitiva de Q-O1 y Q-O7]
-  not_authorized: [implementación, ejecutar RAM Elements, escribir en archivos de RAM del usuario, Freeze sin AGREED de Coordinator y Architect]
+  owner_decisions_open: [Q-O6 ADR-0050 (tras el Architect), confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de F1 (Q-O8), verificación de las filas de mapeo sección/material por un ingeniero]
+  not_authorized: [implementación, Freeze sin AGREED de Coordinator y Architect, nuevas corridas en RAM Elements sin autorización, escribir en archivos de RAM del usuario]
