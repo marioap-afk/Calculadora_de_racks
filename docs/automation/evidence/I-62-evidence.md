@@ -3702,3 +3702,21 @@ solo desde artefactos custodiados.
   `auth status`, tope de 3 600 s, sin reintento. Consumo cubierto por CLAUDE-CLI-I62 = A.
 - **Estado:** custodiado y NO lanzado. A-5 no cambia mientras dure la revisión.
 
+## 136. A-5: revisión formal por `claude-cli` = AGREED (A5-1 y A5-2), auditor ACCREDITED; D.5 diferida a la preparación de la OV (decisiones §72)
+
+- **Revisión** R20261011T065226Z-dbb0: sesión `dcb1b798…`, de 08:50:34Z a 09:10:09Z, salida 0, sin fallo de transporte; 53 turnos (51 Read). Objeto A-5 `ad94ceed`.
+  ([registro](../../initiatives/I-62-architect-review-A-5.md); [output.json](I-62-architect-A-5/R20261011T065226Z-dbb0/output.json))
+- **Veredicto del Architect independiente: AGREED.** A5-1: AGREED; A5-2: AGREED (las dos separables). **0 REQUIRED.** `IfAgreed`: todos los campos
+  `true`. Líneas del Owner: solo una acción o un consumo cada una, con efecto solo tras el acuerdo.
+- **Temas de §72.2:** sin hallazgos la integridad del historial del fixture original, la prohibición de reinicios y transferencias y las decisiones
+  reservadas al Owner. Con precisiones OPCIONALES:
+  - **O1:** la acreditación de C-22 (su premisa no se cumple con AP 16.13); propone dejarla como registro histórico y re-acreditarla en B1;
+  - **O2:** D.5 alcanza también a la OV de FX-04a y FX-04b;
+  - **O3:** la glosa del cupo de A4-6 («titular A2 de FX-02 designado por T16»);
+  - **O4:** el árbol de F_eff igual al de F_norm y la unicidad del trailer como texto, no solo como comprobación;
+  - **O5:** la semántica de `COPIED` en el manifiesto de F_seed.
+- **D.5: DEFER_UNTIL_OV_PREPARATION.** Owner Validation no afectada. No es OWNER-RESERVED, pero hace falta una A-n material durante la preparación de la
+  OV, antes de READY-01; si no, OV-I62-03, -05 (a y b) y -06 acabarían en MAP_INVALID.
+- **Auditor v5.1-a5: ACCREDITED,** con 0 motivos y 52 llamadas ([audit.json](I-62-architect-A-5/R20261011T065226Z-dbb0/audit.json)).
+- **Siguiente:** veredicto del Coordinator sobre A-5 y disposición de O1..O5. Con A-5 AGREED, preparar la disposición de construcción de B1 y las
+  autorizaciones del Owner, sin pedirlas por adelantado (§72, punto 4).

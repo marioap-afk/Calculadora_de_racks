@@ -1,0 +1,69 @@
+{
+ "SessionId": "dcb1b798-b53a-4a31-9693-61cd4a2dfe51",
+ "At": "2026-10-11T08:48:41.976202Z",
+ "Checks": {
+  "1-KitIntegrity": {
+   "Ok": true,
+   "Mismatches": [],
+   "Unlisted": []
+  },
+  "2-ClosureTransport": {
+   "Ok": true
+  },
+  "3-Binary": {
+   "Ok": true,
+   "Exists": true,
+   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+   "Authenticode": "Valid",
+   "SignerIsAnthropic": true
+  },
+  "4-Version": {
+   "Ok": true,
+   "Got": "2.1.293 (Claude Code)"
+  },
+  "5-Auth": {
+   "Ok": true,
+   "loggedIn": true,
+   "authMethod": "claude.ai",
+   "apiProvider": "firstParty",
+   "CompletedAt": "2026-10-11T08:48:33.891073Z"
+  },
+  "6-Clone": {
+   "Ok": true,
+   "Head": "b631c46f08fa403628250035bdb9c2f5c600cc81",
+   "Detached": true,
+   "Clean": true,
+   "LocalBranches": [],
+   "Remotes": [],
+   "BlobMismatches": [],
+   "ReparsePoints": 0
+  },
+  "7-RunFiles": {
+   "Ok": true,
+   "Listing": [
+    "delta.diff",
+    "order.txt",
+    "prompt.md"
+   ],
+   "Mismatches": []
+  },
+  "8-NewSession": {
+   "Ok": true,
+   "PriorTranscripts": 0,
+   "ProjectDirsForCloneOrRun": []
+  },
+  "9-CommandLine": {
+   "Ok": true,
+   "Chars": 16968
+  },
+  "10-TransportGate": {
+   "Ok": true,
+   "Status": "MEASURED",
+   "LaunchArgsMatchTemplate": true,
+   "CharacterizationSha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+   "AcceptanceSha256": null,
+   "Problems": []
+  }
+ }
+}
