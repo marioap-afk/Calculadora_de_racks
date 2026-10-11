@@ -1,9 +1,9 @@
 # I-65 — Proposal V3.1 (Structural Analysis Interop Foundation + RAM Elements Adapter)
 
 ```text
-Estado: PROPUESTA CONGELABLE — pendiente de la revisión de confirmación del Architect
-Frozen: no
-Coordinator: AGREED (sujeto a la confirmación del Architect)        Architect: cierre por diff de A65-V3-01/02 pendiente
+Estado: CONGELADA (Freeze de I-65, 2026-10-11; orden del Owner «Conditional GO for Freeze and F1»)
+Frozen: yes — consenso sobre el blob 11062a915c4c174ede180830c8ab3173ee7b6666 (commit 3872fcc0)
+Coordinator: AGREED        Architect: AGREED (3872fcc0; mantenido en dc3afdda y 5253b031)
 IMPLEMENTATION AUTHORIZATION = NO (aun con AGREED: F1 exige una autorización posterior del Owner y la aceptación de ADR-0050)
 Sustituye a: Proposal V3 (ronda 4 = CHANGES REQUIRED: A65-V3-01 y A65-V3-02 REQUIRED, 03..06 OPTIONAL; A65-V1-01 CLOSED)
 Historia: V1 → V2 → V2.1 → V3 (valores medidos por P1 v3.2 y decisiones del Owner) → V3.1 (correcciones de la ronda 4)
