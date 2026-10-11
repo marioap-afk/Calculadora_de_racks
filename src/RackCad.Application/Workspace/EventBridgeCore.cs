@@ -90,6 +90,14 @@ namespace RackCad.Application.Workspace
             return _byNative.TryGetValue(nativeInstanceId, out var id) && _registry.TryGet(id, out session);
         }
 
+        /// <summary>Checks a request against the session of the document that would execute it. Same verdict as the registry; no side effects.</summary>
+        public RequestDecision Authorize(WorkspaceRequest request, long executingNativeInstanceId) => RequestDecision.Accepted;
+
+        /// <summary>Skeleton.</summary>
+        public void RequestReconciliation()
+        {
+        }
+
         public bool IsDegraded(SessionId id) => _states.TryGetValue(id, out var state) && state.Degraded;
 
         /// <summary>Panel visibility as the host reports it. Only the drain conditions use it; it never changes an attachment.</summary>

@@ -47,6 +47,12 @@ public class WorkspaceBridgeSourceGuardTests
 
     private const string PluginWorkspacePrefix = "src/RackCad.Plugin/Workspace/";
 
+    // I-64 F1-T3A-HOST-CORE (INV-F1-T3A-14, C-T3-04): the ONLY two refinements of this guard, each by EXACT FILE and
+    // never by folder. RACKPANEL may be declared in the command adapter; the read APIs of D-06 may be used in the reader
+    // adapter. Every other file under src/RackCad.Plugin/Workspace/ keeps all the prohibitions below.
+    internal const string CommandAdapterPath = "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs";
+    internal const string ReaderAdapterPath = "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs";
+
     // ------------------------------------------------------------------ INV-F1-T2-02: hookups only in the bridge folder
 
     // The AutoCAD events the workspace governs plus the neighbours a second subscriber would reach for.
@@ -120,10 +126,19 @@ public class WorkspaceBridgeSourceGuardTests
 
     // ------------------------------------------------------------------ INV-F1-T2-03: events never write selection or view
 
-    private static readonly Regex HandlerForbiddenCalls = new(
-        @"\b(?:SetImpliedSelection|SetCurrentView|ZoomExtents|ZoomWindow|Zoom|PanTo|UpdateScreen|Regen|SendStringToExecute|StartCommand|"
+    private const string ForbiddenCallNames =
+        @"SetImpliedSelection|SetCurrentView|ZoomExtents|ZoomWindow|Zoom|PanTo|UpdateScreen|Regen|SendStringToExecute|StartCommand|"
         + @"GetSelection|GetEntity|GetString|GetPoint|GetKeywords|GetInteger|GetDouble|SelectImplied|SelectAll|SelectAtPoint|"
-        + @"ShowModalDialog|ShowModelessDialog|ShowDialog|MessageBox|GetObject|OpenCloseTransaction|Highlight|Unhighlight)\b");
+        + @"ShowModalDialog|ShowModelessDialog|ShowDialog|MessageBox|GetObject|OpenCloseTransaction|Highlight|Unhighlight";
+
+    private static readonly Regex HandlerForbiddenCalls = new(@"\b(?:" + ForbiddenCallNames + @")\b");
+
+    // The reader adapter alone may call SelectImplied and GetObject (D-06); every other name stays forbidden there too.
+    private static readonly Regex ReaderForbiddenCalls = new(
+        @"\b(?:" + string.Join("|", ForbiddenCallNames.Split('|').Where(n => n != "SelectImplied" && n != "GetObject")) + @")\b");
+
+    internal static Regex HandlerForbiddenCallsFor(string path) =>
+        string.Equals(path, ReaderAdapterPath, StringComparison.Ordinal) ? ReaderForbiddenCalls : HandlerForbiddenCalls;
 
     [Fact]
     public void TheBridgeNeverWritesSelectionOrViewNorReadsStoredDataNorAsksNorOpensDialogs()
@@ -131,7 +146,10 @@ public class WorkspaceBridgeSourceGuardTests
         var sources = PluginWorkspace();
         Assert.NotEmpty(sources);
         foreach (var (path, code) in sources)
-            Assert.True(!HandlerForbiddenCalls.IsMatch(code), path + " calls " + HandlerForbiddenCalls.Match(code).Value);
+        {
+            var forbidden = HandlerForbiddenCallsFor(path);
+            Assert.True(!forbidden.IsMatch(code), path + " calls " + forbidden.Match(code).Value);
+        }
     }
 
     [Fact]
@@ -284,11 +302,30 @@ public class WorkspaceBridgeSourceGuardTests
         Assert.DoesNotContain("Workspace", initializer);
         Assert.DoesNotContain("EventBridge", initializer);
 
-        var entryPoints = new Regex(@"IExtensionApplication|ExtensionApplication|\[CommandMethod|\[assembly\s*:|ModuleInitializer|static\s+AutoCadEventBridge\s*\(");
         var sources = PluginWorkspace();
         Assert.NotEmpty(sources);
         foreach (var (path, code) in sources)
-            Assert.True(!entryPoints.IsMatch(code), path + " declares a load-time entry point or a command");
+            Assert.True(!DeclaresEntryPoint(path, code), path + " declares a load-time entry point or a command");
+    }
+
+    private static readonly Regex EntryPoints =
+        new(@"IExtensionApplication|ExtensionApplication|\[CommandMethod|\[assembly\s*:|ModuleInitializer|static\s+AutoCadEventBridge\s*\(");
+
+    /// <summary>
+    /// A load-time entry point or a command. The command adapter, by exact file, may hold ONE <c>[CommandMethod("RACKPANEL")]</c>
+    /// and nothing else of this kind: no alias, no second command, no other name.
+    /// </summary>
+    internal static bool DeclaresEntryPoint(string path, string code)
+    {
+        if (string.Equals(path, CommandAdapterPath, StringComparison.Ordinal))
+        {
+            var attributes = Regex.Matches(code, @"\[\s*CommandMethod\b").Count;
+            var allowed = Regex.Matches(code, @"\[CommandMethod\(""RACKPANEL""\)\]").Count;
+            if (attributes != 1 || allowed != 1) return true;
+            code = Regex.Replace(code, @"\[CommandMethod\(""RACKPANEL""\)\]", "");
+        }
+
+        return EntryPoints.IsMatch(code);
     }
 
     [Fact]
