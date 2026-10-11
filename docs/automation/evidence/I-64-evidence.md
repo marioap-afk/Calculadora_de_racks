@@ -3538,3 +3538,48 @@ sin Worker de producto, sin AutoCAD y sin mutación de perfil, registro, `TRUSTE
 - `config.toml` en la instantánea C.
 - HEAD = remoto = `827917aa` antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/`, `tests/`, archivos de proyecto, ROADMAP ni HANDOFF.
+
+## 59. F1-T3C-PROFILE-DOC — Revisión del Coordinator: PASS; F1-T3D-SMOKE-PROCEDURE y paquete de cierre de F1 autorizados
+
+Sección nueva; las anteriores no se reescriben.
+
+**Revisión del Coordinator** (literal en `docs/automation/evidence/I-64-pilot/F1-T3C-PROFILE-DOC/coordinator-review.md`): **PASS**
+sobre `9af9ac75` (CI 38158957028 4/4).
+- F1-T3C-PROFILE-DOC = **COMPLETE**. El procedimiento de diff de perfil queda **APROBADO PARA USO FUTURO EN SMOKE-1**.
+- Consta que no hubo ejecución de AutoCAD ni mutación de perfil, registro, `TRUSTEDPATHS`, `SECURELOAD` o ACL.
+
+**Dictámenes sobre las decisiones abiertas** (registrados como sección 15 del procedimiento, sin cambiar su cuerpo ni sus
+herramientas):
+- **O-1:** hace falta un procedimiento escrito de Smoke-1 para el operador antes de F1 PASS. Nace la tarea documental
+  **F1-T3D-SMOKE-PROCEDURE**, de la sesión, sin Worker de producto, sin AutoCAD y sin mutación del host. Smoke-1 solo después de F1 PASS.
+- **O-2 (aceptada):** directorio transitorio `artifacts/orchestration/I-64/F1-SMOKE-1/<RunId>/` y custodia en
+  `docs/automation/evidence/I-64-pilot/F1-SMOKE-1/` según el patrón de T3A y T3B. Los compañeros locales nunca se versionan.
+- **O-3:** se mantiene el informe conservador.
+  - Una clave `RackCad.UI.*` nueva solo en el POST es REPORT.
+  - La clave de estado de la paleta solo da `REPORTED_ACCEPTED` si el acuse de I-52 lo acepta de forma explícita; si no,
+    `REPORT_REQUIRED_STOP`.
+- **O-4:** una carga única y no persistente del DLL solo con autorización explícita del RELEASE de I-52 o del acuse del CAD manager, con
+  las características obligatorias y las prohibiciones del dictamen. Si la carga exige un cambio persistente: STOP HOST-TO-CONFIRM /
+  STOP-06.
+- **Precedencia:** INVALID → FORBIDDEN → REPORT → ALLOWED. R-A-03 es solo residual y no da autoridad general.
+
+**Corrección documental del estado** (por orden de la revisión):
+- `last_evidence_commit` = `9af9ac75c0103270116a21c0bf504b2386770446`.
+- `f1_t3c_profile_doc_status` = COMPLETE.
+- La acción siguiente pasa a F1-T3D-SMOKE-PROCEDURE y al paquete de cierre del gate F1.
+- Sin cambios de producto.
+
+**Autorizado a continuación por la misma revisión:**
+1. Redactar el procedimiento exacto de Smoke-1 para el operador. Base: el Freeze V5 (S1-01..S1-12), el procedimiento de diff de
+   perfil de T3C, el producto verificado de F1, las reglas de host de I-52 y los límites de la Owner Validation. Sin ejecutar ningún paso.
+2. Preparar el paquete de cierre del gate F1: cada invariante de cierre congelado de F1 con su evidencia exacta de T1, T2, T3A, T3B,
+   T3C y T3D, con SHAs de producto, corridas de CI y revisiones de cierre del Coordinator.
+3. STOP en **COORDINATOR_F1_GATE_CLOSE_REQUIRED**.
+
+No se ejecuta AutoCAD ni Smoke-1, no se pide la Owner Validation, no se cambia el perfil ni la seguridad, no se tocan `src/` ni
+`tests/`, no se inicia F2 y no se declara F1 PASS.
+
+**Relevos:**
+- Sin invocaciones de modelos en esta sección.
+- HEAD = remoto = `9af9ac75` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.
