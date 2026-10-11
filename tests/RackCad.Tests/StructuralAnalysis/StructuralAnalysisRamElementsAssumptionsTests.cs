@@ -51,7 +51,7 @@ namespace RackCad.Tests
         [Fact]
         public void LosEnunciadosSonNeutralesSinNombreDeProveedorNiCadenaDeProveedorNiAfirmarValidacion()
         {
-            var forbidden = new[] { "RAM", "Ram", "Bent" + "ley", "validated", "validation", "certified", "approved", "safe", "A992", "A500", "W 12X26" };
+            var forbidden = new[] { "RAM", "Ram", "Bentley", "validated", "validation", "certified", "approved", "safe", "A992", "A500", "W 12X26" };
 
             foreach (var assumption in Model().Assumptions)
             {

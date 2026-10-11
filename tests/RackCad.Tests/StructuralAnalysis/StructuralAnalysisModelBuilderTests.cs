@@ -569,7 +569,22 @@ namespace RackCad.Tests
             Assert.NotEmpty(types);
             Assert.DoesNotContain(members, name => name.Equals("Analyze", StringComparison.OrdinalIgnoreCase));
             Assert.DoesNotContain(members, name => name.Equals("ReadResults", StringComparison.OrdinalIgnoreCase));
-            Assert.DoesNotContain(types, t => t.Name.Contains("Writer", StringComparison.Ordinal));
+
+            // A65-F3-06: the file I/O of the neutral layer is read from the SOURCE, not guessed from the names of the types.
+            // Under src/RackCad.Application/StructuralAnalysis/ (not Providers/) File., Directory., FileStream, FileInfo and
+            // DirectoryInfo appear only in StructuralPackageWriter.cs.
+            const string root = "src/RackCad.Application/StructuralAnalysis";
+            const string writer = root + "/StructuralPackageWriter.cs";
+            var neutral = StructuralAnalysisGuards.Files(root)
+                .Where(file => !file.Path.StartsWith(root + "/Providers/", StringComparison.Ordinal))
+                .ToList();
+            var offenders = neutral
+                .Where(file => file.Path != writer)
+                .SelectMany(file => StructuralAnalysisRamElementsHardeningScans.NeutralFileIo(file.Source).Select(v => file.Path + ": " + v))
+                .ToList();
+
+            Assert.Contains(neutral, file => file.Path == writer);
+            Assert.True(offenders.Count == 0, "E/S de archivos fuera de StructuralPackageWriter.cs:\n" + string.Join("\n", offenders));
         }
 
         [Fact]

@@ -20,6 +20,8 @@ namespace RackCad.Tests
         private const string ProvidersRoot = "src/RackCad.Application/StructuralAnalysis/Providers/";
         private const string PackageTemplateTestsFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageTemplateTests.cs";
         private const string GuardFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs";
+        private const string GuardTestsFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsGuardTests.cs";
+        private const string AssumptionsTestsFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsAssumptionsTests.cs";
 
         private static readonly Regex FileApis = new Regex(
             @"\b(?:File|Directory|FileStream|StreamReader|StreamWriter)\b", RegexOptions.CultureInvariant);
@@ -153,16 +155,23 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void INV14_EXIME_EXACTAMENTE_EL_ARCHIVO_DE_PRUEBAS_DE_LA_PLANTILLA_DEL_PAQUETE()
+        public void INV14_EXIME_EXACTAMENTE_CUATRO_RUTAS_EXACTAS()
         {
-            var tool = "ramel" + "ements";
-            var code = "var m = \"" + tool + "\";";
+            var code = "var m = \"ramelements\";";
 
-            Assert.Empty(StructuralAnalysisGuards.Inv14(PackageTemplateTestsFile, code));
+            // the four exempt files: the guard, the package template tests, and these two (their synthetic samples name what the guard forbids)
             Assert.Empty(StructuralAnalysisGuards.Inv14(GuardFile, code));
+            Assert.Empty(StructuralAnalysisGuards.Inv14(PackageTemplateTestsFile, code));
+            Assert.Empty(StructuralAnalysisGuards.Inv14(GuardTestsFile, code));
+            Assert.Empty(StructuralAnalysisGuards.Inv14(AssumptionsTestsFile, code));
+
+            // nothing else is exempt: not another file, not another folder, not another case, not a backup
             Assert.NotEmpty(StructuralAnalysisGuards.Inv14("tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsOtherTests.cs", code));
             Assert.NotEmpty(StructuralAnalysisGuards.Inv14("tests/RackCad.Tests/Other/StructuralAnalysisRamElementsPackageTemplateTests.cs", code));
+            Assert.NotEmpty(StructuralAnalysisGuards.Inv14("tests/RackCad.Tests/Other/StructuralAnalysisRamElementsGuardTests.cs", code));
             Assert.NotEmpty(StructuralAnalysisGuards.Inv14(PackageTemplateTestsFile + ".bak", code));
+            Assert.NotEmpty(StructuralAnalysisGuards.Inv14(GuardTestsFile + ".bak", code));
+            Assert.NotEmpty(StructuralAnalysisGuards.Inv14("tests/RackCad.Tests/StructuralAnalysis/STRUCTURALANALYSISRAMELEMENTSASSUMPTIONSTESTS.CS", code));
             Assert.NotEmpty(StructuralAnalysisGuards.Inv14("tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsMapReaderTests.cs", code));
         }
 

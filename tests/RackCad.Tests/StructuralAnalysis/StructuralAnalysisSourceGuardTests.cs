@@ -22,7 +22,7 @@ namespace RackCad.Tests
     /// does not say, never that what it says is right: the behaviour tests are the criterion.
     /// </para>
     /// <para>
-    /// This file is the one exempt from the INV-14 sweep, because its synthetic samples must name what that guard forbids.
+    /// This file is one of the four exempt from the INV-14 sweep (A65-F3-05), because its synthetic samples must name what that guard forbids.
     /// </para>
     /// </summary>
     public class StructuralAnalysisSourceGuardTests
@@ -376,6 +376,11 @@ namespace RackCad.Tests
         private const string ForceFile = "src/RackCad.Application/Units/ForceUnits.cs";
         private const string GuardFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs";
         private const string PackageTemplateTestsFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageTemplateTests.cs";
+        private const string GuardTestsFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsGuardTests.cs";
+        private const string AssumptionsTestsFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsAssumptionsTests.cs";
+
+        // INV-14 exempts EXACTLY these four exact paths (A65-F3-05): the files whose synthetic samples must name what the guard forbids.
+        private static readonly string[] Inv14Exempt = { GuardFile, PackageTemplateTestsFile, GuardTestsFile, AssumptionsTestsFile };
 
         private static readonly string[] G1Roots =
         {
@@ -500,8 +505,7 @@ namespace RackCad.Tests
             var normalized = Normalize(path);
 
             if (!normalized.StartsWith("tests/RackCad.Tests/", StringComparison.Ordinal)
-                || string.Equals(normalized, GuardFile, StringComparison.Ordinal)
-                || string.Equals(normalized, PackageTemplateTestsFile, StringComparison.Ordinal))
+                || Inv14Exempt.Contains(normalized, StringComparer.Ordinal))
             {
                 return new string[0];
             }

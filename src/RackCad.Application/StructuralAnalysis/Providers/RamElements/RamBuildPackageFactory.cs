@@ -60,6 +60,9 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
         public IReadOnlyList<StructuralPackageFile> Files { get; }
 
         public string AnalysisInputFingerprint { get; }
+
+        /// <summary>The folder that the script embeds (A65-F3-07). RED stub: the member exists so that the tests compile; the value comes in GREEN.</summary>
+        public string PackageFolder => null;
     }
 
     /// <summary>The result of building the package: the content when, and only when, the outcome is Valid. Never a partial package.</summary>

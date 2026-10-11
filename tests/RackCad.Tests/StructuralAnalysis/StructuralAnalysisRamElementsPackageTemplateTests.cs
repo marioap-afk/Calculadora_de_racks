@@ -52,7 +52,7 @@ namespace RackCad.Tests
             "self_weight", "dx", "dy", "dz", "rx", "ry", "rz", "Units", "LB_IN", "Restraints", "CardinalPoint", "CENTROID",
             "LoadDirection", "GLOBAL_Y", "_p4d", "engine",
             // plain Python
-            "loads", "dumps", "isfinite", "__name__", "startswith", "append", "extend", "write", "close", "__getattribute__",
+            "loads", "dumps", "isfinite", "fmod", "__name__", "startswith", "append", "extend", "write", "close", "__getattribute__",
         };
 
         /// <summary>The violations of the rules of the script; empty when the script obeys them all.</summary>
@@ -101,14 +101,19 @@ namespace RackCad.Tests
                 violations.Add("falta el nombre del archivo de lectura de vuelta");
             }
 
-            // rule 8: both gates, in order, before the open and before the first write
+            // rule 8 and A65-F3-11: the three gates (capability, empty model, payload), in order, before the open and before the first write;
+            // the read-back is persisted and the status printed after the write
             if (!functions.TryGetValue("main", out var main))
             {
                 violations.Add("falta main");
             }
             else
             {
-                var order = new[] { "capability_failures(data)", "rm.model()", "empty_model_failures(m", "open(", "write_model(m, data)" };
+                var order = new[]
+                {
+                    "capability_failures(data)", "rm.model()", "empty_model_failures(m", "payload_failures(data)", "open(", "write_model(m, data)",
+                    "persist_readback(out, result)", "print(result[\"status\"])",
+                };
                 var last = -1;
 
                 foreach (var token in order)
@@ -133,6 +138,105 @@ namespace RackCad.Tests
                 {
                     violations.Add("main debe escribir el modelo una sola vez");
                 }
+
+                // A65-F3-11: the payload gate is added whenever the payload was decoded, not only when the other gates pass
+                if (!Regex.IsMatch(main, @"(?m)^        gate = gate \+ payload_failures\(data\)$"))
+                {
+                    violations.Add("la tercera puerta no se evalua siempre que la carga util este decodificada");
+                }
+
+                // T4-21: every rejection of every gate carries the prefix
+                if (!main.Contains("differences.extend([\"gate: \" + item for item in gate])", StringComparison.Ordinal))
+                {
+                    violations.Add("los rechazos de las puertas no llevan el prefijo gate");
+                }
+
+                // A65-F3-04: main neither serialises nor writes the file; it persists through the protected function
+                if (main.Contains("out.write(", StringComparison.Ordinal) || main.Contains("json.dumps(", StringComparison.Ordinal))
+                {
+                    violations.Add("main serializa o escribe el archivo fuera del manejo de errores");
+                }
+            }
+
+            // A65-F3-11 and T4-21: the third gate holds every check of the payload
+            if (!functions.TryGetValue("payload_failures", out var payload))
+            {
+                violations.Add("falta payload_failures");
+            }
+            else
+            {
+                foreach (var required in new[]
+                {
+                    "data[\"units\"] != \"LB_IN\"",
+                    "not field(spec, \"section\")",
+                    "not field(spec, \"material\")",
+                    "field(spec, \"nodeI\") not in node_ids",
+                    "field(spec, \"nodeJ\") not in node_ids",
+                    "field(spec, \"member\") not in member_ids",
+                    "field(spec, \"direction\") != \"GLOBAL_Y\"",
+                    "len(flags) != 6",
+                    "isinstance(flag, bool)",
+                    "repeated_ids(\"node\", node_ids)",
+                    "repeated_ids(\"member\", member_ids)",
+                    "repeated_ids(\"load\", load_ids)",
+                })
+                {
+                    if (!payload.Contains(required, StringComparison.Ordinal))
+                    {
+                        violations.Add("la tercera puerta no comprueba: " + required);
+                    }
+                }
+            }
+
+            if (!functions.TryGetValue("repeated_ids", out var repeated) || !repeated.Contains("if item in seen:", StringComparison.Ordinal))
+            {
+                violations.Add("la tercera puerta no detecta los ids repetidos");
+            }
+
+            // A65-F3-04: the serialisation and the writing are inside the error handling, with a minimal record on failure and the file always closed
+            if (!functions.TryGetValue("persist_readback", out var persist))
+            {
+                violations.Add("falta persist_readback");
+            }
+            else
+            {
+                var steps = new[] { "try:", "json.dumps(result", "out.write(text", "except Exception as exc:", "finally:", "out.close()" };
+                var positions = steps.Select(step => persist.IndexOf(step, StringComparison.Ordinal)).ToList();
+
+                if (positions.Contains(-1) || !positions.SequenceEqual(positions.OrderBy(position => position)))
+                {
+                    violations.Add("la serializacion, la escritura y el cierre de la lectura de vuelta no estan protegidos");
+                }
+
+                foreach (var required in new[]
+                {
+                    "\"schema\": result[\"schema\"],",
+                    "\"status\": FAILED,",
+                    "\"analysisInputFingerprint\": result[\"analysisInputFingerprint\"],",
+                    "\"error\": error,",
+                })
+                {
+                    if (!persist.Contains(required, StringComparison.Ordinal))
+                    {
+                        violations.Add("el respaldo minimo no lleva: " + required);
+                    }
+                }
+
+                if (persist.Contains("\"values\"", StringComparison.Ordinal))
+                {
+                    violations.Add("el respaldo minimo lleva los valores leidos");
+                }
+            }
+
+            // A65-F3-01: the turn is compared modulo 360, wrapped to -180..180, with the relative tolerance of rule 9
+            if (!functions.TryGetValue("angle_near", out var angle)
+                || !angle.Contains("math.isfinite(difference)", StringComparison.Ordinal)
+                || !angle.Contains("math.fmod(difference, 360.0)", StringComparison.Ordinal)
+                || !angle.Contains("wrapped > 180.0", StringComparison.Ordinal)
+                || !angle.Contains("wrapped <= -180.0", StringComparison.Ordinal)
+                || !angle.Contains("abs(wrapped) <= tolerance * max(1.0, abs(expected))", StringComparison.Ordinal))
+            {
+                violations.Add("el giro no se compara modulo 360 con la tolerancia relativa");
             }
 
             if (!functions.TryGetValue("capability_failures", out var capability)
@@ -180,9 +284,14 @@ namespace RackCad.Tests
                     violations.Add("escribe antes de fijar LB_IN");
                 }
 
-                if (!write.Contains("data[\"units\"] != \"LB_IN\"", StringComparison.Ordinal))
+                // A65-F3-11: write_model checks nothing of the payload; the third gate did it before any write
+                if (write.Contains("raise ", StringComparison.Ordinal)
+                    || write.Contains("data[\"units\"]", StringComparison.Ordinal)
+                    || write.Contains("!= \"GLOBAL_Y\"", StringComparison.Ordinal)
+                    || write.Contains("not spec[\"section\"]", StringComparison.Ordinal)
+                    || write.Contains("not spec[\"material\"]", StringComparison.Ordinal))
                 {
-                    violations.Add("no comprueba el par de unidades de la carga util");
+                    violations.Add("write_model comprueba la carga util: eso es de la tercera puerta");
                 }
 
                 if (!write.Contains("member.cardinal_point = rm.CardinalPoint.CENTROID", StringComparison.Ordinal))
@@ -211,11 +320,6 @@ namespace RackCad.Tests
                     || !Regex.IsMatch(call, @"description=spec\[""id""\]"))
                 {
                     violations.Add("members.add sin seccion, material, giro y descripcion explicitos");
-                }
-
-                if (!write.Contains("not spec[\"section\"] or not spec[\"material\"]", StringComparison.Ordinal))
-                {
-                    violations.Add("no rechaza una seccion o un material vacios");
                 }
 
                 var load = Call(write, ".add_point_load(");
@@ -253,6 +357,21 @@ namespace RackCad.Tests
                     {
                         violations.Add("la lectura de vuelta no comprueba: " + required);
                     }
+                }
+
+                // A65-F3-01: the turn is compared modulo 360 and the value read is recorded as it is
+                if (!back.Contains("angle_near(member.rotation, spec[\"rotation\"], relative)", StringComparison.Ordinal)
+                    || Regex.IsMatch(back, @"(?<!angle_)near\(member\.rotation")
+                    || !back.Contains("\"rotation\": member.rotation,", StringComparison.Ordinal))
+                {
+                    violations.Add("el giro no se compara modulo 360 o no se registra tal cual");
+                }
+
+                // A65-F3-02: the description is written (neutral id) but NOT compared; the value read is recorded
+                if (back.Contains("member.description ==", StringComparison.Ordinal)
+                    || !back.Contains("\"description\": member.description,", StringComparison.Ordinal))
+                {
+                    violations.Add("la descripcion se compara o no se registra");
                 }
             }
 
@@ -498,12 +617,17 @@ namespace RackCad.Tests
         [Fact]
         public void ElScriptEscribeElEstadoLaHuellaLasDiferenciasYLosValoresLeidosTambienAnteUnFallo()
         {
+            // A65-F3-04: the file is written by persist_readback, AFTER main has caught the errors of the build and the read-back, and the
+            // serialisation and the write are inside its own error handling: a failure writes the minimal record, then the file is closed.
             var script = RefScript();
-            var failure = script.LastIndexOf("except Exception as exc:", StringComparison.Ordinal);
-            var write = script.IndexOf("out.write(text", StringComparison.Ordinal);
-            var close = script.IndexOf("out.close()", StringComparison.Ordinal);
+            var main = script.IndexOf("def main():", StringComparison.Ordinal);
+            var persist = script.IndexOf("def persist_readback(", StringComparison.Ordinal);
+            var failure = script.IndexOf("except Exception as exc:", persist, StringComparison.Ordinal);
+            var write = script.IndexOf("out.write(text", persist, StringComparison.Ordinal);
+            var close = script.IndexOf("out.close()", persist, StringComparison.Ordinal);
 
-            Assert.True(failure > 0 && write > failure && close > write, "El archivo se escribe despues del bloque de excepcion.");
+            Assert.True(persist > 0 && main > persist, "La escritura es una funcion anterior a main.");
+            Assert.True(write > persist && failure > write && close > failure, "La escritura va dentro del manejo de errores y el cierre despues del respaldo.");
 
             foreach (var key in new[] { "\"status\"", "\"analysisInputFingerprint\"", "\"differences\"", "\"values\"", "result[\"status\"] = PASSED", "print(result[\"status\"])" })
             {
@@ -516,7 +640,7 @@ namespace RackCad.Tests
         {
             var script = RefScript();
             var main = script.Substring(script.IndexOf("def main():", StringComparison.Ordinal));
-            var tokens = new[] { "capability_failures(data)", "rm.model()", "empty_model_failures(m", "open(", "write_model(m, data)", "read_back(m, data" };
+            var tokens = new[] { "capability_failures(data)", "rm.model()", "empty_model_failures(m", "payload_failures(data)", "open(", "write_model(m, data)", "read_back(m, data" };
             var indexes = tokens.Select(t => main.IndexOf(t, StringComparison.Ordinal)).ToList();
 
             Assert.DoesNotContain(-1, indexes);
