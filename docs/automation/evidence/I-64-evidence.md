@@ -3041,3 +3041,67 @@ Sección nueva; las anteriores no se reescriben. El paquete de cierre está en
 - **I-65:** releído antes de este commit; su punta está en `16fa9e76` (F3-T1 de RAM Elements), sin solape con T3A.
 - **Git:** sin escrituras de la sesión desde `ee676668` hasta este commit; HEAD = remoto = `ba52b3b9` antes de él; `main` `bb0d5522`.
 - **Sin cambios en `src/` ni `tests/` en este commit.**
+
+## 52. F1-T3A-HOST-CORE — Revisión del cierre por el Coordinator: PASS; corrección documental del estado
+
+Sección nueva; las anteriores no se reescriben.
+
+**Revisión del Coordinator** (literal en `docs/automation/evidence/I-64-pilot/F1-T3A-HOST-CORE/coordinator-close-review.md`): **PASS**
+sobre `7869e5fa` (CI 38120061176 4/4).
+- **Registro:**
+  - F1-T3A-HOST-CORE = COMPLETE_UNDER_I64_SUBSTITUTE_PROTOCOL_EVIDENCE;
+  - ProductStatus = EXECUTION_VERIFIED / NONE;
+  - ProductVerifiedSha = `ba52b3b983fb7d2a02393df643e8323b125b3d03`;
+  - ProtocolClose = SATISFIED UNDER A-4 + A-6.
+- **Controles finales, conservados tal cual:**
+
+  | Control | Resultado |
+  |---|---|
+  | nc1 | PASS |
+  | Controller nc2 | CONTROL NOT PASSED |
+  | I64-SCOPE-BRIDGE-01 | PASS |
+  | Controller nc3 | NOT PASSED / P-04 |
+  | I64-FREETEXT-BRIDGE-01 | PASS |
+  | nc4 | PASS |
+
+  No se repite ningún control de T3A y el producto de T3A no se reabre.
+
+**Disposición de las desviaciones declaradas en §51:**
+- **Clasificación de nc3: ACEPTADA, con desviación de procedimiento conservada.** La sesión debió devolver al Coordinator el modo de
+  fallo repetido de T2 antes de aplicar la misma clasificación INVALID_OUTPUT. La desviación no invalida el cierre de protocolo, porque
+  A-6 está activa para I-64 y sus precondiciones se cumplen:
+  - producto EXECUTION_VERIFIED de forma independiente;
+  - las ejecuciones permitidas de nc3 agotadas;
+  - FreeText detectado de forma consistente;
+  - el REWORK sintético convertido en STOP por las reglas de attempts y corrección de la tarea real;
+  - los nc3 históricos conservados como NOT PASSED / P-04;
+  - I64-FREETEXT-BRIDGE-01 en PASS.
+
+  Ninguna ejecución de nc3 se reetiqueta como PASS.
+- **`…8354` de la verificación:** NON-BLOCKING CONTROLLER TEXTUAL ERROR. Se conserva; la salida del Controller no se modifica.
+- **stderr de la verificación** (`failed to record rollout items`): NON-BLOCKING CLI AUXILIARY ERROR. Salida 0, salida estructurada
+  válida, verificación completada, sin evidencia faltante para la disposición y sin efectos en Git o en el producto. Se conserva
+  literal.
+- **Diferencia en el recuento de líneas:** NON-BLOCKING REPORTING CONVENTION. Cuando haga falta un delta numérico de líneas por
+  archivo, el canónico es `git diff --numstat`.
+
+**Corrección documental del estado** (`docs/automation/state/I-64.yml`, por orden de la revisión):
+- `last_evidence_commit` = `7869e5fa15b2174565709837a1623caf1fa081d7`, el commit de cierre de T3A.
+- `f1_t3a_host_core_status` registra la revisión PASS, la clasificación de nc3 aceptada y la desviación de procedimiento.
+- `f1`, `f1_blocked_next_task` y la acción siguiente pasan a la preparación del contrato de F1-T3B-HOST-UI.
+- Sin cambios de producto y sin reescritura de historia.
+
+**Autorizado a continuación por la misma revisión:**
+1. F1-T3B-HOST-UI solo para **preparar el contrato**: TaskId nuevo, `ChainRedSha` null, RED de comportamiento real obligatorio.
+2. Tras la CI 4/4 de este commit:
+   - inspección del producto real de T3A en `ba52b3b9`;
+   - comprobación fresca del enrutamiento y de los solapes con I-52, I-65 e I-62;
+   - paquete del contrato de gate de T3B marcado NOT EMITTED.
+3. STOP en COORDINATOR_T3B_GATE_CONTRACT_REQUIRED.
+
+No se invocan la planificación ni el Worker de T3B. F1-T3C-PROFILE-DOC sigue RESERVED / NOT AUTHORIZED y no se crea.
+
+**Relevos:**
+- Sin invocaciones de modelos en esta sección.
+- HEAD = remoto = `7869e5fa` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.
