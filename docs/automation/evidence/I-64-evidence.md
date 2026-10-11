@@ -3420,3 +3420,53 @@ Sección nueva; las anteriores no se reescriben. El paquete de cierre está en
 - **I-52, I-65 e I-62:** releídos antes de cada delegación; I-65 en `a6fa5a35` e I-62 en `460665ab`, sin solape con T3B.
 - **Git:** sin escrituras de la sesión desde `f3a9f40e` hasta este commit; HEAD = remoto = `e0205b5a` antes de él; `main` `bb0d5522`.
 - **Sin cambios en `src/` ni `tests/` en este commit.**
+
+## 57. F1-T3B-HOST-UI — Revisión del cierre por el Coordinator: PASS; corrección documental del estado; F1-T3C autorizada solo para preparación documental
+
+Sección nueva; las anteriores no se reescriben.
+
+**Revisión del Coordinator** (literal en `docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/coordinator-close-review.md`): **PASS**
+sobre `ffd111a9` (CI 38155884290 4/4).
+- **Registro:**
+  - F1-T3B-HOST-UI = COMPLETE_UNDER_I64_SUBSTITUTE_PROTOCOL_EVIDENCE;
+  - ProductStatus = EXECUTION_VERIFIED / NONE;
+  - ProductVerifiedSha = `e0205b5a9f000bbd44aa1f7556d30f06411c3db7`;
+  - ProtocolClose = SATISFIED UNDER A-4 + A-6.
+- **Se conservan tal cual:**
+
+  | Elemento | Resultado |
+  |---|---|
+  | Verificación `37e1` | EXECUTION_BLOCKED / STOP / Scope / C-02 |
+  | Re-verificación `7910` | EXECUTION_VERIFIED / NONE |
+  | T3B-SCOPE-NONSEMANTIC-WHITESPACE-01 | excepción exacta ACEPTADA |
+  | nc1 | PASS |
+  | Controller nc2 | CONTROL NOT PASSED |
+  | I64-SCOPE-BRIDGE-01 | PASS |
+  | Controller nc3 | NOT PASSED / P-04 |
+  | I64-FREETEXT-BRIDGE-01 | PASS |
+  | nc4 | PASS |
+  | Señal P-02 | FALSE_POSITIVE_SESSION_OWN_PROCESS |
+
+  No se repite ni se reetiqueta ningún control de T3B y el producto no cambia.
+
+**Corrección documental del estado** (`docs/automation/state/I-64.yml`, por orden de la revisión):
+- `last_evidence_commit` = `ffd111a9c9984f67725ac47bba3eecb9db2c58d0`, el commit de cierre de T3B.
+- `f1_t3b_host_ui_status` registra la revisión PASS.
+- `f1`, `f1_blocked_next_task` y la acción siguiente pasan a la preparación documental de F1-T3C-PROFILE-DOC.
+- Sin cambios de producto y sin reescritura de historia.
+
+**Autorizado a continuación por la misma revisión:** F1-T3C-PROFILE-DOC solo para **preparación de contrato y documentos**, como
+trabajo documental de la sesión:
+- sin Worker de producto, sin AutoCAD y sin mutación de perfil, registro, TRUSTEDPATHS, SECURELOAD ni ACL;
+- preparar el procedimiento reproducible de diff de perfil que exige F1 (BASELINE, POST, DIFF y DISPOSITION), tras releer I-52;
+- T3C puede leer y citar la evidencia de I-52, pero no la altera ni autoriza su host; Smoke-1 sigue exigiendo el RELEASE aplicable de
+  I-52;
+- sin cambios en `src/`, `tests/`, archivos de proyecto, ROADMAP ni HANDOFF.
+
+Después de la CI 4/4 de este commit: comprobación fresca de I-52, I-65 e I-62; redacción del procedimiento completo; validación de que
+es de solo lectura y reproducible; STOP en **COORDINATOR_T3C_REVIEW_REQUIRED**. Smoke-1 no se ejecuta y F1 PASS no se declara.
+
+**Relevos:**
+- Sin invocaciones de modelos en esta sección.
+- HEAD = remoto = `ffd111a9` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.
