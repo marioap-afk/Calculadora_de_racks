@@ -1,0 +1,72 @@
+{
+  "RunId": "R20261011T035128Z-515d",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a12916-b964-7320-8ca7-b39c0be6b3fb",
+  "Usage": {
+    "input_tokens": 46291,
+    "cached_input_tokens": 22272,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 470,
+    "reasoning_output_tokens": 142
+  },
+  "Commands": [
+    {
+      "Command": "<ruta-local-redactada> -NoProfile -Command 'git rev-parse HEAD'",
+      "Exit": 0
+    },
+    {
+      "Command": "<ruta-local-redactada> -NoProfile -Command 'git rev-parse HEAD:docs/automation/state/I-64.yml'",
+      "Exit": 0
+    },
+    {
+      "Command": "<ruta-local-redactada> -NoProfile -Command 'git rev-parse origin/main'",
+      "Exit": 0
+    }
+  ],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OracleMatch": {
+    "HeadSha": true,
+    "OriginMainSha": true,
+    "StateBlob": true
+  },
+  "OutputSha256": "569B202308C335C213395B76421CEB16E71581381786EDFCF0B399B11996F6E9",
+  "CliVersion": "0.162.0-alpha.17.2",
+  "Sandbox": {
+    "type": "read-only"
+  },
+  "PermissionProfile": {
+    "type": "managed",
+    "file_system": {
+      "type": "restricted",
+      "entries": [
+        {
+          "path": {
+            "type": "special",
+            "value": {
+              "kind": "root"
+            }
+          },
+          "access": "read"
+        }
+      ]
+    },
+    "network": "restricted"
+  },
+  "CollaborationSettings": {
+    "model": "gpt-6-luna",
+    "reasoning_effort": "high",
+    "developer_instructions": null
+  },
+  "Effective": [
+    "gpt-6-luna",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-10-10T21-51-58-01a12916-b964-7320-8ca7-b39c0be6b3fb.jsonl",
+  "EffectiveSourceSha256": "F10C16AC739AEFB8DFD9D112805CDAFAF5011EBDB8FBFBBD6CDC818242A9D804",
+  "LimitPatternContexts": {},
+  "EventsSha256": "74C802FF8CCEE4221C083139A9C1DF1BEB558C36E2881772317749B86DCE115B",
+  "StderrBytes": 39,
+  "Pass": true
+}
