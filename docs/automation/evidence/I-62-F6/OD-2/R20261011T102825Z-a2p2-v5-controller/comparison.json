@@ -1,0 +1,707 @@
+{
+ "Schema": "a2p2-v5-probe-comparison (propuesta de la supervisión; no es decisión)",
+ "Mode": "CONTROLLER_V5",
+ "Verdict": "NOT_DEMONSTRATED",
+ "Operations": {
+  "OP_U0_utf8": false,
+  "OP_A_ejecucion": true,
+  "OP_B_git_y_hashes": true,
+  "OP_C_fidelidad_de_entradas": false,
+  "OP_D_trx_y_ci": true,
+  "OP_E_mapa_I62": false,
+  "OP_F_esquemas_canonicos": false
+ },
+ "Actions": {
+  "PLAN_delegation_v2": false,
+  "VERIFY_controller_verification_v2": false
+ },
+ "Utf8Checks": {
+  "claves_presentes": false,
+  "comandos_citados_existen_y_a_distinto_de_b": true,
+  "cps_t1_exactos": false,
+  "cps_t2_exactos": false,
+  "cps_emitidos_por_la_shell_en_a": false,
+  "a_copias_textuales_de_la_salida": false,
+  "a_bandera_coherente_con_la_copia": true,
+  "modo_de_lenguaje_observado_en_a": true,
+  "b_console_resultado_y_error_exactos": true,
+  "b_psoutput_resultado_y_error_exactos": true,
+  "c_copias_textuales_de_la_salida": true,
+  "c_bandera_coherente_con_la_copia": true,
+  "metodo_valido": true,
+  "metodo_coherente": true,
+  "d_bandera_coherente_con_la_copia": true,
+  "d_respaldado_por_la_salida": true,
+  "metodo_fiel_y_comprobado": true
+ },
+ "Utf8Measurement": {
+  "LanguageMode": "ConstrainedLanguage",
+  "DefaultOutput": {
+   "Command": "C1",
+   "ReportedFaithful": "no",
+   "CopyExact": "no",
+   "CopyIsInRawOutput": "no",
+   "T1InRawOutput": "no",
+   "T2InRawOutput": "no"
+  },
+  "ConsoleOutputEncoding": {
+   "Command": "C2",
+   "Set": "no",
+   "Error": "Cannot set property. Property setting is supported only on core types in this language mode.",
+   "ErrorInRawOutput": "yes"
+  },
+  "PsOutputEncoding": {
+   "Command": "C2",
+   "Set": "yes",
+   "Error": "",
+   "ErrorInRawOutput": "no"
+  },
+  "AfterSetting": {
+   "ReportedFaithful": "no",
+   "CopyExact": "no",
+   "CopyIsInRawOutput": "yes"
+  },
+  "Method": "OTHER",
+  "MethodDetail": "python -c lee UTF-8 y emite JSON con ensure_ascii=True para preservar puntos de código.",
+  "MethodCommand": "C4",
+  "MethodVerifiedExact": "yes",
+  "RawOutputsWithReplacementChar": [
+   1,
+   2
+  ],
+  "RawOutputsWithSubstituteChar": [],
+  "Note": "Hechos del paso 0 para el Coordinator. Method = NONE (o ningún método fiel comprobado) indica que la receta actual no da UTF-8 fiel con el pwsh nativo: es la evidencia que exigiría la opción C de §72 (cambio de receta por A-n material)."
+ },
+ "Fidelity": {
+  "Keys": {
+   "0:u0d:t1": true,
+   "0:u0d:t2": true,
+   "10:md-line": true,
+   "10:md-nonascii-count": true,
+   "10:md-nonascii-chars": true,
+   "11:yaml:automation_state.next_action": true,
+   "12:json:Objective.nonascii-count": true
+  },
+  "CanonicalFields": {
+   "delegation_v2.Authorities": true,
+   "delegation_v2.Objective": true,
+   "delegation_v2.Invariants": true,
+   "delegation_v2.ExpectedEvidence": true,
+   "delegation_v2.StopConditions": true,
+   "controller_verification_v2.AuthorityResolution": true
+  },
+  "Defects": [],
+  "DefectCount": 0,
+  "AllFaithful": true
+ },
+ "EvidenceLinks": {
+  "0": true,
+  "1": true,
+  "2": true,
+  "3": true,
+  "4": true,
+  "5": true,
+  "6": true,
+  "7": true,
+  "8": true,
+  "9": true,
+  "10": false,
+  "11": true,
+  "12": true,
+  "13": true,
+  "14": true,
+  "15": true,
+  "16": true,
+  "17": true,
+  "18": true,
+  "19": true,
+  "20": true,
+  "21": true,
+  "22": true,
+  "23": true
+ },
+ "FailedKeys": {
+  "0:u0:t1-cps": {
+   "expected": "U+2014 U+00F3",
+   "got": "FALTA"
+  },
+  "0:u0:t2-cps": {
+   "expected": "U+00F1 U+00F3 U+00E9 U+00F3",
+   "got": "FALTA"
+  },
+  "12:json:Schema": {
+   "expected": "\"rackcad-gate-contract/v2\"",
+   "got": "rackcad-gate-contract/v2"
+  },
+  "21:mv4-mismatches": {
+   "expected": 7,
+   "got": "31"
+  },
+  "21:mv7-pointer-16": {
+   "expected": "yes",
+   "got": "Antes de aplicar esta sección, toda unidad aplica §16.13."
+  },
+  "21:mv7-pointer-163": {
+   "expected": "yes",
+   "got": "Antes de aplicar esta sección, toda unidad aplica §16.13."
+  }
+ },
+ "PlanCanonicalChecks": {
+  "schema_valid": true,
+  "field:Schema": true,
+  "field:TaskId": true,
+  "field:RunId": true,
+  "field:Initiative": true,
+  "field:Unit": true,
+  "field:Gate": true,
+  "field:Attempt": true,
+  "field:AuthorityRevision": true,
+  "field:MainSha": true,
+  "field:BaseSha": true,
+  "field:ExpectedBranch": true,
+  "field:Owner": true,
+  "field:Model": true,
+  "field:RoutingEnforcement": true,
+  "field:Authorities": true,
+  "field:Objective": true,
+  "field:AllowedWriteScope": true,
+  "field:ForbiddenWriteScope": true,
+  "field:Invariants": true,
+  "field:RequiredTests": true,
+  "field:ExpectedEvidence": true,
+  "field:MaxReworkLoops": true,
+  "field:AttemptsRemaining": true,
+  "field:ChainBaseSha": true,
+  "field:ChainRedSha": true,
+  "field:ChainRedFiles": true,
+  "field:CorrectionOf": true,
+  "field:ExpectedHandoffPath": true,
+  "field:IssuedBy": false,
+  "field:RoleRequirements": true,
+  "field:SupersededCommits": true,
+  "field:ExpectedWorktree": true,
+  "field:StopConditions_contains_K": true,
+  "field:Executor": true,
+  "routing:TaskClass_in_routing_1": true,
+  "routing:PromptProfile": true,
+  "routing:Effort_semantic": true
+ },
+ "PlanSchemaErrors": [],
+ "VerifyCanonicalChecks": {
+  "schema_valid": true,
+  "field:Schema": true,
+  "field:TaskId": true,
+  "field:RunId": true,
+  "field:DelegationRunId": true,
+  "field:WorkRunId": true,
+  "field:Attempt": true,
+  "field:VerifiedSha": true,
+  "field:Verifier": true,
+  "field:Classification": true,
+  "field:Disposition": true,
+  "field:FailureClass": true,
+  "check:Termination": true,
+  "check:Handoff": true,
+  "check:Authority": true,
+  "check:Contract": true,
+  "check:Identity": true,
+  "check:Remote": true,
+  "check:Scope": true,
+  "check:CleanTree": true,
+  "check:Ci": true,
+  "check:Tests": true,
+  "check:Trailer": true,
+  "check:Routing": true,
+  "check:FreeText": true,
+  "check:Denials": true,
+  "check:Ci.RedPart": true,
+  "check:Tests.RedPart": true,
+  "check:Scope.Evidence_lists_diff": false,
+  "coherence_RAE_8": true
+ },
+ "VerifySchemaErrors": [],
+ "AuthorityResolutionMatch": true,
+ "Process": "exit=0 timed_out=no elapsed_s<=415",
+ "IdentityStable": true,
+ "HeadUnchanged": true,
+ "TrackedTreeUnchangedAndClean": true,
+ "IgnoredStatusUnchangedDuringRun": true,
+ "UnstageOk": true,
+ "RemoteReferenceStable": true,
+ "EventsCommandAudit": {
+  "commands": 42,
+  "cmd": 0,
+  "failed": 4,
+  "powershell": 42,
+  "interpreter": 24,
+  "unix_tool": 1,
+  "forbidden_completed": 38,
+  "git_write": 0,
+  "completed_ok": 38,
+  "git_write_completed": 0,
+  "network": 0,
+  "network_completed": 0,
+  "file_write": 0,
+  "file_write_completed": 0,
+  "shells": {
+   "pwsh-runtime": {
+    "total": 42,
+    "ok": 38
+   }
+  },
+  "default_shell": "pwsh-runtime",
+  "model_fallback": false,
+  "f6_obs03": {
+   "present": false,
+   "count": 0,
+   "shells": [],
+   "sample": null,
+   "in_stderr": false
+  },
+  "usage_limit_signal": false
+ },
+ "EventsCommands": [
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 760,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 773,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 448,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 456,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 201,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 349,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 236,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 1,
+   "status": "failed",
+   "chars": 374,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 380,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 336,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 920,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 782,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 212,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 371,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1105,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 976,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1157,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 355,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1149,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1224,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 796,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 744,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1434,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 1,
+   "status": "failed",
+   "chars": 959,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 461,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 898,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1342,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 1,
+   "status": "failed",
+   "chars": 1208,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1024,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "unix_tool"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 284,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 680,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 279,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1376,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 1,
+   "status": "failed",
+   "chars": 3342,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 2937,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 555,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 301,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1246,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 526,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 1165,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell",
+    "interpreter"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 607,
+   "shell": "pwsh-runtime"
+  },
+  {
+   "categories": [
+    "powershell"
+   ],
+   "exit_code": 0,
+   "status": "completed",
+   "chars": 227,
+   "shell": "pwsh-runtime"
+  }
+ ],
+ "NativeRoute": {
+  "DefaultShell": "pwsh-runtime",
+  "ShellsUsed": {
+   "pwsh-runtime": {
+    "total": 42,
+    "ok": 38
+   }
+  },
+  "RuntimePwshUsed": true,
+  "F6Obs03Signature": {
+   "present": false,
+   "count": 0,
+   "shells": [],
+   "sample": null,
+   "in_stderr": false
+  },
+  "ModelFallback": false,
+  "ShellLimitationPersists": false,
+  "CmdA41WouldBeEvaluated": false,
+  "Note": "ShellLimitationPersists = firma de F6-OBS-03 en algún comando o en stderr (CreateProcessAsUserW / «Failed to create unified exec process»). F6-OBS-03 está RESUELTO para este runtime (§70.1); si reaparece, la vía normal del Controller no es elegible aunque el modelo haya recurrido por su cuenta a otra shell, y la ruta CMD_A41 la evalúa el Coordinator (fuera de este kit)."
+ },
+ "UsageLimitSignal": false,
+ "ProcessResidue": {
+  "Observed": true,
+  "CodexProcessesAfter": 5,
+  "WithProbeDirAfter": 0,
+  "Names": []
+ },
+ "OutputChars": 28375,
+ "Reasons": [
+  "OP_U0_utf8: no demostrado",
+  "OP_C_fidelidad_de_entradas: no demostrado",
+  "OP_E_mapa_I62: no demostrado",
+  "OP_F_esquemas_canonicos: no demostrado",
+  "PLAN_delegation_v2: no demostrado",
+  "VERIFY_controller_verification_v2: no demostrado",
+  "pasos sin vínculo con un comando ejecutado (C<n>): [10]"
+ ],
+ "Note": "ALL_OPERATIONS_DEMONSTRATED (§73.7): todas las operaciones, PLAN y VERIFY, fidelidad UTF-8 y vínculos de evidencia conformes, proceso e identidad correctos y sin F6-OBS-03; la elegibilidad del Controller la declara el Coordinator. NOT_DEMONSTRATED: una omisión, un valor distinto, un UNKNOWN relevante o un defecto de fidelidad; no hay elegibilidad por resultados parciales y la sonda no se repite. REFERENCE_UNSTABLE: el origen cambió durante la medición; lo dispone el Coordinator, sin reintento."
+}

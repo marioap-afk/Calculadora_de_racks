@@ -1,0 +1,48 @@
+{
+ "Kit": "a2p2-v5",
+ "StageHead": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+ "Files": [
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T210000Z-a41a/delegation.json",
+   "Copy": "01-delegation.json",
+   "Sha256": "08e3d50c616abc93ef493b9624640a16940e97b8773f244f651a08e61ac59c38",
+   "Bytes": 6486
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T211000Z-a41b/worker-handoff.json",
+   "Copy": "02-worker-handoff.json",
+   "Sha256": "7577ee314da84246ede4c30e477a0df496244a2bf13719737068f0decfe4011e",
+   "Bytes": 2682
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T211000Z-a41b/relay-facts.json",
+   "Copy": "03-relay-facts.json",
+   "Sha256": "532847427603a74b47c6c7b93b0ae7c33088e95966eda7aeb049e9c2ca4a310e",
+   "Bytes": 2618
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c/ci-current/fixture-tests.trx",
+   "Copy": "04-fixture-tests.trx",
+   "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+   "Bytes": 2772
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c/ci-red/fixture-tests.trx",
+   "Copy": "05-fixture-tests.trx",
+   "Sha256": "775d7a8d09db4ece8fd45c9ad6ef205dbdbefc1e1032e2c5686c35ef1e3a77b3",
+   "Bytes": 3883
+  }
+ ],
+ "CreatedDirs": [
+  "artifacts",
+  "artifacts/orchestration",
+  "artifacts/orchestration/FX-U1",
+  "artifacts/orchestration/FX-U1/T1",
+  "artifacts/orchestration/FX-U1/T1/0",
+  "artifacts/orchestration/FX-U1/T1/0/R20261009T210000Z-a41a",
+  "artifacts/orchestration/FX-U1/T1/0/R20261009T211000Z-a41b",
+  "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c",
+  "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c/ci-current",
+  "artifacts/orchestration/FX-U1/T1/0/R20261009T212000Z-a41c/ci-red"
+ ]
+}

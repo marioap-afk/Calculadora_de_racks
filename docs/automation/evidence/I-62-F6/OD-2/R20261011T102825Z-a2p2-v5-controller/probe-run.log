@@ -1,0 +1,6 @@
+pre-probe utc=2026-10-11T10:28:23Z fp=F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113 structure=EQUAL bin=d13914ced6c7af174d8d638db938284231227312104b06a25e9608c632a7daec bins=1 app=26.1007.2314.0 comp=34b1a4066f60fc35
+exit=0 timed_out=no elapsed_s<=415
+head 95bdc29d428b35d2188a10e1c5462d6caf2be4df -> 95bdc29d428b35d2188a10e1c5462d6caf2be4df; session rollout-2026-10-11T04-28-29-01a12a81-c135-7043-abbd-342adc513447.jsonl
+post-probe utc=2026-10-11T10:35:45Z fp=F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113 structure=EQUAL bin=d13914ced6c7af174d8d638db938284231227312104b06a25e9608c632a7daec bins=1 app=26.1007.2314.0 comp=34b1a4066f60fc35
+Sin reintento, sea cual sea el resultado. Siguiente: run_probe.sh compare CONTROLLER_V5 (y la supervisión: modelo/effort efectivos del registro de sesión)
+run_probe rc=0

@@ -1,0 +1,63 @@
+{
+ "Schema": "i62-a2p2-v5-failure-classes (supervisión, plano a; propuesta, no decisión)",
+ "Verdict": "NOT_DEMONSTRATED",
+ "ModelErrors": [
+  {
+   "Where": "paso 0 a) (OP_U0)",
+   "Fact": "T1 se leyó con [System.IO.File]::ReadAllLines, que ConstrainedLanguage bloquea; u0a:t1 quedó vacío y a) no se repitió con otro método. Los puntos de código se entregaron con claves u0a:t1-cps/u0a:t2-cps en lugar de u0:t1-cps/u0:t2-cps (el de T2 era correcto)",
+   "Keys": [
+    "0:u0:t1-cps",
+    "0:u0:t2-cps",
+    "Utf8Checks.a_copias_textuales_de_la_salida",
+    "Utf8Checks.cps_*"
+   ]
+  },
+  {
+   "Where": "paso 12 (OP_C)",
+   "Fact": "json:Schema sin comillas dobles, contra la instrucción explícita («cada valor escrito en JSON»)",
+   "Keys": [
+    "12:json:Schema"
+   ]
+  },
+  {
+   "Where": "paso 10 (OP_C, vínculo)",
+   "Fact": "cita C43; la sesión hizo 42 invocaciones (42 iniciadas y 42 completadas)",
+   "Keys": [
+    "EvidenceLinks.10"
+   ]
+  },
+  {
+   "Where": "PLAN (OP_F)",
+   "Fact": "IssuedBy copiado sin el paréntesis final",
+   "Keys": [
+    "PlanCanonicalChecks.field:IssuedBy"
+   ]
+  },
+  {
+   "Where": "VERIFY (OP_F)",
+   "Fact": "la Evidence de Scope lista 14 de las 15 rutas del diff (falta docs/automation/decisions/FX-U1-T1.gate-contract.json, presente en la salida de su propio C7 y en el paso 3)",
+   "Keys": [
+    "VerifyCanonicalChecks.check:Scope.Evidence_lists_diff"
+   ]
+  }
+ ],
+ "OracleOrWordingAmbiguity": [
+  {
+   "Where": "paso 21 (OP_E)",
+   "Fact": "mv4-mismatches = 31 frente a 7 del oráculo. El oráculo cuenta MV-4 literal (7: los 6 MODIFIED con BaseBlob distinto de EFF^1 y ADR-0048); el comprobador del repositorio, clause_map.py, informa MV-4 ×31 (comparación por clase y blobs, MAP-INVALID/characterization.md L122 y L131). El valor de la celda coincide con el del comprobador",
+   "Keys": [
+    "21:mv4-mismatches"
+   ]
+  },
+  {
+   "Where": "paso 21 (OP_E)",
+   "Fact": "mv7-pointer-16 y mv7-pointer-163: la celda escribió la frase del puntero; la descripción de la clave en el texto no dice yes/no expresamente (solo la regla general de formato)",
+   "Keys": [
+    "21:mv7-pointer-16",
+    "21:mv7-pointer-163"
+   ]
+  }
+ ],
+ "VerdictIndependentOfAmbiguity": true,
+ "VerdictIndependentOfAmbiguityReason": "OP_U0, OP_C, PLAN y VERIFY fallan por errores inequívocos de la celda; OP_E es el único grupo que falla solo por las claves ambiguas"
+}

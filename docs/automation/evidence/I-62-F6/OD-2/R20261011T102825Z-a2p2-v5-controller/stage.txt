@@ -1,0 +1,1 @@
+stage ok 5 archivos; 10 directorios creados

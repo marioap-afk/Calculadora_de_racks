@@ -3776,3 +3776,45 @@ solo desde artefactos custodiados.
   - la sonda solo lee el clon A2 del fixture, sin recursos compartidos con I-64.
 
   Identidad, presupuesto, no repetición, aislamiento del clon y texto armado los comprueban las puertas al lanzar, una sola vez.
+
+## 140. Sonda 2 del bloque A2-P2, reasignada al Controller (CONTROLLER_V5): NOT_DEMONSTRATED; bloque agotado (decisiones §73, puntos 6 y 7)
+
+- **Lanzamiento único** ([resultado](I-62-F6/OD-2/R20261011T102825Z-a2p2-v5-controller/README.md)), a las 10:28:25Z, sin reintento:
+  - las puertas pasaron (literales, líneas del Owner, presupuesto 1/2, no repetición, clon A2 en `95bdc29d` limpio);
+  - el texto armado `6437e184…` es igual al comprobado y distinto de `f88d3313…`;
+  - la identidad (huella `F909F480…`, `d13914ce…`, `26.1007.2314.0` y acompañantes) es igual antes y después;
+  - celda observada `gpt-6-luna`/`high`.
+- **Ejecución:**
+  - salida 0 en ≤ 415 s de 600;
+  - 42 invocaciones con el `pwsh` del runtime, sin escrituras, red ni F6-OBS-03;
+  - `HEAD`, árbol y `status --ignored` sin cambios; escenario retirado sin diferencias;
+  - respuesta completa (24 pasos y los dos canónicos válidos, 28 375 caracteres; 39 137 tokens de salida).
+
+  La omisión de la sonda 1 desapareció.
+- **Veredicto de `compare`: NOT_DEMONSTRATED** (§73.7).
+  - Demostradas: `OP_A` (ejecución), `OP_B` (Git y hashes), `OP_D` (TRX y CI) y la fidelidad de todas las lecturas posteriores y de los campos
+    canónicos.
+  - No demostradas: `OP_U0`, `OP_C`, `OP_E`, `OP_F`, PLAN y VERIFY.
+  - Los 14 `Checks`, la clasificación y `AuthorityResolution` coinciden con la referencia.
+- **Causas** ([failure-classes.json](I-62-F6/OD-2/R20261011T102825Z-a2p2-v5-controller/failure-classes.json)).
+  - Errores inequívocos de la celda:
+    - T1 se leyó con un método que ConstrainedLanguage bloquea y no se repitió;
+    - las claves de los puntos de código del paso 0 están mal nombradas;
+    - `json:Schema` va sin comillas;
+    - el paso 10 cita `C43` con 42 invocaciones;
+    - `IssuedBy` va sin el paréntesis final;
+    - la `Evidence` de Scope omite 1 de 15 rutas.
+  - Ambigüedades del oráculo o del texto, solo en `OP_E`:
+    - `mv4-mismatches` = 31 frente a 7, valor que coincide con el de `clause_map.py`;
+    - `mv7-pointer-*` llevan la frase del puntero en lugar de yes/no.
+  - El veredicto no depende de esas dos ambigüedades.
+- **UTF-8 medido:**
+  - modo ConstrainedLanguage;
+  - la salida por defecto no es fiel (U+FFFD);
+  - `[Console]::OutputEncoding` no se puede fijar («Property setting is supported only on core types in this language mode»);
+  - `$OutputEncoding` se fija, pero no corrige la consola;
+  - hay un método de solo lectura fiel: `python -c` con JSON y `ensure_ascii`, comprobado y aplicado; con él, toda la fidelidad posterior es exacta.
+
+  La receta actual admite lectura fiel sin cambio de receta, si la celda elige ese método.
+- **Presupuesto:** bloque A2-P2 del par `d13914ce…/26.1007.2314.0` agotado (2/2). El Controller sigue sin ser elegible; FX-02/C-24 sigue
+  UNVERIFIED. Ninguna otra invocación sin una disposición nueva.
