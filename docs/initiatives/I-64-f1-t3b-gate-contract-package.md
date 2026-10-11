@@ -1,19 +1,24 @@
 # I-64 — Paquete del contrato de gate de F1-T3B-HOST-UI
 
 ```text
-Estado: PAQUETE PARA EMISIÓN — NOT EMITTED
+Estado: PAQUETE NOT EMITTED — REVISADO con la decisión del Coordinator (evidencia §54, commit c7f389cb)
 Emisor: Coordinator (AUTOMATION_PLAN 16.5; agent-execution/README §1)
 Preparado por: sesión responsable de I-64 (Claude), por la revisión del cierre de T3A (evidencia §52)
 Rama al preparar: architecture/workspace-persistente-rackcad en ee8018e0 (CI 38120717985 4/4), sobre origin/main bb0d5522
 Producto de T3A inspeccionado: ba52b3b983fb7d2a02393df643e8323b125b3d03 (src/ y tests/ idénticos en ee8018e0)
-STOP: COORDINATOR_T3B_GATE_CONTRACT_REQUIRED (decisiones C-T3B-01..C-T3B-09)
+Decisiones C-T3B-01..C-T3B-09: resueltas por el Coordinator (§54). Lo que vale para la emisión es la sección 15
+Siguiente: emisión del contrato (AuthorityRevision c7f389cb), una planificación, A1-A8 y nc4; STOP en COORDINATOR_T3B_ACCEPTANCE_REQUIRED
 ```
 
 Este documento no es un `gate-contract.json`, no emite delegaciones y no autoriza trabajo. **No se ha invocado ninguna planificación ni
 ningún Worker de T3B.** Deriva el contrato del repositorio actual tras T3A. No se apoya en los supuestos del paquete monolítico de T3
 (`I-64-f1-t3-gate-contract-package.md`): cada hecho de la sección 3 está comprobado en `ba52b3b9`.
 
-**Conclusión principal:** T3B **no se puede implementar sin reabrir archivos de producto de T3A**, al menos `WorkspacePanelCommand.cs`
+> **Revisión tras la decisión del Coordinator (§54):** las secciones 1-14 se conservan como el paquete que se presentó. Donde difieran
+> de la decisión manda la **sección 15**, que es la versión que se emite. En particular, la opción C de C-T3B-02 (sondeo de 500 ms)
+> quedó **rechazada** y la sustituye un relevo por eventos.
+
+**Conclusión principal (paquete original):** T3B **no se puede implementar sin reabrir archivos de producto de T3A**, al menos `WorkspacePanelCommand.cs`
 (sección 5). Por la orden de la revisión, esto es un STOP al Coordinator antes de emitir el contrato. El paquete propone deltas exactos
 para que el Coordinator los autorice o los rechace; no amplía el alcance por su cuenta.
 
@@ -527,3 +532,114 @@ S-13/16.7); `CorrectionOf` null; `Attempt` 3, `AttemptsRemaining` 0, `MaxReworkL
 
 **Siguiente:** STOP en **COORDINATOR_T3B_GATE_CONTRACT_REQUIRED**. Sin planificación ni Worker de T3B hasta que el Coordinator decida
 C-T3B-01..C-T3B-09 y emita el contrato.
+
+## 15. Versión para la emisión (decisión del Coordinator, §54)
+
+### 15.1 Decisiones resueltas
+
+| ID | Resolución del Coordinator |
+|---|---|
+| C-T3B-01 | **Autorizado:** delta mínimo de `WorkspacePanelCommand.cs` (obtener el controlador, `OpenPanel()`, crear u obtener el único `WorkspacePaletteHost`, mostrar la paleta); sin lógica de `PaletteSet` en el comando ni alias |
+| C-T3B-02 | **Opción C rechazada** (ni `DispatcherTimer`, ni `System.Threading.Timer`, ni sondeo, ni `GetSnapshot` por paso del tiempo). **Relevo por eventos** sobre la suscripción existente a `DocumentActivated` del puente (15.2), con reapertura exacta de `AutoCadEventBridge.cs` y `WorkspaceController.cs` |
+| C-T3B-03 | **Autorizados G1 y G2**, y **G3** (las dos suscripciones del controlador) |
+| C-T3B-04 | Interruptor de instrumentación como **delegado neutral inyectado** por el host visual; `IWorkspaceHostPort` sin cambios; medidas refrescadas solo por notificación de estado o interacción explícita |
+| C-T3B-05 | Solo mecanismos públicos (`PaletteSet.KeepFocus` o equivalente); ni `Internal`, ni `SetFocusToDwgView`, ni reflexión; verificación estática en T3B, foco real en Smoke-1 |
+| C-T3B-06 | Título de la paleta «RackCad»; rótulo del control raíz «Workspace». No es una decisión de marca |
+| C-T3B-07 | **Regla de nc3 explícita en el contrato** (15.6) |
+| C-T3B-08 | **Mínimos aceptados:** UI 1, Core 487; los dos con `ExpectRed` |
+| C-T3B-09 | **Fuera de T3B:** ayuda de `RACKPANEL`, indicador de modal en comandos clásicos, liberación en `Terminate()`, navegación, pestañas, borradores, escrituras authored, inventario, diff de perfil y Smoke-1 |
+
+### 15.2 Diseño de refresco por eventos (exacto)
+
+1. **`AutoCadEventBridge.cs`** (delta exacto):
+   - declara **una** notificación en memoria `ActiveSessionChanged` (`Action` sin argumentos, sin tipos de AutoCAD);
+   - la declara **`internal`** (interna del puente, visible solo dentro de `RackCad.Plugin`). Así la superficie **pública** que fija
+     `WorkspaceBridgeFacadeSourceGuardTests.TheBridgePublicSurfaceIsTheT2OneAndTheFourFacadesAndNothingElse` (prueba de T3A, no
+     autorizada) no cambia. Si la notificación tuviera que ser pública: STOP al Coordinator;
+   - la disparan solo dos manejadores existentes, **dentro del mismo `Contain(...)` y después** de actualizar el núcleo:
+     - `DocumentActivated`, tras `_core.OnDocumentActivated(...)`;
+     - `DocumentToBeDestroyed`, tras `_core.OnDocumentToBeDestroyed(...)`, **solo si** `_core.ActiveSession` cambió (se compara antes y
+       después);
+   - `Start()` no la dispara; no hay `+=`/`-=` nuevos (16 y 16), ni líneas `handler = (` nuevas (16), ni cambios en `Hook`, `OnIdle`,
+     `Dispose`, `BeginDocumentClose` ni en las fachadas; `EventBridgeCore.cs` no cambia y su `OnDocumentActivated` no encola nada.
+2. **`WorkspaceController.cs`** (delta exacto):
+   - se suscribe exactamente a `_bridge.Drained` (ya existía) y a `_bridge.ActiveSessionChanged`: dos `+=`, ningún `-=`, ninguna
+     suscripción directa a AutoCAD;
+   - expone **una** notificación en memoria pública `StateChanged` (`Action` sin argumentos, sin tipos de AutoCAD);
+   - con `ActiveSessionChanged`: si `PanelVisible`, llama al `_host.RefreshPanel()` existente; después avisa con `StateChanged`. Con el
+     panel oculto no pide reconciliación;
+   - con `Drained`: conserva `_host.OnDrained(outcome)` y su contención y, después, avisa con `StateChanged`;
+   - `OpenPanel`, `ShowPanel` y `HidePanel` avisan con `StateChanged` tras su transición;
+   - cada aviso y cada manejador quedan contenidos (`try`/`catch` con `LogFault`); sin hilos, temporizadores ni persistencia.
+3. **`WorkspacePaletteHost.cs`** (archivo nuevo exacto):
+   - posee la paleta perezosa única (`WorkspaceLazyInstance`), construida sin `toolID` y sin `Load`/`Save`, título «RackCad», cerrar =
+     ocultar, `KeepFocus` o equivalente público;
+   - crea el control raíz de `RackCad.UI.Workspace` con el puerto (`controller.Port`) y el delegado del interruptor
+     (`controller.SetInstrumentationEnabled`), y lo aloja con un único `AddVisual` rotulado «Workspace»;
+   - sincroniza mostrar/ocultar de la paleta con `ShowPanel`/`HidePanel` del controlador (manejador privado y contenido);
+   - se suscribe a `controller.StateChanged` y entonces pide al view-model que **consulte** `GetSnapshot()` y, si hace falta,
+     `GetMeasurementReport()`;
+   - contiene toda excepción; sin transacciones ni lectura o escritura del DWG; sin temporizador.
+4. **Ciclo:**
+   - **oculto:** una activación de documento solo produce un aviso en memoria, sin reconciliación ni lectura del DWG;
+   - **visible:** la activación pide una reconciliación, el drenaje normal la ejecuta en el siguiente reposo, `Drained` avisa y el panel
+     consulta. Después el reposo vuelve a cero trabajo hasta una nueva pista o evento de estado. Sin `StateChanged` no hay consultas.
+
+### 15.3 `AllowedWriteScope` (8 entradas, las de la decisión)
+
+- `src/RackCad.UI/Workspace/` (solo archivos nuevos)
+- `tests/RackCad.UI.Tests/Workspace/` (solo archivos nuevos)
+- `src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs` (nuevo exacto)
+- `src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs` (delta mínimo de 15.1)
+- `src/RackCad.Plugin/Workspace/WorkspaceController.cs` (relevo de 15.2.2)
+- `src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs` (notificación de 15.2.1)
+- `tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs` (nuevo exacto)
+- `tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs` (solo G1/G2/G3)
+
+**`ForbiddenWriteScope`:** la lista de la sección 6 sin `src/RackCad.Plugin/Workspace/WorkspaceController.cs` ni
+`src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs` (146 entradas). Cualquier otro archivo exacto indispensable: STOP al Coordinator.
+
+### 15.4 Deltas exactos de las guardas de T3A (`WorkspaceHostSourceGuardTests.cs`)
+
+| Guarda | Delta |
+|---|---|
+| G1 `NoHostFileUsesTheInternalAutoCadNamespaceOrAnyUiType` | para `src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs` y solo para él, la regla admite `PaletteSet`, `AddVisual`, `Autodesk.AutoCAD.Windows`, `RackCad.UI` y los tipos públicos de host WPF necesarios, y sigue prohibiendo `Autodesk\.AutoCAD\.Internal`, cualquier `Dispatcher` (sondeo) y `Timer`; el trabajo asíncrono o en segundo plano y la lectura o escritura del DWG siguen prohibidos por las demás guardas, que no cambian. Los demás archivos de las dos carpetas conservan la regla completa |
+| G2 `NothingOutsideThePluginWorkspaceReachesTheController` | la búsqueda pasa a identificadores completos: `\bWorkspaceController\b\|\bWorkspaceHostPort\b\|\bWorkspaceSelectionReader\b\|\bWorkspaceHostCore\b`. `IWorkspaceHostPort` deja de coincidir y queda permitido fuera; el controlador, el puerto concreto, el lector y el núcleo siguen prohibidos |
+| G3 `TheControllerSubscribesOnlyToTheDrainedEventOfTheBridge` | exactamente dos `+=` en `WorkspaceController.cs`: `_bridge.Drained +=` y `_bridge.ActiveSessionChanged +=`; ningún `-=` |
+
+Ninguna prueba se borra ni se salta; sin exclusiones por carpeta. Las demás pruebas de T1, T2 y T3A no cambian, entre ellas
+`WorkspaceBridgeFacadeSourceGuardTests`, `WorkspaceBridgeSourceGuardTests` y `WorkspaceSourceGuardExceptionTests`.
+
+### 15.5 Invariantes y pruebas
+
+Las invariantes del contrato (INV-F1-T3B-01..16) sustituyen a las de la sección 7. Sobre la sección 8, cambian dos áreas:
+- «el estado visible no crea trabajo sobre el DWG»: sin notificación no hay consultas; con una notificación, una consulta;
+- se añaden las guardas de fuente del relevo: la notificación interna del puente y las dos suscripciones del controlador.
+
+Mínimos: UI `FullyQualifiedName~RackCad.UI.Tests.Workspace` ≥ 1 y Core `FullyQualifiedName~RackCad.Tests.Workspace` ≥ 487, los dos con
+`ExpectRed`. Los dos RED compilan, fallan por aserción, ejercitan comportamiento real de T3B y no son artificiales; el GREEN conserva la
+cadena RED.
+
+### 15.6 Regla de nc3 (explícita en el contrato de T3B)
+
+- **Oráculo:** FreeText = fail, FailureClass = FreeText, EXECUTION_REWORK_REQUIRED / REWORK.
+- **Salida inválida:** si el Controller detecta la violación, informa FailureClass FreeText y conserva las demás relaciones, pero
+  convierte el REWORK sintético en STOP solo por aplicar `AttemptsRemaining`, `CorrectionsAuthorized` o S-11 de la tarea real →
+  INVALID_OUTPUT, no PASS.
+- **Agotamiento:** dos reintentos normales; si se agotan en el mismo modo: Controller nc3 = NOT PASSED / P-04, y A-6 solo con todas sus
+  precondiciones.
+- **Alcance:** no se extiende por analogía a otras tareas.
+
+### 15.7 Enrutamiento, presupuesto y orden
+
+- **Enrutamiento:** sin cambios respecto de la sección 9: clase, Deep, Worker `claude-sonnet-5-5`/subagente/`high`, Controller
+  `gpt-6-luna`/`high`/read-only con CLI `0.162.0-alpha.17.2`, `RoutingEnforcement` required. El relevo por eventos añade dos archivos
+  pequeños al alcance; el horizonte sigue en Medium.
+- **Presupuesto:** sección 10. `Attempt` 3, `AttemptsRemaining` 0, `CorrectionsAuthorized` false, `ChainRedSha` null.
+- **Revisiones:**
+  - **`AuthorityRevision`:** `c7f389cb`, el commit de la decisión.
+  - **`BaseSha`:** el commit que versiona esta revisión del paquete (el siguiente).
+  - **Por qué difieren:** 16.4 exige el árbol limpio antes de ceder el worktree al Controller; 16.3 admite una `AuthorityRevision`
+    ancestro de `BaseSha`, y el diff entre ambos no contiene rutas `EXTERNAL`.
+  - **Este paquete no es autoridad del contrato:** en `c7f389cb` todavía es la versión previa a la decisión; la autoridad es la decisión
+    literal.

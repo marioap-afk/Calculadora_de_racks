@@ -7,7 +7,7 @@ automation_state:
   state: waiting
   gate: none
   attempts: 3
-  next_action: "Sesion responsable (decision del Coordinator sobre T3B = AUTHORIZED, evidencia §54): tras la CI 4/4 de este commit (AuthorityRevision propuesta de T3B), fetch (S-13 si main cambia), lectura fresca de I-52, I-65 e I-62, revision del paquete NOT EMITTED, emision y validacion del contrato de F1-T3B-HOST-UI, una planificacion valida de gpt-6-luna/high, A1-A8 y nc4; sin Worker; STOP en COORDINATOR_T3B_ACCEPTANCE_REQUIRED."
+  next_action: "Sesion responsable: emitir y validar el contrato de F1-T3B-HOST-UI (AuthorityRevision c7f389cb; BaseSha = este commit; paquete revisado, evidencia §55), una planificacion valida de gpt-6-luna/high, A1-A8 y nc4 sin cortocircuito; sin Worker; STOP en COORDINATOR_T3B_ACCEPTANCE_REQUIRED; sin commit de la sesion hasta terminar los controles (16.4)."
   last_evidence_commit: 7869e5fa15b2174565709837a1623caf1fa081d7
 execution_context:
   mode: manual
@@ -40,10 +40,10 @@ execution_context:
   persistent_next_action:
     NEXT_ROLE: "Sesion responsable (contrato y planificacion de F1-T3B-HOST-UI); despues Coordinator"
     NEXT_ACTION: "esperar la CI 4/4 de este commit (AuthorityRevision propuesta); fetch (S-13 si main cambia); leer de nuevo I-52, I-65 e I-62; revisar el paquete NOT EMITTED con la decision; emitir y validar el contrato (rackcad-gate-contract/v1); una planificacion valida de gpt-6-luna/high; A1-A8 y nc4 sin cortocircuito; STOP en COORDINATOR_T3B_ACCEPTANCE_REQUIRED"
-    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); su padre es 32231d9090e46ca0942cc9c50b7166fb28270414"
+    TARGET_SHA: "la punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo (git log -1 -- docs/automation/state/I-64.yml); AuthorityRevision c7f389cbb2eff4be42f861d8114adc2af753a1c9 (decision); su padre es c7f389cbb2eff4be42f861d8114adc2af753a1c9"
     GATE: F1 — Workspace Foundation
     TASK: F1-T3B-HOST-UI (contrato y planificacion)
-    INPUTS_REQUIRED: "evidencia §§52-54; docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/coordinator-decision-t3b-contract.md; docs/initiatives/I-64-f1-t3b-gate-contract-package.md; producto de T3A en ba52b3b983fb7d2a02393df643e8323b125b3d03"
+    INPUTS_REQUIRED: "evidencia §§52-55; docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/coordinator-decision-t3b-contract.md; docs/initiatives/I-64-f1-t3b-gate-contract-package.md; producto de T3A en ba52b3b983fb7d2a02393df643e8323b125b3d03"
     EXPECTED_RESULT: "contrato de T3B emitido y valido; una planificacion valida; A1-A8 y nc4 evaluados; STOP en COORDINATOR_T3B_ACCEPTANCE_REQUIRED sin Worker"
     REMAINING_BUDGET: "T3B: planificacion 0 de 1 (+2 por transporte/INVALID_OUTPUT); trabajo 0 de 1; verificacion 0 de 1; controles README §10 con A-4/A-6 solo con sus precondiciones; attempts 3 de 3 (AttemptsRemaining 0); CorrectionsAuthorized false; ningun presupuesto reiniciado"
     STOP_CONDITION: "invocar al Worker; MainSha distinto de bb0d5522 sin S-13/16.7; config.toml fuera de A/B/C (P-01); un archivo exacto indispensable fuera de las 8 entradas autorizadas; alcance Long-horizon; reabrir EventBridgeCore.cs, WorkspaceHostCore.cs, IWorkspaceHostPort.cs, WorkspaceHostPort.cs u otro producto de Application; sondeo o temporizador; modificar RackLog.cs; tocar ROADMAP; consumir codigo o reglas no integradas de I-65; AutoCAD, DLL, perfil, registro, ACL, TRUSTEDPATHS o SECURELOAD; declarar F1 PASS"

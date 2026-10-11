@@ -3274,3 +3274,48 @@ NOT EMITTED de `32231d90` (CI 38122448571 4/4): **AUTHORIZED**, con estos térmi
 - Sin invocaciones de modelos en esta sección.
 - HEAD = remoto = `32231d90` antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`.
+
+## 55. F1-T3B-HOST-UI — Paquete revisado con la decisión y comprobaciones previas a la emisión
+
+Sección nueva; las anteriores no se reescriben.
+
+**Tras la CI del commit de la decisión** (`c7f389cb`, CI 38123245949 push 4/4):
+- **`git fetch --all`:** `origin/main` = `bb0d5522`, sin cambios (no aplica S-13).
+- **Lectura fresca de las otras iniciativas:**
+
+  | Iniciativa | Punta | Solape con T3B |
+  |---|---|---|
+  | I-65 | `e0c1120bcda13f90b7c4c8ad861ddd702c1ac891` (la observada por el Coordinator) | ninguno: desde `16fa9e76` solo documentos propios (F3-T1 custodiada y STOP de F3-T2 por transcripción) |
+  | I-62 | `4b76383161e1404fcad2eeffd673908e0881207f` | ninguno |
+  | I-52 | `fb6b56483a421e84c4bc44dd0aa1761813b7e457` | ninguno: no toca `src/RackCad.UI`, `src/RackCad.Plugin`, las pruebas Workspace ni los censos |
+
+**Paquete NOT EMITTED revisado** (`docs/initiatives/I-64-f1-t3b-gate-contract-package.md`, sección 15):
+- **Contenido:**
+  - las decisiones C-T3B-01..C-T3B-09 resueltas;
+  - el diseño exacto del relevo por eventos;
+  - las 8 entradas de `AllowedWriteScope` y las 146 de `ForbiddenWriteScope`;
+  - los deltas exactos de G1, G2 y G3;
+  - la regla de nc3.
+- **Las secciones 1-14 se conservan** como el paquete presentado; donde difieren, manda la 15.
+- **Restricción derivada por la sesión, sin ampliar el alcance:** `ActiveSessionChanged` se declara `internal`. La prueba de T3A
+  `WorkspaceBridgeFacadeSourceGuardTests.TheBridgePublicSurfaceIsTheT2OneAndTheFourFacadesAndNothingElse` fija la superficie pública
+  exacta del puente y no está entre los archivos autorizados. Si la notificación tuviera que ser pública: STOP al Coordinator.
+
+**Revisiones del contrato:**
+- **`AuthorityRevision`:** `c7f389cb`, el commit de la decisión, como ordenó el Coordinator.
+- **`BaseSha`:** el commit que versiona esta sección (commit de estado, 16.4 paso 1).
+- **Por qué es correcto:** 16.4 exige el árbol limpio antes de ceder el worktree al Controller, y 16.3 admite una `AuthorityRevision`
+  ancestro de `BaseSha` si el diff entre ambos no contiene rutas `EXTERNAL`; aquí solo cambian el paquete, la evidencia y el estado.
+- **Autoridad del contrato:** el contrato no cita el paquete como autoridad (en `c7f389cb` todavía es la versión previa a la decisión).
+  La autoridad es la decisión literal.
+
+**Relevos:**
+- Sin invocaciones de modelos en esta sección.
+- `config.toml` en la instantánea C.
+- HEAD = remoto = `c7f389cb` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.
+- Siguiente:
+  - emitir y validar el contrato de F1-T3B-HOST-UI;
+  - una planificación válida de `gpt-6-luna`/`high`;
+  - A1-A8 y nc4;
+  - STOP en COORDINATOR_T3B_ACCEPTANCE_REQUIRED, sin commit de la sesión hasta terminar los controles (16.4).
