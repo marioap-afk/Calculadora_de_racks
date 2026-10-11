@@ -213,3 +213,17 @@ Sin cambios de configuración, sin nuevas solicitudes de acceso, sin abrir RAM E
   en [architect-r4-verdict.md](I-65-f0/architect-r4-verdict.md).
 - Respuesta: Proposal V3.1 (disposición en su §17), `p1-results.md` con los dos hashes del informe y ADR-0050 apuntando a V3.1. El
   Architect anunció que cierra ambos `REQUIRED` a la vista del diff.
+
+## 19. Consenso de diseño (2026-10-11T02:52:44Z)
+
+- Architect, cierre por diff `31aad097..3872fcc0`: **AGREED** sobre la **Proposal V3.1**, `docs/initiatives/I-65-proposal-v3.1.md`,
+  blob `11062a915c4c174ede180830c8ab3173ee7b6666`, commit `3872fcc03f6036bbe1c29a045cf4702bc63df715`
+  ([architect-r4b-agreed.md](I-65-f0/architect-r4b-agreed.md)). Todos los `REQUIRED` de todas las rondas cerrados (A65-V1-01..13,
+  A65-V2-01..04, A65-V21-01, A65-V3-01/02, A65-V31-01); opcionales incorporados.
+- Coordinator: **AGREED** sobre el mismo blob (CD-I65-F0-08).
+- Commit de Freeze permitido (INITIATIVE_LIFECYCLE §6, según el Architect): solo la línea `Frozen` y las líneas de cabecera `Estado` y
+  `Coordinator/Architect`. **No se ejecuta**: el Freeze, la aceptación de ADR-0050 (Q-O6) y la autorización de F1 (Q-O8) quedan con el
+  Owner. IMPLEMENTATION AUTHORIZATION = NO.
+- Métricas de F0: arquetipo NEW ARCHITECTURE (M-07) sin cambio; 5 revisiones del Architect (rondas 1-4 y cierres por diff), modo
+  `SAME-SESSION ROLE` (subagente de contexto independiente); 1 corrida licenciada de RAM Elements (P1 v3.2); 0 cambios de código de
+  producción.

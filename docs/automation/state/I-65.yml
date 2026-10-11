@@ -3,19 +3,19 @@ automation_state:
   initiative: I-65
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
-  current_phase: discovery-f0
+  current_phase: discovery-f0-consensus
   state: in-progress
   gate: F0
   attempts: 0
-  next_action: Cierre por diff de A65-V3-01/02 sobre la Proposal V3.1; con AGREED, ADR-0050 final al Owner (Q-O6); Freeze solo con AGREED; F1 solo con autorización expresa del Owner.
-  last_evidence_commit: acaefc1da279c3573db37a9279a169f3ecaa43ce
+  next_action: Owner decide el Freeze de la Proposal V3.1 (blob 11062a91, AGREED por Coordinator y Architect), la aceptación de ADR-0050 (Q-O6) y la autorización de F1 (Q-O8). Sin Freeze ni implementación hasta su orden.
+  last_evidence_commit: 3872fcc03f6036bbe1c29a045cf4702bc63df715
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F0
-  next_role: Architect (cierre por diff de A65-V3-01 y A65-V3-02 en la Proposal V3.1)
+  next_role: Owner (Freeze GO/NO-GO, Q-O6 ADR-0050, Q-O8 autorización de F1)
   implementation_authorization: NO
   owner_decisions_open: [Q-O6 ADR-0050 (tras el Architect), confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de F1 (Q-O8), verificación de las filas de mapeo sección/material por un ingeniero]
   not_authorized: [implementación, Freeze sin AGREED de Coordinator y Architect, nuevas corridas en RAM Elements sin autorización, escribir en archivos de RAM del usuario]
