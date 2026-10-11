@@ -1,0 +1,83 @@
+I-65 — Owner Authorization: F4 Preparation and Engineering Validation
+Continúa I-65 desde el cierre de F3 en `ad5443bd54021958548e99eabedc5b0cb73fefae`.
+1. Decisión del Owner
+F3 = ACCEPTED.
+Reconozco el GATE PASS de F3 y autorizo exclusivamente la preparación de F4, incluyendo documentación, verificación de contratos, preparación de evidencias y elaboración del paquete de validación de ingeniería.
+F4 IMPLEMENTATION AUTHORIZATION = NO, por ahora.
+No ejecutes todavía el adaptador generado en RAM Elements ni declares completada la validación de ingeniería.
+2. Preflight
+Verifica:
+
+* Estado de la rama y origin/main.
+* Integridad del Freeze y ADR-0050.
+* CI del cierre de F3.
+* Ausencia de conflictos con iniciativas paralelas.
+* Estado de los hallazgos A65-F3-01..12.
+* Contratos y pendientes procedentes de F1.
+
+No modifiques código de producción durante esta preparación.
+3. Validación de secciones y materiales
+Prepara una matriz de verificación para las dos secciones del piloto:
+
+* `AISC-W-W12X26`
+* `AISC-HSS-RECT-HSS4X4X_250`
+
+Incluye:
+
+* Identidad exacta de la sección en RackCad.
+* Nombre exacto de la sección en RAM.
+* Base de datos o catálogo seleccionado.
+* Geometría y propiedades seccionales relevantes.
+* Grado de acero.
+* Módulo de elasticidad E.
+* Coeficiente de Poisson ν o módulo de corte G.
+* Peso unitario.
+* Fuente técnica verificable.
+* Fecha y responsable de validación.
+* Diferencias entre valores esperados y valores de RAM.
+
+No inventes propiedades ni declares una fila como verificada sin evidencia suficiente.
+4. Modelo de referencia
+Prepara la especificación completa de `REF-CANT-01` para permitir que el Owner o un ingeniero construya manualmente el modelo en RAM.
+Debe incluir:
+
+* Coordenadas de nodos.
+* Conectividad.
+* Perfiles.
+* Materiales.
+* Orientación y giros locales.
+* Apoyos y liberaciones.
+* Idealizaciones estructurales.
+* Unidades.
+* Cargas que correspondan al alcance congelado.
+* Exclusiones explícitas.
+
+Distingue los valores derivados del código de los valores que requieren confirmación de ingeniería.
+5. Riesgos F3
+Incorpora al paquete de F4 las observaciones A65-F3-01..12.
+Prioriza:
+
+* Lectura real de θ = −90°.
+* Semántica de la descripción del miembro.
+* Apoyos parcialmente restringidos.
+* Integridad del paquete y lectura única de datos.
+* Correspondencia entre unidades, ejes y cargas.
+* Rechazo seguro de modelos incompatibles.
+
+Prepara las pruebas para verificar esos casos cuando autorice F4.
+6. Entregable
+Presenta:
+
+1. Preflight.
+2. Matriz de secciones y materiales.
+3. Especificación manual de REF-CANT-01.
+4. Procedimiento de validación en RAM.
+5. Lista de riesgos y comprobaciones.
+6. Plan de pruebas positivas y negativas.
+7. Condiciones de aceptación de F4.
+8. Decisiones que requieren intervención del Owner.
+9. Recomendación GO / NO-GO para ejecutar F4.
+
+Puedes delegar investigación y revisión documental conforme a las autoridades vigentes, pero no autorizo cambios de producción ni ejecución de F4.
+Detente cuando el paquete de preparación esté completo.
+IMPLEMENTATION AUTHORIZATION = NO.

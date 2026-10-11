@@ -1,0 +1,13 @@
+FILE Sections/United States/W.sec bytes=58794 sha256=dffd9e0082a8955572f1a21989938c2985952d7e7cffd714295d0e53dbd7b977 tag=[W.leo]
+  ROW Name=W 12X26 | Unit=In | local=FALSE | qmod2exact=FALSE | d=12.2 | bf=6.49 | tw=0.23 | tf=0.38 | k=0.68 | k1=0.75 | area=7.65 | I33loc=204 | Z33loc=37.2 | w33top=33.4 | w33bot=33.4 | I22loc=17.3 | Z22loc=8.17 | w22top=5.34 | w22bot=5.34 | Aw2=2.81 | Aw3=4.93 | J=0.3 | cw=607 | I33p=204 | Z33p=37.2 | w33topp=33.4 | w33botp=33.4 | I22p=17.3 | Z22p=8.17 | w22topp=5.34 | w22botp=5.34 | Imax=204 | Imin=17.3 | readOnly=TRUE | Fac2=2.73 | Fac3=1.55 | R0=5.378 | IsmName=W12X26 | IsmStandardOrganization=AISC
+FILE Sections/United States/HSS_SQR.sec bytes=21917 sha256=992ddac9a9b130da0426dfa761ebde2a8c39fc77736302d5e6431b41c1d93df0 tag=[HSS_Rect.leo]
+  ROW Name=HSS_SQR 4X4X1_4 | Unit=In | local=FALSE | qmod2exact=FALSE | a=4 | b=4 | t=0.233 | area=3.37 | I33loc=7.8 | Z33loc=4.69 | w33top=3.9 | w33bot=3.9 | I22loc=7.8 | Z22loc=4.69 | w22top=3.9 | w22bot=3.9 | J=12.8 | cw=0 | I33p=7.8 | Z33p=4.69 | w33topp=3.9 | w33botp=3.9 | I22p=7.8 | Z22p=4.69 | w22topp=3.9 | w22botp=3.9 | Imax=7.8 | Imin=7.8 | I23loc=0 | readOnly=TRUE | Fac2=1.81 | Fac3=1.81 | IsmName=HSS4X4X1/4 | IsmStandardOrganization=AISC
+FILE Materials/United States/Steel.mat bytes=2789 sha256=2a8b423964d2ba3580273de2d8a29d5e70c9e6dceefa1f892a40bb8cd1139ce1 tag=[Steel]
+  ROW Name=A36 | Unit=Lb-In | U=0.26 | W=0.284 | Alpha=7.20E-06 | E=29000000 | Fy=36000 | Ry=1.5 | Fu=58000 | Rt=1.2 | RCRegion=US
+  ROW Name=A500 GrC rectangular | Unit=Lb-In | U=0.3 | W=0.28179435 | Alpha=6.50E-06 | E=29000000 | Fy=50000 | Ry=1.3 | Fu=62000 | Rt=1.2 | RCRegion=US
+  ROW Name=A992 Gr50 | Unit=Lb-In | U=0.3 | W=0.28179435 | Alpha=6.50E-06 | E=29000000 | Fy=50000 | Ry=1.1 | Fu=65000 | Rt=1.1 | RCRegion=US
+EXACT-NAME OCCURRENCES (all .sec and .mat under the database folder)
+  A500 GrC rectangular -> Materials/United States/Steel.mat
+  A992 Gr50 -> Materials/United States/Steel.mat
+  HSS_SQR 4X4X1_4 -> Sections/United States/HSS_SQR.sec
+  W 12X26 -> Sections/United States/W.sec

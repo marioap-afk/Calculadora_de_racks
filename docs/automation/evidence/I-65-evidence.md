@@ -653,3 +653,33 @@ Hechos posteriores al commit de cierre `1d8c713ee494a8cf5f2577e38dfca1aab9e2c236
   negativos 9 (8 con oráculo cumplido; DEV-I65-F3-01 no bloqueante); 1 simulacro del Coordinator fuera de la suite; 0 cambios de
   `config.toml`; 0 avances de `main`.
 - **Autorización:** la IMPLEMENTATION AUTHORIZATION = F3 ONLY del Owner **termina** con este cierre. F4, F5 y F6 no están autorizadas.
+
+## 32. Preparación de F4 — orden del Owner, preflight y paquete (2026-10-11T09:30:57Z)
+
+Orden del Owner «I-65 — Owner Authorization: F4 Preparation and Engineering Validation» (pegada en el chat; copia byte a byte en
+[I-65-owner-authorization-f4-preparation.original.txt](../decisions/I-65-owner-authorization-f4-preparation.original.txt)): F3 = ACCEPTED;
+autoriza **solo la preparación de F4**; F4 IMPLEMENTATION AUTHORIZATION = NO.
+
+| Comprobación del preflight | Resultado |
+|---|---|
+| Rama | `HEAD` = `origin/architecture/interop-analisis-estructural` = `ad5443bd`; árbol limpio; 42 commits sobre `origin/main` |
+| `origin/main` | `bb0d5522`, sin cambio; base de merge `bb0d5522` |
+| Autoridades congeladas | Proposal V3.1 blob `4e6e1feb` (último cambio `a9d7080b`); ADR-0050 blob `c18def42` (último cambio `ed8154c3`) |
+| CI del cierre de F3 | `1d8c713e`: 38126497464 `success`; `ad5443bd`: 38126805055 `success`; 4/4 trabajos en `success` en ambas |
+| Producción desde el cierre | `git diff 1d8c713e..HEAD -- src tests assets` vacío |
+| Iniciativas paralelas | I-62 `5369b83b`, I-64 `f3a9f40e`, I-52 `fb6b5648`: 0 archivos en las áreas de I-65; común solo `docs/ROADMAP.md`; `merge-tree` limpio contra `ad5443bd`; I-64 toca `src/RackCad.Plugin/Workspace` (riesgo R-12 de F4) |
+| Hallazgos y pendientes | A65-F3-01..12 abiertos (CD-I65-F3-16); A65-F1-08, 09, 11 a F4; A65-F1-03, 10, 12 a la primera tarea de idealización o familias; A65-F1-06 sin cambio (CD-I65-F1-20) |
+| RAM instalado | `RAMElements.exe` SHA-256 `7dcb4855…7970` (= P1); RAM sin proceso en ejecución |
+| Codex | 0 invocaciones; `config.toml` SHA-256 `f909f480…c811` (sin cambio) |
+
+Trabajo de la preparación (sin código de producción, sin RAM):
+
+- Pre-lectura pasiva de la base instalada de RAM (CD-I65-F4P-02): [ram-database-preread.md](I-65-f4-prep/ram-database-preread.md),
+  script y salida custodiados. Hallazgos: nombres únicos en todas las bases de país; A, Ix, Iy y J de las dos secciones idénticos al
+  catálogo; E y ν de los dos materiales iguales a los candidatos; peso unitario 0.28179435 lb/in³ = 486.94 pcf (−0.62 % frente a 490 pcf);
+  base de usuario «Montilla» registrada en la configuración de RAM y no localizada.
+- Paquete de validación de ingeniería: [I-65-f4-engineering-validation-package.md](../../initiatives/I-65-f4-engineering-validation-package.md)
+  (matriz, especificación manual de `REF-CANT-01`, procedimiento de OV).
+- Paquete de preparación: [I-65-f4-preparation.md](../../initiatives/I-65-f4-preparation.md) (preflight, riesgos, plan de pruebas,
+  condiciones de aceptación, decisiones del Owner, GO/NO-GO).
+- Siguiente: revisión documental independiente del Architect sobre este commit.
