@@ -2886,3 +2886,68 @@ Sección nueva; las anteriores no se reescriben.
 - Sin invocaciones de modelos en esta sección.
 - HEAD = remoto = `b687cb86` antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`.
+
+## 50. F1-T3A-HOST-CORE — Contrato y planificación, aceptación, STOP previo al Worker y corrección de alcance
+
+Sección nueva; las anteriores no se reescriben. Los registros transitorios de T3A siguen en
+`artifacts/orchestration/I-64/F1-T3A-HOST-CORE*/` y se custodian en el cierre de T3A.
+
+**Contrato y planificación originales** (`AuthorityRevision` `42d45776`, CI 38111579026 4/4; `MainSha` `bb0d5522`):
+- **Contrato:** `R20261011T043044Z-ed7b/gate-contract.json`, SHA-256 `D17227C5…`, válido contra `rackcad-gate-contract/v1`.
+- **Planificación `R20261011T043044Z-ed7b`:** `gpt-6-luna`/`high`, Codex CLI `0.162.0-alpha.17.2`; delegación `07683DA7…`.
+  - A1-A8: 8 de 8 en pass; nc4 `R20261011T043456Z-2bac` PASS.
+  - I-65 releído antes de delegar: `952df260`, sin solape.
+- **Aceptación del Coordinator:** ACCEPTED; un Worker `claude-sonnet-5-5`/`high`, Attempt 3, AttemptsRemaining 0, `CorrectionsAuthorized`
+  false. El texto literal se custodia en el cierre.
+
+**STOP previo al Worker:**
+- **Precondiciones, todas cumplidas:** HEAD = remoto = `42d45776`, `main` `bb0d5522`, `config.toml` en C con 105 nombres, I-65 sin solape.
+- **Hallazgo:** `AutoCadEventBridge` guarda su `EventBridgeCore` en un campo privado y solo expone `Start`, `SetPanelVisible`,
+  `SetModalRackCadActive`, `Drained` y `Dispose`. El controlador de T3A no podía:
+  - conocer la sesión activa;
+  - obtener la sesión para `ApplyContext`;
+  - autorizar con `WorkspaceSessionRegistry.Authorize`;
+  - pedir una reconciliación (ni `Start` ni la activación encolan pistas).
+- **Prohibiciones:** crear un segundo núcleo o registro violaría INV-02 y D-03.
+- **Error propio de derivación:** el hallazgo H-9 del paquete de T3 dio por suficiente la API de T1/T2 citando miembros del núcleo, sin
+  comprobar que el adaptador del Plugin no los expone.
+- **Registro:** `pre-worker-stop.json` (transitorio). **No se invocó al Worker y no hubo escrituras Git.**
+
+**Corrección de alcance del Coordinator** (literal en
+`docs/automation/evidence/I-64-pilot/F1-T3A-HOST-CORE/coordinator-scope-correction.md`):
+- **Disposición:** el STOP previo al Worker queda ACCEPTED. Es un defecto de alcance del contrato y de la planificación, no un REWORK del
+  Worker: el trabajo consumido es 0.
+- **Planificación `ed7b`:** queda como evidencia histórica **SUPERSEDED_BY_SCOPE_CORRECTION**. Ni INVALID_OUTPUT, ni se borran sus
+  A1-A8 y nc4.
+- **Archivos liberados:** se liberan solo para deltas exactos `src/RackCad.Application/Workspace/EventBridgeCore.cs` (fachada `Authorize`
+  que delega en `WorkspaceSessionRegistry.Authorize` y `RequestReconciliation()`) y `src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs`
+  (fachadas finas `ActiveSession`, `TryGetSession`, `Authorize` y `RequestReconciliation` sobre el único núcleo).
+- **Reglas de `RequestReconciliation`:**
+  - actúa solo sobre la sesión activa; no-op sin sesión activa o con la sesión degradada o retirada;
+  - encola `ImpliedSelectionChanged` y sincroniza `Idle` con la política existente;
+  - nunca drena de forma síncrona, ni lee o escribe el DWG, ni llama a `ApplyContext`, ni crea sesiones o suscripciones, ni persiste.
+- **Lo que no cambia:** `Start`, `OnDocumentActivated`, `OnIdle`, `BeginDocumentClose`, `Hook` y los manejadores. T2 = mecanismo; T3 =
+  política del ciclo de vida del panel.
+- **Cobertura nueva en RED/GREEN:**
+  - `RequestReconciliation` con sesión activa, sin sesión activa y con sesión degradada o retirada;
+  - la fachada `Authorize`;
+  - la guarda de fuente de las fachadas del puente.
+- **Planificación de reemplazo:** se autoriza **una salida válida** (más hasta 2 por transporte o INVALID_OUTPUT). No reinicia
+  `attempts`, trabajo ni verificación, no da Worker de corrección y no toca `max_attempts`.
+- **Orden:** este commit es la nueva `AuthorityRevision` (Y); `42d45776` sigue siendo la autoridad histórica de la descomposición. Tras la
+  CI 4/4 de Y: `fetch` (S-13 si `main` cambia), releer I-65, reemitir el contrato, una planificación de reemplazo, A1-A8 y nc4 de nuevo.
+  Sin Worker, STOP en COORDINATOR_T3A_REPLACEMENT_ACCEPTANCE_REQUIRED.
+
+**Presupuesto de T3A:**
+
+| Fase | Estado |
+|---|---|
+| Planificación | 1 válida consumida (histórica, superada) + 1 de reemplazo autorizada |
+| Trabajo | 0 de 1 |
+| Verificación | 0 de 1 |
+| `attempts` | 3 de 3, sin cambio |
+
+**Relevos:**
+- Desde §49, una invocación de modelo: la planificación `ed7b`.
+- Sin escrituras Git desde `42d45776` hasta este commit; HEAD = remoto = `42d45776` antes de él; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.
