@@ -428,3 +428,22 @@ Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
 | 5 | Revisión del Coordinator contra Freeze + A-n, sin EXP-01 A abierta | sí (sin A-n; sin EXP-01 A) |
 | 6 | Orden commit → árbol limpio → evidencia local → push → CI | en curso sobre este commit |
 | 7 | Rebase entre gates | no hubo (`origin/main` = `bb0d5522` durante todo F1) |
+
+## 25. F1 cerrada (2026-10-11T06:00:46Z)
+
+Hechos posteriores al commit de cierre `4514a99a7ac853a707fd14c89823f327e338de4e` (LIFECYCLE §7, orden de AGENTS.md / WORKFLOW):
+
+- **Árbol limpio y evidencia local:** Core Full local sobre `4514a99a` con árbol limpio: **12946/12946** superadas, 0 fallidas, 0 omitidas
+  (3 min 47 s; TRX `core-full-4514a99a.trx`, SHA-256 `8e04bab017308720b80ef9e28a85f0cefcca9ccc5b8455d365a3b03231381340`, transitorio).
+- **Push y CI del SHA de cierre:** corrida `push` 38116394272 de `refs/heads/architecture/interop-analisis-estructural`, `head_sha`
+  `4514a99a`, `completed/success`: UI Tests (WPF controls, net8.0-windows) = `success`; Tests (Domain + Application) = `success`; Build UI (WPF, valida API de Application) = `success`; Build Plugin without AutoCAD = `success`.
+- **Criterios de LIFECYCLE §7:** 1-7 cumplidos (ver §24 y este apartado). **GATE PASS de F1** declarado por el Coordinator (CD-I65-F1-21)
+  sobre el SHA de cierre `4514a99a` (código de producto = `667a3991`).
+- **Resultado verificable de F1 (Proposal V3.1 §6):** de `REF-CANT-01` y del archivo de cargas se obtiene un `StructuralModel` `Valid`,
+  determinista, igual al golden derivado a mano; fallo cerrado (`Unsupported`/`Invalid`/`Unavailable` sin modelo); unidades explícitas con
+  propietarios únicos y frontera de entrada única.
+- **Métricas de F1:** 2 tareas delegadas, 0 correcciones (`attempts` = 0), 10 de 14 invocaciones de Codex, 2 invocaciones del Worker
+  (29 min 36 s y 28 min 46 s), 1 revisión independiente del Architect; controles negativos 8 (nc4 ×2, nc1-nc3 ×2): 6 con oráculo cumplido,
+  2 no (DEV-I65-F1-01 y DEV-I65-F1-02, no bloqueantes); 0 cambios de `config.toml`; 0 avances de `main`.
+- **Autorización:** la F1 IMPLEMENTATION AUTHORIZATION del Owner **termina** con este cierre. Ningún gate posterior (F3 en adelante) está
+  autorizado.

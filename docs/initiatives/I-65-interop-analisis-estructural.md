@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-65
 title: Structural Analysis Interop Foundation + RAM Elements Adapter
 type: architecture
-status: f1-authorized
+status: f1-closed
 workflow: V2
 conceptual_initiative: I-65
 delivery_unit: I-65
@@ -119,7 +119,8 @@ materiales, idealización, conexiones, apoyos, cargas, errores, provenance, prue
 ## 8. Gates funcionales
 
 G0 (reclamo y bootstrap) y F0 (Discovery, sonda P1, Freeze) cumplidos. El plan de gates vigente es el de la Proposal V3.1 §6; F1 está
-autorizada por el Owner (decisiones §9) y se ejecuta en dos tareas (decisiones §10).
+autorizada por el Owner (decisiones §9), se ejecutó en dos tareas (decisiones §10) y está **cerrada** (decisiones §16); los gates
+siguientes esperan la decisión del Owner.
 
 ## 9. Owner Validation
 

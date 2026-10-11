@@ -3,19 +3,19 @@ automation_state:
   initiative: I-65
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
-  current_phase: f1
-  state: in-progress
+  current_phase: f1-closed
+  state: waiting-owner
   gate: F1
   attempts: 0
-  next_action: Cierre de F1 — Core Full local sobre este commit con árbol limpio, push y lectura de su CI; después, registro del cierre e informe de F1 al Owner. Sin F3 ni otro gate.
-  last_evidence_commit: 667a3991a106afe4e18c88500f65382e69301c69
+  next_action: Owner decide el gate siguiente (F3: paquete RAM determinista y atómico) con el informe de F1; si lo autoriza, el contrato de F3 incorpora las entradas de CD-I65-F1-20. Sin implementación hasta su orden.
+  last_evidence_commit: 4514a99a7ac853a707fd14c89823f327e338de4e
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F1
-  next_role: Coordinator (cierre de F1)
-  implementation_authorization: YES (solo F1 de la Proposal V3.1; termina al concluir F1)
+  next_role: Owner (autorización del gate siguiente)
+  implementation_authorization: NO (la autorización de F1 terminó al cerrar F1, CD-I65-F1-21)
   owner_decisions_open: [confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de cada gate posterior a F1, verificación de filas de mapeo por un ingeniero]
-  not_authorized: [F3, F4, F5, F6, interfaz gráfica, Plugin, cambios fuera del alcance de F1, nuevas corridas en RAM Elements]
+  not_authorized: [F3, F4, F5, F6, F7, interfaz gráfica, Plugin, nuevas corridas en RAM Elements, cambios de código]
