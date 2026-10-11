@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F1
   attempts: 0
-  next_action: F1-T1-NEUTRAL-MODEL por ejecución delegada (AUTOMATION_PLAN §16): contrato de gate, planificación del Controller, nc4 y aceptación, Worker RED->GREEN, verificación y controles; luego F1-T2-CANTILEVER-SOURCE.
+  next_action: F1-T1-NEUTRAL-MODEL — contrato de gate emitido sobre este commit; planificación del Controller, nc4 y aceptación A1-A8, Worker RED->GREEN, verificación y controles nc1-nc3; luego F1-T2-CANTILEVER-SOURCE.
   last_evidence_commit: a9d7080be3046e53b41d83af1bfece0be29871f3
 execution_context:
   mode: manual
