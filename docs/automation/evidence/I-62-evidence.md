@@ -3733,3 +3733,14 @@ solo desde artefactos custodiados.
   - prueba inicial de UTF-8 con la medición de si `OutputEncoding` se puede fijar bajo ConstrainedLanguage.
 
   Preflight obligatorio. Presupuesto del bloque: 1/2 restante.
+
+## 138. Fixture B1: disposición de construcción y solicitudes del Owner preparadas (decisiones §73, punto 8)
+
+- **Preparación** ([B1-construction-request-2026-10-11.md](I-62-F6/requests/B1-construction-request-2026-10-11.md), SHA-256 `82c6046798658b83…`):
+  - los ítems que la disposición de construcción del Coordinator tiene que fijar (A5-1, reglas 1, 4 y 7; A62-A5-O4 y O5): constructor con el
+    blob `38b228a4`, fechas fijas, unidad FX-U2 con Claim-Id y rama, manifiesto, comprobaciones antes de publicar, U-07 y U-08, origen y remoto nuevos,
+    auditoría pública;
+  - las dos líneas del Owner, copiadas literalmente de A-5 §7 (blob `ad94ceed`), con su SHA-256.
+- **Sin pedir ni ejecutar nada:** la línea A5-FIXTURE-B1-REPO se pide con la disposición de construcción; A5-PRINCIPAL-FXU2-CONSUMO, cuando haya un
+  Controller elegible y una disposición de apertura (§73.8). Sustituye al borrador anterior al acuerdo (`B1-fixture-request-draft-2026-10-11.md`), que
+  se conserva.
