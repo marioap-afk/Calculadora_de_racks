@@ -6,11 +6,17 @@ the real handoff is clean under the complete AUTOMATION_PLAN 16.10 rule; the mut
 authorized nc3 mutation (append of AUTHORIZED_APPEND to WorkCompleted); the mutation introduces a forbidden term in a
 governed field; identity, file list and every other field remain unchanged.
 
+A-6 (numeric exactness): JSON numbers are never decoded through binary floating point. Integers keep their exact value
+and lexeme; decimals and exponents become decimal.Decimal with their lexeme; non-finite values are rejected. Both
+handoffs are validated against the embedded rackcad-worker-handoff/v1 schema (integer = an actual JSON integer, never a
+boolean, decimal or exponent form) and every comparison is exact in type and lexeme, including nested key order.
+
 The 16.10 term set, governed fields and matching semantics are derived mechanically from the authority file given in
 --term-set (AUTOMATION_PLAN.md at the MainSha of the verified task). Python standard library only.
 Exit 0 only for PASS; 1 for FAIL; 2 for usage errors.
 """
 import argparse
+import decimal
 import hashlib
 import json
 import re
@@ -31,6 +37,9 @@ SECTION_PREFIX = '### 16.10 '
 SEMANTICS = 'Coincidencia por palabra o frase completa, sin distinguir mayúsculas, en '
 EXCLUSION = ' No se aplica al nombre de propiedad `Gate` ni a su valor.'
 BOM = chr(0xFEFF)
+# rackcad-worker-handoff/v1, embedded verbatim from docs/automation/agent-execution/schemas/worker-handoff.schema.json at
+# main bb0d5522e8411f66a51fdfb3f1f0d0514b737453 (blob cc3c9cf76b2247f3312e99bd447554326cc3700a).
+SCHEMA_V1 = {'$schema': 'https://json-schema.org/draft/2020-12/schema', 'title': 'rackcad-worker-handoff/v1', 'description': 'Entrega de worker (Freeze de I-61, Proposal V9 §8.2). No concede GATE PASS. Subordinado: no crea requisitos de evidencia, estados, gates, reglas Git ni decisiones del Owner.', 'type': 'object', 'additionalProperties': False, 'properties': {'Schema': {'type': 'string', 'enum': ['rackcad-worker-handoff/v1']}, 'TaskId': {'type': 'string'}, 'RunId': {'type': 'string', 'pattern': '^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$'}, 'DelegationRunId': {'type': 'string', 'pattern': '^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$'}, 'Initiative': {'type': 'string'}, 'Gate': {'type': 'string'}, 'Attempt': {'type': 'integer'}, 'BaseSha': {'type': 'string', 'pattern': '^[0-9a-f]{40}$'}, 'RedSha': {'type': ['string', 'null'], 'pattern': '^[0-9a-f]{40}$'}, 'CurrentSha': {'type': 'string', 'pattern': '^[0-9a-f]{40}$'}, 'Branch': {'type': 'string'}, 'Worktree': {'type': 'string'}, 'Pushed': {'type': 'boolean'}, 'FilesChanged': {'type': 'array', 'items': {'type': 'string'}}, 'WorkCompleted': {'type': 'string'}, 'TestsExecuted': {'type': 'array', 'items': {'type': 'object', 'additionalProperties': False, 'properties': {'RunRef': {'type': 'string'}, 'Command': {'type': 'string'}, 'Phase': {'type': 'string', 'enum': ['RED', 'GREEN', 'RELEVANT', 'MUTATION']}, 'TreeSha': {'type': ['string', 'null'], 'pattern': '^[0-9a-f]{40}$'}, 'ResultsFile': {'type': ['string', 'null']}}, 'required': ['RunRef', 'Command', 'Phase', 'TreeSha', 'ResultsFile']}}, 'TestResults': {'type': 'array', 'items': {'type': 'object', 'additionalProperties': False, 'properties': {'RunRef': {'type': 'string'}, 'Selected': {'type': 'integer'}, 'Passed': {'type': 'integer'}, 'Failed': {'type': 'integer'}, 'Skipped': {'type': 'integer'}, 'FailedTests': {'type': 'array', 'items': {'type': 'string'}}}, 'required': ['RunRef', 'Selected', 'Passed', 'Failed', 'Skipped', 'FailedTests']}}, 'Evidence': {'type': 'array', 'items': {'type': 'string'}}, 'UnexpectedFindings': {'type': 'array', 'items': {'type': 'string'}}, 'KnownLimitations': {'type': 'array', 'items': {'type': 'string'}}, 'Deviations': {'type': 'array', 'items': {'type': 'string'}}, 'OpenQuestions': {'type': 'array', 'items': {'type': 'string'}}, 'WorkerStatus': {'type': 'string', 'enum': ['IMPLEMENTATION_COMPLETE', 'PARTIAL', 'BLOCKED']}, 'Disposition': {'type': 'string', 'enum': ['NONE', 'BLOCKED', 'STOP']}, 'TriggeredStopConditions': {'type': 'array', 'items': {'type': 'string'}}, 'RecommendedNextAction': {'type': 'string'}, 'Worker': {'type': 'object', 'additionalProperties': False, 'properties': {'Provider': {'type': 'string'}, 'ModelRequested': {'type': 'string'}, 'EffortRequested': {'type': 'string'}, 'Trailer': {'type': 'string'}}, 'required': ['Provider', 'ModelRequested', 'EffortRequested', 'Trailer']}}, 'required': ['Schema', 'TaskId', 'RunId', 'DelegationRunId', 'Initiative', 'Gate', 'Attempt', 'BaseSha', 'RedSha', 'CurrentSha', 'Branch', 'Worktree', 'Pushed', 'FilesChanged', 'WorkCompleted', 'TestsExecuted', 'TestResults', 'Evidence', 'UnexpectedFindings', 'KnownLimitations', 'Deviations', 'OpenQuestions', 'WorkerStatus', 'Disposition', 'TriggeredStopConditions', 'RecommendedNextAction', 'Worker']}
 
 
 class Usage(argparse.ArgumentParser):
@@ -41,6 +50,106 @@ class Usage(argparse.ArgumentParser):
 
 class Invalid(Exception):
     pass
+
+
+class JsonInt(int):
+    """A JSON integer token: exact value plus its source lexeme."""
+
+    def __new__(cls, lexeme):
+        obj = int.__new__(cls, lexeme)
+        obj.lexeme = lexeme
+        return obj
+
+
+class JsonDecimal(decimal.Decimal):
+    """A JSON fraction/exponent token: exact decimal value plus its source lexeme (never a binary float)."""
+
+    def __new__(cls, lexeme):
+        obj = decimal.Decimal.__new__(cls, lexeme)
+        obj.lexeme = lexeme
+        return obj
+
+
+def parse_json_int(lexeme):
+    try:
+        return JsonInt(lexeme)
+    except ValueError as e:
+        raise Invalid('integer token not representable exactly: %s' % e)
+
+
+def parse_json_decimal(lexeme):
+    try:
+        value = JsonDecimal(lexeme)
+    except (decimal.InvalidOperation, ValueError) as e:
+        raise Invalid('invalid numeric token %r: %s' % (lexeme, e))
+    if not value.is_finite():
+        raise Invalid('non-finite numeric token %r' % lexeme)
+    return value
+
+
+def exact_equal(x, y):
+    """Exact structural equality: same type, same numeric lexeme, same nested key order."""
+    if type(x) is not type(y):
+        return False
+    if type(x) in (JsonInt, JsonDecimal):
+        return x.lexeme == y.lexeme
+    if type(x) is dict:
+        return list(x.keys()) == list(y.keys()) and all(exact_equal(x[k], y[k]) for k in x)
+    if type(x) is list:
+        return len(x) == len(y) and all(exact_equal(a, b) for a, b in zip(x, y))
+    return x == y
+
+
+def type_ok(value, name):
+    if name == 'string':
+        return type(value) is str
+    if name == 'integer':
+        return type(value) is JsonInt
+    if name == 'boolean':
+        return type(value) is bool
+    if name == 'null':
+        return value is None
+    if name == 'array':
+        return type(value) is list
+    if name == 'object':
+        return type(value) is dict
+    raise Invalid('unsupported schema type %r' % name)
+
+
+def validate(value, node, path, problems):
+    supported = {'$schema', 'title', 'description', 'type', 'enum', 'pattern', 'properties', 'required', 'additionalProperties', 'items'}
+    unknown = set(node) - supported
+    if unknown:
+        raise Invalid('unsupported schema keywords at %s: %s' % (path, sorted(unknown)))
+    types = node.get('type')
+    if types is not None:
+        names = types if isinstance(types, list) else [types]
+        if not any(type_ok(value, n) for n in names):
+            problems.append('%s: expected %s' % (path, '/'.join(names)))
+            return
+    if 'enum' in node and not any(type(value) is type(e) and value == e for e in node['enum']):
+        problems.append('%s: value not in enum' % path)
+    if 'pattern' in node and type(value) is str:
+        pattern = node['pattern']
+        if pattern.endswith('$'):
+            pattern = pattern[:-1] + chr(92) + 'Z'
+        if not re.search(pattern, value):
+            problems.append('%s: does not match %s' % (path, node['pattern']))
+    if type(value) is dict:
+        props = node.get('properties', {})
+        for key in node.get('required', []):
+            if key not in value:
+                problems.append('%s: missing %s' % (path, key))
+        if node.get('additionalProperties') is False:
+            extra = [k for k in value if k not in props]
+            if extra:
+                problems.append('%s: unexpected keys %s' % (path, extra))
+        for key, sub in props.items():
+            if key in value:
+                validate(value[key], sub, '%s.%s' % (path, key), problems)
+    if type(value) is list and 'items' in node:
+        for i, item in enumerate(value):
+            validate(item, node['items'], '%s[%d]' % (path, i), problems)
 
 
 def sha256(b):
@@ -81,7 +190,8 @@ def load_handoff(raw):
     if text.startswith(BOM):
         raise Invalid('byte order mark present')
     try:
-        obj = json.loads(text, object_pairs_hook=reject_duplicates, parse_constant=reject_constant)
+        obj = json.loads(text, object_pairs_hook=reject_duplicates, parse_constant=reject_constant,
+                         parse_float=parse_json_decimal, parse_int=parse_json_int)
     except Invalid:
         raise
     except ValueError as e:
@@ -179,10 +289,6 @@ def governed_strings(obj, field):
     raise Invalid('governed field %s does not have its %s type (%s)' % (field, HANDOFF_SCHEMA, GOVERNED_TYPES[field]))
 
 
-def same(x, y):
-    return x == y and json.dumps(x) == json.dumps(y)
-
-
 def hits(obj, fields, patterns):
     out = []
     for field in fields:
@@ -249,8 +355,15 @@ def main(argv):
         check('Input.%sSchema' % role, not probs, '; '.join(probs) or 'Schema and exact key set of %s' % HANDOFF_SCHEMA, code)
     if reasons:
         return finish()
+    for role, obj, code in (('Real', real, 'REAL_SCHEMA_INVALID'), ('Mutated', mut, 'MUTATED_SCHEMA_INVALID')):
+        probs = []
+        try:
+            validate(obj, SCHEMA_V1, '$', probs)
+        except Invalid as e:
+            probs.append(str(e))
+        check('Input.%sTypes' % role, not probs, '; '.join(probs[:8]) or 'all values have their exact %s types' % HANDOFF_SCHEMA, code)
     for k in ('TaskId', 'RunId', 'BaseSha', 'CurrentSha'):
-        out[k] = real[k]
+        out[k] = real[k] if type(real[k]) is str else None
     patterns = compile_terms(terms)
     try:
         real_hits = hits(real, fields, patterns)
@@ -262,10 +375,10 @@ def main(argv):
     out['RealForbiddenHits'], out['MutatedForbiddenHits'] = real_hits, mut_hits
 
     for k in IDENTITY_FIELDS:
-        check('Identity.%s' % k, same(real[k], mut[k]), 'identical' if same(real[k], mut[k]) else 'differs', 'IDENTITY_CHANGED')
+        check('Identity.%s' % k, exact_equal(real[k], mut[k]), 'identical' if exact_equal(real[k], mut[k]) else 'differs', 'IDENTITY_CHANGED')
     same_order = list(real.keys()) == list(mut.keys())
     check('Structure.KeyOrder', same_order, 'same top-level key order' if same_order else 'top-level key order differs', 'KEY_ORDER_CHANGED')
-    changed = [k for k in HANDOFF_KEYS if not same(real[k], mut[k])]
+    changed = [k for k in HANDOFF_KEYS if not exact_equal(real[k], mut[k])]
     out['ChangedFields'] = changed
     check('Structure.OnlyWorkCompletedChanged', changed == ['WorkCompleted'], 'changed fields: %s' % changed, 'UNAUTHORIZED_FIELD_CHANGE')
     check('Real.Clean', not real_hits, 'no forbidden term in the governed fields of the real handoff' if not real_hits else 'real handoff hits: %s' % real_hits, 'REAL_HAS_FORBIDDEN_TERM')
@@ -273,7 +386,7 @@ def main(argv):
     check('Mutated.WorkCompletedHasTerm', bool(wc_hits), 'WorkCompleted hits: %s' % wc_hits, 'NO_FORBIDDEN_TERM_INTRODUCED')
     exact = isinstance(real['WorkCompleted'], str) and mut['WorkCompleted'] == real['WorkCompleted'] + AUTHORIZED_APPEND
     check('Mutated.ExactAuthorizedAppend', exact, 'mutated WorkCompleted == real WorkCompleted + %r' % AUTHORIZED_APPEND if exact else 'mutated WorkCompleted is not exactly the real one plus the authorized append', 'NOT_EXACT_AUTHORIZED_APPEND')
-    others_same = all(same(real[f], mut[f]) for f in fields if f != 'WorkCompleted')
+    others_same = all(exact_equal(real[f], mut[f]) for f in fields if f != 'WorkCompleted')
     check('Mutated.OtherGovernedFieldsUnchanged', others_same, 'governed fields other than WorkCompleted identical' if others_same else 'another governed field changed', 'GOVERNED_FIELD_CHANGED')
 
     def counts(hs):
