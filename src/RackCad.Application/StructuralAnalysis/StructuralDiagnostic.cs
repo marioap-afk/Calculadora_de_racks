@@ -101,5 +101,18 @@ namespace RackCad.Application.StructuralAnalysis
         public const string LoadCountExceeded = "LOAD-COUNT-EXCEEDED";
         public const string LoadTargetMember = "LOAD-TARGET-MEMBER";
         public const string LoadPositionRange = "LOAD-POSITION-RANGE";
+        public const string SourceKindMismatch = "SOURCE-KIND-MISMATCH";
+        public const string SourceStationRange = "SOURCE-STATION-RANGE";
+        public const string SourceStationBlocked = "SOURCE-STATION-BLOCKED";
+        public const string StationFaceUnsupported = "STATION-FACE-UNSUPPORTED";
+        public const string StationSideUnsupported = "STATION-SIDE-UNSUPPORTED";
+        public const string ArmArrangementUnsupported = "ARM-ARRANGEMENT-UNSUPPORTED";
+        public const string ArmSlopeUnsupported = "ARM-SLOPE-UNSUPPORTED";
+        public const string NodePlaneDeviation = "NODE-PLANE-DEVIATION";
+        public const string AxisAngleDeviation = "AXIS-ANGLE-DEVIATION";
+        public const string AxesParallel = "AXES-PARALLEL";
+        public const string NodeOutsideColumn = "NODE-OUTSIDE-COLUMN";
+        public const string NodeSeparation = "NODE-SEPARATION";
+        public const string LoadTargetUnknown = "LOAD-TARGET-UNKNOWN";
     }
 }

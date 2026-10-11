@@ -1,0 +1,27 @@
+{
+  "SchemaVersion": "2.0",
+  "Kind": "Cantilever",
+  "Cantilever": {
+    "SchemaVersion": "1.0",
+    "Line": {
+      "Id": "6f1c2a3e-65a1-4c0f-9e65-000000000001",
+      "Name": "REF-CANT-01",
+      "StationCount": 2,
+      "ColumnCentreSpacing": 48,
+      "StationTopology": {
+        "FaceMode": "Single",
+        "SingleSide": "PositiveY",
+        "LevelCount": 3,
+        "FirstLevelPunchIndex": 0,
+        "RequestedClearHeight": 24,
+        "ColumnBaseTemplate": {
+          "ColumnSectionId": "AISC-W-W12X26",
+          "Base": { "SectionId": "AISC-W-W12X26", "Length": 48 }
+        }
+      },
+      "DefaultArmTemplate": {
+        "Body": { "Arrangement": "Single", "SectionId": "AISC-HSS-RECT-HSS4X4X_250", "CutLength": 36 }
+      }
+    }
+  }
+}
