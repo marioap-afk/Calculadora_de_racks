@@ -3878,3 +3878,59 @@ solo desde artefactos custodiados.
   inequívocos, y MAP_INVALID (MV-3, MV-4, MV-6 y MV-7) se sostiene bajo toda lectura.
 - **Desviación declarada del análisis:** una ejecución de `git status --porcelain` sobre `D:\r62-fixture\A2`, fuera de la lista permitida. Salida
   vacía; el índice conserva su mtime y su contenido; HEAD y refs sin cambio.
+
+## 144. Estrategia del Controller de FX-02: evidencia determinista más Controller; comparación A/B/C y recomendación (decisiones §74.4 y §74.7)
+
+- **Análisis de solo lectura** ([controller-strategy.md](I-62-F6/FX-02/s74/controller-strategy.md), SHA-256 `2f41841a5308dd33…`), con citas de
+  AUTOMATION_PLAN `f525cb1e`, ADR-0046, V14, A-2..A-5, `routing.md`, los descriptores y el registro de decisiones. Sin invocaciones, sin
+  escrituras fuera de la evidencia.
+- **Qué permite ya el contrato:**
+  - 6 de las 14 comprobaciones de VERIFY ya se apoyan en hechos que produce la sesión y que el Controller compara (Termination, Remote «En el
+    registro», Ci, Tests, Routing y Denials; AP L630-L643);
+  - el aceptante ya reproduce de forma mecánica la coherencia de RAE §8, Scope y su propio `Evaluate` (AP L805);
+  - `tool-use` es capacidad obligatoria del Controller, y una salida de herramienta cabe en `Checks.Evidence` si lleva los hechos (nunca un
+    veredicto desnudo: ADR-0046 #6).
+
+  No hay previsión para una herramienta fijada como insumo canónico (AP L1264, ADR-0046 #9 «sin scripts operativos hasta que la evidencia lo
+  justifique»), y B1 no contiene herramientas (A-5 L178-L186).
+- **Qué sería material:**
+  - B en forma de paquete de la sesión (B-ext): cambia quién produce 8 comprobaciones y rompe la independencia (M-01, M-03, M-04, M-05);
+  - un campo de esquema nuevo (M-02);
+  - herramientas como regla permanente (M-08);
+  - volver a medir la misma identidad sin actualización;
+  - cambiar la receta 16.4.
+
+  La forma mínima (B-min: herramientas de hechos fijadas, que ejecuta el propio Controller y que no emiten veredictos) es dudosa (M-03/M-04 probable)
+  y pide un dictamen.
+- **El aceptante reproduce (R1-R10):**
+  - el blob de la herramienta, ejecutada desde el objeto Git;
+  - el intérprete, con `-I`;
+  - una reejecución con los SHA exactos y el mismo SHA-256 de la salida;
+  - el recálculo de cada comprobación y de la clasificación;
+  - Scope y `Evaluate`, como hoy;
+  - una implementación distinta donde la regla depende de la lectura de la norma (MV-4, §143).
+- **Lo que dicen las sondas:**
+  - a favor: la sonda 2 hizo todos los pasos; OP_B y OP_D demostradas; los 14 `Checks` y `AuthorityResolution` coinciden; fidelidad exacta con
+    JSON ASCII; los fallos son de copia, formato y vínculo;
+  - en contra: la consola no es fiel (la herramienta tendría que emitir solo ASCII); ninguna herramienta existente sirve tal cual; MV-4 es ambigua;
+  - ninguna sonda ha medido B-min.
+- **Riesgos:** manipulación de la herramienta, intérprete sin fijar, el Controller como sello de goma, error común entre herramienta y aceptante,
+  independencia del oráculo de C-24 y deriva de autoridad. Las mitigaciones están en el §6 del análisis.
+- **Comparación** (detalle en el §7 del análisis):
+
+| Opción | Autoridad | Coste de recuperación | Ruta demostrable a C-24 |
+|---|---|---|---|
+| **A** Controller actual | actualización observada de Codex, más disposición, OD-2 y `BLOQUE-CODEX-CONSUMO`; o A-n de medición más consumo | 0-1 A-n, 1-2 líneas del Owner, ≤ 2 sondas, kit v6; fecha incierta si espera una actualización | posible, poco probable: depende de una transcripción perfecta |
+| **B-min** | disposición ordinaria de preparación y dictamen de materialidad; medición por A2-P2 o por una A-6 estrecha (una medición, tope 1) más consumo | herramientas (≈ 1-2 sesiones), 1 revisión `claude-cli` (+1), 0-1 A-n, 1-2 sondas, 1-2 líneas del Owner | **la más demostrable** |
+| **B-ext** | A-6 amplia (M-01..M-05, M-08); quizá el Owner por el ADR | A-n amplia, ≥ 2 revisiones, cambio de esquema | debilita la independencia; no recomendable |
+| **C** otro modelo o transporte | C1 `gpt-6.1-sol/high`: elegir la celda es ordinario, la medición va como en A. C2 `claude-cli`: A-n material más línea nueva del Owner. C3/C4 (sesión de escritorio o subagente): no elegibles | C1 como A; C2 alto | C1 como A, sin evidencia; C2 larga; C3/C4 no |
+
+  Común a todas las rutas: el repositorio B1 (Owner), la sesión de FX-U2 (A5-2 más consumo), OD-7 y la ronda de FX-02 dentro de D.3. Ninguna ruta
+  evita una invocación medida nueva: una celda sin medición previa no se vincula (AP L1093), y el bloque A2-P2 de `d13914ce…` está agotado.
+- **Recomendación (no es una enmienda):** adoptar **B-min**, con C1 como respaldo en el mismo bloque de medición. Ruta mínima:
+  1. disposición ordinaria que autorice solo la preparación estática de las herramientas de hechos y de R1-R10, sin invocaciones;
+  2. revisión independiente con `claude-cli` (CLAUDE-CLI-I62) sobre la materialidad y la conformidad con el texto normativo;
+  3. medición, según el dictamen: con «no material», en el próximo bloque A2-P2 tras una actualización observada; con «material», o si el Owner no
+     quiere esperar, por una A-6 estrecha con una medición sobre la identidad vigente (tope 1) y una línea de consumo del Owner.
+
+  Siguiente paso: la disposición del punto 1.

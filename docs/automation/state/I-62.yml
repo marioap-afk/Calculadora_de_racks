@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §74; evidencia §141) — CONTROLLER_V5 consumida (NOT_DEMONSTRATED), bloque agotado; análisis estático de MV-4/MV-7; evaluar evidencia determinista más Controller (recomendación, no enmienda); B1 lista; F7 y controles independientes; sin invocaciones nuevas; sin FX-02 ni F6 PASS"
+  next_action: "F6 (decisiones §74; evidencia §141-§144) — recomendación entregada: B-min (herramientas de hechos fijadas + Controller + reproducción R1-R10 del aceptante), C1 de respaldo; esperar la disposición del Coordinator (preparación estática sin invocaciones); B1 lista; F7 r6 hecho; sin FX-02 ni F6 PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
