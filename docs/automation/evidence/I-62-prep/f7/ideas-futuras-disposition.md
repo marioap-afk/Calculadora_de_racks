@@ -75,3 +75,13 @@ Clave de disposición: **CERRAR** (cubierto por I-62; no se añade entrada, o se
 | A62-A3-O1..O3 | decisiones §61.1 | ídem, registro de la revisión de A-3 | ídem | Coordinator |
 | A62-A4-O11..O13 | decisiones §64.1 (se custodian sin modificar el objeto) | ídem, registro de A-4 r3 | ídem | Coordinator |
 | Ámbito de A-2/A-4 frente a D.5 | A-2 L170; A-4 L336; revisión de A-2, Q-A2-03 | la OV no tiene los presupuestos ni las rutas de F6 | no es idea futura mientras Q22' esté abierta: puede bloquear OV-I62-03 | Coordinator |
+
+## 5. Estado r7 (2026-10-11; decisiones §67-§76; prevalece sobre §3 donde la contradice)
+
+| Id | Cambio r7 | Fuente |
+|---|---|---|
+| F6-N01 | cuarta actualización automática observada el 2026-10-11 (binario `d13914ce…`, app `26.1007.2314.0`, huella `F909F480…`); P-01 resuelto con OD-2 = A (§69); un bloque A2-P2 consumido entero (2/2, §74.1) | evidencia §125-§127; decisiones §69, §74 |
+| **F6-N16** (nueva) | instrumento determinista de hechos (B-min) más un aceptante independiente como medio de verificación del Controller. En I-62 queda acotado a FX-02 en F6 mediante A-6 y la decisión OWNER-RESERVED sobre ADR-0046 #9. Su generalización (otros roles, otras unidades o producción) es una evolución del protocolo con sus propias autoridades, fuera de I-62 (dictamen: M-06 y M-07 se activarían) | decisiones §75, §76; evidencia §146-§147 |
+| **F6-N17** (nueva) | fidelidad de lectura por representación ASCII bajo ConstrainedLanguage: `[Console]::OutputEncoding` no se puede fijar y la salida por defecto no es fiel. La lectura con `python -c` y JSON de escapes ASCII es fiel (capacidad observada, no fidelidad completa). Idea: declarar en el descriptor del adapter el método fiel observado | decisiones §74.2; evidencia §140 |
+| F6-N15 | se añade el desajuste de formato entre implementaciones independientes de una misma SPEC (vocabulario de entradas reproducidas, forma de `U19Normalized` y pathspec `:(literal)`), resuelto por fe de erratas antes de usarlas como evidencia | evidencia §146 |
+

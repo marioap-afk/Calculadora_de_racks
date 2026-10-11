@@ -197,7 +197,7 @@
       "kind": "COORDINATOR + EXECUTION (caracterización y reconstrucción en otro carril)",
       "blocks": ["F-05", "F-06 (aplicabilidad por determinar)", "OV con resiembra (Q24)", "confirmación de C-22, C-23, C-25a y C-27 (§66.4)"],
       "frozen_basis": "AUTOMATION_PLAN L821-L822 y L920; V14 D.1 pasos 2-3 (L2390-L2397)",
-      "state": "evidencia §119 (MV-3, MV-4, MV-6, MV-7); decisiones §66.3 (caracterizar EFF^1 frente a EFF; reconstrucción conforme al mapa y a AP 16.13; ni parchear el resolver ni declarar MAP_VALID sin MV-1..MV-7) y §66.4 (análisis de efectos antes de tocar refs; no reescribir historial acreditado)",
+      "state": "evidencia §119 (MV-3, MV-4, MV-6, MV-7); decisiones §66.3 (caracterizar EFF^1 frente a EFF; reconstrucción conforme al mapa y a AP 16.13; ni parchear el resolver ni declarar MAP_VALID sin MV-1..MV-7) y §66.4 (análisis de efectos antes de tocar refs; no reescribir historial acreditado). r7: causa raíz y ruta acordadas: A-5 AGREED (decisiones §73.1; fixture B1 con F_seed anterior a la activación, MV-1..MV-7 antes de cualquier reclamo, unidad FX-U2); B1 preparada sin pedir; FX-U2 no se abre sin Controller elegible (§74.5, §76.7); el C-22 histórico no se traslada (§73.2, §76.7); D.5 bajo la obligación de §73.3",
       "open_question": "Q24"
     },
     {
@@ -206,7 +206,8 @@
       "kind": "COORDINATOR (+ OWNER y ARCHITECT según la opción)",
       "blocks": ["F-05", "F-01", "READY-01 si produce una A-n"],
       "frozen_basis": "decisiones §66.5 (sin otra sonda A4-1 con la misma identidad; solo actualización real del runtime, alternativa ya autorizada y elegible o A-n futura justificada) y §66.10 (informe de opciones con autoridad, medición, consecuencias para el fixture y posibilidad real de VERIFIED)",
-      "state": "informe en preparación por otro carril; sin A2"
+      "state": "r7: A4-1 y las dos sondas del bloque A2-P2 NOT_DEMONSTRATED; bloque agotado (decisiones §74.1). Estrategia B-min aceptada para preparación (§75.1); paquete construido y probado (evidencia §146); dictamen independiente MATERIAL, ACCREDITED (§76.1; evidencia §147). A-6 en preparación (§76.2), sin presentarse a acuerdo mientras la decisión OWNER-RESERVED sobre ADR-0046 #9 esté sin disponer (§76.5); medición futura de una invocación con autorización de consumo propia (§76.6)",
+      "open_question": "Q27"
     }
   ],
   "open_questions_ref": "closure-integration-checklist.md §10 (Q1..Q22) y §10.1 (estado r5; Q22', Q23..Q26)"
