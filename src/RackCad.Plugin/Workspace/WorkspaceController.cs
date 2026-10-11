@@ -12,9 +12,11 @@ namespace RackCad.Plugin.Workspace
     /// nothing. It owns the single <see cref="AutoCadEventBridge"/>, the fine selection reader and the pure
     /// <see cref="WorkspaceHostCore"/> that holds every decision; this class only wires them to the host and forwards.
     ///
-    /// Every access to the bridge goes through the bridge facades. The only subscription it makes is to the bridge's own
-    /// <c>Drained</c> event: the drain is the only place where the selection is read. It never starts a thread, holds no
-    /// host object, writes nothing to the drawing, the selection or the view and persists nothing.
+    /// Every access to the bridge goes through the bridge facades. The only subscriptions it makes are to the bridge's own
+    /// in-memory notices (I-64 F1-T3B): <c>Drained</c> (the drain is the only place where the selection is read) and
+    /// <c>ActiveSessionChanged</c>. It relays them to the visual host as one in-memory <see cref="StateChanged"/> notice
+    /// and never subscribes to AutoCAD. It never starts a thread, holds no host object, writes nothing to the drawing, the
+    /// selection or the view and persists nothing.
     /// </summary>
     public sealed class WorkspaceController
     {
@@ -39,7 +41,11 @@ namespace RackCad.Plugin.Workspace
             _bridge.ActiveSessionChanged += OnActiveSessionChanged;
         }
 
-        /// <summary>RED skeleton: declared, not raised yet.</summary>
+        /// <summary>
+        /// In-memory notice that the state the panel presents may have changed: after a drain, after the active session
+        /// changed and after every panel transition. It carries no argument and no AutoCAD type. The visual host pulls a
+        /// fresh snapshot through the port when it arrives; nothing is persisted and nothing runs on a timer.
+        /// </summary>
         public event Action StateChanged;
 
         /// <summary>The controller of the process. The first call creates it; later calls return the same one.</summary>
@@ -54,11 +60,23 @@ namespace RackCad.Plugin.Workspace
         public bool PanelVisible => _host.PanelVisible;
 
         /// <summary>First call: starts the bridge once. Always: shows the panel state and asks for a reconciliation at the next rest.</summary>
-        public void OpenPanel() => _host.OpenPanel();
+        public void OpenPanel()
+        {
+            _host.OpenPanel();
+            NotifyStateChanged();
+        }
 
-        public void ShowPanel() => _host.ShowPanel();
+        public void ShowPanel()
+        {
+            _host.ShowPanel();
+            NotifyStateChanged();
+        }
 
-        public void HidePanel() => _host.HidePanel();
+        public void HidePanel()
+        {
+            _host.HidePanel();
+            NotifyStateChanged();
+        }
 
         public void RefreshPanel() => _host.RefreshPanel();
 
@@ -67,8 +85,20 @@ namespace RackCad.Plugin.Workspace
         /// <summary>The in-memory switch of the instrumentation. It changes no setting of the host.</summary>
         public void SetInstrumentationEnabled(bool enabled) => _host.SetInstrumentationEnabled(enabled);
 
+        // The active document changed: a visible panel asks for one reconciliation (at the next rest, through the normal
+        // drain); a hidden panel asks for nothing and reads nothing. Either way the visual host is told to pull the state.
         private void OnActiveSessionChanged()
         {
+            try
+            {
+                if (PanelVisible) _host.RefreshPanel();
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("WorkspaceController.OnActiveSessionChanged", ex);
+            }
+
+            NotifyStateChanged();
         }
 
         private void OnDrained(DrainOutcome outcome)
@@ -81,6 +111,21 @@ namespace RackCad.Plugin.Workspace
             catch (System.Exception ex)
             {
                 LogFault("WorkspaceController.OnDrained", ex);
+            }
+
+            NotifyStateChanged();
+        }
+
+        // The one place that raises the notice; a failing subscriber is logged and never reaches the bridge or AutoCAD.
+        private void NotifyStateChanged()
+        {
+            try
+            {
+                StateChanged?.Invoke();
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("WorkspaceController.StateChanged", ex);
             }
         }
 
