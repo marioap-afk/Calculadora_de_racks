@@ -2,7 +2,7 @@
 
 Procedimiento: `docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md`. Se copia a `<run>/operator/operator-record.md` y se llena durante
 la ejecución. Resultado por paso: `PASS`, `FAIL`, `NOT_EXECUTED` (con motivo), `NOT_APPLICABLE` (solo por decisión del Coordinator) o
-`NOT_EXECUTABLE_IN_F1` (S1-06a..e, hasta D-T3D-01). Sin rutas locales en este archivo.
+`NOT_APPLICABLE_BY_DESIGN` (solo S1-06a..e, y solo con I-64-A-7 aceptada). Sin rutas locales en este archivo.
 
 ```text
 RunId:                    <R...-xxxx>
@@ -13,7 +13,9 @@ Fin (UTC, SM-40):         <hora>
 I-52 RELEASE / acuse:     <referencia de la transcripción>
 PaletteKeyAcceptance:     ACCEPTED | NOT_ACCEPTED | NOT_RECORDED
 Carga única autorizada:   SI (por <I-52 / CAD manager>) | NO | NO_HUBO_AVISO
-Decisiones D-T3D-01..06:  <referencia de la autorización del Coordinator>
+I-64-A-7:                 <ACCEPTED: referencia>   (sin A-7 aceptada no hay Smoke-1)
+Dibujo Diagnostico:       SHA-256 <hash>   texto esperado: «Diagnóstico» / «No se pudo interpretar la definición del objeto seleccionado.»
+Dibujo Sin identidad:     SHA-256 <hash>   texto esperado: «Sin identidad» / «El objeto seleccionado no tiene identidad de rack.»
 ```
 
 | Paso | S1 / OV / INV | Resultado | Observado (textos literales del panel y de la línea de órdenes) | Valores (sesión, RackId, ms, DBMOD, entidades, filas) | Notas |
@@ -31,11 +33,13 @@ Decisiones D-T3D-01..06:  <referencia de la autorización del Coordinator>
 | SM-07 | S1-04 copia | | | | |
 | SM-08 | S1-04 dos racks | | | | |
 | SM-09 | S1-04 con otra entidad | | | | |
-| SM-10 | S1-04 sin identidad / INV-16 | | | | |
-| SM-11 | S1-04 diagnóstico / INV-17 (D-T3D-03) | | | | |
+| SM-10a | S1-04 bloque sin datos de RackCad | | | | esperado: «Selección actual: 0 racks y 1 otros objetos.» |
+| SM-10b | S1-04 sin identidad / INV-16 | | | | |
+| SM-11 | S1-04 diagnóstico / INV-17 (D-T3D-03, obligatorio) | | | | |
 | SM-12 | S1-09 / esc. 2 / INV-01 | | | última secuencia antes de la espera=; filas entre la espera y panel.hide= | |
 | SM-13 | S1-06f | | | | |
-| SM-14a..e | S1-06a..e (D-T3D-01) | NOT_EXECUTABLE_IN_F1 | adaptadas: | | |
+| S1-06a..e | INV-24 (A-7) | NOT_APPLICABLE_BY_DESIGN | | | solo con A-7 aceptada; nunca PASS |
+| SM-14a..e | evidencia complementaria (A-7) | | | | SUPPLEMENTARY_EVIDENCE; no cuenta como S1-06a..e |
 | SM-14h | S1-06h | | | DBMOD= | |
 | SM-15 | S1-06g | | | | |
 | SM-16 | INV-33, ocultar y mostrar | | | filas con la paleta cerrada=; filas al mostrar= | |
@@ -58,9 +62,10 @@ Decisiones D-T3D-01..06:  <referencia de la autorización del Coordinator>
 | SM-33 | comandos clásicos / INV-25 | | | | |
 | SM-34 | S1-07 / OV-17 | | | | |
 | SM-35 | S1-07 | | | DBMOD= | |
+| SM-35n | S1-07 / INV-23 (D-T3D-06) | | | | SetModalRackCadActive no ejercitado; rama modal de INV-23 cubierta por Core |
 | SM-36 | INV-25 | | | | |
 | SM-37 | INV-25, INV-14 | | | | |
-| SM-38 | INV-14 (D-T3D-04) | | | | |
+| SM-38 | INV-14 (D-T3D-04) | | (1) sin aserción Debug visible; (2) sin excepción no controlada; (3) sin cierre inesperado; (4) RackLog sin fuga; (5) drenajes y lecturas completados | | |
 | SM-39 | RackLog | | | entradas nuevas=; SHA-256 del archivo= | |
 | SM-40 | cierre sin guardar | | | acad= | |
 | SM-41 | dibujos sin cambios | | | A=; B=; C=; biblioteca= | |
