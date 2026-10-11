@@ -1,0 +1,174 @@
+{
+  "RunId": "R20261011T022328Z-2809",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a128c5-ff2b-77c0-8e68-f5bb19643b96",
+  "Usage": {
+    "input_tokens": 1614468,
+    "cached_input_tokens": 1457152,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 13691,
+    "reasoning_output_tokens": 5713
+  },
+  "CommandCount": 52,
+  "NonZeroCommands": [
+    {
+      "Command": "<ruta-local-redactada> -NoProfile -Command 'git ls-remote origin refs/heads/main refs/heads/architecture/portabilidad-coordinador-principal'",
+      "Exit": 1,
+      "Error": "fatal: unable to access 'https://github.com/marioap-afk/Calculadora_de_racks.git/': Failed to connect to github.com port 443 via 127.0.0.1 after 2105 ms: Could not connect to server"
+    },
+    {
+      "Command": "\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git -c http.proxy= ls-remote origin refs/heads/main refs/heads/architecture/portabilidad-coordinador-principal'",
+      "Exit": 1,
+      "Error": "ss 'https://github.com/marioap-afk/Calculadora_de_racks.git/': schannel: AcquireCredentialsHandle failed: SEC_E_NO_CREDENTIALS (0x8009030e) - No hay credenciales disponibles en el paquete de seguridad"
+    },
+    {
+      "Command": "!='\"'FreeText')) for name in ['mutation.json','oracle-result.json','coordinator-classification.json']: print(rid,name,json.dumps(json.loads((root/name).read_bytes()),ensure_ascii=True)) '@ | python -\"",
+      "Exit": 1,
+      "Error": "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ FileNotFoundError: [Errno 2] No such file or directory: 'artifacts\\\\orchestration\\\\I-64\\\\F1-T2-BRIDGE-nc3\\\\3\\\\R20261011T014150Z-3200\\\\coordinator-classification.json'"
+    }
+  ],
+  "ExecutedBridgeTools": [],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OutputSha256": "2B1B287C3ADC35412D4A919139B109A3D4528504439942D89F284FE4D8B49B35",
+  "NonAsciiBytes": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "RequiredCount": 2,
+  "OptionalCount": 0,
+  "RequiredFindings": [
+    {
+      "Id": "I64-A5-NUMERIC-OVERFLOW-FAIL-OPEN",
+      "Severity": "REQUIRED",
+      "Question": "Q05",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py:84",
+      "Defect": "parse_constant rejects literal NaN/Infinity but not exponent overflow. JSON tokens 1e999 and 2e999 both become floating-point Infinity and survive load_handoff, schema_problems and same(). A synthetic pair containing those Attempt values and the authorized WorkCompleted append returned PASS/0 with no reasons. Non-finite, ambiguous numeric evidence is therefore accepted.",
+      "Authority": "owner-decision-a5-freetext.md:47 requires malformed, ambiguous or incomplete evidence to fail closed; coordinator-order-a5-freetext.md:109 requires Infinity rejection; I-64-A-5.md:103 freezes rejection of parse/evidence/identity ambiguity. LIFECYCLE Sec.5 makes an open failure path REQUIRED.",
+      "Correction": "Reject non-finite numeric results at every nesting level, including exponent overflow, before comparison. Add positive and negative overflow regressions that require FAIL/nonzero. Publish corrected verifier identity and self-test evidence through the next append-only A-n for review.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A5-LOSSY-NUMERIC-COMPARISON",
+      "Severity": "REQUIRED",
+      "Question": "Q06",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py:183",
+      "Defect": "same() compares values only after lossy binary floating-point decoding. Distinct finite JSON numbers can become identical values and identical json.dumps output. With REAL Attempt=1.0 and MUTATED Attempt=1.00000000000000001, the exact verifier returned PASS/0, Identity.Attempt pass and ChangedFields=[WorkCompleted]. The additional difference was hidden. Underflow from 1e-999 to 0.0 creates the same defect.",
+      "Authority": "owner-decision-a5-freetext.md:46 requires identity and non-FreeText fields unchanged; coordinator-order-a5-freetext.md:115 and :122-131 require identical Attempt, structural equivalence and no additional mutation. A-5 Sec.2 promises strict value/type equality and only WorkCompleted changed. LIFECYCLE Sec.5 requires a verifiable invariant.",
+      "Correction": "Preserve numeric values losslessly before comparison, or fail closed on unsupported numeric encodings. Compare exact values and types recursively without floating-point rounding or underflow masking differences. Add precision-loss and underflow regressions requiring FAIL/nonzero, and freeze the correction and new blob in the next A-n.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "OptionalFindings": [],
+  "Answers": {
+    "Q01": [
+      "YES",
+      true
+    ],
+    "Q02": [
+      "YES",
+      true
+    ],
+    "Q03": [
+      "YES",
+      true
+    ],
+    "Q04": [
+      "YES",
+      true
+    ],
+    "Q05": [
+      "NO",
+      false
+    ],
+    "Q06": [
+      "NO",
+      false
+    ],
+    "Q07": [
+      "YES",
+      true
+    ],
+    "Q08": [
+      "YES",
+      true
+    ],
+    "Q09": [
+      "YES",
+      true
+    ],
+    "Q10": [
+      "YES",
+      true
+    ],
+    "Q11": [
+      "NO",
+      true
+    ],
+    "Q12": [
+      "NO",
+      true
+    ]
+  },
+  "PolarityAsExpected": {
+    "Q01": true,
+    "Q02": true,
+    "Q03": true,
+    "Q04": true,
+    "Q05": false,
+    "Q06": false,
+    "Q07": true,
+    "Q08": true,
+    "Q09": true,
+    "Q10": true,
+    "Q11": true,
+    "Q12": true
+  },
+  "Coherent": true,
+  "SubjectBlobs": {
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-5.md",
+      "Blob": "a61dc9d7a77e0eae624c1aa622180276d6d56501"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py",
+      "Blob": "48739ba6328cbee4c425d26ea94a7f471c021bdf"
+    },
+    "SelfTest": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_freetext_bridge.py",
+      "Blob": "146cd79e9ce86396819da774508d0a45e7cf04d0"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-freetext-result-a5.json",
+      "Blob": "56271645a6e52fe2f3e88c20835289e6f03b9c8e"
+    },
+    "OwnerDecision": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/owner-decision-a5-freetext.md",
+      "Blob": "518fbfd935dc77d1079c1161e22bab31d2c61d6e"
+    },
+    "CoordinatorOrder": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/coordinator-order-a5-freetext.md",
+      "Blob": "5a54f8f614a06dcbe3753ba7d7b33ff1eaba23bd"
+    }
+  },
+  "SubjectMatches": true,
+  "GateTerms1610": [],
+  "Limitations": [
+    "The filesystem-writing self-test runner was not launched. Its 36 cases were exercised in memory against the exact Git verifier bytes, with synthetic input reads and captured output. Additional numeric probes also used only synthetic inputs. No verifier execution used T2 deliveries.",
+    "git ls-remote failed through the configured proxy; retry without the proxy failed in schannel with SEC_E_NO_CREDENTIALS. Q12 uses pinned main and local branch history, not a freshly verified remote tip.",
+    "coordinator-classification.json is absent from nc3 directories R20261011T014150Z-3200 and R20261011T014542Z-0c58, confirmed by directory inventory. Their oracle-result.json files apply the recorded Coordinator rule; the first attempt's separate classification and the literal Coordinator order were available.",
+    "The earlier unauthorized T2 invocation disclosed in evidence Sec.41 was not repeated or used as substitute evidence."
+  ],
+  "Effective": [
+    "gpt-6.1-sol",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-10-10T20-23-47-01a128c5-ff2b-77c0-8e68-f5bb19643b96.jsonl",
+  "EffectiveSourceSha256": "359CB12ADAFB476AAB484B3D9E4F179C8232B1376B72875274148812DC528786",
+  "LimitPatternContexts": {
+    "action | frontera |\\r   | S-11 | repeated rework limit reached | STOP |\\": 1,
+    "eraction | frontera |\\r | S-11 | repeated rework limit reached | STOP |\\": 1
+  },
+  "EventsSha256": "49E4A3200EFF671F1AA1D3FBC43BBA3F5A2A7D2B1403A8712035897F9D1F8CAA"
+}
