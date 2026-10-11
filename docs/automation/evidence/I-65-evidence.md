@@ -177,3 +177,19 @@ Owner Validation: por determinar; no aplica a G0. Tag de integración: no existe
   no se abrió.
 - **P1 NO se ha ejecutado.** F0 queda bloqueado por la ejecución de P1; se entrega el procedimiento manual
   ([p1-procedure.md](I-65-f0/p1-procedure.md), secciones B y C) con la carpeta ya preparada.
+
+## 16. Diagnóstico del bloqueo de Computer Use (2026-10-11T02:19:27Z)
+
+Orden del Owner: diagnosticar sin modificar configuraciones de seguridad, sin repetir la solicitud de acceso y sin ejecutar P1. El
+Owner confirmó que no rechazó ningún permiso: la denegación apareció sola.
+
+| Pregunta | Resultado | Clase |
+|---|---|---|
+| ¿Restricciones de Computer Use sobre apps de escritorio? | Documentadas: niveles por categoría (solo ver: navegadores y plataformas de trading; solo clic: terminales e IDE; control total: el resto), una lista de bloqueo de apps sensibles que «se deniegan automáticamente», la lista **«Denied apps»** del usuario (Settings > This computer > System > Computer use) que rechaza «sin preguntar», y no disponible en planes Team/Enterprise. RAM Elements no pertenece a ninguna categoría restringida documentada | DOCUMENTED (code.claude.com/docs/en/desktop; support.claude.com, artículo 14128542) |
+| ¿RAM Elements se ejecuta elevado? | **No.** Manifiesto embebido `requestedExecutionLevel level="asInvoker" uiAccess="false"`; sin capa `RUNASADMIN` en `AppCompatFlags\Layers`; el acceso directo del menú Inicio no pide elevación (destino `RamElements.exe /Multiopen`); la sesión corre con integridad media; RAM ni siquiera estaba en ejecución al denegarse | MEASURED |
+| ¿Origen: sistema operativo, herramienta o política? | **Capa de acceso de la app de Claude.** La respuesta (`user_denied`) llegó antes de cualquier interacción con RAM o con Windows, así que no es UIPI. En la app: Computer Use habilitado (`chicagoEnabled = true`); trabajo entre apps no deshabilitado por la organización (`orgWorkAcrossAppsDisabled = false`); sin políticas `HKLM/HKCU\SOFTWARE\Policies\{Anthropic,Claude}`; esta sesión no guarda decisiones previas (`cuAllowedApps: []`); «ramelements»/«RAM Elements» no aparece en el almacenamiento local legible de la app. La última concesión de Computer Use en este equipo (sesión I-62, app «Claude», 2026-10-05T02:42:39Z, mismo modo de permisos) es **anterior** a la actualización de la app del 2026-10-09 (`app-2.31226.1`) | MEASURED (hechos); causa exacta UNKNOWN |
+| Causa exacta | Los únicos rechazos sin aviso documentados son la lista «Denied apps» y la lista de bloqueo. Cuál aplicó, o si la compilación actual o el modo de la sesión cambian el comportamiento, no se puede ver sin abrir Settings (acción del usuario) y no está documentado | UNKNOWN |
+| Alternativas oficiales | (1) El Owner revisa Settings > This computer > System > Computer use > Denied apps y, si RAM Elements figura, la quita: autorización normal del usuario; el Coordinator haría **una** solicitud nueva. (2) Ejecución manual por el Owner con el procedimiento preparado (sin cambios de configuración). El modo guiado («teach») usa la misma lista de apps permitidas y no está documentado oficialmente: no se propone | DOCUMENTED / prepared |
+
+Sin cambios de configuración, sin nuevas solicitudes de acceso, sin abrir RAM Elements. **P1 sigue sin ejecutarse**; F0 sigue bloqueado.
+
