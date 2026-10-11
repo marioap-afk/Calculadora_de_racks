@@ -1,0 +1,13 @@
+{
+ "field": "delegation.AllowedWriteScope",
+ "excluded": "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs",
+ "from": [
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/",
+  "src/RackCad.Application/StructuralAnalysis/StructuralPackageWriter.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ],
+ "to": [
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/",
+  "src/RackCad.Application/StructuralAnalysis/StructuralPackageWriter.cs"
+ ]
+}

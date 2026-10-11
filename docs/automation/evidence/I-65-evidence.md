@@ -766,3 +766,52 @@ Custodia:
 | `F4-T1-PACKAGE-HARDENING/R20261011T162337Z-4794/trx-summary.json` | `CF66FDE6F27AA22D…` | `8b57b5d52c23` (fin de línea normalizado por Git) |
 | `F4-T1-PACKAGE-HARDENING/R20261011T162337Z-4794/coordinator-dispositions-f4t1.md` | `3C00996C380E17E0…` | `8c4189d04183` |
 | `F4-T1-PACKAGE-HARDENING/R20261011T162337Z-4794/analysis.md` | `2AEDD7D047A1B786…` | (este commit) |
+
+## 37. F4-T1-PACKAGE-HARDENING — corrección y controles (2026-10-11T17:09:22Z)
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T163137Z-5315` | PLANNING (intento 1) | Codex `gpt-6-luna`/`high` | delegación de corrección válida; seis colecciones idénticas; A1-A8 en `pass`; `CorrectionOf` `R20261011T162337Z-4794`; `claude-sonnet-5-5`/`medium` (Balanced) |
+| `R20261011T163420Z-5bee` | WORK (intento 1) | subagente `claude-sonnet-5-5`/`medium` (18 mensajes) | `IMPLEMENTATION_COMPLETE`; un commit `f5c6b885` sin RED (DEV-I65-F4-02): patrón `WholeToken` y autoprueba sintética en un solo archivo; 4 min 28 s; 10 llamadas; sin Python |
+| `R20261011T164003Z-6ecb` | VERIFICATION | Codex `gpt-6-luna`/`high` | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `f5c6b885`; DEV-I65-F4-02 admitida |
+| `R20261011T164930Z-b2ea` | CONTROL nc1 | Codex `gpt-6-luna`/`high` | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Handoff`: **oráculo NO cumplido** (DEV-I65-F4-03) |
+| `R20261011T165257Z-97b9` | CONTROL nc2 | Codex `gpt-6-luna`/`high` | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Scope`: **oráculo cumplido** |
+| `R20261011T165957Z-92bf` | CONTROL nc3 | Codex `gpt-6-luna`/`high` | `EXECUTION_REWORK_REQUIRED/REWORK`, `FailureClass` = `FreeText`: **oráculo cumplido** |
+
+- **CI push:** `f5c6b885` → `38156339767` `success` (4/4); Core 13 637/13 637; filtro 154/154. El commit de sesión `ab2a0fe2` (solo docs) tiene
+  su corrida `38155736708` en `failure` por la misma aserción defectuosa, ya corregida.
+- **Procesos:** en las entradas de la verificación y de los controles aparecieron `git.exe` creados tras el fin de cada cesión, sin línea de
+  órdenes legible; releídos por PID: terminados (uno, 20180, seguía vivo unos minutos y terminó poco después): falsos P-02 de la aplicación de
+  escritorio.
+- **Invocaciones de Codex en F4:** 7 de 28. `attempts` = 1.
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T1-PACKAGE-HARDENING/R20261011T163137Z-5315/gate-contract.json` | `CBA1679B8A682326…` | `735b485834b7` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T163137Z-5315/prompt.md` | `4EB61998C6383A76…` | `f748c2dd41a1` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T163137Z-5315/delegation.json` | `6A8AD418DEC5C1EA…` | `c8886a0c999b` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T163137Z-5315/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T163137Z-5315/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-T1-PACKAGE-HARDENING/R20261011T163137Z-5315/relay-record.json` | `B01FF39F71EC2D4B…` | `524934f7a89d` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T163420Z-5bee/prompt.md` | `92F9A040192FC13E…` | `ccd808a3f050` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T163420Z-5bee/worker-handoff.json` | `D001B1755BD80200…` | `791417926a22` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T163420Z-5bee/relay-record.json` | `F87F725A724F5F87…` | `4986e75e5957` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T164003Z-6ecb/prompt.md` | `90F7DC2532263333…` | `035782447c8b` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T164003Z-6ecb/controller-verification.json` | `956EA25950E1B30B…` | `947a386cd1ae` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T164003Z-6ecb/relay-record.json` | `D0DE4D156E10E891…` | `4b77cc13b328` |
+| `F4-T1-PACKAGE-HARDENING/R20261011T164003Z-6ecb/trx-summary.json` | `ECA59C63393FBADF…` | `ced8155fa923` (fin de línea normalizado por Git) |
+| `F4-T1-PACKAGE-HARDENING/R20261011T164003Z-6ecb/coordinator-dispositions-f4t1c1.md` | `D16602092A67E7E4…` | `a60935c85190` |
+| `F4-T1-PACKAGE-HARDENING-nc1/R20261011T164930Z-b2ea/prompt.md` | `C356DE032596565B…` | `0488bebb430d` |
+| `F4-T1-PACKAGE-HARDENING-nc1/R20261011T164930Z-b2ea/mutation.json` | `626BEA8ED538562F…` | `30e496bcfbbe` (fin de línea normalizado por Git) |
+| `F4-T1-PACKAGE-HARDENING-nc1/R20261011T164930Z-b2ea/controller-verification.json` | `74F31BF62F8F8128…` | `24ddffdc2945` |
+| `F4-T1-PACKAGE-HARDENING-nc1/R20261011T164930Z-b2ea/relay-record.json` | `39A5B3134B0B341C…` | `bb6283551862` |
+| `F4-T1-PACKAGE-HARDENING-nc2/R20261011T165257Z-97b9/prompt.md` | `E10DE73C51BF744A…` | `1fa472660935` |
+| `F4-T1-PACKAGE-HARDENING-nc2/R20261011T165257Z-97b9/mutation.json` | `EDA0954885BE23F7…` | `3ca01cac2426` (fin de línea normalizado por Git) |
+| `F4-T1-PACKAGE-HARDENING-nc2/R20261011T165257Z-97b9/controller-verification.json` | `015BA4F24A842525…` | `b59f2ac0afdb` |
+| `F4-T1-PACKAGE-HARDENING-nc2/R20261011T165257Z-97b9/relay-record.json` | `0ED8EAF34AAD3019…` | `b73c8608aa55` |
+| `F4-T1-PACKAGE-HARDENING-nc3/R20261011T165957Z-92bf/prompt.md` | `3C3E8880C0641136…` | `7de93dc9b97b` |
+| `F4-T1-PACKAGE-HARDENING-nc3/R20261011T165957Z-92bf/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F4-T1-PACKAGE-HARDENING-nc3/R20261011T165957Z-92bf/controller-verification.json` | `23DA85D288A4B71F…` | `b31a9c739eee` |
+| `F4-T1-PACKAGE-HARDENING-nc3/R20261011T165957Z-92bf/relay-record.json` | `4357D6576083D3A2…` | `396fa8a6721e` |

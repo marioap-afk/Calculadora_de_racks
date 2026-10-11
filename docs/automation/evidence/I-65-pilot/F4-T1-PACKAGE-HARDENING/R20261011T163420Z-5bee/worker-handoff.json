@@ -1,0 +1,58 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T1-PACKAGE-HARDENING",
+  "RunId": "R20261011T163420Z-5bee",
+  "DelegationRunId": "R20261011T163137Z-5315",
+  "Initiative": "I-65",
+  "Gate": "F4",
+  "Attempt": 1,
+  "BaseSha": "ab2a0fe249f065af0403ce78a25cb17e0826b806",
+  "RedSha": null,
+  "CurrentSha": "f5c6b88564d287b09966c353ee493d3db2a20b28",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+  "Pushed": true,
+  "FilesChanged": [
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs"
+  ],
+  "WorkCompleted": "Corregido el patron de LosDosLiteralesQueEstabanPartidosSeEscribenEnteros mediante un helper WholeToken que admite una barra invertida opcional antes de cada comilla y sigue exigiendo el token entero; anadida la autoprueba ElPatronDelLiteralEnteroAceptaComillasEscapadasYRechazaLaPalabraPartida con entradas sinteticas. Un solo archivo tocado, un solo commit (sin RED, DEV-I65-F4-02), push hecho.",
+  "TestsExecuted": [
+    {
+      "RunRef": "hardening",
+      "Command": "cd C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElementsHardening\" --logger \"trx;LogFileName=hardening.trx\" --results-directory artifacts/orchestration/I-65/F4-T1-PACKAGE-HARDENING/1/R20261011T163420Z-5bee/tests/hardening",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T1-PACKAGE-HARDENING/1/R20261011T163420Z-5bee/tests/hardening/hardening.trx"
+    },
+    {
+      "RunRef": "core",
+      "Command": "cd C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-65/F4-T1-PACKAGE-HARDENING/1/R20261011T163420Z-5bee/tests/core",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T1-PACKAGE-HARDENING/1/R20261011T163420Z-5bee/tests/core/core.trx"
+    }
+  ],
+  "TestResults": [
+    { "RunRef": "hardening", "Selected": 154, "Passed": 154, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "core", "Selected": 13637, "Passed": 13637, "Failed": 0, "Skipped": 0, "FailedTests": [] }
+  ],
+  "Evidence": [
+    "Patron viejo: literal verbatim con comillas dobles desnudas alrededor del token (r[a]melements y B[e]ntley). Patron nuevo: helper WholeToken(token) = barra invertida opcional + comilla + token + barra invertida opcional + comilla, aplicado a los mismos dos tokens. Sigue exigiendo el token ENTERO consecutivo entre comillas: no admite comilla de cierre, signo + ni espacio en medio, asi que un token partido en dos literales concatenados no coincide.",
+    "Autoprueba sintetica ElPatronDelLiteralEnteroAceptaComillasEscapadasYRechazaLaPalabraPartida: token partido en dos literales concatenados -> no coincide (DoesNotMatch); token entero entre comillas -> coincide; token entero con comillas escapadas dentro de una cadena C# -> coincide. Resultado: superada. El token se obtiene de ToolName() (leido de la plantilla), sin literal entero nuevo (INV-14).",
+    "Totales: seleccion RackCad.Tests.StructuralAnalysisRamElementsHardening = 154 de 154 superadas, 0 fallos; suite completa de RackCad.Tests (Core) = 13637 de 13637 superadas, 0 fallos, 0 omitidas. Las corridas se hicieron con el arbol modificado antes del commit (TreeSha null); el commit contiene exactamente ese cambio."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller de la correccion sobre el SHA f5c6b88564d287b09966c353ee493d3db2a20b28 y recogida de la corrida push de la CI por el Principal.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

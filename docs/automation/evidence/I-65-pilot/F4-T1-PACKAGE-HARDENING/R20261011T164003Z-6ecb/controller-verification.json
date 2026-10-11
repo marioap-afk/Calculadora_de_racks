@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T1-PACKAGE-HARDENING",
+  "RunId": "R20261011T164003Z-6ecb",
+  "DelegationRunId": "R20261011T163137Z-5315",
+  "WorkRunId": "R20261011T163420Z-5bee",
+  "Attempt": 1,
+  "VerifiedSha": "f5c6b88564d287b09966c353ee493d3db2a20b28",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true, OutputWrittenUtc=2026-10-11T16:39:17Z; Cession.StartUtc=2026-10-11T16:34:25Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json parsea como rackcad-worker-handoff/v1; TaskId, RunId, DelegationRunId y Attempt coinciden con la delegación, RunId de trabajo, delegación e intento 1. CurrentSha=f5c6b88564d287b09966c353ee493d3db2a20b28, fecha del relevo posterior al inicio, WorkerStatus=IMPLEMENTATION_COMPLETE y RecommendedNextAction presente."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídas las autoridades UNIT_DOC y UNIT_CHANGE desde AuthorityRevision f64014f312f3b4f849e26dcee6dd713cbace146e; proposal-v3.1 declara Frozen: yes. Leídas las EXTERNAL desde MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git merge-base MainSha AuthorityRevision devuelve MainSha; git diff --name-only MB..AuthorityRevision para las rutas EXTERNAL y git diff --name-only AuthorityRevision..BaseSha para EXTERNAL/UNIT_CHANGE no muestran cambios."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Delegación y gate-contract coinciden en AuthorityRevision, MainSha, TaskId, Gate, Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions. El objetivo de la delegación precisa la corrección autorizada y concuerda con CorrectionOf y DEV-I65-F4-02."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y git rev-parse refs/remotes/origin/architecture/interop-analisis-estructural devuelven f5c6b88564d287b09966c353ee493d3db2a20b28; git merge-base --is-ancestor BaseSha CurrentSha devuelve 0. Rama y worktree coinciden con ExpectedBranch/ExpectedWorktree; RedSha=null conforme a DEV-I65-F4-02."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts registra OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y LsRemoteSha=f5c6b88564d287b09966c353ee493d3db2a20b28. El ref remoto local coincide con CurrentSha. No se ejecutó ls-remote en esta verificación."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only ab2a0fe249f065af0403ce78a25cb17e0826b806..f5c6b88564d287b09966c353ee493d3db2a20b28 contiene solo tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs, cubierto por AllowedWriteScope tests/RackCad.Tests/StructuralAnalysis/; no coincide con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no devuelve cambios. git check-ignore -v sobre la entrada worker-handoff.json devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "RemoteFacts.CurrentRun: run 38156339767, event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=CurrentSha, completed/success; los cuatro jobs requeridos concluyeron success. TRX Core: 13637/13637 aprobadas. RedPart no aplica según DEV-I65-F4-02; RemoteFacts.RedRun 38154104233 corresponde al ChainRedSha y el TRX Core registra 109 fallidas."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "git show CurrentSha -- tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs confirma el cambio de WholeToken y la autoprueba sintética: token partido no coincide; token entero y token entero con comillas escapadas coinciden. TRX CurrentSha: filtro RackCad.Tests.StructuralAnalysisRamElementsHardening seleccionó 154, 154 aprobadas y 0 fallidas; Core completo 13637 aprobadas. Cobertura en el mismo TRX: tercera puerta y prefijo gate en StructuralAnalysisRamElementsHardeningTemplateTests (MainEvaluaLasTresPuertasAntesDeAbrirElArchivoYDeCualquierEscritura, TodoRechazoDeCualquierPuertaVaADifferencesConElPrefijoGateYElEstadoSigueSiendoElDeFallo, LaTerceraPuertaHaceCadaComprobacion); giro módulo 360, descripción y escritura robusta en las pruebas de lectura de vuelta; carpeta embebida/regla de carpeta en StructuralAnalysisRamElementsHardeningPackageTests; carrera de destino en StructuralAnalysisRamElementsHardeningRaceTests; exención exacta INV-14 y E/S neutral en StructuralAnalysisRamElementsHardeningGuardTests y StructuralAnalysisModelBuilderTests. El Core completo verde incluye las guardas y el golden REF-CANT-01. La corrección no tiene RED propio conforme a DEV-I65-F4-02, registrado en la disposición del Coordinator y en I-65.md §27."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B -1 CurrentSha incluye literalmente “Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>”, igual al campo Worker.Trailer de worker-handoff.json; el modelo efectivo del registro coincide con claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "La delegación solicita claude-sonnet-5-5 y effort medium; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=medium. RoutingEnforcement=required; no se registra discrepancia."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction del relevo contra los términos de AUTOMATION_PLAN §16.10; no hay coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra cero denegaciones, cero avisos de límite y Cession.SessionOperated=false. Exit/Entry mantienen los procesos de la sesión como línea base; no aparece señal de proceso ajeno o delegación adicional."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "Se admite DEV-I65-F4-02: la disposición registrada establece que esta corrección de una aserción defectuosa no requiere RED propio; la prueba focal y el Core completo del SHA corregido pasan.",
+    "El diff BaseSha..CurrentSha y el commit del Worker contienen solo el archivo de prueba indicado. El diff ChainBaseSha..CurrentSha incluye además registros de sesión bajo docs/automation; entre los cambios de pruebas existentes aparecen los cinco archivos previstos y los demás archivos de pruebas de hardening son altas.",
+    "El TRX UI registra 1654 resultados, 1637 aprobados y 17 NotExecuted; RemoteFacts indica Counters notExecuted=0, consistente con la convención documentada del logger."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación y continuar la revisión del Coordinator prevista para F4-T1."
+}
