@@ -1,0 +1,11 @@
+{
+  "RunId": "R20261011T012027Z-9c23",
+  "Control": "nc3",
+  "CoordinatorClassification": {
+    "Outcome": "INVALID_OUTPUT",
+    "TransportDisposition": "BLOCKED",
+    "ValidNc3OutputsConsumed": 0,
+    "Reason": "FreeText=fail and FailureClass=FreeText detected and the other 13 results preserved, but the control result was transformed into EXECUTION_BLOCKED/STOP through C-15/S-11; README 10 requires EXECUTION_REWORK_REQUIRED/REWORK for nc3; negative controls do not consume attempts; schema-conforming but semantically false against its control oracle."
+  },
+  "Source": "decision del Coordinator recibida por el chat de la sesion responsable (I-64 COORDINATOR DECISION F1-T2-BRIDGE / nc3); se versiona en la custodia"
+}

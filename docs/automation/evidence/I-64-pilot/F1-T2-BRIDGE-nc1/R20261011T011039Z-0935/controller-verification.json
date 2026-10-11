@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261011T011039Z-0935",
+  "DelegationRunId": "R20261010T082206Z-21c1",
+  "WorkRunId": "R20261010T202008Z-3df4",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, TerminalEvent records the subagent final result. Cession.StartUtc=2026-10-10T20:23:57Z; OutputWrittenUtc=2026-10-10T20:52:30Z, after start."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present at the supplied input path. TaskId, Attempt, DelegationRunId, and RunId match the delegation and work record. OutputWrittenUtc follows Cession.StartUtc. CurrentSha consistency is evaluated under Identity."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read all 30 authority entries from the revisions assigned by 16.3: unit documents at d5bdcb7aff31ba54901a3a0acdbfd81be92ab516 and EXTERNAL documents at bb0d5522e8411f66a51fdfb3f1f0d0514b737453. Read AUTOMATION_PLAN 16.3, 16.8-16.10, agent-execution README 8, and AGENTS.md. The F1-T2 package defines INV-F1-T2-01..14; section heading transliteration matches the repository headings."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json and gate-contract.json: TaskId, Unit, Gate, AuthorityRevision, MainSha, Objective, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests, ExpectedEvidence, and StopConditions match exactly."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "Git branch is architecture/workspace-persistente-rackcad; HEAD and origin branch both equal e2f642b86197441eea0838c8055c1db666606f11; BaseSha and RedSha are ancestors (merge-base checks exit 0); origin/main is bb0d5522e8411f66a51fdfb3f1f0d0514b737453. worker-handoff.json instead declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. The declared SHA disagrees with HEAD, origin branch, and the accepted disposition target."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry records LsRemoteSha=e2f642b86197441eea0838c8055c1db666606f11 and OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, matching the measured remote refs. Exit was at BaseSha before the Worker session, consistent with the recorded handoff timing."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only d5bdcb7aff31ba54901a3a0acdbfd81be92ab516..e2f642b86197441eea0838c8055c1db666606f11 lists 10 files, all in the three allowed Workspace paths. No forbidden path or existing T1 source file changed. The paths match worker-handoff.json FilesChanged."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 returned empty. git check-ignore -v on the supplied input handoff reports .gitignore:3 for artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is completed push for refs/heads/architecture/workspace-persistente-rackcad at e2f642b86197441eea0838c8055c1db666606f11; all four required jobs succeeded. RemoteFacts.RedRun is push on the same branch at 31e3c57a66025ba339acb2c796298e71153126cc; Core Tests failed as expected and Plugin build was skipped."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current Core TRX 38085381131: 12754/12754 passed; 159 Workspace-filter matches, all passed. Red Core TRX 38084788650: 159 matches, 97 passed and 62 failed; failures are behavioral test failures, including 47 messages reporting no live session for native IDs and 15 assertion messages, not compile failures. git diff BaseSha..RedSha -- tests/ gives five Workspace test files; git diff RedSha..HEAD -- tests/ is empty. ChainRedFiles=those five RT paths. UI TRX: 1637 passed, 0 failed, 17 NotExecuted results; Counters.notExecuted=0 follows the specified logger convention."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show -s --format=%B for both commits in BaseSha..HEAD shows Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. relay-record-work records effective model claude-sonnet-5-5 and effort high."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "The accepted delegation and coordinator-acceptance.md request Claude Sonnet 5.5 at high effort. relay-record-work records claude-sonnet-5-5 at high effort; no model or effort discrepancy is recorded."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions, and RecommendedNextAction in worker-handoff.json against the 16.10 term list; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work records no permission denial and no usage or credit-limit warning. The P-01 note is resolved by the supplied Owner/Coordinator dispositions and closed two-hash allowlist; process reread records the transient unattributable process as CLEARED_BY_REREAD."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "worker-handoff.json declares a CurrentSha that differs from the verified Git HEAD, origin branch, CI head SHA, and accepted disposition target; this is contradictory identity evidence.",
+    "The Current Core TRX has 12754 passing tests and the Workspace selection has 159 passing tests. The Red Core TRX has 62 behavioral failures among 159 selected tests; the five RED test paths were not modified by GREEN.",
+    "The UI TRX records 17 NotExecuted results while its Counters.notExecuted value is zero, matching the supplied logger convention."
+  ],
+  "RecommendedNextAction": "Ask the Coordinator to resolve the handoff SHA discrepancy before deciding the authorized next step."
+}

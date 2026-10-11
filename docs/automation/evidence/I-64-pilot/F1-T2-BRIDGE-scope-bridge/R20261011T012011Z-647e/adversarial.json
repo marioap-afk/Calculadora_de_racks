@@ -1,0 +1,193 @@
+{
+  "Schema": "rackcad-i64-scope-bridge/v1",
+  "Result": "FAIL",
+  "Reasons": [
+    {
+      "Code": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+      "Detail": "changed paths not covered by AllowedWriteScope: [\"src/RackCad.Application/Workspace/BridgeOutcomes.cs\"]"
+    }
+  ],
+  "BaseSha": "d5bdcb7aff31ba54901a3a0acdbfd81be92ab516",
+  "CurrentSha": "e2f642b86197441eea0838c8055c1db666606f11",
+  "DelegationSha256": "fdafaba7d452ea30575ec50533f211000b145e4930e8c40e7c1c3b8c8387c50f",
+  "HandoffSha256": "b47f905a81a4e2c4c249f3b9aa987c9971f219c174c126af2a9950742809c0f4",
+  "DelegationRunId": "R20261010T082206Z-21c1",
+  "ChangedPaths": [
+    "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+    "src/RackCad.Application/Workspace/BridgeSource.cs",
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+    "src/RackCad.Application/Workspace/IHostEventSource.cs",
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeDegradedModeTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSubscriptionLifecycleTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeTestSupport.cs"
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Workspace/BridgeSource.cs",
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+    "src/RackCad.Application/Workspace/Hints.cs",
+    "src/RackCad.Application/Workspace/IHostEventSource.cs",
+    "src/RackCad.Application/Workspace/SelectionContext.cs",
+    "src/RackCad.Application/Workspace/SessionId.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs",
+    "src/RackCad.Plugin/Workspace/",
+    "tests/RackCad.Tests/Workspace/"
+  ],
+  "ForbiddenWriteScope": [
+    "docs/",
+    ".github/",
+    "assets/",
+    "eng/",
+    "deploy/",
+    "global.json",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "RackCad.sln",
+    "src/RackCad.UI/",
+    "src/RackCad.Domain/",
+    "tests/RackCad.UI.Tests/",
+    "src/RackCad.Plugin/Systems/",
+    "src/RackCad.Plugin/Views/",
+    "src/RackCad.Plugin/Drawing/",
+    "src/RackCad.Plugin/PluginInitializer.cs",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tools/RackCad.StructuralSections.Import/RackCad.StructuralSections.Import.csproj",
+    "src/RackCad.Plugin/RackAyudaCommands.cs",
+    "src/RackCad.Plugin/RackCabeceraCommands.cs",
+    "src/RackCad.Plugin/RackCamaCommands.cs",
+    "src/RackCad.Plugin/RackCantileverCommands.cs",
+    "src/RackCad.Plugin/RackDinamicoCommands.cs",
+    "src/RackCad.Plugin/RackDuplicarCommands.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.cs",
+    "src/RackCad.Plugin/RackLayoutCommands.Fill.cs",
+    "src/RackCad.Plugin/RackLayoutCommands.cs",
+    "src/RackCad.Plugin/RackMenuCommands.cs",
+    "src/RackCad.Plugin/RackPropiedadesCommands.cs",
+    "src/RackCad.Plugin/RackProyectarCommands.cs",
+    "src/RackCad.Plugin/RackPushBackCommands.cs",
+    "src/RackCad.Plugin/RackSeccionCommands.cs",
+    "src/RackCad.Plugin/RackSelectivoCommands.cs",
+    "src/RackCad.Plugin/RackVariablesCommands.cs",
+    "src/RackCad.Application/Workspace/Hints.cs",
+    "src/RackCad.Application/Workspace/SelectionContext.cs",
+    "src/RackCad.Application/Workspace/SessionId.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+  ],
+  "OutsideAllowed": [
+    "src/RackCad.Application/Workspace/BridgeOutcomes.cs"
+  ],
+  "ForbiddenHits": [],
+  "Checks": [
+    {
+      "Id": "ExpectedBase.Format",
+      "Result": "pass"
+    },
+    {
+      "Id": "ExpectedCurrent.Format",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.Parse",
+      "Result": "pass"
+    },
+    {
+      "Id": "Handoff.Parse",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.Type",
+      "Result": "pass"
+    },
+    {
+      "Id": "Handoff.Type",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.RunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.DelegationRunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.TaskId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.DelegationBaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.HandoffBaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.HandoffCurrentSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "AllowedWriteScope.Present",
+      "Result": "pass"
+    },
+    {
+      "Id": "AllowedWriteScope.Syntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "ForbiddenWriteScope.Present",
+      "Result": "pass"
+    },
+    {
+      "Id": "ForbiddenWriteScope.Syntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Repository",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.BaseSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.CurrentSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Ancestry",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Diff",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Diff.Decode",
+      "Result": "pass"
+    },
+    {
+      "Id": "Diff.NonEmpty",
+      "Result": "pass"
+    },
+    {
+      "Id": "Diff.PathSyntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "Scope.Allowed",
+      "Result": "fail"
+    },
+    {
+      "Id": "Scope.Forbidden",
+      "Result": "pass"
+    }
+  ]
+}

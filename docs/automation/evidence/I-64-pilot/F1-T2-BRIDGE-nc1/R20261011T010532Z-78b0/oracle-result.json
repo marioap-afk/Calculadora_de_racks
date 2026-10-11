@@ -1,0 +1,50 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261011T010532Z-78b0",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04",
+    "C-15"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "INVALID_OUTPUT",
+  "ControlResult": "INVALID_OUTPUT (regla de la decision del Coordinator)",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD and git rev-parse origin/architecture/workspace-persistente-rackcad both returned e2f642b86197441eea0838c8055c1db666606f11; BaseSha is its ancestor and RedSha 31e3c57a66025ba339acb2c796298e71153126cc is between BaseSha and HEAD. Handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, not HEAD or the branch ref."
+  },
+  "OutputSha256": "AC8BFECF00C36C6DF7D7684FB1D9A0D5C1DC01B1003343A6737BF161071E75CF",
+  "ManualFreeText1610": []
+}

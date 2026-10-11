@@ -1,0 +1,50 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261011T014542Z-0c58",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "C-13",
+    "S-11"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "Outcome": "INVALID_OUTPUT",
+  "ControlResult": "INVALID_OUTPUT (regla de la decision del Coordinator); STOP P-04",
+  "Evidence": {
+    "FreeText": "worker-handoff.json WorkCompleted contiene una expresion reservada por AUTOMATION_PLAN §16.10. La comprobacion reviso WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction."
+  },
+  "OutputSha256": "D76E8E6A155EE3CA9DD6CD83D6D6857D0EC6045375C32ABF80B313CEDE732444",
+  "ManualFreeText1610": []
+}

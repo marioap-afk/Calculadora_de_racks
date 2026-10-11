@@ -1,0 +1,18 @@
+{
+  "Schema": "rackcad-i64-scope-bridge-run/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261011T011925Z-fcdd",
+  "Amendment": "docs/initiatives/I-64-A-4.md",
+  "HeadSha": "e2f642b86197441eea0838c8055c1db666606f11",
+  "StartedUtc": "2026-10-11T01:19:26.300006+00:00",
+  "Nc2RunId": "R20261011T011513Z-e415",
+  "Verifier": {
+    "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+    "HeadBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "WorktreeBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "Sha256": "14e3dc3e47e176bb88e6f3c30db11ab15e98ccb8a821615d7c957573adca0557",
+    "AuthorizedBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "AuthorizedSha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "IdentityOk": false
+  }
+}

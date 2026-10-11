@@ -1,0 +1,49 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261011T014150Z-3200",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "C-15"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "Outcome": "INVALID_OUTPUT",
+  "ControlResult": "INVALID_OUTPUT (regla de la decision del Coordinator)",
+  "Evidence": {
+    "FreeText": "Scanned WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against AUTOMATION_PLAN Sec.16.10. One complete prohibited-term match occurs in WorkCompleted; no other listed field matches."
+  },
+  "OutputSha256": "EE6DE678E1B6D3E2CE98FF092447691C598757FFD086B14A3698F90FD9C3D662",
+  "ManualFreeText1610": []
+}
