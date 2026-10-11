@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/portabilidad-coordinador-principal
   claim_id: 5b661a17-8c18-4183-8554-3866059cba2b
   current_phase: F6
-  state: waiting
+  state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "SUSPENDIDA (decisiones §67; handoff docs/initiatives/I-62-handoff-suspension.md): no reanudar sin una disposición expresa del Coordinator que levante la suspensión y nombre el paso"
+  next_action: "F6 (decisiones §68; evidencia §125) — reanudada; Codex actualizado (d13914ce/26.1007.2314.0/F909F480): confirmar estabilidad, preparar el bloque A2-P2 y la sonda del par nuevo (sin ejecutar) y pedir OD-2 nueva y consumo del bloque; B1 preparado a la espera de autoridad; sin F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

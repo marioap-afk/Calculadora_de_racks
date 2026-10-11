@@ -3554,3 +3554,17 @@ solo desde artefactos custodiados.
   - obligaciones pendientes, presupuestos y decisiones vigentes del Owner;
   - las próximas autoridades, las rutas, la acción de recuperación y la prohibición de reanudar implícitamente.
 - La sesión de trabajo sobre I-62 termina tras la CI del commit del handoff. I-64 se reanuda en su propia rama y sesión.
+
+## 125. Decisiones §68: I-62 reanudada; Codex actualizado (observación 1 de la identidad nueva)
+
+- **Reanudación** verificada (rama, handoff y ausencia de otra sesión en el worktree; decisiones §68). Estado `implementing`.
+- **Codex actualizado (punto 3.A)** ([result.json](I-62-F6/OD-2/R20261011T034757Z-s68-passive/result.json)), medición pasiva, sin modelo:
+  - binario `d13914ce…2a7daec` (el único `codex.exe`, en `bin/2e5e00daee91c61d`; ya no existe el `3553cd6e…`);
+  - app `26.1002.7124.0` → `26.1007.2314.0`;
+  - huella de `config.toml` `73890CA3…` → `F909F480…`, con el mismo tamaño y los mismos 107 nombres saneados, escrita el 2026-10-11T02:54:45Z;
+  - el paquete trae `codex-command-runner.exe` y `codex-windows-sandbox-setup.exe`.
+
+  La actualización es posterior a la sonda A4-1 (00:05Z del 10-10), cuyo NOT_DEMONSTRATED vale para la identidad anterior.
+- **Efecto:** P-01 para toda invocación de `codex-cli` hasta una OD-2 nueva. Abre la vía A1 de las opciones de recuperación: un bloque de A-2 (A2-P2)
+  para el par nuevo y, si la ruta `cmd.exe` sigue haciendo falta, otra medición de A4-1 (reglas 3 y 4). Nada de esto autoriza consumo por sí mismo
+  (§67, punto 3). Falta una segunda observación para fijar la huella como estable (A2-P2, regla 3).

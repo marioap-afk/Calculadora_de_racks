@@ -1,0 +1,35 @@
+{
+ "RunId": "R20261011T034757Z-s68-passive",
+ "Authority": "decisiones §68, punto 3.A («Verificar pasivamente si Codex tiene una nueva versión o un cambio de identidad del runtime»); sin modelo ni invocación de codex-cli",
+ "Previous": {
+  "BinaryHash": "3553cd6e7df5a093d8cb8301cd8088a57e0971aba71ddbe0e67f7f44a15cdf68",
+  "BinaryLabel": "9691020b546a15b2",
+  "AppVersion": "26.1002.7124.0",
+  "Fingerprint": "73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF",
+  "Source": "OD-2f = A (decisiones §65); A4-1 NOT_DEMONSTRATED (§66)"
+ },
+ "Observed1": {
+  "ObservedUtc": "2026-10-11T03:47:57.678Z",
+  "BinaryPath": "%LOCALAPPDATA%/OpenAI/Codex/bin/2e5e00daee91c61d/codex.exe",
+  "BinaryHash": "d13914ced6c7af174d8d638db938284231227312104b06a25e9608c632a7daec",
+  "OnlyCodexExeUnderBin": true,
+  "BinDirCreatedLocal": "2026-10-10T20:51:30 (UTC-6; = 2026-10-11T02:51:30Z)",
+  "CompanionExecutables": [
+   "codex-code-mode-host.exe",
+   "codex-command-runner.exe",
+   "codex-windows-sandbox-setup.exe"
+  ],
+  "AppVersion": "26.1007.2314.0",
+  "Fingerprint": "F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113",
+  "FingerprintLastWriteTimeUtc": "2026-10-11T02:54:45.404Z",
+  "FingerprintLength": 4777,
+  "KeyNamesCount": 107,
+  "KeyNamesEqualPreviousBaseline": true
+ },
+ "Classification": "actualización automática observada desde fuera (cambian BinaryHash y AppVersion) con huella resultante nueva: P-01 para toda invocación de codex-cli hasta una OD-2 nueva (OD-2-MAT = A); por A-2 (A2-P2) cabe un bloque de medición nuevo para el par exacto, con autorización por bloque; por A4-1, reglas 3 y 4, la actualización abre otra medición de A4-1. Nada de esto autoriza consumo por sí mismo (§67, punto 3)",
+ "Stability": "observación 1; la regla 3 de A2-P2 exige el par observado con su huella resultante estable: hace falta una segunda observación sin cambios",
+ "NotObserved": [
+  "CliVersion (codex --version es una ejecución que ninguna autorización vigente cubre)",
+  "AuthState (codex login status, ídem)"
+ ]
+}
