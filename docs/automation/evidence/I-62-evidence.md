@@ -3584,3 +3584,11 @@ solo desde artefactos custodiados.
 - **Solicitud** ([request](I-62-F6/requests/FX-02-A2P2-block-request-2026-10-11.md)): al Owner, `OD-2` sobre `F909F480…` y `BLOQUE-CODEX-CONSUMO`
   para el par nuevo; al Coordinator, la disposición del bloque (sondas, celdas, directorios, política de comandos, veredictos).
 - **Validación:** commits solo de documentación, validados por la CI (§68.5).
+
+## 127. Decisiones §69: OD-2 = A sobre F909F480 y bloque A2-P2 autorizado; verificación previa al bloque
+
+- **Owner:** `OD-2 = A` sobre la huella nueva y `BLOQUE-CODEX-CONSUMO = A` para el par `d13914ce…/26.1007.2314.0`, byte a byte las de la solicitud
+  (`06ea65fa…`).
+- **Coordinator:** bloque A2-P2 autorizado; sonda 1 NATIVE_CONTROLLER en `A2` y, después, sonda 2 NATIVE_ARCHITECT en `arch-a2p2v4`; política de
+  comandos; condiciones de parada; A4-1 solo con autorización aparte.
+- **Verificación previa (2026-10-11):** binario, app y huella iguales al par autorizado (un solo `codex.exe`). Par estable (A2-P2, regla 3): huella F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113 sin cambios en las observaciones 1 y 2 (03:47:57Z y 04:46:50Z) y en la verificación previa al bloque.

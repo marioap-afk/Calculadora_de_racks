@@ -1,0 +1,2460 @@
+{
+ "Kit": "a2p2-v4",
+ "Schema": "a2p2-v4-selftest-report (autoensayo de la supervisión; sin modelo)",
+ "UtcWritten": "2026-10-11T04:43:57Z",
+ "NoModelInvoked": true,
+ "CodexInvoked": false,
+ "CodexHomeRead": false,
+ "CfgFpRun": false,
+ "Clones": {
+  "Controller": "D:\\r62-fixture\\tmp-a2p2v4-selftest (fx/u1, 95bdc29d, --no-local, core.autocrlf=false)",
+  "Architect": "D:\\r62-fixture\\tmp-a2p2v4-arch (ídem; solo para el arnés de puertas)",
+  "DeletedAtEnd": true
+ },
+ "Modes": {
+  "cmd-a41": {
+   "AllCasesPass": true,
+   "StatusIgnoredRestored": true,
+   "Steps": {
+    "stage": 0,
+    "unstage": 0
+   },
+   "StatusIgnored": {
+    "0-before-stage": [],
+    "1-after-stage": [
+     "!! artifacts/"
+    ],
+    "2-after-run": [
+     "!! artifacts/"
+    ],
+    "3-after-unstage": []
+   },
+   "JsonschemaAvailable": false,
+   "ReferenceHighlights": {
+    "Checks": {
+     "Termination": "pass",
+     "Handoff": "pass",
+     "Authority": "fail",
+     "Contract": "pass",
+     "Identity": "pass",
+     "Remote": "pass",
+     "Scope": "fail",
+     "CleanTree": "pass",
+     "Ci": "fail",
+     "Ci.RedPart": "pass",
+     "Tests": "fail",
+     "Tests.RedPart": "pass",
+     "Trailer": "fail",
+     "Routing": "pass",
+     "FreeText": "pass",
+     "Denials": "pass"
+    },
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "FailureClass": "Authority",
+    "MapVerdict": "MAP_INVALID",
+    "MvFailed": "MV-3,MV-4,MV-6,MV-7",
+    "Mv4Mismatches": 7,
+    "EFF": "fbe25347799e5b801ef708454212335537448bd1",
+    "ClassifyP": "I62",
+    "StageHead": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "ScopeDiffCount": 15,
+    "KeysRequested": 176
+   },
+   "StrictAudit": {
+    "probe-schema.cmd-a41.json": {
+     "RootIsObjectWithoutAnyOf": true,
+     "StructuralIssues": [],
+     "Keywords": {
+      "additionalProperties": 48,
+      "description": 24,
+      "enum": 64,
+      "items": 27,
+      "minLength": 17,
+      "minimum": 6,
+      "pattern": 30,
+      "required": 48,
+      "title": 2,
+      "type": 263
+     },
+     "NotDocumentedAsSupported": [
+      "minLength"
+     ],
+     "DocumentedUnsupported": [],
+     "NotEmpiricallyAccepted": [],
+     "ObjectNestingDepth": 5,
+     "ObjectProperties": 235,
+     "EnumValues": 232,
+     "NamesAndEnumChars": 4128,
+     "WithinDocumentedLimits": true
+    }
+   },
+   "Cases": [
+    {
+     "Case": "P0_perfecta",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N1_falta_clave_status",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_B_git_y_hashes"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N2_hash_erroneo",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_B_git_y_hashes"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N3_conteo_trx_erroneo",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_D_trx_y_ci"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N4_mapa_veredicto_erroneo",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_E_mapa_I62"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N4b_ClauseMapBlob_erroneo",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_E_mapa_I62"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N5_copia_no_ascii_no_textual",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_C_fidelidad_de_entradas"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N5b_Objective_sin_tilde",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_F_esquemas_canonicos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N6_ls_remote_alterado_en_salida",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_B_git_y_hashes"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N6b_ls_remote_del_origen_cambio",
+     "Expected": "REFERENCE_UNSTABLE",
+     "Verdict": "REFERENCE_UNSTABLE",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N7_delegacion_invalida_esquema",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_F_esquemas_canonicos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": false,
+      "delegation_v2": false,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N8_verificacion_incoherente",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_F_esquemas_canonicos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N9_interprete_completado",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "Operations.OP_A_shell": true
+     },
+     "FailedOperations": [
+      "OP_A_shell"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N10_tope_vencido",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N11_escritura_en_area_ignorada",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N12_routing_incoherente",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_F_esquemas_canonicos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N13_falta_clave_vacia_rt",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_B_git_y_hashes"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N14_negativo_nc2_erroneo",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_G_controles_negativos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N15_N7b_campos_erroneos",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_G_controles_negativos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N16_verificacion_check_erroneo",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_F_esquemas_canonicos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "C1_merge_base_no_es_escritura",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "EventsCommandAudit.git_write": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "C2_fetch_es_escritura",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "Operations.OP_A_shell": true
+     },
+     "FailedOperations": [
+      "OP_A_shell"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    }
+   ]
+  },
+  "native-controller": {
+   "AllCasesPass": true,
+   "StatusIgnoredRestored": true,
+   "Steps": {
+    "stage": 0,
+    "unstage": 0
+   },
+   "StatusIgnored": {
+    "0-before-stage": [],
+    "1-after-stage": [
+     "!! artifacts/"
+    ],
+    "2-after-run": [
+     "!! artifacts/"
+    ],
+    "3-after-unstage": []
+   },
+   "JsonschemaAvailable": false,
+   "ReferenceHighlights": {
+    "Checks": {
+     "Termination": "pass",
+     "Handoff": "pass",
+     "Authority": "fail",
+     "Contract": "pass",
+     "Identity": "pass",
+     "Remote": "pass",
+     "Scope": "fail",
+     "CleanTree": "pass",
+     "Ci": "fail",
+     "Ci.RedPart": "pass",
+     "Tests": "fail",
+     "Tests.RedPart": "pass",
+     "Trailer": "fail",
+     "Routing": "pass",
+     "FreeText": "pass",
+     "Denials": "pass"
+    },
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "FailureClass": "Authority",
+    "MapVerdict": "MAP_INVALID",
+    "MvFailed": "MV-3,MV-4,MV-6,MV-7",
+    "Mv4Mismatches": 7,
+    "EFF": "fbe25347799e5b801ef708454212335537448bd1",
+    "ClassifyP": "I62",
+    "StageHead": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "ScopeDiffCount": 15,
+    "KeysRequested": 175
+   },
+   "StrictAudit": {
+    "probe-schema.native-controller.json": {
+     "RootIsObjectWithoutAnyOf": true,
+     "StructuralIssues": [],
+     "Keywords": {
+      "additionalProperties": 48,
+      "description": 24,
+      "enum": 64,
+      "items": 27,
+      "minLength": 17,
+      "minimum": 6,
+      "pattern": 30,
+      "required": 48,
+      "title": 2,
+      "type": 263
+     },
+     "NotDocumentedAsSupported": [
+      "minLength"
+     ],
+     "DocumentedUnsupported": [],
+     "NotEmpiricallyAccepted": [],
+     "ObjectNestingDepth": 5,
+     "ObjectProperties": 235,
+     "EnumValues": 232,
+     "NamesAndEnumChars": 4128,
+     "WithinDocumentedLimits": true
+    }
+   },
+   "Cases": [
+    {
+     "Case": "P0_pwsh_runtime",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "NativeRoute.DefaultShell": true,
+      "NativeRoute.ShellLimitationPersists": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "P1_cmd_sin_firma",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "cmd",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "NativeRoute.DefaultShell": true,
+      "NativeRoute.CmdA41Opens": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "P2_interprete_libre",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "EventsCommandAudit.interpreter": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "P3_mergebase_no_escribe",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "EventsCommandAudit.git_write": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "P4_fetch_fallido",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "EventsCommandAudit.git_write": true,
+      "EventsCommandAudit.git_write_completed": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "P5_redir_null",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "EventsCommandAudit.file_write": true,
+      "EventsCommandAudit.network": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "F1_F6_fallback_cmd",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-windowsapps",
+      "ModelFallback": true,
+      "ShellLimitationPersists": true
+     },
+     "ExtraChecks": {
+      "NativeRoute.ShellLimitationPersists": true,
+      "NativeRoute.ModelFallback": true,
+      "NativeRoute.CmdA41Opens": true,
+      "NativeRoute.DefaultShell": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "F2_F6_sin_fallback",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-windowsapps",
+      "ModelFallback": false,
+      "ShellLimitationPersists": true
+     },
+     "ExtraChecks": {
+      "NativeRoute.ShellLimitationPersists": true,
+      "Operations.OP_A_shell": true
+     },
+     "FailedOperations": [
+      "OP_A_shell",
+      "OP_B_git_y_hashes",
+      "OP_C_fidelidad_de_entradas",
+      "OP_D_trx_y_ci",
+      "OP_E_mapa_I62",
+      "OP_F_esquemas_canonicos",
+      "OP_G_controles_negativos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": false,
+      "delegation_v2": false,
+      "controller_verification_v2": false
+     }
+    },
+    {
+     "Case": "F3_F6_en_stderr",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": true
+     },
+     "ExtraChecks": {
+      "NativeRoute.ShellLimitationPersists": true,
+      "NativeRoute.F6Obs03Signature.in_stderr": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N_fetch_ok",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "Operations.OP_A_shell": true
+     },
+     "FailedOperations": [
+      "OP_A_shell"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N_escritura_ok",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "Operations.OP_A_shell": true
+     },
+     "FailedOperations": [
+      "OP_A_shell"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N_redir_archivo",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "Operations.OP_A_shell": true
+     },
+     "FailedOperations": [
+      "OP_A_shell"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N_red_ok",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "Operations.OP_A_shell": true
+     },
+     "FailedOperations": [
+      "OP_A_shell"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N_lsremote_github",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "Operations.OP_A_shell": true
+     },
+     "FailedOperations": [
+      "OP_A_shell"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N_falta_shell",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "Operations.OP_A_shell": true
+     },
+     "FailedOperations": [
+      "OP_A_shell"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N1_falta_status",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_B_git_y_hashes"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N2_hash",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_B_git_y_hashes"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N3_trx",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_D_trx_y_ci"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N4_mapa",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_E_mapa_I62"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N5_no_ascii",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_C_fidelidad_de_entradas"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N6b_origen_cambio",
+     "Expected": "REFERENCE_UNSTABLE",
+     "Verdict": "REFERENCE_UNSTABLE",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N7_canonico_invalido",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_F_esquemas_canonicos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": false,
+      "delegation_v2": false,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N10_tope",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N11_area_ignorada",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N14_nc2",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_G_controles_negativos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N16_check",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {},
+     "FailedOperations": [
+      "OP_F_esquemas_canonicos"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    },
+    {
+     "Case": "N17_identidad",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": null,
+     "BelowCauses": null,
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "IdentityStable": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "delegation_v2": true,
+      "controller_verification_v2": true
+     }
+    }
+   ]
+  },
+  "native-architect": {
+   "AllCasesPass": true,
+   "StatusIgnoredRestored": true,
+   "Steps": {},
+   "StatusIgnored": {
+    "0-before-stage": [],
+    "1-after-stage": [],
+    "2-after-run": [],
+    "3-after-unstage": []
+   },
+   "JsonschemaAvailable": false,
+   "ReferenceHighlights": {
+    "KeysRequested": 52,
+    "RequiredInputs": [
+     "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+     "docs/automation/decisions/FX-U1.md",
+     "docs/automation/state/FX-U1.yml",
+     "src/Fixture.Lib/Calculator.cs",
+     "tests/Fixture.Tests/CalculatorTests.cs",
+     "AGENTS.md",
+     "docs/AUTOMATION_PLAN.md"
+    ],
+    "TargetBlob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+    "Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "Authorities": [
+     {
+      "Path": "docs/automation/decisions/FX-U1.md",
+      "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+      "Blob": "d3f3ec72974a65e05ebd7ad4d1c0b3ced7a07c93"
+     },
+     {
+      "Path": "docs/automation/state/FX-U1.yml",
+      "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+      "Blob": "52a3f7d77a4df1a2e70e5d443eece3384cebd670"
+     },
+     {
+      "Path": "src/Fixture.Lib/Calculator.cs",
+      "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+      "Blob": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+     },
+     {
+      "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+      "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+      "Blob": "cd43240b64a3d587915fa852d5fbf5947b8d8fe2"
+     },
+     {
+      "Path": "AGENTS.md",
+      "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+      "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+     },
+     {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+      "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+     }
+    ]
+   },
+   "StrictAudit": {
+    "probe-schema.native-architect.json": {
+     "RootIsObjectWithoutAnyOf": true,
+     "StructuralIssues": [],
+     "Keywords": {
+      "additionalProperties": 24,
+      "description": 26,
+      "enum": 19,
+      "items": 20,
+      "minLength": 45,
+      "minimum": 7,
+      "pattern": 18,
+      "required": 24,
+      "title": 1,
+      "type": 152
+     },
+     "NotDocumentedAsSupported": [
+      "minLength"
+     ],
+     "DocumentedUnsupported": [],
+     "NotEmpiricallyAccepted": [],
+     "ObjectNestingDepth": 6,
+     "ObjectProperties": 131,
+     "EnumValues": 56,
+     "NamesAndEnumChars": 1800,
+     "WithinDocumentedLimits": true
+    }
+   },
+   "Cases": [
+    {
+     "Case": "P0_con_observacion",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "MATCH_OR_ABOVE_REQUIRED",
+     "BelowCauses": [],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true,
+      "ClassificationFinal": true,
+      "Routing.State": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "P0b_sin_observacion",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "MATCH_OR_ABOVE_REQUIRED",
+     "BelowCauses": [],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true,
+      "ClassificationFinal": true,
+      "Routing.State": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "P0c_effort_superior",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "MATCH_OR_ABOVE_REQUIRED",
+     "BelowCauses": [],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true,
+      "Routing.State": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "F1_F6_como_A2P2_s2",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "EXECUTION_REJECTED",
+      "READ_NOT_DEMONSTRATED",
+      "OUTPUT_CONTRACT"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-windowsapps",
+      "ModelFallback": false,
+      "ShellLimitationPersists": true
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true,
+      "Requirements.ARCHITECTURE_REVIEW.read.State": true
+     },
+     "FailedOperations": [
+      "ARQ_A_entorno",
+      "ARQ_B_objeto_revisado",
+      "ARQ_C_autoridades_fieles",
+      "ARQ_D_controles_negativos",
+      "ARQ_E_salida_canonica"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": false,
+      "architect_review_result_v1": false
+     }
+    },
+    {
+     "Case": "F2_F6_fallback_cmd",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "MATCH_OR_ABOVE_REQUIRED",
+     "BelowCauses": [],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-windowsapps",
+      "ModelFallback": true,
+      "ShellLimitationPersists": true
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true,
+      "NativeRoute.ModelFallback": true,
+      "NativeRoute.ShellLimitationPersists": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_raya_no_textual",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "READ_NOT_DEMONSTRATED"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true
+     },
+     "FailedOperations": [
+      "ARQ_C_autoridades_fieles"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_blob_objeto",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "READ_NOT_DEMONSTRATED"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true
+     },
+     "FailedOperations": [
+      "ARQ_B_objeto_revisado"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_falta_heading",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "READ_NOT_DEMONSTRATED"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true
+     },
+     "FailedOperations": [
+      "ARQ_C_autoridades_fieles"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_veredicto_enum",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "OUTPUT_CONTRACT"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true,
+      "CanonicalChecks.schema_valid": true
+     },
+     "FailedOperations": [
+      "ARQ_E_salida_canonica"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": false,
+      "architect_review_result_v1": false
+     }
+    },
+    {
+     "Case": "N_ReviewedBlob",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "OUTPUT_CONTRACT"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true,
+      "CanonicalChecks.field:ReviewedBlob": true
+     },
+     "FailedOperations": [
+      "ARQ_E_salida_canonica"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_cita_no_textual",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "OUTPUT_CONTRACT"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true,
+      "CanonicalChecks.PremiseRefs_textuales": true
+     },
+     "FailedOperations": [
+      "ARQ_E_salida_canonica"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_InputsRead",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "OUTPUT_CONTRACT"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true
+     },
+     "FailedOperations": [
+      "ARQ_E_salida_canonica"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_independencia",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "OUTPUT_CONTRACT"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true
+     },
+     "FailedOperations": [
+      "ARQ_E_salida_canonica"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_tope",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "PROCESS_EXIT_OR_TIMEOUT"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_identidad",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "MEASUREMENT_VOID",
+     "BelowCauses": [],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_effort_inferior",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "EFFORT_BELOW_REQUIRED"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true,
+      "Routing.State": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_modelo_distinto",
+     "Expected": "ALL_OPERATIONS_DEMONSTRATED",
+     "Verdict": "ALL_OPERATIONS_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "MEASUREMENT_VOID",
+     "BelowCauses": [],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_fetch_ok",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "WRITE_OR_NETWORK"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true
+     },
+     "FailedOperations": [
+      "ARQ_A_entorno"
+     ],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    },
+    {
+     "Case": "N_area_ignorada",
+     "Expected": "NOT_DEMONSTRATED",
+     "Verdict": "NOT_DEMONSTRATED",
+     "Pass": true,
+     "Classification": "BELOW_REQUIRED",
+     "BelowCauses": [
+      "WORKTREE_CHANGED"
+     ],
+     "NativeRoute": {
+      "DefaultShell": "pwsh-runtime",
+      "ModelFallback": false,
+      "ShellLimitationPersists": false
+     },
+     "ExtraChecks": {
+      "ArchitectCellClassification": true
+     },
+     "FailedOperations": [],
+     "LocalSchemaValid": {
+      "probe-schema": true,
+      "architect_review_result_v1": true
+     }
+    }
+   ]
+  }
+ },
+ "GatesHarness": {
+  "Harness": "selftest-gates.sh (kit a2p2-v4)",
+  "NoModelInvoked": true,
+  "MeasureCalled": false,
+  "CodexHomeRead": false,
+  "Cases": [
+   {
+    "Case": "G01_pasa",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 0,
+    "Pass": true,
+    "Result": "PASS"
+   },
+   {
+    "Case": "G02_sin_OD2",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "od2-line.txt no consta literal, como línea completa, en el archivo de decisiones"
+   },
+   {
+    "Case": "G03_sin_consumo_bloque",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "bloque-consumo-line.txt no consta literal, como línea completa, en el archivo de decisiones"
+   },
+   {
+    "Case": "G04_par_anterior",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "la disposición del bloque no nombra BinaryHash, AppVersion y la huella estable, en ese orden"
+   },
+   {
+    "Case": "G05_marcador_plantilla",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "DISP_NATIVE_CONTROLLER_MARKER conserva un marcador de la plantilla"
+   },
+   {
+    "Case": "G06_directorio_no_fijado",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "la disposición no fija este directorio -C (D:\\r62-fixture\\tmp-a2p2v4-selftest)"
+   },
+   {
+    "Case": "G07_sin_modo",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "la disposición no nombra el modo NATIVE_CONTROLLER"
+   },
+   {
+    "Case": "G08_sin_estabilidad",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "la observación estable del par no consta en el archivo de evidencia"
+   },
+   {
+    "Case": "G09_ya_lanzada",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "la sonda NATIVE_CONTROLLER ya se lanzó: tope 1 y sin reintento"
+   },
+   {
+    "Case": "G10_ya_custodiada",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "ya hay una medición custodiada de NATIVE_CONTROLLER (*a2p2-v4-controller*): un lanzamiento por modo"
+   },
+   {
+    "Case": "G11_tope_del_bloque",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "el bloque A2-P2 de este par ya consumió sus dos sondas"
+   },
+   {
+    "Case": "G12_clon_con_ignorados",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "PROBE_DIR no está limpio (incluidos los ignorados): clon fresco requerido"
+   },
+   {
+    "Case": "G13_mismo_directorio",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "el -C del Controller y el del Architect no pueden ser el mismo directorio"
+   },
+   {
+    "Case": "G14_directorio_no_admitido",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "directorio no admitido para esta sonda (d:/r62-fixture/a)"
+   },
+   {
+    "Case": "G15_salidas_previas",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "hay salidas de una sonda anterior en out/native-controller/"
+   },
+   {
+    "Case": "G16_BAD_SHA_existe",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "BAD_SHA existe en el clon: el camino de error no se ejercería"
+   },
+   {
+    "Case": "G17_proyeccion_estricta",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 0,
+    "Pass": true,
+    "Result": "PASS"
+   },
+   {
+    "Case": "G18_sin_gates",
+    "Mode": "NATIVE_CONTROLLER",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "falta gates.env (copia de gates.env.template rellenada con los literales del registro)"
+   },
+   {
+    "Case": "A01_pasa",
+    "Mode": "NATIVE_ARCHITECT",
+    "ExitCode": 0,
+    "Pass": true,
+    "Result": "PASS"
+   },
+   {
+    "Case": "A02_A2_no_admitido",
+    "Mode": "NATIVE_ARCHITECT",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "el Architect no usa A2 (es el -C del Controller y del titular A2 de FX-02)"
+   },
+   {
+    "Case": "A03_blob_objeto",
+    "Mode": "NATIVE_ARCHITECT",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "el blob del contrato en TARGET_COMMIT no es TARGET_BLOB"
+   },
+   {
+    "Case": "A04_tope_del_bloque",
+    "Mode": "NATIVE_ARCHITECT",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "el bloque A2-P2 de este par ya consumió sus dos sondas"
+   },
+   {
+    "Case": "A05_ruta_ausente_existe",
+    "Mode": "NATIVE_ARCHITECT",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "ARQ_MISSING_PATH existe en AR: el camino de error no se ejercería"
+   },
+   {
+    "Case": "A06_disposicion_de_otro_modo",
+    "Mode": "NATIVE_ARCHITECT",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "la disposición no nombra el modo NATIVE_ARCHITECT"
+   },
+   {
+    "Case": "A07_sin_OD2",
+    "Mode": "NATIVE_ARCHITECT",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "od2-line.txt no consta literal, como línea completa, en el archivo de decisiones"
+   },
+   {
+    "Case": "C01_sin_sonda_nativa",
+    "Mode": "CMD_A41",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "CMD_A41 solo tras la sonda NATIVE_CONTROLLER comparada (comparison.json local o custodiado)"
+   },
+   {
+    "Case": "C02_sin_limitacion_de_shell",
+    "Mode": "CMD_A41",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "la sonda NATIVE_CONTROLLER no muestra la limitación de shell (F6-OBS-03): CMD_A41 no se abre"
+   },
+   {
+    "Case": "C03_pasa",
+    "Mode": "CMD_A41",
+    "ExitCode": 0,
+    "Pass": true,
+    "Result": "PASS"
+   },
+   {
+    "Case": "C04_sin_consumo_A41",
+    "Mode": "CMD_A41",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "a41-consumo-line.txt no consta literal, como línea completa, en el archivo de decisiones"
+   },
+   {
+    "Case": "C05_disposicion_sin_cmd",
+    "Mode": "CMD_A41",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "la disposición de CMD_A41 no nombra la shell cmd.exe"
+   },
+   {
+    "Case": "C06_segunda_A41_custodiada",
+    "Mode": "CMD_A41",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "A4-1: la evidencia no tiene exactamente la medición consumida R20261010T000542Z-a4-1-probe (regla 3: una más solo con un bloque nuevo)"
+   },
+   {
+    "Case": "C07_trio_anterior",
+    "Mode": "CMD_A41",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "la disposición de CMD_A41 no nombra el trío nuevo (BinaryHash, AppVersion, huella)"
+   },
+   {
+    "Case": "C08_sin_OD2",
+    "Mode": "CMD_A41",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "od2-line.txt no consta literal, como línea completa, en el archivo de decisiones"
+   },
+   {
+    "Case": "C09_ya_lanzada",
+    "Mode": "CMD_A41",
+    "ExitCode": 2,
+    "Pass": true,
+    "Result": "la sonda CMD_A41 ya se lanzó: tope 1 y sin reintento"
+   }
+  ],
+  "AllCasesPass": true,
+  "ClonesCleanAfter": {
+   "controller": true,
+   "architect": true
+  }
+ },
+ "RealEventAudits": {
+  "R20261009T041427Z-a2p2-block_probe1": {
+   "commands": 19,
+   "completed_ok": 9,
+   "failed": 10,
+   "git_write": 0,
+   "network": 0,
+   "file_write": 0,
+   "forbidden_completed": 1,
+   "usage_limit_signal": false,
+   "DefaultShell": "pwsh-windowsapps",
+   "ShellsUsed": {
+    "pwsh-windowsapps": {
+     "total": 3,
+     "ok": 0
+    },
+    "cmd": {
+     "total": 16,
+     "ok": 9
+    }
+   },
+   "F6Obs03": {
+    "present": true,
+    "count": 3,
+    "shells": [
+     "pwsh-windowsapps"
+    ],
+    "in_stderr": true
+   },
+   "ModelFallback": true,
+   "ShellLimitationPersists": true
+  },
+  "R20261009T041427Z-a2p2-block_probe2": {
+   "commands": 6,
+   "completed_ok": 0,
+   "failed": 6,
+   "git_write": 0,
+   "network": 0,
+   "file_write": 0,
+   "forbidden_completed": 0,
+   "usage_limit_signal": false,
+   "DefaultShell": "pwsh-windowsapps",
+   "ShellsUsed": {
+    "pwsh-windowsapps": {
+     "total": 6,
+     "ok": 0
+    }
+   },
+   "F6Obs03": {
+    "present": true,
+    "count": 6,
+    "shells": [
+     "pwsh-windowsapps"
+    ],
+    "in_stderr": true
+   },
+   "ModelFallback": false,
+   "ShellLimitationPersists": true
+  },
+  "R20261010T000542Z-a4-1-probe_probe": {
+   "commands": 11,
+   "completed_ok": 7,
+   "failed": 4,
+   "git_write": 0,
+   "network": 0,
+   "file_write": 0,
+   "forbidden_completed": 0,
+   "usage_limit_signal": false,
+   "DefaultShell": "cmd",
+   "ShellsUsed": {
+    "cmd": {
+     "total": 11,
+     "ok": 7
+    }
+   },
+   "F6Obs03": {
+    "present": false,
+    "count": 0,
+    "shells": [],
+    "in_stderr": false
+   },
+   "ModelFallback": false,
+   "ShellLimitationPersists": false
+  }
+ },
+ "A41Recompare": {
+  "Source": "copia de OD-2/R20261010T000542Z-a4-1-probe (evidencia custodiada; sin escribir en ella)",
+  "VerdictV4": "NOT_DEMONSTRATED",
+  "VerdictV3": "NOT_DEMONSTRATED",
+  "OperationsV4": {
+   "OP_A_shell": true,
+   "OP_B_git_y_hashes": false,
+   "OP_C_fidelidad_de_entradas": false,
+   "OP_D_trx_y_ci": false,
+   "OP_E_mapa_I62": false,
+   "OP_F_esquemas_canonicos": false,
+   "OP_G_controles_negativos": false
+  },
+  "OperationsV3": {
+   "OP_A_shell": false,
+   "OP_B_git_y_hashes": false,
+   "OP_C_fidelidad_de_entradas": false,
+   "OP_D_trx_y_ci": false,
+   "OP_E_mapa_I62": false,
+   "OP_F_esquemas_canonicos": false,
+   "OP_G_controles_negativos": false
+  },
+  "GitWriteV4": 0,
+  "GitWriteV3": 2,
+  "FailedKeysV4": 68
+ },
+ "ArmedPrompts": {
+  "native-controller": {
+   "Chars": 20604,
+   "Sha256": "f88d3313d57f993d3bbe72f1f7e6582982afa07b1e5a27bd1fe0bef4f89662b7",
+   "NamesCmdExe": false,
+   "NamesCertutilOrFindstr": false
+  },
+  "native-architect": {
+   "Chars": 7392,
+   "Sha256": "4d7adb7a1086a971de33c7e5f46994a0320b36e081dcb1d5465124b55ad7db97",
+   "NamesCmdExe": false,
+   "NamesCertutilOrFindstr": false
+  },
+  "cmd-a41": {
+   "Chars": 20751,
+   "Sha256": "455f90342b3a303087ac5300ef2ecfcf30899d99331b7c9c52a86abb1b8fe1e5",
+   "NamesCmdExe": true,
+   "NamesCertutilOrFindstr": true,
+   "DiffVsV3": "solo IssuedBy («kit a41-v3» → «kit a2p2-v4») y dos Sha256 de bindings sintéticos (diff por palabras contra OD-2/R20261010T000542Z-a4-1-probe/probe-prompt.txt)"
+  }
+ },
+ "CmdA41SchemasVsV3": {
+  "probe-schema.cmd-a41.json": {
+   "EqualToV3ExceptDescription": true,
+   "DescriptionIsV3Rekeyed": true
+  },
+  "probe-schema.cmd-a41.strict-projection.json": {
+   "EqualToV3ExceptDescription": true,
+   "DescriptionIsV3Rekeyed": true
+  }
+ },
+ "CmdA41TemplateAndShellDeclarationVsV3": {
+  "probe-prompt.cmd-a41.template.txt": true,
+  "shell-declaration.txt": true,
+  "cfg-fp.ps1": true
+ },
+ "BaselineKeynamesIdenticalToV3": true,
+ "RegexCases": {
+  "Cases": [
+   {
+    "Command": "\"C:\\WINDOWS\\system32\\cmd.exe\" /c 'git merge-base --is-ancestor a b & git merge-base x y'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     0
+    ],
+    "Got": [
+     0,
+     0,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"C:\\WINDOWS\\system32\\cmd.exe\" /c 'echo X & git fetch origin'",
+    "Expected(git_write,network,file_write)": [
+     1,
+     1,
+     0
+    ],
+    "Got": [
+     1,
+     1,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command 'Select-String -Pattern \"git push\" -Path a.md'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     0
+    ],
+    "Got": [
+     0,
+     0,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command 'findstr /c:\"Coordinador del fixture\" a.md'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     0
+    ],
+    "Got": [
+     0,
+     0,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command 'Set-Content x.txt 1'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     1
+    ],
+    "Got": [
+     0,
+     0,
+     1
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command 'git rev-parse HEAD | Out-File h.txt'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     1
+    ],
+    "Got": [
+     0,
+     0,
+     1
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command '$h = git rev-parse HEAD; git rev-parse HEAD > h.txt'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     1
+    ],
+    "Got": [
+     0,
+     0,
+     1
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command 'git -C D:/x -c core.quotepath=off log --oneline -3; git stash list; git tag -l; git branch --show-current'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     0
+    ],
+    "Got": [
+     0,
+     0,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command 'git branch nuevo'",
+    "Expected(git_write,network,file_write)": [
+     1,
+     0,
+     0
+    ],
+    "Got": [
+     1,
+     0,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command 'git ls-remote origin refs/heads/main; git ls-remote --heads origin'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     0
+    ],
+    "Got": [
+     0,
+     0,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command 'git ls-remote github refs/heads/main'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     1,
+     0
+    ],
+    "Got": [
+     0,
+     1,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command '$r = Invoke-WebRequest https://x'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     1,
+     0
+    ],
+    "Got": [
+     0,
+     1,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"C:\\WINDOWS\\system32\\cmd.exe\" /c 'del x.txt'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     1
+    ],
+    "Got": [
+     0,
+     0,
+     1
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"C:\\WINDOWS\\system32\\cmd.exe\" /c 'type a.json 2>nul & certutil -hashfile a SHA256'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     0
+    ],
+    "Got": [
+     0,
+     0,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command 'git hash-object a.txt; git hash-object -w a.txt'",
+    "Expected(git_write,network,file_write)": [
+     1,
+     0,
+     0
+    ],
+    "Got": [
+     1,
+     0,
+     0
+    ],
+    "Pass": true
+   },
+   {
+    "Command": "\"…\\pwsh.exe\" -Command 'Get-Content a.xml | Select-String \"</Results>\"'",
+    "Expected(git_write,network,file_write)": [
+     0,
+     0,
+     0
+    ],
+    "Got": [
+     0,
+     0,
+     0
+    ],
+    "Pass": true
+   }
+  ],
+  "AllPass": true
+ },
+ "SyntaxChecks": {
+  "bash -n run_probe.sh": "OK",
+  "bash -n selftest-gates.sh": "OK",
+  "python -W error -m py_compile probe_tools.py": "OK",
+  "PowerShell Parser (cfg-fp.ps1, procs-snapshot.ps1, make-arch-clone.ps1)": "0 errores",
+  "procs-snapshot.ps1 ejecutado": "5 procesos codex*, ninguno con el directorio de prueba; solo nombres, PID y booleanos"
+ },
+ "AllPass": true
+}

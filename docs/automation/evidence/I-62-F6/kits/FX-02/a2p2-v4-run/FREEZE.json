@@ -1,0 +1,123 @@
+{
+ "Schema": "i62-a2p2-v4-freeze (supervisión, plano a)",
+ "Authority": "decisiones §69 (bloque A2-P2 autorizado para d13914ce…/26.1007.2314.0/F909F480…; sonda 1 NATIVE_CONTROLLER en D:\\r62-fixture\\A2; sonda 2 NATIVE_ARCHITECT en arch-a2p2v4 tras custodiar la 1); Owner: OD-2 = A sobre F909F480… y BLOQUE-CODEX-CONSUMO = A (§69)",
+ "FrozenUtc": "2026-10-11T04:59:56Z",
+ "RunCopy": "scratchpad de la supervisión (a2p2-run), byte a byte igual a este directorio; out/ no existe antes del lanzamiento",
+ "Files": {
+  "README.md": {
+   "Bytes": 33855,
+   "Sha256": "5626064325eb46298bac78c10b1ed30edd0d195b60546fd6680d642ef7f4ab46"
+  },
+  "a41-consumo-line.txt": {
+   "Bytes": 501,
+   "Sha256": "4b081e4e37a54fefca931b1ad3a5a621c64bc9c298e9b82333710c8ee9381746"
+  },
+  "baseline-keynames-F909F480.json": {
+   "Bytes": 4291,
+   "Sha256": "076637c550ff0b3109447ef00263ff087749f0aaa71f299d524e43b8cf82b70b"
+  },
+  "bloque-consumo-line.txt": {
+   "Bytes": 322,
+   "Sha256": "953088c953075af184a017fcf48a98c5540ee0cc4e5123edf719fc969f57bf5b"
+  },
+  "cfg-fp.ps1": {
+   "Bytes": 1479,
+   "Sha256": "b1d833c0abc06fec6e27367b6df2715e7cdca321f0d6c6fbadb9f634e6a31bab"
+  },
+  "gates.env": {
+   "Bytes": 7696,
+   "Sha256": "11c3609e46dd479b46c33ed7ce3d0b07838654507e6d70854432e456a2900f7d"
+  },
+  "gates.env.template": {
+   "Bytes": 7337,
+   "Sha256": "c6138c3b7c737c8cf4b004722e3b6dca67784f5e0a4badebc866995e13d7116b"
+  },
+  "make-arch-clone.ps1": {
+   "Bytes": 8955,
+   "Sha256": "f9d1c14c69959a6fd70c2e5b4cd16d88401956089227739d8a1ce791d3242696"
+  },
+  "od2-line.txt": {
+   "Bytes": 161,
+   "Sha256": "b76470163f86592dfda474d44c5e2051d1e05ead667362fb8428c32ef7d4ac96"
+  },
+  "probe-prompt.cmd-a41.template.txt": {
+   "Bytes": 18023,
+   "Sha256": "b16c3f49539bf35341ef44810501ac4f97835a0dbbf5b85bcddbecfaa8c50b96"
+  },
+  "probe-prompt.native-architect.template.txt": {
+   "Bytes": 6461,
+   "Sha256": "af996d146bf225963be9ea1db46959b0d8e139fe266e6d279f48af061cc6a1d8"
+  },
+  "probe-prompt.native-controller.template.txt": {
+   "Bytes": 18259,
+   "Sha256": "1afc221475505bd5b3fbfcf7e2d56d941c3487474cecda91d9bf75bb9a03241c"
+  },
+  "probe-schema.cmd-a41.json": {
+   "Bytes": 36748,
+   "Sha256": "30ee467b25b0746d6ce7d483dc74e33d68577d66c3761f5bd14985c7d46f5b90"
+  },
+  "probe-schema.cmd-a41.strict-projection.json": {
+   "Bytes": 36298,
+   "Sha256": "0ee76a2e723c3f7359135dd2d4d8779f62dd0ad5a06ce27e8a772be25eb1ed0d"
+  },
+  "probe-schema.native-architect.json": {
+   "Bytes": 20630,
+   "Sha256": "80d54fb393945510db66811a174756c6343ba0733c76af9c1fb7b5d05b5435e1"
+  },
+  "probe-schema.native-architect.strict-projection.json": {
+   "Bytes": 19515,
+   "Sha256": "766c98de3be2d44bd76ed70277b149a83817dce3fd260bde7184f45bab5449a4"
+  },
+  "probe-schema.native-controller.json": {
+   "Bytes": 36780,
+   "Sha256": "5c91208f7f3a067fa1591e55706e4e3beaea580ee0ccdfaade5c4132e647eeb4"
+  },
+  "probe-schema.native-controller.strict-projection.json": {
+   "Bytes": 36330,
+   "Sha256": "9b9ddba7b64079a80872bb4226aec71e33f3e90053f11c8cb573cbfcf09bfc7c"
+  },
+  "probe_tools.py": {
+   "Bytes": 158717,
+   "Sha256": "f0f1a8f77af6b867e71c46a1d6b49e518647cd45f85017f258bdef4cee6bb543"
+  },
+  "procs-snapshot.ps1": {
+   "Bytes": 1236,
+   "Sha256": "f879db305dd296d30241cca75cf61ac0a5828077cd2be6277e4128f934afedaf"
+  },
+  "run_probe.sh": {
+   "Bytes": 23271,
+   "Sha256": "de9bc7bfa66145e7634d7cd3efd0248e1cc99944d5a4c2df8037db940121768a"
+  },
+  "selftest-gates.sh": {
+   "Bytes": 11774,
+   "Sha256": "bcb51b8feaed69672606d4af6fd7b2863fd351213e07b1981f3c08754955d089"
+  },
+  "selftest-report.json": {
+   "Bytes": 61312,
+   "Sha256": "352fecf03d697d92ad573f3a08bdaeb87d8501592d74c65feec6148ee6a6b458"
+  },
+  "shell-declaration.txt": {
+   "Bytes": 433,
+   "Sha256": "062c234e06ab718cfd154434967460249d67fe8a8a7a8c0573bf4653ac19faf0"
+  }
+ },
+ "ArmedPromptNativeController": {
+  "Sha256": "f88d3313d57f993d3bbe72f1f7e6582982afa07b1e5a27bd1fe0bef4f89662b7",
+  "Chars": 20604,
+  "Note": "armado en seco; run_probe.sh lo rearma al lanzar y tiene que coincidir"
+ },
+ "Probe1": {
+  "Mode": "NATIVE_CONTROLLER",
+  "Cell": "codex-cli gpt-6-luna/high",
+  "Recipe": "16.4 literal, sin shell declarada",
+  "WorkingDirectory": "D:\\r62-fixture\\A2",
+  "TimeoutS": 600,
+  "Retry": "ninguno"
+ },
+ "Probe2": {
+  "Mode": "NATIVE_ARCHITECT",
+  "Cell": "codex-cli gpt-6.1-sol/high",
+  "WorkingDirectory": "D:\\r62-fixture\\arch-a2p2v4",
+  "Precondition": "sonda 1 terminada, su evidencia custodiada e identidad estable"
+ }
+}
