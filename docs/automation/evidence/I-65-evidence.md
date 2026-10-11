@@ -409,3 +409,22 @@ Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
 | `F1-T2-CANTILEVER-SOURCE-nc4/R20261011T044756Z-8645/delegation.json` | `33B37C79882F3314…` | `fd351532862b` |
 | `F1-T2-CANTILEVER-SOURCE-nc4/R20261011T044756Z-8645/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
 | `F1-T2-CANTILEVER-SOURCE-nc4/R20261011T044756Z-8645/relay-record.json` | `9B718EB954E5AB89…` | `0e8c09dc479b` |
+
+## 24. Cierre de F1 — revisión y criterios de LIFECYCLE §7 (2026-10-11T05:50:18Z)
+
+- **Revisión independiente de conformidad del Architect** sobre `9d0c6619..667a3991 -- src tests`:
+  **CONFORMANT WITH OBSERVATIONS**, sin REQUIRED; 12 hallazgos OPTIONAL A65-F1-01..12
+  ([architect-f1-conformance.md](I-65-f1/architect-f1-conformance.md)). Confirma que CD-I65-F1-14 (lectura de IDL-10) **no es material**.
+- **Revisión del Coordinator** del diff contra el Freeze y las decisiones: CD-I65-F1-11 (T1) y CD-I65-F1-17 (T2); disposición de los
+  hallazgos del Architect en CD-I65-F1-20.
+- **Criterios de LIFECYCLE §7 para F1** (estado en este commit):
+
+| # | Criterio | Estado |
+|---|---|---|
+| 1 | Resultado observado por pruebas | sí: `REF-CANT-01` + archivo de cargas → `StructuralModel` `Valid`, determinista, igual al golden derivado a mano (pruebas `StructuralAnalysisCantileverGoldenTests` en el TRX de `38114105131`) |
+| 2 | RED→GREEN focal por comportamiento nuevo, selección > 0 | sí: T1 271 (RED 167 fallidas) y T2 80 (RED 78 fallidas), acreditados por el Controller |
+| 3 | Pruebas y evidencia exigidas en verde | sí en los SHA de código (`1692804a`, `667a3991`); Core Full local sobre el SHA de cierre: tras este commit |
+| 4 | CI propio del SHA de cierre leído y verde | tras el push de este commit |
+| 5 | Revisión del Coordinator contra Freeze + A-n, sin EXP-01 A abierta | sí (sin A-n; sin EXP-01 A) |
+| 6 | Orden commit → árbol limpio → evidencia local → push → CI | en curso sobre este commit |
+| 7 | Rebase entre gates | no hubo (`origin/main` = `bb0d5522` durante todo F1) |
