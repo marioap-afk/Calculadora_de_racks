@@ -2777,3 +2777,50 @@ No se invoca la planificación de T3.
 - Sin invocaciones de modelos en esta sección.
 - HEAD = remoto = `32d38688` antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`.
+
+## 48. F1-T3-HOST — Sonda del Controller con el CLI vigente y paquete del contrato de gate (NO emitido)
+
+Sección nueva; las anteriores no se reescriben.
+
+**Corrección documental** (§47): commit `29410bfa`, CI 38109672808 push con los 4 jobs en verde.
+
+**Sonda `R20261011T035128Z-515d`** (`docs/automation/evidence/I-64-protocol-bridge/probe/R20261011T035128Z-515d/`): **PASS**.
+- **Celda efectiva:** `gpt-6-luna`/`high`, `cli_version` `0.162.0-alpha.17.2`.
+- **Sandbox:** `read-only`; `permission_profile` con sistema de archivos de solo lectura y red `restricted`.
+- **Salida y oráculo:** salida estructurada válida contra su esquema. Oráculo de Git exacto: HEAD `29410bfa`, `origin/main` `bb0d5522`, blob
+  del estado `70310eab`; 3 órdenes con código 0.
+- **Sin efectos colaterales:** sin avisos de límite (P-06), sin credenciales ni compras, sin escritura Git, sin mutación de producto.
+- **`config.toml`:** instantánea C antes y después (105 nombres).
+- **Procesos:** sin participantes; lanzador muerto.
+- **CLI:** los directorios nuevos de `Codex/bin` (node_repl, node, rg) no son CLI de Codex; el único CLI sigue siendo el `0.162.0-alpha.17.2`.
+- **Resultado:** la celda queda elegible para la planificación y la verificación de T3.
+
+**Paquete del contrato de T3** (`docs/initiatives/I-64-f1-t3-gate-contract-package.md`, **NO emitido**; no se invocó la planificación):
+- **Derivación:** del Freeze V5 (D-01, D-02, D-03, D-06, D-16, D-17, D-18 y D-22; §§10, 11 y 13), de la propuesta F1, de A-4/A-6 para los
+  controles, del estado y la evidencia, del código en `29410bfa` y de las autoridades de `bb0d5522`. Ninguna ruta `EXTERNAL` cambió en la
+  rama.
+- **Hallazgos del código** (H-1..H-10):
+  - dos guardas de T2 impiden `RACKPANEL` y la lectura del drenaje en `Plugin/Workspace/`, y otra impide sacarlos de esa carpeta;
+  - dos censos de comandos existentes (37) fallan al añadir un comando;
+  - `RackLog` no tiene nivel de tiempos;
+  - ningún proyecto de prueba referencia el Plugin;
+  - no existe el procedimiento de diff de perfil.
+- **Alcance exacto:** solo archivos nuevos en `Application/Workspace/`, `Plugin/Workspace/`, `UI/Workspace/` y `UI.Tests/Workspace/`, más
+  la guarda de T2 y los dos censos según C-T3-04. Los 10 archivos de producto de T1/T2 y los archivos calientes quedan prohibidos.
+- **Contenido del contrato:** 18 invariantes, pruebas Core y UI con `ExpectRed` y STOP C-01..C-15.
+- **Enrutamiento:** la T3 monolítica da Horizonte High y por tanto **Long-horizon**, y **no hay celda Frontera con escritura elegible**
+  (catálogo de `bb0d5522`). STOP según routing §4. Se propone dividir T3 en dos tareas cortas Deep (T3A núcleo y T3B UI) con
+  `claude-sonnet-5-5`/`high`, sin crear alcance.
+- **Unidad:** `attempts` 3/3, `AttemptsRemaining` 0, `CorrectionsAuthorized` false. Presupuesto propuesto por `TaskId`: 1 salida válida + 2
+  por transporte en cada fase, controles nc1-nc4 y los puentes de A-4/A-6.
+- **Coordinación** tras `git fetch`:
+  - **I-52** (`fb6b5648`): sin RELEASE del host; su §258 deja P2 NOT_AUTHORIZED; no toca `src/` ni `tests/`.
+  - **I-65** (`1692804a`): sin solape con T3; su contrato reconoce que Workspace y `PaletteSet` son de I-64.
+  - **I-62** (`1c42300f`): sin solape.
+
+**Estado:** STOP en **COORDINATOR_T3_GATE_CONTRACT_REQUIRED** (decisiones C-T3-01..C-T3-09). F1 sigue IN PROGRESS.
+
+**Relevos:**
+- Una invocación de modelo en esta sección: la sonda.
+- HEAD = remoto = `29410bfa` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.
