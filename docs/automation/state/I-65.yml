@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F4
   attempts: 3
-  next_action: correccion de F4-T4-COMPARATOR-AND-TOOL (Attempt 3, ultimo; CD-I65-F4-18): planificacion, Worker RED (correccion desactivada) / GREEN (restauracion), verificacion y controles; despues pedir al Owner la invocacion 31 antes de T5. Sin corridas en RAM.
+  next_action: reemision de la planificacion de la correccion de F4-T4 (Attempt 3; CD-I65-F4-19), Worker RED/GREEN, verificacion y controles; antes de T5 pedir al Owner las invocaciones 31 y 32. Sin corridas en RAM.
   last_evidence_commit: d2539be2f571deada81fc17fb44934ea075ab096
 execution_context:
   mode: manual

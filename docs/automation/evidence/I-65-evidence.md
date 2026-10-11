@@ -1004,3 +1004,21 @@ Custodia:
 | `F4-T4-COMPARATOR-AND-TOOL/R20261011T202738Z-6356/relay-record.json` | `7D0A8AE83F3B11C7…` | `bfa52572f10d` |
 | `F4-T4-COMPARATOR-AND-TOOL/R20261011T202738Z-6356/trx-summary.json` | `DD2002E46EE73948…` | `86a227e636f7` (fin de línea normalizado por Git) |
 | `F4-T4-COMPARATOR-AND-TOOL/R20261011T202738Z-6356/analysis.md` | `5CAFA306B7430F69…` | `4018740f7b4e` |
+
+## 42. F4-T4 — planificación de la corrección rechazada (2026-10-11T21:02:05Z)
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T205717Z-064f` | PLANNING (intento 3) | Codex `gpt-6-luna`/`high` (22) | **rechazada**: A5 `fail` (`Authorities[0].Section` corrompida), `AnalysisSha256` erróneo; A2-A4 y A6-A8 `pass`; STOP P-03; sin Worker |
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T205717Z-064f/gate-contract.json` | `25B05C775AA5D076…` | `c5613e7c4253` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T205717Z-064f/prompt.md` | `457E787D8A8F0ABF…` | `438a7ea6bc40` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T205717Z-064f/delegation-rejected.json` | `CBC4D1EA4AC80097…` | `86a82ddbf8a6` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T205717Z-064f/acceptance.json` | `7FDFD7EFE56730E4…` | `e8d9a9549ec9` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T205717Z-064f/exactness.json` | `5F9D38644FF5683D…` | `976cf8edf012` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T205717Z-064f/relay-record.json` | `AA526480173C5D75…` | `e546cc25fe15` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T205717Z-064f/analysis-p03.md` | `EF3F21EA61344A8A…` | `f435beb28b18` |
