@@ -3853,3 +3853,83 @@ REQUIRED** sobre `b35548fd` (CI 38169928014 4/4).
 **Relevos:**
 - Una invocación de modelo: el Architect `R20261011T202537Z-1990`, por orden expresa.
 - HEAD = remoto = `6a574fc0` antes de este commit; `main` `bb0d5522`.
+
+## 64. F1 — Revisión final del cierre del gate por el Coordinator: F1 = PASS
+
+**Orden (transcripción literal):** «I-64 — COORDINATOR FINAL F1 GATE REVIEW», en
+`docs/automation/evidence/I-64-pilot/F1-GATE/coordinator-gate-close-review-2.md`.
+
+**Objeto revisado:**
+- `0f49f69160cdffc1d2933d6165d5f472b5793d84`, CI 38173373735 push 4/4;
+- `main` `bb0d5522`;
+- producto: `src/` y `tests/` de `e0205b5a9f000bbd44aa1f7556d30f06411c3db7`.
+
+**Dictamen:** **F1 — WORKSPACE FOUNDATION: GATE PASS. F1 = PASS.**
+- La revisión anterior, CHANGES REQUIRED sobre `b35548fd` (§62), es histórica y se conserva. Su único bloqueo material, D-T3D-01 /
+  INV-24, lo resolvió I-64-A-7 AGREED / ACTIVE (§63).
+- Estado de las tareas:
+
+  | Tarea | Estado |
+  |---|---|
+  | F1-T1-MODEL | COMPLETE_UNDER_I64_SCOPE_BRIDGE |
+  | F1-T2-BRIDGE | COMPLETE_UNDER_I64_SUBSTITUTE_PROTOCOL_EVIDENCE |
+  | F1-T3A-HOST-CORE | COMPLETE_UNDER_I64_SUBSTITUTE_PROTOCOL_EVIDENCE |
+  | F1-T3B-HOST-UI | COMPLETE_UNDER_I64_SUBSTITUTE_PROTOCOL_EVIDENCE |
+  | F1-T3C-PROFILE-DOC | COMPLETE |
+  | F1-T3D-SMOKE-PROCEDURE | COMPLETE / ACCEPTED |
+
+- **Identidad final del producto de F1:** `e0205b5a9f000bbd44aa1f7556d30f06411c3db7`. La documentación del cierre no exige una
+  verificación de producto nueva.
+- No se reescribe ningún resultado histórico de RED, verificación, nc2 ni nc3.
+
+**INV-24:**
+- Parte de F1 = **SATISFIED UNDER I-64-A-7**.
+- Smoke-1: S1-06a..e = NOT_APPLICABLE_BY_DESIGN, **nunca PASS**; SM-14a..e = SUPPLEMENTARY_EVIDENCE; S1-06f/g/h siguen obligatorias.
+- F4 / Smoke-2: S2-16..S2-22 MANDATORY / BINDING.
+- **INV-24 en todo el ciclo de vida = OPEN** hasta que se ejecuten S2-16..S2-22 y la asignación OV final aplicable. No bloquea F1 PASS.
+
+**Residuales:**
+
+| Id | Disposición |
+|---|---|
+| R-01 | ACCEPT: evidencia por las pruebas exactas de T1 y T3A; sin reescritura retrospectiva de contratos |
+| R-02 | ACCEPT: las guardas globales de frontera UI/AutoCAD son la protección real de INV-13 |
+| R-03 | ACCEPT: la verificación Core congelada con fuente simulada para la rama modal de INV-23. S1-07 observa la convivencia real con RACKEDITAR mediante el bloqueo por comando activo. No se reabren comandos clásicos en F1 |
+| R-04 | DEFERRED BY DESIGN a F3 |
+| R-05 | ACCEPT: la evidencia automatizada de contención; Smoke-1 queda como observación de host complementaria |
+| R-06 | las observaciones de host siguen en Smoke-1, después de F1 PASS |
+| R-07 | DISPOSED |
+| R-08 | la deuda de protocolo sigue fuera, en I-62; no bloquea I-64 (`protocol_debt` se conserva) |
+| R-09 | DISPOSED |
+| R-10 | ADR 0047 en PROPOSED es aceptable para F1; la aceptación del Owner queda fuera de este cierre |
+| R-11 | ACCEPT: §40 es la disposición efectiva de cierre de T1 por el Coordinator |
+| R-12 | los fallos históricos del Controller se conservan; las sustituciones de protocolo A-4 y A-6 se aceptan para I-64 |
+| R-13 | DISPOSED por A-7 activa |
+| R-14 | DISPOSED por los requisitos corregidos de los dibujos de Smoke-1 |
+
+**Lo que sigue: preparación de un Candidato concreto de Smoke-1** (Smoke-1 **no** está autorizado):
+- **A. Candidato:** SHA exacto según las reglas congeladas y de validación manual (árbol limpio, suite UI local completa en PASS, builds
+  y pruebas Debug requeridas, CI del SHA exacto en SUCCESS, SHA-256 exacto del DLL de RackCad).
+- **B. Dibujos:** PR-12 DIAGNÓSTICO y PR-13 SIN IDENTIDAD, cada uno con archivo de origen, SHA-256, procedencia y propósito, título y
+  texto exactos esperados y regla de no guardar. Un bloque genérico no vale como SIN IDENTIDAD.
+- **C. I-52:** solo con esta decisión versionada y en verde, pedir el RELEASE de host y el acuse de I-52 para Smoke-1, con los valores
+  de referencia de T3C, la vía de carga única del DLL y PaletteKeyAcceptance. AutoCAD no se lanza antes de ese RELEASE.
+- **D. Perfil:** preparar la orden BASELINE de T3C y los hashes aprobados de sus herramientas. La BASELINE real no se captura hasta
+  tener el RELEASE, el acuse y todos los prerrequisitos.
+- **Parada:** COORDINATOR_SMOKE1_AUTHORIZATION_REQUIRED.
+
+**Estado** (`I-64.yml`):
+- `f1` = PASS;
+- `f1_t3d_smoke_procedure_status` = COMPLETE / ACCEPTED;
+- `last_evidence_commit` = `0f49f69160cdffc1d2933d6165d5f472b5793d84`;
+- siguiente acción: preparación del Candidato de Smoke-1;
+- `protocol_debt` sin cambios.
+
+**Límites:**
+- Sin AutoCAD, BASELINE ni Smoke-1, y sin mutar perfil ni seguridad.
+- Sin F2, F3 ni F4.
+- Sin cambios en `src/`, `tests/`, archivos de proyecto, ROADMAP ni HANDOFF.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- HEAD = remoto = `0f49f691` antes de este commit; `main` `bb0d5522`.
