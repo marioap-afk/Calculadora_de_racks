@@ -3,19 +3,19 @@ automation_state:
   initiative: I-65
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
-  current_phase: discovery-f0-consensus
+  current_phase: f1
   state: in-progress
-  gate: F0
+  gate: F1
   attempts: 0
-  next_action: Owner decide el Freeze de la Proposal V3.1 (blob 11062a91, AGREED por Coordinator y Architect), la aceptación de ADR-0050 (Q-O6) y la autorización de F1 (Q-O8). Sin Freeze ni implementación hasta su orden.
-  last_evidence_commit: 3872fcc03f6036bbe1c29a045cf4702bc63df715
+  next_action: F1-T1-NEUTRAL-MODEL por ejecución delegada (AUTOMATION_PLAN §16): contrato de gate, planificación del Controller, nc4 y aceptación, Worker RED->GREEN, verificación y controles; luego F1-T2-CANTILEVER-SOURCE.
+  last_evidence_commit: a9d7080be3046e53b41d83af1bfece0be29871f3
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
 execution_chain:
-  gate: F0
-  next_role: Owner (Freeze GO/NO-GO, Q-O6 ADR-0050, Q-O8 autorización de F1)
-  implementation_authorization: NO
-  owner_decisions_open: [Q-O6 ADR-0050 (tras el Architect), confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de F1 (Q-O8), verificación de las filas de mapeo sección/material por un ingeniero]
-  not_authorized: [implementación, Freeze sin AGREED de Coordinator y Architect, nuevas corridas en RAM Elements sin autorización, escribir en archivos de RAM del usuario]
+  gate: F1
+  next_role: Controller (planificación de F1-T1-NEUTRAL-MODEL)
+  implementation_authorization: YES (solo F1 de la Proposal V3.1; termina al concluir F1)
+  owner_decisions_open: [confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de cada gate posterior a F1, verificación de filas de mapeo por un ingeniero]
+  not_authorized: [F3, F4, F5, F6, interfaz gráfica, Plugin, cambios fuera del alcance de F1, nuevas corridas en RAM Elements]

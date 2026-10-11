@@ -250,3 +250,15 @@ condiciones:
 - Architect sobre `5253b031`: Decisión 4 **coincide** con V3.1; ADR-0050 blob `4258c286dd48c7e02b07ed7d434d9368d8596bc6` corresponde
   por completo a la arquitectura acordada; AGREED sobre la Proposal V3.1 blob `11062a91` mantenido. Con la aceptación solo deben cambiar
   estado, fecha, decisores y notas posteriores del ADR. Pendiente: confirmación del Owner sobre el texto corregido.
+
+## 21. Freeze y autorización de F1 (2026-10-11T03:10:35Z)
+
+- ADR-0050 **aceptado** por el Owner: commit `ed8154c3` (solo estado, fecha, decisores y nota; texto aceptado = blob
+  `4258c286dd48c7e02b07ed7d434d9368d8596bc6`).
+- **Freeze**: commit **`a9d7080be3046e53b41d83af1bfece0be29871f3`**. Cambia solo las líneas `Estado`, `Frozen` y `Coordinator/Architect` de
+  `docs/initiatives/I-65-proposal-v3.1.md` (3 líneas, comprobado con `git diff -U0`); blob congelado
+  `4e6e1feb4d83aa291707c72ad12f89411ff1d37a`; acuerdo sobre el blob `11062a915c4c174ede180830c8ab3173ee7b6666` (commit `3872fcc0`).
+- Consenso: Coordinator AGREED (CD-I65-F0-08) y Architect AGREED ([architect-r4b-agreed.md](I-65-f0/architect-r4b-agreed.md)),
+  reconfirmado por el Architect en `dc3afdda` y `5253b031`.
+- F1 IMPLEMENTATION AUTHORIZATION = **YES**, solo para el alcance de F1 de la Proposal V3.1 (§6 fila F1), con el protocolo I-61; sin F3-F6
+  ni interfaz gráfica; termina al concluir F1 (orden del Owner, decisiones §9).

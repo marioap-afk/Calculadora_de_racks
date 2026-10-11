@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-65
 title: Structural Analysis Interop Foundation + RAM Elements Adapter
 type: architecture
-status: bootstrap-g0
+status: f1-authorized
 workflow: V2
 conceptual_initiative: I-65
 delivery_unit: I-65
@@ -18,22 +18,22 @@ conflicts_with: []
 hot_files: [docs/ROADMAP.md]
 coordination_strategy: Bootstrap con acuse de ventana de ROADMAP de las sesiones paralelas (I-52, I-62, I-64); frontera de propiedad con ID30 (I-64) e I-62 en el mandato y en DC-07.
 context_packs: [architecture-kernel, catalogs-data, system-selective]
-consumes: [UNKNOWN]
-extends: [UNKNOWN]
-introduces: [UNKNOWN]
-discovery_ref:
-freeze_ref:
-freeze_delta_ref:
+consumes: [Rack Identity (ADR-0009), catalogo neutral de secciones (ADR-0020..0023), colocacion Cantilever (ADR-0022/0024/0025), LengthUnits (ADR-0005, ADR-0040 D3), ADR-0017]
+extends: [StructuralSectionUnits (ADR-0021 §10), bit a bit]
+introduces: [Structural Analysis Model neutral, frontera de unidades de analisis, frontera de proveedores de analisis, supuestos explicitos, canal de cargas explicitas, huellas de fuente y de entrada]
+discovery_ref: docs/initiatives/I-65-discovery.md
+freeze_ref: docs/initiatives/I-65-proposal-v3.1.md
+freeze_delta_ref: null
 amendment_refs: []
-ov_assignment_ref:
-decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-mandate.original.txt]
+ov_assignment_ref: docs/initiatives/I-65-proposal-v3.1.md#5
+decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
 evidence_ref: docs/automation/evidence/I-65-evidence.md
 automation_state_path: docs/automation/state/I-65.yml
 requires_ci: true
-requires_plugin_build:
-requires_autocad:
-requires_owner_decision:
-requires_owner_validation:
+requires_plugin_build: true
+requires_autocad: true
+requires_owner_decision: true
+requires_owner_validation: true
 automation:
   enabled: false
   auto_merge: false
@@ -107,7 +107,9 @@ Son candidatos de intake: cada entrada se verifica con DC-08 en la base vigente
 ## 6. Discovery, decisiones y Freeze
 
 - Discovery: pendiente; se publica en este mismo hilo de trabajo tras el bootstrap.
-- Freeze / Freeze delta / A-n: ninguno.
+- Discovery: [I-65-discovery.md](I-65-discovery.md) (con adendas §13 y §14).
+- Freeze: [I-65-proposal-v3.1.md](I-65-proposal-v3.1.md) (Frozen: yes); Freeze delta: no aplica; A-n: ninguna.
+- ADR: [ADR-0050](../adr/0050-interoperabilidad-analisis-estructural.md) (aceptado).
 - Decisiones: [I-65.md](../automation/decisions/I-65.md); mandato: [I-65-owner-mandate.original.txt](../automation/decisions/I-65-owner-mandate.original.txt).
 
 Discovery responde la «FIRST DISCOVERY QUESTION» del mandato con fuentes oficiales fechadas y con el entorno instalado, y cubre DC-01..09
@@ -125,8 +127,8 @@ materiales, idealización, conexiones, apoyos, cargas, errores, provenance, prue
 
 ## 8. Gates funcionales
 
-G0: reclamo y este bootstrap. El plan del mandato (F0..F7 y READY) **no está congelado** y se revisa contra
-[INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §7 antes del Freeze.
+G0 (reclamo y bootstrap) y F0 (Discovery, sonda P1, Freeze) cumplidos. El plan de gates vigente es el de la Proposal V3.1 §6; F1 está
+autorizada por el Owner (decisiones §9) y se ejecuta en dos tareas (decisiones §10).
 
 ## 9. Owner Validation
 
