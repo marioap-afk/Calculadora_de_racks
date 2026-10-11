@@ -3677,3 +3677,72 @@ invariante de contrato y método de prueba citado antes de usarlo.
 **Relevos:**
 - HEAD = remoto = `8fe54f76` (CI 38169083861 4/4) antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`.
+
+## 62. F1 — Revisión del cierre del gate: CHANGES REQUIRED; I-64-A-7 propuesta; correcciones documentales de T3D y del paquete
+
+Sección nueva; las anteriores no se reescriben.
+
+**Revisión del Coordinator** (literal en `docs/automation/evidence/I-64-pilot/F1-GATE/coordinator-gate-close-review-1.md`): **CHANGES
+REQUIRED** sobre `b35548fd` (CI 38169928014 4/4).
+- El producto queda aceptado. T1, T2, T3A, T3B, T3C y T3D siguen cerrados o aceptados como constan.
+- El **único bloqueo material** de F1 PASS es **D-T3D-01 / INV-24**: el Workspace de F1 no tiene ningún campo editable, así que
+  S1-06a..e no se pueden ejecutar literalmente. SM-14a..e son evidencia complementaria, no S1-06a..e. No se redefine «campo».
+- Se pide la enmienda **I-64-A-7**, con la disposición recomendada: S1-06a..e = NOT_APPLICABLE_BY_DESIGN en F1 / Smoke-1;
+  SM-14a..e = SUPPLEMENTARY_EVIDENCE; se mantienen S1-06f, g y h; los casos literales pasan al primer hito con texto editable
+  (previsto F4 / Smoke-2), con escenarios futuros identificados y sin debilitar el requisito. El mensaje del Coordinator no es por sí
+  solo la enmienda completa.
+- **Dictámenes:**
+  - D-T3D-02: aceptada, sin gancho de inyección nuevo;
+  - D-T3D-03: el caso Diagnóstico de S1-04 es obligatorio para Smoke-1 PASS, con su dibujo preparado antes; sin él, S1-04 queda
+    incompleto;
+  - D-T3D-04: aceptada, sin afirmar que `Debug.Assert` termine AutoCAD;
+  - D-T3D-05: confirmada, el registro es la tabla en memoria más la línea de órdenes, y RackLog solo es evidencia de fallos;
+  - D-T3D-06: aceptada para S1-07, con «Hay un comando en curso.».
+- El paquete de cierre queda aceptado en lo sustancial: se conservan R-01..R-12.
+
+**I-64-A-7 propuesta** (`docs/initiatives/I-64-A-7.md`, **PROPOSED / NOT ACTIVE**):
+- **Contenido:** aplica la disposición recomendada y define los escenarios futuros:
+  - S2-16..S2-20: literal de S1-06a..e en un campo editable del Workspace;
+  - S2-21: `DBMOD` en esos casos;
+  - S2-22: aditivo, el foco no vuelve al terminar una edición, la rama de edición de D-01;
+  - regla del primer hito con campos: si un hito anterior ya tiene texto editable, también se ejecutan ahí;
+  - INV-24 pasa a F1 (S1-06f..h) y F4 (S2-16..S2-22); OV-19 pasa a S1-06f..h y S2-16..S2-22.
+- **No hace:** no cambia la lista de cierre de F1 ni ningún otro escenario, y no debilita el requisito.
+- **Autoridad propuesta:** Architect + Coordinator, con M-04 = YES por prudencia, por el precedente de I-64: hallazgo I64-A1-M04 y
+  justificación de A-2 sobre la semántica de cierre de una verificación.
+- **Lectura alternativa** registrada para el Coordinator: A-n Coordinator-only, por LIFECYCLE §6 («resecuenciar gates sin cambiar
+  resultados»).
+- **Owner:** no requerido por la regla (LIFECYCLE §8: reasignar, no retirar); se le informa.
+- **Architect:** no se ha ordenado ni ejecutado ninguna revisión. Las revisiones formales de I-64 se ejecutan solo con una orden
+  expresa del Coordinator que fija perfil, celda, entradas y preguntas, como en la decisión de A-6.
+
+**Correcciones documentales versionadas en este commit** (sin cambios de producto):
+- **T3D** (`docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md` y la plantilla del operador):
+  - estado ACEPTADO CON CORRECCIONES;
+  - sección 6.6 y S1-06a..e según A-7 (sin A-7 aceptada, Smoke-1 no se ejecuta);
+  - PR-12 (dibujo Diagnóstico, obligatorio) y SM-11 obligatorio;
+  - SM-36..SM-39 según D-T3D-02, 04 y 05; SM-34, SM-35 y la nota SM-35n según D-T3D-06;
+  - criterio de PASS de la sección 9 y la sección 12 con los dictámenes.
+- **Corrección hallada por la sesión (R-14):** T3D decía que un bloque sin datos de RackCad da «Sin identidad». Según
+  `SelectionContext.Classify` y `WorkspaceSelectionReader` en `e0205b5a`, da «Selección actual: 0 racks y 1 otros objetos.».
+  «Sin identidad» exige un sobre legible con Id vacío. T3D separa SM-10a y SM-10b y añade el dibujo PR-13; el Coordinator confirma si
+  es prerrequisito como el de Diagnóstico.
+- **Paquete de cierre** (`docs/automation/evidence/I-64-pilot/F1-GATE/gate-close-package.md`, versión 2):
+  - historial de revisiones;
+  - T3D aceptado con correcciones;
+  - nueva sección 4.1 con el mapeo final de INV-24 sujeto a A-7;
+  - secciones 5 y 7 actualizadas;
+  - R-01..R-12 conservados (R-07 y R-09 con su disposición); R-13 (A-7) y R-14 nuevos.
+- **Estado** (`I-64.yml`): `f1_resume_condition` corregida (estaba con la redacción anterior a A-4), `f1_a7_status` nuevo y la acción
+  siguiente.
+
+**Estado:**
+- F1 sigue IN PROGRESS. **F1 PASS no se declara.**
+- No se ejecutó AutoCAD ni Smoke-1, no se pidió el RELEASE de I-52 y no se inició F2.
+- `src/` y `tests/` siguen idénticos a `e0205b5a`.
+- Siguiente: STOP en **COORDINATOR_A7_DISPOSITION_REQUIRED**: autoridad de A-7 y, si hace falta, orden de revisión del Architect.
+  Con A-7 aceptada, se versiona su estado y se vuelve a COORDINATOR_F1_GATE_CLOSE_REQUIRED.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- HEAD = remoto = `b35548fd` antes de este commit; `main` `bb0d5522`.

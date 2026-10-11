@@ -10,6 +10,14 @@ Este paquete:
 
 Todos los SHA y corridas de CI citados se comprobaron con `git` y `gh run view` (`headSha`, `event`, `conclusion` y jobs).
 
+**Revisiones:**
+- **Versión 1** (`b35548fd`, CI 38169928014 4/4): revisión del cierre del gate F1 = **CHANGES REQUIRED**
+  (`F1-GATE/coordinator-gate-close-review-1.md`, evidencia §62). El producto queda aceptado; T1..T3D siguen cerrados o aceptados; el
+  único bloqueo material es D-T3D-01 / INV-24; el paquete queda aceptado en lo sustancial, con sus residuales R-01..R-12.
+- **Versión 2** (esta): incorpora la propuesta I-64-A-7, el mapeo de INV-24 (sección 4.1), los dictámenes D-T3D-01..06, la revisión
+  de T3D, la corrección de `f1_resume_condition` y los residuales R-13 y R-14. No reescribe la evidencia histórica de las tareas. El
+  producto sigue siendo exactamente `src/` y `tests/` de `e0205b5a`.
+
 ## 1. Identidad del gate
 
 | Hecho | Valor |
@@ -39,7 +47,7 @@ Todos los SHA y corridas de CI citados se comprobaron con `git` y `gh run view` 
 |---|---|---|---|
 | F1-T0-ADR | ADR `propuesto` desde el anexo A | sustituida por T1: `docs/adr/0047-workspace-persistente-modeless-rackcad.md` (**propuesto**), creado en el RED de T1 (`36c344dc` → `b29a1f46` tras el rebase) y sin cambios después | cubierta por la aceptación de T1 |
 | **F1-T3C-PROFILE-DOC** | `docs/initiatives/I-64-f1-t3c-profile-diff-procedure.md`, con herramientas y registro de validación | `9af9ac75` (38158957028) | `F1-T3C-PROFILE-DOC/coordinator-review.md`: **PASS**, COMPLETE, APROBADO PARA USO FUTURO EN SMOKE-1; registrada en `795c95c4` (CI 38168220998), §59 |
-| **F1-T3D-SMOKE-PROCEDURE** | `docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md` y la plantilla del registro del operador | `8fe54f76` (38169083861) | **pendiente: se revisa con este cierre** (§60) |
+| **F1-T3D-SMOKE-PROCEDURE** | `docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md` y la plantilla del registro del operador | `8fe54f76` (38169083861) | **ACEPTADO CON CORRECCIONES DOCUMENTALES** en la revisión del cierre del gate F1 (§62); las correcciones se versionan con esta versión 2. D-T3D-01 depende de A-7 (§60) |
 
 **Controles por tarea** (los históricos se conservan sin reetiquetar):
 
@@ -59,7 +67,7 @@ Todos los SHA y corridas de CI citados se comprobaron con `git` y `gh run view` 
 | Selección fina (Ninguno, Uno, Selección (N) con recuento, Sin identidad, Diagnóstico) sin enumeración global | T1 `SelectionContext.Classify` (`WorkspaceSelectionContextTests`); T3A `WorkspaceSelectionReader` (`WorkspaceSelectionMappingTests`); T3B presentación (`WorkspacePanelContextTests`) |
 | Puente único con encolado y drenaje | T2: `WorkspaceBridgeSubscriptionLifecycleTests`, `WorkspaceBridgeHintAndDrainTests`, `WorkspaceBridgeDegradedModeTests`, `WorkspaceBridgeSourceGuardTests` |
 | Identidad de sesión | T1 `WorkspaceSessionTests`; T2 identificador nativo reciclado; T3A `WorkspaceHostAuthorizationTests` y `WorkspaceBridgeAuthorizeTests` |
-| Política de foco | T3B: `KeepFocus` público, mecánica no congelada (D-01); su verificación es solo de host (INV-24, S1-06a..h) en Smoke-1, con D-T3D-01 abierta |
+| Política de foco | T3B: `KeepFocus` público, mecánica no congelada (D-01); su verificación es solo de host (INV-24): S1-06f..h en Smoke-1 y, según I-64-A-7, S2-16..S2-22 en Smoke-2 (sección 4.1) |
 | Contención | T2: modo degradado; T3A: contención de lecturas fallidas; T3B: estado «Error del panel» y «Reintentar» (`WorkspacePanelErrorTests`) |
 | Instrumentación | T3A `WorkspaceInstrumentation` en memoria (`WorkspaceInstrumentationTests`); T3B presentación e interruptor (`WorkspacePanelInstrumentationTests`) |
 | ADR `propuesto` | ADR 0047 (sección 2) |
@@ -101,11 +109,31 @@ Las pruebas se nombran por clase y, entre paréntesis, la tarea que creó el arc
   - UI: `WorkspacePanelErrorTests` 11, `WorkspacePanelContextTests` 11, `WorkspacePanelStateTests` 12,
     `WorkspacePanelInstrumentationTests` 10, `WorkspacePanelNoWorkTests` 8, `WorkspacePanelViewTests` 8.
 
+### 4.1 INV-24 (no es de cierre de F1): mapeo final, sujeto a I-64-A-7
+
+INV-24 no está en la lista de cierre de F1 (Freeze §11) y A-7 no la añade. Es el único bloqueo material que señala la revisión del
+cierre (D-T3D-01): F1 PASS no se declara hasta que A-7 esté aceptada y este mapeo quede firme.
+
+| Caso | Hito | Estado según A-7 (PROPOSED) | Evidencia |
+|---|---|---|---|
+| S1-06a..S1-06e (campo del panel) | Smoke-1 | **NOT_APPLICABLE_BY_DESIGN**: F1 no expone ningún control de texto editable (`WorkspacePanelView.xaml` en `e0205b5a`). Nunca PASS | — |
+| SM-14a..SM-14e (casilla «Medir en memoria») | Smoke-1 | **SUPPLEMENTARY_EVIDENCE**, solo de aislamiento de teclado y foco | T3D, sección 6.6 |
+| S1-06f (comando activo → acciones deshabilitadas) | Smoke-1 | se ejecuta | T3D SM-13; pruebas Core de la política: `WorkspaceHostPolicyTests` y `WorkspaceHostLifecycleTests` (T3A; bloqueo `CommandActive`). Ninguna prueba de UI cita el texto «Hay un comando en curso.» |
+| S1-06g (el foco vuelve solo según D-01) | Smoke-1 | se ejecuta; en F1 solo vuelve por una acción explícita | T3D SM-15; `KeepFocus` en `WorkspacePaletteHost.cs` |
+| S1-06h (`DBMOD` bit 1) | Smoke-1 | se ejecuta sobre S1-06f, S1-06g y SM-14a..e | T3D SM-14h y SM-18 |
+| S2-16..S2-20 (literal de S1-06a..e, en un campo editable del Workspace) | **Smoke-2 (F4)**, o antes si un hito anterior ya tiene campos editables | nuevos por A-7, sin debilitar el requisito | futuro |
+| S2-21 (`DBMOD` en S2-16..S2-20) | Smoke-2 (F4) | nuevo por A-7 | futuro |
+| S2-22 (el foco no vuelve al terminar una edición) | Smoke-2 (F4) | nuevo y aditivo por A-7 | futuro |
+
+**Tras A-7:**
+- INV-24 se verifica en F1 (S1-06f..h, Smoke-1) y en F4 (S2-16..S2-22, Smoke-2).
+- OV-19 pasa a S1-06f..h y S2-16..S2-22, y sigue ejecutándose sobre `FINAL_CANDIDATE_SHA`.
+
 ## 5. Lo que F1 deja para Smoke-1, después de F1 PASS
 
 Por el Freeze, estas verificaciones son de host y no son criterio de cierre de F1 (A64-PV3-03: ningún cierre exige evidencia de host
 que el Worker no puede producir):
-- **INV-24:** foco, S1-06a..h. D-T3D-01: el panel de F1 no tiene campo editable.
+- **INV-24:** foco, S1-06f..h, con SM-14a..e como evidencia complementaria. S1-06a..e quedan NOT_APPLICABLE_BY_DESIGN y pasan a Smoke-2 como S2-16..S2-22 según I-64-A-7 (sección 4.1).
 - **Parte de host de INV-21:** el diff de perfil (S1-11).
 - **Registro de la comprobación Debug de INV-14.**
 - **Escenarios 1, 2, 3, 9 y 10:** OV-22, como registro sin umbrales.
@@ -125,20 +153,26 @@ El procedimiento exacto es el de T3D. Smoke-1 exige:
 | R-04 | INV-02: la parte de «10 pestañas» no se puede verificar en F1 | es de F3 por diseño |
 | R-05 | INV-25: sin inyecciones de fallo en F1; «borrador intacto» es de F4 | D-T3D-02 |
 | R-06 | INV-14 y INV-17 en el host | D-T3D-04 y D-T3D-03 |
-| R-07 | decisiones de T3D antes de ejecutar Smoke-1 | D-T3D-01..06 |
+| R-07 | decisiones de T3D antes de ejecutar Smoke-1 | D-T3D-01..06. **Dispuestas** en la revisión (§62): D-T3D-01 depende de A-7; D-T3D-02 aceptada; D-T3D-03 (dibujo Diagnóstico) es prerrequisito de Smoke-1 PASS; D-T3D-04 aceptada con corrección de redacción; D-T3D-05 confirmada; D-T3D-06 aceptada para S1-07 |
 | R-08 | `protocol_debt` activa: el Controller puede dar Scope pass cuando falla su comparación auxiliar (nc2 `8415`) | sigue para I-62; no bloquea I-64 (A-4 y A-6) |
-| R-09 | `f1_resume_condition` en `I-64.yml` conserva la redacción anterior a A-4, mientras `f1_blocking_dependency` dice «resuelta para I-64» | corregir esa línea en el commit del dictamen, si el Coordinator lo ordena |
+| R-09 | `f1_resume_condition` en `I-64.yml` conserva la redacción anterior a A-4, mientras `f1_blocking_dependency` dice «resuelta para I-64» | **corregida en la versión 2** (§62), por orden de la revisión; texto anterior en `b35548fd`. Propuesta original: corregir esa línea en el commit del dictamen, si el Coordinator lo ordena |
 | R-10 | ADR 0047 sigue `propuesto` y no figura en `docs/adr/README.md` (archivo caliente) | su aceptación es del Owner; fuera del cierre de F1 |
 | R-11 | T1 no tiene un `coordinator-close-review.md`; su aceptación está en la decisión del contrato de T2 (§40) | aceptar esa decisión como revisión de cierre de T1 |
 | R-12 | El Controller nunca cumplió el oráculo de nc2 (T1-T3B) ni el de nc3 (T2-T3B). Los cierres de protocolo son por los puentes sustitutos A-4 y A-6, y se conservan las desviaciones aceptadas: regla de nc3 por analogía en T3A, espacio de `HostCorePath` en T3B y la señal P-02 falsa | ninguna acción; registro |
+| R-13 | **I-64-A-7** (`docs/initiatives/I-64-A-7.md`): **PROPOSED / NOT ACTIVE**. Autoridad propuesta: Architect + Coordinator (M-04 = YES por prudencia; lectura alternativa: Coordinator-only, LIFECYCLE §6); Owner no requerido por la regla (reasignación, no retiro). No se ha ordenado ni ejecutado ninguna revisión de Architect | disposición del Coordinator sobre la autoridad de A-7 y, si hace falta Architect, una orden de revisión formal. Bloquea F1 PASS |
+| R-14 | **Corrección de T3D hallada por la sesión:** un bloque sin datos de RackCad da «Selección actual: 0 racks y 1 otros objetos.», no «Sin identidad» (`SelectionContext.Classify` y `WorkspaceSelectionReader`). «Sin identidad» exige un sobre legible con Id vacío. T3D separa SM-10a y SM-10b y añade el dibujo de PR-13 | confirmar que el dibujo de Sin identidad (PR-13) es, como el de Diagnóstico (PR-12), prerrequisito de Smoke-1 PASS |
 
 ## 7. Lo que queda
 
-1. Revisión del Coordinator de este paquete, de F1-T3D-SMOKE-PROCEDURE y de D-T3D-01..06, y decisión sobre F1 PASS.
-2. Tras F1 PASS:
+1. **Disposición de I-64-A-7** (R-13): confirmar la autoridad (Architect + Coordinator o Coordinator-only); si hace falta Architect,
+   ordenar su revisión formal; aceptar A-7. Hasta entonces, D-T3D-01 sigue sin resolver y F1 PASS no se declara.
+2. Con A-7 aceptada: versionar su estado y el mapeo firme de INV-24 con CI exacta 4/4 y volver a **COORDINATOR_F1_GATE_CLOSE_REQUIRED**.
+   No hace falta una verificación de producto nueva: `src/` y `tests/` no cambian.
+3. Tras F1 PASS:
    - Candidato de Smoke-1;
-   - RELEASE y acuse de I-52 (con la autorización de carga, si hace falta);
-   - Smoke-1 según T3D, cuya custodia va a `docs/automation/evidence/I-64-pilot/F1-SMOKE-1/`.
+   - dibujos PR-12 y PR-13;
+   - RELEASE y acuse de I-52, todavía no pedidos;
+   - Smoke-1 según T3D.
 
-   F2 y F3 pueden avanzar mientras se espera la ventana de host (Freeze §11), solo con autorización.
-3. Smoke-1 PASS y Smoke-NAV PASS son la condición de entrada de F4.
+   F2 no se inicia sin autorización.
+4. Smoke-1 PASS y Smoke-NAV PASS son la condición de entrada de F4, donde se ejecutan S2-16..S2-22.

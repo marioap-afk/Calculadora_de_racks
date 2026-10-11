@@ -1,8 +1,12 @@
 # I-64 — F1-T3D-SMOKE-PROCEDURE: procedimiento exacto de Smoke-1 para el operador
 
-**Estado:** PREPARADO por la sesión responsable el 2026-10-11 como tarea documental autorizada por la revisión de T3C
-(`docs/automation/evidence/I-64-pilot/F1-T3C-PROFILE-DOC/coordinator-review.md`, evidencia §59). Se revisa dentro del cierre del gate
-F1 (**COORDINATOR_F1_GATE_CLOSE_REQUIRED**).
+**Estado:** **ACEPTADO CON CORRECCIONES DOCUMENTALES**. Lo preparó la sesión responsable el 2026-10-11 como tarea documental
+autorizada por la revisión de T3C (`docs/automation/evidence/I-64-pilot/F1-T3C-PROFILE-DOC/coordinator-review.md`, evidencia §59).
+- **Revisión:** cierre del gate F1, CHANGES REQUIRED
+  (`docs/automation/evidence/I-64-pilot/F1-GATE/coordinator-gate-close-review-1.md`, evidencia §62).
+- **Correcciones aplicadas en esta versión:** los dictámenes D-T3D-02..06 (sección 12) y la corrección de SM-10 hallada por la sesión.
+- **Pendiente:** D-T3D-01 sigue **sin resolver hasta que se acepte la enmienda I-64-A-7** (`docs/initiatives/I-64-A-7.md`, PROPOSED).
+  Mientras tanto, Smoke-1 no puede ejecutarse.
 
 Este documento:
 - **no** autoriza Smoke-1; Smoke-1 se ejecuta solo **después de F1 PASS** y con una autorización expresa del Coordinator;
@@ -10,7 +14,7 @@ Este documento:
 - no cambia `src/`, `tests/` ni archivos de proyecto;
 - **ningún paso se ejecutó** al redactarlo.
 
-Las decisiones que necesita antes de ejecutarse están en la sección 12 (D-T3D-01..06).
+Los dictámenes del Coordinator sobre D-T3D-01..06 están en la sección 12. D-T3D-01 depende de I-64-A-7.
 
 ## 0. Autoridad y límites
 
@@ -58,7 +62,7 @@ salvo una diferencia autorizada de forma expresa.
 | Id | Prerrequisito | Prueba |
 |---|---|---|
 | PR-01 | F1 PASS registrado por el Coordinator | revisión del cierre del gate F1 |
-| PR-02 | autorización de Smoke-1 del Coordinator, con: `RunId`, SHA del Candidato y las decisiones D-T3D-01..06 resueltas | transcripción literal |
+| PR-02 | autorización de Smoke-1 del Coordinator, con: `RunId`, SHA del Candidato e **I-64-A-7 aceptada** (D-T3D-01); D-T3D-02..06 ya dispuestos (sección 12) | transcripción literal |
 | PR-03 | Candidato completo (sección 3) | `candidate.md` |
 | PR-04 | RELEASE explícito de I-52 y acuse con: los cuatro valores de referencia de T3C (cadena `TRUSTEDPATHS`, `SECURELOAD`, perfil, SHA-256 de `acad.exe`); la aceptabilidad de la clave de estado de la paleta (`ACCEPTED` o `NOT_ACCEPTED`); y, si hace falta, la autorización expresa de una carga única no persistente del DLL | transcripción literal |
 | PR-05 | aviso previo a I-52; ninguna sesión de I-52 abierta ni prevista en la ventana | canal entre sesiones |
@@ -68,6 +72,8 @@ salvo una diferencia autorizada de forma expresa.
 | PR-09 | directorio de ejecución creado y vacío: `artifacts/orchestration/I-64/F1-SMOKE-1/<RunId>/` | sección 10 |
 | PR-10 | ninguna variable de entorno persistente con `RackCad` en el nombre. Smoke-1 no usa inyecciones de fallos: el producto de F1 no tiene ninguna para el panel (D-T3D-02) | captura BASELINE |
 | PR-11 | biblioteca de bloques: ruta resuelta y SHA-256 (guía §7.1); no se toca | `candidate.md` |
+| PR-12 | **dibujo con el caso Diagnóstico** (D-T3D-03): un bloque en el espacio modelo cuya definición lleva datos de RackCad que el lector integrado no puede interpretar, o que escribió una versión más nueva. Se registran su SHA-256, el diagnóstico exacto esperado («Diagnóstico» / «No se pudo interpretar la definición del objeto seleccionado.») y que nunca se guarda. **Sin este dibujo, S1-04 queda incompleto y Smoke-1 no puede ser PASS**; la evidencia Core no sustituye esta observación de host. No se autoriza AutoCAD para crearlo antes de la autorización de Smoke-1 | `fixtures.md` |
+| PR-13 | **dibujo con el caso Sin identidad** (corrección de SM-10): un bloque cuya definición lleva un sobre de RackCad legible con Id vacío o en blanco. Se registran su SHA-256 y el texto esperado («Sin identidad» / «El objeto seleccionado no tiene identidad de rack.»). Un bloque cualquiera sin datos de RackCad **no** da «Sin identidad» (sección 6.2, SM-10a) | `fixtures.md` |
 
 ### 2.1 Dibujos de prueba
 
@@ -76,7 +82,7 @@ se cierran sin guardar, y su SHA-256 debe ser el mismo después.
 
 | Id | Contenido mínimo | Uso |
 |---|---|---|
-| **A** | ≥ 2 racks dibujados por RackCad con identidad (RackId distintos); ≥ 1 copia de uno de ellos (mismo RackId); ≥ 1 bloque que no sea rack; ≥ 1 entidad suelta (línea); si existe, un bloque con definición ilegible o de versión futura (D-T3D-03) | S1-04, S1-06, S1-08, ocultar y mostrar, escenarios 2 y 3 |
+| **A** | ≥ 2 racks dibujados por RackCad con identidad (RackId distintos); ≥ 1 copia de uno de ellos (mismo RackId); ≥ 1 bloque sin datos de RackCad; ≥ 1 entidad suelta (línea); el bloque de **Sin identidad** de PR-13; el bloque de **Diagnóstico** de PR-12. Los dos últimos pueden estar en A o en un dibujo aparte con su propio SHA-256 | S1-04, S1-06, S1-08, ocultar y mostrar, escenarios 2 y 3 |
 | **B** | ≥ 1 rack selectivo con datos editables (para RACKEDITAR) y ≥ 1 rack con identidad | S1-05, S1-07, escenario 9 |
 | **C** | dibujo de trabajo con muchas entidades (el Owner anota cuántas); copia descartable | S1-01..S1-03, S1-10 (escenarios 1 y 10) |
 
@@ -183,11 +189,12 @@ Se anota el valor `ms`. Sin umbrales (D-18): solo se registra.
 | SM-07 | Añadir con clic la copia del mismo rack (mismo RackId) | sigue «Un rack» con el mismo RackId | S1-04 |
 | SM-08 | Añadir un segundo rack con otro RackId | «Selección actual» / «Selección actual: 2 racks y 0 otros objetos.» | S1-04, OV-14 |
 | SM-09 | Añadir una línea suelta | «Selección actual: 2 racks y 1 otros objetos.» | S1-04, OV-14 |
-| SM-10 | `Esc` (vaciar la selección); clic en el bloque que no es rack | «Sin identidad» / «El objeto seleccionado no tiene identidad de rack.» | S1-04, INV-16 |
-| SM-11 | `Esc`; clic en el bloque de definición ilegible, si A lo tiene (D-T3D-03) | «Diagnóstico» / «No se pudo interpretar la definición del objeto seleccionado.» | S1-04, INV-17 |
-| SM-12 | `Esc`; no tocar nada durante 60 s; después cerrar la paleta con su botón de cierre y volver a abrirla con `RACKPANEL` | entre la última fila anterior a la espera y la fila `panel.hide` no hay ninguna fila `drain` ni `selection.read`; en la línea de órdenes no aparece «Regenerating model» ni otro mensaje de regeneración | S1-09, escenario 2 (P-02), INV-01 |
+| SM-10a | `Esc` (vaciar la selección); clic en el bloque sin datos de RackCad | «Selección actual» / «Selección actual: 0 racks y 1 otros objetos.» (un bloque que no es rack cuenta como «otro objeto») | S1-04 |
+| SM-10b | `Esc`; clic en el bloque de **Sin identidad** de PR-13 (sobre legible con Id vacío) | «Sin identidad» / «El objeto seleccionado no tiene identidad de rack.»; no aparece ningún RackId | S1-04, INV-16 |
+| SM-11 | `Esc`; clic en el bloque de **Diagnóstico** de PR-12 (obligatorio) | «Diagnóstico» / «No se pudo interpretar la definición del objeto seleccionado.»; no aparece ningún RackId | S1-04, INV-17 (D-T3D-03) |
+| SM-12 | `Esc`; no tocar nada durante 60 s; después cerrar la paleta con su botón de cierre y volver a abrirla con `RACKPANEL` | entre la última fila anterior a la espera y la fila `panel.hide` no hay ninguna fila `drain` ni `selection.read`; en la línea de órdenes no aparece «Regenerating model» ni otro mensaje no deseado. El registro de S1-09 en F1 es **la tabla de instrumentación en memoria del panel más la línea de órdenes** (D-T3D-05); RackLog no es el sumidero de métricas, solo evidencia de fallos | S1-09, escenario 2 (P-02), INV-01 |
 | SM-13 | Iniciar `LINE` y **no** marcar ningún punto | «Leer el dibujo» y «Escribir en el dibujo» desmarcados; «Hay un comando en curso.»; después `Esc`: vuelven a marcarse y el texto desaparece | S1-06f |
-| SM-14 | Comprobaciones de foco adaptadas, pendientes de D-T3D-01 (sección 6.6) | según la sección 6.6 | S1-06a..e (D-T3D-01) |
+| SM-14 | Comprobaciones complementarias de aislamiento de teclado y foco (sección 6.6) | según la sección 6.6 | evidencia complementaria; S1-06a..e según A-7 (D-T3D-01) |
 | SM-15 | Clic dentro de la paleta (fondo o casilla de instrumentación) y escribir `LINE` | nada aparece en la línea de órdenes mientras el foco está en la paleta; después, clic en el área de dibujo y escribir `LINE`: la orden se inicia (`Esc` para cancelarla) | S1-06g (el foco vuelve solo por una acción explícita; F1 no tiene acciones que lo devuelvan) |
 | SM-16 | Seleccionar dos racks; cerrar la paleta (botón de cierre); con la paleta cerrada, cambiar la selección (`Esc` y clic en otro rack); esperar el reposo; `RACKPANEL` | con la paleta cerrada, ninguna fila `drain` ni `selection.read`; al mostrarla: filas `panel.show`, `drain` y `selection.read`, una sola vez, y el contexto refleja la selección actual | INV-33 (P-01b), ocultar y mostrar |
 | SM-17 | Acoplar la paleta a la izquierda y después a la derecha; dejarla flotante. Probar el botón de ocultación automática y anotar si su plegado se comporta como ocultar | se acopla y se libera; sin errores; anotar el comportamiento del plegado (`HOST-TO-CONFIRM`) | D-01 (acoplable y flotante) |
@@ -222,18 +229,25 @@ Se anota el valor `ms`. Sin umbrales (D-18): solo se registra.
 
 | Paso | Acción exacta | Esperado | S1 / OV / INV / escenario |
 |---|---|---|---|
-| SM-34 | En B: `RACKEDITAR`, elegir el rack selectivo; con el editor abierto, observar el panel | el panel no interfiere con el editor; mientras dura la orden: «Hay un comando en curso.» | S1-07, OV-17, INV-23 (D-T3D-06) |
+| SM-34 | En B: `RACKEDITAR`, elegir el rack selectivo; con el editor abierto, observar el panel | el panel no interfiere con el editor; mientras dura la orden: **«Hay un comando en curso.»** (RACKEDITAR mantiene una orden de AutoCAD activa, y eso ya inhibe el drenaje). **No** se exige «Hay un cuadro de diálogo de RackCad abierto.» | S1-07, OV-17 (D-T3D-06) |
 | SM-35 | Cerrar el editor con **Cancelar** (nunca aceptar: aceptar redibuja y escribe); esperar el reposo | el panel vuelve a «Sesión activa» con el contexto de B; `(getvar "DBMOD")` sin el bit 1 cambiado por el panel | S1-07 |
+| SM-35n | Nota obligatoria en el registro | S1-07 valida la convivencia y la sincronización alrededor del flujo real de RACKEDITAR. La conexión de host de `SetModalRackCadActive` desde los comandos clásicos **no se ejercita**: la rama modal de INV-23 la cubre la evidencia Core con fuente simulada. En F1 no se reabren los comandos clásicos | S1-07, INV-23 |
 
 ### 6.6 Foco con un campo del panel (D-T3D-01)
 
 El panel de F1 no tiene **ningún campo editable**: solo textos de estado, dos casillas de disponibilidad no interactivas, la casilla
 «Medir en memoria» y el botón «Reintentar» (visible solo en error). S1-06a..e del Freeze exigen un campo y **no pueden ejecutarse
-literalmente** con el producto de F1. Hasta que el Coordinator decida D-T3D-01, se registran como **NOT_EXECUTABLE_IN_F1** y no
-pueden contar como PASS.
+literalmente** con el producto de F1. Una casilla no es un campo: «campo» no se redefine.
 
-Comprobaciones adaptadas, que son evidencia complementaria y no sustituyen a S1-06a..e. Con el foco de teclado en la casilla
-«Medir en memoria» (llevarlo con `Tab` desde la paleta):
+**Disposición, pendiente de I-64-A-7** (`docs/initiatives/I-64-A-7.md`, PROPOSED):
+- **S1-06a..e en Smoke-1 = NOT_APPLICABLE_BY_DESIGN**: F1 no expone ningún control de texto editable. Su requisito literal pasa entero
+  a Smoke-2, como S2-16..S2-20, más S2-21 (`DBMOD`) y S2-22 (foco al terminar una edición).
+- **SM-14a..e = SUPPLEMENTARY_EVIDENCE**, solo de aislamiento de teclado y foco. Nunca cuentan como S1-06a..e.
+- **S1-06f, S1-06g y S1-06h siguen en Smoke-1.** S1-06h se aplica a S1-06f, S1-06g y SM-14a..e.
+
+Hasta que A-7 se acepte, D-T3D-01 sigue sin resolver y Smoke-1 no se ejecuta. S1-06a..e nunca se marcan PASS.
+
+Comprobaciones complementarias. Con el foco de teclado en la casilla «Medir en memoria» (llevarlo con `Tab` desde la paleta):
 
 | Paso | Acción | Esperado |
 |---|---|---|
@@ -246,15 +260,16 @@ Comprobaciones adaptadas, que son evidencia complementaria y no sustituyen a S1-
 
 ### 6.7 Contención (fallos)
 
-F1 no tiene inyecciones de fallo para el panel (D-T3D-02), así que la contención se comprueba **observando** durante toda la
-secuencia:
+F1 no tiene inyecciones de fallo para el panel, y no se añade ninguna (D-T3D-02, ACEPTADA). INV-25 ya tiene evidencia automatizada
+de UI y de fuente: las excepciones que cruzan la frontera del panel quedan contenidas y llevan al estado Error. Smoke-1 lo complementa
+**observando** durante toda la secuencia; no se modifica el producto para forzar un fallo:
 
 | Paso | Comprobación | Esperado | INV |
 |---|---|---|---|
-| SM-36 | ¿Apareció alguna vez «Error del panel» o «Sesión degradada»? | no. Si apareció: anotar el mensaje literal («No se pudo actualizar el panel: …»), pulsar «Reintentar», comprobar que una orden clásica (`LINE`, `RACKAYUDA`) sigue funcionando y continuar. Es un hallazgo para el Coordinator, no un STOP, salvo que las órdenes clásicas dejen de funcionar | INV-25 |
-| SM-37 | ¿Hubo algún cuadro de excepción no controlada de AutoCAD o de .NET, o un cierre abrupto de AutoCAD? | no | INV-25, INV-14 |
-| SM-38 | Comprobación Debug de INV-14 (`Debug.Assert` de `TopTransaction == null` tras cada drenaje y lectura de la selección) | no se dispara en toda la sesión. En una compilación Debug, un fallo de `Debug.Assert` termina el proceso de forma abrupta (`HOST-TO-CONFIRM`): un cierre abrupto en SM-06..SM-35 es un FAIL candidato de INV-14 | INV-14 |
-| SM-39 | Tras cerrar AutoCAD (sección 7): registro de RackLog del día (`%APPDATA%\RackCad\logs\`) | se anotan las entradas nuevas desde la hora de SM-00a; ninguna con `Workspace` ni «A workspace drain left a transaction open.». Cada excepción se transcribe redactada y se explica | INV-25, INV-14 |
+| SM-36 | ¿Apareció «Error del panel» o «Sesión degradada» sin explicación? | no. Si apareció: anotar el mensaje literal («No se pudo actualizar el panel: …»), pulsar «Reintentar», comprobar que las órdenes clásicas (`LINE`, `RACKAYUDA`) siguen funcionando y continuar. Es un hallazgo para el Coordinator, no un STOP, salvo que las órdenes clásicas dejen de funcionar (SM-STOP-07) | INV-25 |
+| SM-37 | ¿Apareció algún cuadro de excepción no controlada de .NET o de AutoCAD? | no | INV-25 |
+| SM-38 | Comprobación Debug de INV-14 (`Debug.Assert` de `TopTransaction == null` tras cada drenaje y lectura de la selección; D-T3D-04) | se registra: (1) no se observó ninguna interfaz ni diagnóstico de `Debug.Assert`; (2) no se observó ninguna excepción no controlada; (3) AutoCAD no terminó de forma inesperada; (4) RackLog no indica fugas de transacción (SM-39); (5) todos los drenajes y lecturas de la selección esperados se completaron (filas `drain` y `selection.read` de SM-06, SM-16 y SM-20). **Cualquier aserción Debug visible o diagnóstico equivalente de fuga de transacción: FAIL / STOP** para revisión. No se presupone cómo se manifiesta un fallo de `Debug.Assert` en el host | INV-14 |
+| SM-39 | Tras cerrar AutoCAD (sección 7): registro de RackLog del día (`%APPDATA%\RackCad\logs\`), **solo como evidencia de fallos** | se anotan las entradas nuevas desde la hora de SM-00a; ninguna con `Workspace` ni con «A workspace drain left a transaction open.» o «The selection read left a transaction open.». Cada excepción se transcribe redactada y se explica | INV-25, INV-14 |
 
 ## 7. Cierre de AutoCAD
 
@@ -290,17 +305,21 @@ secuencia:
 | `INVALID` | STOP |
 
 **Propuesta de resultado de Smoke-1** (lo deciden el Owner y el Coordinator; la sesión solo propone). PASS si:
-- S1-01, S1-02, S1-03, S1-04 (incluido el caso Diagnóstico según D-T3D-03), S1-05, S1-06f, S1-06g, S1-06h, S1-07, S1-08, S1-09,
-  S1-10 y S1-11 son PASS;
-- S1-06a..e quedan resueltos según D-T3D-01;
+- S1-01, S1-02, S1-03, S1-04, S1-05, S1-06f, S1-06g, S1-06h, S1-07, S1-08, S1-09, S1-10 y S1-11 son PASS;
+- **S1-04 incluye, observados en el host, el caso Diagnóstico (SM-11, PR-12) y el caso Sin identidad (SM-10b, PR-13)**. Si falta
+  cualquiera de los dos dibujos, S1-04 queda incompleto y Smoke-1 no es PASS: la evidencia Core es de apoyo y no sustituye la
+  observación de host;
+- S1-06a..e tienen la disposición de I-64-A-7 ya aceptada (NOT_APPLICABLE_BY_DESIGN en Smoke-1; nunca PASS). Sin A-7 aceptada no hay
+  Smoke-1;
 - S1-12 es PASS o NOT_APPLICABLE;
 - la disposición del perfil es `CLEAN` o `REPORTED_ACCEPTED`;
-- SM-36..SM-39 no tienen hallazgos sin explicar;
+- SM-36..SM-39 no tienen hallazgos sin explicar; una aserción Debug visible o un diagnóstico de fuga de transacción es FAIL;
 - SM-41 da los dibujos sin cambios.
 
 Cualquier FAIL deja Smoke-1 en NOT PASS; un STOP lo deja sin resultado. Con Smoke-1 PASS y Smoke-NAV PASS se entra en F4 (Freeze §11).
-La parte de host de INV-21 la da la disposición del perfil; la de INV-24, S1-06a..h; las mediciones de los escenarios 1, 2, 3, 9 y 10
-son registro (OV-22), sin umbrales.
+- La parte de host de INV-21 la da la disposición del perfil.
+- La de INV-24, en Smoke-1, la dan S1-06f..h, con SM-14a..e como evidencia complementaria. S2-16..S2-22 quedan para Smoke-2, según A-7.
+- Las mediciones de los escenarios 1, 2, 3, 9 y 10 son registro (OV-22), sin umbrales.
 
 ## 10. Evidencia y custodia (dictamen O-2 de T3C)
 
@@ -350,7 +369,7 @@ En `docs/automation/evidence/I-64-pilot/F1-SMOKE-1/<RunId>/`, según el patrón 
 
 | Id | Condición |
 |---|---|
-| SM-STOP-01 | falta cualquier prerrequisito de la sección 2, o la autorización no resuelve D-T3D-01..06 |
+| SM-STOP-01 | falta cualquier prerrequisito de la sección 2, o I-64-A-7 no está aceptada |
 | SM-STOP-02 | un selector de perfil, otra `acad.exe` o una sesión de I-52 durante la ventana |
 | SM-STOP-03 | cargar el DLL exige un cambio persistente de seguridad o de perfil (STOP-06) |
 | SM-STOP-04 | un paso exigiría cambiar una variable del sistema, el perfil o el registro (por ejemplo `PICKFIRST`) |
@@ -372,25 +391,18 @@ En `docs/automation/evidence/I-64-pilot/F1-SMOKE-1/<RunId>/`, según el patrón 
 - **Repetición:** una repetición de Smoke-1 exige una decisión del Coordinator y un `RunId` nuevo; ninguna corrida se repite para
   buscar otro resultado.
 
-## 12. Decisiones necesarias antes de ejecutar (para el Coordinator)
+## 12. Decisiones antes de ejecutar: dictámenes del Coordinator
 
-- **D-T3D-01, foco en un campo.** S1-06a..e (OV-19, INV-24) exigen un campo del panel, y el panel de F1 no tiene ninguno. Opciones:
-  - (a) S1-06a..e quedan **NOT_APPLICABLE en Smoke-1** y pasan al primer hito cuyo panel tenga campos (F4 / Smoke-2). Reasignar un
-    escenario OV exige una A-n (LIFECYCLE §8; Freeze §12, «reasignarlo exige una A-n»).
-  - (b) Se aceptan las comprobaciones adaptadas de la sección 6.6 como evidencia de S1-06a..e en F1.
-  - (c) Otra vía que el Coordinator fije.
+Fuente: revisión del cierre del gate F1, CHANGES REQUIRED (`docs/automation/evidence/I-64-pilot/F1-GATE/coordinator-gate-close-review-1.md`).
+T3D queda aceptado con estas correcciones documentales.
 
-  La sesión no elige: hasta la decisión, NOT_EXECUTABLE_IN_F1.
-- **D-T3D-02, contención sin inyección.** El producto de F1 no tiene inyecciones de fallo para el panel. La contención (INV-25) se
-  comprueba por observación (sección 6.7); provocar un fallo exigiría un cambio de producto, fuera de esta tarea. ¿Se acepta?
-- **D-T3D-03, caso Diagnóstico de S1-04.** Hace falta un dibujo con un bloque de definición ilegible o de versión futura. ¿Lo aporta el
-  Owner? Si no existe, ¿SM-11 queda NOT_EXECUTED con la cobertura Core de INV-17 como evidencia?
-- **D-T3D-04, cómo se registra INV-14 en el host.** Un fallo de `Debug.Assert` en la compilación Debug termina el proceso
-  (`HOST-TO-CONFIRM`). ¿Basta registrar «sin cierre abrupto» (SM-38) más el registro de RackLog (SM-39)?
-- **D-T3D-05, «registro» de S1-09.** El instrumento de F1 es en memoria y se muestra en el panel (decisión de T3: no escribe en
-  RackLog). S1-09 se comprueba sobre esa tabla y sobre la línea de órdenes (sin regeneraciones), no sobre el archivo de RackLog.
-  ¿Se confirma esa lectura de D-18 para F1?
-- **D-T3D-06, modales de RackCad y RACKEDITAR.** `SetModalRackCadActive` no tiene ningún llamador en F1 (hallazgo H-B5 y C-T3B-09 del
-  paquete de T3B: conectarlo reabriría comandos clásicos). En S1-07, RACKEDITAR mantiene una orden activa, así que el panel muestra
-  «Hay un comando en curso.» y no drena. El texto «Hay un cuadro de diálogo de RackCad abierto.» no aparece nunca en F1. ¿Se acepta
-  S1-07 con ese comportamiento?
+| Decisión | Dictamen | Efecto en este procedimiento |
+|---|---|---|
+| **D-T3D-01**, foco en un campo (S1-06a..e, OV-19, INV-24) | **BLOQUEANTE; sin resolver hasta que se acepte I-64-A-7.** Disposición recomendada: en F1 / Smoke-1, S1-06a..e = NOT_APPLICABLE_BY_DESIGN; SM-14a..e = SUPPLEMENTARY_EVIDENCE de aislamiento de teclado y foco; se mantienen S1-06f, g y h; los casos literales con campo editable pasan al primer hito con texto editable en el Workspace (previsto F4 / Smoke-2), sin debilitar el requisito. No se redefine «campo» | sección 6.6. A-7 (PROPOSED) define S2-16..S2-22. Sin A-7 aceptada, Smoke-1 no se ejecuta y S1-06a..e nunca son PASS |
+| **D-T3D-02**, contención sin inyección | **ACEPTADA.** No hace falta ningún gancho nuevo de inyección en F1: INV-25 ya tiene evidencia automatizada de UI y de fuente. Smoke-1 la complementa observando: ningún cuadro de excepción no controlada de .NET o AutoCAD; ningún estado Error o Degraded sin explicar; las órdenes clásicas siguen usables si aparece un error contenido del panel. El producto no se modifica para forzar un fallo | sección 6.7, SM-36 y SM-37 |
+| **D-T3D-03**, caso Diagnóstico de S1-04 | **Smoke-1 PASS exige el caso Diagnóstico.** Antes de Smoke-1 se prepara o identifica un dibujo con un bloque cuya definición de RackCad sea ilegible a propósito, o que represente la condición «futura o inválida» admitida, con su SHA-256, el diagnóstico exacto esperado y la confirmación de que nunca se guarda. Si no existe, S1-04 queda incompleto; la evidencia Core no lo convierte en PASS. No se autoriza AutoCAD ahora para crearlo | PR-12 y SM-11. **Corrección hallada por la sesión:** el caso Sin identidad tampoco se observa con un bloque cualquiera (SM-10a da «Selección actual: 0 racks y 1 otros objetos.»); necesita un sobre legible con Id vacío (PR-13, SM-10b). Se trata con el mismo criterio que el Diagnóstico, a confirmar por el Coordinator |
+| **D-T3D-04**, INV-14 en el host | **ACEPTADA CON CORRECCIÓN DE REDACCIÓN.** No se afirma que `Debug.Assert` termine AutoCAD. Se registra: ninguna interfaz ni diagnóstico de `Debug.Assert` observado; ninguna excepción no controlada; ningún cierre inesperado de AutoCAD; RackLog sin indicios de fuga de transacción; todos los drenajes y lecturas de la selección esperados completados. Una aserción Debug visible o un diagnóstico equivalente de fuga: FAIL / STOP para revisión | SM-38 y SM-39 |
+| **D-T3D-05**, registro de S1-09 | **CONFIRMADA.** En F1, el registro de medición normal es la tabla de instrumentación en memoria del panel. S1-09 usa esa tabla y la observación de la línea de órdenes (Regen o mensajes no deseados). RackLog no es el sumidero de métricas, solo evidencia de fallos. No cambia la decisión de instrumentación de T3 | SM-05, SM-12 y SM-39 |
+| **D-T3D-06**, modales de RackCad y RACKEDITAR | **ACEPTADA para S1-07.** RACKEDITAR mantiene una orden de AutoCAD activa con el editor abierto, así que la política de drenaje de F1 ya queda inhibida. Texto esperado: «Hay un comando en curso.»; no se exige «Hay un cuadro de diálogo de RackCad abierto.». Se registra que S1-07 valida la convivencia y la sincronización alrededor del flujo real de RACKEDITAR, que la conexión de host de `SetModalRackCadActive` desde los comandos clásicos no se ejercita y que la rama modal de INV-23 la cubre la evidencia Core con fuente simulada. En F1 no se reabren los comandos clásicos | SM-34, SM-35 y SM-35n |
+
+Ningún dictamen autoriza cambios de producto ni la ejecución de Smoke-1.
