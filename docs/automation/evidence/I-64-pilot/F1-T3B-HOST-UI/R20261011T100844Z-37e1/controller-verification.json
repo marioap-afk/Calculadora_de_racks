@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "RunId": "R20261011T100844Z-37e1",
+  "DelegationRunId": "R20261011T081209Z-deae",
+  "WorkRunId": "R20261011T090257Z-3038",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED, DeathConfirmed=true y cesion 2026-10-11T09:04:36Z..10:01:43Z. El Worker termino con resultado final notificado; LaunchedPid=null corresponde al subagente. OutputWrittenUtc=10:01:21.641724Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json valida como rackcad-worker-handoff/v1; TaskId, RunId, DelegationRunId, Attempt y BaseSha coinciden con la delegacion y el relevo. CurrentSha=e0205b5a9f000bbd44aa1f7556d30f06411c3db7; fecha de salida posterior al inicio de cesion. La aceptacion formal registra ACCEPTED y un Worker."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git show bb0d5522:docs/AUTOMATION_PLAN.md, docs/automation/agent-execution/README.md y AGENTS.md confirma las autoridades externas y los cuatro jobs requeridos. git merge-base --is-ancestor c7f389cbb2eff4be42f861d8114adc2af753a1c9 f3a9f40e termina con codigo 0. git merge-base bb0d5522 c7f389cb devuelve bb0d5522; diff de rutas EXTERNAL desde esa base a AuthorityRevision esta vacio. git diff --name-only c7f389cb f3a9f40e solo muestra tres documentos UNIT_DOC."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparacion de delegation.json y gate-contract.json: AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions, Authorities y RequiredTests coinciden. Los filtros son FullyQualifiedName~RackCad.UI.Tests.Workspace con minimo 1 y FullyQualifiedName~RackCad.Tests.Workspace con minimo 487; ambos requieren RED."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dan e0205b5a9f000bbd44aa1f7556d30f06411c3db7; la rama y ruta del worktree coinciden con la entrega. merge-base --is-ancestor BaseSha HEAD y merge-base --is-ancestor RedSha HEAD devuelven codigo 0. El historial muestra RED 9ac76ee2 como padre de GREEN e0205b5a."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra CurrentRun 38129212761 como push de refs/heads/architecture/workspace-persistente-rackcad sobre CurrentSha exacto, completado y success; OriginMainSha corresponde a MainSha bb0d5522. La consulta ls-remote de esta verificacion no pudo conectar a github.com; el relevo aporta los hechos remotos requeridos."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only f3a9f40e..HEAD muestra 18 rutas permitidas y ninguna ruta prohibida. Los deltas de los tres archivos de producto restringidos corresponden al contrato; WorkspaceHostSourceGuardTests.cs contiene G1/G2/G3, pero tambien cambia la linea HostCorePath de `= \"` a `=\"`. Ese cambio adicional no pertenece a G1/G2/G3 y viola el delta exacto ordenado; activa C-02."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 esta vacio. git check-ignore -v para la ruta de salida devuelve `.gitignore:3:artifacts/`, por lo que el paquete queda ignorado."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y los TRX corresponden a CurrentSha y al push 38129212761: ref exacta, concluido success, con Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD en success. RedPart: push 38128156191 corresponde a RedSha; el job Core termino failure, UI failure y Plugin skipped."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX GREEN: Core 13122/13122; filtro Workspace 527/527. UI 1701 Passed y 17 NotExecuted; filtro Workspace 64/64. TRX RED: Core filtro 527, con 504 Passed y 23 Failed por asercion; UI filtro 64, con 14 Passed y 50 Failed por asercion. Los conteos concuerdan con la entrega. git diff --name-only RedSha..CurrentSha -- tests/ esta vacio. ChainRedFiles = RT = git diff --name-only BaseSha..RedSha -- tests/: WorkspaceHostSourceGuardTests.cs, WorkspacePaletteHostSourceGuardTests.cs y siete archivos de tests RackCad.UI.Tests/Workspace."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show -s --format=%B 9ac76ee2 y e0205b5a muestra en ambos commits `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`, igual al trailer declarado. relay-record-work registra modelo efectivo claude-sonnet-5-5 y effort high."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "La delegacion solicita claude-sonnet-5-5 con effort high. relay-record-work registra 187 entradas del Worker con message.model claude-sonnet-5-5 y effort high, coincidentes con la solicitud."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revision de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction en worker-handoff.json: sin coincidencias con los terminos de AUTOMATION_PLAN 16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work registra cero denegaciones de permisos y cero avisos de limite de uso o creditos. La unica orden fallida indicada en Notes fue un heredoc mal citado, superado por llamadas posteriores; no queda orden fallida pendiente. El proceso ajeno descrito en Notes inicio despues del fin de cesion y su linea no contiene la ruta del worktree."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "C-02"
+  ],
+  "Findings": [
+    "El delta adicional de espacios en HostCorePath dentro de WorkspaceHostSourceGuardTests.cs excede los cambios G1/G2/G3 permitidos. Es la desviacion que activa C-02.",
+    "En los 23 fallos Core del TRX RED, las aserciones de WorkspacePaletteHostSourceGuardTests detectan que el esqueleto aun carece del host de paleta, las notificaciones y los deltas de comando, puente y controlador requeridos; no son fallos de compilacion.",
+    "En los 50 fallos UI del TRX RED, las aserciones de contextos, estados, errores y reintentos, instrumentacion, trabajo en reposo y vista detectan que el esqueleto no presenta el comportamiento esperado; no son fallos de compilacion.",
+    "El TRX UI registra 17 NotExecuted fuera del filtro Workspace; se cuentan como omitidas y no como pruebas ejecutadas. La paleta no fue instanciada por pruebas y no hubo ejecucion de AutoCAD, segun KnownLimitations de la entrega."
+  ],
+  "RecommendedNextAction": "Detener la cadena y remitir al Coordinator el delta adicional de HostCorePath para su resolucion."
+}

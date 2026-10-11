@@ -1,0 +1,296 @@
+{
+  "Schema": "rackcad-i64-scope-bridge/v1",
+  "Result": "PASS",
+  "Reasons": [],
+  "BaseSha": "f3a9f40e0d0057e14a6eb7a6681590b78cecf37f",
+  "CurrentSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+  "DelegationSha256": "683cbe6f53ddf34ea4d2b6a1097d3949c6de6b00cf5872edbd6cc6555b068009",
+  "HandoffSha256": "b41f5499c0f2ee99a5cba705918ada24d77e3b92b0b3c01104e337799ecd7776",
+  "DelegationRunId": "R20261011T081209Z-deae",
+  "ChangedPaths": [
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+    "src/RackCad.UI/Workspace/WorkspaceMeasurementRow.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelState.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelContextTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelErrorTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelInstrumentationTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelNoWorkTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelStateTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePanelViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePortDouble.cs"
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.UI/Workspace/",
+    "tests/RackCad.UI.Tests/Workspace/",
+    "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "docs/",
+    ".github/",
+    "assets/",
+    "eng/",
+    "deploy/",
+    "tools/",
+    "global.json",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "RackCad.sln",
+    "src/RackCad.Domain/",
+    "src/RackCad.UI/CatalogOption.cs",
+    "src/RackCad.UI/Controls/",
+    "src/RackCad.UI/Editor/",
+    "src/RackCad.UI/EnumDisplayConverter.cs",
+    "src/RackCad.UI/MainMenuAction.cs",
+    "src/RackCad.UI/ObservableObject.cs",
+    "src/RackCad.UI/Preview/",
+    "src/RackCad.UI/PreviewCanvasPainter.cs",
+    "src/RackCad.UI/ProjectVariableRepairText.cs",
+    "src/RackCad.UI/RackBomWindow.xaml",
+    "src/RackCad.UI/RackBomWindow.xaml.cs",
+    "src/RackCad.UI/RackCad.UI.csproj",
+    "src/RackCad.UI/RackCommandHelpWindow.cs",
+    "src/RackCad.UI/RackCommandReference.cs",
+    "src/RackCad.UI/RackConsolidatedBomWindow.xaml",
+    "src/RackCad.UI/RackConsolidatedBomWindow.xaml.cs",
+    "src/RackCad.UI/RackCustomPropertiesWindow.xaml",
+    "src/RackCad.UI/RackCustomPropertiesWindow.xaml.cs",
+    "src/RackCad.UI/RackDesignLibraryWindow.xaml",
+    "src/RackCad.UI/RackDesignLibraryWindow.xaml.cs",
+    "src/RackCad.UI/RackFrames/",
+    "src/RackCad.UI/RackListRow.cs",
+    "src/RackCad.UI/RackListWindow.xaml",
+    "src/RackCad.UI/RackListWindow.xaml.cs",
+    "src/RackCad.UI/RackMainMenuWindow.xaml",
+    "src/RackCad.UI/RackMainMenuWindow.xaml.cs",
+    "src/RackCad.UI/RackProjectVariablesWindow.xaml",
+    "src/RackCad.UI/RackProjectVariablesWindow.xaml.cs",
+    "src/RackCad.UI/RackWarehouseFillWindow.cs",
+    "src/RackCad.UI/RackWarehouseLayoutWindow.cs",
+    "src/RackCad.UI/SafetyDefensaGridWindow.cs",
+    "src/RackCad.UI/SafetyDefenseFace.cs",
+    "src/RackCad.UI/SafetyDesviadorGridWindow.cs",
+    "src/RackCad.UI/SafetyGuiaEntradaGridWindow.cs",
+    "src/RackCad.UI/SafetyParrillaGridWindow.cs",
+    "src/RackCad.UI/SafetyTopeGridWindow.cs",
+    "src/RackCad.UI/SelectiveSafetyWindow.cs",
+    "src/RackCad.UI/Shell/",
+    "src/RackCad.UI/StructuralSections/",
+    "src/RackCad.UI/Systems/",
+    "src/RackCad.UI/Themes/",
+    "src/RackCad.UI/UiSupport.cs",
+    "src/RackCad.UI/Views/",
+    "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+    "tests/RackCad.UI.Tests/StaTestRunner.cs",
+    "tests/RackCad.UI.Tests/WindowCensusGuardTests.cs",
+    "tests/RackCad.UI.Tests/UiSystemBoundaryGuardTests.cs",
+    "tests/RackCad.UI.Tests/CustomPropertiesHelpCensusTests.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Application/BlockNaming.cs",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/CustomProperties/",
+    "src/RackCad.Application/Diagnostics/",
+    "src/RackCad.Application/Drawing/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Formatting/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Layout/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/RackFrames/",
+    "src/RackCad.Application/Settings/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/Views/",
+    "src/RackCad.Application/Workspace/",
+    "src/RackCad.Plugin/CustomPropertiesData.cs",
+    "src/RackCad.Plugin/CustomPropertiesExecutor.cs",
+    "src/RackCad.Plugin/InDocumentTransaction.cs",
+    "src/RackCad.Plugin/LayerHelper.cs",
+    "src/RackCad.Plugin/PluginInitializer.cs",
+    "src/RackCad.Plugin/ProjectVariableMutationExecutor.cs",
+    "src/RackCad.Plugin/ProjectVariablesData.cs",
+    "src/RackCad.Plugin/ProjectVariablesRegistry.cs",
+    "src/RackCad.Plugin/RackAyudaCommands.cs",
+    "src/RackCad.Plugin/RackBlockFinder.cs",
+    "src/RackCad.Plugin/RackCabeceraCommands.cs",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "src/RackCad.Plugin/RackCamaCommands.cs",
+    "src/RackCad.Plugin/RackCantileverCommands.cs",
+    "src/RackCad.Plugin/RackCatalogLoader.cs",
+    "src/RackCad.Plugin/RackCloner.cs",
+    "src/RackCad.Plugin/RackCommandSupport.cs",
+    "src/RackCad.Plugin/RackDinamicoCommands.cs",
+    "src/RackCad.Plugin/RackDuplicarCommands.cs",
+    "src/RackCad.Plugin/RackEnvelopeRestamp.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.cs",
+    "src/RackCad.Plugin/RackLayoutCommands.Fill.cs",
+    "src/RackCad.Plugin/RackLayoutCommands.cs",
+    "src/RackCad.Plugin/RackMenuCommands.cs",
+    "src/RackCad.Plugin/RackPropiedadesCommands.cs",
+    "src/RackCad.Plugin/RackProyectarCommands.cs",
+    "src/RackCad.Plugin/RackPushBackCommands.cs",
+    "src/RackCad.Plugin/RackSeccionCommands.cs",
+    "src/RackCad.Plugin/RackSelectivoCommands.cs",
+    "src/RackCad.Plugin/RackSelectivoInsertIntegration.cs",
+    "src/RackCad.Plugin/RackUnitsGuard.cs",
+    "src/RackCad.Plugin/RackVariablesCommands.cs",
+    "src/RackCad.Plugin/StructuralSectionCatalogAccess.cs",
+    "src/RackCad.Plugin/StructuralSectionCommandFlow.cs",
+    "src/RackCad.Plugin/Drawing/",
+    "src/RackCad.Plugin/KindHandlers/",
+    "src/RackCad.Plugin/Systems/",
+    "src/RackCad.Plugin/Views/",
+    "src/RackCad.Plugin/Workspace/WorkspaceHostPort.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs",
+    "tests/RackCad.Tests/SelectiveEditorOpenTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeDegradedModeTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeReconciliationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSubscriptionLifecycleTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeTestSupport.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostAuthorizationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostLifecycleTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostPolicyTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceSupport.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostTestSupport.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceInstrumentationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSelectionMappingTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSessionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs"
+  ],
+  "OutsideAllowed": [],
+  "ForbiddenHits": [],
+  "Checks": [
+    {
+      "Id": "ExpectedBase.Format",
+      "Result": "pass"
+    },
+    {
+      "Id": "ExpectedCurrent.Format",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.Parse",
+      "Result": "pass"
+    },
+    {
+      "Id": "Handoff.Parse",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.Type",
+      "Result": "pass"
+    },
+    {
+      "Id": "Handoff.Type",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.RunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.DelegationRunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.TaskId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.DelegationBaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.HandoffBaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.HandoffCurrentSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "AllowedWriteScope.Present",
+      "Result": "pass"
+    },
+    {
+      "Id": "AllowedWriteScope.Syntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "ForbiddenWriteScope.Present",
+      "Result": "pass"
+    },
+    {
+      "Id": "ForbiddenWriteScope.Syntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Repository",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.BaseSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.CurrentSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Ancestry",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Diff",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Diff.Decode",
+      "Result": "pass"
+    },
+    {
+      "Id": "Diff.NonEmpty",
+      "Result": "pass"
+    },
+    {
+      "Id": "Diff.PathSyntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "Scope.Allowed",
+      "Result": "pass"
+    },
+    {
+      "Id": "Scope.Forbidden",
+      "Result": "pass"
+    }
+  ]
+}

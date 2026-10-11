@@ -1,0 +1,30 @@
+{
+  "Schema": "rackcad-i64-p02-signal/v1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "Control": "nc3",
+  "RunId": "R20261011T155834Z-41b5",
+  "Signal": "P-02 (AUTOMATION_PLAN 16.4): 2 procesos clasificados participante en la comprobacion de entrada, presentes en la relectura",
+  "Rows": [
+    {
+      "Pid": 22476,
+      "ParentPid": 18312,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T15:58:50.7602350Z"
+    },
+    {
+      "Pid": 31416,
+      "ParentPid": 22476,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T15:58:50.8013360Z"
+    }
+  ],
+  "Facts": [
+    "ParentPid 18312 es el claude.exe de la sesion responsable (creado 2026-10-10T01:10:46Z; el SessionPid de las comprobaciones de huerfanos de T3B).",
+    "Se crearon a las 15:58:50Z: despues de la comprobacion de salida (15:58:44Z, sin participantes) y 2 s antes del inicio de la cesion (15:58:52Z). Son el shell de la herramienta Bash de la sesion que lanzo el control (launch_t3b_nc.sh, que espera al lanzador) y despues ejecuto la comprobacion de entrada en la misma llamada.",
+    "Su linea de ordenes contenia la ruta del worktree porque la sesion incluyo en esa misma llamada un cd al worktree para un paso posterior (nc3_t3b_check.py). En nc1, nc2 y la re-verificacion la llamada que lanzo no contenia la ruta: entradas sin participantes.",
+    "La exclusion de 16.4 es solo el comprobador y sus ancestros por ParentProcessId. La cadena por ParentProcessId del comprobador (pwsh 31452) se corta en el bash que ejecuta t3b_nc_post.sh: su padre de Windows ya no existe (comportamiento de Git Bash/MSYS al lanzar un script; reproducido despues por la sesion: bash -> padre inexistente). Por eso 22476 y 31416, que son sus antecesores en el arbol del shell, no quedaron excluidos.",
+    "El lanzador (19392) y el arbol del participante lanzado estaban muertos en la entrada. Ambos procesos ya no existen (comprobado despues de la entrada).",
+    "16.4 dice: nunca sus hermanos ni otros descendientes de la sesion. Por el texto, estos procesos cuentan como participantes y la senal es P-02; la sesion no la descarta por su cuenta."
+  ],
+  "SessionDisposition": "STOP al Coordinator por P-02; sin reintentos de nc3, sin puentes, sin custodia y sin escrituras Git hasta su decision."
+}

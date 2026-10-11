@@ -1,0 +1,317 @@
+{
+  "Schema": "rackcad-i64-freetext-bridge-run/v1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "RunId": "R20261011T162452Z-b06a",
+  "Mechanism": "I64-FREETEXT-BRIDGE-01",
+  "Amendment": "docs/initiatives/I-64-A-6.md (corrige A-5 para la activacion; ACTIVE por Coordinator AGREED)",
+  "HeadSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+  "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "StartedUtc": "2026-10-11T16:24:54.257856+00:00",
+  "ModelInvoked": false,
+  "Verifier": {
+    "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py",
+    "HeadBlob": "3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169",
+    "WorktreeBlobFiltered": "3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169",
+    "WorktreeBytesSha256": "e760858883926744a606d9438099ed8abf040eea07814275e94b1843307474d4",
+    "ExecutedPath": "artifacts/orchestration/I-64/F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/verifier/verify_freetext_bridge.py",
+    "ExecutedSource": "git cat-file blob 3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169",
+    "ExecutedBlob": "3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169",
+    "ExecutedSha256": "e760858883926744a606d9438099ed8abf040eea07814275e94b1843307474d4",
+    "AuthorizedBlob": "3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169",
+    "AuthorizedSha256": "e760858883926744a606d9438099ed8abf040eea07814275e94b1843307474d4",
+    "IdentityOk": true,
+    "WorktreeBytesEqualBlob": true
+  },
+  "Inputs": {
+    "Real": {
+      "Path": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/worker-handoff.json",
+      "Sha256": "b41f5499c0f2ee99a5cba705918ada24d77e3b92b0b3c01104e337799ecd7776",
+      "Expected": "b41f5499c0f2ee99a5cba705918ada24d77e3b92b0b3c01104e337799ecd7776"
+    },
+    "Mutated": {
+      "Path": "artifacts/orchestration/I-64/F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/worker-handoff.json",
+      "Sha256": "b9a49084d683e9a2620c41f3bfde47087098aeb532f15221b5e5c476c1dc9196",
+      "Expected": "b9a49084d683e9a2620c41f3bfde47087098aeb532f15221b5e5c476c1dc9196"
+    }
+  },
+  "Authority": {
+    "ContractMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "DelegationMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "ExpectedMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "TermSetSource": "git cat-file blob bb0d5522e8411f66a51fdfb3f1f0d0514b737453:docs/AUTOMATION_PLAN.md",
+    "TermSetPath": "artifacts/orchestration/I-64/F1-T3B-HOST-UI-freetext-bridge/R20261011T162452Z-b06a/term-set/AUTOMATION_PLAN.md",
+    "TermSetBlob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+    "TermSetExecutedBlob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+    "TermSetSha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+    "ExpectedTermSetBlob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+    "ExpectedTermSetSha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+    "ProductVerification": {
+      "RunId": "R20261011T153749Z-7910",
+      "Disposition": "NONE",
+      "VerifiedSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7"
+    }
+  },
+  "ExecutedUtc": "2026-10-11T16:24:54.762164+00:00",
+  "Executed": true,
+  "Execution": {
+    "Command": "python -I <bytes del blob 3bc7869e extraidos con git cat-file> --real-handoff artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/worker-handoff.json --mutated-handoff artifacts/orchestration/I-64/F1-T3B-HOST-UI-nc3/3/R20261011T161926Z-49f1/inputs/worker-handoff.json --term-set <bytes de bb0d5522:docs/AUTOMATION_PLAN.md>",
+    "ExitCode": 0,
+    "OutputSha256": "0fa3ef3a14444938ed8919d45c42ad588041321ca8278fb8422c830105c0dc34",
+    "StderrBytes": 0
+  },
+  "Output": {
+    "Schema": "rackcad-i64-freetext-bridge/v1",
+    "Result": "PASS",
+    "Reasons": [],
+    "AuthorizedAppend": " GATE PASS.",
+    "RealHandoffSha256": "b41f5499c0f2ee99a5cba705918ada24d77e3b92b0b3c01104e337799ecd7776",
+    "MutatedHandoffSha256": "b9a49084d683e9a2620c41f3bfde47087098aeb532f15221b5e5c476c1dc9196",
+    "TermSetSourceSha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+    "TermSetSectionSha256": "767662276555c2fafffad3450fe9e264ad691e58e0ddb870e8b739c5dbf76864",
+    "GovernedFields": [
+      "WorkCompleted",
+      "Evidence",
+      "UnexpectedFindings",
+      "KnownLimitations",
+      "Deviations",
+      "OpenQuestions",
+      "RecommendedNextAction"
+    ],
+    "Terms": [
+      "GATE PASS",
+      "GATE_PASS",
+      "Candidato",
+      "Candidate",
+      "FINAL_CANDIDATE_SHA",
+      "gate cerrado",
+      "gate closed",
+      "cierre del gate",
+      "rama integrada",
+      "integrada en main",
+      "integrated into main",
+      "merged into main",
+      "lista para integrar",
+      "ready to merge",
+      "Owner Validation APROBADA",
+      "Owner Validation APPROVED"
+    ],
+    "TaskId": "F1-T3B-HOST-UI",
+    "RunId": "R20261011T090257Z-3038",
+    "BaseSha": "f3a9f40e0d0057e14a6eb7a6681590b78cecf37f",
+    "CurrentSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+    "ChangedFields": [
+      "WorkCompleted"
+    ],
+    "IntroducedForbiddenTerms": [
+      "GATE PASS"
+    ],
+    "RealForbiddenHits": [],
+    "MutatedForbiddenHits": [
+      {
+        "Field": "WorkCompleted",
+        "Index": null,
+        "Term": "GATE PASS",
+        "Count": 1
+      }
+    ],
+    "Checks": [
+      {
+        "Id": "Input.RealReadable",
+        "Result": "pass",
+        "Detail": "strict UTF-8 JSON, no duplicate keys, no non-JSON constants, no lone surrogates"
+      },
+      {
+        "Id": "Input.MutatedReadable",
+        "Result": "pass",
+        "Detail": "strict UTF-8 JSON, no duplicate keys, no non-JSON constants, no lone surrogates"
+      },
+      {
+        "Id": "TermSet.Parsed",
+        "Result": "pass",
+        "Detail": "7 governed fields, 16 terms; whole word or phrase, case-insensitive"
+      },
+      {
+        "Id": "Input.RealSchema",
+        "Result": "pass",
+        "Detail": "Schema and exact key set of rackcad-worker-handoff/v1"
+      },
+      {
+        "Id": "Input.MutatedSchema",
+        "Result": "pass",
+        "Detail": "Schema and exact key set of rackcad-worker-handoff/v1"
+      },
+      {
+        "Id": "Input.RealTypes",
+        "Result": "pass",
+        "Detail": "all values have their exact rackcad-worker-handoff/v1 types"
+      },
+      {
+        "Id": "Input.MutatedTypes",
+        "Result": "pass",
+        "Detail": "all values have their exact rackcad-worker-handoff/v1 types"
+      },
+      {
+        "Id": "Input.GovernedFieldTypes",
+        "Result": "pass",
+        "Detail": "every governed field has its schema type"
+      },
+      {
+        "Id": "Identity.Schema",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.TaskId",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.RunId",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.DelegationRunId",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.Initiative",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.Gate",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.Attempt",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.BaseSha",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.RedSha",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.CurrentSha",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.Branch",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.Worktree",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Identity.FilesChanged",
+        "Result": "pass",
+        "Detail": "identical"
+      },
+      {
+        "Id": "Structure.KeyOrder",
+        "Result": "pass",
+        "Detail": "same top-level key order"
+      },
+      {
+        "Id": "Structure.OnlyWorkCompletedChanged",
+        "Result": "pass",
+        "Detail": "changed fields: ['WorkCompleted']"
+      },
+      {
+        "Id": "Real.Clean",
+        "Result": "pass",
+        "Detail": "no forbidden term in the governed fields of the real handoff"
+      },
+      {
+        "Id": "Mutated.WorkCompletedHasTerm",
+        "Result": "pass",
+        "Detail": "WorkCompleted hits: [{'Field': 'WorkCompleted', 'Index': None, 'Term': 'GATE PASS', 'Count': 1}]"
+      },
+      {
+        "Id": "Mutated.ExactAuthorizedAppend",
+        "Result": "pass",
+        "Detail": "mutated WorkCompleted == real WorkCompleted + ' GATE PASS.'"
+      },
+      {
+        "Id": "Mutated.OtherGovernedFieldsUnchanged",
+        "Result": "pass",
+        "Detail": "governed fields other than WorkCompleted identical"
+      },
+      {
+        "Id": "Mutated.NoCompensatingDisappearance",
+        "Result": "pass",
+        "Detail": "no forbidden-term occurrence disappeared"
+      },
+      {
+        "Id": "Mutated.IntroducedOnlyInWorkCompleted",
+        "Result": "pass",
+        "Detail": "introduced ['GATE PASS'] in ['WorkCompleted']"
+      }
+    ]
+  },
+  "CheckResults": {
+    "Input.RealReadable": "pass",
+    "Input.MutatedReadable": "pass",
+    "TermSet.Parsed": "pass",
+    "Input.RealSchema": "pass",
+    "Input.MutatedSchema": "pass",
+    "Input.RealTypes": "pass",
+    "Input.MutatedTypes": "pass",
+    "Input.GovernedFieldTypes": "pass",
+    "Identity.Schema": "pass",
+    "Identity.TaskId": "pass",
+    "Identity.RunId": "pass",
+    "Identity.DelegationRunId": "pass",
+    "Identity.Initiative": "pass",
+    "Identity.Gate": "pass",
+    "Identity.Attempt": "pass",
+    "Identity.BaseSha": "pass",
+    "Identity.RedSha": "pass",
+    "Identity.CurrentSha": "pass",
+    "Identity.Branch": "pass",
+    "Identity.Worktree": "pass",
+    "Identity.FilesChanged": "pass",
+    "Structure.KeyOrder": "pass",
+    "Structure.OnlyWorkCompletedChanged": "pass",
+    "Real.Clean": "pass",
+    "Mutated.WorkCompletedHasTerm": "pass",
+    "Mutated.ExactAuthorizedAppend": "pass",
+    "Mutated.OtherGovernedFieldsUnchanged": "pass",
+    "Mutated.NoCompensatingDisappearance": "pass",
+    "Mutated.IntroducedOnlyInWorkCompleted": "pass"
+  },
+  "Oracle": {
+    "ResultPass": true,
+    "ExitCode0": true,
+    "NoReasons": true,
+    "ChangedFieldsWorkCompleted": true,
+    "IntroducedGatePass": true,
+    "RealForbiddenHitsEmpty": true,
+    "AllChecksPass": true,
+    "Terms16": true,
+    "GovernedFields7": true,
+    "TermSetSectionSha": true,
+    "TermSetSourceSha": true,
+    "RealHandoffSha": true,
+    "MutatedHandoffSha": true,
+    "CurrentShaVerified": true,
+    "BaseSha": true,
+    "ExactAppendIndependent": true,
+    "OtherFieldsEqualIndependent": true,
+    "Ok": true
+  },
+  "FinishedUtc": "2026-10-11T16:24:55.076684+00:00"
+}

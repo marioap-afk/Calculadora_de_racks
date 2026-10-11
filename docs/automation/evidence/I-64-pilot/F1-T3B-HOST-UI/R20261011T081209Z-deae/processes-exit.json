@@ -1,0 +1,82 @@
+{
+  "CheckedUtc": "2026-10-11T08:13:07.2359304Z",
+  "CheckerPid": 22100,
+  "Rows": [
+    {
+      "Pid": 10244,
+      "ParentPid": 30660,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-09T22:37:41.6499600Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 18312,
+      "ParentPid": 10244,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-10T01:10:46.3458670Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 27556,
+      "ParentPid": 1256,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-10-11T02:51:26.2747490Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null
+    },
+    {
+      "Pid": 37640,
+      "ParentPid": 18312,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T08:12:52.9031110Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 34800,
+      "ParentPid": 37640,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T08:12:52.9736380Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 25536,
+      "ParentPid": 34800,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T08:13:00.0586450Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 22100,
+      "ParentPid": 25536,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-10-11T08:13:00.5392030Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 34844,
+      "ParentPid": 11012,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-10-11T08:13:04.2647920Z",
+      "Classification": "unattributable",
+      "Reread": "GONE"
+    },
+    {
+      "Pid": 39528,
+      "ParentPid": 34844,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-10-11T08:13:04.2984930Z",
+      "Classification": "unattributable",
+      "Reread": "GONE"
+    }
+  ],
+  "ReadableNonParticipants": 46,
+  "Participants": 0,
+  "UnattributablePersistent": 0,
+  "UnattributableCleared": 2
+}

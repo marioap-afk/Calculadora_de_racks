@@ -1,0 +1,103 @@
+{
+  "CheckedUtc": "2026-10-11T10:02:05.3440456Z",
+  "CheckerPid": 10436,
+  "SessionPid": 18312,
+  "Rows": [
+    {
+      "Pid": 10244,
+      "ParentPid": 30660,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-09T22:37:41.6499600Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 18312,
+      "ParentPid": 10244,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-10T01:10:46.3458670Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 27556,
+      "ParentPid": 1256,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-10-11T02:51:26.2747490Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null
+    },
+    {
+      "Pid": 13752,
+      "ParentPid": 18312,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T10:01:56.6581740Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 19324,
+      "ParentPid": 13752,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T10:01:56.7649130Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 9416,
+      "ParentPid": 19324,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T10:01:59.3520750Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 10436,
+      "ParentPid": 9416,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-10-11T10:02:00.1734420Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 37996,
+      "ParentPid": 39836,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T10:02:02.1768050Z",
+      "Classification": "unattributable",
+      "Reread": "GONE"
+    }
+  ],
+  "SessionDescendants": [
+    {
+      "Pid": 21420,
+      "ParentPid": 19324,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T10:01:59.4205770Z",
+      "Classification": "session-descendant",
+      "Reread": null
+    },
+    {
+      "Pid": 28204,
+      "ParentPid": 21420,
+      "Name": "python3.13.exe",
+      "CreationDateUtc": "2026-10-11T10:01:59.7533410Z",
+      "Classification": "session-descendant",
+      "Reread": null
+    }
+  ],
+  "Orphans": [
+    {
+      "Pid": 27128,
+      "ParentPid": 23288,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T10:01:53.8154570Z",
+      "Classification": "orphan",
+      "Reread": "PRESENT"
+    }
+  ],
+  "ReadableNonParticipants": 36,
+  "Participants": 0,
+  "UnattributablePersistent": 0,
+  "OrphansPersistent": 1
+}

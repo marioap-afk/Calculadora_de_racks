@@ -1,0 +1,203 @@
+{
+  "Schema": "rackcad-i64-freetext-bridge/v1",
+  "Result": "PASS",
+  "Reasons": [],
+  "AuthorizedAppend": " GATE PASS.",
+  "RealHandoffSha256": "b41f5499c0f2ee99a5cba705918ada24d77e3b92b0b3c01104e337799ecd7776",
+  "MutatedHandoffSha256": "b9a49084d683e9a2620c41f3bfde47087098aeb532f15221b5e5c476c1dc9196",
+  "TermSetSourceSha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+  "TermSetSectionSha256": "767662276555c2fafffad3450fe9e264ad691e58e0ddb870e8b739c5dbf76864",
+  "GovernedFields": [
+    "WorkCompleted",
+    "Evidence",
+    "UnexpectedFindings",
+    "KnownLimitations",
+    "Deviations",
+    "OpenQuestions",
+    "RecommendedNextAction"
+  ],
+  "Terms": [
+    "GATE PASS",
+    "GATE_PASS",
+    "Candidato",
+    "Candidate",
+    "FINAL_CANDIDATE_SHA",
+    "gate cerrado",
+    "gate closed",
+    "cierre del gate",
+    "rama integrada",
+    "integrada en main",
+    "integrated into main",
+    "merged into main",
+    "lista para integrar",
+    "ready to merge",
+    "Owner Validation APROBADA",
+    "Owner Validation APPROVED"
+  ],
+  "TaskId": "F1-T3B-HOST-UI",
+  "RunId": "R20261011T090257Z-3038",
+  "BaseSha": "f3a9f40e0d0057e14a6eb7a6681590b78cecf37f",
+  "CurrentSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+  "ChangedFields": [
+    "WorkCompleted"
+  ],
+  "IntroducedForbiddenTerms": [
+    "GATE PASS"
+  ],
+  "RealForbiddenHits": [],
+  "MutatedForbiddenHits": [
+    {
+      "Field": "WorkCompleted",
+      "Index": null,
+      "Term": "GATE PASS",
+      "Count": 1
+    }
+  ],
+  "Checks": [
+    {
+      "Id": "Input.RealReadable",
+      "Result": "pass",
+      "Detail": "strict UTF-8 JSON, no duplicate keys, no non-JSON constants, no lone surrogates"
+    },
+    {
+      "Id": "Input.MutatedReadable",
+      "Result": "pass",
+      "Detail": "strict UTF-8 JSON, no duplicate keys, no non-JSON constants, no lone surrogates"
+    },
+    {
+      "Id": "TermSet.Parsed",
+      "Result": "pass",
+      "Detail": "7 governed fields, 16 terms; whole word or phrase, case-insensitive"
+    },
+    {
+      "Id": "Input.RealSchema",
+      "Result": "pass",
+      "Detail": "Schema and exact key set of rackcad-worker-handoff/v1"
+    },
+    {
+      "Id": "Input.MutatedSchema",
+      "Result": "pass",
+      "Detail": "Schema and exact key set of rackcad-worker-handoff/v1"
+    },
+    {
+      "Id": "Input.RealTypes",
+      "Result": "pass",
+      "Detail": "all values have their exact rackcad-worker-handoff/v1 types"
+    },
+    {
+      "Id": "Input.MutatedTypes",
+      "Result": "pass",
+      "Detail": "all values have their exact rackcad-worker-handoff/v1 types"
+    },
+    {
+      "Id": "Input.GovernedFieldTypes",
+      "Result": "pass",
+      "Detail": "every governed field has its schema type"
+    },
+    {
+      "Id": "Identity.Schema",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.TaskId",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.RunId",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.DelegationRunId",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.Initiative",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.Gate",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.Attempt",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.BaseSha",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.RedSha",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.CurrentSha",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.Branch",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.Worktree",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Identity.FilesChanged",
+      "Result": "pass",
+      "Detail": "identical"
+    },
+    {
+      "Id": "Structure.KeyOrder",
+      "Result": "pass",
+      "Detail": "same top-level key order"
+    },
+    {
+      "Id": "Structure.OnlyWorkCompletedChanged",
+      "Result": "pass",
+      "Detail": "changed fields: ['WorkCompleted']"
+    },
+    {
+      "Id": "Real.Clean",
+      "Result": "pass",
+      "Detail": "no forbidden term in the governed fields of the real handoff"
+    },
+    {
+      "Id": "Mutated.WorkCompletedHasTerm",
+      "Result": "pass",
+      "Detail": "WorkCompleted hits: [{'Field': 'WorkCompleted', 'Index': None, 'Term': 'GATE PASS', 'Count': 1}]"
+    },
+    {
+      "Id": "Mutated.ExactAuthorizedAppend",
+      "Result": "pass",
+      "Detail": "mutated WorkCompleted == real WorkCompleted + ' GATE PASS.'"
+    },
+    {
+      "Id": "Mutated.OtherGovernedFieldsUnchanged",
+      "Result": "pass",
+      "Detail": "governed fields other than WorkCompleted identical"
+    },
+    {
+      "Id": "Mutated.NoCompensatingDisappearance",
+      "Result": "pass",
+      "Detail": "no forbidden-term occurrence disappeared"
+    },
+    {
+      "Id": "Mutated.IntroducedOnlyInWorkCompleted",
+      "Result": "pass",
+      "Detail": "introduced ['GATE PASS'] in ['WorkCompleted']"
+    }
+  ]
+}

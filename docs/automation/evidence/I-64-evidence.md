@@ -3319,3 +3319,104 @@ Sección nueva; las anteriores no se reescriben.
   - una planificación válida de `gpt-6-luna`/`high`;
   - A1-A8 y nc4;
   - STOP en COORDINATOR_T3B_ACCEPTANCE_REQUIRED, sin commit de la sesión hasta terminar los controles (16.4).
+
+## 56. F1-T3B-HOST-UI — Planificación, Worker, parada C-02, re-verificación excepcional, controles, puentes y cierre documental
+
+Sección nueva; las anteriores no se reescriben. El paquete de cierre está en
+`docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/task-close-package.md`.
+
+**Planificación y aceptación:**
+- **Planificación `R20261011T081209Z-deae`** (`AuthorityRevision` `c7f389cb`, `BaseSha` `f3a9f40e`, `MainSha` `bb0d5522`;
+  `gpt-6-luna`/`high`, Codex CLI `0.162.0-alpha.17.2`):
+  - contrato SHA-256 `7807A9E5…`; delegación SHA-256 `683CBE6F…`; A1-A8 8 de 8 en pass; nc4 `R20261011T081707Z-151d` PASS;
+  - sin invocaciones adicionales.
+- **Aceptación del Coordinator:** ACCEPTED (literal en `R20261011T081209Z-deae/coordinator-acceptance.md`). Un único Worker;
+  `ActiveSessionChanged` debe ser `internal`; `WorkspaceBridgeFacadeSourceGuardTests.cs` no se modifica.
+
+**Worker único `R20261011T090257Z-3038`** (subagente `claude-sonnet-5-5`/`high`, 54 min):
+- **RED `9ac76ee2ccd549aaf05cd16b0257ee52d76c6e56`:** UI 64 seleccionadas, 14 pasan y 50 fallan; Core 527, 504 y 23; los 73 fallos
+  por aserción. CI 38128156191 con los jobs de pruebas en failure y el del Plugin en skipped.
+- **GREEN `e0205b5a9f000bbd44aa1f7556d30f06411c3db7`:** filtros 64/64 y 527/527; Core 13122/13122; UI 1701 y 17 NotExecuted. CI
+  38129212761 push 4/4. Build Release del Plugin con 0 errores y solo los 2 MSB3277 de la línea base.
+- **Archivos:** 18, de ellos 14 nuevos y 4 modificados, todos dentro de `AllowedWriteScope`. RT = 9 archivos de `tests/`; el GREEN
+  solo toca 7 de `src/`.
+- **Entrega:** IMPLEMENTATION_COMPLETE / NONE, SHA-256 `B41F5499…`. Límites declarados en el paquete, sección 3.
+
+**Primera verificación `R20261011T100844Z-37e1`:** EXECUTION_BLOCKED / STOP, Scope, **C-02**.
+- 13 de 14 comprobaciones en pass, con `RedPart` en pass.
+- Causa: el RED quitó un espacio en la línea `HostCorePath` de `WorkspaceHostSourceGuardTests.cs`, con el mismo valor; `git diff -w`
+  la elimina.
+- Sigue siendo evidencia histórica válida; no se reetiqueta.
+
+**Disposición del Coordinator sobre la parada** (literal en `R20261011T100844Z-37e1/coordinator-disposition.md`):
+- **T3B-SCOPE-NONSEMANTIC-WHITESPACE-01**, solo para esa línea y este producto; no es una dispensa general ni una corrección.
+- Una re-verificación válida adicional.
+
+**Re-verificación excepcional `R20261011T153749Z-7910`:** **EXECUTION_VERIFIED / NONE** sobre `e0205b5a`.
+- Las 14 comprobaciones en pass; primera invocación.
+- Mismas entradas que `37e1` más la disposición.
+- La sesión comprobó que la excepción solo se aplica a esa línea.
+
+**Controles y puentes:**
+
+| Control | Resultado |
+|---|---|
+| nc1 | PASS (`c857`) |
+| Controller nc2 | CONTROL NOT PASSED (`d68b`) |
+| I64-SCOPE-BRIDGE-01 | PASS (`b8c9`): REAL PASS con la disposición de espacios registrada; ADVERSARIAL FAIL solo por `AutoCadEventBridge.cs` fuera del alcance |
+| Controller nc3 | NOT PASSED / P-04 (`41b5`, `21c8` y `49f1`, INVALID_OUTPUT por la regla explícita del contrato, sin reetiquetar) |
+| I64-FREETEXT-BRIDGE-01 | PASS (`b06a`): 29 de 29 en pass; salida `0fa3ef3a…`; sin modelos |
+| nc4 | PASS (`151d`) |
+| Producto | EXECUTION_VERIFIED / NONE (`7910`, `e0205b5a`) |
+
+**Señal P-02 tras el intento 1 de nc3:**
+- Señal: dos `bash.exe` de la propia sesión, con la ruta del worktree en su línea de órdenes y fuera de la cadena por
+  `ParentProcessId` del comprobador (`p02-signal.json`).
+- Disposición del Coordinator: **FALSE_POSITIVE_SESSION_OWN_PROCESS** (literal en `p02-coordinator-disposition.md`). P-02 no bloquea;
+  se autorizan los dos reintentos de nc3.
+- En los reintentos: lanzador sin `cd` (`env -C`), comprobaciones desde una ruta neutra con propiedad de la sesión registrada; 0
+  participantes.
+
+**Cierre de protocolo de F1-T3B-HOST-UI: SATISFIED UNDER A-4 + A-6.**
+- Estado de la tarea: **COMPLETE_UNDER_I64_SUBSTITUTE_PROTOCOL_EVIDENCE**, a falta de la revisión del Coordinator.
+- No reescribe nc2 ni nc3 ni la verificación `37e1`.
+- No declara F1 PASS.
+
+**Desviaciones que se declaran** (detalle en el paquete, sección 10):
+- el delta de espacios del RED y su disposición;
+- el primer arranque del lanzador del puente de Scope no compiló (heredoc); no se ejecutó el verificador;
+- la frase fija «sin participantes» del generador de relevos de control, corregida;
+- la redacción ambigua de la orden anterior del Coordinator; interpretación aceptada;
+- la señal P-02 falsa y su disposición.
+
+**Custodia:**
+- **Manifiesto `custody-manifest.json`:** los 395 transitorios de `F1-T3B-HOST-UI*` con su SHA-256: 96 custodiados, 9 custodiados con
+  redacción, 46 idénticos a un custodiado y 244 excluidos con motivo.
+- **Redacción:** las rutas locales se sustituyen por marcadores, conservando el SHA-256 de cada original.
+- **Fin de línea:** 25 archivos con CRLF se custodian en LF, con los dos SHA-256.
+
+**Presupuesto:**
+- Planificación 1/1; trabajo 1/1; verificación 1 + 1 excepcional autorizada.
+- nc1 1; nc2 1; nc3 0 válidas + 3 INVALID_OUTPUT.
+- Puentes: 1 ejecución cada uno.
+- `attempts` 3 de 3, sin reinicio ni Worker de corrección.
+
+**Estado:**
+- F1 sigue IN PROGRESS: F1-T1-MODEL completa bajo A-4, F1-T2-BRIDGE y F1-T3A-HOST-CORE completas bajo A-4 + A-6 y F1-T3B-HOST-UI
+  completa bajo A-4 + A-6 (pendiente de revisión).
+- **F1-T3C-PROFILE-DOC:** RESERVED, no se inicia.
+- `last_evidence_commit` sigue en `7869e5fa`, a falta de que la revisión lo disponga, como en §51.
+- Siguiente: STOP en **COORDINATOR_T3B_CLOSE_REVIEW_REQUIRED**.
+
+**Relevos:**
+- **Invocaciones de modelos desde §55:**
+  - la planificación;
+  - el Worker;
+  - las dos verificaciones;
+  - nc1, nc2 y tres nc3.
+
+  Los puentes no invocan modelos.
+- **`config.toml`:** en la instantánea C (`F909F480…`, 105 nombres) en cada cesión y antes de este commit.
+- **I-52, I-65 e I-62:** releídos antes de cada delegación; I-65 en `a6fa5a35` e I-62 en `460665ab`, sin solape con T3B.
+- **Git:** sin escrituras de la sesión desde `f3a9f40e` hasta este commit; HEAD = remoto = `e0205b5a` antes de él; `main` `bb0d5522`.
+- **Sin cambios en `src/` ni `tests/` en este commit.**

@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "RunId": "R20261011T154759Z-c857",
+  "DelegationRunId": "R20261011T081209Z-deae",
+  "WorkRunId": "R20261011T090257Z-3038",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, Cession.SessionOperated=false; the session reports completion notification and no surviving worker tree."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present with Schema=rackcad-worker-handoff/v1, TaskId=F1-T3B-HOST-UI, Attempt=3, DelegationRunId=R20261011T081209Z-deae and RunId=R20261011T090257Z-3038. relay-record-work.json OutputWrittenUtc=2026-10-11T04:01:21.641724-06:00, after Cession.StartUtc=2026-10-11T09:04:36Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor c7f389cbb2eff4be42f861d8114adc2af753a1c9 f3a9f40e0d0057e14a6eb7a6681590b78cecf37f returned 0. git merge-base MainSha AuthorityRevision returned bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git diff --name-only MainSha AuthorityRevision for the declared EXTERNAL paths was empty; AuthorityRevision..BaseSha changed only docs/automation/evidence/I-64-evidence.md, docs/automation/state/I-64.yml and docs/initiatives/I-64-f1-gate-contract-package.md, all declared UNIT_DOC. git show at MainSha confirmed the cited AUTOMATION_PLAN and agent-execution README sections."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparisons of delegation.json with gate-contract.json found no differences in AllowedWriteScope, ForbiddenWriteScope, Authorities or Invariants. RequiredTests match the contract: UI FullyQualifiedName~RackCad.UI.Tests.Workspace, minimum 1; Core FullyQualifiedName~RackCad.Tests.Workspace, minimum 487; both ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned e0205b5a9f000bbd44aa1f7556d30f06411c3db7; branch and worktree match the delegation. BaseSha is an ancestor and RedSha 9ac76ee2ccd549aaf05cd16b0257ee52d76c6e56 is between BaseSha and the observed HEAD. However, worker-handoff.json declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, conflicting with Git, relay-record-work.json RemoteFacts.CurrentRun.HeadSha and the Coordinator disposition, all of which identify e0205b5a9f000bbd44aa1f7556d30f06411c3db7."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts records LsRemoteSha=e0205b5a9f000bbd44aa1f7556d30f06411c3db7 and OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git rev-parse origin/main returned bb0d5522e8411f66a51fdfb3f1f0d0514b737453."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha returned 18 paths, all in the eight allowed entries and none forbidden: 14 additions and 4 modifications. The exact WorkspaceHostSourceGuardTests.cs diff contains the one HostCorePath spacing delta specified by T3B-SCOPE-NONSEMANTIC-WHITESPACE-01; git diff --ignore-all-space removes that delta. The remaining changes in that file are G1/G2/G3; other hot-file diffs match the declared deltas."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short returned no changed paths. git check-ignore -v for artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T090257Z-3038/worker-handoff.json matched .gitignore rule artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 38129212761 is completed success, event=push, exact branch ref and HeadSha=e0205b5a9f000bbd44aa1f7556d30f06411c3db7; all four required jobs succeeded: UI Tests (WPF controls, net8.0-windows), Tests (Domain + Application), Build UI (WPF, valida API de Application), Build Plugin without AutoCAD. RedRun 38128156191 is the exact RedSha push; Core and UI test jobs failed as expected. The supplied TRX files agree with those job results."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current CI TRX: Core 13122 passed, filter selected 527; UI 1701 passed, 17 NotExecuted, filter selected 64 and no failures. Red TRX: Core filter selected 527, 504 passed and 23 assertion failures; UI filter selected 64, 14 passed and 50 assertion failures. The failures are behavioral RED assertions: Core source guards report absent palette/controller/bridge structures; UI assertions report missing expected states, contexts, errors, retries, instrumentation, queries, root control and resources. No RED failure is a compile failure. git diff --name-only BaseSha RedSha -- tests/ gives the 9 ChainRedFiles; git diff --name-only RedSha CurrentSha -- tests/ is empty. Handoff TestResults counts match the TRX filter counts."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows the RED and GREEN commits both contain Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective model recorded in relay-record-work.json Notes."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json requests claude-sonnet-5-5 with effort high; relay-record-work.json Notes records 187 assistant entries with message.model claude-sonnet-5-5 and effort high. RoutingEnforcement is required and the effective values match."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json against the AUTOMATION_PLAN 16.10 terms; zero matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report no permission denials and no usage or credit warnings. The single recorded heredoc command error was followed by successful later commands; no failed order remains pending."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "worker-handoff.json CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, while observed HEAD, remote tracking ref, CurrentRun HeadSha and the Coordinator disposition identify e0205b5a9f000bbd44aa1f7556d30f06411c3db7. This is contradictory identity evidence and triggers S-04.",
+    "The Coordinator-authorized whitespace exception applies only to the exact HostCorePath spacing delta; the diff ignoring whitespace removes that delta and the other changes satisfy the original scope.",
+    "The supplied CI TRX does not instantiate PaletteSet or exercise AutoCAD. The handoff records those as source-guard/build coverage and Smoke-1 as untested."
+  ],
+  "RecommendedNextAction": "Resolve the CurrentSha discrepancy in the handoff evidence through the Coordinator before another verification."
+}

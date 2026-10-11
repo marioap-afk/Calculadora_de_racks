@@ -1,0 +1,60 @@
+{
+  "ExactCopy.Authorities": true,
+  "ExactCopy.AllowedWriteScope": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "NonAsciiBytes": 0,
+  "BackslashU": 0,
+  "ControlCharsInStrings": 0,
+  "CorrectionOfNull": true,
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "TaskClassExact": true,
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "PromptProfileExact": true,
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "claude-sonnet-5-5|subagent"
+  },
+  "Model": "claude-sonnet-5-5",
+  "EffortExact": true,
+  "ModelEscalationReason": null,
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "High",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Medium"
+  },
+  "BaseSha": "f3a9f40e0d0057e14a6eb7a6681590b78cecf37f",
+  "AuthorityRevision": "c7f389cbb2eff4be42f861d8114adc2af753a1c9",
+  "MainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "ChainFields": {
+    "ChainBaseSha": "f3a9f40e0d0057e14a6eb7a6681590b78cecf37f",
+    "ChainRedSha": null,
+    "ChainRedFiles": []
+  },
+  "AttemptFields": {
+    "Attempt": 3,
+    "AttemptsRemaining": 0,
+    "MaxReworkLoops": 3
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/{WorkRunId}/worker-handoff.json",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261011T081209Z-deae"
+  },
+  "AcceptanceCriteriaCount": 12,
+  "IssuedBy": "Controller Codex (planificacion F1-T3B-HOST-UI, primera delegacion de la cadena, CONTROLLER_PLANNING)"
+}
