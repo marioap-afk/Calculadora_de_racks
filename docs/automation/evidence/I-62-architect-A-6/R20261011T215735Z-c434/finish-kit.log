@@ -1,0 +1,146 @@
+Traza del paso final del kit de la primera revisión formal de A-6 (R20261011T215735Z-c434). Pasos ejecutados uno a uno con los comandos de
+kit/finish_kit.py, en este orden; ninguno se repitió salvo el selftest (un intento de depuración, con dos expectativas corregidas en el propio
+selftest antes del definitivo; ningún cambio del auditor, del cierre ni del run entre medias). Después de la mutación solo cambió
+kit/finish_kit.py (captura con -X utf8, para no introducir U+FFFD en launch-dry-run.json con la consola cp1252); el manifiesto se rehízo
+después de ese cambio y la preflight en seco se repitió con él.
+
+== 1 prepare_clone (python -B prepare_clone.py; CLONE_COMMIT por defecto = 7b5ffac9)
+{"Written": ["kit-params.json", "D:\\r62-arch-a6", "D:\\r62-arch-a6-run\\order.txt"], "CloneCommit": "7b5ffac9d9c04f90b9708a867089d32e885dc815"}
+== 2 render prompt (python -B make_closure.py --render-prompt)
+{"Written": "prompt.md", "Bytes": 43655, "Lines": 344, "Sha256": "341468cc7c1f716e935843c01491f1b9a98d5e12623849afa7ad6746bb0e4487"}
+== 3 prompt.md copiado al run (copia byte a byte de kit/prompt.md)
+== 4 closure (python -B make_closure.py)
+{
+ "ids": {
+  "RunId": "R20261011T215735Z-c434",
+  "InvocationId": "I20261011T215735Z-c434",
+  "LogicalReviewRequestId": "L20261011T215735Z-c434",
+  "AttemptSeq": 1
+ },
+ "canonical": 65,
+ "bytes": 2231552,
+ "run": {
+  "order.txt": [
+   2918,
+   "e23faecbacc7"
+  ],
+  "prompt.md": [
+   43655,
+   "341468cc7c1f"
+  ]
+ },
+ "large": [
+  "docs/initiatives/I-62-A-6.md",
+  "docs/automation/evidence/I-62-A6/a6-guards.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/tests/test_bmin_facts.py",
+  "docs/initiatives/I-62-proposal-v14.md",
+  "docs/AUTOMATION_PLAN.md",
+  "docs/initiatives/I-62-A-1.md",
+  "docs/initiatives/I-62-A-3.md",
+  "docs/initiatives/I-62-A-4.md",
+  "docs/automation/agent-execution/README.md",
+  "docs/automation/decisions/I-62.md"
+ ],
+ "long": {
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json": [
+   1
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json": [
+   1
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json": [
+   1
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json": [
+   1
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json": [
+   1
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json": [
+   1
+  ],
+  "docs/initiatives/I-62-proposal-v14.md": [
+   2352,
+   2380,
+   2382
+  ],
+  "docs/initiatives/I-62-A-3.md": [
+   1487
+  ],
+  "docs/automation/decisions/I-62.md": [
+   657,
+   734,
+   750,
+   768,
+   787,
+   805,
+   819
+  ]
+ }
+}
+== 5 gate init y set MEASURED <registro de caracterización del clon> (SHA-256 20d0de2c… comprobado)
+20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c  claude-cli-characterization.json (copia del clon)
+{"Written": "transport-gate.json", "Status": "PENDING"}
+{"Written": "transport-gate.json", "Status": "MEASURED", "Sha256": "72dd91a6f4e0cc0c7eb3db90547baf525e12a5c38ed3af8719a926a1d30990d7"}
+transport_gate.py check: Ok true, Problems []
+== 6 verify_clone (python -B verify_clone.py)
+{"AllChecks": true, "Head": "7b5ffac9d9c04f90b9708a867089d32e885dc815", "Files": 3875, "Reparse": 0, "Run": ["order.txt", "prompt.md"], "GuardsRun": {"ExitCode": 0, "Result": "PASS", "WholeEqualsCustodied": true, "DifferingTopLevelKeys": []}, "GuardsSelfTest": {"ExitCode": 0, "Result": "PASS", "Mutants": 83, "MutantsKilled": 83, "WholeEqualsCustodied": true, "DifferingTopLevelKeys": []}}
+== 7 selftest (python -B selftest-post-review.py kit/selftest-result.json)
+io                                   PASS 
+O16-linea-fijada-distinta-de-a6                    PASS 
+O17-dos-encabezados-77                             PASS 
+clean True runfiles {'order.txt': True, 'prompt.md': True} listing ['order.txt', 'prompt.md'] all True {'Cases': 169, 'Pass': 169, 'AuditCases': 110, 'AuditPass': 110, 'GateCases': 41, 'GatePass': 41, 'OwnerGateCases': 18, 'OwnerGatePass': 18}
+== 8 mutation (python -B mutation-post-review.py kit/mutation-result.json)
+     64 KILLED ['O07-linea-antes-de-77']
+owner_gate.py        66 KILLED ['O02-parafrasis', 'O05-espacio-final']
+owner_gate.py        68 KILLED ['O10-sin-claude-cli-i62']
+owner_gate.py        71 KILLED ['O10-sin-claude-cli-i62', 'O11-otra-linea-claude-cli-i62']
+owner_gate.py        75 KILLED ['O07-linea-antes-de-77', 'O10-sin-claude-cli-i62']
+owner_gate.py        77 KILLED ['O13-cambios-sin-commit']
+owner_gate.py        79 KILLED ['O14-head-no-desciende-del-clon']
+owner_gate.py        82 KILLED ['O15-otro-binario']
+{"Baseline": true, "Totals": {"Mutants": 154, "Killed": 154}, "AllKilled": true}
+== tiempos (UTC: inicio selftest, fin selftest, fin mutación)
+2026-10-11T22:41:13Z
+selftest exit=0
+2026-10-11T22:52:34Z
+mutation exit=0
+2026-10-11T23:43:26Z
+== 9 manifest (python -B make_manifest.py)
+{"Written": "kit-manifest.json", "Files": 23, "Gate": "MEASURED", "Sha256": "629fa928c13d1bc9fafdb35bf6627e06fda20b2e9909c95d679461849b3c680c"}
+== 10 launch --dry-run (python -B launch.py --dry-run; código 2 siempre en seco) → ../launch-dry-run.json
+{
+ "BlockingChecks": [
+  "11-OwnerGate"
+ ],
+ "NotRunInDryRun": [
+  "4-Version",
+  "5-Auth"
+ ],
+ "Ok": {
+  "1-KitIntegrity": true,
+  "2-ClosureTransport": true,
+  "3-Binary": true,
+  "4-Version": null,
+  "5-Auth": null,
+  "6-Clone": true,
+  "7-RunFiles": true,
+  "8-NewSession": true,
+  "9-CommandLine": true,
+  "10-TransportGate": true,
+  "11-OwnerGate": false
+ },
+ "OwnerGateProblems": [
+  "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de A-6 §7 (a) (SHA-256 83152eae…): sin disposición afirmativa del Owner sobre ADR-0046 #9 no se lanza"
+ ],
+ "KitIntegrity": {
+  "Ok": true,
+  "Mismatches": [],
+  "Unlisted": []
+ },
+ "CommandLineChars": 15598
+}

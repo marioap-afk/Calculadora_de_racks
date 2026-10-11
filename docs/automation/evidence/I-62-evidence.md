@@ -4060,3 +4060,24 @@ solo desde artefactos custodiados.
   de A-6 §7 (a), SHA-256 `83152eae4f451961…`, con la recomendación A del Coordinator marcada como no aprobación.
 - La revisión formal se lanza solo con la disposición afirmativa del Owner registrada y las autorizaciones de revisión verificadas. El kit se prepara
   ya. Codex no se ejecuta; la línea de consumo queda reservada para después del acuerdo.
+
+## 151. Kit de la revisión formal de A-6 preparado y custodiado, con compuerta del Owner (no lanzado); identidad de Codex sin cambios (decisiones §77)
+
+- **Kit** [`I-62-architect-A-6/R20261011T215735Z-c434`](I-62-architect-A-6/R20261011T215735Z-c434/README.md) (`kit-manifest.json` `629fa928c13d1bc9…`):
+  - objeto: A-6, blob `eac473c0`; clon `D:\r62-arch-a6` en `7b5ffac9`; cierre de 65 archivos, sin `I-62-evidence.md`, para evitar el anclaje;
+  - transporte `claude-cli` 2.1.293 (`8693c4a0…`, sin ejecutarlo), `opus-5-5` xhigh, compuerta MEASURED;
+  - el resultado exige veredictos explícitos sobre los cuatro temas de §77.2 y sobre los nueve deltas A6-1..A6-9. AGREED solo con 0 REQUIRED, los
+    nueve deltas AGREED y los cuatro temas SATISFIED.
+- **Comprobaciones:**
+  - autoprueba 169/169 (auditor, compuerta de transporte y compuerta del Owner);
+  - mutación 154/154 muertos;
+  - `verify_clone` sin fallos;
+  - las guardas propias de A-6, reejecutadas desde el clon, son idénticas a las custodiadas (`run` PASS; autoprueba 83/83).
+- **Compuerta 11-OwnerGate:** la revisión solo se lanza si las decisiones del worktree, ya commiteadas y solo con añadidos desde `7b5ffac9`, contienen
+  **como línea completa** la línea `A6-ADR0046-9-FX02` de A-6 §7 (a) (SHA-256 `83152eae…`), registrada después de §77, y si sigue vigente la línea
+  CLAUDE-CLI-I62 = A con el mismo binario.
+  - Hoy da false y bloquea (`launch-dry-run.json`); es el estado esperado. El resto de las comprobaciones de la prueba en seco son conformes.
+  - Si la compuerta falla, el binario no se ejecuta.
+- **Identidad de Codex, observación pasiva** (sin ejecutar Codex) a las 2026-10-11T21:44:03Z:
+  - huella `F909F480…`, binario `d13914ce…` (uno solo), app `26.1007.2314.0`, acompañantes `34b1a406…`; igual que en las sondas.
+  - No sustituye la confirmación previa a la solicitud de consumo (§77.5).

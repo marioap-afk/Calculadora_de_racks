@@ -1,0 +1,33 @@
+{
+ "Schema": "rackcad-a6-review-kit-params/0",
+ "Provisional": false,
+ "CloneCommit": "7b5ffac9d9c04f90b9708a867089d32e885dc815",
+ "PreparationCommit": "7b5ffac9d9c04f90b9708a867089d32e885dc815",
+ "Object": {
+  "Path": "docs/initiatives/I-62-A-6.md",
+  "Blob": "eac473c0d2e58cf1c4594f48a8816b3833af6509"
+ },
+ "Clone": "D:\\r62-arch-a6",
+ "Run": "D:\\r62-arch-a6-run",
+ "Branch": "architecture/portabilidad-coordinador-principal",
+ "BranchTipAtClone": "7b5ffac9d9c04f90b9708a867089d32e885dc815",
+ "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+ "PreparedAt": "2026-10-11T22:26:02Z",
+ "PreconditionChecks": {
+  "CloneCommitIsCommit": true,
+  "PrepAncestorOrEqualOfCloneCommit": true,
+  "CloneCommitReachableFromBranchTip": true,
+  "ObjectBlobAtCloneCommit": true,
+  "Decisions77AtCloneCommit": true
+ },
+ "Commands": [
+  "git clone -q --no-local -c core.autocrlf=false --single-branch --branch architecture/portabilidad-coordinador-principal %USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal D:\\r62-arch-a6",
+  "git -C D:\\r62-arch-a6 checkout -q --detach 7b5ffac9d9c04f90b9708a867089d32e885dc815",
+  "git -C D:\\r62-arch-a6 branch -D architecture/portabilidad-coordinador-principal",
+  "git -C D:\\r62-arch-a6 remote remove origin",
+  "git -C D:\\r62-arch-a6 reflog expire --expire=now --all",
+  "git -C D:\\r62-arch-a6 gc -q --prune=now",
+  "copia byte a byte de kit/order.txt (= cuerpo §77) → D:\\r62-arch-a6-run\\order.txt",
+  "copia byte a byte de kit/prompt.md (renderizado por make_closure.py --render-prompt) → D:\\r62-arch-a6-run\\prompt.md (finish_kit.py)"
+ ]
+}

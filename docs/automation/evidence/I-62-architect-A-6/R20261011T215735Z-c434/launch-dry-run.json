@@ -1,0 +1,95 @@
+{
+ "DryRun": "solo preflight: no se ejecuta el binario, no se escribe ni se lanza",
+ "BlockingChecks": [
+  "11-OwnerGate"
+ ],
+ "NotRunInDryRun": [
+  "4-Version",
+  "5-Auth"
+ ],
+ "Checks": {
+  "1-KitIntegrity": {
+   "Ok": true,
+   "Mismatches": [],
+   "Unlisted": []
+  },
+  "2-ClosureTransport": {
+   "Ok": true
+  },
+  "3-Binary": {
+   "Ok": true,
+   "Exists": true,
+   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+   "Authenticode": "Valid",
+   "SignerIsAnthropic": true
+  },
+  "4-Version": {
+   "Ok": null,
+   "NotRun": "--dry-run: el binario no se ejecuta (`--version` solo en el lanzamiento real)"
+  },
+  "5-Auth": {
+   "Ok": null,
+   "NotRun": "--dry-run: el binario no se ejecuta (`auth status` solo en el lanzamiento real)"
+  },
+  "6-Clone": {
+   "Ok": true,
+   "Head": "7b5ffac9d9c04f90b9708a867089d32e885dc815",
+   "Detached": true,
+   "Clean": true,
+   "LocalBranches": [],
+   "Remotes": [],
+   "BlobMismatches": [],
+   "ReparsePoints": 0
+  },
+  "7-RunFiles": {
+   "Ok": true,
+   "Listing": [
+    "order.txt",
+    "prompt.md"
+   ],
+   "Mismatches": []
+  },
+  "8-NewSession": {
+   "Ok": true,
+   "PriorTranscripts": 0,
+   "ProjectDirsForCloneOrRun": []
+  },
+  "9-CommandLine": {
+   "Ok": true,
+   "Chars": 15598
+  },
+  "10-TransportGate": {
+   "Ok": true,
+   "Status": "MEASURED",
+   "LaunchArgsMatchTemplate": true,
+   "CharacterizationSha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+   "AcceptanceSha256": null,
+   "Problems": []
+  },
+  "11-OwnerGate": {
+   "Ok": false,
+   "Problems": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de A-6 §7 (a) (SHA-256 83152eae…): sin disposición afirmativa del Owner sobre ADR-0046 #9 no se lanza"
+   ],
+   "A6LineSha256": "83152eae4f451961b9dc43920aa60c6f0910d4d023e9e93d8f5d6160e7ac8b14",
+   "A6LineNumbers": [],
+   "Section77Line": 1548,
+   "NearMissLines": [],
+   "ClaudeCliLineSha256": "fbeade41f74d6694a621fe6294d9568d7b76b124b1fd78e415514582c5d6ee79",
+   "ClaudeCliLineNumbers": [
+    1085
+   ],
+   "DecisionsAppendOnlySinceClone": true,
+   "WorktreeDecisionsClean": true,
+   "HeadDescendsFromClone": true,
+   "BinarySha256MatchesClosure": true,
+   "PinnedLineIsA6L679": true,
+   "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "WorktreeHead": "7b5ffac9d9c04f90b9708a867089d32e885dc815",
+   "DecisionsBlobAtHead": "04c415ee7897d30dc7b8b9f82b2824f2ac54ff0d",
+   "CloneCommit": "7b5ffac9d9c04f90b9708a867089d32e885dc815",
+   "Reads": "git rev-parse, show, hash-object (sin -w) y merge-base, con GIT_OPTIONAL_LOCKS=0; nada se escribe"
+  }
+ }
+}
