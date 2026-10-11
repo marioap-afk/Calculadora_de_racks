@@ -90,12 +90,36 @@ namespace RackCad.Application.Workspace
             return _byNative.TryGetValue(nativeInstanceId, out var id) && _registry.TryGet(id, out session);
         }
 
-        /// <summary>Checks a request against the session of the document that would execute it. Same verdict as the registry; no side effects.</summary>
-        public RequestDecision Authorize(WorkspaceRequest request, long executingNativeInstanceId) => RequestDecision.Accepted;
+        /// <summary>
+        /// Checks a request against the session of the document that would execute it (D-03, INV-22). It is the verdict of the
+        /// one registry this core owns; it has no side effects.
+        /// </summary>
+        public RequestDecision Authorize(WorkspaceRequest request, long executingNativeInstanceId) =>
+            _registry.Authorize(request, executingNativeInstanceId);
 
-        /// <summary>Skeleton.</summary>
+        /// <summary>
+        /// The panel lifecycle asks for a reconciliation (first open, show, refresh). It queues the selection hint on the
+        /// ACTIVE session and lets the idle policy attach the idle source; the drain happens later, at rest, through the
+        /// normal path. It never drains, never reads or writes, never applies a context, never creates a session and never
+        /// attaches anything but the idle source. It does nothing when there is no active session or when that session is
+        /// degraded or retired.
+        /// </summary>
         public void RequestReconciliation()
         {
+            if (!_started) return;
+            try
+            {
+                if (_active is not { } id) return;
+                if (!_states.TryGetValue(id, out var state) || state.Degraded) return;
+                if (!_registry.TryGet(id, out var session) || session == null) return;
+
+                session.EnqueueHint(HintKind.ImpliedSelectionChanged);
+                SyncIdle();
+            }
+            catch (Exception ex)
+            {
+                Fault(_active, "RequestReconciliation", ex);
+            }
         }
 
         public bool IsDegraded(SessionId id) => _states.TryGetValue(id, out var state) && state.Degraded;
