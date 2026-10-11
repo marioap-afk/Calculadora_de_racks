@@ -2824,3 +2824,65 @@ Sección nueva; las anteriores no se reescriben.
 - Una invocación de modelo en esta sección: la sonda.
 - HEAD = remoto = `29410bfa` antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`.
+
+## 49. F1-T3-HOST — Decisión del Coordinator: descomposición en F1-T3A-HOST-CORE y F1-T3B-HOST-UI
+
+Sección nueva; las anteriores no se reescriben.
+
+**Decisión del Coordinator** (literal en
+`docs/automation/evidence/I-64-pilot/F1-T3A-HOST-CORE/coordinator-decision-t3-decomposition.md`), sobre el paquete `b687cb86` (CI
+38110790934 4/4):
+- **No se emite la F1-T3-HOST monolítica.** Su ejecución se descompone en **F1-T3A-HOST-CORE** y **F1-T3B-HOST-UI**.
+  - Es una descomposición del resultado congelado de F1: no difiere ni retira alcance.
+  - T3A se cierra antes de planificar T3B.
+- **Clasificación de las dos tareas:** «Implementacion transversal a capas (corta)», Deep.
+- **Celdas:**
+  - Worker `claude-sonnet-5-5`, subagente, `high`, `write-commit-push`;
+  - Controller `gpt-6-luna`, Codex CLI 0.162.0-alpha.17.2, `high`, solo lectura;
+  - `RoutingEnforcement` `required`.
+- **Presupuesto de cada tarea:**
+  - planificación, trabajo y verificación: 1 salida válida cada una, más un máximo de 2 reintentos por transporte o INVALID_OUTPUT;
+  - controles README §10, con los sustitutos de A-4 y A-6 cuando apliquen;
+  - Attempt 3, AttemptsRemaining 0, `CorrectionsAuthorized` false. Un REWORK válido que exija otro Worker es STOP S-11.
+- **T3A, base no visual y comprobable:**
+  - qué incluye: `IWorkspaceHostPort`, el controlador perezoso único, `RACKPANEL`, el arranque perezoso del puente de T2, el vínculo con la
+    sesión activa, la autorización por `SessionId`, el lector de selección fina usado solo desde el drenaje, `Classify`/`ApplyContext`, la
+    política de panel visible, las políticas puras del host, el interruptor de instrumentación con sus puntos de medida, las guardas de
+    fuente y los censos de comandos;
+  - qué excluye: `PaletteSet`/WPF y AutoCAD en ejecución.
+- **Cambios permitidos en guardas y censos:**
+  - **guarda de T2 `WorkspaceBridgeSourceGuardTests.cs`:** solo excepciones de archivo exacto para un adaptador de comando `RACKPANEL` y un
+    adaptador lector de selección en `Plugin/Workspace/`; sin exclusiones de carpeta y con todas las demás prohibiciones vigentes;
+  - **los dos censos de comandos:** solo +`RACKPANEL` y 37 → 38.
+- **Instrumentación:** `RackLog.cs` no se modifica. Solo se implementan el interruptor en memoria, la recogida de tiempos y de memoria del
+  proceso y los puntos de medida estructurados. Si `RackLog` no puede registrar tiempos y memoria sin abusar de la semántica de error o de
+  aviso: STOP C-T3-INSTRUMENTATION y se devuelve al Coordinator, sin inventar una API global.
+- **T3B** (no emitida): `PaletteSet`, `AddVisual`, `UserControl` raíz, view-model, estado vacío, foco, contención, estado Error, recursos
+  locales y presentación de la instrumentación.
+- **F1-T3C-PROFILE-DOC:** reservada como trabajo documental de la sesión tras T3A y T3B, antes del cierre de F1 y de Smoke-1.
+- **Host:** T3A y T3B no necesitan el RELEASE de host de I-52, porque no se ejecuta AutoCAD; Smoke-1 sí lo necesita.
+- **Coordinación:** releer la punta de I-65 antes de cada delegación y no editar ROADMAP.
+- **Orden de los pasos:**
+  1. versionar esta decisión (commit X = `AuthorityRevision` propuesta) y esperar su CI exacta 4/4;
+  2. `fetch`: `MainSha` = `origin/main` al emitir;
+  3. emitir solo el contrato de T3A;
+  4. una planificación válida del Controller;
+  5. A1-A8 y nc4 sin cortocircuito;
+  6. sin Worker, STOP en COORDINATOR_T3A_ACCEPTANCE_REQUIRED.
+
+**Estado:**
+
+| Elemento | Estado |
+|---|---|
+| F1-T2-BRIDGE | COMPLETE |
+| F1-T3-HOST monolítica | NOT USED |
+| F1-T3A-HOST-CORE | AUTHORIZED FOR CONTRACT + PLANNING ONLY |
+| F1-T3B-HOST-UI | NOT YET AUTHORIZED |
+| F1-T3C-PROFILE-DOC | RESERVED |
+| F1 | NOT PASS |
+| Smoke-1 | NOT AUTHORIZED |
+
+**Relevos:**
+- Sin invocaciones de modelos en esta sección.
+- HEAD = remoto = `b687cb86` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`.
