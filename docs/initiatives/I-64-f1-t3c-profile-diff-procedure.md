@@ -1,8 +1,11 @@
 # I-64 — F1-T3C-PROFILE-DOC: procedimiento reproducible de diff de perfil para Smoke-1
 
-**Estado:** PROPUESTO. Lo preparó la sesión responsable el 2026-10-11 como trabajo documental autorizado por la revisión del cierre
-de T3B (`docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/coordinator-close-review.md`, evidencia §57). Está pendiente de la
-revisión del Coordinator (**COORDINATOR_T3C_REVIEW_REQUIRED**).
+**Estado:** **APROBADO PARA USO FUTURO EN SMOKE-1** por la revisión del Coordinator (PASS sobre `9af9ac75`,
+`docs/automation/evidence/I-64-pilot/F1-T3C-PROFILE-DOC/coordinator-review.md`, evidencia §59). Lo preparó la sesión responsable el
+2026-10-11 como trabajo documental autorizado por la revisión del cierre de T3B
+(`docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI/coordinator-close-review.md`, evidencia §57). Los dictámenes de esa revisión
+están en la sección 15 y prevalecen sobre cualquier lectura más amplia del resto del texto. El cuerpo aprobado y las herramientas no
+cambian.
 
 Este documento:
 - **no** autoriza Smoke-1 ni el host de I-52, y **no** declara F1 PASS;
@@ -399,3 +402,50 @@ y Smoke-1 con este procedimiento. La parte de host de INV-21 se cumple con su DI
 - **O-4.** Con `SECURELOAD=1`, cargar un DLL desde una carpeta no confiada puede mostrar el aviso de seguridad de AutoCAD. Elegir la
   opción que confía la ubicación de forma permanente está prohibido (STOP-06; el diff lo detecta como R-F-03). ¿Se admite la carga de
   una sola vez, sin cambio persistente, o hay que pedir a I-52 y al CAD manager otra vía? Es `HOST-TO-CONFIRM`.
+
+## 15. Dictámenes de la revisión del Coordinator (PASS sobre `9af9ac75`)
+
+Literal en `docs/automation/evidence/I-64-pilot/F1-T3C-PROFILE-DOC/coordinator-review.md`. Resueltas las decisiones de la sección 14:
+
+- **O-1:** hace falta un procedimiento escrito de Smoke-1 para el operador antes de F1 PASS. Es la tarea documental aparte
+  **F1-T3D-SMOKE-PROCEDURE**, que se prepara en `docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md`. Smoke-1 se ejecuta solo después
+  de F1 PASS.
+- **O-2 (aceptada):**
+  - evidencia de ejecución en un directorio transitorio como `artifacts/orchestration/I-64/F1-SMOKE-1/<RunId>/`;
+  - custodia final según el patrón de T3A y T3B en `docs/automation/evidence/I-64-pilot/F1-SMOKE-1/`, con:
+    - manifiesto con el SHA-256 original;
+    - capturas canónicas BASELINE y POST;
+    - diff de perfil;
+    - registros de consola y del operador;
+    - RELEASE y acuse de I-52;
+    - disposiciones del Owner y del Coordinator;
+    - redacciones;
+  - **los compañeros locales en claro nunca se versionan**; solo se registra su SHA-256.
+- **O-3, se mantiene el informe conservador:**
+  - una clave `RackCad.UI.*` presente en la BASELINE: sus cambios de colocación o de valor pueden ser ALLOWED (R-A-02);
+  - una clave `RackCad.UI.*` nueva, solo en el POST: **REPORT**, nunca ALLOWED de forma automática;
+  - paleta del Workspace: si el acuse de I-52 registra de forma explícita que su clave de estado puede aparecer, REPORT con
+    `-PaletteKeyAcceptance ACCEPTED` da `REPORTED_ACCEPTED`; en otro caso, `REPORT_REQUIRED_STOP`;
+  - una persistencia nueva no se normaliza en silencio como comportamiento esperado.
+- **O-4, carga del DLL:** una carga única y no persistente solo se puede usar si el RELEASE de host de I-52 o el acuse del CAD manager
+  la autorizan de forma explícita.
+  - **Características obligatorias:**
+    - el DLL Candidato exacto;
+    - sin adición permanente a `TRUSTEDPATHS`;
+    - sin cambio de `SECURELOAD`;
+    - sin perfil nuevo;
+    - sin carga automática por el registro;
+    - sin bundle ni carga automática en `ApplicationPlugins`;
+    - sin cambio persistente de seguridad.
+
+    La BASELINE y el POST deben probarlo.
+  - **Prohibido:**
+    - «confiar en esta ubicación de forma permanente»;
+    - añadir la carpeta del Candidato a `TRUSTEDPATHS`;
+    - cambiar o desactivar `SECURELOAD`;
+    - crear otro perfil;
+    - registrar RackCad de forma persistente para evitar el aviso.
+  - Si la carga no puede continuar sin uno de esos cambios: **STOP HOST-TO-CONFIRM / STOP-06**, de vuelta a I-52 y al CAD manager.
+- **Precedencia de reglas:** se mantiene INVALID → FORBIDDEN → REPORT → ALLOWED.
+  - **R-A-03 es solo una clasificación residual:** no da autoridad general para ignorar cambios futuros arbitrarios del perfil.
+  - Cualquier regla sensible o específica gana primero.
