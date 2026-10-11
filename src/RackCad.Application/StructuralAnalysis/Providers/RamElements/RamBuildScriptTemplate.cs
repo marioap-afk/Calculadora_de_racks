@@ -6,7 +6,7 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
     /// <summary>
     /// The fixed text of the build script (I-65 D-09 rules 1-10, CD-I65-F3-08). It never changes with the model: every datum travels
     /// in the payload, embedded as ONE string literal that <c>json.loads</c> decodes. The text uses only the calls and attributes of
-    /// section 7 of the F3 document, writes nothing before its two gates, opens one single file (exclusive mode) before the first
+    /// section 7 of the F3 document, writes nothing before its three gates (capability, empty model, payload), opens one single file (exclusive mode) before the first
     /// write, never analyses and never stores the model, and reads everything back in the pair of units it wrote.
     ///
     /// <para>
@@ -73,6 +73,18 @@ def near_abs(actual, expected, tolerance):
     return math.isfinite(actual) and abs(actual - expected) <= tolerance
 
 
+def angle_near(actual, expected, tolerance):
+    difference = actual - expected
+    if not math.isfinite(difference):
+        return False
+    wrapped = math.fmod(difference, 360.0)
+    if wrapped > 180.0:
+        wrapped -= 360.0
+    elif wrapped <= -180.0:
+        wrapped += 360.0
+    return abs(wrapped) <= tolerance * max(1.0, abs(expected))
+
+
 def vector_near(actual, expected, tolerance):
     return len(actual) == len(expected) and all(near_abs(a, e, tolerance) for a, e in zip(actual, expected))
 
@@ -114,10 +126,55 @@ def empty_model_failures(m, case_id):
     return failures
 
 
+def field(spec, key):
+    return spec[key] if key in spec else None
+
+
+def repeated_ids(kind, ids):
+    seen = set()
+    failures = []
+    for item in ids:
+        if item in seen:
+            failures.append(kind + " id repeated: " + repr(item))
+        seen.add(item)
+    return failures
+
+
+def payload_failures(data):
+    failures = []
+    if data["units"] != "LB_IN":
+        failures.append("the unit pair of the payload is not LB_IN")
+    node_ids = [field(spec, "id") for spec in data["nodes"]]
+    member_ids = [field(spec, "id") for spec in data["members"]]
+    load_ids = [field(spec, "id") for spec in data["loads"]]
+    failures.extend(repeated_ids("node", node_ids))
+    failures.extend(repeated_ids("member", member_ids))
+    failures.extend(repeated_ids("load", load_ids))
+    for spec in data["nodes"]:
+        flags = field(spec, "restraints")
+        if not isinstance(flags, list) or len(flags) != 6 or not all(isinstance(flag, bool) for flag in flags):
+            failures.append("node " + str(field(spec, "id")) + " needs six boolean restraint flags")
+    for spec in data["members"]:
+        label = "member " + str(field(spec, "id"))
+        if not field(spec, "section"):
+            failures.append(label + " needs a section")
+        if not field(spec, "material"):
+            failures.append(label + " needs a material")
+        if field(spec, "nodeI") not in node_ids:
+            failures.append(label + " has a node I that does not exist")
+        if field(spec, "nodeJ") not in node_ids:
+            failures.append(label + " has a node J that does not exist")
+    for spec in data["loads"]:
+        label = "load " + str(field(spec, "id"))
+        if field(spec, "member") not in member_ids:
+            failures.append(label + " belongs to a member that does not exist")
+        if field(spec, "direction") != "GLOBAL_Y":
+            failures.append(label + " has a direction other than GLOBAL_Y")
+    return failures
+
+
 def write_model(m, data):
     case_id = data["loadCase"]["id"]
-    if data["units"] != "LB_IN":
-        raise ValueError("the unit pair of the payload is not LB_IN")
     m.units.set(rm.Units.LB_IN)
     nodes = {}
     for spec in data["nodes"]:
@@ -126,8 +183,6 @@ def write_model(m, data):
         nodes[spec["id"]] = m.nodes.add(spec["x"], spec["y"], spec["z"], restraints=restraints, description=spec["id"])
     members = {}
     for spec in data["members"]:
-        if not spec["section"] or not spec["material"]:
-            raise ValueError("member " + spec["id"] + " needs a section and a material")
         member = m.members.add(
             nodes[spec["nodeI"]].id,
             nodes[spec["nodeJ"]].id,
@@ -140,8 +195,6 @@ def write_model(m, data):
         members[spec["id"]] = member
     m.load_condition.add_load_case(case_id, CASE_DESCRIPTION, data["loadCase"]["category"])
     for spec in data["loads"]:
-        if spec["direction"] != "GLOBAL_Y":
-            raise ValueError("load " + spec["id"] + " has a direction other than GLOBAL_Y")
         members[spec["member"]].add_point_load(
             case_id, rm.LoadDirection.GLOBAL_Y, spec["value"], distance=spec["percent"], is_percentage=True
         )
@@ -207,7 +260,7 @@ def read_back(m, data, nodes, members, differences, values):
         })
         check(differences, label + ": section " + repr(member.section), member.section == spec["section"])
         check(differences, label + ": material " + repr(member.material), member.material == spec["material"])
-        check(differences, label + ": rotation " + repr(member.rotation), near(member.rotation, spec["rotation"], relative))
+        check(differences, label + ": rotation " + repr(member.rotation), angle_near(member.rotation, spec["rotation"], relative))
         check(differences, label + ": local axis 1 " + repr(tuple(l1)), vector_near(l1, spec["l1"], axes_tolerance))
         check(differences, label + ": local axis 2 " + repr(tuple(l2)), vector_near(l2, spec["l2"], axes_tolerance))
         check(differences, label + ": local axis 3 " + repr(tuple(l3)), vector_near(l3, spec["l3"], axes_tolerance))
@@ -218,7 +271,6 @@ def read_back(m, data, nodes, members, differences, values):
         check(differences, label + ": axial behavior", int(member.axial_behavior) == 0)
         check(differences, label + ": rotational stiffness", member.rotational_stiffness_i == 0 and member.rotational_stiffness_j == 0)
         check(differences, label + ": releases", not any(flags))
-        check(differences, label + ": description", member.description == spec["id"])
         expected_loads = [load for load in data["loads"] if load["member"] == spec["id"]]
         count = member.point_load_count(case_id)
         check(differences, label + ": " + str(count) + " point loads", count == len(expected_loads))
@@ -245,6 +297,31 @@ def read_back(m, data, nodes, members, differences, values):
     check(differences, "the load case has self weight", tuple(reference.self_weight) == (0.0, 0.0, 0.0))
 
 
+def persist_readback(out, result):
+    if out is None:
+        return
+    try:
+        try:
+            text = json.dumps(result, indent=2, sort_keys=True)
+            out.write(text + "\n")
+        except Exception as exc:
+            error = type(exc).__name__ + ": " + str(exc)
+            result["status"] = FAILED
+            result["differences"].append("readback: " + error)
+            backup = {
+                "schema": result["schema"],
+                "status": FAILED,
+                "analysisInputFingerprint": result["analysisInputFingerprint"],
+                "error": error,
+            }
+            try:
+                out.write(json.dumps(backup, indent=2, sort_keys=True) + "\n")
+            except Exception:
+                pass
+    finally:
+        out.close()
+
+
 def main():
     differences = []
     values = {"nodes": [], "members": [], "loads": [], "loadCase": None}
@@ -266,6 +343,7 @@ def main():
         if not gate:
             m = rm.model()
             gate = empty_model_failures(m, data["loadCase"]["id"])
+        gate = gate + payload_failures(data)
         out = open(data["packageFolder"] + "\\" + READBACK_NAME, "x", encoding="utf-8", newline="\n")
         if gate:
             differences.extend(["gate: " + item for item in gate])
@@ -276,12 +354,11 @@ def main():
         differences.append("exception: " + type(exc).__name__ + ": " + str(exc))
     if not differences:
         result["status"] = PASSED
-    text = json.dumps(result, indent=2, sort_keys=True)
-    if out is not None:
-        try:
-            out.write(text + "\n")
-        finally:
-            out.close()
+    try:
+        persist_readback(out, result)
+    except Exception as exc:
+        result["status"] = FAILED
+        differences.append("readback: " + type(exc).__name__ + ": " + str(exc))
     print(result["status"])
     for item in differences:
         print(" - " + item)

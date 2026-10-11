@@ -51,18 +51,19 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
         public const string ScriptFileName = "rackcad-ram-build.py";
         public const string LoadFileName = "structural-loads.json";
 
-        internal RamBuildPackage(IReadOnlyList<StructuralPackageFile> files, string analysisInputFingerprint)
+        internal RamBuildPackage(IReadOnlyList<StructuralPackageFile> files, string analysisInputFingerprint, string packageFolder)
         {
             Files = files;
             AnalysisInputFingerprint = analysisInputFingerprint;
+            PackageFolder = packageFolder;
         }
 
         public IReadOnlyList<StructuralPackageFile> Files { get; }
 
         public string AnalysisInputFingerprint { get; }
 
-        /// <summary>The folder that the script embeds (A65-F3-07). RED stub: the member exists so that the tests compile; the value comes in GREEN.</summary>
-        public string PackageFolder => null;
+        /// <summary>The folder that the script embeds (A65-F3-07): the one of the options and the <c>packageFolder</c> of the payload.</summary>
+        public string PackageFolder { get; }
     }
 
     /// <summary>The result of building the package: the content when, and only when, the outcome is Valid. Never a partial package.</summary>
@@ -284,7 +285,7 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
             return new RamBuildPackageResult(
                 StructuralExportOutcome.Valid,
                 new ReadOnlyCollection<StructuralDiagnostic>(diagnostics),
-                new RamBuildPackage(files, fingerprint));
+                new RamBuildPackage(files, fingerprint, options.PackageFolder));
         }
 
         // ---------------------------------------------------------------- the folder rule
@@ -299,7 +300,37 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
                 return false;
             }
 
+            // Windows silently drops a trailing dot or space, so the folder it creates would not be the one the script embeds.
+            if (segment[segment.Length - 1] == '.' || segment[segment.Length - 1] == ' ')
+            {
+                return false;
+            }
+
+            if (IsReservedDeviceName(segment))
+            {
+                return false;
+            }
+
             return segment.All(character => character >= 0x20 && "/:<>\"|?*".IndexOf(character) < 0);
+        }
+
+        /// <summary>A reserved device name (CON, PRN, AUX, NUL, COM1-COM9, LPT1-LPT9): the part before the first dot, whatever the case.</summary>
+        private static bool IsReservedDeviceName(string segment)
+        {
+            var dot = segment.IndexOf('.');
+            var name = dot < 0 ? segment : segment.Substring(0, dot);
+
+            if (name.Length == 3)
+            {
+                return string.Equals(name, "CON", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(name, "PRN", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(name, "AUX", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(name, "NUL", StringComparison.OrdinalIgnoreCase);
+            }
+
+            return name.Length == 4
+                && (name.StartsWith("COM", StringComparison.OrdinalIgnoreCase) || name.StartsWith("LPT", StringComparison.OrdinalIgnoreCase))
+                && name[3] >= '1' && name[3] <= '9';
         }
     }
 }
