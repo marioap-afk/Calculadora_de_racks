@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §72; evidencia §136) — A-5 revisada: AGREED (A5-1 y A5-2), 0 REQUIRED, auditor ACCREDITED; D.5 diferida a la preparación de la OV; esperar el veredicto del Coordinator; Controller: opción B (sonda 2 por disposición ordinaria) pendiente; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §73; evidencia §137) — A-5 AGREED; preparar la sonda 2 reasignada al Controller (PLAN y VERIFY conjunta, sin presión de tiempo, salida acotada, prueba UTF-8) con su preflight y ejecutarla una vez; preparar las disposiciones y solicitudes de B1; sin F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

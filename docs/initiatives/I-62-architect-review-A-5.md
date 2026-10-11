@@ -46,3 +46,14 @@ Dejar D.5 fuera ahora es correcto, por tres razones. (1) El defecto es de V14 (D
 [audit.json](../automation/evidence/I-62-architect-A-5/R20261011T065226Z-dbb0/audit.json),
 [runtime-evidence.json](../automation/evidence/I-62-architect-A-5/R20261011T065226Z-dbb0/runtime-evidence.json) y `launch/` (saneado).
 La transcripción y el `stdout.jsonl` no se versionan; sus SHA-256 están en `runtime-evidence.json`.
+
+## Acuerdo (añadido, decisiones §73)
+
+- **Coordinator: AGREED** sobre la A-5 exacta (blob `ad94ceedacbf3dbf70f0217a583978d0e32592fc`), con la acreditación de esta revisión (ACCREDITED).
+  A5-1 = AGREED y A5-2 = AGREED. A-5 queda como enmienda acordada del Freeze y su blob no se edita después del acuerdo (LIFECYCLE §6). El acuerdo no
+  crea el repositorio B1 ni abre FX-U2.
+- **A62-A5-O1..O5:** ACCEPTED NON-BLOCKING, documentados en este registro y en `output.json`, sin modificar el objeto.
+- **C-22:** su PASS anterior se conserva como resultado histórico y no sustituye la acreditación nueva en B1. C-25a conserva su evidencia. Ningún
+  resultado se transfiere automáticamente entre FX-U1 y FX-U2.
+- **D.5:** DEFER_UNTIL_OV_PREPARATION, con la obligación expresa de una enmienda material acordada antes de READY-01 y READY-08 (decisiones §73,
+  punto 3).

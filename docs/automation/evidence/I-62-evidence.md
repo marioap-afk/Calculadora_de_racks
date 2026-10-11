@@ -3720,3 +3720,16 @@ solo desde artefactos custodiados.
 - **Auditor v5.1-a5: ACCREDITED,** con 0 motivos y 52 llamadas ([audit.json](I-62-architect-A-5/R20261011T065226Z-dbb0/audit.json)).
 - **Siguiente:** veredicto del Coordinator sobre A-5 y disposición de O1..O5. Con A-5 AGREED, preparar la disposición de construcción de B1 y las
   autorizaciones del Owner, sin pedirlas por adelantado (§72, punto 4).
+
+## 137. Decisiones §73: A-5 AGREED; obligación de D.5; segunda sonda del bloque A2-P2 reasignada al Controller
+
+- **A-5 AGREED** (Architect y Coordinator) sobre el blob `ad94ceed`; A5-1 y A5-2 AGREED; O1..O5 ACCEPTED NON-BLOCKING. Anexo de acuerdo en el
+  [registro](../../initiatives/I-62-architect-review-A-5.md); el blob no cambia.
+- **Obligación de D.5:** una enmienda material acordada antes de READY-01 y READY-08 para el fixture de OV-I62-03, -05 (a), -05 (b) y -06.
+- **Sonda 2 del bloque A2-P2 → Controller** (`gpt-6-luna/high`, mismo par y huella). Medición conjunta de PLAN y VERIFY, distinta de la sonda 1:
+  - sin «Tiempo limitado»;
+  - salida acotada;
+  - sin los negativos agregados;
+  - prueba inicial de UTF-8 con la medición de si `OutputEncoding` se puede fijar bajo ConstrainedLanguage.
+
+  Preflight obligatorio. Presupuesto del bloque: 1/2 restante.
