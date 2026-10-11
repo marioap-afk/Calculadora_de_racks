@@ -24,6 +24,9 @@
          bundle. Se referencia aqui para que sus pruebas —incluido el XLSX sintetico que se genera en
          runtime— corran en el job de CI que ya existe, sin abrir un tercer proyecto de pruebas. -->
     <ProjectReference Include="..\..\tools\RackCad.StructuralSections.Import\RackCad.StructuralSections.Import.csproj" />
+    <!-- I-65 F4-T4: la herramienta de consola del analisis estructural vive fuera del producto (tools/) y NO
+         entra al bundle; se referencia aqui para que sus pruebas corran en el job Core de la CI. -->
+    <ProjectReference Include="..\..\tools\RackCad.StructuralAnalysis.RamTool\RackCad.StructuralAnalysis.RamTool.csproj" />
   </ItemGroup>
 
   <!-- Ship the versioned catalogs next to the test binaries so the JSON provider
