@@ -3105,3 +3105,61 @@ No se invocan la planificación ni el Worker de T3B. F1-T3C-PROFILE-DOC sigue RE
 - Sin invocaciones de modelos en esta sección.
 - HEAD = remoto = `7869e5fa` antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`.
+
+## 53. F1-T3B-HOST-UI — Inspección de T3A, enrutamiento y paquete del contrato de gate (NOT EMITTED)
+
+Sección nueva; las anteriores no se reescriben. Paquete en `docs/initiatives/I-64-f1-t3b-gate-contract-package.md`, marcado NOT EMITTED.
+
+**Pasos cumplidos de la orden de la revisión del cierre de T3A (§52):**
+1. Decisión y corrección del estado versionadas en `ee8018e0`; CI 38120717985 push 4/4.
+2. `git fetch --all`; inspección del producto de T3A en `ba52b3b9` (`src/` y `tests/` idénticos en `ee8018e0`) y del resto del
+   repositorio; inventario de solo lectura de las guardas y convenciones afectadas (un subagente de lectura de la sesión; sin escrituras).
+3. Enrutamiento y catálogo comprobados de nuevo; solapes con I-52, I-65 e I-62.
+4. Paquete preparado, sin emitir.
+
+**Hallazgos principales:**
+- **T3B no se puede implementar sin reabrir archivos de T3A.** Con la opción recomendada se reabren:
+  - `src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs` (producto): `RACKPANEL` solo abre el estado y dice que la interfaz aún no se
+    muestra;
+  - `tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs` (prueba):
+    - G1: `NoHostFileUsesTheInternalAutoCadNamespaceOrAnyUiType` prohíbe `PaletteSet`, `AddVisual`, `System.Windows` y `RackCad.UI` en
+      todo `Plugin/Workspace/`;
+    - G2: `NothingOutsideThePluginWorkspaceReachesTheController` busca `WorkspaceHostPort` sin límites de palabra, así que la UI no
+      puede nombrar `IWorkspaceHostPort`.
+
+  Por la orden, esto es un **STOP al Coordinator antes de emitir el contrato**. El paquete propone los deltas exactos sin aplicarlos.
+- **Sin disparador de refresco:**
+  - el puerto de T3A es de consulta y el controlador no expone eventos;
+  - activar un documento sin pistas no produce drenaje, y la guarda de T3A `StartAndActivationOfTheCoreDoNotQueueAReconciliation` fija esa
+    regla del Coordinator;
+  - así no se cumple D-03 («el panel muestra la sesión del nuevo documento»).
+
+  Opciones A, B y C en el paquete. Recomendada: C, un refresco en memoria del view-model solo con la paleta visible, que pasa todas las
+  guardas y exige que el Coordinator confirme su lectura de P-02.
+- **Discrepancia registrada:** el Freeze asigna INV-13 a `UiSystemBoundaryGuardTests`. Esa prueba solo comprueba `x:Class`, carpetas y
+  URIs; la frontera UI/AutoCAD la protegen otras siete guardas, que el paquete enumera.
+
+**Propuesta para el contrato (no emitido):**
+- **Tarea:** `TaskId` F1-T3B-HOST-UI. `AllowedWriteScope` de 6 entradas y `ForbiddenWriteScope` de 148, comprobados mecánicamente.
+- **Invariantes y pruebas:** INV-F1-T3B-01..14. `RequiredTests` en UI (`FullyQualifiedName~RackCad.UI.Tests.Workspace`, hoy 0, mínimo 1)
+  y en Core (`FullyQualifiedName~RackCad.Tests.Workspace`, hoy 486, mínimo 487), los dos con `ExpectRed`.
+- **Enrutamiento:** «Implementación transversal a capas (corta)», Deep, horizonte Medium (no Long-horizon).
+  - Worker `claude-sonnet-5-5`/subagente/`high`.
+  - Controller `gpt-6-luna`/`high`/read-only con Codex CLI `0.162.0-alpha.17.2`; sigue siendo el único CLI instalado.
+- **Presupuesto:** el mismo modelo acotado que T3A. `Attempt` 3, `AttemptsRemaining` 0, `CorrectionsAuthorized` false, `ChainRedSha`
+  null.
+- **Decisiones:** C-T3B-01..C-T3B-09 al Coordinator.
+
+**Coordinación (tras `fetch`):**
+- `main` = `bb0d5522`.
+- I-65 = `16fa9e76` (igual a la observada por el Coordinator).
+- I-62 = `4b763831`.
+- I-52 = `fb6b5648`.
+- Ninguna toca las rutas candidatas de T3B. No se consume código ni reglas de I-65.
+
+**Relevos:**
+- Sin invocaciones de modelos de la ejecución delegada: ni planificación ni Worker de T3B.
+- `config.toml` en la instantánea C (`F909F480…`, 105 nombres).
+- HEAD = remoto = `ee8018e0` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/` ni `tests/`. F1-T3C-PROFILE-DOC no se crea.
+- Siguiente: STOP en **COORDINATOR_T3B_GATE_CONTRACT_REQUIRED**.
