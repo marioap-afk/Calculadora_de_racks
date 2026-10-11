@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T3A-HOST-CORE",
+  "RunId": "R20261011T061322Z-5734",
+  "DelegationRunId": "R20261011T045535Z-0140",
+  "WorkRunId": "R20261011T050726Z-0829",
+  "Attempt": 3,
+  "VerifiedSha": "ba52b3b983fb7d2a02393df643e8323b125b3d03",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-10-11T05:11:56Z; Outcome.OutputWrittenUtc=2026-10-11T00:08:40.854921-06:00, posterior al inicio."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente en la ruta de entrada; TaskId=F1-T3A-HOST-CORE, Attempt=3, DelegationRunId=R20261011T045535Z-0140, RunId=R20261011T050726Z-0829; CurrentSha coincide con el HEAD; salida posterior al inicio de cesion."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git show ee6766684f560c5128f0cc6af9c5d091de6e8353:<autoridades de la unidad> confirma la revision existente; docs/AUTOMATION_PLAN.md y docs/automation/agent-execution/README.md se consultaron en MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json coinciden en TaskId, Gate, AuthorityRevision, MainSha, AllowedWriteScope, ForbiddenWriteScope, RequiredTests y StopConditions; aceptacion del Coordinator registra A1-A8 PASS y nc4 PASS."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/heads/architecture/workspace-persistente-rackcad y refs/remotes/origin/architecture/workspace-persistente-rackcad = ba52b3b983fb7d2a02393df643e8323b125b3d03; merge-base --is-ancestor para BaseSha ee676668...e8353 y RedSha de8e767...ba24 devuelve 0; rama y worktree coinciden."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Entry.LsRemoteSha=ba52b3b983fb7d2a02393df643e8323b125b3d03 y RemoteFacts.CurrentRun.HeadSha igual; git rev-parse refs/remotes/origin/main = bb0d5522e8411f66a51fdfb3f1f0d0514b737453, igual a MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha produce 30 rutas; coincide exactamente con FilesChanged, 0 fuera de AllowedWriteScope y 0 en ForbiddenWriteScope. EventBridgeCore.cs: +32/-0; AutoCadEventBridge.cs: +18/-0. GREEN no cambia tests/."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch muestra rama limpia y sincronizada con origin; git check-ignore -v confirma que artifacts/.../inputs/gate-contract.json esta cubierto por .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 38116594290: event=push, ref=refs/heads/architecture/workspace-persistente-rackcad, head_sha=CurrentSha; los cuatro jobs requeridos en success. RedRun 38116482614: push al mismo ref y RedSha; Tests failure, Plugin skipped."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Current Core: 13081/13081 pasaron; filtro reportado 486 seleccionadas, 486 pasaron. TRX RED: 13081 resultados, 172 fallaron y 12909 pasaron; las 172 fallas son pruebas Workspace con fallos de asercion de comportamiento. UI TRX: 1654 resultados, 1637 pasaron, 17 NotExecuted y Counters.notExecuted=0. RT=git diff BaseSha..RedSha -- tests/ contiene 16 rutas; git diff RedSha..CurrentSha -- tests/ esta vacio. ChainRedFiles acreditado como RT: CustomPropertiesCommandGuardTests.cs, SelectiveEditorOpenTests.cs y 14 archivos tests/RackCad.Tests/Workspace del diff."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log BaseSha..CurrentSha --format=%H%n%(trailers:key=Co-Authored-By,valueonly) muestra dos commits, RED y GREEN; ambos llevan Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, coherente con el Worker."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant registra model efectivo claude-sonnet-5-5 y effort high; coincide con la celda y el esfuerzo requeridos. El alias solicitado sonnet esta documentado para esa celda en model-catalog.md."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Busqueda por palabras y frases completas de AUTOMATION_PLAN 16.10 en los siete campos de texto libre de worker-handoff.json: sin coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones; Outcome confirma terminacion y no hay denegacion ni orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El encabezado de esta solicitud indica AuthorityRevision ee6766684f560c5128f0cc6af9c5d091de6e8354; el contrato, la delegacion y Git coinciden en ee6766684f560c5128f0cc6af9c5d091de6e8353. La verificacion uso el SHA de la delegacion aceptada.",
+    "La entrega declara que el estado degradado propio del puente T2 no se consulta mediante las fachadas autorizadas, que un cambio de documento activo no solicita por si solo reconciliacion y que el comando solo inicia el estado del panel y escribe en la linea de comandos. No se ejecuto AutoCAD."
+  ],
+  "RecommendedNextAction": "Ejecutar los controles nc1, nc2 y nc3 previstos para esta entrega."
+}

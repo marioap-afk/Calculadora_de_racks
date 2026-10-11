@@ -1,0 +1,27 @@
+{
+  "Schema": "rackcad-i64-pre-invocation-stop/v1",
+  "TaskId": "F1-T3A-HOST-CORE",
+  "DelegationRunId": "R20261011T043044Z-ed7b",
+  "CheckedUtc": "2026-10-11T04:41:17Z",
+  "WorkerInvoked": false,
+  "Preconditions": {
+    "HeadSha": "42d45776c695ed32987c08213532a9f75edb4a9a",
+    "LsRemoteSha": "42d45776c695ed32987c08213532a9f75edb4a9a",
+    "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "CleanTree": true,
+    "ConfigTomlSha256": "F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113",
+    "ConfigSnapshot": "C",
+    "ConfigNamesEqual": true,
+    "I65Tip": "952df26015aad3592d06f8626cc84d8a9847278b",
+    "I65Overlap": "ninguna (solo documentos propios y su fila de docs/ROADMAP.md)"
+  },
+  "Stop": "Coordinator (ampliacion de alcance; C-02 / C-04 del contrato)",
+  "Finding": "La delegacion aceptada no se puede implementar sin modificar archivos de producto de T2 prohibidos. AutoCadEventBridge (src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs) guarda su EventBridgeCore en un campo privado y solo expone Start, SetPanelVisible, SetModalRackCadActive, el evento Drained (DrainOutcome = SessionId + DrainResult) y Dispose. El controlador de T3A, en un archivo nuevo del Plugin, no puede (1) conocer la sesion activa (EventBridgeCore.ActiveSession no esta expuesto), (2) obtener la WorkspaceSession para aplicar el contexto con ApplyContext (EventBridgeCore.TryGetSession no esta expuesto), (3) autorizar con WorkspaceSessionRegistry.Authorize (el registro es privado del nucleo y el nucleo no lo expone) ni (4) programar la reconciliacion al mostrar o al abrir por primera vez (EventBridgeCore.Start y OnDocumentActivated no encolan ninguna pista; solo las fuentes de eventos lo hacen). Crear un segundo EventBridgeCore o un segundo registro violaria INV-02 y D-03.",
+  "Cause": "Error propio de derivacion: el hallazgo H-9 del paquete docs/initiatives/I-64-f1-t3-gate-contract-package.md afirmo que la API de T1/T2 bastaba citando miembros de EventBridgeCore (TryGetSession, ActiveSession) sin comprobar que el adaptador del Plugin no expone su nucleo. El error paso a INV-F1-T3A-05/06 del contrato y a la delegacion; la planificacion del Controller no lo detecto.",
+  "MinimalAdditiveChangeProposed": [
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs: anadir RequestDecision Authorize(WorkspaceRequest request, long executingNativeInstanceId) => _registry.Authorize(...) y void RequestReconciliation() que encola ImpliedSelectionChanged en la sesion activa no degradada y sincroniza Idle (solo encola; no lee)",
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs: anadir pasarelas de solo lectura SessionId? ActiveSession, bool TryGetSession(SessionId, out WorkspaceSession?), RequestDecision Authorize(WorkspaceRequest, long) y void RequestReconciliation(), sin nuevas suscripciones ni manejadores"
+  ],
+  "Budget": "Trabajo 0 de 1 (Worker no invocado); planificacion 1 de 1 valida consumida; verificacion 0 de 1; attempts 3 de 3 sin cambio",
+  "GitWrites": "ninguna desde 42d45776"
+}
