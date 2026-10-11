@@ -1,0 +1,85 @@
+{
+ "ToolExitCodes": {
+  "identity": 0,
+  "diff": 0,
+  "scope": 0,
+  "contract": 0,
+  "hashes": 0,
+  "cleantree": 0,
+  "read-text-1": 0,
+  "read-text-73": 0,
+  "read-json": 0,
+  "trx": 0,
+  "handoff": 0,
+  "freetext": 0,
+  "clausemap": 0
+ },
+ "Acceptor": {
+  "rc": 0,
+  "Decision": "ACCEPT_FACTS",
+  "Checks": [
+   [
+    "R1",
+    "MATCH"
+   ],
+   [
+    "R2",
+    "MATCH"
+   ],
+   [
+    "R3",
+    "MATCH"
+   ],
+   [
+    "R4",
+    "NOT_APPLICABLE"
+   ],
+   [
+    "R5",
+    "MATCH"
+   ],
+   [
+    "R6",
+    "MATCH"
+   ],
+   [
+    "R7",
+    "MATCH"
+   ],
+   [
+    "R8",
+    "MANUAL"
+   ],
+   [
+    "R9",
+    "MATCH"
+   ],
+   [
+    "R10",
+    "MATCH"
+   ]
+  ]
+ },
+ "Tampered": {
+  "keep-sha": {
+   "rc": 1,
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R3",
+    "R5"
+   ]
+  },
+  "recompute-sha": {
+   "rc": 1,
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R3",
+    "R5"
+   ]
+  }
+ },
+ "AllAsciiEnvelopes": true
+}
+zero-write True True True
+mutants [('M01', 'REJECT_FACTS', ['R7'], ['scope']), ('M02', 'REJECT_FACTS', ['R6'], ['clausemap']), ('M03', 'REJECT_FACTS', ['R5'], ['identity']), ('M04', 'REJECT_FACTS', ['R5', 'R7'], ['diff', 'scope', 'clausemap']), ('M05', 'REJECT_FACTS', ['R6', 'R7'], ['clausemap']), ('M06', 'REJECT_FACTS', ['R6'], ['clausemap']), ('M07', 'REJECT_FACTS', ['R6', 'R7'], ['clausemap']), ('M08', 'ACCEPT_FACTS', [], []), ('M09', 'ACCEPT_FACTS', [], []), ('M10', 'REJECT_FACTS', ['R3', 'R6', 'R7'], ['read-text-1', 'read-text-73', 'read-json']), ('M11', 'ACCEPT_FACTS', [], []), ('M12', 'REJECT_FACTS', ['R7'], ['scope']), ('M13', 'REJECT_FACTS', ['R5'], ['hashes']), ('M14', 'ACCEPT_FACTS', [], []), ('M15', 'ACCEPT_FACTS', [], []), ('M16', 'ACCEPT_FACTS', [], []), ('M17', 'ACCEPT_FACTS', [], []), ('M18', 'ACCEPT_FACTS', [], []), ('M19', 'ACCEPT_FACTS', [], []), ('M27', 'REJECT_FACTS', ['R3', 'R6', 'R7'], ['clausemap']), ('M20', 'REJECT_FACTS', ['R6'], ['clausemap']), ('M21', 'ACCEPT_FACTS', [], []), ('M22', 'ACCEPT_FACTS', [], []), ('M23', 'ACCEPT_FACTS', [], []), ('M24', 'ACCEPT_FACTS', [], []), ('M25', 'ACCEPT_FACTS', [], []), ('M26', 'REJECT_FACTS', ['R9'], ['diff', 'scope', 'clausemap'])]
+xcheck {"ReferenceKeysSample": ["Kit", "Mode", "cv", "delegation", "meta", "steps", "u0"], "Eff": "fbe25347799e5b801ef708454212335537448bd1", "MV4LiteralViolations": 7, "MV4AddedPresentInEff1": 23, "MV4EntryFilePresentInEff1": 1, "MV7": {"PointerIsFirstSentenceS16": true, "PointerIsLastSentenceS163": true, "S163EqualAfterPointerRemoval": false}, "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a", "SchemaBlob": "6b54dda9579d694200d8fc9ec26a4a846eef529b"}

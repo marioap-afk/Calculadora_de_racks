@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §75; evidencia §145) — construir el paquete experimental B-min (herramientas de hechos, aceptante independiente R1-R10, pruebas, negativos y mutaciones) y la revisión de materialidad por claude-cli; sin sondas Codex ni sesiones de Principal; sin FX-02 ni F6 PASS"
+  next_action: "F6 (decisiones §75; evidencia §146) — paquete B-min construido y probado (ACCEPT_FACTS en el extremo a extremo); terminar el kit de la revisión de materialidad por claude-cli sobre el commit del paquete y lanzarla una vez; sin sondas Codex; sin FX-02 ni F6 PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

@@ -3943,3 +3943,30 @@ solo desde artefactos custodiados.
 - Revisión independiente de materialidad por un Architect con `claude-cli` (CLAUDE-CLI-I62), acotada a la pregunta de §75.4. A-6 solo si la
   revisión declara MATERIAL y una disposición nueva lo pide.
 - Sin sondas Codex, sin sesiones de Principal y sin ampliar presupuestos. B1 lista; FX-U2 cerrada.
+
+## 146. Paquete experimental B-min construido y probado (decisiones §75, puntos 2, 3 y 5)
+
+- **Paquete** ([bmin/README.md](I-62-F6/FX-02/bmin/README.md)), fuera de producción, de F_seed y de F_norm. Sin ningún modelo ejecutado.
+  - `SPEC.md` v0.2, con la fe de erratas de integración E1-E7: `510143f24522211e…`;
+  - herramienta `tool/bmin_facts.py`: `b03c3a19cef60838…`;
+  - aceptante independiente `accept/bmin_accept.py`: `173514aa353f6add…`.
+
+  Herramienta y aceptante los escribieron autores distintos, sin ver el código del otro ni ningún oráculo (`probe_tools.py`, `mv_check.py`,
+  `clause_map.py`, referencias de las sondas).
+- **Pruebas:**
+  - herramienta: 66/66, reejecutadas por la supervisión; 27/27 mutantes muertos en la corrida de su autor;
+  - aceptante: 52/52, reejecutadas por la supervisión.
+- **Extremo a extremo** sobre un clon nuevo del fixture, fuera de `D:\r62-fixture`:
+  - 13 órdenes de la herramienta con exit 0; cero escrituras (instantáneas iguales en todas las fases); salidas solo ASCII;
+  - aceptante **ACCEPT_FACTS**: R1-R3, R5-R7, R9 y R10 MATCH; R4 NOT_APPLICABLE (sin salida del Controller); R8 MANUAL;
+  - salida alterada, con y sin `FactsSha256` recalculado: REJECT_FACTS;
+  - de los 27 mutantes de la herramienta ejecutados sobre los datos reales, los 13 que cambian alguna salida son rechazados por el aceptante.
+- **Divergencia MV-4/MV-7 resuelta** sin tocar las sondas:
+  - la herramienta informa por separado `LiteralViolations` (7; L905), `AddedPresentInEff1` (23; R61 b, L916) y `EntryFilePresentInEff1` (1);
+  - en MV-7, campos con nombre propio y el puntero quitado solo como frase.
+- **Integración:**
+  - tres desajustes de formato entre las dos implementaciones (E1-E3), resueltos con la fe de erratas y aplicados por el autor del aceptante sin ver
+    la herramienta;
+  - el cierre de R9 se completó con entradas normativas: `RevPaths`, las superficies de 16.13 y las rutas del mapa.
+- **Límites declarados** en el README §7: la rama de rebase de `Identity`, la coherencia del `Trailer` con el modelo efectivo, el intérprete fuera de la
+  receta y la colocación en una medición, que es la pregunta de materialidad de §75.4.

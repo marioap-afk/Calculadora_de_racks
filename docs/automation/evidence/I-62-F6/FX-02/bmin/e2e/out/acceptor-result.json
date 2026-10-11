@@ -1,0 +1,293 @@
+{
+ "Checks": [
+  {
+   "Detail": {
+    "FileBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+    "PinnedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+    "RunFrom": "path"
+   },
+   "Id": "R1",
+   "Status": "MATCH"
+  },
+  {
+   "Detail": {
+    "Acceptor": {
+     "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec",
+     "ExecutableSource": "sys.base_prefix",
+     "Isolated": true,
+     "Python": "3.13.14"
+    },
+    "Declared": {
+     "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec",
+     "Python": "3.13.14"
+    },
+    "EnvelopeRuntimesChecked": 26,
+    "Problems": []
+   },
+   "Id": "R2",
+   "Status": "MATCH"
+  },
+  {
+   "Detail": {
+    "Runs": [
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "861736ef89ffe2b4512ae61a7aed132c15eb3afd1cb077d43ec18d7365069f0f",
+      "Name": "identity",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69",
+      "Name": "diff",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5",
+      "Name": "scope",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c",
+      "Name": "contract",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "19ef36311d7c1bcf41946dade09966effc4dea105bd98474dd9488365a7ff662",
+      "Name": "hashes",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "dc2de9192f430c63c376ae9897b968481a34651363b7028ac3c9922b49f0a2a4",
+      "Name": "cleantree",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "c17acd151f5cd49351c1ba5e657bdbb3ebe23846a4b7a49ad77e108e023f257c",
+      "Name": "read-text-1",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "be222422f1119e35c3650d699af07db6ca25f5dfa1f5da2336f2e8325322f4ce",
+      "Name": "read-text-73",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "d5b89fa9afdb689f3d1f32dd672bd18c02570658fce45632a663c5c28dc83506",
+      "Name": "read-json",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "68e47e9e01c67ff16dc3f231aacd64d0945ec11a505b4782b9a6d1377f5adadf",
+      "Name": "trx",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "0ec176905be6ce9dc5b62f6dcf0bf702eba84a6485ba96142b2353c56135cb8f",
+      "Name": "handoff",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "c8c29709d9f0a4b850a976a0f824ad86a45c5752c26b3c7522b760462ca93013",
+      "Name": "freetext",
+      "Problems": [],
+      "RerunExit": 0
+     },
+     {
+      "FactsBytesEqual": true,
+      "FactsSha256Recomputed": "dbc7fcbf1f442fa077312b33b64e6b7aff683decfabdf104425446cf3ffb4c9b",
+      "Name": "clausemap",
+      "Problems": [],
+      "RerunExit": 0
+     }
+    ],
+    "ToolFileUnchanged": true
+   },
+   "Id": "R3",
+   "Status": "MATCH"
+  },
+  {
+   "Detail": {
+    "Reason": "sin salida del Controller en la integracion: la aporta la medicion; R4 cubierto por las pruebas del aceptante"
+   },
+   "Id": "R4",
+   "Status": "NOT_APPLICABLE"
+  },
+  {
+   "Detail": {
+    "Runs": [
+     {
+      "Command": "identity",
+      "Compared": 6,
+      "Mismatches": [],
+      "Name": "identity"
+     },
+     {
+      "Command": "diff",
+      "Compared": 3,
+      "Mismatches": [],
+      "Name": "diff"
+     },
+     {
+      "Command": "scope",
+      "Compared": 3,
+      "Mismatches": [],
+      "Name": "scope"
+     },
+     {
+      "Command": "hashes",
+      "Compared": 1,
+      "Mismatches": [],
+      "Name": "hashes"
+     }
+    ]
+   },
+   "Id": "R5",
+   "Status": "MATCH"
+  },
+  {
+   "Detail": {
+    "Runs": [
+     {
+      "Command": "clausemap",
+      "Compared": 90,
+      "Mismatches": [],
+      "Name": "clausemap",
+      "NotCompared": [
+       {
+        "Field": "Validate.MV6[docs/initiatives/PROMPT_TEMPLATES.md].Derived*",
+        "Reason": "file absent in a revision"
+       }
+      ]
+     }
+    ]
+   },
+   "Id": "R6",
+   "Status": "MATCH"
+  },
+  {
+   "Detail": {
+    "Runs": [
+     {
+      "Command": "scope",
+      "Compared": 13,
+      "Mismatches": [],
+      "Name": "scope"
+     },
+     {
+      "Command": "contract",
+      "Compared": 17,
+      "Mismatches": [],
+      "Name": "contract"
+     },
+     {
+      "Command": "clausemap",
+      "Compared": 4,
+      "Mismatches": [],
+      "Name": "clausemap"
+     }
+    ]
+   },
+   "Id": "R7",
+   "Status": "MATCH"
+  },
+  {
+   "Detail": {
+    "Reason": "free text of the verification: manual control of the Coordinator (AP 16.10)"
+   },
+   "Id": "R8",
+   "Status": "MANUAL"
+  },
+  {
+   "Detail": {
+    "Runs": [
+     {
+      "Name": "identity",
+      "Violations": []
+     },
+     {
+      "Name": "diff",
+      "Violations": []
+     },
+     {
+      "Name": "scope",
+      "Violations": []
+     },
+     {
+      "Name": "contract",
+      "Violations": []
+     },
+     {
+      "Name": "hashes",
+      "Violations": []
+     },
+     {
+      "Name": "cleantree",
+      "Violations": []
+     },
+     {
+      "Name": "read-text-1",
+      "Violations": []
+     },
+     {
+      "Name": "read-text-73",
+      "Violations": []
+     },
+     {
+      "Name": "read-json",
+      "Violations": []
+     },
+     {
+      "Name": "trx",
+      "Violations": []
+     },
+     {
+      "Name": "handoff",
+      "Violations": []
+     },
+     {
+      "Name": "freetext",
+      "Violations": []
+     },
+     {
+      "Name": "clausemap",
+      "Violations": []
+     }
+    ]
+   },
+   "Id": "R9",
+   "Status": "MATCH"
+  },
+  {
+   "Detail": {
+    "Cited": "997f97415196bb30cec7ea34aa62d408335390d1828512a49f40f059802c82e9",
+    "Computed": "997f97415196bb30cec7ea34aa62d408335390d1828512a49f40f059802c82e9"
+   },
+   "Id": "R10",
+   "Status": "MATCH"
+  }
+ ],
+ "Decision": "ACCEPT_FACTS",
+ "Schema": "rackcad-bmin-accept/0-experimental"
+}

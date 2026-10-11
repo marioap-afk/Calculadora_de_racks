@@ -1,0 +1,58 @@
+test_cli_flags_and_envelope_shortcut (__main__.TestEndToEnd.test_cli_flags_and_envelope_shortcut) ... ok
+test_e4_ambiguous_derive_and_claim_ids (__main__.TestEndToEnd.test_e4_ambiguous_derive_and_claim_ids) ... ok
+test_fail_closed_missing_data_and_usage (__main__.TestEndToEnd.test_fail_closed_missing_data_and_usage) ... ok
+test_full_request_accepts (__main__.TestEndToEnd.test_full_request_accepts) ... ok
+test_r10_and_not_applicable_rules (__main__.TestEndToEnd.test_r10_and_not_applicable_rules) ... ok
+test_r1_from_git_object_and_rerun_from_stdin (__main__.TestEndToEnd.test_r1_from_git_object_and_rerun_from_stdin) ... ok
+test_r1_wrong_pinned_blob (__main__.TestEndToEnd.test_r1_wrong_pinned_blob) ... ok
+test_r2_declared_version_or_exe_differs (__main__.TestEndToEnd.test_r2_declared_version_or_exe_differs) ... ok
+test_r2_envelope_runtime_not_isolated (__main__.TestEndToEnd.test_r2_envelope_runtime_not_isolated) ... ok
+test_r2_non_isolated_acceptor (__main__.TestEndToEnd.test_r2_non_isolated_acceptor) ... ok
+test_r3_error_envelope_bad_revision (__main__.TestEndToEnd.test_r3_error_envelope_bad_revision) ... ok
+test_r3_non_canonical_bytes (__main__.TestEndToEnd.test_r3_non_canonical_bytes) ... ok
+test_r3_tampered_facts_with_recomputed_sha (__main__.TestEndToEnd.test_r3_tampered_facts_with_recomputed_sha) ... ok
+test_r3_tampered_facts_without_recomputed_sha (__main__.TestEndToEnd.test_r3_tampered_facts_without_recomputed_sha) ... ok
+test_r3_tool_run_without_isolation_is_rejected (__main__.TestEndToEnd.test_r3_tool_run_without_isolation_is_rejected) ... ok
+test_r3_verdict_vocabulary_in_facts (__main__.TestEndToEnd.test_r3_verdict_vocabulary_in_facts) ... ok
+test_r4_authority_map_part (__main__.TestEndToEnd.test_r4_authority_map_part) ... ok
+test_r4_each_check_flipped_is_mismatch (__main__.TestEndToEnd.test_r4_each_check_flipped_is_mismatch) ... ok
+test_r4_freetext_term_detected (__main__.TestEndToEnd.test_r4_freetext_term_detected) ... ok
+test_r4_scope_trailer_identity_cleantree_failures (__main__.TestEndToEnd.test_r4_scope_trailer_identity_cleantree_failures) ... ok
+test_r5_mutants_drop_path_ancestry_trailer (__main__.TestEndToEnd.test_r5_mutants_drop_path_ancestry_trailer) ... ok
+test_r5_rename_both_paths_e6 (__main__.TestEndToEnd.test_r5_rename_both_paths_e6) ... ok
+test_r5_trailer_cases_match_git (__main__.TestEndToEnd.test_r5_trailer_cases_match_git) ... ok
+test_r6_authority_resolution (__main__.TestEndToEnd.test_r6_authority_resolution) ... ok
+test_r6_r7_mutants (__main__.TestEndToEnd.test_r6_r7_mutants) ... ok
+test_r6_r7_valid_and_defect_maps_match (__main__.TestEndToEnd.test_r6_r7_valid_and_defect_maps_match) ... ok
+test_r7_scope_and_contract_mutants (__main__.TestEndToEnd.test_r7_scope_and_contract_mutants) ... ok
+test_r8_is_manual (__main__.TestEndToEnd.test_r8_is_manual) ... ok
+test_r9_closure_violations (__main__.TestEndToEnd.test_r9_closure_violations) ... ok
+test_e1_vocabulary_exempts_verbatim_echoes_only (__main__.TestErrataV02.test_e1_vocabulary_exempts_verbatim_echoes_only) ... ok
+test_e2_u19_normalized_objects_strict (__main__.TestErrataV02.test_e2_u19_normalized_objects_strict) ... ok
+test_e3_literal_pathspec_in_r9 (__main__.TestErrataV02.test_e3_literal_pathspec_in_r9) ... ok
+test_ast_no_write_network_or_foreign_process (__main__.TestHygiene.test_ast_no_write_network_or_foreign_process) ... ok
+test_determinism_and_ascii (__main__.TestHygiene.test_determinism_and_ascii) ... ok
+test_git_executor_closed_list (__main__.TestHygiene.test_git_executor_closed_list) ... ok
+test_zero_writes (__main__.TestHygiene.test_zero_writes) ... ok
+test_activation_defects (__main__.TestIndependentFacts.test_activation_defects) ... ok
+test_ancestry_and_ranges_vs_git (__main__.TestIndependentFacts.test_ancestry_and_ranges_vs_git) ... ok
+test_defect_map_known_defects (__main__.TestIndependentFacts.test_defect_map_known_defects) ... ok
+test_derive_valid_defect_dup_direct_none (__main__.TestIndependentFacts.test_derive_valid_defect_dup_direct_none) ... ok
+test_trailers_vs_git_format (__main__.TestIndependentFacts.test_trailers_vs_git_format) ... ok
+test_tree_diff_paths_vs_git_no_renames (__main__.TestIndependentFacts.test_tree_diff_paths_vs_git_no_renames) ... ok
+test_valid_map_has_no_defects (__main__.TestIndependentFacts.test_valid_map_has_no_defects) ... ok
+test_blob_sha1_matches_git_hash_object (__main__.TestPrimitives.test_blob_sha1_matches_git_hash_object) ... ok
+test_freetext_whole_word_casefold (__main__.TestPrimitives.test_freetext_whole_word_casefold) ... ok
+test_gate_terms_exclude_field_names (__main__.TestPrimitives.test_gate_terms_exclude_field_names) ... ok
+test_markdown_sections_and_code_fences (__main__.TestPrimitives.test_markdown_sections_and_code_fences) ... ok
+test_pointer_only_removal (__main__.TestPrimitives.test_pointer_only_removal) ... ok
+test_schema_subset_validator (__main__.TestPrimitives.test_schema_subset_validator) ... ok
+test_scope_rules (__main__.TestPrimitives.test_scope_rules) ... ok
+test_sentence_splitter (__main__.TestPrimitives.test_sentence_splitter) ... ok
+test_trailer_parser_cases (__main__.TestPrimitives.test_trailer_parser_cases) ... ok
+
+----------------------------------------------------------------------
+Ran 52 tests in 323.656s
+
+OK
+accept rc=0

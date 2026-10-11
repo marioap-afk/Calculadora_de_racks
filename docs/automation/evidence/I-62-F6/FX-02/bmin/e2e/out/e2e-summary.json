@@ -1,0 +1,387 @@
+{
+ "Tip": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+ "ToolSha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200",
+ "ToolBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+ "AcceptorSha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0",
+ "AcceptorBlob": "434ef1fccb0d15762b30244b4a60928120698411",
+ "Python": "3.13.14",
+ "ExecutableSource": "sys.base_prefix",
+ "ToolExitCodes": {
+  "identity": 0,
+  "diff": 0,
+  "scope": 0,
+  "contract": 0,
+  "hashes": 0,
+  "cleantree": 0,
+  "read-text-1": 0,
+  "read-text-73": 0,
+  "read-json": 0,
+  "trx": 0,
+  "handoff": 0,
+  "freetext": 0,
+  "clausemap": 0
+ },
+ "ZeroWrite": {
+  "BeforeEqualsAfterTool": true,
+  "BeforeEqualsAfterAcceptor": true,
+  "BeforeEqualsAfterAll": true,
+  "Before": {
+   "IndexSha256": "c38e08317545b241d4237df5bd185a06fff7d2e21830cc3613ad54ddba777e12",
+   "Refs": "81eb1861e7c1132076e967b50142d966856f446316ccbf2522421f852e6b8cdd",
+   "StatusIgnored": "",
+   "FilesSha256": "dbaf29300f2c721872aac8c137034a0728b5f21a881aafd3e20f6c86427c79ce",
+   "FileCount": 105
+  },
+  "AfterAll": {
+   "IndexSha256": "c38e08317545b241d4237df5bd185a06fff7d2e21830cc3613ad54ddba777e12",
+   "Refs": "81eb1861e7c1132076e967b50142d966856f446316ccbf2522421f852e6b8cdd",
+   "StatusIgnored": "",
+   "FilesSha256": "dbaf29300f2c721872aac8c137034a0728b5f21a881aafd3e20f6c86427c79ce",
+   "FileCount": 105
+  }
+ },
+ "Acceptor": {
+  "rc": 0,
+  "Decision": "ACCEPT_FACTS",
+  "Checks": [
+   [
+    "R1",
+    "MATCH"
+   ],
+   [
+    "R2",
+    "MATCH"
+   ],
+   [
+    "R3",
+    "MATCH"
+   ],
+   [
+    "R4",
+    "NOT_APPLICABLE"
+   ],
+   [
+    "R5",
+    "MATCH"
+   ],
+   [
+    "R6",
+    "MATCH"
+   ],
+   [
+    "R7",
+    "MATCH"
+   ],
+   [
+    "R8",
+    "MANUAL"
+   ],
+   [
+    "R9",
+    "MATCH"
+   ],
+   [
+    "R10",
+    "MATCH"
+   ]
+  ]
+ },
+ "Tampered": {
+  "keep-sha": {
+   "rc": 1,
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R3",
+    "R5"
+   ]
+  },
+  "recompute-sha": {
+   "rc": 1,
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R3",
+    "R5"
+   ]
+  }
+ },
+ "Mutants": [
+  {
+   "Id": "M01",
+   "Description": "coverage rule inverted (E starts with R)",
+   "EnvelopesChanged": [
+    "scope"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R7"
+   ]
+  },
+  {
+   "Id": "M02",
+   "Description": "sentence boundary off ('.' without following whitespace splits)",
+   "EnvelopesChanged": [
+    "clausemap"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R6"
+   ]
+  },
+  {
+   "Id": "M03",
+   "Description": "ancestry argument order swapped",
+   "EnvelopesChanged": [
+    "identity"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R5"
+   ]
+  },
+  {
+   "Id": "M04",
+   "Description": "one diff path dropped",
+   "EnvelopesChanged": [
+    "diff",
+    "scope",
+    "clausemap"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R5",
+    "R7"
+   ]
+  },
+  {
+   "Id": "M05",
+   "Description": "MV-4 lists merged (R61 b list folded into the literal list)",
+   "EnvelopesChanged": [
+    "clausemap"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R6",
+    "R7"
+   ]
+  },
+  {
+   "Id": "M06",
+   "Description": "pointer removed together with its whole line",
+   "EnvelopesChanged": [
+    "clausemap"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R6"
+   ]
+  },
+  {
+   "Id": "M07",
+   "Description": "ENTRY file treated as ADDED (R61 b list)",
+   "EnvelopesChanged": [
+    "clausemap"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R6",
+    "R7"
+   ]
+  },
+  {
+   "Id": "M08",
+   "Description": "first-parent merge order reversed",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M09",
+   "Description": "trailer matched by substring instead of exact line",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M10",
+   "Description": "ensure_ascii=False in the canonical serialization",
+   "EnvelopesChanged": [
+    "read-text-1",
+    "read-text-73",
+    "read-json",
+    "clausemap"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R3",
+    "R6",
+    "R7"
+   ]
+  },
+  {
+   "Id": "M11",
+   "Description": "missing -I check removed",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M12",
+   "Description": "U-19 normalization removed",
+   "EnvelopesChanged": [
+    "scope"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R7"
+   ]
+  },
+  {
+   "Id": "M13",
+   "Description": "raw blob header without the NUL separator",
+   "EnvelopesChanged": [
+    "hashes"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R5"
+   ]
+  },
+  {
+   "Id": "M14",
+   "Description": "free-text whole-word boundary removed",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M15",
+   "Description": "closed list of git subcommands removed",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M16",
+   "Description": "duplicated trailer accepted",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M17",
+   "Description": "unsupported schema keyword accepted",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M18",
+   "Description": "MV-3 deleted paths dropped from the changed set",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M19",
+   "Description": "state with two distinct claim_id values accepted",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M27",
+   "Description": "claim_id lines counted instead of distinct values (real /v2 state rejected)",
+   "EnvelopesChanged": [
+    "clausemap"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R3",
+    "R6",
+    "R7"
+   ]
+  },
+  {
+   "Id": "M20",
+   "Description": "last sentence of 16.3 taken as the first",
+   "EnvelopesChanged": [
+    "clausemap"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R6"
+   ]
+  },
+  {
+   "Id": "M21",
+   "Description": "EFF candidate without the first-parent condition",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M22",
+   "Description": "preamble omitted from H1/H2",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M23",
+   "Description": "status --porcelain no longer forced",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M24",
+   "Description": "code fences ignored (lines inside ``` count as headings)",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M25",
+   "Description": "duplicate JSON keys accepted",
+   "EnvelopesChanged": [],
+   "Decision": "ACCEPT_FACTS",
+   "Mismatches": []
+  },
+  {
+   "Id": "M26",
+   "Description": "--no-ext-diff --no-textconv no longer forced",
+   "EnvelopesChanged": [
+    "diff",
+    "scope",
+    "clausemap"
+   ],
+   "Decision": "REJECT_FACTS",
+   "Mismatches": [
+    "R9"
+   ]
+  }
+ ],
+ "CrossCheckSupervisionOnly": {
+  "ReferenceKeysSample": [
+   "Kit",
+   "Mode",
+   "cv",
+   "delegation",
+   "meta",
+   "steps",
+   "u0"
+  ],
+  "Eff": "fbe25347799e5b801ef708454212335537448bd1",
+  "MV4LiteralViolations": 7,
+  "MV4AddedPresentInEff1": 23,
+  "MV4EntryFilePresentInEff1": 1,
+  "MV7": {
+   "PointerIsFirstSentenceS16": true,
+   "PointerIsLastSentenceS163": true,
+   "S163EqualAfterPointerRemoval": false
+  },
+  "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+  "SchemaBlob": "6b54dda9579d694200d8fc9ec26a4a846eef529b"
+ },
+ "AllAsciiEnvelopes": true
+}
