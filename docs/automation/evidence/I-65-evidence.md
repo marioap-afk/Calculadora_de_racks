@@ -611,3 +611,26 @@ Custodia (blob = identidad duradera; SHA-256 = procedencia del transitorio):
 | `F3-T2-PACKAGE-AND-WRITER-nc4/R20261011T073019Z-5e40/delegation.json` | `93B0A7018D782B00…` | `77d7770f4024` |
 | `F3-T2-PACKAGE-AND-WRITER-nc4/R20261011T073019Z-5e40/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
 | `F3-T2-PACKAGE-AND-WRITER-nc4/R20261011T073019Z-5e40/relay-record.json` | `CFF6DF730158D273…` | `d28d3d5c39a3` |
+
+## 30. Cierre de F3 — revisión y criterios de LIFECYCLE §7 (2026-10-11T08:50:04Z)
+
+- **Revisión independiente del Architect** sobre `bf2d3478..e3ae36d0 -- src tests assets`: **CONFORMANT WITH OBSERVATIONS**, sin
+  REQUIRED ni violación del Freeze; 12 hallazgos OPTIONAL A65-F3-01..12
+  ([architect-f3-conformance.md](I-65-f3/architect-f3-conformance.md)). Golden de RAM recalculado por el Architect y correcto; las 35
+  funciones del núcleo de la puerta, contenidas en las 207 de P1.
+- **Revisión del Coordinator** del diff contra el Freeze, la orden del Owner y CD-I65-F3-01..15: CD-I65-F3-10 (T1) y CD-I65-F3-15 (T2);
+  disposición de los hallazgos en CD-I65-F3-16.
+- **Criterios de LIFECYCLE §7 para F3** (estado en este commit):
+
+| # | Criterio | Estado |
+|---|---|---|
+| 1 | Resultado observado por pruebas | sí: paquete RAM determinista y atómico de `REF-CANT-01` (con filas de fixture) igual al golden de RAM derivado a mano; guardas G1-G4, de plantilla (INV-10) y del proveedor; contrato de la carga útil (TRX de `38119516204` y `38124008377`) |
+| 2 | RED→GREEN focal, selección > 0 | sí: F3-T1 296 (RED 269 fallidas) y F3-T2 241 (RED 230 fallidas), acreditados por el Controller |
+| 3 | Pruebas y evidencia exigidas en verde | sí en los SHA de código (`16fa9e76`, `e3ae36d0`); Core Full local sobre el SHA de cierre: tras este commit |
+| 4 | CI propio del SHA de cierre leído y verde | tras el push de este commit |
+| 5 | Revisión del Coordinator contra Freeze + A-n, sin EXP-01 A abierta | sí (sin A-n; sin EXP-01 A) |
+| 6 | Orden commit → árbol limpio → evidencia local → push → CI | en curso sobre este commit |
+| 7 | Rebase entre gates | no hubo (`origin/main` = `bb0d5522` durante F3) |
+
+- **Controles negativos de F3:** 8 de 9 con oráculo cumplido (nc4 ×2, nc2 ×2, nc3 ×2, nc1 de F3-T2); nc1 de F3-T1 no en sentido estricto
+  (DEV-I65-F3-01). Planificación rechazada y reemitida una vez (CD-I65-F3-11).

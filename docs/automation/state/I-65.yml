@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F3
   attempts: 0
-  next_action: Cierre de F3 — revisión independiente del Architect sobre el diff de F3, commit de cierre, Core Full local, CI e informe al Owner. Sin F4.
+  next_action: Cierre de F3 — Core Full local sobre este commit con árbol limpio, push y lectura de su CI; después, registro del cierre e informe de F3 al Owner. Sin F4.
   last_evidence_commit: e3ae36d0d6cb1f13de685ed0f9825d2b5a71ecf5
 execution_context:
   mode: manual
@@ -15,7 +15,7 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F3
-  next_role: Architect (conformidad de F3) y Coordinator (cierre de F3)
+  next_role: Coordinator (cierre de F3)
   implementation_authorization: F3 ONLY (orden del Owner del 2026-10-11; termina al concluir F3)
   owner_decisions_open: [verificación por un ingeniero de las filas de mapeo, confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de cada gate posterior a F3]
   not_authorized: [F4, F5, F6, integración con Workspace, interfaz gráfica, Plugin, corridas en RAM Elements, análisis, importación de resultados]
