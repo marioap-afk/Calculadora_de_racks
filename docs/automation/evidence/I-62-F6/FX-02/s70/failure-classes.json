@@ -1,0 +1,76 @@
+{
+ "A4-1 (cmd.exe, 73890CA3)": {
+  "Total": 68,
+  "PorCausa": {
+   "OMITIDA": 59,
+   "SANDBOX": 2,
+   "UTF8": 4,
+   "ERROR_MODELO": 3
+  },
+  "Ejemplos": {
+   "OMITIDA": [
+    "4:commits",
+    "4:trailer:d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+    "4:trailer:ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+    "6:mb",
+    "6:anc:base-red",
+    "6:anc:red-head"
+   ],
+   "SANDBOX": [
+    "9:ls-remote:branch",
+    "9:ls-remote:main"
+   ],
+   "UTF8": [
+    "12:yaml:automation_state.next_action",
+    "13:json:Objective",
+    "13:json:Invariants",
+    "13:json:Objective.nonascii-count"
+   ],
+   "ERROR_MODELO": [
+    "13:len:ForbiddenWriteScope",
+    "26:nc2-excluded",
+    "30:n5-field"
+   ]
+  },
+  "Comandos": 11,
+  "Proceso": "exit=0 timed_out=no elapsed_s<=100"
+ },
+ "A2-P2 sonda 1 (pwsh nativo, F909F480)": {
+  "Total": 94,
+  "PorCausa": {
+   "ERROR_MODELO": 6,
+   "OMITIDA": 83,
+   "SANDBOX": 2,
+   "UTF8": 3
+  },
+  "Ejemplos": {
+   "ERROR_MODELO": [
+    "5:diff-red-head",
+    "5:rt",
+    "6:anc:ar-base",
+    "7:blob-at-ar:docs/automation/state/FX-U1.yml",
+    "7:blob-at-ar:docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "13:len:ForbiddenWriteScope"
+   ],
+   "OMITIDA": [
+    "6:mb",
+    "11:md-nonascii-count",
+    "11:md-nonascii-chars",
+    "13:json:Objective.nonascii-count",
+    "14:trx:sha256",
+    "14:trx:total"
+   ],
+   "SANDBOX": [
+    "9:ls-remote:branch",
+    "9:ls-remote:main"
+   ],
+   "UTF8": [
+    "11:md-line",
+    "13:json:Objective",
+    "13:json:Invariants"
+   ]
+  },
+  "Comandos": 4,
+  "Proceso": "exit=0 timed_out=no elapsed_s<=105"
+ }
+}

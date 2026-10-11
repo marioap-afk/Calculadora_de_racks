@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §69; evidencia §128) — sonda 1 NATIVE_CONTROLLER = NOT_DEMONSTRATED (F6-OBS-03 resuelto; la celda omite operaciones, UTF-8 deformado, ls-remote bloqueado); sonda 2 retenida: el Coordinator decide Architect (§69) o segunda medición del Controller; B1 a la espera; sin F6 GATE PASS"
+  next_action: "F6 (decisiones §70; evidencia §129) — esperar al Coordinator: B1 (D.1 frente a AP 16.13: A-n o lectura; presupuesto de Principal de FX-U2) y uso de la sonda 2 (reasignable por disposición ordinaria); sin A-n, sondas ni sesiones nuevas; sin F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

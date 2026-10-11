@@ -3614,3 +3614,18 @@ solo desde artefactos custodiados.
 
   Identidad estable tras la sonda 1.
 
+## 129. Decisiones §70: F6-OBS-03 resuelto; NATIVE_CONTROLLER NOT_DEMONSTRATED; análisis de causas; reutilización de la sonda 2; borrador de B1
+
+- **Acreditado:** F6-OBS-03 = RESUELTO para `d13914ce…/26.1007.2314.0`; NATIVE_CONTROLLER = NOT_DEMONSTRATED. Sonda 2 sin ejecutar.
+- **Causas** ([análisis](I-62-F6/FX-02/s70/controller-failure-analysis.md)):
+  - ≈ 88 % de las claves fallidas son omisiones voluntarias de la celda (59/68 en A4-1; 83/94 en la sonda 1; 11 y 4 comandos);
+  - errores de lectura de Git: 3 y 6;
+  - UTF-8 del transporte: 4 y 3, sin solución por medición;
+  - `ls-remote` bloqueado por el sandbox: 2 y 2, pero VERIFY comprueba `Remote` en el registro;
+  - D-4 agrega en una sola medición lo que en la ejecución real son varias invocaciones.
+- **Sonda 2:** reasignable al Controller por disposición ordinaria. A2-P2 ata el bloque al par, no a celdas, y `BLOQUE-CODEX-CONSUMO` no nombra celda. No
+  exige enmienda ni otra línea del Owner. Pero una sola sonda no demuestra PLAN y VERIFY por separado.
+- **B1** ([borrador](I-62-F6/requests/B1-fixture-request-draft-2026-10-11.md)): técnicamente listo.
+  - Obstáculo normativo: D.1, paso 2, fija el seed con MC_I62, que es la causa de MAP_INVALID. Hace falta una A-n o una lectura del Coordinator.
+  - Presupuesto de Principal para FX-U2: el cupo de A4-6 es solo para A2.
+  - Líneas del Owner en borrador: `FIXTURE-B1-REPO` y `B1-PRINCIPAL-CONSUMO`.
