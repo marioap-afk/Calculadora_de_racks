@@ -4,10 +4,10 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace RackCad.Plugin.Workspace
 {
     /// <summary>
-    /// RACKPANEL (I-64 F1-T3A): the one command of the workspace panel, with no alias. In this task it only creates or
-    /// obtains the single workspace controller and opens the panel state through it, which starts the event bridge lazily and
-    /// asks for the first reconciliation. It carries no rule of its own, builds no palette and no WPF (T3B), and reads and
-    /// writes nothing of the drawing.
+    /// RACKPANEL (I-64 F1-T3A, T3B): the one command of the workspace panel, with no alias. It obtains the single workspace
+    /// controller and opens the panel state through it (which starts the event bridge lazily and asks for the first
+    /// reconciliation), then asks the single palette host to show the palette. It carries no rule of its own and no palette
+    /// logic, and reads and writes nothing of the drawing.
     /// </summary>
     public sealed class WorkspacePanelCommand
     {
@@ -17,8 +17,9 @@ namespace RackCad.Plugin.Workspace
             try
             {
                 WorkspaceController.GetOrCreate().OpenPanel();
+                WorkspacePaletteHost.GetOrCreate().Show();
                 AcApplication.DocumentManager.MdiActiveDocument?.Editor.WriteMessage(
-                    "\nRackCad: panel de trabajo iniciado (esta version aun no muestra la interfaz).");
+                    "\nRackCad: panel Workspace mostrado.");
             }
             catch (System.Exception ex)
             {

@@ -33,7 +33,13 @@ namespace RackCad.Plugin.Workspace
         /// <summary>Raised from the idle pass with the pure result of one drain. The drain performs no read in this bridge.</summary>
         public event Action<DrainOutcome> Drained;
 
-        /// <summary>RED skeleton: declared, not raised yet.</summary>
+        /// <summary>
+        /// In-memory notice that the active session may have changed (I-64 D-03, D-04). It is raised only from the two
+        /// existing document-lifecycle handlers, inside their own containment and after the core has been updated:
+        /// <c>DocumentActivated</c>, and <c>DocumentToBeDestroyed</c> when the active session changed. It carries no
+        /// argument and no AutoCAD type, adds no AutoCAD subscription and is internal: the public surface of the bridge
+        /// does not grow. The controller relays it; nothing in the bridge reads the drawing because of it.
+        /// </summary>
         internal event Action ActiveSessionChanged;
 
         /// <summary>First panel open: hooks the document-collection sources and the active document. Repeating it adds nothing.</summary>
@@ -112,14 +118,23 @@ namespace RackCad.Plugin.Workspace
                 case BridgeSource.DocumentActivated:
                 {
                     var documents = AcApplication.DocumentManager;
-                    DocumentCollectionEventHandler handler = (s, e) => Contain("DocumentActivated", () => _core.OnDocumentActivated(NativeId(e.Document), e.Document.Editor.IsQuiescent));
+                    DocumentCollectionEventHandler handler = (s, e) => Contain("DocumentActivated", () =>
+                    {
+                        _core.OnDocumentActivated(NativeId(e.Document), e.Document.Editor.IsQuiescent);
+                        ActiveSessionChanged?.Invoke();
+                    });
                     documents.DocumentActivated += handler;
                     return () => documents.DocumentActivated -= handler;
                 }
                 case BridgeSource.DocumentToBeDestroyed:
                 {
                     var documents = AcApplication.DocumentManager;
-                    DocumentCollectionEventHandler handler = (s, e) => Contain("DocumentToBeDestroyed", () => _core.OnDocumentToBeDestroyed(NativeId(e.Document)));
+                    DocumentCollectionEventHandler handler = (s, e) => Contain("DocumentToBeDestroyed", () =>
+                    {
+                        var before = _core.ActiveSession;
+                        _core.OnDocumentToBeDestroyed(NativeId(e.Document));
+                        if (_core.ActiveSession != before) ActiveSessionChanged?.Invoke();
+                    });
                     documents.DocumentToBeDestroyed += handler;
                     return () => documents.DocumentToBeDestroyed -= handler;
                 }
