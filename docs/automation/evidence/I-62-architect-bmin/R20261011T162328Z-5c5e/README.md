@@ -258,3 +258,36 @@ Preparación (fuera de `kit/`, no se custodian como kit): `prep/gen_schema.py` (
 - **Fidelidad de lectura previa:** no hay un archivo previo como el de A-5, que salía de la transcripción de su preparador. La fidelidad de cada Read del
   revisor la comprueba el auditor después de la corrida.
 - **Lanzamiento:** una vez, `python -B kit/launch.py`, por la sesión principal, después de este commit. Sin reintento.
+
+## Resultado (añadido tras la corrida, sesión principal)
+
+```text
+Sesión:          cd0a1e5c-605d-4363-9e49-57087fd26a47, de 2026-10-11T20:17:12Z a 2026-10-11T20:31:53Z, salida 0, sin fallo de transporte
+Uso:             37 turnos; herramientas {"Read": 30, "Glob": 1, "Grep": 4, "StructuredOutput": 1}
+Veredicto:       MATERIAL
+Materialidad:    M-01 no, M-02 yes, M-03 yes, M-04 yes, M-05 yes, M-06 no, M-07 no, M-08 yes
+ActionCompat.:   ACTION_COMPATIBLE
+CanonicalInput:  needs-change
+A-6:             yes (8 puntos de alcance mínimo)
+OWNER-RESERVED:  2
+Una invocación:  no
+Acreditación:    ACCREDITED por el auditor v5.1-bmin (0 motivos); la acreditación final es del Coordinator
+Clon tras corrida: HEAD 9356edf1, estado limpio
+```
+
+**Alcance mínimo de A-6 que señala el dictamen** (sin texto de enmienda; §75.7):
+1. V14 D.3, Topología A, Controller de FX-02 en F6: ruta de ejecución con el instrumento fijado por blob (análoga a A4-1), sin tocar la receta 16.4, topes ni totales
+2. V14 §20.3.1 (AP 16.24 L1264) y RAE §15.2 I6: admisión, solo para esa invocación, del archivo de la herramienta en CanonicalInputs y de su ejecución en AllowedActions con su fuente
+3. Vía del blob hasta el -C del Controller sin F_seed ni F_norm y sin leer el worktree real de I-62 (V14 D.1 y D.6; AP L1267; orden §75.2)
+4. AP 16.24: registro de fidelidad del archivo de la herramienta y cobertura de sus GitCalls e Inputs en la auditoría de lecturas frente al EffectiveInputClosure (P-22; Contexto)
+5. AP 16.22 L1204-L1207 y V14 D.4: efecto de los códigos de fallo cerrado de la herramienta y del REJECT_FACTS del aceptante sobre Checks, Classification y el resultado de FX-02
+6. V14 Anexo C, C-24 (L2333-L2334): oráculo del Coordinator calculado sin la herramienta ni el aceptante, sellado antes y no entregado al Controller
+7. Elegibilidad de la celda del Controller con el instrumento: invocación medida que demuestre la ruta, bajo una autorización y un consumo del Owner (patrón A4-1, reglas 2-4)
+8. ADR-0046 #9 (Level A, conservado por ADR-0048): determinación OWNER-RESERVED acotada a FX-02 en F6; exclusión expresa de producción, de otras unidades y de D.5
+
+**OWNER-RESERVED:**
+- Si la evidencia de F6 justifica usar un script operativo (la herramienta B-min y su aceptante) en la verificación del Controller de FX-02, frente a ADR-0046 #9 (Level A: «Sin plataforma ni scripts operativos hasta que la evidencia lo justifique»), conservado por ADR-0048, y con qué alcance (solo F6 o más).
+- Autorización de consumo de cualquier invocación medida nueva de codex-cli que demuestre la ruta del Controller con el instrumento: el bloque A2-P2 de la identidad vigente está agotado y la medición de A4-1 está consumida.
+
+Archivos: `output.json`, `audit.json`, `runtime-evidence.json` y `launch/` (saneado). La transcripción y `stdout.jsonl` no se versionan; sus SHA-256
+están en `runtime-evidence.json`.

@@ -3970,3 +3970,45 @@ solo desde artefactos custodiados.
   - el cierre de R9 se completó con entradas normativas: `RevPaths`, las superficies de 16.13 y las rutas del mapa.
 - **Límites declarados** en el README §7: la rama de rebase de `Identity`, la coherencia del `Trailer` con el modelo efectivo, el intérprete fuera de la
   receta y la colocación en una medición, que es la pregunta de materialidad de §75.4.
+
+## 147. Dictamen independiente de materialidad de B-min por `claude-cli`: MATERIAL; auditor ACCREDITED (decisiones §75, punto 4)
+
+- **Corrida** R20261011T162328Z-5c5e ([registro](I-62-architect-bmin/R20261011T162328Z-5c5e/README.md); [output.json](I-62-architect-bmin/R20261011T162328Z-5c5e/output.json); [audit.json](I-62-architect-bmin/R20261011T162328Z-5c5e/audit.json)):
+  - `claude-cli` 2.1.293, `claude-opus-5-5` xhigh, sesión `cd0a1e5c…`, de 20:17:12Z a 20:31:53Z, salida 0, sin fallo de transporte;
+  - 37 turnos (30 Read, 4 Grep, 1 Glob);
+  - objeto: el paquete en `9356edf1`; kit custodiado en `c0426bea`; evidencia §140-§145 fuera del cierre, para evitar el anclaje.
+- **Veredicto: MATERIAL.** M-02, M-03, M-04, M-05 y M-08 = yes; M-01, M-06 y M-07 = no.
+  - Ejecutar la herramienta desde su blob es **ACTION_COMPATIBLE** (AP 16.24, paso 2), pero eso no basta.
+  - Admitirla como `CanonicalInput` necesita un cambio (`needs-change`): no es objeto, ni registro, ni autoridad (AP L1264); no está en la
+    `AuthorityRevision` del fixture; y la fidelidad y la auditoría de sus lecturas no están previstas.
+  - Superficies: AP 16.4 dentro del texto vigente; 16.19 no afectada; 16.24, ADR-0046, V14 D.3 y los contratos consumidos exigen un cambio material.
+  - Independencia: Actor sin efecto; Sesión y Contexto se conservan con condiciones (el aceptante fuera de la sesión del Principal; las lecturas de
+    la herramienta auditadas frente al `EffectiveInputClosure`).
+- **A-6 necesaria**, con 8 puntos de alcance mínimo (sin texto de enmienda):
+  - ruta del Controller de FX-02 con el instrumento (análoga a A4-1);
+  - admisión de la herramienta en `CanonicalInputs` y `AllowedActions` para esa invocación;
+  - vía del blob sin F_seed ni F_norm y sin el worktree real;
+  - fidelidad y cobertura P-22 de sus lecturas;
+  - efecto de los fallos cerrados y del REJECT_FACTS sobre `Checks`, `Classification` y D.4;
+  - oráculo de C-24 sin la herramienta;
+  - medición de la elegibilidad con autorización de consumo;
+  - excepción de ADR-0046 #9 acotada a FX-02 en F6.
+- **OWNER-RESERVED:**
+  - si la evidencia de F6 justifica un script operativo frente a ADR-0046 #9 (Level A, conservado por ADR-0048), y con qué alcance;
+  - el consumo de cualquier invocación medida nueva de `codex-cli`.
+- **Una sola invocación:** no es posible sin enmienda.
+  - Como RoleInvocation, PLAN y VERIFY juntos son INVALID (AP L1240; P-19).
+  - Como sonda, el bloque A2-P2 está agotado y A4-1 está consumida.
+  - Aun con un bloque nuevo, colocar la herramienta en esa invocación es la cuestión material.
+- **Observaciones del revisor** que la supervisión acepta como hallazgos:
+  - la lectura de MV-4/MV-7 que usa la SPEC debe fijarla una autoridad, no una SPEC no normativa;
+  - el cierre del aceptante debe derivarse del `EffectiveInputClosure`;
+  - un C-24 obtenido con el instrumento demostraría la configuración Controller más herramienta, con efecto en D.5;
+  - R4 no se ejerció en el extremo a extremo.
+- **Corrección append-only del README del paquete** (§8): la columna «Blob» de `tool-suite.log`, `accept-suite.log` y `e2e/e2e-run.log` se calculó sin
+  los filtros de Git. Esos tres archivos tienen CR, y con `core.autocrlf=true` el blob versionado es otro:
+  - `tool-suite.log`: `08f11ab4`;
+  - `accept-suite.log`: `9cd2f405`;
+  - `e2e-run.log`: `6e1f940e`.
+
+  Los SHA-256 de la tabla son los de los bytes del árbol de trabajo. El objeto revisado no se edita.

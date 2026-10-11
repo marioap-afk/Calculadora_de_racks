@@ -1,0 +1,4065 @@
+{
+ "AuditorVersion": "v5.1-bmin (claude-cli; Read/Grep/Glob only; transport gate D-01; declared and self-tested before the launch; decisions §75, point 4)",
+ "Inputs": {
+  "Transcript": {
+   "Path": "%USERPROFILE%/.claude/projects/D--r62-arch-bmin/cd0a1e5c-605d-4363-9e49-57087fd26a47.jsonl",
+   "Sha256": "e2340121648f6ba9c80e1293f35103c7002b1a439bd881815dc4e494851d85fd",
+   "Entries": 186
+  },
+  "Stdout": {
+   "Path": "D:/r62-arch-bmin-run/launch/stdout.jsonl",
+   "Sha256": "e87284e5e2460715d7c77286069291a4969792226a3e7fced2565fb097a03a9a",
+   "Lines": 656
+  },
+  "RunJson": {
+   "Path": "D:/r62-arch-bmin-run/launch/run.json",
+   "Sha256": "ce36dc8846dbe5483a828b2e34a1166d9a81012712c3c038ab268402cb5fc391"
+  },
+  "Preflight": {
+   "Path": "D:/r62-arch-bmin-run/launch/preflight.json",
+   "Sha256": "1e38ba98a8705805edc9780106448a7de13fd9a444411cf4da7a1ab966c57ed5"
+  },
+  "TransportCopies": {
+   "transport-characterization.json": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+   "transport-acceptance.json": null
+  },
+  "Gate": {
+   "Path": "kit/transport-gate.json",
+   "Status": "MEASURED"
+  },
+  "Schema": {
+   "Path": "kit/result.schema.json",
+   "Sha256": "b8d29e4a7b7100c1e90b882b88dc6fd3b49ce319a23180ab288a61e1dab1e9b0"
+  }
+ },
+ "RuntimeIdentity": {
+  "SessionIds": [
+   "cd0a1e5c-605d-4363-9e49-57087fd26a47"
+  ],
+  "Cwds": [
+   "D:\\r62-arch-bmin"
+  ],
+  "Versions": [
+   "2.1.293"
+  ],
+  "Entrypoints": [
+   "claude-desktop"
+  ],
+  "Models": {
+   "claude-opus-5-5": 67
+  },
+  "Efforts": {
+   "xhigh": 67
+  },
+  "SidechainEntries": 0,
+  "TranscriptFileStem": "cd0a1e5c-605d-4363-9e49-57087fd26a47"
+ },
+ "Launch": {
+  "LaunchDir": "D:/r62-arch-bmin-run/launch",
+  "StdoutInLaunchDir": true,
+  "RunJsonPresent": true,
+  "PreflightPresent": true,
+  "Pid": 11484,
+  "Start": "2026-10-11T20:17:12.007529Z",
+  "End": "2026-10-11T20:31:53.019331Z",
+  "ExitCode": 0,
+  "Killed": false,
+  "TimedOut": false,
+  "SessionId": "cd0a1e5c-605d-4363-9e49-57087fd26a47",
+  "Executable": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+  "ExecutableSha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+  "PromptSha256": "2e97f3f2927e053a605ee92a03795908a7b5ef936f920f31583b91b7d48be8f2",
+  "StdoutSha256": "e87284e5e2460715d7c77286069291a4969792226a3e7fced2565fb097a03a9a",
+  "ArgsMatch": true,
+  "Cwd": "D:\\r62-arch-bmin",
+  "PreflightChecks": {
+   "1-KitIntegrity": true,
+   "2-ClosureTransport": true,
+   "3-Binary": true,
+   "4-Version": true,
+   "5-Auth": true,
+   "6-Clone": true,
+   "7-RunFiles": true,
+   "8-NewSession": true,
+   "9-CommandLine": true,
+   "10-TransportGate": true
+  }
+ },
+ "TransportGate": {
+  "Status": "MEASURED",
+  "ArgsTemplate": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none",
+   "--add-dir",
+   "<add-dir>",
+   "--session-id",
+   "<session-id>",
+   "--json-schema",
+   "<json-schema>"
+  ],
+  "CharacterizationSha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+  "AcceptanceSha256": null,
+  "Problems": [],
+  "Ok": true
+ },
+ "Stream": {
+  "InitPresent": true,
+  "ResultPresent": true,
+  "Init": {
+   "session_id": "cd0a1e5c-605d-4363-9e49-57087fd26a47",
+   "cwd": "D:\\r62-arch-bmin",
+   "model": "claude-opus-5-5",
+   "permissionMode": "dontAsk",
+   "tools": [
+    "Glob",
+    "Grep",
+    "Read",
+    "StructuredOutput"
+   ],
+   "mcp_servers": [],
+   "claude_code_version": "2.1.293",
+   "apiKeySource": "none"
+  },
+  "Result": {
+   "subtype": "success",
+   "is_error": false,
+   "terminal_reason": "completed",
+   "num_turns": 37,
+   "session_id": "cd0a1e5c-605d-4363-9e49-57087fd26a47",
+   "permission_denials": [],
+   "total_cost_usd": 4.6174074,
+   "modelUsage": [
+    "claude-opus-5-5"
+   ],
+   "subagent_spawned": 0
+  }
+ },
+ "PromptFidelity": {
+  "PromptMdSha256": "2e97f3f2927e053a605ee92a03795908a7b5ef936f920f31583b91b7d48be8f2",
+  "UserPrompts": 1,
+  "MetaUserEntries": 0,
+  "FirstUserMessageSha256": "2e97f3f2927e053a605ee92a03795908a7b5ef936f920f31583b91b7d48be8f2",
+  "Equal": true,
+  "EqualAfterStrip": true
+ },
+ "RunCustody": {
+  "Files": {
+   "order.txt": {
+    "RunSha256": "21435cd1c0821d8c934117a10e850cb9fa124a06f8dd589719aff8f5b711d630",
+    "KitCopySha256": "21435cd1c0821d8c934117a10e850cb9fa124a06f8dd589719aff8f5b711d630",
+    "ClosureSha256": "21435cd1c0821d8c934117a10e850cb9fa124a06f8dd589719aff8f5b711d630",
+    "Match": true
+   },
+   "prompt.md": {
+    "RunSha256": "2e97f3f2927e053a605ee92a03795908a7b5ef936f920f31583b91b7d48be8f2",
+    "KitCopySha256": "2e97f3f2927e053a605ee92a03795908a7b5ef936f920f31583b91b7d48be8f2",
+    "ClosureSha256": "2e97f3f2927e053a605ee92a03795908a7b5ef936f920f31583b91b7d48be8f2",
+    "Match": true
+   }
+  },
+  "RunDirListing": [
+   "launch",
+   "order.txt",
+   "prompt.md"
+  ],
+  "LaunchDirListing": [
+   "preflight.json",
+   "run.json",
+   "stderr.txt",
+   "stdout.jsonl",
+   "transport-characterization.json"
+  ]
+ },
+ "CloneAfterRun": {
+  "Head": "9356edf141c795ea718a360e266334ded10d6a76",
+  "StatusPorcelainIgnored": "",
+  "LocalBranches": [],
+  "Remotes": [],
+  "Detached": true,
+  "DesignatedBlobsUnchanged": true,
+  "ReparsePoints": []
+ },
+ "ToolAudit": {
+  "Calls": 36,
+  "WithProblems": [],
+  "Rows": [
+   {
+    "Index": 0,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin-run\\order.txt"
+    },
+    "Class": "RUN",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 1,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\decisions\\I-62.md",
+     "offset": 1515,
+     "limit": 15
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 2,
+    "Tool": "Glob",
+    "Input": {
+     "path": "D:\\r62-arch-bmin\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin",
+     "pattern": "**/*"
+    },
+    "Class": "GLOB",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 3,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\SPEC.md",
+     "offset": 1,
+     "limit": 5
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 4,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\SPEC.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 5,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\README.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 6,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\AUTOMATION_PLAN.md",
+     "offset": 500,
+     "limit": 175
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 7,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\AUTOMATION_PLAN.md",
+     "offset": 1015,
+     "limit": 170
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 8,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\AUTOMATION_PLAN.md",
+     "offset": 1184,
+     "limit": 145
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 9,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\adr\\0046-protocolo-de-ejecucion-delegada-de-agentes.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 10,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\agent-execution\\adapters\\codex-cli.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 11,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 1027,
+     "limit": 104
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 12,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\agent-execution\\schemas\\input-closure.v1.schema.json"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 13,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\agent-execution\\schemas\\role-invocation.v1.schema.json"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 14,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\agent-execution\\schemas\\controller-verification.v2.schema.json"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 15,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\evidence\\I-62-F6\\kits\\FX-02\\controller-contracts.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 16,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\INITIATIVE_LIFECYCLE.md",
+     "offset": 30,
+     "limit": 70
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 17,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\INITIATIVE_LIFECYCLE.md",
+     "offset": 190,
+     "limit": 35
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 18,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\adr\\0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 19,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 2330,
+     "limit": 260
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 20,
+    "Tool": "Grep",
+    "Input": {
+     "path": "D:\\r62-arch-bmin\\docs\\initiatives\\I-62-A-4.md",
+     "pattern": "herramient|script|ACTION_|oráculo|C-24|probe|sonda|Level|Nivel",
+     "output_mode": "content",
+     "-n": true
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 21,
+    "Tool": "Grep",
+    "Input": {
+     "path": "D:\\r62-arch-bmin\\docs\\initiatives\\I-62-A-5.md",
+     "pattern": "herramient|script|ACTION_|oráculo|C-24|probe|sonda|Level|Nivel|Controller",
+     "output_mode": "content",
+     "-n": true
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 22,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\initiatives\\I-62-A-4.md",
+     "offset": 155,
+     "limit": 60
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 23,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\initiatives\\I-62-A-4.md",
+     "offset": 480,
+     "limit": 37
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 24,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\initiatives\\I-62-A-4.md",
+     "offset": 1,
+     "limit": 80
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 25,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\initiatives\\I-62-A-4.md",
+     "offset": 363,
+     "limit": 117
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 26,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\initiatives\\I-62-A-5.md",
+     "offset": 1,
+     "limit": 75
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 27,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\initiatives\\I-62-A-5.md",
+     "offset": 149,
+     "limit": 224
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 28,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\decisions\\I-62.md",
+     "offset": 1479,
+     "limit": 36
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 29,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\agent-execution\\README.md",
+     "offset": 533,
+     "limit": 71
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 30,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\AUTOMATION_PLAN.md",
+     "offset": 890,
+     "limit": 60
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 31,
+    "Tool": "Grep",
+    "Input": {
+     "path": "D:\\r62-arch-bmin\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\accept\\ACCEPT-NOTES.md",
+     "pattern": "Controller|Coordinator|oráculo|C-24|autor|sesión|R4|R9",
+     "output_mode": "content",
+     "-n": true
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 32,
+    "Tool": "Grep",
+    "Input": {
+     "path": "D:\\r62-arch-bmin\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\tool\\TOOL-NOTES.md",
+     "pattern": "Controller|Coordinator|oráculo|C-24|autor|sesión|-I|python",
+     "output_mode": "content",
+     "-n": true
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 33,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\accept\\ACCEPT-NOTES.md",
+     "offset": 1,
+     "limit": 95
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 34,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-bmin\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\tool\\TOOL-NOTES.md",
+     "offset": 1,
+     "limit": 25
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 35,
+    "Tool": "StructuredOutput",
+    "Input": {
+     "Schema": "rackcad-bmin-materiality-ruling/0",
+     "RunId": "R20261011T162328Z-5c5e",
+     "InvocationId": "I20261011T162328Z-5c5e",
+     "LogicalReviewRequestId": "L20261011T162328Z-5c5e",
+     "AttemptSeq": 1,
+     "RequestedRole": "ARCHITECT",
+     "Action": "REVIEW_DESIGN",
+     "ReviewedUnit": "I-62",
+     "Object": "{'Commit': '9356edf141c795ea718a360e266334ded10d6a76', 'Files': [{'Path': 'docs/automation/evidence/I-62-F6/FX-02/bmin/README.md', 'Blob': '57a0fb0c234a27df96fdb2ea82b3b2bceb3d4bea'}, {'Path': 'docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md', 'Blob': '4d448c6fc4670cdf97b21dcd17fc00ba1bedcc0c'},…",
+     "ReviewerMode": "SEPARATE SESSION",
+     "SamePersonAsAuthor": "Sesión: no. Soy un proceso claude-cli nuevo, separado de la sesión que preparó B-min (commit 9356edf1), de los autores A (herramienta) y B (aceptante), del Coordinator y de las revisiones anteriores. No vi su transcripción ni su memoria. Operador humano: probablemente el mismo, el Owner que opera la…",
+     "ReviewerDeclaredIdentity": {
+      "Runtime": "claude-cli (agente sobre Claude Agent SDK, según el prompt y el contexto inyectado)",
+      "Model": "claude-opus-5-5 (Opus 5.5, declarado por el runtime)",
+      "Effort": "UNKNOWN",
+      "SessionOrThread": "UNKNOWN"
+     },
+     "ContextDeclaration": "{'State': 'DECLARED', 'Items': ['Instrucciones de sistema del runtime: agente Claude sobre Claude Agent SDK; reglas del harness, permisos, guía de sesión (ultrareview), gestión de contexto y estilo', 'Definiciones de herramientas: Glob, Grep, Read y StructuredOutput, más un aviso de herramientas dif…",
+     "Step0": "{'Basis': 'INVOKER_VERIFIED_CLONE', 'OrderReadWhole': True, 'Decisions75DeclaresOrderBytesAndSha256': True, 'Decisions75Point4MatchesOrderLine30': True, 'PackageFileSetMatchesTable': True, 'SpecHeaderNamesDecisions75': True, 'Note': 'order.txt leído entero con Read (líneas 1-74). Decisiones L1518 de…",
+     "Reads": "['order.txt: 1-74 (entera)', 'docs/automation/decisions/I-62.md: 1515-1529, 1479-1514', 'docs/automation/evidence/I-62-F6/FX-02/bmin: Glob **/* (Paso 0)', 'docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md: 1-5, 1-316 (entera)', 'docs/automation/evidence/I-62-F6/FX-02/bmin/README.md: 1-143 (entera…",
+     "Verdict": "MATERIAL",
+     "ApplicableClauses": "[{'Ref': 'order.txt:30', 'Excerpt': '¿Puede B-min utilizarse como herramienta ACTION_COMPATIBLE con entradas canónicas fijadas por blob bajo el contrato vigente', 'Relevance': 'Pregunta del dictamen: cubre la clasificación de la acción, la admisión como insumo canónico y la materialidad.'}, {'Ref': …",
+     "ActionCompatibility": "{'Classification': 'ACTION_COMPATIBLE', 'Rationale': 'Clasifico la ejecución según AP 16.24, paso 2: la herramienta fijada por blob se ejecuta desde el objeto (`git cat-file blob <b> | python -I -`). Es una acción de solo lectura: un único ejecutor Git con lista cerrada de subórdenes de lectura, GIT…",
+     "CanonicalInputAdmissible": "{'Admissible': 'needs-change', 'Rationale': 'Hay tres obstáculos. (1) La clase CanonicalInputs contiene «los artefactos versionados que la acción necesita: el objeto exacto, sus registros de revisión y sus autoridades» (AP L1264; V14 L1079). El archivo de la herramienta no es objeto, ni registro de …",
+     "Materiality": "[{'Id': 'M-01', 'Activated': 'no', 'Rationale': 'El dueño de cada regla sigue siendo AP 16.9/16.13, y el del resultado, el Controller: la herramienta solo calcula hechos, sin PASS/FAIL/VERIFIED (orden L22-L24; SPEC L12; decisiones §74.4). El Coordinator conserva las comprobaciones entre artefactos (…",
+     "AffectedSurfaces": "[{'Surface': 'AP_16_4', 'Name': 'AUTOMATION_PLAN 16.4 (receta de Codex, cesión, procesos y orden de commits)', 'Effect': 'WITHIN_CURRENT_TEXT', 'Rationale': 'La receta no cambia: binario, -C, -s read-only, esquema, tope, stdin y PATH. Los procesos python y git de la herramienta son descendientes del…",
+     "Independence": "{'Dimensions': [{'Dimension': 'ACTOR', 'Effect': 'NO_EFFECT', 'Rationale': 'El verificador sigue siendo el actor observado del Controller, distinto del Worker. La herramienta no es un actor ni cambia el ActorRef. La referencia de 16.21 (quienes escribieron el rango) no incluye al autor de la herrami…",
+     "A6": "{'Needed': 'yes', 'MinimalDeltaScope': ['V14 D.3, Topología A, Controller de FX-02 en F6: ruta de ejecución con el instrumento fijado por blob (análoga a A4-1), sin tocar la receta 16.4, topes ni totales', 'V14 §20.3.1 (AP 16.24 L1264) y RAE §15.2 I6: admisión, solo para esa invocación, del archivo …",
+     "OwnerReserved": "[{'Decision': 'Si la evidencia de F6 justifica usar un script operativo (la herramienta B-min y su aceptante) en la verificación del Controller de FX-02, frente a ADR-0046 #9 (Level A: «Sin plataforma ni scripts operativos hasta que la evidencia lo justifique»), conservado por ADR-0048, y con qué al…",
+     "SingleInvocationMeasurement": "{'Possible': 'no', 'Conditions': ['Como RoleInvocation es imposible: Action y OutputContract son únicos (AP 16.23 L1240; esquema L734), y juntar PLAN y VERIFY es INVALID (P-19).', 'Como sonda de medición (precedente §73.5), el bloque A2-P2 de la identidad vigente está 2/2 agotado (§74.1) y la medici…",
+     "Observations": "['La clasificación ACTION_COMPATIBLE es necesaria pero no suficiente: responde a qué es la acción, no a si el contrato vigente admite el instrumento. La admisión (CanonicalInputs, regla I6 y vía del blob) es lo que hace material el uso.', 'SPEC L244-L245 indica al Controller cómo aplicar la tabla de…",
+     "KnownLimitations": "['No puedo calcular bytes, SHA-256 ni blobs (no tengo ejecución ni herramientas de hash). La identidad del clon, los blobs y el SHA-256 de order.txt los acredita el invocador.', 'No leí el código ni las salidas del paquete (bmin_facts.py, bmin_accept.py, pruebas, e2e/out). La orden no pide juzgar su…"
+    },
+    "Class": "RESULT",
+    "Failed": false,
+    "Problems": []
+   }
+  ]
+ },
+ "Fidelity": {
+  "Records": [
+   {
+    "Index": 0,
+    "Path": "order.txt",
+    "Kind": "RUN",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 75,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 1,
+    "Path": "docs/automation/decisions/I-62.md",
+    "Kind": "CLOSURE",
+    "Offset": 1515,
+    "Limit": 15,
+    "Lines": 15,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 3,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md",
+    "Kind": "CLOSURE",
+    "Offset": 1,
+    "Limit": 5,
+    "Lines": 5,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 4,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 317,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 5,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 144,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 6,
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Kind": "CLOSURE",
+    "Offset": 500,
+    "Limit": 175,
+    "Lines": 175,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 7,
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Kind": "CLOSURE",
+    "Offset": 1015,
+    "Limit": 170,
+    "Lines": 170,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 8,
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Kind": "CLOSURE",
+    "Offset": 1184,
+    "Limit": 145,
+    "Lines": 145,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 9,
+    "Path": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 106,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 10,
+    "Path": "docs/automation/agent-execution/adapters/codex-cli.md",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 60,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 11,
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Kind": "CLOSURE",
+    "Offset": 1027,
+    "Limit": 104,
+    "Lines": 104,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 12,
+    "Path": "docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 283,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 13,
+    "Path": "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 859,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 14,
+    "Path": "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 682,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 15,
+    "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 218,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 16,
+    "Path": "docs/INITIATIVE_LIFECYCLE.md",
+    "Kind": "CLOSURE",
+    "Offset": 30,
+    "Limit": 70,
+    "Lines": 70,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 17,
+    "Path": "docs/INITIATIVE_LIFECYCLE.md",
+    "Kind": "CLOSURE",
+    "Offset": 190,
+    "Limit": 35,
+    "Lines": 35,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 18,
+    "Path": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 147,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 19,
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Kind": "CLOSURE",
+    "Offset": 2330,
+    "Limit": 260,
+    "Lines": 260,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 22,
+    "Path": "docs/initiatives/I-62-A-4.md",
+    "Kind": "CLOSURE",
+    "Offset": 155,
+    "Limit": 60,
+    "Lines": 60,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 23,
+    "Path": "docs/initiatives/I-62-A-4.md",
+    "Kind": "CLOSURE",
+    "Offset": 480,
+    "Limit": 37,
+    "Lines": 37,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 24,
+    "Path": "docs/initiatives/I-62-A-4.md",
+    "Kind": "CLOSURE",
+    "Offset": 1,
+    "Limit": 80,
+    "Lines": 80,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 25,
+    "Path": "docs/initiatives/I-62-A-4.md",
+    "Kind": "CLOSURE",
+    "Offset": 363,
+    "Limit": 117,
+    "Lines": 117,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 26,
+    "Path": "docs/initiatives/I-62-A-5.md",
+    "Kind": "CLOSURE",
+    "Offset": 1,
+    "Limit": 75,
+    "Lines": 75,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 27,
+    "Path": "docs/initiatives/I-62-A-5.md",
+    "Kind": "CLOSURE",
+    "Offset": 149,
+    "Limit": 224,
+    "Lines": 224,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 28,
+    "Path": "docs/automation/decisions/I-62.md",
+    "Kind": "CLOSURE",
+    "Offset": 1479,
+    "Limit": 36,
+    "Lines": 36,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 29,
+    "Path": "docs/automation/agent-execution/README.md",
+    "Kind": "CLOSURE",
+    "Offset": 533,
+    "Limit": 71,
+    "Lines": 71,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 30,
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Kind": "CLOSURE",
+    "Offset": 890,
+    "Limit": 60,
+    "Lines": 60,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 33,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md",
+    "Kind": "CLOSURE",
+    "Offset": 1,
+    "Limit": 95,
+    "Lines": 95,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 34,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/TOOL-NOTES.md",
+    "Kind": "CLOSURE",
+    "Offset": 1,
+    "Limit": 25,
+    "Lines": 25,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   }
+  ],
+  "DeliveredLinesByPath": {
+   "docs/AUTOMATION_PLAN.md": 549,
+   "docs/INITIATIVE_LIFECYCLE.md": 105,
+   "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md": 106,
+   "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md": 147,
+   "docs/automation/agent-execution/README.md": 71,
+   "docs/automation/agent-execution/adapters/codex-cli.md": 60,
+   "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json": 682,
+   "docs/automation/agent-execution/schemas/input-closure.v1.schema.json": 283,
+   "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json": 859,
+   "docs/automation/decisions/I-62.md": 51,
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md": 144,
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md": 317,
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md": 95,
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/TOOL-NOTES.md": 25,
+   "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md": 218,
+   "docs/initiatives/I-62-A-4.md": 294,
+   "docs/initiatives/I-62-A-5.md": 299,
+   "docs/initiatives/I-62-proposal-v14.md": 364,
+   "order.txt": 75
+  },
+  "FailedReadsNeverCredited": [],
+  "TruncatedKnownLongLines": [],
+  "UnicodeReplacementChars": [],
+  "GrepContentLines": {
+   "Total": 70,
+   "Exact": 68
+  }
+ },
+ "CoverageInformational": {
+  "order.txt": true,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md": true,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md": true,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept-suite.log": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/fake_tool.py": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/e2e-run.log": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/e2e.py": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/acceptor-result.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/e2e-summary.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-cleantree.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-freetext.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-handoff.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-read-json.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-read-text-1.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-read-text-73.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-trx.json": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool-suite.log": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/TOOL-NOTES.md": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/tests/mutate.py": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/tests/test_bmin_facts.py": false,
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/tests/zero_write_check.py": false
+ },
+ "Result": {
+  "Check": {
+   "Found": true,
+   "SchemaValid": true,
+   "Coherence": [],
+   "StructuredOutputCalls": 1,
+   "ConsistentWithTranscript": true,
+   "SchemaDetail": "True"
+  },
+  "Literal": {
+   "Schema": "rackcad-bmin-materiality-ruling/0",
+   "RunId": "R20261011T162328Z-5c5e",
+   "InvocationId": "I20261011T162328Z-5c5e",
+   "LogicalReviewRequestId": "L20261011T162328Z-5c5e",
+   "AttemptSeq": 1,
+   "RequestedRole": "ARCHITECT",
+   "Action": "REVIEW_DESIGN",
+   "ReviewedUnit": "I-62",
+   "Object": {
+    "Commit": "9356edf141c795ea718a360e266334ded10d6a76",
+    "Files": [
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md",
+      "Blob": "57a0fb0c234a27df96fdb2ea82b3b2bceb3d4bea"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md",
+      "Blob": "4d448c6fc4670cdf97b21dcd17fc00ba1bedcc0c"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept-suite.log",
+      "Blob": "9cd2f405d7c1355f046f64ee5a66a1feeceb6a45"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md",
+      "Blob": "cb9df0289c69617122feaa896728c3a86d2040a8"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+      "Blob": "434ef1fccb0d15762b30244b4a60928120698411"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/fake_tool.py",
+      "Blob": "3a3e3d92b2ffe3d0bb52770bdb45787a8d3f2179"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+      "Blob": "fb6fbeeeab6774e13c7d4ccedbc0e569cd927368"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/e2e-run.log",
+      "Blob": "6e1f940e02b934599f1389e1f56eb7b6877ba3e9"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/e2e.py",
+      "Blob": "fbfa3353a1a7df62e7805e5af8954acde5c425d2"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/acceptor-result.json",
+      "Blob": "de2d2c92181cc3ff03c51085ac195cc30c2e1327"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/e2e-summary.json",
+      "Blob": "5b5972190d898550b22b742d268d90d6c52a172f"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json",
+      "Blob": "150bbed82950853e3dcb331b99234222f2168543"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-cleantree.json",
+      "Blob": "05f2026175e9c26df4058e55cc4518a323af2c7d"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json",
+      "Blob": "beab3abd40b9ddfae7094eb09d77feac70e32e55"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json",
+      "Blob": "b34cd0ce331f5ea2dc1a0873c1c56141bc986f1e"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-freetext.json",
+      "Blob": "ac658e4c60c35cdd7e391f402c890860496cdc56"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-handoff.json",
+      "Blob": "0a29fc6d93e4b186bc5229f748a44c9ee1a313de"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json",
+      "Blob": "a4821e2b6f20853611bd4263d8379267f0a17a7e"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json",
+      "Blob": "be4685808202de4667267b01f55b342ac42b6ce6"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-read-json.json",
+      "Blob": "3eaaab4f4b8a26485f14e0146b673a211be7030c"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-read-text-1.json",
+      "Blob": "b289013983e4c8bb7a13712f4365015dd1bf499d"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-read-text-73.json",
+      "Blob": "3a336ed4c59d0c312e64d4f6e4dac91507deee74"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json",
+      "Blob": "a66e75761bbe8cc023e45b30bd84da3196c8b2dd"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-trx.json",
+      "Blob": "45e8e29ce034e9addd5eec2c1685540eb250efea"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool-suite.log",
+      "Blob": "08f11ab465d8894806e228fc0d4045e6dc6bdeda"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/TOOL-NOTES.md",
+      "Blob": "d3218ff79c84a6763db67081408785304a24e0d1"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+      "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/tests/mutate.py",
+      "Blob": "6967938954219a6a8a2f38dc80ef5a1165966d19"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/tests/test_bmin_facts.py",
+      "Blob": "0a74bb2dcf18c1c62ffb55ca87da0e259046fe6d"
+     },
+     {
+      "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/tests/zero_write_check.py",
+      "Blob": "4188d256b76bc3a375454027d208b98d801c8ccc"
+     }
+    ]
+   },
+   "ReviewerMode": "SEPARATE SESSION",
+   "SamePersonAsAuthor": "Sesión: no. Soy un proceso claude-cli nuevo, separado de la sesión que preparó B-min (commit 9356edf1), de los autores A (herramienta) y B (aceptante), del Coordinator y de las revisiones anteriores. No vi su transcripción ni su memoria. Operador humano: probablemente el mismo, el Owner que opera las sesiones de I-62; el runtime me inyectó el nombre de usuario Git del repositorio. No puedo confirmarlo. Proveedor del revisor: Anthropic (Claude, autodeclarado). Proveedor del autor: no observable desde el cierre. TOOL-NOTES y ACCEPT-NOTES declaran lecturas desde un worktree bajo el directorio de worktrees de Codex del usuario, lo que no basta para fijarlo. Si el autor fue una sesión Claude, el proveedor coincide (Proveedor no satisfecho, PREFERRED).",
+   "ReviewerDeclaredIdentity": {
+    "Runtime": "claude-cli (agente sobre Claude Agent SDK, según el prompt y el contexto inyectado)",
+    "Model": "claude-opus-5-5 (Opus 5.5, declarado por el runtime)",
+    "Effort": "UNKNOWN",
+    "SessionOrThread": "UNKNOWN"
+   },
+   "ContextDeclaration": {
+    "State": "DECLARED",
+    "Items": [
+     "Instrucciones de sistema del runtime: agente Claude sobre Claude Agent SDK; reglas del harness, permisos, guía de sesión (ultrareview), gestión de contexto y estilo",
+     "Definiciones de herramientas: Glob, Grep, Read y StructuredOutput, más un aviso de herramientas diferidas no expuestas",
+     "Entorno: directorio de trabajo D:\\r62-arch-bmin, directorio adicional D:\\r62-arch-bmin-run, plataforma win32, shell PowerShell, versión de Windows 11 Pro y una ruta de scratchpad de la sesión",
+     "Identidad de modelo declarada por el runtime (Opus 5.5, claude-opus-5-5), fecha de corte de conocimiento, fecha 2026-10-11 y presupuesto de tokens",
+     "Un parámetro de esfuerzo de razonamiento inyectado por el runtime (no lo trato como identidad observada)",
+     "Instantánea de gitStatus: HEAD separado, rama principal main, estado limpio y los cinco commits recientes (9356edf1, 460665ab, 761f7889, 78dbb411, b7169299)",
+     "Identificadores de cuenta, solo por su tipo: correo electrónico del usuario y nombre de usuario Git",
+     "Recordatorios del runtime durante la corrida, que pedían un breve aviso de progreso (no son compactación ni mensajes nuevos del usuario)",
+     "No se inyectó ninguna memoria de proyecto, CLAUDE.md ni AGENTS.md visibles"
+    ]
+   },
+   "Step0": {
+    "Basis": "INVOKER_VERIFIED_CLONE",
+    "OrderReadWhole": true,
+    "Decisions75DeclaresOrderBytesAndSha256": true,
+    "Decisions75Point4MatchesOrderLine30": true,
+    "PackageFileSetMatchesTable": true,
+    "SpecHeaderNamesDecisions75": true,
+    "Note": "order.txt leído entero con Read (líneas 1-74). Decisiones L1518 declara 3 288 bytes en UTF-8 y el SHA-256 21435cd1c0821d8c934117a10e850cb9fa124a06f8dd589719aff8f5b711d630. L1525 registra la misma pregunta que order.txt L30, con la redacción del registro. La única Glob devolvió exactamente las 30 rutas de la tabla (con separador \\). La cabecera de SPEC.md (L1) nombra «decisiones §75». No puedo recalcular bytes, SHA-256 ni blobs (sin herramientas de hash): eso lo acredita el invocador."
+   },
+   "Reads": [
+    "order.txt: 1-74 (entera)",
+    "docs/automation/decisions/I-62.md: 1515-1529, 1479-1514",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin: Glob **/* (Paso 0)",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md: 1-5, 1-316 (entera)",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md: 1-143 (entera)",
+    "docs/AUTOMATION_PLAN.md: 500-674, 890-949, 1015-1328",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md: 1-106 (entera)",
+    "docs/automation/agent-execution/adapters/codex-cli.md: 1-60 (entera)",
+    "docs/initiatives/I-62-proposal-v14.md: 1027-1130, 2330-2589",
+    "docs/automation/agent-execution/schemas/input-closure.v1.schema.json: 1-283 (entera)",
+    "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json: 1-859 (entera)",
+    "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json: 1-682 (entera)",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md: 1-218 (entera)",
+    "docs/INITIATIVE_LIFECYCLE.md: 30-99, 190-224",
+    "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md: 1-147 (entera)",
+    "docs/initiatives/I-62-A-4.md: Grep sobre el archivo; 1-80, 155-214, 363-479, 480-516",
+    "docs/initiatives/I-62-A-5.md: Grep sobre el archivo; 1-75, 149-372",
+    "docs/automation/agent-execution/README.md: 533-603",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md: Grep sobre el archivo; 1-95",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/TOOL-NOTES.md: Grep sobre el archivo; 1-25"
+   ],
+   "Verdict": "MATERIAL",
+   "ApplicableClauses": [
+    {
+     "Ref": "order.txt:30",
+     "Excerpt": "¿Puede B-min utilizarse como herramienta ACTION_COMPATIBLE con entradas canónicas fijadas por blob bajo el contrato vigente",
+     "Relevance": "Pregunta del dictamen: cubre la clasificación de la acción, la admisión como insumo canónico y la materialidad."
+    },
+    {
+     "Ref": "order.txt:19",
+     "Excerpt": "No incorporar estas herramientas a F_seed, F_norm ni a los contratos de producción.",
+     "Relevance": "El blob de la herramienta no puede entrar en el fixture por F_seed ni por F_norm, y producción queda excluida. Eso condiciona cómo llega el blob a la AuthorityRevision del Controller."
+    },
+    {
+     "Ref": "order.txt:25",
+     "Excerpt": "No compartir el oráculo de C-24 con el Controller.",
+     "Relevance": "Condición de la dimensión C24_ORACLE."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1264",
+     "Excerpt": "los artefactos versionados que la acción necesita: el objeto exacto, sus registros de revisión y sus autoridades",
+     "Relevance": "Contenido de la clase CanonicalInputs. El archivo de la herramienta no es objeto, ni registro de revisión, ni autoridad."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1267",
+     "Excerpt": "transcripción y memoria del autor, sesiones ajenas, worktrees reales de otras unidades, artefactos transitorios",
+     "Relevance": "El paquete vive en el worktree de I-62: el Controller del fixture no puede leerlo de ahí."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1271",
+     "Excerpt": "cada obligación se clasifica: **READ** → transitivo permitido (opción A, por defecto); **ACTION_COMPATIBLE** → acción permitida;",
+     "Relevance": "Base de la clasificación de la ejecución de la herramienta."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1276",
+     "Excerpt": "el cierre fija la `AuthorityRevision` y los blobs; si cambia uno, se recalcula antes de lanzar.",
+     "Relevance": "Los blobs del cierre son los de la AuthorityRevision, y la herramienta no está en la del fixture."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1280",
+     "Excerpt": "lectura registrada fuera del cierre es INVALID_REVIEW_CONTEXT (P-22), y un registro de lecturas sin lecturas o incompleto deja Contexto en UNKNOWN.",
+     "Relevance": "Las lecturas Git internas de la herramienta no entran en el registro del adapter. Afecta a Contexto y a P-22."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1287",
+     "Excerpt": "Un registro `CanonicalInputFidelity` por cada insumo del cierre y por la invocación",
+     "Relevance": "Un insumo canónico nuevo (la herramienta) exige su registro de fidelidad."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1221",
+     "Excerpt": "permisos mínimos: ARCHITECT, EXECUTION_CONTROLLER y REVIEWER son de solo lectura (`Permissions` = READ_ONLY);",
+     "Relevance": "Son los permisos frente a los que se clasifica la acción."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1240",
+     "Excerpt": "PLAN y VERIFY no son intercambiables.",
+     "Relevance": "Una RoleInvocation no puede juntar PLAN y VERIFY. Afecta a la medición en una sola invocación."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:541",
+     "Excerpt": "**Receta de Codex:** binario por ruta verificada; `-C` con el worktree de la unidad únicamente; `-s read-only`;",
+     "Relevance": "La receta 16.4 no cambia: la herramienta corre dentro del sandbox de solo lectura y del -C de la unidad."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1045",
+     "Excerpt": "**Contrato del adapter.** Nueve operaciones: 1. describir; 2. observar; 3. renderizar; 4. invocar;",
+     "Relevance": "AP 16.19: la herramienta no es una operación del adapter ni toca su descriptor."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:646",
+     "Excerpt": "Nunca bastan stdout, un código de salida o un JSON conforme;",
+     "Relevance": "El JSON de hechos no basta por sí solo: el Controller debe contrastarlo."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1204",
+     "Excerpt": "Una comprobación cuya comparación no se pudo ejecutar o no terminó es `not_run`, y `not_run` cuenta como fail;",
+     "Relevance": "Cubre los fallos cerrados de la herramienta, pero no el REJECT_FACTS del aceptante."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1207",
+     "Excerpt": "el Coordinator, que hace las comprobaciones entre artefactos de la verificación, rechaza un VERIFIED que la omita.",
+     "Relevance": "Las comprobaciones entre artefactos son del Coordinator. Ahí puede situarse el aceptante sin crear otro dueño."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1153",
+     "Excerpt": "las entradas son solo el cierre efectivo de insumos (16.24), sin transcripción, memoria ni razonamiento de la referencia",
+     "Relevance": "Dimensión Contexto del Controller cuando usa la herramienta."
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1146",
+     "Excerpt": "La independencia se evalúa sobre identidades **observadas**, nunca sobre identificadores de binding ni sobre",
+     "Relevance": "La diversidad herramienta/aceptante es autodeclarada, no observada."
+    },
+    {
+     "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:69",
+     "Excerpt": "**Nivel A:** documentación, esquemas y piloto real. Sin plataforma ni scripts operativos hasta que la evidencia lo justifique.",
+     "Relevance": "Usar un script mantenido como instrumento de la verificación reinterpreta Level A (M-08)."
+    },
+    {
+     "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:61",
+     "Excerpt": "**Verificación fail-closed y multiseñal.** Ni stdout, ni un código de salida, ni un JSON conforme bastan.",
+     "Relevance": "Se conserva solo si el Controller contrasta los hechos con la fuente Git primaria."
+    },
+    {
+     "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:78",
+     "Excerpt": "**Nivel B o C de entrada** — sin evidencia de piloto que justifique mantener scripts o una plataforma.",
+     "Relevance": "Mantener scripts se asocia expresamente a un nivel superior."
+    },
+    {
+     "Ref": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:40",
+     "Excerpt": "#9, Level A.",
+     "Relevance": "El ADR sucesor conserva Level A."
+    },
+    {
+     "Ref": "docs/INITIATIVE_LIFECYCLE.md:85",
+     "Excerpt": "Cambia comportamiento observable o trato de documentos existentes fuera de lo pedido",
+     "Relevance": "M-03: el piloto FX-02 se ejecutaría con un instrumento nuevo."
+    },
+    {
+     "Ref": "docs/INITIATIVE_LIFECYCLE.md:87",
+     "Excerpt": "Cambia un contrato consumido por otros sistemas o kinds",
+     "Relevance": "M-05: cambia la semántica del cierre, de la invocación y de la auditoría."
+    },
+    {
+     "Ref": "docs/INITIATIVE_LIFECYCLE.md:90",
+     "Excerpt": "Modifica, reinterpreta o contradice un ADR aceptado o la fuente de decision integrada citada por una fundacion;",
+     "Relevance": "M-08 frente a ADR-0046 #9."
+    },
+    {
+     "Ref": "docs/INITIATIVE_LIFECYCLE.md:94",
+     "Excerpt": "Un cambio de alcance, no-objetivos, decision Owner o retiro de escenario OV es `OWNER-RESERVED`.",
+     "Relevance": "ADR-0046 es una decisión aceptada por el Owner."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:1079",
+     "Excerpt": "los artefactos versionados que la acción necesita: el objeto exacto, sus registros de revisión y sus autoridades",
+     "Relevance": "Origen congelado de la clase CanonicalInputs."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:1090",
+     "Excerpt": "**ACTION_COMPATIBLE:** acción compatible con los permisos de la invocación (p. ej., `git log`, de solo lectura) → se registra como acción permitida;",
+     "Relevance": "Criterio y ejemplo para clasificar una ejecución de solo lectura."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:1088",
+     "Excerpt": "En cada archivo se identifican las **obligaciones de lectura o de acción** (p. ej., una sección «Leer primero») y se clasifican:",
+     "Relevance": "La clase se aplica a obligaciones de archivos del cierre, y hoy ninguno obliga a ejecutar B-min."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:1130",
+     "Excerpt": "la cobertura del registro se declara: no captura las lecturas internas del runtime.",
+     "Relevance": "Las lecturas internas de la herramienta escapan a la auditoría."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:2333-2334",
+     "Excerpt": "Esperado independiente = la Proposal acordada (Freeze), las reglas de I-61, o el oráculo del Coordinator (Anexo D). Nunca la salida del procedimiento bajo prueba.",
+     "Relevance": "El oráculo de C-24 no puede salir de la herramienta ni del procedimiento que la usa."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:2438-2439",
+     "Excerpt": "| Controller (`codex-cli`) | planificación | 1 | — | pool | — |",
+     "Relevance": "Filas de D.3 del Controller de FX-02, con planificación y verificación separadas."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:2573",
+     "Excerpt": "worktree real de I-62",
+     "Relevance": "Entrada privada prohibida en el fixture."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:1043",
+     "Excerpt": "elige una decisión del Owner;",
+     "Relevance": "AUT-I1: el Principal nunca elige una decisión del Owner."
+    },
+    {
+     "Ref": "docs/automation/agent-execution/README.md:565",
+     "Excerpt": "todo blob coincide con el de la `AuthorityRevision`; si cambia uno, el cierre se recalcula",
+     "Relevance": "Regla I6 del cierre, que la herramienta no cumple hoy."
+    },
+    {
+     "Ref": "docs/automation/agent-execution/README.md:561",
+     "Excerpt": "ACTION_COMPATIBLE ⇒ ALLOWED y la acción está en `AllowedActions`",
+     "Relevance": "Una acción permitida debe constar en AllowedActions con su fuente."
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:45",
+     "Excerpt": "`{Path, Blob}` en la `AuthorityRevision` (V14 B.9): contrato, archivo de decisiones, estado y lo que la acción necesita",
+     "Relevance": "Contrato consumido de FX-02: los insumos canónicos están en la AuthorityRevision del fixture."
+    },
+    {
+     "Ref": "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json:734",
+     "Excerpt": "Exactamente uno, según la correspondencia cerrada de §20.7.",
+     "Relevance": "Un único OutputContract por invocación."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-A-4.md:393",
+     "Excerpt": "cambia el comportamiento observable del piloto: el Controller ejecuta con un shell declarado;",
+     "Relevance": "Precedente acordado: una ruta de ejecución distinta del Controller de FX-02 se trató como M-03."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-A-4.md:169",
+     "Excerpt": "D.3 supone que la receta basta para ejecutar comandos y no prevé otro adapter para el Architect de A.",
+     "Relevance": "D.3 no prevé instrumentos adicionales del Controller."
+    },
+    {
+     "Ref": "docs/initiatives/I-62-A-5.md:269",
+     "Excerpt": "A5-1 cambia el sistema bajo prueba, no las reglas que lo evalúan",
+     "Relevance": "Contraste: B-min cambia también las reglas del cierre que evalúan la invocación."
+    },
+    {
+     "Ref": "docs/automation/decisions/I-62.md:1510",
+     "Excerpt": "El Controller sigue verificando y emitiendo una decisión estructurada, sin delegar su autoridad en las herramientas.",
+     "Relevance": "Límite de autoridad de la estrategia B (M-01 = no)."
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:12",
+     "Excerpt": "interpreta y contrasta los hechos, cruza al menos la orden Git primaria y emite su `controller-verification/v2` o su `delegation/v2`",
+     "Relevance": "Uso descrito por la SPEC (§0)."
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:115",
+     "Excerpt": "El intérprete `python` no forma parte de la receta 16.4 ni del descriptor del adapter; R2 lo fija y lo declara.",
+     "Relevance": "El intérprete es una dependencia nueva de la ruta del Controller."
+    }
+   ],
+   "ActionCompatibility": {
+    "Classification": "ACTION_COMPATIBLE",
+    "Rationale": "Clasifico la ejecución según AP 16.24, paso 2: la herramienta fijada por blob se ejecuta desde el objeto (`git cat-file blob <b> | python -I -`). Es una acción de solo lectura: un único ejecutor Git con lista cerrada de subórdenes de lectura, GIT_OPTIONAL_LOCKS=0, ninguna escritura, red ni proceso distinto de git (SPEC §1.2-§1.3). Es compatible con Permissions = READ_ONLY (AP L1221) y con el `-s read-only` de la receta (AP L541), como el ejemplo `git log` de V14 L1090. No es como `dotnet test`, que el aislamiento impide (V14 L1091-L1092). Hay dos condiciones: que el intérprete esté disponible bajo el sandbox (no figura en la receta ni en el descriptor, README L115; riesgo ya registrado en A-4 L499) y que se ejecute con -I desde el blob fijado. Límite: la clase se aplica a una obligación identificada en un archivo del cierre (V14 L1088; RAE I2 L561). Hoy ningún insumo del Controller de FX-02 obliga a ejecutar B-min. La clasificación dice qué sería la acción, no que esté admitida: siguen faltando la fuente de la obligación y la admisión del archivo (ver CanonicalInputAdmissible).",
+    "ClauseRefs": [
+     "docs/AUTOMATION_PLAN.md:1271-1274",
+     "docs/initiatives/I-62-proposal-v14.md:1090",
+     "docs/initiatives/I-62-proposal-v14.md:1091-1092",
+     "docs/initiatives/I-62-proposal-v14.md:1088",
+     "docs/AUTOMATION_PLAN.md:1221",
+     "docs/AUTOMATION_PLAN.md:541",
+     "docs/automation/agent-execution/README.md:561",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:23-31",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:115",
+     "docs/initiatives/I-62-A-4.md:499"
+    ]
+   },
+   "CanonicalInputAdmissible": {
+    "Admissible": "needs-change",
+    "Rationale": "Hay tres obstáculos. (1) La clase CanonicalInputs contiene «los artefactos versionados que la acción necesita: el objeto exacto, sus registros de revisión y sus autoridades» (AP L1264; V14 L1079). El archivo de la herramienta no es objeto, ni registro de revisión, ni autoridad: es experimental y no normativo (SPEC L3). Además no se lee como insumo, sino que se ejecuta para producir evidencia. La lectura amplia del kit («lo que la acción necesita», controller-contracts L45) es subordinada y no rebaja AP. (2) El cierre fija los blobs de la AuthorityRevision, y todo blob debe coincidir con el de esa revisión (AP L1276; RAE I6 L565). En FX-02 la AuthorityRevision es la del fixture, y la herramienta no está ahí. No puede entrar por F_seed ni por F_norm (orden L19), y leerla del worktree de I-62 es entrada prohibida (AP L1267; V14 L2573; controller-contracts L50). Llevarla a la rama de la unidad se apartaría de D.1. (3) El texto vigente no prevé su registro de fidelidad (AP L1287) ni la auditoría de sus lecturas Git internas (V14 L1130). El esquema admite la forma {Path, Blob}, pero el significado y la procedencia exigen un cambio acotado.",
+    "ClauseRefs": [
+     "docs/AUTOMATION_PLAN.md:1264",
+     "docs/initiatives/I-62-proposal-v14.md:1079",
+     "docs/AUTOMATION_PLAN.md:1276",
+     "docs/automation/agent-execution/README.md:565",
+     "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:45",
+     "order.txt:19",
+     "docs/AUTOMATION_PLAN.md:1267",
+     "docs/initiatives/I-62-proposal-v14.md:2573",
+     "docs/AUTOMATION_PLAN.md:1287",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:3",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:116-117"
+    ]
+   },
+   "Materiality": [
+    {
+     "Id": "M-01",
+     "Activated": "no",
+     "Rationale": "El dueño de cada regla sigue siendo AP 16.9/16.13, y el del resultado, el Controller: la herramienta solo calcula hechos, sin PASS/FAIL/VERIFIED (orden L22-L24; SPEC L12; decisiones §74.4). El Coordinator conserva las comprobaciones entre artefactos (AP L1207). Condiciones: la SPEC sigue sin ser normativa, y el cierre propio del aceptante (R9) se deriva del EffectiveInputClosure, sin convertirse en una segunda definición de las lecturas permitidas.",
+     "ClauseRefs": [
+      "docs/INITIATIVE_LIFECYCLE.md:83",
+      "order.txt:22-24",
+      "docs/automation/decisions/I-62.md:1510",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:12",
+      "docs/AUTOMATION_PLAN.md:1207"
+     ]
+    },
+    {
+     "Id": "M-02",
+     "Activated": "yes",
+     "Rationale": "Ningún campo cambia: CanonicalInputs {Path, Blob} y AllowedActions {Action, RequiredBy, Class} admiten la forma. Cambia el significado persistido de una entrada custodiada de rackcad-input-closure/v1 y de la RoleInvocation: pasaría a incluir un artefacto no autoritativo que se ejecuta para producir evidencia, fuera de la clase de AP L1264 y V14 L1079.",
+     "ClauseRefs": [
+      "docs/INITIATIVE_LIFECYCLE.md:84",
+      "docs/AUTOMATION_PLAN.md:1264",
+      "docs/initiatives/I-62-proposal-v14.md:1079",
+      "docs/automation/agent-execution/schemas/input-closure.v1.schema.json:18-37"
+     ]
+    },
+    {
+     "Id": "M-03",
+     "Activated": "yes",
+     "Rationale": "Cambia el comportamiento observable del piloto. El Controller de FX-02 verificaría con un instrumento fijado por blob y con un intérprete que la receta no nombra, y C-24 mediría el conjunto Controller más herramienta. A-4, acordada (A-5 L19), clasificó como M-03 el caso análogo de un shell declarado (A-4 L393) y señaló que D.3 supone que la receta basta (A-4 L169).",
+     "ClauseRefs": [
+      "docs/INITIATIVE_LIFECYCLE.md:85",
+      "docs/initiatives/I-62-A-4.md:393",
+      "docs/initiatives/I-62-A-4.md:169",
+      "docs/initiatives/I-62-A-5.md:19",
+      "docs/initiatives/I-62-proposal-v14.md:2438-2439",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:115"
+     ]
+    },
+    {
+     "Id": "M-04",
+     "Activated": "yes",
+     "Rationale": "Cambia qué falla y cómo. Aparecen causas nuevas de not_run: los códigos de fallo cerrado de la herramienta, la falta de -I y un intérprete o un blob no disponibles. La elegibilidad de la celda dependería de demostrar esa ruta, como en A-4 L394. Y aparece un camino de rechazo nuevo, el REJECT_FACTS del aceptante, cuyo efecto sobre Checks, Classification y el resultado D.4 de FX-02 no fija el texto vigente: AP L1204-L1207 cubre la comparación no establecida, no ese rechazo.",
+     "ClauseRefs": [
+      "docs/INITIATIVE_LIFECYCLE.md:86",
+      "docs/AUTOMATION_PLAN.md:1204",
+      "docs/AUTOMATION_PLAN.md:1207",
+      "docs/initiatives/I-62-A-4.md:394"
+     ]
+    },
+    {
+     "Id": "M-05",
+     "Activated": "yes",
+     "Rationale": "La RoleInvocation, el cierre (rackcad-input-closure/v1, regla I6), la fidelidad y la auditoría P-22 son contratos que consumen el invocador, el auditor, los validadores y el Coordinator. Su semántica cambia: hay un insumo que no está en la AuthorityRevision del fixture, y la herramienta hace lecturas que el registro del adapter no captura. El kit de FX-02 (controller-contracts L45-L47) los fija hoy sin ningún instrumento.",
+     "ClauseRefs": [
+      "docs/INITIATIVE_LIFECYCLE.md:87",
+      "docs/automation/agent-execution/README.md:565",
+      "docs/automation/agent-execution/README.md:567",
+      "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:45",
+      "docs/initiatives/I-62-proposal-v14.md:1130"
+     ]
+    },
+    {
+     "Id": "M-06",
+     "Activated": "no",
+     "Rationale": "Acotado al Controller de FX-02 en F6 y con un blob fijado, no añade un punto de extensión reutilizable ni usa el único punto abierto del núcleo (los Facts del adapter, AP L1051-L1052). Se activaría si A-6 admitiera herramientas genéricas como insumo canónico de cualquier rol.",
+     "ClauseRefs": [
+      "docs/INITIATIVE_LIFECYCLE.md:88",
+      "docs/AUTOMATION_PLAN.md:1051-1052"
+     ]
+    },
+    {
+     "Id": "M-07",
+     "Activated": "no",
+     "Rationale": "Acotado al experimento y fuera de F_seed, F_norm y de los contratos de producción (orden L19), no es un mecanismo transversal. Level A excluye framework y servicio de orquestación (ADR-0048 L91-L92). Su adopción en producción o en otras unidades lo activaría, junto con la decisión OWNER-RESERVED.",
+     "ClauseRefs": [
+      "docs/INITIATIVE_LIFECYCLE.md:89",
+      "order.txt:19",
+      "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:91-92"
+     ]
+    },
+    {
+     "Id": "M-08",
+     "Activated": "yes",
+     "Rationale": "ADR-0046, aceptado por el Owner (L3), fija en #9 «Sin plataforma ni scripts operativos hasta que la evidencia lo justifique» (L69) y descarta el Nivel B por falta de evidencia de piloto (L78). ADR-0048 lo conserva (L40). Usar un script mantenido (herramienta y aceptante, con pruebas y mutaciones) como instrumento de la verificación del Controller exige leer que B-min no es un script operativo, o determinar que la evidencia de F6 ya lo justifica: las dos cosas reinterpretan un ADR aceptado. #6 (fallo cerrado) se conserva solo si el Controller contrasta los hechos con la fuente Git primaria.",
+     "ClauseRefs": [
+      "docs/INITIATIVE_LIFECYCLE.md:90",
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:3",
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:69",
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:78",
+      "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:40",
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:61"
+     ]
+    }
+   ],
+   "AffectedSurfaces": [
+    {
+     "Surface": "AP_16_4",
+     "Name": "AUTOMATION_PLAN 16.4 (receta de Codex, cesión, procesos y orden de commits)",
+     "Effect": "WITHIN_CURRENT_TEXT",
+     "Rationale": "La receta no cambia: binario, -C, -s read-only, esquema, tope, stdin y PATH. Los procesos python y git de la herramienta son descendientes del proceso lanzado, y la regla del árbol muerto en la Entrada los cubre. El aceptante, que reejecuta la herramienta sobre el worktree, cabe si lo ejecuta la sesión después de la Entrada y no durante la cesión, porque no escribe.",
+     "ClauseRefs": [
+      "docs/AUTOMATION_PLAN.md:541",
+      "docs/AUTOMATION_PLAN.md:520",
+      "docs/AUTOMATION_PLAN.md:529",
+      "docs/AUTOMATION_PLAN.md:535-537",
+      "docs/automation/agent-execution/adapters/codex-cli.md:24"
+     ]
+    },
+    {
+     "Surface": "AP_16_19",
+     "Name": "AUTOMATION_PLAN 16.19 (contrato del adapter, descriptor y Facts)",
+     "Effect": "NOT_AFFECTED",
+     "Rationale": "La herramienta corre como orden del rol dentro de la invocación, no como operación del adapter. No cambian las nueve operaciones, el descriptor de codex-cli ni su esquema de hechos. Condición: el sobre de B-min, que también tiene un campo Facts, no debe presentarse como los Facts del adapter (el único punto abierto del núcleo).",
+     "ClauseRefs": [
+      "docs/AUTOMATION_PLAN.md:1045",
+      "docs/AUTOMATION_PLAN.md:1051-1052",
+      "docs/automation/agent-execution/adapters/codex-cli.md:43-53"
+     ]
+    },
+    {
+     "Surface": "AP_16_24",
+     "Name": "AUTOMATION_PLAN 16.24 (cierre efectivo de insumos, auditoría de lecturas y fidelidad)",
+     "Effect": "REQUIRES_MATERIAL_CHANGE",
+     "Rationale": "Admitir la herramienta exige cambiar cuatro cosas. La clase CanonicalInputs (L1264), porque no es objeto, registro ni autoridad. La regla de blobs de la AuthorityRevision (L1276), porque no está en el fixture. La fuente de la obligación que la clasifique ACTION_COMPATIBLE (L1271). Y la fidelidad y la auditoría (L1280, L1287), porque sus lecturas internas no las registra el adapter. Puede acotarse como excepción de la invocación del Controller de FX-02, sin cambiar el texto general, pero es semántica nueva.",
+     "ClauseRefs": [
+      "docs/AUTOMATION_PLAN.md:1264",
+      "docs/AUTOMATION_PLAN.md:1267",
+      "docs/AUTOMATION_PLAN.md:1271-1274",
+      "docs/AUTOMATION_PLAN.md:1276",
+      "docs/AUTOMATION_PLAN.md:1280",
+      "docs/AUTOMATION_PLAN.md:1287",
+      "docs/initiatives/I-62-proposal-v14.md:1079"
+     ]
+    },
+    {
+     "Surface": "ADR_0046",
+     "Name": "ADR-0046 #9 (Level A) y #6 (fallo cerrado y multiseñal)",
+     "Effect": "REQUIRES_MATERIAL_CHANGE",
+     "Rationale": "Para #9 hace falta una determinación expresa, reservada al Owner, de que la evidencia de F6 justifica un script operativo acotado, o un cambio del ADR: la lectura implícita sería M-08. ADR-0048 (propuesto) conserva #9. #6 queda dentro del texto si el Controller contrasta con la orden Git primaria y no copia el JSON.",
+     "ClauseRefs": [
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:69",
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:78",
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:61",
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:3",
+      "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:40",
+      "docs/INITIATIVE_LIFECYCLE.md:90"
+     ]
+    },
+    {
+     "Surface": "V14_D3",
+     "Name": "Proposal V14 D.3, Topología A (Controller de FX-02)",
+     "Effect": "REQUIRES_MATERIAL_CHANGE",
+     "Rationale": "D.3 supone que la receta basta para ejecutar las operaciones del Controller (A-4 L169). Una ruta con instrumento fijado por blob es un cambio de la misma naturaleza que A4-1 (shell declarado en el texto de la invocación, L192), que se trató como material (L393-L394). Los topes (11, pool 4, 15) no tienen por qué cambiar, porque la herramienta corre dentro de las invocaciones.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-proposal-v14.md:2433-2442",
+      "docs/initiatives/I-62-A-4.md:169",
+      "docs/initiatives/I-62-A-4.md:192",
+      "docs/initiatives/I-62-A-4.md:393-394"
+     ]
+    },
+    {
+     "Surface": "CONSUMED_CONTRACTS",
+     "Name": "role-invocation/v1, input-closure/v1, controller-verification/v2, RAE §15 y kit controller-contracts.md",
+     "Effect": "REQUIRES_MATERIAL_CHANGE",
+     "Rationale": "Ningún campo cambia: controller-verification/v2 lleva Evidence como texto libre, y CanonicalInputs y AllowedActions admiten la forma. Cambia la semántica que consumen el invocador, el auditor y los validadores: I6 (blobs de la AuthorityRevision), I2 (acción con su fuente), la auditoría P-22 frente a lecturas internas, el registro de fidelidad del nuevo insumo, y el kit de FX-02, que hoy fija CanonicalInputs y AllowedActions sin instrumento.",
+     "ClauseRefs": [
+      "docs/automation/agent-execution/README.md:561",
+      "docs/automation/agent-execution/README.md:565",
+      "docs/automation/agent-execution/README.md:567",
+      "docs/automation/agent-execution/schemas/input-closure.v1.schema.json:18-37",
+      "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json:313-333",
+      "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:45",
+      "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:47"
+     ]
+    },
+    {
+     "Surface": "OTHER",
+     "Name": "V14 Anexo C, C-24 (esperado independiente)",
+     "Effect": "WITHIN_CURRENT_TEXT",
+     "Rationale": "Cabe en el texto si el oráculo del Coordinator no se calcula con la herramienta ni con el aceptante, se sella antes y no se entrega al Controller. Si el esperado saliera de la herramienta, que es parte del procedimiento bajo prueba, se violaría la regla.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-proposal-v14.md:2333-2334",
+      "docs/initiatives/I-62-proposal-v14.md:2363",
+      "order.txt:25",
+      "docs/automation/decisions/I-62.md:1524"
+     ]
+    },
+    {
+     "Surface": "OTHER",
+     "Name": "V14 D.1 y D.6: vía del blob de la herramienta hasta el -C del Controller",
+     "Effect": "REQUIRES_MATERIAL_CHANGE",
+     "Rationale": "La herramienta no puede entrar por F_seed ni por F_norm, y el worktree de I-62 es una entrada privada prohibida. Llevarla a la rama de la unidad se aparta de D.1 (precedente A5-1, M-03). Referenciarla desde otro repositorio contradice la regla I6. Cualquier vía es material.",
+     "ClauseRefs": [
+      "order.txt:19",
+      "docs/initiatives/I-62-proposal-v14.md:2573",
+      "docs/AUTOMATION_PLAN.md:1267",
+      "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:50",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:116-117"
+     ]
+    },
+    {
+     "Surface": "OTHER",
+     "Name": "V14 D.5 (ejecución de FX-02 para la OV sobre FINAL_CANDIDATE_SHA)",
+     "Effect": "UNKNOWN",
+     "Rationale": "Si el VERIFIED de FX-02 depende de B-min, la ejecución compacta de la OV necesitaría el mismo instrumento, fuera de producción. D.5 ya está diferida, con la obligación de una enmienda material antes de READY-01 (§73.3).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-proposal-v14.md:2560",
+      "docs/automation/decisions/I-62.md:1488"
+     ]
+    }
+   ],
+   "Independence": {
+    "Dimensions": [
+     {
+      "Dimension": "ACTOR",
+      "Effect": "NO_EFFECT",
+      "Rationale": "El verificador sigue siendo el actor observado del Controller, distinto del Worker. La herramienta no es un actor ni cambia el ActorRef. La referencia de 16.21 (quienes escribieron el rango) no incluye al autor de la herramienta.",
+      "ClauseRefs": [
+       "docs/AUTOMATION_PLAN.md:1151",
+       "docs/AUTOMATION_PLAN.md:1168"
+      ]
+     },
+     {
+      "Dimension": "SESSION",
+      "Effect": "PRESERVED_WITH_CONDITIONS",
+      "Rationale": "La herramienta corre solo dentro de la sesión del Controller. Condición: el aceptante, que puede rechazar los hechos, no debe ejecutarse en la sesión del Principal de la Topología A, de la que el Worker es subagente, ni durante la cesión. Su rechazo debe quedar en el lado del Coordinator o de la supervisión.",
+      "ClauseRefs": [
+       "docs/AUTOMATION_PLAN.md:1152",
+       "docs/AUTOMATION_PLAN.md:520",
+       "docs/AUTOMATION_PLAN.md:1207"
+      ]
+     },
+     {
+      "Dimension": "CONTEXT",
+      "Effect": "PRESERVED_WITH_CONDITIONS",
+      "Rationale": "Se conserva solo si el archivo de la herramienta y su sobre entran en el cierre declarado, y si sus GitCalls e Inputs se auditan frente al EffectiveInputClosure, no solo frente al cierre propio del aceptante (formato bmin-closure/0). Si no, Contexto queda UNKNOWN. Tampoco debe leerse del worktree de I-62.",
+      "ClauseRefs": [
+       "docs/AUTOMATION_PLAN.md:1153",
+       "docs/AUTOMATION_PLAN.md:1280",
+       "docs/initiatives/I-62-proposal-v14.md:1130",
+       "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:64"
+      ]
+     },
+     {
+      "Dimension": "PROVIDER",
+      "Effect": "NO_EFFECT",
+      "Rationale": "La herramienta es neutral respecto al proveedor. El proveedor del Controller y el del Worker no cambian según sus descriptores.",
+      "ClauseRefs": [
+       "docs/AUTOMATION_PLAN.md:1154",
+       "docs/AUTOMATION_PLAN.md:1168"
+      ]
+     },
+     {
+      "Dimension": "C24_ORACLE",
+      "Effect": "PRESERVED_WITH_CONDITIONS",
+      "Rationale": "Se conserva si el oráculo del Coordinator se calcula sin la herramienta ni el aceptante, se sella antes y no se entrega al Controller. Hay dos riesgos. Las listas de MV-4 con su ancla casi precalculan la decisión (SPEC L244), así que C-24 mediría el conjunto Controller más herramienta. Y la supervisión que escribió la herramienta prepara también el oráculo: la lectura de MV-4/MV-7 del oráculo debe fijarse sin apoyarse en la SPEC.",
+      "ClauseRefs": [
+       "docs/initiatives/I-62-proposal-v14.md:2333-2334",
+       "order.txt:25",
+       "docs/automation/decisions/I-62.md:1524",
+       "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:244"
+      ]
+     },
+     {
+      "Dimension": "TOOL_ACCEPTOR_DIVERSITY",
+      "Effect": "UNKNOWN",
+      "Rationale": "La autoría distinta de herramienta y aceptante está declarada (SPEC L17), no observada (AP L1146). Las dos piezas parten de la misma SPEC y del mismo worktree, de modo que la diversidad está en la implementación, no en la lectura normativa. Las pruebas de clausemap de fake_tool importan el aceptante. Con los datos reales, 14 de los 27 mutantes no cambian ninguna salida y el aceptante no los detecta.",
+      "ClauseRefs": [
+       "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:17",
+       "docs/AUTOMATION_PLAN.md:1146",
+       "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:28",
+       "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:20-21"
+      ]
+     }
+    ],
+    "Consequence": "La independencia del Controller frente al Worker no cambia en Actor ni en Proveedor. Sesión y Contexto se conservan solo con condiciones. Aparece una dependencia que 16.21 no modela: la corrección de la verificación descansa en código escrito por la supervisión de F6, que además es Coordinator del fixture y prepara el oráculo. La diversidad entre herramienta y aceptante está declarada pero no observada. Sin las condiciones (cierre y auditoría que cubran las lecturas de la herramienta, aceptante fuera de la sesión del Worker, oráculo de C-24 calculado sin la herramienta ni el aceptante y sellado antes), Contexto quedaría UNKNOWN y C-24 perdería su esperado independiente."
+   },
+   "A6": {
+    "Needed": "yes",
+    "MinimalDeltaScope": [
+     "V14 D.3, Topología A, Controller de FX-02 en F6: ruta de ejecución con el instrumento fijado por blob (análoga a A4-1), sin tocar la receta 16.4, topes ni totales",
+     "V14 §20.3.1 (AP 16.24 L1264) y RAE §15.2 I6: admisión, solo para esa invocación, del archivo de la herramienta en CanonicalInputs y de su ejecución en AllowedActions con su fuente",
+     "Vía del blob hasta el -C del Controller sin F_seed ni F_norm y sin leer el worktree real de I-62 (V14 D.1 y D.6; AP L1267; orden §75.2)",
+     "AP 16.24: registro de fidelidad del archivo de la herramienta y cobertura de sus GitCalls e Inputs en la auditoría de lecturas frente al EffectiveInputClosure (P-22; Contexto)",
+     "AP 16.22 L1204-L1207 y V14 D.4: efecto de los códigos de fallo cerrado de la herramienta y del REJECT_FACTS del aceptante sobre Checks, Classification y el resultado de FX-02",
+     "V14 Anexo C, C-24 (L2333-L2334): oráculo del Coordinator calculado sin la herramienta ni el aceptante, sellado antes y no entregado al Controller",
+     "Elegibilidad de la celda del Controller con el instrumento: invocación medida que demuestre la ruta, bajo una autorización y un consumo del Owner (patrón A4-1, reglas 2-4)",
+     "ADR-0046 #9 (Level A, conservado por ADR-0048): determinación OWNER-RESERVED acotada a FX-02 en F6; exclusión expresa de producción, de otras unidades y de D.5"
+    ],
+    "Rationale": "El uso es MATERIAL: activa M-02, M-03, M-04, M-05 y M-08. Por LIFECYCLE §6, un cambio material exige A-n con Architect y Coordinator (L221), y la parte de ADR-0046 #9 es OWNER-RESERVED. Por la orden (L62), solo se prepararía después el delta mínimo, condicionado a una disposición nueva. El alcance cabe en D.3 y en una excepción acotada a la invocación del Controller de FX-02 en F6, sin cambiar la receta 16.4, el contrato del adapter (16.19), los campos de los esquemas ni los topes. No redacto ningún texto de enmienda (orden L40).",
+    "ClauseRefs": [
+     "order.txt:62",
+     "order.txt:40",
+     "docs/INITIATIVE_LIFECYCLE.md:221",
+     "docs/INITIATIVE_LIFECYCLE.md:209-214",
+     "docs/automation/decisions/I-62.md:1528"
+    ]
+   },
+   "OwnerReserved": [
+    {
+     "Decision": "Si la evidencia de F6 justifica usar un script operativo (la herramienta B-min y su aceptante) en la verificación del Controller de FX-02, frente a ADR-0046 #9 (Level A: «Sin plataforma ni scripts operativos hasta que la evidencia lo justifique»), conservado por ADR-0048, y con qué alcance (solo F6 o más).",
+     "Why": "ADR-0046 es una decisión aceptada por el Owner, y ADR-0048 solo lo acepta el Owner. LIFECYCLE §3 reserva al Owner el cambio de una decisión suya. AUT-I1 prohíbe que el Principal elija una decisión del Owner. El ADR no atribuye a nadie la determinación de que «la evidencia lo justifica», y ante la duda rige el arquetipo superior.",
+     "ClauseRefs": [
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:3",
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:69",
+      "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:78",
+      "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:40",
+      "docs/INITIATIVE_LIFECYCLE.md:94",
+      "docs/initiatives/I-62-proposal-v14.md:1043"
+     ]
+    },
+    {
+     "Decision": "Autorización de consumo de cualquier invocación medida nueva de codex-cli que demuestre la ruta del Controller con el instrumento: el bloque A2-P2 de la identidad vigente está agotado y la medición de A4-1 está consumida.",
+     "Why": "Las mediciones fuera de los topes que cubre OD-5 exigen una autorización de consumo del Owner (precedente A-4 §7), y la orden vigente prohíbe sondas Codex nuevas.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-4.md:421-425",
+      "docs/automation/decisions/I-62.md:1507",
+      "docs/automation/decisions/I-62.md:1528",
+      "order.txt:60"
+     ]
+    }
+   ],
+   "SingleInvocationMeasurement": {
+    "Possible": "no",
+    "Conditions": [
+     "Como RoleInvocation es imposible: Action y OutputContract son únicos (AP 16.23 L1240; esquema L734), y juntar PLAN y VERIFY es INVALID (P-19).",
+     "Como sonda de medición (precedente §73.5), el bloque A2-P2 de la identidad vigente está 2/2 agotado (§74.1) y la medición de A4-1 está consumida (A-5 L226). Solo una actualización observada del runtime (regla de A-2) u otra A-n abren otra medición (A-4 L203-L207).",
+     "La orden vigente prohíbe sondas Codex nuevas y el consumo de sesiones de Principal (orden L60).",
+     "Aun con un bloque nuevo, colocar la herramienta en esa invocación es la cuestión material de este dictamen (A-6) y necesitaría la autorización de consumo del Owner.",
+     "Una medición no produce VERIFIED ni C-24 PASS: D.3 cuenta planificación y verificación por separado, y el Worker trabaja entre las dos (AP 16.4, orden de commits)."
+    ],
+    "Rationale": "Sin enmienda no es posible: la RoleInvocation no admite PLAN y VERIFY juntos, y con la identidad vigente no queda ninguna medición disponible. Solo una actualización observada del runtime o una A-n abriría una invocación conjunta como la de §73.5, y aun así el uso de B-min en ella activa la materialidad de este dictamen.",
+    "ClauseRefs": [
+     "docs/AUTOMATION_PLAN.md:1240",
+     "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json:734",
+     "docs/automation/decisions/I-62.md:1490",
+     "docs/automation/decisions/I-62.md:1507",
+     "docs/initiatives/I-62-A-5.md:226",
+     "docs/initiatives/I-62-A-4.md:203-207",
+     "order.txt:60",
+     "docs/initiatives/I-62-proposal-v14.md:2438-2439",
+     "docs/AUTOMATION_PLAN.md:535-537"
+    ]
+   },
+   "Observations": [
+    "La clasificación ACTION_COMPATIBLE es necesaria pero no suficiente: responde a qué es la acción, no a si el contrato vigente admite el instrumento. La admisión (CanonicalInputs, regla I6 y vía del blob) es lo que hace material el uso.",
+    "SPEC L244-L245 indica al Controller cómo aplicar la tabla de defectos («cualquier lista no vacía de defecto es MAP_INVALID»). Además ancla AddedPresentInEff1 en la fila L916, que habla de entradas. Es una elección de lectura normativa: si B-min se usa, la lectura de MV-4/MV-7 debe fijarla una autoridad (Coordinator o Architect, §75.5), no la SPEC no normativa.",
+    "El aceptante usa un cierre propio (rackcad-bmin-closure/0-experimental, ACCEPT-NOTES L64) distinto de rackcad-input-closure/v1. En un uso real debería derivarse del EffectiveInputClosure, para no tener dos definiciones de lecturas permitidas para una misma invocación.",
+    "Con B-min fuera de producción (orden L19), un C-24 PASS obtenido con el instrumento demostraría la configuración Controller más herramienta, no el protocolo de producción. Esa diferencia debería declararse, y repercute en D.5 (OV).",
+    "La tabla del README (§8) cita para e2e-run.log, tool-suite.log y accept-suite.log blobs (9a233b14c1c4, 7b01bb7e5303, a2c66962aeb9) distintos de los del commit (6e1f940e02b9, 08f11ab465d8, 9cd2f405d7c1), quizá por normalización de fin de línea. No afecta a la pregunta, pero es una referencia interna inconsistente del paquete.",
+    "En el extremo a extremo, R4 (de los hechos a la decisión) quedó NOT_APPLICABLE por falta de una salida real del Controller (README L101). La comparación central para C-24 no está ejercida.",
+    "A-4 (blob 5e2ba68e) conserva en su bloque State el estado PROPUESTA, aunque A-5 L19 la registra como AGREED (decisiones §64). Uso su texto acordado solo como precedente."
+   ],
+   "KnownLimitations": [
+    "No puedo calcular bytes, SHA-256 ni blobs (no tengo ejecución ni herramientas de hash). La identidad del clon, los blobs y el SHA-256 de order.txt los acredita el invocador.",
+    "No leí el código ni las salidas del paquete (bmin_facts.py, bmin_accept.py, pruebas, e2e/out). La orden no pide juzgar su calidad, y las afirmaciones de README y SPEC sobre resultados de pruebas son autodeclaradas.",
+    "Lecturas parciales: AP (500-674, 890-949, 1015-1328), V14 (1027-1130, 2330-2589), A-4, A-5, LIFECYCLE, RAE (solo §15) y decisiones (solo §73-§75). No leí V14 B.9, que cita controller-contracts L45, ni AP L835 (R61 b), ni decisiones §64 (acuerdo de A-4).",
+    "El proveedor y la sesión del autor de B-min no son observables desde el cierre. La diversidad entre herramienta y aceptante solo consta como autodeclaración.",
+    "No cité ninguna línea truncada (V14 2352, 2380 y 2382; líneas largas de decisiones), ni las líneas omitidas por Grep (A-4 L395 y ACCEPT-NOTES L238).",
+    "La Glob devolvió las rutas con separador \\. La comparación con la tabla se hizo por nombre.",
+    "El runtime inyectó durante la corrida recordatorios de progreso. No hubo compactación del contexto."
+   ]
+  }
+ },
+ "ReferenceCheck": [
+  {
+   "Group": "ApplicableClauses[0]",
+   "Ref": "order.txt:30",
+   "Kind": "RUN",
+   "Lines": [
+    30,
+    30
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[1]",
+   "Ref": "order.txt:19",
+   "Kind": "RUN",
+   "Lines": [
+    19,
+    19
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[2]",
+   "Ref": "order.txt:25",
+   "Kind": "RUN",
+   "Lines": [
+    25,
+    25
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[3]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1264",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1264,
+    1264
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[4]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1267",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1267,
+    1267
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[5]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1271",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1271,
+    1271
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[6]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1276",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1276,
+    1276
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[7]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1280",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1280,
+    1280
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[8]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1287",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1287,
+    1287
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[9]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1221",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1221,
+    1221
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[10]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1240",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1240,
+    1240
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[11]",
+   "Ref": "docs/AUTOMATION_PLAN.md:541",
+   "Kind": "CLOSURE",
+   "Lines": [
+    541,
+    541
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[12]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1045",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1045,
+    1045
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[13]",
+   "Ref": "docs/AUTOMATION_PLAN.md:646",
+   "Kind": "CLOSURE",
+   "Lines": [
+    646,
+    646
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[14]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1204",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1204,
+    1204
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[15]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1207",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1207,
+    1207
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[16]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1153",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1153,
+    1153
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[17]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1146",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1146,
+    1146
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[18]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:69",
+   "Kind": "CLOSURE",
+   "Lines": [
+    69,
+    69
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[19]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:61",
+   "Kind": "CLOSURE",
+   "Lines": [
+    61,
+    61
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[20]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:78",
+   "Kind": "CLOSURE",
+   "Lines": [
+    78,
+    78
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[21]",
+   "Ref": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:40",
+   "Kind": "CLOSURE",
+   "Lines": [
+    40,
+    40
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[22]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:85",
+   "Kind": "CLOSURE",
+   "Lines": [
+    85,
+    85
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[23]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:87",
+   "Kind": "CLOSURE",
+   "Lines": [
+    87,
+    87
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[24]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:90",
+   "Kind": "CLOSURE",
+   "Lines": [
+    90,
+    90
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[25]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:94",
+   "Kind": "CLOSURE",
+   "Lines": [
+    94,
+    94
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[26]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1079",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1079,
+    1079
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[27]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1090",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1090,
+    1090
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[28]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1088",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1088,
+    1088
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[29]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1130",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1130,
+    1130
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[30]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2333-2334",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2333,
+    2334
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[31]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2438-2439",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2438,
+    2439
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[32]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2573",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2573,
+    2573
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[33]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1043",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1043,
+    1043
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[34]",
+   "Ref": "docs/automation/agent-execution/README.md:565",
+   "Kind": "CLOSURE",
+   "Lines": [
+    565,
+    565
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[35]",
+   "Ref": "docs/automation/agent-execution/README.md:561",
+   "Kind": "CLOSURE",
+   "Lines": [
+    561,
+    561
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[36]",
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:45",
+   "Kind": "CLOSURE",
+   "Lines": [
+    45,
+    45
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[37]",
+   "Ref": "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json:734",
+   "Kind": "CLOSURE",
+   "Lines": [
+    734,
+    734
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[38]",
+   "Ref": "docs/initiatives/I-62-A-4.md:393",
+   "Kind": "CLOSURE",
+   "Lines": [
+    393,
+    393
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[39]",
+   "Ref": "docs/initiatives/I-62-A-4.md:169",
+   "Kind": "CLOSURE",
+   "Lines": [
+    169,
+    169
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[40]",
+   "Ref": "docs/initiatives/I-62-A-5.md:269",
+   "Kind": "CLOSURE",
+   "Lines": [
+    269,
+    269
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[41]",
+   "Ref": "docs/automation/decisions/I-62.md:1510",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1510,
+    1510
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[42]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:12",
+   "Kind": "CLOSURE",
+   "Lines": [
+    12,
+    12
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ApplicableClauses[43]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:115",
+   "Kind": "CLOSURE",
+   "Lines": [
+    115,
+    115
+   ],
+   "InRange": true,
+   "ExcerptFound": true,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ActionCompatibility",
+   "Ref": "docs/AUTOMATION_PLAN.md:1271-1274",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1271,
+    1274
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ActionCompatibility",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1090",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1090,
+    1090
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ActionCompatibility",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1091-1092",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1091,
+    1092
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ActionCompatibility",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1088",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1088,
+    1088
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ActionCompatibility",
+   "Ref": "docs/AUTOMATION_PLAN.md:1221",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1221,
+    1221
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ActionCompatibility",
+   "Ref": "docs/AUTOMATION_PLAN.md:541",
+   "Kind": "CLOSURE",
+   "Lines": [
+    541,
+    541
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ActionCompatibility",
+   "Ref": "docs/automation/agent-execution/README.md:561",
+   "Kind": "CLOSURE",
+   "Lines": [
+    561,
+    561
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ActionCompatibility",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:23-31",
+   "Kind": "CLOSURE",
+   "Lines": [
+    23,
+    31
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ActionCompatibility",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:115",
+   "Kind": "CLOSURE",
+   "Lines": [
+    115,
+    115
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ActionCompatibility",
+   "Ref": "docs/initiatives/I-62-A-4.md:499",
+   "Kind": "CLOSURE",
+   "Lines": [
+    499,
+    499
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "docs/AUTOMATION_PLAN.md:1264",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1264,
+    1264
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1079",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1079,
+    1079
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "docs/AUTOMATION_PLAN.md:1276",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1276,
+    1276
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "docs/automation/agent-execution/README.md:565",
+   "Kind": "CLOSURE",
+   "Lines": [
+    565,
+    565
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:45",
+   "Kind": "CLOSURE",
+   "Lines": [
+    45,
+    45
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "order.txt:19",
+   "Kind": "RUN",
+   "Lines": [
+    19,
+    19
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "docs/AUTOMATION_PLAN.md:1267",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1267,
+    1267
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2573",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2573,
+    2573
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "docs/AUTOMATION_PLAN.md:1287",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1287,
+    1287
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:3",
+   "Kind": "CLOSURE",
+   "Lines": [
+    3,
+    3
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "CanonicalInputAdmissible",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:116-117",
+   "Kind": "CLOSURE",
+   "Lines": [
+    116,
+    117
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "A6",
+   "Ref": "order.txt:62",
+   "Kind": "RUN",
+   "Lines": [
+    62,
+    62
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "A6",
+   "Ref": "order.txt:40",
+   "Kind": "RUN",
+   "Lines": [
+    40,
+    40
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "A6",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:221",
+   "Kind": "CLOSURE",
+   "Lines": [
+    221,
+    221
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "A6",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:209-214",
+   "Kind": "CLOSURE",
+   "Lines": [
+    209,
+    214
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "A6",
+   "Ref": "docs/automation/decisions/I-62.md:1528",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1528,
+    1528
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "SingleInvocationMeasurement",
+   "Ref": "docs/AUTOMATION_PLAN.md:1240",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1240,
+    1240
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "SingleInvocationMeasurement",
+   "Ref": "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json:734",
+   "Kind": "CLOSURE",
+   "Lines": [
+    734,
+    734
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "SingleInvocationMeasurement",
+   "Ref": "docs/automation/decisions/I-62.md:1490",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1490,
+    1490
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "SingleInvocationMeasurement",
+   "Ref": "docs/automation/decisions/I-62.md:1507",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1507,
+    1507
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "SingleInvocationMeasurement",
+   "Ref": "docs/initiatives/I-62-A-5.md:226",
+   "Kind": "CLOSURE",
+   "Lines": [
+    226,
+    226
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "SingleInvocationMeasurement",
+   "Ref": "docs/initiatives/I-62-A-4.md:203-207",
+   "Kind": "CLOSURE",
+   "Lines": [
+    203,
+    207
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "SingleInvocationMeasurement",
+   "Ref": "order.txt:60",
+   "Kind": "RUN",
+   "Lines": [
+    60,
+    60
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "SingleInvocationMeasurement",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2438-2439",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2438,
+    2439
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "SingleInvocationMeasurement",
+   "Ref": "docs/AUTOMATION_PLAN.md:535-537",
+   "Kind": "CLOSURE",
+   "Lines": [
+    535,
+    537
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-01]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:83",
+   "Kind": "CLOSURE",
+   "Lines": [
+    83,
+    83
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-01]",
+   "Ref": "order.txt:22-24",
+   "Kind": "RUN",
+   "Lines": [
+    22,
+    24
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-01]",
+   "Ref": "docs/automation/decisions/I-62.md:1510",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1510,
+    1510
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-01]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:12",
+   "Kind": "CLOSURE",
+   "Lines": [
+    12,
+    12
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-01]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1207",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1207,
+    1207
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-02]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:84",
+   "Kind": "CLOSURE",
+   "Lines": [
+    84,
+    84
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-02]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1264",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1264,
+    1264
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-02]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1079",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1079,
+    1079
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-02]",
+   "Ref": "docs/automation/agent-execution/schemas/input-closure.v1.schema.json:18-37",
+   "Kind": "CLOSURE",
+   "Lines": [
+    18,
+    37
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-03]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:85",
+   "Kind": "CLOSURE",
+   "Lines": [
+    85,
+    85
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-03]",
+   "Ref": "docs/initiatives/I-62-A-4.md:393",
+   "Kind": "CLOSURE",
+   "Lines": [
+    393,
+    393
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-03]",
+   "Ref": "docs/initiatives/I-62-A-4.md:169",
+   "Kind": "CLOSURE",
+   "Lines": [
+    169,
+    169
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-03]",
+   "Ref": "docs/initiatives/I-62-A-5.md:19",
+   "Kind": "CLOSURE",
+   "Lines": [
+    19,
+    19
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-03]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2438-2439",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2438,
+    2439
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-03]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:115",
+   "Kind": "CLOSURE",
+   "Lines": [
+    115,
+    115
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-04]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:86",
+   "Kind": "CLOSURE",
+   "Lines": [
+    86,
+    86
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-04]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1204",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1204,
+    1204
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-04]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1207",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1207,
+    1207
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-04]",
+   "Ref": "docs/initiatives/I-62-A-4.md:394",
+   "Kind": "CLOSURE",
+   "Lines": [
+    394,
+    394
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-05]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:87",
+   "Kind": "CLOSURE",
+   "Lines": [
+    87,
+    87
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-05]",
+   "Ref": "docs/automation/agent-execution/README.md:565",
+   "Kind": "CLOSURE",
+   "Lines": [
+    565,
+    565
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-05]",
+   "Ref": "docs/automation/agent-execution/README.md:567",
+   "Kind": "CLOSURE",
+   "Lines": [
+    567,
+    567
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-05]",
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:45",
+   "Kind": "CLOSURE",
+   "Lines": [
+    45,
+    45
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-05]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1130",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1130,
+    1130
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-06]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:88",
+   "Kind": "CLOSURE",
+   "Lines": [
+    88,
+    88
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-06]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1051-1052",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1051,
+    1052
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-07]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:89",
+   "Kind": "CLOSURE",
+   "Lines": [
+    89,
+    89
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-07]",
+   "Ref": "order.txt:19",
+   "Kind": "RUN",
+   "Lines": [
+    19,
+    19
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-07]",
+   "Ref": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:91-92",
+   "Kind": "CLOSURE",
+   "Lines": [
+    91,
+    92
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-08]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:90",
+   "Kind": "CLOSURE",
+   "Lines": [
+    90,
+    90
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-08]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:3",
+   "Kind": "CLOSURE",
+   "Lines": [
+    3,
+    3
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-08]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:69",
+   "Kind": "CLOSURE",
+   "Lines": [
+    69,
+    69
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-08]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:78",
+   "Kind": "CLOSURE",
+   "Lines": [
+    78,
+    78
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-08]",
+   "Ref": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:40",
+   "Kind": "CLOSURE",
+   "Lines": [
+    40,
+    40
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Materiality[M-08]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:61",
+   "Kind": "CLOSURE",
+   "Lines": [
+    61,
+    61
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_4]",
+   "Ref": "docs/AUTOMATION_PLAN.md:541",
+   "Kind": "CLOSURE",
+   "Lines": [
+    541,
+    541
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_4]",
+   "Ref": "docs/AUTOMATION_PLAN.md:520",
+   "Kind": "CLOSURE",
+   "Lines": [
+    520,
+    520
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_4]",
+   "Ref": "docs/AUTOMATION_PLAN.md:529",
+   "Kind": "CLOSURE",
+   "Lines": [
+    529,
+    529
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_4]",
+   "Ref": "docs/AUTOMATION_PLAN.md:535-537",
+   "Kind": "CLOSURE",
+   "Lines": [
+    535,
+    537
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_4]",
+   "Ref": "docs/automation/agent-execution/adapters/codex-cli.md:24",
+   "Kind": "CLOSURE",
+   "Lines": [
+    24,
+    24
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_19]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1045",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1045,
+    1045
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_19]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1051-1052",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1051,
+    1052
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_19]",
+   "Ref": "docs/automation/agent-execution/adapters/codex-cli.md:43-53",
+   "Kind": "CLOSURE",
+   "Lines": [
+    43,
+    53
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_24]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1264",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1264,
+    1264
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_24]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1267",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1267,
+    1267
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_24]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1271-1274",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1271,
+    1274
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_24]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1276",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1276,
+    1276
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_24]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1280",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1280,
+    1280
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_24]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1287",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1287,
+    1287
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[AP_16_24]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1079",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1079,
+    1079
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[ADR_0046]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:69",
+   "Kind": "CLOSURE",
+   "Lines": [
+    69,
+    69
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[ADR_0046]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:78",
+   "Kind": "CLOSURE",
+   "Lines": [
+    78,
+    78
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[ADR_0046]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:61",
+   "Kind": "CLOSURE",
+   "Lines": [
+    61,
+    61
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[ADR_0046]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:3",
+   "Kind": "CLOSURE",
+   "Lines": [
+    3,
+    3
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[ADR_0046]",
+   "Ref": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:40",
+   "Kind": "CLOSURE",
+   "Lines": [
+    40,
+    40
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[ADR_0046]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:90",
+   "Kind": "CLOSURE",
+   "Lines": [
+    90,
+    90
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[V14_D3]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2433-2442",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2433,
+    2442
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[V14_D3]",
+   "Ref": "docs/initiatives/I-62-A-4.md:169",
+   "Kind": "CLOSURE",
+   "Lines": [
+    169,
+    169
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[V14_D3]",
+   "Ref": "docs/initiatives/I-62-A-4.md:192",
+   "Kind": "CLOSURE",
+   "Lines": [
+    192,
+    192
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[V14_D3]",
+   "Ref": "docs/initiatives/I-62-A-4.md:393-394",
+   "Kind": "CLOSURE",
+   "Lines": [
+    393,
+    394
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[CONSUMED_CONTRACTS]",
+   "Ref": "docs/automation/agent-execution/README.md:561",
+   "Kind": "CLOSURE",
+   "Lines": [
+    561,
+    561
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[CONSUMED_CONTRACTS]",
+   "Ref": "docs/automation/agent-execution/README.md:565",
+   "Kind": "CLOSURE",
+   "Lines": [
+    565,
+    565
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[CONSUMED_CONTRACTS]",
+   "Ref": "docs/automation/agent-execution/README.md:567",
+   "Kind": "CLOSURE",
+   "Lines": [
+    567,
+    567
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[CONSUMED_CONTRACTS]",
+   "Ref": "docs/automation/agent-execution/schemas/input-closure.v1.schema.json:18-37",
+   "Kind": "CLOSURE",
+   "Lines": [
+    18,
+    37
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[CONSUMED_CONTRACTS]",
+   "Ref": "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json:313-333",
+   "Kind": "CLOSURE",
+   "Lines": [
+    313,
+    333
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[CONSUMED_CONTRACTS]",
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:45",
+   "Kind": "CLOSURE",
+   "Lines": [
+    45,
+    45
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[CONSUMED_CONTRACTS]",
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:47",
+   "Kind": "CLOSURE",
+   "Lines": [
+    47,
+    47
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2333-2334",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2333,
+    2334
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2363",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2363,
+    2363
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "order.txt:25",
+   "Kind": "RUN",
+   "Lines": [
+    25,
+    25
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "docs/automation/decisions/I-62.md:1524",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1524,
+    1524
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "order.txt:19",
+   "Kind": "RUN",
+   "Lines": [
+    19,
+    19
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2573",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2573,
+    2573
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1267",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1267,
+    1267
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:50",
+   "Kind": "CLOSURE",
+   "Lines": [
+    50,
+    50
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:116-117",
+   "Kind": "CLOSURE",
+   "Lines": [
+    116,
+    117
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2560",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2560,
+    2560
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AffectedSurfaces[OTHER]",
+   "Ref": "docs/automation/decisions/I-62.md:1488",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1488,
+    1488
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerReserved[0]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:3",
+   "Kind": "CLOSURE",
+   "Lines": [
+    3,
+    3
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerReserved[0]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:69",
+   "Kind": "CLOSURE",
+   "Lines": [
+    69,
+    69
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerReserved[0]",
+   "Ref": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:78",
+   "Kind": "CLOSURE",
+   "Lines": [
+    78,
+    78
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerReserved[0]",
+   "Ref": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:40",
+   "Kind": "CLOSURE",
+   "Lines": [
+    40,
+    40
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerReserved[0]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:94",
+   "Kind": "CLOSURE",
+   "Lines": [
+    94,
+    94
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerReserved[0]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1043",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1043,
+    1043
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerReserved[1]",
+   "Ref": "docs/initiatives/I-62-A-4.md:421-425",
+   "Kind": "CLOSURE",
+   "Lines": [
+    421,
+    425
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerReserved[1]",
+   "Ref": "docs/automation/decisions/I-62.md:1507",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1507,
+    1507
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerReserved[1]",
+   "Ref": "docs/automation/decisions/I-62.md:1528",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1528,
+    1528
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerReserved[1]",
+   "Ref": "order.txt:60",
+   "Kind": "RUN",
+   "Lines": [
+    60,
+    60
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[ACTOR]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1151",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1151,
+    1151
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[ACTOR]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1168",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1168,
+    1168
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[SESSION]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1152",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1152,
+    1152
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[SESSION]",
+   "Ref": "docs/AUTOMATION_PLAN.md:520",
+   "Kind": "CLOSURE",
+   "Lines": [
+    520,
+    520
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[SESSION]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1207",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1207,
+    1207
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[CONTEXT]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1153",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1153,
+    1153
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[CONTEXT]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1280",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1280,
+    1280
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[CONTEXT]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1130",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1130,
+    1130
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[CONTEXT]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:64",
+   "Kind": "CLOSURE",
+   "Lines": [
+    64,
+    64
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[PROVIDER]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1154",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1154,
+    1154
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[PROVIDER]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1168",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1168,
+    1168
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[C24_ORACLE]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2333-2334",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2333,
+    2334
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[C24_ORACLE]",
+   "Ref": "order.txt:25",
+   "Kind": "RUN",
+   "Lines": [
+    25,
+    25
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[C24_ORACLE]",
+   "Ref": "docs/automation/decisions/I-62.md:1524",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1524,
+    1524
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[C24_ORACLE]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:244",
+   "Kind": "CLOSURE",
+   "Lines": [
+    244,
+    244
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[TOOL_ACCEPTOR_DIVERSITY]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:17",
+   "Kind": "CLOSURE",
+   "Lines": [
+    17,
+    17
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[TOOL_ACCEPTOR_DIVERSITY]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1146",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1146,
+    1146
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[TOOL_ACCEPTOR_DIVERSITY]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:28",
+   "Kind": "CLOSURE",
+   "Lines": [
+    28,
+    28
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Independence[TOOL_ACCEPTOR_DIVERSITY]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:20-21",
+   "Kind": "CLOSURE",
+   "Lines": [
+    20,
+    21
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  }
+ ],
+ "Accreditation": {
+  "Status": "ACCREDITED",
+  "Reasons": []
+ }
+}

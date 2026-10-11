@@ -1,0 +1,58 @@
+{
+ "RunId": "R20261011T162328Z-5c5e",
+ "InvocationId": "I20261011T162328Z-5c5e",
+ "AttemptSeq": 1,
+ "Transport": "claude-cli 2.1.293 (%APPDATA%/Claude/claude-code/2.1.293/83cb0bd7fed4/claude.exe, SHA-256 8693c4a0…), claude-opus-5-5 xhigh, lanzado por la sesión principal con kit/launch.py",
+ "Authority": "decisiones §75, punto 4; Owner CLAUDE-CLI-I62 = A; compuerta de transporte MEASURED (caracterización 20d0de2c…)",
+ "Session": {
+  "SessionId": "cd0a1e5c-605d-4363-9e49-57087fd26a47",
+  "Start": "2026-10-11T20:17:12.007529Z",
+  "End": "2026-10-11T20:31:53.019331Z",
+  "ExitCode": 0,
+  "Killed": false,
+  "TimedOut": false,
+  "TransportFailure": null,
+  "Cwd": "D:/r62-arch-bmin",
+  "AddDir": "D:/r62-arch-bmin-run"
+ },
+ "Usage": {
+  "num_turns": 37,
+  "total_cost_usd": 4.6174074,
+  "duration_ms": 879271,
+  "tools": {
+   "Read": 30,
+   "Glob": 1,
+   "Grep": 4,
+   "StructuredOutput": 1
+  },
+  "note": "coste equivalente informado por el runtime; cuota de la suscripción"
+ },
+ "Stdout": {
+  "Path": "D:/r62-arch-bmin-run/launch/stdout.jsonl (no versionado: contiene rutas del perfil del usuario)",
+  "Sha256": "e87284e5e2460715d7c77286069291a4969792226a3e7fced2565fb097a03a9a"
+ },
+ "Transcript": {
+  "Versioned": false,
+  "Path": "%USERPROFILE%/.claude/projects/D--r62-arch-bmin/cd0a1e5c-605d-4363-9e49-57087fd26a47.jsonl",
+  "Sha256": "e2340121648f6ba9c80e1293f35103c7002b1a439bd881815dc4e494851d85fd"
+ },
+ "Output": {
+  "File": "output.json",
+  "Sha256": "8572b567e7b0677eee928b3ea9c614ecc1a3290f03c2116499c1080264cc7cc8",
+  "Source": "structured_output del mensaje result de stream-json"
+ },
+ "Audit": {
+  "File": "audit.json",
+  "Sha256": "3409ac706bf624e7db59d647c9ec4042abcf0eb70434b9cf9ef116a7cf7a54dd",
+  "Auditor": "v5.1-bmin custodiado en c0426bea",
+  "Accreditation": {
+   "Status": "ACCREDITED",
+   "Reasons": []
+  }
+ },
+ "CloneAfterRun": {
+  "Head": "9356edf141c795ea718a360e266334ded10d6a76",
+  "StatusPorcelainIgnored": ""
+ },
+ "Independence": "proceso claude-cli nuevo con session id fijado; sin la transcripción ni la memoria de la sesión autora ni del Coordinator; modo seguro sin CLAUDE.md ni memoria; evidencia §140-§145 fuera del cierre; mismo proveedor que la sesión que prepara (Provider PREFERRED no se cumple, declarado)"
+}
