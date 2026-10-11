@@ -3850,3 +3850,31 @@ solo desde artefactos custodiados.
   `ideas-futuras` y `frontiers.json` quedan para r7.
 - **B1:** la solicitud y el procedimiento siguen listos; la construcción se puede pedir por separado porque no consume la sesión de Principal y no
   toca los resultados históricos ([solicitud, §4](I-62-F6/requests/B1-construction-request-2026-10-11.md)). FX-U2 sigue cerrada.
+
+## 143. Análisis estático de MV-4 y MV-7 de la sonda CONTROLLER_V5 (decisiones §74.3); corrección de una afirmación de §140
+
+- **Análisis** ([mv-static-analysis.md](I-62-F6/FX-02/s74/mv-static-analysis.md), SHA-256 `4bab0a514ef15de2…`; recuento reproducible con
+  [mv4_readings.py](I-62-F6/FX-02/s74/mv4_readings.py)). El resultado bruto no cambia: ni el oráculo, ni `reference.json`, ni `comparison.json`, ni el veredicto
+  NOT_DEMONSTRATED.
+- **`mv4-mismatches` (oráculo 7, celda 31): NORMATIVE_AMBIGUITY**, con la PROMPT_AMBIGUITY que hereda.
+  - La fila MV-4 de AP 16.13 (`f525cb1e` L905) solo exige la condición literal; el oráculo la transcribe y da 7.
+  - La tabla de defectos (L916, «ADDED que existe en EFF^1» → MAP_INVALID) y R61 b (L835) invalidan además un ADDED presente en EFF^1, sin asignar ese
+    defecto a ninguna MV.
+  - Recuento por lectura: literal 7; MV-4 más R61 b 30 (explica 23 de las 24 filas de diferencia); exactamente 31 solo con una lectura que choca con
+    L905/L895 para la ENTRY.
+  - No hay ORACLE_DEFECT. MODEL_ERROR no queda establecido en sentido estricto (residuo de 1 fila).
+- **`mv7-pointer-16` y `mv7-pointer-163` (oráculo yes, celda la frase del puntero): PROMPT_AMBIGUITY.**
+  - La descripción de la clave es declarativa y no pide yes/no, a diferencia de las demás.
+  - Bajo la lectura «el valor es la frase en esa posición», el valor de la celda es exacto.
+- **`mv7-163-equal`:** coincide. El método de la celda tiene un defecto latente: quita la última línea entera de 16.3, no solo el puntero. Aquí no
+  tiene efecto porque AP es igual en EFF^1 y en EFF.
+- **Corrección (append-only) de §140, de `failure-classes.json` y del README de la corrida:** la frase «el valor de la celda coincide con el del
+  comprobador» (`clause_map.py` ×31) no corrobora nada. Los dos 31 coinciden solo en el número:
+  - `clause_map.py` marca MV-4 en cada fila porque la derivación está vacía (L133-L137), que es la condición de MV-3 rotulada como MV-4;
+  - la celda no lo usó: el fixture no contiene `.py`.
+
+  La clasificación correcta es la de este análisis. Los archivos de la corrida no se editan.
+- **Veredicto:** sin cambio. Con las lecturas más favorables a la celda solo cambiaría OP_E. OP_U0, OP_C, PLAN y VERIFY fallan por errores
+  inequívocos, y MAP_INVALID (MV-3, MV-4, MV-6 y MV-7) se sostiene bajo toda lectura.
+- **Desviación declarada del análisis:** una ejecución de `git status --porcelain` sobre `D:\r62-fixture\A2`, fuera de la lista permitida. Salida
+  vacía; el índice conserva su mtime y su contenido; HEAD y refs sin cambio.
