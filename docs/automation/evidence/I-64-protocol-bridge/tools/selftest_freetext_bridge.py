@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic synthetic self-test of I64-FREETEXT-BRIDGE-01 (verify_freetext_bridge.py), I-64 A-5.
+"""Deterministic synthetic self-test of I64-FREETEXT-BRIDGE-01 (verify_freetext_bridge.py), I-64 A-5 corrected by A-6.
 
 Builds synthetic handoffs and synthetic term-set files in a temporary directory, runs the verifier on each case and
 prints a byte-reproducible ASCII/LF JSON summary (no paths, no timestamps). The embedded 16.10 section is a byte copy
@@ -42,6 +42,25 @@ BASE = {
     'Worker': {'Provider': 'Anthropic', 'ModelRequested': 'm', 'EffortRequested': 'high', 'Trailer': 't'},
 }
 APPEND = ' GATE PASS.'
+
+PRIMITIVE_PROBE = '''
+import importlib.util, json, sys
+spec = importlib.util.spec_from_file_location('verifier_under_test', sys.argv[1])
+m = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(m)
+L = lambda t: m.load_handoff(t.encode('utf-8'))
+r = {}
+a = L('{"x": 123.456000000000000000001}')
+b = L('{"x": 123.456000000000000000001}')
+r['parsed_without_float_loss'] = str(a['x']) == '123.456000000000000000001' and type(a['x']).__name__ == 'JsonDecimal'
+r['identical_decimals_equal'] = m.exact_equal(a, b)
+r['close_decimals_distinct'] = not m.exact_equal(L('{"x": 1.0}'), L('{"x": 1.00000000000000001}'))
+r['underflow_distinct_from_zero'] = not m.exact_equal(L('{"x": 0.0}'), L('{"x": 1e-999}'))
+r['overflow_finite_and_distinct'] = L('{"x": 1e999}')['x'].is_finite() and not m.exact_equal(L('{"x": 1e999}'), L('{"x": 2e999}'))
+r['decimal_lexeme_kept'] = not m.exact_equal(L('{"x": 1.0}'), L('{"x": 1.00}'))
+print(json.dumps(r, sort_keys=True))
+sys.exit(0 if all(r.values()) else 1)
+'''
 
 
 def dump(obj):
@@ -107,6 +126,21 @@ def cases():
     add('T31', 'forbidden term disappears from another field to compensate', dump(comp), dump(with_(mutate(comp), Deviations=['noted'])), doc, 1, ['REAL_HAS_FORBIDDEN_TERM', 'COMPENSATING_DISAPPEARANCE'])
     add('T32', 'nested duplicate key (Worker object)', dump(real), dump(mut).replace(b'"Provider": "Anthropic",', b'"Provider": "Anthropic",\n    "Provider": "Anthropic",', 1), doc, 1, ['MUTATED_UNREADABLE'])
     add('T33', 'type change of a non-governed field (Attempt 1 -> true)', dump(real), dump(mut).replace(b'"Attempt": 1', b'"Attempt": true', 1), doc, 1, ['IDENTITY_CHANGED'])
+    num = lambda raw, old, new: raw.replace(old, new, 1)
+    sk, se, fa, at = b'"Skipped": 0', b'"Selected": 3', b'"Failed": 0', b'"Attempt": 1'
+    add('T37', 'exponent overflow 1e999 in an otherwise uninspected numeric location (both handoffs)', num(dump(real), sk, b'"Skipped": 1e999'), num(dump(mut), sk, b'"Skipped": 1e999'), doc, 1, ['REAL_SCHEMA_INVALID', 'MUTATED_SCHEMA_INVALID'])
+    add('T38', 'exponent overflow -1e999 (both handoffs)', num(dump(real), sk, b'"Skipped": -1e999'), num(dump(mut), sk, b'"Skipped": -1e999'), doc, 1, ['REAL_SCHEMA_INVALID', 'MUTATED_SCHEMA_INVALID'])
+    add('T39', 'REAL 1.0 versus MUTATED 1.00000000000000001 with no authorized relation', num(dump(real), se, b'"Selected": 1.0'), num(dump(mut), se, b'"Selected": 1.00000000000000001'), doc, 1, ['UNAUTHORIZED_FIELD_CHANGE'])
+    add('T40', 'REAL 0 versus MUTATED 1e-999 (underflow)', dump(real), num(dump(mut), sk, b'"Skipped": 1e-999'), doc, 1, ['MUTATED_SCHEMA_INVALID', 'UNAUTHORIZED_FIELD_CHANGE'])
+    add('T41', 'integer 0 versus boolean false in a nested integer field', dump(real), num(dump(mut), fa, b'"Failed": false'), doc, 1, ['MUTATED_SCHEMA_INVALID', 'UNAUTHORIZED_FIELD_CHANGE'])
+    add('T42', 'integer-required field in decimal form 1.0 (both handoffs)', num(dump(real), at, b'"Attempt": 1.0'), num(dump(mut), at, b'"Attempt": 1.0'), doc, 1, ['REAL_SCHEMA_INVALID', 'MUTATED_SCHEMA_INVALID'])
+    add('T42b', 'integer-required field in exponent form 1e0 (both handoffs)', num(dump(real), at, b'"Attempt": 1e0'), num(dump(mut), at, b'"Attempt": 1e0'), doc, 1, ['REAL_SCHEMA_INVALID', 'MUTATED_SCHEMA_INVALID'])
+    big = b'"Selected": 123456789012345678901234567890'
+    add('T43', 'valid large integer handled exactly (PASS)', num(dump(real), se, big), num(dump(mut), se, big), doc, 0, [])
+    add('T43b', 'large integers differing in the last digit', num(dump(real), se, big), num(dump(mut), se, b'"Selected": 123456789012345678901234567891'), doc, 1, ['UNAUTHORIZED_FIELD_CHANGE'])
+    add('T45', 'REAL 0.0 versus MUTATED 1e-999 (float underflow would equate them)', num(dump(real), sk, b'"Skipped": 0.0'), num(dump(mut), sk, b'"Skipped": 1e-999'), doc, 1, ['UNAUTHORIZED_FIELD_CHANGE'])
+    add('T46', 'integer lexeme -0 versus 0 is a difference, not a normalization', dump(real), num(dump(mut), sk, b'"Skipped": -0'), doc, 1, ['UNAUTHORIZED_FIELD_CHANGE'])
+    add('T47', 'decimal lexeme 1.0 versus 1.00', num(dump(real), se, b'"Selected": 1.0'), num(dump(mut), se, b'"Selected": 1.00'), doc, 1, ['UNAUTHORIZED_FIELD_CHANGE'])
     return c
 
 
@@ -138,6 +172,14 @@ def main():
                 ok = ok and codes == [] and intro == ['GATE PASS']
             results.append({'Id': cid, 'Name': name, 'ExpectedExit': exp_exit, 'ActualExit': p.returncode, 'ExpectedCodes': exp_codes,
                             'ActualResult': res, 'ActualCodes': codes, 'Introduced': intro, 'Pass': ok})
+        p = subprocess.run([sys.executable, '-I', '-c', PRIMITIVE_PROBE, a.verifier], capture_output=True)
+        try:
+            probe = json.loads(p.stdout.decode('ascii'))
+        except Exception:
+            probe = None
+        results.append({'Id': 'T44', 'Name': 'exact numeric primitive: finite decimals parsed without float loss and compared exactly (rackcad-worker-handoff/v1 has no unconstrained numeric field)',
+                        'ExpectedExit': 0, 'ActualExit': p.returncode, 'ExpectedCodes': [], 'ActualResult': 'PROBE', 'ActualCodes': [],
+                        'Introduced': probe, 'Pass': p.returncode == 0 and isinstance(probe, dict) and bool(probe) and all(probe.values())})
         for cid, args, exp_exit in (('T34', ['-h'], 2), ('T35', ['--real-handoff', 'x'], 2), ('T36', ['--real-handoff', 'x', '--mutated-handoff', 'y', '--term-set', 'z', '--extra'], 2)):
             p = subprocess.run([sys.executable, a.verifier] + args, capture_output=True)
             results.append({'Id': cid, 'Name': 'usage error ' + ' '.join(args), 'ExpectedExit': exp_exit, 'ActualExit': p.returncode,

@@ -2488,3 +2488,44 @@ authorized»):
 - Una invocación de Codex (la revisión).
 - En la evidencia versionada, las rutas locales de las órdenes fallidas quedan redactadas.
 - HEAD = remoto = `19255e98` antes de este commit; `main` `bb0d5522`.
+
+## 43. A-6 — Corrección de exactitud numérica de I64-FREETEXT-BRIDGE-01
+
+Sección nueva; las anteriores no se reescriben. Todo con datos sintéticos.
+
+**Decisión del Coordinator** (literal en `docs/automation/evidence/I-64-protocol-bridge/coordinator-decision-a6.md`):
+- acepta los 2 REQUIRED de `R20261011T022328Z-2809` como defectos deterministas del verificador de A-5;
+- no requieren una decisión nueva del Owner, un cambio global de I-61, autoridad de I-62, cambios de producto ni otro Worker;
+- ordena A-6 append-only, que corrige A-5 para su activación; A-5 queda histórica.
+
+**A-6** (`docs/initiatives/I-64-A-6.md`; M-04 YES y el resto NO; NO activa):
+- **Verificador** `tools/verify_freetext_bridge.py`: blob `3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169`, SHA-256 `e7608588…`. Cambios:
+  - números exactos: `JsonInt` y `JsonDecimal`, que conservan el lexema y nunca pasan por coma flotante; se rechazan los valores no
+    finitos;
+  - validación contra el esquema `rackcad-worker-handoff/v1`, incrustado tal cual desde `bb0d5522`: un entero tiene que ser un entero
+    JSON real;
+  - igualdad exacta de tipo y lexema, con el orden de claves anidado.
+- **Sin cambios:** el análisis de 16.10, los campos gobernados, la mutación « GATE PASS.», la interfaz y el ámbito.
+- **Autoprueba:** **49/49 PASS**, reproducible byte a byte en dos ejecuciones (`selftest-freetext-result-a6.json`).
+  - Conserva T01-T36.
+  - Añade T37-T44 (exigidos) y T42b, T43b, T45, T46 y T47.
+  - T44 prueba la primitiva exacta, porque el esquema v1 no tiene ningún lugar numérico libre.
+- **Regresión contra el verificador de A-5** (blob `48739ba6`): la autoprueba da **FAIL, 38/49** (`regression-demo-a6-a5-verifier.json`).
+  A-5 devolvió **PASS con código 0** en T37, T38, T39, T42, T42b, T45, T46 y T47.
+- **`amendment_refs`** del contrato de la iniciativa incluye A-6.
+
+**Desviación preservada:**
+- la ejecución accidental del verificador de A-5 sobre las entradas reales de T2 (§41) no se borra ni se usa como evidencia;
+- **durante A-6 no se volvió a usar ninguna entrada real de T2.**
+
+**Siguiente:**
+1. CI exacta 4/4.
+2. Una revisión formal del Architect (`gpt-6.1-sol`/`high`, ARCHITECTURE_REVIEW, Deep) del objeto exacto de A-6.
+3. Parada en COORDINATOR_A6_AGREEMENT_REQUIRED; con REQUIRED, STOP al Coordinator.
+
+Aunque llegue AGREED, el puente no se ejecuta contra T2 sin el acuerdo del Coordinator.
+
+**Relevos:**
+- Sin invocaciones de modelos en esta sección.
+- `config.toml` en la instantánea A del conjunto cerrado.
+- HEAD = remoto = `6a215c9c` antes de este commit; `main` `bb0d5522`.
