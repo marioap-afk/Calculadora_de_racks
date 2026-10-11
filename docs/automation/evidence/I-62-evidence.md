@@ -4012,3 +4012,14 @@ solo desde artefactos custodiados.
   - `e2e-run.log`: `6e1f940e`.
 
   Los SHA-256 de la tabla son los de los bytes del árbol de trabajo. El objeto revisado no se edita.
+
+## 148. Decisiones §76: dictamen de B-min aceptado (MATERIAL); preparación de A-6, del paquete OWNER-RESERVED y de la solicitud de medición
+
+- Se aceptan el resultado técnico de B-min y el dictamen MATERIAL (R20261011T162328Z-5c5e, ACCREDITED). El paquete no queda autorizado para la
+  ejecución del Controller.
+- Encargos de preparación (sin aplicar, sin AGREED, sin revisión ni invocación nuevas):
+  - A-6, limitada al Controller de FX-02 en F6 y a los ocho puntos del dictamen, con guardas mecánicas, negativos, mutantes y los requisitos de
+    §76.5;
+  - el paquete OWNER-RESERVED sobre ADR-0046 #9;
+  - la solicitud futura de medición, separada de la decisión del Owner sobre el ADR.
+- A-6 no se presenta a acuerdo mientras haya una consecuencia OWNER-RESERVED sin disponer. B1 sigue lista y FX-U2 cerrada.
