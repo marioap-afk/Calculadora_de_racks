@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
 using RackCad.Application.StructuralSections;
 
 namespace RackCad.Application.StructuralAnalysis
@@ -14,21 +17,39 @@ namespace RackCad.Application.StructuralAnalysis
             _value = value;
         }
 
-        public string Value => throw new NotImplementedException();
+        public string Value => _value ?? string.Empty;
 
-        public bool IsEmpty => throw new NotImplementedException();
+        public bool IsEmpty => string.IsNullOrEmpty(_value);
 
-        public static bool TryCreate(string value, out StructuralMaterialId id) => throw new NotImplementedException();
+        public static bool TryCreate(string value, out StructuralMaterialId id)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                id = default;
+                return false;
+            }
 
-        public static StructuralMaterialId Create(string value) => throw new NotImplementedException();
+            id = new StructuralMaterialId(value);
+            return true;
+        }
 
-        public bool Equals(StructuralMaterialId other) => throw new NotImplementedException();
+        public static StructuralMaterialId Create(string value)
+        {
+            if (!TryCreate(value, out var id))
+            {
+                throw new ArgumentException("A material id cannot be blank.", nameof(value));
+            }
 
-        public override bool Equals(object obj) => throw new NotImplementedException();
+            return id;
+        }
 
-        public override int GetHashCode() => throw new NotImplementedException();
+        public bool Equals(StructuralMaterialId other) => string.Equals(Value, other.Value, StringComparison.Ordinal);
 
-        public override string ToString() => throw new NotImplementedException();
+        public override bool Equals(object obj) => obj is StructuralMaterialId other && Equals(other);
+
+        public override int GetHashCode() => StringComparer.Ordinal.GetHashCode(Value);
+
+        public override string ToString() => Value;
 
         public static bool operator ==(StructuralMaterialId left, StructuralMaterialId right) => left.Equals(right);
 
@@ -44,21 +65,40 @@ namespace RackCad.Application.StructuralAnalysis
         public StructuralMaterialRow(
             StructuralSectionId sectionId, StructuralMaterialId materialId, string verifier, DateTime? verifiedOn)
         {
-            throw new NotImplementedException();
+            if (sectionId.IsEmpty)
+            {
+                throw new ArgumentException("A row needs a section id.", nameof(sectionId));
+            }
+
+            if (materialId.IsEmpty)
+            {
+                throw new ArgumentException("A row needs a material id.", nameof(materialId));
+            }
+
+            SectionId = sectionId;
+            MaterialId = materialId;
+            Verifier = verifier;
+            VerifiedOn = verifiedOn;
         }
 
-        public StructuralSectionId SectionId => throw new NotImplementedException();
+        public StructuralSectionId SectionId { get; }
 
-        public StructuralMaterialId MaterialId => throw new NotImplementedException();
+        public StructuralMaterialId MaterialId { get; }
 
-        public string Verifier => throw new NotImplementedException();
+        public string Verifier { get; }
 
-        public DateTime? VerifiedOn => throw new NotImplementedException();
+        public DateTime? VerifiedOn { get; }
 
-        public bool IsVerified => throw new NotImplementedException();
+        public bool IsVerified => !string.IsNullOrWhiteSpace(Verifier) && VerifiedOn.HasValue;
 
         /// <summary>The canonical text of the row; it is what the mapping-rows hash is computed from.</summary>
-        public string CanonicalText => throw new NotImplementedException();
+        public string CanonicalText =>
+            string.Join(
+                "|",
+                SectionId.Value,
+                MaterialId.Value,
+                Verifier ?? string.Empty,
+                VerifiedOn.HasValue ? VerifiedOn.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : string.Empty);
     }
 
     /// <summary>The neutral abstraction through which a material reaches the model: explicit verified rows only.</summary>
@@ -73,16 +113,31 @@ namespace RackCad.Application.StructuralAnalysis
     /// </summary>
     public sealed class StructuralMaterialProfile : IStructuralMaterialProfile
     {
+        private readonly Dictionary<StructuralSectionId, StructuralMaterialRow> _bySection;
+
         public StructuralMaterialProfile(IEnumerable<StructuralMaterialRow> rows)
         {
-            throw new NotImplementedException();
+            var list = StructuralRequire.Items(rows, nameof(rows));
+            _bySection = new Dictionary<StructuralSectionId, StructuralMaterialRow>();
+
+            foreach (var row in list)
+            {
+                if (_bySection.ContainsKey(row.SectionId))
+                {
+                    throw new ArgumentException("Two rows for the section " + row.SectionId + ".", nameof(rows));
+                }
+
+                _bySection.Add(row.SectionId, row);
+            }
+
+            Rows = new ReadOnlyCollection<StructuralMaterialRow>(list.OrderBy(row => row.SectionId.Value, StringComparer.Ordinal).ToList());
         }
 
-        public static StructuralMaterialProfile Empty => throw new NotImplementedException();
+        public static StructuralMaterialProfile Empty { get; } = new StructuralMaterialProfile(new StructuralMaterialRow[0]);
 
-        public IReadOnlyList<StructuralMaterialRow> Rows => throw new NotImplementedException();
+        public IReadOnlyList<StructuralMaterialRow> Rows { get; }
 
         public bool TryGetRow(StructuralSectionId sectionId, out StructuralMaterialRow row) =>
-            throw new NotImplementedException();
+            _bySection.TryGetValue(sectionId, out row);
     }
 }

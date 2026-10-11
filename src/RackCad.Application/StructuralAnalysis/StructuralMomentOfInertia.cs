@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace RackCad.Application.StructuralAnalysis
 {
@@ -16,17 +17,25 @@ namespace RackCad.Application.StructuralAnalysis
         }
 
         /// <summary>The magnitude in inches to the fourth power.</summary>
-        public double InchesToTheFourth => throw new NotImplementedException();
+        public double InchesToTheFourth => _inchesToTheFourth;
 
-        public static StructuralMomentOfInertia FromInchesToTheFourth(double inchesToTheFourth) => throw new NotImplementedException();
+        public static StructuralMomentOfInertia FromInchesToTheFourth(double inchesToTheFourth)
+        {
+            if (double.IsNaN(inchesToTheFourth) || double.IsInfinity(inchesToTheFourth))
+            {
+                throw new ArgumentOutOfRangeException(nameof(inchesToTheFourth), inchesToTheFourth, "A moment of inertia must be finite.");
+            }
 
-        public bool Equals(StructuralMomentOfInertia other) => throw new NotImplementedException();
+            return new StructuralMomentOfInertia(inchesToTheFourth);
+        }
 
-        public override bool Equals(object obj) => throw new NotImplementedException();
+        public bool Equals(StructuralMomentOfInertia other) => _inchesToTheFourth.Equals(other._inchesToTheFourth);
 
-        public override int GetHashCode() => throw new NotImplementedException();
+        public override bool Equals(object obj) => obj is StructuralMomentOfInertia other && Equals(other);
 
-        public override string ToString() => throw new NotImplementedException();
+        public override int GetHashCode() => _inchesToTheFourth.GetHashCode();
+
+        public override string ToString() => _inchesToTheFourth.ToString("R", CultureInfo.InvariantCulture) + " in4";
 
         public static bool operator ==(StructuralMomentOfInertia left, StructuralMomentOfInertia right) => left.Equals(right);
 

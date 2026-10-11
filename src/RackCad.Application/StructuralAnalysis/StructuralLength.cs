@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using RackCad.Application.Units;
 
 namespace RackCad.Application.StructuralAnalysis
@@ -18,24 +19,39 @@ namespace RackCad.Application.StructuralAnalysis
             _inches = inches;
         }
 
-        public static StructuralLength Zero => throw new NotImplementedException();
+        public static StructuralLength Zero => default;
 
         /// <summary>The magnitude in inches.</summary>
-        public double Inches => throw new NotImplementedException();
+        public double Inches => _inches;
 
-        public static StructuralLength FromInches(double inches) => throw new NotImplementedException();
+        public static StructuralLength FromInches(double inches) => From(inches, LengthUnit.Inch);
 
-        public static StructuralLength FromMillimeters(double millimeters) => throw new NotImplementedException();
+        public static StructuralLength FromMillimeters(double millimeters) => From(millimeters, LengthUnit.Millimeter);
 
-        public static StructuralLength From(double value, LengthUnit unit) => throw new NotImplementedException();
+        public static StructuralLength From(double value, LengthUnit unit)
+        {
+            if (double.IsNaN(value) || double.IsInfinity(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), value, "A length must be finite.");
+            }
 
-        public bool Equals(StructuralLength other) => throw new NotImplementedException();
+            var inches = LengthUnits.Authority.ToInches(value, unit);
 
-        public override bool Equals(object obj) => throw new NotImplementedException();
+            if (double.IsInfinity(inches))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), value, "The length does not fit in a double once converted.");
+            }
 
-        public override int GetHashCode() => throw new NotImplementedException();
+            return new StructuralLength(inches);
+        }
 
-        public override string ToString() => throw new NotImplementedException();
+        public bool Equals(StructuralLength other) => _inches.Equals(other._inches);
+
+        public override bool Equals(object obj) => obj is StructuralLength other && Equals(other);
+
+        public override int GetHashCode() => _inches.GetHashCode();
+
+        public override string ToString() => _inches.ToString("R", CultureInfo.InvariantCulture) + " in";
 
         public static bool operator ==(StructuralLength left, StructuralLength right) => left.Equals(right);
 

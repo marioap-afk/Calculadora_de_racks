@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace RackCad.Application.StructuralAnalysis
 {
@@ -17,17 +18,25 @@ namespace RackCad.Application.StructuralAnalysis
         }
 
         /// <summary>The magnitude in square inches.</summary>
-        public double SquareInches => throw new NotImplementedException();
+        public double SquareInches => _squareInches;
 
-        public static StructuralArea FromSquareInches(double squareInches) => throw new NotImplementedException();
+        public static StructuralArea FromSquareInches(double squareInches)
+        {
+            if (double.IsNaN(squareInches) || double.IsInfinity(squareInches))
+            {
+                throw new ArgumentOutOfRangeException(nameof(squareInches), squareInches, "An area must be finite.");
+            }
 
-        public bool Equals(StructuralArea other) => throw new NotImplementedException();
+            return new StructuralArea(squareInches);
+        }
 
-        public override bool Equals(object obj) => throw new NotImplementedException();
+        public bool Equals(StructuralArea other) => _squareInches.Equals(other._squareInches);
 
-        public override int GetHashCode() => throw new NotImplementedException();
+        public override bool Equals(object obj) => obj is StructuralArea other && Equals(other);
 
-        public override string ToString() => throw new NotImplementedException();
+        public override int GetHashCode() => _squareInches.GetHashCode();
+
+        public override string ToString() => _squareInches.ToString("R", CultureInfo.InvariantCulture) + " in2";
 
         public static bool operator ==(StructuralArea left, StructuralArea right) => left.Equals(right);
 

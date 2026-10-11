@@ -20,23 +20,52 @@ namespace RackCad.Application.StructuralAnalysis
         public StructuralDiagnostic(
             string code, StructuralDiagnosticSeverity severity, StructuralExportOutcome impliedOutcome, string subject)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                throw new ArgumentException("A diagnostic needs a stable code.", nameof(code));
+            }
+
+            if (string.IsNullOrWhiteSpace(subject))
+            {
+                throw new ArgumentException("A diagnostic needs a subject.", nameof(subject));
+            }
+
+            if (severity == StructuralDiagnosticSeverity.Blocking && impliedOutcome == StructuralExportOutcome.Valid)
+            {
+                throw new ArgumentException("A blocking diagnostic must imply a non-Valid outcome.", nameof(impliedOutcome));
+            }
+
+            if (severity == StructuralDiagnosticSeverity.NonBlocking && impliedOutcome != StructuralExportOutcome.Valid)
+            {
+                throw new ArgumentException("A non-blocking diagnostic implies the Valid outcome.", nameof(impliedOutcome));
+            }
+
+            if (severity != StructuralDiagnosticSeverity.Blocking && severity != StructuralDiagnosticSeverity.NonBlocking)
+            {
+                throw new ArgumentOutOfRangeException(nameof(severity), severity, "Undeclared severity.");
+            }
+
+            Code = code;
+            Severity = severity;
+            ImpliedOutcome = impliedOutcome;
+            Subject = subject;
         }
 
-        public string Code => throw new NotImplementedException();
+        public string Code { get; }
 
-        public StructuralDiagnosticSeverity Severity => throw new NotImplementedException();
+        public StructuralDiagnosticSeverity Severity { get; }
 
-        public StructuralExportOutcome ImpliedOutcome => throw new NotImplementedException();
+        public StructuralExportOutcome ImpliedOutcome { get; }
 
-        public string Subject => throw new NotImplementedException();
+        public string Subject { get; }
 
-        public bool IsBlocking => throw new NotImplementedException();
+        public bool IsBlocking => Severity == StructuralDiagnosticSeverity.Blocking;
 
         public static StructuralDiagnostic Blocking(string code, StructuralExportOutcome outcome, string subject) =>
-            throw new NotImplementedException();
+            new StructuralDiagnostic(code, StructuralDiagnosticSeverity.Blocking, outcome, subject);
 
-        public static StructuralDiagnostic NonBlocking(string code, string subject) => throw new NotImplementedException();
+        public static StructuralDiagnostic NonBlocking(string code, string subject) =>
+            new StructuralDiagnostic(code, StructuralDiagnosticSeverity.NonBlocking, StructuralExportOutcome.Valid, subject);
     }
 
     /// <summary>The stable diagnostic codes. A code is never renamed or reused.</summary>
