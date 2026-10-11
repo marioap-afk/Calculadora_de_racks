@@ -3583,3 +3583,50 @@ No se ejecuta AutoCAD ni Smoke-1, no se pide la Owner Validation, no se cambia e
 - Sin invocaciones de modelos en esta sección.
 - HEAD = remoto = `9af9ac75` antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`.
+
+## 60. F1-T3D-SMOKE-PROCEDURE — Procedimiento exacto de Smoke-1 para el operador (preparado)
+
+Sección nueva; las anteriores no se reescriben. Tarea documental de la sesión autorizada por la revisión de T3C (§59): sin Worker de
+producto, sin AutoCAD, sin mutación del host y **sin ejecutar ningún paso**.
+
+**Entregables:**
+- **Procedimiento:** `docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md`. Traduce S1-01..S1-12 del Freeze a 41 pasos de operador
+  (SM-00a..SM-41) con:
+  - prerrequisitos (PR-01..PR-11) y dibujos de prueba A, B y C;
+  - identidad del Candidato (bloque de la guía §7.1) y SHA-256 exacto del DLL;
+  - CI del SHA exacto, RELEASE y acuse de I-52, y BASELINE de T3C;
+  - arranque de AutoCAD y carga con la regla de seguridad de O-4;
+  - fases A (panel nunca abierto), B (`RACKPANEL`, selección fina, foco, ocultar y mostrar, `DBMOD`), C (varios documentos y cambio de
+    documento activo), D (convivencia con comandos clásicos y escenario 10) y E (RACKEDITAR);
+  - foco con campo (D-T3D-01) y contención observada;
+  - POST, DIFF y disposición;
+  - evidencia, custodia, STOP y vuelta atrás.
+- **Plantilla del registro del operador:**
+  `docs/automation/evidence/I-64-pilot/F1-T3D-SMOKE-PROCEDURE/operator-record-template.md`.
+
+**Base leída del producto verificado (`e0205b5a`, solo lectura)** para fijar los textos esperados:
+- estados «Panel sin iniciar», «Sin documento», «Sesión activa», «Sesión degradada» y «Error del panel»;
+- disponibilidad con «Hay un comando en curso.» y «No hay un documento abierto.»;
+- contexto «Ninguno», «Un rack», «Selección actual: N racks y M otros objetos.», «Sin identidad» y «Diagnóstico»;
+- aviso de `PICKFIRST`;
+- instrumentación en memoria con los puntos `panel.open`, `panel.show`, `panel.hide`, `drain`, `selection.read` y `cache.invalidate`;
+- paleta «RackCad» con la pestaña «Workspace», sin `toolID`, `KeepFocus`, acoplable y flotante; cerrar oculta.
+
+**Hallazgos que la sesión no resuelve** (sección 12 del procedimiento, para el Coordinator):
+- **D-T3D-01:** el panel de F1 no tiene ningún campo editable. S1-06a..e (OV-19, INV-24) no se pueden ejecutar literalmente; quedan
+  NOT_EXECUTABLE_IN_F1, con comprobaciones adaptadas como evidencia complementaria. Reasignarlos exigiría una A-n.
+- **D-T3D-02:** F1 no tiene inyecciones de fallo para el panel; la contención se observa.
+- **D-T3D-03:** el caso Diagnóstico de S1-04 necesita un dibujo con una definición ilegible.
+- **D-T3D-04:** cómo se registra en el host la comprobación Debug de INV-14.
+- **D-T3D-05:** el «registro» de S1-09 es la tabla de instrumentación en memoria del panel, no RackLog.
+- **D-T3D-06:** `SetModalRackCadActive` sigue sin llamador (H-B5 y C-T3B-09); RACKEDITAR se ve como «Hay un comando en curso.».
+
+**Estado:**
+- F1-T3D-SMOKE-PROCEDURE: PREPARADO; se revisa con el cierre del gate F1.
+- Smoke-1 no se ejecuta y F1 PASS no se declara.
+- Siguiente: el paquete de cierre del gate F1 y STOP en **COORDINATOR_F1_GATE_CLOSE_REQUIRED**.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- HEAD = remoto = `795c95c4` (CI 38168220998 4/4) antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/`, `tests/`, archivos de proyecto, ROADMAP ni HANDOFF.
