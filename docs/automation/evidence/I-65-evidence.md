@@ -970,3 +970,37 @@ Custodia:
 | `F4-T3-DUMP-AND-READERS-nc3/R20261011T201450Z-b8ab/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
 | `F4-T3-DUMP-AND-READERS-nc3/R20261011T201450Z-b8ab/controller-verification.json` | `4E3C3143921E9733…` | `f7abf7b67691` |
 | `F4-T3-DUMP-AND-READERS-nc3/R20261011T201450Z-b8ab/relay-record.json` | `55E4F156F772D7AF…` | `331d4b08bda0` |
+
+## 41. F4-T4-COMPARATOR-AND-TOOL — intento 2: STOP del Worker (2026-10-11T20:56:01Z)
+
+Contrato sobre `AuthorityRevision` = `BaseSha` = `34831380`.
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T202527Z-1167` | PLANNING | Codex `gpt-6-luna`/`high` (21) | delegación válida; seis colecciones idénticas; A1-A8 en `pass`; `claude-sonnet-5-5`/`medium` (Balanced), `ROUTINE_IMPLEMENTATION` |
+| `R20261011T202728Z-e506` | CONTROL nc4 | sin invocación | A3 `fail` y las demás `pass`: oráculo cumplido |
+| `R20261011T202738Z-6356` | WORK | subagente `claude-sonnet-5-5`/`medium` (130 mensajes) | RED `b51adf28` (CI `38173107295` Core `failure`: 75 de 81 del filtro), GREEN `0e9bbc29` (CI `38173786847` Core `failure`: 2 de 81 del filtro, las dos aserciones defectuosas); 22 min 24 s; 78 llamadas; ninguna invocación de un intérprete; `BLOCKED/STOP` C-01 |
+
+- **Cambios del intento:** `StructuralReadbackComparison.cs`, `tools/RackCad.StructuralAnalysis.RamTool/` (proyecto, `Program.cs`, `RamToolCommands.cs`,
+  `RamToolCompare.cs`, `RamToolDumpScript.cs`, `RamToolInject.cs`), `RackCad.sln`, `tests/RackCad.Tests/RackCad.Tests.csproj` y cuatro archivos
+  `StructuralAnalysisComparison*`.
+- **Decisión:** corrección (CD-I65-F4-18, DEV-I65-F4-09); `attempts` = 3. **Invocaciones de Codex en F4:** 21 de 30.
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202527Z-1167/gate-contract.json` | `25B05C775AA5D076…` | `c5613e7c4253` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202527Z-1167/prompt.md` | `5C0E9E881234BC91…` | `d53057752125` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202527Z-1167/delegation.json` | `DC6E51F5DA177815…` | `8deee85b35a7` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202527Z-1167/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202527Z-1167/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202527Z-1167/relay-record.json` | `66FB037D9AD82CC8…` | `52207c49e4a6` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc4/R20261011T202728Z-e506/delegation.json` | `922657D5E64C6F0F…` | `244ccb9b886b` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc4/R20261011T202728Z-e506/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F4-T4-COMPARATOR-AND-TOOL-nc4/R20261011T202728Z-e506/relay-record.json` | `2ACA74C9996B3213…` | `246ceef4486a` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202738Z-6356/prompt.md` | `527AA67BFC18C33F…` | `e64c39aef3e6` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202738Z-6356/worker-handoff.json` | `A0E7AABF173FEF3C…` | `4831d792a809` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202738Z-6356/relay-record.json` | `7D0A8AE83F3B11C7…` | `bfa52572f10d` |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202738Z-6356/trx-summary.json` | `DD2002E46EE73948…` | `86a227e636f7` (fin de línea normalizado por Git) |
+| `F4-T4-COMPARATOR-AND-TOOL/R20261011T202738Z-6356/analysis.md` | `5CAFA306B7430F69…` | `4018740f7b4e` |

@@ -1,0 +1,214 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T4-COMPARATOR-AND-TOOL",
+  "RunId": "R20261011T202738Z-6356",
+  "DelegationRunId": "R20261011T202527Z-1167",
+  "Initiative": "I-65",
+  "Gate": "F4",
+  "Attempt": 2,
+  "BaseSha": "34831380a2f2fd7a2cf5bdd8de05c3281f9efc50",
+  "RedSha": "b51adf28040673bea9e01ea6a36f52e26884ad7a",
+  "CurrentSha": "0e9bbc29b6bd639ccad07b413ddf19d4793a5482",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+  "Pushed": true,
+  "FilesChanged": [
+    "RackCad.sln",
+    "src/RackCad.Application/StructuralAnalysis/StructuralReadbackComparison.cs",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonRowTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonSupport.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonVerdictTests.cs",
+    "tools/RackCad.StructuralAnalysis.RamTool/Program.cs",
+    "tools/RackCad.StructuralAnalysis.RamTool/RackCad.StructuralAnalysis.RamTool.csproj",
+    "tools/RackCad.StructuralAnalysis.RamTool/RamToolCommands.cs",
+    "tools/RackCad.StructuralAnalysis.RamTool/RamToolCompare.cs",
+    "tools/RackCad.StructuralAnalysis.RamTool/RamToolDumpScript.cs",
+    "tools/RackCad.StructuralAnalysis.RamTool/RamToolInject.cs"
+  ],
+  "WorkCompleted": "Comparador neutral puro CompareReadbacks (src/RackCad.Application/StructuralAnalysis/StructuralReadbackComparison.cs: 14 filas con identificadores estables, informe rackcad-structural-comparison/v1 determinista, rechazo y STALE, tolerancias del Freeze como constantes) y herramienta de consola fuera del producto (tools/RackCad.StructuralAnalysis.RamTool: dump-script, compare, inject; entrada en RackCad.sln bajo tools y una ProjectReference en el proyecto de pruebas). 81 pruebas focales nuevas: 79 pasan y 2 fallan por aserciones defectuosas del propio RED, que no se pueden editar (parada, ver Deviations). Suite Core: 14076 pasan, 2 fallan (esas dos). Solucion en Release: 0 errores.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-focal",
+      "Command": "cd \"C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural\" && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisComparison\" --logger \"trx;LogFileName=red-focal.trx\" --results-directory artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/2/R20261011T202738Z-6356/tests/red-focal",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/2/R20261011T202738Z-6356/tests/red-focal/red-focal.trx"
+    },
+    {
+      "RunRef": "red-guards",
+      "Command": "cd \"C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural\" && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~StructuralAnalysisRamElementsHardeningGuardTests|FullyQualifiedName~StructuralAnalysisSourceGuardTests|FullyQualifiedName~StructuralAnalysisRamElementsGuardTests|FullyQualifiedName~StructuralAnalysisSourceEntryHardeningTests\" --logger \"trx;LogFileName=red-guards.trx\" --results-directory artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/2/R20261011T202738Z-6356/tests/red-guards",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/2/R20261011T202738Z-6356/tests/red-guards/red-guards.trx"
+    },
+    {
+      "RunRef": "green-focal",
+      "Command": "cd \"C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural\" && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisComparison\" --logger \"trx;LogFileName=green-focal.trx\" --results-directory artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/2/R20261011T202738Z-6356/tests/green-focal",
+      "Phase": "GREEN",
+      "TreeSha": "0e9bbc29b6bd639ccad07b413ddf19d4793a5482",
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/2/R20261011T202738Z-6356/tests/green-focal/green-focal.trx"
+    },
+    {
+      "RunRef": "green-core",
+      "Command": "cd \"C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural\" && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --logger \"trx;LogFileName=green-core.trx\" --results-directory artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/2/R20261011T202738Z-6356/tests/green-core",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/2/R20261011T202738Z-6356/tests/green-core/green-core.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-focal",
+      "Selected": 81,
+      "Passed": 6,
+      "Failed": 75,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_combination_in_both_fails_because_none_is_expected",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_combination_in_one_model_fails",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_rejected_and_a_stale_report_serialize_their_verdict_and_reason",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_release_that_differs_fails_the_releases_and_supports",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_support_flag_that_differs_fails_the_releases_and_supports",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 0)",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 1)",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 2)",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 3)",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 4)",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 5)",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.Cases_without_loads_are_ignored_in_both_models",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.Combinations_a_dump_could_not_read_are_not_evaluated",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_defaults_are_checked_on_the_generated_model_too",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_first_differences_are_five_in_the_order_of_the_model_and_the_count_is_complete",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_report_does_not_depend_on_the_culture",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_report_has_one_row_per_row_of_the_matrix_in_a_stable_order",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_report_is_deterministic_in_value_and_in_bytes",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_same_load_given_as_a_percentage_and_as_a_distance_passes",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_serialized_report_has_the_exact_shape_of_the_schema",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_serialized_report_uses_LF_and_carries_no_timestamp",
+        "RackCad.Tests.StructuralAnalysisComparisonRowTests.Without_combinations_in_both_the_row_passes",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.A_dump_in_a_failed_state_is_a_rejection",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.A_failed_read_back_is_a_rejection_with_its_own_exit_code",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.A_read_back_of_another_input_is_stale_and_rejected",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_existing_report_file_is_never_overwritten",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_injected_package_is_a_new_folder_with_the_three_files_and_the_script_of_its_payload",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_injection_never_overwrites_an_existing_folder",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_unknown_command_is_invalid_usage",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_unknown_fault_or_an_invalid_package_is_invalid_usage_and_creates_nothing",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_unknown_section_keeps_the_format_with_a_space",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.Dumps_that_differ_fail_with_their_own_exit_code",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.Each_injection_changes_one_semantic_value_of_the_decoded_payload_and_the_folder(fault: \"inverted-axes\", expectedPath: \"$.members[0].l2\")",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.Each_injection_changes_one_semantic_value_of_the_decoded_payload_and_the_folder(fault: \"missing-core-function\", expectedPath: \"$.capabilities.coreFunctions\")",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.Each_injection_changes_one_semantic_value_of_the_decoded_payload_and_the_folder(fault: \"unknown-section\", expectedPath: \"$.members[0].section\")",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.Each_injection_changes_one_semantic_value_of_the_decoded_payload_and_the_folder(fault: \"wrong-version\", expectedPath: \"$.capabilities.version\")",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.Missing_arguments_and_missing_files_are_invalid_usage",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_dump_script_is_published_in_a_new_folder_with_the_embedded_folder",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_dump_script_never_overwrites_an_existing_folder",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_dump_script_refuses_an_embedded_folder_that_is_not_absolute_and_creates_nothing",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_dump_script_without_a_version_is_invalid_usage",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_manifest_of_an_injection_is_marked_with_the_mutation_and_the_hash_of_the_source",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_product_cannot_read_the_manifest_of_an_injection",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_report_file_is_new_and_equals_what_is_printed",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.Two_equal_dumps_with_a_matching_package_pass_with_exit_code_zero",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.Without_arguments_the_tool_prints_its_usage_and_is_invalid_usage",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_cand-idate_paired_twice_fails",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_changed_material_fails_the_material_row",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_changed_section_fails_the_section_row",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_column_twisted_the_other_way_fails_the_local_axes",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_generated_category_other_than_OTHER_fails",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_load_a_thousand_times_larger_fails_the_loads",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_load_in_another_direction_fails_the_loads",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_manual_category_other_than_OTHER_is_only_informative",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_member_missing_in_the_manual_model_fails_the_connectivity",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_member_with_its_nodes_inverted_fails_the_connectivity",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_missing_load_fails_the_loads",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_node_moved_one_millimeter_fails_the_coordinates",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_read_back_in_a_failed_state_rejects_and_approves_no_row",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_rejection_by_a_gate_is_a_rejection_too",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.An_ambiguous_node_pairing_fails_and_is_never_resolved_in_silence",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Another_fingerprint_is_stale_and_approves_no_row",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Axis_tolerance_edge_is_a_tenth_of_a_degree(degrees: 0.089999999999999997, passes: True)",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Axis_tolerance_edge_is_a_tenth_of_a_degree(degrees: 0.11, passes: False)",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Equal_models_with_other_identities_and_order_pass",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Load_position_tolerance_edge_is_two_hundredths_of_an_inch(shift: 0.019, passes: True)",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Load_position_tolerance_edge_is_two_hundredths_of_an_inch(shift: 0.021000000000000001, passes: False)",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Load_value_tolerance_edge_is_a_tenth_of_a_percent(percent: 0.089999999999999997, passes: True)",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Load_value_tolerance_edge_is_a_tenth_of_a_percent(percent: 0.11, passes: False)",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Members_are_paired_by_their_nodes_whatever_the_order_and_the_names",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Node_tolerance_edge_is_two_hundredths_of_an_inch(shift: 0.019, passes: True)",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Node_tolerance_edge_is_two_hundredths_of_an_inch(shift: 0.021000000000000001, passes: False)",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Null_inputs_are_refused",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.The_section_and_material_properties_are_not_evaluated_and_say_who_evaluates_them",
+        "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.The_self_weight_of_the_loaded_cases_is_informative"
+      ]
+    },
+    {
+      "RunRef": "red-guards",
+      "Selected": 174,
+      "Passed": 174,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-focal",
+      "Selected": 81,
+      "Passed": 79,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_injected_package_is_a_new_folder_with_the_three_files_and_the_script_of_its_payload",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_manifest_of_an_injection_is_marked_with_the_mutation_and_the_hash_of_the_source"
+      ]
+    },
+    {
+      "RunRef": "green-core",
+      "Selected": 14078,
+      "Passed": 14076,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_injected_package_is_a_new_folder_with_the_three_files_and_the_script_of_its_payload",
+        "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_manifest_of_an_injection_is_marked_with_the_mutation_and_the_hash_of_the_source"
+      ]
+    }
+  ],
+  "Evidence": [
+    "INV-13 / D-11 / D-13 (prueba que observa cada invariante):\n- Comparador puro, determinista y sin E/S: StructuralAnalysisComparisonRowTests.The_report_is_deterministic_in_value_and_in_bytes, The_report_does_not_depend_on_the_culture, The_serialized_report_uses_LF_and_carries_no_timestamp, The_comparator_does_no_input_output_and_keeps_no_clock_or_state; G1/G2/G4/INV-11/INV-14/INV-16 por las guardas existentes (StructuralAnalysisSourceGuardTests, StructuralAnalysisRamElementsHardeningGuardTests: en verde en la suite Core).\n- Iguales -> PASS: StructuralAnalysisComparisonVerdictTests.Equal_models_with_other_identities_and_order_pass; Members_are_paired_by_their_nodes_whatever_the_order_and_the_names.\n- Nudo desplazado 1 mm -> FAIL: A_node_moved_one_millimeter_fails_the_coordinates. Borde 0.019/0.021 in: Node_tolerance_edge_is_two_hundredths_of_an_inch.\n- Seccion cambiada -> FAIL: A_changed_section_fails_the_section_row; material: A_changed_material_fails_the_material_row.\n- Eje local invertido -> FAIL: A_column_twisted_the_other_way_fails_the_local_axes. Borde 0.09/0.11 grados: Axis_tolerance_edge_is_a_tenth_of_a_degree.\n- Carga x1000 -> FAIL: A_load_a_thousand_times_larger_fails_the_loads. Bordes 0.09/0.11 por ciento: Load_value_tolerance_edge_is_a_tenth_of_a_percent; posicion 0.019/0.021 in: Load_position_tolerance_edge_is_two_hundredths_of_an_inch; direccion: A_load_in_another_direction_fails_the_loads; numero: A_missing_load_fails_the_loads.\n- Emparejamiento ambiguo / nudo reclamado por dos nudos -> FAIL: An_ambiguous_node_pairing_fails_and_is_never_resolved_in_silence; A_cand-idate_paired_twice_fails (el guion evita un termino reservado en el texto).\n- Miembro con nudos invertidos -> FAIL (conectividad): A_member_with_its_nodes_inverted_fails_the_connectivity; miembro ausente: A_member_missing_in_the_manual_model_fails_the_connectivity.\n- Lectura de vuelta fallida / rechazo por compuerta -> rechazo, ninguna fila aprobada: A_read_back_in_a_failed_state_rejects_and_approves_no_row; A_rejection_by_a_gate_is_a_rejection_too.\n- Huella distinta -> STALE, ninguna fila aprobada: Another_fingerprint_is_stale_and_approves_no_row.\n- Categoria del generado distinta de OTHER -> FAIL: A_generated_category_other_than_OTHER_fails. Categoria del manual distinta -> solo INFORMATIVE: A_manual_category_other_than_OTHER_is_only_informative. Peso propio INFORMATIVE: The_self_weight_of_the_loaded_cases_is_informative.\n- Misma carga en porcentaje y en distancia -> PASS: The_same_load_given_as_a_percentage_and_as_a_distance_passes (a traves del lector del volcado).\n- Filas de propiedades NOT_EVALUATED con motivo: The_section_and_material_properties_are_not_evaluated_and_say_who_evaluates_them; combinaciones no leidas: Combinations_a_dump_could_not_read_are_not_evaluated; ninguna combinacion en ambos: Without_combinations_in_both_the_row_passes, A_combination_in_one_model_fails, A_combination_in_both_fails_because_none_is_expected; casos sin cargas ignorados: Cases_without_loads_are_ignored_in_both_models.\n- Valores por defecto, liberaciones y apoyos exactos: A_value_other_than_the_default_fails_the_member_defaults (6 variantes), The_defaults_are_checked_on_the_generated_model_too, A_release_that_differs_fails_the_releases_and_supports, A_support_flag_that_differs_fails_the_releases_and_supports.\n- Forma del informe rackcad-structural-comparison/v1: The_serialized_report_has_the_exact_shape_of_the_schema, The_report_has_one_row_per_row_of_the_matrix_in_a_stable_order, The_first_differences_are_five_in_the_order_of_the_model_and_the_count_is_complete, A_rejected_and_a_stale_report_serialize_their_verdict_and_reason. Tolerancias del Freeze: The_tolerances_are_the_ones_of_the_freeze.\nHerramienta (D-11, CD-I65-F4-09), StructuralAnalysisComparisonToolTests: codigos de salida distintos (The_exit_codes_are_distinct_and_pass_is_zero); volcado en carpeta nueva y sin sobrescritura (The_dump_script_is_published_in_a_new_folder_with_the_embedded_folder, The_dump_script_never_overwrites_an_existing_folder, The_dump_script_refuses_an_embedded_folder_that_is_not_absolute_and_creates_nothing); comparacion PASS/FAIL/rechazo/STALE/volcado fallido y archivo de informe nuevo sin sobrescritura (Two_equal_dumps_with_a_matching_package_pass_with_exit_code_zero, Dumps_that_differ_fail_with_their_own_exit_code, A_failed_read_back_is_a_rejection_with_its_own_exit_code, A_read_back_of_another_input_is_stale_and_rejected, A_dump_in_a_failed_state_is_a_rejection, The_report_file_is_new_and_equals_what_is_printed, An_existing_report_file_is_never_overwritten); inyeccion con una sola mutacion semantica comparando la carga util decodificada con la de origen (Each_injection_changes_one_semantic_value_of_the_decoded_payload_and_the_folder, 4 casos; An_unknown_section_keeps_the_format_with_a_space); carpeta de origen intacta, nueva carpeta sin sobrescritura (An_injection_never_overwrites_an_existing_folder); el producto no contiene el marcador (The_product_does_not_contain_the_marker_of_an_injection) y no lee el manifiesto marcado (The_product_cannot_read_the_manifest_of_an_injection); proyecto net8.0 Exe solo BCL, en la solucion bajo tools, una sola ProjectReference en pruebas y fuera del Plugin (The_tool_is_an_executable_with_only_the_application_reference_and_no_package, The_tool_is_in_the_solution_under_tools_and_in_the_tests_project_but_not_in_the_plugin).\nLas dos pruebas que NO pasan (aserciones defectuosas del RED, ver Deviations): The_manifest_of_an_injection_is_marked_with_the_mutation_and_the_hash_of_the_source y An_injected_package_is_a_new_folder_with_the_three_files_and_the_script_of_its_payload.",
+    "Informe serializado de un caso PASS (dos modelos neutrales equivalentes; generado por work/sample-reports.ps1 con el DLL Release):\n{\n  \"schema\": \"rackcad-structural-comparison/v1\",\n  \"verdict\": \"PASS\",\n  \"reason\": null,\n  \"tolerances\": {\n    \"nodePositionInches\": 0.02,\n    \"axisDegrees\": 0.1,\n    \"loadValuePercent\": 0.1,\n    \"loadPositionInches\": 0.02\n  },\n  \"rows\": [\n    {\n      \"id\": \"NODE-COORDINATES\",\n      \"name\": \"Node coordinates (paired by position)\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": 0,\n      \"unit\": \"in\",\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"The nodes are paired by position; the delta is the largest difference on one coordinate between a node and its nearest counterpart.\"\n    },\n    {\n      \"id\": \"CONNECTIVITY\",\n      \"name\": \"Connectivity (end nodes of the members, I to J)\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"LOCAL-AXES\",\n      \"name\": \"Local axes l1, l2 and l3\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": 0,\n      \"unit\": \"deg\",\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"The angle between corresponding vectors is the arc cosine of their normalised dot product, clamped to [-1, 1].\"\n    },\n    {\n      \"id\": \"SECTION-NAME\",\n      \"name\": \"Section name\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"MATERIAL-NAME\",\n      \"name\": \"Material name\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"SECTION-PROPERTIES\",\n      \"name\": \"Section properties (A, Ix, Iy, J)\",\n      \"verdict\": \"NOT_EVALUATED\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Evaluated by the signed verification sheet of the engineer; the program API does not expose section or material properties.\"\n    },\n    {\n      \"id\": \"MATERIAL-PROPERTIES\",\n      \"name\": \"Material properties (E, nu or G, unit weight)\",\n      \"verdict\": \"NOT_EVALUATED\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Evaluated by the signed verification sheet of the engineer; the program API does not expose section or material properties.\"\n    },\n    {\n      \"id\": \"MEMBER-DEFAULTS\",\n      \"name\": \"Cardinal point, end offsets, stiffness factors, axial behaviour and springs\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Both models must carry the defaults exactly: centroid, no offsets, stiffness factors of 1, normal axial behaviour, no springs.\"\n    },\n    {\n      \"id\": \"RELEASES-SUPPORTS\",\n      \"name\": \"Releases and support flags\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"LOADS\",\n      \"name\": \"Point loads on the members, by case with loads\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": 0,\n      \"unit\": \"percent\",\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Largest difference of a load value, in percent; largest difference of a load position 0 in.\"\n    },\n    {\n      \"id\": \"COMBINATIONS\",\n      \"name\": \"Load combinations (none expected)\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"CASE-CATEGORY\",\n      \"name\": \"Category of the generated case with loads\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"MANUAL-CASE-CATEGORY\",\n      \"name\": \"Category of the manual case with loads\",\n      \"verdict\": \"INFORMATIVE\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Manual case category: OTHER (informative; the program never read back a category created in its interface).\"\n    },\n    {\n      \"id\": \"SELF-WEIGHT\",\n      \"name\": \"Self weight of the cases with loads\",\n      \"verdict\": \"INFORMATIVE\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Self weight multipliers: generated case REF1 (0, 0, 0); manual case REF1 (0, 0, 0) (informative).\"\n    }\n  ]\n}\n",
+    "Informe serializado de un caso FAIL (seccion cambiada y carga multiplicada por 1000):\n{\n  \"schema\": \"rackcad-structural-comparison/v1\",\n  \"verdict\": \"FAIL\",\n  \"reason\": null,\n  \"tolerances\": {\n    \"nodePositionInches\": 0.02,\n    \"axisDegrees\": 0.1,\n    \"loadValuePercent\": 0.1,\n    \"loadPositionInches\": 0.02\n  },\n  \"rows\": [\n    {\n      \"id\": \"NODE-COORDINATES\",\n      \"name\": \"Node coordinates (paired by position)\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": 0,\n      \"unit\": \"in\",\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"The nodes are paired by position; the delta is the largest difference on one coordinate between a node and its nearest counterpart.\"\n    },\n    {\n      \"id\": \"CONNECTIVITY\",\n      \"name\": \"Connectivity (end nodes of the members, I to J)\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"LOCAL-AXES\",\n      \"name\": \"Local axes l1, l2 and l3\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": 0,\n      \"unit\": \"deg\",\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"The angle between corresponding vectors is the arc cosine of their normalised dot product, clamped to [-1, 1].\"\n    },\n    {\n      \"id\": \"SECTION-NAME\",\n      \"name\": \"Section name\",\n      \"verdict\": \"FAIL\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 1,\n      \"differences\": [\n        \"member GA1 (manual MA1): section 'HSS 4X4X1/4' against 'HSS 5X5X1/4'\"\n      ],\n      \"note\": null\n    },\n    {\n      \"id\": \"MATERIAL-NAME\",\n      \"name\": \"Material name\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"SECTION-PROPERTIES\",\n      \"name\": \"Section properties (A, Ix, Iy, J)\",\n      \"verdict\": \"NOT_EVALUATED\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Evaluated by the signed verification sheet of the engineer; the program API does not expose section or material properties.\"\n    },\n    {\n      \"id\": \"MATERIAL-PROPERTIES\",\n      \"name\": \"Material properties (E, nu or G, unit weight)\",\n      \"verdict\": \"NOT_EVALUATED\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Evaluated by the signed verification sheet of the engineer; the program API does not expose section or material properties.\"\n    },\n    {\n      \"id\": \"MEMBER-DEFAULTS\",\n      \"name\": \"Cardinal point, end offsets, stiffness factors, axial behaviour and springs\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Both models must carry the defaults exactly: centroid, no offsets, stiffness factors of 1, normal axial behaviour, no springs.\"\n    },\n    {\n      \"id\": \"RELEASES-SUPPORTS\",\n      \"name\": \"Releases and support flags\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"LOADS\",\n      \"name\": \"Point loads on the members, by case with loads\",\n      \"verdict\": \"FAIL\",\n      \"maxDelta\": 99.9,\n      \"unit\": \"percent\",\n      \"differenceCount\": 1,\n      \"differences\": [\n        \"member GA1 (manual MA1): value -1000 lbf against -1000000 lbf (99.9 percent, limit 0.1)\"\n      ],\n      \"note\": \"Largest difference of a load value, in percent; largest difference of a load position 0 in.\"\n    },\n    {\n      \"id\": \"COMBINATIONS\",\n      \"name\": \"Load combinations (none expected)\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"CASE-CATEGORY\",\n      \"name\": \"Category of the generated case with loads\",\n      \"verdict\": \"PASS\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": null\n    },\n    {\n      \"id\": \"MANUAL-CASE-CATEGORY\",\n      \"name\": \"Category of the manual case with loads\",\n      \"verdict\": \"INFORMATIVE\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Manual case category: OTHER (informative; the program never read back a category created in its interface).\"\n    },\n    {\n      \"id\": \"SELF-WEIGHT\",\n      \"name\": \"Self weight of the cases with loads\",\n      \"verdict\": \"INFORMATIVE\",\n      \"maxDelta\": null,\n      \"unit\": null,\n      \"differenceCount\": 0,\n      \"differences\": [],\n      \"note\": \"Self weight multipliers: generated case REF1 (0, 0, 0); manual case REF1 (0, 0, 0) (informative).\"\n    }\n  ]\n}\n",
+    "dotnet build RackCad.sln -c Release -v:minimal (salida completa en work/release-build.txt): \"Compilacion correcta\"; 65 Advertencia(s), 0 Errores. De las 65 advertencias, 63 son anteriores a esta tarea (MSB3277 de conflictos de referencias de AutoCAD y analizadores xUnit de pruebas existentes) y 2 vienen de archivos del RED que no se pueden editar: CS0649 en tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonSupport.cs(43,27) (campo SpringI sin asignar) y xUnit2013 en StructuralAnalysisComparisonToolTests.cs(447,13). Ninguna advertencia viene de src/RackCad.Application/StructuralAnalysis/StructuralReadbackComparison.cs ni de tools/RackCad.StructuralAnalysis.RamTool.",
+    "Uso de la herramienta (tools/RackCad.StructuralAnalysis.RamTool; argumentos explicitos, sin estado):\n  dump-script --out <carpeta nueva> --adapter-version <version> [--embed-folder <carpeta Windows absoluta y normalizada>]\n  compare --package <carpeta> --generated <volcado.json> --manual <volcado.json> [--report <archivo nuevo>] [--generated-combinations-unread] [--manual-combinations-unread]\n  inject --package <paquete valido> --fault <unknown-section|inverted-axes|wrong-version|missing-core-function> --out <carpeta nueva> [--embed-folder <carpeta>]\n  help | --help (imprime el uso, salida 0)\nCodigos de salida: 0 PASS o hecho; 1 FAIL; 2 REJECTED o STALE (lectura de vuelta no aprobada, huella distinta, volcado en estado de fallo); 3 uso o entrada invalida; 4 salida rechazada (el destino ya existe o no se puede crear; nunca se sobrescribe).\nLa carpeta embebida por defecto es --out; en Linux/CI las pruebas pasan --embed-folder con una ruta Windows explicita. Marcador de inyeccion en el manifiesto: propiedad rackcadFaultInjection { kind, mutation, sourcePackageSha256 = SHA-256 del manifest.json de origen }.\nSupuestos documentados (no decididos por el paquete): las opciones --generated-combinations-unread / --manual-combinations-unread (el tipo neutral de lectura no distingue \"ninguna\" de \"no leida\"; el comparador recibe un parametro opcional StructuralComparisonOptions, por defecto todo leido); el emparejamiento de nudos usa la diferencia maxima por coordenada <= 0.02 in; el valor de una carga se compara como porcentaje respecto al mayor de los dos valores absolutos; las filas dependientes del emparejamiento de nudos (conectividad, ejes, secciones, materiales, liberaciones y apoyos, cargas) salen FAIL si el emparejamiento falla.",
+    "Pruebas que ya pasan en el RED (6 de 81): StructuralAnalysisComparisonRowTests.The_comparator_does_no_input_output_and_keeps_no_clock_or_state (el esqueleto no tiene E/S ni reloj: pasa por construccion y es una guarda de forma); StructuralAnalysisComparisonToolTests.The_product_does_not_contain_the_marker_of_an_injection (el producto no lo contiene antes ni despues); The_tool_is_in_the_solution_under_tools_and_in_the_tests_project_but_not_in_the_plugin y The_tool_is_an_executable_with_only_the_application_reference_and_no_package (el RED ya incluye proyecto, entrada de solucion y referencia, como exige el paquete); The_exit_codes_are_distinct_and_pass_is_zero (las constantes de salida estan en el esqueleto); StructuralAnalysisComparisonVerdictTests.The_tolerances_are_the_ones_of_the_freeze (las constantes de tolerancia estan en el esqueleto). Las otras 75 fallan por NotImplementedException del esqueleto."
+  ],
+  "UnexpectedFindings": [
+    "Defecto de mi RED #1: StructuralAnalysisComparisonToolTests.The_manifest_of_an_injection_is_marked_with_the_mutation_and_the_hash_of_the_source compara las rutas diferentes con la cadena literal \"$.faultInjection\", pero escribi esa prueba antes de renombrar el marcador. La prueba The_product_does_not_contain_the_marker_of_an_injection busca el marcador en src sin distinguir mayusculas y \"faultInjection\" coincide con el tipo existente SiblingRedrawDebugFaultInjection del Plugin (src/RackCad.Plugin/Systems/Shared/SiblingRedrawDebugFaultInjection.cs), asi que el marcador no puede llamarse faultInjection: ambas pruebas no pueden pasar a la vez con el RED tal como esta. El GREEN usa rackcadFaultInjection (la propiedad que lee la propia prueba por RamToolInjection.Marker).",
+    "Defecto de mi RED #2: StructuralAnalysisComparisonToolTests.An_injected_package_is_a_new_folder_with_the_three_files_and_the_script_of_its_payload espera el orden [structural-loads.json, manifest.json, rackcad-ram-build.py] despues de ordenar los nombres de forma ordinal, y el orden ordinal real es [manifest.json, rackcad-ram-build.py, structural-loads.json]; es una asercion equivocada que ninguna implementacion puede satisfacer (los nombres los fijan constantes del proveedor, fuera del alcance).",
+    "Las dos advertencias de compilacion propias (CS0649 y xUnit2013) estan en archivos del RED y tampoco se pueden corregir sin editarlos."
+  ],
+  "KnownLimitations": [
+    "La herramienta no se probo en Linux localmente (solo Windows); las pruebas usan Path.GetTempPath(), \"\\n\" explicito y --embed-folder con rutas Windows literales para no depender del sistema.",
+    "La comparacion de combinaciones depende de las opciones --generated-combinations-unread/--manual-combinations-unread porque el tipo neutral de lectura no distingue \"ninguna\" de \"no leida\" (C-03 no se activo: la fila se evalua, y la opcion es un parametro opcional del comparador).",
+    "El informe compara la transferencia; no valida el diseno (INV-11)."
+  ],
+  "Deviations": [
+    "Parada: las dos aserciones defectuosas del RED (ver UnexpectedFindings) exigirian editar archivos de pruebas del RED, prohibido desde el commit RED; no los edite. La condicion de parada mas cercana de la lista del paquete es C-01 (modificar una prueba). El GREEN esta commiteado y empujado con esas dos pruebas fallando, y la CI del GREEN fallara en el job Core por ellas hasta que el Controller autorice una correccion (CorrectionOf) de esas dos aserciones.",
+    "Las filas de la matriz no son 1:1 con una fila por concepto: el emparejamiento de nudos se informa dentro de NODE-COORDINATES (como en la matriz de la seccion 3 F) y la categoria del generado y la del manual son dos filas aparte (CASE-CATEGORY y MANUAL-CASE-CATEGORY)."
+  ],
+  "OpenQuestions": [
+    "Correccion minima propuesta de las dos aserciones del RED: (1) usar \"$.\" + RamToolInjection.Marker en lugar de \"$.faultInjection\" en el arreglo esperado; (2) esperar [manifest.json, rackcad-ram-build.py, structural-loads.json]. Con ellas, las 81 pruebas focales pasan con el GREEN actual sin tocar la implementacion."
+  ],
+  "WorkerStatus": "BLOCKED",
+  "Disposition": "STOP",
+  "TriggeredStopConditions": [
+    "C-01"
+  ],
+  "RecommendedNextAction": "El Controller decide: autorizar una delegacion de correccion que cambie solo las dos aserciones indicadas del RED (StructuralAnalysisComparisonToolTests.cs) y verifique la CI; la implementacion en 0e9bbc29b6bd639ccad07b413ddf19d4793a5482 no necesita cambios para satisfacerlas.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

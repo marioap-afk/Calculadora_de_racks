@@ -1,0 +1,139 @@
+{
+ "core-green": {
+  "sha256": "6370662EDE8C20F741CC881E4FDFE54EFF6E1F2E6848EF26B5E029D3337FCCD6",
+  "counters": {
+   "total": "14078",
+   "executed": "14078",
+   "passed": "14076",
+   "failed": "2",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 81,
+   "Passed": 79,
+   "Failed": 2
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {
+   "Assert.Equal() Failure": 2
+  }
+ },
+ "ui-green": {
+  "sha256": "1F65EA6E1BA8F34B3CE797E3AAEE23AFA39F45AAD2CEE1F29D67BD1A36E13AC6",
+  "counters": {
+   "total": "1654",
+   "executed": "1637",
+   "passed": "1637",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 0
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "core-red": {
+  "sha256": "FF95512C79127EC4D2781DB56DDD4B4A488B612D1D0F5333D0A083B20A6B30AB",
+  "counters": {
+   "total": "14078",
+   "executed": "14078",
+   "passed": "14003",
+   "failed": "75",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 81,
+   "Failed": 75,
+   "Passed": 6
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {
+   "Assert.Throws() Failure": 1,
+   "System.NotImplementedException ": 74
+  },
+  "failed_filter_names": [
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_combination_in_both_fails_because_none_is_expected",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_combination_in_one_model_fails",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_rejected_and_a_stale_report_serialize_their_verdict_and_reason",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_release_that_differs_fails_the_releases_and_supports",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_support_flag_that_differs_fails_the_releases_and_supports",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 0)",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 1)",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 2)",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 3)",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 4)",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.A_value_other_than_the_default_fails_the_member_defaults(variant: 5)",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.Cases_without_loads_are_ignored_in_both_models",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.Combinations_a_dump_could_not_read_are_not_evaluated",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_defaults_are_checked_on_the_generated_model_too",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_first_differences_are_five_in_the_order_of_the_model_and_the_count_is_complete",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_report_does_not_depend_on_the_culture",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_report_has_one_row_per_row_of_the_matrix_in_a_stable_order",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_report_is_deterministic_in_value_and_in_bytes",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_same_load_given_as_a_percentage_and_as_a_distance_passes",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_serialized_report_has_the_exact_shape_of_the_schema",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.The_serialized_report_uses_LF_and_carries_no_timestamp",
+   "RackCad.Tests.StructuralAnalysisComparisonRowTests.Without_combinations_in_both_the_row_passes",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.A_dump_in_a_failed_state_is_a_rejection",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.A_failed_read_back_is_a_rejection_with_its_own_exit_code",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.A_read_back_of_another_input_is_stale_and_rejected",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_existing_report_file_is_never_overwritten",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_injected_package_is_a_new_folder_with_the_three_files_and_the_script_of_its_payload",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_injection_never_overwrites_an_existing_folder",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_unknown_command_is_invalid_usage",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_unknown_fault_or_an_invalid_package_is_invalid_usage_and_creates_nothing",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.An_unknown_section_keeps_the_format_with_a_space",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.Dumps_that_differ_fail_with_their_own_exit_code",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.Each_injection_changes_one_semantic_value_of_the_decoded_payload_and_the_folder(fault: \"inverted-axes\", expectedPath: \"$.members[0].l2\")",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.Each_injection_changes_one_semantic_value_of_the_decoded_payload_and_the_folder(fault: \"missing-core-function\", expectedPath: \"$.capabilities.coreFunctions\")",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.Each_injection_changes_one_semantic_value_of_the_decoded_payload_and_the_folder(fault: \"unknown-section\", expectedPath: \"$.members[0].section\")",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.Each_injection_changes_one_semantic_value_of_the_decoded_payload_and_the_folder(fault: \"wrong-version\", expectedPath: \"$.capabilities.version\")",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.Missing_arguments_and_missing_files_are_invalid_usage",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_dump_script_is_published_in_a_new_folder_with_the_embedded_folder",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_dump_script_never_overwrites_an_existing_folder",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_dump_script_refuses_an_embedded_folder_that_is_not_absolute_and_creates_nothing",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_dump_script_without_a_version_is_invalid_usage",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_manifest_of_an_injection_is_marked_with_the_mutation_and_the_hash_of_the_source",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_product_cannot_read_the_manifest_of_an_injection",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.The_report_file_is_new_and_equals_what_is_printed",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.Two_equal_dumps_with_a_matching_package_pass_with_exit_code_zero",
+   "RackCad.Tests.StructuralAnalysisComparisonToolTests.Without_arguments_the_tool_prints_its_usage_and_is_invalid_usage",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_candidate_paired_twice_fails",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_changed_material_fails_the_material_row",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_changed_section_fails_the_section_row",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_column_twisted_the_other_way_fails_the_local_axes",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_generated_category_other_than_OTHER_fails",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_load_a_thousand_times_larger_fails_the_loads",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_load_in_another_direction_fails_the_loads",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_manual_category_other_than_OTHER_is_only_informative",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_member_missing_in_the_manual_model_fails_the_connectivity",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_member_with_its_nodes_inverted_fails_the_connectivity",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_missing_load_fails_the_loads",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_node_moved_one_millimeter_fails_the_coordinates",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_read_back_in_a_failed_state_rejects_and_approves_no_row",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.A_rejection_by_a_gate_is_a_rejection_too",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.An_ambiguous_node_pairing_fails_and_is_never_resolved_in_silence",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Another_fingerprint_is_stale_and_approves_no_row",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Axis_tolerance_edge_is_a_tenth_of_a_degree(degrees: 0.089999999999999997, passes: True)",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Axis_tolerance_edge_is_a_tenth_of_a_degree(degrees: 0.11, passes: False)",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Equal_models_with_other_identities_and_order_pass",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Load_position_tolerance_edge_is_two_hundredths_of_an_inch(shift: 0.019, passes: True)",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Load_position_tolerance_edge_is_two_hundredths_of_an_inch(shift: 0.021000000000000001, passes: False)",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Load_value_tolerance_edge_is_a_tenth_of_a_percent(percent: 0.089999999999999997, passes: True)",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Load_value_tolerance_edge_is_a_tenth_of_a_percent(percent: 0.11, passes: False)",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Members_are_paired_by_their_nodes_whatever_the_order_and_the_names",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Node_tolerance_edge_is_two_hundredths_of_an_inch(shift: 0.019, passes: True)",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Node_tolerance_edge_is_two_hundredths_of_an_inch(shift: 0.021000000000000001, passes: False)",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.Null_inputs_are_refused",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.The_section_and_material_properties_are_not_evaluated_and_say_who_evaluates_them",
+   "RackCad.Tests.StructuralAnalysisComparisonVerdictTests.The_self_weight_of_the_loaded_cases_is_informative"
+  ]
+ }
+}
