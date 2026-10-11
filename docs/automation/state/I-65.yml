@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F0
   attempts: 0
-  next_action: P1 v3.2 ejecutada (sin STOP). Revisión de confirmación del Architect sobre la Proposal V3; después, ADR-0050 final al Owner (Q-O6) y Freeze solo con AGREED; F1 solo con autorización expresa del Owner.
+  next_action: Cierre por diff de A65-V3-01/02 sobre la Proposal V3.1; con AGREED, ADR-0050 final al Owner (Q-O6); Freeze solo con AGREED; F1 solo con autorización expresa del Owner.
   last_evidence_commit: acaefc1da279c3573db37a9279a169f3ecaa43ce
 execution_context:
   mode: manual
@@ -15,7 +15,7 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F0
-  next_role: Architect (confirmación de la Proposal V3, ronda 4)
+  next_role: Architect (cierre por diff de A65-V3-01 y A65-V3-02 en la Proposal V3.1)
   implementation_authorization: NO
   owner_decisions_open: [Q-O6 ADR-0050 (tras el Architect), confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01), autorización de F1 (Q-O8), verificación de las filas de mapeo sección/material por un ingeniero]
   not_authorized: [implementación, Freeze sin AGREED de Coordinator y Architect, nuevas corridas en RAM Elements sin autorización, escribir en archivos de RAM del usuario]

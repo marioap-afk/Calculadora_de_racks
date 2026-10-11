@@ -9,7 +9,7 @@
 | Sonda aprobada | P1 v3.2 en `54f17ef6`, blob `2fafe9c9a99121ca82eb09180425463e1cb9fd59`, SHA-256 `96ae6ea92c5fba46df943317658cbcb2d0737ad527e39bb4a2b0cdae0723db80` |
 | Copia ejecutada | [ram-probe-p1.executed.py](p1-run/ram-probe-p1.executed.py), SHA-256 `95378d877a37f297f7e1667b4e763ec891c5df3c07d33e833e34bb1009d85fe0`; única diferencia: la línea `OUT_DIR = r"D:\I65-P1\run-20261011T014503Z"` |
 | Ejecutor | Coordinator con Computer Use (acceso concedido a «RAM Elements 2026», nivel completo), autorización del Owner registrada en `b0098f21` |
-| Informe | [p1-report.json](p1-run/p1-report.json), SHA-256 `d34927716a07e46477f9c3717245582ca20d812994ce9eeccbae8dd07c8c11f3` (32 204 bytes); `write-test.txt` SHA-256 `2689367b…f1df` |
+| Informe | [p1-report.json](p1-run/p1-report.json): archivo original escrito por RAM (CRLF) SHA-256 `d34927716a07e46477f9c3717245582ca20d812994ce9eeccbae8dd07c8c11f3` (32 204 bytes); **blob de Git normalizado a LF** SHA-256 `30d7b1bdf9248bc9d14dee829a706099aa2c05e7fb461925372bdaa8047752c5` (30 971 bytes; convertido a CRLF reproduce el original, comprobado por el Architect); `write-test.txt` SHA-256 `2689367b…f1df` |
 | Capturas | [p1-run/](p1-run/) 01 (modelo vacío al cargar), 02 (ruta en «Ejecutar archivo…»), 03 y 04 (diálogos de confirmación), 05 (salida «Script ejecutado con éxito»), 06 (aviso de guardar respondido «No»), 07 (error gRPC al cerrar) |
 
 ## 2. Secuencia observada

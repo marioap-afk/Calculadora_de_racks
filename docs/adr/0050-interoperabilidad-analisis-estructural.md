@@ -6,7 +6,7 @@
   congelable). Coordinator de I-65 (redacción).
 - **Iniciativa relacionada:** I-65 — `architecture/interop-analisis-estructural`
   ([contrato](../initiatives/I-65-interop-analisis-estructural.md), [Discovery](../initiatives/I-65-discovery.md),
-  [Proposal V3](../initiatives/I-65-proposal-v3.md)).
+  [Proposal V3.1](../initiatives/I-65-proposal-v3.1.md)).
 - **Consume sin reabrir:** [ADR-0017](0017-validacion-cargas-diferida-ram-elements.md). **Compatible con:**
   [ADR-0005](0005-estrategia-de-unidades.md), [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md) §10,
   [ADR-0040](0040-motor-expresiones-parametricas-y-guarda-de-complejidad-sintactica.md) D3,
@@ -72,7 +72,7 @@ RAM Elements 2026 es una API Python que corre solo dentro del programa, con docu
 ## Referencias
 
 - [Mandato de I-65](../automation/decisions/I-65-owner-mandate.original.txt)
-- [Discovery de I-65](../initiatives/I-65-discovery.md), [Proposal V3](../initiatives/I-65-proposal-v3.md)
+- [Discovery de I-65](../initiatives/I-65-discovery.md), [Proposal V3.1](../initiatives/I-65-proposal-v3.1.md)
 - [ADR-0005](0005-estrategia-de-unidades.md), [ADR-0009](0009-identidad-guid-embebida-en-dwg.md),
   [ADR-0017](0017-validacion-cargas-diferida-ram-elements.md),
   [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md),

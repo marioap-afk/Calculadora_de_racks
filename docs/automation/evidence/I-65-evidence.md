@@ -203,3 +203,13 @@ Sin cambios de configuración, sin nuevas solicitudes de acceso, sin abrir RAM E
 - Custodia en [p1-run/](I-65-f0/p1-run/) (informe, copia ejecutada, archivo de prueba y 7 capturas) y análisis en
   [p1-results.md](I-65-f0/p1-results.md). Sin falla de clase STOP.
 - Siguen: adenda §14 de Discovery, Proposal V3, ADR-0050 (borrador final) y paquete de confirmación para el mismo Architect.
+
+## 18. F0 — Architect, ronda 4, y Proposal V3.1
+
+- CI `push` de `d077a1b4`: **success**, `head_sha` exacto.
+- Ronda 4 (confirmación) sobre `d077a1b4`: **CHANGES REQUIRED** con dos `REQUIRED` de documento (A65-V3-01 contrato de unidades del
+  volcado ante un modelo analizado; A65-V3-02 oráculo de material con fuente de ingeniería) y cuatro OPTIONAL. **A65-V1-01 y A65-V21-02
+  CLOSED.** El Architect verificó por su cuenta el informe de P1 (regla de ejes, Timoshenko, conversiones, huérfanos, enum). Texto íntegro
+  en [architect-r4-verdict.md](I-65-f0/architect-r4-verdict.md).
+- Respuesta: Proposal V3.1 (disposición en su §17), `p1-results.md` con los dos hashes del informe y ADR-0050 apuntando a V3.1. El
+  Architect anunció que cierra ambos `REQUIRED` a la vista del diff.
