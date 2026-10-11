@@ -32,7 +32,7 @@ automation_state_path: docs/automation/state/I-65.yml
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision: true
+requires_owner_decision:
 requires_owner_validation: true
 automation:
   enabled: false
@@ -42,11 +42,11 @@ automation:
 
 # I-65 — Structural Analysis Interop Foundation + RAM Elements Adapter
 
-> Contrato **manual** (`automation.enabled: false`): el ejecutor nocturno no selecciona ni reanuda esta iniciativa. Los campos
-> `requires_plugin_build`, `requires_autocad`, `requires_owner_decision` y `requires_owner_validation` quedan **vacíos a propósito**:
-> están **por determinar** según el workflow, no son `false`. Que estén vacíos no concede exenciones
-> ([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §11, regla monotónica). `priority: HIGH` procede del mandato («Priority: HIGH / PARALLEL
-> PRODUCT TRACK»); `size` no tiene fuente y queda vacío.
+> Contrato **manual** (`automation.enabled: false`): el ejecutor nocturno no selecciona ni reanuda esta iniciativa.
+> `requires_plugin_build`, `requires_autocad` y `requires_owner_validation` son `true` por el Freeze (Proposal V3.1 §11, D-13,
+> OV-I65-01, A65-V1-19). `requires_owner_decision` sigue **vacío a propósito**: el Freeze no lo fija; no es `false` y no concede
+> exenciones ([AUTOMATION_PLAN](../AUTOMATION_PLAN.md) §11, regla monotónica). `priority: HIGH` procede del mandato («Priority: HIGH /
+> PARALLEL PRODUCT TRACK»); `size` no tiene fuente y queda vacío.
 
 ## 1. Identidad y agrupación
 
@@ -89,24 +89,15 @@ semánticos; análisis en vivo; sobrescritura automática de archivos de RAM; in
 como autoridad de persistencia de RackCad. Tampoco absorbe **I-38** (ingeniería estructural de Cantilever: verificación y
 dimensionado) ni reabre [ADR-0017](../adr/0017-validacion-cargas-diferida-ram-elements.md): RackCad no valida cargas por sí mismo.
 
-Freeze, Freeze delta y A-n: **ninguno** todavía.
+Alcance congelado: [Proposal V3.1](I-65-proposal-v3.1.md) (Frozen: yes); Freeze delta y A-n: ninguno.
 
 ## 5. Fundaciones y evolución
 
-```text
-Consumes: UNKNOWN — candidatos preliminares: Rack Identity, Authored vs Effective, catálogo neutral de secciones (ADR-0020/0022),
-          Computed Parameters & Project Summary (solo descubrimiento de racks, no como modelo estructural)
-Extends: UNKNOWN
-Introduces: UNKNOWN — candidatos preliminares: Structural Analysis Model neutral, frontera de unidades estructurales,
-            frontera de adaptadores de proveedor de análisis
-```
-
-Son candidatos de intake: cada entrada se verifica con DC-08 en la base vigente
-([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1).
+La fuente es la [Proposal V3.1](I-65-proposal-v3.1.md) §7 (congelada); el front matter la resume.
+Los candidatos de intake se verificaron con DC-08 en la Discovery.
 
 ## 6. Discovery, decisiones y Freeze
 
-- Discovery: pendiente; se publica en este mismo hilo de trabajo tras el bootstrap.
 - Discovery: [I-65-discovery.md](I-65-discovery.md) (con adendas §13 y §14).
 - Freeze: [I-65-proposal-v3.1.md](I-65-proposal-v3.1.md) (Frozen: yes); Freeze delta: no aplica; A-n: ninguna.
 - ADR: [ADR-0050](../adr/0050-interoperabilidad-analisis-estructural.md) (aceptado).
@@ -132,9 +123,9 @@ autorizada por el Owner (decisiones §9) y se ejecuta en dos tareas (decisiones 
 
 ## 9. Owner Validation
 
-- Asignación OV: pendiente del Freeze. El mandato exige una validación temprana del Owner/ingeniería tras la primera rebanada
-  («OWNER / ENGINEERING VALIDATION»), antes de ampliar cobertura.
-- Requiere AutoCAD / RAM Elements / Owner Validation: **por determinar**.
+- Asignación OV: [Proposal V3.1](I-65-proposal-v3.1.md) §5 (OV-I65-01..08). El hito temprano del mandato («OWNER / ENGINEERING
+  VALIDATION») es OV-I65-01 en F4, antes de ampliar cobertura.
+- Requiere AutoCAD y Owner Validation: **sí** (Freeze). RAM Elements: solo en las OV de F4/F5 y READY, por el ingeniero.
 
 ## 10. Evidencia y entrega
 
