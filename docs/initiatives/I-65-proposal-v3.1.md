@@ -182,9 +182,9 @@ StructuralSectionId (catálogo neutral, AISC v16.0) → StructuralSection → no
   de RAM elegido, **con su fuente de ingeniería citada** (p. ej. norma ASTM o Manual AISC), nunca copiados de la base de RAM. La fila de la
   matriz §4 compara los valores de la base de RAM contra esos valores registrados; una diferencia exige el reconocimiento expreso del
   Owner (como los deltas de sección) o el cambio de la fila. Ejemplo conocido: el `A36` de RAM tiene ν = 0.26 frente a 0.3 habitual.
-- Con la recomendación (b), V1 **no** guarda valores de material en RackCad (no hay dos autoridades): E, ν y peso unitario los aporta la
-  base de RAM. El Owner declara en Q-O2 los valores esperados por nombre (p. ej. E = 29 000 ksi), y la OV los verifica en el diálogo de
-  materiales de RAM (fila §4).
+- Con la recomendación (b), los valores de material que usa el análisis los aporta **solo** la base de RAM; RackCad no los transfiere.
+  Los valores esperados de cada fila verificada (oráculo de material) no son una segunda autoridad del análisis: solo sirven para la fila
+  §4 de la OV.
 
 ### D-08 — Errores, versión y escritura atómica (A65-V1-11, A65-V1-12; AQ-10)
 
@@ -308,7 +308,7 @@ bit (A65-V2-07). El texto revisado es el que se congela; el Owner lo acepta **an
 | INV-02 | Cantidades tipadas; sin literales de conversión en el análisis | tipos + G4 | un `25.4` en `StructuralAnalysis/**` hace fallar G4 |
 | INV-03 | Conversiones de entrada correctas y exactas donde corresponde | lbf↔N, kgf↔N, kip, in↔mm, idas y vueltas ≤ 1e-12 | antes de la frontera, la prueba no compila o falla |
 | INV-04 | Determinismo **y sensibilidad** de huellas | mismo diseño → mismo JSON y huella; cambiar geometría, sección, material, supuesto, mapeo, archivo de cargas o versión del adaptador → huella distinta | una huella constante pasa la estabilidad y falla la sensibilidad |
-| INV-05 | Fallo cerrado sin paquete parcial | mapeo ausente, familia C/L, canales pareados, doble cara o `NegativeY`, 25 cargas, carga sin unidad, nudo brazo–columna fuera de la columna → `Unsupported`/`Invalid`; fallo inyectado en la escritura → no queda carpeta | un escritor no atómico deja carpeta |
+| INV-05 | Fallo cerrado sin paquete parcial | mapeo ausente, familia C/L, canales pareados, doble cara o `NegativeY`, brazo con inclinación > 10°, 25 cargas, carga sin unidad, nudo brazo–columna fuera de la columna → `Unsupported`/`Invalid`; fallo inyectado en la escritura → no queda carpeta | un escritor no atómico deja carpeta |
 | INV-06 | Geometría analítica (IDL-01..08) | golden de `REF-CANT-01` derivado a mano | nudos en puntos de inserción de bloque o en caras → falla |
 | INV-07 | Orientación **[P1✓]** | regla de ejes de RAM (D-04) aplicada a las 12 direcciones y 3 giros de P1 reproduce sus vectores (tabla de P1 como fixture); vector de peralte con rotación y espejo; `θ` emitido reproduce el peralte | una rotación no nula ignorada, o `l3 = +Ẑ` aplicado a un miembro no vertical → falla |
 | INV-08 | Apoyos y liberaciones con la transformación de D-04 | tabla de mapeo de banderas | un mapeo índice a índice (Ry→Ry) → falla |
@@ -345,7 +345,7 @@ Sin filas de comportamiento (reacciones, desplazamientos) mientras F6 esté fuer
 |---|---|---|
 | OV-I65-01 | F4 (hito temprano) y READY | Exportar `REF-CANT-01` desde un DWG, correr el script sobre un modelo vacío, sin errores; volcar generado y manual **antes de analizarlos** (D-11); matriz §4 PASS salvo filas informativas |
 | OV-I65-02 | F5 y READY | Cargas de `REF1`: valor, posición y dirección equivalentes (sin comportamiento si F6 está fuera) |
-| OV-I65-03 | F4 y READY | Estación no soportada (C/L, canales pareados, doble cara o brazo `NegativeY`) o mapeo ausente o sin verificar → sin paquete, diagnóstico visible |
+| OV-I65-03 | F4 y READY | Estación no soportada (C/L, canales pareados, doble cara, brazo `NegativeY` o con inclinación > 10°) o mapeo ausente o sin verificar → sin paquete, diagnóstico visible |
 | OV-I65-04 | F4 y READY | El script se niega a correr sobre un modelo no vacío y no lo modifica |
 | OV-I65-05 | F4 y READY | **Inyección de fallo**: paquete de prueba con un nombre de sección inexistente → `FAILED — DISCARD MODEL` en consola y en la lectura de vuelta; el comparador lo rechaza |
 | OV-I65-06 | F4 y READY | **Inyección de fallo**: paquete cuya lectura de vuelta no puede coincidir (ejes esperados alterados) → `FAILED` |
@@ -493,3 +493,5 @@ Propósito: construir a mano en RAM Elements el modelo con el que se compara el 
 | A65-V3-04 (OPTIONAL) | Q-O7: sustitución después del Freeze = Owner + A-n, IDL sin cambios, golden nuevo a mano |
 | A65-V3-05 (OPTIONAL) | `p1-results.md` registra los dos hashes del informe (archivo original CRLF y blob LF de Git) |
 | A65-V3-06 (OPTIONAL) | IDL-10: brazos con más de 10° respecto de la horizontal → `Unsupported` |
+| A65-V3-02 (residual, cierre por diff) | frase residual de D-07 sustituida: los valores esperados vienen solo de cada fila verificada y no son autoridad del análisis |
+| A65-V31-01 | INV-05 (y OV-I65-03) incluyen «brazo con inclinación > 10°» |
