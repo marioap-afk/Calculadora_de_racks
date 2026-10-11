@@ -1,0 +1,43 @@
+diff --git a/tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs b/tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs
+index 897f9765..9a5fd779 100644
+--- a/tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs
++++ b/tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs
+@@ -48,8 +48,11 @@ namespace RackCad.Tests
+         /// <summary>Lo que I-55 G15 anade, EXACTAMENTE: el comando de OD-1 A y su unico alias.</summary>
+         internal static readonly string[] G15Commands = { "RACKPROYECTAR", "RPY" };
+ 
+-        /// <summary>El censo vigente: apertura, G7 y G15, cada nombre una vez.</summary>
+-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).ToArray();
++        /// <summary>Lo que I-65 F4-T5 anade, EXACTAMENTE: el comando de linea de D-13 (el paquete de construccion de una estacion Cantilever), sin alias.</summary>
++        internal static readonly string[] I65Commands = { "RACKRAMPAQUETE" };
++
++        /// <summary>El censo vigente: apertura, G7, G15 e I-65, cada nombre una vez.</summary>
++        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).ToArray();
+ 
+         // ================================================================ censo
+ 
+diff --git a/tests/RackCad.Tests/SelectiveEditorOpenTests.cs b/tests/RackCad.Tests/SelectiveEditorOpenTests.cs
+index 320da87b..60a0777b 100644
+--- a/tests/RackCad.Tests/SelectiveEditorOpenTests.cs
++++ b/tests/RackCad.Tests/SelectiveEditorOpenTests.cs
+@@ -546,6 +546,11 @@ namespace RackCad.Tests
+         /// I-55 G15 la reapunta de 35 a 37: anade EXACTAMENTE `RACKPROYECTAR` y su unico alias `RPY` (OD-1 A). La clasificacion
+         /// por nombre la fija <c>CustomPropertiesCommandGuardTests</c> y la forma del comando, <c>RackProjectionCommandGuardTests</c>.
+         /// </para>
++        /// <para>
++        /// I-65 F4-T5 la reapunta de 37 a 38: anade EXACTAMENTE <c>RACKRAMPAQUETE</c>, el comando de linea de D-13, sin alias. El
++        /// archivo del comando contiene UNA sola vez la subcadena que se cuenta aqui, comentarios incluidos; la forma del comando
++        /// la fija <c>StructuralAnalysisPluginCommandGuardTests</c> y el censo por nombre, <c>CustomPropertiesCommandGuardTests</c>.
++        /// </para>
+         /// </summary>
+         [Fact]
+         public void GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA()
+@@ -554,7 +559,7 @@ namespace RackCad.Tests
+                 .GetFiles(Path.Combine(RepoRoot().FullName, "src", "RackCad.Plugin"), "*.cs", SearchOption.AllDirectories)
+                 .Sum(file => File.ReadAllText(file).Split("[CommandMethod(").Length - 1);
+ 
+-            Assert.Equal(37, total);
++            Assert.Equal(38, total);
+         }
+ 
+         [Fact]

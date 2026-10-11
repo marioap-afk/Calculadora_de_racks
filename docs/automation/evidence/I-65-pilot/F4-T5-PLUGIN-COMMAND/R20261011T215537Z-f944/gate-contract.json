@@ -1,0 +1,357 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-65",
+  "Gate": "F4",
+  "TaskId": "F4-T5-PLUGIN-COMMAND",
+  "Objective": "F4 de I-65, quinta y ultima tarea (decisiones I-65 §26 y §29: CD-I65-F4-02, 09 y 10), con F4 IMPLEMENTATION AUTHORIZATION = YES, CONDITIONAL, F4 ONLY del Owner: el COMANDO DE LINEA del Plugin de D-13 que exporta una estacion de un rack Cantilever al paquete de construccion, segun docs/initiatives/I-65-f4-implementation.md seccion 6. Un archivo NUEVO src/RackCad.Plugin/RackRamElementsCommands.cs (comando RACKRAMPAQUETE, sin alias) que usa la entrada de F4-T2 (decodificador inyectado con el almacen de proyecto), la tabla distribuida leida con su lector, CreateRamBuildPackage y el escritor atomico neutral con la carpeta embebida del paquete; la tabla de mapeo anadida a la salida de compilacion por src/RackCad.Plugin/RackCad.Plugin.csproj (sin el paquete del autoloader, CD-I65-F4-10); las ediciones exactas de cuatro pruebas existentes (censo de comandos, conteo de comandos y las dos listas de permiso de G1); y una guarda nueva del comando. Pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/ con namespace RackCad.Tests y clases cuyo nombre empieza por StructuralAnalysisPluginCommand. NO incluye: cambios de Application (salvo ninguno), del proveedor, de la herramienta, del paquete del autoloader ni de deploy/, interfaz grafica, Workspace, ID30, ninguna ejecucion de AutoCAD, RAM Elements ni Python, nada de F5-F7.",
+  "AuthorityRevision": "283ed6137a8669012369abb6e4a8543c27d34f1b",
+  "MainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-65-proposal-v3.1.md",
+      "Section": "archivo completo (Frozen: yes); en especial D-08, D-12, D-13 y §3 (INV-01 e INV-12)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-f4-implementation.md",
+      "Section": "archivo completo (en especial §0, §1, §3 y §6)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-f4-preparation.md",
+      "Section": "archivo completo (en especial §5 y §6)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65.md",
+      "Section": "archivo completo (en especial §26 y §29)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65-owner-authorization-f4.original.txt",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-65-f1/architect-f1-conformance.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-65-f3/architect-f3-conformance.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-interop-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/adr/0050-interoperabilidad-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Plugin/RackRamElementsCommands.cs",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs",
+    "tests/RackCad.Tests/SelectiveEditorOpenTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/"
+  ],
+  "ForbiddenWriteScope": [
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.design.json",
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.loads.json",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCanonicalizerTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverFixtures.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverGoldenTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverIdealisationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonRowTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonSupport.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonVerdictTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisFingerprintTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisLoadFileReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisMaterialProfileTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelBuilderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisOutcomeTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsAssumptionsTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsAxesTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpPayloadTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpRoundTripTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpSourceTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpSupport.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpTemplateTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpTransferReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsFixtures.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningPackageTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningRaceTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningTemplateTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsMapReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageContentTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageGoldenTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageManifestTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackagePayloadTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageTemplateTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageValidationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageWriterTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsProjectionTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsTranslationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceEntryHardeningTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceEntryTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisUnitTests.cs",
+    "src/RackCad.Application/",
+    "assets/",
+    "src/RackCad.Plugin/Workspace/",
+    "src/RackCad.Domain/",
+    "src/RackCad.UI/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/CantileverSourceGuardTests.cs",
+    "tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs",
+    "tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs",
+    "tests/RackCad.Tests/LengthUnitsAuthorityGuardTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/Golden/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/"
+  ],
+  "Invariants": [
+    "D-13 (comando minimo): un archivo nuevo src/RackCad.Plugin/RackRamElementsCommands.cs con namespace RackCad.Plugin en bloque y una clase publica con un unico atributo CommandMethod cuyo unico argumento es el nombre RACKRAMPAQUETE, en su forma canonica (sin alias, sin espacio tras el parentesis, sin nombre de grupo, nunca escrito en un comentario), y el archivo contiene una sola vez la subcadena [CommandMethod( porque el conteo de SelectiveEditorOpenTests es bruto: selecciona un rack con el ayudante existente, exige el kind cantilever sin distinguir mayusculas, pide el indice de estacion, la ruta del archivo de cargas y la ruta de una carpeta NUEVA, carga el catalogo con StructuralSectionCatalogAccess.TryLoad, lee la tabla de mapeo junto al ensamblado del Plugin (directorio de su Assembly.Location, nunca AppContext.BaseDirectory) con RamSectionMapReader, llama a la entrada de F4-T2 con los bytes del Design del sobre y un decodificador con el almacen de proyecto, construye el paquete con CreateRamBuildPackage y lo publica con StructuralPackagePublisher.Write usando la carpeta embebida del paquete (A65-F3-07), y lista diagnosticos, huella de entrada y archivos escritos",
+    "Fallo cerrado y visible (A65-F1-09, D-08): tabla ausente o ilegible, catalogo no disponible, kind distinto, resultado no Valid o publicacion fallida -> mensaje visible con el resultado (Unavailable, Invalid o Unsupported) y sus diagnosticos, sin carpeta parcial; toda excepcion se captura (System.Exception) y se informa como Unavailable; con la tabla del producto tal como se entrega (filas proposed) el comando responde Unsupported sin escribir nada",
+    "A65-F3-12 y D-07: el comando obtiene el perfil de material SOLO de la tabla leida con su lector (nunca construye StructuralMaterialProfile ni otro perfil); la version del adaptador es una constante unica del comando o del proveedor ya existente",
+    "Prohibiciones de D-13 e INV-12, comprobadas por una guarda nueva sobre el texto del comando: sin suscripciones a eventos de AutoCAD (+=), SetImpliedSelection, WPF o System.Windows, PaletteSet, edicion de menus, codigo de Workspace o de ID30; sin CantileverLineResolver, CsvStructuralSectionCatalogProvider, StructuralSectionCatalogException, Insunits, SiblingRedrawTransaction, RackDefinitionCreator.CreateInTransaction, construccion de sobres (new RackEmbedDocument, RackEmbedComposer), literales de conversion o de unidad (25.4, [in], [mm], [ft]), vocabulario de diseno de INV-11 ni los literales de INV-16; la guarda comprueba ademas que la publicacion usa la carpeta embebida del paquete y que el perfil sale solo de la tabla",
+    "Distribucion de la tabla (CD-I65-F4-10): src/RackCad.Plugin/RackCad.Plugin.csproj solo gana un elemento Content para assets/structural-analysis/ram-elements/section-material-map.json con Link structural-analysis/ram-elements/section-material-map.json y copia a la salida; ningun otro cambio del .csproj, ningun cambio del paquete del autoloader ni de deploy/",
+    "Ediciones exactas de pruebas existentes (unicas): (1) tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs: RACKRAMPAQUETE se anade al censo (Baseline) en una lista propia de I-65; (2) tests/RackCad.Tests/SelectiveEditorOpenTests.cs: el conteo de [CommandMethod( pasa de 37 a 38 con su comentario; (3) tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs: la lista de permiso de G1 pasa a contener exactamente src/RackCad.Plugin/RackRamElementsCommands.cs (una constante interna unica compartida) y su prueba afirma esa unica ruta en lugar de la lista vacia; (4) tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsGuardTests.cs: la segunda barrida de G1 usa esa misma constante; con la lista vacia, los infractores de G1 en src son exactamente ese archivo (prueba)",
+    "Compilacion: el Plugin compila localmente contra AutoCAD 2025 hacia una carpeta de salida bajo artifacts/ (para no chocar con un DLL bloqueado) con 0 errores y sin advertencias nuevas; la solucion completa compila en Release sin ninguna advertencia nueva de los patrones CS, MSB, NU o NETSDK atribuible al diff (las advertencias locales preexistentes, como MSB3277 de las referencias de AutoCAD y las de analizadores de pruebas existentes, se listan y no cuentan; la senal es el job Build Plugin without AutoCAD de la CI del GREEN, que compila la solucion en Release con -NoWarnings); ninguna prueba ejecuta AutoCAD, RAM Elements ni Python",
+    "Forma del cambio y restricciones del Owner: pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/, namespace RackCad.Tests, clases cuyo nombre empieza por StructuralAnalysisPluginCommand, sin los tokens de INV-14; ninguna otra prueba existente cambia; Domain, Application, UI y Workspace intactos; sin interfaz grafica nueva (solo comando de linea); sin analisis, resultados, guardado ni sobrescritura de modelos de RAM; G1 (con la unica ruta permitida), G2, G4, INV-11 e INV-16 en verde"
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.StructuralAnalysisPluginCommand",
+      "MinSelected": 12,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED: la guarda nueva del comando y sus autopruebas (que fallan porque el archivo del comando aun no existe o no cumple), con seleccion >= 12, mas las ediciones de las cuatro pruebas existentes; fallan por asercion o excepcion, sin errores de compilacion; push propio antes del GREEN",
+    "Commit GREEN: el archivo del comando y la edicion del .csproj sin modificar ningun archivo de pruebas del RED; suite Core completa en verde, incluidas todas las guardas del Plugin; Plugin compilado localmente hacia artifacts/ y solucion en Release sin advertencias nuevas atribuibles al diff (las preexistentes locales listadas aparte)",
+    "Comprobacion mecanica antes de aceptar EXECUTION_VERIFIED: git diff --name-only BaseSha..CurrentSha contenido en el AllowedWriteScope de la delegacion y sin interseccion con su ForbiddenWriteScope; en tests/ solo altas bajo tests/RackCad.Tests/StructuralAnalysis/ y modificaciones de las cuatro pruebas nombradas",
+    "worker-handoff.json conforme al esquema, con los SHA de RED y GREEN, el trailer real del Worker, los conteos del filtro en RED y GREEN y, en Evidence, por invariante la prueba que lo observa, la salida de la compilacion del Plugin (errores y advertencias) y de la solucion en Release, y el texto del elemento Content anadido",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success (incluido Build Plugin without AutoCAD) y corrida push del RED con el job Core en failure"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar algo fuera de AllowedWriteScope (Application, el proveedor, otros archivos del Plugin, Workspace, assets, deploy, eng, tools, la solucion u otro .csproj) o editar una prueba existente fuera de las cuatro nombradas o para otro fin"
+    },
+    {
+      "Id": "C-02",
+      "Text": "D-08, D-12, D-13 o una concrecion de I-65-f4-implementation.md no puede implementarse tal como esta (requiere A-n, Architect u Owner)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "La entrada de F4-T2, el paquete o el escritor no ofrecen lo que el comando necesita sin cambiarlos"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52, o de tocar superficies de ID30 o Workspace"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un invariante del contrato no puede mostrar un RED observable antes del cambio correcto"
+    },
+    {
+      "Id": "C-07",
+      "Text": "Hace falta tratar una fila proposed como verified, rellenar valores de ingenieria o distribuir la tabla en el paquete del autoloader"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta una dependencia binaria, un paquete NuGet nuevo, Python, RAM Elements o ejecutar AutoCAD para compilar o probar, o ejecutar un interprete Python por cualquier motivo"
+    },
+    {
+      "Id": "C-09",
+      "Text": "Una guarda existente falla por el cambio y la unica salida seria debilitarla mas alla de las cuatro ediciones nombradas"
+    },
+    {
+      "Id": "C-10",
+      "Text": "Aparece una cuestion material de arquitectura, autoridad o semantica congelada"
+    },
+    {
+      "Id": "C-11",
+      "Text": "El Plugin no compila localmente o el cambio introduce advertencias nuevas que solo se evitarian fuera del alcance"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagente de la sesion de escritorio",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "medium",
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda U-04 y en el piloto de G3 de I-61; evidencia de I-61 §15)",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/codex-cli/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "Codex CLI, solo lectura",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda PR-1 y en G3 de I-61; evidencia de I-61 §§14-15)",
+      "VerifiedOn": "2026-09-30"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Coordinator I-65",
+  "IssuedUtc": "2026-10-11T21:55:37Z"
+}

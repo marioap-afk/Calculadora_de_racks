@@ -1073,3 +1073,36 @@ Custodia:
 | `F4-T4-COMPARATOR-AND-TOOL-nc3/R20261011T212904Z-78f0/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
 | `F4-T4-COMPARATOR-AND-TOOL-nc3/R20261011T212904Z-78f0/controller-verification.json` | `632257C411BF78A3…` | `d22ead39b94c` |
 | `F4-T4-COMPARATOR-AND-TOOL-nc3/R20261011T212904Z-78f0/relay-record.json` | `227FB83391CDDE5E…` | `37ab5a001ffc` |
+
+## 44. F4-T5-PLUGIN-COMMAND — STOP del Worker (2026-10-11T22:13:27Z)
+
+Contrato sobre `AuthorityRevision` = `BaseSha` = `283ed613` (incluye la revisión del Architect de T1-T4, CD-I65-F4-21).
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261011T215537Z-f944` | PLANNING (Attempt 3) | Codex `gpt-6-luna`/`high` (28) | delegación válida; seis colecciones idénticas; A1-A8 en `pass`; `claude-sonnet-5-5`/`high` |
+| `R20261011T215832Z-a127` | CONTROL nc4 | sin invocación | A3 `fail` y las demás `pass`: oráculo cumplido |
+| `R20261011T215838Z-09a6` | WORK | subagente `claude-sonnet-5-5`/`high` (93 mensajes) | **BLOCKED/STOP** C-08 (`python3 --version`) y C-05 (`placeholder.txt` en el checkout principal, borrado); sin commits; worktree sucio, preservado y restaurado por la sesión |
+
+- **Hallazgo:** `RackCad.sln` del checkout principal modificado por el Worker de F4-T4 intento 2 (DEV-I65-F4-16); diff en la custodia.
+- **Invocaciones de Codex en F4:** 28 de 30. `attempts` = 3 (= máximo): S-11.
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T5-PLUGIN-COMMAND/R20261011T215537Z-f944/gate-contract.json` | `0974B91C8D5D80BB…` | `c46f65e2f379` |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215537Z-f944/prompt.md` | `DBAEC1C5CC5BADF0…` | `2c725e74e3d6` |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215537Z-f944/delegation.json` | `F357CD928321CFFC…` | `6787d8d001e0` |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215537Z-f944/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215537Z-f944/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215537Z-f944/relay-record.json` | `A3D9355D88E4A259…` | `61d7e7c9a8eb` |
+| `F4-T5-PLUGIN-COMMAND-nc4/R20261011T215832Z-a127/delegation.json` | `6885F476C9764DDA…` | `2800d01bcd58` |
+| `F4-T5-PLUGIN-COMMAND-nc4/R20261011T215832Z-a127/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F4-T5-PLUGIN-COMMAND-nc4/R20261011T215832Z-a127/relay-record.json` | `6C40F2746CB8F34E…` | `ac0be394f4e2` |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215838Z-09a6/prompt.md` | `58A24ADD23A758D2…` | `0fe074dc86e9` |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215838Z-09a6/worker-handoff.json` | `E2D3E9DAF3B0BF33…` | `74f209e9a6ea` |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215838Z-09a6/relay-record.json` | `6083A1E19B870554…` | `15aa76153057` |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215838Z-09a6/analysis.md` | `1941BEA23566709B…` | `43a21c0570fa` |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215838Z-09a6/main-checkout-RackCad.sln.diff` | `4BA20015ECA06AED…` | `af1499804563` |
+| `F4-T5-PLUGIN-COMMAND/R20261011T215838Z-09a6/worktree-dirty.diff` | `CF2E4B632AFFDA3C…` | `428552020567` |
