@@ -3470,3 +3470,71 @@ es de solo lectura y reproducible; STOP en **COORDINATOR_T3C_REVIEW_REQUIRED**. 
 - Sin invocaciones de modelos en esta sección.
 - HEAD = remoto = `ffd111a9` antes de este commit; `main` `bb0d5522`.
 - Sin cambios en `src/` ni `tests/`.
+
+## 58. F1-T3C-PROFILE-DOC — Procedimiento de diff de perfil (PROPUESTO) y validación de solo lectura
+
+Sección nueva; las anteriores no se reescriben. Trabajo documental de la sesión autorizado por la revisión del cierre de T3B (§57):
+sin Worker de producto, sin AutoCAD y sin mutación de perfil, registro, `TRUSTEDPATHS`, `SECURELOAD` ni ACL.
+
+**Comprobación fresca de ramas** (tras la CI 38156668348 4/4 de `827917aa`):
+
+| Rama | Punta | Lectura |
+|---|---|---|
+| `main` | `bb0d5522` | sin cambio |
+| I-52 (`feature/rackmirror-espejo-semantico`) | `fb6b5648` | sin commits desde el 2026-10-02 |
+| I-65 (`architecture/interop-analisis-estructural`) | `f5c6b885` | F4-T1 (StructuralAnalysis y sus documentos); sin solape |
+| I-62 (`architecture/portabilidad-coordinador-principal`) | `460665ab` | sin cambio |
+
+**I-52, leído sin alterarlo:**
+- El host sigue ligado a la campaña CT-21D y al perfil `<<Unnamed Profile>>`.
+- Último dictamen (§258): la corrida P2 H10 está preparada y no autorizada. **No consta RELEASE de la ventana de host.**
+- Línea base observada de I-52: `TRUSTEDPATHS` con 19 entradas (`a9ba0fd1…`), `SECURELOAD=1` y `acad.exe` `R25.0.171.0.0`
+  (`2a75996f…`).
+- El procedimiento no presume vigente esa línea base: la referencia es el acuse de I-52 en su RELEASE.
+
+**Entregables** (estado PROPUESTO, pendientes de revisión):
+- **Procedimiento:** `docs/initiatives/I-64-f1-t3c-profile-diff-procedure.md`. Define BASELINE, POST, DIFF y DISPOSITION; el alcance
+  exacto; la normalización y el libro canónico; la redacción; las reglas INVALID, FORBIDDEN, REPORT y ALLOWED; las condiciones de STOP;
+  la restauración humana sin reparación automática; y la relación con el RELEASE de I-52.
+- **Herramientas**, en `docs/automation/evidence/I-64-pilot/F1-T3C-PROFILE-DOC/tools/` (PowerShell 7, ASCII, sin elevación):
+  - `Capture-ProfileState.ps1` (blob `ef215539`), de solo lectura;
+  - `Compare-ProfileState.ps1` (blob `d314293a`);
+  - `Test-ProfileDiff.ps1` (blob `c7d2c35f`), autoprueba con 26 casos sintéticos.
+- **Registro de validación:** `docs/automation/evidence/I-64-pilot/F1-T3C-PROFILE-DOC/validation-record.json`.
+
+**Validación** (AutoCAD cerrado, fuera del repositorio):
+- **Análisis estático:** 0 errores de sintaxis y 0 llamadas de escritura del registro, ACL, `reg add/delete/import`, borrado o copia de
+  archivos, `Start-Process`, `NETLOAD` o variables de entorno. Las únicas escrituras son archivos nuevos (`CreateNew`) en la carpeta
+  de salida.
+- **Autoprueba:** 26/26 PASS dos veces, con salidas idénticas.
+- **Reproducibilidad:** dos capturas DRYRUN dan el mismo `CanonicalSha256` (`a03d9675…`, 2229 líneas) y el DIFF entre ellas es
+  `CLEAN`.
+- **Solo lectura:** `reg export` de los seis árboles capturados antes y después da SHA-256 idénticos; los archivos de los directorios
+  `RackCad` no cambian; 0 procesos `acad` antes y después.
+- **Hechos informativos de la DRYRUN** (no es una BASELINE):
+  - `TRUSTEDPATHS`, `SECURELOAD`, el perfil y `acad.exe` coinciden con lo último que registró I-52;
+  - no hay bundle ni registro de carga de RackCad ni variables de entorno de RackCad;
+  - hay 20 claves `Dialogs\RackCad.UI.*` de colocación de ventanas existentes.
+
+**Desviaciones:**
+- **Primer intento de validación abortado:** la autoprueba llamaba `H` a una función y PowerShell resolvió el alias `h`
+  (`Get-History`). Falló antes de su primer caso, sin captura y sin escrituras fuera del directorio de trabajo. Se renombró la función
+  y la validación se repitió completa.
+- **Análisis estático:** la primera pasada marcó la palabra `NETLOAD` en un comentario; se reescribió el comentario antes de validar.
+
+**Decisiones abiertas para el Coordinator** (procedimiento, sección 14):
+- O-1: el procedimiento de pasos de Smoke-1 para el operador;
+- O-2: carpeta y custodia de las capturas de Smoke-1;
+- O-3: una ventana `RackCad.UI.*` existente abierta por primera vez en el smoke, hoy REPORT;
+- O-4: el aviso de seguridad de carga con `SECURELOAD=1` (`HOST-TO-CONFIRM`).
+
+**Estado:**
+- F1-T3C-PROFILE-DOC: procedimiento PROPUESTO.
+- F1 sigue IN PROGRESS y F1 PASS no se declara; Smoke-1 no se ejecuta.
+- Siguiente: STOP en **COORDINATOR_T3C_REVIEW_REQUIRED**.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- `config.toml` en la instantánea C.
+- HEAD = remoto = `827917aa` antes de este commit; `main` `bb0d5522`.
+- Sin cambios en `src/`, `tests/`, archivos de proyecto, ROADMAP ni HANDOFF.
