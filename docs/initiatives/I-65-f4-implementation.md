@@ -95,6 +95,8 @@ Presupuesto de Codex del Owner: **28**. Por tarea: planificación 1, verificaci�
   distancia absoluta desde el nudo I (A65-F4P-02). Volcado no leído en `LB_IN` → `Invalid("unit pair")`; volcado o lectura de vuelta con
   estado de fallo → rechazo.
 - **Tipos neutrales** de lectura (sin identidad de proveedor, G1/G2) que consume el comparador.
+- **INV-14** (CD-I65-F4-13): ninguna exención nueva ni edición de pruebas existentes; las pruebas de la plantilla del volcado
+  obtienen el nombre del módulo del texto de la plantilla de construcción (precedente F4-T1) y no parten literales.
 
 ## 5. F4-T4-COMPARATOR-AND-TOOL
 
