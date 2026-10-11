@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §76; evidencia §149) — A-6 candidata preparada (eac473c0, guardas run PASS); paquete OWNER-RESERVED de ADR-0046 #9 y solicitud futura de medición preparados sin pedir; esperar la disposición del Coordinator y la decisión del Owner sobre ADR-0046 #9 antes de cualquier revisión formal de A-6; sin invocaciones; sin FX-02 ni F6 PASS"
+  next_action: "F6 (decisiones §77; evidencia §150) — esperar la decisión del Owner sobre A6-ADR0046-9-FX02 (tarjeta con texto literal y SHA-256); preparar el kit de la revisión formal de A-6 (eac473c0) con la compuerta de la línea del Owner; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

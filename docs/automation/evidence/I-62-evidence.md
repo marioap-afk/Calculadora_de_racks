@@ -4046,3 +4046,17 @@ solo desde artefactos custodiados.
 - **Preguntas abiertas para el Coordinator y el revisor** (A-6 §8, Q-A6-01..Q-A6-14). Destacada, Q-A6-01: §76.2 dice «hechos como insumos
   canónicos». A-6 hace insumo canónico al archivo del instrumento y trata los hechos como evidencia producida en la invocación, porque el cierre se
   fija antes del lanzamiento y los hechos precalculados serían B-ext, rechazada en §75.1.
+
+## 150. Decisiones §77: A-6 aceptada para revisión formal (eac473c0); cuatro temas de revisión; tarjeta del Owner para ADR-0046 #9
+
+- A-6 (blob `eac473c0`, PROPUESTA) queda aceptada como objeto de la revisión formal. Temas REQUIRED:
+  - Q-A6-02: integridad, procedencia y autorización del objeto Git suelto;
+  - Q-A6-06/07: correspondencia exacta entre REJECT_FACTS, INVALID_OUTPUT, FAIL y UNVERIFIED;
+  - Q-A6-12: independencia efectiva del aceptante.
+
+  Q-A6-01 queda aceptada como interpretación propuesta: el archivo de la herramienta es el insumo canónico y sus resultados son evidencia de la
+  invocación; nunca B-ext.
+- **Tarjeta del Owner** [A6-ADR0046-9-FX02-owner-card-2026-10-11.md](I-62-F6/requests/A6-ADR0046-9-FX02-owner-card-2026-10-11.md): la línea literal
+  de A-6 §7 (a), SHA-256 `83152eae4f451961…`, con la recomendación A del Coordinator marcada como no aprobación.
+- La revisión formal se lanza solo con la disposición afirmativa del Owner registrada y las autorizaciones de revisión verificadas. El kit se prepara
+  ya. Codex no se ejecuta; la línea de consumo queda reservada para después del acuerdo.
