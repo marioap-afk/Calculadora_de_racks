@@ -94,8 +94,26 @@ namespace RackCad.Tests
         [Fact]
         public void LosDosLiteralesQueEstabanPartidosSeEscribenEnteros()
         {
-            Assert.Matches(@"""r[a]melements""", SourceOf("tests/RackCad.Tests", GuardTestsFile));
-            Assert.Matches(@"""B[e]ntley""", SourceOf("tests/RackCad.Tests", AssumptionsFile));
+            Assert.Matches(WholeToken("r[a]melements"), SourceOf("tests/RackCad.Tests", GuardTestsFile));
+            Assert.Matches(WholeToken("B[e]ntley"), SourceOf("tests/RackCad.Tests", AssumptionsFile));
+        }
+
+        // The whole token between quotes; each quote may carry one escaping backslash (the literal can live inside a C# string).
+        private static string WholeToken(string token) => @"\\?""" + token + @"\\?""";
+
+        [Fact]
+        public void ElPatronDelLiteralEnteroAceptaComillasEscapadasYRechazaLaPalabraPartida()
+        {
+            var tool = StructuralAnalysisRamElementsHardeningScans.ToolName();
+            var pattern = WholeToken(Regex.Escape(tool));
+
+            var split = "var m = \"" + tool.Substring(0, 5) + "\" + \"" + tool.Substring(5) + "\";";
+            var whole = "var m = \"" + tool + "\";";
+            var escaped = "var m = \"var n = \\\"" + tool + "\\\";\";";
+
+            Assert.DoesNotMatch(pattern, split);
+            Assert.Matches(pattern, whole);
+            Assert.Matches(pattern, escaped);
         }
 
         [Fact]
