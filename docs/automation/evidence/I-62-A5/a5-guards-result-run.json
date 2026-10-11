@@ -1,0 +1,116 @@
+{
+ "Mode": "RUN",
+ "Base": "efcfcbc5a9f89de0dc4f4f21a426b4723ef18245",
+ "Head": "bf2cf857b69ada371590cde2c8ddfbc8b3581fab",
+ "Guards": {
+  "G1": {
+   "Check": "G1 literales, cabecera y privacidad",
+   "Checked": {
+    "Header": 13,
+    "Blocks": 5,
+    "BlockLines": 31,
+    "Lit": 32,
+    "Self": 1,
+    "Notation": 3,
+    "DeltaInner": 3,
+    "ShortBlobs": 31
+   },
+   "PrivacyChecked": 1,
+   "Info": [],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G2": {
+   "Check": "G2 rutas del commit",
+   "Base": "efcfcbc5a9f89de0dc4f4f21a426b4723ef18245",
+   "Head": "bf2cf857b69ada371590cde2c8ddfbc8b3581fab",
+   "Changed": {
+    "docs/automation/evidence/I-62-A5/a5-guards.py": "A",
+    "docs/automation/evidence/I-62-A5/a5-selftest.json": "A",
+    "docs/automation/evidence/I-62-A5/a5_conformance.py": "A",
+    "docs/automation/evidence/I-62-A5/build_candidate_a5.py": "A",
+    "docs/automation/evidence/I-62-A5/make_candidate_commit.py": "A",
+    "docs/automation/evidence/I-62-A5/neg_controls_a5.py": "A",
+    "docs/automation/evidence/I-62-A5/out/a5-guards-result-preview-head.json": "A",
+    "docs/automation/evidence/I-62-A5/out/authorities_a5.json": "A",
+    "docs/automation/evidence/I-62-A5/out/budget-matrix.json": "A",
+    "docs/automation/evidence/I-62-A5/out/build_a5.json": "A",
+    "docs/automation/evidence/I-62-A5/out/build_a5_repro.json": "A",
+    "docs/automation/evidence/I-62-A5/out/conformance_a5.json": "A",
+    "docs/automation/evidence/I-62-A5/out/f4_clause_map_a5.json": "A",
+    "docs/automation/evidence/I-62-A5/out/mv_A5_claim.json": "A",
+    "docs/automation/evidence/I-62-A5/out/mv_A5_claim.txt": "A",
+    "docs/automation/evidence/I-62-A5/out/mv_A5_main.json": "A",
+    "docs/automation/evidence/I-62-A5/out/mv_A5_main.txt": "A",
+    "docs/automation/evidence/I-62-A5/out/mv_CurrentFixture_main.json": "A",
+    "docs/automation/evidence/I-62-A5/out/mv_CurrentFixture_main.txt": "A",
+    "docs/automation/evidence/I-62-A5/out/neg_controls_a5.json": "A",
+    "docs/automation/evidence/I-62-A5/out/neg_controls_a5.txt": "A",
+    "docs/automation/evidence/I-62-A5/out/neg_tips_a5.json": "A",
+    "docs/automation/evidence/I-62-A5/out/preflight_ab.json": "A",
+    "docs/automation/evidence/I-62-A5/out/preflight_ab.stdout.txt": "A",
+    "docs/automation/evidence/I-62-A5/out/ref-digest-after.txt": "A",
+    "docs/automation/evidence/I-62-A5/out/ref-digest-before.txt": "A",
+    "docs/automation/evidence/I-62-A5/preflight.md": "A",
+    "docs/automation/evidence/I-62-A5/preflight_run.py": "A",
+    "docs/automation/evidence/I-62-evidence.md": "M",
+    "docs/automation/state/I-62.yml": "M",
+    "docs/initiatives/I-62-A-5.md": "A"
+   },
+   "AppendOnlyGrowth": {
+    "docs/automation/evidence/I-62-evidence.md": 2196
+   },
+   "Info": [],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G3": {
+   "Check": "G3 objetos congelados y producción sin cambio",
+   "Frozen": 18,
+   "Production": 20,
+   "Mismatches": {},
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G4": {
+   "Check": "G4 C-20b",
+   "Base": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+   "SurfacesTouched": [],
+   "ExitCode": 0,
+   "Output": "{\"result\": \"EQUAL (MV-2..MV-6)\", \"files\": 31, \"entries\": {\"MODIFIED\": 15, \"REMOVED\": 0, \"ADDED\": 53, \"ENTRY\": 2}}",
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G5": {
+   "Check": "G5 pureza del delta y separabilidad",
+   "Paragraphs": {
+    "A5-1": 2964,
+    "A5-2": 1742
+   },
+   "Info": [
+    "A5-1 tras V14 L2406 (fin de D.1) y A5-2 tras el fin de A4-6 (fin de D.3): añadidos puros, por separado y juntas"
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G5B": {
+   "Check": "G5b autoprueba custodiada",
+   "Summary": {
+    "Mutants": 48,
+    "Killed": 48,
+    "ControlFailures": [],
+    "ByGuard": {
+     "G1": "13/13",
+     "G2": "8/8",
+     "G3": "7/7",
+     "G4": "3/3",
+     "G5": "15/15",
+     "G5B": "2/2"
+    }
+   },
+   "Findings": [],
+   "Result": "PASS"
+  }
+ },
+ "Result": "PASS"
+}

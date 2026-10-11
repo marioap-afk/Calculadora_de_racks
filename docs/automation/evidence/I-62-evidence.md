@@ -3662,3 +3662,11 @@ solo desde artefactos custodiados.
 - **Guardas** (`a5-guards.py`): autoprueba con 48/48 mutantes muertos; vista previa sobre el commit hipotético PASS. La ejecución `run` sobre este
   commit va en el siguiente.
 - **Estado:** PROPUESTA. Revisión del Architect NOT LAUNCHED; ninguna revisión formal hasta una disposición nueva (§71, punto 7).
+
+## 132. A-5: guardas en modo `run` sobre el commit de publicación = PASS
+
+- `a5-guards.py run` con base `efcfcbc5` y head `bf2cf857` (commit de publicación de A-5): G1, G2, G3, G4, G5 y G5b **PASS**
+  ([resultado](I-62-A5/a5-guards-result-run.json)). Custodiados también la vista previa sobre el commit hipotético y su descripción
+  (`a5-guards-result-preview.json`, `out/candidate-commit.json`).
+- A-5 sigue PROPUESTA; ninguna revisión formal hasta una disposición nueva (§71, punto 7).
+

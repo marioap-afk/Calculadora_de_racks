@@ -1,0 +1,159 @@
+{
+ "Base": "efcfcbc5a9f89de0dc4f4f21a426b4723ef18245",
+ "Candidate": "1e645a88a489b5e60478acac1631c9f586855e86",
+ "Tree": "bea95b98d6d95a0785c3038517edc4a73ec36b55",
+ "Files": 29,
+ "Status": [
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/a5-guards.py"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/a5-selftest.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/a5_conformance.py"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/build_candidate_a5.py"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/make_candidate_commit.py"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/neg_controls_a5.py"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/a5-guards-result-preview-head.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/authorities_a5.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/budget-matrix.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/build_a5.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/build_a5_repro.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/conformance_a5.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/f4_clause_map_a5.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_A5_claim.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_A5_claim.txt"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_A5_main.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_A5_main.txt"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_CurrentFixture_main.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/mv_CurrentFixture_main.txt"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/neg_controls_a5.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/neg_controls_a5.txt"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/neg_tips_a5.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/preflight_ab.json"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/preflight_ab.stdout.txt"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/ref-digest-after.txt"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/out/ref-digest-before.txt"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/preflight.md"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/automation/evidence/I-62-A5/preflight_run.py"
+  },
+  {
+   "Status": "A",
+   "Path": "docs/initiatives/I-62-A-5.md"
+  }
+ ],
+ "AllAdded": true,
+ "OnlyA5AndEvidence": true,
+ "ProductionDiff": [],
+ "ProductionDiffEmpty": true,
+ "ProductionPaths": [
+  "src",
+  "tests",
+  "eng",
+  "tools",
+  "deploy",
+  "assets",
+  "docs/adr",
+  "docs/automation/agent-execution",
+  "docs/AUTOMATION_PLAN.md",
+  "docs/WORKFLOW.md",
+  "docs/INITIATIVE_LIFECYCLE.md",
+  "docs/FOUNDATIONS.md",
+  "AGENTS.md",
+  "CLAUDE.md",
+  "Directory.Build.props",
+  "Directory.Build.targets",
+  "RackCad.sln",
+  "global.json",
+  "NuGet.Config",
+  "docs/initiatives/I-62-proposal-v14.md",
+  "docs/initiatives/I-62-consensus-freeze.md",
+  "docs/initiatives/I-62-A-1.md",
+  "docs/initiatives/I-62-A-2.md",
+  "docs/initiatives/I-62-A-3.md",
+  "docs/initiatives/I-62-A-4.md",
+  "docs/initiatives/PROMPT_TEMPLATES.md",
+  "docs/automation/evidence/I-62-F4",
+  "docs/automation/evidence/I-62-F6/MAP-INVALID"
+ ],
+ "Note": "clon --bare --shared temporal; sin push; el worktree de I-62 no se escribe"
+}
