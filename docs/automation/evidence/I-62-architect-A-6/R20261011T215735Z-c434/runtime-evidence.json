@@ -1,0 +1,64 @@
+{
+ "RunId": "R20261011T215735Z-c434",
+ "InvocationId": "I20261011T215735Z-c434",
+ "AttemptSeq": 1,
+ "Transport": "claude-cli 2.1.293 (%APPDATA%/Claude/claude-code/2.1.293/83cb0bd7fed4/claude.exe, SHA-256 8693c4a0…), claude-opus-5-5 xhigh, lanzado por la sesión principal con kit/launch.py",
+ "Authority": "decisiones §77, punto 4, y §78 (A6-ADR0046-9-FX02 = A); Owner CLAUDE-CLI-I62 = A; compuertas 10-TransportGate MEASURED y 11-OwnerGate en Ok",
+ "Session": {
+  "SessionId": "35cd6b11-5a2b-415a-8e87-a3b68fb0817d",
+  "Start": "2026-10-12T07:16:53.791356Z",
+  "End": "2026-10-12T07:38:51.715031Z",
+  "ExitCode": 0,
+  "Killed": false,
+  "TimedOut": false,
+  "TransportFailure": null,
+  "Cwd": "D:/r62-arch-a6",
+  "AddDir": "D:/r62-arch-a6-run"
+ },
+ "Usage": {
+  "num_turns": 65,
+  "total_cost_usd": 7.666838,
+  "duration_ms": 1315822,
+  "tools": {
+   "Read": 54,
+   "Grep": 9,
+   "StructuredOutput": 1
+  },
+  "note": "coste equivalente informado por el runtime; cuota de la suscripción"
+ },
+ "Stdout": {
+  "Path": "D:/r62-arch-a6-run/launch/stdout.jsonl (no versionado: contiene rutas del perfil del usuario)",
+  "Sha256": "c595615f0d591cd1dc15d26f45f7ec30d290bf89d341855b8d1119f20ab7a871"
+ },
+ "Transcript": {
+  "Versioned": false,
+  "Path": "%USERPROFILE%/.claude/projects/D--r62-arch-a6/35cd6b11-5a2b-415a-8e87-a3b68fb0817d.jsonl",
+  "Sha256": "7a6e6fd0fdab4a0c02b1c0eb0e9e61bcb44bcbcd8243f875f4e7fafc708c1d33"
+ },
+ "Output": {
+  "File": "output.json",
+  "Sha256": "eb7e12eb1dad1492570bf0e4babd4f0f5b5078ec2535590b406409ebd4d6a16c",
+  "Source": "structured_output del mensaje result de stream-json"
+ },
+ "Audit": {
+  "File": "audit.json",
+  "Sha256": "0f73a04ca668e12a8f799584b41ecc924d08b6effe53162e01d4d1a4701663f2",
+  "Auditor": "v5.1-a6 custodiado en 8b77981b",
+  "Accreditation": {
+   "Status": "NOT_ACCREDITED",
+   "Reasons": [
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-6] (docs/initiatives/I-62-proposal-v14.md:2333-2334)"
+   ]
+  }
+ },
+ "OwnerGateAtLaunch": {
+  "WorktreeHead": "519b3ddc6fc35299c3641c661e6e432dcdf0c617",
+  "DecisionsLine": 1572,
+  "Section77Line": 1548
+ },
+ "CloneAfterRun": {
+  "Head": "7b5ffac9d9c04f90b9708a867089d32e885dc815",
+  "StatusPorcelainIgnored": ""
+ },
+ "Independence": "proceso claude-cli nuevo con session id fijado; sin la transcripción ni la memoria de la sesión autora ni del Coordinator; modo seguro sin CLAUDE.md ni memoria; evidencia I-62-evidence.md fuera del cierre; mismo proveedor que la sesión que prepara (Provider PREFERRED no se cumple, declarado)"
+}

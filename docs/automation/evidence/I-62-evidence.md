@@ -4090,3 +4090,38 @@ solo desde artefactos custodiados.
 - **Registro:** decisiones §78, como línea completa dentro de un bloque `text`, después del encabezado §77; decisiones solo crece por añadido.
 - **Siguiente:** prueba en seco del kit `R20261011T215735Z-c434` sobre la HEAD que contiene §78; si todas las comprobaciones son conformes,
   lanzamiento único de la revisión formal de A-6 (`claude-cli`, autorización CLAUDE-CLI-I62).
+
+## 153. Revisión formal de A-6 ejecutada (una vez): CHANGES REQUIRED con cinco REQUIRED; el auditor da NOT_ACCREDITED por un motivo (decisiones §77, punto 4; §78)
+
+- **Corrida** [`I-62-architect-A-6/R20261011T215735Z-c434`](I-62-architect-A-6/R20261011T215735Z-c434/README.md):
+  - prueba en seco sobre `519b3ddc` sin comprobaciones bloqueantes; 11-OwnerGate en Ok, con la línea del Owner en decisiones L1572, después de
+    §77 (L1548);
+  - lanzamiento único: sesión `35cd6b11…`, de 07:16:53Z a 07:38:51Z, salida 0, sin fallo de transporte;
+  - 65 turnos y 64 llamadas (Read 54, Grep 9, StructuredOutput 1), ninguna con problemas; coste equivalente informado 7,67 USD (cuota de la
+    suscripción);
+  - clon `7b5ffac9` limpio tras la corrida; Codex no se ejecutó.
+- **Resultado** (`output.json` `eb7e12eb1dad1492…`): **CHANGES REQUIRED**.
+  - **Temas de §77.2:** Q-A6-01 SATISFIED; Q-A6-02 NOT_SATISFIED (R1); Q-A6-06/07 NOT_SATISFIED (R2, R4); Q-A6-12 NOT_SATISFIED (R3).
+  - **Deltas:** A6-2 y A6-6 AGREED; A6-1, A6-3, A6-4, A6-5, A6-7, A6-8 y A6-9 CHANGES REQUIRED.
+  - **REQUIRED:**
+    - R1: la integridad del objeto Git suelto se comprueba en la escritura y no en el punto de uso; los objetos de reemplazo pueden sustituir los
+      bytes; las escrituras no quedan registradas frente a W-2;
+    - R2: la correspondencia REJECT_FACTS / INVALID_OUTPUT / FAIL / UNVERIFIED no es exacta ni exhaustiva; el REJECT_FACTS de A-6 no coincide con
+      la Decision del aceptante fijado;
+    - R3: la independencia del aceptante está declarada, no demostrada (14 de 27 mutantes del instrumento sin detectar con datos reales; pruebas
+      circulares; R4 nunca ejercida sobre una salida real);
+    - R4: el lugar y el momento de ejecución del aceptante (un «clon del fixture») son incompatibles con el aceptante fijado;
+    - R5: A6-1 y A6-7 usan el instrumento también en PLAN, y la línea (a) del Owner dice «en su verificación».
+  - **OPTIONAL:** O1 (correspondencia de GitCalls e Inputs con el cierre), O2 (efecto del FAIL de aislamiento en FX-02), O3 (dónde se comprueba
+    el intérprete).
+  - **Materialidad:** M-01 DISAGREE (UNKNOWN, que cuenta como activado, mientras R2 y R3 sigan abiertos); M-02..M-08 AGREE.
+  - **Separabilidad, D.5 y OV, compatibilidad con A-1..A-5:** sin observaciones.
+  - **Autoridad del Owner:** las correcciones no exigen otra decisión del Owner, salvo en dos casos: que la corrección de R5 conserve el
+    instrumento en PLAN, o que R3 o R4 obliguen a cambiar el blob del aceptante o del instrumento, ya que la línea (a) fija los dos blobs.
+- **Auditoría** (v5.1-a6, `audit.json` `0f73a04ca668e12a…`): **NOT_ACCREDITED, un motivo:** «referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-6] (docs/initiatives/I-62-proposal-v14.md:2333-2334)».
+  - El resto de las reglas son conformes: lanzamiento, compuertas, stream, fidelidad del prompt, custodia del run y del clon, herramientas y 184
+    de 185 referencias.
+  - **Hecho para el Coordinator, sin cambiar el auditor:** el revisor no leyó V14 L2333-L2334. A-6 L116-L119 cita esas dos líneas como
+    «literal», y el revisor sí leyó ese tramo (Read de A-6 L1-L140). Comprobado aquí: A-6 L118-L119 sin el prefijo «> » es byte a byte V14
+    L2333-L2334 en `7b5ffac9`. La regla del kit exige citar solo líneas leídas con Read. La acreditación es del Coordinator.
+- Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS. Sin medición ni Codex hasta el acuerdo.

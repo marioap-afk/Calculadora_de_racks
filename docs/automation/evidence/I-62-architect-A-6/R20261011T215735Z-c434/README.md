@@ -257,3 +257,23 @@ Preparación (fuera de `kit/`, no se custodian como kit): `prep/gen_schema.py` (
 lanzador, el auditor y el selftest de los del kit de B-min por sustituciones exactas; `prep/binary-measurement-2026-10-11.json`; `prep/ids.txt`;
 `prep/prompt-preview.md` (vista previa renderizada desde W antes del clon, igual al `prompt.md` final); salidas de los pasos (`prep/step*.out`).
 `finish-kit.log` (traza de los pasos 1-10, ejecutados uno a uno con los comandos de `finish_kit.py`) y `launch-dry-run.json` (salida literal de `launch.py --dry-run`, capturada con `-X utf8`), junto a este README.
+
+## Resultado (añadido tras la corrida, sesión principal)
+
+```text
+Sesión:          35cd6b11-5a2b-415a-8e87-a3b68fb0817d, de 2026-10-12T07:16:53Z a 2026-10-12T07:38:51Z, salida 0, fallo de transporte: None
+Uso:             65 turnos; herramientas {"Read": 54, "Grep": 9, "StructuredOutput": 1}
+Veredicto:       CHANGES REQUIRED
+REQUIRED:        5 (A62-A6-R1, A62-A6-R2, A62-A6-R3, A62-A6-R4, A62-A6-R5)
+OPTIONAL:        3
+Temas:           Q-A6-01 SATISFIED; Q-A6-02 NOT_SATISFIED; Q-A6-06/07 NOT_SATISFIED; Q-A6-12 NOT_SATISFIED
+Deltas:          A6-1 CHANGES REQUIRED; A6-2 AGREED; A6-3 CHANGES REQUIRED; A6-4 CHANGES REQUIRED; A6-5 CHANGES REQUIRED; A6-6 AGREED; A6-7 CHANGES REQUIRED; A6-8 CHANGES REQUIRED; A6-9 CHANGES REQUIRED
+Acreditación:    NOT_ACCREDITED por el auditor v5.1-a6 (1 motivo); la acreditación final es del Coordinator
+Clon tras corrida: HEAD 7b5ffac9, estado limpio
+```
+
+El veredicto no es el acuerdo: el acuerdo de A-6 es del Architect y del Coordinator sobre el blob exacto, y un REQUIRED abierto lo impide
+(decisiones §77, punto 4). Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS.
+
+Archivos añadidos: `output.json`, `audit.json`, `runtime-evidence.json`, `launch/` (saneado), `launch-dry-run-s78.json` (la prueba en seco sobre
+`519b3ddc`), `launch-run.log` y `post-review.log`. La transcripción y `stdout.jsonl` no se versionan; sus SHA-256 están en `runtime-evidence.json`.

@@ -1,0 +1,696 @@
+{
+ "Schema": "rackcad-a6-architect-review/0",
+ "RunId": "R20261011T215735Z-c434",
+ "InvocationId": "I20261011T215735Z-c434",
+ "LogicalReviewRequestId": "L20261011T215735Z-c434",
+ "AttemptSeq": 1,
+ "RequestedRole": "ARCHITECT",
+ "Action": "REVIEW_DESIGN",
+ "ReviewedUnit": "I-62",
+ "ReviewedCommit": "7b5ffac9d9c04f90b9708a867089d32e885dc815",
+ "ReviewedPath": "docs/initiatives/I-62-A-6.md",
+ "ReviewedBlob": "eac473c0d2e58cf1c4594f48a8816b3833af6509",
+ "ReviewerMode": "SEPARATE SESSION",
+ "SamePersonAsAuthor": "Sesión: no. Soy un proceso claude-cli nuevo, separado de la sesión autora de A-6, de los autores del paquete B-min (autor A de la herramienta y autor B del aceptante), del Coordinator, del dictamen de materialidad R20261011T162328Z-5c5e y de las revisiones anteriores. No vi su transcripción ni su memoria. Operador humano: probablemente el mismo, el Owner que opera las sesiones de I-62 (el runtime me inyectó el nombre de usuario Git del repositorio y un correo de usuario); no puedo confirmarlo. Proveedor del revisor: Anthropic (Claude, autodeclarado por el runtime). Proveedor del autor de A-6: no observable desde el cierre (la cabecera de A-6 no lo declara). TOOL-NOTES y ACCEPT-NOTES declaran que los autores de B-min leyeron desde un worktree bajo el directorio de worktrees de Codex del usuario, lo que no basta para fijar su proveedor. Si el autor de A-6 fue una sesión Claude, el proveedor coincide.",
+ "ReviewerDeclaredIdentity": {
+  "Runtime": "claude-cli (agente sobre Claude Agent SDK, según el prompt y el contexto inyectado)",
+  "Model": "claude-opus-5-5 (Opus 5.5, declarado por el runtime)",
+  "Effort": "UNKNOWN",
+  "SessionOrThread": "UNKNOWN"
+ },
+ "InjectedContextDeclaration": {
+  "State": "DECLARED",
+  "Items": [
+   "Instrucciones de sistema del runtime: agente Claude sobre Claude Agent SDK; reglas del harness, modos de permiso, guía de sesión (ultrareview), entorno de modelos, gestión de contexto, pronombres y estilo",
+   "Definiciones de herramientas: Glob, Grep, Read y StructuredOutput, más un aviso de herramientas diferidas no expuestas",
+   "Entorno: directorio de trabajo D:\\r62-arch-a6, directorio adicional D:\\r62-arch-a6-run, plataforma win32, shell PowerShell, versión de Windows 11 Pro y una ruta de scratchpad de la sesión que contiene un identificador de sesión (declarado solo por su tipo)",
+   "Identidad de modelo declarada por el runtime (Opus 5.5, claude-opus-5-5), fecha de corte de conocimiento, fecha 2026-10-12 y presupuesto de tokens",
+   "Un parámetro de esfuerzo de razonamiento inyectado por el runtime (no lo trato como identidad observada)",
+   "Instantánea de gitStatus: rama actual HEAD (separado), rama principal main, estado limpio y los cinco commits recientes (7b5ffac9, 0c817e1d, 7b7aba46, 108d4ca1, 1652dd61)",
+   "Identificadores de cuenta, solo por su tipo: correo electrónico del usuario y nombre de usuario Git",
+   "Recordatorios del runtime durante la corrida que pedían un breve aviso de progreso (no son compactación ni mensajes nuevos del usuario)",
+   "No se inyectó ninguna memoria de proyecto, CLAUDE.md ni AGENTS.md visibles"
+  ]
+ },
+ "Step0": {
+  "Basis": "INVOKER_VERIFIED_CLONE",
+  "OrderReadWhole": true,
+  "OrderNamesObjectBlob": true,
+  "Decisions77DeclaresOrderBytesAndSha256": true,
+  "Decisions77NamesObjectBlob": true,
+  "Decisions77TopicsAndReviewMatchOrder": true,
+  "GuardsRunModeBaseHeadResult": true,
+  "SelftestA6TextBlobMatchesObject": true,
+  "Note": "order.txt leído entero con Read (46 líneas): L5 nombra docs/initiatives/I-62-A-6.md y L7 el blob eac473c0d2e58cf1c4594f48a8816b3833af6509; L10-L14, los cuatro temas; L19-L24, la revisión formal. Decisiones L1551 declara 2 918 bytes en UTF-8 y el SHA-256 e23faecbacc7ae33976f211ee381020b88dd08f38067eaa938c5b54ec36c4537; L1555 nombra el objeto con el mismo blob; L1556 y L1558 registran los mismos temas (Q-A6-01, y Q-A6-02, Q-A6-06/07 y Q-A6-12 como REQUIRED REVIEW TOPIC) y la misma revisión que order.txt L10-L14 y L19-L24, con la redacción del registro. a6-guards-result-run.json leído entero: Mode RUN (L2), Base 108d4ca1a395c64c43cfae4f17f5854fe2d01536 (L3), Head 7b7aba4645ff2430d583c641d817630282a56fdf (L4) y Result PASS (L128). a6-selftest.json L872-L894: Result PASS (L890), Mode SELF_TEST, ToolBlob c5cc6168… y A6TextBlob eac473c0d2e58cf1c4594f48a8816b3833af6509 (L894). No puedo recalcular bytes, SHA-256 ni blobs (sin ejecución): eso lo acredita el invocador."
+ },
+ "Reads": [
+  "D:/r62-arch-a6-run/order.txt: 1-46 (entera)",
+  "docs/automation/decisions/I-62.md: 1548-1562, 1479-1546",
+  "docs/automation/evidence/I-62-A6/a6-guards-result-run.json: 1-129 (entera)",
+  "docs/automation/evidence/I-62-A6/a6-selftest.json: 872-894",
+  "docs/initiatives/I-62-A-6.md: 1-140, 140-279, 279-409, 410-589, 589-748 (entera); Grep sobre el archivo",
+  "docs/automation/evidence/I-62-architect-bmin/R20261011T162328Z-5c5e/output.json: 1-300, 300-599, 600-805 (entera)",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md: 1-143 (entera)",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md: 1-316 (entera)",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md: 1-240 (entera)",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py: Grep sobre el archivo; 60-184, 200-479, 962-991, 1283-1362, 1821-2035, 2134-2203, 2671-2702",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py: Grep sobre el archivo; 1-311, 600-819, 1440-1614",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/TOOL-NOTES.md: 1-60",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/fake_tool.py: Grep sobre el archivo; 1-20, 265-289",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/e2e.py: Grep sobre el archivo; 120-164",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/acceptor-result.json: Grep sobre el archivo",
+  "docs/automation/evidence/I-62-A6/preflight.md: Grep sobre el archivo; 120-168",
+  "docs/AUTOMATION_PLAN.md: 507-543, 620-708, 1144-1155, 1182-1323",
+  "docs/initiatives/I-62-proposal-v14.md: 356-367, 952-977, 1027-1071, 1073-1130, 2386-2555, 2556-2590; Grep (T10, W-2) sobre el archivo",
+  "docs/INITIATIVE_LIFECYCLE.md: 66-94, 152-222",
+  "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md: 1-106 (entera)",
+  "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md: 1-45",
+  "docs/initiatives/I-62-A-1.md: 1-56",
+  "docs/initiatives/I-62-A-2.md: 1-48",
+  "docs/initiatives/I-62-A-3.md: 1-62",
+  "docs/initiatives/I-62-A-4.md: 185-214",
+  "docs/initiatives/I-62-A-5.md: 149-248",
+  "docs/automation/agent-execution/README.md: 170-235, 537-603",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md: 1-218 (entera)"
+ ],
+ "Verdict": "CHANGES REQUIRED",
+ "RequiredFindings": [
+  {
+   "FindingId": "A62-A6-R1",
+   "Section": "§3.6 A6-3, regla 1, y §3.7 A6-4, regla 1",
+   "ViolatedInvariant": "§77, punto 2 (order.txt:12): la integridad, la procedencia y la autorización de la entrega del objeto Git suelto se acreditan y, si no se demuestran, la entrega falla cerrada. AP 16.24 (L1292-L1293): la comprobación previa se hace por el mismo camino de lectura que usará el rol, y sin FAITHFUL no hay lanzamiento. A6-1, regla 1: solo el blob fijado es el instrumento.",
+   "Counterexample": "Entre la planificación y la verificación, el Worker escribe en el mismo repositorio del -C (AP 16.4, orden de commits, L535-L537). Supongamos que deja allí una sustitución de objetos, por ejemplo refs/replace/9a829b0e…. La supervisión escribe el objeto con hash-object -w y obtiene exactamente el identificador fijado, así que la comprobación de A6-3, regla 1, pasa. Un registro de fidelidad «comparado por blob» también pasa si compara el nombre del objeto: RAE F2 (L578) admite un VerificationMethod en lugar de un TransportSha256. Sin embargo, `git cat-file blob 9a829b0e… | python -I -` entrega los bytes de la sustitución, porque Git aplica los objetos de reemplazo por defecto. El instrumento tampoco neutraliza la sustitución en sus propias llamadas: bmin_facts.py L39 y L141-L143 eliminan todas las variables GIT_* y no fijan GIT_NO_REPLACE_OBJECTS. El aceptante sí lo hace (bmin_accept.py L217). Ninguna regla de A-6 falla cerrada antes del lanzamiento en este caso. Además, la regla 1 escribe en el repositorio del sistema bajo prueba dentro de la ventana, pero no exige registrar con la escritura la disposición que la autoriza, su hora UTC ni que ocurrió fuera de toda cesión. Tampoco la sitúa frente a W-2 (V14 L362-L363) ni frente a la comprobación de procesos de 16.4 (AP L525-L527).",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:398-401",
+    "docs/initiatives/I-62-A-6.md:418-420",
+    "docs/AUTOMATION_PLAN.md:1292-1293",
+    "docs/automation/agent-execution/README.md:578",
+    "docs/AUTOMATION_PLAN.md:535-537",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:39",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:141-143",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:217",
+    "docs/initiatives/I-62-proposal-v14.md:362-363",
+    "docs/AUTOMATION_PLAN.md:525-527",
+    "order.txt:12"
+   ],
+   "WhyItMatters": "El instrumento es código que se ejecuta dentro de la verificación. La comprobación en la escritura demuestra que la supervisión escribió los bytes correctos, no que el Controller ejecute esos bytes, y entre ambos momentos hay una cesión del Worker en el mismo repositorio. §77 exige integridad demostrada con fallo cerrado en el punto de uso.",
+   "CorrectionRequired": "Fijar en A6-3 (o en A6-4, regla 1) que, inmediatamente antes de cada lanzamiento y después de cualquier cesión anterior, la comprobación vuelve a calcular el blob y el SHA-256 de los bytes que entrega el camino exacto de ejecución declarado (la misma orden y el mismo entorno que usará el Controller) y los compara con los de §3.3. Fijar que ese camino desactiva la sustitución de objetos (por ejemplo, --no-replace-objects o GIT_NO_REPLACE_OBJECTS=1 en la orden declarada), o que antes se comprueba que el repositorio del -C no tiene refs/replace/, alternates ni grafts. Toda discrepancia, o la imposibilidad de comprobarlo, deja sin lanzamiento. Cada escritura se registra con la DecisionRef de la disposición que la autoriza, el repositorio, la hora UTC y la constancia de que ningún proceso de la supervisión queda sobre el worktree en la Salida, y A-6 declara su relación con W-2."
+  },
+  {
+   "FindingId": "A62-A6-R2",
+   "Section": "§3.8 A6-5, reglas 1, 3 y 4 (con §3.12 A6-9, regla 2)",
+   "ViolatedInvariant": "§77, punto 2 (order.txt:13): la correspondencia normativa entre REJECT_FACTS, INVALID_OUTPUT, FAIL y UNVERIFIED es exacta y no se inventan estados. AP 16.9 L653: una salida conforme pero vacía o falsa es INVALID_OUTPUT, nunca VERIFIED, con transporte BLOCKED. AP 16.11 L676: la recuperación se rige por la disposición. Resultados de V14 D.4: L2534-L2537. AP L1204: not_run es una comparación que no se pudo ejecutar o no terminó. AP L687: S-04, evidencia contradictoria → STOP.",
+   "Counterexample": "(a) A-6 no menciona INVALID_OUTPUT. Un VERIFIED cuyos hechos rechaza el aceptante es una «salida conforme pero falsa» (AP L653). A6-5, regla 3, crea en su lugar un «VERIFIED rechazado, que no se ingiere», sin clasificación de transporte ni disposición. La regla 4 remite la recuperación a 16.11, que depende de una disposición (L676) que ese par VERIFIED/NONE no tiene, y no dice cómo cuenta la reejecución (RAE L211). (b) Las reglas 3 y 4 solo dan efecto a un VERIFIED rechazado. Ejemplo: el Controller emite EXECUTION_REWORK_REQUIRED/REWORK con CleanTree en fail, y los hechos del instrumento muestran el árbol limpio. R4 da MISMATCH y el aceptante, REJECT_FACTS, pero el REWORK sigue en pie: relanzamiento del Worker y attempts+1 (RAE L198). Ocurre lo mismo con la salida de PLAN y con los negativos (RAE L224-L226): en nc1 (RAE L228) el instrumento falla cerrado a propósito con BAD_REVISION, y R3 exige que Error sea null (ACCEPT-NOTES L81). (c) La partición FAIL/UNVERIFIED de la regla 4 no es exhaustiva. Un REJECT_FACTS por R2 (el intérprete del propio aceptante distinto del declarado; bmin_accept.py L2006-L2017), por R10 (los hechos del relevo de la sesión; SPEC L266), por un NOT_APPLICABLE o por un dato ausente del lado del Controller no es ninguna de las violaciones enumeradas ni un «aceptante sin ejecutar o dato ausente de su lado». (d) El REJECT_FACTS de A-6 no coincide con la Decision del aceptante fijado. Ese aceptante emite ACCEPT_FACTS cuando R4-R7 y R10 están en NOT_APPLICABLE porque la solicitud de la supervisión los declara (bmin_accept.py L80, L2686-L2688 y L2697-L2698; ACCEPT-NOTES L72-L73). La regla 3 dice en cambio que esa no aplicabilidad da REJECT_FACTS, y no indica que el Coordinator lea los Checks y no la Decision. (e) La regla 4 declara FAIL «una decisión del Controller distinta de la que dan sus propios hechos». Esa diferencia la calcula R4 con las reglas propias del aceptante (SPEC L260): «map part: any defect forbids pass», incluida AddedPresentInEff1 (bmin_accept.py L1331-L1333 y L2184-L2188), y otras lecturas propias (ACCEPT-NOTES L190-L192 y L206-L208). A6-9, regla 2, en cambio, devuelve al Coordinator toda divergencia de lectura. (f) Regla 1: una discrepancia entre el instrumento y la orden Git primaria es evidencia contradictoria (S-04), no una comparación que no se pudo ejecutar. Y los fallos del entorno del instrumento (intérprete u objeto ausente, ejecución no aislada) heredan la disposición de su fila, que en CleanTree, Tests, Trailer y FreeText es REWORK (AP L637-L642) y consume attempts por una causa ajena a la entrega.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:440-454",
+    "docs/initiatives/I-62-A-6.md:532-534",
+    "docs/AUTOMATION_PLAN.md:653",
+    "docs/AUTOMATION_PLAN.md:676",
+    "docs/AUTOMATION_PLAN.md:687",
+    "docs/AUTOMATION_PLAN.md:1204",
+    "docs/AUTOMATION_PLAN.md:622-624",
+    "docs/initiatives/I-62-proposal-v14.md:2534-2537",
+    "docs/automation/agent-execution/README.md:211",
+    "docs/automation/agent-execution/README.md:224-226",
+    "docs/automation/agent-execution/README.md:228",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:80",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2686-2688",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2697-2698",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1331-1333",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2184-2188",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2006-2017",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:72-73",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:81",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:190-192",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:206-208",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:260",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:266",
+    "order.txt:13"
+   ],
+   "WhyItMatters": "El aceptante es la compuerta que decide si se ingiere el VERIFIED de FX-02 y si FX-02 queda en FAIL o en UNVERIFIED. Sin una correspondencia exacta con los estados existentes, el mismo hecho da resultados distintos según quién lo lea, y la recuperación y el conteo quedan sin regla. Es lo que §77 prohíbe: apoyarse en estados o efectos que no define el texto normativo.",
+   "CorrectionRequired": "Reescribir A6-5 para que: (1) un REJECT_FACTS, o la falta de resultado del aceptante, sobre una verificación se trate de forma expresa como un estado ya definido (por ejemplo, INVALID_OUTPUT de AP 16.9, con su clasificación de transporte, su efecto en el conteo y su recuperación) o como un estado nuevo con todos esos efectos definidos; (2) cubra las salidas de VERIFY que no son VERIFIED, la salida de PLAN y los negativos, o excluya de forma expresa en ellos el instrumento o el aceptante; (3) reparta de forma exhaustiva entre FAIL y UNVERIFIED las causas de REJECT_FACTS, incluidas R2, R10, NOT_APPLICABLE y el dato ausente del lado del Controller; (4) defina REJECT_FACTS sobre los Checks del aceptante (cualquier estado distinto de MATCH, salvo el MANUAL de R8) y no sobre su Decision; (5) devuelva al Coordinator, antes de cualquier FAIL y en coherencia con A6-9, regla 2, toda divergencia de lectura normativa que detecte R4; y (6) decida, con base en 16.9 y 16.11, si la discrepancia entre el instrumento y Git es not_run o S-04, y qué disposición tienen los fallos del entorno del instrumento."
+  },
+  {
+   "FindingId": "A62-A6-R3",
+   "Section": "§3.12 A6-9, regla 3",
+   "ViolatedInvariant": "§77, punto 2 (order.txt:14): la independencia efectiva del aceptante se demuestra, no basta con declarar su autoría. Decisiones §76, punto 3 (DEC L1540): independencia suficiente para los hechos críticos. AP 16.21 L1146-L1147: la independencia se evalúa sobre identidades observadas, nunca sobre autodeclaraciones. El dictamen deja TOOL_ACCEPTOR_DIVERSITY en UNKNOWN (output.json L707-L715).",
+   "Counterexample": "(1) La autoría distinta y el no haber visto el código ajeno solo están declarados (README L12; ACCEPT-NOTES L3-L8; TOOL-NOTES L3-L8; SPEC L17), y ambos autores trabajaron desde el mismo worktree. (2) Las pruebas de independencia son circulares en clausemap: el fake tool importa el aceptante (fake_tool.py L10-L11 y L270-L278; ACCEPT-NOTES L18-L22), y los mutantes que mata el aceptante son del fake tool, no del instrumento. (3) Con los datos reales, 14 de los 27 mutantes del instrumento no cambian ninguna salida y el aceptante no los detecta (README L28 y L70-L88). Entre ellos están los de hechos críticos que enumera la regla 3: M08 (orden de los merges first-parent), M21 (candidato EFF sin la condición first-parent), M18 (MV-3 sin las rutas borradas), M09 y M16 (trailer), y M11 y M15 (aislamiento y lista cerrada). Ninguna corrida ejerce esos mutantes contra el aceptante sobre datos que los distingan. (4) R4, la comparación de los hechos con la decisión, nunca se ejerció sobre una salida real del Controller (README L101; e2e.py L158; preflight L130). (5) Para los blobs no hay «primitivas distintas»: las dos piezas listan los árboles con ls-tree -r -z --full-tree (bmin_facts.py L238 y L253; bmin_accept.py L437). (6) El cierre del aceptante tiene un formato propio (ACCEPT-NOTES L64-L68 y L217-L221). En el extremo a extremo se construyó a mano, con todos los commits del clon y todas las rutas de los commits nombrados (e2e.py L125-L146), y A-6 no fija ninguna derivación mecánica desde el EffectiveInputClosure ni quién la hace. A-6 usa el aceptante como compuerta (A6-5, regla 3) sin exigir nada de esto. §3.14 (L574) remite a A6-7, que no ejecuta el aceptante, y el preflight lo reconoce como declarado y no observado (L144).",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:535-538",
+    "docs/initiatives/I-62-A-6.md:574",
+    "docs/initiatives/I-62-A-6.md:698",
+    "docs/automation/evidence/I-62-architect-bmin/R20261011T162328Z-5c5e/output.json:707-715",
+    "docs/AUTOMATION_PLAN.md:1146-1147",
+    "docs/automation/decisions/I-62.md:1540",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:12",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:28",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:70-88",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/README.md:101",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:3-8",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:18-22",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:64-68",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:217-221",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/TOOL-NOTES.md:3-8",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md:17",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/fake_tool.py:10-11",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/fake_tool.py:270-278",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/e2e.py:125-146",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/e2e.py:158",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:238",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:253",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:437",
+    "docs/automation/evidence/I-62-A6/preflight.md:130",
+    "docs/automation/evidence/I-62-A6/preflight.md:144",
+    "order.txt:14"
+   ],
+   "WhyItMatters": "A6-5 hace del REJECT_FACTS del aceptante la única barrera independiente frente a hechos falsos del instrumento. Si la diversidad solo está declarada, un defecto común (la misma lectura de la SPEC o el mismo primitivo) pasa a la vez por el instrumento y por el aceptante, y el VERIFIED se ingiere. La regla 3 de A6-9 queda entonces declarada, no demostrada, que es exactamente lo que §77 no admite.",
+   "CorrectionRequired": "Exigir en A6-9, antes de la medición de A6-7 o, como mínimo, antes de la primera invocación de FX-02 con el instrumento, evidencia observable, custodiada y reproducible de independencia efectiva, con fallo cerrado si falta: (a) los 27 mutantes del instrumento real, cada uno ejecutado sobre un repositorio sintético que lo distinga y rechazado por el aceptante (no por las pruebas del instrumento), cubriendo al menos los hechos críticos de la regla 3; (b) pruebas de clausemap del aceptante contra el instrumento real o contra esperados derivados a mano, sin el fake tool que importa el aceptante; (c) R4 ejercido sobre salidas controller-verification/v2 conformes y alteradas, sin NotApplicable; (d) la derivación mecánica del cierre del aceptante desde el EffectiveInputClosure, fijada en A-6 o en un artefacto fijado por blob, con su custodia; y (e) la declaración, por cada hecho crítico, del primitivo que usa cada pieza. Si esa evidencia obliga a cambiar el aceptante, su blob cambia y la determinación del Owner (línea (a), que fija 434ef1fc…) ya no lo cubre."
+  },
+  {
+   "FindingId": "A62-A6-R4",
+   "Section": "§3.6 A6-3, regla 4 (con §3.8 A6-5, regla 3)",
+   "ViolatedInvariant": "LIFECYCLE §5 (L166-L169): un elemento congelable no ejecutable es REQUIRED. A6-5, regla 3, exige un resultado del aceptante para ingerir el VERIFIED.",
+   "Counterexample": "A6-3, regla 4, manda ejecutar el aceptante «sobre un clon del fixture en los mismos SHA». El aceptante fijado exige que el --repo de cada corrida sea el Repo de la solicitud (bmin_accept.py L1850-L1851; ACCEPT-NOTES L49: «clone the tool ran on»). Además reejecuta la herramienta con el argv original del Controller (L1936-L1951) y compara Args y GitCalls (L1982-L1984), y el sobre guarda --repo y las rutas de --file (bmin_facts.py L1590-L1591). Los hechos Toplevel (L631), cleantree (L805-L812) y los hashes del árbol de trabajo (L779-L801) dependen del directorio y del estado del worktree. Sobre otro clon, la solicitud da USAGE (Repo distinto de --repo) o reproduce hechos distintos: REJECT_FACTS sistemático y ningún VERIFIED ingerible. El extremo a extremo funcionó solo porque la herramienta y el aceptante usaron el mismo clon (e2e.py L152). Si se lee «clon» como el propio -C, la regla no fija el momento. Después de la verificación, la sesión hace su commit (AP 16.4, paso 7, L537-L538), que cambia Head y el estado del worktree. Y antes de la siguiente Salida, los procesos git -C <worktree> del aceptante serían participantes ajenos (AP L525-L527; P-02).",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:406-408",
+    "docs/initiatives/I-62-A-6.md:447-450",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1850-1851",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1936-1951",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1982-1984",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md:49",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:1590-1591",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:631",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:779-801",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:805-812",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/e2e.py:152",
+    "docs/AUTOMATION_PLAN.md:535-538",
+    "docs/AUTOMATION_PLAN.md:525-527"
+   ],
+   "WhyItMatters": "Sin un lugar y un momento ejecutables para el aceptante fijado, A6-5, regla 3, rechaza todo VERIFIED o depende de una lectura que no está escrita, y FX-02 no tiene ruta verificable hacia C-24. La compuerta independiente que A-6 introduce no se puede aplicar tal como está redactada.",
+   "CorrectionRequired": "Fijar en A6-3, regla 4, dónde y cuándo se ejecuta el aceptante, de forma compatible con el aceptante fijado: el mismo repositorio y las mismas rutas que usó el instrumento del Controller, con el worktree en el mismo estado, entre la Entrada de la invocación y cualquier escritura o Salida posterior de la sesión (16.4, pasos 5-7, y los negativos), indicando su relación con la comprobación de procesos y con P-02. Si se quiere un clon, A-6 debe decir qué hechos dependientes del estado se excluyen o cómo se reproducen, sabiendo que eso exige otro aceptante (otro blob y otra determinación del Owner). La vía elegida se demuestra antes de apoyarse en ella, por ejemplo en la medición de A6-7."
+  },
+  {
+   "FindingId": "A62-A6-R5",
+   "Section": "§3.4 A6-1, regla 1; §3.10 A6-7, regla 1; §3.11 A6-8 (encabezado y regla 1)",
+   "ViolatedInvariant": "LIFECYCLE L94 y L221: una materia OWNER-RESERVED exige al Owner. V14 AUT-I1 (L1043): nadie salvo el Owner elige una decisión del Owner. ADR-0046 #9 (L69): la excepción solo existe en el alcance que determine el Owner.",
+   "Counterexample": "A6-1, regla 1, permite el instrumento «en sus invocaciones de planificación, de verificación y de los negativos» (L344), y A6-7, regla 1, da la elegibilidad «para la planificación, la verificación y los negativos» (L480). Pero la condición de A6-8 (L508-L510) y la línea (a) del Owner (L679) determinan la excepción para «usar ese instrumento y su aceptante en la verificación del Controller» y dicen que el Controller «puede usar en su verificación». En el vocabulario de la propia A-6, planificación y verificación son invocaciones distintas: PLAN produce delegation/v2 y VERIFY produce controller-verification/v2 (AP L1236-L1237 y L1240; kit L19-L23). Una invocación PLAN con el instrumento aplicaría una excepción de ADR-0046 #9 que la determinación literal no nombra, y leer «verificación» en sentido amplio sería elegir la lectura de una decisión del Owner. A6-8, regla 1, fija el alcance por celda y no por acción (L511-L513), y no resuelve la ambigüedad.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:344",
+    "docs/initiatives/I-62-A-6.md:480-485",
+    "docs/initiatives/I-62-A-6.md:508-513",
+    "docs/initiatives/I-62-A-6.md:663-666",
+    "docs/initiatives/I-62-A-6.md:679",
+    "docs/AUTOMATION_PLAN.md:1236-1237",
+    "docs/AUTOMATION_PLAN.md:1240",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:19-23",
+    "docs/initiatives/I-62-proposal-v14.md:1043",
+    "docs/INITIATIVE_LIFECYCLE.md:94",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:69"
+   ],
+   "WhyItMatters": "Aplicar A-6 a PLAN quedaría sin autoridad reservada, o dependería de una interpretación que solo el Owner puede hacer. Sería M-08 (reinterpretar ADR-0046 #9) fuera del alcance determinado.",
+   "CorrectionRequired": "Alinear A6-1, regla 1, A6-7, regla 1, y A6-8, regla 1, con el alcance literal de la determinación. Una opción es limitar el instrumento a las invocaciones VERIFY (la verificación y los negativos con invocación) y la medición a lo que esas invocaciones necesitan. La otra, si la planificación lo necesita, es declararlo como consecuencia OWNER-RESERVED distinta y obtener una determinación del Owner cuyo texto la cubra, sin reinterpretar la línea (a) ya registrada."
+  }
+ ],
+ "OptionalFindings": [
+  {
+   "FindingId": "A62-A6-O1",
+   "Section": "§3.7 A6-4, reglas 3 y 4",
+   "Note": "A-6 no define cómo se casan las GitCalls (suborden, revisiones y rutas) y los Inputs de cada salida con las clases del cierre ({Path, Blob} de CanonicalInputs, AllowedActions). Además hay lecturas del instrumento que no aparecen ni en GitCalls ni en Inputs. hashes lee archivos del árbol de trabajo con open() y no los declara (bmin_facts.py L779-L801). --file lee rutas arbitrarias y en Inputs solo declara Name y Sha256, sin la ruta (L291-L307). La regla 4 las clasificaría como «lecturas internas del runtime», que no se capturan. Sin la regla de correspondencia, dos auditores pueden llegar a P-22 o a ningún hallazgo con la misma salida.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:424-429",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:779-801",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:291-307",
+    "docs/AUTOMATION_PLAN.md:1264-1267"
+   ],
+   "SuggestedCorrection": "Fijar la regla de correspondencia entre cada GitCall o Input y el cierre (por ejemplo, objetos alcanzables desde SHA del cierre o del Target, y rutas de Args auditadas). Declarar las lecturas de hashes y de --file como lecturas del instrumento, auditadas por sus Args, y no como lecturas internas del runtime."
+  },
+  {
+   "FindingId": "A62-A6-O2",
+   "Section": "§3.6 A6-3, regla 3",
+   "Note": "La regla dice que «cualquier otro repositorio» sigue siendo una entrada privada prohibida y que su lectura es «FAIL de aislamiento». Pero D.6 solo nombra el worktree real de I-62 (V14 L2573), y su FAIL de aislamiento es un resultado de FX-04a (L2580-L2582). Para FX-02 la regla es nueva. Su efecto convive con el INVALID_REVIEW_CONTEXT de A6-4, regla 3, y con el FAIL de A6-5, regla 4, sin que A-6 diga cómo se componen.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:404-405",
+    "docs/initiatives/I-62-proposal-v14.md:2573",
+    "docs/initiatives/I-62-proposal-v14.md:2580-2582",
+    "docs/initiatives/I-62-A-6.md:425-426"
+   ],
+   "SuggestedCorrection": "Presentarla como regla nueva para FX-02 y fijar un único efecto, compuesto de forma expresa con P-22 (A6-4, regla 3) y con el FAIL de A6-5, regla 4."
+  },
+  {
+   "FindingId": "A62-A6-O3",
+   "Section": "§3.4 A6-1, regla 6, y §3.10 A6-7, regla 5",
+   "Note": "El intérprete declarado (ruta, versión y SHA-256) es un invalidador, pero ninguna regla fija dónde se comprueba en cada invocación. Las comprobaciones de la Salida del kit no lo incluyen (L172-L175), y R2 del aceptante calcula el hash de su propio intérprete, no del que usó el Controller (bmin_accept.py L2006-L2017).",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:362-363",
+    "docs/initiatives/I-62-A-6.md:497-498",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:172-175",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2006-2017"
+   ],
+   "SuggestedCorrection": "Añadir a la Salida y a la Entrada de cada invocación con el instrumento la comprobación de la ruta, la versión y el SHA-256 del intérprete declarado frente a la disposición, de modo que una diferencia deje sin lanzamiento."
+  }
+ ],
+ "TopicVerdicts": [
+  {
+   "Topic": "Q-A6-01",
+   "Disposition": "SATISFIED",
+   "Rationale": "A-6 sigue la interpretación aceptada en §77. El único insumo canónico nuevo es el archivo del instrumento, por su blob (§1 L73-L76; §3.3 L325-L333; A6-1, regla 5; A6-2, regla 1). Los hechos son evidencia producida dentro de la invocación, que el Controller contrasta y cita y que el aceptante reproduce (A6-2, regla 4). No reintroduce B-ext (rechazado en DEC L1522): un solo archivo fijado por blob, para una sola celda, un escenario y una fase, sin otras herramientas, fuera de F_seed, de F_norm y de producción (A6-1, regla 7). El cierre no contiene la definición de B-ext más allá de su rechazo.",
+   "ClauseRefs": [
+    "order.txt:11",
+    "docs/initiatives/I-62-A-6.md:73-76",
+    "docs/initiatives/I-62-A-6.md:325-333",
+    "docs/initiatives/I-62-A-6.md:359-361",
+    "docs/initiatives/I-62-A-6.md:375-378",
+    "docs/initiatives/I-62-A-6.md:385-386",
+    "docs/initiatives/I-62-A-6.md:364-365",
+    "docs/automation/decisions/I-62.md:1522"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "Q-A6-02",
+   "Disposition": "NOT_SATISFIED",
+   "Rationale": "La procedencia queda resuelta por la dirección de contenido: los bytes se obtienen por el blob y nunca de un árbol de trabajo, y la escritura se comprueba contra el blob fijado. La integridad, en cambio, solo se comprueba al escribir (A6-3, regla 1) y con un «comparado por blob» que admite una comparación por nombre (A6-4, regla 1; RAE F2). No se exige comprobarla sobre los bytes que entrega el camino exacto de ejecución después de la cesión del Worker, ni desactivar la sustitución de objetos. Tampoco se exige registrar la autorización de cada escritura en el repositorio del sistema bajo prueba. El fallo cerrado no queda demostrado en el punto de uso (A62-A6-R1).",
+   "ClauseRefs": [
+    "order.txt:12",
+    "docs/initiatives/I-62-A-6.md:398-401",
+    "docs/initiatives/I-62-A-6.md:418-420",
+    "docs/AUTOMATION_PLAN.md:1292-1293"
+   ],
+   "FindingIds": [
+    "A62-A6-R1"
+   ]
+  },
+  {
+   "Topic": "Q-A6-06/07",
+   "Disposition": "NOT_SATISFIED",
+   "Rationale": "A6-5 no establece una correspondencia exacta. No relaciona el REJECT_FACTS con INVALID_OUTPUT (AP 16.9 L653), crea un «VERIFIED rechazado» sin transporte, disposición ni recuperación, y solo cubre salidas VERIFIED. Su partición FAIL/UNVERIFIED no es exhaustiva, su REJECT_FACTS no coincide con la Decision del aceptante fijado, y hace FAIL automático una divergencia de lectura que A6-9, regla 2, reserva al Coordinator. Además, el lugar que fija para el aceptante lo hace rechazar de forma sistemática (A62-A6-R2, A62-A6-R4). La evaluación no se apoya en ningún estado que no definan el cierre o un delta de A-6.",
+   "ClauseRefs": [
+    "order.txt:13",
+    "docs/initiatives/I-62-A-6.md:440-454",
+    "docs/AUTOMATION_PLAN.md:653",
+    "docs/initiatives/I-62-proposal-v14.md:2534-2537",
+    "docs/initiatives/I-62-A-6.md:692-693"
+   ],
+   "FindingIds": [
+    "A62-A6-R2",
+    "A62-A6-R4"
+   ]
+  },
+  {
+   "Topic": "Q-A6-12",
+   "Disposition": "NOT_SATISFIED",
+   "Rationale": "Comparé el código, las notas, las pruebas y los resultados de las dos piezas. La regla 3 de A6-9 está declarada, no demostrada. La autoría y el no haber visto el código ajeno son autodeclarados, desde el mismo worktree. Las pruebas de clausemap son circulares. 14 de los 27 mutantes del instrumento, varios de hechos críticos, no se han ejercido contra el aceptante sobre datos que los distingan. R4 no se ha ejercido nunca. Para los blobs, las dos piezas usan el mismo primitivo de árboles. El cierre del aceptante es propio y se construyó a mano. A-6 se apoya en el aceptante sin exigir esa evidencia antes de la medición ni de FX-02 (A62-A6-R3).",
+   "ClauseRefs": [
+    "order.txt:14",
+    "docs/initiatives/I-62-A-6.md:535-538",
+    "docs/initiatives/I-62-A-6.md:698",
+    "docs/automation/evidence/I-62-architect-bmin/R20261011T162328Z-5c5e/output.json:707-715",
+    "docs/AUTOMATION_PLAN.md:1146-1147"
+   ],
+   "FindingIds": [
+    "A62-A6-R3"
+   ]
+  }
+ ],
+ "DeltaVerdicts": [
+  {
+   "Delta": "A6-1",
+   "Verdict": "CHANGES REQUIRED",
+   "Rationale": "Las reglas 2-7 son correctas: solo hechos, ningún veredicto; receta, adapter, esquemas, permisos y autoridad sin cambio; topes sin cambio; tres insumos; invalidadores; fuera de producción. La regla 1, en cambio, extiende el instrumento a la planificación, que la determinación del Owner (verificación) no nombra (R5). Sugerencia para la regla 6: O3.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:344-348",
+    "docs/initiatives/I-62-A-6.md:352-358",
+    "docs/initiatives/I-62-A-6.md:679"
+   ],
+   "FindingIds": [
+    "A62-A6-R5",
+    "A62-A6-O3"
+   ]
+  },
+  {
+   "Delta": "A6-2",
+   "Verdict": "AGREED",
+   "Rationale": "La admisión es acotada y explícita: una entrada {Path, Blob} como única excepción a la clase de §20.3.1, una acción ACTION_COMPATIBLE cuya fuente es la DecisionRef (análoga a la exención de V14 L1093) y la regla I6 contra el blob de A-6, con el resto sin cambio. Los hechos se tratan como evidencia, y la regla no se aplica a ningún otro rol. Cubre el punto 2 del dictamen.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:373-387",
+    "docs/initiatives/I-62-proposal-v14.md:1088-1094",
+    "docs/automation/agent-execution/README.md:561",
+    "docs/automation/agent-execution/README.md:565"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Delta": "A6-3",
+   "Verdict": "CHANGES REQUIRED",
+   "Rationale": "La vía por objeto suelto, sin árbol, índice, ref ni push y fuera de F_seed y F_norm, es coherente con el punto 3 del dictamen. Pero la integridad solo se comprueba al escribir y no en el punto de uso, y la autorización de cada escritura no se registra (R1). Además, la regla 4 sitúa el aceptante en un clon donde el aceptante fijado no puede reproducir los hechos (R4). Sugerencia para la regla 3: O2.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:396-408",
+    "docs/initiatives/I-62-proposal-v14.md:2586-2587"
+   ],
+   "FindingIds": [
+    "A62-A6-R1",
+    "A62-A6-R4",
+    "A62-A6-O2"
+   ]
+  },
+  {
+   "Delta": "A6-4",
+   "Verdict": "CHANGES REQUIRED",
+   "Rationale": "Las reglas 2-4 cubren el contraste con Git, la auditoría y la cobertura declarada. La regla 1, «comparado por blob», no obliga a volver a calcular el hash de los bytes que entrega el camino de ejecución, y es parte del defecto de integridad (R1). Sugerencia para las reglas 3 y 4: O1.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:416-429",
+    "docs/AUTOMATION_PLAN.md:1287-1293"
+   ],
+   "FindingIds": [
+    "A62-A6-R1",
+    "A62-A6-O1"
+   ]
+  },
+  {
+   "Delta": "A6-5",
+   "Verdict": "CHANGES REQUIRED",
+   "Rationale": "La regla 2 es correcta. La correspondencia de las reglas 1, 3 y 4 con INVALID_OUTPUT, FAIL, UNVERIFIED, S-04, la recuperación y el conteo no es exacta ni exhaustiva (R2). La compuerta del aceptante, tal como la sitúa A6-3, regla 4, no es ejecutable (R4).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:438-454",
+    "docs/AUTOMATION_PLAN.md:653",
+    "docs/AUTOMATION_PLAN.md:1204-1207"
+   ],
+   "FindingIds": [
+    "A62-A6-R2",
+    "A62-A6-R4"
+   ]
+  },
+  {
+   "Delta": "A6-6",
+   "Verdict": "AGREED",
+   "Rationale": "El oráculo se calcula sin el instrumento, sin el aceptante y sin la SPEC; su lectura de 16.9 y 16.13 la fija el Coordinator; se sella antes y nunca se entrega; y un C-24 PASS se califica como «Controller más instrumento» y no se extiende a D.5 ni a la OV. Cumple el punto 6 del dictamen y el esperado independiente del Anexo C.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:462-470",
+    "docs/initiatives/I-62-proposal-v14.md:2333-2334"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Delta": "A6-7",
+   "Verdict": "CHANGES REQUIRED",
+   "Rationale": "Sigue el patrón acordado de A4-1: una medición, disposición, consumo del Owner, cuenta aparte, tope 1, sin reintento e invalidadores. Pero la regla 1 hace elegible la celda con el instrumento también para la planificación, fuera del alcance de la determinación (R5). Sugerencia para la regla 5: O3.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:478-500",
+    "docs/initiatives/I-62-A-4.md:195-207"
+   ],
+   "FindingIds": [
+    "A62-A6-R5",
+    "A62-A6-O3"
+   ]
+  },
+  {
+   "Delta": "A6-8",
+   "Verdict": "CHANGES REQUIRED",
+   "Rationale": "Condiciona bien todo el efecto de A-6 a la determinación del Owner, sin conceder, presumir ni modificar ADR-0046 ni ADR-0048, y sin autorizar consumo ni aceptar resultados. Pero su encabezado habla de la verificación y su regla 1 fija el alcance por celda, y no casa con A6-1 y A6-7, que incluyen la planificación (R5).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:508-519",
+    "docs/initiatives/I-62-A-6.md:679"
+   ],
+   "FindingIds": [
+    "A62-A6-R5"
+   ]
+  },
+  {
+   "Delta": "A6-9",
+   "Verdict": "CHANGES REQUIRED",
+   "Rationale": "Las reglas 1, 4 y 5 son correctas. La regla 3 declara una independencia y una derivación del cierre que no están demostradas ni definidas (R3). La regla 2 queda contradicha por el FAIL automático de A6-5, regla 4, cuando la diferencia nace de una lectura normativa propia del aceptante (R2).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:528-541",
+    "docs/automation/decisions/I-62.md:1540"
+   ],
+   "FindingIds": [
+    "A62-A6-R3",
+    "A62-A6-R2"
+   ]
+  }
+ ],
+ "Separability": {
+  "WithinA6NoDeltaSeparable": "CONFIRMED",
+  "SeparableFromA1toA5": "CONFIRMED",
+  "OwnerLinesSeparable": "CONFIRMED",
+  "Rationale": "Dentro de A-6, cada delta sostiene la ruta. Sin A6-2 el cierre rechaza el archivo; sin A6-3 no llega al -C; sin A6-4 Contexto queda UNKNOWN; sin A6-5 el rechazo no tiene efecto; sin A6-6 se pierde el esperado independiente; sin A6-7 no hay celda elegible; sin A6-9 se pierden las condiciones del dictamen; y A6-8 condiciona a todos. Frente a A-1..A-5, A-6 no cambia ninguna y, si no se aplica, FX-02 sigue como estaba. Las dos líneas del Owner son decisiones distintas: (b) exige (a) y A-6 AGREED, y (a) no autoriza consumo; se piden y se deciden por separado.",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-6.md:704-711",
+   "docs/initiatives/I-62-A-6.md:660-661",
+   "docs/initiatives/I-62-A-6.md:669-672",
+   "docs/initiatives/I-62-A-6.md:679-680"
+  ],
+  "FindingIds": []
+ },
+ "MaterialityConfirmation": [
+  {
+   "Id": "M-01",
+   "A6Declared": "no",
+   "ReviewerAssessment": "UNKNOWN",
+   "Agreement": "DISAGREE",
+   "Rationale": "El M-01 = no del dictamen tenía dos condiciones: que la SPEC siga sin ser normativa y que el cierre del aceptante se derive del EffectiveInputClosure sin ser una segunda definición. Tal como está redactada, A-6 hace FAIL automático la diferencia que calcula R4 con las reglas propias del aceptante (por ejemplo, «any defect forbids pass»), en contra de A6-9, regla 2, y no define la derivación del cierre. Puede aparecer así una segunda autoridad de lectura para el resultado de las comprobaciones. UNKNOWN cuenta como activado (LIFECYCLE L78-L79). Con R2 y R3 corregidos, espero M-01 = no, como el dictamen.",
+   "ClauseRefs": [
+    "docs/INITIATIVE_LIFECYCLE.md:83",
+    "docs/INITIATIVE_LIFECYCLE.md:78-79",
+    "docs/initiatives/I-62-A-6.md:613",
+    "docs/automation/evidence/I-62-architect-bmin/R20261011T162328Z-5c5e/output.json:446-448"
+   ],
+   "FindingIds": [
+    "A62-A6-R2",
+    "A62-A6-R3"
+   ]
+  },
+  {
+   "Id": "M-02",
+   "A6Declared": "yes",
+   "ReviewerAssessment": "yes",
+   "Agreement": "AGREE",
+   "Rationale": "Ningún campo cambia, pero cambia el significado persistido del cierre y de la RoleInvocation: un artefacto no autoritativo que se ejecuta entra en CanonicalInputs, y la regla I6 de esa entrada se comprueba contra el blob de A-6.",
+   "ClauseRefs": [
+    "docs/INITIATIVE_LIFECYCLE.md:84",
+    "docs/initiatives/I-62-A-6.md:614",
+    "docs/initiatives/I-62-A-6.md:375-384"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Id": "M-03",
+   "A6Declared": "yes",
+   "ReviewerAssessment": "yes",
+   "Agreement": "AGREE",
+   "Rationale": "El Controller de FX-02 verifica con un instrumento y un intérprete que la receta no nombra, y C-24 pasa a medir la configuración Controller más instrumento.",
+   "ClauseRefs": [
+    "docs/INITIATIVE_LIFECYCLE.md:85",
+    "docs/initiatives/I-62-A-6.md:615",
+    "docs/initiatives/I-62-A-6.md:468-470"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Id": "M-04",
+   "A6Declared": "yes",
+   "ReviewerAssessment": "yes",
+   "Agreement": "AGREE",
+   "Rationale": "Aparecen causas nuevas de not_run, el rechazo del VERIFIED por REJECT_FACTS, una elegibilidad con fallo cerrado e invalidadores nuevos. La activación es correcta; la forma exacta de esos fallos es el objeto de R2.",
+   "ClauseRefs": [
+    "docs/INITIATIVE_LIFECYCLE.md:86",
+    "docs/initiatives/I-62-A-6.md:616",
+    "docs/initiatives/I-62-A-6.md:440-454"
+   ],
+   "FindingIds": [
+    "A62-A6-R2"
+   ]
+  },
+  {
+   "Id": "M-05",
+   "A6Declared": "yes",
+   "ReviewerAssessment": "yes",
+   "Agreement": "AGREE",
+   "Rationale": "Cambia la semántica que consumen el invocador, el auditor, los validadores y el Coordinator: I6, I2 con su fuente, la auditoría P-22 de las lecturas del instrumento, la fidelidad del insumo nuevo y el kit de FX-02, que hoy fija los insumos sin instrumento.",
+   "ClauseRefs": [
+    "docs/INITIATIVE_LIFECYCLE.md:87",
+    "docs/initiatives/I-62-A-6.md:617",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:45"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Id": "M-06",
+   "A6Declared": "no",
+   "ReviewerAssessment": "no",
+   "Agreement": "AGREE",
+   "Rationale": "Una sola pieza, fijada por blob, para un rol, un escenario y una fase. No admite herramientas genéricas ni usa los Facts del adapter.",
+   "ClauseRefs": [
+    "docs/INITIATIVE_LIFECYCLE.md:88",
+    "docs/initiatives/I-62-A-6.md:618"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Id": "M-07",
+   "A6Declared": "no",
+   "ReviewerAssessment": "no",
+   "Agreement": "AGREE",
+   "Rationale": "Ningún mecanismo transversal: el instrumento queda fuera de F_seed, de F_norm, de producción y de otras unidades, dentro del Level A. Adoptarlo en producción lo activaría.",
+   "ClauseRefs": [
+    "docs/INITIATIVE_LIFECYCLE.md:89",
+    "docs/initiatives/I-62-A-6.md:619",
+    "docs/initiatives/I-62-A-6.md:364-365"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Id": "M-08",
+   "A6Declared": "yes",
+   "ReviewerAssessment": "yes",
+   "Agreement": "AGREE",
+   "Rationale": "Usar un script mantenido en la verificación reinterpreta ADR-0046 #9 (Level A), que ADR-0048 conserva. El efecto de A-6 queda condicionado a la determinación del Owner; su alcance exacto frente a la planificación es el objeto de R5.",
+   "ClauseRefs": [
+    "docs/INITIATIVE_LIFECYCLE.md:90",
+    "docs/initiatives/I-62-A-6.md:620",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:69",
+    "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md:78",
+    "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:40"
+   ],
+   "FindingIds": [
+    "A62-A6-R5"
+   ]
+  }
+ ],
+ "CompatibilityA1toA5": {
+  "A1": {
+   "Assessment": "COMPATIBLE",
+   "Note": "A-6 no toca la custodia, state/v2, el CAS, el bucle del Architect ni la reconciliación tras un rebase (§6.2 L644). Solo leí la cabecera de A-1."
+  },
+  "A2": {
+   "Assessment": "COMPATIBLE",
+   "Note": "La medición de A6-7 se cuenta fuera de A2-P2, no usa ni repone el bloque agotado de d13914ce…, y una actualización observada sigue abriendo su bloque por A2-P2 (A6-7, reglas 3 y 4; §6.2 L645)."
+  },
+  "A3": {
+   "Assessment": "COMPATIBLE",
+   "Note": "A-6 no depende de A-3 ni la interpreta. Un cambio de invalidador anula la medición de A6-7 sin que la compatibilidad de un runtime sucesor la prolongue (A6-7, regla 5; §6.2 L646). Solo leí la cabecera de A-3."
+  },
+  "A4": {
+   "Assessment": "COMPATIBLE",
+   "Note": "A6-7 reproduce el patrón de A4-1 (A-4 L195-L211) con una medición propia, contada aparte de la de A4-1, que sigue consumida. A4-6 y el cupo de A2 de FX-U1 no cambian (§6.2 L647)."
+  },
+  "A5": {
+   "Assessment": "COMPATIBLE",
+   "Note": "El instrumento no entra en F_seed ni en F_norm de B1 (A6-3, regla 2), así que A5-1 y su precondición MV-1..MV-7 no cambian. A5-2 y los topes de FX-02 continúan, y los seis párrafos de D.3 van después de A5-2 (A-5 L221; §6.2 L648)."
+  }
+ },
+ "NoChangeConfirmation": {
+  "Recipe164": {
+   "Assessment": "NO_CHANGE",
+   "Note": "A6-1, regla 3, conserva todos los elementos de la receta (AP L541-L543). El intérprete se declara en el texto de la invocación, como el shell de A4-1 (A-4 L192). G3 PASS: los objetos congelados no cambian."
+  },
+  "AdapterCodexCli": {
+   "Assessment": "NO_CHANGE",
+   "Note": "A6-1, regla 3, y §3.13 L548: no cambian ni el descriptor, ni el contrato 16.19, ni el esquema de hechos. G2 solo lista archivos nuevos de A-6. No leí el descriptor; lo acreditan el texto y las guardas custodiadas."
+  },
+  "OutputSchemas": {
+   "Assessment": "NO_CHANGE",
+   "Note": "delegation/v2 y controller-verification/v2 no cambian (A6-1, regla 3; §3.13 L549). Ningún campo cambia (§3.1 L293-L294)."
+  },
+  "FrozenBudgetsD3D5D8": {
+   "Assessment": "NO_CHANGE",
+   "Note": "La fila Codex, total (11, pool 4, tope 15; V14 L2442) y los totales (L2523) siguen igual (A6-1, regla 4). La medición de A6-7 se cuenta aparte con la autorización de consumo del Owner, como en A4-1, sin tocar las cifras congeladas. D.5 y D.8 no cambian."
+  },
+  "RolesAndControllerAuthority": {
+   "Assessment": "NO_CHANGE",
+   "Note": "El Controller sigue verificando y emitiendo su resultado, sin delegarlo (A6-1, regla 3; A6-9, regla 1). El rechazo de un VERIFIED es la autoridad del Coordinator ya existente (AP L1207). El riesgo de una segunda autoridad de lectura por R4 se trata en M-01 y en R2, no como cambio de rol."
+  },
+  "Production": {
+   "Assessment": "NO_CHANGE",
+   "Note": "El instrumento queda fuera de F_seed, de F_norm, de la rama de la unidad, de los contratos de producción y de otras unidades (A6-1, regla 7; §3.13 L552-L553)."
+  },
+  "ADR0046AndADR0048": {
+   "Assessment": "NO_CHANGE",
+   "Note": "A6-8, regla 2: A-6 no modifica ADR-0046 ni ADR-0048, no concede la excepción ni crea un precedente. G3 PASS sobre docs/adr/."
+  },
+  "V14OutsideNineParagraphs": {
+   "Assessment": "NO_CHANGE",
+   "Note": "Nueve añadidos puros (§1 L68-L69; §6.1 L637-L638). G5 PASS y C-20b EQUAL en el resultado run custodiado (L64-L81, L53)."
+  }
+ },
+ "ScopeConfirmation": {
+  "D3AppendAfterA52": {
+   "Assessment": "CONFIRMED",
+   "Note": "A5-2 está al final de D.3 (A-5 L203) y termina en «extiende a esta fila.» (A-5 L221). A6-1 se sitúa a continuación (A-6 L339-L340), y después A6-2 (L371), A6-4 (L414), A6-7 (L476), A6-9 (L526) y A6-8, el último (L506). Son seis párrafos, como dicen §1 L68 y G5."
+  },
+  "D4AppendAfterV14L2554": {
+   "Assessment": "CONFIRMED",
+   "Note": "V14 L2554 es la última línea de D.4, antes de ### D.5 (L2556). A6-5 (A-6 L435-L436) y A6-6 (L460) van a continuación. A-5 no cambia D.4 (A-5 L231)."
+  },
+  "D6AppendAfterV14L2587": {
+   "Assessment": "CONFIRMED",
+   "Note": "V14 L2586-L2587 es el último párrafo de D.6, antes de ### D.7 (L2589). A6-3 va a continuación (A-6 L393-L394)."
+  },
+  "NoFrozenTextReplaced": {
+   "Assessment": "CONFIRMED",
+   "Note": "Todos los deltas son añadidos que declaran «Ninguna línea ... cambia de texto». Las citas de §2 son literales de referencia, y G5 (pureza del delta) y G3 (objetos congelados) dan PASS en el run custodiado. No leí A-1 ni A-3 enteras, así que la posición respecto de sus posibles añadidos descansa en §6.1 y en G5."
+  }
+ },
+ "D5AndOwnerValidation": {
+  "Disposition": "EXCLUSION_CORRECT",
+  "OwnerValidationAffected": "NO",
+  "Rationale": "§77, punto 7, prohíbe extender A-6 a D.5, a la Owner Validation o a otros pilotos. A-6 los excluye de forma expresa (A6-6, regla 3; A6-8, regla 1; §3.15) y deja D.5 bajo la obligación de decisiones §73, punto 3, sin cambiar V14 L960 ni L2558-L2560. Ninguna regla de A-6 se aplica a la ejecución compacta, de modo que la OV se ejecuta como antes, sin el instrumento. §3.15 registra la consecuencia: un C-24 PASS obtenido con el instrumento no sustituye a OV-I62-03, y cualquier uso en la OV exigirá otra enmienda y otra determinación del Owner.",
+  "ClauseRefs": [
+   "order.txt:36",
+   "docs/automation/decisions/I-62.md:1561",
+   "docs/initiatives/I-62-A-6.md:579-587",
+   "docs/initiatives/I-62-A-6.md:468-470",
+   "docs/initiatives/I-62-A-6.md:511-513",
+   "docs/initiatives/I-62-proposal-v14.md:960",
+   "docs/initiatives/I-62-proposal-v14.md:2558-2560",
+   "docs/automation/decisions/I-62.md:1488"
+  ],
+  "FindingIds": []
+ },
+ "OwnerDecisionsScope": {
+  "LineA": {
+   "Assessment": "LIMITED_TO_STATED_SCOPE",
+   "Note": "La línea (a) se limita a lo que enuncia: FX-02 en F6, Topología A, el EXECUTION_CONTROLLER «en su verificación», solo los blobs 9a829b0e… y 434ef1fc…, exclusiones expresas, sin modificar los ADR, sin autorizar consumo y solo con A-6 AGREED. El exceso está en A-6, no en la línea: A6-1 y A6-7 usan el instrumento también en la planificación (R5)."
+  },
+  "LineB": {
+   "Assessment": "LIMITED_TO_STATED_SCOPE",
+   "Note": "Una sola medición read-only, en la celda gpt-6-luna/high, con el blob del instrumento y el trío exacto, fuera de A2-P2, sin reintento ni cambios de configuración, solo con A-6 AGREED, con (a) = A y con la disposición. Distinta de (a) y no implícita en ella."
+  },
+  "SeparateAndNotImplied": "CONFIRMED",
+  "NoResultAcceptedInAdvance": "CONFIRMED",
+  "Rationale": "§7 presenta dos consecuencias separadas: ninguna implica la otra, cada una se pide y se decide aparte, y el silencio no es aprobación. Las dos líneas dicen de forma expresa que no aceptan ningún resultado: (a) «ni acepta ningún resultado» y (b) «no acepta su resultado».",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-6.md:660-661",
+   "docs/initiatives/I-62-A-6.md:663-668",
+   "docs/initiatives/I-62-A-6.md:669-672",
+   "docs/initiatives/I-62-A-6.md:675-676",
+   "docs/initiatives/I-62-A-6.md:679",
+   "docs/initiatives/I-62-A-6.md:680"
+  ]
+ },
+ "OwnerAuthorityCheck": {
+  "AdditionalOwnerReservedConsequences": [],
+  "OwnerDecisionRequired": false,
+  "Note": "La línea (a) consta (la comprobó el lanzador) y la (b) solo rige la aplicación. Las correcciones de R1-R5 se pueden hacer sin otra decisión del Owner. Hay dos condiciones. Si la corrección de R5 conserva el instrumento en las invocaciones PLAN, hará falta una determinación del Owner cuyo texto cubra la planificación, porque nadie más puede elegir una lectura amplia de «en su verificación» (V14 L1043). Y si la evidencia que exige R3, o la vía de R4, obliga a cambiar el aceptante (o el instrumento), su blob ya no es el que fija la línea (a), y hará falta una determinación nueva."
+ },
+ "IfAgreed": {
+  "ScopeLimitedToFX02F6Controller": null,
+  "NineAppendOnlyParagraphs": null,
+  "NoChangeToProtectedSurfaces": null,
+  "FourTopicsSatisfied": null,
+  "AllNineDeltasAgreed": null,
+  "NoAdditionalOwnerDecisionRequired": null,
+  "D5AndOVExcluded": null,
+  "SuitableForCoordinatorAgreement": null
+ },
+ "KnownLimitations": [
+  "No tengo ejecución: no puedo calcular bytes, SHA-256 ni blobs, ni ejecutar las guardas de A-6, el instrumento, el aceptante ni sus pruebas. La identidad del clon y de los archivos la acredita el invocador, y los resultados de las guardas los tomo de los JSON custodiados.",
+  "El comportamiento de Git en que se apoya R1 lo afirmo por conocimiento general de Git, que no puedo comprobar con el cierre: los objetos de reemplazo (refs/replace/) se aplican por defecto en cat-file, y hash-object -w no depende de ellos.",
+  "La determinación del Owner A6-ADR0046-9-FX02 = A está registrada después del commit del clon y no la he visto. Me baso en lo que el lanzador comprobó, y no juzgo la determinación.",
+  "Lecturas parciales: A-1, A-2 y A-3 solo en su cabecera; A-4 solo en §3.2; ADR-0048, L1-L45; bmin_facts.py y bmin_accept.py por tramos (los de Reads); TOOL-NOTES, L1-L60. No leí el README del dictamen, routing.md, el descriptor codex-cli.md, los esquemas, las suites de pruebas, mutate.py, zero_write_check.py, los logs ni los sobres e2e/out (salvo un Grep en acceptor-result.json). Las conclusiones sobre ellos salen del texto de A-6, de las notas del paquete y de las guardas custodiadas.",
+  "Lo que A-6 cita de archivos fuera del cierre no lo pude comprobar: evidencia §140-§150, paquete OWNER-RESERVED, tarjeta del Owner, audit.json y las sondas. La definición de B-ext tampoco está en el cierre, más allá de su rechazo en decisiones §75.",
+  "No cité ninguna línea truncada. Las líneas que solo vi por Grep (por ejemplo, V14 L621, sobre T10) no las cito.",
+  "El runtime inyectó durante la corrida recordatorios para dar avisos de progreso. No hubo compactación del contexto."
+ ],
+ "RecommendedNextAction": "Coordinator: disponer A62-A6-R1..R5 y A62-A6-O1..O3. Después, el autor corrige A-6 en un blob nuevo y repite las guardas (run sobre el commit que lo publique), como manda §77, punto 4. Luego, una re-revisión formal sobre la versión completa, con el delta explícito y la disposición por id. Antes de esa re-revisión, si R5 conserva el instrumento en PLAN, o si R3 o R4 obligan a cambiar el blob del aceptante, preparar la determinación del Owner correspondiente. Hasta el acuerdo, ni medición (línea (b)) ni invocación de Codex."
+}

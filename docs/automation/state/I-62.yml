@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §78; evidencia §152) — línea del Owner A6-ADR0046-9-FX02 = A registrada literal; prueba en seco y lanzamiento único de la revisión formal de A-6 (kit R20261011T215735Z-c434); sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §78; evidencia §153) — revisión formal de A-6 ejecutada: CHANGES REQUIRED (A62-A6-R1..R5, O1..O3); auditor NOT_ACCREDITED por una referencia (V14 L2333-L2334 no leída con Read); esperar la disposición del Coordinator sobre la acreditación y los hallazgos; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
