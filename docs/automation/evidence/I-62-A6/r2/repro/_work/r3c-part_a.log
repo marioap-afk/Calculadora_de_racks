@@ -1,0 +1,48 @@
+envelopes PINNED 41.4s
+envelopes M01 41.1s
+envelopes M02 40.0s
+envelopes M03 81.0s
+envelopes M04 47.4s
+envelopes M05 46.9s
+envelopes M06 47.0s
+envelopes M07 46.2s
+envelopes M08 44.2s
+envelopes M09 45.9s
+envelopes M10 44.2s
+envelopes M11 40.5s
+envelopes M12 35.7s
+envelopes M13 35.1s
+envelopes M14 32.8s
+envelopes M15 34.6s
+envelopes M16 36.3s
+envelopes M17 35.6s
+envelopes M18 35.7s
+envelopes M19 38.5s
+envelopes M27 32.6s
+envelopes M20 33.9s
+envelopes M21 32.8s
+envelopes M22 34.2s
+envelopes M23 35.5s
+envelopes M24 36.0s
+envelopes M25 39.3s
+envelopes M26 38.4s
+baseline S1-REAL-E2E ACCEPT_FACTS []
+baseline S2-REAL-DELIVERY ACCEPT_FACTS []
+baseline S2-NOI REJECT_FACTS ['R2', 'R3', 'R5']
+baseline S2-DUPKEY REJECT_FACTS ['R3', 'R5', 'R7']
+baseline SYN-COMMON ACCEPT_FACTS []
+baseline SYN-SA ACCEPT_FACTS []
+baseline SYN-SA-STATE REJECT_FACTS ['R3', 'R6', 'R7']
+baseline SYN-SB REJECT_FACTS ['R3', 'R6', 'R7']
+baseline SYN-SC REJECT_FACTS ['R3', 'R6', 'R7']
+baseline SYN-SD ACCEPT_FACTS []
+baseline SYN-SE ACCEPT_FACTS []
+baseline SYN-SF REJECT_FACTS ['R3', 'R6', 'R7']
+M01 S1-REAL-E2E M: REJECT_FACTS ['R7'] P: REJECT_FACTS ['R3', 'R7']
+M01 S2-REAL-DELIVERY M: REJECT_FACTS ['R4', 'R7'] P: REJECT_FACTS ['R3', 'R4', 'R7']
+M01 SYN-COMMON M: REJECT_FACTS ['R4', 'R7'] P: REJECT_FACTS ['R3', 'R4', 'R7']
+M02 S1-REAL-E2E M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M02 S2-REAL-DELIVERY M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M02 SYN-COMMON M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M02 SYN-SA M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M02 SYN-SD M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']

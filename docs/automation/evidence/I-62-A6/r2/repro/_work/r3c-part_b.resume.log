@@ -1,0 +1,30 @@
+V0 B1 unequal: [] | B2: MATCH MATCH MATCH | B3: ACCEPT_FACTS []
+D1-literal B1 unequal: [] | B2: MATCH MATCH MISMATCH | B3: ACCEPT_FACTS []
+D2-added-in-eff1 B1 unequal: [] | B2: MATCH MATCH MISMATCH | B3: ACCEPT_FACTS []
+D3-entry-outside-schema B1 unequal: [] | B2: MATCH MATCH MISMATCH | B3: ACCEPT_FACTS []
+D4-entry-in-eff1 B1 unequal: [] | B2: MATCH MATCH MATCH | B3: ACCEPT_FACTS []
+D5-only-in B1 unequal: [] | B2: MATCH MATCH MISMATCH | B3: ACCEPT_FACTS []
+D6-deleted B1 unequal: [] | B2: MATCH MATCH MISMATCH | B3: ACCEPT_FACTS []
+D7-mv6 B1 unequal: [] | B2: MATCH MATCH MISMATCH | B3: ACCEPT_FACTS []
+D8-mv7 B1 unequal: [] | B2: MATCH MATCH MISMATCH | B3: ACCEPT_FACTS []
+D9-mv5-dup B1 unequal: [] | B2: MATCH MATCH MISMATCH | B3: ACCEPT_FACTS []
+D10-mv2 B1 unequal: [] | B2: MATCH MATCH MISMATCH | B3: ACCEPT_FACTS []
+D11-mv1-schema B1 unequal: ['Validate.MV2.MapSurfaces', 'Validate.MV3.ChangedUnderSurfaces', 'Validate.MV3.DeletedUnderSurfaces', 'Validate.MV3.FilesPaths', 'Validate.MV3.FilesDuplicates', 'Validate.MV3.OnlyInChanged', 'Validate.MV3.OnlyInFiles', 'Validate.MV4.Rows', 'Validate.MV4.LiteralViolations', 'Validate.MV4.EntryFilesOutsideSchema', 'Validate.MV4.AddedPresentInEff1', 'Validate.MV4.EntryFilePresentInEff1', 'Validate.MV5.EntryKeyDuplicates', 'Validate.MV5.EntriesOnNonModifiedPath', 'Validate.MV6.PerFile', 'Validate.MV6.EntryKindEntries'] | B2: MATCH MATCH MISMATCH | B3: REJECT_FACTS ['R6', 'R7']
+B4 V0-0 Derive.Eff MISMATCH MATCH
+B4 V0-1 Derive.FirstParentMerges order/content MISMATCH MATCH
+B4 V0-2 Entry.EntryMatches MISMATCH MATCH
+B4 V0-3 MV3.OnlyInFiles MISMATCH MATCH
+B4 V0-4 MV6.AP.DerivedModified MISMATCH MATCH
+B4 V0-5 MV7.S163EffMinusPointer (whole line removed) MISMATCH MATCH
+B4 D1-literal-6 MV4.LiteralViolations emptied MISMATCH MISMATCH
+B4 D2-added-in-eff1-7 MV4 lists merged (R61 b into literal) MISMATCH MISMATCH
+B4 D3-entry-outside-schema-8 MV4.EntryFilesOutsideSchema emptied MISMATCH MISMATCH
+B4 D4-entry-in-eff1-9 ENTRY file treated as ADDED MISMATCH MISMATCH
+B4 D5-only-in-10 MV3.OnlyInChanged emptied MISMATCH MATCH
+B4 D6-deleted-11 MV3 deleted path dropped from changed (M18 form) MISMATCH MATCH
+B4 D7-mv6-12 MV6.AP.MapRemoved emptied MISMATCH MATCH
+B4 D8-mv7-13 MV7.PointerIsLastSentenceS163 flipped MISMATCH MATCH
+B4 D9-mv5-dup-14 MV5.EntryKeyDuplicates emptied MISMATCH MATCH
+B4 D10-mv2-15 MV2.MapSurfaces equal to the closed list MISMATCH MATCH
+B4 D11-mv1-schema-16 MV1.SchemaViolations emptied MISMATCH MATCH
+written %USERPROFILE%/AppData/Local/Temp/claude/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/scratchpad/i62/day3/a6r2/ev/repro/r3/results\b-clausemap.json 3fba9fc76c1539086d6c8421ac0cd951d35cd606c3de1242ed1d22b295a7519c {"B1ToolEqualsHandOnAllFields": ["V0", "D1-literal", "D2-added-in-eff1", "D3-entry-outside-schema", "D4-entry-in-eff1", "D5-only-in", "D6-deleted", "D7-mv6", "D8-mv7", "D9-mv5-dup", "D10-mv2"], "B1ToolDiffersFromHand": {"D11-mv1-schema": ["Validate.MV2.MapSurfaces", "Validate.MV3.ChangedUnderSurfaces", "Validate.MV3.DeletedUnderSurfaces", "Validate.MV3.FilesPaths", "Validate.MV3.FilesDuplicates", "Validate.MV3.OnlyInChanged", "Validate.MV3.OnlyInFiles", "Validate.MV4.Rows", "Validate.MV4.LiteralViolations", "Validate.MV4.EntryFilesOutsideSchema", "Validate.MV4.AddedPresentInEff1", "Validate.MV4.EntryFilePresentInEff1", "Validate.MV5.EntryKeyDuplicates", "Validate.MV5.EntriesOnNonModifiedPath", "Validate.MV6.PerFile", "Validate.MV6.EntryKindEntries"]}, "B2AcceptorEqualsHand_R6R7Match": ["V0", "D1-literal", "D2-added-in-eff1", "D3-entry-outside-schema", "D4-entry-in-eff1", "D5-only-in", "D6-deleted", "D7-mv6", "D8-mv7", "D9-mv5-dup", "D10-mv2", "D11-mv1-schema"], "B2R4AuthorityPassJudgedAsHand": ["V0", "D1-literal", "D2-added-in-eff1", "D3-entry-outside-schema", "D4-entry-in-eff1", "D5-only-in", "D6-deleted", "D7-mv6", "D8-mv7", "D9-mv5-dup", "D10-mv2", "D11-mv1-schema"], "B3AcceptorAcceptsRealTool": ["V0", "D1-literal", "D2-added-in-eff1", "D3-entry-outside-schema", "D4-entry-in-eff1", "D5-only-in", "D6-deleted", "D7-mv6", "D8-mv7", "D9-mv5-dup", "D10-mv2"], "B3AcceptorRejectsRealTool": {"D11-mv1-schema": ["R6", "R7"]}, "B4PerturbationsDetected": 17, "B4Total": 17, "Seconds": 

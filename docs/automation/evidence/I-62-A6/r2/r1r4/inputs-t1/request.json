@@ -1,0 +1,249 @@
+{
+ "Schema": "rackcad-bmin-accept-request/0-experimental",
+ "Repo": "D:/r62-a6r2/r1r4/r4/t1",
+ "Tool": {
+  "PinnedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "RunFrom": "object",
+  "GitObject": {
+   "GitDir": "D:/r62-a6r2/r1r4/r4/t1",
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  }
+ },
+ "Interpreter": {
+  "Python": "3.13.14",
+  "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec"
+ },
+ "Runs": [
+  {
+   "Name": "identity",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/identity.json",
+   "Argv": [
+    "identity",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--branch",
+    "fx/u1",
+    "--base",
+    "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+    "--current",
+    "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+    "--red",
+    "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+   ]
+  },
+  {
+   "Name": "diff",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/diff.json",
+   "Argv": [
+    "diff",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--from",
+    "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+    "--to",
+    "ae25b596a11fe3508ac60a3ef7de5dc23df971ce"
+   ]
+  },
+  {
+   "Name": "scope",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/scope.json",
+   "Argv": [
+    "scope",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--from",
+    "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+    "--to",
+    "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+    "--file",
+    "DELEG=D:/r62-a6r2/r1r4/r4/w-t1/in/deleg.json",
+    "--sha256",
+    "DELEG=5336bfa120b978915a5dcf7193a914b71f8db23897a22448357a2b0ce7d14192"
+   ]
+  },
+  {
+   "Name": "contract",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/contract.json",
+   "Argv": [
+    "contract",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--file",
+    "CONTRACT=D:/r62-a6r2/r1r4/r4/w-t1/in/K.json",
+    "--sha256",
+    "CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+    "--file",
+    "DELEG=D:/r62-a6r2/r1r4/r4/w-t1/in/deleg.json",
+    "--sha256",
+    "DELEG=5336bfa120b978915a5dcf7193a914b71f8db23897a22448357a2b0ce7d14192"
+   ]
+  },
+  {
+   "Name": "hashes",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/hashes.json",
+   "Argv": [
+    "hashes",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--rev",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--paths",
+    "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "src/Fixture.Lib/Calculator.cs"
+   ]
+  },
+  {
+   "Name": "cleantree",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/cleantree.json",
+   "Argv": [
+    "cleantree",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--ignore-path",
+    "artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json"
+   ]
+  },
+  {
+   "Name": "read-text-1",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/read-text-1.json",
+   "Argv": [
+    "read-text",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--rev",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--path",
+    "docs/automation/decisions/FX-U1.md",
+    "--lines",
+    "1-1"
+   ]
+  },
+  {
+   "Name": "read-text-73",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/read-text-73.json",
+   "Argv": [
+    "read-text",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--rev",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--path",
+    "docs/automation/decisions/FX-U1.md",
+    "--lines",
+    "73-73"
+   ]
+  },
+  {
+   "Name": "read-json",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/read-json.json",
+   "Argv": [
+    "read-json",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--rev",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--path",
+    "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "--pointer",
+    "/Objective",
+    "--pointer",
+    "/Schema",
+    "--pointer",
+    "/MainSha",
+    "--pointer",
+    "/AuthorityRevision"
+   ]
+  },
+  {
+   "Name": "trx",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/trx.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--file",
+    "TRX=D:/r62-a6r2/r1r4/r4/w-t1/in/fixture-tests.trx",
+    "--sha256",
+    "TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "--filter-substring",
+    "Subtract"
+   ]
+  },
+  {
+   "Name": "handoff",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/handoff.json",
+   "Argv": [
+    "handoff",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--file",
+    "H=D:/r62-a6r2/r1r4/r4/w-t1/in/handoff.json",
+    "--sha256",
+    "H=f1d05e5087fd805df5ab4a3ec3d1aa4e93ea10aadcd9c1fc13c6ffc52cbaafc8",
+    "--schema-rev",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+   ]
+  },
+  {
+   "Name": "freetext",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/freetext.json",
+   "Argv": [
+    "freetext",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--file",
+    "H=D:/r62-a6r2/r1r4/r4/w-t1/in/handoff.json",
+    "--sha256",
+    "H=f1d05e5087fd805df5ab4a3ec3d1aa4e93ea10aadcd9c1fc13c6ffc52cbaafc8",
+    "--terms-rev",
+    "fbe25347799e5b801ef708454212335537448bd1"
+   ]
+  },
+  {
+   "Name": "clausemap",
+   "Envelope": "D:/r62-a6r2/r1r4/r4/w-t1/env/clausemap.json",
+   "Argv": [
+    "clausemap",
+    "--repo",
+    "D:/r62-a6r2/r1r4/r4/t1",
+    "--main",
+    "fbe25347799e5b801ef708454212335537448bd1",
+    "--state-rev",
+    "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+    "--state-path",
+    "docs/automation/state/FX-U1.yml",
+    "--file",
+    "CONTRACT=D:/r62-a6r2/r1r4/r4/w-t1/in/K.json",
+    "--sha256",
+    "CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+    "--base",
+    "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf"
+   ]
+  }
+ ],
+ "Closure": {
+  "Path": "D:/r62-a6r2/r1r4/r4/w-t1/in/closure.json",
+  "Sha256": "ef350ffb544dff2251a831b9f15b35e42527702983822b6f46cdf609711125df"
+ },
+ "RelayFacts": {
+  "Path": "D:/r62-a6r2/r1r4/r4/w-t1/relay-facts.json",
+  "CitedSha256": "eba9cfb8f55f5a4301b6c32d01e434dc877566a95239ddb2afa3a03872ad3fdb"
+ },
+ "Verification": {
+  "Controller": {
+   "Path": "D:/r62-a6r2/r1r4/r4/w-t1/controller-output.json",
+   "Sha256": "5c14bd5cc46c27e3ccebef1beb2b851d256a5bddadcd67fba9d24c585ab436f5"
+  },
+  "Delegation": {
+   "Path": "D:/r62-a6r2/r1r4/r4/w-t1/in/deleg.json",
+   "Sha256": "5336bfa120b978915a5dcf7193a914b71f8db23897a22448357a2b0ce7d14192"
+  },
+  "Handoff": {
+   "Path": "D:/r62-a6r2/r1r4/r4/w-t1/in/handoff.json",
+   "Sha256": "f1d05e5087fd805df5ab4a3ec3d1aa4e93ea10aadcd9c1fc13c6ffc52cbaafc8"
+  },
+  "IgnorePath": "artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json",
+  "TermsRev": "fbe25347799e5b801ef708454212335537448bd1",
+  "MainSha": "fbe25347799e5b801ef708454212335537448bd1"
+ }
+}

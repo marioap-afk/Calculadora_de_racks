@@ -1,0 +1,75 @@
+{
+ "Schema": "rackcad-relay-record/v2",
+ "TaskId": "T1",
+ "RunId": "R20261012T000000Z-a6c3",
+ "Attempt": 0,
+ "Phase": "VERIFICATION",
+ "WindowSeq": 1,
+ "PrevRelaySha256": null,
+ "Host": {
+  "HostLabelHash": "35cb774fe29e48c8363b31adf0ccdb137ddee3380a3efd292d19c1d679537303",
+  "HostInstanceHash": "UNKNOWN",
+  "HostInstanceState": "UNOBSERVED",
+  "Os": "Windows-11-10.0.26300-SP0"
+ },
+ "Participant": null,
+ "Exit": {
+  "HeadSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "LsRemoteSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "OriginMainSha": "fbe25347799e5b801ef708454212335537448bd1",
+  "CleanTree": true,
+  "GitOperationInProgress": false,
+  "SummaryCommitSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "Fingerprint": {
+   "Kind": "NONE",
+   "Sha256": null,
+   "KeyNames": [],
+   "AcceptanceDecisionRef": null
+  },
+  "Processes": [],
+  "OpenDelegations": 1,
+  "DelegationStatus": "ACCEPTED_OPEN"
+ },
+ "Cession": {
+  "StartUtc": "2026-10-12T08:54:47Z",
+  "EndUtc": "2026-10-12T08:55:06Z",
+  "SessionOperated": false
+ },
+ "Outcome": {
+  "Kind": "COMPLETED",
+  "LaunchedPid": null,
+  "ExitCode": 0,
+  "TerminalEvent": null,
+  "TreeKilled": false,
+  "DeathConfirmed": true,
+  "OutputPath": "D:/r62-a6r2/r1r4/r4/w-t1/controller-output.json",
+  "OutputSha256": "5c14bd5cc46c27e3ccebef1beb2b851d256a5bddadcd67fba9d24c585ab436f5",
+  "OutputWrittenUtc": "2026-10-12T08:55:10Z",
+  "Acceptance": null
+ },
+ "Entry": {
+  "HeadSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "LsRemoteSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "CleanTree": true,
+  "Fingerprint": {
+   "Kind": "NONE",
+   "Sha256": null,
+   "KeyNames": [],
+   "AcceptanceDecisionRef": null
+  },
+  "FingerprintChanged": false,
+  "Processes": []
+ },
+ "RemoteFacts": null,
+ "RebaseMap": null,
+ "RoleInvocation": null,
+ "ReadAudit": null,
+ "InputFidelity": {
+  "path": "bmin_facts.py (objeto Git suelto en T)",
+  "blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+ },
+ "Disposition": "NONE",
+ "Notes": [
+  "Registro de relevo del banco r1r4 (sin participante real: Participant null); hechos del relevo para R10."
+ ]
+}

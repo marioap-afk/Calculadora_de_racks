@@ -1,0 +1,226 @@
+{
+ "Schema": "rackcad-delegation/v2",
+ "TaskId": "T1",
+ "RunId": "R20261012T000000Z-a6d1",
+ "Initiative": "FX-U1",
+ "Unit": "FX-U1",
+ "Gate": "FX-U1-T1",
+ "Attempt": 0,
+ "AuthorityRevision": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+ "MainSha": "fbe25347799e5b801ef708454212335537448bd1",
+ "BaseSha": "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+ "ExpectedBranch": "fx/u1",
+ "ExpectedWorktree": "D:/r62-a6r2/repro/r1r4/r4/t1",
+ "Owner": {
+  "Kind": "session-internal",
+  "Id": "bench-r1r4"
+ },
+ "TaskClass": "bench",
+ "Dimensions": {
+  "Ambiguity": "Low",
+  "ArchitecturalSensitivity": "Low",
+  "Breadth": "Low",
+  "ToolUse": "Low",
+  "FailureCost": "Low",
+  "MechanicalRepetition": "Low",
+  "Horizon": "Low"
+ },
+ "Executor": {
+  "Provider": "bench",
+  "Transport": "session-internal",
+  "Role": "WORKER",
+  "Cell": "bench",
+  "BindingRef": {
+   "UnitId": "FX-U1",
+   "Scope": "TASK",
+   "TaskId": "T1",
+   "Role": "WORKER",
+   "BindingId": "B20261012T000000Z-a6b6",
+   "Sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+   "Location": {
+    "Kind": "TRANSIENT",
+    "Path": "banco-r1r4",
+    "Commit": null,
+    "Blob": null
+   }
+  }
+ },
+ "Model": "bench",
+ "Effort": {
+  "Semantic": "Routine",
+  "Provider": "bench"
+ },
+ "PromptProfile": "ROUTINE_IMPLEMENTATION",
+ "RoutingReason": "banco r1r4 (sin modelo)",
+ "ModelEscalationReason": null,
+ "RoutingEnforcement": "required",
+ "Authorities": [
+  {
+   "Path": "docs/automation/decisions/FX-U1.md",
+   "Section": "documento completo",
+   "Class": "UNIT_DOC"
+  },
+  {
+   "Path": "docs/automation/state/FX-U1.yml",
+   "Section": "documento completo",
+   "Class": "UNIT_DOC"
+  },
+  {
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Section": "documento completo",
+   "Class": "UNIT_CHANGE"
+  },
+  {
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+   "Section": "documento completo",
+   "Class": "UNIT_CHANGE"
+  },
+  {
+   "Path": "AGENTS.md",
+   "Section": "## Jobs requeridos",
+   "Class": "EXTERNAL"
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+   "Class": "EXTERNAL"
+  }
+ ],
+ "Objective": "Añadir a Fixture.Lib la operación Calculator.Subtract(int a, int b) con su prueba en Fixture.Tests: primero la prueba en RED y después la implementación en GREEN.",
+ "AllowedWriteScope": [
+  "src/Fixture.Lib/Calculator.cs",
+  "tests/Fixture.Tests/CalculatorTests.cs",
+  "docs/automation/evidence/FX-U1-agent/**"
+ ],
+ "ForbiddenWriteScope": [
+  ".github/**",
+  ".gitattributes",
+  "AGENTS.md",
+  "CLAUDE.md",
+  "FIXTURE-MANIFEST.json",
+  "docs/AUTOMATION_PLAN.md",
+  "docs/WORKFLOW.md",
+  "docs/INITIATIVE_LIFECYCLE.md",
+  "docs/automation/agent-execution/**",
+  "docs/automation/decisions/**",
+  "src/Fixture.Lib/Fixture.Lib.csproj",
+  "tests/Fixture.Tests/Fixture.Tests.csproj"
+ ],
+ "Invariants": [
+  "Calculator.Add conserva su firma y su comportamiento.",
+  "Sin paquetes ni dependencias nuevas.",
+  "P-16: ningún artefacto nombra, configura ni usa un repositorio o una unidad reales."
+ ],
+ "AcceptanceCriteria": [],
+ "RequiredTests": [
+  {
+   "Project": "tests/Fixture.Tests/Fixture.Tests.csproj",
+   "Filter": "FullyQualifiedName~Subtract",
+   "MinSelected": 1,
+   "ExpectRed": true
+  }
+ ],
+ "ExpectedEvidence": [
+  "Commit RED con la prueba de Subtract y la corrida del fixture con fixture-tests en failure (RedPart).",
+  "Commit GREEN G con la implementación y la corrida push de G en refs/heads/fx/u1 con fixture-build y fixture-tests en success (Ci pass).",
+  "Diario de la ventana y Q7 en docs/automation/evidence/FX-U1-agent/."
+ ],
+ "StopConditions": [
+  {
+   "Id": "S-T1-01",
+   "Text": "Un cambio fuera de AllowedWriteScope o dentro de ForbiddenWriteScope: STOP sin corregir por cuenta propia."
+  },
+  {
+   "Id": "S-T1-02",
+   "Text": "Huella de codex-cli distinta de la línea base aceptada (P-01): STOP del transporte afectado."
+  },
+  {
+   "Id": "S-T1-03",
+   "Text": "Cualquier referencia a un repositorio o unidad reales (P-16): STOP."
+  }
+ ],
+ "MaxReworkLoops": 3,
+ "AttemptsRemaining": 3,
+ "ChainBaseSha": "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+ "ChainRedSha": "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+ "ChainRedFiles": [],
+ "CorrectionOf": null,
+ "ExpectedHandoffPath": "artifacts/orchestration/FX-U1/T1/{WorkRunId}/worker-handoff.json",
+ "IssuedBy": "banco r1r4 (supervision; sin valor normativo)",
+ "RoleRequirements": [
+  {
+   "Role": "PRINCIPAL_COORDINATOR",
+   "Profile": "PRINCIPAL_COORDINATION",
+   "Action": "CUSTODY",
+   "Mandatory": [
+    "PRINCIPAL_COORDINATION.level",
+    "PRINCIPAL_COORDINATION.effort",
+    "PRINCIPAL_COORDINATION.remote-facts",
+    "PRINCIPAL_COORDINATION.introspection",
+    "PRINCIPAL_COORDINATION.repo-write"
+   ],
+   "Independence": [],
+   "EligibleCells": [],
+   "Materialization": null
+  },
+  {
+   "Role": "EXECUTION_CONTROLLER",
+   "Profile": "CONTROLLER_PLANNING",
+   "Action": "PLAN",
+   "Mandatory": [
+    "CONTROLLER_PLANNING.effort",
+    "CONTROLLER_PLANNING.level",
+    "CONTROLLER_PLANNING.read",
+    "CONTROLLER_PLANNING.tool-use",
+    "CONTROLLER_PLANNING.structured-output"
+   ],
+   "Independence": [
+    {
+     "ReferenceRole": "WORKER",
+     "Actor": "REQUIRED",
+     "Session": "REQUIRED",
+     "Context": "REQUIRED",
+     "Provider": "PREFERRED"
+    }
+   ],
+   "EligibleCells": [],
+   "Materialization": null
+  },
+  {
+   "Role": "WORKER",
+   "Profile": "ROUTINE_IMPLEMENTATION",
+   "Action": "IMPLEMENT",
+   "Mandatory": [
+    "ROUTINE_IMPLEMENTATION.effort",
+    "ROUTINE_IMPLEMENTATION.level",
+    "ROUTINE_IMPLEMENTATION.tool-use",
+    "ROUTINE_IMPLEMENTATION.write-commit-push"
+   ],
+   "Independence": [],
+   "EligibleCells": [],
+   "Materialization": null
+  },
+  {
+   "Role": "ARCHITECT",
+   "Profile": "ARCHITECTURE_REVIEW",
+   "Action": "REVIEW_DESIGN",
+   "Mandatory": [
+    "ARCHITECTURE_REVIEW.effort",
+    "ARCHITECTURE_REVIEW.level",
+    "ARCHITECTURE_REVIEW.read"
+   ],
+   "Independence": [
+    {
+     "ReferenceRole": "AUTHOR",
+     "Actor": "REQUIRED",
+     "Session": "REQUIRED",
+     "Context": "REQUIRED",
+     "Provider": "PREFERRED"
+    }
+   ],
+   "EligibleCells": [],
+   "Materialization": null
+  }
+ ],
+ "SupersededCommits": []
+}

@@ -1,0 +1,76 @@
+== P1/P2/P3 {'P1': True, 'P3': True} {'cmd': True, 'ps51': True, 'pwsh': True} P3 all equal True
+versions {"Cmd": "10.0.26300.9550", "Git": "git version 2.54.0.windows.1", "GitPath": "%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE", "Os": "Windows-11-10.0.26300-SP0", "Pwsh": "7.6.6", "PwshPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE", "Python": "3.13.14", "PythonImplementation": "CPython", "PythonOnPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\python.EXE", "WindowsPowerShell": "5.1.26100.9549"}
+ P2 cmd True [] 9a829b0eeb1210238052b1feac06cfa8f7964aed {"BlobSha1": "9a829b0eeb1210238052b1feac06cfa8f7964aed", "CrBytes": 0, "EqualsPinned": true, "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200", "Size": 64764}
+ P2 ps51 False ['3'] 7ea574522b23aea3191c28c4dcbdfc2888e0ea81 {"BlobSha1": "7ea574522b23aea3191c28c4dcbdfc2888e0ea81", "CrBytes": 1614, "EqualsPinned": false, "Sha256": "7856299b0d46a5e46709ded783c0523774bea779e375b1fd53298109f121b4cc", "Size": 66378}
+ P2 pwsh True [] 9a829b0eeb1210238052b1feac06cfa8f7964aed {"BlobSha1": "9a829b0eeb1210238052b1feac06cfa8f7964aed", "CrBytes": 0, "EqualsPinned": true, "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200", "Size": 64764}
+== attack a | refs/replace/<B> pointing to a substitute blob (harmless fake tool printing fabricated facts)
+   Held {"--no-replace-objects returns original": true, "P2 fails at (1) only": true, "P3 runs the pinned tool (byte-equal to baseline)": true, "acceptor accepts P3 envelopes": true, "acceptor rejects fabricated envelopes, R1 MATCH": true, "plain execution path runs the substitute": true, "plain git returns substitute": true, "round-1 write-time check still passes": true}
+   P2After False ['1']
+   AcceptorOnFabricated REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MISMATCH", "R4": "NOT_APPLICABLE", "R5": "MISMATCH", "R6": "NOT_APPLICABLE", "R7": "NOT_APPLICABLE", "R8": "MANUAL", "R9": "MATCH"}
+   AcceptorOnP3 ACCEPT_FACTS 0 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "NOT_APPLICABLE", "R5": "MATCH", "R6": "NOT_APPLICABLE", "R7": "NOT_APPLICABLE", "R8": "MANUAL", "R9": "MATCH"}
+   gitviews {"CatFileType": "blob", "CatFileTypeExit": 0, "NoReplaceCatFile": {"BlobSha1OfBytes": "9a829b0eeb1210238052b1feac06cfa8f7964aed", "Exit": 0, "IsPinned": true, "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"}, "PlainCatFile": {"BlobSha1OfBytes": "0594de72d5252e2ab1c1b3ba9f5dd0a340c44121", "Exit": 0, "IsPinned": false, "Sha256": "78dd97d7ced88f237f4b6e0a48085bc0424a9eeb26b01f7eabdf58544f740362"}}
+== attack b1 | refs/replace/<HEADX> -> crafted commit (same parent and message, tree of RED)
+   Held {"GIT_NO_REPLACE_OBJECTS in the shell does not reach the tool": true, "P2 fails at (1) only": true, "acceptor rejects (R5 MISMATCH, R3 MATCH)": true, "tool facts change under the replace ref (diff, scope)": true}
+   P2After False ['1']
+   AcceptorOnP3 REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "NOT_APPLICABLE", "R5": "MISMATCH", "R6": "NOT_APPLICABLE", "R7": "MISMATCH", "R8": "MANUAL", "R9": "MATCH"}
+   facts changed {"cleantree": [], "diff": ["Paths"], "hashes": [], "identity": [], "scope": ["Paths", "PerPath"]}
+   gitviews {"NoReplaceDiffNames": ["docs/automation/decisions/FX-U1-T1.gate-contract.json", "docs/automation/decisions/FX-U1.md", "docs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json", "docs/automation/evidence/FX-U1-agent/qh/state-r3.validation.json", "docs/automation/state/FX-U1.yml"], "PlainDiffNames": ["docs/automation/decisions/FX-U1-T1.gate-contract.json", "docs/automation/decisions/FX-U1.md"]}
+== attack b2 | refs/replace/<EFF=MAIN> -> crafted merge commit (same tree and parents, extra Agent-Protocol-Normative trailer)
+   Held {"P2 fails at (1) only": true, "acceptor rejects": true, "tool clausemap output changes": true}
+   P2After False ['1']
+   AcceptorOnP3 REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MISMATCH", "R4": "NOT_APPLICABLE", "R5": "MATCH", "R6": "MISMATCH", "R7": "MISMATCH", "R8": "MANUAL", "R9": "MATCH"}
+   facts changed {"clausemap": ["Classify", "Derive", "Entry", "Pre", "Resolve", "Validate"], "identity": []}
+== attack c | info/grafts: HEADX grafted onto BASE (RED dropped)
+   Held {"P2 fails at (2) only": true, "acceptor rejects (R5 MISMATCH, R3 MATCH)": true, "grafts are NOT disabled by --no-replace-objects / GIT_NO_REPLACE_OBJECTS": true, "tool facts change (identity ancestry, diff commits)": true}
+   P2After False ['2']
+   AcceptorOnP3 REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "NOT_APPLICABLE", "R5": "MISMATCH", "R6": "NOT_APPLICABLE", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"}
+   facts changed {"cleantree": [], "diff": ["CoAuthoredBy", "Commits"], "hashes": [], "identity": ["Ancestry"], "scope": []}
+   gitviews {"EnvNoReplaceRevList": ["ae25b596a11fe3508ac60a3ef7de5dc23df971ce"], "IsShallow": "false", "NoReplaceRevList": ["ae25b596a11fe3508ac60a3ef7de5dc23df971ce"], "PlainRevList": ["ae25b596a11fe3508ac60a3ef7de5dc23df971ce"]}
+== attack d1 | objects/info/alternates pointing to another clone of the fixture (benign content)
+   Held {"P2 fails at (2) only": true}
+   P2After False ['2']
+   facts changed {"cleantree": [], "diff": [], "hashes": [], "identity": [], "scope": []}
+== attack d2 | alternate object store whose pack index claims id B for the fake-tool bytes
+   Held {"after P1: P2 fails at (2) and fsck (4) reports the corrupt alternate pack": true, "after P1: the local loose object wins (git serves the pin)": true, "before P1: P1 returns the pinned id but writes no local object (its snapshot check fails)": true, "before P1: P2 fails at (2), (3) and (4)": true, "before P1: P3 executes the fake": true, "before P1: git serves the alternate-pack bytes under id B": true}
+== attack e1 | loose object file of B recompressed (zlib level 9): different file bytes, same object content
+   Held {"P2 passes (benign)": true, "git returns the pinned bytes": true}
+   P2After True []
+   gitviews {"CatFileType": "blob", "CatFileTypeExit": 0, "NoReplaceCatFile": {"BlobSha1OfBytes": "9a829b0eeb1210238052b1feac06cfa8f7964aed", "Exit": 0, "IsPinned": true, "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"}, "PlainCatFile": {"BlobSha1OfBytes": "9a829b0eeb1210238052b1feac06cfa8f7964aed", "Exit": 0, "IsPinned": true, "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"}}
+== attack e2 | loose object file of B replaced by zlib(blob header + fake-tool bytes)
+   Held {"P2 fails at (3) and (4)": true, "P3 executes the fake bytes": true, "acceptor rejects with R1 MISMATCH": true, "git cat-file blob B returns the fake bytes": true}
+   P2After False ['3', '4']
+   AcceptorOnP3 REJECT_FACTS 1 {"R1": "MISMATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MISMATCH", "R4": "NOT_APPLICABLE", "R5": "MISMATCH", "R6": "NOT_APPLICABLE", "R7": "NOT_APPLICABLE", "R8": "MANUAL", "R9": "MATCH"}
+   gitviews {"CatFileType": "blob", "CatFileTypeExit": 0, "NoReplaceCatFile": {"BlobSha1OfBytes": "0594de72d5252e2ab1c1b3ba9f5dd0a340c44121", "Exit": 0, "IsPinned": false, "Sha256": "78dd97d7ced88f237f4b6e0a48085bc0424a9eeb26b01f7eabdf58544f740362"}, "PlainCatFile": {"BlobSha1OfBytes": "0594de72d5252e2ab1c1b3ba9f5dd0a340c44121", "Exit": 0, "IsPinned": false, "Sha256": "78dd97d7ced88f237f4b6e0a48085bc0424a9eeb26b01f7eabdf58544f740362"}}
+== attack f | shallow file declaring RED as a shallow boundary
+   Held {"P2 fails at (2) only": true, "acceptor rejects": true, "tool facts change": true}
+   P2After False ['2']
+   AcceptorOnP3 REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "NOT_APPLICABLE", "R5": "MISMATCH", "R6": "NOT_APPLICABLE", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"}
+   facts changed {"cleantree": [], "diff": [], "hashes": [], "identity": ["Ancestry"], "scope": []}
+   gitviews {"IsShallow": "true", "MergeBaseBaseRed": 1}
+== attack g | sequencing: a write made by the Worker between PLAN and VERIFY
+   Held {"P2 before PLAN passes": true, "P2 before VERIFY fails at (1): no launch": true, "write-time check still passes after the Worker write": true}
+== attack h | git.bat + fake.py planted in the working tree root (untracked); P2 step 3 and P3 run with cwd = T
+   Held {"inherited env (NoDefaultCurrentDirectoryInExePath set): cmd.exe uses the real git (P2 ok, P3 = baseline)": true, "pwsh unaffected in both variants (P2 Launch, P3 = baseline)": true, "variable unset: P2 through cmd.exe is fooled (Launch true while the delivered bytes are not the pin)": true, "variable unset: P3 through cmd.exe executes the fake": true, "variable unset: acceptor rejects the cmd envelopes": true}
+== attack i | objects/info/commit-graph rewritten so that HEADX has BASE as first parent (RED dropped); trailer checksum recomputed
+   Held {"P2 step 4 (fsck) detects it": true, "P2 steps 1-3 pass (not designed for this)": true, "acceptor rejects (R5 MISMATCH)": true, "tool facts change": true}
+   P2After False ['4']
+   AcceptorOnP3 REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "NOT_APPLICABLE", "R5": "MISMATCH", "R6": "NOT_APPLICABLE", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"}
+   facts changed {"cleantree": [], "diff": [], "hashes": [], "identity": ["Ancestry"], "scope": []}
+   gitviews {"CatFileParent": ["parent d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"], "CommitGraphVerifyExit": 1, "LogParents": "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf", "MergeBaseIsAncestorRedHeadxExit": 1, "NoCommitGraphLogParents": "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99", "NoCommitGraphMergeBaseIsAncestorRedHeadxExit": 0, "NoCommitGraphRevList": ["ae25b596a11fe3508ac60a3ef7de5dc23df971ce", "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"], "NoReplaceMergeBaseIsAncestorRedHeadxExit": 1, "NoReplaceRevList": ["
+== r4-t1.json
+   Test1 {"Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df", "HeadIsTip": true, "Kind": "fresh git clone --no-hardlinks -c core.autocrlf=false -b fx/u1", "T1": "D:/r62-a6r2/repro/r1r4/r4/t1"}
+   Test3 ACCEPT_FACTS 0 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "MATCH", "R5": "MATCH", "R6": "MATCH", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"} Held True
+   flip CleanTree pass -> fail REJECT_FACTS {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "MISMATCH", "R5": "MATCH", "R6": "MATCH", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"} Held True
+   flip Identity fail -> pass REJECT_FACTS {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "MISMATCH", "R5": "MATCH", "R6": "MATCH", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"} Held True
+   Test7 {"Held": true, "ProcessTreeDead": true, "Processes": {"CheckerPid": 8028, "ChildrenOfGivenParents": [], "Matching": [], "Needles": ["D:\\r62-a6r2\\repro\\r1r4\\r4\\t1"], "Total": 332, "UnreadableClosedList": [], "UtcTime": "2026-10-12T09:56:01.184525Z"}, "ZeroWrite": [{"Diff": {}, "Equal": true, "Repo": "D:/r62-a6r2/repro/r1r4/r4/t1"}]}
+== r4-t3.json
+   Test5a REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "MATCH", "R5": "MISMATCH", "R6": "MISMATCH", "R7": "MISMATCH", "R8": "MANUAL", "R9": "MATCH"} Held True
+   Test5b REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MISMATCH", "R4": "MATCH", "R5": "MISMATCH", "R6": "MATCH", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"} Held True
+== r4-t6.json
+   t6a REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MISMATCH", "R4": "MATCH", "R5": "MISMATCH", "R6": "MATCH", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"} Held True
+   t6b REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MISMATCH", "R4": "MISMATCH", "R5": "MISMATCH", "R6": "MATCH", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"} Held True
+== r4-t2.json
+   Test1 {"C2": "D:/r62-a6r2/repro/r1r4/r4/c2", "CommonDir": "D:\\r62-a6r2\\repro\\r1r4\\r4\\c2\\.git", "GitDir": "D:\\r62-a6r2\\repro\\r1r4\\r4\\c2\\.git\\worktrees\\t2wt", "Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df", "HeadIsTip": true, "Kind": "git worktree add T2 fx/u1 on a fresh --no-hardlinks clone C2 (checked out at main)", "T2": "D:/r62-a6r2/repro/r1r4/r4/t2wt", "WorktreeList": ["worktree D:/
+   Test3 ACCEPT_FACTS 0 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "MATCH", "R5": "MATCH", "R6": "MATCH", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"} Held True
+   Test4 REJECT_FACTS 1 {"R1": "MATCH", "R10": "MATCH", "R2": "MATCH", "R3": "MATCH", "R4": "MISMATCH", "R5": "MATCH", "R6": "MATCH", "R7": "MATCH", "R8": "MANUAL", "R9": "MATCH"} Held True
+   Test7 {"Held": true, "ProcessTreeDead": true, "Processes": {"CheckerPid": 40268, "ChildrenOfGivenParents": [], "Matching": [], "Needles": ["D:\\r62-a6r2\\repro\\r1r4\\r4\\t2wt"], "Total": 340, "UnreadableClosedList": [{"CreationDateUtc": "2026-10-12T10:00:14.6575010Z", "GrandParentName": "python3.13.exe", "Name": "git.exe", "ParentCommandLineHasNeedle": false, "ParentName": "python3.13.exe", "ParentPid"

@@ -1,0 +1,14 @@
+{
+ "Blob 434ef1fccb0d15762b30244b4a60928120698411": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0",
+ "Blob 9a829b0eeb1210238052b1feac06cfa8f7964aed": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200",
+ "MainHead": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+ "MainStatusEmpty": true,
+ "MainStatusSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+ "OriginFxU1": [
+  "refs/heads/fx/u1 95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+ ],
+ "OriginRefCount": 7,
+ "OriginRefsSha256": "3e3c0c49b82e8bb9426c44a697e8029129f99fc931b77d4c5d66a62bcb262dd4",
+ "WorktreeHead": "23d0ca9d155a4495f7f7a33c89113c194ca573e4",
+ "WorktreeStatusSha256": "498406cb63504bb22c1f938b9d8851a93afe711e20e1c198add6733ea4d396eb"
+}

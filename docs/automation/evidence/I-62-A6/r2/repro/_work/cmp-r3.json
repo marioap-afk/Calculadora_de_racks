@@ -1,0 +1,1301 @@
+{
+ "ClassesExpected": [
+  "DERIVED_FROM_COMPARED_FILE",
+  "DIGEST_VERIFIED",
+  "DURATION",
+  "HOST_PROCESS_TABLE",
+  "PATH",
+  "PATH+TIMESTAMP",
+  "PATH_TRUNCATION",
+  "PID",
+  "STRING_WITH_VERIFIED_DIGESTS",
+  "TIMESTAMP"
+ ],
+ "Files": [
+  {
+   "ByteIdentical": false,
+   "ClassCounts": {
+    "PATH": 27
+   },
+   "CustodiedSha256": "732f2c2b7d579dfa810abb98cc7575fa4cd925253fdd8cdce6b268080810a640",
+   "Differences": [
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M01/bmin_facts.py",
+     "Path": "/Build/Mutants/0/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M01/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M02/bmin_facts.py",
+     "Path": "/Build/Mutants/1/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M02/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M03/bmin_facts.py",
+     "Path": "/Build/Mutants/2/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M03/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M04/bmin_facts.py",
+     "Path": "/Build/Mutants/3/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M04/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M05/bmin_facts.py",
+     "Path": "/Build/Mutants/4/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M05/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M06/bmin_facts.py",
+     "Path": "/Build/Mutants/5/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M06/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M07/bmin_facts.py",
+     "Path": "/Build/Mutants/6/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M07/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M08/bmin_facts.py",
+     "Path": "/Build/Mutants/7/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M08/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M09/bmin_facts.py",
+     "Path": "/Build/Mutants/8/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M09/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M10/bmin_facts.py",
+     "Path": "/Build/Mutants/9/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M10/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M11/bmin_facts.py",
+     "Path": "/Build/Mutants/10/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M11/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M12/bmin_facts.py",
+     "Path": "/Build/Mutants/11/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M12/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M13/bmin_facts.py",
+     "Path": "/Build/Mutants/12/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M13/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M14/bmin_facts.py",
+     "Path": "/Build/Mutants/13/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M14/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M15/bmin_facts.py",
+     "Path": "/Build/Mutants/14/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M15/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M16/bmin_facts.py",
+     "Path": "/Build/Mutants/15/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M16/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M17/bmin_facts.py",
+     "Path": "/Build/Mutants/16/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M17/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M18/bmin_facts.py",
+     "Path": "/Build/Mutants/17/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M18/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M19/bmin_facts.py",
+     "Path": "/Build/Mutants/18/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M19/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M27/bmin_facts.py",
+     "Path": "/Build/Mutants/19/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M27/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M20/bmin_facts.py",
+     "Path": "/Build/Mutants/20/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M20/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M21/bmin_facts.py",
+     "Path": "/Build/Mutants/21/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M21/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M22/bmin_facts.py",
+     "Path": "/Build/Mutants/22/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M22/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M23/bmin_facts.py",
+     "Path": "/Build/Mutants/23/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M23/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M24/bmin_facts.py",
+     "Path": "/Build/Mutants/24/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M24/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M25/bmin_facts.py",
+     "Path": "/Build/Mutants/25/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M25/bmin_facts.py"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/mut/M26/bmin_facts.py",
+     "Path": "/Build/Mutants/26/Path",
+     "Repro": "D:/r62-a6r2/repro/r3/mut/M26/bmin_facts.py"
+    }
+   ],
+   "Failures": [],
+   "File": "build.json",
+   "ReproSha256": "cf61bb59ee158becade569007725fb89c8288cfb23e6f90532ff56ca79d4105b",
+   "Status": "EXPECTED_ONLY_DIFFERENCES"
+  },
+  {
+   "ByteIdentical": false,
+   "ClassCounts": {
+    "DURATION": 1,
+    "PATH": 70,
+    "STRING_WITH_VERIFIED_DIGESTS": 9
+   },
+   "CustodiedSha256": "8125aea0a9681dd208cb9bba82dc5b9483d21ba26a518c9a9fe3c795b9ce46ca",
+   "Differences": [
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/1/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/2/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "DELEG=D:/r62-a6r2/r3/runs/a/inputs/K.json",
+     "Path": "/Scenarios/0/Runs/2/1/8",
+     "Repro": "DELEG=D:/r62-a6r2/repro/r3/runs/a/inputs/K.json"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/3/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "CONTRACT=D:/r62-a6r2/r3/runs/a/inputs/K.json",
+     "Path": "/Scenarios/0/Runs/3/1/4",
+     "Repro": "CONTRACT=D:/r62-a6r2/repro/r3/runs/a/inputs/K.json"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "DELEG=D:/r62-a6r2/r3/runs/a/inputs/K.json",
+     "Path": "/Scenarios/0/Runs/3/1/8",
+     "Repro": "DELEG=D:/r62-a6r2/repro/r3/runs/a/inputs/K.json"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/4/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/5/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/6/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/7/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/8/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/9/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "TRX=D:/r62-a6r2/r3/runs/a/inputs/fixture-tests.trx",
+     "Path": "/Scenarios/0/Runs/9/1/4",
+     "Repro": "TRX=D:/r62-a6r2/repro/r3/runs/a/inputs/fixture-tests.trx"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/10/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "H=D:/r62-a6r2/r3/runs/a/inputs/handoff-e2e.json",
+     "Path": "/Scenarios/0/Runs/10/1/4",
+     "Repro": "H=D:/r62-a6r2/repro/r3/runs/a/inputs/handoff-e2e.json"
+    },
+    {
+     "Class": "STRING_WITH_VERIFIED_DIGESTS",
+     "Custodied": "H=b9d72cf265e7367e4b31280f47ec9f4c1a87d0b346c6b48798e390863ff15bb5",
+     "Path": "/Scenarios/0/Runs/10/1/6",
+     "Repro": "H=3257cc44c7d59c291507ff8fb8c2b965f2942d502a1d5ff61005512718dea515",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/11/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "H=D:/r62-a6r2/r3/runs/a/inputs/handoff-e2e.json",
+     "Path": "/Scenarios/0/Runs/11/1/4",
+     "Repro": "H=D:/r62-a6r2/repro/r3/runs/a/inputs/handoff-e2e.json"
+    },
+    {
+     "Class": "STRING_WITH_VERIFIED_DIGESTS",
+     "Custodied": "H=b9d72cf265e7367e4b31280f47ec9f4c1a87d0b346c6b48798e390863ff15bb5",
+     "Path": "/Scenarios/0/Runs/11/1/6",
+     "Repro": "H=3257cc44c7d59c291507ff8fb8c2b965f2942d502a1d5ff61005512718dea515",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/real",
+     "Path": "/Scenarios/0/Runs/12/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/real"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "CONTRACT=D:/r62-a6r2/r3/runs/a/inputs/K.json",
+     "Path": "/Scenarios/0/Runs/12/1/10",
+     "Repro": "CONTRACT=D:/r62-a6r2/repro/r3/runs/a/inputs/K.json"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/1/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/2/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "DELEG=D:/r62-a6r2/r3/runs/a/inputs/deleg-deliv.json",
+     "Path": "/Scenarios/1/Runs/2/1/8",
+     "Repro": "DELEG=D:/r62-a6r2/repro/r3/runs/a/inputs/deleg-deliv.json"
+    },
+    {
+     "Class": "STRING_WITH_VERIFIED_DIGESTS",
+     "Custodied": "DELEG=4c0d423c04c81ae6d8027e8378e255f6a5fc1f26654dd5d58408da3f9fd37a2e",
+     "Path": "/Scenarios/1/Runs/2/1/10",
+     "Repro": "DELEG=1acceadaef495d767fd1c11836bdc86f20ee3b02a29f5cb211713d8d9c556c26",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/3/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "CONTRACT=D:/r62-a6r2/r3/runs/a/inputs/K.json",
+     "Path": "/Scenarios/1/Runs/3/1/4",
+     "Repro": "CONTRACT=D:/r62-a6r2/repro/r3/runs/a/inputs/K.json"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "DELEG=D:/r62-a6r2/r3/runs/a/inputs/deleg-deliv.json",
+     "Path": "/Scenarios/1/Runs/3/1/8",
+     "Repro": "DELEG=D:/r62-a6r2/repro/r3/runs/a/inputs/deleg-deliv.json"
+    },
+    {
+     "Class": "STRING_WITH_VERIFIED_DIGESTS",
+     "Custodied": "DELEG=4c0d423c04c81ae6d8027e8378e255f6a5fc1f26654dd5d58408da3f9fd37a2e",
+     "Path": "/Scenarios/1/Runs/3/1/10",
+     "Repro": "DELEG=1acceadaef495d767fd1c11836bdc86f20ee3b02a29f5cb211713d8d9c556c26",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/4/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/5/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/6/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "H=D:/r62-a6r2/r3/runs/a/inputs/handoff-deliv.json",
+     "Path": "/Scenarios/1/Runs/6/1/4",
+     "Repro": "H=D:/r62-a6r2/repro/r3/runs/a/inputs/handoff-deliv.json"
+    },
+    {
+     "Class": "STRING_WITH_VERIFIED_DIGESTS",
+     "Custodied": "H=97380dd608958c11dab665ef85b45e6c63fbe210f416a4e59a23f35cfa338e29",
+     "Path": "/Scenarios/1/Runs/6/1/6",
+     "Repro": "H=3b8980578999cd5903d42b0de7ccd2bebfada2625bcab88a81e428eee7783e1d",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/7/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "H=D:/r62-a6r2/r3/runs/a/inputs/handoff-deliv.json",
+     "Path": "/Scenarios/1/Runs/7/1/4",
+     "Repro": "H=D:/r62-a6r2/repro/r3/runs/a/inputs/handoff-deliv.json"
+    },
+    {
+     "Class": "STRING_WITH_VERIFIED_DIGESTS",
+     "Custodied": "H=97380dd608958c11dab665ef85b45e6c63fbe210f416a4e59a23f35cfa338e29",
+     "Path": "/Scenarios/1/Runs/7/1/6",
+     "Repro": "H=3b8980578999cd5903d42b0de7ccd2bebfada2625bcab88a81e428eee7783e1d",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/8/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "CONTRACT=D:/r62-a6r2/r3/runs/a/inputs/K.json",
+     "Path": "/Scenarios/1/Runs/8/1/10",
+     "Repro": "CONTRACT=D:/r62-a6r2/repro/r3/runs/a/inputs/K.json"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/9/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "TRX=D:/r62-a6r2/r3/runs/a/inputs/fixture-tests.trx",
+     "Path": "/Scenarios/1/Runs/9/1/4",
+     "Repro": "TRX=D:/r62-a6r2/repro/r3/runs/a/inputs/fixture-tests.trx"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/1/Runs/10/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/2/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/2/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/3/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/3/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "DELEG=D:/r62-a6r2/r3/runs/a/inputs/deleg-deliv-dupkey.json",
+     "Path": "/Scenarios/3/Runs/0/1/8",
+     "Repro": "DELEG=D:/r62-a6r2/repro/r3/runs/a/inputs/deleg-deliv-dupkey.json"
+    },
+    {
+     "Class": "STRING_WITH_VERIFIED_DIGESTS",
+     "Custodied": "DELEG=c688016498e3929527ec7de2e63b7902f83545fba199684fa0ca15a899560665",
+     "Path": "/Scenarios/3/Runs/0/1/10",
+     "Repro": "DELEG=136e93b2018cdedd1174d013fb539c2e6f0aca9bb8984f5f8112532e186f12e6",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Scenarios/3/Runs/1/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "N=D:/r62-a6r2/r3/runs/a/inputs/dupkey.json",
+     "Path": "/Scenarios/3/Runs/1/1/4",
+     "Repro": "N=D:/r62-a6r2/repro/r3/runs/a/inputs/dupkey.json"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/4/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/4/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/4/Runs/1/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/4/Runs/2/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "DELEG=D:/r62-a6r2/r3/runs/a/inputs/deleg-syn.json",
+     "Path": "/Scenarios/4/Runs/2/1/8",
+     "Repro": "DELEG=D:/r62-a6r2/repro/r3/runs/a/inputs/deleg-syn.json"
+    },
+    {
+     "Class": "STRING_WITH_VERIFIED_DIGESTS",
+     "Custodied": "DELEG=f72232a77fd027d6e518eafe4fdff781a2dbbe6b173be549a7f78cde211c42b3",
+     "Path": "/Scenarios/4/Runs/2/1/10",
+     "Repro": "DELEG=cdd8b8b1d38a88feee89bb88be92fda0c6a373c33bc3827ad982d8beb0649680",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/4/Runs/3/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/4/Runs/4/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "H=D:/r62-a6r2/r3/runs/a/inputs/handoff-syn.json",
+     "Path": "/Scenarios/4/Runs/4/1/4",
+     "Repro": "H=D:/r62-a6r2/repro/r3/runs/a/inputs/handoff-syn.json"
+    },
+    {
+     "Class": "STRING_WITH_VERIFIED_DIGESTS",
+     "Custodied": "H=2b83d48289426f0322208d73262ba5b40c4baf4c15df09b2a1193cb49991a3b6",
+     "Path": "/Scenarios/4/Runs/4/1/6",
+     "Repro": "H=3af6c17cde40ad6a35c9d28a1d1f7d8905d93668209806b74551f75d67ea16fc",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/4/Runs/5/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/5/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/5/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/6/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/6/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/7/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/7/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/8/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/8/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/9/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/9/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/10/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/10/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/11/Repo",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/syn",
+     "Path": "/Scenarios/11/Runs/0/1/2",
+     "Repro": "D:/r62-a6r2/repro/r3/syn"
+    },
+    {
+     "Class": "DURATION",
+     "Custodied": 113.6,
+     "Path": "/Summary/Seconds",
+     "Repro": 1029.0
+    }
+   ],
+   "Failures": [],
+   "File": "a-mutation.json",
+   "ReproSha256": "b70369a22c476b9bf3d52f155cf4e03c6e43b73f0aa04a36c12dbe0041d09559",
+   "Status": "EXPECTED_ONLY_DIFFERENCES"
+  },
+  {
+   "ByteIdentical": false,
+   "ClassCounts": {
+    "DURATION": 1
+   },
+   "CustodiedSha256": "6164fdd7500980a204c5c7108d69c5370eb43ce55316e11046266fda1923d29d",
+   "Differences": [
+    {
+     "Class": "DURATION",
+     "Custodied": 341.7,
+     "Path": "/Summary/Seconds",
+     "Repro": 303.4
+    }
+   ],
+   "Failures": [],
+   "File": "b-clausemap.json",
+   "ReproSha256": "3fba9fc76c1539086d6c8421ac0cd951d35cd606c3de1242ed1d22b295a7519c",
+   "Status": "EXPECTED_ONLY_DIFFERENCES"
+  },
+  {
+   "ByteIdentical": false,
+   "ClassCounts": {
+    "DURATION": 1
+   },
+   "CustodiedSha256": "cdce802cb1c0d0c9fd35678e5b06c1fed36eb9687cedd8b81aa17b1747f3da17",
+   "Differences": [
+    {
+     "Class": "DURATION",
+     "Custodied": 417.6,
+     "Path": "/Summary/Seconds",
+     "Repro": 387.3
+    }
+   ],
+   "Failures": [],
+   "File": "c-r4.json",
+   "ReproSha256": "ea7385f8ceba5a09a096579df3f8052ffaa91b6564f900c37f1e99ec395e822f",
+   "Status": "EXPECTED_ONLY_DIFFERENCES"
+  },
+  {
+   "ByteIdentical": false,
+   "ClassCounts": {
+    "DIGEST_VERIFIED": 4,
+    "DURATION": 1,
+    "PATH": 5
+   },
+   "CustodiedSha256": "85e796c0ce4192e96a95acfc92a1a31bdd5b71abff4df22ce551998b26524965",
+   "Differences": [
+    {
+     "Class": "DIGEST_VERIFIED",
+     "Custodied": "4c0d423c04c81ae6d8027e8378e255f6a5fc1f26654dd5d58408da3f9fd37a2e",
+     "Path": "/Result/Cases/0/Closure/Files/1/Sha256",
+     "Repro": "1acceadaef495d767fd1c11836bdc86f20ee3b02a29f5cb211713d8d9c556c26",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "DIGEST_VERIFIED",
+     "Custodied": "97380dd608958c11dab665ef85b45e6c63fbe210f416a4e59a23f35cfa338e29",
+     "Path": "/Result/Cases/0/Closure/Files/2/Sha256",
+     "Repro": "3b8980578999cd5903d42b0de7ccd2bebfada2625bcab88a81e428eee7783e1d",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "DIGEST_VERIFIED",
+     "Custodied": "e2c500e7bb2cbae7e29d193be6e17c0c4e9fe431",
+     "Path": "/Result/Cases/0/EicSample/CanonicalInputs/12/Blob",
+     "Repro": "9743b4a6c3040544abecfc8bb5d0e262055fed5a",
+     "Verified": [
+      "deleg-deliv.json (runs/{a,c,d}/inputs): the repro file with its work root D:/r62-a6r2/repro/r3 written as D:/r62-a6r2/r3 is byte-identical to the custodied file and gives the custodied Git blob id (verified by the principal session, 2026-10-12)"
+     ]
+    },
+    {
+     "Class": "DIGEST_VERIFIED",
+     "Custodied": "8212412322b1f5239ea8549900e18f1d205f2edc",
+     "Path": "/Result/Cases/0/EicSample/CanonicalInputs/13/Blob",
+     "Repro": "28757de3393b1867a536545fcb5e7e3ec0ffe136",
+     "Verified": [
+      "handoff-deliv.json (runs/{a,c,d}/inputs): same verification as deleg-deliv.json; byte-identical after writing the repro work root as the original one"
+     ]
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Result/Cases/0/Outside/outside-commit/Argv/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Result/Cases/0/Outside/outside-file/Argv/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "N=D:/r62-a6r2/r3/runs/d/inputs/dupkey-free.json",
+     "Path": "/Result/Cases/0/Outside/outside-file/Argv/4",
+     "Repro": "N=D:/r62-a6r2/repro/r3/runs/d/inputs/dupkey-free.json"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Result/Cases/0/Outside/outside-hashes/Argv/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "PATH",
+     "Custodied": "D:/r62-a6r2/r3/deliv",
+     "Path": "/Result/Cases/0/Outside/outside-path/Argv/2",
+     "Repro": "D:/r62-a6r2/repro/r3/deliv"
+    },
+    {
+     "Class": "DURATION",
+     "Custodied": 92.6,
+     "Path": "/Result/Seconds",
+     "Repro": 84.0
+    }
+   ],
+   "Failures": [],
+   "File": "d-closure.json",
+   "ReproSha256": "5a8c6b1073fba561685622846f187e8f1822eaa13c2af7997d4a6462764fb3d6",
+   "Status": "EXPECTED_ONLY_DIFFERENCES"
+  },
+  {
+   "ByteIdentical": true,
+   "ClassCounts": {},
+   "CustodiedSha256": "5283d337b270978829dd142fd8fa6fbf1a28dfd544b9ac4883cfa6e11ded700e",
+   "Differences": [],
+   "File": "e-review.json",
+   "ReproSha256": "5283d337b270978829dd142fd8fa6fbf1a28dfd544b9ac4883cfa6e11ded700e",
+   "Status": "IDENTICAL"
+  },
+  {
+   "ByteIdentical": false,
+   "ClassCounts": {
+    "DERIVED_FROM_COMPARED_FILE": 3,
+    "DIGEST_VERIFIED": 5
+   },
+   "CustodiedSha256": "2e7263a697829aa18483801d203e0465d23394f6ea8b94edbeba6651e01e736f",
+   "Differences": [
+    {
+     "Class": "DERIVED_FROM_COMPARED_FILE",
+     "Custodied": 143422,
+     "Note": "digest/size of results/a-mutation.json, whose own comparison has only expected differences",
+     "Path": "/Files/9/Bytes",
+     "Repro": 143843
+    },
+    {
+     "Class": "DIGEST_VERIFIED",
+     "Custodied": "8125aea0a9681dd208cb9bba82dc5b9483d21ba26a518c9a9fe3c795b9ce46ca",
+     "Path": "/Files/9/Sha256",
+     "Repro": "b70369a22c476b9bf3d52f155cf4e03c6e43b73f0aa04a36c12dbe0041d09559",
+     "Verified": [
+      "V2 counterpart file RESULTS:a-mutation.json: original and repro bytes differ only by DURATION, PATH, STRING_WITH_VERIFIED_DIGESTS"
+     ]
+    },
+    {
+     "Class": "DIGEST_VERIFIED",
+     "Custodied": "6164fdd7500980a204c5c7108d69c5370eb43ce55316e11046266fda1923d29d",
+     "Path": "/Files/10/Sha256",
+     "Repro": "3fba9fc76c1539086d6c8421ac0cd951d35cd606c3de1242ed1d22b295a7519c",
+     "Verified": [
+      "V2 counterpart file RESULTS:b-clausemap.json: original and repro bytes differ only by DURATION"
+     ]
+    },
+    {
+     "Class": "DERIVED_FROM_COMPARED_FILE",
+     "Custodied": 32063,
+     "Note": "digest/size of results/build.json, whose own comparison has only expected differences",
+     "Path": "/Files/11/Bytes",
+     "Repro": 32225
+    },
+    {
+     "Class": "DIGEST_VERIFIED",
+     "Custodied": "732f2c2b7d579dfa810abb98cc7575fa4cd925253fdd8cdce6b268080810a640",
+     "Path": "/Files/11/Sha256",
+     "Repro": "cf61bb59ee158becade569007725fb89c8288cfb23e6f90532ff56ca79d4105b",
+     "Verified": [
+      "V1 substitution: repro content with the repro work root written as the original root hashes to the custodied value"
+     ]
+    },
+    {
+     "Class": "DIGEST_VERIFIED",
+     "Custodied": "cdce802cb1c0d0c9fd35678e5b06c1fed36eb9687cedd8b81aa17b1747f3da17",
+     "Path": "/Files/12/Sha256",
+     "Repro": "ea7385f8ceba5a09a096579df3f8052ffaa91b6564f900c37f1e99ec395e822f",
+     "Verified": [
+      "V2 counterpart file RESULTS:c-r4.json: original and repro bytes differ only by DURATION"
+     ]
+    },
+    {
+     "Class": "DERIVED_FROM_COMPARED_FILE",
+     "Custodied": 25043,
+     "Note": "digest/size of results/d-closure.json, whose own comparison has only expected differences",
+     "Path": "/Files/13/Bytes",
+     "Repro": 25073
+    },
+    {
+     "Class": "DIGEST_VERIFIED",
+     "Custodied": "85e796c0ce4192e96a95acfc92a1a31bdd5b71abff4df22ce551998b26524965",
+     "Path": "/Files/13/Sha256",
+     "Repro": "5a8c6b1073fba561685622846f187e8f1822eaa13c2af7997d4a6462764fb3d6",
+     "Verified": [
+      "V2 counterpart file RESULTS:d-closure.json: original and repro bytes differ only by DIGEST_VERIFIED, DURATION, PATH"
+     ]
+    }
+   ],
+   "Failures": [],
+   "File": "manifest.json",
+   "ReproSha256": "9148d25dc5b4ed9005b20a2de97bf7567d724c4b2166a0272a296375e41a4a01",
+   "Status": "EXPECTED_ONLY_DIFFERENCES"
+  }
+ ],
+ "OriginalWorkRoot": "D:/r62-a6r2/r3",
+ "Package": "r3",
+ "ReproWorkRoot": "D:/r62-a6r2/repro/r3",
+ "Schema": "r62-a6r2-repro/compare-1",
+ "Verdict": "REPRODUCED",
+ "VerifiedDigestPairs": 32,
+ "WorkRootEquivalence": {
+  "ByteIdentical": 2261,
+  "DifferingExplained": {
+   "CONTENT: DIGEST_VERIFIED": {
+    "Count": 64,
+    "Examples": [
+     "runs/a/acc/M/M01/S2-REAL-DELIVERY.json",
+     "runs/a/acc/M/M01/SYN-COMMON.json",
+     "runs/a/acc/M/M02/S2-REAL-DELIVERY.json",
+     "runs/a/acc/M/M02/SYN-COMMON.json"
+    ]
+   },
+   "CONTENT: DIGEST_VERIFIED, PATH": {
+    "Count": 428,
+    "Examples": [
+     "runs/a/env/M01/S1-REAL-E2E/freetext.json",
+     "runs/a/env/M01/S1-REAL-E2E/handoff.json",
+     "runs/a/env/M01/S1-REAL-E2E/identity.json",
+     "runs/a/env/M01/S2-DUPKEY/scope-dupkey.json"
+    ]
+   },
+   "CONTENT: DIGEST_VERIFIED, PATH, STRING_WITH_VERIFIED_DIGESTS": {
+    "Count": 119,
+    "Examples": [
+     "runs/a/req/M/M01/S1-REAL-E2E.json",
+     "runs/a/req/M/M01/S2-REAL-DELIVERY.json",
+     "runs/a/req/M/M01/SYN-COMMON.json",
+     "runs/a/req/M/M02/S1-REAL-E2E.json"
+    ]
+   },
+   "CONTENT: PATH": {
+    "Count": 871,
+    "Examples": [
+     "build.json",
+     "runs/a/echo/control-no-injection/envelope.json",
+     "runs/a/echo/injected-diff-without-no-ext-diff/envelope.json",
+     "runs/a/echo/injected-status-without-porcelain/envelope.json"
+    ]
+   },
+   "CONTENT: PATH/TIMESTAMP (text)": {
+    "Count": 34,
+    "Examples": [
+     "runs/a/echo/control-no-injection/bmin_facts.py",
+     "runs/a/echo/injected-diff-without-no-ext-diff/bmin_facts.py",
+     "runs/a/echo/injected-status-without-porcelain/bmin_facts.py",
+     "runs/a/echo/injected-subcommand-outside-list/bmin_facts.py"
+    ]
+   },
+   "GIT_INDEX_STAT_DATA_ONLY": {
+    "Count": 3,
+    "Examples": [
+     "deliv/.git/index",
+     "real/.git/index",
+     "syn/.git/index"
+    ]
+   },
+   "REFLOG_DATES_PATHS_ONLY": {
+    "Count": 29,
+    "Examples": [
+     "deliv/.git/logs/HEAD",
+     "deliv/.git/logs/refs/heads/fx/u1",
+     "deliv/.git/logs/refs/remotes/origin/HEAD",
+     "deliv/.git/logs/refs/remotes/origin/fx/u1"
+    ]
+   }
+  },
+  "FilesCompared": 3877,
+  "OnlyInOriginal": [
+   "pin/README.md",
+   "pin/SPEC.md",
+   "pin/accept/ACCEPT-NOTES.md",
+   "pin/accept/tests/fake_tool.py",
+   "pin/accept/tests/test_bmin_accept.py",
+   "pin/e2e/e2e-run.log",
+   "pin/e2e/e2e.py",
+   "pin/e2e/out/acceptor-result.json",
+   "pin/e2e/out/e2e-summary.json",
+   "pin/tool/TOOL-NOTES.md",
+   "pin/tool/tests/test_bmin_facts.py",
+   "pin/tool/tests/zero_write_check.py",
+   "runs/tmp/K.json"
+  ],
+  "OnlyInRepro": [],
+  "OriginalRootEntriesNotProducedByThePackageScripts": {
+   "part_a.log": 1,
+   "part_a2.log": 1,
+   "part_a3.log": 1,
+   "part_b.log": 1,
+   "part_c.log": 1,
+   "part_d.log": 1,
+   "repro.log": 1,
+   "review_e.log": 1
+  },
+  "Unexplained": [
+   {
+    "File": "runs/a/acc/M/M01/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M02/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M03/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M04/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M05/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M06/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M07/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M10/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M11/S2-NOI.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M12/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M13/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M20/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M25/S2-DUPKEY.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M26/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/M/M27/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M01/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M02/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M03/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M04/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M05/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M06/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M07/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M10/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M11/S2-NOI.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M12/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M13/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M20/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M25/S2-DUPKEY.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M26/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/P/M27/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/baseline/PINNED/S1-REAL-E2E.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/baseline/PINNED/S2-DUPKEY.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/acc/baseline/PINNED/S2-NOI.json",
+    "Why": "unexplained: [{\"Path\": \"/Checks/3/Detail/Reason\", \"Class\": \"VALUE\", \"Custodied\": \"facts-level scenario: no controller-verification in this request (part (a))\", \"Repro\": \"facts-level request: no controller-verification in this request (part (a))\"}]"
+   },
+   {
+    "File": "runs/a/echo/control-no-injection/request.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"89a18fe804a41e70327085fb0748ce5e9f0f16cd\", \"Repro\": \"2fc581df52fba6c158710bbb905e84519422a194\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/a/echo/injected-diff-without-no-ext-diff/request.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"d4221ecd5ee40ace4c03b0e2ae2b07e1882ad73c\", \"Repro\": \"b6678537dcd7ddda5d430a058293d718ead7f2bd\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/a/echo/injected-status-without-porcelain/request.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"d5d24a18f3f2b0566e6f225bf56eacaf49020557\", \"Repro\": \"68c5f6270e1e0dda45ed5372b85a9ce4f64a2486\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/a/echo/injected-subcommand-outside-list/request.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"c2eb052b23e5729fc09f5552801abfd71646b7db\", \"Repro\": \"aa7849d11e7280f1aaf39d8ffcb20e3a7c90020b\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D1-literal-6-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"48b95e3dca04dea8335c1d5894675ce2f6ca431e\", \"Repro\": \"ad8283d0f2a0b4df6fb3a4d1323cca667fa69e78\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D1-literal-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"af98cbe41d052b2c8337b0b314a3c4140675e010\", \"Repro\": \"294cda6e447f0a3af398fcbca3ec12213a32b04c\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D10-mv2-15-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"f8a7d2b3ccb5a9754ba0632886538ac2f3037890\", \"Repro\": \"30cce1b8fdb69cd1f8b12daf09b9a89c93ea03c9\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D10-mv2-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"e5f0aa199c3d183822c465d9ff0ce9708df1e204\", \"Repro\": \"c5127ff4064c8d97dba7ec1825cb0e50064172cc\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D11-mv1-schema-16-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"1a55b15988ce818161d64fa77fc4c115b81abf0c\", \"Repro\": \"2c5bb55aadc3e17cedbb29ea05eee28d88e18466\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D11-mv1-schema-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"2406c0d32deeb3f100cf42b5d9f56fbff219d5e1\", \"Repro\": \"9d4f39d5fdd394fe90dad57828ed097694842620\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D11-mv1-schema-B3-toolform-echo.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"07bf90cd97b3b9a1fb6e7e23e45afa18fd8ac60f\", \"Repro\": \"9a32a0bf5c69f42a97e8b33be2dfe1a9338d3397\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D2-added-in-eff1-7-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"c6d7d0a6b423874481490ac33b07130dfead4d52\", \"Repro\": \"1366c130e9cbfa03b071428b4284dfc69cad1e3f\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D2-added-in-eff1-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"1739ff33f1b7e2e4102b2bcc3d6b105fdf669581\", \"Repro\": \"706b86acf7ee74952712624ca5a9089e33582a5a\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D3-entry-outside-schema-8-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"94881f42dad5aab560f87dd0bf3e5ce8b6809100\", \"Repro\": \"8a4d29bb911171c7aa229a311dd77b186c163bd2\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D3-entry-outside-schema-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"14a7584aa619f8d57d9c8eebc830c559d5c8957c\", \"Repro\": \"0350176cc78cf76bc8711bae50a660e593403475\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D4-entry-in-eff1-9-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"09016ffa262253a2afe888320b8fb7cedac7a268\", \"Repro\": \"4a58fcae8ccc983a37e3d019c2b1afae6f047642\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D4-entry-in-eff1-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"0677fac8aa5374169cb95166b9f55e06b3462945\", \"Repro\": \"817579d2ce5fb5e9fc2d8d93726b6e20e0d1463b\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D5-only-in-10-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"1e802f44ec68bf661278cbb2054d007c1e03133d\", \"Repro\": \"e3061e4cb5033a6cf76606c39eb9556e0a16ce2d\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D5-only-in-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"64154ed6f91545b277088f4779c80294f15e1e89\", \"Repro\": \"e5a0b9ab958019905838cc107a0577b298ae2429\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D6-deleted-11-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"976b7275b4c7f110d097dd5d4d80a8c62e3de489\", \"Repro\": \"9f4df0591513fa0bb0555a2f0e8e711e4cae2219\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D6-deleted-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"01fd28e059cdc9d167523183ec066d79d0f0cc82\", \"Repro\": \"edf9f723b0f497c2d36fd73c5afbf6de435ebadc\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D7-mv6-12-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"0c92548f4b2f5bcf1d7abae66b62a53220b43d0d\", \"Repro\": \"e8471631831535195c06dbd9de704c6186a0be34\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D7-mv6-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"5533b8b19de54544f62ecc63cb71819129a50eda\", \"Repro\": \"15038b7eb1a8afa07d0a154716a0889ba150b9ba\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D8-mv7-13-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"dfcf1d0897ff3209bebe730d6cabac7107c38fdd\", \"Repro\": \"ab79a4b4408324fed2c466ec2158518318dfdca4\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D8-mv7-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"4d5c8069a7ceb4a07530605a666f2078694dd9c9\", \"Repro\": \"23ae86d9189d12e45e0dc5f0bbd4def56d7cb00f\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D9-mv5-dup-14-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"0a443eb127fa65ad2a5495621813af15835ed4c0\", \"Repro\": \"acdfe368ebecf209d5e4aeaeb4b423df84d90da2\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/D9-mv5-dup-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"110eea1b0483020719543b2d086cd2020513e566\", \"Repro\": \"956858d3003b6195402eedc9702b22037aeae795\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/V0-0-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"964e86905f113461679a6815a7862c6d214070fd\", \"Repro\": \"080e6fb60763360f6547692177ce5368bd0fd87c\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/V0-1-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"7ec179b3981d86e284c73189c211a21159b038f5\", \"Repro\": \"4f94236d283201cc602575c2e2ed77fdc421771e\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/V0-2-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"378ca3ba3d7e664cbdd5346c632fb437d45cc824\", \"Repro\": \"709cc4453b2364483096cb165abfea178bf87392\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/V0-3-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"c6ada8ad70f0fe30974e7bff2131926d1eb845ad\", \"Repro\": \"b2983e1ddedd7d97874a3aa15250ccff655adbb0\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/V0-4-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"13c572b38ca0bc630da522efcb58fa0f3b31445d\", \"Repro\": \"1c2cf0f614c675dc6430fbf0ae971c0b7b00b199\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/V0-5-B4.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"50a1442a31c04ef9d864ec67aa6bdcf0e4f248d4\", \"Repro\": \"bd323520ce605621635805dc174063fddf315293\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/V0-B2-hand-authority-fail.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"fd8aa9ed1a17f8a57c25878f1e05540d1a8b62d7\", \"Repro\": \"102bc43b36533c171e37dc6104aa00abd3dc0908\", \"Note\": \"not explained\"}]"
+   },
+   {
+    "File": "runs/b/req/V0-B2-hand.json",
+    "Why": "unexplained: [{\"Path\": \"/Tool/PinnedBlob\", \"Class\": \"UNVERIFIED_DIGEST\", \"Custodied\": \"fd8aa9ed1a17f8a57c25878f1e05540d1a8b62d7\", \"Repro\": \"102bc43b36533c171e37dc6104aa00abd3dc0908\", \"Note\": \"not explained\"}]"
+   }
+  ]
+ }
+}

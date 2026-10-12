@@ -1,0 +1,10 @@
+T1 test3 ACCEPT_FACTS {'R1': 'MATCH', 'R2': 'MATCH', 'R3': 'MATCH', 'R4': 'MATCH', 'R5': 'MATCH', 'R6': 'MATCH', 'R7': 'MATCH', 'R8': 'MANUAL', 'R9': 'MATCH', 'R10': 'MATCH'}
+T1 flip cleantree REJECT_FACTS {'R1': 'MATCH', 'R2': 'MATCH', 'R3': 'MATCH', 'R4': 'MISMATCH', 'R5': 'MATCH', 'R6': 'MATCH', 'R7': 'MATCH', 'R8': 'MANUAL', 'R9': 'MATCH', 'R10': 'MATCH'}
+T1 flip identity REJECT_FACTS {'R1': 'MATCH', 'R2': 'MATCH', 'R3': 'MATCH', 'R4': 'MISMATCH', 'R5': 'MATCH', 'R6': 'MATCH', 'R7': 'MATCH', 'R8': 'MANUAL', 'R9': 'MATCH', 'R10': 'MATCH'}
+T3 5a REJECT_FACTS {'R1': 'MATCH', 'R2': 'MATCH', 'R3': 'MATCH', 'R4': 'MATCH', 'R5': 'MISMATCH', 'R6': 'MISMATCH', 'R7': 'MISMATCH', 'R8': 'MANUAL', 'R9': 'MATCH', 'R10': 'MATCH'}
+T3 5b REJECT_FACTS {'R1': 'MATCH', 'R2': 'MATCH', 'R3': 'MISMATCH', 'R4': 'MATCH', 'R5': 'MISMATCH', 'R6': 'MATCH', 'R7': 'MATCH', 'R8': 'MANUAL', 'R9': 'MATCH', 'R10': 'MATCH'}
+T6 t6a REJECT_FACTS {'R1': 'MATCH', 'R2': 'MATCH', 'R3': 'MISMATCH', 'R4': 'MATCH', 'R5': 'MISMATCH', 'R6': 'MATCH', 'R7': 'MATCH', 'R8': 'MANUAL', 'R9': 'MATCH', 'R10': 'MATCH'}
+T6 t6b REJECT_FACTS {'R1': 'MATCH', 'R2': 'MATCH', 'R3': 'MISMATCH', 'R4': 'MISMATCH', 'R5': 'MISMATCH', 'R6': 'MATCH', 'R7': 'MATCH', 'R8': 'MANUAL', 'R9': 'MATCH', 'R10': 'MATCH'}
+T2 ACCEPT_FACTS {'R1': 'MATCH', 'R2': 'MATCH', 'R3': 'MATCH', 'R4': 'MATCH', 'R5': 'MATCH', 'R6': 'MATCH', 'R7': 'MATCH', 'R8': 'MANUAL', 'R9': 'MATCH', 'R10': 'MATCH'} flip REJECT_FACTS {'R1': 'MATCH', 'R2': 'MATCH', 'R3': 'MATCH', 'R4': 'MISMATCH', 'R5': 'MATCH', 'R6': 'MATCH', 'R7': 'MATCH', 'R8': 'MANUAL', 'R9': 'MATCH', 'R10': 'MATCH'}
+done
+exit=0

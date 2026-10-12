@@ -1,0 +1,484 @@
+{
+ "Items": {
+  "AcceptedAtFactsLevel": {
+   "M14": [
+    "S2-REAL-DELIVERY",
+    "SYN-COMMON"
+   ],
+   "M17": [
+    "SYN-SC"
+   ]
+  },
+  "Activated": [
+   "M01",
+   "M02",
+   "M03",
+   "M04",
+   "M05",
+   "M06",
+   "M07",
+   "M08",
+   "M09",
+   "M10",
+   "M11",
+   "M12",
+   "M13",
+   "M14",
+   "M16",
+   "M17",
+   "M18",
+   "M19",
+   "M20",
+   "M21",
+   "M22",
+   "M24",
+   "M25",
+   "M26",
+   "M27"
+  ],
+  "ActivatedCount": 25,
+  "ActivatedNotDetectedConfigM": [
+   "M11"
+  ],
+  "CriticalFactsR5R6R7": {
+   "M01": {
+    "CriticalFact": "scope coverage (Scope membership)",
+    "R5R6R7": [
+     "R7"
+    ]
+   },
+   "M02": {
+    "CriticalFact": "MV-7 (sentence boundary)",
+    "R5R6R7": [
+     "R6"
+    ]
+   },
+   "M03": {
+    "CriticalFact": "ancestry / Identity",
+    "R5R6R7": [
+     "R5"
+    ]
+   },
+   "M04": {
+    "CriticalFact": "Scope membership (diff paths)",
+    "R5R6R7": [
+     "R5",
+     "R7"
+    ]
+   },
+   "M05": {
+    "CriticalFact": "MV-4 (four lists)",
+    "R5R6R7": [
+     "R6",
+     "R7"
+    ]
+   },
+   "M06": {
+    "CriticalFact": "MV-7 (pointer removal)",
+    "R5R6R7": [
+     "R6"
+    ]
+   },
+   "M07": {
+    "CriticalFact": "MV-4 (ENTRY vs ADDED)",
+    "R5R6R7": [
+     "R6",
+     "R7"
+    ]
+   },
+   "M08": {
+    "CriticalFact": "effective point derivation (EFF)",
+    "R5R6R7": [
+     "R6"
+    ]
+   },
+   "M09": {
+    "CriticalFact": "effective point derivation (trailer)",
+    "R5R6R7": [
+     "R6"
+    ]
+   },
+   "M10": {
+    "CriticalFact": "canonical ASCII serialization (fidelity)",
+    "R5R6R7": [
+     "R6",
+     "R7"
+    ]
+   },
+   "M11": {
+    "CriticalFact": "isolation (-I)",
+    "R5R6R7": []
+   },
+   "M12": {
+    "CriticalFact": "scope coverage (U-19)",
+    "R5R6R7": [
+     "R7"
+    ]
+   },
+   "M13": {
+    "CriticalFact": "blobs and hashes",
+    "R5R6R7": [
+     "R5"
+    ]
+   },
+   "M14": {
+    "CriticalFact": "free text (16.10; not in the A6-9 critical list)",
+    "R5R6R7": []
+   },
+   "M16": {
+    "CriticalFact": "effective point derivation (trailer uniqueness)",
+    "R5R6R7": [
+     "R6"
+    ]
+   },
+   "M17": {
+    "CriticalFact": "MV-1 (schema subset; not in the A6-9 critical list)",
+    "R5R6R7": []
+   },
+   "M18": {
+    "CriticalFact": "MV-3",
+    "R5R6R7": [
+     "R6"
+    ]
+   },
+   "M19": {
+    "CriticalFact": "Classify (claim_id; not critical list)",
+    "R5R6R7": [
+     "R6"
+    ]
+   },
+   "M20": {
+    "CriticalFact": "MV-7 (last sentence)",
+    "R5R6R7": [
+     "R6"
+    ]
+   },
+   "M21": {
+    "CriticalFact": "effective point derivation (first-parent condition)",
+    "R5R6R7": [
+     "R6",
+     "R7"
+    ]
+   },
+   "M22": {
+    "CriticalFact": "MV-6 (preamble)",
+    "R5R6R7": [
+     "R6"
+    ]
+   },
+   "M24": {
+    "CriticalFact": "MV-6 / Markdown code fences",
+    "R5R6R7": [
+     "R6"
+    ]
+   },
+   "M25": {
+    "CriticalFact": "strict JSON (MV-1, inputs)",
+    "R5R6R7": [
+     "R5",
+     "R6",
+     "R7"
+    ]
+   },
+   "M26": {
+    "CriticalFact": "isolation (forced --no-ext-diff --no-textconv)",
+    "R5R6R7": []
+   },
+   "M27": {
+    "CriticalFact": "Classify (claim_id)",
+    "R5R6R7": [
+     "R6",
+     "R7"
+    ]
+   }
+  },
+  "DetectedOnlyByR4": [
+   "M14",
+   "M17"
+  ],
+  "DetectorsConfigM": {
+   "M01": [
+    "R4",
+    "R7"
+   ],
+   "M02": [
+    "R6"
+   ],
+   "M03": [
+    "R4",
+    "R5"
+   ],
+   "M04": [
+    "R5",
+    "R7"
+   ],
+   "M05": [
+    "R6",
+    "R7"
+   ],
+   "M06": [
+    "R6"
+   ],
+   "M07": [
+    "R6",
+    "R7"
+   ],
+   "M08": [
+    "R6"
+   ],
+   "M09": [
+    "R4",
+    "R6"
+   ],
+   "M10": [
+    "R3",
+    "R6",
+    "R7"
+   ],
+   "M11": [],
+   "M12": [
+    "R4",
+    "R7"
+   ],
+   "M13": [
+    "R5"
+   ],
+   "M14": [
+    "R4"
+   ],
+   "M16": [
+    "R6"
+   ],
+   "M17": [
+    "R4"
+   ],
+   "M18": [
+    "R6"
+   ],
+   "M19": [
+    "R6"
+   ],
+   "M20": [
+    "R6"
+   ],
+   "M21": [
+    "R3",
+    "R6",
+    "R7"
+   ],
+   "M22": [
+    "R6"
+   ],
+   "M24": [
+    "R6"
+   ],
+   "M25": [
+    "R4",
+    "R5",
+    "R6",
+    "R7"
+   ],
+   "M26": [
+    "R9"
+   ],
+   "M27": [
+    "R3",
+    "R6",
+    "R7"
+   ]
+  },
+  "NotActivated": [
+   "M15",
+   "M23"
+  ],
+  "Source": "reproduced results",
+  "SummaryEqualToCustodied": {
+   "AcceptedAtFactsLevel": true,
+   "Activated": true,
+   "ActivatedAndDetectedConfigM": true,
+   "ActivatedNotDetectedConfigM": true,
+   "ActivationsWithoutAttributableDetection": true,
+   "DetectedOnlyByR4": true,
+   "DetectorsConfigM": true,
+   "NotActivated": true
+  }
+ },
+ "PackageFilesChanged": [],
+ "PackageFilesChecked": 35,
+ "PackagesUnchanged": true,
+ "PowerEvents": [
+  {
+   "Id": 109,
+   "Utc": "2026-10-12T18:00:32Z"
+  },
+  {
+   "Id": 507,
+   "Utc": "2026-10-12T17:28:50Z"
+  },
+  {
+   "Id": 506,
+   "Utc": "2026-10-12T17:28:50Z"
+  },
+  {
+   "Id": 107,
+   "Utc": "2026-10-12T15:25:19Z"
+  },
+  {
+   "Id": 42,
+   "Utc": "2026-10-12T15:25:09Z"
+  },
+  {
+   "Id": 507,
+   "Utc": "2026-10-12T15:24:59Z"
+  },
+  {
+   "Id": 506,
+   "Utc": "2026-10-12T14:31:09Z"
+  },
+  {
+   "Id": 507,
+   "Utc": "2026-10-12T14:31:09Z"
+  },
+  {
+   "Id": 506,
+   "Utc": "2026-10-12T14:23:54Z"
+  },
+  {
+   "Id": 507,
+   "Utc": "2026-10-12T14:18:15Z"
+  },
+  {
+   "Id": 506,
+   "Utc": "2026-10-12T13:16:27Z"
+  },
+  {
+   "Id": 507,
+   "Utc": "2026-10-12T13:16:27Z"
+  },
+  {
+   "Id": 506,
+   "Utc": "2026-10-12T10:34:57Z"
+  }
+ ],
+ "R1R4Verdict": "REPRODUCED",
+ "R3Chain": {
+  "Complete": true,
+  "Completed": [
+   "build_repos",
+   "part_a",
+   "part_b",
+   "part_c",
+   "part_d",
+   "review_e",
+   "finalize"
+  ],
+  "Steps": {
+   "build_repos": [
+    {
+     "Event": "start",
+     "Exit": null,
+     "Utc": "2026-10-12T17:31:12Z"
+    },
+    {
+     "Event": "end",
+     "Exit": 0,
+     "Utc": "2026-10-12T17:34:27Z"
+    }
+   ],
+   "finalize": [
+    {
+     "Event": "start",
+     "Exit": null,
+     "Utc": "2026-10-12T20:12:44Z"
+    },
+    {
+     "Event": "end",
+     "Exit": 0,
+     "Utc": "2026-10-12T20:12:45Z"
+    }
+   ],
+   "part_a": [
+    {
+     "Event": "start",
+     "Exit": null,
+     "Utc": "2026-10-12T17:34:27Z"
+    },
+    {
+     "Event": "start",
+     "Exit": null,
+     "Utc": "2026-10-12T19:42:13Z"
+    },
+    {
+     "Event": "end",
+     "Exit": 0,
+     "Utc": "2026-10-12T19:59:23Z"
+    }
+   ],
+   "part_b": [
+    {
+     "Event": "start",
+     "Exit": null,
+     "Utc": "2026-10-12T19:59:24Z"
+    },
+    {
+     "Event": "end",
+     "Exit": 0,
+     "Utc": "2026-10-12T20:04:27Z"
+    }
+   ],
+   "part_c": [
+    {
+     "Event": "start",
+     "Exit": null,
+     "Utc": "2026-10-12T20:04:28Z"
+    },
+    {
+     "Event": "end",
+     "Exit": 0,
+     "Utc": "2026-10-12T20:10:55Z"
+    }
+   ],
+   "part_d": [
+    {
+     "Event": "start",
+     "Exit": null,
+     "Utc": "2026-10-12T20:10:56Z"
+    },
+    {
+     "Event": "end",
+     "Exit": 0,
+     "Utc": "2026-10-12T20:12:20Z"
+    }
+   ],
+   "resume": [
+    {
+     "Event": "start",
+     "Exit": null,
+     "Utc": "2026-10-12T19:42:13Z"
+    },
+    {
+     "Event": "end",
+     "Exit": 0,
+     "Utc": "2026-10-12T20:12:45Z"
+    }
+   ],
+   "review_e": [
+    {
+     "Event": "start",
+     "Exit": null,
+     "Utc": "2026-10-12T20:12:20Z"
+    },
+    {
+     "Event": "end",
+     "Exit": 0,
+     "Utc": "2026-10-12T20:12:44Z"
+    }
+   ]
+  }
+ },
+ "R3Verdict": "REPRODUCED",
+ "ReadOnlySourcesDiff": [
+  "WorktreeHead"
+ ],
+ "Schema": "rackcad-a6r2-repro/1"
+}

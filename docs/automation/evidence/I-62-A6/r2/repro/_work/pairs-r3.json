@@ -1,0 +1,10 @@
+{
+ "28757de3393b1867a536545fcb5e7e3ec0ffe136": [
+  "8212412322b1f5239ea8549900e18f1d205f2edc",
+  "handoff-deliv.json (runs/{a,c,d}/inputs): same verification as deleg-deliv.json; byte-identical after writing the repro work root as the original one"
+ ],
+ "9743b4a6c3040544abecfc8bb5d0e262055fed5a": [
+  "e2c500e7bb2cbae7e29d193be6e17c0c4e9fe431",
+  "deleg-deliv.json (runs/{a,c,d}/inputs): the repro file with its work root D:/r62-a6r2/repro/r3 written as D:/r62-a6r2/r3 is byte-identical to the custodied file and gives the custodied Git blob id (verified by the principal session, 2026-10-12)"
+ ]
+}

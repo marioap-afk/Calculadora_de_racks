@@ -1,0 +1,55 @@
+{
+ "Schema": "rackcad-worker-handoff/v1",
+ "TaskId": "T1",
+ "RunId": "R20261012T000000Z-a6e2",
+ "DelegationRunId": "R20261012T000000Z-a6d1",
+ "Initiative": "FX-U1",
+ "Gate": "FX-U1-T1",
+ "Attempt": 0,
+ "BaseSha": "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+ "RedSha": "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+ "CurrentSha": "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+ "Branch": "fx/u1",
+ "Worktree": "D:/r62-a6r2/repro/r1r4/r4/t1",
+ "Pushed": true,
+ "FilesChanged": [
+  "src/Fixture.Lib/Calculator.cs"
+ ],
+ "WorkCompleted": "Añadí Subtract — escenario sintético de integración B-min",
+ "TestsExecuted": [
+  {
+   "RunRef": "bench",
+   "Command": "dotnet test --filter FullyQualifiedName~Subtract",
+   "Phase": "GREEN",
+   "TreeSha": null,
+   "ResultsFile": null
+  }
+ ],
+ "TestResults": [
+  {
+   "RunRef": "bench",
+   "Selected": 1,
+   "Passed": 1,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  }
+ ],
+ "Evidence": [
+  "GATE PASS (término de 16.10 a propósito, para el hecho de freetext)"
+ ],
+ "UnexpectedFindings": [],
+ "KnownLimitations": [],
+ "Deviations": [],
+ "OpenQuestions": [],
+ "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+ "Disposition": "NONE",
+ "TriggeredStopConditions": [],
+ "RecommendedNextAction": "verificar",
+ "Worker": {
+  "Provider": "bench",
+  "ModelRequested": "bench",
+  "EffortRequested": "bench",
+  "Trailer": "Co-Authored-By: synthetic"
+ }
+}

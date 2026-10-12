@@ -1,0 +1,94 @@
+envelopes PINNED 32.1s
+envelopes M01 29.1s
+envelopes M02 29.9s
+envelopes M03 29.9s
+envelopes M04 27.2s
+envelopes M05 27.9s
+envelopes M06 27.0s
+envelopes M07 30.0s
+envelopes M08 28.7s
+envelopes M09 29.1s
+envelopes M10 27.9s
+envelopes M11 26.1s
+envelopes M12 27.4s
+envelopes M13 27.4s
+envelopes M14 30.2s
+envelopes M15 28.5s
+envelopes M16 32.2s
+envelopes M17 26.8s
+envelopes M18 28.5s
+envelopes M19 31.1s
+envelopes M27 24.4s
+envelopes M20 29.8s
+envelopes M21 30.3s
+envelopes M22 30.5s
+envelopes M23 31.1s
+envelopes M24 30.3s
+envelopes M25 27.0s
+envelopes M26 28.7s
+baseline S1-REAL-E2E ACCEPT_FACTS []
+baseline S2-REAL-DELIVERY ACCEPT_FACTS []
+baseline S2-NOI REJECT_FACTS ['R2', 'R3', 'R5']
+baseline S2-DUPKEY REJECT_FACTS ['R3', 'R5', 'R7']
+baseline SYN-COMMON ACCEPT_FACTS []
+baseline SYN-SA ACCEPT_FACTS []
+baseline SYN-SA-STATE REJECT_FACTS ['R3', 'R6', 'R7']
+baseline SYN-SB REJECT_FACTS ['R3', 'R6', 'R7']
+baseline SYN-SC REJECT_FACTS ['R3', 'R6', 'R7']
+baseline SYN-SD ACCEPT_FACTS []
+baseline SYN-SE ACCEPT_FACTS []
+baseline SYN-SF REJECT_FACTS ['R3', 'R6', 'R7']
+M01 S1-REAL-E2E M: REJECT_FACTS ['R7'] P: REJECT_FACTS ['R3', 'R7']
+M01 S2-REAL-DELIVERY M: REJECT_FACTS ['R4', 'R7'] P: REJECT_FACTS ['R3', 'R4', 'R7']
+M01 SYN-COMMON M: REJECT_FACTS ['R4', 'R7'] P: REJECT_FACTS ['R3', 'R4', 'R7']
+M02 S1-REAL-E2E M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M02 S2-REAL-DELIVERY M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M02 SYN-COMMON M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M02 SYN-SA M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M02 SYN-SD M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M03 S1-REAL-E2E M: REJECT_FACTS ['R5'] P: REJECT_FACTS ['R3', 'R5']
+M03 S2-REAL-DELIVERY M: REJECT_FACTS ['R4', 'R5'] P: REJECT_FACTS ['R3', 'R4', 'R5']
+M03 SYN-COMMON M: REJECT_FACTS ['R4', 'R5'] P: REJECT_FACTS ['R3', 'R4', 'R5']
+M04 S1-REAL-E2E M: REJECT_FACTS ['R5', 'R7'] P: REJECT_FACTS ['R3', 'R5', 'R7']
+M04 S2-REAL-DELIVERY M: REJECT_FACTS ['R5', 'R7'] P: REJECT_FACTS ['R3', 'R5', 'R7']
+M04 SYN-COMMON M: REJECT_FACTS ['R5', 'R7'] P: REJECT_FACTS ['R3', 'R5', 'R7']
+M05 S1-REAL-E2E M: REJECT_FACTS ['R6', 'R7'] P: REJECT_FACTS ['R3', 'R6', 'R7']
+M05 S2-REAL-DELIVERY M: REJECT_FACTS ['R6', 'R7'] P: REJECT_FACTS ['R3', 'R6', 'R7']
+M06 S1-REAL-E2E M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M06 S2-REAL-DELIVERY M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M06 SYN-COMMON M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M06 SYN-SA M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M06 SYN-SD M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M07 S1-REAL-E2E M: REJECT_FACTS ['R6', 'R7'] P: REJECT_FACTS ['R3', 'R6', 'R7']
+M07 S2-REAL-DELIVERY M: REJECT_FACTS ['R6', 'R7'] P: REJECT_FACTS ['R3', 'R6', 'R7']
+M08 SYN-SA M: REJECT_FACTS ['R6'] P: REJECT_FACTS ['R3', 'R6']
+M09 SYN-SE M: REJECT_FACTS ['R4', 'R6'] P: REJECT_FACTS ['R3', 'R4', 'R6']
+M10 S1-REAL-E2E M: REJECT_FACTS ['R3', 'R6', 'R7'] P: REJECT_FACTS ['R3', 'R6', 'R7']
+M10 S2-REAL-DELIVERY M: REJECT_FACTS ['R3', 'R6', 'R7'] P: REJECT_FACTS ['R3', 'R6', 'R7']
+M10 SYN-COMMON M: REJECT_FACTS ['R3', 'R6', 'R7'] P: REJECT_FACTS ['R3', 'R6', 'R7']
+M10 SYN-SA M: REJECT_FACTS ['R3', 'R6', 'R7'] P: REJECT_FACTS ['R3', 'R6', 'R7']
+M10 SYN-SD M: REJECT_FACTS ['R3', 'R6', 'R7'] P: REJECT_FACTS ['R3', 'R6', 'R7']
+M11 S2-NOI M: REJECT_FACTS [] P: REJECT_FACTS []
+Traceback (most recent call last):
+  File "%USERPROFILE%\AppData\Local\Temp\claude\D--Documentos-Codex-Calculadora-de-racks\e5124bf0-ed19-48a1-97ba-574baf9d33a2\scratchpad\i62\day3\a6r2\ev\repro\r3\scripts\part_a.py", line 522, in <module>
+    main()
+    ~~~~^^
+  File "%USERPROFILE%\AppData\Local\Temp\claude\D--Documentos-Codex-Calculadora-de-racks\e5124bf0-ed19-48a1-97ba-574baf9d33a2\scratchpad\i62\day3\a6r2\ev\repro\r3\scripts\part_a.py", line 474, in main
+    jm = judge(scn, mid, m["Path"], m["Blob"], "M", ctx)
+  File "%USERPROFILE%\AppData\Local\Temp\claude\D--Documentos-Codex-Calculadora-de-racks\e5124bf0-ed19-48a1-97ba-574baf9d33a2\scratchpad\i62\day3\a6r2\ev\repro\r3\scripts\part_a.py", line 352, in judge
+    rc, res = L.run_acceptor(req)
+              ~~~~~~~~~~~~~~^^^^^
+  File "%USERPROFILE%\AppData\Local\Temp\claude\D--Documentos-Codex-Calculadora-de-racks\e5124bf0-ed19-48a1-97ba-574baf9d33a2\scratchpad\i62\day3\a6r2\ev\repro\r3\scripts\r3lib.py", line 202, in run_acceptor
+    p = subprocess.run([sys.executable, "-I", ACC, "--request", request_path], stdin=subprocess.DEVNULL,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=clean_env(), cwd=WORK, timeout=3600)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 1241, in communicate
+    sts = self.wait(timeout=self._remaining_time(endtime))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 1280, in wait
+    return self._wait(timeout=timeout)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 1609, in _wait
+    raise TimeoutExpired(self.args, timeout)
+subprocess.TimeoutExpired: Command '['%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe', '-I', 'D:/r62-a6r2/repro/r3/pin/accept/bmin_accept.py', '--request', 'D:/r62-a6r2/repro/r3/runs/a/req/M/M12/S1-REAL-E2E.json']' timed out after 3600 seconds

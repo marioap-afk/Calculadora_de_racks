@@ -1,0 +1,32 @@
+C-DELIV conforming ACCEPT_FACTS MATCH {'Identity': 'pass', 'Scope': 'pass', 'CleanTree': 'pass', 'Trailer': 'pass', 'FreeText': 'pass', 'Authority': 'fail'}
+C-DELIV flip-Identity-fail MISMATCH MISMATCH
+C-DELIV notrun-Identity MISMATCH MISMATCH
+C-DELIV flip-Scope-fail MISMATCH MISMATCH
+C-DELIV notrun-Scope MISMATCH MISMATCH
+C-DELIV flip-CleanTree-fail MISMATCH MISMATCH
+C-DELIV notrun-CleanTree MISMATCH MISMATCH
+C-DELIV flip-Trailer-fail MISMATCH MISMATCH
+C-DELIV notrun-Trailer MISMATCH MISMATCH
+C-DELIV flip-FreeText-fail MISMATCH MISMATCH
+C-DELIV notrun-FreeText MISMATCH MISMATCH
+C-DELIV flip-Authority-pass MISMATCH MISMATCH
+C-DELIV notrun-Authority MATCH MATCH
+C-DELIV authorityresolution-effectivesha-wrong REJECT_FACTS MISMATCH
+C-REAL conforming ACCEPT_FACTS MATCH {'Identity': 'fail', 'Scope': 'fail', 'CleanTree': 'pass', 'Trailer': 'fail', 'FreeText': 'fail', 'Authority': 'fail'}
+C-REAL flip-Identity-pass MISMATCH MISMATCH
+C-REAL notrun-Identity MATCH MATCH
+C-REAL flip-Scope-pass MISMATCH MISMATCH
+C-REAL notrun-Scope MATCH MATCH
+C-REAL flip-CleanTree-fail MISMATCH MISMATCH
+C-REAL notrun-CleanTree MISMATCH MISMATCH
+C-REAL flip-Trailer-pass MISMATCH MISMATCH
+C-REAL notrun-Trailer MATCH MATCH
+C-REAL flip-FreeText-pass MISMATCH MISMATCH
+C-REAL notrun-FreeText MATCH MATCH
+C-REAL flip-Authority-pass MISMATCH MISMATCH
+C-REAL notrun-Authority MATCH MATCH
+C-REAL authorityresolution-effectivesha-wrong REJECT_FACTS MISMATCH
+C-DELIV-DIRTY conforming ACCEPT_FACTS MATCH {'Identity': 'pass', 'Scope': 'pass', 'CleanTree': 'fail', 'Trailer': 'pass', 'FreeText': 'pass', 'Authority': 'fail'}
+C-DELIV-DIRTY flip-CleanTree-pass MISMATCH MISMATCH
+C-DELIV-DIRTY notrun-CleanTree MATCH MATCH
+written %USERPROFILE%/AppData/Local/Temp/claude/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/scratchpad/i62/day3/a6r2/ev/repro/r3/results\c-r4.json ea7385f8ceba5a09a096579df3f8052ffaa91b6564f900c37f1e99ec395e822f {"ConformingAccepted": {"C-DELIV": "ACCEPT_FACTS", "C-REAL": "ACCEPT_FACTS", "C-DELIV-DIRTY": "ACCEPT_FACTS"}, "ConformingR4": {"C-DELIV": "MATCH", "C-REAL": "MATCH", "C-DELIV-DIRTY": "MATCH"}, "FlipsRejectedByR4": "13/13", "FlipsWhereOnlyTheFlippedRowMismatches": "13/13", "NotRun": {"C-DELIV:notrun-Identity": {"R4": "MISMATCH", "AcceptorExpects": "pass"}, "C-DELIV:notrun-Scope": {"R4": "MISMATCH", "AcceptorExpects": "pass"}, "C-DELIV:notrun-CleanTree": {"R4": "MISMATCH", "AcceptorExpects": "pass"}, "C-DELIV:notrun-Trailer": {"R4": "MISMATCH", "AcceptorExpects": "pass"}, "C-DELIV:notrun-FreeText": {"R4": "MISMATCH", "AcceptorExpects": "pass"}, "C-DELIV:notrun-Authority": {"R4": "MATCH", "AcceptorExpects": "not pass"}, "C-REAL:notrun-Identity": {"R4": "MATCH", "AcceptorExpects": "not pass"}, "C-REAL:notrun-Scope": {"R4": "MATCH", "AcceptorExpects": "not pass"}, "C-REAL:notrun-CleanTree": {"R4": "MISMATCH", "AcceptorExpects": "pass"}, "C-REAL:notrun-Trailer": {"R4": "MATCH", "AcceptorExpects": "not pass"}, "C-REAL:notrun-FreeText": {"R4": "MATCH", "AcceptorExpects": "not pass"}, "C-REAL:notrun-Authority": {"R4": "MATCH", "AcceptorExpects": "not pass"}, "C-DELIV-DIRTY:notrun-CleanTree": {"R4": "MATCH", "AcceptorExpects": "not pass"}}, "AnyNotApplicableDeclared": false, "AllCvSchemaValid": true, "Seconds": 387.3}

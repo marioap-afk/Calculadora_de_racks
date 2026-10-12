@@ -1,0 +1,11 @@
+--- ev/r1r4/lib_r1r4.py
++++ ev/repro/r1r4/lib_r1r4.py
+@@ -5,7 +5,7 @@
+ import base64, datetime, hashlib, json, os, platform, re, shutil, stat, struct, subprocess, sys, zlib
+ 
+ HERE = os.path.dirname(os.path.abspath(__file__))
+-WORK = 'D:/r62-a6r2/r1r4'
++WORK = 'D:/r62-a6r2/repro/r1r4'
+ PIN = WORK + '/pin'
+ PIN_TOOL = PIN + '/bmin_facts.py'
+ PIN_ACC = PIN + '/bmin_accept.py'

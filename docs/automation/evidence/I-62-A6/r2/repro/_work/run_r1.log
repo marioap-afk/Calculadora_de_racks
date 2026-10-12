@@ -1,0 +1,14 @@
+P1 True P2 {'pwsh': True, 'cmd': True, 'ps51': True} P3 True
+a {'plain git returns substitute': True, '--no-replace-objects returns original': True, 'round-1 write-time check still passes': True, 'plain execution path runs the substitute': True, 'P3 runs the pinned tool (byte-equal to baseline)': True, 'P2 fails at (1) only': True, 'acceptor rejects fabricated envelopes, R1 MATCH': True, 'acceptor accepts P3 envelopes': True}
+b1 {'tool facts change under the replace ref (diff, scope)': True, 'GIT_NO_REPLACE_OBJECTS in the shell does not reach the tool': True, 'P2 fails at (1) only': True, 'acceptor rejects (R5 MISMATCH, R3 MATCH)': True}
+b2 {'tool clausemap output changes': True, 'P2 fails at (1) only': True, 'acceptor rejects': True}
+c {'grafts are NOT disabled by --no-replace-objects / GIT_NO_REPLACE_OBJECTS': True, 'tool facts change (identity ancestry, diff commits)': True, 'P2 fails at (2) only': True, 'acceptor rejects (R5 MISMATCH, R3 MATCH)': True}
+d1 {'P2 fails at (2) only': True}
+d2 {'after P1: the local loose object wins (git serves the pin)': True, 'after P1: P2 fails at (2) and fsck (4) reports the corrupt alternate pack': True, 'before P1: P1 returns the pinned id but writes no local object (its snapshot check fails)': True, 'before P1: git serves the alternate-pack bytes under id B': True, 'before P1: P3 executes the fake': True, 'before P1: P2 fails at (2), (3) and (4)': True} {'PlainCatFile': {'Exit': 0, 'BlobSha1OfBytes': '9a829b0eeb1210238052b1feac06cfa8f7964aed', 'Sha256': 'b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200', 'IsPinned': True}, 'NoReplaceCatFile': {'Exit': 0, 'BlobSha1OfBytes': '9a829b0eeb1210238052b1feac06cfa8f7964aed', 'Sha256': 'b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200', 'IsPinned': True}, 'CatFileType': 'blob', 'CatFileTypeExit': 0} 9a829b0eeb1210238052b1feac06cfa8f7964aed False
+e1 {'git returns the pinned bytes': True, 'P2 passes (benign)': True}
+e2 {'git cat-file blob B returns the fake bytes': True, 'P3 executes the fake bytes': True, 'P2 fails at (3) and (4)': True, 'acceptor rejects with R1 MISMATCH': True}
+f {'P2 fails at (2) only': True, 'tool facts change': True, 'acceptor rejects': True}
+g {'P2 before PLAN passes': True, 'write-time check still passes after the Worker write': True, 'P2 before VERIFY fails at (1): no launch': True}
+h {'inherited env (NoDefaultCurrentDirectoryInExePath set): cmd.exe uses the real git (P2 ok, P3 = baseline)': True, 'variable unset: P2 through cmd.exe is fooled (Launch true while the delivered bytes are not the pin)': True, 'variable unset: P3 through cmd.exe executes the fake': True, 'variable unset: acceptor rejects the cmd envelopes': True, 'pwsh unaffected in both variants (P2 Launch, P3 = baseline)': True}
+done
+exit=0

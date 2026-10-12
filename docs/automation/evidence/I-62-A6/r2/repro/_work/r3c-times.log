@@ -1,0 +1,18 @@
+build_repos start 2026-10-12T17:31:12Z
+build_repos end 2026-10-12T17:34:27Z exit=0
+part_a start 2026-10-12T17:34:27Z
+resume start 2026-10-12T19:42:13Z cap=150m (decisiones §80, punto 2: una sola reanudación de la misma ejecución, resultados guardados reutilizados)
+part_a start 2026-10-12T19:42:13Z
+part_a end 2026-10-12T19:59:23Z exit=0
+part_b start 2026-10-12T19:59:24Z
+part_b end 2026-10-12T20:04:27Z exit=0
+part_c start 2026-10-12T20:04:28Z
+part_c end 2026-10-12T20:10:55Z exit=0
+part_d start 2026-10-12T20:10:56Z
+part_d end 2026-10-12T20:12:20Z exit=0
+review_e start 2026-10-12T20:12:20Z
+review_e end 2026-10-12T20:12:44Z exit=0
+finalize start 2026-10-12T20:12:44Z
+finalize end 2026-10-12T20:12:45Z exit=0
+resume end 2026-10-12T20:12:45Z exit=0
+CHAIN_DONE
