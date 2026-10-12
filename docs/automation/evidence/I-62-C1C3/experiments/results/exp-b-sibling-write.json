@@ -1,0 +1,138 @@
+{
+  "Experiment": "b-sibling-write",
+  "Runs": {
+    "B1-sibling-write": {
+      "Purpose": "escritura relativa con .. y absoluta en un worktree hermano, con cwd = worktree de la unidad",
+      "C2": {
+        "FirstFactProcessCwd": "D:\\r62-c1c3\\work\\B1-sibling\\wt-unit",
+        "Verdict": "PASS"
+      },
+      "C1": {
+        "Overall": "STOP",
+        "PerCheckout": [
+          {
+            "Path": "D:\\r62-c1c3\\work\\B1-sibling\\main",
+            "Role": "MAIN",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\B1-sibling\\wt-sibling",
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "CONTENT_CHANGED"
+            ],
+            "Disposition": "STOP",
+            "StatusAdded": [
+              " M src/A.cs",
+              "?? notes.txt"
+            ]
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\B1-sibling\\wt-unit",
+            "Role": "UNIT",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": []
+          }
+        ]
+      },
+      "PathHygiene": [
+        {
+          "Raw": "D:\\r62-c1c3\\work\\B1-sibling\\wt-unit\\..\\wt-sibling\\src\\A.cs",
+          "Normalized": "D:\\r62-c1c3\\work\\B1-sibling\\wt-sibling\\src\\A.cs",
+          "InWorktree": false,
+          "Signal": "OUTSIDE_WORKTREE"
+        },
+        {
+          "Raw": "D:\\r62-c1c3\\work\\B1-sibling\\wt-sibling\\notes.txt",
+          "Normalized": "D:\\r62-c1c3\\work\\B1-sibling\\wt-sibling\\notes.txt",
+          "InWorktree": false,
+          "Signal": "OUTSIDE_WORKTREE"
+        }
+      ]
+    },
+    "B1c-sibling-declared-concurrent": {
+      "Purpose": "mismo cambio con el hermano declarado concurrente: la disposicion pasa a ATTRIBUTION_REQUIRED",
+      "C1": {
+        "Overall": "ATTRIBUTION_REQUIRED",
+        "Sibling": [
+          {
+            "Classes": [
+              "CONTENT_CHANGED"
+            ],
+            "Disposition": "ATTRIBUTION_REQUIRED",
+            "StatusAdded": [
+              " M src/A.cs",
+              "?? notes.txt"
+            ]
+          }
+        ]
+      }
+    },
+    "B2-path-via-main-into-own-worktree": {
+      "Purpose": "analogo de F4-T1: ruta que sube desde el checkout principal y vuelve al worktree propio",
+      "C1": {
+        "Overall": "NONE",
+        "PerCheckout": [
+          {
+            "Path": "D:\\r62-c1c3\\work\\B2-dotdot-into-own\\main",
+            "Role": "MAIN",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\B2-dotdot-into-own\\wt-sibling",
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\B2-dotdot-into-own\\wt-unit",
+            "Role": "UNIT",
+            "Classes": [
+              "CONTENT_CHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [
+              " M docs/x.md"
+            ]
+          }
+        ]
+      },
+      "PathHygiene": {
+        "Raw": "D:\\r62-c1c3\\work\\B2-dotdot-into-own\\main\\..\\wt-unit\\docs\\x.md",
+        "Normalized": "D:\\r62-c1c3\\work\\B2-dotdot-into-own\\wt-unit\\docs\\x.md",
+        "InWorktree": true,
+        "Signal": "PATH_VIA_OTHER_CHECKOUT"
+      }
+    }
+  },
+  "Steps": [
+    {
+      "Step": "B1 worker-call",
+      "Command": "$f = [ordered]@{ ProcessCwd = [Environment]::CurrentDirectory }\n[IO.File]::AppendAllText('..\\wt-sibling\\src\\A.cs', '// tocado por el worker' + [char]13 + [char]10)\n[IO.File]::WriteAllText('D:\\r62-c1c3\\work\\B1-sibling\\wt-sibling\\notes.txt', 'nota')\n$f | ConvertTo-Json -Compress",
+      "Cwd": "D:\\r62-c1c3\\work\\B1-sibling\\wt-unit",
+      "ExitCode": 0,
+      "Result": "{\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\B1-sibling\\\\wt-unit\"}"
+    },
+    {
+      "Step": "B2 worker-call",
+      "Command": "[IO.File]::AppendAllText('D:\\r62-c1c3\\work\\B2-dotdot-into-own\\main\\..\\wt-unit\\docs\\x.md', 'linea' + [char]13 + [char]10); [Environment]::CurrentDirectory",
+      "Cwd": "D:\\r62-c1c3\\work\\B2-dotdot-into-own\\wt-unit",
+      "ExitCode": 0,
+      "Result": "D:\\r62-c1c3\\work\\B2-dotdot-into-own\\wt-unit"
+    }
+  ]
+}

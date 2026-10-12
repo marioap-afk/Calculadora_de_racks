@@ -1,0 +1,436 @@
+{
+  "Experiment": "d-false-positives",
+  "Runs": {
+    "D1-index-refresh-and-touch": {
+      "Purpose": "git status sin --no-optional-locks reescribe .git/index del checkout inspeccionado; con la opcion no escribe. Un toque de fecha sin cambio de contenido = TOUCH_ONLY",
+      "IndexAfterNoOptionalLocks": {
+        "Changed": false
+      },
+      "IndexAfterPlainStatus": {
+        "Changed": true
+      },
+      "StatusOutputs": {
+        "NoOptionalLocks": [],
+        "Plain": []
+      },
+      "C1": {
+        "Overall": "SIGNAL",
+        "PerCheckout": [
+          {
+            "Role": "MAIN",
+            "Classes": [
+              "TOUCH_ONLY"
+            ],
+            "Disposition": "SIGNAL",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [
+              "src/A.cs"
+            ],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "UNIT",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          }
+        ]
+      }
+    },
+    "D2-editor-temp-files": {
+      "Purpose": "temporales tipicos: unos ignorados por .gitignore, otros en la lista de ruido declarada, otros sin filtro",
+      "NoisePatterns": [
+        ".vs/",
+        "*.dwl",
+        "*.dwl2",
+        "~$*",
+        "*.swp",
+        "*.tmp"
+      ],
+      "C1": {
+        "Overall": "STOP",
+        "PerCheckout": [
+          {
+            "Role": "MAIN",
+            "Classes": [
+              "CONTENT_CHANGED",
+              "NOISE_ALLOWLISTED"
+            ],
+            "Disposition": "STOP",
+            "StatusAdded": [
+              "?? .~lock.notas.odt#",
+              "?? ~$plano.docx",
+              "?? plano.bak",
+              "?? plano.dwl",
+              "?? plano.dwl2",
+              "?? RackCad.sln~",
+              "?? src/.A.cs.swp",
+              "?? src/A.cs.orig"
+            ],
+            "IgnoredChanged": [
+              ".vs/RackCad/v17/.suo"
+            ],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": [
+              ".vs/RackCad/v17/.suo",
+              "~$plano.docx",
+              "plano.dwl",
+              "plano.dwl2",
+              "src/.A.cs.swp"
+            ]
+          },
+          {
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "UNIT",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          }
+        ]
+      },
+      "ResidualNoiseNotFiltered": [
+        ".~lock.notas.odt#",
+        "plano.bak",
+        "RackCad.sln~",
+        "src/A.cs.orig"
+      ]
+    },
+    "D3-build-outputs": {
+      "Purpose": "escrituras en rutas ignoradas: git status (sin --ignored) no las ve; el barrido de fechas si",
+      "StatusWithoutIgnored": [],
+      "StatusWithIgnoredMatching": [
+        "!! src/bin/",
+        "!! src/obj/"
+      ],
+      "C1": {
+        "Overall": "STOP",
+        "PerCheckout": [
+          {
+            "Role": "MAIN",
+            "Classes": [
+              "IGNORED_CHANGED"
+            ],
+            "Disposition": "STOP",
+            "StatusAdded": [],
+            "IgnoredChanged": [
+              "src/bin/Debug/net8.0/RackCad.Core.dll",
+              "src/obj/Debug/net8.0/RackCad.Core.AssemblyInfo.cs",
+              "src/obj/project.assets.json"
+            ],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "UNIT",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          }
+        ]
+      }
+    },
+    "D4-shared-git-activity": {
+      "Purpose": "un commit legitimo en el worktree de la unidad escribe en el .git compartido (dentro del checkout principal); el barrido excluye .git",
+      "MainGitDirFilesChanged": [
+        ".git/logs/refs/heads/unit",
+        ".git/objects/00/48266e1d32c6b957a79c57218ff8fa88bdaeb0",
+        ".git/objects/55/ea0ac13c47cc8f9e6029bf2c01f17a0985f7ae",
+        ".git/objects/80/a2100578728b8aa7d52743c53a7688f8d63d79",
+        ".git/objects/97/41694d75caeb49d3b7c1f59451c0c56bf6216c",
+        ".git/objects/9e/c052dac10beaef39c65fc03a4135c9cff30359",
+        ".git/objects/a2/79107ac39a83899b8fd2bee33b46a40d3defeb",
+        ".git/objects/ba/c8fba69bc54374e39a5f03e0ae976648b48915",
+        ".git/objects/d8/7a350d14c19763327316fa13283e2f8a9caa08",
+        ".git/objects/da/80fae4aed401a6608d1e2e0cf138bd766c7c74",
+        ".git/refs/heads/unit",
+        ".git/worktrees/wt-unit/COMMIT_EDITMSG",
+        ".git/worktrees/wt-unit/index",
+        ".git/worktrees/wt-unit/logs/HEAD"
+      ],
+      "C1": {
+        "Overall": "NONE",
+        "PerCheckout": [
+          {
+            "Role": "MAIN",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "UNIT",
+            "Classes": [
+              "CONTENT_CHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          }
+        ]
+      }
+    },
+    "D5-stability": {
+      "Purpose": "dos fotografias seguidas sin actividad",
+      "C1": {
+        "Overall": "NONE",
+        "PerCheckout": [
+          {
+            "Role": "MAIN",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "UNIT",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          }
+        ]
+      },
+      "DurationsMs": [
+        448,
+        433,
+        521
+      ]
+    },
+    "D6-build-in-own-worktree": {
+      "Purpose": "bin/obj en el worktree propio del Worker: no es materia de C1",
+      "C1": {
+        "Overall": "NONE",
+        "PerCheckout": [
+          {
+            "Role": "MAIN",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "UNIT",
+            "Classes": [
+              "IGNORED_CHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [],
+            "IgnoredChanged": [
+              "src/bin/Debug/x.dll",
+              "src/obj/y.json"
+            ],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          }
+        ]
+      }
+    },
+    "D7-owner-activity": {
+      "Purpose": "una edicion legitima del Owner en su checkout durante la ventana es indistinguible de una escritura del Worker",
+      "C1": {
+        "Overall": "STOP",
+        "PerCheckout": [
+          {
+            "Role": "MAIN",
+            "Classes": [
+              "CONTENT_CHANGED"
+            ],
+            "Disposition": "STOP",
+            "StatusAdded": [
+              " M docs/x.md"
+            ],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          },
+          {
+            "Role": "UNIT",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "TouchOnly": [],
+            "DirEntryChurn": [],
+            "NoiseAllowlisted": []
+          }
+        ]
+      }
+    }
+  },
+  "Steps": [
+    {
+      "Step": "D1 touch",
+      "Command": "[IO.File]::SetLastWriteTimeUtc(main\\src\\A.cs, +30 s) (mismo contenido)",
+      "Cwd": "D:\\r62-c1c3\\work\\D1-index-refresh\\main",
+      "ExitCode": 0,
+      "Result": "ok"
+    },
+    {
+      "Step": "D1 status --no-optional-locks",
+      "Command": "git -C main --no-optional-locks status --porcelain",
+      "Cwd": "D:\\r62-c1c3\\work\\D1-index-refresh\\main",
+      "ExitCode": 0,
+      "Result": "status='' indexChanged=False"
+    },
+    {
+      "Step": "D1 status (con bloqueos opcionales)",
+      "Command": "git -C main status --porcelain",
+      "Cwd": "D:\\r62-c1c3\\work\\D1-index-refresh\\main",
+      "ExitCode": 0,
+      "Result": "status='' indexChanged=True"
+    },
+    {
+      "Step": "D2 editor temp files",
+      "Command": "crear en main: RackCad.sln~, .~lock.notas.odt#, src\\.A.cs.swp, ~$plano.docx, .vs\\RackCad\\v17\\.suo, plano.dwl, plano.dwl2, plano.bak, src\\A.cs.orig",
+      "Cwd": "D:\\r62-c1c3\\work\\D2-editor-temp\\main",
+      "ExitCode": 0,
+      "Result": "ok"
+    },
+    {
+      "Step": "D3 build outputs",
+      "Command": "crear bin/obj en main; git status --porcelain --untracked-files=all [--ignored=matching]",
+      "Cwd": "D:\\r62-c1c3\\work\\D3-build-outputs\\main",
+      "ExitCode": 0,
+      "Result": "sin --ignored: 0 lineas; con --ignored: 2"
+    },
+    {
+      "Step": "D4 worker commit in unit worktree",
+      "Command": "git -C wt-unit add -A; git -C wt-unit commit",
+      "Cwd": "D:\\r62-c1c3\\work\\D4-shared-git\\wt-unit",
+      "ExitCode": 0,
+      "Result": "ok"
+    }
+  ]
+}

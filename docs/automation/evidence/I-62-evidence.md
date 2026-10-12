@@ -4170,3 +4170,28 @@ solo desde artefactos custodiados.
   Ninguna se declara cerrada; las mitigaciones no ensayadas están señaladas.
 - Blobs del instrumento (`9a829b0e`) y del aceptante (`434ef1fc`) y líneas del Owner sin cambio; ninguna línea nueva del Owner.
 - Ninguna revisión formal lanzada. El kit de la revisión siguiente se prepara aparte (decisiones §80, punto 6).
+
+## 158. Diseño de C1-C3 entregado (decisiones §81): MATERIAL; propuesta de enmienda independiente sin redactar; sin implementación
+
+- **Paquete** [`I-62-C1C3/`](I-62-C1C3/README.md): `c1c3-design.md` (`3aa1cbedec74b547…`), `c1c3-amendment-proposal.md` (`7bbd1dbf3d4a5d60…`) y
+  `experiments/` (scripts y resultados de seis experimentos en repositorios desechables bajo `D:\r62-c1c3\`). Lo preparó un agente en el carril
+  documental y experimental independiente (§81.5), sin tocar I-61, I-65, los lanzadores, los permisos del sistema ni ningún checkout real.
+- **Diseño:**
+  - C1: fotografía de todos los checkouts en la Salida y la Entrada; STOP aplicado por la sesión con el patrón de P-01/P-11.
+  - C2: directorio de proceso del Worker fijado por el transporte.
+  - C3: intérprete no invocable en el entorno del Worker, con una clasificación propia distinta de `Denials`.
+  - Mecanismos preventivos y detectivos separados.
+  - nc2 y A5 son los controles C5 y C6 del paquete de I-65, separados de C1-C3.
+- **Experimentos (medidos):**
+  - la clase de escritura de F4-T4 se reproduce y C1 y C2 la detectan; con el directorio de proceso en el worktree, la misma orden escribe donde
+    debía;
+  - C1 detecta una escritura en otro worktree;
+  - el filtro del `PATH` del hijo bloquea 15 de 15 sondas del intérprete;
+  - límites: escrituras transitorias visibles solo por la fecha del directorio; contenido del mismo tamaño con la fecha restaurada; granularidad de
+    las fechas; los `Process.Start` ignoran los shims.
+- **Materialidad:** M-02..M-06 sí; M-07 y M-08 UNKNOWN, que cuentan como activados; M-01 no. **MATERIAL**: la propuesta de enmienda independiente
+  de A-6 lista alcance, deltas por superficie, dependencias y preguntas, sin texto de enmienda y sin número A-n (§81.4). M-08 depende de una
+  decisión del Owner sobre ADR-0046 #9.
+- **Límite del transporte de subagente:** el Worker subagente hereda el directorio y el entorno de la sesión padre, así que C2 y C3 no se pueden
+  fijar por llamada. Es un requisito de elegibilidad del Worker por transporte, abierto en la propuesta.
+- C1-C3 **no** están implementados e I-65 **no** queda desbloqueada.

@@ -1,0 +1,124 @@
+{
+  "Experiment": "e-limitations",
+  "Runs": {
+    "E1-transient-create-delete": {
+      "Purpose": "analogo de F4-T5 (placeholder.txt creado y borrado): git status y hashes no dejan rastro; la fecha del directorio si",
+      "C1": {
+        "Overall": "STOP",
+        "PerCheckout": [
+          {
+            "Role": "MAIN",
+            "Classes": [
+              "DIR_ENTRY_CHURN"
+            ],
+            "Disposition": "STOP",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": [
+              "."
+            ],
+            "TrackedHashChanged": [],
+            "ChangeTimeOnly": [],
+            "ModifiedFiles": []
+          },
+          {
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": [],
+            "TrackedHashChanged": [],
+            "ChangeTimeOnly": [],
+            "ModifiedFiles": []
+          }
+        ]
+      }
+    },
+    "E2-E3-same-size-mtime-restored": {
+      "Purpose": "sobrescritura con el mismo tamano y la fecha de escritura restaurada: invisible para git status (stat) y para el barrido de fechas; visible para el hash de todos los rastreados y para ChangeTime de NTFS",
+      "GitStatusAfter": [],
+      "C1": {
+        "Overall": "STOP",
+        "PerCheckout": [
+          {
+            "Role": "MAIN",
+            "Classes": [
+              "CONTENT_CHANGED",
+              "CHANGETIME_ONLY"
+            ],
+            "Disposition": "STOP",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": [],
+            "TrackedHashChanged": [
+              "src/A.cs"
+            ],
+            "ChangeTimeOnly": [
+              "bin/tool.dll",
+              "src/A.cs"
+            ],
+            "ModifiedFiles": []
+          },
+          {
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": [],
+            "TrackedHashChanged": [],
+            "ChangeTimeOnly": [],
+            "ModifiedFiles": []
+          }
+        ]
+      }
+    },
+    "E4-mtime-granularity": {
+      "Purpose": "dos escrituras seguidas del mismo archivo (N pares): diferencia de LastWriteTime en ticks de 100 ns",
+      "FileSystem": "NTFS",
+      "Pairs": 200,
+      "MinNonZeroDeltaTicks": 9040.0,
+      "MaxDeltaTicks": 194948.0,
+      "EqualTimestampPairs": 72,
+      "Note": "pares con delta 0 = dos escrituras indistinguibles por fecha; C1 compara estado (hash/estado Git), no solo fecha"
+    },
+    "E5-cost": {
+      "Purpose": "coste orientativo de un barrido completo (archivos y directorios, sin .git) sobre el worktree de I-62 (lectura) y del hash",
+      "Tree": "worktree de I-62 (solo enumeracion de metadatos; sin Git; sin leer contenidos)",
+      "Files": 4304,
+      "Dirs": 499,
+      "TotalBytes": 245075942,
+      "SweepMs": 159,
+      "Sha256MBps": 384.0,
+      "ProjectedFullHashSeconds": 0.6
+    }
+  },
+  "Steps": [
+    {
+      "Step": "E1 transient write",
+      "Command": "[IO.File]::WriteAllText('placeholder.txt', 'x'); Start-Sleep -Milliseconds 1500; [IO.File]::Delete('placeholder.txt')",
+      "Cwd": "D:\\r62-c1c3\\work\\E1-transient\\main",
+      "ExitCode": 0,
+      "Result": "ok"
+    },
+    {
+      "Step": "E2/E3 same-size write + mtime restored",
+      "Command": "WriteAllText(bin\\tool.dll, mismo tamano) + SetLastWriteTimeUtc; WriteAllText(src\\A.cs, class A->class Z) + SetLastWriteTimeUtc",
+      "Cwd": "D:\\r62-c1c3\\work\\E2-E3-mtime-restored\\main",
+      "ExitCode": 0,
+      "Result": "len igual=True"
+    },
+    {
+      "Step": "E5 sweep cost",
+      "Command": "Get-FsSweep <worktree de I-62> (solo metadatos)",
+      "Cwd": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+      "ExitCode": 0,
+      "Result": "4304 archivos, 159 ms"
+    }
+  ]
+}

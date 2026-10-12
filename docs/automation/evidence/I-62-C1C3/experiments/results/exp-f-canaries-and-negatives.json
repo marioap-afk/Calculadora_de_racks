@@ -1,0 +1,103 @@
+{
+  "Experiment": "f-canaries-and-negatives",
+  "Runs": {
+    "K-C1-canary": {
+      "Purpose": "antes de cada cesion: el instrumento detecta exactamente una escritura canario en un fixture (nunca en el checkout real) y no detecta nada sin escritura",
+      "Expected": {
+        "Main": [
+          "?? C1-CANARY-03844783.txt"
+        ],
+        "Sibling": [
+          " M src/A.cs"
+        ],
+        "Overall": "STOP"
+      },
+      "Observed": {
+        "Main": [
+          "?? C1-CANARY-03844783.txt"
+        ],
+        "Sibling": [
+          " M src/A.cs"
+        ],
+        "Overall": "STOP"
+      },
+      "NoWriteOverall": "NONE",
+      "Result": "PASS",
+      "DurationMs": 4420
+    },
+    "NC-C1a-mutated-entry": {
+      "Purpose": "control negativo del validador: la entrada mutada con un cambio en el checkout principal debe dar STOP con esa ruta; el resto, igual que la comparacion real",
+      "Oracle": "Overall=STOP; MAIN.StatusAdded=[ M RackCad.sln]; demas checkouts con la misma disposicion que la comparacion real",
+      "Observed": {
+        "Overall": "STOP",
+        "MainStatusAdded": [
+          " M RackCad.sln"
+        ],
+        "OthersDisposition": [
+          "NONE",
+          "NOT_C1 (worktree propio: Scope/CleanTree)"
+        ],
+        "BaselineOthersDisposition": [
+          "NONE",
+          "NOT_C1 (worktree propio: Scope/CleanTree)"
+        ]
+      },
+      "Result": "PASS"
+    },
+    "NC-C1b-checkout-missing": {
+      "Purpose": "un checkout de la salida falta en la entrada (borrado o no fotografiado)",
+      "Observed": {
+        "Overall": "STOP",
+        "Classes": [
+          "MAIN:UNCHANGED",
+          "QUIESCENT_SIBLING:CHECKOUT_REMOVED",
+          "UNIT:UNCHANGED"
+        ]
+      },
+      "Result": "PASS"
+    },
+    "NC-C1c-role-not-derived": {
+      "Purpose": "los roles se derivan de git worktree list y de ExpectedWorktree de la delegacion; un rol registrado distinto invalida el registro",
+      "Derived": {
+        "D:\\r62-c1c3\\work\\F1-canary-c1\\main": "MAIN",
+        "D:\\r62-c1c3\\work\\F1-canary-c1\\wt-sibling": "QUIESCENT_SIBLING",
+        "D:\\r62-c1c3\\work\\F1-canary-c1\\wt-unit": "UNIT"
+      },
+      "RecordedMutated": {
+        "D:\\r62-c1c3\\work\\F1-canary-c1\\main": "UNIT",
+        "D:\\r62-c1c3\\work\\F1-canary-c1\\wt-sibling": "QUIESCENT_SIBLING",
+        "D:\\r62-c1c3\\work\\F1-canary-c1\\wt-unit": "UNIT"
+      },
+      "Mismatch": [
+        "D:\\r62-c1c3\\work\\F1-canary-c1\\main"
+      ],
+      "Result": "PASS (registro invalido)"
+    },
+    "K-C2-transport-cwd": {
+      "Purpose": "canario de C2: un hijo lanzado por el transporte informa su Environment.CurrentDirectory; distinto del worktree = no se invoca",
+      "Cases": [
+        {
+          "Case": "cwd=worktree",
+          "Observed": "D:\\r62-c1c3\\work\\F1-canary-c1\\wt-unit",
+          "Expected": "D:\\r62-c1c3\\work\\F1-canary-c1\\wt-unit",
+          "Verdict": "PASS"
+        },
+        {
+          "Case": "cwd=main",
+          "Observed": "D:\\r62-c1c3\\work\\F1-canary-c1\\main",
+          "Expected": "D:\\r62-c1c3\\work\\F1-canary-c1\\wt-unit",
+          "Verdict": "STOP_BEFORE_INVOCATION"
+        }
+      ]
+    }
+  },
+  "Steps": [
+    {
+      "Step": "K-C1",
+      "Command": "fixture + exit + escritura canario (main, hermano) + entry + oraculo exacto",
+      "Cwd": "D:\\r62-c1c3\\work\\F1-canary-c1",
+      "ExitCode": 0,
+      "Result": "PASS"
+    }
+  ]
+}

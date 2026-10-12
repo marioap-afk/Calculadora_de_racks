@@ -1,0 +1,193 @@
+{
+  "Generated": "2026-10-12T20:25:10.0849839Z",
+  "Host": {
+    "Pwsh": "7.6.6",
+    "Git": "git version 2.54.0.windows.1",
+    "Os": "Microsoft Windows NT 10.0.26300.0",
+    "DriveDFileSystem": "NTFS"
+  },
+  "Runs": [
+    {
+      "Script": "exp-a-relative-write.ps1",
+      "Command": "pwsh -NoProfile -NonInteractive -File exp-a-relative-write.ps1",
+      "Cwd": "D:\\r62-c1c3",
+      "ExitCode": 0,
+      "DurationMs": 30680,
+      "Stdout": [
+        "A1-hazard-cwd-main: C1=STOP C2=STOP_C2_CWD_MISMATCH wrote=D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main\\RackCad.sln err=",
+        "A2-prevent-cwd-worktree: C1=NONE C2=PASS wrote=D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit\\RackCad.sln err=",
+        "A3a-trap-cwd-empty-edit: C1=NONE C2=PASS wrote= err=MethodInvocationException: Excepción al llamar a \"ReadAllText\" con \"1\" argumentos: \"Could not find file 'D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty\\RackCad.sln'.\"",
+        "A3b-trap-cwd-empty-create: C1=NONE C2=PASS wrote=D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty\\notes-relative.txt err=",
+        "A4-cmdlet-cwd-main: C1=NONE C2=STOP_C2_CWD_MISMATCH wrote=D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit\\RackCad.sln err=",
+        "A5-bash-cwd-main: C1=NONE",
+        "sha256 41de8a103c5b924dea557c5fd5d243ae7e6c5cdc3c39ee39c53d9a9c9a96c2d1"
+      ],
+      "Stderr": ""
+    },
+    {
+      "Script": "exp-b-sibling-write.ps1",
+      "Command": "pwsh -NoProfile -NonInteractive -File exp-b-sibling-write.ps1",
+      "Cwd": "D:\\r62-c1c3",
+      "ExitCode": 0,
+      "DurationMs": 11040,
+      "Stdout": [
+        "B1-sibling-write: C1=STOP",
+        "B1c-sibling-declared-concurrent: C1=ATTRIBUTION_REQUIRED",
+        "B2-path-via-main-into-own-worktree: C1=NONE",
+        "sha256 87078e2c126336ac60c8ba866b207bae4f1667116aa86eb8d4324a50e6b989e7"
+      ],
+      "Stderr": ""
+    },
+    {
+      "Script": "exp-c-interpreter.ps1",
+      "Command": "pwsh -NoProfile -NonInteractive -File exp-c-interpreter.ps1",
+      "Cwd": "D:\\r62-c1c3",
+      "ExitCode": 0,
+      "DurationMs": 29947,
+      "Stdout": [
+        "safe F=True PF=True S=True",
+        "F probes: I65-F1T1=NOT_FOUND I65-F1T2=NOT_FOUND I65-F4T3=NOT_FOUND X-py-launcher=NOT_FOUND X-pip=NOT_FOUND EV-concat=NOT_FOUND EV-variable=NOT_FOUND EV-cmd-c=NOT_FOUND EV-iex=NOT_FOUND EV-encoded=NOT_FOUND EV-process-start=NOT_FOUND EV-start-process=NOT_FOUND I65-F4T5=NOT_FOUND I65-F4T1=NOT_FOUND I65-F3T1=NOT_FOUND X-resolve=RESOLUTION:NONE RESIDUAL-perl=RESOLUTION:/usr/bin/perl",
+        "S probes: I65-F1T1=BLOCKED_BY_SHIM I65-F1T2=BLOCKED_BY_SHIM I65-F4T3=BLOCKED_BY_SHIM X-py-launcher=BLOCKED_BY_SHIM X-pip=BLOCKED_BY_SHIM EV-concat=BLOCKED_BY_SHIM EV-variable=BLOCKED_BY_SHIM EV-cmd-c=BLOCKED_BY_SHIM EV-iex=BLOCKED_BY_SHIM EV-encoded=BLOCKED_BY_SHIM EV-process-start=NOT_FOUND EV-start-process=BLOCKED_BY_SHIM I65-F4T5=BLOCKED_BY_SHIM I65-F4T1=BLOCKED_BY_SHIM I65-F3T1=BLOCKED_BY_SHIM X-resolve=RESOLUTION:/d/r62-c1c3/work/C/shim-sh/python3,/d/r62-c1c3/work/C/shim-sh/python,/d/r62-c1c3/work/C/shim-sh/py RESIDUAL-perl=RESOLUTION:/usr/bin/perl",
+        "hook TP=18 FN=2 TN=8 FP=1",
+        "misclassified: FP-commit-msg->BLOCK EV-concat->ALLOW EV-script-file->ALLOW",
+        "sha256 91413c7d2ab96551a77e7098e1a664202104d54b670e009bc4dadb291c0ed08b"
+      ],
+      "Stderr": ""
+    },
+    {
+      "Script": "exp-d-false-positives.ps1",
+      "Command": "pwsh -NoProfile -NonInteractive -File exp-d-false-positives.ps1",
+      "Cwd": "D:\\r62-c1c3",
+      "ExitCode": 0,
+      "DurationMs": 39411,
+      "Stdout": [
+        "D1-index-refresh-and-touch: C1=SIGNAL main=TOUCH_ONLY",
+        "D2-editor-temp-files: C1=STOP main=CONTENT_CHANGED,NOISE_ALLOWLISTED",
+        "D3-build-outputs: C1=STOP main=IGNORED_CHANGED",
+        "D4-shared-git-activity: C1=NONE main=UNCHANGED",
+        "D5-stability: C1=NONE main=UNCHANGED",
+        "D6-build-in-own-worktree: C1=NONE main=UNCHANGED",
+        "D7-owner-activity: C1=STOP main=CONTENT_CHANGED",
+        "sha256 004033571672e1e1f99288020dfa1a7b367d988c10c8b36efdac7181b4cb8146"
+      ],
+      "Stderr": ""
+    },
+    {
+      "Script": "exp-e-limitations.ps1",
+      "Command": "pwsh -NoProfile -NonInteractive -File exp-e-limitations.ps1",
+      "Cwd": "D:\\r62-c1c3",
+      "ExitCode": 0,
+      "DurationMs": 23251,
+      "Stdout": [
+        "E1-transient-create-delete: C1=STOP main=DIR_ENTRY_CHURN",
+        "E2-E3-same-size-mtime-restored: C1=STOP main=CONTENT_CHANGED,CHANGETIME_ONLY",
+        "E4 equal pairs: 72/200 fs=NTFS",
+        "E5 files=4304 dirs=499 bytes=245075942 ms=159 sha=384 MB/s",
+        "sha256 edd72ddeace70d7a8c2b7ea4b1edbab5475dc90199b73d1ca5b04777cf6bd314"
+      ],
+      "Stderr": ""
+    },
+    {
+      "Script": "exp-f-canaries-and-negatives.ps1",
+      "Command": "pwsh -NoProfile -NonInteractive -File exp-f-canaries-and-negatives.ps1",
+      "Cwd": "D:\\r62-c1c3",
+      "ExitCode": 0,
+      "DurationMs": 12375,
+      "Stdout": [
+        "K-C1-canary: PASS",
+        "NC-C1a-mutated-entry: PASS",
+        "NC-C1b-checkout-missing: PASS",
+        "NC-C1c-role-not-derived: PASS (registro invalido)",
+        "K-C2-transport-cwd: cwd=worktree=PASS cwd=main=STOP_BEFORE_INVOCATION",
+        "sha256 a4d11a242f0358b5a03f06d7a2e6b3a5bd4073b15183955175432c046d8b4108"
+      ],
+      "Stderr": ""
+    }
+  ],
+  "Files": [
+    {
+      "Path": "lib/c1c3-lib.ps1",
+      "Sha256": "ee992655f6c4d6874978fb9e1809e6cc42d65d50da7b167b7c0087c1d8264ebe",
+      "Bytes": 20492
+    },
+    {
+      "Path": "c3-guard.ps1",
+      "Sha256": "f8bcecbb97c819733191516db2dac5a09c56d6a4634e6503d0c2bcf083a51de5",
+      "Bytes": 5044
+    },
+    {
+      "Path": "results/exp-a-relative-write.json",
+      "Sha256": "41de8a103c5b924dea557c5fd5d243ae7e6c5cdc3c39ee39c53d9a9c9a96c2d1",
+      "Bytes": 39349
+    },
+    {
+      "Path": "exp-a-relative-write.ps1",
+      "Sha256": "c64437ba9d4786d6a28f470050b818812ed3458b4ef1a53fa2896a12c7822d79",
+      "Bytes": 7044
+    },
+    {
+      "Path": "results/exp-b-sibling-write.json",
+      "Sha256": "87078e2c126336ac60c8ba866b207bae4f1667116aa86eb8d4324a50e6b989e7",
+      "Bytes": 4611
+    },
+    {
+      "Path": "exp-b-sibling-write.ps1",
+      "Sha256": "2739025252c9b7d198e9855308b3992c902ac664e6e554e531928c47b47743f7",
+      "Bytes": 4925
+    },
+    {
+      "Path": "results/exp-c-interpreter.json",
+      "Sha256": "91413c7d2ab96551a77e7098e1a664202104d54b670e009bc4dadb291c0ed08b",
+      "Bytes": 36040
+    },
+    {
+      "Path": "exp-c-interpreter.ps1",
+      "Sha256": "899de1ca26c3b85dd399728c35753fc9d2e5850d4383c9871ced32caccc23f8d",
+      "Bytes": 18545
+    },
+    {
+      "Path": "results/exp-d-false-positives.json",
+      "Sha256": "004033571672e1e1f99288020dfa1a7b367d988c10c8b36efdac7181b4cb8146",
+      "Bytes": 12760
+    },
+    {
+      "Path": "exp-d-false-positives.ps1",
+      "Sha256": "807083534fc16979ed8956b456ae6dba2f8c0e31d55d84ccb97d78011f739e5b",
+      "Bytes": 8909
+    },
+    {
+      "Path": "results/exp-e-limitations.json",
+      "Sha256": "edd72ddeace70d7a8c2b7ea4b1edbab5475dc90199b73d1ca5b04777cf6bd314",
+      "Bytes": 4094
+    },
+    {
+      "Path": "exp-e-limitations.ps1",
+      "Sha256": "10393fad8984e4539550a9dee710e22ffde2a30a87c55a7bf47be7b32c2d8354",
+      "Bytes": 6843
+    },
+    {
+      "Path": "results/exp-f-canaries-and-negatives.json",
+      "Sha256": "a4d11a242f0358b5a03f06d7a2e6b3a5bd4073b15183955175432c046d8b4108",
+      "Bytes": 3432
+    },
+    {
+      "Path": "exp-f-canaries-and-negatives.ps1",
+      "Sha256": "45ce627cbca722b263dbdac1fd97c26ecde0fda5a72b8d8a2d74c969dbd4a20c",
+      "Bytes": 6616
+    },
+    {
+      "Path": "run-all.ps1",
+      "Sha256": "9cd2bdb917186a9499658ab58ad1741c301201f16c322f0384cf426783b9f1b9",
+      "Bytes": 2822
+    },
+    {
+      "Path": "worker-call-relative.ps1",
+      "Sha256": "82e4c0cf1f589c7ae172d6d2015ece5cc16f0a4503198137e04f433af46e9111",
+      "Bytes": 2793
+    }
+  ],
+  "PrivacyScan": {
+    "Tokens": "nombre de usuario largo y corto (derivados del entorno, no escritos aqui) y patron de correo",
+    "Findings": []
+  }
+}

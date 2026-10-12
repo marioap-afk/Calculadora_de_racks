@@ -1,0 +1,1013 @@
+{
+  "Experiment": "a-relative-path-write",
+  "Host": {
+    "Pwsh": "7.6.6",
+    "Git": "git version 2.54.0.windows.1",
+    "Os": "Microsoft Windows NT 10.0.26300.0"
+  },
+  "Runs": {
+    "A1-hazard-cwd-main": {
+      "Purpose": "reproduce la clase de F4-T4: hijo con cwd = checkout principal, Set-Location al worktree, [IO.File] relativo",
+      "ChildCwd": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main",
+      "ExpectedWorkerCwd": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit",
+      "WorkerCall": {
+        "ExitCode": 0,
+        "Output": {
+          "FirstFact": {
+            "Fact": "C2-FirstFact",
+            "ProcessCwd": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main",
+            "PSLocation": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main",
+            "ExpectedCwd": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit",
+            "C2": "STOP_C2_CWD_MISMATCH"
+          },
+          "AfterSetLocation": {
+            "ProcessCwd": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main",
+            "PSLocation": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit"
+          },
+          "Mode": "EditSln",
+          "Error": null,
+          "ResolvedByDotNet": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main\\RackCad.sln",
+          "ResolvedByPowerShell": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit\\RackCad.sln",
+          "Wrote": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main\\RackCad.sln"
+        },
+        "Stderr": ""
+      },
+      "C2": {
+        "FirstFactProcessCwd": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main",
+        "Verdict": "STOP_C2_CWD_MISMATCH"
+      },
+      "PowerShellVsDotNet": {
+        "PSLocationAfterSetLocation": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit",
+        "ProcessCwdAfterSetLocation": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main",
+        "ResolvedByDotNet": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main\\RackCad.sln",
+        "ResolvedByPowerShell": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit\\RackCad.sln",
+        "Wrote": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main\\RackCad.sln",
+        "Error": null
+      },
+      "BomBefore": {
+        "Main": true,
+        "Unit": true
+      },
+      "BomAfter": {
+        "Main": false,
+        "Unit": true
+      },
+      "TrapEntriesAfter": [],
+      "C1": {
+        "Overall": "STOP",
+        "PerCheckout": [
+          {
+            "Path": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main",
+            "Role": "MAIN",
+            "Classes": [
+              "CONTENT_CHANGED"
+            ],
+            "Disposition": "STOP",
+            "StatusAdded": [
+              " M RackCad.sln"
+            ],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-sibling",
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit",
+            "Role": "UNIT",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          }
+        ]
+      },
+      "ExitSnapshot": [
+        {
+          "Path": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main",
+          "Role": "MAIN",
+          "Head": "c021787c8589",
+          "Branch": "main",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 362
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-sibling",
+          "Role": "QUIESCENT_SIBLING",
+          "Head": "c021787c8589",
+          "Branch": "sibling",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 363
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit",
+          "Role": "UNIT",
+          "Head": "c021787c8589",
+          "Branch": "unit",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 400
+        }
+      ],
+      "EntrySnapshot": [
+        {
+          "Path": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main",
+          "Role": "MAIN",
+          "Head": "c021787c8589",
+          "Branch": "main",
+          "Status": [
+            " M RackCad.sln"
+          ],
+          "StatusHashes": {
+            "RackCad.sln": "0da1094642237ef5c7f08af00e108c310cb0ffcf214627ce5bf2920fcbfb4a85"
+          },
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 367
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-sibling",
+          "Role": "QUIESCENT_SIBLING",
+          "Head": "c021787c8589",
+          "Branch": "sibling",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 420
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit",
+          "Role": "UNIT",
+          "Head": "c021787c8589",
+          "Branch": "unit",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 399
+        }
+      ]
+    },
+    "A2-prevent-cwd-worktree": {
+      "Purpose": "C2 preventivo: el transporte arranca el hijo con cwd = worktree de la unidad",
+      "ChildCwd": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+      "ExpectedWorkerCwd": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+      "WorkerCall": {
+        "ExitCode": 0,
+        "Output": {
+          "FirstFact": {
+            "Fact": "C2-FirstFact",
+            "ProcessCwd": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+            "PSLocation": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+            "ExpectedCwd": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+            "C2": "PASS"
+          },
+          "AfterSetLocation": {
+            "ProcessCwd": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+            "PSLocation": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit"
+          },
+          "Mode": "EditSln",
+          "Error": null,
+          "ResolvedByDotNet": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit\\RackCad.sln",
+          "ResolvedByPowerShell": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit\\RackCad.sln",
+          "Wrote": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit\\RackCad.sln"
+        },
+        "Stderr": ""
+      },
+      "C2": {
+        "FirstFactProcessCwd": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+        "Verdict": "PASS"
+      },
+      "PowerShellVsDotNet": {
+        "PSLocationAfterSetLocation": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+        "ProcessCwdAfterSetLocation": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+        "ResolvedByDotNet": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit\\RackCad.sln",
+        "ResolvedByPowerShell": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit\\RackCad.sln",
+        "Wrote": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit\\RackCad.sln",
+        "Error": null
+      },
+      "BomBefore": {
+        "Main": true,
+        "Unit": true
+      },
+      "BomAfter": {
+        "Main": true,
+        "Unit": false
+      },
+      "TrapEntriesAfter": [],
+      "C1": {
+        "Overall": "NONE",
+        "PerCheckout": [
+          {
+            "Path": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\main",
+            "Role": "MAIN",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-sibling",
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+            "Role": "UNIT",
+            "Classes": [
+              "CONTENT_CHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [
+              " M RackCad.sln"
+            ],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          }
+        ]
+      },
+      "ExitSnapshot": [
+        {
+          "Path": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\main",
+          "Role": "MAIN",
+          "Head": "a919a6f4e271",
+          "Branch": "main",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 367
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-sibling",
+          "Role": "QUIESCENT_SIBLING",
+          "Head": "a919a6f4e271",
+          "Branch": "sibling",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 393
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+          "Role": "UNIT",
+          "Head": "a919a6f4e271",
+          "Branch": "unit",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 365
+        }
+      ],
+      "EntrySnapshot": [
+        {
+          "Path": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\main",
+          "Role": "MAIN",
+          "Head": "a919a6f4e271",
+          "Branch": "main",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 360
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-sibling",
+          "Role": "QUIESCENT_SIBLING",
+          "Head": "a919a6f4e271",
+          "Branch": "sibling",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 419
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+          "Role": "UNIT",
+          "Head": "a919a6f4e271",
+          "Branch": "unit",
+          "Status": [
+            " M RackCad.sln"
+          ],
+          "StatusHashes": {
+            "RackCad.sln": "0da1094642237ef5c7f08af00e108c310cb0ffcf214627ce5bf2920fcbfb4a85"
+          },
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 389
+        }
+      ]
+    },
+    "A3a-trap-cwd-empty-edit": {
+      "Purpose": "C2 variante directorio vacio: la edicion relativa falla (no hay RackCad.sln en la trampa)",
+      "ChildCwd": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty",
+      "ExpectedWorkerCwd": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty",
+      "WorkerCall": {
+        "ExitCode": 0,
+        "Output": {
+          "FirstFact": {
+            "Fact": "C2-FirstFact",
+            "ProcessCwd": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty",
+            "PSLocation": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty",
+            "ExpectedCwd": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty",
+            "C2": "PASS"
+          },
+          "AfterSetLocation": {
+            "ProcessCwd": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty",
+            "PSLocation": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-unit"
+          },
+          "Mode": "EditSln",
+          "Error": "MethodInvocationException: Excepción al llamar a \"ReadAllText\" con \"1\" argumentos: \"Could not find file 'D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty\\RackCad.sln'.\"",
+          "ResolvedByDotNet": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty\\RackCad.sln",
+          "ResolvedByPowerShell": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-unit\\RackCad.sln"
+        },
+        "Stderr": ""
+      },
+      "C2": {
+        "FirstFactProcessCwd": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty",
+        "Verdict": "PASS"
+      },
+      "PowerShellVsDotNet": {
+        "PSLocationAfterSetLocation": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-unit",
+        "ProcessCwdAfterSetLocation": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty",
+        "ResolvedByDotNet": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty\\RackCad.sln",
+        "ResolvedByPowerShell": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-unit\\RackCad.sln",
+        "Wrote": null,
+        "Error": "MethodInvocationException: Excepción al llamar a \"ReadAllText\" con \"1\" argumentos: \"Could not find file 'D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty\\RackCad.sln'.\""
+      },
+      "BomBefore": {
+        "Main": true,
+        "Unit": true
+      },
+      "BomAfter": {
+        "Main": true,
+        "Unit": true
+      },
+      "TrapEntriesAfter": [],
+      "C1": {
+        "Overall": "NONE",
+        "PerCheckout": [
+          {
+            "Path": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\main",
+            "Role": "MAIN",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-sibling",
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-unit",
+            "Role": "UNIT",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          }
+        ]
+      },
+      "ExitSnapshot": [
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\main",
+          "Role": "MAIN",
+          "Head": "7c025d4bde01",
+          "Branch": "main",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 355
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-sibling",
+          "Role": "QUIESCENT_SIBLING",
+          "Head": "7c025d4bde01",
+          "Branch": "sibling",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 380
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-unit",
+          "Role": "UNIT",
+          "Head": "7c025d4bde01",
+          "Branch": "unit",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 384
+        }
+      ],
+      "EntrySnapshot": [
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\main",
+          "Role": "MAIN",
+          "Head": "7c025d4bde01",
+          "Branch": "main",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 363
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-sibling",
+          "Role": "QUIESCENT_SIBLING",
+          "Head": "7c025d4bde01",
+          "Branch": "sibling",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 421
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-unit",
+          "Role": "UNIT",
+          "Head": "7c025d4bde01",
+          "Branch": "unit",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 387
+        }
+      ]
+    },
+    "A3b-trap-cwd-empty-create": {
+      "Purpose": "C2 variante directorio vacio: la creacion relativa cae en la trampa (detectable: trampa no vacia)",
+      "ChildCwd": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty",
+      "ExpectedWorkerCwd": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty",
+      "WorkerCall": {
+        "ExitCode": 0,
+        "Output": {
+          "FirstFact": {
+            "Fact": "C2-FirstFact",
+            "ProcessCwd": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty",
+            "PSLocation": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty",
+            "ExpectedCwd": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty",
+            "C2": "PASS"
+          },
+          "AfterSetLocation": {
+            "ProcessCwd": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty",
+            "PSLocation": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-unit"
+          },
+          "Mode": "CreateNew",
+          "Error": null,
+          "ResolvedByDotNet": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty\\notes-relative.txt",
+          "ResolvedByPowerShell": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-unit\\notes-relative.txt",
+          "Wrote": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty\\notes-relative.txt"
+        },
+        "Stderr": ""
+      },
+      "C2": {
+        "FirstFactProcessCwd": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty",
+        "Verdict": "PASS"
+      },
+      "PowerShellVsDotNet": {
+        "PSLocationAfterSetLocation": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-unit",
+        "ProcessCwdAfterSetLocation": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty",
+        "ResolvedByDotNet": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty\\notes-relative.txt",
+        "ResolvedByPowerShell": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-unit\\notes-relative.txt",
+        "Wrote": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty\\notes-relative.txt",
+        "Error": null
+      },
+      "BomBefore": {
+        "Main": true,
+        "Unit": true
+      },
+      "BomAfter": {
+        "Main": true,
+        "Unit": true
+      },
+      "TrapEntriesAfter": [
+        "notes-relative.txt"
+      ],
+      "C1": {
+        "Overall": "NONE",
+        "PerCheckout": [
+          {
+            "Path": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\main",
+            "Role": "MAIN",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-sibling",
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-unit",
+            "Role": "UNIT",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          }
+        ]
+      },
+      "ExitSnapshot": [
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\main",
+          "Role": "MAIN",
+          "Head": "00525454be86",
+          "Branch": "main",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 351
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-sibling",
+          "Role": "QUIESCENT_SIBLING",
+          "Head": "00525454be86",
+          "Branch": "sibling",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 366
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-unit",
+          "Role": "UNIT",
+          "Head": "00525454be86",
+          "Branch": "unit",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 344
+        }
+      ],
+      "EntrySnapshot": [
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\main",
+          "Role": "MAIN",
+          "Head": "00525454be86",
+          "Branch": "main",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 333
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-sibling",
+          "Role": "QUIESCENT_SIBLING",
+          "Head": "00525454be86",
+          "Branch": "sibling",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 358
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-unit",
+          "Role": "UNIT",
+          "Head": "00525454be86",
+          "Branch": "unit",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 385
+        }
+      ]
+    },
+    "A4-cmdlet-cwd-main": {
+      "Purpose": "contraste: con cmdlets de PowerShell la ruta relativa resuelve contra la ubicacion de PowerShell",
+      "ChildCwd": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main",
+      "ExpectedWorkerCwd": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit",
+      "WorkerCall": {
+        "ExitCode": 0,
+        "Output": {
+          "FirstFact": {
+            "Fact": "C2-FirstFact",
+            "ProcessCwd": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main",
+            "PSLocation": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main",
+            "ExpectedCwd": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit",
+            "C2": "STOP_C2_CWD_MISMATCH"
+          },
+          "AfterSetLocation": {
+            "ProcessCwd": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main",
+            "PSLocation": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit"
+          },
+          "Mode": "CmdletEdit",
+          "Error": null,
+          "ResolvedByDotNet": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main\\RackCad.sln",
+          "ResolvedByPowerShell": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit\\RackCad.sln",
+          "Wrote": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit\\RackCad.sln"
+        },
+        "Stderr": ""
+      },
+      "C2": {
+        "FirstFactProcessCwd": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main",
+        "Verdict": "STOP_C2_CWD_MISMATCH"
+      },
+      "PowerShellVsDotNet": {
+        "PSLocationAfterSetLocation": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit",
+        "ProcessCwdAfterSetLocation": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main",
+        "ResolvedByDotNet": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main\\RackCad.sln",
+        "ResolvedByPowerShell": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit\\RackCad.sln",
+        "Wrote": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit\\RackCad.sln",
+        "Error": null
+      },
+      "BomBefore": {
+        "Main": true,
+        "Unit": true
+      },
+      "BomAfter": {
+        "Main": true,
+        "Unit": false
+      },
+      "TrapEntriesAfter": [],
+      "C1": {
+        "Overall": "NONE",
+        "PerCheckout": [
+          {
+            "Path": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main",
+            "Role": "MAIN",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-sibling",
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": [],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit",
+            "Role": "UNIT",
+            "Classes": [
+              "CONTENT_CHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [
+              " M RackCad.sln"
+            ],
+            "HashChanged": [],
+            "IgnoredChanged": [],
+            "DirEntryChurn": []
+          }
+        ]
+      },
+      "ExitSnapshot": [
+        {
+          "Path": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main",
+          "Role": "MAIN",
+          "Head": "5512b55d82a2",
+          "Branch": "main",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 404
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-sibling",
+          "Role": "QUIESCENT_SIBLING",
+          "Head": "5512b55d82a2",
+          "Branch": "sibling",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 364
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit",
+          "Role": "UNIT",
+          "Head": "5512b55d82a2",
+          "Branch": "unit",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 362
+        }
+      ],
+      "EntrySnapshot": [
+        {
+          "Path": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main",
+          "Role": "MAIN",
+          "Head": "5512b55d82a2",
+          "Branch": "main",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 377
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-sibling",
+          "Role": "QUIESCENT_SIBLING",
+          "Head": "5512b55d82a2",
+          "Branch": "sibling",
+          "Status": [],
+          "StatusHashes": {},
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 413
+        },
+        {
+          "Path": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit",
+          "Role": "UNIT",
+          "Head": "5512b55d82a2",
+          "Branch": "unit",
+          "Status": [
+            " M RackCad.sln"
+          ],
+          "StatusHashes": {
+            "RackCad.sln": "0da1094642237ef5c7f08af00e108c310cb0ffcf214627ce5bf2920fcbfb4a85"
+          },
+          "FileCount": 4,
+          "DirCount": 3,
+          "DurationMs": 366
+        }
+      ]
+    },
+    "A5-bash-cwd-main": {
+      "Purpose": "contraste: en Bash, cd cambia el directorio del proceso; la escritura relativa cae en el worktree",
+      "ChildCwd": "D:\\r62-c1c3\\work\\A5-bash-cwd-main\\main",
+      "BashPwdAfterCd": "D:/r62-c1c3/work/A5-bash-cwd-main/wt-unit",
+      "ExitCode": 0,
+      "C1": {
+        "Overall": "NONE",
+        "PerCheckout": [
+          {
+            "Path": "D:\\r62-c1c3\\work\\A5-bash-cwd-main\\main",
+            "Role": "MAIN",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A5-bash-cwd-main\\wt-sibling",
+            "Role": "QUIESCENT_SIBLING",
+            "Classes": [
+              "UNCHANGED"
+            ],
+            "Disposition": "NONE",
+            "StatusAdded": []
+          },
+          {
+            "Path": "D:\\r62-c1c3\\work\\A5-bash-cwd-main\\wt-unit",
+            "Role": "UNIT",
+            "Classes": [
+              "CONTENT_CHANGED"
+            ],
+            "Disposition": "NOT_C1 (worktree propio: Scope/CleanTree)",
+            "StatusAdded": [
+              " M RackCad.sln"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Steps": [
+    {
+      "Step": "fixture",
+      "Command": "git init + 2x git worktree add (autocrlf=true) en D:\\r62-c1c3\\work\\A1-hazard-cwd-main",
+      "Cwd": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main",
+      "ExitCode": 0,
+      "Result": "ok"
+    },
+    {
+      "Step": "C1 exit snapshot",
+      "Command": "git --no-optional-locks status --porcelain=v1 -z --untracked-files=all + hashes + barrido de fechas (todos los checkouts de git worktree list)",
+      "Cwd": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit",
+      "ExitCode": 0,
+      "Result": "3 checkouts"
+    },
+    {
+      "Step": "worker-call (EditSln)",
+      "Command": "pwsh -NoProfile -File worker-call-relative.ps1 -TargetDir D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit -ExpectedCwd D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit -Mode EditSln",
+      "Cwd": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\main",
+      "ExitCode": 0,
+      "Result": "{\"FirstFact\":{\"Fact\":\"C2-FirstFact\",\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A1-hazard-cwd-main\\\\main\",\"PSLocation\":\"D:\\\\r62-c1c3\\\\work\\\\A1-hazard-cwd-main\\\\main\",\"ExpectedCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A1-hazard-cwd-main\\\\wt-unit\",\"C2\":\"STOP_C2_CWD_MISMATCH\"},\"AfterSetLocation\":{\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A1-hazard-cwd-main\\\\main\",\"PSLocation\":\"D:\\\\r62-c1c3\\\\work\\\\A1-hazard-cwd-main\\\\wt-unit\"},\"Mode\":\"EditSln\",\"Error\":null,\"ResolvedByDotNet\":\"D:\\\\r62-c1c3\\\\work\\\\A1-hazard-cwd-main\\\\main\\\\RackCad.sln\",\"ResolvedByPowerShell\":\"D:\\\\r62-c1c3\\\\work\\\\A1-hazard-cwd-main\\\\wt-unit\\\\RackCad.sln\",\"Wrote\":\"D:\\\\r62-c1c3\\\\work\\\\A1-hazard-cwd-main\\\\main\\\\RackCad.sln\"}"
+    },
+    {
+      "Step": "C1 entry snapshot + diff",
+      "Command": "Compare-RepoSnapshot exit entry",
+      "Cwd": "D:\\r62-c1c3\\work\\A1-hazard-cwd-main\\wt-unit",
+      "ExitCode": 0,
+      "Result": "STOP"
+    },
+    {
+      "Step": "fixture",
+      "Command": "git init + 2x git worktree add (autocrlf=true) en D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree",
+      "Cwd": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree",
+      "ExitCode": 0,
+      "Result": "ok"
+    },
+    {
+      "Step": "C1 exit snapshot",
+      "Command": "git --no-optional-locks status --porcelain=v1 -z --untracked-files=all + hashes + barrido de fechas (todos los checkouts de git worktree list)",
+      "Cwd": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+      "ExitCode": 0,
+      "Result": "3 checkouts"
+    },
+    {
+      "Step": "worker-call (EditSln)",
+      "Command": "pwsh -NoProfile -File worker-call-relative.ps1 -TargetDir D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit -ExpectedCwd D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit -Mode EditSln",
+      "Cwd": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+      "ExitCode": 0,
+      "Result": "{\"FirstFact\":{\"Fact\":\"C2-FirstFact\",\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A2-prevent-cwd-worktree\\\\wt-unit\",\"PSLocation\":\"D:\\\\r62-c1c3\\\\work\\\\A2-prevent-cwd-worktree\\\\wt-unit\",\"ExpectedCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A2-prevent-cwd-worktree\\\\wt-unit\",\"C2\":\"PASS\"},\"AfterSetLocation\":{\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A2-prevent-cwd-worktree\\\\wt-unit\",\"PSLocation\":\"D:\\\\r62-c1c3\\\\work\\\\A2-prevent-cwd-worktree\\\\wt-unit\"},\"Mode\":\"EditSln\",\"Error\":null,\"ResolvedByDotNet\":\"D:\\\\r62-c1c3\\\\work\\\\A2-prevent-cwd-worktree\\\\wt-unit\\\\RackCad.sln\",\"ResolvedByPowerShell\":\"D:\\\\r62-c1c3\\\\work\\\\A2-prevent-cwd-worktree\\\\wt-unit\\\\RackCad.sln\",\"Wrote\":\"D:\\\\r62-c1c3\\\\work\\\\A2-prevent-cwd-worktree\\\\wt-unit\\\\RackCad.sln\"}"
+    },
+    {
+      "Step": "C1 entry snapshot + diff",
+      "Command": "Compare-RepoSnapshot exit entry",
+      "Cwd": "D:\\r62-c1c3\\work\\A2-prevent-cwd-worktree\\wt-unit",
+      "ExitCode": 0,
+      "Result": "NONE"
+    },
+    {
+      "Step": "fixture",
+      "Command": "git init + 2x git worktree add (autocrlf=true) en D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit",
+      "Cwd": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit",
+      "ExitCode": 0,
+      "Result": "ok"
+    },
+    {
+      "Step": "C1 exit snapshot",
+      "Command": "git --no-optional-locks status --porcelain=v1 -z --untracked-files=all + hashes + barrido de fechas (todos los checkouts de git worktree list)",
+      "Cwd": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-unit",
+      "ExitCode": 0,
+      "Result": "3 checkouts"
+    },
+    {
+      "Step": "worker-call (EditSln)",
+      "Command": "pwsh -NoProfile -File worker-call-relative.ps1 -TargetDir D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-unit -ExpectedCwd D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty -Mode EditSln",
+      "Cwd": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\trap-empty",
+      "ExitCode": 0,
+      "Result": "{\"FirstFact\":{\"Fact\":\"C2-FirstFact\",\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A3a-trap-cwd-empty-edit\\\\trap-empty\",\"PSLocation\":\"D:\\\\r62-c1c3\\\\work\\\\A3a-trap-cwd-empty-edit\\\\trap-empty\",\"ExpectedCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A3a-trap-cwd-empty-edit\\\\trap-empty\",\"C2\":\"PASS\"},\"AfterSetLocation\":{\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A3a-trap-cwd-empty-edit\\\\trap-empty\",\"PSLocation\":\"D:\\\\r62-c1c3\\\\work\\\\A3a-trap-cwd-empty-edit\\\\wt-unit\"},\"Mode\":\"EditSln\",\"Error\":\"MethodInvocationException: Excepción al llamar a \\\"ReadAllText\\\" con \\\"1\\\" argumentos: \\\"Could not find file 'D:\\\\r62-c1c3\\\\work\\\\A3a-trap-cwd-empty-edit\\\\trap-empty\\\\RackCad.sln'.\\\"\",\"ResolvedByDotNet\":\"D:\\\\r62-c1c3\\\\work\\\\A3a-trap-cwd-empty-edit\\\\trap-empty\\\\RackCad.sln\",\"ResolvedByPowerShell\":\"D:\\\\r62-c1c3\\\\work\\\\A3a-trap-cwd-empty-edit\\\\wt-unit\\\\RackCad.sln\"}"
+    },
+    {
+      "Step": "C1 entry snapshot + diff",
+      "Command": "Compare-RepoSnapshot exit entry",
+      "Cwd": "D:\\r62-c1c3\\work\\A3a-trap-cwd-empty-edit\\wt-unit",
+      "ExitCode": 0,
+      "Result": "NONE"
+    },
+    {
+      "Step": "fixture",
+      "Command": "git init + 2x git worktree add (autocrlf=true) en D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create",
+      "Cwd": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create",
+      "ExitCode": 0,
+      "Result": "ok"
+    },
+    {
+      "Step": "C1 exit snapshot",
+      "Command": "git --no-optional-locks status --porcelain=v1 -z --untracked-files=all + hashes + barrido de fechas (todos los checkouts de git worktree list)",
+      "Cwd": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-unit",
+      "ExitCode": 0,
+      "Result": "3 checkouts"
+    },
+    {
+      "Step": "worker-call (CreateNew)",
+      "Command": "pwsh -NoProfile -File worker-call-relative.ps1 -TargetDir D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-unit -ExpectedCwd D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty -Mode CreateNew",
+      "Cwd": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\trap-empty",
+      "ExitCode": 0,
+      "Result": "{\"FirstFact\":{\"Fact\":\"C2-FirstFact\",\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A3b-trap-cwd-empty-create\\\\trap-empty\",\"PSLocation\":\"D:\\\\r62-c1c3\\\\work\\\\A3b-trap-cwd-empty-create\\\\trap-empty\",\"ExpectedCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A3b-trap-cwd-empty-create\\\\trap-empty\",\"C2\":\"PASS\"},\"AfterSetLocation\":{\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A3b-trap-cwd-empty-create\\\\trap-empty\",\"PSLocation\":\"D:\\\\r62-c1c3\\\\work\\\\A3b-trap-cwd-empty-create\\\\wt-unit\"},\"Mode\":\"CreateNew\",\"Error\":null,\"ResolvedByDotNet\":\"D:\\\\r62-c1c3\\\\work\\\\A3b-trap-cwd-empty-create\\\\trap-empty\\\\notes-relative.txt\",\"ResolvedByPowerShell\":\"D:\\\\r62-c1c3\\\\work\\\\A3b-trap-cwd-empty-create\\\\wt-unit\\\\notes-relative.txt\",\"Wrote\":\"D:\\\\r62-c1c3\\\\work\\\\A3b-trap-cwd-empty-create\\\\trap-empty\\\\notes-relative.txt\"}"
+    },
+    {
+      "Step": "C1 entry snapshot + diff",
+      "Command": "Compare-RepoSnapshot exit entry",
+      "Cwd": "D:\\r62-c1c3\\work\\A3b-trap-cwd-empty-create\\wt-unit",
+      "ExitCode": 0,
+      "Result": "NONE"
+    },
+    {
+      "Step": "fixture",
+      "Command": "git init + 2x git worktree add (autocrlf=true) en D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main",
+      "Cwd": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main",
+      "ExitCode": 0,
+      "Result": "ok"
+    },
+    {
+      "Step": "C1 exit snapshot",
+      "Command": "git --no-optional-locks status --porcelain=v1 -z --untracked-files=all + hashes + barrido de fechas (todos los checkouts de git worktree list)",
+      "Cwd": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit",
+      "ExitCode": 0,
+      "Result": "3 checkouts"
+    },
+    {
+      "Step": "worker-call (CmdletEdit)",
+      "Command": "pwsh -NoProfile -File worker-call-relative.ps1 -TargetDir D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit -ExpectedCwd D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit -Mode CmdletEdit",
+      "Cwd": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\main",
+      "ExitCode": 0,
+      "Result": "{\"FirstFact\":{\"Fact\":\"C2-FirstFact\",\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A4-cmdlet-cwd-main\\\\main\",\"PSLocation\":\"D:\\\\r62-c1c3\\\\work\\\\A4-cmdlet-cwd-main\\\\main\",\"ExpectedCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A4-cmdlet-cwd-main\\\\wt-unit\",\"C2\":\"STOP_C2_CWD_MISMATCH\"},\"AfterSetLocation\":{\"ProcessCwd\":\"D:\\\\r62-c1c3\\\\work\\\\A4-cmdlet-cwd-main\\\\main\",\"PSLocation\":\"D:\\\\r62-c1c3\\\\work\\\\A4-cmdlet-cwd-main\\\\wt-unit\"},\"Mode\":\"CmdletEdit\",\"Error\":null,\"ResolvedByDotNet\":\"D:\\\\r62-c1c3\\\\work\\\\A4-cmdlet-cwd-main\\\\main\\\\RackCad.sln\",\"ResolvedByPowerShell\":\"D:\\\\r62-c1c3\\\\work\\\\A4-cmdlet-cwd-main\\\\wt-unit\\\\RackCad.sln\",\"Wrote\":\"D:\\\\r62-c1c3\\\\work\\\\A4-cmdlet-cwd-main\\\\wt-unit\\\\RackCad.sln\"}"
+    },
+    {
+      "Step": "C1 entry snapshot + diff",
+      "Command": "Compare-RepoSnapshot exit entry",
+      "Cwd": "D:\\r62-c1c3\\work\\A4-cmdlet-cwd-main\\wt-unit",
+      "ExitCode": 0,
+      "Result": "NONE"
+    },
+    {
+      "Step": "bash worker-call",
+      "Command": "bash -c \"cd 'D:/r62-c1c3/work/A5-bash-cwd-main/wt-unit' && printf 'AddedByWorker = 1\\r\\n' >> RackCad.sln && pwd -W\"",
+      "Cwd": "D:\\r62-c1c3\\work\\A5-bash-cwd-main\\main",
+      "ExitCode": 0,
+      "Result": "D:/r62-c1c3/work/A5-bash-cwd-main/wt-unit"
+    }
+  ]
+}
