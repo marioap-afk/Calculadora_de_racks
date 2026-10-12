@@ -1,7 +1,7 @@
 # I-65 — Incidente del checkout principal: `RackCad.sln` modificado por un Worker (DEV-I65-F4-16)
 
-- **Estado:** CONTENIDO, **SIN RESTAURAR** (la orden del Owner «Option C and Checkout Incident Containment» prohíbe alterar el checkout
-  principal sin una autorización posterior).
+- **Estado:** **RESTAURADO** el 2026-10-12 a las 07:34:04Z con la autorización del Owner («Controlled Checkout Restoration»; §6). Hasta
+  entonces estuvo contenido y sin restaurar por la orden «Option C and Checkout Incident Containment».
 - **Inspección:** 2026-10-12, estrictamente de solo lectura (`git --no-optional-locks`, lectura de archivos y de fechas); ninguna operación
   escribió en `D:\Documentos\Codex\Calculadora de racks` ni en su índice (el índice no aparece modificado en la ventana inspeccionada).
 - **Archivos de esta carpeta:** `main-checkout-facts.json` (hechos y hashes), `main-checkout-RackCad.sln.diff` (diff contra `HEAD`),
@@ -53,7 +53,7 @@ proyecto inexistente.
   principal no se modificó.
 - F4-T5: `placeholder.txt` creado y borrado por el Worker a los 3 s (DEV-I65-F4-15); no existe.
 
-## 5. Procedimiento de restauración (NO EJECUTADO; requiere autorización del Owner)
+## 5. Procedimiento de restauración (ejecutado el 2026-10-12 con autorización del Owner; resultado en §6)
 
 El cambio no autorizado es el archivo completo (M1-M4), así que restaurar el archivo a `HEAD` deshace exactamente ese cambio y nada más.
 Las órdenes leen o escriben solo `RackCad.sln` del checkout principal.
@@ -71,3 +71,30 @@ Las órdenes leen o escriben solo `RackCad.sln` del checkout principal.
 
 Alternativa equivalente, si se prefiere ver el cambio deshecho bloque a bloque: `git apply -R` con `main-checkout-RackCad.sln.diff`
 (tras la misma comprobación previa).
+
+## 6. Restauración ejecutada (2026-10-12)
+
+Autorización: «I-65 — Owner Authorization: Controlled Checkout Restoration» (texto literal en
+`docs/automation/decisions/I-65-owner-authorization-checkout-restoration.original.txt`).
+
+**Comprobaciones previas** (`restore-precheck.json`, `restore_precheck.py.txt`; solo lectura, 07:33:50Z), todas en `pass`:
+
+1. `RackCad.sln` con SHA-256 `4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C`.
+2. Ninguna otra modificación sin confirmar (`status` = ` M RackCad.sln`; índice y `stash` vacíos).
+3. Evidencia custodiada en el commit remoto `3b4bf6a0`; las cuatro copias del archivo alterado (la versionada, leída con los filtros de Git;
+   la del worktree; la de `artifacts`; la del área temporal de la sesión) reproducen exactamente `4F38D61B…`.
+4. `HEAD` `95690c28` con el blob `5317eece`; su contenido materializado con los filtros del checkout (`autocrlf`, CRLF y BOM) tiene SHA-256
+   `A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399`. El blob en crudo (LF) tiene `DEB08FB0…`; el valor esperado por el Owner es el
+   del contenido que la restauración escribe en el árbol de trabajo.
+
+**Restauración:** `git -C "D:\Documentos\Codex\Calculadora de racks" restore --worktree --source=HEAD -- RackCad.sln` (salida 0, 07:34:04Z). Fue la
+única operación que escribió en el checkout principal.
+
+**Comprobaciones posteriores** (`restore-postcheck.json`, `restore_postcheck.py.txt`; 07:34:24Z), todas en `pass`:
+
+- Hash final `A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399` (= el esperado).
+- Checkout principal limpio: `status --porcelain --untracked-files=all` vacío; índice vacío.
+- Integridad del BOM y de la solución: BOM UTF-8 presente, CRLF en las 129 líneas; sin la entrada `RamTool`; los 7 proyectos de la solución
+  existen en disco; ninguna configuración huérfana.
+- Ausencia de cambios en otros archivos: desde el inicio de la inspección (07:12Z), el único archivo del árbol de trabajo con escritura es
+  `RackCad.sln`.

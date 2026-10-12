@@ -1,0 +1,41 @@
+{
+ "ObtainedUtc": "2026-10-12T07:33:50Z",
+ "checks": {
+  "1_current_sha256": {
+   "value": "4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C",
+   "expected": "4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C",
+   "pass": true
+  },
+  "2_no_other_uncommitted": {
+   "status": [
+    " M RackCad.sln"
+   ],
+   "staged": [],
+   "stash": [],
+   "pass": true
+  },
+  "3_evidence_custodied": {
+   "remote_branch_head": "3b4bf6a0ab0d700c8c802c6451d0bbee68934d89",
+   "missing_in_remote_commit": [],
+   "altered_copy_sha256": {
+    "branch_blob_with_filters": "4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C",
+    "worktree_file": "4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C",
+    "artifacts_preserved": "4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C",
+    "session_scratch": "4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C"
+   },
+   "pass": true
+  },
+  "4_head_content": {
+   "head": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+   "head_expected": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+   "blob": "5317eecef383e0902e145b9b5d1fcbaf891e0d01",
+   "blob_expected": "5317eecef383e0902e145b9b5d1fcbaf891e0d01",
+   "raw_blob_sha256": "DEB08FB0DFDEAFBC4DC4A262A285FAB2F964FF3844A6AF449E6621B1DB57FC14",
+   "materialized_sha256": "A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399",
+   "expected": "A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399",
+   "materialized_has_bom": true,
+   "pass": true
+  }
+ },
+ "all_pass": true
+}

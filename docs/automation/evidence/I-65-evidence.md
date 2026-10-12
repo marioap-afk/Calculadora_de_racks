@@ -1135,3 +1135,13 @@ Hashes de la evidencia del incidente (copias de la sesión; Git puede normalizar
 | `main-checkout-mtime-scan.json` | `2C58CD0A710B6E0B2769D2651B2EFEB106216163D14BE4284848EF6519D05A12` |
 | `main-checkout-mtime-scan-wide.json` | `E135256F468ED3DC15AA0B24A63FAE86A63A042025BF99E743B4F8BD945CACAB` |
 | `ram-execution-scan.json` | `6934545FF73755E114AF9ACC075710BAA4EFDD8C44CEDB6D9FC3859EFCE24793` |
+
+## 46. Restauración controlada del checkout principal (2026-10-12T07:35:12Z)
+
+- **Orden del Owner** en custodia: `docs/automation/decisions/I-65-owner-authorization-checkout-restoration.original.txt` (SHA-256 `FDB3CDA902932DEE31CFF4A1138DF35FD1FA5DC1688835FF711F9158AA7B2796`).
+- **Previas** (`restore-precheck.json`, 2026-10-12T07:33:50Z): 1 hash `4F38D61B…` pass; 2 solo ` M RackCad.sln`, índice y `stash` vacíos, pass;
+  3 evidencia en `3b4bf6a0` y cuatro copias = `4F38D61B…`, pass; 4 `HEAD` `95690c28`, blob `5317eece`, materializado `A06892EA…`, pass.
+- **Restauración:** `git restore --worktree --source=HEAD -- RackCad.sln` en el checkout principal, salida 0 (07:34:04Z).
+- **Posteriores** (`restore-postcheck.json`, 07:34:24Z): hash final `A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399`; estado limpio;
+  BOM presente, CRLF, sin `RamTool`, 7 proyectos existentes, sin configuraciones huérfanas; único archivo escrito desde 07:12Z: `RackCad.sln`.
+- **Sin Workers, sin Codex** (28 de 30), sin cambios de producto, sin RAM. F4 sigue INCOMPLETE / BLOCKED.

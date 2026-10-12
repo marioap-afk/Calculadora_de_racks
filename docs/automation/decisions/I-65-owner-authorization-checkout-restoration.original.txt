@@ -1,0 +1,25 @@
+I-65 — Owner Authorization: Controlled Checkout Restoration
+He revisado el cierre parcial de F4 publicado en `3b4bf6a0` y la evidencia del incidente.
+Decisión del Owner
+AUTORIZO la restauración controlada de `RackCad.sln` en el checkout principal, exclusivamente para revertir la modificación no autorizada atribuida al Worker de T4.
+Antes de restaurar:
+
+1. Comprueba que `RackCad.sln` mantiene exactamente el SHA-256 `4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C`.
+2. Confirma que no existen otras modificaciones sin confirmar.
+3. Verifica que la evidencia y la copia del archivo alterado siguen custodiadas.
+4. Comprueba que el contenido de HEAD es el original esperado, con SHA-256 `A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399`.
+
+Si alguna condición falla, detente sin modificar nada.
+Si todas pasan, restaura únicamente `RackCad.sln` desde HEAD mediante `git restore --worktree --source=HEAD`.
+Después verifica:
+
+* Hash final del archivo.
+* Estado limpio del checkout principal.
+* Integridad del proyecto BOM.
+* Ausencia de cambios en otros archivos.
+
+Registra el resultado y su evidencia en I-65.
+No ejecutes nuevos Workers, Codex ni RAM Elements.
+No reanudes F4 ni modifiques código de producción.
+Mantén la iniciativa como INCOMPLETE / BLOCKED.
+IMPLEMENTATION AUTHORIZATION = NO.

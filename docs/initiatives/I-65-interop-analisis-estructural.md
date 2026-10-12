@@ -26,7 +26,7 @@ freeze_ref: docs/initiatives/I-65-proposal-v3.1.md
 freeze_delta_ref: null
 amendment_refs: []
 ov_assignment_ref: docs/initiatives/I-65-proposal-v3.1.md#5
-decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-authorization-f3.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-preparation.original.txt, docs/automation/decisions/I-65-owner-authorization-f4.original.txt, docs/automation/decisions/I-65-owner-disposition-f4t3.original.txt, docs/automation/decisions/I-65-owner-decision-f4-option-c.original.txt, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
+decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-authorization-f3.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-preparation.original.txt, docs/automation/decisions/I-65-owner-authorization-f4.original.txt, docs/automation/decisions/I-65-owner-disposition-f4t3.original.txt, docs/automation/decisions/I-65-owner-decision-f4-option-c.original.txt, docs/automation/decisions/I-65-owner-authorization-checkout-restoration.original.txt, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
 evidence_ref: docs/automation/evidence/I-65-evidence.md
 automation_state_path: docs/automation/state/I-65.yml
 requires_ci: true

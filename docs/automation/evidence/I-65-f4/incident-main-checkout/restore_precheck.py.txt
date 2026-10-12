@@ -1,0 +1,67 @@
+"""Comprobaciones previas (SOLO LECTURA) de la restauracion autorizada de RackCad.sln en el checkout principal."""
+import datetime
+import hashlib
+import json
+import os
+import subprocess
+import sys
+
+MAIN = r"D:\Documentos\Codex\Calculadora de racks"
+WT = r"C:\Users\alejandra-mendoza\.codex\worktrees\architecture-interop-analisis-estructural"
+S = sys.argv[1]
+OUT = sys.argv[2]
+BRANCH = "architecture/interop-analisis-estructural"
+EVD = "docs/automation/evidence/I-65-f4/incident-main-checkout/"
+ALTERED = "4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C"
+HEAD_EXPECTED = "A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399"
+
+
+def git(repo, *a, binary=False):
+    r = subprocess.run(["git", "--no-optional-locks", "-C", repo] + list(a), capture_output=True)
+    if r.returncode != 0:
+        raise SystemExit("git %s failed: %s" % (a, r.stderr.decode("utf-8", "replace")))
+    return r.stdout if binary else r.stdout.decode("utf-8", "replace")
+
+
+def h(b):
+    return hashlib.sha256(b).hexdigest().upper()
+
+
+res = {"ObtainedUtc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "checks": {}}
+cur = open(os.path.join(MAIN, "RackCad.sln"), "rb").read()
+res["checks"]["1_current_sha256"] = {"value": h(cur), "expected": ALTERED, "pass": h(cur) == ALTERED}
+
+status = git(MAIN, "status", "--porcelain=v1", "--untracked-files=all").splitlines()
+staged = git(MAIN, "diff", "--cached", "--name-only").splitlines()
+stash = git(MAIN, "stash", "list").splitlines()
+res["checks"]["2_no_other_uncommitted"] = {"status": status, "staged": staged, "stash": stash,
+                                           "pass": status == [" M RackCad.sln"] and staged == []}
+
+ls_remote = git(WT, "ls-remote", "origin", "refs/heads/" + BRANCH).split()[0]
+tree = git(WT, "ls-tree", "-r", "--name-only", ls_remote, "--", EVD).splitlines()
+needed = [EVD + n for n in ("README.md", "main-checkout-facts.json", "main-checkout-RackCad.sln.diff", "main-checkout-RackCad.sln.modified.txt",
+                            "worker-call-25.ps1.txt", "simulate-worker-call-25.ps1", "simulation.json")]
+filtered_copy = git(WT, "cat-file", "--filters", ls_remote + ":" + EVD + "main-checkout-RackCad.sln.modified.txt", binary=True)
+copies = {
+    "branch_blob_with_filters": h(filtered_copy),
+    "worktree_file": h(open(os.path.join(WT, EVD.replace("/", os.sep), "main-checkout-RackCad.sln.modified.txt"), "rb").read()),
+    "artifacts_preserved": h(open(os.path.join(WT, r"artifacts\orchestration\I-65\F4-T5-PLUGIN-COMMAND\3\R20261011T215838Z-09a6\preserved\main-checkout-RackCad.sln.modified"), "rb").read()),
+    "session_scratch": h(open(os.path.join(S, "incident", "main-checkout-RackCad.sln.working"), "rb").read()),
+}
+res["checks"]["3_evidence_custodied"] = {"remote_branch_head": ls_remote, "missing_in_remote_commit": [n for n in needed if n not in tree],
+                                        "altered_copy_sha256": copies,
+                                        "pass": all(n in tree for n in needed) and all(v == ALTERED for v in copies.values())}
+
+head = git(MAIN, "rev-parse", "HEAD").strip()
+blob = git(MAIN, "rev-parse", "HEAD:RackCad.sln").strip()
+raw = git(MAIN, "cat-file", "blob", blob, binary=True)
+materialized = git(MAIN, "cat-file", "--filters", "HEAD:RackCad.sln", binary=True)
+res["checks"]["4_head_content"] = {"head": head, "head_expected": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f", "blob": blob,
+                                   "blob_expected": "5317eecef383e0902e145b9b5d1fcbaf891e0d01", "raw_blob_sha256": h(raw),
+                                   "materialized_sha256": h(materialized), "expected": HEAD_EXPECTED,
+                                   "materialized_has_bom": materialized.startswith(b"\xef\xbb\xbf"),
+                                   "pass": head == "95690c28dc6268e61dff32a0cbc33cc9fde3d47f" and blob == "5317eecef383e0902e145b9b5d1fcbaf891e0d01"
+                                   and h(materialized) == HEAD_EXPECTED}
+res["all_pass"] = all(c["pass"] for c in res["checks"].values())
+json.dump(res, open(OUT, "w", encoding="utf-8"), indent=1)
+print(json.dumps(res, indent=1))

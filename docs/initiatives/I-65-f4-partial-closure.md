@@ -39,7 +39,7 @@ los tres cumplidos; T3 nc1 y nc3 cumplidos, **nc2 no** (DEV-I65-F4-08, compensad
 
 | Clase | Registros |
 |---|---|
-| **Violación con consecuencias reales** | DEV-I65-F4-16: el Worker de F4-T4 intento 2 reescribió el `RackCad.sln` del checkout principal, sin declararlo ni ser detectado; contenido sin restaurar ([evidencia del incidente](../automation/evidence/I-65-f4/incident-main-checkout/README.md)) |
+| **Violación con consecuencias reales** | DEV-I65-F4-16: el Worker de F4-T4 intento 2 reescribió el `RackCad.sln` del checkout principal, sin declararlo ni ser detectado; **restaurado** el 2026-10-12 con autorización del Owner (decisiones §39) ([evidencia del incidente](../automation/evidence/I-65-f4/incident-main-checkout/README.md)) |
 | Violaciones transitorias o fuera de alcance sin residuo | DEV-I65-F4-15 (`placeholder.txt` en el checkout principal, borrado en 3 s); DEV-I65-F4-18 (borrador del comando de T5 escrito en el área temporal de la sesión; edición de T1 corrección por una ruta que pasaba por el checkout principal y resolvía dentro del worktree) |
 | Infracciones de procedimiento sin efectos observados | Intérprete Python: DEV-I65-F4-01 (T1), DEV-I65-F4-05 (T2 corrección), DEV-I65-F4-06 (T3, aceptada por el Owner solo para esa ejecución), DEV-I65-F4-14 (T5), y DEV-I65-F4-17 (dos en F1 descubiertas ahora); en F3, CD-I65-F3-12 |
 | Desviaciones de protocolo declaradas | DEV-I65-F4-02 (corrección de prueba sin RED), DEV-I65-F4-04 y DEV-I65-F4-09 (STOP del Worker aplicado sin verificación del Controller), DEV-I65-F4-11 (C-07 abreviada por el Controller en la delegación aceptada de la corrección de T4) |
@@ -66,7 +66,8 @@ como limitaciones o mejoras: A65-F4-02, 07, 08, 09, 10 y 11
 
 ## 6. Condiciones necesarias para completar F4
 
-1. Decisión del Owner sobre la restauración del `RackCad.sln` del checkout principal (procedimiento preparado, no ejecutado).
+1. ~~Restauración del `RackCad.sln` del checkout principal~~: **hecha** el 2026-10-12 con autorización del Owner (decisiones §39; hash final
+   `A06892EA…`, checkout limpio).
 2. Controles mecánicos del entorno del Worker en I-62 (o un mecanismo alternativo aprobado por el Owner) antes de delegar más implementación
    ([paquete de escalamiento](../automation/evidence/I-65-f4/i62-escalation-package.md)).
 3. Nueva autorización de implementación con presupuesto de Codex e intentos para: T5 (comando del Plugin y distribución de la tabla) y las

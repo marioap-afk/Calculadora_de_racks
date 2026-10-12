@@ -1,0 +1,46 @@
+"""Busca en las transcripciones de Workers y en los eventos de Codex de F4 cualquier ejecucion del programa de analisis o de sus scripts."""
+import glob
+import json
+import os
+import re
+import sys
+
+WT, SUB = sys.argv[1], sys.argv[2]
+exe = re.compile(r"RAMElements\.exe|Start-Process[^\n]*RAM|rackcad-ram-(build|dump)\.py", re.I)
+interp = re.compile(r"(^|[;&|(\s'\"])(python3?|py)(\.exe)?\s+(-V|--version|-c|-m|-I|[\w./\\-]+\.py)", re.I)
+report = {"worker_transcripts": {}, "codex_events": {}}
+for t in sorted(glob.glob(os.path.join(SUB, "agent-*.jsonl"))):
+    hits = []
+    for line in open(t, encoding="utf-8", errors="replace"):
+        try:
+            e = json.loads(line)
+        except Exception:
+            continue
+        if e.get("type") != "assistant":
+            continue
+        for x in (e.get("message") or {}).get("content", []) or []:
+            if isinstance(x, dict) and x.get("type") == "tool_use" and x.get("name") in ("Bash", "PowerShell"):
+                cmd = (x.get("input") or {}).get("command", "")
+                if exe.search(cmd) and not re.search(r"\b(grep|Select-String|cat|head|sed|ls|Get-Content|Get-ChildItem|Test-Path)\b", cmd):
+                    hits.append(("exe", e.get("timestamp"), cmd[:200]))
+                if interp.search(cmd):
+                    hits.append(("interpreter", e.get("timestamp"), cmd[:200]))
+    report["worker_transcripts"][os.path.basename(t)] = hits
+for ev in sorted(glob.glob(os.path.join(WT, "artifacts", "orchestration", "I-65", "F4-*", "*", "*", "events.jsonl"))):
+    hits = []
+    for line in open(ev, encoding="utf-8", errors="replace"):
+        try:
+            e = json.loads(line)
+        except Exception:
+            continue
+        item = e.get("item") or {}
+        cmd = item.get("command") if isinstance(item, dict) else None
+        if isinstance(cmd, str) and (exe.search(cmd) and not re.search(r"\b(rg|grep|Select-String|Get-Content|cat|sed|ls|git)\b", cmd)):
+            hits.append(cmd[:200])
+    report["codex_events"][os.path.relpath(ev, WT).replace(os.sep, "/")] = hits
+json.dump(report, open(sys.argv[3], "w", encoding="utf-8"), indent=1)
+print("worker transcripts:", len(report["worker_transcripts"]), "codex event files:", len(report["codex_events"]))
+for k, v in report["worker_transcripts"].items():
+    if v:
+        print(k, v)
+print("codex exe hits:", {k: v for k, v in report["codex_events"].items() if v})

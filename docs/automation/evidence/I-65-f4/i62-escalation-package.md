@@ -36,7 +36,7 @@ prompt las prohíba expresamente y cite los casos anteriores.
 
 | Caso | Qué | Detección | Efecto |
 |---|---|---|---|
-| F4-T4 intento 2 (`R20261011T202738Z-6356`, llamada 25) | Reescritura de `D:\…\RackCad.sln` del **checkout principal** (proyecto añadido, BOM eliminado) | ninguna en la cesión ni en la verificación; hallado una hora después por la sesión | **real**: cambio no confirmado en la copia de trabajo del Owner; sigue sin restaurar ([incidente](incident-main-checkout/README.md)) |
+| F4-T4 intento 2 (`R20261011T202738Z-6356`, llamada 25) | Reescritura de `D:\…\RackCad.sln` del **checkout principal** (proyecto añadido, BOM eliminado) | ninguna en la cesión ni en la verificación; hallado una hora después por la sesión | **real**: cambio no confirmado en la copia de trabajo del Owner durante unas 11 h; restaurado el 2026-10-12 con autorización del Owner ([incidente](incident-main-checkout/README.md)) |
 | F4-T5 (`R20261011T215838Z-09a6`, llamada 37) | `placeholder.txt` en el checkout principal | declarado por el Worker (C-05) | transitorio: borrado a los 3 s |
 | F4-T5 (llamada 34) | Borrador de `RackRamElementsCommands.cs` en el área temporal de la sesión | declarado a medias («draft in the session scratchpad») | ninguno en el repositorio |
 | F4-T1 corrección | Edición por la ruta `D:\…\..\..\..\Users\…\worktree\…` | barrido posterior | destino dentro del worktree; señal de rutas construidas desde el checkout principal |
@@ -101,7 +101,7 @@ F4-T4 `RackCad.sln` es de clase B con consecuencias.
 ## 5. Límites
 
 - I-65 no implementa nada de esto y no cambia I-61/I-62. C-08 sigue vigente en I-65; la aceptación del Owner de F4-T3 se limita a esa ejecución.
-- La restauración del checkout principal espera la decisión del Owner (procedimiento en la evidencia del incidente).
+- La restauración del checkout principal se hizo el 2026-10-12 con autorización del Owner (evidencia del incidente, §6).
 
 ## 6. Evidencia
 
