@@ -1,0 +1,4269 @@
+{
+ "Header": {
+  "AcceptorBlob": "434ef1fccb0d15762b30244b4a60928120698411",
+  "AcceptorSha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0",
+  "Git": "git version 2.54.0.windows.1",
+  "MutateBlob": "6967938954219a6a8a2f38dc80ef5a1165966d19",
+  "Python": "3.13.14",
+  "ToolBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "ToolSha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+ },
+ "R4Inputs": [
+  {
+   "Built": "model Controller output (r3model.py) from the pinned tool facts; schema controller-verification.v2 validated by the harness; Results flipped / not_run for the altered cases",
+   "Input": "Verification.Controller {Path, Sha256}"
+  },
+  {
+   "Built": "rackcad-delegation/v2 instance: scopes, authorities, invariants, tests, stop conditions and role requirements copied from the custodied contract FX-U1-T1 (blob 628d89af); BaseSha = Q0 (fixture tip) or the e2e BASE; ExpectedBranch fx/u1; ExpectedWorktree = the clone; schema-validated",
+   "Input": "Verification.Delegation {Path, Sha256}"
+  },
+  {
+   "Built": "rackcad-worker-handoff/v1 instance: BaseSha/RedSha/CurrentSha/Branch/Worktree of the scenario, Worker.Trailer = the declared Co-Authored-By, the seven free-text fields; schema-validated",
+   "Input": "Verification.Handoff {Path, Sha256}"
+  },
+  {
+   "Built": "artifacts/orchestration/FX-U1/T1/0/<VERIFY RunId>/output.json (kit run_dir)",
+   "Input": "Verification.IgnorePath"
+  },
+  {
+   "Built": "MainSha fbe25347 (AP with 16.10 terms)",
+   "Input": "Verification.TermsRev"
+  },
+  {
+   "Built": "origin/main of the fixture, fbe25347 (Derive input of the map part)",
+   "Input": "Verification.MainSha"
+  },
+  {
+   "Built": "not supplied: R4 reads handoff.Worker.Trailer",
+   "Input": "Verification.DeclaredCoAuthoredBy (optional)"
+  },
+  {
+   "Built": "the clone; R4 recomputes Identity/Scope/CleanTree/Trailer from it",
+   "Input": "Repo (shared with R5-R9)"
+  },
+  {
+   "Built": "synthetic relay facts file; R10 is not an R4 input",
+   "Input": "RelayFacts {Path, CitedSha256} (R10, not R4)"
+  },
+  {
+   "Built": "rows from the contract citations, EffectiveSha/ClauseMapBlob from the clausemap facts; checked by R6 against the acceptor's own Derive at Verification.MainSha",
+   "Input": "Controller AuthorityResolution (R6, not R4)"
+  }
+ ],
+ "Scenarios": [
+  {
+   "Cases": [
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "ACCEPT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 0,
+     "FailureClass": "Authority",
+     "Label": "conforming",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-Identity-fail",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "fail",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "notrun-Identity",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "not_run",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-Scope-fail",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "fail",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "notrun-Scope",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "not_run",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-CleanTree-fail",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "fail",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "notrun-CleanTree",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "not_run",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-Trailer-fail",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "notrun-Trailer",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "not_run"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-FreeText-fail",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "notrun-FreeText",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "not_run",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "BLOCKED",
+     "Exit": 1,
+     "FailureClass": "Remote",
+     "Label": "flip-Authority-pass",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "pass",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MISMATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "pass",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "ACCEPT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 0,
+     "FailureClass": "Authority",
+     "Label": "notrun-Authority",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "not_run",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "not_run",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "authorityresolution-effectivesha-wrong",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+       "Index": 0,
+       "Status": "MISMATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MISMATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    }
+   ],
+   "ConformingResults": {
+    "Authority": "fail",
+    "CleanTree": "pass",
+    "FreeText": "pass",
+    "Identity": "pass",
+    "Scope": "pass",
+    "Trailer": "pass"
+   },
+   "Data": "real fixture + simulated T1 delivery",
+   "Scenario": "C-DELIV"
+  },
+  {
+   "Cases": [
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "ACCEPT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 0,
+     "FailureClass": "Authority",
+     "Label": "conforming",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "fail",
+      "Scope": "fail",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-Identity-pass",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MISMATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "pass",
+      "Scope": "fail",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "ACCEPT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 0,
+     "FailureClass": "Authority",
+     "Label": "notrun-Identity",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "not_run",
+      "Scope": "fail",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-Scope-pass",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MISMATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "fail",
+      "Scope": "pass",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "ACCEPT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 0,
+     "FailureClass": "Authority",
+     "Label": "notrun-Scope",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "fail",
+      "Scope": "not_run",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-CleanTree-fail",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "fail",
+      "FreeText": "fail",
+      "Identity": "fail",
+      "Scope": "fail",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "notrun-CleanTree",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MISMATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "not_run",
+      "FreeText": "fail",
+      "Identity": "fail",
+      "Scope": "fail",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-Trailer-pass",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MISMATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "fail",
+      "Scope": "fail",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "ACCEPT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 0,
+     "FailureClass": "Authority",
+     "Label": "notrun-Trailer",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "fail",
+      "Scope": "fail",
+      "Trailer": "not_run"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-FreeText-pass",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MISMATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "fail",
+      "Scope": "fail",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "ACCEPT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 0,
+     "FailureClass": "Authority",
+     "Label": "notrun-FreeText",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "not_run",
+      "Identity": "fail",
+      "Scope": "fail",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Identity",
+     "Label": "flip-Authority-pass",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "pass",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MISMATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "pass",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "fail",
+      "Scope": "fail",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "ACCEPT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 0,
+     "FailureClass": "Authority",
+     "Label": "notrun-Authority",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "not_run",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "not_run",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "fail",
+      "Scope": "fail",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "authorityresolution-effectivesha-wrong",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "term GATE PASS in Evidence"
+       ],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+       ],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "paths not covered by AllowedWriteScope: 3",
+        "paths covered by ForbiddenWriteScope: 2"
+       ],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+       ],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+       "Index": 0,
+       "Status": "MISMATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "fail",
+      "Identity": "fail",
+      "Scope": "fail",
+      "Trailer": "fail"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MISMATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    }
+   ],
+   "ConformingResults": {
+    "Authority": "fail",
+    "CleanTree": "pass",
+    "FreeText": "fail",
+    "Identity": "fail",
+    "Scope": "fail",
+    "Trailer": "fail"
+   },
+   "Data": "real fixture, e2e commits as they are",
+   "Scenario": "C-REAL"
+  },
+  {
+   "Cases": [
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "ACCEPT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 0,
+     "FailureClass": "Authority",
+     "Label": "conforming",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": null,
+       "Reasons": [
+        "status --porcelain is not empty"
+       ],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "fail",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "REJECT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 1,
+     "FailureClass": "Authority",
+     "Label": "flip-CleanTree-pass",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "not pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [
+        "status --porcelain is not empty"
+       ],
+       "Status": "MISMATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MISMATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "pass",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    {
+     "Classification": "EXECUTION_BLOCKED",
+     "CvSchemaErrors": [],
+     "Decision": "ACCEPT_FACTS",
+     "Disposition": "STOP",
+     "Exit": 0,
+     "FailureClass": "Authority",
+     "Label": "notrun-CleanTree",
+     "R4NotApplicableDeclared": false,
+     "R4Rows": {
+      "Authority": {
+       "AcceptorExpects": "not pass",
+       "Controller": "fail",
+       "Defects": [
+        "MV-3: OnlyInFiles",
+        "MV-4: LiteralViolations",
+        "MV-4: AddedPresentInEff1",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: DerivedModified != MapModified",
+        "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+        "MV-6: modified file absent in a revision",
+        "MV-7: 16.3 differs after pointer removal"
+       ],
+       "Reasons": null,
+       "Status": "MATCH"
+      },
+      "CleanTree": {
+       "AcceptorExpects": "not pass",
+       "Controller": "not_run",
+       "Defects": null,
+       "Reasons": [
+        "status --porcelain is not empty"
+       ],
+       "Status": "MATCH"
+      },
+      "FreeText": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Identity": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Scope": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      },
+      "Trailer": {
+       "AcceptorExpects": "pass",
+       "Controller": "pass",
+       "Defects": null,
+       "Reasons": [],
+       "Status": "MATCH"
+      }
+     },
+     "R4Status": "MATCH",
+     "R6AuthorityResolution": [
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 0,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 1,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 2,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 3,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 4,
+       "Status": "MATCH"
+      },
+      {
+       "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+       "Index": 5,
+       "Status": "MATCH"
+      }
+     ],
+     "Results": {
+      "Authority": "fail",
+      "CleanTree": "not_run",
+      "FreeText": "pass",
+      "Identity": "pass",
+      "Scope": "pass",
+      "Trailer": "pass"
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    }
+   ],
+   "ConformingResults": {
+    "Authority": "fail",
+    "CleanTree": "fail",
+    "FreeText": "pass",
+    "Identity": "pass",
+    "Scope": "pass",
+    "Trailer": "pass"
+   },
+   "Data": "real fixture + simulated T1 delivery",
+   "Scenario": "C-DELIV-DIRTY"
+  }
+ ],
+ "Schema": "r3-part-c/1",
+ "Summary": {
+  "AllCvSchemaValid": true,
+  "AnyNotApplicableDeclared": false,
+  "ConformingAccepted": {
+   "C-DELIV": "ACCEPT_FACTS",
+   "C-DELIV-DIRTY": "ACCEPT_FACTS",
+   "C-REAL": "ACCEPT_FACTS"
+  },
+  "ConformingR4": {
+   "C-DELIV": "MATCH",
+   "C-DELIV-DIRTY": "MATCH",
+   "C-REAL": "MATCH"
+  },
+  "FlipsRejectedByR4": "13/13",
+  "FlipsWhereOnlyTheFlippedRowMismatches": "13/13",
+  "NotRun": {
+   "C-DELIV-DIRTY:notrun-CleanTree": {
+    "AcceptorExpects": "not pass",
+    "R4": "MATCH"
+   },
+   "C-DELIV:notrun-Authority": {
+    "AcceptorExpects": "not pass",
+    "R4": "MATCH"
+   },
+   "C-DELIV:notrun-CleanTree": {
+    "AcceptorExpects": "pass",
+    "R4": "MISMATCH"
+   },
+   "C-DELIV:notrun-FreeText": {
+    "AcceptorExpects": "pass",
+    "R4": "MISMATCH"
+   },
+   "C-DELIV:notrun-Identity": {
+    "AcceptorExpects": "pass",
+    "R4": "MISMATCH"
+   },
+   "C-DELIV:notrun-Scope": {
+    "AcceptorExpects": "pass",
+    "R4": "MISMATCH"
+   },
+   "C-DELIV:notrun-Trailer": {
+    "AcceptorExpects": "pass",
+    "R4": "MISMATCH"
+   },
+   "C-REAL:notrun-Authority": {
+    "AcceptorExpects": "not pass",
+    "R4": "MATCH"
+   },
+   "C-REAL:notrun-CleanTree": {
+    "AcceptorExpects": "pass",
+    "R4": "MISMATCH"
+   },
+   "C-REAL:notrun-FreeText": {
+    "AcceptorExpects": "not pass",
+    "R4": "MATCH"
+   },
+   "C-REAL:notrun-Identity": {
+    "AcceptorExpects": "not pass",
+    "R4": "MATCH"
+   },
+   "C-REAL:notrun-Scope": {
+    "AcceptorExpects": "not pass",
+    "R4": "MATCH"
+   },
+   "C-REAL:notrun-Trailer": {
+    "AcceptorExpects": "not pass",
+    "R4": "MATCH"
+   }
+  },
+  "Seconds": 417.6
+ }
+}

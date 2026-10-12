@@ -1,0 +1,677 @@
+{
+ "Held": {
+  "P1": true,
+  "P3": true
+ },
+ "NoDefaultCurrentDirectoryInExePath": "1",
+ "P1": {
+  "DecisionRef": "BANCO-r1r4 (sin disposicion: banco de pruebas de la evidencia A-6 ronda 2; no es una DecisionRef normativa)",
+  "Held": true,
+  "IdEqualsPinned": true,
+  "OnlyNewLooseObject": true,
+  "Repo": "D:/r62-a6r2/r1r4/r1/t0",
+  "ReturnedId": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "SnapshotAfter": {
+   "GitFileCount": 245,
+   "GitFilesSha256": "2a2204770099d1c0b254902866042ec9414d48d9f4a298425195cef2523fbab1",
+   "Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "HeadSymref": "refs/heads/fx/u1",
+   "IndexSha256": "2096f0e4694293756ad81ecf9af26e6ba971e7c94677a05692d6b01a2adb49fb",
+   "RefCount": 9,
+   "RefsSha256": "b5f8c0a9fc7e7b94595cf30303268dcb7aed77d7057e9be1f64a334241d70b43",
+   "ReplaceRefs": [],
+   "StatusEntries": 0,
+   "StatusZSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "WorktreeFileCount": 77,
+   "WorktreeFilesSha256": "3491ede4ca01d8593406d90bec80d665795edbef6f0faef76477630874a0e2cf"
+  },
+  "SnapshotBefore": {
+   "GitFileCount": 244,
+   "GitFilesSha256": "f7793ebc1af29abea97f5d74edd576adf2d5cc94a17205c85ecf92f28d39b261",
+   "Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "HeadSymref": "refs/heads/fx/u1",
+   "IndexSha256": "2096f0e4694293756ad81ecf9af26e6ba971e7c94677a05692d6b01a2adb49fb",
+   "RefCount": 9,
+   "RefsSha256": "b5f8c0a9fc7e7b94595cf30303268dcb7aed77d7057e9be1f64a334241d70b43",
+   "ReplaceRefs": [],
+   "StatusEntries": 0,
+   "StatusZSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "WorktreeFileCount": 77,
+   "WorktreeFilesSha256": "3491ede4ca01d8593406d90bec80d665795edbef6f0faef76477630874a0e2cf"
+  },
+  "SnapshotDiff": {
+   "GitFiles": {
+    "Added": [
+     "objects/9a/829b0eeb1210238052b1feac06cfa8f7964aed"
+    ],
+    "Modified": [],
+    "Removed": []
+   }
+  },
+  "SourceBlobSha1": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "SourceCommand": "git --no-replace-objects -C <I-62 worktree> cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "SourceSha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200",
+  "SourceSize": 64764,
+  "UtcTime": "2026-10-12T08:45:21.617983Z",
+  "WriteCommand": "git -C D:/r62-a6r2/r1r4/r1/t0 hash-object -w --no-filters --stdin",
+  "WriteExit": 0
+ },
+ "P2": {
+  "cmd": {
+   "FailedSteps": [],
+   "Launch": true,
+   "Repo": "D:/r62-a6r2/r1r4/r1/t0",
+   "Shell": "cmd",
+   "Steps": {
+    "1": {
+     "Command": "git -C T for-each-ref refs/replace/",
+     "Exit": 0,
+     "Ok": true,
+     "Output": []
+    },
+    "2": {
+     "AlternatesExists": false,
+     "CommonDir": "D:\\r62-a6r2\\r1r4\\r1\\t0\\.git",
+     "Extra_GitPathAlternates": "D:/r62-a6r2/r1r4/r1/t0/.git/objects/info/alternates",
+     "Extra_GitPathAlternatesExists": false,
+     "Extra_GitPathGrafts": "D:/r62-a6r2/r1r4/r1/t0/.git/info/grafts",
+     "Extra_GitPathGraftsExists": false,
+     "GraftsExists": false,
+     "IsShallowRepository": "false",
+     "Ok": true
+    },
+    "3": {
+     "Cwd": "D:/r62-a6r2/r1r4/r1/t0",
+     "EnvNoDefaultCurrentDirectoryInExePath": "1",
+     "Extra_ConsumerDigest": {
+      "BlobSha1": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+      "CrBytes": 0,
+      "EqualsPinned": true,
+      "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200",
+      "Size": 64764
+     },
+     "Extra_ConsumerDigestCommand": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I D:/r62-a6r2/r1r4/bin/digest.py",
+     "Hash": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+     "HashCommand": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | git hash-object --no-filters --stdin",
+     "HashExit": 0,
+     "Ok": true,
+     "Shell": "cmd",
+     "Type": "blob",
+     "TypeCommand": "git --no-replace-objects cat-file -t 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+     "TypeExit": 0
+    },
+    "4": {
+     "Command": "git -C T fsck --full --no-dangling --no-progress (GIT_OPTIONAL_LOCKS=0)",
+     "Exit": 0,
+     "FsckWroteNothing": true,
+     "Ok": true,
+     "SnapshotDiff": {},
+     "StderrHead": [],
+     "StdoutHead": []
+    }
+   },
+   "UtcTime": "2026-10-12T08:45:33.082914Z"
+  },
+  "ps51": {
+   "FailedSteps": [
+    "3"
+   ],
+   "Launch": false,
+   "Repo": "D:/r62-a6r2/r1r4/r1/t0",
+   "Shell": "ps51",
+   "Steps": {
+    "1": {
+     "Command": "git -C T for-each-ref refs/replace/",
+     "Exit": 0,
+     "Ok": true,
+     "Output": []
+    },
+    "2": {
+     "AlternatesExists": false,
+     "CommonDir": "D:\\r62-a6r2\\r1r4\\r1\\t0\\.git",
+     "Extra_GitPathAlternates": "D:/r62-a6r2/r1r4/r1/t0/.git/objects/info/alternates",
+     "Extra_GitPathAlternatesExists": false,
+     "Extra_GitPathGrafts": "D:/r62-a6r2/r1r4/r1/t0/.git/info/grafts",
+     "Extra_GitPathGraftsExists": false,
+     "GraftsExists": false,
+     "IsShallowRepository": "false",
+     "Ok": true
+    },
+    "3": {
+     "Cwd": "D:/r62-a6r2/r1r4/r1/t0",
+     "EnvNoDefaultCurrentDirectoryInExePath": "1",
+     "Extra_ConsumerDigest": {
+      "BlobSha1": "7ea574522b23aea3191c28c4dcbdfc2888e0ea81",
+      "CrBytes": 1614,
+      "EqualsPinned": false,
+      "Sha256": "7856299b0d46a5e46709ded783c0523774bea779e375b1fd53298109f121b4cc",
+      "Size": 66378
+     },
+     "Extra_ConsumerDigestCommand": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I D:/r62-a6r2/r1r4/bin/digest.py",
+     "Hash": "7ea574522b23aea3191c28c4dcbdfc2888e0ea81",
+     "HashCommand": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | git hash-object --no-filters --stdin",
+     "HashExit": 0,
+     "Ok": false,
+     "Shell": "ps51",
+     "Type": "blob",
+     "TypeCommand": "git --no-replace-objects cat-file -t 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+     "TypeExit": 0
+    },
+    "4": {
+     "Command": "git -C T fsck --full --no-dangling --no-progress (GIT_OPTIONAL_LOCKS=0)",
+     "Exit": 0,
+     "FsckWroteNothing": true,
+     "Ok": true,
+     "SnapshotDiff": {},
+     "StderrHead": [],
+     "StdoutHead": []
+    }
+   },
+   "UtcTime": "2026-10-12T08:45:39.412373Z"
+  },
+  "pwsh": {
+   "FailedSteps": [],
+   "Launch": true,
+   "Repo": "D:/r62-a6r2/r1r4/r1/t0",
+   "Shell": "pwsh",
+   "Steps": {
+    "1": {
+     "Command": "git -C T for-each-ref refs/replace/",
+     "Exit": 0,
+     "Ok": true,
+     "Output": []
+    },
+    "2": {
+     "AlternatesExists": false,
+     "CommonDir": "D:\\r62-a6r2\\r1r4\\r1\\t0\\.git",
+     "Extra_GitPathAlternates": "D:/r62-a6r2/r1r4/r1/t0/.git/objects/info/alternates",
+     "Extra_GitPathAlternatesExists": false,
+     "Extra_GitPathGrafts": "D:/r62-a6r2/r1r4/r1/t0/.git/info/grafts",
+     "Extra_GitPathGraftsExists": false,
+     "GraftsExists": false,
+     "IsShallowRepository": "false",
+     "Ok": true
+    },
+    "3": {
+     "Cwd": "D:/r62-a6r2/r1r4/r1/t0",
+     "EnvNoDefaultCurrentDirectoryInExePath": "1",
+     "Extra_ConsumerDigest": {
+      "BlobSha1": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+      "CrBytes": 0,
+      "EqualsPinned": true,
+      "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200",
+      "Size": 64764
+     },
+     "Extra_ConsumerDigestCommand": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I D:/r62-a6r2/r1r4/bin/digest.py",
+     "Hash": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+     "HashCommand": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | git hash-object --no-filters --stdin",
+     "HashExit": 0,
+     "Ok": true,
+     "Shell": "pwsh",
+     "Type": "blob",
+     "TypeCommand": "git --no-replace-objects cat-file -t 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+     "TypeExit": 0
+    },
+    "4": {
+     "Command": "git -C T fsck --full --no-dangling --no-progress (GIT_OPTIONAL_LOCKS=0)",
+     "Exit": 0,
+     "FsckWroteNothing": true,
+     "Ok": true,
+     "SnapshotDiff": {},
+     "StderrHead": [],
+     "StdoutHead": []
+    }
+   },
+   "UtcTime": "2026-10-12T08:45:28.553537Z"
+  }
+ },
+ "P2Expectation": {
+  "cmd": "Launch true",
+  "ps51": "Launch false at step 3 (bytes changed by the 5.1 pipe)",
+  "pwsh": "Launch true"
+ },
+ "P2Held": {
+  "cmd": true,
+  "ps51": true,
+  "pwsh": true
+ },
+ "P3": {
+  "AllPwshAndCmdEnvelopesByteEqualToFileCopy": true,
+  "Rows": [
+   {
+    "Argv": [
+     "identity",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--branch",
+     "fx/u1",
+     "--base",
+     "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+     "--current",
+     "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+     "--red",
+     "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "d0684b74673970d3e65d0a40b6b690d2e551d10019d7628a5e595b89abffb771",
+    "FileCopyStdoutSha256": "436cba068848ebb94016f993881ba91eecff8ad8dfb6769ebb8eae5ac43abef1",
+    "Name": "identity",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - identity --repo D:/r62-a6r2/r1r4/r1/t0 --branch fx/u1 --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --current ae25b596a11fe3508ac60a3ef7de5dc23df971ce --red d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+     "Exit": 0,
+     "StdoutSha256": "436cba068848ebb94016f993881ba91eecff8ad8dfb6769ebb8eae5ac43abef1"
+    },
+    "ps51_negative": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - identity --repo D:/r62-a6r2/r1r4/r1/t0 --branch fx/u1 --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --current ae25b596a11fe3508ac60a3ef7de5dc23df971ce --red d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+     "Exit": 0,
+     "Note": "envelope comparison cannot see the byte change made by Windows PowerShell 5.1 (see P2 step 3)",
+     "StdoutSha256": "436cba068848ebb94016f993881ba91eecff8ad8dfb6769ebb8eae5ac43abef1"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - identity --repo D:/r62-a6r2/r1r4/r1/t0 --branch fx/u1 --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --current ae25b596a11fe3508ac60a3ef7de5dc23df971ce --red d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+     "Exit": 0,
+     "StdoutSha256": "436cba068848ebb94016f993881ba91eecff8ad8dfb6769ebb8eae5ac43abef1"
+    }
+   },
+   {
+    "Argv": [
+     "diff",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--from",
+     "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+     "--to",
+     "ae25b596a11fe3508ac60a3ef7de5dc23df971ce"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69",
+    "FileCopyStdoutSha256": "1d78a74b501c4319a43918d178c0334d14f872214c46bef8fa3a87f3524a85c6",
+    "Name": "diff",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - diff --repo D:/r62-a6r2/r1r4/r1/t0 --from 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --to ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+     "Exit": 0,
+     "StdoutSha256": "1d78a74b501c4319a43918d178c0334d14f872214c46bef8fa3a87f3524a85c6"
+    },
+    "ps51_negative": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - diff --repo D:/r62-a6r2/r1r4/r1/t0 --from 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --to ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+     "Exit": 0,
+     "Note": "envelope comparison cannot see the byte change made by Windows PowerShell 5.1 (see P2 step 3)",
+     "StdoutSha256": "1d78a74b501c4319a43918d178c0334d14f872214c46bef8fa3a87f3524a85c6"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - diff --repo D:/r62-a6r2/r1r4/r1/t0 --from 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --to ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+     "Exit": 0,
+     "StdoutSha256": "1d78a74b501c4319a43918d178c0334d14f872214c46bef8fa3a87f3524a85c6"
+    }
+   },
+   {
+    "Argv": [
+     "scope",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--from",
+     "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+     "--to",
+     "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+     "--file",
+     "DELEG=D:/r62-a6r2/r1r4/r1/in-t0/deleg.json",
+     "--sha256",
+     "DELEG=1509283b6a7a26159ac066cdabd2e7e9f6b7748666d019c0c9bf31e0c4bf8367"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5",
+    "FileCopyStdoutSha256": "a666084e2abbf43d1491b7461496083b3d1d483c1c46a14a33e276d27d6d4631",
+    "Name": "scope",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - scope --repo D:/r62-a6r2/r1r4/r1/t0 --from 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --to ae25b596a11fe3508ac60a3ef7de5dc23df971ce --file DELEG=D:/r62-a6r2/r1r4/r1/in-t0/deleg.json --sha256 DELEG=1509283b6a7a26159ac066cdabd2e7e9f6b7748666d019c0c9bf31e0c4bf8367",
+     "Exit": 0,
+     "StdoutSha256": "a666084e2abbf43d1491b7461496083b3d1d483c1c46a14a33e276d27d6d4631"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - scope --repo D:/r62-a6r2/r1r4/r1/t0 --from 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --to ae25b596a11fe3508ac60a3ef7de5dc23df971ce --file DELEG=D:/r62-a6r2/r1r4/r1/in-t0/deleg.json --sha256 DELEG=1509283b6a7a26159ac066cdabd2e7e9f6b7748666d019c0c9bf31e0c4bf8367",
+     "Exit": 0,
+     "StdoutSha256": "a666084e2abbf43d1491b7461496083b3d1d483c1c46a14a33e276d27d6d4631"
+    }
+   },
+   {
+    "Argv": [
+     "contract",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--file",
+     "CONTRACT=D:/r62-a6r2/r1r4/r1/in-t0/K.json",
+     "--sha256",
+     "CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+     "--file",
+     "DELEG=D:/r62-a6r2/r1r4/r1/in-t0/deleg.json",
+     "--sha256",
+     "DELEG=1509283b6a7a26159ac066cdabd2e7e9f6b7748666d019c0c9bf31e0c4bf8367"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c",
+    "FileCopyStdoutSha256": "e4582b9fe6416e5dcb9237d2b0c2f56558b08aa3e27a36150171a96524e0f191",
+    "Name": "contract",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - contract --repo D:/r62-a6r2/r1r4/r1/t0 --file CONTRACT=D:/r62-a6r2/r1r4/r1/in-t0/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --file DELEG=D:/r62-a6r2/r1r4/r1/in-t0/deleg.json --sha256 DELEG=1509283b6a7a26159ac066cdabd2e7e9f6b7748666d019c0c9bf31e0c4bf8367",
+     "Exit": 0,
+     "StdoutSha256": "e4582b9fe6416e5dcb9237d2b0c2f56558b08aa3e27a36150171a96524e0f191"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - contract --repo D:/r62-a6r2/r1r4/r1/t0 --file CONTRACT=D:/r62-a6r2/r1r4/r1/in-t0/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --file DELEG=D:/r62-a6r2/r1r4/r1/in-t0/deleg.json --sha256 DELEG=1509283b6a7a26159ac066cdabd2e7e9f6b7748666d019c0c9bf31e0c4bf8367",
+     "Exit": 0,
+     "StdoutSha256": "e4582b9fe6416e5dcb9237d2b0c2f56558b08aa3e27a36150171a96524e0f191"
+    }
+   },
+   {
+    "Argv": [
+     "hashes",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--rev",
+     "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+     "--paths",
+     "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+     "src/Fixture.Lib/Calculator.cs"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "19ef36311d7c1bcf41946dade09966effc4dea105bd98474dd9488365a7ff662",
+    "FileCopyStdoutSha256": "0301a13d57672710aad68575644203cdf427b1c618cb2a55a4a02a2d26651c08",
+    "Name": "hashes",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - hashes --repo D:/r62-a6r2/r1r4/r1/t0 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --paths docs/automation/decisions/FX-U1-T1.gate-contract.json src/Fixture.Lib/Calculator.cs",
+     "Exit": 0,
+     "StdoutSha256": "0301a13d57672710aad68575644203cdf427b1c618cb2a55a4a02a2d26651c08"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - hashes --repo D:/r62-a6r2/r1r4/r1/t0 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --paths docs/automation/decisions/FX-U1-T1.gate-contract.json src/Fixture.Lib/Calculator.cs",
+     "Exit": 0,
+     "StdoutSha256": "0301a13d57672710aad68575644203cdf427b1c618cb2a55a4a02a2d26651c08"
+    }
+   },
+   {
+    "Argv": [
+     "cleantree",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--ignore-path",
+     "artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "dc2de9192f430c63c376ae9897b968481a34651363b7028ac3c9922b49f0a2a4",
+    "FileCopyStdoutSha256": "bbd3d9d54e575b8fe811e51a6770dafd80b557df060a878638cb8c8c021ea4ea",
+    "Name": "cleantree",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - cleantree --repo D:/r62-a6r2/r1r4/r1/t0 --ignore-path artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json",
+     "Exit": 0,
+     "StdoutSha256": "bbd3d9d54e575b8fe811e51a6770dafd80b557df060a878638cb8c8c021ea4ea"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - cleantree --repo D:/r62-a6r2/r1r4/r1/t0 --ignore-path artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json",
+     "Exit": 0,
+     "StdoutSha256": "bbd3d9d54e575b8fe811e51a6770dafd80b557df060a878638cb8c8c021ea4ea"
+    }
+   },
+   {
+    "Argv": [
+     "read-text",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--rev",
+     "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+     "--path",
+     "docs/automation/decisions/FX-U1.md",
+     "--lines",
+     "1-1"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "c17acd151f5cd49351c1ba5e657bdbb3ebe23846a4b7a49ad77e108e023f257c",
+    "FileCopyStdoutSha256": "c51a1c0e252441721c998d5ab4b7af9d92d37ab649044a24bb9f0e87925392a4",
+    "Name": "read-text-1",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - read-text --repo D:/r62-a6r2/r1r4/r1/t0 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 1-1",
+     "Exit": 0,
+     "StdoutSha256": "c51a1c0e252441721c998d5ab4b7af9d92d37ab649044a24bb9f0e87925392a4"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - read-text --repo D:/r62-a6r2/r1r4/r1/t0 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 1-1",
+     "Exit": 0,
+     "StdoutSha256": "c51a1c0e252441721c998d5ab4b7af9d92d37ab649044a24bb9f0e87925392a4"
+    }
+   },
+   {
+    "Argv": [
+     "read-text",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--rev",
+     "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+     "--path",
+     "docs/automation/decisions/FX-U1.md",
+     "--lines",
+     "73-73"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "be222422f1119e35c3650d699af07db6ca25f5dfa1f5da2336f2e8325322f4ce",
+    "FileCopyStdoutSha256": "c57f5e082d2028631b393a40b9973c0da177bcd8aa8d3b4da29312cfb9d07c02",
+    "Name": "read-text-73",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - read-text --repo D:/r62-a6r2/r1r4/r1/t0 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 73-73",
+     "Exit": 0,
+     "StdoutSha256": "c57f5e082d2028631b393a40b9973c0da177bcd8aa8d3b4da29312cfb9d07c02"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - read-text --repo D:/r62-a6r2/r1r4/r1/t0 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 73-73",
+     "Exit": 0,
+     "StdoutSha256": "c57f5e082d2028631b393a40b9973c0da177bcd8aa8d3b4da29312cfb9d07c02"
+    }
+   },
+   {
+    "Argv": [
+     "read-json",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--rev",
+     "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+     "--path",
+     "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+     "--pointer",
+     "/Objective",
+     "--pointer",
+     "/Schema",
+     "--pointer",
+     "/MainSha",
+     "--pointer",
+     "/AuthorityRevision"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "d5b89fa9afdb689f3d1f32dd672bd18c02570658fce45632a663c5c28dc83506",
+    "FileCopyStdoutSha256": "4f2dad9c72764a947d2fe4cae9497dafdf4f80cc6d963e6ab372f5b99cc04d52",
+    "Name": "read-json",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - read-json --repo D:/r62-a6r2/r1r4/r1/t0 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1-T1.gate-contract.json --pointer /Objective --pointer /Schema --pointer /MainSha --pointer /AuthorityRevision",
+     "Exit": 0,
+     "StdoutSha256": "4f2dad9c72764a947d2fe4cae9497dafdf4f80cc6d963e6ab372f5b99cc04d52"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - read-json --repo D:/r62-a6r2/r1r4/r1/t0 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1-T1.gate-contract.json --pointer /Objective --pointer /Schema --pointer /MainSha --pointer /AuthorityRevision",
+     "Exit": 0,
+     "StdoutSha256": "4f2dad9c72764a947d2fe4cae9497dafdf4f80cc6d963e6ab372f5b99cc04d52"
+    }
+   },
+   {
+    "Argv": [
+     "trx",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--file",
+     "TRX=D:/r62-a6r2/r1r4/r1/in-t0/fixture-tests.trx",
+     "--sha256",
+     "TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+     "--filter-substring",
+     "Subtract"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "68e47e9e01c67ff16dc3f231aacd64d0945ec11a505b4782b9a6d1377f5adadf",
+    "FileCopyStdoutSha256": "63733b674c8677f9290f7124b6cbb8a7f6c7cc29a67b2d9640ce1c3a98df97c8",
+    "Name": "trx",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - trx --repo D:/r62-a6r2/r1r4/r1/t0 --file TRX=D:/r62-a6r2/r1r4/r1/in-t0/fixture-tests.trx --sha256 TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513 --filter-substring Subtract",
+     "Exit": 0,
+     "StdoutSha256": "63733b674c8677f9290f7124b6cbb8a7f6c7cc29a67b2d9640ce1c3a98df97c8"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - trx --repo D:/r62-a6r2/r1r4/r1/t0 --file TRX=D:/r62-a6r2/r1r4/r1/in-t0/fixture-tests.trx --sha256 TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513 --filter-substring Subtract",
+     "Exit": 0,
+     "StdoutSha256": "63733b674c8677f9290f7124b6cbb8a7f6c7cc29a67b2d9640ce1c3a98df97c8"
+    }
+   },
+   {
+    "Argv": [
+     "handoff",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--file",
+     "H=D:/r62-a6r2/r1r4/r1/in-t0/handoff.json",
+     "--sha256",
+     "H=17be790776c82662b4473b3fdadd2e89d8a14ee6ac463e370a7df897a2dd8a92",
+     "--schema-rev",
+     "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "cacafbc3828fb3b73b5a5e3ff1d317f7a3b66212e6ac627344cf051d4090db45",
+    "FileCopyStdoutSha256": "fe5df841b85320a8aec8181184916a1ee2a9829bff8d069a1ea374fdfa101f0a",
+    "Name": "handoff",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - handoff --repo D:/r62-a6r2/r1r4/r1/t0 --file H=D:/r62-a6r2/r1r4/r1/in-t0/handoff.json --sha256 H=17be790776c82662b4473b3fdadd2e89d8a14ee6ac463e370a7df897a2dd8a92 --schema-rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+     "Exit": 0,
+     "StdoutSha256": "fe5df841b85320a8aec8181184916a1ee2a9829bff8d069a1ea374fdfa101f0a"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - handoff --repo D:/r62-a6r2/r1r4/r1/t0 --file H=D:/r62-a6r2/r1r4/r1/in-t0/handoff.json --sha256 H=17be790776c82662b4473b3fdadd2e89d8a14ee6ac463e370a7df897a2dd8a92 --schema-rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+     "Exit": 0,
+     "StdoutSha256": "fe5df841b85320a8aec8181184916a1ee2a9829bff8d069a1ea374fdfa101f0a"
+    }
+   },
+   {
+    "Argv": [
+     "freetext",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--file",
+     "H=D:/r62-a6r2/r1r4/r1/in-t0/handoff.json",
+     "--sha256",
+     "H=17be790776c82662b4473b3fdadd2e89d8a14ee6ac463e370a7df897a2dd8a92",
+     "--terms-rev",
+     "fbe25347799e5b801ef708454212335537448bd1"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "c8c29709d9f0a4b850a976a0f824ad86a45c5752c26b3c7522b760462ca93013",
+    "FileCopyStdoutSha256": "3f2ffdf493d1a45469089596989ad32729eb5935ab7430309459108c0f05f470",
+    "Name": "freetext",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - freetext --repo D:/r62-a6r2/r1r4/r1/t0 --file H=D:/r62-a6r2/r1r4/r1/in-t0/handoff.json --sha256 H=17be790776c82662b4473b3fdadd2e89d8a14ee6ac463e370a7df897a2dd8a92 --terms-rev fbe25347799e5b801ef708454212335537448bd1",
+     "Exit": 0,
+     "StdoutSha256": "3f2ffdf493d1a45469089596989ad32729eb5935ab7430309459108c0f05f470"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - freetext --repo D:/r62-a6r2/r1r4/r1/t0 --file H=D:/r62-a6r2/r1r4/r1/in-t0/handoff.json --sha256 H=17be790776c82662b4473b3fdadd2e89d8a14ee6ac463e370a7df897a2dd8a92 --terms-rev fbe25347799e5b801ef708454212335537448bd1",
+     "Exit": 0,
+     "StdoutSha256": "3f2ffdf493d1a45469089596989ad32729eb5935ab7430309459108c0f05f470"
+    }
+   },
+   {
+    "Argv": [
+     "clausemap",
+     "--repo",
+     "D:/r62-a6r2/r1r4/r1/t0",
+     "--main",
+     "fbe25347799e5b801ef708454212335537448bd1",
+     "--state-rev",
+     "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+     "--state-path",
+     "docs/automation/state/FX-U1.yml",
+     "--file",
+     "CONTRACT=D:/r62-a6r2/r1r4/r1/in-t0/K.json",
+     "--sha256",
+     "CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+     "--base",
+     "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf"
+    ],
+    "FileCopyExit": 0,
+    "FileCopyFactsSha256": "dbc7fcbf1f442fa077312b33b64e6b7aff683decfabdf104425446cf3ffb4c9b",
+    "FileCopyStdoutSha256": "02b8b31f0e0b260d2983f35fde6d68cd152017c16795ea5faae954d179117f37",
+    "Name": "clausemap",
+    "cmd": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - clausemap --repo D:/r62-a6r2/r1r4/r1/t0 --main fbe25347799e5b801ef708454212335537448bd1 --state-rev 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --state-path docs/automation/state/FX-U1.yml --file CONTRACT=D:/r62-a6r2/r1r4/r1/in-t0/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+     "Exit": 0,
+     "StdoutSha256": "02b8b31f0e0b260d2983f35fde6d68cd152017c16795ea5faae954d179117f37"
+    },
+    "pwsh": {
+     "BytesEqualToFileCopy": true,
+     "CommandLine": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I - clausemap --repo D:/r62-a6r2/r1r4/r1/t0 --main fbe25347799e5b801ef708454212335537448bd1 --state-rev 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --state-path docs/automation/state/FX-U1.yml --file CONTRACT=D:/r62-a6r2/r1r4/r1/in-t0/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+     "Exit": 0,
+     "StdoutSha256": "02b8b31f0e0b260d2983f35fde6d68cd152017c16795ea5faae954d179117f37"
+    }
+   }
+  ],
+  "SnapshotDiff": {},
+  "ZeroWriteAroundAllRuns": true
+ },
+ "Pins": {
+  "bmin_accept.py": {
+   "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+   "CopyPath": "D:/r62-a6r2/r1r4/pin/bmin_accept.py",
+   "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0",
+   "Size": 111873,
+   "Source": "git --no-replace-objects -C %USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal cat-file blob 434ef1fccb0d15762b30244b4a60928120698411"
+  },
+  "bmin_facts.py": {
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "CopyPath": "D:/r62-a6r2/r1r4/pin/bmin_facts.py",
+   "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200",
+   "Size": 64764,
+   "Source": "git --no-replace-objects -C %USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  }
+ },
+ "Schema": "r1r4-bench/r1-p1-p2-p3",
+ "T0": "D:/r62-a6r2/r1r4/r1/t0",
+ "Versions": {
+  "Cmd": "10.0.26300.9550",
+  "Git": "git version 2.54.0.windows.1",
+  "GitPath": "%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE",
+  "Os": "Windows-11-10.0.26300-SP0",
+  "Pwsh": "7.6.6",
+  "PwshPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+  "Python": "3.13.14",
+  "PythonImplementation": "CPython",
+  "PythonOnPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\python.EXE",
+  "WindowsPowerShell": "5.1.26100.9549"
+ }
+}

@@ -1,0 +1,853 @@
+{
+ "Header": {
+  "AcceptorBlob": "434ef1fccb0d15762b30244b4a60928120698411",
+  "AcceptorSha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0",
+  "Git": "git version 2.54.0.windows.1",
+  "MutateBlob": "6967938954219a6a8a2f38dc80ef5a1165966d19",
+  "Python": "3.13.14",
+  "ToolBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "ToolSha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+ },
+ "Result": {
+  "Cases": [
+   {
+    "Closure": {
+     "Commits": [
+      "1746b404e57d69170ecfc084fd24fa3e699916d7",
+      "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+      "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+      "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+      "a9f6c929e74ef92edfee557c3572b090f48bc318",
+      "b417d36cb820a27c78d6c7d50c234460469c89f8",
+      "fbe25347799e5b801ef708454212335537448bd1"
+     ],
+     "Files": [
+      {
+       "Name": "CONTRACT",
+       "Sha256": "8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc"
+      },
+      {
+       "Name": "DELEG",
+       "Sha256": "4c0d423c04c81ae6d8027e8378e255f6a5fc1f26654dd5d58408da3f9fd37a2e"
+      },
+      {
+       "Name": "H",
+       "Sha256": "97380dd608958c11dab665ef85b45e6c63fbe210f416a4e59a23f35cfa338e29"
+      },
+      {
+       "Name": "TRX",
+       "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513"
+      }
+     ],
+     "Objects": [],
+     "Paths": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      "artifacts/ci/R37949808974/fixture-tests.trx",
+      "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json",
+      "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+      "artifacts/orchestration/FX-U1/T1/0/R20261012T092000Z-c001/output.json",
+      "docs/AUTOMATION_PLAN.md",
+      "docs/FOUNDATIONS.md",
+      "docs/INITIATIVE_LIFECYCLE.md",
+      "docs/WORKFLOW.md",
+      "docs/adr/",
+      "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+      "docs/automation/agent-execution/",
+      "docs/automation/agent-execution/README.md",
+      "docs/automation/agent-execution/adapters/claude-cli.md",
+      "docs/automation/agent-execution/adapters/claude-desktop-session.md",
+      "docs/automation/agent-execution/adapters/claude-subagent.md",
+      "docs/automation/agent-execution/adapters/codex-cli.md",
+      "docs/automation/agent-execution/adapters/codex-desktop-session.md",
+      "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+      "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+      "docs/automation/agent-execution/routing.md",
+      "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json",
+      "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+      "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json",
+      "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json",
+      "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json",
+      "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+      "docs/automation/agent-execution/schemas/automation-state.v2.schema.json",
+      "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+      "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json",
+      "docs/automation/agent-execution/schemas/delegation.v2.schema.json",
+      "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json",
+      "docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+      "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json",
+      "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json",
+      "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+      "docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+      "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json",
+      "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+      "docs/automation/decisions/FX-U1.md",
+      "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+      "docs/automation/state/FX-U1.yml",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "src/Fixture.Lib/Calculator.cs",
+      "tests/Fixture.Tests/CalculatorTests.cs"
+     ],
+     "Refs": [
+      "HEAD",
+      "refs/remotes/origin/fx/u1",
+      "refs/remotes/origin/main"
+     ],
+     "RevPaths": [
+      {
+       "Path": "AGENTS.md",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "docs/AUTOMATION_PLAN.md",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "docs/WORKFLOW.md",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "docs/automation/agent-execution/README.md",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "docs/automation/agent-execution/routing.md",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "docs/automation/decisions/FX-U1.md",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "docs/automation/state/FX-U1.yml",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "src/Fixture.Lib/Calculator.cs",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+       "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7"
+      },
+      {
+       "Path": "AGENTS.md",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/AUTOMATION_PLAN.md",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/WORKFLOW.md",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/automation/agent-execution/README.md",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/automation/agent-execution/routing.md",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/automation/decisions/FX-U1.md",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "docs/automation/state/FX-U1.yml",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "src/Fixture.Lib/Calculator.cs",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+       "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      },
+      {
+       "Path": "AGENTS.md",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "docs/AUTOMATION_PLAN.md",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "docs/WORKFLOW.md",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "docs/automation/agent-execution/README.md",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "docs/automation/agent-execution/routing.md",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "src/Fixture.Lib/Calculator.cs",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+       "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0"
+      },
+      {
+       "Path": "AGENTS.md",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/AUTOMATION_PLAN.md",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/WORKFLOW.md",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/automation/agent-execution/README.md",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/automation/agent-execution/routing.md",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/automation/decisions/FX-U1.md",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "docs/automation/state/FX-U1.yml",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "src/Fixture.Lib/Calculator.cs",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+       "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      },
+      {
+       "Path": "AGENTS.md",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "docs/AUTOMATION_PLAN.md",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "docs/WORKFLOW.md",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "docs/automation/agent-execution/README.md",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "docs/automation/agent-execution/routing.md",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "src/Fixture.Lib/Calculator.cs",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+       "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318"
+      },
+      {
+       "Path": "AGENTS.md",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/AUTOMATION_PLAN.md",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/WORKFLOW.md",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/automation/agent-execution/README.md",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/automation/agent-execution/routing.md",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/automation/decisions/FX-U1.md",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "docs/automation/state/FX-U1.yml",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "src/Fixture.Lib/Calculator.cs",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+       "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+      },
+      {
+       "Path": "AGENTS.md",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      {
+       "Path": "docs/AUTOMATION_PLAN.md",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      {
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      {
+       "Path": "docs/WORKFLOW.md",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      {
+       "Path": "docs/automation/agent-execution/README.md",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      {
+       "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      {
+       "Path": "docs/automation/agent-execution/routing.md",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      {
+       "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      {
+       "Path": "src/Fixture.Lib/Calculator.cs",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      },
+      {
+       "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+       "Rev": "fbe25347799e5b801ef708454212335537448bd1"
+      }
+     ],
+     "Schema": "rackcad-bmin-closure/0-experimental"
+    },
+    "ClosureCounts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "EicCounts": {
+     "AllowedTransitiveInputs": 9,
+     "AutomaticInstructions": 1,
+     "CanonicalInputs": 15,
+     "Obligations": 8
+    },
+    "EicSample": {
+     "AllowedTransitiveInputs": [
+      {
+       "Blob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+       "Path": "docs/WORKFLOW.md",
+       "RequiredBy": {
+        "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+        "Path": "AGENTS.md",
+        "Section": "## Leer primero"
+       }
+      },
+      {
+       "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+       "Path": "docs/automation/agent-execution/README.md",
+       "RequiredBy": {
+        "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+        "Path": "AGENTS.md",
+        "Section": "## Leer primero"
+       }
+      },
+      {
+       "Blob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+       "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+       "RequiredBy": {
+        "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Section": "### 16.13 Compatibilidad de protocolos de ejecuci\u00f3n delegada"
+       }
+      },
+      {
+       "Blob": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+       "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+       "RequiredBy": {
+        "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Section": "### 16.13 Compatibilidad de protocolos de ejecuci\u00f3n delegada"
+       }
+      },
+      {
+       "Blob": "cc3c9cf76b2247f3312e99bd447554326cc3700a",
+       "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+       "RequiredBy": {
+        "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Section": "### 16.9 Verificaci\u00f3n: comprobaciones obligatorias y modos de fallo"
+       }
+      },
+      {
+       "Blob": "f19896a8f1a7c82f74bac7231636f68462a87271",
+       "Path": "docs/INITIATIVE_LIFECYCLE.md",
+       "RequiredBy": {
+        "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Section": "### 16.13 Compatibilidad de protocolos de ejecuci\u00f3n delegada"
+       }
+      },
+      {
+       "Blob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+       "Path": "docs/WORKFLOW.md",
+       "RequiredBy": {
+        "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Section": "### 16.13 Compatibilidad de protocolos de ejecuci\u00f3n delegada"
+       }
+      },
+      {
+       "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+       "Path": "docs/automation/agent-execution/README.md",
+       "RequiredBy": {
+        "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Section": "### 16.13 Compatibilidad de protocolos de ejecuci\u00f3n delegada"
+       }
+      },
+      {
+       "Blob": "bba08fc4686d7192deeb559752636a467103b4b1",
+       "Path": "docs/automation/agent-execution/routing.md",
+       "RequiredBy": {
+        "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Section": "### 16.13 Compatibilidad de protocolos de ejecuci\u00f3n delegada"
+       }
+      }
+     ],
+     "AuthorityRevision": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+     "CanonicalInputs": [
+      {
+       "Blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+       "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json"
+      },
+      {
+       "Blob": "d3f3ec72974a65e05ebd7ad4d1c0b3ced7a07c93",
+       "Path": "docs/automation/decisions/FX-U1.md"
+      },
+      {
+       "Blob": "52a3f7d77a4df1a2e70e5d443eece3384cebd670",
+       "Path": "docs/automation/state/FX-U1.yml"
+      },
+      {
+       "Blob": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+       "Path": "src/Fixture.Lib/Calculator.cs"
+      },
+      {
+       "Blob": "cd43240b64a3d587915fa852d5fbf5947b8d8fe2",
+       "Path": "tests/Fixture.Tests/CalculatorTests.cs"
+      },
+      {
+       "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+       "Path": "AGENTS.md"
+      },
+      {
+       "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+       "Path": "docs/AUTOMATION_PLAN.md"
+      },
+      {
+       "Blob": "0863f2c65dde4e895117f69dbb525dd13c824415",
+       "Path": "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md"
+      },
+      {
+       "Blob": "380892ee869194aa4bd56dcf32dfd76ef0203ab9",
+       "Path": "src/Fixture.Lib/Calculator.cs"
+      },
+      {
+       "Blob": "a9d18f4d1506f1754b446a65f2c6ef90f1609d5a",
+       "Path": "tests/Fixture.Tests/CalculatorTests.cs"
+      },
+      {
+       "Blob": "3fcfffc1aa7ad442422d4da2e5edaf89c48239ea",
+       "Path": "docs/automation/decisions/FX-U1.md"
+      },
+      {
+       "Blob": "a9fea86d076d3a21a6217fa82641e33013fb1340",
+       "Path": "docs/automation/state/FX-U1.yml"
+      },
+      {
+       "Blob": "e2c500e7bb2cbae7e29d193be6e17c0c4e9fe431",
+       "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json"
+      },
+      {
+       "Blob": "8212412322b1f5239ea8549900e18f1d205f2edc",
+       "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json"
+      },
+      {
+       "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff",
+       "Path": "artifacts/ci/R37949808974/fixture-tests.trx"
+      }
+     ]
+    },
+    "EicSchemaErrors": [],
+    "FileNames": {
+     "artifacts/ci/R37949808974/fixture-tests.trx": "TRX",
+     "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json": "DELEG",
+     "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json": "H",
+     "docs/automation/decisions/FX-U1-T1.gate-contract.json": "CONTRACT"
+    },
+    "Inside": {
+     "Decision": "ACCEPT_FACTS",
+     "R9": "MATCH",
+     "R9Runs": {
+      "clausemap": [],
+      "cleantree": [],
+      "contract": [],
+      "diff": [],
+      "freetext": [],
+      "handoff": [],
+      "hashes": [],
+      "identity": [],
+      "read-text": [],
+      "scope": [],
+      "trx": []
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "Outside": {
+     "outside-commit": {
+      "Argv": [
+       "read-text",
+       "--repo",
+       "D:/r62-a6r2/r3/deliv",
+       "--rev",
+       "54f2a4a8f53eb6834448394781600f6343d9a246",
+       "--path",
+       "AGENTS.md",
+       "--lines",
+       "1-1"
+      ],
+      "OtherRunsViolations": {},
+      "R9": "MISMATCH",
+      "Violations": [
+       "GitCalls[0]: object outside the closure: 54f2a4a8f53eb6834448394781600f6343d9a246^{commit}",
+       "GitCalls[1]: object outside the closure: 54f2a4a8f53eb6834448394781600f6343d9a246",
+       "Inputs[0]: commit outside the closure",
+       "Inputs[1]: rev:path outside the closure"
+      ]
+     },
+     "outside-file": {
+      "Argv": [
+       "read-json",
+       "--repo",
+       "D:/r62-a6r2/r3/deliv",
+       "--file",
+       "N=D:/r62-a6r2/r3/runs/d/inputs/dupkey-free.json",
+       "--sha256",
+       "N=37e596ed589aa1ef1381f837ef71b5cda7761674f72adf7d86604f883bedc62d",
+       "--pointer",
+       "/A"
+      ],
+      "OtherRunsViolations": {},
+      "R9": "MISMATCH",
+      "Violations": [
+       "Inputs[0]: file outside the closure"
+      ]
+     },
+     "outside-hashes": {
+      "Argv": [
+       "hashes",
+       "--repo",
+       "D:/r62-a6r2/r3/deliv",
+       "--rev",
+       "b417d36cb820a27c78d6c7d50c234460469c89f8",
+       "--paths",
+       "FIXTURE-MANIFEST.json"
+      ],
+      "OtherRunsViolations": {},
+      "R9": "MISMATCH",
+      "Violations": [
+       "GitCalls[2]: path outside the closure: FIXTURE-MANIFEST.json",
+       "GitCalls[3]: object outside the closure: b8ac6f51340754f57b0d8d3e81733f46e9992307",
+       "Inputs[1]: rev:path outside the closure"
+      ]
+     },
+     "outside-path": {
+      "Argv": [
+       "read-text",
+       "--repo",
+       "D:/r62-a6r2/r3/deliv",
+       "--rev",
+       "b417d36cb820a27c78d6c7d50c234460469c89f8",
+       "--path",
+       "README.md",
+       "--lines",
+       "1-1"
+      ],
+      "OtherRunsViolations": {},
+      "R9": "MISMATCH",
+      "Violations": [
+       "GitCalls[1]: path outside the closure: README.md",
+       "GitCalls[2]: object outside the closure: 6744a160f14c84bed8e74b1a97d74efcd9a96b31",
+       "Inputs[1]: rev:path outside the closure"
+      ]
+     }
+    },
+    "Variant": "EIC-VERIFY"
+   },
+   {
+    "ClosureCounts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 47,
+     "Refs": 3,
+     "RevPaths": 79
+    },
+    "EicCounts": {
+     "AllowedTransitiveInputs": 9,
+     "AutomaticInstructions": 1,
+     "CanonicalInputs": 10,
+     "Obligations": 8
+    },
+    "EicSchemaErrors": [],
+    "FileNames": {
+     "artifacts/ci/R37949808974/fixture-tests.trx": "TRX",
+     "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json": "DELEG",
+     "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json": "H",
+     "docs/automation/decisions/FX-U1-T1.gate-contract.json": "CONTRACT"
+    },
+    "Inside": {
+     "Decision": "REJECT_FACTS",
+     "R9": "MISMATCH",
+     "R9Runs": {
+      "clausemap": [
+       "GitCalls[8]: object outside the closure: a9fea86d076d3a21a6217fa82641e33013fb1340",
+       "Inputs[4]: rev:path outside the closure"
+      ],
+      "cleantree": [],
+      "contract": [],
+      "diff": [],
+      "freetext": [],
+      "handoff": [],
+      "hashes": [
+       "GitCalls[2]: path outside the closure: docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+       "GitCalls[3]: object outside the closure: 0863f2c65dde4e895117f69dbb525dd13c824415",
+       "GitCalls[4]: object outside the closure: 380892ee869194aa4bd56dcf32dfd76ef0203ab9",
+       "GitCalls[5]: object outside the closure: a9d18f4d1506f1754b446a65f2c6ef90f1609d5a",
+       "Inputs[1]: rev:path outside the closure",
+       "Inputs[2]: rev:path outside the closure",
+       "Inputs[3]: rev:path outside the closure"
+      ],
+      "identity": [],
+      "read-text": [
+       "GitCalls[2]: object outside the closure: 3fcfffc1aa7ad442422d4da2e5edaf89c48239ea",
+       "Inputs[1]: rev:path outside the closure"
+      ],
+      "scope": [],
+      "trx": []
+     },
+     "Status": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MISMATCH"
+     }
+    },
+    "Variant": "EIC-I6-STRICT"
+   }
+  ],
+  "Derivation": [
+   {
+    "Field": "Commits",
+    "Formula": "{E.AuthorityRevision} U {D.BaseSha, D.MainSha, D.ChainBaseSha, D.ChainRedSha (if not null)} U {H.BaseSha, H.CurrentSha, H.RedSha (if not null)} U {I.Target.Commit} U {K.AuthorityRevision, K.MainSha} U RevList(D.BaseSha..H.CurrentSha) U FirstParentChain(D.MainSha) U Parents(m) for every m in FirstParentChain(D.MainSha) with two or more parents U {MergeBase(D.MainSha, K.AuthorityRevision)}",
+    "Mechanical": "deterministic, but NOT a lookup in input-closure/v1: it reads the delegation (D), handoff (H), contract (K) and role invocation (I) bytes pinned by E, and three Git graph primitives (rev-list range, first-parent walk, merge-base). The first-parent walk is a superset of every EFF/EFF^1/EFF^2 candidate, so it never depends on a 16.14 Derive implementation (no common mode with the fact under check).",
+    "Rule": "C1"
+   },
+   {
+    "Field": "Refs",
+    "Formula": "{HEAD, refs/remotes/origin/<D.ExpectedBranch>, refs/remotes/origin/main}",
+    "Mechanical": "fixed by AP 16.9 #5 (Identity) and A6' plus D.ExpectedBranch; input-closure/v1 has no field for refs.",
+    "Rule": "C2"
+   },
+   {
+    "Field": "RevPaths",
+    "Formula": "{(c, p) : c in Commits, (p, b) in E.CanonicalInputs U E.AllowedTransitiveInputs U E.AutomaticInstructions, Blob(c:p) = b}  (blob identity: a revision may be read at p only if it holds exactly a blob that E pins for p)",
+    "Mechanical": "mechanical given Commits. Admits a read only for blob versions E lists; with RAE I6 read literally (every blob = the one at AuthorityRevision) the VERIFY reads of the delivered files at the GREEN commit fall outside (shown below).",
+    "Rule": "C3"
+   },
+   {
+    "Field": "Paths",
+    "Formula": "{p : (p, _) in E.CanonicalInputs U E.AllowedTransitiveInputs U E.AutomaticInstructions} U {o.Target : o in E.Obligations, o.Class = READ, o.Target not null} U Surfaces(M) U {f.Path : f in Files(M)} U {a.Path : a in K.Authorities} U {IgnorePath(I)}, with M = the clause map whose blob E pins at its fixed path and IgnorePath(I) = artifacts/orchestration/<I.UnitId>/<I.TaskId>/<Attempt>/<I.RunId>/output.json (kit run_dir)",
+    "Mechanical": "mechanical; Surfaces and Files of M come from the content of a blob E pins (directories such as docs/adr/ and paths absent at EFF cannot be E entries, which need a Blob); the check-ignore path is the invocation's own output path, not an input, so it comes from I, not from E.",
+    "Rule": "C4"
+   },
+   {
+    "Field": "Objects",
+    "Formula": "{}  (trees of Commits and blobs of RevPaths are already implicit in the acceptor)",
+    "Mechanical": "mechanical.",
+    "Rule": "C5"
+   },
+   {
+    "Field": "Files",
+    "Formula": "{(Name(p), SHA256(bytes(p, b))) : (p, b) in E.CanonicalInputs, Name(p) defined}; Name: the contract path -> CONTRACT; artifacts/orchestration/<unit>/<task>/<attempt>/<D.RunId>/output.json -> DELEG; .../<H.RunId>/worker-handoff.json -> H; *.trx -> TRX; bytes(p, b) = the custodied bytes whose Git blob id is b (git cat-file blob b, or the custodied file at p)",
+    "Mechanical": "mechanical once the Name table is fixed; the --file NAME binding is a convention of the tool CLI that input-closure/v1 does not carry.",
+    "Rule": "C6"
+   }
+  ],
+  "NotMechanical": [
+   "Commits (C1): input-closure/v1 has only AuthorityRevision; the revisions come from the delegation, handoff, contract and role-invocation bytes (pinned by E) plus three Git graph primitives.",
+   "Refs (C2): not representable in input-closure/v1; fixed by the norm (16.9 #5) and D.ExpectedBranch.",
+   "Files names (C6): a fixed table path-role -> --file NAME; not in input-closure/v1.",
+   "IgnorePath (C4): the invocation's own output path (role invocation RunId + kit run_dir), not an input.",
+   "RevPaths (C3) versus RAE I6: if every E blob must equal the blob at AuthorityRevision, the GREEN blobs, the window's decision/state records and the custodied contract (absent at AuthorityRevision) cannot be listed, and legitimate VERIFY reads fall outside; resolving it is a normative decision, not a derivation step."
+  ],
+  "Seconds": 92.6
+ },
+ "Schema": "r3-part-d/1"
+}

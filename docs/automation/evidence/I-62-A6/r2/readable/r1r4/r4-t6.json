@@ -1,0 +1,368 @@
+{
+ "Schema": "r1r4-bench/r4-t6",
+ "Versions": {
+  "Cmd": "10.0.26300.9550",
+  "Git": "git version 2.54.0.windows.1",
+  "GitPath": "%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE",
+  "Os": "Windows-11-10.0.26300-SP0",
+  "Pwsh": "7.6.6",
+  "PwshPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+  "Python": "3.13.14",
+  "PythonImplementation": "CPython",
+  "PythonOnPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\python.EXE",
+  "WindowsPowerShell": "5.1.26100.9549"
+ },
+ "t6a": {
+  "Acceptor": {
+   "Checks": {
+    "R1": "MATCH",
+    "R10": "MATCH",
+    "R2": "MATCH",
+    "R3": "MISMATCH",
+    "R4": "MATCH",
+    "R5": "MISMATCH",
+    "R6": "MATCH",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "Decision": "REJECT_FACTS",
+   "Details": {
+    "R3": "{\"Runs\":[{\"FactsBytesEqual\":false,\"FactsSha256Recomputed\":\"300b18d878cc66f59575b1b4c5f932d0662fe91e9a3bfc0bee3b556cb566134d\",\"Name\":\"identity\",\"Problems\":[\"re-run differs in FactsSha256\",\"re-run differs in Facts\"],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69\",\"Name\":\"diff\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5\",\"Name\":\"scope\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c\",\"Name\":\"contract\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"19ef36311d7c1bcf41946dade09966effc4dea105bd98474dd9488365a7ff662\",\"Name\":\"hashes\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"dc2de9192f430c63c376ae9897b968481a34651363b7028ac3c9922b49f0a2a4\",\"Name\":\"cleantree\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"c17acd151f5cd49351c1ba5e657bdbb3ebe23846a4b7a49ad77e108e023f257c\",\"Name\":\"read-text-1\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"be222422f1119e35c3650d699af07db6ca25f5dfa1f5da2336f2e8325322f4ce\",\"Name\":\"read-text-73\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"d5b89fa9afdb689f3d1f32dd672bd18c02570658fce45632a663c5c28dc83506\",\"Name\":\"read-json\",\"Pro",
+    "R4": "{\"Checks\":[{\"AcceptorExpects\":\"not pass\",\"Check\":\"Identity\",\"Controller\":\"fail\",\"Reasons\":[\"HEAD / refs/remotes/origin/<branch> / CurrentSha differ\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Scope\",\"Controller\":\"fail\",\"Reasons\":[\"paths not covered by AllowedWriteScope: 3\",\"paths covered by ForbiddenWriteScope: 2\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"pass\",\"Check\":\"CleanTree\",\"Controller\":\"pass\",\"Reasons\":[],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Trailer\",\"Controller\":\"fail\",\"Reasons\":[\"commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"FreeText\",\"Controller\":\"fail\",\"Reasons\":[\"term GATE PASS in Evidence\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Authority\",\"Controller\":\"fail\",\"Defects\":[\"MV-3: OnlyInFiles\",\"MV-4: LiteralViolations\",\"MV-4: AddedPresentInEff1\",\"MV-6: DerivedModified != MapModified\",\"MV-6: DerivedAddedOrEntry != MapAddedOrEntry\",\"MV-6: DerivedModified != MapModified\",\"MV-6: DerivedModified != MapModified\",\"MV-6: DerivedAddedOrEntry != MapAddedOrEntry\",\"MV-6: DerivedModified != MapModified\",\"MV-6: DerivedAddedOrEntry != MapAddedOrEntry\",\"MV-6: DerivedModified != MapModified\",\"MV-6: DerivedAddedOrEntry != MapAddedOrEntry\",\"MV-6: modified file absent in a revision\",\"MV-7: 16.3 differs after pointer removal\"],\"Rule\":\"map part: any defect forbids pass\",\"Status\":\"MATCH\"}]}",
+    "R5": "{\"Runs\":[{\"Command\":\"identity\",\"Compared\":6,\"Mismatches\":[{\"Acceptor\":\"44c6347965bc539b4b326021c4e99dfe41672a2d\",\"Field\":\"Head\",\"Tool\":\"95bdc29d428b35d2188a10e1c5462d6caf2be4df\"}],\"Name\":\"identity\"},{\"Command\":\"diff\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"diff\"},{\"Command\":\"scope\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"scope\"},{\"Command\":\"hashes\",\"Compared\":1,\"Mismatches\":[],\"Name\":\"hashes\"}]}"
+   },
+   "EndUtc": "2026-10-12T08:57:51.972458Z",
+   "Error": null,
+   "HoldStartUtc": "2026-10-12T08:57:34.659319Z",
+   "MismatchDetails": {
+    "R3": "{\"Runs\":[{\"FactsBytesEqual\":false,\"FactsSha256Recomputed\":\"300b18d878cc66f59575b1b4c5f932d0662fe91e9a3bfc0bee3b556cb566134d\",\"Name\":\"identity\",\"Problems\":[\"re-run differs in FactsSha256\",\"re-run differs in Facts\"],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69\",\"Name\":\"diff\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5\",\"Name\":\"scope\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c\",\"Name\":\"contract\",\"Problems\":[],\"RerunE",
+    "R5": "{\"Runs\":[{\"Command\":\"identity\",\"Compared\":6,\"Mismatches\":[{\"Acceptor\":\"44c6347965bc539b4b326021c4e99dfe41672a2d\",\"Field\":\"Head\",\"Tool\":\"95bdc29d428b35d2188a10e1c5462d6caf2be4df\"}],\"Name\":\"identity\"},{\"Command\":\"diff\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"diff\"},{\"Command\":\"scope\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"scope\"},{\"Command\":\"hashes\",\"Compared\":1,\"Mismatches\":[],\"Name\":\"hashes\"}]}"
+   },
+   "Pid": 32308,
+   "ProcessTreeDead": true,
+   "Processes": {
+    "CheckerPid": 40948,
+    "ChildrenOfGivenParents": [],
+    "Matching": [],
+    "Needles": [
+     "D:\\r62-a6r2\\r1r4\\r4\\t6a"
+    ],
+    "Total": 363,
+    "UnreadableClosedList": [
+     {
+      "CreationDateUtc": "2026-10-12T08:57:54.4347480Z",
+      "GrandParentName": "python3.13.exe",
+      "Name": "git.exe",
+      "ParentCommandLineHasNeedle": false,
+      "ParentName": "python3.13.exe",
+      "ParentPid": 11132,
+      "Pid": 15752
+     }
+    ],
+    "UtcTime": "2026-10-12T08:57:55.094853Z"
+   },
+   "R4Rows": [
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Identity",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Scope",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "paths not covered by AllowedWriteScope: 3",
+      "paths covered by ForbiddenWriteScope: 2"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "pass",
+     "Check": "CleanTree",
+     "Controller": "pass",
+     "Defects": null,
+     "Reasons": [],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Trailer",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "FreeText",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "term GATE PASS in Evidence"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Authority",
+     "Controller": "fail",
+     "Defects": 14,
+     "Reasons": null,
+     "Status": "MATCH"
+    }
+   ],
+   "Rc": 1,
+   "ReleaseUtc": "2026-10-12T08:57:55.104999Z",
+   "Request": "D:/r62-a6r2/r1r4/r4/w-t6a/request.json",
+   "RequestSha256": "915276614dcb7c737530b777d5ca266a4eadd5aa845110e188d820b5307aaddd",
+   "StartUtc": "2026-10-12T08:57:35.599677Z",
+   "StdoutPath": "D:/r62-a6r2/r1r4/r4/w-t6a/request.acceptor-stdout.json",
+   "StdoutSha256": "736ef54ca56e52ff428329035d4c21f48fa41f2d68e75d26e8614b55b734ab5e",
+   "ZeroWrite": [
+    {
+     "Diff": {},
+     "Equal": true,
+     "Repo": "D:/r62-a6r2/r1r4/r4/t6a"
+    }
+   ]
+  },
+  "Held": true,
+  "MismatchedChecks": [
+   "R3",
+   "R5"
+  ],
+  "Pipeline": {
+   "ControllerChecks": {
+    "Authority": "fail",
+    "Ci": "not_run",
+    "CleanTree": "pass",
+    "Contract": "pass",
+    "Denials": "not_run",
+    "FreeText": "fail",
+    "Handoff": "pass",
+    "Identity": "fail",
+    "Remote": "not_run",
+    "Routing": "not_run",
+    "Scope": "fail",
+    "Termination": "not_run",
+    "Tests": "not_run",
+    "Trailer": "fail"
+   },
+   "P2BeforeVerify": true,
+   "Request": {
+    "Path": "D:/r62-a6r2/r1r4/r4/w-t6a/request.json",
+    "Sha256": "915276614dcb7c737530b777d5ca266a4eadd5aa845110e188d820b5307aaddd"
+   }
+  },
+  "StateChange": {
+   "Change": "session commit of a new file (HEAD moves; tree clean)",
+   "CommitExit": 0,
+   "NewHead": "44c6347965bc539b4b326021c4e99dfe41672a2d",
+   "StateDiffSinceEntry": {
+    "Head": {
+     "After": "44c6347965bc539b4b326021c4e99dfe41672a2d",
+     "Before": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+    },
+    "Keys": [
+     "GitFiles",
+     "Head",
+     "IndexSha256",
+     "Refs",
+     "WorktreeFiles"
+    ],
+    "WorktreeFiles": {
+     "Added": [
+      "docs/automation/evidence/FX-U1-agent/bench-session-commit.txt"
+     ],
+     "Modified": [],
+     "Removed": []
+    }
+   }
+  }
+ },
+ "t6b": {
+  "Acceptor": {
+   "Checks": {
+    "R1": "MATCH",
+    "R10": "MATCH",
+    "R2": "MATCH",
+    "R3": "MISMATCH",
+    "R4": "MISMATCH",
+    "R5": "MISMATCH",
+    "R6": "MATCH",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "Decision": "REJECT_FACTS",
+   "Details": {
+    "R3": "{\"Runs\":[{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"3d309de520e4c98707781e1c16bc11809d93a6fa3c62844e7a8a4943ef7242b3\",\"Name\":\"identity\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69\",\"Name\":\"diff\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5\",\"Name\":\"scope\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c\",\"Name\":\"contract\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":false,\"FactsSha256Recomputed\":\"19ef36311d7c1bcf41946dade09966effc4dea105bd98474dd9488365a7ff662\",\"Name\":\"hashes\",\"Problems\":[\"re-run differs in FactsSha256\",\"re-run differs in Facts\"],\"RerunExit\":0},{\"FactsBytesEqual\":false,\"FactsSha256Recomputed\":\"dc2de9192f430c63c376ae9897b968481a34651363b7028ac3c9922b49f0a2a4\",\"Name\":\"cleantree\",\"Problems\":[\"re-run differs in FactsSha256\",\"re-run differs in Facts\"],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"c17acd151f5cd49351c1ba5e657bdbb3ebe23846a4b7a49ad77e108e023f257c\",\"Name\":\"read-text-1\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"be222422f1119e35c3650d699af07db6ca25f5dfa1f5da2336f2e8325322f4ce\",\"Name\":\"read-text-73\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"d5b89fa9afdb689f3d1f32dd672bd18",
+    "R4": "{\"Checks\":[{\"AcceptorExpects\":\"not pass\",\"Check\":\"Identity\",\"Controller\":\"fail\",\"Reasons\":[\"HEAD / refs/remotes/origin/<branch> / CurrentSha differ\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Scope\",\"Controller\":\"fail\",\"Reasons\":[\"paths not covered by AllowedWriteScope: 3\",\"paths covered by ForbiddenWriteScope: 2\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"CleanTree\",\"Controller\":\"pass\",\"Reasons\":[\"status --porcelain is not empty\"],\"Status\":\"MISMATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Trailer\",\"Controller\":\"fail\",\"Reasons\":[\"commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"FreeText\",\"Controller\":\"fail\",\"Reasons\":[\"term GATE PASS in Evidence\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Authority\",\"Controller\":\"fail\",\"Defects\":[\"MV-3: OnlyInFiles\",\"MV-4: LiteralViolations\",\"MV-4: AddedPresentInEff1\",\"MV-6: DerivedModified != MapModified\",\"MV-6: DerivedAddedOrEntry != MapAddedOrEntry\",\"MV-6: DerivedModified != MapModified\",\"MV-6: DerivedModified != MapModified\",\"MV-6: DerivedAddedOrEntry != MapAddedOrEntry\",\"MV-6: DerivedModified != MapModified\",\"MV-6: DerivedAddedOrEntry != MapAddedOrEntry\",\"MV-6: DerivedModified != MapModified\",\"MV-6: DerivedAddedOrEntry != MapAddedOrEntry\",\"MV-6: modified file absent in a revision\",\"MV-7: 16.3 differs after pointer removal\"],\"Rule\":\"map part: any defect forbi",
+    "R5": "{\"Runs\":[{\"Command\":\"identity\",\"Compared\":6,\"Mismatches\":[],\"Name\":\"identity\"},{\"Command\":\"diff\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"diff\"},{\"Command\":\"scope\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"scope\"},{\"Command\":\"hashes\",\"Compared\":1,\"Mismatches\":[{\"Acceptor\":{\"Length\":677,\"Sha256\":\"dc35ab61d708cd9d752649b89842b1d9c82ba03fc042eff860a23e97f3b33deb\"},\"Field\":\"PerPath\",\"Tool\":{\"Length\":677,\"Sha256\":\"79fa9a7535408c26c8162528b2da9512a1e6014c0064b6f3d29b58d4d63e2022\"}}],\"Name\":\"hashes\"}]}"
+   },
+   "EndUtc": "2026-10-12T08:58:59.942707Z",
+   "Error": null,
+   "HoldStartUtc": "2026-10-12T08:58:43.220933Z",
+   "MismatchDetails": {
+    "R3": "{\"Runs\":[{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"3d309de520e4c98707781e1c16bc11809d93a6fa3c62844e7a8a4943ef7242b3\",\"Name\":\"identity\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69\",\"Name\":\"diff\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5\",\"Name\":\"scope\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c\",\"Name\":\"contract\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":false,\"FactsSha256Recomputed\":\"",
+    "R4": "{\"Checks\":[{\"AcceptorExpects\":\"not pass\",\"Check\":\"Identity\",\"Controller\":\"fail\",\"Reasons\":[\"HEAD / refs/remotes/origin/<branch> / CurrentSha differ\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Scope\",\"Controller\":\"fail\",\"Reasons\":[\"paths not covered by AllowedWriteScope: 3\",\"paths covered by ForbiddenWriteScope: 2\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"CleanTree\",\"Controller\":\"pass\",\"Reasons\":[\"status --porcelain is not empty\"],\"Status\":\"MISMATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Trailer\",\"Controller\":\"fail\",\"Reasons\":[\"commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99\"],\"Sta",
+    "R5": "{\"Runs\":[{\"Command\":\"identity\",\"Compared\":6,\"Mismatches\":[],\"Name\":\"identity\"},{\"Command\":\"diff\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"diff\"},{\"Command\":\"scope\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"scope\"},{\"Command\":\"hashes\",\"Compared\":1,\"Mismatches\":[{\"Acceptor\":{\"Length\":677,\"Sha256\":\"dc35ab61d708cd9d752649b89842b1d9c82ba03fc042eff860a23e97f3b33deb\"},\"Field\":\"PerPath\",\"Tool\":{\"Length\":677,\"Sha256\":\"79fa9a7535408c26c8162528b2da9512a1e6014c0064b6f3d29b58d4d63e2022\"}}],\"Name\":\"hashes\"}]}"
+   },
+   "Pid": 39384,
+   "ProcessTreeDead": true,
+   "Processes": {
+    "CheckerPid": 13748,
+    "ChildrenOfGivenParents": [],
+    "Matching": [],
+    "Needles": [
+     "D:\\r62-a6r2\\r1r4\\r4\\t6b"
+    ],
+    "Total": 357,
+    "UnreadableClosedList": [
+     {
+      "CreationDateUtc": "2026-10-12T08:59:02.0827210Z",
+      "GrandParentName": "python3.13.exe",
+      "Name": "git.exe",
+      "ParentCommandLineHasNeedle": false,
+      "ParentName": "python3.13.exe",
+      "ParentPid": 17508,
+      "Pid": 2108
+     }
+    ],
+    "UtcTime": "2026-10-12T08:59:02.569058Z"
+   },
+   "R4Rows": [
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Identity",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Scope",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "paths not covered by AllowedWriteScope: 3",
+      "paths covered by ForbiddenWriteScope: 2"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "CleanTree",
+     "Controller": "pass",
+     "Defects": null,
+     "Reasons": [
+      "status --porcelain is not empty"
+     ],
+     "Status": "MISMATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Trailer",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "FreeText",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "term GATE PASS in Evidence"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Authority",
+     "Controller": "fail",
+     "Defects": 14,
+     "Reasons": null,
+     "Status": "MATCH"
+    }
+   ],
+   "Rc": 1,
+   "ReleaseUtc": "2026-10-12T08:59:02.580265Z",
+   "Request": "D:/r62-a6r2/r1r4/r4/w-t6b/request.json",
+   "RequestSha256": "0cfdacadcdb906e12bb4cb972f90ab67edfff3456ee2f500d63f4caa0020273c",
+   "StartUtc": "2026-10-12T08:58:44.428845Z",
+   "StdoutPath": "D:/r62-a6r2/r1r4/r4/w-t6b/request.acceptor-stdout.json",
+   "StdoutSha256": "e389e9742dd0a4a5a5041674bfbc1ba9e1fdbb49732bf5e58de013149c568886",
+   "ZeroWrite": [
+    {
+     "Diff": {},
+     "Equal": true,
+     "Repo": "D:/r62-a6r2/r1r4/r4/t6b"
+    }
+   ]
+  },
+  "Held": true,
+  "MismatchedChecks": [
+   "R3",
+   "R4",
+   "R5"
+  ],
+  "Pipeline": {
+   "ControllerChecks": {
+    "Authority": "fail",
+    "Ci": "not_run",
+    "CleanTree": "pass",
+    "Contract": "pass",
+    "Denials": "not_run",
+    "FreeText": "fail",
+    "Handoff": "pass",
+    "Identity": "fail",
+    "Remote": "not_run",
+    "Routing": "not_run",
+    "Scope": "fail",
+    "Termination": "not_run",
+    "Tests": "not_run",
+    "Trailer": "fail"
+   },
+   "P2BeforeVerify": true,
+   "Request": {
+    "Path": "D:/r62-a6r2/r1r4/r4/w-t6b/request.json",
+    "Sha256": "0cfdacadcdb906e12bb4cb972f90ab67edfff3456ee2f500d63f4caa0020273c"
+   }
+  },
+  "StateChange": {
+   "Change": "tracked file modified in the working tree (src/Fixture.Lib/Calculator.cs)",
+   "StateDiffSinceEntry": {
+    "Head": null,
+    "Keys": [
+     "StatusZ",
+     "StatusZSha256",
+     "WorktreeFiles"
+    ],
+    "WorktreeFiles": {
+     "Added": [],
+     "Modified": [
+      "src/Fixture.Lib/Calculator.cs"
+     ],
+     "Removed": []
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,427 @@
+{
+ "AllCitationsVerified": true,
+ "Header": {
+  "AcceptorBlob": "434ef1fccb0d15762b30244b4a60928120698411",
+  "AcceptorSha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0",
+  "Git": "git version 2.54.0.windows.1",
+  "MutateBlob": "6967938954219a6a8a2f38dc80ef5a1165966d19",
+  "Python": "3.13.14",
+  "ToolBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "ToolSha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+ },
+ "Note": "line numbers refer to the pinned blobs as LF bytes (git cat-file blob), not to CRLF working-tree files",
+ "Probes": {
+  "P1-tilde-fence (shared reading)": {
+   "Decision": "ACCEPT_FACTS",
+   "R6": "MATCH",
+   "R6Fields": [],
+   "R7": "MATCH",
+   "ToolEff": "fa70a79eec2b40e2dde4dc7d3cde158a4155c746",
+   "ToolTrailerCommits": [
+    "a8a45bdb5aa64710cb231ee1557164aa46227a18"
+   ],
+   "ToolWorkflowDerivedAddedOrEntry": [
+    "## 12. Coexistencia de protocolos de ejecuci\u00f3n delegada (I61/I62)",
+    "## Falso encabezado dentro de un bloque"
+   ]
+  },
+  "P2-indented-heading (divergent parsers)": {
+   "Decision": "REJECT_FACTS",
+   "R6": "MISMATCH",
+   "R6Fields": [
+    "clausemap:Validate.MV6[docs/WORKFLOW.md].DerivedAddedOrEntry"
+   ],
+   "R7": "MATCH",
+   "ToolEff": "1555e3e888c061a017515e1a05faadc5a32131ef",
+   "ToolTrailerCommits": [
+    "96a38e0ae0c2c4b39b678e6c3c299af3e764bcb4"
+   ],
+   "ToolWorkflowDerivedAddedOrEntry": [
+    "## 12. Coexistencia de protocolos de ejecuci\u00f3n delegada (I61/I62)"
+   ]
+  },
+  "P3-crlf-trailer-message (divergent decoding)": {
+   "Decision": "REJECT_FACTS",
+   "R6": "MISMATCH",
+   "R6Fields": [
+    "clausemap:Derive.TrailerCommits",
+    "clausemap:Derive.Candidates",
+    "clausemap:Derive.Eff",
+    "clausemap:Derive.EffParent1",
+    "clausemap:Derive.EffParent2",
+    "clausemap:Validate"
+   ],
+   "R7": "MATCH",
+   "ToolEff": "1c4284f5034a28897ad588cf85f738b94a3e617f",
+   "ToolTrailerCommits": [
+    "dde1766708818fd3e43ce3585729a6363d03804a"
+   ],
+   "ToolWorkflowDerivedAddedOrEntry": [
+    "## 12. Coexistencia de protocolos de ejecuci\u00f3n delegada (I61/I62)"
+   ]
+  }
+ },
+ "Review": [
+  {
+   "Acceptor": [
+    {
+     "Ref": "bmin_accept.py:962-965",
+     "Token": "ta.get(p) != tb.get(p)",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:434-449",
+     "Token": "\"ls-tree\", [\"-r\", \"-z\", \"--full-tree\", commit]",
+     "Verified": true
+    }
+   ],
+   "Fact": "Scope membership (paths of BaseSha..CurrentSha)",
+   "Residual": "a forged or corrupted tree object in the shared clone misleads both identically (the acceptor re-hashes commits and blobs, not trees)",
+   "Shared": "no: git diff (diff machinery) versus two full ls-tree listings compared by (mode, type, id)",
+   "SharedAssumptions": "SPEC E6 (renames give both paths); byte order of paths; same clone and object store; tree objects are not re-hashed by either piece",
+   "Tool": [
+    {
+     "Ref": "bmin_facts.py:642-649",
+     "Token": "\"diff\", \"--name-only\", \"--no-renames\", \"-z\"",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:696",
+     "Token": "diff_paths(ctx, frm, to)",
+     "Verified": true
+    }
+   ]
+  },
+  {
+   "Acceptor": [
+    {
+     "Ref": "bmin_accept.py:380-401",
+     "Token": "def reachable",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:349-365",
+     "Token": "--batch-all-objects",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:284-292",
+     "Token": "\"--show-toplevel\", \"HEAD\", \"--abbrev-ref\", \"HEAD\"",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:294-307",
+     "Token": "for-each-ref",
+     "Verified": true
+    }
+   ],
+   "Fact": "Ancestry and Identity (BaseSha -> RedSha -> CurrentSha; HEAD, branch, toplevel, origin refs)",
+   "Residual": "Head/AbbrevRef/Toplevel are a shared primitive: a wrong rev-parse answer is reproduced by both; the rebase/patch-id branch of 16.9 #5 is implemented by neither",
+   "Shared": "partly: ancestry differs (merge-base versus own walk over re-hashed commit objects); origin refs differ (rev-parse --verify versus for-each-ref); HEAD, abbreviated branch and toplevel come from git rev-parse in BOTH",
+   "SharedAssumptions": "ancestry is reflexive; the tool honours replace refs and grafts (no GIT_NO_REPLACE_OBJECTS, bmin_facts.py:141-143) while the acceptor disables replace objects (bmin_accept.py:217) and parses raw commits: those cases diverge (detected), they are not common mode",
+   "Tool": [
+    {
+     "Ref": "bmin_facts.py:608-610",
+     "Token": "\"merge-base\", \"--is-ancestor\"",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:629-631",
+     "Token": "\"rev-parse\", \"HEAD\"",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:613-617",
+     "Token": "\"rev-parse\", \"--verify\", \"--quiet\", ref",
+     "Verified": true
+    }
+   ]
+  },
+  {
+   "Acceptor": [
+    {
+     "Ref": "bmin_accept.py:1040",
+     "Token": "TRAILER in repo.message(c).split(\"\\n\")",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:1041",
+     "Token": "reversed(repo.first_parent_chain(s))",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:406-413",
+     "Token": "def first_parent_chain",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:415-432",
+     "Token": "def reaching",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:1047",
+     "Token": "p[1] in reach_t and p[0] not in reach_t",
+     "Verified": true
+    }
+   ],
+   "Fact": "Effective point derivation (16.14: trailer, first-parent merges, candidates, EFF)",
+   "Residual": "a misreading of 16.14 shared through the SPEC (e.g. which candidate is EFF) is undetectable; message decoding differs (the tool normalizes CRLF, the acceptor does not: probe P3 below)",
+   "Shared": "no: rev-list/log output versus own walk over raw commit objects; but the SAME reading of 16.14 and of errata E4 (exact line anywhere in the message; unique trailer; first candidate)",
+   "SharedAssumptions": "the trailer is an exact line of the whole message (not git's trailer block); E4 was written after the first integration with both outputs in view, so the two readings were harmonized by the SPEC author",
+   "Tool": [
+    {
+     "Ref": "bmin_facts.py:1072-1073",
+     "Token": "\"rev-list\", \"--first-parent\", \"--merges\", main",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:1074-1083",
+     "Token": "TRAILER in body.split(\"\\n\")",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:1086-1097",
+     "Token": "ps[1] in reach and ps[0] not in reach",
+     "Verified": true
+    }
+   ]
+  },
+  {
+   "Acceptor": [
+    {
+     "Ref": "bmin_accept.py:437",
+     "Token": "\"ls-tree\", [\"-r\", \"-z\", \"--full-tree\", commit]",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:1162-1166",
+     "Token": "changed = sorted(",
+     "Verified": true
+    }
+   ],
+   "Fact": "MV-3 (changed paths under Surfaces between EFF^1 and EFF)",
+   "Residual": "common mode on tree listing (same Git command, same clone); only the filtering differs",
+   "Shared": "YES: both list trees with ls-tree -r -z --full-tree (the tool with :(literal) pathspecs, the acceptor without)",
+   "SharedAssumptions": "changed = blob id differs (mode ignored), map path excluded, deleted paths included; same SPEC wording",
+   "Tool": [
+    {
+     "Ref": "bmin_facts.py:247-258",
+     "Token": "\"ls-tree\", \"-r\", \"-z\", \"--full-tree\", rev, \"--\"",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:1299-1300",
+     "Token": "changed = sorted(",
+     "Verified": true
+    }
+   ]
+  },
+  {
+   "Acceptor": [
+    {
+     "Ref": "bmin_accept.py:1106-1108",
+     "Token": "def oid(tree, p)",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:1177-1188",
+     "Token": "kind == \"ADDED\" and o1 is not None",
+     "Verified": true
+    }
+   ],
+   "Fact": "MV-4 (four lists: literal L905, ENTRY outside the schema, ADDED present in EFF^1, ENTRY present in EFF^1)",
+   "Residual": "a wrong SPEC transcription of L905/R61 b is common to both by construction; R7 'diversity' is diversity of code, not of reading",
+   "Shared": "YES for observed blob ids (ls-tree in both); the four rules are transcribed from the same SPEC text with the same structure",
+   "SharedAssumptions": "SPEC 2.12 MV-4 wording (L905 literal rule, R61 b, defect table L916) read identically; the tool keeps only type blob, the acceptor any entry id (diverges on gitlinks only)",
+   "Tool": [
+    {
+     "Ref": "bmin_facts.py:227-244",
+     "Token": "def blobs_at",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:1322-1333",
+     "Token": "kind == \"ADDED\" and o1 is not None",
+     "Verified": true
+    }
+   ]
+  },
+  {
+   "Acceptor": [
+    {
+     "Ref": "bmin_accept.py:499-518",
+     "Token": "line.startswith(\"```\")",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:490-496",
+     "Token": "def heading_level",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:559-567",
+     "Token": "def section_map",
+     "Verified": true
+    }
+   ],
+   "Fact": "MV-6 (sections per MODIFIED file; derived MODIFIED/REMOVED/ADDED-or-ENTRY)",
+   "Residual": "a heading-like line inside a ~~~ fence is a heading for BOTH (probe P1: identical facts, R6 MATCH); headings are matched on the raw line by the tool and on the normalized line by the acceptor (probe P2: they diverge)",
+   "Shared": "no shared primitive (two parsers), but the same fence rule (a line starting with three backticks toggles code)",
+   "SharedAssumptions": "SPEC 1.9: only ``` fences; no ~~~ fences, no indented code blocks, no setext headings; whitespace collapse \\s+ versus str.split() (same Unicode whitespace set)",
+   "Tool": [
+    {
+     "Ref": "bmin_facts.py:369-385",
+     "Token": "line.startswith(\"```\")",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:90",
+     "Token": "HEADING_RE = re.compile(r\"(#{1,6})(?:[ \\t]|$)\")",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:413-417",
+     "Token": "def heading_map",
+     "Verified": true
+    }
+   ]
+  },
+  {
+   "Acceptor": [
+    {
+     "Ref": "bmin_accept.py:576-590",
+     "Token": "def split_sentences",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:593-600",
+     "Token": "def remove_pointer_sentence",
+     "Verified": true
+    }
+   ],
+   "Fact": "MV-7 (pointer first sentence of 16. and last of 16.3; 16.3 minus the pointer)",
+   "Residual": "a sentence rule the SPEC got wrong is common to both; the position reading of 'presentes' is shared",
+   "Shared": "no (regex split versus character loop)",
+   "SharedAssumptions": "SPEC 1.10: boundary = '.' followed by whitespace or end; '?' and '!' never; 'p. ej.' always splits; AP says the pointers are 'presentes' while the SPEC facts and both pieces use first/last position",
+   "Tool": [
+    {
+     "Ref": "bmin_facts.py:91",
+     "Token": "SENTENCE_RE = re.compile(r\"(?<=\\.)\\s+\")",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:1243-1249",
+     "Token": "del sents[idx[-1]]",
+     "Verified": true
+    }
+   ]
+  },
+  {
+   "Acceptor": [
+    {
+     "Ref": "bmin_accept.py:1013",
+     "Token": "tree[p][1] == \"blob\"",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:459-465",
+     "Token": "git_blob_sha1(data) != oid",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:110-119",
+     "Token": "def git_object_sha1",
+     "Verified": true
+    }
+   ],
+   "Fact": "Blobs and hashes (rev blob ids, content SHA-256, worktree raw blob SHA-1)",
+   "Residual": "tree objects are trusted by both; the same hashlib (library-level common mode, negligible)",
+   "Shared": "YES for the tree -> blob id mapping (ls-tree in both); content read differs (cat-file blob versus cat-file --batch with re-hash); SHA-1/SHA-256 from the same hashlib with the same SPEC header formula",
+   "SharedAssumptions": "the blob id in a tree entry is the identity of the content; the acceptor verifies content against the id, the tool does not",
+   "Tool": [
+    {
+     "Ref": "bmin_facts.py:238-243",
+     "Token": "\"ls-tree\", \"-r\", \"-z\", \"--full-tree\", rev, \"--\"",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:273",
+     "Token": "\"cat-file\", \"blob\", oid",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:794-795",
+     "Token": "hashlib.sha1(b\"blob \"",
+     "Verified": true
+    }
+   ]
+  },
+  {
+   "Acceptor": [
+    {
+     "Ref": "bmin_accept.py:701-705",
+     "Token": "def u19",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:708-719",
+     "Token": "def is_malformed",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:722-732",
+     "Token": "def covers",
+     "Verified": true
+    }
+   ],
+   "Fact": "Scope coverage (AP L553 prefix rule, U-19, malformed entries, A3/A4 containment)",
+   "Residual": "if AP L553 meant something else (e.g. a directory without slash is a prefix) both are equally wrong; R7 cannot see it",
+   "Shared": "no shared code, but logically identical rules (exact match or prefix ending in '/'; '/**' -> '/' prefix; case-sensitive; no Unicode normalization)",
+   "SharedAssumptions": "the SPEC reading of AP L553-L554 and U-19: 'docs/adr' without slash covers only itself; NFC/NFD variants are different paths",
+   "Tool": [
+    {
+     "Ref": "bmin_facts.py:666-673",
+     "Token": "def u19",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:676-687",
+     "Token": "def malformed_reasons",
+     "Verified": true
+    }
+   ]
+  },
+  {
+   "Acceptor": [
+    {
+     "Ref": "bmin_accept.py:2018-2022",
+     "Token": "Runtime.Isolated is not true",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_accept.py:2563-2570",
+     "Token": "calls = run.env.get(\"GitCalls\")",
+     "Verified": true
+    }
+   ],
+   "Fact": "Reads and isolation evidence used by R2/R9 (Runtime.Isolated, GitCalls, Inputs)",
+   "Residual": "a tool that runs a forbidden git call without recording it, or that lies in Runtime, is not detectable by R2/R9 (only the facts comparisons can catch the consequence)",
+   "Shared": "the evidence itself: R2 and R9 judge what the tool REPORTS about itself",
+   "SharedAssumptions": "the received envelope's Runtime and GitCalls are honest; R3 re-runs with -I but cannot observe how the received envelope was produced",
+   "Tool": [
+    {
+     "Ref": "bmin_facts.py:1581-1587",
+     "Token": "sys.flags.isolated == 1",
+     "Verified": true
+    },
+    {
+     "Ref": "bmin_facts.py:144",
+     "Token": "ctx.git_calls.append(argv)",
+     "Verified": true
+    }
+   ]
+  }
+ ],
+ "Schema": "r3-part-e/1"
+}

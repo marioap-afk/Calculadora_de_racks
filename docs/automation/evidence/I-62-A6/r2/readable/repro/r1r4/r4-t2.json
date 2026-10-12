@@ -1,0 +1,660 @@
+{
+ "Pipeline": {
+  "Classification": [
+   "EXECUTION_BLOCKED",
+   "STOP",
+   "Termination"
+  ],
+  "Closure": {
+   "Path": "D:/r62-a6r2/repro/r1r4/r4/w-t2/in/closure.json",
+   "Sha256": "794e10613734250c145eb8d6d8dc0a320ea99614985c14d8b4a30e3bd1905074"
+  },
+  "ControllerChecks": {
+   "Authority": "fail",
+   "Ci": "not_run",
+   "CleanTree": "pass",
+   "Contract": "pass",
+   "Denials": "not_run",
+   "FreeText": "fail",
+   "Handoff": "pass",
+   "Identity": "fail",
+   "Remote": "not_run",
+   "Routing": "not_run",
+   "Scope": "fail",
+   "Termination": "not_run",
+   "Tests": "not_run",
+   "Trailer": "fail"
+  },
+  "ControllerOutput": {
+   "Path": "D:/r62-a6r2/repro/r1r4/r4/w-t2/controller-output.json",
+   "Sha256": "9166eef6d8c08831733ae7b3e44fc6aebaaf61200eb88d769ce7aa7899783f46"
+  },
+  "Envelopes": {
+   "clausemap": {
+    "EnvelopeSha256": "e5e2052930d5276c3981fd38f07a3b3777e1830b941aa2cc2a3dc3fe73710dbf",
+    "Error": null,
+    "FactsSha256": "dbc7fcbf1f442fa077312b33b64e6b7aff683decfabdf104425446cf3ffb4c9b"
+   },
+   "cleantree": {
+    "EnvelopeSha256": "f2a76ecbc42d58d79936fd1d8b49d970aefab8838783042f235509c7407d9ec6",
+    "Error": null,
+    "FactsSha256": "dc2de9192f430c63c376ae9897b968481a34651363b7028ac3c9922b49f0a2a4"
+   },
+   "contract": {
+    "EnvelopeSha256": "4934963c74802e96394eb76c0f3436b1bf5d9e15087b196503dc25d79345640c",
+    "Error": null,
+    "FactsSha256": "0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c"
+   },
+   "diff": {
+    "EnvelopeSha256": "cf7a9500261312df5f7bbd2313642e19942504cae6269d5375bff203c4a363d7",
+    "Error": null,
+    "FactsSha256": "e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69"
+   },
+   "freetext": {
+    "EnvelopeSha256": "728d49f4407c00ab62c1fa3e1338717a4c165c6c8edf43f76537bfc29cc92a1f",
+    "Error": null,
+    "FactsSha256": "c8c29709d9f0a4b850a976a0f824ad86a45c5752c26b3c7522b760462ca93013"
+   },
+   "handoff": {
+    "EnvelopeSha256": "5696fc0e64b7847da35886d5ac82458770eb414cf3ec2f6db793ba9359660dc7",
+    "Error": null,
+    "FactsSha256": "253fa3c18e2065860e9abafb37950d1aaa5b4528d6b0e618606cc277e011e9c9"
+   },
+   "hashes": {
+    "EnvelopeSha256": "8e4b2ea1cd6a9466ec7ab9e60604eae6bfc0344a62cf656309e44c0ed8e5c2e6",
+    "Error": null,
+    "FactsSha256": "19ef36311d7c1bcf41946dade09966effc4dea105bd98474dd9488365a7ff662"
+   },
+   "identity": {
+    "EnvelopeSha256": "bb6389205abbc96a91da1311ab8bb7d159d07e9617bd3f0df9d550624b58139a",
+    "Error": null,
+    "FactsSha256": "b55922301e1d65d2e192c169a303fd56e4969bba599096bb6acecffa215bbda8"
+   },
+   "read-json": {
+    "EnvelopeSha256": "07cd5bc86f80a371da99f15fd9ca929d0d4b60a9b15fe6e9c300c86739acdbfa",
+    "Error": null,
+    "FactsSha256": "d5b89fa9afdb689f3d1f32dd672bd18c02570658fce45632a663c5c28dc83506"
+   },
+   "read-text-1": {
+    "EnvelopeSha256": "373e158efd6901a07f556e11a497e1e42a25a7426454e0ff03a564da430f54e3",
+    "Error": null,
+    "FactsSha256": "c17acd151f5cd49351c1ba5e657bdbb3ebe23846a4b7a49ad77e108e023f257c"
+   },
+   "read-text-73": {
+    "EnvelopeSha256": "faf0b582da05c93b5ee05d1f50a89207a696a52ff465168e20125048f1c9f671",
+    "Error": null,
+    "FactsSha256": "be222422f1119e35c3650d699af07db6ca25f5dfa1f5da2336f2e8325322f4ce"
+   },
+   "scope": {
+    "EnvelopeSha256": "4f7611b4c7ae4241b6a3a17477b4a54d7a2506b1bd87ed16319dd84cd056fae1",
+    "Error": null,
+    "FactsSha256": "b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5"
+   },
+   "trx": {
+    "EnvelopeSha256": "4ba3f029f161eb6b4a4bb082751e3bc0d4dcb0469cc3dccea58de03260692691",
+    "Error": null,
+    "FactsSha256": "68e47e9e01c67ff16dc3f231aacd64d0945ec11a505b4782b9a6d1377f5adadf"
+   }
+  },
+  "Inputs": {
+   "K.json": "8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+   "deleg.json": "19d71a628a3fce3eac5c2e2370af50deeeb5d1b33c4ff3069813537ab6ebc88d",
+   "fixture-tests.trx": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+   "handoff.json": "1f91099ba0e49706e2e58629cedc9e702418e2c413c4275528b096c6e8df836c"
+  },
+  "Label": "t2",
+  "P1": {
+   "DecisionRef": "BANCO-r1r4 (sin disposicion: banco de pruebas de la evidencia A-6 ronda 2; no es una DecisionRef normativa)",
+   "Held": true,
+   "IdEqualsPinned": true,
+   "OnlyNewLooseObject": true,
+   "Repo": "D:/r62-a6r2/repro/r1r4/r4/t2wt",
+   "ReturnedId": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "SnapshotAfter": {
+    "GitFileCount": 253,
+    "GitFilesSha256": "375a6a7b946ff0a4e2e27149050c3204e39e3f7046b6885bba9df98b82f9fb62",
+    "Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "HeadSymref": "refs/heads/fx/u1",
+    "IndexSha256": "b9bade79cee6940e9faf7889ddc1726df9f7d2979b6aa088d26ff9d2d4b4a1a7",
+    "RefCount": 10,
+    "RefsSha256": "71134a76fbe7c6ec5b96bc485beec5aa240408d506de970fd2cbcea3ba8f268f",
+    "ReplaceRefs": [],
+    "StatusEntries": 0,
+    "StatusZSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "WorktreeFileCount": 78,
+    "WorktreeFilesSha256": "1888eb5ea489848fdacc3738857584e097c4434c2374cbda092392342d73e315"
+   },
+   "SnapshotBefore": {
+    "GitFileCount": 252,
+    "GitFilesSha256": "48be07a690f51e2dea15e60e179853447c78f88788e3d55a909ee6ea968a41ca",
+    "Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "HeadSymref": "refs/heads/fx/u1",
+    "IndexSha256": "b9bade79cee6940e9faf7889ddc1726df9f7d2979b6aa088d26ff9d2d4b4a1a7",
+    "RefCount": 10,
+    "RefsSha256": "71134a76fbe7c6ec5b96bc485beec5aa240408d506de970fd2cbcea3ba8f268f",
+    "ReplaceRefs": [],
+    "StatusEntries": 0,
+    "StatusZSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "WorktreeFileCount": 78,
+    "WorktreeFilesSha256": "1888eb5ea489848fdacc3738857584e097c4434c2374cbda092392342d73e315"
+   },
+   "SnapshotDiff": {
+    "GitFiles": {
+     "Added": [
+      "objects/9a/829b0eeb1210238052b1feac06cfa8f7964aed"
+     ],
+     "Modified": [],
+     "Removed": []
+    }
+   },
+   "SourceBlobSha1": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "SourceCommand": "git --no-replace-objects -C <I-62 worktree> cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "SourceSha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200",
+   "SourceSize": 64764,
+   "UtcTime": "2026-10-12T09:59:21.979678Z",
+   "WriteCommand": "git -C D:/r62-a6r2/repro/r1r4/r4/t2wt hash-object -w --no-filters --stdin",
+   "WriteExit": 0
+  },
+  "P2BeforeVerify": {
+   "FailedSteps": [],
+   "Launch": true,
+   "Repo": "D:/r62-a6r2/repro/r1r4/r4/t2wt",
+   "Shell": "pwsh",
+   "Steps": {
+    "1": {
+     "Command": "git -C T for-each-ref refs/replace/",
+     "Exit": 0,
+     "Ok": true,
+     "Output": []
+    },
+    "2": {
+     "AlternatesExists": false,
+     "CommonDir": "D:\\r62-a6r2\\repro\\r1r4\\r4\\c2\\.git",
+     "Extra_GitPathAlternates": "D:/r62-a6r2/repro/r1r4/r4/c2/.git/objects/info/alternates",
+     "Extra_GitPathAlternatesExists": false,
+     "Extra_GitPathGrafts": "D:/r62-a6r2/repro/r1r4/r4/c2/.git/info/grafts",
+     "Extra_GitPathGraftsExists": false,
+     "GraftsExists": false,
+     "IsShallowRepository": "false",
+     "Ok": true
+    },
+    "3": {
+     "Cwd": "D:/r62-a6r2/repro/r1r4/r4/t2wt",
+     "EnvNoDefaultCurrentDirectoryInExePath": "1",
+     "Extra_ConsumerDigest": {
+      "BlobSha1": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+      "CrBytes": 0,
+      "EqualsPinned": true,
+      "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200",
+      "Size": 64764
+     },
+     "Extra_ConsumerDigestCommand": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | python -I D:/r62-a6r2/repro/r1r4/bin/digest.py",
+     "Hash": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+     "HashCommand": "git --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | git hash-object --no-filters --stdin",
+     "HashExit": 0,
+     "Ok": true,
+     "Shell": "pwsh",
+     "Type": "blob",
+     "TypeCommand": "git --no-replace-objects cat-file -t 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+     "TypeExit": 0
+    },
+    "4": {
+     "Command": "git -C T fsck --full --no-dangling --no-progress (GIT_OPTIONAL_LOCKS=0)",
+     "Exit": 0,
+     "FsckWroteNothing": true,
+     "Ok": true,
+     "SnapshotDiff": {},
+     "StderrHead": [],
+     "StdoutHead": []
+    }
+   },
+   "UtcTime": "2026-10-12T09:59:29.208561Z"
+  },
+  "Recovery": {
+   "AllViaDeclaredPath": true,
+   "Problems": [],
+   "ToolRunsRecovered": 13
+  },
+  "RelayFacts": {
+   "Path": "D:/r62-a6r2/repro/r1r4/r4/w-t2/relay-facts.json",
+   "Sha256": "c77b9a8ea7899b889273fcc51cc1c035a2272bf3f058cb321c830e22a784f71f"
+  },
+  "Request": {
+   "Path": "D:/r62-a6r2/repro/r1r4/r4/w-t2/request.json",
+   "Sha256": "228df55d9be0f117f8582c372f82e42d7bdd84b1908638f07d24035b973e0114"
+  },
+  "SchemaBlobs": {
+   "controller-verification.v2.schema.json": {
+    "Blob": "e1faa9eca5c50b2b3a9f91575575614366962720",
+    "Commit": "23d0ca9d155a4495f7f7a33c89113c194ca573e4",
+    "Path": "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json"
+   },
+   "delegation.v2.schema.json": {
+    "Blob": "dfdbe461270e8fd92200c36bab78b9fdc3385014",
+    "Commit": "23d0ca9d155a4495f7f7a33c89113c194ca573e4",
+    "Path": "docs/automation/agent-execution/schemas/delegation.v2.schema.json"
+   },
+   "relay-record.v2.schema.json": {
+    "Blob": "dca5b29c1a260b679efc0fb249c73850925302f0",
+    "Commit": "23d0ca9d155a4495f7f7a33c89113c194ca573e4",
+    "Path": "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+   },
+   "worker-handoff.schema.json": {
+    "Blob": "cc3c9cf76b2247f3312e99bd447554326cc3700a",
+    "Commit": "23d0ca9d155a4495f7f7a33c89113c194ca573e4",
+    "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+   }
+  },
+  "SchemaValid": true,
+  "SchemaValidation": {
+   "controller-verification.v2.schema.json": [],
+   "delegation.v2.schema.json": [],
+   "relay-record.v2.schema.json": [],
+   "worker-handoff.schema.json": []
+  },
+  "Session": {
+   "CessionEndUtc": "2026-10-12T09:59:53Z",
+   "CessionStartUtc": "2026-10-12T09:59:34Z",
+   "Entry": {
+    "CleanTree": true,
+    "Fingerprint": {
+     "AcceptanceDecisionRef": null,
+     "KeyNames": [],
+     "Kind": "NONE",
+     "Sha256": null
+    },
+    "FingerprintChanged": false,
+    "HeadSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "LsRemoteSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "Processes": []
+   },
+   "EntryProcesses": {
+    "CheckerPid": 32384,
+    "ChildrenOfGivenParents": [],
+    "Matching": [],
+    "Needles": [
+     "D:\\r62-a6r2\\repro\\r1r4\\r4\\t2wt"
+    ],
+    "Total": 340,
+    "UnreadableClosedList": [
+     {
+      "CreationDateUtc": "2026-10-12T09:59:54.7950110Z",
+      "GrandParentName": "python3.13.exe",
+      "Name": "git.exe",
+      "ParentCommandLineHasNeedle": false,
+      "ParentName": "python3.13.exe",
+      "ParentPid": 27896,
+      "Pid": 21944
+     }
+    ],
+    "UtcTime": "2026-10-12T09:59:55.301773Z"
+   },
+   "Exit": {
+    "CleanTree": true,
+    "DelegationStatus": "ACCEPTED_OPEN",
+    "Fingerprint": {
+     "AcceptanceDecisionRef": null,
+     "KeyNames": [],
+     "Kind": "NONE",
+     "Sha256": null
+    },
+    "GitOperationInProgress": false,
+    "HeadSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "LsRemoteSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "OpenDelegations": 1,
+    "OriginMainSha": "fbe25347799e5b801ef708454212335537448bd1",
+    "Processes": [],
+    "SummaryCommitSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+   },
+   "ExitProcesses": {
+    "CheckerPid": 22572,
+    "ChildrenOfGivenParents": [],
+    "Matching": [],
+    "Needles": [
+     "D:\\r62-a6r2\\repro\\r1r4\\r4\\t2wt"
+    ],
+    "Total": 339,
+    "UnreadableClosedList": [],
+    "UtcTime": "2026-10-12T09:59:33.675077Z"
+   },
+   "LogPath": "D:/r62-a6r2/repro/r1r4/r4/w-t2/controller-session.jsonl",
+   "LogSha256": "3adeb91b4538be301c2757d63b9e82d1a1a758333775bd95ac5e7f937138e281"
+  },
+  "T": "D:/r62-a6r2/repro/r1r4/r4/t2wt",
+  "Work": "D:/r62-a6r2/repro/r1r4/r4/w-t2",
+  "ZeroWriteToolRuns": {
+   "Diff": {},
+   "Equal": true
+  }
+ },
+ "Schema": "r1r4-bench/r4-t2",
+ "Test1": {
+  "C2": "D:/r62-a6r2/repro/r1r4/r4/c2",
+  "CommonDir": "D:\\r62-a6r2\\repro\\r1r4\\r4\\c2\\.git",
+  "GitDir": "D:\\r62-a6r2\\repro\\r1r4\\r4\\c2\\.git\\worktrees\\t2wt",
+  "Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "HeadIsTip": true,
+  "Kind": "git worktree add T2 fx/u1 on a fresh --no-hardlinks clone C2 (checked out at main)",
+  "T2": "D:/r62-a6r2/repro/r1r4/r4/t2wt",
+  "WorktreeList": [
+   "worktree D:/r62-a6r2/repro/r1r4/r4/c2",
+   "HEAD fbe25347799e5b801ef708454212335537448bd1",
+   "branch refs/heads/main",
+   "",
+   "worktree D:/r62-a6r2/repro/r1r4/r4/t2wt",
+   "HEAD 95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "branch refs/heads/fx/u1"
+  ]
+ },
+ "Test3": {
+  "Acceptor": {
+   "Checks": {
+    "R1": "MATCH",
+    "R10": "MATCH",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "MATCH",
+    "R5": "MATCH",
+    "R6": "MATCH",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "Decision": "ACCEPT_FACTS",
+   "Details": {
+    "R3": "{\"Runs\":[{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"b55922301e1d65d2e192c169a303fd56e4969bba599096bb6acecffa215bbda8\",\"Name\":\"identity\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69\",\"Name\":\"diff\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5\",\"Name\":\"scope\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c\",\"Name\":\"contract\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"19ef36311d7c1bcf41946dade09966effc4dea105bd98474dd9488365a7ff662\",\"Name\":\"hashes\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"dc2de9192f430c63c376ae9897b968481a34651363b7028ac3c9922b49f0a2a4\",\"Name\":\"cleantree\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"c17acd151f5cd49351c1ba5e657bdbb3ebe23846a4b7a49ad77e108e023f257c\",\"Name\":\"read-text-1\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"be222422f1119e35c3650d699af07db6ca25f5dfa1f5da2336f2e8325322f4ce\",\"Name\":\"read-text-73\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"d5b89fa9afdb689f3d1f32dd672bd18c02570658fce45632a663c5c28dc83506\",\"Name\":\"read-json\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha"
+   },
+   "EndUtc": "2026-10-12T10:00:12.768264Z",
+   "Error": null,
+   "HoldStartUtc": "2026-10-12T09:59:57.157831Z",
+   "MismatchDetails": {},
+   "Pid": 33844,
+   "ProcessTreeDead": true,
+   "Processes": {
+    "CheckerPid": 40268,
+    "ChildrenOfGivenParents": [],
+    "Matching": [],
+    "Needles": [
+     "D:\\r62-a6r2\\repro\\r1r4\\r4\\t2wt"
+    ],
+    "Total": 340,
+    "UnreadableClosedList": [
+     {
+      "CreationDateUtc": "2026-10-12T10:00:14.6575010Z",
+      "GrandParentName": "python3.13.exe",
+      "Name": "git.exe",
+      "ParentCommandLineHasNeedle": false,
+      "ParentName": "python3.13.exe",
+      "ParentPid": 33972,
+      "Pid": 37184
+     }
+    ],
+    "UtcTime": "2026-10-12T10:00:15.056804Z"
+   },
+   "R4Rows": [
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Identity",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Scope",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "paths not covered by AllowedWriteScope: 3",
+      "paths covered by ForbiddenWriteScope: 2"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "pass",
+     "Check": "CleanTree",
+     "Controller": "pass",
+     "Defects": null,
+     "Reasons": [],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Trailer",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "FreeText",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "term GATE PASS in Evidence"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Authority",
+     "Controller": "fail",
+     "Defects": 14,
+     "Reasons": null,
+     "Status": "MATCH"
+    }
+   ],
+   "Rc": 0,
+   "ReleaseUtc": "2026-10-12T10:00:15.061505Z",
+   "Request": "D:/r62-a6r2/repro/r1r4/r4/w-t2/request.json",
+   "RequestSha256": "228df55d9be0f117f8582c372f82e42d7bdd84b1908638f07d24035b973e0114",
+   "StartUtc": "2026-10-12T09:59:58.298096Z",
+   "StdoutPath": "D:/r62-a6r2/repro/r1r4/r4/w-t2/request.acceptor-stdout.json",
+   "StdoutSha256": "5abefcd174f498ad34f3d3e2ab87709aeb701f3174c5bec8d6826118cf401f55",
+   "ZeroWrite": [
+    {
+     "Diff": {},
+     "Equal": true,
+     "Repo": "D:/r62-a6r2/repro/r1r4/r4/t2wt"
+    }
+   ]
+  },
+  "Held": true
+ },
+ "Test4": {
+  "Acceptor": {
+   "Checks": {
+    "R1": "MATCH",
+    "R10": "MATCH",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "MISMATCH",
+    "R5": "MATCH",
+    "R6": "MATCH",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "Decision": "REJECT_FACTS",
+   "EndUtc": "2026-10-12T10:00:31.066531Z",
+   "Error": null,
+   "HoldStartUtc": "2026-10-12T10:00:16.409430Z",
+   "MismatchDetails": {
+    "R4": "{\"Checks\":[{\"AcceptorExpects\":\"not pass\",\"Check\":\"Identity\",\"Controller\":\"fail\",\"Reasons\":[\"HEAD / refs/remotes/origin/<branch> / CurrentSha differ\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Scope\",\"Controller\":\"fail\",\"Reasons\":[\"paths not covered by AllowedWriteScope: 3\",\"paths covered by ForbiddenWriteScope: 2\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"pass\",\"Check\":\"CleanTree\",\"Controller\":\"fail\",\"Reasons\":[],\"Status\":\"MISMATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Trailer\",\"Controller\":\"fail\",\"Reasons\":[\"commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not"
+   },
+   "Pid": 15264,
+   "ProcessTreeDead": true,
+   "Processes": {
+    "CheckerPid": 32120,
+    "ChildrenOfGivenParents": [],
+    "Matching": [],
+    "Needles": [
+     "D:\\r62-a6r2\\repro\\r1r4\\r4\\t2wt"
+    ],
+    "Total": 340,
+    "UnreadableClosedList": [
+     {
+      "CreationDateUtc": "2026-10-12T10:00:33.0186090Z",
+      "GrandParentName": "python3.13.exe",
+      "Name": "git.exe",
+      "ParentCommandLineHasNeedle": false,
+      "ParentName": "python3.13.exe",
+      "ParentPid": 38024,
+      "Pid": 8128
+     }
+    ],
+    "UtcTime": "2026-10-12T10:00:33.468574Z"
+   },
+   "R4Rows": [
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Identity",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Scope",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "paths not covered by AllowedWriteScope: 3",
+      "paths covered by ForbiddenWriteScope: 2"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "pass",
+     "Check": "CleanTree",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [],
+     "Status": "MISMATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Trailer",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "FreeText",
+     "Controller": "fail",
+     "Defects": null,
+     "Reasons": [
+      "term GATE PASS in Evidence"
+     ],
+     "Status": "MATCH"
+    },
+    {
+     "AcceptorExpects": "not pass",
+     "Check": "Authority",
+     "Controller": "fail",
+     "Defects": 14,
+     "Reasons": null,
+     "Status": "MATCH"
+    }
+   ],
+   "Rc": 1,
+   "ReleaseUtc": "2026-10-12T10:00:33.472854Z",
+   "Request": "D:/r62-a6r2/repro/r1r4/r4/w-t2/request-flip-cleantree.json",
+   "RequestSha256": "61ac3cf839e5ed14cfea0bf00198e61229ab67e07e154ae233297cb85f0e438e",
+   "StartUtc": "2026-10-12T10:00:17.542139Z",
+   "StdoutPath": "D:/r62-a6r2/repro/r1r4/r4/w-t2/request-flip-cleantree.acceptor-stdout.json",
+   "StdoutSha256": "41cf1c6a18a91bec12777a7ce5b1f5c3269807509e51aaf298010b6cc435f9bb",
+   "ZeroWrite": [
+    {
+     "Diff": {},
+     "Equal": true,
+     "Repo": "D:/r62-a6r2/repro/r1r4/r4/t2wt"
+    }
+   ]
+  },
+  "Check": "CleanTree",
+  "ControllerOutputSha256": "c69e8b21c651b9a34c09522b71ea663d3ce539456ac29a63abf46cca7df5b6ed",
+  "From": "pass",
+  "Held": true,
+  "To": "fail",
+  "ZeroWriteAndProcesses": true
+ },
+ "Test7": {
+  "Held": true,
+  "ProcessTreeDead": true,
+  "Processes": {
+   "CheckerPid": 40268,
+   "ChildrenOfGivenParents": [],
+   "Matching": [],
+   "Needles": [
+    "D:\\r62-a6r2\\repro\\r1r4\\r4\\t2wt"
+   ],
+   "Total": 340,
+   "UnreadableClosedList": [
+    {
+     "CreationDateUtc": "2026-10-12T10:00:14.6575010Z",
+     "GrandParentName": "python3.13.exe",
+     "Name": "git.exe",
+     "ParentCommandLineHasNeedle": false,
+     "ParentName": "python3.13.exe",
+     "ParentPid": 33972,
+     "Pid": 37184
+    }
+   ],
+   "UtcTime": "2026-10-12T10:00:15.056804Z"
+  },
+  "ProcessesOnC2": {
+   "CheckerPid": 8504,
+   "ChildrenOfGivenParents": [],
+   "Matching": [],
+   "Needles": [
+    "D:\\r62-a6r2\\repro\\r1r4\\r4\\c2"
+   ],
+   "Total": 342,
+   "UnreadableClosedList": [
+    {
+     "CreationDateUtc": "2026-10-12T10:00:15.9258450Z",
+     "GrandParentName": "python3.13.exe",
+     "Name": "git.exe",
+     "ParentCommandLineHasNeedle": false,
+     "ParentName": "python3.13.exe",
+     "ParentPid": 15560,
+     "Pid": 22056
+    }
+   ],
+   "UtcTime": "2026-10-12T10:00:16.387242Z"
+  },
+  "ZeroWrite": [
+   {
+    "Diff": {},
+    "Equal": true,
+    "Repo": "D:/r62-a6r2/repro/r1r4/r4/t2wt"
+   }
+  ]
+ },
+ "Versions": {
+  "Cmd": "10.0.26300.9550",
+  "Git": "git version 2.54.0.windows.1",
+  "GitPath": "%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE",
+  "Os": "Windows-11-10.0.26300-SP0",
+  "Pwsh": "7.6.6",
+  "PwshPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+  "Python": "3.13.14",
+  "PythonImplementation": "CPython",
+  "PythonOnPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\python.EXE",
+  "WindowsPowerShell": "5.1.26100.9549"
+ }
+}
