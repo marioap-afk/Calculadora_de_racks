@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §80-§81; evidencia §155-§156) — A-6 ronda 2: concluir R3 (una reanudación con límite), preflight, publicación PROPUESTA y guardas run, kit siguiente sin lanzar; en paralelo, diseño de C1-C3 (sin implementación); sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §80-§81; evidencia §157) — A-6 ronda 2 publicada PROPUESTA (86da0ae7, ae9fe0e9; guardas run PASS; R3 REPRODUCED); preparar el kit de la revisión siguiente sin lanzarlo; esperar la disposición del Coordinator para una única revisión formal; en paralelo, diseño de C1-C3 sin implementación; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

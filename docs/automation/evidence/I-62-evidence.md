@@ -4149,3 +4149,24 @@ solo desde artefactos custodiados.
   solo lectura desde su worktree; I-65 no se modifica.
 - El trabajo de C1-C3 se hace en el área temporal de la sesión y, para las pruebas, en repositorios desechables fuera de todo checkout real. A-6
   ronda 2 sigue su camino (decisiones §80) sin cambios por esta disposición.
+
+## 157. A-6 ronda 2 publicada como PROPUESTA (blob `86da0ae7`, commit `ae9fe0e9`); guardas `run` PASS; reproducción de R3 completa (decisiones §79-§80)
+
+- **Publicación** (decisiones §80, punto 5): `ae9fe0e9`, sobre `2c531b53`, solo modifica `docs/initiatives/I-62-A-6.md` (ronda 1 `eac473c0` →
+  ronda 2 `86da0ae770e683a647f2724860a4bd890061154d`) y añade `docs/automation/evidence/I-62-A6/r2/` (130 archivos). La ronda 1 sigue en Git sin
+  cambio.
+- **Guardas** (`r2/a6r2-guards.py`, blob `dea3db71`):
+  - autoprueba 586/586 sobre el blob exacto;
+  - controles negativos 25/25;
+  - `preview --final` PASS;
+  - **`run` sobre `ae9fe0e9`: PASS en G1-G11 y G5b** (`r2/a6r2-guards-result-run.json`).
+- **Reproducción** ([r2/repro/README.md](I-62-A6/r2/repro/README.md)):
+  - **R1/R4 REPRODUCED** (agente C);
+  - **R3 REPRODUCED**: una sola reanudación de la misma ejecución, con tope de 150 min, de 19:42:13Z a 20:12:45Z, todos los pasos con código 0, tras
+    tres cortes por eventos de energía del equipo;
+  - resumen de mutantes igual al custodiado: 25 activados, M15 y M23 no activables;
+  - paquetes originales intactos.
+- **Brechas G1-G6**, registradas una por una en A-6 §3.12 (hecho no demostrado, riesgo, mitigación, cobertura real, blob y efecto normativo).
+  Ninguna se declara cerrada; las mitigaciones no ensayadas están señaladas.
+- Blobs del instrumento (`9a829b0e`) y del aceptante (`434ef1fc`) y líneas del Owner sin cambio; ninguna línea nueva del Owner.
+- Ninguna revisión formal lanzada. El kit de la revisión siguiente se prepara aparte (decisiones §80, punto 6).
