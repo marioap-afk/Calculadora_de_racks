@@ -4125,3 +4125,10 @@ solo desde artefactos custodiados.
     «literal», y el revisor sí leyó ese tramo (Read de A-6 L1-L140). Comprobado aquí: A-6 L118-L119 sin el prefijo «> » es byte a byte V14
     L2333-L2334 en `7b5ffac9`. La regla del kit exige citar solo líneas leídas con Read. La acreditación es del Coordinator.
 - Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS. Sin medición ni Codex hasta el acuerdo.
+
+## 154. Decisiones §79: correcciones REQUIRED de A-6 (ronda 2) autorizadas en preparación; sin revisión nueva
+
+- La corrida `R20261011T215735Z-c434` (evidencia §153) queda conservada tal cual: NOT_ACCREDITED, sin acreditación excepcional.
+- La candidata de la ronda 2 parte de `eac473c0` y se publica como blob nuevo, sin tocar el de la ronda 1. Los blobs del instrumento (`9a829b0e`)
+  y del aceptante (`434ef1fc`) se conservan si es técnicamente viable; cualquier cambio se detiene y se informa (§79, punto 3).
+- R5 se resuelve limitando el instrumento a VERIFY. No se pide ampliar ADR-0046 #9.

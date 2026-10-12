@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §78; evidencia §153) — revisión formal de A-6 ejecutada: CHANGES REQUIRED (A62-A6-R1..R5, O1..O3); auditor NOT_ACCREDITED por una referencia (V14 L2333-L2334 no leída con Read); esperar la disposición del Coordinator sobre la acreditación y los hallazgos; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §79; evidencia §154) — preparar la candidata de A-6 ronda 2 (R1-R5, O1-O3, M-01) con guardas, negativos, pruebas integradas y reproducción independiente; blobs 9a829b0e/434ef1fc conservados si es viable; sin revisión formal nueva sin disposición; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
