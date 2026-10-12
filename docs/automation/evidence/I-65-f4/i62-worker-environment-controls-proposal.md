@@ -1,5 +1,6 @@
 # Propuesta para I-62: controles preventivos del entorno del Worker (invocaciones de intérpretes no autorizadas)
 
+- **Estado:** SUSTITUIDA el 2026-10-12 por el [paquete de escalamiento](i62-escalation-package.md); se conserva como antecedente.
 - **Estado:** PROPUESTA. No adoptada. Preparada desde I-65 por orden del Owner («Owner Disposition: F4-T3 C-08 and Codex Budget», punto 5).
 - **Destinatario:** I-62 (infraestructura de ejecución delegada). **Este documento no modifica** la infraestructura de I-61/I-62, sus
   esquemas, sus scripts ni sus prompts; solo registra el problema y propone opciones para que I-62 las evalúe con su propio proceso.

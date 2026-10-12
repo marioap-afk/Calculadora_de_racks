@@ -1,0 +1,36 @@
+{
+ "ObtainedUtc": "2026-10-12T07:12:26Z",
+ "MainCheckout": "D:\\Documentos\\Codex\\Calculadora de racks",
+ "Head": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+ "Branch": "main",
+ "OriginMain": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+ "StatusPorcelainAllUntracked": [
+  " M RackCad.sln"
+ ],
+ "StagedNameStatus": [],
+ "StashList": [],
+ "CoreAutocrlf": "true",
+ "GitattributesForSln": [],
+ "RackCadSln": {
+  "LastWriteTimeUtc": "2026-10-11T20:32:56.840840Z",
+  "Working": {
+   "bytes": 10566,
+   "sha256": "4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C",
+   "bom_utf8": false,
+   "crlf": 144,
+   "lf_only": 0,
+   "lines": 144
+  },
+  "HeadBlobId": "5317eecef383e0902e145b9b5d1fcbaf891e0d01",
+  "HeadBlob": {
+   "bytes": 9176,
+   "sha256": "DEB08FB0DFDEAFBC4DC4A262A285FAB2F964FF3844A6AF449E6621B1DB57FC14",
+   "bom_utf8": true,
+   "crlf": 0,
+   "lf_only": 129,
+   "lines": 129
+  },
+  "WorkingBlobIdIfAdded": "45ccab49f50aa929405d8726d1fcdca68065cf53"
+ },
+ "DiffSha256": "4BA20015ECA06AED38D4351FADAD7E11D40888ED8BA4832A536412843AF6E8F6"
+}

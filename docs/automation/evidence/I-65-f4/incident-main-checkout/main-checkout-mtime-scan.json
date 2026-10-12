@@ -1,0 +1,582 @@
+{
+ "window": [
+  "2026-10-11T15:00:00",
+  "2026-10-12T08:00:00"
+ ],
+ "worktree_files": [
+  {
+   "path": "RackCad.sln",
+   "mtime_utc": "2026-10-11T20:32:56.840840Z"
+  }
+ ],
+ "git_dir_files": [
+  {
+   "path": ".git/FETCH_HEAD",
+   "mtime_utc": "2026-10-11T16:19:44.979727Z"
+  },
+  {
+   "path": ".git/objects/pack/pack-b296d8567f4f9d01e7fb8f83a33490709ad23571.pack",
+   "mtime_utc": "2026-10-11T21:35:18.690426Z"
+  },
+  {
+   "path": ".git/objects/pack/pack-b296d8567f4f9d01e7fb8f83a33490709ad23571.idx",
+   "mtime_utc": "2026-10-11T21:35:18.702939Z"
+  },
+  {
+   "path": ".git/objects/pack/pack-b296d8567f4f9d01e7fb8f83a33490709ad23571.rev",
+   "mtime_utc": "2026-10-11T21:35:18.707886Z"
+  },
+  {
+   "path": ".git/objects/pack/multi-pack-index",
+   "mtime_utc": "2026-10-11T21:35:18.885272Z"
+  },
+  {
+   "path": ".git/info/refs",
+   "mtime_utc": "2026-10-11T21:35:19.070699Z"
+  },
+  {
+   "path": ".git/objects/info/packs",
+   "mtime_utc": "2026-10-11T21:35:19.082200Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-workspace-persistente-rackcad/FETCH_HEAD",
+   "mtime_utc": "2026-10-11T21:40:56.660453Z"
+  },
+  {
+   "path": ".git/objects/04/c415ee7897d30dc7b8b9f82b2824f2ac54ff0d",
+   "mtime_utc": "2026-10-11T21:42:44.919374Z"
+  },
+  {
+   "path": ".git/objects/03/955f83cd3695182a0c52cec9f5984e6427ea1a",
+   "mtime_utc": "2026-10-11T21:42:44.942363Z"
+  },
+  {
+   "path": ".git/objects/07/09e2218f2652bc2fe7a2928eb7ad183a4d503a",
+   "mtime_utc": "2026-10-11T21:42:44.948678Z"
+  },
+  {
+   "path": ".git/objects/6e/51e36bfea6d896c6d772e71c3ebe3f614e399c",
+   "mtime_utc": "2026-10-11T21:42:44.965846Z"
+  },
+  {
+   "path": ".git/objects/a3/134b888bc1de2db3152bae4564930152de1d5a",
+   "mtime_utc": "2026-10-11T21:42:45.264456Z"
+  },
+  {
+   "path": ".git/objects/c0/7b60891cd607da7592a083f878de72f1f8b211",
+   "mtime_utc": "2026-10-11T21:42:45.277505Z"
+  },
+  {
+   "path": ".git/objects/55/819ad280388b6c1a78604c71604a98970cbca9",
+   "mtime_utc": "2026-10-11T21:42:45.284939Z"
+  },
+  {
+   "path": ".git/objects/6e/acfdc276e1c4b97e255eb4ea9402304c418f79",
+   "mtime_utc": "2026-10-11T21:42:45.291397Z"
+  },
+  {
+   "path": ".git/objects/fe/e1f569934a4f363e9f944991090eceea08bb76",
+   "mtime_utc": "2026-10-11T21:42:45.296717Z"
+  },
+  {
+   "path": ".git/objects/6a/fa7ac74be0c4d4a6df0f97514b58719a5d9bca",
+   "mtime_utc": "2026-10-11T21:42:45.302251Z"
+  },
+  {
+   "path": ".git/objects/e7/f8d738e0530a6b889f9621b545bfecfc8fb7ee",
+   "mtime_utc": "2026-10-11T21:42:45.308514Z"
+  },
+  {
+   "path": ".git/objects/90/5bbb594ef82839d1ea2a6d011a53e9a3503b5a",
+   "mtime_utc": "2026-10-11T21:42:45.313035Z"
+  },
+  {
+   "path": ".git/objects/7b/5ffac9d9c04f90b9708a867089d32e885dc815",
+   "mtime_utc": "2026-10-11T21:42:45.347589Z"
+  },
+  {
+   "path": ".git/objects/82/2ba76d6161f79a1fbbdf09ec1130ca4c2ca4db",
+   "mtime_utc": "2026-10-11T21:42:45.507130Z"
+  },
+  {
+   "path": ".git/objects/93/ccc28506ca4aed1e0aa0ec138028b55982e3cf",
+   "mtime_utc": "2026-10-11T21:42:45.521838Z"
+  },
+  {
+   "path": ".git/objects/f7/9b29639dd58746919246e20d7933d0c7c403c1",
+   "mtime_utc": "2026-10-11T21:42:45.527074Z"
+  },
+  {
+   "path": ".git/objects/9e/5014ea88241ac8a3c80d61edfb9795bcba6b6c",
+   "mtime_utc": "2026-10-11T21:42:46.387823Z"
+  },
+  {
+   "path": ".git/objects/d7/43ae290420273cee34d3e646ed1e22595f5379",
+   "mtime_utc": "2026-10-11T21:42:46.402189Z"
+  },
+  {
+   "path": ".git/objects/19/6179d5e2b6c05c585da9a5317863794a63ef74",
+   "mtime_utc": "2026-10-11T21:42:46.408605Z"
+  },
+  {
+   "path": ".git/objects/c6/d99aabcabc8bddb9bb9ce23319bde7e44c8228",
+   "mtime_utc": "2026-10-11T21:42:46.413332Z"
+  },
+  {
+   "path": ".git/objects/80/705ae94cad2a69ffa027143b6a1f11932c4d71",
+   "mtime_utc": "2026-10-11T21:42:46.417668Z"
+  },
+  {
+   "path": ".git/objects/52/d50c49c46519142c43359a450c237884a7a265",
+   "mtime_utc": "2026-10-11T21:42:46.425572Z"
+  },
+  {
+   "path": ".git/objects/c0/40e3f1df4722563a64f9d42b38b18f26630299",
+   "mtime_utc": "2026-10-11T21:42:46.430505Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-workspace-persistente-rackcad/index",
+   "mtime_utc": "2026-10-11T21:42:46.438244Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-workspace-persistente-rackcad/COMMIT_EDITMSG",
+   "mtime_utc": "2026-10-11T21:42:46.458312Z"
+  },
+  {
+   "path": ".git/objects/4d/79e91036acdaa3e62b7b54677f394593f581a0",
+   "mtime_utc": "2026-10-11T21:42:46.473239Z"
+  },
+  {
+   "path": ".git/refs/heads/architecture/workspace-persistente-rackcad",
+   "mtime_utc": "2026-10-11T21:42:47.114591Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-workspace-persistente-rackcad/logs/HEAD",
+   "mtime_utc": "2026-10-11T21:42:47.116019Z"
+  },
+  {
+   "path": ".git/logs/refs/heads/architecture/workspace-persistente-rackcad",
+   "mtime_utc": "2026-10-11T21:42:47.124539Z"
+  },
+  {
+   "path": ".git/refs/remotes/origin/architecture/workspace-persistente-rackcad",
+   "mtime_utc": "2026-10-11T21:42:51.863194Z"
+  },
+  {
+   "path": ".git/logs/refs/remotes/origin/architecture/workspace-persistente-rackcad",
+   "mtime_utc": "2026-10-11T21:42:51.870880Z"
+  },
+  {
+   "path": ".git/objects/70/b5561c988acda1a47aab5912d218a39181eec7",
+   "mtime_utc": "2026-10-11T21:54:24.080869Z"
+  },
+  {
+   "path": ".git/objects/5c/77ee9c09fe35ae4b27d11cebb7f5181fab082b",
+   "mtime_utc": "2026-10-11T21:54:24.105131Z"
+  },
+  {
+   "path": ".git/objects/a9/9463a31d513a0d968c318568aab7c374ec697a",
+   "mtime_utc": "2026-10-11T21:54:24.476761Z"
+  },
+  {
+   "path": ".git/objects/8b/ec5ead2f331e013bf47c1d214b702ab8221e64",
+   "mtime_utc": "2026-10-11T21:54:24.491291Z"
+  },
+  {
+   "path": ".git/objects/2c/0a5ea1eac1f9f9fe89ec973365e10707abb0de",
+   "mtime_utc": "2026-10-11T21:54:24.498297Z"
+  },
+  {
+   "path": ".git/objects/de/d1447020a77e44832107e7d2dab26c4c5c1e94",
+   "mtime_utc": "2026-10-11T21:54:24.505633Z"
+  },
+  {
+   "path": ".git/objects/c1/1499e4d7eddffffae0dc4e702af6a637bb76ba",
+   "mtime_utc": "2026-10-11T21:54:24.512000Z"
+  },
+  {
+   "path": ".git/objects/5f/53af22b1755602f2713fce9f52083835012aba",
+   "mtime_utc": "2026-10-11T21:54:24.519621Z"
+  },
+  {
+   "path": ".git/objects/28/3ed6137a8669012369abb6e4a8543c27d34f1b",
+   "mtime_utc": "2026-10-11T21:54:24.559588Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-interop-analisis-estructural/FETCH_HEAD",
+   "mtime_utc": "2026-10-11T22:10:16.166812Z"
+  },
+  {
+   "path": ".git/objects/db/c2f9d0edd2a21131bafb18e96c75b8cf9142d4",
+   "mtime_utc": "2026-10-11T22:14:56.911946Z"
+  },
+  {
+   "path": ".git/objects/ca/54c07dbc856e0f2c57e62975bc6b1562b460eb",
+   "mtime_utc": "2026-10-11T22:14:56.932329Z"
+  },
+  {
+   "path": ".git/objects/55/8595ab8ec440cc05cc3f941bbd9d34399b583e",
+   "mtime_utc": "2026-10-11T22:14:56.940844Z"
+  },
+  {
+   "path": ".git/objects/86/31ac2ac19c6f3fd5b3685913c7b0c12b364717",
+   "mtime_utc": "2026-10-11T22:14:56.948839Z"
+  },
+  {
+   "path": ".git/objects/pack/pack-40cd9bf5f6bc715d187f30d1085d26ae56716303.pack",
+   "mtime_utc": "2026-10-11T22:14:56.962173Z"
+  },
+  {
+   "path": ".git/objects/28/00d01bcd581ce53a39869100360eb223d35295",
+   "mtime_utc": "2026-10-11T22:14:56.966171Z"
+  },
+  {
+   "path": ".git/objects/ac/0be394f4e2ff081a905d1ee8d34b27ab4b3ff8",
+   "mtime_utc": "2026-10-11T22:14:56.973181Z"
+  },
+  {
+   "path": ".git/objects/67/87d8d001e050b0560cba849d852d5e91eeeaa9",
+   "mtime_utc": "2026-10-11T22:14:56.984491Z"
+  },
+  {
+   "path": ".git/objects/c4/6f65e2f379ba443f76fa789502a7309caa6e21",
+   "mtime_utc": "2026-10-11T22:14:56.994035Z"
+  },
+  {
+   "path": ".git/objects/2c/725e74e3d63c92bf861265242f7a9e83fa6910",
+   "mtime_utc": "2026-10-11T22:14:57.002983Z"
+  },
+  {
+   "path": ".git/objects/61/d7e7c9a8ebbeb0da2ad3e0526e177629814878",
+   "mtime_utc": "2026-10-11T22:14:57.015234Z"
+  },
+  {
+   "path": ".git/objects/43/a21c0570fa2bddf7a073505af51dc2b64c4bee",
+   "mtime_utc": "2026-10-11T22:14:57.026534Z"
+  },
+  {
+   "path": ".git/objects/af/149980456386db0b93c4e00f291b97dfe01b50",
+   "mtime_utc": "2026-10-11T22:14:57.034079Z"
+  },
+  {
+   "path": ".git/objects/0f/e074dc86e9cc10a42ced5166c8d574aff4a30d",
+   "mtime_utc": "2026-10-11T22:14:57.043391Z"
+  },
+  {
+   "path": ".git/objects/15/aa7615305755c1ae5bca5ede68b79449662c3d",
+   "mtime_utc": "2026-10-11T22:14:57.050643Z"
+  },
+  {
+   "path": ".git/objects/74/f209e9a6ea03f845b381b2e3033a7bd0187ea1",
+   "mtime_utc": "2026-10-11T22:14:57.056111Z"
+  },
+  {
+   "path": ".git/objects/42/8552020567ad08360b0909d7d3e0c30052ced5",
+   "mtime_utc": "2026-10-11T22:14:57.065384Z"
+  },
+  {
+   "path": ".git/objects/49/44c1366d397269dfbb95b337eae77ada003311",
+   "mtime_utc": "2026-10-11T22:14:57.346783Z"
+  },
+  {
+   "path": ".git/objects/50/b2302270c2be2b4e3c8dd54cce0b07b43c8626",
+   "mtime_utc": "2026-10-11T22:14:57.360286Z"
+  },
+  {
+   "path": ".git/objects/5f/d1a61882c363cb5f0b6116e7b789d39baad44b",
+   "mtime_utc": "2026-10-11T22:14:57.367449Z"
+  },
+  {
+   "path": ".git/objects/31/ca5697495e820618d5235cf3a25036100b9368",
+   "mtime_utc": "2026-10-11T22:14:57.374894Z"
+  },
+  {
+   "path": ".git/objects/49/f5a79c5a3e33f4a3210df9845ea8dc4871ffd9",
+   "mtime_utc": "2026-10-11T22:14:57.382210Z"
+  },
+  {
+   "path": ".git/objects/57/a75451e4673196fa7c112df457ab55dd51a322",
+   "mtime_utc": "2026-10-11T22:14:57.389435Z"
+  },
+  {
+   "path": ".git/objects/e7/29e59d2aaa2042e3fc9c320d5718ca44606324",
+   "mtime_utc": "2026-10-11T22:14:57.393783Z"
+  },
+  {
+   "path": ".git/objects/57/97070df7811c3e227b16be1716becf2466118a",
+   "mtime_utc": "2026-10-11T22:14:57.398790Z"
+  },
+  {
+   "path": ".git/objects/59/1b805b993919b7cb603efec5f444d96ca0e001",
+   "mtime_utc": "2026-10-11T22:14:57.404664Z"
+  },
+  {
+   "path": ".git/objects/48/c05cb6e5a6d6d34171eaa9a7eb3992e2e36d54",
+   "mtime_utc": "2026-10-11T22:14:57.408219Z"
+  },
+  {
+   "path": ".git/objects/ef/cf228ace35b5417b0ef9abfc2f2ba7089ce2c6",
+   "mtime_utc": "2026-10-11T22:14:57.412484Z"
+  },
+  {
+   "path": ".git/objects/20/9f72e03123be6b8966c5a5b4ffeb7d163f0b03",
+   "mtime_utc": "2026-10-11T22:14:57.417872Z"
+  },
+  {
+   "path": ".git/objects/0b/2d539a9a7c389efe0b111df09706c32da89ee0",
+   "mtime_utc": "2026-10-11T22:14:57.422815Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-interop-analisis-estructural/index",
+   "mtime_utc": "2026-10-11T22:14:57.427448Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-interop-analisis-estructural/COMMIT_EDITMSG",
+   "mtime_utc": "2026-10-11T22:14:57.451014Z"
+  },
+  {
+   "path": ".git/objects/1b/518628eb45fbb79b66462fc142dc19550ba40b",
+   "mtime_utc": "2026-10-11T22:14:57.461639Z"
+  },
+  {
+   "path": ".git/refs/heads/architecture/interop-analisis-estructural",
+   "mtime_utc": "2026-10-11T22:14:57.476693Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-interop-analisis-estructural/logs/HEAD",
+   "mtime_utc": "2026-10-11T22:14:57.478709Z"
+  },
+  {
+   "path": ".git/logs/refs/heads/architecture/interop-analisis-estructural",
+   "mtime_utc": "2026-10-11T22:14:57.482509Z"
+  },
+  {
+   "path": ".git/refs/remotes/origin/architecture/interop-analisis-estructural",
+   "mtime_utc": "2026-10-11T22:15:02.243851Z"
+  },
+  {
+   "path": ".git/logs/refs/remotes/origin/architecture/interop-analisis-estructural",
+   "mtime_utc": "2026-10-11T22:15:02.248538Z"
+  },
+  {
+   "path": ".git/objects/aa/c858502d87fd05ce14a26383e50c2f4e18032e",
+   "mtime_utc": "2026-10-11T23:48:21.900595Z"
+  },
+  {
+   "path": ".git/objects/cb/cf15681d76daff2ec1578bd42c2cffd73bcaee",
+   "mtime_utc": "2026-10-11T23:48:21.915045Z"
+  },
+  {
+   "path": ".git/objects/2d/4d881b9d7335b15db173d84aa77ff4f55e53bb",
+   "mtime_utc": "2026-10-11T23:48:21.921351Z"
+  },
+  {
+   "path": ".git/objects/48/cb65a92baf9439a5a3d693191e5fd434d69881",
+   "mtime_utc": "2026-10-11T23:48:21.927064Z"
+  },
+  {
+   "path": ".git/objects/pack/pack-b362369a9a03a2d0cd076e91608a2cf3da431065.pack",
+   "mtime_utc": "2026-10-11T23:48:21.938033Z"
+  },
+  {
+   "path": ".git/objects/91/7fbaa7d55c99f8f7aefb5aa2a16d998cfa7f4a",
+   "mtime_utc": "2026-10-11T23:48:21.940451Z"
+  },
+  {
+   "path": ".git/objects/30/a6ec4b1026a975f4fb79ca491016b0d32f87ee",
+   "mtime_utc": "2026-10-11T23:48:21.946538Z"
+  },
+  {
+   "path": ".git/objects/61/604df4c299fccfd5b94d678efcba52337a1cf0",
+   "mtime_utc": "2026-10-11T23:48:21.950969Z"
+  },
+  {
+   "path": ".git/objects/75/7611506c75e918dedff1ed26bdeb15a6b814fc",
+   "mtime_utc": "2026-10-11T23:48:21.954820Z"
+  },
+  {
+   "path": ".git/objects/7c/7e57a289eb927a0645efbfed9b44c0c09ab72c",
+   "mtime_utc": "2026-10-11T23:48:21.959020Z"
+  },
+  {
+   "path": ".git/objects/25/7d1d0435942dab3618407db87987cbf9a81714",
+   "mtime_utc": "2026-10-11T23:48:21.963077Z"
+  },
+  {
+   "path": ".git/objects/81/f1d876114792c0182e844af4ed1e306f1161d2",
+   "mtime_utc": "2026-10-11T23:48:21.968113Z"
+  },
+  {
+   "path": ".git/objects/05/5affefeb75f4c4325559540929dd8ade8f78af",
+   "mtime_utc": "2026-10-11T23:48:21.972347Z"
+  },
+  {
+   "path": ".git/objects/15/43f76a2545cad31fbd44271dcceb79d6af8b7c",
+   "mtime_utc": "2026-10-11T23:48:21.976391Z"
+  },
+  {
+   "path": ".git/objects/1e/fc5d8bddf9d0c05ea4afcc101b04b2a48772c8",
+   "mtime_utc": "2026-10-11T23:48:21.982770Z"
+  },
+  {
+   "path": ".git/objects/40/b60733bc9f9581cda5ed7c27a1b5120c47710e",
+   "mtime_utc": "2026-10-11T23:48:21.986787Z"
+  },
+  {
+   "path": ".git/objects/ba/5b1f842de61a1eb9f3262cc37f6f17b87c19b6",
+   "mtime_utc": "2026-10-11T23:48:21.990256Z"
+  },
+  {
+   "path": ".git/objects/57/695a20f2948f44c0e242689d0278b340c91f9e",
+   "mtime_utc": "2026-10-11T23:48:21.995927Z"
+  },
+  {
+   "path": ".git/objects/11/397f0be3a76edd6cd8b01561bed3f51f7a14ab",
+   "mtime_utc": "2026-10-11T23:48:21.998529Z"
+  },
+  {
+   "path": ".git/objects/6f/20a2ec2617874f986f6e9187eb44f785b3b8fe",
+   "mtime_utc": "2026-10-11T23:48:22.003769Z"
+  },
+  {
+   "path": ".git/objects/d6/547d3b219ae08bf1944281286a492cfbda6357",
+   "mtime_utc": "2026-10-11T23:48:22.007681Z"
+  },
+  {
+   "path": ".git/objects/81/b2e659597736b87438a2ccf480dc8cdbb739c8",
+   "mtime_utc": "2026-10-11T23:48:22.011424Z"
+  },
+  {
+   "path": ".git/objects/bc/2c83e9dd602b1106f6eb3db1c51223b4f75c8e",
+   "mtime_utc": "2026-10-11T23:48:22.015432Z"
+  },
+  {
+   "path": ".git/objects/78/f88d079d335277d332867071394d25c89c5def",
+   "mtime_utc": "2026-10-11T23:48:22.020710Z"
+  },
+  {
+   "path": ".git/objects/3d/446808a174f8f56ea89c30fff0ee6b410f3be1",
+   "mtime_utc": "2026-10-11T23:48:22.026421Z"
+  },
+  {
+   "path": ".git/objects/bb/565f0fc68821cfa0b6700f6e0f7cf1be46588c",
+   "mtime_utc": "2026-10-11T23:48:22.030748Z"
+  },
+  {
+   "path": ".git/objects/72/7f664b2a27b2e7f26bc5414c0c45a9431504e9",
+   "mtime_utc": "2026-10-11T23:48:22.034835Z"
+  },
+  {
+   "path": ".git/objects/38/0e3074d52db287d43371a7a4005360d301d53e",
+   "mtime_utc": "2026-10-11T23:48:22.039142Z"
+  },
+  {
+   "path": ".git/objects/ad/409c7f832a9a1dd30266982e0a8c90b3aebfc2",
+   "mtime_utc": "2026-10-11T23:48:22.220901Z"
+  },
+  {
+   "path": ".git/objects/c8/cf6debd4c500894f6f36cbdcbb8ec776141d23",
+   "mtime_utc": "2026-10-11T23:48:22.233394Z"
+  },
+  {
+   "path": ".git/objects/aa/ea8463e1b4d5d834d94b5e221fe61be068917a",
+   "mtime_utc": "2026-10-11T23:48:22.240519Z"
+  },
+  {
+   "path": ".git/objects/b7/3516ad9156ab8c2dd829e9d10406cdf21baa56",
+   "mtime_utc": "2026-10-11T23:48:22.249316Z"
+  },
+  {
+   "path": ".git/objects/f5/9bd7a9e60e1144af7ba2d66a3e06a29cacba44",
+   "mtime_utc": "2026-10-11T23:48:22.254918Z"
+  },
+  {
+   "path": ".git/objects/8c/5363f8d05dfa1156793f65011a929ade407de4",
+   "mtime_utc": "2026-10-11T23:48:22.259264Z"
+  },
+  {
+   "path": ".git/objects/93/c50d421a5a2e6dd827834c4e7aaecc8b0ec8cf",
+   "mtime_utc": "2026-10-11T23:48:22.263679Z"
+  },
+  {
+   "path": ".git/objects/68/57105c449781c8ae811e250b65f889fd15d395",
+   "mtime_utc": "2026-10-11T23:48:22.267667Z"
+  },
+  {
+   "path": ".git/objects/8b/77981bfa927e91aee0cb19b3ac8fdc44998071",
+   "mtime_utc": "2026-10-11T23:48:22.299453Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-portabilidad-coordinador-principal/FETCH_HEAD",
+   "mtime_utc": "2026-10-12T07:12:22.358842Z"
+  },
+  {
+   "path": ".git/objects/9f/7f1b13e9d48404ce5cdac89e312e81eae11141",
+   "mtime_utc": "2026-10-12T07:13:16.666185Z"
+  },
+  {
+   "path": ".git/objects/ab/b10d84514db2a0b36166c824ecc5b7453f122e",
+   "mtime_utc": "2026-10-12T07:13:16.695021Z"
+  },
+  {
+   "path": ".git/objects/80/1cf379a74201a655a3d4f7ce735c11279b2fee",
+   "mtime_utc": "2026-10-12T07:13:16.705983Z"
+  },
+  {
+   "path": ".git/objects/dd/8a2691bfd9d04a87c4a4f414a39f200661516d",
+   "mtime_utc": "2026-10-12T07:13:17.037383Z"
+  },
+  {
+   "path": ".git/objects/d0/52fe77a31730781d3133db137749d23d34f8d7",
+   "mtime_utc": "2026-10-12T07:13:17.057681Z"
+  },
+  {
+   "path": ".git/objects/44/5138755719379cebfd7bd6cfe43e6c7b1da688",
+   "mtime_utc": "2026-10-12T07:13:17.065198Z"
+  },
+  {
+   "path": ".git/objects/43/9dbb7bd56477cc1c93eb168ce19872525542c8",
+   "mtime_utc": "2026-10-12T07:13:17.070607Z"
+  },
+  {
+   "path": ".git/objects/e9/a3e40bc5af51e736f7058c581e6fde3b28238a",
+   "mtime_utc": "2026-10-12T07:13:17.077896Z"
+  },
+  {
+   "path": ".git/objects/5a/7bab7a57338f5ec8d99a825810ed865e27a281",
+   "mtime_utc": "2026-10-12T07:13:17.084351Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-portabilidad-coordinador-principal/index",
+   "mtime_utc": "2026-10-12T07:13:17.089530Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-portabilidad-coordinador-principal/COMMIT_EDITMSG",
+   "mtime_utc": "2026-10-12T07:13:17.131536Z"
+  },
+  {
+   "path": ".git/objects/51/9b3ddc6fc35299c3641c661e6e432dcdf0c617",
+   "mtime_utc": "2026-10-12T07:13:17.144810Z"
+  },
+  {
+   "path": ".git/refs/heads/architecture/portabilidad-coordinador-principal",
+   "mtime_utc": "2026-10-12T07:13:17.170802Z"
+  },
+  {
+   "path": ".git/worktrees/architecture-portabilidad-coordinador-principal/logs/HEAD",
+   "mtime_utc": "2026-10-12T07:13:17.172502Z"
+  },
+  {
+   "path": ".git/logs/refs/heads/architecture/portabilidad-coordinador-principal",
+   "mtime_utc": "2026-10-12T07:13:17.173501Z"
+  },
+  {
+   "path": ".git/refs/remotes/origin/architecture/portabilidad-coordinador-principal",
+   "mtime_utc": "2026-10-12T07:13:23.521551Z"
+  },
+  {
+   "path": ".git/logs/refs/remotes/origin/architecture/portabilidad-coordinador-principal",
+   "mtime_utc": "2026-10-12T07:13:23.524770Z"
+  }
+ ]
+}

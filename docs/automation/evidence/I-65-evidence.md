@@ -1106,3 +1106,32 @@ Custodia:
 | `F4-T5-PLUGIN-COMMAND/R20261011T215838Z-09a6/analysis.md` | `1941BEA23566709B…` | `43a21c0570fa` |
 | `F4-T5-PLUGIN-COMMAND/R20261011T215838Z-09a6/main-checkout-RackCad.sln.diff` | `4BA20015ECA06AED…` | `af1499804563` |
 | `F4-T5-PLUGIN-COMMAND/R20261011T215838Z-09a6/worktree-dirty.diff` | `CF2E4B632AFFDA3C…` | `428552020567` |
+
+## 45. F4 detenida (Option C): incidente del checkout principal, informe parcial y escalamiento (2026-10-12T07:21:46Z)
+
+- **Orden del Owner** en custodia: `docs/automation/decisions/I-65-owner-decision-f4-option-c.original.txt` (SHA-256 `06046F38DF1DD7B0E0B4301342CD2432B69356C95EF2497A0C33B5C14BD70A5F`).
+- **Inspección del checkout principal** (solo lectura): `RackCad.sln` actual SHA-256 `4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C`
+  (sin BOM, CRLF, 144 líneas, escrito `2026-10-11T20:32:56.8408396Z`); blob de `HEAD` `5317eece…` SHA-256 `DEB08FB0DFDEAFBC4DC4A262A285FAB2F964FF3844A6AF449E6621B1DB57FC14`;
+  estado previo reconstruido SHA-256 `A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399`; diff SHA-256
+  `4BA20015ECA06AED38D4351FADAD7E11D40888ED8BA4832A536412843AF6E8F6`; reproducción de la llamada 25 idéntica byte a byte. Otras modificaciones:
+  ninguna (Git y barrido de fechas desde el 2026-10-09). Restauración: preparada, no ejecutada.
+- **Barrido de ejecuciones:** 26 transcripciones de subagentes y 28 registros de eventos de Codex de F4: ninguna ejecución del programa de
+  análisis ni de los scripts generados; siete Workers con invocaciones de intérprete (dos de F1 sin registro previo, DEV-I65-F4-17).
+- **Documentos:** [informe parcial de F4](../../initiatives/I-65-f4-partial-closure.md) (F4 INCOMPLETE / BLOCKED) y
+  [paquete de escalamiento a I-62](I-65-f4/i62-escalation-package.md).
+- **Sin Workers, sin Codex** (28 de 30 sin cambio), sin cambios de producto, sin RAM.
+
+Hashes de la evidencia del incidente (copias de la sesión; Git puede normalizar el fin de línea de las copias versionadas):
+
+| Archivo (bajo `I-65-f4/incident-main-checkout/`) | SHA-256 |
+|---|---|
+| `README.md` | `4A659304BEFEE6A8FE4E8FD100611C965E7B7E6FF00AEFE43B0B162E3E11C182` |
+| `main-checkout-facts.json` | `40C27825F5EA42AEC3C96F4DE5D3BFD7A2B30942EA65727320356D1EA384CD38` |
+| `main-checkout-RackCad.sln.diff` | `4BA20015ECA06AED38D4351FADAD7E11D40888ED8BA4832A536412843AF6E8F6` |
+| `main-checkout-RackCad.sln.modified.txt` | `4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C` |
+| `worker-call-25.ps1.txt` | `2DD27A2CDC62A3D6BB3FFA9551E545689339EBC0BDBDA5D913F1CA714FE9DE76` |
+| `simulate-worker-call-25.ps1` | `86C0E0894A9F2FB04B7B8A20F227D7A5F97260F2B6D5CA93E929E1959D7FC427` |
+| `simulation.json` | `F319A03456F338D515089064E004C90FB2DF9F495204BA52CD749949846FA825` |
+| `main-checkout-mtime-scan.json` | `2C58CD0A710B6E0B2769D2651B2EFEB106216163D14BE4284848EF6519D05A12` |
+| `main-checkout-mtime-scan-wide.json` | `E135256F468ED3DC15AA0B24A63FAE86A63A042025BF99E743B4F8BD945CACAB` |
+| `ram-execution-scan.json` | `6934545FF73755E114AF9ACC075710BAA4EFDD8C44CEDB6D9FC3859EFCE24793` |
