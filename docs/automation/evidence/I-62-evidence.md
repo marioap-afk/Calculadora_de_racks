@@ -4141,3 +4141,11 @@ solo desde artefactos custodiados.
   aceptante.
 - R3 se concluye con una sola reanudación de la misma ejecución, que reutiliza sus resultados guardados, con un límite de tiempo explícito. Si se
   vuelve a cortar, R3 queda INCOMPLETE (decisiones §80, punto 2).
+
+## 156. Decisiones §81: diseño de C1-C3 autorizado, sin implementación; carril documental y experimental aparte de A-6
+
+- C1: fotografía de todos los checkouts del repositorio en los hechos de salida y de entrada de cada cesión. C2: directorio de proceso del Worker =
+  su worktree, fijado por el transporte. C3: bloqueo del intérprete en el entorno del Worker. Fuente: el paquete de escalamiento de I-65, leído en
+  solo lectura desde su worktree; I-65 no se modifica.
+- El trabajo de C1-C3 se hace en el área temporal de la sesión y, para las pruebas, en repositorios desechables fuera de todo checkout real. A-6
+  ronda 2 sigue su camino (decisiones §80) sin cambios por esta disposición.
