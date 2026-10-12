@@ -4132,3 +4132,12 @@ solo desde artefactos custodiados.
 - La candidata de la ronda 2 parte de `eac473c0` y se publica como blob nuevo, sin tocar el de la ronda 1. Los blobs del instrumento (`9a829b0e`)
   y del aceptante (`434ef1fc`) se conservan si es técnicamente viable; cualquier cambio se detiene y se informa (§79, punto 3).
 - R5 se resuelve limitando el instrumento a VERIFY. No se pide ampliar ADR-0046 #9.
+
+## 155. Decisiones §80: publicación autorizada de A-6 ronda 2 como PROPUESTA tras completar R3; kit de la revisión siguiente
+
+- La reproducción de R1/R4 por un tercer agente terminó REPRODUCED. La de R3 no terminó: la primera ejecución se cortó cuando el equipo entró en
+  suspensión (10:34:57Z-13:16:27Z; una llamada del aceptante agotó su tope de 3 600 s), y la segunda, cuando el equipo se apagó (18:00:32Z; última
+  escritura a las 18:00:16Z). Los eventos de energía de Windows lo confirman. Ninguna de las dos interrupciones vino del instrumento ni del
+  aceptante.
+- R3 se concluye con una sola reanudación de la misma ejecución, que reutiliza sus resultados guardados, con un límite de tiempo explícito. Si se
+  vuelve a cortar, R3 queda INCOMPLETE (decisiones §80, punto 2).

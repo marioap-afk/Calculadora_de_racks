@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §79; evidencia §154) — preparar la candidata de A-6 ronda 2 (R1-R5, O1-O3, M-01) con guardas, negativos, pruebas integradas y reproducción independiente; blobs 9a829b0e/434ef1fc conservados si es viable; sin revisión formal nueva sin disposición; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §80; evidencia §155) — concluir la reproducción de R3 (una reanudación con límite explícito; si se corta, INCOMPLETE); registro individual de G1-G6; preflight completo; publicar A-6 ronda 2 como PROPUESTA y guardas run; preparar el kit de la revisión siguiente sin lanzarlo; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
