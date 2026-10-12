@@ -4081,3 +4081,12 @@ solo desde artefactos custodiados.
 - **Identidad de Codex, observación pasiva** (sin ejecutar Codex) a las 2026-10-11T21:44:03Z:
   - huella `F909F480…`, binario `d13914ce…` (uno solo), app `26.1007.2314.0`, acompañantes `34b1a406…`; igual que en las sondas.
   - No sustituye la confirmación previa a la solicitud de consumo (§77.5).
+
+## 152. Decisiones §78: la línea del Owner `A6-ADR0046-9-FX02 = A` registrada literal; compuerta de la revisión de A-6 a punto de evaluarse
+
+- **Verificación de la línea**, extraída de la transcripción de la sesión (bloque pegado único, una sola línea, sin espacios añadidos):
+  - 897 bytes; SHA-256 `83152eae4f451961b9dc43920aa60c6f0910d4d023e9e93d8f5d6160e7ac8b14` = el fijado en la compuerta 11-OwnerGate;
+  - igual byte a byte a la línea 22 de la tarjeta y a A-6 L679 (blob `eac473c0`).
+- **Registro:** decisiones §78, como línea completa dentro de un bloque `text`, después del encabezado §77; decisiones solo crece por añadido.
+- **Siguiente:** prueba en seco del kit `R20261011T215735Z-c434` sobre la HEAD que contiene §78; si todas las comprobaciones son conformes,
+  lanzamiento único de la revisión formal de A-6 (`claude-cli`, autorización CLAUDE-CLI-I62).
