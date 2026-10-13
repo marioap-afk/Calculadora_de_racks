@@ -34,6 +34,12 @@ namespace RackCad.Application.StructuralAnalysis
 
         /// <summary>The read-back is not approved (a failure, a gate rejection) or a dump failed: nothing is approved.</summary>
         Rejected = 3,
+
+        /// <summary>
+        /// No row fails but the combinations of a dump could not be read, so the comparison is not complete and is never a PASS (A65-F4-02):
+        /// the engineer decides, and the decision is written in the report.
+        /// </summary>
+        Incomplete = 4,
     }
 
     /// <summary>The stable identifiers of the rows of the report, in report order. An identifier is never renamed or reused.</summary>
@@ -116,6 +122,53 @@ namespace RackCad.Application.StructuralAnalysis
     }
 
     /// <summary>
+    /// The inputs a caller can attach to a report (A65-F4-03): the fingerprints of the manifest and of the read-back and the SHA-256 of the
+    /// four files compared, in lower-case hexadecimal. The comparator is pure and reads no file: it only writes what the caller gives.
+    /// </summary>
+    public sealed class StructuralComparisonInputs
+    {
+        public StructuralComparisonInputs(
+            string manifestFingerprint,
+            string readbackFingerprint,
+            string manifestSha256,
+            string readbackSha256,
+            string generatedDumpSha256,
+            string manualDumpSha256)
+        {
+            ManifestFingerprint = manifestFingerprint;
+            ReadbackFingerprint = readbackFingerprint;
+            ManifestSha256 = Hash(manifestSha256, nameof(manifestSha256));
+            ReadbackSha256 = Hash(readbackSha256, nameof(readbackSha256));
+            GeneratedDumpSha256 = Hash(generatedDumpSha256, nameof(generatedDumpSha256));
+            ManualDumpSha256 = Hash(manualDumpSha256, nameof(manualDumpSha256));
+        }
+
+        /// <summary>The fingerprint of the input that the manifest records; <c>null</c> when it could not be read.</summary>
+        public string ManifestFingerprint { get; }
+
+        /// <summary>The fingerprint of the input that the read-back records; <c>null</c> when it could not be read.</summary>
+        public string ReadbackFingerprint { get; }
+
+        public string ManifestSha256 { get; }
+
+        public string ReadbackSha256 { get; }
+
+        public string GeneratedDumpSha256 { get; }
+
+        public string ManualDumpSha256 { get; }
+
+        private static string Hash(string value, string name)
+        {
+            if (value == null || value.Length != 64 || !value.All(c => (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')))
+            {
+                throw new ArgumentException("A SHA-256 is 64 lower-case hexadecimal characters.", name);
+            }
+
+            return value;
+        }
+    }
+
+    /// <summary>
     /// The report of a comparison (<c>rackcad-structural-comparison/v1</c>): one entry per row of the matrix, in a stable order. It compares
     /// the transfer of a model; it does not validate the design.
     /// </summary>
@@ -139,6 +192,18 @@ namespace RackCad.Application.StructuralAnalysis
         public string Reason { get; }
 
         public IReadOnlyList<StructuralComparisonRow> Rows { get; }
+
+        /// <summary>The decision of the engineer about the combinations nobody could read; <c>null</c> when there is none (A65-F4-02).</summary>
+        public string CombinationsDecision => null;
+
+        /// <summary>The inputs the caller attached; <c>null</c> when it attached none (A65-F4-03).</summary>
+        public StructuralComparisonInputs Inputs => null;
+
+        /// <summary>The same report with the decision about the combinations written in it (not implemented yet).</summary>
+        public StructuralComparisonReport WithCombinationsDecision(string decision) => throw new NotImplementedException();
+
+        /// <summary>The same report with the inputs it was made from (not implemented yet).</summary>
+        public StructuralComparisonReport WithInputs(StructuralComparisonInputs inputs) => throw new NotImplementedException();
 
         public StructuralComparisonRow Row(string id)
         {
@@ -290,6 +355,12 @@ namespace RackCad.Application.StructuralAnalysis
         public const double AxisToleranceDegrees = 0.1;
         public const double LoadValueTolerancePercent = 0.1;
         public const double LoadPositionToleranceInches = 0.02;
+
+        /// <summary>
+        /// The tolerance, in pounds-force, of a load whose manual value is zero: the value is compared in absolute value and never divided.
+        /// It is the noise of a double in the range of V1, not an engineering criterion.
+        /// </summary>
+        public const double ZeroLoadAbsoluteToleranceLbf = 1e-6;
 
         /// <summary>The category the generated case with loads must have.</summary>
         public const string GeneratedCaseCategory = "OTHER";

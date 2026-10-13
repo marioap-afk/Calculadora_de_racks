@@ -158,26 +158,133 @@ namespace RackCad.Tests
         public static StructuralDirection Direction(double[] v) => new StructuralDirection(v[0], v[1], v[2]);
     }
 
+    /// <summary>One thing the values of a read-back can get wrong against the dump of the generated model (A65-F4-03).</summary>
+    public enum StructuralAnalysisValuesMismatch
+    {
+        None = 0,
+        NodeCount,
+        NodeId,
+        NodeCoordinate,
+        NodeSupport,
+        MemberCount,
+        MemberId,
+        MemberSection,
+        MemberMaterial,
+        LoadCount,
+        LoadValue,
+        LoadDistance,
+        LoadDirection,
+        LoadCaseId,
+        LoadCaseCategory,
+        NoLoadCase,
+    }
+
     internal static class StructuralAnalysisComparisonSupport
     {
+        /// <summary>
+        /// An approved read-back whose values agree with the sample dump of the T3 tests (the one the tool tests and one row test read).
+        /// For the models of this support use <see cref="Approved(StructuralModelReadback, StructuralAnalysisValuesMismatch)"/>.
+        /// </summary>
         public static StructuralTransferReadback Approved() =>
+            Approved(StructuralAnalysisRamElementsDumpSupport.Read(StructuralAnalysisRamElementsDumpSupport.Valid()).Readback);
+
+        /// <summary>An approved read-back whose values are what the build would have read from the model of <paramref name="generated"/>, or a variation.</summary>
+        public static StructuralTransferReadback Approved(
+            StructuralModelReadback generated, StructuralAnalysisValuesMismatch mismatch = StructuralAnalysisValuesMismatch.None) =>
+            new StructuralTransferReadback(
+                true,
+                StructuralAnalysisComparisonModel.Fingerprint,
+                StructuralAnalysisComparisonModel.AdapterVersion,
+                new string[0],
+                ValuesOf(generated, mismatch));
+
+        /// <summary>An approved read-back that carries no values at all (the constructor without values).</summary>
+        public static StructuralTransferReadback ApprovedWithoutValues() =>
             new StructuralTransferReadback(true, StructuralAnalysisComparisonModel.Fingerprint, StructuralAnalysisComparisonModel.AdapterVersion, new string[0]);
 
         public static StructuralTransferReadback Failed(params string[] differences) =>
             new StructuralTransferReadback(false, StructuralAnalysisComparisonModel.Fingerprint, StructuralAnalysisComparisonModel.AdapterVersion, differences);
 
+        /// <summary>The values the build would have read back from the model of the dump <paramref name="generated"/>, with at most ONE variation.</summary>
+        public static StructuralTransferValues ValuesOf(
+            StructuralModelReadback generated, StructuralAnalysisValuesMismatch mismatch = StructuralAnalysisValuesMismatch.None)
+        {
+            var nodes = generated.Nodes.Select(n => new StructuralTransferNodeValue(
+                mismatch == StructuralAnalysisValuesMismatch.NodeId ? n.Description + "-x" : n.Description,
+                n.Id,
+                mismatch == StructuralAnalysisValuesMismatch.NodeCoordinate
+                    ? StructuralAnalysisComparisonModel.Position(n.Position.X.Inches + 0.001, n.Position.Y.Inches, n.Position.Z.Inches)
+                    : n.Position,
+                mismatch == StructuralAnalysisValuesMismatch.NodeSupport ? n.SupportFlags.Select(f => !f).ToArray() : n.SupportFlags.ToArray())).ToList();
+
+            var members = generated.Members.Select(m => new StructuralTransferMemberValue(
+                mismatch == StructuralAnalysisValuesMismatch.MemberId ? m.Description + "-x" : m.Description,
+                m.Id,
+                mismatch == StructuralAnalysisValuesMismatch.MemberSection ? m.SectionName + " X" : m.SectionName,
+                mismatch == StructuralAnalysisValuesMismatch.MemberMaterial ? m.MaterialName + " X" : m.MaterialName)).ToList();
+
+            var loadCase = generated.LoadCases.FirstOrDefault(c => c.Loads.Count > 0);
+            var loads = new List<StructuralTransferLoadValue>();
+
+            if (loadCase != null)
+            {
+                foreach (var group in loadCase.Loads.GroupBy(l => l.MemberId, StringComparer.Ordinal))
+                {
+                    var member = generated.Members.Single(m => m.Id == group.Key);
+                    var index = 0;
+
+                    foreach (var load in group)
+                    {
+                        loads.Add(new StructuralTransferLoadValue(
+                            member.Description,
+                            index++,
+                            mismatch == StructuralAnalysisValuesMismatch.LoadDirection ? StructuralReadbackLoadAxis.Local3 : load.Axis,
+                            StructuralForce.FromPoundsForce(load.Value.PoundsForce + (mismatch == StructuralAnalysisValuesMismatch.LoadValue ? 0.5 : 0.0)),
+                            load.DistanceFromNodeI.Inches + (mismatch == StructuralAnalysisValuesMismatch.LoadDistance ? 0.01 : 0.0),
+                            false));
+                    }
+                }
+            }
+
+            switch (mismatch)
+            {
+                case StructuralAnalysisValuesMismatch.NodeCount:
+                    nodes.RemoveAt(nodes.Count - 1);
+                    break;
+                case StructuralAnalysisValuesMismatch.MemberCount:
+                    members.RemoveAt(members.Count - 1);
+                    break;
+                case StructuralAnalysisValuesMismatch.LoadCount:
+                    loads.RemoveAt(loads.Count - 1);
+                    break;
+            }
+
+            var caseValue = loadCase == null || mismatch == StructuralAnalysisValuesMismatch.NoLoadCase
+                ? null
+                : new StructuralTransferCaseValue(
+                    mismatch == StructuralAnalysisValuesMismatch.LoadCaseId ? loadCase.Id + "-x" : loadCase.Id,
+                    mismatch == StructuralAnalysisValuesMismatch.LoadCaseCategory ? loadCase.Category + "-x" : loadCase.Category);
+
+            return new StructuralTransferValues(nodes, members, loads, caseValue);
+        }
+
         /// <summary>Compares a generated model with a manual one; both default to the reference, the manual one with other identities and order.</summary>
+        /// <remarks>Without a <paramref name="transfer"/> the read-back is an approved one whose values agree with the generated model (or vary by <paramref name="mismatch"/>).</remarks>
         public static StructuralComparisonReport Compare(
             StructuralAnalysisComparisonModel generated = null,
             StructuralAnalysisComparisonModel manual = null,
             StructuralTransferReadback transfer = null,
             string fingerprint = StructuralAnalysisComparisonModel.Fingerprint,
-            StructuralComparisonOptions options = null)
+            StructuralComparisonOptions options = null,
+            StructuralAnalysisValuesMismatch mismatch = StructuralAnalysisValuesMismatch.None)
         {
             generated = generated ?? StructuralAnalysisComparisonModel.Reference();
             manual = manual ?? StructuralAnalysisComparisonModel.Reference("M", reverse: true);
 
-            return StructuralReadbackComparison.CompareReadbacks(generated.Build(), manual.Build(), transfer ?? Approved(), fingerprint, options);
+            var generatedReadback = generated.Build();
+
+            return StructuralReadbackComparison.CompareReadbacks(
+                generatedReadback, manual.Build(), transfer ?? Approved(generatedReadback, mismatch), fingerprint, options);
         }
 
         public static StructuralComparisonVerdict VerdictOf(StructuralComparisonReport report, string rowId) => report.Row(rowId).Verdict;

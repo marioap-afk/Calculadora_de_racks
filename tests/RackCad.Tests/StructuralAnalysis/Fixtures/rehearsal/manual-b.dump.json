@@ -1,0 +1,598 @@
+{
+  "schema": "rackcad-ram-dump/v1",
+  "status": "DUMP OK",
+  "adapterVersion": "1.0.0-fixture",
+  "initialUnits": "LB_IN",
+  "readUnits": "LB_IN",
+  "unitsRestored": false,
+  "nodes": [
+    {
+      "id": 1,
+      "description": "MAN.COL.TOP",
+      "coordinates": [
+        0,
+        90.75,
+        6.1
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 2,
+      "description": "MAN.COL.FOOT",
+      "coordinates": [
+        0,
+        0.25,
+        6.1
+      ],
+      "restraints": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 3,
+      "description": "MAN.ARM.3.PositiveY.TIP",
+      "coordinates": [
+        0,
+        77.8103,
+        -36.2261
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 4,
+      "description": "MAN.ARM.3.PositiveY.J",
+      "coordinates": [
+        0,
+        76.2672,
+        6.1
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 5,
+      "description": "MAN.ARM.2.PositiveY.TIP",
+      "coordinates": [
+        0,
+        49.8103,
+        -36.2261
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 6,
+      "description": "MAN.ARM.2.PositiveY.J",
+      "coordinates": [
+        0,
+        48.2672,
+        6.1
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 7,
+      "description": "MAN.ARM.1.PositiveY.TIP",
+      "coordinates": [
+        0,
+        21.8103,
+        -36.2261
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 8,
+      "description": "MAN.ARM.1.PositiveY.J",
+      "coordinates": [
+        0,
+        20.2672,
+        6.1
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    }
+  ],
+  "members": [
+    {
+      "id": 1,
+      "description": "MAN.COL.4",
+      "nodeI": 4,
+      "nodeJ": 1,
+      "section": "W 12X26",
+      "material": "A992 Gr50",
+      "rotation": 270,
+      "l1": [
+        0,
+        1,
+        0
+      ],
+      "l2": [
+        -0,
+        0,
+        -1
+      ],
+      "l3": [
+        -1,
+        0,
+        0
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 2,
+      "description": "MAN.COL.3",
+      "nodeI": 6,
+      "nodeJ": 4,
+      "section": "W 12X26",
+      "material": "A992 Gr50",
+      "rotation": 270,
+      "l1": [
+        0,
+        1,
+        0
+      ],
+      "l2": [
+        -0,
+        0,
+        -1
+      ],
+      "l3": [
+        -1,
+        0,
+        0
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 3,
+      "description": "MAN.COL.2",
+      "nodeI": 8,
+      "nodeJ": 6,
+      "section": "W 12X26",
+      "material": "A992 Gr50",
+      "rotation": 270,
+      "l1": [
+        0,
+        1,
+        0
+      ],
+      "l2": [
+        -0,
+        0,
+        -1
+      ],
+      "l3": [
+        -1,
+        0,
+        0
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 4,
+      "description": "MAN.COL.1",
+      "nodeI": 2,
+      "nodeJ": 8,
+      "section": "W 12X26",
+      "material": "A992 Gr50",
+      "rotation": 270,
+      "l1": [
+        0,
+        1,
+        0
+      ],
+      "l2": [
+        -0,
+        0,
+        -1
+      ],
+      "l3": [
+        -1,
+        0,
+        0
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 5,
+      "description": "MAN.ARM.3.PositiveY",
+      "nodeI": 4,
+      "nodeJ": 3,
+      "section": "HSS_SQR 4X4X1_4",
+      "material": "A500 GrC rectangular",
+      "rotation": 0,
+      "l1": [
+        0,
+        0.036434,
+        -0.999336
+      ],
+      "l2": [
+        0,
+        0.999336,
+        0.036434
+      ],
+      "l3": [
+        1,
+        0,
+        0
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 6,
+      "description": "MAN.ARM.2.PositiveY",
+      "nodeI": 6,
+      "nodeJ": 5,
+      "section": "HSS_SQR 4X4X1_4",
+      "material": "A500 GrC rectangular",
+      "rotation": 0,
+      "l1": [
+        0,
+        0.036434,
+        -0.999336
+      ],
+      "l2": [
+        0,
+        0.999336,
+        0.036434
+      ],
+      "l3": [
+        1,
+        0,
+        0
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 7,
+      "description": "MAN.ARM.1.PositiveY",
+      "nodeI": 8,
+      "nodeJ": 7,
+      "section": "HSS_SQR 4X4X1_4",
+      "material": "A500 GrC rectangular",
+      "rotation": 0,
+      "l1": [
+        0,
+        0.036434,
+        -0.999336
+      ],
+      "l2": [
+        0,
+        0.999336,
+        0.036434
+      ],
+      "l3": [
+        1,
+        0,
+        0
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  ],
+  "loadCases": [
+    {
+      "id": "REF1",
+      "category": "Other",
+      "selfWeight": [
+        0,
+        0,
+        0
+      ],
+      "memberLoads": [
+        {
+          "member": 5,
+          "loads": [
+            {
+              "direction": "Y",
+              "value": -1102.31,
+              "distance": 78.751,
+              "isPercentage": true
+            }
+          ]
+        },
+        {
+          "member": 6,
+          "loads": [
+            {
+              "direction": "Y",
+              "value": -2000,
+              "distance": 36.252,
+              "isPercentage": true
+            }
+          ]
+        },
+        {
+          "member": 7,
+          "loads": [
+            {
+              "direction": "Y",
+              "value": -1000,
+              "distance": 57.501,
+              "isPercentage": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CM",
+      "category": "",
+      "selfWeight": [
+        0,
+        0,
+        0
+      ],
+      "memberLoads": []
+    }
+  ],
+  "combinations": [],
+  "errors": []
+}

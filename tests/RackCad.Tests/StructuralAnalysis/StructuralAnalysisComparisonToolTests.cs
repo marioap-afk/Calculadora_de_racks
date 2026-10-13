@@ -13,6 +13,7 @@ using RackCad.StructuralAnalysis.RamTool;
 using Xunit;
 using C = RackCad.Tests.StructuralAnalysisCantileverFixtures;
 using D = RackCad.Tests.StructuralAnalysisRamElementsDumpSupport;
+using H = RackCad.Tests.StructuralAnalysisComparisonHardeningSupport;
 using I = RackCad.Tests.StructuralAnalysisRamElementsPackageInputs;
 using S = RackCad.Tests.StructuralAnalysisComparisonSupport;
 
@@ -75,7 +76,7 @@ namespace RackCad.Tests
                 ["adapterVersion"] = I.AdapterVersion,
                 ["analysisInputFingerprint"] = readbackFingerprint ?? package.AnalysisInputFingerprint,
                 ["differences"] = new JsonArray((differences ?? new string[0]).Select(d => (JsonNode)d).ToArray()),
-                ["values"] = new JsonObject(),
+                ["values"] = H.SampleValues(),
             };
 
             File.WriteAllText(Path.Combine(folder, RamBuildManifest.ReadbackFileName), readback.ToJsonString(), new UTF8Encoding(false));
@@ -180,7 +181,7 @@ namespace RackCad.Tests
         {
             var package = WritePackage("pkg-pass");
             var generated = WriteDump("generated.json", D.Valid());
-            var manual = WriteDump("manual.json", D.Valid());
+            var manual = WriteDump("manual.json", H.ManualDump());
 
             var result = Run("compare", "--package", package, "--generated", generated, "--manual", manual);
 
@@ -212,7 +213,7 @@ namespace RackCad.Tests
         {
             var package = WritePackage("pkg-failed", RamReadbackReader.StatusFailed, differences: new[] { "members: expected 2 and read 1" });
 
-            var result = Run("compare", "--package", package, "--generated", WriteDump("g.json", D.Valid()), "--manual", WriteDump("m.json", D.Valid()));
+            var result = Run("compare", "--package", package, "--generated", WriteDump("g.json", D.Valid()), "--manual", WriteDump("m.json", H.ManualDump()));
 
             Assert.Equal(RamToolExitCodes.Rejected, result.Code);
             Assert.Contains("REJECTED", result.Output, StringComparison.Ordinal);
@@ -223,7 +224,7 @@ namespace RackCad.Tests
         {
             var package = WritePackage("pkg-stale", readbackFingerprint: StructuralAnalysisComparisonModel.OtherFingerprint);
 
-            var result = Run("compare", "--package", package, "--generated", WriteDump("g.json", D.Valid()), "--manual", WriteDump("m.json", D.Valid()));
+            var result = Run("compare", "--package", package, "--generated", WriteDump("g.json", D.Valid()), "--manual", WriteDump("m.json", H.ManualDump()));
 
             Assert.Equal(RamToolExitCodes.Rejected, result.Code);
             Assert.Contains("STALE", result.Output, StringComparison.Ordinal);
@@ -251,7 +252,7 @@ namespace RackCad.Tests
             var package = WritePackage("pkg-report");
             var report = Path_("report.json");
 
-            var result = Run("compare", "--package", package, "--generated", WriteDump("g.json", D.Valid()), "--manual", WriteDump("m.json", D.Valid()), "--report", report);
+            var result = Run("compare", "--package", package, "--generated", WriteDump("g.json", D.Valid()), "--manual", WriteDump("m.json", H.ManualDump()), "--report", report);
 
             Assert.Equal(RamToolExitCodes.Pass, result.Code);
             Assert.Equal(result.Output, File.ReadAllText(report));

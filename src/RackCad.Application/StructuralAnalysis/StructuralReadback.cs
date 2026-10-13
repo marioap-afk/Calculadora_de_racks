@@ -233,6 +233,22 @@ namespace RackCad.Application.StructuralAnalysis
         public StructuralDirection SelfWeight { get; }
 
         public IReadOnlyList<StructuralReadbackPointLoad> Loads { get; }
+
+        private StructuralReadbackLoadCase(string id, StructuralDirection selfWeight)
+        {
+            Id = StructuralRequire.Text(id, nameof(id));
+            Category = string.Empty;
+            SelfWeight = selfWeight;
+            Loads = StructuralRequire.Items(new StructuralReadbackPointLoad[0], nameof(Loads));
+        }
+
+        /// <summary>
+        /// A case with NO loads whose category the model reported as the empty text (A65-F4-05). The meaning of an empty category is not
+        /// measured; such a case is ignored by the comparison, so the category is kept empty and never interpreted. A case with loads always
+        /// needs a category: use the public constructor.
+        /// </summary>
+        public static StructuralReadbackLoadCase WithoutLoadsAndCategory(string id, StructuralDirection selfWeight) =>
+            new StructuralReadbackLoadCase(id, selfWeight);
     }
 
     /// <summary>One term of a load combination: a load case and its factor.</summary>
@@ -311,6 +327,21 @@ namespace RackCad.Application.StructuralAnalysis
     /// </summary>
     public sealed class StructuralTransferReadback
     {
+        /// <summary>
+        /// The read-back with the values the build read from the model it wrote (A65-F4-03): the comparison binds the dump of the generated
+        /// model to them. The constructor without values stays for a read-back that carries none.
+        /// </summary>
+        public StructuralTransferReadback(
+            bool passed,
+            string analysisInputFingerprint,
+            string adapterVersion,
+            IEnumerable<string> differences,
+            StructuralTransferValues values)
+            : this(passed, analysisInputFingerprint, adapterVersion, differences)
+        {
+            Values = values;
+        }
+
         public StructuralTransferReadback(bool passed, string analysisInputFingerprint, string adapterVersion, IEnumerable<string> differences)
         {
             Differences = StructuralRequire.Items(differences, nameof(differences));
@@ -340,6 +371,135 @@ namespace RackCad.Application.StructuralAnalysis
         public string AdapterVersion { get; }
 
         public IReadOnlyList<string> Differences { get; }
+
+        /// <summary>The values the build read back from the model it wrote, in the neutral frame; <c>null</c> when the read-back carries none.</summary>
+        public StructuralTransferValues Values { get; private set; }
+    }
+
+    /// <summary>A node as the build read it back: the id it gave the node, the id the model gave it, its position and its support flags.</summary>
+    public sealed class StructuralTransferNodeValue
+    {
+        public StructuralTransferNodeValue(string id, string modelId, StructuralPosition position, IEnumerable<bool> supportFlags)
+        {
+            Id = StructuralRequire.Text(id, nameof(id));
+            ModelId = StructuralRequire.Text(modelId, nameof(modelId));
+            Position = StructuralRequire.NotNull(position, nameof(position));
+            SupportFlags = StructuralRequire.Flags(supportFlags, StructuralSupport.FlagCount, nameof(supportFlags));
+        }
+
+        /// <summary>The id the build gave the node (it writes it as the description of the node).</summary>
+        public string Id { get; }
+
+        /// <summary>The id the model gave the node: the id of the same node in a dump.</summary>
+        public string ModelId { get; }
+
+        /// <summary>The position in the neutral frame, in inches.</summary>
+        public StructuralPosition Position { get; }
+
+        /// <summary>The six GLOBAL support flags in the neutral order Tx, Ty, Tz, Rx, Ry, Rz.</summary>
+        public IReadOnlyList<bool> SupportFlags { get; }
+    }
+
+    /// <summary>A member as the build read it back. The read-back does not list the end nodes of a member.</summary>
+    public sealed class StructuralTransferMemberValue
+    {
+        public StructuralTransferMemberValue(string id, string modelId, string sectionName, string materialName)
+        {
+            Id = StructuralRequire.Text(id, nameof(id));
+            ModelId = StructuralRequire.Text(modelId, nameof(modelId));
+            SectionName = StructuralRequire.Text(sectionName, nameof(sectionName));
+            MaterialName = StructuralRequire.Text(materialName, nameof(materialName));
+        }
+
+        /// <summary>The id the build gave the member (it writes it as the description of the member).</summary>
+        public string Id { get; }
+
+        /// <summary>The id the model gave the member: the id of the same member in a dump.</summary>
+        public string ModelId { get; }
+
+        public string SectionName { get; }
+
+        public string MaterialName { get; }
+    }
+
+    /// <summary>
+    /// A point load as the build read it back: the member it belongs to, its index among the loads of that member, a direction, a signed
+    /// force and the distance from node I, which is a percentage of the length of the member when <see cref="IsPercentage"/> is true.
+    /// </summary>
+    public sealed class StructuralTransferLoadValue
+    {
+        public StructuralTransferLoadValue(
+            string memberId, int index, StructuralReadbackLoadAxis axis, StructuralForce value, double distance, bool isPercentage)
+        {
+            if (index < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), index, "The index of a load is not negative.");
+            }
+
+            MemberId = StructuralRequire.Text(memberId, nameof(memberId));
+            Index = index;
+            Axis = StructuralReadbackRequire.Defined(axis, nameof(axis));
+            Value = value;
+            Distance = StructuralReadbackRequire.Finite(distance, nameof(distance));
+            IsPercentage = isPercentage;
+        }
+
+        /// <summary>The id the build gave the member (<see cref="StructuralTransferMemberValue.Id"/>).</summary>
+        public string MemberId { get; }
+
+        public int Index { get; }
+
+        public StructuralReadbackLoadAxis Axis { get; }
+
+        /// <summary>The force, signed along the positive direction of <see cref="Axis"/>.</summary>
+        public StructuralForce Value { get; }
+
+        /// <summary>The distance from node I: inches, or a percentage of the length of the member when <see cref="IsPercentage"/> is true.</summary>
+        public double Distance { get; }
+
+        public bool IsPercentage { get; }
+    }
+
+    /// <summary>The load case as the build read it back.</summary>
+    public sealed class StructuralTransferCaseValue
+    {
+        public StructuralTransferCaseValue(string id, string category)
+        {
+            Id = StructuralRequire.Text(id, nameof(id));
+            Category = StructuralRequire.Text(category, nameof(category));
+        }
+
+        public string Id { get; }
+
+        public string Category { get; }
+    }
+
+    /// <summary>
+    /// What the build read back from the model it wrote, in the neutral frame (A65-F4-03): the nodes, the members, the point loads and the
+    /// load case. It carries no identity of the analysis program; the comparison binds the dump of the generated model to it.
+    /// </summary>
+    public sealed class StructuralTransferValues
+    {
+        public StructuralTransferValues(
+            IEnumerable<StructuralTransferNodeValue> nodes,
+            IEnumerable<StructuralTransferMemberValue> members,
+            IEnumerable<StructuralTransferLoadValue> loads,
+            StructuralTransferCaseValue loadCase)
+        {
+            Nodes = StructuralRequire.Items(nodes, nameof(nodes));
+            Members = StructuralRequire.Items(members, nameof(members));
+            Loads = StructuralRequire.Items(loads, nameof(loads));
+            LoadCase = loadCase;
+        }
+
+        public IReadOnlyList<StructuralTransferNodeValue> Nodes { get; }
+
+        public IReadOnlyList<StructuralTransferMemberValue> Members { get; }
+
+        public IReadOnlyList<StructuralTransferLoadValue> Loads { get; }
+
+        /// <summary>The load case; <c>null</c> when the build had not yet read one.</summary>
+        public StructuralTransferCaseValue LoadCase { get; }
     }
 
     /// <summary>What the manifest of a package says about the input it was built from.</summary>

@@ -24,6 +24,9 @@ namespace RackCad.StructuralAnalysis.RamTool
 
         /// <summary>The destination exists or could not be written: nothing is ever overwritten.</summary>
         public const int OutputRefused = 4;
+
+        /// <summary>The comparison ran, no row fails, but the combinations of a dump could not be read: it is not a PASS (A65-F4-02).</summary>
+        public const int Incomplete = 5;
     }
 
     /// <summary>The sub-commands of the tool: dump-script, compare and inject. Each one is a class that the tests call with their own writers.</summary>

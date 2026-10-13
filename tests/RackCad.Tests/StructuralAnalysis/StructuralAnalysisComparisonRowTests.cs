@@ -137,7 +137,7 @@ namespace RackCad.Tests
 
             Assert.Equal(V.NotEvaluated, S.VerdictOf(report, R.Combinations));
             Assert.False(string.IsNullOrWhiteSpace(report.Row(R.Combinations).Note));
-            Assert.Equal(StructuralComparisonOutcome.Pass, report.Outcome);
+            Assert.Equal(StructuralComparisonOutcome.Incomplete, report.Outcome);
         }
 
         [Fact]

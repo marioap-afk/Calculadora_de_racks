@@ -1,0 +1,572 @@
+{
+  "schema": "rackcad-ram-readback/v1",
+  "status": "READBACK OK",
+  "adapterVersion": "1.0.0-fixture",
+  "analysisInputFingerprint": "9f2c4b1a7d3e5f60918273645aabbccddeeff00112233445566778899aabbccd",
+  "differences": [],
+  "values": {
+    "nodes": [
+      {
+        "id": "ARM.1.PositiveY.J",
+        "ramId": 101,
+        "coordinates": [
+          0,
+          20.26716169689737,
+          6.1
+        ],
+        "restraints": [
+          true,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "ARM.1.PositiveY.TIP",
+        "ramId": 102,
+        "coordinates": [
+          0,
+          21.810300688090436,
+          -36.22609804415268
+        ],
+        "restraints": [
+          true,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "ARM.2.PositiveY.J",
+        "ramId": 103,
+        "coordinates": [
+          0,
+          48.267161696897375,
+          6.1
+        ],
+        "restraints": [
+          true,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "ARM.2.PositiveY.TIP",
+        "ramId": 104,
+        "coordinates": [
+          0,
+          49.81030068809044,
+          -36.22609804415268
+        ],
+        "restraints": [
+          true,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "ARM.3.PositiveY.J",
+        "ramId": 105,
+        "coordinates": [
+          0,
+          76.26716169689738,
+          6.1
+        ],
+        "restraints": [
+          true,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "ARM.3.PositiveY.TIP",
+        "ramId": 106,
+        "coordinates": [
+          0,
+          77.81030068809044,
+          -36.22609804415268
+        ],
+        "restraints": [
+          true,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "COL.FOOT",
+        "ramId": 107,
+        "coordinates": [
+          0,
+          0.25,
+          6.1
+        ],
+        "restraints": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "COL.TOP",
+        "ramId": 108,
+        "coordinates": [
+          0,
+          90.75,
+          6.1
+        ],
+        "restraints": [
+          true,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      }
+    ],
+    "members": [
+      {
+        "id": "ARM.1.PositiveY",
+        "ramId": 201,
+        "section": "HSS_SQR 4X4X1_4",
+        "material": "A500 GrC rectangular",
+        "rotation": 0,
+        "cardinalPoint": 0,
+        "offsetI": [
+          0,
+          0,
+          0
+        ],
+        "offsetJ": [
+          0,
+          0,
+          0
+        ],
+        "stiffnessFactors": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "axialBehavior": 0,
+        "springI": 0,
+        "springJ": 0,
+        "releases": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "l1": [
+          0,
+          0.036434127070177715,
+          -0.9993360567820188
+        ],
+        "l2": [
+          0,
+          0.9993360567820188,
+          0.036434127070177715
+        ],
+        "l3": [
+          1,
+          0,
+          0
+        ],
+        "description": "ARM.1.PositiveY"
+      },
+      {
+        "id": "ARM.2.PositiveY",
+        "ramId": 202,
+        "section": "HSS_SQR 4X4X1_4",
+        "material": "A500 GrC rectangular",
+        "rotation": 0,
+        "cardinalPoint": 0,
+        "offsetI": [
+          0,
+          0,
+          0
+        ],
+        "offsetJ": [
+          0,
+          0,
+          0
+        ],
+        "stiffnessFactors": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "axialBehavior": 0,
+        "springI": 0,
+        "springJ": 0,
+        "releases": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "l1": [
+          0,
+          0.0364341270701778,
+          -0.9993360567820188
+        ],
+        "l2": [
+          0,
+          0.9993360567820188,
+          0.0364341270701778
+        ],
+        "l3": [
+          1,
+          0,
+          0
+        ],
+        "description": "ARM.2.PositiveY"
+      },
+      {
+        "id": "ARM.3.PositiveY",
+        "ramId": 203,
+        "section": "HSS_SQR 4X4X1_4",
+        "material": "A500 GrC rectangular",
+        "rotation": 0,
+        "cardinalPoint": 0,
+        "offsetI": [
+          0,
+          0,
+          0
+        ],
+        "offsetJ": [
+          0,
+          0,
+          0
+        ],
+        "stiffnessFactors": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "axialBehavior": 0,
+        "springI": 0,
+        "springJ": 0,
+        "releases": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "l1": [
+          0,
+          0.03643412707017763,
+          -0.9993360567820188
+        ],
+        "l2": [
+          0,
+          0.9993360567820188,
+          0.03643412707017763
+        ],
+        "l3": [
+          1,
+          0,
+          0
+        ],
+        "description": "ARM.3.PositiveY"
+      },
+      {
+        "id": "COL.1",
+        "ramId": 204,
+        "section": "W 12X26",
+        "material": "A992 Gr50",
+        "rotation": -90,
+        "cardinalPoint": 0,
+        "offsetI": [
+          0,
+          0,
+          0
+        ],
+        "offsetJ": [
+          0,
+          0,
+          0
+        ],
+        "stiffnessFactors": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "axialBehavior": 0,
+        "springI": 0,
+        "springJ": 0,
+        "releases": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "l1": [
+          0,
+          1,
+          0
+        ],
+        "l2": [
+          -6.123233995736766E-17,
+          0,
+          -1
+        ],
+        "l3": [
+          -1,
+          0,
+          6.123233995736766E-17
+        ],
+        "description": "COL.1"
+      },
+      {
+        "id": "COL.2",
+        "ramId": 205,
+        "section": "W 12X26",
+        "material": "A992 Gr50",
+        "rotation": -90,
+        "cardinalPoint": 0,
+        "offsetI": [
+          0,
+          0,
+          0
+        ],
+        "offsetJ": [
+          0,
+          0,
+          0
+        ],
+        "stiffnessFactors": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "axialBehavior": 0,
+        "springI": 0,
+        "springJ": 0,
+        "releases": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "l1": [
+          0,
+          1,
+          0
+        ],
+        "l2": [
+          -6.123233995736766E-17,
+          0,
+          -1
+        ],
+        "l3": [
+          -1,
+          0,
+          6.123233995736766E-17
+        ],
+        "description": "COL.2"
+      },
+      {
+        "id": "COL.3",
+        "ramId": 206,
+        "section": "W 12X26",
+        "material": "A992 Gr50",
+        "rotation": -90,
+        "cardinalPoint": 0,
+        "offsetI": [
+          0,
+          0,
+          0
+        ],
+        "offsetJ": [
+          0,
+          0,
+          0
+        ],
+        "stiffnessFactors": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "axialBehavior": 0,
+        "springI": 0,
+        "springJ": 0,
+        "releases": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "l1": [
+          0,
+          1,
+          0
+        ],
+        "l2": [
+          -6.123233995736766E-17,
+          0,
+          -1
+        ],
+        "l3": [
+          -1,
+          0,
+          6.123233995736766E-17
+        ],
+        "description": "COL.3"
+      },
+      {
+        "id": "COL.4",
+        "ramId": 207,
+        "section": "W 12X26",
+        "material": "A992 Gr50",
+        "rotation": -90,
+        "cardinalPoint": 0,
+        "offsetI": [
+          0,
+          0,
+          0
+        ],
+        "offsetJ": [
+          0,
+          0,
+          0
+        ],
+        "stiffnessFactors": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "axialBehavior": 0,
+        "springI": 0,
+        "springJ": 0,
+        "releases": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "l1": [
+          0,
+          1,
+          0
+        ],
+        "l2": [
+          -6.123233995736766E-17,
+          0,
+          -1
+        ],
+        "l3": [
+          -1,
+          0,
+          6.123233995736766E-17
+        ],
+        "description": "COL.4"
+      }
+    ],
+    "loads": [
+      {
+        "id": "P1",
+        "member": "ARM.1.PositiveY",
+        "index": 0,
+        "direction": "Y",
+        "value": -1000,
+        "percent": 57.50128206169154,
+        "isPercentage": true
+      },
+      {
+        "id": "P2",
+        "member": "ARM.2.PositiveY",
+        "index": 0,
+        "direction": "Y",
+        "value": -2000,
+        "percent": 36.251923092537304,
+        "isPercentage": true
+      },
+      {
+        "id": "P3",
+        "member": "ARM.3.PositiveY",
+        "index": 0,
+        "direction": "Y",
+        "value": -1102.311310924388,
+        "percent": 78.75064103084576,
+        "isPercentage": true
+      }
+    ],
+    "loadCase": {
+      "id": "REF1",
+      "category": "OTHER",
+      "selfWeight": [
+        0,
+        0,
+        0
+      ]
+    }
+  }
+}
