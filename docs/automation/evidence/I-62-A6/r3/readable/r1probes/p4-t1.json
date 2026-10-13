@@ -1,0 +1,768 @@
+{
+ "Cases": [
+  {
+   "Case": "T1-r3",
+   "Expected": "R4 incluido por la regla (ningun not_run entre Identity/Scope/CleanTree/Trailer/FreeText); ACCEPT_FACTS rc 0; R4 MATCH; ningun NOT_APPLICABLE; R8 MANUAL; tabla aceptada; mismos estados, decision, rc y filas R4 que la ronda 2 (r4-t1.json Test3)",
+   "Group": "T1",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "074d1001174968ceaf3afa3fc93b2fa6399725af678baa4cb7f4d0af1ef74770",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "Error": null,
+    "MismatchDetails": {},
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "Rc": 0,
+    "RequestSha256": "2efd4c13965c3876b777aac34a0c6a3c6b204993856ca18a6be9e6b4982160da",
+    "Table": {
+     "AcceptanceReasons": [],
+     "Accepted": true,
+     "AcceptorRc": 0,
+     "ConstructionViolations": [],
+     "Decision": "ACCEPT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "R4Rule": {
+    "Cause": null,
+    "Include": true,
+    "NotRun": []
+   },
+   "Request": {
+    "NotApplicable": [],
+    "NotApplicableReasons": {},
+    "Path": "D:/r62-a6r3/r1/s-t1/request-r3.json",
+    "Runs": 13,
+    "Sha256": "2efd4c13965c3876b777aac34a0c6a3c6b204993856ca18a6be9e6b4982160da",
+    "VerificationIncluded": true
+   },
+   "Round2": {
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "R4Rows": [
+     [
+      "Identity",
+      "fail",
+      "not pass",
+      "MATCH"
+     ],
+     [
+      "Scope",
+      "fail",
+      "not pass",
+      "MATCH"
+     ],
+     [
+      "CleanTree",
+      "pass",
+      "pass",
+      "MATCH"
+     ],
+     [
+      "Trailer",
+      "fail",
+      "not pass",
+      "MATCH"
+     ],
+     [
+      "FreeText",
+      "fail",
+      "not pass",
+      "MATCH"
+     ],
+     [
+      "Authority",
+      "fail",
+      "not pass",
+      "MATCH"
+     ]
+    ],
+    "Rc": 0
+   },
+   "SameAsRound2": true,
+   "What": "Solicitud T1 construida con la regla de la ronda 3 (Runs reconstruidas del registro Codex) y aceptante fijado"
+  },
+  {
+   "Case": "T1-r2-static",
+   "CustodiedCopiesEqualToWorkFiles": {
+    "controller-output.json": true,
+    "deleg.json": true,
+    "handoff.json": true,
+    "relay-facts.json": true,
+    "request.json": true
+   },
+   "Expected": "la construccion recalculada incluye Verification (ningun not_run entre las cinco) y coincide con la solicitud de la ronda 2; tabla aceptada",
+   "Group": "T1",
+   "Holds": true,
+   "Note": "Runs no se contrastan con un registro Codex: la ronda 2 uso un JSONL propio del banco",
+   "Observed": {
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "Table": {
+     "AcceptanceReasons": [],
+     "Accepted": true,
+     "AcceptorRc": 0,
+     "ConstructionViolations": [],
+     "Decision": "ACCEPT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    }
+   },
+   "What": "La solicitud T1 de la ronda 2 (D:\\r62-a6r2, solo lectura) y su salida del aceptante evaluadas con table_r3 (sin reejecutar)"
+  }
+ ],
+ "Clone": {
+  "Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "HeadIsTip": true,
+  "P1": {
+   "Held": true,
+   "IdEqualsPinned": true,
+   "OnlyNewLooseObject": true,
+   "ReturnedId": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  },
+  "P2": {
+   "FailedSteps": [],
+   "Launch": true
+  },
+  "T": "D:/r62-a6r3/r1/c-t1"
+ },
+ "Closure": {
+  "Path": "D:/r62-a6r3/r1/c-t1-in/closure.json",
+  "Sha256": "5a03c5491f1f5987ab5710a950e686c9d8f3436ff46c8b789af0b6fb52f9b3ad"
+ },
+ "Coherence169": {
+  "Contributions": {
+   "Authority": "STOP",
+   "Ci": "BLOCKED",
+   "Denials": "BLOCKED",
+   "FreeText": "REWORK",
+   "Identity": "STOP",
+   "Remote": "BLOCKED",
+   "Routing": "BLOCKED",
+   "Scope": "STOP",
+   "Termination": "BLOCKED",
+   "Tests": "REWORK",
+   "Trailer": "REWORK"
+  },
+  "DispositionDeclared": "STOP",
+  "DispositionOk": true,
+  "DispositionStrictMax": "STOP",
+  "FailureClassDeclared": "Termination",
+  "FailureClassExpected": "Termination",
+  "FailureClassOk": true,
+  "NoInputNotRun": [],
+  "ValidPair": true,
+  "VerifiedIffAllPass": true
+ },
+ "ControllerChecks": {
+  "Authority": "fail",
+  "Ci": "not_run",
+  "CleanTree": "pass",
+  "Contract": "pass",
+  "Denials": "not_run",
+  "FreeText": "fail",
+  "Handoff": "pass",
+  "Identity": "fail",
+  "Remote": "not_run",
+  "Routing": "not_run",
+  "Scope": "fail",
+  "Termination": "not_run",
+  "Tests": "not_run",
+  "Trailer": "fail"
+ },
+ "ControllerOutput": {
+  "Path": "D:/r62-a6r3/r1/s-t1/controller-output.json",
+  "Sha256": "38c3826f3ff4521549d01337c620f0360f08a8119bd2443070f9359cb79cd60f"
+ },
+ "Inputs": {
+  "K.json": "8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+  "deleg.json": "3d011af66346d9a698807b55b05a89331775d523131954dafd90f6a6610ba462",
+  "fixture-tests.trx": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+  "handoff.json": "4d49eea9a525f09a6f0d17f268d5e2e64c93fc33c602a89b84aec9fc095153b1"
+ },
+ "Pins": {
+  "bmin_accept.py": {
+   "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+   "CopyPath": "D:/r62-a6r3/r1/pin/bmin_accept.py",
+   "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0",
+   "Size": 111873,
+   "Source": "git --no-replace-objects -C %USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal cat-file blob 434ef1fccb0d15762b30244b4a60928120698411"
+  },
+  "bmin_facts.py": {
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "CopyPath": "D:/r62-a6r3/r1/pin/bmin_facts.py",
+   "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200",
+   "Size": 64764,
+   "Source": "git --no-replace-objects -C %USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  }
+ },
+ "ReconstructedRuns": [
+  {
+   "Argv0": "identity",
+   "EnvelopeSha256": "45ea0245a80704721a503d6f30741d1d253e125562377b030396ad51c9f7ec53",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 0
+  },
+  {
+   "Argv0": "diff",
+   "EnvelopeSha256": "c1f5a12872063b16318b2f2e7a25801e47493a0db719f89c44c9be2f3656c756",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 1
+  },
+  {
+   "Argv0": "scope",
+   "EnvelopeSha256": "304f4ba36cf91407bed6e2f78b2293db3236947ed3612889d41e93f8962c6851",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 2
+  },
+  {
+   "Argv0": "contract",
+   "EnvelopeSha256": "822184aa044b9b6a3f6e6967c986cc6ec7bf927a4f12c1f1e48960e6b2d2de60",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 3
+  },
+  {
+   "Argv0": "hashes",
+   "EnvelopeSha256": "09509c9ec36230a3ec6af3a7e6859f79ef476fbef7a824407c0bbcf5d8be71bb",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 4
+  },
+  {
+   "Argv0": "cleantree",
+   "EnvelopeSha256": "30166d4ea01c1ba1a9a5449ac40e5ae3fc45c316959a94701eec61a15b0c9ad4",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 5
+  },
+  {
+   "Argv0": "read-text",
+   "EnvelopeSha256": "4051b51c481983ca4acbd7300486807613e743a71a90d95f76f2bd4bebf43df4",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 6
+  },
+  {
+   "Argv0": "read-text",
+   "EnvelopeSha256": "891ee98cbccdbc4368f6859b69523416b4cb7069fe5f981da6da3c55776a002a",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 7
+  },
+  {
+   "Argv0": "read-json",
+   "EnvelopeSha256": "d4439bc9176fb67ca1e4ccb6b758444405e62d7942b718d8f4a43fc0b2f7daca",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 8
+  },
+  {
+   "Argv0": "trx",
+   "EnvelopeSha256": "5ffc9ed28de77c0f17111ab0d42a92b5aab5249fba9212f47a8f168f844b8247",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 9
+  },
+  {
+   "Argv0": "handoff",
+   "EnvelopeSha256": "5ddbf5f1caacbaedc784beb60a080adb4b3afa5a0ea008539cf7d3e4c8792c4a",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 10
+  },
+  {
+   "Argv0": "freetext",
+   "EnvelopeSha256": "12c99fbd99f68a965c8aae8027cc1e7078c888e4213dcda17af3f793914ee7b3",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 11
+  },
+  {
+   "Argv0": "clausemap",
+   "EnvelopeSha256": "d4c05f841dbc110f8fe0ca974061ef22053c9c4e4ef82d01a2e7face8cf217a6",
+   "ExitCode": 0,
+   "NoiseLines": 0,
+   "Seq": 12
+  }
+ ],
+ "Reconstruction": {
+  "CommandExecutions": 18,
+  "Complete": true,
+  "CompletenessProblems": [],
+  "InstrumentExecutions": 13,
+  "Problems": [],
+  "Reconstructible": true
+ },
+ "RelayFacts": {
+  "Path": "D:/r62-a6r3/r1/s-t1/relay-facts.json",
+  "Sha256": "18f78afdde9870d7786bc46ee43a12c61acbee96174b112594c0d48b253fb6e8"
+ },
+ "Schema": "r3-bench/p4-t1",
+ "SchemaValid": true,
+ "SchemaValidation": {
+  "controller-verification.v2": [],
+  "delegation.v2": [],
+  "relay-record.v2": [],
+  "worker-handoff": []
+ },
+ "Session": {
+  "CessionEndUtc": "2026-10-13T14:52:27Z",
+  "CessionStartUtc": "2026-10-13T14:52:04Z",
+  "Executions": [
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - identity --repo D:/r62-a6r3/r1/c-t1 --branch fx/u1 --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --current ae25b596a11fe3508ac60a3ef7de5dc23df971ce --red d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+    ],
+    "Instrument": true,
+    "Name": "identity",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - identity --repo D:/r62-a6r3/r1/c-t1 --branch fx/u1 --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --current ae25b596a11fe3508ac60a3ef7de5dc23df971ce --red d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99\"",
+    "StderrLen": 0,
+    "StdoutLen": 2381,
+    "StdoutSha256": "45ea0245a80704721a503d6f30741d1d253e125562377b030396ad51c9f7ec53"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - diff --repo D:/r62-a6r3/r1/c-t1 --from 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --to ae25b596a11fe3508ac60a3ef7de5dc23df971ce"
+    ],
+    "Instrument": true,
+    "Name": "diff",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - diff --repo D:/r62-a6r3/r1/c-t1 --from 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --to ae25b596a11fe3508ac60a3ef7de5dc23df971ce\"",
+    "StderrLen": 0,
+    "StdoutLen": 2077,
+    "StdoutSha256": "c1f5a12872063b16318b2f2e7a25801e47493a0db719f89c44c9be2f3656c756"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - scope --repo D:/r62-a6r3/r1/c-t1 --from 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --to ae25b596a11fe3508ac60a3ef7de5dc23df971ce --file DELEG=D:/r62-a6r3/r1/c-t1-in/deleg.json --sha256 DELEG=3d011af66346d9a698807b55b05a89331775d523131954dafd90f6a6610ba462"
+    ],
+    "Instrument": true,
+    "Name": "scope",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - scope --repo D:/r62-a6r3/r1/c-t1 --from 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --to ae25b596a11fe3508ac60a3ef7de5dc23df971ce --file DELEG=D:/r62-a6r3/r1/c-t1-in/deleg.json --sha256 DELEG=3d011af66346d9a698807b55b05a89331775d523131954dafd90f6a6610ba462\"",
+    "StderrLen": 0,
+    "StdoutLen": 3162,
+    "StdoutSha256": "304f4ba36cf91407bed6e2f78b2293db3236947ed3612889d41e93f8962c6851"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - contract --repo D:/r62-a6r3/r1/c-t1 --file CONTRACT=D:/r62-a6r3/r1/c-t1-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --file DELEG=D:/r62-a6r3/r1/c-t1-in/deleg.json --sha256 DELEG=3d011af66346d9a698807b55b05a89331775d523131954dafd90f6a6610ba462"
+    ],
+    "Instrument": true,
+    "Name": "contract",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - contract --repo D:/r62-a6r3/r1/c-t1 --file CONTRACT=D:/r62-a6r3/r1/c-t1-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --file DELEG=D:/r62-a6r3/r1/c-t1-in/deleg.json --sha256 DELEG=3d011af66346d9a698807b55b05a89331775d523131954dafd90f6a6610ba462\"",
+    "StderrLen": 0,
+    "StdoutLen": 2284,
+    "StdoutSha256": "822184aa044b9b6a3f6e6967c986cc6ec7bf927a4f12c1f1e48960e6b2d2de60"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - hashes --repo D:/r62-a6r3/r1/c-t1 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --paths docs/automation/decisions/FX-U1-T1.gate-contract.json src/Fixture.Lib/Calculator.cs"
+    ],
+    "Instrument": true,
+    "Name": "hashes",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - hashes --repo D:/r62-a6r3/r1/c-t1 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --paths docs/automation/decisions/FX-U1-T1.gate-contract.json src/Fixture.Lib/Calculator.cs\"",
+    "StderrLen": 0,
+    "StdoutLen": 2238,
+    "StdoutSha256": "09509c9ec36230a3ec6af3a7e6859f79ef476fbef7a824407c0bbcf5d8be71bb"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - cleantree --repo D:/r62-a6r3/r1/c-t1 --ignore-path artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json"
+    ],
+    "Instrument": true,
+    "Name": "cleantree",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - cleantree --repo D:/r62-a6r3/r1/c-t1 --ignore-path artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json\"",
+    "StderrLen": 0,
+    "StdoutLen": 897,
+    "StdoutSha256": "30166d4ea01c1ba1a9a5449ac40e5ae3fc45c316959a94701eec61a15b0c9ad4"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - read-text --repo D:/r62-a6r3/r1/c-t1 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 1-1"
+    ],
+    "Instrument": true,
+    "Name": "read-text-1",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - read-text --repo D:/r62-a6r3/r1/c-t1 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 1-1\"",
+    "StderrLen": 0,
+    "StdoutLen": 1338,
+    "StdoutSha256": "4051b51c481983ca4acbd7300486807613e743a71a90d95f76f2bd4bebf43df4"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - read-text --repo D:/r62-a6r3/r1/c-t1 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 73-73"
+    ],
+    "Instrument": true,
+    "Name": "read-text-73",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - read-text --repo D:/r62-a6r3/r1/c-t1 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 73-73\"",
+    "StderrLen": 0,
+    "StdoutLen": 1535,
+    "StdoutSha256": "891ee98cbccdbc4368f6859b69523416b4cb7069fe5f981da6da3c55776a002a"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - read-json --repo D:/r62-a6r3/r1/c-t1 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1-T1.gate-contract.json --pointer /Objective --pointer /Schema --pointer /MainSha --pointer /AuthorityRevision"
+    ],
+    "Instrument": true,
+    "Name": "read-json",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - read-json --repo D:/r62-a6r3/r1/c-t1 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1-T1.gate-contract.json --pointer /Objective --pointer /Schema --pointer /MainSha --pointer /AuthorityRevision\"",
+    "StderrLen": 0,
+    "StdoutLen": 1562,
+    "StdoutSha256": "d4439bc9176fb67ca1e4ccb6b758444405e62d7942b718d8f4a43fc0b2f7daca"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - trx --repo D:/r62-a6r3/r1/c-t1 --file TRX=D:/r62-a6r3/r1/c-t1-in/fixture-tests.trx --sha256 TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513 --filter-substring Subtract"
+    ],
+    "Instrument": true,
+    "Name": "trx",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - trx --repo D:/r62-a6r3/r1/c-t1 --file TRX=D:/r62-a6r3/r1/c-t1-in/fixture-tests.trx --sha256 TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513 --filter-substring Subtract\"",
+    "StderrLen": 0,
+    "StdoutLen": 1091,
+    "StdoutSha256": "5ffc9ed28de77c0f17111ab0d42a92b5aab5249fba9212f47a8f168f844b8247"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - handoff --repo D:/r62-a6r3/r1/c-t1 --file H=D:/r62-a6r3/r1/c-t1-in/handoff.json --sha256 H=4d49eea9a525f09a6f0d17f268d5e2e64c93fc33c602a89b84aec9fc095153b1 --schema-rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+    ],
+    "Instrument": true,
+    "Name": "handoff",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - handoff --repo D:/r62-a6r3/r1/c-t1 --file H=D:/r62-a6r3/r1/c-t1-in/handoff.json --sha256 H=4d49eea9a525f09a6f0d17f268d5e2e64c93fc33c602a89b84aec9fc095153b1 --schema-rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df\"",
+    "StderrLen": 0,
+    "StdoutLen": 1909,
+    "StdoutSha256": "5ddbf5f1caacbaedc784beb60a080adb4b3afa5a0ea008539cf7d3e4c8792c4a"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - freetext --repo D:/r62-a6r3/r1/c-t1 --file H=D:/r62-a6r3/r1/c-t1-in/handoff.json --sha256 H=4d49eea9a525f09a6f0d17f268d5e2e64c93fc33c602a89b84aec9fc095153b1 --terms-rev fbe25347799e5b801ef708454212335537448bd1"
+    ],
+    "Instrument": true,
+    "Name": "freetext",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - freetext --repo D:/r62-a6r3/r1/c-t1 --file H=D:/r62-a6r3/r1/c-t1-in/handoff.json --sha256 H=4d49eea9a525f09a6f0d17f268d5e2e64c93fc33c602a89b84aec9fc095153b1 --terms-rev fbe25347799e5b801ef708454212335537448bd1\"",
+    "StderrLen": 0,
+    "StdoutLen": 1723,
+    "StdoutSha256": "12c99fbd99f68a965c8aae8027cc1e7078c888e4213dcda17af3f793914ee7b3"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - clausemap --repo D:/r62-a6r3/r1/c-t1 --main fbe25347799e5b801ef708454212335537448bd1 --state-rev 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --state-path docs/automation/state/FX-U1.yml --file CONTRACT=D:/r62-a6r3/r1/c-t1-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf"
+    ],
+    "Instrument": true,
+    "Name": "clausemap",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - clausemap --repo D:/r62-a6r3/r1/c-t1 --main fbe25347799e5b801ef708454212335537448bd1 --state-rev 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --state-path docs/automation/state/FX-U1.yml --file CONTRACT=D:/r62-a6r3/r1/c-t1-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf\"",
+    "StderrLen": 0,
+    "StdoutLen": 44627,
+    "StdoutSha256": "d4c05f841dbc110f8fe0ca974061ef22053c9c4e4ef82d01a2e7face8cf217a6"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git rev-parse HEAD"
+    ],
+    "Instrument": false,
+    "Name": "primary-Identity",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command 'git rev-parse HEAD'",
+    "StderrLen": 0,
+    "StdoutLen": 41,
+    "StdoutSha256": "ec77946fec0e4cc954f7fdbef41217fff5b5d61b8c83eaa0f13a7f64e47f54d3"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git diff --name-only --no-renames 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf..ae25b596a11fe3508ac60a3ef7de5dc23df971ce"
+    ],
+    "Instrument": false,
+    "Name": "primary-Scope",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command 'git diff --name-only --no-renames 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf..ae25b596a11fe3508ac60a3ef7de5dc23df971ce'",
+    "StderrLen": 0,
+    "StdoutLen": 260,
+    "StdoutSha256": "3afdef42b2913072a3785d8fb01836c0a6829a11afd42f58018e8f8ec77f6616"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git status --porcelain"
+    ],
+    "Instrument": false,
+    "Name": "primary-CleanTree",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command 'git status --porcelain'",
+    "StderrLen": 0,
+    "StdoutLen": 0,
+    "StdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git log --format=%H 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf..ae25b596a11fe3508ac60a3ef7de5dc23df971ce"
+    ],
+    "Instrument": false,
+    "Name": "primary-Trailer",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command 'git log --format=%H 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf..ae25b596a11fe3508ac60a3ef7de5dc23df971ce'",
+    "StderrLen": 0,
+    "StdoutLen": 82,
+    "StdoutSha256": "cdf0341c6d765671168524aea532fbfb8532eaa691161c7778c8020994238166"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git rev-parse fbe25347799e5b801ef708454212335537448bd1:docs/automation/agent-execution/compatibility/I62-clause-map.json"
+    ],
+    "Instrument": false,
+    "Name": "primary-Authority",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command 'git rev-parse fbe25347799e5b801ef708454212335537448bd1:docs/automation/agent-execution/compatibility/I62-clause-map.json'",
+    "StderrLen": 0,
+    "StdoutLen": 41,
+    "StdoutSha256": "6a6612def577e8ab78073d6099a1746d2501c2322c7483c9189c470a3fa7b4b2"
+   }
+  ],
+  "LogPath": "D:/r62-a6r3/r1/s-t1/session-events.jsonl",
+  "LogSha256": "9a5a99749b308e545629c9ae45b8f302571dc02118e4a00b82203310d4e6aa58",
+  "ZeroWriteToolRuns": true
+ },
+ "Versions": {
+  "Cmd": "10.0.26300.9550",
+  "Git": "git version 2.54.0.windows.1",
+  "GitPath": "%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE",
+  "Os": "Windows-11-10.0.26300-SP0",
+  "Pwsh": "7.6.6",
+  "PwshPath": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+  "Python": "3.13.14",
+  "PythonImplementation": "CPython",
+  "PythonOnPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\python.EXE",
+  "WindowsPowerShell": "5.1.26100.9549"
+ }
+}

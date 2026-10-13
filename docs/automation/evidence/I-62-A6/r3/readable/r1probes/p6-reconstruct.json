@@ -1,0 +1,1525 @@
+{
+ "Cases": [
+  {
+   "Case": "OK",
+   "Expected": "13 corridas reconstruidas, argv y sobres identicos a T1; mismo resultado del aceptante que T1 (= ronda 2); tabla aceptada",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/OK-events.jsonl",
+    "Sha256": "0eda0beea015af8327c37667ee928988af70800ea9f97267244a0f1fea1e05e9"
+   },
+   "Observed": {
+    "AcceptorStdoutSha256": "074d1001174968ceaf3afa3fc93b2fa6399725af678baa4cb7f4d0af1ef74770",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "Error": null,
+    "MismatchDetails": {},
+    "NoiseLinesPerRun": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "Rc": 0,
+    "Reconstruction": {
+     "CommandExecutions": 18,
+     "Complete": true,
+     "CompletenessProblems": [],
+     "InstrumentExecutions": 13,
+     "Problems": [],
+     "Reconstructible": true
+    },
+    "RequestSha256": "e74e8abdc05628a6f2d532d99ff7e228c05f9620c4dd6d2f913a43689eec40de",
+    "Table": {
+     "AcceptanceReasons": [],
+     "Accepted": true,
+     "AcceptorRc": 0,
+     "ConstructionViolations": [],
+     "Decision": "ACCEPT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [],
+    "NotApplicableReasons": {},
+    "Path": "D:/r62-a6r3/r1/s-recon/request-OK.json",
+    "Runs": 13,
+    "Sha256": "e74e8abdc05628a6f2d532d99ff7e228c05f9620c4dd6d2f913a43689eec40de",
+    "VerificationIncluded": true
+   },
+   "What": "Registro Codex sintetico con las 13 ejecuciones reales de T1"
+  },
+  {
+   "Case": "NOISE",
+   "Expected": "13 corridas reconstruidas, argv y sobres identicos a T1; mismo resultado del aceptante que T1 (= ronda 2); tabla aceptada",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/NOISE-events.jsonl",
+    "Sha256": "79b96c1cf80ee0992e5b20da089823c65a6e9cb86ca019f1dadf5c0234b585c5"
+   },
+   "Observed": {
+    "AcceptorStdoutSha256": "074d1001174968ceaf3afa3fc93b2fa6399725af678baa4cb7f4d0af1ef74770",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "Error": null,
+    "MismatchDetails": {},
+    "NoiseLinesPerRun": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "Rc": 0,
+    "Reconstruction": {
+     "CommandExecutions": 18,
+     "Complete": true,
+     "CompletenessProblems": [],
+     "InstrumentExecutions": 13,
+     "Problems": [],
+     "Reconstructible": true
+    },
+    "RequestSha256": "05df05380bdf2af5d61396c04fc2e11d4ba6d6adc13c8ed6fa18d14e4ea642ed",
+    "Table": {
+     "AcceptanceReasons": [],
+     "Accepted": true,
+     "AcceptorRc": 0,
+     "ConstructionViolations": [],
+     "Decision": "ACCEPT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [],
+    "NotApplicableReasons": {},
+    "Path": "D:/r62-a6r3/r1/s-recon/request-NOISE.json",
+    "Runs": 13,
+    "Sha256": "05df05380bdf2af5d61396c04fc2e11d4ba6d6adc13c8ed6fa18d14e4ea642ed",
+    "VerificationIncluded": true
+   },
+   "What": "Registro Codex sintetico con las 13 ejecuciones reales de T1 y la linea de aviso de profile.ps1 (medida en el registro v5) delante de cada salida"
+  },
+  {
+   "Case": "CRLF",
+   "Expected": "no reconstruible (CRLF); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/CRLF-events.jsonl",
+    "Sha256": "95d1a896e1e66986f1f4ae2c4da8c9e3a610eafc5f452463cbffdea6293f833f"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: envelope: candidate line ends in CRLF"
+    ],
+    "Reconstructible": false
+   },
+   "What": "El sobre de identity termina en CRLF"
+  },
+  {
+   "Case": "TRUNC",
+   "Expected": "no reconstruible (not LF-terminated); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/TRUNC-events.jsonl",
+    "Sha256": "ba372efbf67ec27bf0dcf21497e766ab6bbfdcf721c4a84af5ac8432e1842459"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: envelope: candidate line is not LF-terminated (truncated output)"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Salida de identity truncada a la mitad del sobre (sin LF final)"
+  },
+  {
+   "Case": "TRUNC-LF",
+   "Expected": "no reconstruible (not JSON); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/TRUNC-LF-events.jsonl",
+    "Sha256": "3dd3f00b65aef8f83d656c9b1fdefa68975568df113474d250149f00a14f1787"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: envelope: candidate line is not JSON (truncated or interleaved)"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Salida de identity truncada a la mitad del sobre y con LF final"
+  },
+  {
+   "Case": "TWO",
+   "Expected": "no reconstruible (2 candidate lines); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/TWO-events.jsonl",
+    "Sha256": "841449acc0d4b03798ce16a38413fe614d10d5790723a812143d0b85f5820906"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: envelope: 2 candidate lines in aggregated_output (exactly 1 required)"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Dos sobres en la salida de una orden (identity)"
+  },
+  {
+   "Case": "F-noI",
+   "Expected": "no reconstruible (missing -I); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-noI-events.jsonl",
+    "Sha256": "8883615c2035a2b7b2b850fea421b63250517ec1ccfbd12f8c4e719bcbf75f31"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: missing -I right after the interpreter"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: sin -I"
+  },
+  {
+   "Case": "F-noNRO",
+   "Expected": "no reconstruible (missing --no-replace-objects); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-noNRO-events.jsonl",
+    "Sha256": "006badfb9736cdb5dcfc1d2e7aab61d1efbd4554574a060bcae2ee9a2ad09fa0"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: missing --no-replace-objects"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: sin --no-replace-objects"
+  },
+  {
+   "Case": "F-bare-P3r2",
+   "Expected": "no reconstruible (call operator); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-bare-P3r2-events.jsonl",
+    "Sha256": "65337a0e639b9890dc6417595c855ca48da80e5deecdabeb8472218990ef82e7"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: does not start with the call operator &"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: forma P3 de la ronda 2 (git y python por nombre, sin &)"
+  },
+  {
+   "Case": "F-bare-git",
+   "Expected": "no reconstruible (bare name); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-bare-git-events.jsonl",
+    "Sha256": "556b7a7675369bed5905d3c0922f3bad625e9822436491af74dda807f88f4925"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: git given by bare name or unquoted path"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: git por nombre desnudo (& git)"
+  },
+  {
+   "Case": "F-bare-py",
+   "Expected": "no reconstruible (bare name); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-bare-py-events.jsonl",
+    "Sha256": "f1086c411d602f99ec7f0fcfad71684341e0862b3884d6b81a8a26083a8245ee"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: interpreter given by bare name or unquoted path"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: interprete por nombre desnudo (& python)"
+  },
+  {
+   "Case": "F-extra-stmt",
+   "Expected": "no reconstruible (not allowed); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-extra-stmt-events.jsonl",
+    "Sha256": "e47451d3471e2966d2157e91df28cf5c4db770671193d7758c220d068c0ad8e5"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: character ';' not allowed after a token (tokens are separated by one space; statement, redirection, variable or concatenation)"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: sentencia extra al final (; Write-Output fin)"
+  },
+  {
+   "Case": "F-lead-stmt",
+   "Expected": "no reconstruible (not allowed); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-lead-stmt-events.jsonl",
+    "Sha256": "0fb00e0a367a1dc457f4b9c6db2bf3a93ed72b131126f3a187d6431ec962b2f3"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: character ';' not allowed after a token (tokens are separated by one space; statement, redirection, variable or concatenation)"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: sentencia extra delante (Set-Location ...;)"
+  },
+  {
+   "Case": "F-redir",
+   "Expected": "no reconstruible (not allowed); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-redir-events.jsonl",
+    "Sha256": "fc19723c342235aea19f0debb8e7ec7ef2a13d0ba769607479428121653b1b74"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: character '>' not allowed after a token (tokens are separated by one space; statement, redirection, variable or concatenation)"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: redireccion 2>&1"
+  },
+  {
+   "Case": "F-redir-file",
+   "Expected": "no reconstruible (not allowed); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-redir-file-events.jsonl",
+    "Sha256": "df9e4056e6de7bc85018c506fb7e857b86ef607bffb81a375f966263c0d8063d"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: character '>' not allowed (statement, redirection, variable or other syntax)"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: redireccion a archivo"
+  },
+  {
+   "Case": "F-var",
+   "Expected": "no reconstruible (not allowed); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-var-events.jsonl",
+    "Sha256": "cc97d715cb70bdd32b4a98c2e1e61ae738a0ba8ac7a24364492624fcc70e4737"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: character '$' not allowed (statement, redirection, variable or other syntax)"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: variable como ejecutable ($g)"
+  },
+  {
+   "Case": "F-dq-expand",
+   "Expected": "no reconstruible (expansion); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-dq-expand-events.jsonl",
+    "Sha256": "ebe023cdfa6e43c2235c6770ec8514ea6c566f2d1c12ef313615a5b008ae9605"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: double-quoted literal with expansion or escape"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: literal entre comillas dobles con expansion ($env:...)"
+  },
+  {
+   "Case": "F-second-pipe",
+   "Expected": "no reconstruible (extra pipeline); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-second-pipe-events.jsonl",
+    "Sha256": "90c3420b924fd20b002ab6937c01822c309992b36171c32853c8a905cff8339e"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: inner: extra pipeline or call operator after the tool command"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma: segunda tuberia tras la herramienta"
+  },
+  {
+   "Case": "F-outer-flags",
+   "Expected": "no reconstruible (not the form); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-outer-flags-events.jsonl",
+    "Sha256": "4987c01f7c07212d874eaefb3b913368277d31f4e0a287e82735d58135c61a08"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: outer: not the form \"<pwsh>\" -Command <inner> (4 tokens)"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Forma externa con -NoProfile antes de -Command"
+  },
+  {
+   "Case": "F-cmd-shell",
+   "Expected": "no reconstruible (not the form); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-cmd-shell-events.jsonl",
+    "Sha256": "24fab216251b2bf4f703566b9fdd0e85381a126564277d9c52502ecf2c8be42b"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: outer: not the form \"<pwsh>\" -Command <inner> (3 tokens)"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Shell cmd.exe en lugar de pwsh"
+  },
+  {
+   "Case": "F-blob-mention",
+   "Expected": "no reconstruible (call operator); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/F-blob-mention-events.jsonl",
+    "Sha256": "7addd83a625d905137574cb6923238a328361af17b290640dde90505bad0cf16"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 19,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 14,
+    "Problems": [
+     "item_19: inner: does not start with the call operator &"
+    ],
+    "Reconstructible": false
+   },
+   "What": "Orden no instrumental que menciona el blob fijado (comprobacion tipo P2 dentro de la sesion)"
+  },
+  {
+   "Case": "P-dq",
+   "Expected": "reconstruible; argv y sobres identicos a OK",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/P-dq-events.jsonl",
+    "Sha256": "c7e34cebba86b4109a64beab715e1845fc1ba42e27e9cce32a6fb1af365a6a93"
+   },
+   "Observed": {
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [],
+    "Reconstructible": true
+   },
+   "What": "Control positivo: interprete en literal pwsh entre comillas dobles sin expansiones"
+  },
+  {
+   "Case": "INC-noturn",
+   "Expected": "no reconstruible (turn.completed); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/INC-noturn-events.jsonl",
+    "Sha256": "ca5680a249a87baf8c36757d772a28a95b4a985f14124288ebaabd088b4f7daa"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": false,
+    "CompletenessProblems": [
+     "not exactly one turn.completed as last event"
+    ],
+    "InstrumentExecutions": 13,
+    "Problems": [],
+    "Reconstructible": false
+   },
+   "What": "Registro sin turn.completed"
+  },
+  {
+   "Case": "INC-nocompleted",
+   "Expected": "no reconstruible (without item.completed); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/INC-nocompleted-events.jsonl",
+    "Sha256": "158dbbd0dacca0f4c54cab5251953a05fbe6a4b300aebf4b3ce944e7b0044aa9"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 17,
+    "Complete": false,
+    "CompletenessProblems": [
+     "item item_6: item.started without item.completed"
+    ],
+    "InstrumentExecutions": 12,
+    "Problems": [],
+    "Reconstructible": false
+   },
+   "What": "Un item.started (cleantree) sin su item.completed"
+  },
+  {
+   "Case": "INC-cutlast",
+   "Expected": "no reconstruible (last line incomplete); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/INC-cutlast-events.jsonl",
+    "Sha256": "39e535d7bf5d29e0903c2d1183b3f268bf58d003026e67c252bc9d51193670dc"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": false,
+    "CompletenessProblems": [
+     "log does not end with LF (last line incomplete)",
+     "line 40 is not a JSON object",
+     "not exactly one turn.completed as last event"
+    ],
+    "InstrumentExecutions": 13,
+    "Problems": [],
+    "Reconstructible": false
+   },
+   "What": "Ultima linea del registro cortada (sin LF final)"
+  },
+  {
+   "Case": "EXIT-mismatch",
+   "Expected": "no reconstruible (inconsistent with envelope); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/EXIT-mismatch-events.jsonl",
+    "Sha256": "b2918c8353fd964e7f2a75f1c3754ddb4e5323de4ae3598d6292a378c085ca70"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: exit_code 1 inconsistent with envelope Error null"
+    ],
+    "Reconstructible": false
+   },
+   "What": "exit_code 1 (failed) con un sobre sin error"
+  },
+  {
+   "Case": "EXIT-null",
+   "Expected": "no reconstruible (exit_code not recorded); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/EXIT-null-events.jsonl",
+    "Sha256": "011b2fe633f5dd0b02eaf0bfdd7e44efab63780f0c166558eb5e08212bf1229e"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: exit_code not recorded"
+    ],
+    "Reconstructible": false
+   },
+   "What": "exit_code no registrado (null) con status completed"
+  },
+  {
+   "Case": "EXIT-status",
+   "Expected": "no reconstruible (inconsistent with exit_code); sin solicitud ni aceptante; resultado no aceptado",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/EXIT-status-events.jsonl",
+    "Sha256": "4c2758e53df53278800cdac9f0836022c0204b83131c8d0b4acb1e7d51f216e7"
+   },
+   "Observed": {
+    "Accepted": false,
+    "CommandExecutions": 18,
+    "Complete": true,
+    "CompletenessProblems": [],
+    "InstrumentExecutions": 13,
+    "Problems": [
+     "item_1: status 'failed' inconsistent with exit_code 0"
+    ],
+    "Reconstructible": false
+   },
+   "What": "exit_code 0 con status failed"
+  },
+  {
+   "Case": "EXIT-err",
+   "Expected": "reconstruible como corrida con error (exit != 0 y Error en el sobre); el aceptante la ve: REJECT_FACTS; tabla no aceptada",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/EXIT-err-events.jsonl",
+    "Sha256": "a256f2f567fd57d8871f8abd4862830cffb1a44159a792fa5d4e4454b13baf52"
+   },
+   "Observed": {
+    "AcceptorStdoutSha256": "8c01368d31ab3d2124be4cb53efdf2f7ea19b715d144203d60d52cf32303bb04",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MISMATCH",
+     "R4": "MATCH",
+     "R5": "MISMATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MISMATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "ErrorRuns": [
+     {
+      "Argv": [
+       "identity",
+       "--repo",
+       "D:/r62-a6r3/r1/c-t1",
+       "--branch",
+       "fx/u1",
+       "--base",
+       "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+       "--current",
+       "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+       "--red",
+       "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "EnvelopeError": "BAD_REVISION",
+      "EnvelopePath": "D:/r62-a6r3/r1/s-recon/EXIT-err-env/r13-identity.json",
+      "EnvelopeSha256": "5b72c754d5491efc2a19ef2d13afbb954a96bafdb57d4c7d8cd055d7de6c9bcd",
+      "ErrorRun": true,
+      "ExitCode": 1,
+      "Git": "%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE",
+      "Interpreter": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+      "ItemId": "item_19",
+      "NoiseLines": 0,
+      "Seq": 13,
+      "Shell": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+      "Status": "failed"
+     }
+    ],
+    "MismatchDetails": {
+     "R3": "{\"Runs\":[{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"e11d9f236df3d51a35f2dfbd8d6c732c6f2e0db3c4b2b61febca924562405281\",\"Name\":\"r00-identity\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69\",\"Name\":\"r01-diff\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5\",\"Name\":\"r02-scope\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c\",\"Name\":\"r03-contract\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"19ef36311d7c1bcf41946dade09966effc4dea105bd98474dd9488365a7ff662\",\"Name\":\"r04-hashes\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"dc2de9192f430c63c376a",
+     "R5": "{\"Runs\":[{\"Command\":\"identity\",\"Compared\":6,\"Mismatches\":[],\"Name\":\"r00-identity\"},{\"Command\":\"diff\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"r01-diff\"},{\"Command\":\"scope\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"r02-scope\"},{\"Command\":\"hashes\",\"Compared\":1,\"Mismatches\":[],\"Name\":\"r04-hashes\"},{\"Command\":\"identity\",\"Name\":\"r13-identity\",\"Problems\":[\"envelope without usable Facts\"]}]}",
+     "R9": "{\"Runs\":[{\"Name\":\"r00-identity\",\"Violations\":[]},{\"Name\":\"r01-diff\",\"Violations\":[]},{\"Name\":\"r02-scope\",\"Violations\":[]},{\"Name\":\"r03-contract\",\"Violations\":[]},{\"Name\":\"r04-hashes\",\"Violations\":[]},{\"Name\":\"r05-cleantree\",\"Violations\":[]},{\"Name\":\"r06-read-text\",\"Violations\":[]},{\"Name\":\"r07-read-text\",\"Violations\":[]},{\"Name\":\"r08-read-json\",\"Violations\":[]},{\"Name\":\"r09-trx\",\"Violations\":[]},{\"Name\":\"r10-handoff\",\"Violations\":[]},{\"Name\":\"r11-freetext\",\"Violations\":[]},{\"Name\":\"r12-clausemap\",\"Violations\":[]},{\"Name\":\"r13-identity\",\"Violations\":[\"GitCalls[1]: object outside the closure: deadbeefdeadbeefdeadbeefdeadbeefdeadbeef^{commit}\"]}]}"
+    },
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "PwshExit": 1,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "Rc": 1,
+    "Reconstruction": {
+     "CommandExecutions": 19,
+     "Complete": true,
+     "CompletenessProblems": [],
+     "InstrumentExecutions": 14,
+     "Problems": [],
+     "Reconstructible": true
+    },
+    "RequestSha256": "f5126a2c252102dcd63d3248c20f214cb15b0582c7f21c73d024c8b8fca8b113",
+    "StderrLen": 0,
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R3 = MISMATCH (MATCH required)",
+      "R9 = MISMATCH (MATCH required)",
+      "R5 = MISMATCH (MATCH required by its data condition)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MISMATCH",
+      "R4": "MATCH",
+      "R5": "MISMATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MISMATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [],
+    "NotApplicableReasons": {},
+    "Path": "D:/r62-a6r3/r1/s-recon/request-EXIT-err.json",
+    "Runs": 14,
+    "Sha256": "f5126a2c252102dcd63d3248c20f214cb15b0582c7f21c73d024c8b8fca8b113",
+    "VerificationIncluded": true
+   },
+   "What": "Ejecucion real con error (identity --current inexistente) anadida al registro de T1"
+  },
+  {
+   "Case": "SWAP",
+   "Expected": "reconstruible (la forma es correcta); el aceptante: R3 MISMATCH y REJECT_FACTS; tabla no aceptada",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/SWAP-events.jsonl",
+    "Sha256": "ad9af6290b8f73e4ce2c6d47dd9224f03e436da9bf52c7988b1a9ae1e1ce9cbc"
+   },
+   "Observed": {
+    "AcceptorStdoutSha256": "61dad06032941521d364e3a16b99e6b13a02480b8a10ca83513cfee72f33b5bf",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MISMATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R3": "{\"Runs\":[{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"e11d9f236df3d51a35f2dfbd8d6c732c6f2e0db3c4b2b61febca924562405281\",\"Name\":\"r00-identity\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69\",\"Name\":\"r01-diff\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5\",\"Name\":\"r02-scope\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c\",\"Name\":\"r03-contract\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"19ef36311d7c1bcf41946dade09966effc4dea105bd98474dd9488365a7ff662\",\"Name\":\"r04-hashes\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"dc2de9192f430c63c376a"
+    },
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "Rc": 1,
+    "Reconstruction": {
+     "CommandExecutions": 18,
+     "Complete": true,
+     "CompletenessProblems": [],
+     "InstrumentExecutions": 13,
+     "Problems": [],
+     "Reconstructible": true
+    },
+    "RequestSha256": "2c2eba5578fdc984ec5d48b3de0e52329cc3173bd5f0269d238fbc89789b67a1",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R3 = MISMATCH (MATCH required)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MISMATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [],
+    "NotApplicableReasons": {},
+    "Path": "D:/r62-a6r3/r1/s-recon/request-SWAP.json",
+    "Runs": 13,
+    "Sha256": "2c2eba5578fdc984ec5d48b3de0e52329cc3173bd5f0269d238fbc89789b67a1",
+    "VerificationIncluded": true
+   },
+   "What": "SWAP: argv de una corrida con el sobre de otra: read-text 1-1 <-> 73-73 (mismo comando)"
+  },
+  {
+   "Case": "SWAP-cmd",
+   "Expected": "reconstruible (la forma es correcta); el aceptante: R3 MISMATCH y REJECT_FACTS; tabla no aceptada",
+   "Group": "RECON",
+   "Holds": true,
+   "Log": {
+    "Path": "D:/r62-a6r3/r1/s-recon/SWAP-cmd-events.jsonl",
+    "Sha256": "e1f61f1869bc1181c6ab7f57fa76b4cd68df3e4f2a929b72d5fedb64809d42c6"
+   },
+   "Observed": {
+    "AcceptorStdoutSha256": "831885ef8552543d879955a2dd4c950860cc4a5311130a18e40fc052272dc9dc",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MISMATCH",
+     "R4": "MATCH",
+     "R5": "MISMATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R3": "{\"Runs\":[{\"FactsBytesEqual\":false,\"FactsSha256Recomputed\":\"e515ca30aa341f12f8ff263193ac6f6c6c98c47e7fc72413c5e64aa9cf336a69\",\"Name\":\"r00-identity\",\"Problems\":[\"Command differs from the declared argv\",\"re-run differs in Command\",\"re-run differs in Args\",\"re-run differs in Inputs\",\"re-run differs in GitCalls\",\"re-run differs in FactsSha256\",\"re-run differs in Facts\"],\"RerunExit\":0},{\"FactsBytesEqual\":false,\"FactsSha256Recomputed\":\"e11d9f236df3d51a35f2dfbd8d6c732c6f2e0db3c4b2b61febca924562405281\",\"Name\":\"r01-diff\",\"Problems\":[\"Command differs from the declared argv\",\"re-run differs in Command\",\"re-run differs in Args\",\"re-run differs in Inputs\",\"re-run differs in GitCalls\",\"re-run differs in FactsSha256\",\"re-run differs in Facts\"],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"b5503439bbe77290b677efebbd32615f5d3f69f7e81b9b469e5c9484501b50b5\",\"Name\":\"r02-scope\",\"Problems\":[]",
+     "R5": "{\"Runs\":[{\"Command\":\"identity\",\"Compared\":6,\"Mismatches\":[{\"Field\":\"Head\",\"Problem\":\"absent from the tool Facts\"},{\"Field\":\"AbbrevRef\",\"Problem\":\"absent from the tool Facts\"},{\"Field\":\"Toplevel\",\"Problem\":\"absent from the tool Facts\"},{\"Field\":\"OriginBranch\",\"Problem\":\"absent from the tool Facts\"},{\"Field\":\"OriginMain\",\"Problem\":\"absent from the tool Facts\"},{\"Field\":\"Ancestry\",\"Problem\":\"absent from the tool Facts\"}],\"Name\":\"r00-identity\"},{\"Command\":\"diff\",\"Compared\":3,\"Mismatches\":[{\"Field\":\"Paths\",\"Problem\":\"absent from the tool Facts\"},{\"Field\":\"Commits[set]\",\"Problem\":\"absent from the tool Facts\"},{\"Field\":\"CoAuthoredBy\",\"Problem\":\"absent from the tool Facts\"}],\"Name\":\"r01-diff\"},{\"Command\":\"scope\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"r02-scope\"},{\"Command\":\"hashes\",\"Compared\":1,\"Mismatches\":[],\"Name\":\"r04-hashes\"}]}"
+    },
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "Rc": 1,
+    "Reconstruction": {
+     "CommandExecutions": 18,
+     "Complete": true,
+     "CompletenessProblems": [],
+     "InstrumentExecutions": 13,
+     "Problems": [],
+     "Reconstructible": true
+    },
+    "RequestSha256": "e6275ef32c88dcc349884516a9acba2050f32a99f6a0be39614d417ed7da980f",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R3 = MISMATCH (MATCH required)",
+      "R5 = MISMATCH (MATCH required by its data condition)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MISMATCH",
+      "R4": "MATCH",
+      "R5": "MISMATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [],
+    "NotApplicableReasons": {},
+    "Path": "D:/r62-a6r3/r1/s-recon/request-SWAP-cmd.json",
+    "Runs": 13,
+    "Sha256": "e6275ef32c88dcc349884516a9acba2050f32a99f6a0be39614d417ed7da980f",
+    "VerificationIncluded": true
+   },
+   "What": "SWAP: argv de una corrida con el sobre de otra: identity <-> diff (comandos distintos)"
+  },
+  {
+   "Case": "GRAMMAR-units",
+   "Expected": "sq-escape reconstruible; el resto no",
+   "Group": "RECON",
+   "Holds": true,
+   "Observed": {
+    "Units": [
+     {
+      "Argv": [
+       "identity",
+       "--repo",
+       "D:/x"
+      ],
+      "Expected": true,
+      "Git": "C:\\a'b\\git.exe",
+      "Holds": true,
+      "Reconstructible": true,
+      "Unit": "sq-escape"
+     },
+     {
+      "Expected": false,
+      "Holds": true,
+      "Problem": "inner: non-ASCII or control character",
+      "Reconstructible": false,
+      "Unit": "smart-quote"
+     },
+     {
+      "Expected": false,
+      "Holds": true,
+      "Problem": "inner: empty token",
+      "Reconstructible": false,
+      "Unit": "double-space"
+     },
+     {
+      "Expected": false,
+      "Holds": true,
+      "Problem": "inner: non-ASCII or control character",
+      "Reconstructible": false,
+      "Unit": "newline"
+     },
+     {
+      "Expected": false,
+      "Holds": true,
+      "Problem": "inner: git is not an absolute path to git.exe",
+      "Reconstructible": false,
+      "Unit": "relative-git"
+     },
+     {
+      "Expected": false,
+      "Holds": true,
+      "Problem": "inner: git is not an absolute path to git.exe",
+      "Reconstructible": false,
+      "Unit": "dotdot-git"
+     },
+     {
+      "Expected": false,
+      "Holds": true,
+      "Problem": "inner: character '~' not allowed (statement, redirection, variable or other syntax)",
+      "Reconstructible": false,
+      "Unit": "tilde-arg"
+     },
+     {
+      "Expected": false,
+      "Holds": true,
+      "Problem": "inner: blob differs from the pinned blob",
+      "Reconstructible": false,
+      "Unit": "wrong-blob"
+     }
+    ]
+   },
+   "What": "Unidades de la gramatica interna (sin registro)"
+  },
+  {
+   "Case": "REAL-logs",
+   "Expected": "completos; 0 ejecuciones del instrumento en cada uno; (extra) el decodificador externo y el renderizador reproducen cada orden registrada",
+   "Group": "RECON",
+   "Holds": true,
+   "Observed": {
+    "CommandsTotal": 111,
+    "Logs": [
+     {
+      "CommandExecutions": 8,
+      "Complete": true,
+      "CompletenessProblems": [],
+      "Events": 20,
+      "InstrumentExecutions": 0,
+      "Log": "docs/automation/evidence/I-62-F6/OD-2/R20261007T013200Z-od2d-probe/probe1-events.jsonl",
+      "OuterDecoded": 8,
+      "RerenderIdentical": 8,
+      "Sha256": "4ae371cc5e3f08836cd79b693c4f1c7484d67e65736b380e3fd490e21ec19392"
+     },
+     {
+      "CommandExecutions": 6,
+      "Complete": true,
+      "CompletenessProblems": [],
+      "Events": 17,
+      "InstrumentExecutions": 0,
+      "Log": "docs/automation/evidence/I-62-F6/OD-2/R20261007T013200Z-od2d-probe/probe2-events.jsonl",
+      "OuterDecoded": 6,
+      "RerenderIdentical": 6,
+      "Sha256": "5011fc41abdffbcc9fee3b77ea7dd7596f6f9efaefbb5eb15a635d1e91bd44df"
+     },
+     {
+      "CommandExecutions": 19,
+      "Complete": true,
+      "CompletenessProblems": [],
+      "Events": 43,
+      "InstrumentExecutions": 0,
+      "Log": "docs/automation/evidence/I-62-F6/OD-2/R20261009T041427Z-a2p2-block/probe1-events.jsonl",
+      "OuterDecoded": 19,
+      "RerenderIdentical": 19,
+      "Sha256": "cec2221c6eae600678a4143cee42dd0f242be8bcea6702c10c5787919f912c52"
+     },
+     {
+      "CommandExecutions": 6,
+      "Complete": true,
+      "CompletenessProblems": [],
+      "Events": 16,
+      "InstrumentExecutions": 0,
+      "Log": "docs/automation/evidence/I-62-F6/OD-2/R20261009T041427Z-a2p2-block/probe2-events.jsonl",
+      "OuterDecoded": 6,
+      "RerenderIdentical": 6,
+      "Sha256": "027c9eb1c75fb3adef65c24ed0042ec44eeec190e4f7890b1355e534154651e9"
+     },
+     {
+      "CommandExecutions": 11,
+      "Complete": true,
+      "CompletenessProblems": [],
+      "Events": 26,
+      "InstrumentExecutions": 0,
+      "Log": "docs/automation/evidence/I-62-F6/OD-2/R20261010T000542Z-a4-1-probe/probe-events.jsonl",
+      "OuterDecoded": 11,
+      "RerenderIdentical": 11,
+      "Sha256": "3bcdc17bfde421a3984e0e3bca813764eabeffeee5b3d3c4c53fcfc3c57e903a"
+     },
+     {
+      "CommandExecutions": 4,
+      "Complete": true,
+      "CompletenessProblems": [],
+      "Events": 12,
+      "InstrumentExecutions": 0,
+      "Log": "docs/automation/evidence/I-62-F6/OD-2/R20261011T050156Z-a2p2-v4-controller/probe-events.jsonl",
+      "OuterDecoded": 4,
+      "RerenderIdentical": 4,
+      "Sha256": "7b1c67a081e40584c67ee578672dc0cb9803c90bf2ca696a59db2903bf255997"
+     },
+     {
+      "CommandExecutions": 42,
+      "Complete": true,
+      "CompletenessProblems": [],
+      "Events": 90,
+      "InstrumentExecutions": 0,
+      "Log": "docs/automation/evidence/I-62-F6/OD-2/R20261011T102825Z-a2p2-v5-controller/probe-events.jsonl",
+      "OuterDecoded": 42,
+      "RerenderIdentical": 42,
+      "Sha256": "1bfcae166e94e07afc2f095480e1bd26464652c6d57de01068a51ebb77de8315"
+     },
+     {
+      "CommandExecutions": 9,
+      "Complete": true,
+      "CompletenessProblems": [],
+      "Events": 23,
+      "InstrumentExecutions": 0,
+      "Log": "docs/automation/evidence/I-62-F6/OD-2b-PROBE/R20261006T150704Z-od2b/probe1-events.jsonl",
+      "OuterDecoded": 9,
+      "RerenderIdentical": 9,
+      "Sha256": "f925bbdd26ecdb79ab9cf35d847802f8579b17e32c8237024f8e51f7e1e71ee6"
+     },
+     {
+      "CommandExecutions": 6,
+      "Complete": true,
+      "CompletenessProblems": [],
+      "Events": 17,
+      "InstrumentExecutions": 0,
+      "Log": "docs/automation/evidence/I-62-F6/OD-2b-PROBE/R20261006T150704Z-od2b/probe2-events.jsonl",
+      "OuterDecoded": 6,
+      "RerenderIdentical": 6,
+      "Sha256": "39b4c71235bb903f48884fb2c9fd4115198eccfeff9e8ffa9aa407f8db8e0744"
+     }
+    ],
+    "LogsExpectedByTask": 7,
+    "LogsFound": 9,
+    "OuterDecoded": 111,
+    "RerenderIdentical": 111
+   },
+   "What": "Los registros Codex custodiados de OD-2 y OD-2b-PROBE (encontrados: 9)"
+  }
+ ],
+ "ProfileNoiseLine": "profile.ps1: Cannot dot-source this command because it was defined in a different language mode. To invoke this command without importing its contents, omit the '.' operator.\r\n",
+ "ReferenceRuns": 13,
+ "Schema": "r3-bench/p6-reconstruct"
+}

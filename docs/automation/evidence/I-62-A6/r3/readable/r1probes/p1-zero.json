@@ -1,0 +1,382 @@
+{
+ "Cases": [
+  {
+   "Case": "ZERO-log",
+   "Expected": "registro completo; 0 ejecuciones del instrumento -> la regla no construye solicitud ni ejecuta el aceptante",
+   "Group": "ZERO",
+   "Holds": true,
+   "Observed": {
+    "CommandExecutions": 5,
+    "Complete": true,
+    "InstrumentExecutions": 0,
+    "Problems": [],
+    "Reconstructible": true
+   },
+   "What": "Registro Codex de una invocacion VERIFY sin ejecuciones del instrumento (las 5 lecturas Git primarias reales de T1)"
+  },
+  {
+   "Case": "ZERO-a",
+   "Expected": "REJECT_FACTS; R3 y R9 MISMATCH (R3: sin datos y no dispensable; R9: MISSING_INPUT sin sobres); el resto MATCH/NA/MANUAL; tabla no aceptada",
+   "Group": "ZERO",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "706e112fb170ae1f8ed3c5a180ce18cd6b1cc26ebe3b159d7d08d55e8df9881c",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MISMATCH",
+     "R4": "MATCH",
+     "R5": "NOT_APPLICABLE",
+     "R6": "MATCH",
+     "R7": "NOT_APPLICABLE",
+     "R8": "MANUAL",
+     "R9": "MISMATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R3": "{\"Missing\":\"no data for this check and no NotApplicable declaration\"}",
+     "R9": "{\"Detail\":\"no tool envelope to check against the closure\",\"Error\":\"MISSING_INPUT\"}"
+    },
+    "NotApplicableDetails": {
+     "R5": "{\"Reason\":\"data condition: Runs has no identity/diff/scope/hashes\"}",
+     "R7": "{\"Reason\":\"data condition: Runs has no scope/contract/clausemap\"}"
+    },
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "Rc": 1,
+    "RequestSha256": "4dc48b08fa2fc9b9b057d19c537fa9d54432d9155ee73b327b4aeafd3e278a72",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R3 = MISMATCH (MATCH required)",
+      "R9 = MISMATCH (MATCH required)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [
+      "ZERO_EXECUTIONS: the session log records no instrument execution: no request and no acceptor run",
+      "RUNS_EMPTY: a request needs at least one execution"
+     ],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MISMATCH",
+      "R4": "MATCH",
+      "R5": "NOT_APPLICABLE",
+      "R6": "MATCH",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MISMATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [
+     "R5",
+     "R7"
+    ],
+    "NotApplicableReasons": {
+     "R5": "data condition: Runs has no identity/diff/scope/hashes",
+     "R7": "data condition: Runs has no scope/contract/clausemap"
+    },
+    "Path": "D:/r62-a6r3/r1/s-zero/request-zero-a.json",
+    "Runs": 0,
+    "Sha256": "4dc48b08fa2fc9b9b057d19c537fa9d54432d9155ee73b327b4aeafd3e278a72",
+    "VerificationIncluded": true
+   },
+   "What": "Runs = [] con la construccion mecanica: Verification T1, Closure, RelayFacts (R5/R7 NA por su condicion de datos)"
+  },
+  {
+   "Case": "ZERO-b",
+   "Expected": "REJECT_FACTS; R3 y R9 MISMATCH (sin datos; no son dispensables); R4 R5 R6 R7 R10 NOT_APPLICABLE; tabla no aceptada",
+   "Group": "ZERO",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "3d63b57873c957280b42db090801045b7aec3d3c0c66e2e2f693c3bb90a85bc5",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "NOT_APPLICABLE",
+     "R2": "MATCH",
+     "R3": "MISMATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "NOT_APPLICABLE",
+     "R6": "NOT_APPLICABLE",
+     "R7": "NOT_APPLICABLE",
+     "R8": "MANUAL",
+     "R9": "MISMATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R3": "{\"Missing\":\"no data for this check and no NotApplicable declaration\"}",
+     "R9": "{\"Missing\":\"no data for this check and no NotApplicable declaration\"}"
+    },
+    "NotApplicableDetails": {
+     "R10": "{\"Reason\":\"ZERO-b\"}",
+     "R4": "{\"Reason\":\"ZERO-b\"}",
+     "R5": "{\"Reason\":\"ZERO-b\"}",
+     "R6": "{\"Reason\":\"ZERO-b\"}",
+     "R7": "{\"Reason\":\"ZERO-b\"}"
+    },
+    "ProcessTreeDead": true,
+    "R4Rows": {
+     "Reason": "ZERO-b"
+    },
+    "Rc": 1,
+    "RequestSha256": "3c29a7a77ca21c41a4ec69cbdb45144431a9af7fafe3225a33fcf07d5ce61648",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R3 = MISMATCH (MATCH required)",
+      "R9 = MISMATCH (MATCH required)",
+      "R10 = NOT_APPLICABLE (MATCH required)",
+      "R4 = NOT_APPLICABLE (MATCH required: Verification included)",
+      "R6 = NOT_APPLICABLE (MATCH required by its data condition)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [
+      "ZERO_EXECUTIONS: the session log records no instrument execution: no request and no acceptor run",
+      "R4_RULE: Verification omitted although the rule requires it",
+      "R4_RULE: NotApplicable.R4 declared although the rule requires Verification",
+      "R6_DATA: NotApplicable.R6 declared although Runs/Verification supply data",
+      "NA_FORBIDDEN: NotApplicable.R10",
+      "R10: RelayFacts absent or not pinned to the file",
+      "R9: Closure absent or not pinned to the file",
+      "RUNS_EMPTY: a request needs at least one execution"
+     ],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "NOT_APPLICABLE",
+      "R2": "MATCH",
+      "R3": "MISMATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "NOT_APPLICABLE",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MISMATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [
+     "R10",
+     "R4",
+     "R5",
+     "R6",
+     "R7"
+    ],
+    "NotApplicableReasons": {
+     "R10": "ZERO-b",
+     "R4": "ZERO-b",
+     "R5": "ZERO-b",
+     "R6": "ZERO-b",
+     "R7": "ZERO-b"
+    },
+    "Path": "D:/r62-a6r3/r1/s-zero/request-zero-b.json",
+    "Runs": 0,
+    "Sha256": "3c29a7a77ca21c41a4ec69cbdb45144431a9af7fafe3225a33fcf07d5ce61648",
+    "VerificationIncluded": false
+   },
+   "What": "Runs = [], NotApplicable en R4 R5 R6 R7 R10, sin Closure ni Verification ni RelayFacts"
+  },
+  {
+   "Case": "ZERO-c",
+   "Expected": "REJECT_FACTS; R3 y R9 MISMATCH con \"this check cannot be declared not applicable\"; tabla no aceptada",
+   "Group": "ZERO",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "15de83dd4d1e5d0c16523477ad3ab6628bd08c05741be138fc58a7f0969a7a98",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "NOT_APPLICABLE",
+     "R2": "MATCH",
+     "R3": "MISMATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "NOT_APPLICABLE",
+     "R6": "NOT_APPLICABLE",
+     "R7": "NOT_APPLICABLE",
+     "R8": "MANUAL",
+     "R9": "MISMATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R3": "{\"Missing\":\"no data\",\"Problem\":\"this check cannot be declared not applicable\"}",
+     "R9": "{\"Missing\":\"no data\",\"Problem\":\"this check cannot be declared not applicable\"}"
+    },
+    "NotApplicableDetails": {
+     "R10": "{\"Reason\":\"ZERO-b\"}",
+     "R4": "{\"Reason\":\"ZERO-b\"}",
+     "R5": "{\"Reason\":\"ZERO-b\"}",
+     "R6": "{\"Reason\":\"ZERO-b\"}",
+     "R7": "{\"Reason\":\"ZERO-b\"}"
+    },
+    "ProcessTreeDead": true,
+    "R4Rows": {
+     "Reason": "ZERO-b"
+    },
+    "Rc": 1,
+    "RequestSha256": "91eba448c55117828e54b1fb47d21715521390de368a33ee240c8603fce808be",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R3 = MISMATCH (MATCH required)",
+      "R9 = MISMATCH (MATCH required)",
+      "R10 = NOT_APPLICABLE (MATCH required)",
+      "R4 = NOT_APPLICABLE (MATCH required: Verification included)",
+      "R6 = NOT_APPLICABLE (MATCH required by its data condition)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [
+      "ZERO_EXECUTIONS: the session log records no instrument execution: no request and no acceptor run",
+      "R4_RULE: Verification omitted although the rule requires it",
+      "R4_RULE: NotApplicable.R4 declared although the rule requires Verification",
+      "R6_DATA: NotApplicable.R6 declared although Runs/Verification supply data",
+      "NA_FORBIDDEN: NotApplicable.R3",
+      "NA_FORBIDDEN: NotApplicable.R9",
+      "NA_FORBIDDEN: NotApplicable.R10",
+      "R10: RelayFacts absent or not pinned to the file",
+      "R9: Closure absent or not pinned to the file",
+      "RUNS_EMPTY: a request needs at least one execution"
+     ],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "NOT_APPLICABLE",
+      "R2": "MATCH",
+      "R3": "MISMATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "NOT_APPLICABLE",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MISMATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [
+     "R10",
+     "R3",
+     "R4",
+     "R5",
+     "R6",
+     "R7",
+     "R9"
+    ],
+    "NotApplicableReasons": {
+     "R10": "ZERO-b",
+     "R3": "ZERO-c",
+     "R4": "ZERO-b",
+     "R5": "ZERO-b",
+     "R6": "ZERO-b",
+     "R7": "ZERO-b",
+     "R9": "ZERO-c"
+    },
+    "Path": "D:/r62-a6r3/r1/s-zero/request-zero-c.json",
+    "Runs": 0,
+    "Sha256": "91eba448c55117828e54b1fb47d21715521390de368a33ee240c8603fce808be",
+    "VerificationIncluded": false
+   },
+   "What": "ZERO-b mas NotApplicable en R3 y R9"
+  }
+ ],
+ "Log": {
+  "Path": "D:/r62-a6r3/r1/s-zero/session-events.jsonl",
+  "Sha256": "918ee53ac07f886642b806f6f65ac96e10f830687137824a8ce380bb36a43107"
+ },
+ "Schema": "r3-bench/p1-zero"
+}

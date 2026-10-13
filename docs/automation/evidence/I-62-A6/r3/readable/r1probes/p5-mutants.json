@@ -1,0 +1,931 @@
+{
+ "BaseRequestR4Include": true,
+ "Cases": [
+  {
+   "Case": "M1",
+   "CaughtByAcceptor": true,
+   "CaughtByTable": true,
+   "Expected": "aceptante: R4 MISMATCH (\"declared not applicable but data was supplied\"); tabla: violacion R4_RULE",
+   "Group": "MUT",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "215bcd505e15bf388d57a8aa13433bff61539a1ee46292fbcd81a98aa1c902d5",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MISMATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R4": "{\"Problem\":\"declared not applicable but data was supplied\",\"Result\":{\"Checks\":[{\"AcceptorExpects\":\"not pass\",\"Check\":\"Identity\",\"Controller\":\"fail\",\"Reasons\":[\"HEAD / refs/remotes/origin/<branch> / CurrentSha differ\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Scope\",\"Controller\":\"fail\",\"Reasons\":[\"paths not covered by AllowedWriteScope: 3\",\"paths covered by ForbiddenWriteScope: 2\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"pass\",\"Check\":\"CleanTree\",\"Controller\":\"pass\",\"Reasons\":[],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Trailer\",\"Controller\":\"fail\",\"Reasons\":[\"commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"FreeText\",\"Controller\":\"fail\",\"Reasons\":[\"term GATE PASS in Evidence\"],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\","
+    },
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": {
+     "Problem": "declared not applicable but data was supplied",
+     "Result": {
+      "Checks": [
+       {
+        "AcceptorExpects": "not pass",
+        "Check": "Identity",
+        "Controller": "fail",
+        "Reasons": [
+         "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+        ],
+        "Status": "MATCH"
+       },
+       {
+        "AcceptorExpects": "not pass",
+        "Check": "Scope",
+        "Controller": "fail",
+        "Reasons": [
+         "paths not covered by AllowedWriteScope: 3",
+         "paths covered by ForbiddenWriteScope: 2"
+        ],
+        "Status": "MATCH"
+       },
+       {
+        "AcceptorExpects": "pass",
+        "Check": "CleanTree",
+        "Controller": "pass",
+        "Reasons": [],
+        "Status": "MATCH"
+       },
+       {
+        "AcceptorExpects": "not pass",
+        "Check": "Trailer",
+        "Controller": "fail",
+        "Reasons": [
+         "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+        ],
+        "Status": "MATCH"
+       },
+       {
+        "AcceptorExpects": "not pass",
+        "Check": "FreeText",
+        "Controller": "fail",
+        "Reasons": [
+         "term GATE PASS in Evidence"
+        ],
+        "Status": "MATCH"
+       },
+       {
+        "AcceptorExpects": "not pass",
+        "Check": "Authority",
+        "Controller": "fail",
+        "Defects": [
+         "MV-3: OnlyInFiles",
+         "MV-4: LiteralViolations",
+         "MV-4: AddedPresentInEff1",
+         "MV-6: DerivedModified != MapModified",
+         "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+         "MV-6: DerivedModified != MapModified",
+         "MV-6: DerivedModified != MapModified",
+         "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+         "MV-6: DerivedModified != MapModified",
+         "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+         "MV-6: DerivedModified != MapModified",
+         "MV-6: DerivedAddedOrEntry != MapAddedOrEntry",
+         "MV-6: modified file absent in a revision",
+         "MV-7: 16.3 differs after pointer removal"
+        ],
+        "Rule": "map part: any defect forbids pass",
+        "Status": "MATCH"
+       }
+      ]
+     }
+    },
+    "Rc": 1,
+    "RequestSha256": "2db92e5d3128d2cb0dc620136b886228367e0a9729f660494531b914c5d2882a",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R4 = MISMATCH (MATCH required: Verification included)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [
+      "R4_RULE: NotApplicable.R4 declared although the rule requires Verification"
+     ],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [
+     "R4"
+    ],
+    "NotApplicableReasons": {
+     "R4": "mutante M1"
+    },
+    "Path": "D:/r62-a6r3/r1/s-mut/request-M1.json",
+    "Runs": 13,
+    "Sha256": "2db92e5d3128d2cb0dc620136b886228367e0a9729f660494531b914c5d2882a",
+    "VerificationIncluded": true
+   },
+   "What": "NotApplicable.R4 declarado con Verification incluida"
+  },
+  {
+   "Case": "M2",
+   "CaughtByAcceptor": false,
+   "CaughtByTable": true,
+   "Expected": "aceptante: ACCEPT_FACTS (R4 NOT_APPLICABLE); tabla: violacion R4_RULE -> no aceptada",
+   "Group": "MUT",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "fbcfb656dabfb9a5d2ef082e844733f5d94ef85c96751a4391f56eea99f8b060",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "Error": null,
+    "MismatchDetails": {},
+    "NotApplicableDetails": {
+     "R4": "{\"Reason\":\"mutante M2\"}"
+    },
+    "ProcessTreeDead": true,
+    "R4Rows": {
+     "Reason": "mutante M2"
+    },
+    "Rc": 0,
+    "RequestSha256": "cbbd5e6db64ccad9eb19bf1bae2291c8b5284409949f3e847b1e543b835a2d4b",
+    "Table": {
+     "AcceptanceReasons": [
+      "R4 = NOT_APPLICABLE (MATCH required: Verification included)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 0,
+     "ConstructionViolations": [
+      "R4_RULE: Verification omitted although the rule requires it",
+      "R4_RULE: NotApplicable.R4 declared although the rule requires Verification"
+     ],
+     "Decision": "ACCEPT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [
+     "R4"
+    ],
+    "NotApplicableReasons": {
+     "R4": "mutante M2"
+    },
+    "Path": "D:/r62-a6r3/r1/s-mut/request-M2.json",
+    "Runs": 13,
+    "Sha256": "cbbd5e6db64ccad9eb19bf1bae2291c8b5284409949f3e847b1e543b835a2d4b",
+    "VerificationIncluded": false
+   },
+   "What": "Verification omitida (con NotApplicable.R4) aunque la regla la exige"
+  },
+  {
+   "Case": "M3",
+   "CaughtByAcceptor": true,
+   "CaughtByTable": true,
+   "Expected": "aceptante: R5 MISMATCH; tabla: violacion R5_DATA",
+   "Group": "MUT",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "1e70f7fbc3c095b6b88b31e788bdc7e18bb29d51ae0160341ead5fcd662cd70a",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MISMATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R5": "{\"Problem\":\"declared not applicable but data was supplied\",\"Result\":{\"Runs\":[{\"Command\":\"identity\",\"Compared\":6,\"Mismatches\":[],\"Name\":\"r00-identity\"},{\"Command\":\"diff\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"r01-diff\"},{\"Command\":\"scope\",\"Compared\":3,\"Mismatches\":[],\"Name\":\"r02-scope\"},{\"Command\":\"hashes\",\"Compared\":1,\"Mismatches\":[],\"Name\":\"r04-hashes\"}]}}"
+    },
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "Rc": 1,
+    "RequestSha256": "ce2cfa3baea2273ada9aecbd969d8653aae0414127fd216d2fd220e597d89257",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R5 = MISMATCH (MATCH required by its data condition)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [
+      "R5_DATA: NotApplicable.R5 declared although Runs/Verification supply data"
+     ],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MISMATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [
+     "R5"
+    ],
+    "NotApplicableReasons": {
+     "R5": "mutante M3"
+    },
+    "Path": "D:/r62-a6r3/r1/s-mut/request-M3.json",
+    "Runs": 13,
+    "Sha256": "ce2cfa3baea2273ada9aecbd969d8653aae0414127fd216d2fd220e597d89257",
+    "VerificationIncluded": true
+   },
+   "What": "NotApplicable.R5 con identity/diff/scope/hashes en Runs"
+  },
+  {
+   "Case": "M4",
+   "CaughtByAcceptor": true,
+   "CaughtByTable": true,
+   "Expected": "aceptante: R6 MISMATCH; tabla: violacion R6_DATA",
+   "Group": "MUT",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "79e53e5dc5a2e4df2637d93424aae5a54ac27aa06550231533065644f9f633df",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MISMATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R6": "{\"Problem\":\"declared not applicable but data was supplied\",\"Result\":{\"AuthorityResolution\":[{\"ClauseMapBlob\":\"4d49d3e1a63d2b6128c9d9eeac473156a421571a\",\"EffectiveSha\":\"fbe25347799e5b801ef708454212335537448bd1\",\"Index\":0,\"Status\":\"MATCH\"},{\"ClauseMapBlob\":\"4d49d3e1a63d2b6128c9d9eeac473156a421571a\",\"EffectiveSha\":\"fbe25347799e5b801ef708454212335537448bd1\",\"Index\":1,\"Status\":\"MATCH\"},{\"ClauseMapBlob\":\"4d49d3e1a63d2b6128c9d9eeac473156a421571a\",\"EffectiveSha\":\"fbe25347799e5b801ef708454212335537448bd1\",\"Index\":2,\"Status\":\"MATCH\"},{\"ClauseMapBlob\":\"4d49d3e1a63d2b6128c9d9eeac473156a421571a\",\"EffectiveSha\":\"fbe25347799e5b801ef708454212335537448bd1\",\"Index\":3,\"Status\":\"MATCH\"},{\"ClauseMapBlob\":\"4d49d3e1a63d2b6128c9d9eeac473156a421571a\",\"EffectiveSha\":\"fbe25347799e5b801ef708454212335537448bd1\",\"Index\":4,\"Status\":\"MATCH\"},{\"ClauseMapBlob\":\"4d49d3e1a63d2b6128c9d9eeac473156a421571a\",\"EffectiveSha\":\"fb"
+    },
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "Rc": 1,
+    "RequestSha256": "17095817be1f7b2dc7e9711743ad94d8056b44b498d4d0a1082dcc22f6f53c55",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R6 = MISMATCH (MATCH required by its data condition)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [
+      "R6_DATA: NotApplicable.R6 declared although Runs/Verification supply data"
+     ],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MISMATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [
+     "R6"
+    ],
+    "NotApplicableReasons": {
+     "R6": "mutante M4"
+    },
+    "Path": "D:/r62-a6r3/r1/s-mut/request-M4.json",
+    "Runs": 13,
+    "Sha256": "17095817be1f7b2dc7e9711743ad94d8056b44b498d4d0a1082dcc22f6f53c55",
+    "VerificationIncluded": true
+   },
+   "What": "NotApplicable.R6 con clausemap en Runs"
+  },
+  {
+   "Case": "M5",
+   "CaughtByAcceptor": false,
+   "CaughtByTable": true,
+   "Expected": "aceptante: ACCEPT_FACTS (R4 NOT_APPLICABLE); tabla: \"EXECUTION_VERIFIED without R4 MATCH\" -> no aceptada",
+   "Group": "MUT",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "eb43b1a15da0bece3780f387ab083ea15ea5b899e654127d6c306ee797eaf64e",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "Error": null,
+    "MismatchDetails": {},
+    "NotApplicableDetails": {
+     "R4": "{\"Reason\":\"R4 omitted by the round-3 rule: not_run in the Controller output: Scope\"}"
+    },
+    "ProcessTreeDead": true,
+    "R4Rows": {
+     "Reason": "R4 omitted by the round-3 rule: not_run in the Controller output: Scope"
+    },
+    "Rc": 0,
+    "RequestSha256": "cfa1b31fec0443bf32ca338f06ccf66be41a25732aab3f567133f87737956728",
+    "Table": {
+     "AcceptanceReasons": [
+      "EXECUTION_VERIFIED without R4 MATCH"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 0,
+     "ConstructionViolations": [],
+     "Decision": "ACCEPT_FACTS",
+     "R4Rule": {
+      "Cause": "not_run in the Controller output: Scope",
+      "Classification": "EXECUTION_VERIFIED",
+      "Include": false,
+      "Missing": [],
+      "NotRun": [
+       "Scope"
+      ]
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [
+     "R4"
+    ],
+    "NotApplicableReasons": {
+     "R4": "R4 omitted by the round-3 rule: not_run in the Controller output: Scope"
+    },
+    "Path": "D:/r62-a6r3/r1/s-mut/request-M5.json",
+    "Runs": 13,
+    "Sha256": "cfa1b31fec0443bf32ca338f06ccf66be41a25732aab3f567133f87737956728",
+    "VerificationIncluded": false
+   },
+   "What": "Salida sintetica EXECUTION_VERIFIED con Scope not_run -> la regla omite Verification (R4 NA)"
+  },
+  {
+   "Case": "M5b",
+   "CaughtByAcceptor": false,
+   "CaughtByTable": true,
+   "Expected": "aceptante: ACCEPT_FACTS; tabla: R4_RULE y \"EXECUTION_VERIFIED without R4 MATCH\" -> no aceptada",
+   "Group": "MUT",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "ceb58a5cf5ed6a7178e8c7cd6ef4120caaa25caca5c86d1ae07282ab5daa7e0a",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "Error": null,
+    "MismatchDetails": {},
+    "NotApplicableDetails": {
+     "R4": "{\"Reason\":\"mutante M5b\"}"
+    },
+    "ProcessTreeDead": true,
+    "R4Rows": {
+     "Reason": "mutante M5b"
+    },
+    "Rc": 0,
+    "RequestSha256": "ab502d81201ac07f6ef491a3df48664f2d28fb1d4d3b65d44fe0e9be06d0507e",
+    "Table": {
+     "AcceptanceReasons": [
+      "R4 = NOT_APPLICABLE (MATCH required: Verification included)",
+      "EXECUTION_VERIFIED without R4 MATCH"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 0,
+     "ConstructionViolations": [
+      "R4_RULE: Verification omitted although the rule requires it",
+      "R4_RULE: NotApplicable.R4 declared although the rule requires Verification"
+     ],
+     "Decision": "ACCEPT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_VERIFIED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [
+     "R4"
+    ],
+    "NotApplicableReasons": {
+     "R4": "mutante M5b"
+    },
+    "Path": "D:/r62-a6r3/r1/s-mut/request-M5b.json",
+    "Runs": 13,
+    "Sha256": "ab502d81201ac07f6ef491a3df48664f2d28fb1d4d3b65d44fe0e9be06d0507e",
+    "VerificationIncluded": false
+   },
+   "What": "Salida sintetica EXECUTION_VERIFIED con las 14 en pass, solicitud con Verification omitida y NotApplicable.R4"
+  },
+  {
+   "Case": "M5c",
+   "CaughtByAcceptor": true,
+   "CaughtByTable": true,
+   "Expected": "aceptante: REJECT_FACTS con R4 MISMATCH (los hechos contradicen los pass); tabla no aceptada",
+   "Group": "MUT",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "8e71aaa3cc2bdec637414a3e3bf2ea4ef989d9e8cf7330de3ebe704d7c3f0643",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MISMATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R4": "{\"Checks\":[{\"AcceptorExpects\":\"not pass\",\"Check\":\"Identity\",\"Controller\":\"pass\",\"Reasons\":[\"HEAD / refs/remotes/origin/<branch> / CurrentSha differ\"],\"Status\":\"MISMATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Scope\",\"Controller\":\"pass\",\"Reasons\":[\"paths not covered by AllowedWriteScope: 3\",\"paths covered by ForbiddenWriteScope: 2\"],\"Status\":\"MISMATCH\"},{\"AcceptorExpects\":\"pass\",\"Check\":\"CleanTree\",\"Controller\":\"pass\",\"Reasons\":[],\"Status\":\"MATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Trailer\",\"Controller\":\"pass\",\"Reasons\":[\"commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99\"],\"Status\":\"MISMATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"FreeText\",\"Controller\":\"pass\",\"Reasons\":[\"term GATE PASS in Evidence\"],\"Status\":\"MISMATCH\"},{\"AcceptorExpects\":\"not pass\",\"Check\":\"Authority\",\"Controller\":\"pass\",\"Defects\":[\"MV-3"
+    },
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MISMATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MISMATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MISMATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MISMATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "pass",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MISMATCH"
+     }
+    ],
+    "Rc": 1,
+    "RequestSha256": "1ec7f8eeb259efbc0eba1e0e52f073cce8ec5e0c350a7b43b255846da5eb5930",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R4 = MISMATCH (MATCH required: Verification included)",
+      "EXECUTION_VERIFIED without R4 MATCH"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_VERIFIED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [],
+    "NotApplicableReasons": {},
+    "Path": "D:/r62-a6r3/r1/s-mut/request-M5c.json",
+    "Runs": 13,
+    "Sha256": "1ec7f8eeb259efbc0eba1e0e52f073cce8ec5e0c350a7b43b255846da5eb5930",
+    "VerificationIncluded": true
+   },
+   "What": "La misma salida EXECUTION_VERIFIED (14 en pass) con la construccion de la ronda 3 (Verification incluida)"
+  },
+  {
+   "Case": "M6",
+   "CaughtByAcceptor": false,
+   "CaughtByTable": true,
+   "Expected": "aceptante: ACCEPT_FACTS (no ve la omision); tabla: RUNS_VS_LOG (12 frente a 13) -> no aceptada",
+   "Group": "MUT",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "79f652ea81956831e802987e2f33b4ba395fab1bc16f987b9be33abc4de02016",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "Error": null,
+    "MismatchDetails": {},
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Identity",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "HEAD / refs/remotes/origin/<branch> / CurrentSha differ"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Scope",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "paths not covered by AllowedWriteScope: 3",
+       "paths covered by ForbiddenWriteScope: 2"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Trailer",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "commits without the declared Co-Authored-By: ae25b596a11fe3508ac60a3ef7de5dc23df971ce,d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "FreeText",
+      "Controller": "fail",
+      "Defects": null,
+      "Reasons": [
+       "term GATE PASS in Evidence"
+      ],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "Rc": 0,
+    "RequestSha256": "2ab670ddd8d427fd2ed810a3ec0c999860794a838a38fb724e5adca3bbba89c3",
+    "Table": {
+     "AcceptanceReasons": [],
+     "Accepted": false,
+     "AcceptorRc": 0,
+     "ConstructionViolations": [
+      "RUNS_VS_LOG: request has 12 runs, the session log records 13 instrument executions"
+     ],
+     "Decision": "ACCEPT_FACTS",
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [],
+    "NotApplicableReasons": {},
+    "Path": "D:/r62-a6r3/r1/s-mut/request-M6.json",
+    "Runs": 12,
+    "Sha256": "2ab670ddd8d427fd2ed810a3ec0c999860794a838a38fb724e5adca3bbba89c3",
+    "VerificationIncluded": true
+   },
+   "What": "Runs sin una ejecucion que el registro de sesion recoge (read-text 73-73): 12 corridas frente a 13 reconstruidas"
+  }
+ ],
+ "Schema": "r3-bench/p5-mutants"
+}

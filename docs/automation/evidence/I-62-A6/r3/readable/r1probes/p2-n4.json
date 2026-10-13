@@ -1,0 +1,646 @@
+{
+ "Cases": [
+  {
+   "Case": "N4-a",
+   "Expected": "REJECT_FACTS; R4 MISMATCH (MISSING_INPUT: Verification.Handoff ilegible); tabla no aceptada",
+   "Group": "N4",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "d90afe818386cdda1f48ce8bbc3bce53de82c2f825ede91ec133a22e3918b40b",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MISMATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R4": "{\"Detail\":\"Verification.Handoff.Path: unreadable\",\"Error\":\"MISSING_INPUT\"}"
+    },
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": {
+     "Detail": "Verification.Handoff.Path: unreadable",
+     "Error": "MISSING_INPUT"
+    },
+    "Rc": 1,
+    "RequestSha256": "e1cc4a897ec881ba06e3bf8c2b33473fea9d3e8aaeaa2a185b94ff64637187bc",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R4 = MISMATCH (NOT_APPLICABLE required: Verification omitted by the rule)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [
+      "R4_RULE: Verification included although the rule omits it (inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText)",
+      "R4_RULE: NotApplicable.R4 not declared although the rule omits Verification"
+     ],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": "inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText",
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": false,
+      "Missing": [
+       "Handoff"
+      ],
+      "NotRun": [
+       "Identity",
+       "Scope",
+       "Trailer",
+       "FreeText"
+      ]
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [],
+    "NotApplicableReasons": {},
+    "Path": "D:/r62-a6r3/r1/s-n4/request-a-r2.json",
+    "Runs": 7,
+    "Sha256": "e1cc4a897ec881ba06e3bf8c2b33473fea9d3e8aaeaa2a185b94ff64637187bc",
+    "VerificationIncluded": true
+   },
+   "What": "Construccion de la ronda 2: Verification incluida con la entrega ausente (SHA-256 de la entrega que se habria escrito)"
+  },
+  {
+   "Case": "N4-b",
+   "Expected": "REJECT_FACTS; R4 MISMATCH (sin datos y sin declaracion); tabla no aceptada",
+   "Group": "N4",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "e25dc275d820e8bf39d9bc56130281d384622ae3a562ab7f44a51144ed366db5",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MISMATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R4": "{\"Missing\":\"no data for this check and no NotApplicable declaration\"}"
+    },
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": {
+     "Missing": "no data for this check and no NotApplicable declaration"
+    },
+    "Rc": 1,
+    "RequestSha256": "15097207836308e194d17b026208d6aa3c1d60f94455bb2f1f74f57d01065e37",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R4 = MISMATCH (NOT_APPLICABLE required: Verification omitted by the rule)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [
+      "R4_RULE: NotApplicable.R4 not declared although the rule omits Verification"
+     ],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": "inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText",
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": false,
+      "Missing": [
+       "Handoff"
+      ],
+      "NotRun": [
+       "Identity",
+       "Scope",
+       "Trailer",
+       "FreeText"
+      ]
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MISMATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "NotApplicable": [],
+    "NotApplicableReasons": {},
+    "Path": "D:/r62-a6r3/r1/s-n4/request-b-noR4.json",
+    "Runs": 7,
+    "Sha256": "15097207836308e194d17b026208d6aa3c1d60f94455bb2f1f74f57d01065e37",
+    "VerificationIncluded": false
+   },
+   "What": "Verification omitida sin declarar NotApplicable.R4"
+  },
+  {
+   "Case": "N4-c",
+   "Expected": "ACCEPT_FACTS rc 0; R4 NOT_APPLICABLE; R5 R6 R7 MATCH (hashes, clausemap, contract en Runs); tabla aceptada",
+   "Group": "N4",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "19688d26f3a2591efaca55ef30ea2053aa44202e00a94a96e980e82918b5902e",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "Error": null,
+    "MismatchDetails": {},
+    "NotApplicableDetails": {
+     "R4": "{\"Reason\":\"R4 omitted by the round-3 rule: inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText\"}"
+    },
+    "ProcessTreeDead": true,
+    "R4Rows": {
+     "Reason": "R4 omitted by the round-3 rule: inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText"
+    },
+    "Rc": 0,
+    "RequestSha256": "898b970db2c9697644c473e355aad12213f54a27a041844e057776f1e3dc65f2",
+    "Table": {
+     "AcceptanceReasons": [],
+     "Accepted": true,
+     "AcceptorRc": 0,
+     "ConstructionViolations": [],
+     "Decision": "ACCEPT_FACTS",
+     "R4Rule": {
+      "Cause": "inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText",
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": false,
+      "Missing": [
+       "Handoff"
+      ],
+      "NotRun": [
+       "Identity",
+       "Scope",
+       "Trailer",
+       "FreeText"
+      ]
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "R4Rule": {
+    "Cause": "inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText",
+    "Include": false,
+    "Missing": [
+     "Handoff"
+    ],
+    "NotRun": [
+     "Identity",
+     "Scope",
+     "Trailer",
+     "FreeText"
+    ]
+   },
+   "Request": {
+    "NotApplicable": [
+     "R4"
+    ],
+    "NotApplicableReasons": {
+     "R4": "R4 omitted by the round-3 rule: inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText"
+    },
+    "Path": "D:/r62-a6r3/r1/s-n4/request-c-r3.json",
+    "Runs": 7,
+    "Sha256": "898b970db2c9697644c473e355aad12213f54a27a041844e057776f1e3dc65f2",
+    "VerificationIncluded": false
+   },
+   "What": "Construccion de la ronda 3: entrega ausente y Identity/Scope/Trailer/FreeText en not_run -> Verification omitida, NotApplicable.R4 con la causa"
+  },
+  {
+   "Case": "N4-d",
+   "ErrorRun": [
+    {
+     "Argv": [
+      "identity",
+      "--repo",
+      "D:/r62-a6r3/r1/c-n4",
+      "--branch",
+      "fx/u1",
+      "--base",
+      "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+      "--current",
+      "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+      "--red",
+      "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99"
+     ],
+     "EnvelopeError": "BAD_REVISION",
+     "EnvelopePath": "D:/r62-a6r3/r1/s-n4d/env/r07-identity.json",
+     "EnvelopeSha256": "57600ca58d23670fc04f1773cb25a60251fcbaf1020cfc4bbe3fa5e9f1b5efa5",
+     "ErrorRun": true,
+     "ExitCode": 1,
+     "Git": "%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE",
+     "Interpreter": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+     "ItemId": "item_8",
+     "NoiseLines": 0,
+     "Seq": 7,
+     "Shell": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "Status": "failed"
+    }
+   ],
+   "Expected": "la reconstruccion la conserva como corrida con error (exit != 0, Error del sobre); REJECT_FACTS; tabla no aceptada",
+   "Group": "N4",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "d26a74fb443f9d8964cd5fd9ba884fbb5cc1ab9451931974060dc42effd0a44d",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MISMATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "MISMATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MISMATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R3": "{\"Runs\":[{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c\",\"Name\":\"r00-contract\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"b0e314275e65678d19a1715483cf49435671c5834489800bbf94fd10773eb038\",\"Name\":\"r01-hashes\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"dc2de9192f430c63c376ae9897b968481a34651363b7028ac3c9922b49f0a2a4\",\"Name\":\"r02-cleantree\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"c17acd151f5cd49351c1ba5e657bdbb3ebe23846a4b7a49ad77e108e023f257c\",\"Name\":\"r03-read-text\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"be222422f1119e35c3650d699af07db6ca25f5dfa1f5da2336f2e8325322f4ce\",\"Name\":\"r04-read-text\",\"Problems\":[],\"RerunExit\":0},{\"FactsBytesEqual\":true,\"FactsSha256Recomputed\":\"d5b89fa9afd",
+     "R5": "{\"Runs\":[{\"Command\":\"hashes\",\"Compared\":1,\"Mismatches\":[],\"Name\":\"r01-hashes\"},{\"Command\":\"identity\",\"Name\":\"r07-identity\",\"Problems\":[\"envelope without usable Facts\"]}]}",
+     "R9": "{\"Runs\":[{\"Name\":\"r00-contract\",\"Violations\":[]},{\"Name\":\"r01-hashes\",\"Violations\":[]},{\"Name\":\"r02-cleantree\",\"Violations\":[]},{\"Name\":\"r03-read-text\",\"Violations\":[]},{\"Name\":\"r04-read-text\",\"Violations\":[]},{\"Name\":\"r05-read-json\",\"Violations\":[]},{\"Name\":\"r06-clausemap\",\"Violations\":[]},{\"Name\":\"r07-identity\",\"Violations\":[\"GitCalls[1]: object outside the closure: deadbeefdeadbeefdeadbeefdeadbeefdeadbeef^{commit}\"]}]}"
+    },
+    "NotApplicableDetails": {
+     "R4": "{\"Reason\":\"R4 omitted by the round-3 rule: inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText\"}"
+    },
+    "ProcessTreeDead": true,
+    "R4Rows": {
+     "Reason": "R4 omitted by the round-3 rule: inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText"
+    },
+    "Rc": 1,
+    "RequestSha256": "fca71fe4132cf3991984c92bb6913682b4efe4e7760ad13bab4a93f7b579b6c6",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R3 = MISMATCH (MATCH required)",
+      "R9 = MISMATCH (MATCH required)",
+      "R5 = MISMATCH (MATCH required by its data condition)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ConstructionViolations": [],
+     "Decision": "REJECT_FACTS",
+     "R4Rule": {
+      "Cause": "inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText",
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": false,
+      "Missing": [
+       "Handoff"
+      ],
+      "NotRun": [
+       "Identity",
+       "Scope",
+       "Trailer",
+       "FreeText"
+      ]
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MISMATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "MISMATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MISMATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "PwshExitForErrorRun": [
+    1
+   ],
+   "Request": {
+    "NotApplicable": [
+     "R4"
+    ],
+    "NotApplicableReasons": {
+     "R4": "R4 omitted by the round-3 rule: inputs absent or unreadable: Handoff; not_run in the Controller output: Identity,Scope,Trailer,FreeText"
+    },
+    "Path": "D:/r62-a6r3/r1/s-n4d/request-d-r3.json",
+    "Runs": 8,
+    "Sha256": "fca71fe4132cf3991984c92bb6913682b4efe4e7760ad13bab4a93f7b579b6c6",
+    "VerificationIncluded": false
+   },
+   "What": "N4-c mas una ejecucion del instrumento con error (identity --current inexistente), reconstruida del registro como corrida con error"
+  }
+ ],
+ "Classification": [
+  "EXECUTION_BLOCKED",
+  "BLOCKED",
+  "Handoff"
+ ],
+ "Clone": {
+  "Head": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "HeadIsTip": true,
+  "P1": {
+   "Held": true,
+   "IdEqualsPinned": true,
+   "OnlyNewLooseObject": true,
+   "ReturnedId": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  },
+  "P2": {
+   "FailedSteps": [],
+   "Launch": true
+  },
+  "T": "D:/r62-a6r3/r1/c-n4"
+ },
+ "Coherence169": {
+  "Contributions": {
+   "Authority": "STOP",
+   "Denials": "BLOCKED",
+   "Handoff": "BLOCKED",
+   "Routing": "BLOCKED"
+  },
+  "DispositionDeclared": "BLOCKED",
+  "DispositionOk": false,
+  "DispositionStrictMax": "STOP",
+  "FailureClassDeclared": "Handoff",
+  "FailureClassExpected": "Handoff",
+  "FailureClassOk": true,
+  "NoInputNotRun": [
+   "Ci",
+   "FreeText",
+   "Identity",
+   "Remote",
+   "Scope",
+   "Tests",
+   "Trailer"
+  ],
+  "ValidPair": true,
+  "VerifiedIffAllPass": true
+ },
+ "ControllerChecks": {
+  "Authority": "fail",
+  "Ci": "not_run",
+  "CleanTree": "pass",
+  "Contract": "pass",
+  "Denials": "not_run",
+  "FreeText": "not_run",
+  "Handoff": "fail",
+  "Identity": "not_run",
+  "Remote": "not_run",
+  "Routing": "not_run",
+  "Scope": "not_run",
+  "Termination": "pass",
+  "Tests": "not_run",
+  "Trailer": "not_run"
+ },
+ "ControllerOutput": {
+  "Path": "D:/r62-a6r3/r1/s-n4/controller-output.json",
+  "Sha256": "9938dc6b0128c0e2b5dcdd1ba000f311b1345409d520058f6fa4de0e6b27cf11"
+ },
+ "HandoffRemoved": {
+  "Exists": false,
+  "Path": "D:/r62-a6r3/r1/c-n4-in/handoff.json",
+  "ShaBeforeRemoval": "a4a8907e7fa4d95b26bbbcc2f08e1a852780e21f22a66ffa6609cd9390cb2183"
+ },
+ "Reconstruction": {
+  "CommandExecutions": 10,
+  "Complete": true,
+  "InstrumentExecutions": 7,
+  "Problems": [],
+  "Reconstructible": true
+ },
+ "Schema": "r3-bench/p2-n4",
+ "SchemaValid": true,
+ "SchemaValidation": {
+  "controller-verification.v2": [],
+  "delegation.v2": [],
+  "relay-record.v2": []
+ },
+ "Session": {
+  "Executions": [
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - contract --repo D:/r62-a6r3/r1/c-n4 --file CONTRACT=D:/r62-a6r3/r1/c-n4-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --file DELEG=D:/r62-a6r3/r1/c-n4-in/deleg.json --sha256 DELEG=47193dd038a955803442b4e0574efb07fc27e1e99e1c77bffce41f640ed4e1ae"
+    ],
+    "Instrument": true,
+    "Name": "contract",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - contract --repo D:/r62-a6r3/r1/c-n4 --file CONTRACT=D:/r62-a6r3/r1/c-n4-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --file DELEG=D:/r62-a6r3/r1/c-n4-in/deleg.json --sha256 DELEG=47193dd038a955803442b4e0574efb07fc27e1e99e1c77bffce41f640ed4e1ae\"",
+    "StderrLen": 0,
+    "StdoutLen": 2284,
+    "StdoutSha256": "a5d6ba56a4e26f9ec627ad356745df62c6a0bd4396f3e650fde2b2116670ebc6"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - hashes --repo D:/r62-a6r3/r1/c-n4 --rev fbe25347799e5b801ef708454212335537448bd1 --paths docs/AUTOMATION_PLAN.md src/Fixture.Lib/Calculator.cs"
+    ],
+    "Instrument": true,
+    "Name": "hashes-main",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - hashes --repo D:/r62-a6r3/r1/c-n4 --rev fbe25347799e5b801ef708454212335537448bd1 --paths docs/AUTOMATION_PLAN.md src/Fixture.Lib/Calculator.cs\"",
+    "StderrLen": 0,
+    "StdoutLen": 2118,
+    "StdoutSha256": "a8b1bbdce5b2e763ca91a843e495248ed8b24b76c71471f1319c5ae499ab9f13"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - cleantree --repo D:/r62-a6r3/r1/c-n4 --ignore-path artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json"
+    ],
+    "Instrument": true,
+    "Name": "cleantree",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - cleantree --repo D:/r62-a6r3/r1/c-n4 --ignore-path artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json\"",
+    "StderrLen": 0,
+    "StdoutLen": 897,
+    "StdoutSha256": "2e14d79577ed4ee702f25fd356fcbcda2fb7026c7f75fd6490a95c2442bf8b95"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - read-text --repo D:/r62-a6r3/r1/c-n4 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 1-1"
+    ],
+    "Instrument": true,
+    "Name": "read-text-1",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - read-text --repo D:/r62-a6r3/r1/c-n4 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 1-1\"",
+    "StderrLen": 0,
+    "StdoutLen": 1338,
+    "StdoutSha256": "6d627fd267cd9abbba435d8da177c2ad55d2c2545296ca59e0e28c828611f27e"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - read-text --repo D:/r62-a6r3/r1/c-n4 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 73-73"
+    ],
+    "Instrument": true,
+    "Name": "read-text-73",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - read-text --repo D:/r62-a6r3/r1/c-n4 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1.md --lines 73-73\"",
+    "StderrLen": 0,
+    "StdoutLen": 1535,
+    "StdoutSha256": "9609079ea8d21590fbac11cf7e27af1b2929e98b80ce9000b6760bae58b865df"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - read-json --repo D:/r62-a6r3/r1/c-n4 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1-T1.gate-contract.json --pointer /Objective --pointer /Schema --pointer /MainSha --pointer /AuthorityRevision"
+    ],
+    "Instrument": true,
+    "Name": "read-json",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - read-json --repo D:/r62-a6r3/r1/c-n4 --rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df --path docs/automation/decisions/FX-U1-T1.gate-contract.json --pointer /Objective --pointer /Schema --pointer /MainSha --pointer /AuthorityRevision\"",
+    "StderrLen": 0,
+    "StdoutLen": 1562,
+    "StdoutSha256": "e55f34d41b727d1ef7c38100b9bb418bbdce7ad17cb18504b068e32ae2907fe5"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - clausemap --repo D:/r62-a6r3/r1/c-n4 --main fbe25347799e5b801ef708454212335537448bd1 --state-rev 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --state-path docs/automation/state/FX-U1.yml --file CONTRACT=D:/r62-a6r3/r1/c-n4-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf"
+    ],
+    "Instrument": true,
+    "Name": "clausemap",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - clausemap --repo D:/r62-a6r3/r1/c-n4 --main fbe25347799e5b801ef708454212335537448bd1 --state-rev 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --state-path docs/automation/state/FX-U1.yml --file CONTRACT=D:/r62-a6r3/r1/c-n4-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf\"",
+    "StderrLen": 0,
+    "StdoutLen": 44627,
+    "StdoutSha256": "caa148885c506e2101830ddfc6fe3aff188ef725a68d7b58943fa5444622dfcd"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "Test-Path 'D:/r62-a6r3/r1/c-n4-in/handoff.json'"
+    ],
+    "Instrument": false,
+    "Name": "primary-Handoff",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command \"Test-Path 'D:/r62-a6r3/r1/c-n4-in/handoff.json'\"",
+    "StderrLen": 0,
+    "StdoutLen": 7,
+    "StdoutSha256": "b625e5139b05722842537c7016e2e78c22d36212eaeae63fce2b2005b7808f33"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git status --porcelain"
+    ],
+    "Instrument": false,
+    "Name": "primary-CleanTree",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command 'git status --porcelain'",
+    "StderrLen": 0,
+    "StdoutLen": 0,
+    "StdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   {
+    "ExecutedArgv": [
+     "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git rev-parse fbe25347799e5b801ef708454212335537448bd1:docs/automation/agent-execution/compatibility/I62-clause-map.json"
+    ],
+    "Instrument": false,
+    "Name": "primary-Authority",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.6.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\" -Command 'git rev-parse fbe25347799e5b801ef708454212335537448bd1:docs/automation/agent-execution/compatibility/I62-clause-map.json'",
+    "StderrLen": 0,
+    "StdoutLen": 41,
+    "StdoutSha256": "6a6612def577e8ab78073d6099a1746d2501c2322c7483c9189c470a3fa7b4b2"
+   }
+  ],
+  "LogPath": "D:/r62-a6r3/r1/s-n4/session-events.jsonl",
+  "LogSha256": "f6b78b7871e2c1cf55515ea6f96725da541863c9777a2630151c914edf5edbcd",
+  "ZeroWriteToolRuns": true
+ }
+}
