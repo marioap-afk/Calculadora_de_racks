@@ -46,6 +46,12 @@ using Autodesk.AutoCAD.Runtime;
                     return;
                 }
 
+                if (embed == null)
+                {
+                    Show(editor, StructuralExportOutcome.Invalid, "No es un rack.");
+                    return;
+                }
+
                 if (!string.Equals(embed.Kind, RackEmbedDocument.KindCantilever, StringComparison.OrdinalIgnoreCase))
                 {
                     Show(StructuralExportOutcome.Unsupported);
@@ -59,7 +65,7 @@ using Autodesk.AutoCAD.Runtime;
 
                 if (read.Outcome != StructuralExportOutcome.Valid)
                 {
-                    Show(StructuralExportOutcome.Invalid, read.Diagnostics);
+                    Show(editor, read.Outcome, read.Diagnostics);
                     return;
                 }
 
@@ -72,6 +78,7 @@ using Autodesk.AutoCAD.Runtime;
 
                 if (model.Outcome != StructuralExportOutcome.Valid)
                 {
+                    Show(editor, model.Outcome, model.Diagnostics);
                     return;
                 }
 
@@ -79,6 +86,7 @@ using Autodesk.AutoCAD.Runtime;
 
                 if (package.Outcome != StructuralExportOutcome.Valid)
                 {
+                    Show(editor, package.Outcome, package.Diagnostics);
                     return;
                 }
 
@@ -99,6 +107,12 @@ using Autodesk.AutoCAD.Runtime;
 
         private static CantileverLineDesign DecodeDesign(byte[] bytes)
             => new RackProjectStore().Deserialize(Encoding.UTF8.GetString(bytes)).CantileverLineDesign;
+
+        private static void Show(Editor editor, StructuralExportOutcome outcome, string note)
+        {
+            var message = "RackCad: " + outcome + note;
+            editor.WriteMessage("\n" + message);
+        }
     }
 }
 """).Replace("\r\n", "\n").Replace("@@NS@@", "name" + "space");
@@ -159,6 +173,22 @@ using Autodesk.AutoCAD.Runtime;
             { "C10", "read.Table, catalog", "new StructuralMaterialProfile(), catalog" },
             { "C10", "        private const string AdapterVersion = \"1.0.0\";", "        private const string AdapterVersion = \"1.0.0\";\n        private const string OtherVersion = \"2\";" },
             { "C10", "read.Table, AdapterVersion,", "read.Table, \"2.0.0\"," },
+            {
+                "C15",
+                "                if (package.Outcome != StructuralExportOutcome.Valid)\n                {\n                    Show(editor, package.Outcome, package.Diagnostics);\n                    return;\n                }\n\n                var written = new StructuralPackagePublisher().Write(package.Package.PackageFolder, package.Package.Files);\n",
+                "                var written = new StructuralPackagePublisher().Write(package.Package.PackageFolder, package.Package.Files);\n\n                if (package.Outcome != StructuralExportOutcome.Valid)\n                {\n                    Show(editor, package.Outcome, package.Diagnostics);\n                    return;\n                }\n"
+            },
+            {
+                "C15",
+                "                var written = new StructuralPackagePublisher().Write(package.Package.PackageFolder, package.Package.Files);",
+                "                var early = new StructuralPackagePublisher().Write(package.Package.PackageFolder, package.Package.Files);\n                var written = new StructuralPackagePublisher().Write(package.Package.PackageFolder, package.Package.Files);"
+            },
+            { "C16", "Show(editor, read.Outcome, read.Diagnostics);\n                    return;", "Show(editor, read.Outcome, read.Diagnostics);" },
+            { "C16", "Show(editor, model.Outcome, model.Diagnostics);\n                    return;", "return;" },
+            { "C16", "Show(editor, package.Outcome, package.Diagnostics);", "Show(editor, package.Outcome, null);" },
+            { "C16", "Show(editor, read.Outcome, read.Diagnostics);", "Show(editor, StructuralExportOutcome.Invalid, read.Diagnostics);" },
+            { "C17", "var message = \"RackCad: \" + outcome + note;", "var message = \"RackCad: \" + note;" },
+            { "C17", "editor.WriteMessage(\"\\n\" + message);", "Trace.WriteLine(\"\\n\" + message);" },
         };
 
         [Theory]
@@ -206,6 +236,10 @@ using Autodesk.AutoCAD.Runtime;
             { "C14", "Directory.CreateDirectory(a);" },
             { "C14", "Process.Start(a);" },
             { "C14", "editor.Regen();" },
+            { "C18", "File.WriteAllText(a, b);" },
+            { "C18", "File.Copy(a, b);" },
+            { "C18", "var w = new StreamWriter(a);" },
+            { "C18", "Directory.CreateDirectory(a);" },
         };
 
         [Theory]

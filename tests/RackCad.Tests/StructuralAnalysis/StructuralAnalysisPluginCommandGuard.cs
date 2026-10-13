@@ -31,7 +31,33 @@ namespace RackCad.Tests
         internal static readonly string[] RuleIds =
         {
             "C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11", "C12", "C13", "C14",
+            "C15", "C16", "C17", "C18",
         };
+
+        /// <summary>The index of the brace that closes the one opened at <paramref name="open"/>, or -1.</summary>
+        private static int MatchingBrace(string code, int open)
+        {
+            var depth = 0;
+
+            for (var index = open; index < code.Length; index++)
+            {
+                if (code[index] == '{')
+                {
+                    depth++;
+                }
+                else if (code[index] == '}')
+                {
+                    depth--;
+
+                    if (depth == 0)
+                    {
+                        return index;
+                    }
+                }
+            }
+
+            return -1;
+        }
 
         private static readonly RegexOptions Options = RegexOptions.CultureInvariant;
 
@@ -240,6 +266,111 @@ namespace RackCad.Tests
 
             // ---- C14 no drawing write, process or file mutation
             Forbid("C14", SideEffectTokens, scanned, "efecto prohibido");
+
+            // ---- C15 one publication, after the three checks of the table, the model and the package
+            var publications = Regex.Matches(code, @"\bnew\s+StructuralPackagePublisher\s*\(\s*\)\s*\.\s*Write\s*\(", Options);
+            var checks = Regex.Matches(code, @"\b(?<x>\w+)\s*\.\s*Outcome\s*!=\s*StructuralExportOutcome\s*\.\s*Valid\b", Options);
+
+            if (publications.Count != 1)
+            {
+                found.Add("C15: no hay exactamente UNA llamada de publicacion");
+            }
+
+            if (checks.Cast<Match>().Select(check => check.Groups["x"].Value).Distinct(StringComparer.Ordinal).Count() < 3)
+            {
+                found.Add("C15: faltan las tres comprobaciones != Valid (tabla, modelo y paquete)");
+            }
+            else if (publications.Count == 1 && checks.Cast<Match>().Any(check => check.Index > publications[0].Index))
+            {
+                found.Add("C15: la publicacion aparece antes de una comprobacion != Valid");
+            }
+
+            // ---- C16 every non-Valid block reports the outcome and its diagnostics, then returns before the publication
+            var blocks = Regex.Matches(
+                code,
+                @"\bif\s*\(\s*(?<x>\w+)\s*\.\s*Outcome\s*!=\s*StructuralExportOutcome\s*\.\s*Valid\b[^()]*\)\s*\{",
+                Options);
+
+            if (blocks.Count < 3)
+            {
+                found.Add("C16: faltan los tres bloques if (x.Outcome != Valid) { }");
+            }
+
+            foreach (Match block in blocks)
+            {
+                var subject = block.Groups["x"].Value;
+                var open = block.Index + block.Length - 1;
+                var close = MatchingBrace(code, open);
+
+                if (close < 0)
+                {
+                    found.Add("C16: bloque de " + subject + " sin cierre");
+                    continue;
+                }
+
+                var body = code.Substring(open + 1, close - open - 1).Trim();
+
+                if (!Regex.IsMatch(
+                        body,
+                        @"\bShow\s*\([^;]*\b" + subject + @"\s*\.\s*Outcome\b[^;]*\b" + subject + @"\s*\.\s*Diagnostics\b",
+                        Options))
+                {
+                    found.Add("C16: el bloque de " + subject + " no informa Outcome y Diagnostics con el ayudante visible");
+                }
+
+                if (!Regex.IsMatch(body, @"\breturn\s*;$", Options))
+                {
+                    found.Add("C16: el bloque de " + subject + " no termina con return;");
+                }
+            }
+
+            // ---- C17 the visible helper writes, with editor.WriteMessage, a text that includes the outcome
+            var helpers = Regex.Matches(code, @"\bvoid\s+Show\s*\((?<params>[^)]*)\)\s*\{", Options);
+
+            if (helpers.Count != 1)
+            {
+                found.Add("C17: no hay exactamente UN ayudante visible Show");
+            }
+            else
+            {
+                var helper = helpers[0];
+                var outcomeParameter = Regex.Match(helper.Groups["params"].Value, @"\bStructuralExportOutcome\s+(?<o>\w+)", Options);
+                var helperOpen = helper.Index + helper.Length - 1;
+                var helperClose = MatchingBrace(code, helperOpen);
+                var helperBody = helperClose < 0 ? string.Empty : code.Substring(helperOpen + 1, helperClose - helperOpen - 1);
+                var write = Regex.Match(helperBody, @"\beditor\s*\.\s*WriteMessage\s*\((?<arg>[^;]*)\)\s*;", Options);
+
+                if (!outcomeParameter.Success || !write.Success)
+                {
+                    found.Add("C17: el ayudante visible no recibe el resultado o no escribe con editor.WriteMessage");
+                }
+                else
+                {
+                    var names = new List<string> { outcomeParameter.Groups["o"].Value };
+
+                    foreach (Match local in Regex.Matches(helperBody, @"\b(?:var|[\w<>]+)\s+(?<v>\w+)\s*=\s*(?<init>[^;]*);", Options))
+                    {
+                        if (names.Any(name => Regex.IsMatch(local.Groups["init"].Value, @"\b" + name + @"\b", Options)))
+                        {
+                            names.Add(local.Groups["v"].Value);
+                        }
+                    }
+
+                    if (!names.Any(name => Regex.IsMatch(write.Groups["arg"].Value, @"\b" + name + @"\b", Options)))
+                    {
+                        found.Add("C17: el texto que escribe el ayudante visible no incluye el resultado");
+                    }
+                }
+            }
+
+            // ---- C18 only the publisher writes files or folders
+            Forbid(
+                "C18",
+                new Regex(
+                    @"\bFile\s*\.\s*(?:Write\w*|Create\w*|AppendAll\w*|Copy|Move)\b|\bDirectory\s*\.\s*Create\w*|\bFileStream\b|\bStreamWriter\b",
+                    Options),
+                scanned,
+                "escritura de archivos o carpetas fuera del publicador");
 
             return found;
         }
