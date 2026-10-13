@@ -1,0 +1,83 @@
+{
+ "core-green": {
+  "sha256": "DEE02D78A2182D2119B934823F656B3BE05166E7E2727B1D88EDE6ABE922126B",
+  "counters": {
+   "total": "14368",
+   "executed": "14368",
+   "passed": "14368",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 98,
+   "Passed": 98
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "ui-green": {
+  "sha256": "19CD7907B925990A242EE09FEEFDEE2197673F456EC1FF5C76AB1235DCF5022C",
+  "counters": {
+   "total": "1654",
+   "executed": "1637",
+   "passed": "1637",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 0
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "core-red": {
+  "sha256": "6C6695B22052B1BDB2D6F2973F4D9581B4972C1DC007A1CE97F6B2E1A3ED3C7B",
+  "counters": {
+   "total": "14368",
+   "executed": "14368",
+   "passed": "14347",
+   "failed": "21",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 98,
+   "Passed": 80,
+   "Failed": 18
+  },
+  "n_failed_outside_filter": 3,
+  "failed_outside_filter": [
+   "RackCad.Tests.StructuralAnalysisRamElementsGuardTests.G1_CON_LA_LISTA_VACIA_EL_UNICO_INFRACTOR_EN_SRC_ES_EL_ARCHIVO_DEL_COMANDO",
+   "RackCad.Tests.SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA",
+   "RackCad.Tests.CustomPropertiesCommandGuardTests.TGrd08_ElCensoDeComandosEsElDeAperturaMasRackPropiedadesRprRackProyectarYRpy"
+  ],
+  "failure_kinds": {
+   "No existe el archivo del comando": 16,
+   "Assert.Single() Failure": 2
+  },
+  "failed_filter_names": [
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C01\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C02\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C03\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C04\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C05\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C06\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C07\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C08\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C09\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C10\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C11\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C12\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C13\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C14\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoNoTieneNingunaViolacion",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoTieneUnSoloRegistroYElNombreSoloEnElAtributo",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElElementoContentDeLaTablaYLaTablaExisten",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElProyectoDelPluginGanaUnSoloElementoContentParaLaTabla"
+  ]
+ }
+}

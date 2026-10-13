@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T5-PLUGIN-COMMAND",
+  "RunId": "R20261013T233523Z-b1dd",
+  "DelegationRunId": "R20261013T231726Z-7d47",
+  "WorkRunId": "R20261013T232041Z-8f39",
+  "Attempt": 5,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json coincide con TaskId, Attempt 5, DelegationRunId y WorkRunId declarados; OutputWrittenUtc 2026-10-13T23:31:06Z es posterior a Cession.StartUtc 2026-10-13T23:20:48Z. SHA-256 calculado de la copia: 6CECEBF49FE074448CA52890B311D71693AEDF49464099C41C85D92C93086663, igual a Outcome.OutputSha256."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git rev-parse confirma AuthorityRevision 2151ef557a116cd45eb127d8205f902ae8d335a6. git show en esa revisión confirma Frozen: yes, D-13/INV-12, F4-implementation §§6 y 11, y decisiones I-65 §§37, 41 y 42; git show MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453:AGENTS.md confirma las reglas de pruebas y las suites canónicas."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación de delegation.json con gate-contract.json: AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions, Authorities y RequiredTests coinciden exactamente. relay-record-planning.json registra A1–A8 en pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse: HEAD y refs/remotes/origin/architecture/interop-analisis-estructural = f1d9a51db0718f5a2efeba9699938fdb91b209ac; BaseSha af04ddb539f5bfd15cf057d0bad336cba9315f30 y RedSha a2a8b86899a54d009c79b983ae088379b2fce408 resueltos. git merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha devuelve 0. Rama y raíz del worktree coinciden con la delegación."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y LsRemoteSha=f1d9a51db0718f5a2efeba9699938fdb91b209ac; refs/remotes/origin/main local resuelve a MainSha. git ls-remote intentado, pero la conexión a github.com:443 falló por restricción de red; se usaron los RemoteFacts según la instrucción."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha devuelve exactamente src/RackCad.Plugin/RackCad.Plugin.csproj (AllowedWriteScope exacto), src/RackCad.Plugin/RackRamElementsCommands.cs (exacto) y tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs (cubierto por el prefijo permitido tests/RackCad.Tests/StructuralAnalysis/). Ninguno coincide con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch muestra árbol limpio; git check-ignore -v confirma que artifacts/ y artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/5/R20261013T233523Z-b1dd/worker-handoff.json están ignorados por .gitignore:3."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: run 38484644494, event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=CurrentSha; los cuatro jobs requeridos concluyeron success. TRX ci-core/core.trx: 14368 ejecutadas, 14368 pass, 0 fail. RemoteFacts.RedRun: run 38484201964, push de la misma rama y RedSha; Tests (Domain + Application)=failure, acorde con el RED requerido."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "TRX de CI selecciona 98 pruebas StructuralAnalysisPluginCommand: RED 80 pass/18 fail; GREEN 98 pass/0 fail. El TRX RED registra 14347 pass/21 fail y error=0; el GREEN, 14368 pass/0 fail. RED fallido por pruebas, con selección efectiva, no por compilación. ChainRedFiles resultante (delegation ChainRedFiles vacío más RT = git diff --name-only 283ed6137a8669012369abb6e4a8543c27d34f1b a2a8b86899a54d009c79b983ae088379b2fce408 -- tests/): tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs; tests/RackCad.Tests/SelectiveEditorOpenTests.cs; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/generated.dump.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/generated.readback.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/manual-a.dump.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/manual-b.dump.json; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningDumpReaderTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningIncompleteTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningMetricTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningReadbackTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningRehearsalTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningSupport.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningToolTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonRowTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonSupport.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuard.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandProductTableTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsGuardTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs. git diff --name-only RedSha CurrentSha -- tests/ está vacío; esos archivos no cambiaron entre RED y GREEN. En git show CurrentSha:StructuralAnalysisPluginCommandGuardTests.cs, C01–C14 comprueban forma, flujo y prohibiciones; las pruebas de censos/G1 están presentes en el código y la suite Core verde las ejecuta. Sin embargo, StructuralAnalysisPluginCommandProductTableTests solo llama CantileverStructuralExport.Build y RamBuildPackageFactory: comprueba Unsupported y paquete nulo, pero no ejecuta el comando, observa su respuesta visible ni verifica una llamada omitida al publicador. La guarda C07 solo exige la forma de la llamada Write. Falta una prueba que observe ese comportamiento del comando, así que Tests falla. El handoff declara builds locales Debug/Release y sus resultados, pero los logs citados no están en las copias de entrada; la compilación remota de Plugin sí queda confirmada por el job success."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha muestra los commits RED a2a8b86899a54d009c79b983ae088379b2fce408 y GREEN f1d9a51db0718f5a2efeba9699938fdb91b209ac; ambos incluyen literalmente Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual a worker-handoff.json Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant.ModelEffective=claude-sonnet-5-5 y EffortEffective=medium; coinciden con delegation Model y Effort.Provider. El perfil y el modelo efectivo son consistentes con el paquete aceptado."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Escaneo de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json: no se encontraron términos restringidos por AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones, 0 errores y 0 avisos de límite; no informa una orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "Tests",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La prueba de la tabla con filas proposed confirma el resultado Unsupported del flujo neutral y la ausencia de paquete, pero no invoca RACKRAMPAQUETE ni verifica que el comando no publique ni emita la respuesta visible indicada por el contrato.",
+    "La sesión no pudo consultar GitHub con git ls-remote por la restricción de red; Remote se cotejó con RemoteFacts, que coincide con los SHA registrados en Git local."
+  ],
+  "RecommendedNextAction": "Añadir una prueba del comportamiento del comando mediante un seam de pruebas permitido y repetir la verificación con un nuevo SHA."
+}
