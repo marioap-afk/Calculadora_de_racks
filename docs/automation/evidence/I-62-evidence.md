@@ -4286,3 +4286,27 @@ solo desde artefactos custodiados.
 - Los blobs del instrumento (`9a829b0e`) y del aceptante (`434ef1fc`) no cambian. Las pruebas del aceptante con N4, nc1 y VERIFY sin
   instrumento usan datos sintéticos o custodiados, sin Codex.
 - El kit de la revisión siguiente se lanzará con la orden congelada literal y una comprobación previa de registro que no ejecuta el modelo.
+
+## 164. A-6 ronda 3 publicada como PROPUESTA (decisiones §83): blob `e62f27b8`, guardas `run` PASS sobre `a128efef`
+
+- **Publicación** `a128efef` (padre `9cd074aa`): `docs/initiatives/I-62-A-6.md` pasa de la ronda 2 (`86da0ae7`) a la ronda 3, blob
+  `e62f27b8b1329f1b9cfa69a707feb31d22bad1d1`, y se añade [`I-62-A6/r3/`](I-62-A6/r3/preflight.md) (56 archivos). Cambios normativos solo en A6-3,
+  regla 6, A6-5 y A6-7; el instrumento (`9a829b0e`) y el aceptante (`434ef1fc`) conservan su blob; las líneas del Owner de §7, byte a byte.
+- **R1 (A62-A6R2-R1):** A6-5, regla 7, fija el ámbito: con ejecuciones del instrumento (aceptante y tabla), sin ejecuciones (16.9 sin cambio, sin
+  hechos del instrumento) y registro insuficiente (no aceptada); el instrumento nunca es obligatorio. A6-3, regla 6 (c), y A6-5, regla 2: R4 solo
+  cuando existen los tres archivos que lee y ninguna de sus cinco comprobaciones está en `not_run`, y siempre en una salida VERIFIED. Pruebas del
+  aceptante fijado sin Codex (`r3/r1probes/`, 57 de 57): con `Runs` vacío rechaza siempre; N4 y nc1 se aceptan con la construcción de la ronda 3 y
+  se rechazaban con la de la ronda 2; cuatro errores de construcción solo los detecta la tabla.
+- **R2 (A62-A6R2-R2):** precondiciones con fallo cerrado: reconstrucción de `Runs` desde el registro real (A6-3, regla 6 (a)), demostrada por la
+  medición con el aceptante sobre su registro real (A6-7, regla 1), y disposición previa del Coordinator sobre el cierre de VERIFY (A6-7, regla 7;
+  A6-5, regla 6). Lo estático, comprobado: el formato de nueve registros reales de Codex (`r3/r2static/`: salida estándar y de error mezcladas, sin
+  truncado visible hasta 59 805 bytes) y las comprobaciones (v)-(viii) del punto de uso (28 de 28). Lo real queda pendiente de la medición; ninguna
+  precondición se declara cumplida sin evidencia.
+- **Opcionales:** O2 y O5 incorporadas; O3 en parte (A6-7, regla 1) y el resto como residuo declarado; O1 y O4 no incorporadas, porque tocarían A6-3,
+  regla 1, y A6-4, fuera de decisiones §83, punto 2.
+- **Guardas** `r3/a6r3-guards.py` (`103d69c6`): autoprueba 694/694 sobre el blob exacto; controles negativos 32/32;
+  `preview --final` PASS; `run` sobre `a128efef` PASS en G1-G11 y G5b ([`a6r3-guards-result-run.json`](I-62-A6/r3/a6r3-guards-result-run.json)).
+- **Lanzamiento del kit siguiente** (`r3/launchfix/`, 28 de 28 pruebas): orden congelada `python -B kit/launch.py` comprobada por el propio
+  lanzador, `run.json` escrito siempre que se lanzó el proceso, y comprobación previa de registro con un proceso sustituto. No es un kit: ninguna
+  revisión formal de la ronda 3 sin disposición posterior (decisiones §83, punto 6).
+- Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS.
