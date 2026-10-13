@@ -39,14 +39,18 @@ namespace RackCad.StructuralAnalysis.RamTool
             + "  dump-script --out <new folder> --adapter-version <version> [--embed-folder <absolute normalised Windows folder>]\n"
             + "      Publishes the dump script into a NEW folder (never overwrites). The folder it embeds is --embed-folder, by default --out.\n"
             + "  compare --package <folder> --generated <dump.json> --manual <dump.json> [--report <new file>]\n"
-            + "          [--generated-combinations-unread] [--manual-combinations-unread]\n"
+            + "          [--generated-combinations-unread] [--manual-combinations-unread] [--combinations-decision <text>]\n"
             + "      Reads manifest.json and ram-readback.json of the package and the two dumps, prints the comparison report and, if asked,\n"
-            + "      writes it to a NEW file (never overwrites).\n"
+            + "      writes it to a NEW file (never overwrites). The two dumps must come from independent models: the same file or the same\n"
+            + "      bytes is REJECTED. A package marked as a fault injection is never approved (REJECTED). Either --*-combinations-unread\n"
+            + "      option REQUIRES --combinations-decision <text> (the decision of the engineer, written in the report) and the result is\n"
+            + "      INCOMPLETE, never PASS, when no row fails.\n"
             + "  inject --package <valid package folder> --fault <kind> --out <new folder> [--embed-folder <folder>]\n"
             + "      Writes into a NEW folder a copy of the package with ONE semantic mutation, marked as a fault injection in its manifest.\n"
             + "      Kinds: unknown-section, inverted-axes, wrong-version, missing-core-function.\n"
             + "\n"
-            + "Exit codes: 0 PASS or done; 1 FAIL; 2 REJECTED or STALE; 3 invalid usage or input; 4 output refused (it exists or cannot be written).\n";
+            + "Exit codes: 0 PASS or done; 1 FAIL; 2 REJECTED or STALE; 3 invalid usage or input; 4 output refused (it exists or cannot be written);\n"
+            + "5 INCOMPLETE (no row fails, but the combinations of a dump were not read).\n";
 
         public static int Run(string[] args, TextWriter output, TextWriter error)
         {
@@ -172,6 +176,27 @@ namespace RackCad.StructuralAnalysis.RamTool
                 return Utf8.GetString(File.ReadAllBytes(path));
             }
             catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException || exception is DecoderFallbackException)
+            {
+                problem = "The file '" + path + "' cannot be read: " + exception.Message;
+                return null;
+            }
+        }
+
+        /// <summary>Reads a UTF-8 text file and gives its bytes too; <c>null</c> (with the reason) when it is missing or is not valid UTF-8.</summary>
+        public static string ReadTextWithBytes(string path, out byte[] bytes, out string problem)
+        {
+            bytes = ReadBytes(path, out problem);
+
+            if (bytes == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                return Utf8.GetString(bytes);
+            }
+            catch (DecoderFallbackException exception)
             {
                 problem = "The file '" + path + "' cannot be read: " + exception.Message;
                 return null;

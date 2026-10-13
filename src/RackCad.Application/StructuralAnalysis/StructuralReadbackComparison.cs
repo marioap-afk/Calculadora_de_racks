@@ -180,10 +180,22 @@ namespace RackCad.Application.StructuralAnalysis
         public const int MaxListedDifferences = 5;
 
         internal StructuralComparisonReport(StructuralComparisonOutcome outcome, string reason, IReadOnlyList<StructuralComparisonRow> rows)
+            : this(outcome, reason, rows, null, null)
+        {
+        }
+
+        private StructuralComparisonReport(
+            StructuralComparisonOutcome outcome,
+            string reason,
+            IReadOnlyList<StructuralComparisonRow> rows,
+            string combinationsDecision,
+            StructuralComparisonInputs inputs)
         {
             Outcome = outcome;
             Reason = reason;
             Rows = rows;
+            CombinationsDecision = combinationsDecision;
+            Inputs = inputs;
         }
 
         public StructuralComparisonOutcome Outcome { get; }
@@ -194,16 +206,32 @@ namespace RackCad.Application.StructuralAnalysis
         public IReadOnlyList<StructuralComparisonRow> Rows { get; }
 
         /// <summary>The decision of the engineer about the combinations nobody could read; <c>null</c> when there is none (A65-F4-02).</summary>
-        public string CombinationsDecision => null;
+        public string CombinationsDecision { get; }
 
         /// <summary>The inputs the caller attached; <c>null</c> when it attached none (A65-F4-03).</summary>
-        public StructuralComparisonInputs Inputs => null;
+        public StructuralComparisonInputs Inputs { get; }
 
-        /// <summary>The same report with the decision about the combinations written in it (not implemented yet).</summary>
-        public StructuralComparisonReport WithCombinationsDecision(string decision) => throw new NotImplementedException();
+        /// <summary>The same report with the decision about the combinations written in it. The text is required and not blank.</summary>
+        public StructuralComparisonReport WithCombinationsDecision(string decision)
+        {
+            if (string.IsNullOrWhiteSpace(decision))
+            {
+                throw new ArgumentException("A decision needs a text.", nameof(decision));
+            }
 
-        /// <summary>The same report with the inputs it was made from (not implemented yet).</summary>
-        public StructuralComparisonReport WithInputs(StructuralComparisonInputs inputs) => throw new NotImplementedException();
+            return new StructuralComparisonReport(Outcome, Reason, Rows, decision, Inputs);
+        }
+
+        /// <summary>The same report with the inputs it was made from. A report without inputs serializes exactly as before.</summary>
+        public StructuralComparisonReport WithInputs(StructuralComparisonInputs inputs)
+        {
+            if (inputs == null)
+            {
+                throw new ArgumentNullException(nameof(inputs));
+            }
+
+            return new StructuralComparisonReport(Outcome, Reason, Rows, CombinationsDecision, inputs);
+        }
 
         public StructuralComparisonRow Row(string id)
         {
@@ -226,6 +254,24 @@ namespace RackCad.Application.StructuralAnalysis
             text.Append("  \"schema\": ").Append(Quote(Schema)).Append(",\n");
             text.Append("  \"verdict\": ").Append(Quote(OutcomeText(Outcome))).Append(",\n");
             text.Append("  \"reason\": ").Append(Reason == null ? "null" : Quote(Reason)).Append(",\n");
+
+            if (CombinationsDecision != null)
+            {
+                text.Append("  \"combinationsDecision\": ").Append(Quote(CombinationsDecision)).Append(",\n");
+            }
+
+            if (Inputs != null)
+            {
+                text.Append("  \"inputs\": {\n");
+                text.Append("    \"manifestFingerprint\": ").Append(Inputs.ManifestFingerprint == null ? "null" : Quote(Inputs.ManifestFingerprint)).Append(",\n");
+                text.Append("    \"readbackFingerprint\": ").Append(Inputs.ReadbackFingerprint == null ? "null" : Quote(Inputs.ReadbackFingerprint)).Append(",\n");
+                text.Append("    \"manifestSha256\": ").Append(Quote(Inputs.ManifestSha256)).Append(",\n");
+                text.Append("    \"readbackSha256\": ").Append(Quote(Inputs.ReadbackSha256)).Append(",\n");
+                text.Append("    \"generatedDumpSha256\": ").Append(Quote(Inputs.GeneratedDumpSha256)).Append(",\n");
+                text.Append("    \"manualDumpSha256\": ").Append(Quote(Inputs.ManualDumpSha256)).Append("\n");
+                text.Append("  },\n");
+            }
+
             text.Append("  \"tolerances\": {\n");
             text.Append("    \"nodePositionInches\": ").Append(Number(StructuralReadbackComparison.NodePositionToleranceInches)).Append(",\n");
             text.Append("    \"axisDegrees\": ").Append(Number(StructuralReadbackComparison.AxisToleranceDegrees)).Append(",\n");
@@ -274,6 +320,8 @@ namespace RackCad.Application.StructuralAnalysis
                     return "FAIL";
                 case StructuralComparisonOutcome.Stale:
                     return "STALE";
+                case StructuralComparisonOutcome.Incomplete:
+                    return "INCOMPLETE";
                 default:
                     return "REJECTED";
             }
@@ -344,9 +392,14 @@ namespace RackCad.Application.StructuralAnalysis
     /// inputs give the same report and the same serialized bytes. It compares the transfer of a model; it does not validate the design.
     ///
     /// <para>
-    /// Nodes are paired by position (a candidate is a node within the tolerance on every coordinate); a node with two candidates, or a
+    /// Nodes are paired by position (a candidate is a node whose Euclidean distance is within the tolerance); a node with two candidates, or a
     /// candidate that two nodes claim, is never resolved in silence: the row fails. Members are paired by their pair of paired nodes, in
-    /// any order, and then the sense I to J must agree. The tolerances are the ones of the Freeze and are not altered.
+    /// any order, and then the sense I to J must agree. The tolerances are the ones of the Freeze and are not altered. The value of a load
+    /// is compared relative to the value of the MANUAL model, and in absolute value when that value is zero.
+    /// </para>
+    /// <para>
+    /// Before any row, the dump of the GENERATED model is bound to the values that the build read back from the model it wrote: if they do
+    /// not agree the comparison is rejected. A comparison whose combinations nobody could read is INCOMPLETE, never a PASS.
     /// </para>
     /// </summary>
     public static class StructuralReadbackComparison
@@ -361,6 +414,9 @@ namespace RackCad.Application.StructuralAnalysis
         /// It is the noise of a double in the range of V1, not an engineering criterion.
         /// </summary>
         public const double ZeroLoadAbsoluteToleranceLbf = 1e-6;
+
+        /// <summary>The tolerance, in inches and pounds-force, with which the dump of the generated model must agree with the read-back of the build.</summary>
+        public const double ReadbackBindingTolerance = 1e-6;
 
         /// <summary>The category the generated case with loads must have.</summary>
         public const string GeneratedCaseCategory = "OTHER";
@@ -427,15 +483,221 @@ namespace RackCad.Application.StructuralAnalysis
                     + (manifestAnalysisInputFingerprint ?? "none") + ").");
             }
 
+            var mismatch = FirstBindingMismatch(generated, transfer.Values);
+
+            if (mismatch != null)
+            {
+                return Unapproved(
+                    StructuralComparisonOutcome.Rejected,
+                    "The dump of the generated model does not agree with the values of the read-back of the build: " + mismatch);
+            }
+
             var comparison = new Comparison(generated, manual, options);
             var rows = comparison.Rows();
             var failed = rows.Any(row => row.Verdict == StructuralComparisonVerdict.Fail);
+            var incomplete = rows.Any(row => row.Id == StructuralComparisonRowIds.Combinations && row.Verdict == StructuralComparisonVerdict.NotEvaluated);
 
             return new StructuralComparisonReport(
-                failed ? StructuralComparisonOutcome.Fail : StructuralComparisonOutcome.Pass,
+                failed ? StructuralComparisonOutcome.Fail : (incomplete ? StructuralComparisonOutcome.Incomplete : StructuralComparisonOutcome.Pass),
                 null,
                 new ReadOnlyCollection<StructuralComparisonRow>(rows));
         }
+
+        // ------------------------------------------------------------ the dump of the generated model against the read-back of the build
+
+        private static string FirstBindingMismatch(StructuralModelReadback generated, StructuralTransferValues values)
+        {
+            if (values == null)
+            {
+                return "the read-back carries no values to compare the dump with";
+            }
+
+            if (values.Nodes.Count != generated.Nodes.Count)
+            {
+                return "the read-back lists " + Count(values.Nodes.Count) + " nodes and the dump " + Count(generated.Nodes.Count);
+            }
+
+            if (values.Members.Count != generated.Members.Count)
+            {
+                return "the read-back lists " + Count(values.Members.Count) + " members and the dump " + Count(generated.Members.Count);
+            }
+
+            var casesWithLoads = generated.LoadCases.Where(c => c.Loads.Count > 0).ToList();
+            var expectedLoads = values.Loads.Count;
+            var dumpLoads = casesWithLoads.Sum(c => c.Loads.Count);
+
+            if (expectedLoads != dumpLoads)
+            {
+                return "the read-back lists " + Count(expectedLoads) + " loads and the dump " + Count(dumpLoads);
+            }
+
+            var nodesById = new Dictionary<string, StructuralReadbackNode>(StringComparer.Ordinal);
+
+            foreach (var node in generated.Nodes)
+            {
+                nodesById[node.Id] = node;
+            }
+
+            foreach (var expected in values.Nodes)
+            {
+                if (!nodesById.TryGetValue(expected.ModelId, out var node))
+                {
+                    return "node " + expected.Id + ": the dump has no node with the id " + expected.ModelId;
+                }
+
+                if (!string.Equals(node.Description, expected.Id, StringComparison.Ordinal))
+                {
+                    return "node " + expected.ModelId + ": the dump calls it '" + node.Description + "' and the read-back '" + expected.Id + "'";
+                }
+
+                if (Far(node.Position.X.Inches, expected.Position.X.Inches) || Far(node.Position.Y.Inches, expected.Position.Y.Inches)
+                    || Far(node.Position.Z.Inches, expected.Position.Z.Inches))
+                {
+                    return "node " + expected.Id + ": the dump has (" + Format(node.Position.X.Inches) + ", " + Format(node.Position.Y.Inches) + ", "
+                           + Format(node.Position.Z.Inches) + ") in and the read-back (" + Format(expected.Position.X.Inches) + ", "
+                           + Format(expected.Position.Y.Inches) + ", " + Format(expected.Position.Z.Inches) + ") in";
+                }
+
+                if (!node.SupportFlags.SequenceEqual(expected.SupportFlags))
+                {
+                    return "node " + expected.Id + ": the dump has support flags " + Flags(node.SupportFlags) + " and the read-back " + Flags(expected.SupportFlags);
+                }
+            }
+
+            var membersById = new Dictionary<string, StructuralReadbackMember>(StringComparer.Ordinal);
+
+            foreach (var member in generated.Members)
+            {
+                membersById[member.Id] = member;
+            }
+
+            foreach (var expected in values.Members)
+            {
+                if (!membersById.TryGetValue(expected.ModelId, out var member))
+                {
+                    return "member " + expected.Id + ": the dump has no member with the id " + expected.ModelId;
+                }
+
+                if (!string.Equals(member.Description, expected.Id, StringComparison.Ordinal))
+                {
+                    return "member " + expected.ModelId + ": the dump calls it '" + member.Description + "' and the read-back '" + expected.Id + "'";
+                }
+
+                if (!string.Equals(member.SectionName, expected.SectionName, StringComparison.Ordinal))
+                {
+                    return "member " + expected.Id + ": the dump has section '" + member.SectionName + "' and the read-back '" + expected.SectionName + "'";
+                }
+
+                if (!string.Equals(member.MaterialName, expected.MaterialName, StringComparison.Ordinal))
+                {
+                    return "member " + expected.Id + ": the dump has material '" + member.MaterialName + "' and the read-back '" + expected.MaterialName + "'";
+                }
+            }
+
+            return FirstLoadMismatch(generated, values, casesWithLoads, nodesById, membersById);
+        }
+
+        private static string FirstLoadMismatch(
+            StructuralModelReadback generated,
+            StructuralTransferValues values,
+            List<StructuralReadbackLoadCase> casesWithLoads,
+            Dictionary<string, StructuralReadbackNode> nodesById,
+            Dictionary<string, StructuralReadbackMember> membersById)
+        {
+            if (values.LoadCase == null)
+            {
+                return casesWithLoads.Count == 0 ? null : "the read-back lists no load case and the dump has loads in case " + casesWithLoads[0].Id;
+            }
+
+            var expectedCase = values.LoadCase;
+            var dumpCase = generated.LoadCases.FirstOrDefault(c => string.Equals(c.Id, expectedCase.Id, StringComparison.Ordinal));
+
+            if (dumpCase == null)
+            {
+                return "load case " + expectedCase.Id + ": the dump has no such case";
+            }
+
+            if (!string.Equals(dumpCase.Category, expectedCase.Category, StringComparison.Ordinal))
+            {
+                return "load case " + expectedCase.Id + ": the dump has category '" + dumpCase.Category + "' and the read-back '" + expectedCase.Category + "'";
+            }
+
+            var other = casesWithLoads.FirstOrDefault(c => !string.Equals(c.Id, expectedCase.Id, StringComparison.Ordinal));
+
+            if (other != null)
+            {
+                return "the dump has loads in case " + other.Id + ", which the read-back does not list";
+            }
+
+            var membersByName = new Dictionary<string, StructuralTransferMemberValue>(StringComparer.Ordinal);
+
+            foreach (var member in values.Members)
+            {
+                membersByName[member.Id] = member;
+            }
+
+            foreach (var expected in values.Loads)
+            {
+                var label = "load " + expected.Index.ToString(CultureInfo.InvariantCulture) + " of member " + expected.MemberId;
+
+                if (!membersByName.TryGetValue(expected.MemberId, out var memberValue))
+                {
+                    return label + ": the read-back lists no such member";
+                }
+
+                var dumpLoads = dumpCase.Loads.Where(l => string.Equals(l.MemberId, memberValue.ModelId, StringComparison.Ordinal)).ToList();
+
+                if (expected.Index >= dumpLoads.Count)
+                {
+                    return label + ": the dump has " + Count(dumpLoads.Count) + " loads on that member";
+                }
+
+                var load = dumpLoads[expected.Index];
+
+                if (load.Axis != expected.Axis)
+                {
+                    return label + ": the dump has direction " + load.Axis + " and the read-back " + expected.Axis;
+                }
+
+                if (Far(load.Value.PoundsForce, expected.Value.PoundsForce))
+                {
+                    return label + ": the dump has " + Format(load.Value.PoundsForce) + " lbf and the read-back " + Format(expected.Value.PoundsForce) + " lbf";
+                }
+
+                var distance = expected.Distance;
+
+                if (expected.IsPercentage)
+                {
+                    var member = membersById[memberValue.ModelId];
+
+                    if (!nodesById.TryGetValue(member.NodeIId, out var nodeI) || !nodesById.TryGetValue(member.NodeJId, out var nodeJ))
+                    {
+                        return label + ": the dump does not list an end node of the member, so a percentage cannot become a distance";
+                    }
+
+                    var a = nodeI.Position;
+                    var b = nodeJ.Position;
+                    var length = Math.Sqrt(
+                        Square(b.X.Inches - a.X.Inches) + Square(b.Y.Inches - a.Y.Inches) + Square(b.Z.Inches - a.Z.Inches));
+                    distance = (expected.Distance * length) / 100.0;
+                }
+
+                if (Far(load.DistanceFromNodeI.Inches, distance))
+                {
+                    return label + ": the dump has " + Format(load.DistanceFromNodeI.Inches) + " in from node I and the read-back " + Format(distance) + " in";
+                }
+            }
+
+            return null;
+        }
+
+        private static bool Far(double a, double b) => Math.Abs(a - b) > ReadbackBindingTolerance;
+
+        private static double Square(double value) => value * value;
+
+        private static string Count(int count) => count.ToString(CultureInfo.InvariantCulture);
+
+        private static string Flags(IReadOnlyList<bool> flags) => string.Concat(flags.Select(flag => flag ? "1" : "0"));
 
         /// <summary>A rejected report: no row is approved. For an input that cannot even be compared (a dump in a failed state).</summary>
         public static StructuralComparisonReport Rejected(string reason)
@@ -475,7 +737,11 @@ namespace RackCad.Application.StructuralAnalysis
             private readonly List<(StructuralReadbackMember Generated, StructuralReadbackMember Manual)> _pairs =
                 new List<(StructuralReadbackMember, StructuralReadbackMember)>();
 
+            private const string ZeroLoadLimitText = "0.000001";
+
             private bool _nodesPaired;
+            private bool _zeroBaseCompared;
+            private double _maxZeroBaseLbf;
 
             public Comparison(StructuralModelReadback generated, StructuralModelReadback manual, StructuralComparisonOptions options)
             {
@@ -579,13 +845,14 @@ namespace RackCad.Application.StructuralAnalysis
                     maxDelta,
                     "in",
                     differences,
-                    "The nodes are paired by position; the delta is the largest difference on one coordinate between a node and its nearest counterpart.");
+                    "The nodes are paired by position; the delta is the Euclidean distance between a node and its nearest counterpart.");
             }
 
             private static double Delta(StructuralReadbackNode a, StructuralReadbackNode b) =>
-                Math.Max(
-                    Math.Abs(a.Position.X.Inches - b.Position.X.Inches),
-                    Math.Max(Math.Abs(a.Position.Y.Inches - b.Position.Y.Inches), Math.Abs(a.Position.Z.Inches - b.Position.Z.Inches)));
+                Math.Sqrt(
+                    Square(a.Position.X.Inches - b.Position.X.Inches)
+                    + Square(a.Position.Y.Inches - b.Position.Y.Inches)
+                    + Square(a.Position.Z.Inches - b.Position.Z.Inches));
 
             // ------------------------------------------------------------ members
 
@@ -913,7 +1180,12 @@ namespace RackCad.Application.StructuralAnalysis
                     maxValue,
                     "percent",
                     differences,
-                    "Largest difference of a load value, in percent; largest difference of a load position " + Format(maxPosition) + " in.");
+                    "Largest difference of a load value, in percent of the manual value"
+                    + (_zeroBaseCompared
+                        ? " (a manual value of zero is compared in absolute value, limit " + ZeroLoadLimitText + " lbf; largest absolute value against it "
+                          + Format(_maxZeroBaseLbf) + " lbf)"
+                        : string.Empty)
+                    + "; largest difference of a load position " + Format(maxPosition) + " in.");
             }
 
             private void CompareCaseLoads(
@@ -967,20 +1239,41 @@ namespace RackCad.Application.StructuralAnalysis
                         var counterpart = manualLoads[best];
 
                         var positionDelta = Math.Abs(counterpart.DistanceFromNodeI.Inches - load.DistanceFromNodeI.Inches);
-                        var valueDelta = PercentDelta(load.Value.PoundsForce, counterpart.Value.PoundsForce);
                         maxPosition = Math.Max(maxPosition, positionDelta);
-                        maxValue = Math.Max(maxValue, valueDelta);
 
                         if (load.Axis != counterpart.Axis)
                         {
                             differences.Add(label + ": direction " + load.Axis + " against " + counterpart.Axis);
                         }
 
-                        if (valueDelta > LoadValueTolerancePercent + Epsilon)
+                        var generatedValue = load.Value.PoundsForce;
+                        var manualValue = counterpart.Value.PoundsForce;
+
+                        if (manualValue == 0.0)
                         {
-                            differences.Add(
-                                label + ": value " + Format(load.Value.PoundsForce) + " lbf against " + Format(counterpart.Value.PoundsForce)
-                                + " lbf (" + Format(valueDelta) + " percent, limit " + Format(LoadValueTolerancePercent) + ")");
+                            // the manual value is the base of the comparison: with a base of zero the value is compared in absolute value, never divided
+                            var absolute = Math.Abs(generatedValue);
+                            _zeroBaseCompared = true;
+                            _maxZeroBaseLbf = Math.Max(_maxZeroBaseLbf, absolute);
+
+                            if (absolute > ZeroLoadAbsoluteToleranceLbf)
+                            {
+                                differences.Add(
+                                    label + ": value " + Format(generatedValue) + " lbf against 0 lbf (absolute difference " + Format(absolute)
+                                    + " lbf, limit " + ZeroLoadLimitText + " lbf)");
+                            }
+                        }
+                        else
+                        {
+                            var valueDelta = 100.0 * Math.Abs(generatedValue - manualValue) / Math.Abs(manualValue);
+                            maxValue = Math.Max(maxValue, valueDelta);
+
+                            if (valueDelta > LoadValueTolerancePercent + Epsilon)
+                            {
+                                differences.Add(
+                                    label + ": value " + Format(generatedValue) + " lbf against " + Format(manualValue)
+                                    + " lbf (" + Format(valueDelta) + " percent of the manual value, limit " + Format(LoadValueTolerancePercent) + ")");
+                            }
                         }
 
                         if (positionDelta > LoadPositionToleranceInches + Epsilon)
@@ -1001,12 +1294,6 @@ namespace RackCad.Application.StructuralAnalysis
                 {
                     differences.Add("generated member " + load.MemberId + " carries loads but has no manual counterpart");
                 }
-            }
-
-            private static double PercentDelta(double a, double b)
-            {
-                var scale = Math.Max(Math.Abs(a), Math.Abs(b));
-                return scale == 0.0 ? 0.0 : 100.0 * Math.Abs(a - b) / scale;
             }
 
             private StructuralComparisonRow Combinations()

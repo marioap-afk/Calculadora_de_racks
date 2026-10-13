@@ -378,12 +378,22 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
 
                 scan.Keys(item, path, CaseKeys);
 
+                // A65-F4-05 (CD-I65-F4-34): the semantics of the program for an empty category are NOT MEASURED until the real validation.
+                // The comparison ignores a case without loads, so an exactly empty category is accepted there and nowhere else. An absent or
+                // null category, one that is only blanks, or an empty one on a case with loads is ambiguous and the dump is Invalid. No other
+                // behaviour of the program API is assumed.
                 var row = new CaseRow
                 {
                     Id = scan.String(item, "id", path, nonBlank: true),
-                    Category = scan.String(item, "category", path, nonBlank: true),
+                    Category = scan.String(item, "category", path),
                     SelfWeight = scan.Numbers(item, "selfWeight", path, 3),
                 };
+
+                if (row.Category != null && row.Category.Length > 0 && string.IsNullOrWhiteSpace(row.Category))
+                {
+                    scan.Invalid(JsonCodes.Value, path + ".category");
+                    row.Category = null;
+                }
 
                 if (row.Id != null && !caseIds.Add(row.Id))
                 {
@@ -391,6 +401,12 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
                 }
 
                 ReadMemberLoads(scan, item, path, memberIds, row);
+
+                if (row.Category != null && row.Category.Length == 0 && row.Loads.Count > 0)
+                {
+                    scan.Invalid(JsonCodes.Value, path + ".category: the case '" + (row.Id ?? path) + "' has loads and an empty category");
+                    row.Category = null;
+                }
 
                 if (row.Id != null && row.Category != null && row.SelfWeight != null)
                 {
@@ -523,7 +539,7 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
         // ---------------------------------------------------------------- the conversion (inverse of D-04)
 
         /// <summary>The axis and the sign of a direction of the program, in the neutral frame; <c>null</c> when it is unknown.</summary>
-        private static (StructuralReadbackLoadAxis Axis, bool Flip)? DirectionOf(string direction)
+        internal static (StructuralReadbackLoadAxis Axis, bool Flip)? DirectionOf(string direction)
         {
             switch (direction)
             {
@@ -545,13 +561,13 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
         }
 
         // + 0.0 turns a negative zero into zero, so that the same value is always read the same way
-        private static StructuralPosition ToPosition(double[] p) =>
+        internal static StructuralPosition ToPosition(double[] p) =>
             new StructuralPosition(StructuralLength.FromInches(p[0] + 0.0), StructuralLength.FromInches(-p[2] + 0.0), StructuralLength.FromInches(p[1] + 0.0));
 
         private static StructuralDirection ToDirection(double[] v) => new StructuralDirection(v[0] + 0.0, -v[2] + 0.0, v[1] + 0.0);
 
         /// <summary>The neutral order Tx Ty Tz Rx Ry Rz from the order of the program dx dy dz rx ry rz.</summary>
-        private static bool[] ToFlags(bool[] f) => new[] { f[0], f[2], f[1], f[3], f[5], f[4] };
+        internal static bool[] ToFlags(bool[] f) => new[] { f[0], f[2], f[1], f[3], f[5], f[4] };
 
         /// <summary>The length of each member, from the coordinates of its nodes in the frame of the dump (the frame change keeps lengths).</summary>
         private static Dictionary<int, double> LengthsOf(List<NodeRow> nodes, List<MemberRow> members)
@@ -625,11 +641,13 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
                 m.SpringJ,
                 m.Releases)).ToList();
 
-            var readCases = cases.Select(c => new StructuralReadbackLoadCase(
-                c.Id,
-                c.Category,
-                ToDirection(c.SelfWeight),
-                c.Loads.Select(l => ToLoad(l, lengths[l.Member])))).ToList();
+            var readCases = cases.Select(c => c.Category.Length == 0
+                ? StructuralReadbackLoadCase.WithoutLoadsAndCategory(c.Id, ToDirection(c.SelfWeight))
+                : new StructuralReadbackLoadCase(
+                    c.Id,
+                    c.Category,
+                    ToDirection(c.SelfWeight),
+                    c.Loads.Select(l => ToLoad(l, lengths[l.Member])))).ToList();
 
             var readCombinations = combinations.Select(c => new StructuralReadbackCombination(
                 c.Id,

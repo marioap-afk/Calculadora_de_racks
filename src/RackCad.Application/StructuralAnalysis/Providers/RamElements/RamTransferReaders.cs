@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 
 namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
@@ -94,6 +95,7 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
 
             string adapterVersion = null;
             List<string> differences = null;
+            StructuralTransferValues transferValues = null;
 
             if (backup)
             {
@@ -107,7 +109,14 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
 
                 if (root.TryGetValue("values", out var values))
                 {
-                    scan.Object(values, "$.values");
+                    var valuesObject = scan.Object(values, "$.values");
+
+                    // A65-F4-03: the values of an APPROVED read-back are read strictly, with the exact keys the build writes; the values a
+                    // failed build leaves half written are not used by anyone, so there they only have to be an object.
+                    if (valuesObject != null && passed)
+                    {
+                        transferValues = ReadValues(scan, valuesObject);
+                    }
                 }
             }
 
@@ -141,7 +150,180 @@ namespace RackCad.Application.StructuralAnalysis.Providers.RamElements
                 return Result(scan, null);
             }
 
-            return Result(scan, new StructuralTransferReadback(passed, fingerprint, adapterVersion, differences));
+            return Result(scan, new StructuralTransferReadback(passed, fingerprint, adapterVersion, differences, transferValues));
+        }
+
+        // ---------------------------------------------------------------- the values (A65-F4-03)
+
+        private static readonly string[] ValuesKeys = { "nodes", "members", "loads", "loadCase" };
+
+        private static readonly string[] NodeValueKeys = { "id", "ramId", "coordinates", "restraints" };
+
+        private static readonly string[] MemberValueKeys =
+        {
+            "id", "ramId", "section", "material", "rotation", "cardinalPoint", "offsetI", "offsetJ", "stiffnessFactors", "axialBehavior",
+            "springI", "springJ", "releases", "l1", "l2", "l3", "description",
+        };
+
+        private static readonly string[] LoadValueKeys = { "id", "member", "index", "direction", "value", "percent", "isPercentage" };
+
+        private static readonly string[] CaseValueKeys = { "id", "category", "selfWeight" };
+
+        /// <summary>The values the build leaves in the read-back, read with their exact keys into the neutral type; <c>null</c> when there is a finding.</summary>
+        private static StructuralTransferValues ReadValues(RamJsonScan scan, RamJsonObject values)
+        {
+            var before = scan.Diagnostics.Count;
+
+            scan.Keys(values, "$.values", ValuesKeys);
+
+            var nodes = new List<StructuralTransferNodeValue>();
+            var members = new List<StructuralTransferMemberValue>();
+            var loads = new List<StructuralTransferLoadValue>();
+            StructuralTransferCaseValue loadCase = null;
+
+            var nodeItems = scan.Array(values, "nodes", "$.values");
+
+            for (var index = 0; nodeItems != null && index < nodeItems.Count; index++)
+            {
+                var path = "$.values.nodes[" + index.ToString(CultureInfo.InvariantCulture) + "]";
+                var item = scan.Object(nodeItems[index], path);
+
+                if (item == null)
+                {
+                    continue;
+                }
+
+                scan.Keys(item, path, NodeValueKeys);
+
+                var id = scan.String(item, "id", path, nonBlank: true);
+                var modelId = scan.Integer(item, "ramId", path, 0, int.MaxValue);
+                var coordinates = scan.Numbers(item, "coordinates", path, 3);
+                var restraints = scan.Bools(item, "restraints", path, StructuralSupport.FlagCount);
+
+                if (id != null && modelId.HasValue && coordinates != null && restraints != null)
+                {
+                    nodes.Add(new StructuralTransferNodeValue(
+                        id,
+                        modelId.Value.ToString(CultureInfo.InvariantCulture),
+                        RamDumpReader.ToPosition(coordinates),
+                        RamDumpReader.ToFlags(restraints)));
+                }
+            }
+
+            var memberItems = scan.Array(values, "members", "$.values");
+
+            for (var index = 0; memberItems != null && index < memberItems.Count; index++)
+            {
+                var path = "$.values.members[" + index.ToString(CultureInfo.InvariantCulture) + "]";
+                var item = scan.Object(memberItems[index], path);
+
+                if (item == null)
+                {
+                    continue;
+                }
+
+                scan.Keys(item, path, MemberValueKeys);
+
+                var id = scan.String(item, "id", path, nonBlank: true);
+                var modelId = scan.Integer(item, "ramId", path, 0, int.MaxValue);
+                var section = scan.String(item, "section", path, nonBlank: true);
+                var material = scan.String(item, "material", path, nonBlank: true);
+
+                // the rest of the keys is read only to be strict about its type: the comparison does not use it
+                scan.Number(item, "rotation", path);
+                scan.Integer(item, "cardinalPoint", path, 0, 9);
+                scan.Numbers(item, "offsetI", path, 3);
+                scan.Numbers(item, "offsetJ", path, 3);
+                scan.Numbers(item, "stiffnessFactors", path, 4);
+                scan.Integer(item, "axialBehavior", path, 0, 3);
+                scan.Number(item, "springI", path);
+                scan.Number(item, "springJ", path);
+                scan.Bools(item, "releases", path, StructuralMemberReleases.FlagCount);
+                scan.Numbers(item, "l1", path, 3);
+                scan.Numbers(item, "l2", path, 3);
+                scan.Numbers(item, "l3", path, 3);
+                scan.String(item, "description", path, allowNull: true);
+
+                if (id != null && modelId.HasValue && section != null && material != null)
+                {
+                    members.Add(new StructuralTransferMemberValue(id, modelId.Value.ToString(CultureInfo.InvariantCulture), section, material));
+                }
+            }
+
+            var loadItems = scan.Array(values, "loads", "$.values");
+
+            for (var index = 0; loadItems != null && index < loadItems.Count; index++)
+            {
+                var path = "$.values.loads[" + index.ToString(CultureInfo.InvariantCulture) + "]";
+                var item = scan.Object(loadItems[index], path);
+
+                if (item == null)
+                {
+                    continue;
+                }
+
+                scan.Keys(item, path, LoadValueKeys);
+
+                scan.String(item, "id", path, nonBlank: true);
+                var member = scan.String(item, "member", path, nonBlank: true);
+                var loadIndex = scan.Integer(item, "index", path, 0, int.MaxValue);
+                var direction = scan.String(item, "direction", path);
+                var value = scan.Number(item, "value", path);
+                var percent = scan.Number(item, "percent", path);
+                var isPercentage = scan.Bool(item, "isPercentage", path);
+                var axis = direction == null ? null : RamDumpReader.DirectionOf(direction);
+
+                if (direction != null && axis == null)
+                {
+                    scan.Invalid(JsonCodes.Value, path + ".direction");
+                }
+
+                if (member != null && loadIndex.HasValue && axis.HasValue && value.HasValue && percent.HasValue && isPercentage.HasValue)
+                {
+                    loads.Add(new StructuralTransferLoadValue(
+                        member,
+                        loadIndex.Value,
+                        axis.Value.Axis,
+                        StructuralForce.FromPoundsForce(axis.Value.Flip ? -value.Value + 0.0 : value.Value + 0.0),
+                        percent.Value + 0.0,
+                        isPercentage.Value));
+                }
+            }
+
+            if (values.TryGetValue("loadCase", out var caseValue) && !(caseValue is RamJsonNull))
+            {
+                var path = "$.values.loadCase";
+                var item = scan.Object(caseValue, path);
+
+                if (item != null)
+                {
+                    scan.Keys(item, path, CaseValueKeys);
+
+                    var id = scan.String(item, "id", path, nonBlank: true);
+                    var category = scan.String(item, "category", path, nonBlank: true);
+                    var selfWeight = scan.Numbers(item, "selfWeight", path, 3);
+
+                    if (id != null && category != null && selfWeight != null)
+                    {
+                        loadCase = new StructuralTransferCaseValue(id, category);
+                    }
+                }
+            }
+
+            if (scan.Diagnostics.Count != before)
+            {
+                return null;
+            }
+
+            try
+            {
+                return new StructuralTransferValues(nodes, members, loads, loadCase);
+            }
+            catch (ArgumentException)
+            {
+                scan.Invalid(JsonCodes.Value, "$.values");
+                return null;
+            }
         }
 
         private static RamReadbackReadResult Result(RamJsonScan scan, StructuralTransferReadback transfer)
