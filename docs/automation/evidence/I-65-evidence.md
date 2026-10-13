@@ -1172,3 +1172,74 @@ Hashes de la evidencia del incidente (copias de la sesión; Git puede normalizar
   `RACKPANEL`; Smoke-1 en curso en el host); I-62 `9b8b66a2`; I-52 `fb6b5648`; ningún proceso con la ruta del worktree de I-65 ni AutoCAD,
   RAM Elements o Python en ejecución.
 - **Contadores:** Codex 28 de 46; `attempts` 3, `max_attempts` 6. Sin Workers ni Codex en la recuperación.
+
+## 48. F4-T6-COMPARATOR-HARDENING — planificación, trabajo, verificación y controles (2026-10-13T22:49:13Z)
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261013T213942Z-4bec` | PLANNING (intento 3) | Codex `gpt-6-luna`/`high` (29) | A1-A8 `pass`; seis colecciones exactas; `claude-sonnet-5-5`/`high`, Deep |
+| `R20261013T214329Z-702f` | CONTROL nc4 | sin invocación | A3 `fail`, resto `pass` |
+| `R20261013T214406Z-81c3` | WORK (no lanzado) | — | AutoCAD abierto con el DLL de I-64: pospuesto (CD-I65-F4-37) |
+| `R20261013T214908Z-260e` | WORK (intento 3) | subagente `claude-sonnet-5-5`/`high` (230 mensajes) | RED `d655071b`, GREEN `6422e5b0`; 37 min; 143 llamadas; 0 errores; 0 denegaciones; ninguna invocación de un intérprete; `IMPLEMENTATION_COMPLETE` |
+| `R20261013T222951Z-ece3` | VERIFICATION | Codex (30) | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `6422e5b0` |
+| `R20261013T223652Z-da68` | CONTROL nc1 | Codex `gpt-6-luna`/`high` (31) | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Identity`: **oráculo cumplido** |
+| `R20261013T224014Z-cba7` | CONTROL nc2 | Codex `gpt-6-luna`/`high` (32) | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Scope`: **oráculo cumplido** |
+| `R20261013T224435Z-bccb` | CONTROL nc3 | Codex `gpt-6-luna`/`high` (33) | `EXECUTION_REWORK_REQUIRED/REWORK`, `FailureClass` = `FreeText`: **oráculo cumplido** |
+
+- **CI:** RED `38476630564` (Core `failure`: 131 fallidas, todas en el filtro; sin errores de compilación); GREEN `38477281815` (4/4 `success`; Core
+  14269/14269; UI 1 637 de 1 654).
+- **Controles del Owner (CD-I65-F4-32):** K1/K2 antes y después de cada cesión (planificación, trabajo, verificación, nc1-nc3) sin cambios en el
+  checkout principal (2 151 rastreados, mismo resumen SHA-256) ni en los otros worktrees; K3 informado por el Worker; K4 alcance mecánico `pass`
+  (20 archivos); K5 sin intérpretes, RAM, AutoCAD ni accesos fuera del worktree (`k5-transcript-scan.json`).
+- **Procesos:** en la entrada de nc1, un `git.exe` ilegible creado a las 22:40:03Z, cuatro segundos después del fin de la cesión, ya terminado al
+  comprobarlo: falso P-02 (precedente de F4-T4). En la salida de la planificación, del trabajo, de la verificación y de nc3, `git.exe` ilegibles
+  releídos a los 2 s y terminados.
+- **Entregable:** `StructuralReadbackComparison.cs`, `StructuralReadback.cs` (añadidos), `RamTransferReaders.cs`, `RamDumpReader.cs` y la herramienta
+  (`compare` con `--combinations-decision`, entradas iguales, `inputs` e inyección); 14 archivos de prueba nuevos o editados y fixtures de ensayo.
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T6-COMPARATOR-HARDENING/R20261013T213942Z-4bec/gate-contract.json` | `FBB75886AFB875C0…` | `aec9de59c6f2` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T213942Z-4bec/prompt.md` | `C938D28607A03A33…` | `fb6edd28e399` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T213942Z-4bec/delegation.json` | `0B4B7E30C6AB1A1E…` | `bf65ce9988b9` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T213942Z-4bec/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T213942Z-4bec/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T213942Z-4bec/relay-record.json` | `B7F00404FE2A3756…` | `fe6600967b56` |
+| `F4-T6-COMPARATOR-HARDENING-nc4/R20261013T214329Z-702f/delegation.json` | `57D8B8EAE3A1B783…` | `c99707b4c944` |
+| `F4-T6-COMPARATOR-HARDENING-nc4/R20261013T214329Z-702f/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F4-T6-COMPARATOR-HARDENING-nc4/R20261013T214329Z-702f/relay-record.json` | `27B1640E68E2CD61…` | `43197175e9fa` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T214406Z-81c3/prompt.md` | `992B82CAB5E38147…` | `c32195b8fb15` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T214406Z-81c3/not-launched.txt` | `FF023513A0777859…` | `8f76a4b24eb7` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T214908Z-260e/prompt.md` | `926BFEC89C2569F4…` | `e6ab95355589` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T214908Z-260e/worker-handoff.json` | `1A0280A0B443BB62…` | `de8aec7568fb` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T214908Z-260e/relay-record.json` | `D8D9F5E8E97B9E98…` | `1a010019946e` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T214908Z-260e/k5-transcript-scan.json` | `C7A6B190BA29A176…` | `3e0fe82d984e` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T214908Z-260e/transcript-facts.json` | `8EB504A5BEE6920F…` | `c9d67584de4a` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/prompt.md` | `F052D51347217016…` | `85e0a4f5b851` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/controller-verification.json` | `B57E534A5B67F208…` | `8c38ce2d176a` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/relay-record.json` | `81F8722BA68BE8DE…` | `0255aaa2dd8a` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/coherence.txt` | `B6BEA444F6DA957C…` | `2969a6fa566f` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/trx-summary.json` | `0A923E1A6C329C7D…` | `46c30a408a57` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/scope-mechanical.json` | `46EBE41401C34C99…` | `7e50c2eb3f78` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/coordinator-dispositions-f4t6.md` | `ECE16FAEB0AF04F5…` | `ec4f201bdda9` |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/k-f4t6-plan-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/k-f4t6-work-compare.json` | `37434A9887D381C9…` | `b4f3713d04cf` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/k-f4t6-ver-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/k-f4t6-nc1-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/k-f4t6-nc2-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING/R20261013T222951Z-ece3/k-f4t6-nc3-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING-nc1/R20261013T223652Z-da68/prompt.md` | `BD8F6DB3A62EB680…` | `dd63770749e7` |
+| `F4-T6-COMPARATOR-HARDENING-nc1/R20261013T223652Z-da68/mutation.json` | `035458857D0E54AC…` | `aeaaf7ab1b41` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING-nc1/R20261013T223652Z-da68/controller-verification.json` | `60C03A2D8039CD7C…` | `b5e9948af569` |
+| `F4-T6-COMPARATOR-HARDENING-nc1/R20261013T223652Z-da68/relay-record.json` | `116CFF9846F4844C…` | `bde3f0d95b9f` |
+| `F4-T6-COMPARATOR-HARDENING-nc2/R20261013T224014Z-cba7/prompt.md` | `7B8456174AFAD227…` | `bebe7b01d97c` |
+| `F4-T6-COMPARATOR-HARDENING-nc2/R20261013T224014Z-cba7/mutation.json` | `C58BA31AA2A3479E…` | `1b24c86c38ac` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING-nc2/R20261013T224014Z-cba7/controller-verification.json` | `E9255794F8F44564…` | `8f0ce84876ab` |
+| `F4-T6-COMPARATOR-HARDENING-nc2/R20261013T224014Z-cba7/relay-record.json` | `DD3C26323AB640F8…` | `9cf631245647` |
+| `F4-T6-COMPARATOR-HARDENING-nc2/R20261013T224014Z-cba7/scope-mechanical.json` | `59201A8F17915797…` | `be790c1012cd` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING-nc3/R20261013T224435Z-bccb/prompt.md` | `236EBF9F1797BE69…` | `12df5fb1b274` |
+| `F4-T6-COMPARATOR-HARDENING-nc3/R20261013T224435Z-bccb/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F4-T6-COMPARATOR-HARDENING-nc3/R20261013T224435Z-bccb/controller-verification.json` | `E7CD35D2E3A169DE…` | `678bf9925206` |
+| `F4-T6-COMPARATOR-HARDENING-nc3/R20261013T224435Z-bccb/relay-record.json` | `F9C3195A982EA853…` | `ae7c8c7a0fff` |

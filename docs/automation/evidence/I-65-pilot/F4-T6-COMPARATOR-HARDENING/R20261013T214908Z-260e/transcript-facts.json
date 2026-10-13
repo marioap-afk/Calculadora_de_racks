@@ -1,0 +1,22 @@
+{
+ "transcript_sha256": "2B98C11ED5AB8AF4FEE3C7F70E2F9A75719950ADC964BC33D7F8E79293515180",
+ "assistant_messages": 230,
+ "models": {
+  "claude-sonnet-5-5": 230
+ },
+ "tool_uses": 143,
+ "tool_errors": 0,
+ "denials": 0,
+ "python_commands": [
+  "{\"command\": \"cd C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/src/RackCad.Application/StructuralAnalysis; cp StructuralReadbackComparison.cs ../../../artifacts/orchestration/I-65/F4-T6-COMPARATOR-HARDENING/3/R20261013T214908Z-260e/work/Comparison.original.cs; "
+ ],
+ "prompt_sha256_normalized": "E4CC0C15BFC3EE4E717C27514276000EC38A24743227E3AED72F248DBF0A4EEC",
+ "prompt_file_sha256": "926BFEC89C2569F49E3AA2644FE30F9773C6DC7E21D857A4F5B6196D74CA0267",
+ "prompt_match": {
+  "raw": true,
+  "dedent2_skip1": false,
+  "dedent2": false
+ },
+ "prompt_contained": true,
+ "first_user_len": 17677
+}

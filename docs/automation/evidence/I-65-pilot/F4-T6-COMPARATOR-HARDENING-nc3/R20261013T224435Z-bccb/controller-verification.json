@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T6-COMPARATOR-HARDENING",
+  "RunId": "R20261013T224435Z-bccb",
+  "DelegationRunId": "R20261013T213942Z-4bec",
+  "WorkRunId": "R20261013T214908Z-260e",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true, LaunchedPid=null; Cession.SessionOperated=false. La terminación queda confirmada."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json tiene Schema=rackcad-worker-handoff/v1, TaskId=F4-T6-COMPARATOR-HARDENING, RunId=R20261013T214908Z-260e, DelegationRunId=R20261013T213942Z-4bec, Attempt=3, BaseSha=ef3536156f6a69cdee42a687930877eefc4a585b, CurrentSha=6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1 y Pushed=true. OutputWrittenUtc=2026-10-13T22:27:31Z es posterior a Cession.StartUtc=2026-10-13T21:49:15Z; la copia de entrada corresponde al relevo indicado."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí las autoridades UNIT_DOC y UNIT_CHANGE en AuthorityRevision ef3536156f6a69cdee42a687930877eefc4a585b y las EXTERNAL en MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git merge-base devolvió bb0d5522e8411f66a51fdfb3f1f0d0514b737453; git diff --name-only entre ese merge-base y AuthorityRevision muestra ADR-0050, clasificado UNIT_CHANGE. Las autoridades EXTERNAL indicadas en la delegación no muestran diferencias; git diff --name-only AuthorityRevision BaseSha está vacío."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé delegation.json con gate-contract.json: AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions, Authorities y RequiredTests son iguales. RequiredTests exige tests/RackCad.Tests/RackCad.Tests.csproj, filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisComparison, MinSelected=101 y ExpectRed=true; las aceptaciones A1-A8 del registro de planificación constan en pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current=architecture/interop-analisis-estructural; git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural devuelven 6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1. git merge-base --is-ancestor BaseSha HEAD y git merge-base --is-ancestor RedSha HEAD devuelven 0; BaseSha ef353615 y RedSha d655071b están en el rango declarado."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts registra LsRemoteSha=6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1 y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, coherentes con Entry y MainSha. La orden git ls-remote origin refs/heads/architecture/interop-analisis-estructural no pudo conectarse a GitHub en este sandbox; uso los RemoteFacts registrados."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha da 20 archivos y cada uno queda cubierto por AllowedWriteScope de delegation.json: src/RackCad.Application/StructuralAnalysis/StructuralReadbackComparison.cs; src/RackCad.Application/StructuralAnalysis/StructuralReadback.cs; src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamTransferReaders.cs; src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamDumpReader.cs; tools/RackCad.StructuralAnalysis.RamTool/RamToolCommands.cs; tools/RackCad.StructuralAnalysis.RamTool/RamToolCompare.cs; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/generated.dump.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/generated.readback.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/manual-a.dump.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/manual-b.dump.json; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningDumpReaderTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningIncompleteTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningMetricTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningReadbackTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningRehearsalTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningSupport.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningToolTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonRowTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonSupport.cs. Intersección con ForbiddenWriteScope: ninguna."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short está vacío; relay-record-work.json Entry.CleanTree=true y no registra operación Git en curso. git check-ignore -v sobre la ruta de entradas devuelve .gitignore:3: artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: push, ref refs/heads/architecture/interop-analisis-estructural, head 6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1, completed/success y los cuatro jobs requeridos en success. RemoteFacts.RedRun: push a la misma ref, head d655071b4d00b30526292df6b1d765477cb83446, completed/failure; el job Core falló. La lectura del TRX RED confirma fallos de pruebas, no de compilación."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Lectura directa de core.trx RED (38476630564): 14 269 resultados, selección requerida 272, 141 pasaron y 131 fallaron; Counters error=0 y las fallas son aserciones/excepciones. core.trx GREEN (38477281815): 14 269/14 269 y selección 272/272 pasaron, concordando con TestResults de la entrega. A65-F4-01: StructuralAnalysisComparisonHardeningMetricTests.The_nodes_are_paired_by_euclidean_distance_not_by_the_largest_coordinate observa (0.015,0.015,0) FAIL; (0.010,0.010,0) PASS; (0.0116,0.0116,0.0116) FAIL. The_value_of_a_load_is_relative_to_the_manual_value observa m=999/g=1000 FAIL y m=1000/g=1000.9 PASS; A_manual_value_of_zero_is_compared_in_absolute_value_against_one_millionth_of_a_pound observa m=0/g=0 PASS y m=0/g=0.001 FAIL. A65-F4-02: IncompleteTests.Combinations_nobody_could_read_never_give_a_pass_and_no_failing_row_gives_incomplete, ToolTests.Combinations_declared_unread_with_a_decision_end_incomplete_with_their_own_code y Declaring_combinations_unread_without_a_decision_with_a_text_is_invalid_usage; pasan en GREEN. A65-F4-03: ReadbackTests.The_values_are_read_strictly_and_a_variant_is_never_approved, The_values_the_build_writes_are_read_into_the_neutral_type y A_dump_that_does_not_agree_with_the_values_is_rejected_with_the_first_mismatch; D1 dispone que la falta de nudos I/J en los values de read_back es una limitación registrada: se cotejan los campos disponibles y la conectividad sigue comparándose con el manual. Para entradas, ToolTests.The_same_file_as_generated_and_manual_is_rejected, The_same_path_written_in_another_form_is_the_same_file, Two_files_with_the_same_bytes_as_generated_and_manual_are_rejected; IncompleteTests.A_report_without_inputs_is_byte_for_byte_the_one_of_before. A65-F4-04: ToolTests.The_mark_is_recognised_only_in_the_tool_and_not_in_the_product y A_fault_injection_package_with_a_failed_read_back_is_rejected_citing_the_injection; la guarda existente ElInv14EximeExactamenteCuatroRutasExactas pasó. A65-F4-05: DumpReaderTests.An_absent_category_is_invalid, An_empty_category_on_a_case_with_loads_is_invalid_and_the_diagnostic_names_the_case, An_exactly_empty_category_on_a_case_without_loads_is_valid y The_reader_records_that_the_semantics_of_an_empty_category_are_not_measured pasaron. A65-F4-06: RehearsalTests.The_manual_dump_written_with_the_values_of_the_engineering_package_passes observa -90 y 270 PASS; A_twist_of_plus_ninety_in_the_columns_fails_the_local_axes y Load_positions_typed_with_one_decimal_fail_the_loads y A_member_drawn_the_wrong_way_round_fails_the_connectivity pasan al observar sus FAIL esperados. The_other_tolerances_of_the_freeze_and_the_other_rows_do_not_change pasó; StructuralAnalysisComparisonVerdictTests.The_tolerances_are_the_ones_of_the_freeze pasó en Core. RT=git diff --name-only ChainBaseSha RedSha -- tests/ produce 14 rutas: cuatro fixtures rehearsal, seis archivos nuevos StructuralAnalysisComparisonHardening* de prueba/soporte, y StructuralAnalysisComparisonRowTests.cs, StructuralAnalysisComparisonToolTests.cs, StructuralAnalysisComparisonSupport.cs. git diff --name-only RedSha CurrentSha -- tests/ está vacío, por lo que ChainRedFiles resultante es exactamente RT (esas 14 rutas). UI TRX: total 1654, executed/passed 1637, failed 0; diferencia 17 por atributos Skip conforme al logger."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format='%H%n%B' BaseSha..CurrentSha muestra ambos commits con el trailer declarado literalmente: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. Participant del registro efectivo: ModelEffective=claude-sonnet-5-5 y EffortEffective=high."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant registra ModelRequested=sonnet, ModelEffective=claude-sonnet-5-5, EffortRequested=high y EffortEffective=high, coherentes con la delegación y el trailer."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "El escaneo de los campos de texto libre de worker-handoff.json contra AUTOMATION_PLAN §16.10 devuelve una coincidencia en WorkCompleted."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones, 0 avisos de límite y ninguna invocación de intérprete; no hay denegaciones ni órdenes fallidas pendientes reportadas."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "worker-handoff.json WorkCompleted contiene un término reservado para la verificación; es la única comprobación no aprobada.",
+    "D1 registra que read_back no aporta los extremos I/J de los miembros; el Coordinator dispone cotejar los campos disponibles y conservar la comparación de conectividad contra el manual.",
+    "relay-record-work.json registra DEV-I65-F4-19: 30 llamadas usaron rutas relativas después de cambiar a una ruta absoluta en la misma llamada; la disposición D2 confirma que quedaron dentro del worktree y que no activan parada."
+  ],
+  "RecommendedNextAction": "Corregir WorkCompleted para eliminar la coincidencia reservada y emitir una entrega actualizada para volver a verificar."
+}

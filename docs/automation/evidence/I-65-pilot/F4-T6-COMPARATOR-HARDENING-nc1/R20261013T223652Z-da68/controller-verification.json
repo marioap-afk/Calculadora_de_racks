@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T6-COMPARATOR-HARDENING",
+  "RunId": "R20261013T223652Z-da68",
+  "DelegationRunId": "R20261013T213942Z-4bec",
+  "WorkRunId": "R20261013T214908Z-260e",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "inputs/relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "inputs/worker-handoff.json: TaskId, RunId=R20261013T214908Z-260e, DelegationRunId y Attempt=3 coinciden; OutputWrittenUtc 22:27:31Z es posterior a Cession.StartUtc 21:49:15Z. La entrega está presente y sus campos de relevo son válidos."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí AUTOMATION_PLAN §§16.3, 16.8–16.10 en MainSha bb0d5522 y las autoridades UNIT_DOC/UNIT_CHANGE en AuthorityRevision ef353615; merge-base(bb0d5522, ef353615)=bb0d5522. `git show` confirmó las secciones externas en MainSha y decisiones §41 en AuthorityRevision. `git diff --name-only ef353615 6422e5b -- docs/ AGENTS.md` vacío."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé inputs/delegation.json con gate-contract.json: AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions y RequiredTests concuerdan; RequiredTests exige FullyQualifiedName~RackCad.Tests.StructuralAnalysisComparison, MinSelected=101, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "Git: HEAD=6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1; `git merge-base --is-ancestor` devuelve 0 para BaseSha ef353615 y RedSha d655071b; refs/remotes/origin/architecture/interop-analisis-estructural=6422e5b0. Pero la entrega declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, distinto del HEAD y del remoto; no cumple la identidad exacta exigida."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "inputs/relay-record-work.json RemoteFacts: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y LsRemoteSha=6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1. `git ls-remote` no fue necesario: uso esos hechos registrados, como permite la instrucción. Entry.HeadSha y Entry.LsRemoteSha coinciden."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "`git diff --name-only ef353615 6422e5b` devuelve 20 rutas. Revisadas una a una contra AllowedWriteScope de delegation.json: producción cae en los archivos exactos permitidos o `tools/RackCad.StructuralAnalysis.RamTool/`; las rutas de pruebas caen bajo `tests/RackCad.Tests/StructuralAnalysis/`. Ninguna coincide con ForbiddenWriteScope. `git diff --stat` confirma 20 archivos; scope-mechanical.json también registra 20."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "`git status --porcelain=v1` vacío; Entry.CleanTree=true. `git check-ignore -v` sobre inputs/worker-handoff.json confirma `.gitignore:3:artifacts/`."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX: CurrentRun 38477281815, event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=6422e5b0, completed/success; los cuatro jobs requeridos están en success. Core TRX: 14269/14269 aprobadas, 0 fallidas. UI TRX: total 1654, executed/passed 1637, failed 0, notExecuted=0; la diferencia de 17 corresponde a los Skip registrados por esta convención del logger. RedRun 38476630564 es push de la misma rama sobre d655071b, completed/failure en Core."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Core RED: filtro seleccionado=272, 141 aprobadas, 131 fallidas; total=14269. Las 131 fallas son resultados de pruebas, no un fallo de compilación; relay-record-work registra fallas de aserción/excepción. TRX Core GREEN: filtro 272/272 aprobadas y suite 14269/14269; el TRX de entrega concuerda. `git diff --name-only d655071b 6422e5b -- tests/` vacío. RT/ChainRedFiles acreditados (14): tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/{generated.dump.json,generated.readback.json,manual-a.dump.json,manual-b.dump.json}; StructuralAnalysisComparisonHardening{DumpReader,Incomplete,Metric,Readback,Rehearsal,Support,Tool}Tests.cs; StructuralAnalysisComparisonHardeningSupport.cs; StructuralAnalysisComparisonRowTests.cs; StructuralAnalysisComparisonSupport.cs; StructuralAnalysisComparisonToolTests.cs. Cobertura observada en código de pruebas del SHA 6422e5b y aprobada en TRX: A65-F4-01 `The_nodes_are_paired_by_euclidean_distance_not_by_the_largest_coordinate` (diagonales 0.015/0.015/0 FAIL, 0.010/0.010/0 PASS, 0.0116/0.0116/0.0116 FAIL), más bordes 0.019/0.021 en prueba existente; `The_value_of_a_load_is_relative_to_the_manual_value` (999/1000 FAIL, 1000/1000.9 PASS), `A_manual_value_of_zero_is_compared_in_absolute_value_against_one_millionth_of_a_pound` (0/0 PASS, 0/0.001 FAIL). A65-F4-02 `Combinations_a_dump_could_not_read_are_not_evaluated` y pruebas Incomplete verifican INCOMPLETE, opción `--combinations-decision` y salida propia. A65-F4-03 `A_generated_dump_that_does_not_agree_with_the_values_of_the_read_back_is_rejected`, casos de lectura estricta/valores ausentes, mismas rutas/bytes rechazados, inputs opcionales y `A_report_without_inputs_is_byte_for_byte_the_one_of_before`. A65-F4-04 `The_mark_is_recognised_only_in_the_tool_and_not_in_the_product` y casos de inyección rechazados. A65-F4-05 pruebas de categoría ausente/null/espacios/vacía con cargas y comentario NO MEDIDA. A65-F4-06 `The_manual_dump_written_with_the_values_of_the_engineering_package_passes` (dos variantes), `A_twist_of_plus_ninety_in_the_columns_fails_the_local_axes`, `Load_positions_typed_with_one_decimal_fail_the_loads` y `A_member_drawn_the_wrong_way_round_fails_the_connectivity`; todos pasan. También se cubren tolerancias/filas informativas sin cambio y el invariante operativo se resuelve mediante registros K1–K5 y disposición D2."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "`git log --format=%B ef353615..6422e5b` muestra ambos commits de la cadena con `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. La entrega declara literalmente `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`; concuerda con el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation solicita claude-sonnet-5-5, effort provider=high; relay-record-work Notes identifica al Worker efectivo como claude-sonnet-5-5 con high. Concuerda con RoutingEnforcement=required."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé los campos de texto libre de worker-handoff.json indicados por AUTOMATION_PLAN §16.10; no encontré coincidencias con sus términos restringidos."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes registra 0 denegaciones, 0 errores de herramienta y 0 avisos de límite; Cession.SessionOperated=false y Outcome.DeathConfirmed=true. D2 registra DEV-I65-F4-19 como desviación de procedimiento sin efectos; no activa C-12."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La copia de entrega declara CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, mientras Git, el remoto y el registro de trabajo identifican 6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1.",
+    "D1 registra la limitación de ligadura de `values` sin nudos I/J de miembros; se aplicó la lectura indicada en la disposición, sin convertirla en defecto.",
+    "D2 clasifica DEV-I65-F4-19 como desviación de procedimiento sin efectos; las notas registran el uso de `cd` a ruta absoluta con nombres relativos en la misma llamada.",
+    "La copia de TRX UI informa 1637 ejecuciones aprobadas y 17 Skip reflejados por la diferencia entre total y ejecutadas."
+  ],
+  "RecommendedNextAction": "Corregir la identidad CurrentSha de la entrega y volver a ejecutar la verificación sobre la punta Git correspondiente."
+}
