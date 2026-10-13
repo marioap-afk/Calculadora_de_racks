@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §82; evidencia §160-§162) — revisión formal de A-6 ronda 2 ejecutada: CHANGES REQUIRED (A62-A6R2-R1 y R2; O1-O5), auditor NOT_ACCREDITED (único motivo: falta run.json por un defecto de registro del lanzador); nota de aislamiento preventivo mínimo para I-65 entregada; esperar disposición del Coordinator; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §83; evidencia §163) — preparar A-6 ronda 3 (A6-3 regla 6, A6-5, A6-7; mismos blobs 9a829b0e/434ef1fc): resolver A62-A6R2-R1 y R2 con pruebas del aceptante sin Codex, decidir O1-O5, guardas y preflight, publicar PROPUESTA si conforme; corregir el procedimiento de lanzamiento del kit siguiente; sin revisión formal sin disposición; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

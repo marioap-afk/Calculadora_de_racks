@@ -4278,3 +4278,11 @@ solo desde artefactos custodiados.
   5. medir antes de confiar.
 - Lista lo que I-65 puede hacer con su propia autoridad y lo que queda reservado al Owner. No modifica I-65 ni la infraestructura compartida, no
   inicia una enmienda C1-C3 y no la declara implementada.
+
+## 163. Decisiones §83: preparación de A-6 ronda 3 autorizada, limitada a A6-3 regla 6, A6-5 y A6-7; revisión de la ronda 2 conservada
+
+- La revisión de la ronda 2 (evidencia §161) queda tal cual: NOT_ACCREDITED, CHANGES REQUIRED, sin `run.json` reconstruido. Sus REQUIRED
+  A62-A6R2-R1 y A62-A6R2-R2 son el objeto de la ronda 3; los cinco OPTIONAL reciben una decisión explícita.
+- Los blobs del instrumento (`9a829b0e`) y del aceptante (`434ef1fc`) no cambian. Las pruebas del aceptante con N4, nc1 y VERIFY sin
+  instrumento usan datos sintéticos o custodiados, sin Codex.
+- El kit de la revisión siguiente se lanzará con la orden congelada literal y una comprobación previa de registro que no ejecuta el modelo.
