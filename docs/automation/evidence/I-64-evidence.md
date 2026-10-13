@@ -4028,3 +4028,50 @@ Siguiente: **COORDINATOR_SMOKE1_REVIEW_REQUIRED**.
 - Sin invocaciones de modelos.
 - Mensajes a la sesión «I - 52»: `5a0f1060`, `bb7a8869`, `661aac07`, `88076361`, `f6fd16b0`.
 - HEAD = remoto = `4d79e910` antes de este commit; `main` `bb0d5522`.
+
+## 66. Smoke-1 STOP CONFIRMED; F1-T3B-HOST-UI-C1: colocación inicial de la paleta (RED `0d2fddf8`, GREEN `b874705e`)
+
+**Orden (literal):** «I-64 — Smoke-1 STOP disposition / F1-T3B-HOST-UI-C1 authorized», en
+`docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-C1/coordinator-authorization.md`.
+- Smoke-1 `R20261013T011654Z-184b` = **STOP CONFIRMED**. Causa: en SM-03 la `PaletteSet` del Workspace quedó inutilizable y fuera de la
+  pantalla; el Owner hizo bien en no desviarse. Es un hallazgo de producto contra D-01.
+- El Candidato `4d79e910` pasa a **HISTORICAL_SMOKE1_STOP_CANDIDATE** y no se reutiliza. La evidencia de Smoke-1 y SM-03 no se tocan.
+- Se autoriza una corrección estrecha, **F1-T3B-HOST-UI-C1**: colocación y acople iniciales deterministas al crear la paleta (no en
+  cada `Show()`), sin GUID ni persistencia, sin escrituras de registro, perfil, ajustes ni seguridad, y sin cambios en puente, sesiones
+  ni DWG.
+
+**Ejecución** (sesión responsable, sin invocaciones de modelos; la orden no nombró celdas):
+- **Inspección de la API:** metadatos de `acmgd.dll` de AutoCAD 2025, sin cargarlo y sin AutoCAD. Inventario en
+  `F1-T3B-HOST-UI-C1/paletteset-api-acad2025.txt`. Se usan `DeviceIndependentSize`, `DeviceIndependentMinimumSize`,
+  `InitializeFloatingPosition(Rect)` y `Dock`.
+- **RED `0d2fddf8`** (CI 38341291918): 4 guardas nuevas en `WorkspacePaletteHostSourceGuardTests`. La CI dio exactamente las 2 nuevas en
+  FAIL (Failed 2, Passed 13124, Total 13126) y Plugin skipped.
+- **GREEN `b874705e`** (CI 38341458322 push 4/4): `WorkspacePaletteHost.ApplyInitialPlacement()`, llamado una vez desde el constructor
+  tras `AddVisual` y antes de las suscripciones. Fija:
+  - mínimo 240 × 320 y tamaño 320 × 560 en unidades independientes de los DPI;
+  - rectángulo flotante (80, 80, 320, 560);
+  - `Dock = Right`.
+
+  La colocación está contenida con `LogFault`. `Show()` no cambia. Diff: 2 archivos, +166 / −1.
+- **Verificación local sobre `b874705e`:**
+  - Core enfocada 531/531 y UI enfocada 66/66;
+  - Core Full 13126/13126 y UI Full 1701/1718 (17 Skip);
+  - Debug UI y Debug Plugin en PASS (solo MSB3277);
+  - DLL `FB9523EEA2EDA1DDB53D1CAD1FCB0D6743F4B0F81AC7198645226B96984180EF`.
+
+**Paquete de cierre delta:** `docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-C1/delta-close-package.md`. Incluye:
+- identidad, API, archivos y pruebas;
+- la confirmación de que no hay persistencia ni seguridad nuevas;
+- la comparación con D-01;
+- la evidencia de Smoke-1 conservada (`git diff 30d600ad HEAD -- …/F1-SMOKE-1` vacío);
+- los límites: comportamiento real en el host sin verificar, sin AutoCAD.
+
+**Estado:**
+- `smoke1_status` = STOP CONFIRMED.
+- `f1_t3b_host_ui_c1_status` = GREEN y verificado, paquete preparado.
+- Siguiente: **COORDINATOR_T3B_C1_CLOSE_REQUIRED**.
+- Sin AutoCAD, sin otra ocurrencia de Smoke-1 y sin F2.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- HEAD = remoto = `b874705e` antes de este commit; `main` `bb0d5522`.
