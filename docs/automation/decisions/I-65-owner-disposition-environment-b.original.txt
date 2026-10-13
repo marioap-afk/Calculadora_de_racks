@@ -1,0 +1,70 @@
+I-65 — OWNER DISPOSITION
+Controlled Resumption — Execution Environment B
+He revisado el informe de recuperación de I-65.
+Acepto el preflight y la conservación de F4-T1 a T4.
+1. Decisión del Owner
+Execution Mechanism = OPTION B.
+Selecciono un entorno independiente, administrado por el Owner o TI, para completar las tareas pendientes de F4.
+La prioridad es que los Workers no tengan acceso de escritura al checkout principal ni a otros worktrees reales.
+No autorizo volver a usar el mecanismo anterior de subagentes sobre el entorno principal.
+2. Preparación del entorno
+Prepara una especificación mínima para el entorno aislado, incluyendo:
+
+* Sistema operativo requerido.
+* .NET SDK 8.0.423.
+* Git y dependencias necesarias.
+* Acceso controlado al repositorio y únicamente a la rama de I-65.
+* Directorios permitidos para código, compilación y evidencias.
+* Ejecución de Controller y Worker bajo I-61.
+* Conservación de commits RED/GREEN, CI y pruebas.
+
+No instales herramientas ni modifiques configuraciones reales desde esta sesión.
+Presenta los pasos que deberá realizar el Owner o TI para disponer del entorno.
+3. Unidad pendiente de F4
+Acepto la descomposición en dos cadenas:
+Cadena 1 — Comparador
+Resolver A65-F4-01, 02, 03, 04, 05 y realizar el ensayo A65-F4-06.
+Cadena 2 — Plugin
+Completar T5 y el comando `RACKRAMPAQUETE`, manteniendo las fronteras del Freeze.
+Ambas cadenas quedan aprobadas como alcance propuesto, pero no autorizadas todavía para implementación.
+4. Decisiones técnicas preliminares
+A65-F4-01: adoptar una métrica euclídea para el emparejamiento de nodos, con tolerancia de 0.02 in y prueba diagonal de discriminación.
+A65-F4-02: no permitir que una comparación parcial de combinaciones produzca PASS global. Exigir una decisión explícita y una comprobación completa del alcance evaluado.
+A65-F4-05: corregir el manejo de categorías vacías conforme a la semántica verificada del proveedor, manteniendo rechazo seguro ante datos ambiguos.
+Estas decisiones no autorizan todavía cambios de código.
+5. Conflicto con I-64
+Antes de implementar T5:
+
+1. Verifica qué iniciativa integrará primero.
+2. Coordina las modificaciones de los censos de comandos.
+3. No sobrescribas los cambios de I-64.
+4. Mantén los comandos `RACKPANEL` y `RACKRAMPAQUETE` en los censos cuando ambos correspondan al estado integrado.
+5. Respeta las ventanas de host de I-52 e I-64.
+
+No modifiques ramas ajenas.
+6. Presupuesto
+Acepto provisionalmente la estimación de +16 invocaciones Codex y +2 intentos.
+No quedan habilitados para ejecución hasta que autorice expresamente la reanudación.
+No reinicies ni alteres los contadores actuales.
+7. Ingeniería
+Puedes preparar en paralelo el paquete de verificación de secciones y materiales para que lo revise un ingeniero.
+No cambies filas `proposed` a `verified` sin su firma, fuentes y comprobaciones.
+La diferencia de peso unitario de −0.62 % permanece registrada como diferencia no resuelta y no debe ocultarse ajustando tolerancias.
+No ejecutes todavía RAM Elements.
+8. Entregable inmediato
+Presenta únicamente:
+
+1. Configuración mínima recomendada del entorno aislado.
+2. Requisitos para el Owner o TI.
+3. Cómo trasladar la rama de I-65 sin exponer otros checkouts.
+4. Cómo recuperar commits y evidencias RED/GREEN.
+5. Compatibilidad con el protocolo I-61.
+6. Condiciones verificables para autorizar la implementación.
+7. Conflictos de integración y coordinación pendientes.
+
+No generes nuevos ciclos documentales ni implementes código.
+ENVIRONMENT B = SELECTED.
+ENVIRONMENT DEPLOYMENT = NOT AUTHORIZED.
+F4 IMPLEMENTATION = NOT AUTHORIZED.
+RAM EXECUTION = NOT AUTHORIZED.
+Detente tras el informe y solicita autorización específica antes de comenzar cualquier implementación.

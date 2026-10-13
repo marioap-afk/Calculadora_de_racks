@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-65
 title: Structural Analysis Interop Foundation + RAM Elements Adapter
 type: architecture
-status: f4-incomplete-blocked
+status: f4-implementation
 workflow: V2
 conceptual_initiative: I-65
 delivery_unit: I-65
@@ -26,7 +26,7 @@ freeze_ref: docs/initiatives/I-65-proposal-v3.1.md
 freeze_delta_ref: null
 amendment_refs: []
 ov_assignment_ref: docs/initiatives/I-65-proposal-v3.1.md#5
-decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-authorization-f3.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-preparation.original.txt, docs/automation/decisions/I-65-owner-authorization-f4.original.txt, docs/automation/decisions/I-65-owner-disposition-f4t3.original.txt, docs/automation/decisions/I-65-owner-decision-f4-option-c.original.txt, docs/automation/decisions/I-65-owner-authorization-checkout-restoration.original.txt, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
+decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-authorization-f3.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-preparation.original.txt, docs/automation/decisions/I-65-owner-authorization-f4.original.txt, docs/automation/decisions/I-65-owner-disposition-f4t3.original.txt, docs/automation/decisions/I-65-owner-decision-f4-option-c.original.txt, docs/automation/decisions/I-65-owner-order-coordinator-recovery.original.txt, docs/automation/decisions/I-65-owner-disposition-environment-b.original.txt, docs/automation/decisions/I-65-owner-disposition-environment-b-architecture.original.txt, docs/automation/decisions/I-65-owner-decision-publication-simplification.original.txt, docs/automation/decisions/I-65-owner-disposition-model-s1.original.txt, docs/automation/decisions/I-65-owner-disposition-adr0046-exception.original.txt, docs/automation/decisions/I-65-owner-disposition-return-original-environment.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-resumption.original.txt, docs/automation/decisions/I-65-owner-authorization-checkout-restoration.original.txt, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
 evidence_ref: docs/automation/evidence/I-65-evidence.md
 automation_state_path: docs/automation/state/I-65.yml
 requires_ci: true
@@ -37,7 +37,7 @@ requires_owner_validation: true
 automation:
   enabled: false
   auto_merge: false
-  max_attempts: 3
+  max_attempts: 6
 ---
 
 # I-65 — Structural Analysis Interop Foundation + RAM Elements Adapter
@@ -123,9 +123,10 @@ autorizada por el Owner (decisiones §9), se ejecutó en dos tareas (decisiones 
 (decisiones §17), se ejecutó en dos tareas y está **cerrada** (decisiones §22). De F4 el Owner autorizó **solo la preparación**, que está completa
 (decisiones §23-§25; [preparación](I-65-f4-preparation.md) y [paquete de validación de ingeniería](I-65-f4-engineering-validation-package.md));
 su implementación se autorizó de forma condicional, solo F4 y sin corridas en RAM (decisiones §26;
-[implementación](I-65-f4-implementation.md)), y por decisión del Owner (Option C, decisiones §38) está **detenida: INCOMPLETE / BLOCKED**,
-con T1-T4 verificadas y T5 sin código ([informe parcial](I-65-f4-partial-closure.md)); IMPLEMENTATION AUTHORIZATION = NO; la continuación
-de F4 y los gates posteriores esperan una nueva decisión del Owner.
+[implementación](I-65-f4-implementation.md)); por decisión del Owner (Option C, decisiones §38) quedó **detenida: INCOMPLETE / BLOCKED**,
+con T1-T4 verificadas y T5 sin código ([informe parcial](I-65-f4-partial-closure.md)), y el Owner la **reanudó** el 2026-10-13 solo para
+F4-T6 y F4-T5 en el entorno original, con el riesgo residual aceptado (decisiones §40-§41; [implementación](I-65-f4-implementation.md) §9-§11);
+sin RAM y sin GATE PASS de F4 antes de la validación real.
 
 ## 9. Owner Validation
 

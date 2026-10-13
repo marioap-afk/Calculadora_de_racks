@@ -1,0 +1,87 @@
+I-65 — OWNER DISPOSITION
+Environment B — Architecture Approval and Deployment Preparation
+He revisado la especificación del entorno B.
+1. Decisión
+ENVIRONMENT B = APPROVED IN PRINCIPLE.
+Selecciono una máquina virtual Windows independiente para continuar I-65.
+Para la primera etapa:
+GitHub access model = S (no write credentials inside B).
+La VM no tendrá credenciales que permitan modificar ramas remotas.
+Esta decisión es provisional hasta verificar la compatibilidad del Modelo S con los requisitos de I-61.
+2. Preparación autorizada
+Autorizo preparar la documentación operativa mínima para configurar el entorno B.
+No autoriza instalar o configurar todavía la VM desde esta sesión.
+El objetivo es proporcionar instrucciones concretas para que el Owner o TI realicen la preparación.
+Utiliza:
+
+* Windows 11 x64.
+* .NET SDK 8.0.423.
+* Git, gh y PowerShell.
+* Claude Code y Codex CLI.
+* Un único clon de I-65.
+* Directorios separados para compilación, temporales y evidencias.
+* Sin acceso a carpetas del checkout principal.
+* Sin AutoCAD ni RAM Elements.
+
+3. Modelo de publicación
+Evalúa y documenta el procedimiento Modelo S:
+
+1. Worker produce los commits RED/GREEN localmente dentro de B.
+2. Se exportan mediante un bundle verificable.
+3. El Owner publica desde un entorno autorizado.
+4. La CI se ejecuta sobre cada SHA.
+5. Se recuperan los resultados de CI.
+6. El Controller verifica los SHA exactos.
+7. Las evidencias se custodian con hashes.
+
+Registra cualquier desviación de I-61 que requiera autorización expresa.
+No modifiques el protocolo compartido.
+4. Comprobaciones
+Mantén E1–E9 como condiciones previas a la implementación.
+Autorizaré su ejecución cuando la VM esté preparada.
+La sonda de celdas E7 y su invocación Codex deben presupuestarse por separado como verificación inicial del entorno, sin consumir todavía las +16 invocaciones previstas para F4.
+No reinicies los contadores existentes.
+5. Decisión sobre A65-F4-05
+Acepto provisionalmente:
+
+* Categoría vacía únicamente en casos sin cargas.
+* Rechazo de categorías vacías en casos con cargas.
+* Rechazo de valores ambiguos.
+* Clasificación de la semántica como NO MEDIDA hasta validación real en RAM.
+
+No autorizo inferir comportamientos adicionales de la API.
+6. Conflictos con I-64
+Acepto la regla propuesta:
+
+* Si I-64 ya está integrada, I-65 deberá incorporar ambos comandos y reconciliar los censos.
+* Si I-64 no está integrada, cada iniciativa conserva su alcance y la segunda integración resuelve el conflicto mediante el procedimiento autorizado.
+
+No modifiques ramas ajenas.
+7. Límites
+
+* No reanudar F4.
+* No ejecutar Workers.
+* No modificar código de RackCad.
+* No cambiar I-61/I-62.
+* No instalar software ni modificar permisos desde esta sesión.
+* No ejecutar RAM Elements.
+* No conceder permisos de escritura a GitHub desde B.
+
+8. Entregable
+Presenta una guía operativa mínima para el Owner o TI:
+
+1. Creación de la VM.
+2. Herramientas y versiones.
+3. Clonación y configuración.
+4. Verificación E1–E9.
+5. Publicación RED/GREEN mediante Modelo S.
+6. Recuperación y custodia de evidencias.
+7. Riesgos y desviaciones de I-61.
+8. Autorizaciones restantes.
+
+No generes una nueva iniciativa ni ciclos documentales adicionales.
+ENVIRONMENT DESIGN = APPROVED.
+VM DEPLOYMENT = NOT AUTHORIZED IN THIS SESSION.
+F4 IMPLEMENTATION = NOT AUTHORIZED.
+WORKER EXECUTION = NOT AUTHORIZED.
+Detente tras entregar la guía.

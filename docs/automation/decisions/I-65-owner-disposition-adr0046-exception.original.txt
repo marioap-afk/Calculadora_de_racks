@@ -1,0 +1,48 @@
+# I-65 — OWNER DISPOSITION
+## ADR-0046 Exception / Model S1 Confirmation
+
+He revisado la evaluación de autoridad para las desviaciones D-S1 a D-S7.
+
+### 1. Excepción de ADR-0046
+
+**I65-ADR0046-3-S1 = A**
+
+Apruebo una excepción OWNER-RESERVED limitada a ADR-0046, Decisión 3:
+
+En I-65, exclusivamente dentro del entorno B y para la unidad de cierre de F4, el Worker finalizará con commit local y entrega, sin realizar push.
+
+El Owner publicará los SHA exactos desde el clon de publicación, primero RED y después GREEN, antes de la verificación del Controller.
+
+Esta excepción no se extiende a otras iniciativas, unidades, roles ni entornos.
+
+ADR-0046, AUTOMATION_PLAN, Workflow V2 e I-61 permanecen sin modificaciones.
+
+### 2. Desviaciones operativas
+
+**D-S1 a D-S7 = APPROVED FOR I-65 F4 ONLY.**
+
+Registra las disposiciones y sus evidencias conforme a las autoridades de la iniciativa cuando se autorice la primera operación de escritura en B.
+
+No modifiques todavía el repositorio.
+
+### 3. Estado del entorno B
+
+**ENVIRONMENT B = NOT YET CONFIRMED.**
+
+La aprobación de la arquitectura S1 no implica que la VM esté instalada ni verificada.
+
+No declares completados los ocho requisitos de preparación hasta contar con evidencia real.
+
+### 4. Siguiente paso
+
+Mantén I-65 en INCOMPLETE / BLOCKED mientras el Owner o TI prepara el entorno B.
+
+Una vez que confirme los ocho puntos de la lista, podrás solicitar autorización específica para E1–E9 y para la sonda E7 con presupuesto independiente.
+
+No ejecutes verificaciones, Workers, Codex ni implementación de F4 por ahora.
+
+**F4 IMPLEMENTATION AUTHORIZATION = NO.**
+
+**RAM EXECUTION = NO.**
+
+Detente hasta recibir confirmación de que el entorno B está preparado.

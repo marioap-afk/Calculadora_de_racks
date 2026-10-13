@@ -1,0 +1,62 @@
+I-65 — OWNER DISPOSITION
+Return to Original Environment / Explicit Risk Acceptance
+He reconsiderado la exigencia de utilizar una máquina virtual para continuar I-65.
+1. Decisión del Owner
+ENVIRONMENT B = CANCELLED FOR I-65.
+RETURN TO ORIGINAL EXECUTION ENVIRONMENT = APPROVED.
+Acepto expresamente el riesgo residual de que un Worker pueda modificar accidentalmente archivos fuera de su worktree.
+Esta decisión se fundamenta en la experiencia operativa acumulada de más de 65 implementaciones y en que el incidente identificado fue investigado, restaurado y documentado.
+No considero proporcionado exigir una infraestructura adicional de virtualización para concluir esta iniciativa.
+Esta aceptación de riesgo se limita a I-65 y no modifica las políticas generales de I-61 o I-62.
+2. Controles mínimos
+Mantén los controles existentes del protocolo I-61 y añade comprobaciones operativas no invasivas:
+
+* Estado Git del checkout principal y de los worktrees relevantes antes y después de cada cesión.
+* Registro de los hashes de archivos críticos.
+* Uso de rutas absolutas para operaciones sobre archivos y proyectos.
+* Comprobación del directorio efectivo de trabajo antes de ejecutar operaciones.
+* Revisión del alcance real de los cambios.
+* STOP ante cambios externos inesperados.
+* Custodia de transcripciones y evidencias.
+
+No modifiques permisos del sistema, configuraciones globales ni infraestructura compartida.
+No afirmes que estos controles impiden todas las escrituras externas. Su función principal es reducir errores y facilitar la detección y recuperación.
+3. Protocolo
+Utiliza Workflow V2 e I-61 en su modalidad original.
+Quedan sin aplicación las desviaciones D-S1 a D-S7 del Modelo S1 y la excepción I65-ADR0046-3-S1, porque no utilizaremos el entorno B.
+Registra su sustitución por esta disposición sin borrar las decisiones históricas.
+Conserva Controller, Worker, RED/GREEN, controles negativos y CI.
+4. Reanudación de F4
+Autorizaré la continuación de F4 en dos cadenas:
+Cadena 1 — Comparador
+Resolver A65-F4-01, 02, 03, 04, 05 y 06.
+Cadena 2 — Plugin
+Completar F4-T5 e implementar RACKRAMPAQUETE.
+Conservar íntegramente F4-T1 a T4.
+Antes de ejecutar nuevas delegaciones, comprueba las autoridades actuales, el estado del repositorio y los conflictos con I-64.
+5. Presupuesto
+Apruebo como presupuesto para completar F4:
+
+* Codex: incrementar el límite total de 30 a 46 invocaciones.
+* Attempts: incrementar `max_attempts` de 3 a 5.
+
+No reinicies los contadores históricos.
+El presupuesto adicional se limita a las dos cadenas pendientes.
+6. Restricciones
+
+* No modificar el Freeze.
+* No modificar I-61/I-62.
+* No ejecutar todavía RAM Elements.
+* No avanzar a F5.
+* No modificar ramas ajenas.
+* No sobrescribir trabajo existente.
+* No declarar GATE PASS sin las verificaciones correspondientes.
+
+7. Siguiente paso
+Realiza el preflight de reanudación y presenta el contrato de las dos cadenas pendientes.
+Si el preflight es satisfactorio, solicita una confirmación final antes de ejecutar el primer Worker.
+RISK ACCEPTANCE = APPROVED.
+ORIGINAL ENVIRONMENT = APPROVED.
+F4 IMPLEMENTATION = PENDING FINAL PREFLIGHT.
+RAM EXECUTION = NO.
+Continúa sin preparar máquinas virtuales ni nuevos mecanismos de aislamiento.

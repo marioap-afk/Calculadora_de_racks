@@ -1,0 +1,91 @@
+I-65 — OWNER DISPOSITION
+Environment B / Model S1 — Approval and Controlled Deployment Preparation
+He revisado la comparación entre S1 y S2.
+1. Decisión del Owner
+PUBLICATION MODEL = S1 — APPROVED.
+Selecciono publicación manual mediante bundles verificados y un clon de publicación independiente en el host.
+Descarto S2 para I-65. Su posible desarrollo como componente reutilizable corresponderá a I-62.
+La prioridad es completar F4 sin introducir nuevos participantes automáticos ni credenciales de escritura dentro del entorno Worker.
+2. Desviaciones de I-61
+D-S1 a D-S7 = APPROVED FOR I-65 ONLY, sujetas a que el Coordinator confirme que pueden registrarse como disposiciones de la unidad sin contradecir una autoridad superior.
+Estas excepciones no modifican I-61 ni Workflow V2.
+Se autoriza:
+
+* Commits RED/GREEN locales dentro de B.
+* Publicación manual por el Owner.
+* Entrada del relevo en dos fases.
+* Credenciales remotas de solo lectura dentro de B.
+* Traspaso de propiedad del worktree a B.
+* Nueva línea base de configuración y herramientas en B.
+* Publicación de rebases únicamente mediante autorización expresa y `--force-with-lease`.
+
+Si una autoridad vigente exige una enmienda formal, detente y presenta el conflicto. No declares válida una excepción incompatible.
+3. Entorno B
+ENVIRONMENT B = APPROVED FOR OWNER/TI PREPARATION.
+Autorizo que el Owner o TI preparen la máquina virtual conforme a la guía presentada.
+El Coordinator no debe realizar cambios administrativos ni configurar el host por su cuenta.
+Condiciones:
+
+* VM Windows independiente.
+* Un solo clon de I-65.
+* Sin carpetas compartidas de proyectos.
+* Sin credenciales de escritura de GitHub en B.
+* Sin AutoCAD ni RAM Elements.
+* Sin acceso a otros worktrees del host.
+* Disco de transferencia controlado.
+* Clon de publicación independiente.
+* Preservación de evidencias y SHA exactos.
+
+No utilizar el checkout principal como clon de publicación.
+4. Protocolo de publicación
+Adopta el procedimiento P1–P7 del Modelo S1.
+Cada publicación debe garantizar:
+
+1. Validación de hashes del bundle.
+2. BaseSha remoto exacto.
+3. Identidad de commits.
+4. Publicación RED antes de GREEN.
+5. Existencia de CI individual para RED.
+6. Publicación GREEN sin modificar sus bytes.
+7. Recuperación verificable de resultados y custodia.
+
+Ante cualquier diferencia, STOP.
+No autorices pushes forzados salvo una decisión específica de rebase.
+5. Verificación del entorno
+Cuando el Owner o TI confirme que B está preparado, podrás ejecutar E1–E9 únicamente con autorización expresa.
+La sonda E7 tendrá un presupuesto independiente de una invocación Codex y un subagente de solo lectura.
+No se descuentan todavía las 16 invocaciones previstas para completar F4.
+6. Implementación pendiente
+La unidad restante de F4 conservará dos cadenas:
+Cadena 1 — Comparador
+A65-F4-01, 02, 03, 04, 05 y 06.
+Cadena 2 — Plugin
+T5 y comando RACKRAMPAQUETE.
+Las decisiones técnicas preliminares ya comunicadas siguen vigentes.
+No implementes ninguna cadena todavía.
+El presupuesto adicional de 16 invocaciones Codex y 2 intentos permanece reservado, pero no habilitado.
+7. Coordinación
+Mantén las fronteras de I-52, I-62, I-64 e ID30.
+Antes de T5, verifica el estado de integración de I-64 y reconcilia los censos de comandos conforme al orden real.
+El checkout de I-65 en el host permanece congelado durante la propiedad de B.
+8. Siguiente entrega
+No necesito otra propuesta extensa.
+Entrega únicamente una lista operativa breve para que el Owner confirme:
+
+* VM creada.
+* Herramientas instaladas.
+* Clon de I-65 disponible.
+* Aislamiento respecto del host.
+* Credenciales de solo lectura.
+* Disco de transferencia.
+* Clon de publicación.
+* Puntos de control.
+
+Una vez que confirme esos elementos, solicita la autorización para E1–E9.
+MODEL S1 = APPROVED.
+OWNER/TI ENVIRONMENT PREPARATION = APPROVED.
+E1–E9 EXECUTION = NOT YET AUTHORIZED.
+F4 IMPLEMENTATION = NO.
+WORKER EXECUTION = NO.
+RAM EXECUTION = NO.
+Mantén I-65 en INCOMPLETE / BLOCKED hasta superar las verificaciones y recibir una autorización posterior.

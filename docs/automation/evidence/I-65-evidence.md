@@ -1145,3 +1145,30 @@ Hashes de la evidencia del incidente (copias de la sesión; Git puede normalizar
 - **Posteriores** (`restore-postcheck.json`, 07:34:24Z): hash final `A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399`; estado limpio;
   BOM presente, CRLF, sin `RamTool`, 7 proyectos existentes, sin configuraciones huérfanas; único archivo escrito desde 07:12Z: `RackCad.sln`.
 - **Sin Workers, sin Codex** (28 de 30), sin cambios de producto, sin RAM. F4 sigue INCOMPLETE / BLOCKED.
+
+## 47. Recuperación del Coordinator y reanudación controlada de F4 (2026-10-13)
+
+- **Textos del Owner** en custodia, extraídos byte a byte de la transcripción de la sesión del Coordinator (cuerpo pegado, UTF-8, sin el
+  envoltorio); el archivo añade un salto de línea final, como los anteriores. Los seis primeros coinciden con los SHA-256 comunicados al
+  Owner antes del registro.
+
+| # | Archivo (`docs/automation/decisions/`) | ID | Bytes del cuerpo | SHA-256 del cuerpo | SHA-256 del archivo |
+|---|---|---|---|---|---|
+| 1 | `I-65-owner-order-coordinator-recovery.original.txt` | OD-REC | 7567 | `c7877f4caaca22e1234bbc4d05de92bfbfa8d849ca83ac8485834b28ecc738e2` | `D30F81F1781AEEF1011256362752E9637FA57A66EB1F1D8971F0EBBD49FB3A16` |
+| 2 | `I-65-owner-disposition-environment-b.original.txt` | OD-ENVB | 3782 | `22c6d962e1d3a53a827d997d60031320ea2d17e7ccd5fec6a6a2366523a5268b` | `985E71AD1AD490F609F2C6059CA0F1D5EEE9074AA1E28C9B26BD49F5A8F60CCA` |
+| 3 | `I-65-owner-disposition-environment-b-architecture.original.txt` | OD-ENVB-ARQ | 3446 | `701b8ced6789656aab11cb27e51d6e3304f1c06c4984d95f4724b08405dbd758` | `A2F76BFCB41401E52111B94452F944BB572D42CA2A6110E7BD5CC91150DFB832` |
+| 4 | `I-65-owner-decision-publication-simplification.original.txt` | OD-PUB | 2634 | `974d7c4628e8326714f867f620635a64c4a0e355557c69490327ea99e651cfe5` | `0B65E53BAE4B2624FEB74445305F9C7A6D1ED3AB66AF2D352F067C0C10C67D99` |
+| 5 | `I-65-owner-disposition-model-s1.original.txt` | OD-S1 | 4122 | `12ba5e90a7412d2bdc8f05cd612a85343196d2c92fcbe634a13cb839a407324d` | `25151A6145A003BF37D97244DD9920011D60F48C1BFEB1616F81E61E05937F99` |
+| 6 | `I-65-owner-disposition-adr0046-exception.original.txt` | OD-ADR0046-3 | 1735 | `b2a7d0d5cb7387ef2a90e7c26036121cb952ae7e7b8477d452121de95d8fb398` | `9BDEB2806A9F48DC417E3EFA28F8FFA5AF1C6C159CFE41A80A11991DE2F2DA9C` |
+| 7 | `I-65-owner-disposition-return-original-environment.original.txt` | OD-RET | 3268 | `3c3a40d9936971cddadc85fd693102f7b6fec790049b3c19d482a3d24d176705` | `C515C9C6C6C374476A0D9BE09D147B2882927A1C0F7E7A6B1CF057240A2B47DB` |
+| 8 | `I-65-owner-authorization-f4-resumption.original.txt` | OD-GO | 5230 | `2e53a0b8825a6acefef95f303983de5c37c8afaaa1fb23cd858ecbed81bd28ea` | `2297DF2CD296C66C65CAC950747C908AF23C9E79E1D4A07CDCE9B8768676EBF6` |
+
+- **Preflight de recuperación** (solo lectura, CD-I65-F4-27): rama y `origin` en `2c9b4ca6`; CI `38218663573` 4/4 `success` (Core 14 078/14 078;
+  UI 1 637 superadas de 1 654); `origin/main` = `bb0d5522`; checkout principal limpio, `RackCad.sln` SHA-256
+  `A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399`; Freeze blob `4e6e1feb`, ADR-0050 blob `c18def42`; `git diff 7efacd78 2c9b4ca6`
+  vacío en `src`, `tools`, `tests`, `RackCad.sln`, `assets` y `deploy`; repositorio público y `main` sin protección de rama (solo la regla de tags
+  `integration/*`).
+- **Preflight de reanudación** (CD-I65-F4-29): I-65 sin cambios; `origin/main` = `bb0d5522`; I-64 `09f2f1c3` (no integrada; censo 38 con
+  `RACKPANEL`; Smoke-1 en curso en el host); I-62 `9b8b66a2`; I-52 `fb6b5648`; ningún proceso con la ruta del worktree de I-65 ni AutoCAD,
+  RAM Elements o Python en ejecución.
+- **Contadores:** Codex 28 de 46; `attempts` 3, `max_attempts` 6. Sin Workers ni Codex en la recuperación.

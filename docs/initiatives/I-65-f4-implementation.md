@@ -144,3 +144,40 @@ Estos valores son referencias de equivalencia; no constituyen validación del di
 1. Correcciones obligatorias de F4 implementadas y verificadas. 2. Dos filas verificadas por ingeniería con responsable, fecha y fuentes.
 3. Referencia manual `REF-CANT-01` preparada. 4. Paquete generado correctamente y validado por pruebas automatizadas. 5. Plan de ejecución
 y condiciones de parada confirmadas. Con ellas cumplidas, el Coordinator pide al Owner autorización específica para ejecutar en RAM.
+
+## 9. Unidad de cierre de F4: autorización, orden y presupuesto (2026-10-13)
+
+Autorización del Owner (decisiones §41, OD-RET y OD-GO): **F4-T6 + F4-T5 ONLY**, en el entorno original con el riesgo residual aceptado; sin
+RAM, sin F5-F7, sin GATE PASS de F4 antes de la validación real. Dos cadenas en serie (una delegación abierta a la vez), cada una con
+RED → GREEN, Controller Codex `gpt-6-luna`/`high` (planificación y verificación), Worker `claude-sonnet-5-5`/`high` y controles negativos:
+primero **F4-T6-COMPARATOR-HARDENING** (§10) y después **F4-T5-PLUGIN-COMMAND** re-emitida como corrección (§11). Codex: tope 46 (28
+consumidas); `attempts` 3 y `max_attempts` 6 sin reinicios. Controles operativos K1-K6 de CD-I65-F4-32 y condición C-12 en ambos contratos.
+Al terminar: revisión del Architect de T6 y T5 y cierre de la parte implementable con la suite Core completa y la CI del SHA exacto.
+
+## 10. F4-T6-COMPARATOR-HARDENING
+
+Concreta las observaciones A65-F4-01..06 de la revisión del Architect con las decisiones del Owner (§40-§41), sin cambiar el Freeze ni sus
+tolerancias. Rutas: `StructuralReadbackComparison.cs`, `StructuralReadback.cs` (solo añadidos), `Providers/RamElements/RamTransferReaders.cs`,
+`Providers/RamElements/RamDumpReader.cs`, `tools/RackCad.StructuralAnalysis.RamTool/` (sin su `.csproj`) y pruebas nuevas; ediciones
+nombradas de `StructuralAnalysisComparisonRowTests.cs`, `StructuralAnalysisComparisonToolTests.cs` y `StructuralAnalysisComparisonSupport.cs`.
+
+- **A65-F4-01:** nudos emparejados por distancia **euclídea** ≤ 0.02 in (diagonal (0.015, 0.015) → FAIL; (0.010, 0.010) → PASS); el valor
+  de carga se compara con la diferencia relativa respecto del valor **manual** (m = 999, g = 1000 → FAIL) y, si el manual vale 0, en valor
+  absoluto con 1e-6 lbf (CD-I65-F4-31).
+- **A65-F4-02:** con combinaciones no leídas el resultado global nunca es PASS: resultado `Incomplete` (`INCOMPLETE`), opción
+  `--combinations-decision <texto>` obligatoria y registrada en el informe, código de salida propio.
+- **A65-F4-03:** la lectura de vuelta se lee con sus `values` hacia un tipo neutral; el volcado del generado debe coincidir con ellos
+  (si no, REJECTED); la herramienta rechaza la misma ruta o los mismos bytes como generado y manual; el informe lleva, cuando quien llama
+  la aporta, una sección `inputs` con huellas y SHA-256 de las entradas.
+- **A65-F4-04:** la herramienta reconoce la marca de inyección (solo en `tools/`), evalúa la lectura de vuelta y nunca aprueba (REJECTED).
+- **A65-F4-05:** categoría vacía exacta solo en casos sin cargas; ausente, null, solo espacios o vacía con cargas → Invalid; semántica NO
+  MEDIDA (CD-I65-F4-34).
+- **A65-F4-06:** ensayo general con fixtures sintéticos del paquete de validación §2 (4 decimales, −90 y 270, porcentajes de 3 decimales,
+  otros ids y orden, caso `CM`): PASS; FAIL con +90, con porcentaje de 1 decimal y con un miembro invertido.
+
+## 11. F4-T5-PLUGIN-COMMAND: re-emisión como corrección
+
+Mismo alcance e invariantes que §6 y que el contrato de `R20261011T215537Z-f944`, re-emitidos contra la `AuthorityRevision` vigente y
+como corrección (CD-I65-F4-22, CD-I65-F4-30). Añade la regla de censos de CD-I65-F4-33 (I-64 no integrada: de 37 a 38 solo con
+`RACKRAMPAQUETE`), los controles K1-K6 y la condición C-12. La lista de rutas prohibidas se recalcula al emitir para incluir las pruebas
+que haya creado F4-T6.

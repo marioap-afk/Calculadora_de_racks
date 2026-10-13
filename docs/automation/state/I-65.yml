@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
   current_phase: f4-implementation
-  state: waiting
+  state: implementing
   gate: F4
   attempts: 3
-  next_action: Owner: decidir la reanudacion de I-65 (F4-T5 y A65-F4-01/03/04/05/06) tras los controles de I-62. F4 INCOMPLETE / BLOCKED; checkout principal restaurado (CD-I65-F4-26); sin Workers ni RAM.
+  next_action: Coordinator: F4-T6-COMPARATOR-HARDENING (contrato, planificacion, A1-A8, Worker, verificacion y controles) y despues F4-T5 (decisiones §41); sin RAM.
   last_evidence_commit: d2539be2f571deada81fc17fb44934ea075ab096
 execution_context:
   mode: manual
@@ -15,7 +15,7 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F4
-  next_role: Owner
-  implementation_authorization: NO (decision del Owner Option C, decisiones §38); F4 INCOMPLETE / BLOCKED: T1-T4 verificadas, T5 detenida; T5 y A65-F4-01/03/04/05/06 pendientes de una autorizacion posterior
-  owner_decisions_open: [reanudacion de F4 (T5 y A65-F4-01/03/04/05/06) tras los controles de I-62, OD-F4-02 ingeniero verificador y apertura de RAM para verificar, OD-F4-07 sonda P2, OD-F4-08 operador de RAM, OD-F4-09 REF-CANT-01 en un DWG, OD-F4-10 base Montilla, OD-F4-11 Candidato de hito y repetición del modelo manual, autorización específica de la primera corrida en RAM, confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01)]
-  not_authorized: [nuevas delegaciones de implementacion de F4, alterar el checkout principal, ampliar el presupuesto de Codex, corridas en RAM Elements, Candidato de hito, GATE PASS de F4 antes de la comparación real, F5, F6, F7, capacidades fuera de V1, cambios del Freeze, infraestructura de I-62, interfaces de ID30, integración con Workspace, interfaz gráfica]
+  next_role: Coordinator
+  implementation_authorization: YES — F4-T6 + F4-T5 ONLY (decisiones §41, OD-GO); entorno original con riesgo residual aceptado (OD-RET); tope de Codex 46; max_attempts 6; sin RAM, sin Candidato y sin GATE PASS de F4 antes de la validacion real
+  owner_decisions_open: [OD-F4-02 ingeniero verificador y apertura de RAM para verificar, OD-F4-07 sonda P2, OD-F4-08 operador de RAM, OD-F4-09 REF-CANT-01 en un DWG, OD-F4-10 base Montilla, OD-F4-11 Candidato de hito y repetición del modelo manual, autorización específica de la primera corrida en RAM, confirmación definitiva de Q-O1 y Q-O7 (tras OV-I65-01)]
+  not_authorized: [delegaciones fuera de F4-T6 y F4-T5, alterar el checkout principal, superar 46 invocaciones de Codex o max_attempts 6, corridas en RAM Elements, Candidato de hito, GATE PASS de F4 antes de la comparación real, F5, F6, F7, capacidades fuera de V1, cambios del Freeze, infraestructura de I-62, interfaces de ID30, integración con Workspace, interfaz gráfica]
