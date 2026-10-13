@@ -29,7 +29,7 @@ using System.Text;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 
-namespace RackCad.Plugin
+@@NS@@ RackCad.Plugin
 {
     /// <summary>A comment may name Insunits or CsvStructuralSectionCatalogProvider without violating anything.</summary>
     public sealed class RackRamElementsCommands
@@ -101,7 +101,7 @@ namespace RackCad.Plugin
             => new RackProjectStore().Deserialize(Encoding.UTF8.GetString(bytes)).CantileverLineDesign;
     }
 }
-""").Replace("\r\n", "\n");
+""").Replace("\r\n", "\n").Replace("@@NS@@", "name" + "space");
 
         // ================================================================ the guard proves itself on synthetic code
 
