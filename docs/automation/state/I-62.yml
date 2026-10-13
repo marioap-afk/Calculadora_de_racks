@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §83; evidencia §163-§164) — A-6 ronda 3 PROPUESTA (blob e62f27b8, commit a128efef) con guardas run PASS; R1 y R2 de la ronda 2 corregidos en A6-3 regla 6, A6-5 y A6-7 con los mismos blobs; pendiente de la medición real lo que no se puede comprobar sin Codex; esperar disposición para una única revisión formal (kit nuevo con la orden congelada y la comprobación previa de registro); sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §84; evidencia §165) — preparar, congelar y custodiar el kit único de revisión formal de A-6 ronda 3 (blob e62f27b8), con lanzamiento python -B kit/launch.py, comprobación previa de registro y compuerta de transporte con codificación explícita; prueba en seco sin bloqueos; una revisión, tope 3 600 s, sin reintento; auditor conservado; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

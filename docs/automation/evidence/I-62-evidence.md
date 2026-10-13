@@ -4310,3 +4310,11 @@ solo desde artefactos custodiados.
   lanzador, `run.json` escrito siempre que se lanzó el proceso, y comprobación previa de registro con un proceso sustituto. No es un kit: ninguna
   revisión formal de la ronda 3 sin disposición posterior (decisiones §83, punto 6).
 - Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 165. Decisiones §84: revisión formal única de A-6 ronda 3 autorizada; kit nuevo derivado del de la ronda 2
+
+- Objeto: A-6 ronda 3, blob `e62f27b8`, commit `a128efef` (evidencia §164). El kit se deriva del de la ronda 2 (evidencia §159) y del lanzador
+  corregido de `r3/launchfix/`, y corrige solo los defectos demostrados: el lanzamiento con flags añadidos, el registro de `run.json` tras la corrida
+  y la decodificación de Windows en la compuerta de transporte.
+- Lanzamiento solo con `python -B kit/launch.py`, tras la comprobación previa de registro con un proceso sustituto y una prueba en seco sin
+  bloqueos. Una invocación, tope de 3 600 s, sin reintento. El auditor se ejecuta y su resultado se conserva sin cambios.
