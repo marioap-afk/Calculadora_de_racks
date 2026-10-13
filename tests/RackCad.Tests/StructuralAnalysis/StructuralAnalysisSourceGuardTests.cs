@@ -36,9 +36,6 @@ namespace RackCad.Tests
         private const string MassFile = "src/RackCad.Application/Units/MassUnits.cs";
         private const string ForceFile = "src/RackCad.Application/Units/ForceUnits.cs";
 
-        /// <summary>G1 allow-list of exact paths. EMPTY in F1: the command file of D-13 does not exist yet (F4 fixes it).</summary>
-        private static readonly string[] G1ExactPathAllowList = new string[0];
-
         private static readonly string[] ProductFiles =
         {
             "StructuralLength.cs", "StructuralForce.cs", "StructuralArea.cs", "StructuralMomentOfInertia.cs",
@@ -71,12 +68,12 @@ namespace RackCad.Tests
         // ================================================================ G1 — provider identities
 
         [Fact]
-        public void G1_ELARBOL_REAL_NO_NOMBRA_AL_PROVEEDOR_FUERA_DE_SU_CARPETA_Y_LA_LISTA_DE_PERMISO_ESTA_VACIA()
+        public void G1_ELARBOL_REAL_NO_NOMBRA_AL_PROVEEDOR_FUERA_DE_SU_CARPETA_Y_LA_LISTA_DE_PERMISO_ES_LA_RUTA_DEL_COMANDO()
         {
-            Assert.Empty(G1ExactPathAllowList);
+            Assert.Equal(new[] { "src/RackCad.Plugin/RackRamElementsCommands.cs" }, StructuralAnalysisGuards.G1ExactPathAllowList);
 
             var offenders = StructuralAnalysisGuards.Files("src")
-                .SelectMany(file => StructuralAnalysisGuards.G1(file.Path, file.Source, G1ExactPathAllowList).Select(v => file.Path + ": " + v))
+                .SelectMany(file => StructuralAnalysisGuards.G1(file.Path, file.Source, StructuralAnalysisGuards.G1ExactPathAllowList).Select(v => file.Path + ": " + v))
                 .ToList();
 
             Assert.True(offenders.Count == 0, "Violaciones de G1:\n" + string.Join("\n", offenders));
@@ -101,7 +98,7 @@ namespace RackCad.Tests
         [InlineData(ProvidersRoot + "Other/X.cs", "class RamSection { }")]
         public void G1_LA_GUARDA_DETECTA_UN_ARCHIVO_NEUTRAL_CON_IDENTIDAD_DE_PROVEEDOR(string path, string code)
         {
-            Assert.NotEmpty(StructuralAnalysisGuards.G1(path, code, G1ExactPathAllowList));
+            Assert.NotEmpty(StructuralAnalysisGuards.G1(path, code, StructuralAnalysisGuards.G1ExactPathAllowList));
         }
 
         [Theory]
@@ -113,7 +110,7 @@ namespace RackCad.Tests
         [InlineData("tools/X/X.cs", "var tool = \"RamElements\";")]
         public void G1_LA_GUARDA_NO_MARCA_COMENTARIOS_LA_CARPETA_DEL_PROVEEDOR_NI_LO_QUE_QUEDA_FUERA_DE_ALCANCE(string path, string code)
         {
-            Assert.Empty(StructuralAnalysisGuards.G1(path, code, G1ExactPathAllowList));
+            Assert.Empty(StructuralAnalysisGuards.G1(path, code, StructuralAnalysisGuards.G1ExactPathAllowList));
         }
 
         [Fact]
@@ -378,6 +375,12 @@ namespace RackCad.Tests
         private const string PackageTemplateTestsFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageTemplateTests.cs";
         private const string GuardTestsFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsGuardTests.cs";
         private const string AssumptionsTestsFile = "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsAssumptionsTests.cs";
+
+        /// <summary>
+        /// G1 allow-list of exact paths, shared by both G1 sweeps: exactly the command file of D-13 (I-65 F4-T5). It was empty
+        /// until that file existed.
+        /// </summary>
+        internal static readonly string[] G1ExactPathAllowList = { "src/RackCad.Plugin/RackRamElementsCommands.cs" };
 
         // INV-14 exempts EXACTLY these four exact paths (A65-F3-05): the files whose synthetic samples must name what the guard forbids.
         private static readonly string[] Inv14Exempt = { GuardFile, PackageTemplateTestsFile, GuardTestsFile, AssumptionsTestsFile };

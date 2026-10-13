@@ -176,13 +176,24 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void G1_LA_LISTA_DE_PERMISO_SIGUE_VACIA_Y_EL_PROVEEDOR_NO_APARECE_FUERA_DE_SU_CARPETA()
+        public void G1_LA_LISTA_DE_PERMISO_ES_LA_UNICA_RUTA_DEL_COMANDO_Y_EL_PROVEEDOR_NO_APARECE_FUERA_DE_SU_CARPETA()
         {
             var offenders = StructuralAnalysisGuards.Files("src")
-                .SelectMany(file => StructuralAnalysisGuards.G1(file.Path, file.Source, new string[0]).Select(v => file.Path + ": " + v))
+                .SelectMany(file => StructuralAnalysisGuards.G1(file.Path, file.Source, StructuralAnalysisGuards.G1ExactPathAllowList).Select(v => file.Path + ": " + v))
                 .ToList();
 
-            Assert.True(offenders.Count == 0, "Violaciones de G1 con la lista vacia:\n" + string.Join("\n", offenders));
+            Assert.True(offenders.Count == 0, "Violaciones de G1 con la lista de permiso:\n" + string.Join("\n", offenders));
+        }
+
+        [Fact]
+        public void G1_CON_LA_LISTA_VACIA_EL_UNICO_INFRACTOR_EN_SRC_ES_EL_ARCHIVO_DEL_COMANDO()
+        {
+            var offenders = StructuralAnalysisGuards.Files("src")
+                .Where(file => StructuralAnalysisGuards.G1(file.Path, file.Source, new string[0]).Count > 0)
+                .Select(file => file.Path)
+                .ToList();
+
+            Assert.Equal(StructuralAnalysisGuards.G1ExactPathAllowList, offenders);
         }
     }
 }
