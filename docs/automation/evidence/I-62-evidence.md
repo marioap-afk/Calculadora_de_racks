@@ -4222,3 +4222,12 @@ solo desde artefactos custodiados.
   `AuthorizationSections` = []; §81 es del Owner y no cuenta. Las comprobaciones 4 y 5 no se ejecutan en seco; las demás, conformes.
 - **Riesgo de duración:** el cálculo de 120-160 llamadas da unos 2 500-4 100 s frente al tope de 3 600 s. Subirlo exige cambiar `TimeoutSeconds`
   en el cierre y en `launch.py` y volver a congelar el kit: decisión del Coordinator.
+
+## 160. Decisiones §82: la revisión formal única de A-6 ronda 2 queda autorizada con el kit custodiado; C1-C3 aceptado como diseño MATERIAL
+
+- La disposición nombra el blob completo de A-6 y el RunId del kit custodiado en `677f9b62` (evidencia §159). Es la autorización que exige la
+  compuerta 11 del kit. Antes de lanzar se repiten las condiciones de §82, punto 2, y la prueba en seco; si alguna falla, STOP.
+- Una sola invocación con el tope de 3 600 s del kit, sin reintento. La salida se audita con el auditor del kit y su resultado se conserva sin
+  cambios.
+- C1-C3: sin enmienda todavía; se prepara solo una nota breve sobre el aislamiento preventivo mínimo para I-65, sin tocar I-65 ni la
+  infraestructura compartida.
