@@ -3933,3 +3933,98 @@ REQUIRED** sobre `b35548fd` (CI 38169928014 4/4).
 **Relevos:**
 - Sin invocaciones de modelos.
 - HEAD = remoto = `0f49f691` antes de este commit; `main` `bb0d5522`.
+
+## 65. Smoke-1 — Ocurrencia autorizada: STOP en SM-03 (paleta flotante fuera de la pantalla); perfil CLEAN; I-52 sin deriva
+
+**Autoridad:** «I-64 — COORDINATOR SMOKE-1 AUTHORIZATION» (literal en `F1-SMOKE-1/<RunId>/authorization/coordinator-smoke1-authorization.md`).
+- Una ocurrencia, con HOST_RELEASE = RELEASED (Owner/CAD manager) e I52_P2_H10_DURING_I64 = HELD.
+- Carga única no persistente del DLL autorizada; PaletteKeyAcceptance = ACCEPTED (solo estado de paleta).
+- Ningún commit de I-64 antes de la ocurrencia; este es el commit de custodia posterior.
+
+**Preparación** (custodia en `docs/automation/evidence/I-64-pilot/F1-SMOKE-1/prep/`):
+- **Candidato** `4d79e91036acdaa3e62b7b54677f394593f581a0`, CI 38177504770 push 4/4:
+  - Core Full local 13122/13122; UI Full local 1701, con 17 Skip y 0 con error;
+  - Debug UI y Debug Plugin en PASS (solo MSB3277);
+  - `RackCad.Plugin.dll` `E769219D2F5EDF6E0DE0867633C4A89B94EBBD7F2BD88CF20864CBCF75EF7512`.
+- **Dibujos:**
+  - D = `I64-SMOKE1-FIXTURES-D.dxf` (`03e5606c1e311f700640125b892fe09bf408dd5642115ebcb433b57474ccf165`), hecho sin AutoCAD con `ezdxf` 1.4.4 (descarga autorizada por el usuario); custodiado en LF con su SHA-256 original;
+  - PR-13 = sobre legible con Id en blanco (NoIdentity); PR-12 = sobre con `SchemaVersion` 2.0 (Diagnostic);
+  - A, B y C son copias del Owner (por nombre y SHA-256 en el preflight).
+- **I-52:** su sesión no dio RELEASE propio. El RELEASE lo dio el Owner/CAD manager, según la autorización. Avisos previos PR-05 (msgs `bb7a8869`, `661aac07`).
+
+**RunId `R20261012T195007Z-4141` = PRECHECK_ABORTED / NO_BASELINE / NO_AUTOCAD** (instrucción literal del Owner/Coordinator en su
+`disposition/precheck-aborted.md`):
+- El preflight del Owner paró en el paso 5: no existía la ruta del dibujo A.
+- No hubo lectura de SECURELOAD, BASELINE ni AutoCAD.
+- **No cuenta como repetición.** Mismo Candidato y mismos dibujos con el RunId nuevo.
+- El script regenerado valida las rutas antes de escribir nada.
+
+**RunId `R20261013T011654Z-184b`:**
+- **Preflight y BASELINE** (Owner, 01:19Z):
+  - acad = 0; Candidato exacto; herramientas T3C aprobadas; autoprueba 26/26 (`2981350c…`);
+  - SHA-256 de A, B, C, D y de la biblioteca;
+  - `SECURELOAD_BASELINE_CURRENT` = 1 (`reg query` de solo lectura);
+  - BASELINE código 0, CanonicalSha256 `e2eeb59457f39278c16e96793008a6d9311333f144a3d4bb86bb080e4888df70`, con 4 comprobaciones MATCH: cadena TRUSTEDPATHS exacta `a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498` (19 entradas), SECURELOAD 1, perfil `<<Unnamed Profile>>` y `acad.exe` `2a75996f…6422`;
+  - verificación de la sesión: ledger recalculado, 0 registros de carga RackCad y ninguna clave de paleta previa.
+- **AutoCAD** (inicio 01:22:24Z, hora tomada del proceso):
+  - SM-00a..00e PASS: perfil, SECURELOAD 1 y PICKFIRST 1; aviso de seguridad con «cargar una vez»; D abrió limpio;
+  - SM-00c = 17 entidades; SM-01 = 156 ms; SM-02 = DBMOD 0.
+- **SM-03:** tras `RACKPANEL`, la paleta flotante se movió de forma errática al arrastrarla y salió de la pantalla. El Owner no alcanzó
+  a ver el panel.
+  - Lectura del código: `WorkspacePaletteHost.Show()` solo hace `Visible = true`; `PaletteSet("RackCad")` va sin GUID, sin tamaño ni
+    posición inicial, con `KeepFocus = true`.
+  - Ningún paso escrito la recupera.
+  - Opciones: A, adelantar SM-17 (acoplar) como desviación autorizada; B, STOP.
+  - **Decisión del Owner/Coordinator: «No me quiero desviar» → STOP.**
+- **Cierre:**
+  - AutoCAD cerrado sin guardar; acad = 0 (01:40:19Z).
+  - **POST** código 0, CanonicalSha256 `6581fc4b5c0cf4530aa570b7fbcb74ad2e967b6e464ee17f3a32a5a20d03bceb`, 4 MATCH, todos los hechos `F|` idénticos a la BASELINE.
+  - **DIFF** (`ACCEPTED`) = **CLEAN**, código 0. Dos diferencias ALLOWED R-A-03: `FixedProfile\Application Window\Position` (cambiado) y `Variables\VIEWBACKSTATUS` (añadido). 0 FORBIDDEN, 0 REPORT y ninguna clave de paleta.
+  - **SM-39:** sin archivo de RackLog nuevo.
+  - **SM-41:** A, B, C, D y la biblioteca sin cambios.
+- **I-52 recomprobó con sus instrumentos: SIN DERIVA** (literal en `disposition/i52-recheck.txt`): `acad.exe`, perfil, TRUSTEDPATHS de 19 entradas, SECURELOAD 1, sus ACL, registro, ApplicationPlugins y bytes de P2.
+  - Su límite sobre 3 entradas de `%APPDATA%\RackCad` lo cubren la BASELINE y el POST: sin cambios.
+  - La liberación de P2 H10 la decide su Coordinator.
+- **Registro del operador:** firmado por el Owner («Firmo el registro.», 2026-10-13T01:44:07Z).
+
+**S1** (propuesta):
+
+| S1 | Estado |
+|---|---|
+| S1-01 | INCOMPLETE: panel abierto, no observable |
+| S1-02, S1-03, S1-05, S1-07, S1-09 | NOT_EXECUTED |
+| S1-04 | NOT_EXECUTED: PR-12 y PR-13 no observados en el host |
+| S1-06a..e | NOT_APPLICABLE_BY_DESIGN |
+| S1-06f/g/h | NOT_EXECUTED |
+| S1-08 | INCOMPLETE: solo SM-02 |
+| S1-10 | parcial: estado 1, 156 ms |
+| S1-11 | CLEAN |
+| S1-12 | NOT_APPLICABLE (PICKFIRST = 1) |
+
+**Disposición propuesta: STOP** (T3D §9: un STOP deja Smoke-1 sin resultado; no puede ser PASS). El hallazgo principal, de producto o de
+host, es el comportamiento de la paleta flotante (D-01, «acoplable y flotante»). Una nueva ocurrencia exige decisión del Coordinator y un
+RunId nuevo.
+
+**Custodia** (`docs/automation/evidence/I-64-pilot/F1-SMOKE-1/`, con `custody-manifest.json` por unidad):
+
+| Unidad | CUSTODIED | EXCLUDED |
+|---|---|---|
+| `R20261013T011654Z-184b` | 26 | 162 |
+| `R20261012T195007Z-4141` | 13 | 160 |
+| `prep` | 15 | 168 |
+
+- Excluidos, con SHA-256 y motivo:
+  - salidas sintéticas de la autoprueba;
+  - compañeros locales de las capturas;
+  - registros de dotnet con rutas locales;
+  - duplicados y herramientas T3C idénticas a sus blobs aprobados.
+- Redacciones registradas: el fragmento de ruta del worktree en los scripts del Owner y la ubicación del entorno virtual del generador.
+- CRLF custodiado en LF con el SHA-256 original.
+
+**Límites:** sin F2, F3 ni F4, y sin otra sesión de AutoCAD. `src/` y `tests/` siguen siendo `e0205b5a`; el Candidato `4d79e910` no cambia.
+Siguiente: **COORDINATOR_SMOKE1_REVIEW_REQUIRED**.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- Mensajes a la sesión «I - 52»: `5a0f1060`, `bb7a8869`, `661aac07`, `88076361`, `f6fd16b0`.
+- HEAD = remoto = `4d79e910` antes de este commit; `main` `bb0d5522`.

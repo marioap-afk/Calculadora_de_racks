@@ -1,0 +1,81 @@
+# I-64 Smoke-1 — Registro del operador, RunId R20261012T195007Z-4141
+
+Procedimiento: `docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md`. Se copia a `<run>/operator/operator-record.md` y se llena durante
+la ejecución. Resultado por paso: `PASS`, `FAIL`, `NOT_EXECUTED` (con motivo), `NOT_APPLICABLE` (solo por decisión del Coordinator) o
+`NOT_APPLICABLE_BY_DESIGN` (solo S1-06a..e, por I-64-A-7 AGREED / ACTIVE). Sin rutas locales en este archivo.
+
+```text
+RunId:                    R20261012T195007Z-4141
+Candidate SHA:            4d79e91036acdaa3e62b7b54677f394593f581a0
+DLL SHA-256:              E769219D2F5EDF6E0DE0867633C4A89B94EBBD7F2BD88CF20864CBCF75EF7512
+Inicio (UTC, SM-00a):     <hora>
+Fin (UTC, SM-40):         <hora>
+I-52 RELEASE / acuse:     HOST_RELEASE = RELEASED por el Owner/CAD manager, segun la autorizacion del Coordinator (authorization/coordinator-smoke1-authorization.md); la sesion I-52 no dio acuse propio (authorization/i52-reply.txt); aviso previo PR-05 enviado (msg bb7a8869)
+PaletteKeyAcceptance:     ACCEPTED (autorizacion del Coordinator; solo estado de paleta o ventana modeless)
+Carga única autorizada:   SI (autorizacion del Coordinator bajo el RELEASE del Owner/CAD manager; solo esta ocurrencia; una vez, no persistente)
+I-64-A-7:                 AGREED / ACTIVE (Architect R20261011T202537Z-1990; activacion del Coordinator)
+Dibujo Diagnostico:       archivo de origen I64-SMOKE1-FIXTURES-D.dxf (dibujo D), bloque I64_FX_PR12_DIAGNOSTICO; SHA-256 03e5606c1e311f700640125b892fe09bf408dd5642115ebcb433b57474ccf165; procedencia y proposito: sobre del RackEmbedStore del Candidato con SchemaVersion 2.0 (version futura) -> Diagnostic (candidate/fixtures-pr12-pr13.md); texto esperado: «Diagnóstico» / «No se pudo interpretar la definición del objeto seleccionado.»; nunca se guarda (SHA-256 igual en SM-41)
+Dibujo Sin identidad:     archivo de origen I64-SMOKE1-FIXTURES-D.dxf (dibujo D), bloque I64_FX_PR13_SIN_IDENTIDAD; SHA-256 03e5606c1e311f700640125b892fe09bf408dd5642115ebcb433b57474ccf165; procedencia y proposito: sobre legible del RackEmbedStore del Candidato con Id en blanco -> NoIdentity (candidate/fixtures-pr12-pr13.md); texto esperado: «Sin identidad» / «El objeto seleccionado no tiene identidad de rack.»; nunca se guarda (SHA-256 igual en SM-41)
+Sin cualquiera de los dos dibujos: S1-04 = INCOMPLETE y Smoke-1 no puede ser PASS
+SECURELOAD_BASELINE_CURRENT: <valor de preflight/SECURELOAD_BASELINE_CURRENT.txt>
+Dibujos A, B, C:          nombres y SHA-256 en preflight/preflight-owner.txt (paso 5)
+Orden de arranque (autorizacion): SM-00a, SM-00b, SM-00d (carga), SM-00e (abrir D: primera comprobacion), SM-00c (abrir C), SM-01...
+```
+
+| Paso | S1 / OV / INV | Resultado | Observado (textos literales del panel y de la línea de órdenes) | Valores (sesión, RackId, ms, DBMOD, entidades, filas) | Notas |
+|---|---|---|---|---|---|
+| SM-00a | arranque | | | | |
+| SM-00b | perfil, SECURELOAD, PICKFIRST | | | CPROFILE=; SECURELOAD=; PICKFIRST= | |
+| SM-00c | entidades de C | | | n= | |
+| SM-00d | NETLOAD | | | aviso de seguridad: sí/no; opción elegida: | solo «cargar una vez»; nunca «cargar siempre» ni confiar en la ubicacion; si exige un cambio persistente: STOP-06 |
+| SM-00e | abrir el dibujo D (primera comprobacion de la autorizacion) | | | abre limpio: sí/no; mensajes al abrir: | si no abre limpio: STOP (no reparar el DXF; cerrar sin guardar; POST) |
+| SM-01 | S1-10 / esc. 1 y 10 (nunca abierto) | | | ms= | |
+| SM-02 | S1-08 (lectura previa) | | | DBMOD= | |
+| SM-03 | RACKPANEL / INV-02 | | | Sesión n= | |
+| SM-04 | RACKPANEL repetido / INV-02 | | | | |
+| SM-05 | instrumentación | | | filas: | |
+| SM-06 | S1-04 un rack / esc. 3 | | | RackId=; drain ms=; selection.read ms= | |
+| SM-07 | S1-04 copia | | | | |
+| SM-08 | S1-04 dos racks | | | | |
+| SM-09 | S1-04 con otra entidad | | | | |
+| SM-10a | S1-04 bloque sin datos de RackCad | | | | esperado: «Selección actual: 0 racks y 1 otros objetos.» |
+| SM-10b | S1-04 sin identidad / INV-16 (dibujo D) | | | | pestaña de D; esperado: «Sin identidad» / «El objeto seleccionado no tiene identidad de rack.»; sin RackId |
+| SM-11 | S1-04 diagnóstico / INV-17 (D-T3D-03, obligatorio; dibujo D) | | | | pestaña de D; esperado: «Diagnóstico» / «No se pudo interpretar la definición del objeto seleccionado.»; sin RackId; volver a la pestaña de A antes de SM-12 |
+| SM-12 | S1-09 / esc. 2 / INV-01 | | | última secuencia antes de la espera=; filas entre la espera y panel.hide= | |
+| SM-13 | S1-06f | | | | |
+| S1-06a..e | INV-24 (A-7) | NOT_APPLICABLE_BY_DESIGN | | | por A-7; nunca PASS; obligacion vinculante en S2-16..S2-22 |
+| SM-14a..e | evidencia complementaria (A-7) | | | | SUPPLEMENTARY_EVIDENCE; no cuenta como S1-06a..e |
+| SM-14h | S1-06h | | | DBMOD= | |
+| SM-15 | S1-06g | | | | |
+| SM-16 | INV-33, ocultar y mostrar | | | filas con la paleta cerrada=; filas al mostrar= | |
+| SM-17 | acoplar, flotar, ocultación automática | | | | HOST-TO-CONFIRM |
+| SM-18 | S1-08, S1-06h, OV-20 | | | DBMOD= | |
+| SM-19 | S1-12 | | | | |
+| SM-20 | S1-05 / esc. 9 | | | Sesión m=; drain ms= | |
+| SM-21 | S1-05 | | | RackId B= | |
+| SM-22 | S1-05 / INV-07, INV-22 | | | | |
+| SM-23 | S1-05 | | | | |
+| SM-24 | S1-05 / OV-15 | | | Sesión p= | |
+| SM-25 | INV-22 | | | | |
+| SM-26 | sin documento | | | | |
+| SM-27 | S1-05 | | | | |
+| SM-28 | S1-01 / OV-01 | | | | |
+| SM-29 | S1-02 / OV-02 | | | | |
+| SM-30 | S1-03 / OV-03 | | | | |
+| SM-31 | S1-10 / esc. 10 (oculto) | | | ms= | |
+| SM-32 | S1-10 / esc. 10 (visible) | | | ms= | |
+| SM-33 | comandos clásicos / INV-25 | | | | |
+| SM-34 | S1-07 / OV-17 | | | | |
+| SM-35 | S1-07 | | | DBMOD= | |
+| SM-35n | S1-07 / INV-23 (D-T3D-06) | | | | SetModalRackCadActive no ejercitado; rama modal de INV-23 cubierta por Core |
+| SM-36 | INV-25 | | | | |
+| SM-37 | INV-25, INV-14 | | | | |
+| SM-38 | INV-14 (D-T3D-04) | | (1) sin aserción Debug visible; (2) sin excepción no controlada; (3) sin cierre inesperado; (4) RackLog sin fuga; (5) drenajes y lecturas completados | | |
+| SM-39 | RackLog | | | entradas nuevas=; SHA-256 del archivo= | |
+| SM-40 | cierre sin guardar | | | acad= | |
+| SM-41 | dibujos sin cambios | | | A=; B=; C=; D=; biblioteca= | |
+| POST / DIFF | S1-11 / INV-21 | | | Disposition=; código= | |
+
+```text
+Firma del Owner:          ____________________     Fecha (UTC): ____________________
+```

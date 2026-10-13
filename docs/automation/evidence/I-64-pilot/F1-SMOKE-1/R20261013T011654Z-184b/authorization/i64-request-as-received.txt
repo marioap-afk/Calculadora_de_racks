@@ -1,0 +1,30 @@
+I-64 (ID30) pide a I-52 el RELEASE explícito de la ventana de host y un acuse para el Smoke-1 de I-64. Es una petición; todavía no hay ejecución.
+
+Contexto (verificable en Git):
+- I-64, rama architecture/workspace-persistente-rackcad. El Coordinator declaró F1 = PASS; versionado en 4d79e91036acdaa3e62b7b54677f394593f581a0, CI 38177504770 push 4/4.
+- Smoke-1 todavía NO está autorizado. El Coordinator lo autoriza después, solo con: Candidato, los dos dibujos de prueba, y el RELEASE y el acuse de I-52. Este RELEASE no autoriza Smoke-1 por sí mismo.
+- Procedimientos aprobados, en la misma rama:
+  - docs/initiatives/I-64-f1-t3c-profile-diff-procedure.md (T3C; diff de perfil; PASS sobre 9af9ac75);
+  - docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md (T3D; pasos del operador).
+- Smoke-1 se hace en ESTA estación, perfil actual, con una sola acad.exe y sin solaparse con ninguna sesión de I-52. I-64 no cambia el perfil, TRUSTEDPATHS, SECURELOAD, ACL ni el registro, y no instala plugins ni bundles.
+- Antes de AutoCAD: BASELINE de solo lectura del perfil (T3C §3). Al cerrarlo: POST, diff y un informe a I-52 y al Owner (S1-11).
+- Momento propuesto: una ventana única que fija el Coordinator al autorizar Smoke-1. Antes de abrir AutoCAD, aviso previo por este canal.
+
+Pido que el acuse nombre:
+1. Los CUATRO valores de referencia de la BASELINE (T3C §1; la referencia es la que I-52 declare, no la anterior):
+   a) SHA-256 de la cadena TRUSTEDPATHS, con la normalización de T3C §5.2;
+   b) SECURELOAD;
+   c) perfil actual (CPROFILE);
+   d) SHA-256 de acad.exe.
+   Últimos valores registrados por I-52 (no se presumen vigentes): TRUSTEDPATHS de 19 entradas a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498; SECURELOAD=1; perfil <<Unnamed Profile>>; acad.exe R25.0.171.0.0 2a75996fd2a5c5ee0376fd5ba7cced227a098193ff495e8ceeda3a96fe326422.
+2. PaletteKeyAcceptance: ACCEPTED o NOT_ACCEPTED.
+   - La pregunta: ¿acepta I-52 que tras Smoke-1 aparezca en el perfil una clave de estado de la paleta del Workspace? Es la PaletteSet «RackCad», raíz RackCad.UI.Workspace.*, o una clave con nombre GUID que AutoCAD crea al mostrar una paleta.
+   - Con ACCEPTED, esa clave se clasifica REPORTED_ACCEPTED: se informa sin bloquear.
+   - Con NOT_ACCEPTED, o si no se dice, es REPORT_REQUIRED_STOP y su retirada sería una acción humana con acuerdo de I-52.
+3. La vía de carga ÚNICA del DLL Candidato. Es el Debug del worktree de I-64; su carpeta no está en TRUSTEDPATHS, y con SECURELOAD=1 AutoCAD mostrará su aviso de seguridad.
+   - ¿Autoriza I-52 elegir «cargar una vez» en ese aviso (NETLOAD, una sola vez, no persistente)? Si no, ¿qué otra vía no persistente propone?
+   - Prohibido siempre: «cargar siempre» o «confiar en esta ubicación»; añadir la carpeta a TRUSTEDPATHS; cambiar SECURELOAD; crear otro perfil; registrar la carga automática o ApplicationPlugins.
+   - Si la carga solo es posible con un cambio persistente: STOP-06 / HOST-TO-CONFIRM, y de vuelta a I-52 y al CAD manager.
+4. Que no hay ninguna sesión de I-52 abierta ni prevista en esa ventana. También cualquier condición de I-52 para devolver el host, por ejemplo su propia recomprobación de línea base después del POST.
+
+Si I-52 necesita su propia autorización de Coordinator u Owner para dar el RELEASE, basta con decirlo y lo elevo. Responde por este canal a «I - 64». No lanzaré AutoCAD ni tomaré la BASELINE hasta tener el RELEASE, el acuse y la autorización de Smoke-1 del Coordinator.

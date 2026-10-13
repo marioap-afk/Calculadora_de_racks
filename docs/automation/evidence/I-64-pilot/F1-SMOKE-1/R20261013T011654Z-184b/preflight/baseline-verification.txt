@@ -1,0 +1,7 @@
+baseline-verification (sesion I-64) 2026-10-13T01:20:23Z
+CanonicalSha256 recomputed = e2eeb59457f39278c16e96793008a6d9311333f144a3d4bb86bb080e4888df70 (ledger ordenado, 2229 lineas, sidecar = SHA del archivo)
+PreSmokeChecks: TRUSTEDPATHS.ChainSha256=MATCH, SECURELOAD=MATCH, CurrentProfile=MATCH, AcadExeSha256=MATCH
+AcadProcessCount=0; Unreadable=0; RackCadEnvUser=0; RackCadEnvMachine=0; CandidateDll.Sha256=e769219d...7512; TRUSTEDPATHS.EntryCount=19; CoversCandidateDllFolder=false; SECURELOAD=1 (= SECURELOAD_BASELINE_CURRENT); PICKFIRST=1
+registro de carga RackCad (Applications/Loaded/InstalledApplications): 0; plugins: P|PLUGINS_PROGRAMFILESX86|Autodesk AppManager.bundle|DIR; P|PLUGINS_PROGRAMFILESX86|Autodesk FeaturedApps.bundle|DIR; P|PLUGINS_PROGRAMFILES|AcVBA2025.Bundle|DIR
+claves RackCad.UI.Workspace ya presentes: 0
+Resultado: BASELINE valida; sin desajuste previo al smoke. AutoCAD puede abrirse.
