@@ -1,0 +1,70 @@
+I-62 — COORDINATOR DISPOSITION §80
+A-6 ROUND 2 / R3 REPRODUCTION / PUBLICATION
+1. Estado de la candidata
+Aceptar la preparación técnica de A-6 ronda 2, sin declarar acuerdo ni acreditación definitiva.
+Mantener intactos los blobs del instrumento, del aceptante y las líneas Owner previamente autorizadas.
+No iniciar otra revisión formal todavía.
+2. R3 — Reproducción
+Concluir el proceso de reproducción actualmente iniciado, con un límite de ejecución explícito y sin relanzamientos indefinidos.
+Exigir:
+
+* resultado de los 25 mutantes activables;
+* identificación de los dos no activables;
+* resultados de R5, R6 y R7 sobre los hechos críticos;
+* diferencias frente a la ejecución custodiada;
+* registro de errores, interrupciones y tiempos;
+* verificación de que los paquetes originales permanecieron intactos.
+
+Distinguir claramente autoría, ejecución y revisión independiente.
+Si R3 vuelve a bloquearse, registrar INCOMPLETE y no sustituirlo por PASS.
+3. Brechas G1–G6
+Registrar individualmente las seis limitaciones residuales.
+Para cada una:
+
+* hecho no demostrado;
+* riesgo;
+* mitigación;
+* cobertura real de las pruebas;
+* necesidad o no de cambiar algún blob;
+* efecto sobre el cumplimiento normativo.
+
+No declarar cerrada una brecha por una mitigación no ensayada.
+4. Preflight
+Cuando termine R3, completar el preflight con sus resultados reales.
+Mantener el texto final de la candidata identificado por blob y comprobar que las guardas corresponden exactamente a ese objeto.
+Repetir los controles de alcance, privacidad, identidad y negativos antes de publicar.
+5. Publicación
+Si el preflight es conforme, autorizar publicación de A-6 ronda 2 como PROPUESTA.
+Ejecutar guardas en modo run sobre el commit exacto y custodiar los resultados.
+Si la reproducción R3 queda INCOMPLETE, se podrá publicar una candidata identificada como incompleta, pero no presentarla como preparada para revisión formal.
+No iniciar una nueva revisión sin disposición posterior.
+6. Revisión siguiente
+Preparar un kit que:
+
+* incluya lectura directa de V14 L2333–2334;
+* cubra R1–R5 y O1–O3;
+* evalúe individualmente G1–G6;
+* verifique la materialidad M-01;
+* contraste el texto normativo con el código real del aceptante;
+* examine procedencia e integridad en el momento de uso.
+
+No conceder acreditación excepcional.
+7. Límites
+No ejecutar Codex.
+No abrir FX-U2.
+No crear B1 sin autorización Owner.
+No modificar producción.
+No ampliar la excepción ADR-0046 #9.
+No alterar D.5.
+I-64 conserva prioridad.
+8. Entrega
+Informar exclusivamente:
+
+* resultado final de R3;
+* estado de G1–G6;
+* blob publicado de A-6;
+* guardas y CI;
+* si existe algún hallazgo REQUIRED todavía sin cerrar;
+* condiciones concretas para una única revisión formal.
+
+No declarar A-6 AGREED, FX-02 PASS ni F6 GATE PASS.

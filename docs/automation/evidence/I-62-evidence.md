@@ -4195,3 +4195,30 @@ solo desde artefactos custodiados.
 - **Límite del transporte de subagente:** el Worker subagente hereda el directorio y el entorno de la sesión padre, así que C2 y C3 no se pueden
   fijar por llamada. Es un requisito de elegibilidad del Worker por transporte, abierto en la propuesta.
 - C1-C3 **no** están implementados e I-65 **no** queda desbloqueada.
+
+## 159. Kit de la revisión formal única de A-6 ronda 2 preparado y custodiado, con compuerta de autorización (no lanzado; decisiones §80, punto 6)
+
+- **Kit** [`I-62-architect-A-6r2/R20261012T195511Z-e5c3`](I-62-architect-A-6r2/R20261012T195511Z-e5c3/README.md) (`kit-manifest.json` `3b06e8375ed571eb…`), preparado por un agente en dos fases:
+  - objeto: A-6 blob `86da0ae7`; clon `D:\r62-arch-a6r2` en `0f4d8cbc`, que contiene la publicación `ae9fe0e9`, la custodia de las guardas
+    `04833bf9` y las copias legibles `r2/readable/`;
+  - transporte `claude-cli` 2.1.293 (`8693c4a0…`, sin ejecutarlo), `opus-5-5` xhigh, compuerta MEASURED;
+  - cierre de 214 archivos (7 035 120 bytes), todos UTF-8; C1-C3 fuera del cierre.
+- **Lo que exige el resultado** (decisiones §80, punto 6):
+  - lectura directa de V14 L2333-L2334 (`DirectReads`, paso 0.1 obligatorio);
+  - `Round1FindingResolution` R1-R5 y `Round1OptionalDisposition` O1-O3;
+  - `GapAssessment` G1-G6, uno por uno, con `MitigationTested`;
+  - `M01Verification`;
+  - `AcceptorCodeContrast`: 17 afirmaciones de A6-5 y A6-3 contra el código de `bmin_accept.py`;
+  - `ProvenanceIntegrityAtUse`: 13 elementos.
+  - El auditor v5.2-a6r2 rechaza una cita de V14 L2333-L2334 sin Read en V14, las referencias del aceptante fuera de líneas leídas, y un AGREED
+    con un REQUIRED abierto, una R no CORRECTED, una G REQUIRES_*, un DIFFERS o un INADEQUATE. Sin acreditación excepcional.
+- **Comprobaciones:**
+  - autoprueba 233/233 y mutación 182/182 sobre el clon real;
+  - `verify_clone` sin fallos, con las guardas de la ronda 2 reproducidas idénticas desde el clon.
+- **Desviación declarada frente a la ronda 1:** `I-62-evidence.md` entra en el cierre, porque decisiones §79, punto 5, exige acceso directo a toda
+  fuente citada. Se declara el riesgo de anclaje; el prompt la presenta como evidencia, no como autoridad.
+- **Compuerta 11** (prueba en seco, `launch-dry-run.json`): bloquea **solo** por la autorización. Exige una disposición del Coordinator numerada
+  después de §80 que contenga literalmente el blob `86da0ae770e683a647f2724860a4bd890061154d` y el RunId `R20261012T195511Z-e5c3`. Hoy
+  `AuthorizationSections` = []; §81 es del Owner y no cuenta. Las comprobaciones 4 y 5 no se ejecutan en seco; las demás, conformes.
+- **Riesgo de duración:** el cálculo de 120-160 llamadas da unos 2 500-4 100 s frente al tope de 3 600 s. Subirlo exige cambiar `TimeoutSeconds`
+  en el cierre y en `launch.py` y volver a congelar el kit: decisión del Coordinator.

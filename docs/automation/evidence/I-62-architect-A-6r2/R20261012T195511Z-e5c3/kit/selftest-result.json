@@ -1,0 +1,3505 @@
+{
+ "Selftest": "post-review.py v5.2-a6r2 + transport_gate.py + owner_gate.py (ronda 2) + c3_analysis.analyze",
+ "Environment": "REAL (clon y run del kit)",
+ "Clone": "D:\\r62-arch-a6r2",
+ "Run": "D:\\r62-arch-a6r2-run",
+ "Rev": "0f4d8cbcbe4213e741285e7c3fa090830d38c4a1",
+ "Object": {
+  "Path": "docs/initiatives/I-62-A-6.md",
+  "Blob": "86da0ae770e683a647f2724860a4bd890061154d"
+ },
+ "Provisional": false,
+ "SessionId": "d95fcaba-f7db-4408-af85-497e565d114e",
+ "RunId": "R20261012T195511Z-e5c3",
+ "KitGateStatus": "MEASURED",
+ "Modules": {
+  "post-review.py": "f68042dd28b9bbee63915bee5ba0ee0a872ed896528335a2cd820f1698452938",
+  "transport_gate.py": "b05fedd17b9b6856d618d2ffcde88efc1ceafaa3e6c2d5373667919a718129c6",
+  "owner_gate.py": "969844a928571fe2d72be806fab21b5c7cb332e6ffd5e0c2d6142b027608ff1c",
+  "c3_analysis.py": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+  "result.schema.json": "4823a0b9cfb6db9a61d046eb23c08da93e1319b182d65e07598e6b0a354484be",
+  "selftest-post-review.py": "b4b9fd018622651e5f4f0d387a80bb644999ad66e2265772b70a911fc3239298"
+ },
+ "CloneHeadAfterSelftest": "0f4d8cbcbe4213e741285e7c3fa090830d38c4a1",
+ "CloneCleanAfterSelftest": true,
+ "RunFilesMatchKit": {
+  "order.txt": true,
+  "prompt.md": true,
+  "a6-r1.md": true
+ },
+ "RunDirListingAfterSelftest": [
+  "a6-r1.md",
+  "order.txt",
+  "prompt.md"
+ ],
+ "Cases": [
+  {
+   "Case": "00-base-acreditada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "01-lectura-fuera-absoluta",
+   "Expected": [
+    "lectura fuera del cierre: D:/r62-arch-a6r2/docs/HANDOFF.md",
+    "lectura fuera del cierre (intento fallido"
+   ],
+   "Got": [
+    "llamada 21 (Read): lectura fuera del cierre: D:/r62-arch-a6r2/docs/HANDOFF.md",
+    "llamada 22 (Read): lectura fuera del cierre (intento fallido; sigue siendo una acción fuera del contrato): %USERPROFILE%/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/memory/MEMORY.md"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "02-lectura-fuera-relativa",
+   "Expected": [
+    "lectura fuera del cierre"
+   ],
+   "Got": [
+    "llamada 21 (Read): lectura fuera del cierre: D:/r62-arch-a6r2/docs/HANDOFF.md",
+    "llamada 22 (Read): lectura fuera del cierre: D:/r62-arch-a6r2/../r62-arch-a3/docs/initiatives/I-62-A-3.md",
+    "llamada 23 (Read): lectura fuera del cierre: D:/r62-arch-a6r2/docs/automation/../../AGENTS.md"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "ExpectedCounts": {
+    "lectura fuera del cierre": 3
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "03-escape-por-union (junction)",
+   "Expected": [
+    "lectura fuera del cierre",
+    "Grep fuera del cierre",
+    "Glob fuera del clon y del run",
+    "el clon no quedó limpio",
+    "el clon tiene enlaces o uniones"
+   ],
+   "Got": [
+    "llamada 21 (Read): lectura fuera del cierre: D:/r62-arch-a6r2/zz-selftest-link/docs/initiatives/I-62-A-3.md",
+    "llamada 22 (Grep): Grep fuera del cierre: D:/r62-arch-a6r2/zz-selftest-link/docs/initiatives/I-62-A-3.md",
+    "llamada 23 (Glob): Glob fuera del clon y del run: zz-selftest-link/**/*.md (base D:/r62-arch-a6r2)",
+    "el clon no quedó limpio, cambió de HEAD, dejó de estar separado, ganó ramas o remotos",
+    "el clon tiene enlaces o uniones después de la corrida: ['D:/r62-arch-a6r2/zz-selftest-link']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "04-grep-directorios-y-fuera",
+   "Expected": [
+    "Grep sobre un directorio",
+    "Grep fuera del cierre",
+    "Grep sin path",
+    "Grep con glob o type"
+   ],
+   "Got": [
+    "llamada 21 (Grep): Grep sobre un directorio: D:/r62-arch-a6r2/docs",
+    "llamada 22 (Grep): Grep fuera del cierre: %USERPROFILE%/AppData/Local/Temp/claude/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/scratchpad/i62/day3/kit-a6r2-review/.tmp/st/o",
+    "llamada 23 (Grep): Grep sin path (busca en el directorio de trabajo, que es un directorio)",
+    "llamada 24 (Grep): Grep con glob o type",
+    "llamada 25 (Grep): Grep sobre un directorio: D:/r62-arch-a6r2-run"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "ExpectedCounts": {
+    "Grep sobre un directorio": 2
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "05-glob-fuera-del-cierre",
+   "Expected": [
+    "Glob fuera del clon y del run",
+    "Glob alcanza",
+    "Glob devolvió una ruta fuera del cierre"
+   ],
+   "Got": [
+    "llamada 21 (Glob): Glob fuera del clon y del run: **/*.md (base %USERPROFILE%/AppData/Local/Temp/claude/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/scratchpad/i62/day3/kit-a6r2-review/.tmp/st/o)",
+    "llamada 22 (Glob): Glob fuera del clon y del run: %USERPROFILE%/.claude/projects/**/*.jsonl (base D:/r62-arch-a6r2)",
+    "llamada 23 (Glob): Glob alcanza 48 archivo(s) fuera del cierre: docs/adr/*.md (p. ej., d:/r62-arch-a6r2/docs/adr/0001-ramas-por-iniciativa.md, d:/r62-arch-a6r2/docs/adr/0002-paso0-evidencia.md, d:/r62-arch-a6r2/docs/adr/0002-secuencia-dinamico-modular.md)",
+    "llamada 23 (Glob): Glob devolvió una ruta fuera del cierre: D:/r62-arch-a6r2/docs/adr/x.md",
+    "llamada 24 (Glob): Glob fuera del clon y del run: ../r62-arch-a3/** (base D:/r62-arch-a6r2)",
+    "llamada 25 (Glob): Glob devolvió una ruta fuera del cierre: D:/r62-arch-a6r2/docs/HANDOFF.md"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "ExpectedCounts": {
+    "Glob fuera del clon y del run": 3
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "06-glob-y-grep-aceptados",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "07-herramienta-denegada",
+   "Expected": [
+    "lectura fuera del cierre (intento fallido",
+    "permiso denegado",
+    "permission_denials: Read"
+   ],
+   "Got": [
+    "permission_denials: Read file_path=D:/r62-fixture/A2/README.md",
+    "llamada 21 (Read): lectura fuera del cierre (intento fallido; sigue siendo una acción fuera del contrato): D:/r62-fixture/A2/README.md",
+    "llamada 21 (Read): permiso denegado: Permission to read D:/r62-fixture/A2/README.md has been denied."
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "08-intento-de-bash",
+   "Expected": [
+    "herramienta no permitida (Bash)"
+   ],
+   "Got": [
+    "llamada 21 (Bash): herramienta no permitida (Bash)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "09-prompt-distinto",
+   "Expected": [
+    "fidelidad del prompt"
+   ],
+   "Got": [
+    "fidelidad del prompt: el primer mensaje de usuario es distinto de prompt.md"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "10-mensaje-de-usuario-extra",
+   "Expected": [
+    "mensajes de usuario además del prompt"
+   ],
+   "Got": [
+    "transcripción: 1 mensajes de usuario además del prompt (otro prompt o un resumen de compactación)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "11-modelo-y-effort-distintos",
+   "Expected": [
+    "modelo observado distinto",
+    "effort observado distinto",
+    "modelUsage con modelos distintos",
+    "mensaje del asistente con modelo"
+   ],
+   "Got": [
+    "stream-json: modelUsage con modelos distintos de claude-opus-5-5: ['claude-haiku-4-5', 'claude-opus-5-5']",
+    "stream-json: mensaje del asistente con modelo 'claude-sonnet-5'",
+    "transcripción: modelo observado distinto de claude-opus-5-5 en 1 mensajes del asistente: {'claude-sonnet-5': 1}",
+    "transcripción: effort observado distinto de xhigh en 1 mensajes del asistente: {'high': 1}"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "12-archivo-del-run-alterado",
+   "Expected": [
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): order.txt"
+   ],
+   "Got": [
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): order.txt"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "ExpectedCounts": {
+    "archivo del run distinto del custodiado": 1
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "13-sin-result-y-salida-1",
+   "Expected": [
+    "sin mensaje result",
+    "código de salida 1",
+    "proceso terminado",
+    "no hay resultado estructurado",
+    "llamada sin resultado",
+    "lectura directa: DirectReads sin una entrada"
+   ],
+   "Got": [
+    "lanzamiento: código de salida 1 (se exige 0)",
+    "lanzamiento: proceso terminado por el invocador (Killed/TimedOut)",
+    "stream-json: sin mensaje result (terminación sin resultado)",
+    "llamada 21 (Read): llamada sin resultado (terminación incompleta)",
+    "no hay resultado estructurado",
+    "lectura directa: DirectReads sin una entrada que cubra docs/initiatives/I-62-proposal-v14.md:2333-2334"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "14-referencia-sobre-lineas-no-leidas",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en Separability (docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:82-87)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en Separability (docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:82-87)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "15-referencia-a-prompt-o-fuera-de-rango",
+   "Expected": [
+    "referencia no canónica en TopicVerdicts[Q-A6-01] (prompt.md:1)",
+    "referencia no canónica en TopicVerdicts[Q-A6-01] (order.txt:99)"
+   ],
+   "Got": [
+    "referencia no canónica en TopicVerdicts[Q-A6-01] (prompt.md:1)",
+    "referencia no canónica en TopicVerdicts[Q-A6-01] (order.txt:99)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "16-parada-not-accredited-coherente",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "17-agreed-con-un-required",
+   "Expected": [
+    "AGREED exige cero REQUIRED"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "18-changes-required-sin-required",
+   "Expected": [
+    "CHANGES REQUIRED sin ningún REQUIRED"
+   ],
+   "Got": [
+    "resultado: CHANGES REQUIRED sin ningún REQUIRED"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "19-agreed-con-un-tema-no-satisfecho",
+   "Expected": [
+    "AGREED exige cero REQUIRED"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "20-not-accredited-sin-motivo",
+   "Expected": [
+    "NOT_ACCREDITED sin el motivo en KnownLimitations"
+   ],
+   "Got": [
+    "resultado: NOT_ACCREDITED sin el motivo en KnownLimitations"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "21-structured-output-distinto",
+   "Expected": [
+    "structured_output del result distinto"
+   ],
+   "Got": [
+    "resultado: structured_output del result distinto de la última llamada StructuredOutput de la transcripción (o de su adjunto)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "22-cadena-lateral-y-subagentes",
+   "Expected": [
+    "entradas de cadena lateral",
+    "subagentes lanzados",
+    "mensajes de un subagente"
+   ],
+   "Got": [
+    "stream-json: subagentes lanzados",
+    "stream-json: mensajes de un subagente (parent_tool_use_id)",
+    "transcripción: 1 entradas de cadena lateral (subagentes)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "23-lanzamiento-e-init-distintos",
+   "Expected": [
+    "argumentos del lanzamiento distintos",
+    "herramientas del init distintas",
+    "permissionMode del init distinto",
+    "session_id del init distinto"
+   ],
+   "Got": [
+    "lanzamiento: argumentos del lanzamiento distintos de los del cierre (flags, --add-dir, --session-id o esquema)",
+    "stream-json: session_id del init distinto del fijado",
+    "stream-json: permissionMode del init distinto de dontAsk",
+    "stream-json: herramientas del init distintas de ['Glob', 'Grep', 'Read', 'StructuredOutput']: ['Bash', 'Glob', 'Grep', 'Read', 'StructuredOutput']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "24-lecturas-del-run-y-de-directorios",
+   "Expected": [
+    "lectura fuera del cierre (intento fallido",
+    "lectura de un directorio"
+   ],
+   "Got": [
+    "llamada 21 (Read): lectura fuera del cierre (intento fallido; sigue siendo una acción fuera del contrato): D:/r62-arch-a6r2-run/launch/stdout.jsonl",
+    "llamada 22 (Read): lectura de un directorio: D:/r62-arch-a6r2-run",
+    "llamada 23 (Read): lectura de un directorio: D:/r62-arch-a6r2/docs"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "ExpectedCounts": {
+    "lectura de un directorio": 2
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "25-referencias-a-order-y-a6r1-aceptadas",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "26-lectura-fallida-y-degradada",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en Separability (docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:82)",
+    "fidelidad: docs/initiatives/I-62-proposal-v14.md"
+   ],
+   "Got": [
+    "fidelidad: docs/initiatives/I-62-proposal-v14.md (Read, llamada 22) líneas alteradas [2531]",
+    "referencia sobre líneas no entregadas fielmente en Separability (docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:82)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS",
+   "FailedReadRecorded": true
+  },
+  {
+   "Case": "27-transcripcion-sesion-cwd-version",
+   "Expected": [
+    "transcripción: sesión distinta",
+    "transcripción: cwd distinto",
+    "transcripción: versión distinta"
+   ],
+   "Got": [
+    "transcripción: sesión distinta de la fijada en el kit (['11111111-1111-4111-8111-111111111111', 'd95fcaba-f7db-4408-af85-497e565d114e']; archivo d95fcaba-f7db-4408-af85-497e565d114e)",
+    "transcripción: cwd distinto del clon: %USERPROFILE%/AppData/Local/Temp/claude/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/scratchpad/i62/day3/kit-a6r2-review/.tmp/st/o, D:/r62-arch-a6r2",
+    "transcripción: versión distinta de 2.1.293: ['2.1.289', '2.1.293']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "28-run-json-ausente",
+   "Expected": [
+    "lanzamiento: falta run.json"
+   ],
+   "Got": [
+    "lanzamiento: falta run.json en launch/"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "29-run-json-sessionid",
+   "Expected": [
+    "SessionId de run.json distinto"
+   ],
+   "Got": [
+    "lanzamiento: SessionId de run.json distinto del fijado en el kit"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "30-run-json-ejecutable-ruta",
+   "Expected": [
+    "ejecutable medido distinto del binario elegible"
+   ],
+   "Got": [
+    "lanzamiento: ejecutable medido distinto del binario elegible del cierre (ruta resuelta o SHA-256)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "31-run-json-ejecutable-sha",
+   "Expected": [
+    "ejecutable medido distinto del binario elegible"
+   ],
+   "Got": [
+    "lanzamiento: ejecutable medido distinto del binario elegible del cierre (ruta resuelta o SHA-256)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "32-run-json-cwd",
+   "Expected": [
+    "cwd del proceso distinto del clon"
+   ],
+   "Got": [
+    "lanzamiento: cwd del proceso distinto del clon"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "33-run-json-hashes",
+   "Expected": [
+    "PromptSha256 de run.json distinto",
+    "StdoutSha256 de run.json distinto",
+    "Transcript.Sha256 de run.json distinto"
+   ],
+   "Got": [
+    "lanzamiento: PromptSha256 de run.json distinto de prompt.md del run",
+    "lanzamiento: StdoutSha256 de run.json distinto del stdout.jsonl auditado",
+    "lanzamiento: Transcript.Sha256 de run.json distinto de la transcripción auditada"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "34-preflight-ausente",
+   "Expected": [
+    "lanzamiento: falta preflight.json"
+   ],
+   "Got": [
+    "lanzamiento: falta preflight.json en launch/"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "35-preflight-comprobaciones",
+   "Expected": [
+    "preflight: faltan comprobaciones ['9-CommandLine']",
+    "preflight: comprobaciones sin Ok: ['6-Clone']"
+   ],
+   "Got": [
+    "preflight: faltan comprobaciones ['9-CommandLine']",
+    "preflight: comprobaciones sin Ok: ['6-Clone']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "36-preflight-medidas",
+   "Expected": [
+    "preflight: binario medido",
+    "preflight: versión medida distinta",
+    "preflight: auth status sin loggedIn"
+   ],
+   "Got": [
+    "preflight: binario medido (ruta resuelta o SHA-256) distinto del cierre",
+    "preflight: versión medida distinta de 2.1.293 (Claude Code)",
+    "preflight: auth status sin loggedIn = true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "36b-preflight-ruta-del-binario",
+   "Expected": [
+    "preflight: binario medido"
+   ],
+   "Got": [
+    "preflight: binario medido (ruta resuelta o SHA-256) distinto del cierre"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "37-preflight-compuerta-y-sesion",
+   "Expected": [
+    "preflight: compuerta de transporte distinta",
+    "preflight: SessionId distinto"
+   ],
+   "Got": [
+    "preflight: SessionId distinto del fijado en el kit",
+    "preflight: compuerta de transporte distinta de kit/transport-gate.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "38-compuerta-pendiente",
+   "Expected": [
+    "compuerta de transporte: Status 'PENDING'",
+    "preflight: compuerta de transporte distinta"
+   ],
+   "Got": [
+    "preflight: compuerta de transporte distinta de kit/transport-gate.json",
+    "compuerta de transporte: Status 'PENDING': D-01 abierto (falta la medición C3 o la aceptación registrada)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "39-compuerta-copia-alterada",
+   "Expected": [
+    "compuerta de transporte: SHA-256 del registro de caracterización distinto"
+   ],
+   "Got": [
+    "compuerta de transporte: SHA-256 del registro de caracterización distinto del fijado en la compuerta"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "40-compuerta-copia-ausente",
+   "Expected": [
+    "compuerta de transporte: falta el registro de caracterización"
+   ],
+   "Got": [
+    "compuerta de transporte: falta el registro de caracterización"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "41-compuerta-aceptada-acreditada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "42-compuerta-aceptacion-invalida",
+   "Expected": [
+    "compuerta de transporte: SHA-256 del registro de aceptación distinto",
+    "compuerta de transporte: AcceptedBy distinto"
+   ],
+   "Got": [
+    "compuerta de transporte: SHA-256 del registro de aceptación distinto del fijado en la compuerta",
+    "compuerta de transporte: AcceptedBy distinto de principal-session | Coordinator"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "43-init-ausente",
+   "Expected": [
+    "stream-json: falta el mensaje init"
+   ],
+   "Got": [
+    "stream-json: falta el mensaje init"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "44-init-cwd-modelo-version-mcp",
+   "Expected": [
+    "cwd del init distinto",
+    "modelo del init distinto",
+    "versión del init distinta",
+    "servidores MCP en el init"
+   ],
+   "Got": [
+    "stream-json: cwd del init distinto del clon",
+    "stream-json: modelo del init distinto de claude-opus-5-5",
+    "stream-json: servidores MCP en el init",
+    "stream-json: versión del init distinta de 2.1.293"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "45-result-no-success",
+   "Expected": [
+    "el result no es success"
+   ],
+   "Got": [
+    "stream-json: el result no es success (subtype 'error_max_turns', is_error True)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "46-result-session-id",
+   "Expected": [
+    "session_id del result distinto"
+   ],
+   "Got": [
+    "stream-json: session_id del result distinto del fijado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "47-result-sin-structured-output",
+   "Expected": [
+    "el result no trae structured_output",
+    "no hay resultado estructurado",
+    "lectura directa: DirectReads sin una entrada"
+   ],
+   "Got": [
+    "stream-json: el result no trae structured_output",
+    "no hay resultado estructurado",
+    "lectura directa: DirectReads sin una entrada que cubra docs/initiatives/I-62-proposal-v14.md:2333-2334"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "48-transcripcion-sin-asistente",
+   "Expected": [
+    "ningún mensaje del asistente",
+    "structured_output del result distinto",
+    "referencia sobre líneas no entregadas fielmente",
+    "lectura directa: docs/initiatives/I-62-proposal-v14.md:2333-2334 no entregadas"
+   ],
+   "Got": [
+    "transcripción: ningún mensaje del asistente",
+    "resultado: structured_output del result distinto de la última llamada StructuredOutput de la transcripción (o de su adjunto)",
+    "referencia sobre líneas no entregadas fielmente en TopicVerdicts[Q-A6-01] (docs/initiatives/I-62-A-6.md:1070)",
+    "referencia sobre líneas no entregadas fielmente en TopicVerdicts[Q-A6-02] (docs/initiatives/I-62-A-6.md:1071)",
+    "referencia sobre líneas no entregadas fielmente en TopicVerdicts[Q-A6-06/07] (docs/initiatives/I-62-A-6.md:1073)",
+    "referencia sobre líneas no entregadas fielmente en TopicVerdicts[Q-A6-12] (docs/initiatives/I-62-A-6.md:1078)",
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-1] (docs/initiatives/I-62-A-6.md:443-482)",
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-2] (docs/initiatives/I-62-A-6.md:484-504)",
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-3] (docs/initiatives/I-62-A-6.md:506-558)",
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-4] (docs/initiatives/I-62-A-6.md:560-586)",
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-5] (docs/initiatives/I-62-A-6.md:588-633)",
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-6] (docs/initiatives/I-62-A-6.md:635-649)",
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-7] (docs/initiatives/I-62-A-6.md:651-682)",
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-8] (docs/initiatives/I-62-A-6.md:684-704)",
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-9] (docs/initiatives/I-62-A-6.md:706-874)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-01] (docs/initiatives/I-62-A-6.md:970)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-01] (docs/INITIATIVE_LIFECYCLE.md:83)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-02] (docs/initiatives/I-62-A-6.md:971)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-02] (docs/INITIATIVE_LIFECYCLE.md:84)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-03] (docs/initiatives/I-62-A-6.md:972)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-03] (docs/INITIATIVE_LIFECYCLE.md:85)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-04] (docs/initiatives/I-62-A-6.md:973)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-04] (docs/INITIATIVE_LIFECYCLE.md:86)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-05] (docs/initiatives/I-62-A-6.md:974)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-05] (docs/INITIATIVE_LIFECYCLE.md:87)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-06] (docs/initiatives/I-62-A-6.md:975)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-06] (docs/INITIATIVE_LIFECYCLE.md:88)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-07] (docs/initiatives/I-62-A-6.md:976)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-07] (docs/INITIATIVE_LIFECYCLE.md:89)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-08] (docs/initiatives/I-62-A-6.md:977)",
+    "referencia sobre líneas no entregadas fielmente en MaterialityConfirmation[M-08] (docs/INITIATIVE_LIFECYCLE.md:90)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A6-R1] (docs/initiatives/I-62-A-6.md:927)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A6-R1] (docs/automation/evidence/I-62-architect-A-6/R20261011T215735Z-c434/output.json:78-98)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A6-R2] (docs/initiatives/I-62-A-6.md:928)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A6-R2] (docs/automation/evidence/I-62-architect-A-6/R20261011T215735Z-c434/output.json:99-132)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A6-R3] (docs/initiatives/I-62-A-6.md:929)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A6-R3] (docs/automation/evidence/I-62-architect-A-6/R20261011T215735Z-c434/output.json:133-168)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A6-R4] (docs/initiatives/I-62-A-6.md:930)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A6-R4] (docs/automation/evidence/I-62-architect-A-6/R20261011T215735Z-c434/output.json:169-191)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A6-R5] (docs/initiatives/I-62-A-6.md:931)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A6-R5] (docs/automation/evidence/I-62-architect-A-6/R20261011T215735Z-c434/output.json:192-212)",
+    "referencia sobre líneas no entregadas fielmente en Round1OptionalDisposition[A62-A6-O1] (docs/initiatives/I-62-A-6.md:932)",
+    "referencia sobre líneas no entregadas fielmente en Round1OptionalDisposition[A62-A6-O2] (docs/initiatives/I-62-A-6.md:933)",
+    "referencia sobre líneas no entregadas fielmente en Round1OptionalDisposition[A62-A6-O3] (docs/initiatives/I-62-A-6.md:934)",
+    "referencia sobre líneas no entregadas fielmente en GapAssessment[G1] (docs/initiatives/I-62-A-6.md:816-824)",
+    "referencia sobre líneas no entregadas fielmente en GapAssessment[G2] (docs/initiatives/I-62-A-6.md:825-833)",
+    "referencia sobre líneas no entregadas fielmente en GapAssessment[G3] (docs/initiatives/I-62-A-6.md:834-848)",
+    "referencia sobre líneas no entregadas fielmente en GapAssessment[G4] (docs/initiatives/I-62-A-6.md:849-860)",
+    "referencia sobre líneas no entregadas fielmente en GapAssessment[G5] (docs/initiatives/I-62-A-6.md:861-867)",
+    "referencia sobre líneas no entregadas fielmente en GapAssessment[G6] (docs/initiatives/I-62-A-6.md:868-874)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[PREPARATION_WRITE] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[TIMING_AT_USE] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[POU_I_NO_REPLACE_REFS] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[POU_II_NO_GRAFTS_ALTERNATES_SHALLOW] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[POU_III_TYPE_AND_BYTES_REHASH] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[POU_IV_FSCK] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[POU_V_INTERPRETER_AND_GIT] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[POU_VI_NO_GIT_ENV] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[POU_VII_CONFIG_NO_INCLUDE] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[POU_VIII_NO_SHADOW_EXECUTABLES] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[DECLARED_ORDER] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[FIDELITY_BY_BYTES] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en ProvenanceIntegrityAtUse[FAIL_CLOSED] (docs/initiatives/I-62-A-6.md:527-539)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[CHECK_IDS].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[CHECK_IDS].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[STATUS_VALUES].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[STATUS_VALUES].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[WAIVABLE].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[WAIVABLE].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[DECISION_FORMULA].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[DECISION_FORMULA].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[EXIT_CODES].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[EXIT_CODES].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R8_MANUAL].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R8_MANUAL].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R5_DATA_CONDITION].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R5_DATA_CONDITION].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R6_DATA_CONDITION].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R6_DATA_CONDITION].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R7_DATA_CONDITION].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R7_DATA_CONDITION].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R4_INPUTS].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R4_INPUTS].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R10_RELAY_FACTS].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[R10_RELAY_FACTS].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_REPO].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_REPO].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_TOOL_FROM_OBJECT].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_TOOL_FROM_OBJECT].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_INTERPRETER].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_INTERPRETER].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_RUNS].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_RUNS].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_CLOSURE].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_CLOSURE].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_NOT_APPLICABLE].A6Refs (docs/initiatives/I-62-A-6.md:603-609)",
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[REQUEST_NOT_APPLICABLE].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79-83)",
+    "referencia sobre líneas no entregadas fielmente en DirectReads (docs/initiatives/I-62-proposal-v14.md:2333-2334)",
+    "referencia sobre líneas no entregadas fielmente en Separability (docs/initiatives/I-62-A-6.md:1092-1101)",
+    "referencia sobre líneas no entregadas fielmente en D5AndOwnerValidation (docs/initiatives/I-62-A-6.md:911-921)",
+    "referencia sobre líneas no entregadas fielmente en D5AndOwnerValidation (order.txt:58)",
+    "referencia sobre líneas no entregadas fielmente en OwnerDecisionsScope (docs/initiatives/I-62-A-6.md:1060)",
+    "referencia sobre líneas no entregadas fielmente en OwnerDecisionsScope (docs/initiatives/I-62-A-6.md:1061)",
+    "referencia sobre líneas no entregadas fielmente en M01Verification (docs/initiatives/I-62-A-6.md:970)",
+    "referencia sobre líneas no entregadas fielmente en M01Verification (docs/INITIATIVE_LIFECYCLE.md:83)",
+    "lectura directa: docs/initiatives/I-62-proposal-v14.md:2333-2334 no entregadas fielmente por Read en ese mismo archivo"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "ExpectedCounts": {
+    "referencia sobre líneas no entregadas fielmente": 103
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "49-transcripcion-sin-primer-usuario",
+   "Expected": [
+    "transcripción: sin primer mensaje de usuario"
+   ],
+   "Got": [
+    "transcripción: sin primer mensaje de usuario"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "50-glob-puntos-tras-comodin",
+   "Expected": [
+    "Glob con `..` después de un comodín"
+   ],
+   "Got": [
+    "llamada 21 (Glob): Glob con `..` después de un comodín: docs/*/../../docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "51-run-dir-entrada-ajena",
+   "Expected": [
+    "directorio del run con entradas ajenas al run: ['intruso.txt']"
+   ],
+   "Got": [
+    "directorio del run con entradas ajenas al run: ['intruso.txt']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "52-launch-archivo-inesperado",
+   "Expected": [
+    "launch/ con archivos inesperados: ['notas.txt']"
+   ],
+   "Got": [
+    "launch/ con archivos inesperados: ['notas.txt']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "53-stdout-fuera-de-launch",
+   "Expected": [
+    "lanzamiento: stdout.jsonl fuera de"
+   ],
+   "Got": [
+    "lanzamiento: stdout.jsonl fuera de %USERPROFILE%/AppData/Local/Temp/claude/D--Documentos-Codex-Calculadora-de-racks/e5124bf0-ed19-48a1-97ba-574baf9d33a2/scratchpad/i62/day3/kit-a6r2-review/.tmp/st/t/53/launch"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "54-clon-blob-cambiado",
+   "Expected": [
+    "el clon no conserva los blobs designados del cierre"
+   ],
+   "Got": [
+    "el clon no conserva los blobs designados del cierre"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "55-esquema-invalido",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "56-tema-required-no-satisfecho-sin-required",
+   "Expected": [
+    "tema Q-A6-12 (REQUIRED REVIEW TOPIC) NOT_SATISFIED sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: tema Q-A6-12 (REQUIRED REVIEW TOPIC) NOT_SATISFIED sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "57-tema-q01-no-satisfecho-sin-hallazgo",
+   "Expected": [
+    "tema Q-A6-01 NOT_SATISFIED sin un hallazgo vinculado"
+   ],
+   "Got": [
+    "resultado: tema Q-A6-01 NOT_SATISFIED sin un hallazgo vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "58-tema-required-no-satisfecho-sin-hallazgos",
+   "Expected": [
+    "tema Q-A6-06/07 NOT_SATISFIED sin un hallazgo vinculado",
+    "tema Q-A6-06/07 (REQUIRED REVIEW TOPIC) NOT_SATISFIED sin un REQUIRED"
+   ],
+   "Got": [
+    "resultado: tema Q-A6-06/07 NOT_SATISFIED sin un hallazgo vinculado",
+    "resultado: tema Q-A6-06/07 (REQUIRED REVIEW TOPIC) NOT_SATISFIED sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "59-tema-satisfecho-con-required",
+   "Expected": [
+    "tema Q-A6-06/07 SATISFIED con un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: tema Q-A6-06/07 SATISFIED con un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "60-tema-needs-owner-sin-decision",
+   "Expected": [
+    "tema Q-A6-12 NEEDS_OWNER sin OwnerDecisionRequired = true"
+   ],
+   "Got": [
+    "resultado: tema Q-A6-12 NEEDS_OWNER sin OwnerDecisionRequired = true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "61-tema-ausente",
+   "Expected": [
+    "TopicVerdicts debe disponer los cuatro temas",
+    "AGREED exige cero REQUIRED"
+   ],
+   "Got": [
+    "resultado: TopicVerdicts debe disponer los cuatro temas (Q-A6-01, Q-A6-02, Q-A6-06/07, Q-A6-12) una vez cada uno",
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "62-tema-repetido",
+   "Expected": [
+    "TopicVerdicts debe disponer los cuatro temas",
+    "AGREED exige cero REQUIRED"
+   ],
+   "Got": [
+    "resultado: TopicVerdicts debe disponer los cuatro temas (Q-A6-01, Q-A6-02, Q-A6-06/07, Q-A6-12) una vez cada uno",
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "63-delta-ausente",
+   "Expected": [
+    "DeltaVerdicts debe disponer A6-1..A6-9",
+    "AGREED exige cero REQUIRED"
+   ],
+   "Got": [
+    "resultado: DeltaVerdicts debe disponer A6-1..A6-9 una vez cada uno",
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "64-delta-repetido",
+   "Expected": [
+    "DeltaVerdicts debe disponer A6-1..A6-9"
+   ],
+   "Got": [
+    "resultado: DeltaVerdicts debe disponer A6-1..A6-9 una vez cada uno"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "65-delta-changes-required-sin-required",
+   "Expected": [
+    "delta A6-5 CHANGES REQUIRED sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: delta A6-5 CHANGES REQUIRED sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "66-delta-agreed-con-required",
+   "Expected": [
+    "delta A6-1 AGREED con un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: delta A6-1 AGREED con un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "67-required-sin-disposicion",
+   "Expected": [
+    "REQUIRED sin disposición: todo REQUIRED lo cita al menos un delta o un tema (A62-A6R2-R2)"
+   ],
+   "Got": [
+    "resultado: REQUIRED sin disposición: todo REQUIRED lo cita al menos un delta o un tema (A62-A6R2-R2)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "68-findingids-inexistente",
+   "Expected": [
+    "DeltaVerdicts[A6-7] cita en FindingIds hallazgos que no existen"
+   ],
+   "Got": [
+    "resultado: DeltaVerdicts[A6-7] cita en FindingIds hallazgos que no existen"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "69-ids-de-hallazgo-repetidos",
+   "Expected": [
+    "identificadores de hallazgo repetidos"
+   ],
+   "Got": [
+    "resultado: identificadores de hallazgo repetidos"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "70-required-sin-invariante-ni-contraejemplo",
+   "Expected": [
+    "A62-A6R2-R1 REQUIRED sin ViolatedInvariant ni Counterexample"
+   ],
+   "Got": [
+    "resultado: A62-A6R2-R1 REQUIRED sin ViolatedInvariant ni Counterexample"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "71-required-sin-evidencia",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "72-evidencia-fuera-del-cierre",
+   "Expected": [
+    "referencia no canónica en RequiredFindings[A62-A6R2-R1] (D:/r62-arch-a6r2/docs/HANDOFF.md:1)"
+   ],
+   "Got": [
+    "referencia no canónica en RequiredFindings[A62-A6R2-R1] (D:/r62-arch-a6r2/docs/HANDOFF.md:1)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "73-evidencia-sobre-lineas-no-leidas",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en RequiredFindings[A62-A6R2-R1] (docs/initiatives/I-62-A-6.md:10-12)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en RequiredFindings[A62-A6R2-R1] (docs/initiatives/I-62-A-6.md:10-12)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "74-evidencia-opcional-no-leida",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en OptionalFindings[A62-A6R2-O1]"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en OptionalFindings[A62-A6R2-O1] (docs/initiatives/I-62-proposal-v14.md:2408)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "75-materialidad-fila-ausente",
+   "Expected": [
+    "MaterialityConfirmation debe disponer M-01..M-08"
+   ],
+   "Got": [
+    "resultado: MaterialityConfirmation debe disponer M-01..M-08 una vez cada uno"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "76-materialidad-a6declared-distinto",
+   "Expected": [
+    "MaterialityConfirmation[M-01]: A6Declared distinto del valor de A-6 §5 (no)"
+   ],
+   "Got": [
+    "resultado: MaterialityConfirmation[M-01]: A6Declared distinto del valor de A-6 §5 (no)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "77-materialidad-acuerdo-incoherente",
+   "Expected": [
+    "MaterialityConfirmation[M-03]: Agreement incoherente"
+   ],
+   "Got": [
+    "resultado: MaterialityConfirmation[M-03]: Agreement incoherente con ReviewerAssessment y A6Declared"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "78-materialidad-desacuerdo-sin-hallazgo",
+   "Expected": [
+    "MaterialityConfirmation[M-06] DISAGREE sin un hallazgo vinculado"
+   ],
+   "Got": [
+    "resultado: MaterialityConfirmation[M-06] DISAGREE sin un hallazgo vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "79-materialidad-sin-referencias",
+   "Expected": [
+    "con un veredicto, MaterialityConfirmation[M-04] sin ClauseRefs"
+   ],
+   "Got": [
+    "resultado: con un veredicto, MaterialityConfirmation[M-04] sin ClauseRefs"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "80-separabilidad-no-confirmada-sin-hallazgo",
+   "Expected": [
+    "Separability con una afirmación NOT_CONFIRMED sin un hallazgo vinculado"
+   ],
+   "Got": [
+    "resultado: Separability con una afirmación NOT_CONFIRMED sin un hallazgo vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "81-separabilidad-hallazgo-inexistente",
+   "Expected": [
+    "Separability cita en FindingIds hallazgos que no existen"
+   ],
+   "Got": [
+    "resultado: Separability cita en FindingIds hallazgos que no existen"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "82-d5-cubrir-sin-required",
+   "Expected": [
+    "D5AndOwnerValidation COVER_IN_A6 sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: D5AndOwnerValidation COVER_IN_A6 sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "83-d5-decision-del-owner-sin-owner",
+   "Expected": [
+    "D5AndOwnerValidation OWNER_DECISION_REQUIRED sin OwnerDecisionRequired = true"
+   ],
+   "Got": [
+    "resultado: D5AndOwnerValidation OWNER_DECISION_REQUIRED sin OwnerDecisionRequired = true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "84-decision-del-owner-sin-consecuencias",
+   "Expected": [
+    "OwnerDecisionRequired = true sin AdditionalOwnerReservedConsequences"
+   ],
+   "Got": [
+    "resultado: OwnerDecisionRequired = true sin AdditionalOwnerReservedConsequences"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "85-blocked-sin-decision-del-owner",
+   "Expected": [
+    "BLOCKED — OWNER DECISION sin OwnerDecisionRequired = true"
+   ],
+   "Got": [
+    "resultado: BLOCKED — OWNER DECISION sin OwnerDecisionRequired = true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "86-ifagreed-no-nulo-sin-agreed",
+   "Expected": [
+    "IfAgreed debe ir en null salvo con AGREED"
+   ],
+   "Got": [
+    "resultado: IfAgreed debe ir en null salvo con AGREED"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "87-agreed-con-ifagreed-falso",
+   "Expected": [
+    "AGREED exige cero REQUIRED"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "88-agreed-con-un-cambio-protegido",
+   "Expected": [
+    "AGREED exige cero REQUIRED"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "89-agreed-con-una-linea-del-owner-excedida",
+   "Expected": [
+    "AGREED exige cero REQUIRED"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "90-agreed-con-decision-del-owner",
+   "Expected": [
+    "AGREED exige cero REQUIRED"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "91-no-determinado-con-veredicto",
+   "Expected": [
+    "con un veredicto, NOT_DETERMINED no se admite (NoFrozenTextReplaced, SeparateAndNotImplied)"
+   ],
+   "Got": [
+    "resultado: con un veredicto, NOT_DETERMINED no se admite (NoFrozenTextReplaced, SeparateAndNotImplied)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "92-decision-del-owner-nula-con-veredicto",
+   "Expected": [
+    "OwnerAuthorityCheck.OwnerDecisionRequired no admite null"
+   ],
+   "Got": [
+    "resultado: con un veredicto, OwnerAuthorityCheck.OwnerDecisionRequired no admite null"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "93-paso0-falso-con-veredicto",
+   "Expected": [
+    "las siete booleanas de Step0 van en true"
+   ],
+   "Got": [
+    "resultado: con un veredicto, las siete booleanas de Step0 van en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "94-paso0-nulo-con-veredicto",
+   "Expected": [
+    "las siete booleanas de Step0 van en true"
+   ],
+   "Got": [
+    "resultado: con un veredicto, las siete booleanas de Step0 van en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "95-objeto-blob-de-la-ronda-1",
+   "Expected": [
+    "objeto revisado distinto del designado"
+   ],
+   "Got": [
+    "resultado: objeto revisado distinto del designado (commit, ruta o blob)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "96-objeto-commit-de-la-ronda-1",
+   "Expected": [
+    "objeto revisado distinto del designado"
+   ],
+   "Got": [
+    "resultado: objeto revisado distinto del designado (commit, ruta o blob)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "97-ids-de-invocacion-de-la-ronda-1",
+   "Expected": [
+    "identificadores de la invocación distintos"
+   ],
+   "Got": [
+    "resultado: identificadores de la invocación distintos de los del cierre"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "98-delta-sin-referencias",
+   "Expected": [
+    "con un veredicto, delta A6-4 sin ClauseRefs"
+   ],
+   "Got": [
+    "resultado: con un veredicto, delta A6-4 sin ClauseRefs"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "99-secciones-sin-referencias",
+   "Expected": [
+    "con un veredicto, OwnerDecisionsScope sin ClauseRefs",
+    "con un veredicto, Separability sin ClauseRefs",
+    "con un veredicto, D5AndOwnerValidation sin ClauseRefs",
+    "con un veredicto, tema Q-A6-02 sin ClauseRefs"
+   ],
+   "Got": [
+    "resultado: con un veredicto, tema Q-A6-02 sin ClauseRefs",
+    "resultado: con un veredicto, Separability sin ClauseRefs",
+    "resultado: con un veredicto, D5AndOwnerValidation sin ClauseRefs",
+    "resultado: con un veredicto, OwnerDecisionsScope sin ClauseRefs"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "100-changes-required-coherente-aceptado",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "101-blocked-coherente-aceptado",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "102-agreed-con-un-opcional-aceptado",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "103-id-de-hallazgo-mal-formado",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "103b-id-nuevo-con-el-espacio-de-la-ronda-1",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "104-referencia-absoluta",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "105-referencia-mal-formada",
+   "Expected": [
+    "referencia mal formada en D5AndOwnerValidation",
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json",
+    "referencia mal formada en D5AndOwnerValidation: 'order.txt'"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "106-preflight-sin-compuerta-11",
+   "Expected": [
+    "preflight: faltan comprobaciones ['11-OwnerAndAuthorizationGate']",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de la ronda 2"
+   ],
+   "Got": [
+    "preflight: faltan comprobaciones ['11-OwnerAndAuthorizationGate']",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas A6-ADR0046-9-FX02 y CLAUDE-CLI-I62 = A, o con problemas",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de la ronda 2 en la HEAD del worktree o sin la disposición del Coordinator que autoriza esta revisión (blob y RunId)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "107-preflight-compuerta-11-otra-linea",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas A6-ADR0046-9-FX02 y CLAUDE-CLI-I62 = A, o con problemas"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "108-preflight-compuerta-11-fallida",
+   "Expected": [
+    "preflight: comprobaciones sin Ok: ['11-OwnerAndAuthorizationGate']",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas"
+   ],
+   "Got": [
+    "preflight: comprobaciones sin Ok: ['11-OwnerAndAuthorizationGate']",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas A6-ADR0046-9-FX02 y CLAUDE-CLI-I62 = A, o con problemas"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "108b-preflight-compuerta-11-sin-autorizacion",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de la ronda 2"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de la ronda 2 en la HEAD del worktree o sin la disposición del Coordinator que autoriza esta revisión (blob y RunId)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "108c-preflight-compuerta-11-blob-en-la-head",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de la ronda 2"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de la ronda 2 en la HEAD del worktree o sin la disposición del Coordinator que autoriza esta revisión (blob y RunId)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "108d-preflight-compuerta-11-otro-runid",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de la ronda 2"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de la ronda 2 en la HEAD del worktree o sin la disposición del Coordinator que autoriza esta revisión (blob y RunId)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "109-sin-lectura-directa-de-v14",
+   "Expected": [
+    "lectura directa: docs/initiatives/I-62-proposal-v14.md:2333-2334 no entregadas fielmente",
+    "referencia sobre líneas no entregadas fielmente en DirectReads (docs/initiatives/I-62-proposal-v14.md:2333-2334)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en DirectReads (docs/initiatives/I-62-proposal-v14.md:2333-2334)",
+    "lectura directa: docs/initiatives/I-62-proposal-v14.md:2333-2334 no entregadas fielmente por Read en ese mismo archivo"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "110-cita-de-v14-leida-solo-en-a6-como-en-la-ronda-1",
+   "Expected": [
+    "lectura directa: docs/initiatives/I-62-proposal-v14.md:2333-2334 no entregadas fielmente",
+    "referencia sobre líneas no entregadas fielmente en DirectReads (docs/initiatives/I-62-proposal-v14.md:2333-2334)",
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-6] (docs/initiatives/I-62-proposal-v14.md:2333-2334)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en DeltaVerdicts[A6-6] (docs/initiatives/I-62-proposal-v14.md:2333-2334)",
+    "referencia sobre líneas no entregadas fielmente en DirectReads (docs/initiatives/I-62-proposal-v14.md:2333-2334)",
+    "lectura directa: docs/initiatives/I-62-proposal-v14.md:2333-2334 no entregadas fielmente por Read en ese mismo archivo"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "111-directreads-sin-v14",
+   "Expected": [
+    "lectura directa: DirectReads sin una entrada que cubra"
+   ],
+   "Got": [
+    "lectura directa: DirectReads sin una entrada que cubra docs/initiatives/I-62-proposal-v14.md:2333-2334"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "111b-directreads-cubre-solo-2333",
+   "Expected": [
+    "lectura directa: DirectReads sin una entrada que cubra"
+   ],
+   "Got": [
+    "lectura directa: DirectReads sin una entrada que cubra docs/initiatives/I-62-proposal-v14.md:2333-2334"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "111c-lectura-directa-con-tramo-que-no-cubre-2334",
+   "Expected": [
+    "lectura directa: docs/initiatives/I-62-proposal-v14.md:2333-2334 no entregadas fielmente",
+    "lectura directa: DirectReads sin una entrada que cubra"
+   ],
+   "Got": [
+    "lectura directa: docs/initiatives/I-62-proposal-v14.md:2333-2334 no entregadas fielmente por Read en ese mismo archivo",
+    "lectura directa: DirectReads sin una entrada que cubra docs/initiatives/I-62-proposal-v14.md:2333-2334"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "112-acceptorrefs-en-otro-archivo",
+   "Expected": [
+    "AcceptorCodeContrast[CHECK_IDS].AcceptorRefs: referencia fuera de docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py"
+   ],
+   "Got": [
+    "AcceptorCodeContrast[CHECK_IDS].AcceptorRefs: referencia fuera de docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py: 'docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py:1-3'"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "113-a6refs-en-otro-archivo",
+   "Expected": [
+    "AcceptorCodeContrast[EXIT_CODES].A6Refs: referencia fuera de docs/initiatives/I-62-A-6.md"
+   ],
+   "Got": [
+    "AcceptorCodeContrast[EXIT_CODES].A6Refs: referencia fuera de docs/initiatives/I-62-A-6.md: 'docs/initiatives/I-62-proposal-v14.md:2333-2334'"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "114-acceptorrefs-sobre-lineas-no-leidas",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[DECISION_FORMULA].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2675-2699)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en AcceptorCodeContrast[DECISION_FORMULA].AcceptorRefs (docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2675-2699)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "115-r-de-la-ronda-1-ausente",
+   "Expected": [
+    "Round1FindingResolution debe disponer cada id una vez (faltan ['A62-A6-R5']",
+    "AGREED exige A62-A6-R1..R5"
+   ],
+   "Got": [
+    "resultado: Round1FindingResolution debe disponer cada id una vez (faltan ['A62-A6-R5']; sobran o repetidos [])",
+    "resultado: AGREED exige A62-A6-R1..R5 de la ronda 1 en CORRECTED"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "116-r-de-la-ronda-1-repetido",
+   "Expected": [
+    "Round1FindingResolution con identificadores repetidos",
+    "Round1FindingResolution debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: Round1FindingResolution con identificadores repetidos",
+    "resultado: Round1FindingResolution debe disponer cada id una vez (faltan ['A62-A6-R5']; sobran o repetidos ['A62-A6-R1'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "117-o-de-la-ronda-1-ausente",
+   "Expected": [
+    "Round1OptionalDisposition debe disponer cada id una vez (faltan ['A62-A6-O2']"
+   ],
+   "Got": [
+    "resultado: Round1OptionalDisposition debe disponer cada id una vez (faltan ['A62-A6-O2']; sobran o repetidos [])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "118-o-de-la-ronda-1-repetido",
+   "Expected": [
+    "Round1OptionalDisposition con identificadores repetidos",
+    "Round1OptionalDisposition debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: Round1OptionalDisposition con identificadores repetidos",
+    "resultado: Round1OptionalDisposition debe disponer cada id una vez (faltan ['A62-A6-O3']; sobran o repetidos ['A62-A6-O1'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "119-brecha-ausente",
+   "Expected": [
+    "GapAssessment debe disponer cada id una vez (faltan ['G6']",
+    "AGREED exige G1..G6"
+   ],
+   "Got": [
+    "resultado: GapAssessment debe disponer cada id una vez (faltan ['G6']; sobran o repetidos [])",
+    "resultado: AGREED exige G1..G6 en ACCEPTABLE_RESIDUAL (ninguna brecha REQUIRES_*)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "120-brecha-repetida",
+   "Expected": [
+    "GapAssessment con identificadores repetidos",
+    "GapAssessment debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: GapAssessment con identificadores repetidos",
+    "resultado: GapAssessment debe disponer cada id una vez (faltan ['G2']; sobran o repetidos ['G1'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "121-afirmacion-ausente",
+   "Expected": [
+    "AcceptorCodeContrast debe disponer cada id una vez (faltan ['R10_RELAY_FACTS']",
+    "AGREED exige todas las afirmaciones"
+   ],
+   "Got": [
+    "resultado: AcceptorCodeContrast debe disponer cada id una vez (faltan ['R10_RELAY_FACTS']; sobran o repetidos [])",
+    "resultado: AGREED exige todas las afirmaciones de AcceptorCodeContrast en MATCHES (ningún DIFFERS)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "122-afirmacion-repetida",
+   "Expected": [
+    "AcceptorCodeContrast con identificadores repetidos",
+    "AcceptorCodeContrast debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: AcceptorCodeContrast con identificadores repetidos",
+    "resultado: AcceptorCodeContrast debe disponer cada id una vez (faltan ['WAIVABLE']; sobran o repetidos ['CHECK_IDS'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "123-pieza-de-procedencia-ausente",
+   "Expected": [
+    "ProvenanceIntegrityAtUse debe disponer cada id una vez (faltan ['POU_VIII_NO_SHADOW_EXECUTABLES']",
+    "AGREED exige ProvenanceIntegrityAtUse todo en ADEQUATE"
+   ],
+   "Got": [
+    "resultado: ProvenanceIntegrityAtUse debe disponer cada id una vez (faltan ['POU_VIII_NO_SHADOW_EXECUTABLES']; sobran o repetidos [])",
+    "resultado: AGREED exige ProvenanceIntegrityAtUse todo en ADEQUATE"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "124-pieza-de-procedencia-repetida",
+   "Expected": [
+    "ProvenanceIntegrityAtUse con identificadores repetidos",
+    "ProvenanceIntegrityAtUse debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: ProvenanceIntegrityAtUse con identificadores repetidos",
+    "resultado: ProvenanceIntegrityAtUse debe disponer cada id una vez (faltan ['FAIL_CLOSED']; sobran o repetidos ['PREPARATION_WRITE'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "124b-not-accredited-con-ids-repetidos",
+   "Expected": [
+    "GapAssessment con identificadores repetidos"
+   ],
+   "Got": [
+    "resultado: GapAssessment con identificadores repetidos"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "125-r-parcial-sin-required",
+   "Expected": [
+    "A62-A6-R2 PARTIALLY_CORRECTED sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: A62-A6-R2 PARTIALLY_CORRECTED sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "126-r-no-corregido-sin-required",
+   "Expected": [
+    "A62-A6-R4 NOT_CORRECTED sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: A62-A6-R4 NOT_CORRECTED sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "127-r-corregido-con-required",
+   "Expected": [
+    "A62-A6-R1 CORRECTED con un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: A62-A6-R1 CORRECTED con un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "128-o-no-tratado-sin-hallazgo",
+   "Expected": [
+    "A62-A6-O2 NOT_ADDRESSED sin un hallazgo vinculado"
+   ],
+   "Got": [
+    "resultado: A62-A6-O2 NOT_ADDRESSED sin un hallazgo vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "129-brecha-cambio-de-pieza-sin-required",
+   "Expected": [
+    "GapAssessment[G2] REQUIRES_PIECE_CHANGE sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: GapAssessment[G2] REQUIRES_PIECE_CHANGE sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "130-brecha-cambio-de-texto-sin-required",
+   "Expected": [
+    "GapAssessment[G3] REQUIRES_TEXT_CHANGE sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: GapAssessment[G3] REQUIRES_TEXT_CHANGE sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "131-brecha-decision-del-owner-sin-owner",
+   "Expected": [
+    "GapAssessment[G4] REQUIRES_OWNER_DECISION sin OwnerDecisionRequired = true"
+   ],
+   "Got": [
+    "resultado: GapAssessment[G4] REQUIRES_OWNER_DECISION sin OwnerDecisionRequired = true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "132-brecha-residual-con-required",
+   "Expected": [
+    "GapAssessment[G5] ACCEPTABLE_RESIDUAL con un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: GapAssessment[G5] ACCEPTABLE_RESIDUAL con un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "133-afirmacion-difiere-sin-required",
+   "Expected": [
+    "AcceptorCodeContrast[WAIVABLE] DIFFERS sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: AcceptorCodeContrast[WAIVABLE] DIFFERS sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "134-afirmacion-coincide-con-required",
+   "Expected": [
+    "AcceptorCodeContrast[EXIT_CODES] MATCHES con un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: AcceptorCodeContrast[EXIT_CODES] MATCHES con un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "135-pieza-inadecuada-sin-required",
+   "Expected": [
+    "ProvenanceIntegrityAtUse[POU_IV_FSCK] INADEQUATE sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: ProvenanceIntegrityAtUse[POU_IV_FSCK] INADEQUATE sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "136-pieza-adecuada-con-required",
+   "Expected": [
+    "ProvenanceIntegrityAtUse[TIMING_AT_USE] ADEQUATE con un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: ProvenanceIntegrityAtUse[TIMING_AT_USE] ADEQUATE con un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "137-m01-desacuerdo-sin-hallazgo",
+   "Expected": [
+    "M01Verification DISAGREE sin un hallazgo vinculado"
+   ],
+   "Got": [
+    "resultado: M01Verification DISAGREE sin un hallazgo vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "138-m01-acuerdo-incoherente",
+   "Expected": [
+    "M01Verification: Agreement incoherente con Activated y A6Declared"
+   ],
+   "Got": [
+    "resultado: M01Verification: Agreement incoherente con Activated y A6Declared"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "139-m01-a6declared-distinto-de-a6",
+   "Expected": [
+    "con un veredicto, M01Verification lleva A6Declared = A-6 §5 (no)",
+    "M01Verification.Activated distinto de MaterialityConfirmation[M-01].ReviewerAssessment"
+   ],
+   "Got": [
+    "resultado: con un veredicto, M01Verification lleva A6Declared = A-6 §5 (no) y Agreement AGREE o DISAGREE",
+    "resultado: M01Verification.Activated distinto de MaterialityConfirmation[M-01].ReviewerAssessment"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "140-m01-no-determinado-con-veredicto",
+   "Expected": [
+    "con un veredicto, M01Verification lleva A6Declared = A-6 §5 (no) y Agreement AGREE o DISAGREE"
+   ],
+   "Got": [
+    "resultado: con un veredicto, M01Verification lleva A6Declared = A-6 §5 (no) y Agreement AGREE o DISAGREE"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "141-m01-distinto-de-la-materialidad",
+   "Expected": [
+    "M01Verification.Activated distinto de MaterialityConfirmation[M-01].ReviewerAssessment"
+   ],
+   "Got": [
+    "resultado: M01Verification.Activated distinto de MaterialityConfirmation[M-01].ReviewerAssessment"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "142-elementos-nuevos-sin-referencias",
+   "Expected": [
+    "con un veredicto, Round1FindingResolution[A62-A6-R3] sin ClauseRefs",
+    "con un veredicto, Round1OptionalDisposition[A62-A6-O1] sin ClauseRefs",
+    "con un veredicto, GapAssessment[G4] sin ClauseRefs",
+    "con un veredicto, ProvenanceIntegrityAtUse[DECLARED_ORDER] sin ClauseRefs",
+    "con un veredicto, M01Verification sin ClauseRefs"
+   ],
+   "Got": [
+    "resultado: con un veredicto, Round1FindingResolution[A62-A6-R3] sin ClauseRefs",
+    "resultado: con un veredicto, Round1OptionalDisposition[A62-A6-O1] sin ClauseRefs",
+    "resultado: con un veredicto, GapAssessment[G4] sin ClauseRefs",
+    "resultado: con un veredicto, ProvenanceIntegrityAtUse[DECLARED_ORDER] sin ClauseRefs",
+    "resultado: con un veredicto, M01Verification sin ClauseRefs"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "143-elementos-nuevos-con-hallazgos-inexistentes",
+   "Expected": [
+    "GapAssessment[G4] cita en FindingIds hallazgos que no existen",
+    "AcceptorCodeContrast[R4_INPUTS] cita en FindingIds hallazgos que no existen"
+   ],
+   "Got": [
+    "resultado: GapAssessment[G4] cita en FindingIds hallazgos que no existen",
+    "resultado: AcceptorCodeContrast[R4_INPUTS] cita en FindingIds hallazgos que no existen"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "144-agreed-con-r-no-corregido",
+   "Expected": [
+    "AGREED exige cero REQUIRED",
+    "AGREED exige A62-A6-R1..R5 de la ronda 1 en CORRECTED"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true",
+    "resultado: AGREED exige A62-A6-R1..R5 de la ronda 1 en CORRECTED"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "145-agreed-con-brecha-requires",
+   "Expected": [
+    "AGREED exige cero REQUIRED",
+    "AGREED exige G1..G6 en ACCEPTABLE_RESIDUAL"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true",
+    "resultado: AGREED exige G1..G6 en ACCEPTABLE_RESIDUAL (ninguna brecha REQUIRES_*)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "146-agreed-con-afirmacion-que-difiere",
+   "Expected": [
+    "AGREED exige cero REQUIRED",
+    "AGREED exige todas las afirmaciones de AcceptorCodeContrast en MATCHES"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true",
+    "resultado: AGREED exige todas las afirmaciones de AcceptorCodeContrast en MATCHES (ningún DIFFERS)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "147-agreed-con-pieza-inadecuada",
+   "Expected": [
+    "AGREED exige cero REQUIRED",
+    "AGREED exige ProvenanceIntegrityAtUse todo en ADEQUATE"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true",
+    "resultado: AGREED exige ProvenanceIntegrityAtUse todo en ADEQUATE"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "148-esquema-mitigacion-invalida",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "149-esquema-r-inexistente",
+   "Expected": [
+    "resultado: no valida contra result.schema.json",
+    "Round1FindingResolution debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: Round1FindingResolution debe disponer cada id una vez (faltan ['A62-A6-R5']; sobran o repetidos ['A62-A6-R6'])",
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "150-esquema-afirmacion-sin-referencias-del-aceptante",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151-changes-required-ronda-2-coherente-aceptado",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "152-blocked-por-brecha-coherente-aceptado",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "153-cita-de-v14-tras-la-lectura-directa-aceptada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G00-medida-c3-valida",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G01-pendiente",
+   "Expected": [
+    "D-01 abierto"
+   ],
+   "Got": [
+    "Status 'PENDING': D-01 abierto (falta la medición C3 o la aceptación registrada)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G02-plantilla-de-la-compuerta",
+   "Expected": [
+    "ArgsTemplate de la compuerta"
+   ],
+   "Got": [
+    "ArgsTemplate de la compuerta distinta de la plantilla del cierre"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G03-runid-de-la-compuerta",
+   "Expected": [
+    "RunId, SessionId o Binary de la compuerta"
+   ],
+   "Got": [
+    "RunId, SessionId o Binary de la compuerta distintos del cierre"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G04-sin-registro",
+   "Expected": [
+    "falta el registro de caracterización"
+   ],
+   "Got": [
+    "falta el registro de caracterización"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G05-registro-alterado",
+   "Expected": [
+    "SHA-256 del registro de caracterización distinto"
+   ],
+   "Got": [
+    "SHA-256 del registro de caracterización distinto del fijado en la compuerta"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G06-registro-ilegible",
+   "Expected": [
+    "registro de caracterización ilegible"
+   ],
+   "Got": [
+    "registro de caracterización ilegible"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G07-sin-binario-elegible",
+   "Expected": [
+    "no registra el binario elegible"
+   ],
+   "Got": [
+    "la caracterización no registra el binario elegible (SHA-256, versión y Usable)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G08-c1-otra-lista",
+   "Expected": [
+    "C1 no midió la lista"
+   ],
+   "Got": [
+    "C1 no midió la lista del lanzamiento sin --add-dir"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G09-c1-salida",
+   "Expected": [
+    "C1 sin código de salida 0"
+   ],
+   "Got": [
+    "C1 sin código de salida 0"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G10-stale",
+   "Expected": [
+    "Eligibility.STALE no es false"
+   ],
+   "Got": [
+    "Eligibility.STALE no es false"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G11-architect-no-elegible",
+   "Expected": [
+    "Eligibility.ARCHITECT no es ELIGIBLE"
+   ],
+   "Got": [
+    "Eligibility.ARCHITECT no es ELIGIBLE"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G12-sin-c3",
+   "Expected": [
+    "no tiene la sonda C3"
+   ],
+   "Got": [
+    "la caracterización no tiene la sonda C3"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G13-c3-veredicto",
+   "Expected": [
+    "C3 sin veredicto PASS limpio"
+   ],
+   "Got": [
+    "C3 sin veredicto PASS limpio"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G14-c3-plantilla-sin-add-dir",
+   "Expected": [
+    "C3 no midió la lista exacta"
+   ],
+   "Got": [
+    "C3 no midió la lista exacta del lanzamiento (con --add-dir)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G15-c3-argumentos",
+   "Expected": [
+    "los argumentos registrados de C3"
+   ],
+   "Got": [
+    "los argumentos registrados de C3 no corresponden a la plantilla"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G16-c3-binario",
+   "Expected": [
+    "C3 con otro binario o versión"
+   ],
+   "Got": [
+    "C3 con otro binario o versión"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G17-c3-salida",
+   "Expected": [
+    "C3 sin salida 0"
+   ],
+   "Got": [
+    "C3 sin salida 0 o terminada por el invocador"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G18-c3-result",
+   "Expected": [
+    "C3 sin result success"
+   ],
+   "Got": [
+    "C3 sin result success con structured_output"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G19-c3-init",
+   "Expected": [
+    "init de C3 distinto"
+   ],
+   "Got": [
+    "init de C3 distinto del esperado (herramientas, MCP, permissionMode, versión o modelo)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G20-c3-effort",
+   "Expected": [
+    "C3 con modelo o effort"
+   ],
+   "Got": [
+    "C3 con modelo o effort observado distinto"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G21-c3-lectura-anadida",
+   "Expected": [
+    "dentro del directorio añadido"
+   ],
+   "Got": [
+    "C3: la lectura dentro del directorio añadido no se entregó fiel o se denegó"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G22-c3-lectura-exterior",
+   "Expected": [
+    "lectura fuera del cwd"
+   ],
+   "Got": [
+    "C3: la lectura fuera del cwd y del directorio añadido no quedó denegada"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G23-c3-denegaciones",
+   "Expected": [
+    "permission_denials con rutas distintas"
+   ],
+   "Got": [
+    "C3: permission_denials con rutas distintas de la lectura exterior"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G24-sin-plantilla-medida",
+   "Expected": [
+    "Eligibility.MeasuredArgsTemplate"
+   ],
+   "Got": [
+    "Eligibility.MeasuredArgsTemplate distinta de la plantilla del lanzamiento"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G25-aceptada-valida",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G26-aceptacion-ausente",
+   "Expected": [
+    "falta el registro de aceptación"
+   ],
+   "Got": [
+    "falta el registro de aceptación"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G27-aceptacion-alterada",
+   "Expected": [
+    "SHA-256 del registro de aceptación distinto"
+   ],
+   "Got": [
+    "SHA-256 del registro de aceptación distinto del fijado en la compuerta"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G28-aceptacion-ilegible",
+   "Expected": [
+    "registro de aceptación ilegible"
+   ],
+   "Got": [
+    "registro de aceptación ilegible"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G29-aceptacion-Schema",
+   "Expected": [
+    "aceptación con otro esquema"
+   ],
+   "Got": [
+    "aceptación con otro esquema"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G30-aceptacion-RunId",
+   "Expected": [
+    "aceptación de otro RunId"
+   ],
+   "Got": [
+    "aceptación de otro RunId"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G31-aceptacion-Decision",
+   "Expected": [
+    "aceptación sin Decision"
+   ],
+   "Got": [
+    "aceptación sin Decision = ACCEPT_UNMEASURED_FLAG"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G32-aceptacion-UnmeasuredFlags",
+   "Expected": [
+    "aceptación con UnmeasuredFlags"
+   ],
+   "Got": [
+    "aceptación con UnmeasuredFlags distintos de ['--add-dir']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G33-aceptacion-ArgsTemplate",
+   "Expected": [
+    "aceptación de otra plantilla"
+   ],
+   "Got": [
+    "aceptación de otra plantilla de argumentos"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G34-aceptacion-BinarySha256",
+   "Expected": [
+    "aceptación de otro binario"
+   ],
+   "Got": [
+    "aceptación de otro binario o versión"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G35-aceptacion-CharacterizationSha256",
+   "Expected": [
+    "aceptación sobre otro registro"
+   ],
+   "Got": [
+    "aceptación sobre otro registro de caracterización"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G36-aceptacion-AcceptedBy",
+   "Expected": [
+    "AcceptedBy distinto"
+   ],
+   "Got": [
+    "AcceptedBy distinto de principal-session | Coordinator"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G37-aceptacion-Authority",
+   "Expected": [
+    "aceptación sin Authority"
+   ],
+   "Got": [
+    "aceptación sin Authority, Rationale o At"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G38-sonda-lectura-anadida-denegada",
+   "ProbeVerdict": "FAIL",
+   "ProbeProblems": [
+    "la lectura dentro del directorio añadido no se entregó fiel o se denegó"
+   ],
+   "Expected": [
+    "C3 sin veredicto PASS limpio",
+    "lectura dentro del directorio añadido"
+   ],
+   "Got": [
+    "C3 sin veredicto PASS limpio",
+    "C3: la lectura dentro del directorio añadido no se entregó fiel o se denegó"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G39-sonda-lectura-exterior-entregada",
+   "ProbeVerdict": "FAIL",
+   "ProbeProblems": [
+    "la lectura exterior no quedó denegada (o no se intentó, o se entregó)"
+   ],
+   "Expected": [
+    "C3 sin veredicto PASS limpio",
+    "lectura fuera del cwd"
+   ],
+   "Got": [
+    "C3 sin veredicto PASS limpio",
+    "C3: la lectura fuera del cwd y del directorio añadido no quedó denegada"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G40-sonda-pass",
+   "ProbeVerdict": "PASS",
+   "ProbeProblems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O00-autorizacion-tras-80-aceptada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": true,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O01-sin-autorizacion",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O02-disposicion-del-owner-con-los-tokens",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O03-autorizacion-con-numero-80",
+   "Expected": [
+    "falta la autorización",
+    "decisiones sin un único encabezado §80 (2)"
+   ],
+   "Got": [
+    "decisiones sin un único encabezado §80 (2)",
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O04-blob-abreviado",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O05-sin-runid",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O06-blob-de-la-ronda-1",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O07-tokens-pegados",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O08-blob-y-runid-en-secciones-distintas",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O09-a6-en-la-head-con-otro-blob",
+   "Expected": [
+    "no tiene el blob de la ronda 2 fijado en el kit"
+   ],
+   "Got": [
+    "docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob de la ronda 2 fijado en el kit (eac473c0d2e5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O10-blob-no-fijado",
+   "Expected": [
+    "blob de la A-6 de la ronda 2 no fijado en el kit",
+    "no tiene el blob de la ronda 2 fijado",
+    "falta la autorización"
+   ],
+   "Got": [
+    "blob de la A-6 de la ronda 2 no fijado en el kit (closure.ObjectBlob: 40 hexadecimales, distinto de la ronda 1)",
+    "docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob de la ronda 2 fijado en el kit (86da0ae770e6)",
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O10b-blob-fijado-de-la-ronda-1",
+   "Expected": [
+    "blob de la A-6 de la ronda 2 no fijado en el kit",
+    "no tiene el blob de la ronda 2 fijado",
+    "falta la autorización"
+   ],
+   "Got": [
+    "blob de la A-6 de la ronda 2 no fijado en el kit (closure.ObjectBlob: 40 hexadecimales, distinto de la ronda 1)",
+    "docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob de la ronda 2 fijado en el kit (eac473c0d2e5)",
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O11-sin-la-linea-del-owner",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O12-parafrasis",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =»"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =» distinta de la fijada (líneas [1572])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O13-fragmento-citado-en-tabla",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O14-cita-con-sangria-de-bloque",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O15-espacio-final",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =»"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =» distinta de la fijada (líneas [1572])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O16-retorno-de-carro",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =»"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =» distinta de la fijada (líneas [1572])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O17-linea-antes-de-78",
+   "Expected": [
+    "no está registrada después del encabezado de decisiones §78"
+   ],
+   "Got": [
+    "la línea del Owner A6-ADR0046-9-FX02 no está registrada después del encabezado de decisiones §78"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O18-revocacion-posterior",
+   "Expected": [
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =»"
+   ],
+   "Got": [
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =» distinta de la fijada (líneas [1638])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O19-sin-claude-cli-i62",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner CLAUDE-CLI-I62 = A",
+    "otra línea que empieza por «CLAUDE-CLI-I62 =»"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner CLAUDE-CLI-I62 = A (SHA-256 fbeade41…): autorización de revisión no vigente",
+    "otra línea que empieza por «CLAUDE-CLI-I62 =» distinta de la fijada (líneas [1085]): autorización de revisión no verificable"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O20-otra-linea-claude-cli-i62",
+   "Expected": [
+    "otra línea que empieza por «CLAUDE-CLI-I62 =»"
+   ],
+   "Got": [
+    "otra línea que empieza por «CLAUDE-CLI-I62 =» distinta de la fijada (líneas [1638]): autorización de revisión no verificable"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O21-decision-80-cambiada",
+   "Expected": [
+    "no crece solo por añadido"
+   ],
+   "Got": [
+    "decisiones del worktree no crece solo por añadido desde el commit del clon (§80 o lo anterior cambiaron)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O22-cambios-sin-commit",
+   "Expected": [
+    "cambios sin commit"
+   ],
+   "Got": [
+    "el archivo de decisiones del árbol de trabajo no es el de la HEAD (cambios sin commit)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O23-head-no-desciende-del-clon",
+   "Expected": [
+    "no desciende del commit del clon"
+   ],
+   "Got": [
+    "la HEAD del worktree no desciende del commit del clon"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O24-otro-binario",
+   "Expected": [
+    "SHA-256 medido del binario distinto del cierre"
+   ],
+   "Got": [
+    "SHA-256 medido del binario distinto del cierre: la autorización de revisión no cubre otro binario"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O25-linea-fijada-ausente-de-a6r2",
+   "Expected": [
+    "no está, como línea completa, en la A-6 de la ronda 2"
+   ],
+   "Got": [
+    "la línea fijada del Owner A6-ADR0046-9-FX02 no está, como línea completa, en la A-6 de la ronda 2 del commit del clon (§7)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O26-dos-encabezados-78",
+   "Expected": [
+    "decisiones sin un único encabezado §78 (2)"
+   ],
+   "Got": [
+    "decisiones sin un único encabezado §78 (2)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O27-autorizacion-anterior-al-clon-en-el-cuerpo-de-80",
+   "Expected": [
+    "falta la autorización",
+    "no crece solo por añadido"
+   ],
+   "Got": [
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)",
+    "decisiones del worktree no crece solo por añadido desde el commit del clon (§80 o lo anterior cambiaron)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "Authorized": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "L00-compuerta-11-real-bloquea",
+   "WorktreeHead": "0f4d8cbcbe4213e741285e7c3fa090830d38c4a1",
+   "CloneCommitUsed": "0f4d8cbcbe4213e741285e7c3fa090830d38c4a1",
+   "Ok": false,
+   "Problems": [
+    "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+   ],
+   "A6BlobAtHead": "86da0ae770e683a647f2724860a4bd890061154d",
+   "AuthorizationSections": [],
+   "A6LineNumbers": [
+    1572
+   ],
+   "Note": "binario no medido en la sonda: se pasa el SHA-256 del cierre; nada se escribe en el worktree",
+   "Result": "PASS"
+  }
+ ],
+ "Totals": {
+  "Cases": 233,
+  "Pass": 233,
+  "AuditCases": 162,
+  "AuditPass": 162,
+  "GateCases": 41,
+  "GatePass": 41,
+  "OwnerGateCases": 30,
+  "OwnerGatePass": 30
+ },
+ "AllPass": true
+}

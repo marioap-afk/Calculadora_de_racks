@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §80-§81; evidencia §157-§158) — A-6 ronda 2 publicada PROPUESTA (86da0ae7; guardas run PASS; R3 REPRODUCED); kit de la revisión siguiente en preparación, sin lanzar; diseño de C1-C3 entregado (MATERIAL; propuesta de enmienda independiente sin redactar), sin implementación; esperar disposiciones; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §80-§81; evidencia §157-§159) — A-6 ronda 2 PROPUESTA (86da0ae7) con guardas run PASS y R3 REPRODUCED; kit de la revisión formal única preparado y custodiado (R20261012T195511Z-e5c3), bloqueado hasta una disposición del Coordinator que cite el blob y el RunId; diseño C1-C3 entregado; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

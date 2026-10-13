@@ -1,0 +1,129 @@
+== 1 prepare_clone
+{
+ "CloneCommit": "0f4d8cbcbe4213e741285e7c3fa090830d38c4a1",
+ "Publication": "ae9fe0e94b2dea9bc840d358d876deb6a6407391",
+ "PublicationParent": "2c531b533181a9efb3bba351c09e657e0696bbe1",
+ "GuardsRunCommit": "04833bf9f402d0aee325d4ede126622f31d4f1e5",
+ "Object": {
+  "Path": "docs/initiatives/I-62-A-6.md",
+  "Blob": "86da0ae770e683a647f2724860a4bd890061154d"
+ },
+ "PreconditionChecks": {
+  "CommitsExist": true,
+  "CloneCommitReachableFromBranchTip": true,
+  "PublicationAncestorOfGuardsRun": true,
+  "GuardsRunAncestorOfCloneCommit": true,
+  "Round1AtPublicationParent": true,
+  "SameRound2BlobAtPublicationGuardsRunAndClone": true,
+  "Decisions78to80AtCloneCommit": true,
+  "GuardsRunResultAtCloneCommit": true,
+  "R2UnchangedSincePublication": true
+ },
+ "Commands": [
+  "git clone -q --no-local -c core.autocrlf=false --single-branch --branch architecture/portabilidad-coordinador-principal %USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal D:\\r62-arch-a6r2",
+  "git -C D:\\r62-arch-a6r2 checkout -q --detach 0f4d8cbcbe4213e741285e7c3fa090830d38c4a1",
+  "git -C D:\\r62-arch-a6r2 branch -D architecture/portabilidad-coordinador-principal",
+  "git -C D:\\r62-arch-a6r2 remote remove origin",
+  "git -C D:\\r62-arch-a6r2 reflog expire --expire=now --all",
+  "git -C D:\\r62-arch-a6r2 gc -q --prune=now",
+  "copia byte a byte de kit/order.txt (= cuerpo §80) y kit/a6-r1.md (= blob eac473c0) → D:\\r62-arch-a6r2-run\\",
+  "copia byte a byte de kit/prompt.md (renderizado por make_closure.py --render-prompt) → D:\\r62-arch-a6r2-run\\prompt.md (finish_kit.py)"
+ ]
+}
+
+== 2 render prompt
+{"Written": "prompt.md", "Bytes": 86690, "Lines": 611, "Sha256": "1bb85b88a3d93212065355cd13d046e9fa5e333abf4e582e3f4b8c47e9b603b4"}
+
+== 3 prompt.md copiado al run
+copied
+
+== 4 closure
+{
+ "ids": {
+  "RunId": "R20261012T195511Z-e5c3",
+  "InvocationId": "I20261012T195511Z-e5c3",
+  "LogicalReviewRequestId": "L20261012T195511Z-e5c3",
+  "AttemptSeq": 1
+ },
+ "canonical": 214,
+ "bytes": 7035120,
+ "run": {
+  "order.txt": [
+   2833,
+…
+
+== 5 gate init y set MEASURED
+{"Written": "transport-gate.json", "Status": "PENDING"}
+{
+ "Written": "transport-gate.json",
+ "Status": "MEASURED",
+ "Sha256": "5da1af22ace1b3b6e4c34ede68f327515099d0690c2b3f517bdd92dc897ae67d",
+ "Next": "python -B make_manifest.py --gate; después, custodiar el kit otra vez"
+}
+{
+ "Status": "MEASURED",
+ "ArgsTemplate": [
+  "-p",
+  "--model",
+  "claude-opus-5-5",
+  "--effort",
+  "xhigh",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+  "--safe-mode",
+
+== 6 verify_clone  [2026-10-12T23:26:49Z → 2026-10-12T23:28:42Z]
+{"AllChecks": true, "Head": "0f4d8cbcbe4213e741285e7c3fa090830d38c4a1", "Files": 4090, "Reparse": 0, "Run": ["a6-r1.md", "order.txt", "prompt.md"], "GuardsRun": {"ExitCode": 0, "Result": "PASS", "WholeEqualsCustodied": true, "DifferingTopLevelKeys": []}, "GuardsSelfTest": {"ExitCode": 0, "Result": "PASS", "Mutants": 586, "MutantsKilled": 586, "WholeEqualsCustodied": true, "DifferingTopLevelKeys": []}}
+rc=0
+
+== 7 selftest  [2026-10-12T23:29:05Z → 2026-10-13T00:00:19Z]
+clean True runfiles {'order.txt': True, 'prompt.md': True, 'a6-r1.md': True} listing ['a6-r1.md', 'order.txt', 'prompt.md'] all True {'Cases': 233, 'Pass': 233, 'AuditCases': 162, 'AuditPass': 162, 'GateCases': 41, 'GatePass': 41, 'OwnerGateCases': 30, 'OwnerGatePass': 30}
+rc=0
+
+== 8 mutation  [2026-10-13T00:00:19Z → 2026-10-13T01:49:26Z]
+owner_gate.py       102 KILLED ['O12-parafrasis', 'O15-espacio-final']
+owner_gate.py       104 KILLED ['O19-sin-claude-cli-i62']
+owner_gate.py       107 KILLED ['O19-sin-claude-cli-i62', 'O20-otra-linea-claude-cli-i62']
+owner_gate.py       110 KILLED ['O09-a6-en-la-head-con-otro-blob', 'O10-blob-no-fijado']
+owner_gate.py       113 KILLED ['O03-autorizacion-con-numero-80']
+owner_gate.py       115 KILLED ['O01-sin-autorizacion', 'O02-disposicion-del-owner-con-los-tokens']
+owner_gate.py       119 KILLED ['O21-decision-80-cambiada', 'O27-autorizacion-anterior-al-clon-en-el-cuerpo-de-80']
+owner_gate.py       121 KILLED ['O22-cambios-sin-commit']
+owner_gate.py       123 KILLED ['O23-head-no-desciende-del-clon']
+owner_gate.py       126 KILLED ['O24-otro-binario']
+{"Baseline": true, "Totals": {"Mutants": 182, "Killed": 182}, "AllKilled": true}
+rc=0
+
+== 9 manifest
+{"Written": "kit-manifest.json", "Files": 24, "Gate": "MEASURED", "Sha256": "3b06e8375ed571eb225bf7c3ae98f8ef885598fd945ce348725af7fe810c8c85"}
+
+== 10 launch --dry-run
+{
+ "Code": 2,
+ "BlockingChecks": [
+  "11-OwnerAndAuthorizationGate"
+ ],
+ "NotRunInDryRun": [
+  "4-Version",
+  "5-Auth"
+ ],
+ "AuthorizationSections": [],
+ "Gate11Problems": [
+  "falta la autorización: ninguna disposición del Coordinator numerada después de §80 contiene, como tokens literales, el blob completo de la ronda 2 y el RunId R20261012T195511Z-e5c3 del kit (decisiones §79, punto 7; §80, punto 5)"
+ ],
+ "OtherChecksOk": {
+  "1-KitIntegrity": true,
+  "2-ClosureTransport": true,
+  "3-Binary": true,
+  "4-Version": null,
+  "5-Auth": null,
+  "6-Clone": true,
+  "7-RunFiles": true,
+  "8-NewSession": true,
+  "9-CommandLine": true,
+  "10-TransportGate": true,
+  "11-OwnerAndAuthorizationGate": false
+ },
+ "Sha256": "3c777c29fc76c9afbf45f068dde4b51cdc07b858ed1874ab29e702ef04450a34"
+}
