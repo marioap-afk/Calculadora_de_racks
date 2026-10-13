@@ -618,4 +618,136 @@ public class WorkspacePaletteHostSourceGuardTests
         Assert.DoesNotMatch(new Regex(@"Skip\s*=|\[Fact\(Skip|\[Theory\(Skip"), text);
         Assert.Equal(43, Src.Count(code, @"\[(?:Fact|Theory)\]"));
     }
+
+    // ------------------------------------------------------------------ F1-T3B-HOST-UI-C1: deterministic first placement (D-01)
+    // Smoke-1 R20261013T011654Z-184b stopped at SM-03: the palette, created with no size and no position, floated, became
+    // unusable and left the screen before the Owner could see the panel. The palette is now placed ONCE, when the process
+    // creates it: a device-independent size and minimum size, a floating rectangle that fits a 1024 x 768 primary screen and
+    // an initial dock to the right. Show() only shows it, so any move or dock of the user is kept for the rest of the process;
+    // nothing is persisted (no identity, no handlers of persistence, no registry, no profile).
+
+    private const string PlacementSignature = @"private\s+void\s+ApplyInitialPlacement\s*\(\s*\)";
+    private const string ConstructorSignature = @"private\s+WorkspacePaletteHost\s*\(\s*\)";
+
+    // The geometry members of the palette: they may be touched only inside the first placement.
+    private static readonly string[] GeometryPatterns =
+    {
+        @"\.Dock\s*=(?!=)", @"\bDeviceIndependentSize\b", @"\bDeviceIndependentMinimumSize\b", @"\bDeviceIndependentLocation\b",
+        @"\.Size\s*=(?!=)", @"\.MinimumSize\s*=(?!=)", @"\.Location\s*=(?!=)", @"\bInitializeFloatingPosition\b",
+        @"\bRecalculateDockSiteLayout\b", @"\bFloatControl\b", @"\bRolledUp\b", @"\bAutoRollUp\b", @"\bTitleBarLocation\b",
+    };
+
+    private static double ConstantOf(string code, string name)
+    {
+        var match = Regex.Match(code, @"private\s+const\s+(?:double|int)\s+" + name + @"\s*=\s*(\d+(?:\.\d+)?)\s*;");
+        Assert.True(match.Success, "constant not found: " + name);
+        return double.Parse(match.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    [Fact]
+    public void TheFirstCreationConfiguresAnExplicitDeviceIndependentPlacementAndDocksThePalette()
+    {
+        var code = Host();
+        var placement = Src.BodyOf(code, PlacementSignature);
+
+        Assert.Matches(@"_palette\.DeviceIndependentSize\s*=\s*new\s+System\.Windows\.Size\s*\(\s*InitialWidth\s*,\s*InitialHeight\s*\)\s*;", placement);
+        Assert.Matches(@"_palette\.DeviceIndependentMinimumSize\s*=\s*new\s+System\.Drawing\.Size\s*\(\s*MinimumWidth\s*,\s*MinimumHeight\s*\)\s*;", placement);
+        Assert.Matches(@"_palette\.InitializeFloatingPosition\s*\(\s*new\s+System\.Windows\.Rect\s*\(\s*FloatingLeft\s*,\s*FloatingTop\s*,\s*InitialWidth\s*,\s*InitialHeight\s*\)\s*\)\s*;", placement);
+        Assert.Matches(@"_palette\.Dock\s*=\s*DockSides\.Right\s*;", placement);
+        Assert.True(placement.IndexOf(".Dock", StringComparison.Ordinal) > placement.IndexOf("DeviceIndependentSize", StringComparison.Ordinal),
+            "the palette is docked after it has its size");
+
+        // The initial dock side is one of the enabled sides, so the palette stays acoplable and floating (D-01).
+        Assert.Matches(@"_palette\.DockEnabled\s*=\s*DockSides\.Left\s*\|\s*DockSides\.Right\s*;", code);
+
+        // Visibly usable: a real size, a minimum that does not exceed it, and a floating rectangle on a 1024 x 768 primary screen.
+        var width = ConstantOf(code, "InitialWidth");
+        var height = ConstantOf(code, "InitialHeight");
+        var minWidth = ConstantOf(code, "MinimumWidth");
+        var minHeight = ConstantOf(code, "MinimumHeight");
+        var left = ConstantOf(code, "FloatingLeft");
+        var top = ConstantOf(code, "FloatingTop");
+        Assert.InRange(width, 240, 600);
+        Assert.InRange(height, 300, 700);
+        Assert.InRange(minWidth, 1, width);
+        Assert.InRange(minHeight, 1, height);
+        Assert.InRange(left, 0, 1024 - width);
+        Assert.InRange(top, 0, 768 - height);
+
+        // A failure of the placement is contained and logged: the panel is still shown.
+        Assert.Contains("try", placement);
+        Assert.Contains("catch (System.Exception", placement);
+        Assert.Contains("LogFault(", placement);
+    }
+
+    [Fact]
+    public void RepeatedShowNeverReappliesTheFirstPlacementAndTheUserKeepsMovesAndDocking()
+    {
+        var code = Host();
+        var constructor = Src.BodyOf(code, ConstructorSignature);
+        var placement = Src.BodyOf(code, PlacementSignature);
+        var show = Src.BodyOf(code, @"public\s+void\s+Show\s*\(\s*\)");
+
+        // The placement runs once per process: one declaration and one call, the call in the constructor, after the root
+        // control is added and before the subscriptions (which stay the last step).
+        Assert.Equal(2, Src.Count(code, @"\bApplyInitialPlacement\s*\("));
+        Assert.Equal(1, Src.Count(constructor, @"\bApplyInitialPlacement\s*\(\s*\)\s*;"));
+        var add = constructor.IndexOf("AddVisual", StringComparison.Ordinal);
+        var place = constructor.IndexOf("ApplyInitialPlacement", StringComparison.Ordinal);
+        var subscribe = constructor.IndexOf("+=", StringComparison.Ordinal);
+        Assert.True(add >= 0 && place > add && subscribe > place, "the placement goes after AddVisual and before the subscriptions");
+
+        // Show() only shows: it never touches the geometry, so a repeated RACKPANEL never resets what the user moved or docked.
+        var showStatements = Regex.Replace(show.Substring(show.IndexOf('{') + 1).TrimEnd().TrimEnd('}'), @"\s+", " ").Trim();
+        Assert.Equal("_palette.Visible = true;", showStatements);
+        Assert.Equal(1, Src.Count(code, @"\.Visible\s*=(?!=)"));
+
+        // Every geometry member of the palette is touched only inside the first placement.
+        foreach (var pattern in GeometryPatterns)
+            Assert.True(Src.Count(code, pattern) == Src.Count(placement, pattern), "geometry outside the first placement: " + pattern);
+    }
+
+    [Fact]
+    public void TheFirstPlacementAddsNoPersistenceIdentityAutoloadProfileOrSecurityMechanism()
+    {
+        var code = Host();
+
+        Assert.Matches(@"\bnew\s+PaletteSet\s*\(\s*""RackCad""\s*\)", code);
+        Assert.DoesNotMatch(new Regex(@"\bGuid\b|toolID|ToolId|\bLoad\b|\bSave\b|\bSaving\b|PalettePersist"), code);
+        Assert.DoesNotMatch(
+            new Regex(@"Registry|UserSettings|settings\.json|System\.IO|\bFile\.|Environment\.SetEnvironmentVariable|SetSystemVariable|SetEnvironmentVariable|TRUSTEDPATHS|SECURELOAD|CPROFILE|\bProfiles?\b|ApplicationPlugins|PackageContents|LOADCTRLS|DemandLoad|Preferences"),
+            code);
+
+        // The placement follows no move nor size of the user and keeps nothing: still exactly the two subscriptions of T3B.
+        Assert.Equal(2, Src.Count(code, @"\+="));
+        Assert.DoesNotMatch(new Regex(@"PaletteSetMoved|PaletteSetHostMoved|PaletteSetEnterSizeMove|SizeChanged|PaletteSetDestroy"), code);
+
+        // No new file carries the placement: the plugin workspace folder keeps its six files.
+        Assert.Equal(
+            new[]
+            {
+                "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs", "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+                "src/RackCad.Plugin/Workspace/WorkspaceHostPort.cs", "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+                "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs", "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs",
+            },
+            Src.PluginFiles().Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray());
+    }
+
+    [Fact]
+    public void TheExistingStyleDockingCapabilityAndKeepFocusOfThePaletteAreIntact()
+    {
+        var code = Host();
+        var constructor = Src.BodyOf(code, ConstructorSignature);
+
+        Assert.Equal(1, Src.Count(code, @"\bnew\s+PaletteSet\s*\("));
+        Assert.Matches(
+            @"_palette\.Style\s*=\s*PaletteSetStyles\.ShowPropertiesMenu\s*\|\s*PaletteSetStyles\.ShowAutoHideButton\s*\|\s*PaletteSetStyles\.ShowCloseButton\s*;",
+            constructor);
+        Assert.Matches(@"_palette\.DockEnabled\s*=\s*DockSides\.Left\s*\|\s*DockSides\.Right\s*;", constructor);
+        Assert.Matches(@"_palette\.KeepFocus\s*=\s*true\s*;", constructor);
+        Assert.Matches(@"_palette\.AddVisual\s*\(\s*""Workspace""\s*,\s*_root\s*\)\s*;", constructor);
+        Assert.Equal(1, Src.Count(code, @"\.Style\s*=(?!=)"));
+        Assert.Equal(1, Src.Count(code, @"\.DockEnabled\s*=(?!=)"));
+        Assert.Equal(1, Src.Count(code, @"\.KeepFocus\s*=(?!=)"));
+    }
 }
