@@ -1,0 +1,569 @@
+{
+ "Tool": "neg_controls_a6r3.py",
+ "Summary": {
+  "Cases": 32,
+  "AsExpected": 32,
+  "WorktreeUnchanged": true,
+  "TmpRemoved": true,
+  "Note": "en los casos de archivo G5b también falla: la autoprueba custodiada fija el blob del texto sin alterar"
+ },
+ "WorktreeDigest": {
+  "Before": {
+   "Head": "9cd074aa5668a59ef0030cb494f97ca2ca6333f5",
+   "ForEachRef": "7ae89e1d379b1d4ebc8bd6448036ab952b1721761d67207820e00b4f987a0dd0",
+   "StatusPorcelainIgnored": "b897472d7ab55079534c786a2981087cc67b7ccac6f8d541be278d4305b66ba8",
+   "IndexSha256": "d80be0468165ddb81740f2f549b03cb0f63a0357c60e0a5b7f57e9b584557ab7"
+  },
+  "After": {
+   "Head": "9cd074aa5668a59ef0030cb494f97ca2ca6333f5",
+   "ForEachRef": "7ae89e1d379b1d4ebc8bd6448036ab952b1721761d67207820e00b4f987a0dd0",
+   "StatusPorcelainIgnored": "b897472d7ab55079534c786a2981087cc67b7ccac6f8d541be278d4305b66ba8",
+   "IndexSha256": "d80be0468165ddb81740f2f549b03cb0f63a0357c60e0a5b7f57e9b584557ab7"
+  }
+ },
+ "Rows": [
+  {
+   "Id": "P-0",
+   "Case": "texto conforme, sin commit candidato (G2 NOT_RUN)",
+   "Expected": "PASS",
+   "Result": "PASS",
+   "FailingGuards": [],
+   "AsExpected": true
+  },
+  {
+   "Id": "P-1",
+   "Case": "texto conforme en un commit candidato hipotético (A-6 modificada y r3/ añadido)",
+   "Expected": "PASS",
+   "Result": "PASS",
+   "G2": "PASS",
+   "FailingGuards": [],
+   "Candidate": "41a1dd77ea0a2185d280d77ca1dd6845d7d7c40f",
+   "Status": [
+    {
+     "Status": "A",
+     "Path": "docs/automation/evidence/I-62-A6/r3/a6r3-guards.py"
+    },
+    {
+     "Status": "A",
+     "Path": "docs/automation/evidence/I-62-A6/r3/a6r3-selftest.json"
+    },
+    {
+     "Status": "A",
+     "Path": "docs/automation/evidence/I-62-A6/r3/launchfix/README.md"
+    },
+    {
+     "Status": "A",
+     "Path": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md"
+    },
+    {
+     "Status": "A",
+     "Path": "docs/automation/evidence/I-62-A6/r3/r2static/README.md"
+    },
+    {
+     "Status": "M",
+     "Path": "docs/initiatives/I-62-A-6.md"
+    }
+   ],
+   "AsExpected": true
+  },
+  {
+   "Id": "P-2",
+   "Case": "modo run sobre ese commit candidato (A-6, guardas y autoprueba leídas de head)",
+   "Expected": "PASS",
+   "Result": "PASS",
+   "FailingGuards": [],
+   "AsExpected": true
+  },
+  {
+   "Id": "D-1",
+   "Case": "el borrador con marcadores sin rellenar, en un commit candidato y en modo run",
+   "Expected": [
+    "G8"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5B",
+    "G8"
+   ],
+   "FirstFinding": {
+    "G5B": "a6r3-selftest.json con Result FAIL",
+    "G8": "marcadores pendientes en el texto publicado: ['@@PRE_CMP_STATIC@@', '@@PRE_POU_STATIC@@', '@@PRE_RECON_REAL@@', '@@PRE_RECON_STATIC@@', '@@PRE_REJ_STATIC@@', '@"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-01",
+   "Case": "línea de un bloque literal nuevo de §2 alterada (AP L653)",
+   "Expected": [
+    "G1"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G1",
+    "G10",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G1": "bloque AP L653-L653 distinto de la fuente (líneas [653])"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-02",
+   "Case": "revisión de la ronda 1 retirada de las superficies prohibidas",
+   "Expected": [
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G3",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G3": "lista de superficies prohibidas distinta de la de las guardas: faltan ['docs/automation/evidence/I-62-architect-A-6/']; sobran []"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-03",
+   "Case": "§3.16 sin la fila de R3",
+   "Expected": [
+    "G4"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G4",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G4": "§3.16 no tiene R1-R5 y O1-O3, una fila cada uno y en orden: ['R1', 'R2', 'R4', 'R5', 'O1', 'O2', 'O3']"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-04",
+   "Case": "M-01 con la columna Ronda 1 en AGREE",
+   "Expected": [
+    "G4"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G4",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G4": "M-01: columna Ronda 1 «AGREE» distinta de MaterialityConfirmation (Agreement DISAGREE)"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-05",
+   "Case": "A6-2 cambia respecto de la ronda 2",
+   "Expected": [
+    "G5"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G5": "A6-2: el párrafo no es idéntico byte a byte al de la ronda 2"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-06",
+   "Case": "A6-3 vuelve a situar el aceptante en un clon del fixture (R4)",
+   "Expected": [
+    "G5"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G10",
+    "G5",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G5": "A6-3: la regla 5 no es idéntica a la de la ronda 2 (en la ronda 3 solo cambia la regla 6)"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-07",
+   "Case": "línea (a) del Owner ampliada a la planificación",
+   "Expected": [
+    "G6"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5B",
+    "G6",
+    "G9"
+   ],
+   "FirstFinding": {
+    "G6": "A6-ADR0046-9-FX02: la línea no es idéntica byte a byte a la de la ronda anterior"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-08",
+   "Case": "blob del instrumento cambiado en §3.3",
+   "Expected": [
+    "G7"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G1",
+    "G5B",
+    "G7"
+   ],
+   "FirstFinding": {
+    "G7": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py: blob en A-6 9a829b0eeb1210238052b1feac06cfa8f7964aea distinto del fijado 9a829b0eeb1210238052b1f"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-09",
+   "Case": "«A-6 = AGREED» añadido",
+   "Expected": [
+    "G8"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5B",
+    "G8"
+   ],
+   "FirstFinding": {
+    "G8": "declaración prohibida en esta preparación: A-6 declarada AGREED"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-10",
+   "Case": "se pide una línea del Owner",
+   "Expected": [
+    "G8"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5B",
+    "G8"
+   ],
+   "FirstFinding": {
+    "G8": "petición de una línea o decisión del Owner: «Se pide al Owner la línea»"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-11",
+   "Case": "A6-1, regla 2, admite PLAN (R5)",
+   "Expected": [
+    "G9"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5",
+    "G5B",
+    "G9"
+   ],
+   "FirstFinding": {
+    "G9": "A6-1 admite PLAN o la planificación sin excluirla: «la planificación (PLAN) usa el instrumento:»"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-12",
+   "Case": "tabla de A6-5 sin la condición de R4 sobre `Verification`",
+   "Expected": [
+    "G10"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G10",
+    "G5",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G10": "A6-5, regla 2: no se reconoce la tabla de aceptación (MATCH, MANUAL, R4 condicionada a `Verification`, MATCH o NOT_APPLICABLE)"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-13",
+   "Case": "R5 de A6-5 sin la orden hashes",
+   "Expected": [
+    "G10"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G10",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G10": "A6-5, regla 2: R5 compara ['diff', 'hashes', 'identity', 'scope'] según el aceptante, no ['diff', 'identity', 'scope']"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-14",
+   "Case": "referencia a una línea fuera de V14",
+   "Expected": [
+    "G11"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G11",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G11": "línea fuera del archivo en «V14 L99999» (docs/initiatives/I-62-proposal-v14.md tiene 3323 líneas)"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-15",
+   "Case": "cabecera con la ronda 3 lanzada",
+   "Expected": [
+    "G1",
+    "G8"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G1",
+    "G5B",
+    "G8"
+   ],
+   "FirstFinding": {
+    "G1": "cabecera sin «Architect review: / ronda 1: CHANGES REQUIRED, NOT_ACCREDITED (R20261011T215735Z»",
+    "G8": "cabecera sin «Ronda 3: NOT LAUNCHED.»"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-16",
+   "Case": "§3.17 sin la fila R2 (a)",
+   "Expected": [
+    "G4"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G4",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G4": "§3.17 no tiene R1 (a)-(d), R2 (a)-(b) y O1-O5, una fila cada uno y en orden: ['R1 (a)', 'R1 (b)', 'R1 (c)', 'R1 (d)', 'R2 (b)', 'O1', 'O2', 'O3', 'O4', 'O5']"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-17",
+   "Case": "A6-3, regla 6 (c): condición de R4 con Authority en lugar de FreeText",
+   "Expected": [
+    "G10"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G10",
+    "G5",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G10": "A6-3, regla 6 (c): las comprobaciones de la condición de `not_run` (['Authority', 'CleanTree', 'Identity', 'Scope', 'Trailer']) no son las que R4 recalcula (['I"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-18",
+   "Case": "A6-5, regla 7: el instrumento obligatorio en toda invocación VERIFY",
+   "Expected": [
+    "G5",
+    "G10"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G10",
+    "G5",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G5": "A6-5: falta la frase exigida «Ninguna está obligada a ejecutar el instrumento»",
+    "G10": "A6-5, regla 7: sin `Runs`, el aceptante fijado nunca acepta (R3 sin datos, R9 sin sobres); la regla debe excluir esas invocaciones"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-19",
+   "Case": "A6-1 cambia respecto de la ronda 2",
+   "Expected": [
+    "G5"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G5",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G5": "A6-1: el párrafo no es idéntico byte a byte al de la ronda 2"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-20",
+   "Case": "línea «Cubre» de A6-5 sin O5 de la ronda 2",
+   "Expected": [
+    "G4"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G4",
+    "G5B"
+   ],
+   "FirstFinding": {
+    "G4": "O5 (ronda 2): «Dónde» de §3.17 (['A6-5']) distinto de los deltas cuya línea «Cubre» lo nombra para la ronda 2 ([])"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-21",
+   "Case": "commit candidato que además modifica AUTOMATION_PLAN",
+   "Expected": [
+    "G2",
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2",
+    "G3"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/AUTOMATION_PLAN.md (M)",
+    "G3": "objeto distinto en Base->Head:docs/AUTOMATION_PLAN.md: esperado f525cb1e9d24, obtenido 00e25ebd6568"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-22",
+   "Case": "commit candidato que además modifica un archivo de la ronda 1 de I-62-A6/",
+   "Expected": [
+    "G2",
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2",
+    "G3"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/automation/evidence/I-62-A6/preflight.md (M)",
+    "G3": "archivos de las rondas 1 y 2 de docs/automation/evidence/I-62-A6/ distintos entre base y head (fuera de r3/): ['docs/automation/evidence/I-62-A6/preflight.md']"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-23",
+   "Case": "commit candidato que además modifica decisiones",
+   "Expected": [
+    "G2"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/automation/decisions/I-62.md (M)"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-24",
+   "Case": "commit candidato que además modifica la revisión de la ronda 1",
+   "Expected": [
+    "G2",
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2",
+    "G3"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/automation/evidence/I-62-architect-A-6/R20261011T215735Z-c434/output.json (M)",
+    "G3": "objeto distinto en Base->Head:docs/automation/evidence/I-62-architect-A-6/: esperado 520e7a1f67e8, obtenido 6c85e7a2a4c0"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-25",
+   "Case": "commit candidato que además modifica el instrumento fijado",
+   "Expected": [
+    "G2",
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2",
+    "G3"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py (M)",
+    "G3": "objeto distinto en Base->Head:docs/automation/evidence/I-62-F6/FX-02/bmin/: esperado 3caa0dfa73d3, obtenido 28cfe657a85a"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-26",
+   "Case": "commit candidato que además añade un archivo a I-62-A6/ fuera de r3/",
+   "Expected": [
+    "G2",
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2",
+    "G3"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/automation/evidence/I-62-A6/nuevo.md (A)",
+    "G3": "archivos de las rondas 1 y 2 de docs/automation/evidence/I-62-A6/ distintos entre base y head (fuera de r3/): ['docs/automation/evidence/I-62-A6/nuevo.md']"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-27",
+   "Case": "commit candidato que además modifica un archivo de r2/ (evidencia de la ronda 2)",
+   "Expected": [
+    "G2",
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2",
+    "G3"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/automation/evidence/I-62-A6/r2/preflight.md (M)",
+    "G3": "objeto distinto en Head:docs/automation/evidence/I-62-A6/r2/: esperado 411949b0f20c, obtenido 8ea2a929e3da"
+   },
+   "AsExpected": true
+  },
+  {
+   "Id": "N-28",
+   "Case": "commit candidato que además modifica la revisión de la ronda 2",
+   "Expected": [
+    "G2",
+    "G3"
+   ],
+   "Result": "FAIL",
+   "FailingGuards": [
+    "G2",
+    "G3"
+   ],
+   "FirstFinding": {
+    "G2": "ruta fuera de alcance: docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json (M)",
+    "G3": "objeto distinto en Base->Head:docs/automation/evidence/I-62-architect-A-6r2/: esperado acf2fa30bc7a, obtenido 68346378c0f0"
+   },
+   "AsExpected": true
+  }
+ ]
+}

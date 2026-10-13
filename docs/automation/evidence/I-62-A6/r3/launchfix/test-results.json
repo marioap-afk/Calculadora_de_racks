@@ -1,0 +1,1461 @@
+{
+ "Schema": "rackcad-i62-launchfix-tests/1",
+ "Started": "2026-10-13T14:40:07Z",
+ "Finished": "2026-10-13T14:40:38Z",
+ "Runner": "python -B test_launchfix.py",
+ "HostFacts": {
+  "Platform": "Windows-11-10.0.26300-SP0",
+  "Win32Ver": [
+   "11",
+   "10.0.26300",
+   "SP0",
+   "Multiprocessor Free"
+  ],
+  "Ver": "Microsoft Windows [Versión 10.0.26300.9550]",
+  "Chcp": {
+   "Raw": "50e167696e612064652063f36469676f73206163746976613a203835300d0a",
+   "ActiveCodePage": 850
+  },
+  "PwshConsoleEncoding": [
+   "850",
+   "ibm850",
+   "850"
+  ],
+  "Kernel32": {
+   "ConsoleOutputCP": 850,
+   "ConsoleCP": 850,
+   "OEMCP": 850,
+   "ACP": 1252,
+   "HasConsoleWindow": false
+  },
+  "Python": {
+   "Version": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+   "Executable": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+   "WhichPython": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\python.EXE",
+   "BasePrefix": "C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0",
+   "Flags": {
+    "debug": 0,
+    "inspect": 0,
+    "interactive": 0,
+    "optimize": 0,
+    "dont_write_bytecode": 1,
+    "no_user_site": 0,
+    "no_site": 0,
+    "ignore_environment": 0,
+    "verbose": 0,
+    "bytes_warning": 0,
+    "quiet": 0,
+    "hash_randomization": 1,
+    "isolated": 0,
+    "dev_mode": false,
+    "utf8_mode": 0,
+    "warn_default_encoding": 0,
+    "safe_path": false,
+    "int_max_str_digits": 4300
+   },
+   "OrigArgv": [
+    "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe",
+    "-B",
+    "test_launchfix.py"
+   ],
+   "ExecutableSha256": "no legible: [Errno 22] Invalid argument: 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe'",
+   "BaseInterpreterSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec"
+  },
+  "PythonEnvNames": [
+   "PYTHONDONTWRITEBYTECODE",
+   "PYTHONUSERBASE"
+  ],
+  "PYTHONUTF8": null,
+  "TasklistNonexistentPid": {
+   "ReturnCode": 0,
+   "FirstBytesHex": "494e464f524d414349e04e3a206e6f20",
+   "ValidUtf8": false,
+   "AsCp850": "INFORMACIÓN: no hay tareas ejecutándose que coincidan con los\r\ncriterios especificados."
+  }
+ },
+ "Template": {
+  "File": "launch.r3-template.py",
+  "Sha256": "4534c63be73d12c45bad2a1ce927b5a57bff06e3345a3e7b8d56ca4ad7d149f0"
+ },
+ "FrozenKitSha256": {
+  "launch.py": "f2f58cec38b9f34e04d04e94f866d7d75a6bbd4864ccfbac734f8a52965f78ac",
+  "transport_gate.py": "b05fedd17b9b6856d618d2ffcde88efc1ceafaa3e6c2d5373667919a718129c6",
+  "owner_gate.py": "969844a928571fe2d72be806fab21b5c7cb332e6ffd5e0c2d6142b027608ff1c",
+  "kit-params.json": "6f6a76ed43807daa4eb9b1c758ee10f4842aa5a04866f31c0f4430fc56e1d4a7"
+ },
+ "Results": [
+  {
+   "Id": "i-a",
+   "Case": "sonda de registro con la orden congelada (grafía documentada kit/launch.py)",
+   "Command": "python -B kit/launch.py --record-probe   (cwd: D:\\r62-a6r3\\launchfix\\case-i)",
+   "Expected": "código 0; RecordProbe.Ok y FrozenCommandGuard.Ok = true; PostRunErrors = []; tasklist tratado; temporal borrado; nada escrito en la copia",
+   "Observed": "código 0; RecordProbe.Ok = True; guarda Ok = True; PostRunErrors = []; TasklistQuery = {'ReturnCode': 0, 'StdoutBytes': 89, 'NonAsciiBytes': True}; temporal borrado = True; copia sin cambios = True",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": true,
+    "Problems": [],
+    "RecordWritten": true,
+    "LaunchError": null,
+    "ExitCode": 0,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "CloneAfter",
+     "Cwd",
+     "End",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "ExitCode",
+     "Killed",
+     "Pid",
+     "PostRunErrors",
+     "ProcessGoneAfter",
+     "PromptBytes",
+     "PromptSha256",
+     "ResultMessage",
+     "SessionId",
+     "Start",
+     "StderrBytes",
+     "StdoutLines",
+     "StdoutSha256",
+     "TasklistQuery",
+     "TimedOut",
+     "TimeoutSeconds",
+     "Transcript",
+     "TransportFailure",
+     "TransportGate"
+    ],
+    "MissingFields": [],
+    "PostRunErrors": [],
+    "TasklistQuery": {
+     "ReturnCode": 0,
+     "StdoutBytes": 89,
+     "NonAsciiBytes": true
+    },
+    "ProcessGoneAfter": true,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": true,
+    "RunLaunchExistsAfter": true,
+    "KitListingUnchanged": true,
+    "GuardOk": true,
+    "GuardEnforced": true,
+    "GuardProblems": [],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0
+    },
+    "GuardXOptions": {},
+    "GuardOrigArgvTail": [
+     "-B",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Encodings": {
+     "LocalePreferred": "cp1252",
+     "FileSystem": "utf-8",
+     "Stdout": "cp1252",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    },
+    "Seconds": 1.42,
+    "StderrTail": ""
+   }
+  },
+  {
+   "Id": "i-b",
+   "Case": "sonda de registro con la orden congelada (la plantilla con su nombre, desde kit/)",
+   "Command": "python -B launch.r3-template.py --record-probe   (cwd: D:\\r62-a6r3\\launchfix\\case-i\\kit)",
+   "Expected": "código 0; RecordProbe.Ok y FrozenCommandGuard.Ok = true; PostRunErrors = []; tasklist tratado; temporal borrado; nada escrito en la copia",
+   "Observed": "código 0; RecordProbe.Ok = True; guarda Ok = True; PostRunErrors = []; TasklistQuery = {'ReturnCode': 0, 'StdoutBytes': 89, 'NonAsciiBytes': True}; temporal borrado = True; copia sin cambios = True",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": true,
+    "Problems": [],
+    "RecordWritten": true,
+    "LaunchError": null,
+    "ExitCode": 0,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "CloneAfter",
+     "Cwd",
+     "End",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "ExitCode",
+     "Killed",
+     "Pid",
+     "PostRunErrors",
+     "ProcessGoneAfter",
+     "PromptBytes",
+     "PromptSha256",
+     "ResultMessage",
+     "SessionId",
+     "Start",
+     "StderrBytes",
+     "StdoutLines",
+     "StdoutSha256",
+     "TasklistQuery",
+     "TimedOut",
+     "TimeoutSeconds",
+     "Transcript",
+     "TransportFailure",
+     "TransportGate"
+    ],
+    "MissingFields": [],
+    "PostRunErrors": [],
+    "TasklistQuery": {
+     "ReturnCode": 0,
+     "StdoutBytes": 89,
+     "NonAsciiBytes": true
+    },
+    "ProcessGoneAfter": true,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": true,
+    "RunLaunchExistsAfter": true,
+    "KitListingUnchanged": true,
+    "GuardOk": true,
+    "GuardEnforced": true,
+    "GuardProblems": [],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0
+    },
+    "GuardXOptions": {},
+    "GuardOrigArgvTail": [
+     "-B",
+     "launch.r3-template.py",
+     "--record-probe"
+    ],
+    "Encodings": {
+     "LocalePreferred": "cp1252",
+     "FileSystem": "utf-8",
+     "Stdout": "cp1252",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    },
+    "Seconds": 1.28,
+    "StderrTail": ""
+   }
+  },
+  {
+   "Id": "i-c",
+   "Case": "sonda de registro con la orden congelada (grafía kit\\launch.py)",
+   "Command": "python -B kit\\launch.py --record-probe   (cwd: D:\\r62-a6r3\\launchfix\\case-i)",
+   "Expected": "código 0; RecordProbe.Ok y FrozenCommandGuard.Ok = true; PostRunErrors = []; tasklist tratado; temporal borrado; nada escrito en la copia",
+   "Observed": "código 0; RecordProbe.Ok = True; guarda Ok = True; PostRunErrors = []; TasklistQuery = {'ReturnCode': 0, 'StdoutBytes': 89, 'NonAsciiBytes': True}; temporal borrado = True; copia sin cambios = True",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": true,
+    "Problems": [],
+    "RecordWritten": true,
+    "LaunchError": null,
+    "ExitCode": 0,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "CloneAfter",
+     "Cwd",
+     "End",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "ExitCode",
+     "Killed",
+     "Pid",
+     "PostRunErrors",
+     "ProcessGoneAfter",
+     "PromptBytes",
+     "PromptSha256",
+     "ResultMessage",
+     "SessionId",
+     "Start",
+     "StderrBytes",
+     "StdoutLines",
+     "StdoutSha256",
+     "TasklistQuery",
+     "TimedOut",
+     "TimeoutSeconds",
+     "Transcript",
+     "TransportFailure",
+     "TransportGate"
+    ],
+    "MissingFields": [],
+    "PostRunErrors": [],
+    "TasklistQuery": {
+     "ReturnCode": 0,
+     "StdoutBytes": 89,
+     "NonAsciiBytes": true
+    },
+    "ProcessGoneAfter": true,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": true,
+    "RunLaunchExistsAfter": true,
+    "KitListingUnchanged": true,
+    "GuardOk": true,
+    "GuardEnforced": true,
+    "GuardProblems": [],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0
+    },
+    "GuardXOptions": {},
+    "GuardOrigArgvTail": [
+     "-B",
+     "kit\\launch.py",
+     "--record-probe"
+    ],
+    "Encodings": {
+     "LocalePreferred": "cp1252",
+     "FileSystem": "utf-8",
+     "Stdout": "cp1252",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    },
+    "Seconds": 1.24,
+    "StderrTail": ""
+   }
+  },
+  {
+   "Id": "i-d",
+   "Case": "sonda de registro con la orden congelada (ruta absoluta)",
+   "Command": "python -B D:\\r62-a6r3\\launchfix\\case-i\\kit\\launch.py --record-probe   (cwd: D:\\r62-a6r3\\launchfix\\case-i)",
+   "Expected": "código 0; RecordProbe.Ok y FrozenCommandGuard.Ok = true; PostRunErrors = []; tasklist tratado; temporal borrado; nada escrito en la copia",
+   "Observed": "código 0; RecordProbe.Ok = True; guarda Ok = True; PostRunErrors = []; TasklistQuery = {'ReturnCode': 0, 'StdoutBytes': 89, 'NonAsciiBytes': True}; temporal borrado = True; copia sin cambios = True",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": true,
+    "Problems": [],
+    "RecordWritten": true,
+    "LaunchError": null,
+    "ExitCode": 0,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "CloneAfter",
+     "Cwd",
+     "End",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "ExitCode",
+     "Killed",
+     "Pid",
+     "PostRunErrors",
+     "ProcessGoneAfter",
+     "PromptBytes",
+     "PromptSha256",
+     "ResultMessage",
+     "SessionId",
+     "Start",
+     "StderrBytes",
+     "StdoutLines",
+     "StdoutSha256",
+     "TasklistQuery",
+     "TimedOut",
+     "TimeoutSeconds",
+     "Transcript",
+     "TransportFailure",
+     "TransportGate"
+    ],
+    "MissingFields": [],
+    "PostRunErrors": [],
+    "TasklistQuery": {
+     "ReturnCode": 0,
+     "StdoutBytes": 89,
+     "NonAsciiBytes": true
+    },
+    "ProcessGoneAfter": true,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": true,
+    "RunLaunchExistsAfter": true,
+    "KitListingUnchanged": true,
+    "GuardOk": true,
+    "GuardEnforced": true,
+    "GuardProblems": [],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0
+    },
+    "GuardXOptions": {},
+    "GuardOrigArgvTail": [
+     "-B",
+     "D:\\r62-a6r3\\launchfix\\case-i\\kit\\launch.py",
+     "--record-probe"
+    ],
+    "Encodings": {
+     "LocalePreferred": "cp1252",
+     "FileSystem": "utf-8",
+     "Stdout": "cp1252",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    },
+    "Seconds": 1.31,
+    "StderrTail": ""
+   }
+  },
+  {
+   "Id": "ii-a",
+   "Case": "guarda: -X utf8 -B (la orden de la ronda 2)",
+   "Command": "python -X utf8 -B kit/launch.py --record-probe",
+   "Expected": "código 2 (Refused), sin sonda ni preflight; nada escrito (copia sin cambios, sin __pycache__, sin temporal); regla: «utf8_mode»",
+   "Observed": "código 2; Refused = True; problemas = [\"opciones del intérprete ['-X'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)\", \"el argumento del script ('utf8') no resuelve a este archivo\", \"argumentos ['-B', 'kit/launch.py', '--record-probe'] no admitidos: solo ninguno, --dry-run o --record-probe\", 'sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)', \"opciones -X presentes ['utf8'] (no se admite ninguna)\"]; copia sin cambios = True; __pycache__ = 0; temporales nuevos = 0",
+   "Holds": true,
+   "Details": {
+    "Flags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 1,
+     "isolated": 0,
+     "ignore_environment": 0
+    },
+    "XOptions": {
+     "utf8": "True"
+    },
+    "OrigArgvTail": [
+     "-X",
+     "utf8",
+     "-B",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Problems": [
+     "opciones del intérprete ['-X'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)",
+     "el argumento del script ('utf8') no resuelve a este archivo",
+     "argumentos ['-B', 'kit/launch.py', '--record-probe'] no admitidos: solo ninguno, --dry-run o --record-probe",
+     "sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)",
+     "opciones -X presentes ['utf8'] (no se admite ninguna)"
+    ],
+    "Seconds": 0.37
+   }
+  },
+  {
+   "Id": "iv-a",
+   "Case": "guarda: -B -X utf8",
+   "Command": "python -B -X utf8 kit/launch.py --record-probe",
+   "Expected": "código 2 (Refused), sin sonda ni preflight; nada escrito (copia sin cambios, sin __pycache__, sin temporal); regla: «utf8_mode»",
+   "Observed": "código 2; Refused = True; problemas = [\"el argumento del script ('-X') no resuelve a este archivo\", \"argumentos ['utf8', 'kit/launch.py', '--record-probe'] no admitidos: solo ninguno, --dry-run o --record-probe\", 'sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)', \"opciones -X presentes ['utf8'] (no se admite ninguna)\"]; copia sin cambios = True; __pycache__ = 0; temporales nuevos = 0",
+   "Holds": true,
+   "Details": {
+    "Flags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 1,
+     "isolated": 0,
+     "ignore_environment": 0
+    },
+    "XOptions": {
+     "utf8": "True"
+    },
+    "OrigArgvTail": [
+     "-B",
+     "-X",
+     "utf8",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Problems": [
+     "el argumento del script ('-X') no resuelve a este archivo",
+     "argumentos ['utf8', 'kit/launch.py', '--record-probe'] no admitidos: solo ninguno, --dry-run o --record-probe",
+     "sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)",
+     "opciones -X presentes ['utf8'] (no se admite ninguna)"
+    ],
+    "Seconds": 0.34
+   }
+  },
+  {
+   "Id": "iv-b",
+   "Case": "guarda: -I -B",
+   "Command": "python -I -B kit/launch.py --record-probe",
+   "Expected": "código 2 (Refused), sin sonda ni preflight; nada escrito (copia sin cambios, sin __pycache__, sin temporal); regla: «isolated»",
+   "Observed": "código 2; Refused = True; problemas = [\"opciones del intérprete ['-I'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)\", \"el argumento del script ('-B') no resuelve a este archivo\", \"argumentos ['kit/launch.py', '--record-probe'] no admitidos: solo ninguno, --dry-run o --record-probe\", 'sys.flags.isolated = 1 (se exige 0: sin -I)']; copia sin cambios = True; __pycache__ = 0; temporales nuevos = 0",
+   "Holds": true,
+   "Details": {
+    "Flags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 1,
+     "ignore_environment": 1
+    },
+    "XOptions": {},
+    "OrigArgvTail": [
+     "-I",
+     "-B",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Problems": [
+     "opciones del intérprete ['-I'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)",
+     "el argumento del script ('-B') no resuelve a este archivo",
+     "argumentos ['kit/launch.py', '--record-probe'] no admitidos: solo ninguno, --dry-run o --record-probe",
+     "sys.flags.isolated = 1 (se exige 0: sin -I)"
+    ],
+    "Seconds": 0.36
+   }
+  },
+  {
+   "Id": "iv-c",
+   "Case": "guarda: sin -B (PYTHONDONTWRITEBYTECODE=1 en el entorno)",
+   "Command": "python kit/launch.py --record-probe",
+   "Expected": "código 2 (Refused), sin sonda ni preflight; nada escrito (copia sin cambios, sin __pycache__, sin temporal); regla: «opciones del intérprete»",
+   "Observed": "código 2; Refused = True; problemas = [\"opciones del intérprete ['kit/launch.py'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)\", \"el argumento del script ('--record-probe') no resuelve a este archivo\"]; copia sin cambios = True; __pycache__ = 0; temporales nuevos = 0",
+   "Holds": true,
+   "Details": {
+    "Flags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0,
+     "ignore_environment": 0
+    },
+    "XOptions": {},
+    "OrigArgvTail": [
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Problems": [
+     "opciones del intérprete ['kit/launch.py'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)",
+     "el argumento del script ('--record-probe') no resuelve a este archivo"
+    ],
+    "Seconds": 0.3
+   }
+  },
+  {
+   "Id": "iv-d",
+   "Case": "guarda: orden exacta con PYTHONUTF8=1 en el entorno",
+   "Command": "PYTHONUTF8=1 python -B kit/launch.py --record-probe",
+   "Expected": "código 2 (Refused), sin sonda ni preflight; nada escrito (copia sin cambios, sin __pycache__, sin temporal); regla: «utf8_mode»",
+   "Observed": "código 2; Refused = True; problemas = ['sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)']; copia sin cambios = True; __pycache__ = 0; temporales nuevos = 0",
+   "Holds": true,
+   "Details": {
+    "Flags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 1,
+     "isolated": 0,
+     "ignore_environment": 0
+    },
+    "XOptions": {},
+    "OrigArgvTail": [
+     "-B",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Problems": [
+     "sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)"
+    ],
+    "Seconds": 0.29
+   }
+  },
+  {
+   "Id": "iv-e",
+   "Case": "guarda: dos modos",
+   "Command": "python -B kit/launch.py --record-probe --dry-run",
+   "Expected": "código 2 (Refused), sin sonda ni preflight; nada escrito (copia sin cambios, sin __pycache__, sin temporal); regla: «no admitidos»",
+   "Observed": "código 2; Refused = True; problemas = [\"argumentos ['--record-probe', '--dry-run'] no admitidos: solo ninguno, --dry-run o --record-probe\"]; copia sin cambios = True; __pycache__ = 0; temporales nuevos = 0",
+   "Holds": true,
+   "Details": {
+    "Flags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0,
+     "ignore_environment": 0
+    },
+    "XOptions": {},
+    "OrigArgvTail": [
+     "-B",
+     "kit/launch.py",
+     "--record-probe",
+     "--dry-run"
+    ],
+    "Problems": [
+     "argumentos ['--record-probe', '--dry-run'] no admitidos: solo ninguno, --dry-run o --record-probe"
+    ],
+    "Seconds": 0.27
+   }
+  },
+  {
+   "Id": "iv-f",
+   "Case": "guarda: argumento desconocido",
+   "Command": "python -B kit/launch.py --bogus",
+   "Expected": "código 2 (Refused), sin sonda ni preflight; nada escrito (copia sin cambios, sin __pycache__, sin temporal); regla: «no admitidos»",
+   "Observed": "código 2; Refused = True; problemas = [\"argumentos ['--bogus'] no admitidos: solo ninguno, --dry-run o --record-probe\"]; copia sin cambios = True; __pycache__ = 0; temporales nuevos = 0",
+   "Holds": true,
+   "Details": {
+    "Flags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0,
+     "ignore_environment": 0
+    },
+    "XOptions": {},
+    "OrigArgvTail": [
+     "-B",
+     "kit/launch.py",
+     "--bogus"
+    ],
+    "Problems": [
+     "argumentos ['--bogus'] no admitidos: solo ninguno, --dry-run o --record-probe"
+    ],
+    "Seconds": 0.28
+   }
+  },
+  {
+   "Id": "iv-g",
+   "Case": "guarda: corre antes de cargar transport_gate.py (sin marcador)",
+   "Command": "python -X utf8 -B kit/launch.py --record-probe",
+   "Expected": "código 2 (Refused), sin sonda ni preflight; nada escrito (copia sin cambios, sin __pycache__, sin temporal); regla: «utf8_mode»",
+   "Observed": "código 2; Refused = True; problemas = [\"opciones del intérprete ['-X'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)\", \"el argumento del script ('utf8') no resuelve a este archivo\", \"argumentos ['-B', 'kit/launch.py', '--record-probe'] no admitidos: solo ninguno, --dry-run o --record-probe\", 'sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)', \"opciones -X presentes ['utf8'] (no se admite ninguna)\"]; copia sin cambios = True; __pycache__ = 0; temporales nuevos = 0",
+   "Holds": true,
+   "Details": {
+    "Flags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 1,
+     "isolated": 0,
+     "ignore_environment": 0
+    },
+    "XOptions": {
+     "utf8": "True"
+    },
+    "OrigArgvTail": [
+     "-X",
+     "utf8",
+     "-B",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Problems": [
+     "opciones del intérprete ['-X'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)",
+     "el argumento del script ('utf8') no resuelve a este archivo",
+     "argumentos ['-B', 'kit/launch.py', '--record-probe'] no admitidos: solo ninguno, --dry-run o --record-probe",
+     "sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)",
+     "opciones -X presentes ['utf8'] (no se admite ninguna)"
+    ],
+    "Seconds": 0.32
+   }
+  },
+  {
+   "Id": "iv-h",
+   "Case": "control del marcador: con la orden congelada transport_gate.py sí se carga (después de la guarda)",
+   "Command": "python -B kit/launch.py --record-probe",
+   "Expected": "sin marcador tras iv-g; marcador presente y código 0 tras la orden congelada",
+   "Observed": "sin marcador tras iv-g = True; código 0; marcador = True",
+   "Holds": true,
+   "Details": {}
+  },
+  {
+   "Id": "ii-b",
+   "Case": "guarda desactivada (copia de prueba), -X utf8: el registro robusto (tasklist en bytes) escribe el registro sin error",
+   "Command": "python -X utf8 -B kit/launch.py --record-probe",
+   "Expected": "código 0; guarda informada (Ok = false, Enforced = false); RecordProbe.Ok = true; PostRunErrors = []; tasklist con bytes no ASCII tratado",
+   "Observed": "código 0; guarda Ok = False, Enforced = False; RecordProbe.Ok = True; PostRunErrors = []; TasklistQuery = {'ReturnCode': 0, 'StdoutBytes': 89, 'NonAsciiBytes': True}",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": true,
+    "Problems": [],
+    "RecordWritten": true,
+    "LaunchError": null,
+    "ExitCode": 0,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "CloneAfter",
+     "Cwd",
+     "End",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "ExitCode",
+     "Killed",
+     "Pid",
+     "PostRunErrors",
+     "ProcessGoneAfter",
+     "PromptBytes",
+     "PromptSha256",
+     "ResultMessage",
+     "SessionId",
+     "Start",
+     "StderrBytes",
+     "StdoutLines",
+     "StdoutSha256",
+     "TasklistQuery",
+     "TimedOut",
+     "TimeoutSeconds",
+     "Transcript",
+     "TransportFailure",
+     "TransportGate"
+    ],
+    "MissingFields": [],
+    "PostRunErrors": [],
+    "TasklistQuery": {
+     "ReturnCode": 0,
+     "StdoutBytes": 89,
+     "NonAsciiBytes": true
+    },
+    "ProcessGoneAfter": true,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": true,
+    "RunLaunchExistsAfter": true,
+    "KitListingUnchanged": true,
+    "GuardOk": false,
+    "GuardEnforced": false,
+    "GuardProblems": [
+     "opciones del intérprete ['-X'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)",
+     "el argumento del script ('utf8') no resuelve a este archivo",
+     "argumentos ['-B', 'kit/launch.py', '--record-probe'] no admitidos: solo ninguno, --dry-run o --record-probe",
+     "sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)",
+     "opciones -X presentes ['utf8'] (no se admite ninguna)"
+    ],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 1,
+     "isolated": 0
+    },
+    "GuardXOptions": {
+     "utf8": "True"
+    },
+    "GuardOrigArgvTail": [
+     "-X",
+     "utf8",
+     "-B",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Encodings": {
+     "LocalePreferred": "utf-8",
+     "FileSystem": "utf-8",
+     "Stdout": "utf-8",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    },
+    "StderrTail": ""
+   }
+  },
+  {
+   "Id": "ii-c",
+   "Case": "guarda desactivada + fallo de la ronda 2 inyectado (L267-268 originales), -X utf8: se escribe el registro y se captura la clase",
+   "Command": "python -X utf8 -B kit/launch.py --record-probe",
+   "Expected": "sin traza fatal: código 1 (la sonda informa del fallo); registro escrito; PostRunErrors con TypeError (paso ProcessGoneAfter) y UnicodeDecodeError (hilo lector); solo faltan TasklistQuery y ProcessGoneAfter; temporal borrado",
+   "Observed": "código 1; registro escrito = True; clases = ['TypeError', 'UnicodeDecodeError']; pasos = ['ProcessGoneAfter', 'hilo Thread-2 (_readerthread)']; faltan = ['TasklistQuery', 'ProcessGoneAfter']; temporal borrado = True",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": false,
+    "Problems": [
+     "faltan campos de run.json en el registro: ['TasklistQuery', 'ProcessGoneAfter']",
+     "errores del registro posterior: [('hilo Thread-2 (_readerthread)', 'UnicodeDecodeError'), ('ProcessGoneAfter', 'TypeError')]",
+     "tasklist no consultado o su salida no se trató",
+     "ProcessGoneAfter = None: se esperaba true (el hijo sustituto ya terminó)",
+     "run_and_record devolvió 1"
+    ],
+    "RecordWritten": true,
+    "LaunchError": null,
+    "ExitCode": 0,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "CloneAfter",
+     "Cwd",
+     "End",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "ExitCode",
+     "Killed",
+     "Pid",
+     "PostRunErrors",
+     "PromptBytes",
+     "PromptSha256",
+     "ResultMessage",
+     "SessionId",
+     "Start",
+     "StderrBytes",
+     "StdoutLines",
+     "StdoutSha256",
+     "TimedOut",
+     "TimeoutSeconds",
+     "Transcript",
+     "TransportFailure",
+     "TransportGate"
+    ],
+    "MissingFields": [
+     "TasklistQuery",
+     "ProcessGoneAfter"
+    ],
+    "PostRunErrors": [
+     {
+      "Step": "hilo Thread-2 (_readerthread)",
+      "Class": "UnicodeDecodeError",
+      "Message": "'utf-8' codec can't decode byte 0xe0 in position 9: invalid continuation byte"
+     },
+     {
+      "Step": "ProcessGoneAfter",
+      "Class": "TypeError",
+      "Message": "argument of type 'NoneType' is not iterable"
+     }
+    ],
+    "TasklistQuery": null,
+    "ProcessGoneAfter": null,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": true,
+    "RunLaunchExistsAfter": true,
+    "KitListingUnchanged": true,
+    "GuardOk": false,
+    "GuardEnforced": false,
+    "GuardProblems": [
+     "opciones del intérprete ['-X'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)",
+     "el argumento del script ('utf8') no resuelve a este archivo",
+     "argumentos ['-B', 'kit/launch.py', '--record-probe'] no admitidos: solo ninguno, --dry-run o --record-probe",
+     "sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)",
+     "opciones -X presentes ['utf8'] (no se admite ninguna)"
+    ],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 1,
+     "isolated": 0
+    },
+    "GuardXOptions": {
+     "utf8": "True"
+    },
+    "GuardOrigArgvTail": [
+     "-X",
+     "utf8",
+     "-B",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Encodings": {
+     "LocalePreferred": "utf-8",
+     "FileSystem": "utf-8",
+     "Stdout": "utf-8",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    },
+    "StderrTail": "Exception in thread Thread-2 (_readerthread):\r\nTraceback (most recent call last):\r\n  File \"C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\threading.py\", line 1044, in _bootstrap_inner\r\n    self.run()\r\n    ~~~~~~~~^^\r\n  File \"C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\threading.py\", line 995, in run\r\n    self._target(*self._args, **self._kwargs)\r\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\subprocess.py\", line 1615, in _readerthread\r\n    buffer.append(fh.read())\r\n                  ~~~~~~~^^\r\n  File \"<frozen codecs>\", line 325, in decode\r\nUnicodeDecodeError: 'utf-8' codec can't decode byte 0xe0 in position 9: invalid continuation byte\r\n"
+   }
+  },
+  {
+   "Id": "ii-d",
+   "Case": "la misma copia con el fallo inyectado, con la orden congelada (-B solo): el texto decodificado en cp1252 no falla",
+   "Command": "python -B kit/launch.py --record-probe",
+   "Expected": "código 0; PostRunErrors = []",
+   "Observed": "código 0; PostRunErrors = []; TasklistQuery = {'ReturnCode': 0, 'StdoutBytes': 87, 'NonAsciiBytes': True}",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": true,
+    "Problems": [],
+    "RecordWritten": true,
+    "LaunchError": null,
+    "ExitCode": 0,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "CloneAfter",
+     "Cwd",
+     "End",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "ExitCode",
+     "Killed",
+     "Pid",
+     "PostRunErrors",
+     "ProcessGoneAfter",
+     "PromptBytes",
+     "PromptSha256",
+     "ResultMessage",
+     "SessionId",
+     "Start",
+     "StderrBytes",
+     "StdoutLines",
+     "StdoutSha256",
+     "TasklistQuery",
+     "TimedOut",
+     "TimeoutSeconds",
+     "Transcript",
+     "TransportFailure",
+     "TransportGate"
+    ],
+    "MissingFields": [],
+    "PostRunErrors": [],
+    "TasklistQuery": {
+     "ReturnCode": 0,
+     "StdoutBytes": 87,
+     "NonAsciiBytes": true
+    },
+    "ProcessGoneAfter": true,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": true,
+    "RunLaunchExistsAfter": true,
+    "KitListingUnchanged": true,
+    "GuardOk": true,
+    "GuardEnforced": false,
+    "GuardProblems": [],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0
+    },
+    "GuardXOptions": {},
+    "GuardOrigArgvTail": [
+     "-B",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Encodings": {
+     "LocalePreferred": "cp1252",
+     "FileSystem": "utf-8",
+     "Stdout": "cp1252",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    },
+    "StderrTail": ""
+   }
+  },
+  {
+   "Id": "ii-e",
+   "Case": "el hijo no arranca (copia de prueba: ejecutable inexistente): el registro se escribe igual, con LaunchError",
+   "Command": "python -B kit/launch.py --record-probe",
+   "Expected": "código 1 sin traza fatal; registro escrito; LaunchError.Class = FileNotFoundError; temporal borrado",
+   "Observed": "código 1; registro escrito = True; LaunchError = FileNotFoundError; temporal borrado = True",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": false,
+    "Problems": [
+     "faltan campos de run.json en el registro: ['Pid', 'End', 'ExitCode', 'Killed', 'TimedOut', 'TasklistQuery', 'ProcessGoneAfter', 'StdoutSha256', 'StdoutLines', 'StderrBytes', 'ResultMessage', 'TransportFailure', 'Transcript', 'CloneAfter']",
+     "el hijo sustituto no se lanzó o no recibió stdin: {'Class': 'FileNotFoundError', 'Message': '[WinError 2] El sistema no puede encontrar el archivo especificado', 'ChildRunning': False}",
+     "tasklist no consultado o su salida no se trató",
+     "ProcessGoneAfter = None: se esperaba true (el hijo sustituto ya terminó)",
+     "hijo sustituto sin salida 0 o terminado por el invocador",
+     "stdout del hijo sustituto no registrado como una línea result con el stdin entregado",
+     "transcripción sustituta no registrada",
+     "CloneAfter sin sus dos campos",
+     "run_and_record devolvió 1"
+    ],
+    "RecordWritten": true,
+    "LaunchError": {
+     "Class": "FileNotFoundError",
+     "Message": "[WinError 2] El sistema no puede encontrar el archivo especificado",
+     "ChildRunning": false
+    },
+    "ExitCode": null,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "Cwd",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "LaunchError",
+     "PostRunErrors",
+     "PromptBytes",
+     "PromptSha256",
+     "SessionId",
+     "Start",
+     "TimeoutSeconds",
+     "TransportGate"
+    ],
+    "MissingFields": [
+     "Pid",
+     "End",
+     "ExitCode",
+     "Killed",
+     "TimedOut",
+     "TasklistQuery",
+     "ProcessGoneAfter",
+     "StdoutSha256",
+     "StdoutLines",
+     "StderrBytes",
+     "ResultMessage",
+     "TransportFailure",
+     "Transcript",
+     "CloneAfter"
+    ],
+    "PostRunErrors": [],
+    "TasklistQuery": null,
+    "ProcessGoneAfter": null,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": true,
+    "RunLaunchExistsAfter": true,
+    "KitListingUnchanged": true,
+    "GuardOk": true,
+    "GuardEnforced": true,
+    "GuardProblems": [],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0
+    },
+    "GuardXOptions": {},
+    "GuardOrigArgvTail": [
+     "-B",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Encodings": {
+     "LocalePreferred": "cp1252",
+     "FileSystem": "utf-8",
+     "Stdout": "cp1252",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    },
+    "StderrTail": ""
+   }
+  },
+  {
+   "Id": "ii-f",
+   "Case": "tope alcanzado (copia de prueba: tope 2 s, hijo que duerme): terminate, registro completo escrito",
+   "Command": "python -B kit/launch.py --record-probe",
+   "Expected": "código 1; registro escrito con todos los campos (MissingFields = []); PostRunErrors = []; la sonda informa «terminado por el invocador»",
+   "Observed": "código 1; registro escrito = True; faltan = []; PostRunErrors = []; terminado = True; ProcessGoneAfter = True",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": false,
+    "Problems": [
+     "hijo sustituto sin salida 0 o terminado por el invocador",
+     "stdout del hijo sustituto no registrado como una línea result con el stdin entregado",
+     "run_and_record devolvió 1"
+    ],
+    "RecordWritten": true,
+    "LaunchError": null,
+    "ExitCode": 1,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "CloneAfter",
+     "Cwd",
+     "End",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "ExitCode",
+     "Killed",
+     "Pid",
+     "PostRunErrors",
+     "ProcessGoneAfter",
+     "PromptBytes",
+     "PromptSha256",
+     "ResultMessage",
+     "SessionId",
+     "Start",
+     "StderrBytes",
+     "StdoutLines",
+     "StdoutSha256",
+     "TasklistQuery",
+     "TerminateAt",
+     "TimedOut",
+     "TimeoutSeconds",
+     "Transcript",
+     "TransportFailure",
+     "TransportGate"
+    ],
+    "MissingFields": [],
+    "PostRunErrors": [],
+    "TasklistQuery": {
+     "ReturnCode": 0,
+     "StdoutBytes": 89,
+     "NonAsciiBytes": true
+    },
+    "ProcessGoneAfter": true,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": true,
+    "RunLaunchExistsAfter": true,
+    "KitListingUnchanged": true,
+    "GuardOk": true,
+    "GuardEnforced": true,
+    "GuardProblems": [],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0
+    },
+    "GuardXOptions": {},
+    "GuardOrigArgvTail": [
+     "-B",
+     "kit/launch.py",
+     "--record-probe"
+    ],
+    "Encodings": {
+     "LocalePreferred": "cp1252",
+     "FileSystem": "utf-8",
+     "Stdout": "cp1252",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    },
+    "Seconds": 3.18
+   }
+  },
+  {
+   "Id": "iii-a",
+   "Case": "fragmento original de la ronda 2 (L267-268), PID 99999999 inexistente",
+   "Command": "python -X utf8 -B snippet_round2.py 99999999",
+   "Expected": "hilo lector: UnicodeDecodeError (byte 0xe0, posición 9); q.stdout = None; L268: TypeError «argument of type 'NoneType' is not iterable»",
+   "Observed": "hilos: [('UnicodeDecodeError', \"'utf-8' codec can't decode byte 0xe0 in position 9: invalid continuation byte\")]; q.stdout None = True; excepción = {'Class': 'TypeError', 'Message': \"argument of type 'NoneType' is not iterable\"}; ProcessGoneAfter = None",
+   "Holds": true,
+   "Details": {
+    "Result": {
+     "Utf8Mode": 1,
+     "XOptions": {
+      "utf8": "True"
+     },
+     "Exception": {
+      "Class": "TypeError",
+      "Message": "argument of type 'NoneType' is not iterable"
+     },
+     "QStdoutIsNone": true,
+     "ThreadErrors": [
+      {
+       "Thread": "Thread-1 (_readerthread)",
+       "Class": "UnicodeDecodeError",
+       "Message": "'utf-8' codec can't decode byte 0xe0 in position 9: invalid continuation byte"
+      }
+     ]
+    },
+    "StderrTail": "Exception in thread Thread-1 (_readerthread):\r\nTraceback (most recent call last):\r\n  File \"C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\threading.py\", line 1044, in _bootstrap_inner\r\n    self.run()\r\n    ~~~~~~~~^^\r\n  File \"C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\threading.py\", line 995, in run\r\n    self._target(*self._args, **self._kwargs)\r\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\subprocess.py\", line 1615, in _readerthread\r\n    buffer.append(fh.read())\r\n                  ~~~~~~~^^\r\n  File \"<frozen codecs>\", line 325, in decode\r\nUnicodeDecodeError: 'utf-8' codec can't decode byte 0xe0 in position 9: invalid continuation byte\r\n",
+    "rc": 0
+   }
+  },
+  {
+   "Id": "iii-b",
+   "Case": "fragmento original de la ronda 2 (L267-268), PID 99999999 inexistente",
+   "Command": "python -B snippet_round2.py 99999999",
+   "Expected": "sin error: q.stdout es str y ProcessGoneAfter = true",
+   "Observed": "hilos: []; q.stdout None = False; excepción = None; ProcessGoneAfter = True",
+   "Holds": true,
+   "Details": {
+    "Result": {
+     "Utf8Mode": 0,
+     "XOptions": {},
+     "Exception": null,
+     "QStdoutIsNone": false,
+     "ProcessGoneAfter": true,
+     "ThreadErrors": []
+    },
+    "StderrTail": "",
+    "rc": 0
+   }
+  },
+  {
+   "Id": "v",
+   "Case": "--dry-run informa de la guarda y de la sonda (preflight sustituida en la copia de prueba)",
+   "Command": "python -B kit/launch.py --dry-run",
+   "Expected": "código 2; DryRun con FrozenCommandGuard.Ok = true y RecordProbe.Ok = true; <run>/launch no creado; copia sin cambios",
+   "Observed": "código 2; DryRun = True; guarda Ok = True; RecordProbe.Ok = True; RecordProbeOk = True; <run>/launch = False; copia sin cambios = True",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": true,
+    "Problems": [],
+    "RecordWritten": true,
+    "LaunchError": null,
+    "ExitCode": 0,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "CloneAfter",
+     "Cwd",
+     "End",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "ExitCode",
+     "Killed",
+     "Pid",
+     "PostRunErrors",
+     "ProcessGoneAfter",
+     "PromptBytes",
+     "PromptSha256",
+     "ResultMessage",
+     "SessionId",
+     "Start",
+     "StderrBytes",
+     "StdoutLines",
+     "StdoutSha256",
+     "TasklistQuery",
+     "TimedOut",
+     "TimeoutSeconds",
+     "Transcript",
+     "TransportFailure",
+     "TransportGate"
+    ],
+    "MissingFields": [],
+    "PostRunErrors": [],
+    "TasklistQuery": {
+     "ReturnCode": 0,
+     "StdoutBytes": 89,
+     "NonAsciiBytes": true
+    },
+    "ProcessGoneAfter": true,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": false,
+    "RunLaunchExistsAfter": false,
+    "KitListingUnchanged": true,
+    "GuardOk": true,
+    "GuardEnforced": true,
+    "GuardProblems": [],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 0,
+     "isolated": 0
+    },
+    "GuardXOptions": {},
+    "GuardOrigArgvTail": [
+     "-B",
+     "kit/launch.py",
+     "--dry-run"
+    ],
+    "Encodings": {
+     "LocalePreferred": "cp1252",
+     "FileSystem": "utf-8",
+     "Stdout": "cp1252",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    },
+    "Keys": [
+     "AuthorizationSections",
+     "BlockingChecks",
+     "Checks",
+     "DryRun",
+     "FrozenCommandGuard",
+     "NotRunInDryRun",
+     "RecordProbe",
+     "RecordProbeOk"
+    ]
+   }
+  },
+  {
+   "Id": "vi-a",
+   "Case": "lanzamiento real (guarda desactivada, fallo inyectado, -X utf8): la sonda falla y se niega ANTES de la preflight",
+   "Command": "python -X utf8 -B kit/launch.py",
+   "Expected": "código 2; Refused por la sonda; sin preflight; <run>/launch no creado",
+   "Observed": "código 2; Refused = la sonda de registro falló: no se lanza (nada escrito en el run); PostRunErrors = [('hilo Thread-2 (_readerthread)', 'UnicodeDecodeError'), ('ProcessGoneAfter', 'TypeError')]; <run>/launch = False",
+   "Holds": true,
+   "Details": {
+    "RecordProbeOk": false,
+    "Problems": [
+     "faltan campos de run.json en el registro: ['TasklistQuery', 'ProcessGoneAfter']",
+     "errores del registro posterior: [('hilo Thread-2 (_readerthread)', 'UnicodeDecodeError'), ('ProcessGoneAfter', 'TypeError')]",
+     "tasklist no consultado o su salida no se trató",
+     "ProcessGoneAfter = None: se esperaba true (el hijo sustituto ya terminó)",
+     "run_and_record devolvió 1"
+    ],
+    "RecordWritten": true,
+    "LaunchError": null,
+    "ExitCode": 0,
+    "RecordKeys": [
+     "Args",
+     "AuthSettle",
+     "CloneAfter",
+     "Cwd",
+     "End",
+     "EnvironmentVariableNames",
+     "Executable",
+     "ExecutableSha256",
+     "ExitCode",
+     "Killed",
+     "Pid",
+     "PostRunErrors",
+     "PromptBytes",
+     "PromptSha256",
+     "ResultMessage",
+     "SessionId",
+     "Start",
+     "StderrBytes",
+     "StdoutLines",
+     "StdoutSha256",
+     "TimedOut",
+     "TimeoutSeconds",
+     "Transcript",
+     "TransportFailure",
+     "TransportGate"
+    ],
+    "MissingFields": [
+     "TasklistQuery",
+     "ProcessGoneAfter"
+    ],
+    "PostRunErrors": [
+     {
+      "Step": "hilo Thread-2 (_readerthread)",
+      "Class": "UnicodeDecodeError",
+      "Message": "'utf-8' codec can't decode byte 0xe0 in position 9: invalid continuation byte"
+     },
+     {
+      "Step": "ProcessGoneAfter",
+      "Class": "TypeError",
+      "Message": "argument of type 'NoneType' is not iterable"
+     }
+    ],
+    "TasklistQuery": null,
+    "ProcessGoneAfter": null,
+    "TempDirRemoved": true,
+    "RunLaunchExistedBefore": false,
+    "RunLaunchExistsAfter": false,
+    "KitListingUnchanged": true,
+    "GuardOk": false,
+    "GuardEnforced": false,
+    "GuardProblems": [
+     "opciones del intérprete ['-X'] distintas de las de la orden congelada ['-B'] («python -B kit/launch.py»)",
+     "el argumento del script ('utf8') no resuelve a este archivo",
+     "argumentos ['-B', 'kit/launch.py'] no admitidos: solo ninguno, --dry-run o --record-probe",
+     "sys.flags.utf8_mode = 1 (se exige 0: sin -X utf8 ni PYTHONUTF8)",
+     "opciones -X presentes ['utf8'] (no se admite ninguna)"
+    ],
+    "GuardFlags": {
+     "dont_write_bytecode": 1,
+     "utf8_mode": 1,
+     "isolated": 0
+    },
+    "GuardXOptions": {
+     "utf8": "True"
+    },
+    "GuardOrigArgvTail": [
+     "-X",
+     "utf8",
+     "-B",
+     "kit/launch.py"
+    ],
+    "Encodings": {
+     "LocalePreferred": "utf-8",
+     "FileSystem": "utf-8",
+     "Stdout": "utf-8",
+     "ConsoleOutputCP": 850,
+     "ConsoleCP": 850,
+     "OEMCP": 850,
+     "ACP": 1252
+    }
+   }
+  },
+  {
+   "Id": "vi-b",
+   "Case": "lanzamiento real con la orden congelada (misma copia): la sonda pasa y sigue a la preflight (sustituida → se niega)",
+   "Command": "python -B kit/launch.py",
+   "Expected": "código 2; Refused = «preflight fallida» (se llegó a la preflight); <run>/launch no creado",
+   "Observed": "código 2; Refused = preflight fallida: no se lanza; <run>/launch = False",
+   "Holds": true,
+   "Details": {}
+  },
+  {
+   "Id": "vii-a",
+   "Case": "el adaptador reproduce la plantilla y el diff byte a byte (cada sustitución exacta y única)",
+   "Command": "python -B adapt_launch_r3.py <launch.py de la ronda 2> <dir desechable>",
+   "Expected": "código 0; 12 sustituciones con 1 coincidencia; mismos SHA-256",
+   "Observed": "código 0; sustituciones = 12 (todas 1: True); mismos bytes = True",
+   "Holds": true,
+   "Details": {
+    "Substitutions": [
+     [
+      "D0-docstring-uso",
+      1
+     ],
+     [
+      "G1-imports-y-guarda",
+      1
+     ],
+     [
+      "R1-git-repo-y-decodificacion",
+      1
+     ],
+     [
+      "R2-write_record-y-base_record",
+      1
+     ],
+     [
+      "P1-main-record-probe",
+      1
+     ],
+     [
+      "D1-sonda-antes-de-la-preflight",
+      1
+     ],
+     [
+      "G2-preflight-json",
+      1
+     ],
+     [
+      "R3-base_record-en-main",
+      1
+     ],
+     [
+      "R4-run_and_record-y-spawn_and_wait",
+      1
+     ],
+     [
+      "R5-stdin",
+      1
+     ],
+     [
+      "R6-tope",
+      1
+     ],
+     [
+      "R7-post_run-y-P2-record_probe",
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "Id": "vii-b",
+   "Case": "kit congelado de la ronda 2 intacto y <run>/launch de la ronda 2 sin cambios",
+   "Command": "(SHA-256 antes y después; listado de D:\\r62-arch-a6r2-run\\launch antes y después)",
+   "Expected": "SHA-256 = manifiesto antes y después; listado idéntico",
+   "Observed": "SHA-256 = manifiesto: antes True, después True; listado idéntico = True",
+   "Holds": true,
+   "Details": {
+    "RunLaunchEntries": 4
+   }
+  },
+  {
+   "Id": "vii-c",
+   "Case": "FROZEN_COMMAND = la orden documentada de la ronda 2 y = el bloque del README",
+   "Command": "(lectura de la plantilla y de los README)",
+   "Expected": "FROZEN_COMMAND «python -B kit/launch.py»; aparece literal en el README de la ronda 2; un bloque del README de OUT es exactamente esa orden",
+   "Observed": "FROZEN_COMMAND = 'python -B kit/launch.py'; en el README de la ronda 2 = True; bloque exacto en README.md = True",
+   "Holds": true,
+   "Details": {}
+  },
+  {
+   "Id": "vii-d",
+   "Case": "sin __pycache__ en las copias ni en OUT; ningún temporal de la sonda queda en %TEMP%",
+   "Command": "(listado)",
+   "Expected": "0 y 0",
+   "Observed": "__pycache__ = 0; temporales r62-record-probe-* nuevos = 0",
+   "Holds": true,
+   "Details": {}
+  },
+  {
+   "Id": "vii-e",
+   "Case": "saneamiento de OUT (perfil, cuenta, forma 8.3, correos)",
+   "Command": "(barrido de los archivos)",
+   "Expected": "ningún archivo con la ruta del perfil, el nombre de la cuenta, su forma 8.3 o correos",
+   "Observed": "archivos con fugas: ninguno",
+   "Holds": true,
+   "Details": {}
+  }
+ ],
+ "Summary": {
+  "Cases": 28,
+  "Hold": 28,
+  "Fail": []
+ }
+}

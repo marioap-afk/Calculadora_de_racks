@@ -1,0 +1,188 @@
+{
+ "Schema": "rackcad-bmin-accept-request/0-experimental",
+ "Repo": "D:/r62-a6r3/r1/c-nc1",
+ "Tool": {
+  "PinnedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "RunFrom": "object",
+  "GitObject": {
+   "GitDir": "D:/r62-a6r3/r1/c-nc1",
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  }
+ },
+ "Interpreter": {
+  "Python": "3.13.14",
+  "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec"
+ },
+ "Runs": [
+  {
+   "Name": "r00-contract",
+   "Envelope": "D:/r62-a6r3/r1/s-nc1/env/r00-contract.json",
+   "Argv": [
+    "contract",
+    "--repo",
+    "D:/r62-a6r3/r1/c-nc1",
+    "--file",
+    "CONTRACT=D:/r62-a6r3/r1/c-nc1-in/K.json",
+    "--sha256",
+    "CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+    "--file",
+    "DELEG=D:/r62-a6r3/r1/c-nc1-in/deleg.json",
+    "--sha256",
+    "DELEG=cf1d904487115792592363979f06c1ede5ae357cbff3ab288a747ac156b927d8"
+   ]
+  },
+  {
+   "Name": "r01-hashes",
+   "Envelope": "D:/r62-a6r3/r1/s-nc1/env/r01-hashes.json",
+   "Argv": [
+    "hashes",
+    "--repo",
+    "D:/r62-a6r3/r1/c-nc1",
+    "--rev",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--paths",
+    "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "src/Fixture.Lib/Calculator.cs"
+   ]
+  },
+  {
+   "Name": "r02-cleantree",
+   "Envelope": "D:/r62-a6r3/r1/s-nc1/env/r02-cleantree.json",
+   "Argv": [
+    "cleantree",
+    "--repo",
+    "D:/r62-a6r3/r1/c-nc1",
+    "--ignore-path",
+    "artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json"
+   ]
+  },
+  {
+   "Name": "r03-read-text",
+   "Envelope": "D:/r62-a6r3/r1/s-nc1/env/r03-read-text.json",
+   "Argv": [
+    "read-text",
+    "--repo",
+    "D:/r62-a6r3/r1/c-nc1",
+    "--rev",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--path",
+    "docs/automation/decisions/FX-U1.md",
+    "--lines",
+    "1-1"
+   ]
+  },
+  {
+   "Name": "r04-read-text",
+   "Envelope": "D:/r62-a6r3/r1/s-nc1/env/r04-read-text.json",
+   "Argv": [
+    "read-text",
+    "--repo",
+    "D:/r62-a6r3/r1/c-nc1",
+    "--rev",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--path",
+    "docs/automation/decisions/FX-U1.md",
+    "--lines",
+    "73-73"
+   ]
+  },
+  {
+   "Name": "r05-read-json",
+   "Envelope": "D:/r62-a6r3/r1/s-nc1/env/r05-read-json.json",
+   "Argv": [
+    "read-json",
+    "--repo",
+    "D:/r62-a6r3/r1/c-nc1",
+    "--rev",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--path",
+    "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "--pointer",
+    "/Objective",
+    "--pointer",
+    "/Schema",
+    "--pointer",
+    "/MainSha",
+    "--pointer",
+    "/AuthorityRevision"
+   ]
+  },
+  {
+   "Name": "r06-trx",
+   "Envelope": "D:/r62-a6r3/r1/s-nc1/env/r06-trx.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a6r3/r1/c-nc1",
+    "--file",
+    "TRX=D:/r62-a6r3/r1/c-nc1-in/fixture-tests.trx",
+    "--sha256",
+    "TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "--filter-substring",
+    "Subtract"
+   ]
+  },
+  {
+   "Name": "r07-handoff",
+   "Envelope": "D:/r62-a6r3/r1/s-nc1/env/r07-handoff.json",
+   "Argv": [
+    "handoff",
+    "--repo",
+    "D:/r62-a6r3/r1/c-nc1",
+    "--file",
+    "H=D:/r62-a6r3/r1/c-nc1-in/handoff.json",
+    "--sha256",
+    "H=f5334a11f744fc58330d56630e50d2bfb4ab7f5960ebfc930b8a197ae0c42a52",
+    "--schema-rev",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+   ]
+  },
+  {
+   "Name": "r08-freetext",
+   "Envelope": "D:/r62-a6r3/r1/s-nc1/env/r08-freetext.json",
+   "Argv": [
+    "freetext",
+    "--repo",
+    "D:/r62-a6r3/r1/c-nc1",
+    "--file",
+    "H=D:/r62-a6r3/r1/c-nc1-in/handoff.json",
+    "--sha256",
+    "H=f5334a11f744fc58330d56630e50d2bfb4ab7f5960ebfc930b8a197ae0c42a52",
+    "--terms-rev",
+    "fbe25347799e5b801ef708454212335537448bd1"
+   ]
+  },
+  {
+   "Name": "r09-clausemap",
+   "Envelope": "D:/r62-a6r3/r1/s-nc1/env/r09-clausemap.json",
+   "Argv": [
+    "clausemap",
+    "--repo",
+    "D:/r62-a6r3/r1/c-nc1",
+    "--main",
+    "fbe25347799e5b801ef708454212335537448bd1",
+    "--state-rev",
+    "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+    "--state-path",
+    "docs/automation/state/FX-U1.yml",
+    "--file",
+    "CONTRACT=D:/r62-a6r3/r1/c-nc1-in/K.json",
+    "--sha256",
+    "CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+    "--base",
+    "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf"
+   ]
+  }
+ ],
+ "Closure": {
+  "Path": "D:/r62-a6r3/r1/c-nc1-in/closure.json",
+  "Sha256": "dd3626812611d6c0bc7994537edce10a4e43a9d3f436a02ab67eff15522c1fdb"
+ },
+ "RelayFacts": {
+  "Path": "D:/r62-a6r3/r1/s-nc1/relay-facts-V2.json",
+  "CitedSha256": "e8f1f4568b0c6445ff9dbea949dd7b7082912519ecb9559af7cdc53c65329772"
+ },
+ "NotApplicable": {
+  "R4": "R4 omitted by the round-3 rule: not_run in the Controller output: Scope,Trailer"
+ }
+}

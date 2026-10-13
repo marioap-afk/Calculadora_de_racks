@@ -1,0 +1,169 @@
+{
+ "Schema": "rackcad-controller-verification/v2",
+ "TaskId": "T1",
+ "RunId": "R20261013T000000Z-ac11",
+ "DelegationRunId": "R20261012T000000Z-a6d1",
+ "WorkRunId": "R20261012T000000Z-a6e2",
+ "Attempt": 0,
+ "VerifiedSha": null,
+ "Verifier": {
+  "Role": "EXECUTION_CONTROLLER",
+  "BindingRef": {
+   "UnitId": "FX-U1",
+   "Scope": "TASK",
+   "TaskId": "T1",
+   "Role": "EXECUTION_CONTROLLER",
+   "BindingId": "B20261013T000000Z-a6b5",
+   "Sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+   "Location": {
+    "Kind": "TRANSIENT",
+    "Path": "banco-r3",
+    "Commit": null,
+    "Blob": null
+   }
+  },
+  "Actor": {
+   "AdapterId": "bench-r3",
+   "InstanceId": "NOT_STARTED",
+   "InstanceIdSource": "banco r3: Controller simulado, sin modelo",
+   "Assurance": "NONE"
+  }
+ },
+ "Checks": {
+  "Termination": {
+   "Result": "pass",
+   "Evidence": "registro de la sesion (sintetico, banco r3): trabajo del Worker COMPLETED, muerte confirmada"
+  },
+  "Handoff": {
+   "Result": "pass",
+   "Evidence": "instrumento: bmin_facts handoff --repo D:/r62-a6r3/r1/c-nc1 --file H=D:/r62-a6r3/r1/c-nc1-in/handoff.json --sha256 H=f5334a11f744fc58330d56630e50d2bfb4ab7f5960ebfc930b8a197ae0c42a52 --schema-rev 95bdc29d428b35d2188a10e1c5462d6caf2be4df; FactsSha256=44a310a52e5a2f81ba922bb60caa66494011e1cea7218a7a3db0a3c7ca8171e7"
+  },
+  "Authority": {
+   "Result": "fail",
+   "Evidence": "instrumento: bmin_facts clausemap --repo D:/r62-a6r3/r1/c-nc1 --main fbe25347799e5b801ef708454212335537448bd1 --state-rev 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf --state-path docs/automation/state/FX-U1.yml --file CONTRACT=D:/r62-a6r3/r1/c-nc1-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --base 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf; FactsSha256=dbc7fcbf1f442fa077312b33b64e6b7aff683decfabdf104425446cf3ffb4c9b; defectos del mapa: LiteralViolations,AddedPresentInEff1,EntryFilePresentInEff1"
+  },
+  "Contract": {
+   "Result": "pass",
+   "Evidence": "instrumento: bmin_facts contract --repo D:/r62-a6r3/r1/c-nc1 --file CONTRACT=D:/r62-a6r3/r1/c-nc1-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --file DELEG=D:/r62-a6r3/r1/c-nc1-in/deleg.json --sha256 DELEG=cf1d904487115792592363979f06c1ede5ae357cbff3ab288a747ac156b927d8; FactsSha256=0924174c176c7e8f8531f5d5da93a03434add8bf21cb14a71e34912325efcc4c"
+  },
+  "Identity": {
+   "Result": "fail",
+   "Evidence": "CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef no es un commit existente (primaria: git cat-file -t deadbeefdeadbeefdeadbeefdeadbeefdeadbeef -> rc 1)"
+  },
+  "Remote": {
+   "Result": "not_run",
+   "Evidence": "sin senal en el banco r3 (sin registro de ls-remote del relevo en la salida del Controller); not_run con la disposicion de su fila (AP 16.9)"
+  },
+  "Scope": {
+   "Result": "fail",
+   "Evidence": "git diff BaseSha..CurrentSha no resoluble (primaria: git diff --name-only --no-renames 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf..deadbeefdeadbeefdeadbeefdeadbeefdeadbeef -> rc 1)"
+  },
+  "CleanTree": {
+   "Result": "pass",
+   "Evidence": "instrumento: bmin_facts cleantree --repo D:/r62-a6r3/r1/c-nc1 --ignore-path artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json; FactsSha256=dc2de9192f430c63c376ae9897b968481a34651363b7028ac3c9922b49f0a2a4"
+  },
+  "Ci": {
+   "Result": "not_run",
+   "Evidence": "sin entrada: la comprobacion Identity esta en fail (CurrentSha no es un commit existente); not_run sin disposicion (AP 16.9)",
+   "RedPart": "not_applicable"
+  },
+  "Tests": {
+   "Result": "not_run",
+   "Evidence": "sin entrada: la comprobacion Identity esta en fail (CurrentSha no es un commit existente); not_run sin disposicion (AP 16.9)",
+   "RedPart": "not_applicable"
+  },
+  "Trailer": {
+   "Result": "fail",
+   "Evidence": "rango BaseSha..CurrentSha no resoluble (primaria: git log --format=%H 1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf..deadbeefdeadbeefdeadbeefdeadbeefdeadbeef -> rc 1)"
+  },
+  "Routing": {
+   "Result": "not_run",
+   "Evidence": "sin senal en el banco r3 (sin modelo); not_run con la disposicion de su fila (AP 16.9)"
+  },
+  "FreeText": {
+   "Result": "fail",
+   "Evidence": "instrumento: bmin_facts freetext --repo D:/r62-a6r3/r1/c-nc1 --file H=D:/r62-a6r3/r1/c-nc1-in/handoff.json --sha256 H=f5334a11f744fc58330d56630e50d2bfb4ab7f5960ebfc930b8a197ae0c42a52 --terms-rev fbe25347799e5b801ef708454212335537448bd1; FactsSha256=c8c29709d9f0a4b850a976a0f824ad86a45c5752c26b3c7522b760462ca93013; coincidencias=1"
+  },
+  "Denials": {
+   "Result": "not_run",
+   "Evidence": "sin senal en el banco r3 (sin eventos ni transcripcion del Worker); not_run con la disposicion de su fila (AP 16.9)"
+  }
+ },
+ "AuthorityResolution": [
+  {
+   "Path": "docs/automation/decisions/FX-U1.md",
+   "Section": "documento completo",
+   "Class": "UNIT_DOC",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  },
+  {
+   "Path": "docs/automation/state/FX-U1.yml",
+   "Section": "documento completo",
+   "Class": "UNIT_DOC",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  },
+  {
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Section": "documento completo",
+   "Class": "UNIT_CHANGE",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  },
+  {
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+   "Section": "documento completo",
+   "Class": "UNIT_CHANGE",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  },
+  {
+   "Path": "AGENTS.md",
+   "Section": "## Jobs requeridos",
+   "Class": "EXTERNAL",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+   "Class": "EXTERNAL",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  }
+ ],
+ "Classification": "EXECUTION_BLOCKED",
+ "Disposition": "STOP",
+ "FailureClass": "Authority",
+ "TriggeredStopConditions": [],
+ "Findings": [
+  "Salida sintetica del banco r3 para nc1 (CurrentSha inexistente), variante V1.",
+  "FailureClass = Authority: el mapa del fixture tiene defectos (MV-4) y Authority (#3) precede a Identity (#5) en el orden fijo."
+ ],
+ "RecommendedNextAction": "devolver al Coordinator (banco r3)"
+}
