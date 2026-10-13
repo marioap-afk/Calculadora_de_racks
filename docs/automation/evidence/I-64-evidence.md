@@ -4075,3 +4075,35 @@ Siguiente: **COORDINATOR_SMOKE1_REVIEW_REQUIRED**.
 **Relevos:**
 - Sin invocaciones de modelos.
 - HEAD = remoto = `b874705e` antes de este commit; `main` `bb0d5522`.
+
+## 67. F1-T3B-HOST-UI-C1 = PASS; preparación del Candidato del reintento de Smoke-1
+
+**Orden (literal):** «I-64 — F1-T3B-HOST-UI-C1 CLOSE», en
+`docs/automation/evidence/I-64-pilot/F1-T3B-HOST-UI-C1/coordinator-close-review.md`.
+- **F1-T3B-HOST-UI-C1 = PASS.** Producto: `b874705e26fff203e8727f6ed2362eca497b5860`.
+- `4d79e910` sigue siendo HISTORICAL_SMOKE1_STOP_CANDIDATE y no se reutiliza.
+- Siguiente: preparar un Candidato nuevo de Smoke-1 sobre el producto de C1. Requisitos:
+  - SHA exacto según la regla de validación manual (guía §7.1);
+  - árbol limpio;
+  - Core Full y UI Full en PASS;
+  - builds Debug de UI y Plugin;
+  - CI del SHA exacto 4/4;
+  - SHA-256 exacto del DLL;
+  - los mismos dibujos PR-12 y PR-13 salvo cambio de hash o contenido;
+  - RELEASE de host coordinado de nuevo para el Candidato y DLL nuevos, con referencias de host nuevas según T3C;
+  - la autorización anterior de carga única no se transfiere al DLL nuevo;
+  - sin AutoCAD y sin BASELINE.
+- Parada: **COORDINATOR_SMOKE1_RETRY_AUTHORIZATION_REQUIRED**. Sin F2.
+
+**Candidato propuesto:** este commit documental, cuyo producto es igual a `b874705e`. Su evidencia local se ejecuta después del commit,
+sobre ese HEAD exacto (guía §7.1). Hasta la ocurrencia de Smoke-1 no habrá otro commit: el SHA se estampa en el ensamblado. La
+preparación queda en el directorio transitorio y se custodia después de la ocurrencia.
+
+**Estado** (`I-64.yml`):
+- `f1_t3b_host_ui_c1_status` = PASS;
+- `smoke1_status` = STOP CONFIRMED, con el reintento en preparación;
+- siguiente: COORDINATOR_SMOKE1_RETRY_AUTHORIZATION_REQUIRED.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- HEAD = remoto = `ce2dffea` antes de este commit; `main` `bb0d5522`.
