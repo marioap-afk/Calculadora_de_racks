@@ -24,6 +24,9 @@
     <Content Include="..\..\assets\catalogs\*.json;..\..\assets\catalogs\*.csv;..\..\assets\catalogs\*.dwg" Link="catalogs\%(Filename)%(Extension)">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\assets\structural-analysis\ram-elements\section-material-map.json" Link="structural-analysis/ram-elements/section-material-map.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup Condition="'$(UseAutoCADNuGetReferences)' != 'true'">
     <Reference Include="AcCoreMgd">
