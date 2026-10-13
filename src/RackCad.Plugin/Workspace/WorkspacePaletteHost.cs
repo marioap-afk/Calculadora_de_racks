@@ -11,7 +11,8 @@ namespace RackCad.Plugin.Workspace
     /// loads and nothing is released on terminate.
     ///
     /// The palette is built with only its title (no tool identifier, so it has no persisted identity) and with no
-    /// load or save handlers: the host persists nothing. Closing the palette hides it; the host mirrors that to the
+    /// load or save handlers: the host persists nothing. It is placed once, when the process creates it: a size, a floating
+    /// rectangle on screen and an initial dock to the right (F1-T3B-HOST-UI-C1); showing it again never moves it. Closing the palette hides it; the host mirrors that to the
     /// controller. Exactly one root control of the UI project is added, labelled "Workspace"; its view-model is fed only by
     /// the read-only port of the controller and by the neutral delegate of the instrumentation switch.
     ///
@@ -24,6 +25,15 @@ namespace RackCad.Plugin.Workspace
     {
         private static readonly WorkspaceLazyInstance<WorkspacePaletteHost> Holder =
             new WorkspaceLazyInstance<WorkspacePaletteHost>(() => new WorkspacePaletteHost());
+
+        // The first placement of the palette (F1-T3B-HOST-UI-C1), in device-independent units: a size and a minimum size, and a
+        // floating rectangle that fits any primary screen of at least 1024 x 768.
+        private const double InitialWidth = 320;
+        private const double InitialHeight = 560;
+        private const int MinimumWidth = 240;
+        private const int MinimumHeight = 320;
+        private const double FloatingLeft = 80;
+        private const double FloatingTop = 80;
 
         private readonly WorkspaceController _controller;
         private readonly PaletteSet _palette;
@@ -41,6 +51,9 @@ namespace RackCad.Plugin.Workspace
             _palette.DockEnabled = DockSides.Left | DockSides.Right;
             _palette.KeepFocus = true;
             _palette.AddVisual("Workspace", _root);
+
+            // Once per process, before the palette is ever shown: Show() never repeats it.
+            ApplyInitialPlacement();
 
             // The subscriptions are the last step: once they exist nothing can fail any more.
             _palette.StateChanged += OnPaletteStateChanged;
@@ -60,6 +73,26 @@ namespace RackCad.Plugin.Workspace
         public void Show()
         {
             _palette.Visible = true;
+        }
+
+        // The first placement, applied once when the process creates the palette (F1-T3B-HOST-UI-C1, D-01): Smoke-1 showed that a
+        // palette created with no size and no position can float off the screen. It gets a size and a minimum size, a floating
+        // rectangle on screen for when the user undocks it, and an initial dock to the right. AutoCAD keeps any later move or dock
+        // of the user for the rest of the process; nothing is persisted, because the palette still has no identity. A failure is
+        // contained and logged: the panel is still shown.
+        private void ApplyInitialPlacement()
+        {
+            try
+            {
+                _palette.DeviceIndependentMinimumSize = new System.Drawing.Size(MinimumWidth, MinimumHeight);
+                _palette.DeviceIndependentSize = new System.Windows.Size(InitialWidth, InitialHeight);
+                _palette.InitializeFloatingPosition(new System.Windows.Rect(FloatingLeft, FloatingTop, InitialWidth, InitialHeight));
+                _palette.Dock = DockSides.Right;
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("WorkspacePaletteHost.ApplyInitialPlacement", ex);
+            }
         }
 
         // The palette was shown or hidden (closing it hides it): the controller mirrors the panel visibility.
