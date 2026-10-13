@@ -1243,3 +1243,36 @@ Custodia:
 | `F4-T6-COMPARATOR-HARDENING-nc3/R20261013T224435Z-bccb/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
 | `F4-T6-COMPARATOR-HARDENING-nc3/R20261013T224435Z-bccb/controller-verification.json` | `E7CD35D2E3A169DE…` | `678bf9925206` |
 | `F4-T6-COMPARATOR-HARDENING-nc3/R20261013T224435Z-bccb/relay-record.json` | `F9C3195A982EA853…` | `ae7c8c7a0fff` |
+
+## 49. F4-T5-PLUGIN-COMMAND — corrección (intento 4): STOP C-09 (2026-10-13T23:16:36Z)
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261013T224954Z-16f8` | PLANNING (intento 4, corrección) | Codex `gpt-6-luna`/`high` (34) | A1-A8 `pass`; seis colecciones exactas; `CorrectionOf` `R20261011T215838Z-09a6`; `claude-sonnet-5-5`/`medium` (Balanced) |
+| `R20261013T225238Z-960c` | WORK (intento 4) | subagente `claude-sonnet-5-5`/`medium` (120 mensajes) | **BLOCKED/STOP C-09**; RED `3e1ef603` (CI `38482239303` Core `failure`); sin GREEN; 19 min; 67 llamadas; ninguna invocación de un intérprete |
+
+- **Controles del Owner:** K1/K2 sin cambios en el checkout principal ni en los demás worktrees (planificación y trabajo); K5 sin intérpretes, RAM,
+  AutoCAD ni escrituras fuera del worktree; una lectura del checkout principal con `git status` (DEV-I65-F4-20).
+- **Archivos del GREEN retenidos** (no verificados) en custodia como `hold-*.txt` para trazabilidad.
+- **Contadores:** Codex 34 de 46; `attempts` 5 (máximo 6).
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T5-PLUGIN-COMMAND/R20261013T224954Z-16f8/gate-contract.json` | `6A4685883AE86B7A…` | `3ccf8f01b77b` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T224954Z-16f8/prompt.md` | `0D7B37D4151F00BF…` | `427dfbcf6325` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T224954Z-16f8/delegation.json` | `2C7D93724A05F5FE…` | `a183a78ea512` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T224954Z-16f8/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T224954Z-16f8/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261013T224954Z-16f8/relay-record.json` | `51A06A0924491939…` | `28fddd636f10` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T225238Z-960c/prompt.md` | `291B68B4EE5AC182…` | `bf44ae29a1f3` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T225238Z-960c/worker-handoff.json` | `AED0224AC1C84047…` | `c7dd756e8df7` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T225238Z-960c/relay-record.json` | `48ED8FFBE8A7E346…` | `5970fa2d1a98` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T225238Z-960c/analysis.md` | `BB18FEDE5A6FE6DC…` | `3ce57ea8402c` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T225238Z-960c/k5-transcript-scan.json` | `0034FC1F1D48B8F2…` | `1c5296787f96` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261013T225238Z-960c/transcript-facts.json` | `5189452342001C4F…` | `ee51beb5fb97` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261013T225238Z-960c/k-f4t5-plan-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261013T225238Z-960c/k-f4t5-work-compare.json` | `A13C15824CF431EA…` | `409ee963e06b` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261013T225238Z-960c/hold-RackRamElementsCommands.cs.txt` | `8ACBBAC32DFB9E83…` | `5651cc348cf2` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T225238Z-960c/hold-RackCad.Plugin.csproj.txt` | `6BD4DB8580E3D165…` | `81924bb0d61c` (fin de línea normalizado por Git) |
