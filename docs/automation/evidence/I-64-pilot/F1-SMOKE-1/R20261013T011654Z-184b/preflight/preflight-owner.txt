@@ -1,0 +1,26 @@
+preflight-owner R20261013T011654Z-184b inicio UTC 2026-10-13T01:19:01.7526812Z
+1 acad.exe count = 0
+2 HEAD=4d79e91036acdaa3e62b7b54677f394593f581a0 porcelain=0 productDiffLines=0 CandidateDll=E769219D2F5EDF6E0DE0867633C4A89B94EBBD7F2BD88CF20864CBCF75EF7512
+3 Capture-ProfileState.ps1 750a9097d4d84a75ac1787a7bf40032c44556c64399182aac0b95694b48226e1
+3 Compare-ProfileState.ps1 de642515371b19a59230940ef9659f3d84413f66c8831be201abf55fa73cbd65
+3 Test-ProfileDiff.ps1 d0bb54be83291e060aeaf4d2ec792743d70fc0f621202a1e24ee2fb41de94d8b
+4 selftest: SELFTEST PASS: 26/26 (codigo 0) resultado SHA-256 2981350C0738159ABC8EDEEB8FB2662130EAA98F14D7043AC4D04704766A5B3D
+5 D I64-SMOKE1-FIXTURES-D.dxf 03e5606c1e311f700640125b892fe09bf408dd5642115ebcb433b57474ccf165
+5 A Dibujo A.dwg 90750e8b969a027fe8e61bc75542671b7bdd4c17eaaabdd6a746f71437434852
+5 B Dibujo B.dwg fb9b97f96a3a9e6bd2bb4baa06b33a20fe24b98d34babcc677eaea4c81c9682b
+5 C Dibujo C.dwg ede7cdb350428f9f095d4d9c9ef1ddf4a65564f9752805db48cd5abaea00a53c
+5 biblioteca Base_de_datos_AutoCAD_V.0.dwg B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8
+6 acad.exe count = 0
+6 reg query HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles /ve
+
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles
+    (Predeterminado)    REG_SZ    <<Unnamed Profile>>
+6 reg query HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Variables /v SECURELOAD
+
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Variables
+    SECURELOAD    REG_SZ    1
+6 SECURELOAD_BASELINE_CURRENT = 1
+7 acad.exe count = 0
+7 BASELINE codigo 0
+  BASELINE: CanonicalSha256=e2eeb59457f39278c16e96793008a6d9311333f144a3d4bb86bb080e4888df70 lines=2229 keys=399 values=1765 files=16 plugins=3 env=0 unreadable=0
+OK: preflight y BASELINE correctos. NO abras AutoCAD hasta que la sesion I-64 confirme la BASELINE.

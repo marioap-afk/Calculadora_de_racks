@@ -1,0 +1,1297 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Subject": "preparacion de Smoke-1 (Candidato, dibujos, T3C, scripts del Owner)",
+  "Unit": "prep",
+  "SourceRoot": "artifacts/orchestration/I-64/F1-SMOKE-1-PREP",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; companeros locales solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 15,
+    "EXCLUDED": 168
+  },
+  "Files": [
+    {
+      "Path": "owner-post.ps1",
+      "Bytes": 2522,
+      "Sha256": "4fa7aa5afe7d795eb7d5c8eddd19760a5fe0ac132b478b7719f9fe251dcce79d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "50bdc0e389824e06deef97f181182bc19c67166c618a7a30949f39bbe34a327e",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "owner-preflight-baseline.R20261012T195007Z-4141.ps1",
+      "Bytes": 7562,
+      "Sha256": "11eb788f2d52ebc81f6529f385d7fc6727999ecb8d82d5dc38e405de4e237545",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "706fdd7cdf1025de4eb9ddbbf4c8d3f82ca24c0ce89db6c3093dc51c016b95dc",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "owner-preflight-baseline.ps1",
+      "Bytes": 8257,
+      "Sha256": "6db10c93f7a7e8009dbd9d26f574e29877452a28e2da6f1282371ab5e59e4722",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3b657914d600c57b4d931c7920400f8798011734ad585ad97ab731b01c2adf5f",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "candidate-4d79e910/candidate.md",
+      "Bytes": 2757,
+      "Sha256": "22cabf1ba0b0f9e5035de85474e0e160207613be8d327643badbd1cb057defda",
+      "Disposition": "EXCLUDED",
+      "Reason": "duplicado de candidate/ de la ocurrencia (mismos bytes o registros con rutas)"
+    },
+    {
+      "Path": "candidate-4d79e910/core-test.txt",
+      "Bytes": 22564,
+      "Sha256": "b210885897073e11a719ef4262a4c892e26585c958726f94454f9ab357408645",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate-4d79e910/plugin-build.txt",
+      "Bytes": 39243,
+      "Sha256": "0e315e8cdb94442beb6c609bb54f4f260a6468a9a82d2b3f2799eb6bb1cdf0be",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate-4d79e910/steps.txt",
+      "Bytes": 1096,
+      "Sha256": "bad00982d68b8cff168d8cfc3070367cef4907bfc2e62207c841a88147bd5229",
+      "Disposition": "EXCLUDED",
+      "Reason": "duplicado de candidate/ de la ocurrencia (mismos bytes o registros con rutas)"
+    },
+    {
+      "Path": "candidate-4d79e910/ui-build.txt",
+      "Bytes": 720,
+      "Sha256": "19d36dcb15ec76fc64774ced8b910c757c107c9305b10df2927b82c408aca041",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate-4d79e910/ui-test.txt",
+      "Bytes": 9600,
+      "Sha256": "bfd771fd744f42340afba246563105b63caa43c5da015c03c6976842c138ed0e",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "fixtures/I64-SMOKE1-FIXTURES-D.dxf",
+      "Bytes": 21375,
+      "Sha256": "03e5606c1e311f700640125b892fe09bf408dd5642115ebcb433b57474ccf165",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "0f6fa93def57b2fadf9453b0b09e7319d37ce0cde742c04140a012429fce89c9",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "fixtures/I64-SMOKE1-FIXTURES-D.dxf.pristine",
+      "Bytes": 21375,
+      "Sha256": "03e5606c1e311f700640125b892fe09bf408dd5642115ebcb433b57474ccf165",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia recuperable identica al DXF custodiado (mismo SHA-256)"
+    },
+    {
+      "Path": "fixtures/check_smoke1_fixtures.py",
+      "Bytes": 3577,
+      "Sha256": "210ac6fc814645686aea334e3b9f66add6940e46ea3d5bd9b6e6fceb5cd5388d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "fixtures/envelope-pr12-diagnostico.json",
+      "Bytes": 178,
+      "Sha256": "c182f722e0e77db66b97cd717244ce4f07c9f5c6797319714ec74570bb51f1f1",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "fixtures/envelope-pr13-sin-identidad.json",
+      "Bytes": 144,
+      "Sha256": "2de3c7bf49db4cc48be4ec3ce6035c0b7d5f8f7a166457a894269bbba163e502",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "fixtures/fixtures.md",
+      "Bytes": 5886,
+      "Sha256": "9d7b8abfa0cdaa45d61e8bd79bfa3277fba24358f690d6154ca2eedf6cca0db8",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a8487ad8b8cb993e15cc7ad9127de1ca5a568af605452023089e01cd9194f6ba",
+      "Redaction": [
+        "ubicacion local sustituida por: en un entorno virtual temporal de la sesion"
+      ]
+    },
+    {
+      "Path": "fixtures/make_smoke1_fixtures.py",
+      "Bytes": 2106,
+      "Sha256": "df2a6659761ff878b38e4b2ee970791dd9105b7d018ac051bd778ba0b0fa9ff9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "fixtures/harness/FixtureHarness.csproj",
+      "Bytes": 461,
+      "Sha256": "a1ad68fea7ffa083db8995ae57cbe1ee40a463e4a547cd9890e5bd654acf8780",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "fixtures/harness/Program.cs",
+      "Bytes": 3409,
+      "Sha256": "61ca402b013bf3f0f21b010f68e1e5d34ab0126f3d393ae5f4f1d3c415037606",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "fixtures/readback/I64_FX_PR12_DIAGNOSTICO.json",
+      "Bytes": 178,
+      "Sha256": "c182f722e0e77db66b97cd717244ce4f07c9f5c6797319714ec74570bb51f1f1",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "fixtures/readback/I64_FX_PR13_SIN_IDENTIDAD.json",
+      "Bytes": 144,
+      "Sha256": "2de3c7bf49db4cc48be4ec3ce6035c0b7d5f8f7a166457a894269bbba163e502",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "i52/i52-reply.txt",
+      "Bytes": 1675,
+      "Sha256": "d35e36d54b095b25f472b4a2edf0ecaf795f5f984a9eea8439866078a15ab9b5",
+      "Disposition": "EXCLUDED",
+      "Reason": "duplicado de authorization/ de la ocurrencia"
+    },
+    {
+      "Path": "i52/i64-request-as-received.txt",
+      "Bytes": 3520,
+      "Sha256": "87e4292c5ec9f4b078cdf05ab3d4176e38204b3856eb50f301976965bc046629",
+      "Disposition": "EXCLUDED",
+      "Reason": "duplicado de authorization/ de la ocurrencia"
+    },
+    {
+      "Path": "t3c/baseline-command.md",
+      "Bytes": 3413,
+      "Sha256": "1d40451fb7b9e58b26c702d79fb411d1568049137161d1f4b5b9eeb2826c993c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "t3c/selftest-result.txt",
+      "Bytes": 7233,
+      "Sha256": "2981350c0738159abc8edeeb8fb2662130eaa98f14d7043ac4d04704766a5b3d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "t3c/selftest-work/T01-identical/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T01-identical/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T01-identical/diff.json",
+      "Bytes": 965,
+      "Sha256": "82139055d0abc6ac992f96f649d7a208fdebb1ef884d9ad92aa8dbc9133cbfcb",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T01-identical/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "4bc59a7d3151a3230677c2dff3046f1c0efed00b0391c7991cd11c888c52d2c4",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T01-identical/post.json",
+      "Bytes": 2964,
+      "Sha256": "f1b0693d8740ac2635f56646d22c2b91010b7382e185b0f47b6175e628358dce",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T01-identical/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "7e23d48b4a8e61fa34ce54409679dc169c3787019965997db65111ccf7d5ce1d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T02-trustedpaths-value/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T02-trustedpaths-value/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T02-trustedpaths-value/diff.json",
+      "Bytes": 1631,
+      "Sha256": "5922f2aee8d218193f92228f6a635d04877ffb73bc7887fe822bb7cadc24c8d1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T02-trustedpaths-value/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "4697cf762a953ea9147d24f2f5c1f201d398e6627ea38324202e0c62a8140a19",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T02-trustedpaths-value/post.json",
+      "Bytes": 2964,
+      "Sha256": "a890067a4fa98f95e190e4cabbed56ceaeed03a66f1e44577b815076da8542bc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T02-trustedpaths-value/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "0100815a247d955743fd69ee2fd5507604df629f6d8c8a8e8682db4db64c1372",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T03-secureload/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T03-secureload/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T03-secureload/diff.json",
+      "Bytes": 1139,
+      "Sha256": "45bd06ac10301c41b078c9e840411a424686bc2662f67dd2f2f9f4503cb94cfe",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T03-secureload/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "ecce60b7d3ca1b981af1aab514ed3902ca6b6fc2590e2de006e75154de8c66a2",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T03-secureload/post.json",
+      "Bytes": 2964,
+      "Sha256": "be466c3e546077b0990bfec6e729d27d906a5266a40d2515a11a3a46ecf611ee",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T03-secureload/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "92a448fc6b2cb25cd9edee74826491eb6caa8254218db941befeb724aa46ad46",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T04-current-profile/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T04-current-profile/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T04-current-profile/diff.json",
+      "Bytes": 1231,
+      "Sha256": "149ef8e75256e61af7a72951cc0edbeaecedbd5fdd56fa8e49419362da6cafb8",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T04-current-profile/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "5442b270455b2f97660c659b77762a5369fa82d6cdb20378c3bae0bdbbcc1132",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T04-current-profile/post.json",
+      "Bytes": 3016,
+      "Sha256": "facf3dee0eda26898ba44b0177bc6e993857511a383dcf7a469007a387e9a86c",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T04-current-profile/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "cab24f8b6734bba8e7bc1a1afab58d10cf04423e871bffc730dd06708c6354f1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T05-application-registered/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T05-application-registered/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T05-application-registered/diff.json",
+      "Bytes": 1435,
+      "Sha256": "d964781790f28bbcdd9e231da4b75f73b2bffee65c663e3eee18304b5db974ba",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T05-application-registered/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "e0f3a023862ca47480f81fff5714f232af7884b512d561ccc0aae3c43af1cd3e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T05-application-registered/post.json",
+      "Bytes": 3137,
+      "Sha256": "8e2e01116f40563de288d42067cb2bc4c0023f3ce235803214e19bb61e9e8840",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T05-application-registered/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "b8f10251eb3ccda198aa74a85e3f4044d78269332fd8dcd700296bfce15df406",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T06-bundle-installed/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T06-bundle-installed/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T06-bundle-installed/diff.json",
+      "Bytes": 1160,
+      "Sha256": "d51068644c9a52a8abc02c872c2873170f5e79796e6657ee751828195429bcb6",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T06-bundle-installed/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "d0fd396f08d48629283902e3c4cea738aa5f3af73147c02df20d1f7f0dedee30",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T06-bundle-installed/post.json",
+      "Bytes": 3008,
+      "Sha256": "1831707bd63c566fadf24d8d6af37eb7f62a6301bade1394a3245e19451fe21a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T06-bundle-installed/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "26fa4287b992b6bf75d7ccf4584bfc4391d4257f53144cfa50296b428da5c1c7",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T07-settings-changed/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T07-settings-changed/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T07-settings-changed/diff.json",
+      "Bytes": 1290,
+      "Sha256": "06a978b400ac54d764c6ab468b61cc202fb8f1512995da9b1c669d3d6feec788",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T07-settings-changed/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "561040a3fd2f8d4470a8db20c5444d9ace90300617c50c175c254b25eac57940",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T07-settings-changed/post.json",
+      "Bytes": 2964,
+      "Sha256": "c47283b9ffb364385e844fee4d30fd7b139f58609b887b3644ab4f11105f642e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T07-settings-changed/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "892d1aa3f569bf23f81cae86669706c6af29fda3dbf9d0c5db64bcef3e6eec6f",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T08-racklog-grows/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T08-racklog-grows/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T08-racklog-grows/diff.json",
+      "Bytes": 1282,
+      "Sha256": "c59f699f567a64c3b032e0bfb283089095db8ba90d3e7c0a686ec68a2be738b9",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T08-racklog-grows/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "46e685d1bea8cabe0b957d56e7377e265b16145cb589a5ac7377488f5f831b36",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T08-racklog-grows/post.json",
+      "Bytes": 2964,
+      "Sha256": "45726ebf4d7bf03bb118f58f9ab8ea5e5ad7b707e8e391c6f995eb768b605742",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T08-racklog-grows/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "4e5e6f5e89181af27a387e4e406f3f2189afb38bd109ecb600ca1b49f918be34",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T09-palette-key/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T09-palette-key/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T09-palette-key/diff.json",
+      "Bytes": 1461,
+      "Sha256": "7d2a48f18fdaaa4a6d737dca5a1e94658be9b88c5776fa98d84ba9d80b364abe",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T09-palette-key/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "45b27107277fcb1271e48b6c50f7caf3875c272ef36c379c4d39dfbb0db14f1a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T09-palette-key/post.json",
+      "Bytes": 3164,
+      "Sha256": "07fb265755b27eb44073cc56d86a6902ef9f831f27b1de3e821defa0f1498b0c",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T09-palette-key/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "ed9179e9b992ff7f3d3744b96dbbe2df342ee5816dee5b8007ed93b70b540665",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T10-palette-key-accepted/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T10-palette-key-accepted/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T10-palette-key-accepted/diff.json",
+      "Bytes": 1454,
+      "Sha256": "c3ca8474a2b67a3bc343b39057bc07314abd9b424ce44d7910f90dcb6e6e230b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T10-palette-key-accepted/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "2cd476d4368a1af4bf374416e4bbd4de8f6b8f71c93f128bd63ba0b6ff0a8fb8",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T10-palette-key-accepted/post.json",
+      "Bytes": 3164,
+      "Sha256": "07fb265755b27eb44073cc56d86a6902ef9f831f27b1de3e821defa0f1498b0c",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T10-palette-key-accepted/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "ed9179e9b992ff7f3d3744b96dbbe2df342ee5816dee5b8007ed93b70b540665",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T11-existing-window-placement/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T11-existing-window-placement/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T11-existing-window-placement/diff.json",
+      "Bytes": 1362,
+      "Sha256": "c26ee165f11325d0e97b96d493daebe103428c0887a97814ee3eb4872625317a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T11-existing-window-placement/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "1039b05e36e9712e6fc8a0cd4a6581325604644459934623b61592b56b246ce4",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T11-existing-window-placement/post.json",
+      "Bytes": 2964,
+      "Sha256": "f632d6b64c234901c244800f4978d43cfc69f3da51498cc0d02d980a2db2e2bb",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T11-existing-window-placement/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "8a1f92b67cd59925b806cbdb1a793a567639a63d33f295e26ad8cf722dd24a8a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T12-guid-key/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T12-guid-key/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T12-guid-key/diff.json",
+      "Bytes": 1218,
+      "Sha256": "b4b408e6f3291c3b8d8c5c940e2592bfe113de75ea085617fa3ab29921553d51",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T12-guid-key/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "d0c3d3929f029cdf6a4c62d489689e5c478b88e718f6b39044df25e3c4110eb7",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T12-guid-key/post.json",
+      "Bytes": 3056,
+      "Sha256": "889f04822f838ea493f319384011bf7f18928e6fd9977a1dc4eb354f337b1780",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T12-guid-key/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "91797ddd01f9ebc7241a2ef5405403a359da37f5829bc868f0d0c50b06228961",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T13-autocad-activity/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T13-autocad-activity/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T13-autocad-activity/diff.json",
+      "Bytes": 1319,
+      "Sha256": "7d026910481068f42ebe38af8db57bceeb85f2262f85a5109524ab07e4a8a4e0",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T13-autocad-activity/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "adce000b6d6273e7e13f6007d75f9d35d6571d172bf701859938c5f0ccfee532",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T13-autocad-activity/post.json",
+      "Bytes": 2964,
+      "Sha256": "7994b3bafb98f73726fe4780855539b18c12caed0c1a57c0b1142ce86f24015a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T13-autocad-activity/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "1f6aae9ebe9eac292e48abc0e77e2edc7800c6e00366167758edad5da48968e3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T14-acad-identity/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T14-acad-identity/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T14-acad-identity/diff.json",
+      "Bytes": 1260,
+      "Sha256": "7dd5068779d4683990078bc3d076338e285e3baef809b79fcca4bffa9a8acbb6",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T14-acad-identity/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "9b6aa5513f44d6d6c28bd5edaf03f51f9ddcc16c32ef85933bb84677dedd2b63",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T14-acad-identity/post.json",
+      "Bytes": 2964,
+      "Sha256": "827cf3250c0db91eeb3e1c16d93ea586e01f548d077f2415429e564a6634c317",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T14-acad-identity/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "6e521aaa15c46e978c066a83a1f2e56fcc132f6cc4fc7a8a2d7eb07406fab4ef",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T15-sidecar-tampered/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T15-sidecar-tampered/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T15-sidecar-tampered/diff.json",
+      "Bytes": 1116,
+      "Sha256": "5780beeaebe5dda27a11ed455a2c62f2238b8c860816179c93d6c74fb6d94a32",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T15-sidecar-tampered/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "24c778be7cb7a46deb32eb08ceb6774d41d81c03ab0c0b87ba0aa45e53bb263f",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T15-sidecar-tampered/post.json",
+      "Bytes": 2964,
+      "Sha256": "f1b0693d8740ac2635f56646d22c2b91010b7382e185b0f47b6175e628358dce",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T15-sidecar-tampered/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "46ffd861297ddd3c33ae70fb33fab69b51297fa9b041347ba9a00d9be5ad469c",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T16-ledger-tampered/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T16-ledger-tampered/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T16-ledger-tampered/diff.json",
+      "Bytes": 1318,
+      "Sha256": "b037ab5cb449e3e110b3d61190b87e3b8de4fa8488973396a78435f8bbe0dcce",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T16-ledger-tampered/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "571f90f554974caf33f994a59299f41ab36e73cf7683f4328bccfffe4b67dc14",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T16-ledger-tampered/post.json",
+      "Bytes": 3010,
+      "Sha256": "6b36b311b79a26a02d164a72ce6cd3d5a0a7a183ed1ed9b4f69d245d88a4e15b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T16-ledger-tampered/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "2351c436abb23baaed043a2c44f846a90f513a012f591beb6f2b0c8977cd8c7a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T17-persistent-env-var/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T17-persistent-env-var/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T17-persistent-env-var/diff.json",
+      "Bytes": 1399,
+      "Sha256": "62c2f26f07c37a29894286d62308e260f61d3493e0c4069310e7a2fb7d4e62dc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T17-persistent-env-var/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "d69b7c6ba73f4ac172003a3571d890c5d0e0ef6dd381375498b4c56778d88300",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T17-persistent-env-var/post.json",
+      "Bytes": 3082,
+      "Sha256": "3452a2a96057d49dc1de07cd3e55959925304ff8c52f71ec7de6095e0d5c037c",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T17-persistent-env-var/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "ba16cfc981916f3584e108f9c5f0eba13cb2c402c48e7bf08840dd5afcba7ab5",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T18-pickfirst/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T18-pickfirst/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T18-pickfirst/diff.json",
+      "Bytes": 1143,
+      "Sha256": "6f0f29c913049332dad63bc7dd14685cd1225e505ba55831ffd6125157b414f2",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T18-pickfirst/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "872924edf8a86ede198069d7c88281af352357fd598febb4f82cc78b38efef94",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T18-pickfirst/post.json",
+      "Bytes": 2959,
+      "Sha256": "54e58aee311e52935bd72daffd9e12575b0931a064be9efc1322dbbfaba109e6",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T18-pickfirst/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "e98cf0403ec561deac05026b1aba8fed04b281aa552d613f118a9b04dc113e29",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T19-workspace-dialog/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T19-workspace-dialog/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T19-workspace-dialog/diff.json",
+      "Bytes": 1219,
+      "Sha256": "be94948f5dbe3beaa6d18af627e276055daac841c297d2e63bfb88fda7f49ca3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T19-workspace-dialog/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "e175098d2ab37ea028f83b968e46c0705be9af7d6ce34866c931d2a603ccd6f4",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T19-workspace-dialog/post.json",
+      "Bytes": 3057,
+      "Sha256": "a520edd82ca7e35b1048ff9074974446e01f358010e569ff76ddbba533a89f48",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T19-workspace-dialog/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "fd0a5aedae20c15971bddbc15029861c823578114505f8063b8574c784f41880",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T20-fixedprofile-rackcad/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T20-fixedprofile-rackcad/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T20-fixedprofile-rackcad/diff.json",
+      "Bytes": 1171,
+      "Sha256": "d25c0176700af1999159b1e746b6c9fa2e9902228c12891259b079f8cc41e0cd",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T20-fixedprofile-rackcad/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "8a5f7cad9bc6e08e99d8d1a25a430d7c9528280446b28e5e431247c2bc630553",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T20-fixedprofile-rackcad/post.json",
+      "Bytes": 3009,
+      "Sha256": "a7078137729aa96097e6b98d0f8ab0aaf7df0e01b61b6e5b44f4fccb7d7f6fda",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T20-fixedprofile-rackcad/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "149b488ee88ed7a074fec22e878ee2dedfc0d0a41d85e07b0ba44e35b961c2f9",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T21-acad-running-post/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T21-acad-running-post/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T21-acad-running-post/diff.json",
+      "Bytes": 1288,
+      "Sha256": "0aa33f4c1ffb6597281b9c1e716d2e5df8c35ba37d33a7214e7803b65b27ba89",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T21-acad-running-post/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "fe75602326fc730a32e5643f0cde4dddd917feb13e1c32240f17c3aa56ec71df",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T21-acad-running-post/post.json",
+      "Bytes": 2964,
+      "Sha256": "a369b27b44daeeb6ea35d64daa5e31f3d097cba5f18fa36017527e89e256c0a6",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T21-acad-running-post/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "769be081cc20653a48ea1f9c6495962a496d8ab34c38524ebedc39c8d198e2a6",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T22-unreadable/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T22-unreadable/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T22-unreadable/diff.json",
+      "Bytes": 1482,
+      "Sha256": "e6fd2ec5a2e7983952ca3fa042e585578034ecc993f910adc74bff913318d39e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T22-unreadable/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "33749fd97a1e60a28c6889a2d26585a6a61c607161595f73902f61e6b1006d68",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T22-unreadable/post.json",
+      "Bytes": 3050,
+      "Sha256": "a9f54c1d114efc587f09c3f2ea421a741ddca2c1984a0a1add84c949bc14f00b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T22-unreadable/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "f3a487a6fcd29121ff3dd341772d4a44dc4fe33e3cd5fec6aef723e122e6bee4",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T23-new-window-type/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T23-new-window-type/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T23-new-window-type/diff.json",
+      "Bytes": 1205,
+      "Sha256": "00b0c1ffb1649de7a10cd37b5629d0e05dc12051e2b689513e14960d9b72016b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T23-new-window-type/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "ba944806964af0d97659aa6bcefb7d22172785674994afd27c62415f746e90ee",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T23-new-window-type/post.json",
+      "Bytes": 3043,
+      "Sha256": "e5d8721af00b26cf82725154c05a08b604e90f87f45f2fb92c8a852b05a61fd0",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T23-new-window-type/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "64975776707e8038362cb9d0e377210bf6d45ad5a4e8f4d036db004be64a440c",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T24-localappdata-layout/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T24-localappdata-layout/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T24-localappdata-layout/diff.json",
+      "Bytes": 1433,
+      "Sha256": "74cb778844def211ce3f15013ea683f593168e6731e50c2a635f9ebbb0866a51",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T24-localappdata-layout/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "10fd890edcd55c7d99674f3ed6acace2c3f0a50a44062edbca8492b36c7b6419",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T24-localappdata-layout/post.json",
+      "Bytes": 3090,
+      "Sha256": "414545ef57b35ea34c5d2cd3eb997e33b83cc039e9ce612df4d19b2c8fd411f1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T24-localappdata-layout/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "3c518dafdf03ae0566824f5d64708303642e5d8d8f99eae8a2d00736f995cff3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T25-loaded-entry/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T25-loaded-entry/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T25-loaded-entry/diff.json",
+      "Bytes": 1208,
+      "Sha256": "d21e75f8ab1948b2b4ee564b62b73bc411154134caef4cab9076f10e2776a167",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T25-loaded-entry/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "d6a93f16b98190a6e026b5dd97f5cbd5aa4a748af9b2f4b32ba17c3f25bf9fcc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T25-loaded-entry/post.json",
+      "Bytes": 3048,
+      "Sha256": "187881c76226bef51e69f160be1a79c904d846d7d17916f7c75e29578792e95e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T25-loaded-entry/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "bd6a84c9d029ec3baa383da136b472acced56774a815d1f90d6f7abfd2509147",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T26-candidate-dll-changed/baseline.json",
+      "Bytes": 2968,
+      "Sha256": "543a1cc32030f3de63d5e6fd0c210607edd12a4007fa5e72996dd970d5c151de",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T26-candidate-dll-changed/baseline.json.sha256",
+      "Bytes": 80,
+      "Sha256": "fad352f06e07e429de04d6834f588d7f5505439bb01bfa2fc80d22a5e439dd27",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T26-candidate-dll-changed/diff.json",
+      "Bytes": 1266,
+      "Sha256": "ff572218addadf1383e1d22ea3559be6809fdf330927e09885fbff8c8e44b075",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T26-candidate-dll-changed/diff.json.sha256",
+      "Bytes": 76,
+      "Sha256": "120b2bb986a1395eb0d882b2e6e33d04114603983c337be081470d3fc36f46a4",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T26-candidate-dll-changed/post.json",
+      "Bytes": 2964,
+      "Sha256": "8d49d3567130e63fce7195761f39f4ba1ff4b5b140fca3760b4dd3c1e154c98b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/selftest-work/T26-candidate-dll-changed/post.json.sha256",
+      "Bytes": 76,
+      "Sha256": "2b7fc4a5ba2f3bc5ee0ec42fecd82111d2bf7e895c142233895f888a81e19907",
+      "Disposition": "EXCLUDED",
+      "Reason": "salidas sinteticas de la autoprueba de T3C; su resultado esta en selftest-result.txt"
+    },
+    {
+      "Path": "t3c/tools/Capture-ProfileState.ps1",
+      "Bytes": 22245,
+      "Sha256": "750a9097d4d84a75ac1787a7bf40032c44556c64399182aac0b95694b48226e1",
+      "Disposition": "EXCLUDED",
+      "Reason": "bytes identicos al blob aprobado ef215539 ya versionado en F1-T3C-PROFILE-DOC/tools/"
+    },
+    {
+      "Path": "t3c/tools/Compare-ProfileState.ps1",
+      "Bytes": 13752,
+      "Sha256": "de642515371b19a59230940ef9659f3d84413f66c8831be201abf55fa73cbd65",
+      "Disposition": "EXCLUDED",
+      "Reason": "bytes identicos al blob aprobado d314293a ya versionado en F1-T3C-PROFILE-DOC/tools/"
+    },
+    {
+      "Path": "t3c/tools/Test-ProfileDiff.ps1",
+      "Bytes": 11450,
+      "Sha256": "d0bb54be83291e060aeaf4d2ec792743d70fc0f621202a1e24ee2fb41de94d8b",
+      "Disposition": "EXCLUDED",
+      "Reason": "bytes identicos al blob aprobado c7d2c35f ya versionado en F1-T3C-PROFILE-DOC/tools/"
+    }
+  ]
+}

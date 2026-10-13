@@ -1,0 +1,54 @@
+{
+  "Schema": "rackcad-i64-profile-diff/v1",
+  "Baseline": {
+    "File": "profile-capture-BASELINE.json",
+    "Sha256": "062d6773151c43143e250db10925f153055d9d75ab32ba46abfaff1f4efb2f7c",
+    "Phase": "BASELINE",
+    "CanonicalSha256": "e2eeb59457f39278c16e96793008a6d9311333f144a3d4bb86bb080e4888df70",
+    "SidecarOk": true,
+    "CanonicalOk": true,
+    "SortedOk": true
+  },
+  "Post": {
+    "File": "profile-capture-POST.json",
+    "Sha256": "75021861ac0490214e814f5e80bd92f8753c30411ec42257877631aa1d18db63",
+    "Phase": "POST",
+    "CanonicalSha256": "6581fc4b5c0cf4530aa570b7fbcb74ad2e967b6e464ee17f3a32a5a20d03bceb",
+    "SidecarOk": true,
+    "CanonicalOk": true,
+    "SortedOk": true
+  },
+  "PaletteKeyAcceptance": "ACCEPTED",
+  "Preconditions": [],
+  "ChangeCounts": {
+    "ADDED": 1,
+    "REMOVED": 0,
+    "CHANGED": 1
+  },
+  "ClassCounts": {
+    "INVALID": 0,
+    "FORBIDDEN": 0,
+    "REPORT": 0,
+    "ALLOWED": 2
+  },
+  "Disposition": "CLEAN",
+  "ExitCode": 0,
+  "Entries": [
+    {
+      "Id": "V|HKCU:PRODUCT\\FixedProfile\\Application Window|Position",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|15|42ba3796355b9cb6df7d9b4a12b8b5bbcb134cc87033070378ea6acfa364cf42",
+      "Post": "String|17|6da72b104420c8df7407e1528ed811f4b43eb5bb601effb3ad40a848eb0156ee"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Variables|VIEWBACKSTATUS",
+      "Change": "ADDED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": null,
+      "Post": "String|1|6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+    }
+  ]
+}

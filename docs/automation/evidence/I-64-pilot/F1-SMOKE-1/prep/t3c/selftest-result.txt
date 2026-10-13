@@ -1,0 +1,348 @@
+{
+  "Schema": "rackcad-i64-profile-diff-selftest/v1",
+  "CompareSha256": "de642515371b19a59230940ef9659f3d84413f66c8831be201abf55fa73cbd65",
+  "SelfTestSha256": "d0bb54be83291e060aeaf4d2ec792743d70fc0f621202a1e24ee2fb41de94d8b",
+  "Total": 26,
+  "Passed": 26,
+  "Result": "PASS",
+  "Cases": [
+    {
+      "Id": "T01-identical",
+      "ExpectedCode": 0,
+      "ExpectedRules": [],
+      "ActualCode": 0,
+      "ActualDisposition": "CLEAN",
+      "ActualRules": [],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T02-trustedpaths-value",
+      "ExpectedCode": 20,
+      "ExpectedRules": [
+        "R-F-03"
+      ],
+      "ActualCode": 20,
+      "ActualDisposition": "FORBIDDEN_DRIFT",
+      "ActualRules": [
+        "R-F-03"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T03-secureload",
+      "ExpectedCode": 20,
+      "ExpectedRules": [
+        "R-F-02"
+      ],
+      "ActualCode": 20,
+      "ActualDisposition": "FORBIDDEN_DRIFT",
+      "ActualRules": [
+        "R-F-02"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T04-current-profile",
+      "ExpectedCode": 20,
+      "ExpectedRules": [
+        "R-F-01"
+      ],
+      "ActualCode": 20,
+      "ActualDisposition": "FORBIDDEN_DRIFT",
+      "ActualRules": [
+        "R-F-01"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T05-application-registered",
+      "ExpectedCode": 20,
+      "ExpectedRules": [
+        "R-F-05"
+      ],
+      "ActualCode": 20,
+      "ActualDisposition": "FORBIDDEN_DRIFT",
+      "ActualRules": [
+        "R-F-05"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T06-bundle-installed",
+      "ExpectedCode": 20,
+      "ExpectedRules": [
+        "R-F-06"
+      ],
+      "ActualCode": 20,
+      "ActualDisposition": "FORBIDDEN_DRIFT",
+      "ActualRules": [
+        "R-F-06"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T07-settings-changed",
+      "ExpectedCode": 20,
+      "ExpectedRules": [
+        "R-F-08"
+      ],
+      "ActualCode": 20,
+      "ActualDisposition": "FORBIDDEN_DRIFT",
+      "ActualRules": [
+        "R-F-08"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T08-racklog-grows",
+      "ExpectedCode": 0,
+      "ExpectedRules": [
+        "R-A-01"
+      ],
+      "ActualCode": 0,
+      "ActualDisposition": "CLEAN",
+      "ActualRules": [
+        "R-A-01"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T09-palette-key",
+      "ExpectedCode": 10,
+      "ExpectedRules": [
+        "R-R-01"
+      ],
+      "ActualCode": 10,
+      "ActualDisposition": "REPORT_REQUIRED_STOP",
+      "ActualRules": [
+        "R-R-01"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T10-palette-key-accepted",
+      "ExpectedCode": 11,
+      "ExpectedRules": [
+        "R-R-01"
+      ],
+      "ActualCode": 11,
+      "ActualDisposition": "REPORTED_ACCEPTED",
+      "ActualRules": [
+        "R-R-01"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T11-existing-window-placement",
+      "ExpectedCode": 0,
+      "ExpectedRules": [
+        "R-A-02"
+      ],
+      "ActualCode": 0,
+      "ActualDisposition": "CLEAN",
+      "ActualRules": [
+        "R-A-02"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T12-guid-key",
+      "ExpectedCode": 10,
+      "ExpectedRules": [
+        "R-R-02"
+      ],
+      "ActualCode": 10,
+      "ActualDisposition": "REPORT_REQUIRED_STOP",
+      "ActualRules": [
+        "R-R-02"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T13-autocad-activity",
+      "ExpectedCode": 0,
+      "ExpectedRules": [
+        "R-A-03"
+      ],
+      "ActualCode": 0,
+      "ActualDisposition": "CLEAN",
+      "ActualRules": [
+        "R-A-03"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T14-acad-identity",
+      "ExpectedCode": 30,
+      "ExpectedRules": [
+        "R-INV-02"
+      ],
+      "ActualCode": 30,
+      "ActualDisposition": "INVALID",
+      "ActualRules": [
+        "R-INV-02"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T15-sidecar-tampered",
+      "ExpectedCode": 30,
+      "ExpectedRules": [
+        "R-INV-04"
+      ],
+      "ActualCode": 30,
+      "ActualDisposition": "INVALID",
+      "ActualRules": [
+        "R-INV-04"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T16-ledger-tampered",
+      "ExpectedCode": 30,
+      "ExpectedRules": [
+        "R-INV-04"
+      ],
+      "ActualCode": 30,
+      "ActualDisposition": "INVALID",
+      "ActualRules": [
+        "R-A-03",
+        "R-INV-04"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T17-persistent-env-var",
+      "ExpectedCode": 20,
+      "ExpectedRules": [
+        "R-F-07"
+      ],
+      "ActualCode": 20,
+      "ActualDisposition": "FORBIDDEN_DRIFT",
+      "ActualRules": [
+        "R-F-07"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T18-pickfirst",
+      "ExpectedCode": 20,
+      "ExpectedRules": [
+        "R-F-04"
+      ],
+      "ActualCode": 20,
+      "ActualDisposition": "FORBIDDEN_DRIFT",
+      "ActualRules": [
+        "R-F-04"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T19-workspace-dialog",
+      "ExpectedCode": 10,
+      "ExpectedRules": [
+        "R-R-01"
+      ],
+      "ActualCode": 10,
+      "ActualDisposition": "REPORT_REQUIRED_STOP",
+      "ActualRules": [
+        "R-R-01"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T20-fixedprofile-rackcad",
+      "ExpectedCode": 10,
+      "ExpectedRules": [
+        "R-R-01"
+      ],
+      "ActualCode": 10,
+      "ActualDisposition": "REPORT_REQUIRED_STOP",
+      "ActualRules": [
+        "R-R-01"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T21-acad-running-post",
+      "ExpectedCode": 30,
+      "ExpectedRules": [
+        "R-INV-01"
+      ],
+      "ActualCode": 30,
+      "ActualDisposition": "INVALID",
+      "ActualRules": [
+        "R-INV-01",
+        "R-INV-02"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T22-unreadable",
+      "ExpectedCode": 30,
+      "ExpectedRules": [
+        "R-INV-03"
+      ],
+      "ActualCode": 30,
+      "ActualDisposition": "INVALID",
+      "ActualRules": [
+        "R-A-03",
+        "R-INV-02",
+        "R-INV-03"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T23-new-window-type",
+      "ExpectedCode": 10,
+      "ExpectedRules": [
+        "R-R-01"
+      ],
+      "ActualCode": 10,
+      "ActualDisposition": "REPORT_REQUIRED_STOP",
+      "ActualRules": [
+        "R-R-01"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T24-localappdata-layout",
+      "ExpectedCode": 20,
+      "ExpectedRules": [
+        "R-F-08"
+      ],
+      "ActualCode": 20,
+      "ActualDisposition": "FORBIDDEN_DRIFT",
+      "ActualRules": [
+        "R-F-08"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T25-loaded-entry",
+      "ExpectedCode": 20,
+      "ExpectedRules": [
+        "R-F-05"
+      ],
+      "ActualCode": 20,
+      "ActualDisposition": "FORBIDDEN_DRIFT",
+      "ActualRules": [
+        "R-F-05"
+      ],
+      "Result": "PASS"
+    },
+    {
+      "Id": "T26-candidate-dll-changed",
+      "ExpectedCode": 30,
+      "ExpectedRules": [
+        "R-INV-02"
+      ],
+      "ActualCode": 30,
+      "ActualDisposition": "INVALID",
+      "ActualRules": [
+        "R-INV-02"
+      ],
+      "Result": "PASS"
+    }
+  ]
+}
