@@ -4231,3 +4231,50 @@ solo desde artefactos custodiados.
   cambios.
 - C1-C3: sin enmienda todavía; se prepara solo una nota breve sobre el aislamiento preventivo mínimo para I-65, sin tocar I-65 ni la
   infraestructura compartida.
+
+## 161. Revisión formal única de A-6 ronda 2 ejecutada (decisiones §82): CHANGES REQUIRED; auditor NOT_ACCREDITED por un defecto de registro del lanzador
+
+- **Condiciones previas (§82, punto 2), todas conformes antes de lanzar** ([`preconditions-s82.json`](I-62-architect-A-6r2/R20261012T195511Z-e5c3/preconditions-s82.json)):
+  - el kit, byte a byte igual a su custodia en `677f9b62` (25 archivos; manifiesto `3b06e837…`), y el run igual al manifiesto;
+  - la rama en `5c1118e5`, que desciende de `0f4d8cbc`, `677f9b62`, `ae9fe0e9` y `04833bf9`; decisiones solo por añadido; A-6 en la HEAD =
+    `86da0ae7…`, sin cambio desde la publicación;
+  - `verify_clone.py`, ejecutado desde una copia del kit (porque escribe junto a sí), con AllChecks = true y las guardas de la ronda 2 reproducidas
+    iguales a las custodiadas;
+  - prueba en seco ([`launch-dry-run-s82.json`](I-62-architect-A-6r2/R20261012T195511Z-e5c3/launch-dry-run-s82.json)) con `BlockingChecks` = [] y
+    `AuthorizationSections` = solo §82 (línea 1634); líneas del Owner de §78 (1572) y CLAUDE-CLI-I62 (1085); binario `8693c4a0…` con firma
+    válida de Anthropic.
+- **Una invocación**, sin reintento: lanzador de 03:21:36Z a 03:48:35Z (2026-10-13). El resultado de claude-cli fue `success` (`completed`), sin
+  error, en 1 490 s y 67 turnos; 66 llamadas (57 Read, 8 Grep, 1 StructuredOutput) y ninguna denegación. Clon limpio después.
+- **Dictamen del Architect** ([`output.json`](I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json), `ab734ed03592a932…`): **CHANGES REQUIRED**.
+  - REQUIRED A62-A6R2-R1: la regla de aceptación de A6-5 no es total. N4 (entrega ausente) y una invocación VERIFY sin ninguna ejecución del
+    instrumento nunca dan ACCEPT_FACTS con la tabla vigente, así que acaban en INVALID_OUTPUT y en STOP P-04.
+  - REQUIRED A62-A6R2-R2: falta demostrar, antes de la ronda, la reconstrucción de `Runs` desde el registro real de sesión y la cobertura por el cierre
+    VERIFY de las lecturas legítimas del instrumento (Q-A6R2-06).
+  - OPTIONAL A62-A6R2-O1..O5.
+  - R1-R5: R1 CORRECTED, R2 PARTIALLY_CORRECTED, R3 CORRECTED, R4 PARTIALLY_CORRECTED, R5 CORRECTED. O1-O3: O1 INCORPORATED, O2 INCORPORATED, O3 INCORPORATED.
+  - G1-G6: las seis ACCEPTABLE_RESIDUAL; mitigación ensayada en parte en G1, G3 y G4, y no ensayada en G2, G5 y G6.
+  - M-01: no, de acuerdo con A-6. Deltas: A6-3, A6-5 y A6-7 CHANGES REQUIRED; los otros seis AGREED. Aceptante: 17 de 17 MATCHES. Procedencia
+    en el uso: 13 de 13 ADEQUATE. Q-A6-06/07 NOT_SATISFIED. Sin decisión adicional del Owner.
+- **Auditor v5.2-a6r2** ([`audit.json`](I-62-architect-A-6r2/R20261012T195511Z-e5c3/audit.json), `027e25b7d7eaadb2…`, sin modificar):
+  **NOT_ACCREDITED**, con un único motivo: «lanzamiento: falta run.json en launch/». Las demás comprobaciones no dan ningún motivo: preflight,
+  compuerta de transporte, stream-json, transcripción, herramientas, fidelidad de lectura, referencias, lectura directa de V14 L2333-L2334, esquema,
+  coherencia, custodia del run y clon.
+- **Causa del motivo** ([`launch-recording-defect.json`](I-62-architect-A-6r2/R20261012T195511Z-e5c3/launch-recording-defect.json)):
+  - la sesión principal lanzó `python -X utf8 -B kit/launch.py` en vez de la orden documentada `python -B kit/launch.py`;
+  - al terminar claude-cli, `launch.py` no pudo decodificar en modo UTF-8 la salida de `tasklist`, que viene en la página de códigos OEM, y terminó
+    sin escribir `run.json`;
+  - el código de salida del proceso de claude-cli no quedó registrado. No se reconstruye `run.json`, no hay reintento ni acreditación excepcional
+    (§82, puntos 3 y 5).
+- Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 162. Decisiones §82, punto 6: nota del requisito mínimo de aislamiento preventivo para I-65
+
+- [`I-62-C1C3/i65-preventive-isolation-note.md`](I-62-C1C3/i65-preventive-isolation-note.md) (`c70c669127af2289…`). Traduce a I-65 los
+  cuatro puntos que §82 registra sobre C1-C3. Propone cinco condiciones simultáneas:
+  1. transporte con aislamiento por invocación; el Worker subagente de F4 de I-65 no es elegible;
+  2. comprobación antes de ceder, con fallo cerrado;
+  3. barrera contra intérpretes que cubra las rutas absolutas, o un residuo declarado que I-65 acepte con su Owner;
+  4. C1 solo como detección de escrituras fuera del worktree;
+  5. medir antes de confiar.
+- Lista lo que I-65 puede hacer con su propia autoridad y lo que queda reservado al Owner. No modifica I-65 ni la infraestructura compartida, no
+  inicia una enmienda C1-C3 y no la declara implementada.

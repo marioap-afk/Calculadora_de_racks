@@ -373,3 +373,36 @@ da7f22456bba514c036ac33e744663291fd9d0e732d01ea35a073a0861191860      42  prep/p
 ```
 
 Junto a este README: `launch-dry-run.json` (salida literal de `launch.py --dry-run`, capturada con `-X utf8`) y `finish-kit.log` (traza de los diez pasos). `kit/` es el kit congelado (manifiesto: `kit/kit-manifest.json`). `prep/` es la preparación y no se custodia como kit: `gen_schema.py`, `adapt_post_review.py` y `adapt_launch.py` (derivan esquema, auditor y lanzador), `phase2_edit_*.py` (los cambios de la fase 2 por sustituciones exactas), `phase2_fill_readme.py`, `make_synthetic_env.py` (entorno sintético de la fase 1), `file_table.py` (esta tabla y la comprobación de privacidad: ningún archivo contiene el nombre de usuario ni un correo), `ids.txt`, `diffs/` (cada archivo adaptado frente al de la ronda 1), `phase1/` (autoprueba, mutación y vista previa sintéticas) y `phase2/` (salidas saneadas de cada paso).
+
+## Resultado (añadido tras la corrida, sesión principal; decisiones §82)
+
+```text
+Sesión:          d95fcaba-f7db-4408-af85-497e565d114e, lanzador de 2026-10-13T03:21:36Z a 2026-10-13T03:48:35Z (sin run.json: defecto de registro del lanzador, launch-recording-defect.json)
+Resultado CLI:   success, is_error False, 1490620 ms
+Uso:             67 turnos; herramientas {"Read": 57, "Grep": 8, "StructuredOutput": 1}
+Veredicto:       CHANGES REQUIRED
+REQUIRED:        2 (A62-A6R2-R1, A62-A6R2-R2)
+OPTIONAL:        5
+R1-R5:           A62-A6-R1 CORRECTED; A62-A6-R2 PARTIALLY_CORRECTED; A62-A6-R3 CORRECTED; A62-A6-R4 PARTIALLY_CORRECTED; A62-A6-R5 CORRECTED
+O1-O3:           A62-A6-O1 INCORPORATED; A62-A6-O2 INCORPORATED; A62-A6-O3 INCORPORATED
+G1-G6:           G1 ACCEPTABLE_RESIDUAL (ensayada: partial); G2 ACCEPTABLE_RESIDUAL (ensayada: no); G3 ACCEPTABLE_RESIDUAL (ensayada: partial); G4 ACCEPTABLE_RESIDUAL (ensayada: partial); G5 ACCEPTABLE_RESIDUAL (ensayada: no); G6 ACCEPTABLE_RESIDUAL (ensayada: no)
+M-01:            A-6 no, activado no, AGREE
+Deltas:          A6-1 AGREED; A6-2 AGREED; A6-3 CHANGES REQUIRED; A6-4 AGREED; A6-5 CHANGES REQUIRED; A6-6 AGREED; A6-7 CHANGES REQUIRED; A6-8 AGREED; A6-9 AGREED
+Temas:           Q-A6-01 SATISFIED; Q-A6-02 SATISFIED; Q-A6-06/07 NOT_SATISFIED; Q-A6-12 SATISFIED
+Aceptante:       17 MATCHES, 0 DIFFERS
+Procedencia:     13 ADEQUATE, 0 INADEQUATE
+Acreditación:    NOT_ACCREDITED por el auditor v5.2-a6r2 (1 motivos); sin acreditación excepcional; la acreditación final es del Coordinator
+Clon tras corrida: HEAD 0f4d8cbc, estado limpio
+```
+
+El veredicto no es el acuerdo: el acuerdo de A-6 es del Architect y del Coordinator sobre el blob exacto, y exige una revisión ACCREDITED, cero
+hallazgos REQUIRED y los criterios formales (decisiones §82, punto 5). Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS.
+
+Archivos añadidos: `output.json` y `audit.json` (byte a byte, sin modificar), `runtime-evidence.json`, `launch/` (saneado),
+`launch-dry-run-s82.json` (la prueba en seco sobre `5c1118e5`), `preconditions-s82.json`, `launch-run.log` y `post-review.log`. La transcripción y
+`stdout.jsonl` no se versionan; sus SHA-256 están en `runtime-evidence.json`.
+
+**Defecto de registro del lanzador** (`launch-recording-defect.json`): la sesión principal lanzó `python -X utf8 -B kit/launch.py` en vez de la orden
+documentada `python -B kit/launch.py`. Después de que terminara el proceso de claude-cli, la consulta a `tasklist` no se pudo decodificar en modo UTF-8
+y `launch.py` terminó sin escribir `launch/run.json`. El auditor, ejecutado una vez y sin cambios, da NOT_ACCREDITED con ese único motivo. No se
+reconstruye `run.json`, no hay reintento ni acreditación excepcional.

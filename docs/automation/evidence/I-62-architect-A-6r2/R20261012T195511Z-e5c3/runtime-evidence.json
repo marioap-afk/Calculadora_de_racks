@@ -1,0 +1,78 @@
+{
+ "RunId": "R20261012T195511Z-e5c3",
+ "InvocationId": "I20261012T195511Z-e5c3",
+ "AttemptSeq": 1,
+ "Transport": "claude-cli 2.1.293 (%APPDATA%/Claude/claude-code/2.1.293/83cb0bd7fed4/claude.exe, SHA-256 8693c4a0…), claude-opus-5-5 xhigh, lanzado por la sesión principal con kit/launch.py (python -X utf8 -B)",
+ "Authority": "decisiones §82 (Coordinator; blob y RunId literales); Owner CLAUDE-CLI-I62 = A; línea del Owner de §78; compuertas 10-TransportGate MEASURED y 11-OwnerAndAuthorizationGate en Ok",
+ "Session": {
+  "SessionId": "d95fcaba-f7db-4408-af85-497e565d114e",
+  "RunJsonPresent": false,
+  "LauncherStart": "2026-10-13T03:21:36Z",
+  "LauncherEnd": "2026-10-13T03:48:35Z",
+  "Start": null,
+  "End": null,
+  "ExitCode": null,
+  "Killed": null,
+  "TimedOut": null,
+  "TransportFailure": null,
+  "Cwd": "D:/r62-arch-a6r2",
+  "AddDir": "D:/r62-arch-a6r2-run",
+  "TimeoutSeconds": 3600,
+  "Retry": "ninguno",
+  "LaunchRecordingDefect": "launch-recording-defect.json"
+ },
+ "Usage": {
+  "num_turns": 67,
+  "total_cost_usd": 7.9755636,
+  "duration_ms": 1490620,
+  "subtype": "success",
+  "is_error": false,
+  "tools": {
+   "Read": 57,
+   "Grep": 8,
+   "StructuredOutput": 1
+  },
+  "note": "coste equivalente informado por el runtime; cuota de la suscripción"
+ },
+ "Stdout": {
+  "Path": "D:/r62-arch-a6r2-run/launch/stdout.jsonl (no versionado: contiene rutas del perfil del usuario)",
+  "Sha256": "853075682761c451ea7bcbbcd524e287f099edc607f0debd12110b03670b55c2"
+ },
+ "Transcript": {
+  "Versioned": false,
+  "Path": "%USERPROFILE%/.claude/projects/D--r62-arch-a6r2/d95fcaba-f7db-4408-af85-497e565d114e.jsonl",
+  "Sha256": "e8b85898ef190bb93e351aaba86aeb61ebddbe250dbf0c1b5ba7ce49e06fc40e"
+ },
+ "Output": {
+  "File": "output.json",
+  "Sha256": "ab734ed03592a9321743b147c515712b9c29388d3bcf0a1ffe5d0a588d7b8b28",
+  "Source": "structured_output del mensaje result de stream-json"
+ },
+ "Audit": {
+  "File": "audit.json",
+  "Sha256": "027e25b7d7eaadb2a5eb7fec22e5d625fd40465773a3d4b26b66f9abf4f37999",
+  "Auditor": "v5.2-a6r2 (kit/post-review.py, f68042dd…) custodiado en 677f9b62",
+  "Accreditation": {
+   "Status": "NOT_ACCREDITED",
+   "Reasons": [
+    "lanzamiento: falta run.json en launch/"
+   ]
+  },
+  "Unmodified": true
+ },
+ "OwnerGateAtLaunch": {
+  "WorktreeHead": "5c1118e5ef2a93e0e6e58c4aa38849e8e4764af7",
+  "A6LineNumber": 1572,
+  "Section78Line": 1564,
+  "ClaudeCliLineNumber": 1085,
+  "AuthorizationSection": {
+   "Number": 82,
+   "Line": 1634
+  }
+ },
+ "CloneAfterRun": {
+  "Head": "0f4d8cbcbe4213e741285e7c3fa090830d38c4a1",
+  "StatusPorcelainIgnored": ""
+ },
+ "Independence": "proceso claude-cli nuevo con session id fijado; sin la transcripción ni la memoria de la sesión autora ni del Coordinator; modo seguro sin CLAUDE.md ni memoria; I-62-evidence.md DENTRO del cierre (desviación declarada, decisiones §79, punto 5); mismo proveedor que la sesión que prepara (Provider PREFERRED no se cumple, declarado)"
+}

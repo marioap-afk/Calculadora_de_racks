@@ -1,0 +1,37 @@
+{
+ "Purpose": "decisiones §82, punto 5: el resultado del auditor se conserva sin modificarlo. Este archivo registra el defecto de registro del lanzador; NO sustituye a launch/run.json, que no existe, y el auditor no lo lee",
+ "Invocation": {
+  "Used": "python -X utf8 -B kit/launch.py",
+  "KitDocumented": "python -B kit/launch.py",
+  "Deviation": "la sesión principal añadió -X utf8 (modo UTF-8 de Python) a la orden documentada del kit"
+ },
+ "Failure": {
+  "Where": "kit/launch.py L267-L268, después de que terminara el proceso de claude-cli: subprocess.run([\"tasklist\", ...], text=True)",
+  "Cause": "con -X utf8, text=True decodifica la salida de tasklist (página de códigos OEM de la consola) como UTF-8: UnicodeDecodeError en el hilo lector («byte 0xe0 in position 9»), q.stdout = None y TypeError en L268",
+  "Effect": "launch.py terminó con código 1 sin escribir launch/run.json (se escribe más adelante, en L284): no quedaron registrados por el lanzador Pid, Start, End, ExitCode, Killed, TimedOut, ProcessGoneAfter, StdoutSha256, Transcript ni CloneAfter",
+  "LauncherLog": "launch-run.log",
+  "LauncherStart": "2026-10-13T03:21:36Z",
+  "LauncherEnd": "2026-10-13T03:48:35Z"
+ },
+ "IndependentObservations": {
+  "Note": "observaciones de la sesión principal sobre los archivos que sí existen; no son el registro del lanzador y no se presentan como tal",
+  "StdoutLines": 1024,
+  "StdoutSha256": "853075682761c451ea7bcbbcd524e287f099edc607f0debd12110b03670b55c2",
+  "StderrBytes": 0,
+  "ResultMessage": {
+   "subtype": "success",
+   "is_error": false,
+   "terminal_reason": "completed",
+   "num_turns": 67,
+   "duration_ms": 1490620,
+   "session_id": "d95fcaba-f7db-4408-af85-497e565d114e"
+  },
+  "PermissionDenials": 0,
+  "TranscriptSha256": "e8b85898ef190bb93e351aaba86aeb61ebddbe250dbf0c1b5ba7ce49e06fc40e",
+  "ProcessCheck": "ningún proceso con el session id en su línea de órdenes (Win32_Process), comprobado entre el final del lanzador y la auditoría",
+  "ProcessExitCode": "DESCONOCIDO: solo lo registraba run.json",
+  "TasklistMessage": "la posición del byte (9) coincide con «INFORMACIÓN:», el mensaje de tasklist cuando no hay ninguna tarea con ese PID (INFERENCE)"
+ },
+ "Retry": "ninguno (decisiones §82, punto 3)",
+ "ExceptionalAccreditation": "ninguna (decisiones §82, punto 5)"
+}

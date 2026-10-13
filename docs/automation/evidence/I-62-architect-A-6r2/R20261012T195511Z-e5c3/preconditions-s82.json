@@ -1,0 +1,38 @@
+{
+ "Purpose": "decisiones §82, punto 2: condiciones previas al lanzamiento, comprobadas por la sesión principal (solo lectura)",
+ "Precheck": {
+  "KitFiles": 25,
+  "CustodiedFiles": 25,
+  "SameNameSet": true,
+  "ByteDiffsVsCustody": [],
+  "ManifestSha256": "3b06e8375ed571eb225bf7c3ae98f8ef885598fd945ce348725af7fe810c8c85",
+  "ManifestPinned": true,
+  "ManifestMismatches": [],
+  "RunFilesMismatches": [],
+  "RunListing": [
+   "a6-r1.md",
+   "order.txt",
+   "prompt.md"
+  ],
+  "Head": "5c1118e5ef2a93e0e6e58c4aa38849e8e4764af7",
+  "RemoteHead": "5c1118e5ef2a93e0e6e58c4aa38849e8e4764af7",
+  "DescendsFrom_0f4d8cbc": true,
+  "DescendsFrom_677f9b62": true,
+  "DescendsFrom_ae9fe0e9": true,
+  "DescendsFrom_04833bf9": true,
+  "A6BlobAtHead": "86da0ae770e683a647f2724860a4bd890061154d",
+  "A6BlobOk": true,
+  "WorktreeClean": true,
+  "A6UnchangedSincePublication": true,
+  "DecisionsChangedSinceCustody": "16\t0\tdocs/automation/decisions/I-62.md",
+  "DecisionsDeletedLinesSinceClone": 0
+ },
+ "PrecheckResult": "PRECHECK OK",
+ "CloneVerification": {
+  "Note": "verify_clone.py ejecutado desde una COPIA del kit (escribe clone-verification.json junto a sí; el kit congelado no se toca)",
+  "Sha256": "d94f7638d8de3d958ab7389eba04503f17eb991a0f464b4125ca3206889c325a",
+  "AllChecks": true,
+  "GuardsRun": null,
+  "GuardsSelfTest": null
+ }
+}
