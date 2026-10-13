@@ -1,0 +1,124 @@
+# Inventario de la API publica de Autodesk.AutoCAD.Windows.PaletteSet (AutoCAD 2025)
+# Fuente: metadatos de acmgd.dll de la instalacion de AutoCAD 2025 (SHA-256 7AA8BF5F79F3F980DCC9F4CF9483F8438E773F6BF7C05EC3B263449B2846BC8C), leidos con System.Reflection.Metadata
+# sin cargar el ensamblado, sin AutoCAD y sin reflexion sobre AutoCAD. La CI compila contra AutoCAD.NET 25.0.1 (misma API 25.0).
+# Herramienta: apidump/Program.cs (custodiada junto a este archivo).
+
+TYPE Autodesk.AutoCAD.Windows.PaletteSet attrs=Public, BeforeFieldInit
+  PROP SyncRoot get=nonpublic set=-
+  PROP IsSynchronized get=nonpublic set=-
+  PROP Icon get=public set=public
+  PROP Location get=public set=public
+  PROP Size get=public set=public
+  PROP Anchored get=public set=-
+  PROP MinimumSize get=public set=public
+  PROP DeviceIndependentMinimumSize get=public set=public
+  PROP DeviceIndependentLocation get=public set=public
+  PROP DeviceIndependentSize get=public set=public
+  PROP Visible get=public set=public
+  PROP LargeDarkThemedIcon get=public set=public
+  PROP DarkThemedIcon get=public set=public
+  PROP LargeLightThemedIcon get=public set=public
+  PROP LightThemedIcon get=public set=public
+  PROP PaletteSize get=public set=-
+  PROP Dock get=public set=public
+  PROP KeepFocus get=public set=public
+  PROP TitleBarLocation get=public set=public
+  PROP Opacity get=public set=public
+  PROP Count get=public set=-
+  PROP Name get=public set=public
+  PROP Item get=public set=-
+  PROP RolledUp get=public set=public
+  PROP AutoRollUp get=public set=public
+  PROP DockEnabled get=public set=public
+  PROP Style get=public set=public
+  METHOD .ctor params=3
+  METHOD .ctor params=2
+  METHOD .ctor params=1
+  METHOD EnableTransparency params=2
+  METHOD Activate params=1
+  METHOD GetThemedIcon params=1
+  METHOD SetThemedIcon params=2
+  METHOD Add params=2
+  METHOD Add params=2
+  METHOD AddVisual params=3
+  METHOD AddVisual params=2
+  METHOD AddVisualBrowser params=5
+  METHOD switchVisualBrowser params=3
+  METHOD InitializeFloatingPosition params=1
+  METHOD FloatControl params=1
+  METHOD FloatControl params=1
+  METHOD RecalculateDockSiteLayout params=0
+  METHOD Remove params=1
+  METHOD CopyTo params=2
+  METHOD GetEnumerator params=0
+  EVENT PaletteSetEnterSizeMove
+  EVENT PaletteSetHostMoved
+  EVENT PaletteSetTitleBarLocationChange
+  EVENT Help
+  EVENT PaletteSetShowDockBar
+  EVENT PaletteSetDestroy
+  EVENT PaletteAddContextMenu
+  EVENT PaletteActivated
+  EVENT PaletteSetMoved
+  EVENT SizeChanged
+  EVENT Focused
+  EVENT StateChanged
+  EVENT Save
+  EVENT Saving
+  EVENT Load
+  PROPTYPE SyncRoot : Object
+  PROPTYPE IsSynchronized : Boolean
+  PROPTYPE Icon : System.Drawing.Icon
+  PROPTYPE Location : System.Drawing.Point
+  PROPTYPE Size : System.Drawing.Size
+  PROPTYPE Anchored : Boolean
+  PROPTYPE MinimumSize : System.Drawing.Size
+  PROPTYPE DeviceIndependentMinimumSize : System.Drawing.Size
+  PROPTYPE DeviceIndependentLocation : System.Windows.Point
+  PROPTYPE DeviceIndependentSize : System.Windows.Size
+  PROPTYPE Visible : Boolean
+  PROPTYPE LargeDarkThemedIcon : System.Drawing.Icon
+  PROPTYPE DarkThemedIcon : System.Drawing.Icon
+  PROPTYPE LargeLightThemedIcon : System.Drawing.Icon
+  PROPTYPE LightThemedIcon : System.Drawing.Icon
+  PROPTYPE PaletteSize : System.Windows.Size
+  PROPTYPE Dock : Autodesk.AutoCAD.Windows.DockSides
+  PROPTYPE KeepFocus : Boolean
+  PROPTYPE TitleBarLocation : Autodesk.AutoCAD.Windows.PaletteSetTitleBarLocation
+  PROPTYPE Opacity : Int32
+  PROPTYPE Count : Int32
+  PROPTYPE Name : String
+  PROPTYPE Item : Autodesk.AutoCAD.Windows.Palette
+  PROPTYPE RolledUp : Boolean
+  PROPTYPE AutoRollUp : Boolean
+  PROPTYPE DockEnabled : Autodesk.AutoCAD.Windows.DockSides
+  PROPTYPE Style : Autodesk.AutoCAD.Windows.PaletteSetStyles
+  SIG .ctor(String, String, System.Guid)
+  SIG .ctor(String, System.Guid)
+  SIG .ctor(String)
+  SIG AddVisual(String, System.Windows.Media.Visual, Boolean)
+  SIG AddVisual(String, System.Windows.Media.Visual)
+  SIG InitializeFloatingPosition(System.Windows.Rect)
+TYPE Autodesk.AutoCAD.Windows.PaletteSetStyles attrs=Public, Sealed, BeforeFieldInit
+  FIELD ShowAutoHideButton = 2
+  FIELD ShowPropertiesMenu = 4
+  FIELD ShowCloseButton = 8
+  FIELD NameEditable = 16
+  FIELD Snappable = 32
+  FIELD ShowTabForSingle = 64
+  FIELD UsePaletteNameAsTitleForSingle = 128
+  FIELD SingleRowDock = 512
+  FIELD Notify = 1024
+  FIELD SingleRowNoVertResize = 2048
+  FIELD SingleColDock = 4096
+  FIELD NoTitleBar = 32768
+  FIELD PauseAutoRollupForChildModalDialog = 65536
+TYPE Autodesk.AutoCAD.Windows.DockSides attrs=Public, Sealed, BeforeFieldInit
+  FIELD Left = 4096
+  FIELD Top = 8192
+  FIELD Right = 16384
+  FIELD Bottom = 32768
+  FIELD None = 0
+TYPE Autodesk.AutoCAD.Windows.PaletteSetTitleBarLocation attrs=Public, Sealed, BeforeFieldInit
+  FIELD Left = 0
+  FIELD Right = 1
