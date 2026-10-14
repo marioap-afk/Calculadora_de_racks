@@ -4356,3 +4356,11 @@ solo desde artefactos custodiados.
     confirmados. G1-G6 ACCEPTABLE_RESIDUAL. O1 declinada con motivo; O2 y O5 incorporadas; O3 y O4 en parte. Las ocho precondiciones de una sesión
     real, KEPT_FAIL_CLOSED. Sin decisión nueva del Owner.
 - Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 168. Decisiones §85: revisión de A-6 ronda 3 acreditada; ronda 4 limitada a A62-A6R3-R1
+
+- Se registra el resultado de la revisión de la ronda 3 (evidencia §167): auditor ACCREDITED; Architect CHANGES REQUIRED; A62-A6R3-R1 aceptado
+  como REQUIRED; A62-A6R2-R2 CORRECTED. A-6 sigue como PROPUESTA, con el blob `e62f27b8` de la ronda 3 y los resultados anteriores sin cambio.
+- Ronda 4: cambio normativo solo en A6-3, regla 6 (b), sobre el cierre del aceptante cuando falta una entrada de la tabla de A6-9 o un commit que
+  nombra no existe (N4 y nc1). A6-9, regla 4, no se edita. Sondas nuevas sin Codex, con el cierre derivado de la norma corregida; guardas; kit de
+  revisión preparado y no lanzado.

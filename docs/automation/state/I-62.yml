@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §84; evidencia §165-§167) — revisión formal de A-6 ronda 3 ejecutada: auditor ACCREDITED; Architect CHANGES REQUIRED con un REQUIRED (A62-A6R3-R1: Closure de N4 y nc1 no definido por la tabla de A6-9) y siete OPTIONAL; esperar disposición del Coordinator; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §85; evidencia §168) — preparar A-6 ronda 4 solo en A6-3, regla 6 (b) (cierre del aceptante en N4 y nc1), con sondas sin Codex del cierre derivado de la norma corregida, guardas y preflight; publicar como PROPUESTA si pasa y preparar el kit de revisión acotado sin lanzarlo; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
