@@ -1430,3 +1430,33 @@ Custodia:
 | `docs/initiatives/I-65-f4-real-run-readiness.md` | `B1C476B66BFD29EF8ABCECE957EB8CE17849303EFFAC27387B47E49F42BC479D` |
 
 - Sin ejecución: sin AutoCAD, sin RAM, sin código. Codex 41 de 46; `attempts` 6 de 6.
+
+## 55. Preparación de validación de ingeniería y de host (2026-10-14T01:21:24Z)
+
+- **Orden:** disposición del Owner «F4 Engineering Validation and Host Readiness» (decisiones §49), sobre `27dd4778` (CI 38493431339
+  push 4/4 `success`; `71baf43b`: CI 38493208665 push 4/4 `success`).
+- **Ejecutor:** Coordinator, sin cesiones (sin Codex, Workers ni subagentes). Lecturas del worktree y de la rama de I-64 (su procedimiento
+  T3C, como documento) con `git --no-optional-locks`, sin `fetch`.
+- **Lectura pasiva de RAM (DIF-04):** script de solo lectura en la carpeta temporal de la sesión, `python -I`, sin proceso
+  `RAMElements.exe` antes ni durante; custodia en `docs/automation/evidence/I-65-f4/ram-section-tables-vs-aisc-v16.*`. Una primera pasada
+  recorrió también la documentación de la instalación y terminó con un error de codificación al imprimir; se repitió dos veces solo sobre
+  `Database` (normalización de los nombres y después sin distinguir mayúsculas); solo la salida final se custodia.
+- **Búsquedas web:** notas de versión de RAM Elements y tablas AISC (sin mención de la edición) y propiedades del acero (ν, G, peso
+  unitario): solo orientan las fuentes candidatas de la hoja; nada es autoritativo.
+- **Documentos (SHA-256 al registrar):**
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/initiatives/I-65-f4-engineering-validation-sheet.md` | `66DC6E63970DE579A4D350E92FA49249ADCD510A6E0262649E754F16026B90A7` |
+| `docs/initiatives/I-65-f4-host-release-and-preflight.md` | `97F1471D017EE81A5E818809FE8AD9841464DE5BEC9FE43FDDC491B0F2AEC6F9` |
+| `docs/initiatives/I-65-f4-autocad-smoke-procedure.md` | `C060498916DC80DD9016C65A37B78295B04B68E2342AC3F6BAA1CBEFF9F4001A` |
+| `docs/initiatives/I-65-f4-od-f4-14-combinations.md` | `0F23E86B643735E0F6991C47FD3AB9AA8D50FECB418D816043EAD13F5206B2B0` |
+| `docs/initiatives/I-65-f4-d-mapping-verified-contract.md` | `C94CCB010E9FABFED8A6A15D7C8010093A3D0AAC67A5CAFE8C237A9A0E23857F` |
+| `docs/initiatives/I-65-f4-real-run-readiness.md` | `6132B51130AFC59ED8F8A8C41F89774249133CF593AE7C01A171E3C91C7BF217` |
+| `docs/automation/evidence/I-65-f4/ram-section-tables-vs-aisc-v16.md` | `720382CAD560A28EA584D1289560D59B9BC516BD767CAC829B723AEDB8F4C6F6` |
+| `docs/automation/evidence/I-65-f4/ram-section-tables-vs-aisc-v16.py.txt` | `5CEB2B2B40E2260B5FDD6C7CC5A79ABE957E47989E8F0D72A359413730155C15` |
+| `docs/automation/evidence/I-65-f4/ram-section-tables-vs-aisc-v16.out.txt` | `022C3B5D6B17B2F4EB64E60875CE8376E1936F5ECD92C9E58C1FB9A6091EBD42` |
+
+- **Sin ejecución sobre el host:** sin AutoCAD, sin `NETLOAD`, sin RAM, sin build, sin comandos de registro; la solicitud de host **no se
+  envió**. La tabla de secciones y materiales no cambió (SHA-256 `5229231E0D924E48A839EF77BF0B63A2B631214A670783E01D148B9AC6CB4048`).
+- **Contadores:** Codex 41 de 46; `attempts` 6 de 6 (sin cambio).

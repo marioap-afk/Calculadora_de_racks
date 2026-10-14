@@ -52,9 +52,10 @@ Consulta enviada por el canal entre sesiones el 2026-10-14 a «I - 52» y a «I 
   antes y POST + diff después**; AutoCAD cerrado del todo y aviso a I-52, que recomprueba en solo lectura antes de reanudar. El orden de
   ventanas lo fija el Coordinator de I-52.
 
-**Hueco abierto:** I-52 exige línea base y POST + diff del host, y la única herramienta existente (T3C de I-64) no se usa sin la
-disposición del Coordinator de I-64. I-65 no crea herramientas de host propias en esta preparación. El método se decide en OD-F4-13
-(SP-07); sin método acordado, el smoke no se autoriza.
+**Línea base y POST + diff:** I-52 los exige y las herramientas de T3C de I-64 no se usan sin la disposición de su Coordinator. El
+método de I-65 es el **procedimiento manual de solo lectura** con comandos de Windows de
+[I-65-f4-host-release-and-preflight.md](I-65-f4-host-release-and-preflight.md) §3-§5 (decisiones §49), sin herramientas nuevas; I-52 lo
+acepta o indica el suyo en su ACK. La solicitud formal de ACK + RELEASE está en ese documento §1.
 
 **Protocolo de ventana para I-65** (se aplica cuando el Owner autorice el smoke):
 
@@ -78,7 +79,7 @@ disposición del Coordinator de I-64. I-65 no crea herramientas de host propias 
 | SP-04 | AutoCAD cerrado (`acad.exe` = 0) antes de compilar; ningún otro usuario de AutoCAD en la estación | sesión |
 | SP-05 | Worktree de I-65 limpio y = `origin`; instantánea K1/K2 del checkout principal y de los worktrees (controles del Owner) | sesión |
 | SP-06 | Ningún cambio de perfil, `TRUSTEDPATHS`, `SECURELOAD`, plugins, registro ni ACL previsto | sesión; operador |
-| SP-07 | Método acordado con I-52 (y aceptado por I-64) para la línea base y el POST + diff del host (perfil, `TRUSTEDPATHS`, `SECURELOAD`, plugins, build de `acad.exe`, ACL); hoy **no existe** para I-65 (OD-F4-13) | Owner; I-52; I-64 |
+| SP-07 | Línea base y POST + diff del host con el procedimiento manual de solo lectura de [I-65-f4-host-release-and-preflight.md](I-65-f4-host-release-and-preflight.md) §3-§5, aceptado por I-52 en su ACK (o el método que I-52 indique) | sesión; I-52 |
 
 ## 4. Preparación de la sesión (sin AutoCAD abierto)
 
