@@ -1,0 +1,55 @@
+{
+ "Schema": "rackcad-a6r3-review-kit-params/0",
+ "Provisional": false,
+ "CloneCommit": "9b8b66a21050fe264a4ff4802295468a91fce5c7",
+ "Publication": "a128efef8f83890f8deae66c286c553bed2663e3",
+ "PublicationParent": "9cd074aa5668a59ef0030cb494f97ca2ca6333f5",
+ "GuardsRunCommit": "9a30c9a6503f4e48d22cd9f2486980eb56ad0030",
+ "Object": {
+  "Path": "docs/initiatives/I-62-A-6.md",
+  "Blob": "e62f27b8b1329f1b9cfa69a707feb31d22bad1d1"
+ },
+ "R3AddedAfterPublication": [
+  "docs/automation/evidence/I-62-A6/r3/a6r3-guards-result-run.json",
+  "docs/automation/evidence/I-62-A6/r3/readable/MANIFEST.json",
+  "docs/automation/evidence/I-62-A6/r3/readable/r1probes/p1-zero.json",
+  "docs/automation/evidence/I-62-A6/r3/readable/r1probes/p2-n4.json",
+  "docs/automation/evidence/I-62-A6/r3/readable/r1probes/p3-nc1.json",
+  "docs/automation/evidence/I-62-A6/r3/readable/r1probes/p4-t1.json",
+  "docs/automation/evidence/I-62-A6/r3/readable/r1probes/p5-mutants.json",
+  "docs/automation/evidence/I-62-A6/r3/readable/r1probes/p6-reconstruct.json",
+  "docs/automation/evidence/I-62-A6/r3/readable/r1probes/summary.json",
+  "docs/automation/evidence/I-62-A6/r3/readable/r2static/part-a-events.json",
+  "docs/automation/evidence/I-62-A6/r3/readable/r2static/part-b-pou.json"
+ ],
+ "Clone": "D:\\r62-arch-a6r3",
+ "Run": "D:\\r62-arch-a6r3-run",
+ "Branch": "architecture/portabilidad-coordinador-principal",
+ "BranchTipAtClone": "9b8b66a21050fe264a4ff4802295468a91fce5c7",
+ "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+ "CloneSource": "<directorio común de git del worktree (el del repositorio de trabajo)>",
+ "PreparedAt": "2026-10-13T18:57:14Z",
+ "PreconditionChecks": {
+  "CommonGitDirFound": true,
+  "CommitsExist": true,
+  "CloneCommitReachableFromBranchTip": true,
+  "PublicationAncestorOfGuardsRun": true,
+  "GuardsRunAncestorOfCloneCommit": true,
+  "Round2AtPublicationParent": true,
+  "SameRound3BlobAtPublicationGuardsRunAndClone": true,
+  "Decisions78_83_84AtCloneCommit": true,
+  "Decisions84NamesTheBlob": true,
+  "GuardsRunResultAtCloneCommit": true,
+  "R3UnchangedSincePublication": true
+ },
+ "Commands": [
+  "git clone -q --no-local -c core.autocrlf=false --single-branch --branch architecture/portabilidad-coordinador-principal <directorio común de git del worktree (el del repositorio de trabajo)> D:\\r62-arch-a6r3",
+  "git -C D:\\r62-arch-a6r3 checkout -q --detach 9b8b66a21050fe264a4ff4802295468a91fce5c7",
+  "git -C D:\\r62-arch-a6r3 branch -D architecture/portabilidad-coordinador-principal",
+  "git -C D:\\r62-arch-a6r3 remote remove origin",
+  "git -C D:\\r62-arch-a6r3 reflog expire --expire=now --all",
+  "git -C D:\\r62-arch-a6r3 gc -q --prune=now",
+  "copia byte a byte de kit/order.txt (= cuerpo §84) y kit/a6-r2.md (= blob 86da0ae7) → D:\\r62-arch-a6r3-run\\",
+  "copia byte a byte de kit/prompt.md (renderizado por make_closure.py --render-prompt) → D:\\r62-arch-a6r3-run\\prompt.md (finish_kit.py)"
+ ]
+}

@@ -1,0 +1,53 @@
+--- ronda2/make_manifest.py
++++ ronda3/make_manifest.py
+@@ -1,4 +1,4 @@
+-"""Manifiesto del kit de la ÚNICA revisión formal de la ronda 2 de A-6 (kit-manifest.json): bytes y SHA-256 de cada archivo de kit/ (salvo el propio
++"""Manifiesto del kit de la ÚNICA revisión formal de la ronda 3 de A-6 (kit-manifest.json): bytes y SHA-256 de cada archivo de kit/ (salvo el propio
+ manifiesto) y de los tres archivos del run. launch.py lo exige entero (preflight 1: ningún archivo distinto y ninguno sin listar). Adaptado del
+-make_manifest.py del kit de la ronda 1.
++make_manifest.py del kit de la ronda 2. Es la congelación del kit (decisiones §84, puntos 5 y 7).
+ 
+@@ -18,4 +18,4 @@
+ KIT = os.path.dirname(os.path.abspath(__file__))
+-RUN = r"D:\r62-arch-a6r2-run"
+-RUN_FILES = ["order.txt", "prompt.md", "a6-r1.md"]
++RUN = r"D:\r62-arch-a6r3-run"
++RUN_FILES = ["order.txt", "prompt.md", "a6-r2.md"]
+ MANIFEST = "kit-manifest.json"
+@@ -51,6 +51,7 @@
+     return {
+-        "Kit": "I-62: kit de la ÚNICA revisión formal independiente del Architect de la ronda 2 de la enmienda A-6 por claude-cli (decisiones §80, "
+-               "punto 6; Owner CLAUDE-CLI-I62 = A; lanzamiento condicionado a la compuerta 11: línea del Owner de §78, blob de la ronda 2 en la HEAD "
+-               "y una disposición del Coordinator posterior a §80 con el blob y el RunId)",
+-        "Ids": closure["Ids"], "PreviousAttempts": [], "PreviousRound": "R20261011T215735Z-c434 (ronda 1: CHANGES REQUIRED; auditor NOT_ACCREDITED)",
++        "Kit": "I-62: kit de la ÚNICA revisión formal independiente del Architect de la ronda 3 de la enmienda A-6 por claude-cli (decisiones §84; "
++               "Owner CLAUDE-CLI-I62 = A; lanzamiento con la orden congelada exacta y condicionado a la sonda de registro y a la compuerta 11: línea "
++               "del Owner de §78, blob de la ronda 3 en la HEAD, decisiones §84 fijada y ninguna sección posterior)",
++        "Ids": closure["Ids"], "PreviousAttempts": [],
++        "PreviousRound": "R20261012T195511Z-e5c3 (ronda 2: CHANGES REQUIRED; auditor NOT_ACCREDITED por falta de run.json)",
+         "Commit": closure["AuthorityRevision"],
+@@ -60,14 +61,16 @@
+         "Transport": "claude-cli %s (%s, SHA-256 %s)" % (t["Binary"]["Version"].split()[0], t["Binary"]["Path"], t["Binary"]["Sha256"]),
+-        "Auditor": "v5.2-a6r2 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass %s, %d/%d; %s)"
++        "Auditor": "v5.3-a6r3 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass %s, %d/%d; %s)"
+                    % (st["AllPass"], st["Totals"]["Pass"], st["Totals"]["Cases"], mutation),
+-        "Clone": "D:/r62-arch-a6r2 (git clone --no-local -c core.autocrlf=false --single-branch; HEAD separado en el commit, sin ramas locales; sin "
+-                 "remoto; clone-verification.json AllChecks, con la reproducción de las guardas de la ronda 2)",
+-        "Run": "D:/r62-arch-a6r2-run (order.txt, prompt.md y a6-r1.md, idénticos byte a byte a las copias del kit)",
++        "Clone": "D:/r62-arch-a6r3 (git clone --no-local -c core.autocrlf=false --single-branch desde el directorio común de git; HEAD separado en "
++                 "el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks, con la reproducción de las guardas de la ronda 3)",
++        "Run": "D:/r62-arch-a6r3-run (order.txt, prompt.md y a6-r2.md, idénticos byte a byte a las copias del kit)",
+         "TransportGate": "%s (D-01; launch.py solo lanza en MEASURED o ACCEPTED)" % gate_status(),
+         "OwnerAndAuthorizationGate": "%s (owner_gate.py): launch.py solo lanza con la línea del Owner A6-ADR0046-9-FX02 (SHA-256 %s…) después de §78, "
+-                                     "CLAUDE-CLI-I62 = A vigente, A-6 en la HEAD con el blob %s y una disposición del Coordinator numerada después de "
+-                                     "§80 que contenga ese blob y el RunId %s; se evalúa en el momento del lanzamiento"
++                                     "CLAUDE-CLI-I62 = A vigente, A-6 en la HEAD con el blob %s, decisiones §84 con su encabezado, el blob completo y el "
++                                     "SHA-256 de su texto (%s…) y ninguna sección posterior a §84; se evalúa en el momento del lanzamiento"
+                                      % (closure["OwnerGate"]["Check"], closure["OwnerGate"]["A6LineSha256"][:8], closure["ObjectBlob"][:8],
+-                                        closure["Ids"]["RunId"]),
+-        "Launch": "kit/launch.py, por la sesión principal, una sola vez y solo tras la disposición posterior del Coordinator (NO lanzado)",
++                                        closure["OwnerGate"]["AuthorizationTextSha256"][:8]),
++        "LaunchCommand": closure["Transport"]["LaunchCommand"],
++        "Launch": "%s desde la carpeta que contiene kit/, por la sesión principal, una sola vez, sin flags ni variables añadidos (NO lanzado)"
++                  % closure["Transport"]["LaunchCommand"],
+     }

@@ -1,0 +1,426 @@
+--- v5.2-a6r2/post-review.py
++++ v5.3-a6r3/post-review.py
+@@ -1,29 +1,36 @@
+-"""I-62, decisiones §80, punto 6: post-review audit v5.2-a6r2 of ONE claude-cli run of the ONE FORMAL REVIEW of ROUND 2 of amendment A-6
+-(docs/initiatives/I-62-A-6.md, round-2 blob pinned in the closure, PROPUESTA) by an independent ARCHITECT. Declared and self-tested BEFORE the
+-launch (Owner CLAUDE-CLI-I62 = A; the launch also requires gate 11, owner_gate.py: the Owner line of §78, the round-2 blob at the worktree HEAD
+-and a Coordinator disposition after §80 that names the blob and the RunId); the principal session runs it afterwards, never before, and the
+-auditor is not corrected after the run.
+-
+-v5.2-a6r2 = the v5.1-a6 auditor of round 1 (R20261011T215735Z-c434; NOT_ACCREDITED for one reference, decisions §79, point 1), derived by exact
+-substitutions (prep/adapt_post_review.py): every launch, transport-gate, stream-json, transcript, tool, read-fidelity, run-custody and clone
+-rule is kept byte for byte (the reviewer has ONLY Read, Grep and Glob, plus StructuredOutput; effective paths; read fidelity line by line
+-against the commit; failed reads never credited; prompt.md never a reference; run custody; clone clean after the run; the transport gate D-01
+-re-evaluated on the copies launch.py wrote; preflight.json and run.json audited). Changes (decisions §80, point 6, a-f):
+-  * preflight.json must carry gate 11 in Ok with the two pinned Owner lines, the round-2 blob at the worktree HEAD (= ObjectBlob) and an
+-    authorization section with the blob and the RunId;
+-  * references (every Evidence and every ClauseRefs, and also every DirectReads, A6Refs and AcceptorRefs) resolve to lines of a closure file or
+-    of a premise run file (order.txt, a6-r1.md), all delivered faithfully by Read in that very file (as in v5.1);
+-  * direct read: lines L2333-L2334 of V14 (closure DirectRead) delivered faithfully by Read in the V14 file, and an entry of DirectReads that
+-    covers them (a quotation inside A-6 is not a read of the source);
+-  * acceptor contrast: every AcceptorRefs points into bmin_accept.py (closure AcceptorPath) and every A6Refs into A-6, on lines actually read;
+-  * coherence, new: ids unique in Round1FindingResolution, Round1OptionalDisposition, GapAssessment, AcceptorCodeContrast and
+-    ProvenanceIntegrityAtUse, and, with a verdict, exactly A62-A6-R1..R5, A62-A6-O1..O3, G1..G6, the closure's claims and items once each;
+-    a round-1 REQUIRED not CORRECTED => a linked REQUIRED, CORRECTED => none; an OPTIONAL NOT_ADDRESSED => a linked finding; a gap
+-    REQUIRES_PIECE_CHANGE or REQUIRES_TEXT_CHANGE => a linked REQUIRED, REQUIRES_OWNER_DECISION => OwnerDecisionRequired = true,
+-    ACCEPTABLE_RESIDUAL => no linked REQUIRED; a claim DIFFERS => a linked REQUIRED, MATCHES => none; an item INADEQUATE => a linked REQUIRED,
+-    ADEQUATE => none; M01Verification: DISAGREE => a linked finding, Agreement coherent with Activated and A6Declared, with a verdict A6Declared
+-    = A-6 §5 and Activated = MaterialityConfirmation[M-01]; ClauseRefs in every R, O, G and item and in M01Verification; every FindingIds
+-    entry exists; AGREED => also R1..R5 CORRECTED, G1..G6 ACCEPTABLE_RESIDUAL, every claim MATCHES and every item ADEQUATE;
+-  * kept from v5.1-a6: topics, deltas, materiality, separability, D.5, Owner scope, IfAgreed, NOT_ACCREDITED, invocation ids, Step0 (seven
+-    booleans, now the round-2 Step 0).
++"""I-62, decisiones §84: post-review audit v5.3-a6r3 of ONE claude-cli run of the ONE FORMAL REVIEW of ROUND 3 of amendment A-6
++(docs/initiatives/I-62-A-6.md, round-3 blob pinned in the closure, PROPUESTA) by an independent ARCHITECT. Declared and self-tested BEFORE the
++launch (Owner CLAUDE-CLI-I62 = A; the launch also requires gate 11, owner_gate.py: the Owner line of §78, the round-3 blob at the worktree HEAD,
++decisions §84 with its pinned heading, the full blob and its pinned text SHA-256, and no section after §84); the principal session runs it
++afterwards, never before, on the complete run, and the auditor is not corrected after the run (§84, point 8).
++
++v5.3-a6r3 = the v5.2-a6r2 auditor of round 2 (R20261012T195511Z-e5c3; NOT_ACCREDITED for one reason, the missing run.json, decisions §83,
++point 1), derived by exact substitutions (prep/adapt_post_review.py): every launch, transport-gate, stream-json, transcript, tool, read-fidelity,
++reference, direct-read, run-custody and clone rule of v5.2 is kept byte for byte (the reviewer has ONLY Read, Grep and Glob, plus
++StructuredOutput; effective paths; read fidelity line by line against the commit; failed reads never credited; prompt.md never a reference; run
++custody; clone clean after the run; the transport gate D-01 re-evaluated on the copies launch.py wrote; preflight.json and run.json audited).
++Changes (decisions §84, points 4 and 6):
++  * run.json (point 4: unambiguous execution and custody evidence): Outcome = COMPLETED; Outcome and OutcomeCategories equal to the categories
++    this auditor recomputes from the record's own fields (outcome_categories: LAUNCH_FAILURE, REVIEW_PROCESS_FAILURE, POST_RUN_RECORDING_FAILURE,
++    TRANSPORT_FAILURE, else COMPLETED); PostRunErrors = []; no LaunchError and no Aborted; every field of RUN_JSON_FIELDS present. Any of these is
++    an integrity defect (a reason: NOT_ACCREDITED). The execution category (ExecutionCategory: the recorded Outcome, RUN_JSON_MISSING or
++    OUTCOME_MISSING) and the content result of the Architect (its Verdict) are reported separately in Categories; nothing is reconstructed;
++  * preflight.json: gate 11 in Ok with the two pinned Owner lines, the round-3 blob at the worktree HEAD (= ObjectBlob), the RunId of the kit,
++    Authorized = true with exactly the §84 section (pinned heading, full blob, pinned text SHA-256) and LaterSections = []; FrozenCommandGuard in
++    Ok and Enforced with the frozen command of the closure (Transport.LaunchCommand, `python -B kit/launch.py`); RecordProbe in Ok; Environment
++    with the fixed prefixes, the names and the values of the PYTHON* variables only;
++  * coherence, new (schema rackcad-a6r3-architect-review/0): ids unique in Round2FindingResolution, Round2OptionalDisposition, GapAssessment,
++    NegativeCaseCoherence, AcceptorCodeContrast and RealSessionPreconditions and, with a verdict, exactly A62-A6R2-R1..R2, A62-A6R2-O1..O5,
++    G1..G6, N4/NC1/VERIFY_WITHOUT_INSTRUMENT, the nine claims and the eight preconditions once each; a round-2 REQUIRED not CORRECTED => a linked
++    REQUIRED, CORRECTED => none; an OPTIONAL NOT_ADDRESSED => a linked finding; a gap REQUIRES_PIECE_CHANGE or REQUIRES_TEXT_CHANGE => a linked
++    REQUIRED, REQUIRES_OWNER_DECISION => OwnerDecisionRequired = true, ACCEPTABLE_RESIDUAL => none; a negative case INCOHERENT => a linked
++    REQUIRED, COHERENT => none; ReconstructionFromRealEvents / EffectiveInputClosure INADEQUATE => a linked REQUIRED,
++    ADEQUATE_AS_FAIL_CLOSED_PRECONDITION => none; a claim DIFFERS => a linked REQUIRED, MATCHES => none; a real-session precondition TREATED_AS_MET
++    => a linked REQUIRED (it must not be accredited in advance), KEPT_FAIL_CLOSED => none; OwnerAuthorizationAndVerifyScope with a line
++    EXCEEDS_STATED_SCOPE or a NOT_CONFIRMED => a linked finding; with a verdict, ClauseRefs in every element, no NOT_DETERMINED, every FindingIds
++    entry exists and every REQUIRED is cited by at least one element; AGREED => no REQUIRED, R1 and R2 CORRECTED, the three negative cases
++    COHERENT, reconstruction and closure ADEQUATE_AS_FAIL_CLOSED_PRECONDITION, every claim MATCHES, every precondition KEPT_FAIL_CLOSED, G1..G6
++    ACCEPTABLE_RESIDUAL, the Owner and VERIFY scope confirmed, OwnerDecisionRequired = false and IfAgreed all true;
++  * kept from v5.2: findings, NOT_ACCREDITED, IfAgreed, invocation ids, reviewed object, Step0 (seven booleans, now the round-3 Step 0), the direct
++    read of V14 L2333-L2334 and the acceptor-contrast references (AcceptorRefs only in bmin_accept.py, A6Refs only in A-6).
+ Small seams (list_dir, clone_git, clone_reparse, validate_schema, GATE, LAUNCH_DIR) let the self-test simulate a tampered run dir, launch dir or
+@@ -34,5 +41,5 @@
+     (measured resolved path and SHA-256), argument list = closure flags + --add-dir + --session-id + compact schema, cwd = clone, PromptSha256 =
+-    run/prompt.md, StdoutSha256 = the audited stdout, Transcript.Sha256 = the audited transcript; preflight.json there: the ten checks present and
+-    Ok (and gate 11 as above), session id, measured binary = closure (path and SHA-256), version = 2.1.293 (Claude Code), loggedIn = true, gate =
+-    kit/transport-gate.json;
++    run/prompt.md, StdoutSha256 = the audited stdout, Transcript.Sha256 = the audited transcript, Outcome/PostRunErrors/fields as above;
++    preflight.json there: the ten checks present and Ok (and gate 11 as above), session id, measured binary = closure (path and SHA-256), version
++    = 2.1.293 (Claude Code), loggedIn = true, gate = kit/transport-gate.json, FrozenCommandGuard, RecordProbe and Environment as above;
+   * transport gate (D-01): transport_gate.evaluate(kit/transport-gate.json, closure, launch copies) without problems;
+@@ -47,3 +54,5 @@
+     files on disk) or its returned paths contain any non-closure file; any permission denial (transcript or result) is a violation;
+-  * read fidelity of every Read; references (above) found and delivered faithfully; the direct read (above);
++  * read fidelity of every Read; references (every Evidence and every ClauseRefs, and also every DirectReads, A6Refs and AcceptorRefs) resolve to
++    lines of a closure file or of a premise run file (order.txt, a6-r2.md), all delivered faithfully by Read in that very file; the direct read
++    of V14 L2333-L2334 by Read in the V14 file, with an entry of DirectReads that covers it (a quotation inside A-6 is not a read of the source);
+   * structured output: the result's structured_output equals the input of the last successful StructuredOutput call (and its attachment), is
+@@ -55,3 +64,3 @@
+ 
+-Usage: python post-review.py <transcript.jsonl> <stdout.jsonl> <clone> <run dir> <kit dir> <result.schema.json> <audit.json> [<output.json>]
++Usage: python -B kit/post-review.py <transcript.jsonl> <stdout.jsonl> <clone> <run dir> <kit dir> <result.schema.json> <audit.json> [<output.json>]
+ (run.json, preflight.json and the gate copies are read from <run dir>/launch; the optional output.json receives the result's structured_output,
+@@ -70,3 +79,3 @@
+ 
+-AUDITOR_VERSION = "v5.2-a6r2 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11; direct read of V14 L2333-L2334; declared and self-tested before the launch; decisions §80, point 6)"
++AUDITOR_VERSION = "v5.3-a6r3 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on decisions §84; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2333-L2334; declared and self-tested before the launch; decisions §84)"
+ REPLACEMENT_CHAR = chr(0xFFFD)   # U+FFFD in a tool result: a transport artifact, recorded
+@@ -76,4 +85,4 @@
+     global CLONE, RUN, KIT, CLOSURE, REV, IDS, ALLOWED_LC, RUN_FILES, RUN_FILES_LC, PREMISE_RUN, LONG_LINES, OBJECT_FILES, OBJECT, OBJECT_BLOB
+-    global MAT_IDS, MAT_A6, TOPICS, REQ_TOPICS, DELTAS, TRANSPORT, SESSION_ID, CLONE_REAL, RUN_REAL, ALLOWED_TOOLS, DESIGNATED, TG, OG, GATE
+-    global LAUNCH_DIR, LAUNCH_FILES, R1_IDS, O1_IDS, GAP_IDS, CLAIMS, PROV_ITEMS, ACCEPTOR, DIRECT
++    global TRANSPORT, SESSION_ID, CLONE_REAL, RUN_REAL, ALLOWED_TOOLS, DESIGNATED, TG, OG, GATE
++    global LAUNCH_DIR, LAUNCH_FILES, R2_IDS, O2_IDS, GAP_IDS, CLAIMS, NEG_IDS, PRECOND_IDS, ACCEPTOR, DIRECT, LAUNCH_COMMAND
+     CLONE, RUN, KIT = clone, run, kit
+@@ -89,7 +98,5 @@
+     OBJECT_FILES, OBJECT, OBJECT_BLOB = dict(CLOSURE["ObjectFiles"]), CLOSURE["ObjectPath"], CLOSURE["ObjectBlob"]
+-    MAT_IDS, MAT_A6 = list(CLOSURE["MaterialityIds"]), dict(CLOSURE["MaterialityA6"])
+-    TOPICS, REQ_TOPICS, DELTAS = list(CLOSURE["Topics"]), list(CLOSURE["RequiredTopics"]), list(CLOSURE["Deltas"])
+-    R1_IDS, O1_IDS, GAP_IDS = list(CLOSURE["Round1FindingIds"]), list(CLOSURE["Round1OptionalIds"]), list(CLOSURE["GapIds"])
+-    CLAIMS, PROV_ITEMS = list(CLOSURE["AcceptorClaims"]), list(CLOSURE["ProvenanceItems"])
+-    ACCEPTOR, DIRECT = CLOSURE["AcceptorPath"], CLOSURE["DirectRead"]
++    R2_IDS, O2_IDS, GAP_IDS = list(CLOSURE["Round2FindingIds"]), list(CLOSURE["Round2OptionalIds"]), list(CLOSURE["GapIds"])
++    CLAIMS, NEG_IDS, PRECOND_IDS = list(CLOSURE["AcceptorClaims"]), list(CLOSURE["NegativeCases"]), list(CLOSURE["RealSessionPreconditions"])
++    ACCEPTOR, DIRECT, LAUNCH_COMMAND = CLOSURE["AcceptorPath"], CLOSURE["DirectRead"], CLOSURE["Transport"]["LaunchCommand"]
+     TRANSPORT, SESSION_ID = CLOSURE["Transport"], CLOSURE["Transport"]["SessionId"]
+@@ -410,2 +417,17 @@
+             add("lanzamiento: Transcript.Sha256 de run.json distinto de la transcripción auditada")
++        launch.update({"Outcome": run_json.get("Outcome"), "OutcomeCategories": run_json.get("OutcomeCategories"),
++                       "OutcomeRecomputed": outcome_categories(run_json), "PostRunErrors": run_json.get("PostRunErrors"),
++                       "LaunchError": run_json.get("LaunchError"), "Aborted": run_json.get("Aborted")})
++        if run_json.get("Outcome") != "COMPLETED":
++            add("lanzamiento: Outcome de run.json %r (se exige COMPLETED; categorías registradas %s)" % (run_json.get("Outcome"),
++                                                                                                  run_json.get("OutcomeCategories")))
++        if run_json.get("OutcomeCategories") != launch["OutcomeRecomputed"] or run_json.get("Outcome") != launch["OutcomeRecomputed"][0]:
++            add("lanzamiento: Outcome y OutcomeCategories de run.json incoherentes con sus campos (recalculado: %s)" % launch["OutcomeRecomputed"])
++        if run_json.get("PostRunErrors") != []:
++            add("lanzamiento: PostRunErrors de run.json no vacío o ausente: %s" % str(run_json.get("PostRunErrors"))[:200])
++        if "LaunchError" in run_json or "Aborted" in run_json:
++            add("lanzamiento: run.json registra un fallo de lanzamiento (LaunchError o Aborted)")
++        missing_fields = [k for k in RUN_JSON_FIELDS if k not in run_json]
++        if missing_fields:
++            add("lanzamiento: run.json sin los campos del registro %s" % missing_fields)
+     if preflight is None:
+@@ -438,6 +460,28 @@
+             add("preflight: compuerta 11 (%s) sin las líneas fijadas A6-ADR0046-9-FX02 y CLAUDE-CLI-I62 = A, o con problemas" % OG.CHECK)
+-        if og.get("A6R2Blob") != OBJECT_BLOB or og.get("A6BlobAtHeadMatches") is not True or og.get("RunId") != IDS["RunId"] or \
+-                not any(a.get("HasBlob") and a.get("HasRunId") for a in (og.get("AuthorizationSections") or []) if isinstance(a, dict)):
+-            add("preflight: compuerta 11 (%s) sin el blob de la ronda 2 en la HEAD del worktree o sin la disposición del Coordinator que "
+-                "autoriza esta revisión (blob y RunId)" % OG.CHECK)
++        auth = [a for a in (og.get("AuthorizationSections") or []) if isinstance(a, dict)]
++        if og.get("A6R3Blob") != OBJECT_BLOB or og.get("A6BlobAtHeadMatches") is not True or og.get("RunId") != IDS["RunId"] or \
++                og.get("Authorized") is not True or og.get("LaterSections") != [] or len(auth) != 1 or \
++                auth[0].get("Number") != OG.AUTH_SECTION or auth[0].get("HeadingMatches") is not True or auth[0].get("HasBlob") is not True or \
++                auth[0].get("TextSha256") != OG.AUTH_TEXT_SHA or og.get("AuthorizationTextSha256") != OG.AUTH_TEXT_SHA:
++            add("preflight: compuerta 11 (%s) sin el blob de la ronda 3 en la HEAD del worktree, sin la autorización §84 fijada (encabezado, "
++                "blob completo y SHA-256 del texto) o con una sección posterior a §84" % OG.CHECK)
++        fg = preflight.get("FrozenCommandGuard") if isinstance(preflight.get("FrozenCommandGuard"), dict) else {}
++        launch["FrozenCommandGuard"] = {k: fg.get(k) for k in ("Ok", "Enforced", "FrozenCommand", "OrigArgvTail", "Problems")}
++        if fg.get("Ok") is not True or fg.get("Enforced") is not True or fg.get("FrozenCommand") != LAUNCH_COMMAND or fg.get("Problems"):
++            add("preflight: guarda de la orden congelada (FrozenCommandGuard) ausente, no aplicada, fallida o con otra orden que %s" % LAUNCH_COMMAND)
++        rp = preflight.get("RecordProbe") if isinstance(preflight.get("RecordProbe"), dict) else {}
++        launch["RecordProbe"] = {k: rp.get(k) for k in ("Ok", "Problems", "RunAndRecordExit", "Outcome")}
++        if rp.get("Ok") is not True or rp.get("Problems"):
++            add("preflight: sonda de registro (RecordProbe) ausente o fallida")
++        env = preflight.get("Environment") if isinstance(preflight.get("Environment"), dict) else {}
++        names, pyvals = env.get("Names"), env.get("PythonValues")
++        launch["Environment"] = {"Names": names, "PythonValues": pyvals}
++        if env.get("Prefixes") != list(LAUNCH_ENV_PREFIXES) or not isinstance(names, list) or not isinstance(pyvals, dict) or \
++                sorted(pyvals) != sorted(n for n in names if str(n).upper().startswith("PYTHON")) or \
++                any(not str(n).upper().startswith(LAUNCH_ENV_PREFIXES) for n in names):
++            add("preflight: entorno del lanzador sin registrar o mal registrado (Environment: prefijos %s, nombres y valores solo de PYTHON*)"
++                % list(LAUNCH_ENV_PREFIXES))
++
++    launch["ExecutionCategory"] = "RUN_JSON_MISSING" if run_json is None else (
++        run_json.get("Outcome") if isinstance(run_json.get("Outcome"), str) else "OUTCOME_MISSING")
+ 
+@@ -790,2 +834,6 @@
+         "ReferenceCheck": ref_check, "DirectRead": direct,
++        "Categories": {"Execution": launch.get("ExecutionCategory"),
++                       "ArchitectVerdict": result.get("Verdict") if isinstance(result, dict) else None,
++                       "Note": "decisiones §84, punto 4: la categoría de ejecución y custodia (Outcome de run.json) y el resultado de contenido del "
++                               "Architect (Verdict) se informan por separado; cualquier defecto de integridad es un motivo y impide ACCREDITED"},
+         "Accreditation": {"Status": "ACCREDITED" if not reasons else "NOT_ACCREDITED", "Reasons": reasons},
+@@ -795,11 +843,33 @@
+ REF_RX = re.compile(r"^(.+):([1-9][0-9]*)(?:-([1-9][0-9]*))?$")
+-STEP0_KEYS = ("V14DirectReadL2333L2334", "OrderReadWhole", "Decisions80DeclaresOrderBytesAndSha256", "Decisions79RoundOneDisposition",
+-              "GuardsRunModeBaseHeadResult", "SelftestA6TextBlobMatchesObject", "Round1OutputIdentifiesRunAndFindings")
++STEP0_KEYS = ("V14DirectReadL2333L2334", "OrderReadWhole", "Decisions84DeclaresOrderBytesAndSha256", "Decisions83RoundTwoDisposition",
++              "GuardsRunModeBaseHeadResult", "SelftestA6TextBlobMatchesObject", "Round2OutputIdentifiesRunAndFindings")
+ NOT_DET = "NOT_DETERMINED"
+ BLOCKED = "BLOCKED " + chr(0x2014) + " OWNER DECISION"
+-COMPAT_KEYS = ("A1", "A2", "A3", "A4", "A5")
+-NOCH_KEYS = ("Recipe164", "AdapterCodexCli", "OutputSchemas", "FrozenBudgetsD3D5D8", "RolesAndControllerAuthority", "Production", "ADR0046AndADR0048",
+-             "V14OutsideNineParagraphs")
+-SCOPE_KEYS = ("D3AppendAfterA52", "D4AppendAfterV14L2554", "D6AppendAfterV14L2587", "NoFrozenTextReplaced")
+-SEP_KEYS = ("WithinA6NoDeltaSeparable", "SeparableFromA1toA5", "OwnerLinesSeparable")
++ARRAYS = (("Round2FindingResolution", "Round2Finding"), ("Round2OptionalDisposition", "Round2Optional"), ("GapAssessment", "Gap"),
++          ("NegativeCaseCoherence", "Case"), ("RealSessionPreconditions", "Precondition"))
++SINGLES = ("ReconstructionFromRealEvents", "EffectiveInputClosure", "OwnerAuthorizationAndVerifyScope")
++OWNER_LINES = ("LineA", "LineB")
++OWNER_SCOPE_KEYS = ("VerifyOnly", "PinnedBlobsUnchanged", "NoResultAcceptedInAdvance")
++LAUNCH_ENV_PREFIXES = ("PYTHON", "GIT_", "CLAUDE", "ANTHROPIC")   # §84, punto 2 (los de launch.py)
++RUN_JSON_FIELDS = ("SessionId", "Executable", "ExecutableSha256", "Args", "Cwd", "PromptSha256", "PromptBytes", "TimeoutSeconds", "TransportGate",
++                   "EnvironmentVariableNames", "AuthSettle", "Start", "PostRunErrors", "Pid", "End", "ExitCode", "Killed", "TimedOut",
++                   "TasklistQuery", "ProcessGoneAfter", "StdoutSha256", "StdoutLines", "StderrBytes", "ResultMessage", "TransportFailure",
++                   "Transcript", "CloneAfter", "Outcome", "OutcomeCategories")   # los de launch.py (la autoprueba lo comprueba)
++
++
++def outcome_categories(rec):
++    """The auditor's own recomputation of the launch categories of decisions §84, point 4, from the record's fields (same rule as launch.py;
++    the self-test checks they agree): every category that holds, by precedence, or COMPLETED."""
++    rec = rec if isinstance(rec, dict) else {}
++    started = "Pid" in rec
++    cats = []
++    if "LaunchError" in rec or "Aborted" in rec or not started:
++        cats.append("LAUNCH_FAILURE")
++    if started and (rec.get("ExitCode") != 0 or rec.get("Killed") is not False or rec.get("TimedOut") is not False):
++        cats.append("REVIEW_PROCESS_FAILURE")
++    if rec.get("PostRunErrors"):
++        cats.append("POST_RUN_RECORDING_FAILURE")
++    if started and (rec.get("ResultMessage") is not True or rec.get("TransportFailure") is not None):
++        cats.append("TRANSPORT_FAILURE")
++    return cats or ["COMPLETED"]
+ 
+@@ -817,5 +887,3 @@
+             out += [("%s[%s]" % (key, x.get("FindingId")), ref, None) for ref in (x.get("Evidence") or [])]
+-    for key, label in (("TopicVerdicts", "Topic"), ("DeltaVerdicts", "Delta"), ("MaterialityConfirmation", "Id"),
+-                       ("Round1FindingResolution", "Round1Finding"), ("Round1OptionalDisposition", "Round1Optional"), ("GapAssessment", "Gap"),
+-                       ("ProvenanceIntegrityAtUse", "Item")):
++    for key, label in ARRAYS:
+         for x in items(r.get(key)):
+@@ -825,3 +893,3 @@
+     out += [("DirectReads", x.get("Ref"), None) for x in items(r.get("DirectReads"))]
+-    for key in ("Separability", "D5AndOwnerValidation", "OwnerDecisionsScope", "M01Verification"):
++    for key in SINGLES:
+         out += [(key, ref, None) for ref in ((r.get(key) or {}).get("ClauseRefs") or [])]
+@@ -835,9 +903,12 @@
+     all_ids = set(req_ids) | set(opt_ids)
+-    tv, dv, mc = items(result.get("TopicVerdicts")), items(result.get("DeltaVerdicts")), items(result.get("MaterialityConfirmation"))
+-    sep, d5, ods = result.get("Separability") or {}, result.get("D5AndOwnerValidation") or {}, result.get("OwnerDecisionsScope") or {}
+-    comp, noch, scope = result.get("CompatibilityA1toA5") or {}, result.get("NoChangeConfirmation") or {}, result.get("ScopeConfirmation") or {}
+-    oac, ia, step0 = result.get("OwnerAuthorityCheck") or {}, result.get("IfAgreed") or {}, result.get("Step0") or {}
++    r2, o2, gaps = items(result.get("Round2FindingResolution")), items(result.get("Round2OptionalDisposition")), items(result.get("GapAssessment"))
++    neg, acc, pre = items(result.get("NegativeCaseCoherence")), items(result.get("AcceptorCodeContrast")), items(result.get("RealSessionPreconditions"))
++    rec_, clo = result.get("ReconstructionFromRealEvents") or {}, result.get("EffectiveInputClosure") or {}
++    osc, oac = result.get("OwnerAuthorizationAndVerifyScope") or {}, result.get("OwnerAuthorityCheck") or {}
++    ia, step0 = result.get("IfAgreed") or {}, result.get("Step0") or {}
+     owner = oac.get("OwnerDecisionRequired")
+-    r1, o1, gaps = items(result.get("Round1FindingResolution")), items(result.get("Round1OptionalDisposition")), items(result.get("GapAssessment"))
+-    acc, prov, m01 = items(result.get("AcceptorCodeContrast")), items(result.get("ProvenanceIntegrityAtUse")), result.get("M01Verification") or {}
++    arrays = (("Round2FindingResolution", r2, "Round2Finding", R2_IDS), ("Round2OptionalDisposition", o2, "Round2Optional", O2_IDS),
++              ("GapAssessment", gaps, "Gap", GAP_IDS), ("NegativeCaseCoherence", neg, "Case", NEG_IDS),
++              ("AcceptorCodeContrast", acc, "Claim", CLAIMS), ("RealSessionPreconditions", pre, "Precondition", PRECOND_IDS))
++    singles = (("ReconstructionFromRealEvents", rec_), ("EffectiveInputClosure", clo), ("OwnerAuthorizationAndVerifyScope", osc))
+ 
+@@ -853,8 +924,3 @@
+             c.append("%s REQUIRED sin ViolatedInvariant ni Counterexample" % f.get("FindingId"))
+-    holders = ([("TopicVerdicts[%s]" % t.get("Topic"), t) for t in tv] + [("DeltaVerdicts[%s]" % d.get("Delta"), d) for d in dv] +
+-               [("MaterialityConfirmation[%s]" % m.get("Id"), m) for m in mc] + [("Separability", sep), ("D5AndOwnerValidation", d5)] +
+-               [("Round1FindingResolution[%s]" % x.get("Round1Finding"), x) for x in r1] +
+-               [("Round1OptionalDisposition[%s]" % x.get("Round1Optional"), x) for x in o1] + [("GapAssessment[%s]" % x.get("Gap"), x) for x in gaps] +
+-               [("AcceptorCodeContrast[%s]" % x.get("Claim"), x) for x in acc] + [("ProvenanceIntegrityAtUse[%s]" % x.get("Item"), x) for x in prov] +
+-               [("M01Verification", m01)])
++    holders = [("%s[%s]" % (label, x.get(key)), x) for label, xs, key, _ in arrays for x in xs] + list(singles)
+     for label, x in holders:
+@@ -862,35 +928,3 @@
+             c.append("%s cita en FindingIds hallazgos que no existen" % label)
+-    for t in tv:
+-        disp, label = t.get("Disposition"), t.get("Topic")
+-        if disp == "NOT_SATISFIED" and not linked(t):
+-            c.append("tema %s NOT_SATISFIED sin un hallazgo vinculado" % label)
+-        if disp == "NOT_SATISFIED" and label in REQ_TOPICS and not has_req(t):
+-            c.append("tema %s (REQUIRED REVIEW TOPIC) NOT_SATISFIED sin un REQUIRED vinculado" % label)
+-        if disp == "SATISFIED" and has_req(t):
+-            c.append("tema %s SATISFIED con un REQUIRED vinculado" % label)
+-        if disp == "NEEDS_OWNER" and owner is not True:
+-            c.append("tema %s NEEDS_OWNER sin OwnerDecisionRequired = true" % label)
+-    for d in dv:
+-        if d.get("Verdict") == "CHANGES REQUIRED" and not has_req(d):
+-            c.append("delta %s CHANGES REQUIRED sin un REQUIRED vinculado" % d.get("Delta"))
+-        if d.get("Verdict") == "AGREED" and has_req(d):
+-            c.append("delta %s AGREED con un REQUIRED vinculado" % d.get("Delta"))
+-    if any(sep.get(k) == "NOT_CONFIRMED" for k in SEP_KEYS) and not linked(sep):
+-        c.append("Separability con una afirmación NOT_CONFIRMED sin un hallazgo vinculado")
+-    for m in mc:
+-        mid = m.get("Id")
+-        if mid in MAT_A6 and m.get("A6Declared") != MAT_A6[mid]:
+-            c.append("MaterialityConfirmation[%s]: A6Declared distinto del valor de A-6 §5 (%s)" % (mid, MAT_A6[mid]))
+-        if (m.get("Agreement") == "AGREE") != (m.get("ReviewerAssessment") == m.get("A6Declared")):
+-            c.append("MaterialityConfirmation[%s]: Agreement incoherente con ReviewerAssessment y A6Declared" % mid)
+-        if m.get("Agreement") == "DISAGREE" and not linked(m):
+-            c.append("MaterialityConfirmation[%s] DISAGREE sin un hallazgo vinculado" % mid)
+-    if d5.get("Disposition") == "COVER_IN_A6" and not has_req(d5):
+-        c.append("D5AndOwnerValidation COVER_IN_A6 sin un REQUIRED vinculado")
+-    if d5.get("Disposition") == "OWNER_DECISION_REQUIRED" and owner is not True:
+-        c.append("D5AndOwnerValidation OWNER_DECISION_REQUIRED sin OwnerDecisionRequired = true")
+-    if owner is True and not oac.get("AdditionalOwnerReservedConsequences"):
+-        c.append("OwnerDecisionRequired = true sin AdditionalOwnerReservedConsequences")
+-    for label, xs, key in (("Round1FindingResolution", r1, "Round1Finding"), ("Round1OptionalDisposition", o1, "Round1Optional"),
+-                           ("GapAssessment", gaps, "Gap"), ("AcceptorCodeContrast", acc, "Claim"), ("ProvenanceIntegrityAtUse", prov, "Item")):
++    for label, xs, key, _ in arrays:
+         ids_ = [str(x.get(key)) for x in xs]
+@@ -898,10 +932,10 @@
+             c.append("%s con identificadores repetidos" % label)
+-    for x in r1:
++    for x in r2:
+         if x.get("Status") != "CORRECTED" and not has_req(x):
+-            c.append("%s %s sin un REQUIRED vinculado" % (x.get("Round1Finding"), x.get("Status")))
++            c.append("%s %s sin un REQUIRED vinculado" % (x.get("Round2Finding"), x.get("Status")))
+         if x.get("Status") == "CORRECTED" and has_req(x):
+-            c.append("%s CORRECTED con un REQUIRED vinculado" % x.get("Round1Finding"))
+-    for x in o1:
++            c.append("%s CORRECTED con un REQUIRED vinculado" % x.get("Round2Finding"))
++    for x in o2:
+         if x.get("Status") == "NOT_ADDRESSED" and not linked(x):
+-            c.append("%s NOT_ADDRESSED sin un hallazgo vinculado" % x.get("Round1Optional"))
++            c.append("%s NOT_ADDRESSED sin un hallazgo vinculado" % x.get("Round2Optional"))
+     for x in gaps:
+@@ -913,2 +947,7 @@
+             c.append("GapAssessment[%s] ACCEPTABLE_RESIDUAL con un REQUIRED vinculado" % x.get("Gap"))
++    for x in neg:
++        if x.get("Status") == "INCOHERENT" and not has_req(x):
++            c.append("NegativeCaseCoherence[%s] INCOHERENT sin un REQUIRED vinculado" % x.get("Case"))
++        if x.get("Status") == "COHERENT" and has_req(x):
++            c.append("NegativeCaseCoherence[%s] COHERENT con un REQUIRED vinculado" % x.get("Case"))
+     for x in acc:
+@@ -918,11 +957,17 @@
+             c.append("AcceptorCodeContrast[%s] MATCHES con un REQUIRED vinculado" % x.get("Claim"))
+-    for x in prov:
+-        if x.get("Status") == "INADEQUATE" and not has_req(x):
+-            c.append("ProvenanceIntegrityAtUse[%s] INADEQUATE sin un REQUIRED vinculado" % x.get("Item"))
+-        if x.get("Status") == "ADEQUATE" and has_req(x):
+-            c.append("ProvenanceIntegrityAtUse[%s] ADEQUATE con un REQUIRED vinculado" % x.get("Item"))
+-    if m01.get("Agreement") == "DISAGREE" and not linked(m01):
+-        c.append("M01Verification DISAGREE sin un hallazgo vinculado")
+-    if m01.get("Agreement") in ("AGREE", "DISAGREE") and (m01.get("Agreement") == "AGREE") != (m01.get("Activated") == m01.get("A6Declared")):
+-        c.append("M01Verification: Agreement incoherente con Activated y A6Declared")
++    for x in pre:
++        if x.get("Status") == "TREATED_AS_MET" and not has_req(x):
++            c.append("RealSessionPreconditions[%s] TREATED_AS_MET sin un REQUIRED vinculado (se acredita de antemano)" % x.get("Precondition"))
++        if x.get("Status") == "KEPT_FAIL_CLOSED" and has_req(x):
++            c.append("RealSessionPreconditions[%s] KEPT_FAIL_CLOSED con un REQUIRED vinculado" % x.get("Precondition"))
++    for label, x in singles[:2]:
++        if x.get("Assessment") == "INADEQUATE" and not has_req(x):
++            c.append("%s INADEQUATE sin un REQUIRED vinculado" % label)
++        if x.get("Assessment") == "ADEQUATE_AS_FAIL_CLOSED_PRECONDITION" and has_req(x):
++            c.append("%s ADEQUATE_AS_FAIL_CLOSED_PRECONDITION con un REQUIRED vinculado" % label)
++    if (any((osc.get(k) or {}).get("Assessment") == "EXCEEDS_STATED_SCOPE" for k in OWNER_LINES) or
++            any(osc.get(k) == "NOT_CONFIRMED" for k in OWNER_SCOPE_KEYS)) and not linked(osc):
++        c.append("OwnerAuthorizationAndVerifyScope con una línea EXCEEDS_STATED_SCOPE o una afirmación NOT_CONFIRMED sin un hallazgo vinculado")
++    if owner is True and not oac.get("AdditionalOwnerReservedConsequences"):
++        c.append("OwnerDecisionRequired = true sin AdditionalOwnerReservedConsequences")
+     if v != "NOT_ACCREDITED":
+@@ -932,11 +977,3 @@
+             c.append("objeto revisado distinto del designado (commit, ruta o blob)")
+-        if sorted(str(t.get("Topic")) for t in tv) != sorted(TOPICS):
+-            c.append("TopicVerdicts debe disponer los cuatro temas (%s) una vez cada uno" % ", ".join(TOPICS))
+-        if sorted(str(d.get("Delta")) for d in dv) != sorted(DELTAS):
+-            c.append("DeltaVerdicts debe disponer A6-1..A6-9 una vez cada uno")
+-        if sorted(str(m.get("Id")) for m in mc) != sorted(MAT_IDS):
+-            c.append("MaterialityConfirmation debe disponer M-01..M-08 una vez cada uno")
+-        for label, xs, key, want in (("Round1FindingResolution", r1, "Round1Finding", R1_IDS),
+-                                     ("Round1OptionalDisposition", o1, "Round1Optional", O1_IDS), ("GapAssessment", gaps, "Gap", GAP_IDS),
+-                                     ("AcceptorCodeContrast", acc, "Claim", CLAIMS), ("ProvenanceIntegrityAtUse", prov, "Item", PROV_ITEMS)):
++        for label, xs, key, want in arrays:
+             got_ = [str(x.get(key)) for x in xs]
+@@ -945,23 +982,8 @@
+                          % (label, [w for w in want if w not in got_], sorted({g for g in got_ if g not in want or got_.count(g) > 1})))
+-        if m01.get("A6Declared") != MAT_A6.get("M-01") or m01.get("Agreement") not in ("AGREE", "DISAGREE"):
+-            c.append("con un veredicto, M01Verification lleva A6Declared = A-6 §5 (%s) y Agreement AGREE o DISAGREE" % MAT_A6.get("M-01"))
+-        if any(m.get("Id") == "M-01" and m.get("ReviewerAssessment") != m01.get("Activated") for m in mc):
+-            c.append("M01Verification.Activated distinto de MaterialityConfirmation[M-01].ReviewerAssessment")
+-        needs_refs = ([("tema %s" % t.get("Topic"), t) for t in tv] + [("delta %s" % d.get("Delta"), d) for d in dv] +
+-                      [("MaterialityConfirmation[%s]" % m.get("Id"), m) for m in mc] +
+-                      [("Separability", sep), ("D5AndOwnerValidation", d5), ("OwnerDecisionsScope", ods)] +
+-                      [("Round1FindingResolution[%s]" % x.get("Round1Finding"), x) for x in r1] +
+-                      [("Round1OptionalDisposition[%s]" % x.get("Round1Optional"), x) for x in o1] +
+-                      [("GapAssessment[%s]" % x.get("Gap"), x) for x in gaps] +
+-                      [("ProvenanceIntegrityAtUse[%s]" % x.get("Item"), x) for x in prov] + [("M01Verification", m01)])
+-        for label, x in needs_refs:
++        for label, x in [h for h in holders if not h[0].startswith("AcceptorCodeContrast[")]:
+             if not x.get("ClauseRefs"):
+                 c.append("con un veredicto, %s sin ClauseRefs" % label)
+-        undetermined = ([k for k in SEP_KEYS if sep.get(k) == NOT_DET] +
+-                        [k for k in COMPAT_KEYS if (comp.get(k) or {}).get("Assessment") == NOT_DET] +
+-                        [k for k in NOCH_KEYS if (noch.get(k) or {}).get("Assessment") == NOT_DET] +
+-                        [k for k in SCOPE_KEYS if (scope.get(k) or {}).get("Assessment") == NOT_DET] +
+-                        [k for k in ("Disposition", "OwnerValidationAffected") if d5.get(k) == NOT_DET] +
+-                        [k for k in ("LineA", "LineB") if (ods.get(k) or {}).get("Assessment") == NOT_DET] +
+-                        [k for k in ("SeparateAndNotImplied", "NoResultAcceptedInAdvance") if ods.get(k) == NOT_DET])
++        undetermined = ([k for k in OWNER_LINES if (osc.get(k) or {}).get("Assessment") == NOT_DET] +
++                        [k for k in OWNER_SCOPE_KEYS if osc.get(k) == NOT_DET] +
++                        [label for label, x in singles[:2] if x.get("Assessment") == NOT_DET])
+         if undetermined:
+@@ -971,3 +993,3 @@
+         cited = set()
+-        for x in tv + dv:
++        for _, x in holders:
+             cited |= set(linked(x))
+@@ -975,23 +997,21 @@
+         if uncited:
+-            c.append("REQUIRED sin disposición: todo REQUIRED lo cita al menos un delta o un tema (%s)" % ", ".join(str(i) for i in uncited))
+-    if v == "AGREED" and (req or len(dv) != len(DELTAS) or any(d.get("Verdict") != "AGREED" for d in dv) or len(tv) != len(TOPICS) or
+-                          any(t.get("Disposition") != "SATISFIED" for t in tv) or owner is not False or
+-                          d5.get("Disposition") != "EXCLUSION_CORRECT" or
+-                          any((comp.get(k) or {}).get("Assessment") != "COMPATIBLE" for k in COMPAT_KEYS) or
+-                          any((noch.get(k) or {}).get("Assessment") != "NO_CHANGE" for k in NOCH_KEYS) or
+-                          any((scope.get(k) or {}).get("Assessment") != "CONFIRMED" for k in SCOPE_KEYS) or
+-                          any((ods.get(k) or {}).get("Assessment") != "LIMITED_TO_STATED_SCOPE" for k in ("LineA", "LineB")) or
+-                          any(ods.get(k) != "CONFIRMED" for k in ("SeparateAndNotImplied", "NoResultAcceptedInAdvance")) or
+-                          not ia or not all(ia.get(k) is True for k in ia)):
+-        c.append("AGREED exige cero REQUIRED, los nueve deltas en AGREED, los cuatro temas en SATISFIED, ninguna decisión del Owner pendiente, D.5 "
+-                 "en EXCLUSION_CORRECT, A-1..A-5 COMPATIBLE, NoChangeConfirmation todo NO_CHANGE, ScopeConfirmation todo CONFIRMED, las dos líneas "
+-                 "del Owner en LIMITED_TO_STATED_SCOPE con SeparateAndNotImplied y NoResultAcceptedInAdvance en CONFIRMED, e IfAgreed todo en true")
+-    if v == "AGREED" and (len(r1) != len(R1_IDS) or any(x.get("Status") != "CORRECTED" for x in r1)):
+-        c.append("AGREED exige A62-A6-R1..R5 de la ronda 1 en CORRECTED")
++            c.append("REQUIRED sin disposición: todo REQUIRED lo cita al menos un elemento evaluado (%s)" % ", ".join(str(i) for i in uncited))
++    if v == "AGREED" and (req or owner is not False or not ia or not all(ia.get(k) is True for k in ia) or
++                          any((osc.get(k) or {}).get("Assessment") != "LIMITED_TO_STATED_SCOPE" for k in OWNER_LINES) or
++                          any(osc.get(k) != "CONFIRMED" for k in OWNER_SCOPE_KEYS)):
++        c.append("AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente, la autorización del Owner y el alcance de VERIFY confirmados (las "
++                 "dos líneas en LIMITED_TO_STATED_SCOPE y VerifyOnly, PinnedBlobsUnchanged y NoResultAcceptedInAdvance en CONFIRMED) e IfAgreed "
++                 "todo en true")
++    if v == "AGREED" and (len(r2) != len(R2_IDS) or any(x.get("Status") != "CORRECTED" for x in r2)):
++        c.append("AGREED exige A62-A6R2-R1 y A62-A6R2-R2 en CORRECTED")
++    if v == "AGREED" and (len(neg) != len(NEG_IDS) or any(x.get("Status") != "COHERENT" for x in neg)):
++        c.append("AGREED exige N4, NC1 y VERIFY_WITHOUT_INSTRUMENT en COHERENT")
++    if v == "AGREED" and any(x.get("Assessment") != "ADEQUATE_AS_FAIL_CLOSED_PRECONDITION" for _, x in singles[:2]):
++        c.append("AGREED exige la reconstrucción desde eventos reales y el cierre efectivo en ADEQUATE_AS_FAIL_CLOSED_PRECONDITION")
++    if v == "AGREED" and (len(acc) != len(CLAIMS) or any(x.get("Status") != "MATCHES" for x in acc)):
++        c.append("AGREED exige todas las afirmaciones de AcceptorCodeContrast en MATCHES (ningún DIFFERS)")
++    if v == "AGREED" and (len(pre) != len(PRECOND_IDS) or any(x.get("Status") != "KEPT_FAIL_CLOSED" for x in pre)):
++        c.append("AGREED exige todas las precondiciones de sesión real en KEPT_FAIL_CLOSED (ninguna acreditada de antemano)")
+     if v == "AGREED" and (len(gaps) != len(GAP_IDS) or any(x.get("Assessment") != "ACCEPTABLE_RESIDUAL" for x in gaps)):
+         c.append("AGREED exige G1..G6 en ACCEPTABLE_RESIDUAL (ninguna brecha REQUIRES_*)")
+-    if v == "AGREED" and (len(acc) != len(CLAIMS) or any(x.get("Status") != "MATCHES" for x in acc)):
+-        c.append("AGREED exige todas las afirmaciones de AcceptorCodeContrast en MATCHES (ningún DIFFERS)")
+-    if v == "AGREED" and (len(prov) != len(PROV_ITEMS) or any(x.get("Status") != "ADEQUATE" for x in prov)):
+-        c.append("AGREED exige ProvenanceIntegrityAtUse todo en ADEQUATE")
+     if v != "AGREED" and any(x is not None for x in ia.values()):

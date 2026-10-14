@@ -1,0 +1,43 @@
+--- ronda2/mutation-post-review.py
++++ ronda3/mutation-post-review.py
+@@ -1,5 +1,6 @@
+-"""Mutation test of the auditor v5.2-a6r2 (post-review.py), of transport_gate.py and of owner_gate.py (round 2: Owner line of §78, CLAUDE-CLI-I62,
+-round-2 blob at the worktree HEAD and the Coordinator authorization after §80) for the ONE formal review of round 2 of A-6 (decisions §80, point 6),
+-run BEFORE the launch: «cada regla del auditor tiene un caso que falla sin ella», checked mechanically. The harness of the round-1 kit, unchanged
+-except its names; it honours RACKCAD_A6R2_KITDATA like the self-test (phase 1: the synthetic environment; phase 2: the real clone).
++"""Mutation test of the auditor v5.3-a6r3 (post-review.py), of transport_gate.py (round 3: the D-01 gate and the explicit Windows decoding of
++decisions §84, point 5) and of owner_gate.py (round 3: Owner line of §78, CLAUDE-CLI-I62, round-3 blob at the worktree HEAD, decisions §84 with its
++pinned heading, blob and text SHA-256, and no later section) for the ONE formal review of round 3 of A-6 (decisions §84), run BEFORE the launch:
++«cada regla del auditor tiene un caso que falla sin ella», checked mechanically. The harness of the round-2 kit, unchanged except its names; it
++honours RACKCAD_A6R3_KITDATA like the self-test (by default, the real clone and run of the kit).
+ 
+@@ -8,3 +9,6 @@
+ on a copy of its module (that one call becomes a no-op) and the FULL case list of selftest-post-review.py (without the live probe L00) runs against
+-the mutant; the mutant is KILLED when at least one case FAILS. The unmutated baseline must pass every case first.
++the mutant (the stand-in executables of the decoding cases G50-G58 run for every mutant); the mutant is KILLED when at least one case FAILS, or
++when the mutant makes a case raise an exception (an observable difference from the baseline, which passes every case; recorded in KilledBy as
++«EXCEPTION <class>: <message>» and counted in Totals.KilledByException). The unmutated baseline must pass every case first (an exception there is
++not caught).
+ Speed: Test-Json, the clone's git queries, the reparse walk and the run-file bytes are memoized across mutants (case 12 still simulates its
+@@ -94,5 +98,5 @@
+     failing, n_cases = judge(ST.load_auditor())
+-    doc = {"Mutation": "post-review.py v5.2-a6r2 + transport_gate.py + owner_gate.py (ronda 2): cada sitio de regla desactivado debe hacer fallar al "
++    doc = {"Mutation": "post-review.py v5.3-a6r3 + transport_gate.py + owner_gate.py (ronda 3): cada sitio de regla desactivado debe hacer fallar al "
+                        "menos un caso del selftest",
+-           "Environment": "SYNTHETIC (fase 1: prep/make_synthetic_env.py)" if ST._CLOSURE.get("Synthetic") else "REAL (clon y run del kit)",
++           "Environment": "SYNTHETIC" if ST._CLOSURE.get("Synthetic") else "REAL (clon y run del kit)",
+            "Baseline": {"Cases": n_cases, "Failing": failing, "AllPass": not failing}, "Modules": {}, "Mutants": []}
+@@ -112,3 +116,6 @@
+                 pr.OG = ST.load("owner_gate_mutant", path)
+-            fails, _ = judge(pr)
++            try:
++                fails, _ = judge(pr)
++            except Exception as e:   # the mutant made a case raise: observable difference, recorded as a kill (see the docstring)
++                fails = ["EXCEPTION %s: %s" % (type(e).__name__, str(e)[:200])]
+             doc["Mutants"].append({"Module": name, "Line": i + 1, "Code": src[i].strip()[:150], "Killed": bool(fails), "KilledBy": fails[:4],
+@@ -121,3 +128,4 @@
+     doc["Survivors"] = [m for m in doc["Mutants"] if not m["Killed"]]
+-    doc["Totals"] = {"Mutants": len(doc["Mutants"]), "Killed": sum(1 for m in doc["Mutants"] if m["Killed"])}
++    doc["Totals"] = {"Mutants": len(doc["Mutants"]), "Killed": sum(1 for m in doc["Mutants"] if m["Killed"]),
++                     "KilledByException": sum(1 for m in doc["Mutants"] if any(str(k).startswith("EXCEPTION ") for k in m["KilledBy"]))}
+     doc["AllKilled"] = doc["Baseline"]["AllPass"] and not doc["Survivors"]

@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §84; evidencia §165) — preparar, congelar y custodiar el kit único de revisión formal de A-6 ronda 3 (blob e62f27b8), con lanzamiento python -B kit/launch.py, comprobación previa de registro y compuerta de transporte con codificación explícita; prueba en seco sin bloqueos; una revisión, tope 3 600 s, sin reintento; auditor conservado; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §84; evidencia §165-§166) — kit de la revisión formal única de A-6 ronda 3 congelado y custodiado (R20261013T183701Z-9f80, manifiesto 771d9f46); repetir la comprobación previa y la prueba en seco y lanzar UNA vez python -B kit/launch.py; auditor conservado; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

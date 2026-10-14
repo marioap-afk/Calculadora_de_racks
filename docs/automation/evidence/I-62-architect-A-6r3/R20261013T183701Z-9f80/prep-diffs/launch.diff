@@ -1,0 +1,250 @@
+--- r3/launchfix/launch.r3-template.py
++++ ronda3/kit/launch.py
+@@ -1,20 +1,25 @@
+-"""I-62, decisiones §80, punto 6: lanzador de la ÚNICA revisión formal independiente del Architect de la RONDA 2 de la enmienda A-6 (blob de la
+-ronda 2 fijado en kit-params.json y en el cierre), por una celda claude-cli medida y elegible (autorización del Owner CLAUDE-CLI-I62 = A). Commit
+-del clon: kit-params.json. Lo ejecuta la sesión principal, una sola vez y sin reintento, y SOLO después de una disposición posterior del
+-Coordinator que autorice esta revisión (decisiones §79, punto 7; §80, punto 5): la comprobación 11 lo exige. Quien prepara el kit no lo ejecuta
+-(solo su modo --dry-run, que no ejecuta el binario). Adaptado del launch.py del kit de la ronda 1 (prep/adapt_launch.py).
++"""I-62, decisiones §84: lanzador de la ÚNICA revisión formal independiente del Architect de la RONDA 3 de la enmienda A-6 (blob de la ronda 3
++fijado en kit-params.json y en el cierre), por una celda claude-cli medida y elegible (autorización del Owner CLAUDE-CLI-I62 = A). Commit del clon:
++kit-params.json. Lo ejecuta la sesión principal, una sola vez y sin reintento, con la orden congelada EXACTA `python -B kit/launch.py` desde la
++carpeta que contiene kit/ (decisiones §84, punto 2), y solo con el kit congelado y custodiado. Quien prepara el kit no lo lanza (solo sus modos
++--dry-run y --record-probe, que no ejecutan el binario). Derivado de la plantilla custodiada r3/launchfix/launch.r3-template.py (prep/adapt_launch.py).
+ 
+ Antes de lanzar comprueba, y se NIEGA a lanzar (código 2, sin escribir nada) si falla cualquiera de estas condiciones:
++  G. la orden es exactamente FROZEN_COMMAND (más, como mucho, --dry-run o --record-probe): se evalúa al importar, antes de cargar
++     transport_gate.py y owner_gate.py (ver abajo);
++  P. la sonda de registro (el mismo código que escribe run.json, con un hijo sustituto que no es un modelo, en un temporal fuera del run, del clon
++     y del kit; §84, punto 3) funciona: si falla, STOP antes de la preflight y antes de invocar al Architect;
+   1. integridad del kit: cada archivo de kit-manifest.json con su SHA-256 (incluidos este script, transport_gate.py y transport-gate.json);
+-  2. transporte del cierre = constantes de este script (flags, --add-dir, session id, cwd, binario, tope) y ArgsTemplate del cierre = la plantilla;
+-     el cierre designa el blob de la ronda 2 de kit-params.json y lleva el RunId del kit;
++  2. transporte del cierre = constantes de este script (flags, --add-dir, session id, cwd, binario, tope, orden congelada) y ArgsTemplate del
++     cierre = la plantilla; el cierre designa el blob de la ronda 3 de kit-params.json (distinto de los de las rondas 1 y 2) y lleva el RunId del kit;
+   3. binario elegible: existe en %APPDATA%, ruta resuelta = la del cierre, SHA-256 = 8693c4a0…, firma Authenticode válida de «Anthropic, PBC»;
+-  4. versión: `claude.exe --version` = «2.1.293 (Claude Code)»;
+-  5. autenticación: `claude.exe auth status --json` con loggedIn = true (solo se conservan loggedIn, authMethod y apiProvider; ni correo ni
+-     organización; ninguna credencial se lee);
++  4. versión: `claude.exe --version` = «2.1.293 (Claude Code)», con la salida capturada en bytes y decodificada como UTF-8 estricto
++     (transport_gate.decode_cli_output; decisiones §84, punto 5);
++  5. autenticación: `claude.exe auth status --json` con loggedIn = true (salida en bytes, UTF-8 estricto; solo se conservan loggedIn, authMethod y
++     apiProvider; ni correo ni organización; ninguna credencial se lee);
+   6. clon: HEAD = el commit, separado (sin ninguna rama local), sin remoto, árbol limpio con ignorados, blobs designados, sin enlaces ni uniones;
+-  7. run: exactamente los tres archivos (order.txt, prompt.md y a6-r1.md; sin launch/), cada uno = copia del kit = RunFileHashes del cierre =
+-     kit-manifest.json, y a6-r1.md con el blob Git de la ronda 1 (eac473c0);
++  7. run: exactamente los tres archivos (order.txt, prompt.md y a6-r2.md; sin launch/), cada uno = copia del kit = RunFileHashes del cierre =
++     kit-manifest.json, y a6-r2.md con el blob Git de la ronda 2 (86da0ae7);
+   8. sesión nueva: sin transcripción con el session id fijado en ningún proyecto y sin directorio de proyecto para el clon ni para el run (sin
+-     memoria previa; patrón D--r62-arch-a6r2*);
++     memoria previa; patrón D--r62-arch-a6r3*, que no casa con los de las rondas anteriores);
+   9. longitud de la línea de órdenes de Windows (< 32 000 caracteres);
+@@ -23,35 +28,30 @@
+      los argumentos que se van a lanzar = la de la compuerta;
+- 11. compuerta del Owner y de la autorización (owner_gate.py; decisiones §78, §79 y §80), BLOQUEANTE: en la HEAD del worktree de I-62, la línea
+-     del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) como línea completa después de §78 y en la A-6 de la ronda 2 del clon; CLAUDE-CLI-I62 = A
+-     vigente y el binario medido = el del cierre; A-6 en la HEAD con el blob de la ronda 2 fijado; una disposición del Coordinator numerada
+-     después de §80 que contenga el blob completo y el RunId del kit; decisiones crece solo por añadido desde el clon, sin cambios sin commit, y
+-     la HEAD desciende del clon (solo lectura de git en el worktree: rev-parse, show, hash-object sin -w y merge-base). Se evalúa antes de las
+-     comprobaciones 4 y 5: si no pasa, el binario no se ejecuta (ni --version ni auth status).
+-Después escribe <run>/launch/preflight.json y las copias de los registros de la compuerta (transport-characterization.json y, en ACCEPTED,
+-transport-acceptance.json); espera AUTH_SETTLE_S = 120 s contados desde el final de `auth status` (comprobación 5), para que una renovación del
+-token OAuth que esa llamada haya iniciado termine antes del lanzamiento (mitigación de TRANSPORT_AUTH_REFRESH_CONFLICT, que dejó el intento 1
+-de la revisión de A-3 en INVALID_LAUNCH); vuelve a medir el binario JUSTO antes de lanzarlo (si su SHA-256 cambió, aborta sin lanzar) y lanza la ruta resuelta
+-con la lista exacta de argumentos (flags medidos + --add-dir del run + --session-id + --json-schema compacto), el prompt (bytes de prompt.md del
+-run) por stdin y cwd = el clon. Aplica el tope de 3 600 s con terminación (terminate y, 60 s después, kill) y escribe en <run>/launch/:
+-stdout.jsonl, stderr.txt y run.json (ruta resuelta y SHA-256 medidos del ejecutable, PID, inicio y fin, código de salida, terminado o no,
+-SHA-256 de stdout y de la transcripción, clon después, espera tras `auth status`). Si el mensaje result contiene «Failed to refresh OAuth token»
+-con 0 tokens, run.json lo registra en TransportFailure como TRANSPORT_AUTH_REFRESH_CONFLICT. No hay reintento en ningún caso.
+-Plantilla r3 (corrección del lanzamiento tras la ronda 2, RunId R20261012T195511Z-e5c3: lanzada con `-X utf8` añadido, el lector de
++ 11. compuerta del Owner y de la autorización (owner_gate.py; decisiones §78, §56 y §84), BLOQUEANTE: en la HEAD del worktree de I-62, la línea
++     del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) como línea completa después de §78 y en la A-6 de la ronda 3 del clon; CLAUDE-CLI-I62 = A
++     vigente y el binario medido = el del cierre; A-6 en la HEAD con el blob de la ronda 3 fijado; decisiones §84 con el encabezado fijado, el blob
++     completo como token literal y el SHA-256 de su texto fijado en el kit; NINGUNA sección posterior a §84; decisiones crece solo por añadido desde
++     el clon, sin cambios sin commit, y la HEAD desciende del clon (solo lectura de git en el worktree). Se evalúa antes de las comprobaciones 4 y 5:
++     si no pasa, el binario no se ejecuta (ni --version ni auth status).
++Después escribe <run>/launch/preflight.json (Checks, FrozenCommandGuard, RecordProbe y Environment: nombres de las variables PYTHON*, GIT_*, CLAUDE*
++y ANTHROPIC* y valores solo de las PYTHON*; el lanzador no pone ni quita ninguna) y las copias de los registros de la compuerta
++(transport-characterization.json y, en ACCEPTED, transport-acceptance.json); espera AUTH_SETTLE_S = 120 s contados desde el final de `auth status`
++(mitigación de TRANSPORT_AUTH_REFRESH_CONFLICT); vuelve a medir el binario JUSTO antes de lanzarlo (si su SHA-256 cambió, aborta sin lanzar, con
++Outcome LAUNCH_FAILURE) y lanza la ruta resuelta con la lista exacta de argumentos (flags medidos + --add-dir del run + --session-id + --json-schema
++compacto), el prompt (bytes de prompt.md del run) por stdin y cwd = el clon. Aplica el tope de 3 600 s con terminación (terminate y, 60 s después,
++kill) y escribe en <run>/launch/: stdout.jsonl, stderr.txt y run.json, SIEMPRE una vez lanzado el hijo (try/finally), con Outcome y
++OutcomeCategories (decisiones §84, punto 4): COMPLETED, REVIEW_PROCESS_FAILURE (código distinto de 0, terminado o tope), TRANSPORT_FAILURE (sin
++mensaje result o «Failed to refresh OAuth token» con 0 tokens), POST_RUN_RECORDING_FAILURE (PostRunErrors no vacío) o LAUNCH_FAILURE. El resultado
++de contenido del Architect lo juzga el auditor. No hay reintento en ningún caso y ningún registro se reconstruye después de la corrida.
++Correcciones heredadas de la plantilla r3 (tras la ronda 2, RunId R20261012T195511Z-e5c3: lanzada con `-X utf8` añadido, el lector de
+ `tasklist` con text=True falló con UnicodeDecodeError, q.stdout quedó en None, el TypeError siguiente abortó launch.py y run.json no se escribió):
+-  G. guarda de la orden congelada, evaluada ANTES de todo (antes de cargar transport_gate.py y owner_gate.py y de cualquier preflight): se niega
+-     (código 2, sin escribir nada) si la orden no es exactamente FROZEN_COMMAND más, como mucho, un modo (--dry-run o --record-probe):
+-     sys.orig_argv[1:] = ["-B", <script>, *modo], con <script> normalizado (realpath + normcase: cualquier grafía que resuelva a ESTE archivo);
+-     sys.flags.dont_write_bytecode = 1, sys.flags.utf8_mode = 0, sys.flags.isolated = 0 y sys._xoptions vacío. Lo observado (argv, flags,
+-     opciones -X, intérprete y codificaciones) va a preflight.json (FrozenCommandGuard) y a la salida de --dry-run y de --record-probe.
+-  R. registro posterior a prueba de fallos: tasklist se captura en bytes (sin decodificar) y el PID se busca en bytes; cada paso posterior al fin
+-     del proceso va aparte y su excepción queda en run.json (PostRunErrors: paso, clase y mensaje; también las de hilos, como el lector de
+-     subprocess); run.json se escribe SIEMPRE una vez lanzado el hijo (try/finally), con los campos que se hayan podido reunir.
+-  P. --record-probe: el MISMO código que lanza y registra (run_and_record → spawn_and_wait → post_run → write_record) con un hijo sustituto
+-     inocuo (este intérprete con -c: lee stdin, imprime una línea JSON type=result y sale con 0) en un directorio temporal FUERA del run, del
+-     clon y del kit; escribe record-probe.json (nunca run.json ni <run>/launch), lo valida (campos de run.json presentes y serializables, tasklist
+-     consultado y tratado, ningún PostRunErrors) y borra el temporal. No ejecuta claude.exe ni lee la transcripción del session id real.
+-     Código 0 = el registro funciona; 1 = no (con el motivo en Problems).
+-  D. la sonda P también corre en --dry-run (informada junto a la guarda G) y en el lanzamiento real ANTES de la preflight: si falla, el
+-     lanzamiento se niega con código 2 sin escribir nada en el run.
+-Uso (la orden congelada, sin flags añadidos; FROZEN_COMMAND, desde la raíz del kit):
++  G. guarda de la orden congelada, evaluada ANTES de todo: se niega (código 2, sin escribir nada) si la orden no es exactamente FROZEN_COMMAND más,
++     como mucho, un modo (--dry-run o --record-probe): sys.orig_argv[1:] = ["-B", <script>, *modo], con <script> normalizado (realpath + normcase:
++     cualquier grafía que resuelva a ESTE archivo); sys.flags.dont_write_bytecode = 1, sys.flags.utf8_mode = 0, sys.flags.isolated = 0 y
++     sys._xoptions vacío. Lo observado va a preflight.json (FrozenCommandGuard) y a la salida de --dry-run y de --record-probe.
++  R. registro posterior a prueba de fallos: tasklist se captura en bytes y el PID se busca en bytes; cada paso posterior al fin del proceso va
++     aparte y su excepción queda en run.json (PostRunErrors; también las de hilos); run.json se escribe SIEMPRE una vez lanzado el hijo.
++  P. --record-probe: el MISMO código que lanza y registra (run_and_record → spawn_and_wait → post_run → write_record) con un hijo sustituto inocuo;
++     escribe record-probe.json en un temporal (nunca run.json ni <run>/launch), lo valida y borra el temporal. No ejecuta claude.exe.
++  D. la sonda P también corre en --dry-run y en el lanzamiento real ANTES de la preflight.
++Uso (la orden congelada, sin flags añadidos; FROZEN_COMMAND, desde la carpeta que contiene kit/):
+      python -B kit/launch.py                → G, P, preflight y, si todo pasa, el único lanzamiento
+@@ -153,8 +153,8 @@
+ _spec.loader.exec_module(OG)
+-CLONE, RUN = r"D:\r62-arch-a6r2", r"D:\r62-arch-a6r2-run"
++CLONE, RUN = r"D:\r62-arch-a6r3", r"D:\r62-arch-a6r3-run"
+ PARAMS = json.load(open(os.path.join(KIT, "kit-params.json"), encoding="utf-8"))
+ assert PARAMS.get("Provisional") is False and PARAMS.get("Clone") == CLONE and PARAMS.get("Run") == RUN, "kit-params.json provisional o de otro clon"
+-REV = PARAMS["CloneCommit"]   # commit del clon (A-6 ronda 2 publicada y el resultado `run` de sus guardas custodiado)
++REV = PARAMS["CloneCommit"]   # commit del clon (A-6 ronda 3 publicada, el resultado `run` de sus guardas custodiado y decisiones §84)
+ WORKTREE = os.path.join(os.environ.get("USERPROFILE", ""), ".codex", "worktrees", "architecture-portabilidad-coordinador-principal")   # solo lectura (11)
+-SESSION_ID = "d95fcaba-f7db-4408-af85-497e565d114e"   # uuid4 del único lanzamiento (generado una vez en la fase 1)
++SESSION_ID = "3f6938fa-d6b4-4494-bacb-684ce6287624"   # uuid4 del único lanzamiento (generado una vez; prep/ids.txt)
+ BIN_DISPLAY = r"%APPDATA%\Claude\claude-code\2.1.293\83cb0bd7fed4\claude.exe"
+@@ -166,4 +166,5 @@
+ ADD_DIR = ["--add-dir", RUN]   # D-01: solo se lanza si transport-gate.json ata la medición C3 o la aceptación registrada
+-RUN_FILES = ["order.txt", "prompt.md", "a6-r1.md"]
+-A6R1_BLOB = "eac473c0d2e58cf1c4594f48a8816b3833af6509"   # a6-r1.md: el texto de A-6 de la ronda 1 (decisiones §77, punto 1)
++RUN_FILES = ["order.txt", "prompt.md", "a6-r2.md"]
++A6R2_BLOB = "86da0ae770e683a647f2724860a4bd890061154d"   # a6-r2.md: el texto de A-6 de la ronda 2 (decisiones §80), premisa de la ronda 3
++LAUNCH_ENV_PREFIXES = ("PYTHON", "GIT_", "CLAUDE", "ANTHROPIC")   # §84.2: nombres en preflight.json; valores solo de las PYTHON*
+ TIMEOUT_S, KILL_GRACE_S = 3600, 60
+@@ -173,3 +174,3 @@
+ PROJECTS = os.path.join(os.path.expanduser("~"), ".claude", "projects")
+-PROJECT_DIR = os.path.join(PROJECTS, "D--r62-arch-a6r2")
++PROJECT_DIR = os.path.join(PROJECTS, "D--r62-arch-a6r3")
+ TRANSCRIPT = os.path.join(PROJECT_DIR, SESSION_ID + ".jsonl")
+@@ -235,3 +236,4 @@
+                                closure["AuthorityRevision"] == REV and closure.get("ObjectBlob") == PARAMS["Object"]["Blob"] and
+-                               closure.get("ObjectBlob") != OG.A6R1_BLOB and closure["Ids"]["RunId"] == OG.RUN_ID and closure.get("Provisional") is False and
++                               closure.get("ObjectBlob") not in (OG.A6R1_BLOB, OG.A6R2_BLOB) and closure["Ids"]["RunId"] == OG.RUN_ID and
++                               closure.get("Provisional") is False and t.get("LaunchCommand") == FROZEN_COMMAND and
+                                t.get("ArgsTemplate") == TG.templatize(args[1:])}
+@@ -245,4 +247,6 @@
+     else:
+-        ver = TG.cli_version(BIN, KIT) if c["3-Binary"]["Ok"] and og["Ok"] else None   # sin la compuerta del Owner no se ejecuta el binario
+-        c["4-Version"] = {"Ok": ver == VERSION, "Got": ver, "NotExecutedBecauseOwnerGate": not og["Ok"]}
++        cv = TG.cli_version(BIN, KIT) if c["3-Binary"]["Ok"] and og["Ok"] else None   # sin la compuerta del Owner no se ejecuta el binario
++        ver = cv["Version"] if cv else None   # bytes decodificados como UTF-8 estricto (transport_gate.decode_cli_output; §84, punto 5)
++        c["4-Version"] = {"Ok": ver == VERSION, "Got": ver, "NotExecutedBecauseOwnerGate": not og["Ok"],
++                          "ReturnCode": cv["ReturnCode"] if cv else None, "Decoding": cv["Decoding"] if cv else None}
+         auth = TG.auth_status(BIN, KIT) if c["4-Version"]["Ok"] else {}
+@@ -269,3 +273,3 @@
+             run_bad.append(n)
+-        elif n == "a6-r1.md" and git_blob(open(os.path.join(RUN, n), "rb").read()) != A6R1_BLOB:
++        elif n == "a6-r2.md" and git_blob(open(os.path.join(RUN, n), "rb").read()) != A6R2_BLOB:
+             run_bad.append(n)
+@@ -273,3 +277,3 @@
+     prior = glob.glob(os.path.join(PROJECTS, "*", SESSION_ID + ".jsonl"))
+-    project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(PROJECTS, "D--r62-arch-a6r2*")))
++    project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(PROJECTS, "D--r62-arch-a6r3*")))
+     c["8-NewSession"] = {"Ok": not prior and not project_dirs, "PriorTranscripts": len(prior), "ProjectDirsForCloneOrRun": project_dirs}
+@@ -300,2 +304,4 @@
+         rec.setdefault("PostRunErrors", []).append({"Step": "WriteRecord", "Class": type(e).__name__, "Message": str(e)[:500]})
++        if "Outcome" in rec:
++            set_outcome(rec)   # §84.4: la anotación cambia la categoría (POST_RUN_RECORDING_FAILURE)
+         text = json.dumps(rec, ensure_ascii=False, indent=1, default=repr)
+@@ -311,2 +317,39 @@
+             "EnvironmentVariableNames": sorted(k for k in os.environ if k.upper().startswith(("CLAUDE", "ANTHROPIC"))), "AuthSettle": settle}
++
++
++def _userless_value(v):
++    return os.pathsep.join(_userless(x) for x in str(v).split(os.pathsep))
++
++
++def environment_record():
++    """§84, punto 2: variables del entorno del lanzador con prefijo LAUNCH_ENV_PREFIXES: los nombres de todas y los valores solo de las PYTHON*
++    (con el perfil escrito como %VAR%). El lanzador no pone ni quita ninguna variable: claude.exe hereda este entorno tal cual (Popen sin env)."""
++    names = sorted(k for k in os.environ if k.upper().startswith(LAUNCH_ENV_PREFIXES))
++    return {"Prefixes": list(LAUNCH_ENV_PREFIXES), "Names": names,
++            "PythonValues": {k: _userless_value(os.environ[k]) for k in names if k.upper().startswith("PYTHON")},
++            "SetOrStrippedByLauncher": [], "ChildEnvironment": "heredado sin cambios (Popen sin env)"}
++
++
++def outcome_categories(rec):
++    """§84, punto 4: categorías de la corrida según el registro, todas las que se cumplen, en orden de precedencia (COMPLETED si ninguna):
++    LAUNCH_FAILURE (el hijo no arrancó, la espera falló o el lanzamiento se abortó), REVIEW_PROCESS_FAILURE (código distinto de 0, terminado por
++    el invocador o tope agotado), POST_RUN_RECORDING_FAILURE (PostRunErrors no vacío: registro posterior o custodia incompletos) y
++    TRANSPORT_FAILURE (sin mensaje result, o TransportFailure registrado, como TRANSPORT_AUTH_REFRESH_CONFLICT). El resultado de contenido del
++    Architect no es una categoría del lanzador: lo juzga el auditor."""
++    started = "Pid" in rec
++    cats = []
++    if "LaunchError" in rec or "Aborted" in rec or not started:
++        cats.append("LAUNCH_FAILURE")
++    if started and (rec.get("ExitCode") != 0 or rec.get("Killed") is not False or rec.get("TimedOut") is not False):
++        cats.append("REVIEW_PROCESS_FAILURE")
++    if rec.get("PostRunErrors"):
++        cats.append("POST_RUN_RECORDING_FAILURE")
++    if started and (rec.get("ResultMessage") is not True or rec.get("TransportFailure") is not None):
++        cats.append("TRANSPORT_FAILURE")
++    return cats or ["COMPLETED"]
++
++
++def set_outcome(rec):
++    rec["OutcomeCategories"] = outcome_categories(rec)
++    rec["Outcome"] = rec["OutcomeCategories"][0]
+ 
+@@ -333,3 +376,5 @@
+                           "BlockingChecks": [k for k, v in checks.items() if v["Ok"] is False],
+-                          "AuthorizationSections": checks[OG.CHECK].get("AuthorizationSections"),   # fase 2: visibles para el Coordinator
++                          "AuthorizationSections": checks[OG.CHECK].get("AuthorizationSections"),   # §84: encabezado, blob y SHA-256 del texto
++                          "LaterSections": checks[OG.CHECK].get("LaterSections"),                   # secciones posteriores a §84 (bloquean)
++                          "Environment": environment_record(),
+                           "NotRunInDryRun": [k for k, v in checks.items() if v["Ok"] is None], "Checks": checks}, ensure_ascii=False, indent=1))
+@@ -342,3 +387,3 @@
+     write_json(os.path.join(out_dir, "preflight.json"), {"SessionId": SESSION_ID, "At": now(), "Checks": checks, "FrozenCommandGuard": FROZEN,
+-                                                         "RecordProbe": probe})
++                                                         "RecordProbe": probe, "Environment": environment_record()})
+     open(os.path.join(out_dir, TG.COPY_CHARACTERIZATION), "wb").write(char_b)
+@@ -356,2 +401,3 @@
+         rec["Aborted"] = "el binario cambió entre la preflight y el lanzamiento: no se lanza (borrar launch/ y volver a custodiar)"
++        set_outcome(rec)   # LAUNCH_FAILURE
+         write_json(os.path.join(out_dir, "run.json"), rec)
+@@ -360,5 +406,6 @@
+     rc = run_and_record(rec, [resolved] + args[1:], CLONE, prompt, out_dir, "run.json", TIMEOUT_S, TRANSCRIPT,
+-                        "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a6r2\\" + SESSION_ID + ".jsonl", CLONE)
++                        "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a6r3\\" + SESSION_ID + ".jsonl", CLONE)
+     print(json.dumps({k: rec.get(k) for k in ("SessionId", "Pid", "Start", "End", "ExitCode", "Killed", "TimedOut", "ResultMessage",
+-                                              "TransportFailure", "PostRunErrors", "LaunchError")}, ensure_ascii=False))
++                                              "TransportFailure", "PostRunErrors", "LaunchError", "Outcome", "OutcomeCategories")},
++                     ensure_ascii=False))
+     return rc
+@@ -369,3 +416,4 @@
+     reunido. Común al lanzamiento real (run.json) y a la sonda P (record-probe.json). Las excepciones de hilos (p. ej. el lector de subprocess,
+-    el de stdin) también quedan en PostRunErrors. → 0 si el hijo salió con 0, hay mensaje result y no hubo errores; si no, 1."""
++    el de stdin) también quedan en PostRunErrors. Antes de escribir, set_outcome fija Outcome y OutcomeCategories (§84, punto 4) con lo reunido;
++    nada se reconstruye después. → 0 solo con Outcome COMPLETED; si no, 1."""
+     rec["Start"] = now()
+@@ -390,5 +438,5 @@
+         threading.excepthook = prev_hook
++        set_outcome(rec)   # §84, punto 4: categoría del registro tal como queda (nunca se reconstruye después)
+         write_record(os.path.join(out_dir, record_name), rec)
+-    ok = rec.get("ExitCode") == 0 and rec.get("ResultMessage") is True and not rec["PostRunErrors"] and "LaunchError" not in rec
+-    return 0 if ok else 1
++    return 0 if rec["Outcome"] == "COMPLETED" else 1
+ 
+@@ -488,3 +536,4 @@
+                    "TasklistQuery", "ProcessGoneAfter", "StdoutSha256", "StdoutLines", "StderrBytes", "ResultMessage", "TransportFailure",
+-                   "Transcript", "CloneAfter")   # los que run.json lleva en un lanzamiento completo (opcionales: StdinError, TerminateAt, KillAt)
++                   "Transcript", "CloneAfter", "Outcome", "OutcomeCategories")   # los de un lanzamiento completo (opcionales: StdinError, TerminateAt,
++#                                                                                  KillAt, LaunchError, Aborted)
+ 
+@@ -583,2 +632,5 @@
+             probs.append("CloneAfter sin sus dos campos")
++        out["Outcome"], out["OutcomeCategories"] = back.get("Outcome"), back.get("OutcomeCategories")
++        if back.get("Outcome") != "COMPLETED" or back.get("OutcomeCategories") != ["COMPLETED"]:
++            probs.append("Outcome del registro sustituto %r (se esperaba COMPLETED)" % back.get("Outcome"))
+         if rc != 0:

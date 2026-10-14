@@ -1,0 +1,85 @@
+I-62 — COORDINATOR DISPOSITION §84
+A-6 ROUND 3 / FORMAL REVIEW AUTHORIZATION
+1. Objeto
+A-6 ronda 3: ACCEPTED FOR FORMAL REVIEW.
+Blob exacto:
+e62f27b8b1329f1b9cfa69a707feb31d22bad1d1
+Commit de publicación:
+a128efef
+Conservar los blobs del instrumento y aceptante, las autorizaciones Owner y las evidencias históricas.
+2. Kit de revisión
+Autorizar preparar un único kit de revisión formal independiente para esta candidata.
+Reutilizar el kit acreditado anterior en cuanto resulte compatible y corregir únicamente los defectos demostrados de lanzamiento y decodificación.
+El lanzamiento debe usar exactamente:
+python -B kit/launch.py
+No añadir flags, variables o sustituciones sin reflejarlas en el kit congelado.
+3. Precheck
+Autorizar un precheck de registro con un proceso sustituto que no invoque ningún modelo.
+Puede ejecutarse en el dry run y como precondición de lanzamiento real.
+No debe crear un run.json ficticio de la revisión, modificar el clon ni consumir presupuesto de modelo.
+Si falla: STOP antes de invocar al Architect.
+4. Errores del lanzador
+El lanzador debe producir una evidencia inequívoca de ejecución y custodia.
+Distinguir:
+
+* fallo del proceso de revisión;
+* fallo del transporte;
+* fallo posterior de escritura o custodia;
+* resultado de contenido del Architect.
+
+Cualquier defecto de integridad impide ACCREDITED.
+No reconstruir registros después de la corrida.
+5. Transport gate
+Corregir el manejo de la codificación de Windows con una estrategia explícita y pruebas negativas.
+No alterar el binario ni su configuración.
+Congelar y custodiar el kit corregido antes del lanzamiento.
+6. Revisión
+Exigir una revisión independiente y acotada sobre:
+
+* cierre de A62-A6R2-R1;
+* cierre de A62-A6R2-R2;
+* coherencia de N4, nc1 y VERIFY sin instrumento;
+* reconstrucción desde eventos reales;
+* cierre efectivo de entradas;
+* compatibilidad con el aceptante fijado;
+* autorización Owner y alcance de VERIFY;
+* riesgos G1–G6;
+* hallazgos opcionales O1–O5.
+
+Los hallazgos que dependan de una sesión real deben mantenerse como precondiciones fail-closed, sin considerarlos acreditados anticipadamente.
+7. Lanzamiento
+Una vez congelado el kit:
+
+* verificar identidad del binario claude-cli;
+* verificar integridad del clon, manifest y fuentes;
+* verificar objeto exacto A-6;
+* comprobar vigencia de autorizaciones;
+* ejecutar dry run con cero bloqueos;
+* lanzar UNA sola revisión formal si todo es conforme.
+
+Límite: 3,600 segundos.
+Sin reintento.
+Sin acreditación excepcional.
+Si la preparación necesita una modificación material de las autoridades congeladas, detenerse y presentarla antes del lanzamiento.
+8. Resultado
+Ejecutar el auditor sobre la corrida completa, conservar sus resultados sin modificación y presentar los hallazgos.
+No declarar A-6 AGREED hasta una revisión ACCREDITED y una disposición posterior del Coordinator.
+9. Límites
+No ejecutar Codex.
+No abrir FX-U2.
+No crear B1.
+No modificar I-65 ni infraestructura compartida.
+No ampliar ADR-0046 #9.
+No alterar D.5.
+I-64 mantiene prioridad de recursos.
+10. Entrega
+Informar:
+
+* kit y commit de custodia;
+* preflight y pruebas del lanzador;
+* corrida, veredicto y auditor;
+* R1/R2, opcionales y G1–G6;
+* nueva decisión indispensable;
+* siguiente paso mínimo hacia C-24.
+
+No declarar A-6 AGREED, FX-02 PASS, F6 GATE PASS ni integración anticipadamente.

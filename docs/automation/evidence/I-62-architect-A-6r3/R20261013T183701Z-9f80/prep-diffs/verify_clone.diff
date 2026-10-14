@@ -1,0 +1,151 @@
+--- ronda2/kit/verify_clone.py
++++ ronda3/kit/verify_clone.py
+@@ -1,4 +1,4 @@
+-"""Verificación mecánica del clon limpio y del run de la ÚNICA revisión formal de la ronda 2 de A-6 (decisiones §80, punto 6) por claude-cli, antes
+-del lanzamiento (la identidad la verifica el invocador, porque el revisor no tiene herramientas de ejecución), con la reproducción de las
+-comprobaciones estáticas de la ronda 2 (guardas a6r2-guards.py). Adaptado del verify_clone.py del kit de la ronda 1 (R20261011T215735Z-c434).
++"""Verificación mecánica del clon limpio y del run de la ÚNICA revisión formal de la ronda 3 de A-6 (decisiones §84) por claude-cli, antes del
++lanzamiento (la identidad la verifica el invocador, porque el revisor no tiene herramientas de ejecución), con la reproducción de las comprobaciones
++estáticas de la ronda 3 (guardas a6r3-guards.py). Adaptado del verify_clone.py del kit de la ronda 2 (R20261012T195511Z-e5c3).
+ 
+@@ -6,20 +6,21 @@
+ ignorados); ningún objeto fuera de la historia de HEAD y ninguna etiqueta fuera de ella; los blobs designados (los de CanonicalInputs del cierre y
+-el del registro de caracterización que fija la compuerta); la historia del objeto (eac473c0 en el padre de la publicación; el blob de la ronda 2
+-en la publicación, en la custodia de las guardas y en el commit del clon; a6r2-guards.py, a6r2-selftest.json y preflight.md de r2/ sin cambio
+-desde la publicación; el resultado `run` sin cambio desde su custodia); commits presentes (los de la ronda 1, §80, el paquete B-min, la base del
+-mapa y la caracterización) y ausentes (los del Freeze y de V14, anteriores al rebase); sin enlaces simbólicos ni uniones en el árbol de trabajo ni
+-entradas 120000 en el índice; core.autocrlf; el run (exactamente order.txt, prompt.md y a6-r1.md; order.txt con el SHA-256 y los bytes que
+-declara decisiones §80 en el commit; a6-r1.md con el blob eac473c0; cada archivo idéntico a la copia del kit y a RunFileHashes del cierre;
+-prompt.md sin salto de línea final ni CR y en UTF-8); el registro de caracterización (su SHA-256 en el clon = el de transport-gate.json); que no
+-exista ningún directorio de proyecto de claude-cli para el clon o el run (patrón D--r62-arch-a6r2*) ni una transcripción con el session id
+-fijado; y una preflight de las guardas de la ronda 2 (evidencia del invocador: el revisor no la ejecuta), con la salida y los temporales en
+-<kit-a6r2-review>/.tmp/ex1, que se borra. Como en la ronda 1, la preflight ejecuta el a6r2-guards.py del clon con --repo = el worktree de la
+-rama, solo lectura (las guardas leen con GIT_OPTIONAL_LOCKS=0 y GIT_NO_REPLACE_OBJECTS=1; ninguna escritura), y con --a6 = el archivo del clon:
+-  * `a6r2-guards.py run --repo <worktree> --base <padre de la publicación> --head <publicación>`: su salida, entera, igual al resultado `run`
+-    custodiado;
+-  * `a6r2-guards.py self-test --repo <worktree> --a6 <A-6 del clon> --base <la base que registra la autoprueba custodiada en «Repo»>`: Result PASS,
+-    ToolBlob y A6TextBlob del commit, todos los mutantes muertos, e igual entera a la autoprueba custodiada.
++el del registro de caracterización que fija la compuerta); la historia del objeto (86da0ae7 en el padre de la publicación; el blob de la ronda 3
++en la publicación, en la custodia de las guardas y en el commit del clon; a6r3-guards.py, a6r3-selftest.json, a6r3-sources-for-reviewer.json y
++preflight.md de r3/ sin cambio desde la publicación; el resultado `run` sin cambio desde su custodia); commits presentes (los de las rondas 1 y 2,
++la revisión de la ronda 2, §83 y §84, el paquete B-min, la base del mapa y la caracterización) y ausentes (los del Freeze y de V14, anteriores al
++rebase); sin enlaces simbólicos ni uniones en el árbol de trabajo ni entradas 120000 en el índice; core.autocrlf; el run (exactamente order.txt,
++prompt.md y a6-r2.md; order.txt con el SHA-256 y los bytes que declara decisiones §84 en el commit; a6-r2.md con el blob 86da0ae7; cada archivo
++idéntico a la copia del kit y a RunFileHashes del cierre; prompt.md sin salto de línea final ni CR y en UTF-8); el registro de caracterización (su
++SHA-256 en el clon = el de transport-gate.json); que no exista ningún directorio de proyecto de claude-cli para el clon o el run (patrón
++D--r62-arch-a6r3*) ni una transcripción con el session id fijado; y una preflight de las guardas de la ronda 3 (evidencia del invocador: el revisor
++no la ejecuta), con la salida y los temporales en <kit-a6r3-review>/.tmp/ex1, que se borra. Como en la ronda 2, la preflight ejecuta el
++a6r3-guards.py del clon con --repo = el worktree de la rama, solo lectura (las guardas leen con GIT_OPTIONAL_LOCKS=0 y GIT_NO_REPLACE_OBJECTS=1;
++ninguna escritura), y con --a6 = el archivo del clon:
++  * `a6r3-guards.py run --repo <worktree> --base <padre de la publicación> --head <publicación>`: su salida, entera, igual al resultado `run`
++    custodiado (PASS, 9cd074aa..a128efef);
++  * `a6r3-guards.py self-test --repo <worktree> --a6 <A-6 del clon> --base <la base que registra la autoprueba custodiada en «Repo»>`: Result PASS,
++    ToolBlob y A6TextBlob del commit, todos los mutantes muertos (694/694), e igual entera a la autoprueba custodiada.
+ Las guardas escriben solo --out y su --tmp; se ejecutan con el intérprete aislado (-I -B) y el cwd en el clon, que se comprueba limpio al
+-terminar. No ejecuta el paquete B-min, la reproducción ni sus pruebas. Escribe clone-verification.json junto a este script. No escribe en el clon
+-ni en el worktree. (Preparado en la fase 1; se ejecuta por primera vez en la fase 2, cuando existan el commit de la publicación y el clon.)
++terminar. No ejecuta el paquete B-min, las pruebas del aceptante ni la evidencia estática. Escribe clone-verification.json junto a este script. No
++escribe en el clon ni en el worktree.
+ Uso: python -B verify_clone.py
+@@ -37,7 +38,8 @@
+ KIT = os.path.dirname(os.path.abspath(__file__))
+-CLONE, RUN = r"D:\r62-arch-a6r2", r"D:\r62-arch-a6r2-run"
+-OBJECT, A6R1_BLOB = "docs/initiatives/I-62-A-6.md", "eac473c0d2e58cf1c4594f48a8816b3833af6509"
+-SESSION_ID = "d95fcaba-f7db-4408-af85-497e565d114e"
+-R2 = "docs/automation/evidence/I-62-A6/r2/"
+-GUARDS, SELFTEST, GUARDS_RUN_RESULT, PREFLIGHT = (R2 + n for n in ("a6r2-guards.py", "a6r2-selftest.json", "a6r2-guards-result-run.json", "preflight.md"))
++CLONE, RUN = r"D:\r62-arch-a6r3", r"D:\r62-arch-a6r3-run"
++OBJECT, A6R2_BLOB = "docs/initiatives/I-62-A-6.md", "86da0ae770e683a647f2724860a4bd890061154d"
++SESSION_ID = "3f6938fa-d6b4-4494-bacb-684ce6287624"
++R3 = "docs/automation/evidence/I-62-A6/r3/"
++GUARDS, SELFTEST, GUARDS_RUN_RESULT, PREFLIGHT, SOURCES = (R3 + n for n in ("a6r3-guards.py", "a6r3-selftest.json", "a6r3-guards-result-run.json",
++                                                                             "preflight.md", "a6r3-sources-for-reviewer.json"))
+ KIT_BLOBS = {
+@@ -45,4 +47,4 @@
+ }
+-ORDER_TEXTS = {"order.txt": ("80", "1342b5be1a5de104ac08a1115ddc999d2e6dfbe80100affaa16ea44439fa7f99", 2833)}
+-RUN_FILES = ["order.txt", "prompt.md", "a6-r1.md"]
++ORDER_TEXTS = {"order.txt": ("84", "8a6b560f1da473ff152732e2e6bf2b82cd60f2df4ddfc7e44f8359edc7bef2e8", 3377)}
++RUN_FILES = ["order.txt", "prompt.md", "a6-r2.md"]
+ TMP = os.path.join(os.path.dirname(KIT), ".tmp", "ex1")
+@@ -90,10 +92,12 @@
+ gate = json.load(open(os.path.join(KIT, "transport-gate.json"), encoding="utf-8"))
+-r2_at = lambda c, p: git("rev-parse", c + ":" + p, check=False).stdout.strip()
+-AT_COMMIT = {(PUB_PARENT, OBJECT): A6R1_BLOB, (PUBLICATION, OBJECT): OBJECT_BLOB, (GUARDS_RUN, OBJECT): OBJECT_BLOB, (REV, OBJECT): OBJECT_BLOB,
+-             (REV, GUARDS): r2_at(PUBLICATION, GUARDS), (REV, SELFTEST): r2_at(PUBLICATION, SELFTEST), (REV, PREFLIGHT): r2_at(PUBLICATION, PREFLIGHT),
+-             (REV, GUARDS_RUN_RESULT): r2_at(GUARDS_RUN, GUARDS_RUN_RESULT)}
+-PRESENT = {REV: "commit del clon", GUARDS_RUN: "custodia del resultado `run` de las guardas de la ronda 2", PUBLICATION: "publicación de la ronda 2",
+-           PUB_PARENT: "padre de la publicación (base de las guardas; A-6 de la ronda 1)",
++r3_at = lambda c, p: git("rev-parse", c + ":" + p, check=False).stdout.strip()
++AT_COMMIT = {(PUB_PARENT, OBJECT): A6R2_BLOB, (PUBLICATION, OBJECT): OBJECT_BLOB, (GUARDS_RUN, OBJECT): OBJECT_BLOB, (REV, OBJECT): OBJECT_BLOB,
++             (REV, GUARDS): r3_at(PUBLICATION, GUARDS), (REV, SELFTEST): r3_at(PUBLICATION, SELFTEST), (REV, PREFLIGHT): r3_at(PUBLICATION, PREFLIGHT),
++             (REV, SOURCES): r3_at(PUBLICATION, SOURCES), (REV, GUARDS_RUN_RESULT): r3_at(GUARDS_RUN, GUARDS_RUN_RESULT)}
++PRESENT = {REV: "commit del clon", GUARDS_RUN: "custodia del resultado `run` de las guardas de la ronda 3", PUBLICATION: "publicación de la ronda 3",
++           PUB_PARENT: "padre de la publicación (base de las guardas; A-6 de la ronda 2; decisiones §83)",
++           "0652161097df43fc7a0d6bdf59b2fd55ec0afdaa": "decisiones §84 registradas",
++           "802994e2a7be557d5a1e0723c3661c7ebc33c02a": "custodia de la revisión de la ronda 2",
++           "ae9fe0e94b2dea9bc840d358d876deb6a6407391": "publicación de la ronda 2 (86da0ae7)",
+            "7b7aba4645ff2430d583c641d817630282a56fdf": "publicación de la ronda 1 (eac473c0)",
+-           "6a681cec598d75976ab57af7c61a8c9da69ca990": "decisiones §80 registradas",
+            "9356edf141c795ea718a360e266334ded10d6a76": "commit del paquete B-min",
+@@ -120,3 +124,3 @@
+               "MatchesClosure": sha(b) == closure["RunFileHashes"][n]["Sha256"] and len(b) == closure["RunFileHashes"][n]["Bytes"]}
+-run["a6-r1.md"]["GitBlob"] = git_blob(open(os.path.join(RUN, "a6-r1.md"), "rb").read())
++run["a6-r2.md"]["GitBlob"] = git_blob(open(os.path.join(RUN, "a6-r2.md"), "rb").read())
+ for n, (num, want_sha, size) in ORDER_TEXTS.items():
+@@ -132,6 +136,6 @@
+ projects = os.path.join(os.path.expanduser("~"), ".claude", "projects")
+-project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(projects, "D--r62-arch-a6r2*")))
++project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(projects, "D--r62-arch-a6r3*")))
+ prior_sessions = glob.glob(os.path.join(projects, "*", SESSION_ID + ".jsonl"))
+-r2_pub = set(n for n in git("ls-tree", "-r", "--name-only", PUBLICATION, "--", R2).stdout.split("\n") if n)
+-r2_now = set(n for n in git("ls-tree", "-r", "--name-only", REV, "--", R2).stdout.split("\n") if n)
++r3_pub = set(n for n in git("ls-tree", "-r", "--name-only", PUBLICATION, "--", R3).stdout.split("\n") if n)
++r3_now = set(n for n in git("ls-tree", "-r", "--name-only", REV, "--", R3).stdout.split("\n") if n)
+ doc = {
+@@ -154,3 +158,3 @@
+     "BlobsAtCommits": at_commit,
+-    "R2AddedAfterPublication": sorted(r2_now - r2_pub), "R2RemovedAfterPublication": sorted(r2_pub - r2_now),
++    "R3AddedAfterPublication": sorted(r3_now - r3_pub), "R3RemovedAfterPublication": sorted(r3_pub - r3_now),
+     "PublicationParentOf": git("rev-parse", PUBLICATION + "^").stdout.strip(),
+@@ -163,3 +167,3 @@
+                                   "MatchesGate": char_sha == gate["Characterization"]["Sha256"], "GateStatus": gate.get("Status")},
+-    "ClaudeProjectDirsForCloneOrRun": {"Pattern": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a6r2*", "Found": project_dirs},
++    "ClaudeProjectDirsForCloneOrRun": {"Pattern": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a6r3*", "Found": project_dirs},
+     "PriorTranscriptsForSessionId": {"SessionId": SESSION_ID, "Found": len(prior_sessions)},
+@@ -170,4 +174,6 @@
+                                  env=dict(os.environ, GIT_OPTIONAL_LOCKS="0")).stdout.strip()
++wt_status = lambda: subprocess.run(["git", "-C", WORKTREE, "status", "--porcelain"], capture_output=True, text=True, encoding="utf-8",
++                                   errors="replace", env=dict(os.environ, GIT_OPTIONAL_LOCKS="0")).stdout
+ pre = {"Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal (solo lectura de git)",
+-       "WorktreeHeadBefore": wt_head()}
++       "WorktreeHeadBefore": wt_head(), "WorktreeStatusBefore": wt_status()}
+ out_run, out_st = os.path.join(TMP, "run.json"), os.path.join(TMP, "st.json")
+@@ -202,3 +208,3 @@
+     pre["SelfTest"]["OutputError"] = str(e)
+-pre["WorktreeHeadAfter"] = wt_head()
++pre["WorktreeHeadAfter"], pre["WorktreeStatusAfter"] = wt_head(), wt_status()
+ shutil.rmtree(TMP)
+@@ -212,8 +218,8 @@
+                     not doc["TagsNotMergedIntoHead"] and all(v["Match"] for v in doc["Blobs"].values()) and
+-                    all(v["Expected"] == v["Got"] and v["Got"] for v in at_commit.values()) and OBJECT_BLOB != A6R1_BLOB and
+-                    doc["PublicationParentOf"] == PUB_PARENT and GUARDS_RUN_RESULT in doc["R2AddedAfterPublication"] and
+-                    not doc["R2RemovedAfterPublication"] and
++                    all(v["Expected"] == v["Got"] and v["Got"] for v in at_commit.values()) and OBJECT_BLOB != A6R2_BLOB and
++                    doc["PublicationParentOf"] == PUB_PARENT and GUARDS_RUN_RESULT in doc["R3AddedAfterPublication"] and
++                    not doc["R3RemovedAfterPublication"] and
+                     all(v["Present"] for v in doc["CommitsPresent"].values()) and not any(v["Present"] for v in doc["CommitsAbsent"].values()) and
+                     doc["IndexSymlinks"] == 0 and not reparse and doc["CoreAutocrlf"] == "false" and run_listing == sorted(RUN_FILES) and
+-                    all(v["IdenticalToKitCopy"] and v["MatchesClosure"] for v in run.values()) and run["a6-r1.md"]["GitBlob"] == A6R1_BLOB and
++                    all(v["IdenticalToKitCopy"] and v["MatchesClosure"] for v in run.values()) and run["a6-r2.md"]["GitBlob"] == A6R2_BLOB and
+                     all(run[n]["MatchesDecisions"] for n in ORDER_TEXTS) and
+@@ -224,6 +230,7 @@
+                     gr["ExitCode"] == 0 and gr.get("Result") == "PASS" and gr.get("WholeEqualsCustodied") is True and
++                    gr.get("Base") == PUB_PARENT and gr.get("Head") == PUBLICATION and
+                     gs["ExitCode"] == 0 and gs.get("Result") == "PASS" and gs.get("A6TextBlob") == OBJECT_BLOB and
+-                    gs.get("ToolBlob") == AT_COMMIT[(REV, GUARDS)] and gs.get("Mutants") == gs.get("MutantsKilled") and
++                    gs.get("ToolBlob") == AT_COMMIT[(REV, GUARDS)] and gs.get("Mutants") == gs.get("MutantsKilled") and bool(gs.get("Mutants")) and
+                     gs.get("WholeEqualsCustodied") is True and
+-                    pre["WorktreeHeadBefore"] == pre["WorktreeHeadAfter"] and
++                    pre["WorktreeHeadBefore"] == pre["WorktreeHeadAfter"] and pre["WorktreeStatusBefore"] == pre["WorktreeStatusAfter"] and
+                     doc["StatusAfterPreflight"] == "")

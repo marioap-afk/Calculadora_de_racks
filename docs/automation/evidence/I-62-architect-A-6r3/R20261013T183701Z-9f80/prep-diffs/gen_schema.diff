@@ -1,0 +1,142 @@
+--- ronda2/prep/gen_schema.py
++++ ronda3/prep/gen_schema.py
+@@ -1,15 +1,22 @@
+-"""Genera kit/result.schema.json (rackcad-a6r2-architect-review/0) para la ÚNICA revisión formal de la ronda 2 de A-6 (decisiones §80, punto 6).
++"""Genera kit/result.schema.json (rackcad-a6r3-architect-review/0) para la ÚNICA revisión formal de la ronda 3 de A-6 (decisiones §84, punto 6).
+ 
+-Derivado de prep/gen_schema.py del kit de la ronda 1 (rackcad-a6-architect-review/0, R20261011T215735Z-c434): los mismos campos y las mismas
+-palabras clave ya medidas con claude-cli 2.1.293 (type, additionalProperties, required, properties, enum, pattern, minLength, minItems, items;
+-sin $ref, const, anyOf, maxLength ni maxItems), más los campos que exige §80, punto 6:
+-  * DirectReads (lectura directa; debe incluir V14 L2333-L2334 leídas con Read en el archivo de V14: lo comprueba el auditor);
+-  * Round1FindingResolution (A62-A6-R1..R5: CORRECTED | PARTIALLY_CORRECTED | NOT_CORRECTED);
+-  * Round1OptionalDisposition (A62-A6-O1..O3: INCORPORATED | ACCEPTABLE_AS_IS | NOT_ADDRESSED);
+-  * GapAssessment (G1..G6: ACCEPTABLE_RESIDUAL | REQUIRES_PIECE_CHANGE | REQUIRES_TEXT_CHANGE | REQUIRES_OWNER_DECISION; MitigationTested);
+-  * M01Verification (materialidad M-01);
+-  * AcceptorCodeContrast (cada afirmación de A6-5, regla 2, y de A6-3, reglas 5-6, frente a las líneas de bmin_accept.py);
+-  * ProvenanceIntegrityAtUse (escritura de preparación, momento de uso, pasos (i)-(viii), orden declarada, fidelidad por los bytes, fallo cerrado).
+-Los hallazgos nuevos llevan ids A62-A6R2-R<n> / A62-A6R2-O<n>, distintos de los de la ronda 1 (A62-A6-R1..R5, O1..O3), que aquí solo se disponen.
+-La unicidad, la cobertura exacta de ids y la coherencia las comprueba el auditor (post-review.py v5.2-a6r2).
++Derivado de prep/gen_schema.py del kit de la ronda 2 (rackcad-a6r2-architect-review/0, R20261012T195511Z-e5c3): las mismas palabras clave ya
++medidas con claude-cli 2.1.293 (type, additionalProperties, required, properties, enum, pattern, minLength, minItems, items; sin $ref, const, anyOf,
++maxLength ni maxItems) y los mismos campos de identidad, Step0 (siete booleanas, ahora las del Paso 0 de la ronda 3), DirectReads, Reads, hallazgos,
++GapAssessment, AcceptorCodeContrast, OwnerAuthorityCheck, IfAgreed, KnownLimitations y RecommendedNextAction. La revisión de la ronda 3 es ACOTADA
++(§84, punto 6): en lugar de los temas, los deltas, la materialidad, la separabilidad, la compatibilidad, las superficies, D.5 y la procedencia de
++la ronda 2, el esquema tiene un campo por cada punto que nombra §84, punto 6:
++  * Round2FindingResolution: cierre de A62-A6R2-R1 y A62-A6R2-R2 (CORRECTED | PARTIALLY_CORRECTED | NOT_CORRECTED);
++  * NegativeCaseCoherence: coherencia de N4, nc1 y VERIFY sin instrumento (COHERENT | INCOHERENT);
++  * ReconstructionFromRealEvents y EffectiveInputClosure: reconstrucción desde eventos reales y cierre efectivo de entradas
++    (ADEQUATE_AS_FAIL_CLOSED_PRECONDITION | INADEQUATE);
++  * AcceptorCodeContrast: compatibilidad con el aceptante fijado, nueve afirmaciones frente al código de bmin_accept.py (MATCHES | DIFFERS);
++  * OwnerAuthorizationAndVerifyScope: autorización del Owner y alcance de VERIFY;
++  * GapAssessment: riesgos G1-G6;
++  * Round2OptionalDisposition: hallazgos opcionales O1-O5 (INCORPORATED | PARTLY_INCORPORATED | DECLINED_WITH_REASON | NOT_ADDRESSED);
++  * RealSessionPreconditions: lista explícita de las precondiciones que dependen de una sesión real o de una disposición futura, cada una
++    KEPT_FAIL_CLOSED (A-6 la mantiene como precondición con fallo cerrado, sin acreditarla de antemano) o TREATED_AS_MET (A-6 la da por cumplida:
++    exige un REQUIRED; lo comprueba el auditor).
++Los hallazgos nuevos llevan ids A62-A6R3-R<n> / A62-A6R3-O<n>. La unicidad, la cobertura exacta de ids y la coherencia las comprueba el auditor
++(post-review.py v5.3-a6r3).
+ Uso: python -B gen_schema.py <kit dir>
+@@ -25,20 +32,18 @@
+ HEX40N = {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"}
+-FID = {"type": "string", "pattern": "^A62-A6R2-(R|O)[1-9][0-9]*$"}
++FID = {"type": "string", "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"}
+ CNF = {"enum": ["CONFIRMED", "NOT_CONFIRMED", "NOT_DETERMINED"]}
+-TOPICS = ["Q-A6-01", "Q-A6-02", "Q-A6-06/07", "Q-A6-12"]
+-DELTAS = ["A6-%d" % i for i in range(1, 10)]
+-ROUND1_REQUIRED = ["A62-A6-R%d" % i for i in range(1, 6)]
+-ROUND1_OPTIONAL = ["A62-A6-O%d" % i for i in range(1, 4)]
++ROUND2_REQUIRED = ["A62-A6R2-R1", "A62-A6R2-R2"]
++ROUND2_OPTIONAL = ["A62-A6R2-O%d" % i for i in range(1, 6)]
+ GAPS = ["G%d" % i for i in range(1, 7)]
+-ACCEPTOR_CLAIMS = ["CHECK_IDS", "STATUS_VALUES", "WAIVABLE", "DECISION_FORMULA", "EXIT_CODES", "R8_MANUAL", "R5_DATA_CONDITION",
+-                   "R6_DATA_CONDITION", "R7_DATA_CONDITION", "R4_INPUTS", "R10_RELAY_FACTS", "REQUEST_REPO", "REQUEST_TOOL_FROM_OBJECT",
+-                   "REQUEST_INTERPRETER", "REQUEST_RUNS", "REQUEST_CLOSURE", "REQUEST_NOT_APPLICABLE"]
+-PROVENANCE_ITEMS = ["PREPARATION_WRITE", "TIMING_AT_USE", "POU_I_NO_REPLACE_REFS", "POU_II_NO_GRAFTS_ALTERNATES_SHALLOW",
+-                    "POU_III_TYPE_AND_BYTES_REHASH", "POU_IV_FSCK", "POU_V_INTERPRETER_AND_GIT", "POU_VI_NO_GIT_ENV",
+-                    "POU_VII_CONFIG_NO_INCLUDE", "POU_VIII_NO_SHADOW_EXECUTABLES", "DECLARED_ORDER", "FIDELITY_BY_BYTES", "FAIL_CLOSED"]
+-STEP0 = ["V14DirectReadL2333L2334", "OrderReadWhole", "Decisions80DeclaresOrderBytesAndSha256", "Decisions79RoundOneDisposition",
+-         "GuardsRunModeBaseHeadResult", "SelftestA6TextBlobMatchesObject", "Round1OutputIdentifiesRunAndFindings"]
+-IFAGREED = ["ScopeLimitedToFX02F6ControllerVerify", "NineAppendOnlyParagraphs", "NoChangeToProtectedSurfaces", "FourTopicsSatisfied",
+-            "AllNineDeltasAgreed", "Round1FindingsCorrected", "GapsAcceptableAsResiduals", "AcceptorContrastMatches", "ProvenanceAtUseAdequate",
+-            "NoAdditionalOwnerDecisionRequired", "D5AndOVExcluded", "SuitableForCoordinatorAgreement"]
++NEGATIVE_CASES = ["N4", "NC1", "VERIFY_WITHOUT_INSTRUMENT"]
++ACCEPTOR_CLAIMS = ["CHECK_IDS", "WAIVABLE_SET", "DECISION_FORMULA", "EXIT_CODES", "NOT_APPLICABLE_RULES", "R4_VERIFICATION_CONDITION",
++                   "R4_NOT_RUN_AS_NON_PASS", "R4_AUTHORITY_MAP_RULE", "R3_R9_WITHOUT_RUNS"]
++REAL_SESSION_PRECONDITIONS = ["RUNS_RECONSTRUCTION_FROM_REAL_LOG", "RUNS_COMPARISON_ON_REAL_RUNS", "IDENTITY_AT_USE_IN_REAL_SHELL",
++                              "GIT_BY_NAME_IS_DECLARED_GIT", "CLOSURE_COVERAGE_R9_ON_REAL_RUNS", "ACCEPTOR_RUN_ON_MEASUREMENT_LOG",
++                              "COORDINATOR_CLOSURE_AND_RECONSTRUCTION_RULE_DISPOSITION", "NORMATIVE_READINGS_DISPOSITION_AND_PRETEST"]
++STEP0 = ["V14DirectReadL2333L2334", "OrderReadWhole", "Decisions84DeclaresOrderBytesAndSha256", "Decisions83RoundTwoDisposition",
++         "GuardsRunModeBaseHeadResult", "SelftestA6TextBlobMatchesObject", "Round2OutputIdentifiesRunAndFindings"]
++IFAGREED = ["ScopeLimitedToFX02F6ControllerVerify", "Round3ChangesLimitedToA63R6A65A67", "Round2FindingsCorrected", "NegativeCasesCoherent",
++            "ReconstructionAndClosureFailClosed", "AcceptorContrastMatches", "RealSessionPreconditionsKeptFailClosed", "GapsAcceptableAsResiduals",
++            "OwnerAuthorizationAndVerifyScopeConfirmed", "NoAdditionalOwnerDecisionRequired", "SuitableForCoordinatorAgreement"]
+ 
+@@ -58,9 +63,7 @@
+ REFS, REFS1, FIDS, STRS = arr(REF), arr(REF, minItems=1), arr(FID), arr(STR)
+-COMPAT = assessed(["COMPATIBLE", "CONFLICT", "NOT_DETERMINED"])
+-NOCH = assessed(["NO_CHANGE", "CHANGE", "NOT_DETERMINED"])
+-SCOPE = assessed(["CONFIRMED", "NOT_CONFIRMED", "NOT_DETERMINED"])
+ LINE = assessed(["LIMITED_TO_STATED_SCOPE", "EXCEEDS_STATED_SCOPE", "NOT_DETERMINED"])
++FAILCLOSED = {"enum": ["ADEQUATE_AS_FAIL_CLOSED_PRECONDITION", "INADEQUATE", "NOT_DETERMINED"]}
+ 
+ schema = obj({
+-    "Schema": {"enum": ["rackcad-a6r2-architect-review/0"]},
++    "Schema": {"enum": ["rackcad-a6r3-architect-review/0"]},
+     "RunId": {"type": "string", "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"},
+@@ -83,16 +86,17 @@
+     "Verdict": {"enum": ["AGREED", "CHANGES REQUIRED", "BLOCKED — OWNER DECISION", "NOT_ACCREDITED"]},
+-    "RequiredFindings": arr(obj({"FindingId": {"type": "string", "pattern": "^A62-A6R2-R[1-9][0-9]*$"}, "Section": TXT, "ViolatedInvariant": STR,
++    "RequiredFindings": arr(obj({"FindingId": {"type": "string", "pattern": "^A62-A6R3-R[1-9][0-9]*$"}, "Section": TXT, "ViolatedInvariant": STR,
+                                  "Counterexample": STR, "Evidence": REFS1, "WhyItMatters": TXT, "CorrectionRequired": TXT})),
+-    "OptionalFindings": arr(obj({"FindingId": {"type": "string", "pattern": "^A62-A6R2-O[1-9][0-9]*$"}, "Section": TXT, "Note": TXT,
++    "OptionalFindings": arr(obj({"FindingId": {"type": "string", "pattern": "^A62-A6R3-O[1-9][0-9]*$"}, "Section": TXT, "Note": TXT,
+                                  "Evidence": REFS1, "SuggestedCorrection": STR})),
+-    "TopicVerdicts": arr(obj({"Topic": {"enum": TOPICS}, "Disposition": {"enum": ["SATISFIED", "NOT_SATISFIED", "NEEDS_OWNER"]},
+-                              "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
+-    "Round1FindingResolution": arr(obj({"Round1Finding": {"enum": ROUND1_REQUIRED},
++    "Round2FindingResolution": arr(obj({"Round2Finding": {"enum": ROUND2_REQUIRED},
+                                         "Status": {"enum": ["CORRECTED", "PARTIALLY_CORRECTED", "NOT_CORRECTED"]},
+                                         "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
+-    "Round1OptionalDisposition": arr(obj({"Round1Optional": {"enum": ROUND1_OPTIONAL},
+-                                          "Status": {"enum": ["INCORPORATED", "ACCEPTABLE_AS_IS", "NOT_ADDRESSED"]},
+-                                          "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
+-    "DeltaVerdicts": arr(obj({"Delta": {"enum": DELTAS}, "Verdict": {"enum": ["AGREED", "CHANGES REQUIRED"]}, "Rationale": TXT,
+-                              "ClauseRefs": REFS, "FindingIds": FIDS})),
++    "NegativeCaseCoherence": arr(obj({"Case": {"enum": NEGATIVE_CASES}, "Status": {"enum": ["COHERENT", "INCOHERENT"]}, "Rationale": TXT,
++                                      "ClauseRefs": REFS, "FindingIds": FIDS})),
++    "ReconstructionFromRealEvents": obj({"Assessment": FAILCLOSED, "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS}),
++    "EffectiveInputClosure": obj({"Assessment": FAILCLOSED, "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS}),
++    "AcceptorCodeContrast": arr(obj({"Claim": {"enum": ACCEPTOR_CLAIMS}, "A6Refs": REFS1, "AcceptorRefs": REFS1,
++                                     "Status": {"enum": ["MATCHES", "DIFFERS"]}, "Rationale": TXT, "FindingIds": FIDS})),
++    "OwnerAuthorizationAndVerifyScope": obj({"LineA": LINE, "LineB": LINE, "VerifyOnly": CNF, "PinnedBlobsUnchanged": CNF,
++                                             "NoResultAcceptedInAdvance": CNF, "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS}),
+     "GapAssessment": arr(obj({"Gap": {"enum": GAPS},
+@@ -100,22 +104,8 @@
+                               "MitigationTested": {"enum": ["yes", "no", "partial"]}, "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
+-    "M01Verification": obj({"A6Declared": {"enum": ["yes", "no", "NOT_DETERMINED"]}, "Activated": {"enum": ["yes", "no", "UNKNOWN"]},
+-                            "Agreement": {"enum": ["AGREE", "DISAGREE", "NOT_DETERMINED"]}, "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS}),
+-    "MaterialityConfirmation": arr(obj({"Id": {"enum": ["M-0%d" % i for i in range(1, 9)]}, "A6Declared": {"enum": ["yes", "no"]},
+-                                        "ReviewerAssessment": {"enum": ["yes", "no", "UNKNOWN"]}, "Agreement": {"enum": ["AGREE", "DISAGREE"]},
+-                                        "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
+-    "AcceptorCodeContrast": arr(obj({"Claim": {"enum": ACCEPTOR_CLAIMS}, "A6Refs": REFS1, "AcceptorRefs": REFS1,
+-                                     "Status": {"enum": ["MATCHES", "DIFFERS"]}, "Rationale": TXT, "FindingIds": FIDS})),
+-    "ProvenanceIntegrityAtUse": arr(obj({"Item": {"enum": PROVENANCE_ITEMS}, "Status": {"enum": ["ADEQUATE", "INADEQUATE"]}, "Rationale": TXT,
+-                                         "ClauseRefs": REFS, "FindingIds": FIDS})),
+-    "Separability": obj({"WithinA6NoDeltaSeparable": CNF, "SeparableFromA1toA5": CNF, "OwnerLinesSeparable": CNF, "Rationale": TXT,
+-                         "ClauseRefs": REFS, "FindingIds": FIDS}),
+-    "CompatibilityA1toA5": obj({k: COMPAT for k in ("A1", "A2", "A3", "A4", "A5")}),
+-    "NoChangeConfirmation": obj({k: NOCH for k in ("Recipe164", "AdapterCodexCli", "OutputSchemas", "FrozenBudgetsD3D5D8",
+-                                                    "RolesAndControllerAuthority", "Production", "ADR0046AndADR0048", "V14OutsideNineParagraphs")}),
+-    "ScopeConfirmation": obj({k: SCOPE for k in ("D3AppendAfterA52", "D4AppendAfterV14L2554", "D6AppendAfterV14L2587", "NoFrozenTextReplaced")}),
+-    "D5AndOwnerValidation": obj({"Disposition": {"enum": ["EXCLUSION_CORRECT", "COVER_IN_A6", "OWNER_DECISION_REQUIRED", "NOT_DETERMINED"]},
+-                                 "OwnerValidationAffected": {"enum": ["YES", "NO", "NOT_DETERMINED"]}, "Rationale": TXT, "ClauseRefs": REFS,
+-                                 "FindingIds": FIDS}),
+-    "OwnerDecisionsScope": obj({"LineA": LINE, "LineB": LINE, "SeparateAndNotImplied": CNF, "NoResultAcceptedInAdvance": CNF, "Rationale": TXT,
+-                                "ClauseRefs": REFS}),
++    "Round2OptionalDisposition": arr(obj({"Round2Optional": {"enum": ROUND2_OPTIONAL},
++                                          "Status": {"enum": ["INCORPORATED", "PARTLY_INCORPORATED", "DECLINED_WITH_REASON", "NOT_ADDRESSED"]},
++                                          "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
++    "RealSessionPreconditions": arr(obj({"Precondition": {"enum": REAL_SESSION_PRECONDITIONS},
++                                         "Status": {"enum": ["KEPT_FAIL_CLOSED", "TREATED_AS_MET"]}, "Rationale": TXT, "ClauseRefs": REFS,
++                                         "FindingIds": FIDS})),
+     "OwnerAuthorityCheck": obj({"AdditionalOwnerReservedConsequences": STRS, "OwnerDecisionRequired": NB, "Note": STR}),

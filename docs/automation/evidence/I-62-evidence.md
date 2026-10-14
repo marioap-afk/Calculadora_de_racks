@@ -4318,3 +4318,22 @@ solo desde artefactos custodiados.
   y la decodificación de Windows en la compuerta de transporte.
 - Lanzamiento solo con `python -B kit/launch.py`, tras la comprobación previa de registro con un proceso sustituto y una prueba en seco sin
   bloqueos. Una invocación, tope de 3 600 s, sin reintento. El auditor se ejecuta y su resultado se conserva sin cambios.
+
+## 166. Kit de la revisión formal única de A-6 ronda 3 congelado y custodiado (decisiones §84, puntos 2, 5 y 7; no lanzado)
+
+- **Kit** [`I-62-architect-A-6r3/R20261013T183701Z-9f80`](I-62-architect-A-6r3/R20261013T183701Z-9f80/README.md) (`kit-manifest.json` `771d9f4629a2b82a…`; 25 archivos de `kit/`;
+  diferencias con el kit de la ronda 2 en `prep-diffs/`). Lo preparó un agente, subagente de la sesión que redactó A-6 (declarado en el README):
+  - objeto: A-6 ronda 3, blob `e62f27b8`; clon `D:\r62-arch-a6r3` en `9b8b66a2` (con `a128efef`, la custodia de las guardas `9a30c9a6`, las
+    copias legibles de `r3/` y decisiones §84); cierre de 282 archivos (9 612 179 bytes), todos UTF-8;
+  - transporte sin cambio: `claude-cli` 2.1.293 (`8693c4a0…`), `opus-5-5` xhigh, compuerta D-01 MEASURED; tope de 3 600 s, sin reintento;
+  - lanzamiento solo con `python -B kit/launch.py`, que el propio lanzador comprueba; comprobación previa de registro con un proceso sustituto, en
+    la prueba en seco y antes del lanzamiento real; `run.json` siempre escrito una vez lanzado el proceso, con `Outcome` (proceso de revisión,
+    transporte, registro posterior o lanzamiento) separado del dictamen;
+  - compuerta de transporte: `--version` y `auth status` en bytes y UTF-8 estricto, con fallo cerrado; sin tocar el binario ni su configuración;
+  - compuerta 11: §84 con su encabezado, el blob completo y el SHA-256 de su texto fijado (`4f0530fc…`); bloquea si hay una sección posterior.
+- **Comprobaciones:** autoprueba 274/274 sobre el clon y el run reales; mutación 183/183 (tres mutantes muertos por excepción, con el arnés corregido
+  y declarado); `verify_clone` sin fallos, con las guardas de la ronda 3 reproducidas iguales a las custodiadas; `--record-probe` con código 0;
+  prueba en seco con `BlockingChecks` = [] y la §84 como autorización.
+- **Desviaciones declaradas:** el entorno heredado por `claude.exe` es el de la sesión que lanza, como en las rondas 1 y 2 (§84 prohíbe añadir o
+  quitar variables sin reflejarlo en el kit); el `clone_git` del auditor sigue decodificando con la configuración regional, porque esa regla se
+  conserva byte a byte y su salida es ASCII en un clon limpio.

@@ -1,0 +1,146 @@
+--- ronda2/kit/prepare_clone.py
++++ ronda3/kit/prepare_clone.py
+@@ -1,21 +1,22 @@
+-"""Paso del clon de la ÚNICA revisión formal de la ronda 2 de A-6 (decisiones §80, punto 6; fase 2): crea el clon de lectura D:\\r62-arch-a6r2 y el
+-run D:\\r62-arch-a6r2-run, y escribe kit/kit-params.json. Lo ejecuta finish_kit.py (o la sesión principal), una sola vez. Adaptado del
+-prepare_clone.py del kit de la ronda 1.
++"""Paso del clon de la ÚNICA revisión formal de la ronda 3 de A-6 (decisiones §84): crea el clon de lectura D:\\r62-arch-a6r3 y el run
++D:\\r62-arch-a6r3-run, y escribe kit/kit-params.json. Lo ejecuta finish_kit.py (o quien prepara el kit), una sola vez. Adaptado del prepare_clone.py
++del kit de la ronda 2.
+ 
+-Argumentos: <CLONE_COMMIT> <PUBLICATION> [<GUARDS_RUN_COMMIT>], SHA completos. CLONE_COMMIT es el commit que nombra el mensaje de la fase 2 (la
+-publicación de la ronda 2 o un commit posterior que custodie el resultado `run` de sus guardas); PUBLICATION, el commit que publica la A-6 de la
+-ronda 2 (su padre tiene la de la ronda 1); GUARDS_RUN_COMMIT, el que custodia el resultado `run` (por defecto, CLONE_COMMIT).
++Argumentos: <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT>, SHA completos. CLONE_COMMIT es el commit que nombra la orden del kit (contiene la
++publicación de la ronda 3, la custodia del resultado `run` de sus guardas, decisiones §84 y las copias legibles de r3/); PUBLICATION, el commit
++que publica la A-6 de la ronda 3 (su padre tiene la de la ronda 2); GUARDS_RUN_COMMIT, el que custodia el resultado `run`.
+ Comprueba antes de escribir nada (solo lectura de git en el worktree de I-62, con GIT_OPTIONAL_LOCKS=0): los tres son commits; CLONE_COMMIT es
+-alcanzable desde la punta de la rama; PUBLICATION ≤ GUARDS_RUN_COMMIT ≤ CLONE_COMMIT; el padre de PUBLICATION tiene la A-6 de la ronda 1 (eac473c0);
+-PUBLICATION, GUARDS_RUN_COMMIT y CLONE_COMMIT tienen el mismo blob de A-6, distinto del de la ronda 1; en CLONE_COMMIT, decisiones tiene §78, §79 y §80
+-y r2/ tiene el resultado `run` de las guardas; kit/order.txt es el cuerpo §80 y kit/a6-r1.md el blob eac473c0; ni el clon, ni el run, ni
+-kit/kit-params.json existen todavía. Después, con el patrón de los kits anteriores (HEAD separado en el commit, sin ramas locales ni remoto):
+-  git clone -q --no-local -c core.autocrlf=false --single-branch --branch <rama> <worktree> D:\\r62-arch-a6r2
+-  git -C D:\\r62-arch-a6r2 checkout -q --detach <CLONE_COMMIT>
+-  git -C D:\\r62-arch-a6r2 branch -D <rama>
+-  git -C D:\\r62-arch-a6r2 remote remove origin
+-  git -C D:\\r62-arch-a6r2 reflog expire --expire=now --all ; git -C D:\\r62-arch-a6r2 gc -q --prune=now
+-  D:\\r62-arch-a6r2-run\\order.txt y a6-r1.md = copias byte a byte de kit/; prompt.md lo copia finish_kit.py tras renderizarlo
+-No escribe en el worktree.
+-Uso: python -B prepare_clone.py <CLONE_COMMIT> <PUBLICATION> [<GUARDS_RUN_COMMIT>]
++alcanzable desde la punta de la rama; PUBLICATION ≤ GUARDS_RUN_COMMIT ≤ CLONE_COMMIT; el padre de PUBLICATION tiene la A-6 de la ronda 2
++(86da0ae7); PUBLICATION, GUARDS_RUN_COMMIT y CLONE_COMMIT tienen el mismo blob de A-6, distinto de los de las rondas 1 y 2; en CLONE_COMMIT,
++decisiones tiene §78, §83 y §84 (y §84 contiene el blob completo) y r3/ tiene el resultado `run` de las guardas; r3/ sin cambios desde la
++publicación salvo añadidos; kit/order.txt es el cuerpo §84 y kit/a6-r2.md el blob 86da0ae7; ni el clon, ni el run, ni kit/kit-params.json existen
++todavía. Después (HEAD separado en el commit, sin ramas locales ni remoto), clonando desde el directorio común de Git del worktree:
++  git clone -q --no-local -c core.autocrlf=false --single-branch --branch <rama> <directorio común de git> D:\\r62-arch-a6r3
++  git -C D:\\r62-arch-a6r3 checkout -q --detach <CLONE_COMMIT>
++  git -C D:\\r62-arch-a6r3 branch -D <rama>
++  git -C D:\\r62-arch-a6r3 remote remove origin
++  git -C D:\\r62-arch-a6r3 reflog expire --expire=now --all ; git -C D:\\r62-arch-a6r3 gc -q --prune=now
++  D:\\r62-arch-a6r3-run\\order.txt y a6-r2.md = copias byte a byte de kit/; prompt.md lo copia finish_kit.py tras renderizarlo
++No escribe en el worktree ni en el repositorio de origen (git clone --no-local solo lee).
++Uso: python -B prepare_clone.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT>
+ """
+@@ -31,3 +32,3 @@
+ KIT = os.path.dirname(os.path.abspath(__file__))
+-CLONE, RUN = r"D:\r62-arch-a6r2", r"D:\r62-arch-a6r2-run"
++CLONE, RUN = r"D:\r62-arch-a6r3", r"D:\r62-arch-a6r3-run"
+ WORKTREE = os.path.join(os.environ["USERPROFILE"], ".codex", "worktrees", "architecture-portabilidad-coordinador-principal")
+@@ -35,6 +36,7 @@
+ BRANCH = "architecture/portabilidad-coordinador-principal"
+-OBJECT, A6R1_BLOB = "docs/initiatives/I-62-A-6.md", "eac473c0d2e58cf1c4594f48a8816b3833af6509"
+-R2 = "docs/automation/evidence/I-62-A6/r2/"
+-RUN_RESULT = R2 + "a6r2-guards-result-run.json"
+-ORDER_SHA = "1342b5be1a5de104ac08a1115ddc999d2e6dfbe80100affaa16ea44439fa7f99"
++OBJECT = "docs/initiatives/I-62-A-6.md"
++A6R1_BLOB, A6R2_BLOB = "eac473c0d2e58cf1c4594f48a8816b3833af6509", "86da0ae770e683a647f2724860a4bd890061154d"
++R3 = "docs/automation/evidence/I-62-A6/r3/"
++RUN_RESULT = R3 + "a6r3-guards-result-run.json"
++ORDER_SHA = "8a6b560f1da473ff152732e2e6bf2b82cd60f2df4ddfc7e44f8359edc7bef2e8"
+ 
+@@ -47,3 +49,3 @@
+ def run(cmd):
+-    r = subprocess.run(cmd, capture_output=True, text=True)
++    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+     if r.returncode:
+@@ -58,7 +60,6 @@
+ def main(argv):
+-    if len(argv) not in (2, 3):
++    if len(argv) != 3:
+         print(__doc__)
+         return 2
+-    clone_commit, pub = argv[0], argv[1]
+-    grc = argv[2] if len(argv) == 3 else clone_commit
++    clone_commit, pub, grc = argv
+     for c in (clone_commit, pub, grc):
+@@ -70,5 +71,6 @@
+     if hashlib.sha256(open(os.path.join(KIT, "order.txt"), "rb").read()).hexdigest() != ORDER_SHA:
+-        raise SystemExit("kit/order.txt distinto del cuerpo §80")
+-    if git_blob(open(os.path.join(KIT, "a6-r1.md"), "rb").read()) != A6R1_BLOB:
+-        raise SystemExit("kit/a6-r1.md no es el blob eac473c0 de la ronda 1")
++        raise SystemExit("kit/order.txt distinto del cuerpo §84")
++    if git_blob(open(os.path.join(KIT, "a6-r2.md"), "rb").read()) != A6R2_BLOB:
++        raise SystemExit("kit/a6-r2.md no es el blob 86da0ae7 de la ronda 2")
++    common = wt("rev-parse", "--path-format=absolute", "--git-common-dir").stdout.strip()
+     tip = wt("rev-parse", "refs/heads/" + BRANCH).stdout.strip()
+@@ -77,5 +79,8 @@
+     dec = wt("show", clone_commit + ":docs/automation/decisions/I-62.md").stdout.split("\n")
+-    r2_pub = set(x for x in wt("ls-tree", "-r", "--name-only", pub, "--", R2).stdout.split("\n") if x)
+-    r2_now = set(x for x in wt("ls-tree", "-r", "--name-only", clone_commit, "--", R2).stdout.split("\n") if x)
++    s84 = [i for i, l in enumerate(dec) if l.startswith("## 84. ")]
++    s84_end = next((j for j in range(s84[0] + 1, len(dec)) if dec[j].startswith("## ")), len(dec)) if len(s84) == 1 else 0
++    r3_pub = set(x for x in wt("ls-tree", "-r", "--name-only", pub, "--", R3).stdout.split("\n") if x)
++    r3_now = set(x for x in wt("ls-tree", "-r", "--name-only", clone_commit, "--", R3).stdout.split("\n") if x)
+     checks = {
++        "CommonGitDirFound": bool(common) and os.path.isdir(common),
+         "CommitsExist": all(wt("cat-file", "-e", c + "^{commit}").returncode == 0 for c in (clone_commit, pub, grc)),
+@@ -84,9 +89,10 @@
+         "GuardsRunAncestorOfCloneCommit": wt("merge-base", "--is-ancestor", grc, clone_commit).returncode == 0,
+-        "Round1AtPublicationParent": wt("rev-parse", parent + ":" + OBJECT).stdout.strip() == A6R1_BLOB,
+-        "SameRound2BlobAtPublicationGuardsRunAndClone": blob != A6R1_BLOB and re.match(r"^[0-9a-f]{40}$", blob or "") is not None and
++        "Round2AtPublicationParent": wt("rev-parse", parent + ":" + OBJECT).stdout.strip() == A6R2_BLOB,
++        "SameRound3BlobAtPublicationGuardsRunAndClone": blob not in (A6R1_BLOB, A6R2_BLOB) and re.match(r"^[0-9a-f]{40}$", blob or "") is not None and
+         all(wt("rev-parse", c + ":" + OBJECT).stdout.strip() == blob for c in (pub, grc)),
+-        "Decisions78to80AtCloneCommit": all(any(l.startswith("## %d. " % n) for l in dec) for n in (78, 79, 80)),
+-        "GuardsRunResultAtCloneCommit": RUN_RESULT in r2_now,
+-        "R2UnchangedSincePublication": all(wt("rev-parse", pub + ":" + p).stdout.strip() == wt("rev-parse", clone_commit + ":" + p).stdout.strip()
+-                                           for p in r2_pub),
++        "Decisions78_83_84AtCloneCommit": all(any(l.startswith("## %d. " % n) for l in dec) for n in (78, 83, 84)),
++        "Decisions84NamesTheBlob": len(s84) == 1 and bool(blob) and blob in "\n".join(dec[s84[0]:s84_end]),
++        "GuardsRunResultAtCloneCommit": RUN_RESULT in r3_now,
++        "R3UnchangedSincePublication": all(wt("rev-parse", pub + ":" + p).stdout.strip() == wt("rev-parse", clone_commit + ":" + p).stdout.strip()
++                                           for p in r3_pub),
+     }
+@@ -96,3 +102,3 @@
+     cmds = [
+-        ["git", "clone", "-q", "--no-local", "-c", "core.autocrlf=false", "--single-branch", "--branch", BRANCH, WORKTREE, CLONE],
++        ["git", "clone", "-q", "--no-local", "-c", "core.autocrlf=false", "--single-branch", "--branch", BRANCH, common, CLONE],
+         ["git", "-C", CLONE, "checkout", "-q", "--detach", clone_commit],
+@@ -106,11 +112,13 @@
+     os.makedirs(RUN)
+-    for n in ("order.txt", "a6-r1.md"):
++    for n in ("order.txt", "a6-r2.md"):
+         shutil.copyfile(os.path.join(KIT, n), os.path.join(RUN, n))
+-    shown = [" ".join(c).replace(WORKTREE, WORKTREE_DISPLAY) for c in cmds] + [
+-        "copia byte a byte de kit/order.txt (= cuerpo §80) y kit/a6-r1.md (= blob eac473c0) → D:\\r62-arch-a6r2-run\\",
+-        "copia byte a byte de kit/prompt.md (renderizado por make_closure.py --render-prompt) → D:\\r62-arch-a6r2-run\\prompt.md (finish_kit.py)"]
+-    params = {"Schema": "rackcad-a6r2-review-kit-params/0", "Provisional": False, "CloneCommit": clone_commit, "Publication": pub,
++    common_display = "<directorio común de git del worktree (el del repositorio de trabajo)>"
++    shown = [" ".join(c).replace(common, common_display) for c in cmds] + [
++        "copia byte a byte de kit/order.txt (= cuerpo §84) y kit/a6-r2.md (= blob 86da0ae7) → D:\\r62-arch-a6r3-run\\",
++        "copia byte a byte de kit/prompt.md (renderizado por make_closure.py --render-prompt) → D:\\r62-arch-a6r3-run\\prompt.md (finish_kit.py)"]
++    params = {"Schema": "rackcad-a6r3-review-kit-params/0", "Provisional": False, "CloneCommit": clone_commit, "Publication": pub,
+               "PublicationParent": parent, "GuardsRunCommit": grc, "Object": {"Path": OBJECT, "Blob": blob},
+-              "R2AddedAfterPublication": sorted(r2_now - r2_pub), "Clone": CLONE, "Run": RUN, "Branch": BRANCH, "BranchTipAtClone": tip,
+-              "Worktree": WORKTREE_DISPLAY, "PreparedAt": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
++              "R3AddedAfterPublication": sorted(r3_now - r3_pub), "Clone": CLONE, "Run": RUN, "Branch": BRANCH, "BranchTipAtClone": tip,
++              "Worktree": WORKTREE_DISPLAY, "CloneSource": common_display,
++              "PreparedAt": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+               "PreconditionChecks": checks, "Commands": shown}
+@@ -118,4 +126,4 @@
+         f.write(json.dumps(params, ensure_ascii=False, indent=1) + "\n")
+-    print(json.dumps({"Written": ["kit-params.json", CLONE, RUN + "\\order.txt", RUN + "\\a6-r1.md"], "CloneCommit": clone_commit,
+-                      "ObjectBlob": blob, "R2AddedAfterPublication": params["R2AddedAfterPublication"]}, ensure_ascii=False))
++    print(json.dumps({"Written": ["kit-params.json", CLONE, RUN + "\\order.txt", RUN + "\\a6-r2.md"], "CloneCommit": clone_commit,
++                      "ObjectBlob": blob, "R3AddedAfterPublication": params["R3AddedAfterPublication"], "Checks": checks}, ensure_ascii=False))
+     return 0

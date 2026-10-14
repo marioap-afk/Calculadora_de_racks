@@ -1,0 +1,84 @@
+--- ronda2/transport_gate.py
++++ ronda3/transport_gate.py
+@@ -17,2 +17,9 @@
+ funciones.
++
++Codificación de Windows (kit de la ronda 3 de A-6, decisiones §84, punto 5): cli_version y auth_status (preflight 4 y 5 de launch.py) capturan la
++salida del binario en BYTES, sin text=True, y la decodifican con decode_cli_output: UTF-8 estricto; el BOM UTF-8 inicial se quita y se registra;
++nunca con la página de códigos de la consola ni con la preferida por el locale. Si no se puede decodificar (BOM UTF-16, bytes que no son UTF-8,
++salida vacía o no capturada), falla cerrado: la comprobación queda en Ok = false, con el problema y un extracto hexadecimal (en auth status, solo
++los bytes inválidos, sin contexto, para no registrar el correo ni la organización). No se toca el binario ni su configuración; la compuerta D-01
++y sus predicados no cambian.
+ 
+@@ -262,4 +269,48 @@
+ 
++UTF8_BOM = b"\xef\xbb\xbf"
++UTF16_BOMS = (b"\xff\xfe", b"\xfe\xff")
++
++
++def decode_cli_output(b, context=8):
++    """Decodificación explícita de la salida de claude.exe (decisiones §84, punto 5). Pura: la autoprueba la ejerce con bytes sintéticos.
++    UTF-8 estricto; el BOM UTF-8 inicial se quita y se registra (Bom); nunca la página de la consola ni la del locale. Falla cerrado (Ok = false,
++    Text = None) ante una salida no capturada en bytes, vacía, con BOM UTF-16 o que no es UTF-8; HexExcerpt = los bytes del problema y hasta
++    `context` bytes a cada lado (context=0: solo los bytes del problema). → {Ok, Problems, Encoding, Bytes, Bom, Text, HexExcerpt}."""
++    probs = []
++    raw = bytes(b) if isinstance(b, (bytes, bytearray)) else None
++    out = {"Encoding": "utf-8 (estricto; BOM UTF-8 inicial quitado y registrado)", "Bytes": len(raw) if raw is not None else None, "Bom": False,
++           "Text": None, "HexExcerpt": None}
++    body = raw or b""
++    if body.startswith(UTF8_BOM):
++        out["Bom"], body = True, body[len(UTF8_BOM):]
++    if raw is None:
++        probs.append("salida del binario no capturada en bytes (%s)" % type(b).__name__)
++    elif not body.strip():
++        probs.append("salida del binario vacía (%d bytes)" % len(raw))
++        out["HexExcerpt"] = body[:2 * context].hex(" ")
++    elif body[:2] in UTF16_BOMS:
++        probs.append("salida del binario con BOM UTF-16 (%s): no es UTF-8" % body[:2].hex(" "))
++        out["HexExcerpt"] = body[:2 + 2 * context].hex(" ")
++    else:
++        try:
++            out["Text"] = body.decode("utf-8", "strict")
++        except UnicodeDecodeError as e:
++            probs.append("salida del binario que no es UTF-8 estricto (posición %d: %s)" % (e.start, e.reason))
++            out["HexExcerpt"] = body[max(0, e.start - context):e.end + context].hex(" ")
++    out["Problems"], out["Ok"] = probs, not probs
++    return out
++
++
++def run_bytes(argv, cwd):
++    """Ejecuta argv y devuelve (código de salida, stdout en BYTES): sin text=True, ninguna decodificación implícita."""
++    r = subprocess.run(argv, capture_output=True, cwd=cwd)
++    return r.returncode, r.stdout
++
++
+ def cli_version(path, cwd):
+-    return subprocess.run([path, "--version"], capture_output=True, text=True, cwd=cwd).stdout.strip()
++    """`--version` en bytes, decodificado con decode_cli_output. → {Version: el texto sin espacios en los extremos, o None si no se decodifica;
++    ReturnCode; Decoding: el registro de la decodificación, sin el texto}."""
++    rc, out = run_bytes([path, "--version"], cwd)
++    d = decode_cli_output(out)
++    return {"Version": d["Text"].strip() if d["Ok"] else None, "ReturnCode": rc, "Decoding": {k: v for k, v in d.items() if k != "Text"}}
+ 
+@@ -267,9 +318,16 @@
+ def auth_status(path, cwd):
+-    """`auth status --json`: solo se conservan loggedIn, authMethod y apiProvider (ni correo ni organización; no lee credenciales)."""
+-    r = subprocess.run([path, "auth", "status", "--json"], capture_output=True, text=True, cwd=cwd)
++    """`auth status --json`: solo se conservan loggedIn, authMethod y apiProvider (ni correo ni organización; no lee credenciales). La salida se
++    captura en bytes y se decodifica con decode_cli_output con context=0 (el extracto hexadecimal, si lo hay, solo lleva los bytes inválidos)."""
++    rc, out = run_bytes([path, "auth", "status", "--json"], cwd)
++    d = decode_cli_output(out, context=0)
++    rec = {"ReturnCode": rc, "Decoding": {k: v for k, v in d.items() if k != "Text"}}
++    if not d["Ok"]:
++        return dict({"loggedIn": None, "DecodeError": True}, **rec)
+     try:
+-        a = json.loads(r.stdout)
+-        return {k: a.get(k) for k in ("loggedIn", "authMethod", "apiProvider")}
++        a = json.loads(d["Text"])
+     except ValueError:
+-        return {"loggedIn": None, "ParseError": True}
++        a = None
++    if not isinstance(a, dict):
++        return dict({"loggedIn": None, "ParseError": True}, **rec)
++    return dict({k: a.get(k) for k in ("loggedIn", "authMethod", "apiProvider")}, **rec)
+ 
