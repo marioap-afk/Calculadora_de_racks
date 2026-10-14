@@ -1379,3 +1379,13 @@ Custodia:
 | `F4-T5-PLUGIN-COMMAND-nc3/R20261014T001948Z-ab02/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
 | `F4-T5-PLUGIN-COMMAND-nc3/R20261014T001948Z-ab02/controller-verification.json` | `96EC36BBB3E5C8E0…` | `b7e479faaf61` |
 | `F4-T5-PLUGIN-COMMAND-nc3/R20261014T001948Z-ab02/relay-record.json` | `5D888716FC38C4E4…` | `5c5c40c6145c` |
+
+## 52. Revisión del Architect de F4-T6 y F4-T5 (2026-10-14T00:34:30Z)
+
+- **Participante:** subagente `claude-opus-5-5`/`high` (Architect, `SAME-SESSION ROLE`), solo lectura; cesión 2026-10-14T00:24:41Z - 2026-10-14T00:33:24Z.
+- **Resultado:** CONFORMANT WITH OBSERVATIONS; 0 REQUIRED; 10 OPTIONAL (A65-F4R-01..10); custodia en
+  `docs/automation/evidence/I-65-f4/architect-f4-t6-t5-conformance.md` (SHA-256 `F5C7876871E8282F88F69140258FC0EFD2B2ED7D374F0CDDE41AECF120D52D7B`).
+- **Controles del Owner:** K1/K2 sin cambios en el checkout principal ni en los demás worktrees; K5 sin intérpretes, RAM, AutoCAD ni accesos fuera
+  del worktree (`architect-f4-t6-t5-k5-transcript-scan.json`).
+- **Contadores finales de la unidad de cierre:** Codex 41 de 46 (29-41: planificaciones, verificaciones y controles); `attempts` 6 de 6; Workers 4
+  (T6; T5 intentos 4, 5 y 6) más 1 preparado y no lanzado; Architect 1. Sin RAM.
