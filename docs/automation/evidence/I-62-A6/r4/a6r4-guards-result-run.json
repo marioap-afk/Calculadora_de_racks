@@ -1,0 +1,1704 @@
+{
+ "Mode": "RUN",
+ "Base": "ceb8597796b756f199e1c1b153f02e95b820b44e",
+ "Head": "d66f7f4b6a7031938588378b6eef7f1c3d4e4cf7",
+ "Guards": {
+  "G1": {
+   "Check": "G1 cabecera, literales, citas, identificadores, referencias a reglas y privacidad",
+   "Checked": {
+    "Header": 33,
+    "Blocks": 45,
+    "BlockLines": 117,
+    "Lit": 36,
+    "LitByRef": 0,
+    "Self": 4,
+    "Own": 1,
+    "Notation": 4,
+    "DeltaInner": 2,
+    "ShortBlobs": 61,
+    "Hex8": 5,
+    "Hex40": 16,
+    "Hex64": 5,
+    "RuleRefs": 156
+   },
+   "PrivacyChecked": 1,
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G2": {
+   "Check": "G2 rutas del commit",
+   "Base": "ceb8597796b756f199e1c1b153f02e95b820b44e",
+   "Head": "d66f7f4b6a7031938588378b6eef7f1c3d4e4cf7",
+   "Changed": {
+    "docs/automation/evidence/I-62-A6/r4/a6r4-guards-result-preview.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/a6r4-guards.diff": "A",
+    "docs/automation/evidence/I-62-A6/r4/a6r4-guards.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/a6r4-selftest.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/a6r4-sources-for-reviewer.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/adapt_guards_r4.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/adapt_neg_r4.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/make_candidate_commit_a6r4.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/neg-fixtures/I-62-A-6.r4.draft.md": "A",
+    "docs/automation/evidence/I-62-A6/r4/neg-fixtures/a6r4-selftest.draft.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/neg_controls_a6r4.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/neg_controls_a6r4.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/preflight.md": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/derive_r4.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/SPEC.md": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/derive_indep.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/make_synth.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/run_synth.log": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/sample.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-all_present.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-d_absent_unpinned.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-d_branch_null.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_absent_unpinned.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_blob_mismatch.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_bom.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_current_39hex.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_current_empty.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_current_missing.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_current_nonexistent.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_current_null.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_current_tree.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_current_upper.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_custody_missing.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_dupkey.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_invalid_json.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_not_object.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-h_red_null.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-k_absent_unpinned.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-k_authorities_empty.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-k_invalid_json.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-mergebase_none.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-target_nonexistent.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-trx_unverifiable.json.stderr.txt": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/run_synth.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-all_present.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-d_absent_unpinned.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-d_branch_null.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_absent_unpinned.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_blob_mismatch.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_bom.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_current_39hex.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_current_empty.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_current_missing.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_current_nonexistent.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_current_null.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_current_tree.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_current_upper.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_custody_missing.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_dupkey.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_invalid_json.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_not_object.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-h_red_null.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-k_absent_unpinned.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-k_authorities_empty.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-k_invalid_json.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-mergebase_none.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-target_nonexistent.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/E-trx_unverifiable.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/all_present-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/all_present-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/d_absent_unpinned-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/d_branch_null-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/d_branch_null-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/expect.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_absent_unpinned-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_blob_mismatch-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_blob_mismatch-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_bom-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_bom-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_39hex-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_39hex-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_empty-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_empty-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_missing-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_missing-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_nonexistent-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_nonexistent-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_null-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_null-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_tree-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_tree-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_upper-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_current_upper-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_custody_missing-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_custody_missing-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_dupkey-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_dupkey-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_invalid_json-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_invalid_json-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_not_object-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_not_object-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_red_null-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/h_red_null-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/k_absent_unpinned-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/k_absent_unpinned-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/k_authorities_empty-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/k_authorities_empty-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/k_authorities_empty-K.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/k_invalid_json-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/k_invalid_json-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/k_invalid_json-K.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/mergebase_none-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/mergebase_none-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/mergebase_none-K.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/t.trx": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/target_nonexistent-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/target_nonexistent-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/trx_unverifiable-D.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/synvec/trx_unverifiable-H.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/sample.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-all_present.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-d_absent_unpinned.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-d_branch_null.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_absent_unpinned.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_blob_mismatch.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_bom.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_current_39hex.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_current_empty.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_current_missing.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_current_nonexistent.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_current_null.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_current_tree.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_current_upper.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_custody_missing.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_dupkey.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_invalid_json.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_not_object.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-h_red_null.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-k_absent_unpinned.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-k_authorities_empty.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-k_invalid_json.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-mergebase_none.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-target_nonexistent.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/vectors/syn-trx_unverifiable.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-N4-ABSENT.closure.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-N4-ABSENT.derivation.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-N4-ABSENT.vector.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-N4-STALE.closure.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-N4-STALE.derivation.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-NC1.closure.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-NC1.derivation.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-NC1.vector.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-R2.closure.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-R2.vector.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-V.closure.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-V.derivation.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/D-V.vector.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/E-D-N4-ABSENT.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/E-D-N4-STALE.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/E-D-NC1.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/derive/E-v.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-n4/E.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-n4/closure-n4-subst.closure.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-n4/closure-n4-subst.derivation.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-n4/closure-n4.closure.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-n4/closure-n4.derivation.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-n4/closure-n4.vector.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-n4/controller-output.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-n4/request-c.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-n4x/request-x-subst.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-n4x/request-x.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1/E.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1/closure-nc1.closure.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1/closure-nc1.derivation.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1/closure-nc1.vector.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1/controller-output-V1.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1/controller-output-V2.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1/request-V1.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1/request-V2.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1v3/controller-output-V3.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1v3/request-V3.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1x/closure-as-other.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1x/request-x-subst.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-nc1x/request-x.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-v/E.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-v/closure-v-strict.closure.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-v/closure-v-strict.derivation.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-v/closure-v.closure.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-v/closure-v.derivation.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-v/closure-v.vector.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-v/controller-output.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/inputs/s-v/request.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/lib_r1r4.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/lib_r3.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/lib_r4.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/make_readme_r4.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/p10-nc1.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/p11-indep.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/p8-v.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/p9-n4.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/reconstruct_runs.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/run_r4.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/summary.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/table_r3.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/table_r4.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/readable/MANIFEST.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p10-nc1.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p11-indep.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p7-derive.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p8-v.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p9-n4.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/summary.json": "A",
+    "docs/automation/evidence/I-62-A6/r4/text/make_r4_fills.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/text/make_r4_text.py": "A",
+    "docs/automation/evidence/I-62-A6/r4/text/r6b-r4.txt": "A",
+    "docs/initiatives/I-62-A-6.md": "M"
+   },
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G3": {
+   "Check": "G3 superficies prohibidas, objetos congelados, rondas 1 a 3 intactas y C-20b",
+   "Listed": 36,
+   "Frozen": 36,
+   "Mismatches": {},
+   "C20b": {
+    "ExitCode": 0,
+    "Output": "{\"result\": \"EQUAL (MV-2..MV-6)\", \"files\": 31, \"entries\": {\"MODIFIED\": 15, \"REMOVED\": 0, \"ADDED\": 53, \"ENTRY\": 2}}"
+   },
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G4": {
+   "Check": "G4 dictamen, revisiones de las rondas 1 (R1-R5, O1-O3), 2 (R1, R2, O1-O5) y 3 (R1, O1-O7), M-01..M-08 y compatibilidad",
+   "Points": 8,
+   "Findings": [],
+   "Info": [],
+   "Result": "PASS"
+  },
+  "G5": {
+   "Check": "G5 pureza del delta",
+   "Paragraphs": {
+    "A6-1": 4056,
+    "A6-2": 1875,
+    "A6-3": 9662,
+    "A6-4": 2698,
+    "A6-5": 8926,
+    "A6-6": 917,
+    "A6-7": 4908,
+    "A6-8": 1657,
+    "A6-9": 2635
+   },
+   "Info": [
+    "A6-1, A6-2, A6-4, A6-7, A6-9 y A6-8 tras A5-2 (fin de D.3); A6-5 y A6-6 tras V14 L2554 (fin de D.4); A6-3 tras V14 L2587 (fin de D.6)"
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G6": {
+   "Check": "G6 líneas del Owner (idénticas a la ronda anterior; (a) registrada en §78)",
+   "Lines": 2,
+   "Names": [
+    "A6-ADR0046-9-FX02",
+    "A6-CONTROLLER-MEDICION-CONSUMO"
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G7": {
+   "Check": "G7 identidad por blob de los instrumentos",
+   "Rows": 3,
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G8": {
+   "Check": "G8 estado y declaraciones",
+   "Findings": [],
+   "Info": [],
+   "Result": "PASS"
+  },
+  "G9": {
+   "Check": "G9 alcance de R5: solo VERIFY, PLAN excluida",
+   "Checked": {
+    "Clauses": 335,
+    "PlanClauses": 3,
+    "Sites": 11,
+    "Sources": 8
+   },
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G10": {
+   "Check": "G10 resultado del aceptante frente a sus bytes y estados normativos citados",
+   "Acceptor": {
+    "CheckIds": [
+     "R1",
+     "R2",
+     "R3",
+     "R4",
+     "R5",
+     "R6",
+     "R7",
+     "R8",
+     "R9",
+     "R10"
+    ],
+    "Waivable": [
+     "R10",
+     "R4",
+     "R5",
+     "R6",
+     "R7"
+    ],
+    "Commands": {
+     "R5": [
+      "diff",
+      "hashes",
+      "identity",
+      "scope"
+     ],
+     "R6": [
+      "clausemap"
+     ],
+     "R7": [
+      "clausemap",
+      "contract",
+      "scope"
+     ]
+    },
+    "Branches": {
+     "R5": [
+      "diff",
+      "hashes",
+      "identity",
+      "scope"
+     ],
+     "R7": [
+      "clausemap",
+      "contract",
+      "scope"
+     ]
+    },
+    "ExtraSources": {
+     "R5": [],
+     "R6": [
+      "AuthorityResolution"
+     ],
+     "R7": []
+    },
+    "ManualChecks": [
+     "R8"
+    ],
+    "RequestKeys": {
+     "R1": [
+      "Tool"
+     ],
+     "R2": [
+      "Interpreter"
+     ],
+     "R3": [
+      "Repo",
+      "Runs",
+      "Tool"
+     ],
+     "R4": [
+      "Repo",
+      "Verification"
+     ],
+     "R5": [
+      "Repo",
+      "Runs"
+     ],
+     "R6": [
+      "Repo",
+      "Runs",
+      "Verification"
+     ],
+     "R7": [
+      "Repo",
+      "Runs"
+     ],
+     "R8": [],
+     "R9": [
+      "Closure",
+      "Repo",
+      "Runs"
+     ],
+     "R10": [
+      "RelayFacts"
+     ]
+    },
+    "DecisionStatuses": [
+     "MANUAL",
+     "MATCH",
+     "NOT_APPLICABLE"
+    ],
+    "StatusValues": [
+     "MANUAL",
+     "MATCH",
+     "MISMATCH",
+     "NOT_APPLICABLE"
+    ],
+    "ExitCodes": {
+     "ACCEPT_FACTS": 0,
+     "REJECT_FACTS": 1,
+     "AcceptError": 64
+    },
+    "DecisionTrue": "ACCEPT_FACTS",
+    "DecisionFalse": "REJECT_FACTS",
+    "DecisionAll": true,
+    "R4Checks": [
+     "Identity",
+     "Scope",
+     "CleanTree",
+     "Trailer",
+     "FreeText",
+     "Authority"
+    ],
+    "R4Pinned": [
+     "Controller",
+     "Delegation",
+     "Handoff"
+    ],
+    "R4NotRunIsNonPass": true,
+    "R4AuthorityRule": true,
+    "R3NoRunsNoData": true,
+    "R9NoRunsError": true,
+    "NaWaivableOnly": true,
+    "NaWithDataMismatch": true
+   },
+   "Findings": [],
+   "Info": [
+    "la tabla exige MATCH en ['R10'], que el aceptante permite declarar no aplicables: más estricta que su Decision"
+   ],
+   "Result": "PASS"
+  },
+  "G11": {
+   "Check": "G11 fuentes y rangos de líneas para el revisor siguiente",
+   "Refs": 109,
+   "Sources": [
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+     "Lines": 1732,
+     "Ranges": [
+      [
+       520,
+       523
+      ],
+      [
+       535,
+       538
+      ],
+      [
+       541,
+       543
+      ],
+      [
+       610,
+       611
+      ],
+      [
+       622,
+       625
+      ],
+      [
+       646,
+       646
+      ],
+      [
+       653,
+       653
+      ],
+      [
+       676,
+       677
+      ],
+      [
+       686,
+       687
+      ],
+      [
+       910,
+       918
+      ],
+      [
+       1093,
+       1093
+      ],
+      [
+       1204,
+       1207
+      ],
+      [
+       1221,
+       1221
+      ],
+      [
+       1237,
+       1237
+      ],
+      [
+       1240,
+       1241
+      ],
+      [
+       1244,
+       1251
+      ],
+      [
+       1264,
+       1264
+      ],
+      [
+       1267,
+       1267
+      ],
+      [
+       1271,
+       1276
+      ],
+      [
+       1279,
+       1280
+      ],
+      [
+       1287,
+       1288
+      ]
+     ],
+     "Refs": 31
+    },
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Blob": "f19896a8f1a7c82f74bac7231636f68462a87271",
+     "Lines": 360,
+     "Ranges": [
+      [
+       94,
+       94
+      ],
+      [
+       221,
+       221
+      ]
+     ],
+     "Refs": 2
+    },
+    {
+     "Path": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+     "Blob": "da275e1a141a750fee2a8f501b36aa280d7aa534",
+     "Lines": 105,
+     "Ranges": [
+      [
+       61,
+       61
+      ],
+      [
+       69,
+       69
+      ],
+      [
+       78,
+       78
+      ]
+     ],
+     "Refs": 5
+    },
+    {
+     "Path": "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+     "Blob": "e1bd8d91f10cb4c86eaf7753f9ef2531ae62498e",
+     "Lines": 146,
+     "Ranges": [
+      [
+       40,
+       40
+      ],
+      [
+       91,
+       92
+      ]
+     ],
+     "Refs": 4
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+     "Lines": 756,
+     "Ranges": [
+      [
+       219,
+       226
+      ],
+      [
+       228,
+       228
+      ],
+      [
+       561,
+       561
+      ],
+      [
+       565,
+       568
+      ],
+      [
+       578,
+       578
+      ]
+     ],
+     "Refs": 8
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Blob": "4e090ed4687330a5584ca8f43468bcd2c7b009aa",
+     "Lines": 1698,
+     "Ranges": [
+      [
+       812,
+       824
+      ],
+      [
+       1105,
+       1117
+      ],
+      [
+       1191,
+       1204
+      ],
+      [
+       1274,
+       1304
+      ],
+      [
+       1479,
+       1698
+      ]
+     ],
+     "Refs": 123
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md",
+     "Blob": "90929ad1c49c028f41f58f654f8713bd0b35f27b",
+     "Lines": 217,
+     "Ranges": [
+      [
+       23,
+       23
+      ],
+      [
+       44,
+       45
+      ]
+     ],
+     "Refs": 2
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Blob": "78a3eed00a96b0e26e55500f16359da5aba24eff",
+     "Lines": 4366,
+     "Ranges": [
+      [
+       3780,
+       3820
+      ],
+      [
+       3822,
+       3830
+      ],
+      [
+       3832,
+       3852
+      ],
+      [
+       3854,
+       3880
+      ],
+      [
+       3882,
+       3936
+      ],
+      [
+       3938,
+       3945
+      ],
+      [
+       3947,
+       3972
+      ],
+      [
+       3974,
+       4014
+      ],
+      [
+       4016,
+       4025
+      ],
+      [
+       4027,
+       4048
+      ],
+      [
+       4050,
+       4062
+      ],
+      [
+       4064,
+       4083
+      ],
+      [
+       4085,
+       4092
+      ],
+      [
+       4094,
+       4127
+      ],
+      [
+       4129,
+       4134
+      ],
+      [
+       4136,
+       4143
+      ],
+      [
+       4145,
+       4151
+      ],
+      [
+       4153,
+       4172
+      ],
+      [
+       4174,
+       4197
+      ],
+      [
+       4199,
+       4224
+      ],
+      [
+       4226,
+       4233
+      ],
+      [
+       4235,
+       4268
+      ],
+      [
+       4270,
+       4280
+      ],
+      [
+       4282,
+       4288
+      ],
+      [
+       4290,
+       4312
+      ],
+      [
+       4314,
+       4320
+      ],
+      [
+       4322,
+       4339
+      ],
+      [
+       4341,
+       4358
+      ],
+      [
+       4360,
+       4366
+      ]
+     ],
+     "Refs": 44
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Blob": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+     "Lines": 516,
+     "Ranges": [
+      [
+       169,
+       169
+      ],
+      [
+       192,
+       192
+      ],
+      [
+       203,
+       203
+      ],
+      [
+       206,
+       207
+      ],
+      [
+       393,
+       393
+      ]
+     ],
+     "Refs": 9
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-5.md",
+     "Blob": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+     "Lines": 372,
+     "Ranges": [
+      [
+       216,
+       216
+      ],
+      [
+       221,
+       221
+      ]
+     ],
+     "Refs": 3
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+     "Lines": 3323,
+     "Ranges": [
+      [
+       362,
+       363
+      ],
+      [
+       960,
+       960
+      ],
+      [
+       974,
+       974
+      ],
+      [
+       1043,
+       1043
+      ],
+      [
+       1079,
+       1079
+      ],
+      [
+       1088,
+       1090
+      ],
+      [
+       1098,
+       1099
+      ],
+      [
+       1126,
+       1130
+      ],
+      [
+       2333,
+       2334
+      ],
+      [
+       2363,
+       2363
+      ],
+      [
+       2438,
+       2442
+      ],
+      [
+       2523,
+       2523
+      ],
+      [
+       2528,
+       2528
+      ],
+      [
+       2534,
+       2537
+      ],
+      [
+       2544,
+       2544
+      ],
+      [
+       2554,
+       2554
+      ],
+      [
+       2558,
+       2560
+      ],
+      [
+       2573,
+       2573
+      ],
+      [
+       2580,
+       2582
+      ],
+      [
+       2586,
+       2587
+      ]
+     ],
+     "Refs": 26
+    }
+   ],
+   "Sections": [
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 43,
+     "Lines": [
+      812,
+      824
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 57,
+     "Lines": [
+      1105,
+      1117
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 61,
+     "Lines": [
+      1191,
+      1204
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 64,
+     "Lines": [
+      1274,
+      1304
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 73,
+     "Lines": [
+      1479,
+      1498
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 77,
+     "Lines": [
+      1548,
+      1562
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 78,
+     "Lines": [
+      1564,
+      1584
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 79,
+     "Lines": [
+      1586,
+      1599
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 82,
+     "Lines": [
+      1634,
+      1648
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 83,
+     "Lines": [
+      1650,
+      1664
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 84,
+     "Lines": [
+      1666,
+      1682
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 85,
+     "Lines": [
+      1684,
+      1698
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 76,
+     "Lines": [
+      1531,
+      1546
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 74,
+     "Lines": [
+      1500,
+      1513
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 75,
+     "Lines": [
+      1515,
+      1529
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 80,
+     "Lines": [
+      1601,
+      1615
+     ]
+    },
+    {
+     "Path": "docs/automation/decisions/I-62.md",
+     "Section": 81,
+     "Lines": [
+      1617,
+      1632
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 153,
+     "Lines": [
+      4094,
+      4127
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 161,
+     "Lines": [
+      4235,
+      4268
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 167,
+     "Lines": [
+      4341,
+      4358
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 147,
+     "Lines": [
+      3974,
+      4014
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 146,
+     "Lines": [
+      3947,
+      3972
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 140,
+     "Lines": [
+      3780,
+      3820
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 141,
+     "Lines": [
+      3822,
+      3830
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 142,
+     "Lines": [
+      3832,
+      3852
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 143,
+     "Lines": [
+      3854,
+      3880
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 144,
+     "Lines": [
+      3882,
+      3936
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 145,
+     "Lines": [
+      3938,
+      3945
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 148,
+     "Lines": [
+      4016,
+      4025
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 149,
+     "Lines": [
+      4027,
+      4048
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 150,
+     "Lines": [
+      4050,
+      4062
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 151,
+     "Lines": [
+      4064,
+      4083
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 152,
+     "Lines": [
+      4085,
+      4092
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 154,
+     "Lines": [
+      4129,
+      4134
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 155,
+     "Lines": [
+      4136,
+      4143
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 156,
+     "Lines": [
+      4145,
+      4151
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 157,
+     "Lines": [
+      4153,
+      4172
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 158,
+     "Lines": [
+      4174,
+      4197
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 159,
+     "Lines": [
+      4199,
+      4224
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 160,
+     "Lines": [
+      4226,
+      4233
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 162,
+     "Lines": [
+      4270,
+      4280
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 163,
+     "Lines": [
+      4282,
+      4288
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 164,
+     "Lines": [
+      4290,
+      4312
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 165,
+     "Lines": [
+      4314,
+      4320
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 166,
+     "Lines": [
+      4322,
+      4339
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-evidence.md",
+     "Section": 168,
+     "Lines": [
+      4360,
+      4366
+     ]
+    }
+   ],
+   "Paths": [
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Object": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+    },
+    {
+     "Path": "docs/FOUNDATIONS.md",
+     "Object": "748c74baff01bba9d71ab27ff23109554211ece1"
+    },
+    {
+     "Path": "docs/INITIATIVE_LIFECYCLE.md",
+     "Object": "f19896a8f1a7c82f74bac7231636f68462a87271"
+    },
+    {
+     "Path": "docs/WORKFLOW.md",
+     "Object": "446c32ba6a91f9a712a0758038ae0a46ab1c970f"
+    },
+    {
+     "Path": "docs/adr/",
+     "Object": "90cb20cf890dabba732b3e99b630a7ad1db7be6b"
+    },
+    {
+     "Path": "docs/automation/agent-execution/",
+     "Object": "809fd58f450d3379a4fcc958cf8907fcdc5acff3"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-A5/",
+     "Object": "f03a0048e7b2c8788a4535d45392c9d49c2a3080"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-A6/",
+     "Object": "b03ca6bd2b14ea69bdee733263eb2c2b6b8ebe41"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-A6/preflight.md",
+     "Object": "69c1d98752bcdbf0a2df0c0f2ca8812cc832f44f"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-A6/r2/",
+     "Object": "411949b0f20cb6edb1a01a208ccdfb1b3b19db76"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-A6/r2/independence/",
+     "Object": "c4f969df3a1d5dad13b3ec7ed82038e90fc90b6c"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-A6/r3/",
+     "Object": "a4e93edba524476d28e1d7d50df6e9ef1fccb5ab"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F4/",
+     "Object": "c72a6bf2475fe40db48bba0f6ec9f1ad2564b63e"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/",
+     "Object": "3caa0dfa73d372af9251cf5c5c194261de8c7685"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md",
+     "Object": "4d448c6fc4670cdf97b21dcd17fc00ba1bedcc0c"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+     "Object": "434ef1fccb0d15762b30244b4a60928120698411"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+     "Object": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/MAP-INVALID/",
+     "Object": "b0b3b2586a98883353dfda1c73b400355cbc51b0"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/",
+     "Object": "0249e70f08ae46f1fe89a4858141f85a4e781408"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-A-6/",
+     "Object": "520e7a1f67e8280e8432a7666624fcf548c51a66"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-A-6/R20261011T215735Z-c434/",
+     "Object": "062e6e797b15f9466a81cd1594834cb7835a5ea5"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-A-6/R20261011T215735Z-c434/output.json",
+     "Object": "e90d685bb829fc7d30eda9bdb05deb3ac66d24f5"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-A-6r2/",
+     "Object": "acf2fa30bc7a1db4756e3f743cb1dcc227734b8b"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/",
+     "Object": "0179a06ee3835d37e77dcc69dd7dc2596e9b8e45"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json",
+     "Object": "fc357d09f1d345fa5ad55ca5aeffb6dc7510abaa"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-A-6r3/",
+     "Object": "f4442fdf2cdeb9a4e3abbe041443f32f77139745"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/",
+     "Object": "d9fb04f5d24ba991a9d62b190ba344db19a4efb8"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json",
+     "Object": "691bbc8fabdefaa853c1d6e29465b6c1a1889107"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-bmin/",
+     "Object": "ee74d0f9c61d49e3cda8340e75c1f09d88ae73e9"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-bmin/R20261011T162328Z-5c5e/",
+     "Object": "f3ca9c50dc8e07790b387164ff5d828121ff2788"
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-architect-bmin/R20261011T162328Z-5c5e/output.json",
+     "Object": "96c3efbc81e9c6814b232774fd8ac7e900deda7d"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-1.md",
+     "Object": "c01899a72b940503bb85a0fab42bc085c603fd0f"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-2.md",
+     "Object": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-3.md",
+     "Object": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-4.md",
+     "Object": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f"
+    },
+    {
+     "Path": "docs/initiatives/I-62-A-5.md",
+     "Object": "ad94ceedacbf3dbf70f0217a583978d0e32592fc"
+    },
+    {
+     "Path": "docs/initiatives/I-62-consensus-freeze.md",
+     "Object": "0f6b860837e2478db8525e1fb30a485bc4646816"
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Object": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa"
+    },
+    {
+     "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+     "Object": "384d0b0c3734ab7df881ad17fa740fdb8a6422d5"
+    }
+   ],
+   "PendingR4Paths": [
+    "docs/automation/evidence/I-62-A6/r4/",
+    "docs/automation/evidence/I-62-A6/r4/a6r4-guards.py"
+   ],
+   "GuardSources": [
+    {
+     "Path": "docs/AUTOMATION_PLAN.md",
+     "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+     "Lines": 1732,
+     "Ranges": [
+      [
+       1236,
+       1237
+      ],
+      [
+       1240,
+       1240
+      ],
+      [
+       610,
+       611
+      ],
+      [
+       623,
+       623
+      ],
+      [
+       625,
+       625
+      ],
+      [
+       653,
+       653
+      ],
+      [
+       686,
+       687
+      ],
+      [
+       1204,
+       1204
+      ],
+      [
+       1251,
+       1251
+      ]
+     ]
+    },
+    {
+     "Path": "docs/automation/agent-execution/README.md",
+     "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+     "Lines": 756,
+     "Ranges": [
+      [
+       220,
+       220
+      ],
+      [
+       225,
+       226
+      ],
+      [
+       228,
+       228
+      ]
+     ]
+    },
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+     "Lines": 3323,
+     "Ranges": [
+      [
+       2441,
+       2441
+      ],
+      [
+       2534,
+       2536
+      ]
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md",
+     "Blob": "90929ad1c49c028f41f58f654f8713bd0b35f27b",
+     "Lines": 217,
+     "Ranges": [
+      [
+       19,
+       23
+      ]
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md",
+     "Blob": "cb9df0289c69617122feaa896728c3a86d2040a8",
+     "Lines": 240,
+     "Ranges": [
+      [
+       41,
+       42
+      ]
+     ]
+    },
+    {
+     "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+     "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+     "Lines": 2816,
+     "Ranges": [
+      [
+       78,
+       78
+      ],
+      [
+       79,
+       79
+      ],
+      [
+       80,
+       80
+      ],
+      [
+       81,
+       81
+      ],
+      [
+       82,
+       82
+      ],
+      [
+       83,
+       83
+      ],
+      [
+       1884,
+       1917
+      ],
+      [
+       1954,
+       1998
+      ],
+      [
+       2001,
+       2025
+      ],
+      [
+       2134,
+       2197
+      ],
+      [
+       2202,
+       2215
+      ],
+      [
+       2218,
+       2244
+      ],
+      [
+       2247,
+       2276
+      ],
+      [
+       2279,
+       2283
+      ],
+      [
+       2286,
+       2320
+      ],
+      [
+       2323,
+       2327
+      ],
+      [
+       2542,
+       2609
+      ],
+      [
+       2612,
+       2619
+      ],
+      [
+       2622,
+       2623
+      ],
+      [
+       2675,
+       2699
+      ],
+      [
+       2801,
+       2812
+      ]
+     ]
+    }
+   ],
+   "Findings": [],
+   "Result": "PASS"
+  },
+  "G5B": {
+   "Check": "G5b autoprueba custodiada",
+   "Summary": {
+    "Mutants": 815,
+    "Killed": 815,
+    "NotApplied": 0,
+    "Survivors": [],
+    "ControlFailures": [],
+    "ByGuard": {
+     "G1": "165/165",
+     "G2": "22/22",
+     "G3": "31/31",
+     "G4": "105/105",
+     "G5": "344/344",
+     "G6": "16/16",
+     "G7": "6/6",
+     "G8": "24/24",
+     "G9": "30/30",
+     "G10": "50/50",
+     "G11": "16/16",
+     "G5B": "6/6"
+    }
+   },
+   "Findings": [],
+   "Result": "PASS"
+  }
+ },
+ "Result": "PASS"
+}

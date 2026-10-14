@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §85; evidencia §168) — preparar A-6 ronda 4 solo en A6-3, regla 6 (b) (cierre del aceptante en N4 y nc1), con sondas sin Codex del cierre derivado de la norma corregida, guardas y preflight; publicar como PROPUESTA si pasa y preparar el kit de revisión acotado sin lanzarlo; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §85; evidencia §168-§169) — A-6 ronda 4 PROPUESTA (blob 4bc919dd, commit d66f7f4b) con guardas run PASS; A62-A6R3-R1 corregido solo en A6-3 regla 6 (b), sin tocar A6-9; preparar y congelar el kit de la revisión acotada a R1 sin lanzarlo; esperar disposición; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

@@ -4364,3 +4364,32 @@ solo desde artefactos custodiados.
 - Ronda 4: cambio normativo solo en A6-3, regla 6 (b), sobre el cierre del aceptante cuando falta una entrada de la tabla de A6-9 o un commit que
   nombra no existe (N4 y nc1). A6-9, regla 4, no se edita. Sondas nuevas sin Codex, con el cierre derivado de la norma corregida; guardas; kit de
   revisión preparado y no lanzado.
+
+## 169. A-6 ronda 4 publicada como PROPUESTA (decisiones §85): blob `4bc919dd`, guardas `run` PASS sobre `d66f7f4b`
+
+- **Publicación** `d66f7f4b` (padre `ceb85977`): `docs/initiatives/I-62-A-6.md` pasa de la ronda 3 (`e62f27b8`) a la ronda 4, blob
+  `4bc919dd4768ab81abc74b70d3a4a3821c07feb5`, y se añade [`I-62-A6/r4/`](I-62-A6/r4/preflight.md) (218 archivos). Cambio normativo solo en A6-3,
+  regla 6 (b); A6-9, regla 4, y su tabla, los demás deltas y el resto de A6-3 conservan el texto de la ronda 3 byte a byte; el instrumento
+  (`9a829b0e`) y el aceptante (`434ef1fc`) conservan su blob; las líneas del Owner de §7, byte a byte.
+- **A62-A6R3-R1:** la regla 6 (b) fija cómo se aplica la tabla de derivación cuando una entrada no da valor: (i) la delegación, la entrega o el
+  contrato que E no fija, o cuyos bytes faltan, no tienen el blob o no son un único objeto JSON estricto, omiten todos sus términos; (ii) un campo
+  ausente, `null` o vacío no aporta término, y un valor de commit que no es un nombre completo de un commit existente se omite; (iii) una primitiva
+  de grafo con un extremo omitido o sin resultado da el conjunto vacío; (iv) ningún término omitido se sustituye; (v) cada omisión se registra con
+  su causa y el registro se custodia con la solicitud y el cierre. La prueba previa y la medición usan la misma regla con las entradas de su
+  invocación.
+- **Pruebas sin Codex** ([`r4/r1probes/`](I-62-A6/r4/r1probes/README.md), 56 de 56 casos; corrida completa desde un área vacía, 16:37-16:53 UTC):
+  con todas las entradas, el cierre es idéntico al de la ronda 2; en N4 se omiten los términos de la entrega (6 commits; RED fuera, G dentro por el
+  `Target`) en todas las formas de entrega ausente; en nc1 se omiten H.CurrentSha y la `RevList` (el cierre conserva sus 7 commits); los campos
+  ausentes, `null`, vacíos o con un valor que no es un commit dan el mismo cierre con su causa; una implementación independiente, escrita por otro
+  agente solo desde el texto, coincide en 58 de 58 vectores. Con el aceptante fijado: N4 acepta con R4 no aplicable y R9 en `MATCH`; nc1 V1-V3 aceptan; las ejecuciones
+  sobre commits inexistentes y las lecturas de entradas sustituidas se rechazan (R9). Con un cierre inflado por una sustitución, el aceptante solo
+  acepta y únicamente el cotejo con la derivación lo rechaza; los insumos añadidos o inventados y el cierre del extremo a extremo de la ronda 3
+  quedan rechazados por el cotejo. En nc1, sustituir el commit inexistente por G no cambia el cierre: solo el registro lo muestra.
+- **A6-9:** ninguna contradicción exige modificarlo (A-6 §3.18).
+- **Opcionales** (decisiones §85, punto 4): O1, O5 y O6 registrados como no bloqueantes; O2, cotejo mecánico de la solicitud con su construcción en
+  el banco; O3, `clausemap` dentro del cierre derivado y fuera con la variante I6 estricta (queda para la disposición de A6-7, regla 7); O4, momento
+  y efecto de la prueba previa precisados en la evidencia; O7, custodia de la medición asegurada (A6-3, regla 6 (b); anexo).
+- **Guardas** `r4/a6r4-guards.py` (`56b59c50`, adaptadas por un agente distinto): autoprueba 815/815 sobre el blob exacto; controles
+  negativos 52/52; `preview --final` PASS; `run` sobre `d66f7f4b` PASS en G1-G11 y G5b
+  ([`a6r4-guards-result-run.json`](I-62-A6/r4/a6r4-guards-result-run.json)).
+- Kit de la revisión acotada: por preparar y congelar sin lanzar (decisiones §85, punto 6). Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS.
