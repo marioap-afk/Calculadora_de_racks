@@ -4337,3 +4337,22 @@ solo desde artefactos custodiados.
 - **Desviaciones declaradas:** el entorno heredado por `claude.exe` es el de la sesión que lanza, como en las rondas 1 y 2 (§84 prohíbe añadir o
   quitar variables sin reflejarlo en el kit); el `clone_git` del auditor sigue decodificando con la configuración regional, porque esa regla se
   conserva byte a byte y su salida es ASCII en un clon limpio.
+
+## 167. Revisión formal única de A-6 ronda 3 ejecutada (decisiones §84): ACCREDITED; CHANGES REQUIRED con un REQUIRED (A62-A6R3-R1)
+
+- **Condiciones previas** (§84, punto 7; [`preconditions-s84.json`](I-62-architect-A-6r3/R20261013T183701Z-9f80/preconditions-s84.json)): kit custodiado en `6504aa81` sin cambios
+  (manifiesto `771d9f46…`); `verify_clone` sin fallos desde una copia del kit; en la misma herramienta y carpeta del lanzamiento, `--record-probe`
+  con código 0 y prueba en seco con `BlockingChecks` = [], la §84 como autorización y ninguna sección posterior; binario `8693c4a0…` con firma válida.
+- **Una invocación** con `python -B kit/launch.py`, sin reintento: de 04:19:12Z a 04:37:51Z (2026-10-14), `Outcome` COMPLETED, salida 0, sin errores
+  posteriores ni de lanzamiento; 54 turnos; clon limpio después. `run.json` escrito por el lanzador.
+- **Auditor v5.3-a6r3** ([`audit.json`](I-62-architect-A-6r3/R20261013T183701Z-9f80/audit.json), sin modificar): **ACCREDITED**, cero motivos; categoría de ejecución COMPLETED.
+- **Dictamen del Architect** ([`output.json`](I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json)): **CHANGES REQUIRED**.
+  - REQUIRED A62-A6R3-R1: la tabla de derivación de A6-9, regla 4, no define el `Closure` de la solicitud cuando la entrega falta (N4) o nombra un
+    commit inexistente (nc1), y las sondas de `r3/r1probes/` usaron el cierre del extremo a extremo, no el de esa tabla. Corrección pedida: fijar
+    ese cierre de forma mecánica en A6-3, regla 6 (b) (con presentación previa si hubiera que tocar A6-9, regla 4), y repetir las sondas con él.
+  - OPTIONAL A62-A6R3-O1..O7.
+  - A62-A6R2-R1 PARTIALLY_CORRECTED (por A62-A6R3-R1); A62-A6R2-R2 CORRECTED. N4 y nc1 INCOHERENT (mismo motivo); VERIFY sin instrumento
+    COHERENT. Reconstrucción y cierre efectivo ADEQUATE_AS_FAIL_CLOSED_PRECONDITION. Aceptante: 9 de 9 MATCHES. Owner y alcance VERIFY
+    confirmados. G1-G6 ACCEPTABLE_RESIDUAL. O1 declinada con motivo; O2 y O5 incorporadas; O3 y O4 en parte. Las ocho precondiciones de una sesión
+    real, KEPT_FAIL_CLOSED. Sin decisión nueva del Owner.
+- Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS.

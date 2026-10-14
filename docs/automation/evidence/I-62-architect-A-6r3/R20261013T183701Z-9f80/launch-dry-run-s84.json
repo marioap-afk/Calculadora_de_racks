@@ -1,0 +1,292 @@
+{
+ "DryRun": "guarda de la orden congelada, sonda de registro (en un temporal que se borra) y preflight: no se ejecuta el binario, no se escribe en el kit, el run ni el clon y no se lanza",
+ "FrozenCommandGuard": {
+  "Ok": true,
+  "Problems": [],
+  "FrozenCommand": "python -B kit/launch.py",
+  "Enforced": true,
+  "OrigArgvTail": [
+   "-B",
+   "kit/launch.py",
+   "--dry-run"
+  ],
+  "ScriptArgResolvesToThisFile": true,
+  "ScriptArgIsDocumentedSpelling": true,
+  "Mode": [
+   "--dry-run"
+  ],
+  "Flags": {
+   "debug": 0,
+   "inspect": 0,
+   "interactive": 0,
+   "optimize": 0,
+   "dont_write_bytecode": 1,
+   "no_user_site": 0,
+   "no_site": 0,
+   "ignore_environment": 0,
+   "verbose": 0,
+   "bytes_warning": 0,
+   "quiet": 0,
+   "hash_randomization": 1,
+   "isolated": 0,
+   "dev_mode": false,
+   "utf8_mode": 0,
+   "warn_default_encoding": 0,
+   "safe_path": false,
+   "int_max_str_digits": 4300
+  },
+  "XOptions": {},
+  "Interpreter": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+  "PythonVersion": "3.13.14",
+  "Encodings": {
+   "LocalePreferred": "cp1252",
+   "FileSystem": "utf-8",
+   "Stdout": "cp1252",
+   "ConsoleOutputCP": 850,
+   "ConsoleCP": 850,
+   "OEMCP": 850,
+   "ACP": 1252
+  }
+ },
+ "RecordProbe": {
+  "Ok": true,
+  "Problems": [],
+  "TempDir": "%TEMP%\\r62-record-probe-4nxg8yw5",
+  "RecordFile": "record-probe.json",
+  "StandInChild": "sys.executable -B -I -c PROBE_CHILD (lee stdin, una línea JSON type=result, código 0)",
+  "RunAndRecordExit": 0,
+  "RecordWritten": true,
+  "RecordUnderTempDir": true,
+  "Interpreter": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+  "InterpreterSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec",
+  "InterpreterMeasured": "C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\python.exe",
+  "RecordKeys": [
+   "Args",
+   "AuthSettle",
+   "CloneAfter",
+   "Cwd",
+   "End",
+   "EnvironmentVariableNames",
+   "Executable",
+   "ExecutableSha256",
+   "ExitCode",
+   "Killed",
+   "Outcome",
+   "OutcomeCategories",
+   "Pid",
+   "PostRunErrors",
+   "ProcessGoneAfter",
+   "PromptBytes",
+   "PromptSha256",
+   "ResultMessage",
+   "SessionId",
+   "Start",
+   "StderrBytes",
+   "StdoutLines",
+   "StdoutSha256",
+   "TasklistQuery",
+   "TimedOut",
+   "TimeoutSeconds",
+   "Transcript",
+   "TransportFailure",
+   "TransportGate"
+  ],
+  "MissingFields": [],
+  "NotJsonSerialisable": [],
+  "PostRunErrors": [],
+  "LaunchError": null,
+  "TasklistQuery": {
+   "ReturnCode": 0,
+   "StdoutBytes": 89,
+   "NonAsciiBytes": true
+  },
+  "ProcessGoneAfter": true,
+  "ExitCode": 0,
+  "ResultMessage": true,
+  "StdoutLines": 1,
+  "ChildStdinBytes": 13,
+  "Outcome": "COMPLETED",
+  "OutcomeCategories": [
+   "COMPLETED"
+  ],
+  "TempDirRemoved": true,
+  "RunLaunchExistedBefore": false,
+  "RunLaunchExistsAfter": false,
+  "KitListingUnchanged": true
+ },
+ "RecordProbeOk": true,
+ "BlockingChecks": [],
+ "AuthorizationSections": [
+  {
+   "Number": 84,
+   "Line": 1666,
+   "Heading": "## 84. Disposición del Coordinator: A-6 ronda 3, autorización de la revisión formal (2026-10-13 UTC)",
+   "HeadingMatches": true,
+   "HasBlob": true,
+   "TextSha256": "4f0530fc0c6424221b678b3dde69e522a24c5df811ab7b6286daf99921f540ef",
+   "TextSha256Matches": true
+  }
+ ],
+ "LaterSections": [],
+ "Environment": {
+  "Prefixes": [
+   "PYTHON",
+   "GIT_",
+   "CLAUDE",
+   "ANTHROPIC"
+  ],
+  "Names": [
+   "ANTHROPIC_BASE_URL",
+   "CLAUDECODE",
+   "CLAUDE_AGENT_SDK_MCP_NO_PREFIX",
+   "CLAUDE_AGENT_SDK_VERSION",
+   "CLAUDE_CODE_ACCOUNT_UUID",
+   "CLAUDE_CODE_CHILD_SESSION",
+   "CLAUDE_CODE_DESKTOP_APP_VERSION",
+   "CLAUDE_CODE_DISABLE_CRON",
+   "CLAUDE_CODE_DISABLE_TERMINAL_TITLE",
+   "CLAUDE_CODE_EAGER_FLUSH",
+   "CLAUDE_CODE_EMIT_TOOL_USE_SUMMARIES",
+   "CLAUDE_CODE_ENABLE_ASK_USER_QUESTION_TOOL",
+   "CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING",
+   "CLAUDE_CODE_ENTRYPOINT",
+   "CLAUDE_CODE_EXECPATH",
+   "CLAUDE_CODE_HOST_SESSION_ID",
+   "CLAUDE_CODE_MESSAGING_SOCKET",
+   "CLAUDE_CODE_MESSAGING_TOKEN",
+   "CLAUDE_CODE_OAUTH_SCOPES",
+   "CLAUDE_CODE_ORGANIZATION_UUID",
+   "CLAUDE_CODE_REPORT_FINDINGS",
+   "CLAUDE_CODE_SDK_HAS_HOST_AUTH_REFRESH",
+   "CLAUDE_CODE_SESSION_ATTENDED",
+   "CLAUDE_CODE_SESSION_ID",
+   "CLAUDE_CODE_SIMPLE",
+   "CLAUDE_CODE_TERMINAL_MCP_TOOLS",
+   "CLAUDE_CODE_USER_EMAIL",
+   "CLAUDE_EFFORT",
+   "CLAUDE_PID",
+   "CLAUDE_PREVIEW_CLASSIFIER_FLOOR",
+   "GIT_EDITOR",
+   "PYTHONDONTWRITEBYTECODE",
+   "PYTHONUSERBASE"
+  ],
+  "PythonValues": {
+   "PYTHONDONTWRITEBYTECODE": "1",
+   "PYTHONUSERBASE": "%LOCALAPPDATA%\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages"
+  },
+  "SetOrStrippedByLauncher": [],
+  "ChildEnvironment": "heredado sin cambios (Popen sin env)"
+ },
+ "NotRunInDryRun": [
+  "4-Version",
+  "5-Auth"
+ ],
+ "Checks": {
+  "1-KitIntegrity": {
+   "Ok": true,
+   "Mismatches": [],
+   "Unlisted": []
+  },
+  "2-ClosureTransport": {
+   "Ok": true
+  },
+  "3-Binary": {
+   "Ok": true,
+   "Exists": true,
+   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+   "Authenticode": "Valid",
+   "SignerIsAnthropic": true
+  },
+  "4-Version": {
+   "Ok": null,
+   "NotRun": "--dry-run: el binario no se ejecuta (`--version` solo en el lanzamiento real)"
+  },
+  "5-Auth": {
+   "Ok": null,
+   "NotRun": "--dry-run: el binario no se ejecuta (`auth status` solo en el lanzamiento real)"
+  },
+  "6-Clone": {
+   "Ok": true,
+   "Head": "9b8b66a21050fe264a4ff4802295468a91fce5c7",
+   "Detached": true,
+   "Clean": true,
+   "LocalBranches": [],
+   "Remotes": [],
+   "BlobMismatches": [],
+   "ReparsePoints": 0
+  },
+  "7-RunFiles": {
+   "Ok": true,
+   "Listing": [
+    "a6-r2.md",
+    "order.txt",
+    "prompt.md"
+   ],
+   "Mismatches": []
+  },
+  "8-NewSession": {
+   "Ok": true,
+   "PriorTranscripts": 0,
+   "ProjectDirsForCloneOrRun": []
+  },
+  "9-CommandLine": {
+   "Ok": true,
+   "Chars": 14359
+  },
+  "10-TransportGate": {
+   "Ok": true,
+   "Status": "MEASURED",
+   "LaunchArgsMatchTemplate": true,
+   "CharacterizationSha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+   "AcceptanceSha256": null,
+   "Problems": []
+  },
+  "11-OwnerAndAuthorizationGate": {
+   "Ok": true,
+   "Problems": [],
+   "A6LineSha256": "83152eae4f451961b9dc43920aa60c6f0910d4d023e9e93d8f5d6160e7ac8b14",
+   "A6LineNumbers": [
+    1572
+   ],
+   "Section78Line": 1564,
+   "NearMissLines": [
+    1564
+   ],
+   "ClaudeCliLineSha256": "fbeade41f74d6694a621fe6294d9568d7b76b124b1fd78e415514582c5d6ee79",
+   "ClaudeCliLineNumbers": [
+    1085
+   ],
+   "A6R3Blob": "e62f27b8b1329f1b9cfa69a707feb31d22bad1d1",
+   "A6BlobAtHead": "e62f27b8b1329f1b9cfa69a707feb31d22bad1d1",
+   "A6BlobAtHeadMatches": true,
+   "PinnedLineInA6R3": true,
+   "RunId": "R20261013T183701Z-9f80",
+   "AuthorizationSection": 84,
+   "AuthorizationHeading": "## 84. Disposición del Coordinator: A-6 ronda 3, autorización de la revisión formal (2026-10-13 UTC)",
+   "AuthorizationTextSha256": "4f0530fc0c6424221b678b3dde69e522a24c5df811ab7b6286daf99921f540ef",
+   "AuthorizationSections": [
+    {
+     "Number": 84,
+     "Line": 1666,
+     "Heading": "## 84. Disposición del Coordinator: A-6 ronda 3, autorización de la revisión formal (2026-10-13 UTC)",
+     "HeadingMatches": true,
+     "HasBlob": true,
+     "TextSha256": "4f0530fc0c6424221b678b3dde69e522a24c5df811ab7b6286daf99921f540ef",
+     "TextSha256Matches": true
+    }
+   ],
+   "LaterSections": [],
+   "Authorized": true,
+   "DecisionsAppendOnlySinceClone": true,
+   "WorktreeDecisionsClean": true,
+   "HeadDescendsFromClone": true,
+   "BinarySha256MatchesClosure": true,
+   "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "WorktreeHead": "6504aa8131407ff8c50fe99b3107bb238a7a1619",
+   "DecisionsBlobAtHead": "be5e376fc2c3ee65fee8c1e9862b58127cfc851a",
+   "CloneCommit": "9b8b66a21050fe264a4ff4802295468a91fce5c7",
+   "Reads": "git rev-parse, show, hash-object (sin -w) y merge-base, con GIT_OPTIONAL_LOCKS=0; nada se escribe"
+  }
+ }
+}

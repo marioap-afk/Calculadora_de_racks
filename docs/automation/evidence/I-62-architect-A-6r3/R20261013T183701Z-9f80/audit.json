@@ -1,0 +1,5447 @@
+{
+ "AuditorVersion": "v5.3-a6r3 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on decisions §84; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2333-L2334; declared and self-tested before the launch; decisions §84)",
+ "Inputs": {
+  "Transcript": {
+   "Path": "%USERPROFILE%/.claude/projects/D--r62-arch-a6r3/3f6938fa-d6b4-4494-bacb-684ce6287624.jsonl",
+   "Sha256": "c3793f18b16d6c40985ad11eec320b0a486ce48d05b9470f6e22a3d44ddafa4c",
+   "Entries": 271
+  },
+  "Stdout": {
+   "Path": "D:/r62-arch-a6r3-run/launch/stdout.jsonl",
+   "Sha256": "71af5e19868d409455b350430e2e6032ca4596d49d3bc15623d0d4c018ae18dc",
+   "Lines": 778
+  },
+  "RunJson": {
+   "Path": "D:/r62-arch-a6r3-run/launch/run.json",
+   "Sha256": "dfe9776e4338df17961fb93e91fb2e7af5f2550337558cab55a9395661a3bc02"
+  },
+  "Preflight": {
+   "Path": "D:/r62-arch-a6r3-run/launch/preflight.json",
+   "Sha256": "9289a3026e47f1a15d27ec40ddc1077404f371b3f43d6560d0c1311dba49c5cc"
+  },
+  "TransportCopies": {
+   "transport-characterization.json": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+   "transport-acceptance.json": null
+  },
+  "Gate": {
+   "Path": "kit/transport-gate.json",
+   "Status": "MEASURED"
+  },
+  "Schema": {
+   "Path": "kit/result.schema.json",
+   "Sha256": "2ce2eafb72b1abbe9b01cc81962e11fd7e5c82b8007217751144dc32b7fb1633"
+  }
+ },
+ "RuntimeIdentity": {
+  "SessionIds": [
+   "3f6938fa-d6b4-4494-bacb-684ce6287624"
+  ],
+  "Cwds": [
+   "D:\\r62-arch-a6r3"
+  ],
+  "Versions": [
+   "2.1.293"
+  ],
+  "Entrypoints": [
+   "claude-desktop"
+  ],
+  "Models": {
+   "claude-opus-5-5": 95
+  },
+  "Efforts": {
+   "xhigh": 95
+  },
+  "SidechainEntries": 0,
+  "TranscriptFileStem": "3f6938fa-d6b4-4494-bacb-684ce6287624"
+ },
+ "Launch": {
+  "LaunchDir": "D:/r62-arch-a6r3-run/launch",
+  "StdoutInLaunchDir": true,
+  "RunJsonPresent": true,
+  "PreflightPresent": true,
+  "Pid": 40708,
+  "Start": "2026-10-14T04:19:12.643198Z",
+  "End": "2026-10-14T04:37:51.107683Z",
+  "ExitCode": 0,
+  "Killed": false,
+  "TimedOut": false,
+  "SessionId": "3f6938fa-d6b4-4494-bacb-684ce6287624",
+  "Executable": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+  "ExecutableSha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+  "PromptSha256": "fa6f011ecfdeb79f71a108b2a6a5cca52be17ec0ca2d8207a7351f7851ac632b",
+  "StdoutSha256": "71af5e19868d409455b350430e2e6032ca4596d49d3bc15623d0d4c018ae18dc",
+  "ArgsMatch": true,
+  "Cwd": "D:\\r62-arch-a6r3",
+  "Outcome": "COMPLETED",
+  "OutcomeCategories": [
+   "COMPLETED"
+  ],
+  "OutcomeRecomputed": [
+   "COMPLETED"
+  ],
+  "PostRunErrors": [],
+  "LaunchError": null,
+  "Aborted": null,
+  "PreflightChecks": {
+   "1-KitIntegrity": true,
+   "2-ClosureTransport": true,
+   "3-Binary": true,
+   "4-Version": true,
+   "5-Auth": true,
+   "6-Clone": true,
+   "7-RunFiles": true,
+   "8-NewSession": true,
+   "9-CommandLine": true,
+   "10-TransportGate": true,
+   "11-OwnerAndAuthorizationGate": true
+  },
+  "FrozenCommandGuard": {
+   "Ok": true,
+   "Enforced": true,
+   "FrozenCommand": "python -B kit/launch.py",
+   "OrigArgvTail": [
+    "-B",
+    "kit/launch.py"
+   ],
+   "Problems": []
+  },
+  "RecordProbe": {
+   "Ok": true,
+   "Problems": [],
+   "RunAndRecordExit": 0,
+   "Outcome": "COMPLETED"
+  },
+  "Environment": {
+   "Names": [
+    "ANTHROPIC_BASE_URL",
+    "CLAUDECODE",
+    "CLAUDE_AGENT_SDK_MCP_NO_PREFIX",
+    "CLAUDE_AGENT_SDK_VERSION",
+    "CLAUDE_CODE_ACCOUNT_UUID",
+    "CLAUDE_CODE_CHILD_SESSION",
+    "CLAUDE_CODE_DESKTOP_APP_VERSION",
+    "CLAUDE_CODE_DISABLE_CRON",
+    "CLAUDE_CODE_DISABLE_TERMINAL_TITLE",
+    "CLAUDE_CODE_EAGER_FLUSH",
+    "CLAUDE_CODE_EMIT_TOOL_USE_SUMMARIES",
+    "CLAUDE_CODE_ENABLE_ASK_USER_QUESTION_TOOL",
+    "CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING",
+    "CLAUDE_CODE_ENTRYPOINT",
+    "CLAUDE_CODE_EXECPATH",
+    "CLAUDE_CODE_HOST_SESSION_ID",
+    "CLAUDE_CODE_MESSAGING_SOCKET",
+    "CLAUDE_CODE_MESSAGING_TOKEN",
+    "CLAUDE_CODE_OAUTH_SCOPES",
+    "CLAUDE_CODE_ORGANIZATION_UUID",
+    "CLAUDE_CODE_REPORT_FINDINGS",
+    "CLAUDE_CODE_SDK_HAS_HOST_AUTH_REFRESH",
+    "CLAUDE_CODE_SESSION_ATTENDED",
+    "CLAUDE_CODE_SESSION_ID",
+    "CLAUDE_CODE_SIMPLE",
+    "CLAUDE_CODE_TERMINAL_MCP_TOOLS",
+    "CLAUDE_CODE_USER_EMAIL",
+    "CLAUDE_EFFORT",
+    "CLAUDE_PID",
+    "CLAUDE_PREVIEW_CLASSIFIER_FLOOR",
+    "GIT_EDITOR",
+    "PYTHONDONTWRITEBYTECODE",
+    "PYTHONUSERBASE"
+   ],
+   "PythonValues": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUSERBASE": "%LOCALAPPDATA%\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages"
+   }
+  },
+  "ExecutionCategory": "COMPLETED"
+ },
+ "TransportGate": {
+  "Status": "MEASURED",
+  "ArgsTemplate": [
+   "-p",
+   "--model",
+   "claude-opus-5-5",
+   "--effort",
+   "xhigh",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--safe-mode",
+   "--strict-mcp-config",
+   "--no-chrome",
+   "--tools",
+   "Read,Grep,Glob",
+   "--permission-mode",
+   "dontAsk",
+   "--permission-prompts",
+   "none",
+   "--add-dir",
+   "<add-dir>",
+   "--session-id",
+   "<session-id>",
+   "--json-schema",
+   "<json-schema>"
+  ],
+  "CharacterizationSha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+  "AcceptanceSha256": null,
+  "Problems": [],
+  "Ok": true
+ },
+ "Stream": {
+  "InitPresent": true,
+  "ResultPresent": true,
+  "Init": {
+   "session_id": "3f6938fa-d6b4-4494-bacb-684ce6287624",
+   "cwd": "D:\\r62-arch-a6r3",
+   "model": "claude-opus-5-5",
+   "permissionMode": "dontAsk",
+   "tools": [
+    "Glob",
+    "Grep",
+    "Read",
+    "StructuredOutput"
+   ],
+   "mcp_servers": [],
+   "claude_code_version": "2.1.293",
+   "apiKeySource": "none"
+  },
+  "Result": {
+   "subtype": "success",
+   "is_error": false,
+   "terminal_reason": "completed",
+   "num_turns": 54,
+   "session_id": "3f6938fa-d6b4-4494-bacb-684ce6287624",
+   "permission_denials": [],
+   "total_cost_usd": 7.188614200000002,
+   "modelUsage": [
+    "claude-opus-5-5"
+   ],
+   "subagent_spawned": 0
+  }
+ },
+ "PromptFidelity": {
+  "PromptMdSha256": "fa6f011ecfdeb79f71a108b2a6a5cca52be17ec0ca2d8207a7351f7851ac632b",
+  "UserPrompts": 1,
+  "MetaUserEntries": 0,
+  "FirstUserMessageSha256": "fa6f011ecfdeb79f71a108b2a6a5cca52be17ec0ca2d8207a7351f7851ac632b",
+  "Equal": true,
+  "EqualAfterStrip": true
+ },
+ "RunCustody": {
+  "Files": {
+   "order.txt": {
+    "RunSha256": "8a6b560f1da473ff152732e2e6bf2b82cd60f2df4ddfc7e44f8359edc7bef2e8",
+    "KitCopySha256": "8a6b560f1da473ff152732e2e6bf2b82cd60f2df4ddfc7e44f8359edc7bef2e8",
+    "ClosureSha256": "8a6b560f1da473ff152732e2e6bf2b82cd60f2df4ddfc7e44f8359edc7bef2e8",
+    "Match": true
+   },
+   "prompt.md": {
+    "RunSha256": "fa6f011ecfdeb79f71a108b2a6a5cca52be17ec0ca2d8207a7351f7851ac632b",
+    "KitCopySha256": "fa6f011ecfdeb79f71a108b2a6a5cca52be17ec0ca2d8207a7351f7851ac632b",
+    "ClosureSha256": "fa6f011ecfdeb79f71a108b2a6a5cca52be17ec0ca2d8207a7351f7851ac632b",
+    "Match": true
+   },
+   "a6-r2.md": {
+    "RunSha256": "f34b0adcaaf0387483981018c5a26df47e020c5c4f3962737938b9b319f71959",
+    "KitCopySha256": "f34b0adcaaf0387483981018c5a26df47e020c5c4f3962737938b9b319f71959",
+    "ClosureSha256": "f34b0adcaaf0387483981018c5a26df47e020c5c4f3962737938b9b319f71959",
+    "Match": true
+   }
+  },
+  "RunDirListing": [
+   "a6-r2.md",
+   "launch",
+   "order.txt",
+   "prompt.md"
+  ],
+  "LaunchDirListing": [
+   "preflight.json",
+   "run.json",
+   "stderr.txt",
+   "stdout.jsonl",
+   "transport-characterization.json"
+  ]
+ },
+ "CloneAfterRun": {
+  "Head": "9b8b66a21050fe264a4ff4802295468a91fce5c7",
+  "StatusPorcelainIgnored": "",
+  "LocalBranches": [],
+  "Remotes": [],
+  "Detached": true,
+  "DesignatedBlobsUnchanged": true,
+  "ReparsePoints": []
+ },
+ "ToolAudit": {
+  "Calls": 53,
+  "WithProblems": [],
+  "Rows": [
+   {
+    "Index": 0,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 2325,
+     "limit": 18
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 1,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3-run\\order.txt"
+    },
+    "Class": "RUN",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 2,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\decisions\\I-62.md",
+     "offset": 1650,
+     "limit": 33
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 3,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\a6r3-guards-result-run.json"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 4,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\a6r3-selftest.json",
+     "offset": 6994,
+     "limit": 26
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 5,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-architect-A-6r2\\R20261012T195511Z-e5c3\\output.json",
+     "offset": 1,
+     "limit": 200
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 6,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-architect-A-6r2\\R20261012T195511Z-e5c3\\output.json",
+     "offset": 200,
+     "limit": 205
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 7,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-architect-A-6r2\\R20261012T195511Z-e5c3\\output.json",
+     "offset": 405,
+     "limit": 120
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 8,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\initiatives\\I-62-A-6.md",
+     "offset": 1,
+     "limit": 100
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 9,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\initiatives\\I-62-A-6.md",
+     "offset": 100,
+     "limit": 300
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 10,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\initiatives\\I-62-A-6.md",
+     "offset": 399,
+     "limit": 200
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 11,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\initiatives\\I-62-A-6.md",
+     "offset": 597,
+     "limit": 170
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 12,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\initiatives\\I-62-A-6.md",
+     "offset": 763,
+     "limit": 210
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 13,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\initiatives\\I-62-A-6.md",
+     "offset": 970,
+     "limit": 110
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 14,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\initiatives\\I-62-A-6.md",
+     "offset": 1080,
+     "limit": 241
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 15,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\accept\\bmin_accept.py",
+     "offset": 1,
+     "limit": 160
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 16,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\accept\\bmin_accept.py",
+     "offset": 1700,
+     "limit": 300
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 17,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\accept\\bmin_accept.py",
+     "offset": 2000,
+     "limit": 135
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 18,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\accept\\bmin_accept.py",
+     "offset": 2134,
+     "limit": 200
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 19,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\accept\\bmin_accept.py",
+     "offset": 2530,
+     "limit": 287
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 20,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "def read_pinned|def read_input_file|def same_path|def _clean_env|def git_run",
+     "path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\accept\\bmin_accept.py",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 21,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-F6\\FX-02\\bmin\\accept\\bmin_accept.py",
+     "offset": 157,
+     "limit": 80
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 22,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\r1probes\\README.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 23,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "Closure|RevList|derive|Derive",
+     "path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\readable\\r1probes\\p3-nc1.json",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 24,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\readable\\r1probes\\p3-nc1.json",
+     "offset": 340,
+     "limit": 40
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 25,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "(?i)closure",
+     "path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\r1probes\\run_r3.py",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 26,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\r1probes\\run_r3.py",
+     "offset": 240,
+     "limit": 160
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 27,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "def build_closure",
+     "path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\r1probes\\lib_r3.py",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 28,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "def build_closure",
+     "path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\r1probes\\lib_r1r4.py",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 29,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\r1probes\\lib_r1r4.py",
+     "offset": 560,
+     "limit": 60
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 30,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "(?i)N4|nc1|ausente|absent|inexistente",
+     "path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r2\\independence\\README.md",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 31,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "(?i)\\(d\\)|deriv|closure|cierre",
+     "path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r2\\independence\\README.md",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 32,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r2\\independence\\README.md",
+     "offset": 160,
+     "limit": 90
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 33,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-F6\\kits\\FX-02\\controller-contracts.md",
+     "offset": 1,
+     "limit": 100
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 34,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\AUTOMATION_PLAN.md",
+     "offset": 618,
+     "limit": 92
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 35,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "(?i)relay|AuthorityResolution|FactsSha",
+     "path": "D:\\r62-arch-a6r3\\docs\\automation\\agent-execution\\schemas\\controller-verification.v2.schema.json",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 36,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\r2static\\README.md",
+     "offset": 1,
+     "limit": 170
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 37,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\r2static\\README.md",
+     "offset": 170,
+     "limit": 158
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 38,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\preflight.md"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 39,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3-run\\a6-r2.md",
+     "offset": 545,
+     "limit": 130
+    },
+    "Class": "RUN",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 40,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\decisions\\I-62.md",
+     "offset": 1564,
+     "limit": 36
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 41,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-architect-A-6r2\\R20261012T195511Z-e5c3\\output.json",
+     "offset": 845,
+     "limit": 82
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 42,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\agent-execution\\README.md",
+     "offset": 215,
+     "limit": 22
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 43,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\INITIATIVE_LIFECYCLE.md",
+     "offset": 152,
+     "limit": 40
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 44,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r2\\readable\\independence\\results\\d-closure.json",
+     "offset": 765,
+     "limit": 89
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 45,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r2\\readable\\independence\\results\\d-closure.json",
+     "offset": 740,
+     "limit": 27
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 46,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\AUTOMATION_PLAN.md",
+     "offset": 1200,
+     "limit": 55
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 47,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 2436,
+     "limit": 8
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 48,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\initiatives\\I-62-proposal-v14.md",
+     "offset": 2530,
+     "limit": 26
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 49,
+    "Tool": "Grep",
+    "Input": {
+     "pattern": "derivaci|Derivation|C1|RevList",
+     "path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-architect-A-6r2\\R20261012T195511Z-e5c3\\output.json",
+     "output_mode": "content"
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 50,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\automation\\evidence\\I-62-A6\\r3\\r1probes\\run_r3.py",
+     "offset": 118,
+     "limit": 45
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 51,
+    "Tool": "Read",
+    "Input": {
+     "file_path": "D:\\r62-arch-a6r3\\docs\\AUTOMATION_PLAN.md",
+     "offset": 604,
+     "limit": 14
+    },
+    "Class": "CLOSURE",
+    "Failed": false,
+    "Problems": []
+   },
+   {
+    "Index": 52,
+    "Tool": "StructuredOutput",
+    "Input": {
+     "Schema": "rackcad-a6r3-architect-review/0",
+     "RunId": "R20261013T183701Z-9f80",
+     "InvocationId": "I20261013T183701Z-9f80",
+     "LogicalReviewRequestId": "L20261013T183701Z-9f80",
+     "AttemptSeq": 1,
+     "RequestedRole": "ARCHITECT",
+     "Action": "REVIEW_DESIGN",
+     "ReviewedUnit": "I-62",
+     "ReviewedCommit": "9b8b66a21050fe264a4ff4802295468a91fce5c7",
+     "ReviewedPath": "docs/initiatives/I-62-A-6.md",
+     "ReviewedBlob": "e62f27b8b1329f1b9cfa69a707feb31d22bad1d1",
+     "ReviewerMode": "SEPARATE SESSION",
+     "SamePersonAsAuthor": "Sesión: no. Soy un proceso claude-cli nuevo, separado de la sesión autora de A-6 y de sus tres rondas, de los agentes que construyeron r1probes/, r2static/ y launchfix/, de los autores del paquete B-min, del Coordinator, del dictamen R20261011T162328Z-5c5e y de las revisiones de las rondas 1 y 2. No…",
+     "ReviewerDeclaredIdentity": {
+      "Runtime": "claude-cli (agente sobre Claude Agent SDK, según el contexto inyectado)",
+      "Model": "claude-opus-5-5 (Opus 5.5, declarado por el runtime)",
+      "Effort": "UNKNOWN",
+      "SessionOrThread": "UNKNOWN"
+     },
+     "InjectedContextDeclaration": "{'State': 'DECLARED', 'Items': ['Instrucciones de sistema del runtime: agente Claude sobre Claude Agent SDK; reglas del harness, modos de permiso, guía de sesión (ultrareview), entorno de modelos, gestión de contexto, pronombres y estilo', 'Definiciones de herramientas: Glob, Grep, Read y Structured…",
+     "Step0": "{'Basis': 'INVOKER_VERIFIED_CLONE', 'V14DirectReadL2333L2334': True, 'OrderReadWhole': True, 'Decisions84DeclaresOrderBytesAndSha256': True, 'Decisions83RoundTwoDisposition': True, 'GuardsRunModeBaseHeadResult': True, 'SelftestA6TextBlobMatchesObject': True, 'Round2OutputIdentifiesRunAndFindings': T…",
+     "DirectReads": "[{'Ref': 'docs/initiatives/I-62-proposal-v14.md:2333-2334', 'Purpose': 'Lectura directa obligatoria del Anexo C (esperado independiente), contrastada con la cita de A-6 L133-L134 y con A6-6'}, {'Ref': 'docs/initiatives/I-62-proposal-v14.md:2441', 'Purpose': 'D.3: los ocho negativos con invocación (n…",
+     "Reads": "['D:/r62-arch-a6r3-run/order.txt: 1-85 (entera)', 'D:/r62-arch-a6r3-run/a6-r2.md: 545-674', 'docs/initiatives/I-62-proposal-v14.md: 2325-2342, 2436-2443, 2530-2555', 'docs/initiatives/I-62-A-6.md: 1-100, 100-399, 399-598, 597-766, 763-972, 970-1079, 1080-1320 (entera)', 'docs/automation/decisions/I-…",
+     "Verdict": "CHANGES REQUIRED",
+     "RequiredFindings": "[{'FindingId': 'A62-A6R3-R1', 'Section': '§3.6 A6-3, regla 6 (b) (`Closure` de la solicitud), con §3.8 A6-5, regla 7 (d), la tabla de derivación de A6-9, regla 4 (§3.12) y §3.17, filas R1 (b)-(d)', 'ViolatedInvariant': 'LIFECYCLE §5 (L166-L169): es REQUIRED un elemento congelable no ejecutable o no …",
+     "OptionalFindings": "[{'FindingId': 'A62-A6R3-O1', 'Section': '§3.6 A6-3, regla 6 (a), identificación de las ejecuciones; §3.17, límites de la reconstrucción de referencia', 'Note': '«Es ejecución del instrumento toda orden registrada que contiene el blob fijado» falla cerrado en un sentido y deja un hueco en el otro. U…",
+     "Round2FindingResolution": "[{'Round2Finding': 'A62-A6R2-R1', 'Status': 'PARTIALLY_CORRECTED', 'Rationale': 'El hallazgo (output.json L406-L432) pedía: (a) definir «invocación VERIFY con el instrumento» y el trato de una VERIFY sin ejecuciones; (b) la solicitud y la tabla de N4; (c) cómo juzga R4 los not_run posteriores al pri…",
+     "NegativeCaseCoherence": "[{'Case': 'N4', 'Status': 'INCOHERENT', 'Rationale': 'Coherente en casi todo. Con la entrega ausente, Handoff queda en fail con BLOCKED, y las comprobaciones que dependen de la entrega quedan en not_run sin entrada y sin disposición (AP L622-L623, L657). A6-1, regla 7, y A6-5, regla 7 (d), impiden e…",
+     "ReconstructionFromRealEvents": "{'Assessment': 'ADEQUATE_AS_FAIL_CLOSED_PRECONDITION', 'Rationale': 'La regla está definida de forma verificable. A6-3, regla 6 (a) (L574-L581), exige un registro completo (inicio y fin del turno, y el fin de cada orden iniciada) y legible; identifica las ejecuciones por el blob; exige el Argv en la…",
+     "EffectiveInputClosure": "{'Assessment': 'ADEQUATE_AS_FAIL_CLOSED_PRECONDITION', 'Rationale': 'A6-7, regla 7 (L756-L761), fija una disposición previa verificable. Su contenido: cómo el cierre efectivo de VERIFY que fija el kit cubre las lecturas legítimas del instrumento, en particular las de CurrentSha y las de los commits …",
+     "AcceptorCodeContrast": "[{'Claim': 'CHECK_IDS', 'A6Refs': ['docs/initiatives/I-62-A-6.md:640-641'], 'AcceptorRefs': ['docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79', 'docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1878-1879', 'docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin…",
+     "OwnerAuthorizationAndVerifyScope": "{'LineA': {'Assessment': 'LIMITED_TO_STATED_SCOPE', 'Note': 'A-6 L1213 coincide con decisiones §78, L1572. «En su verificación» = las invocaciones VERIFY (A6-1, reglas 1 y 2, L474-L484; A6-8, regla 1, L772-L774). El aceptante lo usa solo la supervisión, del lado del Coordinator, en FX-02 en F6. Lo q…",
+     "GapAssessment": "[{'Gap': 'G1', 'Assessment': 'ACCEPTABLE_RESIDUAL', 'MitigationTested': 'partial', 'Rationale': 'No demostrado: que el aceptante detecte por sí mismo hechos falsos de MV-1. Mitigación: la parte de mapa de R4 (bmin_accept.py L2184-L2188), ahora solo cuando la solicitud lleva `Verification`, que es si…",
+     "Round2OptionalDisposition": "[{'Round2Optional': 'A62-A6R2-O1', 'Status': 'DECLINED_WITH_REASON', 'Rationale': 'No se incorpora porque exige cambiar A6-3, regla 1, que queda fuera de §83, punto 2 (L1658). El motivo basta: el propio hallazgo reconocía que la comprobación previa (ii) y la del punto de uso cubren el riesgo y que e…",
+     "RealSessionPreconditions": "[{'Precondition': 'RUNS_RECONSTRUCTION_FROM_REAL_LOG', 'Status': 'KEPT_FAIL_CLOSED', 'Rationale': 'La regla y sus límites están definidos (A6-3, regla 6 (a)), y la forma exacta queda para la disposición y la medición (L574-L576; A6-7, reglas 1 y 7). Si falta, no hay solicitud o la celda no es elegib…",
+     "OwnerAuthorityCheck": "{'AdditionalOwnerReservedConsequences': [], 'OwnerDecisionRequired': False, 'Note': 'La línea (a) consta (decisiones §78, L1572) y la ronda 3 no amplía su alcance ni cambia los blobs que fija. La línea (b) solo rige la aplicación. El único REQUIRED (A62-A6R3-R1) se corrige en A6-3, regla 6 (b), dent…",
+     "IfAgreed": "{'ScopeLimitedToFX02F6ControllerVerify': None, 'Round3ChangesLimitedToA63R6A65A67': None, 'Round2FindingsCorrected': None, 'NegativeCasesCoherent': None, 'ReconstructionAndClosureFailClosed': None, 'AcceptorContrastMatches': None, 'RealSessionPreconditionsKeptFailClosed': None, 'GapsAcceptableAsResi…",
+     "KnownLimitations": "['Sin ejecución de código: no recalculé blobs, SHA-256 ni bytes, y no ejecuté las guardas, el instrumento, el aceptante ni las sondas. La identidad la acredita el invocador, y mis conclusiones sobre el aceptante salen de leer su código.', 'Las afirmaciones de que las sondas de la ronda 3 usaron el c…",
+     "RecommendedNextAction": "Que el Coordinator disponga A62-A6R3-R1 y los opcionales A62-A6R3-O1..O7 y autorice una ronda 4 limitada a A6-3, regla 6 (b), sin cambiar el instrumento, el aceptante ni las líneas del Owner. Esa ronda debe fijar de forma mecánica el Closure de las invocaciones VERIFY con la entrega ausente o con un…"
+    },
+    "Class": "RESULT",
+    "Failed": false,
+    "Problems": []
+   }
+  ]
+ },
+ "Fidelity": {
+  "Records": [
+   {
+    "Index": 0,
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Kind": "CLOSURE",
+    "Offset": 2325,
+    "Limit": 18,
+    "Lines": 18,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 1,
+    "Path": "order.txt",
+    "Kind": "RUN",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 86,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 2,
+    "Path": "docs/automation/decisions/I-62.md",
+    "Kind": "CLOSURE",
+    "Offset": 1650,
+    "Limit": 33,
+    "Lines": 33,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 3,
+    "Path": "docs/automation/evidence/I-62-A6/r3/a6r3-guards-result-run.json",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 1447,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 4,
+    "Path": "docs/automation/evidence/I-62-A6/r3/a6r3-selftest.json",
+    "Kind": "CLOSURE",
+    "Offset": 6994,
+    "Limit": 26,
+    "Lines": 26,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 5,
+    "Path": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json",
+    "Kind": "CLOSURE",
+    "Offset": 1,
+    "Limit": 200,
+    "Lines": 200,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 6,
+    "Path": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json",
+    "Kind": "CLOSURE",
+    "Offset": 200,
+    "Limit": 205,
+    "Lines": 205,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 7,
+    "Path": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json",
+    "Kind": "CLOSURE",
+    "Offset": 405,
+    "Limit": 120,
+    "Lines": 120,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 8,
+    "Path": "docs/initiatives/I-62-A-6.md",
+    "Kind": "CLOSURE",
+    "Offset": 1,
+    "Limit": 100,
+    "Lines": 100,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 9,
+    "Path": "docs/initiatives/I-62-A-6.md",
+    "Kind": "CLOSURE",
+    "Offset": 100,
+    "Limit": 300,
+    "Lines": 300,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 10,
+    "Path": "docs/initiatives/I-62-A-6.md",
+    "Kind": "CLOSURE",
+    "Offset": 399,
+    "Limit": 200,
+    "Lines": 200,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 11,
+    "Path": "docs/initiatives/I-62-A-6.md",
+    "Kind": "CLOSURE",
+    "Offset": 597,
+    "Limit": 170,
+    "Lines": 170,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 12,
+    "Path": "docs/initiatives/I-62-A-6.md",
+    "Kind": "CLOSURE",
+    "Offset": 763,
+    "Limit": 210,
+    "Lines": 210,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 13,
+    "Path": "docs/initiatives/I-62-A-6.md",
+    "Kind": "CLOSURE",
+    "Offset": 970,
+    "Limit": 110,
+    "Lines": 110,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 14,
+    "Path": "docs/initiatives/I-62-A-6.md",
+    "Kind": "CLOSURE",
+    "Offset": 1080,
+    "Limit": 241,
+    "Lines": 241,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 15,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+    "Kind": "CLOSURE",
+    "Offset": 1,
+    "Limit": 160,
+    "Lines": 160,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 16,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+    "Kind": "CLOSURE",
+    "Offset": 1700,
+    "Limit": 300,
+    "Lines": 300,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 17,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+    "Kind": "CLOSURE",
+    "Offset": 2000,
+    "Limit": 135,
+    "Lines": 135,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 18,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+    "Kind": "CLOSURE",
+    "Offset": 2134,
+    "Limit": 200,
+    "Lines": 200,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 19,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+    "Kind": "CLOSURE",
+    "Offset": 2530,
+    "Limit": 287,
+    "Lines": 287,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 21,
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+    "Kind": "CLOSURE",
+    "Offset": 157,
+    "Limit": 80,
+    "Lines": 80,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 22,
+    "Path": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 319,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 24,
+    "Path": "docs/automation/evidence/I-62-A6/r3/readable/r1probes/p3-nc1.json",
+    "Kind": "CLOSURE",
+    "Offset": 340,
+    "Limit": 40,
+    "Lines": 40,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 26,
+    "Path": "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py",
+    "Kind": "CLOSURE",
+    "Offset": 240,
+    "Limit": 160,
+    "Lines": 160,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 29,
+    "Path": "docs/automation/evidence/I-62-A6/r3/r1probes/lib_r1r4.py",
+    "Kind": "CLOSURE",
+    "Offset": 560,
+    "Limit": 60,
+    "Lines": 60,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 32,
+    "Path": "docs/automation/evidence/I-62-A6/r2/independence/README.md",
+    "Kind": "CLOSURE",
+    "Offset": 160,
+    "Limit": 90,
+    "Lines": 90,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 33,
+    "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md",
+    "Kind": "CLOSURE",
+    "Offset": 1,
+    "Limit": 100,
+    "Lines": 100,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 34,
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Kind": "CLOSURE",
+    "Offset": 618,
+    "Limit": 92,
+    "Lines": 92,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 36,
+    "Path": "docs/automation/evidence/I-62-A6/r3/r2static/README.md",
+    "Kind": "CLOSURE",
+    "Offset": 1,
+    "Limit": 170,
+    "Lines": 170,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 37,
+    "Path": "docs/automation/evidence/I-62-A6/r3/r2static/README.md",
+    "Kind": "CLOSURE",
+    "Offset": 170,
+    "Limit": 158,
+    "Lines": 158,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 38,
+    "Path": "docs/automation/evidence/I-62-A6/r3/preflight.md",
+    "Kind": "CLOSURE",
+    "Offset": null,
+    "Limit": null,
+    "Lines": 86,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 39,
+    "Path": "a6-r2.md",
+    "Kind": "RUN",
+    "Offset": 545,
+    "Limit": 130,
+    "Lines": 130,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 40,
+    "Path": "docs/automation/decisions/I-62.md",
+    "Kind": "CLOSURE",
+    "Offset": 1564,
+    "Limit": 36,
+    "Lines": 36,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 41,
+    "Path": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json",
+    "Kind": "CLOSURE",
+    "Offset": 845,
+    "Limit": 82,
+    "Lines": 82,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 42,
+    "Path": "docs/automation/agent-execution/README.md",
+    "Kind": "CLOSURE",
+    "Offset": 215,
+    "Limit": 22,
+    "Lines": 22,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 43,
+    "Path": "docs/INITIATIVE_LIFECYCLE.md",
+    "Kind": "CLOSURE",
+    "Offset": 152,
+    "Limit": 40,
+    "Lines": 40,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 44,
+    "Path": "docs/automation/evidence/I-62-A6/r2/readable/independence/results/d-closure.json",
+    "Kind": "CLOSURE",
+    "Offset": 765,
+    "Limit": 89,
+    "Lines": 89,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 45,
+    "Path": "docs/automation/evidence/I-62-A6/r2/readable/independence/results/d-closure.json",
+    "Kind": "CLOSURE",
+    "Offset": 740,
+    "Limit": 27,
+    "Lines": 27,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 46,
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Kind": "CLOSURE",
+    "Offset": 1200,
+    "Limit": 55,
+    "Lines": 55,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 47,
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Kind": "CLOSURE",
+    "Offset": 2436,
+    "Limit": 8,
+    "Lines": 8,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 48,
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Kind": "CLOSURE",
+    "Offset": 2530,
+    "Limit": 26,
+    "Lines": 26,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 50,
+    "Path": "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py",
+    "Kind": "CLOSURE",
+    "Offset": 118,
+    "Limit": 45,
+    "Lines": 45,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   },
+   {
+    "Index": 51,
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Kind": "CLOSURE",
+    "Offset": 604,
+    "Limit": 14,
+    "Lines": 14,
+    "Altered": [],
+    "Status": "FAITHFUL_NORMALIZED"
+   }
+  ],
+  "DeliveredLinesByPath": {
+   "a6-r2.md": 130,
+   "docs/AUTOMATION_PLAN.md": 161,
+   "docs/INITIATIVE_LIFECYCLE.md": 40,
+   "docs/automation/agent-execution/README.md": 22,
+   "docs/automation/decisions/I-62.md": 69,
+   "docs/automation/evidence/I-62-A6/r2/independence/README.md": 90,
+   "docs/automation/evidence/I-62-A6/r2/readable/independence/results/d-closure.json": 114,
+   "docs/automation/evidence/I-62-A6/r3/a6r3-guards-result-run.json": 1447,
+   "docs/automation/evidence/I-62-A6/r3/a6r3-selftest.json": 26,
+   "docs/automation/evidence/I-62-A6/r3/preflight.md": 86,
+   "docs/automation/evidence/I-62-A6/r3/r1probes/README.md": 319,
+   "docs/automation/evidence/I-62-A6/r3/r1probes/lib_r1r4.py": 60,
+   "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py": 205,
+   "docs/automation/evidence/I-62-A6/r3/r2static/README.md": 327,
+   "docs/automation/evidence/I-62-A6/r3/readable/r1probes/p3-nc1.json": 40,
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py": 1157,
+   "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md": 100,
+   "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json": 606,
+   "docs/initiatives/I-62-A-6.md": 1320,
+   "docs/initiatives/I-62-proposal-v14.md": 52,
+   "order.txt": 86
+  },
+  "FailedReadsNeverCredited": [],
+  "TruncatedKnownLongLines": [],
+  "UnicodeReplacementChars": [],
+  "GrepContentLines": {
+   "Total": 60,
+   "Exact": 56
+  }
+ },
+ "CoverageInformational": {
+  "order.txt": true,
+  "a6-r2.md": false,
+  "docs/initiatives/I-62-A-6.md": true
+ },
+ "Result": {
+  "Check": {
+   "Found": true,
+   "SchemaValid": true,
+   "Coherence": [],
+   "StructuredOutputCalls": 1,
+   "ConsistentWithTranscript": true,
+   "SchemaDetail": "True"
+  },
+  "Literal": {
+   "Schema": "rackcad-a6r3-architect-review/0",
+   "RunId": "R20261013T183701Z-9f80",
+   "InvocationId": "I20261013T183701Z-9f80",
+   "LogicalReviewRequestId": "L20261013T183701Z-9f80",
+   "AttemptSeq": 1,
+   "RequestedRole": "ARCHITECT",
+   "Action": "REVIEW_DESIGN",
+   "ReviewedUnit": "I-62",
+   "ReviewedCommit": "9b8b66a21050fe264a4ff4802295468a91fce5c7",
+   "ReviewedPath": "docs/initiatives/I-62-A-6.md",
+   "ReviewedBlob": "e62f27b8b1329f1b9cfa69a707feb31d22bad1d1",
+   "ReviewerMode": "SEPARATE SESSION",
+   "SamePersonAsAuthor": "Sesión: no. Soy un proceso claude-cli nuevo, separado de la sesión autora de A-6 y de sus tres rondas, de los agentes que construyeron r1probes/, r2static/ y launchfix/, de los autores del paquete B-min, del Coordinator, del dictamen R20261011T162328Z-5c5e y de las revisiones de las rondas 1 y 2. No vi sus transcripciones ni su memoria. Operador humano: probablemente el mismo Owner que opera las sesiones de I-62 (el runtime me inyectó un correo de usuario y un nombre de usuario Git, que declaro solo por su tipo); no puedo confirmarlo. Proveedor del revisor: Anthropic (Claude, autodeclarado por el runtime). Proveedor del autor del texto de A-6: no consta en el cierre (preflight.md L31 habla de «la sesión principal», sin proveedor); el banco r2static/ se ejecutó desde «la sesión de Claude Code» (r2static/README.md L18 y L302), así que al menos ese agente usó el mismo proveedor. El proveedor es una dimensión PREFERRED, no REQUIRED (LIFECYCLE L185).",
+   "ReviewerDeclaredIdentity": {
+    "Runtime": "claude-cli (agente sobre Claude Agent SDK, según el contexto inyectado)",
+    "Model": "claude-opus-5-5 (Opus 5.5, declarado por el runtime)",
+    "Effort": "UNKNOWN",
+    "SessionOrThread": "UNKNOWN"
+   },
+   "InjectedContextDeclaration": {
+    "State": "DECLARED",
+    "Items": [
+     "Instrucciones de sistema del runtime: agente Claude sobre Claude Agent SDK; reglas del harness, modos de permiso, guía de sesión (ultrareview), entorno de modelos, gestión de contexto, pronombres y estilo",
+     "Definiciones de herramientas: Glob, Grep, Read y StructuredOutput, más un aviso de herramientas diferidas no expuestas",
+     "Entorno: directorio de trabajo D:\\r62-arch-a6r3, directorio adicional D:\\r62-arch-a6r3-run, plataforma win32, shell PowerShell, versión de Windows 11 Pro y una ruta de scratchpad con un identificador de sesión (declarado solo por su tipo)",
+     "Identidad de modelo declarada por el runtime (Opus 5.5, claude-opus-5-5), fecha de corte de conocimiento, fecha 2026-10-13 y presupuesto de tokens",
+     "Instantánea de gitStatus: HEAD separado, rama principal main, árbol limpio y cinco commits recientes (9b8b66a2, 06521610, 9a30c9a6, a128efef, 9cd074aa)",
+     "Identificadores de cuenta, solo por su tipo: correo electrónico del usuario y nombre de usuario Git",
+     "Recordatorios del runtime durante la corrida que pedían un breve aviso de progreso (no son compactación ni mensajes nuevos del usuario)",
+     "No vi ninguna memoria de proyecto, CLAUDE.md ni AGENTS.md inyectados"
+    ]
+   },
+   "Step0": {
+    "Basis": "INVOKER_VERIFIED_CLONE",
+    "V14DirectReadL2333L2334": true,
+    "OrderReadWhole": true,
+    "Decisions84DeclaresOrderBytesAndSha256": true,
+    "Decisions83RoundTwoDisposition": true,
+    "GuardsRunModeBaseHeadResult": true,
+    "SelftestA6TextBlobMatchesObject": true,
+    "Round2OutputIdentifiesRunAndFindings": true,
+    "Note": "1) Read sobre docs/initiatives/I-62-proposal-v14.md con offset 2325 y limit 18: L2333-L2334 llegaron fielmente («Esperado independiente = la Proposal acordada (Freeze), las reglas de I-61, o el oráculo del Coordinator (Anexo D). Nunca la salida del procedimiento bajo prueba.»). 2) order.txt leído entero (85 líneas): puntos 2-4 en L10-L31 y punto 6 en L36-L49 (nueve puntos y la frase sobre la sesión real en L49). 3) Decisiones L1669: el cuerpo de §84 suma 3 377 bytes, con SHA-256 8a6b560f…bef2e8. §84, punto 6 (L1678), registra los mismos nueve puntos que order.txt L36-L49. §83, punto 1 (L1657): revisión de la ronda 2 conservada, CHANGES REQUIRED, auditor NOT_ACCREDITED, sin acreditación excepcional y R1 y R2 aceptados. Puntos 3 y 4 en L1659-L1660. 4) a6r3-guards-result-run.json leído entero: Mode RUN (L2), Base 9cd074aa… (L3), Head a128efef… (L4) y Result PASS (L1445). 5) a6r3-selftest.json L6994-L7019: Result PASS (L7015), Mode SELF_TEST, ToolBlob 103d69c6…, A6TextBlob e62f27b8… (L7019). 6) Salida de la ronda 2: RunId R20261012T195511Z-e5c3 (L3), ReviewedBlob 86da0ae7… (L12), Verdict CHANGES REQUIRED (L404), R1 en L406-L432, R2 en L433-L461 y O1-O5 en L464-L522. No puedo recalcular bytes, SHA-256 ni blobs porque no tengo ejecución: eso lo acredita el invocador."
+   },
+   "DirectReads": [
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:2333-2334",
+     "Purpose": "Lectura directa obligatoria del Anexo C (esperado independiente), contrastada con la cita de A-6 L133-L134 y con A6-6"
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:2441",
+     "Purpose": "D.3: los ocho negativos con invocación (nc1 y N4 «handoff ausente → BLOCKED»), contrastados con A-6 L103 y con A6-5, regla 7 (d)"
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:2534-2537",
+     "Purpose": "D.4, resultados PASS/FAIL/UNVERIFIED, frente a A6-5, regla 5 (A-6 L670-L673)"
+    },
+    {
+     "Ref": "docs/initiatives/I-62-proposal-v14.md:2544",
+     "Purpose": "Matriz de cierre de FX-02, citada en A-6 L149"
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:622-625",
+     "Purpose": "16.9: not_run, precedencia y not_run sin entrada; base de A6-5, regla 2, y del juicio de N4 y nc1"
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:653",
+     "Purpose": "Modo INVALID_OUTPUT, al que remite A6-5, regla 4"
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:657",
+     "Purpose": "Entrega ausente → BLOCKED/BLOCKED: oráculo de N4"
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:610-611",
+     "Purpose": "16.8: dos reejecuciones por fase y por control negativo; la tercera, STOP P-04 (A6-5, regla 4)"
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:676-677",
+     "Purpose": "16.11, recuperación; Q-A6R3-04"
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:686-687",
+     "Purpose": "S-03 y S-04 (A6-5, reglas 1, 4 y 6)"
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1204-1207",
+     "Purpose": "16.22, comparación no establecida = not_run (A6-5, reglas 1 y 2)"
+    },
+    {
+     "Ref": "docs/AUTOMATION_PLAN.md:1244-1251",
+     "Purpose": "16.23, resultado inválido y P-19, efecto que fija A6-5, regla 4"
+    },
+    {
+     "Ref": "docs/automation/agent-execution/README.md:219-226",
+     "Purpose": "RAE §10: copias de entradas salvo el campo mutado, oráculo relativo y fallo de transporte de los negativos"
+    },
+    {
+     "Ref": "docs/automation/agent-execution/README.md:228",
+     "Purpose": "nc1: CurrentSha inexistente → Identity, BLOCKED/STOP (A-6 L388)"
+    },
+    {
+     "Ref": "docs/automation/decisions/I-62.md:1572",
+     "Purpose": "Línea del Owner (a), que comparo con A-6 L1213"
+    },
+    {
+     "Ref": "docs/automation/decisions/I-62.md:1657-1660",
+     "Purpose": "§83, puntos 1-4: resultado de la ronda 2, límite de los cambios y lo que piden R1 y R2"
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:19-23",
+     "Purpose": "Kit: los negativos son VERIFY con el mismo prompt y el Target de la verificación real"
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:44-45",
+     "Purpose": "AuthorityRevision y CanonicalInputs del kit (A-6 L392-L393; Q-A6R2-06)"
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:78-83",
+     "Purpose": "Constantes R4_CHECKS, CHECK_IDS, WAIVABLE, R5_COMMANDS y R7_COMMANDS (A6-5, regla 2)"
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1954-1998",
+     "Purpose": "R3: sin corridas no hay datos; reejecución y comparación del sobre"
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2134-2197",
+     "Purpose": "R4: Verification, archivos fijados, not_run como no pass y regla de Authority"
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2247-2327",
+     "Purpose": "Selección de corridas por orden y condiciones de datos de R5, R6 y R7"
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2542-2609",
+     "Purpose": "R9: cierre; sin sobres, MISSING_INPUT; alcance de la correspondencia (O4)"
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2675-2699",
+     "Purpose": "accept(): NOT_APPLICABLE solo en dispensables, NA con datos = MISMATCH y fórmula de la Decision"
+    },
+    {
+     "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2801-2812",
+     "Purpose": "main(): códigos 0, 1 y 64"
+    },
+    {
+     "Ref": "docs/INITIATIVE_LIFECYCLE.md:166-169",
+     "Purpose": "Criterio REQUIRED/OPTIONAL"
+    }
+   ],
+   "Reads": [
+    "D:/r62-arch-a6r3-run/order.txt: 1-85 (entera)",
+    "D:/r62-arch-a6r3-run/a6-r2.md: 545-674",
+    "docs/initiatives/I-62-proposal-v14.md: 2325-2342, 2436-2443, 2530-2555",
+    "docs/initiatives/I-62-A-6.md: 1-100, 100-399, 399-598, 597-766, 763-972, 970-1079, 1080-1320 (entera)",
+    "docs/automation/decisions/I-62.md: 1564-1599, 1650-1682",
+    "docs/automation/evidence/I-62-A6/r3/a6r3-guards-result-run.json: 1-1446 (entera)",
+    "docs/automation/evidence/I-62-A6/r3/a6r3-selftest.json: 6994-7019",
+    "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json: 1-404, 405-524, 845-926; Grep sobre el archivo",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py: 1-160, 157-236, 1700-1999, 2000-2134, 2134-2333, 2530-2816; Grep sobre el archivo",
+    "docs/automation/evidence/I-62-A6/r3/r1probes/README.md: 1-319 (entera)",
+    "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py: 118-162, 240-399; Grep sobre el archivo",
+    "docs/automation/evidence/I-62-A6/r3/r1probes/lib_r1r4.py: 560-619; Grep sobre el archivo",
+    "docs/automation/evidence/I-62-A6/r3/r1probes/lib_r3.py: Grep sobre el archivo (sin coincidencias)",
+    "docs/automation/evidence/I-62-A6/r3/readable/r1probes/p3-nc1.json: 340-379; Grep sobre el archivo",
+    "docs/automation/evidence/I-62-A6/r3/r2static/README.md: 1-327 (entera)",
+    "docs/automation/evidence/I-62-A6/r3/preflight.md: 1-85 (entera)",
+    "docs/automation/evidence/I-62-A6/r2/independence/README.md: 160-249; Grep sobre el archivo",
+    "docs/automation/evidence/I-62-A6/r2/readable/independence/results/d-closure.json: 740-853",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md: 1-100",
+    "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json: Grep sobre el archivo",
+    "docs/AUTOMATION_PLAN.md: 604-617, 618-709, 1200-1254",
+    "docs/automation/agent-execution/README.md: 215-236",
+    "docs/INITIATIVE_LIFECYCLE.md: 152-191"
+   ],
+   "Verdict": "CHANGES REQUIRED",
+   "RequiredFindings": [
+    {
+     "FindingId": "A62-A6R3-R1",
+     "Section": "§3.6 A6-3, regla 6 (b) (`Closure` de la solicitud), con §3.8 A6-5, regla 7 (d), la tabla de derivación de A6-9, regla 4 (§3.12) y §3.17, filas R1 (b)-(d)",
+     "ViolatedInvariant": "LIFECYCLE §5 (L166-L169): es REQUIRED un elemento congelable no ejecutable o no verificable. Decisiones §83, punto 3 (L1659), pide definir de forma exhaustiva cómo se aplica A-6 a VERIFY, incluidos N4 y nc1, y probar con ellos el aceptante fijado. A6-9, regla 4 (A-6 L808-L810, L841-L843), fija que el cierre del aceptante se deriva mecánicamente, «sin ningún paso de juicio».",
+     "Counterexample": "A6-5, regla 7 (d) (L696-L700), dice que N4 y nc1 que ejecutan el instrumento sobre las entradas que sí existen son invocaciones con ejecuciones y llevan la solicitud de A6-3, regla 6. Esa solicitud exige `Closure` = el cierre derivado por la regla de A-6 sobre la independencia (L582-L583). La tabla de derivación (L819-L824) toma como entradas «la delegación D, la entrega H y el contrato K cuyos blobs fija E», y C1 contiene {H.BaseSha, H.CurrentSha, H.RedSha} y RevList(D.BaseSha..H.CurrentSha). (1) nc1 (RAE L228): H.CurrentSha no es un commit. RevList(D.BaseSha..H.CurrentSha), una primitiva de grafo fijada, falla, y Blob(c:p) de C3 no está definido para ese c. La tabla no fija ningún resultado para ese caso. (2) N4 (V14 L2441): H no existe, así que los términos de H en C1, RevList y la entrada H de C6 no tienen valor. En los dos casos la supervisión, o aplica un criterio que A-6 no da (un paso de juicio), o no obtiene cierre, no hay solicitud y no hay «ningún resultado del aceptante en el intervalo». Entonces la salida no se acepta (L656-L658): reejecución con la misma entrada mutada y, a la tercera, STOP P-04 y control no superado (L663-L664). Es el efecto que A62-A6R2-R1 tenía que eliminar. La evidencia de la ronda 3 no lo cubre: las solicitudes de N4 y nc1 (y T1) se construyeron con el cierre del extremo a extremo (`build_closure`: todos los commits del clon y todas las rutas de nueve commits fijos; lib_r1r4.py L577-L598), no con la tabla de A6-9. Para N4 se quitó a mano el archivo H (run_r3.py L259-L262); para nc1 no se usó la entrega mutada (run_r3.py L384). La derivación solo se ejercitó para la VERIFY de T1 sobre la entrega (r2/independence/README.md L194, L241-L242). Por eso N4-c y nc1 V1-V3 (r1probes/README.md L149, L164-L168), que A-6 presenta en §3.17 (L1043-L1045), no muestran el resultado de R9 con el cierre que A-6 prescribe.",
+     "Evidence": [
+      "docs/initiatives/I-62-A-6.md:582-584",
+      "docs/initiatives/I-62-A-6.md:696-700",
+      "docs/initiatives/I-62-A-6.md:808-810",
+      "docs/initiatives/I-62-A-6.md:819-826",
+      "docs/initiatives/I-62-A-6.md:841-843",
+      "docs/initiatives/I-62-A-6.md:656-658",
+      "docs/initiatives/I-62-A-6.md:663-664",
+      "docs/initiatives/I-62-A-6.md:1043-1045",
+      "docs/automation/agent-execution/README.md:219-226",
+      "docs/automation/agent-execution/README.md:228",
+      "docs/initiatives/I-62-proposal-v14.md:2441",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/lib_r1r4.py:577-598",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py:254-262",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py:376-384",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:133-136",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:149",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:164-168",
+      "docs/automation/evidence/I-62-A6/r2/independence/README.md:192-194",
+      "docs/automation/evidence/I-62-A6/r2/independence/README.md:241-242",
+      "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:23",
+      "docs/automation/decisions/I-62.md:1659",
+      "docs/INITIATIVE_LIFECYCLE.md:166-169"
+     ],
+     "WhyItMatters": "N4 y nc1 son dos de los ocho negativos con invocación de D.3 y se lanzan con el mismo prompt que la verificación (kit L23; RAE L220), así que es esperable que el Controller ejecute el instrumento sobre las entradas que sí existen. Si la solicitud no se puede construir, ninguno de los dos se acepta: se gasta el pool de D.3 (cuatro, con ≤ 2 por fase) y la sesión no fungible de FX-U2, el control queda no superado y FX-02 no llega a C-24. Además, la demostración que pide §83, punto 3, se hizo con una solicitud que A-6 no construye: el resultado de R9, que decide la aceptación, no está ensayado con el cierre prescrito. La regla es ejecutable en la verificación real, pero no en estos dos negativos.",
+     "CorrectionRequired": "Sin cambiar el instrumento, el aceptante ni el alcance de la línea (a): (1) en A6-3, regla 6 (b), dentro de decisiones §83, punto 2, fijar de forma mecánica el `Closure` de toda invocación VERIFY en la que la entrega falta o es ilegible, o en la que un commit que nombra la entrega no existe (N4, nc1 y cualquier otro caso así). Por ejemplo: los términos de la tabla que dependen de una H ausente se omiten; los que nombran un commit inexistente, incluido RevList hasta él, son vacíos; C3 solo usa commits existentes; y la derivación registra cada término omitido. Si hace falta tocar A6-9, regla 4, se presenta antes, como exige §83, punto 2. Hacer explícito que la medición de A6-7 y la prueba previa de A6-5, regla 6, usan las mismas entradas D, H, K e I. (2) Repetir en r1probes/ los casos de N4 (N4-c y N4-d) y de nc1 (V1-V3 y nc1-err) con el `Closure` derivado exactamente por esa tabla, desde un cierre efectivo como el del kit (con el `Target` de la verificación real), y registrar R9 y el resultado de la tabla de A6-5, regla 2. (3) Ajustar las filas R1 (b)-(d) de §3.17 a esos resultados y declarar qué cierre usó cada sonda."
+    }
+   ],
+   "OptionalFindings": [
+    {
+     "FindingId": "A62-A6R3-O1",
+     "Section": "§3.6 A6-3, regla 6 (a), identificación de las ejecuciones; §3.17, límites de la reconstrucción de referencia",
+     "Note": "«Es ejecución del instrumento toda orden registrada que contiene el blob fijado» falla cerrado en un sentido y deja un hueco en el otro. Una orden benigna que nombra el blob, como `git cat-file -t <blob>`, vuelve no reconstruible todo el registro y deja la salida sin aceptar (F-blob-mention); un Controller que compruebe el objeto antes de usarlo gastaría lanzamientos de D.3. En sentido contrario, una ejecución que no nombre el blob completo (prefijo abreviado, `--batch`) no se identifica ni se reconstruye. Si su salida no cita `FactsSha256`, se trata como sin ejecuciones, y las lecturas internas del instrumento quedan fuera de la auditoría P-22. A-6 declara los dos límites (L1065), y la medición de A6-7 revelaría el primero.",
+     "Evidence": [
+      "docs/initiatives/I-62-A-6.md:576-577",
+      "docs/initiatives/I-62-A-6.md:1065",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:214",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:245-246",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:269-271"
+     ],
+     "SuggestedCorrection": "Que el texto de la invocación diga al Controller que el blob solo aparece en la orden declarada. Ampliar la identificación a toda orden que nombre un prefijo del blob o que alimente por la entrada estándar al intérprete declarado, con fallo cerrado si no se reconstruye."
+    },
+    {
+     "FindingId": "A62-A6R3-O2",
+     "Section": "§3.8 A6-5, reglas 2 y 4; §3.6 A6-3, regla 6",
+     "Note": "El aceptante no comprueba que la solicitud sea su construcción mecánica: M2, M5, M5b y M6 dan ACCEPT_FACTS y solo la tabla del banco los rechaza. La regla 2 cubre R4 y la salida VERIFIED, pero entre los casos de salida no aceptada de la regla 4 no figura una solicitud con menos `Runs` que el registro (M6) ni, en general, una solicitud distinta de su construcción mecánica.",
+     "Evidence": [
+      "docs/initiatives/I-62-A-6.md:572-574",
+      "docs/initiatives/I-62-A-6.md:656-658",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:184",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:238-240"
+     ],
+     "SuggestedCorrection": "Añadir a la regla 4: «una solicitud distinta de su construcción mecánica desde el registro (número, orden, argv o SHA-256 de los sobres de `Runs`, o inclusión de `Verification`)», y que la custodia permita recalcularla."
+    },
+    {
+     "FindingId": "A62-A6R3-O3",
+     "Section": "§3.17, tabla de precondiciones de R2, fila «cobertura completa de las lecturas legítimas»",
+     "Note": "La fila solo nombra `hashes` y `read-text` sobre `CurrentSha`. Con la regla I6 estricta, la evidencia (d) deja fuera también `clausemap` (el estado en GREEN), y la disposición de A6-7, regla 7, tiene que cubrir esa lectura.",
+     "Evidence": [
+      "docs/initiatives/I-62-A-6.md:1062",
+      "docs/automation/evidence/I-62-A6/r2/independence/README.md:236-239",
+      "docs/automation/evidence/I-62-A6/r2/readable/independence/results/d-closure.json:759-766"
+     ],
+     "SuggestedCorrection": "Añadir `clausemap` (estado en `CurrentSha`) a la fila y remitir a la lista completa de (d)."
+    },
+    {
+     "FindingId": "A62-A6R3-O4",
+     "Section": "§3.8 A6-5, regla 6 (prueba previa)",
+     "Note": "La prueba previa usa «un cierre derivado del cierre efectivo real de las invocaciones VERIFY del kit», que solo existe después de la entrega, pero la regla no lo dice. Tampoco dice qué pasa con el lanzamiento si la prueba o la disposición faltan o fallan: «no se usa tal como está» deja el aceptante fuera, pero no dice, como A6-7, regla 7, que la celda deje de ser elegible con el instrumento. Se podrían lanzar invocaciones VERIFY cuyas salidas con ejecuciones nunca se aceptan.",
+     "Evidence": [
+      "docs/initiatives/I-62-A-6.md:674-683",
+      "docs/initiatives/I-62-A-6.md:756-761",
+      "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:437"
+     ],
+     "SuggestedCorrection": "Fijar el momento (después de la entrega y del cálculo del cierre de VERIFY, antes del primer lanzamiento VERIFY, sin cesión) y el efecto: sin disposición o con la prueba fallida, no se lanza ninguna invocación VERIFY con el instrumento admitido."
+    },
+    {
+     "FindingId": "A62-A6R3-O5",
+     "Section": "§3.8 A6-5, regla 2; §3.17, fila R1 (d)",
+     "Note": "En nc2, nc3, N5, N6, N7a y N7b las cinco comprobaciones suelen evaluarse, así que la solicitud lleva `Verification` y R4 recalcula sobre las entradas copiadas del control. El banco no demuestra que la mutación de cada uno sea visible para R4. En N6 (CleanTree), R4 recalcula con `git status` del `-C` y la ruta ignorada de la solicitud (bmin_accept.py L2087-L2097): si la mutación no se refleja ahí, R4 da MISMATCH y el control correcto queda sin aceptar.",
+     "Evidence": [
+      "docs/initiatives/I-62-proposal-v14.md:2441",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2087-2097",
+      "docs/initiatives/I-62-A-6.md:585-588",
+      "docs/initiatives/I-62-A-6.md:1045"
+     ],
+     "SuggestedCorrection": "Extender las sondas, o la prueba previa, a la construcción de cada negativo con invocación y registrar R4 en cada uno, en particular N6 y N7a/N7b."
+    },
+    {
+     "FindingId": "A62-A6R3-O6",
+     "Section": "§3.8 A6-5, regla 4 (S-04 antes de reejecutar)",
+     "Note": "La regla dice que de una salida no aceptada no se aplica «ni STOP derivado de ella», y a continuación la devuelve «con STOP» si registra S-04. Es coherente con 16.11 (S-04 → STOP y decisión del Coordinator) y con 16.8 (las reejecuciones son para BLOCKED y transporte), pero la redacción admite leerla como una excepción a la propia regla. Respuesta a Q-A6R3-04: es coherente.",
+     "Evidence": [
+      "docs/initiatives/I-62-A-6.md:661-667",
+      "docs/AUTOMATION_PLAN.md:676-677",
+      "docs/AUTOMATION_PLAN.md:686-687",
+      "docs/AUTOMATION_PLAN.md:610-611"
+     ],
+     "SuggestedCorrection": "Precisar que ese STOP es el de la condición S-04 de la regla 1 según 16.11, no la `Disposition` de la salida no aceptada, y que en un control negativo el Coordinator decide además el estado del control."
+    },
+    {
+     "FindingId": "A62-A6R3-O7",
+     "Section": "§3.10 A6-7, regla 1",
+     "Note": "La corrección (a) de A62-A6R2-R2 pedía la corrida del aceptante sobre el registro real «con el resultado custodiado». A6-7, regla 1, exige que la medición la demuestre, pero no dice que la solicitud, el registro y el resultado se custodien por blob, como A6-3, regla 6, exige para las invocaciones VERIFY.",
+     "Evidence": [
+      "docs/initiatives/I-62-A-6.md:732-737",
+      "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:460"
+     ],
+     "SuggestedCorrection": "Añadir que el registro de sesión real, las `Runs` reconstruidas, la solicitud y el resultado del aceptante de la medición se custodian con su SHA-256 antes de la disposición de elegibilidad."
+    }
+   ],
+   "Round2FindingResolution": [
+    {
+     "Round2Finding": "A62-A6R2-R1",
+     "Status": "PARTIALLY_CORRECTED",
+     "Rationale": "El hallazgo (output.json L406-L432) pedía: (a) definir «invocación VERIFY con el instrumento» y el trato de una VERIFY sin ejecuciones; (b) la solicitud y la tabla de N4; (c) cómo juzga R4 los not_run posteriores al primer fallo; y (d) demostrarlo con el aceptante fijado al menos sobre N4 y nc1. §83, punto 3 (L1659), pide además conservar 16.9 y su precedencia, sin estados nuevos ni rechazos de evidencia convertidos en fallos del producto. (a) Corregido: A6-5, regla 7 (L684-L700), define el ámbito y lo reparte en con ejecuciones, sin ejecuciones (16.9, 16.11 y 16.22 sin cambio) y registro insuficiente (no aceptada); A6-3, regla 6 (L572-L573, L590-L593), lo aplica a la solicitud. (b) Corregido para R4: A6-3, regla 6 (c) (L585-L588), y A6-5, regla 2 (L642-L643). Lo confirman el código (bmin_accept.py L2134-L2142, L2686-L2688) y N4-a/b/c. (c) Corregido: L648-L652; el aceptante trata not_run como no pass (L2193), y la regla de la ronda 3 lo hace uniforme (V2-r2 frente a V3-r2). Una VERIFIED siempre lleva R4. La semántica de 16.9 y su precedencia no cambian, no aparecen estados nuevos y la salida no aceptada nunca es FAIL (L670-L673). (d) Ensayado, 57 de 57 (r1probes/README.md L102), pero con el cierre del extremo a extremo y no con el cierre derivado que prescribe A6-3, regla 6 (b). Para N4 y nc1 con ejecuciones, ese cierre no está definido: la tabla de A6-9 no es total sin H ni con un CurrentSha inexistente (A62-A6R3-R1). Respuesta a Q-A6R2-02 y Q-A6R2-04 (L1239, L1241): corregidas, salvo ese punto.",
+     "ClauseRefs": [
+      "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:406-432",
+      "docs/automation/decisions/I-62.md:1659",
+      "a6-r2.md:550-556",
+      "a6-r2.md:603-609",
+      "docs/initiatives/I-62-A-6.md:572-593",
+      "docs/initiatives/I-62-A-6.md:640-653",
+      "docs/initiatives/I-62-A-6.md:684-700",
+      "docs/initiatives/I-62-A-6.md:1042-1045",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:147-149",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:164-169",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2134-2142",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/lib_r1r4.py:577-598"
+     ],
+     "FindingIds": [
+      "A62-A6R3-R1"
+     ]
+    },
+    {
+     "Round2Finding": "A62-A6R2-R2",
+     "Status": "CORRECTED",
+     "Rationale": "El hallazgo (output.json L433-L461) pedía: (a) reconstruir `Runs` desde el registro real de una invocación y ejecutar sobre ellas el aceptante fijado en el mismo `-C` antes de la ronda, sin elegibilidad si falla; y (b) una disposición del Coordinator sobre la cobertura de las lecturas legítimas del instrumento por el cierre de VERIFY, con la prueba previa extendida a un cierre derivado del kit real y sin aceptante mientras falte. §83, punto 4 (L1660), pide además precondiciones verificables, separar lo estático de lo que exige la medición real y no declarar acreditada evidencia que no existe. (a) A6-3, regla 6 (a) (L574-L581), fija la reconstrucción con fallo cerrado: registro completo y legible, identificación, forma declarada con -I, exactamente un sobre canónico con LF sin alterar bytes, y código. La remite a la regla que demuestre la medición y que nombre la disposición. A6-7, regla 1 (L732-L737), exige demostrar sobre el registro real de la medición la reconstrucción y una corrida del aceptante con ACCEPT_FACTS. La regla 4 (L745-L747) y la 7 (L759-L761) quitan la elegibilidad si falta. La regla 5 (L748-L750) añade la regla de reconstrucción y el cierre como invalidadores. (b) A6-7, regla 7 (L756-L761), y A6-5, regla 6 (L679-L683). La tabla de §3.17 (L1057-L1063) separa lo comprobable ya de lo que exige la medición, y L1054-L1055 y L761 impiden dar por cumplida evidencia que no existe. He contrastado la evidencia estática con lo que A-6 dice de ella (r2static/README.md L131-L153; r1probes/README.md L186-L226). En la ronda 2 nada de esto existía (a6-r2.md L550-L556, L626-L633, L659-L665). Lo que depende de la sesión real queda como precondición con fallo cerrado. Matices sin efecto en el estado: la custodia del resultado de la medición (A62-A6R3-O7) y la lista de lecturas fuera con I6 estricto (A62-A6R3-O3).",
+     "ClauseRefs": [
+      "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:433-461",
+      "docs/automation/decisions/I-62.md:1660",
+      "a6-r2.md:626-633",
+      "a6-r2.md:659-665",
+      "docs/initiatives/I-62-A-6.md:574-581",
+      "docs/initiatives/I-62-A-6.md:674-683",
+      "docs/initiatives/I-62-A-6.md:726-761",
+      "docs/initiatives/I-62-A-6.md:1054-1063",
+      "docs/automation/evidence/I-62-A6/r3/r2static/README.md:131-153",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:186-226"
+     ],
+     "FindingIds": []
+    }
+   ],
+   "NegativeCaseCoherence": [
+    {
+     "Case": "N4",
+     "Status": "INCOHERENT",
+     "Rationale": "Coherente en casi todo. Con la entrega ausente, Handoff queda en fail con BLOCKED, y las comprobaciones que dependen de la entrega quedan en not_run sin entrada y sin disposición (AP L622-L623, L657). A6-1, regla 7, y A6-5, regla 7 (d), impiden ejecutar el instrumento sobre la entrega (L696-L698). Sin ejecuciones, rige 16.9 sin cambio (L691-L693). Con ejecuciones, la solicitud omite `Verification` y declara R4 no aplicable (L585-L588); el aceptante fijado lo admite (bmin_accept.py L2135-L2137, L2686-L2688), y una ejecución con error se rechaza (N4-d). La salida no aceptada se reejecuta como transporte, según RAE §10 (L225-L226) y 16.8 (L610-L611), y el juicio del control sigue siendo su oráculo relativo (L652-L653). Incoherente en un punto: la misma solicitud exige el `Closure` derivado por la tabla de A6-9 (L582-L583), y con H ausente sus términos de H no tienen valor (L819-L824). N4-c se aceptó con el cierre del extremo a extremo, sin H a mano (run_r3.py L259-L262), no con el prescrito (A62-A6R3-R1).",
+     "ClauseRefs": [
+      "docs/AUTOMATION_PLAN.md:622-625",
+      "docs/AUTOMATION_PLAN.md:657",
+      "docs/automation/agent-execution/README.md:219-226",
+      "docs/initiatives/I-62-A-6.md:585-588",
+      "docs/initiatives/I-62-A-6.md:652-653",
+      "docs/initiatives/I-62-A-6.md:691-700",
+      "docs/initiatives/I-62-A-6.md:819-824",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:147-150",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py:254-262",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2134-2142"
+     ],
+     "FindingIds": [
+      "A62-A6R3-R1"
+     ]
+    },
+    {
+     "Case": "NC1",
+     "Status": "INCOHERENT",
+     "Rationale": "Coherente con 16.9, 16.22 y RAE §10. Identity queda en fail con STOP (RAE L228). Scope y Trailer pueden quedar en fail o en not_run sin entrada (16.22): con la ronda 3, las dos variantes se aceptan (V1, con R4 en MATCH; V2 y V3, con R4 no aplicable), y la ronda 2 rechazaba V3 (r1probes/README.md L164-L168). El aceptante fijado devuelve «not pass» en Identity, Scope y Trailer con una revisión inexistente (bmin_accept.py L2041-L2046, L2066-L2072, L2110-L2115), y una ejecución sobre ese CurrentSha se rechaza (nc1-err, L169). Incoherente en un punto: la solicitud exige el `Closure` derivado (L582-L583), y RevList(D.BaseSha..H.CurrentSha) con un CurrentSha inexistente no tiene resultado definido en la tabla (L822-L824). Las variantes V1-V3 se aceptaron con el cierre del extremo a extremo (run_r3.py L384; lib_r1r4.py L577-L598) (A62-A6R3-R1).",
+     "ClauseRefs": [
+      "docs/automation/agent-execution/README.md:228",
+      "docs/AUTOMATION_PLAN.md:1204-1207",
+      "docs/initiatives/I-62-A-6.md:648-652",
+      "docs/initiatives/I-62-A-6.md:696-700",
+      "docs/initiatives/I-62-A-6.md:822-824",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:164-169",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py:376-384",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2041-2046"
+     ],
+     "FindingIds": [
+      "A62-A6R3-R1"
+     ]
+    },
+    {
+     "Case": "VERIFY_WITHOUT_INSTRUMENT",
+     "Status": "COHERENT",
+     "Rationale": "Con el registro completo y legible y sin ninguna ejecución, no hay solicitud ni aceptante. La salida se trata como sin el instrumento, con 16.9, 16.11 y 16.22 sin cambio. Si cita una orden del instrumento o un FactsSha256, queda sin aceptar (L691-L693, L656-L658), y la supervisión registra el recuento cero con el SHA-256 del registro (L592-L593). Es necesario y total frente al aceptante fijado: sin corridas, R3 no tiene datos y no es dispensable, y R9 lanza MISSING_INPUT (bmin_accept.py L80, L1954-L1956, L2553-L2554, L2689-L2692). ZERO-a/b/c lo confirman con cualquier combinación de declaraciones (r1probes/README.md L123-L129). Para D.4, esas salidas son ingeridas (L670-L673). Respuesta a Q-A6R3-02: es compatible con A6-6, regla 3, porque la calificación «Controller más instrumento» se aplica a la configuración (cierre que admite el instrumento), es conservadora y no amplía A6-8, que no se excede porque no se usa nada fuera de VERIFY.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:592-593",
+      "docs/initiatives/I-62-A-6.md:656-658",
+      "docs/initiatives/I-62-A-6.md:670-673",
+      "docs/initiatives/I-62-A-6.md:691-693",
+      "docs/initiatives/I-62-A-6.md:1250",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1954-1956",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2542-2554",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:123-129"
+     ],
+     "FindingIds": []
+    }
+   ],
+   "ReconstructionFromRealEvents": {
+    "Assessment": "ADEQUATE_AS_FAIL_CLOSED_PRECONDITION",
+    "Rationale": "La regla está definida de forma verificable. A6-3, regla 6 (a) (L574-L581), exige un registro completo (inicio y fin del turno, y el fin de cada orden iniciada) y legible; identifica las ejecuciones por el blob; exige el Argv en la forma declarada, con Git e intérprete por ruta y con -I; exactamente un sobre canónico terminado en LF, sin alterar ningún byte; y el código de salida. Cualquier fallo deja la invocación sin solicitud y la salida sin aceptar (también A6-5, regla 4, L656-L658, y regla 7 (c), L694-L695). La regla concreta queda para la disposición y la medición: A6-7, regla 1 (L732-L734), la demuestra sobre el registro real; las reglas 4 y 7 (L745-L747, L756-L761) quitan la elegibilidad si falta, y la regla 5 la hace invalidador (L748-L750). A-6 separa lo estático de lo real (L1059, L1063, L1065), y la evidencia lo respalda: 9 registros reales (111 órdenes) con `command` como cadena con la shell, stdout y stderr mezclados y sin truncado visible hasta 59 805 bytes (r2static/README.md L131-L153), y una reconstrucción de referencia que aísla el sobre o falla cerrada en 30 casos (r1probes/README.md L186-L226). Respuesta a Q-A6R3-03: como precondición con fallo cerrado, basta. Si el registro real no permite aislar el sobre (por ejemplo, por el ruido de profile.ps1 dentro de la línea o por un truncado), la medición falla y la celda no es elegible. Cambiar la orden declarada tocaría A6-1 y quedaría fuera de §83, punto 2. La identificación por el blob es mejorable (A62-A6R3-O1).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:574-581",
+     "docs/initiatives/I-62-A-6.md:656-658",
+     "docs/initiatives/I-62-A-6.md:694-695",
+     "docs/initiatives/I-62-A-6.md:726-737",
+     "docs/initiatives/I-62-A-6.md:745-753",
+     "docs/initiatives/I-62-A-6.md:756-761",
+     "docs/initiatives/I-62-A-6.md:1059",
+     "docs/initiatives/I-62-A-6.md:1063-1065",
+     "docs/automation/evidence/I-62-A6/r3/r2static/README.md:131-153",
+     "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:72-85",
+     "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:186-226"
+    ],
+    "FindingIds": [
+     "A62-A6R3-O1"
+    ]
+   },
+   "EffectiveInputClosure": {
+    "Assessment": "ADEQUATE_AS_FAIL_CLOSED_PRECONDITION",
+    "Rationale": "A6-7, regla 7 (L756-L761), fija una disposición previa verificable. Su contenido: cómo el cierre efectivo de VERIFY que fija el kit cubre las lecturas legítimas del instrumento, en particular las de CurrentSha y las de los commits de la tabla de derivación, o cómo se limitan las órdenes a lo que ese cierre admite; y la regla de reconstrucción. Su momento: antes de la medición. Su uso: el mismo cierre en la medición y en la disposición de cada VERIFY posterior. Sin ella no hay medición; sin una medición que lo demuestre (R9 en MATCH sobre el registro real, L735), la celda no es elegible y el aceptante no se usa. El cierre de VERIFY es invalidador (L748-L750). A6-5, regla 6 (L679-L683), añade la prueba previa con un cierre derivado del cierre real del kit y con esa cobertura, con fallo cerrado si una lectura necesaria queda fuera. Lo justifica la evidencia (d): con I6 estricto, lecturas legítimas en GREEN quedan fuera (d-closure.json L759-L785; independence/README.md L236-L239), y el kit fija CanonicalInputs en la AuthorityRevision del contrato (controller-contracts.md L44-L45; A-6 L392-L393). Respuesta a Q-A6R2-06: el cierre es del kit, y A-6 condiciona a esa disposición la medición y el uso del aceptante. Fuera de este punto: la lista de lecturas fuera omite `clausemap` (A62-A6R3-O3), el efecto de una prueba previa fallida sobre el lanzamiento es mejorable (A62-A6R3-O4), y la totalidad de la derivación del cierre del aceptante en N4 y nc1 es otro asunto (A62-A6R3-R1), que no afecta a esta cobertura de E.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:756-761",
+     "docs/initiatives/I-62-A-6.md:674-683",
+     "docs/initiatives/I-62-A-6.md:735",
+     "docs/initiatives/I-62-A-6.md:748-750",
+     "docs/initiatives/I-62-A-6.md:808-810",
+     "docs/initiatives/I-62-A-6.md:612-621",
+     "docs/initiatives/I-62-A-6.md:392-393",
+     "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:44-45",
+     "docs/automation/evidence/I-62-A6/r2/readable/independence/results/d-closure.json:759-785",
+     "docs/automation/evidence/I-62-A6/r2/independence/README.md:236-239",
+     "docs/initiatives/I-62-A-6.md:1243"
+    ],
+    "FindingIds": [
+     "A62-A6R3-O3",
+     "A62-A6R3-O4"
+    ]
+   },
+   "AcceptorCodeContrast": [
+    {
+     "Claim": "CHECK_IDS",
+     "A6Refs": [
+      "docs/initiatives/I-62-A-6.md:640-641"
+     ],
+     "AcceptorRefs": [
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1878-1879",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2622-2623",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2675-2699"
+     ],
+     "Status": "MATCHES",
+     "Rationale": "El resultado lleva `Checks` R1-R10 en el orden de CHECK_IDS. Cada uno está en MATCH o MISMATCH (_status), NOT_APPLICABLE (solo en las dispensables) o MANUAL (R8 siempre). No hay otros estados.",
+     "FindingIds": []
+    },
+    {
+     "Claim": "WAIVABLE_SET",
+     "A6Refs": [
+      "docs/initiatives/I-62-A-6.md:642-648"
+     ],
+     "AcceptorRefs": [
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:80",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2686-2694",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2697-2698"
+     ],
+     "Status": "MATCHES",
+     "Rationale": "Son dispensables R4, R5, R6, R7 y R10. Una comprobación sin datos y declarada no aplicable da NOT_APPLICABLE, y la Decision la cuenta como aceptable, así que la Decision sola no basta. La tabla de A-6 es más estricta: R10 siempre en MATCH y R4 no aplicable solo por A6-3, regla 6 (c).",
+     "FindingIds": []
+    },
+    {
+     "Claim": "DECISION_FORMULA",
+     "A6Refs": [
+      "docs/initiatives/I-62-A-6.md:640-642",
+      "docs/initiatives/I-62-A-6.md:647-648"
+     ],
+     "AcceptorRefs": [
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2697-2698",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2806-2808"
+     ],
+     "Status": "MATCHES",
+     "Rationale": "La Decision es ACCEPT_FACTS si y solo si todas las comprobaciones están en MATCH, NOT_APPLICABLE o MANUAL, y REJECT_FACTS en cualquier otro caso, también con un error de solicitud (código 64, Checks vacío). A-6 lee además las `Checks`.",
+     "FindingIds": []
+    },
+    {
+     "Claim": "EXIT_CODES",
+     "A6Refs": [
+      "docs/initiatives/I-62-A-6.md:640-642",
+      "docs/initiatives/I-62-A-6.md:667-669"
+     ],
+     "AcceptorRefs": [
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2801-2812"
+     ],
+     "Status": "MATCHES",
+     "Rationale": "El código es 0 con ACCEPT_FACTS y 1 con REJECT_FACTS. Es 64 con un AcceptError al construir la solicitud: uso, archivo de solicitud ausente, hash o JSON. Esos son errores de la supervisión, como los trata la regla 4. Con 64, la Decision es REJECT_FACTS, y la tabla exige el código 0.",
+     "FindingIds": []
+    },
+    {
+     "Claim": "NOT_APPLICABLE_RULES",
+     "A6Refs": [
+      "docs/initiatives/I-62-A-6.md:644-646"
+     ],
+     "AcceptorRefs": [
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:81-83",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2247-2250",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2279-2283",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2286-2311",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2323-2327",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2686-2694"
+     ],
+     "Status": "MATCHES",
+     "Rationale": "R5 tiene datos con una corrida identity, diff, scope o hashes; R7, con scope, contract o clausemap; y R6, con clausemap o con una AuthorityResolution no vacía en la salida que R4 leyó. Sin datos y con NA, da NOT_APPLICABLE; sin datos y sin NA, MISMATCH; con datos y con NA, MISMATCH.",
+     "FindingIds": []
+    },
+    {
+     "Claim": "R4_VERIFICATION_CONDITION",
+     "A6Refs": [
+      "docs/initiatives/I-62-A-6.md:585-588",
+      "docs/initiatives/I-62-A-6.md:642-643"
+     ],
+     "AcceptorRefs": [
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2134-2142",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2160-2178",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:166-176",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2682-2688"
+     ],
+     "Status": "MATCHES",
+     "Rationale": "R4 lee la salida, la delegación y la entrega, cada una por ruta y SHA-256 (read_pinned), y además IgnorePath, TermsRev y MainSha. Si falta uno de los tres archivos, MISSING_INPUT deja todo R4 en MISMATCH (N4-a). Sin `Verification`, R4 no tiene datos y queda NOT_APPLICABLE si se declara. Coincide con A6-3, regla 6 (c), y con A6-5, regla 2.",
+     "FindingIds": []
+    },
+    {
+     "Claim": "R4_NOT_RUN_AS_NON_PASS",
+     "A6Refs": [
+      "docs/initiatives/I-62-A-6.md:648-650"
+     ],
+     "AcceptorRefs": [
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2149-2151",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2181-2197"
+     ],
+     "Status": "MATCHES",
+     "Rationale": "Solo admite pass, fail o not_run, y compara (Controller == pass) con su propio cálculo: fail y not_run cuentan igual como no pass. Si no puede calcular una fila, o si falta el resultado del Controller, la fila da MISMATCH.",
+     "FindingIds": []
+    },
+    {
+     "Claim": "R4_AUTHORITY_MAP_RULE",
+     "A6Refs": [
+      "docs/initiatives/I-62-A-6.md:648-649"
+     ],
+     "AcceptorRefs": [
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2166-2178",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2184-2188"
+     ],
+     "Status": "MATCHES",
+     "Rationale": "Con defectos de mapa en MainSha, Authority en pass da MISMATCH. Sin defectos, la fila es «unconstrained» (G5). Sin MainSha, o si el mapa no se puede calcular, la fila da MISMATCH.",
+     "FindingIds": []
+    },
+    {
+     "Claim": "R3_R9_WITHOUT_RUNS",
+     "A6Refs": [
+      "docs/initiatives/I-62-A-6.md:590-593",
+      "docs/initiatives/I-62-A-6.md:691-693"
+     ],
+     "AcceptorRefs": [
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:80",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1954-1956",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2542-2554",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2689-2692"
+     ],
+     "Status": "MATCHES",
+     "Rationale": "Con `Runs` vacío, R3 no tiene datos y no es dispensable. R9 lanza MISSING_INPUT si hay cierre, y sin cierre tampoco tiene datos. La Decision es siempre REJECT_FACTS. Por eso A-6 no crea solicitud cuando no hay ejecuciones (A6-3, regla 6, última frase; A6-5, regla 7 (b)).",
+     "FindingIds": []
+    }
+   ],
+   "OwnerAuthorizationAndVerifyScope": {
+    "LineA": {
+     "Assessment": "LIMITED_TO_STATED_SCOPE",
+     "Note": "A-6 L1213 coincide con decisiones §78, L1572. «En su verificación» = las invocaciones VERIFY (A6-1, reglas 1 y 2, L474-L484; A6-8, regla 1, L772-L774). El aceptante lo usa solo la supervisión, del lado del Coordinator, en FX-02 en F6. Lo que añade la ronda 3 (la corrida del aceptante en la medición y la prueba previa con el cierre real) son actividades de la supervisión con los mismos blobs (L1203-L1206), dentro de la excepción."
+    },
+    "LineB": {
+     "Assessment": "LIMITED_TO_STATED_SCOPE",
+     "Note": "A-6 L1214: una medición de solo lectura con el instrumento fijado, sin reintento y sin aceptar su resultado. La reconstrucción de Runs y la corrida del aceptante sobre su registro son de la supervisión y no abren ninguna invocación (L1203-L1206; A6-7, regla 3, L739-L744). La línea (b) solo rige la aplicación."
+    },
+    "VerifyOnly": "CONFIRMED",
+    "PinnedBlobsUnchanged": "CONFIRMED",
+    "NoResultAcceptedInAdvance": "CONFIRMED",
+    "Rationale": "VERIFY: el alcance de la cabecera (L32-L35), A6-1, regla 2 (PLAN sin instrumento ni aceptante, L483-L484), el ámbito de A6-5, regla 7 (L684-L687), que solo abarca VERIFY, y A6-7, regla 1, que no mide la planificación (L737); G9 en PASS (guards-run L154-L164). Blobs: §3.3 fija 9a829b0e… y 434ef1fc… (L450-L451); la custodia de las guardas da esos objetos en sus rutas (guards-run L1134-L1141) y G7 en PASS (L142-L147); la ronda 3 no cambia ninguno (L1035-L1036). Sin aceptación anticipada: las dos líneas «no acepta ningún resultado» (L1209-L1214); A6-8, regla 4 (L780-L781); A6-7, regla 2 (L738) y regla 7 (L761). El hallazgo A62-A6R3-R1 se corrige sin tocar blobs ni el alcance de (a).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:1186-1191",
+     "docs/initiatives/I-62-A-6.md:1203-1214",
+     "docs/automation/decisions/I-62.md:1572",
+     "docs/initiatives/I-62-A-6.md:474-484",
+     "docs/initiatives/I-62-A-6.md:772-783",
+     "docs/initiatives/I-62-A-6.md:684-687",
+     "docs/initiatives/I-62-A-6.md:737-744",
+     "docs/initiatives/I-62-A-6.md:450-451",
+     "docs/automation/evidence/I-62-A6/r3/a6r3-guards-result-run.json:142-164",
+     "docs/automation/evidence/I-62-A6/r3/a6r3-guards-result-run.json:1134-1141"
+    ],
+    "FindingIds": []
+   },
+   "GapAssessment": [
+    {
+     "Gap": "G1",
+     "Assessment": "ACCEPTABLE_RESIDUAL",
+     "MitigationTested": "partial",
+     "Rationale": "No demostrado: que el aceptante detecte por sí mismo hechos falsos de MV-1. Mitigación: la parte de mapa de R4 (bmin_accept.py L2184-L2188), ahora solo cuando la solicitud lleva `Verification`, que es siempre el caso en una VERIFIED (L902-L903). Está ensayada solo con M17 en la evidencia de independencia, no con datos de la ronda. Cerrarla exige cambiar el aceptante. Efecto de la ronda 3 (L907-L909, L1067-L1069): en salidas sin `Verification` (N4 y not_run), un hecho falso de MV-1 solo cambia un resultado ya distinto de VERIFIED, y en N4 y nc1 no altera el oráculo relativo, porque Authority es anterior a la comprobación mutada solo en nc1, y allí la verificación real ya pasó R4. Respuesta a Q-A6R3-01: aceptable tal como se acota.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:898-909",
+      "docs/initiatives/I-62-A-6.md:1067-1069",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2184-2188",
+      "docs/initiatives/I-62-A-6.md:1249"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Gap": "G2",
+     "Assessment": "ACCEPTABLE_RESIDUAL",
+     "MitigationTested": "no",
+     "Rationale": "No demostrado: que las dos piezas coincidan sobre un mapa que viola su esquema. El riesgo es un rechazo falso (independence/README.md L160), nunca una aceptación falsa. La mitigación, la prueba previa de A6-5, regla 6, no está ensayada porque B1 no existe. Cerrarla exige otro blob y una fe de erratas. La ronda 3 no cambia G2: la prueba previa ahora usa además el cierre real, también con fallo cerrado.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:910-918",
+      "docs/initiatives/I-62-A-6.md:679-683",
+      "docs/automation/evidence/I-62-A6/r2/independence/README.md:160"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Gap": "G3",
+     "Assessment": "ACCEPTABLE_RESIDUAL",
+     "MitigationTested": "partial",
+     "Rationale": "No demostrado: una recomputación independiente de freetext, cleantree, trx, handoff, read-text, read-json y la parte A5 de contract. R4 cubre solo seis comprobaciones (bmin_accept.py L78) y está ensayada con M14 y con resultados invertidos (independence/README.md L171-L175). El contraste primario y el oráculo no están ensayados. En la ronda 3, R4 deja de actuar sin `Verification` (L932-L934): un hecho falso puede dar un REWORK, BLOCKED o STOP indebido, nunca un VERIFIED, y esas filas son de REWORK, así que la máxima disposición no baja de una fila STOP real. Residuo aceptable y declarado.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:919-934",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:78",
+      "docs/automation/evidence/I-62-A6/r2/independence/README.md:171-175",
+      "docs/AUTOMATION_PLAN.md:622-625"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Gap": "G4",
+     "Assessment": "ACCEPTABLE_RESIDUAL",
+     "MitigationTested": "partial",
+     "Rationale": "No demostrado: que el aceptante observe por sí mismo el aislamiento y las llamadas a Git. Mitigación: blob fijado más comprobación del punto de uso, con (i)-(iv) ensayados en r2 y (v)-(viii) en r3, pero con el pwsh 7 del PATH, no con el del runtime en ConstrainedLanguage (r2static/README.md L268-L275); y la auditoría del registro de sesión, no ensayada con un registro real. Lo que A-6 dice de la cobertura (L941-L945) coincide con la evidencia. Que git por nombre sea el Git declarado lo demuestra la medición; entre invocaciones queda la reejecución del aceptante (R3 y R5). El alcance de R9 (L949-L951) coincide con el código (bmin_accept.py L2595-L2605). Cerrarla exige otro aceptante. Aceptable, con el límite de identificación de A62-A6R3-O1.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:935-954",
+      "docs/automation/evidence/I-62-A6/r3/r2static/README.md:268-275",
+      "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:263-271",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2595-2605"
+     ],
+     "FindingIds": [
+      "A62-A6R3-O1"
+     ]
+    },
+    {
+     "Gap": "G5",
+     "Assessment": "ACCEPTABLE_RESIDUAL",
+     "MitigationTested": "no",
+     "Rationale": "Un Authority en fail falso con un mapa válido no se detecta (bmin_accept.py L2187-L2188; independence/README.md L162-L163). El riesgo es un STOP falso, en la dirección conservadora; nunca un VERIFIED falso. El oráculo sellado no está ensayado. Cerrarla exige otro aceptante. La ronda 3 no cambia G5.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:955-961",
+      "docs/automation/evidence/I-62-A6/r2/independence/README.md:162-163",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2184-2188"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Gap": "G6",
+     "Assessment": "ACCEPTABLE_RESIDUAL",
+     "MitigationTested": "no",
+     "Rationale": "Divergencia demostrada con sondas sintéticas (encabezado sangrado y commit con CRLF). El riesgo es un rechazo falso, no una aceptación falsa. La prueba previa no está ensayada. Cerrarla exige otro blob y una fe de erratas. La ronda 3 no cambia G6.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:962-968",
+      "docs/initiatives/I-62-A-6.md:1067"
+     ],
+     "FindingIds": []
+    }
+   ],
+   "Round2OptionalDisposition": [
+    {
+     "Round2Optional": "A62-A6R2-O1",
+     "Status": "DECLINED_WITH_REASON",
+     "Rationale": "No se incorpora porque exige cambiar A6-3, regla 1, que queda fuera de §83, punto 2 (L1658). El motivo basta: el propio hallazgo reconocía que la comprobación previa (ii) y la del punto de uso cubren el riesgo y que el resultado no cambia (output.json L467).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:1048",
+      "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:464-475",
+      "docs/automation/decisions/I-62.md:1658"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Round2Optional": "A62-A6R2-O2",
+     "Status": "INCORPORATED",
+     "Rationale": "G4 precisa la cobertura paso a paso ((i)-(iv) en r2; (v)-(viii) en r3, con el pwsh 7 del PATH; la auditoría, sin ensayar), y la fila O3 de §3.16 ya cita r3/r2static/ y dice que r2/r1r4/ no la ensayó. Coincide con r2static/README.md (28 de 28 casos y sus límites).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:1049",
+      "docs/initiatives/I-62-A-6.md:941-945",
+      "docs/initiatives/I-62-A-6.md:1028",
+      "docs/automation/evidence/I-62-A6/r3/r2static/README.md:229-233",
+      "docs/automation/evidence/I-62-A6/r3/r2static/README.md:268-275"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Round2Optional": "A62-A6R2-O3",
+     "Status": "PARTLY_INCORPORATED",
+     "Rationale": "La medición de A6-7 debe demostrar que git por nombre es el Git declarado (L732-L733), y el resto queda como residuo declarado en G4, con su mitigación (L946-L948). El paso (v) de A6-3, regla 3, no cambia porque queda fuera de §83, punto 2. Es una de las dos alternativas que proponía el hallazgo.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:1050",
+      "docs/initiatives/I-62-A-6.md:732-733",
+      "docs/initiatives/I-62-A-6.md:946-948",
+      "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:489-500"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Round2Optional": "A62-A6R2-O4",
+     "Status": "PARTLY_INCORPORATED",
+     "Rationale": "A6-4, regla 3, conserva «La comprobación R9 del aceptante aplica esa correspondencia» (L617) porque queda fuera de §83, punto 2. La precisión va en G4 (L949-L951) y coincide con el código: R9 juzga GitCalls e Inputs, y los --file solo en las órdenes que compara (bmin_accept.py L2595-L2605).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:1051",
+      "docs/initiatives/I-62-A-6.md:617",
+      "docs/initiatives/I-62-A-6.md:949-951",
+      "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2595-2605"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Round2Optional": "A62-A6R2-O5",
+     "Status": "INCORPORATED",
+     "Rationale": "A6-5, regla 4 (L665-L667): una salida no aceptada que registra S-04 por una discrepancia con Git vuelve al Coordinator con STOP antes de reejecutar, con el motivo de que la misma pieza fijada no la puede resolver. Es coherente con 16.11 y 16.8 (Q-A6R3-04). La redacción admite precisión (A62-A6R3-O6).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:1052",
+      "docs/initiatives/I-62-A-6.md:665-667",
+      "docs/AUTOMATION_PLAN.md:686-687"
+     ],
+     "FindingIds": [
+      "A62-A6R3-O6"
+     ]
+    }
+   ],
+   "RealSessionPreconditions": [
+    {
+     "Precondition": "RUNS_RECONSTRUCTION_FROM_REAL_LOG",
+     "Status": "KEPT_FAIL_CLOSED",
+     "Rationale": "La regla y sus límites están definidos (A6-3, regla 6 (a)), y la forma exacta queda para la disposición y la medición (L574-L576; A6-7, reglas 1 y 7). Si falta, no hay solicitud o la celda no es elegible. La tabla la marca como pendiente de la medición (L1059), y el preflight también (preflight.md L78-L80).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:574-581",
+      "docs/initiatives/I-62-A-6.md:732-734",
+      "docs/initiatives/I-62-A-6.md:756-761",
+      "docs/initiatives/I-62-A-6.md:1059",
+      "docs/automation/evidence/I-62-A6/r3/preflight.md:78-80"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Precondition": "RUNS_COMPARISON_ON_REAL_RUNS",
+     "Status": "KEPT_FAIL_CLOSED",
+     "Rationale": "R3 compara argv, entradas, llamadas a Git, hechos y error (L590-L591). Está ensayada sobre registros sintéticos (SWAP, ejecución con error), y sobre las ejecuciones reales queda pendiente de la medición (L1060). Sin ACCEPT_FACTS no hay elegibilidad (L745-L747).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:590-591",
+      "docs/initiatives/I-62-A-6.md:1060",
+      "docs/initiatives/I-62-A-6.md:734-737",
+      "docs/initiatives/I-62-A-6.md:745-747"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Precondition": "IDENTITY_AT_USE_IN_REAL_SHELL",
+     "Status": "KEPT_FAIL_CLOSED",
+     "Rationale": "El paso (iii) se hace por la tubería del shell de la invocación antes de cada lanzamiento. Cualquier diferencia, o la imposibilidad de comprobarlo, deja la invocación sin lanzar y lleva a S-04 (L552-L561). La medición demuestra la entrega de los bytes (L728). La tabla lo declara pendiente con el shell real (L1061), y r2static deja sin probar el pwsh del runtime (L270-L274).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:549-561",
+      "docs/initiatives/I-62-A-6.md:726-728",
+      "docs/initiatives/I-62-A-6.md:1061",
+      "docs/automation/evidence/I-62-A6/r3/r2static/README.md:270-274"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Precondition": "GIT_BY_NAME_IS_DECLARED_GIT",
+     "Status": "KEPT_FAIL_CLOSED",
+     "Rationale": "A6-7, regla 1, lo exige sobre el registro real de la medición, y la regla 4 quita la elegibilidad si falta. Entre invocaciones es un residuo declarado (G4, L946-L948), no un hecho acreditado.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:732-733",
+      "docs/initiatives/I-62-A-6.md:745-747",
+      "docs/initiatives/I-62-A-6.md:946-948",
+      "docs/initiatives/I-62-A-6.md:1050"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Precondition": "CLOSURE_COVERAGE_R9_ON_REAL_RUNS",
+     "Status": "KEPT_FAIL_CLOSED",
+     "Rationale": "R9 debe quedar en MATCH en la corrida del aceptante de la medición, con el cierre dispuesto (L735, L756-L761). La tabla la declara pendiente (L1062). Sin la disposición no hay medición, y sin la medición el aceptante no se usa.",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:734-737",
+      "docs/initiatives/I-62-A-6.md:756-761",
+      "docs/initiatives/I-62-A-6.md:1062"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Precondition": "ACCEPTOR_RUN_ON_MEASUREMENT_LOG",
+     "Status": "KEPT_FAIL_CLOSED",
+     "Rationale": "A6-7, regla 1, exige ACCEPT_FACTS con R1, R2, R3 y R9 en MATCH, R5-R7 en MATCH o no aplicables y R4 y R10 no aplicables, en el mismo -C y después de su Entrada. Si no, la celda no es elegible y no hay repetición (regla 4). A-6 no lo da por cumplido (L761; §7, L1203-L1206).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:732-737",
+      "docs/initiatives/I-62-A-6.md:745-747",
+      "docs/initiatives/I-62-A-6.md:761",
+      "docs/initiatives/I-62-A-6.md:1203-1206"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Precondition": "COORDINATOR_CLOSURE_AND_RECONSTRUCTION_RULE_DISPOSITION",
+     "Status": "KEPT_FAIL_CLOSED",
+     "Rationale": "A6-7, regla 7: la disposición es previa a la medición, con su contenido definido; sin ella no hay medición; nombra el cierre y la regla que repiten las disposiciones posteriores, y los dos son invalidadores (regla 5). El Anexo la ordena antes de la medición (L1309-L1311).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:748-750",
+      "docs/initiatives/I-62-A-6.md:756-761",
+      "docs/initiatives/I-62-A-6.md:1309-1311"
+     ],
+     "FindingIds": []
+    },
+    {
+     "Precondition": "NORMATIVE_READINGS_DISPOSITION_AND_PRETEST",
+     "Status": "KEPT_FAIL_CLOSED",
+     "Rationale": "A6-5, regla 6: la disposición de las lecturas normativas, regla por regla, y la prueba previa sobre los datos de la ronda con un cierre derivado del cierre real son previas a la primera invocación con el instrumento. Sin coincidencia, o si la prueba falla, el aceptante no se usa tal como está, y una divergencia durante la ronda lleva a S-03. No se dan por cumplidas. El efecto sobre el lanzamiento se puede precisar (A62-A6R3-O4).",
+     "ClauseRefs": [
+      "docs/initiatives/I-62-A-6.md:674-683",
+      "docs/initiatives/I-62-A-6.md:914-915"
+     ],
+     "FindingIds": [
+      "A62-A6R3-O4"
+     ]
+    }
+   ],
+   "OwnerAuthorityCheck": {
+    "AdditionalOwnerReservedConsequences": [],
+    "OwnerDecisionRequired": false,
+    "Note": "La línea (a) consta (decisiones §78, L1572) y la ronda 3 no amplía su alcance ni cambia los blobs que fija. La línea (b) solo rige la aplicación. El único REQUIRED (A62-A6R3-R1) se corrige en A6-3, regla 6 (b), dentro de decisiones §83, punto 2, o, si hiciera falta tocar A6-9, regla 4, con una presentación previa al Coordinator: es materia del Coordinator, no del Owner. Ninguna brecha G1-G6 exige otro blob para el acuerdo."
+   },
+   "IfAgreed": {
+    "ScopeLimitedToFX02F6ControllerVerify": null,
+    "Round3ChangesLimitedToA63R6A65A67": null,
+    "Round2FindingsCorrected": null,
+    "NegativeCasesCoherent": null,
+    "ReconstructionAndClosureFailClosed": null,
+    "AcceptorContrastMatches": null,
+    "RealSessionPreconditionsKeptFailClosed": null,
+    "GapsAcceptableAsResiduals": null,
+    "OwnerAuthorizationAndVerifyScopeConfirmed": null,
+    "NoAdditionalOwnerDecisionRequired": null,
+    "SuitableForCoordinatorAgreement": null
+   },
+   "KnownLimitations": [
+    "Sin ejecución de código: no recalculé blobs, SHA-256 ni bytes, y no ejecuté las guardas, el instrumento, el aceptante ni las sondas. La identidad la acredita el invocador, y mis conclusiones sobre el aceptante salen de leer su código.",
+    "Las afirmaciones de que las sondas de la ronda 3 usaron el cierre del extremo a extremo salen de leer run_r3.py (L121-L126, L254-L262, L376-L384) y lib_r1r4.py (L577-L598). No leí las copias legibles p2-n4.json, p4-t1.json ni summary.json, ni table_r3.py, reconstruct_runs.py o lib_r3.py enteros.",
+    "Cómo construye el kit el cierre efectivo E de cada negativo (por ejemplo, si E de N4 fija el blob de una entrega ausente) no consta en controller-contracts.md L1-L100. Los demás archivos del kit están fuera del cierre. A62-A6R3-R1 vale con cualquiera de las dos lecturas, porque la tabla de A6-9 tampoco define el caso.",
+    "La construcción concreta de N6, N7a y N7b no está en el cierre (solo la lista de V14 L2441). A62-A6R3-O5 es una observación de cobertura, no un defecto demostrado.",
+    "La línea 357 de readable/r1probes/p3-nc1.json parece cortada en la propia copia legible («MV-6: Derived»). No la cito.",
+    "No leí las secciones §140-§165 de I-62-evidence.md. Ninguna conclusión depende de ellas.",
+    "Comparé a ojo, no byte a byte, A-6 L1213 con decisiones L1572 y las reglas que la ronda 3 dice no tocar. La igualdad byte a byte la acreditan G5 y G6 en PASS en el resultado run custodiado."
+   ],
+   "RecommendedNextAction": "Que el Coordinator disponga A62-A6R3-R1 y los opcionales A62-A6R3-O1..O7 y autorice una ronda 4 limitada a A6-3, regla 6 (b), sin cambiar el instrumento, el aceptante ni las líneas del Owner. Esa ronda debe fijar de forma mecánica el Closure de las invocaciones VERIFY con la entrega ausente o con un commit inexistente (N4, nc1) y, si hiciera falta tocar A6-9, regla 4, presentarlo antes. Después: repetir en r1probes/ los casos N4 y nc1 con el cierre derivado exactamente por la tabla, desde un cierre efectivo como el del kit; ajustar §3.17; volver a pasar las guardas sobre el commit exacto; y hacer una única revisión formal acotada a esa corrección. No hace falta ninguna decisión nueva del Owner. Siguen sin A-6 AGREED, FX-02 PASS ni medición."
+  }
+ },
+ "ReferenceCheck": [
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:582-584",
+   "Kind": "CLOSURE",
+   "Lines": [
+    582,
+    584
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:696-700",
+   "Kind": "CLOSURE",
+   "Lines": [
+    696,
+    700
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:808-810",
+   "Kind": "CLOSURE",
+   "Lines": [
+    808,
+    810
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:819-826",
+   "Kind": "CLOSURE",
+   "Lines": [
+    819,
+    826
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:841-843",
+   "Kind": "CLOSURE",
+   "Lines": [
+    841,
+    843
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:656-658",
+   "Kind": "CLOSURE",
+   "Lines": [
+    656,
+    658
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:663-664",
+   "Kind": "CLOSURE",
+   "Lines": [
+    663,
+    664
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1043-1045",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1043,
+    1045
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/agent-execution/README.md:219-226",
+   "Kind": "CLOSURE",
+   "Lines": [
+    219,
+    226
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/agent-execution/README.md:228",
+   "Kind": "CLOSURE",
+   "Lines": [
+    228,
+    228
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2441",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2441,
+    2441
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/lib_r1r4.py:577-598",
+   "Kind": "CLOSURE",
+   "Lines": [
+    577,
+    598
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py:254-262",
+   "Kind": "CLOSURE",
+   "Lines": [
+    254,
+    262
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py:376-384",
+   "Kind": "CLOSURE",
+   "Lines": [
+    376,
+    384
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:133-136",
+   "Kind": "CLOSURE",
+   "Lines": [
+    133,
+    136
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:149",
+   "Kind": "CLOSURE",
+   "Lines": [
+    149,
+    149
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:164-168",
+   "Kind": "CLOSURE",
+   "Lines": [
+    164,
+    168
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r2/independence/README.md:192-194",
+   "Kind": "CLOSURE",
+   "Lines": [
+    192,
+    194
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r2/independence/README.md:241-242",
+   "Kind": "CLOSURE",
+   "Lines": [
+    241,
+    242
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:23",
+   "Kind": "CLOSURE",
+   "Lines": [
+    23,
+    23
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/automation/decisions/I-62.md:1659",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1659,
+    1659
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RequiredFindings[A62-A6R3-R1]",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:166-169",
+   "Kind": "CLOSURE",
+   "Lines": [
+    166,
+    169
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:576-577",
+   "Kind": "CLOSURE",
+   "Lines": [
+    576,
+    577
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1065",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1065,
+    1065
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:214",
+   "Kind": "CLOSURE",
+   "Lines": [
+    214,
+    214
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:245-246",
+   "Kind": "CLOSURE",
+   "Lines": [
+    245,
+    246
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:269-271",
+   "Kind": "CLOSURE",
+   "Lines": [
+    269,
+    271
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:572-574",
+   "Kind": "CLOSURE",
+   "Lines": [
+    572,
+    574
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:656-658",
+   "Kind": "CLOSURE",
+   "Lines": [
+    656,
+    658
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O2]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:184",
+   "Kind": "CLOSURE",
+   "Lines": [
+    184,
+    184
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O2]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:238-240",
+   "Kind": "CLOSURE",
+   "Lines": [
+    238,
+    240
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O3]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1062",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1062,
+    1062
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O3]",
+   "Ref": "docs/automation/evidence/I-62-A6/r2/independence/README.md:236-239",
+   "Kind": "CLOSURE",
+   "Lines": [
+    236,
+    239
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O3]",
+   "Ref": "docs/automation/evidence/I-62-A6/r2/readable/independence/results/d-closure.json:759-766",
+   "Kind": "CLOSURE",
+   "Lines": [
+    759,
+    766
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O4]",
+   "Ref": "docs/initiatives/I-62-A-6.md:674-683",
+   "Kind": "CLOSURE",
+   "Lines": [
+    674,
+    683
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O4]",
+   "Ref": "docs/initiatives/I-62-A-6.md:756-761",
+   "Kind": "CLOSURE",
+   "Lines": [
+    756,
+    761
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O4]",
+   "Ref": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:437",
+   "Kind": "CLOSURE",
+   "Lines": [
+    437,
+    437
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O5]",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2441",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2441,
+    2441
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O5]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2087-2097",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2087,
+    2097
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O5]",
+   "Ref": "docs/initiatives/I-62-A-6.md:585-588",
+   "Kind": "CLOSURE",
+   "Lines": [
+    585,
+    588
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O5]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1045",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1045,
+    1045
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O6]",
+   "Ref": "docs/initiatives/I-62-A-6.md:661-667",
+   "Kind": "CLOSURE",
+   "Lines": [
+    661,
+    667
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O6]",
+   "Ref": "docs/AUTOMATION_PLAN.md:676-677",
+   "Kind": "CLOSURE",
+   "Lines": [
+    676,
+    677
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O6]",
+   "Ref": "docs/AUTOMATION_PLAN.md:686-687",
+   "Kind": "CLOSURE",
+   "Lines": [
+    686,
+    687
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O6]",
+   "Ref": "docs/AUTOMATION_PLAN.md:610-611",
+   "Kind": "CLOSURE",
+   "Lines": [
+    610,
+    611
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O7]",
+   "Ref": "docs/initiatives/I-62-A-6.md:732-737",
+   "Kind": "CLOSURE",
+   "Lines": [
+    732,
+    737
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OptionalFindings[A62-A6R3-O7]",
+   "Ref": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:460",
+   "Kind": "CLOSURE",
+   "Lines": [
+    460,
+    460
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:406-432",
+   "Kind": "CLOSURE",
+   "Lines": [
+    406,
+    432
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "docs/automation/decisions/I-62.md:1659",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1659,
+    1659
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "a6-r2.md:550-556",
+   "Kind": "RUN",
+   "Lines": [
+    550,
+    556
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "a6-r2.md:603-609",
+   "Kind": "RUN",
+   "Lines": [
+    603,
+    609
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:572-593",
+   "Kind": "CLOSURE",
+   "Lines": [
+    572,
+    593
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:640-653",
+   "Kind": "CLOSURE",
+   "Lines": [
+    640,
+    653
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:684-700",
+   "Kind": "CLOSURE",
+   "Lines": [
+    684,
+    700
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1042-1045",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1042,
+    1045
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:147-149",
+   "Kind": "CLOSURE",
+   "Lines": [
+    147,
+    149
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:164-169",
+   "Kind": "CLOSURE",
+   "Lines": [
+    164,
+    169
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2134-2142",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2134,
+    2142
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/lib_r1r4.py:577-598",
+   "Kind": "CLOSURE",
+   "Lines": [
+    577,
+    598
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R2]",
+   "Ref": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:433-461",
+   "Kind": "CLOSURE",
+   "Lines": [
+    433,
+    461
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R2]",
+   "Ref": "docs/automation/decisions/I-62.md:1660",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1660,
+    1660
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R2]",
+   "Ref": "a6-r2.md:626-633",
+   "Kind": "RUN",
+   "Lines": [
+    626,
+    633
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R2]",
+   "Ref": "a6-r2.md:659-665",
+   "Kind": "RUN",
+   "Lines": [
+    659,
+    665
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:574-581",
+   "Kind": "CLOSURE",
+   "Lines": [
+    574,
+    581
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:674-683",
+   "Kind": "CLOSURE",
+   "Lines": [
+    674,
+    683
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:726-761",
+   "Kind": "CLOSURE",
+   "Lines": [
+    726,
+    761
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1054-1063",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1054,
+    1063
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R2]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r2static/README.md:131-153",
+   "Kind": "CLOSURE",
+   "Lines": [
+    131,
+    153
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2FindingResolution[A62-A6R2-R2]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:186-226",
+   "Kind": "CLOSURE",
+   "Lines": [
+    186,
+    226
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1048",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1048,
+    1048
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O1]",
+   "Ref": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:464-475",
+   "Kind": "CLOSURE",
+   "Lines": [
+    464,
+    475
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O1]",
+   "Ref": "docs/automation/decisions/I-62.md:1658",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1658,
+    1658
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1049",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1049,
+    1049
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:941-945",
+   "Kind": "CLOSURE",
+   "Lines": [
+    941,
+    945
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1028",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1028,
+    1028
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O2]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r2static/README.md:229-233",
+   "Kind": "CLOSURE",
+   "Lines": [
+    229,
+    233
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O2]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r2static/README.md:268-275",
+   "Kind": "CLOSURE",
+   "Lines": [
+    268,
+    275
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O3]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1050",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1050,
+    1050
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O3]",
+   "Ref": "docs/initiatives/I-62-A-6.md:732-733",
+   "Kind": "CLOSURE",
+   "Lines": [
+    732,
+    733
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O3]",
+   "Ref": "docs/initiatives/I-62-A-6.md:946-948",
+   "Kind": "CLOSURE",
+   "Lines": [
+    946,
+    948
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O3]",
+   "Ref": "docs/automation/evidence/I-62-architect-A-6r2/R20261012T195511Z-e5c3/output.json:489-500",
+   "Kind": "CLOSURE",
+   "Lines": [
+    489,
+    500
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O4]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1051",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1051,
+    1051
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O4]",
+   "Ref": "docs/initiatives/I-62-A-6.md:617",
+   "Kind": "CLOSURE",
+   "Lines": [
+    617,
+    617
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O4]",
+   "Ref": "docs/initiatives/I-62-A-6.md:949-951",
+   "Kind": "CLOSURE",
+   "Lines": [
+    949,
+    951
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O4]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2595-2605",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2595,
+    2605
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O5]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1052",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1052,
+    1052
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O5]",
+   "Ref": "docs/initiatives/I-62-A-6.md:665-667",
+   "Kind": "CLOSURE",
+   "Lines": [
+    665,
+    667
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "Round2OptionalDisposition[A62-A6R2-O5]",
+   "Ref": "docs/AUTOMATION_PLAN.md:686-687",
+   "Kind": "CLOSURE",
+   "Lines": [
+    686,
+    687
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:898-909",
+   "Kind": "CLOSURE",
+   "Lines": [
+    898,
+    909
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1067-1069",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1067,
+    1069
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G1]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2184-2188",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2184,
+    2188
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1249",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1249,
+    1249
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:910-918",
+   "Kind": "CLOSURE",
+   "Lines": [
+    910,
+    918
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G2]",
+   "Ref": "docs/initiatives/I-62-A-6.md:679-683",
+   "Kind": "CLOSURE",
+   "Lines": [
+    679,
+    683
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G2]",
+   "Ref": "docs/automation/evidence/I-62-A6/r2/independence/README.md:160",
+   "Kind": "CLOSURE",
+   "Lines": [
+    160,
+    160
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G3]",
+   "Ref": "docs/initiatives/I-62-A-6.md:919-934",
+   "Kind": "CLOSURE",
+   "Lines": [
+    919,
+    934
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G3]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:78",
+   "Kind": "CLOSURE",
+   "Lines": [
+    78,
+    78
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G3]",
+   "Ref": "docs/automation/evidence/I-62-A6/r2/independence/README.md:171-175",
+   "Kind": "CLOSURE",
+   "Lines": [
+    171,
+    175
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G3]",
+   "Ref": "docs/AUTOMATION_PLAN.md:622-625",
+   "Kind": "CLOSURE",
+   "Lines": [
+    622,
+    625
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G4]",
+   "Ref": "docs/initiatives/I-62-A-6.md:935-954",
+   "Kind": "CLOSURE",
+   "Lines": [
+    935,
+    954
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G4]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r2static/README.md:268-275",
+   "Kind": "CLOSURE",
+   "Lines": [
+    268,
+    275
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G4]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:263-271",
+   "Kind": "CLOSURE",
+   "Lines": [
+    263,
+    271
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G4]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2595-2605",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2595,
+    2605
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G5]",
+   "Ref": "docs/initiatives/I-62-A-6.md:955-961",
+   "Kind": "CLOSURE",
+   "Lines": [
+    955,
+    961
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G5]",
+   "Ref": "docs/automation/evidence/I-62-A6/r2/independence/README.md:162-163",
+   "Kind": "CLOSURE",
+   "Lines": [
+    162,
+    163
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G5]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2184-2188",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2184,
+    2188
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G6]",
+   "Ref": "docs/initiatives/I-62-A-6.md:962-968",
+   "Kind": "CLOSURE",
+   "Lines": [
+    962,
+    968
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "GapAssessment[G6]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1067",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1067,
+    1067
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[N4]",
+   "Ref": "docs/AUTOMATION_PLAN.md:622-625",
+   "Kind": "CLOSURE",
+   "Lines": [
+    622,
+    625
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[N4]",
+   "Ref": "docs/AUTOMATION_PLAN.md:657",
+   "Kind": "CLOSURE",
+   "Lines": [
+    657,
+    657
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[N4]",
+   "Ref": "docs/automation/agent-execution/README.md:219-226",
+   "Kind": "CLOSURE",
+   "Lines": [
+    219,
+    226
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[N4]",
+   "Ref": "docs/initiatives/I-62-A-6.md:585-588",
+   "Kind": "CLOSURE",
+   "Lines": [
+    585,
+    588
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[N4]",
+   "Ref": "docs/initiatives/I-62-A-6.md:652-653",
+   "Kind": "CLOSURE",
+   "Lines": [
+    652,
+    653
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[N4]",
+   "Ref": "docs/initiatives/I-62-A-6.md:691-700",
+   "Kind": "CLOSURE",
+   "Lines": [
+    691,
+    700
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[N4]",
+   "Ref": "docs/initiatives/I-62-A-6.md:819-824",
+   "Kind": "CLOSURE",
+   "Lines": [
+    819,
+    824
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[N4]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:147-150",
+   "Kind": "CLOSURE",
+   "Lines": [
+    147,
+    150
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[N4]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py:254-262",
+   "Kind": "CLOSURE",
+   "Lines": [
+    254,
+    262
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[N4]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2134-2142",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2134,
+    2142
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[NC1]",
+   "Ref": "docs/automation/agent-execution/README.md:228",
+   "Kind": "CLOSURE",
+   "Lines": [
+    228,
+    228
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[NC1]",
+   "Ref": "docs/AUTOMATION_PLAN.md:1204-1207",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1204,
+    1207
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[NC1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:648-652",
+   "Kind": "CLOSURE",
+   "Lines": [
+    648,
+    652
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[NC1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:696-700",
+   "Kind": "CLOSURE",
+   "Lines": [
+    696,
+    700
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[NC1]",
+   "Ref": "docs/initiatives/I-62-A-6.md:822-824",
+   "Kind": "CLOSURE",
+   "Lines": [
+    822,
+    824
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[NC1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:164-169",
+   "Kind": "CLOSURE",
+   "Lines": [
+    164,
+    169
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[NC1]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/run_r3.py:376-384",
+   "Kind": "CLOSURE",
+   "Lines": [
+    376,
+    384
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[NC1]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2041-2046",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2041,
+    2046
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[VERIFY_WITHOUT_INSTRUMENT]",
+   "Ref": "docs/initiatives/I-62-A-6.md:592-593",
+   "Kind": "CLOSURE",
+   "Lines": [
+    592,
+    593
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[VERIFY_WITHOUT_INSTRUMENT]",
+   "Ref": "docs/initiatives/I-62-A-6.md:656-658",
+   "Kind": "CLOSURE",
+   "Lines": [
+    656,
+    658
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[VERIFY_WITHOUT_INSTRUMENT]",
+   "Ref": "docs/initiatives/I-62-A-6.md:670-673",
+   "Kind": "CLOSURE",
+   "Lines": [
+    670,
+    673
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[VERIFY_WITHOUT_INSTRUMENT]",
+   "Ref": "docs/initiatives/I-62-A-6.md:691-693",
+   "Kind": "CLOSURE",
+   "Lines": [
+    691,
+    693
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[VERIFY_WITHOUT_INSTRUMENT]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1250",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1250,
+    1250
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[VERIFY_WITHOUT_INSTRUMENT]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1954-1956",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1954,
+    1956
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[VERIFY_WITHOUT_INSTRUMENT]",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2542-2554",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2542,
+    2554
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "NegativeCaseCoherence[VERIFY_WITHOUT_INSTRUMENT]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:123-129",
+   "Kind": "CLOSURE",
+   "Lines": [
+    123,
+    129
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[RUNS_RECONSTRUCTION_FROM_REAL_LOG]",
+   "Ref": "docs/initiatives/I-62-A-6.md:574-581",
+   "Kind": "CLOSURE",
+   "Lines": [
+    574,
+    581
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[RUNS_RECONSTRUCTION_FROM_REAL_LOG]",
+   "Ref": "docs/initiatives/I-62-A-6.md:732-734",
+   "Kind": "CLOSURE",
+   "Lines": [
+    732,
+    734
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[RUNS_RECONSTRUCTION_FROM_REAL_LOG]",
+   "Ref": "docs/initiatives/I-62-A-6.md:756-761",
+   "Kind": "CLOSURE",
+   "Lines": [
+    756,
+    761
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[RUNS_RECONSTRUCTION_FROM_REAL_LOG]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1059",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1059,
+    1059
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[RUNS_RECONSTRUCTION_FROM_REAL_LOG]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/preflight.md:78-80",
+   "Kind": "CLOSURE",
+   "Lines": [
+    78,
+    80
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[RUNS_COMPARISON_ON_REAL_RUNS]",
+   "Ref": "docs/initiatives/I-62-A-6.md:590-591",
+   "Kind": "CLOSURE",
+   "Lines": [
+    590,
+    591
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[RUNS_COMPARISON_ON_REAL_RUNS]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1060",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1060,
+    1060
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[RUNS_COMPARISON_ON_REAL_RUNS]",
+   "Ref": "docs/initiatives/I-62-A-6.md:734-737",
+   "Kind": "CLOSURE",
+   "Lines": [
+    734,
+    737
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[RUNS_COMPARISON_ON_REAL_RUNS]",
+   "Ref": "docs/initiatives/I-62-A-6.md:745-747",
+   "Kind": "CLOSURE",
+   "Lines": [
+    745,
+    747
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[IDENTITY_AT_USE_IN_REAL_SHELL]",
+   "Ref": "docs/initiatives/I-62-A-6.md:549-561",
+   "Kind": "CLOSURE",
+   "Lines": [
+    549,
+    561
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[IDENTITY_AT_USE_IN_REAL_SHELL]",
+   "Ref": "docs/initiatives/I-62-A-6.md:726-728",
+   "Kind": "CLOSURE",
+   "Lines": [
+    726,
+    728
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[IDENTITY_AT_USE_IN_REAL_SHELL]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1061",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1061,
+    1061
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[IDENTITY_AT_USE_IN_REAL_SHELL]",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r2static/README.md:270-274",
+   "Kind": "CLOSURE",
+   "Lines": [
+    270,
+    274
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[GIT_BY_NAME_IS_DECLARED_GIT]",
+   "Ref": "docs/initiatives/I-62-A-6.md:732-733",
+   "Kind": "CLOSURE",
+   "Lines": [
+    732,
+    733
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[GIT_BY_NAME_IS_DECLARED_GIT]",
+   "Ref": "docs/initiatives/I-62-A-6.md:745-747",
+   "Kind": "CLOSURE",
+   "Lines": [
+    745,
+    747
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[GIT_BY_NAME_IS_DECLARED_GIT]",
+   "Ref": "docs/initiatives/I-62-A-6.md:946-948",
+   "Kind": "CLOSURE",
+   "Lines": [
+    946,
+    948
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[GIT_BY_NAME_IS_DECLARED_GIT]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1050",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1050,
+    1050
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[CLOSURE_COVERAGE_R9_ON_REAL_RUNS]",
+   "Ref": "docs/initiatives/I-62-A-6.md:734-737",
+   "Kind": "CLOSURE",
+   "Lines": [
+    734,
+    737
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[CLOSURE_COVERAGE_R9_ON_REAL_RUNS]",
+   "Ref": "docs/initiatives/I-62-A-6.md:756-761",
+   "Kind": "CLOSURE",
+   "Lines": [
+    756,
+    761
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[CLOSURE_COVERAGE_R9_ON_REAL_RUNS]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1062",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1062,
+    1062
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[ACCEPTOR_RUN_ON_MEASUREMENT_LOG]",
+   "Ref": "docs/initiatives/I-62-A-6.md:732-737",
+   "Kind": "CLOSURE",
+   "Lines": [
+    732,
+    737
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[ACCEPTOR_RUN_ON_MEASUREMENT_LOG]",
+   "Ref": "docs/initiatives/I-62-A-6.md:745-747",
+   "Kind": "CLOSURE",
+   "Lines": [
+    745,
+    747
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[ACCEPTOR_RUN_ON_MEASUREMENT_LOG]",
+   "Ref": "docs/initiatives/I-62-A-6.md:761",
+   "Kind": "CLOSURE",
+   "Lines": [
+    761,
+    761
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[ACCEPTOR_RUN_ON_MEASUREMENT_LOG]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1203-1206",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1203,
+    1206
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[COORDINATOR_CLOSURE_AND_RECONSTRUCTION_RULE_DISPOSITION]",
+   "Ref": "docs/initiatives/I-62-A-6.md:748-750",
+   "Kind": "CLOSURE",
+   "Lines": [
+    748,
+    750
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[COORDINATOR_CLOSURE_AND_RECONSTRUCTION_RULE_DISPOSITION]",
+   "Ref": "docs/initiatives/I-62-A-6.md:756-761",
+   "Kind": "CLOSURE",
+   "Lines": [
+    756,
+    761
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[COORDINATOR_CLOSURE_AND_RECONSTRUCTION_RULE_DISPOSITION]",
+   "Ref": "docs/initiatives/I-62-A-6.md:1309-1311",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1309,
+    1311
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[NORMATIVE_READINGS_DISPOSITION_AND_PRETEST]",
+   "Ref": "docs/initiatives/I-62-A-6.md:674-683",
+   "Kind": "CLOSURE",
+   "Lines": [
+    674,
+    683
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "RealSessionPreconditions[NORMATIVE_READINGS_DISPOSITION_AND_PRETEST]",
+   "Ref": "docs/initiatives/I-62-A-6.md:914-915",
+   "Kind": "CLOSURE",
+   "Lines": [
+    914,
+    915
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[CHECK_IDS].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:640-641",
+   "Kind": "CLOSURE",
+   "Lines": [
+    640,
+    641
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[CHECK_IDS].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:79",
+   "Kind": "CLOSURE",
+   "Lines": [
+    79,
+    79
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[CHECK_IDS].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1878-1879",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1878,
+    1879
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[CHECK_IDS].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2622-2623",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2622,
+    2623
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[CHECK_IDS].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2675-2699",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2675,
+    2699
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[WAIVABLE_SET].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:642-648",
+   "Kind": "CLOSURE",
+   "Lines": [
+    642,
+    648
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[WAIVABLE_SET].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:80",
+   "Kind": "CLOSURE",
+   "Lines": [
+    80,
+    80
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[WAIVABLE_SET].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2686-2694",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2686,
+    2694
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[WAIVABLE_SET].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2697-2698",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2697,
+    2698
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[DECISION_FORMULA].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:640-642",
+   "Kind": "CLOSURE",
+   "Lines": [
+    640,
+    642
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[DECISION_FORMULA].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:647-648",
+   "Kind": "CLOSURE",
+   "Lines": [
+    647,
+    648
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[DECISION_FORMULA].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2697-2698",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2697,
+    2698
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[DECISION_FORMULA].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2806-2808",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2806,
+    2808
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[EXIT_CODES].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:640-642",
+   "Kind": "CLOSURE",
+   "Lines": [
+    640,
+    642
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[EXIT_CODES].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:667-669",
+   "Kind": "CLOSURE",
+   "Lines": [
+    667,
+    669
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[EXIT_CODES].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2801-2812",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2801,
+    2812
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[NOT_APPLICABLE_RULES].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:644-646",
+   "Kind": "CLOSURE",
+   "Lines": [
+    644,
+    646
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[NOT_APPLICABLE_RULES].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:81-83",
+   "Kind": "CLOSURE",
+   "Lines": [
+    81,
+    83
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[NOT_APPLICABLE_RULES].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2247-2250",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2247,
+    2250
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[NOT_APPLICABLE_RULES].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2279-2283",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2279,
+    2283
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[NOT_APPLICABLE_RULES].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2286-2311",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2286,
+    2311
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[NOT_APPLICABLE_RULES].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2323-2327",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2323,
+    2327
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[NOT_APPLICABLE_RULES].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2686-2694",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2686,
+    2694
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_VERIFICATION_CONDITION].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:585-588",
+   "Kind": "CLOSURE",
+   "Lines": [
+    585,
+    588
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_VERIFICATION_CONDITION].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:642-643",
+   "Kind": "CLOSURE",
+   "Lines": [
+    642,
+    643
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_VERIFICATION_CONDITION].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2134-2142",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2134,
+    2142
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_VERIFICATION_CONDITION].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2160-2178",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2160,
+    2178
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_VERIFICATION_CONDITION].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:166-176",
+   "Kind": "CLOSURE",
+   "Lines": [
+    166,
+    176
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_VERIFICATION_CONDITION].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2682-2688",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2682,
+    2688
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_NOT_RUN_AS_NON_PASS].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:648-650",
+   "Kind": "CLOSURE",
+   "Lines": [
+    648,
+    650
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_NOT_RUN_AS_NON_PASS].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2149-2151",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2149,
+    2151
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_NOT_RUN_AS_NON_PASS].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2181-2197",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2181,
+    2197
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_AUTHORITY_MAP_RULE].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:648-649",
+   "Kind": "CLOSURE",
+   "Lines": [
+    648,
+    649
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_AUTHORITY_MAP_RULE].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2166-2178",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2166,
+    2178
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R4_AUTHORITY_MAP_RULE].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2184-2188",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2184,
+    2188
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R3_R9_WITHOUT_RUNS].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:590-593",
+   "Kind": "CLOSURE",
+   "Lines": [
+    590,
+    593
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R3_R9_WITHOUT_RUNS].A6Refs",
+   "Ref": "docs/initiatives/I-62-A-6.md:691-693",
+   "Kind": "CLOSURE",
+   "Lines": [
+    691,
+    693
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R3_R9_WITHOUT_RUNS].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:80",
+   "Kind": "CLOSURE",
+   "Lines": [
+    80,
+    80
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R3_R9_WITHOUT_RUNS].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1954-1956",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1954,
+    1956
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R3_R9_WITHOUT_RUNS].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2542-2554",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2542,
+    2554
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "AcceptorCodeContrast[R3_R9_WITHOUT_RUNS].AcceptorRefs",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2689-2692",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2689,
+    2692
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2333-2334",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2333,
+    2334
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2441",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2441,
+    2441
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2534-2537",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2534,
+    2537
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2544",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2544,
+    2544
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/AUTOMATION_PLAN.md:622-625",
+   "Kind": "CLOSURE",
+   "Lines": [
+    622,
+    625
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/AUTOMATION_PLAN.md:653",
+   "Kind": "CLOSURE",
+   "Lines": [
+    653,
+    653
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/AUTOMATION_PLAN.md:657",
+   "Kind": "CLOSURE",
+   "Lines": [
+    657,
+    657
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/AUTOMATION_PLAN.md:610-611",
+   "Kind": "CLOSURE",
+   "Lines": [
+    610,
+    611
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/AUTOMATION_PLAN.md:676-677",
+   "Kind": "CLOSURE",
+   "Lines": [
+    676,
+    677
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/AUTOMATION_PLAN.md:686-687",
+   "Kind": "CLOSURE",
+   "Lines": [
+    686,
+    687
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/AUTOMATION_PLAN.md:1204-1207",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1204,
+    1207
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/AUTOMATION_PLAN.md:1244-1251",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1244,
+    1251
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/agent-execution/README.md:219-226",
+   "Kind": "CLOSURE",
+   "Lines": [
+    219,
+    226
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/agent-execution/README.md:228",
+   "Kind": "CLOSURE",
+   "Lines": [
+    228,
+    228
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/decisions/I-62.md:1572",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1572,
+    1572
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/decisions/I-62.md:1657-1660",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1657,
+    1660
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:19-23",
+   "Kind": "CLOSURE",
+   "Lines": [
+    19,
+    23
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:44-45",
+   "Kind": "CLOSURE",
+   "Lines": [
+    44,
+    45
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:78-83",
+   "Kind": "CLOSURE",
+   "Lines": [
+    78,
+    83
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:1954-1998",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1954,
+    1998
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2134-2197",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2134,
+    2197
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2247-2327",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2247,
+    2327
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2542-2609",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2542,
+    2609
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2675-2699",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2675,
+    2699
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2801-2812",
+   "Kind": "CLOSURE",
+   "Lines": [
+    2801,
+    2812
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "DirectReads",
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:166-169",
+   "Kind": "CLOSURE",
+   "Lines": [
+    166,
+    169
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/initiatives/I-62-A-6.md:574-581",
+   "Kind": "CLOSURE",
+   "Lines": [
+    574,
+    581
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/initiatives/I-62-A-6.md:656-658",
+   "Kind": "CLOSURE",
+   "Lines": [
+    656,
+    658
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/initiatives/I-62-A-6.md:694-695",
+   "Kind": "CLOSURE",
+   "Lines": [
+    694,
+    695
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/initiatives/I-62-A-6.md:726-737",
+   "Kind": "CLOSURE",
+   "Lines": [
+    726,
+    737
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/initiatives/I-62-A-6.md:745-753",
+   "Kind": "CLOSURE",
+   "Lines": [
+    745,
+    753
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/initiatives/I-62-A-6.md:756-761",
+   "Kind": "CLOSURE",
+   "Lines": [
+    756,
+    761
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/initiatives/I-62-A-6.md:1059",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1059,
+    1059
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/initiatives/I-62-A-6.md:1063-1065",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1063,
+    1065
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r2static/README.md:131-153",
+   "Kind": "CLOSURE",
+   "Lines": [
+    131,
+    153
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:72-85",
+   "Kind": "CLOSURE",
+   "Lines": [
+    72,
+    85
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "ReconstructionFromRealEvents",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/r1probes/README.md:186-226",
+   "Kind": "CLOSURE",
+   "Lines": [
+    186,
+    226
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/initiatives/I-62-A-6.md:756-761",
+   "Kind": "CLOSURE",
+   "Lines": [
+    756,
+    761
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/initiatives/I-62-A-6.md:674-683",
+   "Kind": "CLOSURE",
+   "Lines": [
+    674,
+    683
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/initiatives/I-62-A-6.md:735",
+   "Kind": "CLOSURE",
+   "Lines": [
+    735,
+    735
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/initiatives/I-62-A-6.md:748-750",
+   "Kind": "CLOSURE",
+   "Lines": [
+    748,
+    750
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/initiatives/I-62-A-6.md:808-810",
+   "Kind": "CLOSURE",
+   "Lines": [
+    808,
+    810
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/initiatives/I-62-A-6.md:612-621",
+   "Kind": "CLOSURE",
+   "Lines": [
+    612,
+    621
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/initiatives/I-62-A-6.md:392-393",
+   "Kind": "CLOSURE",
+   "Lines": [
+    392,
+    393
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:44-45",
+   "Kind": "CLOSURE",
+   "Lines": [
+    44,
+    45
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/automation/evidence/I-62-A6/r2/readable/independence/results/d-closure.json:759-785",
+   "Kind": "CLOSURE",
+   "Lines": [
+    759,
+    785
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/automation/evidence/I-62-A6/r2/independence/README.md:236-239",
+   "Kind": "CLOSURE",
+   "Lines": [
+    236,
+    239
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "EffectiveInputClosure",
+   "Ref": "docs/initiatives/I-62-A-6.md:1243",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1243,
+    1243
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerAuthorizationAndVerifyScope",
+   "Ref": "docs/initiatives/I-62-A-6.md:1186-1191",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1186,
+    1191
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerAuthorizationAndVerifyScope",
+   "Ref": "docs/initiatives/I-62-A-6.md:1203-1214",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1203,
+    1214
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerAuthorizationAndVerifyScope",
+   "Ref": "docs/automation/decisions/I-62.md:1572",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1572,
+    1572
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerAuthorizationAndVerifyScope",
+   "Ref": "docs/initiatives/I-62-A-6.md:474-484",
+   "Kind": "CLOSURE",
+   "Lines": [
+    474,
+    484
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerAuthorizationAndVerifyScope",
+   "Ref": "docs/initiatives/I-62-A-6.md:772-783",
+   "Kind": "CLOSURE",
+   "Lines": [
+    772,
+    783
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerAuthorizationAndVerifyScope",
+   "Ref": "docs/initiatives/I-62-A-6.md:684-687",
+   "Kind": "CLOSURE",
+   "Lines": [
+    684,
+    687
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerAuthorizationAndVerifyScope",
+   "Ref": "docs/initiatives/I-62-A-6.md:737-744",
+   "Kind": "CLOSURE",
+   "Lines": [
+    737,
+    744
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerAuthorizationAndVerifyScope",
+   "Ref": "docs/initiatives/I-62-A-6.md:450-451",
+   "Kind": "CLOSURE",
+   "Lines": [
+    450,
+    451
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerAuthorizationAndVerifyScope",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/a6r3-guards-result-run.json:142-164",
+   "Kind": "CLOSURE",
+   "Lines": [
+    142,
+    164
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  },
+  {
+   "Group": "OwnerAuthorizationAndVerifyScope",
+   "Ref": "docs/automation/evidence/I-62-A6/r3/a6r3-guards-result-run.json:1134-1141",
+   "Kind": "CLOSURE",
+   "Lines": [
+    1134,
+    1141
+   ],
+   "InRange": true,
+   "ExcerptFound": null,
+   "DeliveredFaithfully": true
+  }
+ ],
+ "DirectRead": {
+  "Path": "docs/initiatives/I-62-proposal-v14.md",
+  "Lines": [
+   2333,
+   2334
+  ],
+  "DeliveredByRead": true,
+  "DirectReadsEntries": [
+   "docs/initiatives/I-62-proposal-v14.md:2333-2334"
+  ]
+ },
+ "Categories": {
+  "Execution": "COMPLETED",
+  "ArchitectVerdict": "CHANGES REQUIRED",
+  "Note": "decisiones §84, punto 4: la categoría de ejecución y custodia (Outcome de run.json) y el resultado de contenido del Architect (Verdict) se informan por separado; cualquier defecto de integridad es un motivo y impide ACCREDITED"
+ },
+ "Accreditation": {
+  "Status": "ACCREDITED",
+  "Reasons": []
+ }
+}

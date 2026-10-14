@@ -342,3 +342,28 @@ Junto a este README: `launch-dry-run.json` (salida de `python -B kit/launch.py -
 
 **Privacidad:** `prep/file_table.py` comprueba que ningún archivo de `kit/`, de `prep/` ni de esta carpeta (este README incluido) contiene el nombre de usuario de Windows, largo u 8.3, ni una dirección de correo (salvo las de prueba del dominio reservado example.invalid): sin coincidencias. Las rutas del perfil se escriben como %USERPROFILE%, %LOCALAPPDATA%, %APPDATA% o %TEMP%; del entorno solo constan nombres de variables y los valores de las PYTHON*, y de `auth status` nada se registra todavía (solo se ejecuta en el lanzamiento real, y entonces solo loggedIn, authMethod y apiProvider).
 
+## Resultado (añadido tras la corrida, sesión principal; decisiones §84)
+
+```text
+Sesión:          3f6938fa-d6b4-4494-bacb-684ce6287624, de 2026-10-14T04:19:12Z a 2026-10-14T04:37:51Z, Outcome COMPLETED, salida 0, sin errores posteriores
+Uso:             54 turnos; herramientas {"Read": 43, "Grep": 9, "StructuredOutput": 1}
+Veredicto:       CHANGES REQUIRED
+REQUIRED:        1 (A62-A6R3-R1)
+OPTIONAL:        7
+R1-R2 ronda 2:   A62-A6R2-R1 PARTIALLY_CORRECTED; A62-A6R2-R2 CORRECTED
+Negativos:       N4 INCOHERENT; NC1 INCOHERENT; VERIFY_WITHOUT_INSTRUMENT COHERENT
+Reconstrucción:  ADEQUATE_AS_FAIL_CLOSED_PRECONDITION; cierre efectivo: ADEQUATE_AS_FAIL_CLOSED_PRECONDITION
+Aceptante:       9 MATCHES, 0 DIFFERS
+G1-G6:           G1 ACCEPTABLE_RESIDUAL; G2 ACCEPTABLE_RESIDUAL; G3 ACCEPTABLE_RESIDUAL; G4 ACCEPTABLE_RESIDUAL; G5 ACCEPTABLE_RESIDUAL; G6 ACCEPTABLE_RESIDUAL
+O1-O5 ronda 2:   A62-A6R2-O1 DECLINED_WITH_REASON; A62-A6R2-O2 INCORPORATED; A62-A6R2-O3 PARTLY_INCORPORATED; A62-A6R2-O4 PARTLY_INCORPORATED; A62-A6R2-O5 INCORPORATED
+Precondiciones:  KEPT_FAIL_CLOSED (8)
+Acreditación:    ACCREDITED por el auditor v5.3-a6r3 (0 motivos); sin acreditación excepcional
+Clon tras corrida: HEAD 9b8b66a2, estado limpio
+```
+
+El veredicto no es el acuerdo: A-6 no se declara AGREED hasta una revisión ACCREDITED sin REQUIRED y una disposición posterior del Coordinator
+(decisiones §84, punto 8). Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS.
+
+Archivos añadidos: `output.json` y `audit.json` (byte a byte, sin modificar), `runtime-evidence.json`, `launch/` (saneado), `launch-dry-run-s84.json`,
+`preconditions-s84.json`, `launch-run.log` y `post-review.log`. La transcripción y `stdout.jsonl` no se versionan; sus SHA-256 están en
+`runtime-evidence.json`.
