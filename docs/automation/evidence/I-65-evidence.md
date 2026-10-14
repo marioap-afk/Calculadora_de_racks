@@ -1587,3 +1587,8 @@ Custodia:
 | `docs/initiatives/I-65-f4-final-properties-for-approval.md` | `193EF91E940649558E616459A029FC8344D6E02ED9082FBA00AEF6DE3FC6331A` |
 
 - **Contadores:** Codex 41 de 46; `attempts` 6 de 6; reserva 48/9 no habilitada.
+
+## 61. Respuesta de I-52 a la solicitud concreta (2026-10-14T02:39:59Z)
+
+- Custodia literal en `docs/automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md` §15 (SHA-256 `5160F340E8560CA18A385A8BEFE8BA0AB7256A9366C59E7709D7B354C3FD4C8D`). Sin ACK ni RELEASE.
+- Sin ejecución sobre el host. Codex 41 de 46; `attempts` 6 de 6.

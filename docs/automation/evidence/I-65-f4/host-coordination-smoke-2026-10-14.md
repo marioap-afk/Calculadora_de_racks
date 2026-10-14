@@ -172,3 +172,12 @@ Esto es solo un recibo: sigue sin haber ACK de I-64. En cuanto el Coordinator de
 
 Estado: **sin ACK ni RELEASE**; I-52 no respondió a la solicitud concreta al registrar.
 
+## 15. Respuesta de «I - 52» a la solicitud concreta (llegó después de `ccffbc3c`)
+
+```text
+I-52 → I-65: recibida la solicitud de ventana concreta (2026-10-14 10:00-11:00 local, alterna 16:00-17:00). NO es ACK ni RELEASE y esta sesión no puede dárselos; la elevo al Coordinator / Owner / CAD manager de I-52 junto con el orden frente a I-64 y P2 H10, el sí/no a la carga única y el SHA-256 del DLL (745653e1, 2e04a4bb…6e41d) como dato a evaluar. Sobre S-5: no emito compatibilidad del método; solo constato que tus valores de referencia coinciden con mi última lectura (perfil, TRUSTEDPATHS a9ba0fd1…2498, SECURELOAD=1, acad.exe 2a75996f…6422) y que listar mis rutas con icacls sin tocarlas es lo que ya aplico yo; mi recomprobación propia sigue siendo la que cuenta. No hay decisión ni ventana asignada todavía: no abras AutoCAD. Te envío la disposición literal cuando llegue.
+```
+
+Estado: **sin ACK ni RELEASE de I-52 ni de I-64**; S-5 sin confirmar (la sesión de I-52 no emite la compatibilidad; constata la coincidencia
+de valores y que listar sus rutas con `icacls` es lo que ella misma aplica).
+
