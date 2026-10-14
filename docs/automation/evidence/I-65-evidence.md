@@ -1592,3 +1592,8 @@ Custodia:
 
 - Custodia literal en `docs/automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md` §15 (SHA-256 `5160F340E8560CA18A385A8BEFE8BA0AB7256A9366C59E7709D7B354C3FD4C8D`). Sin ACK ni RELEASE.
 - Sin ejecución sobre el host. Codex 41 de 46; `attempts` 6 de 6.
+
+## 62. Peticiones de confirmación expresa para la ventana del smoke (2026-10-14T02:48:41Z)
+
+- Disposición del Owner (decisiones §56). Peticiones a I-52 y a I-64 custodiadas literalmente (custodia de coordinación, SHA-256 `49D6E8A5DDB496C673E07CE1E0BC1629E3453C286407CE6BA41B38D491C0F90E`).
+- `acad.exe` = 0; sin ejecución sobre el host. Codex 41 de 46; `attempts` 6 de 6.

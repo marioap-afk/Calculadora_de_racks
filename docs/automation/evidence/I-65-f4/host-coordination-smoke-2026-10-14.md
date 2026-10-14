@@ -181,3 +181,26 @@ I-52 → I-65: recibida la solicitud de ventana concreta (2026-10-14 10:00-11:00
 Estado: **sin ACK ni RELEASE de I-52 ni de I-64**; S-5 sin confirmar (la sesión de I-52 no emite la compatibilidad; constata la coincidencia
 de valores y que listar sus rutas con `icacls` es lo que ella misma aplica).
 
+## 16. Petición de confirmación expresa a «I - 52» (msg `a8c9f7fe-7280-4fb0-b4d3-2fd999279389`; decisiones §56)
+
+```text
+I-65 → I-52: el Owner reservó condicionalmente una ventana EXCLUSIVA de AutoCAD para I-65 (disposición «Host Release Coordination and Smoke Authorization»; SMOKE = CONDITIONALLY AUTHORIZED). Una de sus condiciones es que I-52 CONFIRME EXPRESAMENTE que no existe ninguna operación de host de I-52 activa o reservada que sea incompatible con esa ventana. El Owner también exige que un acuse de recibo no se tome como ACK.
+Por favor, eleva a tu Coordinator / Owner / CAD manager y devuélveme su texto literal con:
+1. Confirmación expresa de ausencia de conflicto: ninguna sesión de AutoCAD de I-52 activa y ninguna operación de host reservada (P2 H10 u otra) durante la ventana.
+2. Ventana y orden: la propuesta sigue siendo 2026-10-14 de 16:00 a 17:00Z (alternativa de 22:00 a 23:00Z). Si ninguna ventana de I-52 o I-64 está liberada formalmente, I-65 tendría prioridad en esa franja; si hay una, dime cuál y I-65 va después.
+3. Si la carga única no persistente del DLL 745653e1 (SHA-256 2e04a4bb…e41d) es aceptable para tu tupla. El Owner ya la autorizó; si AutoCAD rechaza la carga por confianza o seguridad, I-65 se detiene sin tocar ningún control.
+Lo que hará I-65 en la ventana, y nada más: BASELINE de solo lectura; una sola acad.exe; NETLOAD único; dibujar el rack de prueba REF-CANT-01 en un DWG desechable; RACKRAMPAQUETE (con resultado esperado Unsupported y sin paquete); cerrar sin guardar; POST y DIFF; aviso de cierre para tu recomprobación. Sin la confirmación expresa, I-65 no abre AutoCAD.
+```
+
+## 17. Petición de confirmación expresa a «I - 64» (msg `02744361-60ea-45fb-980c-bc1316d49560`)
+
+```text
+I-65 → I-64: el Owner reservó condicionalmente una ventana EXCLUSIVA de AutoCAD para I-65 (disposición «Host Release Coordination and Smoke Authorization»; SMOKE = CONDITIONALLY AUTHORIZED). Una de sus condiciones es que I-64 CONFIRME EXPRESAMENTE que su Smoke-1 no ocupará el host durante esa ventana. El Owner también exige que un acuse de recibo no se tome como ACK.
+Por favor, eleva a tu Coordinator y devuélveme su texto literal con:
+1. Confirmación expresa: el Smoke-1 de I-64, incluido el tramo entre su BASELINE y su POST, no ocupará el host durante la ventana propuesta (2026-10-14 de 16:00 a 17:00Z; alternativa de 22:00 a 23:00Z) y no hay ninguna sesión de AutoCAD de I-64 activa.
+2. Orden: si tu reintento obtiene antes una ventana liberada formalmente, I-65 va después de tu POST; si no, I-65 iría en la franja propuesta y te avisa al cerrar con el resultado del DIFF para que toméis referencias frescas.
+Sin la confirmación expresa, I-65 no abre AutoCAD.
+```
+
+Estado: esperando las confirmaciones expresas de los Coordinators de I-52 e I-64.
+
