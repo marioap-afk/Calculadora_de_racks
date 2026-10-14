@@ -1318,3 +1318,64 @@ Custodia:
 | `F4-T5-PLUGIN-COMMAND/R20261013T233523Z-b1dd/k-f4t5c2-plan-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
 | `F4-T5-PLUGIN-COMMAND/R20261013T233523Z-b1dd/k-f4t5c2-work-compare.json` | `DC951BCC96218DC8…` | `be6799734eeb` (fin de línea normalizado por Git) |
 | `F4-T5-PLUGIN-COMMAND/R20261013T233523Z-b1dd/k-f4t5c2-ver-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+
+## 51. F4-T5-PLUGIN-COMMAND — corrección final (intento 6), verificación y controles (2026-10-14T00:24:04Z)
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261013T234354Z-7203` | PLANNING (intento 6, corrección final) | Codex `gpt-6-luna`/`high` (37) | A1-A8 `pass`; seis colecciones exactas; `CorrectionOf` `R20261013T233523Z-b1dd` (`Tests`); `ChainRedSha` `a2a8b868`, 21 `ChainRedFiles` |
+| `R20261013T234619Z-b5ef` | WORK (intento 6) | subagente `claude-sonnet-5-5`/`medium` (51 mensajes) | RED `28fe112e` + `e413b9a2`, GREEN `e610ea49`; 13 min; 31 llamadas; ninguna invocación de un intérprete; `IMPLEMENTATION_COMPLETE` |
+| `R20261014T000444Z-1eac` | VERIFICATION | Codex (38) | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `e610ea49` |
+| `R20261014T000903Z-310b` | CONTROL nc1 | Codex `gpt-6-luna`/`high` (39) | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Identity`: **oráculo cumplido** |
+| `R20261014T001323Z-b951` | CONTROL nc2 | Codex `gpt-6-luna`/`high` (40) | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `Scope`: **oráculo cumplido** |
+| `R20261014T001948Z-ab02` | CONTROL nc3 | Codex `gpt-6-luna`/`high` (41) | `EXECUTION_BLOCKED/STOP`, `FailureClass` = `StopCondition`: **oráculo NO cumplido** (esperado `EXECUTION_REWORK_REQUIRED/REWORK`, `FreeText`) |
+
+- **CI:** RED `38487208404` (Core `failure`: 25 fallidas) y `28fe112e` (`38487185238`, Core `failure`); GREEN `38487578349` (4/4 `success`; Core
+  14384/14384; UI 1 637 de 1 654).
+- **Controles del Owner:** K1/K2 sin cambios externos en planificación, trabajo, verificación y nc1-nc3; K3 informado; K4 alcance mecánico `pass`
+  (diff neto de 2 archivos); K5 sin intérpretes, RAM, AutoCAD ni accesos fuera del worktree.
+- **Entregable de T5:** `src/RackCad.Plugin/RackRamElementsCommands.cs` (comando `RACKRAMPAQUETE`), el `Content` de la tabla en `RackCad.Plugin.csproj`,
+  la guarda del comando con las reglas C01-C18 y sus autopruebas, la prueba de la tabla del producto y las cuatro ediciones exactas de pruebas existentes.
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-T5-PLUGIN-COMMAND/R20261013T234354Z-7203/gate-contract.json` | `6A4685883AE86B7A…` | `3ccf8f01b77b` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T234354Z-7203/prompt.md` | `3B967C310B04FD9B…` | `653e7b5677aa` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T234354Z-7203/delegation.json` | `CAA0F86FD45DC59D…` | `19f6fa12f22a` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T234354Z-7203/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T234354Z-7203/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261013T234354Z-7203/relay-record.json` | `9289AFB631B335C4…` | `a436eb5596f5` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T234619Z-b5ef/prompt.md` | `0D5ACE7DDD494866…` | `0b830ba14f50` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T234619Z-b5ef/worker-handoff.json` | `09760FD55654971D…` | `de2160b1545c` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T234619Z-b5ef/relay-record.json` | `8AF57DE1CBDEA8F9…` | `e66ec8dbabeb` |
+| `F4-T5-PLUGIN-COMMAND/R20261013T234619Z-b5ef/k5-transcript-scan.json` | `352B6D68CF46E198…` | `b75421877e22` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261013T234619Z-b5ef/transcript-facts.json` | `C7C03E36D83028CC…` | `afc281fe9ce9` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/prompt.md` | `326022D2D26F08D4…` | `002ca1ccc689` |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/controller-verification.json` | `F3B3B874EAF67F6D…` | `59b7b2f99031` |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/relay-record.json` | `A93F4CB9C41181D7…` | `02d31365cbbb` |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/coherence.txt` | `B6BEA444F6DA957C…` | `2969a6fa566f` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/trx-summary.json` | `134FE7E7C82BA0B0…` | `2bf7bceaae9d` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/scope-mechanical.json` | `09E037A7222C0F7E…` | `f2b787f4e0ef` |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/scope-mechanical-red1.json` | `09E037A7222C0F7E…` | `f2b787f4e0ef` |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/coordinator-dispositions-f4t5c3.md` | `36CBC96B1F41948F…` | `4bdb240b239f` |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/k-f4t5c3-plan-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/k-f4t5c3-work-compare.json` | `76CCC5A90B4AF9B2…` | `7b023e0082cf` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/k-f4t5c3-ver-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/k-f4t5c3-nc1-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/k-f4t5c3-nc2-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND/R20261014T000444Z-1eac/k-f4t5c3-nc3-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND-nc1/R20261014T000903Z-310b/prompt.md` | `1CD13D7BA6FA4762…` | `866f3ff95a95` |
+| `F4-T5-PLUGIN-COMMAND-nc1/R20261014T000903Z-310b/mutation.json` | `F4D7D4F569DDF3B9…` | `24e73c62ff9f` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND-nc1/R20261014T000903Z-310b/controller-verification.json` | `C42E887F5DC7C83A…` | `ca7b7075eeff` |
+| `F4-T5-PLUGIN-COMMAND-nc1/R20261014T000903Z-310b/relay-record.json` | `5EE88376ACFF6276…` | `f9e9984f52fc` |
+| `F4-T5-PLUGIN-COMMAND-nc2/R20261014T001323Z-b951/prompt.md` | `3779792CDC445EAA…` | `a3cdc98350f0` |
+| `F4-T5-PLUGIN-COMMAND-nc2/R20261014T001323Z-b951/mutation.json` | `BD5E6CEBD13E75D2…` | `d04b3f88c30e` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND-nc2/R20261014T001323Z-b951/controller-verification.json` | `2DECABFF09124404…` | `dc0c8957bbf0` |
+| `F4-T5-PLUGIN-COMMAND-nc2/R20261014T001323Z-b951/relay-record.json` | `396CD86F42761359…` | `0a823355fe5d` |
+| `F4-T5-PLUGIN-COMMAND-nc2/R20261014T001323Z-b951/scope-mechanical.json` | `8D179AD01CE40AAF…` | `e2f23d97152a` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND-nc3/R20261014T001948Z-ab02/prompt.md` | `8C9B39C43B44736F…` | `09a734375e3f` |
+| `F4-T5-PLUGIN-COMMAND-nc3/R20261014T001948Z-ab02/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F4-T5-PLUGIN-COMMAND-nc3/R20261014T001948Z-ab02/controller-verification.json` | `96EC36BBB3E5C8E0…` | `b7e479faaf61` |
+| `F4-T5-PLUGIN-COMMAND-nc3/R20261014T001948Z-ab02/relay-record.json` | `5D888716FC38C4E4…` | `5c5c40c6145c` |

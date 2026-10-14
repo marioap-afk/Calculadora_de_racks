@@ -1,0 +1,87 @@
+{
+ "core-green": {
+  "sha256": "340B12A0B3C040664241266B794FB332BC42DD932988C93835E5F7823DF86EBA",
+  "counters": {
+   "total": "14384",
+   "executed": "14384",
+   "passed": "14384",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 114,
+   "Passed": 114
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "ui-green": {
+  "sha256": "15A8646867D734F6FB66BF1436F3CB662379330705915B420A3F2371073E2ECA",
+  "counters": {
+   "total": "1654",
+   "executed": "1637",
+   "passed": "1637",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 0
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "core-red": {
+  "sha256": "1A33BD0627C6BFA6685242DC62ACE1EFA5D40E33F5D672F135296DB300254172",
+  "counters": {
+   "total": "14384",
+   "executed": "14384",
+   "passed": "14359",
+   "failed": "25",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 114,
+   "Passed": 92,
+   "Failed": 22
+  },
+  "n_failed_outside_filter": 3,
+  "failed_outside_filter": [
+   "RackCad.Tests.SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA",
+   "RackCad.Tests.CustomPropertiesCommandGuardTests.TGrd08_ElCensoDeComandosEsElDeAperturaMasRackPropiedadesRprRackProyectarYRpy",
+   "RackCad.Tests.StructuralAnalysisRamElementsGuardTests.G1_CON_LA_LISTA_VACIA_EL_UNICO_INFRACTOR_EN_SRC_ES_EL_ARCHIVO_DEL_COMANDO"
+  ],
+  "failure_kinds": {
+   "No existe el archivo del comando": 20,
+   "Assert.Single() Failure": 2
+  },
+  "failed_filter_names": [
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C01\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C02\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C03\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C04\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C05\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C06\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C07\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C08\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C09\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C10\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C11\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C12\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C13\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C14\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C15\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C16\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C17\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla(rule: \"C18\")",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoNoTieneNingunaViolacion",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoTieneUnSoloRegistroYElNombreSoloEnElAtributo",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElElementoContentDeLaTablaYLaTablaExisten",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElProyectoDelPluginGanaUnSoloElementoContentParaLaTabla"
+  ]
+ }
+}

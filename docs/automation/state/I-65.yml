@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: F4
   attempts: 6
-  next_action: Coordinator: correccion final de F4-T5-PLUGIN-COMMAND (attempts 6, AttemptsRemaining 0; CorrectionOf R20261013T233523Z-b1dd, Tests; CD-I65-F4-41): planificacion, A1-A8, Worker, verificacion y controles; despues revision del Architect. Sin RAM.
+  next_action: Coordinator: revision independiente del Architect de F4-T6 (6422e5b0) y F4-T5 (e610ea49); despues informe al Owner y parada antes de la primera corrida real en RAM.
   last_evidence_commit: d2539be2f571deada81fc17fb44934ea075ab096
 execution_context:
   mode: manual

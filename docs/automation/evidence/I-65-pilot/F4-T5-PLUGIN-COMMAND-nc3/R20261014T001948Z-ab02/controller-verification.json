@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T5-PLUGIN-COMMAND",
+  "RunId": "R20261014T001948Z-ab02",
+  "DelegationRunId": "R20261013T234354Z-7203",
+  "WorkRunId": "R20261013T234619Z-b5ef",
+  "Attempt": 6,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, ExitCode=0, TreeKilled=false. Cession.SessionOperated=false; Notes indican 0 denegaciones y 0 avisos de límite."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json valida con worker-handoff.schema.json (Test-Json=True). TaskId, RunId, DelegationRunId y Attempt coinciden con la delegación; BaseSha=932fcd87; CurrentSha=e610ea49; Branch y Worktree coinciden. OutputWrittenUtc del relevo=2026-10-14T00:00:38Z, posterior a Cession.StartUtc=2026-10-13T23:46:25Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídos desde Git los archivos declarados. En AuthorityRevision 2151ef55 coinciden los blobs de Proposal V3.1, implementación F4, ADR-0050, AGENTS.md, AUTOMATION_PLAN.md y agent-execution/README.md con HEAD. En decisions/I-65.md, las secciones 37, 41 y 42 permanecen; el diff desde AuthorityRevision añade las secciones 43–44. Proposal indica Frozen: yes."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "relay-record-planning.json registra A1–A8 en pass. La comparación de la delegación aceptada con gate-contract.json confirma TaskId, AuthorityRevision y MainSha, alcances, invariantes, StopConditions y RequiredTests; RequiredTests exige filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisPluginCommand, MinSelected=12 y ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y origin/architecture/interop-analisis-estructural = e610ea496c06df22a8309b70cb83136f51255dec. git merge-base --is-ancestor confirma BaseSha 932fcd87 y RedSha e413b9a2 como ancestros de CurrentSha (código 0). Rama y worktree coinciden con la entrega."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=e610ea49 y OriginMainSha=bb0d5522, igual a MainSha. La orden git ls-remote origin refs/heads/architecture/interop-analisis-estructural no pudo conectar a GitHub; se usan esos RemoteFacts. CurrentRun 38487578349 y RedRun 38487208404 son push de la rama exacta y de sus respectivos SHA."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha devuelve únicamente tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuard.cs y StructuralAnalysisPluginCommandGuardTests.cs. Ambos quedan cubiertos por AllowedWriteScope de delegation.json, prefijo tests/RackCad.Tests/StructuralAnalysis/; no hay intersección con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch muestra rama architecture/interop-analisis-estructural alineada con origin y sin cambios locales. git check-ignore -v sobre gate-contract.json confirma exclusión por .gitignore:3, artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX leídos: push 38487578349 sobre CurrentSha, conclusión success; los cuatro jobs requeridos están en success. Push RED 38487208404 sobre e413b9a2: job Core failure. core.trx GREEN: 14 384 pasaron, 0 fallaron; ui.trx: total 1 654, ejecutadas y pasadas 1 637, 0 fallidas (17 NotExecuted según la convención indicada)."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX RED: filtro seleccionó 114, 92 pasaron y 22 fallaron; las 22 fallas seleccionadas son aserciones de StructuralAnalysisPluginCommandGuardTests, sin errores de compilación. TRX GREEN: las 114 seleccionadas pasaron; suite Core completa 14 384/14 384. Red CI tuvo 25 fallas totales, 3 fuera del filtro. git diff ChainBaseSha 283ed613..RedSha e413b9a2 -- tests/ da 21 ChainRedFiles: CustomPropertiesCommandGuardTests.cs; SelectiveEditorOpenTests.cs; Fixtures/rehearsal/{generated.dump.json,generated.readback.json,manual-a.dump.json,manual-b.dump.json}; StructuralAnalysisComparisonHardening{DumpReaderTests,IncompleteTests,MetricTests,ReadbackTests,RehearsalTests,Support,ToolTests}.cs; StructuralAnalysisComparison{RowTests,Support,ToolTests}.cs; StructuralAnalysisPluginCommandGuard.cs; StructuralAnalysisPluginCommandGuardTests.cs; StructuralAnalysisPluginCommandProductTableTests.cs; StructuralAnalysisRamElementsGuardTests.cs; StructuralAnalysisSourceGuardTests.cs. diff RedSha..CurrentSha -- tests/ vacío. Cobertura actual: C01–C18 y autopruebas por variante pasan en ElArchivoDelComandoCumpleLaRegla, ElArchivoDelComandoNoTieneNingunaViolacion y CadaReglaDeLaGuardaTieneAlMenosUnaVarianteQueLaDemuestra; registro único en ElArchivoDelComandoTieneUnSoloRegistroYElNombreSoloEnElAtributo; tabla en ElProyectoDelPluginGanaUnSoloElementoContentParaLaTabla y ElElementoContentDeLaTablaYLaTablaExisten. Las cuatro ediciones de censos/G1 se observan en CustomPropertiesCommandGuardTests, SelectiveEditorOpenTests, StructuralAnalysisSourceGuardTests y StructuralAnalysisRamElementsGuardTests, incluidas en la suite verde. Controles operativos: relay registra K1/K2 sin cambios ajenos, primera acción informada, rutas absolutas, git con -C, sin intérpretes y sin actividad durante la cesión. Handoff reporta build Debug del Plugin sin errores y Release sin advertencias nuevas atribuibles al diff; el job Build Plugin without AutoCAD del SHA actual está en success."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra tres commits: 28fe112e, e413b9a2 y e610ea49. Cada uno incluye literalmente Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, coincidente con Worker.Trailer y con el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation solicita claude-sonnet-5-5/medium con enforcement required. relay-record-work.json Participant registra ModelEffective=claude-sonnet-5-5 y EffortEffective=medium."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "El texto libre WorkCompleted de worker-handoff.json contiene una coincidencia literal con un término reservado por AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones y 0 avisos de límite. El fallo de git add se declara como error de herramienta superado; no consta denegación ni orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "StopCondition",
+  "TriggeredStopConditions": [
+    "S-11"
+  ],
+  "Findings": [
+    "La única comprobación fallida es FreeText: el handoff contiene una coincidencia prohibida por §16.10.",
+    "La delegación está en Attempt 6 con AttemptsRemaining=0; la decisión CD-I65-F4-41, en la sección 44, establece STOP S-11 ante un nuevo REWORK.",
+    "La sesión no pudo consultar GitHub con git ls-remote; la comprobación remota se sustentó en RemoteFacts y los TRX entregados."
+  ],
+  "RecommendedNextAction": "Registrar la causa de texto libre y detener nuevas correcciones por S-11."
+}
