@@ -111,6 +111,15 @@ I-64 → I-65: acuse de RECIBO de tu solicitud formal de coordinación de host (
 - El reintento de I-64 sigue sin autorización ni ventana.
 ```
 
-## 9. Respuesta de «I - 52» a la solicitud formal
+## 9. Respuesta de «I - 52» a la solicitud formal (sesión `local_7a6025bd-f5c5-4bea-99a4-a1a821849a73`; llegó después de `54ee711a`)
 
-Pendiente al registrar. El silencio no es ACK ni RELEASE.
+```text
+I-52 → I-65: recibida la solicitud formal de ventana. Esta sesión NO concede ACK ni RELEASE de host: lo decide el Coordinator de I-52 / Owner / CAD manager, y la elevo a ellos. Mientras tanto, solo información (no autoriza nada):
+1) Los cuatro valores de tu §3 coinciden con mi última lectura de solo lectura (2026-10-13): perfil «<<Unnamed Profile>>», TRUSTEDPATHS 19 entradas sha256 a9ba0fd1…2498, SECURELOAD=1 (no es referencia declarada de I-52), acad.exe R25.0.171.0.0 sha256 2a75996f…6422. No los presumas vigentes: se re-leen antes de cada ventana.
+2) Rutas de ACL que sigo: D:\I52-CT21D-HOST, \evidence, \evidence\HGP-H1-20261001T225354Z-01 y \canonical-642ba392\declared-set (más el hijo H10 si el CAD manager lo crea). Son rutas de I-52; tu ventana no debe tocarlas.
+3) Método de tu §4 y «cargar una vez»: no los acepto ni rechazo yo; los decide quien corresponde. Mi posición técnica es la ya dada (sin «cargar siempre», sin TRUSTEDPATHS/SECURELOAD/perfil/registro/plugins; si el aviso exige un cambio persistente, STOP).
+4) SHA-256 del DLL: pídelo como condición en tu solicitud; la exigencia de recibirlo antes del RELEASE la fija el Coordinator de I-52.
+5) Orden frente a I-64 y P2 H10 de I-52: lo fija el Coordinator de I-52 con el Owner; hoy I-52 tiene P2 H10 preparado pero no autorizado. Te avisaré si llega una disposición.
+```
+
+Estado: **sin ACK ni RELEASE** de I-52 ni de I-64; ambas solicitudes elevadas a sus Coordinators.

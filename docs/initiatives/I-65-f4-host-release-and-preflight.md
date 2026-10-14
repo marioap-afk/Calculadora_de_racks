@@ -65,7 +65,7 @@ comandos son de Windows o de PowerShell 7, sin opciones de escritura sobre el re
 | B-05 | Identidad de `acad.exe` | `reg query "HKLM\SOFTWARE\Autodesk\AutoCAD\R25.0\ACAD-8101:409" /v AcadLocation`; `Get-FileHash` y `(Get-Item <ruta>\acad.exe).VersionInfo.FileVersion` | los del ACK de I-52 (hoy: R25.0.171.0.0, `2a75996fd2a5c5ee0376fd5ba7cced227a098193ff495e8ceeda3a96fe326422`) |
 | B-06 | Plugins instalados | `Get-ChildItem -Name -Force` de `%APPDATA%\Autodesk\ApplicationPlugins`, `%ProgramData%\Autodesk\ApplicationPlugins`, `%ProgramFiles%\Autodesk\ApplicationPlugins` y `%ProgramFiles(x86)%\Autodesk\ApplicationPlugins`; por raíz: número de entradas, SHA-256 de la lista de nombres unida por LF y nombres con `RackCad` | listas iguales en BASELINE y POST; ningún bundle de RackCad |
 | B-07 | Variables de entorno persistentes | nombres de `[Environment]::GetEnvironmentVariables('User')` y `('Machine')` que contengan `RackCad` | ninguna |
-| B-08 | ACL | `icacls "<AcadLocation>"`, `icacls "<carpeta del DLL>"` y las rutas que I-52 indique en su ACK; SHA-256 de cada listado | listados iguales en BASELINE y POST |
+| B-08 | ACL | `icacls "<AcadLocation>"`, `icacls "<carpeta del DLL>"` y las rutas que sigue I-52 (custodia §9): `D:\I52-CT21D-HOST`, `D:\I52-CT21D-HOST\evidence`, `D:\I52-CT21D-HOST\evidence\HGP-H1-20261001T225354Z-01`, `D:\I52-CT21D-HOST\canonical-642ba392\declared-set` y el hijo H10 si el CAD manager lo crea. Solo el listado de `icacls`, sin entrar en esas carpetas, que son de I-52 y la ventana no toca (si I-52 prefiere leerlas él en su recomprobación, I-65 omite esas cuatro); SHA-256 de cada listado | listados iguales en BASELINE y POST |
 | B-09 | DLL | `Get-FileHash` del DLL; ¿alguna entrada de `TRUSTEDPATHS` cubre su carpeta? | SHA-256 del aviso H-4; no la cubre |
 | B-10 | Checkouts | instantánea K1/K2 (estado Git de todos los worktrees y SHA-256 de los rastreados del checkout principal) | registrada |
 
@@ -119,6 +119,8 @@ de la sesión, que no se versiona.
 | ACL de `AcadLocation` | listado idéntico entre capturas |
 | Comparación de las dos capturas | **LIMPIO** (sin diferencias) |
 
-El procedimiento es reproducible y no altera el host. Queda pendiente que I-52 lo acepte o indique su método, y que I-52 diga qué rutas
-de ACL sigue.
+El procedimiento es reproducible y no altera el host. Las rutas de ACL de I-52 se incorporaron después a B-08 (respuesta de su sesión,
+custodia §9); los valores de referencia se **vuelven a leer** antes de cada ventana y no se presumen vigentes (`SECURELOAD` no es una
+referencia declarada de I-52, pero se mantiene como clase PROHIBIDO). Pendiente: que el Coordinator de I-52, el Owner o el CAD manager
+acepten el método y decidan sobre «cargar una vez» y sobre si el SHA-256 del DLL debe llegar antes del RELEASE.
 

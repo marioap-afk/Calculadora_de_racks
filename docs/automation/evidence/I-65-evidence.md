@@ -1490,3 +1490,15 @@ Custodia:
 
 - **Sin ejecución:** sin AutoCAD, `NETLOAD`, RAM ni build; la tabla de secciones y materiales no cambió. Codex 41 de 46; `attempts` 6 de 6;
   reserva provisional (48; 9) no habilitada.
+
+## 57. Respuesta de I-52 a la solicitud formal (2026-10-14T01:42:31Z)
+
+- Mensaje de «I - 52» recibido después de `54ee711a`; texto literal en la custodia §9. Sin ACK ni RELEASE de I-52 ni de I-64.
+- Documentos actualizados (SHA-256 al registrar):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md` | `F7580C34E65555C9C2CA570996415C0897EFEE2BA607DC57DCF346D0650297E2` |
+| `docs/initiatives/I-65-f4-host-release-and-preflight.md` | `2517131C24B619C5FA01C130611598D4B1DA4215AD132239CBF8E25DBD660E09` |
+
+- Sin ejecución sobre el host. Codex 41 de 46; `attempts` 6 de 6.
