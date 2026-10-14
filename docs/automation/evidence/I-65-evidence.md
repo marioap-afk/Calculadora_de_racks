@@ -1460,3 +1460,33 @@ Custodia:
 - **Sin ejecución sobre el host:** sin AutoCAD, sin `NETLOAD`, sin RAM, sin build, sin comandos de registro; la solicitud de host **no se
   envió**. La tabla de secciones y materiales no cambió (SHA-256 `5229231E0D924E48A839EF77BF0B63A2B631214A670783E01D148B9AC6CB4048`).
 - **Contadores:** Codex 41 de 46; `attempts` 6 de 6 (sin cambio).
+
+## 56. Coordinación de host, plan M-05c y revisión de propiedades (2026-10-14T01:40:39Z)
+
+- **Orden:** disposición del Owner «F4 Host Coordination and Combination Validation» (decisiones §50), sobre `da5f8cfe` (CI 38495297376
+  push 4/4 `success`).
+- **Ejecutor:** Coordinator, sin cesiones (sin Codex, Workers ni subagentes).
+- **Lecturas del host (solo lectura; `acad.exe` = 0 y `RAMElements.exe` = 0 antes de empezar):** perfil, `TRUSTEDPATHS` (solo número de
+  entradas y SHA-256), `SECURELOAD` y `acad.exe` (versión y SHA-256); dos capturas en seco de B-01, B-03..B-08 en una carpeta local de la
+  sesión, no versionada (resultado LIMPIO). Ninguna escritura en el registro, el perfil, las ACL ni las carpetas de AutoCAD.
+- **Lecturas pasivas de RAM:** `Materials/United States/Steel.mat` (SHA-256 `2A8B423964D2BA3580273DE2D8A29D5E70C9E6DCEEFA1F892A40BB8CD1139CE1`,
+  sin cambio desde la pre-lectura); sin abrir RAM.
+- **Cálculo independiente:** `section-props-analytic-check.py.txt` con `python -I` en la carpeta temporal (solo dimensiones; no lee el
+  catálogo ni RAM).
+- **Canal entre sesiones:** solicitudes formales a I-52 (`9f80bc9e-…`) y a I-64 (`01e1f8d4-…`); recibo de I-64 (no es ACK); I-52 sin
+  respuesta al registrar.
+- **Documentos (SHA-256 al registrar):**
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/initiatives/I-65-f4-host-release-and-preflight.md` | `F04EC29BC7ACD0207E94E0976A7F8142BC46F1B4582D507156F14D18337EA033` |
+| `docs/initiatives/I-65-f4-m05c-plan.md` | `A75629E84305AD77C5BBA21A67FBE524E9828E1F37F4833193511F018394864C` |
+| `docs/initiatives/I-65-f4-properties-technical-review.md` | `CF446269A3C8A4BE9F51CEF3E42079F1BD367DB142B16597BF8A156C9EA6B27B` |
+| `docs/initiatives/I-65-f4-engineering-validation-sheet.md` | `9027F616C656B6733B70B7007D499F1C1E7CCB7DDB3E6E80DAE9B072605C12D4` |
+| `docs/initiatives/I-65-f4-real-run-readiness.md` | `683ED86F051824E74ED8918681517F7293036B5B31318D740446636BAAF00E29` |
+| `docs/automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md` | `F94747D1DCF1B2A99782881F22717BA3DF9061C2CC63F0A68E8CCABAE28C7BA3` |
+| `docs/automation/evidence/I-65-f4/section-props-analytic-check.py.txt` | `2675F7CB0B2EF3D076F6B1961AE6ED951C525E78E23E6583243D9108EF2F7927` |
+| `docs/automation/evidence/I-65-f4/section-props-analytic-check.out.txt` | `80E03E48A467F1D8D886E9928809EB77BECE0F493E02EA66BDAA38E657A6C835` |
+
+- **Sin ejecución:** sin AutoCAD, `NETLOAD`, RAM ni build; la tabla de secciones y materiales no cambió. Codex 41 de 46; `attempts` 6 de 6;
+  reserva provisional (48; 9) no habilitada.

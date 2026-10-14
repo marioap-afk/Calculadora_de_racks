@@ -1,0 +1,119 @@
+"""Derivacion analitica independiente de propiedades de seccion a partir de las dimensiones (contraste de la hoja de validacion de I-65).
+No lee el catalogo ni RAM: solo dimensiones y convenciones geometricas declaradas. Uso: python -I section_props_check.py"""
+import math
+
+N = 4000  # segmentos por arco de esquina
+
+
+def rounded_rect(b, h, r):
+    """Poligono antihorario de un rectangulo b x h centrado en el origen con esquinas de radio r."""
+    pts = []
+    corners = [(b / 2 - r, h / 2 - r, 0.0), (-b / 2 + r, h / 2 - r, math.pi / 2), (-b / 2 + r, -h / 2 + r, math.pi), (b / 2 - r, -h / 2 + r, 1.5 * math.pi)]
+    for cx, cy, a0 in corners:
+        if r == 0:
+            pts.append((cx, cy))
+            continue
+        for i in range(N + 1):
+            a = a0 + (math.pi / 2) * i / N
+            pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
+    return pts
+
+
+def poly_props(pts):
+    """Area, Ix (eje x por el origen), Iy y primer momento de la mitad y>=0 respecto de x."""
+    A = Ix = Iy = 0.0
+    n = len(pts)
+    for i in range(n):
+        x0, y0 = pts[i]
+        x1, y1 = pts[(i + 1) % n]
+        c = x0 * y1 - x1 * y0
+        A += c
+        Ix += (y0 * y0 + y0 * y1 + y1 * y1) * c
+        Iy += (x0 * x0 + x0 * x1 + x1 * x1) * c
+    return A / 2, Ix / 12, Iy / 12
+
+
+def clip_top(pts):
+    """Recorte Sutherland-Hodgman al semiplano y >= 0."""
+    out = []
+    n = len(pts)
+    for i in range(n):
+        p, q = pts[i], pts[(i + 1) % n]
+        pin, qin = p[1] >= 0, q[1] >= 0
+        if pin:
+            out.append(p)
+        if pin != qin:
+            t = p[1] / (p[1] - q[1])
+            out.append((p[0] + t * (q[0] - p[0]), 0.0))
+    return out
+
+
+def first_moment(pts):
+    Qx = 0.0
+    n = len(pts)
+    for i in range(n):
+        x0, y0 = pts[i]
+        x1, y1 = pts[(i + 1) % n]
+        c = x0 * y1 - x1 * y0
+        Qx += (y0 + y1) * c
+    return Qx / 6
+
+
+def hss_square(B, t, ro_factor):
+    ro = ro_factor * t
+    ri = max(ro - t, 0.0)
+    outer = rounded_rect(B, B, ro)
+    inner = rounded_rect(B - 2 * t, B - 2 * t, ri)
+    Ao, Ixo, Iyo = poly_props(outer)
+    Ai, Ixi, Iyi = poly_props(inner)
+    A = Ao - Ai
+    Ix = Ixo - Ixi
+    S = Ix / (B / 2)
+    r = math.sqrt(Ix / A)
+    Z = 2 * (first_moment(clip_top(outer)) - first_moment(clip_top(inner)))
+    # torsion: Bredt-Batho sobre la linea media con radio medio rm = ro - t/2
+    rm = ro - t / 2
+    bm = B - t
+    A0 = bm * bm - (4 - math.pi) * rm * rm
+    p0 = 4 * bm - (8 - 2 * math.pi) * rm
+    J = 4 * A0 * A0 * t / p0
+    # constante de torsion para tension (formula de AISC para HSS rectangulares)
+    C = 2 * (B - t) * (B - t) * t - 4.5 * (4 - math.pi) * t ** 3
+    return dict(A=A, Ix=Ix, S=S, r=r, Z=Z, J=J, C=C)
+
+
+def w_shape(d, bf, tw, tf, rf):
+    """W con filetes de radio rf: alas + alma + 4 filetes (areas de esquina concava)."""
+    hw = d - 2 * tf
+    A = 2 * bf * tf + hw * tw
+    Ix = (bf * d ** 3 - (bf - tw) * hw ** 3) / 12
+    Iy = 2 * tf * bf ** 3 / 12 + hw * tw ** 3 / 12
+    # filete: cuadrado rf x rf menos cuarto de circulo; area y centroide respecto del vertice interior
+    af = (1 - math.pi / 4) * rf * rf
+    cf = rf * (10 - 3 * math.pi) / (12 - 3 * math.pi)  # distancia del centroide del filete al vertice, por eje
+    yf = hw / 2 - cf
+    xf = tw / 2 + cf
+    A += 4 * af
+    Ix += 4 * af * yf * yf
+    Iy += 4 * af * xf * xf
+    Sx = Ix / (d / 2)
+    Zx = 2 * (bf * tf * (d / 2 - tf / 2) + tw * (hw / 2) ** 2 / 2 + 2 * af * yf)
+    J_simple = (2 * bf * tf ** 3 + hw * tw ** 3) / 3
+    return dict(A=A, Ix=Ix, Iy=Iy, Sx=Sx, Zx=Zx, J_simple=J_simple)
+
+
+def show(title, props, ref):
+    print("== " + title)
+    for k, v in props.items():
+        if k in ref:
+            print("   %-9s derivado %10.4f  catalogo %8s  delta %+7.3f %%" % (k, v, ref[k], 100 * (v - ref[k]) / ref[k]))
+        else:
+            print("   %-9s derivado %10.4f" % (k, v))
+
+
+hss_ref = dict(A=3.37, Ix=7.8, S=3.9, r=1.52, Z=4.69, J=12.8, C=6.56)
+show("HSS4X4X1/4, tdes = 0.233 (tabulado), radio exterior 2.0 tdes", hss_square(4.0, 0.233, 2.0), hss_ref)
+show("HSS4X4X1/4, tdes = 0.93 x 0.25 = 0.2325, radio exterior 2.0 tdes", hss_square(4.0, 0.2325, 2.0), hss_ref)
+show("HSS4X4X1/4, tdes = 0.233, radio exterior 1.5 tdes (sensibilidad)", hss_square(4.0, 0.233, 1.5), hss_ref)
+w_ref = dict(A=7.65, Ix=204, Iy=17.3, Sx=33.4, Zx=37.2, J_simple=0.3)
+show("W12X26 con dimensiones tabuladas (d 12.2, bf 6.49, tw 0.23, tf 0.38, filete kdes - tf = 0.30)", w_shape(12.2, 6.49, 0.23, 0.38, 0.30), w_ref)

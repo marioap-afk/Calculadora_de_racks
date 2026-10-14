@@ -33,9 +33,9 @@ Documentos de la preparación:
 | OD-F4-03 | **Aceptada** (base de RAM como representación, contrastada con fuentes externas) |
 | OD-F4-04 (resto) | pendiente: DIF-02 |
 | OD-F4-07, 08, 09, 10, 11 | abiertas (10 queda dispuesta por DIF-03) |
-| OD-F4-12 | **CONDITIONAL APPROVAL**: contrato preparado, no emitido ni ejecutado |
-| OD-F4-13 | **PREPARATION APPROVED**: solicitud y preflight/POST preparados; la solicitud no se envió |
-| OD-F4-14 | **resolución propuesta** (CMB-1..CMB-7), pendiente de decisión |
+| OD-F4-12 | **CONDITIONAL APPROVAL**: contrato preparado, no emitido ni ejecutado; reserva provisional Codex 48 y `max_attempts` 9 **no habilitada** (decisiones §50) |
+| OD-F4-13 | HOST COORDINATION = AUTHORIZED: solicitud formal **enviada** a I-52 e I-64 (decisiones §50); sin ACK ni RELEASE todavía; preflight/POST definitivo y validado en seco |
+| OD-F4-14 | estrategia M-05c **aceptada para planificación** ([plan](I-65-f4-m05c-plan.md)); su ejecución exige autorización para abrir RAM |
 | — | autorización de la corrida en RAM; Q-O1 y Q-O7 tras OV-I65-01 |
 
 ## 3. Condiciones exactas para autorizar la primera corrida real

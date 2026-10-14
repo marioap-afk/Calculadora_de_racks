@@ -1,0 +1,31 @@
+== HSS4X4X1/4, tdes = 0.233 (tabulado), radio exterior 2.0 tdes
+   A         derivado     3.3710  catalogo     3.37  delta  +0.031 %
+   Ix        derivado     7.8008  catalogo      7.8  delta  +0.010 %
+   S         derivado     3.9004  catalogo      3.9  delta  +0.010 %
+   r         derivado     1.5212  catalogo     1.52  delta  +0.079 %
+   Z         derivado     4.6923  catalogo     4.69  delta  +0.050 %
+   J         derivado    12.7805  catalogo     12.8  delta  -0.152 %
+   C         derivado     6.5638  catalogo     6.56  delta  +0.058 %
+== HSS4X4X1/4, tdes = 0.93 x 0.25 = 0.2325, radio exterior 2.0 tdes
+   A         derivado     3.3646  catalogo     3.37  delta  -0.161 %
+   Ix        derivado     7.7883  catalogo      7.8  delta  -0.150 %
+   S         derivado     3.8941  catalogo      3.9  delta  -0.150 %
+   r         derivado     1.5214  catalogo     1.52  delta  +0.095 %
+   Z         derivado     4.6841  catalogo     4.69  delta  -0.125 %
+   J         derivado    12.7578  catalogo     12.8  delta  -0.329 %
+   C         derivado     6.5517  catalogo     6.56  delta  -0.127 %
+== HSS4X4X1/4, tdes = 0.233, radio exterior 1.5 tdes (sensibilidad)
+   A         derivado     3.4176  catalogo     3.37  delta  +1.414 %
+   Ix        derivado     7.9826  catalogo      7.8  delta  +2.341 %
+   S         derivado     3.9913  catalogo      3.9  delta  +2.341 %
+   r         derivado     1.5283  catalogo     1.52  delta  +0.546 %
+   Z         derivado     4.7846  catalogo     4.69  delta  +2.017 %
+   J         derivado    12.7107  catalogo     12.8  delta  -0.697 %
+   C         derivado     6.5638  catalogo     6.56  delta  +0.058 %
+== W12X26 con dimensiones tabuladas (d 12.2, bf 6.49, tw 0.23, tf 0.38, filete kdes - tf = 0.30)
+   A         derivado     7.6409  catalogo     7.65  delta  -0.120 %
+   Ix        derivado   203.5038  catalogo      204  delta  -0.243 %
+   Iy        derivado    17.3269  catalogo     17.3  delta  +0.156 %
+   Sx        derivado    33.3613  catalogo     33.4  delta  -0.116 %
+   Zx        derivado    37.1124  catalogo     37.2  delta  -0.235 %
+   J_simple  derivado     0.2838  catalogo      0.3  delta  -5.397 %

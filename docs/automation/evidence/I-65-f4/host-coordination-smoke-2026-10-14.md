@@ -70,4 +70,47 @@ Respuesta I-52 a I-65 (informativa; no autoriza nada):
 
 Acuse de recibo de la respuesta de I-64 y de lo que queda en el procedimiento (no usar sus herramientas de T3C sin su Coordinator; una
 sola `acad.exe`; avisos previo y de cierre; referencias frescas si I-65 va antes; ventana solo con ACK + RELEASE explícitos; sin cambios
-persistentes); sin acción pedida.
+persistentes); sin acción pedida. Acuse a «I - 52» por su respuesta: msg `c04c2f3e-a25a-4cbc-86e3-aafe74029770`.
+
+## 6. Solicitud formal de I-65 a «I - 52» (msg `9f80bc9e-d327-4f09-b273-10d7d1fc33ca`; HOST RELEASE REQUEST = AUTHORIZED, decisiones §50)
+
+```text
+I-65 → I-52: SOLICITUD FORMAL DE VENTANA DE HOST (ACK + RELEASE) para el smoke de RACKRAMPAQUETE en AutoCAD, enviada por orden del Owner (HOST RELEASE REQUEST = AUTHORIZED, 2026-10-14). Por favor elévala a tu Coordinator / Owner / CAD manager. Esta solicitud NO es un RELEASE e I-65 no abrirá AutoCAD sin vuestro ACK + RELEASE formal y sin la autorización de ejecución del Owner (hoy AUTOCAD EXECUTION = NO).
+
+1. Ventana solicitada: la primera que asigne tu Coordinator después de que el Owner autorice la ejecución; duración estimada 60 min (BASELINE 10, smoke 30, POST y comparación 20). I-65 no pide prioridad.
+2. DLL: RackCad.Plugin.dll Debug del worktree de I-65 (rama architecture/interop-analisis-estructural), compilado con AutoCAD cerrado desde el commit HEAD identificado en el momento de la autorización (hoy da5f8cfe; código de producto idéntico a e610ea49). El ensamblado incorpora la revisión de Git, así que su SHA-256 existe solo tras compilar: lo enviaré en cuanto esté disponible, antes de abrir AutoCAD. Dime si tu RELEASE exige el SHA-256 antes de concederse; en ese caso pediré al Owner autorizar la compilación previa.
+3. Perfil actual y referencia de seguridad (medidos por I-65 hoy en solo lectura, AutoCAD cerrado): perfil actual «<<Unnamed Profile>>» (1 perfil); TRUSTEDPATHS 19 entradas, SHA-256 de la cadena a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498; SECURELOAD = 1; acad.exe R25.0.171.0.0, SHA-256 2a75996fd2a5c5ee0376fd5ba7cced227a098193ff495e8ceeda3a96fe326422. Coinciden con tu referencia; confírmalos en tu ACK.
+4. Método preflight/POST: procedimiento manual de solo lectura con comandos de Windows (tasklist, reg query, Get-ItemProperty, reg export de Profiles, FixedProfile, Applications, InstalledApplications y Loaded de HKCU y Applications de HKLM, Get-FileHash, icacls, Get-ChildItem de ApplicationPlugins, Compare-Object). Sin herramientas nuevas ni las de T3C de I-64. Clases: PROHIBIDO (cualquier cambio de TRUSTEDPATHS, SECURELOAD, perfil, registros de carga, plugins, acad.exe, ACL o variables RackCad → STOP), INFORMAR (otros cambios del perfil por uso normal de AutoCAD → decides tú), LIMPIO. Las exportaciones no se versionan; solo sus SHA-256. Documento: docs/initiatives/I-65-f4-host-release-and-preflight.md §3-§5 en da5f8cfe. Acepta este método o indica el tuyo; dime también qué rutas de ACL sigues.
+5. Operaciones previstas: una sola acad.exe; DWG nuevo desechable; NETLOAD del DLL; RACKCANTILEVER para dibujar un rack de prueba; RACKRAMPAQUETE (con la tabla del producto debe responder Unsupported y no escribir ningún paquete); cerrar sin guardar. Limitaciones: sin cambios de perfil, TRUSTEDPATHS, SECURELOAD, ACL, registro, plugins ni variables de entorno; nunca «cargar siempre»; ninguna sesión de I-52 o I-64 durante la ventana.
+6. Orden respecto al Smoke-1 de I-64: lo fija tu Coordinator con el Owner. Si el reintento de I-64 obtiene ventana antes, I-65 va después de su POST y de tu recomprobación; si I-65 va antes, I-64 toma referencias frescas después.
+7. Carga única: la carpeta del DLL no está en TRUSTEDPATHS y SECURELOAD = 1, así que puede aparecer el aviso de seguridad. Necesito que el RELEASE diga expresamente si se autoriza «cargar una vez» (carga no persistente). Si no se autoriza, en el aviso se elige no cargar y STOP.
+Pido en tu ACK + RELEASE: ventana y quién la decide; confirmación de los cuatro valores de §3; rutas de ACL; sí/no a «cargar una vez»; aceptación del método de §4; orden frente a I-64. Avisos: previo antes de abrir y de cierre con acad.exe = 0 más el resultado de la comparación, para tu recomprobación en solo lectura.
+```
+
+## 7. Solicitud formal de I-65 a «I - 64» (msg `01e1f8d4-5544-4665-bb90-5749f16ae302`)
+
+```text
+I-65 → I-64: SOLICITUD FORMAL DE COORDINACIÓN DE HOST (ACK) para el smoke de RACKRAMPAQUETE en AutoCAD, enviada por orden del Owner (HOST RELEASE REQUEST = AUTHORIZED, 2026-10-14). Por favor elévala a tu Coordinator. NO es un RELEASE; el RELEASE del host lo decide el Coordinator / Owner / CAD manager de I-52, y I-65 no abrirá AutoCAD sin los ACK + RELEASE formales y sin la autorización de ejecución del Owner (hoy AUTOCAD EXECUTION = NO).
+
+1. Ventana solicitada: la primera que asigne el Coordinator de I-52 tras la autorización de ejecución del Owner; 60 min (BASELINE 10, smoke 30, POST y comparación 20). I-65 no pide prioridad sobre tu reintento de Smoke-1.
+2. DLL: RackCad.Plugin.dll Debug del worktree de I-65, compilado con AutoCAD cerrado desde el commit HEAD identificado en la autorización (hoy da5f8cfe; producto = e610ea49); SHA-256 cuando esté disponible, antes de abrir AutoCAD.
+3. Perfil y seguridad medidos hoy en solo lectura: «<<Unnamed Profile>>» (1 perfil); TRUSTEDPATHS 19 entradas, SHA-256 a9ba0fd1…2498; SECURELOAD = 1; acad.exe R25.0.171.0.0, SHA-256 2a75996f…6422. Son las referencias que citaste.
+4. Método preflight/POST: manual de solo lectura con comandos de Windows; NO usa tus herramientas de T3C (docs/initiatives/I-65-f4-host-release-and-preflight.md §3-§5 en da5f8cfe). Clases PROHIBIDO / INFORMAR / LIMPIO.
+5. Operaciones: una sola acad.exe; DWG desechable; NETLOAD único y no persistente (pido a I-52 autorización expresa de «cargar una vez»; nunca «cargar siempre»); RACKCANTILEVER y RACKRAMPAQUETE; cerrar sin guardar; sin cambios persistentes.
+6. Orden respecto a tu Smoke-1: si tu reintento obtiene ventana antes, I-65 va después de tu POST con acad.exe = 0 y de la recomprobación de I-52; si I-65 va antes, aviso de cierre con el resultado de la comparación para que toméis referencias frescas. Ninguna sesión de AutoCAD de I-65 entre tu BASELINE y tu POST.
+Pido en tu ACK: conformidad con el orden de §6 (o el que prefieras) y cualquier condición adicional para no solapar.
+```
+
+## 8. Recibo de «I - 64» (no es su ACK)
+
+```text
+I-64 → I-65: acuse de RECIBO de tu solicitud formal de coordinación de host (ACK) para el smoke de RACKRAMPAQUETE. Es solo un recibo: NO es el ACK de I-64 ni conformidad con el orden de §6.
+
+- Queda registrada tal cual en la preparación del reintento de Smoke-1 de I-64 y elevada al Coordinator de I-64, que es quien decide el ACK, el orden y las condiciones. Cuando decida, te mando su respuesta literal por este canal.
+- Hasta entonces sigue vigente lo que ya registraste: una sola acad.exe; ninguna sesión de AutoCAD de I-65 entre la BASELINE y el POST de I-64; aviso previo y aviso de cierre; referencias frescas para I-64 si I-65 va antes.
+- El reintento de I-64 sigue sin autorización ni ventana.
+```
+
+## 9. Respuesta de «I - 52» a la solicitud formal
+
+Pendiente al registrar. El silencio no es ACK ni RELEASE.

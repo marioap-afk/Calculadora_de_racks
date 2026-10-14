@@ -5,9 +5,11 @@ Documento de la unidad (Coordinator, 2026-10-14), por la disposición del Owner 
 [§49](../automation/decisions/I-65.md)). Completa el [procedimiento de smoke](I-65-f4-autocad-smoke-procedure.md) (SP-07, H-1..H-7,
 PC-05) con las condiciones actuales de I-52 e I-64 ([custodia](../automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md)).
 
-> **Estado: PREPARADO.** AUTOCAD EXECUTION = NOT AUTHORIZED. La solicitud de §1 **no se ha enviado**: se envía solo cuando el Owner lo
-> ordene. Los comandos de §3-§5 **no se han ejecutado**. No se abre AutoCAD, no se ejecuta `NETLOAD` y no se toca el perfil de seguridad
-> sin la liberación correspondiente.
+> **Estado (2026-10-14, decisiones §50): PROCEDIMIENTO DEFINITIVO; SOLICITUD ENVIADA; SIN RELEASE.** Por orden del Owner (HOST RELEASE
+> REQUEST = AUTHORIZED) la solicitud formal se envió a I-52 y a I-64. El texto enviado, que es el que vale, y las respuestas están en la
+> [custodia](../automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md) §6-§9. La solicitud **no** es un RELEASE.
+> AUTOCAD EXECUTION = NO: no se abre AutoCAD ni se ejecuta `NETLOAD` sin los ACK + RELEASE formales y sin la autorización de ejecución
+> del Owner. La BASELINE y el POST de §3-§5 se validaron en seco (§7), con AutoCAD cerrado y en solo lectura.
 
 ## 0. Requisitos del Owner para la prueba y dónde se cumplen
 
@@ -61,9 +63,9 @@ comandos son de Windows o de PowerShell 7, sin opciones de escritura sobre el re
 | B-03 | `TRUSTEDPATHS` y `SECURELOAD` | `Get-ItemProperty -LiteralPath 'HKCU:\<PRODUCT>\Profiles\<<Unnamed Profile>>\Variables' -Name TRUSTEDPATHS,SECURELOAD`; SHA-256 de la cadena exacta en UTF-8 sin BOM ni salto final y número de entradas no vacías separadas por `;` | los valores del ACK de I-52 (hoy: 19 entradas, `a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498`; `SECURELOAD` = 1) |
 | B-04 | Árboles del registro de AutoCAD | `reg export` a archivos nuevos de: `HKCU\<PRODUCT>\Profiles`, `HKCU\<PRODUCT>\FixedProfile`, `HKCU\<PRODUCT>\Applications`, `HKCU\<PRODUCT>\InstalledApplications`, `HKCU\<PRODUCT>\Loaded` y `HKLM\SOFTWARE\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications`; `Get-FileHash` de cada archivo | seis archivos (o «ausente», que debe repetirse en el POST) |
 | B-05 | Identidad de `acad.exe` | `reg query "HKLM\SOFTWARE\Autodesk\AutoCAD\R25.0\ACAD-8101:409" /v AcadLocation`; `Get-FileHash` y `(Get-Item <ruta>\acad.exe).VersionInfo.FileVersion` | los del ACK de I-52 (hoy: R25.0.171.0.0, `2a75996fd2a5c5ee0376fd5ba7cced227a098193ff495e8ceeda3a96fe326422`) |
-| B-06 | Plugins instalados | `Get-ChildItem -Name -Force` de `%APPDATA%\Autodesk\ApplicationPlugins`, `%ProgramData%\Autodesk\ApplicationPlugins`, `%ProgramFiles%\Autodesk\ApplicationPlugins` y `%ProgramFiles(x86)%\Autodesk\ApplicationPlugins` | listas anotadas; ningún bundle de RackCad |
+| B-06 | Plugins instalados | `Get-ChildItem -Name -Force` de `%APPDATA%\Autodesk\ApplicationPlugins`, `%ProgramData%\Autodesk\ApplicationPlugins`, `%ProgramFiles%\Autodesk\ApplicationPlugins` y `%ProgramFiles(x86)%\Autodesk\ApplicationPlugins`; por raíz: número de entradas, SHA-256 de la lista de nombres unida por LF y nombres con `RackCad` | listas iguales en BASELINE y POST; ningún bundle de RackCad |
 | B-07 | Variables de entorno persistentes | nombres de `[Environment]::GetEnvironmentVariables('User')` y `('Machine')` que contengan `RackCad` | ninguna |
-| B-08 | ACL | `icacls "<AcadLocation>"`, `icacls "<carpeta del DLL>"` y las rutas que I-52 indique en su ACK | listados anotados |
+| B-08 | ACL | `icacls "<AcadLocation>"`, `icacls "<carpeta del DLL>"` y las rutas que I-52 indique en su ACK; SHA-256 de cada listado | listados iguales en BASELINE y POST |
 | B-09 | DLL | `Get-FileHash` del DLL; ¿alguna entrada de `TRUSTEDPATHS` cubre su carpeta? | SHA-256 del aviso H-4; no la cubre |
 | B-10 | Checkouts | instantánea K1/K2 (estado Git de todos los worktrees y SHA-256 de los rastreados del checkout principal) | registrada |
 
@@ -97,3 +99,26 @@ repiten B-01..B-10 en una carpeta POST nueva, con los mismos comandos y las mism
 Otra `acad.exe` antes o durante la ventana; RELEASE ausente o ambiguo; deriva previa en B-02/B-03/B-05; aviso de seguridad al cargar sin
 autorización de «cargar una vez»; cualquier clase PROHIBIDO; imposibilidad de leer una clave de B-02..B-05 (la línea base sería
 INVALID). Toda parada → registro literal, aviso de cierre y decisión del Owner.
+
+## 7. Validación en seco (2026-10-14; solo lectura; AutoCAD y RAM cerrados)
+
+Por la autorización de coordinación de host (decisiones §50), la sesión ejecutó dos veces seguidas B-01, B-03..B-08 (sin DLL: aún no se
+ha compilado) con los comandos de §3, sin opciones de escritura sobre el registro, el perfil ni las ACL. Escribió solo en una carpeta local
+de la sesión, que no se versiona.
+
+| Comprobación | Resultado |
+|---|---|
+| `acad.exe` / `RAMElements.exe` | 0 / 0 |
+| Perfil actual y conjunto | `<<Unnamed Profile>>`; 1 perfil |
+| `TRUSTEDPATHS` | 19 entradas; SHA-256 de la cadena `a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498` (igual a la referencia de I-52) |
+| `SECURELOAD` | 1 |
+| `acad.exe` | R25.0.171.0.0; SHA-256 `2a75996fd2a5c5ee0376fd5ba7cced227a098193ff495e8ceeda3a96fe326422` (igual a la referencia de I-52) |
+| Seis árboles de B-04 | los seis existen y se exportan; SHA-256 idénticos entre la primera y la segunda captura |
+| `ApplicationPlugins` | 3 raíces presentes y 1 ausente; 0 nombres con `RackCad`; listas idénticas entre capturas |
+| Variables con `RackCad` | 0 de usuario, 0 de máquina |
+| ACL de `AcadLocation` | listado idéntico entre capturas |
+| Comparación de las dos capturas | **LIMPIO** (sin diferencias) |
+
+El procedimiento es reproducible y no altera el host. Queda pendiente que I-52 lo acepte o indique su método, y que I-52 diga qué rutas
+de ACL sigue.
+

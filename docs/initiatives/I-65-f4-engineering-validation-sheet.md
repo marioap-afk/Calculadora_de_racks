@@ -164,5 +164,7 @@ fuente independiente.
 | Resultado: CONFORME / CONFORME CON DIFERENCIAS RECONOCIDAS (DIF-01) / NO CONFORME | | |
 | Confirmación expresa del Owner | | |
 
+Revisión técnica de valores y fuentes (decisiones §50): [I-65-f4-properties-technical-review.md](I-65-f4-properties-technical-review.md).
+
 Con la tarjeta confirmada, el Coordinator presenta el contrato de la actualización a `verified`
 ([borrador](I-65-f4-d-mapping-verified-contract.md)); no antes.
