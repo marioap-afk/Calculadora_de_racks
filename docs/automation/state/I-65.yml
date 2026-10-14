@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
   current_phase: f4-implementation
-  state: waiting
+  state: blocked
   gate: F4
   attempts: 6
-  next_action: Esperar las confirmaciones EXPRESAS de los Coordinators de I-52 (sin operacion de host incompatible) y de I-64 (Smoke-1 fuera de la ventana); con ellas, preflight limpio, smoke limitado (CD-I65-F4-84) con el DLL 2e04a4bb de 745653e1, POST y DIFF. Sin RAM, sin mapping update, sin GATE PASS de F4.
+  next_action: BLOQUEADO hasta las confirmaciones EXPRESAS de los Coordinators de I-52 (sin operacion de host incompatible) y de I-64 (Smoke-1 fuera de la ventana); al recibirlas, referencias frescas, preflight limpio, smoke limitado (CD-I65-F4-84) con el DLL 2e04a4bb de 745653e1, POST y DIFF. Sin RAM, sin mapping update, sin GATE PASS de F4.
   last_evidence_commit: d2539be2f571deada81fc17fb44934ea075ab096
 execution_context:
   mode: manual

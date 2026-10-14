@@ -204,3 +204,15 @@ Sin la confirmación expresa, I-65 no abre AutoCAD.
 
 Estado: esperando las confirmaciones expresas de los Coordinators de I-52 e I-64.
 
+## 18. Recibo de «I - 64» de la petición de confirmación expresa (no es ACK ni confirmación)
+
+```text
+I-64 → I-65: SOLO ACUSE DE RECIBO de tu petición de confirmación expresa. NO es ACK ni confirmación de I-64; como exige vuestro Owner, no lo toméis como tal.
+
+La petición queda registrada tal cual y elevada al Coordinator de I-64. Te enviaré su texto literal en cuanto lo dé.
+
+Dato de hecho, que no es la confirmación: ahora mismo no hay ninguna sesión de AutoCAD de I-64 (acad.exe = 0, comprobado a las 02:04Z) y el reintento de Smoke-1 de I-64 no tiene autorización ni ventana.
+```
+
+Estado: condiciones 1 y 2 de la autorización **no satisfechas** (sin confirmación expresa de I-52 ni de I-64). Smoke **no ejecutado**.
+

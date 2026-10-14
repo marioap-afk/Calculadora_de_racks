@@ -1597,3 +1597,8 @@ Custodia:
 
 - Disposición del Owner (decisiones §56). Peticiones a I-52 y a I-64 custodiadas literalmente (custodia de coordinación, SHA-256 `49D6E8A5DDB496C673E07CE1E0BC1629E3453C286407CE6BA41B38D491C0F90E`).
 - `acad.exe` = 0; sin ejecución sobre el host. Codex 41 de 46; `attempts` 6 de 6.
+
+## 63. Bloqueo del smoke (2026-10-14T02:49:16Z)
+
+- Recibo de I-64 custodiado (§18; custodia SHA-256 `DCED36024618143CEC508C644F4B285EE01B27A5D60FA24B116576BB8E988EFB`); I-52 sin respuesta. Condiciones 1 y 2 no satisfechas; smoke no ejecutado; `acad.exe` = 0.
+- Codex 41 de 46; `attempts` 6 de 6.
