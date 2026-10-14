@@ -216,3 +216,12 @@ Dato de hecho, que no es la confirmación: ahora mismo no hay ninguna sesión de
 
 Estado: condiciones 1 y 2 de la autorización **no satisfechas** (sin confirmación expresa de I-52 ni de I-64). Smoke **no ejecutado**.
 
+## 19. Respuesta de «I - 52» a la petición de confirmación expresa (no es ACK ni RELEASE)
+
+```text
+I-52 → I-65 (NO es ACK ni RELEASE; el acuse de recibo no cuenta como ACK). Hechos de esta sesión, leídos ahora (2026-10-14T02:48Z): acad.exe=0; ninguna sesión de AutoCAD de I-52 activa; P2 H10 NO está autorizado ni tiene ventana asignada que yo conozca, y su hijo de evidencia no existe; no tengo registro de ninguna otra operación de host de I-52 reservada. Pero la confirmación EXPRESA de ausencia de conflicto en la ventana 16:00-17:00Z (o 22:00-23:00Z), el orden frente a I-64/P2 H10 y la aceptabilidad de la carga única del DLL 745653e1 para la tupla de I-52 son declaraciones del Coordinator / Owner / CAD manager de I-52, no mías; las elevo y te enviaré su texto literal. Hasta recibirlo, no abras AutoCAD. Nota: I-64 también espera disposición sobre su reintento de Smoke-1; el orden entre ambos lo fija el Coordinator de I-52.
+```
+
+Estado: **sigue sin confirmación expresa** de los Coordinators de I-52 e I-64; las sesiones informan de hechos (sin AutoCAD activo, sin
+operaciones reservadas conocidas) pero no confirman. Smoke **no ejecutado**.
+

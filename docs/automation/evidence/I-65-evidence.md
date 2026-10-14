@@ -1602,3 +1602,4 @@ Custodia:
 
 - Recibo de I-64 custodiado (§18; custodia SHA-256 `DCED36024618143CEC508C644F4B285EE01B27A5D60FA24B116576BB8E988EFB`); I-52 sin respuesta. Condiciones 1 y 2 no satisfechas; smoke no ejecutado; `acad.exe` = 0.
 - Codex 41 de 46; `attempts` 6 de 6.
+- Respuesta posterior de I-52 (custodia §19; SHA-256 `91C475C85544D952F102FB3C821C36BC223BA0EAAD237B897F6B174086B97623`): hechos sin conflicto conocido (`acad.exe` = 0, P2 H10 sin autorización ni ventana, sin otras operaciones reservadas), pero **no** es la confirmación expresa de su Coordinator; el bloqueo se mantiene.
