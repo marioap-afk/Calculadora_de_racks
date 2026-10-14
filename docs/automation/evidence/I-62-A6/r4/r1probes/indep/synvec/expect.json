@@ -1,0 +1,556 @@
+{
+ "names": {
+  "c0": "a8b9c7248778ce3ae77930e1b262171603b54605",
+  "s1": "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+  "c1": "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+  "m": "ed086040bf125d58a2d1f56e36fc6222de775266",
+  "c2": "577629114da303258d24cd47fbcc4ce0177a75e7",
+  "r1": "69b613824a1ad981747306d2634a4af0e2005953",
+  "x1": "c08f5dc76960e2e5a096faab1f49ce192a3753c5",
+  "g1": "b036701cfb66864042ac9ace32432afd73e8e5ad",
+  "u0": "bde4ab7eedf1080ae85b7e74016436e1e2d9a874",
+  "u1": "df30c242949f5a53cbed45563f3e7afc2d9bbebe",
+  "tree_c2": "10e1bd4d46510c991b4aafea6b7975ce16daebee",
+  "nonexistent": "1234567890abcdef1234567890abcdef12345678"
+ },
+ "cases": {
+  "all_present": {
+   "description": "every input present and valid",
+   "exit": 0,
+   "omitted": {},
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "c08f5dc76960e2e5a096faab1f49ce192a3753c5",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_absent_unpinned": {
+   "description": "E has no entry at the designated H path",
+   "exit": 0,
+   "omitted": {
+    "C1.H.BaseSha": "INPUT_ABSENT",
+    "C1.H.CurrentSha": "INPUT_ABSENT",
+    "C1.H.RedSha": "INPUT_ABSENT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "INPUT_ABSENT",
+    "C6.H": "INPUT_ABSENT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_custody_missing": {
+   "description": "H path pinned in E, custody file does not exist",
+   "exit": 0,
+   "omitted": {
+    "C1.H.BaseSha": "INPUT_ABSENT",
+    "C1.H.CurrentSha": "INPUT_ABSENT",
+    "C1.H.RedSha": "INPUT_ABSENT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "INPUT_ABSENT",
+    "C6.H": "INPUT_ABSENT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_blob_mismatch": {
+   "description": "custodied H bytes have another blob than the pinned one",
+   "exit": 0,
+   "omitted": {
+    "C1.H.BaseSha": "INPUT_ABSENT",
+    "C1.H.CurrentSha": "INPUT_ABSENT",
+    "C1.H.RedSha": "INPUT_ABSENT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "INPUT_ABSENT",
+    "C6.H": "INPUT_ABSENT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_invalid_json": {
+   "description": "H bytes are not JSON (truncated)",
+   "exit": 0,
+   "omitted": {
+    "C1.H.BaseSha": "INPUT_ABSENT",
+    "C1.H.CurrentSha": "INPUT_ABSENT",
+    "C1.H.RedSha": "INPUT_ABSENT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "INPUT_ABSENT",
+    "C6.H": "INPUT_ABSENT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_dupkey": {
+   "description": "H has a duplicated key in a nested object",
+   "exit": 0,
+   "omitted": {
+    "C1.H.BaseSha": "INPUT_ABSENT",
+    "C1.H.CurrentSha": "INPUT_ABSENT",
+    "C1.H.RedSha": "INPUT_ABSENT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "INPUT_ABSENT",
+    "C6.H": "INPUT_ABSENT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_bom": {
+   "description": "H is valid JSON preceded by a UTF-8 BOM",
+   "exit": 0,
+   "omitted": {
+    "C1.H.BaseSha": "INPUT_ABSENT",
+    "C1.H.CurrentSha": "INPUT_ABSENT",
+    "C1.H.RedSha": "INPUT_ABSENT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "INPUT_ABSENT",
+    "C6.H": "INPUT_ABSENT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_not_object": {
+   "description": "H is a JSON array, not an object",
+   "exit": 0,
+   "omitted": {
+    "C1.H.BaseSha": "INPUT_ABSENT",
+    "C1.H.CurrentSha": "INPUT_ABSENT",
+    "C1.H.RedSha": "INPUT_ABSENT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "INPUT_ABSENT",
+    "C6.H": "INPUT_ABSENT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_current_missing": {
+   "description": "H.CurrentSha absent",
+   "exit": 0,
+   "omitted": {
+    "C1.H.CurrentSha": "FIELD_MISSING",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "PRIMITIVE_EMPTY"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_current_null": {
+   "description": "H.CurrentSha null",
+   "exit": 0,
+   "omitted": {
+    "C1.H.CurrentSha": "FIELD_NULL",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "PRIMITIVE_EMPTY"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_current_empty": {
+   "description": "H.CurrentSha \"\"",
+   "exit": 0,
+   "omitted": {
+    "C1.H.CurrentSha": "FIELD_EMPTY",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "PRIMITIVE_EMPTY"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_current_upper": {
+   "description": "H.CurrentSha = uppercase hex of g1",
+   "exit": 0,
+   "omitted": {
+    "C1.H.CurrentSha": "NOT_A_COMMIT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "PRIMITIVE_EMPTY"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_current_39hex": {
+   "description": "H.CurrentSha = first 39 hex of g1",
+   "exit": 0,
+   "omitted": {
+    "C1.H.CurrentSha": "NOT_A_COMMIT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "PRIMITIVE_EMPTY"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_current_tree": {
+   "description": "H.CurrentSha = tree id of c2",
+   "exit": 0,
+   "omitted": {
+    "C1.H.CurrentSha": "NOT_A_COMMIT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "PRIMITIVE_EMPTY"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_current_nonexistent": {
+   "description": "H.CurrentSha = nonexistent 40-hex",
+   "exit": 0,
+   "omitted": {
+    "C1.H.CurrentSha": "NOT_A_COMMIT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "PRIMITIVE_EMPTY"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "h_red_null": {
+   "description": "H.RedSha null",
+   "exit": 0,
+   "omitted": {
+    "C1.H.RedSha": "FIELD_NULL"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "c08f5dc76960e2e5a096faab1f49ce192a3753c5",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "d_absent_unpinned": {
+   "description": "E has no entry at the designated D path",
+   "exit": 0,
+   "omitted": {
+    "C1.D.BaseSha": "INPUT_ABSENT",
+    "C1.D.MainSha": "INPUT_ABSENT",
+    "C1.D.ChainBaseSha": "INPUT_ABSENT",
+    "C1.D.ChainRedSha": "INPUT_ABSENT",
+    "C1.RevList(D.BaseSha..H.CurrentSha)": "INPUT_ABSENT",
+    "C1.FirstParentChain(D.MainSha)": "INPUT_ABSENT",
+    "C1.MergeBase(D.MainSha,K.AuthorityRevision)": "INPUT_ABSENT",
+    "C2.origin/D.ExpectedBranch": "INPUT_ABSENT",
+    "C6.DELEG": "INPUT_ABSENT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "k_absent_unpinned": {
+   "description": "E has no entry at the designated K path",
+   "exit": 0,
+   "omitted": {
+    "C1.K.AuthorityRevision": "INPUT_ABSENT",
+    "C1.K.MainSha": "INPUT_ABSENT",
+    "C1.MergeBase(D.MainSha,K.AuthorityRevision)": "INPUT_ABSENT",
+    "C4.K.Authorities": "INPUT_ABSENT",
+    "C6.CONTRACT": "INPUT_ABSENT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "c08f5dc76960e2e5a096faab1f49ce192a3753c5",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "k_invalid_json": {
+   "description": "K pinned (custody) with verified bytes that are not JSON",
+   "exit": 0,
+   "omitted": {
+    "C1.K.AuthorityRevision": "INPUT_ABSENT",
+    "C1.K.MainSha": "INPUT_ABSENT",
+    "C1.MergeBase(D.MainSha,K.AuthorityRevision)": "INPUT_ABSENT",
+    "C4.K.Authorities": "INPUT_ABSENT",
+    "C6.CONTRACT": "INPUT_ABSENT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "c08f5dc76960e2e5a096faab1f49ce192a3753c5",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "k_authorities_empty": {
+   "description": "K.Authorities = [] (legitimately empty, not recorded)",
+   "exit": 0,
+   "omitted": {},
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "c08f5dc76960e2e5a096faab1f49ce192a3753c5",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "d_branch_null": {
+   "description": "D.ExpectedBranch null",
+   "exit": 0,
+   "omitted": {
+    "C2.origin/D.ExpectedBranch": "FIELD_NULL"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "c08f5dc76960e2e5a096faab1f49ce192a3753c5",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "mergebase_none": {
+   "description": "K.AuthorityRevision = u1 (unrelated root history)",
+   "exit": 0,
+   "omitted": {
+    "C1.MergeBase(D.MainSha,K.AuthorityRevision)": "PRIMITIVE_EMPTY"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "c08f5dc76960e2e5a096faab1f49ce192a3753c5",
+    "df30c242949f5a53cbed45563f3e7afc2d9bbebe",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "target_nonexistent": {
+   "description": "I.Target.Commit = nonexistent 40-hex",
+   "exit": 0,
+   "omitted": {
+    "C1.I.Target.Commit": "NOT_A_COMMIT"
+   },
+   "commits": [
+    "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "69b613824a1ad981747306d2634a4af0e2005953",
+    "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "c08f5dc76960e2e5a096faab1f49ce192a3753c5",
+    "ed086040bf125d58a2d1f56e36fc6222de775266"
+   ],
+   "refs": [
+    "HEAD",
+    "refs/remotes/origin/fx/syn",
+    "refs/remotes/origin/main"
+   ]
+  },
+  "trx_unverifiable": {
+   "description": "custodied TRX bytes do not have the pinned blob (bench error)",
+   "exit": 2
+  }
+ }
+}

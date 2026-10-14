@@ -1,0 +1,276 @@
+{
+ "Schema": "rackcad-input-closure/v1",
+ "AuthorityRevision": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+ "CanonicalInputs": [
+  {
+   "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+   "Blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0"
+  },
+  {
+   "Path": "docs/automation/decisions/FX-U1.md",
+   "Blob": "d3f3ec72974a65e05ebd7ad4d1c0b3ced7a07c93"
+  },
+  {
+   "Path": "docs/automation/state/FX-U1.yml",
+   "Blob": "52a3f7d77a4df1a2e70e5d443eece3384cebd670"
+  },
+  {
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Blob": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+  },
+  {
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+   "Blob": "cd43240b64a3d587915fa852d5fbf5947b8d8fe2"
+  },
+  {
+   "Path": "AGENTS.md",
+   "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+  },
+  {
+   "Path": "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+   "Blob": "0863f2c65dde4e895117f69dbb525dd13c824415"
+  },
+  {
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Blob": "380892ee869194aa4bd56dcf32dfd76ef0203ab9"
+  },
+  {
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+   "Blob": "a9d18f4d1506f1754b446a65f2c6ef90f1609d5a"
+  },
+  {
+   "Path": "docs/automation/decisions/FX-U1.md",
+   "Blob": "3fcfffc1aa7ad442422d4da2e5edaf89c48239ea"
+  },
+  {
+   "Path": "docs/automation/state/FX-U1.yml",
+   "Blob": "a9fea86d076d3a21a6217fa82641e33013fb1340"
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json",
+   "Blob": "c740262f199a305ebed5cce2cc9e919b8d03abe7"
+  },
+  {
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+   "Blob": "05c31b9c528749bb551ccc73fe39fca7383027ff"
+  },
+  {
+   "Path": "artifacts/ci/R37949808974/fixture-tests.trx",
+   "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff"
+  }
+ ],
+ "AutomaticInstructions": [
+  {
+   "Path": "AGENTS.md",
+   "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+   "Adapter": "codex-cli"
+  }
+ ],
+ "Obligations": [
+  {
+   "SourcePath": "AGENTS.md",
+   "SourceSection": "## Leer primero",
+   "SourceBlob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+   "Text": "Leer primero: docs/WORKFLOW.md",
+   "Class": "READ",
+   "Resolution": "INCLUDED",
+   "Target": "docs/WORKFLOW.md",
+   "Authority": null,
+   "Reason": null
+  },
+  {
+   "SourcePath": "AGENTS.md",
+   "SourceSection": "## Leer primero",
+   "SourceBlob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+   "Text": "Leer primero: docs/AUTOMATION_PLAN.md",
+   "Class": "READ",
+   "Resolution": "INCLUDED",
+   "Target": "docs/AUTOMATION_PLAN.md",
+   "Authority": null,
+   "Reason": null
+  },
+  {
+   "SourcePath": "AGENTS.md",
+   "SourceSection": "## Leer primero",
+   "SourceBlob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+   "Text": "Leer primero: docs/automation/agent-execution/README.md",
+   "Class": "READ",
+   "Resolution": "INCLUDED",
+   "Target": "docs/automation/agent-execution/README.md",
+   "Authority": null,
+   "Reason": null
+  },
+  {
+   "SourcePath": "AGENTS.md",
+   "SourceSection": "## Comandos canonicos",
+   "SourceBlob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+   "Text": "git status; git log --oneline -10",
+   "Class": "ACTION_COMPATIBLE",
+   "Resolution": "ALLOWED",
+   "Target": "git status",
+   "Authority": null,
+   "Reason": null
+  },
+  {
+   "SourcePath": "AGENTS.md",
+   "SourceSection": "## Comandos canonicos",
+   "SourceBlob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+   "Text": "dotnet test tests/Fixture.Tests/Fixture.Tests.csproj",
+   "Class": "ACTION_INCOMPATIBLE",
+   "Resolution": "EXEMPTED",
+   "Target": "dotnet test",
+   "Authority": "CD-07 / OQ-17 (assumed exemption of the R3 evidence)",
+   "Reason": null
+  },
+  {
+   "SourcePath": "docs/AUTOMATION_PLAN.md",
+   "SourceSection": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+   "SourceBlob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Text": "M := mapa en EFF (ruta fija); valido contra el esquema en EFF; Validate(M)",
+   "Class": "READ",
+   "Resolution": "INCLUDED",
+   "Target": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+   "Authority": null,
+   "Reason": null
+  },
+  {
+   "SourcePath": "docs/AUTOMATION_PLAN.md",
+   "SourceSection": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+   "SourceBlob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Text": "M := mapa en EFF (ruta fija); valido contra el esquema en EFF; Validate(M)",
+   "Class": "READ",
+   "Resolution": "INCLUDED",
+   "Target": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+   "Authority": null,
+   "Reason": null
+  },
+  {
+   "SourcePath": "docs/AUTOMATION_PLAN.md",
+   "SourceSection": "### 16.9 Verificación: comprobaciones obligatorias y modos de fallo",
+   "SourceBlob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Text": "Handoff: entrega presente y valida",
+   "Class": "READ",
+   "Resolution": "INCLUDED",
+   "Target": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+   "Authority": null,
+   "Reason": null
+  }
+ ],
+ "AllowedTransitiveInputs": [
+  {
+   "Path": "docs/WORKFLOW.md",
+   "Blob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "RequiredBy": {
+    "Path": "AGENTS.md",
+    "Section": "## Leer primero",
+    "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+   }
+  },
+  {
+   "Path": "docs/automation/agent-execution/README.md",
+   "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "RequiredBy": {
+    "Path": "AGENTS.md",
+    "Section": "## Leer primero",
+    "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+   }
+  },
+  {
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+   "Blob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "RequiredBy": {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Section": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+    "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+   }
+  },
+  {
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+   "Blob": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "RequiredBy": {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Section": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+    "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+   }
+  },
+  {
+   "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+   "Blob": "cc3c9cf76b2247f3312e99bd447554326cc3700a",
+   "RequiredBy": {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Section": "### 16.9 Verificación: comprobaciones obligatorias y modos de fallo",
+    "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+   }
+  },
+  {
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Blob": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "RequiredBy": {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Section": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+    "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+   }
+  },
+  {
+   "Path": "docs/WORKFLOW.md",
+   "Blob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "RequiredBy": {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Section": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+    "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+   }
+  },
+  {
+   "Path": "docs/automation/agent-execution/README.md",
+   "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "RequiredBy": {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Section": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+    "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+   }
+  },
+  {
+   "Path": "docs/automation/agent-execution/routing.md",
+   "Blob": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "RequiredBy": {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Section": "### 16.13 Compatibilidad de protocolos de ejecución delegada",
+    "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+   }
+  }
+ ],
+ "AllowedActions": [
+  {
+   "Action": "git status",
+   "RequiredBy": "AGENTS.md#Comandos canonicos",
+   "Class": "ACTION_COMPATIBLE",
+   "ExemptionRef": null,
+   "ExemptionScope": null
+  },
+  {
+   "Action": "dotnet test tests/Fixture.Tests/Fixture.Tests.csproj",
+   "RequiredBy": "AGENTS.md#Comandos canonicos",
+   "Class": "EXEMPTED",
+   "ExemptionRef": "CD-07 / OQ-17 (assumed)",
+   "ExemptionScope": "this VERIFY invocation"
+  }
+ ],
+ "DeclaredRuntimeContext": [
+  {
+   "Kind": "ADAPTER_SYSTEM_INSTRUCTIONS",
+   "Source": "codex-cli descriptor 155f3469 (not exposed)",
+   "SizeOrSha256": "0"
+  }
+ ],
+ "ForbiddenInputs": [
+  "transcripción y memoria del autor",
+  "sesiones ajenas",
+  "worktrees reales de otras unidades",
+  "artefactos transitorios no enumerados"
+ ],
+ "FixedPointIterations": 2
+}

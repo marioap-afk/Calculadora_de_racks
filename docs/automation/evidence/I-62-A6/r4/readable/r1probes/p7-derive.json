@@ -1,0 +1,3787 @@
+{
+ "Cases": [
+  {
+   "Case": "D-R2",
+   "Expected": "cierre identico al custodiado de la ronda 2 (EIC-VERIFY.bmin-closure.json); un solo termino omitido: D.ChainRedSha (null)",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ]
+    ]
+   },
+   "Round2ClosureSha256": "d62dcce90140b9a155469a357a9bd7741d555fe0a433bf54b568b66c7af7a9cf",
+   "What": "Vector de la ronda 2 (EIC-VERIFY, D, H y K de r2/independence (d)) con la regla corregida"
+  },
+  {
+   "Case": "D-R2-STRICT",
+   "Expected": "cierre identico al custodiado de la ronda 2 (EIC-I6-STRICT)",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 47,
+     "Refs": 3,
+     "RevPaths": 79
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ]
+    ]
+   },
+   "What": "Vector de la ronda 2 con la variante I6 estricta de E"
+  },
+  {
+   "Case": "D-V",
+   "Expected": "igual al cierre de la ronda 2 salvo los SHA-256 de DELEG y H, que cambian con la ruta del clon",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "DiffWithRound2": {
+     "Files": {
+      "Extra": [
+       [
+        "DELEG",
+        "407c7334d8973d6667d76a92b916e64baa292c7de74f1c13bfcbbbb0805bb7fd"
+       ],
+       [
+        "H",
+        "518dbfd7d35ba20ea9ab91f706a90fba4a5b125cc3a7e591594ac27b0730fc69"
+       ]
+      ],
+      "Missing": [
+       [
+        "DELEG",
+        "4c0d423c04c81ae6d8027e8378e255f6a5fc1f26654dd5d58408da3f9fd37a2e"
+       ],
+       [
+        "H",
+        "97380dd608958c11dab665ef85b45e6c63fbe210f416a4e59a23f35cfa338e29"
+       ]
+      ]
+     }
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ]
+    ]
+   },
+   "What": "Verificacion real (T1 sobre la entrega): copias de D y H con la ruta de este clon"
+  },
+  {
+   "Case": "D-N4-ABSENT",
+   "Expected": "H ausente: se omiten H.BaseSha, H.CurrentSha, H.RedSha, RevList(D.BaseSha..H.CurrentSha) y C6 H con INPUT_ABSENT; RED fuera (solo lo aportaban H); G dentro por I.Target.Commit; TIP por D.BaseSha; ningun commit fuera de los de la verificacion real",
+   "Group": "derive",
+   "HPathInPaths": false,
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 6,
+     "Files": 3,
+     "Objects": 0,
+     "Paths": 47,
+     "Refs": 3,
+     "RevPaths": 75
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": false,
+      "Why": "E does not pin the designated path"
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.BaseSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.RedSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C6.H",
+      "INPUT_ABSENT"
+     ]
+    ]
+   },
+   "What": "E sin entrada de la entrega (el kit no puede fijar el blob de un archivo que no existe)"
+  },
+  {
+   "Case": "D-N4-STALE",
+   "Expected": "H ausente: se omiten H.BaseSha, H.CurrentSha, H.RedSha, RevList(D.BaseSha..H.CurrentSha) y C6 H con INPUT_ABSENT; RED fuera (solo lo aportaban H); G dentro por I.Target.Commit; TIP por D.BaseSha; ningun commit fuera de los de la verificacion real",
+   "Group": "derive",
+   "HPathInPaths": true,
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 6,
+     "Files": 3,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 75
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": false,
+      "Why": "custodied bytes do not exist"
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.BaseSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.RedSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C6.H",
+      "INPUT_ABSENT"
+     ]
+    ]
+   },
+   "What": "E fija la ruta de la entrega con el blob de la entrega real, pero el archivo no existe"
+  },
+  {
+   "Case": "D-N4-STALE-vs-ABSENT",
+   "Expected": "solo la ruta de la entrega en C4 (es una entrada de E en STALE); los commits, C3, C2 y C6 iguales",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Paths": {
+     "Extra": [
+      "artifacts/orchestration/FX-U1/T1-n4/0/R20261012T091000Z-a001/worker-handoff.json"
+     ],
+     "Missing": []
+    }
+   },
+   "What": "Diferencia entre las dos formas de E en N4"
+  },
+  {
+   "Case": "D-N4-BLOB",
+   "Expected": "H ausente por la regla (i): las mismas omisiones y el mismo cierre que D-N4-STALE",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 6,
+     "Files": 3,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 75
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "TRX"
+    ],
+    "InputWhy": "bytes do not have the pinned blob",
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": false,
+      "Why": "bytes do not have the pinned blob"
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.BaseSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.RedSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C6.H",
+      "INPUT_ABSENT"
+     ]
+    ]
+   },
+   "What": "bytes de la entrega con otro blob que el que fija E"
+  },
+  {
+   "Case": "D-N4-NOTJSON",
+   "Expected": "H ausente por la regla (i): las mismas omisiones y el mismo cierre que D-N4-STALE",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 6,
+     "Files": 3,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 75
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "TRX"
+    ],
+    "InputWhy": "not JSON: Expecting value: line 26 column 15 (char 839)",
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": false,
+      "Why": "not JSON: Expecting value: line 26 column 15 (char 839)"
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.BaseSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.RedSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C6.H",
+      "INPUT_ABSENT"
+     ]
+    ]
+   },
+   "What": "entrega truncada (no es JSON)"
+  },
+  {
+   "Case": "D-N4-DUPKEY",
+   "Expected": "H ausente por la regla (i): las mismas omisiones y el mismo cierre que D-N4-STALE",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 6,
+     "Files": 3,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 75
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "TRX"
+    ],
+    "InputWhy": "repeated key TaskId",
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": false,
+      "Why": "repeated key TaskId"
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.BaseSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.RedSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C6.H",
+      "INPUT_ABSENT"
+     ]
+    ]
+   },
+   "What": "entrega con una clave repetida"
+  },
+  {
+   "Case": "D-N4-BOM",
+   "Expected": "H ausente por la regla (i): las mismas omisiones y el mismo cierre que D-N4-STALE",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 6,
+     "Files": 3,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 75
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "TRX"
+    ],
+    "InputWhy": "BOM",
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": false,
+      "Why": "BOM"
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.BaseSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.RedSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C6.H",
+      "INPUT_ABSENT"
+     ]
+    ]
+   },
+   "What": "entrega con BOM UTF-8"
+  },
+  {
+   "Case": "D-N4-ARRAY",
+   "Expected": "H ausente por la regla (i): las mismas omisiones y el mismo cierre que D-N4-STALE",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 6,
+     "Files": 3,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 75
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "TRX"
+    ],
+    "InputWhy": "not an object",
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": false,
+      "Why": "not an object"
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.BaseSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.H.RedSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C6.H",
+      "INPUT_ABSENT"
+     ]
+    ]
+   },
+   "What": "entrega que es un arreglo JSON, no un objeto"
+  },
+  {
+   "Case": "D-NC1",
+   "Expected": "H.CurrentSha NOT_A_COMMIT y RevList PRIMITIVE_EMPTY; RED sigue dentro por H.RedSha y G por I.Target.Commit: mismos commits que la verificacion real; C6 H = SHA-256 de la entrega mutada",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "NOT_A_COMMIT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "PRIMITIVE_EMPTY"
+     ]
+    ]
+   },
+   "What": "nc1: H.CurrentSha = deadbeef... (40 hex, no es un objeto del clon)"
+  },
+  {
+   "Case": "F-CUR-MISSING",
+   "Expected": "se omiten H.CurrentSha (FIELD_MISSING) y RevList (PRIMITIVE_EMPTY); el cierre es el de D-NC1 salvo el SHA-256 de C6 H",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "FIELD_MISSING"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "PRIMITIVE_EMPTY"
+     ]
+    ]
+   },
+   "What": "H sin el campo CurrentSha"
+  },
+  {
+   "Case": "F-CUR-NULL",
+   "Expected": "se omiten H.CurrentSha (FIELD_NULL) y RevList (PRIMITIVE_EMPTY); el cierre es el de D-NC1 salvo el SHA-256 de C6 H",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "PRIMITIVE_EMPTY"
+     ]
+    ]
+   },
+   "What": "H.CurrentSha = null"
+  },
+  {
+   "Case": "F-CUR-EMPTY",
+   "Expected": "se omiten H.CurrentSha (FIELD_EMPTY) y RevList (PRIMITIVE_EMPTY); el cierre es el de D-NC1 salvo el SHA-256 de C6 H",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "FIELD_EMPTY"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "PRIMITIVE_EMPTY"
+     ]
+    ]
+   },
+   "What": "H.CurrentSha = \"\""
+  },
+  {
+   "Case": "F-CUR-UPPER",
+   "Expected": "se omiten H.CurrentSha (NOT_A_COMMIT) y RevList (PRIMITIVE_EMPTY); el cierre es el de D-NC1 salvo el SHA-256 de C6 H",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "NOT_A_COMMIT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "PRIMITIVE_EMPTY"
+     ]
+    ]
+   },
+   "What": "H.CurrentSha = G en mayusculas"
+  },
+  {
+   "Case": "F-CUR-ABBREV",
+   "Expected": "se omiten H.CurrentSha (NOT_A_COMMIT) y RevList (PRIMITIVE_EMPTY); el cierre es el de D-NC1 salvo el SHA-256 de C6 H",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "NOT_A_COMMIT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "PRIMITIVE_EMPTY"
+     ]
+    ]
+   },
+   "What": "H.CurrentSha = prefijo de 12 caracteres de G"
+  },
+  {
+   "Case": "F-CUR-TREE",
+   "Expected": "se omiten H.CurrentSha (NOT_A_COMMIT) y RevList (PRIMITIVE_EMPTY); el cierre es el de D-NC1 salvo el SHA-256 de C6 H",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "NOT_A_COMMIT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "PRIMITIVE_EMPTY"
+     ]
+    ]
+   },
+   "What": "H.CurrentSha = el arbol de G (objeto existente, no commit)"
+  },
+  {
+   "Case": "F-CUR-BLOB",
+   "Expected": "se omiten H.CurrentSha (NOT_A_COMMIT) y RevList (PRIMITIVE_EMPTY); el cierre es el de D-NC1 salvo el SHA-256 de C6 H",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "NOT_A_COMMIT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "PRIMITIVE_EMPTY"
+     ]
+    ]
+   },
+   "What": "H.CurrentSha = un blob existente"
+  },
+  {
+   "Case": "F-CUR-REF",
+   "Expected": "se omiten H.CurrentSha (NOT_A_COMMIT) y RevList (PRIMITIVE_EMPTY); el cierre es el de D-NC1 salvo el SHA-256 de C6 H",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.CurrentSha",
+      "NOT_A_COMMIT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "PRIMITIVE_EMPTY"
+     ]
+    ]
+   },
+   "What": "H.CurrentSha = \"HEAD\" (una ref, no un nombre de commit)"
+  },
+  {
+   "Case": "F-RED-MISSING",
+   "Expected": "se omite H.RedSha (FIELD_MISSING); RED sigue dentro por RevList(D.BaseSha..H.CurrentSha): mismos commits que la verificacion real",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.RedSha",
+      "FIELD_MISSING"
+     ]
+    ]
+   },
+   "What": "H sin el campo RedSha"
+  },
+  {
+   "Case": "F-RED-NULL",
+   "Expected": "se omite H.RedSha (FIELD_NULL); RED sigue dentro por RevList(D.BaseSha..H.CurrentSha): mismos commits que la verificacion real",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.RedSha",
+      "FIELD_NULL"
+     ]
+    ]
+   },
+   "What": "H.RedSha = null"
+  },
+  {
+   "Case": "F-RED-EMPTY",
+   "Expected": "se omite H.RedSha (FIELD_EMPTY); RED sigue dentro por RevList(D.BaseSha..H.CurrentSha): mismos commits que la verificacion real",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.H.RedSha",
+      "FIELD_EMPTY"
+     ]
+    ]
+   },
+   "What": "H.RedSha = \"\""
+  },
+  {
+   "Case": "D-D-ABSENT",
+   "Expected": "todos los terminos de D omitidos con INPUT_ABSENT, incluida la ref de C2 y C6 DELEG; sin la cadena de primer padre de D.MainSha",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 5,
+     "Files": 3,
+     "Objects": 0,
+     "Paths": 47,
+     "Refs": 2,
+     "RevPaths": 67
+    },
+    "Files": [
+     "CONTRACT",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": false,
+      "Why": "E does not pin the designated path"
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.BaseSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.D.ChainBaseSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.D.ChainRedSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.D.MainSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.FirstParentChain(D.MainSha)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.RevList(D.BaseSha..H.CurrentSha)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C2.origin/D.ExpectedBranch",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C6.DELEG",
+      "INPUT_ABSENT"
+     ]
+    ]
+   },
+   "What": "Delegacion no fijada por E (generalidad de la regla (i))"
+  },
+  {
+   "Case": "D-K-ABSENT",
+   "Expected": "K.AuthorityRevision, K.MainSha, MergeBase, las rutas de K.Authorities y C6 CONTRACT omitidos con INPUT_ABSENT",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 3,
+     "Objects": 0,
+     "Paths": 47,
+     "Refs": 3,
+     "RevPaths": 86
+    },
+    "Files": [
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": false,
+      "Why": "E does not pin the designated path"
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.K.AuthorityRevision",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.K.MainSha",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C4.K.Authorities",
+      "INPUT_ABSENT"
+     ],
+     [
+      "C6.CONTRACT",
+      "INPUT_ABSENT"
+     ]
+    ]
+   },
+   "What": "Contrato no fijado por E (generalidad de la regla (i))"
+  },
+  {
+   "Case": "D-TARGET-NX",
+   "Expected": "I.Target.Commit NOT_A_COMMIT; G sigue dentro por H.CurrentSha",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.I.Target.Commit",
+      "NOT_A_COMMIT"
+     ]
+    ]
+   },
+   "What": "I.Target.Commit inexistente"
+  },
+  {
+   "Case": "D-MB-EMPTY",
+   "Expected": "MergeBase PRIMITIVE_EMPTY; la raiz entra por K.AuthorityRevision; nada sustituye la base comun ausente",
+   "Group": "derive",
+   "Holds": true,
+   "Observed": {
+    "Counts": {
+     "Commits": 8,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 86
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ],
+     [
+      "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+      "PRIMITIVE_EMPTY"
+     ]
+    ],
+    "Orphan": "577d70c9aca8f2566c671aafcb2e617d0b366183"
+   },
+   "What": "K.AuthorityRevision = una raiz sin relacion con D.MainSha (MergeBase sin base comun)"
+  },
+  {
+   "Case": "S-N4-REALH",
+   "Expected": "el cotejo rechaza: RED, la ruta de H y C6 H de mas (el cierre no es el derivado) y el registro no declara H ausente",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Commits": {
+      "Extra": [
+       "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      ],
+      "Missing": []
+     },
+     "Files": {
+      "Extra": [
+       [
+        "H",
+        "518dbfd7d35ba20ea9ab91f706a90fba4a5b125cc3a7e591594ac27b0730fc69"
+       ]
+      ],
+      "Missing": []
+     },
+     "Paths": {
+      "Extra": [
+       "artifacts/orchestration/FX-U1/T1-n4/0/R20261012T091000Z-a001/worker-handoff.json"
+      ],
+      "Missing": []
+     },
+     "RevPaths": {
+      "Extra": [
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "AGENTS.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/AUTOMATION_PLAN.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/INITIATIVE_LIFECYCLE.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/WORKFLOW.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/agent-execution/README.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/agent-execution/routing.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/decisions/FX-U1-T1.gate-contract.json"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/decisions/FX-U1.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/state/FX-U1.yml"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "src/Fixture.Lib/Calculator.cs"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "tests/Fixture.Tests/CalculatorTests.cs"
+       ]
+      ],
+      "Missing": []
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED",
+     "DERIVATION_RECORD_DIFFERS"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 extra Commits (added or invented input): [\"53436cb20adf1fe87dc91b0382dd3123a1fac44f\"]",
+     "CLOSURE_NOT_DERIVED: 1 extra Paths (added or invented input): [\"artifacts/orchestration/FX-U1/T1-n4/0/R20261012T091000Z-a001/worker-handoff.json\"]",
+     "CLOSURE_NOT_DERIVED: 14 extra RevPaths (added or invented input): [[\"53436cb20adf1fe87dc91b0382dd3123a1fac44f\", \"AGENTS.md\"], [\"53436cb20adf1fe87dc91b0382dd3123a1fac44f\", \"docs/AUTOMATION_PLAN.md\"], [\"53436cb20adf1fe87dc91b0382dd3123a1fac44f\", \"docs/INITIATIVE_LIFECYCLE.md\"]]",
+     "CLOSURE_NOT_DERIVED: 1 extra Files (added or invented input): [[\"H\", \"518dbfd7d35ba20ea9ab91f706a90fba4a5b125cc3a7e591594ac27b0730fc69\"]]",
+     "DERIVATION_RECORD_DIFFERS: record [[\"C1.D.ChainRedSha\", \"FIELD_NULL\"]], derived again [[\"C1.D.ChainRedSha\", \"FIELD_NULL\"], [\"C1.H.BaseSha\", \"INPUT_ABSENT\"], [\"C1.H.CurrentSha\", \"INPUT_ABSENT\"], [\"C1.H.RedSha\", \"INPUT_ABSENT\"], [\"C1.RevList(D.BaseSha..H.CurrentSha)\", \"INPUT_ABSENT\"], [\"C6.H\", \"INPUT_ABSENT\"]]"
+    ]
+   },
+   "What": "N4: la entrega ausente se sustituye por la entrega real de la verificacion (una copia valida)"
+  },
+  {
+   "Case": "S-N4-TARGET",
+   "Expected": "el cotejo rechaza: RED (RevList hasta el Target), la ruta de H y C6 H de mas; registro distinto",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Commits": {
+      "Extra": [
+       "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+      ],
+      "Missing": []
+     },
+     "Files": {
+      "Extra": [
+       [
+        "H",
+        "e0abf98de9cc57d4976ffbd1cba17680ea124d9d514403fdafdec0cb61d7f9ab"
+       ]
+      ],
+      "Missing": []
+     },
+     "Paths": {
+      "Extra": [
+       "artifacts/orchestration/FX-U1/T1-n4/0/R20261012T091000Z-a001/worker-handoff.json"
+      ],
+      "Missing": []
+     },
+     "RevPaths": {
+      "Extra": [
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "AGENTS.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/AUTOMATION_PLAN.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/INITIATIVE_LIFECYCLE.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/WORKFLOW.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/agent-execution/README.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/agent-execution/routing.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/decisions/FX-U1-T1.gate-contract.json"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/decisions/FX-U1.md"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "docs/automation/state/FX-U1.yml"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "src/Fixture.Lib/Calculator.cs"
+       ],
+       [
+        "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+        "tests/Fixture.Tests/CalculatorTests.cs"
+       ]
+      ],
+      "Missing": []
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED",
+     "DERIVATION_RECORD_DIFFERS"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 extra Commits (added or invented input): [\"53436cb20adf1fe87dc91b0382dd3123a1fac44f\"]",
+     "CLOSURE_NOT_DERIVED: 1 extra Paths (added or invented input): [\"artifacts/orchestration/FX-U1/T1-n4/0/R20261012T091000Z-a001/worker-handoff.json\"]",
+     "CLOSURE_NOT_DERIVED: 14 extra RevPaths (added or invented input): [[\"53436cb20adf1fe87dc91b0382dd3123a1fac44f\", \"AGENTS.md\"], [\"53436cb20adf1fe87dc91b0382dd3123a1fac44f\", \"docs/AUTOMATION_PLAN.md\"], [\"53436cb20adf1fe87dc91b0382dd3123a1fac44f\", \"docs/INITIATIVE_LIFECYCLE.md\"]]",
+     "CLOSURE_NOT_DERIVED: 1 extra Files (added or invented input): [[\"H\", \"e0abf98de9cc57d4976ffbd1cba17680ea124d9d514403fdafdec0cb61d7f9ab\"]]",
+     "DERIVATION_RECORD_DIFFERS: record [[\"C1.D.ChainRedSha\", \"FIELD_NULL\"], [\"C1.H.RedSha\", \"FIELD_NULL\"]], derived again [[\"C1.D.ChainRedSha\", \"FIELD_NULL\"], [\"C1.H.BaseSha\", \"INPUT_ABSENT\"], [\"C1.H.CurrentSha\", \"INPUT_ABSENT\"], [\"C1.H.RedSha\", \"INPUT_ABSENT\"], [\"C1.RevList(D.BaseSha..H.CurrentSha)\", \"INPUT_ABSENT\"], [\"C6.H\", \"INPUT_ABSENT\"]]"
+    ]
+   },
+   "What": "N4: la supervision completa la entrega ausente con el Target (una entrega sintetica con CurrentSha = I.Target.Commit)"
+  },
+  {
+   "Case": "S-NC1-G",
+   "Expected": "el cierre resultante es IGUAL al normativo (RED y G ya estaban por H.RedSha y el Target); solo el registro de derivacion muestra la sustitucion, y el cotejo la rechaza por el registro",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {},
+    "Kinds": [
+     "DERIVATION_RECORD_DIFFERS"
+    ],
+    "Violations": [
+     "DERIVATION_RECORD_DIFFERS: record [[\"C1.D.ChainRedSha\", \"FIELD_NULL\"]], derived again [[\"C1.D.ChainRedSha\", \"FIELD_NULL\"], [\"C1.H.CurrentSha\", \"NOT_A_COMMIT\"], [\"C1.RevList(D.BaseSha..H.CurrentSha)\", \"PRIMITIVE_EMPTY\"]]"
+    ]
+   },
+   "What": "nc1: la supervision sustituye el CurrentSha inexistente por G solo al derivar (los bytes custodiados siguen siendo los mutados)"
+  },
+  {
+   "Case": "S-NC1-OTHER",
+   "Expected": "el cotejo rechaza: commits de RevList hasta ese commit de mas, y registro distinto",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Commits": {
+      "Extra": [
+       "13654f96be6dd1effc167d883a8e18fa718dd8fe"
+      ],
+      "Missing": []
+     },
+     "RevPaths": {
+      "Extra": [
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "AGENTS.md"
+       ],
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "docs/AUTOMATION_PLAN.md"
+       ],
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "docs/INITIATIVE_LIFECYCLE.md"
+       ],
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "docs/WORKFLOW.md"
+       ],
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "docs/automation/agent-execution/README.md"
+       ],
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+       ],
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+       ],
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "docs/automation/agent-execution/routing.md"
+       ],
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+       ],
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "src/Fixture.Lib/Calculator.cs"
+       ],
+       [
+        "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+        "tests/Fixture.Tests/CalculatorTests.cs"
+       ]
+      ],
+      "Missing": []
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED",
+     "DERIVATION_RECORD_DIFFERS"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 extra Commits (added or invented input): [\"13654f96be6dd1effc167d883a8e18fa718dd8fe\"]",
+     "CLOSURE_NOT_DERIVED: 11 extra RevPaths (added or invented input): [[\"13654f96be6dd1effc167d883a8e18fa718dd8fe\", \"AGENTS.md\"], [\"13654f96be6dd1effc167d883a8e18fa718dd8fe\", \"docs/AUTOMATION_PLAN.md\"], [\"13654f96be6dd1effc167d883a8e18fa718dd8fe\", \"docs/INITIATIVE_LIFECYCLE.md\"]]",
+     "DERIVATION_RECORD_DIFFERS: record [[\"C1.D.ChainRedSha\", \"FIELD_NULL\"]], derived again [[\"C1.D.ChainRedSha\", \"FIELD_NULL\"], [\"C1.H.CurrentSha\", \"NOT_A_COMMIT\"], [\"C1.RevList(D.BaseSha..H.CurrentSha)\", \"PRIMITIVE_EMPTY\"]]"
+    ]
+   },
+   "What": "nc1: el CurrentSha inexistente se sustituye por otro commit existente (cabeza de origin/fx/u1-fx05)"
+  },
+  {
+   "Case": "S-N4-E2E",
+   "Expected": "el cotejo rechaza: cientos de elementos de mas (todos los commits del clon, rutas de nueve commits, C6 H)",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Commits": {
+      "Extra": [
+       "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+       "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+       "1d2f14bf9036f730f288bb04b5b0a9c8e0727ac9",
+       "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+       "54f2a4a8f53eb6834448394781600f6343d9a246",
+       "5a3a7d69d650dfa9d0349c5464e245936dc2e187",
+       "6b51b3787819b6be2cc410b2641415c5034c874f",
+       "7cf79ffcd02c3d55e6740225a6138d0c66e099e0",
+       "9ce50a5ec3dad421c277424c3df861b3591ac224",
+       "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+       "b6d294ede5e1ce7e9412447629b2b9d77ffec0d4",
+       "b9c554c4d90667e28e477aa3bdf90663964c4321",
+       "badbf9304a270a96cdc13f7c6030e76735517136",
+       "c785def9bcfa5b50f08e25ecc394649ae690a19a",
+       "cabed54738f56e846bd77be321cace10d053094d",
+       "cc21e1d258f0816c01b0927f49b138aec7c9a365",
+       "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+       "ead6119f08bf118bef1538269a3954c63ddae142",
+       "eea0114ac78badf89d4bc497b5a69fb591ed923b",
+       "f4f5929ff1ba995ae8e0c387b76a79eeca7ca886"
+      ],
+      "Missing": []
+     },
+     "Files": {
+      "Extra": [
+       [
+        "H",
+        "518dbfd7d35ba20ea9ab91f706a90fba4a5b125cc3a7e591594ac27b0730fc69"
+       ]
+      ],
+      "Missing": []
+     },
+     "Paths": {
+      "Extra": [
+       "artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json"
+      ],
+      "Missing": [
+       "artifacts/ci/R37949808974/fixture-tests.trx",
+       "artifacts/orchestration/FX-U1/T1-n4/0/R20261012T090000Z-d001/output.json",
+       "artifacts/orchestration/FX-U1/T1/0/R20261014T000000Z-a4n4/output.json",
+       "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md"
+      ]
+     },
+     "RevPaths": {
+      "Extra": [
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        ".gitattributes"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        ".github/workflows/fixture.yml"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "CLAUDE.md"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "FIXTURE-MANIFEST.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "README.md"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/adapters/claude-cli.md"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/adapters/claude-desktop-session.md"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/adapters/claude-subagent.md"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/adapters/codex-cli.md"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/model-catalog.md"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/prompting-guide.md"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/automation-state.v2.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/binding.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/controller-verification.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/delegation.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/delegation.v2.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/gate-contract.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/input-closure.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/preflight.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/relay-record.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T203145Z-483e.validation.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T204713Z-77a7.validation.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T220048Z-65bf.validation.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T220134Z-20ab.validation.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-1.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-2.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-3.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-4.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/B20261006T220601Z-cfe1.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/B20261006T220601Z-cfe1.validation.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.validation.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/state-r1.validation.json"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "src/Fixture.Lib/Fixture.Lib.csproj"
+       ],
+       [
+        "1746b404e57d69170ecfc084fd24fa3e699916d7",
+        "tests/Fixture.Tests/Fixture.Tests.csproj"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        ".gitattributes"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        ".github/workflows/fixture.yml"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "AGENTS.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "CLAUDE.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "FIXTURE-MANIFEST.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "README.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/AUTOMATION_PLAN.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/INITIATIVE_LIFECYCLE.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/WORKFLOW.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/README.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/adapters/claude-cli.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/adapters/claude-desktop-session.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/adapters/claude-subagent.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/adapters/codex-cli.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/model-catalog.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/prompting-guide.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/routing.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/automation-state.v2.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/binding.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/controller-verification.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/delegation.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/delegation.v2.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/gate-contract.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/input-closure.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/preflight.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/relay-record.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/decisions/FX-U1.md"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T203145Z-483e.validation.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T204713Z-77a7.validation.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T220048Z-65bf.validation.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T220134Z-20ab.validation.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-1.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-2.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-3.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-4.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/B20261006T220601Z-cfe1.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/B20261006T220601Z-cfe1.validation.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.validation.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/state-r1.validation.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.validation.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/evidence/FX-U1-agent/g0/state-r2.validation.json"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "docs/automation/state/FX-U1.yml"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "src/Fixture.Lib/Calculator.cs"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "src/Fixture.Lib/Fixture.Lib.csproj"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "tests/Fixture.Tests/CalculatorTests.cs"
+       ],
+       [
+        "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+        "tests/Fixture.Tests/Fixture.Tests.csproj"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        ".gitattributes"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        ".github/workflows/fixture.yml"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "CLAUDE.md"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "FIXTURE-MANIFEST.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "README.md"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/adapters/claude-cli.md"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/adapters/claude-desktop-session.md"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/adapters/claude-subagent.md"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/adapters/codex-cli.md"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/model-catalog.md"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/prompting-guide.md"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/automation-state.v2.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/binding.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/controller-verification.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/delegation.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/delegation.v2.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/gate-contract.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/input-closure.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/preflight.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/relay-record.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "src/Fixture.Lib/Fixture.Lib.csproj"
+       ],
+       [
+        "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+        "tests/Fixture.Tests/Fixture.Tests.csproj"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        ".gitattributes"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        ".github/workflows/fixture.yml"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        ".gitignore"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "CLAUDE.md"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "FIXTURE-MANIFEST.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "README.md"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/adapters/claude-cli.md"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/adapters/claude-desktop-session.md"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/adapters/claude-subagent.md"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/adapters/codex-cli.md"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/model-catalog.md"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/prompting-guide.md"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/automation-state.v2.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/binding.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/controller-verification.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/delegation.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/delegation.v2.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/gate-contract.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/input-closure.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/preflight.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/relay-record.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T203145Z-483e.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T204713Z-77a7.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T220048Z-65bf.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T220134Z-20ab.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-1.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-2.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-3.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-4.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/B20261006T220601Z-cfe1.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/B20261006T220601Z-cfe1.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/state-r1.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/g0/state-r2.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/qh/state-r3.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/repair/B20261007T023706Z-5fdd.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/repair/B20261007T023706Z-5fdd.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/repair/P20261007T023103Z-01b1.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/repair/qh/state-r5.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/repair/qr/B20261007T023706Z-5fdd.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/repair/qr/B20261007T023706Z-5fdd.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "docs/automation/evidence/FX-U1-agent/repair/qr/state-r4.validation.json"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "src/Fixture.Lib/Fixture.Lib.csproj"
+       ],
+       [
+        "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+        "tests/Fixture.Tests/Fixture.Tests.csproj"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        ".gitattributes"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        ".github/workflows/fixture.yml"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "CLAUDE.md"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "FIXTURE-MANIFEST.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "README.md"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/adapters/claude-cli.md"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/adapters/claude-desktop-session.md"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/adapters/claude-subagent.md"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/adapters/codex-cli.md"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/model-catalog.md"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/prompting-guide.md"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/automation-state.v2.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/binding.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/controller-verification.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/delegation.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/delegation.v2.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/gate-contract.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/input-closure.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/preflight.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/relay-record.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "src/Fixture.Lib/Fixture.Lib.csproj"
+       ],
+       [
+        "a9f6c929e74ef92edfee557c3572b090f48bc318",
+        "tests/Fixture.Tests/Fixture.Tests.csproj"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        ".gitattributes"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        ".github/workflows/fixture.yml"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "AGENTS.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "CLAUDE.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "FIXTURE-MANIFEST.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "README.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/AUTOMATION_PLAN.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/INITIATIVE_LIFECYCLE.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/WORKFLOW.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/README.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/adapters/claude-cli.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/adapters/claude-desktop-session.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/adapters/claude-subagent.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/adapters/codex-cli.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/model-catalog.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/prompting-guide.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/routing.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/automation-state.v2.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/binding.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/controller-verification.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/delegation.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/delegation.v2.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/gate-contract.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/input-closure.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/preflight.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/relay-record.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/decisions/FX-U1-T1.gate-contract.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/decisions/FX-U1.md"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T203145Z-483e.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T204713Z-77a7.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T220048Z-65bf.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T220134Z-20ab.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-1.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-2.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-3.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-4.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/B20261006T220601Z-cfe1.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/B20261006T220601Z-cfe1.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/state-r1.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/g0/state-r2.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/qh/FX-U1-T1.contract.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/evidence/FX-U1-agent/qh/state-r3.validation.json"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "docs/automation/state/FX-U1.yml"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "src/Fixture.Lib/Calculator.cs"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "src/Fixture.Lib/Fixture.Lib.csproj"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "tests/Fixture.Tests/CalculatorTests.cs"
+       ],
+       [
+        "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+        "tests/Fixture.Tests/Fixture.Tests.csproj"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        ".gitattributes"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        ".github/workflows/fixture.yml"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "AGENTS.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "CLAUDE.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "FIXTURE-MANIFEST.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "README.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/AUTOMATION_PLAN.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/INITIATIVE_LIFECYCLE.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/WORKFLOW.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/README.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/adapters/claude-cli.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/adapters/claude-desktop-session.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/adapters/claude-subagent.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/adapters/codex-cli.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/model-catalog.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/prompting-guide.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/routing.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/automation-state.v2.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/binding.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/controller-verification.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/delegation.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/delegation.v2.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/gate-contract.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/input-closure.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/preflight.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/relay-record.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/decisions/FX-U1-T1.gate-contract.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/decisions/FX-U1.md"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T203145Z-483e.validation.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T204713Z-77a7.validation.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T220048Z-65bf.validation.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/P20261006T220134Z-20ab.validation.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-1.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-2.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-3.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/autoverificacion/preflight-4.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/B20261006T220601Z-cfe1.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/B20261006T220601Z-cfe1.validation.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/P20261006T220134Z-20ab.validation.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/bootstrap/state-r1.validation.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/g0/B20261006T220601Z-cfe1.validation.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/evidence/FX-U1-agent/g0/state-r2.validation.json"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "docs/automation/state/FX-U1.yml"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "src/Fixture.Lib/Calculator.cs"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "src/Fixture.Lib/Fixture.Lib.csproj"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "tests/Fixture.Tests/CalculatorTests.cs"
+       ],
+       [
+        "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+        "tests/Fixture.Tests/Fixture.Tests.csproj"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        ".gitattributes"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        ".github/workflows/fixture.yml"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "CLAUDE.md"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "FIXTURE-MANIFEST.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "README.md"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/adapters/claude-cli.md"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/adapters/claude-desktop-session.md"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/adapters/claude-subagent.md"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/adapters/codex-cli.md"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/adapters/codex-desktop-session.md"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/model-catalog.md"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/prompting-guide.md"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/automation-state.v2.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/binding.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/controller-verification.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/delegation.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/delegation.v2.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/gate-contract.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/input-closure.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/preflight.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/relay-record.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/relay-record.v2.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "src/Fixture.Lib/Fixture.Lib.csproj"
+       ],
+       [
+        "fbe25347799e5b801ef708454212335537448bd1",
+        "tests/Fixture.Tests/Fixture.Tests.csproj"
+       ]
+      ],
+      "Missing": [
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "AGENTS.md"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/AUTOMATION_PLAN.md"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/INITIATIVE_LIFECYCLE.md"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/WORKFLOW.md"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/automation/agent-execution/README.md"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/automation/agent-execution/routing.md"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/automation/decisions/FX-U1-T1.gate-contract.json"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/automation/decisions/FX-U1.md"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "docs/automation/state/FX-U1.yml"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "src/Fixture.Lib/Calculator.cs"
+       ],
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "tests/Fixture.Tests/CalculatorTests.cs"
+       ]
+      ]
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 20 extra Commits (added or invented input): [\"13654f96be6dd1effc167d883a8e18fa718dd8fe\", \"1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf\", \"1d2f14bf9036f730f288bb04b5b0a9c8e0727ac9\"]",
+     "CLOSURE_NOT_DERIVED: 1 extra Paths (added or invented input): [\"artifacts/orchestration/FX-U1/T1/0/R20261011T000000Z-e2e0/output.json\"]",
+     "CLOSURE_NOT_DERIVED: 4 missing Paths: [\"artifacts/ci/R37949808974/fixture-tests.trx\", \"artifacts/orchestration/FX-U1/T1-n4/0/R20261012T090000Z-d001/output.json\", \"artifacts/orchestration/FX-U1/T1/0/R20261014T000000Z-a4n4/output.json\"]",
+     "CLOSURE_NOT_DERIVED: 419 extra RevPaths (added or invented input): [[\"1746b404e57d69170ecfc084fd24fa3e699916d7\", \".gitattributes\"], [\"1746b404e57d69170ecfc084fd24fa3e699916d7\", \".github/workflows/fixture.yml\"], [\"1746b404e57d69170ecfc084fd24fa3e699916d7\", \"CLAUDE.md\"]]",
+     "CLOSURE_NOT_DERIVED: 15 missing RevPaths: [[\"b417d36cb820a27c78d6c7d50c234460469c89f8\", \"AGENTS.md\"], [\"b417d36cb820a27c78d6c7d50c234460469c89f8\", \"docs/AUTOMATION_PLAN.md\"], [\"b417d36cb820a27c78d6c7d50c234460469c89f8\", \"docs/INITIATIVE_LIFECYCLE.md\"]]",
+     "CLOSURE_NOT_DERIVED: 1 extra Files (added or invented input): [[\"H\", \"518dbfd7d35ba20ea9ab91f706a90fba4a5b125cc3a7e591594ac27b0730fc69\"]]"
+    ]
+   },
+   "What": "N4 con el cierre del extremo a extremo de la ronda 3 (build_closure) en lugar del derivado"
+  },
+  {
+   "Case": "X-N4-COMMIT",
+   "Expected": "el cotejo rechaza: el cierre no es el derivado",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Commits": {
+      "Extra": [
+       "13654f96be6dd1effc167d883a8e18fa718dd8fe"
+      ],
+      "Missing": []
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 extra Commits (added or invented input): [\"13654f96be6dd1effc167d883a8e18fa718dd8fe\"]"
+    ]
+   },
+   "What": "N4 + un commit existente fuera de la tabla"
+  },
+  {
+   "Case": "X-N4-NX",
+   "Expected": "el cotejo rechaza: el cierre no es el derivado",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Commits": {
+      "Extra": [
+       "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+      ],
+      "Missing": []
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 extra Commits (added or invented input): [\"deadbeefdeadbeefdeadbeefdeadbeefdeadbeef\"]"
+    ]
+   },
+   "What": "N4 + el commit inexistente deadbeef... (objeto inventado)"
+  },
+  {
+   "Case": "X-N4-PATH",
+   "Expected": "el cotejo rechaza: el cierre no es el derivado",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Paths": {
+      "Extra": [
+       "README.md"
+      ],
+      "Missing": []
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 extra Paths (added or invented input): [\"README.md\"]"
+    ]
+   },
+   "What": "N4 + la ruta README.md"
+  },
+  {
+   "Case": "X-N4-REVPATH",
+   "Expected": "el cotejo rechaza: el cierre no es el derivado",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "RevPaths": {
+      "Extra": [
+       [
+        "b417d36cb820a27c78d6c7d50c234460469c89f8",
+        "README.md"
+       ]
+      ],
+      "Missing": []
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 extra RevPaths (added or invented input): [[\"b417d36cb820a27c78d6c7d50c234460469c89f8\", \"README.md\"]]"
+    ]
+   },
+   "What": "N4 + (G, README.md)"
+  },
+  {
+   "Case": "X-N4-FILE",
+   "Expected": "el cotejo rechaza: el cierre no es el derivado",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Files": {
+      "Extra": [
+       [
+        "H",
+        "0000000000000000000000000000000000000000000000000000000000000000"
+       ]
+      ],
+      "Missing": []
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 extra Files (added or invented input): [[\"H\", \"0000000000000000000000000000000000000000000000000000000000000000\"]]"
+    ]
+   },
+   "What": "N4 + C6 H inventado"
+  },
+  {
+   "Case": "X-N4-REF",
+   "Expected": "el cotejo rechaza: el cierre no es el derivado",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Refs": {
+      "Extra": [
+       "refs/remotes/origin/fx/u1-fx05"
+      ],
+      "Missing": []
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 extra Refs (added or invented input): [\"refs/remotes/origin/fx/u1-fx05\"]"
+    ]
+   },
+   "What": "N4 + una ref fuera de C2"
+  },
+  {
+   "Case": "X-N4-DROP",
+   "Expected": "el cotejo rechaza: el cierre no es el derivado",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Commits": {
+      "Extra": [],
+      "Missing": [
+       "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+      ]
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 missing Commits: [\"95bdc29d428b35d2188a10e1c5462d6caf2be4df\"]"
+    ]
+   },
+   "What": "N4 sin el commit TIP (D.BaseSha)"
+  },
+  {
+   "Case": "X-NC1-NX",
+   "Expected": "el cotejo rechaza: el cierre no es el derivado",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {
+     "Commits": {
+      "Extra": [
+       "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+      ],
+      "Missing": []
+     }
+    },
+    "Kinds": [
+     "CLOSURE_NOT_DERIVED"
+    ],
+    "Violations": [
+     "CLOSURE_NOT_DERIVED: 1 extra Commits (added or invented input): [\"deadbeefdeadbeefdeadbeefdeadbeefdeadbeef\"]"
+    ]
+   },
+   "What": "nc1 + el CurrentSha inexistente como commit del cierre"
+  },
+  {
+   "Case": "X-N4-RECORD",
+   "Expected": "el cotejo rechaza: el registro no declara los terminos omitidos",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {},
+    "Kinds": [
+     "DERIVATION_RECORD_DIFFERS"
+    ],
+    "Violations": [
+     "DERIVATION_RECORD_DIFFERS: record [], derived again [[\"C1.D.ChainRedSha\", \"FIELD_NULL\"], [\"C1.H.BaseSha\", \"INPUT_ABSENT\"], [\"C1.H.CurrentSha\", \"INPUT_ABSENT\"], [\"C1.H.RedSha\", \"INPUT_ABSENT\"], [\"C1.RevList(D.BaseSha..H.CurrentSha)\", \"INPUT_ABSENT\"], [\"C6.H\", \"INPUT_ABSENT\"]]"
+    ]
+   },
+   "What": "N4 con el cierre normativo y un registro de derivacion vacio"
+  },
+  {
+   "Case": "X-N4-OK",
+   "Expected": "el cotejo no encuentra ninguna diferencia",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {},
+    "Kinds": [],
+    "Violations": []
+   },
+   "What": "Control positivo: cierre normativo de N4 con su registro"
+  },
+  {
+   "Case": "X-NC1-OK",
+   "Expected": "el cotejo no encuentra ninguna diferencia",
+   "Group": "neg",
+   "Holds": true,
+   "Observed": {
+    "Diff": {},
+    "Kinds": [],
+    "Violations": []
+   },
+   "What": "Control positivo: cierre normativo de nc1 con su registro"
+  }
+ ],
+ "Orphan": "577d70c9aca8f2566c671aafcb2e617d0b366183",
+ "Other": "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+ "Repo": "D:/r62-a6r4/r1/c-d",
+ "Schema": "r4-bench/p7-derive"
+}

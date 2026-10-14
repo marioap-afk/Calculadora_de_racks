@@ -1,0 +1,719 @@
+{
+ "Cases": [
+  {
+   "Case": "V-r4",
+   "Derivation": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 48,
+     "Refs": 3,
+     "RevPaths": 89
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ]
+    ]
+   },
+   "Expected": "la regla incluye Verification; ACCEPT_FACTS rc 0; R9 MATCH (ninguna corrida fuera, clausemap dentro); tabla de la ronda 4 aceptada (construccion, aceptacion y cotejo del cierre)",
+   "Group": "V",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "e32c0f88417930221e3b9092e4debea2d53ddec166596c791de84814db764071",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "Decision": "ACCEPT_FACTS",
+    "Error": null,
+    "MismatchDetails": {},
+    "NotApplicableDetails": {},
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "pass",
+      "Check": "Identity",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "Scope",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "Trailer",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "FreeText",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "R9Runs": {},
+    "R9RunsChecked": [
+     "r00-identity",
+     "r01-diff",
+     "r02-scope",
+     "r03-contract",
+     "r04-hashes",
+     "r05-cleantree",
+     "r06-handoff",
+     "r07-freetext",
+     "r08-clausemap",
+     "r09-trx",
+     "r10-read-text",
+     "r11-read-json"
+    ],
+    "Rc": 0,
+    "RequestSha256": "c568a2f6c8e9153e04292e75c56efce286aae0572a0c2ab8f443c5e82bba1a6c",
+    "Table": {
+     "AcceptanceReasons": [],
+     "Accepted": true,
+     "AcceptorRc": 0,
+     "ClosureViolations": [],
+     "ConstructionViolations": [],
+     "Decision": "ACCEPT_FACTS",
+     "Omitted": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "Request": {
+    "Closure": {
+     "Path": "D:/r62-a6r4/r1/s-v/closure-v.closure.json",
+     "Sha256": "9b1ee7564a700ef81ce1e4f47b728e0545fa56ae7329387cddbd4ad48bcdb39b"
+    },
+    "NotApplicable": [],
+    "Path": "D:/r62-a6r4/r1/s-v/request.json",
+    "Runs": 12,
+    "Sha256": "c568a2f6c8e9153e04292e75c56efce286aae0572a0c2ab8f443c5e82bba1a6c",
+    "VerificationIncluded": true
+   },
+   "What": "Verificacion real de T1 sobre la entrega: 12 corridas reconstruidas del registro Codex; Closure derivado con la regla corregida"
+  },
+  {
+   "Case": "O3-STRICT",
+   "Derivation": {
+    "Counts": {
+     "Commits": 7,
+     "Files": 4,
+     "Objects": 0,
+     "Paths": 47,
+     "Refs": 3,
+     "RevPaths": 79
+    },
+    "Files": [
+     "CONTRACT",
+     "DELEG",
+     "H",
+     "TRX"
+    ],
+    "Inputs": {
+     "D": {
+      "Present": true,
+      "Why": null
+     },
+     "H": {
+      "Present": true,
+      "Why": null
+     },
+     "K": {
+      "Present": true,
+      "Why": null
+     }
+    },
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ]
+    ]
+   },
+   "Expected": "R9 MISMATCH; quedan fuera las lecturas legitimas en G: hashes, read-text y clausemap (estado en G); read-json no (el blob del contrato en G es el que fija E); la cobertura depende de la disposicion de A6-7, regla 7",
+   "Group": "V",
+   "Holds": true,
+   "Observed": {
+    "AcceptorStdoutSha256": "550f97cd94cd5375a102f23f4241d23d8041045ae3dd06acbe8169e8daf6557d",
+    "Checks": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MISMATCH"
+    },
+    "Decision": "REJECT_FACTS",
+    "Error": null,
+    "MismatchDetails": {
+     "R9": "{\"Runs\":[{\"Name\":\"r00-identity\",\"Violations\":[]},{\"Name\":\"r01-diff\",\"Violations\":[]},{\"Name\":\"r02-scope\",\"Violations\":[]},{\"Name\":\"r03-contract\",\"Violations\":[]},{\"Name\":\"r04-hashes\",\"Violations\":[\"GitCalls[2]: path outside the closure: docs/automation/evidence/FX-U1-agent/T1/worker-notes.md\",\"GitCalls[3]: object outside the closure: 0863f2c65dde4e895117f69dbb525dd13c824415\",\"GitCalls[4]: object outside the closure: 380892ee869194aa4bd56dcf32dfd76ef0203ab9\",\"GitCalls[5]: object outside the closure: a9d18f4d1506f1754b446a65f2c6ef90f1609d5a\",\"Inputs[1]: rev:path outside the closure\",\"Inputs[2]: rev:path outside the closure\",\"Inputs[3]: rev:path outside the closure\"]},{\"Name\":\"r05-cleantree\",\"Violations\":[]},{\"Name\":\"r06-handoff\",\"Violations\":[]},{\"Name\":\"r07-freetext\",\"Violations\":[]},{\"Name\":\"r08-clausemap\",\"Violations\":[\"GitCalls[8]: object outside the closure: a9fea86d076d3a21a6217fa826"
+    },
+    "NotApplicableDetails": {},
+    "OutsideRuns": [
+     "clausemap",
+     "hashes",
+     "read-text"
+    ],
+    "ProcessTreeDead": true,
+    "R4Rows": [
+     {
+      "AcceptorExpects": "pass",
+      "Check": "Identity",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "Scope",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "CleanTree",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "Trailer",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "pass",
+      "Check": "FreeText",
+      "Controller": "pass",
+      "Defects": null,
+      "Reasons": [],
+      "Status": "MATCH"
+     },
+     {
+      "AcceptorExpects": "not pass",
+      "Check": "Authority",
+      "Controller": "fail",
+      "Defects": 14,
+      "Reasons": null,
+      "Status": "MATCH"
+     }
+    ],
+    "R9Runs": {
+     "r04-hashes": [
+      "GitCalls[2]: path outside the closure: docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+      "GitCalls[3]: object outside the closure: 0863f2c65dde4e895117f69dbb525dd13c824415",
+      "GitCalls[4]: object outside the closure: 380892ee869194aa4bd56dcf32dfd76ef0203ab9",
+      "GitCalls[5]: object outside the closure: a9d18f4d1506f1754b446a65f2c6ef90f1609d5a",
+      "Inputs[1]: rev:path outside the closure",
+      "Inputs[2]: rev:path outside the closure",
+      "Inputs[3]: rev:path outside the closure"
+     ],
+     "r08-clausemap": [
+      "GitCalls[8]: object outside the closure: a9fea86d076d3a21a6217fa82641e33013fb1340",
+      "Inputs[4]: rev:path outside the closure"
+     ],
+     "r10-read-text": [
+      "GitCalls[2]: object outside the closure: 3fcfffc1aa7ad442422d4da2e5edaf89c48239ea",
+      "Inputs[1]: rev:path outside the closure"
+     ]
+    },
+    "R9RunsChecked": [
+     "r00-identity",
+     "r01-diff",
+     "r02-scope",
+     "r03-contract",
+     "r04-hashes",
+     "r05-cleantree",
+     "r06-handoff",
+     "r07-freetext",
+     "r08-clausemap",
+     "r09-trx",
+     "r10-read-text",
+     "r11-read-json"
+    ],
+    "Rc": 1,
+    "RequestSha256": "7bd23cfd8e21438eb32d683882afaa48ed34914d0ab612dbaf6bcf38f778c481",
+    "Table": {
+     "AcceptanceReasons": [
+      "acceptor exit code 1",
+      "Decision 'REJECT_FACTS'",
+      "R9 = MISMATCH (MATCH required)"
+     ],
+     "Accepted": false,
+     "AcceptorRc": 1,
+     "ClosureViolations": [],
+     "ConstructionViolations": [],
+     "Decision": "REJECT_FACTS",
+     "Omitted": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "R4Rule": {
+      "Cause": null,
+      "Classification": "EXECUTION_BLOCKED",
+      "Include": true,
+      "Missing": [],
+      "NotRun": []
+     },
+     "Statuses": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MISMATCH"
+     }
+    },
+    "ZeroWrite": true
+   },
+   "What": "O3: las mismas 12 corridas con el cierre derivado de la variante I6 estricta de E (todo blob = el de la AuthorityRevision)"
+  }
+ ],
+ "Classification": [
+  "EXECUTION_BLOCKED",
+  "STOP",
+  "Termination"
+ ],
+ "Clone": {
+  "Head": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "P1": {
+   "Held": true,
+   "IdEqualsPinned": true,
+   "OnlyNewLooseObject": true,
+   "ReturnedId": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  },
+  "P2": {
+   "FailedSteps": [],
+   "Launch": true
+  },
+  "Source": "D:/r62-a6r2/r3/deliv",
+  "T": "D:/r62-a6r4/r1/c-v"
+ },
+ "ControllerChecks": {
+  "Authority": "fail",
+  "Ci": "not_run",
+  "CleanTree": "pass",
+  "Contract": "pass",
+  "Denials": "not_run",
+  "FreeText": "pass",
+  "Handoff": "pass",
+  "Identity": "pass",
+  "Remote": "not_run",
+  "Routing": "not_run",
+  "Scope": "pass",
+  "Termination": "not_run",
+  "Tests": "not_run",
+  "Trailer": "pass"
+ },
+ "Reconstruction": {
+  "CommandExecutions": 17,
+  "Complete": true,
+  "InstrumentExecutions": 12,
+  "Problems": [],
+  "Reconstructible": true
+ },
+ "Schema": "r4-bench/p8-v",
+ "SchemaValid": true,
+ "SchemaValidation": {
+  "controller-verification.v2": [],
+  "delegation.v2": [],
+  "relay-record.v2": [],
+  "worker-handoff": []
+ },
+ "Session": {
+  "Executions": [
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - identity --repo D:/r62-a6r4/r1/c-v --branch fx/u1 --base 95bdc29d428b35d2188a10e1c5462d6caf2be4df --current b417d36cb820a27c78d6c7d50c234460469c89f8 --red 53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+    ],
+    "Instrument": true,
+    "Name": "identity",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - identity --repo D:/r62-a6r4/r1/c-v --branch fx/u1 --base 95bdc29d428b35d2188a10e1c5462d6caf2be4df --current b417d36cb820a27c78d6c7d50c234460469c89f8 --red 53436cb20adf1fe87dc91b0382dd3123a1fac44f\"",
+    "StderrLen": 0,
+    "StdoutLen": 2379,
+    "StdoutSha256": "99f2b86232dc7ce3414121f824333c2199049b56a1c9d868517c46dda77d43fb"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - diff --repo D:/r62-a6r4/r1/c-v --from 95bdc29d428b35d2188a10e1c5462d6caf2be4df --to b417d36cb820a27c78d6c7d50c234460469c89f8"
+    ],
+    "Instrument": true,
+    "Name": "diff",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - diff --repo D:/r62-a6r4/r1/c-v --from 95bdc29d428b35d2188a10e1c5462d6caf2be4df --to b417d36cb820a27c78d6c7d50c234460469c89f8\"",
+    "StderrLen": 0,
+    "StdoutLen": 1960,
+    "StdoutSha256": "8c0d94a1d2f4088c76bac6b241de75d2dc8e563b005d01ee976063c69e694bf5"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - scope --repo D:/r62-a6r4/r1/c-v --from 95bdc29d428b35d2188a10e1c5462d6caf2be4df --to b417d36cb820a27c78d6c7d50c234460469c89f8 --file DELEG=D:/r62-a6r4/r1/c-v-in/deleg.json --sha256 DELEG=dc2c46f4e991e1959b111fc5564476136b8c16ab0e92bc146380bbf98012c86c"
+    ],
+    "Instrument": true,
+    "Name": "scope",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - scope --repo D:/r62-a6r4/r1/c-v --from 95bdc29d428b35d2188a10e1c5462d6caf2be4df --to b417d36cb820a27c78d6c7d50c234460469c89f8 --file DELEG=D:/r62-a6r4/r1/c-v-in/deleg.json --sha256 DELEG=dc2c46f4e991e1959b111fc5564476136b8c16ab0e92bc146380bbf98012c86c\"",
+    "StderrLen": 0,
+    "StdoutLen": 2742,
+    "StdoutSha256": "1fde266ce60d50a930b40cd73ddccc03f061dcbbde28d36a79b96643df460f42"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - contract --repo D:/r62-a6r4/r1/c-v --file CONTRACT=D:/r62-a6r4/r1/c-v-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --file DELEG=D:/r62-a6r4/r1/c-v-in/deleg.json --sha256 DELEG=dc2c46f4e991e1959b111fc5564476136b8c16ab0e92bc146380bbf98012c86c"
+    ],
+    "Instrument": true,
+    "Name": "contract",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - contract --repo D:/r62-a6r4/r1/c-v --file CONTRACT=D:/r62-a6r4/r1/c-v-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --file DELEG=D:/r62-a6r4/r1/c-v-in/deleg.json --sha256 DELEG=dc2c46f4e991e1959b111fc5564476136b8c16ab0e92bc146380bbf98012c86c\"",
+    "StderrLen": 0,
+    "StdoutLen": 2281,
+    "StdoutSha256": "6f9e4588e3cc38ca687b69d5ca0c0b3d6b672acb21d2de404ed3e118a78f2ce6"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - hashes --repo D:/r62-a6r4/r1/c-v --rev b417d36cb820a27c78d6c7d50c234460469c89f8 --paths docs/automation/evidence/FX-U1-agent/T1/worker-notes.md src/Fixture.Lib/Calculator.cs tests/Fixture.Tests/CalculatorTests.cs"
+    ],
+    "Instrument": true,
+    "Name": "hashes",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - hashes --repo D:/r62-a6r4/r1/c-v --rev b417d36cb820a27c78d6c7d50c234460469c89f8 --paths docs/automation/evidence/FX-U1-agent/T1/worker-notes.md src/Fixture.Lib/Calculator.cs tests/Fixture.Tests/CalculatorTests.cs\"",
+    "StderrLen": 0,
+    "StdoutLen": 2958,
+    "StdoutSha256": "bc69f75258c6f1292d6810fee40efe15c336036547f00f304586884435221c2d"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - cleantree --repo D:/r62-a6r4/r1/c-v --ignore-path artifacts/orchestration/FX-U1/T1/0/R20261012T092000Z-c001/output.json"
+    ],
+    "Instrument": true,
+    "Name": "cleantree",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - cleantree --repo D:/r62-a6r4/r1/c-v --ignore-path artifacts/orchestration/FX-U1/T1/0/R20261012T092000Z-c001/output.json\"",
+    "StderrLen": 0,
+    "StdoutLen": 896,
+    "StdoutSha256": "f94f9d165e24c557a2f72574e47d2fc5627fa994fa0bba407ee103c9b5cb96e6"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - handoff --repo D:/r62-a6r4/r1/c-v --file H=D:/r62-a6r4/r1/c-v-in/handoff.json --sha256 H=9ff54b08f2555de3c10a6d09c0ca2b6e52168389bae8c4d615013d996458af61 --schema-rev b417d36cb820a27c78d6c7d50c234460469c89f8"
+    ],
+    "Instrument": true,
+    "Name": "handoff",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - handoff --repo D:/r62-a6r4/r1/c-v --file H=D:/r62-a6r4/r1/c-v-in/handoff.json --sha256 H=9ff54b08f2555de3c10a6d09c0ca2b6e52168389bae8c4d615013d996458af61 --schema-rev b417d36cb820a27c78d6c7d50c234460469c89f8\"",
+    "StderrLen": 0,
+    "StdoutLen": 1941,
+    "StdoutSha256": "a02c8e37acaff7c84a68c7e519ef025da205f6aefafef5573bf6e831d4d7a6e3"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - freetext --repo D:/r62-a6r4/r1/c-v --file H=D:/r62-a6r4/r1/c-v-in/handoff.json --sha256 H=9ff54b08f2555de3c10a6d09c0ca2b6e52168389bae8c4d615013d996458af61 --terms-rev fbe25347799e5b801ef708454212335537448bd1"
+    ],
+    "Instrument": true,
+    "Name": "freetext",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - freetext --repo D:/r62-a6r4/r1/c-v --file H=D:/r62-a6r4/r1/c-v-in/handoff.json --sha256 H=9ff54b08f2555de3c10a6d09c0ca2b6e52168389bae8c4d615013d996458af61 --terms-rev fbe25347799e5b801ef708454212335537448bd1\"",
+    "StderrLen": 0,
+    "StdoutLen": 1672,
+    "StdoutSha256": "35e5c64d10f7dbb80063ac9e6a30a527f5519fcac7bba887200dc3d1f5e335dd"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - clausemap --repo D:/r62-a6r4/r1/c-v --main fbe25347799e5b801ef708454212335537448bd1 --state-rev b417d36cb820a27c78d6c7d50c234460469c89f8 --state-path docs/automation/state/FX-U1.yml --file CONTRACT=D:/r62-a6r4/r1/c-v-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --base 95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+    ],
+    "Instrument": true,
+    "Name": "clausemap",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - clausemap --repo D:/r62-a6r4/r1/c-v --main fbe25347799e5b801ef708454212335537448bd1 --state-rev b417d36cb820a27c78d6c7d50c234460469c89f8 --state-path docs/automation/state/FX-U1.yml --file CONTRACT=D:/r62-a6r4/r1/c-v-in/K.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --base 95bdc29d428b35d2188a10e1c5462d6caf2be4df\"",
+    "StderrLen": 0,
+    "StdoutLen": 45567,
+    "StdoutSha256": "c242ef4a968a3f7ab7b92e3bafc446df84669fbbf5c148e74717072d1e437be6"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - trx --repo D:/r62-a6r4/r1/c-v --file TRX=D:/r62-a6r4/r1/c-v-in/fixture-tests.trx --sha256 TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513 --filter-substring Subtract"
+    ],
+    "Instrument": true,
+    "Name": "trx",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - trx --repo D:/r62-a6r4/r1/c-v --file TRX=D:/r62-a6r4/r1/c-v-in/fixture-tests.trx --sha256 TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513 --filter-substring Subtract\"",
+    "StderrLen": 0,
+    "StdoutLen": 1089,
+    "StdoutSha256": "aea1ee38ce2597f9f8a3bb5c83d3bde57f4741b94807f3d85c69642b564f23c1"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - read-text --repo D:/r62-a6r4/r1/c-v --rev b417d36cb820a27c78d6c7d50c234460469c89f8 --path docs/automation/decisions/FX-U1.md --lines 1-1"
+    ],
+    "Instrument": true,
+    "Name": "read-text",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - read-text --repo D:/r62-a6r4/r1/c-v --rev b417d36cb820a27c78d6c7d50c234460469c89f8 --path docs/automation/decisions/FX-U1.md --lines 1-1\"",
+    "StderrLen": 0,
+    "StdoutLen": 1337,
+    "StdoutSha256": "0fe12d4f69abcfd0f717cf8b8f209f48bc5ef695cc866744876e9209a9495dd8"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "& '%USERPROFILE%\\AppData\\Local\\Programs\\Git\\mingw64\\bin\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe' -I - read-json --repo D:/r62-a6r4/r1/c-v --rev b417d36cb820a27c78d6c7d50c234460469c89f8 --path docs/automation/decisions/FX-U1-T1.gate-contract.json --pointer /Objective --pointer /Schema --pointer /MainSha --pointer /AuthorityRevision"
+    ],
+    "Instrument": true,
+    "Name": "read-json",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command \"& 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin\\\\git.EXE' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & 'C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe' -I - read-json --repo D:/r62-a6r4/r1/c-v --rev b417d36cb820a27c78d6c7d50c234460469c89f8 --path docs/automation/decisions/FX-U1-T1.gate-contract.json --pointer /Objective --pointer /Schema --pointer /MainSha --pointer /AuthorityRevision\"",
+    "StderrLen": 0,
+    "StdoutLen": 1561,
+    "StdoutSha256": "9579dd430168f6c1c61d8f046874df3f238172a25ffcecddbc986bddf5403af4"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git rev-parse HEAD"
+    ],
+    "Instrument": false,
+    "Name": "primary-Identity",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command 'git rev-parse HEAD'",
+    "StderrLen": 0,
+    "StdoutLen": 41,
+    "StdoutSha256": "10ccf8463261abf86a99ea549b0f9fe8b081049f9b4abbe7dbf7cbd864fddd51"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git diff --name-only --no-renames 95bdc29d428b35d2188a10e1c5462d6caf2be4df..b417d36cb820a27c78d6c7d50c234460469c89f8"
+    ],
+    "Instrument": false,
+    "Name": "primary-Scope",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command 'git diff --name-only --no-renames 95bdc29d428b35d2188a10e1c5462d6caf2be4df..b417d36cb820a27c78d6c7d50c234460469c89f8'",
+    "StderrLen": 0,
+    "StdoutLen": 125,
+    "StdoutSha256": "269bb366bb03463ab6ab884e80985fad3e8a16bc9912c963974a43b1e0e45d79"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git status --porcelain"
+    ],
+    "Instrument": false,
+    "Name": "primary-CleanTree",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command 'git status --porcelain'",
+    "StderrLen": 0,
+    "StdoutLen": 0,
+    "StdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git log --format=%H 95bdc29d428b35d2188a10e1c5462d6caf2be4df..b417d36cb820a27c78d6c7d50c234460469c89f8"
+    ],
+    "Instrument": false,
+    "Name": "primary-Trailer",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command 'git log --format=%H 95bdc29d428b35d2188a10e1c5462d6caf2be4df..b417d36cb820a27c78d6c7d50c234460469c89f8'",
+    "StderrLen": 0,
+    "StdoutLen": 82,
+    "StdoutSha256": "71b80cba7723a756711fa67f3cc52c76591ddc6436420fe210531c9f9be1a71b"
+   },
+   {
+    "ExecutedArgv": [
+     "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\pwsh.EXE",
+     "-NoLogo",
+     "-NoProfile",
+     "-NonInteractive",
+     "-Command",
+     "git rev-parse fbe25347799e5b801ef708454212335537448bd1:docs/automation/agent-execution/compatibility/I62-clause-map.json"
+    ],
+    "Instrument": false,
+    "Name": "primary-Authority",
+    "Rc": 0,
+    "RecordedCommand": "\"C:\\\\Users\\\\<usuario>\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.EXE\" -Command 'git rev-parse fbe25347799e5b801ef708454212335537448bd1:docs/automation/agent-execution/compatibility/I62-clause-map.json'",
+    "StderrLen": 0,
+    "StdoutLen": 41,
+    "StdoutSha256": "6a6612def577e8ab78073d6099a1746d2501c2322c7483c9189c470a3fa7b4b2"
+   }
+  ],
+  "LogPath": "D:/r62-a6r4/r1/s-v/session-events.jsonl",
+  "LogSha256": "9b581e3a2f270619ba73a2e73071152c0dc4ab095076f56df2e88e66c8abef85",
+  "ZeroWriteToolRuns": true
+ }
+}

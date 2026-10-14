@@ -1,0 +1,53 @@
+{
+ "Schema": "a6r4-closure-derivation/1",
+ "Vector": "D:/r62-a6r4/r1/derive/D-N4-STALE.vector.json",
+ "VectorSha256": "532ba41bb71fbc520c714feaf88de94413e61b85889d256df1243c1134db35a1",
+ "Closure": "D:/r62-a6r4/r1/derive/D-N4-STALE.closure.json",
+ "ClosureSha256": "84dae440badc7ebebb7d0189ad9bf2aa4d251976db1b15ed5fc8b867cecdf6b9",
+ "Omitted": [
+  {
+   "Term": "C1.D.ChainRedSha",
+   "Cause": "FIELD_NULL",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.H.BaseSha",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.H.CurrentSha",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.H.RedSha",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.RevList(D.BaseSha..H.CurrentSha)",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C6.H",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  }
+ ],
+ "Inputs": {
+  "D": {
+   "Present": true,
+   "Why": null
+  },
+  "H": {
+   "Present": false,
+   "Why": "custodied bytes do not exist"
+  },
+  "K": {
+   "Present": true,
+   "Why": null
+  }
+ }
+}

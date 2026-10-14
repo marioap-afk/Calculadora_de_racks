@@ -1,0 +1,53 @@
+{
+ "Schema": "a6r4-closure-derivation/1",
+ "Vector": "D:/r62-a6r4/r1/derive/D-N4-ABSENT.vector.json",
+ "VectorSha256": "ddf813eccb23753c185c5d34e2fc9179941b5c7fb4970c7222ac3dd1b7ea1593",
+ "Closure": "D:/r62-a6r4/r1/derive/D-N4-ABSENT.closure.json",
+ "ClosureSha256": "de09ec1b96ceef76773dbfd7faf698eabf76e1d38f0d7c6c15c1166892687631",
+ "Omitted": [
+  {
+   "Term": "C1.D.ChainRedSha",
+   "Cause": "FIELD_NULL",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.H.BaseSha",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.H.CurrentSha",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.H.RedSha",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.RevList(D.BaseSha..H.CurrentSha)",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C6.H",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  }
+ ],
+ "Inputs": {
+  "D": {
+   "Present": true,
+   "Why": null
+  },
+  "H": {
+   "Present": false,
+   "Why": "E does not pin the designated path"
+  },
+  "K": {
+   "Present": true,
+   "Why": null
+  }
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "Schema": "synthetic-contract",
+ "AuthorityRevision": "df30c242949f5a53cbed45563f3e7afc2d9bbebe",
+ "MainSha": "577629114da303258d24cd47fbcc4ce0177a75e7",
+ "Authorities": [
+  {
+   "Path": "docs/auth-a.md"
+  },
+  {
+   "Path": "docs/auth-b.md"
+  }
+ ]
+}

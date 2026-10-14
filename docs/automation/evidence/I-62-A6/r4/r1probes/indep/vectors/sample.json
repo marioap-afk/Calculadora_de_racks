@@ -1,0 +1,14 @@
+{
+  "Repo": "D:/r62-a6r2/r3/deliv",
+  "E": "D:/r62-a6r2/r3/runs/d/EIC-VERIFY.input-closure.json",
+  "I": {"UnitId": "FX-U1", "TaskId": "T1", "Attempt": 0, "RunId": "R20261012T092000Z-c001",
+        "Target": {"Commit": "b417d36cb820a27c78d6c7d50c234460469c89f8", "Path": "src/Fixture.Lib/Calculator.cs",
+                   "Blob": "380892ee869194aa4bd56dcf32dfd76ef0203ab9"}},
+  "Designation": {"D": "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json",
+                  "H": "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+                  "K": "docs/automation/decisions/FX-U1-T1.gate-contract.json"},
+  "Custody": {"artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json": "D:/r62-a6r2/r3/runs/d/inputs/deleg-deliv.json",
+              "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json": "D:/r62-a6r2/r3/runs/d/inputs/handoff-deliv.json",
+              "artifacts/ci/R37949808974/fixture-tests.trx": "D:/r62-a6r2/r3/runs/d/inputs/fixture-tests.trx"},
+  "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+}

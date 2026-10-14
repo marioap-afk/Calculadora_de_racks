@@ -1,0 +1,25 @@
+all_present            PASS 
+h_absent_unpinned      PASS 
+h_custody_missing      PASS 
+h_blob_mismatch        PASS 
+h_invalid_json         PASS 
+h_dupkey               PASS 
+h_bom                  PASS 
+h_not_object           PASS 
+h_current_missing      PASS 
+h_current_null         PASS 
+h_current_empty        PASS 
+h_current_upper        PASS 
+h_current_39hex        PASS 
+h_current_tree         PASS 
+h_current_nonexistent  PASS 
+h_red_null             PASS 
+d_absent_unpinned      PASS 
+k_absent_unpinned      PASS 
+k_invalid_json         PASS 
+k_authorities_empty    PASS 
+d_branch_null          PASS 
+mergebase_none         PASS 
+target_nonexistent     PASS 
+trx_unverifiable       PASS 
+0 case(s) failed

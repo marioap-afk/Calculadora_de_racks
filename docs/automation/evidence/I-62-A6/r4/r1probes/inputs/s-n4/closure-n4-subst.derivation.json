@@ -1,0 +1,28 @@
+{
+ "Schema": "a6r4-closure-derivation/1",
+ "Vector": "D:/r62-a6r4/r1/s-n4/closure-n4-subst.vector.json",
+ "VectorSha256": "abb291e3f1693ec3b1b4f97430ab1df13d4462b1512d7e45be7457623765d181",
+ "Closure": "D:/r62-a6r4/r1/s-n4/closure-n4-subst.closure.json",
+ "ClosureSha256": "5d3016b1c127c20c04499af49b240a3fa0156b77e921ed70c6f214d472e3a965",
+ "Omitted": [
+  {
+   "Term": "C1.D.ChainRedSha",
+   "Cause": "FIELD_NULL",
+   "Detail": ""
+  }
+ ],
+ "Inputs": {
+  "D": {
+   "Present": true,
+   "Why": null
+  },
+  "H": {
+   "Present": true,
+   "Why": null
+  },
+  "K": {
+   "Present": true,
+   "Why": null
+  }
+ }
+}

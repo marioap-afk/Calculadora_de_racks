@@ -1,0 +1,26 @@
+{
+ "Repo": "D:/r62-a6r4/indep/synrepo",
+ "E": "D:/r62-a6r4/indep/synvec/E-h_bom.json",
+ "I": {
+  "UnitId": "SU",
+  "TaskId": "T1",
+  "Attempt": 0,
+  "RunId": "RC001",
+  "Target": {
+   "Commit": "b036701cfb66864042ac9ace32432afd73e8e5ad",
+   "Path": "src/a.txt",
+   "Blob": "92b0a48bde195fe53b80e38b4bcec00faa514e5f"
+  }
+ },
+ "Designation": {
+  "D": "artifacts/orchestration/SU/T1/0/RD001/output.json",
+  "H": "artifacts/orchestration/SU/T1/0/RH001/worker-handoff.json",
+  "K": "docs/decisions/SYN-K.json"
+ },
+ "Custody": {
+  "artifacts/orchestration/SU/T1/0/RD001/output.json": "D:/r62-a6r4/indep/synvec/h_bom-D.json",
+  "artifacts/orchestration/SU/T1/0/RH001/worker-handoff.json": "D:/r62-a6r4/indep/synvec/h_bom-H.json",
+  "tests/t.trx": "D:/r62-a6r4/indep/synvec/t.trx"
+ },
+ "MapPath": "docs/map.json"
+}

@@ -1,0 +1,54 @@
+{
+ "Files": [
+  {
+   "Canonical": "docs/automation/evidence/I-62-A6/r4/r1probes/p10-nc1.json",
+   "CanonicalBlob": "58d49e2e65093ede0df3197f6c88476ac6fc4e6b",
+   "CanonicalSha256": "068cd82fcb77abff0f5374418ca3bf20b886ee19851fb0b2e1a1b84844a92870",
+   "Readable": "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p10-nc1.json",
+   "ReadableSha256": "19a494e080b98cb63f044ed44f0abd5145a5021465ea08e2392de4fcb16453ad",
+   "Transform": "json.dumps(obj, ensure_ascii=True, sort_keys=True, indent=1); strings over 1500 chars as {\"__chunks__\": [...]}"
+  },
+  {
+   "Canonical": "docs/automation/evidence/I-62-A6/r4/r1probes/p11-indep.json",
+   "CanonicalBlob": "9feb4029b858f81a3da9c3849c75949f6e92fca6",
+   "CanonicalSha256": "864a3a182bd78b07c0dfcb2fce05b16c848d922f242f088a688b80225d9daa4e",
+   "Readable": "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p11-indep.json",
+   "ReadableSha256": "2376d93f8421dbc04606f2400c9ee0118282377835cec13f161beb16a1e8fecc",
+   "Transform": "json.dumps(obj, ensure_ascii=True, sort_keys=True, indent=1); strings over 1500 chars as {\"__chunks__\": [...]}"
+  },
+  {
+   "Canonical": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+   "CanonicalBlob": "906c704ace458d877ef6daaedbcb264fcff4d871",
+   "CanonicalSha256": "099000fb80a33bee394bdfc9690398aa7f558e79a11d6fbea3ef71c829de7444",
+   "Readable": "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p7-derive.json",
+   "ReadableSha256": "32e49a571235d42a3ae919dafd2ff3dcf93db3ad406702cfedf09e3b9853c0c2",
+   "Transform": "json.dumps(obj, ensure_ascii=True, sort_keys=True, indent=1); strings over 1500 chars as {\"__chunks__\": [...]}"
+  },
+  {
+   "Canonical": "docs/automation/evidence/I-62-A6/r4/r1probes/p8-v.json",
+   "CanonicalBlob": "28f4ae4a6983d1a0f3dc741c14bab3a426004d84",
+   "CanonicalSha256": "acb05c430ea66e57a2830f3fc00c261339e8b62268247aa1afab48c77d40d036",
+   "Readable": "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p8-v.json",
+   "ReadableSha256": "01be4d5d039c16bdf20b3c5b64e05f6d181154ef3642cfb1d645c6f22bee4fa7",
+   "Transform": "json.dumps(obj, ensure_ascii=True, sort_keys=True, indent=1); strings over 1500 chars as {\"__chunks__\": [...]}"
+  },
+  {
+   "Canonical": "docs/automation/evidence/I-62-A6/r4/r1probes/p9-n4.json",
+   "CanonicalBlob": "8b912b084a9629f57461bacb79af9c12e477bdc1",
+   "CanonicalSha256": "b3dcf564ef67f9da0dafa21caf9d5d95a2114a8e72b422f972b5d67873efea51",
+   "Readable": "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p9-n4.json",
+   "ReadableSha256": "476f007fc0056630348c637c815a204e26a43a940232313fe9310eed146e3dd8",
+   "Transform": "json.dumps(obj, ensure_ascii=True, sort_keys=True, indent=1); strings over 1500 chars as {\"__chunks__\": [...]}"
+  },
+  {
+   "Canonical": "docs/automation/evidence/I-62-A6/r4/r1probes/summary.json",
+   "CanonicalBlob": "0332c8d4d9bca302bc40bdfb3df5ea19f325c1e8",
+   "CanonicalSha256": "6aae4ebb4fd897c220f799b1910c287f666ad801aecc7d8c78771a9899454df6",
+   "Readable": "docs/automation/evidence/I-62-A6/r4/readable/r1probes/summary.json",
+   "ReadableSha256": "159a4a2be5dabbe7132826be7df13b663a8327483a4b6c145ebc97ec798fad9f",
+   "Transform": "json.dumps(obj, ensure_ascii=True, sort_keys=True, indent=1); strings over 1500 chars as {\"__chunks__\": [...]}"
+  }
+ ],
+ "Purpose": "copias derivadas, legibles con Read (líneas <= 1900 caracteres), de los resultados JSON de una sola línea de r4/; el archivo canónico es el de la columna Canonical, fijado por su blob",
+ "Schema": "rackcad-a6r4-readable-copies/1"
+}

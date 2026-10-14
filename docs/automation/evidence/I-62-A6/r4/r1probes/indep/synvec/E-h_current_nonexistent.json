@@ -1,0 +1,61 @@
+{
+ "Schema": "rackcad-input-closure/v1",
+ "AuthorityRevision": "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+ "CanonicalInputs": [
+  {
+   "Path": "docs/decisions/SYN-K.json",
+   "Blob": "286148f13aa97aef738fb9a513da41deb2e96962"
+  },
+  {
+   "Path": "src/a.txt",
+   "Blob": "8d9aacef35438e63345a199fa452a9ce96f2fe3e"
+  },
+  {
+   "Path": "src/a.txt",
+   "Blob": "92b0a48bde195fe53b80e38b4bcec00faa514e5f"
+  },
+  {
+   "Path": "artifacts/orchestration/SU/T1/0/RD001/output.json",
+   "Blob": "5480d3df6be1867d2518e16de28b8a0345c8884c"
+  },
+  {
+   "Path": "artifacts/orchestration/SU/T1/0/RH001/worker-handoff.json",
+   "Blob": "1e1d74b08409ebf121a1d0c42ee20d089f759000"
+  },
+  {
+   "Path": "tests/t.trx",
+   "Blob": "d75ee1c9ce8719585023bed5e4808fa10a3964b0"
+  }
+ ],
+ "AutomaticInstructions": [
+  {
+   "Path": "AGENTS.md",
+   "Blob": "24d6bf3e1696c29a9a32b6146a8818c8c4b810dc",
+   "Adapter": "x"
+  }
+ ],
+ "Obligations": [
+  {
+   "Class": "READ",
+   "Target": "docs/read-target.md"
+  },
+  {
+   "Class": "READ",
+   "Target": null
+  },
+  {
+   "Class": "ACTION_COMPATIBLE",
+   "Target": "git status"
+  }
+ ],
+ "AllowedTransitiveInputs": [
+  {
+   "Path": "docs/map.json",
+   "Blob": "76ef2cdab162a906e2ebdd82394b582e574d8e6e"
+  },
+  {
+   "Path": "docs/w.md",
+   "Blob": "e556b830cfd4d2bf3f4501b4ff7cf2ce00c052ef"
+  }
+ ]
+}

@@ -1,0 +1,1 @@
+BENCH_ERROR: C6 entry tests/t.trx named TRX: bytes do not have the pinned blob

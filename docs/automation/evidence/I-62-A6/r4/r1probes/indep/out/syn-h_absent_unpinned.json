@@ -1,0 +1,197 @@
+{
+ "Closure": {
+  "Schema": "rackcad-bmin-closure/0-experimental",
+  "Commits": [
+   "577629114da303258d24cd47fbcc4ce0177a75e7",
+   "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+   "69b613824a1ad981747306d2634a4af0e2005953",
+   "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+   "a8b9c7248778ce3ae77930e1b262171603b54605",
+   "b036701cfb66864042ac9ace32432afd73e8e5ad",
+   "ed086040bf125d58a2d1f56e36fc6222de775266"
+  ],
+  "RevPaths": [
+   {
+    "Rev": "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "Path": "AGENTS.md"
+   },
+   {
+    "Rev": "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "Path": "docs/map.json"
+   },
+   {
+    "Rev": "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "Path": "docs/w.md"
+   },
+   {
+    "Rev": "577629114da303258d24cd47fbcc4ce0177a75e7",
+    "Path": "src/a.txt"
+   },
+   {
+    "Rev": "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "Path": "AGENTS.md"
+   },
+   {
+    "Rev": "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "Path": "docs/map.json"
+   },
+   {
+    "Rev": "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "Path": "docs/w.md"
+   },
+   {
+    "Rev": "686b7163e4f158b812a90307d0dd0b857e8a4ff9",
+    "Path": "src/a.txt"
+   },
+   {
+    "Rev": "69b613824a1ad981747306d2634a4af0e2005953",
+    "Path": "AGENTS.md"
+   },
+   {
+    "Rev": "69b613824a1ad981747306d2634a4af0e2005953",
+    "Path": "docs/map.json"
+   },
+   {
+    "Rev": "69b613824a1ad981747306d2634a4af0e2005953",
+    "Path": "docs/w.md"
+   },
+   {
+    "Rev": "69b613824a1ad981747306d2634a4af0e2005953",
+    "Path": "src/a.txt"
+   },
+   {
+    "Rev": "69b613824a1ad981747306d2634a4af0e2005953",
+    "Path": "tests/t.trx"
+   },
+   {
+    "Rev": "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "Path": "AGENTS.md"
+   },
+   {
+    "Rev": "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "Path": "docs/map.json"
+   },
+   {
+    "Rev": "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "Path": "docs/w.md"
+   },
+   {
+    "Rev": "6e31cb0d54bde2592acdfc3fb574521c798953d4",
+    "Path": "src/a.txt"
+   },
+   {
+    "Rev": "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "Path": "AGENTS.md"
+   },
+   {
+    "Rev": "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "Path": "docs/map.json"
+   },
+   {
+    "Rev": "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "Path": "docs/w.md"
+   },
+   {
+    "Rev": "a8b9c7248778ce3ae77930e1b262171603b54605",
+    "Path": "src/a.txt"
+   },
+   {
+    "Rev": "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "Path": "AGENTS.md"
+   },
+   {
+    "Rev": "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "Path": "docs/decisions/SYN-K.json"
+   },
+   {
+    "Rev": "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "Path": "docs/map.json"
+   },
+   {
+    "Rev": "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "Path": "docs/w.md"
+   },
+   {
+    "Rev": "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "Path": "src/a.txt"
+   },
+   {
+    "Rev": "b036701cfb66864042ac9ace32432afd73e8e5ad",
+    "Path": "tests/t.trx"
+   },
+   {
+    "Rev": "ed086040bf125d58a2d1f56e36fc6222de775266",
+    "Path": "AGENTS.md"
+   },
+   {
+    "Rev": "ed086040bf125d58a2d1f56e36fc6222de775266",
+    "Path": "docs/map.json"
+   },
+   {
+    "Rev": "ed086040bf125d58a2d1f56e36fc6222de775266",
+    "Path": "docs/w.md"
+   },
+   {
+    "Rev": "ed086040bf125d58a2d1f56e36fc6222de775266",
+    "Path": "src/a.txt"
+   }
+  ],
+  "Refs": [
+   "HEAD",
+   "refs/remotes/origin/fx/syn",
+   "refs/remotes/origin/main"
+  ],
+  "Paths": [
+   "AGENTS.md",
+   "artifacts/orchestration/SU/T1/0/RC001/output.json",
+   "artifacts/orchestration/SU/T1/0/RD001/output.json",
+   "docs/",
+   "docs/auth-a.md",
+   "docs/auth-b.md",
+   "docs/decisions/SYN-K.json",
+   "docs/map-file.md",
+   "docs/map.json",
+   "docs/read-target.md",
+   "docs/w.md",
+   "src/a.txt",
+   "tests/t.trx"
+  ],
+  "Objects": [],
+  "Files": [
+   {
+    "Name": "CONTRACT",
+    "Sha256": "0e846f2e3dbc4d62dd89b8bf05491465e52037d680098f8d6f9a6872420ecc5c"
+   },
+   {
+    "Name": "DELEG",
+    "Sha256": "71e314681dd49849b27aa33540d176bcfdf9ed149296826bc4119ef371fdd321"
+   },
+   {
+    "Name": "TRX",
+    "Sha256": "ef9a62f212f6561839f75d9a564e643e24bce9282ee0f88e15aba98fe611c31c"
+   }
+  ]
+ },
+ "Omitted": [
+  {
+   "Term": "C1.H.BaseSha",
+   "Cause": "INPUT_ABSENT"
+  },
+  {
+   "Term": "C1.H.CurrentSha",
+   "Cause": "INPUT_ABSENT"
+  },
+  {
+   "Term": "C1.H.RedSha",
+   "Cause": "INPUT_ABSENT"
+  },
+  {
+   "Term": "C1.RevList(D.BaseSha..H.CurrentSha)",
+   "Cause": "INPUT_ABSENT"
+  },
+  {
+   "Term": "C6.H",
+   "Cause": "INPUT_ABSENT"
+  }
+ ]
+}

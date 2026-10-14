@@ -1,0 +1,2472 @@
+{
+ "Cases": [
+  {
+   "Case": "INDEP-ALL",
+   "Expected": "mismo cierre y mismos terminos omitidos con la misma causa en todos los vectores",
+   "Group": "indep",
+   "Holds": true,
+   "IndepSha256": "0346022c54dce18942b3b3691c6e1190b66c2cb8e79c685676193651a66ad178",
+   "Observed": {
+    "Agree": 58,
+    "Vectors": 58
+   },
+   "Rows": [
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 5,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 47,
+      "Refs": 2,
+      "RevPaths": 67
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.ChainBaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.ChainRedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.MainSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.FirstParentChain(D.MainSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C2.origin/D.ExpectedBranch",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.DELEG",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.ChainBaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.ChainRedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.MainSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.FirstParentChain(D.MainSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C2.origin/D.ExpectedBranch",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.DELEG",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-D-ABSENT.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 47,
+      "Refs": 3,
+      "RevPaths": 86
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.K.AuthorityRevision",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.K.MainSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C4.K.Authorities",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.CONTRACT",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.K.AuthorityRevision",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.K.MainSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C4.K.Authorities",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.CONTRACT",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-K-ABSENT.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 8,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 86
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-MB-EMPTY.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 6,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 47,
+      "Refs": 3,
+      "RevPaths": 75
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-N4-ABSENT.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 6,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 75
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-N4-ARRAY.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 6,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 75
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-N4-BLOB.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 6,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 75
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-N4-BOM.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 6,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 75
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-N4-DUPKEY.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 6,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 75
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-N4-NOTJSON.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 6,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 75
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-N4-STALE.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-NC1.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 47,
+      "Refs": 3,
+      "RevPaths": 79
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-R2-STRICT.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-R2.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.I.Target.Commit",
+       "NOT_A_COMMIT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.I.Target.Commit",
+       "NOT_A_COMMIT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-TARGET-NX.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/D-V.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-CUR-ABBREV.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-CUR-BLOB.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "FIELD_EMPTY"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "FIELD_EMPTY"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-CUR-EMPTY.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "FIELD_MISSING"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "FIELD_MISSING"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-CUR-MISSING.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-CUR-NULL.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-CUR-REF.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-CUR-TREE.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-CUR-UPPER.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.RedSha",
+       "FIELD_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.RedSha",
+       "FIELD_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-RED-EMPTY.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.RedSha",
+       "FIELD_MISSING"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.RedSha",
+       "FIELD_MISSING"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-RED-MISSING.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.RedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.RedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/F-RED-NULL.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/S-N4-REALH.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.RedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.RedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/derive/S-N4-TARGET.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/s-n4/closure-n4-subst.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 6,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 47,
+      "Refs": 3,
+      "RevPaths": 75
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/s-n4/closure-n4.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/s-nc1/closure-nc1.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 47,
+      "Refs": 3,
+      "RevPaths": 79
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/s-v/closure-v-strict.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/r1/s-v/closure-v.vector.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 48,
+      "Refs": 3,
+      "RevPaths": 89
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.ChainRedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/sample.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 8,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 36
+     },
+     "OmittedIndep": [],
+     "OmittedMine": [],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-all_present.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 4,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 13,
+      "Refs": 2,
+      "RevPaths": 19
+     },
+     "OmittedIndep": [
+      [
+       "C1.D.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.ChainBaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.ChainRedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.MainSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.FirstParentChain(D.MainSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C2.origin/D.ExpectedBranch",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.DELEG",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.D.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.ChainBaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.ChainRedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.D.MainSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.FirstParentChain(D.MainSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C2.origin/D.ExpectedBranch",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.DELEG",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-d_absent_unpinned.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 8,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 2,
+      "RevPaths": 36
+     },
+     "OmittedIndep": [
+      [
+       "C2.origin/D.ExpectedBranch",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C2.origin/D.ExpectedBranch",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-d_branch_null.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 13,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_absent_unpinned.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_blob_mismatch.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_bom.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_current_39hex.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.CurrentSha",
+       "FIELD_EMPTY"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.CurrentSha",
+       "FIELD_EMPTY"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_current_empty.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.CurrentSha",
+       "FIELD_MISSING"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.CurrentSha",
+       "FIELD_MISSING"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_current_missing.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_current_nonexistent.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.CurrentSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.CurrentSha",
+       "FIELD_NULL"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_current_null.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_current_tree.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.CurrentSha",
+       "NOT_A_COMMIT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_current_upper.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_custody_missing.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_dupkey.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_invalid_json.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 7,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 31
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.BaseSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.CurrentSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.H.RedSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.RevList(D.BaseSha..H.CurrentSha)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.H",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_not_object.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 8,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 36
+     },
+     "OmittedIndep": [
+      [
+       "C1.H.RedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.H.RedSha",
+       "FIELD_NULL"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-h_red_null.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 8,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 11,
+      "Refs": 3,
+      "RevPaths": 35
+     },
+     "OmittedIndep": [
+      [
+       "C1.K.AuthorityRevision",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.K.MainSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C4.K.Authorities",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.CONTRACT",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.K.AuthorityRevision",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.K.MainSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C4.K.Authorities",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.CONTRACT",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-k_absent_unpinned.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 8,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 12,
+      "Refs": 3,
+      "RevPaths": 35
+     },
+     "OmittedIndep": [],
+     "OmittedMine": [],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-k_authorities_empty.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 8,
+      "Files": 3,
+      "Objects": 0,
+      "Paths": 12,
+      "Refs": 3,
+      "RevPaths": 35
+     },
+     "OmittedIndep": [
+      [
+       "C1.K.AuthorityRevision",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.K.MainSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C4.K.Authorities",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.CONTRACT",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.K.AuthorityRevision",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.K.MainSha",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C4.K.Authorities",
+       "INPUT_ABSENT"
+      ],
+      [
+       "C6.CONTRACT",
+       "INPUT_ABSENT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-k_invalid_json.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 9,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 35
+     },
+     "OmittedIndep": [
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+       "PRIMITIVE_EMPTY"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-mergebase_none.json"
+    },
+    {
+     "Agree": true,
+     "ClosureDiff": {},
+     "Counts": {
+      "Commits": 8,
+      "Files": 4,
+      "Objects": 0,
+      "Paths": 14,
+      "Refs": 3,
+      "RevPaths": 36
+     },
+     "OmittedIndep": [
+      [
+       "C1.I.Target.Commit",
+       "NOT_A_COMMIT"
+      ]
+     ],
+     "OmittedMine": [
+      [
+       "C1.I.Target.Commit",
+       "NOT_A_COMMIT"
+      ]
+     ],
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-target_nonexistent.json"
+    },
+    {
+     "Agree": true,
+     "BothBenchError": true,
+     "IndepRc": 2,
+     "MineError": "RuntimeError: TRX bytes do not verify: tests/t.trx",
+     "Stderr": "BENCH_ERROR: C6 entry tests/t.trx named TRX: bytes do not have the pinned blob\r\n",
+     "Vector": "D:/r62-a6r4/indep/vectors/syn-trx_unverifiable.json"
+    }
+   ],
+   "What": "Implementacion independiente (escrita aparte, solo desde el texto normativo) frente a derive_r4.py en cada vector del banco y del propio agente"
+  }
+ ],
+ "Schema": "r4-bench/p11-indep"
+}
