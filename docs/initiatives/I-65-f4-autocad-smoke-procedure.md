@@ -25,7 +25,7 @@ Fuera de alcance: generar un paquete válido (imposible hasta que las filas sean
 
 ## 2. Coordinación de host con I-52 e I-64
 
-Consulta enviada por el canal entre sesiones el 2026-10-14 a «I - 52» y a «I - 64» (textos y respuestas literales en la evidencia §53).
+Consulta enviada por el canal entre sesiones el 2026-10-14 a «I - 52» y a «I - 64» (textos y respuestas literales en la evidencia §53 y §54).
 
 **Respuesta de I-64** (posición de su sesión; los puntos 2 y 3 los eleva a su Coordinator):
 
@@ -40,19 +40,33 @@ Consulta enviada por el canal entre sesiones el 2026-10-14 a «I - 52» y a «I 
   `SECURELOAD`); si I-65 va después, I-64 avisa cuando su POST esté tomado y `acad.exe` = 0, y antes de la ventana de I-65 va también la
   recomprobación de I-52; ni I-64 ni I-65 dejan cambios persistentes.
 
-**Respuesta de I-52:** pendiente al publicar este documento (evidencia §53). El silencio **no** es acuerdo.
+**Respuesta de I-52** (informativa; no es ACK ni RELEASE; evidencia §54):
+
+- Su campaña CT-21D está en **pausa de host**, sin sesión de AutoCAD de I-52 (`acad.exe` = 0 en su última lectura); su P2 (H10) está
+  preparada pero **no** autorizada.
+- El perfil «<<Unnamed Profile>>» es su referencia: perfil, `TRUSTEDPATHS` (19 entradas, `a9ba0fd1…2498`), build de `acad.exe`
+  (R25.0.171.0.0, `2a75996f…6422`) y ACL **no deben cambiar**; cualquier deriva afecta su tupla.
+- Reglas para otra iniciativa: aviso previo por el canal; el **RELEASE lo decide el Coordinator, el Owner o el CAD manager de I-52**
+  (no su sesión); una sola `acad.exe` sin solaparse con sesiones de I-52; sin cambios de perfil, `TRUSTEDPATHS`, `SECURELOAD`, ACL,
+  registro ni plugins; carga única no persistente (nunca «cargar siempre» ni carpetas nuevas en `TRUSTEDPATHS`); **captura de línea base
+  antes y POST + diff después**; AutoCAD cerrado del todo y aviso a I-52, que recomprueba en solo lectura antes de reanudar. El orden de
+  ventanas lo fija el Coordinator de I-52.
+
+**Hueco abierto:** I-52 exige línea base y POST + diff del host, y la única herramienta existente (T3C de I-64) no se usa sin la
+disposición del Coordinator de I-64. I-65 no crea herramientas de host propias en esta preparación. El método se decide en OD-F4-13
+(SP-07); sin método acordado, el smoke no se autoriza.
 
 **Protocolo de ventana para I-65** (se aplica cuando el Owner autorice el smoke):
 
 | Paso | Acción | Responsable |
 |---|---|---|
 | H-1 | Pedir la ventana por el canal a I-52 y a I-64 con fecha, duración estimada, DLL (ruta y SHA-256) y este procedimiento | sesión I-65 |
-| H-2 | Recibir **ACK + RELEASE explícitos** de I-52 (compuerta de host propia) y de I-64; el orden entre las tres iniciativas lo fijan sus Coordinators y el Owner | I-52, I-64, Owner |
-| H-3 | Recomprobación de I-52 antes de abrir AutoCAD, si I-52 la exige | I-52 |
+| H-2 | Recibir **ACK + RELEASE explícitos**: el de I-52 lo decide su Coordinator, el Owner o el CAD manager; el de I-64, su Coordinator. El orden de ventanas lo fija el Coordinator de I-52 con el Owner | I-52, I-64, Owner |
+| H-3 | Línea base del host con el método acordado (SP-07) | según SP-07 |
 | H-4 | Aviso previo de apertura por el canal | sesión I-65 |
 | H-5 | Smoke (§5) | operador |
-| H-6 | Aviso de cierre con `acad.exe` = 0 y lista de lo que se tocó (nada persistente) | sesión I-65 |
-| H-7 | Si I-65 va antes que I-64: I-64 toma referencias frescas; cualquier deriva frente a ellas se investiga como incidente de I-65 | I-64; sesión I-65 |
+| H-6 | AutoCAD cerrado del todo; POST + diff del host con el mismo método | según SP-07 |
+| H-7 | Aviso de cierre con `acad.exe` = 0 y resultado del diff; I-52 recomprueba en solo lectura antes de reanudar; si I-65 fue antes que I-64, I-64 toma referencias frescas. Cualquier deriva es incidente de I-65 | sesión I-65; I-52; I-64 |
 
 ## 3. Precondiciones (todas)
 
@@ -64,6 +78,7 @@ Consulta enviada por el canal entre sesiones el 2026-10-14 a «I - 52» y a «I 
 | SP-04 | AutoCAD cerrado (`acad.exe` = 0) antes de compilar; ningún otro usuario de AutoCAD en la estación | sesión |
 | SP-05 | Worktree de I-65 limpio y = `origin`; instantánea K1/K2 del checkout principal y de los worktrees (controles del Owner) | sesión |
 | SP-06 | Ningún cambio de perfil, `TRUSTEDPATHS`, `SECURELOAD`, plugins, registro ni ACL previsto | sesión; operador |
+| SP-07 | Método acordado con I-52 (y aceptado por I-64) para la línea base y el POST + diff del host (perfil, `TRUSTEDPATHS`, `SECURELOAD`, plugins, build de `acad.exe`, ACL); hoy **no existe** para I-65 (OD-F4-13) | Owner; I-52; I-64 |
 
 ## 4. Preparación de la sesión (sin AutoCAD abierto)
 
@@ -149,7 +164,7 @@ caso «fila sin verificar» queda evidenciado por SM-06 con la tabla del product
 | PC-02 | Carpeta del paquete y carpetas de §4.4 | no existen |
 | PC-03 | K1/K2: checkout principal y demás worktrees sin cambios; worktree de I-65 limpio (`bin/` y `obj/` ignorados) | sin cambios |
 | PC-04 | SHA-256 del DLL cargado | igual al de §4.2 |
-| PC-05 | Host: perfil, `TRUSTEDPATHS`, `SECURELOAD`, plugins | sin cambios, con el método que acepten I-52 e I-64 (las herramientas de I-64 no se usan sin su disposición); si no hay método acordado, se declara **no medido** |
+| PC-05 | Host: perfil, `TRUSTEDPATHS`, `SECURELOAD`, plugins | sin cambios, medido con el método de SP-07 (las herramientas de I-64 no se usan sin su disposición) |
 | PC-06 | Aviso de cierre a I-52 e I-64 (H-6) | enviado |
 
 ## 9. Paradas
@@ -161,7 +176,7 @@ Owner.
 
 ## 10. Resultado y custodia
 
-- **PASS del smoke** = SM-01..SM-08, SM-10 y SM-11 como se esperaba (SM-09 opcional), PC-01..PC-04 y PC-06 cumplidas y PC-05 cumplida o
-  declarada no medida. No es Owner Validation ni GATE PASS; deja cerrada A65-F4R-08 y aporta la captura parcial de OV-I65-03.
+- **PASS del smoke** = SM-01..SM-08, SM-10 y SM-11 como se esperaba (SM-09 opcional), PC-01..PC-06 cumplidas (PC-05 con el método
+  de SP-07). No es Owner Validation ni GATE PASS; deja cerrada A65-F4R-08 y aporta la captura parcial de OV-I65-03.
 - Custodia en `docs/automation/evidence/I-65-f4/`: texto de la línea de comandos, capturas, SHA-256 del DLL y de la tabla, registro del
   operador (observaciones y firma) y los mensajes de ventana con I-52 e I-64.

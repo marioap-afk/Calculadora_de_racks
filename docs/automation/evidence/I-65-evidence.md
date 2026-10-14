@@ -1416,3 +1416,17 @@ Custodia:
 - **Controles del Owner:** K1/K2 antes del commit sin cambios en el checkout principal ni en los demás worktrees; en el propio, solo los
   seis archivos nuevos de esta preparación.
 - **Contadores:** Codex 41 de 46; `attempts` 6 de 6 (sin cambio).
+
+## 54. Respuesta de I-52 a la coordinación de host (2026-10-14T01:01:19Z)
+
+- Mensaje de «I - 52» (sesión `local_7a6025bd-f5c5-4bea-99a4-a1a821849a73`), recibido después de `71baf43b`; texto literal en la custodia
+  §4. Acuse de I-65 a I-64: msg `3b93b0f8-3a92-4469-b623-54139e1172db` (custodia §5).
+- Documentos actualizados (SHA-256 al registrar):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md` | `95BADE2A28A24E63A0D59E85161ED122B3E2AE8463958BEC50C60E5360588536` |
+| `docs/initiatives/I-65-f4-autocad-smoke-procedure.md` | `DEEC3DF8E057F53C49DA0C913A3398D54B4F7302FAFA2C8B8BA3F8AFA962311C` |
+| `docs/initiatives/I-65-f4-real-run-readiness.md` | `B1C476B66BFD29EF8ABCECE957EB8CE17849303EFFAC27387B47E49F42BC479D` |
+
+- Sin ejecución: sin AutoCAD, sin RAM, sin código. Codex 41 de 46; `attempts` 6 de 6.

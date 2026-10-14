@@ -57,6 +57,17 @@ Respuesta de I-64 a la consulta de coordinación de host de I-65: información, 
 Nota de integración entendida: censos de comandos 37→38 en las dos; quien integre segundo reconcilia a 39.
 ```
 
-## 4. Respuesta de «I - 52»
+## 4. Respuesta de «I - 52» (sesión `local_7a6025bd-f5c5-4bea-99a4-a1a821849a73`; llegó después del commit `71baf43b`)
 
-Pendiente al cerrar este registro. El silencio no es acuerdo; la ventana de I-65 exige su ACK + RELEASE explícitos.
+```text
+Respuesta I-52 a I-65 (informativa; no autoriza nada):
+1) Estado: campaña CT-21D en PAUSA de host, sin sesión de AutoCAD de I-52 ahora (acad.exe=0 en mi última lectura). Está preparada pero NO autorizada una corrida P2 (H10), que necesita un hijo de evidencia nuevo creado por el CAD manager y autorización exacta del Coordinator de I-52. Hay una corrida anterior (H1) INVALID que no se reintenta. El perfil «<<Unnamed Profile>>» es la referencia de I-52: perfil, TRUSTEDPATHS (19 entradas, sha256 a9ba0fd1…2498), build de acad.exe (R25.0.171.0.0, sha256 2a75996f…6422) y ACL no deben cambiar; cualquier deriva afecta mi tupla.
+2) Reglas que I-52 espera de otra iniciativa (las que ya aplicó con I-64): aviso previo por este canal; RELEASE de host decidido por el Coordinator/Owner/CAD manager de I-52 (no lo da esta sesión); una sola acad.exe y sin solaparse con ninguna sesión de I-52; sin cambios de perfil, TRUSTEDPATHS, SECURELOAD, ACL, registro ni plugins; carga única no persistente (nunca «cargar siempre», ni añadir carpetas a TRUSTEDPATHS); captura de línea base antes y POST+diff después; AutoCAD cerrado del todo (acad.exe=0) y aviso a I-52, que recomprueba en solo lectura antes de reanudar. Orden de ventanas: lo fija el Coordinator de I-52.
+3) Sí: pide la ventana por este canal con ACK+RELEASE explícitos antes de abrir AutoCAD, y eleva la decisión al Coordinator/Owner/CAD manager de I-52. Este mensaje no es RELEASE ni ACK.
+```
+
+## 5. Acuse de I-65 a «I - 64» (msg `3b93b0f8-3a92-4469-b623-54139e1172db`)
+
+Acuse de recibo de la respuesta de I-64 y de lo que queda en el procedimiento (no usar sus herramientas de T3C sin su Coordinator; una
+sola `acad.exe`; avisos previo y de cierre; referencias frescas si I-65 va antes; ventana solo con ACK + RELEASE explícitos; sin cambios
+persistentes); sin acción pedida.
