@@ -1389,3 +1389,30 @@ Custodia:
   del worktree (`architect-f4-t6-t5-k5-transcript-scan.json`).
 - **Contadores finales de la unidad de cierre:** Codex 41 de 46 (29-41: planificaciones, verificaciones y controles); `attempts` 6 de 6; Workers 4
   (T6; T5 intentos 4, 5 y 6) más 1 preparado y no lanzado; Architect 1. Sin RAM.
+
+## 53. Preparación de la primera validación real de F4 (2026-10-14T00:58:49Z)
+
+- **Orden:** disposición del Owner «F4 Engineering Validation Preparation» (decisiones §47), sobre `191344ff` (CI 38490960626 push 4/4
+  `success`).
+- **Ejecutor:** Coordinator, sin cesiones (sin Codex, Workers ni subagentes). Lecturas del worktree y de las ramas de I-52 e I-64 con
+  `git --no-optional-locks` (referencias locales = `ls-remote`, sin `fetch`).
+- **Documentos publicados (SHA-256 al registrar):**
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/initiatives/I-65-f4-engineering-validation-sheet.md` | `570FE3269ADD338E9AE0FAC67B283EF826E678122131F7978A00650FF0DE2878` |
+| `docs/initiatives/I-65-f4-ref-cant-01-manual-procedure.md` | `6FC226B8FFA97D7E871C9C78C7F8234781BC354A7AA32FD77072F9F17E4FFFF3` |
+| `docs/initiatives/I-65-f4-autocad-smoke-procedure.md` | `191521A72B3C6297EDC640E8FD0E14939D67D448838C9609FA4538B31401F7A1` |
+| `docs/initiatives/I-65-f4-real-run-readiness.md` | `25509D7A0D2F1D1B1B627597691AA24EA92187B2F80C465F81A5E45E9E17B6B3` |
+| `docs/automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md` | `1810E284A84FCB523B8949C9FAFA81EBB3554845755CE111E55BC55938A27D89` |
+
+- **Coordinación de host:** mensajes `207da1c2-dc67-4198-af8e-9d96848f7b66` (a I-52) y `9795f3c5-6f2c-4eb9-8a32-ef7fa87948ce` (a I-64);
+  respuesta de I-64 custodiada literalmente; I-52 sin respuesta al registrar.
+- **Corroboración pública de la hoja:** tres búsquedas web (W12X26, HSS4X4X1/4 y A500 Gr C) y dos lecturas: el PDF de Atlas Tube no fue
+  legible (flujos comprimidos; la herramienta lo guardó en la carpeta de resultados de la sesión, no se abrió ni se usó) y la página de
+  terceros de la HSS respondió 403. Nada de eso es fuente autoritativa.
+- **Sin ejecución:** no se abrió AutoCAD ni RAM, no se ejecutó `NETLOAD`, no se compiló ni se cambió código, la tabla de secciones y
+  materiales no cambió (SHA-256 `5229231E0D924E48A839EF77BF0B63A2B631214A670783E01D148B9AC6CB4048`).
+- **Controles del Owner:** K1/K2 antes del commit sin cambios en el checkout principal ni en los demás worktrees; en el propio, solo los
+  seis archivos nuevos de esta preparación.
+- **Contadores:** Codex 41 de 46; `attempts` 6 de 6 (sin cambio).

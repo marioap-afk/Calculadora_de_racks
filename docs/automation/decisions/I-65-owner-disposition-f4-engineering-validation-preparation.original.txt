@@ -1,0 +1,76 @@
+I-65 — OWNER DISPOSITION
+F4 Engineering Validation Preparation
+He revisado el informe de cierre de implementación publicado en `191344ff`.
+Acepto las entregas verificadas de F4-T6 y F4-T5, así como el veredicto CONFORMANT WITH OBSERVATIONS del Architect.
+No declaro todavía GATE PASS de F4.
+1. Autorización
+F4 ENGINEERING VALIDATION PREPARATION = APPROVED.
+Autorizo preparar las condiciones necesarias para la primera validación real de RackCad → RAM Elements.
+Esta autorización es exclusivamente de preparación y verificación documental.
+No autoriza todavía ejecutar el adaptador en RAM ni modificar propiedades estructurales sin validación.
+2. Secciones y materiales
+Prepara una hoja de validación para:
+
+* AISC-W-W12X26 → W 12X26 → ASTM A992 Gr50.
+* AISC-HSS-RECT-HSS4X4X_250 → HSS_SQR 4X4X1_4 → ASTM A500 GrC.
+
+Incluye:
+
+* Propiedades geométricas relevantes.
+* Propiedades de material.
+* Fuentes técnicas independientes.
+* Valores existentes en RAM.
+* Diferencias y tolerancias.
+* Responsable y fecha de verificación.
+
+No cambies las filas a verified hasta contar con validación expresa de ingeniería.
+3. Diferencia de densidad
+DIF-01 queda reconocida:
+RAM ≈ 486.94 pcf.
+AISC ≈ 490 pcf.
+Diferencia aproximada: −0.62 %.
+Para la primera validación de equivalencia sin peso propio puede registrarse como una diferencia informativa aceptada dentro de ese alcance limitado.
+No modificar tolerancias ni utilizar esta disposición para análisis posteriores que dependan del peso propio.
+DIF-02, DIF-03 y DIF-04 permanecen sujetos a revisión.
+4. Combinaciones
+A65-F4R-06:
+Para la primera corrida, las combinaciones que no puedan leerse mediante una interfaz verificada deben declararse explícitamente como NO EVALUADAS.
+No se permite que una comparación parcial produzca PASS global.
+No implementar nuevas capacidades de lectura de combinaciones sin un contrato autorizado.
+5. Modelo manual
+Prepara el procedimiento para construir REF-CANT-01 manualmente en RAM Elements.
+Incluye:
+
+* Nudos y coordenadas.
+* Miembros y conectividad.
+* Secciones y materiales.
+* Ejes locales y orientación.
+* Apoyos y liberaciones.
+* Cargas P1–P3.
+* Supuestos y exclusiones.
+
+Utiliza el paquete de ingeniería existente. No inventes nuevos valores.
+6. AutoCAD
+Prepara el procedimiento de Smoke del comando RACKRAMPAQUETE y coordina su futura ejecución con las autoridades de host de I-52 e I-64.
+No abras AutoCAD ni ejecutes NETLOAD sin autorización específica.
+7. Alcance de trabajo
+No modifiques código de producción.
+No cambies el Freeze ni ADR-0050.
+No ejecutes RAM Elements.
+No avances a F5.
+No declares un Candidato de hito ni GATE PASS.
+8. Entregable
+Presenta:
+
+1. Hoja de validación de ingeniería.
+2. Procedimiento manual REF-CANT-01.
+3. Procedimiento de Smoke en AutoCAD.
+4. Estado de DIF-01 a DIF-04.
+5. Decisiones pendientes del Owner.
+6. Condiciones exactas para autorizar la primera corrida real.
+7. Recomendación GO / NO-GO.
+
+IMPLEMENTATION AUTHORIZATION = NO.
+RAM EXECUTION = NO.
+AUTOCAD HOST EXECUTION = NO.
+Continúa con la preparación autorizada y detente antes de cualquier validación real.
