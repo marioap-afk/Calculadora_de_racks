@@ -1633,3 +1633,7 @@ Custodia:
 
 - Exportaciones del registro, capturas completas y resúmenes en `D:\r65-smoke\745653e1\run-R20261014T0312Z\` (no versionado: datos personales).
 - Codex 41 de 46; `attempts` 6 de 6.
+
+## 65. Recomprobación de I-52 tras el smoke (2026-10-14T03:27:51Z)
+
+- Respuestas de I-52 custodiadas literalmente (§23-§24; custodia SHA-256 `6474E8FE355C68B52ADC71F5C2E4FF14DF7D086302A4F926FFCC9CFA15979F0C`). Sin deriva; INFORMAR sin efecto en su tupla.
