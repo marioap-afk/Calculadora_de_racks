@@ -100,3 +100,7 @@ paquete válido exige las filas `verified`.
 | R-5 | `verifiedBy` y `verifiedOn` (confirmación expresa) | Owner |
 | R-6 | Orden de emitir F4-D y habilitar la reserva (Codex tope 48, `max_attempts` 9), **después** del smoke con las filas `proposed` | Owner |
 
+**Estado (2026-10-14, decisiones §60):** S-1..S-6 cumplidas por el smoke aceptado (PASS). R-3 documentada, R-4 y R-5 preparadas en el
+[paquete de aprobación](I-65-f4-engineering-approval-package.md) (decisiones D-01..D-10 y condiciones C-F4D-01..09); todas pendientes
+del Owner.
+

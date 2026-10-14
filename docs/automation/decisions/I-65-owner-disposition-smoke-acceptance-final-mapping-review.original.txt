@@ -1,0 +1,67 @@
+I-65 — OWNER DISPOSITION
+AutoCAD Smoke Acceptance / Final Engineering Mapping Review
+He revisado el resultado del smoke de RACKRAMPAQUETE y las evidencias registradas en los commits `82a11c19` y `e07ff9f2`.
+1. Aceptación del smoke
+AUTOCAD SMOKE = ACCEPTED / PASS.
+Reconozco:
+
+* Ejecución con el DLL de SHA-256 `2e04a4bb47b04012fab1fd04b0c9d11e5ec3dcaf01ba1aabbb9764a9c5c6e41d`.
+* Carga única no persistente.
+* Resultado Unsupported con los dos diagnósticos MATERIAL-ROW-UNVERIFIED.
+* Ausencia de paquete generado.
+* Comparación POST sin cambios prohibidos.
+* Liberación del host y recomprobación de I-52 sin deriva.
+
+A65-F4R-08 queda satisfecha para este smoke.
+No repitas la prueba salvo que cambie una condición material del binario o del contrato.
+2. Próxima prioridad: R-3
+Autorizo exclusivamente completar la validación documental de ingeniería de las dos secciones del piloto.
+Prioriza referencias técnicas primarias y verificables para:
+
+* W12X26: geometría y constante de torsión J.
+* HSS 4X4X1/4: espesor de diseño, radios de esquina y propiedades.
+* Acero: E = 29 000 ksi y ν = 0.30.
+* Peso unitario de referencia de 490 pcf.
+* ASTM A992 y ASTM A500 Gr C: propiedades y ediciones aplicables.
+
+Distingue claramente propiedades publicadas, propiedades derivadas matemáticamente y convenciones de modelado.
+No utilices coincidencias con RAM como única prueba independiente.
+Si una fuente no está disponible o no permite verificar un valor, decláralo pendiente.
+3. Preparación de R-4 y R-5
+Propón el texto definitivo de `source` para cada fila, con fuentes trazables y diferencias documentadas.
+Prepara los campos `verifiedBy` y `verifiedOn`, pero mantenlos vacíos hasta mi aprobación expresa.
+No atribuyas todavía una firma de ingeniería.
+4. Diferencias
+Mantén DIF-01 (−0.62 % de peso unitario) como diferencia informativa, aceptada exclusivamente para la prueba de transferencia sin peso propio.
+No cambies la tolerancia ni presentes los valores de RAM como equivalentes para análisis estructurales posteriores.
+Conserva registrada la limitación sobre la edición formal del catálogo de RAM.
+5. Alcance autorizado
+Puedes investigar fuentes técnicas oficiales, contrastar propiedades, revisar cálculos y preparar la aprobación de ingeniería.
+No autorices todavía:
+
+* Actualizar las filas a verified.
+* Ejecutar Workers de código.
+* Modificar código de producción.
+* Abrir AutoCAD.
+* Ejecutar RAM Elements.
+* Declarar Candidato de hito.
+* Declarar GATE PASS de F4.
+
+6. Entregable
+Presenta una tabla final con:
+
+1. Propiedad.
+2. Valor propuesto.
+3. Fuente técnica específica.
+4. Evidencia verificable.
+5. Diferencia frente a RAM.
+6. Clasificación VERIFIED / DERIVED / PENDING.
+7. Decisiones que requieren mi aprobación.
+
+Incluye los textos `source` propuestos y las condiciones exactas para autorizar F4-D.
+SMOKE = PASS.
+ENGINEERING DOCUMENTATION = AUTHORIZED.
+MAPPING UPDATE = NOT AUTHORIZED.
+RAM EXECUTION = NOT AUTHORIZED.
+F4 GATE PASS = NO.
+Detente después de entregar el paquete de aprobación.

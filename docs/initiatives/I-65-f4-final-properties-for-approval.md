@@ -8,6 +8,9 @@ Next Steps» §5 A ([texto literal](../automation/decisions/I-65-owner-dispositi
 
 > **Estado: LISTA PARA LA APROBACIÓN FINAL DEL OWNER. NINGUNA FILA VERIFICADA.** `verifiedBy` y `verifiedOn` **no** se asignan.
 > MAPPING UPDATE = NO: la tabla `section-material-map.json` no cambia. Ninguna propiedad se da por validada porque coincidan AISC y RAM.
+>
+> **Actualización R-3 (2026-10-14):** la tabla final, los textos `source` propuestos (§5 queda sustituido) y las condiciones de F4-D están
+> en el [paquete de aprobación](I-65-f4-engineering-approval-package.md).
 
 ## 1. Lo que ya está dispuesto
 

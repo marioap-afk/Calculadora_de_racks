@@ -7,6 +7,10 @@ Decisions» §3 ([texto literal](../automation/decisions/I-65-owner-disposition-
 > **Estado: TRAZABILIDAD DOCUMENTAL, SIN APROBACIÓN.** Ninguna propiedad ni material queda verificado. `source`, `verifiedBy` y `verifiedOn`
 > no tienen valores definitivos (R-4/R-5). Las fuentes «secundarias» son corroboración pública consultada en la web el 2026-10-14; no
 > sustituyen la cita de la fuente primaria, que confirma el Owner.
+>
+> **Actualización R-3 (2026-10-14):** la clasificación final VERIFIED / DERIVED / PENDING está en el
+> [paquete de aprobación](I-65-f4-engineering-approval-package.md). La base oficial AISC v16.0 (hash comprobado) verifica la geometría,
+> y la población de esa base fija la forma de la fórmula de J (T-06: 0.21·tf⁴ por ala) y la convención de esquinas (T-09: 2·tdes).
 
 ## 1. Clases de fuente
 

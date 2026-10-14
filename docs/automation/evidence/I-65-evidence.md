@@ -1637,3 +1637,20 @@ Custodia:
 ## 65. Recomprobación de I-52 tras el smoke (2026-10-14T03:27:51Z)
 
 - Respuestas de I-52 custodiadas literalmente (§23-§24; custodia SHA-256 `6474E8FE355C68B52ADC71F5C2E4FF14DF7D086302A4F926FFCC9CFA15979F0C`). Sin deriva; INFORMAR sin efecto en su tupla.
+
+## 66. Paquete de aprobación de ingeniería R-3/R-4/R-5 (2026-10-14T04:00:29Z)
+
+- Orden: disposición «AutoCAD Smoke Acceptance / Final Engineering Mapping Review» (decisiones §60). Ejecutor: Coordinator; sin Codex, Workers, AutoCAD ni RAM; sin descargas.
+- Fuente primaria leída en solo lectura: `tools/sources/aisc-shapes-database-v16.0.xlsx` del checkout principal (ignorado por Git), SHA-256 `82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496` (igual al del manifiesto del catálogo). Checkout principal limpio antes y después.
+- Fichas oficiales de ASTM leídas (solo metadatos bibliográficos): A992/A992M-22 activa (2022-09-21); A500/A500M-23 activa (2023-11-21). Páginas HTML de AISC: 403 a la herramienta de lectura; AISC 360-22 no descargada.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-smoke-acceptance-final-mapping-review.original.txt` | `6E91166B16D28B25E19FD27A0BC7C85FC64F0B36A2EDDC1B9B94CCA9C186AE81` |
+| `docs/initiatives/I-65-f4-engineering-approval-package.md` | `B55359523620BC6FD2CFF8BCDF0E118648F2739E01243938B3FC79D748FAB883` |
+| `docs/automation/evidence/I-65-f4/aisc-v16-convention-check.py.txt` | `672E36ED9EB779B80EF2D26F05D5C9BC39D7A578F5920D76E8E1132C8B567ACB` |
+| `docs/automation/evidence/I-65-f4/aisc-v16-convention-check.out.txt` | `1879FE7457EA1FAE1E5E6C8CA156A881B6C180A41E543B5706775975FA1E9DE4` |
+
+- Tabla `assets/structural-analysis/ram-elements/section-material-map.json` sin cambios: `5229231E0D924E48A839EF77BF0B63A2B631214A670783E01D148B9AC6CB4048` (dos filas `proposed`).
+- Codex 41 de 46; `attempts` 6 de 6.
