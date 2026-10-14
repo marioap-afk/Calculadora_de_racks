@@ -1,0 +1,70 @@
+I-65 — OWNER DISPOSITION
+AutoCAD Smoke Pre-Release and Engineering Mapping Decisions
+He revisado el estado publicado en `f9c6bd9c`, con CI 38500450515 en PASS 4/4.
+1. Prioridad
+La prioridad inmediata de I-65 es ejecutar el smoke controlado de RACKRAMPAQUETE con las filas todavía en estado `proposed`, antes de actualizar los mapeos a `verified`.
+No es necesario esperar a que I-64 termine su iniciativa completa, pero sí respetar su ventana de host y las autoridades de I-52.
+2. Host y smoke
+S-3 — APPROVED.
+Acepto una única carga no persistente mediante NETLOAD del DLL exacto autorizado.
+No se permite carga automática, modificación permanente de rutas confiables ni cambios de configuración de seguridad.
+S-4 — APPROVED.
+Autorizo compilar el DLL desde un SHA identificado, sin abrir AutoCAD.
+Calcula su SHA-256 y registra la identidad exacta del binario. La compilación no constituye autorización para cargarlo.
+S-5 — APPROVED CONDITIONALLY.
+Acepto el procedimiento de preflight/POST de I-65 como método propuesto de captura y comparación, siempre que I-52 confirme su compatibilidad con sus referencias vigentes y rutas ACL.
+No modifiques esas rutas ni sus permisos.
+S-1 / S-2 — PENDING.
+Solicita a los responsables de I-52 e I-64 una ventana concreta, sin solapamiento con Smoke-1 de I-64 ni P2 H10 de I-52.
+Obtén los ACK y confirma el orden de las actividades.
+S-6 — NOT YET AUTHORIZED.
+No abras AutoCAD ni ejecutes NETLOAD hasta recibir una autorización específica de ejecución y los ACK/RELEASE correspondientes.
+3. Decisiones de ingeniería
+R-1 — CONDITIONAL ACCEPTANCE.
+Acepto utilizar la evidencia de compatibilidad entre las tablas instaladas de RAM y AISC v16.0 para el piloto, pero no declarar que la edición formal de la base RAM está verificada.
+Registra esa distinción en la hoja de validación.
+R-2 — ν = 0.30, PROVISIONALLY ACCEPTED.
+Utiliza ν = 0.30 como candidato común para las dos filas, con E = 29 000 ksi, sujeto a fuentes técnicas verificables.
+No marques materiales como verificados hasta cerrar las citas necesarias.
+R-3 — PENDING.
+Completa la trazabilidad de:
+
+* E y peso unitario.
+* Propiedades geométricas de W12X26, especialmente J.
+* HSS 4X4X1/4, incluido el espesor de diseño y la convención de esquinas.
+* Propiedades de ASTM A992 y A500 Gr C.
+
+R-4 / R-5 — PENDING.
+No asignes todavía valores definitivos a `source`, `verifiedBy` ni `verifiedOn`.
+R-6 — NOT AUTHORIZED.
+La actualización F4-D de las filas a `verified` sigue pendiente.
+No habilites aún los presupuestos Codex 48 ni `max_attempts` 9.
+4. Actividades autorizadas
+Puedes:
+
+1. Compilar el DLL de smoke desde un SHA exacto, sin abrir AutoCAD.
+2. Obtener su hash y evidencia del build.
+3. Completar y enviar la solicitud de ventana con I-52 e I-64.
+4. Confirmar las referencias de seguridad requeridas.
+5. Completar documentalmente las fuentes estructurales pendientes.
+
+No ejecutes Workers adicionales para cambiar código.
+No ejecutes RAM Elements.
+No modifiques las filas de mapeo.
+5. Entregable
+Entrega:
+
+1. SHA del código compilado y SHA-256 del DLL.
+2. Resultado de compilación y CI.
+3. Estado de ACK + RELEASE y ventana de host.
+4. Referencias frescas requeridas para el preflight.
+5. Fuentes técnicas que soportan las propiedades propuestas.
+6. Decisiones de ingeniería todavía pendientes.
+
+Detente antes de abrir AutoCAD.
+BUILD FOR SMOKE = AUTHORIZED.
+SINGLE NON-PERSISTENT NETLOAD = APPROVED IN PRINCIPLE, NOT RELEASED.
+AUTOCAD EXECUTION = NO.
+RAM EXECUTION = NO.
+MAPPING UPDATE = NO.
+F4 GATE PASS = NO.
