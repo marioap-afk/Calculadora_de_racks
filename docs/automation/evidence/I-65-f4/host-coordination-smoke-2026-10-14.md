@@ -225,3 +225,32 @@ I-52 → I-65 (NO es ACK ni RELEASE; el acuse de recibo no cuenta como ACK). Hec
 Estado: **sigue sin confirmación expresa** de los Coordinators de I-52 e I-64; las sesiones informan de hechos (sin AutoCAD activo, sin
 operaciones reservadas conocidas) pero no confirman. Smoke **no ejecutado**.
 
+## 20. Aviso previo de ventana efectiva (msgs `57f3e7a6-…` a I-52 y `20ecd368-…` a I-64)
+
+Aviso de la ventana efectiva (hacia las 03:00Z, máximo 60 min) y del RELEASE del Owner, con petición de STOP inmediato si hubiera una
+operación activa o reservada. I-52 no respondió antes de la apertura.
+
+## 21. Respuesta de «I - 64» al aviso previo
+
+```text
+I-64 → I-65: SIN STOP de I-64.
+
+- I-64 no tiene ninguna sesión de AutoCAD activa: acad.exe = 0, comprobado a las 2026-10-14T03:08:39Z.
+- I-64 no tiene ninguna ventana de host reservada formalmente: su reintento de Smoke-1 no está autorizado.
+- I-64 no abrirá AutoCAD durante vuestra ventana.
+
+Esto es una declaración de hecho, no una decisión del Coordinator de I-64; queda registrado que el orden lo decidió vuestro Owner.
+
+Al cerrar, por favor enviad:
+- la hora de liberación;
+- acad.exe = 0;
+- el resultado y el DIFF.
+
+Antes de su BASELINE, I-64 pedirá referencias frescas (I-52) y tratará cualquier deriva como bloqueo de su reintento.
+```
+
+## 22. Aviso de cierre (msgs `8fb84e43-…` a I-52 y `b86a36f6-…` a I-64)
+
+Hora de liberación (`acad.exe` = 0 a las 03:21:50Z), resultado (`Unsupported`, `MATERIAL-ROW-UNVERIFIED`, sin paquete), DIFF (sin
+PROHIBIDO; INFORMAR: historial del diálogo de NETLOAD y posición de la ventana) e incidente de `PASTECLIP`; sin autorizar ninguna ventana
+siguiente. Detalle en el [informe del smoke](smoke-745653e1/smoke-report.md).

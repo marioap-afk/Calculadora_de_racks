@@ -1,0 +1,87 @@
+I-65 — OWNER HOST RELEASE
+Exclusive AutoCAD Smoke Window
+He revisado las respuestas de I-52 e I-64 y el estado de coordinación registrado en `e14003bd`.
+Como Owner, ejerzo expresamente la autoridad de liberación del host reconocida por I-52 y asumo la decisión de orden frente a I-64.
+1. RELEASE
+I-65 HOST RELEASE = APPROVED, CONDITIONAL ON FRESH PREFLIGHT.
+Autorizo una ventana exclusiva para el smoke de I-65, con prioridad anterior a las futuras ventanas todavía no autorizadas de I-64 Smoke-1 e I-52 P2 H10.
+Esta disposición no autoriza ni cancela las pruebas de I-64 o I-52.
+No interrumpas ninguna operación activa. Si aparece una ventana formalmente reservada o una instancia activa de AutoCAD, detente y coordina el conflicto.
+2. DLL autorizado
+Carga exclusivamente:
+
+* Commit: `745653e1ecf10850a009e6c3d305e44ea55facbe`
+* Archivo: `RackCad.Plugin.dll`
+* SHA-256: `2e04a4bb47b04012fab1fd04b0c9d11e5ec3dcaf01ba1aabbb9764a9c5c6e41d`
+
+Comprueba el hash nuevamente antes de la ejecución.
+No sustituyas el DLL ni utilices otra compilación.
+3. Condiciones de preflight
+Antes de abrir AutoCAD:
+
+1. Confirmar que no existe `acad.exe` abierto.
+2. Reconfirmar que I-52 e I-64 no tienen una ventana activa incompatible.
+3. Registrar perfil, TRUSTEDPATHS, SECURELOAD y hash de acad.exe.
+4. Capturar el estado de los plugins y registros relevantes.
+5. Comprobar las referencias y ACL protegidas de I-52.
+6. Capturar el estado Git de los checkouts.
+7. Confirmar que el procedimiento POST está preparado.
+
+Si aparece una diferencia en un elemento protegido, STOP.
+4. Ejecución
+AUTOCAD EXECUTION = APPROVED FOR I-65 SMOKE ONLY.
+Autorizo:
+
+1. Abrir una sola instancia de AutoCAD.
+2. Crear un dibujo desechable.
+3. Realizar un único NETLOAD no persistente del DLL autorizado, siguiendo el procedimiento de seguridad normal de AutoCAD.
+4. Crear REF-CANT-01 conforme al procedimiento aprobado.
+5. Ejecutar RACKRAMPAQUETE.
+6. Verificar que las filas `proposed` producen:
+   * `Unsupported`;
+   * diagnóstico `MATERIAL-ROW-UNVERIFIED`;
+   * ausencia de paquete generado.
+7. Capturar la evidencia.
+8. Cerrar AutoCAD sin guardar.
+9. Ejecutar POST y comparar contra la línea base.
+
+No modificar TRUSTEDPATHS, SECURELOAD, perfil, rutas confiables ni configuraciones de carga.
+Si AutoCAD rechaza el DLL por confianza o seguridad, detente sin eludir la restricción.
+5. Coordinación de salida
+Antes de abrir, comunica a I-52 e I-64 la ventana efectiva y el RELEASE del Owner.
+Después de cerrar, comunica:
+
+* Hora de liberación.
+* Resultado del smoke.
+* Estado del POST.
+* Cualquier diferencia observada.
+
+No autorices automáticamente la siguiente ventana de otra iniciativa.
+6. Límites
+
+* No ejecutar RAM Elements.
+* No modificar la tabla de materiales.
+* No iniciar F4-D.
+* No avanzar a F5.
+* No cambiar código de producto.
+* No declarar GATE PASS de F4.
+
+7. Entregable
+Presenta:
+
+1. Hora real de inicio y cierre.
+2. Referencias de preflight.
+3. Identidad del DLL cargado.
+4. Resultado visible del comando.
+5. Evidencia del rechazo seguro.
+6. Confirmación de ausencia de paquete.
+7. Comparación POST.
+8. Estado final del host y coordinación con I-52/I-64.
+
+OWNER HOST RELEASE = APPROVED.
+SINGLE NETLOAD = AUTHORIZED.
+AUTOCAD SMOKE = AUTHORIZED.
+RAM EXECUTION = NO.
+MAPPING UPDATE = NO.
+F4 GATE PASS = NO.
+Procede autónomamente dentro del alcance indicado y detente ante cualquier condición de seguridad o conflicto de host.

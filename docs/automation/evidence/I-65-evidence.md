@@ -1603,3 +1603,33 @@ Custodia:
 - Recibo de I-64 custodiado (§18; custodia SHA-256 `DCED36024618143CEC508C644F4B285EE01B27A5D60FA24B116576BB8E988EFB`); I-52 sin respuesta. Condiciones 1 y 2 no satisfechas; smoke no ejecutado; `acad.exe` = 0.
 - Codex 41 de 46; `attempts` 6 de 6.
 - Respuesta posterior de I-52 (custodia §19; SHA-256 `91C475C85544D952F102FB3C821C36BC223BA0EAAD237B897F6B174086B97623`): hechos sin conflicto conocido (`acad.exe` = 0, P2 H10 sin autorización ni ventana, sin otras operaciones reservadas), pero **no** es la confirmación expresa de su Coordinator; el bloqueo se mantiene.
+
+## 64. Smoke de `RACKRAMPAQUETE` en AutoCAD (2026-10-14T03:25:13Z)
+
+- Orden: RELEASE del Owner (decisiones §58). Ejecutor: Coordinator con Computer Use (solo «AutoCAD 2025 - English»); sin Codex ni Workers; sin RAM.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/01-dibujo-desechable.jpg` | `836908CDC6CC9B18727DD5148D59DC1DC9736A499C3BF9EB81F15A7A61871D29` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/02-netload-dll-i65-seleccionado.jpg` | `8E772FEF583ED4CFF4FBD3B67E37E45A83D3D924510B88BD038B1D97AB814E65` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/03-aviso-seguridad-load-once.jpg` | `4F93DD61327B75E793EA9869FA6631B22026A4421498C30E082A8039F5EE13FF` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/04-dll-cargado.jpg` | `397D8F3EAE763F880EF38A32A97C242B7B5DED2175F529C5CE7B29D97DCB6571` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/05-columna-base-w12x26.jpg` | `CE0FAA6D29A0AADCC886507FE51F8274A7778A5BFFCBAA1FD74D92A70FCD51D8` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/06-brazo-hss4x4x1_4.jpg` | `EADDF188DF67D8732DB48ACCFE16817D14E3544E1C22EFF6844DEC45BC5D8BBA` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/07-linea-ref-cant-01-resuelta.jpg` | `DA08B0844CE475443912D6971AF5A08F394B352637CA075ED247455D8A0CEFB6` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/08-vista-frontal-insertada.jpg` | `25EC85A24A659FC13616D4E889A8222638D61140FD2566BB1224DF74FB128B66` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/09-rackrampaquete-pide-rack.jpg` | `B6B388B4D5320ED2C5918E12F4E6E62B1182BD407BEAFB8B0DE576F25EB195FB` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/10-incidente-pasteclip.jpg` | `1E0EC0EC9E6B217B545EC8C8497BEF73C74AB1E05FA9E1CA9A839DE1D8E26978` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/11-pasteclip-cancelado.jpg` | `2052DD476B5BEB882EE64A70AA173CCB83B2FB8E145A11876B9F9A6B1B7D7126` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/12-ruta-cargas.jpg` | `5C7311CE5CB9D44EDE60402E6B0D235D61D03ED2D5D76BA5411C6ECD2C6D4622` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/13-resultado-unsupported.jpg` | `AA5EA6DC98538C2D01A8544A701F87F5B05F3D6A30258F6B985965C1F74FD009` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/14-resultado-unsupported-detalle.jpg` | `54B99A5022E4A3948068CA1205981A38285B1E7FC386D504624F649F19C9200B` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/15-cierre-sin-guardar.jpg` | `B267F0F7B788FF014A3D4DB38B2B5704FC1EA458D84A51BFFF281AFCF92C9D3F` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/baseline-summary.txt` | `240D088015E0482F4B82E030411A36EC0C3DE812546A1D5CFAB24AA54CF4709D` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/diff-registry-keys.txt` | `0892338C09123EF046DD481DC75954F359A71A855DE2FC9C04EBDE174EDA294B` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/post-summary.txt` | `24DA51D1B559122CD14D0C607FAB81D81FD7E13F35C0308A02E3D54614531B6E` |
+| `docs/automation/evidence/I-65-f4/smoke-745653e1/smoke-report.md` | `2CEF4C4ADDE6DE9E7BB4BD9E2411EFC62297E8CBFA644F9D7552DD19A7B429F5` |
+
+- Exportaciones del registro, capturas completas y resúmenes en `D:\r65-smoke\745653e1\run-R20261014T0312Z\` (no versionado: datos personales).
+- Codex 41 de 46; `attempts` 6 de 6.
