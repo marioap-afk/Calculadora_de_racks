@@ -110,7 +110,10 @@ etiqueta, p. ej. `Tx Ty Rz`):
 
 ## 8. Cargas P1–P3
 
-1. Crear un caso con id **`REF1`** y categoría **Other**.
+1. Crear un caso con id **`REF1`**, una descripción (RAM la exige) y una categoría **no vacía**. La interfaz de RAM **no ofrece «Other»**
+   (M-05c, 2026-10-14: ASH, CRANE, DL, EQ, HAIL, LL, LLR, SNOW, WIND, FLUID, EARTH, NOTIONAL, TEMPERATURE). En el manual la categoría es
+   **informativa** para el comparador, pero no puede quedar vacía en un caso con cargas (A65-F4-05). Elegir una de la lista, por ejemplo
+   `DL`, y anotarla; el volcado la lee como texto (`"DL"`).
 2. Sin peso propio, sin cargas nodales ni distribuidas; **no crear combinaciones**.
 3. Cada carga es una **carga puntual en miembro**, dirección **`GLOBAL_Y` con valor negativo** (negativo = hacia abajo; sin doble
    signo), posición **en % del miembro analítico medida desde el nudo I** (`ARM.k.PositiveY.J`), con **al menos 3 decimales** (con un

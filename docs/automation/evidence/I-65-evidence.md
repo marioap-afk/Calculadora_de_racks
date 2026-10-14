@@ -1502,3 +1502,47 @@ Custodia:
 | `docs/initiatives/I-65-f4-host-release-and-preflight.md` | `2517131C24B619C5FA01C130611598D4B1DA4215AD132239CBF8E25DBD660E09` |
 
 - Sin ejecución sobre el host. Codex 41 de 46; `attempts` 6 de 6.
+
+## 58. M-05c en RAM Elements (2026-10-14T02:07:29Z)
+
+- **Orden:** autorización del Owner «RAM M-05c Authorization / Engineering Validation» (decisiones §52), sobre `93606ea0` (CI
+  38497191240 push 4/4 `success`; `54ee711a`: CI 38497053907 push 4/4 `success`).
+- **Ejecutor:** Coordinator con Computer Use (acceso concedido solo a «RAM Elements 2026»). Sin Codex, Workers ni subagentes.
+- **Preparación:** herramienta de F4 compilada con el `dotnet.exe` del usuario (`-c Debug`, salida en `bin/` y `obj/` ignorados);
+  `dump-script` en dos carpetas nuevas bajo `D:\r65-m05c\R20261014T015051Z\`. K1/K2 antes (`m05c-before`) y después (`m05c-after`):
+  sin cambios. Avisos de cortesía a I-52 e I-64 al empezar y al terminar.
+- **Custodia (SHA-256):**
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/m05c/01-ram-modelo-vacio-inicial.jpg` | `CD144B5B0C7638FA467FDE04122FCEC4EFD00473B6EDEB36FA27483CB3064A4F` |
+| `docs/automation/evidence/I-65-f4/m05c/02-estados-de-carga-inicial.jpg` | `EBC92F9B2AAEB01CB9B276F4395E8D21F6932DD490461A7FF23A6FCD4384F9CA` |
+| `docs/automation/evidence/I-65-f4/m05c/03-mz-casos-a-b.jpg` | `76730000490B0A96F3200A40DF5067772FEE13980509CB51D228D787186DAE89` |
+| `docs/automation/evidence/I-65-f4/m05c/04-mz-aviso-descripcion-b.jpg` | `560E1DC5760C7C340FFF5015D53049C737CECFA70BCE083CB0CD07494327293C` |
+| `docs/automation/evidence/I-65-f4/m05c/05-mz-dump-ok.jpg` | `F2426EACCD2F40F447C89A7DF491BAC685E8E66795E5FA528C8E0E9056CF8802` |
+| `docs/automation/evidence/I-65-f4/m05c/06-mz-guardar-no.jpg` | `CC1A0E569E70FEFF32E066E2A4EDE47DE7DFEA1318A672CD16CEF451A5D64258` |
+| `docs/automation/evidence/I-65-f4/m05c/07-mp-combinacion-c1.jpg` | `EAE4EE45A906D46FEE0F6EB5BD4E054178CB6C8192F8ED9CF4BD7BA27234832B` |
+| `docs/automation/evidence/I-65-f4/m05c/08-mp-estado-c1.jpg` | `D073D01D74B87CB038C9F9DAA61E19E8D0BF636D2835DDA77DF678E4400B3C6F` |
+| `docs/automation/evidence/I-65-f4/m05c/09-mp-dump-ok.jpg` | `19C315A49C657A5DDF871B483F3632C12409BECF94FF099CC1BD7CC2DB61B4E3` |
+| `docs/automation/evidence/I-65-f4/m05c/10-secciones-grupos.jpg` | `77E22DA0026A1C74404E59EF5217A10355ADF5DCB2F1FCB64604E16A4A2E8CD8` |
+| `docs/automation/evidence/I-65-f4/m05c/11-secciones-grupos-final-lista.jpg` | `D37C2C6B46EE4040ADE4B908E66653D1C6A501ECD84F68D33A186D1226B374F1` |
+| `docs/automation/evidence/I-65-f4/m05c/12-hss-sqr-4x4x1_4.jpg` | `6285E447C4DBFF6FC41FBAC607DA87BCF95111B7940122026926D25F7D509A2B` |
+| `docs/automation/evidence/I-65-f4/m05c/13-w-12x26.jpg` | `0C22FDB069B5EEFEDE51C03F00243C0805B103F0CE843D0E6DDEFD5437F2A01A` |
+| `docs/automation/evidence/I-65-f4/m05c/14-steel-a500.jpg` | `E4FC6672B11CB55DC44BB6E93676CD472A49A783F38122B0FCE2BB6874A738BC` |
+| `docs/automation/evidence/I-65-f4/m05c/15-steel-a992-gr50.jpg` | `15DFB6B741F1F562FE1D3AA8B062435CBB9C74CAC5B0BDB0C58DE6B12097932F` |
+| `docs/automation/evidence/I-65-f4/m05c/16-cierre-guardar-no.jpg` | `A6CF648538D8571A8F57C34AB421D0F28805164F3B0FBCA50EE38651077E85A2` |
+| `docs/automation/evidence/I-65-f4/m05c/m05c-report.md` | `E45CF855586D40E3A99EF9DD573E3FD1632CF554FACEA06C472CD875192FB866` |
+| `docs/automation/evidence/I-65-f4/m05c/mp-rackcad-ram-dump.py.txt` | `E53C13452FA2B09E97615B82D99793A401FC1B7C3FBE1D5567A34C179065E048` |
+| `docs/automation/evidence/I-65-f4/m05c/mp-ram-dump.json` | `27162B052C1793461054DED13160D4838021D1839EC7DB3D81F0B4272520797C` |
+| `docs/automation/evidence/I-65-f4/m05c/mz-rackcad-ram-dump.py.txt` | `F18A3ECF79B345B3E06B6F88B0D57ED4E7DD961F0177797FC3BAF7593A988B69` |
+| `docs/automation/evidence/I-65-f4/m05c/mz-ram-dump.json` | `ED7F3CA77D4492624C3CF02478363443BBC767454275634069FD592A0B7DCDEC` |
+
+- **Documentos actualizados:**
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/initiatives/I-65-f4-od-f4-14-combinations.md` | `1F95D7B4EEB402F35B8086870D57916A035C43B9135BB107A8EFC95E125F24F3` |
+| `docs/initiatives/I-65-f4-ref-cant-01-manual-procedure.md` | `7FCC1B9C4F1F47A76AD0B19A695D81813F17340B11BB0DCF5C0F14075381DD99` |
+| `docs/initiatives/I-65-f4-real-run-readiness.md` | `E5E04F8A036F6C0A5FDAD9CC7895FDE39E79F8482D5770A6DCC6BD4C79EAFDDE` |
+
+- **Contadores:** Codex 41 de 46; `attempts` 6 de 6; reserva 48/9 no habilitada.

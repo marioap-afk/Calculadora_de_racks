@@ -35,7 +35,7 @@ Documentos de la preparación:
 | OD-F4-07, 08, 09, 10, 11 | abiertas (10 queda dispuesta por DIF-03) |
 | OD-F4-12 | **CONDITIONAL APPROVAL**: contrato preparado, no emitido ni ejecutado; reserva provisional Codex 48 y `max_attempts` 9 **no habilitada** (decisiones §50) |
 | OD-F4-13 | HOST COORDINATION = AUTHORIZED: solicitud formal **enviada** a I-52 e I-64 (decisiones §50); sin ACK ni RELEASE todavía; preflight/POST definitivo y validado en seco |
-| OD-F4-14 | estrategia M-05c **aceptada para planificación** ([plan](I-65-f4-m05c-plan.md)); su ejecución exige autorización para abrir RAM |
+| OD-F4-14 | **M-05c ejecutada (2026-10-14): lectura de combinaciones VERIFICADA** ([custodia](../automation/evidence/I-65-f4/m05c/m05c-report.md)); resolución propuesta: CMB-3 en la primera corrida, con su condición de validez ([documento](I-65-f4-od-f4-14-combinations.md) §5), pendiente de decisión del Owner |
 | — | autorización de la corrida en RAM; Q-O1 y Q-O7 tras OV-I65-01 |
 
 ## 3. Condiciones exactas para autorizar la primera corrida real
@@ -49,7 +49,7 @@ Documentos de la preparación:
 | CR-05 | Candidato de hito declarado por orden del Owner (suites Core y UI completas en local, CI del SHA exacto, SHA-256 del DLL) con la tabla `verified` |
 | CR-06 | Paquete válido de `REF-CANT-01` generado con `RACKRAMPAQUETE` desde el Candidato, en una ventana de host liberada, con su DWG (OD-F4-09) |
 | CR-07 | Operador y licencia de RAM asignados (OD-F4-08); RAM 26.00.01.015 con el hash de P1 |
-| CR-08 | OD-F4-14 decidida (CMB-1..CMB-7), incluido si se autoriza el control M-05c |
+| CR-08 | OD-F4-14 decidida: M-05c ya verificó la lectura de combinaciones; falta que el Owner adopte la resolución propuesta (CMB-3 con condición de validez) |
 | CR-09 | Plan y paradas confirmados: volcados en la misma sesión sin guardar ni reabrir (A65-F4R-02), un paquete nuevo por intento, todo `FAILED` descartado sin guardar |
 | CR-10 | Presupuesto para atender lo que revele la corrida (hoy 0 `attempts`; Codex sujeto al tope que fije el Owner) |
 | CR-11 | Autorización específica: RAM EXECUTION = YES, con alcance (pasos C-F del paquete, M-05c y, si se incluyen, OV-I65-03..07) |

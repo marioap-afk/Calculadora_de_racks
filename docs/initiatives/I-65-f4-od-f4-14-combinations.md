@@ -48,3 +48,21 @@ mida, un arreglo vacío en el volcado no prueba la ausencia.
 Incluir **M-05c** en la primera corrida: son pocos minutos en un modelo desechable y es la única vía, sin cambiar el Freeze, por la que la
 fila de combinaciones —y con ella OV-I65-01— puede llegar a PASS de forma legítima. Si el Owner no lo autoriza, la primera corrida acaba,
 como máximo, en OV-I65-01 = INCOMPLETE (CMB-4).
+
+## 5. Resultado de M-05c y resolución propuesta (2026-10-14, decisiones §52)
+
+M-05c se ejecutó con autorización del Owner ([custodia](../automation/evidence/I-65-f4/m05c/m05c-report.md)). `MZ` dio `DUMP OK` con
+`combinations: []` y `MP` dio `DUMP OK` con `C1` y sus términos exactos (`A`·1.2, `B`·1.6). Clasificación: **lectura de combinaciones
+verificada** para `RAMElements.exe` `7dcb4855…7970`, `ramelements` 0.1.0 y el script de volcado del adaptador 1.0.0.
+
+**Resolución propuesta de OD-F4-14 (para decisión del Owner):**
+
+1. Las combinaciones siguen **fuera del modelo piloto** (CMB-1).
+2. En la primera corrida rige **CMB-3**: el comparador se invoca **sin** `--generated-combinations-unread` ni
+   `--manual-combinations-unread`. Con 0 combinaciones en ambos volcados la fila es PASS por evaluación real, no por conversión; con ≥ 1 en
+   cualquiera, FAIL y STOP.
+3. **Condición de validez:** si cambia el hash de `RAMElements.exe`, la versión de `ramelements` o el script de volcado, la verificación
+   deja de valer, se aplica **CMB-4** (`INCOMPLETE`) y M-05c se repite antes de volver a CMB-3.
+4. Cualquier volcado con estado `FAILED` se rechaza; si se ve una combinación que no se puede verificar, **CMB-5** (STOP).
+5. Sin cambios de código, del Freeze ni de los contratos congelados. `INCOMPLETE` nunca se convierte en `PASS`.
+

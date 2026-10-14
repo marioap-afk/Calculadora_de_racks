@@ -1,0 +1,58 @@
+{
+  "adapterVersion": "1.0.0",
+  "combinations": [
+    {
+      "id": "C1",
+      "terms": [
+        {
+          "case": "A",
+          "factor": 1.2
+        },
+        {
+          "case": "B",
+          "factor": 1.6
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "initialUnits": "KIP_FT",
+  "loadCases": [
+    {
+      "category": "DL",
+      "id": "CM",
+      "memberLoads": [],
+      "selfWeight": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "category": "DL",
+      "id": "A",
+      "memberLoads": [],
+      "selfWeight": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "category": "LL",
+      "id": "B",
+      "memberLoads": [],
+      "selfWeight": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "members": [],
+  "nodes": [],
+  "readUnits": "LB_IN",
+  "schema": "rackcad-ram-dump/v1",
+  "status": "DUMP OK",
+  "unitsRestored": true
+}
