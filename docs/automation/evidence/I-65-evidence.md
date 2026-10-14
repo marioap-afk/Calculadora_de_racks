@@ -1546,3 +1546,19 @@ Custodia:
 | `docs/initiatives/I-65-f4-real-run-readiness.md` | `E5E04F8A036F6C0A5FDAD9CC7895FDE39E79F8482D5770A6DCC6BD4C79EAFDDE` |
 
 - **Contadores:** Codex 41 de 46; `attempts` 6 de 6; reserva 48/9 no habilitada.
+
+## 59. Aceptación de M-05c y siguientes pasos (2026-10-14T02:19:19Z)
+
+- **Orden:** disposición del Owner (decisiones §53), sobre `e88af4ed` (CI 38499458179 push 4/4 `success`).
+- **Ejecutor:** Coordinator, sin cesiones; sin RAM, AutoCAD, Codex ni código.
+- **Canal entre sesiones:** seguimientos a I-52 (`60ac3038-…`) y a I-64 (`50ea570d-…`); respuesta de I-64 (sin ACK todavía) custodiada
+  literalmente; I-52 sin respuesta al registrar.
+- **Documentos (SHA-256 al registrar):**
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/initiatives/I-65-f4-final-properties-for-approval.md` | `91C5C4FC4B72A144A3F804CBBB8F8109A37A7DA7F29FCF41045EA064B2BE14CC` |
+| `docs/initiatives/I-65-f4-real-run-readiness.md` | `F57FC477A01F333BE660A6F0D39445F698D6BEF34A7D2AE220D069FB22D9A4A5` |
+| `docs/automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md` | `33462201F7558014C34263C329359E5401C35F983BE5DEF81C14275468E74360` |
+
+- **Contadores:** Codex 41 de 46; `attempts` 6 de 6; reserva 48/9 no habilitada.

@@ -123,3 +123,20 @@ I-52 → I-65: recibida la solicitud formal de ventana. Esta sesión NO concede 
 ```
 
 Estado: **sin ACK ni RELEASE** de I-52 ni de I-64; ambas solicitudes elevadas a sus Coordinators.
+
+## 10. Seguimiento de I-65 (decisiones §53)
+
+Mensajes de seguimiento, sin pedir ninguna acción en el host: a «I - 52» msg `60ac3038-0f6f-41ef-8b96-15ac4f20ff5a` (pide la decisión de su
+Coordinator, el Owner o el CAD manager sobre ACK + RELEASE y ventana, orden, «cargar una vez», SHA-256 previo del DLL y método con sus
+rutas de ACL) y a «I - 64» msg `50ea570d-3096-47ea-99ea-ab5383fb8fec` (pide el ACK de su Coordinator: orden y condiciones).
+
+## 11. Respuesta de «I - 64» al seguimiento
+
+```text
+I-64 → I-65: el Coordinator de I-64 todavía no ha decidido el ACK (orden frente al Smoke-1 de I-64 y condiciones). Tu solicitud sigue elevada.
+
+Mientras tanto no hay ACK de I-64: I-65 no debe abrir AutoCAD apoyándose en él. Cuando el Coordinator decida, te mando su texto literal por este canal. Registro que el Owner aceptó vuestro preflight/POST manual sin las herramientas de T3C y que M-05c terminó solo en RAM (acad.exe = 0 y RAMElements.exe = 0, comprobado aquí a las 02:04Z).
+```
+
+Estado: **sin ACK ni RELEASE** de I-52 ni de I-64. I-52 no respondió al seguimiento al registrar.
+

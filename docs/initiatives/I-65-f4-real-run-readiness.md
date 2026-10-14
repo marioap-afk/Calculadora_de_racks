@@ -35,7 +35,7 @@ Documentos de la preparación:
 | OD-F4-07, 08, 09, 10, 11 | abiertas (10 queda dispuesta por DIF-03) |
 | OD-F4-12 | **CONDITIONAL APPROVAL**: contrato preparado, no emitido ni ejecutado; reserva provisional Codex 48 y `max_attempts` 9 **no habilitada** (decisiones §50) |
 | OD-F4-13 | HOST COORDINATION = AUTHORIZED: solicitud formal **enviada** a I-52 e I-64 (decisiones §50); sin ACK ni RELEASE todavía; preflight/POST definitivo y validado en seco |
-| OD-F4-14 | **M-05c ejecutada (2026-10-14): lectura de combinaciones VERIFICADA** ([custodia](../automation/evidence/I-65-f4/m05c/m05c-report.md)); resolución propuesta: CMB-3 en la primera corrida, con su condición de validez ([documento](I-65-f4-od-f4-14-combinations.md) §5), pendiente de decisión del Owner |
+| OD-F4-14 | **RESUELTA — CMB-3** (decisiones §53): M-05c ACCEPTED para el ejecutable de RAM, `ramelements` 0.1.0 y el script de volcado 1.0.0; si cambia cualquiera, INCOMPLETE hasta repetir la verificación |
 | — | autorización de la corrida en RAM; Q-O1 y Q-O7 tras OV-I65-01 |
 
 ## 3. Condiciones exactas para autorizar la primera corrida real
@@ -49,7 +49,7 @@ Documentos de la preparación:
 | CR-05 | Candidato de hito declarado por orden del Owner (suites Core y UI completas en local, CI del SHA exacto, SHA-256 del DLL) con la tabla `verified` |
 | CR-06 | Paquete válido de `REF-CANT-01` generado con `RACKRAMPAQUETE` desde el Candidato, en una ventana de host liberada, con su DWG (OD-F4-09) |
 | CR-07 | Operador y licencia de RAM asignados (OD-F4-08); RAM 26.00.01.015 con el hash de P1 |
-| CR-08 | OD-F4-14 decidida: M-05c ya verificó la lectura de combinaciones; falta que el Owner adopte la resolución propuesta (CMB-3 con condición de validez) |
+| CR-08 | **Cumplida** (decisiones §53): OD-F4-14 = CMB-3, con la condición de validez de M-05c |
 | CR-09 | Plan y paradas confirmados: volcados en la misma sesión sin guardar ni reabrir (A65-F4R-02), un paquete nuevo por intento, todo `FAILED` descartado sin guardar |
 | CR-10 | Presupuesto para atender lo que revele la corrida (hoy 0 `attempts`; Codex sujeto al tope que fije el Owner) |
 | CR-11 | Autorización específica: RAM EXECUTION = YES, con alcance (pasos C-F del paquete, M-05c y, si se incluyen, OV-I65-03..07) |
@@ -75,3 +75,28 @@ paquete válido exige las filas `verified`.
 
 - **Primera corrida real en RAM: NO-GO** hasta cumplir CR-01..CR-11.
 - **Siguiente paso: GO** para los pasos 1, 2 y 7, que no ejecutan nada sobre el host.
+
+## 6. Decisiones exactas pendientes (decisiones §53)
+
+**Para iniciar el smoke de AutoCAD (filas `proposed`):**
+
+| # | Decisión | De quién |
+|---|---|---|
+| S-1 | ACK + RELEASE del host y ventana (fecha, hora, duración de 60 min) | Coordinator de I-52, Owner o CAD manager |
+| S-2 | ACK de I-64: orden frente a su Smoke-1 y condiciones para no solapar | Coordinator de I-64 |
+| S-3 | «Cargar una vez» (carga no persistente del DLL): sí o no | quien conceda el RELEASE de I-52 |
+| S-4 | Si el SHA-256 del DLL debe conocerse antes del RELEASE; si es así, autorizar compilar el DLL sin abrir AutoCAD | Coordinator de I-52; Owner |
+| S-5 | Aceptación del método preflight/POST por I-52, con sus rutas de ACL (el Owner ya lo aceptó como base) | I-52 |
+| S-6 | AUTOCAD EXECUTION = YES limitada al smoke, con el commit identificado del DLL | Owner |
+
+**Para actualizar las filas a `verified`:**
+
+| # | Decisión | De quién |
+|---|---|---|
+| R-1 | DIF-04: aprobar con la edición sin verificar formalmente (coherencia con v16.0 + fuentes independientes) o exigir documentación de Bentley | Owner |
+| R-2 | DIF-02: oráculo ν = 0.3 (recomendado) o G, con su cita (F-06 o F-03) | Owner |
+| R-3 | Citas de E (F-03), del peso unitario (F-07), de la geometría (F-01, incluida J de la W12X26 y la convención de esquinas de la HSS) y ediciones ASTM (F-04, F-05) | Owner |
+| R-4 | Texto `source` definitivo de cada fila ([borrador](I-65-f4-final-properties-for-approval.md) §5) | Owner |
+| R-5 | `verifiedBy` y `verifiedOn` (confirmación expresa) | Owner |
+| R-6 | Orden de emitir F4-D y habilitar la reserva (Codex tope 48, `max_attempts` 9), **después** del smoke con las filas `proposed` | Owner |
+
