@@ -1,0 +1,29 @@
+# I-65 D-08: lee las tablas candidatas con el lector del producto (RackCad.Application.dll congelado del smoke, commit 745653e1).
+# Solo lectura. Uso: pwsh -NoProfile -File reader_check.ps1 <carpeta-dll> <carpeta-candidatas> <tabla-actual>
+param([string]$DllDir, [string]$CandDir, [string]$Current)
+$ErrorActionPreference = 'Stop'
+[void][System.Reflection.Assembly]::LoadFrom((Join-Path $DllDir 'RackCad.Domain.dll'))
+$app = [System.Reflection.Assembly]::LoadFrom((Join-Path $DllDir 'RackCad.Application.dll'))
+$reader = $app.GetType('RackCad.Application.StructuralAnalysis.Providers.RamElements.RamSectionMapReader')
+$read = $reader.GetMethod('Read', [type[]]@([string]))
+
+function Show-Read([string]$Label, [string]$Path) {
+    $json = [System.IO.File]::ReadAllText($Path, [System.Text.Encoding]::UTF8)
+    $r = $read.Invoke($null, @($json))
+    "== $Label : Outcome $($r.Outcome)"
+    foreach ($d in $r.Diagnostics) { "   diag $($d.Code) | $($d.ImpliedOutcome) | $($d.Subject)" }
+    if ($null -ne $r.Table) {
+        foreach ($row in $r.Table.Rows) {
+            $m = $row.ExpectedMaterial
+            $e = if ($m.ElasticModulus) { "$($m.ElasticModulus.Value) $($m.ElasticModulus.Unit)" } else { 'null' }
+            $w = if ($m.UnitWeight) { "$($m.UnitWeight.Value) $($m.UnitWeight.Unit)" } else { 'null' }
+            $g = if ($m.ShearModulus) { "$($m.ShearModulus.Value) $($m.ShearModulus.Unit)" } else { 'null' }
+            $srcLen = if ($m.Source) { $m.Source.Length } else { 0 }
+            "   row $($row.SectionId.Value) | $($row.RamSectionCountry)/$($row.RamSectionTable)/$($row.RamSectionName) | $($row.MaterialId.Value) -> $($row.RamMaterial) | status $($row.Status) verified=$($row.IsVerified) | E $e | nu $($m.PoissonRatio) | G $g | W $w | source chars $srcLen | by '$($row.VerifiedBy)' on '$($row.VerifiedOn)'"
+        }
+    }
+}
+
+Show-Read 'tabla distribuida actual' $Current
+Show-Read 'candidata proposed (valores finales, status proposed)' (Join-Path $CandDir 'candidate-proposed.json')
+Show-Read 'candidata verified (valores finales, D-09 null)' (Join-Path $CandDir 'candidate-verified.json')

@@ -7,8 +7,8 @@ automation_state:
   state: waiting
   gate: F4
   attempts: 6
-  next_action: Owner: resolver el paquete de aprobación de ingeniería (docs/initiatives/I-65-f4-engineering-approval-package.md; D-01..D-10, C-F4D-01..09) y, si procede, ordenar F4-D con la reserva Codex 48 / max_attempts 9; smoke ACEPTADO (PASS, decisiones §60). Sin RAM, sin mapping update, sin GATE PASS de F4.
-  last_evidence_commit: e07ff9f2317c67dac7d36c8736595df12aa9e1e2
+  next_action: Owner: D-09 (aprobar la declaración de conformidad técnica y dar verifiedBy/verifiedOn) y D-10 (autorizar F4-D con la reserva Codex 48 / max_attempts 9) según docs/initiatives/I-65-f4-d09-signoff-f4d-request.md; D-01..D-08 aprobadas (decisiones §61). Sin RAM, sin mapping update, sin GATE PASS de F4.
+  last_evidence_commit: 8d16eb52609fffeee07ba096c54624ab867b4c22
 execution_context:
   mode: manual
   automation_enabled: false
@@ -16,6 +16,6 @@ execution_context:
 execution_chain:
   gate: F4
   next_role: Owner
-  implementation_authorization: NINGUNA VIGENTE; smoke de AutoCAD ACEPTADO (decisiones §60, no repetir salvo cambio material); ENGINEERING DOCUMENTATION hecha (paquete R-3/R-4/R-5); MAPPING UPDATE = NO; RAM EXECUTION = NO; F4 GATE PASS = NO; reserva Codex 48 / max_attempts 9 no habilitada
-  owner_decisions_open: [paquete de aprobacion D-01..D-10 (geometria VERIFIED; E y nu PENDING; peso 490 DERIVED; ediciones ASTM; oraculo nu; texto source A o B; verifiedBy y verifiedOn; orden de F4-D con la reserva), segundo smoke con filas verified tras F4-D, OD-F4-07 sonda P2, OD-F4-08 operador de RAM, OD-F4-09 REF-CANT-01 en un DWG, OD-F4-11 Candidato de hito y repeticion del modelo manual, autorizacion especifica de la primera corrida en RAM, confirmacion definitiva de Q-O1 y Q-O7 (tras OV-I65-01)]
+  implementation_authorization: NINGUNA VIGENTE; smoke de AutoCAD ACEPTADO (decisiones §60, no repetir salvo cambio material); ENGINEERING BASIS = ACCEPTED FOR REF-CANT-01 (D-01..D-08, decisiones §61); FINAL ENGINEERING SIGN-OFF = PENDING; MAPPING UPDATE = NO; RAM EXECUTION = NO; F4 GATE PASS = NO; reserva Codex 48 / max_attempts 9 no habilitada
+  owner_decisions_open: [D-09 declaracion de conformidad tecnica + verifiedBy y verifiedOn, D-10 orden de F4-D con la reserva, segundo smoke con filas verified tras F4-D, OD-F4-07 sonda P2, OD-F4-08 operador de RAM, OD-F4-09 REF-CANT-01 en un DWG, OD-F4-11 Candidato de hito y repeticion del modelo manual, autorizacion especifica de la primera corrida en RAM, confirmacion definitiva de Q-O1 y Q-O7 (tras OV-I65-01)]
   not_authorized: [delegaciones fuera de F4-T6 y F4-T5, alterar el checkout principal, superar 46 invocaciones de Codex o max_attempts 6, corridas en RAM Elements, Candidato de hito, GATE PASS de F4 antes de la comparación real, F5, F6, F7, capacidades fuera de V1, cambios del Freeze, infraestructura de I-62, interfaces de ID30, integración con Workspace, interfaz gráfica]

@@ -1,0 +1,21 @@
+AISC-W-W12X26: length 860, UTF-8 SHA-256 E149A548C78B1496EC5285445BC99D95D772EA79891557F5260D12EF45DE0E25
+  single line                PASS
+  ascii                      PASS
+  IsPrintable                PASS
+  no quote/backslash         PASS
+  no leading/trailing space  PASS
+  required phrases           PASS
+  no forbidden claims        PASS
+AISC-HSS-RECT-HSS4X4X_250: length 1001, UTF-8 SHA-256 830FFE891093C1258F1D4A750E17984851281570365ECF9FC9577D28BE108F93
+  single line                PASS
+  ascii                      PASS
+  IsPrintable                PASS
+  no quote/backslash         PASS
+  no leading/trailing space  PASS
+  required phrases           PASS
+  no forbidden claims        PASS
+rows-final.json: 3175 bytes, SHA-256 B4CEC50140C434001E09DD8A5812C83CCB2A86759F1B576CB5AEA275311BF993, JSON round-trip of source PASS
+candidate-proposed.json: 3175 bytes, SHA-256 ADA644E9DCA1E7E1C4F45029B2B21CC9417AC528C00FA464A8798FC5B1B974A4, JSON round-trip of source PASS
+candidate-verified.json: 3175 bytes, SHA-256 B4CEC50140C434001E09DD8A5812C83CCB2A86759F1B576CB5AEA275311BF993, JSON round-trip of source PASS
+sectionId, ramSection.name, materialId, ramMaterial unchanged: PASS
+OVERALL PASS

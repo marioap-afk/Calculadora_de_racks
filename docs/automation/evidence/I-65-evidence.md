@@ -1654,3 +1654,22 @@ Custodia:
 
 - Tabla `assets/structural-analysis/ram-elements/section-material-map.json` sin cambios: `5229231E0D924E48A839EF77BF0B63A2B631214A670783E01D148B9AC6CB4048` (dos filas `proposed`).
 - Codex 41 de 46; `attempts` 6 de 6.
+
+## 67. Comprobación mecánica de D-08 y filas finales (2026-10-14T04:17:07Z)
+
+- Orden: disposición «Engineering Approval Package — D-01 to D-08» (decisiones §61). Ejecutor: Coordinator; sin Codex, Workers, AutoCAD ni RAM.
+- Lector del producto ejecutado en solo lectura desde `D:\r65-smoke\745653e1\bin-Debug-net8.0-windows\` (`RackCad.Application.dll` `F9A97451…7F0F` y `RackCad.Domain.dll` `04643D3E…3A2C`, iguales al manifiesto del smoke); `git diff 745653e1 HEAD -- src tests assets tools` vacío.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-engineering-approval-d01-d08.original.txt` | `C2F51A3912A23A6A3BCE836DCC0B6A108DAFADF4D10ABA615AD71D673853981A` |
+| `docs/initiatives/I-65-f4-d09-signoff-f4d-request.md` | `00AAF7580865E98390F40E2F6E8D50C5EA20965B0EBB335572CDFEC66B26AA29` |
+| `docs/automation/evidence/I-65-f4/d08-variant-b-check.py.txt` | `77B0DA353F380E559F75F9D94E61E5A37F84150B15624406E88F7A30A44A1180` |
+| `docs/automation/evidence/I-65-f4/d08-variant-b-check.out.txt` | `9F575BB70AE7B17B07832DE329DE7F3EB4F8624E6C98246F8F9AB5A541D61587` |
+| `docs/automation/evidence/I-65-f4/d08-reader-check.ps1.txt` | `A6DBD6FCF454F6A73D81792516971522183C9634859B7D21055B52C80CC67884` |
+| `docs/automation/evidence/I-65-f4/d08-reader-check.out.txt` | `5C47F0EFE07B2433C578319C7A1C36680C5F9AC336BC6CEBBCC57429F15CA007` |
+| `docs/automation/evidence/I-65-f4/d08-rows-final.json` | `B4CEC50140C434001E09DD8A5812C83CCB2A86759F1B576CB5AEA275311BF993` |
+
+- Tabla del producto sin cambios: `5229231E0D924E48A839EF77BF0B63A2B631214A670783E01D148B9AC6CB4048`. Checkout principal limpio.
+- Codex 41 de 46; `attempts` 6 de 6.

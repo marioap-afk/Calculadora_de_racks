@@ -1,0 +1,132 @@
+"""I-65 D-08: comprobacion mecanica de la Variante B de `source` y construccion de las filas finales.
+
+Uso: python -I variant_b_check.py <paquete.md> <tabla-actual.json> <carpeta-salida>
+- Extrae literalmente los dos bloques ```text de la Variante B del paquete de aprobacion.
+- Comprueba: una linea, ASCII, reglas IsPrintable del lector (sin Cc/Cf/Zl/Zp ni blancos distintos del espacio),
+  sin comillas ni barras invertidas, frases de limitacion exigidas y cifras del paquete.
+- Escribe tres tablas candidatas (sin tocar el repositorio):
+    rows-final.json       status verified, verifiedBy/verifiedOn null (pendientes de D-09)
+    candidate-proposed.json  mismos valores con status proposed (debe leerse Valid)
+    candidate-verified.json  igual que rows-final.json (debe dar Invalid solo por verifiedBy/verifiedOn)
+"""
+import hashlib
+import json
+import sys
+import unicodedata
+
+pkg, current, outdir = sys.argv[1], sys.argv[2], sys.argv[3]
+text = open(pkg, encoding="utf-8").read()
+start = text.index("**Variante B")
+end = text.index("**Variante A")
+section = text[start:end]
+blocks = []
+pos = 0
+while True:
+    i = section.find("```text\n", pos)
+    if i < 0:
+        break
+    j = section.index("\n```", i + 8)
+    blocks.append(section[i + 8:j])
+    pos = j + 4
+assert len(blocks) == 2, len(blocks)
+w_src, hss_src = blocks
+report = []
+
+
+def printable(s):
+    if not s.strip():
+        return False
+    for ch in s:
+        cat = unicodedata.category(ch)
+        if cat in ("Cc", "Cf", "Zl", "Zp") or (ch.isspace() and ch != " "):
+            return False
+    return True
+
+
+required_common = [
+    "AISC Shapes Database v16.0",
+    "82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496",
+    "E 29000 ksi and nu 0.30: modeling conventions",
+    "primary citation not read in I-65",
+    "Unit weight 490 pcf",
+    "DIF-01: RAM unit weight -0.62 %",
+    "informative only for the pilot transfer test without self weight",
+    "RAM values are not equivalent for later analyses",
+    "RAM catalog formal edition not verified",
+    "486.94 pcf",
+]
+required = {
+    "AISC-W-W12X26": required_common + [
+        "row W12X26 as published", "A 7.65 in2", "Ix 204 in4", "Iy 17.3 in4", "J 0.300 in4", "within 0.24 %",
+        "ASTM A992/A992M Grade 50", "A992/A992M-22", "United States/W/W 12X26", "A992 Gr50"],
+    "AISC-HSS-RECT-HSS4X4X_250": required_common + [
+        "row HSS4X4X1/4 as published", "tnom 0.25 in", "tdes 0.233 in", "A 3.37 in2", "Ix = Iy 7.80 in4", "J 12.8 in4",
+        "outside corner radius 2 tdes within 0.15 %", "ASTM A500/A500M Grade C", "A500/A500M-23",
+        "United States/HSS_SQR/HSS_SQR 4X4X1_4", "A500 GrC rectangular", "not A500 GrC rounded"],
+}
+forbidden = ["verified by", "certif", "ANSI/AISC 360", "Manual 16th"]
+
+ok = True
+for sid, src in (("AISC-W-W12X26", w_src), ("AISC-HSS-RECT-HSS4X4X_250", hss_src)):
+    checks = {
+        "single line": "\n" not in src and "\r" not in src,
+        "ascii": all(ord(c) < 128 for c in src),
+        "IsPrintable": printable(src),
+        "no quote/backslash": '"' not in src and "\\" not in src,
+        "no leading/trailing space": src == src.strip(),
+        "required phrases": all(p in src for p in required[sid]),
+        "no forbidden claims": not any(f.lower() in src.lower() for f in forbidden),
+    }
+    missing = [p for p in required[sid] if p not in src]
+    ok &= all(checks.values())
+    report.append("%s: length %d, UTF-8 SHA-256 %s" % (sid, len(src), hashlib.sha256(src.encode("utf-8")).hexdigest().upper()))
+    for k, v in checks.items():
+        report.append("  %-26s %s" % (k, "PASS" if v else "FAIL"))
+    if missing:
+        report.append("  missing: %r" % missing)
+
+table = json.load(open(current, encoding="utf-8"))
+assert table["schema"] == "rackcad-ram-elements-section-map/v1"
+assert [r["sectionId"] for r in table["rows"]] == ["AISC-W-W12X26", "AISC-HSS-RECT-HSS4X4X_250"]
+fill = {
+    "AISC-W-W12X26": ("W", w_src),
+    "AISC-HSS-RECT-HSS4X4X_250": ("HSS_SQR", hss_src),
+}
+
+
+def build(status):
+    out = json.loads(json.dumps(table))
+    for row in out["rows"]:
+        ram_table, src = fill[row["sectionId"]]
+        row["ramSection"]["table"] = ram_table
+        row["ramSection"]["country"] = "United States"
+        row["expectedMaterial"] = {
+            "elasticModulus": {"value": 29000, "unit": "ksi"},
+            "poissonRatio": 0.3,
+            "shearModulus": None,
+            "unitWeight": {"value": 490, "unit": "pcf"},
+            "source": src,
+        }
+        row["status"] = status
+        row["verifiedBy"] = None
+        row["verifiedOn"] = None
+    return out
+
+
+for name, status in (("rows-final.json", "verified"), ("candidate-proposed.json", "proposed"),
+                     ("candidate-verified.json", "verified")):
+    data = build(status)
+    raw = json.dumps(data, ensure_ascii=True, indent=2) + "\n"
+    open(outdir + "/" + name, "w", encoding="utf-8", newline="\n").write(raw)
+    back = json.loads(raw)
+    for row in back["rows"]:
+        assert row["expectedMaterial"]["source"] == fill[row["sectionId"]][1]
+    report.append("%s: %d bytes, SHA-256 %s, JSON round-trip of source PASS"
+                  % (name, len(raw.encode("utf-8")), hashlib.sha256(raw.encode("utf-8")).hexdigest().upper()))
+
+unchanged = ["sectionId", "materialId", "ramMaterial"]
+for a, b in zip(table["rows"], build("verified")["rows"]):
+    assert all(a[k] == b[k] for k in unchanged) and a["ramSection"]["name"] == b["ramSection"]["name"]
+report.append("sectionId, ramSection.name, materialId, ramMaterial unchanged: PASS")
+report.append("OVERALL " + ("PASS" if ok else "FAIL"))
+print("\n".join(report))
