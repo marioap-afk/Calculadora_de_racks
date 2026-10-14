@@ -29,3 +29,5 @@
    Sx        derivado    33.3613  catalogo     33.4  delta  -0.116 %
    Zx        derivado    37.1124  catalogo     37.2  delta  -0.235 %
    J_simple  derivado     0.2838  catalogo      0.3  delta  -5.397 %
+== W12X26 J con filetes (El Darwish y Johnston), correccion total de alas 0.42 tf^4: J 0.29994 (catalogo 0.3, delta -0.019 %), alpha 0.13048, D 0.55574
+== W12X26 J con filetes (El Darwish y Johnston), correccion total de alas 0.84 tf^4: J 0.29119 (catalogo 0.3, delta -2.938 %), alpha 0.13048, D 0.55574

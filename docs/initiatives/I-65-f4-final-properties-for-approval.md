@@ -43,7 +43,7 @@ Next Steps» §5 A ([texto literal](../automation/decisions/I-65-owner-dispositi
 | A (in²) | 7.65 | 7.65 | 7.641 (−0.12 %) | 0 % | ±0.5 % | Manual AISC, tabla de perfiles W |
 | Ix (in⁴) | 204 | 204 | 203.5 (−0.24 %) | 0 % | ±0.5 % | ídem |
 | Iy (in⁴) | 17.3 | 17.3 | 17.33 (+0.16 %) | 0 % | ±0.5 % | ídem |
-| J (in⁴) | 0.3 | 0.3 | 0.284 con la fórmula simple de paredes delgadas, sin filetes (−5.4 %): **no concluyente** | 0 % | ±0.5 % | **Manual AISC (obligatoria para J)** |
+| J (in⁴) | 0.3 | 0.3 | 0.29994 (−0.02 %) con la fórmula con filetes de El Darwish y Johnston (forma exacta por confirmar; [trazabilidad](I-65-f4-structural-sources-traceability.md) T-06); 0.284 con la suma simple de rectángulos | 0 % | ±0.5 % | Manual AISC, Tabla 1-1 |
 | d; bf; tw; tf (in) | 12.2; 6.49; 0.23; 0.38 | idénticos | — | 0 | informativo | ídem |
 | Sx; Zx; Sy; Zy (in³) | 33.4; 37.2; 5.34; 8.17 | idénticos | Sx −0.12 %; Zx −0.24 % | 0 | informativo | ídem |
 | Cw (in⁶) | 607 | 607 | — | 0 | informativo | ídem |
@@ -110,9 +110,9 @@ E 29000 ksi: ANSI/AISC 360-22, Symbols. nu 0.3: <F-06 confirmada>. Unit weight 4
 | # | Diferencia | Estado | Qué falta |
 |---|---|---|---|
 | DIF-01 | Peso unitario −0.62 % | aceptada como informativa (piloto sin peso propio) | — |
-| DIF-02 | ν o G | pendiente | elegir oráculo; recomendado ν = 0.3 (exacto con RAM) con la cita F-06 |
+| DIF-02 | ν o G | **ν = 0.30 aceptado provisionalmente** (R-2) | cita F-06 |
 | DIF-03 | «Montilla» | resuelta: no es autoridad y no existe en la interfaz | — |
-| DIF-04 | Edición formal del catálogo de RAM | **sin verificar** | decisión del Owner: (a) aprobar las filas con la edición sin verificar formalmente, apoyándose en la coherencia completa con v16.0 y en las fuentes independientes de §4; o (b) exigir documentación de Bentley antes de aprobar |
+| DIF-04 | Edición formal del catálogo de RAM | **R-1 aceptación condicional**: coherencia con v16.0 como evidencia del piloto; edición formal **no verificada** | — (no declarar verificada la edición) |
 | G-J | J de la W12X26 sin contraste independiente concluyente | pendiente | F-01 (Manual) |
 | G-HSS | Convención de esquinas de la HSS | pendiente | confirmar radio exterior 2·tdes y tdes = 0.93·tnom en F-01 o F-09 |
 | C-ED | Ediciones de ASTM y citas de E y del peso | pendientes | F-03, F-04, F-05, F-07 |

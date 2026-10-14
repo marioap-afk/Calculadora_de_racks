@@ -117,3 +117,17 @@ show("HSS4X4X1/4, tdes = 0.93 x 0.25 = 0.2325, radio exterior 2.0 tdes", hss_squ
 show("HSS4X4X1/4, tdes = 0.233, radio exterior 1.5 tdes (sensibilidad)", hss_square(4.0, 0.233, 1.5), hss_ref)
 w_ref = dict(A=7.65, Ix=204, Iy=17.3, Sx=33.4, Zx=37.2, J_simple=0.3)
 show("W12X26 con dimensiones tabuladas (d 12.2, bf 6.49, tw 0.23, tf 0.38, filete kdes - tf = 0.30)", w_shape(12.2, 6.49, 0.23, 0.38, 0.30), w_ref)
+
+def w_torsion_el_darwish_johnston(d, bf, tw, tf, r, flange_coef):
+    """J de un perfil I laminado con filetes: 2 alas + alma + 2 uniones alma-ala (El Darwish y Johnston, 1965).
+    flange_coef: coeficiente total de la correccion de extremo de las dos alas (0.42 = 2 x 0.21)."""
+    j_flanges = 2 * bf * tf ** 3 / 3 - flange_coef * tf ** 4
+    j_web = (d - 2 * tf) * tw ** 3 / 3
+    alpha = -0.042 + 0.2204 * (tw / tf) + 0.1355 * (r / tf) - 0.0865 * (r * tw / tf ** 2) - 0.0725 * (tw / tf) ** 2
+    D = ((tf + r) ** 2 + tw * (r + tw / 4)) / (2 * r + tf)
+    return j_flanges + j_web + 2 * alpha * D ** 4, alpha, D
+
+
+for coef in (0.42, 0.84):
+    J, a, D = w_torsion_el_darwish_johnston(12.2, 6.49, 0.23, 0.38, 0.30, coef)
+    print("== W12X26 J con filetes (El Darwish y Johnston), correccion total de alas %.2f tf^4: J %.5f (catalogo 0.3, delta %+.3f %%), alpha %.5f, D %.5f" % (coef, J, 100 * (J - 0.3) / 0.3, a, D))

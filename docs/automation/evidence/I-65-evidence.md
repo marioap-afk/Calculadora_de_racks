@@ -1562,3 +1562,28 @@ Custodia:
 | `docs/automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md` | `33462201F7558014C34263C329359E5401C35F983BE5DEF81C14275468E74360` |
 
 - **Contadores:** Codex 41 de 46; `attempts` 6 de 6; reserva 48/9 no habilitada.
+
+## 60. Compilación del DLL del smoke, referencias y fuentes (2026-10-14T02:37:50Z)
+
+- **Orden:** disposición del Owner (decisiones §54), sobre `f9c6bd9c` (CI 38500450515 push 4/4 `success`); texto literal en `745653e1`.
+- **Ejecutor:** Coordinator, sin cesiones; sin Codex, Workers ni RAM; AutoCAD cerrado (`acad.exe` = 0) en todo momento.
+- **Compilación:** `745653e1` → `RackCad.Plugin.dll` `2e04a4bb…e41d` (detalle en la custodia). Las salidas `bin/` y `obj/` están
+  ignoradas por Git; la copia congelada y la carpeta de evidencia del host están fuera del repositorio.
+- **Canal entre sesiones:** solicitudes de ventana concreta a I-52 (`db3893c0-…`) y a I-64 (`00b36eca-…`); recibo de I-64 custodiado
+  literalmente (§14 de la custodia de coordinación).
+- **Búsquedas web** (fuentes secundarias de R-3) listadas en el documento de trazabilidad §5. La Design Guide 9 de AISC no se pudo leer
+  (PDF cifrado; la herramienta lo guardó en la carpeta de resultados de la sesión, sin abrirlo).
+- **Documentos (SHA-256 al registrar):**
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/smoke-dll-build-745653e1.md` | `9BC602502494CDC3A6A65006C9DD5AAAEA8FF997EC6DD250857A26A80A1C5458` |
+| `docs/automation/evidence/I-65-f4/smoke-dll-745653e1-output-manifest.txt` | `14E860D1D4D4B0EA46F1567D2FC128D5CDA8772817227BBF86D3C4D2599DC5B9` |
+| `docs/automation/evidence/I-65-f4/host-coordination-smoke-2026-10-14.md` | `59415ACA87109D67FAAA2C65A8EAF757F72BE1A4381B89468E07328340B69973` |
+| `docs/automation/evidence/I-65-f4/section-props-analytic-check.py.txt` | `24E2D7392A426B72771E4E18A16544674DA14398D9664DD748101F570F8FBA12` |
+| `docs/automation/evidence/I-65-f4/section-props-analytic-check.out.txt` | `A31712C8B8A0B79D0C49B627E2DF7F8C2E6014ED8F856AF7B8EB1BC368D280D1` |
+| `docs/initiatives/I-65-f4-structural-sources-traceability.md` | `3336A50EFD8C53FDA63D13644BF69E784C3F39D6E50FE7330F1A5E1CB64746E3` |
+| `docs/initiatives/I-65-f4-engineering-validation-sheet.md` | `E6961E27BDFBD7F1EC798087A375A1F78AA64E3078BC955BC90E4025F8FF3C85` |
+| `docs/initiatives/I-65-f4-final-properties-for-approval.md` | `193EF91E940649558E616459A029FC8344D6E02ED9082FBA00AEF6DE3FC6331A` |
+
+- **Contadores:** Codex 41 de 46; `attempts` 6 de 6; reserva 48/9 no habilitada.

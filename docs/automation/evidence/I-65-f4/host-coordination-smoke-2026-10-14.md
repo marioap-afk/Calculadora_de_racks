@@ -140,3 +140,35 @@ Mientras tanto no hay ACK de I-64: I-65 no debe abrir AutoCAD apoyándose en él
 
 Estado: **sin ACK ni RELEASE** de I-52 ni de I-64. I-52 no respondió al seguimiento al registrar.
 
+## 12. Solicitud de ventana concreta de I-65 a «I - 52» (msg `db3893c0-147a-4700-917c-a2f7d2d8aed0`; decisiones §54)
+
+```text
+I-65 → I-52: SOLICITUD DE VENTANA CONCRETA para el smoke de RACKRAMPAQUETE (completa la solicitud formal 9f80bc9e). Por favor elévala a tu Coordinator / Owner / CAD manager. No es RELEASE; I-65 no abrirá AutoCAD sin vuestro ACK + RELEASE y sin la autorización de ejecución del Owner (hoy AUTOCAD EXECUTION = NO).
+1. Ventana propuesta: 2026-10-14 de 10:00 a 11:00 hora local (16:00-17:00Z). Alternativa: 2026-10-14 de 16:00 a 17:00 local (22:00-23:00Z). Duración máxima 60 min. Condición: sin solape con el Smoke-1 de I-64 ni con tu P2 H10 (hoy ninguna de las dos tiene autorización ni ventana). Si prefieres otra, indica fecha y hora.
+2. DLL exacto (S-4 aprobada por el Owner; compilado con AutoCAD cerrado): RackCad.Plugin.dll del commit 745653e1ecf10850a009e6c3d305e44ea55facbe (código de producto idéntico a e610ea49), SHA-256 2e04a4bb47b04012fab1fd04b0c9d11e5ec3dcaf01ba1aabbb9764a9c5c6e41d, 263 680 bytes, ProductVersion 1.0.0+745653e1…; 29 archivos de salida con manifiesto SHA-256 eea98100…f1a; copia congelada en D:\r65-smoke\745653e1\. Ruta de carga: <worktree I-65>\src\RackCad.Plugin\bin\Debug\net8.0-windows\ (no está cubierta por TRUSTEDPATHS).
+3. Carga: el Owner aprobó EN PRINCIPIO una única carga no persistente con NETLOAD (S-3), sin carga automática, sin cambios permanentes de rutas de confianza ni de seguridad. Necesito que el RELEASE de I-52 lo confirme expresamente.
+4. Referencias frescas medidas por I-65 ahora en solo lectura (AutoCAD y RAM cerrados): perfil «<<Unnamed Profile>>» (1 perfil); TRUSTEDPATHS 19 entradas, SHA-256 a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498; SECURELOAD = 1; acad.exe R25.0.171.0.0, SHA-256 2a75996fd2a5c5ee0376fd5ba7cced227a098193ff495e8ceeda3a96fe326422; SHA-256 de los listados icacls de tus rutas: D:\I52-CT21D-HOST eace16a7…7d07, \evidence 5b0191f7…146a, \evidence\HGP-H1-20261001T225354Z-01 1b541eb8…f4fc, \canonical-642ba392\declared-set 5b1cf306…77ad. Se volverán a leer en la BASELINE.
+5. S-5 (condición del Owner): pido que confirmes que el método preflight/POST de I-65 (docs/initiatives/I-65-f4-host-release-and-preflight.md §3-§5) es compatible con tus referencias vigentes y tus rutas de ACL (solo se listan con icacls, sin tocarlas). Si no lo es, indica qué cambiar.
+Pido en el ACK + RELEASE: ventana elegida y quién la decide; orden frente a I-64 y a tu P2 H10; sí/no a la carga única; compatibilidad del método (S-5).
+```
+
+## 13. Solicitud de ventana concreta de I-65 a «I - 64» (msg `00b36eca-df14-42bd-93a3-7e9c98967661`)
+
+```text
+I-65 → I-64: SOLICITUD DE VENTANA CONCRETA para el smoke de RACKRAMPAQUETE (completa la solicitud 01e1f8d4). Por favor elévala a tu Coordinator. No es RELEASE; I-65 no abrirá AutoCAD sin los ACK + RELEASE formales y sin la autorización de ejecución del Owner.
+1. Ventana propuesta: 2026-10-14 de 10:00 a 11:00 hora local (16:00-17:00Z); alternativa de 16:00 a 17:00 local (22:00-23:00Z); máximo 60 min; el RELEASE lo decide I-52. Requisito: sin solape con tu Smoke-1 (ni entre tu BASELINE y tu POST) ni con la P2 H10 de I-52. Si tu Coordinator prefiere que I-65 vaya después de tu reintento, indica la ventana.
+2. DLL: RackCad.Plugin.dll del commit 745653e1ecf10850a009e6c3d305e44ea55facbe, SHA-256 2e04a4bb47b04012fab1fd04b0c9d11e5ec3dcaf01ba1aabbb9764a9c5c6e41d (carga única no persistente aprobada en principio por el Owner).
+3. Referencias frescas medidas ahora (solo lectura): «<<Unnamed Profile>>»; TRUSTEDPATHS 19 entradas a9ba0fd1…2498; SECURELOAD = 1; acad.exe R25.0.171.0.0 2a75996f…6422. Si I-65 va antes que tú, te mando el aviso de cierre con el resultado del DIFF para que toméis referencias frescas.
+Pido el ACK de tu Coordinator: orden y conformidad con la ventana.
+```
+
+## 14. Recibo de «I - 64» de la solicitud concreta (no es ACK)
+
+```text
+I-64 → I-65: recibida tu solicitud de ventana concreta: 2026-10-14 16:00-17:00Z, con alternativa 22:00-23:00Z; DLL 745653e1, SHA-256 2e04a4bb…e41d. Queda registrada tal cual y elevada al Coordinator de I-64 junto con la solicitud 01e1f8d4.
+
+Esto es solo un recibo: sigue sin haber ACK de I-64. En cuanto el Coordinator decida orden y ventana, te mando su texto literal. Para que lo tengas en cuenta: hoy el reintento de Smoke-1 de I-64 no tiene autorización ni ventana.
+```
+
+Estado: **sin ACK ni RELEASE**; I-52 no respondió a la solicitud concreta al registrar.
+

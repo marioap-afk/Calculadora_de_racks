@@ -5,7 +5,7 @@ Documento de la unidad (Coordinator). Versión 2 (2026-10-14), preparada para la
 decisiones [§49](../automation/decisions/I-65.md)). La versión 1 está en `71baf43b` (decisiones §47). Desarrolla la matriz §1 del
 [paquete de validación de ingeniería](I-65-f4-engineering-validation-package.md). No cambia el Freeze, ADR-0050 ni ninguna tolerancia.
 
-> **Estado: LISTA PARA LA VALIDACIÓN DEL OWNER. SIN FIRMA, SIN FECHA DE APROBACIÓN, SIN VALIDACIÓN FINAL.** El Owner asume
+> **Estado: LISTA PARA LA VALIDACIÓN DEL OWNER. SIN FIRMA, SIN FECHA DE APROBACIÓN, SIN VALIDACIÓN FINAL.** Edición formal de la base de RAM: **no verificada** (R-1: la coherencia con AISC v16.0 se usa solo como evidencia del piloto). El Owner asume
 > provisionalmente la verificación (OD-F4-02). Nada de esta hoja se le atribuye hasta su confirmación expresa. Las dos filas de
 > `assets/structural-analysis/ram-elements/section-material-map.json` siguen `proposed` (MAPPING UPDATE = PENDING ENGINEERING APPROVAL).
 > RAM no se abrió para preparar esta hoja.
@@ -28,9 +28,9 @@ decisiones [§49](../automation/decisions/I-65.md)). La versión 1 está en `71b
 | OD-F4-02 | El Owner asume **provisionalmente** la verificación de las dos filas |
 | OD-F4-03 | **Aceptada:** la base de RAM representa las propiedades que consume el adaptador, **contrastadas con fuentes de ingeniería externas** |
 | DIF-01 | Peso unitario −0.62 %: aceptada **solo** como diferencia informativa del piloto sin peso propio; la tolerancia no cambia |
-| DIF-02 | ν o G: **pendiente** de verificar contra una fuente técnica adecuada (§5.1) |
+| DIF-02 | **R-2 (decisiones §54): ν = 0.30 aceptado PROVISIONALMENTE** como candidato común de las dos filas, con E = 29 000 ksi, sujeto a fuentes técnicas verificables ([trazabilidad](I-65-f4-structural-sources-traceability.md) T-01, T-02); ningún material se marca verificado hasta cerrar las citas |
 | DIF-03 | La base «Montilla» **no** se usa como fuente de autoridad del piloto mientras no se identifique |
-| DIF-04 | **Confirmar la edición del catálogo de RAM antes de verificar las filas** (§4) |
+| DIF-04 | **R-1 (decisiones §54), ACEPTACIÓN CONDICIONAL:** la coherencia entre las tablas instaladas de RAM y AISC v16.0 (§4) se usa como evidencia **para el piloto**; **no** se declara verificada la edición formal de la base de RAM |
 
 Tolerancias (Freeze §4, sin cambio): A, Ix, Iy y J de RAM frente al catálogo ±0.5 %; E y ν exactas; peso unitario ±0.5 %.
 
