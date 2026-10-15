@@ -1,0 +1,741 @@
+--- ronda3/kit/make_closure.py
++++ ronda4/kit/make_closure.py
+@@ -1,26 +1,30 @@
+-"""I-62, decisiones §84: EffectiveInputClosure de la ÚNICA REVISIÓN FORMAL de la RONDA 3 de la enmienda A-6 (docs/initiatives/I-62-A-6.md, blob de
+-la ronda 3 de kit-params.json, PROPUESTA) por un ARCHITECT independiente, en una celda `claude-cli` medida y elegible (autorización del Owner
+-CLAUDE-CLI-I62 = A: revisiones de ARCHITECT de I-62, solo lectura). La revisión solo se lanza con la compuerta 11 de launch.py en Ok: decisiones
+-§84 con su encabezado, el blob completo y el SHA-256 de su texto fijados, y ninguna sección posterior (owner_gate.py).
+-
+-Adaptado del make_closure.py del kit de la ronda 2 (R20261012T195511Z-e5c3): la misma estructura de cierre, rangos, run y transporte; el objeto
+-es la A-6 de la ronda 3 en el commit del clon (CloneCommit de kit-params.json: un commit que contiene la publicación de la ronda 3, la custodia
+-del resultado `run` de sus guardas, decisiones §84 y las copias legibles de r3/). El run tiene TRES archivos: order.txt (= cuerpo §84, 3 377
+-bytes), prompt.md (renderizado desde prompt.template.md) y a6-r2.md (el texto de la ronda 2, blob 86da0ae7, premisa: la revisión de la ronda 2
+-lo citó).
++"""I-62, decisiones §85, punto 6: EffectiveInputClosure de la ÚNICA REVISIÓN FORMAL de la RONDA 4 de la enmienda A-6 (docs/initiatives/I-62-A-6.md, blob de
++la ronda 4 de kit-params.json, PROPUESTA) por un ARCHITECT independiente, acotada a A62-A6R3-R1 y a sus consecuencias directas, en una celda
++`claude-cli` medida y elegible (autorización del Owner CLAUDE-CLI-I62 = A: revisiones de ARCHITECT de I-62, solo lectura). La revisión solo se
++lanza con la compuerta 11 de launch.py en Ok: una disposición del Coordinator posterior a §85, fijada en owner_gate.py (número, encabezado y
++SHA-256 de su texto, con el blob completo), y ninguna sección posterior.
++
++Adaptado del make_closure.py del kit acreditado de la ronda 3 (R20261013T183701Z-9f80): la misma estructura de cierre, rangos, run y transporte; el
++objeto es la A-6 de la ronda 4 en el commit del clon (CloneCommit de kit-params.json: un commit que contiene decisiones §85, la publicación de la
++ronda 4 y la custodia del resultado `run` de sus guardas). El run tiene TRES archivos: order.txt (= cuerpo §85, 2 805 bytes), prompt.md
++(renderizado desde prompt.template.md) y a6-r3.md (el texto de la ronda 3, blob e62f27b8, premisa: la revisión de la ronda 3 lo citó y la pureza
++del delta se juzga frente a él).
+ 
+ Cierre canónico, en el commit del clon, cada archivo fijado por su blob (los directorios por su árbol):
+-  * A-6 de la ronda 3, entera (objeto);
+-  * docs/automation/evidence/I-62-A6/r3/ entero (guardas, autoprueba, resultado `run`, pruebas del aceptante r1probes/, evidencia estática r2static/,
+-    launchfix/, negativos, preflight y readable/ con su MANIFEST comprobado);
+-  * docs/automation/evidence/I-62-A6/r2/ entero (como en la ronda 2, con r2/readable/ y su MANIFEST comprobado);
+-  * el paquete B-min entero (para el contraste del texto normativo con accept/bmin_accept.py);
+-  * el dictamen de materialidad (output.json y README.md de R20261011T162328Z-5c5e) y las salidas de las revisiones de las rondas 1 y 2
+-    (output.json de R20261011T215735Z-c434 y de R20261012T195511Z-e5c3), con rangos por hallazgo;
+-  * la base normativa del kit de la ronda 2 (V14, AUTOMATION_PLAN, ADR-0046, ADR-0048, LIFECYCLE, A-1..A-5, agent-execution README, routing.md,
+-    adapters/codex-cli.md, cinco esquemas, kits/FX-02/controller-contracts.md, decisiones), con sus rangos de orientación y los nuevos (decisiones
+-    §83-§84; A-6: §3.17 y sus tablas, G1-G6, reglas de cada delta, §8 con las preguntas de la ronda 3);
+-  * toda fuente que liste G11 en el resultado `run` custodiado de las guardas de la ronda 3 (Sources y GuardSources; igual a
+-    a6r3-sources-for-reviewer.json), con sus rangos, incluida la evidencia (I-62-evidence.md, evidencia y no autoridad, como en la ronda 2).
+-  Fuera: docs/automation/evidence/I-62-C1C3/ (C1-C3 y la nota de aislamiento de I-65; decisiones §81-§82) y todo material de I-65.
++  * A-6 de la ronda 4, entera (objeto): mapa de secciones; reglas de cada delta; las líneas de A6-3, regla 6 (b), sus apartados (i)-(v) y su frase
++    final; las tablas y los párrafos de §3.17 y §3.18; la tabla de derivación de §3.12 (A6-9, regla 4) y G1-G6; la fila de §4 de N4 y nc1; las
++    líneas del Owner y los párrafos «Ronda 3» y «Ronda 4» de §7; y las filas de §8 Q-A6R3-01..04 y Q-A6R4-01..04;
++  * docs/automation/evidence/I-62-A6/r4/ entero (con readable/ y su MANIFEST comprobado);
++  * de r3/: r1probes/ entero (las sondas que criticó A62-A6R3-R1), sus copias legibles de r3/readable/ (con el MANIFEST, comprobado entero) y los
++    archivos de r3/ que citan r4/ o A-6 (lista fijada R3_CITED, comprobada mecánicamente sobre los textos);
++  * de r2/: independence/ entero (escenario del banco de la ronda 4) y sus copias legibles de r2/readable/ (con el MANIFEST, comprobado entero);
++  * la salida de la revisión de la ronda 3 (output.json, 691bbc8f), con rangos por A62-A6R3-R1, A62-A6R3-O1..O7 y NegativeCaseCoherence;
++  * el paquete B-min entero (árbol 3caa0dfa: bmin_accept.py y bmin_facts.py, que cita la regla 6 (b) y las sondas);
++  * la base normativa de la ronda 3 (V14, AUTOMATION_PLAN, ADR-0046, ADR-0048, LIFECYCLE, A-1..A-5, agent-execution README con §10 L219-L228,
++    routing.md, adapters/codex-cli.md, cinco esquemas, kits/FX-02/controller-contracts.md con L23 y L44-L45, decisiones §43, §57, §61, §64 y §73
++    en adelante, con las filas de §84 y §85);
++  * toda fuente que liste G11 en el resultado `run` custodiado de las guardas de la ronda 4 (Sources y GuardSources; igual a
++    a6r4-sources-for-reviewer.json), con sus rangos, incluida la evidencia (I-62-evidence.md, §140 en adelante; evidencia y no autoridad).
++  Fuera: docs/automation/evidence/I-62-C1C3/ (C1-C3 y la nota de aislamiento de I-65) y todo material de I-65; el resto de r2/ y r3/; la evidencia
++  de la ronda 1; las salidas de las revisiones de las rondas 1 y 2 y el dictamen de B-min; los demás archivos de los directorios de las revisiones.
+ Un archivo del cierre que no sea texto UTF-8 se informa (todos, con su ruta) y detiene el script; los archivos con líneas de más de 2 000
+@@ -32,3 +36,3 @@
+   python -B make_closure.py                    → escribe kit/closure.json (exige que kit/prompt.md sea el renderizado y que el run tenga
+-                                                  exactamente order.txt, prompt.md y a6-r2.md, iguales a las copias del kit)
++                                                  exactamente order.txt, prompt.md y a6-r3.md, iguales a las copias del kit)
+ No escribe en el clon, en el run ni en el repositorio.
+@@ -51,22 +55,23 @@
+ 
+-CLONE_FIXED, RUN_FIXED = r"D:\r62-arch-a6r3", r"D:\r62-arch-a6r3-run"
+-IDS = {"RunId": "R20261013T183701Z-9f80", "InvocationId": "I20261013T183701Z-9f80", "LogicalReviewRequestId": "L20261013T183701Z-9f80",
++CLONE_FIXED, RUN_FIXED = r"D:\r62-arch-a6r4", r"D:\r62-arch-a6r4-run"
++IDS = {"RunId": "R20261014T180556Z-5e02", "InvocationId": "I20261014T180556Z-5e02", "LogicalReviewRequestId": "L20261014T180556Z-5e02",
+        "AttemptSeq": 1}
+-SESSION_ID = "3f6938fa-d6b4-4494-bacb-684ce6287624"          # --session-id fijado para el único lanzamiento (uuid4; prep/ids.txt)
++SESSION_ID = "4cfdcf7d-0aa5-4a96-98ac-0c0a4832ec5b"          # --session-id fijado para el único lanzamiento (uuid4; prep/ids.txt)
+ OBJECT = "docs/initiatives/I-62-A-6.md"
+ A6R1_BLOB = "eac473c0d2e58cf1c4594f48a8816b3833af6509"        # ronda 1 (decisiones §77, punto 1)
+-A6R2_BLOB = "86da0ae770e683a647f2724860a4bd890061154d"        # ronda 2 (decisiones §80): en el padre de la publicación y en a6-r2.md
++A6R2_BLOB = "86da0ae770e683a647f2724860a4bd890061154d"        # ronda 2 (decisiones §80)
++A6R3_BLOB = "e62f27b8b1329f1b9cfa69a707feb31d22bad1d1"        # ronda 3 (decisiones §83-§84): en el padre de la publicación y en a6-r3.md
+ R2_DIR = "docs/automation/evidence/I-62-A6/r2"
+-R2_RUN_RESULT, R2_SELFTEST = R2_DIR + "/a6r2-guards-result-run.json", R2_DIR + "/a6r2-selftest.json"
++R2_INDEP = R2_DIR + "/independence"
+ R3_DIR = "docs/automation/evidence/I-62-A6/r3"
+-R3_GUARDS, R3_SELFTEST, R3_RUN_RESULT = R3_DIR + "/a6r3-guards.py", R3_DIR + "/a6r3-selftest.json", R3_DIR + "/a6r3-guards-result-run.json"
+-R3_SOURCES = R3_DIR + "/a6r3-sources-for-reviewer.json"
++R3_PROBES = R3_DIR + "/r1probes"
++R3_CITED = [R3_DIR + "/" + n for n in ("a6r3-guards.py", "launchfix/README.md", "make_candidate_commit_a6r3.py", "neg_controls_a6r3.py",
++                                       "preflight.md", "r2static/README.md")]   # archivos de r3/ fuera de r1probes/ que citan r4/ o A-6 (comprobado)
++R4_DIR = "docs/automation/evidence/I-62-A6/r4"
++R4_GUARDS, R4_SELFTEST, R4_RUN_RESULT = R4_DIR + "/a6r4-guards.py", R4_DIR + "/a6r4-selftest.json", R4_DIR + "/a6r4-guards-result-run.json"
++R4_SOURCES = R4_DIR + "/a6r4-sources-for-reviewer.json"
+ PKG_DIR = "docs/automation/evidence/I-62-F6/FX-02/bmin"
+ ACCEPTOR, TOOL = PKG_DIR + "/accept/bmin_accept.py", PKG_DIR + "/tool/bmin_facts.py"
+-RULING_DIR = "docs/automation/evidence/I-62-architect-bmin/R20261011T162328Z-5c5e"
+-RULING_OUT, RULING_README = RULING_DIR + "/output.json", RULING_DIR + "/README.md"
+-R1_REVIEW_DIR = "docs/automation/evidence/I-62-architect-A-6"
+-R1_REVIEW_OUT = R1_REVIEW_DIR + "/R20261011T215735Z-c434/output.json"
+-R2_REVIEW_DIR = "docs/automation/evidence/I-62-architect-A-6r2"
+-R2_REVIEW_OUT = R2_REVIEW_DIR + "/R20261012T195511Z-e5c3/output.json"
++R3_REVIEW_DIR = "docs/automation/evidence/I-62-architect-A-6r3"
++R3_REVIEW_OUT = R3_REVIEW_DIR + "/R20261013T183701Z-9f80/output.json"
+ AP = "docs/AUTOMATION_PLAN.md"
+@@ -85,5 +90,5 @@
+ DECISIONS = "docs/automation/decisions/I-62.md"
+-EVIDENCE = "docs/automation/evidence/I-62-evidence.md"          # DENTRO del cierre (como en la ronda 2): evidencia, no autoridad
++EVIDENCE = "docs/automation/evidence/I-62-evidence.md"          # DENTRO del cierre (como en las rondas 2 y 3): evidencia, no autoridad
+ C1C3_DIR = "docs/automation/evidence/I-62-C1C3"                 # FUERA del cierre (C1-C3 y la nota de I-65; decisiones §81-§82)
+-READABLE_DIRS = (R2_DIR + "/readable", R3_DIR + "/readable")    # copias legibles (líneas <= 1 900) de los JSON de una sola línea
++READABLE_DIRS = (R2_DIR + "/readable", R3_DIR + "/readable", R4_DIR + "/readable")   # copias legibles (líneas <= 1 900) de los JSON de una línea
+ CHAR_RECORD = "docs/automation/evidence/I-62-claude-cli/R20261008T183600Z-char/claude-cli-characterization.json"   # lo fija la compuerta; fuera del cierre
+@@ -99,4 +104,3 @@
+     CC: "90929ad1c49c028f41f58f654f8713bd0b35f27b",
+-    RULING_OUT: "96c3efbc81e9c6814b232774fd8ac7e900deda7d", RULING_README: "8ce105e0c2c6efd18eb720799492fdca0b4f7315",
+-    R1_REVIEW_OUT: "e90d685bb829fc7d30eda9bdb05deb3ac66d24f5", R2_REVIEW_OUT: "fc357d09f1d345fa5ad55ca5aeffb6dc7510abaa",
++    R3_REVIEW_OUT: "691bbc8fabdefaa853c1d6e29465b6c1a1889107",
+     ACCEPTOR: "434ef1fccb0d15762b30244b4a60928120698411", TOOL: "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+@@ -105,21 +109,20 @@
+ PINNED_TREES = {PKG_DIR: "3caa0dfa73d372af9251cf5c5c194261de8c7685", "docs/automation/agent-execution": "809fd58f450d3379a4fcc958cf8907fcdc5acff3",
+-                R1_REVIEW_DIR: "520e7a1f67e8280e8432a7666624fcf548c51a66", R2_REVIEW_DIR: "acf2fa30bc7a1db4756e3f743cb1dcc227734b8b",
+-                R2_DIR: "411949b0f20cb6edb1a01a208ccdfb1b3b19db76"}
+-DECISIONS_PREFIX_BLOB = "be5e376fc2c3ee65fee8c1e9862b58127cfc851a"   # decisiones en 06521610 (§84 registrada): prefijo exacto de las del clon
+-RUN_FILES = ["order.txt", "prompt.md", "a6-r2.md"]
+-PREMISE_RUN_FILES = ["order.txt", "a6-r2.md"]                # prompt.md nunca
+-ORDER_TEXT = ("84", "8a6b560f1da473ff152732e2e6bf2b82cd60f2df4ddfc7e44f8359edc7bef2e8", 3377)
++                R2_DIR: "411949b0f20cb6edb1a01a208ccdfb1b3b19db76", R2_INDEP: "c4f969df3a1d5dad13b3ec7ed82038e90fc90b6c",
++                R3_DIR: "a4e93edba524476d28e1d7d50df6e9ef1fccb5ab", R3_REVIEW_DIR: "f4442fdf2cdeb9a4e3abbe041443f32f77139745"}
++DECISIONS_PREFIX_BLOB = "4e090ed4687330a5584ca8f43468bcd2c7b009aa"   # decisiones en ceb85977 (§85 registrada): prefijo exacto de las del clon
++BASE_SECTION = 85                                              # §85: última sección de decisiones en el commit del clon (= owner_gate.BASE_SECTION)
++RUN_FILES = ["order.txt", "prompt.md", "a6-r3.md"]
++PREMISE_RUN_FILES = ["order.txt", "a6-r3.md"]                # prompt.md nunca
++ORDER_TEXT = ("85", "d74e2aa1ce5eacc7dd6323cf3f3acec37fd6eb25f905ca4f2479dbca0cde5232", 2805)
+ MATERIALITY_IDS = ["M-0%d" % i for i in range(1, 9)]
+ MATERIALITY_A6_EXPECTED = {"M-01": "no", "M-02": "yes", "M-03": "yes", "M-04": "yes", "M-05": "yes", "M-06": "no", "M-07": "no", "M-08": "yes"}
+-ROUND1_FINDING_IDS = ["A62-A6-R%d" % i for i in range(1, 6)]
+-ROUND1_OPTIONAL_IDS = ["A62-A6-O%d" % i for i in range(1, 4)]
+-ROUND2_FINDING_IDS = ["A62-A6R2-R1", "A62-A6R2-R2"]
+-ROUND2_OPTIONAL_IDS = ["A62-A6R2-O%d" % i for i in range(1, 6)]
++ROUND3_FINDING_IDS = ["A62-A6R3-R1"]
++ROUND3_OPTIONAL_IDS = ["A62-A6R3-O%d" % i for i in range(1, 8)]
++NEGATIVE_CASES = ["N4", "NC1"]
++CLOSURE_RULE_CASES = ["N4_ABSENT_DELIVERY", "NC1_NONEXISTENT_COMMIT", "ABSENT_NULL_EMPTY_FIELDS"]
++CLOSURE_SUBRULES = ["i", "ii", "iii", "iv", "v"]
++EVIDENCE_ASPECTS = ["DERIVATION", "INDEPENDENT_IMPLEMENTATION", "SUBSTITUTIONS", "ADDED_OR_INVENTED_INPUTS", "ACCEPTOR_RUNS", "O3_STRICT"]
++MANDATORY_EVIDENCE_ASPECTS = EVIDENCE_ASPECTS[:5]             # las pruebas obligatorias de decisiones §85, punto 3 (O3_STRICT: punto 4)
++ROUND4_QUESTION_IDS = ["Q-A6R4-0%d" % i for i in range(1, 5)]
+ GAP_IDS = ["G%d" % i for i in range(1, 7)]
+-NEGATIVE_CASES = ["N4", "NC1", "VERIFY_WITHOUT_INSTRUMENT"]
+-ACCEPTOR_CLAIMS = ["CHECK_IDS", "WAIVABLE_SET", "DECISION_FORMULA", "EXIT_CODES", "NOT_APPLICABLE_RULES", "R4_VERIFICATION_CONDITION",
+-                   "R4_NOT_RUN_AS_NON_PASS", "R4_AUTHORITY_MAP_RULE", "R3_R9_WITHOUT_RUNS"]
+-REAL_SESSION_PRECONDITIONS = ["RUNS_RECONSTRUCTION_FROM_REAL_LOG", "RUNS_COMPARISON_ON_REAL_RUNS", "IDENTITY_AT_USE_IN_REAL_SHELL",
+-                              "GIT_BY_NAME_IS_DECLARED_GIT", "CLOSURE_COVERAGE_R9_ON_REAL_RUNS", "ACCEPTOR_RUN_ON_MEASUREMENT_LOG",
+-                              "COORDINATOR_CLOSURE_AND_RECONSTRUCTION_RULE_DISPOSITION", "NORMATIVE_READINGS_DISPOSITION_AND_PRETEST"]
+ DIRECT_READ = {"Path": V14, "Start": 2333, "End": 2334, "Token": "Esperado independiente"}
+@@ -130,4 +133,4 @@
+                   "--strict-mcp-config", "--no-chrome", "--tools", "Read,Grep,Glob", "--permission-mode", "dontAsk", "--permission-prompts", "none"]
+-LAUNCH_COMMAND = "python -B kit/launch.py"   # decisiones §84, punto 2 (FROZEN_COMMAND de launch.py)
+-TIMEOUT_S = 3600               # decisiones §84, punto 7
++LAUNCH_COMMAND = "python -B kit/launch.py"   # la orden congelada de la ronda 3 (FROZEN_COMMAND de launch.py)
++TIMEOUT_S = 3600               # el tope de la ronda 3
+ AUTH_SETTLE_S = 120            # mitigación del intento 1 de A-3: espera entre `auth status` (preflight 5) y el lanzamiento
+@@ -150,3 +153,3 @@
+ 
+-# ------------------------------------------------------------------ rangos mecánicos (los del kit de la ronda 2)
++# ------------------------------------------------------------------ rangos mecánicos (los de los kits de las rondas 2 y 3)
+ def headings(lines):
+@@ -206,2 +209,10 @@
+     return {"Section": label, "Start": first, "End": end}
++
++
++def fenced_after(lines, rng, prefix, label):
++    """Desde la línea de `rng` que empieza por `prefix` hasta el cierre del primer bloque ``` que la sigue (la tabla de derivación de §3.12)."""
++    first = row(lines, rng, lambda x: x.startswith(prefix), label)["Start"]
++    fences = [i + 1 for i in range(first, rng["End"]) if lines[i].startswith("```")]
++    assert len(fences) >= 2, "%s: sin bloque ``` cerrado después de la línea %d" % (label, first)
++    return {"Section": label, "Start": first, "End": fences[1]}
+ 
+@@ -357,4 +368,11 @@
+         cited(L, 184, 184, "(INVALID_OUTPUT)", "§8, salida inválida (INVALID_OUTPUT) (L184)"),
++        cited(L, 219, 228, "Se ejecutan una sola vez", "§10, controles negativos (L219-L228)"),
+         cited(L, 561, 561, "| I2 |", "§15.2, regla I2 (L561)"), cited(L, 565, 568, "| I6 |", "§15.2, regla I6 y auditoría de lecturas (L565-L568)")] + \
+         g11_ranges(RAE)
++
++
++def ranges_cc(L):
++    return whole(L) + [header_block(L)] + all_sections(L) + [
++        cited(L, 23, 23, "| nc1, nc2, nc3, N4, N5, N6, N7a, N7b |", "negativos con invocación: mismo prompt y Target de la verificación real (L23)"),
++        cited(L, 44, 45, "| `AuthorityRevision` |", "AuthorityRevision y CanonicalInputs del kit (L44-L45)")] + g11_ranges(CC)
+ 
+@@ -386,4 +404,10 @@
+                         ("rechazo", "| rechazo ante evidencia incompleta o inconsistente")]
+-Q_ROWS = ("Q-A6-01", "Q-A6-02", "Q-A6-06, Q-A6-07", "Q-A6-12", "Q-A6R2-01", "Q-A6R2-02", "Q-A6R2-03", "Q-A6R2-04", "Q-A6R2-05", "Q-A6R2-06",
+-          "Q-A6R3-01", "Q-A6R3-02", "Q-A6R3-03", "Q-A6R3-04")
++R4_CORRECTION_ROWS = ["R1"] + ["O%d" % i for i in range(1, 8)]
++R4_BULLETS = [("derivación", "- **Derivación.**"), ("cierre independiente", "- **Cierre calculado de forma independiente.**"),
++              ("aceptante fijado", "- **Aceptante fijado.**"), ("insumos y sustituciones", "- **Insumos añadidos o inventados y sustituciones.**")]
++R4_PARAS = [("cambio normativo", "Cambio normativo solo en A6-3, regla 6 (b)"), ("N4 y nc1", "**N4 y nc1 con el cierre normativo**"),
++            ("relación con A6-9", "**Relación con A6-9, regla 4**"), ("prueba previa", "**Momento y efecto de la prueba previa**"),
++            ("G1-G6", "**Riesgos residuales G1-G6 en la ronda 4.**"), ("kit", "**Kit de la revisión de la ronda 4**")]
++SUBRULE_RX = r"^>    \((i|ii|iii|iv|v)\) "
++Q_ROWS = ["Q-A6R3-0%d" % i for i in range(1, 5)] + ROUND4_QUESTION_IDS
+ 
+@@ -392,3 +416,3 @@
+     s = {h[2].split(" ")[0]: section(L, h[2]) for h in headings(L)[1:] if h[1] <= 3}
+-    s5, s7, s8, s312, s316, s317 = s["5."], s["7."], s["8."], s["3.12"], s["3.16"], s["3.17"]
++    s4, s7, s8, s312, s317, s318 = s["4."], s["7."], s["8."], s["3.12"], s["3.17"], s["3.18"]
+     deltas = {"A6-%d" % n: s["3.%d" % (n + 3)] for n in range(1, 10)}
+@@ -399,2 +423,12 @@
+         rules += rs
++    r6 = [r for r in rules if r["Section"] == "A6-3, regla 6"][0]
++    b0 = row(L, r6, lambda x: x.startswith(">    (b) `Repo` = el `-C`"), "A6-3, regla 6 (b)")["Start"]
++    c0 = row(L, r6, lambda x: x.startswith(">    (c) `Verification` = "), "A6-3, regla 6 (c)")["Start"]
++    r6b = {"Section": "A6-3, regla 6 (b)", "Start": b0, "End": c0 - 1}
++    final = row(L, r6b, lambda x: x.startswith(">    La prueba previa de la regla de A-6"), "A6-3, regla 6 (b), frase final")["Start"]
++    subrules = block_items(L, {"Start": b0, "End": final - 1}, SUBRULE_RX, lambda x: x.startswith(">    "),
++                           lambda m: "A6-3, regla 6 (b) (%s)" % m.group(1))
++    assert [x["Section"] for x in subrules] == ["A6-3, regla 6 (b) (%s)" % k for k in CLOSURE_SUBRULES], "A6-3, regla 6 (b): apartados (i)-(v)"
++    r6b_parts = [r6b, {"Section": "A6-3, regla 6 (b), encabezado (`Closure`)", "Start": b0, "End": subrules[0]["Start"] - 1}] + subrules + [
++        {"Section": "A6-3, regla 6 (b), frase final (prueba previa y medición)", "Start": final, "End": c0 - 1}]
+     gaps = block_items(L, s312, r"^- \*\*(G[1-6])\. ", lambda x: x.startswith("  "), lambda m: "§3.12, %s" % m.group(1))
+@@ -403,7 +437,5 @@
+     assert OG.line_sha(L[line_a["Start"] - 1]) == OG.A6_LINE_SHA, "A-6 §7: la línea (a) no es la fijada (SHA-256 83152eae…)"
+-    return whole(L) + [header_block(L)] + all_sections(L) + [
+-        table_at(L, s["3.2"], lambda x: x.startswith("| Punto | Alcance mínimo del dictamen |"), "§3.2, tabla de los ocho puntos"),
+-        table_at(L, s["3.3"], lambda x: x.startswith("| Pieza | Ruta de procedencia |"), "§3.3, tabla de identidad por blob"),
+-        table_at(L, s5, lambda x: x.startswith("| M | Activado | Dictamen | Ronda 1 | Ronda 2 | Motivo |"), "§5, tabla M-01..M-08"),
+-        table_at(L, s316, lambda x: x.startswith("| Hallazgo de la ronda 1 | Corrección |"), "§3.16, tabla de las correcciones de la ronda 2"),
++    return whole(L) + [header_block(L)] + all_sections(L) + r6b_parts + [
++        fenced_after(L, s312, "**Tabla de derivación del cierre del aceptante**", "§3.12, tabla de derivación del cierre del aceptante (A6-9, regla 4)"),
++        para(L, s312, "La tabla no es mecánica desde", "§3.12, párrafo que sigue a la tabla de derivación"),
+         table_at(L, s317, lambda x: x.startswith("| Hallazgo de la ronda 2 | Corrección |"), "§3.17, tabla de las correcciones de la ronda 3"),
+@@ -413,7 +445,12 @@
+         para(L, s317, "**Riesgos residuales G1-G6 en la ronda 3.**", "§3.17, riesgos residuales G1-G6 en la ronda 3"),
+-        para(L, s317, "**Procedimiento de lanzamiento del kit siguiente**", "§3.17, procedimiento de lanzamiento del kit siguiente")] + [
+-        row(L, s5, (lambda m: lambda x: x.startswith("| %s |" % m))(m), "§5, %s" % m) for m in MATERIALITY_IDS] + [
+-        row(L, s316, (lambda r: lambda x: x.startswith("| %s:" % r))(r), "§3.16, %s" % r) for r in ("R1", "R2", "R3", "R4", "R5", "O1", "O2", "O3")] + [
++        para(L, s317, "**Procedimiento de lanzamiento del kit siguiente**", "§3.17, procedimiento de lanzamiento del kit siguiente"),
++        table_at(L, s318, lambda x: x.startswith("| Hallazgo de la ronda 3 | Corrección |"), "§3.18, tabla de la corrección de la ronda 4")] + [
+         row(L, s317, (lambda r: lambda x: x.startswith("| %s:" % r))(r), "§3.17, %s" % r) for r in R3_CORRECTION_ROWS] + [
+         row(L, s317, (lambda p: lambda x: x.startswith(p))(p), "§3.17, precondición: %s" % k) for k, p in R3_PRECONDITION_ROWS] + [
++        row(L, s318, (lambda r: lambda x: x.startswith("| %s:" % r))(r), "§3.18, %s" % r) for r in R4_CORRECTION_ROWS] + [
++        para(L, s318, p, "§3.18, %s" % k) for k, p in R4_PARAS] + [
++        dict(block_items(L, s318, "^" + re.escape(p), lambda x: x.startswith("  "), (lambda k: lambda m: "§3.18, viñeta: %s" % k)(k))[0])
++        for k, p in R4_BULLETS] + [
++        row(L, s4, lambda x: x.startswith("| Cierre del aceptante con una entrada que falta o un commit inexistente (N4, nc1) |"),
++            "§4, fila de N4 y nc1"),
+         line_a,
+@@ -422,3 +459,4 @@
+         row(L, s7, lambda x: x.startswith("- **(b) Autorización de consumo"), "§7, consecuencia (b)"),
+-        para(L, s7, "**Ronda 3.**", "§7, ronda 3 y blobs fijados")] + [
++        para(L, s7, "**Ronda 3.**", "§7, ronda 3 y blobs fijados"),
++        para(L, s7, "**Ronda 4.**", "§7, ronda 4 y blobs fijados")] + [
+         row(L, s8, (lambda q: lambda x: x.startswith("| %s |" % q))(q), "§8, %s" % q) for q in Q_ROWS] + gaps + rules
+@@ -460,11 +498,11 @@
+     s = {n: section(L, "%d. " % n) for n in present if n in (43, 57, 61, 64) or n >= 73}
+-    s83, s84 = s[83], s[84]
+-    rows83 = [row(L, s83, (lambda k: lambda x: x.startswith("| **%d. " % k))(k), "§83, punto %d" % k) for k in range(1, 9)]
++    s84, s85 = s[84], s[85]
+     rows84 = [row(L, s84, (lambda k: lambda x: x.startswith("| **%d. " % k))(k), "§84, punto %d" % k) for k in range(1, 11)]
+-    src83 = row(L, s83, lambda x: "extraído de la transcripción de la sesión, suma " in x, "§83, bytes y SHA-256 del cuerpo pegado")
++    rows85 = [row(L, s85, (lambda k: lambda x: x.startswith("| **%d. " % k))(k), "§85, punto %d" % k) for k in range(1, 9)]
+     src84 = row(L, s84, lambda x: "extraído de la transcripción de la sesión, suma " in x, "§84, bytes y SHA-256 del cuerpo pegado")
++    src85 = row(L, s85, lambda x: "extraído de la transcripción de la sesión, suma " in x, "§85, bytes y SHA-256 del cuerpo pegado")
+     owner78 = row(L, s[78], lambda x: OG.line_sha(x) == OG.A6_LINE_SHA, "§78, línea del Owner A6-ADR0046-9-FX02")
+     last = max(n for n in s)
+-    return [span(s[73], s[last], "§73-§%d" % last), span(s[83], s[84], "§83-§84")] + [s[n] for n in sorted(s)] + [src83] + rows83 + \
+-        [src84] + rows84 + [owner78] + g11_ranges(DECISIONS)
++    return [span(s[73], s[last], "§73-§%d" % last), span(s[84], s[85], "§84-§85")] + [s[n] for n in sorted(s)] + [src84] + rows84 + \
++        [src85] + rows85 + [owner78] + g11_ranges(DECISIONS)
+ 
+@@ -493,4 +531,4 @@
+     (V14, "Proposal V14 congelada: §18 (matriz OV y OD, orientación), §20.2 (AUT-I1), §20.3 y §20.3.1 (cierre efectivo de insumos), Anexo C "
+-          "(L2333-L2334, LECTURA DIRECTA OBLIGATORIA; C-24, L2363), D.1, D.3 (tabla de la Topología A y totales), D.4 (resultados y matriz de "
+-          "cierre), D.5 y D.6; rangos citados por A-6 (G11)", "SECTIONS", ranges_v14, "§18, §20.2, §20.3, §20.3.1, Anexo C, D.1, D.3, D.4, D.5 y D.6"),
++          "(L2333-L2334, LECTURA DIRECTA OBLIGATORIA; C-24, L2363), D.1, D.3 (tabla de la Topología A, negativos y totales), D.4, D.5 y D.6; "
++          "rangos citados por A-6 (G11)", "SECTIONS", ranges_v14, "§18, §20.2, §20.3, §20.3.1, Anexo C, D.1, D.3, D.4, D.5 y D.6"),
+     (AP, "AUTOMATION_PLAN: 16.4 (receta), 16.9 (comprobaciones y modos de fallo; INVALID_OUTPUT L653), 16.10, 16.11 (recuperación), 16.13-16.14 "
+@@ -500,3 +538,3 @@
+     (ADR48, "ADR-0048 (roles, binding por capacidad, independencia por dimensiones; conserva #9, Level A)", "ENTIRE", ranges_adr(ADR48), "entero"),
+-    (LIFECYCLE, "LIFECYCLE §3 (M-01..M-08; OWNER-RESERVED), §5 (REQUIRED/OPTIONAL y veredictos, orientación) y §6 (enmiendas)", "SECTIONS",
++    (LIFECYCLE, "LIFECYCLE §3 (M-01..M-08; OWNER-RESERVED), §5 (REQUIRED/OPTIONAL y veredictos) y §6 (enmiendas)", "SECTIONS",
+      ranges_lifecycle, "§3, §5 y §6"),
+@@ -508,19 +546,20 @@
+     (RAE, "procedimiento de agent-execution: §5 (invocación del Controller), §8 (coherencia de la verificación; INVALID_OUTPUT), §10 (controles "
+-          "negativos, L219-L228), §14 (binding, independencia) y §15 (invocación de rol, cierre e I2/I6, fidelidad)", "SECTIONS", ranges_rae,
+-     "§5, §8, §10, §14 y §15"),
++          "negativos, L219-L228: copias de las entradas salvo el campo mutado, oráculo relativo, nc1), §14 (binding, independencia) y §15 "
++          "(invocación de rol, cierre e I2/I6, fidelidad)", "SECTIONS", ranges_rae, "§5, §8, §10 (L219-L228), §14 y §15"),
+     (ROUTING, "enrutamiento estable (clases, elegibilidad de una celda, el propio Controller)", "ENTIRE", ranges_doc, "entero"),
+     (CODEX_CLI, "descriptor del adapter codex-cli de la celda del Controller", "ENTIRE", ranges_doc, "entero"),
+-    (S_IC, "esquema rackcad-input-closure/v1 (contrato consumido)", "ENTIRE", ranges_whole, "entero"),
+-    (S_RI, "esquema rackcad-role-invocation/v1 (contrato consumido)", "ENTIRE", ranges_whole, "entero"),
++    (S_IC, "esquema rackcad-input-closure/v1 (contrato consumido: E de la tabla de derivación)", "ENTIRE", ranges_whole, "entero"),
++    (S_RI, "esquema rackcad-role-invocation/v1 (contrato consumido: I de la tabla de derivación)", "ENTIRE", ranges_whole, "entero"),
+     (S_CV2, "esquema rackcad-controller-verification/v2 (contrato consumido; lo lee R4 del aceptante)", "ENTIRE", ranges_whole, "entero"),
+-    (S_DEL2, "esquema rackcad-delegation/v2 (contrato consumido)", "ENTIRE", ranges_whole, "entero"),
+-    (S_WH, "esquema rackcad-worker-handoff/v1 (contrato consumido)", "ENTIRE", ranges_whole, "entero"),
+-    (CC, "contratos de las invocaciones del Controller de FX-02 (codex-cli, solo lectura; CanonicalInputs en L44-L45); sin valores esperados",
+-     "ENTIRE", ranges_g11_only(CC), "entero"),
+-    (DECISIONS, "decisiones §43, §57, §61, §64 (acuerdos de A-1..A-4) y §73 en adelante (§82: revisión de la ronda 2; §83: ronda 3 y correcciones "
+-                "R1/R2; §84: esta revisión)", "SECTIONS", ranges_decisions, "§43, §57, §61, §64 y §73 en adelante"),
++    (S_DEL2, "esquema rackcad-delegation/v2 (contrato consumido: D de la tabla de derivación)", "ENTIRE", ranges_whole, "entero"),
++    (S_WH, "esquema rackcad-worker-handoff/v1 (contrato consumido: H de la tabla de derivación)", "ENTIRE", ranges_whole, "entero"),
++    (CC, "contratos de las invocaciones del Controller de FX-02 (codex-cli, solo lectura; Target de la verificación real en L23; CanonicalInputs en "
++         "L44-L45); sin valores esperados", "ENTIRE", ranges_cc, "entero"),
++    (DECISIONS, "decisiones §43, §57, §61, §64 (acuerdos de A-1..A-4) y §73 en adelante (§84: revisión de la ronda 3; §85: su disposición, la "
++                "corrección acotada de la ronda 4 y la preparación de este kit)", "SECTIONS", ranges_decisions,
++     "§43, §57, §61, §64 y §73 en adelante"),
+     (EVIDENCE, "evidencia de I-62 (registro de la sesión que preparó A-6 y este kit: hechos, resúmenes y valoraciones; evidencia, no autoridad), que "
+-               "A-6 cita (§140 en adelante; §161-§165: revisión de la ronda 2, ronda 3 y §84); en el cierre como en la ronda 2 (decisiones §79, "
+-               "punto 5: acceso directo a toda fuente citada), con riesgo de anclaje declarado", "SECTIONS", ranges_evidence,
+-     "§140 en adelante (citadas por A-6)"),
++               "A-6 cita (§140 en adelante; §166-§169: kit y revisión de la ronda 3, §85 y publicación de la ronda 4); en el cierre como en las "
++               "rondas 2 y 3 (decisiones §79, punto 5: acceso directo a toda fuente citada), con riesgo de anclaje declarado", "SECTIONS",
++     ranges_evidence, "§140 en adelante (citadas por A-6)"),
+ ]
+@@ -596,9 +635,9 @@
+ def load_g11(rev):
+-    """Fuentes y rangos de G11 del resultado `run` custodiado de las guardas de la ronda 3 (= a6r3-sources-for-reviewer.json, comprobado)."""
++    """Fuentes y rangos de G11 del resultado `run` custodiado de las guardas de la ronda 4 (= a6r4-sources-for-reviewer.json, comprobado)."""
+     global G11
+-    G11 = json.loads(git("show", rev + ":" + R3_RUN_RESULT).decode("utf-8"))["Guards"]["G11"]
++    G11 = json.loads(git("show", rev + ":" + R4_RUN_RESULT).decode("utf-8"))["Guards"]["G11"]
+     assert G11.get("Sources"), "G11 sin Sources"
+-    src = json.loads(git("show", rev + ":" + R3_SOURCES).decode("utf-8"))
++    src = json.loads(git("show", rev + ":" + R4_SOURCES).decode("utf-8"))
+     assert src.get("Sources") == G11.get("Sources") and src.get("GuardSources") == G11.get("GuardSources"), \
+-        "a6r3-sources-for-reviewer.json distinto de G11 del resultado `run` custodiado"
++        "a6r4-sources-for-reviewer.json distinto de G11 del resultado `run` custodiado"
+     return G11
+@@ -621,2 +660,20 @@
+ 
++def r3_cited_files(rev):
++    """Archivos de r3/ fuera de r1probes/ que citan, por su ruta, la A-6 de la ronda 4 o algún archivo de r4/ (token `r3/<ruta>` o
++    `docs/automation/evidence/I-62-A6/r3/<ruta>`, con la ruta de un archivo del árbol r3/)."""
++    r3_files = set(dir_files(rev, R3_DIR))
++    rx = re.compile(r"(?<![A-Za-z0-9_-])(?:docs/automation/evidence/I-62-A6/)?r3/([A-Za-z0-9_./-]+)")
++    hits = set()
++    for p in [OBJECT] + dir_files(rev, R4_DIR):
++        try:
++            t = git("show", rev + ":" + p).decode("utf-8")
++        except UnicodeDecodeError:
++            continue
++        for m in rx.finditer(t):
++            f = R3_DIR + "/" + m.group(1).rstrip(".")
++            if f in r3_files and not f.startswith(R3_PROBES + "/"):
++                hits.add(f)
++    return sorted(hits)
++
++
+ def identity_checks():
+@@ -628,4 +685,4 @@
+     assert git("rev-parse", pub + "^").decode().strip() == parent, "el padre de la publicación no es %s" % parent[:8]
+-    assert git("rev-parse", parent + ":" + OBJECT).decode().strip() == A6R2_BLOB, "el padre de la publicación no tiene la A-6 de la ronda 2"
+-    assert obj_blob not in (A6R1_BLOB, A6R2_BLOB), "el objeto no puede ser el blob de la ronda 1 ni el de la ronda 2"
++    assert git("rev-parse", parent + ":" + OBJECT).decode().strip() == A6R3_BLOB, "el padre de la publicación no tiene la A-6 de la ronda 3"
++    assert obj_blob not in (A6R1_BLOB, A6R2_BLOB, A6R3_BLOB), "el objeto no puede ser el blob de las rondas 1, 2 o 3"
+     for c in (pub, grc, REV):
+@@ -634,10 +691,9 @@
+         assert git_ok("merge-base", "--is-ancestor", a, b), "%s no es antecesor de %s" % (a, b)
+-    pub_files = dir_files(pub, R3_DIR)
+-    now_files = dir_files(REV, R3_DIR)
++    pub_files = dir_files(pub, R4_DIR)
++    now_files = dir_files(REV, R4_DIR)
+     unchanged = all(git("rev-parse", pub + ":" + p).decode().strip() == git("rev-parse", REV + ":" + p).decode().strip() for p in pub_files)
+     added = set(now_files) - set(pub_files)
+-    allowed_added = set(P.get("R3AddedAfterPublication") or [R3_RUN_RESULT])
+-    assert unchanged and R3_RUN_RESULT in set(now_files) and added <= allowed_added and \
+-        all(a == R3_RUN_RESULT or a.startswith(R3_DIR + "/readable/") for a in added), \
+-        "r3/ cambió después de la publicación además de añadir el resultado `run` y readable/ (añadidos: %s)" % sorted(added)
++    allowed_added = set(P.get("R4AddedAfterPublication") or [R4_RUN_RESULT])
++    assert unchanged and R4_RUN_RESULT in set(now_files) and added <= allowed_added and all(a == R4_RUN_RESULT for a in added), \
++        "r4/ cambió después de la publicación además de añadir el resultado `run` (añadidos: %s)" % sorted(added)
+     for d, t in PINNED_TREES.items():
+@@ -646,12 +702,14 @@
+     dec_b = git("show", REV + ":" + DECISIONS)
+-    assert dec_b.startswith(old), "decisiones del clon no crece solo por añadido desde la registrada con §84 (blob be5e376f, commit 06521610)"
++    assert dec_b.startswith(old), "decisiones del clon no crece solo por añadido desde la registrada con §85 (blob 4e090ed4, commit ceb85977)"
+     dec = dec_b.decode("utf-8").split("\n")
+-    auth = OG.authorization_sections(dec, obj_blob)
+-    assert len(auth) == 1 and auth[0]["HeadingMatches"] and auth[0]["HasBlob"] and auth[0]["TextSha256Matches"], \
+-        "decisiones §84 del clon sin el encabezado, el blob o el SHA-256 del texto fijados en owner_gate.py: %s" % auth
+-    run_res = json.loads(git("show", REV + ":" + R3_RUN_RESULT).decode("utf-8"))
++    numbered = [(i, int(m.group(1))) for i, m in ((i, OG.NUMBERED_RX.match(l)) for i, l in enumerate(dec)) if m]
++    s85 = [i for i, n in numbered if n == BASE_SECTION]
++    assert BASE_SECTION == OG.BASE_SECTION and len(s85) == 1 and max(n for _, n in numbered) == BASE_SECTION, \
++        "decisiones del clon: §85 no es la última sección numerada, una sola vez (la autorización del lanzamiento tiene que ser posterior)"
++    s85_text = OG.section_text(dec, s85[0])
++    run_res = json.loads(git("show", REV + ":" + R4_RUN_RESULT).decode("utf-8"))
+     assert run_res.get("Mode") == "RUN" and run_res.get("Base") == parent and run_res.get("Head") == pub and run_res.get("Result") == "PASS", \
+         "el resultado `run` custodiado no es Mode RUN / Base = padre / Head = publicación / PASS"
+-    st = json.loads(git("show", REV + ":" + R3_SELFTEST).decode("utf-8"))
+-    tool_blob = git("rev-parse", REV + ":" + R3_GUARDS).decode().strip()
++    st = json.loads(git("show", REV + ":" + R4_SELFTEST).decode("utf-8"))
++    tool_blob = git("rev-parse", REV + ":" + R4_GUARDS).decode().strip()
+     summ = st.get("Summary") or {}
+@@ -659,5 +717,5 @@
+         summ.get("Mutants") == summ.get("Killed") and summ.get("Mutants"), \
+-        "la autoprueba custodiada no es PASS con A6TextBlob = objeto, ToolBlob = a6r3-guards.py y todos los mutantes muertos"
++        "la autoprueba custodiada no es PASS con A6TextBlob = objeto, ToolBlob = a6r4-guards.py y todos los mutantes muertos"
+     a6 = git("show", REV + ":" + OBJECT).decode("utf-8").split("\n")
+-    assert sum(1 for l in a6 if OG.line_sha(l) == OG.A6_LINE_SHA) == 1, "A-6 ronda 3 sin la línea (a) fijada, una vez"
++    assert sum(1 for l in a6 if OG.line_sha(l) == OG.A6_LINE_SHA) == 1, "A-6 ronda 4 sin la línea (a) fijada, una vez"
+     assert sum(1 for l in dec if OG.line_sha(l) == OG.A6_LINE_SHA) == 1, "decisiones del clon sin la línea (a) del Owner (§78), una vez"
+@@ -674,11 +732,14 @@
+         readable += readable_manifest(REV, rdir)
+-    for d in (R2_DIR, R3_DIR):
++    for d in (R2_DIR, R3_DIR, R4_DIR):
+         assert not any(p.startswith(C1C3_DIR + "/") for p in dir_files(REV, d)), "C1-C3 dentro de %s (inesperado)" % d
++    cited_r3 = r3_cited_files(REV)
++    assert cited_r3 == sorted(R3_CITED), "archivos de r3/ citados por A-6 o r4/ distintos de R3_CITED: %s" % cited_r3
+     changed = [x for x in git("diff", "--name-status", pub, REV).decode("utf-8").split("\n") if x]
+     return {"CloneCommit": REV, "Publication": pub, "PublicationParent": parent, "GuardsRunCommit": grc,
+-            "ObjectRound2AtPublicationParent": A6R2_BLOB, "ObjectBlobAtPublicationGuardsRunAndClone": obj_blob,
+-            "R3DirUnchangedSincePublicationExceptRunResultAndReadable": True, "R3AddedAfterPublication": sorted(added),
+-            "R3Tree": git("rev-parse", REV + ":" + R3_DIR).decode().strip(), "PinnedTrees": PINNED_TREES,
+-            "DecisionsAppendOnlySinceSection84Record": True,
+-            "Decisions84": {"Line": auth[0]["Line"], "Heading": auth[0]["Heading"], "TextSha256": auth[0]["TextSha256"], "HasBlob": True},
++            "ObjectRound3AtPublicationParent": A6R3_BLOB, "ObjectBlobAtPublicationGuardsRunAndClone": obj_blob,
++            "R4DirUnchangedSincePublicationExceptRunResult": True, "R4AddedAfterPublication": sorted(added),
++            "R4Tree": git("rev-parse", REV + ":" + R4_DIR).decode().strip(), "PinnedTrees": PINNED_TREES,
++            "DecisionsAppendOnlySinceSection85Record": True,
++            "Decisions85": {"Line": s85[0] + 1, "Heading": dec[s85[0]], "TextSha256": hashlib.sha256(s85_text.encode("utf-8")).hexdigest(),
++                            "LastNumberedSection": True},
+             "GuardsRunResult": {"Mode": "RUN", "Base": parent, "Head": pub, "Result": "PASS"},
+@@ -687,4 +748,4 @@
+             "G11EqualsSourcesForReviewer": True,
+-            "OwnerLineOnceInA6R3AndInDecisions78": True, "ClaudeCliLinePinnedOnce": True, "G11SourcesBlobsMatchClone": True,
+-            "DecisionsAndEvidenceAppendOnlySinceG11": True, "ReadableCopies": readable,
++            "OwnerLineOnceInA6R4AndInDecisions78": True, "ClaudeCliLinePinnedOnce": True, "G11SourcesBlobsMatchClone": True,
++            "DecisionsAndEvidenceAppendOnlySinceG11": True, "ReadableCopies": readable, "R3CitedFiles": cited_r3,
+             "ChangedSincePublication": changed}
+@@ -722,5 +783,5 @@
+ def evidence_ranges(n):
+-    if n in (R3_RUN_RESULT, R2_RUN_RESULT):
++    if n == R4_RUN_RESULT:
+         return ranges_grr
+-    if n in (R3_SELFTEST, R2_SELFTEST):
++    if n == R4_SELFTEST:
+         return ranges_selftest
+@@ -729,8 +790,20 @@
+ 
++def readable_selection(rev, rdir, canonicals):
++    """MANIFEST.json de `rdir` y las copias legibles cuyo canónico está en `canonicals` (el MANIFEST se comprueba entero en identity_checks)."""
++    man = json.loads(git("show", rev + ":" + rdir + "/MANIFEST.json").decode("utf-8"))
++    return [rdir + "/MANIFEST.json"] + sorted(e["Readable"] for e in man["Files"] if e["Canonical"] in canonicals)
++
++
+ def group_items(rev):
+-    r3 = [(n, "evidencia de la ronda 3 de A-6 (guardas, autoprueba, resultado `run`, pruebas del aceptante, evidencia estática de R2, lanzador "
+-              "corregido, negativos, preflight y copias legibles): %s" % n[len(R3_DIR) + 1:], "ENTIRE", evidence_ranges(n),
+-           "evidencia de la ronda 3, entera") for n in dir_files(rev, R3_DIR)]
+-    r2 = [(n, "evidencia de la ronda 2 de A-6 (guardas, autoprueba, resultados, preflight, reproducción e independencia): %s" % n[len(R2_DIR) + 1:],
+-           "ENTIRE", evidence_ranges(n), "evidencia de la ronda 2, entera") for n in dir_files(rev, R2_DIR)]
++    r4 = [(n, "evidencia de la ronda 4 de A-6 (derivación del cierre con la regla corregida, implementación independiente, sustituciones, insumos "
++              "añadidos o inventados, pruebas del aceptante fijado, guardas, autoprueba, resultado `run`, negativos, preflight y copias legibles): %s"
++           % n[len(R4_DIR) + 1:], "ENTIRE", evidence_ranges(n), "evidencia de la ronda 4, entera") for n in dir_files(rev, R4_DIR)]
++    probes3 = [n for n in dir_files(rev, R3_DIR) if n.startswith(R3_PROBES + "/")]
++    r3_names = probes3 + sorted(R3_CITED) + readable_selection(rev, R3_DIR + "/readable", set(probes3) | set(R3_CITED))
++    r3 = [(n, "evidencia de la ronda 3 de A-6 (sondas r1probes/ que criticó A62-A6R3-R1, sus copias legibles y los archivos de r3/ que citan r4/ o "
++              "A-6): %s" % n[len(R3_DIR) + 1:], "ENTIRE", evidence_ranges(n), "evidencia de la ronda 3 (selección)") for n in r3_names]
++    indep = [n for n in dir_files(rev, R2_DIR) if n.startswith(R2_INDEP + "/")]
++    r2_names = indep + readable_selection(rev, R2_DIR + "/readable", set(indep))
++    r2 = [(n, "evidencia de la ronda 2 de A-6: independence/ (escenario del banco de la ronda 4) y sus copias legibles: %s" % n[len(R2_DIR) + 1:],
++           "ENTIRE", evidence_ranges(n), "evidencia de la ronda 2 (independence/)") for n in r2_names]
+     pk = [(n, "paquete B-min, %s" % n[len(PKG_DIR) + 1:], "ENTIRE",
+@@ -738,13 +811,6 @@
+            "paquete B-min, entero") for n in dir_files(rev, PKG_DIR)]
+-    ru = [(RULING_OUT, "dictamen de materialidad de B-min (R20261011T162328Z-5c5e, MATERIAL, ACCREDITED): salida estructurada", "ENTIRE",
+-           ranges_whole, "dictamen, entero"),
+-          (RULING_README, "dictamen de materialidad de B-min: README de su kit custodiado", "ENTIRE", ranges_doc, "dictamen, entero"),
+-          (R1_REVIEW_OUT, "revisión formal de la ronda 1 (R20261011T215735Z-c434; CHANGES REQUIRED; auditor NOT_ACCREDITED, decisiones §79): salida "
+-                          "estructurada con A62-A6-R1..R5 y A62-A6-O1..O3 literales", "ENTIRE", review_output_ranges(ROUND1_FINDING_IDS + ROUND1_OPTIONAL_IDS),
+-           "revisión de la ronda 1, entera"),
+-          (R2_REVIEW_OUT, "revisión formal de la ronda 2 (R20261012T195511Z-e5c3; CHANGES REQUIRED; auditor NOT_ACCREDITED por falta de run.json, "
+-                          "decisiones §82-§83): salida estructurada con A62-A6R2-R1, A62-A6R2-R2 y A62-A6R2-O1..O5 literales y su valoración de G1-G6",
+-           "ENTIRE", review_output_ranges(ROUND2_FINDING_IDS + ROUND2_OPTIONAL_IDS, ("GapAssessment", "AcceptorCodeContrast")),
+-           "revisión de la ronda 2, entera")]
+-    return [(OBJECT, "objeto: la enmienda A-6, ronda 3 (PROPUESTA), entera", "ENTIRE", ranges_a6, "objeto, entero")] + r3 + r2 + pk + ru
++    ru = [(R3_REVIEW_OUT, "revisión formal de la ronda 3 (R20261013T183701Z-9f80; auditor ACCREDITED; CHANGES REQUIRED; decisiones §84-§85): salida "
++                          "estructurada con A62-A6R3-R1 y A62-A6R3-O1..O7 literales y su NegativeCaseCoherence", "ENTIRE",
++           review_output_ranges(ROUND3_FINDING_IDS + ROUND3_OPTIONAL_IDS, ("NegativeCaseCoherence",)), "revisión de la ronda 3, entera")]
++    return [(OBJECT, "objeto: la enmienda A-6, ronda 4 (PROPUESTA), entera", "ENTIRE", ranges_a6, "objeto, entero")] + r4 + r3 + r2 + pk + ru
+ 
+@@ -775,3 +841,3 @@
+     assert len({r["Path"] for r in can}) == len(can), "rutas repetidas en el cierre"
+-    assert EVIDENCE in texts, "la evidencia I-62-evidence.md entra en el cierre (como en la ronda 2)"
++    assert EVIDENCE in texts, "la evidencia I-62-evidence.md entra en el cierre (como en las rondas 2 y 3)"
+     assert not any(p.startswith(C1C3_DIR + "/") for p in texts), "C1-C3 no entra en el cierre"
+@@ -812,3 +878,3 @@
+     g = {p: {x["Section"]: x for x in by[p]["LineRanges"]} for p in by}
+-    dec, a6, r2o = g[DECISIONS], by[OBJECT], g[R2_REVIEW_OUT]
++    dec, a6, r3o = g[DECISIONS], by[OBJECT], g[R3_REVIEW_OUT]
+     a6_map = "; ".join("%s %s" % ((x["Section"] if x["Section"] in ("cabecera",) else
+@@ -816,4 +882,4 @@
+                        for x in a6["LineRanges"] if x["Section"] != "entero" and (x["Section"] == "cabecera" or x["Section"].startswith("#")))
+-    grr = g[R3_RUN_RESULT]
+-    st = [x for x in by[R3_SELFTEST]["LineRanges"] if x["Section"].startswith("Summary")][0]
++    grr = g[R4_RUN_RESULT]
++    st = [x for x in by[R4_SELFTEST]["LineRanges"] if x["Section"].startswith("Summary")][0]
+     large = [r["Path"] for r in can if r["Bytes"] > LARGE] + [n for n in PREMISE_RUN_FILES if run[n]["Bytes"] > LARGE]
+@@ -824,11 +890,9 @@
+                  ["%s %s" % (n, ", ".join(str(k) for k in run[n]["LinesOver2000Chars"])) for n in PREMISE_RUN_FILES if run[n]["LinesOver2000Chars"]]
+-    grouped = (OBJECT, RULING_OUT, RULING_README, R1_REVIEW_OUT, R2_REVIEW_OUT)
++    grouped = (OBJECT, R3_REVIEW_OUT)
+     entries = [prompt_entry(k + 1, r) for k, r in enumerate([r for r in can if r["Path"] not in grouped and
+-                                                             not r["Path"].startswith((R2_DIR + "/", R3_DIR + "/", PKG_DIR + "/"))])]
++                                                             not r["Path"].startswith((R2_DIR + "/", R3_DIR + "/", R4_DIR + "/", PKG_DIR + "/"))])]
+     ga = g[OBJECT]
+     sec = lambda p: range_text([x for x in a6["LineRanges"] if x["Section"].startswith("### " + p + " ") or x["Section"].startswith("## " + p + " ")][0])
+-    q = lambda k: range_text(ga["§8, %s" % k])
+     rule = lambda d, n: range_text(ga["%s, regla %d" % (d, n)])
+-    d83 = [x for k, x in dec.items() if k.startswith("## 83. ")][0]
+-    d84 = [x for k, x in dec.items() if k.startswith("## 84. ")][0]
++    d85 = [x for k, x in dec.items() if k.startswith("## 85. ")][0]
+     ev_g11 = [x for x in G11.get("Sources", []) if x["Path"] == EVIDENCE]
+@@ -836,2 +900,3 @@
+     v14d = DIRECT_READ
++    r6b_sub = "; ".join("(%s) L%s" % (k, range_text(ga["A6-3, regla 6 (b) (%s)" % k])) for k in CLOSURE_SUBRULES)
+     rep = {
+@@ -843,5 +908,7 @@
+         "{{OBJECT_BYTES}}": fmt_n(a6["Bytes"]), "{{OBJECT_LINES}}": fmt_n(a6["Lines"]),
+-        "{{A6R2_BYTES}}": fmt_n(run["a6-r2.md"]["Bytes"]), "{{A6R2_LINES}}": fmt_n(run["a6-r2.md"]["Lines"]),
++        "{{A6R3_BYTES}}": fmt_n(run["a6-r3.md"]["Bytes"]), "{{A6R3_LINES}}": fmt_n(run["a6-r3.md"]["Lines"]),
+         "{{ORDER_LINES}}": str(run["order.txt"]["Lines"]),
+         "{{A6_MAP}}": a6_map,
++        "{{R4_TABLE}}": table([by[p] for p in sorted(by) if p.startswith(R4_DIR + "/")]),
++        "{{R4_COUNT}}": str(sum(1 for p in by if p.startswith(R4_DIR + "/"))),
+         "{{R3_TABLE}}": table([by[p] for p in sorted(by) if p.startswith(R3_DIR + "/")]),
+@@ -852,40 +919,41 @@
+         "{{PKG_COUNT}}": str(sum(1 for p in by if p.startswith(PKG_DIR + "/"))),
+-        "{{RULING_TABLE}}": table([by[RULING_OUT], by[RULING_README], by[R1_REVIEW_OUT], by[R2_REVIEW_OUT]]),
++        "{{R3OUT_TABLE}}": table([by[R3_REVIEW_OUT]]),
+         "{{V14_DIRECT}}": "%d-%d" % (v14d["Start"], v14d["End"]),
+         "{{V14_DIRECT_OFFSET}}": str(v14d["Start"] - 8), "{{V14_DIRECT_LIMIT}}": str(v14d["End"] - v14d["Start"] + 17),
+-        "{{DEC83_84}}": "%d-%d" % (d83["Start"], d84["End"]),
+-        "{{DEC83_P1}}": range_text(dec["§83, punto 1"]), "{{DEC83_P2}}": range_text(dec["§83, punto 2"]),
+-        "{{DEC83_P3}}": range_text(dec["§83, punto 3"]), "{{DEC83_P4}}": range_text(dec["§83, punto 4"]),
+-        "{{DEC84_SOURCE}}": range_text(dec["§84, bytes y SHA-256 del cuerpo pegado"]), "{{DEC84_P6}}": range_text(dec["§84, punto 6"]),
+-        "{{DEC84_P7}}": range_text(dec["§84, punto 7"]),
+-        "{{DEC84_HEAD}}": "%d" % d84["Start"],
++        "{{DEC85}}": "%d-%d" % (d85["Start"], d85["End"]),
++        "{{DEC85_SOURCE}}": range_text(dec["§85, bytes y SHA-256 del cuerpo pegado"]),
++        "{{DEC85_P1}}": range_text(dec["§85, punto 1"]), "{{DEC85_P2}}": range_text(dec["§85, punto 2"]),
++        "{{DEC85_P3}}": range_text(dec["§85, punto 3"]), "{{DEC85_P4}}": range_text(dec["§85, punto 4"]),
++        "{{DEC85_P5}}": range_text(dec["§85, punto 5"]), "{{DEC85_P6}}": range_text(dec["§85, punto 6"]),
++        "{{DEC85_P7}}": range_text(dec["§85, punto 7"]), "{{DEC85_P8}}": range_text(dec["§85, punto 8"]),
++        "{{DEC85_HEAD}}": "%d" % d85["Start"],
+         "{{DEC78_LINE}}": range_text(dec["§78, línea del Owner A6-ADR0046-9-FX02"]),
+-        "{{GRR}}": R3_RUN_RESULT.replace("/", "\\"), "{{STJ}}": R3_SELFTEST.replace("/", "\\"),
++        "{{GRR}}": R4_RUN_RESULT.replace("/", "\\"), "{{STJ}}": R4_SELFTEST.replace("/", "\\"),
+         "{{GRR_HEAD}}": range_text(grr["Mode, Base y Head (L2-L4)"]), "{{GRR_RESULT}}": range_text(grr["Result de conjunto"]),
+-        "{{GRR_LINES}}": str(by[R3_RUN_RESULT]["Lines"]), "{{ST_TAIL}}": range_text(st),
+-        "{{R2OUT_HEAD}}": range_text(r2o["RunId, ids, objeto revisado y Verdict (cabecera)"]),
+-        "{{R2OUT_R}}": "; ".join("%s %s" % (f[-2:], range_text(r2o["hallazgo %s" % f])) for f in ROUND2_FINDING_IDS),
+-        "{{R2OUT_O}}": "; ".join("%s %s" % (f[-2:], range_text(r2o["hallazgo %s" % f])) for f in ROUND2_OPTIONAL_IDS),
+-        "{{R2OUT_GAPS}}": range_text(r2o["GapAssessment"]),
++        "{{GRR_LINES}}": str(by[R4_RUN_RESULT]["Lines"]), "{{ST_TAIL}}": range_text(st),
++        "{{R3OUT_HEAD}}": range_text(r3o["RunId, ids, objeto revisado y Verdict (cabecera)"]),
++        "{{R3OUT_R}}": "; ".join("%s %s" % (f[-2:], range_text(r3o["hallazgo %s" % f])) for f in ROUND3_FINDING_IDS),
++        "{{R3OUT_O}}": "; ".join("%s %s" % (f[-2:], range_text(r3o["hallazgo %s" % f])) for f in ROUND3_OPTIONAL_IDS),
++        "{{R3OUT_NEG}}": range_text(r3o["NegativeCaseCoherence"]),
+         "{{A6_LINE_A}}": range_text(ga["§7, línea del Owner (a) A6-ADR0046-9-FX02"]),
+         "{{A6_LINE_B}}": range_text(ga["§7, línea del Owner (b) A6-CONTROLLER-MEDICION-CONSUMO"]),
+-        "{{A6_S38}}": sec("3.8"), "{{A6_S310}}": sec("3.10"), "{{A6_S312}}": sec("3.12"), "{{A6_S316}}": sec("3.16"), "{{A6_S317}}": sec("3.17"),
+-        "{{A6_S62}}": sec("6.2"), "{{A6_S7}}": sec("7."), "{{A6_S8}}": sec("8."),
++        "{{A6_S36}}": sec("3.6"), "{{A6_S312}}": sec("3.12"), "{{A6_S317}}": sec("3.17"), "{{A6_S318}}": sec("3.18"), "{{A6_S4}}": sec("4."),
++        "{{A6_S7}}": sec("7."), "{{A6_S8}}": sec("8."),
++        "{{A6_R6B}}": range_text(ga["A6-3, regla 6 (b)"]), "{{A6_R6B_SUB}}": r6b_sub,
++        "{{A6_R6B_HEAD}}": range_text(ga["A6-3, regla 6 (b), encabezado (`Closure`)"]),
++        "{{A6_R6B_FINAL}}": range_text(ga["A6-3, regla 6 (b), frase final (prueba previa y medición)"]),
++        "{{A6_DERIV}}": range_text(ga["§3.12, tabla de derivación del cierre del aceptante (A6-9, regla 4)"]),
++        "{{A6_DERIV_PARA}}": range_text(ga["§3.12, párrafo que sigue a la tabla de derivación"]),
++        "{{A6_S318_T}}": range_text(ga["§3.18, tabla de la corrección de la ronda 4"]),
++        "{{A6_S318_ROWS}}": "; ".join("%s L%s" % (r, range_text(ga["§3.18, %s" % r])) for r in R4_CORRECTION_ROWS),
++        "{{A6_S318_PARAS}}": "; ".join("%s L%s" % (k, range_text(ga["§3.18, %s" % k])) for k, _ in R4_PARAS),
++        "{{A6_S318_BULLETS}}": "; ".join("%s L%s" % (k, range_text(ga["§3.18, viñeta: %s" % k])) for k, _ in R4_BULLETS),
+         "{{A6_S317_T1}}": range_text(ga["§3.17, tabla de las correcciones de la ronda 3"]),
+-        "{{A6_S317_T2}}": range_text(ga["§3.17, tabla de las precondiciones de R2"]),
+-        "{{A6_S317_ROWS}}": "; ".join("%s L%s" % (r, range_text(ga["§3.17, %s" % r])) for r in R3_CORRECTION_ROWS),
+-        "{{A6_S317_PRE}}": "; ".join("%s L%s" % (k, range_text(ga["§3.17, precondición: %s" % k])) for k, _ in R3_PRECONDITION_ROWS),
+-        "{{A6_S317_LIM}}": range_text(ga["§3.17, límites de la reconstrucción de referencia"]),
+-        "{{A6_S317_G}}": range_text(ga["§3.17, riesgos residuales G1-G6 en la ronda 3"]),
+-        "{{A6_S7_R3}}": range_text(ga["§7, ronda 3 y blobs fijados"]),
+-        "{{A6_G}}": "; ".join("%s %s" % (k, range_text(ga["§3.12, %s" % k])) for k in GAP_IDS),
+-        "{{A6_A61_R1}}": rule("A6-1", 1), "{{A6_A61_R2}}": rule("A6-1", 2),
+-        "{{A6_A63_R3}}": rule("A6-3", 3), "{{A6_A63_R5}}": rule("A6-3", 5), "{{A6_A63_R6}}": rule("A6-3", 6),
+-        "{{A6_A64_R3}}": rule("A6-4", 3),
+-        "{{A6_A65_R1}}": rule("A6-5", 1), "{{A6_A65_R2}}": rule("A6-5", 2), "{{A6_A65_R4}}": rule("A6-5", 4), "{{A6_A65_R5}}": rule("A6-5", 5),
+-        "{{A6_A65_R6}}": rule("A6-5", 6), "{{A6_A65_R7}}": rule("A6-5", 7),
+-        "{{A6_A67_R1}}": rule("A6-7", 1), "{{A6_A67_R5}}": rule("A6-7", 5), "{{A6_A67_R7}}": rule("A6-7", 7),
+-        "{{A6_A68_R5}}": rule("A6-8", 5), "{{A6_A69_R4}}": rule("A6-9", 4),
+-        "{{QR2}}": "%s-%s" % (ga["§8, Q-A6R2-01"]["Start"], ga["§8, Q-A6R2-06"]["End"]),
++        "{{A6_S317_ROWS_R1}}": "; ".join("%s L%s" % (r, range_text(ga["§3.17, %s" % r])) for r in R3_CORRECTION_ROWS[:4]),
++        "{{A6_S4_ROW}}": range_text(ga["§4, fila de N4 y nc1"]),
++        "{{A6_S7_R4}}": range_text(ga["§7, ronda 4 y blobs fijados"]),
++        "{{A6_A63_R6}}": rule("A6-3", 6), "{{A6_A65_R2}}": rule("A6-5", 2), "{{A6_A65_R4}}": rule("A6-5", 4), "{{A6_A65_R6}}": rule("A6-5", 6),
++        "{{A6_A65_R7}}": rule("A6-5", 7), "{{A6_A67_R1}}": rule("A6-7", 1), "{{A6_A67_R7}}": rule("A6-7", 7), "{{A6_A69_R4}}": rule("A6-9", 4),
+         "{{QR3}}": "%s-%s" % (ga["§8, Q-A6R3-01"]["Start"], ga["§8, Q-A6R3-04"]["End"]),
++        "{{QR4}}": "%s-%s" % (ga["§8, Q-A6R4-01"]["Start"], ga["§8, Q-A6R4-04"]["End"]),
+         "{{ACCEPTOR}}": ACCEPTOR, "{{ACCEPTOR_LINES}}": fmt_n(by[ACCEPTOR]["Lines"]),
+@@ -931,3 +999,3 @@
+     can, texts, Ls = build(items)
+-    assert order_text_check(Ls[DECISIONS]), "decisiones §84 no declara el SHA-256 y los bytes del cuerpo pegado"
++    assert order_text_check(Ls[DECISIONS]), "decisiones §85 no declara el SHA-256 y los bytes del cuerpo pegado"
+     mat = materiality_a6(Ls[OBJECT])
+@@ -936,4 +1004,4 @@
+     run = {n: rd[n][0] for n in rd}
+-    assert run["order.txt"]["Sha256"] == ORDER_TEXT[1] and run["order.txt"]["Bytes"] == ORDER_TEXT[2], "order.txt distinto del cuerpo §84 custodiado"
+-    assert run["a6-r2.md"]["GitBlob"] == A6R2_BLOB, "a6-r2.md no es el blob 86da0ae7 de la ronda 2"
++    assert run["order.txt"]["Sha256"] == ORDER_TEXT[1] and run["order.txt"]["Bytes"] == ORDER_TEXT[2], "order.txt distinto del cuerpo §85 custodiado"
++    assert run["a6-r3.md"]["GitBlob"] == A6R3_BLOB, "a6-r3.md no es el blob e62f27b8 de la ronda 3"
+     prompt = render_prompt(can, Ls, run, ident)
+@@ -955,7 +1023,7 @@
+     run["prompt.md"] = describe(pb, "prompt.md")[0]
+-    sources = {"order.txt": "cuerpo exacto pegado de la disposición §84 del Coordinator (3 377 bytes; SHA-256 8a6b560f…, el que declara decisiones §84 en "
+-                            "el commit); su punto 6 (líneas 36-49) ordena el contenido de esta revisión",
++    sources = {"order.txt": "cuerpo exacto pegado de la disposición §85 del Coordinator (2 805 bytes; SHA-256 d74e2aa1…, el que declara decisiones §85 "
++                            "en el commit); su punto 6 (líneas 46-49) ordena preparar este kit, acotado a R1 y a sus consecuencias directas",
+                "prompt.md": "kit/prompt.md renderizado desde kit/prompt.template.md; stdin literal del proceso claude-cli; nunca es premisa",
+-               "a6-r2.md": "texto de A-6 de la ronda 2 (blob 86da0ae7, decisiones §80; commit ae9fe0e9), byte a byte, para comparar A62-A6R2-R1, "
+-                           "A62-A6R2-R2 y O1-O5 (que citan sus líneas) con la ronda 3"}
++               "a6-r3.md": "texto de A-6 de la ronda 3 (blob e62f27b8, decisiones §83; commit a128efef), byte a byte, para comparar A62-A6R3-R1, "
++                           "A62-A6R3-O1..O7 (que citan sus líneas) y la pureza del delta con la ronda 4"}
+     run_hashes = {n: {"Bytes": run[n]["Bytes"], "Lines": run[n]["Lines"], "Sha256": run[n]["Sha256"], "LinesOver2000Chars": run[n]["LinesOver2000Chars"],
+@@ -964,3 +1032,3 @@
+     run_hashes["order.txt"]["IdentityCheck"] = {"DecisionsSection": "§" + ORDER_TEXT[0], "Sha256DeclaredInDecisions": True, "BytesDeclaredInDecisions": ORDER_TEXT[2]}
+-    run_hashes["a6-r2.md"]["GitBlob"] = A6R2_BLOB
++    run_hashes["a6-r3.md"]["GitBlob"] = A6R3_BLOB
+     rmap = readable_of({r["Path"] for r in can}, ident["ReadableCopies"])
+@@ -974,3 +1042,3 @@
+         r.pop("PromptLabel", None)
+-    project = re.sub(r"[^A-Za-z0-9]", "-", CLONE)            # nombre del directorio de proyecto de claude-cli (D:\r62-arch-a6r3 → D--r62-arch-a6r3)
++    project = re.sub(r"[^A-Za-z0-9]", "-", CLONE)            # nombre del directorio de proyecto de claude-cli (D:\r62-arch-a6r4 → D--r62-arch-a6r4)
+     closure = {
+@@ -979,19 +1047,21 @@
+         "ObjectKind": "FILE", "ObjectPath": OBJECT, "ObjectBlob": params["Object"]["Blob"], "ObjectFiles": {OBJECT: params["Object"]["Blob"]},
+-        "PreviousObject": {"Path": OBJECT, "Blob": A6R2_BLOB, "RunFile": "a6-r2.md"},
++        "PreviousObject": {"Path": OBJECT, "Blob": A6R3_BLOB, "RunFile": "a6-r3.md"},
+         "Publication": {"Commit": params["Publication"], "Parent": params["PublicationParent"], "GuardsRunCommit": params["GuardsRunCommit"]},
+         "PackagePath": None,
+-        "PackageNote": "sin paquete del Architect: el prompt hace de paquete (decisiones §84, puntos 2 y 6: un único kit de revisión formal "
+-                       "independiente y una revisión acotada)",
++        "PackageNote": "sin paquete del Architect: el prompt hace de paquete (decisiones §85, punto 6: un kit de revisión acotado a R1 y a sus "
++                       "consecuencias directas)",
+         "Identity": ident,
+-        "PriorFindingIds": ROUND2_FINDING_IDS + ROUND2_OPTIONAL_IDS,
+-        "Question": "decisiones §84, punto 6 (order.txt, líneas 36-49): revisión formal independiente y acotada de la ronda 3 de A-6 sobre el cierre "
+-                    "de A62-A6R2-R1 y A62-A6R2-R2; la coherencia de N4, nc1 y VERIFY sin instrumento; la reconstrucción desde eventos reales; el "
+-                    "cierre efectivo de entradas; la compatibilidad con el aceptante fijado; la autorización del Owner y el alcance de VERIFY; los "
+-                    "riesgos G1-G6; y los hallazgos opcionales O1-O5. Lo que dependa de una sesión real se mantiene como precondición con fallo "
+-                    "cerrado, sin darlo por acreditado de antemano; sin acreditación excepcional",
++        "PriorFindingIds": ROUND3_FINDING_IDS + ROUND3_OPTIONAL_IDS,
++        "Question": "decisiones §85, punto 6 (order.txt, líneas 46-49): revisión formal independiente de la ronda 4 de A-6, acotada a A62-A6R3-R1 y a "
++                    "sus consecuencias directas: el cierre de A62-A6R3-R1; si A6-3, regla 6 (b) (i)-(v), es total y mecánica, sin paso de juicio, "
++                    "en N4, en nc1 y con campos ausentes, null o vacíos, y si introduce o sustituye insumos; la compatibilidad con A6-9, regla 4, y su "
++                    "tabla; la coherencia de N4 y nc1; la adecuación de la evidencia de r4/r1probes/; la pureza del delta; el tratamiento de "
++                    "O1-O7 según decisiones §85, punto 4; y las preguntas Q-A6R4-01..04. Lo que dependa de una sesión real sigue como precondición "
++                    "con fallo cerrado; sin acreditación excepcional",
+         "MaterialityA6": mat,
+-        "Round2FindingIds": ROUND2_FINDING_IDS, "Round2OptionalIds": ROUND2_OPTIONAL_IDS, "GapIds": GAP_IDS, "NegativeCases": NEGATIVE_CASES,
+-        "AcceptorClaims": ACCEPTOR_CLAIMS, "RealSessionPreconditions": REAL_SESSION_PRECONDITIONS, "AcceptorPath": ACCEPTOR,
++        "Round3FindingIds": ROUND3_FINDING_IDS, "Round3OptionalIds": ROUND3_OPTIONAL_IDS, "NegativeCases": NEGATIVE_CASES,
++        "ClosureRuleCases": CLOSURE_RULE_CASES, "ClosureSubRules": CLOSURE_SUBRULES, "EvidenceAspects": EVIDENCE_ASPECTS,
++        "MandatoryEvidenceAspects": MANDATORY_EVIDENCE_ASPECTS, "Round4QuestionIds": ROUND4_QUESTION_IDS, "AcceptorPath": ACCEPTOR,
+         "DirectRead": {k: DIRECT_READ[k] for k in ("Path", "Start", "End")},
+-        "G11": {"Source": "Guards.G11 de %s en el commit del clon (= %s)" % (R3_RUN_RESULT, R3_SOURCES),
++        "G11": {"Source": "Guards.G11 de %s en el commit del clon (= %s)" % (R4_RUN_RESULT, R4_SOURCES),
+                 "Refs": G11.get("Refs"), "Sources": [{"Path": x["Path"], "Blob": x["Blob"], "Ranges": x["Ranges"]} for x in G11.get("Sources", [])],
+@@ -1000,6 +1070,11 @@
+         "OwnerGate": {"Check": OG.CHECK, "A6LineSha256": OG.A6_LINE_SHA, "ClaudeCliLineSha256": OG.CLAUDE_LINE_SHA, "RunId": OG.RUN_ID,
+-                      "AuthorizationSection": OG.AUTH_SECTION, "AuthorizationHeading": OG.AUTH_HEADING, "AuthorizationTextSha256": OG.AUTH_TEXT_SHA,
+-                      "Authorization": "decisiones §84 (en el commit del clon): exactamente una sección «## 84. » con el encabezado fijado, el blob "
+-                                       "completo de la ronda 3 como token literal y el SHA-256 de su texto fijado; ninguna sección posterior a §84 "
+-                                       "en el momento del lanzamiento; launch.py lo exige en las decisiones del worktree (owner_gate.py)"},
++                      "BaseSection": OG.BASE_SECTION,
++                      "Authorization": "una disposición del Coordinator POSTERIOR a §85 (decisiones §85, punto 6: «No lanzar revisión formal de ronda 4 "
++                                       "hasta nueva disposición del Coordinator»), que no existe al congelar el kit. Se fija en owner_gate.py "
++                                       "(AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA, que el kit entrega en None; pin_authorization.py calcula los "
++                                       "valores) y se vuelve a congelar el kit; mientras está pendiente, la compuerta 11 bloquea con «authorization "
++                                       "pending: …». Fijada, exactamente una sección con ese número, el encabezado fijado, el blob completo de la "
++                                       "ronda 4 como token literal, el SHA-256 de su texto fijado y ninguna sección posterior en el momento del "
++                                       "lanzamiento; launch.py lo exige en las decisiones del worktree (owner_gate.py). Este cierre no cambia al "
++                                       "fijarla"},
+         "Transport": {"Adapter": "claude-cli", "Binary": BINARY, "Model": "claude-opus-5-5", "Effort": "xhigh",
+@@ -1010,4 +1085,4 @@
+                                       "punto 7; §57, punto 3): kit/transport-gate.json en MEASURED con el SHA-256 del registro fijado",
+-                      "Gate": "kit/transport-gate.json (transport_gate.py: la compuerta D-01 byte a byte la de los kits anteriores; cli_version y "
+-                              "auth_status con la salida en bytes y UTF-8 estricto, decisiones §84, punto 5)",
++                      "Gate": "kit/transport-gate.json (transport_gate.py byte a byte el de la ronda 3: la compuerta D-01 y cli_version y auth_status "
++                              "con la salida en bytes y UTF-8 estricto)",
+                       "Stdin": "prompt.md del run (bytes literales)",
+@@ -1027,5 +1102,5 @@
+         "IdentityVerification": "el revisor no ejecuta git: el invocador verifica el clon antes del lanzamiento (verify_clone.py → clone-verification.json, "
+-                                "con la reproducción de las guardas de la ronda 3) y el auditor lo vuelve a verificar después; el revisor contrasta lo "
+-                                "que puede leer: V14 L2333-L2334, order.txt, decisiones §83-§84 (bytes, SHA-256, puntos), el resultado `run` de las "
+-                                "guardas, la autoprueba (A6TextBlob) y la salida de la ronda 2",
++                                "con la reproducción de las guardas de la ronda 4) y el auditor lo vuelve a verificar después; el revisor contrasta lo "
++                                "que puede leer: V14 L2333-L2334, order.txt, decisiones §85 (bytes, SHA-256, puntos), el resultado `run` de las "
++                                "guardas, la autoprueba (A6TextBlob) y la salida de la ronda 3",
+         "CanonicalInputs": can, "AllowedTransitiveInputs": [],
+@@ -1039,3 +1114,4 @@
+             "Grep": "solo con `path` = un ARCHIVO del cierre o del run; sin `glob` ni `type`; nunca un directorio ni sin `path`",
+-            "Glob": "su alcance (path + patrón) solo puede contener archivos del cierre o del run (r2/, r3/ y bmin/ están enteros en el cierre)",
++            "Glob": "su alcance (path + patrón) solo puede contener archivos del cierre o del run (r4/, r3/r1probes/, r2/independence/ y bmin/ están "
++                    "enteros en el cierre; el resto de r2/ y de r3/ no)",
+             "LargeFileThresholdBytes": LARGE, "MaxRangeLines": 300,
+@@ -1044,3 +1120,3 @@
+             "ClauseRefs": "toda referencia (`ruta:línea` o `ruta:inicio-fin`) apunta a líneas leídas enteras con Read en ese mismo archivo y entregadas "
+-                          "fielmente: de archivos del cierre (ruta relativa al clon) o de order.txt y a6-r2.md (nombre suelto); nunca de prompt.md. Una "
++                          "fielmente: de archivos del cierre (ruta relativa al clon) o de order.txt y a6-r3.md (nombre suelto); nunca de prompt.md. Una "
+                           "cita de una fuente dentro de A-6 no es una lectura de la fuente",
+@@ -1057,6 +1133,10 @@
+                        "todo material de I-65",
+-             "Reason": "fuera del cierre (decisiones §84, punto 9; orden del kit): ajeno a esta revisión; A-6 no se amplía"},
+-            {"Source": "docs/automation/evidence/I-62-A6/ fuera de r2/ y r3/ (evidencia de la ronda 1) y el resto de los directorios de las revisiones "
+-                       "de las rondas 1 y 2 (audit.json, README.md, kit/, launch/, registros del lanzamiento)",
+-             "Reason": "el cierre lleva las salidas estructuradas de las dos revisiones; G3 de las guardas comprueba que esos archivos no cambian"},
++             "Reason": "fuera del cierre (decisiones §85, punto 7; orden del kit): ajeno a esta revisión; A-6 no se amplía"},
++            {"Source": "docs/automation/evidence/I-62-A6/r2/ fuera de independence/ (y sus copias legibles), r3/ fuera de r1probes/ y de los archivos "
++                       "que citan r4/ o A-6 (R3_CITED), los directorios de r3/ que A-6 solo nombra (r2static/, launchfix/), la evidencia de la ronda 1",
++             "Reason": "revisión acotada a A62-A6R3-R1 (decisiones §85, punto 6); G3 de las guardas comprueba los árboles r2/ y r3/ y la pureza del "
++                       "delta se juzga frente a a6-r3.md y G5"},
++            {"Source": "las salidas de las revisiones de las rondas 1 y 2, el dictamen de materialidad de B-min y el resto de los directorios de las "
++                       "revisiones (audit.json, README.md, kit/, launch/, registros del lanzamiento)",
++             "Reason": "el cierre lleva la salida estructurada de la revisión de la ronda 3, la que dispone esta ronda; G3 comprueba esos objetos"},
+             {"Source": "rutas que A-6 solo nombra como superficies o por blob (G11 Paths sin rangos de líneas: FOUNDATIONS, WORKFLOW, el registro del "
+@@ -1066,6 +1146,8 @@
+              "Reason": "materiales de la sesión que prepara; las líneas del Owner están literales en A-6 §7 y la (a) en decisiones §78"},
+-            {"Source": "probe_tools.py, los reference.json / comparison.json de las sondas y los análisis citados por la evidencia",
++            {"Source": "probe_tools.py, los reference.json / comparison.json de las sondas de F6 y los análisis citados por la evidencia",
+              "Reason": "excluidos: la revisión se hace contra el texto normativo, no contra el oráculo de C-24 (§75.3)"},
+-            {"Source": "ejecución de las guardas, del paquete B-min, de las pruebas del aceptante, de la evidencia estática o del lanzador",
++            {"Source": "ejecución de las guardas, del paquete B-min, de las sondas de r4/ (incluida la implementación independiente) o del lanzador",
+              "Reason": "sin herramientas de ejecución; los resultados custodiados están en el cierre y el invocador reprodujo las guardas"},
++            {"Source": "la disposición del Coordinator posterior a §85 que autoriza el lanzamiento",
++             "Reason": "posterior al commit del clon; la comprueba la compuerta 11 en las decisiones del worktree antes de lanzar"},
+         ],
+@@ -1094,4 +1176,5 @@
+     for r in can:
+-        k = "r3" if r["Path"].startswith(R3_DIR + "/") else ("r2" if r["Path"].startswith(R2_DIR + "/") else
+-                                                           ("bmin" if r["Path"].startswith(PKG_DIR + "/") else "resto"))
++        k = "r4" if r["Path"].startswith(R4_DIR + "/") else ("r3" if r["Path"].startswith(R3_DIR + "/") else
++                                                           ("r2" if r["Path"].startswith(R2_DIR + "/") else
++                                                            ("bmin" if r["Path"].startswith(PKG_DIR + "/") else "resto")))
+         g = by_group.setdefault(k, {"Files": 0, "Bytes": 0, "Lines": 0})

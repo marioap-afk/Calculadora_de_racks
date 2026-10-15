@@ -1,0 +1,393 @@
+--- ronda3/kit/post-review.py
++++ ronda4/kit/post-review.py
+@@ -1,36 +1,35 @@
+-"""I-62, decisiones §84: post-review audit v5.3-a6r3 of ONE claude-cli run of the ONE FORMAL REVIEW of ROUND 3 of amendment A-6
+-(docs/initiatives/I-62-A-6.md, round-3 blob pinned in the closure, PROPUESTA) by an independent ARCHITECT. Declared and self-tested BEFORE the
+-launch (Owner CLAUDE-CLI-I62 = A; the launch also requires gate 11, owner_gate.py: the Owner line of §78, the round-3 blob at the worktree HEAD,
+-decisions §84 with its pinned heading, the full blob and its pinned text SHA-256, and no section after §84); the principal session runs it
+-afterwards, never before, on the complete run, and the auditor is not corrected after the run (§84, point 8).
+-
+-v5.3-a6r3 = the v5.2-a6r2 auditor of round 2 (R20261012T195511Z-e5c3; NOT_ACCREDITED for one reason, the missing run.json, decisions §83,
+-point 1), derived by exact substitutions (prep/adapt_post_review.py): every launch, transport-gate, stream-json, transcript, tool, read-fidelity,
+-reference, direct-read, run-custody and clone rule of v5.2 is kept byte for byte (the reviewer has ONLY Read, Grep and Glob, plus
+-StructuredOutput; effective paths; read fidelity line by line against the commit; failed reads never credited; prompt.md never a reference; run
+-custody; clone clean after the run; the transport gate D-01 re-evaluated on the copies launch.py wrote; preflight.json and run.json audited).
+-Changes (decisions §84, points 4 and 6):
+-  * run.json (point 4: unambiguous execution and custody evidence): Outcome = COMPLETED; Outcome and OutcomeCategories equal to the categories
+-    this auditor recomputes from the record's own fields (outcome_categories: LAUNCH_FAILURE, REVIEW_PROCESS_FAILURE, POST_RUN_RECORDING_FAILURE,
+-    TRANSPORT_FAILURE, else COMPLETED); PostRunErrors = []; no LaunchError and no Aborted; every field of RUN_JSON_FIELDS present. Any of these is
+-    an integrity defect (a reason: NOT_ACCREDITED). The execution category (ExecutionCategory: the recorded Outcome, RUN_JSON_MISSING or
+-    OUTCOME_MISSING) and the content result of the Architect (its Verdict) are reported separately in Categories; nothing is reconstructed;
+-  * preflight.json: gate 11 in Ok with the two pinned Owner lines, the round-3 blob at the worktree HEAD (= ObjectBlob), the RunId of the kit,
+-    Authorized = true with exactly the §84 section (pinned heading, full blob, pinned text SHA-256) and LaterSections = []; FrozenCommandGuard in
+-    Ok and Enforced with the frozen command of the closure (Transport.LaunchCommand, `python -B kit/launch.py`); RecordProbe in Ok; Environment
+-    with the fixed prefixes, the names and the values of the PYTHON* variables only;
+-  * coherence, new (schema rackcad-a6r3-architect-review/0): ids unique in Round2FindingResolution, Round2OptionalDisposition, GapAssessment,
+-    NegativeCaseCoherence, AcceptorCodeContrast and RealSessionPreconditions and, with a verdict, exactly A62-A6R2-R1..R2, A62-A6R2-O1..O5,
+-    G1..G6, N4/NC1/VERIFY_WITHOUT_INSTRUMENT, the nine claims and the eight preconditions once each; a round-2 REQUIRED not CORRECTED => a linked
+-    REQUIRED, CORRECTED => none; an OPTIONAL NOT_ADDRESSED => a linked finding; a gap REQUIRES_PIECE_CHANGE or REQUIRES_TEXT_CHANGE => a linked
+-    REQUIRED, REQUIRES_OWNER_DECISION => OwnerDecisionRequired = true, ACCEPTABLE_RESIDUAL => none; a negative case INCOHERENT => a linked
+-    REQUIRED, COHERENT => none; ReconstructionFromRealEvents / EffectiveInputClosure INADEQUATE => a linked REQUIRED,
+-    ADEQUATE_AS_FAIL_CLOSED_PRECONDITION => none; a claim DIFFERS => a linked REQUIRED, MATCHES => none; a real-session precondition TREATED_AS_MET
+-    => a linked REQUIRED (it must not be accredited in advance), KEPT_FAIL_CLOSED => none; OwnerAuthorizationAndVerifyScope with a line
+-    EXCEEDS_STATED_SCOPE or a NOT_CONFIRMED => a linked finding; with a verdict, ClauseRefs in every element, no NOT_DETERMINED, every FindingIds
+-    entry exists and every REQUIRED is cited by at least one element; AGREED => no REQUIRED, R1 and R2 CORRECTED, the three negative cases
+-    COHERENT, reconstruction and closure ADEQUATE_AS_FAIL_CLOSED_PRECONDITION, every claim MATCHES, every precondition KEPT_FAIL_CLOSED, G1..G6
+-    ACCEPTABLE_RESIDUAL, the Owner and VERIFY scope confirmed, OwnerDecisionRequired = false and IfAgreed all true;
+-  * kept from v5.2: findings, NOT_ACCREDITED, IfAgreed, invocation ids, reviewed object, Step0 (seven booleans, now the round-3 Step 0), the direct
+-    read of V14 L2333-L2334 and the acceptor-contrast references (AcceptorRefs only in bmin_accept.py, A6Refs only in A-6).
++"""I-62, decisiones §85, punto 6: post-review audit v5.4-a6r4 of ONE claude-cli run of the ONE FORMAL REVIEW of ROUND 4 of amendment A-6
++(docs/initiatives/I-62-A-6.md, round-4 blob pinned in the closure, PROPUESTA), bounded to A62-A6R3-R1 and its direct consequences, by an
++independent ARCHITECT. Declared and self-tested BEFORE the launch (Owner CLAUDE-CLI-I62 = A; the launch also requires gate 11, owner_gate.py: the
++Owner line of §78, the round-4 blob at the worktree HEAD and the Coordinator disposition after §85 pinned in owner_gate.py, with its number,
++heading, full blob and text SHA-256, and no later section); the principal session runs it afterwards, never before, on the complete run, and the
++auditor is not corrected after the run.
++
++v5.4-a6r4 = the v5.3-a6r3 auditor of round 3 (R20261013T183701Z-9f80, ACCREDITED, decisions §84-§85), derived by exact substitutions
++(prep/adapt_post_review.py): every launch, transport-gate, stream-json, transcript, tool, read-fidelity, reference, direct-read, run-custody, clone,
++run.json (Outcome, OutcomeCategories, PostRunErrors, fields), FrozenCommandGuard, RecordProbe and Environment rule of v5.3 is kept byte for byte
++(the reviewer has ONLY Read, Grep and Glob, plus StructuredOutput; effective paths; read fidelity line by line against the commit; failed reads
++never credited; prompt.md never a reference; run custody; clone clean after the run; the transport gate D-01 re-evaluated on the copies launch.py
++wrote; preflight.json and run.json audited; the execution category and the Architect verdict reported separately in Categories). Changes:
++  * preflight.json, gate 11 (round 4): the authorization pinned in the kit's owner_gate.py (pinned_authorization()) must not be pending and the
++    record must carry AuthorizationPending = false (a new reason otherwise); the round-3 rule compares the record with the pinned values (section
++    number, heading, full blob, text SHA-256, exactly one section, no later section) and with the round-4 blob (A6R4Blob) and the kit RunId;
++  * schema coherence (rackcad-a6r4-architect-review/0): ids unique in Round3FindingResolution, NegativeCaseCoherence, EvidenceAdequacy,
++    OptionalDispositionConformance, QuestionAnswers and ClosureRuleMechanical.Coverage/SubRules and, with a verdict, exactly A62-A6R3-R1,
++    N4/NC1, the six evidence aspects, A62-A6R3-O1..O7, Q-A6R4-01..04, the three closure-rule cases and sub-rules i..v once each; A62-A6R3-R1 not
++    CORRECTED => a linked REQUIRED, CORRECTED => none; a closure-rule case NOT_COVERED or with JudgmentStepRequired, or a sub-rule that introduces
++    or substitutes an input => a linked REQUIRED, otherwise none; ClosureRuleMechanical NOT_TOTAL_OR_NOT_MECHANICAL => a linked REQUIRED,
++    TOTAL_AND_MECHANICAL => none and every case covered without judgment and every sub-rule no/no; A69Compatibility CONTRADICTIONS => the list and
++    a linked REQUIRED, NONE => neither; a negative case INCOHERENT => a linked REQUIRED, COHERENT => none; an evidence aspect INADEQUATE => a
++    linked REQUIRED for the five mandatory aspects of decisions §85, point 3, a linked finding for O3_STRICT (point 4), ADEQUATE => no linked
++    REQUIRED; DeltaPurity NOT_CONFIRMED => a linked REQUIRED, CONFIRMED => none; an optional DOES_NOT_CONFORM or a question NOT_SATISFIED => a
++    linked finding; with a verdict, ClauseRefs in every element (nested ones too), no NOT_DETERMINED, every FindingIds entry exists and every
++    REQUIRED is cited by at least one element; AGREED => no REQUIRED, no Owner decision pending, IfAgreed all true, R1 CORRECTED, the closure rule
++    TOTAL_AND_MECHANICAL with every case covered without judgment and every sub-rule no/no, A69Compatibility NONE, N4 and NC1 COHERENT, every
++    evidence aspect ADEQUATE, DeltaPurity CONFIRMED and O1..O7 CONFORMS; CHANGES REQUIRED or REJECTED => at least one REQUIRED;
++  * schema validation: validate_schema requires Test-Json AND an in-process check of the measured keyword subset (schema_errors), because the
++    pwsh 7.6.7 installed on 2026-10-14 validates only the first level of nesting with Test-Json (measured); the rule and its reason text are
++    unchanged;
++  * kept from v5.3: findings, NOT_ACCREDITED, BLOCKED — OWNER DECISION, IfAgreed, invocation ids, reviewed object, Step0 (seven booleans, now the
++    round-4 Step 0) and the direct read of V14 L2333-L2334; the acceptor-contrast reference rule is retired with its field.
+ Small seams (list_dir, clone_git, clone_reparse, validate_schema, GATE, LAUNCH_DIR) let the self-test simulate a tampered run dir, launch dir or
+@@ -41,5 +40,5 @@
+     (measured resolved path and SHA-256), argument list = closure flags + --add-dir + --session-id + compact schema, cwd = clone, PromptSha256 =
+-    run/prompt.md, StdoutSha256 = the audited stdout, Transcript.Sha256 = the audited transcript, Outcome/PostRunErrors/fields as above;
++    run/prompt.md, StdoutSha256 = the audited stdout, Transcript.Sha256 = the audited transcript, Outcome/PostRunErrors/fields as in v5.3;
+     preflight.json there: the ten checks present and Ok (and gate 11 as above), session id, measured binary = closure (path and SHA-256), version
+-    = 2.1.293 (Claude Code), loggedIn = true, gate = kit/transport-gate.json, FrozenCommandGuard, RecordProbe and Environment as above;
++    = 2.1.293 (Claude Code), loggedIn = true, gate = kit/transport-gate.json, FrozenCommandGuard, RecordProbe and Environment as in v5.3;
+   * transport gate (D-01): transport_gate.evaluate(kit/transport-gate.json, closure, launch copies) without problems;
+@@ -54,7 +53,7 @@
+     files on disk) or its returned paths contain any non-closure file; any permission denial (transcript or result) is a violation;
+-  * read fidelity of every Read; references (every Evidence and every ClauseRefs, and also every DirectReads, A6Refs and AcceptorRefs) resolve to
+-    lines of a closure file or of a premise run file (order.txt, a6-r2.md), all delivered faithfully by Read in that very file; the direct read
++  * read fidelity of every Read; references (every Evidence and every ClauseRefs, nested ones included, and also every DirectReads) resolve to
++    lines of a closure file or of a premise run file (order.txt, a6-r3.md), all delivered faithfully by Read in that very file; the direct read
+     of V14 L2333-L2334 by Read in the V14 file, with an entry of DirectReads that covers it (a quotation inside A-6 is not a read of the source);
+   * structured output: the result's structured_output equals the input of the last successful StructuredOutput call (and its attachment), is
+-    valid against result.schema.json and coherent (above);
++    valid against result.schema.json (Test-Json and schema_errors) and coherent (above);
+   * run custody: each run file = kit copy = closure RunFileHashes; the run dir holds only the run files and launch/; launch/ holds only the files
+@@ -79,3 +78,3 @@
+ 
+-AUDITOR_VERSION = "v5.3-a6r3 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on decisions §84; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2333-L2334; declared and self-tested before the launch; decisions §84)"
++AUDITOR_VERSION = "v5.4-a6r4 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on the Coordinator disposition after §85 pinned in owner_gate.py; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2333-L2334; declared and self-tested before the launch; decisions §85, point 6)"
+ REPLACEMENT_CHAR = chr(0xFFFD)   # U+FFFD in a tool result: a transport artifact, recorded
+@@ -86,3 +85,3 @@
+     global TRANSPORT, SESSION_ID, CLONE_REAL, RUN_REAL, ALLOWED_TOOLS, DESIGNATED, TG, OG, GATE
+-    global LAUNCH_DIR, LAUNCH_FILES, R2_IDS, O2_IDS, GAP_IDS, CLAIMS, NEG_IDS, PRECOND_IDS, ACCEPTOR, DIRECT, LAUNCH_COMMAND
++    global LAUNCH_DIR, LAUNCH_FILES, R3F_IDS, O3_IDS, NEG_IDS, CASES, SUBRULES, ASPECTS, MANDATORY, QUESTIONS, DIRECT, LAUNCH_COMMAND
+     CLONE, RUN, KIT = clone, run, kit
+@@ -98,5 +97,6 @@
+     OBJECT_FILES, OBJECT, OBJECT_BLOB = dict(CLOSURE["ObjectFiles"]), CLOSURE["ObjectPath"], CLOSURE["ObjectBlob"]
+-    R2_IDS, O2_IDS, GAP_IDS = list(CLOSURE["Round2FindingIds"]), list(CLOSURE["Round2OptionalIds"]), list(CLOSURE["GapIds"])
+-    CLAIMS, NEG_IDS, PRECOND_IDS = list(CLOSURE["AcceptorClaims"]), list(CLOSURE["NegativeCases"]), list(CLOSURE["RealSessionPreconditions"])
+-    ACCEPTOR, DIRECT, LAUNCH_COMMAND = CLOSURE["AcceptorPath"], CLOSURE["DirectRead"], CLOSURE["Transport"]["LaunchCommand"]
++    R3F_IDS, O3_IDS, NEG_IDS = list(CLOSURE["Round3FindingIds"]), list(CLOSURE["Round3OptionalIds"]), list(CLOSURE["NegativeCases"])
++    CASES, SUBRULES = list(CLOSURE["ClosureRuleCases"]), list(CLOSURE["ClosureSubRules"])
++    ASPECTS, MANDATORY, QUESTIONS = list(CLOSURE["EvidenceAspects"]), list(CLOSURE["MandatoryEvidenceAspects"]), list(CLOSURE["Round4QuestionIds"])
++    DIRECT, LAUNCH_COMMAND = CLOSURE["DirectRead"], CLOSURE["Transport"]["LaunchCommand"]
+     TRANSPORT, SESSION_ID = CLOSURE["Transport"], CLOSURE["Transport"]["SessionId"]
+@@ -134,4 +134,41 @@
+ 
++def schema_errors(value, schema, path="$"):
++    """In-process check of `value` against `schema` for the keyword subset measured with claude-cli 2.1.293 (type, additionalProperties false,
++    required, properties, enum, pattern, minLength, minItems, items); an unknown keyword is an error (fail closed). → list of errors.
++    Added in v5.4-a6r4: pwsh 7.6.7 (installed 2026-10-14) Test-Json validates only the first level of nesting (measured), so validate_schema
++    requires both."""
++    errs = []
++    unknown = sorted(set(schema) - {"type", "additionalProperties", "required", "properties", "enum", "pattern", "minLength", "minItems", "items"})
++    if unknown or schema.get("additionalProperties", False) not in (True, False):
++        return ["%s: palabras clave fuera del subconjunto medido %s" % (path, unknown or ["additionalProperties"])]
++
++    def is_type(v, t):
++        return {"object": isinstance(v, dict), "array": isinstance(v, list), "string": isinstance(v, str), "boolean": isinstance(v, bool),
++                "integer": isinstance(v, int) and not isinstance(v, bool), "null": v is None}.get(t, False)
++    types = schema["type"] if isinstance(schema.get("type"), list) else ([schema["type"]] if "type" in schema else None)
++    if types is not None and not any(is_type(value, t) for t in types):
++        return ["%s: tipo %s, se espera %s" % (path, type(value).__name__, types)]
++    if "enum" in schema and not any(json.dumps(value, sort_keys=True) == json.dumps(e, sort_keys=True) for e in schema["enum"]):
++        errs.append("%s: valor fuera del enum" % path)
++    if isinstance(value, str) and "pattern" in schema and re.search(schema["pattern"], value) is None:
++        errs.append("%s: no casa con el patrón" % path)
++    if isinstance(value, str) and len(value) < schema.get("minLength", 0):
++        errs.append("%s: más corto que minLength" % path)
++    if isinstance(value, list):
++        if len(value) < schema.get("minItems", 0):
++            errs.append("%s: menos elementos que minItems" % path)
++        for i, x in enumerate(value):
++            errs += schema_errors(x, schema["items"], "%s[%d]" % (path, i)) if "items" in schema else []
++    if isinstance(value, dict):
++        props = schema.get("properties", {})
++        errs += ["%s: falta %s" % (path, k) for k in schema.get("required", []) if k not in value]
++        errs += ["%s: propiedad no admitida %s" % (path, k) for k in value if schema.get("additionalProperties") is False and k not in props]
++        for k, v in value.items():
++            errs += schema_errors(v, props[k], "%s.%s" % (path, k)) if k in props else []
++    return errs
++
++
+ def validate_schema(result, schema):
+-    """Test-Json (PowerShell 7) against the declared schema → (valid, detail)."""
++    """Test-Json (PowerShell 7) against the declared schema AND the in-process check of the measured keyword subset (schema_errors) →
++    (valid, detail). v5.4-a6r4: both are required, because pwsh 7.6.7 Test-Json checks only the first level of nesting."""
+     tmp = tempfile.mkdtemp()
+@@ -144,3 +181,4 @@
+     os.rmdir(tmp)
+-    return o == "True", o[:400]
++    errs = schema_errors(result, json.load(open(schema, encoding="utf-8")))
++    return o == "True" and not errs, ("Test-Json: %s | subconjunto: %s" % (o[:300], "; ".join(errs[:5]) if errs else "sin errores"))[:600]
+ 
+@@ -461,8 +499,13 @@
+         auth = [a for a in (og.get("AuthorizationSections") or []) if isinstance(a, dict)]
+-        if og.get("A6R3Blob") != OBJECT_BLOB or og.get("A6BlobAtHeadMatches") is not True or og.get("RunId") != IDS["RunId"] or \
++        pins = OG.pinned_authorization()
++        if OG.authorization_pending(pins) or og.get("AuthorizationPending") is not False:
++            add("preflight: compuerta 11 (%s) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §85 fijada, o "
++                "registro con AuthorizationPending distinto de false)" % OG.CHECK)
++        if og.get("A6R4Blob") != OBJECT_BLOB or og.get("A6BlobAtHeadMatches") is not True or og.get("RunId") != IDS["RunId"] or \
+                 og.get("Authorized") is not True or og.get("LaterSections") != [] or len(auth) != 1 or \
+-                auth[0].get("Number") != OG.AUTH_SECTION or auth[0].get("HeadingMatches") is not True or auth[0].get("HasBlob") is not True or \
+-                auth[0].get("TextSha256") != OG.AUTH_TEXT_SHA or og.get("AuthorizationTextSha256") != OG.AUTH_TEXT_SHA:
+-            add("preflight: compuerta 11 (%s) sin el blob de la ronda 3 en la HEAD del worktree, sin la autorización §84 fijada (encabezado, "
+-                "blob completo y SHA-256 del texto) o con una sección posterior a §84" % OG.CHECK)
++                auth[0].get("Number") != pins["Section"] or auth[0].get("HeadingMatches") is not True or auth[0].get("HasBlob") is not True or \
++                auth[0].get("TextSha256") != pins["TextSha256"] or og.get("AuthorizationTextSha256") != pins["TextSha256"] or \
++                og.get("AuthorizationSection") != pins["Section"] or og.get("AuthorizationHeading") != pins["Heading"]:
++            add("preflight: compuerta 11 (%s) sin el blob de la ronda 4 en la HEAD del worktree, sin la autorización fijada en owner_gate.py "
++                "(sección posterior a §85, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella" % OG.CHECK)
+         fg = preflight.get("FrozenCommandGuard") if isinstance(preflight.get("FrozenCommandGuard"), dict) else {}
+@@ -785,3 +828,3 @@
+ 
+-    # ---------------- direct read of V14 L2333-L2334 (decisions §80, point 6) and acceptor-contrast references
++    # ---------------- direct read of V14 L2333-L2334 (decisions §80, point 6)
+     r_ = result if isinstance(result, dict) else {}
+@@ -799,8 +842,2 @@
+         add("lectura directa: DirectReads sin una entrada que cubra %s:%d-%d" % (dpath, da, db))
+-    for x in items(r_.get("AcceptorCodeContrast")):
+-        for key, want in (("AcceptorRefs", ACCEPTOR), ("A6Refs", OBJECT)):
+-            for ref in x.get(key) or []:
+-                m = REF_RX.match(str(ref or ""))
+-                if not m or classify(m.group(1), CLONE) != ("CLOSURE", want):
+-                    add("AcceptorCodeContrast[%s].%s: referencia fuera de %s: %r" % (x.get("Claim"), key, want, str(ref)[:80]))
+ 
+@@ -843,11 +880,10 @@
+ REF_RX = re.compile(r"^(.+):([1-9][0-9]*)(?:-([1-9][0-9]*))?$")
+-STEP0_KEYS = ("V14DirectReadL2333L2334", "OrderReadWhole", "Decisions84DeclaresOrderBytesAndSha256", "Decisions83RoundTwoDisposition",
+-              "GuardsRunModeBaseHeadResult", "SelftestA6TextBlobMatchesObject", "Round2OutputIdentifiesRunAndFindings")
++STEP0_KEYS = ("V14DirectReadL2333L2334", "OrderReadWhole", "Decisions85DeclaresOrderBytesAndSha256", "Decisions85RoundThreeDisposition",
++              "GuardsRunModeBaseHeadResult", "SelftestA6TextBlobMatchesObject", "Round3OutputIdentifiesRunAndFindings")
+ NOT_DET = "NOT_DETERMINED"
+ BLOCKED = "BLOCKED " + chr(0x2014) + " OWNER DECISION"
+-ARRAYS = (("Round2FindingResolution", "Round2Finding"), ("Round2OptionalDisposition", "Round2Optional"), ("GapAssessment", "Gap"),
+-          ("NegativeCaseCoherence", "Case"), ("RealSessionPreconditions", "Precondition"))
+-SINGLES = ("ReconstructionFromRealEvents", "EffectiveInputClosure", "OwnerAuthorizationAndVerifyScope")
+-OWNER_LINES = ("LineA", "LineB")
+-OWNER_SCOPE_KEYS = ("VerifyOnly", "PinnedBlobsUnchanged", "NoResultAcceptedInAdvance")
++ARRAYS = (("Round3FindingResolution", "Round3Finding"), ("NegativeCaseCoherence", "Case"), ("EvidenceAdequacy", "Aspect"),
++          ("OptionalDispositionConformance", "Round3Optional"), ("QuestionAnswers", "Question"))
++NESTED = (("ClosureRuleMechanical", "Coverage", "Case"), ("ClosureRuleMechanical", "SubRules", "SubRule"))
++SINGLES = ("ClosureRuleMechanical", "A69Compatibility", "DeltaPurity")
+ LAUNCH_ENV_PREFIXES = ("PYTHON", "GIT_", "CLAUDE", "ANTHROPIC")   # §84, punto 2 (los de launch.py)
+@@ -890,4 +926,5 @@
+             out += [("%s[%s]" % (key, x.get(label)), ref, None) for ref in (x.get("ClauseRefs") or [])]
+-    for x in items(r.get("AcceptorCodeContrast")):
+-        out += [("AcceptorCodeContrast[%s].%s" % (x.get("Claim"), k), ref, None) for k in ("A6Refs", "AcceptorRefs") for ref in (x.get(k) or [])]
++    for parent, key, label in NESTED:
++        for x in items((r.get(parent) if isinstance(r.get(parent), dict) else {}).get(key)):
++            out += [("%s.%s[%s]" % (parent, key, x.get(label)), ref, None) for ref in (x.get("ClauseRefs") or [])]
+     out += [("DirectReads", x.get("Ref"), None) for x in items(r.get("DirectReads"))]
+@@ -903,12 +940,15 @@
+     all_ids = set(req_ids) | set(opt_ids)
+-    r2, o2, gaps = items(result.get("Round2FindingResolution")), items(result.get("Round2OptionalDisposition")), items(result.get("GapAssessment"))
+-    neg, acc, pre = items(result.get("NegativeCaseCoherence")), items(result.get("AcceptorCodeContrast")), items(result.get("RealSessionPreconditions"))
+-    rec_, clo = result.get("ReconstructionFromRealEvents") or {}, result.get("EffectiveInputClosure") or {}
+-    osc, oac = result.get("OwnerAuthorizationAndVerifyScope") or {}, result.get("OwnerAuthorityCheck") or {}
+-    ia, step0 = result.get("IfAgreed") or {}, result.get("Step0") or {}
++    r3, neg, ev = items(result.get("Round3FindingResolution")), items(result.get("NegativeCaseCoherence")), items(result.get("EvidenceAdequacy"))
++    od, qa = items(result.get("OptionalDispositionConformance")), items(result.get("QuestionAnswers"))
++    crm = result.get("ClosureRuleMechanical") if isinstance(result.get("ClosureRuleMechanical"), dict) else {}
++    cov, sub = items(crm.get("Coverage")), items(crm.get("SubRules"))
++    a69 = result.get("A69Compatibility") if isinstance(result.get("A69Compatibility"), dict) else {}
++    dp = result.get("DeltaPurity") if isinstance(result.get("DeltaPurity"), dict) else {}
++    oac, ia, step0 = result.get("OwnerAuthorityCheck") or {}, result.get("IfAgreed") or {}, result.get("Step0") or {}
+     owner = oac.get("OwnerDecisionRequired")
+-    arrays = (("Round2FindingResolution", r2, "Round2Finding", R2_IDS), ("Round2OptionalDisposition", o2, "Round2Optional", O2_IDS),
+-              ("GapAssessment", gaps, "Gap", GAP_IDS), ("NegativeCaseCoherence", neg, "Case", NEG_IDS),
+-              ("AcceptorCodeContrast", acc, "Claim", CLAIMS), ("RealSessionPreconditions", pre, "Precondition", PRECOND_IDS))
+-    singles = (("ReconstructionFromRealEvents", rec_), ("EffectiveInputClosure", clo), ("OwnerAuthorizationAndVerifyScope", osc))
++    arrays = (("Round3FindingResolution", r3, "Round3Finding", R3F_IDS), ("NegativeCaseCoherence", neg, "Case", NEG_IDS),
++              ("EvidenceAdequacy", ev, "Aspect", ASPECTS), ("OptionalDispositionConformance", od, "Round3Optional", O3_IDS),
++              ("QuestionAnswers", qa, "Question", QUESTIONS), ("ClosureRuleMechanical.Coverage", cov, "Case", CASES),
++              ("ClosureRuleMechanical.SubRules", sub, "SubRule", SUBRULES))
++    singles = (("ClosureRuleMechanical", crm), ("A69Compatibility", a69), ("DeltaPurity", dp))
+ 
+@@ -919,2 +959,8 @@
+         return any(i in req_ids for i in linked(x))
++
++    def covered(x):
++        return x.get("Status") == "COVERED" and x.get("JudgmentStepRequired") is False
++
++    def clean(x):
++        return x.get("IntroducesInput") == "no" and x.get("SubstitutesInput") == "no"
+     if len(set(req_ids + opt_ids)) != len(req_ids + opt_ids):
+@@ -932,17 +978,28 @@
+             c.append("%s con identificadores repetidos" % label)
+-    for x in r2:
++    for x in r3:
+         if x.get("Status") != "CORRECTED" and not has_req(x):
+-            c.append("%s %s sin un REQUIRED vinculado" % (x.get("Round2Finding"), x.get("Status")))
++            c.append("%s %s sin un REQUIRED vinculado" % (x.get("Round3Finding"), x.get("Status")))
+         if x.get("Status") == "CORRECTED" and has_req(x):
+-            c.append("%s CORRECTED con un REQUIRED vinculado" % x.get("Round2Finding"))
+-    for x in o2:
+-        if x.get("Status") == "NOT_ADDRESSED" and not linked(x):
+-            c.append("%s NOT_ADDRESSED sin un hallazgo vinculado" % x.get("Round2Optional"))
+-    for x in gaps:
+-        if x.get("Assessment") in ("REQUIRES_PIECE_CHANGE", "REQUIRES_TEXT_CHANGE") and not has_req(x):
+-            c.append("GapAssessment[%s] %s sin un REQUIRED vinculado" % (x.get("Gap"), x.get("Assessment")))
+-        if x.get("Assessment") == "REQUIRES_OWNER_DECISION" and owner is not True:
+-            c.append("GapAssessment[%s] REQUIRES_OWNER_DECISION sin OwnerDecisionRequired = true" % x.get("Gap"))
+-        if x.get("Assessment") == "ACCEPTABLE_RESIDUAL" and has_req(x):
+-            c.append("GapAssessment[%s] ACCEPTABLE_RESIDUAL con un REQUIRED vinculado" % x.get("Gap"))
++            c.append("%s CORRECTED con un REQUIRED vinculado" % x.get("Round3Finding"))
++    for x in cov:
++        if not covered(x) and not has_req(x):
++            c.append("ClosureRuleMechanical.Coverage[%s] NOT_COVERED o con un paso de juicio sin un REQUIRED vinculado" % x.get("Case"))
++        if covered(x) and has_req(x):
++            c.append("ClosureRuleMechanical.Coverage[%s] COVERED sin juicio con un REQUIRED vinculado" % x.get("Case"))
++    for x in sub:
++        if not clean(x) and not has_req(x):
++            c.append("ClosureRuleMechanical.SubRules[%s] introduce o sustituye un insumo sin un REQUIRED vinculado" % x.get("SubRule"))
++        if clean(x) and has_req(x):
++            c.append("ClosureRuleMechanical.SubRules[%s] sin insumos introducidos ni sustituidos con un REQUIRED vinculado" % x.get("SubRule"))
++    if crm.get("Assessment") == "NOT_TOTAL_OR_NOT_MECHANICAL" and not has_req(crm):
++        c.append("ClosureRuleMechanical NOT_TOTAL_OR_NOT_MECHANICAL sin un REQUIRED vinculado")
++    if crm.get("Assessment") == "TOTAL_AND_MECHANICAL" and has_req(crm):
++        c.append("ClosureRuleMechanical TOTAL_AND_MECHANICAL con un REQUIRED vinculado")
++    if crm.get("Assessment") == "TOTAL_AND_MECHANICAL" and (not all(covered(x) for x in cov) or not all(clean(x) for x in sub)):
++        c.append("ClosureRuleMechanical TOTAL_AND_MECHANICAL con un caso no cubierto o con juicio, o con un apartado que introduce o sustituye un "
++                 "insumo")
++    if a69.get("Status") == "CONTRADICTIONS" and (not a69.get("Contradictions") or not has_req(a69)):
++        c.append("A69Compatibility CONTRADICTIONS sin la lista de contradicciones o sin un REQUIRED vinculado")
++    if a69.get("Status") == "NONE" and (a69.get("Contradictions") or has_req(a69)):
++        c.append("A69Compatibility NONE con contradicciones en la lista o con un REQUIRED vinculado")
+     for x in neg:
+@@ -952,20 +1009,20 @@
+             c.append("NegativeCaseCoherence[%s] COHERENT con un REQUIRED vinculado" % x.get("Case"))
+-    for x in acc:
+-        if x.get("Status") == "DIFFERS" and not has_req(x):
+-            c.append("AcceptorCodeContrast[%s] DIFFERS sin un REQUIRED vinculado" % x.get("Claim"))
+-        if x.get("Status") == "MATCHES" and has_req(x):
+-            c.append("AcceptorCodeContrast[%s] MATCHES con un REQUIRED vinculado" % x.get("Claim"))
+-    for x in pre:
+-        if x.get("Status") == "TREATED_AS_MET" and not has_req(x):
+-            c.append("RealSessionPreconditions[%s] TREATED_AS_MET sin un REQUIRED vinculado (se acredita de antemano)" % x.get("Precondition"))
+-        if x.get("Status") == "KEPT_FAIL_CLOSED" and has_req(x):
+-            c.append("RealSessionPreconditions[%s] KEPT_FAIL_CLOSED con un REQUIRED vinculado" % x.get("Precondition"))
+-    for label, x in singles[:2]:
+-        if x.get("Assessment") == "INADEQUATE" and not has_req(x):
+-            c.append("%s INADEQUATE sin un REQUIRED vinculado" % label)
+-        if x.get("Assessment") == "ADEQUATE_AS_FAIL_CLOSED_PRECONDITION" and has_req(x):
+-            c.append("%s ADEQUATE_AS_FAIL_CLOSED_PRECONDITION con un REQUIRED vinculado" % label)
+-    if (any((osc.get(k) or {}).get("Assessment") == "EXCEEDS_STATED_SCOPE" for k in OWNER_LINES) or
+-            any(osc.get(k) == "NOT_CONFIRMED" for k in OWNER_SCOPE_KEYS)) and not linked(osc):
+-        c.append("OwnerAuthorizationAndVerifyScope con una línea EXCEEDS_STATED_SCOPE o una afirmación NOT_CONFIRMED sin un hallazgo vinculado")
++    for x in ev:
++        mandatory = x.get("Aspect") in MANDATORY
++        if x.get("Status") == "INADEQUATE" and mandatory and not has_req(x):
++            c.append("EvidenceAdequacy[%s] INADEQUATE sin un REQUIRED vinculado (prueba obligatoria de decisiones §85, punto 3)" % x.get("Aspect"))
++        if x.get("Status") == "INADEQUATE" and not mandatory and not linked(x):
++            c.append("EvidenceAdequacy[%s] INADEQUATE sin un hallazgo vinculado" % x.get("Aspect"))
++        if x.get("Status") == "ADEQUATE" and has_req(x):
++            c.append("EvidenceAdequacy[%s] ADEQUATE con un REQUIRED vinculado" % x.get("Aspect"))
++    if dp.get("Status") == "NOT_CONFIRMED" and not has_req(dp):
++        c.append("DeltaPurity NOT_CONFIRMED sin un REQUIRED vinculado")
++    if dp.get("Status") == "CONFIRMED" and has_req(dp):
++        c.append("DeltaPurity CONFIRMED con un REQUIRED vinculado")
++    for x in od:
++        if x.get("Status") == "DOES_NOT_CONFORM" and not linked(x):
++            c.append("OptionalDispositionConformance[%s] DOES_NOT_CONFORM sin un hallazgo vinculado" % x.get("Round3Optional"))
++    for x in qa:
++        if x.get("Outcome") == "NOT_SATISFIED" and not linked(x):
++            c.append("QuestionAnswers[%s] NOT_SATISFIED sin un hallazgo vinculado" % x.get("Question"))
+     if owner is True and not oac.get("AdditionalOwnerReservedConsequences"):
+@@ -982,10 +1039,8 @@
+                          % (label, [w for w in want if w not in got_], sorted({g for g in got_ if g not in want or got_.count(g) > 1})))
+-        for label, x in [h for h in holders if not h[0].startswith("AcceptorCodeContrast[")]:
++        for label, x in holders:
+             if not x.get("ClauseRefs"):
+                 c.append("con un veredicto, %s sin ClauseRefs" % label)
+-        undetermined = ([k for k in OWNER_LINES if (osc.get(k) or {}).get("Assessment") == NOT_DET] +
+-                        [k for k in OWNER_SCOPE_KEYS if osc.get(k) == NOT_DET] +
+-                        [label for label, x in singles[:2] if x.get("Assessment") == NOT_DET])
++        undetermined = [label for label, x in singles if x.get("Assessment" if label == "ClosureRuleMechanical" else "Status") == NOT_DET]
+         if undetermined:
+-            c.append("con un veredicto, NOT_DETERMINED no se admite (%s)" % ", ".join(undetermined[:6]))
++            c.append("con un veredicto, NOT_DETERMINED no se admite (%s)" % ", ".join(undetermined))
+         if owner is None:
+@@ -998,24 +1053,24 @@
+             c.append("REQUIRED sin disposición: todo REQUIRED lo cita al menos un elemento evaluado (%s)" % ", ".join(str(i) for i in uncited))
+-    if v == "AGREED" and (req or owner is not False or not ia or not all(ia.get(k) is True for k in ia) or
+-                          any((osc.get(k) or {}).get("Assessment") != "LIMITED_TO_STATED_SCOPE" for k in OWNER_LINES) or
+-                          any(osc.get(k) != "CONFIRMED" for k in OWNER_SCOPE_KEYS)):
+-        c.append("AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente, la autorización del Owner y el alcance de VERIFY confirmados (las "
+-                 "dos líneas en LIMITED_TO_STATED_SCOPE y VerifyOnly, PinnedBlobsUnchanged y NoResultAcceptedInAdvance en CONFIRMED) e IfAgreed "
+-                 "todo en true")
+-    if v == "AGREED" and (len(r2) != len(R2_IDS) or any(x.get("Status") != "CORRECTED" for x in r2)):
+-        c.append("AGREED exige A62-A6R2-R1 y A62-A6R2-R2 en CORRECTED")
++    if v == "AGREED" and (req or owner is not False or not ia or not all(ia.get(k) is True for k in ia)):
++        c.append("AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true")
++    if v == "AGREED" and (len(r3) != len(R3F_IDS) or any(x.get("Status") != "CORRECTED" for x in r3)):
++        c.append("AGREED exige A62-A6R3-R1 en CORRECTED")
++    if v == "AGREED" and (crm.get("Assessment") != "TOTAL_AND_MECHANICAL" or len(cov) != len(CASES) or len(sub) != len(SUBRULES) or
++                          not all(covered(x) for x in cov) or not all(clean(x) for x in sub)):
++        c.append("AGREED exige ClosureRuleMechanical en TOTAL_AND_MECHANICAL, con los tres casos COVERED sin juicio y los cinco apartados sin "
++                 "insumos introducidos ni sustituidos")
++    if v == "AGREED" and a69.get("Status") != "NONE":
++        c.append("AGREED exige A69Compatibility en NONE")
+     if v == "AGREED" and (len(neg) != len(NEG_IDS) or any(x.get("Status") != "COHERENT" for x in neg)):
+-        c.append("AGREED exige N4, NC1 y VERIFY_WITHOUT_INSTRUMENT en COHERENT")
+-    if v == "AGREED" and any(x.get("Assessment") != "ADEQUATE_AS_FAIL_CLOSED_PRECONDITION" for _, x in singles[:2]):
+-        c.append("AGREED exige la reconstrucción desde eventos reales y el cierre efectivo en ADEQUATE_AS_FAIL_CLOSED_PRECONDITION")
+-    if v == "AGREED" and (len(acc) != len(CLAIMS) or any(x.get("Status") != "MATCHES" for x in acc)):
+-        c.append("AGREED exige todas las afirmaciones de AcceptorCodeContrast en MATCHES (ningún DIFFERS)")
+-    if v == "AGREED" and (len(pre) != len(PRECOND_IDS) or any(x.get("Status") != "KEPT_FAIL_CLOSED" for x in pre)):
+-        c.append("AGREED exige todas las precondiciones de sesión real en KEPT_FAIL_CLOSED (ninguna acreditada de antemano)")
+-    if v == "AGREED" and (len(gaps) != len(GAP_IDS) or any(x.get("Assessment") != "ACCEPTABLE_RESIDUAL" for x in gaps)):
+-        c.append("AGREED exige G1..G6 en ACCEPTABLE_RESIDUAL (ninguna brecha REQUIRES_*)")
++        c.append("AGREED exige N4 y NC1 en COHERENT")
++    if v == "AGREED" and (len(ev) != len(ASPECTS) or any(x.get("Status") != "ADEQUATE" for x in ev)):
++        c.append("AGREED exige los seis aspectos de EvidenceAdequacy en ADEQUATE")
++    if v == "AGREED" and dp.get("Status") != "CONFIRMED":
++        c.append("AGREED exige DeltaPurity en CONFIRMED")
++    if v == "AGREED" and (len(od) != len(O3_IDS) or any(x.get("Status") != "CONFORMS" for x in od)):
++        c.append("AGREED exige A62-A6R3-O1..O7 en CONFORMS")
+     if v != "AGREED" and any(x is not None for x in ia.values()):
+         c.append("IfAgreed debe ir en null salvo con AGREED")
+-    if v == "CHANGES REQUIRED" and not req:
+-        c.append("CHANGES REQUIRED sin ningún REQUIRED")
++    if v in ("CHANGES REQUIRED", "REJECTED") and not req:
++        c.append("%s sin ningún REQUIRED" % v)
+     if v == BLOCKED and owner is not True:

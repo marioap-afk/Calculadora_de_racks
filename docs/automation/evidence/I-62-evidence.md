@@ -4393,3 +4393,25 @@ solo desde artefactos custodiados.
   negativos 52/52; `preview --final` PASS; `run` sobre `d66f7f4b` PASS en G1-G11 y G5b
   ([`a6r4-guards-result-run.json`](I-62-A6/r4/a6r4-guards-result-run.json)).
 - Kit de la revisión acotada: por preparar y congelar sin lanzar (decisiones §85, punto 6). Ni A-6 AGREED, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 170. Kit de la revisión formal acotada de A-6 ronda 4 congelado y custodiado (decisiones §85, punto 6; no lanzado)
+
+- **Kit** [`I-62-architect-A-6r4/R20261014T180556Z-5e02`](I-62-architect-A-6r4/R20261014T180556Z-5e02/README.md) (`kit-manifest.json` `6c8807beb692f860…`; 26 archivos de `kit/`;
+  diferencias con el kit acreditado de la ronda 3 en `prep-diffs/`). Lo preparó un agente, subagente de la sesión que redactó A-6 (declarado en el
+  README):
+  - objeto: A-6 ronda 4, blob `4bc919dd`, publicación `d66f7f4b`; clon `D:\r62-arch-a6r4` en `088b3227` (con la custodia de las guardas `run`);
+  - alcance acotado a A62-A6R3-R1 y a sus consecuencias directas: resolución del hallazgo, regla 6 (b) total y mecánica, compatibilidad con A6-9,
+    coherencia de N4 y nc1, adecuación de la evidencia de `r4/r1probes/`, pureza del delta, opcionales según decisiones §85, punto 4, y
+    preguntas Q-A6R4-01..04 (esquema `rackcad-a6r4-architect-review/0`; auditor v5.4-a6r4);
+  - transporte, lanzador, compuerta de transporte y comprobación previa de registro sin cambio de lógica respecto de la ronda 3: `claude-cli`
+    2.1.293 (`8693c4a0…`), `opus-5-5` xhigh, tope de 3 600 s, sin reintento, orden exacta `python -B kit/launch.py`;
+  - compuerta 11: BLOQUEANTE con la autorización pendiente; una disposición del Coordinator posterior a §85 se fija con `pin_authorization.py`
+    (número, encabezado y SHA-256 del texto) y el kit se vuelve a congelar y custodiar antes del lanzamiento.
+- **Comprobaciones:** autoprueba 297/297; mutación 191/191 (tres muertos por excepción, en los mismos sitios de decodificación que en la
+  ronda 3); `verify_clone` sin fallos, con las guardas de la ronda 4 reproducidas iguales a las custodiadas (`run` PASS, autoprueba 815/815);
+  `--record-probe` con código 0; prueba en seco con `BlockingChecks` = [`11-OwnerAndAuthorizationGate`] (autorización pendiente) y ninguna
+  sección posterior.
+- **Desviaciones declaradas:** el pwsh del `PATH` pasó a 7.6.7 por actualización de la tienda y su `Test-Json` solo valida el primer nivel, así que el
+  auditor añade una comprobación del esquema en proceso además de la llamada sin cambio; el esquema admite también BLOCKED — OWNER DECISION y
+  NOT_ACCREDITED; el cierre (337 archivos) deja fuera las salidas de las revisiones de las rondas 1 y 2 y el dictamen de B-min. Ningún modelo ni CLI
+  de modelos se ejecutó.

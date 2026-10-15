@@ -1,0 +1,45 @@
+{
+ "Schema": "rackcad-a6r4-review-kit-params/0",
+ "Provisional": false,
+ "CloneCommit": "088b3227a22ef6ab28b7ba43d5aa90de68d5b08f",
+ "Publication": "d66f7f4b6a7031938588378b6eef7f1c3d4e4cf7",
+ "PublicationParent": "ceb8597796b756f199e1c1b153f02e95b820b44e",
+ "GuardsRunCommit": "088b3227a22ef6ab28b7ba43d5aa90de68d5b08f",
+ "Object": {
+  "Path": "docs/initiatives/I-62-A-6.md",
+  "Blob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5"
+ },
+ "R4AddedAfterPublication": [
+  "docs/automation/evidence/I-62-A6/r4/a6r4-guards-result-run.json"
+ ],
+ "Clone": "D:\\r62-arch-a6r4",
+ "Run": "D:\\r62-arch-a6r4-run",
+ "Branch": "architecture/portabilidad-coordinador-principal",
+ "BranchTipAtClone": "088b3227a22ef6ab28b7ba43d5aa90de68d5b08f",
+ "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+ "CloneSource": "<directorio común de git del worktree (el del repositorio de trabajo)>",
+ "PreparedAt": "2026-10-14T18:15:32Z",
+ "PreconditionChecks": {
+  "CommonGitDirFound": true,
+  "CommitsExist": true,
+  "CloneCommitReachableFromBranchTip": true,
+  "PublicationAncestorOfGuardsRun": true,
+  "GuardsRunAncestorOfCloneCommit": true,
+  "Round3AtPublicationParent": true,
+  "SameRound4BlobAtPublicationGuardsRunAndClone": true,
+  "Decisions78_84_85AtCloneCommit": true,
+  "Decisions85IsTheLastSectionAtCloneCommit": true,
+  "GuardsRunResultAtCloneCommit": true,
+  "R4UnchangedSincePublication": true
+ },
+ "Commands": [
+  "git clone -q --no-local -c core.autocrlf=false --single-branch --branch architecture/portabilidad-coordinador-principal <directorio común de git del worktree (el del repositorio de trabajo)> D:\\r62-arch-a6r4",
+  "git -C D:\\r62-arch-a6r4 checkout -q --detach 088b3227a22ef6ab28b7ba43d5aa90de68d5b08f",
+  "git -C D:\\r62-arch-a6r4 branch -D architecture/portabilidad-coordinador-principal",
+  "git -C D:\\r62-arch-a6r4 remote remove origin",
+  "git -C D:\\r62-arch-a6r4 reflog expire --expire=now --all",
+  "git -C D:\\r62-arch-a6r4 gc -q --prune=now",
+  "copia byte a byte de kit/order.txt (= cuerpo §85) y kit/a6-r3.md (= blob e62f27b8) → D:\\r62-arch-a6r4-run\\",
+  "copia byte a byte de kit/prompt.md (renderizado por make_closure.py --render-prompt) → D:\\r62-arch-a6r4-run\\prompt.md (finish_kit.py)"
+ ]
+}

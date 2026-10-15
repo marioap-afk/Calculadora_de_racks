@@ -1,0 +1,926 @@
+{
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "Schema",
+  "RunId",
+  "InvocationId",
+  "LogicalReviewRequestId",
+  "AttemptSeq",
+  "RequestedRole",
+  "Action",
+  "ReviewedUnit",
+  "ReviewedCommit",
+  "ReviewedPath",
+  "ReviewedBlob",
+  "ReviewerMode",
+  "SamePersonAsAuthor",
+  "ReviewerDeclaredIdentity",
+  "InjectedContextDeclaration",
+  "Step0",
+  "DirectReads",
+  "Reads",
+  "Verdict",
+  "RequiredFindings",
+  "OptionalFindings",
+  "Round3FindingResolution",
+  "ClosureRuleMechanical",
+  "A69Compatibility",
+  "NegativeCaseCoherence",
+  "EvidenceAdequacy",
+  "DeltaPurity",
+  "OptionalDispositionConformance",
+  "QuestionAnswers",
+  "OwnerAuthorityCheck",
+  "IfAgreed",
+  "KnownLimitations",
+  "RecommendedNextAction"
+ ],
+ "properties": {
+  "Schema": {
+   "enum": [
+    "rackcad-a6r4-architect-review/0"
+   ]
+  },
+  "RunId": {
+   "type": "string",
+   "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+  },
+  "InvocationId": {
+   "type": "string",
+   "pattern": "^I[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+  },
+  "LogicalReviewRequestId": {
+   "type": "string",
+   "pattern": "^L[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+  },
+  "AttemptSeq": {
+   "type": "integer",
+   "enum": [
+    1
+   ]
+  },
+  "RequestedRole": {
+   "enum": [
+    "ARCHITECT"
+   ]
+  },
+  "Action": {
+   "enum": [
+    "REVIEW_DESIGN"
+   ]
+  },
+  "ReviewedUnit": {
+   "enum": [
+    "I-62"
+   ]
+  },
+  "ReviewedCommit": {
+   "type": [
+    "string",
+    "null"
+   ],
+   "pattern": "^[0-9a-f]{40}$"
+  },
+  "ReviewedPath": {
+   "enum": [
+    "docs/initiatives/I-62-A-6.md"
+   ]
+  },
+  "ReviewedBlob": {
+   "type": [
+    "string",
+    "null"
+   ],
+   "pattern": "^[0-9a-f]{40}$"
+  },
+  "ReviewerMode": {
+   "enum": [
+    "SAME-SESSION ROLE",
+    "SEPARATE SESSION",
+    "EXTERNAL HUMAN"
+   ]
+  },
+  "SamePersonAsAuthor": {
+   "type": "string",
+   "minLength": 1
+  },
+  "ReviewerDeclaredIdentity": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Runtime",
+    "Model",
+    "Effort",
+    "SessionOrThread"
+   ],
+   "properties": {
+    "Runtime": {
+     "type": "string"
+    },
+    "Model": {
+     "type": "string"
+    },
+    "Effort": {
+     "type": "string"
+    },
+    "SessionOrThread": {
+     "type": "string"
+    }
+   }
+  },
+  "InjectedContextDeclaration": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "State",
+    "Items"
+   ],
+   "properties": {
+    "State": {
+     "enum": [
+      "DECLARED",
+      "NONE"
+     ]
+    },
+    "Items": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "Step0": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Basis",
+    "V14DirectReadL2333L2334",
+    "OrderReadWhole",
+    "Decisions85DeclaresOrderBytesAndSha256",
+    "Decisions85RoundThreeDisposition",
+    "GuardsRunModeBaseHeadResult",
+    "SelftestA6TextBlobMatchesObject",
+    "Round3OutputIdentifiesRunAndFindings",
+    "Note"
+   ],
+   "properties": {
+    "Basis": {
+     "enum": [
+      "INVOKER_VERIFIED_CLONE"
+     ]
+    },
+    "V14DirectReadL2333L2334": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "OrderReadWhole": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "Decisions85DeclaresOrderBytesAndSha256": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "Decisions85RoundThreeDisposition": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "GuardsRunModeBaseHeadResult": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "SelftestA6TextBlobMatchesObject": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "Round3OutputIdentifiesRunAndFindings": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "Note": {
+     "type": "string"
+    }
+   }
+  },
+  "DirectReads": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Ref",
+     "Purpose"
+    ],
+    "properties": {
+     "Ref": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+     },
+     "Purpose": {
+      "type": "string",
+      "minLength": 1
+     }
+    }
+   }
+  },
+  "Reads": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "Verdict": {
+   "enum": [
+    "AGREED",
+    "CHANGES REQUIRED",
+    "REJECTED",
+    "BLOCKED — OWNER DECISION",
+    "NOT_ACCREDITED"
+   ]
+  },
+  "RequiredFindings": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "FindingId",
+     "Section",
+     "ViolatedInvariant",
+     "Counterexample",
+     "Evidence",
+     "WhyItMatters",
+     "CorrectionRequired"
+    ],
+    "properties": {
+     "FindingId": {
+      "type": "string",
+      "pattern": "^A62-A6R4-R[1-9][0-9]*$"
+     },
+     "Section": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ViolatedInvariant": {
+      "type": "string"
+     },
+     "Counterexample": {
+      "type": "string"
+     },
+     "Evidence": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+      },
+      "minItems": 1
+     },
+     "WhyItMatters": {
+      "type": "string",
+      "minLength": 1
+     },
+     "CorrectionRequired": {
+      "type": "string",
+      "minLength": 1
+     }
+    }
+   }
+  },
+  "OptionalFindings": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "FindingId",
+     "Section",
+     "Note",
+     "Evidence",
+     "SuggestedCorrection"
+    ],
+    "properties": {
+     "FindingId": {
+      "type": "string",
+      "pattern": "^A62-A6R4-O[1-9][0-9]*$"
+     },
+     "Section": {
+      "type": "string",
+      "minLength": 1
+     },
+     "Note": {
+      "type": "string",
+      "minLength": 1
+     },
+     "Evidence": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+      },
+      "minItems": 1
+     },
+     "SuggestedCorrection": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "Round3FindingResolution": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Round3Finding",
+     "Status",
+     "Rationale",
+     "ClauseRefs",
+     "FindingIds"
+    ],
+    "properties": {
+     "Round3Finding": {
+      "enum": [
+       "A62-A6R3-R1"
+      ]
+     },
+     "Status": {
+      "enum": [
+       "CORRECTED",
+       "PARTIALLY_CORRECTED",
+       "NOT_CORRECTED"
+      ]
+     },
+     "Rationale": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ClauseRefs": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+      }
+     },
+     "FindingIds": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+      }
+     }
+    }
+   }
+  },
+  "ClosureRuleMechanical": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Assessment",
+    "Coverage",
+    "SubRules",
+    "Rationale",
+    "ClauseRefs",
+    "FindingIds"
+   ],
+   "properties": {
+    "Assessment": {
+     "enum": [
+      "TOTAL_AND_MECHANICAL",
+      "NOT_TOTAL_OR_NOT_MECHANICAL",
+      "NOT_DETERMINED"
+     ]
+    },
+    "Coverage": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "Case",
+       "Status",
+       "JudgmentStepRequired",
+       "Rationale",
+       "ClauseRefs",
+       "FindingIds"
+      ],
+      "properties": {
+       "Case": {
+        "enum": [
+         "N4_ABSENT_DELIVERY",
+         "NC1_NONEXISTENT_COMMIT",
+         "ABSENT_NULL_EMPTY_FIELDS"
+        ]
+       },
+       "Status": {
+        "enum": [
+         "COVERED",
+         "NOT_COVERED"
+        ]
+       },
+       "JudgmentStepRequired": {
+        "type": "boolean"
+       },
+       "Rationale": {
+        "type": "string",
+        "minLength": 1
+       },
+       "ClauseRefs": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+        }
+       },
+       "FindingIds": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+        }
+       }
+      }
+     }
+    },
+    "SubRules": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "SubRule",
+       "IntroducesInput",
+       "SubstitutesInput",
+       "Rationale",
+       "ClauseRefs",
+       "FindingIds"
+      ],
+      "properties": {
+       "SubRule": {
+        "enum": [
+         "i",
+         "ii",
+         "iii",
+         "iv",
+         "v"
+        ]
+       },
+       "IntroducesInput": {
+        "enum": [
+         "yes",
+         "no"
+        ]
+       },
+       "SubstitutesInput": {
+        "enum": [
+         "yes",
+         "no"
+        ]
+       },
+       "Rationale": {
+        "type": "string",
+        "minLength": 1
+       },
+       "ClauseRefs": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+        }
+       },
+       "FindingIds": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+        }
+       }
+      }
+     }
+    },
+    "Rationale": {
+     "type": "string",
+     "minLength": 1
+    },
+    "ClauseRefs": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+     }
+    },
+    "FindingIds": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+     }
+    }
+   }
+  },
+  "A69Compatibility": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Status",
+    "Contradictions",
+    "Rationale",
+    "ClauseRefs",
+    "FindingIds"
+   ],
+   "properties": {
+    "Status": {
+     "enum": [
+      "NONE",
+      "CONTRADICTIONS",
+      "NOT_DETERMINED"
+     ]
+    },
+    "Contradictions": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "Rationale": {
+     "type": "string",
+     "minLength": 1
+    },
+    "ClauseRefs": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+     }
+    },
+    "FindingIds": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+     }
+    }
+   }
+  },
+  "NegativeCaseCoherence": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Case",
+     "Status",
+     "Rationale",
+     "ClauseRefs",
+     "FindingIds"
+    ],
+    "properties": {
+     "Case": {
+      "enum": [
+       "N4",
+       "NC1"
+      ]
+     },
+     "Status": {
+      "enum": [
+       "COHERENT",
+       "INCOHERENT"
+      ]
+     },
+     "Rationale": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ClauseRefs": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+      }
+     },
+     "FindingIds": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+      }
+     }
+    }
+   }
+  },
+  "EvidenceAdequacy": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Aspect",
+     "Status",
+     "Rationale",
+     "ClauseRefs",
+     "FindingIds"
+    ],
+    "properties": {
+     "Aspect": {
+      "enum": [
+       "DERIVATION",
+       "INDEPENDENT_IMPLEMENTATION",
+       "SUBSTITUTIONS",
+       "ADDED_OR_INVENTED_INPUTS",
+       "ACCEPTOR_RUNS",
+       "O3_STRICT"
+      ]
+     },
+     "Status": {
+      "enum": [
+       "ADEQUATE",
+       "INADEQUATE"
+      ]
+     },
+     "Rationale": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ClauseRefs": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+      }
+     },
+     "FindingIds": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+      }
+     }
+    }
+   }
+  },
+  "DeltaPurity": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Status",
+    "Rationale",
+    "ClauseRefs",
+    "FindingIds"
+   ],
+   "properties": {
+    "Status": {
+     "enum": [
+      "CONFIRMED",
+      "NOT_CONFIRMED",
+      "NOT_DETERMINED"
+     ]
+    },
+    "Rationale": {
+     "type": "string",
+     "minLength": 1
+    },
+    "ClauseRefs": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+     }
+    },
+    "FindingIds": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+     }
+    }
+   }
+  },
+  "OptionalDispositionConformance": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Round3Optional",
+     "Status",
+     "Rationale",
+     "ClauseRefs",
+     "FindingIds"
+    ],
+    "properties": {
+     "Round3Optional": {
+      "enum": [
+       "A62-A6R3-O1",
+       "A62-A6R3-O2",
+       "A62-A6R3-O3",
+       "A62-A6R3-O4",
+       "A62-A6R3-O5",
+       "A62-A6R3-O6",
+       "A62-A6R3-O7"
+      ]
+     },
+     "Status": {
+      "enum": [
+       "CONFORMS",
+       "DOES_NOT_CONFORM"
+      ]
+     },
+     "Rationale": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ClauseRefs": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+      }
+     },
+     "FindingIds": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+      }
+     }
+    }
+   }
+  },
+  "QuestionAnswers": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Question",
+     "Outcome",
+     "Answer",
+     "ClauseRefs",
+     "FindingIds"
+    ],
+    "properties": {
+     "Question": {
+      "enum": [
+       "Q-A6R4-01",
+       "Q-A6R4-02",
+       "Q-A6R4-03",
+       "Q-A6R4-04"
+      ]
+     },
+     "Outcome": {
+      "enum": [
+       "SATISFIED",
+       "NOT_SATISFIED"
+      ]
+     },
+     "Answer": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ClauseRefs": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+      }
+     },
+     "FindingIds": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+      }
+     }
+    }
+   }
+  },
+  "OwnerAuthorityCheck": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "AdditionalOwnerReservedConsequences",
+    "OwnerDecisionRequired",
+    "Note"
+   ],
+   "properties": {
+    "AdditionalOwnerReservedConsequences": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "OwnerDecisionRequired": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "Note": {
+     "type": "string"
+    }
+   }
+  },
+  "IfAgreed": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "ScopeLimitedToA63R6bAndDirectConsequences",
+    "Round3FindingCorrected",
+    "ClosureRuleTotalAndMechanical",
+    "NoContradictionWithA69Rule4",
+    "NegativeCasesCoherent",
+    "EvidenceAdequate",
+    "DeltaLimitedToA63R6b",
+    "OptionalDispositionsConform",
+    "NoAdditionalOwnerDecisionRequired",
+    "SuitableForCoordinatorAgreement"
+   ],
+   "properties": {
+    "ScopeLimitedToA63R6bAndDirectConsequences": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "Round3FindingCorrected": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "ClosureRuleTotalAndMechanical": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "NoContradictionWithA69Rule4": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "NegativeCasesCoherent": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "EvidenceAdequate": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "DeltaLimitedToA63R6b": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "OptionalDispositionsConform": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "NoAdditionalOwnerDecisionRequired": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "SuitableForCoordinatorAgreement": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    }
+   }
+  },
+  "KnownLimitations": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "RecommendedNextAction": {
+   "type": "string"
+  }
+ }
+}

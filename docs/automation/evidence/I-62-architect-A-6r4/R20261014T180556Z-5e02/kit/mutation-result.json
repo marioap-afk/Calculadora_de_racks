@@ -1,0 +1,2070 @@
+{
+ "Mutation": "post-review.py v5.4-a6r4 + transport_gate.py + owner_gate.py (ronda 4): cada sitio de regla desactivado debe hacer fallar al menos un caso del selftest",
+ "Environment": "REAL (clon y run del kit)",
+ "Baseline": {
+  "Cases": 296,
+  "Failing": [],
+  "AllPass": true
+ },
+ "Modules": {
+  "post-review.py": {
+   "Sha256": "4f46caa66c5fcd299000e2d2f0c42ebf3a13c4c9fd027f0a57b314c2a8fc485f",
+   "Sites": 133,
+   "Killed": 133
+  },
+  "transport_gate.py": {
+   "Sha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+   "Sites": 40,
+   "Killed": 40
+  },
+  "owner_gate.py": {
+   "Sha256": "d442608a77b78d96546c042cc396cb1b553c69673a5368aa526953f63060b049",
+   "Sites": 18,
+   "Killed": 18
+  }
+ },
+ "Mutants": [
+  {
+   "Module": "post-review.py",
+   "Line": 361,
+   "Code": "probs.append(\"Glob con `..` después de un comodín: %s\" % pattern)",
+   "Killed": true,
+   "KilledBy": [
+    "50-glob-puntos-tras-comodin"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 366,
+   "Code": "probs.append(\"Glob fuera del clon y del run: %s (base %s)\" % (pattern, userless(base)))",
+   "Killed": true,
+   "KilledBy": [
+    "03-escape-por-union (junction)",
+    "05-glob-fuera-del-cierre"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 373,
+   "Code": "probs.append(\"Glob alcanza %d archivo(s) fuera del cierre: %s (p. ej., %s)\" % (len(bad), pattern, \", \".join(userless(b) for b in bad[:3])))",
+   "Killed": true,
+   "KilledBy": [
+    "05-glob-fuera-del-cierre"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 380,
+   "Code": "probs.append(\"Glob devolvió una ruta fuera del cierre: %s\" % userless(t))",
+   "Killed": true,
+   "KilledBy": [
+    "05-glob-fuera-del-cierre"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 429,
+   "Code": "add(\"lanzamiento: stdout.jsonl fuera de %s\" % userless(LAUNCH_DIR))",
+   "Killed": true,
+   "KilledBy": [
+    "53-stdout-fuera-de-launch"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 431,
+   "Code": "add(\"lanzamiento: falta run.json en launch/\")",
+   "Killed": true,
+   "KilledBy": [
+    "28-run-json-ausente"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 436,
+   "Code": "add(\"lanzamiento: código de salida %r (se exige 0)\" % run_json.get(\"ExitCode\"))",
+   "Killed": true,
+   "KilledBy": [
+    "13-sin-result-y-salida-1",
+    "126-run-json-fallo-del-proceso",
+    "132-run-json-outcome-incoherente",
+    "137-run-json-fallo-del-proceso-y-del-registro"
+   ],
+   "KillingCases": 5
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 438,
+   "Code": "add(\"lanzamiento: proceso terminado por el invocador (Killed/TimedOut)\")",
+   "Killed": true,
+   "KilledBy": [
+    "13-sin-result-y-salida-1",
+    "137-run-json-fallo-del-proceso-y-del-registro"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 440,
+   "Code": "add(\"lanzamiento: SessionId de run.json distinto del fijado en el kit\")",
+   "Killed": true,
+   "KilledBy": [
+    "29-run-json-sessionid"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 443,
+   "Code": "add(\"lanzamiento: ejecutable medido distinto del binario elegible del cierre (ruta resuelta o SHA-256)\")",
+   "Killed": true,
+   "KilledBy": [
+    "30-run-json-ejecutable-ruta",
+    "31-run-json-ejecutable-sha"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 446,
+   "Code": "add(\"lanzamiento: argumentos del lanzamiento distintos de los del cierre (flags, --add-dir, --session-id o esquema)\")",
+   "Killed": true,
+   "KilledBy": [
+    "23-lanzamiento-e-init-distintos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 449,
+   "Code": "add(\"lanzamiento: cwd del proceso distinto del clon\")",
+   "Killed": true,
+   "KilledBy": [
+    "32-run-json-cwd"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 451,
+   "Code": "add(\"lanzamiento: PromptSha256 de run.json distinto de prompt.md del run\")",
+   "Killed": true,
+   "KilledBy": [
+    "33-run-json-hashes"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 453,
+   "Code": "add(\"lanzamiento: StdoutSha256 de run.json distinto del stdout.jsonl auditado\")",
+   "Killed": true,
+   "KilledBy": [
+    "33-run-json-hashes"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 455,
+   "Code": "add(\"lanzamiento: Transcript.Sha256 de run.json distinto de la transcripción auditada\")",
+   "Killed": true,
+   "KilledBy": [
+    "33-run-json-hashes"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 460,
+   "Code": "add(\"lanzamiento: Outcome de run.json %r (se exige COMPLETED; categorías registradas %s)\" % (run_json.get(\"Outcome\"),",
+   "Killed": true,
+   "KilledBy": [
+    "13-sin-result-y-salida-1",
+    "126-run-json-fallo-del-proceso",
+    "127-run-json-fallo-del-transporte",
+    "128-run-json-sin-mensaje-result-registrado"
+   ],
+   "KillingCases": 10
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 463,
+   "Code": "add(\"lanzamiento: Outcome y OutcomeCategories de run.json incoherentes con sus campos (recalculado: %s)\" % launch[\"OutcomeRecomputed\"])",
+   "Killed": true,
+   "KilledBy": [
+    "132-run-json-outcome-incoherente",
+    "133-run-json-categorias-incoherentes",
+    "134-run-json-sin-outcome"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 465,
+   "Code": "add(\"lanzamiento: PostRunErrors de run.json no vacío o ausente: %s\" % str(run_json.get(\"PostRunErrors\"))[:200])",
+   "Killed": true,
+   "KilledBy": [
+    "129-run-json-fallo-del-registro-posterior",
+    "136-run-json-postrunerrors-ausente",
+    "137-run-json-fallo-del-proceso-y-del-registro"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 467,
+   "Code": "add(\"lanzamiento: run.json registra un fallo de lanzamiento (LaunchError o Aborted)\")",
+   "Killed": true,
+   "KilledBy": [
+    "130-run-json-fallo-de-lanzamiento",
+    "131-run-json-abortado"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 470,
+   "Code": "add(\"lanzamiento: run.json sin los campos del registro %s\" % missing_fields)",
+   "Killed": true,
+   "KilledBy": [
+    "134-run-json-sin-outcome",
+    "135-run-json-sin-campos-del-registro",
+    "136-run-json-postrunerrors-ausente"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 472,
+   "Code": "add(\"lanzamiento: falta preflight.json en launch/\")",
+   "Killed": true,
+   "KilledBy": [
+    "34-preflight-ausente"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 478,
+   "Code": "add(\"preflight: faltan comprobaciones %s\" % missing)",
+   "Killed": true,
+   "KilledBy": [
+    "35-preflight-comprobaciones",
+    "150-preflight-sin-compuerta-11"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 481,
+   "Code": "add(\"preflight: comprobaciones sin Ok: %s\" % not_ok)",
+   "Killed": true,
+   "KilledBy": [
+    "35-preflight-comprobaciones",
+    "150c-preflight-compuerta-11-fallida"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 483,
+   "Code": "add(\"preflight: SessionId distinto del fijado en el kit\")",
+   "Killed": true,
+   "KilledBy": [
+    "37-preflight-compuerta-y-sesion"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 486,
+   "Code": "add(\"preflight: binario medido (ruta resuelta o SHA-256) distinto del cierre\")",
+   "Killed": true,
+   "KilledBy": [
+    "36-preflight-medidas",
+    "36b-preflight-ruta-del-binario"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 488,
+   "Code": "add(\"preflight: versión medida distinta de %s\" % TRANSPORT[\"Binary\"][\"Version\"])",
+   "Killed": true,
+   "KilledBy": [
+    "36-preflight-medidas"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 490,
+   "Code": "add(\"preflight: auth status sin loggedIn = true\")",
+   "Killed": true,
+   "KilledBy": [
+    "36-preflight-medidas"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 494,
+   "Code": "add(\"preflight: compuerta de transporte distinta de kit/transport-gate.json\")",
+   "Killed": true,
+   "KilledBy": [
+    "37-preflight-compuerta-y-sesion",
+    "38-compuerta-pendiente"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 498,
+   "Code": "add(\"preflight: compuerta 11 (%s) sin las líneas fijadas A6-ADR0046-9-FX02 y CLAUDE-CLI-I62 = A, o con problemas\" % OG.CHECK)",
+   "Killed": true,
+   "KilledBy": [
+    "150-preflight-sin-compuerta-11",
+    "150b-preflight-compuerta-11-otra-linea",
+    "150c-preflight-compuerta-11-fallida"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 502,
+   "Code": "add(\"preflight: compuerta 11 (%s) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §85 fijada, o \"",
+   "Killed": true,
+   "KilledBy": [
+    "150-preflight-sin-compuerta-11",
+    "151o-preflight-compuerta-11-registro-pendiente",
+    "151p-kit-con-la-autorizacion-pendiente"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 509,
+   "Code": "add(\"preflight: compuerta 11 (%s) sin el blob de la ronda 4 en la HEAD del worktree, sin la autorización fijada en owner_gate.py \"",
+   "Killed": true,
+   "KilledBy": [
+    "150-preflight-sin-compuerta-11",
+    "151-preflight-compuerta-11-sin-autorizacion",
+    "151b-preflight-compuerta-11-blob-en-la-head",
+    "151c-preflight-compuerta-11-otro-runid"
+   ],
+   "KillingCases": 15
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 514,
+   "Code": "add(\"preflight: guarda de la orden congelada (FrozenCommandGuard) ausente, no aplicada, fallida o con otra orden que %s\" % LAUNCH_COMMAND)",
+   "Killed": true,
+   "KilledBy": [
+    "138-preflight-sin-guarda-de-la-orden",
+    "139-preflight-guarda-no-aplicada",
+    "140-preflight-guarda-con-otra-orden",
+    "141-preflight-guarda-fallida"
+   ],
+   "KillingCases": 5
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 518,
+   "Code": "add(\"preflight: sonda de registro (RecordProbe) ausente o fallida\")",
+   "Killed": true,
+   "KilledBy": [
+    "143-preflight-sin-sonda-de-registro",
+    "144-preflight-sonda-fallida"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 525,
+   "Code": "add(\"preflight: entorno del lanzador sin registrar o mal registrado (Environment: prefijos %s, nombres y valores solo de PYTHON*)\"",
+   "Killed": true,
+   "KilledBy": [
+    "145-preflight-sin-entorno",
+    "146-preflight-entorno-con-valor-no-python",
+    "147-preflight-entorno-sin-valor-python",
+    "148-preflight-entorno-otros-prefijos"
+   ],
+   "KillingCases": 5
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 536,
+   "Code": "add(\"compuerta de transporte: \" + p)",
+   "Killed": true,
+   "KilledBy": [
+    "38-compuerta-pendiente",
+    "39-compuerta-copia-alterada",
+    "40-compuerta-copia-ausente",
+    "42-compuerta-aceptacion-invalida"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 545,
+   "Code": "add(\"stream-json: falta el mensaje init\")",
+   "Killed": true,
+   "KilledBy": [
+    "43-init-ausente"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 550,
+   "Code": "add(\"stream-json: session_id del init distinto del fijado\")",
+   "Killed": true,
+   "KilledBy": [
+    "23-lanzamiento-e-init-distintos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 552,
+   "Code": "add(\"stream-json: cwd del init distinto del clon\")",
+   "Killed": true,
+   "KilledBy": [
+    "44-init-cwd-modelo-version-mcp"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 554,
+   "Code": "add(\"stream-json: modelo del init distinto de %s\" % TRANSPORT[\"Model\"])",
+   "Killed": true,
+   "KilledBy": [
+    "44-init-cwd-modelo-version-mcp"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 556,
+   "Code": "add(\"stream-json: permissionMode del init distinto de %s\" % exp_init[\"permissionMode\"])",
+   "Killed": true,
+   "KilledBy": [
+    "23-lanzamiento-e-init-distintos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 558,
+   "Code": "add(\"stream-json: herramientas del init distintas de %s: %s\" % (exp_init[\"tools\"], init.get(\"tools\")))",
+   "Killed": true,
+   "KilledBy": [
+    "23-lanzamiento-e-init-distintos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 560,
+   "Code": "add(\"stream-json: servidores MCP en el init\")",
+   "Killed": true,
+   "KilledBy": [
+    "44-init-cwd-modelo-version-mcp"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 562,
+   "Code": "add(\"stream-json: versión del init distinta de %s\" % exp_init[\"claude_code_version\"])",
+   "Killed": true,
+   "KilledBy": [
+    "44-init-cwd-modelo-version-mcp"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 564,
+   "Code": "add(\"stream-json: sin mensaje result (terminación sin resultado)\")",
+   "Killed": true,
+   "KilledBy": [
+    "13-sin-result-y-salida-1"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 571,
+   "Code": "add(\"stream-json: el result no es success (subtype %r, is_error %r)\" % (res.get(\"subtype\"), res.get(\"is_error\")))",
+   "Killed": true,
+   "KilledBy": [
+    "45-result-no-success"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 573,
+   "Code": "add(\"stream-json: session_id del result distinto del fijado\")",
+   "Killed": true,
+   "KilledBy": [
+    "46-result-session-id"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 577,
+   "Code": "add(\"permission_denials: %s %s\" % (d.get(\"tool_name\"), userless(\"; \".join(\"%s=%s\" % (k, v) for k, v in ti.items())[:160] if isinstance(ti, dict) else ",
+   "Killed": true,
+   "KilledBy": [
+    "07-herramienta-denegada"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 579,
+   "Code": "add(\"stream-json: modelUsage con modelos distintos de %s: %s\" % (TRANSPORT[\"Model\"], sorted((res.get(\"modelUsage\") or {}).keys())))",
+   "Killed": true,
+   "KilledBy": [
+    "11-modelo-y-effort-distintos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 581,
+   "Code": "add(\"stream-json: subagentes lanzados\")",
+   "Killed": true,
+   "KilledBy": [
+    "22-cadena-lateral-y-subagentes"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 583,
+   "Code": "add(\"stream-json: el result no trae structured_output\")",
+   "Killed": true,
+   "KilledBy": [
+    "47-result-sin-structured-output"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 588,
+   "Code": "add(\"stream-json: mensaje del asistente con modelo %r\" % m.get(\"model\"))",
+   "Killed": true,
+   "KilledBy": [
+    "11-modelo-y-effort-distintos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 591,
+   "Code": "add(\"stream-json: mensajes de un subagente (parent_tool_use_id)\")",
+   "Killed": true,
+   "KilledBy": [
+    "22-cadena-lateral-y-subagentes"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 634,
+   "Code": "add(\"transcripción: sesión distinta de la fijada en el kit (%s; archivo %s)\" % (sorted(ident[\"SessionIds\"]), ident[\"TranscriptFileStem\"]))",
+   "Killed": true,
+   "KilledBy": [
+    "27-transcripcion-sesion-cwd-version"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 636,
+   "Code": "add(\"transcripción: cwd distinto del clon: %s\" % \", \".join(sorted(userless(c) for c in ident[\"Cwds\"])))",
+   "Killed": true,
+   "KilledBy": [
+    "27-transcripcion-sesion-cwd-version"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 638,
+   "Code": "add(\"transcripción: versión distinta de %s: %s\" % (exp_init[\"claude_code_version\"], sorted(ident[\"Versions\"])))",
+   "Killed": true,
+   "KilledBy": [
+    "27-transcripcion-sesion-cwd-version"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 640,
+   "Code": "add(\"transcripción: %d entradas de cadena lateral (subagentes)\" % ident[\"SidechainEntries\"])",
+   "Killed": true,
+   "KilledBy": [
+    "22-cadena-lateral-y-subagentes"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 644,
+   "Code": "add(\"transcripción: ningún mensaje del asistente\")",
+   "Killed": true,
+   "KilledBy": [
+    "48-transcripcion-sin-asistente"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 646,
+   "Code": "add(\"transcripción: modelo observado distinto de %s en %s mensajes del asistente: %s\" % (TRANSPORT[\"Model\"], sum(bad_models.values()), bad_models))",
+   "Killed": true,
+   "KilledBy": [
+    "11-modelo-y-effort-distintos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 648,
+   "Code": "add(\"transcripción: effort observado distinto de %s en %s mensajes del asistente: %s\" % (TRANSPORT[\"Effort\"], sum(bad_efforts.values()), bad_efforts))",
+   "Killed": true,
+   "KilledBy": [
+    "11-modelo-y-effort-distintos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 651,
+   "Code": "add(\"transcripción: sin primer mensaje de usuario\")",
+   "Killed": true,
+   "KilledBy": [
+    "49-transcripcion-sin-primer-usuario"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 658,
+   "Code": "add(\"fidelidad del prompt: el primer mensaje de usuario es distinto de prompt.md\")",
+   "Killed": true,
+   "KilledBy": [
+    "09-prompt-distinto"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 660,
+   "Code": "add(\"transcripción: %d mensajes de usuario además del prompt (otro prompt o un resumen de compactación)\" % (len(user_prompts) - 1))",
+   "Killed": true,
+   "KilledBy": [
+    "10-mensaje-de-usuario-extra"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 689,
+   "Code": "row[\"Problems\"].append(\"lectura de un directorio: %s\" % userless(ref))",
+   "Killed": true,
+   "KilledBy": [
+    "24-lecturas-del-run-y-de-directorios"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 691,
+   "Code": "row[\"Problems\"].append(\"lectura fuera del cierre\" + (\" (intento fallido; sigue siendo una acción fuera del contrato)\" if failed else \"\") +",
+   "Killed": true,
+   "KilledBy": [
+    "01-lectura-fuera-absoluta",
+    "02-lectura-fuera-relativa",
+    "03-escape-por-union (junction)",
+    "07-herramienta-denegada"
+   ],
+   "KillingCases": 5
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 705,
+   "Code": "row[\"Problems\"].append(\"Grep sin path (busca en el directorio de trabajo, que es un directorio)\")",
+   "Killed": true,
+   "KilledBy": [
+    "04-grep-directorios-y-fuera"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 707,
+   "Code": "row[\"Problems\"].append(\"Grep sobre un directorio: %s\" % userless(ref))",
+   "Killed": true,
+   "KilledBy": [
+    "04-grep-directorios-y-fuera"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 709,
+   "Code": "row[\"Problems\"].append(\"Grep fuera del cierre: %s\" % userless(ref))",
+   "Killed": true,
+   "KilledBy": [
+    "03-escape-por-union (junction)",
+    "04-grep-directorios-y-fuera"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 711,
+   "Code": "row[\"Problems\"].append(\"Grep con glob o type\")",
+   "Killed": true,
+   "KilledBy": [
+    "04-grep-directorios-y-fuera"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 728,
+   "Code": "row[\"Problems\"].append(\"herramienta no permitida (%s)\" % name)",
+   "Killed": true,
+   "KilledBy": [
+    "08-intento-de-bash"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 730,
+   "Code": "row[\"Problems\"].append(\"permiso denegado: %s\" % userless(out.strip()[:160]))",
+   "Killed": true,
+   "KilledBy": [
+    "07-herramienta-denegada"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 735,
+   "Code": "row[\"Problems\"].append(\"llamada sin resultado (terminación incompleta)\")",
+   "Killed": true,
+   "KilledBy": [
+    "13-sin-result-y-salida-1"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 738,
+   "Code": "add(\"llamada %d (%s): %s\" % (idx, name, p))",
+   "Killed": true,
+   "KilledBy": [
+    "01-lectura-fuera-absoluta",
+    "02-lectura-fuera-relativa",
+    "03-escape-por-union (junction)",
+    "04-grep-directorios-y-fuera"
+   ],
+   "KillingCases": 10
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 741,
+   "Code": "add(\"fidelidad: %s (Read, llamada %d) líneas alteradas %s\" % (f[\"Path\"], f[\"Index\"], f[\"Altered\"][:10]))",
+   "Killed": true,
+   "KilledBy": [
+    "26-lectura-fallida-y-degradada"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 755,
+   "Code": "add(\"archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): %s\" % n)",
+   "Killed": true,
+   "KilledBy": [
+    "12-archivo-del-run-alterado"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 759,
+   "Code": "add(\"directorio del run con entradas ajenas al run: %s\" % extra)",
+   "Killed": true,
+   "KilledBy": [
+    "51-run-dir-entrada-ajena"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 763,
+   "Code": "add(\"launch/ con archivos inesperados: %s\" % unexpected)",
+   "Killed": true,
+   "KilledBy": [
+    "52-launch-archivo-inesperado"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 777,
+   "Code": "add(\"el clon no quedó limpio, cambió de HEAD, dejó de estar separado, ganó ramas o remotos\")",
+   "Killed": true,
+   "KilledBy": [
+    "03-escape-por-union (junction)"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 779,
+   "Code": "add(\"el clon no conserva los blobs designados del cierre\")",
+   "Killed": true,
+   "KilledBy": [
+    "54-clon-blob-cambiado"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 781,
+   "Code": "add(\"el clon tiene enlaces o uniones después de la corrida: %s\" % reparse[:3])",
+   "Killed": true,
+   "KilledBy": [
+    "03-escape-por-union (junction)"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 789,
+   "Code": "add(\"resultado: structured_output del result distinto de la última llamada StructuredOutput de la transcripción (o de su adjunto)\")",
+   "Killed": true,
+   "KilledBy": [
+    "21-structured-output-distinto",
+    "48-transcripcion-sin-asistente"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 794,
+   "Code": "add(\"resultado: \" + x)",
+   "Killed": true,
+   "KilledBy": [
+    "17-agreed-con-un-required",
+    "18-changes-required-sin-required",
+    "19-agreed-con-un-opcional-no-conforme",
+    "20-not-accredited-sin-motivo"
+   ],
+   "KillingCases": 73
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 796,
+   "Code": "add(\"resultado: no valida contra result.schema.json\")",
+   "Killed": true,
+   "KilledBy": [
+    "55-esquema-invalido",
+    "95-required-sin-evidencia",
+    "112-id-de-hallazgo-mal-formado",
+    "113-id-nuevo-con-el-espacio-de-la-ronda-3"
+   ],
+   "KillingCases": 14
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 798,
+   "Code": "add(\"no hay resultado estructurado\")",
+   "Killed": true,
+   "KilledBy": [
+    "13-sin-result-y-salida-1",
+    "47-result-sin-structured-output"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 805,
+   "Code": "add(\"referencia mal formada en %s: %r\" % (group, str(ref)[:80]))",
+   "Killed": true,
+   "KilledBy": [
+    "115-referencia-mal-formada"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 825,
+   "Code": "add(\"referencia no canónica en %s (%s)\" % (group, shown))",
+   "Killed": true,
+   "KilledBy": [
+    "15-referencia-a-prompt-o-fuera-de-rango",
+    "96-evidencia-fuera-del-cierre"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 827,
+   "Code": "add(\"referencia sobre líneas no entregadas fielmente en %s (%s)\" % (group, shown))",
+   "Killed": true,
+   "KilledBy": [
+    "14-referencia-sobre-lineas-no-leidas",
+    "26-lectura-fallida-y-degradada",
+    "48-transcripcion-sin-asistente",
+    "97-evidencia-sobre-lineas-no-leidas"
+   ],
+   "KillingCases": 8
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 834,
+   "Code": "add(\"lectura directa: %s:%d-%d no entregadas fielmente por Read en ese mismo archivo\" % (dpath, da, db))",
+   "Killed": true,
+   "KilledBy": [
+    "48-transcripcion-sin-asistente",
+    "125b-sin-lectura-directa-de-v14",
+    "125c-cita-de-v14-leida-solo-en-a6"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 842,
+   "Code": "add(\"lectura directa: DirectReads sin una entrada que cubra %s:%d-%d\" % (dpath, da, db))",
+   "Killed": true,
+   "KilledBy": [
+    "13-sin-result-y-salida-1",
+    "47-result-sin-structured-output",
+    "125d-directreads-sin-v14",
+    "125e-directreads-cubre-solo-2333"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 967,
+   "Code": "c.append(\"identificadores de hallazgo repetidos\")",
+   "Killed": true,
+   "KilledBy": [
+    "93-ids-de-hallazgo-repetidos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 970,
+   "Code": "c.append(\"%s REQUIRED sin ViolatedInvariant ni Counterexample\" % f.get(\"FindingId\"))",
+   "Killed": true,
+   "KilledBy": [
+    "94-required-sin-invariante-ni-contraejemplo"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 974,
+   "Code": "c.append(\"%s cita en FindingIds hallazgos que no existen\" % label)",
+   "Killed": true,
+   "KilledBy": [
+    "92-findingids-inexistentes"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 978,
+   "Code": "c.append(\"%s con identificadores repetidos\" % label)",
+   "Killed": true,
+   "KilledBy": [
+    "119b-r3-repetido",
+    "120b-negativo-repetido",
+    "121b-evidencia-repetida",
+    "122b-opcional-repetido"
+   ],
+   "KillingCases": 8
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 981,
+   "Code": "c.append(\"%s %s sin un REQUIRED vinculado\" % (x.get(\"Round3Finding\"), x.get(\"Status\")))",
+   "Killed": true,
+   "KilledBy": [
+    "56-r3-parcial-sin-required",
+    "57-r3-no-corregido-sin-required"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 983,
+   "Code": "c.append(\"%s CORRECTED con un REQUIRED vinculado\" % x.get(\"Round3Finding\"))",
+   "Killed": true,
+   "KilledBy": [
+    "58-r3-corregido-con-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 986,
+   "Code": "c.append(\"ClosureRuleMechanical.Coverage[%s] NOT_COVERED o con un paso de juicio sin un REQUIRED vinculado\" % x.get(\"Case\"))",
+   "Killed": true,
+   "KilledBy": [
+    "59-caso-no-cubierto-sin-required",
+    "60-caso-con-juicio-sin-required",
+    "117-esquema-juicio-como-texto"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 988,
+   "Code": "c.append(\"ClosureRuleMechanical.Coverage[%s] COVERED sin juicio con un REQUIRED vinculado\" % x.get(\"Case\"))",
+   "Killed": true,
+   "KilledBy": [
+    "61-caso-cubierto-con-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 991,
+   "Code": "c.append(\"ClosureRuleMechanical.SubRules[%s] introduce o sustituye un insumo sin un REQUIRED vinculado\" % x.get(\"SubRule\"))",
+   "Killed": true,
+   "KilledBy": [
+    "62-apartado-introduce-sin-required",
+    "63-apartado-sustituye-sin-required"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 993,
+   "Code": "c.append(\"ClosureRuleMechanical.SubRules[%s] sin insumos introducidos ni sustituidos con un REQUIRED vinculado\" % x.get(\"SubRule\"))",
+   "Killed": true,
+   "KilledBy": [
+    "64-apartado-limpio-con-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 995,
+   "Code": "c.append(\"ClosureRuleMechanical NOT_TOTAL_OR_NOT_MECHANICAL sin un REQUIRED vinculado\")",
+   "Killed": true,
+   "KilledBy": [
+    "65-regla-no-total-sin-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 997,
+   "Code": "c.append(\"ClosureRuleMechanical TOTAL_AND_MECHANICAL con un REQUIRED vinculado\")",
+   "Killed": true,
+   "KilledBy": [
+    "66-regla-total-con-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 999,
+   "Code": "c.append(\"ClosureRuleMechanical TOTAL_AND_MECHANICAL con un caso no cubierto o con juicio, o con un apartado que introduce o sustituye un \"",
+   "Killed": true,
+   "KilledBy": [
+    "67-regla-total-con-caso-con-juicio",
+    "67b-regla-total-con-apartado-que-sustituye",
+    "117-esquema-juicio-como-texto"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1002,
+   "Code": "c.append(\"A69Compatibility CONTRADICTIONS sin la lista de contradicciones o sin un REQUIRED vinculado\")",
+   "Killed": true,
+   "KilledBy": [
+    "68-a69-contradicciones-sin-lista",
+    "69-a69-contradicciones-sin-required"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1004,
+   "Code": "c.append(\"A69Compatibility NONE con contradicciones en la lista o con un REQUIRED vinculado\")",
+   "Killed": true,
+   "KilledBy": [
+    "70-a69-ninguna-con-required",
+    "70b-a69-ninguna-con-lista",
+    "118e-esquema-elemento-de-lista-no-texto"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1007,
+   "Code": "c.append(\"NegativeCaseCoherence[%s] INCOHERENT sin un REQUIRED vinculado\" % x.get(\"Case\"))",
+   "Killed": true,
+   "KilledBy": [
+    "71-negativo-incoherente-sin-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1009,
+   "Code": "c.append(\"NegativeCaseCoherence[%s] COHERENT con un REQUIRED vinculado\" % x.get(\"Case\"))",
+   "Killed": true,
+   "KilledBy": [
+    "72-negativo-coherente-con-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1013,
+   "Code": "c.append(\"EvidenceAdequacy[%s] INADEQUATE sin un REQUIRED vinculado (prueba obligatoria de decisiones §85, punto 3)\" % x.get(\"Aspect\"))",
+   "Killed": true,
+   "KilledBy": [
+    "73-evidencia-obligatoria-inadecuada-sin-required",
+    "73b-evidencia-obligatoria-inadecuada-solo-con-opcional"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1015,
+   "Code": "c.append(\"EvidenceAdequacy[%s] INADEQUATE sin un hallazgo vinculado\" % x.get(\"Aspect\"))",
+   "Killed": true,
+   "KilledBy": [
+    "74-evidencia-o3-inadecuada-sin-hallazgo"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1017,
+   "Code": "c.append(\"EvidenceAdequacy[%s] ADEQUATE con un REQUIRED vinculado\" % x.get(\"Aspect\"))",
+   "Killed": true,
+   "KilledBy": [
+    "75-evidencia-adecuada-con-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1019,
+   "Code": "c.append(\"DeltaPurity NOT_CONFIRMED sin un REQUIRED vinculado\")",
+   "Killed": true,
+   "KilledBy": [
+    "76-pureza-no-confirmada-sin-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1021,
+   "Code": "c.append(\"DeltaPurity CONFIRMED con un REQUIRED vinculado\")",
+   "Killed": true,
+   "KilledBy": [
+    "77-pureza-confirmada-con-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1024,
+   "Code": "c.append(\"OptionalDispositionConformance[%s] DOES_NOT_CONFORM sin un hallazgo vinculado\" % x.get(\"Round3Optional\"))",
+   "Killed": true,
+   "KilledBy": [
+    "78-opcional-no-conforme-sin-hallazgo"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1027,
+   "Code": "c.append(\"QuestionAnswers[%s] NOT_SATISFIED sin un hallazgo vinculado\" % x.get(\"Question\"))",
+   "Killed": true,
+   "KilledBy": [
+    "79-pregunta-no-satisfecha-sin-hallazgo"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1029,
+   "Code": "c.append(\"OwnerDecisionRequired = true sin AdditionalOwnerReservedConsequences\")",
+   "Killed": true,
+   "KilledBy": [
+    "80-decision-del-owner-sin-consecuencias"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1032,
+   "Code": "c.append(\"con un veredicto, las siete booleanas de Step0 van en true\")",
+   "Killed": true,
+   "KilledBy": [
+    "86-paso0-falso-con-veredicto",
+    "87-paso0-nulo-con-veredicto"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1034,
+   "Code": "c.append(\"objeto revisado distinto del designado (commit, ruta o blob)\")",
+   "Killed": true,
+   "KilledBy": [
+    "88-objeto-blob-de-la-ronda-3",
+    "89-objeto-commit-de-la-ronda-3"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1038,
+   "Code": "c.append(\"%s debe disponer cada id una vez (faltan %s; sobran o repetidos %s)\"",
+   "Killed": true,
+   "KilledBy": [
+    "119-r3-ausente",
+    "119b-r3-repetido",
+    "120-negativo-ausente",
+    "120b-negativo-repetido"
+   ],
+   "KillingCases": 14
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1042,
+   "Code": "c.append(\"con un veredicto, %s sin ClauseRefs\" % label)",
+   "Killed": true,
+   "KilledBy": [
+    "91-elementos-sin-referencias"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1045,
+   "Code": "c.append(\"con un veredicto, NOT_DETERMINED no se admite (%s)\" % \", \".join(undetermined))",
+   "Killed": true,
+   "KilledBy": [
+    "84-no-determinado-con-veredicto"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1047,
+   "Code": "c.append(\"con un veredicto, OwnerAuthorityCheck.OwnerDecisionRequired no admite null\")",
+   "Killed": true,
+   "KilledBy": [
+    "85-decision-del-owner-nula-con-veredicto"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1053,
+   "Code": "c.append(\"REQUIRED sin disposición: todo REQUIRED lo cita al menos un elemento evaluado (%s)\" % \", \".join(str(i) for i in uncited))",
+   "Killed": true,
+   "KilledBy": [
+    "99-required-sin-disposicion"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1055,
+   "Code": "c.append(\"AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true\")",
+   "Killed": true,
+   "KilledBy": [
+    "17-agreed-con-un-required",
+    "83-agreed-con-ifagreed-falso",
+    "100-agreed-r3-no-corregido",
+    "101-agreed-regla-no-total"
+   ],
+   "KillingCases": 9
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1057,
+   "Code": "c.append(\"AGREED exige A62-A6R3-R1 en CORRECTED\")",
+   "Killed": true,
+   "KilledBy": [
+    "100-agreed-r3-no-corregido",
+    "119-r3-ausente",
+    "119b-r3-repetido"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1060,
+   "Code": "c.append(\"AGREED exige ClosureRuleMechanical en TOTAL_AND_MECHANICAL, con los tres casos COVERED sin juicio y los cinco apartados sin \"",
+   "Killed": true,
+   "KilledBy": [
+    "101-agreed-regla-no-total",
+    "117-esquema-juicio-como-texto",
+    "124-caso-de-la-regla-ausente",
+    "124c-apartado-ausente"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1063,
+   "Code": "c.append(\"AGREED exige A69Compatibility en NONE\")",
+   "Killed": true,
+   "KilledBy": [
+    "102-agreed-a69-contradicciones"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1065,
+   "Code": "c.append(\"AGREED exige N4 y NC1 en COHERENT\")",
+   "Killed": true,
+   "KilledBy": [
+    "17-agreed-con-un-required",
+    "103-agreed-negativo-incoherente",
+    "116-esquema-estados-invalidos",
+    "120-negativo-ausente"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1067,
+   "Code": "c.append(\"AGREED exige los seis aspectos de EvidenceAdequacy en ADEQUATE\")",
+   "Killed": true,
+   "KilledBy": [
+    "104-agreed-evidencia-inadecuada",
+    "116-esquema-estados-invalidos",
+    "121-evidencia-ausente"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1069,
+   "Code": "c.append(\"AGREED exige DeltaPurity en CONFIRMED\")",
+   "Killed": true,
+   "KilledBy": [
+    "105-agreed-pureza-no-confirmada"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1071,
+   "Code": "c.append(\"AGREED exige A62-A6R3-O1..O7 en CONFORMS\")",
+   "Killed": true,
+   "KilledBy": [
+    "19-agreed-con-un-opcional-no-conforme",
+    "116-esquema-estados-invalidos",
+    "122-opcional-ausente"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1073,
+   "Code": "c.append(\"IfAgreed debe ir en null salvo con AGREED\")",
+   "Killed": true,
+   "KilledBy": [
+    "82-ifagreed-no-nulo-sin-agreed"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1075,
+   "Code": "c.append(\"%s sin ningún REQUIRED\" % v)",
+   "Killed": true,
+   "KilledBy": [
+    "18-changes-required-sin-required",
+    "109-rejected-sin-required"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1077,
+   "Code": "c.append(\"BLOCKED — OWNER DECISION sin OwnerDecisionRequired = true\")",
+   "Killed": true,
+   "KilledBy": [
+    "81-blocked-sin-decision-del-owner"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1079,
+   "Code": "c.append(\"NOT_ACCREDITED sin el motivo en KnownLimitations\")",
+   "Killed": true,
+   "KilledBy": [
+    "20-not-accredited-sin-motivo"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1081,
+   "Code": "c.append(\"identificadores de la invocación distintos de los del cierre\")",
+   "Killed": true,
+   "KilledBy": [
+    "90-ids-de-invocacion-de-la-ronda-3"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 110,
+   "Code": "probs.append(\"la caracterización no registra el binario elegible (SHA-256, versión y Usable)\")",
+   "Killed": true,
+   "KilledBy": [
+    "G07-sin-binario-elegible"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 113,
+   "Code": "probs.append(\"C1 no midió la lista del lanzamiento sin --add-dir\")",
+   "Killed": true,
+   "KilledBy": [
+    "G08-c1-otra-lista"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 115,
+   "Code": "probs.append(\"C1 sin código de salida 0\")",
+   "Killed": true,
+   "KilledBy": [
+    "G09-c1-salida"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 118,
+   "Code": "probs.append(\"Eligibility.STALE no es false\")",
+   "Killed": true,
+   "KilledBy": [
+    "G10-stale"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 120,
+   "Code": "probs.append(\"Eligibility.ARCHITECT no es ELIGIBLE\")",
+   "Killed": true,
+   "KilledBy": [
+    "G11-architect-no-elegible"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 129,
+   "Code": "probs.append(\"la caracterización no tiene la sonda C3\")",
+   "Killed": true,
+   "KilledBy": [
+    "G12-sin-c3"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 132,
+   "Code": "probs.append(\"C3 sin veredicto PASS limpio\")",
+   "Killed": true,
+   "KilledBy": [
+    "G13-c3-veredicto",
+    "G38-sonda-lectura-anadida-denegada",
+    "G39-sonda-lectura-exterior-entregada"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 134,
+   "Code": "probs.append(\"C3 no midió la lista exacta del lanzamiento (con --add-dir)\")",
+   "Killed": true,
+   "KilledBy": [
+    "G14-c3-plantilla-sin-add-dir"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 136,
+   "Code": "probs.append(\"los argumentos registrados de C3 no corresponden a la plantilla\")",
+   "Killed": true,
+   "KilledBy": [
+    "G15-c3-argumentos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 139,
+   "Code": "probs.append(\"C3 con otro binario o versión\")",
+   "Killed": true,
+   "KilledBy": [
+    "G16-c3-binario"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 141,
+   "Code": "probs.append(\"C3 sin salida 0 o terminada por el invocador\")",
+   "Killed": true,
+   "KilledBy": [
+    "G17-c3-salida"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 144,
+   "Code": "probs.append(\"C3 sin result success con structured_output\")",
+   "Killed": true,
+   "KilledBy": [
+    "G18-c3-result"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 148,
+   "Code": "probs.append(\"init de C3 distinto del esperado (herramientas, MCP, permissionMode, versión o modelo)\")",
+   "Killed": true,
+   "KilledBy": [
+    "G19-c3-init"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 150,
+   "Code": "probs.append(\"C3 con modelo o effort observado distinto\")",
+   "Killed": true,
+   "KilledBy": [
+    "G20-c3-effort"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 153,
+   "Code": "probs.append(\"C3: la lectura dentro del directorio añadido no se entregó fiel o se denegó\")",
+   "Killed": true,
+   "KilledBy": [
+    "G21-c3-lectura-anadida",
+    "G38-sonda-lectura-anadida-denegada"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 156,
+   "Code": "probs.append(\"C3: la lectura fuera del cwd y del directorio añadido no quedó denegada\")",
+   "Killed": true,
+   "KilledBy": [
+    "G22-c3-lectura-exterior",
+    "G39-sonda-lectura-exterior-entregada"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 159,
+   "Code": "probs.append(\"C3: permission_denials con rutas distintas de la lectura exterior\")",
+   "Killed": true,
+   "KilledBy": [
+    "G23-c3-denegaciones"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 161,
+   "Code": "probs.append(\"Eligibility.MeasuredArgsTemplate distinta de la plantilla del lanzamiento\")",
+   "Killed": true,
+   "KilledBy": [
+    "G24-sin-plantilla-medida"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 169,
+   "Code": "probs.append(\"aceptación con otro esquema\")",
+   "Killed": true,
+   "KilledBy": [
+    "G29-aceptacion-Schema"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 171,
+   "Code": "probs.append(\"aceptación de otro RunId\")",
+   "Killed": true,
+   "KilledBy": [
+    "G30-aceptacion-RunId"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 173,
+   "Code": "probs.append(\"aceptación sin Decision = ACCEPT_UNMEASURED_FLAG\")",
+   "Killed": true,
+   "KilledBy": [
+    "G31-aceptacion-Decision"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 175,
+   "Code": "probs.append(\"aceptación con UnmeasuredFlags distintos de %s\" % unmeasured_flags(template))",
+   "Killed": true,
+   "KilledBy": [
+    "G32-aceptacion-UnmeasuredFlags"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 177,
+   "Code": "probs.append(\"aceptación de otra plantilla de argumentos\")",
+   "Killed": true,
+   "KilledBy": [
+    "G33-aceptacion-ArgsTemplate"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 179,
+   "Code": "probs.append(\"aceptación de otro binario o versión\")",
+   "Killed": true,
+   "KilledBy": [
+    "G34-aceptacion-BinarySha256"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 181,
+   "Code": "probs.append(\"aceptación sobre otro registro de caracterización\")",
+   "Killed": true,
+   "KilledBy": [
+    "G35-aceptacion-CharacterizationSha256"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 183,
+   "Code": "probs.append(\"AcceptedBy distinto de %s\" % \" | \".join(ACCEPTERS))",
+   "Killed": true,
+   "KilledBy": [
+    "42-compuerta-aceptacion-invalida",
+    "G36-aceptacion-AcceptedBy"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 185,
+   "Code": "probs.append(\"aceptación sin Authority, Rationale o At\")",
+   "Killed": true,
+   "KilledBy": [
+    "G37-aceptacion-Authority"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 199,
+   "Code": "probs.append(\"Status %r: D-01 abierto (falta la medición C3 o la aceptación registrada)\" % status)",
+   "Killed": true,
+   "KilledBy": [
+    "38-compuerta-pendiente",
+    "G01-pendiente"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 201,
+   "Code": "probs.append(\"ArgsTemplate de la compuerta distinta de la plantilla del cierre\")",
+   "Killed": true,
+   "KilledBy": [
+    "G02-plantilla-de-la-compuerta"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 203,
+   "Code": "probs.append(\"RunId, SessionId o Binary de la compuerta distintos del cierre\")",
+   "Killed": true,
+   "KilledBy": [
+    "G03-runid-de-la-compuerta"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 208,
+   "Code": "probs.append(\"falta el registro de caracterización\")",
+   "Killed": true,
+   "KilledBy": [
+    "40-compuerta-copia-ausente",
+    "G04-sin-registro"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 210,
+   "Code": "probs.append(\"SHA-256 del registro de caracterización distinto del fijado en la compuerta\")",
+   "Killed": true,
+   "KilledBy": [
+    "39-compuerta-copia-alterada",
+    "G05-registro-alterado"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 215,
+   "Code": "probs.append(\"registro de caracterización ilegible\")",
+   "Killed": true,
+   "KilledBy": [
+    "G06-registro-ilegible"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 223,
+   "Code": "probs.append(\"falta el registro de aceptación\")",
+   "Killed": true,
+   "KilledBy": [
+    "G26-aceptacion-ausente"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 225,
+   "Code": "probs.append(\"SHA-256 del registro de aceptación distinto del fijado en la compuerta\")",
+   "Killed": true,
+   "KilledBy": [
+    "42-compuerta-aceptacion-invalida",
+    "G27-aceptacion-alterada"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 230,
+   "Code": "probs.append(\"registro de aceptación ilegible\")",
+   "Killed": true,
+   "KilledBy": [
+    "G28-aceptacion-ilegible"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 287,
+   "Code": "probs.append(\"salida del binario no capturada en bytes (%s)\" % type(b).__name__)",
+   "Killed": true,
+   "KilledBy": [
+    "G48-decodificacion-no-bytes",
+    "G48b-decodificacion-texto-ya-decodificado"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 289,
+   "Code": "probs.append(\"salida del binario vacía (%d bytes)\" % len(raw))",
+   "Killed": true,
+   "KilledBy": [
+    "EXCEPTION AttributeError: 'NoneType' object has no attribute 'strip'"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 292,
+   "Code": "probs.append(\"salida del binario con BOM UTF-16 (%s): no es UTF-8\" % body[:2].hex(\" \"))",
+   "Killed": true,
+   "KilledBy": [
+    "EXCEPTION AttributeError: 'NoneType' object has no attribute 'strip'"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "transport_gate.py",
+   "Line": 298,
+   "Code": "probs.append(\"salida del binario que no es UTF-8 estricto (posición %d: %s)\" % (e.start, e.reason))",
+   "Killed": true,
+   "KilledBy": [
+    "EXCEPTION AttributeError: 'NoneType' object has no attribute 'strip'"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 144,
+   "Code": "probs.append(\"blob de la A-6 de la ronda 4 no fijado en el kit (closure.ObjectBlob: 40 hexadecimales, distinto de los de las rondas 1, 2 y 3)\")",
+   "Killed": true,
+   "KilledBy": [
+    "O12-blob-no-fijado",
+    "O12b-blob-fijado-de-la-ronda-3",
+    "O12c-blob-fijado-de-la-ronda-2"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 146,
+   "Code": "probs.append(\"la línea fijada del Owner A6-ADR0046-9-FX02 no está, como línea completa, en la A-6 de la ronda 4 del commit del clon (§7)\")",
+   "Killed": true,
+   "KilledBy": [
+    "O27-linea-fijada-ausente-de-a6r4"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 148,
+   "Code": "probs.append(\"decisiones sin un único encabezado §78 (%d)\" % len(s78))",
+   "Killed": true,
+   "KilledBy": [
+    "O28-dos-encabezados-78"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 150,
+   "Code": "probs.append(\"falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 %s…)\" % A6_LINE_SHA[:8])",
+   "Killed": true,
+   "KilledBy": [
+    "O13-sin-la-linea-del-owner",
+    "O14-parafrasis",
+    "O15-fragmento-citado-en-tabla",
+    "O16-cita-con-sangria-de-bloque"
+   ],
+   "KillingCases": 6
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 152,
+   "Code": "probs.append(\"la línea del Owner A6-ADR0046-9-FX02 no está registrada después del encabezado de decisiones §78\")",
+   "Killed": true,
+   "KilledBy": [
+    "O19-linea-antes-de-78"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 154,
+   "Code": "probs.append(\"otra línea que empieza por «%s» distinta de la fijada (líneas %s)\" % (A6_LINE_PREFIX, [i + 1 for i in other_a6][:5]))",
+   "Killed": true,
+   "KilledBy": [
+    "O14-parafrasis",
+    "O17-espacio-final",
+    "O18-retorno-de-carro",
+    "O20-revocacion-anterior-a-85"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 156,
+   "Code": "probs.append(\"falta, como línea completa de decisiones, la línea del Owner CLAUDE-CLI-I62 = A (SHA-256 %s…): autorización de revisión \"",
+   "Killed": true,
+   "KilledBy": [
+    "O21-sin-claude-cli-i62"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 159,
+   "Code": "probs.append(\"otra línea que empieza por «%s» distinta de la fijada (líneas %s): autorización de revisión no verificable\"",
+   "Killed": true,
+   "KilledBy": [
+    "O21-sin-claude-cli-i62",
+    "O22-otra-linea-claude-cli-i62"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 162,
+   "Code": "probs.append(\"docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob de la ronda 4 fijado en el kit (%s)\"",
+   "Killed": true,
+   "KilledBy": [
+    "O11-a6-en-la-head-con-otro-blob",
+    "O12-blob-no-fijado",
+    "O12b-blob-fijado-de-la-ronda-3",
+    "O12c-blob-fijado-de-la-ronda-2"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 165,
+   "Code": "probs.append(PENDING_REASON)",
+   "Killed": true,
+   "KilledBy": [
+    "O00-autorizacion-pendiente-bloquea",
+    "O00b-pendiente-con-una-seccion-posterior-a-85"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 168,
+   "Code": "probs.append(\"la autorización fijada (§%s) no es una sección posterior a §%d (decisiones §85, punto 6)\" % (a[\"Section\"], BASE_SECTION))",
+   "Killed": true,
+   "KilledBy": [
+    "O10-fijada-no-posterior-a-85",
+    "O10b-fijada-con-un-numero-que-no-es-entero"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 170,
+   "Code": "probs.append(\"decisiones sin un único encabezado §%s (%d)\" % (a[\"Section\"], len(auth)))",
+   "Killed": true,
+   "KilledBy": [
+    "O08-sin-la-seccion-fijada",
+    "O09-dos-secciones-fijadas",
+    "O10b-fijada-con-un-numero-que-no-es-entero"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 172,
+   "Code": "probs.append(\"falta la autorización: la sección §%s de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de la ronda 4 \"",
+   "Killed": true,
+   "KilledBy": [
+    "O04-fijada-con-otro-texto",
+    "O05-fijada-con-otro-encabezado",
+    "O06-fijada-con-el-blob-abreviado",
+    "O07-fijada-con-el-blob-pegado"
+   ],
+   "KillingCases": 12
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 176,
+   "Code": "probs.append(\"sección posterior a §%s en decisiones (%s): una disposición posterior tiene que revisarse antes de lanzar\"",
+   "Killed": true,
+   "KilledBy": [
+    "O02-seccion-posterior-a-la-fijada",
+    "O03-seccion-90-cualquiera-posterior"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 180,
+   "Code": "probs.append(\"decisiones del worktree no crece solo por añadido desde el commit del clon (§85 o lo anterior cambiaron)\")",
+   "Killed": true,
+   "KilledBy": [
+    "O23-decision-85-cambiada"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 182,
+   "Code": "probs.append(\"el archivo de decisiones del árbol de trabajo no es el de la HEAD (cambios sin commit)\")",
+   "Killed": true,
+   "KilledBy": [
+    "O24-cambios-sin-commit"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 184,
+   "Code": "probs.append(\"la HEAD del worktree no desciende del commit del clon\")",
+   "Killed": true,
+   "KilledBy": [
+    "O25-head-no-desciende-del-clon"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 187,
+   "Code": "probs.append(\"SHA-256 medido del binario distinto del cierre: la autorización de revisión no cubre otro binario\")",
+   "Killed": true,
+   "KilledBy": [
+    "O26-otro-binario"
+   ],
+   "KillingCases": 1
+  }
+ ],
+ "Survivors": [],
+ "Totals": {
+  "Mutants": 191,
+  "Killed": 191,
+  "KilledByException": 3
+ },
+ "AllKilled": true
+}

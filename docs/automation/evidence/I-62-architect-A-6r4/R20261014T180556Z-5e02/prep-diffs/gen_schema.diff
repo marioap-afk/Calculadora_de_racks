@@ -1,0 +1,145 @@
+--- ronda3/prep/gen_schema.py
++++ ronda4/prep/gen_schema.py
+@@ -1,23 +1,24 @@
+-"""Genera kit/result.schema.json (rackcad-a6r3-architect-review/0) para la ÚNICA revisión formal de la ronda 3 de A-6 (decisiones §84, punto 6).
++"""Genera kit/result.schema.json (rackcad-a6r4-architect-review/0) para la ÚNICA revisión formal de la ronda 4 de A-6, acotada a A62-A6R3-R1 y a sus
++consecuencias directas (decisiones §85, punto 6).
+ 
+-Derivado de prep/gen_schema.py del kit de la ronda 2 (rackcad-a6r2-architect-review/0, R20261012T195511Z-e5c3): las mismas palabras clave ya
+-medidas con claude-cli 2.1.293 (type, additionalProperties, required, properties, enum, pattern, minLength, minItems, items; sin $ref, const, anyOf,
+-maxLength ni maxItems) y los mismos campos de identidad, Step0 (siete booleanas, ahora las del Paso 0 de la ronda 3), DirectReads, Reads, hallazgos,
+-GapAssessment, AcceptorCodeContrast, OwnerAuthorityCheck, IfAgreed, KnownLimitations y RecommendedNextAction. La revisión de la ronda 3 es ACOTADA
+-(§84, punto 6): en lugar de los temas, los deltas, la materialidad, la separabilidad, la compatibilidad, las superficies, D.5 y la procedencia de
+-la ronda 2, el esquema tiene un campo por cada punto que nombra §84, punto 6:
+-  * Round2FindingResolution: cierre de A62-A6R2-R1 y A62-A6R2-R2 (CORRECTED | PARTIALLY_CORRECTED | NOT_CORRECTED);
+-  * NegativeCaseCoherence: coherencia de N4, nc1 y VERIFY sin instrumento (COHERENT | INCOHERENT);
+-  * ReconstructionFromRealEvents y EffectiveInputClosure: reconstrucción desde eventos reales y cierre efectivo de entradas
+-    (ADEQUATE_AS_FAIL_CLOSED_PRECONDITION | INADEQUATE);
+-  * AcceptorCodeContrast: compatibilidad con el aceptante fijado, nueve afirmaciones frente al código de bmin_accept.py (MATCHES | DIFFERS);
+-  * OwnerAuthorizationAndVerifyScope: autorización del Owner y alcance de VERIFY;
+-  * GapAssessment: riesgos G1-G6;
+-  * Round2OptionalDisposition: hallazgos opcionales O1-O5 (INCORPORATED | PARTLY_INCORPORATED | DECLINED_WITH_REASON | NOT_ADDRESSED);
+-  * RealSessionPreconditions: lista explícita de las precondiciones que dependen de una sesión real o de una disposición futura, cada una
+-    KEPT_FAIL_CLOSED (A-6 la mantiene como precondición con fallo cerrado, sin acreditarla de antemano) o TREATED_AS_MET (A-6 la da por cumplida:
+-    exige un REQUIRED; lo comprueba el auditor).
+-Los hallazgos nuevos llevan ids A62-A6R3-R<n> / A62-A6R3-O<n>. La unicidad, la cobertura exacta de ids y la coherencia las comprueba el auditor
+-(post-review.py v5.3-a6r3).
+-Uso: python -B gen_schema.py <kit dir>
++Derivado de prep/gen_schema.py del kit acreditado de la ronda 3 (rackcad-a6r3-architect-review/0, R20261013T183701Z-9f80): las mismas palabras
++clave ya medidas con claude-cli 2.1.293 (type, additionalProperties, required, properties, enum, pattern, minLength, minItems, items; sin $ref,
++const, anyOf, maxLength ni maxItems) y los mismos campos de identidad, Step0 (siete booleanas, ahora las del Paso 0 de la ronda 4), DirectReads,
++Reads, hallazgos (ids A62-A6R4-R<n> / A62-A6R4-O<n>), NegativeCaseCoherence, OwnerAuthorityCheck, IfAgreed, KnownLimitations y
++RecommendedNextAction. En lugar de los nueve puntos de la ronda 3, un campo por punto de la revisión acotada de la ronda 4 (orden del kit, punto 4):
++  * Round3FindingResolution: cierre de A62-A6R3-R1 (CORRECTED | PARTIALLY_CORRECTED | NOT_CORRECTED);
++  * ClosureRuleMechanical: si A6-3, regla 6 (b) (i)-(v), es total y mecánica, sin paso de juicio, en N4 (toda forma de entrega ausente), en nc1 y
++    con campos ausentes, null o vacíos (Coverage: COVERED | NOT_COVERED y JudgmentStepRequired), y si cada apartado introduce o sustituye un insumo
++    (SubRules: IntroducesInput y SubstitutesInput, yes | no); Assessment TOTAL_AND_MECHANICAL | NOT_TOTAL_OR_NOT_MECHANICAL;
++  * A69Compatibility: contradicción con A6-9, regla 4, o su tabla que exigiría editar A6-9 (NONE | CONTRADICTIONS, con la lista);
++  * NegativeCaseCoherence: N4 y NC1 (COHERENT | INCOHERENT);
++  * EvidenceAdequacy: los seis aspectos de r4/r1probes/ (derivación, implementación independiente, sustituciones, insumos añadidos o inventados,
++    corridas del aceptante, O3-STRICT), ADEQUATE | INADEQUATE;
++  * DeltaPurity: solo A6-3, regla 6 (b), cambia normativamente (CONFIRMED | NOT_CONFIRMED);
++  * OptionalDispositionConformance: O1..O7 de la ronda 3 frente a decisiones §85, punto 4 (CONFORMS | DOES_NOT_CONFORM);
++  * QuestionAnswers: Q-A6R4-01..04 (Outcome SATISFIED | NOT_SATISFIED, con Answer).
++Veredictos: AGREED, CHANGES REQUIRED y REJECTED (los de la orden del kit), BLOCKED — OWNER DECISION (LIFECYCLE §5, con OwnerAuthorityCheck) y
++NOT_ACCREDITED (la parada con fallo cerrado del Paso 0, como en las rondas anteriores). La unicidad, la cobertura exacta de ids y la coherencia las
++comprueba el auditor (post-review.py v5.4-a6r4).
++Uso: python -I -B gen_schema.py <kit dir>
+ """
+@@ -31,19 +32,18 @@
+ NB = {"type": ["boolean", "null"]}
++BOOL = {"type": "boolean"}
++YN = {"enum": ["yes", "no"]}
+ HEX40N = {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"}
+-FID = {"type": "string", "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"}
+-CNF = {"enum": ["CONFIRMED", "NOT_CONFIRMED", "NOT_DETERMINED"]}
+-ROUND2_REQUIRED = ["A62-A6R2-R1", "A62-A6R2-R2"]
+-ROUND2_OPTIONAL = ["A62-A6R2-O%d" % i for i in range(1, 6)]
+-GAPS = ["G%d" % i for i in range(1, 7)]
+-NEGATIVE_CASES = ["N4", "NC1", "VERIFY_WITHOUT_INSTRUMENT"]
+-ACCEPTOR_CLAIMS = ["CHECK_IDS", "WAIVABLE_SET", "DECISION_FORMULA", "EXIT_CODES", "NOT_APPLICABLE_RULES", "R4_VERIFICATION_CONDITION",
+-                   "R4_NOT_RUN_AS_NON_PASS", "R4_AUTHORITY_MAP_RULE", "R3_R9_WITHOUT_RUNS"]
+-REAL_SESSION_PRECONDITIONS = ["RUNS_RECONSTRUCTION_FROM_REAL_LOG", "RUNS_COMPARISON_ON_REAL_RUNS", "IDENTITY_AT_USE_IN_REAL_SHELL",
+-                              "GIT_BY_NAME_IS_DECLARED_GIT", "CLOSURE_COVERAGE_R9_ON_REAL_RUNS", "ACCEPTOR_RUN_ON_MEASUREMENT_LOG",
+-                              "COORDINATOR_CLOSURE_AND_RECONSTRUCTION_RULE_DISPOSITION", "NORMATIVE_READINGS_DISPOSITION_AND_PRETEST"]
+-STEP0 = ["V14DirectReadL2333L2334", "OrderReadWhole", "Decisions84DeclaresOrderBytesAndSha256", "Decisions83RoundTwoDisposition",
+-         "GuardsRunModeBaseHeadResult", "SelftestA6TextBlobMatchesObject", "Round2OutputIdentifiesRunAndFindings"]
+-IFAGREED = ["ScopeLimitedToFX02F6ControllerVerify", "Round3ChangesLimitedToA63R6A65A67", "Round2FindingsCorrected", "NegativeCasesCoherent",
+-            "ReconstructionAndClosureFailClosed", "AcceptorContrastMatches", "RealSessionPreconditionsKeptFailClosed", "GapsAcceptableAsResiduals",
+-            "OwnerAuthorizationAndVerifyScopeConfirmed", "NoAdditionalOwnerDecisionRequired", "SuitableForCoordinatorAgreement"]
++FID = {"type": "string", "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"}
++ROUND3_REQUIRED = ["A62-A6R3-R1"]
++ROUND3_OPTIONAL = ["A62-A6R3-O%d" % i for i in range(1, 8)]
++NEGATIVE_CASES = ["N4", "NC1"]
++CLOSURE_RULE_CASES = ["N4_ABSENT_DELIVERY", "NC1_NONEXISTENT_COMMIT", "ABSENT_NULL_EMPTY_FIELDS"]
++CLOSURE_SUBRULES = ["i", "ii", "iii", "iv", "v"]
++EVIDENCE_ASPECTS = ["DERIVATION", "INDEPENDENT_IMPLEMENTATION", "SUBSTITUTIONS", "ADDED_OR_INVENTED_INPUTS", "ACCEPTOR_RUNS", "O3_STRICT"]
++ROUND4_QUESTIONS = ["Q-A6R4-0%d" % i for i in range(1, 5)]
++STEP0 = ["V14DirectReadL2333L2334", "OrderReadWhole", "Decisions85DeclaresOrderBytesAndSha256", "Decisions85RoundThreeDisposition",
++         "GuardsRunModeBaseHeadResult", "SelftestA6TextBlobMatchesObject", "Round3OutputIdentifiesRunAndFindings"]
++IFAGREED = ["ScopeLimitedToA63R6bAndDirectConsequences", "Round3FindingCorrected", "ClosureRuleTotalAndMechanical", "NoContradictionWithA69Rule4",
++            "NegativeCasesCoherent", "EvidenceAdequate", "DeltaLimitedToA63R6b", "OptionalDispositionsConform", "NoAdditionalOwnerDecisionRequired",
++            "SuitableForCoordinatorAgreement"]
+ 
+@@ -58,12 +58,6 @@
+ 
+-def assessed(values):
+-    return obj({"Assessment": {"enum": values}, "Note": STR})
+-
+-
+ REFS, REFS1, FIDS, STRS = arr(REF), arr(REF, minItems=1), arr(FID), arr(STR)
+-LINE = assessed(["LIMITED_TO_STATED_SCOPE", "EXCEEDS_STATED_SCOPE", "NOT_DETERMINED"])
+-FAILCLOSED = {"enum": ["ADEQUATE_AS_FAIL_CLOSED_PRECONDITION", "INADEQUATE", "NOT_DETERMINED"]}
+ 
+ schema = obj({
+-    "Schema": {"enum": ["rackcad-a6r3-architect-review/0"]},
++    "Schema": {"enum": ["rackcad-a6r4-architect-review/0"]},
+     "RunId": {"type": "string", "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"},
+@@ -85,27 +79,28 @@
+     "Reads": STRS,
+-    "Verdict": {"enum": ["AGREED", "CHANGES REQUIRED", "BLOCKED — OWNER DECISION", "NOT_ACCREDITED"]},
+-    "RequiredFindings": arr(obj({"FindingId": {"type": "string", "pattern": "^A62-A6R3-R[1-9][0-9]*$"}, "Section": TXT, "ViolatedInvariant": STR,
++    "Verdict": {"enum": ["AGREED", "CHANGES REQUIRED", "REJECTED", "BLOCKED — OWNER DECISION", "NOT_ACCREDITED"]},
++    "RequiredFindings": arr(obj({"FindingId": {"type": "string", "pattern": "^A62-A6R4-R[1-9][0-9]*$"}, "Section": TXT, "ViolatedInvariant": STR,
+                                  "Counterexample": STR, "Evidence": REFS1, "WhyItMatters": TXT, "CorrectionRequired": TXT})),
+-    "OptionalFindings": arr(obj({"FindingId": {"type": "string", "pattern": "^A62-A6R3-O[1-9][0-9]*$"}, "Section": TXT, "Note": TXT,
++    "OptionalFindings": arr(obj({"FindingId": {"type": "string", "pattern": "^A62-A6R4-O[1-9][0-9]*$"}, "Section": TXT, "Note": TXT,
+                                  "Evidence": REFS1, "SuggestedCorrection": STR})),
+-    "Round2FindingResolution": arr(obj({"Round2Finding": {"enum": ROUND2_REQUIRED},
++    "Round3FindingResolution": arr(obj({"Round3Finding": {"enum": ROUND3_REQUIRED},
+                                         "Status": {"enum": ["CORRECTED", "PARTIALLY_CORRECTED", "NOT_CORRECTED"]},
+                                         "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
++    "ClosureRuleMechanical": obj({
++        "Assessment": {"enum": ["TOTAL_AND_MECHANICAL", "NOT_TOTAL_OR_NOT_MECHANICAL", "NOT_DETERMINED"]},
++        "Coverage": arr(obj({"Case": {"enum": CLOSURE_RULE_CASES}, "Status": {"enum": ["COVERED", "NOT_COVERED"]}, "JudgmentStepRequired": BOOL,
++                             "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
++        "SubRules": arr(obj({"SubRule": {"enum": CLOSURE_SUBRULES}, "IntroducesInput": YN, "SubstitutesInput": YN, "Rationale": TXT,
++                             "ClauseRefs": REFS, "FindingIds": FIDS})),
++        "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS}),
++    "A69Compatibility": obj({"Status": {"enum": ["NONE", "CONTRADICTIONS", "NOT_DETERMINED"]}, "Contradictions": STRS, "Rationale": TXT,
++                             "ClauseRefs": REFS, "FindingIds": FIDS}),
+     "NegativeCaseCoherence": arr(obj({"Case": {"enum": NEGATIVE_CASES}, "Status": {"enum": ["COHERENT", "INCOHERENT"]}, "Rationale": TXT,
+                                       "ClauseRefs": REFS, "FindingIds": FIDS})),
+-    "ReconstructionFromRealEvents": obj({"Assessment": FAILCLOSED, "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS}),
+-    "EffectiveInputClosure": obj({"Assessment": FAILCLOSED, "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS}),
+-    "AcceptorCodeContrast": arr(obj({"Claim": {"enum": ACCEPTOR_CLAIMS}, "A6Refs": REFS1, "AcceptorRefs": REFS1,
+-                                     "Status": {"enum": ["MATCHES", "DIFFERS"]}, "Rationale": TXT, "FindingIds": FIDS})),
+-    "OwnerAuthorizationAndVerifyScope": obj({"LineA": LINE, "LineB": LINE, "VerifyOnly": CNF, "PinnedBlobsUnchanged": CNF,
+-                                             "NoResultAcceptedInAdvance": CNF, "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS}),
+-    "GapAssessment": arr(obj({"Gap": {"enum": GAPS},
+-                              "Assessment": {"enum": ["ACCEPTABLE_RESIDUAL", "REQUIRES_PIECE_CHANGE", "REQUIRES_TEXT_CHANGE", "REQUIRES_OWNER_DECISION"]},
+-                              "MitigationTested": {"enum": ["yes", "no", "partial"]}, "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
+-    "Round2OptionalDisposition": arr(obj({"Round2Optional": {"enum": ROUND2_OPTIONAL},
+-                                          "Status": {"enum": ["INCORPORATED", "PARTLY_INCORPORATED", "DECLINED_WITH_REASON", "NOT_ADDRESSED"]},
+-                                          "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
+-    "RealSessionPreconditions": arr(obj({"Precondition": {"enum": REAL_SESSION_PRECONDITIONS},
+-                                         "Status": {"enum": ["KEPT_FAIL_CLOSED", "TREATED_AS_MET"]}, "Rationale": TXT, "ClauseRefs": REFS,
+-                                         "FindingIds": FIDS})),
++    "EvidenceAdequacy": arr(obj({"Aspect": {"enum": EVIDENCE_ASPECTS}, "Status": {"enum": ["ADEQUATE", "INADEQUATE"]}, "Rationale": TXT,
++                                 "ClauseRefs": REFS, "FindingIds": FIDS})),
++    "DeltaPurity": obj({"Status": {"enum": ["CONFIRMED", "NOT_CONFIRMED", "NOT_DETERMINED"]}, "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS}),
++    "OptionalDispositionConformance": arr(obj({"Round3Optional": {"enum": ROUND3_OPTIONAL}, "Status": {"enum": ["CONFORMS", "DOES_NOT_CONFORM"]},
++                                               "Rationale": TXT, "ClauseRefs": REFS, "FindingIds": FIDS})),
++    "QuestionAnswers": arr(obj({"Question": {"enum": ROUND4_QUESTIONS}, "Outcome": {"enum": ["SATISFIED", "NOT_SATISFIED"]}, "Answer": TXT,
++                                "ClauseRefs": REFS, "FindingIds": FIDS})),
+     "OwnerAuthorityCheck": obj({"AdditionalOwnerReservedConsequences": STRS, "OwnerDecisionRequired": NB, "Note": STR}),

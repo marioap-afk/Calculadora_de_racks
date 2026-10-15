@@ -1,0 +1,68 @@
+I-62 — COORDINATOR DISPOSITION §85
+A-6 ROUND 3 ACCREDITED / ROUND 4 NARROW CORRECTION
+1. Dictamen
+Registrar append-only:
+Review A-6 ronda 3 = ACCREDITED.
+Architect = CHANGES REQUIRED.
+A62-A6R3-R1 = ACCEPTED REQUIRED.
+A62-A6R2-R2 = CORRECTED.
+Mantener A-6 como PROPUESTA. Conservar los objetos y resultados de las rondas anteriores sin modificaciones.
+2. Corrección autorizada
+Autorizar exclusivamente preparar A-6 ronda 4 para resolver A62-A6R3-R1.
+Objetivo: definir de forma mecánica el cierre de entradas en N4 (entrega ausente) y nc1 (commit inexistente), sin introducir objetos que no existen ni sustituir el cierre con el utilizado en una prueba general.
+Superficie preferida: A6-3, regla 6(b).
+No editar A6-9, regla 4, sin nueva disposición que justifique el delta exacto.
+3. Pruebas obligatorias
+Repetir las pruebas N4 y nc1 usando el cierre derivado literalmente de la norma corregida.
+Incluir:
+
+* entrega ausente;
+* commit inexistente;
+* campos ausentes frente a campos vacíos;
+* cierre calculado de forma independiente;
+* comparación del contrato de solicitud contra el cierre efectivo;
+* rechazo de insumos adicionales o inventados;
+* controles negativos donde una entrada inexistente se sustituye por una válida.
+
+No invocar Codex para estas pruebas.
+4. Opcionales
+O1: registrar como no bloqueante; no ampliar alcance sin evidencia.
+O2: atender mediante cotejo mecánico de solicitud y construcción.
+O3: verificar inclusión de clausemap cuando corresponde.
+O4: precisar en evidencia el momento y efecto del precheck.
+O5 y O6: registrar como no bloqueantes.
+O7: asegurar custodia de la futura medición.
+No añadir cambios normativos fuera de A6-3 regla 6(b) por estos opcionales sin autorización posterior.
+5. Guardas
+Ejecutar:
+
+* autoprueba y mutantes del texto corregido;
+* negativos sobre N4/nc1;
+* compatibilidad con los otros siete deltas de A-6;
+* verificación de los blobs fijados del instrumento y aceptante;
+* integridad de las autorizaciones Owner;
+* guardas sobre el commit exacto.
+
+6. Publicación
+Si el preflight pasa, publicar A-6 ronda 4 como PROPUESTA y custodiar la evidencia.
+Preparar el kit de revisión acotado a R1 y sus consecuencias directas.
+No lanzar revisión formal de ronda 4 hasta nueva disposición del Coordinator.
+7. Límites
+No ejecutar Codex.
+No modificar herramienta ni aceptante.
+No crear fixture B1.
+No abrir FX-U2.
+No modificar producción, I-65 ni D.5.
+No ampliar la excepción ADR-0046 #9.
+I-64 mantiene prioridad.
+8. Entrega
+Reportar:
+
+* blob exacto de A-6 ronda 4;
+* diff respecto de ronda 3;
+* evidencia de N4 y nc1 con el cierre normativo correcto;
+* guardas, negativos y CI;
+* posibles contradicciones que exijan modificar A6-9;
+* preparación para una sola revisión formal final.
+
+No declarar A-6 AGREED, FX-02 PASS ni F6 GATE PASS.

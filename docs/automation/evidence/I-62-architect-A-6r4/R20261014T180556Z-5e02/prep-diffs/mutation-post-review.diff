@@ -1,0 +1,20 @@
+--- ronda3/kit/mutation-post-review.py
++++ ronda4/kit/mutation-post-review.py
+@@ -1,6 +1,7 @@
+-"""Mutation test of the auditor v5.3-a6r3 (post-review.py), of transport_gate.py (round 3: the D-01 gate and the explicit Windows decoding of
+-decisions §84, point 5) and of owner_gate.py (round 3: Owner line of §78, CLAUDE-CLI-I62, round-3 blob at the worktree HEAD, decisions §84 with its
+-pinned heading, blob and text SHA-256, and no later section) for the ONE formal review of round 3 of A-6 (decisions §84), run BEFORE the launch:
+-«cada regla del auditor tiene un caso que falla sin ella», checked mechanically. The harness of the round-2 kit, unchanged except its names; it
+-honours RACKCAD_A6R3_KITDATA like the self-test (by default, the real clone and run of the kit).
++"""Mutation test of the auditor v5.4-a6r4 (post-review.py), of transport_gate.py (unchanged from round 3: the D-01 gate and the explicit Windows
++decoding of decisions §84, point 5) and of owner_gate.py (round 4: Owner line of §78, CLAUDE-CLI-I62, round-4 blob at the worktree HEAD and the
++Coordinator authorization after §85, pending until pinned, then with its pinned number, heading, blob and text SHA-256 and no later section) for the
++ONE formal review of round 4 of A-6 (decisions §85, point 6), run BEFORE the launch: «cada regla del auditor tiene un caso que falla sin ella»,
++checked mechanically. The harness of the round-3 kit, unchanged except its names; it honours RACKCAD_A6R4_KITDATA like the self-test (by default,
++the real clone and run of the kit).
+ 
+@@ -98,3 +99,3 @@
+     failing, n_cases = judge(ST.load_auditor())
+-    doc = {"Mutation": "post-review.py v5.3-a6r3 + transport_gate.py + owner_gate.py (ronda 3): cada sitio de regla desactivado debe hacer fallar al "
++    doc = {"Mutation": "post-review.py v5.4-a6r4 + transport_gate.py + owner_gate.py (ronda 4): cada sitio de regla desactivado debe hacer fallar al "
+                        "menos un caso del selftest",

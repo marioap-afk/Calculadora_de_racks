@@ -1,0 +1,67 @@
+--- ronda3/kit/finish_kit.py
++++ ronda4/kit/finish_kit.py
+@@ -1,13 +1,14 @@
+-"""Termina el kit de la ÚNICA revisión formal de la ronda 3 de A-6 (decisiones §84). Lo ejecuta quien prepara el kit, una vez, desde el directorio
+-kit/ o con su ruta. NO lanza el revisor y NO ejecuta el binario de claude (launch.py solo con --record-probe y --dry-run). Adaptado del
+-finish_kit.py del kit de la ronda 2.
++"""Termina el kit de la ÚNICA revisión formal de la ronda 4 de A-6 (decisiones §85, punto 6). Lo ejecuta quien prepara el kit, una vez, desde el
++directorio kit/ o con su ruta. NO lanza el revisor y NO ejecuta el binario de claude (launch.py solo con --record-probe y --dry-run). Derivado del
++finish_kit.py del kit acreditado de la ronda 3 (prep/adapt_misc.py).
+ 
+ Pasos, en orden; se detiene en el primero que falla (código distinto de 0) y no deshace nada:
+-  1. prepare_clone.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT> → D:\\r62-arch-a6r3, D:\\r62-arch-a6r3-run\\{order.txt, a6-r2.md} y kit-params.json
++  1. prepare_clone.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT> → D:\\r62-arch-a6r4, D:\\r62-arch-a6r4-run\\{order.txt, a6-r3.md} y kit-params.json
+   2. make_closure.py --render-prompt                   → kit/prompt.md (desde prompt.template.md, con la lista G11 del resultado `run` custodiado)
+-  3. copia byte a byte de kit/prompt.md                → D:\\r62-arch-a6r3-run\\prompt.md
++  3. copia byte a byte de kit/prompt.md                → D:\\r62-arch-a6r4-run\\prompt.md
+   4. make_closure.py                                   → kit/closure.json (cierre fijado por blob en CLONE_COMMIT)
+   5. transport_gate.py init y set MEASURED <registro de caracterización del clon> → kit/transport-gate.json (MEASURED, SHA-256 20d0de2c…)
+-  6. verify_clone.py                                   → kit/clone-verification.json (AllChecks, con la reproducción de las guardas de la ronda 3)
+-  7. selftest-post-review.py kit/selftest-result.json  → AllPass, sobre el clon y el run reales (L00 debe pasar la compuerta 11 con §84)
++  6. verify_clone.py                                   → kit/clone-verification.json (AllChecks, con la reproducción de las guardas de la ronda 4)
++  7. selftest-post-review.py kit/selftest-result.json  → AllPass, sobre el clon y el run reales (L00: la compuerta 11 real, PENDIENTE mientras no
++                                                         se fije la autorización, con el único problema «authorization pending: …»)
+   8. mutation-post-review.py kit/mutation-result.json  → AllKilled (con --no-mutation se omite y el manifiesto lo declara)
+@@ -15,6 +16,7 @@
+  10. python -B kit/launch.py --record-probe            → la orden congelada exacta, desde la carpeta que contiene kit/: código 0 (sonda de registro)
+- 11. python -B kit/launch.py --dry-run                 → ../launch-dry-run.json: código 2 siempre en seco; se exige BlockingChecks = [],
+-                                                         FrozenCommandGuard y RecordProbe en Ok, AuthorizationSections = la §84 y LaterSections = [];
++ 11. python -B kit/launch.py --dry-run                 → ../launch-dry-run.json: código 2 siempre en seco; con la autorización pendiente se exige
++                                                         que el ÚNICO bloqueo sea la compuerta 11 con el único problema «authorization pending: …»,
++                                                         FrozenCommandGuard y RecordProbe en Ok, AuthorizationSections = [] y LaterSections = [];
+                                                          4 y 5 sin ejecutar
+-Los pasos 10 y 11 se ejecutan SIN flags ni variables añadidos (decisiones §84, punto 2): la guarda de launch.py los rechazaría.
++Los pasos 10 y 11 se ejecutan SIN flags ni variables añadidos (la orden congelada): la guarda de launch.py los rechazaría.
+ Uso: python -B finish_kit.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT> [--no-mutation]
+@@ -30,6 +32,7 @@
+ KIT = os.path.dirname(os.path.abspath(__file__))
+-RUN = r"D:\r62-arch-a6r3-run"
+-CHAR = r"D:\r62-arch-a6r3\docs\automation\evidence\I-62-claude-cli\R20261008T183600Z-char\claude-cli-characterization.json"
++RUN = r"D:\r62-arch-a6r4-run"
++CHAR = r"D:\r62-arch-a6r4\docs\automation\evidence\I-62-claude-cli\R20261008T183600Z-char\claude-cli-characterization.json"
+ CHAR_SHA = "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c"
+ GATE11 = "11-OwnerAndAuthorizationGate"
++PENDING = "authorization pending: "   # owner_gate.PENDING_REASON: la autorización posterior a §85 todavía no está fijada
+ USER_RX = re.compile(r"(?i)[a-z]:(?:\\\\|\\|/)+users(?:\\\\|\\|/)+[^\\/\"\s]+")
+@@ -93,5 +96,7 @@
+     g = d["Checks"][GATE11]
+-    if d.get("BlockingChecks") != [] or d.get("RecordProbeOk") is not True or (d.get("FrozenCommandGuard") or {}).get("Ok") is not True or \
+-            d.get("LaterSections") != [] or [a.get("Number") for a in d.get("AuthorizationSections") or []] != [84] or g.get("Ok") is not True:
+-        raise SystemExit("STOP: la preflight en seco no está limpia: %s / %s" % (d.get("BlockingChecks"), g.get("Problems")))
++    if d.get("BlockingChecks") != [GATE11] or d.get("RecordProbeOk") is not True or (d.get("FrozenCommandGuard") or {}).get("Ok") is not True or \
++            d.get("LaterSections") != [] or d.get("AuthorizationSections") != [] or g.get("AuthorizationPending") is not True or \
++            len(g.get("Problems") or []) != 1 or not g["Problems"][0].startswith(PENDING):
++        raise SystemExit("STOP: la preflight en seco no se bloquea SOLO por la autorización pendiente: %s / %s" % (d.get("BlockingChecks"),
++                                                                                                                 g.get("Problems")))
+     m = hashlib.sha256(open(os.path.join(KIT, "kit-manifest.json"), "rb").read()).hexdigest()
+@@ -99,5 +104,7 @@
+                       "Gate11": {k: g.get(k) for k in ("Ok", "Problems", "A6LineNumbers", "ClaudeCliLineNumbers", "A6BlobAtHeadMatches",
+-                                                       "AuthorizationSections", "LaterSections")},
+-                      "Next": "custodiar el kit; repetir la sonda de registro y la preflight en seco con la orden congelada (BlockingChecks = [] y "
+-                              "LaterSections = []) y lanzar una vez, desde la carpeta que contiene kit/: python -B kit/launch.py"}, ensure_ascii=False))
++                                                       "AuthorizationPending", "AuthorizationSections", "LaterSections", "SectionsAfterBase")},
++                      "Next": "custodiar el kit; esperar la disposición del Coordinator posterior a §85 que autorice el lanzamiento; fijarla con "
++                              "pin_authorization.py y volver a congelar (make_manifest.py); repetir la sonda de registro y la preflight en seco con la "
++                              "orden congelada (BlockingChecks = [], AuthorizationSections = esa sección, LaterSections = []) y lanzar una vez, desde "
++                              "la carpeta que contiene kit/: python -B kit/launch.py"}, ensure_ascii=False))
+     return 0

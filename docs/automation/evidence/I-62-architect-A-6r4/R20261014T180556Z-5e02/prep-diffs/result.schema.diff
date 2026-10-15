@@ -1,0 +1,870 @@
+--- ronda3/kit/result.schema.json
++++ ronda4/kit/result.schema.json
+@@ -25,11 +25,10 @@
+   "OptionalFindings",
+-  "Round2FindingResolution",
++  "Round3FindingResolution",
++  "ClosureRuleMechanical",
++  "A69Compatibility",
+   "NegativeCaseCoherence",
+-  "ReconstructionFromRealEvents",
+-  "EffectiveInputClosure",
+-  "AcceptorCodeContrast",
+-  "OwnerAuthorizationAndVerifyScope",
+-  "GapAssessment",
+-  "Round2OptionalDisposition",
+-  "RealSessionPreconditions",
++  "EvidenceAdequacy",
++  "DeltaPurity",
++  "OptionalDispositionConformance",
++  "QuestionAnswers",
+   "OwnerAuthorityCheck",
+@@ -42,3 +41,3 @@
+    "enum": [
+-    "rackcad-a6r3-architect-review/0"
++    "rackcad-a6r4-architect-review/0"
+    ]
+@@ -161,7 +160,7 @@
+     "OrderReadWhole",
+-    "Decisions84DeclaresOrderBytesAndSha256",
+-    "Decisions83RoundTwoDisposition",
++    "Decisions85DeclaresOrderBytesAndSha256",
++    "Decisions85RoundThreeDisposition",
+     "GuardsRunModeBaseHeadResult",
+     "SelftestA6TextBlobMatchesObject",
+-    "Round2OutputIdentifiesRunAndFindings",
++    "Round3OutputIdentifiesRunAndFindings",
+     "Note"
+@@ -186,9 +185,9 @@
+     },
+-    "Decisions84DeclaresOrderBytesAndSha256": {
+-     "type": [
+-      "boolean",
+-      "null"
+-     ]
+-    },
+-    "Decisions83RoundTwoDisposition": {
++    "Decisions85DeclaresOrderBytesAndSha256": {
++     "type": [
++      "boolean",
++      "null"
++     ]
++    },
++    "Decisions85RoundThreeDisposition": {
+      "type": [
+@@ -210,3 +209,3 @@
+     },
+-    "Round2OutputIdentifiesRunAndFindings": {
++    "Round3OutputIdentifiesRunAndFindings": {
+      "type": [
+@@ -252,2 +251,3 @@
+     "CHANGES REQUIRED",
++    "REJECTED",
+     "BLOCKED — OWNER DECISION",
+@@ -273,3 +273,3 @@
+       "type": "string",
+-      "pattern": "^A62-A6R3-R[1-9][0-9]*$"
++      "pattern": "^A62-A6R4-R[1-9][0-9]*$"
+      },
+@@ -319,3 +319,3 @@
+       "type": "string",
+-      "pattern": "^A62-A6R3-O[1-9][0-9]*$"
++      "pattern": "^A62-A6R4-O[1-9][0-9]*$"
+      },
+@@ -343,3 +343,3 @@
+   },
+-  "Round2FindingResolution": {
++  "Round3FindingResolution": {
+    "type": "array",
+@@ -349,3 +349,3 @@
+     "required": [
+-     "Round2Finding",
++     "Round3Finding",
+      "Status",
+@@ -356,6 +356,5 @@
+     "properties": {
+-     "Round2Finding": {
++     "Round3Finding": {
+       "enum": [
+-       "A62-A6R2-R1",
+-       "A62-A6R2-R2"
++       "A62-A6R3-R1"
+       ]
+@@ -384,4 +383,194 @@
+        "type": "string",
+-       "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"
+-      }
++       "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
++      }
++     }
++    }
++   }
++  },
++  "ClosureRuleMechanical": {
++   "type": "object",
++   "additionalProperties": false,
++   "required": [
++    "Assessment",
++    "Coverage",
++    "SubRules",
++    "Rationale",
++    "ClauseRefs",
++    "FindingIds"
++   ],
++   "properties": {
++    "Assessment": {
++     "enum": [
++      "TOTAL_AND_MECHANICAL",
++      "NOT_TOTAL_OR_NOT_MECHANICAL",
++      "NOT_DETERMINED"
++     ]
++    },
++    "Coverage": {
++     "type": "array",
++     "items": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": [
++       "Case",
++       "Status",
++       "JudgmentStepRequired",
++       "Rationale",
++       "ClauseRefs",
++       "FindingIds"
++      ],
++      "properties": {
++       "Case": {
++        "enum": [
++         "N4_ABSENT_DELIVERY",
++         "NC1_NONEXISTENT_COMMIT",
++         "ABSENT_NULL_EMPTY_FIELDS"
++        ]
++       },
++       "Status": {
++        "enum": [
++         "COVERED",
++         "NOT_COVERED"
++        ]
++       },
++       "JudgmentStepRequired": {
++        "type": "boolean"
++       },
++       "Rationale": {
++        "type": "string",
++        "minLength": 1
++       },
++       "ClauseRefs": {
++        "type": "array",
++        "items": {
++         "type": "string",
++         "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
++        }
++       },
++       "FindingIds": {
++        "type": "array",
++        "items": {
++         "type": "string",
++         "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
++        }
++       }
++      }
++     }
++    },
++    "SubRules": {
++     "type": "array",
++     "items": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": [
++       "SubRule",
++       "IntroducesInput",
++       "SubstitutesInput",
++       "Rationale",
++       "ClauseRefs",
++       "FindingIds"
++      ],
++      "properties": {
++       "SubRule": {
++        "enum": [
++         "i",
++         "ii",
++         "iii",
++         "iv",
++         "v"
++        ]
++       },
++       "IntroducesInput": {
++        "enum": [
++         "yes",
++         "no"
++        ]
++       },
++       "SubstitutesInput": {
++        "enum": [
++         "yes",
++         "no"
++        ]
++       },
++       "Rationale": {
++        "type": "string",
++        "minLength": 1
++       },
++       "ClauseRefs": {
++        "type": "array",
++        "items": {
++         "type": "string",
++         "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
++        }
++       },
++       "FindingIds": {
++        "type": "array",
++        "items": {
++         "type": "string",
++         "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
++        }
++       }
++      }
++     }
++    },
++    "Rationale": {
++     "type": "string",
++     "minLength": 1
++    },
++    "ClauseRefs": {
++     "type": "array",
++     "items": {
++      "type": "string",
++      "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
++     }
++    },
++    "FindingIds": {
++     "type": "array",
++     "items": {
++      "type": "string",
++      "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
++     }
++    }
++   }
++  },
++  "A69Compatibility": {
++   "type": "object",
++   "additionalProperties": false,
++   "required": [
++    "Status",
++    "Contradictions",
++    "Rationale",
++    "ClauseRefs",
++    "FindingIds"
++   ],
++   "properties": {
++    "Status": {
++     "enum": [
++      "NONE",
++      "CONTRADICTIONS",
++      "NOT_DETERMINED"
++     ]
++    },
++    "Contradictions": {
++     "type": "array",
++     "items": {
++      "type": "string"
++     }
++    },
++    "Rationale": {
++     "type": "string",
++     "minLength": 1
++    },
++    "ClauseRefs": {
++     "type": "array",
++     "items": {
++      "type": "string",
++      "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
++     }
++    },
++    "FindingIds": {
++     "type": "array",
++     "items": {
++      "type": "string",
++      "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+      }
+@@ -406,4 +595,3 @@
+        "N4",
+-       "NC1",
+-       "VERIFY_WITHOUT_INSTRUMENT"
++       "NC1"
+       ]
+@@ -431,83 +619,9 @@
+        "type": "string",
+-       "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"
+-      }
+-     }
+-    }
+-   }
+-  },
+-  "ReconstructionFromRealEvents": {
+-   "type": "object",
+-   "additionalProperties": false,
+-   "required": [
+-    "Assessment",
+-    "Rationale",
+-    "ClauseRefs",
+-    "FindingIds"
+-   ],
+-   "properties": {
+-    "Assessment": {
+-     "enum": [
+-      "ADEQUATE_AS_FAIL_CLOSED_PRECONDITION",
+-      "INADEQUATE",
+-      "NOT_DETERMINED"
+-     ]
+-    },
+-    "Rationale": {
+-     "type": "string",
+-     "minLength": 1
+-    },
+-    "ClauseRefs": {
+-     "type": "array",
+-     "items": {
+-      "type": "string",
+-      "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+-     }
+-    },
+-    "FindingIds": {
+-     "type": "array",
+-     "items": {
+-      "type": "string",
+-      "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"
+-     }
+-    }
+-   }
+-  },
+-  "EffectiveInputClosure": {
+-   "type": "object",
+-   "additionalProperties": false,
+-   "required": [
+-    "Assessment",
+-    "Rationale",
+-    "ClauseRefs",
+-    "FindingIds"
+-   ],
+-   "properties": {
+-    "Assessment": {
+-     "enum": [
+-      "ADEQUATE_AS_FAIL_CLOSED_PRECONDITION",
+-      "INADEQUATE",
+-      "NOT_DETERMINED"
+-     ]
+-    },
+-    "Rationale": {
+-     "type": "string",
+-     "minLength": 1
+-    },
+-    "ClauseRefs": {
+-     "type": "array",
+-     "items": {
+-      "type": "string",
+-      "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+-     }
+-    },
+-    "FindingIds": {
+-     "type": "array",
+-     "items": {
+-      "type": "string",
+-      "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"
+-     }
+-    }
+-   }
+-  },
+-  "AcceptorCodeContrast": {
++       "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
++      }
++     }
++    }
++   }
++  },
++  "EvidenceAdequacy": {
+    "type": "array",
+@@ -517,221 +631,3 @@
+     "required": [
+-     "Claim",
+-     "A6Refs",
+-     "AcceptorRefs",
+-     "Status",
+-     "Rationale",
+-     "FindingIds"
+-    ],
+-    "properties": {
+-     "Claim": {
+-      "enum": [
+-       "CHECK_IDS",
+-       "WAIVABLE_SET",
+-       "DECISION_FORMULA",
+-       "EXIT_CODES",
+-       "NOT_APPLICABLE_RULES",
+-       "R4_VERIFICATION_CONDITION",
+-       "R4_NOT_RUN_AS_NON_PASS",
+-       "R4_AUTHORITY_MAP_RULE",
+-       "R3_R9_WITHOUT_RUNS"
+-      ]
+-     },
+-     "A6Refs": {
+-      "type": "array",
+-      "items": {
+-       "type": "string",
+-       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+-      },
+-      "minItems": 1
+-     },
+-     "AcceptorRefs": {
+-      "type": "array",
+-      "items": {
+-       "type": "string",
+-       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+-      },
+-      "minItems": 1
+-     },
+-     "Status": {
+-      "enum": [
+-       "MATCHES",
+-       "DIFFERS"
+-      ]
+-     },
+-     "Rationale": {
+-      "type": "string",
+-      "minLength": 1
+-     },
+-     "FindingIds": {
+-      "type": "array",
+-      "items": {
+-       "type": "string",
+-       "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"
+-      }
+-     }
+-    }
+-   }
+-  },
+-  "OwnerAuthorizationAndVerifyScope": {
+-   "type": "object",
+-   "additionalProperties": false,
+-   "required": [
+-    "LineA",
+-    "LineB",
+-    "VerifyOnly",
+-    "PinnedBlobsUnchanged",
+-    "NoResultAcceptedInAdvance",
+-    "Rationale",
+-    "ClauseRefs",
+-    "FindingIds"
+-   ],
+-   "properties": {
+-    "LineA": {
+-     "type": "object",
+-     "additionalProperties": false,
+-     "required": [
+-      "Assessment",
+-      "Note"
+-     ],
+-     "properties": {
+-      "Assessment": {
+-       "enum": [
+-        "LIMITED_TO_STATED_SCOPE",
+-        "EXCEEDS_STATED_SCOPE",
+-        "NOT_DETERMINED"
+-       ]
+-      },
+-      "Note": {
+-       "type": "string"
+-      }
+-     }
+-    },
+-    "LineB": {
+-     "type": "object",
+-     "additionalProperties": false,
+-     "required": [
+-      "Assessment",
+-      "Note"
+-     ],
+-     "properties": {
+-      "Assessment": {
+-       "enum": [
+-        "LIMITED_TO_STATED_SCOPE",
+-        "EXCEEDS_STATED_SCOPE",
+-        "NOT_DETERMINED"
+-       ]
+-      },
+-      "Note": {
+-       "type": "string"
+-      }
+-     }
+-    },
+-    "VerifyOnly": {
+-     "enum": [
+-      "CONFIRMED",
+-      "NOT_CONFIRMED",
+-      "NOT_DETERMINED"
+-     ]
+-    },
+-    "PinnedBlobsUnchanged": {
+-     "enum": [
+-      "CONFIRMED",
+-      "NOT_CONFIRMED",
+-      "NOT_DETERMINED"
+-     ]
+-    },
+-    "NoResultAcceptedInAdvance": {
+-     "enum": [
+-      "CONFIRMED",
+-      "NOT_CONFIRMED",
+-      "NOT_DETERMINED"
+-     ]
+-    },
+-    "Rationale": {
+-     "type": "string",
+-     "minLength": 1
+-    },
+-    "ClauseRefs": {
+-     "type": "array",
+-     "items": {
+-      "type": "string",
+-      "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+-     }
+-    },
+-    "FindingIds": {
+-     "type": "array",
+-     "items": {
+-      "type": "string",
+-      "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"
+-     }
+-    }
+-   }
+-  },
+-  "GapAssessment": {
+-   "type": "array",
+-   "items": {
+-    "type": "object",
+-    "additionalProperties": false,
+-    "required": [
+-     "Gap",
+-     "Assessment",
+-     "MitigationTested",
+-     "Rationale",
+-     "ClauseRefs",
+-     "FindingIds"
+-    ],
+-    "properties": {
+-     "Gap": {
+-      "enum": [
+-       "G1",
+-       "G2",
+-       "G3",
+-       "G4",
+-       "G5",
+-       "G6"
+-      ]
+-     },
+-     "Assessment": {
+-      "enum": [
+-       "ACCEPTABLE_RESIDUAL",
+-       "REQUIRES_PIECE_CHANGE",
+-       "REQUIRES_TEXT_CHANGE",
+-       "REQUIRES_OWNER_DECISION"
+-      ]
+-     },
+-     "MitigationTested": {
+-      "enum": [
+-       "yes",
+-       "no",
+-       "partial"
+-      ]
+-     },
+-     "Rationale": {
+-      "type": "string",
+-      "minLength": 1
+-     },
+-     "ClauseRefs": {
+-      "type": "array",
+-      "items": {
+-       "type": "string",
+-       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
+-      }
+-     },
+-     "FindingIds": {
+-      "type": "array",
+-      "items": {
+-       "type": "string",
+-       "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"
+-      }
+-     }
+-    }
+-   }
+-  },
+-  "Round2OptionalDisposition": {
+-   "type": "array",
+-   "items": {
+-    "type": "object",
+-    "additionalProperties": false,
+-    "required": [
+-     "Round2Optional",
++     "Aspect",
+      "Status",
+@@ -742,9 +638,10 @@
+     "properties": {
+-     "Round2Optional": {
++     "Aspect": {
+       "enum": [
+-       "A62-A6R2-O1",
+-       "A62-A6R2-O2",
+-       "A62-A6R2-O3",
+-       "A62-A6R2-O4",
+-       "A62-A6R2-O5"
++       "DERIVATION",
++       "INDEPENDENT_IMPLEMENTATION",
++       "SUBSTITUTIONS",
++       "ADDED_OR_INVENTED_INPUTS",
++       "ACCEPTOR_RUNS",
++       "O3_STRICT"
+       ]
+@@ -753,6 +650,4 @@
+       "enum": [
+-       "INCORPORATED",
+-       "PARTLY_INCORPORATED",
+-       "DECLINED_WITH_REASON",
+-       "NOT_ADDRESSED"
++       "ADEQUATE",
++       "INADEQUATE"
+       ]
+@@ -774,9 +669,46 @@
+        "type": "string",
+-       "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"
+-      }
+-     }
+-    }
+-   }
+-  },
+-  "RealSessionPreconditions": {
++       "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
++      }
++     }
++    }
++   }
++  },
++  "DeltaPurity": {
++   "type": "object",
++   "additionalProperties": false,
++   "required": [
++    "Status",
++    "Rationale",
++    "ClauseRefs",
++    "FindingIds"
++   ],
++   "properties": {
++    "Status": {
++     "enum": [
++      "CONFIRMED",
++      "NOT_CONFIRMED",
++      "NOT_DETERMINED"
++     ]
++    },
++    "Rationale": {
++     "type": "string",
++     "minLength": 1
++    },
++    "ClauseRefs": {
++     "type": "array",
++     "items": {
++      "type": "string",
++      "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
++     }
++    },
++    "FindingIds": {
++     "type": "array",
++     "items": {
++      "type": "string",
++      "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
++     }
++    }
++   }
++  },
++  "OptionalDispositionConformance": {
+    "type": "array",
+@@ -786,3 +718,3 @@
+     "required": [
+-     "Precondition",
++     "Round3Optional",
+      "Status",
+@@ -793,12 +725,11 @@
+     "properties": {
+-     "Precondition": {
++     "Round3Optional": {
+       "enum": [
+-       "RUNS_RECONSTRUCTION_FROM_REAL_LOG",
+-       "RUNS_COMPARISON_ON_REAL_RUNS",
+-       "IDENTITY_AT_USE_IN_REAL_SHELL",
+-       "GIT_BY_NAME_IS_DECLARED_GIT",
+-       "CLOSURE_COVERAGE_R9_ON_REAL_RUNS",
+-       "ACCEPTOR_RUN_ON_MEASUREMENT_LOG",
+-       "COORDINATOR_CLOSURE_AND_RECONSTRUCTION_RULE_DISPOSITION",
+-       "NORMATIVE_READINGS_DISPOSITION_AND_PRETEST"
++       "A62-A6R3-O1",
++       "A62-A6R3-O2",
++       "A62-A6R3-O3",
++       "A62-A6R3-O4",
++       "A62-A6R3-O5",
++       "A62-A6R3-O6",
++       "A62-A6R3-O7"
+       ]
+@@ -807,4 +738,4 @@
+       "enum": [
+-       "KEPT_FAIL_CLOSED",
+-       "TREATED_AS_MET"
++       "CONFORMS",
++       "DOES_NOT_CONFORM"
+       ]
+@@ -826,3 +757,51 @@
+        "type": "string",
+-       "pattern": "^A62-A6R3-(R|O)[1-9][0-9]*$"
++       "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
++      }
++     }
++    }
++   }
++  },
++  "QuestionAnswers": {
++   "type": "array",
++   "items": {
++    "type": "object",
++    "additionalProperties": false,
++    "required": [
++     "Question",
++     "Outcome",
++     "Answer",
++     "ClauseRefs",
++     "FindingIds"
++    ],
++    "properties": {
++     "Question": {
++      "enum": [
++       "Q-A6R4-01",
++       "Q-A6R4-02",
++       "Q-A6R4-03",
++       "Q-A6R4-04"
++      ]
++     },
++     "Outcome": {
++      "enum": [
++       "SATISFIED",
++       "NOT_SATISFIED"
++      ]
++     },
++     "Answer": {
++      "type": "string",
++      "minLength": 1
++     },
++     "ClauseRefs": {
++      "type": "array",
++      "items": {
++       "type": "string",
++       "pattern": "^[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*:[1-9][0-9]*(-[1-9][0-9]*)?$"
++      }
++     },
++     "FindingIds": {
++      "type": "array",
++      "items": {
++       "type": "string",
++       "pattern": "^A62-A6R4-(R|O)[1-9][0-9]*$"
+       }
+@@ -862,11 +841,10 @@
+    "required": [
+-    "ScopeLimitedToFX02F6ControllerVerify",
+-    "Round3ChangesLimitedToA63R6A65A67",
+-    "Round2FindingsCorrected",
++    "ScopeLimitedToA63R6bAndDirectConsequences",
++    "Round3FindingCorrected",
++    "ClosureRuleTotalAndMechanical",
++    "NoContradictionWithA69Rule4",
+     "NegativeCasesCoherent",
+-    "ReconstructionAndClosureFailClosed",
+-    "AcceptorContrastMatches",
+-    "RealSessionPreconditionsKeptFailClosed",
+-    "GapsAcceptableAsResiduals",
+-    "OwnerAuthorizationAndVerifyScopeConfirmed",
++    "EvidenceAdequate",
++    "DeltaLimitedToA63R6b",
++    "OptionalDispositionsConform",
+     "NoAdditionalOwnerDecisionRequired",
+@@ -875,15 +853,21 @@
+    "properties": {
+-    "ScopeLimitedToFX02F6ControllerVerify": {
+-     "type": [
+-      "boolean",
+-      "null"
+-     ]
+-    },
+-    "Round3ChangesLimitedToA63R6A65A67": {
+-     "type": [
+-      "boolean",
+-      "null"
+-     ]
+-    },
+-    "Round2FindingsCorrected": {
++    "ScopeLimitedToA63R6bAndDirectConsequences": {
++     "type": [
++      "boolean",
++      "null"
++     ]
++    },
++    "Round3FindingCorrected": {
++     "type": [
++      "boolean",
++      "null"
++     ]
++    },
++    "ClosureRuleTotalAndMechanical": {
++     "type": [
++      "boolean",
++      "null"
++     ]
++    },
++    "NoContradictionWithA69Rule4": {
+      "type": [
+@@ -899,27 +883,15 @@
+     },
+-    "ReconstructionAndClosureFailClosed": {
+-     "type": [
+-      "boolean",
+-      "null"
+-     ]
+-    },
+-    "AcceptorContrastMatches": {
+-     "type": [
+-      "boolean",
+-      "null"
+-     ]
+-    },
+-    "RealSessionPreconditionsKeptFailClosed": {
+-     "type": [
+-      "boolean",
+-      "null"
+-     ]
+-    },
+-    "GapsAcceptableAsResiduals": {
+-     "type": [
+-      "boolean",
+-      "null"
+-     ]
+-    },
+-    "OwnerAuthorizationAndVerifyScopeConfirmed": {
++    "EvidenceAdequate": {
++     "type": [
++      "boolean",
++      "null"
++     ]
++    },
++    "DeltaLimitedToA63R6b": {
++     "type": [
++      "boolean",
++      "null"
++     ]
++    },
++    "OptionalDispositionsConform": {
+      "type": [
