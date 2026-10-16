@@ -1,0 +1,71 @@
+I-65 — OWNER DISPOSITION
+Second Smoke V-11 Correction and Read-Only Revalidation
+He revisado el resultado del segundo smoke y la evidencia custodiada en los commits `51e0061d`, `4d1f9a7c`, `46e5e789` y `043a0303`, todos con CI 4/4 satisfactorio.
+1. Decisión del Owner
+V-11 CORRECTION = APPROVED.
+Autorizo corregir exclusivamente el validador externo del segundo smoke para que interprete correctamente la carpeta de destino embebida en el script Python mediante la serialización JSON correspondiente.
+La autorización no incluye modificar el paquete generado, el adaptador de RackCad ni el código de producción.
+2. Paquete autorizado
+Revalida únicamente el paquete existente:
+`D:\r65-smoke\51fc82f1\run-R20261016T1918Z\pkg-01`
+Sus tres archivos deben permanecer idénticos en bytes:
+
+* `manifest.json`
+* `rackcad-ram-build.py`
+* `structural-loads.json`
+
+Antes y después de la validación, calcula sus SHA-256 y confirma que no cambiaron.
+No generes otro paquete.
+3. Corrección de V-11
+La nueva comprobación debe:
+
+1. Extraer la carga útil del script usando la interpretación de serialización correspondiente.
+2. Recuperar la carpeta efectiva sin ejecutar el script generado.
+3. Compararla con la carpeta del manifiesto y la ruta real del paquete.
+4. Verificar que no existan diferencias de separadores, caracteres o destino.
+5. Fallar si la ruta efectiva no coincide.
+
+No sustituyas esta comprobación por una búsqueda de texto más permisiva.
+Incluye pruebas negativas que detecten rutas alteradas y distintos niveles de escape.
+4. Conservación de evidencia
+Mantén:
+
+* Resultado original 15/16.
+* Versión original del validador.
+* Diagnóstico de V-11.
+* Versión corregida.
+* Pruebas positivas y negativas.
+* Resultado de la revalidación.
+* Hashes antes y después.
+
+No sobrescribas los registros históricos.
+5. Aceptación
+Si el mismo paquete pasa 16/16 y las pruebas negativas demuestran que V-11 sigue detectando una ruta incorrecta, registra:
+SECOND SMOKE = PASS AFTER VALIDATOR CORRECTION.
+Si continúa fallando, registra el resultado real y detente.
+No declares PASS basándote únicamente en el diagnóstico de que el error parece estar en el validador.
+6. Host y ejecución
+No abrir AutoCAD.
+No ejecutar NETLOAD.
+No ejecutar RAM Elements.
+No modificar configuraciones del host.
+No modificar la tabla de secciones y materiales.
+No ejecutar Workers de producción ni consumir Codex.
+7. Entregable
+Presenta:
+
+1. Causa raíz confirmada de V-11.
+2. Cambio exacto del validador.
+3. Resultado de pruebas negativas.
+4. Resultado final 16/16 o fallo observado.
+5. SHA-256 de los tres archivos antes y después.
+6. Estado del segundo smoke.
+7. Recomendación para la primera corrida real en RAM Elements.
+
+V-11 VALIDATOR CORRECTION = AUTHORIZED.
+EXISTING PACKAGE REVALIDATION = AUTHORIZED.
+AUTOCAD EXECUTION = NO.
+RAM EXECUTION = NO.
+PRODUCT CODE CHANGES = NO.
+F4 GATE PASS = NO.
+Continúa únicamente con esta corrección y detente después de la revalidación.

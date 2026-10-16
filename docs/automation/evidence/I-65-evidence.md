@@ -1902,3 +1902,25 @@ Custodia:
 - Script y cargas del paquete por SHA-256: `rackcad-ram-build.py` `D9B41AAB69643C01971E756FB9323A8F35DAD6B33008598655C753FE2F92D719`; `structural-loads.json` `25F48E7F75D879C4668C3D9B37F69FDA0CD5442A407C03FF76362754623CAE05`.
 - Codex 50 de 52; `attempts` 7 de 9.
 - Recomprobación de I-52 custodiada (custodia §13, decisiones CD-I65-F4-140; commit `46e5e789`): SHA-256 nuevos `docs/automation/evidence/I-65-f4/host-coordination-smoke2-2026-10-16.md` `188982088F8FAB2087F3389A5A52FAC1AAABCC1C6C8196A02DC64CA33FEF9CEF` y `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/smoke-report.md` `2F10E11E04051B96289EBB4207A66181BF905EC638B7C8CDD1A689B64E006DBA`.
+
+## 75. Corrección de V-11 y revalidación de solo lectura (2026-10-16T20:42:21Z)
+
+- Orden: «Second Smoke V-11 Correction and Read-Only Revalidation» (decisiones §70). Ejecutor: Coordinator; `acad.exe` = 0 y `RAMElements.exe` = 0; sin Codex ni Workers.
+- Corrida local: `D:\r65-smoke\51fc82f1\run-R20261016T1918Z\v11-correction\` (copias de prueba en `selftest\`, informes por caso en `selftest\reports\`).
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-v11-correction-revalidation.original.txt` | `C615D602402B5F9B7BBB2BADC9F3AD9B083D2E7C300DCB79989B26A0AB4C6316` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/v11-correction/pkg-hashes-after.txt` | `7C8D7C24BE5F26F4EE2BE71C7CF035835C990D83A6F5A2B74ECE5332AE606A1A` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/v11-correction/pkg-hashes-before.txt` | `454D23DA774AE874CC2D29A9070BCBCC7625FBEDA6FCEC0F19D5104B6B3C527C` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/v11-correction/revalidation-report.md` | `547ED93E0E9E875F1763996A99AA37F95A9C5A49E8B8A068308ECE9AD6D475D5` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/v11-correction/test-v11-validator.json` | `BB8DF79AE803F44DA622B033DB50419E618F18BC559DC4D21D0BD5EE9AA1FD80` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/v11-correction/test-v11-validator.out.txt` | `AB2668C9F4F01F1F332768D581A4BB47D87C7D903DF7EE04245106FFC2D97463` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/v11-correction/test-v11-validator.py.txt` | `AA09C4C48AF7687B3346325B5068069BAAA3790CFD49C548B3D8F128BFB80AC0` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/v11-correction/validate-smoke2-package-v1-to-v2.diff.txt` | `81F5321FDB29ECBECA5C9EC4B4352A1925DF53B1CB9AF1740DD1A455E324EBE8` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/v11-correction/validate-smoke2-package-v2.py.txt` | `1F56B8CBA1A64F908C46EB5691930891C3DC0EF1D9BF8ED9C45F8E5F8BDD297A` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/v11-correction/validator-report-v2.json` | `87E2230BD8ABBD6EA87D46BA07C5056C0BDE1DC77A6109A820F53D169E81324D` |
+
+- Registros históricos sin cambios: `validate-smoke2-package.py.txt` `8B19A9C725C66A629B03B6DDEA7BBA70149788508E38E92E673C9A6852812C17`; `smoke2-51fc82f1/validator-report.json` `0D415A3F79F90B8B44114C478848FECA954C441510055717827B7EEB52D269C0`; `smoke2-51fc82f1/v11-diagnostic.json` `C22F22222D15F5795172CDFEAF364A77EDCC7DAD2C17BFDFDE873D84DCF4E1D2`.
+- Codex 50 de 52; `attempts` 7 de 9.

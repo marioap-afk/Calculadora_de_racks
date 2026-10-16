@@ -161,3 +161,10 @@ ST2-07 (comprobación del validador en `FAIL`) se activó: registrado, sin repet
    valida en la OV, no aquí.
 5. La confirmación expresa del Coordinator de I-64 llegó **después** de abrir la ventana y se refería a la franja propuesta del
    2026-10-17. La ventana usada se apoyó en el RELEASE del Owner y en los hechos de las tres iniciativas («sin conflicto activo»).
+
+## 11. Adenda (2026-10-16 ~20:41Z): corrección de V-11 y revalidación
+
+El texto anterior se conserva tal como se registró. Por orden del Owner (decisiones §70), el validador se corrigió (v2) y el **mismo**
+paquete se revalidó en solo lectura: **PASS 16/16**, con los SHA-256 de los tres archivos idénticos antes y después y pruebas negativas que
+detectan rutas alteradas y distintos niveles de escape ([informe de la revalidación](v11-correction/revalidation-report.md)). Estado:
+**SECOND SMOKE = PASS AFTER VALIDATOR CORRECTION**.

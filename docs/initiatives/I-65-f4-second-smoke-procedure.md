@@ -6,7 +6,7 @@ Documento de la unidad (Coordinator, 2026-10-16), por la disposición del Owner 
 ([preflight/POST](I-65-f4-host-release-and-preflight.md) §3-§6) y su informe
 ([smoke 745653e1](../automation/evidence/I-65-f4/smoke-745653e1/smoke-report.md)).
 
-> **Estado (2026-10-16): EJECUTADO** bajo el OWNER HOST RELEASE (decisiones §68-§69; [informe](../automation/evidence/I-65-f4/smoke2-51fc82f1/smoke-report.md)): `Valid` y paquete generado; validador 15/16 (V-11 falso negativo por doble escape); DIFF `INFORMAR`. Texto original de preparación:
+> **Estado (2026-10-16): EJECUTADO** bajo el OWNER HOST RELEASE (decisiones §68-§69; [informe](../automation/evidence/I-65-f4/smoke2-51fc82f1/smoke-report.md)): `Valid` y paquete generado; validador 15/16 (V-11 falso negativo por doble escape); DIFF `INFORMAR`. **Revalidado con el validador v2 (decisiones §70): PASS 16/16; SECOND SMOKE = PASS AFTER VALIDATOR CORRECTION** ([revalidación](../automation/evidence/I-65-f4/smoke2-51fc82f1/v11-correction/revalidation-report.md)). Texto original de preparación:
 >
 > **Estado: PREPARADO. EJECUCIÓN NO AUTORIZADA.** AUTOCAD EXECUTION = NOT AUTHORIZED; RAM EXECUTION = NOT AUTHORIZED. La solicitud de
 > ventana (ACK + RELEASE) se envió a I-52 y a I-64 ([custodia](../automation/evidence/I-65-f4/host-coordination-smoke2-2026-10-16.md));
