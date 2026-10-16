@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
   current_phase: f4-implementation
-  state: validating
+  state: waiting
   gate: F4
   attempts: 7
-  next_action: Coordinator: segundo smoke en curso bajo el OWNER HOST RELEASE (decisiones §68): preflight fresco, NETLOAD unico del DLL fa334b14, RACKRAMPAQUETE con filas verified, validacion 16/16, cierre sin guardar, POST/DIFF y aviso de cierre a I-52/I-64; sin RAM ni GATE PASS de F4.
+  next_action: Owner: disposicion sobre el segundo smoke (Valid y paquete generado; validador 15/16 con V-11 falso negativo por doble escape; DIFF INFORMAR con VIEWBACKSTATUS borrado, pendiente de I-52); sin RAM ni GATE PASS de F4.
   last_evidence_commit: 51fc82f131a287ef66458a433c614c389033769d
 execution_context:
   mode: manual
@@ -15,7 +15,7 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F4
-  next_role: Coordinator
-  implementation_authorization: OWNER HOST RELEASE = APPROVED (decisiones §68); SINGLE NETLOAD = AUTHORIZED; SECOND SMOKE = AUTHORIZED (solo DLL fa334b14); RAM EXECUTION = NO; F4 GATE PASS = NO
-  owner_decisions_open: [aceptacion del segundo smoke, primera generacion valida del paquete RAM y su destino, OD-F4-07 sonda P2, OD-F4-08 operador de RAM, OD-F4-09 REF-CANT-01 en un DWG, OD-F4-11 Candidato de hito y repeticion del modelo manual, autorizacion especifica de la primera corrida en RAM, confirmacion definitiva de Q-O1 y Q-O7 (tras OV-I65-01)]
-  not_authorized: [implementacion nueva, cambios en src/, alterar el checkout principal, superar 52 invocaciones de Codex o max_attempts 9, AutoCAD fuera del segundo smoke, NETLOAD de otro DLL o repetido, nuevas compilaciones, reintentos de generacion, corridas en RAM Elements, paquete definitivo de RAM, Candidato de hito, GATE PASS de F4, F5, F6, F7, capacidades fuera de V1, cambios del Freeze o de ADR-0050, codigo de I-52, I-62, I-64 o ID30, infraestructura de I-62, integración con Workspace, interfaz gráfica]
+  next_role: Owner
+  implementation_authorization: NINGUNA VIGENTE; segundo smoke EJECUTADO bajo el OWNER HOST RELEASE (decisiones §68-§69; NETLOAD unico consumido); AUTOCAD EXECUTION = NOT AUTHORIZED; RAM EXECUTION = NO; F4 GATE PASS = NO
+  owner_decisions_open: [aceptacion del segundo smoke y disposicion sobre V-11 (falso negativo del validador), aceptacion de INFORMAR por I-52 (VIEWBACKSTATUS), primera generacion valida del paquete RAM y su destino, OD-F4-07 sonda P2, OD-F4-08 operador de RAM, OD-F4-09 REF-CANT-01 en un DWG, OD-F4-11 Candidato de hito y repeticion del modelo manual, autorizacion especifica de la primera corrida en RAM, confirmacion definitiva de Q-O1 y Q-O7 (tras OV-I65-01)]
+  not_authorized: [implementacion nueva, cambios en src/, alterar el checkout principal, superar 52 invocaciones de Codex o max_attempts 9, AutoCAD, NETLOAD, nuevas compilaciones, reintentos de generacion, corregir el validador sin orden, corridas en RAM Elements, paquete definitivo de RAM, Candidato de hito, GATE PASS de F4, F5, F6, F7, capacidades fuera de V1, cambios del Freeze o de ADR-0050, codigo de I-52, I-62, I-64 o ID30, infraestructura de I-62, integración con Workspace, interfaz gráfica]

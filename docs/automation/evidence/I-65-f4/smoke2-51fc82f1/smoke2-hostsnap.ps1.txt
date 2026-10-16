@@ -1,0 +1,49 @@
+# I-65 segundo smoke: BASELINE / POST de SOLO LECTURA (mismo metodo que el primer smoke, I-65-f4-host-release-and-preflight.md §3-§5).
+# Uso: pwsh -NoProfile -File smoke2_hostsnap.ps1 -Phase baseline|post -Run D:\r65-smoke\51fc82f1\run-<RunId>
+# Unicas escrituras: archivos nuevos en <Run>\<Phase>\. No imprime TRUSTEDPATHS ni listados icacls en claro (solo SHA-256).
+param([Parameter(Mandatory)][ValidateSet('baseline','post')][string]$Phase, [Parameter(Mandatory)][string]$Run)
+$ErrorActionPreference = 'Stop'
+$dir = Join-Path $Run $Phase
+if (Test-Path -LiteralPath $dir) { throw "ya existe $dir" }
+New-Item -ItemType Directory -Path $dir | Out-Null
+$prod = 'Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409'
+$base = 'D:\r65-smoke\51fc82f1'
+$out = Join-Path $base 'bin-Debug-net8.0-windows'
+function Get-TextSha([string]$s) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($s))).ToLower() }
+function Get-FSha([string]$p) { (Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLower() }
+$L = @()
+$L += "time_utc=" + (Get-Date).ToUniversalTime().ToString('o')
+$L += "B-01 acad=" + @(Get-Process -Name acad -ErrorAction SilentlyContinue).Count + " ram=" + @(Get-Process -Name RAMElements -ErrorAction SilentlyContinue).Count
+$prof = (Get-ItemProperty -LiteralPath "HKCU:\$prod\Profiles").'(default)'
+$names = @(Get-ChildItem -LiteralPath "HKCU:\$prod\Profiles" | ForEach-Object { $_.PSChildName })
+$L += "B-02 profile=" + $(if ($prof -eq '<<Unnamed Profile>>') { $prof } else { 'OTHER' }) + " profiles=" + $names.Count
+$v = Get-ItemProperty -LiteralPath "HKCU:\$prod\Profiles\$prof\Variables" -Name TRUSTEDPATHS, SECURELOAD
+$tp = [string]$v.TRUSTEDPATHS; $entries = @($tp.Split(';') | Where-Object { $_ -ne '' })
+$L += "B-03 trustedpaths_entries=" + $entries.Count + " sha256=" + (Get-TextSha $tp) + " secureload=" + $v.SECURELOAD
+$keys = [ordered]@{ 'hkcu-profiles' = "HKCU\$prod\Profiles"; 'hkcu-fixedprofile' = "HKCU\$prod\FixedProfile"; 'hkcu-applications' = "HKCU\$prod\Applications"; 'hkcu-installedapplications' = "HKCU\$prod\InstalledApplications"; 'hkcu-loaded' = "HKCU\$prod\Loaded"; 'hklm-applications' = "HKLM\SOFTWARE\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications" }
+foreach ($k in $keys.Keys) { $f = Join-Path $dir "$k.reg"; & reg.exe export $keys[$k] $f 2>&1 | Out-Null; if (Test-Path -LiteralPath $f) { $L += "B-04 $k " + (Get-FSha $f) } else { $L += "B-04 $k ABSENT" } }
+$loc = (Get-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Autodesk\AutoCAD\R25.0\ACAD-8101:409').AcadLocation
+$exe = Join-Path $loc 'acad.exe'
+$L += "B-05 acad=" + (Get-Item -LiteralPath $exe).VersionInfo.FileVersion + " sha256=" + (Get-FSha $exe)
+$i = 0
+foreach ($r in @("$env:APPDATA\Autodesk\ApplicationPlugins", "$env:ProgramData\Autodesk\ApplicationPlugins", "$env:ProgramFiles\Autodesk\ApplicationPlugins", "${env:ProgramFiles(x86)}\Autodesk\ApplicationPlugins")) { $i++; if (Test-Path -LiteralPath $r) { $n = @(Get-ChildItem -Name -Force -LiteralPath $r); $L += "B-06 root$i count=" + $n.Count + " sha256=" + (Get-TextSha ($n -join "`n")) + " rackcad=" + @($n | Where-Object { $_ -match 'RackCad' }).Count } else { $L += "B-06 root$i ABSENT" } }
+$L += "B-07 env_user=" + @([Environment]::GetEnvironmentVariables('User').Keys | Where-Object { $_ -match 'RackCad' }).Count + " env_machine=" + @([Environment]::GetEnvironmentVariables('Machine').Keys | Where-Object { $_ -match 'RackCad' }).Count
+$acls = [ordered]@{ 'acadlocation' = $loc; 'dllfolder' = $out; 'i52-host' = 'D:\I52-CT21D-HOST'; 'i52-evidence' = 'D:\I52-CT21D-HOST\evidence'; 'i52-h1' = 'D:\I52-CT21D-HOST\evidence\HGP-H1-20261001T225354Z-01'; 'i52-declared' = 'D:\I52-CT21D-HOST\canonical-642ba392\declared-set' }
+foreach ($a in $acls.GetEnumerator()) { if (Test-Path -LiteralPath $a.Value) { $L += "B-08 " + $a.Key + " " + (Get-TextSha ((& icacls.exe $a.Value) -join "`n")) } else { $L += "B-08 " + $a.Key + " ABSENT" } }
+$dll = Join-Path $out 'RackCad.Plugin.dll'
+$covered = $false; foreach ($e in $entries) { $t = $e.TrimEnd('\'); if ($t -and $out.StartsWith($t, [StringComparison]::OrdinalIgnoreCase)) { $covered = $true } }
+$L += "B-09 dll_sha256=" + (Get-FSha $dll) + " productversion=" + [System.Diagnostics.FileVersionInfo]::GetVersionInfo($dll).ProductVersion + " covered_by_trustedpaths=" + $covered
+$man = (Get-ChildItem -Recurse -File -LiteralPath $out | Sort-Object FullName | ForEach-Object { $_.FullName.Substring($out.Length + 1).Replace('\','/') + "  " + (Get-FSha $_.FullName) + "  " + $_.Length }) -join "`n"
+$L += "B-09 output_manifest_sha256(LF)=" + (Get-TextSha ($man + "`n")) + " files=" + @(Get-ChildItem -Recurse -File -LiteralPath $out).Count + " manifest_file_sha256=" + (Get-FSha (Join-Path $base 'output-manifest.txt'))
+Set-Content -LiteralPath (Join-Path $dir 'output-manifest-recomputed.txt') -Value ($man + "`n") -NoNewline -Encoding utf8NoBOM
+$L += "B-09 table_sha256=" + (Get-FSha (Join-Path $out 'structural-analysis\ram-elements\section-material-map.json')) + " loads_sha256=" + (Get-FSha (Join-Path $base 'inputs\ref-cant-01.loads.json')) + " expected_inputs_sha256=" + (Get-FSha (Join-Path $base 'expected-inputs.json'))
+$rc = Join-Path $env:APPDATA 'RackCad'
+if (Test-Path -LiteralPath $rc) { $rl = (Get-ChildItem -Recurse -File -LiteralPath $rc | Sort-Object FullName | ForEach-Object { $_.FullName.Substring($rc.Length + 1) + " " + $_.Length + " " + $_.LastWriteTimeUtc.ToString('o') }) -join "`n"; $L += "X-01 appdata_rackcad files=" + @(Get-ChildItem -Recurse -File -LiteralPath $rc).Count + " listing_sha256=" + (Get-TextSha $rl); Set-Content -LiteralPath (Join-Path $dir 'appdata-rackcad-listing.txt') -Value $rl -Encoding utf8NoBOM } else { $L += "X-01 appdata_rackcad ABSENT" }
+$L += "X-02 package_folder_exists=" + (Test-Path -LiteralPath (Join-Path $Run 'pkg-01')) + " tmp_siblings=" + @(Get-ChildItem -Force -LiteralPath $Run -Filter 'pkg-01.tmp-*' -ErrorAction SilentlyContinue).Count
+$L | Set-Content -LiteralPath (Join-Path $dir 'summary.txt') -Encoding utf8NoBOM
+if ($Phase -eq 'post') {
+  "=== DIFF summary (baseline vs post, excluding time)"
+  Compare-Object (Get-Content (Join-Path $Run 'baseline\summary.txt') | Where-Object { $_ -notmatch '^time_utc' }) (Get-Content (Join-Path $dir 'summary.txt') | Where-Object { $_ -notmatch '^time_utc' }) | ForEach-Object { $_.SideIndicator + ' ' + $_.InputObject }
+  "=== post"
+}
+$L

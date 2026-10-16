@@ -1,0 +1,30 @@
+# I-65 segundo smoke: claves y nombres de valor que cambian entre BASELINE y POST (solo lectura; sin valores en claro).
+param([Parameter(Mandatory)][string]$Run, [Parameter(Mandatory)][string]$Out)
+$ErrorActionPreference = 'Stop'
+$res = @()
+foreach ($n in 'hkcu-profiles', 'hkcu-fixedprofile', 'hkcu-applications', 'hkcu-installedapplications', 'hkcu-loaded', 'hklm-applications') {
+  $b = Join-Path $Run "baseline\$n.reg"; $p = Join-Path $Run "post\$n.reg"
+  if ((Get-FileHash -LiteralPath $b).Hash -eq (Get-FileHash -LiteralPath $p).Hash) { $res += "$n IGUAL"; continue }
+  $parse = {
+    param($f)
+    $key = ''; $map = @{}; $last = $null
+    foreach ($line in (Get-Content -LiteralPath $f)) {
+      if ($line -match '^\[(.*)\]$') { $key = $Matches[1]; $map["$key|<clave>"] = ''; $last = $null; continue }
+      if ($line -match '^("(?:[^"\\]|\\.)*"|@)=(.*)$') { $last = "$key|" + $Matches[1]; $map[$last] = $Matches[2]; continue }
+      if ($last -and $line -match '^\s+\S') { $map[$last] += $line.Trim() }
+    }
+    $map
+  }
+  $mb = & $parse $b; $mp = & $parse $p
+  $names = @($mb.Keys + $mp.Keys | Sort-Object -Unique)
+  foreach ($k in $names) {
+    $kind = if (-not $mb.ContainsKey($k)) { 'NUEVO' } elseif (-not $mp.ContainsKey($k)) { 'BORRADO' } elseif ($mb[$k] -ne $mp[$k]) { 'CAMBIADO' } else { $null }
+    if ($kind) {
+      $parts = $k.Split('|', 2)
+      $path = $parts[0] -replace [regex]::Escape($env:USERNAME), '<usuario>' -replace [regex]::Escape($env:COMPUTERNAME), '<maquina>'
+      $res += "$n $kind $path :: " + $parts[1]
+    }
+  }
+}
+$res | Set-Content -LiteralPath $Out -Encoding utf8NoBOM
+$res

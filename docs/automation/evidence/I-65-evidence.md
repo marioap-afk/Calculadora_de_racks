@@ -1864,3 +1864,40 @@ Custodia:
 - `acad.exe` = 0 y `RAMElements.exe` = 0 a las 2026-10-16T19:14:43Z; DLL re-leído `fa334b14…aedb`.
 - Custodia de la coordinación (§7-§8): `docs/automation/evidence/I-65-f4/host-coordination-smoke2-2026-10-16.md` SHA-256 `0EDEBF85C83420448702CB0131FA342F9BDDF1868E31B3A5D98525348B723B57`.
 - Codex 50 de 52 (sin uso); `attempts` 7 de 9.
+
+## 74. Segundo smoke ejecutado (2026-10-16T19:32:25Z)
+
+- Orden: OWNER HOST RELEASE (decisiones §68-§69). Ejecutor: Coordinator con Computer Use (solo «AutoCAD 2025 - English»); sin RAM, Codex ni Workers.
+- Corrida local (no versionada): `D:\r65-smoke\51fc82f1\run-R20261016T1918Z\`; exportaciones `.reg` y paquete completo allí.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/host-coordination-smoke2-2026-10-16.md` | `978EF46C87BDFC20E360DED02C954BC34C07123A4857927825B8691B92EE751E` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/01-dibujo-desechable.jpg` | `0308974FC3A6A227D7B2940947BD4B1E3191DF49581CAC1C5F8B379909366369` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/02-incidente-carpeta-test-tmp.jpg` | `867D7CF462F9D6B042D59822A6FDFD01649B76CDCF035548F4065204709C539D` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/03-netload-dll-autorizado-seleccionado.jpg` | `50DE8088B16377C5C922A3AC1491198987C86CAF823C0ED3D7023CDEBDBC1536` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/04-aviso-seguridad-load-once.jpg` | `EA94E57350017DF9B23B611A096348B4C765C0F560EFF9AC3DCC0533C2C6A074` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/05-dll-cargado.jpg` | `957C277C6D5F42A085933C26E06D732442CE091DC43B0A5E9F5FE8D5DFC46253` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/06-columna-base-w12x26.jpg` | `D18DDA4C44A84DD96ABED001901F0C5E87E1B455775C658395B3E93DD409A3B5` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/07-brazo-hss4x4x1_4.jpg` | `5BBB86C2E2DAE2AA084661DA6557763105CC92CFAA734A05A519FEF4F90DE503` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/08-linea-ref-cant-01-resuelta.jpg` | `C2EB82B1410547833E2888778265B414CA363871C27171B69336AB75A557CFF5` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/09-vista-frontal-insertada.jpg` | `D65048CE1E090CBB093F52226EFD6653221EC5D0D4D8B5DBB2B45B884619F24F` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/10-ruta-cargas.jpg` | `A8CBD596D22C532034C54C4C3DF9B79D33020FAC1B3D78441861ACAE20F34C95` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/11-carpeta-tecleada-barras-invertidas.jpg` | `8BA622C43F39EAF7632558AF08A9B2CA916B8DF1B21E1BA648C9B2A1F886E00C` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/12-resultado-valid.jpg` | `FE2F6C21CFA26DD1A700A38968C882B0605F5734249C2685E764B0E3F9F98593` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/13-consola-completa.jpg` | `F6AC30C68D8CF5BACDDA834EC806691B8D3BA1BD18D19A9132D483E3BBA9B9D9` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/14-cierre-sin-guardar.jpg` | `32125F4C1A55A69253D1A64D89D1B5A3A69E8B7A316AA70F9104D1414772D406` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/baseline-summary.txt` | `FCBAF7447B69A321A1D1684F6D8521B51E2BD2DC28319392427DFC3CD7612DDD` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/diag-v11-smoke2.py.txt` | `88AC867FA8FE01FCCC96A8D672DB31C67CA790B8A6396D5813EB22D3F68A1076` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/diff-registry-keys.txt` | `D9846AAAE35E712ECBF68155BEFF6CC081CA9AB80BBF8890C955C099F840AD55` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/manifest.json` | `19FBA962297BADC95DD008BCF8D1477993C55A7FF8B5347D68E311E246F53A78` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/post-summary.txt` | `5AE14DA6FD4F2EE661D2B8CFFABF11F5DEAFFAC4F9164344B1B705DFCE21A2EE` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/smoke-report.md` | `3005492600F74CF406644DF4253FAF0AA0CD2DFFE6FD3D392F18725A8C9FD990` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/smoke2-hostsnap.ps1.txt` | `C04B72B74E79DE020C608FD73B646883EB31D07187A0BF32292F936CED7DCF12` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/smoke2-regdiff.ps1.txt` | `353ECC74D023C4E35D2FE9089014B62185B956938D8AFEB661EBF89872891AA5` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/v11-diagnostic.json` | `C22F22222D15F5795172CDFEAF364A77EDCC7DAD2C17BFDFDE873D84DCF4E1D2` |
+| `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/validator-report.json` | `0D415A3F79F90B8B44114C478848FECA954C441510055717827B7EEB52D269C0` |
+
+- Script y cargas del paquete por SHA-256: `rackcad-ram-build.py` `D9B41AAB69643C01971E756FB9323A8F35DAD6B33008598655C753FE2F92D719`; `structural-loads.json` `25F48E7F75D879C4668C3D9B37F69FDA0CD5442A407C03FF76362754623CAE05`.
+- Codex 50 de 52; `attempts` 7 de 9.

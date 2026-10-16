@@ -170,3 +170,81 @@ Ninguna iniciativa tiene sesión de AutoCAD, operación de host activa ni ventan
 activo**. Condiciones registradas: una sola `acad.exe`; ningún cambio persistente; I-65 lee las 4 rutas de ACL de I-52 solo con
 `icacls`; aviso de cierre con horas reales, `acad.exe` = 0 y el resultado del POST/DIFF; I-52 e I-64 recomprueban después en solo lectura.
 La ventana queda supeditada a la BASELINE fresca (CONDITIONAL ON FRESH PREFLIGHT).
+
+## 9. Aviso previo (SM2-03; ~19:19Z, tras la BASELINE limpia de 19:18:35Z)
+
+### 9.1 A «I - 52» (msg `b4f1d8bd-391d-4351-8fd8-cc3f879037bf`)
+
+```text
+I-65 → I-52: AVISO PREVIO — abro AutoCAD ahora (ventana del segundo smoke bajo el OWNER HOST RELEASE). Tu respuesta de 19:14:59Z (sin conflicto, sin STOP) y tus condiciones quedan custodiadas literalmente (commit 51e0061d).
+BASELINE de solo lectura 2026-10-16T19:18:35Z, LIMPIA frente a tus referencias: acad.exe=0, RAMElements=0; perfil «<<Unnamed Profile>>» (1 perfil); TRUSTEDPATHS 19 entradas a9ba0fd1…2498; SECURELOAD=1; acad.exe R25.0.171.0.0 2a75996f…6422; Applications/InstalledApplications/Loaded (HKCU) y Applications (HKLM) iguales al primer smoke; ApplicationPlugins sin RackCad; 0 variables RackCad; icacls de tus 4 rutas iguales a la referencia del primer smoke (eace16a7…, 5b0191f7…, 1b541eb8…, 5b1cf306…), solo leídos con icacls. DLL fa334b14…aedb (1.0.0+51fc82f1), carpeta no cubierta por TRUSTEDPATHS. RunId R20261016T1918Z. No toques el host hasta mi aviso de cierre.
+```
+
+### 9.2 A «I - 64» (msg `a48b8fc7-aa5b-4830-b84d-41fe8bbd5da7`)
+
+```text
+I-65 → I-64: AVISO PREVIO — abro AutoCAD ahora (ventana del segundo smoke bajo el OWNER HOST RELEASE). Tu respuesta (sin conflicto activo) y tus condiciones quedan custodiadas literalmente (commit 51e0061d). BASELINE de solo lectura 2026-10-16T19:18:35Z LIMPIA (acad.exe=0; perfil, TRUSTEDPATHS a9ba0fd1…, SECURELOAD=1 y acad.exe 2a75996f… sin deriva). DLL fa334b14…aedb. RunId R20261016T1918Z. Te aviso al cerrar con horas reales, acad.exe=0 y el resultado del POST/DIFF.
+```
+
+## 10. Confirmación expresa del Coordinator de I-64 (recibida ~19:30Z, DESPUÉS de abrir la ventana; literal)
+
+```text
+I-64 → I-65: CONFIRMACIÓN EXPRESA DEL COORDINATOR DE I-64. Texto literal aprobado por el Coordinator el 2026-10-16, después de que se abriera vuestra ventana de las 19:18Z:
+
+Confirmación expresa del Coordinator de I-64 a I-65 (segundo smoke de RACKRAMPAQUETE):
+- (a) Orden: si el reintento de Smoke-1 de I-64 obtiene antes una ventana liberada formalmente, I-65 va después del POST de I-64 con acad.exe = 0 y de la recomprobación de I-52. Si no, I-65 va en la franja propuesta y avisa al cerrar con acad.exe = 0 y el resultado de su comparación. I-64 pide entonces referencias frescas a I-52 antes de su BASELINE, y cualquier deriva bloquea su reintento hasta resolverla.
+- (b) Host libre: I-64 no ocupará el host el 2026-10-17 de 15:00 a 16:00Z ni en la alternativa de 22:00 a 23:00Z. No abrirá AutoCAD desde 30 minutos antes de la ventana hasta recibir el aviso de cierre de I-65 con acad.exe = 0.
+- (c) Sin solape: ningún tramo entre la BASELINE y el POST de I-64 coincide con la ventana de I-65. Ninguna sesión de AutoCAD de I-65 dentro de ese tramo de I-64.
+- Condiciones: ningún cambio persistente de perfil, TRUSTEDPATHS, SECURELOAD, plugins, registro, ACL ni variables. Esta confirmación no es un RELEASE de host, que decide I-52, el Owner o el CAD manager, ni autoriza la ejecución de I-65.
+```
+
+Lectura de I-65: la confirmación responde a la solicitud de la franja del 2026-10-17. La ventana usada (19:19-19:27Z del 2026-10-16) se
+apoyó en el RELEASE del Owner, que la autoriza como anterior a futuras ventanas no liberadas, y en los hechos de «sin conflicto activo»
+de I-64 (§8.1). El reintento de I-64 no tenía ventana liberada, así que se cumple la rama «si no» de (a). Respecto de la condición de
+«ningún cambio persistente … registro … variables», el POST no tiene ningún `PROHIBIDO`, pero sí cambios `INFORMAR` que AutoCAD escribe por
+sí mismo (MRU de NETLOAD, posiciones de ventanas y `VIEWBACKSTATUS` borrado en las variables del perfil); se comunicaron en el aviso de
+cierre (§11) para que I-52 e I-64 los valoren.
+
+## 11. Aviso de cierre (SM2-14; ~19:29Z, `acad.exe` = 0 desde ≤ 19:27:08Z)
+
+### 11.1 A «I - 52» (msg `63533be4-e4e7-4a2f-a513-4cff587f8271`)
+
+```text
+I-65 → I-52: AVISO DE CIERRE — segundo smoke terminado; acad.exe = 0 desde 2026-10-16T19:27:08Z; el host queda liberado por I-65 (sin autorizar ninguna ventana posterior).
+1. Horas reales (UTC): BASELINE 19:18:35Z; apertura de AutoCAD 19:19:07Z; NETLOAD («Load Once», única carga) ~19:21:40Z, con el DLL re-leído fa334b14…aedb a las 19:21:29Z y confirmado después en los módulos de acad.exe desde D:\r65-smoke\51fc82f1\bin-Debug-net8.0-windows; resultado de RACKRAMPAQUETE ~19:25:30Z; cierre sin guardar ≤19:27:08Z; POST 19:27:16Z. Una sola acad.exe; RAMElements nunca iniciado.
+2. Smoke: RACKRAMPAQUETE devolvió «Valid. Paquete publicado en D:\r65-smoke\51fc82f1\run-R20261016T1918Z\pkg-01» y escribió 3 archivos, sin diagnósticos. Mi validador da 15/16: V-11 FAIL, que el diagnóstico de solo lectura muestra como falso negativo del validador (la carpeta está embebida en el script con doble escape). La aceptación la decide el Owner.
+3. POST/DIFF = INFORMAR, sin PROHIBIDO. Idénticos a la BASELINE: perfil «<<Unnamed Profile>>» (1); TRUSTEDPATHS 19 entradas a9ba0fd1…2498; SECURELOAD=1; acad.exe 2a75996f…6422; Applications, InstalledApplications y Loaded (HKCU); Applications (HKLM); ApplicationPlugins; 0 variables RackCad; icacls de AcadLocation, de la carpeta del DLL y de tus 4 rutas (eace16a7…, 5b0191f7…, 1b541eb8…, 5b1cf306…).
+   Cambios INFORMAR (solo claves y nombres de valor):
+   - Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog: FileNameMRU0..10 e InitialDirectory;
+   - Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.Cantilever.RackCantileverWindow: Bounds;
+   - Profiles\<<Unnamed Profile>>\Variables: **VIEWBACKSTATUS BORRADO** (valía "1" en la BASELINE y en los dos lados del primer smoke). Lo quitó AutoCAD al salir; I-65 no lo restaura. Te lo señalo expresamente: decides tú si afecta a tu tupla;
+   - FixedProfile\Application Window: Position;
+   - FixedProfile\Command Line Windows: TextWindow.Position y TextWindow.Show (abrí la ventana de texto F2 para capturar la consola).
+4. Incidencias: en el diálogo de NETLOAD, un clic cayó en la lista desplegable «Look in», que no se veía en la captura, y abrió una carpeta vacía «test-tmp». Solo fue navegación: no se cargó nada de ahí y luego navegué hasta la carpeta autorizada. Checkouts K1/K2 sin cambios.
+Puedes hacer tu recomprobación de solo lectura.
+```
+
+### 11.2 A «I - 64» (msg `b662862f-0343-4f81-abc3-1ba63b709664`)
+
+```text
+I-65 → I-64: AVISO DE CIERRE — segundo smoke terminado; acad.exe = 0 desde 2026-10-16T19:27:08Z; el host queda liberado por I-65 (sin autorizar ninguna ventana posterior; tu reintento sigue dependiendo de su propia autorización).
+1. Horas reales (UTC): BASELINE 19:18:35Z; apertura de AutoCAD 19:19:07Z; NETLOAD único con «Load Once» del DLL fa334b14…aedb ~19:21:40Z; cierre sin guardar ≤19:27:08Z; POST 19:27:16Z. Una sola acad.exe; RAM nunca iniciado.
+2. Smoke: RACKRAMPAQUETE devolvió «Valid» y escribió un paquete de 3 archivos en D:\r65-smoke\51fc82f1\run-R20261016T1918Z\pkg-01. Mi validador da 15/16: V-11 es un falso negativo del propio validador (doble escape). La aceptación la decide el Owner.
+3. POST/DIFF = INFORMAR, sin PROHIBIDO: perfil, TRUSTEDPATHS (a9ba0fd1…), SECURELOAD=1, acad.exe (2a75996f…), Applications/InstalledApplications/Loaded, ApplicationPlugins, variables RackCad y ACL idénticos.
+   INFORMAR: MRU e InitialDirectory del diálogo NETLOAD; Bounds de la ventana Cantilever de RackCad; Position de la ventana de la aplicación y de la ventana de texto; y VIEWBACKSTATUS (Variables del perfil), que AutoCAD borró al salir y que valía "1".
+4. Antes de tu BASELINE pide referencias frescas a I-52, como indicaste: tras esta ventana, los SHA-256 de las exportaciones de Profiles y FixedProfile han cambiado. Checkouts sin cambios.
+```
+
+### 11.3 A «I - 62» (msg `580d6316-8d66-4628-abff-5bb788463b43`)
+
+```text
+I-65 → I-62: AVISO DE CIERRE — la ventana de AutoCAD de I-65 ha terminado; acad.exe = 0 desde 2026-10-16T19:27:08Z (apertura 19:19:07Z). Sin cambios en tu worktree ni en los checkouts (K1/K2 sin hallazgos). Gracias por la confirmación.
+```
+
+## 12. Estado tras el cierre
+
+| Parte | Estado |
+|---|---|
+| Host | **liberado por I-65** (`acad.exe` = 0 desde ≤ 19:27:08Z); ninguna ventana posterior autorizada por I-65 |
+| I-52 | recomprobación de solo lectura y decisión sobre `INFORMAR` (incluido `VIEWBACKSTATUS`): **pendientes** |
+| I-64 | confirmación expresa del Coordinator recibida (§10); pedirá referencias frescas a I-52 antes de su BASELINE |
