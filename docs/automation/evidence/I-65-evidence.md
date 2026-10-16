@@ -1690,3 +1690,50 @@ Custodia:
 | `docs/automation/evidence/I-65-f4/f4d-reader-check-target.out.txt` | `1400F80A75B1D63D370EB264AE1D7DE4E0FE9A4BB9B047A3FC4721DF3EE7432A` |
 
 - Codex 41 de 48; `attempts` 6 de 9.
+
+## 69. F4-D-SECTION-MAP-VERIFIED — intento 6: planificación, trabajo y verificación con REWORK (2026-10-16T15:30:26Z)
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261016T144346Z-4eaf` | PLANNING (intento 6) | Codex `gpt-6-luna`/`high` (42) | A1-A8 `pass`; seis colecciones exactas; `claude-sonnet-5-5`/`medium`, Balanced |
+| `R20261016T145133Z-0214` | CONTROL nc4 | sin invocación | A3 `fail`, resto `pass` |
+| `R20261016T145459Z-8301` | WORK (intento 6) | subagente `claude-sonnet-5-5`/`medium` (61 mensajes) | RED `fe9b6720`, GREEN `d548fb0b`; 23 min; 37 llamadas; 0 errores; 0 denegaciones; ninguna invocación de un intérprete; `IMPLEMENTATION_COMPLETE` |
+| `R20261016T152242Z-2e6f` | VERIFICATION | Codex (43) | **`EXECUTION_REWORK_REQUIRED`/`REWORK`**, `FailureClass` `Ci`; RED acreditado (`RedPart` `pass` en `Ci` y `Tests`) |
+
+- **CI:** RED `38921140743` (Core `failure`: 13 fallidas de 14390, todas en el filtro, por aserción); GREEN `38922575054` (Core `failure`:
+  3 fallidas de 14390, carpeta `/tmp/…` rechazada por la fábrica; UI 1 637 de 1 654 `success`; Build UI `success`; Build Plugin `skipped`).
+- **Controles del Owner:** K1/K2 sin cambios externos en planificación, trabajo y verificación; K3 primera orden `pwd`; K5 sin intérpretes, RAM,
+  AutoCAD ni accesos fuera del worktree; alcance mecánico `pass` (6 archivos).
+- **Procesos:** `git.exe`/`bash.exe` ilegibles en las salidas y entradas, creados por las apps del host fuera de las cesiones y ya terminados al
+  releerlos a los 2 s (falso P-02 conocido).
+- **Contadores:** Codex 43 de 48; `attempts` 7 (máximo 9).
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T144346Z-4eaf/gate-contract.json` | `1D30597A8C1997E8…` | `6d3f5a5f3ea8` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T144346Z-4eaf/prompt.md` | `7455C0EAD837416D…` | `c0e71ebc9a10` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T144346Z-4eaf/delegation.json` | `641A72C312290138…` | `c705fccca877` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T144346Z-4eaf/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T144346Z-4eaf/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T144346Z-4eaf/relay-record.json` | `B8397E244555A238…` | `8bef8e68dfb8` |
+| `F4-D-SECTION-MAP-VERIFIED-nc4/R20261016T145133Z-0214/delegation.json` | `94781BC88FCBED6B…` | `f82f920ebf3b` |
+| `F4-D-SECTION-MAP-VERIFIED-nc4/R20261016T145133Z-0214/acceptance.json` | `3E2CF552A67987E0…` | `2df92c858dd3` |
+| `F4-D-SECTION-MAP-VERIFIED-nc4/R20261016T145133Z-0214/relay-record.json` | `EB242048C60EE0B5…` | `5642381b0f07` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T145459Z-8301/prompt.md` | `BAAA069B178F2A62…` | `d32cd7f5877e` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T145459Z-8301/worker-handoff.json` | `828A0C08F9E807C9…` | `91cd5c54fcac` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T145459Z-8301/relay-record.json` | `531AD7F91C48BDA4…` | `4a03a645f0ad` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T145459Z-8301/k5-transcript-scan.json` | `BD9F3D243AB2CD99…` | `eb61e9863246` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T145459Z-8301/transcript-facts.json` | `D1AD8EACBC96E9AA…` | `c1ac66e3dd09` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/prompt.md` | `E13BA678618EEA84…` | `2b0f95ac26bd` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/controller-verification.json` | `9EE078E1ABE599EF…` | `795c84be6514` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/relay-record.json` | `62EDEDA053B00428…` | `50238b6b7507` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/coherence.txt` | `1CFE9B0EB90C8340…` | `59f654fdcafb` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/trx-summary.json` | `A53FCB11EE6AB6F6…` | `5927adbdbe37` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/scope-mechanical.json` | `EAB463F0847F6452…` | `20777534e692` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/analysis.md` | `15C626B405FB279D…` | `bcf2a6ff8e1f` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/coordinator-dispositions-f4d.md` | `46BB24593504EB0A…` | `ce730620dfe2` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/k-f4d-plan-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/k-f4d-work-compare.json` | `E7BD970DF664ACB8…` | `9edd8c809a65` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/k-f4d-ver-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |

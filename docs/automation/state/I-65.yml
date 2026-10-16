@@ -6,8 +6,8 @@ automation_state:
   current_phase: f4-implementation
   state: implementing
   gate: F4
-  attempts: 6
-  next_action: Coordinator: F4-D-SECTION-MAP-VERIFIED (decisiones §62: contrato de gate, planificacion del Controller, A1-A8 y nc4, Worker RED/GREEN, verificacion, nc1-nc3, Core completa, CI del SHA exacto, revision del Architect, custodia y cierre); sin AutoCAD ni RAM; detenerse al cerrar F4-D y pedir aprobacion antes de usar el nuevo DLL.
+  attempts: 7
+  next_action: Coordinator: correccion de F4-D-SECTION-MAP-VERIFIED (attempts 7, AttemptsRemaining 2; CorrectionOf R20261016T152242Z-2e6f, Ci; CD-I65-F4-113): planificacion, A1-A8, Worker, verificacion, nc1-nc3, revision del Architect, custodia y cierre; sin AutoCAD ni RAM.
   last_evidence_commit: 9f6fff6e12bde1f8a0c3c0f6cb8160632091834a
 execution_context:
   mode: manual

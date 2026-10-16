@@ -1,0 +1,22 @@
+{
+ "transcript_sha256": "F1DFB37645EBE241624EBE547F14F0DFA9E222EC6E3DCF26FA4880491E4FFC08",
+ "assistant_messages": 61,
+ "models": {
+  "claude-sonnet-5-5": 61
+ },
+ "tool_uses": 37,
+ "tool_errors": 0,
+ "denials": 0,
+ "python_commands": [
+  "{\"file_path\": \"C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/6/R20261016T145459Z-8301/worker-handoff.json\", \"content\": \"{\\n  \\\"Schema\\\": \\\"rackcad-worker-handoff/v1\\\",\\n  \\\"TaskId\\\": \\\"F4-D-SECTION-MAP-VER"
+ ],
+ "prompt_sha256_normalized": "0D570E239D1C621477CF12DD35623AE093C1829A4F8F7B0AFEB56AC6A146C8F3",
+ "prompt_file_sha256": "BAAA069B178F2A62C55B721BCA601F93EC86CFA902872BC1F39218E0EDF1D0E4",
+ "prompt_match": {
+  "raw": true,
+  "dedent2_skip1": false,
+  "dedent2": false
+ },
+ "prompt_contained": true,
+ "first_user_len": 19772
+}
