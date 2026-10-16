@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §87; evidencia §173) — caracterizar claude-cli 2.1.299 (solo lectura; sondas C1-C3 de §56.7); si ELIGIBLE, recuperar el transporte del kit R20261014T180556Z-5e02 (clon nuevo, manifiesto, autoprueba, guardas), congelar, custodiar y lanzar UNA vez python -B kit/launch.py si la autorización sigue aplicable; si no, STOP; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §87; evidencia §173-§174) — claude-cli 2.1.299 ELIGIBLE (295b49ec); recuperar el transporte del kit R20261014T180556Z-5e02 (clon nuevo con la caracterización, identidad del binario, compuerta D-01, manifiesto, autoprueba, guardas), congelar y custodiar; preflight y UNA revisión con python -B kit/launch.py si la autorización sigue aplicable; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

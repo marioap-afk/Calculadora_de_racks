@@ -4451,3 +4451,14 @@ solo desde artefactos custodiados.
 - Con la caracterización conforme: el kit `R20261014T180556Z-5e02` actualiza solo la identidad del binario y sus referencias de transporte, con
   un clon nuevo que contenga el registro de caracterización, recalcula el manifiesto, repite la autoprueba, las guardas y las comprobaciones de
   identidad afectadas, y se congela y custodia. Una sola revisión, con `python -B kit/launch.py`, si la autorización sigue siendo aplicable.
+
+## 174. claude-cli 2.1.299 caracterizado: ELIGIBLE para la revisión de A-6 ronda 4 (decisiones §87, puntos 2-3)
+
+- [`I-62-claude-cli/R20261016T185242Z-char`](I-62-claude-cli/R20261016T185242Z-char/README.md): binario `%APPDATA%/Claude/claude-code/2.1.299/f0584be0fbaf/claude.exe`,
+  SHA-256 `295b49ec…`, Authenticode válido de Anthropic, versión `2.1.299 (Claude Code)`, autenticado. Mismas sondas que la caracterización de
+  2.1.293 en un clon limpio sin remoto: C1 (modelo `claude-opus-5-5` y effort `xhigh` observados, prompt fiel, lectura 12/12 fiel, salida
+  estructurada, solo lectura, sin MCP ni contexto del proyecto), C2 (terminación) y C3 (plantilla exacta del kit con `--add-dir`: PASS).
+- El primer C1 falló sin llegar al modelo por una renovación concurrente del token OAuth, lanzado justo después de `auth status`; se conserva y
+  C1 y C2 se repitieron una vez tras más de 3 minutos.
+- Registro (SHA-256 `4ba6ba586440ce5c…`): ARCHITECT y REVIEWER ELIGIBLE, `STALE` = false, equivalencia con los requisitos vigentes demostrada;
+  los predicados de la compuerta de transporte del kit lo aceptan. CLAUDE-CLI-I62 sin cambio. Ninguna revisión formal ejecutada.

@@ -1,0 +1,58 @@
+--- probe-c3.py (kit de A-2)
++++ char2_c3.py
+@@ -1,4 +1,5 @@
+-"""I-62 A-2 corregida: sonda acotada C3 de claude-cli (decisiones §56, punto 7; Owner CLAUDE-CLI-I62 = A), vía (a) para cerrar la desviación D-01
++"""I-62 §87: sonda C3 de la caracterización de claude-cli 2.1.299 (decisiones §87, punto 2; procedimiento de §56, punto 7), derivada por
++sustituciones exactas (adapt_c3.py) de la sonda C3 del kit de A-2. Original: sonda acotada C3 de claude-cli, vía (a) para cerrar la desviación D-01
+ del README. Quien prepara el kit NO la ejecuta: la ejecuta la sesión principal, una vez, antes de launch.py, y solo si elige la vía (a).
+ 
+ Mide la plantilla EXACTA que lanzará launch.py (transport_gate.template_of(closure.json Transport): flags de C1 + --add-dir <dir> +
+@@ -29,15 +30,16 @@
+ import secrets
+ import subprocess
+ import sys
++import time
+ import uuid
+ 
+ KIT = os.path.dirname(os.path.abspath(__file__))
+ _spec = importlib.util.spec_from_file_location("transport_gate", os.path.join(KIT, "transport_gate.py"))
+ TG = importlib.util.module_from_spec(_spec)
+ _spec.loader.exec_module(TG)
+-PROBE_CWD = r"D:\r62-cli-char"
+-REVIEW_CLONE = r"D:\r62-arch-a2r"
+-PROBE_ROOT = r"D:\r62-c3-probe"
++PROBE_CWD = r"D:\r62-cli-char2"
++REVIEW_CLONE = r"D:\r62-arch-a6r4"
++PROBE_ROOT = r"D:\r62-c3-probe2"
+ ADD_DIR = os.path.join(PROBE_ROOT, "add")
+ OUT_DIR = os.path.join(PROBE_ROOT, "out")
+ ADD_FILE = os.path.join(ADD_DIR, "canary-add.txt")
+@@ -150,9 +152,11 @@
+ 
+ 
+ def main(char_path):
+-    closure = json.load(open(os.path.join(KIT, "closure.json"), encoding="utf-8"))
++    closure = json.load(open(os.path.join(KIT, "closure.r4kit.json"), encoding="utf-8"))   # plantilla, modelo y effort del kit de la ronda 4
+     t = closure["Transport"]
+-    template, binary = TG.template_of(t), TG.binary_of(closure)
++    template = TG.template_of(t)
++    binary = {"Path": "%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe",                    # el binario que se caracteriza
++              "Sha256": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b", "Version": "2.1.299 (Claude Code)"}
+     bin_path = TG.expand(binary["Path"])
+     char_bytes = open(char_path, "rb").read()
+     char = json.loads(char_bytes.decode("utf-8"))
+@@ -168,12 +172,13 @@
+     m = TG.measure_binary(bin_path)
+     if not (m["Exists"] and m["Sha256"] == binary["Sha256"] and m["Authenticode"] == "Valid" and m["SignerIsAnthropic"]):
+         return refuse("binario no elegible", Binary=m)
+-    ver = TG.cli_version(bin_path, KIT)
++    ver = TG.cli_version(bin_path, KIT)["Version"]   # el transport_gate de la ronda 4 devuelve un registro
+     if ver != binary["Version"]:
+         return refuse("versión distinta", Version=ver)
+     auth = TG.auth_status(bin_path, KIT)
+     if auth.get("loggedIn") is not True:
+         return refuse("auth status sin loggedIn", Auth=auth)
++    time.sleep(120)   # AuthSettle, como el lanzador: auth status puede renovar el token OAuth y chocar con el proceso de la sonda
+     sid = str(uuid.uuid4())
+     if glob.glob(os.path.join(PROJECTS, "*", sid + ".jsonl")):
+         return refuse("ya hay una transcripción con el session id")

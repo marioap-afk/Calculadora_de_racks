@@ -1,0 +1,78 @@
+{
+ "Probe": "C1",
+ "SessionId": "f6c1133a-f4d2-420d-a6b9-cc46cebfcb33",
+ "ExitCode": 1,
+ "Killed": false,
+ "ProcessGoneAfter": true,
+ "Init": {
+  "cwd": "D:\\r62-cli-char2",
+  "session_id": "f6c1133a-f4d2-420d-a6b9-cc46cebfcb33",
+  "model": "claude-opus-5-5",
+  "permissionMode": "dontAsk",
+  "tools": [
+   "Glob",
+   "Grep",
+   "Read",
+   "StructuredOutput"
+  ],
+  "mcp_servers": [],
+  "claude_code_version": "2.1.299",
+  "apiKeySource": "none",
+  "output_style": "default"
+ },
+ "InitSessionIdMatches": true,
+ "Result": {
+  "subtype": "success",
+  "is_error": true,
+  "terminal_reason": "api_error",
+  "num_turns": 1,
+  "session_id_matches": true,
+  "modelUsage": [],
+  "structured_output_present": false,
+  "structured_output": null,
+  "permission_denials": []
+ },
+ "ResultMessage": true,
+ "ObservedModel": [
+  "<synthetic>"
+ ],
+ "ObservedEffortPerMessage": [
+  null
+ ],
+ "PromptFidelity": true,
+ "ToolCalls": [],
+ "Transcript": {
+  "Path": "%USERPROFILE%\\.claude\\projects\\D--r62-cli-char2\\f6c1133a-f4d2-420d-a6b9-cc46cebfcb33.jsonl",
+  "Sha256": "e32a8a5e6ca519000ba0665145112eed917217817bf6cb00f6e86c9d3369396f",
+  "Entries": 15
+ },
+ "AttachmentTypes": [
+  "credential_org",
+  "date",
+  "environment",
+  "model",
+  "prompt_snapshot",
+  "session_context",
+  "total_tokens_reminder"
+ ],
+ "CloneUnchanged": true,
+ "ReadFidelity": {
+  "LinesDelivered": 0,
+  "LinesFaithful": 0,
+  "Of": 12,
+  "OnlyTheRequestedFile": true
+ },
+ "StructuredOutputCheck": {
+  "first_line_matches": false,
+  "lines_read": null,
+  "tools_available": null
+ },
+ "AutomaticContext": {
+  "ProjectMemoryDir": false,
+  "TranscriptMentions": {
+   "CLAUDE.md": 0,
+   "MEMORY.md": 0,
+   "AGENTS.md": 0
+  }
+ }
+}

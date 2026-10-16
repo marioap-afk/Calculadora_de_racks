@@ -1,0 +1,67 @@
+{
+ "Probe": "C2",
+ "SessionId": "0ee38791-7b83-46c8-ba02-745db3d5ba79",
+ "ExitCode": 1,
+ "Killed": true,
+ "ProcessGoneAfter": true,
+ "Init": {
+  "cwd": "D:\\r62-cli-char2",
+  "session_id": "0ee38791-7b83-46c8-ba02-745db3d5ba79",
+  "model": "claude-opus-5-5",
+  "permissionMode": "dontAsk",
+  "tools": [
+   "Glob",
+   "Grep",
+   "Read",
+   "StructuredOutput"
+  ],
+  "mcp_servers": [],
+  "claude_code_version": "2.1.299",
+  "apiKeySource": "none",
+  "output_style": "default"
+ },
+ "InitSessionIdMatches": true,
+ "Result": null,
+ "ResultMessage": false,
+ "ObservedModel": [
+  "claude-opus-5-5"
+ ],
+ "ObservedEffortPerMessage": [
+  "xhigh"
+ ],
+ "PromptFidelity": true,
+ "ToolCalls": [
+  {
+   "Tool": "Read",
+   "Input": {
+    "file_path": "D:\\r62-cli-char2\\docs\\initiatives\\I-62-proposal-v14.md",
+    "offset": "1",
+    "limit": "400"
+   }
+  },
+  {
+   "Tool": "Read",
+   "Input": {
+    "file_path": "D:\\r62-cli-char2\\docs\\initiatives\\I-62-proposal-v14.md",
+    "offset": "401",
+    "limit": "400"
+   }
+  }
+ ],
+ "Transcript": {
+  "Path": "%USERPROFILE%\\.claude\\projects\\D--r62-cli-char2\\0ee38791-7b83-46c8-ba02-745db3d5ba79.jsonl",
+  "Sha256": "4e09f84a38ab9c80f07b8396b4d4711204196fdaac7222245ac7526752c78056",
+  "Entries": 24
+ },
+ "AttachmentTypes": [
+  "credential_org",
+  "date",
+  "environment",
+  "model",
+  "prompt_snapshot",
+  "session_context",
+  "total_tokens_reminder"
+ ],
+ "CloneUnchanged": true,
+ "ToolCallsBeforeTermination": 2
+}

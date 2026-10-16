@@ -1,0 +1,39 @@
+{
+ "Path": "%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe",
+ "RealPath": "%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe",
+ "Sha256": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b",
+ "Size": 269231264,
+ "Sha256Expected": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b",
+ "Sha256Matches": true,
+ "Modified": "2026-10-16T14:19:42.540484+00:00",
+ "Authenticode": {
+  "Status": "Valid",
+  "Subject": "CN=\"Anthropic, PBC\", O=\"Anthropic, PBC\", L=San Francisco, S=California, C=US, SERIALNUMBER=4860621, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.2=Delaware, OID.1.3.6.1.4.1.311.60.2.1.3=US",
+  "Thumbprint": "60C2D9C51F09822FFF4F194DE9EEDB67451292D1",
+  "NotAfter": "2027-10-28T23:59:59.0000000Z",
+  "TimeStamped": true
+ },
+ "SignerIsAnthropic": true,
+ "Version": {
+  "Text": "2.1.299 (Claude Code)",
+  "ReturnCode": 0,
+  "StrictUtf8": true
+ },
+ "AuthStatus": {
+  "ReturnCode": 0,
+  "StrictUtf8": true,
+  "loggedIn": true,
+  "authMethod": "claude.ai",
+  "apiProvider": "firstParty",
+  "subscriptionType": "max",
+  "FieldsOmitted": "correo, organización y sus identificadores (no se guardan)"
+ },
+ "Clone": {
+  "Path": "D:/r62-cli-char2",
+  "Head": "e8a3de0541af0470096943f72df38333cf048f17",
+  "HeadExpected": "e8a3de0541af0470096943f72df38333cf048f17",
+  "StatusPorcelain": "",
+  "Remotes": ""
+ },
+ "Time": "2026-10-16T18:52:42.457441Z"
+}

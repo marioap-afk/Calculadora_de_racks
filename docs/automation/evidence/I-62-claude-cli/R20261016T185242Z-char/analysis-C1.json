@@ -1,0 +1,118 @@
+{
+ "Probe": "C1",
+ "SessionId": "3503d798-e6a0-4cac-b3f8-6cb557eafa1b",
+ "ExitCode": 0,
+ "Killed": false,
+ "ProcessGoneAfter": true,
+ "Init": {
+  "cwd": "D:\\r62-cli-char2",
+  "session_id": "3503d798-e6a0-4cac-b3f8-6cb557eafa1b",
+  "model": "claude-opus-5-5",
+  "permissionMode": "dontAsk",
+  "tools": [
+   "Glob",
+   "Grep",
+   "Read",
+   "StructuredOutput"
+  ],
+  "mcp_servers": [],
+  "claude_code_version": "2.1.299",
+  "apiKeySource": "none",
+  "output_style": "default"
+ },
+ "InitSessionIdMatches": true,
+ "Result": {
+  "subtype": "success",
+  "is_error": false,
+  "terminal_reason": "completed",
+  "num_turns": 3,
+  "session_id_matches": true,
+  "modelUsage": [
+   "claude-opus-5-5"
+  ],
+  "structured_output_present": true,
+  "structured_output": {
+   "first_line": "# I-62 Amendment A-1 — Identidad y presupuesto del bucle del Architect, cierre del bucle y reconciliación de la orquestación tras un rebase",
+   "lines_read": 12,
+   "declared_model": "claude-opus-5-5",
+   "tools_available": [
+    "Glob",
+    "Grep",
+    "Read",
+    "StructuredOutput"
+   ],
+   "files_read": [
+    "docs/initiatives/I-62-A-1.md"
+   ]
+  },
+  "permission_denials": []
+ },
+ "ResultMessage": true,
+ "ObservedModel": [
+  "claude-opus-5-5"
+ ],
+ "ObservedEffortPerMessage": [
+  "xhigh"
+ ],
+ "PromptFidelity": true,
+ "ToolCalls": [
+  {
+   "Tool": "Read",
+   "Input": {
+    "file_path": "D:\\r62-cli-char2\\docs\\initiatives\\I-62-A-1.md",
+    "offset": "1",
+    "limit": "12"
+   }
+  },
+  {
+   "Tool": "StructuredOutput",
+   "Input": {
+    "first_line": "# I-62 Amendment A-1 — Identidad y presupuesto del bucle del Architect, cierre del bucle y reconciliación de la orquestación tras un rebase",
+    "lines_read": "12",
+    "declared_model": "claude-opus-5-5",
+    "tools_available": "['Glob', 'Grep', 'Read', 'StructuredOutput']",
+    "files_read": "['docs/initiatives/I-62-A-1.md']"
+   }
+  }
+ ],
+ "Transcript": {
+  "Path": "%USERPROFILE%\\.claude\\projects\\D--r62-cli-char2\\3503d798-e6a0-4cac-b3f8-6cb557eafa1b.jsonl",
+  "Sha256": "20757f2151a761d4e698763d8d3dc43efa34e155ebe54959c1f5f9f15bfab830",
+  "Entries": 22
+ },
+ "AttachmentTypes": [
+  "credential_org",
+  "date",
+  "environment",
+  "model",
+  "prompt_snapshot",
+  "session_context",
+  "structured_output",
+  "total_tokens_reminder"
+ ],
+ "CloneUnchanged": true,
+ "ReadFidelity": {
+  "LinesDelivered": 12,
+  "LinesFaithful": 12,
+  "Of": 12,
+  "OnlyTheRequestedFile": true
+ },
+ "StructuredOutputCheck": {
+  "first_line_matches": true,
+  "lines_read": 12,
+  "tools_available": [
+   "Glob",
+   "Grep",
+   "Read",
+   "StructuredOutput"
+  ]
+ },
+ "AutomaticContext": {
+  "ProjectMemoryDir": false,
+  "TranscriptMentions": {
+   "CLAUDE.md": 0,
+   "MEMORY.md": 0,
+   "AGENTS.md": 0
+  }
+ }
+}
