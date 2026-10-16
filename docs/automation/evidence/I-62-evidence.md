@@ -4462,3 +4462,12 @@ solo desde artefactos custodiados.
   C1 y C2 se repitieron una vez tras más de 3 minutos.
 - Registro (SHA-256 `4ba6ba586440ce5c…`): ARCHITECT y REVIEWER ELIGIBLE, `STALE` = false, equivalencia con los requisitos vigentes demostrada;
   los predicados de la compuerta de transporte del kit lo aceptan. CLAUDE-CLI-I62 sin cambio. Ninguna revisión formal ejecutada.
+
+## 175. Decisiones §88: validación incremental del kit de A-6 ronda 4
+
+- La recuperación del transporte (decisiones §87, opción A: clon, prompt, orden y alcance del cierre sin cambio; solo las referencias de transporte)
+  pasa a validación incremental: matriz de componentes con su SHA-256 anterior y nuevo, dependencias y controles, reutilización justificada de los
+  resultados de los componentes idénticos (incluida la mutación) y pruebas dirigidas a los modificados. Los controles de lanzamiento (identidad del
+  binario, manifiesto, autorizaciones, comprobación previa de registro, prueba en seco, auditoría) no se reducen.
+- Efecto mecánico de esta sección: la compuerta 11 del kit bloquea si hay una sección de decisiones posterior a la autorización fijada. Esta
+  sección sigue a §87 y no lleva el blob de A-6 ni autoriza el lanzamiento, así que `pin_authorization.py` no puede fijarla.
