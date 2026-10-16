@@ -1969,3 +1969,10 @@ Custodia:
 - Capturas: 30 archivos en `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/captures/` (resumen SHA-256 de nombre+hash `8524D0C35200750A5FBC899D330E68E95269DC864F900F7340F917BEADAB0001`).
 - Paquete después: `manifest.json` `19FBA962…`, `rackcad-ram-build.py` `D9B41AAB…`, `structural-loads.json` `25F48E7F…` (sin cambios) + `ram-readback.json` `E622F429…`.
 - Codex 50 de 52; `attempts` 7 de 9.
+
+## 78. Preparación del Candidato de hito de F4 (2026-10-16T22:39:32Z)
+
+- Orden: «P2 Acceptance / F4 Final Candidate Preparation» (decisiones §74). Ejecutor: Coordinator; solo lectura de la rama, de `origin`, del host y de la instalación de RAM; ensayo de `inject` en el scratchpad de la sesión (los cuatro tipos con código 0 y el origen `pkg-01` intacto; no vale para la OV); un subagente Explore de solo lectura compiló el estado de los hallazgos; sin AutoCAD, RAM ni Codex.
+- Custodia (SHA-256): `docs/automation/decisions/I-65-owner-disposition-p2-acceptance-candidate-prep.original.txt` `F0AC3F03D63D54334DE10DB78A4EE7F8C855CE25E53E600895069CD6D4CBA5FC`; `docs/initiatives/I-65-f4-final-candidate-preparation.md` `76F0FA6E4B4123915DBDD69A2E1B9172C78EB9A963B3C10C700538FD6951D048`.
+- La evidencia local y de CI del SHA propuesto (este commit) se registra en §79, después de crearlo y con el árbol limpio.
+- Codex 50 de 52; `attempts` 7 de 9.

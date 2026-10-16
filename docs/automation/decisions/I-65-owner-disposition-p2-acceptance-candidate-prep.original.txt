@@ -1,0 +1,87 @@
+I-65 — OWNER DISPOSITION
+P2 Acceptance / F4 Final Candidate Preparation
+He revisado el informe de P2 publicado en `d6746d2b`, con CI 4/4 satisfactorio.
+1. Aceptación de P2
+P2 = ACCEPTED / EXPERIMENTAL TRANSFER EQUIVALENCE PASS.
+Acepto los resultados:
+
+* Construcción automática en RAM Elements con READBACK OK.
+* Lectura de vuelta con cero diferencias.
+* Volcado independiente del modelo generado.
+* Modelo manual conforme a REF-CANT-01.
+* Comparador PASS, código 0.
+* Cero combinaciones verificadas.
+* Peso propio excluido.
+* Integridad de los tres archivos originales.
+
+La aceptación corresponde exclusivamente a la equivalencia de transferencia demostrada, no a validación de resistencia o diseño estructural.
+2. Incidencias
+Acepto el incidente de pegado accidental como una corrección de entrada recuperada antes del volcado. No consume la corrección controlada de P2.
+Acepto el uso de ft/kip en la interfaz del modelo manual, dado que las conversiones y el volcado se verificaron contra la especificación en lb-in.
+Conserva ambas incidencias y sus evidencias.
+No las elimines de la custodia histórica.
+3. Sistema piloto
+Q-O1 = APPROVED.
+La primera versión permanece limitada a una estación Cantilever de una sola cara conforme al Freeze.
+Q-O7 = APPROVED.
+Confirmo REF-CANT-01 como referencia estructural de transferencia de V1.
+No amplíes el alcance a Selectivo, mezzanines ni otros sistemas.
+4. DIF-04
+Acepto para el piloto la compatibilidad demostrada entre las propiedades de las secciones instaladas en RAM y la AISC Shapes Database v16.0.
+La edición formal del catálogo de RAM permanece UNKNOWN y debe figurar como limitación documentada.
+No declares que Bentley identifica formalmente su catálogo como v16.0 sin evidencia adicional.
+5. Preparación del Candidato
+F4 FINAL CANDIDATE PREPARATION = AUTHORIZED.
+Autorizo exclusivamente:
+
+1. Preflight actualizado de rama, Freeze, ADR y conflictos.
+2. Revisión de la custodia de P2.
+3. Identificación del SHA exacto del Candidato.
+4. Core Full y pruebas correspondientes.
+5. Verificación de CI del mismo SHA.
+6. Compilación determinista del DLL, si el procedimiento del Candidato lo exige.
+7. Identificación de paquetes y modelos desechables para OV-I65-01 y OV-I65-03..07.
+8. Preparación de las pruebas de inyección de fallo.
+9. Revisión de las condiciones de validación final.
+10. Presentación del plan de ejecución con presupuesto y condiciones de parada.
+
+No declares todavía formalmente el Candidato si LIFECYCLE requiere una autorización separada.
+6. Modelo manual final
+Prepara una estrategia para conservar un modelo manual de referencia en una ubicación controlada, evitando tener que teclear nuevamente todos los valores.
+Esta autorización solo permite planificar esa estrategia.
+No guardes todavía archivos RAM ni reutilices un modelo no verificado.
+El modelo debe ser atribuible a la especificación congelada y a una versión exacta de RAM.
+7. Pruebas finales
+Prepara OV-I65-01 y OV-I65-03..07.
+Para los escenarios negativos utiliza paquetes y modelos desechables independientes.
+No sobrescribas el paquete validado de P2 ni reutilices su readback.
+Mantén CMB-3, DIF-01 informativa y todas las tolerancias existentes.
+8. Límites
+No abrir AutoCAD.
+No ejecutar RAM Elements.
+No realizar NETLOAD.
+No modificar código de producto.
+No cambiar secciones, materiales ni tolerancias.
+No iniciar F5, F6 o F7.
+No declarar GATE PASS de F4.
+No consumir nuevas invocaciones Codex sin autorización.
+9. Entregable
+Presenta:
+
+1. Resultado de preflight.
+2. SHA propuesto para Candidato.
+3. Pruebas y CI.
+4. Estado de los riesgos y hallazgos del Architect.
+5. Estrategia del modelo manual.
+6. Matriz de OV-I65-01 y OV-I65-03..07.
+7. Paquetes y archivos que deben generarse.
+8. Presupuesto de ejecución y correcciones.
+9. Ventanas de host necesarias.
+10. Recomendación GO / NO-GO para declarar el Candidato y ejecutar la validación final.
+
+P2 = ACCEPTED.
+Q-O1 / Q-O7 = APPROVED.
+F4 CANDIDATE PREPARATION = AUTHORIZED.
+FINAL VALIDATION EXECUTION = NO.
+F4 GATE PASS = NO.
+Prepara el cierre técnico de F4 y detente antes de cualquier nueva ejecución real.
