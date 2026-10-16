@@ -4423,3 +4423,22 @@ solo desde artefactos custodiados.
   admitido es el de las tres constantes de fijación.
 - Preflight completo (incluidos los recursos de I-64 y el estado del checkout principal tras el incidente de la evidencia §169) y una sola
   invocación con `python -B kit/launch.py`, tope de 3 600 s, sin reintento. El auditor congelado se ejecuta y su resultado se conserva sin cambios.
+
+## 172. Kit de la revisión de A-6 ronda 4 con §86 fijada, vuelto a congelar y custodiado; preflight con STOP por el binario de claude-cli (decisiones §86, puntos 2, 3 y 5)
+
+- **Fijación** con `kit/pin_authorization.py` sobre el texto registrado de decisiones en `f6417765`: §86, encabezado byte a byte y SHA-256 del
+  texto `f85aa811f237b084e222650d2e7e8e88d665d30e5d5931cab57dcd3107a56b76` ([`pin-authorization.json`](I-62-architect-A-6r4/R20261014T180556Z-5e02/preflight-s86/pin-authorization.json)).
+  En `kit/` solo cambian las tres constantes de `owner_gate.py` (diff de tres líneas, `owner_gate.pin.diff`) y el manifiesto: `6c8807be…` →
+  `cf71191e4eda6205…`, con `AuthorizationState` FIJADA; ningún otro archivo del kit cambia.
+- **Preflight** ([`preflight-s86/`](I-62-architect-A-6r4/R20261014T180556Z-5e02/preflight-s86/)): autoprueba completa con la autorización fijada 297/297;
+  `verify_clone` (desde una copia del kit, para no tocar el congelado) con AllChecks, incluidas las guardas de la ronda 4 reproducidas iguales a las
+  custodiadas; `--record-probe` con código 0; A-6 en la HEAD = `4bc919dd`; en la compuerta 11, §86 reconocida (encabezado, blob y SHA-256 del
+  texto), CLAUDE-CLI-I62 = A y la línea del Owner de §78 vigentes, decisiones solo por añadido desde el clon.
+- **STOP (decisiones §86, punto 5): la prueba en seco no sale limpia.** `BlockingChecks` = [`3-Binary`, `11-OwnerAndAuthorizationGate`]: el
+  binario fijado de `claude-cli` 2.1.293 (`%APPDATA%/Claude/claude-code/2.1.293/83cb0bd7fed4/claude.exe`, SHA-256 `8693c4a0…`) ya no existe;
+  la app de escritorio se actualizó el 2026-10-16 a las 08:19 (hora local) a 2.1.299 y solo quedan 2.1.295 (`a3001274…`) y 2.1.299
+  (`295b49ec…`). La compuerta 11 falla solo por esa causa («la autorización de revisión no cubre otro binario»). La celda elegible de `claude-cli`
+  se acreditó con la caracterización de 2.1.293 (decisiones L1114 y L1476), así que ninguna revisión se lanzó y el kit no se modifica más.
+- **Host** (`host-checks.json`): I-64 sin actividad observable (worktree limpio en `09f2f1c3`, sin AutoCAD, dotnet, MSBuild ni testhost); el
+  checkout principal sin alteración tras el incidente de la evidencia §169 (limpio, HEAD `95690c28` con el último movimiento del reflog el
+  2026-09-30, `origin/main` local y remoto `bb0d5522`).

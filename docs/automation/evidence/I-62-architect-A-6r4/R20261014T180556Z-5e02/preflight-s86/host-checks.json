@@ -1,0 +1,46 @@
+{
+ "Schema": "a6r4-host-checks/1",
+ "UtcTime": "2026-10-16T14:50Z",
+ "MainCheckout": {
+  "Path": "D:/Documentos/Codex/Calculadora de racks",
+  "Branch": "main",
+  "Status": "clean (only \"## main...origin/main [behind 90]\")",
+  "Head": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+  "LastReflogEntryMain": "2026-09-30 09:55:56 -0600 (merge I-60)",
+  "OriginMainLocal": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "OriginMainRemote": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "Stash": [],
+  "Conclusion": "sin alteración tras el incidente de la evidencia §169 (el push de main fue rechazado); ningún cambio correctivo hecho"
+ },
+ "I64": {
+  "Worktree": "architecture-workspace-persistente-rackcad",
+  "Head": "09f2f1c3 (2026-10-13)",
+  "Status": "clean",
+  "RecentFiles3h": 0,
+  "Processes": "sin acad.exe, accoreconsole.exe, dotnet.exe, testhost.exe, MSBuild.exe ni VBCSCompiler.exe",
+  "Other": "la app de escritorio de Codex abierta (2 codex.exe desde 2026-10-16 08:14 local); esta revisión no la usa",
+  "Conclusion": "I-64 sin actividad observable sobre recursos críticos"
+ },
+ "Load": {
+  "FreeRamGB": 23.9,
+  "TotalRamGB": 47.7,
+  "CpuPercent": 54
+ },
+ "ClaudeCli": {
+  "Pinned": "2.1.293 %APPDATA%/Claude/claude-code/2.1.293/83cb0bd7fed4/claude.exe sha256 8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa: AUSENTE",
+  "Installed": [
+   {
+    "Version": "2.1.295",
+    "Dir": "d2e29494ec83",
+    "Sha256": "a30012741c3d0b55e2a6c252dab3781134b75be95896ae89d40a93e10f83bcd6",
+    "Modified": "2026-10-09T16:38:01 local"
+   },
+   {
+    "Version": "2.1.299",
+    "Dir": "f0584be0fbaf",
+    "Sha256": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b",
+    "Modified": "2026-10-16T08:19:42 local"
+   }
+  ]
+ }
+}

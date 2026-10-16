@@ -19,16 +19,16 @@
  "TransportGate": "MEASURED (D-01; launch.py solo lanza en MEASURED o ACCEPTED)",
  "OwnerAndAuthorizationGate": "11-OwnerAndAuthorizationGate (owner_gate.py): launch.py solo lanza con la línea del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) después de §78, CLAUDE-CLI-I62 = A vigente, A-6 en la HEAD con el blob 4bc919dd y la disposición del Coordinator posterior a §85 fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin ninguna sección posterior; se evalúa en el momento del lanzamiento",
  "AuthorizationPins": {
-  "Section": null,
-  "Heading": null,
-  "TextSha256": null
+  "Section": 86,
+  "Heading": "## 86. Disposición del Coordinator: A-6 ronda 4, revisión formal final acotada del Architect (2026-10-16 UTC)",
+  "TextSha256": "f85aa811f237b084e222650d2e7e8e88d665d30e5d5931cab57dcd3107a56b76"
  },
- "AuthorizationState": "PENDIENTE: owner_gate.py entrega AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None; la compuerta 11 bloquea hasta fijar una disposición del Coordinator posterior a §85 (pin_authorization.py) y volver a congelar el kit",
+ "AuthorizationState": "FIJADA: decisiones §86 (encabezado y SHA-256 del texto en AuthorizationPins)",
  "OwnerGateTested": {
   "SelftestSha256": "d442608a77b78d96546c042cc396cb1b553c69673a5368aa526953f63060b049",
   "MutationSha256": "d442608a77b78d96546c042cc396cb1b553c69673a5368aa526953f63060b049",
-  "CurrentSha256": "d442608a77b78d96546c042cc396cb1b553c69673a5368aa526953f63060b049",
-  "ChangedSinceSelftestOrMutation": false
+  "CurrentSha256": "b8efee09df1f700fc72e274edd005340322addd58967cc34534c75d2b2231ac0",
+  "ChangedSinceSelftestOrMutation": true
  },
  "LaunchCommand": "python -B kit/launch.py",
  "Launch": "python -B kit/launch.py desde la carpeta que contiene kit/, por la sesión principal, una sola vez, sin flags ni variables añadidos (NO lanzado)",
@@ -82,8 +82,8 @@
    "Sha256": "d74e2aa1ce5eacc7dd6323cf3f3acec37fd6eb25f905ca4f2479dbca0cde5232"
   },
   "owner_gate.py": {
-   "Bytes": 17040,
-   "Sha256": "d442608a77b78d96546c042cc396cb1b553c69673a5368aa526953f63060b049"
+   "Bytes": 17094,
+   "Sha256": "b8efee09df1f700fc72e274edd005340322addd58967cc34534c75d2b2231ac0"
   },
   "pin_authorization.py": {
    "Bytes": 5588,

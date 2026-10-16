@@ -1,0 +1,31 @@
+{
+ "Values": {
+  "AUTH_SECTION": 86,
+  "AUTH_HEADING": "## 86. Disposición del Coordinator: A-6 ronda 4, revisión formal final acotada del Architect (2026-10-16 UTC)",
+  "AUTH_TEXT_SHA": "f85aa811f237b084e222650d2e7e8e88d665d30e5d5931cab57dcd3107a56b76"
+ },
+ "Checks": {
+  "AfterBaseSection": true,
+  "BaseSection": 85,
+  "SectionsWithThatNumber": 1,
+  "SectionLine": 1700,
+  "HasBlobToken": true,
+  "Blob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+  "RecomputedByGateFunctions": true,
+  "LaterSections": [],
+  "TextLines": 16
+ },
+ "Ready": true,
+ "PythonLines": [
+  "AUTH_SECTION = 86   # decisiones §86: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)",
+  "AUTH_HEADING = \"## 86. Disposición del Coordinator: A-6 ronda 4, revisión formal final acotada del Architect (2026-10-16 UTC)\"",
+  "AUTH_TEXT_SHA = \"f85aa811f237b084e222650d2e7e8e88d665d30e5d5931cab57dcd3107a56b76\"   # SHA-256 del texto de §86 (pin_authorization.py)"
+ ],
+ "FileSha256": "e31f6be6a786d1b78e42c21d2a48faba796c8c2848054d5ca6fa7c2f221fa871",
+ "CurrentPins": {
+  "Section": null,
+  "Heading": null,
+  "TextSha256": null
+ },
+ "Next": "sustituir en kit/owner_gate.py solo las tres líneas AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA por PythonLines; python -B kit/make_manifest.py; y, con la orden congelada desde la carpeta que contiene kit/, --record-probe y --dry-run (compuerta 11 en Ok, AuthorizationSections = esta sección, LaterSections = [])"
+}
