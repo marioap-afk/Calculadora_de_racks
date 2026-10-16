@@ -46,7 +46,7 @@ Dato de hecho, que no es la confirmación: I-64 no tiene ninguna sesión de Auto
 
 | Parte | Estado |
 |---|---|
-| I-52 (ACK + RELEASE) | **pendiente**: sin respuesta al registrar |
+| I-52 (ACK + RELEASE) | **pendiente**: solo acuse de recibo con datos (§6); elevado a su Coordinator, Owner o CAD manager |
 | I-64 (confirmación expresa) | **pendiente**: solo acuse de recibo; elevado a su Coordinator |
 | Owner (autorización de ejecución) | **pendiente**: AUTOCAD EXECUTION = NOT AUTHORIZED |
 
@@ -63,3 +63,13 @@ Dato de hecho, que no es la confirmación: I-64 no tiene ninguna sesión de Auto
 | Variables con `RackCad` | 0 de usuario, 0 de máquina |
 
 Se vuelven a leer en la BASELINE de la ventana; no se presumen vigentes.
+
+## 6. Respuesta de «I - 52» (recibida ~2026-10-16T19:05Z; acuse de recibo con datos, NO es ACK ni RELEASE)
+
+```text
+I-52 → I-65: recibida la solicitud del segundo smoke. NO es ACK ni RELEASE: (a) ventana/orden, (d) «Load Once» del DLL fa334b14…aedb, (e) aceptación del método y (f) la confirmación expresa de ausencia de conflicto son decisiones del Coordinator / Owner / CAD manager de I-52; las elevo y te enviaré su texto literal. No abras AutoCAD hasta recibirlo.
+Solo datos (leídos 2026-10-16T19:00Z): (b) acad.exe=0; R25.0.171.0.0 sha256 2a75996fd2a5c5ee0376fd5ba7cced227a098193ff495e8ceeda3a96fe326422; perfil «<<Unnamed Profile>>»; TRUSTEDPATHS 19 entradas sha256 a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498; SECURELOAD=1 (no es referencia declarada de I-52). Se re-leen antes de la ventana. (c) Rutas de ACL de I-52: D:\I52-CT21D-HOST, \evidence, \evidence\HGP-H1-20261001T225354Z-01, \canonical-642ba392\declared-set (más el hijo H10 si el CAD manager lo crea). (f) Hechos, no confirmación: ninguna sesión de AutoCAD de I-52 activa; P2 H10 sigue sin autorización ni ventana, hijo H10 inexistente. Mi posición técnica sobre carga: la de siempre (sin «Always Load», sin TRUSTEDPATHS/SECURELOAD/perfil/registro; si exige cambio persistente, STOP).
+```
+
+Lectura de I-65: los valores (b) coinciden con las referencias frescas de §5; las rutas (c) son las mismas que B-08 ya sigue. Faltan
+(a), (d), (e) y (f) como decisión expresa: **sin RELEASE**.

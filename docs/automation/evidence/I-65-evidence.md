@@ -1856,3 +1856,4 @@ Custodia:
 | `docs/automation/evidence/I-65-f4/host-coordination-smoke2-2026-10-16.md` | `42DA307C052AE83F97689BA8179BC3391C4A6AC53CC0F81C3A46566DA768E56B` |
 
 - Codex 50 de 52; `attempts` 7 de 9.
+- Respuesta de I-52 custodiada literalmente (custodia §6; SHA-256 del archivo `3C2ED03B1B5942D65BA1D970ECD34795050523025ED05A0009C5FA65B2D25EF4`): acuse de recibo con datos; sin RELEASE.
