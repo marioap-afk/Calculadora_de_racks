@@ -1,0 +1,135 @@
+I-65 — OWNER AUTHORIZATION
+P2 — First Real RAM Elements Transfer and Equivalence Test
+He revisado la preparación de P2 publicada en `b981ea1e`, con CI 4/4 satisfactorio.
+1. Decisión del Owner
+RAM EXECUTION = AUTHORIZED FOR P2 ONLY.
+Autorizo una primera corrida controlada de transferencia RackCad → RAM Elements, seguida de la lectura de vuelta y comparación con REF-CANT-01 manual.
+Esta es una validación experimental previa al Candidato de hito.
+No autoriza GATE PASS de F4 ni sustituye las validaciones que deban repetirse sobre el Candidato final.
+2. Paquete autorizado
+Utiliza exclusivamente el paquete existente:
+`D:\r65-smoke\51fc82f1\run-R20261016T1918Z\pkg-01`
+Con los tres archivos y SHA-256 ya custodiados.
+No regeneres, reubiques, sobrescribas ni modifiques esos archivos.
+Autorizo la creación exclusiva de:
+`ram-readback.json`
+en la carpeta del paquete, siempre que no exista previamente.
+Si ya existe o alguno de los hashes originales cambió, STOP.
+3. Entorno RAM
+Utiliza:
+
+* RAM Elements 26.00.01.15, con el SHA-256 verificado de P1 y M-05c.
+* API `ramelements` 0.1.0, con la identidad registrada.
+* Computer Use mediante los permisos normales de la aplicación.
+
+Antes de abrir:
+
+1. Confirma que RAM está cerrado.
+2. Confirma que nadie está utilizando el equipo.
+3. Comprueba las identidades y los hashes.
+4. Realiza copia de seguridad del Config.ini.
+5. Prepara carpetas nuevas para las evidencias y volcados.
+6. Comunica la ventana a I-52 e I-64.
+7. Comprueba que no coincide con una captura BASELINE/POST de I-64.
+
+No utilices Computer Use para eludir controles o permisos.
+4. Modelo generado
+Autorizo:
+
+1. Abrir RAM Elements con un modelo nuevo y vacío.
+2. Ejecutar una sola vez `rackcad-ram-build.py` desde Python Console.
+3. Confirmar READBACK OK y la huella de entrada prevista.
+4. Inspeccionar visualmente el modelo.
+5. Ejecutar el volcado independiente en la misma sesión.
+6. Descartar el modelo sin guardar.
+
+No ejecutar análisis ni diseño estructural.
+Si la construcción falla o deja un modelo parcial, descartarlo y detener P2. No reintentar con el mismo paquete ni generar otro.
+5. Modelo manual REF-CANT-01
+OPERATOR = CLAUDE WITH COMPUTER USE.
+Autorizo construir el modelo manual mediante la interfaz de RAM Elements, utilizando exclusivamente la especificación previamente congelada de REF-CANT-01.
+No copies valores del modelo generado ni utilices sus volcados para definir el modelo manual.
+Aplica:
+
+* Nudos y coordenadas de referencia.
+* Miembros con sentido I → J.
+* Secciones y materiales acordados.
+* Giros de columnas θ = −90°.
+* Apoyos y liberaciones definidos.
+* Cargas P1–P3.
+* Peso propio excluido.
+* Cero combinaciones, conforme a CMB-3.
+
+Autorizo hasta una corrección controlada del modelo manual si se detecta un error de entrada identificable antes de la comparación definitiva.
+Documenta cualquier corrección.
+Después del volcado manual, descarta el modelo sin guardar.
+6. Equivalencia
+Congela la herramienta de comparación derivada de `ad595b42`.
+Realiza las verificaciones en cuatro niveles separados:
+
+1. Construcción correcta dentro de RAM.
+2. Lectura de vuelta completa.
+3. Comparación contra el modelo manual.
+4. Registro de limitaciones y supuestos de ingeniería.
+
+La comparación debe cubrir geometría, conectividad, orientación, perfiles, materiales, apoyos, liberaciones y cargas.
+OD-F4-14 = CMB-3 permanece vigente: combinaciones verificadas como cero en ambos modelos.
+DIF-01 permanece informativa, exclusivamente sin peso propio.
+Un resultado INCOMPLETE, FAIL o REJECTED no puede convertirse automáticamente en PASS.
+7. Evidencia y cierre
+Conserva:
+
+* Capturas de RAM.
+* Identidades de versiones.
+* SHA-256 del paquete antes y después.
+* Lectura de vuelta generada.
+* Dos volcados.
+* Informe del comparador.
+* Cambios de Config.ini.
+* Estado de checkouts.
+* Incidencias y correcciones manuales.
+
+Puedes conservar los cambios normales de interfaz en Config.ini. No modifiques su configuración deliberadamente ni restaures la copia previa sin autorización.
+8. Restricciones
+No ejecutar AutoCAD ni NETLOAD.
+No guardar modelos RAM.
+No modificar código de RackCad ni la tabla de materiales.
+No ejecutar análisis estructural automático.
+No cambiar el Freeze.
+No iniciar F5, F6 ni F7.
+No declarar Candidato ni GATE PASS de F4.
+No consumir Codex.
+9. Condiciones de parada
+STOP ante:
+
+* Cambios de hash.
+* Archivo readback existente.
+* Modelo RAM no vacío al comenzar.
+* Error de construcción o lectura.
+* Diferencias de API o versión.
+* Comportamientos de seguridad inesperados.
+* Escrituras fuera del destino autorizado.
+* Conflictos de host.
+* Resultado incompleto o diferencias materiales no explicadas.
+
+10. Entregable
+Presenta:
+
+1. Resultado de la construcción automática.
+2. Resultado del readback.
+3. Resultado del volcado independiente.
+4. Resultado de la construcción manual.
+5. Matriz de equivalencia.
+6. Resultado del comparador.
+7. Incidencias y correcciones.
+8. Hashes y evidencias.
+9. Limitaciones de ingeniería.
+10. Recomendación para el Candidato de hito y la validación final de F4.
+
+P2 RAM EXECUTION = APPROVED.
+ONE AUTOMATIC BUILD = AUTHORIZED.
+ONE MANUAL REFERENCE BUILD = AUTHORIZED.
+ONE CONTROLLED MANUAL CORRECTION = AUTHORIZED IF NEEDED.
+STRUCTURAL ANALYSIS = NO.
+F4 GATE PASS = NO.
+Procede dentro del alcance indicado y detente al entregar los resultados.
