@@ -41,17 +41,19 @@ namespace RackCad.Tests
         // ---------------------------------------------------------------- the table as it is delivered
 
         [Fact]
-        public void ConLaTablaDelProductoTalComoSeEntregaElResultadoEsUnsupportedYSinContenido()
+        public void ConLaTablaDelProductoTalComoSeEntregaElResultadoEsValidoConContenidoEnMemoria()
         {
             var shipped = RamSectionMapReader.Read(F.DataFileText());
-            var fixtureTable = F.RefTable();
-            var model = F.ValidRefModel(fixtureTable);
+            var shippedTable = shipped.Table;
+            var model = F.ValidRefModel(shippedTable);
 
             Assert.Equal(StructuralExportOutcome.Valid, shipped.Outcome);
 
             var result = RamBuildPackageFactory.CreateRamBuildPackage(model, I.Options(shipped.Table));
 
-            AssertRefused(result, StructuralExportOutcome.Unsupported, K.SectionRowUnverified);
+            Assert.Equal(StructuralExportOutcome.Valid, result.Outcome);
+            Assert.NotNull(result.Package);
+            Assert.DoesNotContain(result.Diagnostics, d => d.IsBlocking);
         }
 
         [Fact]
@@ -304,7 +306,7 @@ namespace RackCad.Tests
         [Fact]
         public void LaPrecedenciaEsLaDeCdI65F104InvalidGanaAUnsupported()
         {
-            var shipped = RamSectionMapReader.Read(F.DataFileText()).Table;
+            var shipped = F.Table(F.Document(F.ColumnRow(), ProposedArmRow()));
             var model = F.ValidRefModel(F.RefTable());
 
             var result = RamBuildPackageFactory.CreateRamBuildPackage(model, I.Options(shipped, folder: "relative"));

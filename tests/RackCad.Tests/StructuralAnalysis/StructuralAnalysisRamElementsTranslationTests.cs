@@ -444,10 +444,19 @@ namespace RackCad.Tests
             Assert.Contains(result.Diagnostics, d => d.Code == K.ModelNotValid && d.IsBlocking);
         }
 
+        private static System.Text.Json.Nodes.JsonObject ProposedArmRow()
+        {
+            var row = F.ArmRow();
+            row["status"] = "proposed";
+            row["verifiedBy"] = null;
+            row["verifiedOn"] = null;
+            return row;
+        }
+
         [Fact]
         public void UnResultadoQueNoEsValidoSePropagaConSuResultadoYSinPlan()
         {
-            var table = F.Read(F.DataFileText()).Table;
+            var table = F.Table(F.Document(F.ColumnRow(), ProposedArmRow()));
             var built = F.BuildRef(table);
             Assert.Equal(StructuralExportOutcome.Unsupported, built.Outcome);
 

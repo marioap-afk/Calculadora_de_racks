@@ -20,7 +20,7 @@ namespace RackCad.Tests
         // ---------------------------------------------------------------- the data file the product ships
 
         [Fact]
-        public void ElArchivoDeDatosEsValidoYTieneExactamenteLasDosFilasProposedDeRefCant01()
+        public void ElArchivoDeDatosEsValidoYTieneExactamenteLasDosFilasVerifiedDeRefCant01()
         {
             var result = F.Read(F.DataFileText());
 
@@ -29,8 +29,8 @@ namespace RackCad.Tests
             Assert.Equal(
                 new[] { "AISC-HSS-RECT-HSS4X4X_250", "AISC-W-W12X26" },
                 result.Table.Rows.Select(r => r.SectionId.Value).ToArray());
-            Assert.All(result.Table.Rows, row => Assert.Equal(RamSectionMapStatus.Proposed, row.Status));
-            Assert.All(result.Table.Rows, row => Assert.False(row.IsVerified));
+            Assert.All(result.Table.Rows, row => Assert.Equal(RamSectionMapStatus.Verified, row.Status));
+            Assert.All(result.Table.Rows, row => Assert.True(row.IsVerified));
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void ElArchivoDeDatosNoTrajoValoresDeIngenieriaNiVerificacion()
+        public void ElArchivoDeDatosTraeLosValoresDeIngenieriaYLaVerificacionAprobados()
         {
             var table = F.Read(F.DataFileText()).Table;
 
@@ -60,30 +60,32 @@ namespace RackCad.Tests
 
             foreach (var row in table.Rows)
             {
-                Assert.Null(row.RamSectionTable);
-                Assert.Null(row.RamSectionCountry);
-                Assert.Null(row.VerifiedBy);
-                Assert.Null(row.VerifiedOn);
-                Assert.Null(row.ExpectedMaterial.ElasticModulus);
-                Assert.Null(row.ExpectedMaterial.PoissonRatio);
+                Assert.Equal("United States", row.RamSectionCountry);
+                Assert.Equal(row.SectionId.Value == "AISC-W-W12X26" ? "W" : "HSS_SQR", row.RamSectionTable);
+                Assert.Equal("Mario Pérez — Owner / Engineering Validator", row.VerifiedBy);
+                Assert.Equal("2026-10-16", row.VerifiedOn);
+                Assert.NotNull(row.ExpectedMaterial.ElasticModulus);
+                Assert.Equal(29000d, row.ExpectedMaterial.ElasticModulus.Value);
+                Assert.Equal(0.3, row.ExpectedMaterial.PoissonRatio);
                 Assert.Null(row.ExpectedMaterial.ShearModulus);
-                Assert.Null(row.ExpectedMaterial.UnitWeight);
-                Assert.Null(row.ExpectedMaterial.Source);
+                Assert.NotNull(row.ExpectedMaterial.UnitWeight);
+                Assert.Equal(490d, row.ExpectedMaterial.UnitWeight.Value);
+                Assert.False(string.IsNullOrWhiteSpace(row.ExpectedMaterial.Source));
             }
         }
 
         [Fact]
-        public void ConLaTablaTalComoSeEntregaTodaExportacionEsUnsupportedYNoSeAsignaNingunMaterial()
+        public void ConLaTablaTalComoSeEntregaLaExportacionDeRefCant01EsValidaYNoHayFilasSinVerificar()
         {
             var table = F.Read(F.DataFileText()).Table;
             Assert.NotNull(table);
 
             var result = F.BuildRef(table);
 
-            Assert.Equal(StructuralExportOutcome.Unsupported, result.Outcome);
-            Assert.Null(result.Model);
+            Assert.Equal(StructuralExportOutcome.Valid, result.Outcome);
+            Assert.NotNull(result.Model);
             Assert.Equal(
-                2,
+                0,
                 result.Diagnostics.Count(d => d.Code == StructuralDiagnosticCodes.MaterialRowUnverified));
         }
 

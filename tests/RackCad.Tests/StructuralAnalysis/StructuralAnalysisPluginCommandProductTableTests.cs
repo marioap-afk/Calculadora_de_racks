@@ -14,7 +14,7 @@ namespace RackCad.Tests
     /// <summary>
     /// I-65 F4-T5 — what the command of D-13 answers with the table of the product exactly as it ships, observed with the very
     /// pieces the command composes (the reader of the table, the entry of the station and the package factory), without the
-    /// Plugin: while every row is proposed, the model is Unsupported and no package exists, so nothing is ever published.
+    /// Plugin: with every row verified (F4-D), the model is Valid and the factory gives a package in memory; nothing is published.
     /// </summary>
     public class StructuralAnalysisPluginCommandProductTableTests
     {
@@ -29,43 +29,43 @@ namespace RackCad.Tests
             new RackProjectStore().Deserialize(Encoding.UTF8.GetString(bytes))?.CantileverLineDesign;
 
         [Fact]
-        public void LaTablaDeProductoSeLeeYTodasSusFilasSiguenProposed()
+        public void LaTablaDeProductoSeLeeYTodasSusFilasEstanVerified()
         {
             var read = ReadProductTable();
 
             Assert.Equal(StructuralExportOutcome.Valid, read.Outcome);
             Assert.NotNull(read.Table);
             Assert.NotEmpty(read.Table.Rows);
-            Assert.All(read.Table.Rows, row => Assert.Equal(RamSectionMapStatus.Proposed, row.Status));
+            Assert.All(read.Table.Rows, row => Assert.Equal(RamSectionMapStatus.Verified, row.Status));
         }
 
         [Fact]
-        public void ConLaTablaDeProducto_LaEstacionEsUnsupported_ConElDiagnosticoDeFilaSinVerificar_YSinModelo()
+        public void ConLaTablaDeProducto_LaEstacionEsValida_ConModelo_YSinElDiagnosticoDeFilaSinVerificar()
         {
             var table = ReadProductTable().Table;
 
             var result = CantileverStructuralExport.Build(
                 C.RackId, "Cantilever", 0, C.DesignBytes(), Decode, C.LoadsBytes(), table, C.Catalog);
 
-            Assert.Equal(StructuralExportOutcome.Unsupported, result.Outcome);
-            Assert.Null(result.Model);
-            Assert.Contains(result.Diagnostics, diagnostic => diagnostic.Code == StructuralDiagnosticCodes.MaterialRowUnverified);
+            Assert.Equal(StructuralExportOutcome.Valid, result.Outcome);
+            Assert.NotNull(result.Model);
+            Assert.DoesNotContain(result.Diagnostics, diagnostic => diagnostic.Code == StructuralDiagnosticCodes.MaterialRowUnverified);
         }
 
         [Fact]
-        public void ConLaTablaDeProducto_LaFabricaNoDaPaquete_AsiQueElComandoNoEscribeNada()
+        public void ConLaTablaDeProducto_LaFabricaDaUnPaqueteValidoEnMemoria_SinCrearLaCarpeta()
         {
             var table = ReadProductTable().Table;
             var loads = C.LoadsBytes();
+            var folder = Path.Combine(Path.GetTempPath(), "rackcad-f4d-" + System.Guid.NewGuid().ToString("N"));
 
             var model = CantileverStructuralExport.Build(C.RackId, "cantilever", 0, C.DesignBytes(), Decode, loads, table, C.Catalog);
             var package = RamBuildPackageFactory.CreateRamBuildPackage(
-                model, new RamBuildPackageOptions(table, "1.0.0", @"C:\Paquetes\estacion-0", loads));
+                model, new RamBuildPackageOptions(table, "1.0.0", folder, loads));
 
-            Assert.NotEqual(StructuralExportOutcome.Valid, package.Outcome);
-            Assert.Null(package.Package);
-            Assert.NotEmpty(package.Diagnostics);
-            Assert.Contains(package.Diagnostics, diagnostic => diagnostic.IsBlocking);
+            Assert.Equal(StructuralExportOutcome.Valid, package.Outcome);
+            Assert.NotNull(package.Package);
+            Assert.False(Directory.Exists(folder));
         }
 
         [Fact]
