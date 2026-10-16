@@ -1,0 +1,26 @@
+HEAD=5a5ca57731ebbbbc41ed4f702698709d5e128a86 dirty=0
+HEAD_after=5a5ca57731ebbbbc41ed4f702698709d5e128a86 dirty_after=0
+sdk=8.0.423
+--- Core Full (final)
+
+Correctas! - Con error:     0, Superado: 14390, Omitido:     0, Total: 14390, Duración: 3 m 8 s - RackCad.Tests.dll (net8.0)
+core_exit=0 secs=308
+--- UI Full (final)
+
+Correctas! - Con error:     0, Superado:  1637, Omitido:    17, Total:  1654, Duración: 9 m 21 s - RackCad.UI.Tests.dll (net8.0)
+ui_exit=0 secs=598
+--- Debug UI build
+    0 Errores
+
+Tiempo transcurrido 00:00:06.63
+ui_build_exit=0
+--- Debug Plugin build
+    0 Errores
+
+Tiempo transcurrido 00:00:42.59
+plugin_build_exit=0 start=2026-10-16T22:56:03.9341322Z end=2026-10-16T22:56:47.2305835Z
+--- Debug RamTool build
+    0 Errores
+
+Tiempo transcurrido 00:00:16.51
+tool_build_exit=0

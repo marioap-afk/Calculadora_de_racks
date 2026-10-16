@@ -1976,3 +1976,43 @@ Custodia:
 - Custodia (SHA-256): `docs/automation/decisions/I-65-owner-disposition-p2-acceptance-candidate-prep.original.txt` `F0AC3F03D63D54334DE10DB78A4EE7F8C855CE25E53E600895069CD6D4CBA5FC`; `docs/initiatives/I-65-f4-final-candidate-preparation.md` `76F0FA6E4B4123915DBDD69A2E1B9172C78EB9A963B3C10C700538FD6951D048`.
 - La evidencia local y de CI del SHA propuesto (este commit) se registra en §79, después de crearlo y con el árbol limpio.
 - Codex 50 de 52; `attempts` 7 de 9.
+
+## 79. Evidencia del SHA propuesto para el Candidato de hito `5a5ca577` (2026-10-16T22:57:56Z; hecho posterior al commit)
+
+Producida **después** de crear `5a5ca57731ebbbbc41ed4f702698709d5e128a86`, con el árbol limpio antes y después, sobre ese HEAD exacto
+(AGENTS.md, «Orden para la evidencia local de un Candidato»). Bloque de la [guía §7.1](../../guias/validacion-manual-autocad.md),
+**PROPUESTO — NO DECLARADO** (READY-03 y READY-06 pendientes; decisiones §74):
+
+```text
+Candidate SHA:        5a5ca57731ebbbbc41ed4f702698709d5e128a86   (PROPUESTO, no declarado)
+Arbol limpio:         SI            <- antes y despues de producir la evidencia local
+SDK resuelto:         8.0.423
+Core Full local:      PASS          (14390/14390, 0 omitidas, 3 m 8 s)
+UI Full local:        PASS          (1637 superadas, 0 con error, 17 omitidas = las 17 `Skip =` declaradas en tests/RackCad.UI.Tests)
+Debug UI build:       PASS          (0 advertencias, 0 errores)
+Debug Plugin build:   PASS          (0 errores; 2 MSB3277 conocidas de las referencias de AutoCAD)
+CI exact SHA:         GREEN (run 38977069487, push, head_sha 5a5ca577, job ui-tests "UI Tests (WPF controls, net8.0-windows)" success; 4/4)
+Owner validation:     required (OV-I65-01, OV-I65-03..07 pendientes; no autorizadas)
+Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg (override de %APPDATA%\RackCad\settings.json)  SHA-256 b4ca2248db9c3d72487ac8b5b1e5510cdd8aba231ab340541d91bebca2d560e8
+```
+
+- **AutoCAD** de referencia: R25.0.171.0.0, `acad.exe` `2a75996f…6422` (segundo smoke); no se abrió.
+- **DLL del Candidato** (compilada desde `5a5ca577` con `-o` a una carpeta **nueva**; `acad.exe` = 0): `D:\r65-smoke\5a5ca577\bin-Debug-net8.0-windows\RackCad.Plugin.dll`,
+  SHA-256 **`c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07`**, 263 680 bytes, ProductVersion `1.0.0+5a5ca577…`;
+  `RackCad.Application.dll` `7f1f3cd2…8f5b`; 32 archivos ([manifiesto de salida](I-65-f4/candidate-5a5ca577/output-manifest.txt));
+  tabla junto a la DLL `fc3d9146…b619` = blob `d088e2a9…` (las dos filas `verified`). Las DLL anteriores (`2e04a4bb…`, `fa334b14…`) siguen
+  intactas y **no** son la del Candidato.
+- **Herramienta de F4 del Candidato:** `D:\r65-smoke\5a5ca577\ramtool\`, `.exe` `0b56e198…8720`, `.dll` `d421c82b…9538`, `1.0.0+5a5ca577…`.
+- **Entradas efectivas del validador v2:** cargas congeladas `D:\r65-smoke\5a5ca577\inputs\ref-cant-01.loads.json` `25f48e7f…ae05`;
+  [valores esperados](I-65-f4/candidate-5a5ca577/expected-inputs.json) calculados con el `RackCad.Application.dll` del Candidato
+  (`rowsSha256` `54ca9f6c…c98c`, igual que antes).
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/expected-inputs.json` | `B3D101C1331632BB3F6CCD19C9D28F5C0A713BAFF12D628BB621E2F10C409911` |
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/local-evidence.txt` | `FCF506CC0264D6CF49B2061C9097F7AF0EB1A69607786644C983EE5E917F8556` |
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/output-manifest.txt` | `ED2875E42FB467F0294DF15F8E688D968FF058942E7E98B5BB0C8CBF7B5DB22B` |
+
+- Este registro está en un commit hijo y **no** extiende la evidencia a ese hijo (AGENTS.md, «Commit documental»).
+- Codex 50 de 52; `attempts` 7 de 9.
