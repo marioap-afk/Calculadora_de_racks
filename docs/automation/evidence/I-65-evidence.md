@@ -1924,3 +1924,20 @@ Custodia:
 
 - Registros históricos sin cambios: `validate-smoke2-package.py.txt` `8B19A9C725C66A629B03B6DDEA7BBA70149788508E38E92E673C9A6852812C17`; `smoke2-51fc82f1/validator-report.json` `0D415A3F79F90B8B44114C478848FECA954C441510055717827B7EEB52D269C0`; `smoke2-51fc82f1/v11-diagnostic.json` `C22F22222D15F5795172CDFEAF364A77EDCC7DAD2C17BFDFDE873D84DCF4E1D2`.
 - Codex 50 de 52; `attempts` 7 de 9.
+
+## 76. Preparación de P2 (2026-10-16T21:22:39Z)
+
+- Orden: «Second Smoke Acceptance / RAM First Run Readiness» (decisiones §71). Ejecutor: Coordinator; solo lectura de la instalación de RAM, `Config.ini`, servicios y paquete; `RAMElements.exe` = 0; sin Codex ni Workers.
+- Escrituras fuera del repositorio: `D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-prep\payload-vs-manual.json`.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-second-smoke-acceptance-ram-readiness.original.txt` | `FFD94EE7414577B11534FA286BF53EE9631BA73B7213A3F1F8F2EB1B4D9C628A` |
+| `docs/initiatives/I-65-f4-p2-ram-first-run-procedure.md` | `7868D5373CBA297277216FB79852CB9789363FE4FF1476BE88AA4D1B61B448E8` |
+| `docs/automation/evidence/I-65-f4/p2-prep/host-coordination-p2.md` | `676B6F608CA017F615B316ECEF3592A5ADC7E4BC6DB2918D9022D700AFB2E38C` |
+| `docs/automation/evidence/I-65-f4/p2-prep/p2-payload-vs-manual.py.txt` | `A10D5B46938CC88CE4700E491C00A4BEB6A90167C21C684EC2C57D8C45F959FA` |
+| `docs/automation/evidence/I-65-f4/p2-prep/payload-vs-manual.json` | `B28C39215392A7EA0EFEA808B777730D049B1E709DEFA17C255AFD2E89EE98B5` |
+
+- Paquete sin cambios (21:12Z): `19fba962…`, `d9b41aab…`, `25f48e7f…`; `ram-readback.json` inexistente.
+- Codex 50 de 52; `attempts` 7 de 9.

@@ -1,0 +1,16 @@
+{
+ "result": "IGUAL",
+ "checks": 117,
+ "findings": [],
+ "analysisInputFingerprint": "505941e2ca42a02dd85b72629579bcd27e4900f80c69ebd41bb8ea73c0a5ba61",
+ "packageFolder": "D:\\r65-smoke\\51fc82f1\\run-R20261016T1918Z\\pkg-01",
+ "capabilities": {
+  "version": "0.1.0",
+  "coreFunctions": 35
+ },
+ "tolerances": {
+  "relative": 1e-09,
+  "percent": 1e-09,
+  "axes": 1e-09
+ }
+}
