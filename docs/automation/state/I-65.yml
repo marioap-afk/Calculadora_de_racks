@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: F4
   attempts: 7
-  next_action: Coordinator: correccion de F4-D-SECTION-MAP-VERIFIED (attempts 7, AttemptsRemaining 2; CorrectionOf R20261016T152242Z-2e6f, Ci; CD-I65-F4-113): planificacion, A1-A8, Worker, verificacion, nc1-nc3, revision del Architect, custodia y cierre; sin AutoCAD ni RAM.
+  next_action: Coordinator: reemision de la planificacion de la correccion de F4-D (attempts 7; CorrectionOf R20261016T152242Z-2e6f, Ci; CD-I65-F4-114), Worker, verificacion y nc1-nc2; nc3 excede el tope de Codex 48 y requiere autorizacion del Owner (CD-I65-F4-115); sin AutoCAD ni RAM.
   last_evidence_commit: 9f6fff6e12bde1f8a0c3c0f6cb8160632091834a
 execution_context:
   mode: manual

@@ -1737,3 +1737,25 @@ Custodia:
 | `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/k-f4d-plan-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
 | `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/k-f4d-work-compare.json` | `E7BD970DF664ACB8…` | `9edd8c809a65` (fin de línea normalizado por Git) |
 | `F4-D-SECTION-MAP-VERIFIED/R20261016T152242Z-2e6f/k-f4d-ver-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+
+## 70. F4-D — planificación de la corrección rechazada (2026-10-16T15:37:20Z)
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261016T153224Z-5bb3` | PLANNING (intento 7) | Codex `gpt-6-luna`/`high` (44) | **rechazada**: A4 `fail` (`" .github/"`), A5 `fail` (`…f4-d.original.txt`); A2, A3, A6-A8 `pass`; STOP P-03; sin Worker |
+
+- Controles K1/K2 sin cambios; `config.toml` sin cambios; procesos ilegibles de las apps del host terminados al releerlos.
+- Codex 44 de 48; `attempts` 7 (máximo 9).
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/gate-contract.json` | `1D30597A8C1997E8…` | `6d3f5a5f3ea8` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/prompt.md` | `5AEE82A7BBADD679…` | `9ce1a98345b9` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/delegation-rejected.json` | `638AD9AD28CE3D4A…` | `522ead82ed71` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/acceptance.json` | `2642FE560F378427…` | `2c75b4923a83` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/exactness.json` | `36A30E4DF57987C5…` | `710c92d2e431` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/relay-record.json` | `F67C3B62F88DD0DE…` | `a5054dbe37cc` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/analysis-p03.md` | `912BAD530BEAC363…` | `70f53517b4ac` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/k-f4d-cplan-compare.json` | `D5EE2EED23590569…` | `f7bf6c77e753` |
