@@ -23,6 +23,9 @@ namespace RackCad.Tests
         private const string ColumnId = "AISC-W-W12X26";
         private const string ArmId = "AISC-HSS-RECT-HSS4X4X_250";
 
+        // Windows absolute path string: the factory only checks its syntax and writes nothing, so it is valid on Windows and Linux.
+        private const string PackageFolder = @"C:\RackCad-F4D-NoExiste\paquete-estacion-0";
+
         private const string VerifiedBy = "Mario Pérez — Owner / Engineering Validator";
         private const string VerifiedOn = "2026-10-16";
 
@@ -126,7 +129,7 @@ namespace RackCad.Tests
         public void LaFabricaDaUnPaqueteValidoEnMemoriaConLaTablaDistribuidaSinEscribirLaCarpeta()
         {
             var table = ShippedTable();
-            var folder = Path.Combine(Path.GetTempPath(), "rackcad-f4d-" + Guid.NewGuid().ToString("N"));
+            var folder = PackageFolder;
             var model = BuildRefCant01(table);
             Assert.Equal(StructuralExportOutcome.Valid, model.Outcome);
             Assert.False(Directory.Exists(folder));
@@ -151,7 +154,7 @@ namespace RackCad.Tests
             var changedRead = RamSectionMapReader.Read(changedText);
             Assert.Equal(StructuralExportOutcome.Valid, changedRead.Outcome);
             var shipped = ShippedTable();
-            var folder = Path.Combine(Path.GetTempPath(), "rackcad-f4d-" + Guid.NewGuid().ToString("N"));
+            var folder = PackageFolder;
 
             var original = RamBuildPackageFactory.CreateRamBuildPackage(
                 BuildRefCant01(shipped), new RamBuildPackageOptions(shipped, "1.0.0", folder, C.LoadsBytes()));

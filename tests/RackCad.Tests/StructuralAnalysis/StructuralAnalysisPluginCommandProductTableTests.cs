@@ -18,6 +18,9 @@ namespace RackCad.Tests
     /// </summary>
     public class StructuralAnalysisPluginCommandProductTableTests
     {
+        // Windows absolute path string: the factory only checks its syntax and writes nothing, so it is valid on Windows and Linux.
+        private const string PackageFolder = @"C:\RackCad-F4D-NoExiste\paquete-estacion-0";
+
         private static RamSectionMapReadResult ReadProductTable()
         {
             var path = Path.Combine(C.RepoRoot(), "assets", "structural-analysis", "ram-elements", "section-material-map.json");
@@ -57,7 +60,7 @@ namespace RackCad.Tests
         {
             var table = ReadProductTable().Table;
             var loads = C.LoadsBytes();
-            var folder = Path.Combine(Path.GetTempPath(), "rackcad-f4d-" + System.Guid.NewGuid().ToString("N"));
+            var folder = PackageFolder;
 
             var model = CantileverStructuralExport.Build(C.RackId, "cantilever", 0, C.DesignBytes(), Decode, loads, table, C.Catalog);
             var package = RamBuildPackageFactory.CreateRamBuildPackage(
