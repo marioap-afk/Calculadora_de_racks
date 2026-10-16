@@ -1835,3 +1835,24 @@ Custodia:
 | `F4-D-SECTION-MAP-VERIFIED-nc3/R20261016T163750Z-f190/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
 | `F4-D-SECTION-MAP-VERIFIED-nc3/R20261016T163750Z-f190/controller-verification.json` | `479FE29E0100A4C0…` | `586a9787d6e9` |
 | `F4-D-SECTION-MAP-VERIFIED-nc3/R20261016T163750Z-f190/relay-record.json` | `6D520B4E2C61CAF4…` | `902e4363a8b3` |
+
+## 72. Preparación del segundo smoke: compilación, procedimiento y coordinación de host (2026-10-16T19:03:46Z)
+
+- Orden: «F4-D Acceptance / Second AutoCAD Smoke Preparation» (decisiones §67). Ejecutor: Coordinator; sin AutoCAD, RAM, Codex ni Workers.
+- Compilación 2026-10-16T18:54:16Z-18:54:49Z desde `51fc82f1` hacia `D:\r65-smoke\51fc82f1\bin-Debug-net8.0-windows` (no versionado); DLL `fa334b14…aedb`; `acad.exe` = 0 y `RAMElements.exe` = 0 antes y después; DLL del primer smoke intacto.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-f4d-acceptance-second-smoke-prep.original.txt` | `C644936498ADD005C44D3F92F003CD4A072E505D253C913A0147249B7517850E` |
+| `docs/initiatives/I-65-f4-second-smoke-procedure.md` | `F59DBBE8E1079247646DAF2E4891056C8D5BE612F365D28B0D55529B9E053952` |
+| `docs/automation/evidence/I-65-f4/smoke2-dll-build-51fc82f1.md` | `703FCCF2A27662D47C36C5A31C53199C33474F8F8D3E2A136DCFD639AFA430C4` |
+| `docs/automation/evidence/I-65-f4/smoke2-dll-51fc82f1-output-manifest.txt` | `5C9A6D62E84D23317D19A6D67A4883E8F7EDB9DAC33A94511761220DBDF265D2` |
+| `docs/automation/evidence/I-65-f4/smoke2-expected-inputs.json` | `8B264A05171616070893ECCE7808E36E31048322545AC99185D42572A3682148` |
+| `docs/automation/evidence/I-65-f4/smoke2-expected-inputs.ps1.txt` | `0C84A4D0C4145B82505BB5C759CF03489C598DA79794BFABA164BBFC0333F379` |
+| `docs/automation/evidence/I-65-f4/validate-smoke2-package.py.txt` | `8B19A9C725C66A629B03B6DDEA7BBA70149788508E38E92E673C9A6852812C17` |
+| `docs/automation/evidence/I-65-f4/selftest-smoke2-validator.py.txt` | `93E38ED3BE645297F653737BB0FC1560FB071ABD19FD52F8823282F63CB49B1B` |
+| `docs/automation/evidence/I-65-f4/selftest-smoke2-validator.out.txt` | `EF76EB76F7DA981AE314340786923CDDC29FF3F3D9F6FA3D633DBA736F78EDA0` |
+| `docs/automation/evidence/I-65-f4/host-coordination-smoke2-2026-10-16.md` | `42DA307C052AE83F97689BA8179BC3391C4A6AC53CC0F81C3A46566DA768E56B` |
+
+- Codex 50 de 52; `attempts` 7 de 9.

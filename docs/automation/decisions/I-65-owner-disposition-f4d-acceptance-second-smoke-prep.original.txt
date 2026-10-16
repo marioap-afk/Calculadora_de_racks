@@ -1,0 +1,97 @@
+I-65 — OWNER DISPOSITION
+F4-D Acceptance / Second AutoCAD Smoke Preparation
+He revisado el cierre de F4-D en `ad595b42`, CI 38934290550, PASS 4/4.
+1. Decisión
+F4-D = ACCEPTED / CLOSED.
+Reconozco:
+
+* Las dos filas de mapeo en `verified`.
+* El blob de tabla idéntico al objetivo aprobado.
+* REF-CANT-01 como `Valid`, con cero diagnósticos.
+* Controller `EXECUTION_VERIFIED`, 14/14.
+* Architect `CONFORMANT WITH OBSERVATIONS`, sin REQUIRED.
+* Core Full 14,390/14,390.
+
+Los resultados divergentes de nc2 y nc3 permanecen documentados; no deben presentarse como cumplimiento estricto de sus oráculos.
+2. Compilación del nuevo DLL
+BUILD FOR SECOND SMOKE = AUTHORIZED.
+Autorizo compilar el nuevo DLL de RackCad desde el SHA exacto de F4-D, con AutoCAD cerrado.
+Registra:
+
+* SHA del código.
+* SHA-256 del DLL.
+* SHA-256 y contenido normalizado de la tabla distribuida.
+* Versión y configuración de compilación.
+* Resultado de compilación y CI.
+* Identidad exacta del paquete que se utilizará.
+
+No sustituyas silenciosamente el DLL anterior.
+3. Segundo smoke — preparación
+SECOND AUTOCAD SMOKE PREPARATION = AUTHORIZED.
+Prepara una prueba controlada que:
+
+1. Utilice un DWG desechable de REF-CANT-01.
+2. Cargue una sola vez el DLL mediante NETLOAD no persistente.
+3. Ejecute RACKRAMPAQUETE con las dos filas verificadas.
+4. Genere un único paquete en una carpeta desechable fuera del repositorio.
+5. Compruebe sus tres archivos esperados.
+6. Valide manifiesto, procedencia, huellas, codificación UTF-8 y archivo de cargas.
+7. Confirme que el modelo neutral es `Valid` y que la salida no es parcial.
+8. Registre las limitaciones de DIF-01 y las hipótesis del piloto.
+9. Cierre AutoCAD sin guardar y complete POST.
+
+La prueba no debe ejecutar RAM Elements ni analizar el modelo.
+4. Integridad y codificación
+Incorpora comprobaciones explícitas para:
+A65-F4D-01
+Los finales de línea del JSON no deben provocar una falsa discrepancia.
+Conserva hashes de bytes y registra separadamente cualquier comparación normalizada.
+A65-F4D-10
+Comprueba que el manifiesto generado representa correctamente:
+`Mario Pérez — Owner / Engineering Validator`
+No sustituyas caracteres ni modifiques la identidad aprobada.
+A65-F4D-07
+Las huellas deben compararse contra el paquete real generado y sus entradas efectivas.
+No utilices las huellas de fixtures de prueba como valores esperados cuando cambia el origen del modelo.
+5. Combinaciones y cargas
+Mantén OD-F4-14 = CMB-3.
+Las combinaciones pertenecen a la validación de equivalencia posterior, no deben inferirse del simple éxito de generación del paquete.
+Utiliza exclusivamente el archivo de cargas aprobado para REF-CANT-01, sin alterar sus valores.
+Registra DIF-01 como diferencia informativa aceptada únicamente sin peso propio.
+6. Host y autoridades
+Solicita la coordinación de una nueva ventana con I-52 e I-64.
+Repite el procedimiento de captura previa y POST que permitió cerrar el primer smoke.
+No asumas que la liberación anterior sigue vigente.
+La identidad exacta del nuevo DLL debe comunicarse antes del RELEASE.
+No alteres TRUSTEDPATHS, SECURELOAD, perfiles ni configuraciones persistentes.
+7. Límites de autorización
+Esta orden autoriza compilación y preparación del segundo smoke, pero no su ejecución.
+No autoriza:
+
+* Abrir AutoCAD.
+* Ejecutar NETLOAD.
+* Ejecutar RAM Elements.
+* Cambiar código de producción.
+* Cambiar materiales, secciones o tolerancias.
+* Iniciar F5, F6 o F7.
+* Declarar Candidato de hito o GATE PASS de F4.
+
+8. Entregable
+Presenta:
+
+1. Identidad y hash del nuevo DLL.
+2. Resultado de compilación.
+3. Tabla verificada distribuida.
+4. Procedimiento definitivo del segundo smoke.
+5. Estado de ACK + RELEASE.
+6. Condiciones de aceptación y parada.
+7. Riesgos y observaciones residuales.
+8. Recomendación GO / NO-GO para ejecutar el segundo smoke.
+
+F4-D = CLOSED.
+DLL BUILD = AUTHORIZED.
+SECOND SMOKE PREPARATION = AUTHORIZED.
+AUTOCAD EXECUTION = NOT AUTHORIZED.
+RAM EXECUTION = NOT AUTHORIZED.
+F4 GATE PASS = NO.
+Continúa con la preparación y detente antes de abrir AutoCAD.

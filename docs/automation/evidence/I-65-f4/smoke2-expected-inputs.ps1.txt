@@ -1,0 +1,54 @@
+# I-65 segundo smoke: valores esperados derivados de las ENTRADAS EFECTIVAS (tabla distribuida junto al DLL y archivo de cargas aprobado),
+# calculados con el RackCad.Application.dll de la propia salida compilada (no con fixtures). Solo lectura.
+# Uso: pwsh -NoProfile -File smoke2_expected_inputs.ps1 <carpeta-salida> <archivo-cargas> <salida.json>
+param([string]$OutDir, [string]$LoadsFile, [string]$OutJson)
+$ErrorActionPreference = 'Stop'
+[void][System.Reflection.Assembly]::LoadFrom((Join-Path $OutDir 'RackCad.Domain.dll'))
+$app = [System.Reflection.Assembly]::LoadFrom((Join-Path $OutDir 'RackCad.Application.dll'))
+$readerT = $app.GetType('RackCad.Application.StructuralAnalysis.Providers.RamElements.RamSectionMapReader')
+$fpT = $app.GetType('RackCad.Application.StructuralAnalysis.StructuralFingerprints')
+$rowT = $app.GetType('RackCad.Application.StructuralAnalysis.StructuralMaterialRow')
+$tablePath = Join-Path $OutDir 'structural-analysis\ram-elements\section-material-map.json'
+$tableBytes = [IO.File]::ReadAllBytes($tablePath)
+$read = $readerT.GetMethod('Read', [type[]]@([string])).Invoke($null, @([Text.Encoding]::UTF8.GetString($tableBytes)))
+if ("$($read.Outcome)" -ne 'Valid') { throw "tabla no Valid: $($read.Outcome)" }
+$listT = [System.Collections.Generic.List``1].MakeGenericType($rowT)
+$neutral = [Activator]::CreateInstance($listT)
+$rows = @()
+foreach ($r in $read.Table.Rows) {
+    $neutral.Add($r.ToNeutralRow())
+    $m = $r.ExpectedMaterial
+    $rows += [ordered]@{
+        sectionId = $r.SectionId.Value; ramName = $r.RamSectionName; ramTable = $r.RamSectionTable; ramCountry = $r.RamSectionCountry
+        materialId = $r.MaterialId.Value; ramMaterial = $r.RamMaterial; status = "$($r.Status)"
+        elasticModulus = [ordered]@{ value = $m.ElasticModulus.Value; unit = $m.ElasticModulus.Unit }
+        poissonRatio = $m.PoissonRatio; shearModulus = $null
+        unitWeight = [ordered]@{ value = $m.UnitWeight.Value; unit = $m.UnitWeight.Unit }
+        source = $m.Source; verifiedBy = $r.VerifiedBy; verifiedOn = $r.VerifiedOn
+        verifiedByUtf8Hex = (([Text.Encoding]::UTF8.GetBytes($r.VerifiedBy)) | ForEach-Object { $_.ToString('x2') }) -join ''
+        canonicalText = $r.CanonicalText
+    }
+}
+$invokeArgs = New-Object object[] 1
+$invokeArgs[0] = $neutral
+$rowsSha = $fpT.GetMethod('MappingRows').Invoke($null, $invokeArgs)
+$sha = [Security.Cryptography.SHA256]::Create()
+function Hex([byte[]]$b) { (($sha.ComputeHash($b)) | ForEach-Object { $_.ToString('x2') }) -join '' }
+$loadBytes = [IO.File]::ReadAllBytes($LoadsFile)
+$out = [ordered]@{
+    generatedUtc = (Get-Date).ToUniversalTime().ToString('o')
+    applicationDll = [ordered]@{ path = (Join-Path $OutDir 'RackCad.Application.dll'); productVersion = (Get-Item (Join-Path $OutDir 'RackCad.Application.dll')).VersionInfo.ProductVersion }
+    table = [ordered]@{ path = $tablePath; bytes = $tableBytes.Length; sha256Bytes = (Hex $tableBytes); hasCR = ([Array]::IndexOf($tableBytes, [byte]13) -ge 0) }
+    loads = [ordered]@{ path = $LoadsFile; bytes = $loadBytes.Length; sha256Bytes = (Hex $loadBytes); hasCR = ([Array]::IndexOf($loadBytes, [byte]13) -ge 0) }
+    mappingRowsSha256AllRows = $rowsSha
+    rows = $rows
+    expected = [ordered]@{
+        files = @('manifest.json', 'rackcad-ram-build.py', 'structural-loads.json')
+        schema = 'rackcad-ram-build-manifest/v1'; adapterName = 'rackcad-ram-elements-adapter'; adapterVersion = '1.0.0'
+        product = 'RAM Elements'; productVersion = '26.00.01.015'; productVersionStatus = 'declared, not verified'; package = 'ramelements'
+        loadsFileName = 'structural-loads.json'; readbackName = 'ram-readback.json'
+        verifiedBy = ('Mario P' + [char]0x00E9 + 'rez ' + [char]0x2014 + ' Owner / Engineering Validator'); verifiedOn = '2026-10-16'
+    }
+}
+[IO.File]::WriteAllText($OutJson, ($out | ConvertTo-Json -Depth 8), (New-Object Text.UTF8Encoding($false)))
+"ok rowsSha256=$rowsSha table=$($out.table.sha256Bytes.Substring(0,16)) loads=$($out.loads.sha256Bytes.Substring(0,16)) rows=$($rows.Count)"
