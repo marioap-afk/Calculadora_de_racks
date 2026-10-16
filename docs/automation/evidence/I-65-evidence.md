@@ -1901,3 +1901,4 @@ Custodia:
 
 - Script y cargas del paquete por SHA-256: `rackcad-ram-build.py` `D9B41AAB69643C01971E756FB9323A8F35DAD6B33008598655C753FE2F92D719`; `structural-loads.json` `25F48E7F75D879C4668C3D9B37F69FDA0CD5442A407C03FF76362754623CAE05`.
 - Codex 50 de 52; `attempts` 7 de 9.
+- Recomprobación de I-52 custodiada (custodia §13, decisiones CD-I65-F4-140; commit `46e5e789`): SHA-256 nuevos `docs/automation/evidence/I-65-f4/host-coordination-smoke2-2026-10-16.md` `188982088F8FAB2087F3389A5A52FAC1AAABCC1C6C8196A02DC64CA33FEF9CEF` y `docs/automation/evidence/I-65-f4/smoke2-51fc82f1/smoke-report.md` `2F10E11E04051B96289EBB4207A66181BF905EC638B7C8CDD1A689B64E006DBA`.
