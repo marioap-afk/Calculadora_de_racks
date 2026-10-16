@@ -1,0 +1,111 @@
+I-65 — OWNER HOST RELEASE
+Second AutoCAD Smoke — Verified Mapping Package
+He revisado la preparación del segundo smoke registrada en `63c3b8b3` y `c46a330c`, con CI 4/4 satisfactorio.
+1. Autoridad del Owner
+Como Owner, ejerzo expresamente la autoridad de liberación del host reconocida por I-52.
+I-65 SECOND SMOKE HOST RELEASE = APPROVED, CONDITIONAL ON FRESH PREFLIGHT.
+Autorizo una ventana exclusiva de AutoCAD para I-65, anterior a futuras ventanas de I-52 e I-64 que aún no estén formalmente liberadas.
+Esta autorización no cancela ventanas existentes ni permite interrumpir una operación activa.
+Antes de abrir AutoCAD:
+
+* Comunica el RELEASE del Owner a I-52 e I-64.
+* Comprueba que ninguna iniciativa tenga una sesión activa o ventana incompatible.
+* Registra su respuesta y cualquier condición de coordinación.
+* Confirma que solo habrá una instancia de `acad.exe`.
+
+Si existe un conflicto activo, STOP.
+2. DLL autorizado
+Utiliza exclusivamente:
+Código: `51fc82f1`
+Archivo: `RackCad.Plugin.dll`
+SHA-256:
+`fa334b144507fc8922171036edae878f773c003164f4c98302cdc67c9291aedb`
+Versión: `1.0.0+51fc82f1`
+La tabla que acompaña al DLL debe ser exactamente la aprobada, con ambas filas `verified`.
+Verifica el hash del DLL y la tabla antes de ejecutar NETLOAD.
+No sustituyas ningún archivo por otra compilación.
+3. Preflight obligatorio
+Repite el procedimiento de captura previa aprobado:
+
+1. Confirmar `acad.exe` cerrado.
+2. Confirmar perfil `<<Unnamed Profile>>`.
+3. Leer TRUSTEDPATHS y su hash.
+4. Leer SECURELOAD.
+5. Verificar versión y hash de `acad.exe`.
+6. Comprobar registros de carga, plugins y ACL relevantes.
+7. Comprobar estado de los checkouts.
+8. Registrar la identidad de todos los archivos del paquete de prueba.
+
+Si las referencias protegidas presentan deriva, STOP.
+4. Ejecución autorizada
+AUTOCAD EXECUTION = APPROVED FOR SECOND SMOKE ONLY.
+Autorizo:
+
+1. Abrir una única instancia de AutoCAD.
+2. Crear un DWG desechable de REF-CANT-01.
+3. Ejecutar un único NETLOAD no persistente del DLL autorizado.
+4. Elegir exclusivamente «Load Once» si aparece el aviso estándar de confianza.
+5. Ejecutar RACKRAMPAQUETE con las filas verificadas.
+6. Introducir la ruta de destino con separadores Windows `\`.
+7. Generar un único paquete en una carpeta desechable nueva y fuera del repositorio.
+8. Validar los tres archivos del paquete mediante las 16 comprobaciones preparadas.
+9. Verificar la huella entre consola, manifiesto y script.
+10. Comprobar que la identidad del verificador se conserva correctamente en UTF-8.
+11. Capturar las evidencias.
+12. Cerrar AutoCAD sin guardar.
+13. Ejecutar POST y comparar contra la referencia previa.
+
+No realices nuevos intentos de generación si el primero presenta un diagnóstico inesperado. Registra el fallo y detente.
+5. Condiciones de aceptación
+El segundo smoke se considerará satisfactorio únicamente si:
+
+* El comando devuelve `Valid`.
+* No hay diagnósticos bloqueantes.
+* Se genera exactamente el paquete previsto.
+* El validador pasa 16/16.
+* El manifiesto y las huellas son coherentes.
+* La tabla conserva sus dos filas verificadas.
+* El DLL mantiene su SHA-256.
+* AutoCAD se cierra correctamente.
+* No hay cambios prohibidos en POST.
+* Los checkouts permanecen intactos.
+
+Si aparece una diferencia, no la corrijas silenciosamente.
+6. Coordinación de salida
+Después de cerrar AutoCAD, informa a I-52 e I-64:
+
+* Hora real de inicio y cierre.
+* Estado de liberación del host.
+* Resultado del smoke.
+* Resultado de POST.
+* Incidencias observadas.
+
+No autorices automáticamente las siguientes ventanas de otras iniciativas.
+7. Restricciones
+No ejecutar RAM Elements.
+No analizar el modelo.
+No modificar las filas de materiales.
+No cambiar código de producto.
+No modificar TRUSTEDPATHS, SECURELOAD ni configuraciones persistentes.
+No iniciar F5, F6 ni F7.
+No declarar todavía GATE PASS de F4.
+8. Entregable
+Presenta:
+
+1. Ventana real utilizada.
+2. Identidad del DLL y tabla cargados.
+3. Resultado visible de RACKRAMPAQUETE.
+4. Identidad y ubicación del paquete generado.
+5. Resultado de las 16 comprobaciones.
+6. Evidencia de UTF-8 y huellas.
+7. Resultado de preflight/POST.
+8. Confirmación de liberación del host.
+9. Incidencias y limitaciones.
+10. Recomendación para la primera ejecución en RAM Elements.
+
+OWNER HOST RELEASE = APPROVED.
+SINGLE NETLOAD = AUTHORIZED.
+SECOND SMOKE = AUTHORIZED.
+RAM EXECUTION = NO.
+F4 GATE PASS = NO.
+Procede únicamente cuando el preflight confirme que la ventana es segura y exclusiva.

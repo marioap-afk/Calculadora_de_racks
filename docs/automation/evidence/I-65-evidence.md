@@ -1857,3 +1857,10 @@ Custodia:
 
 - Codex 50 de 52; `attempts` 7 de 9.
 - Respuesta de I-52 custodiada literalmente (custodia §6; SHA-256 del archivo `3C2ED03B1B5942D65BA1D970ECD34795050523025ED05A0009C5FA65B2D25EF4`): acuse de recibo con datos; sin RELEASE.
+
+## 73. OWNER HOST RELEASE del segundo smoke y comunicación previa (2026-10-16T19:17:28Z)
+
+- Orden: «OWNER HOST RELEASE / Second AutoCAD Smoke — Verified Mapping Package» (decisiones §68); original SHA-256 `32C25B13F00FC685B77C4C5B83C73D96F21B4A8263EF6D4D597ED50F4F7EDF2E`.
+- `acad.exe` = 0 y `RAMElements.exe` = 0 a las 2026-10-16T19:14:43Z; DLL re-leído `fa334b14…aedb`.
+- Custodia de la coordinación (§7-§8): `docs/automation/evidence/I-65-f4/host-coordination-smoke2-2026-10-16.md` SHA-256 `0EDEBF85C83420448702CB0131FA342F9BDDF1868E31B3A5D98525348B723B57`.
+- Codex 50 de 52 (sin uso); `attempts` 7 de 9.
