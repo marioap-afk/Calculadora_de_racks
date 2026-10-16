@@ -1,0 +1,29 @@
+"""I-65 F4-D: tabla objetivo = d08-rows-final.json con solo los cuatro null de D-09 sustituidos por los valores del Owner.
+Uso: python -I make_f4d_target.py <d08-rows-final.json> <salida.json>
+verifiedBy literal de la autorizacion del Owner: "Mario Pérez — Owner / Engineering Validator" (U+00E9 y U+2014 por punto de codigo)."""
+import difflib
+import hashlib
+import json
+import sys
+import unicodedata
+
+src, out = sys.argv[1], sys.argv[2]
+raw = open(src, encoding="utf-8", newline="").read()
+data = json.loads(raw)
+by = "Mario P" + chr(0x00E9) + "rez " + chr(0x2014) + " Owner / Engineering Validator"
+on = "2026-10-16"
+assert unicodedata.normalize("NFC", by) == by
+for row in data["rows"]:
+    assert row["status"] == "verified" and row["verifiedBy"] is None and row["verifiedOn"] is None
+    row["verifiedBy"] = by
+    row["verifiedOn"] = on
+text = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
+# Same serializer as d08 (indent=2); the ASCII part must be byte-identical to the source.
+assert json.dumps(json.loads(raw), ensure_ascii=True, indent=2) + "\n" == raw, "d08 not reproducible by the serializer"
+open(out, "w", encoding="utf-8", newline="\n").write(text)
+diff = [l for l in difflib.unified_diff(raw.splitlines(), text.splitlines(), lineterm="", n=0) if l[:1] in "+-" and not l.startswith(("+++", "---"))]
+print("verifiedBy chars", len(by), "codepoints", ["U+%04X" % ord(c) for c in by if ord(c) > 127])
+print("diff lines", len(diff))
+for l in diff:
+    print("  " + l.encode("unicode_escape").decode("ascii"))
+print("target bytes", len(text.encode("utf-8")), "SHA-256", hashlib.sha256(text.encode("utf-8")).hexdigest().upper())

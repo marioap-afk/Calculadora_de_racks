@@ -26,7 +26,7 @@ freeze_ref: docs/initiatives/I-65-proposal-v3.1.md
 freeze_delta_ref: null
 amendment_refs: []
 ov_assignment_ref: docs/initiatives/I-65-proposal-v3.1.md#5
-decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-authorization-f3.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-preparation.original.txt, docs/automation/decisions/I-65-owner-authorization-f4.original.txt, docs/automation/decisions/I-65-owner-disposition-f4t3.original.txt, docs/automation/decisions/I-65-owner-decision-f4-option-c.original.txt, docs/automation/decisions/I-65-owner-order-coordinator-recovery.original.txt, docs/automation/decisions/I-65-owner-disposition-environment-b.original.txt, docs/automation/decisions/I-65-owner-disposition-environment-b-architecture.original.txt, docs/automation/decisions/I-65-owner-decision-publication-simplification.original.txt, docs/automation/decisions/I-65-owner-disposition-model-s1.original.txt, docs/automation/decisions/I-65-owner-disposition-adr0046-exception.original.txt, docs/automation/decisions/I-65-owner-disposition-return-original-environment.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-resumption.original.txt, docs/automation/decisions/I-65-owner-authorization-checkout-restoration.original.txt, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
+decision_refs: [docs/automation/decisions/I-65.md, docs/automation/decisions/I-65-owner-authorization-f3.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-preparation.original.txt, docs/automation/decisions/I-65-owner-authorization-f4.original.txt, docs/automation/decisions/I-65-owner-disposition-f4t3.original.txt, docs/automation/decisions/I-65-owner-decision-f4-option-c.original.txt, docs/automation/decisions/I-65-owner-order-coordinator-recovery.original.txt, docs/automation/decisions/I-65-owner-disposition-environment-b.original.txt, docs/automation/decisions/I-65-owner-disposition-environment-b-architecture.original.txt, docs/automation/decisions/I-65-owner-decision-publication-simplification.original.txt, docs/automation/decisions/I-65-owner-disposition-model-s1.original.txt, docs/automation/decisions/I-65-owner-disposition-adr0046-exception.original.txt, docs/automation/decisions/I-65-owner-disposition-return-original-environment.original.txt, docs/automation/decisions/I-65-owner-authorization-f4-resumption.original.txt, docs/automation/decisions/I-65-owner-authorization-d09-d10-f4d.original.txt, docs/automation/decisions/I-65-owner-authorization-checkout-restoration.original.txt, docs/automation/decisions/I-65-owner-mandate.original.txt, docs/automation/decisions/I-65-owner-decision-p1.original.txt, docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt, docs/adr/0050-interoperabilidad-analisis-estructural.md]
 evidence_ref: docs/automation/evidence/I-65-evidence.md
 automation_state_path: docs/automation/state/I-65.yml
 requires_ci: true
@@ -37,7 +37,7 @@ requires_owner_validation: true
 automation:
   enabled: false
   auto_merge: false
-  max_attempts: 6
+  max_attempts: 9
 ---
 
 # I-65 — Structural Analysis Interop Foundation + RAM Elements Adapter

@@ -1673,3 +1673,20 @@ Custodia:
 
 - Tabla del producto sin cambios: `5229231E0D924E48A839EF77BF0B63A2B631214A670783E01D148B9AC6CB4048`. Checkout principal limpio.
 - Codex 41 de 46; `attempts` 6 de 6.
+
+## 68. Autorización de F4-D: registro, preflight y tabla objetivo (2026-10-16T14:41:15Z)
+
+- Orden: «D-09 Engineering Sign-Off / D-10 F4-D Implementation» (decisiones §62). Autoverificación de la sesión principal: `get_session("self")` = `claude-opus-5-5`/`xhigh` (MATCH).
+- Preflight: `HEAD` = `ls-remote` = `9f6fff6e`; `origin/main` = `bb0d5522` = `merge-base`; 0 commits de `main` por delante; Freeze y ADR-0050 sin commits desde `a9d7080b`; `git diff 745653e1 HEAD -- src tests assets tools` vacío.
+- Selección del filtro del contrato en `9f6fff6e` (`dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter "FullyQualifiedName~RackCad.Tests.StructuralAnalysis"`, TRX en el scratchpad): 1789 superadas, 0 fallidas.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-authorization-d09-d10-f4d.original.txt` | `130D0ACCBF3FBE86B8274CAFE4858F7852007B4AEC2BCF1133B4B6D16189A50E` |
+| `docs/automation/evidence/I-65-f4/f4d-table-target.json` | `FC3D91464AC48A15730661EFCD50ECB770114559C68BDEFAE67E0816972DB619` |
+| `docs/automation/evidence/I-65-f4/f4d-make-target.py.txt` | `151146599BC272CD828CB3D2038878E9142BEE711EE41B5164411E123B438061` |
+| `docs/automation/evidence/I-65-f4/f4d-reader-check-target.ps1.txt` | `FC9901DD2BF3CA6B13BCC0616B2514D4470ECB0442BFE2999039781CB6447012` |
+| `docs/automation/evidence/I-65-f4/f4d-reader-check-target.out.txt` | `1400F80A75B1D63D370EB264AE1D7DE4E0FE9A4BB9B047A3FC4721DF3EE7432A` |
+
+- Codex 41 de 48; `attempts` 6 de 9.

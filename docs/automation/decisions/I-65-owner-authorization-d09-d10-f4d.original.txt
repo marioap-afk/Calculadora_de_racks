@@ -1,0 +1,124 @@
+I-65 — OWNER AUTHORIZATION
+D-09 Engineering Sign-Off / D-10 F4-D Implementation
+Initiative: I-65 — Structural Analysis Interop Foundation + RAM Elements Adapter
+Workflow: V2
+Priority: HIGH
+Authorization: F4-D ONLY
+1. Decisión del Owner
+D-09 = APPROVED.
+Apruebo expresamente la declaración de conformidad técnica de `docs/initiatives/I-65-f4-d09-signoff-f4d-request.md`, publicada en `9f6fff6e`.
+La aprobación se limita al modelo analítico del piloto REF-CANT-01 y a la verificación de equivalencia de transferencia entre RackCad y RAM Elements.
+La aprobación no representa:
+
+* Certificación de las propiedades del material fabricado.
+* Validación de resistencia o estabilidad estructural.
+* Aprobación de diseño de un rack real.
+* Autorización para ampliar el alcance a otros sistemas o secciones.
+
+2. Identidad y fecha del verificador
+Para ambas filas utiliza exactamente:
+`verifiedBy = "Mario Pérez — Owner / Engineering Validator"`
+`verifiedOn = "2026-10-16"`
+Conserva ambos valores de forma idéntica en las dos filas.
+Esta declaración corresponde a la aprobación emitida por el Owner el 16 de octubre de 2026.
+3. Propiedades aprobadas
+D-01 a D-08 = APPROVED.
+Acepto para el piloto:
+W12X26
+
+* SectionId: `AISC-W-W12X26`
+* Sección RAM: `W 12X26`
+* Tabla: `W`
+* País: `United States`
+* Material RAM: `A992 Gr50`
+* E = 29,000 ksi
+* ν = 0.30
+* Peso unitario de referencia = 490 pcf
+
+HSS 4X4X1/4
+
+* SectionId: `AISC-HSS-RECT-HSS4X4X_250`
+* Sección RAM: `HSS_SQR 4X4X1_4`
+* Tabla: `HSS_SQR`
+* País: `United States`
+* Material RAM: `A500 GrC rectangular`
+* E = 29,000 ksi
+* ν = 0.30
+* Peso unitario de referencia = 490 pcf
+
+Para ambas filas:
+
+* `shearModulus = null`.
+* Utiliza íntegramente la Variante B de `source`, custodiada en `d08-rows-final.json`.
+* Mantén documentada DIF-01, diferencia de peso unitario de −0.62 %, exclusivamente informativa para la prueba sin peso propio.
+* Conserva la limitación de que la edición formal del catálogo de RAM no está verificada.
+
+No cambies otras propiedades, tolerancias ni hipótesis de modelado.
+4. Autorización D-10
+D-10 = APPROVED.
+F4-D-SECTION-MAP-VERIFIED = IMPLEMENTATION AUTHORIZED.
+Autoriza ejecutar el contrato existente:
+`docs/initiatives/I-65-f4-d-mapping-verified-contract.md`
+Utiliza la versión revisada en `9f6fff6e` y sus invariantes D-INV-01..07.
+La modificación funcional debe limitarse a:
+
+1. Cambiar las dos filas de `proposed` a `verified`.
+2. Incorporar los valores `verifiedBy` y `verifiedOn` aprobados.
+3. Conservar literalmente los valores estructurales y textos `source` validados.
+4. Ajustar únicamente las pruebas explícitamente autorizadas que dependen del estado anterior.
+5. Confirmar que el modelo REF-CANT-01 puede producir `Valid` con la tabla verificada.
+
+No modificar el adaptador, su arquitectura ni código dentro de `src/`.
+5. Presupuesto autorizado
+Codex invocation cap = 48.
+Conserva las 41 invocaciones consumidas.
+max_attempts = 9.
+Conserva `attempts = 6`.
+No reinicies contadores.
+Autoriza hasta tres Workers y una revisión independiente del Architect, dentro del presupuesto disponible y del protocolo I-61.
+6. Ejecución y verificaciones
+Aplica Workflow V2 e I-61:
+
+1. Preflight de rama, Freeze, ADR-0050 y conflictos.
+2. Registro literal de esta autorización.
+3. Emisión y validación del contrato F4-D.
+4. Planificación del Controller.
+5. Worker con RED/GREEN.
+6. Verificación del Controller.
+7. Controles negativos.
+8. Core Full.
+9. CI sobre SHA exacto.
+10. Revisión de conformidad cuando corresponda.
+11. Custodia y cierre de F4-D.
+
+Conserva los controles K1–K6 y C-12 sobre los checkouts y el entorno.
+Si aparece un diagnóstico adicional distinto de los previstos, detente y presenta su causa antes de ampliar el alcance.
+7. Restricciones
+No ejecutar AutoCAD ni RAM Elements.
+No modificar el Freeze ni ADR-0050.
+No cambiar código de I-52, I-62, I-64 o ID30.
+No iniciar F5, F6 o F7.
+No declarar Candidato de hito ni GATE PASS de F4.
+No generar automáticamente el paquete definitivo en RAM.
+No repetir el smoke con filas `proposed`; ya está aprobado.
+8. Entregable
+Al completar F4-D, entrega:
+
+1. SHA de código, RED/GREEN y CI.
+2. Diff exacto de las dos filas.
+3. Valores finales de `verifiedBy` y `verifiedOn`.
+4. Resultado del lector y la generación del modelo REF-CANT-01.
+5. Pruebas Core y controles negativos.
+6. Veredicto del Controller y Architect.
+7. Consumo de Codex e intentos.
+8. Desviaciones y riesgos.
+9. Estado del nuevo DLL y de la tabla distribuida.
+10. Recomendación para el segundo smoke y la primera generación válida del paquete RAM.
+
+D-09 = APPROVED.
+D-10 = APPROVED.
+F4-D IMPLEMENTATION = AUTHORIZED.
+AUTOCAD EXECUTION = NO.
+RAM EXECUTION = NO.
+F4 GATE PASS = NO.
+Continúa autónomamente dentro del alcance autorizado. Detente al cerrar F4-D y solicita aprobación antes de utilizar el nuevo DLL en AutoCAD.

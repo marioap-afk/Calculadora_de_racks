@@ -1,0 +1,3 @@
+== tabla objetivo : Outcome Valid; diagnosticos 0
+   row AISC-HSS-RECT-HSS4X4X_250 | United States/HSS_SQR/HSS_SQR 4X4X1_4 | ASTM-A500-GRC -> A500 GrC rectangular | status Verified verified=True | E 29000 ksi | nu 0.3 | G null | W 490 pcf | source chars 1001 | verifiedBy chars 43 non-ascii [U+00E9,U+2014] | verifiedOn 2026-10-16
+   row AISC-W-W12X26 | United States/W/W 12X26 | ASTM-A992-GR50 -> A992 Gr50 | status Verified verified=True | E 29000 ksi | nu 0.3 | G null | W 490 pcf | source chars 860 | verifiedBy chars 43 non-ascii [U+00E9,U+2014] | verifiedOn 2026-10-16
