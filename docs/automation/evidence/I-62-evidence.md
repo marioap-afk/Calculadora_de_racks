@@ -4415,3 +4415,11 @@ solo desde artefactos custodiados.
   auditor añade una comprobación del esquema en proceso además de la llamada sin cambio; el esquema admite también BLOCKED — OWNER DECISION y
   NOT_ACCREDITED; el cierre (337 archivos) deja fuera las salidas de las revisiones de las rondas 1 y 2 y el dictamen de B-min. Ningún modelo ni CLI
   de modelos se ejecutó.
+
+## 171. Decisiones §86: revisión formal final acotada de A-6 ronda 4 autorizada
+
+- Objeto: A-6 ronda 4, blob `4bc919dd`, commit `d66f7f4b` (evidencia §169); kit `R20261014T180556Z-5e02` (evidencia §170). La autorización se fija
+  en la compuerta 11 con `pin_authorization.py` sobre el texto registrado de esta sección, el kit se vuelve a congelar y custodiar, y el único cambio
+  admitido es el de las tres constantes de fijación.
+- Preflight completo (incluidos los recursos de I-64 y el estado del checkout principal tras el incidente de la evidencia §169) y una sola
+  invocación con `python -B kit/launch.py`, tope de 3 600 s, sin reintento. El auditor congelado se ejecuta y su resultado se conserva sin cambios.

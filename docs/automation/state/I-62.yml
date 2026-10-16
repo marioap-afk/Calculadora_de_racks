@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §85; evidencia §168-§170) — A-6 ronda 4 PROPUESTA (blob 4bc919dd, commit d66f7f4b), guardas run PASS; kit de la revisión acotada a A62-A6R3-R1 congelado y custodiado sin lanzar (R20261014T180556Z-5e02, manifiesto 6c8807be), con la compuerta de autorización pendiente; esperar disposición del Coordinator que autorice la revisión (fijarla, volver a congelar, prueba en seco, UNA vez python -B kit/launch.py); sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §86; evidencia §171) — fijar §86 en la compuerta 11 del kit R20261014T180556Z-5e02, volver a congelar y custodiar; preflight completo y UNA revisión formal acotada de A-6 ronda 4 (blob 4bc919dd) con python -B kit/launch.py, tope 3 600 s, sin reintento; auditor congelado conservado; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
