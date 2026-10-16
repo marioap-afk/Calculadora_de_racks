@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-D-SECTION-MAP-VERIFIED",
+  "RunId": "R20261016T163750Z-f190",
+  "DelegationRunId": "R20261016T153804Z-5fdd",
+  "WorkRunId": "R20261016T154337Z-8aed",
+  "Attempt": 7,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED, DeathConfirmed=true y OutputWrittenUtc=2026-10-16T16:01:14Z; la cesión fue 15:43:47Z–16:01:35Z. El releído exit-reread-work.txt indica que git.exe PID 36848 ya no estaba vivo."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json identifica TaskId F4-D-SECTION-MAP-VERIFIED, Attempt 7, RunId R20261016T154337Z-8aed y DelegationRunId R20261016T153804Z-5fdd; WorkerStatus=IMPLEMENTATION_COMPLETE. El registro de trabajo apunta al ExpectedHandoffPath resuelto con ese WorkRunId."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Git confirma AuthorityRevision e886b5577ad565ef4a55bb2e535b7d463f345b79 y MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453. La comparación de las rutas EXTERNAL declaradas entre MainSha, AuthorityRevision y BaseSha no muestra cambios; las autoridades UNIT_DOC/UNIT_CHANGE se leyeron en AuthorityRevision."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación elemento por elemento de delegation.json con gate-contract.json: AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions, RequiredTests y Authorities coinciden. RequiredTests exige FullyQualifiedName~RackCad.Tests.StructuralAnalysis, MinSelected=1789 y ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD = 51fc82f131a287ef66458a433c614c389033769d; rama architecture/interop-analisis-estructural; refs/remotes/origin/architecture/interop-analisis-estructural tiene el mismo SHA. BaseSha c487262fca9536bc769b6a6b704b82d556fce8fb es ancestro de RedSha 2188a1d7b1b42c81076634221e00732193d0678f y RedSha es ancestro de CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Entry HeadSha=LsRemoteSha=51fc82f131a287ef66458a433c614c389033769d y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git ls-remote no pudo conectar en este entorno; se usaron los RemoteFacts conforme a la instrucción."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only c487262fca9536bc769b6a6b704b82d556fce8fb HEAD da tres rutas: assets/structural-analysis/ram-elements/section-material-map.json y las pruebas StructuralAnalysisPluginCommandProductTableTests.cs y StructuralAnalysisSectionMapVerifiedTests.cs. Cada ruta coincide exactamente con una entrada AllowedWriteScope de delegation.json; ninguna coincide con ForbiddenWriteScope. El diff RedSha..CurrentSha solo contiene la tabla."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch muestra la rama esperada sin cambios locales. git check-ignore confirma que artifacts/orchestration/.../inputs/worker-handoff.json está bajo artifacts/ ignorado. Las pruebas de paquete verifican creación en memoria y ausencia de escrituras a disco."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts registra la corrida push 38928508008 para CurrentSha, ref exacta refs/heads/architecture/interop-analisis-estructural y los cuatro jobs requeridos en success. TRX Core actual: 14390/14390 aprobadas; TRX UI: 1637 aprobadas, 0 fallidas; las 17 NotExecuted corresponden a atributos Skip. La corrida push 38927278590 para RedSha tiene Core en failure; su TRX muestra 13 fallos de pruebas y 0 errores de compilación."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Core actual: selección StructuralAnalysis=1795 (mínimo 1789), 1795 aprobadas, 0 fallidas. TRX RED: 1795 seleccionadas, 1782 aprobadas y 13 fallidas por aserciones/resultados Unsupported, no por compilación; coincide con TestResults de la entrega. git diff --name-only ChainBaseSha e886b5577ad565ef4a55bb2e535b7d463f345b79 RedSha -- tests/ da cinco ChainRedFiles: StructuralAnalysisPluginCommandProductTableTests.cs, StructuralAnalysisRamElementsMapReaderTests.cs, StructuralAnalysisRamElementsPackageValidationTests.cs, StructuralAnalysisRamElementsTranslationTests.cs y StructuralAnalysisSectionMapVerifiedTests.cs. RedSha..CurrentSha no modifica pruebas ni esos ChainRedFiles. D-INV-01/02: StructuralAnalysisSectionMapVerifiedTests y RamElementsMapReaderTests comprueban filas, literales y lectura; el blob de la tabla del producto y el objetivo en AuthorityRevision coincide: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2. D-INV-03: pruebas de literales preservan 490 pcf, G null y tolerancia 0.3. D-INV-04: StructuralAnalysisSectionMapVerifiedTests comprueba REF-CANT-01 Valid, diagnósticos y huella sensible al campo; esa prueba y StructuralAnalysisPluginCommandProductTableTests verifican paquete Valid en memoria con ruta Windows absoluta fija. D-INV-05: PackageValidationTests y TranslationTests cubren precedencia y propagación con filas proposed. D-INV-06: las pruebas de paquete verifican ausencia de escrituras y contenido parcial. La prueba GREEN coincide con la entrega; guardas e INV-14 no se editaron y Core quedó verde."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD muestra los commits RED 2188a1d7 y GREEN 51fc82f1; ambos contienen literalmente el trailer declarado en Worker.Trailer: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. El registro identifica modelo efectivo claude-sonnet-5-5 y effort medium."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant declara ModelEffective=claude-sonnet-5-5 y EffortEffective=medium; coinciden con el modelo y effort solicitados en delegation.json. Notes informa cero avisos de límite."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "El escaneo de los campos libres de worker-handoff.json encontró una coincidencia con un término reservado de AUTOMATION_PLAN §16.10 en WorkCompleted."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes informa 0 denegaciones, 0 errores de herramienta y ninguna invocación de intérprete. La lista Exit.Processes registra python3.13.exe PID 20932; esto contradice la declaración de K5 de que no hubo intérpretes y motiva los stop conditions S-04 y C-08."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [
+    "S-04",
+    "C-08"
+  ],
+  "Findings": [
+    "WorkCompleted contiene un término reservado detectado por la comprobación de texto libre.",
+    "La foto Exit.Processes registra python3.13.exe PID 20932, creado durante la preparación de la cesión; el registro también declara que no hubo intérpretes. La evidencia operativa es contradictoria y activa S-04/C-08.",
+    "git ls-remote no fue accesible desde este entorno; Remote se verificó con los RemoteFacts registrados."
+  ],
+  "RecommendedNextAction": "Resolver con el Coordinator la contradicción operativa y retirar el término reservado de la entrega antes de una nueva verificación."
+}

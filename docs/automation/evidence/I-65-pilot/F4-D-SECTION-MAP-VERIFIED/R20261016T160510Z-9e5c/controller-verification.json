@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-D-SECTION-MAP-VERIFIED",
+  "RunId": "R20261016T160510Z-9e5c",
+  "DelegationRunId": "R20261016T153804Z-5fdd",
+  "WorkRunId": "R20261016T154337Z-8aed",
+  "Attempt": 7,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json registra Outcome COMPLETED y DeathConfirmed=true para el Worker. Sin embargo, Exit.Processes registra git.exe PID 36848 como unattributable antes de Cession.StartUtc; README §3.2 y AUTOMATION_PLAN §16.4 clasifican un proceso no atribuible como STOP P-02. El registro dice que terminó al releerlo aproximadamente dos segundos después, pero la cesión se inició y el Worker fue invocado después de haber observado esa condición."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe; Schema rackcad-worker-handoff/v1, TaskId F4-D-SECTION-MAP-VERIFIED, Attempt 7, DelegationRunId R20261016T153804Z-5fdd y RunId R20261016T154337Z-8aed coinciden. OutputWrittenUtc 2026-10-16T16:01:14Z es posterior a Cession.StartUtc 2026-10-16T15:43:47Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí las autoridades UNIT_DOC y UNIT_CHANGE en AuthorityRevision e886b5577ad565ef4a55bb2e535b7d463f345b79, incluida la tabla objetivo y ADR-0050; leí las autoridades EXTERNAL en MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git merge-base --is-ancestor AuthorityRevision BaseSha c487262fca9536bc769b6a6b704b82d556fce8fb terminó con código 0."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json coinciden en Unit I-65, Gate F4, TaskId, AuthorityRevision, MainSha, ramas, AllowedWriteScope y RequiredTests. relay-record-planning.json registra A1-A8 en pass; RequiredTests exige FullyQualifiedName~RackCad.Tests.StructuralAnalysis, MinSelected 1789 y ExpectRed true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD, refs/heads/architecture/interop-analisis-estructural y refs/remotes/origin/architecture/interop-analisis-estructural devuelven 51fc82f131a287ef66458a433c614c389033769d. git merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha terminaron con código 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "git ls-remote origin refs/heads/architecture/interop-analisis-estructural falló por conectividad a github.com. Según la alternativa indicada, relay-record-work.json RemoteFacts registra CurrentRun como push de refs/heads/architecture/interop-analisis-estructural en CurrentSha 51fc82f131a287ef66458a433c614c389033769d, con conclusión success; OriginMainSha es bb0d5522e8411f66a51fdfb3f1f0d0514b737453. El SHA local y la referencia remota local coinciden con esos datos."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha produjo StructuralAnalysisPluginCommandProductTableTests.cs y StructuralAnalysisSectionMapVerifiedTests.cs; cada ruta está cubierta por su entrada exacta en delegation.json AllowedWriteScope y ninguna aparece en ForbiddenWriteScope. git diff --name-only RedSha CurrentSha produjo solo assets/structural-analysis/ram-elements/section-material-map.json. ChainRedFiles, obtenidos con git diff --name-only e886b5577ad565ef4a55bb2e535b7d463f345b79 fe9b6720, son los cinco archivos de pruebas de F4-D; el diff RedSha..CurrentSha no los toca ni toca RT, cuyo conjunto tests/ es el mismo conjunto de cinco rutas."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short está vacío y HEAD es CurrentSha. git check-ignore -v sobre el artefacto de entrega devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun es push del SHA y rama exactos, con los cuatro jobs requeridos en success. Los TRX de CI coinciden con los SHA-256 del relevo: Core 14390/14390, 0 fallidas; UI total 1654, ejecutadas y superadas 1637, 0 fallidas. Las 17 NotExecuted de UI concuerdan con los 17 Skip indicados en las entradas. RedRun es push del RedSha; el job Core falló como se esperaba."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Los TRX muestran 1795 pruebas StructuralAnalysis seleccionadas en RED (1782 pasaron, 13 fallaron) y GREEN (1795 pasaron, 0 fallaron), superando MinSelected 1789. El TRX RED contiene fallos Assert.Equal/Assert.All y no fallos de compilación; sus 13 nombres concuerdan con TestResults. D-INV-01/02/03: StructuralAnalysisSectionMapVerifiedTests y las pruebas literales de StructuralAnalysisRamElementsMapReaderTests observan filas, valores, lector, E=29000 ksi, ν=0.3, G=null y 490 pcf; blob de la tabla en CurrentSha y de la tabla objetivo en AuthorityRevision es d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2. D-INV-04: las pruebas de REF-CANT-01, paquete en memoria y huella están en StructuralAnalysisSectionMapVerifiedTests y StructuralAnalysisPluginCommandProductTableTests y pasan en GREEN. D-INV-05: StructuralAnalysisRamElementsPackageValidationTests y StructuralAnalysisRamElementsTranslationTests conservan cobertura con fixtures proposed y quedan dentro de la selección verde. D-INV-06: las pruebas del paquete comprueban operación en memoria y ausencia de carpeta/archivo; la ruta fija declarada en la entrega se usa como opción y no como destino de publicación. D-INV-07 y controles operativos: relay-record-work.json registra K1/K2 sin cambios en checkout principal y otros worktrees, K3 con directorios informados, K5 sin intérpretes/AutoCAD/RAM ni E/S fuera del worktree, y C-12 sin operación de la sesión durante la cesión."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "El campo literal Worker.Trailer de worker-handoff.json es: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. git log --format=%B BaseSha..CurrentSha muestra ese trailer en los dos commits; el Worker efectivo registrado es claude-sonnet-5-5, effort medium."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra modelo efectivo claude-sonnet-5-5 y effort medium, iguales a ModelRequested y EffortRequested en worker-handoff.json y a la selección de la delegación; RoutingEnforcement es required."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json; no contienen ninguno de los términos o frases prohibidos por AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones y cero avisos de límite. La consulta local ls-remote fallida por conectividad quedó resuelta usando RemoteFacts, según la instrucción de la delegación; no queda una denegación de permisos o credenciales pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "StopCondition",
+  "TriggeredStopConditions": [
+    "P-02"
+  ],
+  "Findings": [
+    "La fotografía Exit del relevo contiene git.exe PID 36848 clasificado como unattributable. Aunque el registro dice que terminó antes de iniciar la cesión, §3.2 del README y §16.4 de AUTOMATION_PLAN clasifican la observación de un proceso no atribuible como STOP P-02; la invocación del Worker siguió adelante.",
+    "La consulta directa git ls-remote no fue posible por conectividad. RemoteFacts sí coincide con HEAD, la referencia remota local y la corrida push exitosa del CurrentSha.",
+    "La entrega declara TreeSha null en corridas locales porque se ejecutaron con cambios sin confirmar; la verificación de resultados de CI aquí se basa en las corridas push exactas y los TRX suministrados."
+  ],
+  "RecommendedNextAction": "Detener la secuencia y elevar el P-02 al Coordinator para que registre su resolución conforme a AUTOMATION_PLAN §16.11."
+}

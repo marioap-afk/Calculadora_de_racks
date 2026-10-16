@@ -1,5 +1,9 @@
 # I-65 — F4-D: contrato propuesto para actualizar las filas a `verified` (borrador; no emitido)
 
+> **Estado (2026-10-16): EMITIDO, EJECUTADO Y CERRADO.** Autorizado en las decisiones §62 (D-09 y D-10) y cerrado en §66: la tabla del
+> producto tiene las dos filas `verified` en `51fc82f1` (verificación del Controller `R20261016T161137Z-e795`, `EXECUTION_VERIFIED`). El texto
+> de abajo es la revisión `9f6fff6e` que el Owner autorizó; no cambia.
+
 Documento de la unidad (Coordinator, 2026-10-14), por la disposición del Owner «F4 Engineering Validation and Host Readiness» §2
 ([texto literal](../automation/decisions/I-65-owner-disposition-f4-validation-host-readiness.original.txt); decisiones
 [§49](../automation/decisions/I-65.md)).

@@ -1759,3 +1759,79 @@ Custodia:
 | `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/relay-record.json` | `F67C3B62F88DD0DE…` | `a5054dbe37cc` |
 | `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/analysis-p03.md` | `912BAD530BEAC363…` | `70f53517b4ac` |
 | `F4-D-SECTION-MAP-VERIFIED/R20261016T153224Z-5bb3/k-f4d-cplan-compare.json` | `D5EE2EED23590569…` | `f7bf6c77e753` |
+
+## 71. F4-D-SECTION-MAP-VERIFIED — corrección, verificación, controles, Architect y cierre (2026-10-16T16:43:54Z)
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261016T153804Z-5fdd` | PLANNING (intento 7, reemisión) | Codex `gpt-6-luna`/`high` (45) | A1-A8 `pass`; seis colecciones exactas; `claude-sonnet-5-5`/`medium`, DEBUGGING |
+| `R20261016T154337Z-8aed` | WORK (intento 7) | subagente `claude-sonnet-5-5`/`medium` (34 mensajes) | RED `2188a1d7`, GREEN `51fc82f1`; 17 min; 22 llamadas; 0 errores; 0 denegaciones; ningún intérprete; `IMPLEMENTATION_COMPLETE` |
+| `R20261016T160510Z-9e5c` | VERIFICATION | Codex (46) | `EXECUTION_BLOCKED`/STOP (P-02, `Termination`); 13/14 `pass`; resuelto por el Coordinator (falso positivo) |
+| `R20261016T161137Z-e795` | VERIFICATION (reverificación) | Codex (47) | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `51fc82f1` |
+| `R20261016T161516Z-fbf3` | CONTROL nc1 | Codex `gpt-6-luna`/`high` (48) | `EXECUTION_BLOCKED/STOP`, `FailureClass` `Identity`: **oráculo cumplido** |
+| `R20261016T163345Z-e1cd` | CONTROL nc2 | Codex `gpt-6-luna`/`high` (49) | `EXECUTION_BLOCKED/STOP`, `FailureClass` `Contract`: oráculo no cumplido en sentido estricto (DEV-I65-F4-24) |
+| `R20261016T163750Z-f190` | CONTROL nc3 | Codex `gpt-6-luna`/`high` (50) | `EXECUTION_BLOCKED/STOP`, `FailureClass` `FreeText`: oráculo no cumplido en sentido estricto (DEV-I65-F4-25) |
+| — | Architect | subagente `claude-opus-5-5`/`high` (103 mensajes) | CONFORMANT WITH OBSERVATIONS; 0 REQUIRED; 11 OPTIONAL; cesión 2026-10-16T16:19:36Z - 2026-10-16T16:27:58Z |
+
+- **CI:** RED `38927278590` (Core `failure`: 13 de 14390, por aserción); GREEN `38928508008` (4/4 `success`; Core 14390/14390; filtro
+  `FullyQualifiedName~RackCad.Tests.StructuralAnalysis` 1795/1795; UI 1 637 de 1 654). Las CI de los commits de sesión `2a1ed99a` y `c487262f` terminaron en `failure` porque contenían las tres pruebas del intento 6.
+- **Tabla:** blob `d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2` en `51fc82f1` = `f4d-table-target.json` en `e886b557`; diff frente a `d08-rows-final.json`: solo las 4 líneas de `verifiedBy`/`verifiedOn`.
+- **Controles del Owner:** K1/K2 antes y después de cada cesión (planificación, trabajo, dos verificaciones, nc1-nc3 y Architect) sin cambios en el checkout principal (2 151 rastreados, mismo resumen SHA-256) ni en los demás worktrees; K3 primera orden `pwd`; K4 alcance mecánico `pass`; K5 sin intérpretes, RAM, AutoCAD ni accesos fuera del worktree en el Worker y en el Architect.
+- **Procesos:** `git.exe` ilegibles en salidas y entradas, todos terminados al releerlos a los 2 s; su padre era un `python3.13.exe` descendiente de la sesión desde las 14:28Z (ya terminado), no un participante.
+- **Contadores:** Codex 50 de 52; `attempts` 7 de 9.
+
+Custodia:
+
+| Archivo (bajo `I-65-pilot/`) | SHA-256 transitorio | Blob |
+|---|---|---|
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153804Z-5fdd/gate-contract.json` | `1D30597A8C1997E8…` | `6d3f5a5f3ea8` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153804Z-5fdd/prompt.md` | `74FDA922E2BA1489…` | `411645fbc9fc` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153804Z-5fdd/delegation.json` | `39DA9FDB2D4C8284…` | `5458ce52ff97` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153804Z-5fdd/acceptance.json` | `F63ED8E87F2A0609…` | `73d1783fc942` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153804Z-5fdd/exactness.json` | `D0CBC2F19D9B1FBA…` | `de0f1687cb6b` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T153804Z-5fdd/relay-record.json` | `F9464614B572E0B4…` | `f025c14e10a6` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T154337Z-8aed/prompt.md` | `2A2643F56221DD29…` | `bab2a05a3ff9` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T154337Z-8aed/worker-handoff.json` | `139B23C35234BE16…` | `cba3fc27501b` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T154337Z-8aed/relay-record.json` | `C8C5BCFE58CE7FB1…` | `a810e69f45f1` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T154337Z-8aed/exit-reread.txt` | `E8BCF26FC237E178…` | `c3ec10768635` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T154337Z-8aed/k5-transcript-scan.json` | `D9D167B80A071688…` | `6bdd4719021e` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T154337Z-8aed/transcript-facts.json` | `AF3517E5FA951565…` | `c1b0a2a6fb31` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T160510Z-9e5c/prompt.md` | `CA575CF0E6C0D893…` | `d7cc46ce5400` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T160510Z-9e5c/controller-verification.json` | `E6582534FA9D0FFC…` | `c8c5a3c373d2` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T160510Z-9e5c/relay-record.json` | `E23D5634D0E8D665…` | `8980c4a7771d` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T160510Z-9e5c/coherence.txt` | `549CF2A09391A1D4…` | `28672c6afdc6` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T160510Z-9e5c/trx-summary.json` | `A2B68DC6B9A3BA51…` | `a4f1c0adedce` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T160510Z-9e5c/scope-mechanical.json` | `09E037A7222C0F7E…` | `f2b787f4e0ef` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T160510Z-9e5c/scope-mechanical-red.json` | `EA9243D08F85F96D…` | `5cecf52cc960` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T160510Z-9e5c/coordinator-dispositions-f4d-c.md` | `6407C6ABC96C91E3…` | `87cd3d1773e6` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/prompt.md` | `8E42CA65577E7878…` | `683b2ee1de93` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/controller-verification.json` | `C3732CA284E0873A…` | `f7f515ed3b1f` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/relay-record.json` | `C2461374DD92EC37…` | `3e7c84bd2f57` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/coherence.txt` | `B6BEA444F6DA957C…` | `2969a6fa566f` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/trx-summary.json` | `A2B68DC6B9A3BA51…` | `a4f1c0adedce` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/scope-mechanical.json` | `09E037A7222C0F7E…` | `f2b787f4e0ef` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/scope-mechanical-red.json` | `EA9243D08F85F96D…` | `5cecf52cc960` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/coordinator-dispositions-f4d-c2.md` | `EDB4298251F72F6F…` | `88ff4e7a03d7` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/analysis-p02.md` | `C1F0B8AB5621ED65…` | `cc38c2b1e267` |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/exit-reread-work.txt` | `E8BCF26FC237E178…` | `c3ec10768635` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/k-f4d-cplan2-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/k-f4d-cwork-compare.json` | `407468C0FEF5600D…` | `8dea6a51096e` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/k-f4d-cver-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/k-f4d-cver2-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/k-f4d-nc1-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/k-f4d-nc2-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/k-f4d-nc3-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED/R20261016T161137Z-e795/k-f4d-arch-compare.json` | `C088C85BFA563FB0…` | `f7bf6c77e753` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED-nc1/R20261016T161516Z-fbf3/prompt.md` | `1AB1DA569CF63BC2…` | `30bf7b20bdcb` |
+| `F4-D-SECTION-MAP-VERIFIED-nc1/R20261016T161516Z-fbf3/mutation.json` | `BAD195C5FC768A53…` | `a81c73469bf1` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED-nc1/R20261016T161516Z-fbf3/controller-verification.json` | `E45ED362CEC34E29…` | `aefa8981454e` |
+| `F4-D-SECTION-MAP-VERIFIED-nc1/R20261016T161516Z-fbf3/relay-record.json` | `97D64165DBE214A8…` | `96f253c3bae5` |
+| `F4-D-SECTION-MAP-VERIFIED-nc2/R20261016T163345Z-e1cd/prompt.md` | `347A9F307935C130…` | `bf9d6a5c6f8f` |
+| `F4-D-SECTION-MAP-VERIFIED-nc2/R20261016T163345Z-e1cd/mutation.json` | `097F965B71EEF33E…` | `e0b2c57a97e1` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED-nc2/R20261016T163345Z-e1cd/controller-verification.json` | `FC0DFA2497E70525…` | `30c72fb49a8a` |
+| `F4-D-SECTION-MAP-VERIFIED-nc2/R20261016T163345Z-e1cd/relay-record.json` | `3ED827487B0CDD94…` | `101cf8824657` |
+| `F4-D-SECTION-MAP-VERIFIED-nc2/R20261016T163345Z-e1cd/scope-mechanical.json` | `4EE52354A8CBECDF…` | `e3db9383041e` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED-nc3/R20261016T163750Z-f190/prompt.md` | `5DCFC8B84995CE83…` | `89727cc35362` |
+| `F4-D-SECTION-MAP-VERIFIED-nc3/R20261016T163750Z-f190/mutation.json` | `DA1F3B8B5E00512B…` | `511067defe3d` (fin de línea normalizado por Git) |
+| `F4-D-SECTION-MAP-VERIFIED-nc3/R20261016T163750Z-f190/controller-verification.json` | `479FE29E0100A4C0…` | `586a9787d6e9` |
+| `F4-D-SECTION-MAP-VERIFIED-nc3/R20261016T163750Z-f190/relay-record.json` | `6D520B4E2C61CAF4…` | `902e4363a8b3` |

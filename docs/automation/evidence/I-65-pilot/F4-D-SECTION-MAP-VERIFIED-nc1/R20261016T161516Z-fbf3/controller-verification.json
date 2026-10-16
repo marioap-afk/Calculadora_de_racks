@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-D-SECTION-MAP-VERIFIED",
+  "RunId": "R20261016T161516Z-fbf3",
+  "DelegationRunId": "R20261016T153804Z-5fdd",
+  "WorkRunId": "R20261016T154337Z-8aed",
+  "Attempt": 7,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, ExitCode=0, OutputWrittenUtc=2026-10-16T16:01:14Z posterior a Cession.StartUtc=15:43:47Z. exit-reread-work.txt: PID 36848 releído tras 2 s, alive=[] antes de abrir la cesión; D3 resuelve el P-02 previo como falso positivo."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente; TaskId=F4-D-SECTION-MAP-VERIFIED, RunId=R20261016T154337Z-8aed, DelegationRunId=R20261016T153804Z-5fdd, Attempt=7, rama y worktree coinciden con la delegación. OutputWrittenUtc es posterior al inicio de la cesión. La mutación de CurrentSha se evalúa en Identity."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí las autoridades desde Git en AuthorityRevision e886b5577ad565ef4a55bb2e535b7d463f345b79, incluida AUTOMATION_PLAN §16, README de agent-execution §8, contrato F4-D, decisiones I-65 §62, tabla objetivo, ADR-0050 y AGENTS.md. MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453 coincide con el registro."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé delegación y contrato: Authorities, AllowedWriteScope, ForbiddenWriteScope, RequiredTests y StopConditions coinciden; A1-A8 del registro de planificación están en pass. Filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysis, MinSelected=1789 y ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "La entrega declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; git cat-file -e no encuentra ese commit. En cambio, relay-record-work.json registra 51fc82f131a287ef66458a433c614c389033769d; git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural devuelven ese SHA. Base c487262f es ancestro de ese SHA y RedSha 2188a1d7 también; la rama y el worktree coinciden. La identidad de la entrega no coincide con Git."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "RemoteFacts del registro: LsRemoteSha=51fc82f131a287ef66458a433c614c389033769d y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453. Git confirma HEAD y origin/main con esos valores. No pude consultar git ls-remote en este entorno; usé RemoteFacts según lo indicado."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only c487262fca9536bc769b6a6b704b82d556fce8fb..51fc82f131a287ef66458a433c614c389033769d devuelve exactamente StructuralAnalysisPluginCommandProductTableTests.cs y StructuralAnalysisSectionMapVerifiedTests.cs; cada ruta coincide con su entrada exacta en delegation.json AllowedWriteScope y ninguna está en ForbiddenWriteScope. scope-mechanical.json confirma 2 archivos, pass=true, sin uncovered ni forbidden_hits. El diff del RED contiene además section-material-map.json, también permitido. scope-mechanical-red.json confirma 3 archivos cubiertos."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain está vacío. git check-ignore -v --no-index confirma que los artefactos bajo artifacts/orchestration/ están cubiertos por .gitignore:3 (artifacts/). La carpeta fija C:\\RackCad-F4D-NoExiste\\paquete-estacion-0 no existe (Test-Path=false) y está fuera del worktree."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 38928508008: event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=51fc82f131a287ef66458a433c614c389033769d; los cuatro jobs requeridos están en success. TRX Core: 14390/14390 pasaron; selección StructuralAnalysis=1795/1795. TRX UI: total 1654, 1637 pasaron, 0 fallaron; los 17 Skip constan como NotExecuted según la convención del logger. RedRun 38927278590 es push del RedSha 2188a1d7; el job Core falló con 13 fallidas del filtro y el TRX muestra aserciones, no errores de compilación; RedPart pass."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX de CurrentSha: 1795 seleccionadas del filtro, 1795 pasaron; cumple MinSelected=1789. TRX RED: 1795 seleccionadas, 1782 pasaron y 13 fallaron; fallas observadas por aserción (p. ej., esperado W, actual null; esperado Valid, actual Unsupported). git diff RED..CurrentSha -- tests/ está vacío. ChainRedFiles de e886b557..fe9b6720: StructuralAnalysisPluginCommandProductTableTests.cs, StructuralAnalysisRamElementsMapReaderTests.cs, StructuralAnalysisRamElementsPackageValidationTests.cs, StructuralAnalysisRamElementsTranslationTests.cs y StructuralAnalysisSectionMapVerifiedTests.cs. La corrección RED acreditada no modifica esas pruebas en el paso RED→GREEN.\nD-INV-01/02/03: StructuralAnalysisSectionMapVerifiedTests comprueba lector Valid, dos filas Verified y literales; las pruebas del MapReader cubren las filas y valores distribuidos. Blob de la tabla en CurrentSha d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, igual al blob de la tabla objetivo en AuthorityRevision. Los literales incluyen W/HSS_SQR, United States, E=29000 ksi, nu=0.3, shearModulus=null, 490 pcf, source y verificación aprobada; DIF-01 permanece informativo.\nD-INV-04: StructuralAnalysisSectionMapVerifiedTests cubre REF-CANT-01, paquete Valid en memoria y cambio de AnalysisInputFingerprint; StructuralAnalysisPluginCommandProductTableTests cubre la tabla distribuida y el paquete en memoria. D-INV-05: PackageValidation conserva precedencia Invalid sobre Unsupported con tabla proposed de fixture; Translation conserva propagación Unsupported con proposed de fixture. D-INV-06: pruebas de paquete verifican el caso en memoria y ausencia de escritura en la carpeta fija. D-INV-07 y controles K1/K2/K3/K5 constan en relay-record-work.json; los guardas no se modifican. INV-14: el diff neto solo cambia dos pruebas y no modifica guardas."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B c487262f..51fc82f devuelve ambos commits de la entrega; cada cuerpo contiene literalmente `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`, igual al Worker.Trailer declarado y coherente con el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5/medium; relay-record-work.json registra modelo efectivo claude-sonnet-5-5 y effort medium. Sin desviaciones declaradas."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Escaneé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json contra los términos de AUTOMATION_PLAN §16.10; no encontré coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra 22 llamadas de herramienta, 0 errores de herramienta, 0 denegaciones, 0 avisos de límite y ninguna invocación de intérprete. No hay denegaciones u órdenes fallidas pendientes en las señales del relevo."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El control de entrada mutó el CurrentSha de la entrega a deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, que no existe en Git; el SHA real del relevo y de HEAD es 51fc82f131a287ef66458a433c614c389033769d.",
+    "La comprobación de alcance sobre el SHA real muestra dos archivos de pruebas permitidos; CI y TRX respaldan la cadena RED/GREEN del trabajo.",
+    "La consulta local de ls-remote no estuvo disponible; RemoteFacts del relevo aporta el SHA remoto y OriginMainSha."
+  ],
+  "RecommendedNextAction": "Reemitir la entrada de control con CurrentSha=51fc82f131a287ef66458a433c614c389033769d y volver a evaluar Identity."
+}
