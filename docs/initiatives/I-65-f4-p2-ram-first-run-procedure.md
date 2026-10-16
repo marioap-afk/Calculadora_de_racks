@@ -6,6 +6,8 @@ Documento de la unidad (Coordinator, 2026-10-16), por la disposición del Owner 
 §2-§3 (pasos D-F), el [procedimiento manual de `REF-CANT-01`](I-65-f4-ref-cant-01-manual-procedure.md), la
 [resolución CMB-3](I-65-f4-od-f4-14-combinations.md) y la experiencia de [M-05c](../automation/evidence/I-65-f4/m05c/m05c-report.md).
 
+> **Estado (2026-10-16): EJECUTADO** (decisiones §72-§73; [informe](../automation/evidence/I-65-f4/p2-R20261016T2147Z/p2-report.md)): construcción, lectura de vuelta y comparador PASS. Texto original de preparación:
+>
 > **Estado: PREPARADO. RAM EXECUTION = NOT YET AUTHORIZED. AUTOCAD = NO.** Nada de este documento se ha ejecutado en RAM. La preparación
 > solo leyó archivos del paquete, de la instalación de RAM, del Config.ini de usuario y de los servicios del sistema, y escribió una
 > comparación en `D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-prep\` (fuera del repositorio).

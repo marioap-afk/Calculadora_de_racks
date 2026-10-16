@@ -1,0 +1,195 @@
+{
+ "source": "C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural\\docs\\initiatives\\I-65-f4-ref-cant-01-manual-procedure.md",
+ "units_interface": "Ingles (ft, kip) sin cambios de configuracion",
+ "restraints": {
+  "COL.FOOT": "dx dy dz rx ry rz",
+  "otros": "dx ry rz"
+ },
+ "releases": "ninguna",
+ "loadCase": {
+  "id": "REF1",
+  "category": "DL (la interfaz no ofrece Other; informativa)",
+  "selfWeight": "no",
+  "combinations": 0
+ },
+ "nodes": [
+  {
+   "n": 1,
+   "desc": "COL.FOOT",
+   "x_in": 0.0,
+   "y_in": 0.25,
+   "z_in": 6.1,
+   "x_ft": "0.00000000",
+   "y_ft": "0.02083333",
+   "z_ft": "0.50833333"
+  },
+  {
+   "n": 2,
+   "desc": "ARM.1.PositiveY.J",
+   "x_in": 0.0,
+   "y_in": 20.26716169689737,
+   "z_in": 6.1,
+   "x_ft": "0.00000000",
+   "y_ft": "1.68893014",
+   "z_ft": "0.50833333"
+  },
+  {
+   "n": 3,
+   "desc": "ARM.2.PositiveY.J",
+   "x_in": 0.0,
+   "y_in": 48.267161696897375,
+   "z_in": 6.1,
+   "x_ft": "0.00000000",
+   "y_ft": "4.02226347",
+   "z_ft": "0.50833333"
+  },
+  {
+   "n": 4,
+   "desc": "ARM.3.PositiveY.J",
+   "x_in": 0.0,
+   "y_in": 76.26716169689738,
+   "z_in": 6.1,
+   "x_ft": "0.00000000",
+   "y_ft": "6.35559681",
+   "z_ft": "0.50833333"
+  },
+  {
+   "n": 5,
+   "desc": "COL.TOP",
+   "x_in": 0.0,
+   "y_in": 90.75,
+   "z_in": 6.1,
+   "x_ft": "0.00000000",
+   "y_ft": "7.56250000",
+   "z_ft": "0.50833333"
+  },
+  {
+   "n": 6,
+   "desc": "ARM.1.PositiveY.TIP",
+   "x_in": 0.0,
+   "y_in": 21.810300688090436,
+   "z_in": -36.22609804415268,
+   "x_ft": "0.00000000",
+   "y_ft": "1.81752506",
+   "z_ft": "-3.01884150"
+  },
+  {
+   "n": 7,
+   "desc": "ARM.2.PositiveY.TIP",
+   "x_in": 0.0,
+   "y_in": 49.81030068809044,
+   "z_in": -36.22609804415268,
+   "x_ft": "0.00000000",
+   "y_ft": "4.15085839",
+   "z_ft": "-3.01884150"
+  },
+  {
+   "n": 8,
+   "desc": "ARM.3.PositiveY.TIP",
+   "x_in": 0.0,
+   "y_in": 77.81030068809044,
+   "z_in": -36.22609804415268,
+   "x_ft": "0.00000000",
+   "y_ft": "6.48419172",
+   "z_ft": "-3.01884150"
+  }
+ ],
+ "members": [
+  {
+   "m": 1,
+   "desc": "COL.1",
+   "I": 1,
+   "J": 2,
+   "length_in": 20.01716169689737,
+   "section": "W 12X26",
+   "material": "A992 Gr50",
+   "rotation": -90.0
+  },
+  {
+   "m": 2,
+   "desc": "COL.2",
+   "I": 2,
+   "J": 3,
+   "length_in": 28.0,
+   "section": "W 12X26",
+   "material": "A992 Gr50",
+   "rotation": -90.0
+  },
+  {
+   "m": 3,
+   "desc": "COL.3",
+   "I": 3,
+   "J": 4,
+   "length_in": 28.0,
+   "section": "W 12X26",
+   "material": "A992 Gr50",
+   "rotation": -90.0
+  },
+  {
+   "m": 4,
+   "desc": "COL.4",
+   "I": 4,
+   "J": 5,
+   "length_in": 14.48283830310262,
+   "section": "W 12X26",
+   "material": "A992 Gr50",
+   "rotation": -90.0
+  },
+  {
+   "m": 5,
+   "desc": "ARM.1.PositiveY",
+   "I": 2,
+   "J": 6,
+   "length_in": 42.35421884050472,
+   "section": "HSS_SQR 4X4X1_4",
+   "material": "A500 GrC rectangular",
+   "rotation": 0.0
+  },
+  {
+   "m": 6,
+   "desc": "ARM.2.PositiveY",
+   "I": 3,
+   "J": 7,
+   "length_in": 42.35421884050472,
+   "section": "HSS_SQR 4X4X1_4",
+   "material": "A500 GrC rectangular",
+   "rotation": 0.0
+  },
+  {
+   "m": 7,
+   "desc": "ARM.3.PositiveY",
+   "I": 4,
+   "J": 8,
+   "length_in": 42.35421884050472,
+   "section": "HSS_SQR 4X4X1_4",
+   "material": "A500 GrC rectangular",
+   "rotation": 0.0
+  }
+ ],
+ "loads": [
+  {
+   "id": "P1",
+   "member_desc": "ARM.1.PositiveY",
+   "member": 5,
+   "value_lbf": -1000.0,
+   "value_kip": "-1.000000000",
+   "percent": "57.501282"
+  },
+  {
+   "id": "P2",
+   "member_desc": "ARM.2.PositiveY",
+   "member": 6,
+   "value_lbf": -2000.0,
+   "value_kip": "-2.000000000",
+   "percent": "36.251923"
+  },
+  {
+   "id": "P3",
+   "member_desc": "ARM.3.PositiveY",
+   "member": 7,
+   "value_lbf": -1102.311310924388,
+   "value_kip": "-1.102311311",
+   "percent": "78.750641"
+  }
+ ]
+}

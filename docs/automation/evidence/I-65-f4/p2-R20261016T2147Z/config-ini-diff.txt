@@ -1,0 +1,29 @@
+Config.ini de usuario de RAM: lineas que difieren (antes '-', despues '+'); antes 2505ca6e50eb722d418085f4b4382693d8ac1f894fb1fdfac51272f1e3a6282e, despues 2c5939572c66032fc5ecf8204c5b4d9dc6f8d0efb7695eacfc2c0c1ea3489d4a
+- accLoadConditionsManager=4
+- accPythonConsole=4
+- accQANew=1
+- accQAUndo=3
+- AccSelectAllElements=1
+- accUnitSystem=1
+- PythonScripts=D:\r65-m05c\R20261014T015051Z\mp
+- frmInfoTablesDataBaseName=
++ accConfigureUnits=1
++ AccHeClipboardPaste=1
++ accLoadConditionsManager=5
++ accLoads=3
++ accLocalAxes=2
++ accPythonConsole=7
++ accQANew=3
++ accQAUndo=4
++ AccSelectAllElements=4
++ accUnitSystem=2
++ panDecreaseFontSize=1
++ panIncreaseFontSize=1
++ PythonScripts=D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-R20261016T2147Z\dump-man
++ [DlgGeneralConfiguration]
++ 3DViewFontZoom=1
++ frmInfoTablesRecordName=Alaska_Cedar_SelectStr
++ frmInfoTablesTableName=Dimension Lumber
++ frmInfoTablesDataBaseName=Australia
++ frmInfoTablesRecordName=AS_BT 75BT7.0
++ frmInfoTablesTableName=AS_BT

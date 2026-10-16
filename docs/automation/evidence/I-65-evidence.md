@@ -1941,3 +1941,31 @@ Custodia:
 
 - Paquete sin cambios (21:12Z): `19fba962…`, `d9b41aab…`, `25f48e7f…`; `ram-readback.json` inexistente.
 - Codex 50 de 52; `attempts` 7 de 9.
+
+## 77. P2 ejecutada (2026-10-16T22:20:55Z)
+
+- Orden: «P2 — First Real RAM Elements Transfer and Equivalence Test» (decisiones §72-§73). Ejecutor: Coordinator con Computer Use; sin AutoCAD, Codex ni Workers.
+- Corrida local: `D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-R20261016T2147Z\` (Config.ini antes/después, herramienta congelada, volcados, capturas).
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/p2-prep/host-coordination-p2.md` | `875502206EEF54BE46322817EF64BCCFCA69D09F53DB01793FC98D9B8A2D15B9` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/comparison-console.txt` | `EC1C4A79915590072DDF49A0ACFE7D09B8F83B6D9B52128409B33A0799FD4D6A` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/comparison-report.json` | `D3C669AE875374401FC5D8B2BA7818E457A3EB58C23F65178B86A8BB22D207ED` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/config-ini-diff.txt` | `D68E6CDD8001877EF4A03CED7D1BFD553DE7B2CD6E6863668B432CD38930418A` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/generated-rackcad-ram-dump.py.txt` | `D30C9802589AA50FEE79C72EA38B013B17F5F854E1D288A1C4C8E72028B1ED0E` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/generated-ram-dump.json` | `F5789D1CE923A648B77B192571C7271AC40901043AE92301E443624E4F664BE0` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/manual-entry-sheet.json` | `BEEFA05491491A18D6B944BF72B7E5D80C9FDCCCFA2196B174EA3C44F1DDAE77` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/manual-rackcad-ram-dump.py.txt` | `AF26248953F033CCAF82D9435B85C282B7BD647E532D2642D86D9E3322D47F29` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/manual-ram-dump.json` | `C4A98FB0EA798031DE2B3052D81EAE89F42B731A92F06DBFA97F148ADE9BA23B` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/p2-manual-entry-sheet.py.txt` | `2E518C0073B88C5BEA706F407DC0F8FCAB0F412D114DAA42C9237038DEECA307` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/p2-preflight.ps1.txt` | `F6446C485B95B4FCF901702B9379572AF9294C04F697090F3C0BC7B8E78DCC59` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/p2-report.md` | `B2F368A98CEB8997D0E017124AD2C54048694FB8AD9E1744B7281397E125C148` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/post.txt` | `573804D62128B40FAEBEF2199D4F01DE82B1274605BBC7610A19A7ABFA4C19C1` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/preflight.txt` | `3205DDEF62368B071C592C2C0E633DD0218AA48CD466CC402BD33E4061D5621F` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/ram-readback.json` | `E622F429CAC805BB7CD5F07B4E377833AE79AB26297AE20E2C400AF2B5E91511` |
+
+- Capturas: 30 archivos en `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/captures/` (resumen SHA-256 de nombre+hash `8524D0C35200750A5FBC899D330E68E95269DC864F900F7340F917BEADAB0001`).
+- Paquete después: `manifest.json` `19FBA962…`, `rackcad-ram-build.py` `D9B41AAB…`, `structural-loads.json` `25F48E7F…` (sin cambios) + `ram-readback.json` `E622F429…`.
+- Codex 50 de 52; `attempts` 7 de 9.
