@@ -4442,3 +4442,12 @@ solo desde artefactos custodiados.
 - **Host** (`host-checks.json`): I-64 sin actividad observable (worktree limpio en `09f2f1c3`, sin AutoCAD, dotnet, MSBuild ni testhost); el
   checkout principal sin alteración tras el incidente de la evidencia §169 (limpio, HEAD `95690c28` con el último movimiento del reflog el
   2026-09-30, `origin/main` local y remoto `bb0d5522`).
+
+## 173. Decisiones §87: caracterización de claude-cli 2.1.299 y recuperación del transporte del kit de A-6 ronda 4
+
+- El STOP de la evidencia §172 se acepta y se conserva. Se caracteriza, en solo lectura y con las mismas sondas que la caracterización
+  R20261008T183600Z-char (decisiones §56, punto 7: C1 lectura y salida estructurada, C2 terminación, C3 la plantilla exacta del kit con
+  `--add-dir`), el binario `claude-cli` 2.1.299 que instaló la app de escritorio. Sin ELIGIBLE demostrado: STOP.
+- Con la caracterización conforme: el kit `R20261014T180556Z-5e02` actualiza solo la identidad del binario y sus referencias de transporte, con
+  un clon nuevo que contenga el registro de caracterización, recalcula el manifiesto, repite la autoprueba, las guardas y las comprobaciones de
+  identidad afectadas, y se congela y custodia. Una sola revisión, con `python -B kit/launch.py`, si la autorización sigue siendo aplicable.
