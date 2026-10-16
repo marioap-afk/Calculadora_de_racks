@@ -7,7 +7,7 @@ automation_state:
   state: waiting
   gate: F4
   attempts: 7
-  next_action: Owner: disposiciones para READY-03 (A65-F4R-07/02, A65-F4D-02/03/04/05/09, A65-F1-06, estrategia del modelo manual A/B, OD-F4-11), autorizacion de la revision del Architect (READY-06) y orden de declarar el Candidato y ejecutar la validacion final (W1 AutoCAD, W2 RAM).
+  next_action: Coordinator: revision de conformidad del Architect sobre 5a5ca577 (decisiones §75) y propuesta de declaracion del Candidato; sin AutoCAD, RAM ni GATE PASS de F4.
   last_evidence_commit: 51fc82f131a287ef66458a433c614c389033769d
 execution_context:
   mode: manual
@@ -15,7 +15,7 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F4
-  next_role: Owner
-  implementation_authorization: NINGUNA VIGENTE; P2 ACCEPTED; F4 FINAL CANDIDATE PREPARATION hecha (decisiones §74); FINAL VALIDATION EXECUTION = NO; RAM = NO; AUTOCAD = NO; F4 GATE PASS = NO
-  owner_decisions_open: [disposicion de A65-F4R-07, A65-F4R-02, A65-F4D-02/03/04/05/09 y A65-F1-06, estrategia del modelo manual (A reutilizar volcado P2 / B guardar referencia), OD-F4-11, autorizacion de la revision del Architect (READY-06), declaracion del Candidato de hito, autorizacion de la validacion final OV-I65-01 y 03..07 con ventanas W1 y W2]
+  next_role: Architect
+  implementation_authorization: ARCHITECT CONFORMANCE REVIEW = AUTHORIZED (solo lectura, 5a5ca577); CANDIDATE DECLARATION = PENDING; FINAL AUTOCAD / RAM VALIDATION = NOT AUTHORIZED; F4 GATE PASS = NO
+  owner_decisions_open: [declaracion formal del Candidato de hito 5a5ca577 (tras la conformidad del Architect), autorizacion de la validacion final OV-I65-01 y 03..07 con ventanas W1 y W2]
   not_authorized: [implementacion nueva, cambios en src/, alterar el checkout principal, superar 52 invocaciones de Codex o max_attempts 9, AutoCAD, NETLOAD, nuevas compilaciones, reintentos de generacion, corregir el validador sin orden, corridas en RAM Elements, paquete definitivo de RAM, Candidato de hito, GATE PASS de F4, F5, F6, F7, capacidades fuera de V1, cambios del Freeze o de ADR-0050, codigo de I-52, I-62, I-64 o ID30, infraestructura de I-62, integración con Workspace, interfaz gráfica]
