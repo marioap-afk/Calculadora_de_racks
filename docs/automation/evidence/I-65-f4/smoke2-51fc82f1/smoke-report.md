@@ -144,7 +144,7 @@ Resultado del DIFF: **INFORMAR**. I-52 decide si afecta a su tupla (AC2-06); `VI
 | AC2-03 modelo `Valid`, salida no parcial | **cumple** |
 | AC2-04 mismo SHA-256 del DLL en BASELINE, antes de NETLOAD y en POST | **cumple** |
 | AC2-05 AutoCAD cerrado sin guardar; RAM nunca iniciado; nada analizado | **cumple** |
-| AC2-06 DIFF `LIMPIO`, o `INFORMAR` aceptado por I-52 | **pendiente** de I-52 (`INFORMAR`) |
+| AC2-06 DIFF `LIMPIO`, o `INFORMAR` aceptado por I-52 | **cumple a nivel de la sesión de I-52**: recomprobación sin deriva; `INFORMAR` registrado como observado, sin acción (custodia §13); su Coordinator puede pronunciarse |
 | AC2-07 K1/K2 sin cambios; avisos previo y de cierre | **cumple** |
 
 ST2-07 (comprobación del validador en `FAIL`) se activó: registrado, sin repetir la generación ni corregir el validador; decide el Owner.

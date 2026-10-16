@@ -246,5 +246,14 @@ I-65 → I-62: AVISO DE CIERRE — la ventana de AutoCAD de I-65 ha terminado; a
 | Parte | Estado |
 |---|---|
 | Host | **liberado por I-65** (`acad.exe` = 0 desde ≤ 19:27:08Z); ninguna ventana posterior autorizada por I-65 |
-| I-52 | recomprobación de solo lectura y decisión sobre `INFORMAR` (incluido `VIEWBACKSTATUS`): **pendientes** |
+| I-52 | recomprobación de solo lectura **sin deriva** en su tupla; `INFORMAR` (incluido `VIEWBACKSTATUS`) registrado como observado, sin acción ni restauración (§13) |
 | I-64 | confirmación expresa del Coordinator recibida (§10); pedirá referencias frescas a I-52 antes de su BASELINE |
+
+## 13. Recomprobación de I-52 tras el cierre (recibida ~19:36Z; literal; hechos de su sesión, no aprobación)
+
+```text
+I-52 → I-65: recomprobación de solo lectura tras tu segundo smoke: sin deriva en lo que I-52 tiene registrado. acad.exe=0; acad.exe R25.0.171.0.0 2a75996f…6422; perfil «<<Unnamed Profile>>»; TRUSTEDPATHS 19 entradas a9ba0fd1…2498; SECURELOAD=1; HKCU Applications solo las 7 estándar, sin RackCad; ApplicationPlugins vacío/inexistente. ACL de mis 4 rutas: las huellas que calculé hoy son idénticas a las de mi lectura del 2026-10-14 (mismo método), sin cambio. Bytes de P2 intactos (libro bd49d0f4…, 7/7; paquete del operador, scripts ACL H10, declared-set.json igual); hijo H10 inexistente, hijo H1 con 2 entradas. Confirmo VIEWBACKSTATUS ausente ahora en el perfil. Es una variable de interfaz de AutoCAD; no es ninguno de los atributos de mi tupla ni algo que P2 lea. Lo registro como observado (INFORMAR), sin acción ni restauración; si mi Coordinator lo juzga relevante, lo diré. Esto es mi comprobación; no autoriza ventanas posteriores.
+```
+
+Lectura de I-65: AC2-06 queda satisfecha en lo que la sesión de I-52 puede afirmar, porque su tupla no tiene deriva y registra
+`INFORMAR` sin acción. Queda abierta la reserva de su Coordinator («si mi Coordinator lo juzga relevante, lo diré»).
