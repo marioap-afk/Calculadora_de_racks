@@ -2391,3 +2391,9 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 - CI 39052279094: `push`, rama exacta, `head_sha` `1e7d8fc23e089619f61d40194969cecb09762336`, 4/4 jobs `success` (Tests, UI Tests, Build UI,
   Build Plugin).
 - **GATE PASS de F4** registrado en decisiones §84 (CD-I65-F4-221). Candidato de hito `5a5ca577`; no es READY.
+
+## 89. Revisión del alcance de F5 y de privacidad (2026-10-17T18:00:45Z)
+
+- Orden: decisiones §85. Solo lectura del Freeze, del código y de la evidencia; inventario de las 146 capturas de I-65 por un subagente de solo lectura (`sonnet`); comprobación de la visibilidad del repositorio con la API de GitHub (`private: false`, `visibility: public`). Sin AutoCAD, RAM, Codex ni Workers.
+- Custodia: `docs/initiatives/I-65-f5-scope-and-ready-review.md` SHA-256 `F4F6EFF3DC8886E2603E002C48BA7254FE41A32B715B396E277B2A679EC32424`.
+- El subagente del inventario creó tres archivos temporales con sus búsquedas en `%TEMP%` (fuera de los checkouts); no tocó el worktree.

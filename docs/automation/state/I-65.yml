@@ -7,7 +7,7 @@ automation_state:
   state: waiting-owner
   gate: F4
   attempts: 7
-  next_action: Owner decide el gate siguiente (F5: OV-I65-02 con su propio archivo de cargas, alcance y presupuesto) con el informe de cierre de F4; antes de READY, estrategia del modelo manual (A/B) y procedencia del volcado (A65-F4F-04). Sin implementacion hasta su orden.
+  next_action: Owner: privacidad urgente (A65-F4F-07: repositorio publico con capturas que contienen datos de un tercero; C-1 privado, C-2 redaccion, C-3 historial) y decisiones para F5 (conjunto de cargas de OV-I65-02, Candidato para F5, operador de la referencia manual) segun docs/initiatives/I-65-f5-scope-and-ready-review.md; sin F5 ni READY.
   last_evidence_commit: 1e7d8fc23e089619f61d40194969cecb09762336
 execution_context:
   mode: manual
@@ -18,5 +18,5 @@ execution_chain:
   next_role: Owner (decision del gate siguiente)
   implementation_authorization: NO (la autorizacion de la revision final y del gate termino con el GATE PASS de F4, CD-I65-F4-221/222)
   milestone_candidate: {sha: 5a5ca57731ebbbbc41ed4f702698709d5e128a86, scope: hito F4 (no FINAL_CANDIDATE_SHA), dll: c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, ci: 38977069487 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS sin REQUIRED, coordinator: CONFORMING, gate: F4 GATE PASS sobre el SHA de cierre 1e7d8fc2 (CI 39052279094), owner_validation: W1 PASS y W2 PASS (aceptadas por el Owner, decisiones §80 y §82)}
-  owner_decisions_open: [autorizacion de F5 (alcance, archivo de cargas de OV-I65-02, presupuesto), estrategia del modelo manual para el FINAL_CANDIDATE_SHA de READY (A o B), procedencia del volcado ligada a la sesion (A65-F4F-04), capturas versionadas con datos de cuenta y de terceros (A65-F4F-07)]
+  owner_decisions_open: [contencion de privacidad A65-F4F-07 (C-1..C-5), aprobacion del archivo de cargas de OV-I65-02 y del Candidato para F5, operador de la referencia manual, autorizacion de F5, estrategia de referencia para READY (A/B/C), A65-F4F-04 opcion 0 u opcion 1, orden de integracion con I-64, presupuesto de READY]
   not_authorized: [F5, F6, F7, implementacion nueva, cambios en src/, alterar el checkout principal, AutoCAD, NETLOAD, corridas en RAM Elements, analisis estructural, guardar modelos de RAM, declaracion de READY final o FINAL_CANDIDATE_SHA, integracion, superar 52 invocaciones de Codex o max_attempts 9, cambios del Freeze o de ADR-0050, tolerancias, codigo de I-52, I-62, I-64 o ID30, integracion con Workspace, interfaz grafica]

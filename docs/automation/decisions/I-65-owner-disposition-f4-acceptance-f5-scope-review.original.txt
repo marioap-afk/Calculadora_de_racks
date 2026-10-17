@@ -1,0 +1,53 @@
+I-65 — OWNER DISPOSITION
+F4 Gate Acceptance / F5 Scope and Evidence Review
+He revisado el cierre de F4 registrado en `34da5c3e`, con CI 4/4 satisfactorio.
+1. Aceptación
+F4 GATE PASS = ACKNOWLEDGED.
+Reconozco el GATE PASS emitido por el Coordinator sobre `1e7d8fc2` y la conformidad independiente del Architect sin hallazgos REQUIRED.
+No autorizo todavía F5 ni READY final.
+2. Alcance de F5
+Revisa el Freeze de I-65 y determina exactamente qué falta implementar para F5 — Controlled Loads.
+Distingue:
+
+* Capacidades ya implementadas en F1–F4.
+* Capacidades congeladas todavía pendientes.
+* Pruebas existentes reutilizables.
+* Trabajo adicional realmente necesario.
+* Validaciones de ingeniería reservadas al Owner.
+
+No amplíes el alcance hacia combinaciones automáticas, peso propio, RMI/AISC o cargas sísmicas si están fuera del Freeze.
+3. OV-I65-02
+Prepara una propuesta para OV-I65-02 y su archivo de cargas específico.
+No generes cargas nuevas sin justificar su relación con el contrato congelado.
+4. Observaciones de F4
+A65-F4F-04: evalúa una solución mínima de trazabilidad del volcado respecto de su sesión y modelo de origen, sin modificar código todavía.
+A65-F4F-07: inspecciona las evidencias publicadas y determina qué información identificable aparece y cuál es su exposición real.
+No reescribas ni elimines evidencia histórica sin autorización.
+Si existen datos personales o de terceros expuestos en un repositorio público, prioriza la propuesta de contención y corrección.
+5. READY final
+Evalúa separadamente:
+
+* Estrategia A frente a B para la referencia manual.
+* Condiciones de OV-08.
+* Repetición de OV-01 a OV-07.
+* Riesgos derivados del conflicto de censos con I-64.
+* Presupuesto restante de Codex e intentos.
+
+No declares READY ni integres I-65.
+6. Entregable
+Presenta:
+
+1. Estado formal de F4.
+2. Alcance residual exacto de F5.
+3. Propuesta de OV-I65-02.
+4. Análisis de A65-F4F-04.
+5. Evaluación de privacidad de A65-F4F-07.
+6. Requisitos para READY final.
+7. Presupuesto recomendado.
+8. Plan mínimo de continuación.
+
+F4 = CLOSED / GATE PASS.
+F5 IMPLEMENTATION = NO.
+READY = NO.
+INTEGRATION = NO.
+Continúa únicamente con esta revisión y detente antes de nuevos cambios funcionales.
