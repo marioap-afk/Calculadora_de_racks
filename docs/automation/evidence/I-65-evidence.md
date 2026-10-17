@@ -2246,3 +2246,77 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 | `docs/automation/evidence/I-65-f4/w2-prep/w2-hostsnap.ps1.txt` | `6904A43965DE69B33B78C304CD57D1958B31B2018121906CF22D034724FF5485` |
 
 - W2 aún no ejecutada; entra en vigor con este commit en `origin`, su CI 4/4 y las condiciones W2-PR-01..10.
+
+## 86. W2 ejecutada sobre el Candidato `5a5ca577` (2026-10-17T16:23:54Z)
+
+- Orden: decisiones §80-§81. Ejecutor: Coordinator con Computer Use (solo «RAM Elements 2026»); sin Codex, Workers ni AutoCAD; sin
+  cambios de producto. Informe: `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/w2-report.md`.
+- Custodia versionada (SHA-256 de los bytes versionados; lecturas de vuelta, volcado e informes del comparador con sus bytes exactos):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/db-tree-python-method.txt` | `C732B054FA3CB7A1347DA8A35401C4C327A3309A4F4960CDB6644638988454BA` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/dump-OV01-gen-ram-dump.json` | `F5789D1CE923A648B77B192571C7271AC40901043AE92301E443624E4F664BE0` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/inj-OV05-ram-readback.json` | `0957AFAF34F7134400BD161E2AF8C3351C14AFFA7F8729B4EE735FAD13A9E8B9` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/inj-OV06-ram-readback.json` | `B0DF7CEA6329D61FE473A354677B5E43F3BD9898BCEB14E24F22746D28D725CA` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/inj-OV07a-ram-readback.json` | `E92F6B38205C9EFDA83EEEDD87DF6BCFCC364033D4C47D0565450BB48A22C018` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/inj-OV07b-ram-readback.json` | `0EBF9D007FA6A342D9DCE456C6E09776BD193DE84EFD0E4D965B806C33322F52` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/k1-k2-w2-compare.json` | `D5EE2EED235905698403496486182D7D2DAAE04B62D3756F98020C9E5926FC04` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/pkg-OV01-ram-readback.json` | `0848B78528518A0D9B26C48188EF6FEB2EBC6E8C0640D3CBE2836394F607116E` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/pkg-OV04-ram-readback.json` | `0D011958F41AF106797B1B71D9F7CA73BB79A29528D9FB0CB5D10B29B1A4E037` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/timeline-w2.txt` | `D4A68D18C748025BEDC5A501FD603CE3C5BD1EF139986290AF7A6828DAE563FA` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/w2-OV01-comparison-console.txt` | `80F674264337B3308DE755221160AD82A1B79240462CB996E145D7D33701CB4A` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/w2-OV01-comparison.json` | `3705AFE9DE9AD6839BB765346C4C76EEAFCBE83B953BA9164F661FB5CA151A0A` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/w2-OV05-control-console.txt` | `CAC225ED66B6DB0505FF5CC7AD05A8F69D82CFEC4AC027ACF6AC9996165FC0F6` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/w2-OV05-control.json` | `1D6FC23BDB97A3A661A8CE84E68D07927CB681AA9B42CB2E1FC22927E0119894` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/w2-config-ini-diff.txt` | `48AF6A9EBA3C9615C597E091D6E46442813372EE0A0FBC250D2F62EF5C166647` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/w2-post-summary.txt` | `F065A4E94B388A74B1EA7DAC140E7B10C212C9A758CB7EFA9BD440787ED170E9` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/w2-pre-summary.txt` | `A0251D29DA2FAF58BF1D125F446B2B4F9A07E7EEB144A7636A942B8CFC91F80A` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/w2-report.md` | `E6F07D1D25606859A5F52BB0ED6E4ED60E5695F619AB6426EC0BF19B9EB5EC78` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/01-ram-modelo-nuevo-vacio.jpg` | `AB590971D829BDF118CC77D6E8955E709D432BB03C8B8BFF03B1978748FC1690` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/02-barra-estado-licencia-elementos-0.jpg` | `5194F612116B65A6A614AF5FC1C9B67136B548072CFC4B5CA55C2B02EFFDB49B` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/03-ov01-script-del-paquete-seleccionado.jpg` | `465E9FFB1CB7B03BDA978973A7EED25AD7542A0E447D3F0D1248CD91F9C7BF23` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/04-ov01-consola-readback-ok-huella.jpg` | `6F94AEAE950721C6B7E5784CB3E3C86135BBB08FC32C5FC8DA107F5D505A44DC` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/05-ov01-barra-estado-elementos-15.jpg` | `7AD05F55B8C4A1DE538ABD22333157D8D701A591BE1EE66BC7A7916051AEE59F` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/06-ov01-volcado-seleccionado.jpg` | `0718A22BD492CC31813E9B24AB155698B34A24C56511412DE621FE727DDF1546` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/07-ov01-consola-dump-ok.jpg` | `878D11B5665F37071BC9FFFDAA1EEB8849EC0ACB26E58A8F934B7A56481DE27E` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/08-ov01-descartar-no.jpg` | `5CB46449E27FE6560E61903359A51D7D23C673027437D0D84B111F49DA4306C1` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/09-ov04-nudo-de-prueba-0-0-0.jpg` | `6120C1AE415F068F15CC51ACCF5903D12EBDD6140CC49AC050FEE2239A7699B2` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/10-ov04-barra-estado-elementos-1-antes.jpg` | `22612E9DBA6F6AF111ABA3AE650D2CC165DA42E1CFB1E9187A72DD4E51C8E20B` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/11-ov04-script-seleccionado.jpg` | `76CAC8E03B0E4D7965D2B6CE782017B207377C4476DA8722FC67050B827B47CD` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/12-ov04-consola-gate-1-nodo.jpg` | `8E6CE09F99A390A5005633287AFF29028BA99C12E9EF00EC0269C0FEB16377B2` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/13-ov04-barra-estado-elementos-1-despues.jpg` | `22612E9DBA6F6AF111ABA3AE650D2CC165DA42E1CFB1E9187A72DD4E51C8E20B` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/14-ov04-rejilla-nudos-despues.jpg` | `C6F7BF396F4B48311762FCB3465765226717EC0F7E06C984CE102D34E527D799` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/15-ov04-descartar-no.jpg` | `5CB46449E27FE6560E61903359A51D7D23C673027437D0D84B111F49DA4306C1` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/16-ov05-script-seleccionado.jpg` | `0D0740BBD90DFDA8685F2F888AB5D45001941B49210AFCB2F8129C02723D9313` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/17-ov05-consola-seccion-rechazada.jpg` | `7382D4F5F883D48FEE7688EB294610DFCE61A94637C081DBCAAAAF811F171A03` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/18-ov05-barra-estado-elementos-9-parcial.jpg` | `FE67B62DAC51BE21268A07EB30E5022F5EF87810B63C819360F6F4BA59C43EEF` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/19-ov05-parcial-nudos.jpg` | `B08952754D8A6C7F79A6169C1A5EF6E07284ADAF6664B7ACCC01C21E905119E7` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/20-ov05-parcial-miembros.jpg` | `ADE7CC4F45D75E66FA7079B794A21AD0023DEC5E1E334EFA80659EA852551FF8` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/21-ov05-descartar-no.jpg` | `5CB46449E27FE6560E61903359A51D7D23C673027437D0D84B111F49DA4306C1` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/22-ov06-script-seleccionado.jpg` | `2EE84544BF151B7D311B7DA2243D5C17DC22460C7DADE6F3CC35AB2A65307ACF` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/23-ov06-consola-eje-local-2.jpg` | `7E8F4058378AF1A6C99E7E98A6521ABD708A5AAA561C7EEE2325C877BF359680` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/24-ov06-barra-estado-elementos-15.jpg` | `7AD05F55B8C4A1DE538ABD22333157D8D701A591BE1EE66BC7A7916051AEE59F` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/25-ov06-descartar-no.jpg` | `5CB46449E27FE6560E61903359A51D7D23C673027437D0D84B111F49DA4306C1` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/26-ov07a-barra-estado-vacio-antes.jpg` | `5194F612116B65A6A614AF5FC1C9B67136B548072CFC4B5CA55C2B02EFFDB49B` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/27-ov07a-script-seleccionado.jpg` | `189BA366906856417F9CD0E55B1A0486564BBE4EC05B87D0889C61231C528E72` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/28-ov07a-consola-gate-version.jpg` | `603E3148B1C7C445BC61C140B621A006B5CF4396F90F43406FEE2C43747A8312` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/29-ov07a-barra-estado-vacio-despues.jpg` | `5194F612116B65A6A614AF5FC1C9B67136B548072CFC4B5CA55C2B02EFFDB49B` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/30-ov07b-barra-estado-vacio-antes.jpg` | `5194F612116B65A6A614AF5FC1C9B67136B548072CFC4B5CA55C2B02EFFDB49B` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/31-ov07b-script-seleccionado.jpg` | `E1818EFE19F12D5E10B562D77C2B7B0D6A571509FA60ADF5A79B178C95AEC0BC` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/32-ov07b-consola-gate-funcion.jpg` | `AED8DDCA50463D3AD3E6164AC68A8F2BA76F513F2FC5AF75EE62F51E3C763F19` |
+| `docs/automation/evidence/I-65-f4/w2-R20261017T0847Z/captures/33-ov07b-barra-estado-vacio-despues.jpg` | `5194F612116B65A6A614AF5FC1C9B67136B548072CFC4B5CA55C2B02EFFDB49B` |
+
+- **Matriz de la validación final del hito (evidencia §81), resultado:**
+
+| OV | Ventana | Resultado |
+|---|---|---|
+| OV-I65-01 | W1 + W2 | **PASS** |
+| OV-I65-03 (a)-(e) | W1 | **PASS** |
+| OV-I65-03 «fila sin verificar» | sin host | cubierto por las pruebas de fixture (CD-I65-F4-186) |
+| OV-I65-04 | W1 + W2 | **PASS** |
+| OV-I65-05 | entre ventanas + W2 | **PASS** |
+| OV-I65-06 | entre ventanas + W2 | **PASS** |
+| OV-I65-07 (a, b) | entre ventanas + W2 | **PASS** |
+
+- W2 = SATISFACTORIA. F4 GATE PASS = NOT YET AUTHORIZED. Codex 50 de 52; `attempts` 7 de 9.

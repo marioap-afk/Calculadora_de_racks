@@ -1,0 +1,4 @@
+CAMBIADA DefaultFolders|PythonScripts -> D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV07b
+CAMBIADA |accPythonConsole
+CAMBIADA |accQANew
+claves_iguales=83

@@ -6,6 +6,8 @@ Documento de la unidad (Coordinator, 2026-10-17), por la autorización del Owner
 §6 y adenda §11; matriz del hito en la evidencia §81) para la ventana W2. Reutiliza los pasos de RAM de P2
 ([procedimiento](I-65-f4-p2-ram-first-run-procedure.md) §4-§5) y los paquetes de W1 ([informe](../automation/evidence/I-65-f4/w1-R20261017T0847Z/w1-report.md)).
 
+> **Estado (2026-10-17): EJECUTADO** (decisiones §81; [informe](../automation/evidence/I-65-f4/w2-R20261017T0847Z/w2-report.md)): W2 = SATISFACTORIA (OV-01 comparador PASS con `c4a98fb0…`; OV-04..07 con su rechazo esperado). Texto original de preparación:
+>
 > **Estado: PREPARADO.** W2 RAM EXECUTION = CONDITIONAL GO: entra en vigor solo con este procedimiento versionado, su CI satisfactoria y
 > todas las condiciones de entrada de §3 cumplidas. AUTOCAD = NO. STRUCTURAL ANALYSIS = NO. PRODUCT CODE CHANGES = NO. F4 GATE PASS =
 > NOT YET AUTHORIZED.
