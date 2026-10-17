@@ -19,15 +19,15 @@
  "TransportGate": "MEASURED (D-01; launch.py solo lanza en MEASURED o ACCEPTED)",
  "OwnerAndAuthorizationGate": "11-OwnerAndAuthorizationGate (owner_gate.py): launch.py solo lanza con la línea del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) después de §78, CLAUDE-CLI-I62 = A vigente, A-6 en la HEAD con el blob 4bc919dd y la disposición del Coordinator posterior a §85 fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin ninguna sección posterior; se evalúa en el momento del lanzamiento",
  "AuthorizationPins": {
-  "Section": 87,
-  "Heading": "## 87. Disposición del Coordinator: claude-cli 2.1.299, recuperación del transporte (2026-10-16 UTC)",
-  "TextSha256": "0eb44fac5b69404947d1065f03d4fe758607197a4d3d54f22f013c19eed5503a"
+  "Section": 89,
+  "Heading": "## 89. Disposición del Coordinator: A-6 ronda 4, transporte recuperado, lanzamiento único (2026-10-17 UTC)",
+  "TextSha256": "d89c669f1dce815858d16f9eb1eabad6ab1d100a2a732c6ee2d0fbf9b661fc92"
  },
- "AuthorizationState": "FIJADA: decisiones §87 (encabezado y SHA-256 del texto en AuthorizationPins)",
+ "AuthorizationState": "FIJADA: decisiones §89 (encabezado y SHA-256 del texto en AuthorizationPins)",
  "OwnerGateTested": {
   "SelftestSha256": "d90aa1b05d9a7323824f81a23293490c1e9bae3d1ce7d5ccb1742e460c8f1b8d",
   "MutationSha256": "d442608a77b78d96546c042cc396cb1b553c69673a5368aa526953f63060b049",
-  "CurrentSha256": "d90aa1b05d9a7323824f81a23293490c1e9bae3d1ce7d5ccb1742e460c8f1b8d",
+  "CurrentSha256": "87ad933732b42655a992113e2e7fcc3eb4519dbb673063cee686df97838f75bb",
   "ChangedSinceSelftestOrMutation": true
  },
  "LaunchCommand": "python -B kit/launch.py",
@@ -86,8 +86,8 @@
    "Sha256": "d74e2aa1ce5eacc7dd6323cf3f3acec37fd6eb25f905ca4f2479dbca0cde5232"
   },
   "owner_gate.py": {
-   "Bytes": 17085,
-   "Sha256": "d90aa1b05d9a7323824f81a23293490c1e9bae3d1ce7d5ccb1742e460c8f1b8d"
+   "Bytes": 17091,
+   "Sha256": "87ad933732b42655a992113e2e7fcc3eb4519dbb673063cee686df97838f75bb"
   },
   "pin_authorization.py": {
    "Bytes": 5588,

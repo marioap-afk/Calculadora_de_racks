@@ -1,0 +1,31 @@
+{
+ "Values": {
+  "AUTH_SECTION": 89,
+  "AUTH_HEADING": "## 89. Disposición del Coordinator: A-6 ronda 4, transporte recuperado, lanzamiento único (2026-10-17 UTC)",
+  "AUTH_TEXT_SHA": "d89c669f1dce815858d16f9eb1eabad6ab1d100a2a732c6ee2d0fbf9b661fc92"
+ },
+ "Checks": {
+  "AfterBaseSection": true,
+  "BaseSection": 85,
+  "SectionsWithThatNumber": 1,
+  "SectionLine": 1750,
+  "HasBlobToken": true,
+  "Blob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+  "RecomputedByGateFunctions": true,
+  "LaterSections": [],
+  "TextLines": 17
+ },
+ "Ready": true,
+ "PythonLines": [
+  "AUTH_SECTION = 89   # decisiones §89: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)",
+  "AUTH_HEADING = \"## 89. Disposición del Coordinator: A-6 ronda 4, transporte recuperado, lanzamiento único (2026-10-17 UTC)\"",
+  "AUTH_TEXT_SHA = \"d89c669f1dce815858d16f9eb1eabad6ab1d100a2a732c6ee2d0fbf9b661fc92\"   # SHA-256 del texto de §89 (pin_authorization.py)"
+ ],
+ "FileSha256": "9613fd9e161d0c3b4b6a63e803a94e3cfc6c5356cba195b792e19d5f7fb6de68",
+ "CurrentPins": {
+  "Section": 87,
+  "Heading": "## 87. Disposición del Coordinator: claude-cli 2.1.299, recuperación del transporte (2026-10-16 UTC)",
+  "TextSha256": "0eb44fac5b69404947d1065f03d4fe758607197a4d3d54f22f013c19eed5503a"
+ },
+ "Next": "sustituir en kit/owner_gate.py solo las tres líneas AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA por PythonLines; python -B kit/make_manifest.py; y, con la orden congelada desde la carpeta que contiene kit/, --record-probe y --dry-run (compuerta 11 en Ok, AuthorizationSections = esta sección, LaterSections = [])"
+}

@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §89; evidencia §177) — fijar §89 en el kit R20261014T180556Z-5e02, validación dirigida y preflight; UNA revisión de A-6 ronda 4 (blob 4bc919dd) con python -B kit/launch.py, claude-cli 2.1.299, tope 3 600 s, sin reintento; auditor congelado; sin nuevas secciones de decisiones hasta auditar; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §89; evidencia §177-§178) — kit R20261014T180556Z-5e02 con §89 fijada (manifiesto b1342909), preflight final con cero bloqueos; lanzar UNA vez python -B kit/launch.py (claude-cli 2.1.299), tope 3 600 s, sin reintento; auditor congelado; sin nuevas secciones de decisiones hasta auditar; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

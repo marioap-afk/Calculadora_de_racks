@@ -4501,3 +4501,16 @@ solo desde artefactos custodiados.
   sección de decisiones nueva hasta el lanzamiento y la auditoría.
 - Validación dirigida (compuerta de autorización, identidad del binario y del cierre, manifiesto, comprobación previa de registro, prueba en seco
   con cero bloqueos) y preflight completo; una sola invocación con `python -B kit/launch.py`, tope de 3 600 s, sin reintento; auditor congelado.
+
+## 178. Kit de A-6 ronda 4 con §89 fijada, vuelto a congelar y custodiado; preflight final con cero bloqueos (decisiones §89, puntos 2-4)
+
+- **Fijación:** `pin_authorization.py` sobre el texto registrado de §89 en `dc3f2924` (línea 1750, blob como token, sin secciones posteriores):
+  SHA-256 del texto `d89c669f1dce815858d16f9eb1eabad6ab1d100a2a732c6ee2d0fbf9b661fc92`. En `kit/` solo cambian las tres constantes de autorización de `owner_gate.py`
+  ([`owner_gate.pin.diff`](I-62-architect-A-6r4/R20261014T180556Z-5e02/preflight-s89/owner_gate.pin.diff)) y el manifiesto: `70d68119…` → `b1342909562478e5…`.
+- **Validación dirigida** (decisiones §88 y §89, punto 3): casos de la compuerta de autorización O00-O30 y la sonda en vivo L00, más la coherencia
+  lanzador-auditor X01-X04: 41/41; integridad del manifiesto (26 archivos); el resto de resultados se reutiliza, porque sus componentes y
+  dependencias no cambian (matriz de la evidencia §176).
+- **Preflight final** ([`preflight-s89/`](I-62-architect-A-6r4/R20261014T180556Z-5e02/preflight-s89/)): A-6 en la HEAD = `4bc919dd`; kit y clon íntegros
+  (comprobaciones 1, 2 y 6); binario `claude-cli` 2.1.299 presente con SHA-256 `295b49ec…` y Authenticode válido de Anthropic; caracterización
+  vigente fijada en la compuerta de transporte; líneas del Owner y CLAUDE-CLI-I62 = A intactas; I-64 sin procesos ni cambios; checkout principal
+  sin alteraciones; comprobación previa de registro con código 0; prueba en seco con `BlockingChecks` = [] y §89 como autorización.

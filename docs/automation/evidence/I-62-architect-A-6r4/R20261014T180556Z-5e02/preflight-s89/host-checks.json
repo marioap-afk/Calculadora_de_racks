@@ -1,0 +1,28 @@
+{
+ "Schema": "a6r4-host-checks/1",
+ "UtcTime": "2026-10-17T02:32:38Z",
+ "MainCheckout": {
+  "Path": "D:/Documentos/Codex/Calculadora de racks",
+  "Branch": "main",
+  "StatusLines": 0,
+  "Head": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+  "LastReflogEntryMain": "2026-09-30 09:55:56 -0600 (merge I-60)",
+  "OriginMainLocal": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "OriginMainRemote": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "Conclusion": "sin alteraciones; ningún cambio correctivo"
+ },
+ "I64": {
+  "Worktree": "architecture-workspace-persistente-rackcad",
+  "Head": "09f2f1c3",
+  "StatusLines": 0,
+  "Processes": "sin acad.exe, accoreconsole.exe, dotnet.exe, testhost.exe, MSBuild.exe ni VBCSCompiler.exe; ningún proceso con la ruta de I-64",
+  "Conclusion": "sin conflicto de recursos"
+ },
+ "ReviewClone": {
+  "ProcessesReferencingIt": 0
+ },
+ "Load": {
+  "FreeRamGB": 26.3,
+  "CpuPercent": 17
+ }
+}
