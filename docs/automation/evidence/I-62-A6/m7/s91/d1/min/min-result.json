@@ -1,0 +1,693 @@
+{
+ "Cases": [
+  {
+   "AcceptorExit": 1,
+   "AcceptorStdoutSha256": "08ad538985a40d805e0896d47d2e1bdcf2dce978f575ff57752bc38c7bf0dfb2",
+   "Contract": {
+    "AllowedWriteScope": [
+     "a/**"
+    ],
+    "Bytes": 538,
+    "ForbiddenWriteScope": [],
+    "Sha256": "b73333b4463094ee47343e674991533702000e47e84d959cb0dcab600060e99a"
+   },
+   "Decision": "REJECT_FACTS",
+   "Delegation": {
+    "AllowedWriteScope": [
+     "a/b"
+    ],
+    "Bytes": 238,
+    "ForbiddenWriteScope": [],
+    "Sha256": "938534a489bbda86fdff28c7ea7f53f33058bddaa4a9133e68213311606a5d88"
+   },
+   "Diverge": true,
+   "EnvelopeHasEmail": false,
+   "EnvelopeSha256": "74ef1f070e31318391330a7db20b0963488574759a733fe5fb652e21995e8cfb",
+   "FactsLevelAccepted": false,
+   "Name": "MIN-A3",
+   "PredictedNoU19": {
+    "A3": [
+     {
+      "ContainedBy": [],
+      "Entry": "a/b"
+     }
+    ],
+    "A4": []
+   },
+   "PredictedU19Both": {
+    "A3": [
+     {
+      "ContainedBy": [
+       "a/**"
+      ],
+      "Entry": "a/b"
+     }
+    ],
+    "A4": []
+   },
+   "R7Mismatches": [
+    {
+     "Acceptor": [
+      "a/**"
+     ],
+     "Field": "A3[a/b].ContainedBy",
+     "Tool": []
+    }
+   ],
+   "RepoUnchangedByAcceptor": true,
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MISMATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [
+    {
+     "ContainedBy": [],
+     "Entry": "a/b"
+    }
+   ],
+   "ToolA4": [],
+   "ToolEqualsNoU19Prediction": {
+    "A3": true,
+    "A4": true
+   },
+   "ToolExit": 0,
+   "ToolGitCalls": [],
+   "ToolStderr": "",
+   "What": "D-1 minimo en A3: entrada contenedora del contrato 'a/**', contenida distinta bajo ella"
+  },
+  {
+   "AcceptorExit": 0,
+   "AcceptorStdoutSha256": "0c4c84fba199cca998cf29ee0d7d6d3670c7fddb24f56e9cb89bf00b7cfec4f0",
+   "Contract": {
+    "AllowedWriteScope": [
+     "a/**"
+    ],
+    "Bytes": 538,
+    "ForbiddenWriteScope": [],
+    "Sha256": "b73333b4463094ee47343e674991533702000e47e84d959cb0dcab600060e99a"
+   },
+   "Decision": "ACCEPT_FACTS",
+   "Delegation": {
+    "AllowedWriteScope": [
+     "a/**"
+    ],
+    "Bytes": 239,
+    "ForbiddenWriteScope": [],
+    "Sha256": "f5d229768317dbab1d98b36241d0abb9748d206e9363aba363395ee0233f190f"
+   },
+   "Diverge": false,
+   "EnvelopeHasEmail": false,
+   "EnvelopeSha256": "e91a738ac7581ae862ae81b15aa7bf2f5e284a5a6e0c1f2072207541ce06df2f",
+   "FactsLevelAccepted": true,
+   "Name": "NEAR-A3-SAME",
+   "PredictedNoU19": {
+    "A3": [
+     {
+      "ContainedBy": [
+       "a/**"
+      ],
+      "Entry": "a/**"
+     }
+    ],
+    "A4": []
+   },
+   "PredictedU19Both": {
+    "A3": [
+     {
+      "ContainedBy": [
+       "a/**"
+      ],
+      "Entry": "a/**"
+     }
+    ],
+    "A4": []
+   },
+   "R7Mismatches": [],
+   "RepoUnchangedByAcceptor": true,
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [
+    {
+     "ContainedBy": [
+      "a/**"
+     ],
+     "Entry": "a/**"
+    }
+   ],
+   "ToolA4": [],
+   "ToolEqualsNoU19Prediction": {
+    "A3": true,
+    "A4": true
+   },
+   "ToolExit": 0,
+   "ToolGitCalls": [],
+   "ToolStderr": "",
+   "What": "vecino que coincide: la delegacion copia la cadena del contrato"
+  },
+  {
+   "AcceptorExit": 0,
+   "AcceptorStdoutSha256": "6fd56eec0b4b8e40a98c2c3786eaee3a1d7fe5b12eb3d9e6a6f7dbb83b5d225c",
+   "Contract": {
+    "AllowedWriteScope": [
+     "a/"
+    ],
+    "Bytes": 536,
+    "ForbiddenWriteScope": [],
+    "Sha256": "a38f200e133534f5c988fd4a9c0b813b06a4520d79253a5fb40ffbfb3fb6844c"
+   },
+   "Decision": "ACCEPT_FACTS",
+   "Delegation": {
+    "AllowedWriteScope": [
+     "a/b"
+    ],
+    "Bytes": 238,
+    "ForbiddenWriteScope": [],
+    "Sha256": "938534a489bbda86fdff28c7ea7f53f33058bddaa4a9133e68213311606a5d88"
+   },
+   "Diverge": false,
+   "EnvelopeHasEmail": false,
+   "EnvelopeSha256": "604a4bfc4870388abad4b29f1055f30e5cf66781542e114bbc595b6dc62bb37f",
+   "FactsLevelAccepted": true,
+   "Name": "NEAR-A3-NORM",
+   "PredictedNoU19": {
+    "A3": [
+     {
+      "ContainedBy": [
+       "a/"
+      ],
+      "Entry": "a/b"
+     }
+    ],
+    "A4": []
+   },
+   "PredictedU19Both": {
+    "A3": [
+     {
+      "ContainedBy": [
+       "a/"
+      ],
+      "Entry": "a/b"
+     }
+    ],
+    "A4": []
+   },
+   "R7Mismatches": [],
+   "RepoUnchangedByAcceptor": true,
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [
+    {
+     "ContainedBy": [
+      "a/"
+     ],
+     "Entry": "a/b"
+    }
+   ],
+   "ToolA4": [],
+   "ToolEqualsNoU19Prediction": {
+    "A3": true,
+    "A4": true
+   },
+   "ToolExit": 0,
+   "ToolGitCalls": [],
+   "ToolStderr": "",
+   "What": "vecino que coincide: el contrato ya escribe el prefijo normalizado 'a/'"
+  },
+  {
+   "AcceptorExit": 1,
+   "AcceptorStdoutSha256": "5636a1a851e36ee705fae9d515d141cd0974c4db027b138710e193aa12bf1cfd",
+   "Contract": {
+    "AllowedWriteScope": [
+     "a/**"
+    ],
+    "Bytes": 538,
+    "ForbiddenWriteScope": [],
+    "Sha256": "b73333b4463094ee47343e674991533702000e47e84d959cb0dcab600060e99a"
+   },
+   "Decision": "REJECT_FACTS",
+   "Delegation": {
+    "AllowedWriteScope": [
+     "a/"
+    ],
+    "Bytes": 237,
+    "ForbiddenWriteScope": [],
+    "Sha256": "7af59d5f49d2eeb2897cf2f746e5ff666ad2c6640f937c283501fbeebcf5e004"
+   },
+   "Diverge": true,
+   "EnvelopeHasEmail": false,
+   "EnvelopeSha256": "c4181dd252d05e05a720a55f900fbaecfb9941af75dcebd7ccae133d3e3fc4a9",
+   "FactsLevelAccepted": false,
+   "Name": "MIN-A3-PREFIX",
+   "PredictedNoU19": {
+    "A3": [
+     {
+      "ContainedBy": [],
+      "Entry": "a/"
+     }
+    ],
+    "A4": []
+   },
+   "PredictedU19Both": {
+    "A3": [
+     {
+      "ContainedBy": [
+       "a/**"
+      ],
+      "Entry": "a/"
+     }
+    ],
+    "A4": []
+   },
+   "R7Mismatches": [
+    {
+     "Acceptor": [
+      "a/**"
+     ],
+     "Field": "A3[a/].ContainedBy",
+     "Tool": []
+    }
+   ],
+   "RepoUnchangedByAcceptor": true,
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MISMATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [
+    {
+     "ContainedBy": [],
+     "Entry": "a/"
+    }
+   ],
+   "ToolA4": [],
+   "ToolEqualsNoU19Prediction": {
+    "A3": true,
+    "A4": true
+   },
+   "ToolExit": 0,
+   "ToolGitCalls": [],
+   "ToolStderr": "",
+   "What": "D-1 con la contenida igual a la forma U-19 de la contenedora ('a/' bajo 'a/**')"
+  },
+  {
+   "AcceptorExit": 1,
+   "AcceptorStdoutSha256": "f499f708bc96019cda53074e4ad74a2bb2990279b4d54cfecfda8d84b1699795",
+   "Contract": {
+    "AllowedWriteScope": [],
+    "Bytes": 537,
+    "ForbiddenWriteScope": [
+     "a/b"
+    ],
+    "Sha256": "3d2365f5856d615e152c810733045d4e3bc61bda1e749620c2a4a5ff1ba0931a"
+   },
+   "Decision": "REJECT_FACTS",
+   "Delegation": {
+    "AllowedWriteScope": [],
+    "Bytes": 239,
+    "ForbiddenWriteScope": [
+     "a/**"
+    ],
+    "Sha256": "cb9f60fec7932d9e58c864be0a6e9e9d16d6b9c4017d1c9f80315aba13a0657a"
+   },
+   "Diverge": true,
+   "EnvelopeHasEmail": false,
+   "EnvelopeSha256": "c6a4d8e827d638e837b301fcb12bab817119cb4b4443b1929985b801225922dd",
+   "FactsLevelAccepted": false,
+   "Name": "MIN-A4",
+   "PredictedNoU19": {
+    "A3": [],
+    "A4": [
+     {
+      "ContainedBy": [],
+      "Entry": "a/b"
+     }
+    ]
+   },
+   "PredictedU19Both": {
+    "A3": [],
+    "A4": [
+     {
+      "ContainedBy": [
+       "a/**"
+      ],
+      "Entry": "a/b"
+     }
+    ]
+   },
+   "R7Mismatches": [
+    {
+     "Acceptor": [
+      "a/**"
+     ],
+     "Field": "A4[a/b].ContainedBy",
+     "Tool": []
+    }
+   ],
+   "RepoUnchangedByAcceptor": true,
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MISMATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [],
+   "ToolA4": [
+    {
+     "ContainedBy": [],
+     "Entry": "a/b"
+    }
+   ],
+   "ToolEqualsNoU19Prediction": {
+    "A3": true,
+    "A4": true
+   },
+   "ToolExit": 0,
+   "ToolGitCalls": [],
+   "ToolStderr": "",
+   "What": "D-1 minimo en A4: entrada contenedora de la delegacion 'a/**', prohibida del contrato 'a/b'"
+  },
+  {
+   "AcceptorExit": 0,
+   "AcceptorStdoutSha256": "2b07c5c63a0178445c818f9c9d91080a4b15ee9492671eafc51dec88e8d9c1a9",
+   "Contract": {
+    "AllowedWriteScope": [],
+    "Bytes": 537,
+    "ForbiddenWriteScope": [
+     "a/b"
+    ],
+    "Sha256": "3d2365f5856d615e152c810733045d4e3bc61bda1e749620c2a4a5ff1ba0931a"
+   },
+   "Decision": "ACCEPT_FACTS",
+   "Delegation": {
+    "AllowedWriteScope": [],
+    "Bytes": 237,
+    "ForbiddenWriteScope": [
+     "a/"
+    ],
+    "Sha256": "974d21fb3b371cf676312f350aeb7e4b35a5be9fb7fa25057d5c6f9b914b3b41"
+   },
+   "Diverge": false,
+   "EnvelopeHasEmail": false,
+   "EnvelopeSha256": "8d1ceb0b3e18dbb21a23f10d44b8697732239a833812c66bd297ab35dc238a5f",
+   "FactsLevelAccepted": true,
+   "Name": "NEAR-A4-NORM",
+   "PredictedNoU19": {
+    "A3": [],
+    "A4": [
+     {
+      "ContainedBy": [
+       "a/"
+      ],
+      "Entry": "a/b"
+     }
+    ]
+   },
+   "PredictedU19Both": {
+    "A3": [],
+    "A4": [
+     {
+      "ContainedBy": [
+       "a/"
+      ],
+      "Entry": "a/b"
+     }
+    ]
+   },
+   "R7Mismatches": [],
+   "RepoUnchangedByAcceptor": true,
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [],
+   "ToolA4": [
+    {
+     "ContainedBy": [
+      "a/"
+     ],
+     "Entry": "a/b"
+    }
+   ],
+   "ToolEqualsNoU19Prediction": {
+    "A3": true,
+    "A4": true
+   },
+   "ToolExit": 0,
+   "ToolGitCalls": [],
+   "ToolStderr": "",
+   "What": "vecino que coincide en A4: la delegacion escribe 'a/'"
+  },
+  {
+   "AcceptorExit": 0,
+   "AcceptorStdoutSha256": "1a733f5b0eb949916d6edecb29e942906b38ab5d4ebc14138c69d0b731c20cca",
+   "Contract": {
+    "AllowedWriteScope": [
+     "c/**"
+    ],
+    "Bytes": 538,
+    "ForbiddenWriteScope": [],
+    "Sha256": "54035e854da2d00e264b97bc8bb76081685cf9e7f7468b1524bf00bcb6670fa8"
+   },
+   "Decision": "ACCEPT_FACTS",
+   "Delegation": {
+    "AllowedWriteScope": [
+     "a/b"
+    ],
+    "Bytes": 238,
+    "ForbiddenWriteScope": [],
+    "Sha256": "938534a489bbda86fdff28c7ea7f53f33058bddaa4a9133e68213311606a5d88"
+   },
+   "Diverge": false,
+   "EnvelopeHasEmail": false,
+   "EnvelopeSha256": "1baefde689be91f172bbb963b7e6f0f7a55bf50e8de25e47ea204875ec3ba36a",
+   "FactsLevelAccepted": true,
+   "Name": "NEAR-A3-NONE",
+   "PredictedNoU19": {
+    "A3": [
+     {
+      "ContainedBy": [],
+      "Entry": "a/b"
+     }
+    ],
+    "A4": []
+   },
+   "PredictedU19Both": {
+    "A3": [
+     {
+      "ContainedBy": [],
+      "Entry": "a/b"
+     }
+    ],
+    "A4": []
+   },
+   "R7Mismatches": [],
+   "RepoUnchangedByAcceptor": true,
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [
+    {
+     "ContainedBy": [],
+     "Entry": "a/b"
+    }
+   ],
+   "ToolA4": [],
+   "ToolEqualsNoU19Prediction": {
+    "A3": true,
+    "A4": true
+   },
+   "ToolExit": 0,
+   "ToolGitCalls": [],
+   "ToolStderr": "",
+   "What": "vecino que coincide sin contencion en ninguna pieza ('a/b' frente a 'c/**'): R7 compara hechos, no el resultado de A3"
+  },
+  {
+   "AcceptorExit": 1,
+   "AcceptorStdoutSha256": "a92fd3909524179911196bbc07f4615b9c26bb1e782c577a10fb1b2e9fcb0c09",
+   "Contract": {
+    "AllowedWriteScope": [
+     "a/**",
+     "a/b"
+    ],
+    "Bytes": 547,
+    "ForbiddenWriteScope": [],
+    "Sha256": "44288504e2593e1bd1f135b8499b4099d928e67f99fe7162d23f7bfae65f088b"
+   },
+   "Decision": "REJECT_FACTS",
+   "Delegation": {
+    "AllowedWriteScope": [
+     "a/b"
+    ],
+    "Bytes": 238,
+    "ForbiddenWriteScope": [],
+    "Sha256": "938534a489bbda86fdff28c7ea7f53f33058bddaa4a9133e68213311606a5d88"
+   },
+   "Diverge": true,
+   "EnvelopeHasEmail": false,
+   "EnvelopeSha256": "5c0a9a57991c3fec9b3795c5bc3ca17c448cea6f2063ffa5668fcc16ab902425",
+   "FactsLevelAccepted": false,
+   "Name": "MIN-A3-SETS",
+   "PredictedNoU19": {
+    "A3": [
+     {
+      "ContainedBy": [
+       "a/b"
+      ],
+      "Entry": "a/b"
+     }
+    ],
+    "A4": []
+   },
+   "PredictedU19Both": {
+    "A3": [
+     {
+      "ContainedBy": [
+       "a/**",
+       "a/b"
+      ],
+      "Entry": "a/b"
+     }
+    ],
+    "A4": []
+   },
+   "R7Mismatches": [
+    {
+     "Acceptor": [
+      "a/**",
+      "a/b"
+     ],
+     "Field": "A3[a/b].ContainedBy",
+     "Tool": [
+      "a/b"
+     ]
+    }
+   ],
+   "RepoUnchangedByAcceptor": true,
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MISMATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [
+    {
+     "ContainedBy": [
+      "a/b"
+     ],
+     "Entry": "a/b"
+    }
+   ],
+   "ToolA4": [],
+   "ToolEqualsNoU19Prediction": {
+    "A3": true,
+    "A4": true
+   },
+   "ToolExit": 0,
+   "ToolGitCalls": [],
+   "ToolStderr": "",
+   "What": "D-1 con el mismo resultado de A3 en las dos lecturas: 'a/b' contenida por 'a/b' (las dos piezas) y por 'a/**' (solo el aceptante)"
+  }
+ ],
+ "Environment": {
+  "Git": {
+   "EqualsDeclared": true,
+   "Sha256": "81ef35ae005ca9318018d18e3327578ce939fb99feaad6b2d7c8ab15f3de8db5",
+   "Version": "git version 2.54.0.windows.1"
+  },
+  "Pwsh": {
+   "Version": "7.6.7"
+  },
+  "Python": {
+   "EqualsDeclared": true,
+   "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec",
+   "Version": "3.13.14"
+  }
+ },
+ "Pinned": {
+  "Acceptor": {
+   "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+   "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0"
+  },
+  "Tool": {
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+  }
+ },
+ "Repo": {
+  "HeadResolves": false,
+  "IdEqualsPinned": true,
+  "Objects": [
+   "9a/829b0eeb1210238052b1feac06cfa8f7964aed"
+  ],
+  "Path": "min/repo",
+  "PipelineBlobEqualsPinned": true,
+  "PipelineRecomputedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "Refs": [],
+  "WriteReturnedId": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+ },
+ "Schema": "rackcad-i62-d1-min/0-experimental"
+}

@@ -1,0 +1,23 @@
+{
+ "Checks": {
+  "HygieneFiles": 6,
+  "JsonRows": 12,
+  "MdQuotes": 168,
+  "MdTags": 222,
+  "MdTermQuotes": 44,
+  "ProbeFacts": 54,
+  "Sources": 13,
+  "TextCitations": 168
+ },
+ "Files": {
+  "probes/probe-r12-result.json": "13e56742ff2029e743555c7240a13dbec9aa8779a7f7f897db4eaf397a4699ca",
+  "probes/probe_r12.py": "3b1d28c868728230588c7e113c86cd08cd4bdf485052ea6fdee5ebdaedc9cce0",
+  "r12-citations.json": "5cfa38d08218c520f45cc1e989a1697325ce6706c11abe7665541573c2d4a2d6",
+  "r12.json": "6d6e6d5fbb5261b8759861df6f38e55e5ebc26a4b95a79985ecd918bfb211a35",
+  "r12.md": "0cd87377e63519be2d2a08b576b72351f805743f24c18f9c646ef06693c7c411",
+  "verify_r12.py": "f51c3a6d2a1772b974c1245120b18ac62b35829852aae0fe92b46104284cc3e0"
+ },
+ "Pass": true,
+ "Problems": [],
+ "Schema": "i62-r12-verify/1"
+}

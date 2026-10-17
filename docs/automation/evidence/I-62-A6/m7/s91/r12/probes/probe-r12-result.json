@@ -1,0 +1,569 @@
+{
+ "Acceptor": {
+  "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+  "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0"
+ },
+ "P1_B1_blobs": {
+  "AcceptorSchemaViolations": [],
+  "E2E3": {
+   "AP_eff_Constructs": {
+    "BacktickFenceLinesCol0": 20,
+    "CR": 0,
+    "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+    "HeadingLinesWithNonAsciiSpace": 0,
+    "IndentedBacktickFences": 0,
+    "IndentedHashLines": 0,
+    "SetextCandidates": [],
+    "TabsInHeadingLines": 0,
+    "TildeFences": 0
+   },
+   "AP_eff_ReaderDisagreements": 0,
+   "EntryHeadingLineOwnLine": false,
+   "EntryMatches": [
+    614
+   ],
+   "EntryNamesR163_raw": true,
+   "R163Matches": [
+    717
+   ],
+   "RawLinesEqualEntry_anyContext": 1,
+   "RawLinesEqualR163_anyContext": 1,
+   "WORKFLOW_eff_Constructs": {
+    "BacktickFenceLinesCol0": 10,
+    "CR": 0,
+    "CodeFlagOnlyDifferences_noHeadingEffect": 64,
+    "HeadingLinesWithNonAsciiSpace": 0,
+    "IndentedBacktickFences": 0,
+    "IndentedHashLines": 0,
+    "SetextCandidates": [],
+    "TabsInHeadingLines": 0,
+    "TildeFences": 0
+   },
+   "WORKFLOW_eff_ReaderDisagreements": 0
+  },
+  "MV5": {
+   "DupExact": [],
+   "DupNormalized": [],
+   "Entries": 70,
+   "SectionsNotNormalized": [],
+   "SectionsWithNonAsciiSpace": []
+  },
+  "MV6": [
+   {
+    "AcceptorEqualsMap": true,
+    "B1_lines_kept": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "B2_lines_kept_trimmed": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "MapAddedOrEntry": 18,
+    "MapModified": 5,
+    "MapRemoved": 0,
+    "NonMarkdown": false,
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Readers": {
+     "Base": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 6,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        2
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     },
+     "Eff": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 20,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        2
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     }
+    }
+   },
+   {
+    "AcceptorEqualsMap": true,
+    "B1_lines_kept": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "B2_lines_kept_trimmed": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "MapAddedOrEntry": 0,
+    "MapModified": 3,
+    "MapRemoved": 0,
+    "NonMarkdown": false,
+    "Path": "docs/INITIATIVE_LIFECYCLE.md",
+    "Readers": {
+     "Base": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 2,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        2
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     },
+     "Eff": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 2,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        2
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     }
+    }
+   },
+   {
+    "AcceptorEqualsMap": true,
+    "B1_lines_kept": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "B2_lines_kept_trimmed": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "MapAddedOrEntry": 1,
+    "MapModified": 3,
+    "MapRemoved": 0,
+    "NonMarkdown": false,
+    "Path": "docs/WORKFLOW.md",
+    "Readers": {
+     "Base": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 10,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 64,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        3
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     },
+     "Eff": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 10,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 64,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        3
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     }
+    }
+   },
+   {
+    "AcceptorEqualsMap": true,
+    "B1_lines_kept": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "B2_lines_kept_trimmed": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "MapAddedOrEntry": 34,
+    "MapModified": 1,
+    "MapRemoved": 0,
+    "NonMarkdown": false,
+    "Path": "docs/automation/agent-execution/README.md",
+    "Readers": {
+     "Base": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 16,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        2
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     },
+     "Eff": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 18,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        2
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     }
+    }
+   },
+   {
+    "AcceptorEqualsMap": true,
+    "B1_lines_kept": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "B2_lines_kept_trimmed": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "MapAddedOrEntry": 2,
+    "MapModified": 1,
+    "MapRemoved": 0,
+    "NonMarkdown": false,
+    "Path": "docs/automation/agent-execution/routing.md",
+    "Readers": {
+     "Base": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 0,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        2
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     },
+     "Eff": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 0,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        2
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     }
+    }
+   },
+   {
+    "AcceptorEqualsMap": true,
+    "B1_lines_kept": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "B2_lines_kept_trimmed": {
+     "EqualsMap": true,
+     "ExtraModified": [],
+     "MissingModified": []
+    },
+    "MapAddedOrEntry": 0,
+    "MapModified": 2,
+    "MapRemoved": 0,
+    "NonMarkdown": false,
+    "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+    "Readers": {
+     "Base": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 32,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        2
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     },
+     "Eff": {
+      "Constructs": {
+       "BacktickFenceLinesCol0": 32,
+       "CR": 0,
+       "CodeFlagOnlyDifferences_noHeadingEffect": 0,
+       "FirstHeadingLevels": [
+        1,
+        2,
+        2,
+        2
+       ],
+       "HeadingAboveLevel2BeforeFirstLevel2": false,
+       "HeadingLinesWithNonAsciiSpace": 0,
+       "IndentedBacktickFences": 0,
+       "IndentedHashLines": 0,
+       "Level1Headings": 1,
+       "SetextCandidates": [],
+       "TabsInHeadingLines": 0,
+       "TildeFences": 0
+      },
+      "DisagreementCount": 0,
+      "ReaderDisagreements": []
+     }
+    }
+   }
+  ],
+  "MV7_B1pair": {
+   "APbase_ReaderDisagreements": 0,
+   "AcceptorEqualAfterRemoval": true,
+   "ApBaseBlob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+   "LinesKeptTrimmed_SubstringRemovedEqual": true,
+   "LinesKept_SubstringRemovedEqual": true,
+   "PointerIsFirstSentenceS16": true,
+   "PointerIsLastSentenceS163": true,
+   "PointerOccurrencesIn163Base": 0,
+   "PointerOccurrencesIn163Eff": 1,
+   "RemoveAllOccurrencesEqual": true,
+   "RemoveWholeLineEqual": false
+  },
+  "MapBOM": false,
+  "MapNumericAllInt": true,
+  "MapNumericValueCount": 70,
+  "MapNumericValues": [
+   1,
+   2,
+   3
+  ],
+  "MapParsesStrict": true,
+  "SchemaBOM": false,
+  "SchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "SchemaKeywords": [
+   "$schema",
+   "additionalProperties",
+   "description",
+   "enum",
+   "items",
+   "maximum",
+   "minItems",
+   "minLength",
+   "minimum",
+   "pattern",
+   "properties",
+   "required",
+   "title",
+   "type",
+   "uniqueItems"
+  ],
+  "SchemaParsesStrict": true,
+  "SchemaPatterns": [
+   "^[0-9a-f]{40}$"
+  ],
+  "SchemaUnsupportedByAcceptor": []
+ },
+ "P2_fixture_trailer": {
+  "CRInMessageCount": 0,
+  "Commits": 3,
+  "ExactLineAfterCRStrip": [
+   "a9f6c929e74ef92edfee557c3572b090f48bc318"
+  ],
+  "ExactLineLF": [
+   "a9f6c929e74ef92edfee557c3572b090f48bc318"
+  ],
+  "GitTrailerKey": [
+   "a9f6c929e74ef92edfee557c3572b090f48bc318"
+  ],
+  "Main": "fbe25347799e5b801ef708454212335537448bd1",
+  "Substring": [
+   "a9f6c929e74ef92edfee557c3572b090f48bc318"
+  ]
+ },
+ "P3_bench_scope": {
+  "Contract": {
+   "AcceptorMalformed": [],
+   "DotSegmentEmptySegmentOrEdgeSpaces": [],
+   "Empty": [],
+   "Entries": 15,
+   "FinalDoubleStar": [
+    "docs/automation/evidence/FX-U1-agent/**",
+    ".github/**",
+    "docs/automation/agent-execution/**",
+    "docs/automation/decisions/**"
+   ],
+   "NonFinalWildcard": []
+  },
+  "Delegation": {
+   "AcceptorMalformed": [],
+   "DotSegmentEmptySegmentOrEdgeSpaces": [],
+   "Empty": [],
+   "Entries": 15,
+   "FinalDoubleStar": [
+    "docs/automation/evidence/FX-U1-agent/**",
+    ".github/**",
+    "docs/automation/agent-execution/**",
+    "docs/automation/decisions/**"
+   ],
+   "NonFinalWildcard": []
+  },
+  "ModeOnlyOrTypeChanges": false,
+  "NameOnlyNoRenames": [
+   "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+   "src/Fixture.Lib/Calculator.cs",
+   "tests/Fixture.Tests/CalculatorTests.cs"
+  ],
+  "NameStatusM": [
+   "A\tdocs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+   "M\tsrc/Fixture.Lib/Calculator.cs",
+   "M\ttests/Fixture.Tests/CalculatorTests.cs"
+  ],
+  "RenamesDetected": false
+ },
+ "P4_git_rename_default": {
+  "DefaultConfig": [
+   "allowed.txt"
+  ],
+  "DiffRenamesFalse": [
+   "allowed.txt",
+   "forbidden.txt"
+  ],
+  "GitVersion": "git version 2.54.0.windows.1",
+  "NoRenames": [
+   "allowed.txt",
+   "forbidden.txt"
+  ],
+  "TmpRemoved": true
+ },
+ "Schema": "i62-r12-probe/1"
+}

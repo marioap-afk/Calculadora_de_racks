@@ -1,0 +1,1259 @@
+{
+ "Environment": {
+  "Git": {
+   "EqualsDeclared": true,
+   "Sha256": "81ef35ae005ca9318018d18e3327578ce939fb99feaad6b2d7c8ab15f3de8db5",
+   "Version": "git version 2.54.0.windows.1"
+  },
+  "Pwsh": {
+   "Version": "7.6.7"
+  },
+  "Python": {
+   "EqualsDeclared": true,
+   "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec",
+   "Version": "3.13.14"
+  }
+ },
+ "Files": {
+  "d1.md": "fbb0e2fb9d1d2ad60abb56fe0c0a6173a4245b7ea7966d34e388b7538d386df3",
+  "lib/derive_r4.py": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426",
+  "lib/designate_m7.py": "491dcbd672518befa3cf74a64c7a9971992c66eee5bd122b3ae537a184f5a5c6",
+  "lib/lib_m7.py": "50e8c8957d37d63118a9fa41373488f8269e84909c91ada7bc0b8997106fe797",
+  "lib/lib_r1r4.py": "c3995a1cd377822593837c6e34eff30425de61da73b1928d5a0460ce93bfa8c5",
+  "lib/lib_r3.py": "357a775123ec2bcb0dc9ae6323806d92e77716aaaa04a5bdc56b4fbe4701481c",
+  "lib/lib_r4.py": "f1d94cc0eb2849bc69eaac90db374de2ef946aff6ce139bb9b396a1dfde8ab60",
+  "lib/make_eic_verify.py": "58f13c6a8564fe9877e3a5bb40e8d46fccf1ce67ac174ccd6a4298ddad03a8d2",
+  "lib/reconstruct_runs.py": "5dc9f78ee40e0f54efc5d14b2ec84dc12dd4a6c1d63b66b0c07a9d2be33338da",
+  "lib/run_m7.py": "eee0a19e09559965c4315fc26cea7f6fc9a6d643b81d71caa1968e0c6f9623d0",
+  "lib/table_m7.py": "a0765733be3e140f01afe1818d3a1ff630e83cb1970acba22e593f322574c1e3",
+  "lib/table_r3.py": "ec4d9a8ec0f665f74660bf517526b0a1c097efe630feda1f83297c8661851c9b",
+  "lib/table_r4.py": "e1efb54a7f9189c715780cfd130f2ea8540e70d9c5739adff3aa12a5bb5f2797",
+  "make_summary.py": "55aa911633417b6fd0378ae6e4e4be010aa8688640995d08dba0e7cd9b10e297",
+  "min/cases/MIN-A3-PREFIX/CONTRACT.json": "b73333b4463094ee47343e674991533702000e47e84d959cb0dcab600060e99a",
+  "min/cases/MIN-A3-PREFIX/DELEG.json": "7af59d5f49d2eeb2897cf2f746e5ff666ad2c6640f937c283501fbeebcf5e004",
+  "min/cases/MIN-A3-PREFIX/accept-output.json": "5636a1a851e36ee705fae9d515d141cd0974c4db027b138710e193aa12bf1cfd",
+  "min/cases/MIN-A3-PREFIX/closure.json": "7d91fa3ce046f11e39532148bef490dc75472134a6d3a6c18f224370adb058a7",
+  "min/cases/MIN-A3-PREFIX/envelope.json": "c4181dd252d05e05a720a55f900fbaecfb9941af75dcebd7ccae133d3e3fc4a9",
+  "min/cases/MIN-A3-PREFIX/request.json": "271b77876fdb5196203b7c6ebe6bd18fe7c8bba9c387640df0a3fc80a833270b",
+  "min/cases/MIN-A3-SETS/CONTRACT.json": "44288504e2593e1bd1f135b8499b4099d928e67f99fe7162d23f7bfae65f088b",
+  "min/cases/MIN-A3-SETS/DELEG.json": "938534a489bbda86fdff28c7ea7f53f33058bddaa4a9133e68213311606a5d88",
+  "min/cases/MIN-A3-SETS/accept-output.json": "a92fd3909524179911196bbc07f4615b9c26bb1e782c577a10fb1b2e9fcb0c09",
+  "min/cases/MIN-A3-SETS/closure.json": "32e5665b5d1939c361aaa1d12b3aecd97acec4b790502bada6ef01b504294451",
+  "min/cases/MIN-A3-SETS/envelope.json": "5c0a9a57991c3fec9b3795c5bc3ca17c448cea6f2063ffa5668fcc16ab902425",
+  "min/cases/MIN-A3-SETS/request.json": "fdee272b1640afa5bcb2e0b5f13f7869f23588625c17a50c206d72f172a94d1f",
+  "min/cases/MIN-A3/CONTRACT.json": "b73333b4463094ee47343e674991533702000e47e84d959cb0dcab600060e99a",
+  "min/cases/MIN-A3/DELEG.json": "938534a489bbda86fdff28c7ea7f53f33058bddaa4a9133e68213311606a5d88",
+  "min/cases/MIN-A3/accept-output.json": "08ad538985a40d805e0896d47d2e1bdcf2dce978f575ff57752bc38c7bf0dfb2",
+  "min/cases/MIN-A3/closure.json": "71503a809a5647dbc78ab51c5a0c3e5cba90c641206527045447ff6623c6220b",
+  "min/cases/MIN-A3/envelope.json": "74ef1f070e31318391330a7db20b0963488574759a733fe5fb652e21995e8cfb",
+  "min/cases/MIN-A3/request.json": "e34c27e2c4436d616f446b1feed43670fda507a1782046a9aae9afe872a39cb5",
+  "min/cases/MIN-A4/CONTRACT.json": "3d2365f5856d615e152c810733045d4e3bc61bda1e749620c2a4a5ff1ba0931a",
+  "min/cases/MIN-A4/DELEG.json": "cb9f60fec7932d9e58c864be0a6e9e9d16d6b9c4017d1c9f80315aba13a0657a",
+  "min/cases/MIN-A4/accept-output.json": "f499f708bc96019cda53074e4ad74a2bb2990279b4d54cfecfda8d84b1699795",
+  "min/cases/MIN-A4/closure.json": "2821bac302e9b1471abe0be08f928423ec9a2d4a11f46c231e6fbb39b70b4956",
+  "min/cases/MIN-A4/envelope.json": "c6a4d8e827d638e837b301fcb12bab817119cb4b4443b1929985b801225922dd",
+  "min/cases/MIN-A4/request.json": "a23c7a585008e5313ccf324c32cbf76196cdaec51a0d8e438131c22f16a6eb83",
+  "min/cases/NEAR-A3-NONE/CONTRACT.json": "54035e854da2d00e264b97bc8bb76081685cf9e7f7468b1524bf00bcb6670fa8",
+  "min/cases/NEAR-A3-NONE/DELEG.json": "938534a489bbda86fdff28c7ea7f53f33058bddaa4a9133e68213311606a5d88",
+  "min/cases/NEAR-A3-NONE/accept-output.json": "1a733f5b0eb949916d6edecb29e942906b38ab5d4ebc14138c69d0b731c20cca",
+  "min/cases/NEAR-A3-NONE/closure.json": "e2a37ccdb08b253075b10358be7265c87f3e305653c5d857601f2012a0afdc9d",
+  "min/cases/NEAR-A3-NONE/envelope.json": "1baefde689be91f172bbb963b7e6f0f7a55bf50e8de25e47ea204875ec3ba36a",
+  "min/cases/NEAR-A3-NONE/request.json": "ae2bd6d0ea3b2c5842e73a9c2e3ab31bee829bd2d0d747b43ed515a0ceb06498",
+  "min/cases/NEAR-A3-NORM/CONTRACT.json": "a38f200e133534f5c988fd4a9c0b813b06a4520d79253a5fb40ffbfb3fb6844c",
+  "min/cases/NEAR-A3-NORM/DELEG.json": "938534a489bbda86fdff28c7ea7f53f33058bddaa4a9133e68213311606a5d88",
+  "min/cases/NEAR-A3-NORM/accept-output.json": "6fd56eec0b4b8e40a98c2c3786eaee3a1d7fe5b12eb3d9e6a6f7dbb83b5d225c",
+  "min/cases/NEAR-A3-NORM/closure.json": "02def40a65f597be113b40d1e738d8f5a99dbe3260e7b0f187ae5733b9eb8d11",
+  "min/cases/NEAR-A3-NORM/envelope.json": "604a4bfc4870388abad4b29f1055f30e5cf66781542e114bbc595b6dc62bb37f",
+  "min/cases/NEAR-A3-NORM/request.json": "4c836b47333c27dec5c5238cb2fa3ff806c8b9ee098c8eab9f2a3b742e6a2eca",
+  "min/cases/NEAR-A3-SAME/CONTRACT.json": "b73333b4463094ee47343e674991533702000e47e84d959cb0dcab600060e99a",
+  "min/cases/NEAR-A3-SAME/DELEG.json": "f5d229768317dbab1d98b36241d0abb9748d206e9363aba363395ee0233f190f",
+  "min/cases/NEAR-A3-SAME/accept-output.json": "0c4c84fba199cca998cf29ee0d7d6d3670c7fddb24f56e9cb89bf00b7cfec4f0",
+  "min/cases/NEAR-A3-SAME/closure.json": "142d3d88eacf58305bc5dc6b52deac31e726b540bbe33374af3dc200c24d0fd7",
+  "min/cases/NEAR-A3-SAME/envelope.json": "e91a738ac7581ae862ae81b15aa7bf2f5e284a5a6e0c1f2072207541ce06df2f",
+  "min/cases/NEAR-A3-SAME/request.json": "bfa7e5b8a718bb5ecaac5bc997d562b4a7c9730536bbd8988d51a92816219402",
+  "min/cases/NEAR-A4-NORM/CONTRACT.json": "3d2365f5856d615e152c810733045d4e3bc61bda1e749620c2a4a5ff1ba0931a",
+  "min/cases/NEAR-A4-NORM/DELEG.json": "974d21fb3b371cf676312f350aeb7e4b35a5be9fb7fa25057d5c6f9b914b3b41",
+  "min/cases/NEAR-A4-NORM/accept-output.json": "2b07c5c63a0178445c818f9c9d91080a4b15ee9492671eafc51dec88e8d9c1a9",
+  "min/cases/NEAR-A4-NORM/closure.json": "9614355b8632a0b92d608da84968b3c92e724c426bc4d06530d42bd4d5b4420c",
+  "min/cases/NEAR-A4-NORM/envelope.json": "8d1ceb0b3e18dbb21a23f10d44b8697732239a833812c66bd297ab35dc238a5f",
+  "min/cases/NEAR-A4-NORM/request.json": "6c1e0dfbd31692cc38cad2c156e8128ee201c18433a325589e8c0ac320b99eaf",
+  "min/d1_min.py": "6d47a0ae848cc241ebd07abdd43a5c1f9ae9d3a13db655b9f8fabe0fd670de32",
+  "min/min-result.json": "f939b325c31ce330cd3f1553b66ad45cd748a6b6672f70295b75eed2f49f4ccd",
+  "min/pinned/bmin_accept.py": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0",
+  "nc2/d1_nc2.py": "de4c936609956ce2ece4b107eec0030ce3400b585522f021fb53e55edeaf4f56",
+  "nc2/nc2-result.json": "86cd607ef81f4428af48bf4f6bcd0e11c688d28962682b04c5e76a8a1fb107be",
+  "nc2/out/inputs/K.json": "8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+  "nc2/out/inputs/s0-nc2/deleg.json": "ba5b643727d6166919a0f322116d80a625b79ac5717adf6fcc03a33dfa324639",
+  "nc2/out/inputs/s0-nc2/handoff.json": "f6f30d35d1a4013c3a105c2d84d55601b61d8873df05d5722f18579da1c5565f",
+  "nc2/out/inputs/s0-v/deleg.json": "51b6874b08115ef5103d5a38e3105a5d8f89c71080b240b9388ccb80ce20fd29",
+  "nc2/out/inputs/s0-v/handoff.json": "f6f30d35d1a4013c3a105c2d84d55601b61d8873df05d5722f18579da1c5565f",
+  "nc2/out/inputs/s1-nc2/deleg.json": "803198ff774a077a1d712ab1d01e7e8a5552bfa89706293ab0c769a8bde848d4",
+  "nc2/out/inputs/s1-nc2/handoff.json": "0efccf5bfb0de9cde8d37354ad93bb93ace451411a836d39ab9c7a1c3d140224",
+  "nc2/out/inputs/s1-v/deleg.json": "6cf84a9c0ce44f4985c0a979dffa0bf67bdd235d008bf7d85f5567a159c9429d",
+  "nc2/out/inputs/s1-v/handoff.json": "0efccf5bfb0de9cde8d37354ad93bb93ace451411a836d39ab9c7a1c3d140224",
+  "nc2/out/s0-nc2-a/acceptor-stdout-b1.json": "6b64d9537ac172c86015578b002a5c2abb527c6234412465e529993fb92884da",
+  "nc2/out/s0-nc2-a/acceptor-stdout-b2.json": "83bb3bf367b564b479d6090de8b7cff646d1521abf726838b72556d6004d8065",
+  "nc2/out/s0-nc2-a/contract-envelope.json": "89ad269a9d6f5c2f90f43d51a529fd757ce6889acc17b4911771e36df107fcce",
+  "nc2/out/s0-nc2-a/controller-output-b1.json": "69bfe9e4865f40c815c4808275668e2f8cd29b1eae1c57b79acdf9c06a0a77e2",
+  "nc2/out/s0-nc2-a/controller-output-b2.json": "c6724d1b314c29a36f685cfa2e03df7f9b44a86d5c13454f488b1f81b95c8d97",
+  "nc2/out/s0-nc2-a/request-b1.json": "7dae368c66f69360d8a5a363f4e5233aa518f2b5e05b6ee724d8ccda9a813240",
+  "nc2/out/s0-nc2-a/request-b2.json": "e31c0e7fb561f149e3349bf711a6279161361242e36d5b35367e74ca747f97c2",
+  "nc2/out/s0-nc2-c/acceptor-stdout-c.json": "25d0927eac8628a7b411e6d0ec2162e3d19d080f2a544980c630373e22253d0a",
+  "nc2/out/s0-nc2-c/controller-output-c.json": "71b63bf174f372708c809042c2d15d799260ccf10c86675ffad21e050bcfe3da",
+  "nc2/out/s0-nc2-c/request-c.json": "63a994ce638a0baae6b008989d5322c0f7c5ecd8627906cae5ea1bdbf37c644f",
+  "nc2/out/s0-v-a/acceptor-stdout-b1.json": "e092a8d75e123da6b4059531d29a2d07e282ced3ac746aab2bceaff445a6d1cd",
+  "nc2/out/s0-v-a/contract-envelope.json": "cef377aa4a471cbc4fd60f67616bb5041457eb504142196b7456d7c00110d2dc",
+  "nc2/out/s0-v-a/controller-output-b1.json": "629ae7c769bcebed620899a356c8e3c60dbde5ab5c766e4649bba64c0575d6a0",
+  "nc2/out/s0-v-a/request-b1.json": "9ae58ec13357f16520d052b0369cb5b0d308ecf8b07e335aca47dcae1e363b7f",
+  "nc2/out/s0-v-c/acceptor-stdout-c.json": "db3e9e8848ebc1610112f91e91c126fa544f4196576729ed782fbe9748ea2d63",
+  "nc2/out/s0-v-c/controller-output-c.json": "316d3ea8cd621bdf647f290272e50d3b99e4e251cb4be3ce167380d4b141844c",
+  "nc2/out/s0-v-c/request-c.json": "dbd33e41e2aef35ff22eb88b6e1a6545e841978512f49dad32a9d63847031edc",
+  "nc2/out/s1-nc2-a/acceptor-stdout-b1.json": "fa71efe63e84a609a43728aa51927c82261036518cc3ecb0a28d550014e68889",
+  "nc2/out/s1-nc2-a/acceptor-stdout-b2.json": "6f441b9a0cc26d9de023c60e7f254a01a514bbbd34d83433e1f6b88d85e25576",
+  "nc2/out/s1-nc2-a/contract-envelope.json": "69d06756ff25f4d804cb1f81e389cbd2eaeea7738f4254c02fa259fd50f9f3ea",
+  "nc2/out/s1-nc2-a/controller-output-b1.json": "086161b99b2245c54eea251921bf249becd678e5b2e69f3994d61e1ec71d4b7f",
+  "nc2/out/s1-nc2-a/controller-output-b2.json": "594068c4e5c811aad5a5c5d92a78f560893058be3592215b0606858846a8ce2e",
+  "nc2/out/s1-nc2-a/request-b1.json": "be231abedbeda6a4d395e174af78ddea78e4626310ccce13c60edb921db3ca62",
+  "nc2/out/s1-nc2-a/request-b2.json": "88afac4de3dc9559d08a2c768aa9c3d353200d4fb6b0200be41b460662a303a6",
+  "nc2/out/s1-nc2-c/acceptor-stdout-c.json": "147d749289c7787450e57bee381b218f65f67adfde11df4080c15879530985aa",
+  "nc2/out/s1-nc2-c/controller-output-c.json": "e1468924210c6c817eb7579852022be5338d92f8c26f5a8dc0f2490d34e2db7d",
+  "nc2/out/s1-nc2-c/request-c.json": "81083c79e861e8ffd8a39d1049c922a9427e1df75ed9257dd6970c11f9acf394",
+  "nc2/out/s1-v-a/acceptor-stdout-b1.json": "424a78085e7b3cdd65304987b8a8433745b8706317ef4aefa7bfe36528fa8940",
+  "nc2/out/s1-v-a/contract-envelope.json": "bb986db319910e09cd6c53c0fc8a6da7c665b519b3e8b6c28a129ffcd058cb5c",
+  "nc2/out/s1-v-a/controller-output-b1.json": "d104403fab840acdd6907be5e89d3576b23a35cd57086e7a9a419895b4adeb13",
+  "nc2/out/s1-v-a/request-b1.json": "224f602cb67158b3df51aea04d9f32349e8af8d95ca8afdba1837595f9f071eb",
+  "nc2/out/s1-v-c/acceptor-stdout-c.json": "8ce5f62e12dc2a5d7f8995d017f1701fb46909f56b89b99058c92ee723f0d2d5",
+  "nc2/out/s1-v-c/controller-output-c.json": "4d859bc7761d5f75cf5c463409df18a7cf51d994d51f5dc2316718e15b4d4d94",
+  "nc2/out/s1-v-c/request-c.json": "128be0e4310c85910bd5b97503cadf2b7e1b75523809f554124a0f25cc643593",
+  "nc2/run.log": "9cae5b368be9d30b8c5c9daf79a3fea723fb5173ad5d129db37462c4b9a4141b",
+  "pinned/bmin_accept.py": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0",
+  "pinned/bmin_facts.py": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+ },
+ "Hygiene": {
+  "DeliverablesWithUserNameOrEmail": [],
+  "TransientDirs": [
+   "min/repo",
+   "nc2/w",
+   "lib/__pycache__"
+  ],
+  "TransientFilesWithUserNameOrEmail": 18
+ },
+ "MinimalCase": {
+  "Cases": [
+   {
+    "Contract": [
+     [
+      "a/**"
+     ],
+     []
+    ],
+    "Decision": "REJECT_FACTS",
+    "Delegation": [
+     [
+      "a/b"
+     ],
+     []
+    ],
+    "Diverge": true,
+    "FactsLevelAccepted": false,
+    "Name": "MIN-A3",
+    "R7": "MISMATCH",
+    "R7Mismatches": [
+     {
+      "Acceptor": [
+       "a/**"
+      ],
+      "Field": "A3[a/b].ContainedBy",
+      "Tool": []
+     }
+    ],
+    "ToolA3": [
+     {
+      "ContainedBy": [],
+      "Entry": "a/b"
+     }
+    ],
+    "ToolA4": []
+   },
+   {
+    "Contract": [
+     [
+      "a/**"
+     ],
+     []
+    ],
+    "Decision": "ACCEPT_FACTS",
+    "Delegation": [
+     [
+      "a/**"
+     ],
+     []
+    ],
+    "Diverge": false,
+    "FactsLevelAccepted": true,
+    "Name": "NEAR-A3-SAME",
+    "R7": "MATCH",
+    "R7Mismatches": [],
+    "ToolA3": [
+     {
+      "ContainedBy": [
+       "a/**"
+      ],
+      "Entry": "a/**"
+     }
+    ],
+    "ToolA4": []
+   },
+   {
+    "Contract": [
+     [
+      "a/"
+     ],
+     []
+    ],
+    "Decision": "ACCEPT_FACTS",
+    "Delegation": [
+     [
+      "a/b"
+     ],
+     []
+    ],
+    "Diverge": false,
+    "FactsLevelAccepted": true,
+    "Name": "NEAR-A3-NORM",
+    "R7": "MATCH",
+    "R7Mismatches": [],
+    "ToolA3": [
+     {
+      "ContainedBy": [
+       "a/"
+      ],
+      "Entry": "a/b"
+     }
+    ],
+    "ToolA4": []
+   },
+   {
+    "Contract": [
+     [
+      "a/**"
+     ],
+     []
+    ],
+    "Decision": "REJECT_FACTS",
+    "Delegation": [
+     [
+      "a/"
+     ],
+     []
+    ],
+    "Diverge": true,
+    "FactsLevelAccepted": false,
+    "Name": "MIN-A3-PREFIX",
+    "R7": "MISMATCH",
+    "R7Mismatches": [
+     {
+      "Acceptor": [
+       "a/**"
+      ],
+      "Field": "A3[a/].ContainedBy",
+      "Tool": []
+     }
+    ],
+    "ToolA3": [
+     {
+      "ContainedBy": [],
+      "Entry": "a/"
+     }
+    ],
+    "ToolA4": []
+   },
+   {
+    "Contract": [
+     [],
+     [
+      "a/b"
+     ]
+    ],
+    "Decision": "REJECT_FACTS",
+    "Delegation": [
+     [],
+     [
+      "a/**"
+     ]
+    ],
+    "Diverge": true,
+    "FactsLevelAccepted": false,
+    "Name": "MIN-A4",
+    "R7": "MISMATCH",
+    "R7Mismatches": [
+     {
+      "Acceptor": [
+       "a/**"
+      ],
+      "Field": "A4[a/b].ContainedBy",
+      "Tool": []
+     }
+    ],
+    "ToolA3": [],
+    "ToolA4": [
+     {
+      "ContainedBy": [],
+      "Entry": "a/b"
+     }
+    ]
+   },
+   {
+    "Contract": [
+     [],
+     [
+      "a/b"
+     ]
+    ],
+    "Decision": "ACCEPT_FACTS",
+    "Delegation": [
+     [],
+     [
+      "a/"
+     ]
+    ],
+    "Diverge": false,
+    "FactsLevelAccepted": true,
+    "Name": "NEAR-A4-NORM",
+    "R7": "MATCH",
+    "R7Mismatches": [],
+    "ToolA3": [],
+    "ToolA4": [
+     {
+      "ContainedBy": [
+       "a/"
+      ],
+      "Entry": "a/b"
+     }
+    ]
+   },
+   {
+    "Contract": [
+     [
+      "c/**"
+     ],
+     []
+    ],
+    "Decision": "ACCEPT_FACTS",
+    "Delegation": [
+     [
+      "a/b"
+     ],
+     []
+    ],
+    "Diverge": false,
+    "FactsLevelAccepted": true,
+    "Name": "NEAR-A3-NONE",
+    "R7": "MATCH",
+    "R7Mismatches": [],
+    "ToolA3": [
+     {
+      "ContainedBy": [],
+      "Entry": "a/b"
+     }
+    ],
+    "ToolA4": []
+   },
+   {
+    "Contract": [
+     [
+      "a/**",
+      "a/b"
+     ],
+     []
+    ],
+    "Decision": "REJECT_FACTS",
+    "Delegation": [
+     [
+      "a/b"
+     ],
+     []
+    ],
+    "Diverge": true,
+    "FactsLevelAccepted": false,
+    "Name": "MIN-A3-SETS",
+    "R7": "MISMATCH",
+    "R7Mismatches": [
+     {
+      "Acceptor": [
+       "a/**",
+       "a/b"
+      ],
+      "Field": "A3[a/b].ContainedBy",
+      "Tool": [
+       "a/b"
+      ]
+     }
+    ],
+    "ToolA3": [
+     {
+      "ContainedBy": [
+       "a/b"
+      ],
+      "Entry": "a/b"
+     }
+    ],
+    "ToolA4": []
+   }
+  ],
+  "Repo": {
+   "HeadResolves": false,
+   "IdEqualsPinned": true,
+   "Objects": [
+    "9a/829b0eeb1210238052b1feac06cfa8f7964aed"
+   ],
+   "Path": "min/repo",
+   "PipelineBlobEqualsPinned": true,
+   "PipelineRecomputedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Refs": [],
+   "WriteReturnedId": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  }
+ },
+ "Nc2": {
+  "Invocations": {
+   "S0/NC2-A/b1": {
+    "AcceptanceReasons": [],
+    "AcceptedA65r2": true,
+    "Acceptor": {
+     "Checks": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     },
+     "Decision": "ACCEPT_FACTS",
+     "Rc": 0
+    },
+    "Classification": [
+     "EXECUTION_BLOCKED",
+     "STOP",
+     "Termination"
+    ],
+    "ContractByU19Ok": true,
+    "ContractFactsA3": [
+     [
+      "src/Fixture.Lib/Calculator.cs",
+      [
+       "src/Fixture.Lib/Calculator.cs"
+      ]
+     ],
+     [
+      "tests/Fixture.Tests/CalculatorTests.cs",
+      [
+       "tests/Fixture.Tests/CalculatorTests.cs"
+      ]
+     ]
+    ],
+    "ContractRun": true,
+    "Controller": {
+     "Authority": "fail",
+     "Ci": "not_run",
+     "CleanTree": "pass",
+     "Contract": "pass",
+     "Denials": "not_run",
+     "FreeText": "pass",
+     "Handoff": "pass",
+     "Identity": "pass",
+     "Remote": "not_run",
+     "Routing": "not_run",
+     "Scope": "fail",
+     "Termination": "not_run",
+     "Tests": "not_run",
+     "Trailer": "pass"
+    },
+    "Orders": 12,
+    "ProcessTreeDead": true,
+    "TableAccepted": true,
+    "VerificationIncluded": true,
+    "ZeroWrite": true
+   },
+   "S0/NC2-A/b2": {
+    "AcceptanceReasons": [],
+    "AcceptedA65r2": true,
+    "Acceptor": {
+     "Checks": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     },
+     "Decision": "ACCEPT_FACTS",
+     "Rc": 0
+    },
+    "Classification": [
+     "EXECUTION_BLOCKED",
+     "STOP",
+     "Termination"
+    ],
+    "ContractByU19Ok": true,
+    "ContractFactsA3": [
+     [
+      "src/Fixture.Lib/Calculator.cs",
+      [
+       "src/Fixture.Lib/Calculator.cs"
+      ]
+     ],
+     [
+      "tests/Fixture.Tests/CalculatorTests.cs",
+      [
+       "tests/Fixture.Tests/CalculatorTests.cs"
+      ]
+     ]
+    ],
+    "ContractRun": true,
+    "Controller": {
+     "Authority": "fail",
+     "Ci": "not_run",
+     "CleanTree": "pass",
+     "Contract": "pass",
+     "Denials": "not_run",
+     "FreeText": "pass",
+     "Handoff": "pass",
+     "Identity": "pass",
+     "Remote": "not_run",
+     "Routing": "not_run",
+     "Scope": "fail",
+     "Termination": "not_run",
+     "Tests": "not_run",
+     "Trailer": "pass"
+    },
+    "Orders": 12,
+    "ProcessTreeDead": true,
+    "TableAccepted": true,
+    "VerificationIncluded": true,
+    "ZeroWrite": true
+   },
+   "S0/NC2-C/c": {
+    "AcceptanceReasons": [],
+    "AcceptedA65r2": true,
+    "Acceptor": {
+     "Checks": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     },
+     "Decision": "ACCEPT_FACTS",
+     "Rc": 0
+    },
+    "Classification": [
+     "EXECUTION_BLOCKED",
+     "STOP",
+     "Termination"
+    ],
+    "ContractByU19Ok": true,
+    "ContractFactsA3": null,
+    "ContractRun": false,
+    "Controller": {
+     "Authority": "fail",
+     "Ci": "not_run",
+     "CleanTree": "pass",
+     "Contract": "pass",
+     "Denials": "not_run",
+     "FreeText": "pass",
+     "Handoff": "pass",
+     "Identity": "pass",
+     "Remote": "not_run",
+     "Routing": "not_run",
+     "Scope": "fail",
+     "Termination": "not_run",
+     "Tests": "not_run",
+     "Trailer": "pass"
+    },
+    "Orders": 11,
+    "ProcessTreeDead": true,
+    "TableAccepted": true,
+    "VerificationIncluded": true,
+    "ZeroWrite": true
+   },
+   "S0/V-A/b1": {
+    "AcceptanceReasons": [],
+    "AcceptedA65r2": true,
+    "Acceptor": {
+     "Checks": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     },
+     "Decision": "ACCEPT_FACTS",
+     "Rc": 0
+    },
+    "Classification": [
+     "EXECUTION_BLOCKED",
+     "STOP",
+     "Termination"
+    ],
+    "ContractByU19Ok": true,
+    "ContractFactsA3": [
+     [
+      "src/Fixture.Lib/Calculator.cs",
+      [
+       "src/Fixture.Lib/Calculator.cs"
+      ]
+     ],
+     [
+      "tests/Fixture.Tests/CalculatorTests.cs",
+      [
+       "tests/Fixture.Tests/CalculatorTests.cs"
+      ]
+     ],
+     [
+      "docs/automation/evidence/FX-U1-agent/**",
+      [
+       "docs/automation/evidence/FX-U1-agent/**"
+      ]
+     ]
+    ],
+    "ContractRun": true,
+    "Controller": {
+     "Authority": "fail",
+     "Ci": "not_run",
+     "CleanTree": "pass",
+     "Contract": "pass",
+     "Denials": "not_run",
+     "FreeText": "pass",
+     "Handoff": "pass",
+     "Identity": "pass",
+     "Remote": "not_run",
+     "Routing": "not_run",
+     "Scope": "pass",
+     "Termination": "not_run",
+     "Tests": "not_run",
+     "Trailer": "pass"
+    },
+    "Orders": 12,
+    "ProcessTreeDead": true,
+    "TableAccepted": true,
+    "VerificationIncluded": true,
+    "ZeroWrite": true
+   },
+   "S0/V-C/c": {
+    "AcceptanceReasons": [],
+    "AcceptedA65r2": true,
+    "Acceptor": {
+     "Checks": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     },
+     "Decision": "ACCEPT_FACTS",
+     "Rc": 0
+    },
+    "Classification": [
+     "EXECUTION_BLOCKED",
+     "STOP",
+     "Termination"
+    ],
+    "ContractByU19Ok": true,
+    "ContractFactsA3": null,
+    "ContractRun": false,
+    "Controller": {
+     "Authority": "fail",
+     "Ci": "not_run",
+     "CleanTree": "pass",
+     "Contract": "pass",
+     "Denials": "not_run",
+     "FreeText": "pass",
+     "Handoff": "pass",
+     "Identity": "pass",
+     "Remote": "not_run",
+     "Routing": "not_run",
+     "Scope": "pass",
+     "Termination": "not_run",
+     "Tests": "not_run",
+     "Trailer": "pass"
+    },
+    "Orders": 11,
+    "ProcessTreeDead": true,
+    "TableAccepted": true,
+    "VerificationIncluded": true,
+    "ZeroWrite": true
+   },
+   "S1/NC2-A/b1": {
+    "AcceptanceReasons": [
+     "acceptor exit code 1",
+     "Decision 'REJECT_FACTS'",
+     "R7 = MISMATCH (MATCH required by its data condition)"
+    ],
+    "AcceptedA65r2": false,
+    "Acceptor": {
+     "Checks": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MISMATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     },
+     "Decision": "REJECT_FACTS",
+     "Rc": 1
+    },
+    "Classification": [
+     "EXECUTION_BLOCKED",
+     "STOP",
+     "Termination"
+    ],
+    "ContractByU19Ok": true,
+    "ContractFactsA3": [
+     [
+      "src/Fixture.Lib/Calculator.cs",
+      [
+       "src/Fixture.Lib/Calculator.cs"
+      ]
+     ],
+     [
+      "tests/Fixture.Tests/CalculatorTests.cs",
+      [
+       "tests/Fixture.Tests/CalculatorTests.cs"
+      ]
+     ],
+     [
+      "docs/automation/evidence/FX-U1-agent/T1/worker-summary.md",
+      []
+     ]
+    ],
+    "ContractRun": true,
+    "Controller": {
+     "Authority": "fail",
+     "Ci": "not_run",
+     "CleanTree": "pass",
+     "Contract": "fail",
+     "Denials": "not_run",
+     "FreeText": "pass",
+     "Handoff": "pass",
+     "Identity": "pass",
+     "Remote": "not_run",
+     "Routing": "not_run",
+     "Scope": "fail",
+     "Termination": "not_run",
+     "Tests": "not_run",
+     "Trailer": "pass"
+    },
+    "Orders": 12,
+    "ProcessTreeDead": true,
+    "TableAccepted": false,
+    "VerificationIncluded": true,
+    "ZeroWrite": true
+   },
+   "S1/NC2-A/b2": {
+    "AcceptanceReasons": [
+     "acceptor exit code 1",
+     "Decision 'REJECT_FACTS'",
+     "R7 = MISMATCH (MATCH required by its data condition)"
+    ],
+    "AcceptedA65r2": false,
+    "Acceptor": {
+     "Checks": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MISMATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     },
+     "Decision": "REJECT_FACTS",
+     "Rc": 1
+    },
+    "Classification": [
+     "EXECUTION_BLOCKED",
+     "STOP",
+     "Termination"
+    ],
+    "ContractByU19Ok": true,
+    "ContractFactsA3": [
+     [
+      "src/Fixture.Lib/Calculator.cs",
+      [
+       "src/Fixture.Lib/Calculator.cs"
+      ]
+     ],
+     [
+      "tests/Fixture.Tests/CalculatorTests.cs",
+      [
+       "tests/Fixture.Tests/CalculatorTests.cs"
+      ]
+     ],
+     [
+      "docs/automation/evidence/FX-U1-agent/T1/worker-summary.md",
+      []
+     ]
+    ],
+    "ContractRun": true,
+    "Controller": {
+     "Authority": "fail",
+     "Ci": "not_run",
+     "CleanTree": "pass",
+     "Contract": "pass",
+     "Denials": "not_run",
+     "FreeText": "pass",
+     "Handoff": "pass",
+     "Identity": "pass",
+     "Remote": "not_run",
+     "Routing": "not_run",
+     "Scope": "fail",
+     "Termination": "not_run",
+     "Tests": "not_run",
+     "Trailer": "pass"
+    },
+    "Orders": 12,
+    "ProcessTreeDead": true,
+    "TableAccepted": false,
+    "VerificationIncluded": true,
+    "ZeroWrite": true
+   },
+   "S1/NC2-C/c": {
+    "AcceptanceReasons": [],
+    "AcceptedA65r2": true,
+    "Acceptor": {
+     "Checks": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     },
+     "Decision": "ACCEPT_FACTS",
+     "Rc": 0
+    },
+    "Classification": [
+     "EXECUTION_BLOCKED",
+     "STOP",
+     "Termination"
+    ],
+    "ContractByU19Ok": true,
+    "ContractFactsA3": null,
+    "ContractRun": false,
+    "Controller": {
+     "Authority": "fail",
+     "Ci": "not_run",
+     "CleanTree": "pass",
+     "Contract": "pass",
+     "Denials": "not_run",
+     "FreeText": "pass",
+     "Handoff": "pass",
+     "Identity": "pass",
+     "Remote": "not_run",
+     "Routing": "not_run",
+     "Scope": "fail",
+     "Termination": "not_run",
+     "Tests": "not_run",
+     "Trailer": "pass"
+    },
+    "Orders": 11,
+    "ProcessTreeDead": true,
+    "TableAccepted": true,
+    "VerificationIncluded": true,
+    "ZeroWrite": true
+   },
+   "S1/V-A/b1": {
+    "AcceptanceReasons": [],
+    "AcceptedA65r2": true,
+    "Acceptor": {
+     "Checks": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     },
+     "Decision": "ACCEPT_FACTS",
+     "Rc": 0
+    },
+    "Classification": [
+     "EXECUTION_BLOCKED",
+     "STOP",
+     "Termination"
+    ],
+    "ContractByU19Ok": true,
+    "ContractFactsA3": [
+     [
+      "src/Fixture.Lib/Calculator.cs",
+      [
+       "src/Fixture.Lib/Calculator.cs"
+      ]
+     ],
+     [
+      "tests/Fixture.Tests/CalculatorTests.cs",
+      [
+       "tests/Fixture.Tests/CalculatorTests.cs"
+      ]
+     ],
+     [
+      "docs/automation/evidence/FX-U1-agent/**",
+      [
+       "docs/automation/evidence/FX-U1-agent/**"
+      ]
+     ]
+    ],
+    "ContractRun": true,
+    "Controller": {
+     "Authority": "fail",
+     "Ci": "not_run",
+     "CleanTree": "pass",
+     "Contract": "pass",
+     "Denials": "not_run",
+     "FreeText": "pass",
+     "Handoff": "pass",
+     "Identity": "pass",
+     "Remote": "not_run",
+     "Routing": "not_run",
+     "Scope": "pass",
+     "Termination": "not_run",
+     "Tests": "not_run",
+     "Trailer": "pass"
+    },
+    "Orders": 12,
+    "ProcessTreeDead": true,
+    "TableAccepted": true,
+    "VerificationIncluded": true,
+    "ZeroWrite": true
+   },
+   "S1/V-C/c": {
+    "AcceptanceReasons": [],
+    "AcceptedA65r2": true,
+    "Acceptor": {
+     "Checks": {
+      "R1": "MATCH",
+      "R10": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH"
+     },
+     "Decision": "ACCEPT_FACTS",
+     "Rc": 0
+    },
+    "Classification": [
+     "EXECUTION_BLOCKED",
+     "STOP",
+     "Termination"
+    ],
+    "ContractByU19Ok": true,
+    "ContractFactsA3": null,
+    "ContractRun": false,
+    "Controller": {
+     "Authority": "fail",
+     "Ci": "not_run",
+     "CleanTree": "pass",
+     "Contract": "pass",
+     "Denials": "not_run",
+     "FreeText": "pass",
+     "Handoff": "pass",
+     "Identity": "pass",
+     "Remote": "not_run",
+     "Routing": "not_run",
+     "Scope": "pass",
+     "Termination": "not_run",
+     "Tests": "not_run",
+     "Trailer": "pass"
+    },
+    "Orders": 11,
+    "ProcessTreeDead": true,
+    "TableAccepted": true,
+    "VerificationIncluded": true,
+    "ZeroWrite": true
+   }
+  },
+  "Oracle": {
+   "S0/A/b1": {
+    "ControlAccepted": true,
+    "ControlDecision": "ACCEPT_FACTS",
+    "ControlPassable": true,
+    "ControlR7": "MATCH",
+    "EarlierDiffer": [],
+    "Holds": true,
+    "MutatedFail": true,
+    "RelativeFailureClass": "Scope",
+    "VerificationAccepted": true
+   },
+   "S0/A/b2": {
+    "ControlAccepted": true,
+    "ControlDecision": "ACCEPT_FACTS",
+    "ControlPassable": true,
+    "ControlR7": "MATCH",
+    "EarlierDiffer": [],
+    "Holds": true,
+    "MutatedFail": true,
+    "RelativeFailureClass": "Scope",
+    "VerificationAccepted": true
+   },
+   "S0/C/c": {
+    "ControlAccepted": true,
+    "ControlDecision": "ACCEPT_FACTS",
+    "ControlPassable": true,
+    "ControlR7": "MATCH",
+    "EarlierDiffer": [],
+    "Holds": true,
+    "MutatedFail": true,
+    "RelativeFailureClass": "Scope",
+    "VerificationAccepted": true
+   },
+   "S1/A/b1": {
+    "ControlAccepted": false,
+    "ControlDecision": "REJECT_FACTS",
+    "ControlPassable": false,
+    "ControlR7": "MISMATCH",
+    "EarlierDiffer": [
+     "Contract"
+    ],
+    "Holds": false,
+    "MutatedFail": true,
+    "RelativeFailureClass": "Contract",
+    "VerificationAccepted": true
+   },
+   "S1/A/b2": {
+    "ControlAccepted": false,
+    "ControlDecision": "REJECT_FACTS",
+    "ControlPassable": false,
+    "ControlR7": "MISMATCH",
+    "EarlierDiffer": [],
+    "Holds": true,
+    "MutatedFail": true,
+    "RelativeFailureClass": "Scope",
+    "VerificationAccepted": true
+   },
+   "S1/C/c": {
+    "ControlAccepted": true,
+    "ControlDecision": "ACCEPT_FACTS",
+    "ControlPassable": true,
+    "ControlR7": "MATCH",
+    "EarlierDiffer": [],
+    "Holds": true,
+    "MutatedFail": true,
+    "RelativeFailureClass": "Scope",
+    "VerificationAccepted": true
+   }
+  },
+  "S0": {
+   "BenchMutationEqualsThisReading": true,
+   "Diff": [
+    "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs"
+   ],
+   "FirstDiffFile": "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+   "Nc2Allowed": [
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs"
+   ],
+   "RealAllowed": [
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs",
+    "docs/automation/evidence/FX-U1-agent/**"
+   ]
+  },
+  "S1": {
+   "Diff": [
+    "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+    "docs/automation/evidence/FX-U1-agent/T1/worker-summary.md",
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs"
+   ],
+   "ExtraPath": "docs/automation/evidence/FX-U1-agent/T1/worker-summary.md",
+   "FirstDiffFile": "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+   "G2": "0e27c94616cfc8cef5a26b1748626dc930896848",
+   "Nc2Allowed": [
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs",
+    "docs/automation/evidence/FX-U1-agent/T1/worker-summary.md"
+   ],
+   "P1": {
+    "Held": true,
+    "IdEqualsPinned": true,
+    "OnlyNewLooseObject": true,
+    "ReturnedId": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+   },
+   "P2": {
+    "FailedSteps": [],
+    "Launch": true
+   },
+   "RealAllowed": [
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs",
+    "docs/automation/evidence/FX-U1-agent/**"
+   ]
+  },
+  "Seconds": 704.3
+ },
+ "Pinned": {
+  "Acceptor": {
+   "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+   "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0"
+  },
+  "Tool": {
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+  }
+ },
+ "Schema": "rackcad-i62-d1-summary/0-experimental",
+ "Static": {
+  "A67-bench-M": {
+   "A3A4PassInstrumentReading": true,
+   "A3A4PassU19Reading": true,
+   "D1": false,
+   "D1Pairs": [],
+   "Delegation": {
+    "Path": "D:/r62-a6m7/bench/work/in-m/deleg.json",
+    "Sha256": "e46ed08bb43c39d26ca7a31f9e772ddea597d4dbc6b9769d3c51914e836d1ef7"
+   },
+   "ListsEqualContract": true
+  },
+  "A67-bench-p8-m": {
+   "Blob": "78c61629d3eb89d5136723737311cc791a92d868",
+   "Case": "M-A",
+   "Checks": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "MATCH",
+    "R6": "MATCH",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "Decision": "ACCEPT_FACTS",
+   "Holds": true,
+   "R7Runs": [
+    {
+     "Command": "scope",
+     "Compared": 9,
+     "Mismatches": 0
+    },
+    {
+     "Command": "contract",
+     "Compared": 17,
+     "Mismatches": 0
+    },
+    {
+     "Command": "clausemap",
+     "Compared": 4,
+     "Mismatches": 0
+    }
+   ],
+   "Sha256": "e7de53c21f00b81ec3a238342656a3356e1180d3f3bc5fc271c9cb125196d8b6",
+   "TableAccepted": true
+  },
+  "A67-kit-a6m7-measure": {
+   "A3A4PassInstrumentReading": true,
+   "A3A4PassU19Reading": true,
+   "D1": false,
+   "D1Pairs": [],
+   "Delegation": {
+    "Blob": "71cda7f01082b5a98f05db509348995480d5f18f",
+    "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/deleg.json",
+    "Sha256": "8a3dfd5132d3c547a0ce70895af14d699d3ee3169d6f5ed7f41c874d48ce4149"
+   },
+   "ListsEqualContract": true
+  },
+  "deleg-s0-nc2": {
+   "A3A4PassInstrumentReading": true,
+   "A3A4PassU19Reading": true,
+   "AllowedWriteScope": [
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs"
+   ],
+   "D1": false,
+   "D1Pairs": []
+  },
+  "deleg-s0-v": {
+   "A3A4PassInstrumentReading": true,
+   "A3A4PassU19Reading": true,
+   "AllowedWriteScope": [
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs",
+    "docs/automation/evidence/FX-U1-agent/**"
+   ],
+   "D1": false,
+   "D1Pairs": []
+  },
+  "deleg-s1-nc2": {
+   "A3A4PassInstrumentReading": false,
+   "A3A4PassU19Reading": true,
+   "AllowedWriteScope": [
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs",
+    "docs/automation/evidence/FX-U1-agent/T1/worker-summary.md"
+   ],
+   "D1": true,
+   "D1Pairs": [
+    [
+     "A3",
+     "docs/automation/evidence/FX-U1-agent/T1/worker-summary.md",
+     "docs/automation/evidence/FX-U1-agent/**"
+    ]
+   ]
+  },
+  "deleg-s1-v": {
+   "A3A4PassInstrumentReading": true,
+   "A3A4PassU19Reading": true,
+   "AllowedWriteScope": [
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs",
+    "docs/automation/evidence/FX-U1-agent/**"
+   ],
+   "D1": false,
+   "D1Pairs": []
+  }
+ }
+}

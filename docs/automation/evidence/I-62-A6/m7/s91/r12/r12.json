@@ -1,0 +1,263 @@
+{
+ "Schema": "i62-r12/1",
+ "Mandate": "decisiones §91, punto 4: resolver una por una las doce filas ambiguas de A6-5, regla 6",
+ "Date": "2026-10-17",
+ "Nature": "análisis normativo independiente; no decide, no declara Controller ELIGIBLE, FX-02 PASS, F6 GATE PASS ni integración",
+ "W": {"Path": "%USERPROFILE%/.codex/worktrees/architecture-portabilidad-coordinador-principal", "Head": "46217ccc37f10516456fba7d9c9ad4752499d45b"},
+ "Acceptor": {"Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py", "Blob": "434ef1fccb0d15762b30244b4a60928120698411", "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0"},
+ "Instrument": {"Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py", "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed", "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"},
+ "CitationsFile": "r12-citations.json",
+ "Probes": {
+  "Script": {"Path": "probes/probe_r12.py", "Sha256": "3b1d28c868728230588c7e113c86cd08cd4bdf485052ea6fdee5ebdaedc9cce0"},
+  "Result": {"Path": "probes/probe-r12-result.json", "Sha256": "13e56742ff2029e743555c7240a13dbec9aa8779a7f7f897db4eaf397a4699ca"},
+  "Parts": {
+   "P1": "blobs de B1 (mapa 4d49d3e1, esquema 6b54dda9, seis pares MODIFIED bb0d5522 -> 6f0187cb, WORKFLOW y AP en EFF): lector del aceptante desde su blob frente a lector de tipo CommonMark; MV-6 y MV-7 con normalizaciones que conservan líneas; MV-1; MV-5",
+   "P2": "tráiler en la historia de main del banco (fbe25347): línea exacta, tras quitar CR, subcadena y clave en el bloque de tráileres de Git",
+   "P3": "alcance de la entrega del banco: contrato T1, delegación del kit, diff 95bdc29d..b417d36c",
+   "P4": "Git 2.54.0.windows.1 por defecto ante un renombre (repositorio temporal borrado)"
+  }
+ },
+ "Counts": {"COMPATIBLE": 3, "INCOMPATIBLE": 1, "INDETERMINATE": 8},
+ "Rows": [
+  {
+   "Id": "L-01",
+   "Title": "E2: qué commit lleva el trailer, unicidad y EFF en MainSha_eval",
+   "Authorities": ["C-30", "C-31", "C-32", "C-33", "C-34", "C-35", "C-36", "C-37", "C-09", "C-26", "C-96", "C-91", "C-92", "C-93", "C-80", "C-85", "C-86"],
+   "AcceptorReading": "commit con el trailer = todo commit alcanzable desde Verification.MainSha cuyo mensaje crudo, partido por LF, tiene una línea exactamente igual a la cadena (sensible a mayúsculas, sin recortar espacios ni quitar CR, en cualquier posición); dos o más, o uno sin merge first-parent cuyo segundo padre lo alcance (reflexivo) y cuyo primer padre no, es defecto; EFF = candidato más antiguo; sin trailer y sin punto de entrada, sin restricción; la misma lectura rige E4 y EffectiveSha en R6",
+   "AcceptorCode": ["K-01", "K-02", "K-03", "K-04", "K-05", "K-06", "K-53", "K-54", "K-56", "K-55", "K-07", "K-08", "T-02", "T-03"],
+   "Alternatives": [
+    {"Id": "(i)", "Text": "tráiler de Git: solo en el bloque final de tráileres; clave sin distinguir mayúsculas; espacios tolerados", "AcceptorErrorIfAlternativeIsRight": "ambos", "Scenario": "línea igual en el cuerpo de otro commit o variante como único tráiler: rechazo falso determinista (R4; R6/E4; ejecución del instrumento con error); variante junto a la línea exacta: aceptación indebida posible en R4"},
+    {"Id": "(ii)", "Text": "precedente de WORKFLOW §11.2 (V14 ancla ahí el punto efectivo): una variante de forma es forma estructural distinta y detiene la identificación", "AcceptorErrorIfAlternativeIsRight": "aceptación indebida", "Scenario": "variante junto a la línea exacta, o variante como único tráiler sin punto de entrada (el aceptante queda sin restricción)"},
+    {"Id": "(iii)", "Text": "subcadena en cualquier lugar del mensaje", "AcceptorErrorIfAlternativeIsRight": "aceptación indebida", "Scenario": "mención dentro de una línea más larga"}
+   ],
+   "SettledSubpoints": ["universo = historia de MainSha_eval (E2)", "alcanza es reflexivo (A5-1: segundo padre de F_eff = F_norm; precondición Derive da F_eff)", "el primer merge no admite elección: como mucho hay un candidato", "clases de defecto de AP 786, 787, 799 y 947", "MainSha_eval de la solicitud = el MainSha de la invocación (A6-3, regla 6 (c))"],
+   "OpenSubpoint": "qué cuenta como commit con el trailer",
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "R4 no aplicable; en fbe25347 (3 commits) a9f6c929 es el único bajo las cuatro lecturas y ningún mensaje tiene CR", "Evidence": ["C-08", "P-01", "P-02", "P-03", "P-04", "P-05", "P-06"]},
+   "RoundB1": {"Affected": "condicional", "Condition": "un commit de main del fixture posterior a F_eff y alcanzable desde el MainSha de la verificación lleva la línea fuera del bloque de tráileres o una variante de forma; A5-1 solo fija F_norm y la precondición en F_eff", "Evidence": ["C-91", "C-93", "C-15", "C-77", "C-78"]},
+   "Disposition": "INDETERMINATE",
+   "CoordinatorDecision": {"Needed": true, "Question": "qué cuenta como commit con el trailer", "IfAcceptorReading": "solo lectura del Coordinator (A6-5, regla 6)", "IfAlternative": "otro blob, corrección de A-6 y determinación del Owner (A6-5, regla 6; A6-8, regla 5)"},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "misma clase; consecuencias corregidas", "Note": "frente al tráiler de Git el aceptante también puede ser más permisivo; tercera lectura por WORKFLOW §11.2; R6 también usa la lectura", "Evidence": ["R-02"]},
+   "Evidence": ["C-15", "C-77", "C-78"]
+  },
+  {
+   "Id": "L-02",
+   "Title": "E2-E3: punto de entrada y encabezado de 16.13",
+   "Authorities": ["C-38", "C-39", "C-40", "C-41", "C-42", "C-43", "C-44", "C-88", "C-87", "C-94", "C-93", "C-95"],
+   "AcceptorReading": "Match = línea completa normalizada fuera de bloques de tres comillas invertidas en la columna 0; nombra = el texto de la sección del punto de entrada (LF, sin normalizar espacios) contiene literalmente la línea exacta de 16.13; constantes fijas; defectos solo con EFF presente",
+   "AcceptorCode": ["K-09", "K-11", "K-12", "K-10"],
+   "Alternatives": [
+    {"Id": "(a)", "Text": "nombra = línea propia o enlace", "AcceptorErrorIfAlternativeIsRight": "aceptación indebida", "Scenario": "excluida: invalidaría el WORKFLOW de MC_I62 (cita en línea) y haría insatisfacible la precondición de A5-1"},
+    {"Id": "(b)", "Text": "nombra con espacios normalizados", "AcceptorErrorIfAlternativeIsRight": "rechazo falso", "Scenario": "excluida por exacta"},
+    {"Id": "(c)", "Text": "E3 con la línea que de hecho nombre X en lugar de la constante", "AcceptorErrorIfAlternativeIsRight": "ninguno", "Scenario": "excluida por los encabezados fijos (AP 924)"}
+   ],
+   "SettledSubpoints": ["nombra = mención literal de la línea exacta", "constantes fijas", "nivel ## implícito en la igualdad de línea"],
+   "OpenSubpoint": null,
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "R4 no aplicable; hechos de Entry sobre los mismos blobs: un punto de entrada (L614), una 16.13 (L717), cero diferencias de encabezado entre lectores", "Evidence": ["C-08", "P-07", "P-08", "P-11", "P-12"]},
+   "RoundB1": {"Affected": "no", "Condition": "mismos blobs de MC_I62 copiados sin adaptar", "Evidence": ["C-95", "P-09", "P-10"]},
+   "Disposition": "COMPATIBLE",
+   "CoordinatorDecision": {"Needed": false, "Question": null, "IfAcceptorReading": "lectura del Coordinator (A6-5, regla 6)", "IfAlternative": null},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "desacuerdo: COMPATIBLE", "Note": "la línea propia invalidaría el WORKFLOW de MC_I62 y la precondición de A-5; la sangría pertenece a L-13", "Evidence": ["R-03"]},
+   "Evidence": ["P-09", "P-10"]
+  },
+  {
+   "Id": "L-04",
+   "Title": "MV-1: JSON y validación contra el esquema en EFF",
+   "Authorities": ["C-45", "C-46", "C-104", "C-47", "C-95"],
+   "AcceptorReading": "UTF-8 estricto sin BOM, sin claves repetidas ni NaN o Infinity; subconjunto de draft 2020-12 con fallo cerrado ante palabras no admitidas; enum, const y uniqueItems por JSON canónico; pattern con re de Python y $ final como fin de texto",
+   "AcceptorCode": ["K-23", "K-24", "K-25", "K-26", "K-27", "K-28", "K-29"],
+   "Alternatives": [
+    {"Id": "(a)", "Text": "validación según el dialecto que declara el esquema (2020-12): palabras desconocidas ignoradas, format como anotación, 1 = 1.0, patrones ECMA-262", "AcceptorErrorIfAlternativeIsRight": "ambos", "Scenario": "palabras desconocidas o enum/const numéricos: rechazo falso; uniqueItems 1/1.0 o clases Unicode en pattern: aceptación indebida"},
+    {"Id": "(b)", "Text": "JSON tolerante (BOM ignorado, nombres repetidos con el último valor)", "AcceptorErrorIfAlternativeIsRight": "rechazo falso", "Scenario": "mapa con BOM o claves repetidas"}
+   ],
+   "SettledSubpoints": [],
+   "OpenSubpoint": "rigidez del JSON y semántica del validador",
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "R4 no aplicable; mismos blobs 4d49d3e1/6b54dda9 en el EFF del banco; sin palabras fuera del subconjunto, sin violaciones, un solo pattern hexadecimal, sin BOM, enteros 1-3", "Evidence": ["C-08", "P-13", "P-14", "P-15", "P-16", "P-17", "P-18"]},
+   "RoundB1": {"Affected": "no", "Condition": "A5-1 copia los dos blobs sin adaptarlos", "Evidence": ["C-95"]},
+   "Disposition": "INDETERMINATE",
+   "CoordinatorDecision": {"Needed": true, "Question": "rigidez del JSON (BOM, claves repetidas, NaN) y semántica del validador (subconjunto con fallo cerrado o 2020-12 completo)", "IfAcceptorReading": "solo lectura del Coordinator; en los blobs fijados no hay diferencia", "IfAlternative": "otro blob, corrección de A-6 y determinación del Owner"},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "misma clase; consecuencias corregidas", "Note": "el esquema sí declara 2020-12; frente a ese dialecto el aceptante también puede ser más permisivo", "Evidence": ["R-04", "R-05"]},
+   "Evidence": []
+  },
+  {
+   "Id": "L-10",
+   "Title": "MV-4, lista EntryFilePresentInEff1 (informativa)",
+   "Authorities": ["C-48", "C-49", "C-50", "C-51", "C-81", "C-82", "C-55", "C-52", "C-53", "C-102", "C-103", "C-90"],
+   "AcceptorReading": "calcula la lista de archivos ENTRY presentes en EFF^1 y la compara en R7, pero no la cuenta como defecto de la parte de mapa",
+   "AcceptorCode": ["K-30", "K-31", "K-32", "K-33"],
+   "Alternatives": [
+    {"Id": "B-ext", "Text": "AP 915 con el BaseBlob observado = blob(EFF^1, p) para toda clase: una ENTRY preexistente es defecto y, con AP 905, MAP_INVALID", "AcceptorErrorIfAlternativeIsRight": "aceptación indebida", "Scenario": "ENTRY preexistente como único defecto"}
+   ],
+   "SettledSubpoints": ["AP 916 es una regla de entradas (incluye REMOVED, que no es FileKind) y no funda una regla de archivo; la asimetría ADDED/ENTRY descansa en R61 b"],
+   "OpenSubpoint": "si una ENTRY de archivo presente en EFF^1 es defecto",
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "R4 no aplicable; las dos piezas calculan la misma lista (en el banco, el esquema, presente en 930288c5)", "Evidence": ["C-08"]},
+   "RoundB1": {"Affected": "no", "Condition": "A5-1 deja F_seed = EFF^1 sin archivos ENTRY", "Evidence": ["C-90"]},
+   "Disposition": "INDETERMINATE",
+   "CoordinatorDecision": {"Needed": true, "Question": "si una ENTRY de archivo presente en EFF^1 es defecto (B-ext)", "IfAcceptorReading": "solo lectura del Coordinator (informativa)", "IfAlternative": "otro blob, corrección de A-6 y determinación del Owner"},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "misma clase", "Note": "la evidencia de L-09 cita AP 916 como regla de archivo; es una regla de entradas", "Evidence": ["R-06"]},
+   "Evidence": ["C-77", "C-78"]
+  },
+  {
+   "Id": "L-11",
+   "Title": "MV-5: Entries único por (Path, Section)",
+   "Authorities": ["C-54", "C-55", "C-56", "C-57", "C-58"],
+   "AcceptorReading": "clave (Path, Section normalizada); el Path de cada entrada tiene que ser de una fila con FileKind MODIFIED",
+   "AcceptorCode": ["K-34", "K-35"],
+   "Alternatives": [
+    {"Id": "exacta", "Text": "clave de cadena exacta", "AcceptorErrorIfAlternativeIsRight": "rechazo falso", "Scenario": "dos Section que solo difieren en espacios"}
+   ],
+   "SettledSubpoints": ["la identidad de una designación es la de Match normalizado; con clave exacta, único y entrada o archivo duplicado no tendrían efecto y la violación de AP 891 no la detectaría ninguna regla", "archivo MODIFIED = FileKind MODIFIED"],
+   "OpenSubpoint": null,
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "R4 no aplicable; mismo mapa: 70 entradas, sin duplicados con ninguna clave, todas las Section normalizadas", "Evidence": ["C-08", "P-19", "P-20", "P-21"]},
+   "RoundB1": {"Affected": "no", "Condition": "mismo mapa", "Evidence": ["P-20", "P-21"]},
+   "Disposition": "COMPATIBLE",
+   "CoordinatorDecision": {"Needed": false, "Question": null, "IfAcceptorReading": "lectura del Coordinator (A6-5, regla 6)", "IfAlternative": null},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "desacuerdo: COMPATIBLE", "Note": "Match normalizado fija la identidad de la designación", "Evidence": ["R-07"]},
+   "Evidence": []
+  },
+  {
+   "Id": "L-12",
+   "Title": "MV-6: igualdad con la derivación por archivo MODIFIED",
+   "Authorities": ["C-59", "C-60", "C-61", "C-62", "C-63", "C-64"],
+   "AcceptorReading": "MV-6 en todo archivo MODIFIED del mapa; H = encabezados normalizados de todos los niveles más preámbulo (texto anterior al primer encabezado de nivel 2); texto de sección con subsecciones, normalizado colapsando todo blanco, saltos de línea incluidos; clases como conjuntos; ENTRY = el par fijo; duplicados y archivo ausente: defecto",
+   "AcceptorCode": ["K-20", "K-21", "K-16", "K-19", "K-18", "K-17", "K-22"],
+   "Alternatives": [
+    {"Id": "(i)", "Text": "MV-6 solo en archivos Markdown", "AcceptorErrorIfAlternativeIsRight": "rechazo falso", "Scenario": "excluida por el literal por archivo MODIFIED p"},
+    {"Id": "(ii)", "Text": "espacios colapsados colapsa espacios y tabuladores y conserva las líneas (el paso CRLF a LF sería redundante si no); variante con recorte de líneas", "AcceptorErrorIfAlternativeIsRight": "ambos", "Scenario": "sección cambiada solo en sus saltos de línea"}
+   ],
+   "SettledSubpoints": ["aplicación a todo archivo MODIFIED", "subsecciones y todos los niveles", "preámbulo antes del primer ##", "duplicados en ambas revisiones", "ENTRY = el par fijo"],
+   "OpenSubpoint": "si espacios colapsados incluye los saltos de línea",
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "R4 no aplicable; en el banco EFF^1 ya lleva los EffBlob y PROMPT_TEMPLATES falta en las dos revisiones: con textos idénticos cualquier normalización da lo mismo", "Evidence": ["C-08", "C-105"]},
+   "RoundB1": {"Affected": "no", "Condition": "los seis pares dan las clases del mapa con la normalización del aceptante y con las dos que conservan líneas; ningún nivel 3 o mayor antes del primer ##", "Evidence": ["P-22", "P-23", "P-24", "P-25", "P-34", "P-54"]},
+   "Disposition": "INDETERMINATE",
+   "CoordinatorDecision": {"Needed": true, "Question": "si espacios colapsados incluye los saltos de línea (también rige el normalizado de MV-7)", "IfAcceptorReading": "solo lectura del Coordinator", "IfAlternative": "otro blob, corrección de A-6 y determinación del Owner"},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "misma clase, otra razón", "Note": "readings.md la abre por los archivos no Markdown (lo resuelve el literal) y no examina los saltos de línea", "Evidence": ["R-08", "R-09"]},
+   "Evidence": []
+  },
+  {
+   "Id": "L-13",
+   "Title": "Lector Markdown para Match, MV-6 y MV-7",
+   "Authorities": ["C-57", "C-38", "C-61"],
+   "AcceptorReading": "encabezado = línea normalizada (cualquier sangría, blancos Unicode de str.split) que empieza por 1 a 6 # seguidos de espacio o fin; bloque de código = entre líneas que empiezan en la columna 0 por tres comillas invertidas; sin vallas de tildes, código sangrado, setext ni HTML",
+   "AcceptorCode": ["K-14", "K-15", "K-13"],
+   "Alternatives": [
+    {"Id": "CommonMark", "Text": "ATX con sangría de 0 a 3; vallas de comillas o tildes con sangría de 0 a 3; código sangrado de 4 o más; setext", "AcceptorErrorIfAlternativeIsRight": "ambos", "Scenario": "línea # sangrada en código sangrado; encabezado dentro de un bloque de tildes; valla sangrada de 1 a 3"}
+   ],
+   "SettledSubpoints": ["setext excluido: la sección se delimita por número de #"],
+   "OpenSubpoint": "si bloques de código incluye tildes y código sangrado, y si cuenta la sangría de los encabezados",
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "R4 no aplicable; R6 sobre los mismos blobs; el residuo G6 no aparece", "Evidence": ["C-08", "P-11", "P-12"]},
+   "RoundB1": {"Affected": "no", "Condition": "cero diferencias de nivel de encabezado entre lectores; sin tildes, sin # sangrados, sin setext", "Evidence": ["P-26", "P-27", "P-28", "P-29", "P-30", "P-31", "P-32", "P-33"]},
+   "Disposition": "INDETERMINATE",
+   "CoordinatorDecision": {"Needed": true, "Question": "si bloques de código incluye tildes y código sangrado, y si cuenta la sangría de los encabezados", "IfAcceptorReading": "solo lectura del Coordinator", "IfAlternative": "otro blob, corrección de A-6 y determinación del Owner"},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "misma clase", "Note": "el setext lo excluye el número de #", "Evidence": []},
+   "Evidence": []
+  },
+  {
+   "Id": "L-14",
+   "Title": "MV-7: punto de entrada, punteros y 16.3 en EFF",
+   "Authorities": ["C-65", "C-66", "C-67", "C-68", "C-42", "C-40", "C-69", "C-70"],
+   "AcceptorReading": "punto de entrada y nombra como L-02; 16.13 una vez en el AP de EFF; puntero = primera frase del cuerpo del único ## 16. y última del cuerpo de ### 16.3; frase hasta un punto seguido de blanco o fin; se quita la última aparición del puntero una vez y se compara el cuerpo normalizado con el de EFF^1",
+   "AcceptorCode": ["K-36", "K-37", "K-38", "K-39", "K-41", "K-42", "K-40"],
+   "Alternatives": [
+    {"Id": "presencia", "Text": "puntero presente en cualquier lugar", "AcceptorErrorIfAlternativeIsRight": "rechazo falso", "Scenario": "excluida: el componente se define por su posición"},
+    {"Id": "16.13", "Text": "16.13 repetida no es defecto de MV-7", "AcceptorErrorIfAlternativeIsRight": "ninguno", "Scenario": "ya es ENTRY_INVALID por E3 y el resolver"},
+    {"Id": "retirada", "Text": "quitar todas las apariciones o la línea entera", "AcceptorErrorIfAlternativeIsRight": "ninguno", "Scenario": "la línea entera quitaría texto de I-61; todas frente a la última solo difiere con dos apariciones"}
+   ],
+   "SettledSubpoints": ["posiciones de AP 730", "16.13 repetida sin efecto en la decisión", "sin el puntero = sin la frase"],
+   "OpenSubpoint": null,
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "R4 no aplicable; en el banco el AP de EFF^1 es el de EFF: desigualdad con toda lectura", "Evidence": ["C-08"]},
+   "RoundB1": {"Affected": "no", "Condition": "puntero primera frase de §16 y última de 16.3; igualdad con la retirada del aceptante, con todas las apariciones y con normalización que conserva líneas; la línea entera da desigualdad", "Evidence": ["P-35", "P-36", "P-37", "P-38", "P-39", "P-40"]},
+   "Disposition": "COMPATIBLE",
+   "CoordinatorDecision": {"Needed": false, "Question": null, "IfAcceptorReading": "lectura del Coordinator; la normalización se decide en L-12", "IfAlternative": null},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "desacuerdo: COMPATIBLE", "Note": "el componente se define por posición; 16.13 repetida ya es ENTRY_INVALID", "Evidence": ["R-10"]},
+   "Evidence": []
+  },
+  {
+   "Id": "L-16",
+   "Title": "Entradas de alcance mal formadas (MalformedEntries)",
+   "Authorities": ["C-71", "C-97", "C-21"],
+   "AcceptorReading": "mal formada = absoluta (/ inicial o letra de unidad), con barra invertida, con segmento .., o con *, ? o [ fuera de un /** final; la vacía solo cuenta en R4",
+   "AcceptorCode": ["K-43", "K-44", "K-45"],
+   "Alternatives": [
+    {"Id": "positiva", "Text": "la sintaxis positiva de AP 552 excluye además la entrada vacía, los segmentos . o vacíos y los blancos extremos", "AcceptorErrorIfAlternativeIsRight": "aceptación indebida", "Scenario": "entrada añadida a ForbiddenWriteScope con ., // o blancos (A3 impide las demás)"}
+   ],
+   "SettledSubpoints": [],
+   "OpenSubpoint": "qué entradas son mal formadas",
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "R4 no aplicable; R7 compara listas con la misma definición; sin entradas mal formadas, vacías ni con segmentos . o vacíos en el contrato T1 y la delegación", "Evidence": ["C-08", "P-42", "P-44", "P-45", "P-46", "P-48", "P-49"]},
+   "RoundB1": {"Affected": "condicional", "Condition": "una entrada así llega a la delegación", "Evidence": ["C-76", "C-79"]},
+   "Disposition": "INDETERMINATE",
+   "CoordinatorDecision": {"Needed": true, "Question": "si la entrada vacía, los segmentos . o vacíos y los blancos extremos son mal formados", "IfAcceptorReading": "solo lectura del Coordinator", "IfAlternative": "otro blob, corrección de A-6 y determinación del Owner"},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "misma clase", "Note": "", "Evidence": []},
+   "Evidence": []
+  },
+  {
+   "Id": "L-18",
+   "Title": "U-19 (b): comodín no final",
+   "Authorities": ["C-20", "C-27", "C-21", "C-22", "C-99", "C-100", "C-71", "C-02"],
+   "AcceptorReading": "sin expansión: una entrada con *, ? o [ fuera de un /** final es mal formada, cubre solo su cadena y hace que Scope no pueda ser pass",
+   "AcceptorCode": ["K-44", "K-47"],
+   "Alternatives": [
+    {"Id": "(b2)", "Text": "la entrada se lee como la lista exacta de rutas del árbol de BaseSha enumerada en la orden (U-19)", "AcceptorErrorIfAlternativeIsRight": "rechazo falso", "Scenario": "comodín no final en la delegación con el Controller aplicando U-19"},
+    {"Id": "(b1)", "Text": "la delegación nunca lleva el comodín (readings.md)", "AcceptorErrorIfAlternativeIsRight": "ninguno", "Scenario": "no es una lectura de U-19 sino una suposición sobre las entradas"}
+   ],
+   "SettledSubpoints": [],
+   "OpenSubpoint": null,
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "sin comodines no finales en el contrato T1 ni en la delegación", "Evidence": ["P-43", "P-47"]},
+   "RoundB1": {"Affected": "condicional", "Condition": "un comodín no final llega al contrato de FX-U2 o a una delegación (pasaría A3 frente a un prefijo /** del contrato)", "Evidence": ["C-72"]},
+   "Disposition": "INCOMPATIBLE",
+   "CoordinatorDecision": {"Needed": true, "Question": "conservar U-19 (b) o precisarla para FX-02", "IfAcceptorReading": "no basta una lectura: precisar U-19 (b) es modificar una disposición ordinaria del propio Coordinator (§62, punto 3); basta una disposición nueva registrada por añadido, que puede ir en la de A6-5, regla 6, como modificación expresa; sin blob nuevo, sin corrección de A-6 ni determinación del Owner", "IfAlternative": "conservar U-19 (b) tal como está deja el aceptante sin uso tal como está: otro blob, corrección de A-6 y determinación del Owner"},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "desacuerdo: INCOMPATIBLE", "Note": "(b1) no es una lectura del texto de U-19, que da significado a la entrada", "Evidence": ["R-11"]},
+   "Evidence": ["C-25", "C-23"]
+  },
+  {
+   "Id": "L-23",
+   "Title": "R4 Scope con entradas vacías o mal formadas",
+   "Authorities": ["C-73", "C-71", "C-72", "C-47", "C-74", "C-75", "C-28"],
+   "AcceptorReading": "una entrada vacía o mal formada en cualquiera de las dos listas impide pass; si no la hay, pass si y solo si toda ruta del diff está cubierta por AllowedWriteScope y ninguna por ForbiddenWriteScope; diff vacío: pass",
+   "AcceptorCode": ["K-46", "K-48", "K-49"],
+   "Alternatives": [
+    {"Id": "(a)", "Text": "comparación literal: una entrada mal formada solo se cubre a sí misma y no hace fallar Scope por sí sola", "AcceptorErrorIfAlternativeIsRight": "rechazo falso", "Scenario": "entrada mal formada añadida a la delegación"},
+    {"Id": "(b)", "Text": "diff vacío = fallo (éxito declarado sin commit)", "AcceptorErrorIfAlternativeIsRight": "aceptación indebida", "Scenario": "excluida: el vacío está contenido y AP 660 no hace fallar Scope; N6 no aplica en FX-02"}
+   ],
+   "SettledSubpoints": ["diff vacío = pass", "la parte de comodines choca con U-19 (b): es L-18"],
+   "OpenSubpoint": "si una entrada vacía o mal formada impide Scope = pass",
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": false, "Affected": false, "Reason": "R4 no aplicable", "Evidence": ["C-08"]},
+   "RoundB1": {"Affected": "condicional", "Condition": "una entrada vacía o mal formada llega a la delegación (en la práctica, un añadido a ForbiddenWriteScope)", "Evidence": ["C-79"]},
+   "Disposition": "INDETERMINATE",
+   "CoordinatorDecision": {"Needed": true, "Question": "si una entrada vacía o mal formada impide Scope = pass", "IfAcceptorReading": "solo lectura del Coordinator", "IfAlternative": "otro blob, corrección de A-6 y determinación del Owner"},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "misma clase", "Note": "la parte de comodines pertenece a L-18; la del diff vacío no está abierta", "Evidence": []},
+   "Evidence": []
+  },
+  {
+   "Id": "L-24",
+   "Title": "Conjunto de rutas del diff (renombres)",
+   "Authorities": ["C-73", "C-74", "C-14"],
+   "AcceptorReading": "rutas cuya entrada (modo, tipo e identificador) difiere entre los dos árboles completos: un renombre aporta origen y destino; el instrumento usa --no-renames",
+   "AcceptorCode": ["K-51", "K-50", "T-01"],
+   "Alternatives": [
+    {"Id": "defecto", "Text": "salida de la orden literal con la configuración por defecto de Git (detecta renombres): solo el destino", "AcceptorErrorIfAlternativeIsRight": "rechazo falso", "Scenario": "renombre detectado con origen prohibido o no cubierto; con la lectura por defecto, renombrar un archivo prohibido hacia el alcance permitido pasaría Scope"}
+   ],
+   "SettledSubpoints": [],
+   "OpenSubpoint": "conjunto de rutas: --no-renames o configuración por defecto",
+   "Measurement": {"DecisionLevelExercised": false, "FactsLevelExercised": true, "Affected": false, "Reason": "sin renombres en el banco; la orden primaria del texto de la medición ya usa --no-renames (elección del kit)", "Evidence": ["P-41"]},
+   "RoundB1": {"Affected": "condicional", "Condition": "la entrega del Worker renombra un archivo; además, con un renombre, el instrumento y una orden primaria por defecto difieren: S-04 y STOP, sea cual sea el aceptante", "Evidence": ["P-50", "P-51", "P-52", "C-10"]},
+   "Disposition": "INDETERMINATE",
+   "CoordinatorDecision": {"Needed": true, "Question": "conjunto de rutas = --no-renames (aceptante) o la orden con la configuración por defecto", "IfAcceptorReading": "solo lectura del Coordinator", "IfAlternative": "otro blob, corrección de A-6 y determinación del Owner"},
+   "ReadingsMd": {"Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE", "Agreement": "misma clase; consecuencias corregidas", "Note": "Git 2.54 por defecto lista solo el destino; interacción con A6-5, regla 1", "Evidence": ["R-12"]},
+   "Evidence": ["P-50", "P-51"]
+  }
+ ],
+ "Disagreements": [
+  {"Row": "L-02", "Readings": "AMBIGUOUS-ACCEPTOR-CHOICE", "R12": "COMPATIBLE", "Why": "la línea propia invalidaría el WORKFLOW de MC_I62 y la precondición de A-5; un enlace no es la línea exacta"},
+  {"Row": "L-11", "Readings": "AMBIGUOUS-ACCEPTOR-CHOICE", "R12": "COMPATIBLE", "Why": "Match normalizado fija la identidad de una designación; con clave exacta único no tendría efecto"},
+  {"Row": "L-14", "Readings": "AMBIGUOUS-ACCEPTOR-CHOICE", "R12": "COMPATIBLE", "Why": "el componente Punteros se define por posición; 16.13 repetida ya es ENTRY_INVALID; las retiradas razonables coinciden"},
+  {"Row": "L-18", "Readings": "AMBIGUOUS-ACCEPTOR-CHOICE", "R12": "INCOMPATIBLE", "Why": "U-19 (b) da significado a la entrada con comodín no final; (b1) es una suposición sobre las entradas"},
+  {"Row": "L-12", "Readings": "AMBIGUOUS-ACCEPTOR-CHOICE", "R12": "INDETERMINATE", "Why": "misma clase por otra razón: el subpunto abierto son los saltos de línea, no los archivos no Markdown"},
+  {"Row": "L-01", "Readings": "AMBIGUOUS-ACCEPTOR-CHOICE", "R12": "INDETERMINATE", "Why": "consecuencias: también aceptación indebida frente al tráiler de Git; tercera lectura por WORKFLOW §11.2; R6 usa la lectura"},
+  {"Row": "L-04", "Readings": "AMBIGUOUS-ACCEPTOR-CHOICE", "R12": "INDETERMINATE", "Why": "consecuencias: el esquema declara 2020-12; el aceptante también puede ser más permisivo"},
+  {"Row": "L-10", "Readings": "AMBIGUOUS-ACCEPTOR-CHOICE", "R12": "INDETERMINATE", "Why": "evidencia de L-09: AP 916 es una regla de entradas, no de archivos"},
+  {"Row": "L-23", "Readings": "AMBIGUOUS-ACCEPTOR-CHOICE", "R12": "INDETERMINATE", "Why": "matiz: la parte de comodines es L-18; la del diff vacío no está abierta"},
+  {"Row": "L-24", "Readings": "AMBIGUOUS-ACCEPTOR-CHOICE", "R12": "INDETERMINATE", "Why": "consecuencias: Git 2.54 por defecto lista solo el destino; S-04 frente a una orden primaria por defecto"}
+ ],
+ "OnlyProposedChange": "L-18: una disposición del Coordinator que precise U-19 (b) para FX-02 (sin comodines no finales en contrato y delegación; una entrada así en una delegación, mal formada y sin Scope pass), justificada por AP 552; sin blob nuevo",
+ "FileHashes": "r12-verify-result.json (lo escribe verify_r12.py con el SHA-256 de cada archivo bajo r12)"
+}

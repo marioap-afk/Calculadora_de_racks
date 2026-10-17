@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §91; evidencia §183) — medición de A6-7 HELD; kit a6m7-measure congelado sin ejecutar; preparar con análisis estático: determinación normativa de I6 sobre R7-A (¿cabe en las autoridades acordadas o exige enmienda?), D-1 y viabilidad de nc2, doce lecturas ambiguas, examen de reconstruct_runs_m7.py y matriz de riesgos medición directa frente a sonda previa; sin Codex, sin consumo del Owner, sin bloque A2-P2 automático; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §91; evidencia §183-§184) — medición de A6-7 HELD; R7-A exige una enmienda material acotada (I6/B.9/A6-2 r3); D-1 = defecto del instrumento, evitable excluyendo contract de las VERIFY de FX-02; lecturas: 3 COMPATIBLE, 1 INCOMPATIBLE (L-18), 8 INDETERMINATE; reconstruct_runs_m7 viable sin demostrar; esperar disposición del Coordinator sobre la enmienda del cierre de VERIFY; sin Codex ni consumo del Owner; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

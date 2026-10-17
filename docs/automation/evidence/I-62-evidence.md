@@ -4624,3 +4624,32 @@ solo desde artefactos custodiados.
 - Encargos, solo con análisis estático y pruebas existentes: determinación normativa acotada sobre R7-A (I6, A6-2, A6-7, AP 16.24) por categoría de
   insumo; caso mínimo de D-1 y viabilidad de nc2 con los blobs fijados; disposición individual de las doce lecturas ambiguas; examen de
   `reconstruct_runs_m7.py`; matriz de riesgos A/B. El kit sigue congelado; esta sección no contiene marcadores de la disposición de medición.
+
+## 184. Decisiones §91: determinación de I6 (R7-A exige enmienda material), D-1 y nc2, doce lecturas, reconstrucción y matriz de riesgos; medición retenida
+
+- **I6 y R7-A** ([`i6-determination.md`](I-62-A6/m7/s91/i6-determination.md)): R7-A **no cabe literalmente** en las autoridades acordadas. Seis entradas Git de su E
+  (contrato, `worker-notes.md`, los dos archivos entregados y los dos registros en G) no tienen el blob de la AuthorityRevision que exigen V14 B.9
+  L2233, RAE I6 L565 y A6-2, regla 3; D, H y el TRX no son artefactos versionados. Con la lectura literal, ninguna VERIFY de FX-02 (con o sin instrumento)
+  admite el objeto que V14 B.9 L2231 obliga a verificar ni la delegación y la entrega que lee 16.9: el hueco es anterior a A-6. A6-7, regla 7, delega la
+  cobertura del cierre del kit, no la comprobación de blobs; por el criterio M-02/M-05 de la propia A-6, cambiarla es material. Cambio mínimo
+  propuesto (sin redactar): una A-n acotada a las VERIFY de FX-02 en F6 y a la medición, con la regla de admisión por categoría; Architect y
+  Coordinator; sin consecuencia reservada al Owner identificada.
+- **D-1 y nc2** ([`d1/d1.md`](I-62-A6/m7/s91/d1/d1.md)): defecto del instrumento, no ambigüedad (U-19 rige las dos entradas de toda contención de A3 y A4, como hace el
+  aceptante). Caso mínimo: contrato `["a/**"]`, delegación `["a/b"]` → hecho del instrumento «no contenido», aceptante REJECT_FACTS solo por R7. Error de
+  un solo sentido (nunca acepta de más). No afecta a la medición (su delegación copia las listas de T1; R7 `MATCH`). En nc2 aparece cuando el diff
+  verificado tiene dos o más archivos bajo el prefijo de evidencia (en el banco hay uno: no se activa; activado en una copia con un segundo archivo);
+  con `contract` en las órdenes, nc2 queda sin aceptar (STOP P-04, control no superado); sin `contract`, aceptada y con el oráculo relativo intacto.
+  Cambio mínimo dentro de las reglas vigentes: excluir `contract` de toda invocación VERIFY de FX-02 por disposición del Coordinator (A6-7, regla 7);
+  `Contract` pierde el cotejo de R7. Hallazgo lateral: los `RunId` del banco y del kit (`…-m7m0`) no tienen la forma de AP 16.6.
+- **Doce lecturas ambiguas** ([`r12/r12.md`](I-62-A6/m7/s91/r12/r12.md); análisis independiente; citas comprobadas): 3 COMPATIBLE (L-02, L-11, L-14),
+  1 INCOMPATIBLE (L-18: U-19 (b) da a un comodín no final el sentido de lista exacta y el aceptante lo trata como mal formado; solo rechazo falso) y 8
+  INDETERMINATE (L-01, L-04, L-10, L-12, L-13, L-16, L-23, L-24). Ninguna afecta a la medición en el banco. Adoptar la lectura del aceptante en las 8
+  indeterminadas es una lectura del Coordinator; elegir la alternativa exige otro blob. L-18: una disposición del Coordinator que acote U-19 para FX-02
+  (sin comodines no finales en contrato ni delegación) basta, sin cambio de blob.
+- **Reconstrucción** ([`reconstruction-review.md`](I-62-A6/m7/s91/reconstruction-review.md)): `reconstruct_runs_m7.py` es un candidato viable; no reduce las garantías de
+  identidad, bytes, `Argv` ni custodia; la referencia no reconstruiría ninguna ejecución con el pwsh del runtime. No demostrado sobre un registro real; el
+  shell no queda fijado y la comprobación (iii) previa solo usa el pwsh del runtime.
+- **Matriz de riesgos** ([`risk-matrix.md`](I-62-A6/m7/s91/risk-matrix.md)): la sonda previa B eliminaría las incertidumbres de entorno de la versión 26.1013 (forma
+  registrada, shell, modo de lenguaje, alias de Python, `PATH`, truncado, celda) a cambio de una disposición de bloque A2-P2, una línea del Owner y
+  unas horas; no reduce la capacidad del Controller ni el cierre (U9). Ni A ni B antes de resolver el cierre.
+- Kit `a6m7-measure` sin cambios (congelado, sin ejecutar); sin Codex; sin consumo del Owner.
