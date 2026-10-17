@@ -157,3 +157,12 @@ Confirmación expresa del Coordinator de I-64 a I-65 (W1 nueva, validación fina
 | I-52 | aviso hecho; **no emite STOP** (R-9); el Owner ejerce la autoridad de liberación del host |
 | I-64 | **CONFIRMED — NO CONFLICT** para la W1 nueva (R-10): inicio ≤ 10:45Z, ≤ 90 min desde la apertura, fin antes de las 23:59Z |
 | Owner | W1 AUTOCAD EXECUTION = CONDITIONAL GO (decisiones §78); falta solo el preflight de W1-PR-04..09 |
+
+## 6. Después de W1
+
+- Avisos de cierre a I-64 (msg `44037c73…`) e I-52 (msg `4c63d623…`), ~09:11Z, con `acad.exe` = 0 y el DIFF.
+- Recomprobación de solo lectura de I-52 (literal):
+
+```text
+I-52 → I-65: recomprobación de solo lectura tras W1: sin deriva en lo que I-52 tiene registrado. acad.exe=0; acad.exe R25.0.171.0.0 2a75996f…6422; perfil «<<Unnamed Profile>>»; TRUSTEDPATHS 19 entradas a9ba0fd1…2498; SECURELOAD=1; HKCU Applications solo las 7 estándar, sin RackCad; ApplicationPlugins vacío/inexistente. ACL de mis 4 rutas: huellas idénticas a mis lecturas anteriores. Bytes de P2 intactos (libro bd49d0f4…, 7/7; paquete del operador, scripts ACL H10, declared-set.json igual); hijo H10 inexistente, H1 con 2 entradas. Los cambios INFORMAR que reportas (NetLoadDialog, posición de ventana, VIEWBACKSTATUS) quedan registrados como observados, sin acción. No autoriza ventanas posteriores.
+```

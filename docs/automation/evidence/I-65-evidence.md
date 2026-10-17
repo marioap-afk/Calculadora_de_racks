@@ -2232,3 +2232,4 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 | `dump-OV01-gen/rackcad-ram-dump.py` | `56faa3550934a663889fb78b0b7787350839ed6b3f0747cf9064fc2a5ae1a2d5` |
 
 - W1 = SATISFACTORIA; W2 no autorizada. Codex 50 de 52; `attempts` 7 de 9.
+- Recomprobación de I-52 tras W1: sin deriva; INFORMAR registrado sin acción; no autoriza ventanas posteriores. Custodia actualizada: `docs/automation/evidence/I-65-f4/host-coordination-w1-2026-10-17.md`, SHA-256 `7C5CC0DF416D2B301C72F2118793FBDA0F86B5BE533129EA82E4A52F5E46CABC`.
