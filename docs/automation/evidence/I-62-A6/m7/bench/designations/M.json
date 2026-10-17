@@ -1,0 +1,47 @@
+{
+ "Schema": "a6m7-designation/1",
+ "Case": "M",
+ "Repo": "D:/r62-a6m7/bench/c-m",
+ "AuthorityRevision": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+ "Invocation": {
+  "UnitId": "FX-U1",
+  "TaskId": "T1-m7",
+  "Attempt": 0,
+  "RunId": "R20261016T000000Z-m7m0",
+  "Target": {
+   "Commit": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Blob": "380892ee869194aa4bd56dcf32dfd76ef0203ab9"
+  }
+ },
+ "RunPath": "artifacts/orchestration/FX-U1/T1-m7/0/R20261016T000000Z-m7m0/",
+ "Inputs": [
+  {
+   "Role": "DELEG",
+   "Path": "artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json",
+   "Custody": "D:/r62-a6m7/bench/work/in-m/deleg.json"
+  },
+  {
+   "Role": "H",
+   "Path": "artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json",
+   "Custody": "D:/r62-a6m7/bench/work/in-m/handoff.json"
+  },
+  {
+   "Role": "CONTRACT",
+   "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+   "Custody": null,
+   "Blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0"
+  },
+  {
+   "Role": "TRX",
+   "Path": "artifacts/ci/R37949808974/fixture-tests.trx",
+   "Custody": "D:/r62-a6m7/bench/work/in-m/fixture-tests.trx"
+  }
+ ],
+ "Instrument": {
+  "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+  "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+ },
+ "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+ "Adapter": "codex-cli"
+}

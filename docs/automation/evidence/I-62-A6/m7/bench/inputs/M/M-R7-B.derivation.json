@@ -1,0 +1,92 @@
+{
+ "Schema": "a6m7-closure-derivation/1",
+ "Designation": "D:/r62-a6m7/bench/work/build/M-R7-B.designation.json",
+ "DesignationSha256": "8c3e9ecd11117bd46cd7a59adcf3b9ea339c5604529f3f875090e3a6bd2c5f79",
+ "Vector": "D:/r62-a6m7/bench/work/build/M-R7-B.vector.json",
+ "VectorSha256": "9988a5ac65f4248f8b838843b0cea22a1451d4f4074022700f57e2d3ad1625f8",
+ "E": "D:/r62-a6m7/bench/work/build/E-M-R7-B.json",
+ "ESha256": "b1f6eb696b52e6a9fce32f44fef87fc6ec80761645e6529465c5bca4ba03d34e",
+ "Closure": "D:/r62-a6m7/bench/work/build/M-R7-B.closure.json",
+ "ClosureSha256": "f20d7c4b4fb90c3ceb75cb4de76fc4d62f52924f56b9fa2ec5a9e1a9faeb1584",
+ "DesignationCheck": {
+  "Ok": true,
+  "Problems": [],
+  "Bypassed": [],
+  "Inputs": {
+   "DELEG": {
+    "Path": "artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "H": {
+    "Path": "artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "CONTRACT": {
+    "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "Pinned": false,
+    "Present": false
+   }
+  },
+  "Names": {
+   "DELEG": [
+    "artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json"
+   ],
+   "H": [
+    "artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json"
+   ],
+   "TRX": [
+    "artifacts/ci/R37949808974/fixture-tests.trx"
+   ]
+  }
+ },
+ "Omitted": [
+  {
+   "Term": "C1.D.ChainRedSha",
+   "Cause": "FIELD_NULL",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.K.AuthorityRevision",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.K.MainSha",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C4.K.Authorities",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C6.CONTRACT",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  }
+ ],
+ "Inputs": {
+  "D": {
+   "Present": true,
+   "Why": null
+  },
+  "H": {
+   "Present": true,
+   "Why": null
+  },
+  "K": {
+   "Present": false,
+   "Why": "E does not pin the designated path"
+  }
+ }
+}

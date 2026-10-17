@@ -1,0 +1,331 @@
+{
+ "Cases": [
+  {
+   "AcceptorExit": 0,
+   "Decision": "ACCEPT_FACTS",
+   "Name": "P1-mirrored-T1",
+   "R7Mismatches": [],
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [
+    {
+     "ContainedBy": [
+      "src/Fixture.Lib/Calculator.cs"
+     ],
+     "Entry": "src/Fixture.Lib/Calculator.cs"
+    },
+    {
+     "ContainedBy": [
+      "tests/Fixture.Tests/CalculatorTests.cs"
+     ],
+     "Entry": "tests/Fixture.Tests/CalculatorTests.cs"
+    },
+    {
+     "ContainedBy": [
+      "docs/automation/evidence/FX-U1-agent/**"
+     ],
+     "Entry": "docs/automation/evidence/FX-U1-agent/**"
+    }
+   ],
+   "ToolA4": [
+    {
+     "ContainedBy": [
+      ".github/**"
+     ],
+     "Entry": ".github/**"
+    },
+    {
+     "ContainedBy": [
+      ".gitattributes"
+     ],
+     "Entry": ".gitattributes"
+    },
+    {
+     "ContainedBy": [
+      "AGENTS.md"
+     ],
+     "Entry": "AGENTS.md"
+    },
+    {
+     "ContainedBy": [
+      "CLAUDE.md"
+     ],
+     "Entry": "CLAUDE.md"
+    },
+    {
+     "ContainedBy": [
+      "FIXTURE-MANIFEST.json"
+     ],
+     "Entry": "FIXTURE-MANIFEST.json"
+    },
+    {
+     "ContainedBy": [
+      "docs/AUTOMATION_PLAN.md"
+     ],
+     "Entry": "docs/AUTOMATION_PLAN.md"
+    },
+    {
+     "ContainedBy": [
+      "docs/WORKFLOW.md"
+     ],
+     "Entry": "docs/WORKFLOW.md"
+    },
+    {
+     "ContainedBy": [
+      "docs/INITIATIVE_LIFECYCLE.md"
+     ],
+     "Entry": "docs/INITIATIVE_LIFECYCLE.md"
+    },
+    {
+     "ContainedBy": [
+      "docs/automation/agent-execution/**"
+     ],
+     "Entry": "docs/automation/agent-execution/**"
+    },
+    {
+     "ContainedBy": [
+      "docs/automation/decisions/**"
+     ],
+     "Entry": "docs/automation/decisions/**"
+    },
+    {
+     "ContainedBy": [
+      "src/Fixture.Lib/Fixture.Lib.csproj"
+     ],
+     "Entry": "src/Fixture.Lib/Fixture.Lib.csproj"
+    },
+    {
+     "ContainedBy": [
+      "tests/Fixture.Tests/Fixture.Tests.csproj"
+     ],
+     "Entry": "tests/Fixture.Tests/Fixture.Tests.csproj"
+    }
+   ],
+   "ToolExit": 0,
+   "What": "T1 contract (blob 628d89af) and a delegation that copies its scope lists literally"
+  },
+  {
+   "AcceptorExit": 1,
+   "Decision": "REJECT_FACTS",
+   "Name": "P2-nc2-like-T1",
+   "R7Mismatches": [
+    {
+     "Acceptor": [
+      "docs/automation/evidence/FX-U1-agent/**"
+     ],
+     "Field": "A3[docs/automation/evidence/FX-U1-agent/note-a.md].ContainedBy",
+     "Tool": []
+    }
+   ],
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MISMATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [
+    {
+     "ContainedBy": [],
+     "Entry": "docs/automation/evidence/FX-U1-agent/note-a.md"
+    },
+    {
+     "ContainedBy": [
+      "src/Fixture.Lib/Calculator.cs"
+     ],
+     "Entry": "src/Fixture.Lib/Calculator.cs"
+    },
+    {
+     "ContainedBy": [
+      "tests/Fixture.Tests/CalculatorTests.cs"
+     ],
+     "Entry": "tests/Fixture.Tests/CalculatorTests.cs"
+    }
+   ],
+   "ToolA4": [
+    {
+     "ContainedBy": [
+      ".github/**"
+     ],
+     "Entry": ".github/**"
+    },
+    {
+     "ContainedBy": [
+      ".gitattributes"
+     ],
+     "Entry": ".gitattributes"
+    },
+    {
+     "ContainedBy": [
+      "AGENTS.md"
+     ],
+     "Entry": "AGENTS.md"
+    },
+    {
+     "ContainedBy": [
+      "CLAUDE.md"
+     ],
+     "Entry": "CLAUDE.md"
+    },
+    {
+     "ContainedBy": [
+      "FIXTURE-MANIFEST.json"
+     ],
+     "Entry": "FIXTURE-MANIFEST.json"
+    },
+    {
+     "ContainedBy": [
+      "docs/AUTOMATION_PLAN.md"
+     ],
+     "Entry": "docs/AUTOMATION_PLAN.md"
+    },
+    {
+     "ContainedBy": [
+      "docs/WORKFLOW.md"
+     ],
+     "Entry": "docs/WORKFLOW.md"
+    },
+    {
+     "ContainedBy": [
+      "docs/INITIATIVE_LIFECYCLE.md"
+     ],
+     "Entry": "docs/INITIATIVE_LIFECYCLE.md"
+    },
+    {
+     "ContainedBy": [
+      "docs/automation/agent-execution/**"
+     ],
+     "Entry": "docs/automation/agent-execution/**"
+    },
+    {
+     "ContainedBy": [
+      "docs/automation/decisions/**"
+     ],
+     "Entry": "docs/automation/decisions/**"
+    },
+    {
+     "ContainedBy": [
+      "src/Fixture.Lib/Fixture.Lib.csproj"
+     ],
+     "Entry": "src/Fixture.Lib/Fixture.Lib.csproj"
+    },
+    {
+     "ContainedBy": [
+      "tests/Fixture.Tests/Fixture.Tests.csproj"
+     ],
+     "Entry": "tests/Fixture.Tests/Fixture.Tests.csproj"
+    }
+   ],
+   "ToolExit": 0,
+   "What": "T1 contract; delegation where the evidence prefix entry is replaced by the enumeration of one file under it (the substitution that RAE nc2 prescribes when a prefix covers the excluded file)"
+  },
+  {
+   "AcceptorExit": 1,
+   "Decision": "REJECT_FACTS",
+   "Name": "P3-synthetic-nested",
+   "R7Mismatches": [
+    {
+     "Acceptor": [
+      "src/**"
+     ],
+     "Field": "A3[src/a.cs].ContainedBy",
+     "Tool": []
+    },
+    {
+     "Acceptor": [
+      "src/**"
+     ],
+     "Field": "A3[src/lib/**].ContainedBy",
+     "Tool": []
+    },
+    {
+     "Acceptor": [
+      "build/**"
+     ],
+     "Field": "A4[build/].ContainedBy",
+     "Tool": []
+    },
+    {
+     "Acceptor": [
+      "secrets/**"
+     ],
+     "Field": "A4[secrets/key.txt].ContainedBy",
+     "Tool": []
+    }
+   ],
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "NOT_APPLICABLE",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "NOT_APPLICABLE",
+    "R7": "MISMATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "ToolA3": [
+    {
+     "ContainedBy": [],
+     "Entry": "src/a.cs"
+    },
+    {
+     "ContainedBy": [],
+     "Entry": "src/lib/**"
+    },
+    {
+     "ContainedBy": [
+      "docs/notes/"
+     ],
+     "Entry": "docs/notes/"
+    }
+   ],
+   "ToolA4": [
+    {
+     "ContainedBy": [],
+     "Entry": "build/"
+    },
+    {
+     "ContainedBy": [],
+     "Entry": "secrets/key.txt"
+    }
+   ],
+   "ToolExit": 0,
+   "What": "synthetic scope lists: '/**' containing entries over a file, a nested '/**' and a plain prefix"
+  }
+ ],
+ "Claim": "instrument contract A3/A4 without U-19 versus acceptor with U-19 (R7)",
+ "Pinned": {
+  "Acceptor": {
+   "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+   "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0"
+  },
+  "T1Contract": {
+   "Blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+   "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+   "Rev": "95bdc29d"
+  },
+  "Tool": {
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+  }
+ },
+ "Python": "3.13.14",
+ "Schema": "rackcad-i62-a6m7-probe/0-experimental"
+}

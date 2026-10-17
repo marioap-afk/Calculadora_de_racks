@@ -1,0 +1,102 @@
+{
+ "Schema": "a6m7-closure-derivation/1",
+ "Designation": "D:/r62-a6m7/bench/work/build/NC1-R7-B.designation.json",
+ "DesignationSha256": "0d01f8d6e143afb86e3e9a97ea3317493dfd74c5d48fddb78b435c592cdaba9f",
+ "Vector": "D:/r62-a6m7/bench/work/build/NC1-R7-B.vector.json",
+ "VectorSha256": "5e97ab5c766b91c1c363fbff1bd705b627a823be81734aa4243fb6032a3a119e",
+ "E": "D:/r62-a6m7/bench/work/build/E-NC1-R7-B.json",
+ "ESha256": "6764cb5e37811f3b8af17cae5e67c07cf0631f36475efc981d4ed3e98edb308a",
+ "Closure": "D:/r62-a6m7/bench/work/build/NC1-R7-B.closure.json",
+ "ClosureSha256": "c2158469b40a96b7a92d60b6c1f278eb7e4034cfd53e592574ad42adf6793d0f",
+ "DesignationCheck": {
+  "Ok": true,
+  "Problems": [],
+  "Bypassed": [],
+  "Inputs": {
+   "DELEG": {
+    "Path": "artifacts/orchestration/FX-U1/T1-nc1/0/R20261012T090000Z-d001/output.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "H": {
+    "Path": "artifacts/orchestration/FX-U1/T1-nc1/0/R20261012T091000Z-a001/worker-handoff.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "CONTRACT": {
+    "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "Pinned": false,
+    "Present": false
+   }
+  },
+  "Names": {
+   "DELEG": [
+    "artifacts/orchestration/FX-U1/T1-nc1/0/R20261012T090000Z-d001/output.json"
+   ],
+   "H": [
+    "artifacts/orchestration/FX-U1/T1-nc1/0/R20261012T091000Z-a001/worker-handoff.json"
+   ],
+   "TRX": [
+    "artifacts/ci/R37949808974/fixture-tests.trx"
+   ]
+  }
+ },
+ "Omitted": [
+  {
+   "Term": "C1.D.ChainRedSha",
+   "Cause": "FIELD_NULL",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.H.CurrentSha",
+   "Cause": "NOT_A_COMMIT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.K.AuthorityRevision",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.K.MainSha",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.RevList(D.BaseSha..H.CurrentSha)",
+   "Cause": "PRIMITIVE_EMPTY",
+   "Detail": "omitted end"
+  },
+  {
+   "Term": "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C4.K.Authorities",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C6.CONTRACT",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  }
+ ],
+ "Inputs": {
+  "D": {
+   "Present": true,
+   "Why": null
+  },
+  "H": {
+   "Present": true,
+   "Why": null
+  },
+  "K": {
+   "Present": false,
+   "Why": "E does not pin the designated path"
+  }
+ }
+}

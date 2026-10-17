@@ -1,0 +1,146 @@
+{
+ "Schema": "rackcad-bmin-accept-request/0-experimental",
+ "Repo": "D:/r62-a6m7/bench/c-n7",
+ "Tool": {
+  "PinnedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "RunFrom": "object",
+  "GitObject": {
+   "GitDir": "D:/r62-a6m7/bench/c-n7",
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  }
+ },
+ "Interpreter": {
+  "Python": "3.13.14",
+  "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec"
+ },
+ "Runs": [
+  {
+   "Name": "r00-identity",
+   "Envelope": "D:/r62-a6m7/bench/work/s-n7b-b/env/r00-identity.json",
+   "Argv": [
+    "identity",
+    "--repo",
+    "D:/r62-a6m7/bench/c-n7",
+    "--branch",
+    "fx/u1",
+    "--base",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--current",
+    "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+    "--red",
+    "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+   ]
+  },
+  {
+   "Name": "r01-diff",
+   "Envelope": "D:/r62-a6m7/bench/work/s-n7b-b/env/r01-diff.json",
+   "Argv": [
+    "diff",
+    "--repo",
+    "D:/r62-a6m7/bench/c-n7",
+    "--from",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--to",
+    "13654f96be6dd1effc167d883a8e18fa718dd8fe"
+   ]
+  },
+  {
+   "Name": "r02-scope",
+   "Envelope": "D:/r62-a6m7/bench/work/s-n7b-b/env/r02-scope.json",
+   "Argv": [
+    "scope",
+    "--repo",
+    "D:/r62-a6m7/bench/c-n7",
+    "--from",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--to",
+    "13654f96be6dd1effc167d883a8e18fa718dd8fe",
+    "--file",
+    "DELEG=D:/r62-a6m7/bench/work/in-n7b/deleg.json",
+    "--sha256",
+    "DELEG=cf3feb346b616d59674ba2664127c3eb8d40e105e9c7e1986193cf35981fd331"
+   ]
+  },
+  {
+   "Name": "r03-cleantree",
+   "Envelope": "D:/r62-a6m7/bench/work/s-n7b-b/env/r03-cleantree.json",
+   "Argv": [
+    "cleantree",
+    "--repo",
+    "D:/r62-a6m7/bench/c-n7",
+    "--ignore-path",
+    "artifacts/orchestration/FX-U1/T1/0/R20261016T000000Z-m7b7/output.json"
+   ]
+  },
+  {
+   "Name": "r04-handoff",
+   "Envelope": "D:/r62-a6m7/bench/work/s-n7b-b/env/r04-handoff.json",
+   "Argv": [
+    "handoff",
+    "--repo",
+    "D:/r62-a6m7/bench/c-n7",
+    "--file",
+    "H=D:/r62-a6m7/bench/work/in-n7b/handoff.json",
+    "--sha256",
+    "H=6b5bbd3d21dab13d0de281c4b4dc5c8ee4d89ce3f37cd942cac6411a110be953",
+    "--schema-rev",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8"
+   ]
+  },
+  {
+   "Name": "r05-freetext",
+   "Envelope": "D:/r62-a6m7/bench/work/s-n7b-b/env/r05-freetext.json",
+   "Argv": [
+    "freetext",
+    "--repo",
+    "D:/r62-a6m7/bench/c-n7",
+    "--file",
+    "H=D:/r62-a6m7/bench/work/in-n7b/handoff.json",
+    "--sha256",
+    "H=6b5bbd3d21dab13d0de281c4b4dc5c8ee4d89ce3f37cd942cac6411a110be953",
+    "--terms-rev",
+    "fbe25347799e5b801ef708454212335537448bd1"
+   ]
+  },
+  {
+   "Name": "r06-trx",
+   "Envelope": "D:/r62-a6m7/bench/work/s-n7b-b/env/r06-trx.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a6m7/bench/c-n7",
+    "--file",
+    "TRX=D:/r62-a6m7/bench/work/in-n7b/fixture-tests.trx",
+    "--sha256",
+    "TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "--filter-substring",
+    "Subtract"
+   ]
+  }
+ ],
+ "Closure": {
+  "Path": "D:/r62-a6m7/bench/work/build/N7B-R7-B.closure.json",
+  "Sha256": "c28329c36022bd6983eb1644ad1ca3e1579162331a332a56ab5abde5832fa74a"
+ },
+ "RelayFacts": {
+  "Path": "D:/r62-a6m7/bench/work/s-n7b/relay-facts-B.json",
+  "CitedSha256": "f853dbcf498b85868468aef66806f5e3304443e76c3c5fcb6545f499c6ec508b"
+ },
+ "Verification": {
+  "Controller": {
+   "Path": "D:/r62-a6m7/bench/work/s-n7b/controller-output-B.json",
+   "Sha256": "cc69444f1972c390974ac8d309b864306c3afb52226ed439fdc4eeaed3510f3d"
+  },
+  "Delegation": {
+   "Path": "D:/r62-a6m7/bench/work/in-n7b/deleg.json",
+   "Sha256": "cf3feb346b616d59674ba2664127c3eb8d40e105e9c7e1986193cf35981fd331"
+  },
+  "Handoff": {
+   "Path": "D:/r62-a6m7/bench/work/in-n7b/handoff.json",
+   "Sha256": "6b5bbd3d21dab13d0de281c4b4dc5c8ee4d89ce3f37cd942cac6411a110be953"
+  },
+  "IgnorePath": "artifacts/orchestration/FX-U1/T1/0/R20261016T000000Z-m7b7/output.json",
+  "TermsRev": "fbe25347799e5b801ef708454212335537448bd1",
+  "MainSha": "fbe25347799e5b801ef708454212335537448bd1"
+ }
+}

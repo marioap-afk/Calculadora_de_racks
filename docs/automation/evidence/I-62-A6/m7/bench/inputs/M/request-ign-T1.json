@@ -1,0 +1,218 @@
+{
+ "Schema": "rackcad-bmin-accept-request/0-experimental",
+ "Repo": "D:/r62-a6m7/bench/c-m",
+ "Tool": {
+  "PinnedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "RunFrom": "object",
+  "GitObject": {
+   "GitDir": "D:/r62-a6m7/bench/c-m",
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  }
+ },
+ "Interpreter": {
+  "Python": "3.13.14",
+  "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec"
+ },
+ "Runs": [
+  {
+   "Name": "r00-identity",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r00-identity.json",
+   "Argv": [
+    "identity",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--branch",
+    "fx/u1",
+    "--base",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--current",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "--red",
+    "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+   ]
+  },
+  {
+   "Name": "r01-diff",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r01-diff.json",
+   "Argv": [
+    "diff",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--from",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--to",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8"
+   ]
+  },
+  {
+   "Name": "r02-scope",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r02-scope.json",
+   "Argv": [
+    "scope",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--from",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--to",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "--file",
+    "DELEG=D:/r62-a6m7/bench/work/in-m/deleg.json",
+    "--sha256",
+    "DELEG=e46ed08bb43c39d26ca7a31f9e772ddea597d4dbc6b9769d3c51914e836d1ef7"
+   ]
+  },
+  {
+   "Name": "r03-contract",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r03-contract.json",
+   "Argv": [
+    "contract",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--file",
+    "CONTRACT=D:/r62-a6m7/bench/work/in-m/K.json",
+    "--sha256",
+    "CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+    "--file",
+    "DELEG=D:/r62-a6m7/bench/work/in-m/deleg.json",
+    "--sha256",
+    "DELEG=e46ed08bb43c39d26ca7a31f9e772ddea597d4dbc6b9769d3c51914e836d1ef7"
+   ]
+  },
+  {
+   "Name": "r04-hashes",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r04-hashes.json",
+   "Argv": [
+    "hashes",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--rev",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "--paths",
+    "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs"
+   ]
+  },
+  {
+   "Name": "r05-cleantree",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r05-cleantree.json",
+   "Argv": [
+    "cleantree",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--ignore-path",
+    "artifacts/orchestration/FX-U1/T1-m7/0/R20261016T000000Z-m7m0/output.json"
+   ]
+  },
+  {
+   "Name": "r06-handoff",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r06-handoff.json",
+   "Argv": [
+    "handoff",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--file",
+    "H=D:/r62-a6m7/bench/work/in-m/handoff.json",
+    "--sha256",
+    "H=702253d6ddc972adc0920a9dc65b6a3744792a6b9df312767c62ca216f440652",
+    "--schema-rev",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8"
+   ]
+  },
+  {
+   "Name": "r07-freetext",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r07-freetext.json",
+   "Argv": [
+    "freetext",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--file",
+    "H=D:/r62-a6m7/bench/work/in-m/handoff.json",
+    "--sha256",
+    "H=702253d6ddc972adc0920a9dc65b6a3744792a6b9df312767c62ca216f440652",
+    "--terms-rev",
+    "fbe25347799e5b801ef708454212335537448bd1"
+   ]
+  },
+  {
+   "Name": "r08-clausemap",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r08-clausemap.json",
+   "Argv": [
+    "clausemap",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--main",
+    "fbe25347799e5b801ef708454212335537448bd1",
+    "--state-rev",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "--state-path",
+    "docs/automation/state/FX-U1.yml",
+    "--file",
+    "CONTRACT=D:/r62-a6m7/bench/work/in-m/K.json",
+    "--sha256",
+    "CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+    "--base",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+   ]
+  },
+  {
+   "Name": "r09-trx",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r09-trx.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--file",
+    "TRX=D:/r62-a6m7/bench/work/in-m/fixture-tests.trx",
+    "--sha256",
+    "TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "--filter-substring",
+    "Subtract"
+   ]
+  },
+  {
+   "Name": "r10-read-text",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r10-read-text.json",
+   "Argv": [
+    "read-text",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--rev",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "--path",
+    "docs/automation/decisions/FX-U1.md",
+    "--lines",
+    "1-1"
+   ]
+  },
+  {
+   "Name": "r11-read-json",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-a/env/r11-read-json.json",
+   "Argv": [
+    "read-json",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--rev",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "--path",
+    "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "--pointer",
+    "/Objective",
+    "--pointer",
+    "/Schema",
+    "--pointer",
+    "/MainSha",
+    "--pointer",
+    "/AuthorityRevision"
+   ]
+  }
+ ],
+ "Closure": {
+  "Path": "D:/r62-a6m7/bench/work/s-m/M-IGN-T1.closure.json",
+  "Sha256": "749d69ef7648d80a99d663a1e4493534ce1145aee7c47e9460e5850c293cf0d0"
+ },
+ "NotApplicable": {
+  "R4": "A6-7 rule 1: the measurement produces no verification (no Verification in the request)",
+  "R10": "A6-7 rule 1: the measurement has no relay facts (no RelayFacts in the request)"
+ }
+}

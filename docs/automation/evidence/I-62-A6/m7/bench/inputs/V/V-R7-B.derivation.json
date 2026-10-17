@@ -1,0 +1,92 @@
+{
+ "Schema": "a6m7-closure-derivation/1",
+ "Designation": "D:/r62-a6m7/bench/work/build/V-R7-B.designation.json",
+ "DesignationSha256": "c6382a0a87a5a76d0e75e797d3bf4c8c6b69502156c9e84d015127aafa5d6ca6",
+ "Vector": "D:/r62-a6m7/bench/work/build/V-R7-B.vector.json",
+ "VectorSha256": "b3b8de57fa9263b7336f37dba3a88ef53ee9a5b356c756b09c63ec45fe0e5869",
+ "E": "D:/r62-a6m7/bench/work/build/E-V-R7-B.json",
+ "ESha256": "fd29106629d6c5f4b88688e90230fe6dd3e47c24b6971ff5c89f1d90519f42a1",
+ "Closure": "D:/r62-a6m7/bench/work/build/V-R7-B.closure.json",
+ "ClosureSha256": "a5397517251769f3ac69eb3960d0bb1aa299ebecc728c03c5c9fa1877dc92dd9",
+ "DesignationCheck": {
+  "Ok": true,
+  "Problems": [],
+  "Bypassed": [],
+  "Inputs": {
+   "DELEG": {
+    "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "H": {
+    "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "CONTRACT": {
+    "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "Pinned": false,
+    "Present": false
+   }
+  },
+  "Names": {
+   "DELEG": [
+    "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json"
+   ],
+   "H": [
+    "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json"
+   ],
+   "TRX": [
+    "artifacts/ci/R37949808974/fixture-tests.trx"
+   ]
+  }
+ },
+ "Omitted": [
+  {
+   "Term": "C1.D.ChainRedSha",
+   "Cause": "FIELD_NULL",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.K.AuthorityRevision",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.K.MainSha",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.MergeBase(D.MainSha,K.AuthorityRevision)",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C4.K.Authorities",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  },
+  {
+   "Term": "C6.CONTRACT",
+   "Cause": "INPUT_ABSENT",
+   "Detail": ""
+  }
+ ],
+ "Inputs": {
+  "D": {
+   "Present": true,
+   "Why": null
+  },
+  "H": {
+   "Present": true,
+   "Why": null
+  },
+  "K": {
+   "Present": false,
+   "Why": "E does not pin the designated path"
+  }
+ }
+}

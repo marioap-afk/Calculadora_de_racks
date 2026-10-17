@@ -1,0 +1,387 @@
+{
+ "Schema": "rackcad-bmin-closure/0-experimental",
+ "Commits": [
+  "1746b404e57d69170ecfc084fd24fa3e699916d7",
+  "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+  "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+  "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "a9f6c929e74ef92edfee557c3572b090f48bc318",
+  "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "fbe25347799e5b801ef708454212335537448bd1"
+ ],
+ "RevPaths": [
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "AGENTS.md"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "docs/AUTOMATION_PLAN.md"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "docs/WORKFLOW.md"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "docs/automation/agent-execution/README.md"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "docs/automation/agent-execution/routing.md"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "docs/automation/decisions/FX-U1.md"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "docs/automation/state/FX-U1.yml"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "src/Fixture.Lib/Calculator.cs"
+  },
+  {
+   "Rev": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs"
+  },
+  {
+   "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Path": "AGENTS.md"
+  },
+  {
+   "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Path": "docs/AUTOMATION_PLAN.md"
+  },
+  {
+   "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md"
+  },
+  {
+   "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Path": "docs/WORKFLOW.md"
+  },
+  {
+   "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Path": "docs/automation/agent-execution/README.md"
+  },
+  {
+   "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+  },
+  {
+   "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+  },
+  {
+   "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Path": "docs/automation/agent-execution/routing.md"
+  },
+  {
+   "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+  },
+  {
+   "Rev": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Path": "src/Fixture.Lib/Calculator.cs"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "AGENTS.md"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "docs/AUTOMATION_PLAN.md"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "docs/WORKFLOW.md"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "docs/automation/agent-execution/README.md"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "docs/automation/agent-execution/routing.md"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "src/Fixture.Lib/Calculator.cs"
+  },
+  {
+   "Rev": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "AGENTS.md"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "docs/AUTOMATION_PLAN.md"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "docs/WORKFLOW.md"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "docs/automation/agent-execution/README.md"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "docs/automation/agent-execution/routing.md"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "src/Fixture.Lib/Calculator.cs"
+  },
+  {
+   "Rev": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "AGENTS.md"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "docs/AUTOMATION_PLAN.md"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "docs/WORKFLOW.md"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "docs/automation/agent-execution/README.md"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "docs/automation/agent-execution/routing.md"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "src/Fixture.Lib/Calculator.cs"
+  },
+  {
+   "Rev": "a9f6c929e74ef92edfee557c3572b090f48bc318",
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs"
+  },
+  {
+   "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "AGENTS.md"
+  },
+  {
+   "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "docs/AUTOMATION_PLAN.md"
+  },
+  {
+   "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md"
+  },
+  {
+   "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "docs/WORKFLOW.md"
+  },
+  {
+   "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "docs/automation/agent-execution/README.md"
+  },
+  {
+   "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+  },
+  {
+   "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+  },
+  {
+   "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "docs/automation/agent-execution/routing.md"
+  },
+  {
+   "Rev": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "AGENTS.md"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "docs/AUTOMATION_PLAN.md"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "docs/WORKFLOW.md"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "docs/automation/agent-execution/README.md"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "docs/automation/agent-execution/routing.md"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "src/Fixture.Lib/Calculator.cs"
+  },
+  {
+   "Rev": "fbe25347799e5b801ef708454212335537448bd1",
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs"
+  }
+ ],
+ "Refs": [
+  "HEAD",
+  "refs/remotes/origin/fx/u1",
+  "refs/remotes/origin/main"
+ ],
+ "Paths": [
+  "AGENTS.md",
+  "CLAUDE.md",
+  "artifacts/ci/R37949808974/fixture-tests.trx",
+  "artifacts/orchestration/FX-U1/T1-nc1/0/R20261012T090000Z-d001/output.json",
+  "artifacts/orchestration/FX-U1/T1-nc1/0/R20261012T091000Z-a001/worker-handoff.json",
+  "artifacts/orchestration/FX-U1/T1/0/R20261014T000000Z-a4c1/output.json",
+  "docs/AUTOMATION_PLAN.md",
+  "docs/FOUNDATIONS.md",
+  "docs/INITIATIVE_LIFECYCLE.md",
+  "docs/WORKFLOW.md",
+  "docs/adr/",
+  "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md",
+  "docs/automation/agent-execution/",
+  "docs/automation/agent-execution/README.md",
+  "docs/automation/agent-execution/adapters/claude-cli.md",
+  "docs/automation/agent-execution/adapters/claude-desktop-session.md",
+  "docs/automation/agent-execution/adapters/claude-subagent.md",
+  "docs/automation/agent-execution/adapters/codex-cli.md",
+  "docs/automation/agent-execution/adapters/codex-desktop-session.md",
+  "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+  "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+  "docs/automation/agent-execution/routing.md",
+  "docs/automation/agent-execution/schemas/adapters/claude-cli.facts.v1.schema.json",
+  "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+  "docs/automation/agent-execution/schemas/adapters/claude-subagent.facts.v1.schema.json",
+  "docs/automation/agent-execution/schemas/adapters/codex-cli.facts.v1.schema.json",
+  "docs/automation/agent-execution/schemas/adapters/codex-desktop-session.facts.v1.schema.json",
+  "docs/automation/agent-execution/schemas/architect-review-result.v1.schema.json",
+  "docs/automation/agent-execution/schemas/automation-state.v2.schema.json",
+  "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+  "docs/automation/agent-execution/schemas/controller-verification.v2.schema.json",
+  "docs/automation/agent-execution/schemas/delegation.v2.schema.json",
+  "docs/automation/agent-execution/schemas/gate-contract.v2.schema.json",
+  "docs/automation/agent-execution/schemas/input-closure.v1.schema.json",
+  "docs/automation/agent-execution/schemas/input-fidelity.v1.schema.json",
+  "docs/automation/agent-execution/schemas/normative-dependency-manifest.v1.schema.json",
+  "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+  "docs/automation/agent-execution/schemas/relay-record.v2.schema.json",
+  "docs/automation/agent-execution/schemas/reviewer-result.v1.schema.json",
+  "docs/automation/agent-execution/schemas/role-invocation.v1.schema.json",
+  "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+  "docs/automation/decisions/FX-U1.md",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+  "docs/automation/state/FX-U1.yml",
+  "docs/initiatives/PROMPT_TEMPLATES.md",
+  "src/Fixture.Lib/Calculator.cs",
+  "tests/Fixture.Tests/CalculatorTests.cs"
+ ],
+ "Objects": [],
+ "Files": [
+  {
+   "Name": "DELEG",
+   "Sha256": "195930e9e4f634742cc5dbfd36371d0dada3e8f17a9bbd54ba8caef539db6906"
+  },
+  {
+   "Name": "H",
+   "Sha256": "a7bd1b78c9a6970c8dd6a69be3b55d39fe060f091ecd2ac1793669346079fc87"
+  },
+  {
+   "Name": "TRX",
+   "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513"
+  }
+ ]
+}

@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §90; evidencia §180) — A-6 AGREED (blob 4bc919dd; Architect R20261014T180556Z-5e02 ACCREDITED; Coordinator §90); O1-O6 ACCEPTED NON-BLOCKING; preparar la medición del Controller B-min (A6-7 regla 7 con clausemap, D/H/K por rutas, regla de reconstrucción de Runs, A6-5 regla 6, N5-N7, identidad del instrumento y del aceptante, comprobaciones preventivas), identidad pasiva de Codex, línea A6-CONTROLLER-MEDICION-CONSUMO para la identidad vigente y solicitud de B1; sin Codex ni consumo hasta la disposición de medición y la aprobación del Owner; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §90; evidencia §180-§181) — A-6 AGREED; preparación de A6-7 custodiada (banco 77/77: cierre de VERIFY R7-A/R7-B, designación por rutas y KPR, N5-N7, M aceptada; lecturas del aceptante 24 filas sin divergencia de lectura, D-1 abierta); identidad de Codex cambiada (9ecb9df2/26.1013.3656.0/6EFA5B0E, estable): OD-2 y línea (b) nuevas preparadas, sin pedir; kit mínimo de medición en preparación; sin Codex ni consumo hasta la disposición de medición y la aprobación del Owner; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

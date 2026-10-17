@@ -1,0 +1,26 @@
+{
+ "Repo": "D:/r62-a6m7/bench/c-n7",
+ "I": {
+  "UnitId": "FX-U1",
+  "TaskId": "T1",
+  "Attempt": 0,
+  "RunId": "R20261016T000000Z-m7b7",
+  "Target": {
+   "Commit": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Blob": "380892ee869194aa4bd56dcf32dfd76ef0203ab9"
+  }
+ },
+ "Designation": {
+  "D": "artifacts/orchestration/FX-U1/T1-n7b/0/R20261012T090000Z-d001/output.json",
+  "H": "artifacts/orchestration/FX-U1/T1-n7b/0/R20261012T091000Z-a001/worker-handoff.json",
+  "K": "docs/automation/decisions/FX-U1-T1.gate-contract.json"
+ },
+ "Custody": {
+  "artifacts/orchestration/FX-U1/T1-n7b/0/R20261012T090000Z-d001/output.json": "D:/r62-a6m7/bench/work/in-n7b/deleg.json",
+  "artifacts/orchestration/FX-U1/T1-n7b/0/R20261012T091000Z-a001/worker-handoff.json": "D:/r62-a6m7/bench/work/in-n7b/handoff.json",
+  "artifacts/ci/R37949808974/fixture-tests.trx": "D:/r62-a6m7/bench/work/in-n7b/fixture-tests.trx"
+ },
+ "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+ "E": "D:/r62-a6m7/bench/work/build/E-N7B-R7-B.json"
+}

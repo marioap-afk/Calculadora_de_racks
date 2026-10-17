@@ -1,0 +1,3208 @@
+{
+ "Schema": "rackcad-i62-a6m7-readings/0-experimental",
+ "Purpose": "material para la disposición del Coordinator de A-6, A6-5, regla 6 (lecturas normativas del aceptante); no decide",
+ "Worktree": {
+  "Path": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+  "Head": "400a72d8581d1dd472db59412fd485df8fae03f2"
+ },
+ "Acceptor": {
+  "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+  "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+  "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0"
+ },
+ "Instrument": {
+  "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+  "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+ },
+ "FixtureAuthorityRevision": {
+  "Repo": "D:/r62-a6r2/r3/deliv",
+  "Commit": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+  "AutomationPlanBlob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+  "ByteIdenticalToWorktree": true
+ },
+ "Sources": {
+  "A6": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/initiatives/I-62-A-6.md",
+   "Blob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+   "Sha256": "cad51e9f84a6394b7e8f239e03fc683b8981ee7319760051f980db3bac596a39"
+  },
+  "AP": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Sha256": "6dc9f5d5cb90b2242a8d21140674c0b88dc6472a36dd8c65dc988e8cac6a19f5"
+  },
+  "DEC": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/decisions/I-62.md",
+   "Blob": "c0f0457b282e154fafc36bd7ae217b8027816ee1",
+   "Sha256": "4503f5587ca8e5cd2c9dce0f08d58892eb38d57da22f5f0f94e142ab09514f78"
+  },
+  "V14": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Sha256": "ab55ad4f4addef8455543ed06a4c60aa0a1901affc0ba3686146dfeedd9279af"
+  },
+  "A5": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/initiatives/I-62-A-5.md",
+   "Blob": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+   "Sha256": "3b1c60d2049ef20d5543a09964577143314d76d57bb36dd55d74cf8ea8d5733d"
+  },
+  "RAE": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/agent-execution/README.md",
+   "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Sha256": "2070e629151846afc90bb76348c47fc0ccd28fcfe5fbc9ad4e78959df93d8dc1"
+  },
+  "UNBLOCK": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/evidence/I-62-F6/requests/FX-02-unblock-request-2026-10-09.md",
+   "Blob": "203d288750bedd3d4b8560ff01374376d9760d21",
+   "Sha256": "cad97c4e8664fcb12cd9abafa37213b162bc8af59c6a5b302e1a1bd091a1ff5d"
+  },
+  "ACC": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+   "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+   "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0"
+  },
+  "TOOL": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+  },
+  "ANOTES": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/ACCEPT-NOTES.md",
+   "Blob": "cb9df0289c69617122feaa896728c3a86d2040a8",
+   "Sha256": "3751f21685c18c8433d2c28c8f847622a54957ef0ba9362a887f41fd164a415d"
+  },
+  "TNOTES": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/TOOL-NOTES.md",
+   "Blob": "d3218ff79c84a6763db67081408785304a24e0d1",
+   "Sha256": "f56781bf5cd5fd1003cb8778386207a0c914ebd94cfb5650ff98e1345375b81d"
+  },
+  "SPEC": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md",
+   "Blob": "4d448c6fc4670cdf97b21dcd17fc00ba1bedcc0c",
+   "Sha256": "510143f24522211ed0480c813d496dcf47e4c4f8feba8ceb02148ddfa4932fb9"
+  },
+  "S74": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/s74/mv-static-analysis.md",
+   "Blob": "8c8dab0f6c67d39cb2f019ce9c0bdf062063adda",
+   "Sha256": "4bab0a514ef15de2ad61ca6d1cc2c16bef64ae383c3ca1eb8c5dcaa57f1688d6"
+  },
+  "INDEP": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/evidence/I-62-A6/r2/independence/README.md",
+   "Blob": "72c9a7ebfb9ece9c38a2e998ea8f01e568f1ec81",
+   "Sha256": "0031e55a266970d03ddf46eb8edbd56a1378fb4e82ef283d9dd55523ff1b2f4c"
+  },
+  "BCM": {
+   "Repo": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "Path": "docs/automation/evidence/I-62-A6/r2/independence/results/b-clausemap.json",
+   "Blob": "c3a6f0c3b6da531239f56cd3230abeef70317ace",
+   "Sha256": "6164fdd7500980a204c5c7108d69c5370eb43ce55316e11046266fda1923d29d"
+  }
+ },
+ "VerdictCounts": {
+  "COINCIDE": 12,
+  "AMBIGUOUS-ACCEPTOR-CHOICE": 12,
+  "DIVERGE": 0
+ },
+ "Rows": [
+  {
+   "Id": "L-01",
+   "Set": "R4 parte de mapa (E2)",
+   "Rule": "E2: activación (Derive, trailer único y EFF) en MainSha_eval",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      945,
+      946
+     ],
+     "Kind": "quote",
+     "Text": "`I62_EFFECTIVE_SHA` es el primer merge en first-parent de `origin/main` cuyo segundo padre alcanza el **único** commit con el trailer `Agent-Protocol-Normative: I-62` y cuyo primer padre no lo alcanza."
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      799,
+      799
+     ],
+     "Kind": "quote",
+     "Text": "| punto de entrada sin EFF derivable, o trailer duplicado | ACTIVATION_INVALID → STOP al Owner |"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      813,
+      814
+     ],
+     "Kind": "quote",
+     "Text": "`MainSha_eval` = `K.MainSha`, salvo en una reverificación de 16.7 sin conflictos, donde es el `MainSha` nuevo del `RebaseMap`"
+    },
+    {
+     "Src": "A6",
+     "Lines": [
+      619,
+      619
+     ],
+     "Kind": "quote",
+     "Text": "la revisión de los términos de 16.10 y el `MainSha` de la invocación"
+    }
+   ],
+   "Acceptor": "Commit «con el trailer» = commit alcanzable desde `Verification.MainSha` cuyo mensaje crudo, partido por LF y sin normalizar CR ni recortar espacios, contiene una línea exactamente igual a `Agent-Protocol-Normative: I-62`. Dos o más: defecto. Uno sin merge de la cadena first-parent cuyo segundo padre lo alcance (alcanzar es reflexivo) y cuyo primer padre no lo alcance: defecto. EFF = el candidato más antiguo. Sin trailer y sin punto de entrada: PRE_ACTIVATION, sin restricción.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1040,
+      1040
+     ],
+     "Kind": "token",
+     "Text": "TRAILER in repo.message(c).split("
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1047,
+      1047
+     ],
+     "Kind": "token",
+     "Text": "if p[1] in reach_t and p[0] not in reach_t:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1049,
+      1049
+     ],
+     "Kind": "token",
+     "Text": "eff = cands[0] if cands else None"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      266,
+      266
+     ],
+     "Kind": "token",
+     "Text": "message.decode(\"utf-8\", \"surrogateescape\")"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1299,
+      1299
+     ],
+     "Kind": "token",
+     "Text": "\"ACTIVATION: more than one trailer commit\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1301,
+      1301
+     ],
+     "Kind": "token",
+     "Text": "\"ACTIVATION: trailer present but no derivable EFF\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2170,
+      2170
+     ],
+     "Kind": "token",
+     "Text": "cm, internal = acceptor_clausemap(ctx.repo, main)"
+    }
+   ],
+   "InstrumentDiffers": true,
+   "Instrument": "Misma lectura (línea exacta en cualquier lugar del mensaje), pero normaliza CRLF del mensaje antes de partirlo: con un mensaje CRLF las dos piezas divergen (G6, sonda P3).",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1079,
+      1079
+     ],
+     "Kind": "token",
+     "Text": "lf(git_text(rec))"
+    },
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1082,
+      1082
+     ],
+     "Kind": "token",
+     "Text": "if TRAILER in body.split("
+    }
+   ],
+   "Multiple": "sí: (i) línea exacta en cualquier lugar del mensaje (aceptante; SPEC E4); (ii) trailer de Git, solo en el bloque final de trailers; (iii) subcadena. Además, el tratamiento de CRLF.",
+   "Proposed": "El commit «con el trailer» de 16.14 es todo commit alcanzable desde `MainSha_eval` (AP L813-L814; en la solicitud del aceptante, el `MainSha` de la invocación, A6-3, regla 6 (c)) cuyo mensaje, partido por LF y sin recortar espacios ni normalizar CR, contiene una línea exactamente igual a `Agent-Protocol-Normative: I-62`; «único» se cuenta sobre ese conjunto; «alcanza» es reflexivo; dos o más commits, o uno sin merge first-parent que cumpla la regla, es ACTIVATION_INVALID y prohíbe `Authority` = pass.",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Con (ii), el aceptante contaría como trailer una línea del cuerpo y vería ACTIVATION_INVALID donde el Coordinator no: rechazo falso. Con (iii), no contaría una mención dentro de una línea más larga y dejaría `Authority` sin restricción donde el Coordinator ve ACTIVATION_INVALID: aceptación indebida posible. En los dos casos el aceptante no se usa tal como está (A6-5, regla 6). CRLF: residuo G6, solo rechazo falso.",
+   "Items": [
+    "14",
+    "E4"
+   ],
+   "Evidence": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      206,
+      208
+     ],
+     "Kind": "token",
+     "Text": "Evaluate E2-E3"
+    },
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      238,
+      238
+     ],
+     "Kind": "token",
+     "Text": "an envelope with Facts is a MISMATCH"
+    },
+    {
+     "Src": "INDEP",
+     "Lines": [
+      275,
+      276
+     ],
+     "Kind": "token",
+     "Text": "P3, CRLF in the trailer commit's message"
+    }
+   ],
+   "IfOtherShort": "no utilizable (rechazo falso o aceptación indebida, según la alternativa)",
+   "MultipleShort": "sí"
+  },
+  {
+   "Id": "L-02",
+   "Set": "R4 parte de mapa (E2-E3)",
+   "Rule": "E2-E3: punto de entrada y encabezado de 16.13 en MainSha_eval",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      784,
+      785
+     ],
+     "Kind": "quote",
+     "Text": "X := Match(MainSha_eval, WORKFLOW, <línea de encabezado del punto de entrada>) (misma semántica que Match: línea normalizada, nivel ##, fuera de bloques de código)"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      789,
+      789
+     ],
+     "Kind": "quote",
+     "Text": "EFF presente y |X| ≠ 1 → ENTRY_INVALID → STOP (S-12; P-15)"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      801,
+      801
+     ],
+     "Kind": "quote",
+     "Text": "| el punto de entrada nombra una 16.13 ausente o repetida | ENTRY_INVALID → STOP |"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      728,
+      728
+     ],
+     "Kind": "quote",
+     "Text": "nombra esta subsección por su línea de encabezado exacta"
+    }
+   ],
+   "Acceptor": "`Match` = línea completa normalizada (espacios colapsados y recortados; la sangría no cuenta) igual a la línea fija normalizada, fuera de bloques ```; el nivel lo fija el prefijo `##` o `###` de la propia línea fija. Defecto si el punto de entrada no aparece exactamente una vez en WORKFLOW, si la línea de 16.13 no aparece exactamente una vez en AP o si el texto de la sección del punto de entrada (CRLF a LF, sin normalizar espacios) no contiene literalmente la línea exacta de 16.13.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1062,
+      1062
+     ],
+     "Kind": "token",
+     "Text": "em = doc.match_lines(ENTRY_HEADING)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1064,
+      1064
+     ],
+     "Kind": "token",
+     "Text": "names = doc.section_contains_literal(em[0], R163_HEADING)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      523,
+      523
+     ],
+     "Kind": "token",
+     "Text": "norm_ws(line) == w"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      573,
+      573
+     ],
+     "Kind": "token",
+     "Text": "return needle in self.section_text(k)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1307,
+      1307
+     ],
+     "Kind": "token",
+     "Text": "\"ENTRY: entry point count is not 1\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1309,
+      1309
+     ],
+     "Kind": "token",
+     "Text": "\"ENTRY: 16.13 heading count is not 1\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1311,
+      1311
+     ],
+     "Kind": "token",
+     "Text": "\"ENTRY: entry point does not name 16.13\""
+    }
+   ],
+   "InstrumentDiffers": true,
+   "Instrument": "Igual, salvo que reconoce encabezados sobre la línea cruda, sin sangría: un encabezado sangrado diverge (G6, sonda P2).",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      381,
+      381
+     ],
+     "Kind": "token",
+     "Text": "m = HEADING_RE.match(line)"
+    }
+   ],
+   "Multiple": "sí: «nombra … por su línea exacta» admite subcadena en cualquier parte de la sección (aceptante), la línea propia o un enlace; y el encabezado sangrado se reconoce o no.",
+   "Proposed": "El punto de entrada y 16.13 se cuentan con `Match` sobre la línea normalizada completa (la sangría inicial no cuenta), fuera de los bloques que empiezan por tres comillas invertidas; el punto de entrada «nombra» 16.13 si el texto de su sección, con CRLF convertido en LF, contiene literalmente la línea exacta de 16.13; con EFF presente, |X| ≠ 1, |R| ≠ 1 o un punto de entrada que no la nombra es ENTRY_INVALID y prohíbe `Authority` = pass.",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Con una lectura más estricta de «nombra» (línea propia), el aceptante sería más permisivo que el Coordinator y no restringiría un `pass` que el Coordinator rechaza; con otra lectura de la sangría, rechazo falso. En los dos casos, no se usa tal como está. Sangría frente al instrumento: residuo G6.",
+   "Items": [
+    "8",
+    "11",
+    "14"
+   ],
+   "Evidence": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      200,
+      200
+     ],
+     "Kind": "token",
+     "Text": "literal substring of the 16.13 heading in the entry section text"
+    },
+    {
+     "Src": "INDEP",
+     "Lines": [
+      273,
+      274
+     ],
+     "Kind": "token",
+     "Text": "P2, three-space indented heading"
+    }
+   ],
+   "IfOtherShort": "no utilizable (rechazo falso o aceptación indebida, según la alternativa)",
+   "MultipleShort": "sí"
+  },
+  {
+   "Id": "L-03",
+   "Set": "R4 parte de mapa (alcance)",
+   "Rule": "Alcance y efecto de la parte de mapa de `Authority`",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      822,
+      822
+     ],
+     "Kind": "quote",
+     "Text": "Cualquier fallo → MAP_INVALID → `Authority` fail; STOP (S-12; P-15)."
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      779,
+      779
+     ],
+     "Kind": "quote",
+     "Text": "comprobación `Authority` de la verificación"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      920,
+      920
+     ],
+     "Kind": "quote",
+     "Text": "**Con MAP_INVALID, ningún contrato I61 pasa `Authority` tras EFF.**"
+    },
+    {
+     "Src": "A5",
+     "Lines": [
+      157,
+      157
+     ],
+     "Kind": "quote",
+     "Text": "Con AP L822, toda evaluación de un contrato I62 del fixture termina en STOP."
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      1204,
+      1204
+     ],
+     "Kind": "quote",
+     "Text": "es `not_run`, y `not_run` cuenta como fail; nunca es"
+    }
+   ],
+   "Acceptor": "Un defecto de E2-E3 o de MV-1..MV-7 prohíbe que el `Authority` del Controller sea `pass` (`fail` y `not_run` valen igual). Sin defectos, `Authority` queda sin restricción: el aceptante no recalcula `Classify`, los pasos 3-4 de `Resolve` ni las comprobaciones de 16.3, y no distingue la clasificación de la unidad. PRE_ACTIVATION: sin restricción.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      2185,
+      2185
+     ],
+     "Kind": "token",
+     "Text": "row[\"Rule\"] = \"map part: any defect forbids pass\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2187,
+      2187
+     ],
+     "Kind": "token",
+     "Text": "good = ctl is not None and not (defects and ctl == \"pass\")"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2188,
+      2188
+     ],
+     "Kind": "token",
+     "Text": "\"not pass\" if defects else \"unconstrained\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2151,
+      2151
+     ],
+     "Kind": "token",
+     "Text": "r if r in (\"pass\", \"fail\", \"not_run\") else None"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1302,
+      1305
+     ],
+     "Kind": "token",
+     "Text": "if der[\"Eff\"] is None:"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "No aplica: el instrumento no decide.",
+   "InstrumentCode": [],
+   "Multiple": "no para la decisión: L920 nombra los contratos I61, pero L822 (paso 2 de `Resolve`, antes de ramificar por la clasificación) no distingue, y A-5 L157 ya la lee para contratos I62 del fixture. La unilateralidad (sin defecto no se exige pass) es alcance, no lectura: residuo G5.",
+   "Proposed": "En la verificación de FX-02, todo defecto de la parte de mapa (E2-E3 o `Validate(M)`, MV-1..MV-7) hace que `Authority` no pueda ser `pass`, sea cual sea la clasificación de la unidad (AP L822; A-5 L157); `fail` y `not_run` cuentan igual (16.22). La ausencia de defectos no implica `pass`. PRE_ACTIVATION no impone restricción de mapa.",
+   "Verdict": "COINCIDE",
+   "Consequence": "Si el Coordinator limitara MAP_INVALID a los contratos I61 (lectura restrictiva de L920), el aceptante rechazaría un `pass` de una unidad I62 que el Coordinator admite (rechazo falso): no se usaría tal como está. G5 sigue declarado.",
+   "Items": [
+    "1",
+    "14"
+   ],
+   "Evidence": [
+    {
+     "Src": "A6",
+     "Lines": [
+      988,
+      988
+     ],
+     "Kind": "token",
+     "Text": "G5. Parte de mapa de R4 de un solo lado."
+    },
+    {
+     "Src": "INDEP",
+     "Lines": [
+      162,
+      163
+     ],
+     "Kind": "token",
+     "Text": "R4 asymmetry"
+    }
+   ],
+   "IfOtherShort": "no utilizable (rechazo falso)",
+   "MultipleShort": "no (para la decisión)"
+  },
+  {
+   "Id": "L-04",
+   "Set": "R4 parte de mapa (MV-1)",
+   "Rule": "MV-1: el mapa existe, se interpreta como JSON y valida contra su esquema en EFF",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      902,
+      902
+     ],
+     "Kind": "quote",
+     "Text": "| MV-1 | el mapa existe en EFF en la ruta fija, se interpreta como JSON y valida contra su esquema en EFF |"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      912,
+      912
+     ],
+     "Kind": "quote",
+     "Text": "| mapa ausente, ilegible o inválido contra su esquema | MAP_INVALID |"
+    }
+   ],
+   "Acceptor": "«Se interpreta como JSON» = UTF-8 estricto, sin BOM, sin claves repetidas y sin NaN ni Infinity. «Valida contra su esquema» = subconjunto de draft 2020-12 (`type`, `enum`, `const`, `required`, `properties`, `additionalProperties`, `items`, `minItems`, `maxItems`, `uniqueItems`, `minLength`, `pattern`, `minimum`, `maximum`, más anotaciones), con `enum` y `const` por igualdad de JSON canónico y `pattern` con `re` de Python y `$` final leído como fin de texto (`\\Z`). Mapa o esquema ausente o ilegible, palabra clave fuera del subconjunto o alguna violación: defecto.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      141,
+      141
+     ],
+     "Kind": "token",
+     "Text": "text = data.decode(\"utf-8\")"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      145,
+      145
+     ],
+     "Kind": "token",
+     "Text": "object_pairs_hook=_no_dup_pairs, parse_constant=_no_constant"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      843,
+      843
+     ],
+     "Kind": "token",
+     "Text": "_SUPPORTED_KEYWORDS = frozenset("
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      861,
+      861
+     ],
+     "Kind": "token",
+     "Text": "if k not in _SUPPORTED_KEYWORDS:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      899,
+      899
+     ],
+     "Kind": "token",
+     "Text": "pat = pat[:-1] + "
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      917,
+      917
+     ],
+     "Kind": "token",
+     "Text": "canonical(inst) == canonical(e)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1315,
+      1315
+     ],
+     "Kind": "token",
+     "Text": "\"MV-1: map absent or unreadable\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1317,
+      1317
+     ],
+     "Kind": "token",
+     "Text": "\"MV-1: schema absent or unreadable\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1319,
+      1319
+     ],
+     "Kind": "token",
+     "Text": "\"MV-1: schema keyword outside the supported subset\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1321,
+      1321
+     ],
+     "Kind": "token",
+     "Text": "\"MV-1: map invalid against its schema\""
+    }
+   ],
+   "InstrumentDiffers": true,
+   "Instrument": "Misma lectura del JSON y del subconjunto, pero ante una palabra clave no admitida o un esquema ilegible falla cerrado (`UNSUPPORTED_SCHEMA_KEYWORD` o `MALFORMED_JSON`, sin hechos) y usa clases ASCII en `pattern`. En R6 `SchemaViolations` solo se compara por vacío (ACCEPT-NOTES 6): G1.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1273,
+      1273
+     ],
+     "Kind": "token",
+     "Text": "schema = json_input(sch_bytes, \"clause-map schema at Eff\")"
+    },
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1274,
+      1274
+     ],
+     "Kind": "token",
+     "Text": "schema_check(schema, \"\", compiled)"
+    }
+   ],
+   "Multiple": "sí: AP no fija el dialecto ni el validador; RFC 8259 solo recomienda nombres únicos y hay analizadores que toleran el BOM; la igualdad numérica (1 frente a 1.0) en `enum` y `const`; la semántica ECMA de `pattern`.",
+   "Proposed": "Para FX-02, MV-1 se cumple solo si el mapa en EFF, en su ruta fija, es JSON UTF-8 estricto (sin BOM, sin claves repetidas, sin NaN ni Infinity) y valida sin violaciones contra el esquema en EFF con el subconjunto de draft 2020-12 de la especificación B-min (§2.12), con `enum` y `const` por igualdad de JSON canónico y el `$` final de `pattern` como fin de texto; un esquema ausente o ilegible, o una palabra clave fuera del subconjunto, deja MV-1 sin establecer y `Authority` no puede ser `pass` (16.22).",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Con un JSON tolerante o un validador completo de 2020-12, el aceptante vería defecto donde el Coordinator no (rechazo falso): no se usa tal como está. No material sobre el esquema `6b54dda9` (EFF del fixture y MC_I62): solo usa palabras del subconjunto y el `pattern` `^[0-9a-f]{40}$`. G1 sigue declarado.",
+   "Items": [
+    "6",
+    "12"
+   ],
+   "Evidence": [
+    {
+     "Src": "A6",
+     "Lines": [
+      931,
+      931
+     ],
+     "Kind": "token",
+     "Text": "G1. Palabra clave de esquema no admitida (MV-1)."
+    }
+   ],
+   "IfOtherShort": "no utilizable (rechazo falso)",
+   "MultipleShort": "sí"
+  },
+  {
+   "Id": "L-05",
+   "Set": "R4 parte de mapa (MV-2)",
+   "Rule": "MV-2: `Surfaces` = la lista cerrada",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      903,
+      903
+     ],
+     "Kind": "quote",
+     "Text": "| MV-2 | `Surfaces` = la lista cerrada de esta subsección |"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      889,
+      889
+     ],
+     "Kind": "quote",
+     "Text": "<la lista cerrada de esta subsección, en su orden>"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      738,
+      738
+     ],
+     "Kind": "quote",
+     "Text": "**Superficies** (lista cerrada): `AGENTS.md`, `CLAUDE.md`"
+    }
+   ],
+   "Acceptor": "Igualdad exacta de listas ordenadas entre `Surfaces` del mapa y los valores entre comillas invertidas del único párrafo de AP en EFF que empieza por «**Superficies** (lista cerrada):», hasta la primera línea en blanco; párrafo ausente o repetido: defecto.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      620,
+      620
+     ],
+     "Kind": "token",
+     "Text": "norm_ws(line).startswith(SURFACES_LEAD)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      621,
+      621
+     ],
+     "Kind": "token",
+     "Text": "if len(starts) != 1:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1322,
+      1322
+     ],
+     "Kind": "token",
+     "Text": "canonical(v[\"MV2\"][\"MapSurfaces\"]) != canonical(v[\"MV2\"][\"ClosedList\"])"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1323,
+      1323
+     ],
+     "Kind": "token",
+     "Text": "\"MV-2: Surfaces differ from the closed list\""
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual sobre AP `f525cb1e`; normaliza los espacios de cada valor y busca el párrafo al inicio de la línea cruda (sin efecto en ese AP).",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1199,
+      1199
+     ],
+     "Kind": "token",
+     "Text": "values = [norm(v) for v in BACKTICK_RE.findall("
+    }
+   ],
+   "Multiple": "no: L889 fija el orden («en su orden»).",
+   "Proposed": "MV-2 exige que `Surfaces` sea, elemento a elemento y en el mismo orden, la lista de valores entre comillas invertidas del párrafo «**Superficies** (lista cerrada):» de AP en EFF.",
+   "Verdict": "COINCIDE",
+   "Consequence": "Con igualdad de conjuntos, el aceptante sería más estricto (orden distinto = defecto): rechazo falso; no se usaría tal como está.",
+   "Items": [],
+   "Evidence": [
+    {
+     "Src": "INDEP",
+     "Lines": [
+      148,
+      148
+     ],
+     "Kind": "token",
+     "Text": "Surfaces reordered"
+    }
+   ],
+   "IfOtherShort": "no utilizable (rechazo falso)",
+   "MultipleShort": "no"
+  },
+  {
+   "Id": "L-06",
+   "Set": "R4 parte de mapa (MV-3)",
+   "Rule": "MV-3: completitud de archivos",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      904,
+      904
+     ],
+     "Kind": "quote",
+     "Text": "{p bajo `Surfaces` : blob(EFF^1, p) ≠ blob(EFF, p)} ∖ {mapa} = {`Files.Path`}, sin duplicados; un archivo borrado no tiene clase → inválido"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      914,
+      914
+     ],
+     "Kind": "quote",
+     "Text": "| archivo modificado ausente de `Files`, o listado sin modificarse | MAP_INVALID |"
+    }
+   ],
+   "Acceptor": "«Bajo `Surfaces`» = ruta igual a una superficie o que empieza por una superficie terminada en `/`, con las `Surfaces` del propio mapa; cambiada = identificador de la entrada distinto entre EFF^1 y EFF (la ausencia cuenta; el modo no), sin el mapa; igualdad de conjuntos con `Files.Path`; duplicados y borrados: defecto.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1160,
+      1160
+     ],
+     "Kind": "token",
+     "Text": "p == s or (s.endswith(\"/\") and p.startswith(s))"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1163,
+      1163
+     ],
+     "Kind": "token",
+     "Text": "if p != MAP_PATH and under(p) and oid(t1, p) != oid(t2, p))"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1166,
+      1166
+     ],
+     "Kind": "token",
+     "Text": "\"DeletedUnderSurfaces\": [p for p in changed if p in t1 and p not in t2],"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1328,
+      1328
+     ],
+     "Kind": "token",
+     "Text": "(\"OnlyInChanged\", \"OnlyInFiles\", \"FilesDuplicates\", \"DeletedUnderSurfaces\")"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1299,
+      1299
+     ],
+     "Kind": "token",
+     "Text": "if t1.get(p) != t2.get(p) and p != MAP_PATH"
+    }
+   ],
+   "Multiple": "no en efecto: usar las `Surfaces` del mapa o la lista cerrada solo difiere cuando MV-2 ya es defecto (ACCEPT-NOTES 12).",
+   "Proposed": "MV-3 se evalúa con las `Surfaces` del mapa: el conjunto de rutas bajo ellas cuyo blob difiere entre EFF^1 y EFF (añadidas y borradas incluidas), sin el mapa, debe ser igual a `Files.Path`, sin duplicados; una ruta borrada es defecto.",
+   "Verdict": "COINCIDE",
+   "Consequence": "Ninguna práctica: con MV-2 en defecto, `Authority` ya no puede ser `pass`.",
+   "Items": [
+    "12"
+   ],
+   "Evidence": [],
+   "IfOtherShort": "sin efecto práctico (con MV-2 en defecto)",
+   "MultipleShort": "no (en efecto)"
+  },
+  {
+   "Id": "L-07",
+   "Set": "R4 parte de mapa (MV-4, lista 1)",
+   "Rule": "MV-4, lista `LiteralViolations` (regla literal de L905)",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      905,
+      905
+     ],
+     "Kind": "quote",
+     "Text": "MODIFIED ⇒ `BaseBlob` = blob(EFF^1, p) ∧ `EffBlob` = blob(EFF, p); ADDED o ENTRY ⇒ `BaseBlob` = `null` ∧ `EffBlob` = blob(EFF, p)"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      915,
+      915
+     ],
+     "Kind": "quote",
+     "Text": "| `BaseBlob` o `EffBlob` distintos de los observados | MAP_INVALID |"
+    }
+   ],
+   "Acceptor": "Regla literal de L905 por fila de `Files`; un blob observado nulo nunca coincide. Lista no vacía: defecto.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1178,
+      1178
+     ],
+     "Kind": "token",
+     "Text": "if o1 is None or base != o1 or o2 is None or effb != o2:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1181,
+      1181
+     ],
+     "Kind": "token",
+     "Text": "if base is not None or o2 is None or effb != o2:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1331,
+      1331
+     ],
+     "Kind": "token",
+     "Text": "(\"LiteralViolations\", \"EntryFilesOutsideSchema\", \"AddedPresentInEff1\")"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1323,
+      1323
+     ],
+     "Kind": "token",
+     "Text": "if o1 is None or f[\"BaseBlob\"] != o1 or o2 is None or f[\"EffBlob\"] != o2:"
+    }
+   ],
+   "Multiple": "no.",
+   "Proposed": "`LiteralViolations` es MV-4 tal como lo escribe L905 (la lectura A del análisis s74, la que cuenta A-5 L157, «MV-4 con 7»); una lista no vacía es MAP_INVALID.",
+   "Verdict": "COINCIDE",
+   "Consequence": "No hay otra lectura admisible; si el Coordinator fijara otra, el aceptante no se usaría tal como está.",
+   "Items": [
+    "4"
+   ],
+   "Evidence": [
+    {
+     "Src": "S74",
+     "Lines": [
+      107,
+      107
+     ],
+     "Kind": "token",
+     "Text": "| A: literal | L905 | **7** |"
+    },
+    {
+     "Src": "A5",
+     "Lines": [
+      157,
+      157
+     ],
+     "Kind": "token",
+     "Text": "MV-4 con 7"
+    }
+   ],
+   "IfOtherShort": "no hay otra lectura admisible",
+   "MultipleShort": "no"
+  },
+  {
+   "Id": "L-08",
+   "Set": "R4 parte de mapa (MV-4, lista 2)",
+   "Rule": "MV-4, lista `EntryFilesOutsideSchema`",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      905,
+      905
+     ],
+     "Kind": "quote",
+     "Text": "ENTRY de archivo ⊆ {esquema del mapa}"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      917,
+      917
+     ],
+     "Kind": "quote",
+     "Text": "| ENTRY fuera de la lista cerrada; encabezados duplicados | MAP_INVALID |"
+    }
+   ],
+   "Acceptor": "Toda fila con `FileKind` = ENTRY cuya ruta no es la del esquema del mapa: defecto.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1183,
+      1183
+     ],
+     "Kind": "token",
+     "Text": "if kind == \"ENTRY\" and p != SCHEMA_PATH:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1331,
+      1331
+     ],
+     "Kind": "token",
+     "Text": "\"EntryFilesOutsideSchema\""
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1328,
+      1328
+     ],
+     "Kind": "token",
+     "Text": "if kind == \"ENTRY\" and p != MAP_SCHEMA_PATH:"
+    }
+   ],
+   "Multiple": "no.",
+   "Proposed": "`EntryFilesOutsideSchema` es la cláusula «ENTRY de archivo ⊆ {esquema del mapa}» de L905; una lista no vacía es MAP_INVALID.",
+   "Verdict": "COINCIDE",
+   "Consequence": "No hay otra lectura admisible; si el Coordinator fijara otra, el aceptante no se usaría tal como está.",
+   "Items": [
+    "4"
+   ],
+   "Evidence": [],
+   "IfOtherShort": "no hay otra lectura admisible",
+   "MultipleShort": "no"
+  },
+  {
+   "Id": "L-09",
+   "Set": "R4 parte de mapa (MV-4, lista 3)",
+   "Rule": "MV-4, lista `AddedPresentInEff1` (R61 b; tabla de defectos)",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      916,
+      916
+     ],
+     "Kind": "quote",
+     "Text": "ADDED que existe en EFF^1"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      835,
+      835
+     ],
+     "Kind": "quote",
+     "Text": "b. Path con FileKind ADDED (no existía en EFF^1)"
+    }
+   ],
+   "Acceptor": "Fila ADDED cuya ruta existe en EFF^1: defecto (rotulado «MV-4: AddedPresentInEff1»).",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1185,
+      1185
+     ],
+     "Kind": "token",
+     "Text": "if kind == \"ADDED\" and o1 is not None:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1331,
+      1331
+     ],
+     "Kind": "token",
+     "Text": "\"AddedPresentInEff1\""
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1330,
+      1330
+     ],
+     "Kind": "token",
+     "Text": "if kind == \"ADDED\" and o1 is not None:"
+    }
+   ],
+   "Multiple": "sobre dónde vive (dentro de MV-4 o solo en la tabla de defectos: lecturas A y B del análisis s74), no sobre el efecto: L916 la declara MAP_INVALID.",
+   "Proposed": "Un archivo ADDED que existe en EFF^1 es MAP_INVALID por la tabla de defectos (L916; R61 b, L835), se cuente o no dentro de MV-4; `AddedPresentInEff1` no vacía prohíbe `Authority` = pass.",
+   "Verdict": "COINCIDE",
+   "Consequence": "Ninguna: el efecto no depende de la etiqueta.",
+   "Items": [
+    "4"
+   ],
+   "Evidence": [
+    {
+     "Src": "S74",
+     "Lines": [
+      108,
+      108
+     ],
+     "Kind": "token",
+     "Text": "| B: MV-4 + definición de ADDED |"
+    }
+   ],
+   "IfOtherShort": "el efecto no cambia (L916)",
+   "MultipleShort": "sí en la etiqueta, no en el efecto"
+  },
+  {
+   "Id": "L-10",
+   "Set": "R4 parte de mapa (MV-4, lista 4)",
+   "Rule": "MV-4, lista `EntryFilePresentInEff1` (informativa)",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      905,
+      905
+     ],
+     "Kind": "quote",
+     "Text": "ADDED o ENTRY ⇒ `BaseBlob` = `null` ∧ `EffBlob` = blob(EFF, p)"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      732,
+      732
+     ],
+     "Kind": "quote",
+     "Text": "ruta fija; el mapa lo lista como ENTRY con su blob"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      895,
+      895
+     ],
+     "Kind": "quote",
+     "Text": "`BaseBlob` es `null` solo con ADDED o ENTRY."
+    }
+   ],
+   "Acceptor": "La calcula (ENTRY que existe en EFF^1) y la compara en R6 y R7, pero no la cuenta como defecto en la parte de mapa.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1187,
+      1187
+     ],
+     "Kind": "token",
+     "Text": "if kind == \"ENTRY\" and o1 is not None:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1331,
+      1331
+     ],
+     "Kind": "token",
+     "Text": "(\"LiteralViolations\", \"EntryFilesOutsideSchema\", \"AddedPresentInEff1\")"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1535,
+      1535
+     ],
+     "Kind": "token",
+     "Text": "\"EntryFilePresentInEff1\""
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual (la especificación la declara informativa).",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1332,
+      1332
+     ],
+     "Kind": "token",
+     "Text": "if kind == \"ENTRY\" and o1 is not None:"
+    }
+   ],
+   "Multiple": "sí: la lectura B-ext del análisis s74 (L915 leído como «`BaseBlob` = blob(EFF^1, p), con null = ausente», para todas las clases) la convertiría en defecto; s74 la califica de débil porque choca con L905 y L895 ante una ENTRY preexistente.",
+   "Proposed": "`EntryFilePresentInEff1` es informativa: una ENTRY de archivo presente en EFF^1 no es por sí sola defecto de MV-4 ni de la tabla de defectos.",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Con B-ext, el aceptante sería más permisivo que el Coordinator (no restringiría un `pass` que el Coordinator rechaza): no se usaría tal como está. No material en un B1 conforme a A5-1: el esquema no existe en `bb0d5522`, base de la derivación del mapa; sí existía en EFF^1 del fixture actual (`930288c5`).",
+   "Items": [
+    "4"
+   ],
+   "Evidence": [
+    {
+     "Src": "SPEC",
+     "Lines": [
+      221,
+      221
+     ],
+     "Kind": "token",
+     "Text": "(ninguna regla lo convierte en defecto; se informa)"
+    },
+    {
+     "Src": "S74",
+     "Lines": [
+      109,
+      109
+     ],
+     "Kind": "token",
+     "Text": "| B-ext: L915 absoluto |"
+    },
+    {
+     "Src": "INDEP",
+     "Lines": [
+      142,
+      142
+     ],
+     "Kind": "token",
+     "Text": "| D4 | ENTRY schema present in EFF^1 (informative) |"
+    },
+    {
+     "Src": "BCM",
+     "Lines": [
+      1,
+      1
+     ],
+     "Kind": "token",
+     "Text": "D4-entry-in-eff1"
+    }
+   ],
+   "IfOtherShort": "no utilizable (aceptación indebida posible)",
+   "MultipleShort": "sí"
+  },
+  {
+   "Id": "L-11",
+   "Set": "R4 parte de mapa (MV-5)",
+   "Rule": "MV-5: `Entries` único por (`Path`, `Section`), con `Path` de un archivo MODIFIED",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      906,
+      906
+     ],
+     "Kind": "quote",
+     "Text": "| MV-5 | `Entries` único por (`Path`, `Section`), con `Path` de un archivo MODIFIED |"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      913,
+      913
+     ],
+     "Kind": "quote",
+     "Text": "| entrada o archivo duplicado | MAP_INVALID |"
+    }
+   ],
+   "Acceptor": "Unicidad por (`Path`, `Section` normalizada, con espacios colapsados); cada entrada debe tener el `Path` de una fila con `FileKind` = MODIFIED.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1191,
+      1191
+     ],
+     "Kind": "token",
+     "Text": "keys = [(e[\"Path\"], norm_ws(e[\"Section\"])) for e in entries]"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1196,
+      1196
+     ],
+     "Kind": "token",
+     "Text": "if e[\"Path\"] not in modified"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1334,
+      1334
+     ],
+     "Kind": "token",
+     "Text": "(\"EntryKeyDuplicates\", \"EntriesOnNonModifiedPath\")"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1340,
+      1340
+     ],
+     "Kind": "token",
+     "Text": "keys = [(e[\"Path\"], norm(e[\"Section\"])) for e in entries]"
+    }
+   ],
+   "Multiple": "sí, menor: clave exacta o normalizada; `Match` (L872-L873) normaliza, así que dos entradas que solo difieren en espacios designan el mismo encabezado.",
+   "Proposed": "MV-5 compara `Section` normalizada (espacios colapsados, extremos recortados): dos entradas con el mismo `Path` y la misma `Section` normalizada están duplicadas; toda entrada debe tener el `Path` de un archivo MODIFIED.",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Con clave exacta, el aceptante sería más estricto (rechazo falso): no se usaría tal como está. Materialidad baja.",
+   "Items": [
+    "12"
+   ],
+   "Evidence": [],
+   "IfOtherShort": "no utilizable (rechazo falso)",
+   "MultipleShort": "sí (menor)"
+  },
+  {
+   "Id": "L-12",
+   "Set": "R4 parte de mapa (MV-6)",
+   "Rule": "MV-6: igualdad con la derivación por archivo MODIFIED",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      907,
+      907
+     ],
+     "Kind": "quote",
+     "Text": "MODIFIED = {h ∈ H1 ∩ H2 : texto normalizado distinto}; REMOVED = H1 ∖ H2; ADDED ∪ ENTRY = H2 ∖ H1"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      907,
+      907
+     ],
+     "Kind": "quote",
+     "Text": "ni más ni menos; encabezados únicos por archivo en ambas revisiones"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      895,
+      896
+     ],
+     "Kind": "quote",
+     "Text": "Una sección va desde su encabezado hasta el siguiente con el mismo número de `#` o menos, e incluye sus subsecciones; el texto se normaliza con CRLF → LF y espacios colapsados."
+    }
+   ],
+   "Acceptor": "Para cada archivo MODIFIED del mapa, Markdown o no: H = líneas de encabezado normalizadas de todos los niveles (con sus `#`) más `preámbulo`; texto de sección = desde su encabezado hasta el siguiente de nivel igual o superior, subsecciones incluidas, con espacios colapsados (un encabezado de nivel 1 llega hasta el siguiente de nivel 1 o hasta el final del archivo); preámbulo = texto anterior al primer `##`. Igualdad de conjuntos por clase, con ADDED y ENTRY juntas; entradas ENTRY = exactamente el par fijo; encabezado repetido en cualquiera de las dos revisiones: defecto; archivo MODIFIED ausente en una revisión: defecto. Un archivo no Markdown solo tiene `preámbulo`, salvo líneas que empiecen por `#`.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1085,
+      1085
+     ],
+     "Kind": "token",
+     "Text": "rec[\"DerivedModified\"] = sorted(h for h in set(h1) & set(h2) if h1[h] != h2[h])"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1086,
+      1086
+     ],
+     "Kind": "token",
+     "Text": "rec[\"DerivedRemoved\"] = sorted(set(h1) - set(h2))"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1087,
+      1087
+     ],
+     "Kind": "token",
+     "Text": "rec[\"DerivedAddedOrEntry\"] = sorted(set(h2) - set(h1))"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1077,
+      1077
+     ],
+     "Kind": "token",
+     "Text": "if text1 is None or text2 is None:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      561,
+      561
+     ],
+     "Kind": "token",
+     "Text": "texts = {PREAMBLE: norm_ws(self.preamble_text())}"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      535,
+      535
+     ],
+     "Kind": "token",
+     "Text": "if self.heads[j][1] <= level:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1199,
+      1199
+     ],
+     "Kind": "token",
+     "Text": "if f.get(\"FileKind\") == \"MODIFIED\" and f[\"Path\"] not in mod_paths:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1208,
+      1208
+     ],
+     "Kind": "token",
+     "Text": "exp = sorted([(AP_PATH, norm_ws(R163_HEADING)), (WF_PATH, norm_ws(ENTRY_HEADING))])"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1339,
+      1339
+     ],
+     "Kind": "token",
+     "Text": "\"MV-6: modified file absent in a revision\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1342,
+      1342
+     ],
+     "Kind": "token",
+     "Text": "\"MV-6: duplicated headings\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1348,
+      1348
+     ],
+     "Kind": "token",
+     "Text": "\"MV-6: ENTRY entries differ from the fixed pair\""
+    }
+   ],
+   "InstrumentDiffers": true,
+   "Instrument": "Misma semántica, salvo el reconocimiento de encabezados (línea cruda: L-13) y que un archivo ausente se trata como conjunto vacío; en ese caso el aceptante no compara los derivados, así que no hay discrepancia en R6.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1356,
+      1356
+     ],
+     "Kind": "token",
+     "Text": "h1 = Md(text1).heading_map() if text1 is not None else {}"
+    }
+   ],
+   "Multiple": "sí: (i) si MV-6 se aplica a un archivo MODIFIED no Markdown (ACCEPT-NOTES 13: sí, con solo `preámbulo`) o solo a los Markdown; (ii) el reconocimiento de encabezados (L-13). La inclusión de subsecciones y de todos los niveles la fija el texto (L895-L896, L907).",
+   "Proposed": "MV-6 se aplica a todo archivo MODIFIED del mapa, Markdown o no, con el lector de L-13: H1 y H2 son los encabezados normalizados de todos los niveles más `preámbulo`; el texto de una sección incluye sus subsecciones; las clases derivadas se comparan como conjuntos con las del mapa (ADDED y ENTRY juntas); ENTRY = exactamente el par fijo; un encabezado repetido en cualquiera de las dos revisiones, o un archivo MODIFIED ausente en una de ellas, es defecto.",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Si MV-6 excluyera los archivos no Markdown, el aceptante sería más estricto (rechazo falso): no se usaría tal como está. No material en el mapa `4d49d3e1`: sus seis archivos MODIFIED son Markdown y lista como MODIFIED sus encabezados de nivel 1, coherente con esta lectura.",
+   "Items": [
+    "8",
+    "12",
+    "13"
+   ],
+   "Evidence": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      204,
+      205
+     ],
+     "Kind": "token",
+     "Text": "MV-6** runs on every MODIFIED file of the map"
+    }
+   ],
+   "IfOtherShort": "no utilizable (rechazo falso)",
+   "MultipleShort": "sí"
+  },
+  {
+   "Id": "L-13",
+   "Set": "R4 parte de mapa (lector Markdown)",
+   "Rule": "Lectura de Markdown para Match, MV-6 y MV-7 (encabezados, bloques de código, preámbulo)",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      872,
+      873
+     ],
+     "Kind": "quote",
+     "Text": "cuenta los encabezados del archivo en `rev` cuya línea, normalizada, es igual a `Section` normalizado (normalizar = espacios colapsados y extremos recortados); se ignoran las líneas dentro de bloques de código."
+    }
+   ],
+   "Acceptor": "Encabezado = línea que, con los espacios colapsados y recortados, empieza por 1 a 6 `#` seguidos de espacio o fin (la sangría inicial, de cualquier tamaño, no cuenta); bloque de código = entre líneas que empiezan en la columna 0 por tres comillas invertidas; sin vallas `~~~`, sin bloques sangrados y sin encabezados setext; «espacios» = los de `str.split()` de Python (incluye espacios Unicode como U+00A0); preámbulo = texto anterior al primer encabezado de nivel 2; `## 16.` y `### 16.3` = el único encabezado de ese nivel igual a la etiqueta o que empieza por etiqueta y espacio.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      508,
+      508
+     ],
+     "Kind": "token",
+     "Text": "if line.startswith(\"```\"):"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      515,
+      515
+     ],
+     "Kind": "token",
+     "Text": "nl = norm_ws(line)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      516,
+      516
+     ],
+     "Kind": "token",
+     "Text": "lv = heading_level(nl)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      494,
+      494
+     ],
+     "Kind": "token",
+     "Text": "if 1 <= n <= 6 and (n == len(normalized_line) or normalized_line[n] == "
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      487,
+      487
+     ],
+     "Kind": "token",
+     "Text": "return \" \".join(text.split())"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      550,
+      550
+     ],
+     "Kind": "token",
+     "Text": "if level == 2:"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      556,
+      557
+     ],
+     "Kind": "token",
+     "Text": "nl.startswith(label + \" \")"
+    }
+   ],
+   "InstrumentDiffers": true,
+   "Instrument": "Encabezado sobre la línea cruda, sin sangría: con un encabezado sangrado divergen (G6, sonda P2); mismas vallas (`~~~` es modo común, sonda P1).",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      90,
+      90
+     ],
+     "Kind": "token",
+     "Text": "HEADING_RE = re.compile("
+    },
+    {
+     "Src": "TOOL",
+     "Lines": [
+      381,
+      381
+     ],
+     "Kind": "token",
+     "Text": "HEADING_RE.match(line)"
+    }
+   ],
+   "Multiple": "sí: CommonMark admite hasta 3 espacios de sangría (con 4 es código), vallas `~~~` y encabezados setext; AP solo dice «encabezados» y «bloques de código».",
+   "Proposed": "Para MV-6, MV-7 y E2-E3, un encabezado es una línea que, tras colapsar y recortar espacios, empieza por 1 a 6 `#` seguidos de espacio o fin de línea, fuera de los bloques delimitados por líneas que empiezan por tres comillas invertidas; no se reconocen vallas `~~~`, bloques sangrados ni encabezados setext; el preámbulo es el texto anterior al primer `##`.",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Con CommonMark, el aceptante divergiría en las dos direcciones (sangría de 4 o más espacios, `~~~`, setext): no se usaría tal como está. Frente al instrumento: residuo G6, solo rechazo falso.",
+   "Items": [
+    "8",
+    "9"
+   ],
+   "Evidence": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      193,
+      195
+     ],
+     "Kind": "token",
+     "Text": "heading = normalized line starting with 1-6 `#`"
+    },
+    {
+     "Src": "INDEP",
+     "Lines": [
+      271,
+      272
+     ],
+     "Kind": "token",
+     "Text": "P1, `~~~` fence (shared reading)"
+    }
+   ],
+   "IfOtherShort": "no utilizable (error en las dos direcciones)",
+   "MultipleShort": "sí"
+  },
+  {
+   "Id": "L-14",
+   "Set": "R4 parte de mapa (MV-7)",
+   "Rule": "MV-7: punto de entrada, punteros y 16.3 en EFF",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      908,
+      908
+     ],
+     "Kind": "quote",
+     "Text": "punteros presentes en §16 y 16.3 en EFF; 16.3 en EFF sin el puntero = 16.3 en EFF^1 (normalizado)"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      730,
+      730
+     ],
+     "Kind": "quote",
+     "Text": "| Punteros | primera frase de §16 y última frase de 16.3 |"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      918,
+      918
+     ],
+     "Kind": "quote",
+     "Text": "| punto de entrada de WORKFLOW, 16.13 o punteros ausentes con EFF presente | MAP_INVALID |"
+    }
+   ],
+   "Acceptor": "En EFF: el punto de entrada exactamente una vez en WORKFLOW y nombrando 16.13 (como L-02); además, la línea de 16.13 exactamente una vez en AP (comprobación interna adicional); «punteros presentes» = la frase puntero es la primera frase del cuerpo del único `## 16.` y la última del cuerpo del único `### 16.3` (posiciones de L730); frase = texto hasta un `.` seguido de espacio o fin; «16.3 sin el puntero» = se quita una vez la última aparición de la frase puntero completa y se compara el cuerpo normalizado con el de EFF^1.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1224,
+      1224
+     ],
+     "Kind": "token",
+     "Text": "internal[\"R163CountEff\"] = len(d2.match_lines(R163_HEADING))"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1228,
+      1228
+     ],
+     "Kind": "token",
+     "Text": "first = sents[0] if sents else None"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1233,
+      1233
+     ],
+     "Kind": "token",
+     "Text": "last = sents[-1] if sents else None"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1234,
+      1234
+     ],
+     "Kind": "token",
+     "Text": "minus = remove_pointer_sentence(body2, POINTER)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      582,
+      582
+     ],
+     "Kind": "token",
+     "Text": "if text[i] == \".\" and (i + 1 == n or text[i + 1].isspace()):"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      596,
+      596
+     ],
+     "Kind": "token",
+     "Text": "for k in range(len(sentences) - 1, -1, -1):"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1351,
+      1351
+     ],
+     "Kind": "token",
+     "Text": "\"MV-7: entry point / 16.13 in EFF\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1353,
+      1353
+     ],
+     "Kind": "token",
+     "Text": "\"MV-7: pointer position\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1355,
+      1355
+     ],
+     "Kind": "token",
+     "Text": "\"MV-7: 16.3 differs after pointer removal\""
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual, con encabezados sobre la línea cruda (L-13).",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      1248,
+      1248
+     ],
+     "Kind": "token",
+     "Text": "del sents[idx[-1]]"
+    }
+   ],
+   "Multiple": "sí: «presentes» admite presencia en cualquier lugar o en la posición de L730; si 16.13 repetido en EFF es defecto de MV-7 (L918 dice «ausentes»; L917 y MV-6 cubren los duplicados); cómo se quita el puntero (frase, línea o todas las apariciones).",
+   "Proposed": "MV-7 exige en EFF: el punto de entrada una sola vez y nombrando 16.13 (L-02); la línea de 16.13 una sola vez en AP; la frase puntero como primera frase del cuerpo de `## 16.` y última del cuerpo de `### 16.3` (frase = texto hasta un punto seguido de espacio o fin); y que el cuerpo normalizado de 16.3 sin esa frase (su última aparición, una vez) sea igual al cuerpo normalizado de 16.3 en EFF^1.",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Con «presencia en cualquier lugar», o sin la comprobación de 16.13 repetido, el aceptante sería más estricto (rechazo falso): no se usaría tal como está. El paréntesis de la regla 6 enumera MV-1..MV-6, pero la parte de mapa aplica MV-7, y A6-9, regla 2, la nombra.",
+   "Items": [
+    "9",
+    "10",
+    "11",
+    "14"
+   ],
+   "Evidence": [
+    {
+     "Src": "SPEC",
+     "Lines": [
+      246,
+      247
+     ],
+     "Kind": "token",
+     "Text": "PointerIsFirstSentenceS16"
+    },
+    {
+     "Src": "S74",
+     "Lines": [
+      178,
+      178
+     ],
+     "Kind": "token",
+     "Text": "(a) predicado de presencia"
+    }
+   ],
+   "IfOtherShort": "no utilizable (rechazo falso)",
+   "MultipleShort": "sí"
+  },
+  {
+   "Id": "L-15",
+   "Set": "R7 (scope)",
+   "Rule": "Cobertura de una ruta por una entrada (`PerPath`)",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      553,
+      553
+     ],
+     "Kind": "quote",
+     "Text": "R está cubierta por E si R = E, o si E termina en `/` y R empieza por E."
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      552,
+      552
+     ],
+     "Kind": "quote",
+     "Text": "ruta relativa a la raíz con `/` y la capitalización exacta"
+    }
+   ],
+   "Acceptor": "Cobertura por cadena exacta, sensible a mayúsculas y sin normalización Unicode, con E ya leída por U-19; las entradas mal formadas participan literalmente; R7 compara `AllowedCoveredBy` y `ForbiddenCoveredBy` por ruta, en orden, tras U-19.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      724,
+      724
+     ],
+     "Kind": "token",
+     "Text": "e = u19(entry)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      727,
+      727
+     ],
+     "Kind": "token",
+     "Text": "return e.endswith(\"/\") and path.startswith(e)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      999,
+      999
+     ],
+     "Kind": "token",
+     "Text": "\"AllowedCoveredBy\": [e for e in allowed if covers(e, p)]"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2229,
+      2229
+     ],
+     "Kind": "token",
+     "Text": "n_u19_list"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      673,
+      673
+     ],
+     "Kind": "token",
+     "Text": "return path == entry or (entry.endswith(\"/\") and path.startswith(entry))"
+    },
+    {
+     "Src": "TOOL",
+     "Lines": [
+      701,
+      701
+     ],
+     "Kind": "token",
+     "Text": "covers(u19(e), p)"
+    }
+   ],
+   "Multiple": "no.",
+   "Proposed": "Una ruta R está cubierta por una entrada E, leída por U-19, si R = E, o si E termina en `/` y R empieza por E, comparando cadenas exactas sin plegar mayúsculas ni normalizar Unicode.",
+   "Verdict": "COINCIDE",
+   "Consequence": "No hay otra lectura admisible; si el Coordinator fijara otra, el aceptante no se usaría tal como está.",
+   "Items": [
+    "5"
+   ],
+   "Evidence": [],
+   "IfOtherShort": "no hay otra lectura admisible",
+   "MultipleShort": "no"
+  },
+  {
+   "Id": "L-16",
+   "Set": "R7 (scope)",
+   "Rule": "Entradas de alcance mal formadas (`MalformedEntries`)",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      552,
+      552
+     ],
+     "Kind": "quote",
+     "Text": "archivo exacto o prefijo de directorio terminado en `/`, sin comodines, `..` ni rutas absolutas."
+    }
+   ],
+   "Acceptor": "Mal formada = absoluta (`/` inicial, o letra de unidad seguida de `:`), con barra invertida, con un segmento `..`, o con `*`, `?` o `[` fuera de un `/**` final. La entrada vacía, los segmentos `.`, `//` y los espacios finales no se listan.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      709,
+      709
+     ],
+     "Kind": "token",
+     "Text": "if entry.startswith(\"/\")"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      711,
+      711
+     ],
+     "Kind": "token",
+     "Text": "entry[1] == \":\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      713,
+      713
+     ],
+     "Kind": "token",
+     "Text": "if \"..\" in entry.split(\"/\"):"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      716,
+      716
+     ],
+     "Kind": "token",
+     "Text": "for ch in \"*?[\":"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1007,
+      1007
+     ],
+     "Kind": "token",
+     "Text": "\"MalformedEntries\": [e for e in both if is_malformed(e)]"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2230,
+      2230
+     ],
+     "Kind": "token",
+     "Text": "n_entries_flex"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual en la pertenencia a la lista; añade `Reasons` y también parte `..` por la barra invertida (sin efecto: con barra invertida ya es mal formada).",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      676,
+      676
+     ],
+     "Kind": "token",
+     "Text": "def malformed_reasons(entry):"
+    }
+   ],
+   "Multiple": "sí: L552 exige además «archivo exacto o prefijo de directorio terminado en `/`» y la capitalización exacta: una entrada vacía o con `./` puede leerse como mal formada.",
+   "Proposed": "Para la lista `MalformedEntries` de R7, una entrada está mal formada si es absoluta, contiene una barra invertida, tiene un segmento `..` o contiene `*`, `?` o `[` fuera de un `/**` final; la entrada vacía se trata en R4 `Scope` (L-23).",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Si el Coordinator tuviera por mal formadas `./x` o `a//b`, el aceptante no las marcaría ni en R7 ni en R4 (más permisivo): no se usaría tal como está. Ninguna aparece en las listas del contrato T1 (`628d89af`).",
+   "Items": [
+    "7"
+   ],
+   "Evidence": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      190,
+      192
+     ],
+     "Kind": "token",
+     "Text": "a drive prefix (`C:`) counts as absolute"
+    }
+   ],
+   "IfOtherShort": "no utilizable (aceptación indebida posible)",
+   "MultipleShort": "sí"
+  },
+  {
+   "Id": "L-17",
+   "Set": "R7 (scope)",
+   "Rule": "U-19 (a): «/**» final = prefijo terminado en «/» (`U19Normalized`)",
+   "Normative": [
+    {
+     "Src": "DEC",
+     "Lines": [
+      1234,
+      1234
+     ],
+     "Kind": "quote",
+     "Text": "U-19 = «/**» final = prefijo terminado en «/»; comodín no final = lista exacta de rutas en el árbol de BaseSha, enumerada en la orden; ningún commit del Worker solo de evidencia"
+    },
+    {
+     "Src": "DEC",
+     "Lines": [
+      1250,
+      1250
+     ],
+     "Kind": "quote",
+     "Text": "| U-19 | entera | — |"
+    },
+    {
+     "Src": "UNBLOCK",
+     "Lines": [
+      89,
+      89
+     ],
+     "Kind": "quote",
+     "Text": "Una entrada que termina en `/**` se lee como el prefijo terminado en `/` (16.5)."
+    }
+   ],
+   "Acceptor": "`x/**` se lee `x/`; R7 compara `U19Normalized` exacto: `[{Entry, List, Prefix}]`, primero Allowed y después Forbidden, en el orden de la delegación (E2).",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      703,
+      703
+     ],
+     "Kind": "token",
+     "Text": "if entry.endswith(\"/**\"):"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      704,
+      704
+     ],
+     "Kind": "token",
+     "Text": "return entry[:-2]"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      1003,
+      1003
+     ],
+     "Kind": "token",
+     "Text": "u19n = [{\"Entry\": e, \"List\": name, \"Prefix\": u19(e)}"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2231,
+      2231
+     ],
+     "Kind": "token",
+     "Text": "cmp.eq(\"U19Normalized\", mine[\"U19Normalized\"], dig(facts, \"U19Normalized\"))"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual en `scope`.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      667,
+      668
+     ],
+     "Kind": "token",
+     "Text": "if entry.endswith(\"/**\"):"
+    }
+   ],
+   "Multiple": "no.",
+   "Proposed": "Una entrada que termina en `/**` se lee como el prefijo que termina en `/` (`docs/x/**` = `docs/x/`), en las dos listas de alcance y dondequiera que se lean (16.5).",
+   "Verdict": "COINCIDE",
+   "Consequence": "No hay otra lectura admisible; si el Coordinator fijara otra, el aceptante no se usaría tal como está.",
+   "Items": [
+    "E2"
+   ],
+   "Evidence": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      236,
+      236
+     ],
+     "Kind": "token",
+     "Text": "own `U19Normalized`"
+    },
+    {
+     "Src": "SPEC",
+     "Lines": [
+      311,
+      311
+     ],
+     "Kind": "token",
+     "Text": "`{\"Entry\", \"List\", \"Prefix\"}`"
+    }
+   ],
+   "IfOtherShort": "no hay otra lectura admisible",
+   "MultipleShort": "no"
+  },
+  {
+   "Id": "L-18",
+   "Set": "R7 (scope) y R4 Scope",
+   "Rule": "U-19 (b): comodín no final",
+   "Normative": [
+    {
+     "Src": "DEC",
+     "Lines": [
+      1234,
+      1234
+     ],
+     "Kind": "quote",
+     "Text": "comodín no final = lista exacta de rutas en el árbol de BaseSha, enumerada en la orden"
+    },
+    {
+     "Src": "UNBLOCK",
+     "Lines": [
+      89,
+      89
+     ],
+     "Kind": "quote",
+     "Text": "Una entrada con comodín en otra posición se lee como la lista exacta de rutas que casan en el árbol de `BaseSha`, enumerada en la orden"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      552,
+      552
+     ],
+     "Kind": "quote",
+     "Text": "sin comodines"
+    }
+   ],
+   "Acceptor": "El comodín no llega a la delegación: si aparece una entrada con `*`, `?` o `[` fuera de un `/**` final, es mal formada (figura en `MalformedEntries`), cubre solo su cadena literal y hace que `Scope` no pueda ser `pass` en R4. No expande nada contra el árbol de `BaseSha`.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      715,
+      715
+     ],
+     "Kind": "token",
+     "Text": "core = entry[:-3] if entry.endswith(\"/**\") else entry"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      716,
+      716
+     ],
+     "Kind": "token",
+     "Text": "for ch in \"*?[\":"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2075,
+      2075
+     ],
+     "Kind": "token",
+     "Text": "bad = [e for e in allowed + forbidden if e == \"\" or is_malformed(e)]"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual: mal formada y cobertura literal, sin expansión.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      682,
+      684
+     ],
+     "Kind": "token",
+     "Text": "reasons.append(\"wildcard\")"
+    }
+   ],
+   "Multiple": "sí: (b1) la orden enumera las rutas y la delegación nunca lleva el comodín (aceptante); (b2) un comodín que llega a la delegación se expande contra el árbol de `BaseSha`.",
+   "Proposed": "Un comodín no final no llega a la delegación: el Coordinator enumera en la orden las rutas exactas que casan en el árbol de `BaseSha`. Una entrada con `*`, `?` o `[` fuera de un `/**` final que aparezca en una delegación está mal formada: figura en `MalformedEntries`, cubre solo su cadena literal y `Scope` no puede ser `pass`.",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Con (b2), el aceptante rechazaría un `Scope` = pass legítimo (rechazo falso): no se usaría tal como está. El contrato T1 no tiene comodines no finales.",
+   "Items": [
+    "7"
+   ],
+   "Evidence": [],
+   "IfOtherShort": "no utilizable (rechazo falso)",
+   "MultipleShort": "sí"
+  },
+  {
+   "Id": "L-19",
+   "Set": "R7 (scope)",
+   "Rule": "U-19 (c): ningún commit del Worker solo de evidencia",
+   "Normative": [
+    {
+     "Src": "DEC",
+     "Lines": [
+      1234,
+      1234
+     ],
+     "Kind": "quote",
+     "Text": "ningún commit del Worker solo de evidencia"
+    }
+   ],
+   "Acceptor": "No la aplica: R7 solo compara `PerPath`, `MalformedEntries`, `U19Normalized`, A3, A4 y las listas de MV-4, y R4 no la evalúa. No tiene lectura propia.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      82,
+      82
+     ],
+     "Kind": "token",
+     "Text": "R7_COMMANDS = frozenset([\"scope\", \"contract\", \"clausemap\"])"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2218,
+      2218
+     ],
+     "Kind": "token",
+     "Text": "def _compare_r7(run, mine, internal, facts, cmp):"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "No la aplica.",
+   "InstrumentCode": [],
+   "Multiple": "no aplica (no hay lectura del aceptante).",
+   "Proposed": "U-19 (c) rige la conducta del Worker y la verificación del Controller tal como está; el aceptante no la aplica y esta disposición no fija lectura sobre ella.",
+   "Verdict": "COINCIDE",
+   "Vacuous": true,
+   "Consequence": "Ninguna para la regla 6 (coincidencia vacía).",
+   "Items": [],
+   "Evidence": [],
+   "IfOtherShort": "ninguna (coincidencia vacía)",
+   "MultipleShort": "no aplica"
+  },
+  {
+   "Id": "L-20",
+   "Set": "R7 (contract)",
+   "Rule": "A3: `AllowedWriteScope` ⊆ alcance permitido del contrato",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      562,
+      562
+     ],
+     "Kind": "quote",
+     "Text": "| A3 | `AllowedWriteScope` ⊆ alcance permitido del contrato | STOP (P-03) |"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      553,
+      554
+     ],
+     "Kind": "quote",
+     "Text": "A ⊆ B si cada entrada de A está cubierta por alguna de B (un prefijo de A solo lo cubre un prefijo de B que lo contenga)."
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      1192,
+      1192
+     ],
+     "Kind": "quote",
+     "Text": "| A3'-A5' | + `RoleRequirements` de la delegación ⊇ los del contrato por rol"
+    },
+    {
+     "Src": "RAE",
+     "Lines": [
+      125,
+      125
+     ],
+     "Kind": "quote",
+     "Text": "con la sintaxis de alcance de AUTOMATION_PLAN §16 (archivo exacto o prefijo terminado en `/`)."
+    }
+   ],
+   "Acceptor": "Por cada entrada a del `AllowedWriteScope` de la delegación, en su orden: `ContainedBy` = las entradas b del alcance permitido del contrato con u19(a) = u19(b), o con u19(b) terminada en `/` y u19(a) que empieza por u19(b). No recalcula A5 ni los añadidos de 16.22 (`RoleRequirements`, `SupersededCommits`): G3.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1034,
+      1034
+     ],
+     "Kind": "token",
+     "Text": "\"A3\": [{\"Entry\": a, \"ContainedBy\": [b for b in ca if contained(a, b)]} for a in da]"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      732,
+      732
+     ],
+     "Kind": "token",
+     "Text": "return covers(b, u19(a))"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2241,
+      2242
+     ],
+     "Kind": "token",
+     "Text": "n_u19_list"
+    }
+   ],
+   "InstrumentDiffers": true,
+   "Instrument": "Sin U-19 en la entrada contenedora: L-22.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      739,
+      739
+     ],
+     "Kind": "token",
+     "Text": "if covers(b, e)]}"
+    }
+   ],
+   "Multiple": "no, con U-19 aplicada (L-22).",
+   "Proposed": "A3 se lee entrada a entrada: cada entrada de `AllowedWriteScope` de la delegación debe estar contenida, tras U-19 en las dos, por alguna entrada del alcance permitido del contrato, con la regla de L553-L554.",
+   "Verdict": "COINCIDE",
+   "Consequence": "No hay otra lectura admisible; si el Coordinator fijara otra, el aceptante no se usaría tal como está. G3 sigue declarado para A5 y los añadidos de A3'-A5'.",
+   "Items": [
+    "4",
+    "5"
+   ],
+   "Evidence": [],
+   "IfOtherShort": "no hay otra lectura admisible",
+   "MultipleShort": "no (con U-19)"
+  },
+  {
+   "Id": "L-21",
+   "Set": "R7 (contract)",
+   "Rule": "A4: `ForbiddenWriteScope` ⊇ prohibido del contrato",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      563,
+      563
+     ],
+     "Kind": "quote",
+     "Text": "| A4 | `ForbiddenWriteScope` ⊇ prohibido del contrato | STOP (P-03) |"
+    }
+   ],
+   "Acceptor": "Por cada entrada prohibida del contrato, en su orden: `ContainedBy` = las entradas del `ForbiddenWriteScope` de la delegación que la contienen, con la misma regla y U-19 en las dos.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      1035,
+      1035
+     ],
+     "Kind": "token",
+     "Text": "\"A4\": [{\"Entry\": a, \"ContainedBy\": [b for b in df if contained(a, b)]} for a in cf]"
+    }
+   ],
+   "InstrumentDiffers": true,
+   "Instrument": "Sin U-19 en la entrada contenedora: L-22.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      741,
+      741
+     ],
+     "Kind": "token",
+     "Text": "if covers(g, e)]}"
+    }
+   ],
+   "Multiple": "no, con U-19 aplicada (L-22).",
+   "Proposed": "A4 se lee entrada a entrada: cada entrada prohibida del contrato debe estar contenida, tras U-19 en las dos, por alguna entrada del `ForbiddenWriteScope` de la delegación.",
+   "Verdict": "COINCIDE",
+   "Consequence": "No hay otra lectura admisible; si el Coordinator fijara otra, el aceptante no se usaría tal como está.",
+   "Items": [
+    "4",
+    "5"
+   ],
+   "Evidence": [],
+   "IfOtherShort": "no hay otra lectura admisible",
+   "MultipleShort": "no (con U-19)"
+  },
+  {
+   "Id": "L-22",
+   "Set": "R7 (contract)",
+   "Rule": "U-19 dentro de la contención de A3 y A4",
+   "Normative": [
+    {
+     "Src": "DEC",
+     "Lines": [
+      1234,
+      1234
+     ],
+     "Kind": "quote",
+     "Text": "U-19 = «/**» final = prefijo terminado en «/»"
+    },
+    {
+     "Src": "UNBLOCK",
+     "Lines": [
+      89,
+      89
+     ],
+     "Kind": "quote",
+     "Text": "se lee como el prefijo terminado en `/` (16.5)"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      553,
+      554
+     ],
+     "Kind": "quote",
+     "Text": "A ⊆ B si cada entrada de A está cubierta por alguna de B"
+    }
+   ],
+   "Acceptor": "Aplica U-19 a las dos entradas de la contención (la contenida y la contenedora).",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      732,
+      732
+     ],
+     "Kind": "token",
+     "Text": "return covers(b, u19(a))"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      724,
+      724
+     ],
+     "Kind": "token",
+     "Text": "e = u19(entry)"
+    }
+   ],
+   "InstrumentDiffers": true,
+   "Instrument": "No aplica U-19 en `contract`: una entrada contenedora `x/**` es una cadena literal que solo se contiene a sí misma (TOOL-NOTES 12). Divergencia confirmada por las sondas P2 y P3.",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      739,
+      739
+     ],
+     "Kind": "token",
+     "Text": "if covers(b, e)]}"
+    },
+    {
+     "Src": "TOOL",
+     "Lines": [
+      741,
+      741
+     ],
+     "Kind": "token",
+     "Text": "if covers(g, e)]}"
+    },
+    {
+     "Src": "TNOTES",
+     "Lines": [
+      162,
+      162
+     ],
+     "Kind": "token",
+     "Text": "U-19 is not applied (SPEC names it only for scope)"
+    }
+   ],
+   "Multiple": "no razonable: sin U-19, toda entrada `/**` del contrato sería mal formada (comodín, L552) y no contendría más que su propia cadena, lo que contradice el contrato custodiado T1, que usa `/**` en sus dos listas; la especificación §2.4, no normativa, calla.",
+   "Proposed": "U-19 se aplica también a la contención de A3 y A4 (16.5, L553-L554), en las dos entradas.",
+   "Verdict": "COINCIDE",
+   "Consequence": "Para la regla 6, ninguna. Queda una divergencia abierta entre instrumento y aceptante, no registrada en G1-G6 (§6, D-1): con una entrada contenedora `…/**` y una contenida distinta bajo ella, el aceptante rechaza los hechos del instrumento (R7 MISMATCH; sondas P2 y P3); con listas que copian las del contrato T1, coinciden (sonda P1). Nunca produce una aceptación indebida. Si el Coordinator adoptara la lectura del instrumento, el aceptante no se usaría tal como está.",
+   "Items": [
+    "5"
+   ],
+   "Evidence": [
+    {
+     "Src": "RAE",
+     "Lines": [
+      229,
+      230
+     ],
+     "Kind": "token",
+     "Text": "se sustituye por la enumeración de los demás archivos del diff"
+    },
+    {
+     "Src": "INDEP",
+     "Lines": [
+      267,
+      267
+     ],
+     "Kind": "token",
+     "Text": "| Scope coverage |"
+    }
+   ],
+   "IfOtherShort": "no utilizable (rechazo falso); D-1 aparte",
+   "MultipleShort": "no razonable"
+  },
+  {
+   "Id": "L-23",
+   "Set": "R4 Scope (fuera del paréntesis de la regla 6)",
+   "Rule": "R4 `Scope` con entradas vacías o mal formadas",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      636,
+      636
+     ],
+     "Kind": "quote",
+     "Text": "| 7 | `Scope` | `git diff --name-only BaseSha..CurrentSha` ⊆ `AllowedWriteScope` y sin intersección con `ForbiddenWriteScope` | Controller | STOP |"
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      1205,
+      1206
+     ],
+     "Kind": "quote",
+     "Text": "`Scope` = pass exige en su `Evidence` la salida reproducible de `git diff --name-only BaseSha..CurrentSha` y la entrada de `AllowedWriteScope` que contiene cada ruta."
+    },
+    {
+     "Src": "AP",
+     "Lines": [
+      660,
+      660
+     ],
+     "Kind": "quote",
+     "Text": "| Éxito declarado sin commit | Controller (`Identity`, `CleanTree`, `Scope`) |"
+    }
+   ],
+   "Acceptor": "`Scope` esperado = pass solo si ninguna entrada de las dos listas está vacía o mal formada (L-16), toda ruta del diff está cubierta por `AllowedWriteScope` y ninguna por `ForbiddenWriteScope` (cobertura de L-15, con U-19); con diff vacío, pass.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      2075,
+      2075
+     ],
+     "Kind": "token",
+     "Text": "bad = [e for e in allowed + forbidden if e == \"\" or is_malformed(e)]"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2078,
+      2078
+     ],
+     "Kind": "token",
+     "Text": "unc = [p for p in paths if not any(covers(e, p) for e in allowed)]"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2081,
+      2081
+     ],
+     "Kind": "token",
+     "Text": "fb = [p for p in paths if any(covers(e, p) for e in forbidden)]"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "No aplica: el instrumento no decide.",
+   "InstrumentCode": [],
+   "Multiple": "sí: AP no dice que una entrada mal formada haga fallar `Scope`; en la lectura literal solo cubre su cadena. Diff vacío frente al modo «Éxito declarado sin commit» (L660).",
+   "Proposed": "En la verificación de FX-02, una entrada vacía o mal formada en `AllowedWriteScope` o `ForbiddenWriteScope` hace que `Scope` no pueda ser `pass`; si no la hay, `Scope` es `pass` si y solo si toda ruta de `BaseSha..CurrentSha` está cubierta por `AllowedWriteScope` y ninguna por `ForbiddenWriteScope`.",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Está fuera del paréntesis de la regla 6, pero aplica la misma cobertura y U-19. Con la lectura literal, el aceptante rechazaría un `pass` legítimo (rechazo falso): no se usaría tal como está, o S-03 durante la ronda. Las listas del contrato T1 no tienen entradas vacías ni mal formadas.",
+   "Items": [
+    "7"
+   ],
+   "Evidence": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      191,
+      191
+     ],
+     "Kind": "token",
+     "Text": "R4 Scope rule any malformed or empty entry"
+    }
+   ],
+   "IfOtherShort": "no utilizable (rechazo falso)",
+   "MultipleShort": "sí"
+  },
+  {
+   "Id": "L-24",
+   "Set": "R7 (scope) y R4 Scope",
+   "Rule": "Conjunto de rutas del diff (renombres)",
+   "Normative": [
+    {
+     "Src": "AP",
+     "Lines": [
+      636,
+      636
+     ],
+     "Kind": "quote",
+     "Text": "`git diff --name-only BaseSha..CurrentSha` ⊆ `AllowedWriteScope`"
+    },
+    {
+     "Src": "SPEC",
+     "Lines": [
+      315,
+      315
+     ],
+     "Kind": "quote",
+     "Text": "un renombre da las dos rutas, la de origen y la de destino"
+    }
+   ],
+   "Acceptor": "Rutas del diff = las rutas cuya entrada (modo, tipo e identificador) difiere entre los dos árboles completos: un renombre aporta origen y destino; un cambio solo de modo también cuenta.",
+   "AcceptorCode": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      965,
+      965
+     ],
+     "Kind": "token",
+     "Text": "if ta.get(p) != tb.get(p))"
+    }
+   ],
+   "InstrumentDiffers": false,
+   "Instrument": "Igual (`git diff --name-only --no-renames`).",
+   "InstrumentCode": [
+    {
+     "Src": "TOOL",
+     "Lines": [
+      643,
+      643
+     ],
+     "Kind": "token",
+     "Text": "\"--no-renames\""
+    }
+   ],
+   "Multiple": "sí: con la configuración por defecto de Git (`diff.renames`), `git diff --name-only` puede listar solo el destino de un renombre; el resultado de la orden literal depende de la configuración (SPEC E6 no es normativa).",
+   "Proposed": "El conjunto de rutas de `Scope` y de la cobertura de R7 es el de `git diff --name-only --no-renames BaseSha..CurrentSha`: un renombre aporta su ruta de origen y la de destino.",
+   "Verdict": "AMBIGUOUS-ACCEPTOR-CHOICE",
+   "Consequence": "Con detección de renombres, el aceptante sería más estricto (la ruta de origen también tiene que estar cubierta y no prohibida): rechazo falso; no se usaría tal como está.",
+   "Items": [
+    "3",
+    "E6"
+   ],
+   "Evidence": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      179,
+      180
+     ],
+     "Kind": "token",
+     "Text": "Renames"
+    }
+   ],
+   "IfOtherShort": "no utilizable (rechazo falso)",
+   "MultipleShort": "sí"
+  }
+ ],
+ "AcceptNotesItemMap": [
+  {
+   "Item": "1",
+   "Topic": "Checks como objeto; `not_run` = no pass",
+   "Rows": "L-03 (y R4 en general)",
+   "Effect": "coherente con 16.22 (AP L1204)"
+  },
+  {
+   "Item": "2",
+   "Topic": "términos de 16.10 (E5)",
+   "Rows": "fuera de la regla 6",
+   "Effect": "lectura propia de R4 `FreeText` (§6, D-6)"
+  },
+  {
+   "Item": "3",
+   "Topic": "renombres (E6)",
+   "Rows": "L-24",
+   "Effect": "cambia el conjunto de rutas de la cobertura"
+  },
+  {
+   "Item": "4",
+   "Topic": "órdenes no fijados: conjuntos o multiconjuntos",
+   "Rows": "L-07..L-10, L-20, L-21",
+   "Effect": "granularidad de comparación, no lectura"
+  },
+  {
+   "Item": "5",
+   "Topic": "formatos tolerados; `CoveredBy`/`ContainedBy` tras U-19",
+   "Rows": "L-15, L-20..L-22",
+   "Effect": "granularidad de comparación"
+  },
+  {
+   "Item": "6",
+   "Topic": "`SchemaViolations` solo por vacío",
+   "Rows": "L-04",
+   "Effect": "comparación; residuo G1"
+  },
+  {
+   "Item": "7",
+   "Topic": "entradas mal formadas; regla de R4 `Scope`",
+   "Rows": "L-16, L-18, L-23",
+   "Effect": "cambia la lectura"
+  },
+  {
+   "Item": "8",
+   "Topic": "Markdown: encabezados, vallas, preámbulo, cuerpo",
+   "Rows": "L-02, L-12, L-13",
+   "Effect": "cambia la lectura"
+  },
+  {
+   "Item": "9",
+   "Topic": "`## 16.` y `### 16.3` únicos",
+   "Rows": "L-13, L-14",
+   "Effect": "cambia la lectura"
+  },
+  {
+   "Item": "10",
+   "Topic": "quitar el puntero: frase, última aparición, una vez",
+   "Rows": "L-14",
+   "Effect": "cambia la lectura"
+  },
+  {
+   "Item": "11",
+   "Topic": "`EntryNamesR163`: subcadena literal",
+   "Rows": "L-02, L-14",
+   "Effect": "cambia la lectura"
+  },
+  {
+   "Item": "12",
+   "Topic": "análisis del mapa; MV-3 con `Surfaces` del mapa; MV-3..MV-6 con forma básica; MV-5 normalizada",
+   "Rows": "L-04, L-06, L-11, L-12",
+   "Effect": "cambia la lectura; residuo G2 en la comparación"
+  },
+  {
+   "Item": "13",
+   "Topic": "MV-6 en todo archivo MODIFIED",
+   "Rows": "L-12",
+   "Effect": "cambia la lectura"
+  },
+  {
+   "Item": "14",
+   "Topic": "parte de mapa: E2-E3 y MV-1..MV-7; PRE_ACTIVATION libre",
+   "Rows": "L-01..L-14",
+   "Effect": "define la parte de mapa"
+  },
+  {
+   "Item": "15",
+   "Topic": "ejecutable de R2",
+   "Rows": "—",
+   "Effect": "no afecta a estas reglas"
+  },
+  {
+   "Item": "16",
+   "Topic": "vocabulario de R3 (E1)",
+   "Rows": "—",
+   "Effect": "no afecta a estas reglas"
+  },
+  {
+   "Item": "17",
+   "Topic": "alcance de R5; R7 = reglas de lectura normativa",
+   "Rows": "L-15..L-22",
+   "Effect": "define qué compara R7; no es lectura"
+  },
+  {
+   "Item": "18",
+   "Topic": "R9: cierre, `:(literal)`, `RevPaths`",
+   "Rows": "—",
+   "Effect": "no afecta a estas reglas"
+  },
+  {
+   "Item": "19",
+   "Topic": "`Identity`: rutas, ascendencia reflexiva, sin rama de rebase",
+   "Rows": "fuera de la regla 6",
+   "Effect": "lectura propia de R4 (§6, D-6)"
+  },
+  {
+   "Item": "20",
+   "Topic": "`Trailer`",
+   "Rows": "fuera de la regla 6",
+   "Effect": "lectura propia de R4 (§6, D-6)"
+  },
+  {
+   "Item": "21",
+   "Topic": "`NotApplicable` explícito",
+   "Rows": "—",
+   "Effect": "no afecta a estas reglas"
+  },
+  {
+   "Item": "E1",
+   "Topic": "excepciones de vocabulario",
+   "Rows": "—",
+   "Effect": "no afecta a estas reglas"
+  },
+  {
+   "Item": "E2",
+   "Topic": "`U19Normalized` estricto",
+   "Rows": "L-17",
+   "Effect": "fija el formato"
+  },
+  {
+   "Item": "E3",
+   "Topic": "`:(literal)` en R9",
+   "Rows": "—",
+   "Effect": "no afecta a estas reglas"
+  },
+  {
+   "Item": "E4",
+   "Topic": "activación ambigua; `claim_id`",
+   "Rows": "L-01",
+   "Effect": "coherente con la lectura de L-01"
+  },
+  {
+   "Item": "E5",
+   "Topic": "términos tras los dos puntos",
+   "Rows": "fuera de la regla 6",
+   "Effect": "R4 `FreeText`"
+  },
+  {
+   "Item": "E6",
+   "Topic": "`--no-renames`",
+   "Rows": "L-24",
+   "Effect": "cambia el conjunto de rutas"
+  },
+  {
+   "Item": "E7",
+   "Topic": "blobs solo por `RevPaths`",
+   "Rows": "—",
+   "Effect": "no afecta a estas reglas"
+  }
+ ],
+ "OutsideRule6Readings": [
+  {
+   "Check": "R4 `Identity`",
+   "Reading": "rutas de worktree con `normcase(abspath())`; ascendencia reflexiva; sin la rama de rebase y `patch-id` de 16.9 #5 (en una reverificación de 16.7 tras rebase, la lectura puede diferir)",
+   "Cites": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      222,
+      223
+     ],
+     "Kind": "token",
+     "Text": "the rebase / `patch-id` branch of 16.9 #5 is not covered"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2049,
+      2049
+     ],
+     "Kind": "token",
+     "Text": "same_path(wt_h, wt_d)"
+    }
+   ]
+  },
+  {
+   "Check": "R4 `Trailer`",
+   "Reading": "valor declarado de `DeclaredCoAuthoredBy` o `Worker.Trailer`; bloque de trailers de Git; «coherente con el modelo efectivo» no se comprueba; un rango vacío pasa",
+   "Cites": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      227,
+      228
+     ],
+     "Kind": "token",
+     "Text": "is not checked (needs routing facts)"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2118,
+      2118
+     ],
+     "Kind": "token",
+     "Text": "if declared not in coauthored_values(ctx.repo.message(c))"
+    }
+   ]
+  },
+  {
+   "Check": "R4 `FreeText`",
+   "Reading": "16 términos tras el primer «`:»; espacios colapsados, `casefold`, palabra completa; `Gate` no se examina",
+   "Cites": [
+    {
+     "Src": "ANOTES",
+     "Lines": [
+      176,
+      178
+     ],
+     "Kind": "token",
+     "Text": "the terms are the list after the first"
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      652,
+      652
+     ],
+     "Kind": "token",
+     "Text": "cut = text.find(\"`:\")"
+    }
+   ]
+  },
+  {
+   "Check": "R4 `CleanTree`",
+   "Reading": "`status --porcelain -z --untracked-files=normal` vacío y `check-ignore -q --no-index` de la ruta ignorada",
+   "Cites": [
+    {
+     "Src": "ACC",
+     "Lines": [
+      2090,
+      2090
+     ],
+     "Kind": "token",
+     "Text": "\"--porcelain\", \"-z\", \"--untracked-files=normal\""
+    },
+    {
+     "Src": "ACC",
+     "Lines": [
+      2091,
+      2091
+     ],
+     "Kind": "token",
+     "Text": "\"check-ignore\", [\"-q\", \"--no-index\", \"--\", ignore_path]"
+    }
+   ]
+  }
+ ],
+ "Auxiliary": [
+  {
+   "Id": "X-01",
+   "What": "A-6, regla 6 de A6-5 (lecturas normativas del aceptante)",
+   "Cite": {
+    "Src": "A6",
+    "Lines": [
+     707,
+     709
+    ],
+    "Kind": "quote",
+    "Text": "una disposición del Coordinator fija su lectura de las reglas en las que el aceptante aplica una propia (la parte de mapa de `Authority` en R4, con MV-1..MV-6 y las listas de MV-4; la cobertura, U-19, A3 y A4 en R7) y declara, regla por regla, que coincide con la del aceptante fijado."
+   }
+  },
+  {
+   "Id": "X-02",
+   "What": "A-6, sin coincidencia el aceptante no se usa tal como está",
+   "Cite": {
+    "Src": "A6",
+    "Lines": [
+     709,
+     710
+    ],
+    "Kind": "quote",
+    "Text": "Sin esa coincidencia el aceptante no se usa tal como está: cambiarlo exige otro blob, otra corrección de A-6 y otra determinación del Owner."
+   }
+  },
+  {
+   "Id": "X-03",
+   "What": "A-6, prueba previa de los hechos",
+   "Cite": {
+    "Src": "A6",
+    "Lines": [
+     715,
+     716
+    ],
+    "Kind": "quote",
+    "Text": "si el aceptante rechaza hechos correctos del instrumento por una divergencia entre las dos piezas, o si una lectura que la verificación necesita queda fuera de ese cierre, no se usa tal como está;"
+   }
+  },
+  {
+   "Id": "X-04",
+   "What": "A6-9, regla 2",
+   "Cite": {
+    "Src": "A6",
+    "Lines": [
+     829,
+     831
+    ],
+    "Kind": "quote",
+    "Text": "el Controller aplica a los hechos del instrumento las reglas de AUTOMATION_PLAN 16.9 y 16.13, incluida la tabla de defectos de `Validate(M)`, tal como están."
+   }
+  },
+  {
+   "Id": "X-05",
+   "What": "A6-9, regla 2 (divergencias al Coordinator)",
+   "Cite": {
+    "Src": "A6",
+    "Lines": [
+     830,
+     831
+    ],
+    "Kind": "quote",
+    "Text": "una divergencia de lectura sobre MV-4 o MV-7, o sobre cualquier otra regla, se devuelve al Coordinator, que la decide;"
+   }
+  },
+  {
+   "Id": "X-06",
+   "What": "A-6, G1-G6 sin cerrar",
+   "Cite": {
+    "Src": "A6",
+    "Lines": [
+     927,
+     927
+    ],
+    "Kind": "quote",
+    "Text": "**Ninguna brecha queda cerrada**"
+   }
+  },
+  {
+   "Id": "X-07",
+   "What": "A-6, G2",
+   "Cite": {
+    "Src": "A6",
+    "Lines": [
+     943,
+     943
+    ],
+    "Kind": "quote",
+    "Text": "G2. Mapa que viola su esquema."
+   }
+  },
+  {
+   "Id": "X-08",
+   "What": "A-6, G6",
+   "Cite": {
+    "Src": "A6",
+    "Lines": [
+     995,
+     995
+    ],
+    "Kind": "quote",
+    "Text": "G6. Encabezado sangrado y mensaje de commit con CRLF."
+   }
+  },
+  {
+   "Id": "X-09",
+   "What": "DEC §62, punto 3: U-19 dispuesta",
+   "Cite": {
+    "Src": "DEC",
+    "Lines": [
+     1215,
+     1215
+    ],
+    "Kind": "token",
+    "Text": "U-18 (b), U-19, U-20"
+   }
+  },
+  {
+   "Id": "X-10",
+   "What": "A-6 §3.3: blob y SHA-256 del aceptante",
+   "Cite": {
+    "Src": "A6",
+    "Lines": [
+     469,
+     469
+    ],
+    "Kind": "token",
+    "Text": "`434ef1fccb0d15762b30244b4a60928120698411` | `173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0`"
+   }
+  },
+  {
+   "Id": "X-11",
+   "What": "A-6 §3.3: blob y SHA-256 del instrumento",
+   "Cite": {
+    "Src": "A6",
+    "Lines": [
+     468,
+     468
+    ],
+    "Kind": "token",
+    "Text": "`9a829b0eeb1210238052b1feac06cfa8f7964aed` | `b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200`"
+   }
+  }
+ ],
+ "OpenDivergences": [
+  {
+   "Id": "D-1",
+   "Between": "instrumento y aceptante",
+   "Rows": [
+    "L-20",
+    "L-21",
+    "L-22"
+   ],
+   "InG1G6": false,
+   "Effect": "rechazo falso (R7 MISMATCH); nunca aceptación indebida",
+   "Evidence": "probes/probe-result.json: P1 ACCEPT_FACTS, P2 y P3 REJECT_FACTS por R7"
+  },
+  {
+   "Id": "D-2",
+   "Between": "instrumento y aceptante",
+   "Rows": [
+    "L-04",
+    "L-06",
+    "L-07",
+    "L-08",
+    "L-09",
+    "L-10",
+    "L-11",
+    "L-12"
+   ],
+   "InG1G6": true,
+   "Residual": "G2",
+   "Effect": "rechazo falso en un mapa que viola su esquema"
+  },
+  {
+   "Id": "D-3",
+   "Between": "instrumento y aceptante",
+   "Rows": [
+    "L-01",
+    "L-02",
+    "L-13"
+   ],
+   "InG1G6": true,
+   "Residual": "G6",
+   "Effect": "rechazo falso (encabezado sangrado; mensaje CRLF)"
+  },
+  {
+   "Id": "D-4",
+   "Between": "instrumento y aceptante",
+   "Rows": [
+    "L-04"
+   ],
+   "InG1G6": true,
+   "Residual": "G1",
+   "Effect": "sin control en el nivel de los hechos para MV-1"
+  },
+  {
+   "Id": "D-5",
+   "Between": "texto de la regla 6 y la parte de mapa",
+   "Rows": [
+    "L-01",
+    "L-02",
+    "L-14"
+   ],
+   "InG1G6": false,
+   "Effect": "el paréntesis enumera MV-1..MV-6; la parte de mapa aplica también MV-7 y E2-E3: la disposición debe cubrirlos"
+  },
+  {
+   "Id": "D-6",
+   "Between": "texto de la regla 6 y R4",
+   "Rows": [
+    "L-23",
+    "L-24"
+   ],
+   "InG1G6": false,
+   "Effect": "lecturas propias de R4 (Scope con mal formadas, Identity, Trailer, FreeText, CleanTree) fuera del paréntesis"
+  }
+ ]
+}

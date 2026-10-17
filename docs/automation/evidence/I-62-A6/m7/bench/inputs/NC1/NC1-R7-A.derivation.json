@@ -1,0 +1,81 @@
+{
+ "Schema": "a6m7-closure-derivation/1",
+ "Designation": "D:/r62-a6m7/bench/work/build/NC1-R7-A.designation.json",
+ "DesignationSha256": "0d01f8d6e143afb86e3e9a97ea3317493dfd74c5d48fddb78b435c592cdaba9f",
+ "Vector": "D:/r62-a6m7/bench/work/build/NC1-R7-A.vector.json",
+ "VectorSha256": "924a3b7671dd5cbfd5bea6a91da3d6cd311b7001f348afaeabc087e033f75dd1",
+ "E": "D:/r62-a6m7/bench/work/build/E-NC1-R7-A.json",
+ "ESha256": "413e22d85f07be7288f19d7ba168c540d297eb98c4c3d79c12abbe2c28653966",
+ "Closure": "D:/r62-a6m7/bench/work/build/NC1-R7-A.closure.json",
+ "ClosureSha256": "5863af8b83f044a7cb45d18781d24a5c07614c498324a3db7e49c22e2d266cb8",
+ "DesignationCheck": {
+  "Ok": true,
+  "Problems": [],
+  "Bypassed": [],
+  "Inputs": {
+   "DELEG": {
+    "Path": "artifacts/orchestration/FX-U1/T1-nc1/0/R20261012T090000Z-d001/output.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "H": {
+    "Path": "artifacts/orchestration/FX-U1/T1-nc1/0/R20261012T091000Z-a001/worker-handoff.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "CONTRACT": {
+    "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   }
+  },
+  "Names": {
+   "CONTRACT": [
+    "docs/automation/decisions/FX-U1-T1.gate-contract.json"
+   ],
+   "DELEG": [
+    "artifacts/orchestration/FX-U1/T1-nc1/0/R20261012T090000Z-d001/output.json"
+   ],
+   "H": [
+    "artifacts/orchestration/FX-U1/T1-nc1/0/R20261012T091000Z-a001/worker-handoff.json"
+   ],
+   "TRX": [
+    "artifacts/ci/R37949808974/fixture-tests.trx"
+   ]
+  }
+ },
+ "Omitted": [
+  {
+   "Term": "C1.D.ChainRedSha",
+   "Cause": "FIELD_NULL",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.H.CurrentSha",
+   "Cause": "NOT_A_COMMIT",
+   "Detail": ""
+  },
+  {
+   "Term": "C1.RevList(D.BaseSha..H.CurrentSha)",
+   "Cause": "PRIMITIVE_EMPTY",
+   "Detail": "omitted end"
+  }
+ ],
+ "Inputs": {
+  "D": {
+   "Present": true,
+   "Why": null
+  },
+  "H": {
+   "Present": true,
+   "Why": null
+  },
+  "K": {
+   "Present": true,
+   "Why": null
+  }
+ }
+}

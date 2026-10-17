@@ -1,0 +1,130 @@
+{
+ "Schema": "rackcad-bmin-accept-request/0-experimental",
+ "Repo": "D:/r62-a6m7/bench/c-m",
+ "Tool": {
+  "PinnedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "RunFrom": "object",
+  "GitObject": {
+   "GitDir": "D:/r62-a6m7/bench/c-m",
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  }
+ },
+ "Interpreter": {
+  "Python": "3.13.14",
+  "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec"
+ },
+ "Runs": [
+  {
+   "Name": "r00-identity",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-b/env/r00-identity.json",
+   "Argv": [
+    "identity",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--branch",
+    "fx/u1",
+    "--base",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--current",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "--red",
+    "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+   ]
+  },
+  {
+   "Name": "r01-diff",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-b/env/r01-diff.json",
+   "Argv": [
+    "diff",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--from",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--to",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8"
+   ]
+  },
+  {
+   "Name": "r02-scope",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-b/env/r02-scope.json",
+   "Argv": [
+    "scope",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--from",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--to",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "--file",
+    "DELEG=D:/r62-a6m7/bench/work/in-m/deleg.json",
+    "--sha256",
+    "DELEG=e46ed08bb43c39d26ca7a31f9e772ddea597d4dbc6b9769d3c51914e836d1ef7"
+   ]
+  },
+  {
+   "Name": "r03-cleantree",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-b/env/r03-cleantree.json",
+   "Argv": [
+    "cleantree",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--ignore-path",
+    "artifacts/orchestration/FX-U1/T1-m7/0/R20261016T000000Z-m7m0/output.json"
+   ]
+  },
+  {
+   "Name": "r04-handoff",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-b/env/r04-handoff.json",
+   "Argv": [
+    "handoff",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--file",
+    "H=D:/r62-a6m7/bench/work/in-m/handoff.json",
+    "--sha256",
+    "H=702253d6ddc972adc0920a9dc65b6a3744792a6b9df312767c62ca216f440652",
+    "--schema-rev",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8"
+   ]
+  },
+  {
+   "Name": "r05-freetext",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-b/env/r05-freetext.json",
+   "Argv": [
+    "freetext",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--file",
+    "H=D:/r62-a6m7/bench/work/in-m/handoff.json",
+    "--sha256",
+    "H=702253d6ddc972adc0920a9dc65b6a3744792a6b9df312767c62ca216f440652",
+    "--terms-rev",
+    "fbe25347799e5b801ef708454212335537448bd1"
+   ]
+  },
+  {
+   "Name": "r06-trx",
+   "Envelope": "D:/r62-a6m7/bench/work/s-m-b/env/r06-trx.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a6m7/bench/c-m",
+    "--file",
+    "TRX=D:/r62-a6m7/bench/work/in-m/fixture-tests.trx",
+    "--sha256",
+    "TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "--filter-substring",
+    "Subtract"
+   ]
+  }
+ ],
+ "Closure": {
+  "Path": "D:/r62-a6m7/bench/work/build/M-R7-B.closure.json",
+  "Sha256": "f20d7c4b4fb90c3ceb75cb4de76fc4d62f52924f56b9fa2ec5a9e1a9faeb1584"
+ },
+ "NotApplicable": {
+  "R4": "A6-7 rule 1: the measurement produces no verification (no Verification in the request)",
+  "R10": "A6-7 rule 1: the measurement has no relay facts (no RelayFacts in the request)",
+  "R6": "data condition: Runs has no clausemap and there is no Verification"
+ }
+}

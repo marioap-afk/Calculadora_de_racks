@@ -1,0 +1,41 @@
+{
+ "Closure": {
+  "Path": "D:\\r62-a6m7\\readings\\probes\\cases\\P3-synthetic-nested\\closure.json"
+ },
+ "Interpreter": {
+  "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec",
+  "Python": "3.13.14"
+ },
+ "NotApplicable": {
+  "R10": "probe: no relay facts",
+  "R4": "probe: no verification",
+  "R5": "probe: no identity/diff/scope/hashes run",
+  "R6": "probe: no clausemap run"
+ },
+ "Repo": "D:\\r62-a6m7\\readings\\probes\\repo",
+ "Runs": [
+  {
+   "Argv": [
+    "contract",
+    "--repo",
+    "D:\\r62-a6m7\\readings\\probes\\repo",
+    "--file",
+    "CONTRACT=D:\\r62-a6m7\\readings\\probes\\cases\\P3-synthetic-nested\\CONTRACT.json",
+    "--sha256",
+    "CONTRACT=ccad92b8173c7494bf7dc19960b07c310f33ce7c503d34a471d97ae50adc3922",
+    "--file",
+    "DELEG=D:\\r62-a6m7\\readings\\probes\\cases\\P3-synthetic-nested\\DELEG.json",
+    "--sha256",
+    "DELEG=2bb1c88ec51841d2852703b53150c851d512e1d3265a077cc781cc97470f491d"
+   ],
+   "Envelope": "D:\\r62-a6m7\\readings\\probes\\cases\\P3-synthetic-nested\\envelope.json",
+   "Name": "contract-1"
+  }
+ ],
+ "Schema": "rackcad-bmin-accept-request/0-experimental",
+ "Tool": {
+  "Path": "D:\\r62-a6m7\\readings\\probes\\pinned\\bmin_facts.py",
+  "PinnedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "RunFrom": "path"
+ }
+}

@@ -1,0 +1,2879 @@
+{
+ "Checks": [
+  {
+   "Blob": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+   "Id": "source:A5",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "3b1c60d2049ef20d5543a09964577143314d76d57bb36dd55d74cf8ea8d5733d"
+  },
+  {
+   "Blob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+   "Id": "source:A6",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "cad51e9f84a6394b7e8f239e03fc683b8981ee7319760051f980db3bac596a39"
+  },
+  {
+   "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+   "Id": "source:ACC",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0"
+  },
+  {
+   "Blob": "cb9df0289c69617122feaa896728c3a86d2040a8",
+   "Id": "source:ANOTES",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "3751f21685c18c8433d2c28c8f847622a54957ef0ba9362a887f41fd164a415d"
+  },
+  {
+   "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Id": "source:AP",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "6dc9f5d5cb90b2242a8d21140674c0b88dc6472a36dd8c65dc988e8cac6a19f5"
+  },
+  {
+   "Blob": "c3a6f0c3b6da531239f56cd3230abeef70317ace",
+   "Id": "source:BCM",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "6164fdd7500980a204c5c7108d69c5370eb43ce55316e11046266fda1923d29d"
+  },
+  {
+   "Blob": "c0f0457b282e154fafc36bd7ae217b8027816ee1",
+   "Id": "source:DEC",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "4503f5587ca8e5cd2c9dce0f08d58892eb38d57da22f5f0f94e142ab09514f78"
+  },
+  {
+   "Blob": "72c9a7ebfb9ece9c38a2e998ea8f01e568f1ec81",
+   "Id": "source:INDEP",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "0031e55a266970d03ddf46eb8edbd56a1378fb4e82ef283d9dd55523ff1b2f4c"
+  },
+  {
+   "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Id": "source:RAE",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "2070e629151846afc90bb76348c47fc0ccd28fcfe5fbc9ad4e78959df93d8dc1"
+  },
+  {
+   "Blob": "8c8dab0f6c67d39cb2f019ce9c0bdf062063adda",
+   "Id": "source:S74",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "4bab0a514ef15de2ad61ca6d1cc2c16bef64ae383c3ca1eb8c5dcaa57f1688d6"
+  },
+  {
+   "Blob": "4d448c6fc4670cdf97b21dcd17fc00ba1bedcc0c",
+   "Id": "source:SPEC",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "510143f24522211ed0480c813d496dcf47e4c4f8feba8ceb02148ddfa4932fb9"
+  },
+  {
+   "Blob": "d3218ff79c84a6763db67081408785304a24e0d1",
+   "Id": "source:TNOTES",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "f56781bf5cd5fd1003cb8778386207a0c914ebd94cfb5650ff98e1345375b81d"
+  },
+  {
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Id": "source:TOOL",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+  },
+  {
+   "Blob": "203d288750bedd3d4b8560ff01374376d9760d21",
+   "Id": "source:UNBLOCK",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "cad97c4e8664fcb12cd9abafa37213b162bc8af59c6a5b302e1a1bd091a1ff5d"
+  },
+  {
+   "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Id": "source:V14",
+   "Kind": "source",
+   "OK": true,
+   "PathAtHead": true,
+   "Sha256": "ab55ad4f4addef8455543ed06a4c60aa0a1901affc0ba3686146dfeedd9279af"
+  },
+  {
+   "Id": "L-01/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    945,
+    946
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "`I62_EFFECTIVE_SHA` es el primer merge en first-parent de `origin/main` cuyo segundo padre alcanza el **\u00fanico** commit con el trailer `Agent-Protocol-Normative: I-62` y cuyo primer padre no lo alcanza."
+  },
+  {
+   "Id": "L-01/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    799,
+    799
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| punto de entrada sin EFF derivable, o trailer duplicado | ACTIVATION_INVALID \u2192 STOP al Owner |"
+  },
+  {
+   "Id": "L-01/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    813,
+    814
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "`MainSha_eval` = `K.MainSha`, salvo en una reverificaci\u00f3n de 16.7 sin conflictos, donde es el `MainSha` nuevo del `RebaseMap`"
+  },
+  {
+   "Id": "L-01/Normative/3",
+   "Kind": "quote",
+   "Lines": [
+    619,
+    619
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "la revisi\u00f3n de los t\u00e9rminos de 16.10 y el `MainSha` de la invocaci\u00f3n"
+  },
+  {
+   "Id": "L-01/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1040,
+    1040
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "TRAILER in repo.message(c).split("
+  },
+  {
+   "Id": "L-01/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    1047,
+    1047
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if p[1] in reach_t and p[0] not in reach_t:"
+  },
+  {
+   "Id": "L-01/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    1049,
+    1049
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "eff = cands[0] if cands else None"
+  },
+  {
+   "Id": "L-01/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    266,
+    266
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "message.decode(\"utf-8\", \"surrogateescape\")"
+  },
+  {
+   "Id": "L-01/AcceptorCode/4",
+   "Kind": "token",
+   "Lines": [
+    1299,
+    1299
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"ACTIVATION: more than one trailer commit\""
+  },
+  {
+   "Id": "L-01/AcceptorCode/5",
+   "Kind": "token",
+   "Lines": [
+    1301,
+    1301
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"ACTIVATION: trailer present but no derivable EFF\""
+  },
+  {
+   "Id": "L-01/AcceptorCode/6",
+   "Kind": "token",
+   "Lines": [
+    2170,
+    2170
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "cm, internal = acceptor_clausemap(ctx.repo, main)"
+  },
+  {
+   "Id": "L-01/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1079,
+    1079
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "lf(git_text(rec))"
+  },
+  {
+   "Id": "L-01/InstrumentCode/1",
+   "Kind": "token",
+   "Lines": [
+    1082,
+    1082
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if TRAILER in body.split("
+  },
+  {
+   "Id": "L-01/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    206,
+    208
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "Evaluate E2-E3"
+  },
+  {
+   "Id": "L-01/Evidence/1",
+   "Kind": "token",
+   "Lines": [
+    238,
+    238
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "an envelope with Facts is a MISMATCH"
+  },
+  {
+   "Id": "L-01/Evidence/2",
+   "Kind": "token",
+   "Lines": [
+    275,
+    276
+   ],
+   "OK": true,
+   "Src": "INDEP",
+   "Text": "P3, CRLF in the trailer commit's message"
+  },
+  {
+   "Id": "L-02/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    784,
+    785
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "X := Match(MainSha_eval, WORKFLOW, <l\u00ednea de encabezado del punto de entrada>) (misma sem\u00e1ntica que Match: l\u00ednea normalizada, nivel ##, fuera de bloques de c\u00f3digo)"
+  },
+  {
+   "Id": "L-02/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    789,
+    789
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "EFF presente y |X| \u2260 1 \u2192 ENTRY_INVALID \u2192 STOP (S-12; P-15)"
+  },
+  {
+   "Id": "L-02/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    801,
+    801
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| el punto de entrada nombra una 16.13 ausente o repetida | ENTRY_INVALID \u2192 STOP |"
+  },
+  {
+   "Id": "L-02/Normative/3",
+   "Kind": "quote",
+   "Lines": [
+    728,
+    728
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "nombra esta subsecci\u00f3n por su l\u00ednea de encabezado exacta"
+  },
+  {
+   "Id": "L-02/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1062,
+    1062
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "em = doc.match_lines(ENTRY_HEADING)"
+  },
+  {
+   "Id": "L-02/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    1064,
+    1064
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "names = doc.section_contains_literal(em[0], R163_HEADING)"
+  },
+  {
+   "Id": "L-02/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    523,
+    523
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "norm_ws(line) == w"
+  },
+  {
+   "Id": "L-02/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    573,
+    573
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "return needle in self.section_text(k)"
+  },
+  {
+   "Id": "L-02/AcceptorCode/4",
+   "Kind": "token",
+   "Lines": [
+    1307,
+    1307
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"ENTRY: entry point count is not 1\""
+  },
+  {
+   "Id": "L-02/AcceptorCode/5",
+   "Kind": "token",
+   "Lines": [
+    1309,
+    1309
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"ENTRY: 16.13 heading count is not 1\""
+  },
+  {
+   "Id": "L-02/AcceptorCode/6",
+   "Kind": "token",
+   "Lines": [
+    1311,
+    1311
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"ENTRY: entry point does not name 16.13\""
+  },
+  {
+   "Id": "L-02/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    381,
+    381
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "m = HEADING_RE.match(line)"
+  },
+  {
+   "Id": "L-02/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    200,
+    200
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "literal substring of the 16.13 heading in the entry section text"
+  },
+  {
+   "Id": "L-02/Evidence/1",
+   "Kind": "token",
+   "Lines": [
+    273,
+    274
+   ],
+   "OK": true,
+   "Src": "INDEP",
+   "Text": "P2, three-space indented heading"
+  },
+  {
+   "Id": "L-03/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    822,
+    822
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "Cualquier fallo \u2192 MAP_INVALID \u2192 `Authority` fail; STOP (S-12; P-15)."
+  },
+  {
+   "Id": "L-03/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    779,
+    779
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "comprobaci\u00f3n `Authority` de la verificaci\u00f3n"
+  },
+  {
+   "Id": "L-03/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    920,
+    920
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "**Con MAP_INVALID, ning\u00fan contrato I61 pasa `Authority` tras EFF.**"
+  },
+  {
+   "Id": "L-03/Normative/3",
+   "Kind": "quote",
+   "Lines": [
+    157,
+    157
+   ],
+   "OK": true,
+   "Src": "A5",
+   "Text": "Con AP L822, toda evaluaci\u00f3n de un contrato I62 del fixture termina en STOP."
+  },
+  {
+   "Id": "L-03/Normative/4",
+   "Kind": "quote",
+   "Lines": [
+    1204,
+    1204
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "es `not_run`, y `not_run` cuenta como fail; nunca es"
+  },
+  {
+   "Id": "L-03/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    2185,
+    2185
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "row[\"Rule\"] = \"map part: any defect forbids pass\""
+  },
+  {
+   "Id": "L-03/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    2187,
+    2187
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "good = ctl is not None and not (defects and ctl == \"pass\")"
+  },
+  {
+   "Id": "L-03/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    2188,
+    2188
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"not pass\" if defects else \"unconstrained\""
+  },
+  {
+   "Id": "L-03/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    2151,
+    2151
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "r if r in (\"pass\", \"fail\", \"not_run\") else None"
+  },
+  {
+   "Id": "L-03/AcceptorCode/4",
+   "Kind": "token",
+   "Lines": [
+    1302,
+    1305
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if der[\"Eff\"] is None:"
+  },
+  {
+   "Id": "L-03/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    988,
+    988
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "G5. Parte de mapa de R4 de un solo lado."
+  },
+  {
+   "Id": "L-03/Evidence/1",
+   "Kind": "token",
+   "Lines": [
+    162,
+    163
+   ],
+   "OK": true,
+   "Src": "INDEP",
+   "Text": "R4 asymmetry"
+  },
+  {
+   "Id": "L-04/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    902,
+    902
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| MV-1 | el mapa existe en EFF en la ruta fija, se interpreta como JSON y valida contra su esquema en EFF |"
+  },
+  {
+   "Id": "L-04/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    912,
+    912
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| mapa ausente, ilegible o inv\u00e1lido contra su esquema | MAP_INVALID |"
+  },
+  {
+   "Id": "L-04/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    141,
+    141
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "text = data.decode(\"utf-8\")"
+  },
+  {
+   "Id": "L-04/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    145,
+    145
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "object_pairs_hook=_no_dup_pairs, parse_constant=_no_constant"
+  },
+  {
+   "Id": "L-04/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    843,
+    843
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "_SUPPORTED_KEYWORDS = frozenset("
+  },
+  {
+   "Id": "L-04/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    861,
+    861
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if k not in _SUPPORTED_KEYWORDS:"
+  },
+  {
+   "Id": "L-04/AcceptorCode/4",
+   "Kind": "token",
+   "Lines": [
+    899,
+    899
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "pat = pat[:-1] + "
+  },
+  {
+   "Id": "L-04/AcceptorCode/5",
+   "Kind": "token",
+   "Lines": [
+    917,
+    917
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "canonical(inst) == canonical(e)"
+  },
+  {
+   "Id": "L-04/AcceptorCode/6",
+   "Kind": "token",
+   "Lines": [
+    1315,
+    1315
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-1: map absent or unreadable\""
+  },
+  {
+   "Id": "L-04/AcceptorCode/7",
+   "Kind": "token",
+   "Lines": [
+    1317,
+    1317
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-1: schema absent or unreadable\""
+  },
+  {
+   "Id": "L-04/AcceptorCode/8",
+   "Kind": "token",
+   "Lines": [
+    1319,
+    1319
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-1: schema keyword outside the supported subset\""
+  },
+  {
+   "Id": "L-04/AcceptorCode/9",
+   "Kind": "token",
+   "Lines": [
+    1321,
+    1321
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-1: map invalid against its schema\""
+  },
+  {
+   "Id": "L-04/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1273,
+    1273
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "schema = json_input(sch_bytes, \"clause-map schema at Eff\")"
+  },
+  {
+   "Id": "L-04/InstrumentCode/1",
+   "Kind": "token",
+   "Lines": [
+    1274,
+    1274
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "schema_check(schema, \"\", compiled)"
+  },
+  {
+   "Id": "L-04/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    931,
+    931
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "G1. Palabra clave de esquema no admitida (MV-1)."
+  },
+  {
+   "Id": "L-05/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    903,
+    903
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| MV-2 | `Surfaces` = la lista cerrada de esta subsecci\u00f3n |"
+  },
+  {
+   "Id": "L-05/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    889,
+    889
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "<la lista cerrada de esta subsecci\u00f3n, en su orden>"
+  },
+  {
+   "Id": "L-05/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    738,
+    738
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "**Superficies** (lista cerrada): `AGENTS.md`, `CLAUDE.md`"
+  },
+  {
+   "Id": "L-05/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    620,
+    620
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "norm_ws(line).startswith(SURFACES_LEAD)"
+  },
+  {
+   "Id": "L-05/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    621,
+    621
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if len(starts) != 1:"
+  },
+  {
+   "Id": "L-05/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    1322,
+    1322
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "canonical(v[\"MV2\"][\"MapSurfaces\"]) != canonical(v[\"MV2\"][\"ClosedList\"])"
+  },
+  {
+   "Id": "L-05/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    1323,
+    1323
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-2: Surfaces differ from the closed list\""
+  },
+  {
+   "Id": "L-05/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1199,
+    1199
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "values = [norm(v) for v in BACKTICK_RE.findall("
+  },
+  {
+   "Id": "L-05/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    148,
+    148
+   ],
+   "OK": true,
+   "Src": "INDEP",
+   "Text": "Surfaces reordered"
+  },
+  {
+   "Id": "L-06/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    904,
+    904
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "{p bajo `Surfaces` : blob(EFF^1, p) \u2260 blob(EFF, p)} \u2216 {mapa} = {`Files.Path`}, sin duplicados; un archivo borrado no tiene clase \u2192 inv\u00e1lido"
+  },
+  {
+   "Id": "L-06/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    914,
+    914
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| archivo modificado ausente de `Files`, o listado sin modificarse | MAP_INVALID |"
+  },
+  {
+   "Id": "L-06/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1160,
+    1160
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "p == s or (s.endswith(\"/\") and p.startswith(s))"
+  },
+  {
+   "Id": "L-06/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    1163,
+    1163
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if p != MAP_PATH and under(p) and oid(t1, p) != oid(t2, p))"
+  },
+  {
+   "Id": "L-06/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    1166,
+    1166
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"DeletedUnderSurfaces\": [p for p in changed if p in t1 and p not in t2],"
+  },
+  {
+   "Id": "L-06/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    1328,
+    1328
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "(\"OnlyInChanged\", \"OnlyInFiles\", \"FilesDuplicates\", \"DeletedUnderSurfaces\")"
+  },
+  {
+   "Id": "L-06/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1299,
+    1299
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if t1.get(p) != t2.get(p) and p != MAP_PATH"
+  },
+  {
+   "Id": "L-07/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    905,
+    905
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "MODIFIED \u21d2 `BaseBlob` = blob(EFF^1, p) \u2227 `EffBlob` = blob(EFF, p); ADDED o ENTRY \u21d2 `BaseBlob` = `null` \u2227 `EffBlob` = blob(EFF, p)"
+  },
+  {
+   "Id": "L-07/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    915,
+    915
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| `BaseBlob` o `EffBlob` distintos de los observados | MAP_INVALID |"
+  },
+  {
+   "Id": "L-07/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1178,
+    1178
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if o1 is None or base != o1 or o2 is None or effb != o2:"
+  },
+  {
+   "Id": "L-07/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    1181,
+    1181
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if base is not None or o2 is None or effb != o2:"
+  },
+  {
+   "Id": "L-07/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    1331,
+    1331
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "(\"LiteralViolations\", \"EntryFilesOutsideSchema\", \"AddedPresentInEff1\")"
+  },
+  {
+   "Id": "L-07/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1323,
+    1323
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if o1 is None or f[\"BaseBlob\"] != o1 or o2 is None or f[\"EffBlob\"] != o2:"
+  },
+  {
+   "Id": "L-07/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    107,
+    107
+   ],
+   "OK": true,
+   "Src": "S74",
+   "Text": "| A: literal | L905 | **7** |"
+  },
+  {
+   "Id": "L-07/Evidence/1",
+   "Kind": "token",
+   "Lines": [
+    157,
+    157
+   ],
+   "OK": true,
+   "Src": "A5",
+   "Text": "MV-4 con 7"
+  },
+  {
+   "Id": "L-08/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    905,
+    905
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "ENTRY de archivo \u2286 {esquema del mapa}"
+  },
+  {
+   "Id": "L-08/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    917,
+    917
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| ENTRY fuera de la lista cerrada; encabezados duplicados | MAP_INVALID |"
+  },
+  {
+   "Id": "L-08/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1183,
+    1183
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if kind == \"ENTRY\" and p != SCHEMA_PATH:"
+  },
+  {
+   "Id": "L-08/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    1331,
+    1331
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"EntryFilesOutsideSchema\""
+  },
+  {
+   "Id": "L-08/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1328,
+    1328
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if kind == \"ENTRY\" and p != MAP_SCHEMA_PATH:"
+  },
+  {
+   "Id": "L-09/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    916,
+    916
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "ADDED que existe en EFF^1"
+  },
+  {
+   "Id": "L-09/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    835,
+    835
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "b. Path con FileKind ADDED (no exist\u00eda en EFF^1)"
+  },
+  {
+   "Id": "L-09/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1185,
+    1185
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if kind == \"ADDED\" and o1 is not None:"
+  },
+  {
+   "Id": "L-09/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    1331,
+    1331
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"AddedPresentInEff1\""
+  },
+  {
+   "Id": "L-09/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1330,
+    1330
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if kind == \"ADDED\" and o1 is not None:"
+  },
+  {
+   "Id": "L-09/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    108,
+    108
+   ],
+   "OK": true,
+   "Src": "S74",
+   "Text": "| B: MV-4 + definici\u00f3n de ADDED |"
+  },
+  {
+   "Id": "L-10/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    905,
+    905
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "ADDED o ENTRY \u21d2 `BaseBlob` = `null` \u2227 `EffBlob` = blob(EFF, p)"
+  },
+  {
+   "Id": "L-10/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    732,
+    732
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "ruta fija; el mapa lo lista como ENTRY con su blob"
+  },
+  {
+   "Id": "L-10/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    895,
+    895
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "`BaseBlob` es `null` solo con ADDED o ENTRY."
+  },
+  {
+   "Id": "L-10/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1187,
+    1187
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if kind == \"ENTRY\" and o1 is not None:"
+  },
+  {
+   "Id": "L-10/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    1331,
+    1331
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "(\"LiteralViolations\", \"EntryFilesOutsideSchema\", \"AddedPresentInEff1\")"
+  },
+  {
+   "Id": "L-10/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    1535,
+    1535
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"EntryFilePresentInEff1\""
+  },
+  {
+   "Id": "L-10/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1332,
+    1332
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if kind == \"ENTRY\" and o1 is not None:"
+  },
+  {
+   "Id": "L-10/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    221,
+    221
+   ],
+   "OK": true,
+   "Src": "SPEC",
+   "Text": "(ninguna regla lo convierte en defecto; se informa)"
+  },
+  {
+   "Id": "L-10/Evidence/1",
+   "Kind": "token",
+   "Lines": [
+    109,
+    109
+   ],
+   "OK": true,
+   "Src": "S74",
+   "Text": "| B-ext: L915 absoluto |"
+  },
+  {
+   "Id": "L-10/Evidence/2",
+   "Kind": "token",
+   "Lines": [
+    142,
+    142
+   ],
+   "OK": true,
+   "Src": "INDEP",
+   "Text": "| D4 | ENTRY schema present in EFF^1 (informative) |"
+  },
+  {
+   "Id": "L-10/Evidence/3",
+   "Kind": "token",
+   "Lines": [
+    1,
+    1
+   ],
+   "OK": true,
+   "Src": "BCM",
+   "Text": "D4-entry-in-eff1"
+  },
+  {
+   "Id": "L-11/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    906,
+    906
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| MV-5 | `Entries` \u00fanico por (`Path`, `Section`), con `Path` de un archivo MODIFIED |"
+  },
+  {
+   "Id": "L-11/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    913,
+    913
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| entrada o archivo duplicado | MAP_INVALID |"
+  },
+  {
+   "Id": "L-11/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1191,
+    1191
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "keys = [(e[\"Path\"], norm_ws(e[\"Section\"])) for e in entries]"
+  },
+  {
+   "Id": "L-11/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    1196,
+    1196
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if e[\"Path\"] not in modified"
+  },
+  {
+   "Id": "L-11/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    1334,
+    1334
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "(\"EntryKeyDuplicates\", \"EntriesOnNonModifiedPath\")"
+  },
+  {
+   "Id": "L-11/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1340,
+    1340
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "keys = [(e[\"Path\"], norm(e[\"Section\"])) for e in entries]"
+  },
+  {
+   "Id": "L-12/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    907,
+    907
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "MODIFIED = {h \u2208 H1 \u2229 H2 : texto normalizado distinto}; REMOVED = H1 \u2216 H2; ADDED \u222a ENTRY = H2 \u2216 H1"
+  },
+  {
+   "Id": "L-12/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    907,
+    907
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "ni m\u00e1s ni menos; encabezados \u00fanicos por archivo en ambas revisiones"
+  },
+  {
+   "Id": "L-12/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    895,
+    896
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "Una secci\u00f3n va desde su encabezado hasta el siguiente con el mismo n\u00famero de `#` o menos, e incluye sus subsecciones; el texto se normaliza con CRLF \u2192 LF y espacios colapsados."
+  },
+  {
+   "Id": "L-12/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1085,
+    1085
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "rec[\"DerivedModified\"] = sorted(h for h in set(h1) & set(h2) if h1[h] != h2[h])"
+  },
+  {
+   "Id": "L-12/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    1086,
+    1086
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "rec[\"DerivedRemoved\"] = sorted(set(h1) - set(h2))"
+  },
+  {
+   "Id": "L-12/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    1087,
+    1087
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "rec[\"DerivedAddedOrEntry\"] = sorted(set(h2) - set(h1))"
+  },
+  {
+   "Id": "L-12/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    1077,
+    1077
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if text1 is None or text2 is None:"
+  },
+  {
+   "Id": "L-12/AcceptorCode/4",
+   "Kind": "token",
+   "Lines": [
+    561,
+    561
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "texts = {PREAMBLE: norm_ws(self.preamble_text())}"
+  },
+  {
+   "Id": "L-12/AcceptorCode/5",
+   "Kind": "token",
+   "Lines": [
+    535,
+    535
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if self.heads[j][1] <= level:"
+  },
+  {
+   "Id": "L-12/AcceptorCode/6",
+   "Kind": "token",
+   "Lines": [
+    1199,
+    1199
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if f.get(\"FileKind\") == \"MODIFIED\" and f[\"Path\"] not in mod_paths:"
+  },
+  {
+   "Id": "L-12/AcceptorCode/7",
+   "Kind": "token",
+   "Lines": [
+    1208,
+    1208
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "exp = sorted([(AP_PATH, norm_ws(R163_HEADING)), (WF_PATH, norm_ws(ENTRY_HEADING))])"
+  },
+  {
+   "Id": "L-12/AcceptorCode/8",
+   "Kind": "token",
+   "Lines": [
+    1339,
+    1339
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-6: modified file absent in a revision\""
+  },
+  {
+   "Id": "L-12/AcceptorCode/9",
+   "Kind": "token",
+   "Lines": [
+    1342,
+    1342
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-6: duplicated headings\""
+  },
+  {
+   "Id": "L-12/AcceptorCode/10",
+   "Kind": "token",
+   "Lines": [
+    1348,
+    1348
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-6: ENTRY entries differ from the fixed pair\""
+  },
+  {
+   "Id": "L-12/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1356,
+    1356
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "h1 = Md(text1).heading_map() if text1 is not None else {}"
+  },
+  {
+   "Id": "L-12/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    204,
+    205
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "MV-6** runs on every MODIFIED file of the map"
+  },
+  {
+   "Id": "L-13/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    872,
+    873
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "cuenta los encabezados del archivo en `rev` cuya l\u00ednea, normalizada, es igual a `Section` normalizado (normalizar = espacios colapsados y extremos recortados); se ignoran las l\u00edneas dentro de bloques de c\u00f3digo."
+  },
+  {
+   "Id": "L-13/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    508,
+    508
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if line.startswith(\"```\"):"
+  },
+  {
+   "Id": "L-13/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    515,
+    515
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "nl = norm_ws(line)"
+  },
+  {
+   "Id": "L-13/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    516,
+    516
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "lv = heading_level(nl)"
+  },
+  {
+   "Id": "L-13/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    494,
+    494
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if 1 <= n <= 6 and (n == len(normalized_line) or normalized_line[n] == "
+  },
+  {
+   "Id": "L-13/AcceptorCode/4",
+   "Kind": "token",
+   "Lines": [
+    487,
+    487
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "return \" \".join(text.split())"
+  },
+  {
+   "Id": "L-13/AcceptorCode/5",
+   "Kind": "token",
+   "Lines": [
+    550,
+    550
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if level == 2:"
+  },
+  {
+   "Id": "L-13/AcceptorCode/6",
+   "Kind": "token",
+   "Lines": [
+    556,
+    557
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "nl.startswith(label + \" \")"
+  },
+  {
+   "Id": "L-13/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    90,
+    90
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "HEADING_RE = re.compile("
+  },
+  {
+   "Id": "L-13/InstrumentCode/1",
+   "Kind": "token",
+   "Lines": [
+    381,
+    381
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "HEADING_RE.match(line)"
+  },
+  {
+   "Id": "L-13/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    193,
+    195
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "heading = normalized line starting with 1-6 `#`"
+  },
+  {
+   "Id": "L-13/Evidence/1",
+   "Kind": "token",
+   "Lines": [
+    271,
+    272
+   ],
+   "OK": true,
+   "Src": "INDEP",
+   "Text": "P1, `~~~` fence (shared reading)"
+  },
+  {
+   "Id": "L-14/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    908,
+    908
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "punteros presentes en \u00a716 y 16.3 en EFF; 16.3 en EFF sin el puntero = 16.3 en EFF^1 (normalizado)"
+  },
+  {
+   "Id": "L-14/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    730,
+    730
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| Punteros | primera frase de \u00a716 y \u00faltima frase de 16.3 |"
+  },
+  {
+   "Id": "L-14/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    918,
+    918
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| punto de entrada de WORKFLOW, 16.13 o punteros ausentes con EFF presente | MAP_INVALID |"
+  },
+  {
+   "Id": "L-14/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1224,
+    1224
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "internal[\"R163CountEff\"] = len(d2.match_lines(R163_HEADING))"
+  },
+  {
+   "Id": "L-14/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    1228,
+    1228
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "first = sents[0] if sents else None"
+  },
+  {
+   "Id": "L-14/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    1233,
+    1233
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "last = sents[-1] if sents else None"
+  },
+  {
+   "Id": "L-14/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    1234,
+    1234
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "minus = remove_pointer_sentence(body2, POINTER)"
+  },
+  {
+   "Id": "L-14/AcceptorCode/4",
+   "Kind": "token",
+   "Lines": [
+    582,
+    582
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if text[i] == \".\" and (i + 1 == n or text[i + 1].isspace()):"
+  },
+  {
+   "Id": "L-14/AcceptorCode/5",
+   "Kind": "token",
+   "Lines": [
+    596,
+    596
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "for k in range(len(sentences) - 1, -1, -1):"
+  },
+  {
+   "Id": "L-14/AcceptorCode/6",
+   "Kind": "token",
+   "Lines": [
+    1351,
+    1351
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-7: entry point / 16.13 in EFF\""
+  },
+  {
+   "Id": "L-14/AcceptorCode/7",
+   "Kind": "token",
+   "Lines": [
+    1353,
+    1353
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-7: pointer position\""
+  },
+  {
+   "Id": "L-14/AcceptorCode/8",
+   "Kind": "token",
+   "Lines": [
+    1355,
+    1355
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MV-7: 16.3 differs after pointer removal\""
+  },
+  {
+   "Id": "L-14/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    1248,
+    1248
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "del sents[idx[-1]]"
+  },
+  {
+   "Id": "L-14/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    246,
+    247
+   ],
+   "OK": true,
+   "Src": "SPEC",
+   "Text": "PointerIsFirstSentenceS16"
+  },
+  {
+   "Id": "L-14/Evidence/1",
+   "Kind": "token",
+   "Lines": [
+    178,
+    178
+   ],
+   "OK": true,
+   "Src": "S74",
+   "Text": "(a) predicado de presencia"
+  },
+  {
+   "Id": "L-15/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    553,
+    553
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "R est\u00e1 cubierta por E si R = E, o si E termina en `/` y R empieza por E."
+  },
+  {
+   "Id": "L-15/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    552,
+    552
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "ruta relativa a la ra\u00edz con `/` y la capitalizaci\u00f3n exacta"
+  },
+  {
+   "Id": "L-15/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    724,
+    724
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "e = u19(entry)"
+  },
+  {
+   "Id": "L-15/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    727,
+    727
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "return e.endswith(\"/\") and path.startswith(e)"
+  },
+  {
+   "Id": "L-15/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    999,
+    999
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"AllowedCoveredBy\": [e for e in allowed if covers(e, p)]"
+  },
+  {
+   "Id": "L-15/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    2229,
+    2229
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "n_u19_list"
+  },
+  {
+   "Id": "L-15/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    673,
+    673
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "return path == entry or (entry.endswith(\"/\") and path.startswith(entry))"
+  },
+  {
+   "Id": "L-15/InstrumentCode/1",
+   "Kind": "token",
+   "Lines": [
+    701,
+    701
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "covers(u19(e), p)"
+  },
+  {
+   "Id": "L-16/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    552,
+    552
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "archivo exacto o prefijo de directorio terminado en `/`, sin comodines, `..` ni rutas absolutas."
+  },
+  {
+   "Id": "L-16/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    709,
+    709
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if entry.startswith(\"/\")"
+  },
+  {
+   "Id": "L-16/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    711,
+    711
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "entry[1] == \":\""
+  },
+  {
+   "Id": "L-16/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    713,
+    713
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if \"..\" in entry.split(\"/\"):"
+  },
+  {
+   "Id": "L-16/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    716,
+    716
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "for ch in \"*?[\":"
+  },
+  {
+   "Id": "L-16/AcceptorCode/4",
+   "Kind": "token",
+   "Lines": [
+    1007,
+    1007
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"MalformedEntries\": [e for e in both if is_malformed(e)]"
+  },
+  {
+   "Id": "L-16/AcceptorCode/5",
+   "Kind": "token",
+   "Lines": [
+    2230,
+    2230
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "n_entries_flex"
+  },
+  {
+   "Id": "L-16/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    676,
+    676
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "def malformed_reasons(entry):"
+  },
+  {
+   "Id": "L-16/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    190,
+    192
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "a drive prefix (`C:`) counts as absolute"
+  },
+  {
+   "Id": "L-17/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    1234,
+    1234
+   ],
+   "OK": true,
+   "Src": "DEC",
+   "Text": "U-19 = \u00ab/**\u00bb final = prefijo terminado en \u00ab/\u00bb; comod\u00edn no final = lista exacta de rutas en el \u00e1rbol de BaseSha, enumerada en la orden; ning\u00fan commit del Worker solo de evidencia"
+  },
+  {
+   "Id": "L-17/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    1250,
+    1250
+   ],
+   "OK": true,
+   "Src": "DEC",
+   "Text": "| U-19 | entera | \u2014 |"
+  },
+  {
+   "Id": "L-17/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    89,
+    89
+   ],
+   "OK": true,
+   "Src": "UNBLOCK",
+   "Text": "Una entrada que termina en `/**` se lee como el prefijo terminado en `/` (16.5)."
+  },
+  {
+   "Id": "L-17/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    703,
+    703
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if entry.endswith(\"/**\"):"
+  },
+  {
+   "Id": "L-17/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    704,
+    704
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "return entry[:-2]"
+  },
+  {
+   "Id": "L-17/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    1003,
+    1003
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "u19n = [{\"Entry\": e, \"List\": name, \"Prefix\": u19(e)}"
+  },
+  {
+   "Id": "L-17/AcceptorCode/3",
+   "Kind": "token",
+   "Lines": [
+    2231,
+    2231
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "cmp.eq(\"U19Normalized\", mine[\"U19Normalized\"], dig(facts, \"U19Normalized\"))"
+  },
+  {
+   "Id": "L-17/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    667,
+    668
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if entry.endswith(\"/**\"):"
+  },
+  {
+   "Id": "L-17/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    236,
+    236
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "own `U19Normalized`"
+  },
+  {
+   "Id": "L-17/Evidence/1",
+   "Kind": "token",
+   "Lines": [
+    311,
+    311
+   ],
+   "OK": true,
+   "Src": "SPEC",
+   "Text": "`{\"Entry\", \"List\", \"Prefix\"}`"
+  },
+  {
+   "Id": "L-18/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    1234,
+    1234
+   ],
+   "OK": true,
+   "Src": "DEC",
+   "Text": "comod\u00edn no final = lista exacta de rutas en el \u00e1rbol de BaseSha, enumerada en la orden"
+  },
+  {
+   "Id": "L-18/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    89,
+    89
+   ],
+   "OK": true,
+   "Src": "UNBLOCK",
+   "Text": "Una entrada con comod\u00edn en otra posici\u00f3n se lee como la lista exacta de rutas que casan en el \u00e1rbol de `BaseSha`, enumerada en la orden"
+  },
+  {
+   "Id": "L-18/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    552,
+    552
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "sin comodines"
+  },
+  {
+   "Id": "L-18/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    715,
+    715
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "core = entry[:-3] if entry.endswith(\"/**\") else entry"
+  },
+  {
+   "Id": "L-18/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    716,
+    716
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "for ch in \"*?[\":"
+  },
+  {
+   "Id": "L-18/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    2075,
+    2075
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "bad = [e for e in allowed + forbidden if e == \"\" or is_malformed(e)]"
+  },
+  {
+   "Id": "L-18/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    682,
+    684
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "reasons.append(\"wildcard\")"
+  },
+  {
+   "Id": "L-19/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    1234,
+    1234
+   ],
+   "OK": true,
+   "Src": "DEC",
+   "Text": "ning\u00fan commit del Worker solo de evidencia"
+  },
+  {
+   "Id": "L-19/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    82,
+    82
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "R7_COMMANDS = frozenset([\"scope\", \"contract\", \"clausemap\"])"
+  },
+  {
+   "Id": "L-19/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    2218,
+    2218
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "def _compare_r7(run, mine, internal, facts, cmp):"
+  },
+  {
+   "Id": "L-20/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    562,
+    562
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| A3 | `AllowedWriteScope` \u2286 alcance permitido del contrato | STOP (P-03) |"
+  },
+  {
+   "Id": "L-20/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    553,
+    554
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "A \u2286 B si cada entrada de A est\u00e1 cubierta por alguna de B (un prefijo de A solo lo cubre un prefijo de B que lo contenga)."
+  },
+  {
+   "Id": "L-20/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    1192,
+    1192
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| A3'-A5' | + `RoleRequirements` de la delegaci\u00f3n \u2287 los del contrato por rol"
+  },
+  {
+   "Id": "L-20/Normative/3",
+   "Kind": "quote",
+   "Lines": [
+    125,
+    125
+   ],
+   "OK": true,
+   "Src": "RAE",
+   "Text": "con la sintaxis de alcance de AUTOMATION_PLAN \u00a716 (archivo exacto o prefijo terminado en `/`)."
+  },
+  {
+   "Id": "L-20/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1034,
+    1034
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"A3\": [{\"Entry\": a, \"ContainedBy\": [b for b in ca if contained(a, b)]} for a in da]"
+  },
+  {
+   "Id": "L-20/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    732,
+    732
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "return covers(b, u19(a))"
+  },
+  {
+   "Id": "L-20/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    2241,
+    2242
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "n_u19_list"
+  },
+  {
+   "Id": "L-20/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    739,
+    739
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if covers(b, e)]}"
+  },
+  {
+   "Id": "L-21/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    563,
+    563
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| A4 | `ForbiddenWriteScope` \u2287 prohibido del contrato | STOP (P-03) |"
+  },
+  {
+   "Id": "L-21/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    1035,
+    1035
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"A4\": [{\"Entry\": a, \"ContainedBy\": [b for b in df if contained(a, b)]} for a in cf]"
+  },
+  {
+   "Id": "L-21/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    741,
+    741
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if covers(g, e)]}"
+  },
+  {
+   "Id": "L-22/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    1234,
+    1234
+   ],
+   "OK": true,
+   "Src": "DEC",
+   "Text": "U-19 = \u00ab/**\u00bb final = prefijo terminado en \u00ab/\u00bb"
+  },
+  {
+   "Id": "L-22/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    89,
+    89
+   ],
+   "OK": true,
+   "Src": "UNBLOCK",
+   "Text": "se lee como el prefijo terminado en `/` (16.5)"
+  },
+  {
+   "Id": "L-22/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    553,
+    554
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "A \u2286 B si cada entrada de A est\u00e1 cubierta por alguna de B"
+  },
+  {
+   "Id": "L-22/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    732,
+    732
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "return covers(b, u19(a))"
+  },
+  {
+   "Id": "L-22/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    724,
+    724
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "e = u19(entry)"
+  },
+  {
+   "Id": "L-22/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    739,
+    739
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if covers(b, e)]}"
+  },
+  {
+   "Id": "L-22/InstrumentCode/1",
+   "Kind": "token",
+   "Lines": [
+    741,
+    741
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "if covers(g, e)]}"
+  },
+  {
+   "Id": "L-22/InstrumentCode/2",
+   "Kind": "token",
+   "Lines": [
+    162,
+    162
+   ],
+   "OK": true,
+   "Src": "TNOTES",
+   "Text": "U-19 is not applied (SPEC names it only for scope)"
+  },
+  {
+   "Id": "L-22/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    229,
+    230
+   ],
+   "OK": true,
+   "Src": "RAE",
+   "Text": "se sustituye por la enumeraci\u00f3n de los dem\u00e1s archivos del diff"
+  },
+  {
+   "Id": "L-22/Evidence/1",
+   "Kind": "token",
+   "Lines": [
+    267,
+    267
+   ],
+   "OK": true,
+   "Src": "INDEP",
+   "Text": "| Scope coverage |"
+  },
+  {
+   "Id": "L-23/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    636,
+    636
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| 7 | `Scope` | `git diff --name-only BaseSha..CurrentSha` \u2286 `AllowedWriteScope` y sin intersecci\u00f3n con `ForbiddenWriteScope` | Controller | STOP |"
+  },
+  {
+   "Id": "L-23/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    1205,
+    1206
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "`Scope` = pass exige en su `Evidence` la salida reproducible de `git diff --name-only BaseSha..CurrentSha` y la entrada de `AllowedWriteScope` que contiene cada ruta."
+  },
+  {
+   "Id": "L-23/Normative/2",
+   "Kind": "quote",
+   "Lines": [
+    660,
+    660
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "| \u00c9xito declarado sin commit | Controller (`Identity`, `CleanTree`, `Scope`) |"
+  },
+  {
+   "Id": "L-23/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    2075,
+    2075
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "bad = [e for e in allowed + forbidden if e == \"\" or is_malformed(e)]"
+  },
+  {
+   "Id": "L-23/AcceptorCode/1",
+   "Kind": "token",
+   "Lines": [
+    2078,
+    2078
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "unc = [p for p in paths if not any(covers(e, p) for e in allowed)]"
+  },
+  {
+   "Id": "L-23/AcceptorCode/2",
+   "Kind": "token",
+   "Lines": [
+    2081,
+    2081
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "fb = [p for p in paths if any(covers(e, p) for e in forbidden)]"
+  },
+  {
+   "Id": "L-23/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    191,
+    191
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "R4 Scope rule any malformed or empty entry"
+  },
+  {
+   "Id": "L-24/Normative/0",
+   "Kind": "quote",
+   "Lines": [
+    636,
+    636
+   ],
+   "OK": true,
+   "Src": "AP",
+   "Text": "`git diff --name-only BaseSha..CurrentSha` \u2286 `AllowedWriteScope`"
+  },
+  {
+   "Id": "L-24/Normative/1",
+   "Kind": "quote",
+   "Lines": [
+    315,
+    315
+   ],
+   "OK": true,
+   "Src": "SPEC",
+   "Text": "un renombre da las dos rutas, la de origen y la de destino"
+  },
+  {
+   "Id": "L-24/AcceptorCode/0",
+   "Kind": "token",
+   "Lines": [
+    965,
+    965
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if ta.get(p) != tb.get(p))"
+  },
+  {
+   "Id": "L-24/InstrumentCode/0",
+   "Kind": "token",
+   "Lines": [
+    643,
+    643
+   ],
+   "OK": true,
+   "Src": "TOOL",
+   "Text": "\"--no-renames\""
+  },
+  {
+   "Id": "L-24/Evidence/0",
+   "Kind": "token",
+   "Lines": [
+    179,
+    180
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "Renames"
+  },
+  {
+   "Id": "outside/0/0",
+   "Kind": "token",
+   "Lines": [
+    222,
+    223
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "the rebase / `patch-id` branch of 16.9 #5 is not covered"
+  },
+  {
+   "Id": "outside/0/1",
+   "Kind": "token",
+   "Lines": [
+    2049,
+    2049
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "same_path(wt_h, wt_d)"
+  },
+  {
+   "Id": "outside/1/0",
+   "Kind": "token",
+   "Lines": [
+    227,
+    228
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "is not checked (needs routing facts)"
+  },
+  {
+   "Id": "outside/1/1",
+   "Kind": "token",
+   "Lines": [
+    2118,
+    2118
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "if declared not in coauthored_values(ctx.repo.message(c))"
+  },
+  {
+   "Id": "outside/2/0",
+   "Kind": "token",
+   "Lines": [
+    176,
+    178
+   ],
+   "OK": true,
+   "Src": "ANOTES",
+   "Text": "the terms are the list after the first"
+  },
+  {
+   "Id": "outside/2/1",
+   "Kind": "token",
+   "Lines": [
+    652,
+    652
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "cut = text.find(\"`:\")"
+  },
+  {
+   "Id": "outside/3/0",
+   "Kind": "token",
+   "Lines": [
+    2090,
+    2090
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"--porcelain\", \"-z\", \"--untracked-files=normal\""
+  },
+  {
+   "Id": "outside/3/1",
+   "Kind": "token",
+   "Lines": [
+    2091,
+    2091
+   ],
+   "OK": true,
+   "Src": "ACC",
+   "Text": "\"check-ignore\", [\"-q\", \"--no-index\", \"--\", ignore_path]"
+  },
+  {
+   "Id": "aux/X-01",
+   "Kind": "quote",
+   "Lines": [
+    707,
+    709
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "una disposici\u00f3n del Coordinator fija su lectura de las reglas en las que el aceptante aplica una propia (la parte de mapa de `Authority` en R4, con MV-1..MV-6 y las listas de MV-4; la cobertura, U-19, A3 y A4 en R7) y declara, regla por regla, que coincide con la del aceptante fijado."
+  },
+  {
+   "Id": "aux/X-02",
+   "Kind": "quote",
+   "Lines": [
+    709,
+    710
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "Sin esa coincidencia el aceptante no se usa tal como est\u00e1: cambiarlo exige otro blob, otra correcci\u00f3n de A-6 y otra determinaci\u00f3n del Owner."
+  },
+  {
+   "Id": "aux/X-03",
+   "Kind": "quote",
+   "Lines": [
+    715,
+    716
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "si el aceptante rechaza hechos correctos del instrumento por una divergencia entre las dos piezas, o si una lectura que la verificaci\u00f3n necesita queda fuera de ese cierre, no se usa tal como est\u00e1;"
+  },
+  {
+   "Id": "aux/X-04",
+   "Kind": "quote",
+   "Lines": [
+    829,
+    831
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "el Controller aplica a los hechos del instrumento las reglas de AUTOMATION_PLAN 16.9 y 16.13, incluida la tabla de defectos de `Validate(M)`, tal como est\u00e1n."
+  },
+  {
+   "Id": "aux/X-05",
+   "Kind": "quote",
+   "Lines": [
+    830,
+    831
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "una divergencia de lectura sobre MV-4 o MV-7, o sobre cualquier otra regla, se devuelve al Coordinator, que la decide;"
+  },
+  {
+   "Id": "aux/X-06",
+   "Kind": "quote",
+   "Lines": [
+    927,
+    927
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "**Ninguna brecha queda cerrada**"
+  },
+  {
+   "Id": "aux/X-07",
+   "Kind": "quote",
+   "Lines": [
+    943,
+    943
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "G2. Mapa que viola su esquema."
+  },
+  {
+   "Id": "aux/X-08",
+   "Kind": "quote",
+   "Lines": [
+    995,
+    995
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "G6. Encabezado sangrado y mensaje de commit con CRLF."
+  },
+  {
+   "Id": "aux/X-09",
+   "Kind": "token",
+   "Lines": [
+    1215,
+    1215
+   ],
+   "OK": true,
+   "Src": "DEC",
+   "Text": "U-18 (b), U-19, U-20"
+  },
+  {
+   "Id": "aux/X-10",
+   "Kind": "token",
+   "Lines": [
+    469,
+    469
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "`434ef1fccb0d15762b30244b4a60928120698411` | `173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0`"
+  },
+  {
+   "Id": "aux/X-11",
+   "Kind": "token",
+   "Lines": [
+    468,
+    468
+   ],
+   "OK": true,
+   "Src": "A6",
+   "Text": "`9a829b0eeb1210238052b1feac06cfa8f7964aed` | `b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200`"
+  },
+  {
+   "Expected": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Got": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Id": "fixture:AP@1746b404",
+   "Kind": "identity",
+   "OK": true
+  },
+  {
+   "Expected": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Got": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Id": "fixture:AP@fbe25347",
+   "Kind": "identity",
+   "OK": true
+  },
+  {
+   "Expected": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Got": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Id": "fixture:AP@95bdc29d",
+   "Kind": "identity",
+   "OK": true
+  },
+  {
+   "Expected": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "GotFixture": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "GotWorktree": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "Id": "fixture:EFF:I62-clause-map.json",
+   "Kind": "identity",
+   "OK": true
+  },
+  {
+   "Expected": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "GotFixture": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "GotWorktree": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "Id": "fixture:EFF:clause-map.schema.json",
+   "Kind": "identity",
+   "OK": true
+  },
+  {
+   "Id": "worktree:AP@HEAD",
+   "Kind": "identity",
+   "OK": true
+  },
+  {
+   "Id": "V14:no-U-19",
+   "Kind": "absence",
+   "OK": true
+  },
+  {
+   "Decision": "ACCEPT_FACTS",
+   "Id": "probe:P1-mirrored-T1",
+   "Kind": "probe",
+   "OK": true,
+   "R7": "MATCH",
+   "R7Mismatches": 0
+  },
+  {
+   "Decision": "REJECT_FACTS",
+   "Id": "probe:P2-nc2-like-T1",
+   "Kind": "probe",
+   "OK": true,
+   "R7": "MISMATCH",
+   "R7Mismatches": 1
+  },
+  {
+   "Decision": "REJECT_FACTS",
+   "Id": "probe:P3-synthetic-nested",
+   "Kind": "probe",
+   "OK": true,
+   "R7": "MISMATCH",
+   "R7Mismatches": 4
+  },
+  {
+   "Id": "probe:pinned",
+   "Kind": "probe",
+   "OK": true,
+   "Sha256": "b89a2181f1f49f6b0ced6fa529832e30a0ea1d195ade2f555d823fce5aff942d"
+  },
+  {
+   "Counts": {
+    "AMBIGUOUS-ACCEPTOR-CHOICE": 12,
+    "COINCIDE": 12,
+    "DIVERGE": 0
+   },
+   "Id": "verdict-counts",
+   "Kind": "consistency",
+   "OK": true
+  },
+  {
+   "Id": "hygiene",
+   "Kind": "hygiene",
+   "OK": true,
+   "Problems": []
+  }
+ ],
+ "Head": "400a72d8581d1dd472db59412fd485df8fae03f2",
+ "Schema": "rackcad-i62-a6m7-citations/0-experimental",
+ "Summary": {
+  "AllVerified": true,
+  "Checks": 269,
+  "Citations": 241,
+  "CitationsVerified": 241,
+  "Failed": 0,
+  "Verified": 269
+ },
+ "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal"
+}

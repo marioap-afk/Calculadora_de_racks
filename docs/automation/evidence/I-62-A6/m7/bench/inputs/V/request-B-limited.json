@@ -1,0 +1,146 @@
+{
+ "Schema": "rackcad-bmin-accept-request/0-experimental",
+ "Repo": "D:/r62-a6m7/bench/c-v",
+ "Tool": {
+  "PinnedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "RunFrom": "object",
+  "GitObject": {
+   "GitDir": "D:/r62-a6m7/bench/c-v",
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  }
+ },
+ "Interpreter": {
+  "Python": "3.13.14",
+  "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec"
+ },
+ "Runs": [
+  {
+   "Name": "r00-identity",
+   "Envelope": "D:/r62-a6m7/bench/work/s-v-b/env/r00-identity.json",
+   "Argv": [
+    "identity",
+    "--repo",
+    "D:/r62-a6m7/bench/c-v",
+    "--branch",
+    "fx/u1",
+    "--base",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--current",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "--red",
+    "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+   ]
+  },
+  {
+   "Name": "r01-diff",
+   "Envelope": "D:/r62-a6m7/bench/work/s-v-b/env/r01-diff.json",
+   "Argv": [
+    "diff",
+    "--repo",
+    "D:/r62-a6m7/bench/c-v",
+    "--from",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--to",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8"
+   ]
+  },
+  {
+   "Name": "r02-scope",
+   "Envelope": "D:/r62-a6m7/bench/work/s-v-b/env/r02-scope.json",
+   "Argv": [
+    "scope",
+    "--repo",
+    "D:/r62-a6m7/bench/c-v",
+    "--from",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--to",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "--file",
+    "DELEG=D:/r62-a6m7/bench/work/in-v/deleg.json",
+    "--sha256",
+    "DELEG=f380200c402f12484732e3473ce636db5cd5825b0b971343e59b81d4c8429c91"
+   ]
+  },
+  {
+   "Name": "r03-cleantree",
+   "Envelope": "D:/r62-a6m7/bench/work/s-v-b/env/r03-cleantree.json",
+   "Argv": [
+    "cleantree",
+    "--repo",
+    "D:/r62-a6m7/bench/c-v",
+    "--ignore-path",
+    "artifacts/orchestration/FX-U1/T1/0/R20261012T092000Z-c001/output.json"
+   ]
+  },
+  {
+   "Name": "r04-handoff",
+   "Envelope": "D:/r62-a6m7/bench/work/s-v-b/env/r04-handoff.json",
+   "Argv": [
+    "handoff",
+    "--repo",
+    "D:/r62-a6m7/bench/c-v",
+    "--file",
+    "H=D:/r62-a6m7/bench/work/in-v/handoff.json",
+    "--sha256",
+    "H=5a6f76ba4fa37857ef6b345464d51338da635628864b70884a04cb2518416b19",
+    "--schema-rev",
+    "b417d36cb820a27c78d6c7d50c234460469c89f8"
+   ]
+  },
+  {
+   "Name": "r05-freetext",
+   "Envelope": "D:/r62-a6m7/bench/work/s-v-b/env/r05-freetext.json",
+   "Argv": [
+    "freetext",
+    "--repo",
+    "D:/r62-a6m7/bench/c-v",
+    "--file",
+    "H=D:/r62-a6m7/bench/work/in-v/handoff.json",
+    "--sha256",
+    "H=5a6f76ba4fa37857ef6b345464d51338da635628864b70884a04cb2518416b19",
+    "--terms-rev",
+    "fbe25347799e5b801ef708454212335537448bd1"
+   ]
+  },
+  {
+   "Name": "r06-trx",
+   "Envelope": "D:/r62-a6m7/bench/work/s-v-b/env/r06-trx.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a6m7/bench/c-v",
+    "--file",
+    "TRX=D:/r62-a6m7/bench/work/in-v/fixture-tests.trx",
+    "--sha256",
+    "TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "--filter-substring",
+    "Subtract"
+   ]
+  }
+ ],
+ "Closure": {
+  "Path": "D:/r62-a6m7/bench/work/build/V-R7-B.closure.json",
+  "Sha256": "a5397517251769f3ac69eb3960d0bb1aa299ebecc728c03c5c9fa1877dc92dd9"
+ },
+ "RelayFacts": {
+  "Path": "D:/r62-a6m7/bench/work/s-v/relay-facts-B.json",
+  "CitedSha256": "d772cf876f189bd899742fb4a1341ee4027564bb9f23abb35fe9a4ff2888e7b7"
+ },
+ "Verification": {
+  "Controller": {
+   "Path": "D:/r62-a6m7/bench/work/s-v/controller-output-B.json",
+   "Sha256": "df59a7c86fc799c1b8aa1b154e9d3a2890969d5c4e578e18b111637bb6c8a19d"
+  },
+  "Delegation": {
+   "Path": "D:/r62-a6m7/bench/work/in-v/deleg.json",
+   "Sha256": "f380200c402f12484732e3473ce636db5cd5825b0b971343e59b81d4c8429c91"
+  },
+  "Handoff": {
+   "Path": "D:/r62-a6m7/bench/work/in-v/handoff.json",
+   "Sha256": "5a6f76ba4fa37857ef6b345464d51338da635628864b70884a04cb2518416b19"
+  },
+  "IgnorePath": "artifacts/orchestration/FX-U1/T1/0/R20261012T092000Z-c001/output.json",
+  "TermsRev": "fbe25347799e5b801ef708454212335537448bd1",
+  "MainSha": "fbe25347799e5b801ef708454212335537448bd1"
+ }
+}

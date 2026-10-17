@@ -1,0 +1,77 @@
+{
+ "Schema": "a6m7-closure-derivation/1",
+ "Designation": "D:/r62-a6m7/bench/work/build/N7AR-SAME-R7-A.designation.json",
+ "DesignationSha256": "ecd65fe9320f36b8afa08fbb1f218b0d1f995902a10c0e6c7efe9cf67b31abdd",
+ "Vector": "D:/r62-a6m7/bench/work/build/N7AR-SAME-R7-A.vector.json",
+ "VectorSha256": "07b78b93496c65c7c1024f509e736a102a872bf1af2322202a522430f55f08e4",
+ "E": "D:/r62-a6m7/bench/work/build/E-N7AR-SAME-R7-A.json",
+ "ESha256": "29fa38973022ee939ebc8b9587e723efd272a068b50bfa865c969c937ada81fa",
+ "Closure": "D:/r62-a6m7/bench/work/build/N7AR-SAME-R7-A.closure.json",
+ "ClosureSha256": "354806e9082a0b174572229882f1c0b752ae3d35db15a0aabec95d3008ff76d2",
+ "DesignationCheck": {
+  "Ok": false,
+  "Problems": [],
+  "Bypassed": [
+   {
+    "Code": "KPR-2",
+    "Detail": "H path names RunId R20261012T091000Z-a001 but the bytes carry RunId R20261011T081000Z-a000: Name(p) undefined in C6"
+   },
+   {
+    "Code": "KPR-2",
+    "Detail": "Name(p) = H is None, not exactly the designated path"
+   }
+  ],
+  "Inputs": {
+   "DELEG": {
+    "Path": "artifacts/orchestration/FX-U1/T1-n7a/0/R20261012T090000Z-d001/output.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "H": {
+    "Path": "artifacts/orchestration/FX-U1/T1-n7a/0/R20261012T091000Z-a001/worker-handoff.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "CONTRACT": {
+    "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   }
+  },
+  "Names": {
+   "CONTRACT": [
+    "docs/automation/decisions/FX-U1-T1.gate-contract.json"
+   ],
+   "DELEG": [
+    "artifacts/orchestration/FX-U1/T1-n7a/0/R20261012T090000Z-d001/output.json"
+   ],
+   "TRX": [
+    "artifacts/ci/R37949808974/fixture-tests.trx"
+   ]
+  }
+ },
+ "Omitted": [
+  {
+   "Term": "C1.D.ChainRedSha",
+   "Cause": "FIELD_NULL",
+   "Detail": ""
+  }
+ ],
+ "Inputs": {
+  "D": {
+   "Present": true,
+   "Why": null
+  },
+  "H": {
+   "Present": true,
+   "Why": null
+  },
+  "K": {
+   "Present": true,
+   "Why": null
+  }
+ }
+}

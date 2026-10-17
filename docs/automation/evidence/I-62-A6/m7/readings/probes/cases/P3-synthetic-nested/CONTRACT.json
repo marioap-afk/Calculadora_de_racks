@@ -1,0 +1,164 @@
+{
+ "AllowedWriteScope": [
+  "src/**",
+  "docs/notes/"
+ ],
+ "Authorities": [
+  {
+   "Class": "UNIT_DOC",
+   "Path": "docs/automation/decisions/FX-U1.md",
+   "Section": "documento completo"
+  },
+  {
+   "Class": "UNIT_DOC",
+   "Path": "docs/automation/state/FX-U1.yml",
+   "Section": "documento completo"
+  },
+  {
+   "Class": "UNIT_CHANGE",
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Section": "documento completo"
+  },
+  {
+   "Class": "UNIT_CHANGE",
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+   "Section": "documento completo"
+  },
+  {
+   "Class": "EXTERNAL",
+   "Path": "AGENTS.md",
+   "Section": "## Jobs requeridos"
+  },
+  {
+   "Class": "EXTERNAL",
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Section": "## 16. Ejecuci\u00f3n delegada bajo orden del Coordinator"
+  }
+ ],
+ "AuthorityRevision": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+ "CorrectionsAuthorized": true,
+ "ExpectedEvidence": [
+  "Commit RED con la prueba de Subtract y la corrida del fixture con fixture-tests en failure (RedPart).",
+  "Commit GREEN G con la implementaci\u00f3n y la corrida push de G en refs/heads/fx/u1 con fixture-build y fixture-tests en success (Ci pass).",
+  "Diario de la ventana y Q7 en docs/automation/evidence/FX-U1-agent/."
+ ],
+ "ForbiddenWriteScope": [
+  "build/",
+  "secrets/key.txt"
+ ],
+ "Gate": "FX-U1-T1",
+ "Invariants": [
+  "Calculator.Add conserva su firma y su comportamiento.",
+  "Sin paquetes ni dependencias nuevas.",
+  "P-16: ning\u00fan artefacto nombra, configura ni usa un repositorio o una unidad reales."
+ ],
+ "IssuedBy": "Coordinator del fixture (sesi\u00f3n de supervisi\u00f3n, plano a; sistema bajo prueba en el plano c)",
+ "IssuedUtc": "2026-10-06T22:53:15Z",
+ "MainSha": "fbe25347799e5b801ef708454212335537448bd1",
+ "MaterializationCloseSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+ "Objective": "A\u00f1adir a Fixture.Lib la operaci\u00f3n Calculator.Subtract(int a, int b) con su prueba en Fixture.Tests: primero la prueba en RED y despu\u00e9s la implementaci\u00f3n en GREEN.",
+ "ProtocolSet": "rackcad-protocol/I62",
+ "RequiredTests": [
+  {
+   "ExpectRed": true,
+   "Filter": "FullyQualifiedName~Subtract",
+   "MinSelected": 1,
+   "Project": "tests/Fixture.Tests/Fixture.Tests.csproj"
+  }
+ ],
+ "RoleRequirements": [
+  {
+   "Action": "CUSTODY",
+   "EligibleCells": [],
+   "Independence": [],
+   "Mandatory": [
+    "PRINCIPAL_COORDINATION.level",
+    "PRINCIPAL_COORDINATION.effort",
+    "PRINCIPAL_COORDINATION.remote-facts",
+    "PRINCIPAL_COORDINATION.introspection",
+    "PRINCIPAL_COORDINATION.repo-write"
+   ],
+   "Materialization": null,
+   "Profile": "PRINCIPAL_COORDINATION",
+   "Role": "PRINCIPAL_COORDINATOR"
+  },
+  {
+   "Action": "PLAN",
+   "EligibleCells": [],
+   "Independence": [
+    {
+     "Actor": "REQUIRED",
+     "Context": "REQUIRED",
+     "Provider": "PREFERRED",
+     "ReferenceRole": "WORKER",
+     "Session": "REQUIRED"
+    }
+   ],
+   "Mandatory": [
+    "CONTROLLER_PLANNING.effort",
+    "CONTROLLER_PLANNING.level",
+    "CONTROLLER_PLANNING.read",
+    "CONTROLLER_PLANNING.tool-use",
+    "CONTROLLER_PLANNING.structured-output"
+   ],
+   "Materialization": null,
+   "Profile": "CONTROLLER_PLANNING",
+   "Role": "EXECUTION_CONTROLLER"
+  },
+  {
+   "Action": "IMPLEMENT",
+   "EligibleCells": [],
+   "Independence": [],
+   "Mandatory": [
+    "ROUTINE_IMPLEMENTATION.effort",
+    "ROUTINE_IMPLEMENTATION.level",
+    "ROUTINE_IMPLEMENTATION.tool-use",
+    "ROUTINE_IMPLEMENTATION.write-commit-push"
+   ],
+   "Materialization": null,
+   "Profile": "ROUTINE_IMPLEMENTATION",
+   "Role": "WORKER"
+  },
+  {
+   "Action": "REVIEW_DESIGN",
+   "EligibleCells": [],
+   "Independence": [
+    {
+     "Actor": "REQUIRED",
+     "Context": "REQUIRED",
+     "Provider": "PREFERRED",
+     "ReferenceRole": "AUTHOR",
+     "Session": "REQUIRED"
+    }
+   ],
+   "Mandatory": [
+    "ARCHITECTURE_REVIEW.effort",
+    "ARCHITECTURE_REVIEW.level",
+    "ARCHITECTURE_REVIEW.read"
+   ],
+   "Materialization": null,
+   "Profile": "ARCHITECTURE_REVIEW",
+   "Role": "ARCHITECT"
+  }
+ ],
+ "RoutingEnforcement": "required",
+ "Schema": "rackcad-gate-contract/v2",
+ "StopConditions": [
+  {
+   "Id": "S-T1-01",
+   "Text": "Un cambio fuera de AllowedWriteScope o dentro de ForbiddenWriteScope: STOP sin corregir por cuenta propia."
+  },
+  {
+   "Id": "S-T1-02",
+   "Text": "Huella de codex-cli distinta de la l\u00ednea base aceptada (P-01): STOP del transporte afectado."
+  },
+  {
+   "Id": "S-T1-03",
+   "Text": "Cualquier referencia a un repositorio o unidad reales (P-16): STOP."
+  }
+ ],
+ "SupersededBaseSha": null,
+ "SupersededCommits": [],
+ "TaskId": "T1",
+ "Unit": "FX-U1"
+}

@@ -1,0 +1,71 @@
+{
+ "Schema": "a6m7-closure-derivation/1",
+ "Designation": "D:/r62-a6m7/bench/work/build/V-R7-A.designation.json",
+ "DesignationSha256": "c6382a0a87a5a76d0e75e797d3bf4c8c6b69502156c9e84d015127aafa5d6ca6",
+ "Vector": "D:/r62-a6m7/bench/work/build/V-R7-A.vector.json",
+ "VectorSha256": "fef86dbce4a1d38d6be3d43b8daf6473fb82cfa6f3e68a99ac51145a70925b20",
+ "E": "D:/r62-a6m7/bench/work/build/E-V-R7-A.json",
+ "ESha256": "256d841be5afcb1c2c242cddfb0e335b2050bfdb056f1e1e9da8ba6fd8304e06",
+ "Closure": "D:/r62-a6m7/bench/work/build/V-R7-A.closure.json",
+ "ClosureSha256": "93275fd76e5e475ace378579769506632e5529a16c76518daf516079c6766634",
+ "DesignationCheck": {
+  "Ok": true,
+  "Problems": [],
+  "Bypassed": [],
+  "Inputs": {
+   "DELEG": {
+    "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "H": {
+    "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   },
+   "CONTRACT": {
+    "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "Pinned": true,
+    "Why": null,
+    "Present": true
+   }
+  },
+  "Names": {
+   "CONTRACT": [
+    "docs/automation/decisions/FX-U1-T1.gate-contract.json"
+   ],
+   "DELEG": [
+    "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json"
+   ],
+   "H": [
+    "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json"
+   ],
+   "TRX": [
+    "artifacts/ci/R37949808974/fixture-tests.trx"
+   ]
+  }
+ },
+ "Omitted": [
+  {
+   "Term": "C1.D.ChainRedSha",
+   "Cause": "FIELD_NULL",
+   "Detail": ""
+  }
+ ],
+ "Inputs": {
+  "D": {
+   "Present": true,
+   "Why": null
+  },
+  "H": {
+   "Present": true,
+   "Why": null
+  },
+  "K": {
+   "Present": true,
+   "Why": null
+  }
+ }
+}

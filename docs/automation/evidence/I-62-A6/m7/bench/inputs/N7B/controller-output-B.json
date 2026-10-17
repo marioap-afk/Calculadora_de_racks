@@ -1,0 +1,173 @@
+{
+ "Schema": "rackcad-controller-verification/v2",
+ "TaskId": "T1",
+ "RunId": "R20261016T000000Z-m7b7",
+ "DelegationRunId": "R20261012T090000Z-d001",
+ "WorkRunId": "R20261012T091000Z-a001",
+ "Attempt": 0,
+ "VerifiedSha": null,
+ "Verifier": {
+  "Role": "EXECUTION_CONTROLLER",
+  "BindingRef": {
+   "UnitId": "FX-U1",
+   "Scope": "TASK",
+   "TaskId": "T1",
+   "Role": "EXECUTION_CONTROLLER",
+   "BindingId": "B20261013T000000Z-a6b5",
+   "Sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+   "Location": {
+    "Kind": "TRANSIENT",
+    "Path": "banco-r3",
+    "Commit": null,
+    "Blob": null
+   }
+  },
+  "Actor": {
+   "AdapterId": "bench-r3",
+   "InstanceId": "NOT_STARTED",
+   "InstanceIdSource": "banco r3: Controller simulado, sin modelo",
+   "Assurance": "NONE"
+  }
+ },
+ "Checks": {
+  "Termination": {
+   "Result": "not_run",
+   "Evidence": "sin senal en el banco r3 (Controller simulado; sin registro de terminacion del Worker)"
+  },
+  "Handoff": {
+   "Result": "fail",
+   "Evidence": "instrumento: bmin_facts handoff --repo D:/r62-a6m7/bench/c-n7 --file H=D:/r62-a6m7/bench/work/in-n7b/handoff.json --sha256 H=6b5bbd3d21dab13d0de281c4b4dc5c8ee4d89ce3f37cd942cac6411a110be953 --schema-rev b417d36cb820a27c78d6c7d50c234460469c89f8; FactsSha256=5f89b2f4e09fd83ff3089db8247eda12a8c882154ecb0548eb176d00ea51878b; primaria: no hay orden Git primaria para esta comprobacion; MissingRequiredKeys=0"
+  },
+  "Authority": {
+   "Result": "fail",
+   "Evidence": "sin instrumento: la orden clausemap queda fuera del cierre R7-B (A6-7, regla 7, limitar); resultado por la lectura Git primaria (banco m7)"
+  },
+  "Contract": {
+   "Result": "pass",
+   "Evidence": "sin instrumento: la orden contract queda fuera del cierre R7-B (A6-7, regla 7, limitar); resultado por la lectura Git primaria (banco m7)"
+  },
+  "Identity": {
+   "Result": "fail",
+   "Evidence": "instrumento: bmin_facts identity --repo D:/r62-a6m7/bench/c-n7 --branch fx/u1 --base 95bdc29d428b35d2188a10e1c5462d6caf2be4df --current 13654f96be6dd1effc167d883a8e18fa718dd8fe --red 53436cb20adf1fe87dc91b0382dd3123a1fac44f; FactsSha256=17b79dfb28c2e5464fd49dd27ac8e5768d6952c644cd2c62c402caad99c3b1e0; primaria: git cat-file -t 13654f96be6dd1effc167d883a8e18fa718dd8fe -> coincide con los hechos: NO; Head=b417d36cb820a27c78d6c7d50c234460469c89f8 CurrentSha=13654f96be6dd1effc167d883a8e18fa718dd8fe"
+  },
+  "Remote": {
+   "Result": "not_run",
+   "Evidence": "sin senal en el banco r3 (sin registro de ls-remote del relevo en la salida del Controller)"
+  },
+  "Scope": {
+   "Result": "fail",
+   "Evidence": "instrumento: bmin_facts scope --repo D:/r62-a6m7/bench/c-n7 --from 95bdc29d428b35d2188a10e1c5462d6caf2be4df --to 13654f96be6dd1effc167d883a8e18fa718dd8fe --file DELEG=D:/r62-a6m7/bench/work/in-n7b/deleg.json --sha256 DELEG=cf3feb346b616d59674ba2664127c3eb8d40e105e9c7e1986193cf35981fd331; FactsSha256=a8c3bb6e9bc173565ffa4f80f8d9a67f06b42e04beeee27b4e2b7ff03d4757ef; primaria: git diff --name-only --no-renames 95bdc29d428b35d2188a10e1c5462d6caf2be4df..13654f96be6dd1effc167d883a8e18fa718dd8fe -> coincide con los hechos: si"
+  },
+  "CleanTree": {
+   "Result": "pass",
+   "Evidence": "instrumento: bmin_facts cleantree --repo D:/r62-a6m7/bench/c-n7 --ignore-path artifacts/orchestration/FX-U1/T1/0/R20261016T000000Z-m7b7/output.json; FactsSha256=1c6eaf3f68fb5098fd06715806ccc5844a5f63850b8a51bfee950d9708862260; primaria: git status --porcelain -> coincide con los hechos: si"
+  },
+  "Ci": {
+   "Result": "not_run",
+   "RedPart": "not_applicable",
+   "Evidence": "sin corrida de CI en el banco r3"
+  },
+  "Tests": {
+   "Result": "not_run",
+   "RedPart": "not_applicable",
+   "Evidence": "sin TRX de RedSha en el banco r3"
+  },
+  "Trailer": {
+   "Result": "fail",
+   "Evidence": "instrumento: bmin_facts diff --repo D:/r62-a6m7/bench/c-n7 --from 95bdc29d428b35d2188a10e1c5462d6caf2be4df --to 13654f96be6dd1effc167d883a8e18fa718dd8fe; FactsSha256=6ff059c2e0554f272343d10cff294639456aff1d43c41204d8c22a3c8e0978f7; primaria: git log --format=%H 95bdc29d428b35d2188a10e1c5462d6caf2be4df..13654f96be6dd1effc167d883a8e18fa718dd8fe -> coincide con los hechos: si; declarado=R3 Synthetic Worker (FX-U1 T1)"
+  },
+  "Routing": {
+   "Result": "not_run",
+   "Evidence": "sin senal en el banco r3 (sin modelo)"
+  },
+  "FreeText": {
+   "Result": "pass",
+   "Evidence": "instrumento: bmin_facts freetext --repo D:/r62-a6m7/bench/c-n7 --file H=D:/r62-a6m7/bench/work/in-n7b/handoff.json --sha256 H=6b5bbd3d21dab13d0de281c4b4dc5c8ee4d89ce3f37cd942cac6411a110be953 --terms-rev fbe25347799e5b801ef708454212335537448bd1; FactsSha256=e43b75172c1b50871c17157b4f73db611487131daf8e741e5f50965c90b37c4f; primaria: no hay orden Git primaria para esta comprobacion; coincidencias=0"
+  },
+  "Denials": {
+   "Result": "not_run",
+   "Evidence": "sin senal en el banco r3 (sin eventos ni transcripcion)"
+  }
+ },
+ "AuthorityResolution": [
+  {
+   "Path": "docs/automation/decisions/FX-U1.md",
+   "Section": "documento completo",
+   "Class": "UNIT_DOC",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  },
+  {
+   "Path": "docs/automation/state/FX-U1.yml",
+   "Section": "documento completo",
+   "Class": "UNIT_DOC",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  },
+  {
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Section": "documento completo",
+   "Class": "UNIT_CHANGE",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  },
+  {
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+   "Section": "documento completo",
+   "Class": "UNIT_CHANGE",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  },
+  {
+   "Path": "AGENTS.md",
+   "Section": "## Jobs requeridos",
+   "Class": "EXTERNAL",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  },
+  {
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+   "Class": "EXTERNAL",
+   "Mode": "NORMAL",
+   "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "Parts": [],
+   "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+   "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "UnitProtocol": "rackcad-protocol/I62"
+  }
+ ],
+ "Classification": "EXECUTION_BLOCKED",
+ "Disposition": "STOP",
+ "FailureClass": "Termination",
+ "TriggeredStopConditions": [
+  "S-T1-01"
+ ],
+ "Findings": [
+  "Salida sintetica del banco r3: Controller simulado por la supervision, derivada mecanicamente de los sobres del instrumento reconstruidos del registro de sesion (formato Codex).",
+  "AuthorityResolution: Mode y RevisionSha son valores de banco (no derivados de E.3.1); EffectiveSha y ClauseMapBlob salen de los hechos clausemap.",
+  "Salida sintetica del banco m7 para N7b (entrega de otra corrida, Identity fail).",
+  "Variante R7-B (banco m7): ordenes del instrumento limitadas al cierre derivado; excluidas: clausemap, contract, hashes, read-json, read-text"
+ ],
+ "RecommendedNextAction": "devolver al Coordinator (banco r3)"
+}

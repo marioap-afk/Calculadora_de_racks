@@ -4544,3 +4544,50 @@ solo desde artefactos custodiados.
 - **Siguiente:** solo preparación de A6-7 (cierre de VERIFY con `clausemap`, D/H/K por rutas, regla de reconstrucción, lecturas normativas del
   aceptante, N5-N7, identidad del instrumento y del aceptante, comprobaciones preventivas), identidad pasiva de Codex, línea (b) para la identidad
   vigente y solicitud de B1. Sin Codex, sin consumo, sin B1 ni FX-U2.
+
+## 181. Preparación de la medición de A6-7 (decisiones §90, puntos 2-5): cierre de VERIFY, designación por rutas, N5-N7, lecturas del aceptante, identidad de Codex y B1; sin Codex
+
+- **Banco** ([`m7/bench/`](I-62-A6/m7/bench/README.md); `python -I run_m7.py all`, desde un área vacía; 77 de 77 casos conformes; reutiliza byte a byte `derive_r4.py`,
+  `reconstruct_runs.py`, `table_r3.py`, `table_r4.py` y las bibliotecas de `r4/r1probes/`):
+  - **Cierre de VERIFY (A6-7, regla 7).** `make_eic_verify.py` construye E por invocación desde una designación. Sin la entrada del instrumento
+    reproduce byte a byte el EIC-VERIFY y el EIC-I6-STRICT de `r2/independence/` y los E de V, N4 y nc1 de la ronda 4 (resultados reutilizados
+    por identidad). **R7-A** (cubrir): autoridades por su blob en la AuthorityRevision; el objeto verificado y los registros de la ventana por su
+    blob en `I.Target.Commit`; D, H, el TRX y el contrato por el blob de sus bytes custodiados; añade exactamente la entrada del instrumento y su
+    acción (A6-2). **R7-B** (limitar, I6 literal): deja fuera `contract`, `hashes`, `clausemap`, `read-text` y `read-json` en V y en M, y la
+    medición no podría demostrar tres operaciones de A6-7, regla 1 (blobs y hashes; lectura fiel de JSON y texto; resolución por el mapa).
+  - **Lectura de I6 que tiene que fijar la disposición.** El contrato `FX-U1-T1.gate-contract.json` no está en el árbol de la AuthorityRevision
+    `1746b404` (entra en `d30fb6a9`). R7-A exige leer RAE §15.2 I6 y A6-2, regla 3, como comprobación de la clase de autoridades; leídas al pie de la
+    letra rechazarían seis entradas de R7-A (contrato, `worker-notes.md`, `Calculator.cs`, `CalculatorTests.cs`, `FX-U1.md`, `FX-U1.yml`) y también
+    D, H y el TRX. R7-B tampoco es literal: conserva D, H y el TRX aplicando I6 solo a las entradas Git.
+  - **Designación por rutas (O3, O2).** Formato `a6m7-designation/1`: D, H, K y el TRX se identifican solo por las rutas que el kit da a la
+    invocación; entradas fuera de D, H y K o de tipo erróneo fallan cerradas (14 casos). `derive_r4.py` por sí solo no falla cerrado ante esas
+    entradas; la comprobación de la designación sí, antes de derivar.
+  - **Riesgo O6 confirmado y resuelto por regla de rutas.** Si un control muta `H.RunId` y la copia de H queda bajo el directorio del RunId
+    original, `Name(p)` de C6 queda indefinido, el cierre pierde H sin registro de omisión (la regla 6 (b) (v) no tiene esa causa) y el aceptante
+    rechaza por R9 `handoff` y `freetext`. Reglas del kit KPR-1 (salida en `IgnorePath(I)`), KPR-2 (cada copia bajo el RunId de sus bytes) y KPR-3:
+    la tabla acordada no cambia.
+  - **N5-N7 (O6), con R7-A:** N5 (0 pruebas), N6 (trabajo sin commit, construible solo como copia sucia: OQ-11 sigue abierta), N7a y N7b
+    (entrega de otra corrida, con `Identity` pass y fail): ACCEPT_FACTS con R4 y R9 en `MATCH`; con la variante de `H.RunId` mutado, aceptada con
+    KPR-2 y rechazada sin ella. Con R7-B, las mismas cinco órdenes quedan fuera. nc2 y nc3, solo derivación.
+  - **Medición M:** designación propia (`I.TaskId` `T1-m7`), E R7-A y las 12 órdenes: ACCEPT_FACTS con R1, R2, R3, R5, R6, R7 y R9 en `MATCH`, R4 y
+    R10 no aplicables, R8 MANUAL.
+  - **Intérprete y Git declarables:** Python 3.13.14 (alias de la Microsoft Store; imagen `python3.13.exe` `ad169f4c…`, la misma de las rondas
+    anteriores) y Git 2.54.0.windows.1 (`%USERPROFILE%\AppData\Local\Programs\Git\cmd\git.EXE`, `81ef35ae…`); con el pwsh del runtime de
+    Codex delante en el `PATH`, `git` por nombre resuelve al Git declarado.
+  - **Sin demostrar aquí:** un registro y un Controller reales (salidas y registros sintéticos), el shell del runtime y la resolución de `git`
+    dentro de la invocación real.
+- **Lecturas normativas del aceptante (A6-5, regla 6)** ([`m7/readings/`](I-62-A6/m7/readings/readings.md)): 24 filas; 12 COINCIDE,
+  12 AMBIGUOUS-ACCEPTOR-CHOICE (el texto admite más de una lectura; se propone adoptar la del aceptante) y ninguna DIVERGE; citas comprobadas
+  mecánicamente contra los bytes de cada blob (todas conformes). AP es byte a byte igual en la AuthorityRevision del fixture. Divergencia nueva
+  **D-1** entre instrumento y aceptante (no de lectura): en A3 y A4 el aceptante aplica U-19 a la entrada contenedora y el instrumento no; con la
+  sustitución que prescribe nc2 sobre el contrato de T1, el aceptante rechaza por R7 (solo rechazo falso; la medición no la activa). Texto de
+  disposición propuesto en su §7; quedan para el Coordinator las 12 filas ambiguas, el tratamiento de D-1 y la exclusión de las lecturas propias del
+  aceptante en `Identity`, `Trailer`, `FreeText` y `CleanTree`.
+- **Identidad de Codex, observación pasiva** ([`m7/identity/`](I-62-A6/m7/identity/obs1.json); sin ejecutar Codex): tres observaciones iguales (04:58Z,
+  05:31Z y 06:12Z del 2026-10-17): un solo `codex.exe`, SHA-256 `9ecb9df2…`; AppVersion `26.1013.3656.0`; huella `6EFA5B0E…`, con los mismos nombres de
+  claves que la línea base de `F909F480`; pwsh del runtime `362a356c…` sin cambio. **Cambiaron binario, versión y huella** frente al trío de la
+  solicitud anterior (`d13914ce…` / `26.1007.2314.0` / `F909F480…`): esa solicitud no se reutiliza (decisiones §90, punto 4). Líneas preparadas
+  ([`m7/owner-lines/`](I-62-A6/m7/owner-lines/line-b.txt)): OD-2 sobre la huella nueva (SHA-256 `3b33dd56cbae5fddab9a9431e7ad9b83170e6782e0161385bc324789634b7f25`) y A6-CONTROLLER-MEDICION-CONSUMO con
+  el trío vigente (`dda4b3f9c1db0183a38e5400777a2a21d524aa4b92ad684d5c5cae1b2fc4cf27`); no se piden.
+- **B1** ([`B1-repo-request-2026-10-17.md`](I-62-F6/requests/B1-repo-request-2026-10-17.md)): solicitud de creación del repositorio como acción
+  separada, con los hechos comprobados (A-5 y constructor sin cambio; nombre libre); no incluye la sesión de Principal de FX-U2. No se pide.

@@ -1,0 +1,18 @@
+{
+ "Commits": [],
+ "Files": [
+  {
+   "Name": "CONTRACT",
+   "Sha256": "ab78accbbf8ca99d1aeedc0fdc55951103f607fc0a958d0c7baefc63334289ad"
+  },
+  {
+   "Name": "DELEG",
+   "Sha256": "522d2a6d5f7a9c40dd9cc5fe084b98fa80edf28a47a5d88542b8a97d2a88921c"
+  }
+ ],
+ "Objects": [],
+ "Paths": [],
+ "Refs": [],
+ "RevPaths": [],
+ "Schema": "rackcad-bmin-closure/0-experimental"
+}
