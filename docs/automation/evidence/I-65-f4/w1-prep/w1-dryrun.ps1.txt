@@ -1,0 +1,51 @@
+# Comprobacion en seco de W1 (preparacion, NO es evidencia de OV): ejecuta CantileverStructuralExport.Build de las DLL
+# congeladas del Candidato fuera de AutoCAD, con el diseno de REF-CANT-01 y una variante por caso de OV-03, y con el archivo
+# de cargas de cada caso. Solo lee; no escribe paquetes (no llama a la fabrica ni al publicador).
+# Uso: pwsh -NoProfile -File w1_dryrun.ps1 <binDir> <designJson> <loadsDir> <refLoads>
+param([string]$Bin, [string]$DesignPath, [string]$LoadsDir, [string]$RefLoads)
+$ErrorActionPreference = 'Stop'
+[void][Reflection.Assembly]::LoadFrom((Join-Path $Bin 'RackCad.Domain.dll'))
+$app = [Reflection.Assembly]::LoadFrom((Join-Path $Bin 'RackCad.Application.dll'))
+"Application: " + $app.Location + " " + $app.GetCustomAttributes([Reflection.AssemblyInformationalVersionAttribute], $false)[0].InformationalVersion
+
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+$mapPath = Join-Path $Bin 'structural-analysis\ram-elements\section-material-map.json'
+$read = [RackCad.Application.StructuralAnalysis.Providers.RamElements.RamSectionMapReader]::Read([IO.File]::ReadAllText($mapPath, $utf8))
+"Tabla: " + $read.Outcome
+$catalog = [RackCad.Application.StructuralSections.CsvStructuralSectionCatalogProvider]::new((Join-Path $Bin 'catalogs')).Load()
+$store = [RackCad.Application.Persistence.RackProjectStore]::new()
+$decode = [System.Func[byte[], RackCad.Domain.Systems.Cantilever.CantileverLineDesign]] {
+    param([byte[]]$b)
+    return $store.Deserialize([Text.Encoding]::UTF8.GetString($b)).CantileverLineDesign
+}.GetNewClosure()
+
+$base = Get-Content -LiteralPath $DesignPath -Raw
+function Variant([string]$from, [string]$to) {
+    if (-not $base.Contains($from)) { throw "No encuentro '$from' en el diseno base" }
+    return $base.Replace($from, $to)
+}
+$cases = @(
+    @{ Id = 'REF-CANT-01 (OV-01/OV-04)'; Design = $base; Loads = $RefLoads; Expect = 'Valid' },
+    @{ Id = 'OV-03 a doble cara'; Design = (Variant '"FaceMode": "Single"' '"FaceMode": "Double"'); Loads = (Join-Path $LoadsDir 'ov03a-double-face.loads.json'); Expect = 'STATION-FACE-UNSUPPORTED' },
+    @{ Id = 'OV-03 b NegativeY'; Design = (Variant '"SingleSide": "PositiveY"' '"SingleSide": "NegativeY"'); Loads = (Join-Path $LoadsDir 'ov03b-negative-y.loads.json'); Expect = 'STATION-SIDE-UNSUPPORTED' },
+    @{ Id = 'OV-03 c pendiente 3 por 12'; Design = (Variant '"CutLength": 36 }' '"CutLength": 36, "SlopeRisePer12": 3 }'); Loads = (Join-Path $LoadsDir 'ov03c-slope-over-10deg.loads.json'); Expect = 'ARM-SLOPE-UNSUPPORTED' },
+    @{ Id = 'OV-03 d canal doble enfrentada C4X5.4'; Design = (Variant '"Arrangement": "Single", "SectionId": "AISC-HSS-RECT-HSS4X4X_250"' '"Arrangement": "DoubleChannelFacing", "SectionId": "AISC-C-C4X5_4"'); Loads = (Join-Path $LoadsDir 'ov03d-paired-channels.loads.json'); Expect = 'ARM-ARRANGEMENT-UNSUPPORTED' },
+    @{ Id = 'OV-03 e brazo HSS4X4X5/16 sin fila'; Design = (Variant '"SectionId": "AISC-HSS-RECT-HSS4X4X_250"' '"SectionId": "AISC-HSS-RECT-HSS4X4X_313"'); Loads = (Join-Path $LoadsDir 'ov03e-section-without-row.loads.json'); Expect = 'MATERIAL-ROW-MISSING' },
+    # Controles negativos (muestran que un archivo de cargas incompatible daria Invalid y por que se usa el de cada caso)
+    @{ Id = 'CONTROL e con cargas en NegativeY'; Design = (Variant '"SectionId": "AISC-HSS-RECT-HSS4X4X_250"' '"SectionId": "AISC-HSS-RECT-HSS4X4X_313"'); Loads = (Join-Path $LoadsDir 'ov03b-negative-y.loads.json'); Expect = '(control)' },
+    @{ Id = 'CONTROL c con cargas en NegativeY'; Design = (Variant '"CutLength": 36 }' '"CutLength": 36, "SlopeRisePer12": 3 }'); Loads = (Join-Path $LoadsDir 'ov03b-negative-y.loads.json'); Expect = '(control)' }
+)
+foreach ($c in $cases) {
+    $loadBytes = [IO.File]::ReadAllBytes($c.Loads)
+    $sha = [BitConverter]::ToString([Security.Cryptography.SHA256]::HashData($loadBytes)).Replace('-', '').ToLower()
+    $r = [RackCad.Application.Systems.Cantilever.CantileverStructuralExport]::Build('dryrun-rack', 'Cantilever', 0,
+        [Text.Encoding]::UTF8.GetBytes($c.Design), $decode, $loadBytes, $read.Table, $catalog)
+    $codes = @($r.Diagnostics | ForEach-Object { $_.Severity.ToString() + ' ' + $_.Code + ' (' + $_.Subject + ')' })
+    $blocking = @($r.Diagnostics | Where-Object { $_.Severity.ToString() -eq 'Blocking' } | ForEach-Object { $_.Code } | Sort-Object -Unique)
+    $ok = if ($c.Expect -eq 'Valid') { $r.Outcome.ToString() -eq 'Valid' -and $codes.Count -eq 0 }
+          elseif ($c.Expect -eq '(control)') { $null }
+          else { $r.Outcome.ToString() -eq 'Unsupported' -and $blocking.Count -eq 1 -and $blocking[0] -eq $c.Expect }
+    "---- " + $c.Id + " | cargas " + (Split-Path $c.Loads -Leaf) + " " + $sha.Substring(0, 8) + " | esperado " + $c.Expect
+    "     resultado: " + $r.Outcome + $(if ($null -ne $ok) { " -> " + $(if ($ok) { 'OK' } else { 'NO COINCIDE' }) } else { '' })
+    $codes | ForEach-Object { "       " + $_ }
+}

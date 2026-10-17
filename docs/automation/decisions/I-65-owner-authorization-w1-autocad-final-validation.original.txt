@@ -1,0 +1,103 @@
+I-65 — OWNER AUTHORIZATION
+F4 Final Validation — W1 AutoCAD Preparation and Conditional Execution
+He revisado la declaración del Candidato F4 registrada en `47930947`, con CI 38995618342 en PASS 4/4.
+1. Decisión del Owner
+W1 PROCEDURE PREPARATION = AUTHORIZED.
+W1 AUTOCAD EXECUTION = CONDITIONALLY AUTHORIZED.
+Autorizo preparar el procedimiento definitivo de W1 y ejecutarlo sin otra aprobación intermedia únicamente si todas las condiciones de entrada quedan satisfechas.
+La autorización se limita a la validación final de F4 sobre el Candidato declarado:
+`5a5ca57731ebbbbc41ed4f702698709d5e128a86`
+No autoriza modificar código ni ampliar el Freeze.
+2. Preparación de W1
+Prepara y versiona el procedimiento paso a paso antes de abrir AutoCAD.
+Debe incluir:
+
+* Construcción exacta de REF-CANT-01.
+* Identidad de los dibujos y bloques utilizados.
+* Archivos de cargas para OV-I65-01 y OV-I65-04.
+* Geometría y archivos de cargas específicos para cada variante OV-I65-03.
+* Diagnósticos esperados por caso.
+* Rutas nuevas de paquetes desechables.
+* Condiciones de parada y evidencias.
+* Preflight y POST del host.
+
+No utilices un archivo de cargas incompatible que provoque `Invalid` antes del diagnóstico estructural esperado.
+3. OV-I65-03
+Para cada uno de los cinco casos negativos:
+
+1. Define la geometría correspondiente.
+2. Define el archivo de cargas coherente con esa geometría.
+3. Identifica el diagnóstico `Unsupported` esperado.
+4. Ejecuta un único intento.
+5. Comprueba que no se generó paquete.
+6. Registra el resultado y la evidencia.
+
+Los casos son:
+
+* Estación de doble cara.
+* Brazo `NegativeY`.
+* Brazo con inclinación superior a 10°.
+* Canales pareados o perfiles C/L.
+* Perfil sin fila de mapeo.
+
+Las pruebas de fixture sobre filas no verificadas permanecen como evidencia separada.
+Si un caso no puede construirse conforme al procedimiento, registra el bloqueo y no lo sustituyas por otro escenario.
+4. DLL y host
+Utiliza únicamente la DLL del Candidato:
+`RackCad.Plugin.dll`
+SHA-256 completo: el fijado en el manifiesto de `D:\r65-smoke\5a5ca577\`, con prefijo `c72b759d` y sufijo `ac07`.
+Antes de la ejecución:
+
+1. Comunica la ventana y la identidad del DLL a I-52 e I-64.
+2. Obtén la confirmación de I-64 de ausencia de conflicto.
+3. Comprueba que no exista otra instancia de AutoCAD.
+4. Confirma que nadie utiliza el equipo.
+5. Ejecuta el preflight completo.
+6. Verifica DLL, tabla, biblioteca de bloques y archivos de cargas.
+7. Confirma que no existen diferencias protegidas.
+
+Si falta alguna condición, no abras AutoCAD.
+5. Ejecución W1
+Autorizo:
+
+1. Abrir una sola instancia de AutoCAD.
+2. Cargar una sola vez el DLL mediante NETLOAD no persistente.
+3. Elegir únicamente «Load Once» ante el aviso estándar.
+4. Construir REF-CANT-01 en un DWG desechable.
+5. Generar `pkg-OV01` y `pkg-OV04` en carpetas nuevas.
+6. Validar ambos paquetes mediante las 16 comprobaciones.
+7. Ejecutar los cinco escenarios negativos de OV-03.
+8. Capturar resultados y diagnósticos.
+9. Cerrar AutoCAD sin guardar.
+10. Ejecutar POST y clasificar las diferencias.
+
+No desactives controles de seguridad ni modifiques configuraciones persistentes.
+6. Condiciones de aceptación
+W1 solo será satisfactoria si:
+
+* La DLL cargada coincide con el Candidato.
+* OV-01 y OV-04 producen paquetes `Valid`, completos y 16/16.
+* Los datos de OV-01 coinciden con REF-CANT-01.
+* OV-03 produce los rechazos esperados, sin paquetes.
+* El host termina sin cambios prohibidos.
+* Los checkouts permanecen intactos.
+
+Un resultado `Invalid` por cargas incompatibles no sustituye al rechazo `Unsupported` esperado.
+7. Después de W1
+Si W1 termina satisfactoriamente:
+
+* Custodia el resultado.
+* Prepara los paquetes de inyección OV-05, 06 y 07 desde `pkg-OV01`.
+* Verifica que las fuentes originales no se modifiquen.
+* Prepara los scripts de volcado para W2.
+* Presenta el estado de preparación de RAM Elements.
+
+No ejecutes todavía RAM.
+8. Restricciones
+W1 PREPARATION = APPROVED.
+W1 AUTOCAD EXECUTION = CONDITIONAL GO.
+W2 RAM EXECUTION = NO.
+PRODUCT CODE CHANGES = NO.
+F4 GATE PASS = NO.
+No iniciar F5, F6 ni F7.
+Continúa autónomamente con W1 dentro del alcance y detente antes de W2.

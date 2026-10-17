@@ -2115,3 +2115,26 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
   Aceptación de F4 (AC-F4-07) sin cambios: OV-I65-01 PASS, salvo las filas informativas, y OV-I65-03..07 PASS, con custodia. Después:
   revisión del Architect, cierre y GATE PASS solo con orden del Owner.
 - FINAL READY DECLARATION = NO; W1 = NO; W2 = NO; F4 GATE PASS = NO. Codex 50 de 52; `attempts` 7 de 9.
+
+## 82. Procedimiento de W1 versionado (2026-10-17T04:54:58Z)
+
+- Orden: decisiones §78 (W1 PROCEDURE PREPARATION = AUTHORIZED). Sin AutoCAD, RAM, Codex ni Workers; sin cambios de producto.
+- Custodia (SHA-256; los archivos de cargas, por sus bytes con LF, iguales a las copias de `D:\r65-smoke\5a5ca577\inputs\`):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-authorization-w1-autocad-final-validation.original.txt` | `3DEFC38B2EF38D19164DC0FD6298AC8BFE743F0B27EB71A57B996D49AACC0DF6` |
+| `docs/initiatives/I-65-f4-w1-autocad-procedure.md` | `A7F49707D861ABE5502EAB1F942EB19275E132614A1AD892888F66535AA38E77` |
+| `docs/automation/evidence/I-65-f4/w1-prep/w1-dryrun.ps1.txt` | `F5725F602CE16F051A996F86C36D854F6472556F0DD8DE8660F8AD603627BFB1` |
+| `docs/automation/evidence/I-65-f4/w1-prep/w1-dryrun-output.txt` | `84560544CD6224D902C65EB2760D4EE81848A31D337D76A1BFC21E5862D940CF` |
+| `docs/automation/evidence/I-65-f4/w1-prep/w1-hostsnap.ps1.txt` | `5C33A842FA1A39D4DD9CE9EC1DD4B9143B3271FCEECA0D59D570F3B551B35BA4` |
+| `docs/automation/evidence/I-65-f4/w1-prep/loads/ov03a-double-face.loads.json` | `8E05FAADBFC2304B0CEBEA1BF4F1187C3734391CCAAFF0792C5F661444EBE87B` |
+| `docs/automation/evidence/I-65-f4/w1-prep/loads/ov03b-negative-y.loads.json` | `87E642305C6AA758EC7E6B07D7940272C91557CA23F03737C137959CBA80DE90` |
+| `docs/automation/evidence/I-65-f4/w1-prep/loads/ov03c-slope-over-10deg.loads.json` | `25F48E7F75D879C4668C3D9B37F69FDA0CD5442A407C03FF76362754623CAE05` |
+| `docs/automation/evidence/I-65-f4/w1-prep/loads/ov03d-paired-channels.loads.json` | `25F48E7F75D879C4668C3D9B37F69FDA0CD5442A407C03FF76362754623CAE05` |
+| `docs/automation/evidence/I-65-f4/w1-prep/loads/ov03e-section-without-row.loads.json` | `25F48E7F75D879C4668C3D9B37F69FDA0CD5442A407C03FF76362754623CAE05` |
+
+- Comprobación en seco con las DLL congeladas del Candidato (`RackCad.Application.dll` `1.0.0+5a5ca577…`): REF-CANT-01 `Valid`; (a)-(e)
+  con su código esperado y nada más; controles registrados. Es preparación, no evidencia de OV.
+- Copias en `D:\r65-smoke\5a5ca577\inputs\` hechas sin sobrescribir nada (el `ref-cant-01.loads.json` congelado no se tocó).
+- W1 aún no ejecutada. Codex 50 de 52; `attempts` 7 de 9.

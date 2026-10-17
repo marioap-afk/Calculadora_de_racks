@@ -1,0 +1,8 @@
+{
+  "schema": "rackcad-structural-loads/v1",
+  "loads": [
+    { "id": "N1", "target": { "level": 1, "side": "NegativeY" }, "positionBasis": "physicalArmFraction", "position": 0.5, "direction": "-Z", "magnitude": 1000, "unit": "lbf" },
+    { "id": "N2", "target": { "level": 2, "side": "NegativeY" }, "positionBasis": "physicalArmFraction", "position": 0.25, "direction": "-Z", "magnitude": 2, "unit": "kip" },
+    { "id": "N3", "target": { "level": 3, "side": "NegativeY" }, "positionBasis": "physicalArmFraction", "position": 0.75, "direction": "-Z", "magnitude": 500, "unit": "kgf" }
+  ]
+}
