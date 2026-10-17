@@ -2138,3 +2138,8 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
   con su código esperado y nada más; controles registrados. Es preparación, no evidencia de OV.
 - Copias en `D:\r65-smoke\5a5ca577\inputs\` hechas sin sobrescribir nada (el `ref-cant-01.loads.json` congelado no se tocó).
 - W1 aún no ejecutada. Codex 50 de 52; `attempts` 7 de 9.
+
+## 83. Coordinación de host de W1 (2026-10-17T08:47:16Z)
+
+- Custodia literal: `docs/automation/evidence/I-65-f4/host-coordination-w1-2026-10-17.md`, SHA-256 `CFB37D63BA263289780C7C2811E1EF5DB32724069CB3FBFED804BDBB0C3EAE79`.
+- W1-PR-01..03 cumplidas (procedimiento en `origin` `afa10180`, CI 39004356219 4/4; avisos hechos; confirmación expresa de I-64 a las 08:45Z). Siguiente: preflight W1-PR-04..09.
