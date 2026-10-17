@@ -1,0 +1,1446 @@
+{
+ "Phase": "p3-neg",
+ "SyntheticCommits": {
+  "DiffPathDeleted": "f8ef7429a3592c49b7743fe4fa4d7fb6f25c4f16",
+  "RecordAbsent": "004893943d3333f81677de1fb207e0b47d2cd22c",
+  "RecordAtAR": "303174d62ed550b9ba49858c4da523dd2ee46eaa"
+ },
+ "ReusedByIdentity": {
+  "Note": "Los negativos de sustitución e inflación a nivel de la derivación del cierre del aceptante no se repiten: se reutilizan por identidad (derive_r4.py y designate_m7.py sin cambio, SHA-256 3de12c54… y 491dcbd6…).",
+  "Files": [
+   {
+    "Path": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+    "Sha256": "099000fb80a33bee394bdfc9690398aa7f558e79a11d6fbea3ef71c829de7444",
+    "Cases": "grupo neg: S-N4-REALH, S-N4-TARGET, S-NC1-G, S-NC1-OTHER, S-N4-E2E, X-N4-COMMIT, X-N4-NX, X-N4-PATH, X-N4-REVPATH, X-N4-FILE, X-N4-REF",
+    "Verified": true
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/r4/r1probes/p9-n4.json",
+    "Sha256": "b3dcf564ef67f9da0dafa21caf9d5d95a2114a8e72b422f972b5d67873efea51",
+    "Cases": "N4-x, N4-x-subst",
+    "Verified": true
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/r4/r1probes/p10-nc1.json",
+    "Sha256": "068cd82fcb77abff0f5374418ca3bf20b886ee19851fb0b2e1a1b84844a92870",
+    "Cases": "nc1-x",
+    "Verified": true
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json (grupo desig)",
+    "Sha256": "6a8c57376685465ce39a5b117ad5f4077bc4319b43814a0ba78c36e6c0213b6a",
+    "Cases": "DES-MULTI, DES-O3-OTHER-RUN, DES-O3-PATTERN, DES-TRX-BAD, DES-MAP-NX",
+    "Verified": true
+   }
+  ]
+ },
+ "Cases": [
+  {
+   "Caso": "NEG-ABS-AUTH",
+   "Qué": "ausente: una autoridad citada por el contrato no existe en su revisión (UNIT_DOC en la AR)",
+   "Esperado": "regla 5 (a) corregida: cierre sin esa entrada, ausencia registrada, nada la sustituye (la trata 16.3); el validador lo acepta",
+   "Observado": "cierre con 26 entradas; ausencias registradas: AUTHORITY:UNIT_DOC docs/automation/decisions/FX-U1-ausente.md: absent at AR: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); validador: acepta; entrada para la autoridad ausente: no; ausencia registrada: sí",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "AUTHORITY:UNIT_DOC",
+      "docs/automation/decisions/FX-U1-ausente.md",
+      "absent at AR: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ]
+    ],
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:AUTHORITY:UNIT_DOC@AR",
+       "Path": "docs/automation/decisions/FX-U1-ausente.md",
+       "Revision": "AR",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-ABS-AUTH-OLD",
+   "Qué": "evidencia negativa: la misma designación con la regla 5 (a) de la ronda 1 (--absent-a=no-closure)",
+   "Esperado": "sin cierre (lo que el texto corregido ya no hace)",
+   "Observado": "sin cierre: AUTHORITY_ABSENT (docs/automation/decisions/FX-U1-ausente.md absent at AR, read by AUTHORITY:UNIT_DOC (superseded reading of rule 5 (a): no closure))",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [],
+    "Validator": null
+   }
+  },
+  {
+   "Caso": "NEG-ABS-TARGET",
+   "Qué": "ausente: el objeto exacto del Target no existe en Target.commit",
+   "Esperado": "sin cierre (regla 5 (b))",
+   "Observado": "sin cierre: TARGET (the exact object of the Target is absent at Target.commit (rule 5 (b): no launch))",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [],
+    "Validator": null
+   }
+  },
+  {
+   "Caso": "NEG-ABS-TARGET-CHK",
+   "Qué": "validador: el E de V con ese Target",
+   "Esperado": "rechaza: NoClosureExpected (regla 5 (b))",
+   "Observado": "rechaza: rule 5 (b): the exact object of the Target is absent at Target.commit",
+   "Cumple": true
+  },
+  {
+   "Caso": "NEG-ABS-DIFFPATH",
+   "Qué": "ausente: ruta del diff BaseSha..Target.commit borrada en Target.commit (commit sintético f8ef7429 en la copia del repositorio)",
+   "Esperado": "cierre sin entrada para esa ruta (regla 5 (b)), causa registrada; el validador lo acepta (positivo)",
+   "Observado": "cierre con 26 entradas; ausencias registradas: DIFF_PATH src/Fixture.Lib/Fixture.Lib.csproj: deleted at Target.commit: no entry (rule 5 (b)); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); validador: acepta; entrada para src/Fixture.Lib/Fixture.Lib.csproj: no",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "DIFF_PATH",
+      "src/Fixture.Lib/Fixture.Lib.csproj",
+      "deleted at Target.commit: no entry (rule 5 (b))"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ]
+    ],
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      },
+      {
+       "Category": "b",
+       "Role": "b:DIFF",
+       "Path": "src/Fixture.Lib/Fixture.Lib.csproj",
+       "Revision": "Target.commit",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-ABS-RECORD",
+   "Qué": "ausente: el registro de estado de la unidad no existe en Target.commit (commit sintético 00489394)",
+   "Esperado": "cierre sin entrada (b) para el registro (regla 5 (b)), causa registrada; el validador lo acepta",
+   "Observado": "cierre con 25 entradas; ausencias registradas: DIFF_PATH docs/automation/state/FX-U1.yml: deleted at Target.commit: no entry (rule 5 (b)); RECORD docs/automation/state/FX-U1.yml: absent at Target.commit: no entry (rule 5 (b)); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); validador: acepta; entrada (b) del registro: no; la autoridad UNIT_DOC sigue en la AR",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "DIFF_PATH",
+      "docs/automation/state/FX-U1.yml",
+      "deleted at Target.commit: no entry (rule 5 (b))"
+     ],
+     [
+      "RECORD",
+      "docs/automation/state/FX-U1.yml",
+      "absent at Target.commit: no entry (rule 5 (b))"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ]
+    ],
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      },
+      {
+       "Category": "b",
+       "Role": "b:DIFF",
+       "Path": "docs/automation/state/FX-U1.yml",
+       "Revision": "Target.commit",
+       "Cause": "absent"
+      },
+      {
+       "Category": "b",
+       "Role": "b:RECORD",
+       "Path": "docs/automation/state/FX-U1.yml",
+       "Revision": "Target.commit",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-ABS-DELEG-AUSENTE",
+   "Qué": "ausente: DELEG sin bytes custodiados",
+   "Esperado": "regla 5 (c) corregida: sin cierre y sin lanzamiento, causa registrada, nada sustituido",
+   "Observado": "sin cierre: NO_CLOSURE (delegation absent, with another blob or unreadable: (b) cannot be computed (rule 5 (c): no launch); nothing substitutes it); ausencias registradas: DELEG artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json: ABSENT: the custodied file does not exist; sin K o sin D, (a) y (b) no se pueden calcular: sin cierre ni lanzamiento (regla 5 (c))",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "DELEG",
+      "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json",
+      "ABSENT: the custodied file does not exist"
+     ]
+    ],
+    "Validator": null
+   }
+  },
+  {
+   "Caso": "NEG-ABS-DELEG-OTRO-BLOB",
+   "Qué": "ausente: DELEG con bytes de otro blob que el registrado",
+   "Esperado": "regla 5 (c) corregida: sin cierre y sin lanzamiento, causa registrada, nada sustituido",
+   "Observado": "sin cierre: NO_CLOSURE (delegation absent, with another blob or unreadable: (b) cannot be computed (rule 5 (c): no launch); nothing substitutes it); ausencias registradas: DELEG artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json: BLOB_MISMATCH: the custodied bytes do not have the registered blob; sin K o sin D, (a) y (b) no se pueden calcular: sin cierre ni lanzamiento (regla 5 (c))",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "DELEG",
+      "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json",
+      "BLOB_MISMATCH: the custodied bytes do not have the registered blob"
+     ]
+    ],
+    "Validator": null
+   }
+  },
+  {
+   "Caso": "NEG-ABS-DELEG-ILEGIBLE",
+   "Qué": "ausente: DELEG no legible (la ruta es un directorio)",
+   "Esperado": "regla 5 (c) corregida: sin cierre y sin lanzamiento, causa registrada, nada sustituido",
+   "Observado": "sin cierre: NO_CLOSURE (delegation absent, with another blob or unreadable: (b) cannot be computed (rule 5 (c): no launch); nothing substitutes it); ausencias registradas: DELEG artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json: UNREADABLE: the custodied bytes cannot be read; sin K o sin D, (a) y (b) no se pueden calcular: sin cierre ni lanzamiento (regla 5 (c))",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "DELEG",
+      "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json",
+      "UNREADABLE: the custodied bytes cannot be read"
+     ]
+    ],
+    "Validator": null
+   }
+  },
+  {
+   "Caso": "NEG-ABS-H-AUSENTE",
+   "Qué": "ausente: H sin bytes custodiados",
+   "Esperado": "regla 5 (c): sin entrada, causa registrada, nada sustituido; el validador acepta el E; como N4 en la derivación",
+   "Observado": "cierre con 25 entradas; ausencias registradas: H artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json: ABSENT: the custodied file does not exist; 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); validador: acepta; entrada en la ruta designada: no; otras entradas fuera de Git: 2; designate_m7: Ok; derivación como N4: omitidos por INPUT_ABSENT: C1.H.BaseSha, C1.H.CurrentSha, C1.H.RedSha, C1.RevList(D.BaseSha..H.CurrentSha), C6.H",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "H",
+      "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+      "ABSENT: the custodied file does not exist"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ]
+    ],
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "c",
+       "Role": "H",
+       "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+       "Cause": "ABSENT"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-ABS-H-OTRO-BLOB",
+   "Qué": "ausente: H con bytes de otro blob que el registrado",
+   "Esperado": "regla 5 (c): sin entrada, causa registrada, nada sustituido; el validador acepta el E; como N4 en la derivación",
+   "Observado": "cierre con 25 entradas; ausencias registradas: H artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json: BLOB_MISMATCH: the custodied bytes do not have the registered blob; 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); validador: acepta; entrada en la ruta designada: no; otras entradas fuera de Git: 2; designate_m7: Ok; derivación como N4: omitidos por INPUT_ABSENT: C1.H.BaseSha, C1.H.CurrentSha, C1.H.RedSha, C1.RevList(D.BaseSha..H.CurrentSha), C6.H",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "H",
+      "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+      "BLOB_MISMATCH: the custodied bytes do not have the registered blob"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ]
+    ],
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "c",
+       "Role": "H",
+       "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+       "Cause": "BLOB_MISMATCH"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-ABS-H-ILEGIBLE",
+   "Qué": "ausente: H no legible (la ruta es un directorio)",
+   "Esperado": "regla 5 (c): sin entrada, causa registrada, nada sustituido; el validador acepta el E; como N4 en la derivación",
+   "Observado": "cierre con 25 entradas; ausencias registradas: H artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json: UNREADABLE: the custodied bytes cannot be read; 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); validador: acepta; entrada en la ruta designada: no; otras entradas fuera de Git: 2; designate_m7: Ok; derivación como N4: omitidos por INPUT_ABSENT: C1.H.BaseSha, C1.H.CurrentSha, C1.H.RedSha, C1.RevList(D.BaseSha..H.CurrentSha), C6.H",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "H",
+      "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+      "UNREADABLE: the custodied bytes cannot be read"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ]
+    ],
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "c",
+       "Role": "H",
+       "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+       "Cause": "UNREADABLE"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-ABS-CONTRACT-AUSENTE",
+   "Qué": "ausente: CONTRACT sin bytes custodiados",
+   "Esperado": "regla 5 (c) corregida: sin cierre y sin lanzamiento, causa registrada, nada sustituido",
+   "Observado": "sin cierre: NO_CLOSURE (contract absent, with another blob or unreadable: (a) cannot be computed (rule 5 (c): no launch); nothing substitutes it); ausencias registradas: CONTRACT docs/automation/decisions/FX-U1-T1.gate-contract.json: ABSENT: the Git object of the registered blob is not available in the -C; sin K o sin D, (a) y (b) no se pueden calcular: sin cierre ni lanzamiento (regla 5 (c))",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "CONTRACT",
+      "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+      "ABSENT: the Git object of the registered blob is not available in the -C"
+     ]
+    ],
+    "Validator": null
+   }
+  },
+  {
+   "Caso": "NEG-ABS-CONTRACT-OTRO-BLOB",
+   "Qué": "ausente: CONTRACT con bytes de otro blob que el registrado",
+   "Esperado": "regla 5 (c) corregida: sin cierre y sin lanzamiento, causa registrada, nada sustituido",
+   "Observado": "sin cierre: NO_CLOSURE (contract absent, with another blob or unreadable: (a) cannot be computed (rule 5 (c): no launch); nothing substitutes it); ausencias registradas: CONTRACT docs/automation/decisions/FX-U1-T1.gate-contract.json: BLOB_MISMATCH: the custodied bytes do not have the registered blob; sin K o sin D, (a) y (b) no se pueden calcular: sin cierre ni lanzamiento (regla 5 (c))",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "CONTRACT",
+      "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+      "BLOB_MISMATCH: the custodied bytes do not have the registered blob"
+     ]
+    ],
+    "Validator": null
+   }
+  },
+  {
+   "Caso": "NEG-ABS-CONTRACT-ILEGIBLE",
+   "Qué": "ausente: CONTRACT no legible (la ruta es un directorio)",
+   "Esperado": "regla 5 (c) corregida: sin cierre y sin lanzamiento, causa registrada, nada sustituido",
+   "Observado": "sin cierre: NO_CLOSURE (contract absent, with another blob or unreadable: (a) cannot be computed (rule 5 (c): no launch); nothing substitutes it); ausencias registradas: CONTRACT docs/automation/decisions/FX-U1-T1.gate-contract.json: UNREADABLE: the custodied bytes cannot be read; sin K o sin D, (a) y (b) no se pueden calcular: sin cierre ni lanzamiento (regla 5 (c))",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "CONTRACT",
+      "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+      "UNREADABLE: the custodied bytes cannot be read"
+     ]
+    ],
+    "Validator": null
+   }
+  },
+  {
+   "Caso": "NEG-ABS-TRX-AUSENTE",
+   "Qué": "ausente: TRX sin bytes custodiados",
+   "Esperado": "regla 5 (c): sin entrada, causa registrada, nada sustituido; el validador acepta el E",
+   "Observado": "cierre con 25 entradas; ausencias registradas: TRX artifacts/ci/R37949808974/fixture-tests.trx: ABSENT: the custodied file does not exist; 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); validador: acepta; entrada en la ruta designada: no; otras entradas fuera de Git: 2; designate_m7: TRX_NOT_PINNED",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "TRX",
+      "artifacts/ci/R37949808974/fixture-tests.trx",
+      "ABSENT: the custodied file does not exist"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ]
+    ],
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "c",
+       "Role": "TRX",
+       "Path": "artifacts/ci/R37949808974/fixture-tests.trx",
+       "Cause": "ABSENT"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-ABS-TRX-OTRO-BLOB",
+   "Qué": "ausente: TRX con bytes de otro blob que el registrado",
+   "Esperado": "regla 5 (c): sin entrada, causa registrada, nada sustituido; el validador acepta el E",
+   "Observado": "cierre con 25 entradas; ausencias registradas: TRX artifacts/ci/R37949808974/fixture-tests.trx: BLOB_MISMATCH: the custodied bytes do not have the registered blob; 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); validador: acepta; entrada en la ruta designada: no; otras entradas fuera de Git: 2; designate_m7: TRX_NOT_PINNED",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "TRX",
+      "artifacts/ci/R37949808974/fixture-tests.trx",
+      "BLOB_MISMATCH: the custodied bytes do not have the registered blob"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ]
+    ],
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "c",
+       "Role": "TRX",
+       "Path": "artifacts/ci/R37949808974/fixture-tests.trx",
+       "Cause": "BLOB_MISMATCH"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-ABS-TRX-ILEGIBLE",
+   "Qué": "ausente: TRX no legible (la ruta es un directorio)",
+   "Esperado": "regla 5 (c): sin entrada, causa registrada, nada sustituido; el validador acepta el E",
+   "Observado": "cierre con 25 entradas; ausencias registradas: TRX artifacts/ci/R37949808974/fixture-tests.trx: UNREADABLE: the custodied bytes cannot be read; 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); validador: acepta; entrada en la ruta designada: no; otras entradas fuera de Git: 2; designate_m7: TRX_NOT_PINNED",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "TRX",
+      "artifacts/ci/R37949808974/fixture-tests.trx",
+      "UNREADABLE: the custodied bytes cannot be read"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ]
+    ],
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "c",
+       "Role": "TRX",
+       "Path": "artifacts/ci/R37949808974/fixture-tests.trx",
+       "Cause": "UNREADABLE"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-REP-BASE-V",
+   "Qué": "reemplazada: el objeto (Calculator.cs) fijado en BaseSha en vez de Target.commit (V)",
+   "Esperado": "rechaza: falta la entrada (b) en Target.commit; el blob de BaseSha coincide aquí con el de la AR (duplicado de la autoridad UNIT_CHANGE)",
+   "Observado": "rechaza: MISSING b:TARGET src/Fixture.Lib/Calculator.cs 380892ee; MISSING b:DIFF src/Fixture.Lib/Calculator.cs 380892ee; DUPLICATE CanonicalInputs src/Fixture.Lib/Calculator.cs 73e8502c",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [
+      [
+       "b:TARGET",
+       "src/Fixture.Lib/Calculator.cs",
+       "380892ee"
+      ],
+      [
+       "b:DIFF",
+       "src/Fixture.Lib/Calculator.cs",
+       "380892ee"
+      ]
+     ],
+     "Duplicates": [
+      [
+       "CanonicalInputs",
+       "src/Fixture.Lib/Calculator.cs",
+       "73e8502c"
+      ]
+     ],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 4,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-REP-BASE-B1",
+   "Qué": "reemplazada: el objeto fijado en BaseSha en vez de Target.commit (B1-like, donde BaseSha cambió el objeto)",
+   "Esperado": "rechaza: entrada ajena (blob de BaseSha) y falta la del Target",
+   "Observado": "rechaza: FOREIGN src/Fixture.Lib/Calculator.cs 726c25c3 (the blob is not the reference of its category (73e8502c, a04c1096)); MISSING b:TARGET src/Fixture.Lib/Calculator.cs a04c1096; MISSING b:DIFF src/Fixture.Lib/Calculator.cs a04c1096",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [
+      [
+       "src/Fixture.Lib/Calculator.cs",
+       "726c25c3",
+       "the blob is not the reference of its category (73e8502c, a04c1096)"
+      ]
+     ],
+     "Missing": [
+      [
+       "b:TARGET",
+       "src/Fixture.Lib/Calculator.cs",
+       "a04c1096"
+      ],
+      [
+       "b:DIFF",
+       "src/Fixture.Lib/Calculator.cs",
+       "a04c1096"
+      ]
+     ],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": []
+    }
+   }
+  },
+  {
+   "Caso": "NEG-REP-AUTH-TGT",
+   "Qué": "reemplazada: la autoridad UNIT_DOC (decisiones) fijada en Target.commit en vez de en su revisión de lectura (AR)",
+   "Esperado": "rechaza: falta la autoridad en la AR (la entrada queda duplicada con el registro (b))",
+   "Observado": "rechaza: MISSING a:AUTHORITY:UNIT_DOC@AR docs/automation/decisions/FX-U1.md d3f3ec72; DUPLICATE CanonicalInputs docs/automation/decisions/FX-U1.md 3fcfffc1",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [
+      [
+       "a:AUTHORITY:UNIT_DOC@AR",
+       "docs/automation/decisions/FX-U1.md",
+       "d3f3ec72"
+      ]
+     ],
+     "Duplicates": [
+      [
+       "CanonicalInputs",
+       "docs/automation/decisions/FX-U1.md",
+       "3fcfffc1"
+      ]
+     ],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 4,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-REP-CONTRACT",
+   "Qué": "reemplazada: el contrato por otro contrato (otro blob en la ruta designada)",
+   "Esperado": "rechaza: entrada ajena y falta el contrato custodiado",
+   "Observado": "rechaza: FOREIGN docs/automation/decisions/FX-U1-T1.gate-contract.json e8c3882c (the blob is not the reference of its category (628d89af)); MISSING c:CONTRACT docs/automation/decisions/FX-U1-T1.gate-contract.json 628d89af",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [
+      [
+       "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+       "e8c3882c",
+       "the blob is not the reference of its category (628d89af)"
+      ]
+     ],
+     "Missing": [
+      [
+       "c:CONTRACT",
+       "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+       "628d89af"
+      ]
+     ],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-REP-H-OTHER",
+   "Qué": "reemplazada: la entrega por la copia de otra corrida (R20261011T081000Z-a000) en una ruta no designada",
+   "Esperado": "rechaza: entrada fuera de Git no designada y falta la entrega designada",
+   "Observado": "rechaza: FOREIGN artifacts/orchestration/FX-U1/T1/0/R20261011T081000Z-a000/worker-handoff.json dbf4a289 (off-Git or TRX path not designated, or with another blob than the custodied bytes); MISSING c:H artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json 954c1dbd",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [
+      [
+       "artifacts/orchestration/FX-U1/T1/0/R20261011T081000Z-a000/worker-handoff.json",
+       "dbf4a289",
+       "off-Git or TRX path not designated, or with another blob than the custodied bytes"
+      ]
+     ],
+     "Missing": [
+      [
+       "c:H",
+       "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+       "954c1dbd"
+      ]
+     ],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-REP-EFF1",
+   "Qué": "reemplazada: la entrada de EFF^1 (WORKFLOW, MV-6/MV-7) por su blob de EFF (B1-like)",
+   "Esperado": "rechaza: falta la lectura en EFF^1 (y la entrada queda duplicada)",
+   "Observado": "rechaza: MISSING a:16.13-MV6@EFF^1 docs/WORKFLOW.md 884ed305; DUPLICATE AllowedTransitiveInputs docs/WORKFLOW.md 446c32ba",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [
+      [
+       "a:16.13-MV6@EFF^1",
+       "docs/WORKFLOW.md",
+       "884ed305"
+      ]
+     ],
+     "Duplicates": [
+      [
+       "AllowedTransitiveInputs",
+       "docs/WORKFLOW.md",
+       "446c32ba"
+      ]
+     ],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": []
+    }
+   }
+  },
+  {
+   "Caso": "NEG-FOR-TGT-OUT",
+   "Qué": "ajena: un archivo de Target.commit fuera del diff y de los registros (src/Fixture.Lib/Fixture.Lib.csproj)",
+   "Esperado": "rechaza: FOREIGN",
+   "Observado": "rechaza: FOREIGN src/Fixture.Lib/Fixture.Lib.csproj bfa77a11 (the path has no reference in any category (outside the diff, the records, the designation and the authorities))",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [
+      [
+       "src/Fixture.Lib/Fixture.Lib.csproj",
+       "bfa77a11",
+       "the path has no reference in any category (outside the diff, the records, the designation and the authorities)"
+      ]
+     ],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-FOR-OTHER-REPO",
+   "Qué": "ajena: una ruta de otro repositorio (el worktree de I-62: docs/initiatives/I-62-A-6.md, blob 4bc919dd)",
+   "Esperado": "rechaza: FOREIGN",
+   "Observado": "rechaza: FOREIGN docs/initiatives/I-62-A-6.md 4bc919dd (the path has no reference in any category (outside the diff, the records, the designation and the authorities))",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [
+      [
+       "docs/initiatives/I-62-A-6.md",
+       "4bc919dd",
+       "the path has no reference in any category (outside the diff, the records, the designation and the authorities)"
+      ]
+     ],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-FOR-TRX",
+   "Qué": "ajena: un TRX no designado",
+   "Esperado": "rechaza: FOREIGN (fuera de Git o TRX no designado)",
+   "Observado": "rechaza: FOREIGN artifacts/ci/R00000000000/otro.trx 8b2f09c6 (off-Git or TRX path not designated, or with another blob than the custodied bytes)",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [
+      [
+       "artifacts/ci/R00000000000/otro.trx",
+       "8b2f09c6",
+       "off-Git or TRX path not designated, or with another blob than the custodied bytes"
+      ]
+     ],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-FOR-INSTR",
+   "Qué": "ajena: la entrada del instrumento (y su acción) en una invocación que no lo admite (designación sin instrumento)",
+   "Esperado": "rechaza: FOREIGN (instrumento no admitido) y la acción del instrumento",
+   "Observado": "rechaza: FOREIGN docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py 9a829b0e (instrument entry in an invocation that does not admit it); ACTION: instrument action in an invocation that does not admit the instrument",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [
+      [
+       "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+       "9a829b0e",
+       "instrument entry in an invocation that does not admit it"
+      ]
+     ],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "ACTION: instrument action in an invocation that does not admit the instrument"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-FOR-INSTR-BUILD",
+   "Qué": "constructor con la misma designación sin instrumento (control)",
+   "Esperado": "cierre sin la entrada ni la acción del instrumento",
+   "Observado": "entrada del instrumento: no; acción: no",
+   "Cumple": true
+  },
+  {
+   "Caso": "NEG-FOR-DUP",
+   "Qué": "ajena: una entrada duplicada con el mismo blob (el registro de decisiones en Target.commit, dos veces)",
+   "Esperado": "rechaza: DUPLICATE",
+   "Observado": "rechaza: DUPLICATE CanonicalInputs docs/automation/decisions/FX-U1.md 3fcfffc1",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [
+      [
+       "CanonicalInputs",
+       "docs/automation/decisions/FX-U1.md",
+       "3fcfffc1"
+      ]
+     ],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 4,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-FOR-WIDE",
+   "Qué": "ajena con el texto corregido: un archivo ADDED del mapa en EFF (docs/automation/agent-execution/adapters/codex-cli.md), que Validate solo compara por su blob",
+   "Esperado": "rechaza: FOREIGN (la regla 1 (a) corregida solo admite mapa, esquema, MODIFIED y WORKFLOW/AUTOMATION_PLAN)",
+   "Observado": "rechaza: FOREIGN docs/automation/agent-execution/adapters/codex-cli.md 155f3469 (the path has no reference in any category (outside the diff, the records, the designation and the authorities))",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [
+      [
+       "docs/automation/agent-execution/adapters/codex-cli.md",
+       "155f3469",
+       "the path has no reference in any category (outside the diff, the records, the designation and the authorities)"
+      ]
+     ],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-POS-OVERLAP",
+   "Qué": "positivo de la regla 1 corregida: el registro de decisiones en Target.commit tiene el blob de la AR (commit sintético 303174d6), así que el par es a la vez (a) UNIT_DOC y (b) registro y objeto del diff",
+   "Esperado": "una sola entrada, en dos categorías y con el blob de la referencia de cada una; el validador la acepta",
+   "Observado": "cierre con 25 entradas; ausencias registradas: 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); 16.13:MV-6 docs/initiatives/PROMPT_TEMPLATES.md: absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24); validador: acepta; entradas de ese par: 1; categorías: ['a', 'b']",
+   "Cumple": true,
+   "Datos": {
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+     ]
+    ],
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [
+      {
+       "List": "CanonicalInputs",
+       "Path": "docs/automation/decisions/FX-U1.md",
+       "Blob": "d3f3ec72974a65e05ebd7ad4d1c0b3ced7a07c93",
+       "Categories": [
+        "a",
+        "b"
+       ]
+      }
+     ],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "NEG-PATH-RUNID",
+   "Qué": "regla 2 (c) corregida: la copia de la entrega en un directorio con el RunId de la verificación real y no el de sus bytes (designación N7AR-SAME del banco, el riesgo O6)",
+   "Esperado": "rechaza: PATH_RULE (el directorio no lleva el RunId de los bytes)",
+   "Observado": "rechaza: PATH_RULE: H path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule text)",
+   "Cumple": true,
+   "Datos": {
+    "Validator": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "PATH_RULE: H path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule text)"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  }
+ ]
+}

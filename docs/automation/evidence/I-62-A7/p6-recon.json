@@ -1,0 +1,451 @@
+{
+ "Phase": "p6-recon",
+ "Raw": {
+  "Ref": {
+   "Sha256": "5dc9f78ee40e0f54efc5d14b2ec84dc12dd4a6c1d63b66b0c07a9d2be33338da",
+   "Expected": "5dc9f78ee40e0f54efc5d14b2ec84dc12dd4a6c1d63b66b0c07a9d2be33338da",
+   "Match": true
+  },
+  "V2": {
+   "Sha256": "1eceeceecfebf994e3bce0af7818dfaa2144b99fb1339897745c2fe9ea7141ab",
+   "Expected": "1eceeceecfebf994e3bce0af7818dfaa2144b99fb1339897745c2fe9ea7141ab",
+   "Match": true
+  },
+  "Rows": [
+   {
+    "Definition": "canon",
+    "Role": "helper",
+    "Normalization": "docstring only",
+    "Identical": true
+   },
+   {
+    "Definition": "sha256",
+    "Role": "helper",
+    "Normalization": "docstring only",
+    "Identical": true
+   },
+   {
+    "Definition": "split_outer",
+    "Role": "outer splitter",
+    "Normalization": "docstring only",
+    "Identical": true
+   },
+   {
+    "Definition": "_strategy",
+    "Role": "outer splitter",
+    "Normalization": "docstring only",
+    "Identical": true
+   },
+   {
+    "Definition": "quote_token",
+    "Role": "outer splitter (rendering)",
+    "Normalization": "docstring only",
+    "Identical": true
+   },
+   {
+    "Definition": "render_command",
+    "Role": "outer splitter (rendering)",
+    "Normalization": "docstring only",
+    "Identical": true
+   },
+   {
+    "Definition": "lex_pwsh",
+    "Role": "pwsh lexer",
+    "Normalization": "docstring only",
+    "Identical": true
+   },
+   {
+    "Definition": "_abs_exe",
+    "Role": "git / interpreter path check",
+    "Normalization": "docstring only",
+    "Identical": true
+   },
+   {
+    "Definition": "extract_envelope",
+    "Role": "envelope extraction",
+    "Normalization": "docstring only",
+    "Identical": true
+   },
+   {
+    "Definition": "parse_log",
+    "Role": "completeness",
+    "Normalization": "docstring only",
+    "Identical": true
+   },
+   {
+    "Definition": "NotReconstructible",
+    "Role": "exception class",
+    "Normalization": "none",
+    "Identical": true
+   },
+   {
+    "Definition": "FACTS_SCHEMA",
+    "Role": "module constant",
+    "Normalization": "none",
+    "Identical": true
+   },
+   {
+    "Definition": "ALLOWED_EVENTS",
+    "Role": "module constant",
+    "Normalization": "none",
+    "Identical": true
+   },
+   {
+    "Definition": "TOOL_COMMANDS",
+    "Role": "module constant",
+    "Normalization": "none",
+    "Identical": true
+   },
+   {
+    "Definition": "OUTER_BARE",
+    "Role": "module constant",
+    "Normalization": "none",
+    "Identical": true
+   },
+   {
+    "Definition": "INNER_BARE",
+    "Role": "module constant",
+    "Normalization": "none",
+    "Identical": true
+   },
+   {
+    "Definition": "WIN_ABS",
+    "Role": "module constant",
+    "Normalization": "none",
+    "Identical": true
+   },
+   {
+    "Definition": "GIT_NAME",
+    "Role": "module constant",
+    "Normalization": "none",
+    "Identical": true
+   },
+   {
+    "Definition": "PY_NAME",
+    "Role": "module constant",
+    "Normalization": "none",
+    "Identical": true
+   },
+   {
+    "Definition": "PWSH_NAME",
+    "Role": "module constant",
+    "Normalization": "none",
+    "Identical": true
+   },
+   {
+    "Definition": "parse_instrument_command (ref) [lex_pwsh .. args] = _parse_pwsh_inner (v2) [lex_pwsh .. args]",
+    "Role": "pwsh inner grammar",
+    "Normalization": "docstring; lexed argument toks[2] (ref) / inner (v2) -> one placeholder; return compared apart",
+    "Identical": true,
+    "Statements": 17,
+    "ReturnRef": "return {'Shell': toks[0], 'Git': tok(1)[1], 'Interpreter': tok(8)[1], 'Argv': args}",
+    "ReturnV2": "return (tok(1)[1], tok(8)[1], args)"
+   },
+   {
+    "Definition": "reconstruct",
+    "Role": "execution identity, exit rules, envelope custody",
+    "Normalization": "v2: dict keys 'Rule' (1) and 'Rendering' (1) removed; reference: no-op statements removed: if env.get('Command') != p['Argv'][0]: pass",
+    "Identical": true,
+    "UndeclaredNormalization": true,
+    "NoopStatements": [
+     "if env.get('Command') != p['Argv'][0]: pass"
+    ]
+   },
+   {
+    "Definition": "main",
+    "Role": "command line",
+    "Normalization": "usage text (script name)",
+    "Identical": true
+   }
+  ],
+  "NewOrChangedInV2": [
+   "CMD_FORBIDDEN",
+   "CMD_NAME",
+   "RULE",
+   "_abs_shell",
+   "_parse_cmd_inner",
+   "_parse_pwsh_inner"
+  ],
+  "DeclaredNew": [
+   "RULE",
+   "CMD_NAME",
+   "CMD_FORBIDDEN",
+   "_abs_shell",
+   "_parse_pwsh_inner",
+   "_parse_cmd_inner"
+  ],
+  "UndeclaredNewOrChanged": [],
+  "OnlyInRef": [],
+  "DispatcherChanged": true,
+  "Guarantees": [
+   {
+    "Guarantee": "identidad de las ejecuciones (orden registrada completada que contiene el blob fijado)",
+    "Where": "reconstruct (filtro inst)",
+    "Identical": true
+   },
+   {
+    "Guarantee": "argv: forma declarada, Git e intérprete por ruta absoluta, -I, orden conocida, argumentos simples",
+    "Where": "split_outer, _strategy, lex_pwsh, _abs_exe, gramática interior pwsh",
+    "Identical": true,
+    "Widening": "shell: _abs_shell admite componentes que empiezan por punto (solo la posición del shell); renderizados R2 (-NoProfile) y R3 (cmd.exe /c) con gramática cerrada nueva (_parse_cmd_inner)"
+   },
+   {
+    "Guarantee": "bytes: exactamente un sobre, canónico, ASCII, terminado en LF, escrito sin alterar",
+    "Where": "extract_envelope; reconstruct (_raw)",
+    "Identical": true
+   },
+   {
+    "Guarantee": "resultados y códigos de salida: exit_code entero, status coherente, Error nulo si y solo si exit 0",
+    "Where": "reconstruct",
+    "Identical": true
+   },
+   {
+    "Guarantee": "custodia: registro completo y legible; sin él no hay Runs",
+    "Where": "parse_log; reconstruct (Reconstructible)",
+    "Identical": true
+   }
+  ],
+  "AllUnchangedIdentical": true,
+  "Demonstrated": "NO: comparación estática; la reconstrucción sobre un registro real de Codex 26.1013 no está medida (decisiones §92, punto 6)"
+ },
+ "Cases": [
+  {
+   "Caso": "RECON-canon",
+   "Qué": "identidad AST de canon (helper)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring only"
+   }
+  },
+  {
+   "Caso": "RECON-sha256",
+   "Qué": "identidad AST de sha256 (helper)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring only"
+   }
+  },
+  {
+   "Caso": "RECON-split_outer",
+   "Qué": "identidad AST de split_outer (outer splitter)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring only"
+   }
+  },
+  {
+   "Caso": "RECON-_strategy",
+   "Qué": "identidad AST de _strategy (outer splitter)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring only"
+   }
+  },
+  {
+   "Caso": "RECON-quote_token",
+   "Qué": "identidad AST de quote_token (outer splitter (rendering))",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring only"
+   }
+  },
+  {
+   "Caso": "RECON-render_command",
+   "Qué": "identidad AST de render_command (outer splitter (rendering))",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring only"
+   }
+  },
+  {
+   "Caso": "RECON-lex_pwsh",
+   "Qué": "identidad AST de lex_pwsh (pwsh lexer)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring only"
+   }
+  },
+  {
+   "Caso": "RECON-_abs_exe",
+   "Qué": "identidad AST de _abs_exe (git / interpreter path check)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring only"
+   }
+  },
+  {
+   "Caso": "RECON-extract_envelope",
+   "Qué": "identidad AST de extract_envelope (envelope extraction)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring only"
+   }
+  },
+  {
+   "Caso": "RECON-parse_log",
+   "Qué": "identidad AST de parse_log (completeness)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring only"
+   }
+  },
+  {
+   "Caso": "RECON-NotReconstructible",
+   "Qué": "identidad AST de NotReconstructible (exception class)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "none"
+   }
+  },
+  {
+   "Caso": "RECON-FACTS_SCHEMA",
+   "Qué": "identidad AST de FACTS_SCHEMA (module constant)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "none"
+   }
+  },
+  {
+   "Caso": "RECON-ALLOWED_EVENTS",
+   "Qué": "identidad AST de ALLOWED_EVENTS (module constant)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "none"
+   }
+  },
+  {
+   "Caso": "RECON-TOOL_COMMANDS",
+   "Qué": "identidad AST de TOOL_COMMANDS (module constant)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "none"
+   }
+  },
+  {
+   "Caso": "RECON-OUTER_BARE",
+   "Qué": "identidad AST de OUTER_BARE (module constant)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "none"
+   }
+  },
+  {
+   "Caso": "RECON-INNER_BARE",
+   "Qué": "identidad AST de INNER_BARE (module constant)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "none"
+   }
+  },
+  {
+   "Caso": "RECON-WIN_ABS",
+   "Qué": "identidad AST de WIN_ABS (module constant)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "none"
+   }
+  },
+  {
+   "Caso": "RECON-GIT_NAME",
+   "Qué": "identidad AST de GIT_NAME (module constant)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "none"
+   }
+  },
+  {
+   "Caso": "RECON-PY_NAME",
+   "Qué": "identidad AST de PY_NAME (module constant)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "none"
+   }
+  },
+  {
+   "Caso": "RECON-PWSH_NAME",
+   "Qué": "identidad AST de PWSH_NAME (module constant)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "none"
+   }
+  },
+  {
+   "Caso": "RECON-parse_instrument_command",
+   "Qué": "identidad AST de parse_instrument_command (ref) [lex_pwsh .. args] = _parse_pwsh_inner (v2) [lex_pwsh .. args] (pwsh inner grammar)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "docstring; lexed argument toks[2] (ref) / inner (v2) -> one placeholder; return compared apart"
+   }
+  },
+  {
+   "Caso": "RECON-reconstruct",
+   "Qué": "identidad AST de reconstruct (execution identity, exit rules, envelope custody)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "v2: dict keys 'Rule' (1) and 'Rendering' (1) removed; reference: no-op statements removed: if env.get('Command') != p['Argv'][0]: pass"
+   }
+  },
+  {
+   "Caso": "RECON-main",
+   "Qué": "identidad AST de main (command line)",
+   "Esperado": "idéntica tras la normalización declarada",
+   "Observado": "idéntica",
+   "Cumple": true,
+   "Datos": {
+    "Normalization": "usage text (script name)"
+   }
+  },
+  {
+   "Caso": "RECON-HEADER",
+   "Qué": "cambios de la v2 frente a lo que declara su cabecera",
+   "Esperado": "solo lo declarado: RULE, CMD_NAME, CMD_FORBIDDEN, _abs_shell, _parse_cmd_inner, _parse_pwsh_inner (extracción), despachador, campos Rule y Rendering",
+   "Observado": "nuevas o cambiadas: CMD_FORBIDDEN, CMD_NAME, RULE, _abs_shell, _parse_cmd_inner, _parse_pwsh_inner; no declaradas: ninguna; además se retiró del original una sentencia sin efecto: if env.get('Command') != p['Argv'][0]: pass",
+   "Cumple": true
+  }
+ ],
+ "Rc": 0
+}

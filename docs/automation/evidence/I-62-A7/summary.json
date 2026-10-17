@@ -1,0 +1,67 @@
+{
+ "Schema": "i62-a7-preflight-summary/1",
+ "Candidate": {
+  "Path": "docs/initiatives/I-62-A-7.md (candidata)",
+  "Blob": "6c29747d61c5f689a195095ad3712e6d9dba62aa"
+ },
+ "Base": "bb439090f6798a502c077da450edc1319e416fe5",
+ "StartUtc": "2026-10-17T17:41:47Z",
+ "Totals": {
+  "p0": {
+   "Cases": 9,
+   "Hold": 9
+  },
+  "p1": {
+   "Cases": 17,
+   "Hold": 17
+  },
+  "p2": {
+   "Cases": 9,
+   "Hold": 9
+  },
+  "p3": {
+   "Cases": 33,
+   "Hold": 33
+  },
+  "p5": {
+   "Cases": 22,
+   "Hold": 22
+  },
+  "p6": {
+   "Cases": 24,
+   "Hold": 24
+  },
+  "p4": {
+   "Cases": 46,
+   "Hold": 46
+  }
+ },
+ "Hold": 160,
+ "Cases": 160,
+ "NotHolding": [],
+ "Guards": {
+  "Result": "PASS",
+  "Head": "11a94996cbea39d1f41eeffca81ee3abc5878688",
+  "CandidateBlob": "6c29747d61c5f689a195095ad3712e6d9dba62aa",
+  "Guards": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS",
+   "G4": "PASS",
+   "G5": "PASS",
+   "G6": "PASS",
+   "G7": "PASS"
+  }
+ },
+ "Selftest": {
+  "Result": "PASS",
+  "Killed": 44,
+  "Total": 44
+ },
+ "Versions": {
+  "git": "git version 2.54.0.windows.1",
+  "python": "3.13.14",
+  "os": "Windows-11-10.0.26300-SP0",
+  "pwsh": "7.6.7"
+ }
+}

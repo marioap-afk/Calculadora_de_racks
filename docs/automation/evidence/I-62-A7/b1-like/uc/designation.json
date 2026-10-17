@@ -1,0 +1,51 @@
+{
+ "Schema": "a6m7-designation/1",
+ "Case": "B1-LIKE-uc",
+ "Repo": "D:/r62-a7/work/b1",
+ "AuthorityRevision": "88970c806c42b63fb81230d5e66bbb9881d17b92",
+ "Invocation": {
+  "UnitId": "FX-U2",
+  "TaskId": "T1",
+  "Attempt": 0,
+  "RunId": "R20261017T102000Z-b2v1",
+  "Target": {
+   "Commit": "4397f6d21a6e18e57db246b72624f57a811afba9",
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Blob": "a263a2a2e0ecee0d66034ef6b3e56c62b3ff2978"
+  }
+ },
+ "RunPath": "artifacts/orchestration/FX-U2/T1/0/R20261017T102000Z-b2v1/",
+ "Inputs": [
+  {
+   "Role": "DELEG",
+   "Path": "artifacts/orchestration/FX-U2/T1/0/R20261017T100000Z-b2d1/output.json",
+   "Custody": "D:/r62-a7/evid/b1-like/uc/deleg.json",
+   "Blob": "e0c420b9b2500d63b0c8b9e6b7ec6ac549c96ec0"
+  },
+  {
+   "Role": "H",
+   "Path": "artifacts/orchestration/FX-U2/T1/0/R20261017T101000Z-b2a1/worker-handoff.json",
+   "Custody": "D:/r62-a7/evid/b1-like/uc/handoff.json",
+   "Blob": "8cd8319b92c8c0d918a30dd23f8e0ce59a9b4dc2"
+  },
+  {
+   "Role": "CONTRACT",
+   "Path": "docs/automation/decisions/FX-U2-T1.gate-contract.json",
+   "Custody": "D:/r62-a7/evid/b1-like/uc/FX-U2-T1.gate-contract.json",
+   "Blob": "1a2a3310714fad96e49b34dd5e671e50ed229d4b"
+  },
+  {
+   "Role": "TRX",
+   "Path": "artifacts/ci/R37949808974/fixture-tests.trx",
+   "Custody": "D:/r62-a7/evid/b1-like/uc/fixture-tests.trx",
+   "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff"
+  }
+ ],
+ "Instrument": {
+  "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+  "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+ },
+ "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+ "Adapter": "codex-cli",
+ "DecisionRef": "BANCO-A7-B1LIKE-UC"
+}

@@ -1,0 +1,1190 @@
+{
+ "Phase": "p2-b1",
+ "Commits": {
+  "Claim": "6040097c5f05277d4d786a99bfc80970665c1e5f",
+  "AuthorityRevision": "2345c8d957be9dde69e3b566505119f91714611b",
+  "BaseSha": "a3515d92669df443272b31d4835cc9416bac1641",
+  "Target": "a2c8347d1222db9c2fcfecd9a84e4d768c5f6cdd",
+  "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+  "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+  "Variant-uc": {
+   "AuthorityRevision": "88970c806c42b63fb81230d5e66bbb9881d17b92",
+   "BaseSha": "685ec6cd1db8f6b68df72ed5ffc36de8d588563a",
+   "Target": "4397f6d21a6e18e57db246b72624f57a811afba9"
+  }
+ },
+ "Designation": "D:/r62-a7/evid/b1-like/main/designation.json",
+ "Inputs": {
+  "FX-U2-T1.gate-contract.json": "b759226ed289425ff972908c16f243dbbb6494eec510a3698e3897da5cae2239",
+  "deleg.json": "aa7a956a532526b61238b41b311210f9b944ae00c1c05b45919d2beb6dae7944",
+  "handoff.json": "725d9147e239d5b1ff041a85b564d255d61f21b40990b6376af94c09e320fa71",
+  "fixture-tests.trx": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+  "designation.json": "41ea369f8b0c9291777c09a195bc4e48a225e63cb2bd1ca0abe1a46a4108a6b0"
+ },
+ "InputsVariant": {
+  "FX-U2-T1.gate-contract.json": "7ddd714a92a7065a66dc59d99f804cc776476fd01e425747030f3a7fe414e932",
+  "deleg.json": "c495a441ce3ff134a801cae004010e4f6aebb902f20a46d0ae53d73e0447c728",
+  "handoff.json": "7f199a2f06fc044b1ab34a076d56fe64f99a5c141e7b7e65414b9b2f1f150adc",
+  "fixture-tests.trx": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+  "designation.json": "4c67e18ecee32206dedd364417a90e5dfc999753c31531e67e16447a30c22c2a"
+ },
+ "EA7Sha256": "49d358a57f3b10134e5c328c7d31bb194e904f34b02a67f0aafc7e844c047222",
+ "ER7ASha256": "a472df539bba68fbc425006164aab247bed09dbb4ef17e005b3b18fd6646c40e",
+ "Closures": {
+  "A7": {
+   "Path": "D:\\r62-a7\\work\\p2\\closure-A7.json",
+   "Sha256": "fc3c66ef386c5fd8ee510d411e9dfdd0034c1b8e0a1ec6e536f05551a7932260",
+   "Counts": {
+    "Commits": 6,
+    "RevPaths": 69,
+    "Paths": 47,
+    "Files": 4
+   },
+   "Omitted": [
+    [
+     "C1.D.ChainRedSha",
+     "FIELD_NULL"
+    ],
+    [
+     "C1.H.RedSha",
+     "FIELD_NULL"
+    ]
+   ],
+   "Designation": "Ok"
+  },
+  "R7-A": {
+   "Path": "D:\\r62-a7\\work\\p2\\closure-R7-A.json",
+   "Sha256": "b544475a3dbe3e7dfcff7a13d5a235ec62936c9ac2f74d32194cf4033ca5aad6",
+   "Counts": {
+    "Commits": 6,
+    "RevPaths": 63,
+    "Paths": 47,
+    "Files": 4
+   },
+   "Omitted": [
+    [
+     "C1.D.ChainRedSha",
+     "FIELD_NULL"
+    ],
+    [
+     "C1.H.RedSha",
+     "FIELD_NULL"
+    ]
+   ],
+   "Designation": "Ok"
+  }
+ },
+ "InstrumentArgv": [
+  "clausemap",
+  "--repo",
+  "D:/r62-a7/work/b1",
+  "--main",
+  "88ab34c398f03070c94a584f95196a394d869f7c",
+  "--file",
+  "CONTRACT=D:/r62-a7/evid/b1-like/main/FX-U2-T1.gate-contract.json",
+  "--sha256",
+  "CONTRACT=b759226ed289425ff972908c16f243dbbb6494eec510a3698e3897da5cae2239",
+  "--base",
+  "a3515d92669df443272b31d4835cc9416bac1641"
+ ],
+ "DeclaredFormShape": "& <git declarado> --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & <python declarado> -I - clausemap ...",
+ "Acceptor": {
+  "A7": {
+   "Rc": 0,
+   "Decision": "ACCEPT_FACTS",
+   "Checks": {
+    "R1": "MATCH",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "MATCH",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH",
+    "R10": "NOT_APPLICABLE"
+   },
+   "R9Violations": [],
+   "R9ViolationCount": 0,
+   "ZeroWrite": true,
+   "StdoutSha256": "e0762ed22424cb4a90a6fb4e0c32c9f7af34da529c634e04afbc6392757c4e2f"
+  },
+  "R7-A": {
+   "Rc": 1,
+   "Decision": "REJECT_FACTS",
+   "Checks": {
+    "R1": "MATCH",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "NOT_APPLICABLE",
+    "R5": "NOT_APPLICABLE",
+    "R6": "MATCH",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MISMATCH",
+    "R10": "NOT_APPLICABLE"
+   },
+   "R9Violations": [
+    "GitCalls[18]: object outside the closure: 07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+    "GitCalls[19]: object outside the closure: 6415c33bd2f86fa05444e00b630d7fed5e5d7a22",
+    "GitCalls[21]: object outside the closure: 884ed305ce242bda575cef74a9eff8c28ce7b67c",
+    "GitCalls[22]: object outside the closure: 64ae952b6fb01ce206200c64d2a1d8683b5a297d",
+    "GitCalls[24]: object outside the closure: 82ca9b38865bd93e8de6134a368b905cba9fc627",
+    "GitCalls[26]: object outside the closure: 0e3ed262add5154b975dab1931f729bcae2e31ea",
+    "Inputs[7]: rev:path outside the closure",
+    "Inputs[8]: rev:path outside the closure",
+    "Inputs[10]: rev:path outside the closure",
+    "Inputs[11]: rev:path outside the closure",
+    "Inputs[13]: rev:path outside the closure",
+    "Inputs[15]: rev:path outside the closure"
+   ],
+   "R9ViolationCount": 12,
+   "ZeroWrite": true,
+   "StdoutSha256": "1dbdde9c6584c296fe60cfb424fadbf4891a0c008029b84586edb12dcfc45d8f"
+  }
+ },
+ "AcceptorVariant": {
+  "Rc": 1,
+  "Decision": "REJECT_FACTS",
+  "Checks": {
+   "R1": "MATCH",
+   "R2": "MATCH",
+   "R3": "MATCH",
+   "R4": "NOT_APPLICABLE",
+   "R5": "NOT_APPLICABLE",
+   "R6": "MATCH",
+   "R7": "MATCH",
+   "R8": "MANUAL",
+   "R9": "MISMATCH",
+   "R10": "NOT_APPLICABLE"
+  },
+  "R9Violations": [
+   "GitCalls[35]: object outside the closure: 73e8502c5fed4cff98d53e3ca880ac5598fac597",
+   "Inputs[18]: rev:path outside the closure",
+   "Inputs[19]: rev:path outside the closure"
+  ],
+  "R9ViolationCount": 3,
+  "ZeroWrite": true,
+  "StdoutSha256": "5235f7be2ae8dd4416865a62a5469255eec839debc552123b40e7d4e9ee99c1e"
+ },
+ "Cases": [
+  {
+   "Caso": "B1-PIN-EFF1",
+   "Qué": "B1-like (clon temporal de candidate-b, MAP_VALID; EFF^1 lleva los blobs anteriores a la activación): entradas de A7-1 en EFF^1",
+   "Esperado": "A7-1 fija en EFF^1 los archivos MODIFIED del mapa (y AUTOMATION_PLAN para MV-7) con blobs distintos de los de la AuthorityRevision; R7-A no",
+   "Observado": "A7: 6 entradas en EFF^1, 6 con blob distinto del de la AR (AUTOMATION_PLAN.md 07b97bd3/AR f525cb1e, INITIATIVE_LIFECYCLE.md 6415c33b/AR f19896a8, WORKFLOW.md 884ed305/AR 446c32ba, README.md 64ae952b/AR 592dcfd4, routing.md 82ca9b38/AR bba08fc4, PROMPT_TEMPLATES.md 0e3ed262/AR 384d0b0c); R7-A contiene 0 de ellas",
+   "Cumple": true,
+   "Datos": {
+    "Entries": [
+     {
+      "List": "AllowedTransitiveInputs",
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Blob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+      "Category": "a",
+      "Kind": "16.13:MV-6",
+      "Revision": "EFF^1",
+      "BlobAtAuthorityRevision": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+     },
+     {
+      "List": "AllowedTransitiveInputs",
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Blob": "6415c33bd2f86fa05444e00b630d7fed5e5d7a22",
+      "Category": "a",
+      "Kind": "16.13:MV-6",
+      "Revision": "EFF^1",
+      "BlobAtAuthorityRevision": "f19896a8f1a7c82f74bac7231636f68462a87271"
+     },
+     {
+      "List": "AllowedTransitiveInputs",
+      "Path": "docs/WORKFLOW.md",
+      "Blob": "884ed305ce242bda575cef74a9eff8c28ce7b67c",
+      "Category": "a",
+      "Kind": "16.13:MV-6",
+      "Revision": "EFF^1",
+      "BlobAtAuthorityRevision": "446c32ba6a91f9a712a0758038ae0a46ab1c970f"
+     },
+     {
+      "List": "AllowedTransitiveInputs",
+      "Path": "docs/automation/agent-execution/README.md",
+      "Blob": "64ae952b6fb01ce206200c64d2a1d8683b5a297d",
+      "Category": "a",
+      "Kind": "16.13:MV-6",
+      "Revision": "EFF^1",
+      "BlobAtAuthorityRevision": "592dcfd45e8743fd83b3423249fbd3c73e3d3055"
+     },
+     {
+      "List": "AllowedTransitiveInputs",
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Blob": "82ca9b38865bd93e8de6134a368b905cba9fc627",
+      "Category": "a",
+      "Kind": "16.13:MV-6",
+      "Revision": "EFF^1",
+      "BlobAtAuthorityRevision": "bba08fc4686d7192deeb559752636a467103b4b1"
+     },
+     {
+      "List": "AllowedTransitiveInputs",
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Blob": "0e3ed262add5154b975dab1931f729bcae2e31ea",
+      "Category": "a",
+      "Kind": "16.13:MV-6",
+      "Revision": "EFF^1",
+      "BlobAtAuthorityRevision": "384d0b0c3734ab7df881ad17fa740fdb8a6422d5"
+     }
+    ]
+   }
+  },
+  {
+   "Caso": "B1-CHECK",
+   "Qué": "validador sobre los dos E del caso B1-like",
+   "Esperado": "acepta el E de A7-1; rechaza el de R7-A (faltan las lecturas en EFF^1)",
+   "Observado": "A7: acepta; R7-A: rechaza (faltan 6: AUTOMATION_PLAN.md@EFF^1, INITIATIVE_LIFECYCLE.md@EFF^1, PROMPT_TEMPLATES.md@EFF^1, README.md@EFF^1, WORKFLOW.md@EFF^1, routing.md@EFF^1)",
+   "Cumple": true,
+   "Datos": {
+    "A7": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": []
+    },
+    "R7A": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [
+      [
+       "a:16.13-MV6@EFF^1",
+       "docs/AUTOMATION_PLAN.md",
+       "07b97bd3"
+      ],
+      [
+       "a:16.13-MV6@EFF^1",
+       "docs/INITIATIVE_LIFECYCLE.md",
+       "6415c33b"
+      ],
+      [
+       "a:16.13-MV6@EFF^1",
+       "docs/WORKFLOW.md",
+       "884ed305"
+      ],
+      [
+       "a:16.13-MV6@EFF^1",
+       "docs/automation/agent-execution/README.md",
+       "64ae952b"
+      ],
+      [
+       "a:16.13-MV6@EFF^1",
+       "docs/automation/agent-execution/routing.md",
+       "82ca9b38"
+      ],
+      [
+       "a:16.13-MV6@EFF^1",
+       "docs/initiatives/PROMPT_TEMPLATES.md",
+       "0e3ed262"
+      ],
+      [
+       "a:16.13-VALIDATE@EFF^1",
+       "docs/AUTOMATION_PLAN.md",
+       "07b97bd3"
+      ]
+     ],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": []
+    }
+   }
+  },
+  {
+   "Caso": "B1-DERIVE",
+   "Qué": "derivación del cierre del aceptante (designate_m7 + derive_r4, sin cambio) desde cada E",
+   "Esperado": "designación válida en ambos; el cierre de A7 tiene RevPaths en EFF^1 para las lecturas de MV-6/MV-7 que el de R7-A no tiene",
+   "Observado": "A7: {'Commits': 6, 'RevPaths': 69, 'Paths': 47, 'Files': 4}, RevPaths en EFF^1: 9; R7-A: {'Commits': 6, 'RevPaths': 63, 'Paths': 47, 'Files': 4}, RevPaths en EFF^1: 3",
+   "Cumple": true,
+   "Datos": {
+    "RevPathsAtEFF1": {
+     "A7": [
+      "AGENTS.md",
+      "docs/AUTOMATION_PLAN.md",
+      "docs/INITIATIVE_LIFECYCLE.md",
+      "docs/WORKFLOW.md",
+      "docs/automation/agent-execution/README.md",
+      "docs/automation/agent-execution/routing.md",
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "src/Fixture.Lib/Calculator.cs"
+     ],
+     "R7-A": [
+      "AGENTS.md",
+      "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+      "src/Fixture.Lib/Calculator.cs"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "B1-CLAUSEMAP",
+   "Qué": "clausemap por la forma declarada (& <git> --no-replace-objects cat-file blob 9a829b0e… | & <python> -I - clausemap …), objeto suelto escrito en el clon temporal",
+   "Esperado": "rc 0, Error nulo, sobre canónico; el instrumento lee contenido en EFF^1",
+   "Observado": "rc 0; Error None; hechos MV1-MV7 presentes: sí; lecturas de contenido en EFF^1: AGENTS.md, AUTOMATION_PLAN.md, INITIATIVE_LIFECYCLE.md, WORKFLOW.md, README.md, routing.md, PROMPT_TEMPLATES.md, Calculator.cs",
+   "Cumple": true,
+   "Datos": {
+    "Eff1Reads": [
+     "AGENTS.md",
+     "docs/AUTOMATION_PLAN.md",
+     "docs/INITIATIVE_LIFECYCLE.md",
+     "docs/WORKFLOW.md",
+     "docs/automation/agent-execution/README.md",
+     "docs/automation/agent-execution/routing.md",
+     "docs/initiatives/PROMPT_TEMPLATES.md",
+     "src/Fixture.Lib/Calculator.cs"
+    ],
+    "EnvelopeSha256": "12afa45ea84809432a17c086d3475e5b7dffcb8abb00482a6dbb4800e5b7f037",
+    "StderrBytes": 0
+   }
+  },
+  {
+   "Caso": "B1-R9",
+   "Qué": "aceptante fijado (434ef1fc…) sobre la corrida real de clausemap con cada cierre derivado (solicitud de la medición: sin Verification ni RelayFacts)",
+   "Esperado": "R9 MATCH con el cierre de A7-1; R9 MISMATCH con el de R7-A (lecturas en EFF^1 fuera del cierre)",
+   "Observado": "A7: ACCEPT_FACTS rc 0, R9 MATCH; R7-A: REJECT_FACTS rc 1, R9 MISMATCH (12 violaciones; p. ej. GitCalls[18]: object outside the closure: 07b97bd3eef3a36bae3180bd7eb24b176b8049f0; GitCalls[19]: object outside the closure: 6415c33bd2f86fa05444e00b630d7fed5e5d7a22); cero escrituras: sí",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "A7": {
+      "Rc": 0,
+      "Decision": "ACCEPT_FACTS",
+      "Checks": {
+       "R1": "MATCH",
+       "R2": "MATCH",
+       "R3": "MATCH",
+       "R4": "NOT_APPLICABLE",
+       "R5": "NOT_APPLICABLE",
+       "R6": "MATCH",
+       "R7": "MATCH",
+       "R8": "MANUAL",
+       "R9": "MATCH",
+       "R10": "NOT_APPLICABLE"
+      },
+      "R9Violations": [],
+      "R9ViolationCount": 0,
+      "ZeroWrite": true,
+      "StdoutSha256": "e0762ed22424cb4a90a6fb4e0c32c9f7af34da529c634e04afbc6392757c4e2f"
+     },
+     "R7-A": {
+      "Rc": 1,
+      "Decision": "REJECT_FACTS",
+      "Checks": {
+       "R1": "MATCH",
+       "R2": "MATCH",
+       "R3": "MATCH",
+       "R4": "NOT_APPLICABLE",
+       "R5": "NOT_APPLICABLE",
+       "R6": "MATCH",
+       "R7": "MATCH",
+       "R8": "MANUAL",
+       "R9": "MISMATCH",
+       "R10": "NOT_APPLICABLE"
+      },
+      "R9Violations": [
+       "GitCalls[18]: object outside the closure: 07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+       "GitCalls[19]: object outside the closure: 6415c33bd2f86fa05444e00b630d7fed5e5d7a22",
+       "GitCalls[21]: object outside the closure: 884ed305ce242bda575cef74a9eff8c28ce7b67c",
+       "GitCalls[22]: object outside the closure: 64ae952b6fb01ce206200c64d2a1d8683b5a297d",
+       "GitCalls[24]: object outside the closure: 82ca9b38865bd93e8de6134a368b905cba9fc627",
+       "GitCalls[26]: object outside the closure: 0e3ed262add5154b975dab1931f729bcae2e31ea",
+       "Inputs[7]: rev:path outside the closure",
+       "Inputs[8]: rev:path outside the closure",
+       "Inputs[10]: rev:path outside the closure",
+       "Inputs[11]: rev:path outside the closure",
+       "Inputs[13]: rev:path outside the closure",
+       "Inputs[15]: rev:path outside the closure"
+      ],
+      "R9ViolationCount": 12,
+      "ZeroWrite": true,
+      "StdoutSha256": "1dbdde9c6584c296fe60cfb424fadbf4891a0c008029b84586edb12dcfc45d8f"
+     }
+    }
+   }
+  },
+  {
+   "Caso": "B1-UC-R9",
+   "Qué": "residuo declarado (A-7 §3.5, Q-A7-06): el archivo UNIT_CHANGE citado (Calculator.cs) cambió antes de la AuthorityRevision (blob en la AR 50f77b97; en EFF^1, EFF y MainSha_eval 73e8502c); clausemap compara cada cita en EFF^1, EFF y MainSha_eval",
+   "Esperado": "el E de A7-1 es válido; con él, R9 MISMATCH sobre clausemap (rechazo falso, nunca aceptación falsa: el comportamiento declarado); la precondición de §3.5 bloquea el lanzamiento (S-03)",
+   "Observado": "validador sobre el E de A7-1: acepta; clausemap rc 0; aceptante: REJECT_FACTS rc 1, R9 MISMATCH (3 violaciones: GitCalls[35]: object outside the closure: 73e8502c5fed4cff98d53e3ca880ac5598fac597; Inputs[18]: rev:path outside the closure; Inputs[19]: rev:path outside the closure); precondición (cobertura): NO_LAUNCH_S-03",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 1,
+     "Decision": "REJECT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MISMATCH",
+      "R10": "NOT_APPLICABLE"
+     },
+     "R9Violations": [
+      "GitCalls[35]: object outside the closure: 73e8502c5fed4cff98d53e3ca880ac5598fac597",
+      "Inputs[18]: rev:path outside the closure",
+      "Inputs[19]: rev:path outside the closure"
+     ],
+     "R9ViolationCount": 3,
+     "ZeroWrite": true,
+     "StdoutSha256": "5235f7be2ae8dd4416865a62a5469255eec839debc552123b40e7d4e9ee99c1e"
+    },
+    "Validator": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": []
+    },
+    "Precondition": {
+     "coverage": {
+      "Mode": "coverage",
+      "Citations": [
+       {
+        "Path": "docs/automation/decisions/FX-U2.md",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "81703ed7fb3532bbc4433bbf7afd2ff268644179",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1,
+        "ReadsOutsideE": []
+       },
+       {
+        "Path": "docs/automation/state/FX-U2.yml",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "068febb841aaa03598218bd319d44eddc9d24316",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1,
+        "ReadsOutsideE": []
+       },
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Blobs": {
+         "AR": "50f77b97235c30cd1e23d98168108a9d11b4e082",
+         "EFF": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF^1": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "MainSha_eval": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+        },
+        "Distinct": 2,
+        "ReadsOutsideE": [
+         "EFF^1",
+         "EFF",
+         "MainSha_eval"
+        ]
+       },
+       {
+        "Path": "AGENTS.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF^1": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "MainSha_eval": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+        },
+        "Distinct": 1,
+        "ReadsOutsideE": []
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF^1": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+         "MainSha_eval": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+        },
+        "Distinct": 2,
+        "ReadsOutsideE": []
+       }
+      ],
+      "Blocking": [
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Why": "clausemap reads src/Fixture.Lib/Calculator.cs at EFF^1, EFF, MainSha_eval, not pinned by E"
+       }
+      ],
+      "Result": "NO_LAUNCH_S-03",
+      "Revisions": {
+       "AR": "88970c806c42b63fb81230d5e66bbb9881d17b92",
+       "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+       "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+       "MainSha_eval": "88ab34c398f03070c94a584f95196a394d869f7c"
+      }
+     },
+     "text": {
+      "Mode": "text",
+      "Citations": [
+       {
+        "Path": "docs/automation/decisions/FX-U2.md",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "81703ed7fb3532bbc4433bbf7afd2ff268644179",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "docs/automation/state/FX-U2.yml",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "068febb841aaa03598218bd319d44eddc9d24316",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Blobs": {
+         "AR": "50f77b97235c30cd1e23d98168108a9d11b4e082",
+         "EFF": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF^1": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "MainSha_eval": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+        },
+        "Distinct": 2
+       },
+       {
+        "Path": "AGENTS.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF^1": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "MainSha_eval": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF^1": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+         "MainSha_eval": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+        },
+        "Distinct": 2
+       }
+      ],
+      "Blocking": [
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Why": "different blobs at AR 50f77b97, EFF 73e8502c, EFF^1 73e8502c, MainSha_eval 73e8502c"
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Why": "different blobs at AR f525cb1e, EFF f525cb1e, EFF^1 07b97bd3, MainSha_eval f525cb1e"
+       }
+      ],
+      "Result": "NO_LAUNCH_S-03",
+      "Revisions": {
+       "AR": "88970c806c42b63fb81230d5e66bbb9881d17b92",
+       "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+       "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+       "MainSha_eval": "88ab34c398f03070c94a584f95196a394d869f7c"
+      }
+     },
+     "unit": {
+      "Mode": "unit",
+      "Citations": [
+       {
+        "Path": "docs/automation/decisions/FX-U2.md",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "81703ed7fb3532bbc4433bbf7afd2ff268644179",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "docs/automation/state/FX-U2.yml",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "068febb841aaa03598218bd319d44eddc9d24316",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Blobs": {
+         "AR": "50f77b97235c30cd1e23d98168108a9d11b4e082",
+         "EFF": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF^1": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "MainSha_eval": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+        },
+        "Distinct": 2
+       },
+       {
+        "Path": "AGENTS.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF^1": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "MainSha_eval": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+        },
+        "Distinct": 1,
+        "Compared": false
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF^1": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+         "MainSha_eval": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+        },
+        "Distinct": 2,
+        "Compared": false
+       }
+      ],
+      "Blocking": [
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Why": "different blobs at AR 50f77b97, EFF 73e8502c, EFF^1 73e8502c, MainSha_eval 73e8502c"
+       }
+      ],
+      "Result": "NO_LAUNCH_S-03",
+      "Revisions": {
+       "AR": "88970c806c42b63fb81230d5e66bbb9881d17b92",
+       "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+       "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+       "MainSha_eval": "88ab34c398f03070c94a584f95196a394d869f7c"
+      }
+     }
+    }
+   }
+  },
+  {
+   "Caso": "CIT-B1-UC",
+   "Qué": "precondición de §3.5 en la variante B1-UC",
+   "Esperado": "el criterio de cobertura bloquea (NO_LAUNCH, S-03): clausemap leería Calculator.cs en EFF^1, EFF y MainSha_eval con un blob que el cierre no fija",
+   "Observado": "coverage: NO_LAUNCH_S-03 (Calculator.cs); text: NO_LAUNCH_S-03 (Calculator.cs, AUTOMATION_PLAN.md); unit: NO_LAUNCH_S-03 (Calculator.cs)",
+   "Cumple": true,
+   "Datos": {
+    "Precondition": {
+     "coverage": {
+      "Mode": "coverage",
+      "Citations": [
+       {
+        "Path": "docs/automation/decisions/FX-U2.md",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "81703ed7fb3532bbc4433bbf7afd2ff268644179",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1,
+        "ReadsOutsideE": []
+       },
+       {
+        "Path": "docs/automation/state/FX-U2.yml",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "068febb841aaa03598218bd319d44eddc9d24316",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1,
+        "ReadsOutsideE": []
+       },
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Blobs": {
+         "AR": "50f77b97235c30cd1e23d98168108a9d11b4e082",
+         "EFF": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF^1": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "MainSha_eval": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+        },
+        "Distinct": 2,
+        "ReadsOutsideE": [
+         "EFF^1",
+         "EFF",
+         "MainSha_eval"
+        ]
+       },
+       {
+        "Path": "AGENTS.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF^1": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "MainSha_eval": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+        },
+        "Distinct": 1,
+        "ReadsOutsideE": []
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF^1": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+         "MainSha_eval": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+        },
+        "Distinct": 2,
+        "ReadsOutsideE": []
+       }
+      ],
+      "Blocking": [
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Why": "clausemap reads src/Fixture.Lib/Calculator.cs at EFF^1, EFF, MainSha_eval, not pinned by E"
+       }
+      ],
+      "Result": "NO_LAUNCH_S-03",
+      "Revisions": {
+       "AR": "88970c806c42b63fb81230d5e66bbb9881d17b92",
+       "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+       "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+       "MainSha_eval": "88ab34c398f03070c94a584f95196a394d869f7c"
+      }
+     },
+     "text": {
+      "Mode": "text",
+      "Citations": [
+       {
+        "Path": "docs/automation/decisions/FX-U2.md",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "81703ed7fb3532bbc4433bbf7afd2ff268644179",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "docs/automation/state/FX-U2.yml",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "068febb841aaa03598218bd319d44eddc9d24316",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Blobs": {
+         "AR": "50f77b97235c30cd1e23d98168108a9d11b4e082",
+         "EFF": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF^1": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "MainSha_eval": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+        },
+        "Distinct": 2
+       },
+       {
+        "Path": "AGENTS.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF^1": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "MainSha_eval": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF^1": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+         "MainSha_eval": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+        },
+        "Distinct": 2
+       }
+      ],
+      "Blocking": [
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Why": "different blobs at AR 50f77b97, EFF 73e8502c, EFF^1 73e8502c, MainSha_eval 73e8502c"
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Why": "different blobs at AR f525cb1e, EFF f525cb1e, EFF^1 07b97bd3, MainSha_eval f525cb1e"
+       }
+      ],
+      "Result": "NO_LAUNCH_S-03",
+      "Revisions": {
+       "AR": "88970c806c42b63fb81230d5e66bbb9881d17b92",
+       "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+       "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+       "MainSha_eval": "88ab34c398f03070c94a584f95196a394d869f7c"
+      }
+     },
+     "unit": {
+      "Mode": "unit",
+      "Citations": [
+       {
+        "Path": "docs/automation/decisions/FX-U2.md",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "81703ed7fb3532bbc4433bbf7afd2ff268644179",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "docs/automation/state/FX-U2.yml",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "068febb841aaa03598218bd319d44eddc9d24316",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Blobs": {
+         "AR": "50f77b97235c30cd1e23d98168108a9d11b4e082",
+         "EFF": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF^1": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "MainSha_eval": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+        },
+        "Distinct": 2
+       },
+       {
+        "Path": "AGENTS.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF^1": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "MainSha_eval": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+        },
+        "Distinct": 1,
+        "Compared": false
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF^1": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+         "MainSha_eval": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+        },
+        "Distinct": 2,
+        "Compared": false
+       }
+      ],
+      "Blocking": [
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Why": "different blobs at AR 50f77b97, EFF 73e8502c, EFF^1 73e8502c, MainSha_eval 73e8502c"
+       }
+      ],
+      "Result": "NO_LAUNCH_S-03",
+      "Revisions": {
+       "AR": "88970c806c42b63fb81230d5e66bbb9881d17b92",
+       "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+       "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+       "MainSha_eval": "88ab34c398f03070c94a584f95196a394d869f7c"
+      }
+     }
+    }
+   }
+  },
+  {
+   "Caso": "CIT-B1-MAIN",
+   "Qué": "precondición de §3.5 en el caso B1-like principal (el contrato cita AUTOMATION_PLAN.md como EXTERNAL, como el de FX-U1; AUTOMATION_PLAN.md es MODIFIED en todo mapa válido)",
+   "Esperado": "el criterio de cobertura deja lanzar (AUTOMATION_PLAN.md en EFF^1 lo fija el cierre, categoría (a); R9 da MATCH en B1-R9); la redacción anterior («blobs distintos en esas revisiones», modo text) bloqueaba: evidencia negativa de F10",
+   "Observado": "coverage: LAUNCH_MAY_PROCEED; text: NO_LAUNCH_S-03 (AUTOMATION_PLAN.md: different blobs at AR f525cb1e, EFF f525cb1e, EFF^1 07b97bd3, MainSha_eval f525cb1e); unit: LAUNCH_MAY_PROCEED",
+   "Cumple": true,
+   "Datos": {
+    "Precondition": {
+     "coverage": {
+      "Mode": "coverage",
+      "Citations": [
+       {
+        "Path": "docs/automation/decisions/FX-U2.md",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "81703ed7fb3532bbc4433bbf7afd2ff268644179",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1,
+        "ReadsOutsideE": []
+       },
+       {
+        "Path": "docs/automation/state/FX-U2.yml",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "068febb841aaa03598218bd319d44eddc9d24316",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1,
+        "ReadsOutsideE": []
+       },
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Blobs": {
+         "AR": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF^1": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "MainSha_eval": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+        },
+        "Distinct": 1,
+        "ReadsOutsideE": []
+       },
+       {
+        "Path": "AGENTS.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF^1": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "MainSha_eval": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+        },
+        "Distinct": 1,
+        "ReadsOutsideE": []
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF^1": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+         "MainSha_eval": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+        },
+        "Distinct": 2,
+        "ReadsOutsideE": []
+       }
+      ],
+      "Blocking": [],
+      "Result": "LAUNCH_MAY_PROCEED",
+      "Revisions": {
+       "AR": "2345c8d957be9dde69e3b566505119f91714611b",
+       "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+       "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+       "MainSha_eval": "88ab34c398f03070c94a584f95196a394d869f7c"
+      }
+     },
+     "text": {
+      "Mode": "text",
+      "Citations": [
+       {
+        "Path": "docs/automation/decisions/FX-U2.md",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "81703ed7fb3532bbc4433bbf7afd2ff268644179",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "docs/automation/state/FX-U2.yml",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "068febb841aaa03598218bd319d44eddc9d24316",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Blobs": {
+         "AR": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF^1": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "MainSha_eval": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "AGENTS.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF^1": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "MainSha_eval": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF^1": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+         "MainSha_eval": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+        },
+        "Distinct": 2
+       }
+      ],
+      "Blocking": [
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Why": "different blobs at AR f525cb1e, EFF f525cb1e, EFF^1 07b97bd3, MainSha_eval f525cb1e"
+       }
+      ],
+      "Result": "NO_LAUNCH_S-03",
+      "Revisions": {
+       "AR": "2345c8d957be9dde69e3b566505119f91714611b",
+       "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+       "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+       "MainSha_eval": "88ab34c398f03070c94a584f95196a394d869f7c"
+      }
+     },
+     "unit": {
+      "Mode": "unit",
+      "Citations": [
+       {
+        "Path": "docs/automation/decisions/FX-U2.md",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "81703ed7fb3532bbc4433bbf7afd2ff268644179",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "docs/automation/state/FX-U2.yml",
+        "Class": "UNIT_DOC",
+        "Blobs": {
+         "AR": "068febb841aaa03598218bd319d44eddc9d24316",
+         "EFF": null,
+         "EFF^1": null,
+         "MainSha_eval": null
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "src/Fixture.Lib/Calculator.cs",
+        "Class": "UNIT_CHANGE",
+        "Blobs": {
+         "AR": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "EFF^1": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+         "MainSha_eval": "73e8502c5fed4cff98d53e3ca880ac5598fac597"
+        },
+        "Distinct": 1
+       },
+       {
+        "Path": "AGENTS.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "EFF^1": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+         "MainSha_eval": "69b1f03282a128993ba348ba1e44a1b6b9c95040"
+        },
+        "Distinct": 1,
+        "Compared": false
+       },
+       {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Class": "EXTERNAL",
+        "Blobs": {
+         "AR": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+         "EFF^1": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+         "MainSha_eval": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+        },
+        "Distinct": 2,
+        "Compared": false
+       }
+      ],
+      "Blocking": [],
+      "Result": "LAUNCH_MAY_PROCEED",
+      "Revisions": {
+       "AR": "2345c8d957be9dde69e3b566505119f91714611b",
+       "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+       "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+       "MainSha_eval": "88ab34c398f03070c94a584f95196a394d869f7c"
+      }
+     }
+    }
+   }
+  },
+  {
+   "Caso": "DES-REG-B1",
+   "Qué": "designación B1-like con la ruta y el blob de cada artefacto registrados (regla 2 (c) corregida)",
+   "Esperado": "ningún aviso de blob sin registrar; el validador comprueba los cuatro",
+   "Observado": "sin blob registrado: ninguno",
+   "Cumple": true
+  }
+ ]
+}

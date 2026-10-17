@@ -1,0 +1,450 @@
+{
+ "Base": "bb439090f6798a502c077da450edc1319e416fe5",
+ "Candidate": {
+  "Added": 29,
+  "Base": "bb439090f6798a502c077da450edc1319e416fe5",
+  "CandidateBlob": "6c29747d61c5f689a195095ad3712e6d9dba62aa",
+  "Guards": {
+   "G1": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G2": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G3": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G4": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G5": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G6": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G7": {
+    "Findings": [],
+    "Status": "PASS"
+   }
+  },
+  "Head": "a272d0d9f650cdb5001017e0d9ba492a5777ac05",
+  "Mode": "preview",
+  "Result": "PASS"
+ },
+ "Killed": 44,
+ "Mode": "selftest",
+ "Mutants": [
+  {
+   "Condition": "candidate",
+   "Guard": "ALL",
+   "Killed": null,
+   "Mutant": "la candidata sin mutar",
+   "Result": "PASS"
+  },
+  {
+   "Condition": "only-adds",
+   "ExpectedFinding": "G1-only-adds",
+   "Findings": 1,
+   "Guard": "G1",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "modifica un archivo existente (docs/automation/decisions/I-62.md)"
+  },
+  {
+   "Condition": "allowed-paths",
+   "ExpectedFinding": "G1-allowed-paths",
+   "Findings": 1,
+   "Guard": "G1",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "añade un archivo fuera de lo permitido (docs/automation/evidence/I-62-A6/extra.txt)"
+  },
+  {
+   "Condition": "amendment-added",
+   "ExpectedFinding": "G1-amendment-added",
+   "Findings": 1,
+   "Guard": "G1",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "el commit no añade la enmienda"
+  },
+  {
+   "Condition": "protected",
+   "ExpectedFinding": "G2-protected(surface)",
+   "Findings": 1,
+   "Guard": "G2",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "cambia el archivo de estado de I-62 (superficie protegida)"
+  },
+  {
+   "Condition": "kit",
+   "ExpectedFinding": "G2-protected(kit)",
+   "Findings": 1,
+   "Guard": "G2",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "cambia un archivo del kit a6m7-measure"
+  },
+  {
+   "Condition": "I-64/I-65",
+   "ExpectedFinding": "G2-protected(I-64/I-65)",
+   "Findings": 1,
+   "Guard": "G2",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "añade una ruta de I-65"
+  },
+  {
+   "Condition": "pinned",
+   "ExpectedFinding": "G2-pinned",
+   "Findings": 2,
+   "Guard": "G2",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "cambia el blob de A-5 en el commit"
+  },
+  {
+   "Condition": "header-claims",
+   "ExpectedFinding": "G2-header-claims",
+   "Findings": 1,
+   "Guard": "G2",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "la cabecera de A-7 cita otro blob de A-5"
+  },
+  {
+   "Condition": "literal",
+   "ExpectedFinding": "G3-literal",
+   "Findings": 1,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "L1 con una palabra cambiada en la cita"
+  },
+  {
+   "Condition": "lines",
+   "ExpectedFinding": "G3-literal",
+   "Findings": 1,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "L4 con otra línea (2234)"
+  },
+  {
+   "Condition": "blob",
+   "ExpectedFinding": "G3-blob",
+   "Findings": 1,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "L6 con otro blob abreviado de AP"
+  },
+  {
+   "Condition": "anchor",
+   "ExpectedFinding": "G3-literal",
+   "Findings": 2,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "L7 (fila parafraseada) con otro rango de líneas"
+  },
+  {
+   "Condition": "rows",
+   "ExpectedFinding": "G3-rows",
+   "Findings": 1,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "falta la fila L15"
+  },
+  {
+   "Condition": "extra",
+   "ExpectedFinding": "G3-extra",
+   "Findings": 1,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "el texto cita el fin de A6-8 en otras líneas"
+  },
+  {
+   "Condition": "scope",
+   "ExpectedFinding": "G4-scope",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "frase de alcance sin «en F6»"
+  },
+  {
+   "Condition": "nochange",
+   "ExpectedFinding": "G4-nochange",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "sin la cláusula «sin cambiar el texto de §20.3.1, de B.9, de AUTOMATION_PLAN 16.24»"
+  },
+  {
+   "Condition": "points",
+   "ExpectedFinding": "G4-points",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "el punto 7 deja de estar numerado"
+  },
+  {
+   "Condition": "categories",
+   "ExpectedFinding": "G4-categories",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "la categoría (d) sale del punto 1"
+  },
+  {
+   "Condition": "location",
+   "ExpectedFinding": "G4-location",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "otra ubicación"
+  },
+  {
+   "Condition": "table",
+   "ExpectedFinding": "G4-table",
+   "Findings": 2,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "la tabla de §3.3 pierde la fila (c)"
+  },
+  {
+   "Condition": "rule1",
+   "ExpectedFinding": "G4-rule1",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 1 sin «al menos»"
+  },
+  {
+   "Condition": "rule1a",
+   "ExpectedFinding": "G4-rule1a",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 1 (a) sin «cuyo contenido lee»"
+  },
+  {
+   "Condition": "rule2a",
+   "ExpectedFinding": "G4-rule2a",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 2 (a) excluye AUTOMATION_PLAN en EFF^1"
+  },
+  {
+   "Condition": "rule2-repeat",
+   "ExpectedFinding": "G4-rule2-repeat",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 2 (a): «en que coincida» en lugar de «en que difiera»"
+  },
+  {
+   "Condition": "rule2c",
+   "ExpectedFinding": "G4-rule2c",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 2 (c) sin la ruta del control"
+  },
+  {
+   "Condition": "rule5a",
+   "ExpectedFinding": "G4-rule5a",
+   "Findings": 2,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 5 (a) vuelve a «deja el cierre sin calcular»"
+  },
+  {
+   "Condition": "rule5c",
+   "ExpectedFinding": "G4-rule5c",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 5 (c) sin la delegación"
+  },
+  {
+   "Condition": "superseded",
+   "ExpectedFinding": "G4-superseded",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "reinsertada la frase de unicidad de la ronda 1"
+  },
+  {
+   "Condition": "residual",
+   "ExpectedFinding": "G4-residual",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "sin el rótulo del residuo declarado de §3.5"
+  },
+  {
+   "Condition": "rule2c-register",
+   "ExpectedFinding": "G4-rule2c-register",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 2 (c) sin el registro de ruta y blob de cada artefacto"
+  },
+  {
+   "Condition": "residual-coverage",
+   "ExpectedFinding": "G4-residual-coverage",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§3.5: «es el de una entrada del cierre» cambiado"
+  },
+  {
+   "Condition": "superseded-35",
+   "ExpectedFinding": "G4-superseded-35",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§3.5: reinsertado el criterio de blobs distintos"
+  },
+  {
+   "Condition": "q06",
+   "ExpectedFinding": "G4-q06",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "sin la pregunta Q-A7-06"
+  },
+  {
+   "Condition": "table-absence",
+   "ExpectedFinding": "G4-table-absence",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "la columna de ausencia de (c) en §3.3 vuelve a «sin entrada»"
+  },
+  {
+   "Condition": "state-table",
+   "ExpectedFinding": "G5-state-table",
+   "Findings": 1,
+   "Guard": "G5",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§11: Architect «ronda 1: LAUNCHED»"
+  },
+  {
+   "Condition": "state",
+   "ExpectedFinding": "G5-state",
+   "Findings": 2,
+   "Guard": "G5",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "State AGREED"
+  },
+  {
+   "Condition": "architect",
+   "ExpectedFinding": "G5-architect",
+   "Findings": 1,
+   "Guard": "G5",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "Architect review LAUNCHED"
+  },
+  {
+   "Condition": "classification",
+   "ExpectedFinding": "G5-classification",
+   "Findings": 1,
+   "Guard": "G5",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "clasificación no material"
+  },
+  {
+   "Condition": "owner",
+   "ExpectedFinding": "G5-owner",
+   "Findings": 1,
+   "Guard": "G5",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "decisión del Owner requerida"
+  },
+  {
+   "Condition": "values",
+   "ExpectedFinding": "G6-values",
+   "Findings": 1,
+   "Guard": "G6",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "M-03 = no"
+  },
+  {
+   "Condition": "header",
+   "ExpectedFinding": "G6-header",
+   "Findings": 1,
+   "Guard": "G6",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "la cabecera declara M-05 no"
+  },
+  {
+   "Condition": "host-identity",
+   "ExpectedFinding": "host identity present",
+   "Findings": 1,
+   "Guard": "G7",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "la identidad del host (leída en tiempo de ejecución) en el texto"
+  },
+  {
+   "Condition": "users-path",
+   "ExpectedFinding": "Users\\<name> path",
+   "Findings": 1,
+   "Guard": "G7",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "una ruta de perfil de Windows con nombre"
+  },
+  {
+   "Condition": "e-mail",
+   "ExpectedFinding": "e-mail address",
+   "Findings": 1,
+   "Guard": "G7",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "una dirección de correo"
+  }
+ ],
+ "MutantsTotal": 44,
+ "Result": "PASS"
+}

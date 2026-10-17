@@ -1,0 +1,1762 @@
+{
+ "Phase": "p1-repro",
+ "Rows": [
+  {
+   "Case": "V",
+   "Designation": "D:/r62-a6m7/bench/designations/V.json",
+   "DesignationSha256": "c6382a0a87a5a76d0e75e797d3bf4c8c6b69502156c9e84d015127aafa5d6ca6",
+   "R7ACustodiedSha256": "256d841be5afcb1c2c242cddfb0e335b2050bfdb056f1e1e9da8ba6fd8304e06",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": []
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "256d841be5afcb1c2c242cddfb0e335b2050bfdb056f1e1e9da8ba6fd8304e06",
+    "EqualsR7A": true,
+    "Entries": 26,
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "N4",
+   "Designation": "D:/r62-a6m7/bench/designations/N4.json",
+   "DesignationSha256": "2efe3b4c72295b92eea989366461850b211011cde442227ea620ca1fce675ec1",
+   "R7ACustodiedSha256": "0df49e601d88141356d560fbf9ffa37ed9e48989e8b64d7d0b91af666f68e30b",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": [
+     {
+      "Category": "c",
+      "Role": "H",
+      "Path": "artifacts/orchestration/FX-U1/T1-n4/0/R20261012T091000Z-a001/worker-handoff.json",
+      "Cause": "ABSENT: the custodied file does not exist",
+      "Substituted": false
+     }
+    ]
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "0df49e601d88141356d560fbf9ffa37ed9e48989e8b64d7d0b91af666f68e30b",
+    "EqualsR7A": true,
+    "Entries": 25,
+    "Absences": [
+     [
+      "H",
+      "artifacts/orchestration/FX-U1/T1-n4/0/R20261012T091000Z-a001/worker-handoff.json",
+      null
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "c",
+       "Role": "H",
+       "Path": "artifacts/orchestration/FX-U1/T1-n4/0/R20261012T091000Z-a001/worker-handoff.json",
+       "Cause": "ABSENT"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "c",
+       "Role": "H",
+       "Path": "artifacts/orchestration/FX-U1/T1-n4/0/R20261012T091000Z-a001/worker-handoff.json",
+       "Cause": "ABSENT"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "PATH_RULE: DELEG path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "c",
+       "Role": "H",
+       "Path": "artifacts/orchestration/FX-U1/T1-n4/0/R20261012T091000Z-a001/worker-handoff.json",
+       "Cause": "ABSENT"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "NC1",
+   "Designation": "D:/r62-a6m7/bench/designations/NC1.json",
+   "DesignationSha256": "0d01f8d6e143afb86e3e9a97ea3317493dfd74c5d48fddb78b435c592cdaba9f",
+   "R7ACustodiedSha256": "413e22d85f07be7288f19d7ba168c540d297eb98c4c3d79c12abbe2c28653966",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": []
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "413e22d85f07be7288f19d7ba168c540d297eb98c4c3d79c12abbe2c28653966",
+    "EqualsR7A": true,
+    "Entries": 26,
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "PATH_RULE: DELEG path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)",
+      "PATH_RULE: H path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "NC2",
+   "Designation": "D:/r62-a6m7/bench/designations/NC2.json",
+   "DesignationSha256": "3ca8bdc42002a5ea4fe858bb4847904a724737593c129e547de1cc330bfb16da",
+   "R7ACustodiedSha256": "9072bf06e72398021b1ab6f923b30997ff6dca0f0683ab7cc9d5747199370db0",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": []
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "9072bf06e72398021b1ab6f923b30997ff6dca0f0683ab7cc9d5747199370db0",
+    "EqualsR7A": true,
+    "Entries": 26,
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "PATH_RULE: DELEG path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)",
+      "PATH_RULE: H path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "NC3",
+   "Designation": "D:/r62-a6m7/bench/designations/NC3.json",
+   "DesignationSha256": "767e3d0439035ef204898f4715498e5af0a8849a0c9dc2e684cda5258511c681",
+   "R7ACustodiedSha256": "393a953af16194779a6a5e1aa98e2e95df8b91a0aa50ef920377c1062a5653fb",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": []
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "393a953af16194779a6a5e1aa98e2e95df8b91a0aa50ef920377c1062a5653fb",
+    "EqualsR7A": true,
+    "Entries": 26,
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "PATH_RULE: DELEG path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)",
+      "PATH_RULE: H path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "N5",
+   "Designation": "D:/r62-a6m7/bench/designations/N5.json",
+   "DesignationSha256": "9fd9e7b5a7314c71a4a15ce0fb0c11bc7b7b68dfd59a08fefe006ea5aebe1628",
+   "R7ACustodiedSha256": "759e200c1f9d19f4b8df9099ee0250a8a46b23bf5217c3608843c1146c4470bf",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": []
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "759e200c1f9d19f4b8df9099ee0250a8a46b23bf5217c3608843c1146c4470bf",
+    "EqualsR7A": true,
+    "Entries": 26,
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "PATH_RULE: DELEG path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)",
+      "PATH_RULE: H path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "N6",
+   "Designation": "D:/r62-a6m7/bench/designations/N6.json",
+   "DesignationSha256": "697e47aff6b9c9c94be4397f5c443f408492a69df4ad89f6992b6c406cb45427",
+   "R7ACustodiedSha256": "67e32328066986a480199b7076c9a78abfa7670f0ae90939cd3af845d341e020",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": []
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "67e32328066986a480199b7076c9a78abfa7670f0ae90939cd3af845d341e020",
+    "EqualsR7A": true,
+    "Entries": 26,
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "PATH_RULE: DELEG path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)",
+      "PATH_RULE: H path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "N7A",
+   "Designation": "D:/r62-a6m7/bench/designations/N7A.json",
+   "DesignationSha256": "ae03a4ebbd09d0ced765052b1c45e965b709a79279fdfa94073e24bb98f97461",
+   "R7ACustodiedSha256": "7a62191cb307194786203191512bb139f197f79d450c0549b9692bec4ccd8e00",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": []
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "7a62191cb307194786203191512bb139f197f79d450c0549b9692bec4ccd8e00",
+    "EqualsR7A": true,
+    "Entries": 26,
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "PATH_RULE: DELEG path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)",
+      "PATH_RULE: H path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "N7AR-OWN",
+   "Designation": "D:/r62-a6m7/bench/designations/N7AR-OWN.json",
+   "DesignationSha256": "0915d9b70955bb8d46aa9eb0ce319a8a04d4f72dd2cfb7ede357b940dccd2213",
+   "R7ACustodiedSha256": "e4f26b06782651a3f596d6698bc367bfb9192d234ba976f03919673427dcb95b",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": []
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "e4f26b06782651a3f596d6698bc367bfb9192d234ba976f03919673427dcb95b",
+    "EqualsR7A": true,
+    "Entries": 26,
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "PATH_RULE: DELEG path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)",
+      "PATH_RULE: H path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "N7B",
+   "Designation": "D:/r62-a6m7/bench/designations/N7B.json",
+   "DesignationSha256": "a570c0d0b4ac0f726c10d089f23cd7f0e96447916c1ac2b24e619fcda161323d",
+   "R7ACustodiedSha256": "4dddb72fa66fc648f4fb2d3ca64fa714359a4c43c445d1da4e4ed6e833a960ad",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": []
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "4dddb72fa66fc648f4fb2d3ca64fa714359a4c43c445d1da4e4ed6e833a960ad",
+    "EqualsR7A": true,
+    "Entries": 26,
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": false,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [
+      "PATH_RULE: DELEG path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)",
+      "PATH_RULE: H path is not under artifacts/orchestration/ in a directory named with the RunId of its bytes (path rule strict)"
+     ],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  },
+  {
+   "Case": "M",
+   "Designation": "D:/r62-a6m7/bench/designations/M.json",
+   "DesignationSha256": "8c3e9ecd11117bd46cd7a59adcf3b9ea339c5604529f3f875090e3a6bd2c5f79",
+   "R7ACustodiedSha256": "fec2ea0dfb05aee193946177e2eb78d4f3e35b7a801ec383cfa92aa20959e0be",
+   "R7AFreshEqualsCustodied": true,
+   "no-closure": {
+    "Closure": false,
+    "NoClosure": {
+     "Code": "AUTHORITY_ABSENT",
+     "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+    },
+    "Absences": []
+   },
+   "no-entry": {
+    "Closure": true,
+    "Sha256": "fec2ea0dfb05aee193946177e2eb78d4f3e35b7a801ec383cfa92aa20959e0be",
+    "EqualsR7A": true,
+    "Entries": 26,
+    "Absences": [
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF"
+     ],
+     [
+      "16.13:MV-6",
+      "docs/initiatives/PROMPT_TEMPLATES.md",
+      "EFF^1"
+     ]
+    ],
+    "NotAdmittedMapFiles": 23,
+    "DifferFromAuthorityRevision": []
+   },
+   "Check": {
+    "default": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-5a": {
+     "Accepted": false,
+     "NoClosureExpected": [
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+      "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+     ],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    },
+    "old-path": {
+     "Accepted": true,
+     "NoClosureExpected": [],
+     "Foreign": [],
+     "Missing": [],
+     "Duplicates": [],
+     "ListViolations": [],
+     "Problems": [],
+     "Overlaps": [],
+     "Absences": [
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF",
+       "Cause": "absent"
+      },
+      {
+       "Category": "a",
+       "Role": "a:16.13-MV6@EFF^1",
+       "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+       "Revision": "EFF^1",
+       "Cause": "absent"
+      }
+     ],
+     "RepeatedPairs": 3,
+     "UnregisteredBlobs": [
+      "DELEG",
+      "H",
+      "TRX"
+     ]
+    }
+   }
+  }
+ ],
+ "Kit": {
+  "FrozenESha256": "137c7c3bba6591c84fdef4c5f6ef443f72da1cfd871478968c64a5c7cb5a1152",
+  "FrozenExpected": "137c7c3bba6591c84fdef4c5f6ef443f72da1cfd871478968c64a5c7cb5a1152",
+  "A7EqualsFrozen": true,
+  "OldReading5aNoClosure": {
+   "Code": "AUTHORITY_ABSENT",
+   "Detail": "docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure)"
+  },
+  "Check": {
+   "Accepted": true,
+   "NoClosureExpected": [],
+   "Foreign": [],
+   "Missing": [],
+   "Duplicates": [],
+   "ListViolations": [],
+   "Problems": [],
+   "Overlaps": [],
+   "Absences": [
+    {
+     "Category": "a",
+     "Role": "a:16.13-MV6@EFF",
+     "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+     "Revision": "EFF",
+     "Cause": "absent"
+    },
+    {
+     "Category": "a",
+     "Role": "a:16.13-MV6@EFF^1",
+     "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+     "Revision": "EFF^1",
+     "Cause": "absent"
+    }
+   ],
+   "RepeatedPairs": 3,
+   "UnregisteredBlobs": [
+    "DELEG",
+    "H",
+    "TRX"
+   ]
+  },
+  "CheckOldReading5a": {
+   "Accepted": false,
+   "NoClosureExpected": [
+    "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF (a:16.13-MV6@EFF)",
+    "rule 5 (a): docs/initiatives/PROMPT_TEMPLATES.md absent at EFF^1 (a:16.13-MV6@EFF^1)"
+   ],
+   "Foreign": [],
+   "Missing": [],
+   "Duplicates": [],
+   "ListViolations": [],
+   "Problems": [],
+   "Overlaps": [],
+   "Absences": [],
+   "RepeatedPairs": 3,
+   "UnregisteredBlobs": [
+    "DELEG",
+    "H",
+    "TRX"
+   ]
+  },
+  "DesignationLocal": "D:\\r62-a7\\work\\p1\\designation-kit-M.local.json",
+  "DesignationLocalSha256": "408d41ac1954e26cf2befdf41c8e35112b430e981c595dc6535442131c0570d1"
+ },
+ "Cases": [
+  {
+   "Caso": "REPRO-V",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco V.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (256d841be5afcb1c…): sí; E A7 SHA-256 256d841be5afcb1c2c242cddfb0e335b2050bfdb056f1e1e9da8ba6fd8304e06, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-N4",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco N4.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (0df49e601d881413…): sí; E A7 SHA-256 0df49e601d88141356d560fbf9ffa37ed9e48989e8b64d7d0b91af666f68e30b, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-NC1",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco NC1.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (413e22d85f07be72…): sí; E A7 SHA-256 413e22d85f07be7288f19d7ba168c540d297eb98c4c3d79c12abbe2c28653966, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-NC2",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco NC2.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (9072bf06e7239802…): sí; E A7 SHA-256 9072bf06e72398021b1ab6f923b30997ff6dca0f0683ab7cc9d5747199370db0, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-NC3",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco NC3.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (393a953af1619477…): sí; E A7 SHA-256 393a953af16194779a6a5e1aa98e2e95df8b91a0aa50ef920377c1062a5653fb, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-N5",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco N5.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (759e200c1f9d19f4…): sí; E A7 SHA-256 759e200c1f9d19f4b8df9099ee0250a8a46b23bf5217c3608843c1146c4470bf, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-N6",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco N6.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (67e32328066986a4…): sí; E A7 SHA-256 67e32328066986a480199b7076c9a78abfa7670f0ae90939cd3af845d341e020, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-N7A",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco N7A.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (7a62191cb3071947…): sí; E A7 SHA-256 7a62191cb307194786203191512bb139f197f79d450c0549b9692bec4ccd8e00, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-N7AR-OWN",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco N7AR-OWN.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (e4f26b06782651a3…): sí; E A7 SHA-256 e4f26b06782651a3f596d6698bc367bfb9192d234ba976f03919673427dcb95b, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-N7B",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco N7B.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (4dddb72fa66fc648…): sí; E A7 SHA-256 4dddb72fa66fc648f4fb2d3ca64fa714359a4c43c445d1da4e4ed6e833a960ad, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-M",
+   "Qué": "E de A7-1 (texto corregido) frente a E de R7-A (designación del banco M.json) y validador con las lecturas del texto",
+   "Esperado": "E A7 = E R7-A byte a byte (A-7 §3.1, §3.4) y el validador lo acepta",
+   "Observado": "R7-A fresco = custodiado (fec2ea0dfb05aee1…): sí; E A7 SHA-256 fec2ea0dfb05aee193946177e2eb78d4f3e35b7a801ec383cfa92aa20959e0be, igual a R7-A: sí; ausencias (a) registradas sin entrada: PROMPT_TEMPLATES.md@EFF, PROMPT_TEMPLATES.md@EFF^1; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-OLD-5A",
+   "Qué": "evidencia negativa: las once designaciones con la regla 5 (a) de la ronda 1 antes de su corrección (una entrada de (a) ausente dejaba el cierre sin calcular), conmutador --absent-a=no-closure",
+   "Esperado": "sin cierre en las once (el motivo de F1); el texto corregido no lo hace",
+   "Observado": "sin cierre en 11 de 11; causa: docs/initiatives/PROMPT_TEMPLATES.md absent at EFF, read by 16.13:MV-6 (superseded reading of rule 5 (a): no closure); el validador con esa lectura rechaza 11 de 11",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-OLD-PATH",
+   "Qué": "evidencia negativa: regla 2 (c) de la ronda 1 (artifacts/orchestration/<UnitId>/<I.TaskId>/<Attempt>/<RunId>/), conmutador --path-rule=strict",
+   "Esperado": "rechaza las copias de los controles en T1-<control> (el motivo de F2); el texto corregido las admite",
+   "Observado": "rechaza 9 de 11 (N4, NC1, NC2, NC3, N5, N6, N7A, N7AR-OWN, N7B); con el texto corregido, los 11 cumplen la regla 2 (c)",
+   "Cumple": true
+  },
+  {
+   "Caso": "REPRO-UNIQ",
+   "Qué": "regla 2 (a) corregida: «una misma ruta puede figurar con un blob por cada revisión de lectura en que difiera, y una misma entrada puede figurar en más de una lista del cierre cuando 16.24 lo exige»",
+   "Esperado": "los pares repetidos de los E (heredados de R7-A) solo aparecen en listas distintas o con RequiredBy distinto; ningún duplicado",
+   "Observado": "3 pares repetidos: AGENTS.md en CanonicalInputs+AutomaticInstructions; docs/WORKFLOW.md en AllowedTransitiveInputs+AllowedTransitiveInputs; docs/automation/agent-execution/README.md en AllowedTransitiveInputs+AllowedTransitiveInputs; duplicados dentro de una lista y con el mismo RequiredBy: 0",
+   "Cumple": true
+  },
+  {
+   "Caso": "CIT-FXU1",
+   "Qué": "precondición de §3.5 (check_citation_blobs.py, criterio de cobertura) en las once designaciones del banco: toda lectura de contenido de clausemap de una cita en EFF^1, EFF o MainSha_eval es de un blob que fija el cierre",
+   "Esperado": "se puede lanzar en las once",
+   "Observado": "cobertura (normativo): LAUNCH_MAY_PROCEED; evidencia negativa de redacciones anteriores: texto LAUNCH_MAY_PROCEED, unit LAUNCH_MAY_PROCEED",
+   "Cumple": true,
+   "Datos": {
+    "PerCase": [
+     [
+      "V",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ],
+     [
+      "N4",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ],
+     [
+      "NC1",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ],
+     [
+      "NC2",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ],
+     [
+      "NC3",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ],
+     [
+      "N5",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ],
+     [
+      "N6",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ],
+     [
+      "N7A",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ],
+     [
+      "N7AR-OWN",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ],
+     [
+      "N7B",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ],
+     [
+      "M",
+      {
+       "text": "LAUNCH_MAY_PROCEED",
+       "unit": "LAUNCH_MAY_PROCEED",
+       "coverage": "LAUNCH_MAY_PROCEED"
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "Caso": "DES-REG",
+   "Qué": "regla 2 (c) corregida: la designación registra la ruta y el blob de cada artefacto; el validador comprueba el blob registrado y avisa del que falta",
+   "Esperado": "el formato a6m7-designation/1 del banco solo registra el del contrato: aviso para DELEG, H y TRX en las once (la próxima preparación del kit tiene que registrarlos; el formato del banco no se cambia)",
+   "Observado": "sin blob registrado: DELEG, H, TRX",
+   "Cumple": true,
+   "Datos": {
+    "PerCase": [
+     [
+      "V",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ],
+     [
+      "N4",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ],
+     [
+      "NC1",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ],
+     [
+      "NC2",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ],
+     [
+      "NC3",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ],
+     [
+      "N5",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ],
+     [
+      "N6",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ],
+     [
+      "N7A",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ],
+     [
+      "N7AR-OWN",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ],
+     [
+      "N7B",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ],
+     [
+      "M",
+      [
+       "DELEG",
+       "H",
+       "TRX"
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "Caso": "REPRO-KIT",
+   "Qué": "E congelado del kit a6m7-measure (137c7c3b…) frente a A7-1 y al validador",
+   "Esperado": "el validador acepta el E congelado; E A7 = E congelado",
+   "Observado": "SHA-256 del congelado 137c7c3bba6591c84fdef4c5f6ef443f72da1cfd871478968c64a5c7cb5a1152; regla 5 (a) de la ronda 1 (evidencia negativa): sin cierre: AUTHORITY_ABSENT; texto corregido: E A7 = congelado: sí; validador: acepta; validador con la regla 5 (a) de la ronda 1: rechaza (NoClosureExpected)",
+   "Cumple": true
+  }
+ ]
+}

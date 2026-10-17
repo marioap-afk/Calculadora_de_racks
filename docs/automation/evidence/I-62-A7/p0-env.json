@@ -1,0 +1,74 @@
+{
+ "Phase": "p0-env",
+ "Versions": {
+  "git": "git version 2.54.0.windows.1",
+  "python": "3.13.14",
+  "os": "Windows-11-10.0.26300-SP0",
+  "pwsh": "7.6.7"
+ },
+ "Cases": [
+  {
+   "Caso": "ENV-W",
+   "Qué": "HEAD del worktree de I-62 (solo lectura)",
+   "Esperado": "bb439090f6798a502c077da450edc1319e416fe5",
+   "Observado": "bb439090f6798a502c077da450edc1319e416fe5",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-derive_r4.py",
+   "Qué": "copia byte a byte de D:/r62-a6m7/bench/derive_r4.py",
+   "Esperado": "SHA-256 3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426 e igual a la fuente",
+   "Observado": "SHA-256 3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426; igual a la fuente: sí",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-designate_m7.py",
+   "Qué": "copia byte a byte de D:/r62-a6m7/bench/designate_m7.py",
+   "Esperado": "SHA-256 491dcbd672518befa3cf74a64c7a9971992c66eee5bd122b3ae537a184f5a5c6 e igual a la fuente",
+   "Observado": "SHA-256 491dcbd672518befa3cf74a64c7a9971992c66eee5bd122b3ae537a184f5a5c6; igual a la fuente: sí",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-make_eic_verify.py",
+   "Qué": "copia byte a byte de D:/r62-a6m7/bench/make_eic_verify.py",
+   "Esperado": "SHA-256 58f13c6a8564fe9877e3a5bb40e8d46fccf1ce67ac174ccd6a4298ddad03a8d2 e igual a la fuente",
+   "Observado": "SHA-256 58f13c6a8564fe9877e3a5bb40e8d46fccf1ce67ac174ccd6a4298ddad03a8d2; igual a la fuente: sí",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-reconstruct_runs.py",
+   "Qué": "copia byte a byte de D:/r62-a6m7/bench/reconstruct_runs.py",
+   "Esperado": "SHA-256 5dc9f78ee40e0f54efc5d14b2ec84dc12dd4a6c1d63b66b0c07a9d2be33338da e igual a la fuente",
+   "Observado": "SHA-256 5dc9f78ee40e0f54efc5d14b2ec84dc12dd4a6c1d63b66b0c07a9d2be33338da; igual a la fuente: sí",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-reconstruct_runs_m7.py",
+   "Qué": "copia byte a byte de <W>/docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/reconstruct_runs_m7.py",
+   "Esperado": "SHA-256 1eceeceecfebf994e3bce0af7818dfaa2144b99fb1339897745c2fe9ea7141ab e igual a la fuente",
+   "Observado": "SHA-256 1eceeceecfebf994e3bce0af7818dfaa2144b99fb1339897745c2fe9ea7141ab; igual a la fuente: sí",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-instrumento",
+   "Qué": "instrumento desde su objeto Git del repositorio de I-62, sin modificar",
+   "Esperado": "blob 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Observado": "blob recalculado 9a829b0eeb1210238052b1feac06cfa8f7964aed; 64764 bytes; SHA-256 b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-aceptante",
+   "Qué": "aceptante desde su objeto Git del repositorio de I-62, sin modificar",
+   "Esperado": "blob 434ef1fccb0d15762b30244b4a60928120698411",
+   "Observado": "blob recalculado 434ef1fccb0d15762b30244b4a60928120698411; 111873 bytes; SHA-256 173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0",
+   "Cumple": true
+  },
+  {
+   "Caso": "CAND",
+   "Qué": "candidata A-7 leída por completo",
+   "Esperado": "blob 6c29747d61c5f689a195095ad3712e6d9dba62aa",
+   "Observado": "blob 6c29747d61c5f689a195095ad3712e6d9dba62aa, 27472 bytes, 279 líneas, LF",
+   "Cumple": true
+  }
+ ]
+}

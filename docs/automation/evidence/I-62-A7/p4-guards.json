@@ -1,0 +1,350 @@
+{
+ "Phase": "p4-guards",
+ "Preview": {
+  "Result": "PASS",
+  "Head": "11a94996cbea39d1f41eeffca81ee3abc5878688",
+  "CandidateBlob": "6c29747d61c5f689a195095ad3712e6d9dba62aa",
+  "Guards": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS",
+   "G4": "PASS",
+   "G5": "PASS",
+   "G6": "PASS",
+   "G7": "PASS"
+  }
+ },
+ "Selftest": {
+  "Result": "PASS",
+  "Killed": 44,
+  "Total": 44
+ },
+ "Cases": [
+  {
+   "Caso": "GUARD-PREVIEW",
+   "Qué": "guardas G1-G7 sobre el commit hipotético (base bb439090 + candidata + este directorio)",
+   "Esperado": "PASS en las siete",
+   "Observado": "G1 PASS; G2 PASS; G3 PASS; G4 PASS; G5 PASS; G6 PASS; G7 PASS",
+   "Cumple": true,
+   "Datos": {
+    "Head": "11a94996cbea39d1f41eeffca81ee3abc5878688",
+    "Added": 30
+   }
+  },
+  {
+   "Caso": "GUARD-SELFTEST",
+   "Qué": "autoprueba: un mutante por condición de guarda",
+   "Esperado": "candidata PASS y todos los mutantes muertos",
+   "Observado": "candidata PASS; mutantes muertos 44 de 44",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G1-only-adds",
+   "Qué": "modifica un archivo existente (docs/automation/decisions/I-62.md)",
+   "Esperado": "G1 FAIL (G1-only-adds)",
+   "Observado": "G1 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G1-allowed-paths",
+   "Qué": "añade un archivo fuera de lo permitido (docs/automation/evidence/I-62-A6/extra.txt)",
+   "Esperado": "G1 FAIL (G1-allowed-paths)",
+   "Observado": "G1 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G1-amendment-added",
+   "Qué": "el commit no añade la enmienda",
+   "Esperado": "G1 FAIL (G1-amendment-added)",
+   "Observado": "G1 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-protected",
+   "Qué": "cambia el archivo de estado de I-62 (superficie protegida)",
+   "Esperado": "G2 FAIL (G2-protected(surface))",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-kit",
+   "Qué": "cambia un archivo del kit a6m7-measure",
+   "Esperado": "G2 FAIL (G2-protected(kit))",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-I-64/I-65",
+   "Qué": "añade una ruta de I-65",
+   "Esperado": "G2 FAIL (G2-protected(I-64/I-65))",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-pinned",
+   "Qué": "cambia el blob de A-5 en el commit",
+   "Esperado": "G2 FAIL (G2-pinned)",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-header-claims",
+   "Qué": "la cabecera de A-7 cita otro blob de A-5",
+   "Esperado": "G2 FAIL (G2-header-claims)",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-literal",
+   "Qué": "L1 con una palabra cambiada en la cita",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-lines",
+   "Qué": "L4 con otra línea (2234)",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-blob",
+   "Qué": "L6 con otro blob abreviado de AP",
+   "Esperado": "G3 FAIL (G3-blob)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-anchor",
+   "Qué": "L7 (fila parafraseada) con otro rango de líneas",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-rows",
+   "Qué": "falta la fila L15",
+   "Esperado": "G3 FAIL (G3-rows)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-extra",
+   "Qué": "el texto cita el fin de A6-8 en otras líneas",
+   "Esperado": "G3 FAIL (G3-extra)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-scope",
+   "Qué": "frase de alcance sin «en F6»",
+   "Esperado": "G4 FAIL (G4-scope)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-nochange",
+   "Qué": "sin la cláusula «sin cambiar el texto de §20.3.1, de B.9, de AUTOMATION_PLAN 16.24»",
+   "Esperado": "G4 FAIL (G4-nochange)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-points",
+   "Qué": "el punto 7 deja de estar numerado",
+   "Esperado": "G4 FAIL (G4-points)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-categories",
+   "Qué": "la categoría (d) sale del punto 1",
+   "Esperado": "G4 FAIL (G4-categories)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-location",
+   "Qué": "otra ubicación",
+   "Esperado": "G4 FAIL (G4-location)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-table",
+   "Qué": "la tabla de §3.3 pierde la fila (c)",
+   "Esperado": "G4 FAIL (G4-table)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule1",
+   "Qué": "regla 1 sin «al menos»",
+   "Esperado": "G4 FAIL (G4-rule1)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule1a",
+   "Qué": "regla 1 (a) sin «cuyo contenido lee»",
+   "Esperado": "G4 FAIL (G4-rule1a)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2a",
+   "Qué": "regla 2 (a) excluye AUTOMATION_PLAN en EFF^1",
+   "Esperado": "G4 FAIL (G4-rule2a)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2-repeat",
+   "Qué": "regla 2 (a): «en que coincida» en lugar de «en que difiera»",
+   "Esperado": "G4 FAIL (G4-rule2-repeat)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c",
+   "Qué": "regla 2 (c) sin la ruta del control",
+   "Esperado": "G4 FAIL (G4-rule2c)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule5a",
+   "Qué": "regla 5 (a) vuelve a «deja el cierre sin calcular»",
+   "Esperado": "G4 FAIL (G4-rule5a)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule5c",
+   "Qué": "regla 5 (c) sin la delegación",
+   "Esperado": "G4 FAIL (G4-rule5c)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-superseded",
+   "Qué": "reinsertada la frase de unicidad de la ronda 1",
+   "Esperado": "G4 FAIL (G4-superseded)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-residual",
+   "Qué": "sin el rótulo del residuo declarado de §3.5",
+   "Esperado": "G4 FAIL (G4-residual)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-register",
+   "Qué": "regla 2 (c) sin el registro de ruta y blob de cada artefacto",
+   "Esperado": "G4 FAIL (G4-rule2c-register)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-residual-coverage",
+   "Qué": "§3.5: «es el de una entrada del cierre» cambiado",
+   "Esperado": "G4 FAIL (G4-residual-coverage)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-superseded-35",
+   "Qué": "§3.5: reinsertado el criterio de blobs distintos",
+   "Esperado": "G4 FAIL (G4-superseded-35)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-q06",
+   "Qué": "sin la pregunta Q-A7-06",
+   "Esperado": "G4 FAIL (G4-q06)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-table-absence",
+   "Qué": "la columna de ausencia de (c) en §3.3 vuelve a «sin entrada»",
+   "Esperado": "G4 FAIL (G4-table-absence)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-state-table",
+   "Qué": "§11: Architect «ronda 1: LAUNCHED»",
+   "Esperado": "G5 FAIL (G5-state-table)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-state",
+   "Qué": "State AGREED",
+   "Esperado": "G5 FAIL (G5-state)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-architect",
+   "Qué": "Architect review LAUNCHED",
+   "Esperado": "G5 FAIL (G5-architect)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-classification",
+   "Qué": "clasificación no material",
+   "Esperado": "G5 FAIL (G5-classification)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-owner",
+   "Qué": "decisión del Owner requerida",
+   "Esperado": "G5 FAIL (G5-owner)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G6-values",
+   "Qué": "M-03 = no",
+   "Esperado": "G6 FAIL (G6-values)",
+   "Observado": "G6 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G6-header",
+   "Qué": "la cabecera declara M-05 no",
+   "Esperado": "G6 FAIL (G6-header)",
+   "Observado": "G6 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G7-host-identity",
+   "Qué": "la identidad del host (leída en tiempo de ejecución) en el texto",
+   "Esperado": "G7 FAIL (host identity present)",
+   "Observado": "G7 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G7-users-path",
+   "Qué": "una ruta de perfil de Windows con nombre",
+   "Esperado": "G7 FAIL (Users\\<name> path)",
+   "Observado": "G7 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G7-e-mail",
+   "Qué": "una dirección de correo",
+   "Esperado": "G7 FAIL (e-mail address)",
+   "Observado": "G7 FAIL",
+   "Cumple": true
+  }
+ ]
+}
