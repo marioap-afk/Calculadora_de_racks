@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §89; evidencia §177-§179) — revisión formal de A-6 ronda 4 ejecutada: auditor ACCREDITED; Architect AGREED con cero REQUIRED (A62-A6R3-R1 CORRECTED) y seis OPTIONAL A62-A6R4-O1..O6; esperar la disposición del Coordinator sobre el acuerdo de A-6 (blob 4bc919dd); sin Codex; sin A-6 AGREED declarado, sin FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §90; evidencia §180) — A-6 AGREED (blob 4bc919dd; Architect R20261014T180556Z-5e02 ACCREDITED; Coordinator §90); O1-O6 ACCEPTED NON-BLOCKING; preparar la medición del Controller B-min (A6-7 regla 7 con clausemap, D/H/K por rutas, regla de reconstrucción de Runs, A6-5 regla 6, N5-N7, identidad del instrumento y del aceptante, comprobaciones preventivas), identidad pasiva de Codex, línea A6-CONTROLLER-MEDICION-CONSUMO para la identidad vigente y solicitud de B1; sin Codex ni consumo hasta la disposición de medición y la aprobación del Owner; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
@@ -31,3 +31,4 @@ execution_context:
   f4_status: GATE PASS / COMPLETE por el Coordinator sobre 6f0187cb (decisions §44; evidencia a8c6af16; CI 37391012002 y 37391578392 success); C-20b E.5/derivado = divergencias de previsión NO MATERIALES, sin A-n; C-21 PASS; F4-OBS-20..24 ACCEPTED
   f6_status: "SUSPENDIDA (decisiones §67): FX-01/C-23, FX-04a/C-25a y FX-05/C-27 PASS; FX-02/C-24 UNVERIFIED (A4-1 NOT_DEMONSTRATED, Controller NOT_ELIGIBLE; MAP_INVALID del fixture, B1 caracterizada sin crear); FX-04b UNSUPPORTED; FX-03 UNVERIFIED (reclasificar); FX-06 pendiente; F6 GATE PASS pendiente; OD-2 = A sobre 73890CA3 (OD-2f), OD-3 = A (§56), OD-4/OD-5 = A, OD-7 = A público"
   a1_status: AGREED (Coordinator, decisions §43) sobre ca09ade8 / docs/initiatives/I-62-A-1.md / blob c01899a7 (inmutable); Architect AGREED en R20261005T151303Z-c64c, ACCREDITED (registro r5; evidence §57-§58); A62-A1U-O1 = obligación de F4, no material; Owner NOT REQUIRED
+  a6_status: "AGREED (Coordinator, decisiones §90) sobre docs/initiatives/I-62-A-6.md / blob 4bc919dd (publicado en d66f7f4b; inmutable); Architect AGREED en R20261014T180556Z-5e02, ACCREDITED (evidencia §179); A62-A6R4-O1..O6 ACCEPTED NON-BLOCKING; Owner (a) A6-ADR0046-9-FX02 = A (§78); (b) A6-CONTROLLER-MEDICION-CONSUMO no pedida"

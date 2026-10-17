@@ -4533,3 +4533,14 @@ solo desde artefactos custodiados.
   - OPTIONAL A62-A6R4-O1..O6 (no bloqueantes): taxonomía del registro de (v); casos fuera de D, H y K o de tipo; identificación de D, H y K por
     las rutas del kit; base normativa de la fila O7; dos citas de §2 y §3.17; y los cierres de N5-N7 antes de la medición.
 - El veredicto no es el acuerdo: falta la disposición del Coordinator (decisiones §89, punto 8). Ni FX-02 PASS, ni F6 GATE PASS.
+
+## 180. Decisiones §90: A-6 AGREED (blob `4bc919dd`); preparación de la medición del Controller autorizada, sin Codex
+
+- **Acuerdo:** Architect AGREED (R20261014T180556Z-5e02), auditor ACCREDITED, cero REQUIRED, A62-A6R3-R1 CORRECTED / CLOSED; Coordinator AGREED
+  (decisiones §90, punto 1) sobre `docs/initiatives/I-62-A-6.md`, blob `4bc919dd4768ab81abc74b70d3a4a3821c07feb5`, sin tocar el objeto. Custodia: `output.json`
+  (blob `3a34a5ba`), `audit.json` (blob `013db3b8`) y el resto del resultado en `e604ba4f` (evidencia §179); la disposición, en decisiones §90
+  con el SHA-256 de su cuerpo.
+- **Opcionales** A62-A6R4-O1..O6: ACCEPTED NON-BLOCKING; sin quinta ronda; O6 = pruebas estáticas de N5-N7 antes de la medición.
+- **Siguiente:** solo preparación de A6-7 (cierre de VERIFY con `clausemap`, D/H/K por rutas, regla de reconstrucción, lecturas normativas del
+  aceptante, N5-N7, identidad del instrumento y del aceptante, comprobaciones preventivas), identidad pasiva de Codex, línea (b) para la identidad
+  vigente y solicitud de B1. Sin Codex, sin consumo, sin B1 ni FX-U2.
