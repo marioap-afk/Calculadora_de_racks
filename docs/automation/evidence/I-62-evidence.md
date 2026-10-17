@@ -4616,3 +4616,11 @@ solo desde artefactos custodiados.
   vigente, disposiciones previas del Coordinator (lecturas del aceptante, D-1, medición con los marcadores M7-* y la lectura de I6 de R7-A), líneas
   OD-2 y (b) con su SHA-256, opción de una sonda de caracterización del par nuevo por A2-P2 (sin kit), condiciones de lanzamiento e invalidadores.
   Sustituye al borrador del 2026-10-11, que se conserva. No se pide nada.
+
+## 183. Decisiones §91: medición de A6-7 retenida; determinación normativa de I6 (R7-A), D-1 y nc2, doce lecturas ambiguas, reconstrucción y matriz de riesgos
+
+- Estado: A-6 AGREED; kit `a6m7-measure` PREPARED / NOT EXECUTED (`FREEZE.json` `459a3440…`, evidencia §182); A2-P2 del runtime anterior EXHAUSTED;
+  identidad nueva de Codex estable en tres observaciones (evidencia §181). **Medición de A6-7 HELD**; sin Codex y sin solicitar consumo del Owner.
+- Encargos, solo con análisis estático y pruebas existentes: determinación normativa acotada sobre R7-A (I6, A6-2, A6-7, AP 16.24) por categoría de
+  insumo; caso mínimo de D-1 y viabilidad de nc2 con los blobs fijados; disposición individual de las doce lecturas ambiguas; examen de
+  `reconstruct_runs_m7.py`; matriz de riesgos A/B. El kit sigue congelado; esta sección no contiene marcadores de la disposición de medición.
