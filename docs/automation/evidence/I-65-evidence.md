@@ -2375,3 +2375,19 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 
 - **SHA de cierre de F4 = este commit.** Candidato de hito `5a5ca577`; código = árbol de `51fc82f1`. El CI de este commit no da evidencia
   nueva a `5a5ca577` (AGENTS, «Commit documental»).
+
+## 88. Cierre de F4: evidencia del SHA de cierre `1e7d8fc2` (2026-10-17T17:11:14Z)
+
+- Orden: decisiones §82-§84. Sin AutoCAD, RAM, Codex ni Workers; sin cambios de producto.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/close-1e7d8fc2/ci-run-39052279094-jobs.json` | `577F011F4880C4BA9504BFFD60AA427AB5973F37F63848A297F9956B44710CC2` |
+| `docs/automation/evidence/I-65-f4/close-1e7d8fc2/ci-run-39052279094.json` | `2AD22DE2E4AD5511FA55249B08105F8350A9EDA4AF2C32C3A645A53495792882` |
+| `docs/automation/evidence/I-65-f4/close-1e7d8fc2/local-evidence.txt` | `EF6529C88C2EF4CF47F93087A4087BE16F16DA2DFE22F696DC2278F022D1C76C` |
+
+- Core Full local sobre `1e7d8fc2` (árbol limpio antes y después): **14390/14390**, 0 con error, 291 s; TRX `bc3b28747893fde0512a30805ef44531b47bf86fb7457c7b1afd025ca818fc4c` (no versionado).
+- CI 39052279094: `push`, rama exacta, `head_sha` `1e7d8fc23e089619f61d40194969cecb09762336`, 4/4 jobs `success` (Tests, UI Tests, Build UI,
+  Build Plugin).
+- **GATE PASS de F4** registrado en decisiones §84 (CD-I65-F4-221). Candidato de hito `5a5ca577`; no es READY.
