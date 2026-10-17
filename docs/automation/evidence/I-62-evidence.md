@@ -4493,3 +4493,11 @@ solo desde artefactos custodiados.
 - **Prueba en seco:** `BlockingChecks` = [`11-OwnerAndAuthorizationGate`] con el único problema «sección posterior a §87 en decisiones (§88 en la
   línea 1733)»; dentro de la compuerta, §87 coincide (encabezado, blob y SHA-256 del texto); comprobaciones 1-3 y 6-10 en Ok, con el binario 2.1.299
   presente (`295b49ec…`). Nada lanzado: según §87, punto 5, el procedimiento exige una disposición posterior que autorice el lanzamiento.
+
+## 177. Decisiones §89: lanzamiento único de la revisión de A-6 ronda 4 con el transporte recuperado
+
+- Objeto: A-6 ronda 4, blob `4bc919dd`; kit `R20261014T180556Z-5e02` recuperado (manifiesto `70d68119…`, verificado completo contra `4e301b28`);
+  `claude-cli` 2.1.299 (`295b49ec…`). §89 se fija en la compuerta 11 con `pin_authorization.py` (solo las constantes de autorización); ninguna
+  sección de decisiones nueva hasta el lanzamiento y la auditoría.
+- Validación dirigida (compuerta de autorización, identidad del binario y del cierre, manifiesto, comprobación previa de registro, prueba en seco
+  con cero bloqueos) y preflight completo; una sola invocación con `python -B kit/launch.py`, tope de 3 600 s, sin reintento; auditor congelado.

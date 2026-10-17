@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §88; evidencia §176) — kit R20261014T180556Z-5e02 recuperado para claude-cli 2.1.299 (manifiesto 70d68119, validación incremental) y custodiado; prueba en seco bloqueada solo por la compuerta 11 (§88 posterior a §87); esperar una disposición que autorice el lanzamiento con el blob de A-6, fijarla, prueba en seco sin bloqueos y UNA revisión; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §89; evidencia §177) — fijar §89 en el kit R20261014T180556Z-5e02, validación dirigida y preflight; UNA revisión de A-6 ronda 4 (blob 4bc919dd) con python -B kit/launch.py, claude-cli 2.1.299, tope 3 600 s, sin reintento; auditor congelado; sin nuevas secciones de decisiones hasta auditar; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
