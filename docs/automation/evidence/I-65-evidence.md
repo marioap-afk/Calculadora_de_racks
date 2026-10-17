@@ -2016,3 +2016,37 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg (override de %APPDATA%\R
 
 - Este registro está en un commit hijo y **no** extiende la evidencia a ese hijo (AGENTS.md, «Commit documental»).
 - Codex 50 de 52; `attempts` 7 de 9.
+
+## 80. Revisión del Architect y propuesta de declaración del Candidato de hito `5a5ca577` (2026-10-17T00:14:36Z)
+
+- Orden: decisiones §75-§76. Architect por subagente de solo lectura; Coordinator sin AutoCAD, RAM, Codex ni Workers.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/architect-f4c-conformance.md` | `33022B6FACD725E2CF1103D2B7D8C2FACDC6107468D809C6D360758935003B12` |
+| `docs/automation/evidence/I-65-f4/architect-f4c.prompt.md` | `5B95A1060ECBF7211CE86D98DEE904A999591DC2B910787566D3F0AFD664FADB` |
+| `docs/automation/evidence/I-65-f4/architect-f4c-k5-transcript-scan.json` | `46A610DFD274BC8D15808EFE64E63DAB4F6EAC9D2B217C695F4839A82BBD23EC` |
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/ci-run-38977069487.json` | `62EDED2C094E7D1A654F0AC8CCA873D30ECE453C551147B5DD460D00117E2D4F` |
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/ci-run-38977069487-jobs.json` | `B39EADD5A3AE23BEC118B6D76D163F4C98CF073466BEFDBB45FCD2550E0DEAB3` |
+| `docs/initiatives/I-65-f4-final-candidate-preparation.md` | `5AF6E1CE1E31B9ECF775DDC1CA8ED1A82FCAC4BA3F11C6BCA84D88182C3F0161` |
+
+- **Propuesta de bloque de declaración (guía §7.1), pendiente del acto del Owner:**
+
+```text
+Candidate SHA:        5a5ca57731ebbbbc41ed4f702698709d5e128a86   (Candidato de hito de F4; PROPUESTO, pendiente de la declaración del Owner)
+Arbol limpio:         SI            <- al producir la evidencia local (§79)
+SDK resuelto:         8.0.423
+Core Full local:      PASS          (14390/14390)
+UI Full local:        PASS          (1637 superadas, 0 con error, 17 omitidas declaradas)
+Debug UI build:       PASS
+Debug Plugin build:   PASS          (DLL c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07, 1.0.0+5a5ca577; -o D:\r65-smoke\5a5ca577\, desviación registrada de la guía §2)
+CI exact SHA:         GREEN (run 38977069487, event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha exacto, job ui-tests success; 4/4)
+Owner validation:     required (OV-I65-01, OV-I65-03..07; W1 AutoCAD + W2 RAM; no autorizadas)
+Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d72487ac8b5b1e5510cdd8aba231ab340541d91bebca2d560e8   <- se vuelve a medir en W1
+Conformidad:          Architect CONFORMANT WITH OBSERVATIONS (0 REQUIRED, A65-F4C-01..08); Coordinator CONFORMING
+Registro posterior:   decisiones §74-§76 y evidencia §78-§80 en hijos documentales (e8c7f73a, 9a6f69d6 y este commit), sin cambio de producto
+Cobertura:            no es requisito previo (WORKFLOW §2.bis/§7); se mide después, cuando ci.yml esté en main
+```
+
+- Codex 50 de 52; `attempts` 7 de 9.

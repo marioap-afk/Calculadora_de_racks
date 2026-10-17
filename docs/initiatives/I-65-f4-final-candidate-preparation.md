@@ -176,3 +176,24 @@ W1 va antes que W2 (W2 necesita los paquetes). Pueden ser el mismo día.
 - Conflicto de host.
 
 Toda parada: registro literal, avisos de cierre y decisión del Owner. Ninguna parada se resuelve cambiando código sin autorización.
+
+## 11. Adenda tras la revisión del Architect (2026-10-17; decisiones §76)
+
+El texto anterior es el del SHA propuesto `5a5ca577` y no se modifica. Esta adenda, en un commit hijo documental, recoge cómo se
+atienden las observaciones OPTIONAL A65-F4C-01..08 del [Architect](../automation/evidence/I-65-f4/architect-f4c-conformance.md) en los
+procedimientos de W1 y W2. Se aplicarán cuando el Owner autorice ejecutar.
+
+| Observación | Corrección o atención |
+|---|---|
+| A65-F4C-01 (oráculo de «fila sin verificar» mal apuntado) | **Corrección de §6 OV-03:** T4-18 es, desde F4-D, la prueba **positiva** de la tabla verificada, y RamTool no tiene ninguna herramienta que copie la tabla. La cobertura de «fila sin verificar» la dan las pruebas de fixture `UnaFilaSinVerificadorOSinFechaEsUnsupported`, `UnaFilaProposedNuncaSeTrataComoVerified` y `UnResultadoQueNoEsValidoSePropagaConSuResultadoYSinPlan`, que están en verde en la Core Full del SHA propuesto. Sustituyen al caso de AutoCAD por otra clase de evidencia, y la autorización de W1 debe nombrar esa sustitución. El caso de **mapeo ausente** sí se ejecuta en AutoCAD |
+| A65-F4C-02 (READY-03 registrado en un hijo) | Lo decide la autorización de declarar (decisiones §76): las tres condiciones del Architect |
+| A65-F4C-03 (el REJECTED del comparador no discrimina) | En OV-05 la evidencia que decide es la **consola** y la **lectura de vuelta** (`FAILED — DISCARD MODEL` con la excepción de sección, como el `ValueError` de P1). El comparador se ejecuta solo como control adicional, con entradas fijas: `--generated` = volcado del generado de OV-01 y `--manual` = volcado manual de la estrategia A |
+| A65-F4C-04 (oráculos de OV-03 y OV-04 poco específicos) | **Código esperado por caso de OV-03:** (a) doble cara → `STATION-FACE-UNSUPPORTED`; (b) brazo `NegativeY` → `STATION-SIDE-UNSUPPORTED`; (c) brazo con más de 10° → `ARM-SLOPE-UNSUPPORTED`; (d) canales pareados → `ARM-ARRANGEMENT-UNSUPPORTED`, o familia C/L → `SECTION-FAMILY-UNSUPPORTED`; (e) sección sin fila → `MATERIAL-ROW-MISSING` con el id de la sección. Cada caso pasa solo si el código esperado aparece en la consola y no se crea la carpeta. Un `Invalid` debido a las cargas o a la carpeta no cuenta: los archivos de cargas por geometría se preparan en el procedimiento de W1, y si un caso no se puede dibujar es STOP de ese caso. **OV-04:** `pkg-OV04` se valida con v2 (16/16) antes de W2, y la única diferencia esperada es `gate: the model has 1 nodes` |
+| A65-F4C-05 (condiciones de la estrategia A incompletas) | Se añaden como paradas de W2: (a) los scripts de volcado del Candidato difieren de `manual-rackcad-ram-dump.py.txt` (`af262489…`) solo en la línea de la carpeta; (b) el informe del comparador de OV-01 registra `manualDumpSha256` = `c4a98fb0…`; (c) la condición 3 se comprueba sobre la **carga útil** de `pkg-OV01` (117/117 frente a la especificación, `rowsSha256` `54ca9f6c…`, cargas `25f48e7f…`) y no sobre la huella, que cambia con el `rackId` de un DWG nuevo; (d) el alcance de la estrategia A para el `FINAL_CANDIDATE_SHA` de READY lo decide el Owner |
+| A65-F4C-06 (registro del CI, ubicación de la DLL, cobertura) | El CI ya está custodiado con su `ref` (`event=push`, `head_branch` exacto, `head_sha` exacto, 4 jobs; [JSON](../automation/evidence/I-65-f4/candidate-5a5ca577/ci-run-38977069487.json)). La compilación con `-o` en `D:\r65-smoke\5a5ca577\` queda registrada como desviación de la guía §2, con la trazabilidad completa. La cobertura del Candidato **no** es requisito previo: según WORKFLOW §2.bis y §7, «la cobertura no declara Candidato» y se mide después, con `workflow_dispatch`, que solo existe cuando `ci.yml` llega a `main` |
+| A65-F4C-07 (faltan paradas operativas) | Se añaden a W1/W2: ruta del módulo cargado en `acad.exe` distinta de `D:\r65-smoke\5a5ca577\bin-Debug-net8.0-windows` o SHA-256 distinto de `c72b759d…`; ruta o hash del script distinto del esperado antes de cada «Ejecutar archivo…» (`PythonScripts` apunta hoy a `dump-man` de P2); licencia no disponible; diálogo modal no previsto; condición de Q-O1 (paquete de ingeniería §3 H); caso de OV-03 que no se puede dibujar; pegado accidental del portapapeles (en ese caso Ctrl+Z inmediato y registro); renombrado accidental en un diálogo «Abrir» (comprobar en disco después) |
+| A65-F4C-08 (`last_evidence_commit` desactualizado) | Corregido en el estado: `5a5ca577…` |
+
+Orden en W1, según la recomendación del Architect: primero las dos generaciones válidas (`pkg-OV01`, `pkg-OV04`) y después los casos
+de OV-03. Las inyecciones se hacen tras W1 y antes de W2, con `pkg-OV01` todavía de tres archivos, sin `--embed-folder` y comprobando
+que los hashes de `pkg-OV01` no cambian.
