@@ -4653,3 +4653,13 @@ solo desde artefactos custodiados.
   registrada, shell, modo de lenguaje, alias de Python, `PATH`, truncado, celda) a cambio de una disposición de bloque A2-P2, una línea del Owner y
   unas horas; no reduce la capacidad del Controller ni el cierre (U9). Ni A ni B antes de resolver el cierre.
 - Kit `a6m7-measure` sin cambios (congelado, sin ejecutar); sin Codex; sin consumo del Owner.
+
+## 185. Decisiones §92: preparación (no aplicación) de una enmienda material estrecha del cierre de VERIFY de FX-02; D-1 y nc2; lecturas; reconstrucción
+
+- Estado aceptado: análisis de §91 (`703f1c3f`); A-6 AGREED; A6-7 HELD; Controller NOT_DEMONSTRATED; FX-02/C-24 UNVERIFIED. Sin Codex ni consumo.
+- Encargos: candidata de enmienda con texto exacto y categorías (autoridades; objetos del `Target`; delegación, entrega, contrato y registros
+  custodiados; instrumento y lecturas legítimas) con origen, identidad, revisión, fidelidad y ausencia; R7-A como referencia técnica, R7-B rechazado;
+  disposición limitada que excluya `contract` de las VERIFY de FX-02; interpretación motivada o fallo cerrado para las ocho lecturas indeterminadas y
+  límite de escenarios de L-18 sin cambiar U-19; comprobación estática de `reconstruct_runs_m7.py`; preflight (delta, materialidad, guardas, negativos de
+  entradas ausentes, reemplazadas y ajenas, compatibilidad con A-5 y A-6, preservación de oráculos, presupuestos y líneas del Owner, evidencia sobre
+  R7-A). Sin revisión formal, sin B1, sin FX-U2, sin C1-C3.

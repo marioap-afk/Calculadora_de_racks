@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §91; evidencia §183-§184) — medición de A6-7 HELD; R7-A exige una enmienda material acotada (I6/B.9/A6-2 r3); D-1 = defecto del instrumento, evitable excluyendo contract de las VERIFY de FX-02; lecturas: 3 COMPATIBLE, 1 INCOMPATIBLE (L-18), 8 INDETERMINATE; reconstruct_runs_m7 viable sin demostrar; esperar disposición del Coordinator sobre la enmienda del cierre de VERIFY; sin Codex ni consumo del Owner; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §92; evidencia §185) — preparar (no aplicar) la enmienda material estrecha del cierre de VERIFY de FX-02 en F6 (R7-A como referencia), la disposición que excluye contract de las VERIFY, las ocho lecturas indeterminadas y L-18, la comprobación estática de reconstruct_runs_m7 y el preflight; A6-7 HELD; sin Codex, sin revisión formal, sin B1 ni FX-U2; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
