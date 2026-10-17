@@ -7,7 +7,7 @@ automation_state:
   state: waiting
   gate: F4
   attempts: 7
-  next_action: Owner: acto de declaracion del Candidato de hito 5a5ca577 (registrando la lectura de READY de CD-I65-F4-178) y, despues, autorizacion de la validacion final (W1 AutoCAD, W2 RAM) con la adenda §11 de la preparacion; sin GATE PASS de F4.
+  next_action: Owner: liberacion de W1 (AutoCAD) para la validacion final del Candidato de hito F4 5a5ca577 (DLL c72b759d), con el procedimiento operativo de W1 versionado antes de abrir AutoCAD; W2 (RAM) despues; sin GATE PASS de F4.
   last_evidence_commit: 5a5ca57731ebbbbc41ed4f702698709d5e128a86
 execution_context:
   mode: manual
@@ -16,6 +16,7 @@ execution_context:
 execution_chain:
   gate: F4
   next_role: Owner
-  implementation_authorization: NINGUNA VIGENTE; revision del Architect HECHA (CONFORMANT WITH OBSERVATIONS, 0 REQUIRED); CANDIDATE DECLARATION = PENDING (acto del Owner); FINAL AUTOCAD / RAM VALIDATION = NOT AUTHORIZED; F4 GATE PASS = NO
-  owner_decisions_open: [declaracion formal del Candidato de hito 5a5ca577 con la lectura de READY de CD-I65-F4-178, alcance de la estrategia A para el FINAL_CANDIDATE_SHA (A65-F4C-05 d), sustitucion de clase de evidencia de OV-03 fila sin verificar (A65-F4C-01), autorizacion de la validacion final OV-I65-01 y 03..07 con ventanas W1 y W2]
-  not_authorized: [implementacion nueva, cambios en src/, alterar el checkout principal, superar 52 invocaciones de Codex o max_attempts 9, AutoCAD, NETLOAD, nuevas compilaciones, reintentos de generacion, corregir el validador sin orden, corridas en RAM Elements, paquete definitivo de RAM, Candidato de hito, GATE PASS de F4, F5, F6, F7, capacidades fuera de V1, cambios del Freeze o de ADR-0050, codigo de I-52, I-62, I-64 o ID30, infraestructura de I-62, integración con Workspace, interfaz gráfica]
+  implementation_authorization: NINGUNA VIGENTE; CANDIDATO DE HITO F4 5a5ca577 DECLARADO (decisiones §77, evidencia §81); FINAL READY DECLARATION = NO; W1 AUTOCAD EXECUTION = NO; W2 RAM EXECUTION = NO; F4 GATE PASS = NO
+  milestone_candidate: {sha: 5a5ca57731ebbbbc41ed4f702698709d5e128a86, scope: hito F4 (no FINAL_CANDIDATE_SHA), dll: c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, ci: 38977069487 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS sin REQUIRED, coordinator: CONFORMING, owner_validation: required (W1 y W2 pendientes)}
+  owner_decisions_open: [liberacion de W1 (AutoCAD) con la DLL c72b759d, autorizacion de W2 (RAM) tras W1, estrategia del modelo manual para el FINAL_CANDIDATE_SHA de READY (posterior)]
+  not_authorized: [implementacion nueva, cambios en src/, alterar el checkout principal, superar 52 invocaciones de Codex o max_attempts 9, AutoCAD, NETLOAD, nuevas compilaciones, reintentos de generacion, corregir el validador sin orden, corridas en RAM Elements, paquete definitivo de RAM, declaracion de READY final o FINAL_CANDIDATE_SHA, ejecucion de W1 y W2, GATE PASS de F4, F5, F6, F7, capacidades fuera de V1, cambios del Freeze o de ADR-0050, codigo de I-52, I-62, I-64 o ID30, infraestructura de I-62, integración con Workspace, interfaz gráfica]

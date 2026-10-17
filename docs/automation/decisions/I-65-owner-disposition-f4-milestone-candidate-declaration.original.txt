@@ -1,0 +1,86 @@
+I-65 — OWNER DISPOSITION
+F4 Milestone Candidate Declaration
+He revisado el informe de conformidad publicado en `9a6f69d6` y `55a228ba`, ambos con CI 4/4 satisfactorio.
+1. Decisión del Owner
+F4 MILESTONE CANDIDATE DECLARATION = AUTHORIZED.
+Autorizo declarar como Candidato de hito F4 el SHA exacto:
+`5a5ca57731ebbbbc41ed4f702698709d5e128a86`
+Esta autorización está limitada al hito F4 y no constituye declaración de READY final de I-65.
+2. Lectura de LIFECYCLE
+Acepto expresamente la lectura de CD-I65-F4-178:
+Las disposiciones §74–§76 y las conformidades del Architect y Coordinator están registradas en commits documentales posteriores:
+
+* `e8c7f73a`
+* `9a6f69d6`
+* `55a228ba`
+
+Esos commits no modifican código de producto, Freeze, tabla, tolerancias ni contratos estructurales.
+Para este hito, acepto que esas decisiones constituyan evidencia posterior vinculada al SHA exacto del Candidato.
+Esta excepción no se extiende al FINAL_CANDIDATE_SHA de READY.
+3. Verificación antes de declarar
+Repite READY-04 con fetch fresco.
+Comprueba:
+
+1. Que origin/main no haya avanzado respecto de la base.
+2. Que el SHA del Candidato sigue siendo exacto.
+3. Que el árbol permanece limpio.
+4. Que el Freeze y ADR-0050 no cambiaron.
+5. Que la DLL y la tabla conservan sus hashes.
+6. Que la CI del SHA sigue siendo válida.
+7. Que no surgieron REQUIRED nuevos.
+
+Si main avanzó o cambió cualquier componente material, detente y aplica las autoridades de recuperación antes de declarar.
+4. Estrategia A — OD-F4-11
+STRATEGY A = APPROVED FOR F4 ONLY.
+Autorizo reutilizar el volcado manual custodiado de P2 (`c4a98fb0…`) como referencia independiente de transferencia durante la validación final de F4.
+Condiciones:
+
+* Versiones e identidades idénticas.
+* Especificación congelada sin cambios.
+* Plantilla de volcado idéntica.
+* Paquete del Candidato contrastado contra REF-CANT-01.
+* Comparador referenciando explícitamente el volcado manual.
+* No reutilizar el readback generado durante P2.
+
+La estrategia del modelo manual para READY final deberá decidirse posteriormente.
+5. OV-03 — Fila sin verificar
+Acepto que el caso de rechazo de fila sin verificar se cubra en el Candidato mediante las pruebas de fixture identificadas por el Coordinator.
+Registra separadamente que el primer smoke de AutoCAD ya demostró el rechazo seguro con las filas `proposed`.
+No presentes las pruebas de fixture como una nueva ejecución real en AutoCAD.
+Los demás casos de OV-03 deberán seguir la matriz de validación autorizada.
+6. Observaciones del Architect
+Acepto las disposiciones no bloqueantes registradas y las ocho observaciones OPTIONAL de la revisión final.
+Conserva trazabilidad y limitaciones.
+No las conviertas automáticamente en requisitos de implementación adicionales para F4.
+7. Declaración
+Si las verificaciones previas pasan, registra formalmente el Candidato F4 conforme a LIFECYCLE §7.1 y §8.
+Custodia:
+
+* SHA exacto.
+* Identidad del DLL.
+* Tabla verificada.
+* Resultados Core y UI.
+* CI.
+* Veredicto del Architect.
+* Conformidad del Coordinator.
+* Disposiciones del Owner.
+* Matriz de validación final.
+
+No modifiques código de producto.
+8. Siguiente paso
+Después de declarar el Candidato:
+
+1. Presenta su estado formal.
+2. Confirma que W1 y W2 están listas para autorización.
+3. Identifica únicamente los bloqueos reales restantes.
+4. Solicita la liberación de W1 antes de abrir AutoCAD.
+
+No ejecutes todavía ninguna prueba final en el host.
+9. Restricciones
+F4 CANDIDATE DECLARATION = APPROVED.
+FINAL READY DECLARATION = NO.
+W1 AUTOCAD EXECUTION = NO.
+W2 RAM EXECUTION = NO.
+F4 GATE PASS = NO.
+No iniciar F5, F6 ni F7.
+Procede con la declaración controlada y detente antes de W1.

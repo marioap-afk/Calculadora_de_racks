@@ -2050,3 +2050,68 @@ Cobertura:            no es requisito previo (WORKFLOW §2.bis/§7); se mide des
 ```
 
 - Codex 50 de 52; `attempts` 7 de 9.
+
+## 81. Declaración del Candidato de hito F4 `5a5ca577` (2026-10-17T02:36:27Z)
+
+- Orden: decisiones §77 (Owner: F4 MILESTONE CANDIDATE DECLARATION = AUTHORIZED). Coordinator sin AutoCAD, RAM, Codex ni Workers; sin
+  cambios de producto.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-f4-milestone-candidate-declaration.original.txt` | `E9E11923E69C54F1A302D8463CD88500434B7894258B4283B81812B645F9D8DF` |
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/predeclaration-recheck.txt` | `6C906864DCE788773F6FFAF8B2A00B968923F4D1D80EE5386BB0894CB0C1994B` |
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/local-evidence.txt` | `FCF506CC0264D6CF49B2061C9097F7AF0EB1A69607786644C983EE5E917F8556` |
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/output-manifest.txt` | `ED2875E42FB467F0294DF15F8E688D968FF058942E7E98B5BB0C8CBF7B5DB22B` |
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/expected-inputs.json` | `B3D101C1331632BB3F6CCD19C9D28F5C0A713BAFF12D628BB621E2F10C409911` |
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/ci-run-38977069487.json` | `62EDED2C094E7D1A654F0AC8CCA873D30ECE453C551147B5DD460D00117E2D4F` |
+| `docs/automation/evidence/I-65-f4/candidate-5a5ca577/ci-run-38977069487-jobs.json` | `B39EADD5A3AE23BEC118B6D76D163F4C98CF073466BEFDBB45FCD2550E0DEAB3` |
+| `docs/automation/evidence/I-65-f4/architect-f4c-conformance.md` | `33022B6FACD725E2CF1103D2B7D8C2FACDC6107468D809C6D360758935003B12` |
+| `docs/automation/evidence/I-65-f4/f4d-table-target.json` | `FC3D91464AC48A15730661EFCD50ECB770114559C68BDEFAE67E0816972DB619` |
+| `docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/manual-ram-dump.json` | `C4A98FB0EA798031DE2B3052D81EAE89F42B731A92F06DBFA97F148ADE9BA23B` |
+| `docs/initiatives/I-65-f4-final-candidate-preparation.md` | `5AF6E1CE1E31B9ECF775DDC1CA8ED1A82FCAC4BA3F11C6BCA84D88182C3F0161` |
+
+- **Verificación previa (02:30Z):** las siete comprobaciones del Owner pasan (decisiones CD-I65-F4-188, registro literal arriba).
+- **Bloque de declaración (guía §7.1):**
+
+```text
+Candidate SHA:        5a5ca57731ebbbbc41ed4f702698709d5e128a86   (Candidato de HITO de F4; DECLARADO por autorizacion del Owner, decisiones §77; no es FINAL_CANDIDATE_SHA)
+Arbol limpio:         SI            <- al producir la evidencia local (§79)
+SDK resuelto:         8.0.423
+Core Full local:      PASS          (14390/14390)
+UI Full local:        PASS          (1637 superadas, 0 con error, 17 omitidas declaradas)
+Debug UI build:       PASS
+Debug Plugin build:   PASS          (DLL c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07, 1.0.0+5a5ca577; -o D:\r65-smoke\5a5ca577\bin-Debug-net8.0-windows, desviacion registrada de la guia §2)
+CI exact SHA:         GREEN (run 38977069487, event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha exacto, job ui-tests success; 4/4)
+Owner validation:     required (OV-I65-01 y OV-I65-03..07 en W1 AutoCAD + W2 RAM; no autorizadas todavia)
+Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d72487ac8b5b1e5510cdd8aba231ab340541d91bebca2d560e8   <- medida de nuevo a las 02:30Z; se vuelve a medir en W1
+```
+
+- **Custodia adicional del Candidato:**
+
+| Elemento | Valor |
+|---|---|
+| Tabla verificada | `assets/structural-analysis/ram-elements/section-material-map.json`, blob `d088e2a9…` = `f4d-table-target.json`; junto a la DLL, SHA-256 `fc3d9146…b619`; las dos filas `verified` (D-09, decisiones §62-§66) |
+| Herramienta de F4 | `D:\r65-smoke\5a5ca577\ramtool\` (`RackCad.StructuralAnalysis.RamTool.exe` `0b56e198…`, `.dll` `d421c82b…`) |
+| Entradas congeladas | cargas `25f48e7f…`; valores esperados del validador v2 `expected-inputs.json` (`b3d101c1…`) |
+| Architect | CONFORMANT WITH OBSERVATIONS, 0 REQUIRED, A65-F4C-01..08 aceptadas como OPTIONAL (decisiones §76-§77) |
+| Coordinator | CONFORMING (CD-I65-F4-180) |
+| Disposiciones del Owner | §74 (P2 aceptada, Q-O1/Q-O7, DIF-04), §75 (hallazgos), §77 (declaración, lectura de LIFECYCLE, estrategia A solo F4, OV-03, observaciones) |
+| Registro posterior | decisiones §74-§77 y evidencia §78-§81 en hijos documentales (`e8c7f73a`, `9a6f69d6`, `55a228ba` y este commit), sin cambio de producto; lectura aceptada por el Owner solo para el hito |
+| Cobertura | no es requisito previo (WORKFLOW §2.bis/§7); se mide después, cuando `ci.yml` esté en `main` |
+
+- **Matriz de la validación final del hito** (preparación §6 con la adenda §11 y las disposiciones de §77; todo sobre `5a5ca577`):
+
+| OV | Ventana | Evidencia que decide | Estado |
+|---|---|---|---|
+| OV-I65-01 | W1 (`pkg-OV01`, validador v2 16/16, carga útil 117/117 frente a REF-CANT-01) + W2 (construcción, lectura de vuelta, volcado en la misma sesión) | comparador sin `--*-unread` PASS (0) con `manualDumpSha256` = `c4a98fb0…` (estrategia A, solo F4); propiedades por la hoja D-09 | PENDIENTE |
+| OV-I65-03 (a)-(e) | W1 | código esperado en la consola (`STATION-FACE-UNSUPPORTED`, `STATION-SIDE-UNSUPPORTED`, `ARM-SLOPE-UNSUPPORTED`, `ARM-ARRANGEMENT-UNSUPPORTED` o `SECTION-FAMILY-UNSUPPORTED`, `MATERIAL-ROW-MISSING`) y carpeta sin crear | PENDIENTE |
+| OV-I65-03 «fila sin verificar» | ninguna (sin host) | tres pruebas de fixture en verde en la Core Full del SHA exacto; clase de evidencia sustituida por el Owner (§77); **no** es una ejecución en AutoCAD. Primer smoke (`745653e1`) solo informativo | CUBIERTO POR PRUEBAS AUTOMATIZADAS |
+| OV-I65-04 | W1 (`pkg-OV04`, v2 16/16) + W2 | rechazo `gate:` antes de escribir; lectura de vuelta `FAILED`; conteos sin cambio | PENDIENTE |
+| OV-I65-05 | entre ventanas (`inject unknown-section`) + W2 | consola y lectura de vuelta `FAILED — DISCARD MODEL`; comparador solo como control | PENDIENTE |
+| OV-I65-06 | entre ventanas (`inject inverted-axes`) + W2 | `FAILED` con la diferencia de ejes locales | PENDIENTE |
+| OV-I65-07 | entre ventanas (`wrong-version`, `missing-core-function`) + W2 | rechazo antes de escribir; Elementos: 0; lectura de vuelta `FAILED` con `gate:` | PENDIENTE |
+
+  Aceptación de F4 (AC-F4-07) sin cambios: OV-I65-01 PASS, salvo las filas informativas, y OV-I65-03..07 PASS, con custodia. Después:
+  revisión del Architect, cierre y GATE PASS solo con orden del Owner.
+- FINAL READY DECLARATION = NO; W1 = NO; W2 = NO; F4 GATE PASS = NO. Codex 50 de 52; `attempts` 7 de 9.
