@@ -2320,3 +2320,58 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 | OV-I65-07 (a, b) | entre ventanas + W2 | **PASS** |
 
 - W2 = SATISFACTORIA. F4 GATE PASS = NOT YET AUTHORIZED. Codex 50 de 52; `attempts` 7 de 9.
+
+## 87. Revisión final del Architect y criterios de cierre de F4 (2026-10-17T17:00:40Z)
+
+- Orden: decisiones §82-§83. Architect por subagente de solo lectura; Coordinator sin AutoCAD, RAM, Codex ni Workers.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f4/architect-f4-final-conformance.md` | `32E4876DA6EAA808D686C1D1D427AF904E276FC20CA34EED0D2521E6A2E1F020` |
+| `docs/automation/evidence/I-65-f4/architect-f4-final.prompt.md` | `561F531DD511ABB190BAE49F89F92D0FBC7B9128965D9139D6E4E4BD4319B620` |
+| `docs/automation/evidence/I-65-f4/architect-f4-final-k5-transcript-scan.json` | `6C060294FB3B954B730AB10A5F45A418897037F87175712A364877624582433F` |
+
+- **Matriz final de F4 (Candidato de hito `5a5ca577`; filas separadas por clase de evidencia, A65-F4F-03):**
+
+| OV | Ventana / clase | Resultado | No evaluado o informativo |
+|---|---|---|---|
+| OV-I65-01 | W1 (AutoCAD) + W2 (RAM) + comparador | **PASS** | propiedades de sección y material NOT_EVALUATED (D-09); categoría del caso manual y peso propio INFORMATIVE; DIF-01 informativa |
+| OV-I65-03 (a) doble cara | W1 | **PASS** | — |
+| OV-I65-03 (b) brazo `NegativeY` | W1 | **PASS** | — |
+| OV-I65-03 (c) más de 10° | W1 | **PASS** | — |
+| OV-I65-03 (d) canales pareados | W1 | **PASS** | variante C/L: NOT_EVALUATED en el host (alternativa de la orden; pruebas de Core de `SECTION-FAMILY-UNSUPPORTED`) |
+| OV-I65-03 (e) mapeo ausente | W1 | **PASS** | — |
+| OV-I65-03 «fila sin verificar» | pruebas de fixture (sin host) | cubierta por pruebas automatizadas; NOT_EVALUATED en el host | primer smoke `745653e1` solo histórico |
+| OV-I65-04 | W1 + W2 | **PASS** | — |
+| OV-I65-05 | inyección + W2 | **PASS** | elementos parciales documentados y descartados; el REJECTED del control no discrimina por diseño |
+| OV-I65-06 | inyección + W2 | **PASS** | — |
+| OV-I65-07a / 07b | inyección + W2 | **PASS** / **PASS** | — |
+
+  FAIL: 0. INCOMPLETE: 0. OV-I65-02 (F5) y OV-I65-08 (READY) no aplican a F4.
+
+- **Criterios de cierre (AC-F4-01..11, `I-65-f4-preparation.md` §7, y LIFECYCLE §7):**
+
+| Criterio | Estado | Evidencia |
+|---|---|---|
+| AC-F4-01 | CUMPLE | orden del Owner y contrato de gate (§26) |
+| AC-F4-02 | CUMPLE | Freeze `4e6e1feb…` y ADR-0050 `c18def42…` sin cambios; sin A-n |
+| AC-F4-03 | CUMPLE | F4-T1..T6 y F4-D con RED→GREEN verificados; Core 14390/14390 y CI 38977069487 4/4 sobre el Candidato |
+| AC-F4-04 | CUMPLE | CD-I65-F4-166, §75-§76 |
+| AC-F4-05 | CUMPLE | F4-D §62-§66 (filas `verified`, hoja D-09); DIF-01..04 dispuestas; OD-F4-03 |
+| AC-F4-06 | CUMPLE | Candidato de hito declarado (§77, evidencia §81) |
+| AC-F4-07 | CUMPLE | matriz de arriba (W1 §79, W2 §81; aceptadas por el Owner §80 y §82) |
+| AC-F4-08 | CUMPLE | producto igual a `51fc82f1`; sin análisis, guardado ni sobrescritura de modelos de RAM |
+| AC-F4-09 | CUMPLE | Architect CONFORMANT WITH OBSERVATIONS sin REQUIRED (CD-I65-F4-216); Coordinator CONFORMING (CD-I65-F4-218) |
+| AC-F4-10 | **PENDIENTE** | commit de cierre (este) → árbol limpio → Core Full local → push → CI del SHA exacto → GATE PASS registrado después |
+| AC-F4-11 | CUMPLE | no se activó: OV-I65-01 PASS sin hipótesis incorrectas |
+| LIFECYCLE §7.1 resultado observado | CUMPLE | hito del Owner (§80, §82) y pruebas |
+| §7.2 RED→GREEN | CUMPLE | revisiones de F4-T1..T6 y F4-D |
+| §7.3 pruebas y evidencia | CUMPLE | evidencia del Candidato (§79, §81) y validación final (§84, §86) |
+| §7.4 CI del SHA de cierre | **PENDIENTE** | CI de este commit |
+| §7.5 revisión del Coordinator | CUMPLE | CD-I65-F4-218 |
+| §7.6 orden commit → árbol limpio → evidencia local → push → CI | **PENDIENTE** | Core Full local sobre este HEAD y CI |
+| §7.7 rebase entre gates | CUMPLE | sin rebase; `origin/main` = `bb0d5522` (fetch fresco) |
+
+- **SHA de cierre de F4 = este commit.** Candidato de hito `5a5ca577`; código = árbol de `51fc82f1`. El CI de este commit no da evidencia
+  nueva a `5a5ca577` (AGENTS, «Commit documental»).
