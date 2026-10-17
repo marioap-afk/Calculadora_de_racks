@@ -2233,3 +2233,16 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 
 - W1 = SATISFACTORIA; W2 no autorizada. Codex 50 de 52; `attempts` 7 de 9.
 - Recomprobación de I-52 tras W1: sin deriva; INFORMAR registrado sin acción; no autoriza ventanas posteriores. Custodia actualizada: `docs/automation/evidence/I-65-f4/host-coordination-w1-2026-10-17.md`, SHA-256 `7C5CC0DF416D2B301C72F2118793FBDA0F86B5BE533129EA82E4A52F5E46CABC`.
+
+## 85. Procedimiento de W2 versionado (2026-10-17T15:57:13Z)
+
+- Orden: decisiones §80. Sin RAM, AutoCAD, Codex ni Workers; sin cambios de producto.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-authorization-w2-ram-final-validation.original.txt` | `786153FF65A61F8C2BC5CEBD97DCC07E8FBAE7E9ACE01A667AC67455B487973A` |
+| `docs/initiatives/I-65-f4-w2-ram-procedure.md` | `ABDD4C74E04E0260B6DA9BDF462F2ED9EA8F5840CE2FFE9D49D1C2DC5627B18C` |
+| `docs/automation/evidence/I-65-f4/w2-prep/w2-hostsnap.ps1.txt` | `6904A43965DE69B33B78C304CD57D1958B31B2018121906CF22D034724FF5485` |
+
+- W2 aún no ejecutada; entra en vigor con este commit en `origin`, su CI 4/4 y las condiciones W2-PR-01..10.

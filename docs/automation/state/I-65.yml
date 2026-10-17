@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
   current_phase: f4-implementation
-  state: waiting
+  state: in-progress
   gate: F4
   attempts: 7
-  next_action: Owner: autorizacion de W2 (RAM) para OV-I65-01 (construccion, lectura de vuelta, volcado y comparador con el volcado manual c4a98fb0, estrategia A) y OV-I65-04..07 (pkg-OV04, inj-OV05, inj-OV06, inj-OV07a, inj-OV07b); W1 SATISFACTORIA (decisiones §79); sin GATE PASS de F4.
+  next_action: Coordinator: W2 segun docs/initiatives/I-65-f4-w2-ram-procedure.md (CI del procedimiento, condiciones W2-PR-01..10; si se cumplen, ejecucion en RAM); despues, parada y solicitud de la revision final de cierre de F4; sin GATE PASS.
   last_evidence_commit: 5a5ca57731ebbbbc41ed4f702698709d5e128a86
 execution_context:
   mode: manual
@@ -15,8 +15,8 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F4
-  next_role: Owner
-  implementation_authorization: NINGUNA de codigo; W1 EJECUTADA Y SATISFACTORIA (decisiones §79); W2 RAM EXECUTION = NO; FINAL READY DECLARATION = NO; F4 GATE PASS = NO
+  next_role: Coordinator
+  implementation_authorization: NINGUNA de codigo; W1 = PASS (decisiones §80); W2 PROCEDURE PREPARATION = AUTHORIZED; W2 RAM EXECUTION = CONDITIONAL GO; AUTOCAD = NO; STRUCTURAL ANALYSIS = NO; F4 GATE PASS = NOT YET AUTHORIZED
   milestone_candidate: {sha: 5a5ca57731ebbbbc41ed4f702698709d5e128a86, scope: hito F4 (no FINAL_CANDIDATE_SHA), dll: c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, ci: 38977069487 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS sin REQUIRED, coordinator: CONFORMING, owner_validation: required (W1 y W2 pendientes)}
-  owner_decisions_open: [autorizacion de W2 (RAM) tras W1, estrategia del modelo manual para el FINAL_CANDIDATE_SHA de READY (posterior)]
-  not_authorized: [implementacion nueva, cambios en src/, alterar el checkout principal, superar 52 invocaciones de Codex o max_attempts 9, AutoCAD, NETLOAD, nuevas compilaciones, reintentos de generacion, corregir el validador sin orden, corridas en RAM Elements, paquete definitivo de RAM, declaracion de READY final o FINAL_CANDIDATE_SHA, ejecucion de W2, GATE PASS de F4, F5, F6, F7, capacidades fuera de V1, cambios del Freeze o de ADR-0050, codigo de I-52, I-62, I-64 o ID30, infraestructura de I-62, integración con Workspace, interfaz gráfica]
+  owner_decisions_open: [revision final de cierre de F4 tras W2, GATE PASS de F4, estrategia del modelo manual para el FINAL_CANDIDATE_SHA de READY (posterior)]
+  not_authorized: [implementacion nueva, cambios en src/, alterar el checkout principal, superar 52 invocaciones de Codex o max_attempts 9, AutoCAD, NETLOAD, nuevas compilaciones, reintentos de generacion, corregir el validador sin orden, corridas en RAM Elements fuera de W2, analisis estructural, guardar modelos de RAM, paquete definitivo de RAM, declaracion de READY final o FINAL_CANDIDATE_SHA, GATE PASS de F4, F5, F6, F7, capacidades fuera de V1, cambios del Freeze o de ADR-0050, codigo de I-52, I-62, I-64 o ID30, infraestructura de I-62, integración con Workspace, interfaz gráfica]
