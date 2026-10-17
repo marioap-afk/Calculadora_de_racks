@@ -452,3 +452,31 @@ b67d4a054d795645c229dee498fa077e257b54dc707865591d3d2ed2d3911c8d     145  prep/p
 eba7cf4aedfc4ae90749b1059f81124879656f56a875241d61c241e54fdfd8ec    7912  launch-dry-run.json
 cfe6ba3f3a5806499b66e39374fd15b908322b37af997bf62d649aba39553286    2919  record-probe.json
 ```
+
+## Resultado (añadido tras la corrida, sesión principal; decisiones §89)
+
+```text
+Sesión:          4cfdcf7d-0aa5-4a96-98ac-0c0a4832ec5b, de 2026-10-17T02:36:16Z a 2026-10-17T02:58:01Z, Outcome COMPLETED, salida 0, sin errores posteriores
+Transporte:      claude-cli 2.1.299 (295b49ec…), claude-opus-5-5 xhigh; kit con §89 fijada (manifiesto b1342909562478e5…, custodia 7bdcd812)
+Uso:             63 turnos; herramientas {"Read": 51, "Grep": 10, "StructuredOutput": 1}
+Veredicto:       AGREED
+REQUIRED:        0
+OPTIONAL:        6 (A62-A6R4-O1, A62-A6R4-O2, A62-A6R4-O3, A62-A6R4-O4, A62-A6R4-O5, A62-A6R4-O6)
+R1 ronda 3:      A62-A6R3-R1 CORRECTED
+Regla 6 (b):     TOTAL_AND_MECHANICAL; A6-9: NONE
+Negativos:       N4 COHERENT; NC1 COHERENT
+Evidencia:       DERIVATION ADEQUATE; INDEPENDENT_IMPLEMENTATION ADEQUATE; SUBSTITUTIONS ADEQUATE; ADDED_OR_INVENTED_INPUTS ADEQUATE; ACCEPTOR_RUNS ADEQUATE; O3_STRICT ADEQUATE
+Delta:           CONFIRMED
+Opcionales r3:   A62-A6R3-O1 CONFORMS; A62-A6R3-O2 CONFORMS; A62-A6R3-O3 CONFORMS; A62-A6R3-O4 CONFORMS; A62-A6R3-O5 CONFORMS; A62-A6R3-O6 CONFORMS; A62-A6R3-O7 CONFORMS
+Preguntas r4:    Q-A6R4-01 SATISFIED; Q-A6R4-02 SATISFIED; Q-A6R4-03 SATISFIED; Q-A6R4-04 SATISFIED
+Owner:           decisión adicional requerida: False
+Acreditación:    ACCREDITED por el auditor v5.4-a6r4 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on the Coordinator disposition after §85 pinned in owner_gate.py; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2333-L2334; declared and self-tested before the launch; decisions §85, point 6) (0 motivos); sin acreditación excepcional
+Clon tras corrida: HEAD 088b3227, estado limpio
+```
+
+El veredicto no es el acuerdo: A-6 no se declara AGREED hasta la disposición del Coordinator (decisiones §89, punto 8). Ni FX-02 PASS, ni F6
+GATE PASS.
+
+Archivos añadidos: `output.json` y `audit.json` (byte a byte, sin modificar), `runtime-evidence.json`, `launch/` (saneado), `launch-run.log` y
+`post-review.log`. Las condiciones previas están en `preflight-s89/`. La transcripción y `stdout.jsonl` no se versionan; sus SHA-256 están en
+`runtime-evidence.json`.

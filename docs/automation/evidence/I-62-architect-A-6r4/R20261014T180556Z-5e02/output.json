@@ -1,0 +1,755 @@
+{
+ "Schema": "rackcad-a6r4-architect-review/0",
+ "RunId": "R20261014T180556Z-5e02",
+ "InvocationId": "I20261014T180556Z-5e02",
+ "LogicalReviewRequestId": "L20261014T180556Z-5e02",
+ "AttemptSeq": 1,
+ "RequestedRole": "ARCHITECT",
+ "Action": "REVIEW_DESIGN",
+ "ReviewedUnit": "I-62",
+ "ReviewedCommit": "088b3227a22ef6ab28b7ba43d5aa90de68d5b08f",
+ "ReviewedPath": "docs/initiatives/I-62-A-6.md",
+ "ReviewedBlob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+ "ReviewerMode": "SEPARATE SESSION",
+ "SamePersonAsAuthor": "Sesión: no. Soy un proceso claude-cli nuevo, separado de la sesión autora de A-6 y de sus cuatro rondas, de los agentes que construyeron las sondas de las rondas 3 y 4 (incluida r4/r1probes/indep/), de los autores del paquete B-min, del Coordinator, del dictamen de materialidad y de las revisiones de las rondas 1 a 3. No vi sus transcripciones ni su memoria. Operador humano: probablemente el mismo Owner que opera las sesiones de I-62 (el runtime me inyectó un correo de usuario y un nombre de usuario Git, que declaro solo por su tipo); no lo puedo confirmar. Proveedor del revisor: Anthropic (Claude Opus 5.5, autodeclarado por el runtime). Proveedor del autor del texto de A-6: no consta en el cierre. r4/preflight.md L35-L36 distingue tres agentes (guardas, banco e implementación independiente) sin nombrar su proveedor, y las sondas no invocaron ningún modelo (r1probes/README.md L5). El proveedor es una dimensión PREFERRED, no REQUIRED (LIFECYCLE L185).",
+ "ReviewerDeclaredIdentity": {
+  "Runtime": "claude-cli (agente sobre Claude Agent SDK, según el contexto inyectado)",
+  "Model": "claude-opus-5-5 (Opus 5.5, declarado por el runtime)",
+  "Effort": "UNKNOWN",
+  "SessionOrThread": "UNKNOWN (el runtime solo expuso una ruta de scratchpad con un identificador de sesión, que declaro por su tipo)"
+ },
+ "InjectedContextDeclaration": {
+  "State": "DECLARED",
+  "Items": [
+   "Instrucciones de sistema del runtime: agente Claude sobre Claude Agent SDK; reglas del harness (markdown, modos de permiso, recordatorios del sistema, hooks, contenido pegado), guía de seguridad, guía de sesión sobre ultrareview, entorno de modelos Claude, gestión de contexto, pronombres, confirmación de acciones y estilo",
+   "Definiciones de herramientas: Glob, Grep, Read y StructuredOutput, más un aviso de herramientas diferidas no expuestas",
+   "Entorno: directorio de trabajo D:\\r62-arch-a6r4 (repositorio Git), directorio adicional D:\\r62-arch-a6r4-run, plataforma win32, shell PowerShell, Windows 11 Pro 10.0.26300 y una ruta de scratchpad con un identificador de sesión (declarado solo por su tipo)",
+   "Identidad de modelo declarada por el runtime (Opus 5.5, claude-opus-5-5), fecha de corte de conocimiento, fecha 2026-10-16 y presupuesto de tokens",
+   "Instantánea de gitStatus: HEAD separado, rama principal main, árbol limpio y cinco commits recientes (088b3227, d66f7f4b, ceb85977, f402c4e7, 6504aa81)",
+   "Identificadores de cuenta, solo por su tipo: correo electrónico del usuario y nombre de usuario Git",
+   "Recordatorios del runtime durante la corrida que pedían un breve aviso de progreso (no son compactación ni mensajes nuevos del usuario)",
+   "No vi ninguna memoria de proyecto, CLAUDE.md ni AGENTS.md inyectados"
+  ]
+ },
+ "Step0": {
+  "Basis": "INVOKER_VERIFIED_CLONE",
+  "V14DirectReadL2333L2334": true,
+  "OrderReadWhole": true,
+  "Decisions85DeclaresOrderBytesAndSha256": true,
+  "Decisions85RoundThreeDisposition": true,
+  "GuardsRunModeBaseHeadResult": true,
+  "SelftestA6TextBlobMatchesObject": true,
+  "Round3OutputIdentifiesRunAndFindings": true,
+  "Note": "1) Read sobre docs/initiatives/I-62-proposal-v14.md con offset 2325 y limit 18: L2333-L2334 llegaron fielmente («Esperado independiente = la Proposal acordada (Freeze), las reglas de I-61, o el oráculo del Coordinator (Anexo D). Nunca la salida del procedimiento bajo prueba.»). 2) order.txt leído entero (68 líneas): punto 1 en L3-L9, punto 2 en L10-L14, punto 3 en L15-L27, punto 4 en L28-L35 y punto 6 en L46-L49. 3) Decisiones L1684-L1698: L1687 declara que el cuerpo pegado de §85 suma 2 805 bytes, con SHA-256 d74e2aa1…de5232, el de la orden. Los puntos 1-8 (L1691-L1698) registran lo que dice order.txt, con la redacción del registro. L1691: ronda 3 ACCREDITED, Architect CHANGES REQUIRED, A62-A6R3-R1 ACCEPTED REQUIRED y A62-A6R2-R2 CORRECTED. 4) a6r4-guards-result-run.json leído entero: Mode RUN (L2), Base ceb85977… (L3), Head d66f7f4b… (L4) y Result PASS (L1703); G5 en PASS (L292). 5) a6r4-selftest.json L8204-L8229: 815 de 815 mutantes muertos, Result PASS (L8225), Mode SELF_TEST, ToolBlob 56b59c50… y A6TextBlob 4bc919dd… (L8229), que es el blob del objeto. 6) Salida de la ronda 3: RunId R20261013T183701Z-9f80 (L3), ReviewedBlob e62f27b8… (L12), Verdict CHANGES REQUIRED (L176), R1 en L178-L209, O1-O7 en L212-L292 y NegativeCaseCoherence en L336-L391. No puedo recalcular bytes, SHA-256 ni blobs porque no tengo ejecución: eso lo acredita el invocador."
+ },
+ "DirectReads": [
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2333-2334",
+   "Purpose": "Lectura directa obligatoria del Anexo C (esperado independiente), contrastada con la cita de A-6 L136-L139"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2441",
+   "Purpose": "D.3: los ocho negativos con invocación (nc1; N4 handoff ausente → BLOCKED; N7a y N7b, otra corrida), contrastados con A-6 L108"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:622-625",
+   "Purpose": "16.9: not_run, precedencia y pares válidos (A-6 L320-L325); base de la coherencia de N4 y nc1"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:631",
+   "Purpose": "Fila Handoff de 16.9: ausente → BLOCKED; otra corrida → REWORK o STOP (N4, N7a y N7b)"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:653",
+   "Purpose": "Modo INVALID_OUTPUT al que remite A6-5, regla 4 (A-6 L327-L329)"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:657",
+   "Purpose": "Entrega ausente → BLOCKED/BLOCKED: oráculo de N4"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:676-677",
+   "Purpose": "16.11, recuperación (A-6 L331-L334)"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:1204-1207",
+   "Purpose": "16.22, comparación no establecida = not_run (A-6 L196-L201); Scope y Trailer en nc1"
+  },
+  {
+   "Ref": "docs/automation/agent-execution/README.md:219-226",
+   "Purpose": "RAE §10: copias de las entradas salvo el campo mutado, oráculo relativo y fallo de transporte (A-6 L359-L368, L404-L406)"
+  },
+  {
+   "Ref": "docs/automation/agent-execution/README.md:228",
+   "Purpose": "nc1: CurrentSha inexistente → Identity, BLOCKED/STOP (A-6 L391-L393)"
+  },
+  {
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:23",
+   "Purpose": "Kit: los negativos usan el mismo prompt y el Target de la verificación real (A-6 L404-L405)"
+  },
+  {
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:44-45",
+   "Purpose": "AuthorityRevision y CanonicalInputs del kit (A-6 L397-L398)"
+  },
+  {
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:52",
+   "Purpose": "Fidelidad previa: sin FAITHFUL no se lanza (P-24); respuesta a Q-A6R4-02"
+  },
+  {
+   "Ref": "docs/automation/decisions/I-62.md:1572",
+   "Purpose": "Línea del Owner (a), comparada con A-6 L1324"
+  },
+  {
+   "Ref": "docs/automation/decisions/I-62.md:1684-1698",
+   "Purpose": "Decisiones §85: autorización, pruebas obligatorias, opcionales, límites y entrega de la ronda 4"
+  },
+  {
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:94",
+   "Purpose": "Materias OWNER-RESERVED (A-6 L268-L270), para la comprobación de autoridad del Owner"
+  },
+  {
+   "Ref": "docs/INITIATIVE_LIFECYCLE.md:166-173",
+   "Purpose": "Criterio REQUIRED/OPTIONAL y condición de AGREED"
+  },
+  {
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2134-2137",
+   "Purpose": "R4 sin Verification no tiene datos (no aplicable por la tabla de A6-5, regla 2)"
+  },
+  {
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2542-2554",
+   "Purpose": "R9: exige el Closure de la solicitud y al menos un sobre (A-6 L1146-L1149)"
+  },
+  {
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2588-2591",
+   "Purpose": "R9: toda entrada file de Inputs tiene que estar en C6 (entrega ausente o sustituida)"
+  },
+  {
+   "Ref": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2675-2698",
+   "Purpose": "accept(): NOT_APPLICABLE solo en comprobaciones dispensables; fórmula de la Decision"
+  }
+ ],
+ "Reads": [
+  "docs/initiatives/I-62-proposal-v14.md: 2325-2342, 2436-2443",
+  "order.txt (run): 1-68 (entera)",
+  "a6-r3.md (run): 528-539, 540-619, 684-700, 726-761, 785-846, 1033-1052; Grep sobre el archivo",
+  "docs/automation/decisions/I-62.md: 1564-1584, 1684-1698",
+  "docs/automation/evidence/I-62-A6/r4/a6r4-guards-result-run.json: 1-1704 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/a6r4-selftest.json: 8204-8229",
+  "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json: 1-300, 300-399",
+  "docs/initiatives/I-62-A-6.md: 1-300, 301-600, 600-899, 900-1199, 1200-1447 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md: 1-93 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/indep/SPEC.md: 1-145 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/run_synth.log: 1-26 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-trx_unverifiable.json.stderr.txt: 1 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/indep/derive_indep.py: 325-344, 468-489; Grep sobre el archivo",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md: 1-100; Grep sobre el archivo",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/README.md: 1-175 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/derive_r4.py: 1-365 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/table_r4.py: 1-81 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/lib_r4.py: 1-241 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/table_r3.py: 1-30, 135-200; Grep sobre el archivo",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/run_r4.py: 517-606; Grep sobre el archivo",
+  "docs/automation/evidence/I-62-A6/r4/readable/r1probes/summary.json: 1-371 (entera)",
+  "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p9-n4.json: 1-180; Grep sobre el archivo",
+  "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p10-nc1.json: 1-153; Grep sobre el archivo",
+  "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p8-v.json: 1-200, 200-359",
+  "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p11-indep.json: 1-30; Grep sobre el archivo",
+  "docs/automation/evidence/I-62-A6/r4/preflight.md: 1-87 (entera)",
+  "docs/automation/agent-execution/README.md: 215-236, 236-247",
+  "docs/AUTOMATION_PLAN.md: 618-677, 1200-1209",
+  "docs/INITIATIVE_LIFECYCLE.md: 90-95, 152-191, 218-222",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py: 2130-2145, 2530-2624, 2672-2700"
+ ],
+ "Verdict": "AGREED",
+ "RequiredFindings": [],
+ "OptionalFindings": [
+  {
+   "FindingId": "A62-A6R4-O1",
+   "Section": "§3.6 A6-3, regla 6 (b) (v), registro de derivación; §3.18, «Derivación» y «Cierre calculado de forma independiente»",
+   "Note": "(v) enumera tres causas: entrada ausente; campo ausente, null o vacío; y valor que no nombra un commit existente. Pero (iii) produce una cuarta situación que A-6 (§3.18, L1138-L1139) y la evidencia registran como omisión: la RevList «primitiva vacía» en nc1, o un MergeBase sin base común. El texto tampoco dice si se registra un término que la tabla solo admite «si no es null» cuando es null; las dos implementaciones lo registran como FIELD_NULL, y es la única omisión con todas las entradas presentes. Tampoco dice si se registra una lista vacía (K.Authorities = []) ni cómo se registra una lista con elementos defectuosos. El cierre no cambia, porque (i)-(iii) lo fijan. Pero el registro que (v) custodia, y que usa el cotejo (Q-A6R4-03), no queda determinado solo por el texto. Las dos implementaciones coinciden porque SPEC.md fijó esa taxonomía (PRIMITIVE_EMPTY, prioridad de INPUT_ABSENT y listas vacías sin registrar) y el agente anotó sus elecciones. Fuera de los vectores divergirían: con K.Authorities = \"\" derive_r4.py no registra nada, y con un elemento sin Path falla; derive_indep.py registra FIELD_EMPTY en el primer caso y el elemento defectuoso en el segundo. Además, §3.18 dice que la segunda implementación se escribió «solo desde el texto de la regla y de la tabla», y en realidad se escribió desde SPEC.md, que añade esa interfaz y esa taxonomía.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:610-615",
+    "docs/initiatives/I-62-A-6.md:1138-1139",
+    "docs/initiatives/I-62-A-6.md:1143-1145",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/SPEC.md:117-125",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md:49-52",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md:61-66",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/derive_r4.py:285-294",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/derive_indep.py:470-487",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:134-138"
+   ],
+   "SuggestedCorrection": "En (v), añadir la causa «primitiva vacía por (iii) (extremo omitido o sin resultado)» y precisar tres cosas: un término que la tabla solo admite «si no es null» se registra como campo null; una lista vacía no aporta nada y no se registra; y cada elemento defectuoso de una lista se registra. En §3.18, decir que la segunda implementación partió de la regla, de la tabla y de la interfaz del banco (SPEC.md), que fija la taxonomía del registro."
+  },
+  {
+   "FindingId": "A62-A6R4-O2",
+   "Section": "§3.6 A6-3, regla 6 (b) (i)-(iii): entradas de la tabla distintas de D, H y K, tipos de campo y generalidad",
+   "Note": "(i)-(iii) fijan el resultado cuando faltan D, H o K y cuando un campo está ausente, es null, está vacío o no es un commit. No lo fijan en otros casos: cuando los bytes custodiados de una entrada que C6 nombra TRX, o del mapa M que lee C4, no verifican contra el blob que fija E; cuando un campo que no es un commit tiene un tipo JSON erróneo (ExpectedBranch, RunId, Authorities, I.Target); ni cuando hay varios blobs fijados en la ruta de una entrada. La evidencia muestra que el texto no decide el resultado. Que un TRX que no verifica sea un error del banco lo decide SPEC.md, y las dos implementaciones se detienen. Con M, derive_r4.py usa sin aviso un mapa vacío y derive_indep.py se detiene; ningún vector lo ejercita. Con K ausente solo por no ser JSON, el agente tuvo que elegir si la entrada CONTRACT de C6 «lee K». Ningún control de FX-02 produce esos estados: presuponen un defecto de custodia de la supervisión, porque E fija los blobs y sin fidelidad no hay lanzamiento (P-24). Sin cierre no hay solicitud, y A6-5, regla 4, deja la salida sin aceptar (fallo cerrado). No afecta, por tanto, a N4 ni a nc1.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:600-611",
+    "docs/initiatives/I-62-A-6.md:689-691",
+    "docs/initiatives/I-62-A-6.md:861-871",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/SPEC.md:86-89",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/derive_r4.py:277-284",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/derive_r4.py:333-336",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/derive_indep.py:330-340",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md:56",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md:68-80",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/syn-trx_unverifiable.json.stderr.txt:1",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:52"
+   ],
+   "SuggestedCorrection": "Cerrar esos casos con una frase en (b), por ejemplo: «si otra entrada que lee la tabla (una entrada TRX o el mapa M) no verifica contra E, si un campo que la tabla lee tiene un tipo que no puede usar o si hay varios blobs fijados en la ruta de una entrada, no hay derivación: no hay solicitud y la salida queda sin aceptar (A6-5, regla 4)». También vale declarar en §3.18 que quedan fuera de la regla y fallan cerrados. Precisar además si la entrada CONTRACT de C6 se omite cuando K falta."
+  },
+  {
+   "FindingId": "A62-A6R4-O3",
+   "Section": "§3.6 A6-3, regla 6 (b) (i), identificación de D, H y K; §3.18, «Relación con A6-9, regla 4»",
+   "Note": "(i) decide que D, H o K «faltan si E no fija su blob», y para eso hay que saber qué entrada de E es cada una. La tabla lo presupone (línea Entradas) y solo §3.18, que es descriptiva, dice que la identificación la da el kit, por las rutas de entrada de la invocación. El banco la recibe como dato del vector (Designation), con la nota «no forma parte de la regla», y el README la declara entre lo no demostrado. En N4, tal como el kit calcula E (un archivo que no existe no tiene blob), no hay ambigüedad. Pero con un E que llevara la ruta de la entrega de otra corrida, identificar por patrón o por la ruta de entrada daría cierres distintos.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:603-604",
+    "docs/initiatives/I-62-A-6.md:852-853",
+    "docs/initiatives/I-62-A-6.md:1160-1162",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/SPEC.md:77-79",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:28-33",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:168-170",
+    "docs/automation/agent-execution/README.md:220-221"
+   ],
+   "SuggestedCorrection": "En (i), decir que D, H y K son las entradas de E en las rutas que el kit da a la invocación como entradas (su ruta de entrada, RAE §10), y que «E fija su blob» significa que E tiene exactamente una entrada en esa ruta."
+  },
+  {
+   "FindingId": "A62-A6R4-O4",
+   "Section": "§3.18, fila O7 (custodia de la medición)",
+   "Note": "La fila dice que «la medición es una invocación VERIFY con el instrumento, y A6-3, regla 6, exige construir y custodiar su solicitud con el resultado». Pero A6-5, regla 7, define ese conjunto como las invocaciones VERIFY de FX-02 (la verificación, su reverificación y cada control negativo), y A6-7, regla 2, dice que la medición no es una invocación de rol de FX-02. A6-3, regla 6, se aplica a ese conjunto. La base normativa que sí alcanza a la medición es la frase final de (b), con (v): el cierre, el registro de derivación y la solicitud. La custodia por SHA-256 de su registro de sesión y del resultado del aceptante solo está en el anexo, que no es normativo (paso 4). La disposición cumple §85, punto 4 (ningún cambio normativo fuera de 6 (b)), pero la fila exagera su base normativa.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:1126",
+    "docs/initiatives/I-62-A-6.md:717-718",
+    "docs/initiatives/I-62-A-6.md:771",
+    "docs/initiatives/I-62-A-6.md:590-591",
+    "docs/initiatives/I-62-A-6.md:614-617",
+    "docs/initiatives/I-62-A-6.md:1438-1442",
+    "order.txt:34-35"
+   ],
+   "SuggestedCorrection": "Reescribir la fila O7 separando lo normativo (frase final de (b) y (v): cierre, registro y solicitud de la medición) de lo previsto (anexo, paso 4: custodia por SHA-256 del registro de sesión, de la solicitud y del resultado del aceptante antes de la disposición de elegibilidad). Lo previsto lo tendría que nombrar la disposición de A6-7, regla 3."
+  },
+  {
+   "FindingId": "A62-A6R4-O5",
+   "Section": "§2, fuentes añadidas en la ronda 4; §3.17, fila de precondiciones «cobertura completa de las lecturas legítimas»",
+   "Note": "L405-L406 citan README.md:219-220 para «copias de las entradas que conservan sus RunId internos salvo el campo mutado», pero ese texto está en RAE L221; L220 trae «el mismo prompt, salvo la ruta de entrada y el RunId de la invocación». Además, la fila de precondiciones de §3.17 (L1095) sigue nombrando solo hashes y read-text con la regla I6 estricta, aunque la ronda 4 comprobó que clausemap también queda fuera (§3.18, L1122; p8-v, O3-STRICT).",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:404-406",
+    "docs/automation/agent-execution/README.md:220-221",
+    "docs/initiatives/I-62-A-6.md:1095",
+    "docs/initiatives/I-62-A-6.md:1122",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p8-v.json:239-243"
+   ],
+   "SuggestedCorrection": "Citar README.md:220-221. En la fila de §3.17, añadir clausemap (estado en CurrentSha) o remitir a §3.18, fila O3."
+  },
+  {
+   "FindingId": "A62-A6R4-O6",
+   "Section": "§3.12 A6-9, tabla de derivación (nombre H de C6); alcance de la evidencia de la ronda 4 (otros controles con invocación)",
+   "Note": "La ronda 4 ejercita el cierre en la verificación real, en N4 y en nc1, que es lo que pide §85, punto 3. En C6, el nombre H exige que la ruta de la entrega termine en <H.RunId>/worker-handoff.json. En N7a y N7b («otra corrida») puede pasar lo siguiente: si el campo mutado es el RunId de la entrega y la copia conserva su ruta, C6 no contendría H. Entonces una ejecución de handoff o freetext sobre esa entrega legible daría R9 en MISMATCH, la salida no se aceptaría y el control podría agotar sus reejecuciones, el mismo tipo de efecto que A62-A6R3-R1. Ni V14 ni RAE §10 fijan qué campo mutan N7a y N7b, así que el riesgo no está demostrado. No afecta a la corrección de R1.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-6.md:869-870",
+    "docs/initiatives/I-62-proposal-v14.md:2441",
+    "docs/AUTOMATION_PLAN.md:631",
+    "docs/automation/agent-execution/README.md:220-221",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/derive_r4.py:325-328",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2588-2591"
+   ],
+   "SuggestedCorrection": "Antes de la medición, extender el banco, o la prueba previa de A6-5, regla 6, a los cierres de N5, N6, N7a y N7b con las rutas del kit. Si el riesgo se confirma, presentar el delta exacto (en A6-3, regla 6 (b), o, con una disposición nueva, en A6-9) antes de usar el aceptante en esos controles."
+  }
+ ],
+ "Round3FindingResolution": [
+  {
+   "Round3Finding": "A62-A6R3-R1",
+   "Status": "CORRECTED",
+   "Rationale": "El hallazgo (output.json L178-L209) mostraba que la tabla de A6-9 no fijaba ningún resultado sin la entrega (N4) ni con un CurrentSha inexistente (nc1), de modo que la solicitud no se podía construir sin un paso de juicio, y que las sondas de la ronda 3 usaron el cierre del extremo a extremo. Pedía: (1) fijar en A6-3, regla 6 (b), el Closure de esos casos: omitir los términos de una H ausente; vaciar los que nombran un commit inexistente, incluida RevList; usar en C3 solo commits existentes; registrar las omisiones; y hacer explícito que la medición y la prueba previa usan las mismas entradas. (2) Repetir N4-c, N4-d, nc1 V1-V3 y nc1-err con ese cierre, desde un E como el del kit y con el Target real, y registrar R9 y la tabla de A6-5, regla 2. (3) Ajustar §3.17. Decisiones §85, puntos 2 y 3 (L1692-L1693), piden lo mismo, sin objetos inexistentes ni el cierre de una prueba general, sin editar A6-9 y sin Codex. En la ronda 3, (b) solo decía «Closure = el cierre derivado por la regla de A-6 sobre la independencia» (a6-r3.md L582-L584). La ronda 4 añade (i)-(v) y la frase final (L600-L617). (1) Cumplido punto por punto: (i) omite los términos de H; (ii) valida cada commit con cat-file -t en el -C; (iii) vacía las primitivas; (iv) prohíbe sustituir, también por el cierre de una prueba general; (v) registra y custodia; la frase final cubre la prueba previa y la medición. A6-9 y su tabla no cambian (a6-r3.md L808-L839 frente a L841-L872). (2) Cumplido sin Codex (README L5). N4-c, N4-d, V1-r4, V2-r4, V3-r4 y nc1-err usan el cierre que derive_r4.py deriva del E de r2/independence (d), con la ruta de cada control y el Target G (lib_r4.py L81-L83, L166-L192; run_r4.py L517-L548). Registran R9 y la tabla: N4-c da ACCEPT_FACTS con R9 en MATCH (p9-n4 L4-L97), V1-r4 da ACCEPT_FACTS con R4 y R9 en MATCH (p10-nc1 L4-L22, L104-L117), y las ejecuciones con error se rechazan (README L113, L128). (3) Cumplido: L1076-L1078 declaran qué cierre usó cada sonda. El defecto ya no existe: en N4 y nc1 el cierre es único, admite las lecturas legítimas y no admite la entrega ni el commit sustituidos.",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json:178-209",
+    "docs/automation/decisions/I-62.md:1692-1693",
+    "a6-r3.md:582-584",
+    "a6-r3.md:808-839",
+    "docs/initiatives/I-62-A-6.md:600-617",
+    "docs/initiatives/I-62-A-6.md:841-872",
+    "docs/initiatives/I-62-A-6.md:1076-1078",
+    "docs/initiatives/I-62-A-6.md:1117-1155",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:5-6",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:44-70",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:110-130",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/lib_r4.py:166-192",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/run_r4.py:517-548",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p9-n4.json:4-97",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p10-nc1.json:104-117"
+   ],
+   "FindingIds": []
+  }
+ ],
+ "ClosureRuleMechanical": {
+  "Assessment": "TOTAL_AND_MECHANICAL",
+  "Coverage": [
+   {
+    "Case": "N4_ABSENT_DELIVERY",
+    "Status": "COVERED",
+    "JudgmentStepRequired": false,
+    "Rationale": "(i) enumera todas las formas: E no fija el blob; los bytes custodiados no existen o tienen otro blob; o no son un único objeto JSON en UTF-8 sin claves repetidas. También enumera los términos que se omiten con la entrega ausente: H.BaseSha, H.CurrentSha y H.RedSha en C1, la RevList y la entrada H de C6. Son los únicos que leen H: C3 se calcula sobre los commits que quedan, C4 lee E y el nombre H de C6 necesita H.RunId. (iv) impide completarlos y (v) los registra con la causa «entrada ausente». El resultado es único: las siete formas de N4 dan las mismas omisiones y el mismo cierre, salvo la ruta de la entrega en C4 cuando E la fija (README L47-L54), y la implementación independiente coincide (indep README L36-L37).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:600-605",
+     "docs/initiatives/I-62-A-6.md:612-615",
+     "docs/initiatives/I-62-A-6.md:852-871",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:47-54",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md:36-37",
+     "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p9-n4.json:19-58"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Case": "NC1_NONEXISTENT_COMMIT",
+    "Status": "COVERED",
+    "JudgmentStepRequired": false,
+    "Rationale": "(ii) da un criterio cerrado de validez para cada valor de commit, también en los extremos de las primitivas y en I.Target.Commit: una cadena de 40 hexadecimales en minúscula que cat-file -t da como commit en el -C. Si no lo es, el valor se omite. (iii) deja vacía la RevList con un extremo omitido, y C3 y los demás términos se calculan sobre lo que queda. nc1 y las variantes del CurrentSha (mayúsculas, abreviado, árbol, blob, ref HEAD) dan el mismo cierre, salvo el SHA-256 de la entrada H de C6 (README L55-L63), y la implementación independiente coincide (indep README L39).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:606-611",
+     "docs/initiatives/I-62-A-6.md:855-857",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:55-63",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md:38-39",
+     "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p10-nc1.json:104-117"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Case": "ABSENT_NULL_EMPTY_FIELDS",
+    "Status": "COVERED",
+    "JudgmentStepRequired": false,
+    "Rationale": "Según la primera frase de (ii), un campo que la tabla lee y que no está, es null o está vacío no aporta ningún término, sea cual sea su papel: término de C1, extremo de una primitiva, sufijo de una ref de C2, ruta de K.Authorities o componente de IgnorePath. Así el cierre queda fijado sin criterio adicional. El banco lo ejercita con CurrentSha y RedSha ausentes, null y vacíos (README L56-L58, L64-L66), y la implementación independiente con ExpectedBranch null y K.Authorities vacía (indep README L38, L43-L44). Lo que el texto no fija del todo es la taxonomía del registro de (v) en casos marginales (A62-A6R4-O1), no el cierre.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:606-607",
+     "docs/initiatives/I-62-A-6.md:855-866",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:56-66",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md:38-44"
+    ],
+    "FindingIds": []
+   }
+  ],
+  "SubRules": [
+   {
+    "SubRule": "i",
+    "IntroducesInput": "no",
+    "SubstitutesInput": "no",
+    "Rationale": "Solo usa E y los bytes custodiados de D, H y K, que son entradas de la tabla, para decidir si una entrada falta, y entonces omite sus términos. No admite nada que la tabla no tome. Con la entrega ausente, RED sale del cierre y G solo sigue por I.Target.Commit, que es un término propio de la tabla.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:603-605",
+     "docs/initiatives/I-62-A-6.md:852-853",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:47"
+    ],
+    "FindingIds": []
+   },
+   {
+    "SubRule": "ii",
+    "IntroducesInput": "no",
+    "SubstitutesInput": "no",
+    "Rationale": "Solo usa el valor del campo y el repositorio del -C, que ya es entrada de la tabla, con una lectura fija (cat-file -t con --no-replace-objects). Un valor inválido se omite y nada lo reemplaza.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:606-609",
+     "docs/initiatives/I-62-A-6.md:852-853",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/derive_r4.py:130-160"
+    ],
+    "FindingIds": []
+   },
+   {
+    "SubRule": "iii",
+    "IntroducesInput": "no",
+    "SubstitutesInput": "no",
+    "Rationale": "Una primitiva con un extremo omitido, o sin resultado, da el conjunto vacío. Ningún otro commit hace de extremo ni de base común (D-MB-EMPTY: «nada sustituye la base común ausente»).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:610-611",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:70",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/derive_r4.py:227-252"
+    ],
+    "FindingIds": []
+   },
+   {
+    "SubRule": "iv",
+    "IntroducesInput": "no",
+    "SubstitutesInput": "no",
+    "Rationale": "Prohíbe expresamente sustituir un término omitido por otra entrega o una copia suya, por otro commit, por una ref, por el Target o por el cierre de una prueba general. Las sustituciones del banco quedan rechazadas (README L80-L84).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:612-613",
+     "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:80-84"
+    ],
+    "FindingIds": []
+   },
+   {
+    "SubRule": "v",
+    "IntroducesInput": "no",
+    "SubstitutesInput": "no",
+    "Rationale": "El registro de derivación es una salida que se custodia con la solicitud y el cierre, no un insumo del cierre. R9 no lo lee: solo lee el Closure.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-6.md:614-615",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2542-2554"
+    ],
+    "FindingIds": []
+   }
+  ],
+  "Rationale": "Con las entradas de la tabla (E, D, H, K, I y el -C), (i)-(iii) dan un único cierre en los tres casos. (iv) impide sustituir, (v) registra y la frase final aplica la misma regla a la prueba previa y a la medición con las entradas de su invocación. Ningún apartado añade un insumo ni sustituye un término. Dos implementaciones independientes dan el mismo cierre y las mismas omisiones en 58 de 58 vectores. Quedan precisiones no bloqueantes, ninguna sobre el cierre de N4, de nc1 ni de los campos ausentes, null o vacíos tal como los produce FX-02: la taxonomía del registro (A62-A6R4-O1), los casos fuera de D, H y K o de tipo (A62-A6R4-O2) y la identificación de D, H y K (A62-A6R4-O3).",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-6.md:600-617",
+   "docs/initiatives/I-62-A-6.md:848-879",
+   "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p11-indep.json:4-12"
+  ],
+  "FindingIds": [
+   "A62-A6R4-O1",
+   "A62-A6R4-O2",
+   "A62-A6R4-O3"
+  ]
+ },
+ "A69Compatibility": {
+  "Status": "NONE",
+  "Contradictions": [],
+  "Rationale": "A6-9, regla 4 (L841-L843), y su tabla (L848-L872) son byte a byte las de la ronda 3 (a6-r3.md L808-L839), y G5 está en PASS. La regla 6 (b) no define otras lecturas permitidas: solo quita términos cuando una entrada de la tabla no da valor, nunca añade, y con todas las entradas presentes el cierre es idéntico al custodiado de la ronda 2 (README L44). La línea Entradas presupone que E fija D, H y K, y (i) define el caso en que no los fija sin contradecirla. (ii) consulta el -C con cat-file -t, y el -C ya es entrada de la tabla. Esa consulta decide si un valor puede ser operando de las operaciones de grafo fijadas que nombra la regla 4. La tabla ya lee el repositorio más allá de esas tres primitivas (Blob(c:p) en C3), así que la frase «solo primitivas de grafo» no queda contradicha de un modo que obligue a editar A6-9. La frase final es compatible con A6-5, regla 6 (L707-L716), y con A6-7, regla 1 (L767-L770). Ninguna contradicción exige editar A6-9 (decisiones §85, punto 2, L1692). La identificación de D, H y K, que la tabla presupone, conviene fijarla en (i) (A62-A6R4-O3).",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-6.md:841-843",
+   "docs/initiatives/I-62-A-6.md:848-879",
+   "a6-r3.md:808-839",
+   "docs/initiatives/I-62-A-6.md:1157-1162",
+   "docs/initiatives/I-62-A-6.md:606-611",
+   "docs/automation/decisions/I-62.md:1692",
+   "docs/automation/evidence/I-62-A6/r4/a6r4-guards-result-run.json:275-293",
+   "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:44"
+  ],
+  "FindingIds": [
+   "A62-A6R4-O3"
+  ]
+ },
+ "NegativeCaseCoherence": [
+  {
+   "Case": "N4",
+   "Status": "COHERENT",
+   "Rationale": "Con la entrega ausente, Handoff queda en fail con BLOCKED, y las comprobaciones sin entrada quedan en not_run sin disposición (AP L622-L623, L631, L657). El Controller no ejecuta el instrumento sobre la entrega (A6-5, regla 7 (d), L729-L733), y sin ejecuciones rigen 16.9, 16.11 y 16.22 sin cambio. Si ejecuta el instrumento sobre las entradas que sí existen, la solicitud omite Verification y declara R4 no aplicable (L618-L621; bmin_accept.py L2134-L2137), y el Closure es ahora el de (i): sin los términos de H y sin sustituirlos (L603-L605, L612-L613), contenido en el de la verificación real. N4-c da ACCEPT_FACTS con R9 en MATCH en sus 7 corridas, clausemap incluida, y la tabla de A6-5, regla 2, acepta la salida (p9-n4 L60-L158). Una ejecución sobre un commit inexistente, o la lectura de otra entrega en lugar de la ausente, queda fuera del cierre: R9 en MISMATCH (N4-d y N4-x, README L113-L114) y salida no aceptada, con la recuperación de transporte de 16.8 y 16.11 (A6-5, regla 4, L689-L702). El juicio del control sigue su oráculo relativo (RAE L224-L226; A6-5, regla 2, L685-L686). La entrada del control es la copia de las entradas, salvo el campo mutado (RAE L220-L221), con el Target real (kit L23). Desaparece la única incoherencia de la valoración de la ronda 3 (output.json L340).",
+   "ClauseRefs": [
+    "docs/AUTOMATION_PLAN.md:622-625",
+    "docs/AUTOMATION_PLAN.md:657",
+    "docs/automation/agent-execution/README.md:219-226",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:23",
+    "docs/initiatives/I-62-A-6.md:603-605",
+    "docs/initiatives/I-62-A-6.md:618-621",
+    "docs/initiatives/I-62-A-6.md:685-686",
+    "docs/initiatives/I-62-A-6.md:689-702",
+    "docs/initiatives/I-62-A-6.md:729-733",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2134-2137",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p9-n4.json:60-158",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:112-115",
+    "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json:336-356"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Case": "NC1",
+   "Status": "COHERENT",
+   "Rationale": "Identity queda en fail con STOP (RAE L228). Scope y Trailer quedan en fail o en not_run (16.22, AP L1204-L1207), con la precedencia STOP > BLOCKED > REWORK (AP L624). Con (ii) y (iii), H.CurrentSha se omite porque no nombra un commit, y la RevList queda vacía. RED y G siguen dentro por H.RedSha y por I.Target.Commit, que es el Target real (kit L23), así que el cierre conserva los 7 commits de la verificación real (L1138-L1141). V1 (R4 en MATCH) y V2 y V3 (R4 no aplicable por L618-L621) dan ACCEPT_FACTS con R9 en MATCH, y la tabla las acepta (p10-nc1 L4-L22, L95-L149; README L125-L127). Una ejecución sobre el CurrentSha inexistente, o sobre otro commit que lo sustituya, queda fuera: R9 en MISMATCH y salida no aceptada (README L128-L129). Concuerda con la valoración de la ronda 3 (output.json L360), cuya única incoherencia (una RevList sin resultado definido) desaparece.",
+   "ClauseRefs": [
+    "docs/automation/agent-execution/README.md:228",
+    "docs/AUTOMATION_PLAN.md:1204-1207",
+    "docs/AUTOMATION_PLAN.md:622-625",
+    "docs/initiatives/I-62-A-6.md:606-611",
+    "docs/initiatives/I-62-A-6.md:618-621",
+    "docs/initiatives/I-62-A-6.md:1138-1141",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p10-nc1.json:4-22",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p10-nc1.json:95-149",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:125-130",
+    "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json:357-374"
+   ],
+   "FindingIds": []
+  }
+ ],
+ "EvidenceAdequacy": [
+  {
+   "Aspect": "DERIVATION",
+   "Status": "ADEQUATE",
+   "Rationale": "derive_r4.py aplica (i)-(v) literalmente (L95-L110, L138-L160, L227-L252, L305-L338). Lo hace sobre el E custodiado de r2/independence (d), con las tres entradas fuera de Git de cada control en su propia ruta y con el Target de la verificación real (README L26-L33; lib_r4.py L81-L83, L166-L192), como piden RAE §10 (L220-L221) y el kit (L23, L44-L45). Son 27 casos (README L44-L70): todas las entradas presentes (cierre idéntico al custodiado de la ronda 2), siete formas de N4, nc1 con ocho formas de CurrentSha, RedSha ausente, null o vacío, D o K ausentes, un Target inexistente y un MergeBase sin base común. Los límites están declarados (README L168-L170): un solo escenario, salidas sintéticas y la designación dada por el vector. No se ejercitan los casos fuera de D, H y K (A62-A6R4-O2) ni los cierres de otros controles (A62-A6R4-O6).",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A6/r4/r1probes/derive_r4.py:95-110",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/derive_r4.py:227-252",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/lib_r4.py:166-192",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:26-33",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:44-70",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:168-170",
+    "docs/automation/agent-execution/README.md:220-221",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:44-45"
+   ],
+   "FindingIds": [
+    "A62-A6R4-O2",
+    "A62-A6R4-O6"
+   ]
+  },
+  {
+   "Aspect": "INDEPENDENT_IMPLEMENTATION",
+   "Status": "ADEQUATE",
+   "Rationale": "Otro agente escribió derive_indep.py desde SPEC.md, con el texto literal de A6-9, regla 4, de la tabla y de la regla 6 (b), más la interfaz (SPEC L42-L58, L77-L89), sin leer la otra implementación (indep README L6). Da el mismo cierre y las mismas omisiones, con la misma causa, en 58 de 58 vectores (p11-indep L4-L12). De ellos, 25 son propios, sobre un repositorio con dos raíces, una fusión en la cadena de primer padre y objetos que no son commits (indep README L17-L47; run_synth.log, 24 de 24). Sus elecciones documentadas (L49-L93) muestran que el cierre de N4 y nc1 no depende de ellas. Las que tocan el registro las fijó la interfaz (SPEC L117-L125; A62-A6R4-O1).",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/SPEC.md:42-58",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/SPEC.md:77-89",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md:1-6",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md:31-47",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/out/run_synth.log:1-25",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p11-indep.json:4-12"
+   ],
+   "FindingIds": [
+    "A62-A6R4-O1"
+   ]
+  },
+  {
+   "Aspect": "SUBSTITUTIONS",
+   "Status": "ADEQUATE",
+   "Rationale": "El cotejo rechaza la entrega real puesta en lugar de la ausente, la entrega completada con el Target, G en lugar del CurrentSha inexistente (solo por el registro, porque el cierre es igual) y otro commit existente (S-N4-REALH, S-N4-TARGET, S-NC1-G y S-NC1-OTHER; README L80-L83). Con el aceptante, la lectura sustituida queda fuera del cierre derivado: R9 en MISMATCH en N4-x y nc1-x. Con el cierre de la sustitución, el aceptante solo da ACCEPT_FACTS, y únicamente el cotejo lo rechaza (N4-x-subst y nc1-x-subst; README L114-L115, L129-L130; run_r4.py L577-L589). Esto confirma (iv) y la función de (v).",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:80-83",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:114-115",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:129-130",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/run_r4.py:577-589"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Aspect": "ADDED_OR_INVENTED_INPUTS",
+   "Status": "ADEQUATE",
+   "Rationale": "El cotejo rechaza un commit, un commit inventado, una ruta, un RevPath, un archivo y una ref de más, un commit de menos, un registro vacío y el cierre del extremo a extremo de la ronda 3, y no encuentra diferencias en los dos controles positivos (README L84-L95). La comparación del contrato de la solicitud con el cierre efectivo es mecánica: table_r4.closure_check deriva de nuevo el cierre desde el vector custodiado (E, D, H, K, I, designación y custodia) y compara campo a campo el cierre y el registro (table_r4.py L35-L69). A eso se suma la comprobación de la construcción y de las Runs frente al registro de sesión de la ronda 3 (table_r3.py L135-L198).",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:72-95",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/table_r4.py:35-69",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/table_r3.py:135-198"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Aspect": "ACCEPTOR_RUNS",
+   "Status": "ADEQUATE",
+   "Rationale": "El aceptante fijado (G7, en el resultado run) corre en solo lectura sobre la misma copia, con cero escrituras y el árbol de procesos terminado (README L35-L38; p9-n4 L83, L159). Hay doce corridas: cuatro de N4 (N4-c, N4-d, N4-x y N4-x-subst), seis de nc1 (V1-r4, V2-r4, V3-r4, nc1-err, nc1-x y nc1-x-subst) y dos de la verificación (V-r4, con 12 corridas y R4 y R9 en MATCH, y O3-STRICT) (p8-v L4-L58, L113-L128). Las salidas del Controller son sintéticas y los registros tienen el formato de Codex, sin ser reales (README L168-L169). La sesión real sigue siendo una precondición de A6-7 con fallo cerrado (preflight L78-L86).",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A6/r4/a6r4-guards-result-run.json:304-309",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:35-38",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:97-130",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p8-v.json:4-58",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p8-v.json:113-128",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/summary.json:355-357",
+    "docs/automation/evidence/I-62-A6/r4/preflight.md:78-86"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Aspect": "O3_STRICT",
+   "Status": "ADEQUATE",
+   "Rationale": "clausemap (estado en G) queda dentro del cierre derivado en V-r4 (p8-v L114-L127), en N4-c (p9-n4 L88-L96) y en V1-r4 (p10-nc1 L84-L94). Con la variante I6 estricta de E, R9 queda en MISMATCH y quedan fuera hashes, clausemap y read-text (p8-v L216-L243). Coincide con §3.18 (L1122) y con la disposición pendiente de A6-7, regla 7 (L789-L794). La fila de precondiciones de §3.17 no se actualizó (A62-A6R4-O5).",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p8-v.json:114-127",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p8-v.json:216-243",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p9-n4.json:88-96",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p10-nc1.json:84-94",
+    "docs/initiatives/I-62-A-6.md:1122",
+    "docs/initiatives/I-62-A-6.md:789-794"
+   ],
+   "FindingIds": [
+    "A62-A6R4-O5"
+   ]
+  }
+ ],
+ "DeltaPurity": {
+  "Status": "CONFIRMED",
+  "Rationale": "Comparé con a6-r3.md. La introducción y el apartado (a) de la regla 6 (a6-r3.md L572-L581), los apartados (c) y (d), el párrafo final y la regla 7 (L585-L595) son iguales a A-6 L590-L599 y L618-L628. A6-5, regla 7 (L684-L700 frente a L717-L733), A6-7 (L726-L761 frente a L759-L794) y A6-9 con su tabla y su párrafo (L792-L846 frente a L825-L879) también son iguales. El apartado (b) solo cambia en lo que pide R1: (i)-(v) y la frase final, que R1 pedía expresamente (output.json L208), más el traslado de RelayFacts delante de Closure, sin cambio de sentido (README L137-L138). Lo demás que cambia es descriptivo: la línea Cubre de A6-3 (a6-r3.md L530 frente a L548), tres celdas de §3.17 (L1043-L1045 frente a L1076-L1078), §3.18 y las secciones que enumeran L1111-L1115. G5, que compara los nueve deltas byte a byte salvo la regla 6 (b), está en PASS en el resultado run (L275-L293), y los mutantes de G5 mueren todos (344 de 344).",
+  "ClauseRefs": [
+   "a6-r3.md:572-595",
+   "docs/initiatives/I-62-A-6.md:590-628",
+   "a6-r3.md:684-700",
+   "docs/initiatives/I-62-A-6.md:717-733",
+   "a6-r3.md:726-761",
+   "docs/initiatives/I-62-A-6.md:759-794",
+   "a6-r3.md:792-846",
+   "docs/initiatives/I-62-A-6.md:825-879",
+   "a6-r3.md:530",
+   "docs/initiatives/I-62-A-6.md:548",
+   "docs/initiatives/I-62-A-6.md:1111-1115",
+   "docs/automation/evidence/I-62-A6/r4/a6r4-guards-result-run.json:275-293",
+   "docs/automation/evidence/I-62-A6/r4/a6r4-guards-result-run.json:1689"
+  ],
+  "FindingIds": []
+ },
+ "OptionalDispositionConformance": [
+  {
+   "Round3Optional": "A62-A6R3-O1",
+   "Status": "CONFORMS",
+   "Rationale": "§85 dice: «no bloqueante; no se amplía el alcance sin evidencia» (order.txt L29; DEC L1694). A-6 no cambia ni el alcance ni el texto, y conserva declarados en §3.17 (L1098) los dos límites que señalaba el hallazgo (output.json L212-L224).",
+   "ClauseRefs": [
+    "order.txt:29",
+    "docs/automation/decisions/I-62.md:1694",
+    "docs/initiatives/I-62-A-6.md:1120",
+    "docs/initiatives/I-62-A-6.md:1098",
+    "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json:212-224"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round3Optional": "A62-A6R3-O2",
+   "Status": "CONFORMS",
+   "Rationale": "§85 dice: «cotejo mecánico de la solicitud y su construcción» (order.txt L30). Está en la evidencia, sin cambio normativo. table_r3 recalcula Runs, Verification y NotApplicable y compara las Runs con el registro (table_r3.py L135-L198), y table_r4 vuelve a derivar el cierre y su registro (table_r4.py L35-L69). Una solicitud distinta queda sin aceptar en el banco (README L72-L95).",
+   "ClauseRefs": [
+    "order.txt:30",
+    "docs/initiatives/I-62-A-6.md:1121",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/table_r3.py:135-198",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/table_r4.py:35-69",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:72-95"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round3Optional": "A62-A6R3-O3",
+   "Status": "CONFORMS",
+   "Rationale": "§85 dice: «verificar inclusión de clausemap cuando corresponde» (order.txt L31). Está verificado en la evidencia: clausemap queda dentro en la verificación, en N4 y en nc1, y fuera con la variante I6 estricta (O3-STRICT). §3.18 (L1122) y preflight.md (L27, L85) lo registran, sin cambio normativo. La fila de precondiciones de §3.17 (L1095) quedó sin actualizar (A62-A6R4-O5).",
+   "ClauseRefs": [
+    "order.txt:31",
+    "docs/initiatives/I-62-A-6.md:1122",
+    "docs/automation/evidence/I-62-A6/r4/preflight.md:27",
+    "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p8-v.json:216-243"
+   ],
+   "FindingIds": [
+    "A62-A6R4-O5"
+   ]
+  },
+  {
+   "Round3Optional": "A62-A6R3-O4",
+   "Status": "CONFORMS",
+   "Rationale": "§85 dice: «precisar en evidencia el momento y efecto del precheck» (order.txt L32). §3.18 (L1164-L1168), como lectura de la supervisión fuera del delta, y preflight.md (L28) lo precisan. El momento: después de la entrega y del cálculo del cierre, antes del primer lanzamiento VERIFY y fuera de toda cesión. El efecto: el aceptante no se usa y no se lanza ninguna invocación VERIFY con el instrumento admitido. Es coherente con A6-5, regla 6 (L707-L716), y con A6-7, regla 7 (L789-L794), y no cambia su texto.",
+   "ClauseRefs": [
+    "order.txt:32",
+    "docs/initiatives/I-62-A-6.md:1123",
+    "docs/initiatives/I-62-A-6.md:1164-1168",
+    "docs/initiatives/I-62-A-6.md:707-716",
+    "docs/automation/evidence/I-62-A6/r4/preflight.md:28"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round3Optional": "A62-A6R3-O5",
+   "Status": "CONFORMS",
+   "Rationale": "§85 dice: «registrar como no bloqueante» (order.txt L33). A-6 lo registra como no bloqueante, sin cambio (L1124).",
+   "ClauseRefs": [
+    "order.txt:33",
+    "docs/initiatives/I-62-A-6.md:1124",
+    "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json:259-270"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round3Optional": "A62-A6R3-O6",
+   "Status": "CONFORMS",
+   "Rationale": "§85 dice: «registrar como no bloqueante» (order.txt L33). A-6 lo registra como no bloqueante, sin cambio, y recuerda que la revisión de la ronda 3 juzgó coherente la regla (L1125; output.json L274).",
+   "ClauseRefs": [
+    "order.txt:33",
+    "docs/initiatives/I-62-A-6.md:1125",
+    "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json:271-282"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round3Optional": "A62-A6R3-O7",
+   "Status": "CONFORMS",
+   "Rationale": "§85 dice: «asegurar custodia de la futura medición», sin cambios normativos fuera de 6 (b) (order.txt L34-L35). Dentro de 6 (b), la frase final y (v) llevan a la medición la derivación del cierre y la custodia del registro con la solicitud y el cierre (L614-L617). El anexo, en su paso 4, fija la custodia por SHA-256 del registro de sesión, de la solicitud, del cierre y del resultado antes de la disposición de elegibilidad (L1441-L1442). Es lo máximo que permite la superficie, pero la premisa de la fila O7 es inexacta (A62-A6R4-O4).",
+   "ClauseRefs": [
+    "order.txt:34-35",
+    "docs/initiatives/I-62-A-6.md:1126",
+    "docs/initiatives/I-62-A-6.md:614-617",
+    "docs/initiatives/I-62-A-6.md:1438-1442",
+    "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json:283-292"
+   ],
+   "FindingIds": [
+    "A62-A6R4-O4"
+   ]
+  }
+ ],
+ "QuestionAnswers": [
+  {
+   "Question": "Q-A6R4-01",
+   "Outcome": "SATISFIED",
+   "Answer": "Basta esa ubicación. A6-9, regla 4, deriva el cierre «con la tabla de A-6» (L841-L843). La regla 6 (b) forma parte de A-6 y es la única construcción de la solicitud (L590-L591, L600-L602), y R9 solo lee el Closure de la solicitud (bmin_accept.py L2542-L2554). La frase final aplica la misma regla a la prueba previa y a la medición (L616-L617). Una remisión desde la regla 4 exigiría editar A6-9, y §85, punto 2, reserva ese cambio a una disposición nueva (L1692). Tampoco hace falta, porque nada aplica la tabla fuera de esa construcción.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:841-843",
+    "docs/initiatives/I-62-A-6.md:590-591",
+    "docs/initiatives/I-62-A-6.md:600-602",
+    "docs/initiatives/I-62-A-6.md:616-617",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2542-2554",
+    "docs/automation/decisions/I-62.md:1692"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Question": "Q-A6R4-02",
+   "Outcome": "SATISFIED",
+   "Answer": "La diferencia es aceptable. La ruta entra en C4 por «{p de cada entrada de E}», un término que lee E y no H (L863), así que (i) no lo omite, y quitarlo cambiaría la tabla. No admite ninguna lectura de la entrega: la entrada H de C6 se omite (L604-L605), R9 exige que cada entrada file de Inputs esté en C6 (bmin_accept.py L2588-L2591) y la entrega, en su ruta ignorada, no tiene RevPath. Lo confirma D-N4-STALE-vs-ABSENT, donde solo cambia esa ruta en C4 (README L49). Además, un E que fije una entrega que no existe no pasa la fidelidad previa (P-24; kit L52), así que en una invocación lanzada N4 llega como «E no fija su blob». Conviene fijar en (i) cómo se identifica la ruta de H (A62-A6R4-O3).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:863",
+    "docs/initiatives/I-62-A-6.md:604-605",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2588-2591",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:49",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:52"
+   ],
+   "FindingIds": [
+    "A62-A6R4-O3"
+   ]
+  },
+  {
+   "Question": "Q-A6R4-03",
+   "Outcome": "SATISFIED",
+   "Answer": "Basta. En nc1, el cierre derivado y el de la sustitución por G son iguales, porque G entra por I.Target.Commit (el Target real, kit L23) y RED por H.RedSha, que son términos de la tabla (L855-L856). R9 solo lee el cierre, así que en este escenario la sustitución no cambia ninguna aceptación. Lo que la delata es el registro de (v), custodiado con la solicitud y el cierre (L614-L615): S-NC1-G la rechaza por DERIVATION_RECORD_DIFFERS (README L82; table_r4.py L60-L66). Ese cotejo es evidencia y no norma, como dispuso §85, punto 4, para O2 (L1694). Para que el cotejo sea mecánico entre supervisiones distintas, la taxonomía del registro debería quedar fijada en (v) (A62-A6R4-O1).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:855-856",
+    "docs/initiatives/I-62-A-6.md:614-615",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:23",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:82",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/table_r4.py:60-66",
+    "docs/automation/decisions/I-62.md:1694"
+   ],
+   "FindingIds": [
+    "A62-A6R4-O1"
+   ]
+  },
+  {
+   "Question": "Q-A6R4-04",
+   "Outcome": "SATISFIED",
+   "Answer": "Es aceptable. (i)-(iii) son la misma regla para cualquier entrada de la tabla que no da valor, y A62-A6R3-R1 pedía cubrir «N4, nc1 y cualquier otro caso así» (output.json L208). Solo quita términos y no admite lecturas nuevas, y la evidencia la ejercita (D-D-ABSENT y D-K-ABSENT, README L67-L68; d_absent_unpinned, k_absent_unpinned y k_invalid_json en indep README L41-L42). Ningún control de FX-02 deja ausentes D o K (V14 L2441), así que no cambia el trato de ningún control. Esa generalidad deja abiertas algunas lecturas marginales sin efecto en FX-02, por ejemplo si la entrada CONTRACT de C6 «lee K» cuando K falta solo por no ser JSON (A62-A6R4-O2).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:603-611",
+    "docs/automation/evidence/I-62-architect-A-6r3/R20261013T183701Z-9f80/output.json:208",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/README.md:67-68",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/indep/README.md:41-42",
+    "docs/initiatives/I-62-proposal-v14.md:2441"
+   ],
+   "FindingIds": [
+    "A62-A6R4-O2"
+   ]
+  }
+ ],
+ "OwnerAuthorityCheck": {
+  "AdditionalOwnerReservedConsequences": [],
+  "OwnerDecisionRequired": false,
+  "Note": "La línea (a) consta (DEC L1572, igual a A-6 L1324), y la (b) solo rige la aplicación (L1325). La ronda 4 no cambia los blobs del instrumento ni del aceptante (G7, run L304-L309) ni el alcance VERIFY. Tampoco cambia ningún alcance, no-objetivo, decisión del Owner ni escenario OV (LIFECYCLE L94): solo fija cómo la supervisión deriva el cierre del aceptante (A-6 L1316-L1317; preflight L73-L76). No identifico ninguna otra consecuencia OWNER-RESERVED."
+ },
+ "IfAgreed": {
+  "ScopeLimitedToA63R6bAndDirectConsequences": true,
+  "Round3FindingCorrected": true,
+  "ClosureRuleTotalAndMechanical": true,
+  "NoContradictionWithA69Rule4": true,
+  "NegativeCasesCoherent": true,
+  "EvidenceAdequate": true,
+  "DeltaLimitedToA63R6b": true,
+  "OptionalDispositionsConform": true,
+  "NoAdditionalOwnerDecisionRequired": true,
+  "SuitableForCoordinatorAgreement": true
+ },
+ "KnownLimitations": [
+  "Sin ejecución: no ejecuté git, las guardas, el aceptante, el instrumento, las sondas de r4/ ni la implementación independiente. No recalculé blobs ni SHA-256: me apoyo en la verificación del invocador y en los resultados custodiados (resultado run, autoprueba, summary.json y las copias legibles).",
+  "La identidad del commit, del árbol y de los blobs la verificó el invocador; yo solo comprobé lo que muestran los archivos que leí (Step0).",
+  "La evidencia de r4/ usa salidas del Controller sintéticas y registros con el formato de Codex, no reales, un solo escenario (la entrega simulada de FX-U1) y la designación de D, H y K dada por el vector. Lo que depende de la sesión real (medición de A6-7, prueba previa de A6-5, regla 6, y disposición de A6-7, regla 7, sobre el cierre de VERIFY, incluida clausemap) lo juzgo como precondición con fallo cerrado, no como demostrado.",
+  "El E de los controles negativos que calculará el kit está pendiente (CD-14 y OQ-18 del kit; disposición de A6-7, regla 7). El banco usa el EIC-VERIFY de la ronda 2 con las rutas de cada control. Si el E real no fijara D o H, (i) los trataría como ausentes, y la prueba previa y la medición lo detectarían (fallo cerrado).",
+  "No leí la copia legible de p7-derive.json (más de 3 700 líneas): para la derivación y el cotejo me apoyo en las tablas del README, generadas desde los resultados según make_readme_r4.py (no leído), en summary.json y en p8-v, p9-n4, p10-nc1 y p11-indep, que sí leí en parte. Tampoco leí la evidencia de r2/independence/ ni las sondas de la ronda 3: tomo su descripción de la salida de la ronda 3 y de A-6.",
+  "Usé Grep sobre archivos del cierre (a6-r3.md, run_r4.py, table_r3.py, p9-n4, p10-nc1, p11-indep, derive_indep.py y el kit). No cito ninguna línea vista solo por Grep, y tampoco las líneas que Grep mostró truncadas (p10-nc1 L383 y L546).",
+  "Los cierres de N5, N6, N7a y N7b no se ejercitan (A62-A6R4-O6). Ni V14 ni RAE §10 fijan qué campo mutan N7a y N7b, así que el riesgo señalado no está demostrado.",
+  "La disposición del Coordinator que autoriza esta invocación es posterior al commit del clon y está fuera del cierre: no la juzgo."
+ ],
+ "RecommendedNextAction": "Que el auditor acredite esta corrida. Después, el Coordinator puede registrar el acuerdo de A-6 sobre el blob 4bc919dd4768ab81abc74b70d3a4a3821c07feb5 (LIFECYCLE §6) y disponer A62-A6R4-O1..O6 como no bloqueantes: cualquier cambio de texto, solo en A6-3, regla 6 (b), o en secciones descriptivas, con disposición. Antes de la medición, las disposiciones de A6-7, regla 7 (cobertura del cierre de VERIFY, incluida clausemap, identificación de D, H y K por las rutas del kit y regla de reconstrucción de Runs), y de A6-5, regla 6, con el banco extendido a los cierres de N5-N7 si se acepta A62-A6R4-O6. La línea (b) del Owner solo después del acuerdo. Sin declarar FX-02 PASS ni F6 GATE PASS."
+}
