@@ -1,0 +1,94 @@
+MEDICION A6-7 (I-62). Invocacion de medicion del EXECUTION_CONTROLLER de FX-02, de solo lectura. RunId R20261016T000000Z-m7m0.
+
+Esta invocacion es una medicion, no una verificacion: no produces ninguna verificacion, ningun resultado de comprobacion, ninguna clasificacion ni ninguna disposicion, y no escribes como resultado o veredicto las palabras PASS, FAIL, VERIFIED, EXECUTION_, MAP_VALID ni MAP_INVALID. Tu tarea es ejecutar las ordenes de abajo en el directorio de trabajo, leer sus salidas y devolver el objeto estructurado que pide el esquema de salida, completo, sin omitir ningun campo obligatorio.
+
+Reglas (todas obligatorias):
+1. El directorio de trabajo es D:\r62-a6m7\m7-run. Lee solo dentro de el. No leas ningun otro directorio ni repositorio, no uses git -C, --git-dir ni --work-tree y no cambies de directorio.
+2. Solo lectura: no escribas, no crees ni borres archivos, no ejecutes ordenes de Git que escriban (commit, checkout, switch, reset, add, rm, stash, fetch, pull, push, merge, rebase, tag, config, update-index, gc, prune, hash-object -w), no uses la red y no cambies variables de entorno.
+3. Cada ejecucion de la shell arranca un proceso nuevo: lo que ajustes en una no se conserva en la siguiente. Llamamos C1, C2, ... a las ejecuciones de la shell en el orden en que las haces, contadas tambien las que fallen.
+4. Haz exactamente las ejecuciones C1 a C17 de abajo, en ese orden, y ninguna mas. Si una falla, no la repitas: anotalo en Findings y sigue con la siguiente.
+5. C4 a C15 son las doce ordenes del instrumento de hechos. Copia cada una literalmente como el unico contenido de su ejecucion de la shell, sin nada antes ni despues: sin punto y coma, sin redirecciones, sin variables, sin otra tuberia, sin 2>&1 y sin Out-String. El identificador completo de 40 caracteres del objeto del instrumento solo aparece en esas doce ordenes: no lo escribas en ninguna otra orden.
+6. C1, C2, C3, C16 y C17 tambien se copian literalmente, cada bloque entero en una sola ejecucion de la shell.
+7. Cada salida del instrumento contiene una linea JSON en ASCII (el sobre). Si el codigo de salida no es 0, si la linea no es JSON o si su campo Error no es null, no uses ese sobre como hecho: anotalo en Findings.
+
+Ejecuciones:
+
+C1 (Git por nombre):
+where.exe git; git --exec-path; git --version
+
+C2 (entrega de los bytes del objeto del instrumento por la tuberia de esta shell, con el nombre abreviado del objeto):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file -t 9a829b0eeb12; & '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb12 | & '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' hash-object --no-filters --stdin
+
+C3 (comprobacion Git primaria de las revisiones y de los archivos antes de pasarlos al instrumento):
+git cat-file -t 95bdc29d428b35d2188a10e1c5462d6caf2be4df; git cat-file -t 53436cb20adf1fe87dc91b0382dd3123a1fac44f; git cat-file -t b417d36cb820a27c78d6c7d50c234460469c89f8; git cat-file -t fbe25347799e5b801ef708454212335537448bd1; Test-Path -LiteralPath D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json; Test-Path -LiteralPath D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json; Test-Path -LiteralPath D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261016T000000Z-m7m0/ci-current/fixture-tests.trx; Test-Path -LiteralPath D:/r62-a6m7/m7-run/docs/automation/decisions/FX-U1-T1.gate-contract.json; Test-Path -LiteralPath D:/r62-a6m7/m7-run/docs/automation/evidence/FX-U1-agent/T1/worker-notes.md; Test-Path -LiteralPath D:/r62-a6m7/m7-run/src/Fixture.Lib/Calculator.cs; Test-Path -LiteralPath D:/r62-a6m7/m7-run/tests/Fixture.Tests/CalculatorTests.cs
+
+C4 a C15 (instrumento de hechos; una orden por ejecucion, copiada literalmente):
+
+C4 (identity):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - identity --repo D:/r62-a6m7/m7-run --branch fx/u1 --base 95bdc29d428b35d2188a10e1c5462d6caf2be4df --current b417d36cb820a27c78d6c7d50c234460469c89f8 --red 53436cb20adf1fe87dc91b0382dd3123a1fac44f
+
+C5 (diff):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - diff --repo D:/r62-a6m7/m7-run --from 95bdc29d428b35d2188a10e1c5462d6caf2be4df --to b417d36cb820a27c78d6c7d50c234460469c89f8
+
+C6 (scope):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - scope --repo D:/r62-a6m7/m7-run --from 95bdc29d428b35d2188a10e1c5462d6caf2be4df --to b417d36cb820a27c78d6c7d50c234460469c89f8 --file DELEG=D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json --sha256 DELEG=8a3dfd5132d3c547a0ce70895af14d699d3ee3169d6f5ed7f41c874d48ce4149
+
+C7 (contract):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - contract --repo D:/r62-a6m7/m7-run --file CONTRACT=D:/r62-a6m7/m7-run/docs/automation/decisions/FX-U1-T1.gate-contract.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --file DELEG=D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json --sha256 DELEG=8a3dfd5132d3c547a0ce70895af14d699d3ee3169d6f5ed7f41c874d48ce4149
+
+C8 (hashes):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - hashes --repo D:/r62-a6m7/m7-run --rev b417d36cb820a27c78d6c7d50c234460469c89f8 --paths docs/automation/evidence/FX-U1-agent/T1/worker-notes.md src/Fixture.Lib/Calculator.cs tests/Fixture.Tests/CalculatorTests.cs
+
+C9 (cleantree):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - cleantree --repo D:/r62-a6m7/m7-run --ignore-path artifacts/orchestration/FX-U1/T1-m7/0/R20261016T000000Z-m7m0/output.json
+
+C10 (handoff):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - handoff --repo D:/r62-a6m7/m7-run --file H=D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json --sha256 H=6494a738c65f168fe5705f7eff58850fa3b288f0210778f4a8c009d984c52b7e --schema-rev b417d36cb820a27c78d6c7d50c234460469c89f8
+
+C11 (freetext):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - freetext --repo D:/r62-a6m7/m7-run --file H=D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json --sha256 H=6494a738c65f168fe5705f7eff58850fa3b288f0210778f4a8c009d984c52b7e --terms-rev fbe25347799e5b801ef708454212335537448bd1
+
+C12 (clausemap):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - clausemap --repo D:/r62-a6m7/m7-run --main fbe25347799e5b801ef708454212335537448bd1 --state-rev b417d36cb820a27c78d6c7d50c234460469c89f8 --state-path docs/automation/state/FX-U1.yml --file CONTRACT=D:/r62-a6m7/m7-run/docs/automation/decisions/FX-U1-T1.gate-contract.json --sha256 CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc --base 95bdc29d428b35d2188a10e1c5462d6caf2be4df
+
+C13 (trx):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - trx --repo D:/r62-a6m7/m7-run --file TRX=D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261016T000000Z-m7m0/ci-current/fixture-tests.trx --sha256 TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513 --filter-substring Subtract
+
+C14 (read-text):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - read-text --repo D:/r62-a6m7/m7-run --rev b417d36cb820a27c78d6c7d50c234460469c89f8 --path docs/automation/decisions/FX-U1.md --lines 1-1
+
+C15 (read-json):
+& '%LOCALAPPDATA%\Programs\Git\cmd\git.exe' --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | & '%LOCALAPPDATA%\Microsoft\WindowsApps\python.exe' -I - read-json --repo D:/r62-a6m7/m7-run --rev b417d36cb820a27c78d6c7d50c234460469c89f8 --path docs/automation/decisions/FX-U1-T1.gate-contract.json --pointer /Objective --pointer /Schema --pointer /MainSha --pointer /AuthorityRevision
+
+C16 (contraste con las ordenes Git primarias, bloque A):
+echo M-P01; git rev-parse HEAD; echo M-P02; git rev-parse --abbrev-ref HEAD; echo M-P03; git rev-parse --show-toplevel; echo M-P04; git rev-parse refs/remotes/origin/fx/u1; echo M-P05; git rev-parse refs/remotes/origin/main; echo M-P06; git merge-base --is-ancestor 95bdc29d428b35d2188a10e1c5462d6caf2be4df b417d36cb820a27c78d6c7d50c234460469c89f8; echo $LASTEXITCODE; echo M-P07; git merge-base --is-ancestor 95bdc29d428b35d2188a10e1c5462d6caf2be4df 53436cb20adf1fe87dc91b0382dd3123a1fac44f; echo $LASTEXITCODE; echo M-P08; git merge-base --is-ancestor 53436cb20adf1fe87dc91b0382dd3123a1fac44f b417d36cb820a27c78d6c7d50c234460469c89f8; echo $LASTEXITCODE; echo M-P09; git diff --name-only --no-renames 95bdc29d428b35d2188a10e1c5462d6caf2be4df..b417d36cb820a27c78d6c7d50c234460469c89f8; echo M-P10; git rev-list --reverse 95bdc29d428b35d2188a10e1c5462d6caf2be4df..b417d36cb820a27c78d6c7d50c234460469c89f8; echo M-P11; git log --no-show-signature '--format=%H%x20%(trailers:key=Co-Authored-By,valueonly,separator=%x7C)' 95bdc29d428b35d2188a10e1c5462d6caf2be4df..b417d36cb820a27c78d6c7d50c234460469c89f8
+
+C17 (contraste con las ordenes Git primarias, bloque B; sustituye <Eff> por el valor de Facts.Derive.Eff del sobre de clausemap, C12):
+echo M-P12; git --no-optional-locks status --porcelain; echo M-P13; git --no-optional-locks status --porcelain --ignored; echo M-P14; git check-ignore -v --no-index artifacts/orchestration/FX-U1/T1-m7/0/R20261016T000000Z-m7m0/output.json; echo $LASTEXITCODE; echo M-P15; git rev-parse b417d36cb820a27c78d6c7d50c234460469c89f8:docs/automation/evidence/FX-U1-agent/T1/worker-notes.md b417d36cb820a27c78d6c7d50c234460469c89f8:src/Fixture.Lib/Calculator.cs b417d36cb820a27c78d6c7d50c234460469c89f8:tests/Fixture.Tests/CalculatorTests.cs; echo M-P16; git hash-object --no-filters -- docs/automation/evidence/FX-U1-agent/T1/worker-notes.md src/Fixture.Lib/Calculator.cs tests/Fixture.Tests/CalculatorTests.cs; echo M-P17; git rev-parse b417d36cb820a27c78d6c7d50c234460469c89f8:docs/automation/decisions/FX-U1-T1.gate-contract.json; echo M-P18; git hash-object --no-filters -- D:/r62-a6m7/m7-run/docs/automation/decisions/FX-U1-T1.gate-contract.json D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json D:/r62-a6m7/m7-run/artifacts/orchestration/FX-U1/T1-m7/0/R20261016T000000Z-m7m0/ci-current/fixture-tests.trx; echo M-P19; git rev-parse b417d36cb820a27c78d6c7d50c234460469c89f8:docs/automation/decisions/FX-U1.md; echo M-P20; git rev-parse b417d36cb820a27c78d6c7d50c234460469c89f8:docs/automation/agent-execution/schemas/worker-handoff.schema.json; echo M-P21; git rev-parse fbe25347799e5b801ef708454212335537448bd1:docs/AUTOMATION_PLAN.md; echo M-P22; git rev-list --first-parent --merges fbe25347799e5b801ef708454212335537448bd1; echo M-P23; git rev-parse <Eff>:docs/automation/agent-execution/compatibility/I62-clause-map.json; echo M-P24; git rev-parse b417d36cb820a27c78d6c7d50c234460469c89f8:docs/automation/state/FX-U1.yml
+
+Como rellenar la respuesta (los nombres son los del esquema de salida):
+- Schema, Mode y RunId: los unicos valores que admite el esquema.
+- ShellInvocations: el numero de ejecuciones de la shell que hiciste.
+- GitByName: Invocation = C1; WhereLines = las lineas que imprimio where.exe git, en orden y tal cual; ExecPath y Version = las lineas que imprimieron git --exec-path y git --version.
+- Delivery: Invocation = C2; ObjectType = la salida de cat-file -t; RehashedId = la salida de hash-object.
+- Preconditions: Invocation = C3; Commits = cada revision con el tipo que imprimio cat-file -t; Files = cada ruta con el resultado de Test-Path (true o false).
+- Runs: una fila por cada orden del instrumento, C4 a C15, en orden: Order (la orden: identity, diff, ...), Invocation, ExitCode, FactsSha256 del sobre (null si no hay sobre utilizable) y ErrorCode (Error.Code del sobre, o null).
+- Primary: una fila por cada marcador M-P01 a M-P24, en orden: Id (P01 a P24), Invocation (C16 o C17), GitCommand (la orden Git exacta que sigue al marcador, sin el echo ni el echo $LASTEXITCODE), OutputLines (las lineas que se imprimieron entre ese marcador y el siguiente, tal cual y en orden; ninguna si no hubo salida), InstrumentValue (el valor del hecho del instrumento con el que la contrastas, como texto) y Equal (true si la orden primaria y el hecho del instrumento coinciden).
+- Identity: de Facts del sobre de identity (C4): Head, AbbrevRef, Toplevel, OriginBranch, OriginMain, y Ancestry base->current, base->red y red->current.
+- Diff: Facts.Paths y Facts.Commits del sobre de diff (C5).
+- Scope: Facts.PerPath del sobre de scope (C6), con Path, AllowedCoveredBy y ForbiddenCoveredBy.
+- Trailer: por cada commit de Facts.CoAuthoredBy del sobre de diff (C5), en el orden de Facts.Commits, sus valores tal cual.
+- CleanTree: Facts.StatusPorcelain, Facts.StatusIgnored y Facts.CheckIgnoreRc del sobre de cleantree (C9).
+- Hashes: Facts.PerPath del sobre de hashes (C8).
+- Reads: copias fieles en texto JSON ASCII, con los escapes \uXXXX exactamente como estan en el sobre; una cadena JSON lleva sus comillas:
+  - ContractPointersJson: para cada puntero de read-json (C15), su valor de Facts.Values como texto JSON;
+  - DecisionsFirstLineJson: Facts.Lines[0].Text de read-text (C14) como cadena JSON, y DecisionsFirstLineNonAsciiCount = Facts.NonAsciiCount;
+  - HandoffFieldsJson: Facts.Fields de handoff (C10) como objeto JSON;
+  - TrxSha256 = Facts.Sha256, TrxCountersJson = Facts.Counters como objeto JSON, y TrxFilterSelected = Facts.FilterSelected, de trx (C13);
+  - FreeTextTermsJson = Facts.Terms como arreglo JSON, y FreeTextMatchCount = el numero de elementos de Facts.Matches, de freetext (C11);
+  - ContractA5MissingJson = Facts.A5Missing como objeto JSON, y ContractSupersededEqual = Facts.SupersededEqual, de contract (C7).
+- ClauseMap: Facts.Derive.Eff y Facts.Derive.EffParent1 del sobre de clausemap (C12), y MapBlob = la salida de M-P23.
+- AuthorityResolution: la resolucion por el mapa de clausulas en la forma de AuthorityResolution (paso 5 de Resolve de AP 16.13), una fila por cada elemento de Facts.Resolve.Citations del sobre de clausemap, en ese orden: Path, Section, Class, Mode, RevisionSha, Parts, EffectiveSha, ClauseMapBlob y UnitProtocol.
+- Findings: lo que no salio como se esperaba (ejecuciones fallidas, sobres inutilizables, una discrepancia entre un hecho y su orden primaria), o un arreglo vacio.
+
+Responde solo despues de haber hecho C17.

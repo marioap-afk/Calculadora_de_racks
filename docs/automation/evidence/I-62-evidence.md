@@ -4591,3 +4591,28 @@ solo desde artefactos custodiados.
   el trío vigente (`dda4b3f9c1db0183a38e5400777a2a21d524aa4b92ad684d5c5cae1b2fc4cf27`); no se piden.
 - **B1** ([`B1-repo-request-2026-10-17.md`](I-62-F6/requests/B1-repo-request-2026-10-17.md)): solicitud de creación del repositorio como acción
   separada, con los hechos comprobados (A-5 y constructor sin cambio; nombre libre); no incluye la sesión de Principal de FX-U2. No se pide.
+
+## 182. Kit mínimo de la medición de A6-7 congelado y custodiado, sin lanzar; solicitud de medición para la identidad vigente (decisiones §90, puntos 3, 4 y 7)
+
+- **Kit** [`kits/FX-02/a6m7-measure/`](I-62-F6/kits/FX-02/a6m7-measure/README.md) (`FREEZE.json` SHA-256 `459a3440af3d9b553d55d4cfc84b7a40ab3a58ab2ac178af01a23f144ba3cae8`, 43 archivos): una invocación
+  medida del EXECUTION_CONTROLLER de FX-02 (`codex-cli` / `gpt-6-luna` / `high`, solo lectura) con el instrumento `9a829b0e`, sobre el `-C`
+  `D:\r62-a6m7\m7-run` (copia de la entrega del banco con sus refs; instantánea `43a8caf6…`; sin el objeto del instrumento, que escribe
+  `prep_write.py` solo tras la disposición). Cierre R7-A congelado antes de lanzar (E `137c7c3b…`, cierre derivado `3d1a065f…`, registro de derivación
+  `b2f0e609…`; único término omitido `D.ChainRedSha`). Texto de 17 pasos (16 440 caracteres ASCII, armado `a3bb4f9e…`) con la orden declarada literal
+  para las 12 órdenes, 24 contrastes primarios y `where.exe git` / `git --exec-path` por nombre; esquema y proyección estricta; oráculo solo con
+  primitivas de Git (`2e0c1a0d…`), sellado y fuera del `-C`; comparador OP1-OP9 más RA-RH (git por nombre, `Runs`, aceptante y tabla, identidad,
+  modelo y effort, P-22, sin escritura, terminación). Orden única: `bash run_m7.sh launch` (puertas → punto de uso → marcador P-07 → un lanzamiento,
+  tope 600 s → Entrada → reconstrucción → aceptante en el mismo `-C` → comparación → custodia).
+- **Autoprueba sin lanzar: 113 de 113** (estáticas 6, reconstrucción 8, preparación 9, punto de uso 7, sesión sintética 3, negativos del
+  comparador 25, matriz de rechazos de las puertas 48, ejecutor 7 con un sustituto compilado en un directorio temporal). Ni Codex, ni `claude`, ni el
+  pwsh del runtime se ejecutaron.
+- **Hallazgos de la construcción:** la regla de reconstrucción de referencia (`5dc9f78e…`) no reconstruye ninguna ejecución hecha con el pwsh del
+  runtime (rechaza el componente `.cache` de su ruta): se propone `reconstruct_runs_m7.py` (`1eceecee…`), que solo añade eso y las representaciones
+  `-NoProfile -Command` y `cmd.exe /c`, con el mismo resultado en 62 de 64 registros de referencia (las dos diferencias, las esperadas) y 29 variantes
+  mal formadas que fallan cerradas; desde el Git Bash, `git` por nombre sería otro binario, así que el `PATH` del hijo se arma desde el registro de
+  Windows; la prueba de entrega exacta usa el nombre abreviado del objeto; la lectura de `AuthorityResolution` (V5 o R3) queda para el Coordinator;
+  hoy hay procesos `codex.exe` de la app de escritorio vivos y la puerta P-02 rechazará hasta que se cierre.
+- **Solicitud** [`A6-controller-measurement-request-2026-10-17.md`](I-62-F6/requests/A6-controller-measurement-request-2026-10-17.md): identidad
+  vigente, disposiciones previas del Coordinator (lecturas del aceptante, D-1, medición con los marcadores M7-* y la lectura de I6 de R7-A), líneas
+  OD-2 y (b) con su SHA-256, opción de una sonda de caracterización del par nuevo por A2-P2 (sin kit), condiciones de lanzamiento e invalidadores.
+  Sustituye al borrador del 2026-10-11, que se conserva. No se pide nada.

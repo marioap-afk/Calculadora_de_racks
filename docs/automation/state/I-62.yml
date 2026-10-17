@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §90; evidencia §180-§181) — A-6 AGREED; preparación de A6-7 custodiada (banco 77/77: cierre de VERIFY R7-A/R7-B, designación por rutas y KPR, N5-N7, M aceptada; lecturas del aceptante 24 filas sin divergencia de lectura, D-1 abierta); identidad de Codex cambiada (9ecb9df2/26.1013.3656.0/6EFA5B0E, estable): OD-2 y línea (b) nuevas preparadas, sin pedir; kit mínimo de medición en preparación; sin Codex ni consumo hasta la disposición de medición y la aprobación del Owner; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §90; evidencia §180-§182) — A-6 AGREED; preparación de A6-7 y kit mínimo de medición congelados y custodiados sin lanzar (FREEZE 459a3440; autoprueba 113/113); esperar del Coordinator la disposición de lecturas del aceptante (A6-5 regla 6), el tratamiento de D-1 y la disposición de medición con los marcadores M7-* (cierre R7-A y su lectura de I6, reconstrucción v2, kit), y del Owner OD-2 sobre 6EFA5B0E y la línea (b) para 9ecb9df2/26.1013.3656.0; app de Codex cerrada antes de lanzar; sin Codex ni consumo hasta entonces; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

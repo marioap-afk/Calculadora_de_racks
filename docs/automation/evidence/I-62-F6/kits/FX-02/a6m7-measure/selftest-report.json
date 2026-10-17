@@ -1,0 +1,1321 @@
+{
+ "ByGroup": {
+  "A": {
+   "Holding": 6,
+   "Total": 6
+  },
+  "B": {
+   "Holding": 8,
+   "Total": 8
+  },
+  "D": {
+   "Holding": 7,
+   "Total": 7
+  },
+  "G": {
+   "Holding": 48,
+   "Total": 48
+  },
+  "N": {
+   "Holding": 25,
+   "Total": 25
+  },
+  "P": {
+   "Holding": 9,
+   "Total": 9
+  },
+  "S": {
+   "Holding": 3,
+   "Total": 3
+  },
+  "U": {
+   "Holding": 7,
+   "Total": 7
+  }
+ },
+ "Cases": [
+  {
+   "Case": "REUSE-BYTES",
+   "Expected": "every reused file byte-identical to its source (bench, v5 kit, r2static, Owner lines)",
+   "Group": "A",
+   "Holds": true,
+   "Observed": {
+    "baseline-keynames-F909F480.json": true,
+    "cfg-fp.ps1": true,
+    "derive_r4.py": true,
+    "designate_m7.py": true,
+    "line-b.txt": true,
+    "line-od2.txt": true,
+    "make_eic_verify.py": true,
+    "pou_check.py": true,
+    "procs-snapshot.ps1": true,
+    "reconstruct_runs.py": true,
+    "table_m7.py": true,
+    "table_r3.py": true,
+    "table_r4.py": true
+   }
+  },
+  {
+   "Case": "SYNTAX",
+   "Expected": "all kit Python files compile; bash -n on run_m7.sh and selftest_m7.sh",
+   "Group": "A",
+   "Holds": true,
+   "Observed": "none"
+  },
+  {
+   "Case": "SCHEMA",
+   "Expected": "full schema and strict projection: keyword subset of the v5 schemas; every object closed with all properties required; projection = full without minLength; files = the generated ones",
+   "Group": "A",
+   "Holds": true,
+   "Observed": "no problem"
+  },
+  {
+   "Case": "REFERENCE-RUNTIME-SHELL",
+   "Expected": "FINDING: rendered with the runtime pwsh of Codex (%USERPROFILE%\\.cache\\...\\pwsh.exe) the reference rule rejects every order (component .cache); v2 reconstructs them",
+   "Group": "A",
+   "Holds": true,
+   "Observed": [
+    "outer: shell is not an absolute path to pwsh.exe"
+   ]
+  },
+  {
+   "Case": "PROMPT",
+   "Expected": "armed prompt: ASCII, no double quote, the full blob only in the 12 orders, abbreviated name in C2, no oracle value, every order as written in the prompt reconstructible by v2 (runtime pwsh) and by the reference (a pwsh path without dot components) to the same argv; SHA-256 = FREEZE",
+   "Group": "A",
+   "Holds": true,
+   "Observed": {
+    "BlobCount": 12,
+    "Chars": 16440,
+    "Sha256": "a3bb4f9e2d9b9bdcaff6e9ebf7567357c382515143df91ddb7335c1dea9ba35c"
+   }
+  },
+  {
+   "Case": "ORACLE-INDEPENDENT",
+   "Expected": "the oracle code loads neither the instrument nor the acceptor nor the SPEC (only git plumbing through the declared git, hashlib, json, xml.etree on the custodied bytes)",
+   "Group": "A",
+   "Holds": true,
+   "Observed": "no reference"
+  },
+  {
+   "Case": "V2-EQ-REFERENCE",
+   "Expected": "every r3/r4/bench/custodied log: same reconstruction as the reference (Reconstructible, Runs, Problems), except F-outer-flags (the -NoProfile rendering v2 adds) and F-cmd-shell (both not reconstructible; message differs: cmd with &)",
+   "Group": "B",
+   "Holds": true,
+   "Observed": {
+    "Different": [
+     "F-cmd-shell-events.jsonl",
+     "F-outer-flags-events.jsonl"
+    ],
+    "Identical": 62,
+    "Logs": 64
+   }
+  },
+  {
+   "Case": "V2-NOPROFILE-R3CASE",
+   "Expected": "F-outer-flags (r3) under v2: reconstructible with the argv and envelope SHA-256 of OK",
+   "Group": "B",
+   "Holds": true,
+   "Observed": {
+    "Reconstructible": true,
+    "Runs": 13
+   }
+  },
+  {
+   "Case": "V2-NEW-R2-NoProfile",
+   "Expected": "new rendering: v2 reconstructs with the argv and envelopes of OK; the reference does not",
+   "Group": "B",
+   "Holds": true,
+   "Observed": {
+    "Reference": false,
+    "V2": true
+   }
+  },
+  {
+   "Case": "V2-NEW-R3-cmd",
+   "Expected": "new rendering: v2 reconstructs with the argv and envelopes of OK; the reference does not",
+   "Group": "B",
+   "Holds": true,
+   "Observed": {
+    "Reference": false,
+    "V2": true
+   }
+  },
+  {
+   "Case": "V2-NEW-R1-runtime-pwsh",
+   "Expected": "new rendering: v2 reconstructs with the argv and envelopes of OK; the reference does not",
+   "Group": "B",
+   "Holds": true,
+   "Observed": {
+    "Reference": false,
+    "V2": true
+   }
+  },
+  {
+   "Case": "V2-NEW-R2-runtime-pwsh",
+   "Expected": "new rendering: v2 reconstructs with the argv and envelopes of OK; the reference does not",
+   "Group": "B",
+   "Holds": true,
+   "Observed": {
+    "Reference": false,
+    "V2": true
+   }
+  },
+  {
+   "Case": "V2-ENCODED-NOT-IDENTIFIED",
+   "Expected": "LIMIT (unchanged from the reference): an execution that does not name the blob (-EncodedCommand) is not identified; reference and v2 both count 0 executions (the comparator then reports the 12 orders as not executed)",
+   "Group": "B",
+   "Holds": true,
+   "Observed": {
+    "Reference": 0,
+    "V2": 0
+   }
+  },
+  {
+   "Case": "V2-MALFORMED",
+   "Expected": "every malformed or unlisted rendering fails closed under v2 (cmd with & %% ^ ! >, unquoted or bare paths, quoted args, second pipe, no -I, no --no-replace-objects, double space, /C, /d /c, /s /c, relative cmd, pwsh inner under cmd, other pwsh flags or order, powershell.exe 5.1, statement, bare git, -EncodedCommand)",
+   "Group": "B",
+   "Holds": true,
+   "Observed": {
+    "cmd-amp": "item_1: inner(cmd): character(s) & not allowed (separators, redirection, escape, expansion",
+    "cmd-bang": "item_1: inner(cmd): character(s) ! not allowed (separators, redirection, escape, expansion",
+    "cmd-bare-python": "item_1: inner(cmd): interpreter is not a double-quoted absolute path to python[3[.N]].exe",
+    "cmd-caret": "item_1: inner(cmd): character(s) ^ not allowed (separators, redirection, escape, expansion",
+    "cmd-d-c": "item_1: outer: not the form \"<pwsh>\" -Command <inner> (4 tokens)",
+    "cmd-double-space": "item_1: inner(cmd): leading/trailing or double space",
+    "cmd-noI": "item_1: inner(cmd): missing -I right after the interpreter",
+    "cmd-noNRO": "item_1: inner(cmd): missing --no-replace-objects",
+    "cmd-percent": "item_1: inner(cmd): character(s) % not allowed (separators, redirection, escape, expansion",
+    "cmd-pwsh-inner": "item_1: inner(cmd): character(s) &' not allowed (separators, redirection, escape, expansio",
+    "cmd-quoted-arg": "item_1: inner(cmd): exactly four double quotes required (git and interpreter paths only)",
+    "cmd-redirect": "item_1: inner(cmd): character(s) > not allowed (separators, redirection, escape, expansion",
+    "cmd-relative": "item_1: outer: not the form \"<pwsh>\" -Command <inner> (3 tokens)",
+    "cmd-s-c": "item_1: outer: not the form \"<pwsh>\" -Command <inner> (4 tokens)",
+    "cmd-second-pipe": "item_1: inner(cmd): exactly one pipe required",
+    "cmd-unquoted-git": "item_1: inner(cmd): exactly four double quotes required (git and interpreter paths only)",
+    "cmd-upper-C": "item_1: outer: not the form \"<pwsh>\" -Command <inner> (3 tokens)",
+    "git-dot-component": "item_1: inner: git is not an absolute path to git.exe",
+    "powershell51-noprofile": "item_1: outer: not the form \"<pwsh>\" -Command <inner> (4 tokens)",
+    "pwsh-command-then-noprofile": "item_1: outer: not the form \"<pwsh>\" -Command <inner> (4 tokens)",
+    "pwsh-nologo-command": "item_1: outer: not the form \"<pwsh>\" -Command <inner> (4 tokens)",
+    "pwsh-noprofile-bare-git": "item_1: inner: git given by bare name or unquoted path",
+    "pwsh-noprofile-lower": "item_1: outer: not the form \"<pwsh>\" -Command <inner> (4 tokens)",
+    "pwsh-noprofile-noninteractive": "item_1: outer: not the form \"<pwsh>\" -Command <inner> (5 tokens)",
+    "pwsh-noprofile-stmt": "item_1: inner: character ';' not allowed after a token (tokens are separated by one space;",
+    "shell-dot": "item_1: outer: shell is not an absolute path to pwsh.exe",
+    "shell-dotdot": "item_1: outer: shell is not an absolute path to pwsh.exe",
+    "shell-dots-only": "item_1: outer: shell is not an absolute path to pwsh.exe",
+    "shell-trailing-dot": "item_1: outer: shell is not an absolute path to pwsh.exe"
+   }
+  },
+  {
+   "Case": "CLONE-DETERMINISTIC",
+   "Expected": "a scratch copy made by prep_clone.py has the refs, HEAD, status, file list and file contents of m7-run",
+   "Group": "P",
+   "Holds": true,
+   "Observed": {
+    "SameRefsHeadStatusFiles": true
+   }
+  },
+  {
+   "Case": "CLONE-REFUSES-EXISTING",
+   "Expected": "prep_clone.py with its defaults refuses because m7-run exists (nothing written); m7-run equal to its frozen snapshot (no instrument object yet)",
+   "Group": "P",
+   "Holds": true,
+   "Observed": {
+    "M7RunEqualsFrozen": true,
+    "M7RunUnchanged": true,
+    "Rc": 2
+   }
+  },
+  {
+   "Case": "PREP-WRITE-REFUSE-replace-ref",
+   "Expected": "prep_write refuses before writing (rc 2), no loose object, the -C unchanged after removing the plant",
+   "Group": "P",
+   "Holds": true,
+   "Observed": {
+    "ObjectAbsent": true,
+    "Rc": 2,
+    "Unchanged": true
+   }
+  },
+  {
+   "Case": "PREP-WRITE-REFUSE-alternates",
+   "Expected": "prep_write refuses before writing (rc 2), no loose object, the -C unchanged after removing the plant",
+   "Group": "P",
+   "Holds": true,
+   "Observed": {
+    "ObjectAbsent": true,
+    "Rc": 2,
+    "Unchanged": true
+   }
+  },
+  {
+   "Case": "PREP-WRITE-REFUSE-include-config",
+   "Expected": "prep_write refuses before writing (rc 2), no loose object, the -C unchanged after removing the plant",
+   "Group": "P",
+   "Holds": true,
+   "Observed": {
+    "ObjectAbsent": true,
+    "Rc": 2,
+    "Unchanged": true
+   }
+  },
+  {
+   "Case": "PREP-WRITE-REFUSE-no-disposition",
+   "Expected": "prep_write refuses before writing (rc 2), no loose object, the -C unchanged after removing the plant",
+   "Group": "P",
+   "Holds": true,
+   "Observed": {
+    "ObjectAbsent": true,
+    "Rc": 2,
+    "Unchanged": true
+   }
+  },
+  {
+   "Case": "PREP-WRITE-REFUSE-drift-file",
+   "Expected": "prep_write refuses before writing (rc 2), no loose object, the -C unchanged after removing the plant",
+   "Group": "P",
+   "Holds": true,
+   "Observed": {
+    "ObjectAbsent": true,
+    "Rc": 2,
+    "Unchanged": true
+   }
+  },
+  {
+   "Case": "PREP-WRITE-HELD",
+   "Expected": "prep_write on a scratch copy: id = pinned blob, snapshots differ in exactly one new loose object, DecisionRef from the disposition, registered config written",
+   "Group": "P",
+   "Holds": true,
+   "Observed": {
+    "DecisionRef": "I62-A6-7-M7",
+    "Diff": [
+     "GitFiles"
+    ],
+    "Held": true,
+    "Rc": 0
+   }
+  },
+  {
+   "Case": "PREP-WRITE-ONCE",
+   "Expected": "a second prep_write refuses (the write is done once)",
+   "Group": "P",
+   "Holds": true,
+   "Observed": {
+    "Rc": 2
+   }
+  },
+  {
+   "Case": "POU-PASS",
+   "Expected": "point of use (i)-(viii) on the prepared scratch copy: Launch true; git and python by name resolve to the declared paths; shell language mode recorded",
+   "Group": "U",
+   "Holds": true,
+   "Observed": {
+    "Failed": [],
+    "LanguageMode": "FullLanguage",
+    "Rc": 0
+   }
+  },
+  {
+   "Case": "POU-REFUSE-i-replace-ref",
+   "Expected": "point of use fails closed in step (i): Launch false, exit 1",
+   "Group": "U",
+   "Holds": true,
+   "Observed": {
+    "Failed": [
+     "i"
+    ],
+    "Rc": 1
+   }
+  },
+  {
+   "Case": "POU-REFUSE-vi-GIT_DIR",
+   "Expected": "point of use fails closed in step (vi): Launch false, exit 1",
+   "Group": "U",
+   "Holds": true,
+   "Observed": {
+    "Failed": [
+     "vi"
+    ],
+    "Rc": 1
+   }
+  },
+  {
+   "Case": "POU-REFUSE-viii-git-exe",
+   "Expected": "point of use fails closed in step (viii): Launch false, exit 1",
+   "Group": "U",
+   "Holds": true,
+   "Observed": {
+    "Failed": [
+     "viii"
+    ],
+    "Rc": 1
+   }
+  },
+  {
+   "Case": "POU-REFUSE-v-sha",
+   "Expected": "point of use fails closed in step (v): Launch false, exit 1",
+   "Group": "U",
+   "Holds": true,
+   "Observed": {
+    "Failed": [
+     "v"
+    ],
+    "Rc": 1
+   }
+  },
+  {
+   "Case": "POU-REFUSE-vii-include",
+   "Expected": "point of use fails closed in step (vii): Launch false, exit 1",
+   "Group": "U",
+   "Holds": true,
+   "Observed": {
+    "Failed": [
+     "vii"
+    ],
+    "Rc": 1
+   }
+  },
+  {
+   "Case": "POU-REFUSE-iii-no-shell",
+   "Expected": "point of use fails closed in step (iii): Launch false, exit 1",
+   "Group": "U",
+   "Holds": true,
+   "Observed": {
+    "Failed": [
+     "iii",
+     "v"
+    ],
+    "Rc": 1
+   }
+  },
+  {
+   "Case": "SYNTH-RECON",
+   "Expected": "the synthetic Codex-format log of the 17 executions reconstructs with v2: 12 instrument executions, rendering R1, declared git and interpreter",
+   "Group": "S",
+   "Holds": true,
+   "Observed": {
+    "Executions": 12,
+    "Problems": [],
+    "Reconstructible": true
+   }
+  },
+  {
+   "Case": "SYNTH-ACCEPTOR",
+   "Expected": "fixed acceptor (bytes by blob), declared interpreter, same -C: ACCEPT_FACTS rc 0, R1 R2 R3 R9 MATCH, R4 R10 NOT_APPLICABLE, R5-R7 MATCH, R8 MANUAL; zero writes; process tree ended; table of M accepted (construction, rows, closure cotejo, designation)",
+   "Group": "S",
+   "Holds": true,
+   "Observed": {
+    "Decision": "ACCEPT_FACTS",
+    "Provenance": {
+     "Ok": true,
+     "ProcessTreeEnded": true,
+     "ZeroWrite": true
+    },
+    "Rc": 0,
+    "Statuses": {
+     "R1": "MATCH",
+     "R10": "NOT_APPLICABLE",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    },
+    "TableAccepted": true,
+    "Violations": []
+   }
+  },
+  {
+   "Case": "COMPARE-POSITIVE",
+   "Expected": "perfect synthetic Controller (values read from the real envelopes and outputs) against the oracle computed from Git primitives: every operation DEMONSTRATED, every record item OK -> ALL_OPERATIONS_DEMONSTRATED (shows oracle = instrument facts here)",
+   "Group": "S",
+   "Holds": true,
+   "Observed": {
+    "Causes": [],
+    "FailingChecks": [],
+    "Reading": [
+     "V5"
+    ],
+    "Verdict": "ALL_OPERATIONS_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-diff-path",
+   "Expected": "NOT_DEMONSTRATED with cause OP3_diff_y_pertenencia_Scope",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP3_diff_y_pertenencia_Scope"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-scope-member",
+   "Expected": "NOT_DEMONSTRATED with cause OP3_diff_y_pertenencia_Scope",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP3_diff_y_pertenencia_Scope"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-identity-head",
+   "Expected": "NOT_DEMONSTRATED with cause OP4_lecturas_Identity_Remote_CleanTree_Trailer",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP4_lecturas_Identity_Remote_CleanTree_Trailer"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-trailer",
+   "Expected": "NOT_DEMONSTRATED with cause OP4_lecturas_Identity_Remote_CleanTree_Trailer",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP4_lecturas_Identity_Remote_CleanTree_Trailer"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-hash",
+   "Expected": "NOT_DEMONSTRATED with cause OP5_blobs_y_hashes",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP5_blobs_y_hashes"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-json-not-ascii",
+   "Expected": "NOT_DEMONSTRATED with cause OP6_lectura_fiel_JSON_y_texto",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP6_lectura_fiel_JSON_y_texto"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-text-altered",
+   "Expected": "NOT_DEMONSTRATED with cause OP6_lectura_fiel_JSON_y_texto",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP6_lectura_fiel_JSON_y_texto"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-ar-blob",
+   "Expected": "NOT_DEMONSTRATED with cause OP7_mapa_de_clausulas_AuthorityResolution",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP7_mapa_de_clausulas_AuthorityResolution"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-ar-reading",
+   "Expected": "NOT_DEMONSTRATED with cause OP7_mapa_de_clausulas_AuthorityResolution",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP7_mapa_de_clausulas_AuthorityResolution"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-primary-missing",
+   "Expected": "NOT_DEMONSTRATED with cause OP8_contraste_con_orden_Git_primaria",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP6_lectura_fiel_JSON_y_texto",
+     "OP8_contraste_con_orden_Git_primaria",
+     "OP9_salida_estructurada_completa"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-primary-equal-false",
+   "Expected": "NOT_DEMONSTRATED with cause OP8_contraste_con_orden_Git_primaria",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP4_lecturas_Identity_Remote_CleanTree_Trailer",
+     "OP8_contraste_con_orden_Git_primaria"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-field-omitted",
+   "Expected": "NOT_DEMONSTRATED with cause OP9_salida_estructurada_completa",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP9_salida_estructurada_completa"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-bad-cref",
+   "Expected": "NOT_DEMONSTRATED with cause OP9_salida_estructurada_completa",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP2_ejecucion_desde_objeto_aislada",
+     "OP9_salida_estructurada_completa"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-no-output",
+   "Expected": "NOT_DEMONSTRATED with cause OP9_salida_estructurada_completa",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP1_entrega_exacta_bytes",
+     "OP2_ejecucion_desde_objeto_aislada",
+     "OP3_diff_y_pertenencia_Scope",
+     "OP4_lecturas_Identity_Remote_CleanTree_Trailer",
+     "OP5_blobs_y_hashes",
+     "OP6_lectura_fiel_JSON_y_texto",
+     "OP7_mapa_de_clausulas_AuthorityResolution",
+     "OP8_contraste_con_orden_Git_primaria",
+     "OP9_salida_estructurada_completa",
+     "RA_git_por_nombre_es_el_declarado"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-delivery-wrong",
+   "Expected": "NOT_DEMONSTRATED with cause OP1_entrega_exacta_bytes",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP1_entrega_exacta_bytes"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-where-other-git",
+   "Expected": "NOT_DEMONSTRATED with cause RA_git_por_nombre_es_el_declarado",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "RA_git_por_nombre_es_el_declarado"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-blob-in-other-command",
+   "Expected": "NOT_DEMONSTRATED with cause RB_reconstruccion_Runs_regla_nombrada",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP1_entrega_exacta_bytes",
+     "OP2_ejecucion_desde_objeto_aislada",
+     "OP3_diff_y_pertenencia_Scope",
+     "OP4_lecturas_Identity_Remote_CleanTree_Trailer",
+     "OP5_blobs_y_hashes",
+     "OP6_lectura_fiel_JSON_y_texto",
+     "OP7_mapa_de_clausulas_AuthorityResolution",
+     "RA_git_por_nombre_es_el_declarado",
+     "RB_reconstruccion_Runs_regla_nombrada"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-crlf-envelope",
+   "Expected": "NOT_DEMONSTRATED with cause RB_reconstruccion_Runs_regla_nombrada",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "OP2_ejecucion_desde_objeto_aislada",
+     "OP3_diff_y_pertenencia_Scope",
+     "OP4_lecturas_Identity_Remote_CleanTree_Trailer",
+     "OP5_blobs_y_hashes",
+     "OP6_lectura_fiel_JSON_y_texto",
+     "OP7_mapa_de_clausulas_AuthorityResolution",
+     "RB_reconstruccion_Runs_regla_nombrada"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-acceptor-reject",
+   "Expected": "NOT_DEMONSTRATED with cause RC_aceptante_ACCEPT_FACTS_tabla",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "RC_aceptante_ACCEPT_FACTS_tabla"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-identity-after",
+   "Expected": "NOT_DEMONSTRATED with cause RD_identidad_antes_y_despues",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "RD_identidad_antes_y_despues"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-effort",
+   "Expected": "NOT_DEMONSTRATED with cause RE_modelo_effort_efectivos",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "RE_modelo_effort_efectivos"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-p22-read",
+   "Expected": "NOT_DEMONSTRATED with cause RF_sin_lectura_P22",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "RF_sin_lectura_P22"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-clone-write",
+   "Expected": "NOT_DEMONSTRATED with cause RG_sin_escritura_en_el_clon",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "RG_sin_escritura_en_el_clon"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-timeout",
+   "Expected": "NOT_DEMONSTRATED with cause RH_lanzamiento_terminacion_entrada",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "RH_lanzamiento_terminacion_entrada"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "COMPARE-usage-limit",
+   "Expected": "NOT_DEMONSTRATED with cause RH_lanzamiento_terminacion_entrada",
+   "Group": "N",
+   "Holds": true,
+   "Observed": {
+    "Causes": [
+     "RH_lanzamiento_terminacion_entrada"
+    ],
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "GATES-PASS",
+   "Expected": "every gate passes on the fixture (temporary decisions file with the disposition and both Owner lines, identity fixtures, scratch -C with the instrument object, launch environment, processes, armed prompt)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": {
+    "Refused": []
+   }
+  },
+  {
+   "Case": "DECISIONS-missing-M7-CELDA",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-missing-M7-TRIO",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-missing-M7-INSTRUMENTO",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-missing-M7-INTERPRETE",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-missing-M7-GIT",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-missing-M7-C",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-missing-M7-CIERRE",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-missing-M7-RECONSTRUCCION",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-missing-M7-ESCRITURA",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-missing-M7-KIT",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-altered-trio",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-altered-interpreter-sha",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-altered-closure-sha",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-no-lecturas",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "M7-LECTURAS: no single reference to the A6-5 rule 6 readings disposition (\u00a7N)"
+   ]
+  },
+  {
+   "Case": "DECISIONS-lecturas-section-absent",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "M7-LECTURAS: section \u00a797 does not exist after \u00a790 or does not name A6-5, regla 6"
+   ]
+  },
+  {
+   "Case": "DECISIONS-lecturas-section-without-A6-5",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "M7-LECTURAS: section \u00a792 does not exist after \u00a790 or does not name A6-5, regla 6"
+   ]
+  },
+  {
+   "Case": "DECISIONS-od2-missing",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "line-od2.txt is not a complete line of the decisions file after the disposition"
+   ]
+  },
+  {
+   "Case": "DECISIONS-b-missing",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "line-b.txt is not a complete line of the decisions file after the disposition"
+   ]
+  },
+  {
+   "Case": "DECISIONS-od2-altered",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "line-od2.txt is not a complete line of the decisions file after the disposition"
+   ]
+  },
+  {
+   "Case": "DECISIONS-b-not-complete-line",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "line-b.txt is not a complete line of the decisions file after the disposition"
+   ]
+  },
+  {
+   "Case": "DECISIONS-owner-before-disposition",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "line-od2.txt is not a complete line of the decisions file after the disposition",
+    "line-b.txt is not a complete line of the decisions file after the disposition"
+   ]
+  },
+  {
+   "Case": "DECISIONS-no-section-90",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "DECISIONS-two-dispositions",
+   "Expected": "decisions gate refuses",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no single Coordinator disposition after section 90 contains every marker"
+   ]
+  },
+  {
+   "Case": "IDENTITY-fingerprint",
+   "Expected": "identity gate refuses (identity != trio)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "Fingerprint"
+   ]
+  },
+  {
+   "Case": "IDENTITY-keynames",
+   "Expected": "identity gate refuses (identity != trio)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "Fingerprint",
+    "KeyNames"
+   ]
+  },
+  {
+   "Case": "IDENTITY-bins-2",
+   "Expected": "identity gate refuses (identity != trio)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "Bins"
+   ]
+  },
+  {
+   "Case": "IDENTITY-companions",
+   "Expected": "identity gate refuses (identity != trio)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "Companions"
+   ]
+  },
+  {
+   "Case": "IDENTITY-appversion",
+   "Expected": "identity gate refuses (identity != trio)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "AppVersion"
+   ]
+  },
+  {
+   "Case": "IDENTITY-binaryhash",
+   "Expected": "identity gate refuses (identity != trio)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "BinaryHash"
+   ]
+  },
+  {
+   "Case": "IDENTITY-runtime-pwsh",
+   "Expected": "identity gate refuses (identity != trio)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "RuntimePwshSha256"
+   ]
+  },
+  {
+   "Case": "P07-MARKER",
+   "Expected": "P-07 refuses with the launch marker present",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "P-07: launch marker present (tope 1, no retry)"
+   ]
+  },
+  {
+   "Case": "P07-PREVIOUS-EVENTS",
+   "Expected": "P-07 refuses with events of a previous launch",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "P-07: a previous launch left out/raw/events.jsonl"
+   ]
+  },
+  {
+   "Case": "STATE-extra-file",
+   "Expected": "state gate refuses (the -C is not the frozen snapshot plus exactly the loose object)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "state of the -C is not the frozen snapshot plus exactly the instrument loose object: [\"GitFiles\", \"StatusZ\", \"WorktreeFiles\"]"
+   ]
+  },
+  {
+   "Case": "STATE-extra-ref",
+   "Expected": "state gate refuses (the -C is not the frozen snapshot plus exactly the loose object)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "state of the -C is not the frozen snapshot plus exactly the instrument loose object: [\"GitFiles\", \"Refs\"]"
+   ]
+  },
+  {
+   "Case": "STATE-ignored-file",
+   "Expected": "state gate refuses (the -C is not the frozen snapshot plus exactly the loose object)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "state of the -C is not the frozen snapshot plus exactly the instrument loose object: [\"GitFiles\", \"WorktreeFiles\"]"
+   ]
+  },
+  {
+   "Case": "STATE-no-prep-write",
+   "Expected": "state gate refuses without a held preparation write record",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "no held preparation write (A6-3 rule 1) with DecisionRef I62-A6-7-M7 in out/prep-write.json",
+    "no registered config of the preparation write (out/registered-config.json)"
+   ]
+  },
+  {
+   "Case": "STATE-no-object",
+   "Expected": "state gate refuses without the instrument loose object",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "state of the -C is not the frozen snapshot plus exactly the instrument loose object: []"
+   ]
+  },
+  {
+   "Case": "LAUNCHENV-GIT_var",
+   "Expected": "launch-environment gate refuses (GIT_* present / runtime pwsh not first in PATH)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "launch environment has GIT_* variables: GIT_EDITOR"
+   ]
+  },
+  {
+   "Case": "LAUNCHENV-path-order",
+   "Expected": "launch-environment gate refuses (GIT_* present / runtime pwsh not first in PATH)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "the runtime pwsh directory is not the first PATH entry of the child"
+   ]
+  },
+  {
+   "Case": "STATICGIT-root",
+   "Expected": "static scan refuses a git.* in the -C root",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "git.* found in D:/r62-a6m7/kit/.selftest/c1: ['git.cmd']"
+   ]
+  },
+  {
+   "Case": "STATICGIT-dir",
+   "Expected": "static scan refuses a git.exe in a scanned directory",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "git.* found in D:/r62-a6m7/kit/.selftest/fakesys: ['git.exe']"
+   ]
+  },
+  {
+   "Case": "PROCESSES-on-C",
+   "Expected": "P-02 refuses with a live process whose command line names the -C",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "P-02: 1 process(es) with the -C in their command line"
+   ]
+  },
+  {
+   "Case": "PROCESSES-forbidden-name",
+   "Expected": "P-02 refuses with a live process of the forbidden name (codex.exe at the measurement; the stub name here)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "P-02: 1 m7stubcodex.exe process(es) alive (no other m7stubcodex.exe may run at the launch)"
+   ]
+  },
+  {
+   "Case": "CLAUDE-PROJECT",
+   "Expected": "P-02 refuses with a Claude project directory for the -C",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "a Claude project directory exists for the -C"
+   ]
+  },
+  {
+   "Case": "KIT-CHANGED",
+   "Expected": "kit gate refuses a file changed after the freeze",
+   "Group": "G",
+   "Holds": true,
+   "Observed": [
+    "file changed after the freeze: prompt.m7.template.txt"
+   ]
+  },
+  {
+   "Case": "PROMPT-CHANGED",
+   "Expected": "the armed prompt of a changed template differs from the frozen SHA-256 (prompt gate refuses)",
+   "Group": "G",
+   "Holds": true,
+   "Observed": "8b5b4e325e8a55cb"
+  },
+  {
+   "Case": "FIXTURE-GUARD",
+   "Expected": "fixture mode refuses the real decisions file and the real Codex binary path",
+   "Group": "G",
+   "Holds": true,
+   "Observed": "both refused"
+  },
+  {
+   "Case": "USAGE",
+   "Expected": "the runner accepts only its documented forms (exit 64 otherwise)",
+   "Group": "D",
+   "Holds": true,
+   "Observed": [
+    64,
+    64,
+    64
+   ]
+  },
+  {
+   "Case": "DRYRUN-PASS",
+   "Expected": "bash run_m7.sh --dry-run <fixture>: every gate and the point of use pass; stops before the marker and the launch",
+   "Group": "D",
+   "Holds": true,
+   "Observed": {
+    "Events": false,
+    "Marker": false,
+    "Rc": 0,
+    "Tail": [
+     "DRY-RUN: stopping before the P-07 marker and the launch (nothing launched)"
+    ]
+   }
+  },
+  {
+   "Case": "DRYRUN-REFUSE",
+   "Expected": "dry-run with the decisions fixture lacking line (b): refused (exit 2) before any launch step",
+   "Group": "D",
+   "Holds": true,
+   "Observed": {
+    "Err": [
+     "REFUSED: gates (see D:/r62-a6m7/kit/.selftest/out1/gates.json)"
+    ],
+    "Rc": 2
+   }
+  },
+  {
+   "Case": "STUB-LAUNCH-ARGV",
+   "Expected": "stub launch through the runner: the binary receives exactly the recipe (exec -C <-C> -s read-only -m gpt-6-luna -c model_reasoning_effort=\"high\" --output-schema <projection> -o <IgnorePath> --json <prompt>), the prompt byte-identical to the armed one, PATH with the runtime pwsh directory first, git by name = the declared git, no GIT_* in the child, P-07 marker created",
+   "Group": "D",
+   "Holds": true,
+   "Observed": {
+    "ArgsEqual": true,
+    "Marker": true,
+    "PathFirstIsRuntimeDir": true,
+    "PromptEqual": true,
+    "WhereFirst": "%LOCALAPPDATA%\\Programs\\Git\\cmd\\git.exe"
+   }
+  },
+  {
+   "Case": "STUB-LAUNCH-POST",
+   "Expected": "stub launch end to end: exit 0, death confirmed, post (identity after, Entry with the -o file only, session record fixture, reconstruction, request, real acceptor on the scratch -C, table, comparison, custody) -> ALL_OPERATIONS_DEMONSTRATED; custody manifest written; no unsanitized text in out/custody",
+   "Group": "D",
+   "Holds": true,
+   "Observed": {
+    "Causes": [],
+    "Launch": {
+     "CapS": 600,
+     "DeathConfirmed": true,
+     "ElapsedS": 5,
+     "EndUtc": "2026-10-17T07:31:44Z",
+     "Exit": 0,
+     "KillAfterS": 10,
+     "StartUtc": "2026-10-17T07:31:39Z",
+     "TimedOut": false,
+     "Watchdog": "no"
+    },
+    "Rc": 0,
+    "Verdict": "ALL_OPERATIONS_DEMONSTRATED"
+   }
+  },
+  {
+   "Case": "STUB-NO-RETRY",
+   "Expected": "a second launch with the same marker is refused (P-07, tope 1, no retry)",
+   "Group": "D",
+   "Holds": true,
+   "Observed": {
+    "Rc": 2
+   }
+  },
+  {
+   "Case": "STUB-WATCHDOG",
+   "Expected": "a hanging stub is tree-killed at the cap (fixture cap 25 s), its death confirmed, post still runs and the verdict is NOT_DEMONSTRATED",
+   "Group": "D",
+   "Holds": true,
+   "Observed": {
+    "Alive": [],
+    "Launch": {
+     "CapS": 25,
+     "DeathConfirmed": true,
+     "ElapsedS": 20,
+     "EndUtc": "2026-10-17T07:32:41Z",
+     "Exit": 1,
+     "KillAfterS": 10,
+     "StartUtc": "2026-10-17T07:32:19Z",
+     "TimedOut": true,
+     "Watchdog": "yes"
+    },
+    "Seconds": 39,
+    "Verdict": "NOT_DEMONSTRATED"
+   }
+  }
+ ],
+ "Environment": {
+  "CodexExecuted": false,
+  "ConfigTomlRead": false,
+  "M7RunWritten": false,
+  "PwshOfTheSessions": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\pwsh.EXE",
+  "RuntimePwshExecuted": false,
+  "SessionsRead": false
+ },
+ "Holding": 113,
+ "Schema": "i62-a6m7-selftest/1",
+ "Seconds": 237,
+ "Total": 113,
+ "UtcTime": "2026-10-17T07:32:45Z"
+}

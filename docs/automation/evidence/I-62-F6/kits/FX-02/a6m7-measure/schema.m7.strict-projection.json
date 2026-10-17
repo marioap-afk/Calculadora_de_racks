@@ -1,0 +1,711 @@
+{
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "AuthorityResolution",
+  "ClauseMap",
+  "CleanTree",
+  "Delivery",
+  "Diff",
+  "Findings",
+  "GitByName",
+  "Hashes",
+  "Identity",
+  "Mode",
+  "Preconditions",
+  "Primary",
+  "Reads",
+  "RunId",
+  "Runs",
+  "Schema",
+  "Scope",
+  "ShellInvocations",
+  "Trailer"
+ ],
+ "properties": {
+  "Schema": {
+   "type": "string",
+   "enum": [
+    "rackcad-a6m7-measurement/1"
+   ]
+  },
+  "Mode": {
+   "type": "string",
+   "enum": [
+    "A6-7_MEDICION"
+   ]
+  },
+  "RunId": {
+   "type": "string",
+   "enum": [
+    "R20261016T000000Z-m7m0"
+   ]
+  },
+  "ShellInvocations": {
+   "type": "integer",
+   "minimum": 1
+  },
+  "GitByName": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "ExecPath",
+    "Invocation",
+    "Version",
+    "WhereLines"
+   ],
+   "properties": {
+    "Invocation": {
+     "type": "string",
+     "pattern": "^C[1-9][0-9]*$",
+     "description": "Ejecucion de la shell C<n>, contadas desde 1 incluidas las fallidas."
+    },
+    "WhereLines": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "ExecPath": {
+     "type": "string"
+    },
+    "Version": {
+     "type": "string"
+    }
+   }
+  },
+  "Delivery": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Invocation",
+    "ObjectType",
+    "RehashedId"
+   ],
+   "properties": {
+    "Invocation": {
+     "type": "string",
+     "pattern": "^C[1-9][0-9]*$",
+     "description": "Ejecucion de la shell C<n>, contadas desde 1 incluidas las fallidas."
+    },
+    "ObjectType": {
+     "type": "string"
+    },
+    "RehashedId": {
+     "type": "string"
+    }
+   }
+  },
+  "Preconditions": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Commits",
+    "Files",
+    "Invocation"
+   ],
+   "properties": {
+    "Invocation": {
+     "type": "string",
+     "pattern": "^C[1-9][0-9]*$",
+     "description": "Ejecucion de la shell C<n>, contadas desde 1 incluidas las fallidas."
+    },
+    "Commits": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "Sha",
+       "Type"
+      ],
+      "properties": {
+       "Sha": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{40}$"
+       },
+       "Type": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "Files": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "Exists",
+       "Path"
+      ],
+      "properties": {
+       "Path": {
+        "type": "string"
+       },
+       "Exists": {
+        "type": "boolean"
+       }
+      }
+     }
+    }
+   }
+  },
+  "Runs": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "ErrorCode",
+     "ExitCode",
+     "FactsSha256",
+     "Invocation",
+     "Order"
+    ],
+    "properties": {
+     "Order": {
+      "type": "string",
+      "enum": [
+       "identity",
+       "diff",
+       "scope",
+       "contract",
+       "hashes",
+       "cleantree",
+       "handoff",
+       "freetext",
+       "clausemap",
+       "trx",
+       "read-text",
+       "read-json"
+      ]
+     },
+     "Invocation": {
+      "type": "string",
+      "pattern": "^C[1-9][0-9]*$",
+      "description": "Ejecucion de la shell C<n>, contadas desde 1 incluidas las fallidas."
+     },
+     "ExitCode": {
+      "type": "integer"
+     },
+     "FactsSha256": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+     },
+     "ErrorCode": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    }
+   }
+  },
+  "Primary": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Equal",
+     "GitCommand",
+     "Id",
+     "InstrumentValue",
+     "Invocation",
+     "OutputLines"
+    ],
+    "properties": {
+     "Id": {
+      "type": "string",
+      "enum": [
+       "P01",
+       "P02",
+       "P03",
+       "P04",
+       "P05",
+       "P06",
+       "P07",
+       "P08",
+       "P09",
+       "P10",
+       "P11",
+       "P12",
+       "P13",
+       "P14",
+       "P15",
+       "P16",
+       "P17",
+       "P18",
+       "P19",
+       "P20",
+       "P21",
+       "P22",
+       "P23",
+       "P24"
+      ]
+     },
+     "Invocation": {
+      "type": "string",
+      "pattern": "^C[1-9][0-9]*$",
+      "description": "Ejecucion de la shell C<n>, contadas desde 1 incluidas las fallidas."
+     },
+     "GitCommand": {
+      "type": "string"
+     },
+     "OutputLines": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "InstrumentValue": {
+      "type": "string"
+     },
+     "Equal": {
+      "type": "boolean"
+     }
+    }
+   }
+  },
+  "Identity": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "AbbrevRef",
+    "BaseIsAncestorOfCurrent",
+    "BaseIsAncestorOfRed",
+    "Head",
+    "OriginBranch",
+    "OriginMain",
+    "RedIsAncestorOfCurrent",
+    "Toplevel"
+   ],
+   "properties": {
+    "Head": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{40}$"
+    },
+    "AbbrevRef": {
+     "type": "string"
+    },
+    "Toplevel": {
+     "type": "string"
+    },
+    "OriginBranch": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "pattern": "^[0-9a-f]{40}$"
+    },
+    "OriginMain": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "pattern": "^[0-9a-f]{40}$"
+    },
+    "BaseIsAncestorOfCurrent": {
+     "type": "boolean"
+    },
+    "BaseIsAncestorOfRed": {
+     "type": "boolean"
+    },
+    "RedIsAncestorOfCurrent": {
+     "type": "boolean"
+    }
+   }
+  },
+  "Diff": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Commits",
+    "Paths"
+   ],
+   "properties": {
+    "Paths": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "Commits": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+     }
+    }
+   }
+  },
+  "Scope": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "PerPath"
+   ],
+   "properties": {
+    "PerPath": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "AllowedCoveredBy",
+       "ForbiddenCoveredBy",
+       "Path"
+      ],
+      "properties": {
+       "Path": {
+        "type": "string"
+       },
+       "AllowedCoveredBy": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "ForbiddenCoveredBy": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "Trailer": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "PerCommit"
+   ],
+   "properties": {
+    "PerCommit": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "CoAuthoredBy",
+       "Commit"
+      ],
+      "properties": {
+       "Commit": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{40}$"
+       },
+       "CoAuthoredBy": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "CleanTree": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "CheckIgnoreRc",
+    "StatusIgnored",
+    "StatusPorcelain"
+   ],
+   "properties": {
+    "StatusPorcelain": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "StatusIgnored": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "CheckIgnoreRc": {
+     "type": "integer"
+    }
+   }
+  },
+  "Hashes": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "PerPath"
+   ],
+   "properties": {
+    "PerPath": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "Path",
+       "RevBlob",
+       "RevBlobSha256",
+       "WorktreeRawBlobSha1",
+       "WorktreeSha256"
+      ],
+      "properties": {
+       "Path": {
+        "type": "string"
+       },
+       "RevBlob": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "pattern": "^[0-9a-f]{40}$"
+       },
+       "RevBlobSha256": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "pattern": "^[0-9a-f]{64}$"
+       },
+       "WorktreeRawBlobSha1": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "pattern": "^[0-9a-f]{40}$"
+       },
+       "WorktreeSha256": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "pattern": "^[0-9a-f]{64}$"
+       }
+      }
+     }
+    }
+   }
+  },
+  "Reads": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "ContractA5MissingJson",
+    "ContractPointersJson",
+    "ContractSupersededEqual",
+    "DecisionsFirstLineJson",
+    "DecisionsFirstLineNonAsciiCount",
+    "FreeTextMatchCount",
+    "FreeTextTermsJson",
+    "HandoffFieldsJson",
+    "TrxCountersJson",
+    "TrxFilterSelected",
+    "TrxSha256"
+   ],
+   "properties": {
+    "ContractPointersJson": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "AuthorityRevision",
+      "MainSha",
+      "Objective",
+      "Schema"
+     ],
+     "properties": {
+      "Objective": {
+       "type": "string",
+       "description": "Texto JSON en ASCII (escapes \\uXXXX) copiado del sobre."
+      },
+      "Schema": {
+       "type": "string",
+       "description": "Texto JSON en ASCII (escapes \\uXXXX) copiado del sobre."
+      },
+      "MainSha": {
+       "type": "string",
+       "description": "Texto JSON en ASCII (escapes \\uXXXX) copiado del sobre."
+      },
+      "AuthorityRevision": {
+       "type": "string",
+       "description": "Texto JSON en ASCII (escapes \\uXXXX) copiado del sobre."
+      }
+     }
+    },
+    "DecisionsFirstLineJson": {
+     "type": "string",
+     "description": "Texto JSON en ASCII (escapes \\uXXXX) copiado del sobre."
+    },
+    "DecisionsFirstLineNonAsciiCount": {
+     "type": "integer"
+    },
+    "HandoffFieldsJson": {
+     "type": "string",
+     "description": "Texto JSON en ASCII (escapes \\uXXXX) copiado del sobre."
+    },
+    "TrxSha256": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{64}$"
+    },
+    "TrxCountersJson": {
+     "type": "string",
+     "description": "Texto JSON en ASCII (escapes \\uXXXX) copiado del sobre."
+    },
+    "TrxFilterSelected": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "FreeTextTermsJson": {
+     "type": "string",
+     "description": "Texto JSON en ASCII (escapes \\uXXXX) copiado del sobre."
+    },
+    "FreeTextMatchCount": {
+     "type": "integer"
+    },
+    "ContractA5MissingJson": {
+     "type": "string",
+     "description": "Texto JSON en ASCII (escapes \\uXXXX) copiado del sobre."
+    },
+    "ContractSupersededEqual": {
+     "type": "boolean"
+    }
+   }
+  },
+  "ClauseMap": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Eff",
+    "EffParent1",
+    "MapBlob"
+   ],
+   "properties": {
+    "Eff": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "pattern": "^[0-9a-f]{40}$"
+    },
+    "EffParent1": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "pattern": "^[0-9a-f]{40}$"
+    },
+    "MapBlob": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "pattern": "^[0-9a-f]{40}$"
+    }
+   }
+  },
+  "AuthorityResolution": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Class",
+     "ClauseMapBlob",
+     "EffectiveSha",
+     "Mode",
+     "Parts",
+     "Path",
+     "RevisionSha",
+     "Section",
+     "UnitProtocol"
+    ],
+    "properties": {
+     "Path": {
+      "type": "string"
+     },
+     "Section": {
+      "type": "string"
+     },
+     "Class": {
+      "type": "string",
+      "enum": [
+       "UNIT_DOC",
+       "UNIT_CHANGE",
+       "EXTERNAL"
+      ]
+     },
+     "Mode": {
+      "type": "string",
+      "enum": [
+       "NORMAL",
+       "COMPAT",
+       "COMPUESTA",
+       "ENTRY"
+      ]
+     },
+     "RevisionSha": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "pattern": "^[0-9a-f]{40}$"
+     },
+     "Parts": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "additionalProperties": false,
+       "required": [
+        "RevisionSha",
+        "Section"
+       ],
+       "properties": {
+        "Section": {
+         "type": "string"
+        },
+        "RevisionSha": {
+         "type": "string",
+         "pattern": "^[0-9a-f]{40}$"
+        }
+       }
+      }
+     },
+     "EffectiveSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+     },
+     "ClauseMapBlob": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+     },
+     "UnitProtocol": {
+      "type": "string",
+      "enum": [
+       "rackcad-protocol/I61",
+       "rackcad-protocol/I62"
+      ]
+     }
+    }
+   },
+   "description": "Forma de AuthorityResolution (paso 5 de Resolve, AP 16.13), una fila por cita del contrato."
+  },
+  "Findings": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  }
+ },
+ "description": "Salida de la medicion A6-7 (I-62) del EXECUTION_CONTROLLER de FX-02: hechos, contrastes primarios y resolucion por el mapa de clausulas; no es una verificacion. Proyeccion estricta (sin minLength).",
+ "title": "rackcad-a6m7-measurement/1"
+}

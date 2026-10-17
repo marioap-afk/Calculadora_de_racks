@@ -1,0 +1,58 @@
+MEDICION A6-7 (I-62). Invocacion de medicion del EXECUTION_CONTROLLER de FX-02, de solo lectura. RunId {RUN_ID}.
+
+Esta invocacion es una medicion, no una verificacion: no produces ninguna verificacion, ningun resultado de comprobacion, ninguna clasificacion ni ninguna disposicion, y no escribes como resultado o veredicto las palabras PASS, FAIL, VERIFIED, EXECUTION_, MAP_VALID ni MAP_INVALID. Tu tarea es ejecutar las ordenes de abajo en el directorio de trabajo, leer sus salidas y devolver el objeto estructurado que pide el esquema de salida, completo, sin omitir ningun campo obligatorio.
+
+Reglas (todas obligatorias):
+1. El directorio de trabajo es {CDIR_WIN}. Lee solo dentro de el. No leas ningun otro directorio ni repositorio, no uses git -C, --git-dir ni --work-tree y no cambies de directorio.
+2. Solo lectura: no escribas, no crees ni borres archivos, no ejecutes ordenes de Git que escriban (commit, checkout, switch, reset, add, rm, stash, fetch, pull, push, merge, rebase, tag, config, update-index, gc, prune, hash-object -w), no uses la red y no cambies variables de entorno.
+3. Cada ejecucion de la shell arranca un proceso nuevo: lo que ajustes en una no se conserva en la siguiente. Llamamos C1, C2, ... a las ejecuciones de la shell en el orden en que las haces, contadas tambien las que fallen.
+4. Haz exactamente las ejecuciones C1 a C17 de abajo, en ese orden, y ninguna mas. Si una falla, no la repitas: anotalo en Findings y sigue con la siguiente.
+5. C4 a C15 son las doce ordenes del instrumento de hechos. Copia cada una literalmente como el unico contenido de su ejecucion de la shell, sin nada antes ni despues: sin punto y coma, sin redirecciones, sin variables, sin otra tuberia, sin 2>&1 y sin Out-String. El identificador completo de 40 caracteres del objeto del instrumento solo aparece en esas doce ordenes: no lo escribas en ninguna otra orden.
+6. C1, C2, C3, C16 y C17 tambien se copian literalmente, cada bloque entero en una sola ejecucion de la shell.
+7. Cada salida del instrumento contiene una linea JSON en ASCII (el sobre). Si el codigo de salida no es 0, si la linea no es JSON o si su campo Error no es null, no uses ese sobre como hecho: anotalo en Findings.
+
+Ejecuciones:
+
+C1 (Git por nombre):
+where.exe git; git --exec-path; git --version
+
+C2 (entrega de los bytes del objeto del instrumento por la tuberia de esta shell, con el nombre abreviado del objeto):
+& '{GIT}' --no-replace-objects cat-file -t {B12}; & '{GIT}' --no-replace-objects cat-file blob {B12} | & '{GIT}' hash-object --no-filters --stdin
+
+C3 (comprobacion Git primaria de las revisiones y de los archivos antes de pasarlos al instrumento):
+{PRECONDITIONS}
+
+{ORDERS}
+
+C16 (contraste con las ordenes Git primarias, bloque A):
+{PRIMARY_A}
+
+C17 (contraste con las ordenes Git primarias, bloque B; sustituye <Eff> por el valor de Facts.Derive.Eff del sobre de clausemap, C12):
+{PRIMARY_B}
+
+Como rellenar la respuesta (los nombres son los del esquema de salida):
+- Schema, Mode y RunId: los unicos valores que admite el esquema.
+- ShellInvocations: el numero de ejecuciones de la shell que hiciste.
+- GitByName: Invocation = C1; WhereLines = las lineas que imprimio where.exe git, en orden y tal cual; ExecPath y Version = las lineas que imprimieron git --exec-path y git --version.
+- Delivery: Invocation = C2; ObjectType = la salida de cat-file -t; RehashedId = la salida de hash-object.
+- Preconditions: Invocation = C3; Commits = cada revision con el tipo que imprimio cat-file -t; Files = cada ruta con el resultado de Test-Path (true o false).
+- Runs: una fila por cada orden del instrumento, C4 a C15, en orden: Order (la orden: identity, diff, ...), Invocation, ExitCode, FactsSha256 del sobre (null si no hay sobre utilizable) y ErrorCode (Error.Code del sobre, o null).
+- Primary: una fila por cada marcador M-P01 a M-P24, en orden: Id (P01 a P24), Invocation (C16 o C17), GitCommand (la orden Git exacta que sigue al marcador, sin el echo ni el echo $LASTEXITCODE), OutputLines (las lineas que se imprimieron entre ese marcador y el siguiente, tal cual y en orden; ninguna si no hubo salida), InstrumentValue (el valor del hecho del instrumento con el que la contrastas, como texto) y Equal (true si la orden primaria y el hecho del instrumento coinciden).
+- Identity: de Facts del sobre de identity (C4): Head, AbbrevRef, Toplevel, OriginBranch, OriginMain, y Ancestry base->current, base->red y red->current.
+- Diff: Facts.Paths y Facts.Commits del sobre de diff (C5).
+- Scope: Facts.PerPath del sobre de scope (C6), con Path, AllowedCoveredBy y ForbiddenCoveredBy.
+- Trailer: por cada commit de Facts.CoAuthoredBy del sobre de diff (C5), en el orden de Facts.Commits, sus valores tal cual.
+- CleanTree: Facts.StatusPorcelain, Facts.StatusIgnored y Facts.CheckIgnoreRc del sobre de cleantree (C9).
+- Hashes: Facts.PerPath del sobre de hashes (C8).
+- Reads: copias fieles en texto JSON ASCII, con los escapes \uXXXX exactamente como estan en el sobre; una cadena JSON lleva sus comillas:
+  - ContractPointersJson: para cada puntero de read-json (C15), su valor de Facts.Values como texto JSON;
+  - DecisionsFirstLineJson: Facts.Lines[0].Text de read-text (C14) como cadena JSON, y DecisionsFirstLineNonAsciiCount = Facts.NonAsciiCount;
+  - HandoffFieldsJson: Facts.Fields de handoff (C10) como objeto JSON;
+  - TrxSha256 = Facts.Sha256, TrxCountersJson = Facts.Counters como objeto JSON, y TrxFilterSelected = Facts.FilterSelected, de trx (C13);
+  - FreeTextTermsJson = Facts.Terms como arreglo JSON, y FreeTextMatchCount = el numero de elementos de Facts.Matches, de freetext (C11);
+  - ContractA5MissingJson = Facts.A5Missing como objeto JSON, y ContractSupersededEqual = Facts.SupersededEqual, de contract (C7).
+- ClauseMap: Facts.Derive.Eff y Facts.Derive.EffParent1 del sobre de clausemap (C12), y MapBlob = la salida de M-P23.
+- AuthorityResolution: la resolucion por el mapa de clausulas en la forma de AuthorityResolution (paso 5 de Resolve de AP 16.13), una fila por cada elemento de Facts.Resolve.Citations del sobre de clausemap, en ese orden: Path, Section, Class, Mode, RevisionSha, Parts, EffectiveSha, ClauseMapBlob y UnitProtocol.
+- Findings: lo que no salio como se esperaba (ejecuciones fallidas, sobres inutilizables, una discrepancia entre un hecho y su orden primaria), o un arreglo vacio.
+
+Responde solo despues de haber hecho C17.
