@@ -50,9 +50,9 @@ CLAUDE_LINE_SHA = "fbeade41f74d6694a621fe6294d9568d7b76b124b1fd78e415514582c5d6e
 CLAUDE_LINE_PREFIX = "CLAUDE-CLI-I62 ="
 SECTION_78 = "## 78. "
 BASE_SECTION = 85                                                # decisiones §85: última sección en el commit del clon (prepara el kit)
-AUTH_SECTION = 86   # decisiones §86: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)
-AUTH_HEADING = "## 86. Disposición del Coordinator: A-6 ronda 4, revisión formal final acotada del Architect (2026-10-16 UTC)"
-AUTH_TEXT_SHA = "f85aa811f237b084e222650d2e7e8e88d665d30e5d5931cab57dcd3107a56b76"   # SHA-256 del texto de §86 (pin_authorization.py)
+AUTH_SECTION = 87   # decisiones §87: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)
+AUTH_HEADING = "## 87. Disposición del Coordinator: claude-cli 2.1.299, recuperación del transporte (2026-10-16 UTC)"
+AUTH_TEXT_SHA = "0eb44fac5b69404947d1065f03d4fe758607197a4d3d54f22f013c19eed5503a"   # SHA-256 del texto de §87 (pin_authorization.py)
 PENDING_REASON = ("authorization pending: a Coordinator disposition after §85 must be pinned (section number, heading, text SHA-256) and the kit "
                   "re-frozen")
 NUMBERED_RX = re.compile(r"^## ([0-9]+)\. ")

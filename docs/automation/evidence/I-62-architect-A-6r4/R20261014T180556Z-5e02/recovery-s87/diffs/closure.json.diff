@@ -1,0 +1,24 @@
+1032,1034c1032,1034
+<    "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+<    "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+<    "Version": "2.1.293 (Claude Code)",
+---
+>    "Path": "%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe",
+>    "Sha256": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b",
+>    "Version": "2.1.299 (Claude Code)",
+1090c1090
+<   "AddDirStatus": "medido en C3 de la caracterización R20261008T183600Z-char sobre la plantilla exacta con marcadores (decisiones §56, punto 7; §57, punto 3): kit/transport-gate.json en MEASURED con el SHA-256 del registro fijado",
+---
+>   "AddDirStatus": "medido en C3 de la caracterización R20261016T185242Z-char de claude-cli 2.1.299 sobre la plantilla exacta con marcadores (decisiones §87, puntos 2-4; procedimiento de §56, punto 7): kit/transport-gate.json en MEASURED con el SHA-256 del registro fijado (kit/claude-cli-characterization.json, copia del registro del commit 1c960c0a)",
+1103c1103
+<    "claude_code_version": "2.1.293"
+---
+>    "claude_code_version": "2.1.299"
+1110c1110
+<   "Characterization": "claude-cli-characterization.json de R20261008T183600Z-char (decisiones §56, punto 7; §57, punto 3): C1 completada, C3 PASS sobre la plantilla con --add-dir"
+---
+>   "Characterization": "claude-cli-characterization.json de R20261016T185242Z-char (decisiones §87, puntos 2-3; evidencia §174), copia en kit/ del registro del commit 1c960c0a (blob 19b8a27e): C1 completada, C3 PASS sobre la plantilla con --add-dir"
+13302c13302
+<   "prompt de sistema propio de claude-cli 2.1.293 en modo -p con --safe-mode: sin CLAUDE.md, memoria, skills de usuario, ganchos ni MCP (medido en C1)",
+---
+>   "prompt de sistema propio de claude-cli 2.1.299 en modo -p con --safe-mode: sin CLAUDE.md, memoria, skills de usuario, ganchos ni MCP (medido en C1)",

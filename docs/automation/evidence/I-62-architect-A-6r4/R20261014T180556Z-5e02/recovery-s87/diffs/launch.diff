@@ -1,0 +1,20 @@
+--- kit fijado a §86 (cf71191e)/launch.py
++++ kit/launch.py (decisiones §87)
+@@ -18,4 +18,4 @@
+      kit;
+-  3. binario elegible: existe en %APPDATA%, ruta resuelta = la del cierre, SHA-256 = 8693c4a0…, firma Authenticode válida de «Anthropic, PBC»;
+-  4. versión: `claude.exe --version` = «2.1.293 (Claude Code)», con la salida capturada en bytes y decodificada como UTF-8 estricto
++  3. binario elegible: existe en %APPDATA%, ruta resuelta = la del cierre, SHA-256 = 295b49ec…, firma Authenticode válida de «Anthropic, PBC»;
++  4. versión: `claude.exe --version` = «2.1.299 (Claude Code)», con la salida capturada en bytes y decodificada como UTF-8 estricto
+      (transport_gate.decode_cli_output);
+@@ -164,6 +164,6 @@
+ SESSION_ID = "4cfdcf7d-0aa5-4a96-98ac-0c0a4832ec5b"   # uuid4 del único lanzamiento (generado una vez; prep/ids.txt)
+-BIN_DISPLAY = r"%APPDATA%\Claude\claude-code\2.1.293\83cb0bd7fed4\claude.exe"
+-BIN = os.path.join(os.environ.get("APPDATA", ""), "Claude", "claude-code", "2.1.293", "83cb0bd7fed4", "claude.exe")
+-BIN_SHA = "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa"
+-VERSION = "2.1.293 (Claude Code)"
++BIN_DISPLAY = r"%APPDATA%\Claude\claude-code\2.1.299\f0584be0fbaf\claude.exe"
++BIN = os.path.join(os.environ.get("APPDATA", ""), "Claude", "claude-code", "2.1.299", "f0584be0fbaf", "claude.exe")
++BIN_SHA = "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b"
++VERSION = "2.1.299 (Claude Code)"
+ FLAGS = ["-p", "--model", "claude-opus-5-5", "--effort", "xhigh", "--output-format", "stream-json", "--verbose", "--safe-mode",

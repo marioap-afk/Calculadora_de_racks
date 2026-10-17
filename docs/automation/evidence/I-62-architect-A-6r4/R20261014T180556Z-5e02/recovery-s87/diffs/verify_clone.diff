@@ -1,0 +1,41 @@
+--- kit fijado a §86 (cf71191e)/verify_clone.py
++++ kit/verify_clone.py (decisiones §87)
+@@ -6,3 +6,3 @@
+ ignorados); ningún objeto fuera de la historia de HEAD y ninguna etiqueta fuera de ella; los blobs designados (los de CanonicalInputs del cierre y
+-el del registro de caracterización que fija la compuerta); la historia del objeto (e62f27b8 en el padre de la publicación; el blob de la ronda 4
++el del registro de caracterización de 2.1.293 que conserva el clon); la historia del objeto (e62f27b8 en el padre de la publicación; el blob de la ronda 4
+ en la publicación, en la custodia de las guardas y en el commit del clon; a6r4-guards.py, a6r4-selftest.json, a6r4-sources-for-reviewer.json y
+@@ -13,3 +13,4 @@
+ e62f27b8; cada archivo idéntico a la copia del kit y a RunFileHashes del cierre; prompt.md sin salto de línea final ni CR y en UTF-8); el registro
+-de caracterización (su SHA-256 en el clon = el de transport-gate.json); que no exista ningún directorio de proyecto de claude-cli para el clon o el
++de caracterización que fija la compuerta (decisiones §87: copia en kit/, fuera del clon; su SHA-256 = el fijado = el de
++transport-gate.json, y su blob = el del registro en el commit 1c960c0a de la rama, leído del worktree con git de solo lectura); que no exista ningún directorio de proyecto de claude-cli para el clon o el
+ run (patrón D--r62-arch-a6r4*) ni una transcripción con el session id fijado; y una preflight de las guardas de la ronda 4 (evidencia del invocador:
+@@ -135,4 +136,13 @@
+ char_path = gate["Characterization"]["Path"]
+-char_in_clone = os.path.normcase(os.path.abspath(char_path)).startswith(os.path.normcase(CLONE) + os.sep)
+-char_sha = sha(open(char_path, "rb").read())
++# decisiones §87 (opción A del Coordinator): el registro de caracterización de 2.1.299 no está en el clon (088b3227); la compuerta fija una copia en
++# kit/, extraída con `git cat-file blob` del commit de la caracterización: su SHA-256 = el fijado y su blob = el del registro en ese commit.
++CHAR_COMMIT = "1c960c0a2bcf07b4a074db78179489ae4a9e4822"
++CHAR_REPO_PATH = "docs/automation/evidence/I-62-claude-cli/R20261016T185242Z-char/claude-cli-characterization.json"
++CHAR_SHA, CHAR_BLOB = "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c", "19b8a27e0de4c92749147a15c7cea5012289040b"
++char_bytes = open(char_path, "rb").read()
++char_sha = sha(char_bytes)
++char_blob_at_commit = subprocess.run(["git", "-C", WORKTREE, "rev-parse", CHAR_COMMIT + ":" + CHAR_REPO_PATH], capture_output=True, text=True,
++                                     env=dict(os.environ, GIT_OPTIONAL_LOCKS="0")).stdout.strip()
++char_in_kit = os.path.normcase(os.path.abspath(char_path)) == os.path.normcase(os.path.join(KIT, "claude-cli-characterization.json"))
++char_external_ok = char_in_kit and char_sha == CHAR_SHA and git_blob(char_bytes) == CHAR_BLOB and char_blob_at_commit == CHAR_BLOB
+ projects = os.path.join(os.path.expanduser("~"), ".claude", "projects")
+@@ -167,3 +177,5 @@
+     "Run": {"Dir": RUN, "Files": run_listing, "Records": run},
+-    "TransportCharacterization": {"Path": char_path, "InClone": char_in_clone, "Sha256": char_sha,
++    "TransportCharacterization": {"Path": char_path, "InKit": char_in_kit, "Sha256": char_sha, "PinnedSha256": CHAR_SHA,
++                                  "Blob": git_blob(char_bytes), "PinnedBlob": CHAR_BLOB, "Commit": CHAR_COMMIT, "RepoPath": CHAR_REPO_PATH,
++                                  "BlobAtCommit": char_blob_at_commit, "ExternalCopyOk": char_external_ok,
+                                   "MatchesGate": char_sha == gate["Characterization"]["Sha256"], "GateStatus": gate.get("Status")},
+@@ -228,3 +240,3 @@
+                     not run["prompt.md"]["FinalNewline"] and run["prompt.md"]["CarriageReturns"] == 0 and
+-                    char_in_clone and doc["TransportCharacterization"]["MatchesGate"] and gate.get("Status") in ("MEASURED", "ACCEPTED") and
++                    char_external_ok and doc["TransportCharacterization"]["MatchesGate"] and gate.get("Status") in ("MEASURED", "ACCEPTED") and
+                     not project_dirs and doc["PriorTranscriptsForSessionId"]["Found"] == 0 and

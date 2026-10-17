@@ -1,0 +1,34 @@
+{
+ "Test": "verify_clone negativa: copia alterada (1 byte) del registro externo",
+ "Seconds": 179.5,
+ "ExitCode": 1,
+ "Stdout": "{\"AllChecks\": false, \"Head\": \"088b3227a22ef6ab28b7ba43d5aa90de68d5b08f\", \"Files\": 4467, \"Reparse\": 0, \"Run\": [\"a6-r3.md\", \"order.txt\", \"prompt.md\"], \"GuardsRun\": {\"ExitCode\": 0, \"Result\": \"PASS\", \"WholeEqualsCustodied\": true, \"DifferingTopLevelKeys\": []}, \"GuardsSelfTest\": {\"ExitCode\": 0, \"Result\": \"PASS\", \"Mutants\": 815, \"MutantsKilled\": 815, \"WholeEqualsCustodied\": true, \"DifferingTopLevelKeys\": []}}",
+ "StderrTail": "",
+ "TransportCharacterization": {
+  "Path": "D:\\r62-a6r4\\kit-a6r4-review\\prep\\s87\\neg-verify\\kit\\claude-cli-characterization.json",
+  "InKit": true,
+  "Sha256": "82f96f5525266aaf2341195b3597303b019ae335d4eb4bf4a74504ebf0368f9d",
+  "PinnedSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+  "Blob": "6f124c88f701a8a0f4529a72b329621de659973b",
+  "PinnedBlob": "19b8a27e0de4c92749147a15c7cea5012289040b",
+  "Commit": "1c960c0a2bcf07b4a074db78179489ae4a9e4822",
+  "RepoPath": "docs/automation/evidence/I-62-claude-cli/R20261016T185242Z-char/claude-cli-characterization.json",
+  "BlobAtCommit": "19b8a27e0de4c92749147a15c7cea5012289040b",
+  "ExternalCopyOk": false,
+  "MatchesGate": true,
+  "GateStatus": "MEASURED"
+ },
+ "Checks": {
+  "ExitCode1": true,
+  "AllChecksFalse": true,
+  "ExternalCopyOkFalse": true,
+  "InKitTrue": true,
+  "MatchesGateTrue": true,
+  "Sha256DiffersFromPinned": true,
+  "BlobDiffersFromPinned": true,
+  "BlobAtCommitIsPinned": true,
+  "GuardsStillPass": true,
+  "RealKitUnchanged": true
+ },
+ "Result": "PASS"
+}

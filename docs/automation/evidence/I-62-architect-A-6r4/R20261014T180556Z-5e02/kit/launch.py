@@ -16,8 +16,8 @@ Antes de lanzar comprueba, y se NIEGA a lanzar (código 2, sin escribir nada) si
   2. transporte del cierre = constantes de este script (flags, --add-dir, session id, cwd, binario, tope, orden congelada) y ArgsTemplate del
      cierre = la plantilla; el cierre designa el blob de la ronda 4 de kit-params.json (distinto de los de las rondas 1, 2 y 3) y lleva el RunId del
      kit;
-  3. binario elegible: existe en %APPDATA%, ruta resuelta = la del cierre, SHA-256 = 8693c4a0…, firma Authenticode válida de «Anthropic, PBC»;
-  4. versión: `claude.exe --version` = «2.1.293 (Claude Code)», con la salida capturada en bytes y decodificada como UTF-8 estricto
+  3. binario elegible: existe en %APPDATA%, ruta resuelta = la del cierre, SHA-256 = 295b49ec…, firma Authenticode válida de «Anthropic, PBC»;
+  4. versión: `claude.exe --version` = «2.1.299 (Claude Code)», con la salida capturada en bytes y decodificada como UTF-8 estricto
      (transport_gate.decode_cli_output);
   5. autenticación: `claude.exe auth status --json` con loggedIn = true (salida en bytes, UTF-8 estricto; solo se conservan loggedIn, authMethod y
      apiProvider; ni correo ni organización; ninguna credencial se lee);
@@ -162,10 +162,10 @@ assert PARAMS.get("Provisional") is False and PARAMS.get("Clone") == CLONE and P
 REV = PARAMS["CloneCommit"]   # commit del clon (A-6 ronda 4 publicada, el resultado `run` de sus guardas custodiado y decisiones §85)
 WORKTREE = os.path.join(os.environ.get("USERPROFILE", ""), ".codex", "worktrees", "architecture-portabilidad-coordinador-principal")   # solo lectura (11)
 SESSION_ID = "4cfdcf7d-0aa5-4a96-98ac-0c0a4832ec5b"   # uuid4 del único lanzamiento (generado una vez; prep/ids.txt)
-BIN_DISPLAY = r"%APPDATA%\Claude\claude-code\2.1.293\83cb0bd7fed4\claude.exe"
-BIN = os.path.join(os.environ.get("APPDATA", ""), "Claude", "claude-code", "2.1.293", "83cb0bd7fed4", "claude.exe")
-BIN_SHA = "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa"
-VERSION = "2.1.293 (Claude Code)"
+BIN_DISPLAY = r"%APPDATA%\Claude\claude-code\2.1.299\f0584be0fbaf\claude.exe"
+BIN = os.path.join(os.environ.get("APPDATA", ""), "Claude", "claude-code", "2.1.299", "f0584be0fbaf", "claude.exe")
+BIN_SHA = "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b"
+VERSION = "2.1.299 (Claude Code)"
 FLAGS = ["-p", "--model", "claude-opus-5-5", "--effort", "xhigh", "--output-format", "stream-json", "--verbose", "--safe-mode",
          "--strict-mcp-config", "--no-chrome", "--tools", "Read,Grep,Glob", "--permission-mode", "dontAsk", "--permission-prompts", "none"]
 ADD_DIR = ["--add-dir", RUN]   # D-01: solo se lanza si transport-gate.json ata la medición C3 o la aceptación registrada

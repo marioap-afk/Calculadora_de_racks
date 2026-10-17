@@ -1,0 +1,15 @@
+--- /d/r62-a6r4/pin86/owner_gate.pending.py	2026-10-16 08:27:34.285309800 -0600
++++ kit/owner_gate.py	2026-10-16 13:16:27.986018000 -0600
+@@ -50,9 +50,9 @@
+ CLAUDE_LINE_PREFIX = "CLAUDE-CLI-I62 ="
+ SECTION_78 = "## 78. "
+ BASE_SECTION = 85                                                # decisiones §85: última sección en el commit del clon (prepara el kit)
+-AUTH_SECTION = None   # número de la disposición del Coordinator posterior a §85 que autoriza el lanzamiento: PENDIENTE (pin_authorization.py)
+-AUTH_HEADING = None   # su encabezado, byte a byte: PENDIENTE
+-AUTH_TEXT_SHA = None  # SHA-256 de su texto: PENDIENTE (con las tres fijadas, volver a congelar el kit: make_manifest.py)
++AUTH_SECTION = 87   # decisiones §87: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)
++AUTH_HEADING = "## 87. Disposición del Coordinator: claude-cli 2.1.299, recuperación del transporte (2026-10-16 UTC)"
++AUTH_TEXT_SHA = "0eb44fac5b69404947d1065f03d4fe758607197a4d3d54f22f013c19eed5503a"   # SHA-256 del texto de §87 (pin_authorization.py)
+ PENDING_REASON = ("authorization pending: a Coordinator disposition after §85 must be pinned (section number, heading, text SHA-256) and the kit "
+                   "re-frozen")
+ NUMBERED_RX = re.compile(r"^## ([0-9]+)\. ")

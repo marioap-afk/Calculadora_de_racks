@@ -1,0 +1,672 @@
+{
+ "Schema": "rackcad-incremental-validation-matrix (decisiones §88, punto 3)",
+ "Kit": "R20261014T180556Z-5e02",
+ "Authority": "decisiones §87 (opción A) y §88",
+ "Baseline": "kit fijado a §86, kit-manifest.json cf71191e4eda620573f935f7d3a08c69423370dcd27407a937823578ff9ec9b9 (copia verificada: prep/s87/pinned-kit/)",
+ "NewManifestSha256": "70d68119e8e1f0a54cad030ba46fd120bf5e609d9b798a08aa3fcf63d42be79f",
+ "Summary": {
+  "Files": 30,
+  "Changed": 12,
+  "Unchanged": 18,
+  "ControlsReRun": 55,
+  "ControlsReused": 7
+ },
+ "Timings": [
+  {
+   "Step": "Sustituciones exactas y fijación (prep/s87/adapt_transport_s87.py)",
+   "WallClock": "segundos (no cronometrado)"
+  },
+  {
+   "Step": "make_closure: identity_checks + closure.json",
+   "WallClock": "62,5 s"
+  },
+  {
+   "Step": "make_closure --render-prompt (comprobación de identidad del prompt)",
+   "WallClock": "62,1 s"
+  },
+  {
+   "Step": "transport_gate.py init + set MEASURED; check",
+   "WallClock": "~1 s; 0,17 s"
+  },
+  {
+   "Step": "verify_clone positiva",
+   "WallClock": "6 min 47 s (19:20:18Z, con carga) y 2 min 42 s (00:02:01Z)"
+  },
+  {
+   "Step": "verify_clone negativa",
+   "WallClock": "179,5 s"
+  },
+  {
+   "Step": "autoprueba COMPLETA (antes de §88; cubre G00-G58, O00-O30, L00, X01-X04 y los casos de auditoría)",
+   "WallClock": "74 min 01 s (19:27:32Z-20:41:33Z)"
+  },
+  {
+   "Step": "mutación completa, detenida por §88 en 152/191",
+   "WallClock": "3 h 15 min 16 s (20:41:33Z-23:56:49Z); resultado no usado salvo como evidencia adicional"
+  },
+  {
+   "Step": "make_manifest",
+   "WallClock": "0,2 s"
+  },
+  {
+   "Step": "launch.py --record-probe",
+   "WallClock": "1,4 s"
+  },
+  {
+   "Step": "launch.py --dry-run",
+   "WallClock": "19,7 s"
+  }
+ ],
+ "Rows": [
+  {
+   "File": "kit/a6-r3.md",
+   "OldSha256": "51b285371fb0a4ecfe0751ffd6061fb5981384e262c881d4b639843ac4986b9d",
+   "NewSha256": "51b285371fb0a4ecfe0751ffd6061fb5981384e262c881d4b639843ac4986b9d",
+   "Changed": false,
+   "Role": "premisa del run (blob e62f27b8)",
+   "DependsOn": "blob e62f27b8 del worktree; copia del run",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    },
+    {
+     "Control": "verify_clone: blob Git y copia del run",
+     "Status": "RE-RUN",
+     "Detail": "verify_clone positiva: AllChecks true (19:20:18Z-19:27:05Z en 1c960c0a y 00:02:01Z-00:04:43Z en e83676bb); guardas run y self-test iguales enteras a las custodiadas (815/815)"
+    },
+    {
+     "Control": "launch 7-RunFiles",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --dry-run (00:10:06Z, 19,7 s): 1-3 y 6-10 Ok; 4 y 5 no se ejecutan en seco; BlockingChecks = [\"11-OwnerAndAuthorizationGate\"] solo por §88 (esperado, §88 punto 5)"
+    }
+   ]
+  },
+  {
+   "File": "kit/c3_analysis.py",
+   "OldSha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+   "NewSha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+   "Changed": false,
+   "Role": "analizador C3 (solo lo usa la autoprueba)",
+   "DependsOn": "ninguna del transporte",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    },
+    {
+     "Control": "casos G00-G58",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88): 61/61"
+    }
+   ]
+  },
+  {
+   "File": "kit/claude-cli-characterization.json",
+   "OldSha256": null,
+   "NewSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+   "Changed": true,
+   "Role": "NUEVO: copia del registro de caracterización de 2.1.299 (decisiones §87), fuera del clon",
+   "DependsOn": "blob 19b8a27e en 1c960c0a:docs/automation/evidence/I-62-claude-cli/R20261016T185242Z-char/; SHA-256 fijado en verify_clone.py y en transport-gate.json",
+   "Controls": [
+    {
+     "Control": "SHA-256 y blob = los del commit (worktree, solo lectura)",
+     "Status": "RE-RUN",
+     "Detail": "verify_clone positiva: AllChecks true (19:20:18Z-19:27:05Z en 1c960c0a y 00:02:01Z-00:04:43Z en e83676bb); guardas run y self-test iguales enteras a las custodiadas (815/815)"
+    },
+    {
+     "Control": "negativo: copia alterada",
+     "Status": "RE-RUN",
+     "Detail": "verify_clone negativa (prep/s87/neg-verify-result.json): copia del registro con 1 byte alterado → código 1, AllChecks false, ExternalCopyOk false, MatchesGate true; kit real sin cambio; 179,5 s"
+    },
+    {
+     "Control": "transport_gate.py check",
+     "Status": "RE-RUN",
+     "Detail": "Status MEASURED, Problems [] (0,17 s)"
+    },
+    {
+     "Control": "launch 10-TransportGate",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --dry-run (00:10:06Z, 19,7 s): 1-3 y 6-10 Ok; 4 y 5 no se ejecutan en seco; BlockingChecks = [\"11-OwnerAndAuthorizationGate\"] solo por §88 (esperado, §88 punto 5)"
+    }
+   ]
+  },
+  {
+   "File": "kit/clone-verification.json",
+   "OldSha256": "16d9290c68fc704797d8798e1d8d83bba4e2bc5163f664e42232a5f26fb415b2",
+   "NewSha256": "82926e1500b8b69f19e4b90b3de5c08f639256a518cdf5deb7a9165ade879ba3",
+   "Changed": true,
+   "Role": "salida de verify_clone.py",
+   "DependsOn": "verify_clone.py, closure.json, transport-gate.json, el registro, el clon, el run y el worktree",
+   "Controls": [
+    {
+     "Control": "regenerado",
+     "Status": "RE-RUN",
+     "Detail": "verify_clone positiva: AllChecks true (19:20:18Z-19:27:05Z en 1c960c0a y 00:02:01Z-00:04:43Z en e83676bb); guardas run y self-test iguales enteras a las custodiadas (815/815)"
+    }
+   ]
+  },
+  {
+   "File": "kit/closure.json",
+   "OldSha256": "8c70a195fd0b1b7e34f3b9095b3669df34b84a173c3e117fedccd117acdefc42",
+   "NewSha256": "694288d489188d44a3991da7eb914bb56ec477bbb745160df22aabcd8476b3e2",
+   "Changed": true,
+   "Role": "cierre; cambia SOLO Transport (Binary, AddDirStatus, ExpectedInit.claude_code_version, Characterization) y DeclaredRuntimeContext[0] (versión)",
+   "DependsOn": "make_closure.py, clon 088b3227, kit-params.json",
+   "Controls": [
+    {
+     "Control": "identity_checks de make_closure",
+     "Status": "RE-RUN",
+     "Detail": "código 0 (62,5 s); resumen idéntico al de la congelación (337 archivos, 6 973 215 bytes, 129 476 líneas)"
+    },
+    {
+     "Control": "diff estructural frente a cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "claves de primer nivel distintas: Transport y DeclaredRuntimeContext; CanonicalInputs idénticos (decisiones 4e090ed4 con 45 rangos y evidencia fafd4392 con 60, sin cambio); 7 líneas (prep/diffs/s87/closure.json.diff)"
+    },
+    {
+     "Control": "launch 2-ClosureTransport",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --dry-run (00:10:06Z, 19,7 s): 1-3 y 6-10 Ok; 4 y 5 no se ejecutan en seco; BlockingChecks = [\"11-OwnerAndAuthorizationGate\"] solo por §88 (esperado, §88 punto 5)"
+    },
+    {
+     "Control": "casos de auditoría del transporte",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88): 195/195"
+    }
+   ]
+  },
+  {
+   "File": "kit/finish_kit.py",
+   "OldSha256": "74928bb9d4390499179305f6ee2257b3dd38cfda0a8110cce26a65bf9b5902b1",
+   "NewSha256": "74928bb9d4390499179305f6ee2257b3dd38cfda0a8110cce26a65bf9b5902b1",
+   "Changed": false,
+   "Role": "procedimiento de la congelación original (no se ejecuta en la recuperación)",
+   "DependsOn": "ninguna en el lanzamiento",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual (su paso 5 sigue describiendo el registro 20d0de2c del clon: texto histórico, no un control)"
+    }
+   ]
+  },
+  {
+   "File": "kit/kit-params.json",
+   "OldSha256": "c8d805f6d934cc0b8d18c7f7941382a1da387a91f5094e94ac97f9e983b92aa5",
+   "NewSha256": "c8d805f6d934cc0b8d18c7f7941382a1da387a91f5094e94ac97f9e983b92aa5",
+   "Changed": false,
+   "Role": "parámetros del clon",
+   "DependsOn": "commit del clon 088b3227 (sin cambio)",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    },
+    {
+     "Control": "verify_clone y launch 6-Clone",
+     "Status": "RE-RUN",
+     "Detail": "verify_clone positiva: AllChecks true (19:20:18Z-19:27:05Z en 1c960c0a y 00:02:01Z-00:04:43Z en e83676bb); guardas run y self-test iguales enteras a las custodiadas (815/815)"
+    }
+   ]
+  },
+  {
+   "File": "kit/launch.py",
+   "OldSha256": "2802716c22483aebfb7c666b65d0ecd66c50e77de82117278a17b1e5605d00a2",
+   "NewSha256": "0ada02349afde4ffb8bb98f0eeca879190963d86dbc426c4bb94ee483e52a94c",
+   "Changed": true,
+   "Role": "lanzador; cambian SOLO las constantes del binario (BIN_DISPLAY, BIN, BIN_SHA, VERSION) y dos menciones de su docstring",
+   "DependsOn": "closure.Transport.Binary; binario 2.1.299",
+   "Controls": [
+    {
+     "Control": "X01-X04 (coherencia lanzador-auditor)",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88): 4/4"
+    },
+    {
+     "Control": "sonda de registro",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --record-probe (00:10:05Z, 1,4 s): código 0, RecordProbe.Ok y FrozenCommandGuard.Ok"
+    },
+    {
+     "Control": "launch 2-ClosureTransport y 3-Binary (SHA-256 295b49ec, Authenticode Valid, Anthropic)",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --dry-run (00:10:06Z, 19,7 s): 1-3 y 6-10 Ok; 4 y 5 no se ejecutan en seco; BlockingChecks = [\"11-OwnerAndAuthorizationGate\"] solo por §88 (esperado, §88 punto 5)"
+    },
+    {
+     "Control": "mutación",
+     "Status": "REUSED",
+     "Detail": "sin reglas de auditoría en launch.py; la lógica no cambia (prep/diffs/s87/launch.diff: 6 líneas de constantes/docstring)"
+    }
+   ]
+  },
+  {
+   "File": "kit/make_closure.py",
+   "OldSha256": "74c88d269de6fb0d1a8785c4eb9e71f5d16a7472b86a2db60ee3080f973e5ced",
+   "NewSha256": "1c9b52bf01ab2869bedf0f93983a3cf6ba46b50dd738f306fea719a39115ec6b",
+   "Changed": true,
+   "Role": "generador del cierre; cambia SOLO el bloque de transporte y la versión de DeclaredRuntimeContext",
+   "DependsOn": "clon, kit-params.json",
+   "Controls": [
+    {
+     "Control": "identity_checks y cierre",
+     "Status": "RE-RUN",
+     "Detail": "código 0, 62,5 s"
+    },
+    {
+     "Control": "renderizado del prompt",
+     "Status": "RE-RUN",
+     "Detail": "--render-prompt (62,1 s): prompt.md byte a byte igual (a8dc5773)"
+    }
+   ]
+  },
+  {
+   "File": "kit/make_manifest.py",
+   "OldSha256": "f160f9119ab57f6ca0fca672945b30a7245622ab92fcb14005a6237da323ddd8",
+   "NewSha256": "f160f9119ab57f6ca0fca672945b30a7245622ab92fcb14005a6237da323ddd8",
+   "Changed": false,
+   "Role": "congelación",
+   "DependsOn": "archivos de kit/ y del run",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    },
+    {
+     "Control": "congelación",
+     "Status": "RE-RUN",
+     "Detail": "kit-manifest.json 70d68119 (0,2 s)"
+    }
+   ]
+  },
+  {
+   "File": "kit/mutation-post-review.py",
+   "OldSha256": "4eaa1c8e33d0c706b3965b62e3fe544981f1e8fcd15352564d2613254a1a1305",
+   "NewSha256": "4eaa1c8e33d0c706b3965b62e3fe544981f1e8fcd15352564d2613254a1a1305",
+   "Changed": false,
+   "Role": "arnés de mutación",
+   "DependsOn": "selftest-post-review.py",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    }
+   ]
+  },
+  {
+   "File": "kit/mutation-result.json",
+   "OldSha256": "424c983eb68eaaa7052c491feafe98e5045df0d93a0fcc752dcab4cae926cf73",
+   "NewSha256": "424c983eb68eaaa7052c491feafe98e5045df0d93a0fcc752dcab4cae926cf73",
+   "Changed": false,
+   "Role": "resultado histórico de mutación",
+   "DependsOn": "post-review.py, transport_gate.py, owner_gate.py (sitios de regla)",
+   "Controls": [
+    {
+     "Control": "mutación de post-review.py",
+     "Status": "REUSED",
+     "Detail": "mutation-result.json 424c983e (191/191: post-review.py 133/133 sobre 4f46caa6, transport_gate.py 40/40 sobre e326b5b9, owner_gate.py 18/18 sobre d442608a; 2026-10-15); 4f46caa6 → 6c51758a difiere en UNA línea de docstring (prep/diffs/s87/post-review.diff): sitios de regla idénticos. Además mutación parcial sobre el código actual, detenida por §88 (prep/s87/phase/mutation.raw, 20:41:33Z-23:56:49Z): post-review.py 133/133 muertos y transport_gate.py 19/40 muertos, 0 supervivientes; no escribió mutation-result.json"
+    },
+    {
+     "Control": "mutación de transport_gate.py",
+     "Status": "REUSED",
+     "Detail": "transport_gate.py idéntico (e326b5b9): 40/40 de mutation-result.json 424c983e (191/191: post-review.py 133/133 sobre 4f46caa6, transport_gate.py 40/40 sobre e326b5b9, owner_gate.py 18/18 sobre d442608a; 2026-10-15)"
+    },
+    {
+     "Control": "mutación de owner_gate.py",
+     "Status": "REUSED",
+     "Detail": "d442608a → d90aa1b0 difiere SOLO en las tres constantes AUTH_* (prep/diffs/s87/owner_gate.vs-mutated-d442608a.diff); los sitios probs.append y la lógica son idénticos y los casos que matan cada sitio fijan su autorización explícitamente: 18/18 de mutation-result.json 424c983e (191/191: post-review.py 133/133 sobre 4f46caa6, transport_gate.py 40/40 sobre e326b5b9, owner_gate.py 18/18 sobre d442608a; 2026-10-15)"
+    }
+   ]
+  },
+  {
+   "File": "kit/order.txt",
+   "OldSha256": "d74e2aa1ce5eacc7dd6323cf3f3acec37fd6eb25f905ca4f2479dbca0cde5232",
+   "NewSha256": "d74e2aa1ce5eacc7dd6323cf3f3acec37fd6eb25f905ca4f2479dbca0cde5232",
+   "Changed": false,
+   "Role": "orden vigente (§85)",
+   "DependsOn": "decisiones §85 del clon",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    },
+    {
+     "Control": "verify_clone MatchesDecisions",
+     "Status": "RE-RUN",
+     "Detail": "verify_clone positiva: AllChecks true (19:20:18Z-19:27:05Z en 1c960c0a y 00:02:01Z-00:04:43Z en e83676bb); guardas run y self-test iguales enteras a las custodiadas (815/815)"
+    }
+   ]
+  },
+  {
+   "File": "kit/owner_gate.py",
+   "OldSha256": "b8efee09df1f700fc72e274edd005340322addd58967cc34534c75d2b2231ac0",
+   "NewSha256": "d90aa1b05d9a7323824f81a23293490c1e9bae3d1ce7d5ccb1742e460c8f1b8d",
+   "Changed": true,
+   "Role": "compuerta 11; cambian SOLO AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA (§86 → §87)",
+   "DependsOn": "decisiones de la HEAD del worktree; closure.ObjectBlob",
+   "Controls": [
+    {
+     "Control": "pin_authorization.py n = 87",
+     "Status": "RE-RUN",
+     "Detail": "Ready, línea 1717, blob como token, sin secciones posteriores en 1c960c0a (prep/s87/pin87.json)"
+    },
+    {
+     "Control": "casos O00-O30 y L00",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88): 37/37; L00 PINNED Ok en 1c960c0a"
+    },
+    {
+     "Control": "launch 11 en la HEAD e83676bb",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --dry-run (00:10:06Z, 19,7 s): 1-3 y 6-10 Ok; 4 y 5 no se ejecutan en seco; BlockingChecks = [\"11-OwnerAndAuthorizationGate\"] solo por §88 (esperado, §88 punto 5); la sección §87 fijada coincide (encabezado, blob, SHA-256 del texto)"
+    },
+    {
+     "Control": "mutación",
+     "Status": "REUSED",
+     "Detail": "ver mutation-result.json (diff solo de las tres constantes)"
+    }
+   ]
+  },
+  {
+   "File": "kit/pin_authorization.py",
+   "OldSha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+   "NewSha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+   "Changed": false,
+   "Role": "cálculo de la fijación",
+   "DependsOn": "ninguna",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    },
+    {
+     "Control": "O30",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88)"
+    }
+   ]
+  },
+  {
+   "File": "kit/post-review.py",
+   "OldSha256": "4f46caa66c5fcd299000e2d2f0c42ebf3a13c4c9fd027f0a57b314c2a8fc485f",
+   "NewSha256": "6c51758aaa9bc981f5f733e9fa9946d5402f8a9dbcbc543e580bdd1bab4b68cc",
+   "Changed": true,
+   "Role": "auditor v5.4-a6r4; cambia SOLO una línea de docstring (versión)",
+   "DependsOn": "closure.json, owner_gate.py, transport_gate.py, result.schema.json",
+   "Controls": [
+    {
+     "Control": "casos de auditoría",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88): 195/195"
+    },
+    {
+     "Control": "mutación",
+     "Status": "REUSED",
+     "Detail": "ver mutation-result.json; y mutación parcial sobre el código actual, detenida por §88 (prep/s87/phase/mutation.raw, 20:41:33Z-23:56:49Z): post-review.py 133/133 muertos y transport_gate.py 19/40 muertos, 0 supervivientes; no escribió mutation-result.json"
+    }
+   ]
+  },
+  {
+   "File": "kit/prepare_clone.py",
+   "OldSha256": "0d23faf2f468e92cda65f634b610c7cc5a5c8b6edb0d19162fbcd603cc30cf0e",
+   "NewSha256": "0d23faf2f468e92cda65f634b610c7cc5a5c8b6edb0d19162fbcd603cc30cf0e",
+   "Changed": false,
+   "Role": "preparación del clon (no se ejecuta: el clon sigue en 088b3227)",
+   "DependsOn": "ninguna",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    }
+   ]
+  },
+  {
+   "File": "kit/prompt.md",
+   "OldSha256": "a8dc5773499ae56cf06718f4aed1cf46723eb66e6f1511166f6bd5e3e33ed0b9",
+   "NewSha256": "a8dc5773499ae56cf06718f4aed1cf46723eb66e6f1511166f6bd5e3e33ed0b9",
+   "Changed": false,
+   "Role": "prompt de la revisión",
+   "DependsOn": "plantilla, cierre (sin identificadores del transporte)",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    },
+    {
+     "Control": "re-renderizado",
+     "Status": "RE-RUN",
+     "Detail": "byte a byte igual"
+    },
+    {
+     "Control": "copia del run idéntica",
+     "Status": "RE-RUN",
+     "Detail": "verify_clone positiva: AllChecks true (19:20:18Z-19:27:05Z en 1c960c0a y 00:02:01Z-00:04:43Z en e83676bb); guardas run y self-test iguales enteras a las custodiadas (815/815)"
+    }
+   ]
+  },
+  {
+   "File": "kit/prompt.template.md",
+   "OldSha256": "da40d1050c865e7032afc2a3502df32b4e80f0bb345d61ceb1cfb9605544a931",
+   "NewSha256": "da40d1050c865e7032afc2a3502df32b4e80f0bb345d61ceb1cfb9605544a931",
+   "Changed": false,
+   "Role": "plantilla",
+   "DependsOn": "ninguna",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    }
+   ]
+  },
+  {
+   "File": "kit/read_fidelity.py",
+   "OldSha256": "7b51116e5e4876c1416066994e282ad077661547ee5fb1dcb0fbcbd59e413cce",
+   "NewSha256": "7b51116e5e4876c1416066994e282ad077661547ee5fb1dcb0fbcbd59e413cce",
+   "Changed": false,
+   "Role": "fidelidad de lectura (auditor)",
+   "DependsOn": "ninguna del transporte",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    },
+    {
+     "Control": "casos de auditoría",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88)"
+    }
+   ]
+  },
+  {
+   "File": "kit/result.schema.json",
+   "OldSha256": "f3dad55b008af984fb1ca6e57f32a311fd53d42d897fba1162bd8849f5a754ed",
+   "NewSha256": "f3dad55b008af984fb1ca6e57f32a311fd53d42d897fba1162bd8849f5a754ed",
+   "Changed": false,
+   "Role": "contrato de salida",
+   "DependsOn": "ninguna del transporte",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    },
+    {
+     "Control": "casos de esquema",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88)"
+    }
+   ]
+  },
+  {
+   "File": "kit/selftest-post-review.py",
+   "OldSha256": "a86eeac7fb857ec8066563e6284a8c2c572450cf8b1923b41c6e25944aab9529",
+   "NewSha256": "3ae15c6364f23290b66c52ebe2fd2a5a83243c5f1cc0081d968388f857fbab8e",
+   "Changed": true,
+   "Role": "autoprueba; cambian SOLO las versiones de los fixtures (2.1.293 → 2.1.299)",
+   "DependsOn": "closure.Transport (ExpectedInit, versión), owner_gate.py",
+   "Controls": [
+    {
+     "Control": "autoprueba",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88)"
+    }
+   ]
+  },
+  {
+   "File": "kit/selftest-result.json",
+   "OldSha256": "eac70103a87bb89b4cd1be0440ff2e18ace474214d26ac4ce2ca20e6e4172953",
+   "NewSha256": "5ac8c720634d69778e6abbd3b22ca856d37914c6c1bb800ec75d2879edc09125",
+   "Changed": true,
+   "Role": "salida de la autoprueba",
+   "DependsOn": "todos los módulos (Modules en el resultado = los del kit)",
+   "Controls": [
+    {
+     "Control": "regenerado",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88)"
+    }
+   ]
+  },
+  {
+   "File": "kit/transport-gate.json",
+   "OldSha256": "b0bf2d95e50f03dc29ffa2e7f3c8ebf0f1ddf1997144373b1d62ad543f54a4e1",
+   "NewSha256": "790191bdfc445fda9885a5c98dc2546eca9402153dde0fe2e3a5c1bf4fa3ce08",
+   "Changed": true,
+   "Role": "compuerta D-01 (init + set MEASURED sobre la copia del registro)",
+   "DependsOn": "closure.Transport, el registro",
+   "Controls": [
+    {
+     "Control": "transport_gate.py check",
+     "Status": "RE-RUN",
+     "Detail": "MEASURED, Problems []"
+    },
+    {
+     "Control": "casos G00-G58",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88): 61/61"
+    },
+    {
+     "Control": "launch 10-TransportGate",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --dry-run (00:10:06Z, 19,7 s): 1-3 y 6-10 Ok; 4 y 5 no se ejecutan en seco; BlockingChecks = [\"11-OwnerAndAuthorizationGate\"] solo por §88 (esperado, §88 punto 5)"
+    }
+   ]
+  },
+  {
+   "File": "kit/transport_gate.py",
+   "OldSha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+   "NewSha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+   "Changed": false,
+   "Role": "compuerta D-01 (byte a byte la de la ronda 3)",
+   "DependsOn": "ninguna",
+   "Controls": [
+    {
+     "Control": "SHA-256 = manifiesto cf71191e",
+     "Status": "RE-RUN",
+     "Detail": "igual"
+    },
+    {
+     "Control": "casos G00-G58",
+     "Status": "RE-RUN",
+     "Detail": "selftest-result.json 5ac8c720 (autoprueba COMPLETA, 297/297, 2026-10-16T19:27:32Z-20:41:33Z, HEAD del worktree 1c960c0a; terminada antes de §88): 61/61"
+    },
+    {
+     "Control": "mutación",
+     "Status": "REUSED",
+     "Detail": "40/40 de mutation-result.json 424c983e (191/191: post-review.py 133/133 sobre 4f46caa6, transport_gate.py 40/40 sobre e326b5b9, owner_gate.py 18/18 sobre d442608a; 2026-10-15); y mutación parcial sobre el código actual, detenida por §88 (prep/s87/phase/mutation.raw, 20:41:33Z-23:56:49Z): post-review.py 133/133 muertos y transport_gate.py 19/40 muertos, 0 supervivientes; no escribió mutation-result.json"
+    }
+   ]
+  },
+  {
+   "File": "kit/verify_clone.py",
+   "OldSha256": "bc028e3fd13a555087cf8fbf5fec1b43ecff8573ef49a99f75058b1fd2f655d4",
+   "NewSha256": "b8eaee883d15b8a6f8a4b96e8abac6eb896f27467cfd092cfea31f82105daecf",
+   "Changed": true,
+   "Role": "verificación del clon; cambia SOLO la comprobación del registro (copia en kit/ con SHA-256 y blob fijados, en lugar de dentro del clon)",
+   "DependsOn": "el registro, transport-gate.json, el worktree (solo lectura)",
+   "Controls": [
+    {
+     "Control": "positiva",
+     "Status": "RE-RUN",
+     "Detail": "verify_clone positiva: AllChecks true (19:20:18Z-19:27:05Z en 1c960c0a y 00:02:01Z-00:04:43Z en e83676bb); guardas run y self-test iguales enteras a las custodiadas (815/815)"
+    },
+    {
+     "Control": "negativa",
+     "Status": "RE-RUN",
+     "Detail": "verify_clone negativa (prep/s87/neg-verify-result.json): copia del registro con 1 byte alterado → código 1, AllChecks false, ExternalCopyOk false, MatchesGate true; kit real sin cambio; 179,5 s"
+    }
+   ]
+  },
+  {
+   "File": "kit/kit-manifest.json",
+   "OldSha256": "cf71191e4eda620573f935f7d3a08c69423370dcd27407a937823578ff9ec9b9",
+   "NewSha256": "70d68119e8e1f0a54cad030ba46fd120bf5e609d9b798a08aa3fcf63d42be79f",
+   "Changed": true,
+   "Role": "congelación",
+   "DependsOn": "todos los archivos de kit/ y del run",
+   "Controls": [
+    {
+     "Control": "launch 1-KitIntegrity",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --dry-run (00:10:06Z, 19,7 s): 1-3 y 6-10 Ok; 4 y 5 no se ejecutan en seco; BlockingChecks = [\"11-OwnerAndAuthorizationGate\"] solo por §88 (esperado, §88 punto 5)"
+    }
+   ]
+  },
+  {
+   "File": "run/order.txt",
+   "OldSha256": "d74e2aa1ce5eacc7dd6323cf3f3acec37fd6eb25f905ca4f2479dbca0cde5232",
+   "NewSha256": "d74e2aa1ce5eacc7dd6323cf3f3acec37fd6eb25f905ca4f2479dbca0cde5232",
+   "Changed": false,
+   "Role": "archivo del run",
+   "DependsOn": "copia del kit",
+   "Controls": [
+    {
+     "Control": "idéntico a la copia del kit; launch 7-RunFiles",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --dry-run (00:10:06Z, 19,7 s): 1-3 y 6-10 Ok; 4 y 5 no se ejecutan en seco; BlockingChecks = [\"11-OwnerAndAuthorizationGate\"] solo por §88 (esperado, §88 punto 5)"
+    }
+   ]
+  },
+  {
+   "File": "run/prompt.md",
+   "OldSha256": "a8dc5773499ae56cf06718f4aed1cf46723eb66e6f1511166f6bd5e3e33ed0b9",
+   "NewSha256": "a8dc5773499ae56cf06718f4aed1cf46723eb66e6f1511166f6bd5e3e33ed0b9",
+   "Changed": false,
+   "Role": "archivo del run",
+   "DependsOn": "copia del kit",
+   "Controls": [
+    {
+     "Control": "idéntico a la copia del kit; launch 7-RunFiles",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --dry-run (00:10:06Z, 19,7 s): 1-3 y 6-10 Ok; 4 y 5 no se ejecutan en seco; BlockingChecks = [\"11-OwnerAndAuthorizationGate\"] solo por §88 (esperado, §88 punto 5)"
+    }
+   ]
+  },
+  {
+   "File": "run/a6-r3.md",
+   "OldSha256": "51b285371fb0a4ecfe0751ffd6061fb5981384e262c881d4b639843ac4986b9d",
+   "NewSha256": "51b285371fb0a4ecfe0751ffd6061fb5981384e262c881d4b639843ac4986b9d",
+   "Changed": false,
+   "Role": "archivo del run",
+   "DependsOn": "copia del kit",
+   "Controls": [
+    {
+     "Control": "idéntico a la copia del kit; launch 7-RunFiles",
+     "Status": "RE-RUN",
+     "Detail": "launch.py --dry-run (00:10:06Z, 19,7 s): 1-3 y 6-10 Ok; 4 y 5 no se ejecutan en seco; BlockingChecks = [\"11-OwnerAndAuthorizationGate\"] solo por §88 (esperado, §88 punto 5)"
+    }
+   ]
+  }
+ ]
+}

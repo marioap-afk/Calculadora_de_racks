@@ -1858,9 +1858,16 @@
   }
  },
  "TransportCharacterization": {
-  "Path": "D:\\r62-arch-a6r4\\docs\\automation\\evidence\\I-62-claude-cli\\R20261008T183600Z-char\\claude-cli-characterization.json",
-  "InClone": true,
-  "Sha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+  "Path": "D:\\r62-a6r4\\kit-a6r4-review\\kit\\claude-cli-characterization.json",
+  "InKit": true,
+  "Sha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+  "PinnedSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+  "Blob": "19b8a27e0de4c92749147a15c7cea5012289040b",
+  "PinnedBlob": "19b8a27e0de4c92749147a15c7cea5012289040b",
+  "Commit": "1c960c0a2bcf07b4a074db78179489ae4a9e4822",
+  "RepoPath": "docs/automation/evidence/I-62-claude-cli/R20261016T185242Z-char/claude-cli-characterization.json",
+  "BlobAtCommit": "19b8a27e0de4c92749147a15c7cea5012289040b",
+  "ExternalCopyOk": true,
   "MatchesGate": true,
   "GateStatus": "MEASURED"
  },
@@ -1879,7 +1886,7 @@
  },
  "GuardsPreflight": {
   "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal (solo lectura de git)",
-  "WorktreeHeadBefore": "088b3227a22ef6ab28b7ba43d5aa90de68d5b08f",
+  "WorktreeHeadBefore": "e83676bbfa0f987a37d59682b096a934f440119c",
   "WorktreeStatusBefore": "",
   "Run": {
    "Command": "python -I -B -X utf8 docs/automation/evidence/I-62-A6/r4/a6r4-guards.py run --repo <worktree> --base ceb85977 --head d66f7f4b --out <temporal> --tmp <temporal> (script del clon; cwd = el clon; solo lectura de git)",
@@ -1910,7 +1917,7 @@
    "DifferingTopLevelKeys": [],
    "OutputSha256": "4a3cd3e0f984f599fcbd6f6db65671602b57b87725c61faf676ff412fb86005e"
   },
-  "WorktreeHeadAfter": "088b3227a22ef6ab28b7ba43d5aa90de68d5b08f",
+  "WorktreeHeadAfter": "e83676bbfa0f987a37d59682b096a934f440119c",
   "WorktreeStatusAfter": ""
  },
  "StatusAfterPreflight": "",

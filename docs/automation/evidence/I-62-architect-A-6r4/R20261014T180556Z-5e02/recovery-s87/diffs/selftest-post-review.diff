@@ -1,0 +1,44 @@
+--- kit fijado a §86 (cf71191e)/selftest-post-review.py
++++ kit/selftest-post-review.py (decisiones §87)
+@@ -308,3 +308,3 @@
+     def entry(self, typ, **kw):
+-        e = {"type": typ, "isSidechain": False, "sessionId": SID, "cwd": CLONE, "version": "2.1.293", "entrypoint": "sdk-cli"}
++        e = {"type": typ, "isSidechain": False, "sessionId": SID, "cwd": CLONE, "version": "2.1.299", "entrypoint": "sdk-cli"}
+         e.update(kw)
+@@ -336,3 +336,3 @@
+         uid = self.call("StructuredOutput", copy.deepcopy(tx_input), "Structured output provided successfully")
+-        self.tx.insert(len(self.tx) - 1, {"type": "attachment", "isSidechain": False, "sessionId": SID, "cwd": CLONE, "version": "2.1.293",
++        self.tx.insert(len(self.tx) - 1, {"type": "attachment", "isSidechain": False, "sessionId": SID, "cwd": CLONE, "version": "2.1.299",
+                                           "attachment": {"type": "structured_output", "data": copy.deepcopy(tx_input), "toolUseID": uid}})
+@@ -347,3 +347,3 @@
+         init = {"type": "system", "subtype": "init", "cwd": CLONE, "session_id": SID, "tools": ["Glob", "Grep", "Read", "StructuredOutput"],
+-                "mcp_servers": [], "model": MODEL, "permissionMode": "dontAsk", "claude_code_version": "2.1.293", "apiKeySource": "none"}
++                "mcp_servers": [], "model": MODEL, "permissionMode": "dontAsk", "claude_code_version": "2.1.299", "apiKeySource": "none"}
+         patch(init, self.init_patch)
+@@ -1670,3 +1670,3 @@
+                       "Result": "PASS" if not missing and not unexpected and extra_ok else "FAIL"})
+-    v = b"2.1.293 (Claude Code)\n"
++    v = b"2.1.299 (Claude Code)\n"
+     cp850 = "INFORMACIÓN: no hay tareas".encode("cp850")
+@@ -1677,3 +1677,3 @@
+     decode_case("G45-decodificacion-utf8-invalido", b"ab\xc3(cd", ["no es UTF-8 estricto"], hexpart="61 62 c3 28 63 64")
+-    decode_case("G46-decodificacion-utf16-con-bom", "2.1.293 (Claude Code)".encode("utf-16"), ["BOM UTF-16"])
++    decode_case("G46-decodificacion-utf16-con-bom", "2.1.299 (Claude Code)".encode("utf-16"), ["BOM UTF-16"])
+     decode_case("G47-decodificacion-vacia", b"", ["salida del binario vacía"], hexpart="")
+@@ -1681,3 +1681,3 @@
+     decode_case("G48-decodificacion-no-bytes", None, ["no capturada en bytes"])
+-    decode_case("G48b-decodificacion-texto-ya-decodificado", "2.1.293", ["no capturada en bytes"])
++    decode_case("G48b-decodificacion-texto-ya-decodificado", "2.1.299", ["no capturada en bytes"])
+     decode_case("G49-decodificacion-sin-contexto", "org: INFORMACIÓN".encode("cp850"), ["no es UTF-8 estricto"], hexpart="e0", context=0)
+@@ -1727,7 +1727,7 @@
+                           "orgName": "Organización Á"}, ensure_ascii=False)
+-    standin_case("G50-sustituto-version-ascii", b"2.1.293 (Claude Code)\r\n", TG.cli_version, version_check("2.1.293 (Claude Code)"))
+-    standin_case("G51-sustituto-version-cp850", "INFORMACIÓN: 2.1.293".encode("cp850"), TG.cli_version, version_check(None, "no es UTF-8 estricto"))
+-    standin_case("G52-sustituto-version-utf16", "2.1.293 (Claude Code)".encode("utf-16"), TG.cli_version, version_check(None, "BOM UTF-16"))
++    standin_case("G50-sustituto-version-ascii", b"2.1.299 (Claude Code)\r\n", TG.cli_version, version_check("2.1.299 (Claude Code)"))
++    standin_case("G51-sustituto-version-cp850", "INFORMACIÓN: 2.1.299".encode("cp850"), TG.cli_version, version_check(None, "no es UTF-8 estricto"))
++    standin_case("G52-sustituto-version-utf16", "2.1.299 (Claude Code)".encode("utf-16"), TG.cli_version, version_check(None, "BOM UTF-16"))
+     standin_case("G53-sustituto-version-vacia", b"", TG.cli_version, version_check(None, "salida del binario vacía"))
+-    standin_case("G54-sustituto-version-bom-utf8", TG.UTF8_BOM + b"2.1.293 (Claude Code)\n", TG.cli_version, version_check("2.1.293 (Claude Code)", bom=True))
++    standin_case("G54-sustituto-version-bom-utf8", TG.UTF8_BOM + b"2.1.299 (Claude Code)\n", TG.cli_version, version_check("2.1.299 (Claude Code)", bom=True))
+     standin_case("G55-sustituto-auth-utf8-no-ascii", auth_ok.encode("utf-8"), TG.auth_status, auth_check(True))

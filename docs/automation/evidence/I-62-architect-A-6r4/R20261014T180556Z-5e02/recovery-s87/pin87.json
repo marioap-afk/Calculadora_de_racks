@@ -1,0 +1,39 @@
+{
+ "WorktreeHead": "1c960c0a2bcf07b4a074db78179489ae4a9e4822",
+ "DecisionsFile": "prep/s87/decisiones-1c960c0a.txt (git cat-file blob en Git Bash)",
+ "DecisionsBlob": "ed6550c96cd77e1f57dbc967a4d2205efe2afb95",
+ "DecisionsSha256": "7097e6be84958f4591ef92ecda7047a6723956ad21255d6f5d927ca398a7f00b",
+ "ObjectBlob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+ "Number": 87,
+ "Values": {
+  "AUTH_SECTION": 87,
+  "AUTH_HEADING": "## 87. Disposición del Coordinator: claude-cli 2.1.299, recuperación del transporte (2026-10-16 UTC)",
+  "AUTH_TEXT_SHA": "0eb44fac5b69404947d1065f03d4fe758607197a4d3d54f22f013c19eed5503a"
+ },
+ "Checks": {
+  "AfterBaseSection": true,
+  "BaseSection": 85,
+  "SectionsWithThatNumber": 1,
+  "SectionLine": 1717,
+  "HasBlobToken": true,
+  "Blob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+  "RecomputedByGateFunctions": true,
+  "LaterSections": [],
+  "TextLines": 15
+ },
+ "Ready": true,
+ "Before": [
+  "AUTH_SECTION = 86   # decisiones §86: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)",
+  "AUTH_HEADING = \"## 86. Disposición del Coordinator: A-6 ronda 4, revisión formal final acotada del Architect (2026-10-16 UTC)\"",
+  "AUTH_TEXT_SHA = \"f85aa811f237b084e222650d2e7e8e88d665d30e5d5931cab57dcd3107a56b76\"   # SHA-256 del texto de §86 (pin_authorization.py)"
+ ],
+ "After": [
+  "AUTH_SECTION = 87   # decisiones §87: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)",
+  "AUTH_HEADING = \"## 87. Disposición del Coordinator: claude-cli 2.1.299, recuperación del transporte (2026-10-16 UTC)\"",
+  "AUTH_TEXT_SHA = \"0eb44fac5b69404947d1065f03d4fe758607197a4d3d54f22f013c19eed5503a\"   # SHA-256 del texto de §87 (pin_authorization.py)"
+ ],
+ "OwnerGateSha256": {
+  "Before": "b8efee09df1f700fc72e274edd005340322addd58967cc34534c75d2b2231ac0",
+  "After": "d90aa1b05d9a7323824f81a23293490c1e9bae3d1ce7d5ccb1742e460c8f1b8d"
+ }
+}

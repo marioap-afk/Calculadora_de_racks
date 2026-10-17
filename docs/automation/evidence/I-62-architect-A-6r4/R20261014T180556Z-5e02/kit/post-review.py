@@ -40,7 +40,7 @@ Checks (each failure is a reason; ACCREDITED only with 0 reasons):
     (measured resolved path and SHA-256), argument list = closure flags + --add-dir + --session-id + compact schema, cwd = clone, PromptSha256 =
     run/prompt.md, StdoutSha256 = the audited stdout, Transcript.Sha256 = the audited transcript, Outcome/PostRunErrors/fields as in v5.3;
     preflight.json there: the ten checks present and Ok (and gate 11 as above), session id, measured binary = closure (path and SHA-256), version
-    = 2.1.293 (Claude Code), loggedIn = true, gate = kit/transport-gate.json, FrozenCommandGuard, RecordProbe and Environment as in v5.3;
+    = 2.1.299 (Claude Code), loggedIn = true, gate = kit/transport-gate.json, FrozenCommandGuard, RecordProbe and Environment as in v5.3;
   * transport gate (D-01): transport_gate.evaluate(kit/transport-gate.json, closure, launch copies) without problems;
   * stream-json: init (session id, cwd = clone, model, permissionMode, tools = {Glob, Grep, Read, StructuredOutput}, no MCP, version) and a result
     message (success, not is_error, session id, structured_output present, permission_denials empty, modelUsage only the requested model, no

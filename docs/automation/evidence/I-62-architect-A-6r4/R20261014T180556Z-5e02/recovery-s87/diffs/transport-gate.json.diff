@@ -1,0 +1,14 @@
+7,9c7,9
+<   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
+<   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+<   "Version": "2.1.293 (Claude Code)"
+---
+>   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe",
+>   "Sha256": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b",
+>   "Version": "2.1.299 (Claude Code)"
+41,42c41,42
+<   "Path": "D:\\r62-arch-a6r4\\docs\\automation\\evidence\\I-62-claude-cli\\R20261008T183600Z-char\\claude-cli-characterization.json",
+<   "Sha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c"
+---
+>   "Path": "D:\\r62-a6r4\\kit-a6r4-review\\kit\\claude-cli-characterization.json",
+>   "Sha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c"

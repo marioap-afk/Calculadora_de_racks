@@ -4471,3 +4471,25 @@ solo desde artefactos custodiados.
   binario, manifiesto, autorizaciones, comprobación previa de registro, prueba en seco, auditoría) no se reducen.
 - Efecto mecánico de esta sección: la compuerta 11 del kit bloquea si hay una sección de decisiones posterior a la autorización fijada. Esta
   sección sigue a §87 y no lleva el blob de A-6 ni autoriza el lanzamiento, así que `pin_authorization.py` no puede fijarla.
+
+## 176. Kit de A-6 ronda 4 recuperado para claude-cli 2.1.299 con validación incremental; prueba en seco bloqueada solo por §88 (decisiones §87, opción A; §88)
+
+- **Cambios mínimos** (sustituciones exactas frente al kit con §86 fijada, `cf71191e…`; diffs en [`recovery-s87/diffs/`](I-62-architect-A-6r4/R20261014T180556Z-5e02/recovery-s87/)):
+  identidad del binario en `launch.py`, bloque de transporte en `make_closure.py` y `closure.json` (las 337 entradas canónicas, incluidas
+  decisiones y evidencia con sus rangos, idénticas; además la versión en `DeclaredRuntimeContext`), `transport-gate.json` en MEASURED sobre una
+  copia del registro de la caracterización `R20261016T185242Z-char` dentro de `kit/` (SHA-256 `4ba6ba58…`, blob `19b8a27e` en `1c960c0a`),
+  `verify_clone.py` (comprueba esa copia contra el commit), una línea de documentación de `post-review.py`, los datos de prueba de la autoprueba y la
+  fijación de la autorización en §87 con `pin_authorization.py` (solo las tres constantes de `owner_gate.py`). El clon (`088b3227`), el run,
+  `prompt.md` (re-renderizado byte a byte igual), `order.txt`, el esquema, `transport_gate.py` y los demás componentes no cambian. Manifiesto
+  `cf71191e…` → `70d68119e8e1f0a5…` (26 archivos).
+- **Validación incremental** ([`validation-matrix.md`](I-62-architect-A-6r4/R20261014T180556Z-5e02/recovery-s87/validation-matrix.md)): 30 filas
+  (componente → SHA-256 anterior y nuevo → dependencias → controles); mutación reutilizada de `mutation-result.json` (191/191) para los
+  componentes con código de reglas idéntico (`post-review.py` cambia una línea de documentación; `transport_gate.py` idéntico; `owner_gate.py` solo
+  las tres constantes de fijación); vueltos a ejecutar: `verify_clone` (positivo, y un negativo con un byte cambiado en la copia del registro que
+  falla), las comprobaciones de identidad de `make_closure`, la compuerta de transporte (problemas vacíos), la autoprueba (G00-G58 61/61,
+  O00-O30 y L00 37/37 con §87 fijada, X01-X04 4/4, casos de auditoría 195/195), el manifiesto, la comprobación previa de registro (código 0) y la
+  prueba en seco. La autoprueba completa ya había terminado (74 min) cuando llegó §88; la mutación completa se detuvo en 152/191 (todos muertos) y
+  no sustituye a la custodiada.
+- **Prueba en seco:** `BlockingChecks` = [`11-OwnerAndAuthorizationGate`] con el único problema «sección posterior a §87 en decisiones (§88 en la
+  línea 1733)»; dentro de la compuerta, §87 coincide (encabezado, blob y SHA-256 del texto); comprobaciones 1-3 y 6-10 en Ok, con el binario 2.1.299
+  presente (`295b49ec…`). Nada lanzado: según §87, punto 5, el procedimiento exige una disposición posterior que autorice el lanzamiento.

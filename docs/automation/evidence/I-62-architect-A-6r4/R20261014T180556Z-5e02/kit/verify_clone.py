@@ -4,14 +4,15 @@ comprobaciones estáticas de la ronda 4 (guardas a6r4-guards.py). Derivado del v
 
 Comprueba: kit-params.json no provisional; HEAD = CloneCommit, separado (sin ninguna rama local); sin remotos; árbol limpio (también sin
 ignorados); ningún objeto fuera de la historia de HEAD y ninguna etiqueta fuera de ella; los blobs designados (los de CanonicalInputs del cierre y
-el del registro de caracterización que fija la compuerta); la historia del objeto (e62f27b8 en el padre de la publicación; el blob de la ronda 4
+el del registro de caracterización de 2.1.293 que conserva el clon); la historia del objeto (e62f27b8 en el padre de la publicación; el blob de la ronda 4
 en la publicación, en la custodia de las guardas y en el commit del clon; a6r4-guards.py, a6r4-selftest.json, a6r4-sources-for-reviewer.json y
 preflight.md de r4/ sin cambio desde la publicación; el resultado `run` sin cambio desde su custodia); commits presentes (los de las rondas 1, 2 y
 3, las revisiones de las rondas 2 y 3, §84 y §85, el paquete B-min, la base del mapa y la caracterización) y ausentes (los del Freeze y de V14,
 anteriores al rebase); sin enlaces simbólicos ni uniones en el árbol de trabajo ni entradas 120000 en el índice; core.autocrlf; el run
 (exactamente order.txt, prompt.md y a6-r3.md; order.txt con el SHA-256 y los bytes que declara decisiones §85 en el commit; a6-r3.md con el blob
 e62f27b8; cada archivo idéntico a la copia del kit y a RunFileHashes del cierre; prompt.md sin salto de línea final ni CR y en UTF-8); el registro
-de caracterización (su SHA-256 en el clon = el de transport-gate.json); que no exista ningún directorio de proyecto de claude-cli para el clon o el
+de caracterización que fija la compuerta (decisiones §87: copia en kit/, fuera del clon; su SHA-256 = el fijado = el de
+transport-gate.json, y su blob = el del registro en el commit 1c960c0a de la rama, leído del worktree con git de solo lectura); que no exista ningún directorio de proyecto de claude-cli para el clon o el
 run (patrón D--r62-arch-a6r4*) ni una transcripción con el session id fijado; y una preflight de las guardas de la ronda 4 (evidencia del invocador:
 el revisor no la ejecuta), con la salida y los temporales en <kit-a6r4-review>/.tmp/ex1, que se borra. Como en las rondas 2 y 3, la preflight
 ejecuta el a6r4-guards.py del clon con --repo = el worktree de la rama, solo lectura (las guardas leen con GIT_OPTIONAL_LOCKS=0 y
@@ -133,8 +134,17 @@ pb = open(os.path.join(RUN, "prompt.md"), "rb").read()
 pb.decode("utf-8")
 run["prompt.md"].update({"FinalNewline": pb.endswith(b"\n"), "CarriageReturns": pb.count(b"\r"), "Utf8": True})
 char_path = gate["Characterization"]["Path"]
-char_in_clone = os.path.normcase(os.path.abspath(char_path)).startswith(os.path.normcase(CLONE) + os.sep)
-char_sha = sha(open(char_path, "rb").read())
+# decisiones §87 (opción A del Coordinator): el registro de caracterización de 2.1.299 no está en el clon (088b3227); la compuerta fija una copia en
+# kit/, extraída con `git cat-file blob` del commit de la caracterización: su SHA-256 = el fijado y su blob = el del registro en ese commit.
+CHAR_COMMIT = "1c960c0a2bcf07b4a074db78179489ae4a9e4822"
+CHAR_REPO_PATH = "docs/automation/evidence/I-62-claude-cli/R20261016T185242Z-char/claude-cli-characterization.json"
+CHAR_SHA, CHAR_BLOB = "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c", "19b8a27e0de4c92749147a15c7cea5012289040b"
+char_bytes = open(char_path, "rb").read()
+char_sha = sha(char_bytes)
+char_blob_at_commit = subprocess.run(["git", "-C", WORKTREE, "rev-parse", CHAR_COMMIT + ":" + CHAR_REPO_PATH], capture_output=True, text=True,
+                                     env=dict(os.environ, GIT_OPTIONAL_LOCKS="0")).stdout.strip()
+char_in_kit = os.path.normcase(os.path.abspath(char_path)) == os.path.normcase(os.path.join(KIT, "claude-cli-characterization.json"))
+char_external_ok = char_in_kit and char_sha == CHAR_SHA and git_blob(char_bytes) == CHAR_BLOB and char_blob_at_commit == CHAR_BLOB
 projects = os.path.join(os.path.expanduser("~"), ".claude", "projects")
 project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(projects, "D--r62-arch-a6r4*")))
 prior_sessions = glob.glob(os.path.join(projects, "*", SESSION_ID + ".jsonl"))
@@ -165,7 +175,9 @@ doc = {
     "IndexSymlinks": sum(1 for l in git("ls-files", "-s").stdout.splitlines() if l.startswith("120000 ")),
     "ReparsePointsInWorkTree": reparse, "WorkTreeFiles": files,
     "Run": {"Dir": RUN, "Files": run_listing, "Records": run},
-    "TransportCharacterization": {"Path": char_path, "InClone": char_in_clone, "Sha256": char_sha,
+    "TransportCharacterization": {"Path": char_path, "InKit": char_in_kit, "Sha256": char_sha, "PinnedSha256": CHAR_SHA,
+                                  "Blob": git_blob(char_bytes), "PinnedBlob": CHAR_BLOB, "Commit": CHAR_COMMIT, "RepoPath": CHAR_REPO_PATH,
+                                  "BlobAtCommit": char_blob_at_commit, "ExternalCopyOk": char_external_ok,
                                   "MatchesGate": char_sha == gate["Characterization"]["Sha256"], "GateStatus": gate.get("Status")},
     "ClaudeProjectDirsForCloneOrRun": {"Pattern": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a6r4*", "Found": project_dirs},
     "PriorTranscriptsForSessionId": {"SessionId": SESSION_ID, "Found": len(prior_sessions)},
@@ -226,7 +238,7 @@ doc["AllChecks"] = (doc["Head"] == REV and doc["Detached"] and doc["LocalBranche
                     all(v["IdenticalToKitCopy"] and v["MatchesClosure"] for v in run.values()) and run["a6-r3.md"]["GitBlob"] == A6R3_BLOB and
                     all(run[n]["MatchesDecisions"] for n in ORDER_TEXTS) and
                     not run["prompt.md"]["FinalNewline"] and run["prompt.md"]["CarriageReturns"] == 0 and
-                    char_in_clone and doc["TransportCharacterization"]["MatchesGate"] and gate.get("Status") in ("MEASURED", "ACCEPTED") and
+                    char_external_ok and doc["TransportCharacterization"]["MatchesGate"] and gate.get("Status") in ("MEASURED", "ACCEPTED") and
                     not project_dirs and doc["PriorTranscriptsForSessionId"]["Found"] == 0 and
                     closure["AuthorityRevision"] == REV and closure["ObjectBlob"] == OBJECT_BLOB and closure.get("Provisional") is False and
                     gr["ExitCode"] == 0 and gr.get("Result") == "PASS" and gr.get("WholeEqualsCustodied") is True and

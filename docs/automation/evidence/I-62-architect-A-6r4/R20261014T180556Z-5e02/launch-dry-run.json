@@ -51,7 +51,7 @@
  "RecordProbe": {
   "Ok": true,
   "Problems": [],
-  "TempDir": "%TEMP%\\r62-record-probe-jrb2pjoe",
+  "TempDir": "%TEMP%\\r62-record-probe-n3wp3eje",
   "RecordFile": "record-probe.json",
   "StandInChild": "sys.executable -B -I -c PROBE_CHILD (lee stdin, una línea JSON type=result, código 0)",
   "RunAndRecordExit": 0,
@@ -118,8 +118,24 @@
  "BlockingChecks": [
   "11-OwnerAndAuthorizationGate"
  ],
- "AuthorizationSections": [],
- "LaterSections": [],
+ "AuthorizationSections": [
+  {
+   "Number": 87,
+   "Line": 1717,
+   "Heading": "## 87. Disposición del Coordinator: claude-cli 2.1.299, recuperación del transporte (2026-10-16 UTC)",
+   "HeadingMatches": true,
+   "HasBlob": true,
+   "TextSha256": "0eb44fac5b69404947d1065f03d4fe758607197a4d3d54f22f013c19eed5503a",
+   "TextSha256Matches": true
+  }
+ ],
+ "LaterSections": [
+  {
+   "Number": 88,
+   "Line": 1733,
+   "Heading": "## 88. Disposición del Coordinator: validación incremental de los kits de revisión, eficiencia de ejecución (2026-10-16 UTC)"
+  }
+ ],
  "Environment": {
   "Prefixes": [
    "PYTHON",
@@ -153,6 +169,7 @@
    "CLAUDE_CODE_SESSION_ATTENDED",
    "CLAUDE_CODE_SESSION_ID",
    "CLAUDE_CODE_SIMPLE",
+   "CLAUDE_CODE_STARTUP_FAILURE_RESULTS",
    "CLAUDE_CODE_TERMINAL_MCP_TOOLS",
    "CLAUDE_CODE_USER_EMAIL",
    "CLAUDE_EFFORT",
@@ -185,8 +202,8 @@
   "3-Binary": {
    "Ok": true,
    "Exists": true,
-   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.293\\83cb0bd7fed4\\claude.exe",
-   "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
+   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe",
+   "Sha256": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b",
    "Authenticode": "Valid",
    "SignerIsAnthropic": true
   },
@@ -230,14 +247,14 @@
    "Ok": true,
    "Status": "MEASURED",
    "LaunchArgsMatchTemplate": true,
-   "CharacterizationSha256": "20d0de2ce625c38ddeaaf445ce2261b080520bdcf57eec8f4bf9a8bd0cedbf4c",
+   "CharacterizationSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
    "AcceptanceSha256": null,
    "Problems": []
   },
   "11-OwnerAndAuthorizationGate": {
    "Ok": false,
    "Problems": [
-    "authorization pending: a Coordinator disposition after §85 must be pinned (section number, heading, text SHA-256) and the kit re-frozen"
+    "sección posterior a §87 en decisiones (§88 en la línea 1733): una disposición posterior tiene que revisarse antes de lanzar"
    ],
    "A6LineSha256": "83152eae4f451961b9dc43920aa60c6f0910d4d023e9e93d8f5d6160e7ac8b14",
    "A6LineNumbers": [
@@ -257,21 +274,53 @@
    "PinnedLineInA6R4": true,
    "RunId": "R20261014T180556Z-5e02",
    "BaseSection": 85,
-   "AuthorizationPending": true,
-   "AuthorizationSection": null,
-   "AuthorizationHeading": null,
-   "AuthorizationTextSha256": null,
-   "AuthorizationSections": [],
-   "LaterSections": [],
-   "SectionsAfterBase": [],
-   "Authorized": false,
+   "AuthorizationPending": false,
+   "AuthorizationSection": 87,
+   "AuthorizationHeading": "## 87. Disposición del Coordinator: claude-cli 2.1.299, recuperación del transporte (2026-10-16 UTC)",
+   "AuthorizationTextSha256": "0eb44fac5b69404947d1065f03d4fe758607197a4d3d54f22f013c19eed5503a",
+   "AuthorizationSections": [
+    {
+     "Number": 87,
+     "Line": 1717,
+     "Heading": "## 87. Disposición del Coordinator: claude-cli 2.1.299, recuperación del transporte (2026-10-16 UTC)",
+     "HeadingMatches": true,
+     "HasBlob": true,
+     "TextSha256": "0eb44fac5b69404947d1065f03d4fe758607197a4d3d54f22f013c19eed5503a",
+     "TextSha256Matches": true
+    }
+   ],
+   "LaterSections": [
+    {
+     "Number": 88,
+     "Line": 1733,
+     "Heading": "## 88. Disposición del Coordinator: validación incremental de los kits de revisión, eficiencia de ejecución (2026-10-16 UTC)"
+    }
+   ],
+   "SectionsAfterBase": [
+    {
+     "Number": 86,
+     "Line": 1700,
+     "Heading": "## 86. Disposición del Coordinator: A-6 ronda 4, revisión formal final acotada del Architect (2026-10-16 UTC)"
+    },
+    {
+     "Number": 87,
+     "Line": 1717,
+     "Heading": "## 87. Disposición del Coordinator: claude-cli 2.1.299, recuperación del transporte (2026-10-16 UTC)"
+    },
+    {
+     "Number": 88,
+     "Line": 1733,
+     "Heading": "## 88. Disposición del Coordinator: validación incremental de los kits de revisión, eficiencia de ejecución (2026-10-16 UTC)"
+    }
+   ],
+   "Authorized": true,
    "DecisionsAppendOnlySinceClone": true,
    "WorktreeDecisionsClean": true,
    "HeadDescendsFromClone": true,
    "BinarySha256MatchesClosure": true,
    "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
-   "WorktreeHead": "088b3227a22ef6ab28b7ba43d5aa90de68d5b08f",
-   "DecisionsBlobAtHead": "4e090ed4687330a5584ca8f43468bcd2c7b009aa",
+   "WorktreeHead": "e83676bbfa0f987a37d59682b096a934f440119c",
+   "DecisionsBlobAtHead": "418606f40ee5661170f5334bc351507902fb2404",
    "CloneCommit": "088b3227a22ef6ab28b7ba43d5aa90de68d5b08f",
    "Reads": "git rev-parse, show, hash-object (sin -w) y merge-base, con GIT_OPTIONAL_LOCKS=0; nada se escribe"
   }

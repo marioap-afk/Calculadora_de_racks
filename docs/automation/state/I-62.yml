@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §88; evidencia §173-§175) — terminar la recuperación incremental del transporte del kit R20261014T180556Z-5e02 (claude-cli 2.1.299 ELIGIBLE; opción A), con la matriz de validación; la compuerta 11 bloquea por §88 posterior a §87: hace falta una disposición de lanzamiento con el blob de A-6 para fijarla; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §88; evidencia §176) — kit R20261014T180556Z-5e02 recuperado para claude-cli 2.1.299 (manifiesto 70d68119, validación incremental) y custodiado; prueba en seco bloqueada solo por la compuerta 11 (§88 posterior a §87); esperar una disposición que autorice el lanzamiento con el blob de A-6, fijarla, prueba en seco sin bloqueos y UNA revisión; sin Codex; sin A-6 AGREED, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

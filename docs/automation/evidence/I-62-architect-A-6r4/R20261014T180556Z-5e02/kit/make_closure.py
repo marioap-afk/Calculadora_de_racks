@@ -126,9 +126,9 @@ MANDATORY_EVIDENCE_ASPECTS = EVIDENCE_ASPECTS[:5]             # las pruebas obli
 ROUND4_QUESTION_IDS = ["Q-A6R4-0%d" % i for i in range(1, 5)]
 GAP_IDS = ["G%d" % i for i in range(1, 7)]
 DIRECT_READ = {"Path": V14, "Start": 2333, "End": 2334, "Token": "Esperado independiente"}
-BINARY = {"Path": r"%APPDATA%\Claude\claude-code\2.1.293\83cb0bd7fed4\claude.exe",
-          "Sha256": "8693c4a02dde7441d0066ede68af8ddfc408bb982d77e12b506286268224e6fa",
-          "Version": "2.1.293 (Claude Code)", "Authenticode": 'Valid; CN="Anthropic, PBC"'}
+BINARY = {"Path": r"%APPDATA%\Claude\claude-code\2.1.299\f0584be0fbaf\claude.exe",
+          "Sha256": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b",
+          "Version": "2.1.299 (Claude Code)", "Authenticode": 'Valid; CN="Anthropic, PBC"'}
 MEASURED_FLAGS = ["-p", "--model", "claude-opus-5-5", "--effort", "xhigh", "--output-format", "stream-json", "--verbose", "--safe-mode",
                   "--strict-mcp-config", "--no-chrome", "--tools", "Read,Grep,Glob", "--permission-mode", "dontAsk", "--permission-prompts", "none"]
 LAUNCH_COMMAND = "python -B kit/launch.py"   # la orden congelada de la ronda 3 (FROZEN_COMMAND de launch.py)
@@ -1081,21 +1081,23 @@ def build_kit(repo, rev, run_dir, out_dir, params, mode):
                       "Flags": MEASURED_FLAGS, "AddDir": ["--add-dir", RUN], "SessionId": SESSION_ID, "Cwd": CLONE,
                       "ArgsTemplate": TG.templatize(MEASURED_FLAGS + ["--add-dir", RUN] + ["--session-id", SESSION_ID, "--json-schema", "{}"]),
                       "LaunchCommand": LAUNCH_COMMAND,
-                      "AddDirStatus": "medido en C3 de la caracterización R20261008T183600Z-char sobre la plantilla exacta con marcadores (decisiones §56, "
-                                      "punto 7; §57, punto 3): kit/transport-gate.json en MEASURED con el SHA-256 del registro fijado",
+                      "AddDirStatus": "medido en C3 de la caracterización R20261016T185242Z-char de claude-cli 2.1.299 sobre la plantilla exacta "
+                                      "con marcadores (decisiones §87, puntos 2-4; procedimiento de §56, punto 7): kit/transport-gate.json en MEASURED "
+                                      "con el SHA-256 del registro fijado (kit/claude-cli-characterization.json, copia del registro del commit 1c960c0a)",
                       "Gate": "kit/transport-gate.json (transport_gate.py byte a byte el de la ronda 3: la compuerta D-01 y cli_version y auth_status "
                               "con la salida en bytes y UTF-8 estricto)",
                       "Stdin": "prompt.md del run (bytes literales)",
                       "JsonSchema": "kit/result.schema.json en forma compacta: json.dumps(separators=(',', ':'), ensure_ascii=True)",
                       "ExpectedInit": {"tools": ["Glob", "Grep", "Read", "StructuredOutput"], "permissionMode": "dontAsk", "mcp_servers": [],
-                                       "claude_code_version": "2.1.293"},
+                                       "claude_code_version": "2.1.299"},
                       "TranscriptPath": "%USERPROFILE%\\.claude\\projects\\" + project + "\\" + SESSION_ID + ".jsonl",
                       "LaunchDir": RUN + "\\launch (preflight.json, transport-characterization.json, transport-acceptance.json solo en ACCEPTED, "
                                    "stdout.jsonl, stderr.txt y run.json)", "TimeoutSeconds": TIMEOUT_S, "AuthSettleSeconds": AUTH_SETTLE_S,
                       "AuthSettle": "launch.py espera AUTH_SETTLE_S segundos entre el final de `auth status` y el lanzamiento, y registra como "
                                     "TRANSPORT_AUTH_REFRESH_CONFLICT un result con «Failed to refresh OAuth token» y 0 tokens (sin reintento)",
-                      "Characterization": "claude-cli-characterization.json de R20261008T183600Z-char (decisiones §56, punto 7; §57, punto 3): C1 "
-                                          "completada, C3 PASS sobre la plantilla con --add-dir"},
+                      "Characterization": "claude-cli-characterization.json de R20261016T185242Z-char (decisiones §87, puntos 2-3; evidencia §174), "
+                                          "copia en kit/ del registro del commit 1c960c0a (blob 19b8a27e): C1 completada, C3 PASS sobre la plantilla "
+                                          "con --add-dir"},
         "RunDir": RUN, "RunFiles": RUN_FILES, "PremiseRunFiles": PREMISE_RUN_FILES, "RunFileHashes": run_hashes,
         "RunCustody": "el auditor compara el SHA-256 de cada archivo del run con RunFileHashes y con la copia del kit; el directorio del run solo admite "
                       "esos tres archivos y, después del lanzamiento, el subdirectorio launch/, que solo admite los archivos que escribe launch.py",
@@ -1152,7 +1154,7 @@ def build_kit(repo, rev, run_dir, out_dir, params, mode):
              "Reason": "posterior al commit del clon; la comprueba la compuerta 11 en las decisiones del worktree antes de lanzar"},
         ],
         "DeclaredRuntimeContext": [
-            "prompt de sistema propio de claude-cli 2.1.293 en modo -p con --safe-mode: sin CLAUDE.md, memoria, skills de usuario, ganchos ni MCP (medido en C1)",
+            "prompt de sistema propio de claude-cli 2.1.299 en modo -p con --safe-mode: sin CLAUDE.md, memoria, skills de usuario, ganchos ni MCP (medido en C1)",
             "adjunto session_context: identidad de la cuenta y estado de Git del cwd (HEAD separado del clon, sin rama, y asuntos de los commits recientes)",
             "adjunto environment: cwd " + CLONE + ", plataforma, shell, directorio scratchpad del runtime y directorios adicionales (--add-dir del run)",
             "adjuntos model, date, credential_org (uuid de la organización), prompt_snapshot, total_tokens_reminder y el esquema de structured_output",

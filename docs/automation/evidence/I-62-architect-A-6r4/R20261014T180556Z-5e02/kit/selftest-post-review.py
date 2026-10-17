@@ -306,7 +306,7 @@ class Run:
         self.drop_launch, self.extra_launch, self.stdout_outside, self.tx_filter = set(), {}, False, None
 
     def entry(self, typ, **kw):
-        e = {"type": typ, "isSidechain": False, "sessionId": SID, "cwd": CLONE, "version": "2.1.293", "entrypoint": "sdk-cli"}
+        e = {"type": typ, "isSidechain": False, "sessionId": SID, "cwd": CLONE, "version": "2.1.299", "entrypoint": "sdk-cli"}
         e.update(kw)
         self.tx.append(e)
         return e
@@ -334,7 +334,7 @@ class Run:
         self.final_result = result
         tx_input = self.so_tx_override if self.so_tx_override is not None else result
         uid = self.call("StructuredOutput", copy.deepcopy(tx_input), "Structured output provided successfully")
-        self.tx.insert(len(self.tx) - 1, {"type": "attachment", "isSidechain": False, "sessionId": SID, "cwd": CLONE, "version": "2.1.293",
+        self.tx.insert(len(self.tx) - 1, {"type": "attachment", "isSidechain": False, "sessionId": SID, "cwd": CLONE, "version": "2.1.299",
                                           "attachment": {"type": "structured_output", "data": copy.deepcopy(tx_input), "toolUseID": uid}})
 
     def write(self, d):
@@ -345,7 +345,7 @@ class Run:
         tbytes = "".join(json.dumps(e, ensure_ascii=False) + "\n" for e in tx).encode("utf-8")
         open(tpath, "wb").write(tbytes)
         init = {"type": "system", "subtype": "init", "cwd": CLONE, "session_id": SID, "tools": ["Glob", "Grep", "Read", "StructuredOutput"],
-                "mcp_servers": [], "model": MODEL, "permissionMode": "dontAsk", "claude_code_version": "2.1.293", "apiKeySource": "none"}
+                "mcp_servers": [], "model": MODEL, "permissionMode": "dontAsk", "claude_code_version": "2.1.299", "apiKeySource": "none"}
         patch(init, self.init_patch)
         lines = ([] if self.no_init else [init]) + self.so
         if not self.no_result:
@@ -1668,18 +1668,18 @@ def gate_cases():
         cases.append({"Case": name, "Expected": list(expected), "Got": got, "Missing": missing, "Unexpected": unexpected,
                       "Record": {k: d[k] for k in ("Ok", "Bytes", "Bom", "HexExcerpt")}, "TextMatches": d["Text"] == text,
                       "Result": "PASS" if not missing and not unexpected and extra_ok else "FAIL"})
-    v = b"2.1.293 (Claude Code)\n"
+    v = b"2.1.299 (Claude Code)\n"
     cp850 = "INFORMACIÓN: no hay tareas".encode("cp850")
     decode_case("G41-decodificacion-ascii", v, text=v.decode("ascii"))
     decode_case("G42-decodificacion-bom-utf8", TG.UTF8_BOM + v, text=v.decode("ascii"), bom=True)
     decode_case("G43-decodificacion-utf8-no-ascii", "Organización Á Í Ï Ð Ý".encode("utf-8"), text="Organización Á Í Ï Ð Ý")
     decode_case("G44-decodificacion-cp850-informacion", cp850, ["no es UTF-8 estricto"], hexpart=cp850[9 - 8:9 + 1 + 8].hex(" "))   # 0xE0 en la posición 9
     decode_case("G45-decodificacion-utf8-invalido", b"ab\xc3(cd", ["no es UTF-8 estricto"], hexpart="61 62 c3 28 63 64")
-    decode_case("G46-decodificacion-utf16-con-bom", "2.1.293 (Claude Code)".encode("utf-16"), ["BOM UTF-16"])
+    decode_case("G46-decodificacion-utf16-con-bom", "2.1.299 (Claude Code)".encode("utf-16"), ["BOM UTF-16"])
     decode_case("G47-decodificacion-vacia", b"", ["salida del binario vacía"], hexpart="")
     decode_case("G47b-decodificacion-solo-espacios", b" \r\n", ["salida del binario vacía"])
     decode_case("G48-decodificacion-no-bytes", None, ["no capturada en bytes"])
-    decode_case("G48b-decodificacion-texto-ya-decodificado", "2.1.293", ["no capturada en bytes"])
+    decode_case("G48b-decodificacion-texto-ya-decodificado", "2.1.299", ["no capturada en bytes"])
     decode_case("G49-decodificacion-sin-contexto", "org: INFORMACIÓN".encode("cp850"), ["no es UTF-8 estricto"], hexpart="e0", context=0)
 
     def standin_case(name, payload, fn, check):
@@ -1725,11 +1725,11 @@ def gate_cases():
         return f
     auth_ok = json.dumps({"loggedIn": True, "authMethod": "claude.ai", "apiProvider": "firstParty", "email": "persona@example.invalid",
                           "orgName": "Organización Á"}, ensure_ascii=False)
-    standin_case("G50-sustituto-version-ascii", b"2.1.293 (Claude Code)\r\n", TG.cli_version, version_check("2.1.293 (Claude Code)"))
-    standin_case("G51-sustituto-version-cp850", "INFORMACIÓN: 2.1.293".encode("cp850"), TG.cli_version, version_check(None, "no es UTF-8 estricto"))
-    standin_case("G52-sustituto-version-utf16", "2.1.293 (Claude Code)".encode("utf-16"), TG.cli_version, version_check(None, "BOM UTF-16"))
+    standin_case("G50-sustituto-version-ascii", b"2.1.299 (Claude Code)\r\n", TG.cli_version, version_check("2.1.299 (Claude Code)"))
+    standin_case("G51-sustituto-version-cp850", "INFORMACIÓN: 2.1.299".encode("cp850"), TG.cli_version, version_check(None, "no es UTF-8 estricto"))
+    standin_case("G52-sustituto-version-utf16", "2.1.299 (Claude Code)".encode("utf-16"), TG.cli_version, version_check(None, "BOM UTF-16"))
     standin_case("G53-sustituto-version-vacia", b"", TG.cli_version, version_check(None, "salida del binario vacía"))
-    standin_case("G54-sustituto-version-bom-utf8", TG.UTF8_BOM + b"2.1.293 (Claude Code)\n", TG.cli_version, version_check("2.1.293 (Claude Code)", bom=True))
+    standin_case("G54-sustituto-version-bom-utf8", TG.UTF8_BOM + b"2.1.299 (Claude Code)\n", TG.cli_version, version_check("2.1.299 (Claude Code)", bom=True))
     standin_case("G55-sustituto-auth-utf8-no-ascii", auth_ok.encode("utf-8"), TG.auth_status, auth_check(True))
     standin_case("G56-sustituto-auth-cp850", auth_ok.encode("cp850", "replace"), TG.auth_status,
                  auth_check(None, "no es UTF-8 estricto", "DecodeError", max_hex=3))

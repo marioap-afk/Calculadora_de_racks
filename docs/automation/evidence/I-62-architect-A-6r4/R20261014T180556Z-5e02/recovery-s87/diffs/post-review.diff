@@ -1,0 +1,7 @@
+--- kit fijado a §86 (cf71191e)/post-review.py
++++ kit/post-review.py (decisiones §87)
+@@ -42,3 +42,3 @@
+     preflight.json there: the ten checks present and Ok (and gate 11 as above), session id, measured binary = closure (path and SHA-256), version
+-    = 2.1.293 (Claude Code), loggedIn = true, gate = kit/transport-gate.json, FrozenCommandGuard, RecordProbe and Environment as in v5.3;
++    = 2.1.299 (Claude Code), loggedIn = true, gate = kit/transport-gate.json, FrozenCommandGuard, RecordProbe and Environment as in v5.3;
+   * transport gate (D-01): transport_gate.evaluate(kit/transport-gate.json, closure, launch copies) without problems;
