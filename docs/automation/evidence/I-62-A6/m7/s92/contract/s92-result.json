@@ -1,0 +1,665 @@
+{
+ "A": {
+  "S0/V-A (12 ordenes, con contract)": {
+   "DeclaredOrderCheck": {
+    "Declared": [
+     "identity",
+     "diff",
+     "scope",
+     "hashes",
+     "cleantree",
+     "read-text",
+     "read-json",
+     "trx",
+     "handoff",
+     "freetext",
+     "clausemap"
+    ],
+    "Ok": false,
+    "Outside": [
+     {
+      "ItemId": "item_4",
+      "Order": "contract",
+      "Seq": 3
+     }
+    ],
+    "Reconstructible": false
+   },
+   "EnvelopesEqualBenchReconstruction": true,
+   "InstrumentExecutions": 12,
+   "LogSha256": "d9f7938bad397ccbf3b52da09187d01808ff3c8585cbeb05c922206e9f346621",
+   "LogSha256InNc2Result": "d9f7938bad397ccbf3b52da09187d01808ff3c8585cbeb05c922206e9f346621",
+   "Orders": [
+    "identity",
+    "diff",
+    "scope",
+    "contract",
+    "hashes",
+    "cleantree",
+    "handoff",
+    "freetext",
+    "clausemap",
+    "trx",
+    "read-text",
+    "read-json"
+   ],
+   "Reconstructible": true,
+   "Renderings": [
+    "R1"
+   ],
+   "RuleExit": 0
+  },
+  "S0/V-C (11 ordenes, sin contract)": {
+   "DeclaredOrderCheck": {
+    "Declared": [
+     "identity",
+     "diff",
+     "scope",
+     "hashes",
+     "cleantree",
+     "read-text",
+     "read-json",
+     "trx",
+     "handoff",
+     "freetext",
+     "clausemap"
+    ],
+    "Ok": true,
+    "Outside": [],
+    "Reconstructible": true
+   },
+   "EnvelopesEqualBenchReconstruction": true,
+   "InstrumentExecutions": 11,
+   "LogSha256": "eccb4836ca6ef5040d6b016373a71d9c1386330a03e5ef3172818467bf26ac06",
+   "LogSha256InNc2Result": "eccb4836ca6ef5040d6b016373a71d9c1386330a03e5ef3172818467bf26ac06",
+   "Orders": [
+    "identity",
+    "diff",
+    "scope",
+    "hashes",
+    "cleantree",
+    "handoff",
+    "freetext",
+    "clausemap",
+    "trx",
+    "read-text",
+    "read-json"
+   ],
+   "Reconstructible": true,
+   "Renderings": [
+    "R1"
+   ],
+   "RuleExit": 0
+  },
+  "S1/NC2-A (12 ordenes, con contract)": {
+   "DeclaredOrderCheck": {
+    "Declared": [
+     "identity",
+     "diff",
+     "scope",
+     "hashes",
+     "cleantree",
+     "read-text",
+     "read-json",
+     "trx",
+     "handoff",
+     "freetext",
+     "clausemap"
+    ],
+    "Ok": false,
+    "Outside": [
+     {
+      "ItemId": "item_4",
+      "Order": "contract",
+      "Seq": 3
+     }
+    ],
+    "Reconstructible": false
+   },
+   "EnvelopesEqualBenchReconstruction": true,
+   "InstrumentExecutions": 12,
+   "LogSha256": "df76561fcdd631a32fe06425262aba4a0af89f02567376b6877c9fc6f464fdf7",
+   "LogSha256InNc2Result": "df76561fcdd631a32fe06425262aba4a0af89f02567376b6877c9fc6f464fdf7",
+   "Orders": [
+    "identity",
+    "diff",
+    "scope",
+    "contract",
+    "hashes",
+    "cleantree",
+    "handoff",
+    "freetext",
+    "clausemap",
+    "trx",
+    "read-text",
+    "read-json"
+   ],
+   "Reconstructible": true,
+   "Renderings": [
+    "R1"
+   ],
+   "RuleExit": 0
+  },
+  "S1/NC2-C (11 ordenes, sin contract)": {
+   "DeclaredOrderCheck": {
+    "Declared": [
+     "identity",
+     "diff",
+     "scope",
+     "hashes",
+     "cleantree",
+     "read-text",
+     "read-json",
+     "trx",
+     "handoff",
+     "freetext",
+     "clausemap"
+    ],
+    "Ok": true,
+    "Outside": [],
+    "Reconstructible": true
+   },
+   "EnvelopesEqualBenchReconstruction": true,
+   "InstrumentExecutions": 11,
+   "LogSha256": "f6772bc7236dce743f2d5dc300405c878c121b7fc5f99a036da0b2db1d663314",
+   "LogSha256InNc2Result": "f6772bc7236dce743f2d5dc300405c878c121b7fc5f99a036da0b2db1d663314",
+   "Orders": [
+    "identity",
+    "diff",
+    "scope",
+    "hashes",
+    "cleantree",
+    "handoff",
+    "freetext",
+    "clausemap",
+    "trx",
+    "read-text",
+    "read-json"
+   ],
+   "Reconstructible": true,
+   "Renderings": [
+    "R1"
+   ],
+   "RuleExit": 0
+  }
+ },
+ "B": {
+  "Nc2ResultBlobInW": "docs/automation/evidence/I-62-A6/m7/s91/d1/nc2/nc2-result.json",
+  "Nc2ResultSha256": "86cd607ef81f4428af48bf4f6bcd0e11c688d28962682b04c5e76a8a1fb107be",
+  "S1/A/b1": {
+   "ControlAccepted": false,
+   "ControlDecision": "REJECT_FACTS",
+   "ControlPassable": false,
+   "ControlR7": "MISMATCH",
+   "EarlierDiffer": [
+    "Contract"
+   ],
+   "Holds": false,
+   "MutatedFail": true,
+   "RelativeFailureClass": "Contract",
+   "VerificationAccepted": true
+  },
+  "S1/A/b2": {
+   "ControlAccepted": false,
+   "ControlDecision": "REJECT_FACTS",
+   "ControlPassable": false,
+   "ControlR7": "MISMATCH",
+   "EarlierDiffer": [],
+   "Holds": true,
+   "MutatedFail": true,
+   "RelativeFailureClass": "Scope",
+   "VerificationAccepted": true
+  },
+  "S1/C/c": {
+   "ControlAccepted": true,
+   "ControlDecision": "ACCEPT_FACTS",
+   "ControlPassable": true,
+   "ControlR7": "MATCH",
+   "EarlierDiffer": [],
+   "Holds": true,
+   "MutatedFail": true,
+   "RelativeFailureClass": "Scope",
+   "VerificationAccepted": true
+  },
+  "S1NC2C": {
+   "AcceptedA65r2": true,
+   "ControllerResults": {
+    "Authority": "fail",
+    "Ci": "not_run",
+    "CleanTree": "pass",
+    "Contract": "pass",
+    "Denials": "not_run",
+    "FreeText": "pass",
+    "Handoff": "pass",
+    "Identity": "pass",
+    "Remote": "not_run",
+    "Routing": "not_run",
+    "Scope": "fail",
+    "Termination": "not_run",
+    "Tests": "not_run",
+    "Trailer": "pass"
+   },
+   "VerificationIncluded": true
+  },
+  "S1NC2CAcceptor": {
+   "Checks": {
+    "R1": "MATCH",
+    "R10": "MATCH",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "MATCH",
+    "R5": "MATCH",
+    "R6": "MATCH",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "Decision": "ACCEPT_FACTS",
+   "MismatchDetails": {},
+   "NotApplicable": [],
+   "ProcessTreeDead": true,
+   "R9OutsideClosure": {},
+   "Rc": 0,
+   "RequestSha256": "81083c79e861e8ffd8a39d1049c922a9427e1df75ed9257dd6970c11f9acf394",
+   "StdoutSha256": "147d749289c7787450e57bee381b218f65f67adfde11df4080c15879530985aa",
+   "ZeroWrite": true
+  },
+  "S1VC": {
+   "AcceptedA65r2": true,
+   "ControllerResults": {
+    "Authority": "fail",
+    "Ci": "not_run",
+    "CleanTree": "pass",
+    "Contract": "pass",
+    "Denials": "not_run",
+    "FreeText": "pass",
+    "Handoff": "pass",
+    "Identity": "pass",
+    "Remote": "not_run",
+    "Routing": "not_run",
+    "Scope": "pass",
+    "Termination": "not_run",
+    "Tests": "not_run",
+    "Trailer": "pass"
+   }
+  }
+ },
+ "C": {
+  "AcceptedA65r2": true,
+  "Acceptor": {
+   "Checks": {
+    "R1": "MATCH",
+    "R10": "MATCH",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "MATCH",
+    "R5": "MATCH",
+    "R6": "MATCH",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   },
+   "Decision": "ACCEPT_FACTS",
+   "MismatchDetails": {},
+   "ProcessTreeDead": true,
+   "R9OutsideClosure": {},
+   "Rc": 0,
+   "RequestSha256": "7a78a7c1f27eef6f51d3790045c779277a578f21f361152831d2bd2530c4fd45",
+   "StdoutSha256": "2d71597996c8e3043982325a65492c2d73bdb4651fa35f295c108530d6b12053",
+   "ZeroWrite": true
+  },
+  "BenchReconstruction": {
+   "CommandExecutions": 18,
+   "Complete": true,
+   "InstrumentExecutions": 13,
+   "Problems": [],
+   "Reconstructible": true
+  },
+  "Classification": [
+   "EXECUTION_BLOCKED",
+   "STOP",
+   "Termination"
+  ],
+  "Clone": "nc2/w/c-x",
+  "ContractByController": {
+   "A3": [
+    {
+     "ContainedBy": [
+      "src/Fixture.Lib/Calculator.cs"
+     ],
+     "Entry": "src/Fixture.Lib/Calculator.cs"
+    },
+    {
+     "ContainedBy": [
+      "tests/Fixture.Tests/CalculatorTests.cs"
+     ],
+     "Entry": "tests/Fixture.Tests/CalculatorTests.cs"
+    },
+    {
+     "ContainedBy": [
+      "docs/automation/evidence/FX-U1-agent/**"
+     ],
+     "Entry": "docs/automation/evidence/FX-U1-agent/T1/worker-summary.md"
+    }
+   ],
+   "A4Uncontained": [],
+   "Result": "pass"
+  },
+  "ControllerResults": {
+   "Authority": "fail",
+   "Ci": "not_run",
+   "CleanTree": "pass",
+   "Contract": "pass",
+   "Denials": "not_run",
+   "FreeText": "pass",
+   "Handoff": "pass",
+   "Identity": "pass",
+   "Remote": "not_run",
+   "Routing": "not_run",
+   "Scope": "fail",
+   "Termination": "not_run",
+   "Tests": "not_run",
+   "Trailer": "pass"
+  },
+  "CrossCheck": {
+   "A5Missing": [],
+   "Agree": true,
+   "Controller": "pass",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  },
+  "DeclaredOrderCheck": {
+   "Declared": [
+    "identity",
+    "diff",
+    "scope",
+    "hashes",
+    "cleantree",
+    "read-text",
+    "read-json",
+    "trx",
+    "handoff",
+    "freetext",
+    "clausemap"
+   ],
+   "Ok": true,
+   "Outside": [],
+   "Reconstructible": true
+  },
+  "Derivation": {
+   "Bypassed": [],
+   "Counts": {
+    "Commits": 8,
+    "Files": 4,
+    "Objects": 0,
+    "Paths": 50,
+    "Refs": 3,
+    "RevPaths": 105
+   },
+   "Derived": true,
+   "Files": [
+    "CONTRACT",
+    "DELEG",
+    "H",
+    "TRX"
+   ],
+   "Inputs": {
+    "D": {
+     "Present": true,
+     "Why": null
+    },
+    "H": {
+     "Present": true,
+     "Why": null
+    },
+    "K": {
+     "Present": true,
+     "Why": null
+    }
+   },
+   "Omitted": [
+    [
+     "C1.D.ChainRedSha",
+     "FIELD_NULL"
+    ]
+   ]
+  },
+  "Files": {
+   "AcceptorStdout": {
+    "Path": "out/s92-nc2-r/acceptor-stdout.json",
+    "Sanitized": false,
+    "Sha256": "2d71597996c8e3043982325a65492c2d73bdb4651fa35f295c108530d6b12053"
+   },
+   "Controller": {
+    "Path": "out/s92-nc2-r/controller-output.json",
+    "Sanitized": false,
+    "Sha256": "aa88b9c5b6b86c3978255d4cfd9d4550e2be6a24d7edb567ff906e99065267a0"
+   },
+   "Envelope-read-json-CONTRACT": {
+    "Path": "out/s92-nc2-r/envelope-read-json-CONTRACT.json",
+    "Sanitized": false,
+    "Sha256": "1590093c04fa72bb68405cc66bfaa2e62d2d3c2cb959e84d6521254ac4c0307f"
+   },
+   "Envelope-read-json-DELEG": {
+    "Path": "out/s92-nc2-r/envelope-read-json-DELEG.json",
+    "Sanitized": false,
+    "Sha256": "49ccf18366782fa37778cbd973a645db842fad20e5194c40bd2d1c6d28c6b673"
+   },
+   "Request": {
+    "Path": "out/s92-nc2-r/request.json",
+    "Sanitized": false,
+    "Sha256": "7a78a7c1f27eef6f51d3790045c779277a578f21f361152831d2bd2530c4fd45"
+   }
+  },
+  "G2": "0e27c94616cfc8cef5a26b1748626dc930896848",
+  "KitRule": {
+   "EnvelopesEqualBenchReconstruction": true,
+   "Exit": 0,
+   "InstrumentExecutions": 13,
+   "Orders": [
+    "identity",
+    "diff",
+    "scope",
+    "hashes",
+    "cleantree",
+    "handoff",
+    "freetext",
+    "clausemap",
+    "trx",
+    "read-text",
+    "read-json",
+    "read-json",
+    "read-json"
+   ],
+   "Reconstructible": true
+  },
+  "OracleVsS1VC": {
+   "EarlierDiffer": [],
+   "Holds": true,
+   "MutatedFail": true,
+   "RelativeFailureClass": "Scope"
+  },
+  "Orders": [
+   "identity",
+   "diff",
+   "scope",
+   "hashes",
+   "cleantree",
+   "handoff",
+   "freetext",
+   "clausemap",
+   "trx",
+   "read-text",
+   "read-json",
+   "read-json",
+   "read-json"
+  ],
+  "P2": {
+   "FailedSteps": [],
+   "Launch": true
+  },
+  "ReadJsonFaithful": {
+   "CONTRACT": true,
+   "DELEG": true
+  },
+  "RunId": "R20261017T000000Z-d1e4",
+  "SchemaErrors": [],
+  "Session": {
+   "LogSha256": "7cb45e36e10dbb814b09778a72ca06c9cf51c5870d610f311b2e7d673c99fcbd",
+   "ZeroWriteToolRuns": true
+  },
+  "Table": {
+   "AcceptanceReasons": [],
+   "Accepted": true,
+   "AcceptorRc": 0,
+   "ClosureViolations": [],
+   "ConstructionViolations": [],
+   "Decision": "ACCEPT_FACTS",
+   "DesignationViolations": [],
+   "Omitted": [
+    [
+     "C1.D.ChainRedSha",
+     "FIELD_NULL"
+    ]
+   ],
+   "R4Rule": {
+    "Cause": null,
+    "Classification": "EXECUTION_BLOCKED",
+    "Include": true,
+    "Missing": [],
+    "NotRun": []
+   },
+   "Statuses": {
+    "R1": "MATCH",
+    "R10": "MATCH",
+    "R2": "MATCH",
+    "R3": "MATCH",
+    "R4": "MATCH",
+    "R5": "MATCH",
+    "R6": "MATCH",
+    "R7": "MATCH",
+    "R8": "MANUAL",
+    "R9": "MATCH"
+   }
+  },
+  "VerificationIncluded": true
+ },
+ "DeclaredOrders": [
+  "identity",
+  "diff",
+  "scope",
+  "hashes",
+  "cleantree",
+  "read-text",
+  "read-json",
+  "trx",
+  "handoff",
+  "freetext",
+  "clausemap"
+ ],
+ "Environment": {
+  "Git": {
+   "DeclaredFormGitIsThisOne": true,
+   "EqualsDeclared": true,
+   "Sha256": "81ef35ae005ca9318018d18e3327578ce939fb99feaad6b2d7c8ab15f3de8db5"
+  },
+  "Python": {
+   "EqualsDeclared": true,
+   "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec",
+   "Source": "sys.base_prefix",
+   "Version": "3.13.14"
+  },
+  "Versions": {
+   "Cmd": "10.0.26300.9711",
+   "Git": "git version 2.54.0.windows.1",
+   "GitPath": "%USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.EXE",
+   "Os": "Windows-11-10.0.26300-SP0",
+   "Pwsh": "7.6.7",
+   "PwshPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\Microsoft.PowerShell_8wekyb3d8bbwe\\pwsh.EXE",
+   "Python": "3.13.14",
+   "PythonImplementation": "CPython",
+   "PythonOnPath": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\python.EXE",
+   "WindowsPowerShell": "5.1.26100.9711"
+  }
+ },
+ "KitRule": {
+  "Blob": "15e1d4bbbc9d16450d77069bc64899966ccbaa64",
+  "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/reconstruct_runs_m7.py",
+  "Rule": "reconstruct_runs_m7/2",
+  "Sha256": "1eceeceecfebf994e3bce0af7818dfaa2144b99fb1339897745c2fe9ea7141ab"
+ },
+ "Pins": {
+  "bmin_accept.py": {
+   "Blob": "434ef1fccb0d15762b30244b4a60928120698411",
+   "Sha256": "173514aa353f6add1b11ea73ef6da68bba752bacdca64baa0551a6a7be6d8bb0"
+  },
+  "bmin_facts.py": {
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Sha256": "b03c3a19cef608386afd7c2e0618b884bfd7b7f6913e95d8ed70272d517a0200"
+  }
+ },
+ "Schema": "rackcad-i62-s92-bench/0-experimental",
+ "Seconds": 69.6,
+ "X": {
+  "s0-nc2-a/b1": {
+   "Agree": true,
+   "Controller": "pass",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  },
+  "s0-nc2-a/b2": {
+   "Agree": true,
+   "Controller": "pass",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  },
+  "s0-nc2-c/c": {
+   "Agree": true,
+   "Controller": "pass",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  },
+  "s0-v-a/b1": {
+   "Agree": true,
+   "Controller": "pass",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  },
+  "s0-v-c/c": {
+   "Agree": true,
+   "Controller": "pass",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  },
+  "s1-nc2-a/b1": {
+   "Agree": false,
+   "Controller": "fail",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  },
+  "s1-nc2-a/b2": {
+   "Agree": true,
+   "Controller": "pass",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  },
+  "s1-nc2-c/c": {
+   "Agree": true,
+   "Controller": "pass",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  },
+  "s1-v-a/b1": {
+   "Agree": true,
+   "Controller": "pass",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  },
+  "s1-v-c/c": {
+   "Agree": true,
+   "Controller": "pass",
+   "NotCovered": [],
+   "Recomputed": "pass"
+  }
+ }
+}

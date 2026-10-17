@@ -1,0 +1,16 @@
+A S1/NC2-A (12 ordenes, con contract) rule True 12 check False [{'Seq': 3, 'ItemId': 'item_4', 'Order': 'contract'}]
+A S1/NC2-C (11 ordenes, sin contract) rule True 11 check True []
+A S0/V-A (12 ordenes, con contract) rule True 12 check False [{'Seq': 3, 'ItemId': 'item_4', 'Order': 'contract'}]
+A S0/V-C (11 ordenes, sin contract) rule True 11 check True []
+C kit rule True check True acceptor 0 ACCEPT_FACTS MATCH accepted True oracle True cross True
+X s0-nc2-a/b1 {'Recomputed': 'pass', 'Controller': 'pass', 'Agree': True, 'NotCovered': []}
+X s0-nc2-a/b2 {'Recomputed': 'pass', 'Controller': 'pass', 'Agree': True, 'NotCovered': []}
+X s0-nc2-c/c {'Recomputed': 'pass', 'Controller': 'pass', 'Agree': True, 'NotCovered': []}
+X s0-v-a/b1 {'Recomputed': 'pass', 'Controller': 'pass', 'Agree': True, 'NotCovered': []}
+X s0-v-c/c {'Recomputed': 'pass', 'Controller': 'pass', 'Agree': True, 'NotCovered': []}
+X s1-nc2-a/b1 {'Recomputed': 'pass', 'Controller': 'fail', 'Agree': False, 'NotCovered': []}
+X s1-nc2-a/b2 {'Recomputed': 'pass', 'Controller': 'pass', 'Agree': True, 'NotCovered': []}
+X s1-nc2-c/c {'Recomputed': 'pass', 'Controller': 'pass', 'Agree': True, 'NotCovered': []}
+X s1-v-a/b1 {'Recomputed': 'pass', 'Controller': 'pass', 'Agree': True, 'NotCovered': []}
+X s1-v-c/c {'Recomputed': 'pass', 'Controller': 'pass', 'Agree': True, 'NotCovered': []}
+wrote s92-result.json 863d446f03ed1018f066b12b87dd3f384d777b99e6b588b14a573886fa53453e seconds 69.6

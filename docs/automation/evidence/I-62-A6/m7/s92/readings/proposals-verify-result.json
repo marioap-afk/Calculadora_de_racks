@@ -1,0 +1,29 @@
+{
+ "Checks": {
+  "HygieneFiles": 12,
+  "JsonRows": 8,
+  "MdQuotes": 54,
+  "MdTags": 78,
+  "MdTermQuotes": 8,
+  "ProbeFacts": 24,
+  "Sources": 10,
+  "TextCitations": 54
+ },
+ "Files": {
+  "probes/probe-proposals-result.json": "74661c1d5823459d84aaeaaa46d4cb2f4d7fa896d4ea8c01857d41de5635a719",
+  "probes/probe-r12-result.json": "13e56742ff2029e743555c7240a13dbec9aa8779a7f7f897db4eaf397a4699ca",
+  "probes/probe_proposals.py": "ef97e90aeb76c5aaacad57e20cb03daca982eff9e60f306b2d19435e2e69420e",
+  "probes/probe_r12.py": "3b1d28c868728230588c7e113c86cd08cd4bdf485052ea6fdee5ebdaedc9cce0",
+  "proposals-citations.json": "e88d49652c5eda14d2184cb399b236fbafc65ed0f93b20c4d82657a0c1c31858",
+  "proposals.json": "60947bb9414b1579714397e40bc726ad7b8018c834e421cd6f601f80f0b4f270",
+  "proposals.md": "cdf9f23246db61446fc0bdbe29d0798b471deec61268be72260ba2fc2e1109dc",
+  "r12-citations.json": "5cfa38d08218c520f45cc1e989a1697325ce6706c11abe7665541573c2d4a2d6",
+  "r12.json": "6d6e6d5fbb5261b8759861df6f38e55e5ebc26a4b95a79985ecd918bfb211a35",
+  "r12.md": "0cd87377e63519be2d2a08b576b72351f805743f24c18f9c646ef06693c7c411",
+  "verify_proposals.py": "c7f437292439416803815651fe8dcc9abbdc24cd56fa5777e9701437d92ff347",
+  "verify_r12.py": "f51c3a6d2a1772b974c1245120b18ac62b35829852aae0fe92b46104284cc3e0"
+ },
+ "Pass": true,
+ "Problems": [],
+ "Schema": "i62-r12-proposals-verify/1"
+}

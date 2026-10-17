@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §92; evidencia §185) — preparar (no aplicar) la enmienda material estrecha del cierre de VERIFY de FX-02 en F6 (R7-A como referencia), la disposición que excluye contract de las VERIFY, las ocho lecturas indeterminadas y L-18, la comprobación estática de reconstruct_runs_m7 y el preflight; A6-7 HELD; sin Codex, sin revisión formal, sin B1 ni FX-U2; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §92; evidencia §185-§186) — A-7 candidata publicada PROPUESTA (blob 6c29747d, commit 6fee8fd6; preflight 160/160; guardas run PASS); disposiciones de exclusión de contract y de lecturas preparadas sin emitir; esperar la disposición del Coordinator que autorice la revisión formal de A-7; A6-7 HELD; sin Codex, sin B1 ni FX-U2; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

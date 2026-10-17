@@ -1,0 +1,276 @@
+{
+ "B1": {
+  "C04": {
+   "Basis": "A5-1 rule 6: map and schema copied byte for byte",
+   "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "SchemaBlob": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "Triggered": false
+  },
+  "C10": {
+   "Basis": "A5-1 rule 1: no ENTRY file in F_seed",
+   "EntryFilesPresentInEff1": [],
+   "Triggered": false
+  },
+  "C12": {
+   "MV7Equality": {
+    "N1": true,
+    "N2": true,
+    "N3": true
+   },
+   "PerFile": [
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 5,
+     "Path": "docs/AUTOMATION_PLAN.md"
+    },
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 3,
+     "Path": "docs/INITIATIVE_LIFECYCLE.md"
+    },
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 3,
+     "Path": "docs/WORKFLOW.md"
+    },
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 1,
+     "Path": "docs/automation/agent-execution/README.md"
+    },
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 1,
+     "Path": "docs/automation/agent-execution/routing.md"
+    },
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 2,
+     "Path": "docs/initiatives/PROMPT_TEMPLATES.md"
+    }
+   ],
+   "Triggered": false
+  },
+  "C13": {
+   "PerFile": {
+    "EFF:docs/AUTOMATION_PLAN.md": {},
+    "EFF:docs/INITIATIVE_LIFECYCLE.md": {},
+    "EFF:docs/WORKFLOW.md": {},
+    "EFF:docs/automation/agent-execution/README.md": {},
+    "EFF:docs/automation/agent-execution/routing.md": {},
+    "EFF:docs/initiatives/PROMPT_TEMPLATES.md": {},
+    "EFF^1:docs/AUTOMATION_PLAN.md": {},
+    "EFF^1:docs/INITIATIVE_LIFECYCLE.md": {},
+    "EFF^1:docs/WORKFLOW.md": {},
+    "EFF^1:docs/automation/agent-execution/README.md": {},
+    "EFF^1:docs/automation/agent-execution/routing.md": {},
+    "EFF^1:docs/initiatives/PROMPT_TEMPLATES.md": {}
+   },
+   "Triggered": false
+  }
+ },
+ "Bench": {
+  "C01": {
+   "CommitsMentioningKey": [
+    "a9f6c929e74ef92edfee557c3572b090f48bc318"
+   ],
+   "CommitsScanned": 3,
+   "GitTrailerValues": [
+    "I-62"
+   ],
+   "Main": "fbe25347799e5b801ef708454212335537448bd1",
+   "Reasons": [],
+   "Triggered": false
+  },
+  "C04": {
+   "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "SchemaBlob": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "Triggered": false
+  },
+  "C10": {
+   "EntryFilesPresentInEff1": [
+    "docs/automation/agent-execution/compatibility/clause-map.schema.json"
+   ],
+   "MV3Holds": false,
+   "MV4LiteralViolations": 7,
+   "Triggered": false
+  },
+  "C12": {
+   "MV7Equality": {
+    "N1": false,
+    "N2": false,
+    "N3": false
+   },
+   "PerFile": [
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 0,
+     "Path": "docs/AUTOMATION_PLAN.md"
+    },
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 0,
+     "Path": "docs/INITIATIVE_LIFECYCLE.md"
+    },
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 0,
+     "Path": "docs/WORKFLOW.md"
+    },
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 0,
+     "Path": "docs/automation/agent-execution/README.md"
+    },
+    {
+     "AgreeN1N2": true,
+     "AgreeN1N3": true,
+     "ModifiedCount": 0,
+     "Path": "docs/automation/agent-execution/routing.md"
+    }
+   ],
+   "Triggered": false
+  },
+  "C13": {
+   "PerFile": {
+    "EFF:docs/AUTOMATION_PLAN.md": {},
+    "EFF:docs/INITIATIVE_LIFECYCLE.md": {},
+    "EFF:docs/WORKFLOW.md": {},
+    "EFF:docs/automation/agent-execution/README.md": {},
+    "EFF:docs/automation/agent-execution/routing.md": {},
+    "EFF^1:docs/AUTOMATION_PLAN.md": {},
+    "EFF^1:docs/INITIATIVE_LIFECYCLE.md": {},
+    "EFF^1:docs/WORKFLOW.md": {},
+    "EFF^1:docs/automation/agent-execution/README.md": {},
+    "EFF^1:docs/automation/agent-execution/routing.md": {}
+   },
+   "Triggered": false
+  },
+  "C16": {
+   "C18Triggered": false,
+   "PerInput": {
+    "contract-T1": {},
+    "in-m": {},
+    "in-n4": {},
+    "in-n5": {},
+    "in-n6": {},
+    "in-n7a": {},
+    "in-n7ar-own": {},
+    "in-n7ar-same": {},
+    "in-n7b": {},
+    "in-nc1": {},
+    "in-nc2": {},
+    "in-nc3": {},
+    "in-v": {},
+    "kit-deleg": {}
+   },
+   "Triggered": false
+  },
+  "C24": {
+   "PerCase": [
+    {
+     "Applicable": true,
+     "Case": "in-m",
+     "Paths": 3,
+     "PrintableAscii": true,
+     "RenameDetectedEqualsNoRenames": true,
+     "Triggered": false
+    },
+    {
+     "Applicable": true,
+     "Case": "in-n5",
+     "Paths": 3,
+     "PrintableAscii": true,
+     "RenameDetectedEqualsNoRenames": true,
+     "Triggered": false
+    },
+    {
+     "Applicable": true,
+     "Case": "in-n6",
+     "Paths": 3,
+     "PrintableAscii": true,
+     "RenameDetectedEqualsNoRenames": true,
+     "Triggered": false
+    },
+    {
+     "Applicable": true,
+     "Case": "in-n7a",
+     "Paths": 3,
+     "PrintableAscii": true,
+     "RenameDetectedEqualsNoRenames": true,
+     "Triggered": false
+    },
+    {
+     "Applicable": true,
+     "Case": "in-n7ar-own",
+     "Paths": 3,
+     "PrintableAscii": true,
+     "RenameDetectedEqualsNoRenames": true,
+     "Triggered": false
+    },
+    {
+     "Applicable": true,
+     "Case": "in-n7ar-same",
+     "Paths": 3,
+     "PrintableAscii": true,
+     "RenameDetectedEqualsNoRenames": true,
+     "Triggered": false
+    },
+    {
+     "Applicable": true,
+     "Case": "in-n7b",
+     "Paths": 31,
+     "PrintableAscii": true,
+     "RenameDetectedEqualsNoRenames": true,
+     "Triggered": false
+    },
+    {
+     "Applicable": false,
+     "Case": "in-nc1",
+     "Why": "BaseSha or CurrentSha is not an existing commit"
+    },
+    {
+     "Applicable": true,
+     "Case": "in-nc2",
+     "Paths": 3,
+     "PrintableAscii": true,
+     "RenameDetectedEqualsNoRenames": true,
+     "Triggered": false
+    },
+    {
+     "Applicable": true,
+     "Case": "in-nc3",
+     "Paths": 3,
+     "PrintableAscii": true,
+     "RenameDetectedEqualsNoRenames": true,
+     "Triggered": false
+    },
+    {
+     "Applicable": true,
+     "Case": "in-v",
+     "Paths": 3,
+     "PrintableAscii": true,
+     "RenameDetectedEqualsNoRenames": true,
+     "Triggered": false
+    }
+   ],
+   "Triggered": false
+  },
+  "Derive": {
+   "Candidates": [
+    "fbe25347799e5b801ef708454212335537448bd1"
+   ]
+  }
+ },
+ "Schema": "i62-r12-proposals-probe/1"
+}

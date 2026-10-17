@@ -4663,3 +4663,32 @@ solo desde artefactos custodiados.
   límite de escenarios de L-18 sin cambiar U-19; comprobación estática de `reconstruct_runs_m7.py`; preflight (delta, materialidad, guardas, negativos de
   entradas ausentes, reemplazadas y ajenas, compatibilidad con A-5 y A-6, preservación de oráculos, presupuestos y líneas del Owner, evidencia sobre
   R7-A). Sin revisión formal, sin B1, sin FX-U2, sin C1-C3.
+
+## 186. A-7 candidata publicada como PROPUESTA (blob `6c29747d`, commit `6fee8fd6`), preflight 160/160 y guardas `run` PASS; disposiciones de §92 preparadas (decisiones §92)
+
+- **A-7** ([`I-62-A-7.md`](../../initiatives/I-62-A-7.md), blob `6c29747d61c5f689a195095ad3712e6d9dba62aa`), publicada en `6fee8fd6` (padre `bb439090`): ese commit
+  añade solo A-7 y `I-62-A7/`. PROPUESTA, ronda 1; revisión del Architect NOT LAUNCHED. Una regla, A7-1, al final de V14 D.3 después de A6-8: el cierre de
+  las VERIFY de FX-02 en F6 y de la medición de A6-7 se compone de (a) autoridades, cada una en la revisión en que 16.3 y 16.13 ordenan leerla
+  (AuthorityRevision para la unidad, `MainSha_eval` para EXTERNAL y Evaluate, EFF y EFF^1 para Validate); (b) objetos versionados del `Target`, en
+  `Target.commit`; (c) contrato, delegación, entrega y TRX, por el blob de sus bytes custodiados en las rutas de la designación; (d) el instrumento de A6-2.
+  Cada categoría con origen, identidad, referencia de I6, fidelidad y ausencia. M-02 a M-05 sí; sin consecuencia reservada al Owner. Residuo declarado
+  (§3.5): las comparaciones de `clausemap` en revisiones que 16.13 no lee, con una comprobación de cobertura de fallo cerrado antes de lanzar.
+- **Preflight** ([`I-62-A7/preflight.md`](I-62-A7/preflight.md)): 160 de 160 casos. Reproducción: el cierre de A7-1 es byte a byte el de R7-A en las 11
+  designaciones del banco y en el E congelado del kit. Caso tipo B1 sobre una copia temporal del bundle custodiado `candidate-b.bundle` (sin crear B1): A7-1
+  fija 6 archivos MODIFIED en EFF^1 con blobs distintos de la AuthorityRevision y `clausemap` da R9 `MATCH`; con R7-A, `MISMATCH`. 33 negativos de entradas
+  ausentes, reemplazadas y ajenas; compatibilidad con A-5 y A-6 y preservación de oráculos, presupuestos y líneas del Owner (22); comprobación estática de
+  `reconstruct_runs_m7.py` (24): las funciones declaradas sin cambio son idénticas por AST. El preflight corrigió el texto candidato antes de publicarlo
+  (doce hallazgos, F1-F12: archivo del mapa ausente, ruta de los controles, unicidad, contrato o delegación ausentes, criterio de cobertura de §3.5,
+  registro de blobs), todos resueltos salvo el residuo F6 y una nota de la cabecera de la reconstrucción (F8).
+- **Guardas** (`a7-guards.py`, autoprueba 44 de 44 mutantes): `run` sobre `bb439090..6fee8fd6` = **PASS** en G1-G7
+  ([resultado](I-62-A7/a7-guards-result-run.json)).
+- **Disposiciones preparadas** ([`m7/s92/`](I-62-A6/m7/s92/coordinator-notes.md)), sin emitir:
+  - **Exclusión de `contract`** (`contract/disposition-draft.md`): la orden declarada para la medición y toda VERIFY de FX-02 es un conjunto cerrado de
+    11 órdenes; una ejecución de `contract` no tiene la forma declarada y la salida no se acepta (no es un FAIL del producto); `Contract` sigue siendo
+    obligación del Controller con U-19, leyendo CONTRACT y DELEG con `read-json --file`. Banco: nc2 con dos archivos de evidencia, aceptada sin
+    `contract` con el oráculo relativo intacto; las operaciones de A6-7, regla 1, siguen demostrables. El punto 7 (recálculo de `Contract` por la
+    supervisión) sería un control nuevo: nota del Principal en `coordinator-notes.md`.
+  - **Lecturas** (`readings/proposals.md`; citas comprobadas): las ocho INDETERMINATE por comprobaciones de fallo cerrado de la supervisión (FC-01,
+    FC-04, FC-10, FC-12, FC-13, FC-16 para L-16 y L-23, FC-24), con S-03 si los datos llegan al caso ambiguo; L-18 por la limitación FC-18 (sin comodines
+    no finales en contrato ni delegaciones), sin cambiar U-19. Ninguna se activa en el banco ni en un B1 según A5-1.
+- Sin Codex, sin revisión formal, sin B1 ni FX-U2; A6-7 HELD.

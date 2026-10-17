@@ -1,0 +1,277 @@
+{
+ "Schema": "rackcad-bmin-accept-request/0-experimental",
+ "Repo": "D:/r62-a6m7/d1/nc2/w/c-x",
+ "Tool": {
+  "PinnedBlob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+  "RunFrom": "object",
+  "GitObject": {
+   "GitDir": "D:/r62-a6m7/d1/nc2/w/c-x",
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+  }
+ },
+ "Interpreter": {
+  "Python": "3.13.14",
+  "ExecutableSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec"
+ },
+ "Runs": [
+  {
+   "Name": "r00-identity",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r00-identity.json",
+   "Argv": [
+    "identity",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--branch",
+    "fx/u1",
+    "--base",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--current",
+    "0e27c94616cfc8cef5a26b1748626dc930896848",
+    "--red",
+    "53436cb20adf1fe87dc91b0382dd3123a1fac44f"
+   ]
+  },
+  {
+   "Name": "r01-diff",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r01-diff.json",
+   "Argv": [
+    "diff",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--from",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--to",
+    "0e27c94616cfc8cef5a26b1748626dc930896848"
+   ]
+  },
+  {
+   "Name": "r02-scope",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r02-scope.json",
+   "Argv": [
+    "scope",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--from",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "--to",
+    "0e27c94616cfc8cef5a26b1748626dc930896848",
+    "--file",
+    "DELEG=D:/r62-a6m7/d1/nc2/w/work/in-s1-nc2/deleg.json",
+    "--sha256",
+    "DELEG=803198ff774a077a1d712ab1d01e7e8a5552bfa89706293ab0c769a8bde848d4"
+   ]
+  },
+  {
+   "Name": "r03-hashes",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r03-hashes.json",
+   "Argv": [
+    "hashes",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--rev",
+    "0e27c94616cfc8cef5a26b1748626dc930896848",
+    "--paths",
+    "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+    "docs/automation/evidence/FX-U1-agent/T1/worker-summary.md",
+    "src/Fixture.Lib/Calculator.cs",
+    "tests/Fixture.Tests/CalculatorTests.cs"
+   ]
+  },
+  {
+   "Name": "r04-cleantree",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r04-cleantree.json",
+   "Argv": [
+    "cleantree",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--ignore-path",
+    "artifacts/orchestration/FX-U1/T1/0/R20261017T000000Z-d1e4/output.json"
+   ]
+  },
+  {
+   "Name": "r05-handoff",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r05-handoff.json",
+   "Argv": [
+    "handoff",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--file",
+    "H=D:/r62-a6m7/d1/nc2/w/work/in-s1-nc2/handoff.json",
+    "--sha256",
+    "H=0efccf5bfb0de9cde8d37354ad93bb93ace451411a836d39ab9c7a1c3d140224",
+    "--schema-rev",
+    "0e27c94616cfc8cef5a26b1748626dc930896848"
+   ]
+  },
+  {
+   "Name": "r06-freetext",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r06-freetext.json",
+   "Argv": [
+    "freetext",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--file",
+    "H=D:/r62-a6m7/d1/nc2/w/work/in-s1-nc2/handoff.json",
+    "--sha256",
+    "H=0efccf5bfb0de9cde8d37354ad93bb93ace451411a836d39ab9c7a1c3d140224",
+    "--terms-rev",
+    "fbe25347799e5b801ef708454212335537448bd1"
+   ]
+  },
+  {
+   "Name": "r07-clausemap",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r07-clausemap.json",
+   "Argv": [
+    "clausemap",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--main",
+    "fbe25347799e5b801ef708454212335537448bd1",
+    "--state-rev",
+    "0e27c94616cfc8cef5a26b1748626dc930896848",
+    "--state-path",
+    "docs/automation/state/FX-U1.yml",
+    "--file",
+    "CONTRACT=D:/r62-a6m7/d1/nc2/w/work/in-s1-nc2/K.json",
+    "--sha256",
+    "CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+    "--base",
+    "95bdc29d428b35d2188a10e1c5462d6caf2be4df"
+   ]
+  },
+  {
+   "Name": "r08-trx",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r08-trx.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--file",
+    "TRX=D:/r62-a6m7/d1/nc2/w/work/in-s1-nc2/fixture-tests.trx",
+    "--sha256",
+    "TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "--filter-substring",
+    "Subtract"
+   ]
+  },
+  {
+   "Name": "r09-read-text",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r09-read-text.json",
+   "Argv": [
+    "read-text",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--rev",
+    "0e27c94616cfc8cef5a26b1748626dc930896848",
+    "--path",
+    "docs/automation/decisions/FX-U1.md",
+    "--lines",
+    "1-1"
+   ]
+  },
+  {
+   "Name": "r10-read-json",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r10-read-json.json",
+   "Argv": [
+    "read-json",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--rev",
+    "0e27c94616cfc8cef5a26b1748626dc930896848",
+    "--path",
+    "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+    "--pointer",
+    "/Objective",
+    "--pointer",
+    "/Schema",
+    "--pointer",
+    "/MainSha",
+    "--pointer",
+    "/AuthorityRevision"
+   ]
+  },
+  {
+   "Name": "r11-read-json",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r11-read-json.json",
+   "Argv": [
+    "read-json",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--file",
+    "CONTRACT=D:/r62-a6m7/d1/nc2/w/work/in-s1-nc2/K.json",
+    "--sha256",
+    "CONTRACT=8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc",
+    "--pointer",
+    "/AllowedWriteScope",
+    "--pointer",
+    "/ForbiddenWriteScope",
+    "--pointer",
+    "/Invariants",
+    "--pointer",
+    "/StopConditions",
+    "--pointer",
+    "/Authorities",
+    "--pointer",
+    "/RequiredTests",
+    "--pointer",
+    "/RoleRequirements",
+    "--pointer",
+    "/SupersededCommits"
+   ]
+  },
+  {
+   "Name": "r12-read-json",
+   "Envelope": "D:/r62-a6m7/d1/s92/w/work/s92-nc2-r-log/env/r12-read-json.json",
+   "Argv": [
+    "read-json",
+    "--repo",
+    "D:/r62-a6m7/d1/nc2/w/c-x",
+    "--file",
+    "DELEG=D:/r62-a6m7/d1/nc2/w/work/in-s1-nc2/deleg.json",
+    "--sha256",
+    "DELEG=803198ff774a077a1d712ab1d01e7e8a5552bfa89706293ab0c769a8bde848d4",
+    "--pointer",
+    "/AllowedWriteScope",
+    "--pointer",
+    "/ForbiddenWriteScope",
+    "--pointer",
+    "/Invariants",
+    "--pointer",
+    "/StopConditions",
+    "--pointer",
+    "/Authorities",
+    "--pointer",
+    "/RequiredTests",
+    "--pointer",
+    "/RoleRequirements",
+    "--pointer",
+    "/SupersededCommits"
+   ]
+  }
+ ],
+ "Closure": {
+  "Path": "D:/r62-a6m7/d1/s92/w/work/build/s92-nc2-r.closure.json",
+  "Sha256": "071120e5692bce0910ded2eb27425d4b430ca751628a315c9b765fef69e9d458"
+ },
+ "RelayFacts": {
+  "Path": "D:/r62-a6m7/d1/s92/w/work/s-s92-nc2-r/relay-facts.json",
+  "CitedSha256": "927858159b6e131de59da99d202e205c3315a8579f6e852c96d05c74e9e1830c"
+ },
+ "Verification": {
+  "Controller": {
+   "Path": "D:/r62-a6m7/d1/s92/w/work/s-s92-nc2-r/controller-output.json",
+   "Sha256": "aa88b9c5b6b86c3978255d4cfd9d4550e2be6a24d7edb567ff906e99065267a0"
+  },
+  "Delegation": {
+   "Path": "D:/r62-a6m7/d1/nc2/w/work/in-s1-nc2/deleg.json",
+   "Sha256": "803198ff774a077a1d712ab1d01e7e8a5552bfa89706293ab0c769a8bde848d4"
+  },
+  "Handoff": {
+   "Path": "D:/r62-a6m7/d1/nc2/w/work/in-s1-nc2/handoff.json",
+   "Sha256": "0efccf5bfb0de9cde8d37354ad93bb93ace451411a836d39ab9c7a1c3d140224"
+  },
+  "IgnorePath": "artifacts/orchestration/FX-U1/T1/0/R20261017T000000Z-d1e4/output.json",
+  "TermsRev": "fbe25347799e5b801ef708454212335537448bd1",
+  "MainSha": "fbe25347799e5b801ef708454212335537448bd1"
+ }
+}
