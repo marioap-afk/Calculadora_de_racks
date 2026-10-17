@@ -1,0 +1,11 @@
+pre-netload 08:51:35Z c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07 table fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619
+pre-open 08:52:24Z c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07
+ref-inserted 08:55:26Z
+ov01-valid 08:56:21Z
+ov04-valid 08:57:13Z
+ov03a 08:59:37Z exists=False tmp=0
+ov03b 09:01:46Z exists=False tmp=0
+ov03c 09:05:05Z exists=False tmp=0; nota: pendiente tecleada primero como 0.3 (triple clic solo selecciono 438) y corregida a 3 con Ctrl+A antes de exportar
+ov03d 09:07:35Z exists=False tmp=0
+ov03e 09:10:10Z exists=False tmp=0
+acad-closed 09:10:53Z acad=0 ram=0

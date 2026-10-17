@@ -7,6 +7,8 @@ decisiones [§78](../automation/decisions/I-65.md)). Concreta la matriz de la va
 ventana W1. Reutiliza el método de BASELINE/POST/DIFF del segundo smoke ([procedimiento](I-65-f4-second-smoke-procedure.md);
 [preflight/POST](I-65-f4-host-release-and-preflight.md) §3-§6).
 
+> **Estado (2026-10-17): EJECUTADO** (decisiones §79; [informe](../automation/evidence/I-65-f4/w1-R20261017T0847Z/w1-report.md)): W1 = SATISFACTORIA (OV-01 y OV-04 `Valid` 16/16, carga útil 117/117, OV-03 (a)-(e) con su código y sin carpeta, DIFF sin PROHIBIDO). Texto original de preparación:
+>
 > **Estado: PREPARADO.** W1 AUTOCAD EXECUTION = CONDITIONAL GO: se ejecuta sin otra aprobación solo si se cumplen todas las condiciones
 > de entrada de §3. W2 RAM EXECUTION = NO. PRODUCT CODE CHANGES = NO. F4 GATE PASS = NO.
 

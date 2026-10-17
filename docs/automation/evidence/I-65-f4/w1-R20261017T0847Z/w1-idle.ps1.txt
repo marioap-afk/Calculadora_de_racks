@@ -1,0 +1,12 @@
+# Solo lectura: segundos de inactividad del usuario, procesos acad/RAM y nombre del proceso en primer plano.
+Add-Type -Namespace W1I -Name U -MemberDefinition @'
+[StructLayout(LayoutKind.Sequential)] public struct LII { public uint cbSize; public uint dwTime; }
+[DllImport("user32.dll")] public static extern bool GetLastInputInfo(ref LII p);
+[DllImport("user32.dll")] public static extern System.IntPtr GetForegroundWindow();
+[DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(System.IntPtr h, out uint pid);
+'@
+$lii = New-Object W1I.U+LII; $lii.cbSize = 8; [void][W1I.U]::GetLastInputInfo([ref]$lii)
+$idle = [math]::Round(([Environment]::TickCount64 % 4294967296 - $lii.dwTime) / 1000.0, 1)
+$fpid = 0; [void][W1I.U]::GetWindowThreadProcessId([W1I.U]::GetForegroundWindow(), [ref]$fpid)
+$fg = (Get-Process -Id $fpid -ErrorAction SilentlyContinue).ProcessName
+"time_utc=" + (Get-Date).ToUniversalTime().ToString('o') + " user_idle_seconds=$idle foreground_process=$fg acad=" + @(Get-Process -Name acad -ErrorAction SilentlyContinue).Count + " ram=" + @(Get-Process -Name RAMElements -ErrorAction SilentlyContinue).Count

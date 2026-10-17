@@ -1,0 +1,6 @@
+time_utc=2026-10-17T09:10:19.2776611Z acad_count=1
+pid=26824
+RackCad.Plugin.dll D:\r65-smoke\5a5ca577\bin-Debug-net8.0-windows\RackCad.Plugin.dll c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07
+RackCad.UI.dll D:\r65-smoke\5a5ca577\bin-Debug-net8.0-windows\RackCad.UI.dll 78498d77cbcbde6b15f1cfce1cc52b92500fd1deb6569cd1d34ff4c3f8fe3b9c
+RackCad.Application.dll D:\r65-smoke\5a5ca577\bin-Debug-net8.0-windows\RackCad.Application.dll 7f1f3cd28a3e9f4b7270fb57a6ec1a13014ec9b12ba64aceab391725d0b08f5b
+RackCad.Domain.dll D:\r65-smoke\5a5ca577\bin-Debug-net8.0-windows\RackCad.Domain.dll f5b02abf74a3bbe3c55203c942ebf14005057105cbf77decaaf1e9fff90f5813

@@ -1,0 +1,145 @@
+{
+  "schema": "rackcad-ram-build-manifest/v1",
+  "adapter": {
+    "name": "rackcad-ram-elements-adapter",
+    "version": "1.0.0"
+  },
+  "target": {
+    "product": "RAM Elements",
+    "productVersion": "26.00.01.015",
+    "productVersionStatus": "declared, not verified",
+    "package": "ramelements",
+    "packageVersion": "0.1.0",
+    "units": "LB_IN"
+  },
+  "source": {
+    "rackId": "89fcc4ba-b78a-41b6-8985-9a583c24f989",
+    "kind": "Cantilever",
+    "stationIndex": 0,
+    "sourceFingerprint": "13d0064dc090980e863788346e484e5348ffa51069d7ab21790d45d61fbfc88e",
+    "generatorVersion": "rackcad-structural-model/1"
+  },
+  "analysisInputFingerprint": "f5ce900c14ee768bb85670e814099d58947857778077ced8f81d371a8858d663",
+  "packageFolder": "D:\\r65-smoke\\5a5ca577\\ov-R20261017T0847Z\\inj-OV07b",
+  "loadsFile": {
+    "name": "structural-loads.json",
+    "sha256": "25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05"
+  },
+  "mapping": {
+    "rowsSha256": "54ca9f6c80376d857755e68fc16d7de58a771b52cb0a0b7fa452a5df6191c98c",
+    "rows": [
+      {
+        "sectionId": "AISC-HSS-RECT-HSS4X4X_250",
+        "ramSection": {
+          "name": "HSS_SQR 4X4X1_4",
+          "table": "HSS_SQR",
+          "country": "United States"
+        },
+        "materialId": "ASTM-A500-GRC",
+        "ramMaterial": "A500 GrC rectangular",
+        "expectedMaterial": {
+          "elasticModulus": {
+            "value": 29000,
+            "unit": "ksi"
+          },
+          "poissonRatio": 0.3,
+          "shearModulus": null,
+          "unitWeight": {
+            "value": 490,
+            "unit": "pcf"
+          },
+          "source": "Geometry: AISC Shapes Database v16.0 (Aug 2023; file SHA-256 82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496), row HSS4X4X1/4 as published: tnom 0.25 in, tdes 0.233 in (0.93 tnom), A 3.37 in2, Ix = Iy 7.80 in4, J 12.8 in4; independent derivation with outside corner radius 2 tdes within 0.15 %. Material: ASTM A500/A500M Grade C, square and rectangular (current ASTM edition A500/A500M-23). E 29000 ksi and nu 0.30: modeling conventions for structural steel accepted at verification; primary citation not read in I-65. Unit weight 490 pcf: steel density implied by the AISC v16.0 HSS nominal weights (median 490.00 pcf). RAM: United States/HSS_SQR/HSS_SQR 4X4X1_4, material A500 GrC rectangular, not A500 GrC rounded (E 29000 ksi, nu 0.3, 486.94 pcf). DIF-01: RAM unit weight -0.62 %, informative only for the pilot transfer test without self weight; RAM values are not equivalent for later analyses. RAM catalog formal edition not verified. Ref: I-65 F4 engineering approval package."
+        },
+        "status": "verified",
+        "verifiedBy": "Mario Pérez — Owner / Engineering Validator",
+        "verifiedOn": "2026-10-16",
+        "canonicalText": "26:rackcad-section-map-row/v1|25:AISC-HSS-RECT-HSS4X4X_250|15:HSS_SQR 4X4X1_4|7:HSS_SQR|13:United States|13:ASTM-A500-GRC|20:A500 GrC rectangular|5:29000|3:ksi|3:0.3|-|-|3:490|3:pcf|1001:Geometry: AISC Shapes Database v16.0 (Aug 2023; file SHA-256 82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496), row HSS4X4X1/4 as published: tnom 0.25 in, tdes 0.233 in (0.93 tnom), A 3.37 in2, Ix = Iy 7.80 in4, J 12.8 in4; independent derivation with outside corner radius 2 tdes within 0.15 %. Material: ASTM A500/A500M Grade C, square and rectangular (current ASTM edition A500/A500M-23). E 29000 ksi and nu 0.30: modeling conventions for structural steel accepted at verification; primary citation not read in I-65. Unit weight 490 pcf: steel density implied by the AISC v16.0 HSS nominal weights (median 490.00 pcf). RAM: United States/HSS_SQR/HSS_SQR 4X4X1_4, material A500 GrC rectangular, not A500 GrC rounded (E 29000 ksi, nu 0.3, 486.94 pcf). DIF-01: RAM unit weight -0.62 %, informative only for the pilot transfer test without self weight; RAM values are not equivalent for later analyses. RAM catalog formal edition not verified. Ref: I-65 F4 engineering approval package.|8:verified|43:Mario Pérez — Owner / Engineering Validator|10:2026-10-16"
+      },
+      {
+        "sectionId": "AISC-W-W12X26",
+        "ramSection": {
+          "name": "W 12X26",
+          "table": "W",
+          "country": "United States"
+        },
+        "materialId": "ASTM-A992-GR50",
+        "ramMaterial": "A992 Gr50",
+        "expectedMaterial": {
+          "elasticModulus": {
+            "value": 29000,
+            "unit": "ksi"
+          },
+          "poissonRatio": 0.3,
+          "shearModulus": null,
+          "unitWeight": {
+            "value": 490,
+            "unit": "pcf"
+          },
+          "source": "Geometry: AISC Shapes Database v16.0 (Aug 2023; file SHA-256 82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496), row W12X26 as published: A 7.65 in2, Ix 204 in4, Iy 17.3 in4, J 0.300 in4; independent derivation within 0.24 %. Material: ASTM A992/A992M Grade 50 (current ASTM edition A992/A992M-22). E 29000 ksi and nu 0.30: modeling conventions for structural steel accepted at verification; primary citation not read in I-65. Unit weight 490 pcf: steel density implied by the AISC v16.0 HSS nominal weights (median 490.00 pcf). RAM: United States/W/W 12X26, material A992 Gr50 (E 29000 ksi, nu 0.3, 486.94 pcf). DIF-01: RAM unit weight -0.62 %, informative only for the pilot transfer test without self weight; RAM values are not equivalent for later analyses. RAM catalog formal edition not verified. Ref: I-65 F4 engineering approval package."
+        },
+        "status": "verified",
+        "verifiedBy": "Mario Pérez — Owner / Engineering Validator",
+        "verifiedOn": "2026-10-16",
+        "canonicalText": "26:rackcad-section-map-row/v1|13:AISC-W-W12X26|7:W 12X26|1:W|13:United States|14:ASTM-A992-GR50|9:A992 Gr50|5:29000|3:ksi|3:0.3|-|-|3:490|3:pcf|860:Geometry: AISC Shapes Database v16.0 (Aug 2023; file SHA-256 82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496), row W12X26 as published: A 7.65 in2, Ix 204 in4, Iy 17.3 in4, J 0.300 in4; independent derivation within 0.24 %. Material: ASTM A992/A992M Grade 50 (current ASTM edition A992/A992M-22). E 29000 ksi and nu 0.30: modeling conventions for structural steel accepted at verification; primary citation not read in I-65. Unit weight 490 pcf: steel density implied by the AISC v16.0 HSS nominal weights (median 490.00 pcf). RAM: United States/W/W 12X26, material A992 Gr50 (E 29000 ksi, nu 0.3, 486.94 pcf). DIF-01: RAM unit weight -0.62 %, informative only for the pilot transfer test without self weight; RAM values are not equivalent for later analyses. RAM catalog formal edition not verified. Ref: I-65 F4 engineering approval package.|8:verified|43:Mario Pérez — Owner / Engineering Validator|10:2026-10-16"
+      }
+    ]
+  },
+  "assumptions": {
+    "sha256": "ab580fafa69551a1be49c0651bcbcf8468b91e7bd728e8d4f5dd196a23948818",
+    "warning": "These assumptions are hypotheses for transfer equivalence only; they are not a structural validation.",
+    "items": [
+      {
+        "id": "ASM-PROP-01",
+        "statement": "Section and material properties used by the analysis are those of the analysis program database, selected by the section and material names of the verified mapping rows. Declared limitation: database editions and material values may differ from the usual ones; they are compared against the catalogue and against the expected values with their cited source."
+      },
+      {
+        "id": "CON-01",
+        "statement": "The arm-to-column connection is continuous: no member end is released. Declared limitation: the real connection is semi-rigid."
+      },
+      {
+        "id": "IDL-NO-OFFSETS",
+        "statement": "No rigid offsets: each analytical arm runs from the column axis to its tip and includes half the column and the plate. Declared limitation: the arm flexibility is overestimated, and no conclusion about real behaviour is drawn from V1."
+      },
+      {
+        "id": "LOD-01",
+        "statement": "A single load case REF1 carries the loads of the load file; there is no self weight and there are no combinations. Declared limitation: the loads are not derived from pallets, impact, seismic action or tributary areas."
+      },
+      {
+        "id": "SUP-01",
+        "statement": "COL.FOOT is fixed in its six degrees of freedom. Declared limitation: no anchor, base plate or slab stiffness is represented."
+      },
+      {
+        "id": "SUP-02",
+        "statement": "The base is not modelled; the idealisation starts at the column foot. Declared limitation: the real base bears on the floor."
+      },
+      {
+        "id": "SUP-03",
+        "statement": "Plane analysis: every node other than the foot restrains translation along X and rotation about Y and Z. Declared limitation: no out-of-plane buckling and no bracing effect are represented."
+      }
+    ]
+  },
+  "exclusions": [
+    "The base, the plates, the gussets, the spacers, the bracing and the round bars are not modelled as elements (SUP-02, IDL-06, CD-I65-F1-14).",
+    "No self weight, no load combinations, no nodal loads, no distributed loads and no local loads.",
+    "No springs, no rigid end offsets and no releases (D-02, D-09)."
+  ],
+  "files": [
+    {
+      "name": "rackcad-ram-build.py",
+      "sha256": "6ad0d8916aac8287596197135fe0086727efcbf6a6cc2d916fae1b62990d734c"
+    },
+    {
+      "name": "structural-loads.json",
+      "sha256": "25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05"
+    }
+  ],
+  "readback": {
+    "name": "ram-readback.json",
+    "repeatsAnalysisInputFingerprint": true
+  },
+  "rackcadFaultInjection": {
+    "kind": "missing-core-function",
+    "mutation": "capabilities.coreFunctions: the nonexistent function 'rackcad_nonexistent_function' is required",
+    "sourcePackageSha256": "6b013b62423e6e1590849a9bacdd5e4242d6930db6de040cc3f62507444a4edc"
+  }
+}

@@ -1,0 +1,72 @@
+time_utc=2026-10-17T09:12:02Z
+ramtool exe=0b56e198331b7eec69c5c9efb41b0aa863a547aa5e4c458d3e66e69752878720 dll=d421c82b08e5a450e64b940b3309d04345f13e41b4b24394f6cd79bc4b949538
+== pkg-OV01 antes
+6b013b62423e6e1590849a9bacdd5e4242d6930db6de040cc3f62507444a4edc *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/pkg-OV01/manifest.json
+d01551f7cfa78a80e787471b763e9af8b1a5944681f64190d918a14e5d3c2f3f *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/pkg-OV01/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/pkg-OV01/structural-loads.json
+== inject unknown-section -> inj-OV05
+Injected package published in 'D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV05' (fault: unknown-section; mutation: members[0].section: 'HSS_SQR 4X4X1_4' -> 'HSS_SQR INEXISTENTE-99'; embedded folder: D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV05).
+exit=0
+manifest.json
+rackcad-ram-build.py
+structural-loads.json
+== inject inverted-axes -> inj-OV06
+Injected package published in 'D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV06' (fault: inverted-axes; mutation: members[0].l2: the expected local axis 2 of the first member is inverted; embedded folder: D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV06).
+exit=0
+manifest.json
+rackcad-ram-build.py
+structural-loads.json
+== inject wrong-version -> inj-OV07a
+Injected package published in 'D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV07a' (fault: wrong-version; mutation: capabilities.version: '0.1.0' -> '999.0.0'; embedded folder: D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV07a).
+exit=0
+manifest.json
+rackcad-ram-build.py
+structural-loads.json
+== inject missing-core-function -> inj-OV07b
+Injected package published in 'D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV07b' (fault: missing-core-function; mutation: capabilities.coreFunctions: the nonexistent function 'rackcad_nonexistent_function' is required; embedded folder: D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV07b).
+exit=0
+manifest.json
+rackcad-ram-build.py
+structural-loads.json
+== pkg-OV01 despues
+6b013b62423e6e1590849a9bacdd5e4242d6930db6de040cc3f62507444a4edc *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/pkg-OV01/manifest.json
+d01551f7cfa78a80e787471b763e9af8b1a5944681f64190d918a14e5d3c2f3f *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/pkg-OV01/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/pkg-OV01/structural-loads.json
+manifest.json
+rackcad-ram-build.py
+structural-loads.json
+== injected package hashes
+7335a76992c1d44c3d02062e70f0d5148f86d84259db84bfa5748a722d179179 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV05/manifest.json
+c995ccb006a113ac3889e2d3b88dc381a0cb32cdcf09cd482416641f17943e39 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV05/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV05/structural-loads.json
+8c6e1c4d9cb34001cb424f4c39cee076d0ad2fc40784b8dbf0e2b915f73635cc *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV06/manifest.json
+1d36513d3822c4fd53bd1c1a6f3648445606765db05132ac3673c93683cc407c *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV06/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV06/structural-loads.json
+72a6e289ea5c7ad6d2a66696bc15e61d8092bf76b0221379865b792525976567 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV07a/manifest.json
+b6016021012a6c523fa03940d0d674c152f703304a1601a7d9fd9bf7bc595486 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV07a/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV07a/structural-loads.json
+cb4972ab776304d8b0511f7acc4e5a92ccc291e818fb20b6b0519403e2494c6c *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV07b/manifest.json
+6ad0d8916aac8287596197135fe0086727efcbf6a6cc2d916fae1b62990d734c *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV07b/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/inj-OV07b/structural-loads.json
+== dump-script -> dump-OV01-gen
+Dump script published in 'D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\dump-OV01-gen'; it embeds the folder 'D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\dump-OV01-gen'.
+exit=0
+rackcad-ram-dump.py
+56faa3550934a663889fb78b0b7787350839ed6b3f0747cf9064fc2a5ae1a2d5 *D:/r65-smoke/5a5ca577/ov-R20261017T0847Z/dump-OV01-gen/rackcad-ram-dump.py
+== diff vs P2 manual dump template (af262489)
+11c11
+< PAYLOAD = "{\"schema\":\"rackcad-ram-dump-payload/v1\",\"adapterVersion\":\"1.0.0\",\"dumpFolder\":\"D:\\\\r65-smoke\\\\51fc82f1\\\\run-R20261016T1918Z\\\\p2-R20261016T2147Z\\\\dump-man\",\"dumpFileName\":\"ram-dump.json\",\"capabilities\":{\"version\":\"0.1.0\",\"coreFunctions\":[\"lc_count\",\"lc_get_case_category\",\"lc_get_id\",\"lc_get_self_weight\",\"lc_is_combo\",\"lc_term_count\",\"lc_term_factor\",\"lc_term_lc_index\",\"members_count\",\"members_get_axial_behavior\",\"members_get_cardinal_point\",\"members_get_description\",\"members_get_id\",\"members_get_local_axes\",\"members_get_material\",\"members_get_nodes\",\"members_get_point_load\",\"members_get_point_load_count\",\"members_get_releases\",\"members_get_rigid_end_offset\",\"members_get_rotation\",\"members_get_rotational_stiffness\",\"members_get_section\",\"members_get_stiffness_factors\",\"nodes_count\",\"nodes_get_coordinates\",\"nodes_get_description\",\"nodes_get_id\",\"nodes_get_restraints\",\"units_get\",\"units_set\"]}}"
+---
+> PAYLOAD = "{\"schema\":\"rackcad-ram-dump-payload/v1\",\"adapterVersion\":\"1.0.0\",\"dumpFolder\":\"D:\\\\r65-smoke\\\\5a5ca577\\\\ov-R20261017T0847Z\\\\dump-OV01-gen\",\"dumpFileName\":\"ram-dump.json\",\"capabilities\":{\"version\":\"0.1.0\",\"coreFunctions\":[\"lc_count\",\"lc_get_case_category\",\"lc_get_id\",\"lc_get_self_weight\",\"lc_is_combo\",\"lc_term_count\",\"lc_term_factor\",\"lc_term_lc_index\",\"members_count\",\"members_get_axial_behavior\",\"members_get_cardinal_point\",\"members_get_description\",\"members_get_id\",\"members_get_local_axes\",\"members_get_material\",\"members_get_nodes\",\"members_get_point_load\",\"members_get_point_load_count\",\"members_get_releases\",\"members_get_rigid_end_offset\",\"members_get_rotation\",\"members_get_rotational_stiffness\",\"members_get_section\",\"members_get_stiffness_factors\",\"nodes_count\",\"nodes_get_coordinates\",\"nodes_get_description\",\"nodes_get_id\",\"nodes_get_restraints\",\"units_get\",\"units_set\"]}}"
+diff_exit=1
+lines 213 213 differing_lines [11]
+payload_keys_differing ['dumpFolder']
+dumpFolder P2 = D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-R20261016T2147Z\dump-man
+dumpFolder W2 = D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\dump-OV01-gen
+RESULT SOLO CAMBIA dumpFolder
+pkg-OV01 packageFolder= D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\pkg-OV01 | faultInjection= None
+pkg-OV04 packageFolder= D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\pkg-OV04 | faultInjection= None
+inj-OV05 packageFolder= D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV05 | faultInjection= {"kind": "unknown-section", "mutation": "members[0].section: 'HSS_SQR 4X4X1_4' -> 'HSS_SQR INEXISTENTE-99'", "sourcePackageSha256": "6b013b62423e6e1590849a9bacd
+inj-OV06 packageFolder= D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV06 | faultInjection= {"kind": "inverted-axes", "mutation": "members[0].l2: the expected local axis 2 of the first member is inverted", "sourcePackageSha256": "6b013b62423e6e1590849a
+inj-OV07a packageFolder= D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV07a | faultInjection= {"kind": "wrong-version", "mutation": "capabilities.version: '0.1.0' -> '999.0.0'", "sourcePackageSha256": "6b013b62423e6e1590849a9bacdd5e4242d6930db6de040cc3f6
+inj-OV07b packageFolder= D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV07b | faultInjection= {"kind": "missing-core-function", "mutation": "capabilities.coreFunctions: the nonexistent function 'rackcad_nonexistent_function' is required", "sourcePackageS
