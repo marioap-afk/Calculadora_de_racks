@@ -1,0 +1,31 @@
+candidato_propuesto=bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109
+HEAD=bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109 dirty=0
+start=2026-10-19T01:38:32Z
+HEAD_after=bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109 dirty_after=0
+end=2026-10-19T01:54:08Z
+sdk=8.0.423
+--- Core Full
+Correctas! - Con error:     0, Superado: 14390, Omitido:     0, Total: 14390, Duración: 2 m 35 s - RackCad.Tests.dll (net8.0)
+core_exit=0 secs=253
+--- UI Full
+Correctas! - Con error:     0, Superado:  1637, Omitido:    17, Total:  1654, Duración: 9 m 50 s - RackCad.UI.Tests.dll (net8.0)
+ui_exit=0 secs=627
+--- Debug UI build
+Compilación correcta.
+0 Advertencia(s)
+0 Errores
+Tiempo transcurrido 00:00:05.86
+ui_build_exit=0
+--- Debug Plugin build (-o D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows)
+Compilación correcta.
+2 Advertencia(s)
+0 Errores
+Tiempo transcurrido 00:00:31.78
+plugin_build_exit=0 start=2026-10-19T01:53:20Z end=2026-10-19T01:53:53Z
+--- Debug RamTool build (-o D:\r65-smoke\bd1fcf8a\ramtool)
+Compilación correcta.
+0 Advertencia(s)
+0 Errores
+Tiempo transcurrido 00:00:13.47
+tool_build_exit=0
+--- Registros completos y .trx: NO versionados (contienen rutas con el usuario y el equipo; PRIVACY HOLD).

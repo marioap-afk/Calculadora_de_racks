@@ -2437,3 +2437,45 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 - La evidencia del Candidato (Core Full y UI Full locales, builds Debug, manifiesto de salida, identidad de la DLL, valores esperados del
   validador v2 y CI del SHA exacto), la revisión del Architect, la conformidad del Coordinator y el bloque de declaración propuesto se
   versionan en commits posteriores, como evidencia de ese SHA exacto.
+
+## 92. Evidencia del SHA propuesto del Candidato de hito de F5 `bd1fcf8a` (2026-10-19T02:00:06Z)
+
+- Orden: decisiones §87 (CD-I65-F5-09). Evidencia del SHA exacto `bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109`, producida **después** del commit y con el árbol
+  limpio (HEAD antes y después = ese SHA; `status --porcelain` vacío antes y después; 01:38:32Z-01:54:08Z). SDK 8.0.423 (dotnet del usuario).
+  Base de `main` `bb0d5522`, 0 commits detrás. Producto = árbol de `51fc82f1`. Sin AutoCAD, RAM, NETLOAD, Codex ni Workers.
+
+| Comprobación | Resultado |
+|---|---|
+| Core Full | **14390/14390** superadas, 0 con error (253 s) |
+| UI Full | **1637 superadas, 17 omitidas** (las mismas omisiones declaradas que en F4), 0 con error; total 1654 (627 s) |
+| Build Debug de UI | 0 errores, 0 advertencias |
+| Build Debug del Plugin (`-o D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows`) | 0 errores; 2 advertencias MSB3277 (conflicto de versiones de `Microsoft.VisualBasic`, igual que en F4) |
+| Build Debug de la herramienta (`-o D:\r65-smoke\bd1fcf8a\ramtool`) | 0 errores, 0 advertencias |
+| Salida del Plugin | 32 archivos; manifiesto `bd096bec0f2410449a61dae28a3571bb77e55af99e6cc5e86d978605b03a301f`; frente a la salida de F4 solo cambian los 8 binarios `RackCad.*` (dll/pdb, por el SHA estampado); catálogos, `deps.json` y tabla iguales |
+| **DLL del Candidato** | `RackCad.Plugin.dll` SHA-256 **`81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5`**, ProductVersion `1.0.0+bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109` (Application, Domain y UI con la misma versión; `identity.txt`) |
+| Tabla junto a la DLL | `fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619`, 3279 bytes, sin CR, blob `d088e2a9…` = blob en el SHA |
+| Herramienta de F4 | 11 archivos; `RackCad.StructuralAnalysis.RamTool.exe` `21290785e13f2daee51b10b9d0b8911f86e73798e2cf49e668ce791a78e9ce7c` (1.0.0+bd1fcf8a…) |
+| Archivo de cargas de OV-I65-02 | `D:\r65-smoke\bd1fcf8a\inputs\ov-i65-02.loads.json`, copiado del blob del SHA: `d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c`, 1112 bytes, LF |
+| Valores esperados del validador v2 | `D:\r65-smoke\bd1fcf8a\expected-inputs.json`, SHA-256 de los bytes en disco `c61a6e1255783f3c59f3e236c0057bbd88b3b1eabbbe424ba7dced71f22ddaf8` (CRLF; cf. A65-F4F-01); filas `54ca9f6c…` = F4; **no versionado** (PRIVACY HOLD: incluye el nombre del verificador); resumen en `expected-inputs-summary.txt` |
+| Comprobación en seco con las DLL del Candidato | modelo `Valid` (0 diagnósticos), paquete `Valid` (3 archivos) en memoria, nada escrito en disco; **6/6 IGUAL** a la tabla de la preparación §4; huella `3dd3f8bc…3c7c`; línea `PAYLOAD` idéntica byte a byte a la de las DLL de `5a5ca577` (`939dc7e6…`); Q2 = 99.99999999999997 % (CD-I65-F5-08) |
+| CI del SHA exacto | run **`39187567306`** (`push`, rama de I-65, `head_sha` = el SHA): **4/4 success**, con `UI Tests (WPF controls, net8.0-windows)` |
+
+- **Host:** `RAMElements.exe` = 0. Hay un `acad.exe` del usuario abierto desde las 00:38:19Z con un dibujo propio y con la DLL del
+  Candidato **de F4** cargada desde `D:\r65-smoke\5a5ca577\…` mediante NETLOAD manual (primera entrada del MRU del diálogo; ningún
+  registro de carga automática de RackCad). No se interactuó con él; los builds escriben en la carpeta nueva `D:\r65-smoke\bd1fcf8a\`.
+  Para W3 se exige `acad.exe` = 0 (procedimientos W3-PR-04).
+- **Privacidad:** los registros completos de pruebas y builds y los `.trx` no se versionan (rutas con el usuario y el equipo); del CI solo
+  se versiona un resumen de campos técnicos (sin el JSON crudo de la API). Barrido de los archivos nuevos (`privacy-secrets-scan.txt`):
+  **0 secretos y 0 datos personales**. Visibilidad del repositorio: `public` (comprobado a las 01:57:19Z; API autenticada `private: false`, consulta anónima 200): PRIVACY HOLD vigente, C-1 pendiente del Owner.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/ci-run.txt` | `998B0AC830E094410CB3F84E669DBCF4B2C922F68F72D98E83CB786FD368E8F0` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/expected-inputs-summary.txt` | `812E73D7C68E8F1AC801C6C7E2D56B9796242DC7E7EEFC682FE9ADFA9D2F433D` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/f5-dryrun-candidate-output.txt` | `7845A74E31E407FB575E5DC9357DA9E659A5A6E095B4DAAFBE221DB451B4DF45` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/identity.txt` | `C0C0B2DA6C0614112634F04843C2EBDE327C786CE5CB016605ADD29A90E69B27` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/local-evidence.txt` | `64EFD31E7B3FB48E5C3A1207F7566F24DE3653C75D160EC8FEF16C36F742B4DE` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/output-manifest.txt` | `BD096BEC0F2410449A61DAE28A3571BB77E55AF99E6CC5E86D978605B03A301F` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/privacy-secrets-scan.txt` | `3148AB7774D82F3D5E2CCD86C1211BF1562A23C1EDE710490574713679CC4964` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/ramtool-manifest.txt` | `3E6EC61F389A3F88E231665550D44E6A55509DC08D5D195398EB0F8F58C8780D` |
