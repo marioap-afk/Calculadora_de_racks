@@ -84,3 +84,9 @@ reenvío. I-64 dejó constancia de que no la vio en su chat (mensaje de arriba) 
 ## Avisos de cierre
 
 A I-64 (msg 2c8764cd…) e I-52 (msg d1e23542…) a las ~18:02Z, con `acad.exe` = 0, la incidencia del doble arranque y el DIFF (INFORMAR).
+
+## Recomprobación de solo lectura de I-52 tras W3 (literal)
+
+```text
+I-52 → I-65: recomprobación de solo lectura tras W3: sin deriva en lo que I-52 tiene registrado. acad.exe=0; acad.exe R25.0.171.0.0 2a75996f…6422; perfil «<<Unnamed Profile>>»; TRUSTEDPATHS 19 entradas a9ba0fd1…2498; SECURELOAD=1; HKCU Applications solo las 7 estándar, sin RackCad; ApplicationPlugins vacío/inexistente. Huellas de mis 4 rutas de ACL idénticas a mis lecturas anteriores. Bytes de P2 intactos (libro bd49d0f4…, 7/7; paquete del operador, scripts ACL H10, declared-set.json igual); hijo H10 inexistente, H1 con 2 entradas. Tus cambios INFORMAR (diálogo NETLOAD, Bounds de la ventana, posición de Application Window) y el doble arranque de acad.exe cerrado a las 17:53:48Z quedan registrados como observados, sin acción. No autoriza ventanas posteriores.
+```
