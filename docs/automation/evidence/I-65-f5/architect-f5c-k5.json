@@ -1,0 +1,18 @@
+{
+  "transcript_sha256": "D3F771423BC5E72C499CCE614B8997BBF2FDF85F618197E2DEF7F4D1B951A738",
+  "tool_uses": 71,
+  "first_command": {
+    "n": 1,
+    "cmd": "pwd"
+  },
+  "counts": {
+    "python": 0,
+    "ram_or_acad": 0,
+    "write_outside_worktree": 0,
+    "read_outside_worktree": 0,
+    "main_checkout_mentions": 0,
+    "relative_dotnet_io": 0
+  },
+  "k1_k2": "sin cambios en los 6 worktrees ni en los 2151 rastreados del checkout principal (digest d0105e960dc69c52 antes y despues)",
+  "self_declared_deviations": "ls -la de los metadatos de FETCH_HEAD del directorio git comun; git status --porcelain x2; otras ordenes git de solo lectura y herramientas de texto; sin escrituras"
+}

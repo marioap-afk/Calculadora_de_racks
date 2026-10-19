@@ -2479,3 +2479,32 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 | `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/output-manifest.txt` | `BD096BEC0F2410449A61DAE28A3571BB77E55AF99E6CC5E86D978605B03A301F` |
 | `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/privacy-secrets-scan.txt` | `3148AB7774D82F3D5E2CCD86C1211BF1562A23C1EDE710490574713679CC4964` |
 | `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/ramtool-manifest.txt` | `3E6EC61F389A3F88E231665550D44E6A55509DC08D5D195398EB0F8F58C8780D` |
+
+## 93. Revisión del Architect, conformidad del Coordinator y comprobación previa a la declaración del Candidato de F5 (2026-10-19T02:27:45Z)
+
+- Orden: decisiones §87-§88. Architect (opus, solo lectura) de 02:01Z a 02:21Z con K1/K2/K5; comprobación previa con fetch fresco a las
+  02:22:50Z; conformidad del Coordinator. Sin AutoCAD, RAM, NETLOAD, Codex ni Workers; producto sin cambios.
+- Resultado: Architect **CONFORMANT WITH OBSERVATIONS** (0 REQUIRED, A65-F5C-01..09 OPTIONAL); Coordinator **CONFORMING**; READY-01..09
+  CUMPLE en la lectura de hito. **Candidato NO declarado** (acto del Owner; bloque propuesto en `coordinator-f5c-conformity.md` §6).
+- A65-F5C-07: `f5-dryrun-candidate-identity.txt` (DLL cargadas y qué se escribió), `tools/` (copias saneadas; la lista local de nombres del
+  escáner no se versiona), `expected-inputs.redacted.json` (nombre del verificador redactado; el original `c61a6e12…` sigue en disco).
+- Barrido de secretos y datos personales de §92, §93, el estado y los archivos nuevos: 0 coincidencias. Visibilidad: `public` (02:22:50Z).
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f5/architect-f5c-conformance.md` | `630648A36AB58923B9CA533150559BBF414C1A8EDE39E8A70FFD39DAEAC7C59B` |
+| `docs/automation/evidence/I-65-f5/architect-f5c-k5.json` | `5226C3013237C0AF26292162C5473187FDF5BDADFA3E1AAE8B7F80B37E56248B` |
+| `docs/automation/evidence/I-65-f5/architect-f5c.prompt.md` | `492EA0A3A7F6E790A9C0B0F0626098751CFEDA4E3CD6111CAF934B57323C8EE6` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/expected-inputs.redacted.json` | `FC23C447A344432F32BA5495B6CCEEF9D8D60DC4DCE0B9D04EF0F847D574EFC4` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/f5-dryrun-candidate-identity.txt` | `7A9094441C5FE6B9FA7327EEB571812E8C042D3F870E6194948E7FE62C220C0C` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/predeclaration-recheck.txt` | `A544F7F521988CC941131554FCDF00AEA92CE51F7DF2BC7166B67F263B32F657` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/tools/README.txt` | `366728D6E2BA93C2CED7C9B319B4E1598A1D60409879092CF0311A396E27236D` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/tools/cand-evidence.sh.txt` | `B1B151619DAE33544960043391DF4200EFFEE0343F1C39C3F1A2B51165532D52` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/tools/cand-identity.ps1.txt` | `BB73129D18BEEDEE7C300F0DFE9E2699225531E7C4F17EFDEAE858FF98284F4E` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/tools/ci-summary.sh.txt` | `0D4240002C7C3A694EFAB2E88EF4FB3A74AC7D3639FE6FB9E51B7DD4FDEEBF7D` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/tools/expected-inputs-summary.py.txt` | `7734C97C05B054A3C841755201AE24DE193F4E7CDA021A10751371E3AAB09C68` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/tools/f5-dryrun-compare.py.txt` | `39AC443A5A20368AFBAB217309C9E8AFA27AF77E7E7DCF97CDFD0AA950F85265` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/tools/redact-expected-inputs.py.txt` | `9C67B98A1AC080A734C484D1D523435C66C0C291343B6677994C0DA2489460D2` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/tools/secrets-scan.py.txt` | `DAE25FA9FE595CC90D37A357FEB5CF668375D29314D54253EB4EE881E1058DFB` |
+| `docs/automation/evidence/I-65-f5/coordinator-f5c-conformity.md` | `FD319001FC041CCBC30B9C08E4791DEEDF1F75AF0EAD7743CAEB9A8BEC324237` |

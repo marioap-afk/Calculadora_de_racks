@@ -7,7 +7,7 @@ automation_state:
   state: waiting-owner
   gate: F5
   attempts: 7
-  next_action: Coordinator: revision independiente del Architect sobre bd1fcf8a y conformidad; despues Owner: declaracion del Candidato de hito de F5, C-1 (repositorio privado) y autorizacion de W3/W4.
+  next_action: Owner: declaracion del Candidato de hito de F5 bd1fcf8a (bloque §7.1 propuesto) y disposicion de A65-F5C-01..09; C-1 (repositorio privado; el Coordinator lo verifica por lectura); autorizacion de W3 y despues de W4.
   last_evidence_commit: bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109
 execution_context:
   mode: manual
@@ -15,9 +15,9 @@ execution_context:
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F5
-  next_role: Owner (decision del gate siguiente)
+  next_role: Owner (declaracion del Candidato de hito de F5)
   implementation_authorization: NO; F5 SPECIFICATION = APPROVED; F5 CANDIDATE PREPARATION = GO (decisiones §87); F5 CANDIDATE DECLARATION = PENDING; W3/W4 EXECUTION = NO; F5 GATE PASS = NO; READY FINAL = NO; HISTORY REWRITE = NO
   milestone_candidate: {sha: 5a5ca57731ebbbbc41ed4f702698709d5e128a86, scope: hito F4 (no FINAL_CANDIDATE_SHA), dll: c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, ci: 38977069487 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS sin REQUIRED, coordinator: CONFORMING, gate: F4 GATE PASS sobre el SHA de cierre 1e7d8fc2 (CI 39052279094), owner_validation: W1 PASS y W2 PASS (aceptadas por el Owner, decisiones §80 y §82)}
-  f5_milestone_candidate_proposed: {sha: bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109, scope: hito F5 (OV-I65-02; no FINAL_CANDIDATE_SHA), dll: 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, loads: d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c, ci: 39187567306 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: PENDIENTE, coordinator: PENDIENTE, declaration: PENDING (Owner)}
+  f5_milestone_candidate_proposed: {sha: bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109, scope: hito F5 (OV-I65-02; no FINAL_CANDIDATE_SHA), dll: 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, loads: d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c, ci: 39187567306 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS (A65-F5C-01..09 OPTIONAL), coordinator: CONFORMING, predeclaration_recheck: 2026-10-19T02:22:50Z, declaration: PENDING (Owner)}
   owner_decisions_open: [C-1 repositorio privado (accion del Owner), C-2 ejecucion de la redaccion, C-5 notificaciones, declaracion del Candidato de hito de F5, autorizacion de W3 AutoCAD, autorizacion de W4 RAM]
   not_authorized: [W3 AutoCAD y W4 RAM de F5, declarar el Candidato de F5 sin el Owner, F6, F7, implementacion nueva, cambios en src/, alterar el checkout principal, AutoCAD, NETLOAD, corridas en RAM Elements, analisis estructural, guardar modelos de RAM, declaracion de READY final o FINAL_CANDIDATE_SHA, integracion, superar 52 invocaciones de Codex o max_attempts 9, cambios del Freeze o de ADR-0050, tolerancias, codigo de I-52, I-62, I-64 o ID30, integracion con Workspace, interfaz grafica]

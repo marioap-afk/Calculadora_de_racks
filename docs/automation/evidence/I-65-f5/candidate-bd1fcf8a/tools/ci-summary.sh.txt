@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Espera el CI push del SHA exacto y escribe un resumen SIN datos personales (solo campos tecnicos). Uso: bash ci_summary.sh <sha> <out.txt>
+set -u
+SHA="$1"; OUT="$2"; R=marioap-afk/Calculadora_de_racks
+for i in $(seq 1 120); do
+  id=$(gh api "repos/$R/actions/runs?head_sha=$SHA&event=push" --jq '.workflow_runs[0].id // empty' 2>/dev/null)
+  if [ -n "$id" ]; then
+    st=$(gh api "repos/$R/actions/runs/$id" --jq '.status' 2>/dev/null)
+    [ "$st" = "completed" ] && break
+  fi
+  sleep 20
+done
+gh api "repos/$R/actions/runs/$id" --jq '"run_id=\(.id)\nworkflow=\(.name)\nevent=\(.event)\nbranch=\(.head_branch)\nhead_sha=\(.head_sha)\nstatus=\(.status)\nconclusion=\(.conclusion)\nrun_attempt=\(.run_attempt)\ncreated_at=\(.created_at)\nupdated_at=\(.updated_at)"' > "$OUT"
+echo "jobs:" >> "$OUT"
+gh api "repos/$R/actions/runs/$id/jobs" --jq '.jobs[] | "  - \(.name) | \(.status) | \(.conclusion) | \(.started_at) -> \(.completed_at)"' >> "$OUT"
+echo "nota=resumen de campos tecnicos de la API de GitHub; el JSON crudo no se versiona (trae datos personales del autor y del actor)" >> "$OUT"
+cat "$OUT"

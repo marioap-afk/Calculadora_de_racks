@@ -1,0 +1,9 @@
+comprobacion_en_seco=pwsh -NoProfile -File f5_dryrun.ps1 <bin> <design> <loads> <payload-line> y python -I f5_dryrun_compare.py <payload-line>
+bin=D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows (Assembly.LoadFrom de RackCad.Domain.dll y RackCad.Application.dll)
+RackCad.Application.dll sha256=10ba267162470352373a45ab6c41cbc255f7ebabbbb74396e1b05dd8812df77a productVersion=1.0.0+bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109
+RackCad.Domain.dll sha256=b358a51371ffc33bb7bcb52df8204ce3dde28ca1d6e1566911165615fd72a30d productVersion=1.0.0+bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109
+design=docs/automation/evidence/I-65-f1/ref-cant-01.design.json sha256=6725a016d9585c5d0dde15d28ebc186fd4f5ac71930bdd55f901a9483b9572d5
+loads=D:\r65-smoke\bd1fcf8a\inputs\ov-i65-02.loads.json sha256=d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c
+escrito_en_disco=solo la linea PAYLOAD en el scratchpad de la sesion (sha256=939dc7e6e42b8c3b60fe9f245388e04fd77dafe2bf8a3b998d374be54dcc9864, 4918 bytes); nada en D:\r65-smoke ni en la carpeta ficticia del paquete (no se llama al publicador)
+f5_dryrun.ps1 original_sha256=7dc01426047e7bbed619dbd347e81e8df908cc86a14b6877fa8c9f8b8641aa3d
+f5_dryrun_compare.py original_sha256=39ac443a5a20368afbab217309c9e8afa27af77e7e7dcf97cdfd0aa950f85265
