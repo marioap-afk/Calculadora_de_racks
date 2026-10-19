@@ -4692,3 +4692,10 @@ solo desde artefactos custodiados.
     FC-04, FC-10, FC-12, FC-13, FC-16 para L-16 y L-23, FC-24), con S-03 si los datos llegan al caso ambiguo; L-18 por la limitación FC-18 (sin comodines
     no finales en contrato ni delegaciones), sin cambiar U-19. Ninguna se activa en el banco ni en un B1 según A5-1.
 - Sin Codex, sin revisión formal, sin B1 ni FX-U2; A6-7 HELD.
+
+## 187. Decisiones §93: revisión formal única de A-7 autorizada (blob `6c29747d`, commit `6fee8fd6`)
+
+- Objeto verificado: `docs/initiatives/I-62-A-7.md`, blob `6c29747d61c5f689a195095ad3712e6d9dba62aa`, SHA-256 `1ab7315ad0a2592b…`, publicado en `6fee8fd6`.
+- Kit acotado a A-7 derivado del kit acreditado de A-6 ronda 4 (transporte `claude-cli` 2.1.299, `295b49ec…`, presente y sin cambio; auditor y compuertas
+  reutilizados donde la identidad lo permita), con validación incremental (§88); §93 se fija como autorización; ninguna sección de decisiones nueva hasta
+  lanzar y auditar; una invocación, tope de 3 600 s, sin reintento; auditor acreditado. Sin Codex, sin medición, sin B1 ni FX-U2.

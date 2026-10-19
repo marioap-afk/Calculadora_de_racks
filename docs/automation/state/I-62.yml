@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §92; evidencia §185-§186) — A-7 candidata publicada PROPUESTA (blob 6c29747d, commit 6fee8fd6; preflight 160/160; guardas run PASS); disposiciones de exclusión de contract y de lecturas preparadas sin emitir; esperar la disposición del Coordinator que autorice la revisión formal de A-7; A6-7 HELD; sin Codex, sin B1 ni FX-U2; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §93; evidencia §187) — preparar el kit acotado de la revisión formal de A-7 (blob 6c29747d, commit 6fee8fd6) desde el kit acreditado de A-6 r4, con validación incremental; fijar §93; prueba en seco con cero bloqueos; UNA revisión con claude-cli 2.1.299, tope 3 600 s, sin reintento; auditor acreditado; sin nuevas secciones de decisiones hasta auditar; sin Codex; sin A-7 AGREED automático"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
