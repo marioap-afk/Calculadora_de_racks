@@ -4751,3 +4751,30 @@ solo desde artefactos custodiados.
   N4, nc1, tipo B1, invalidador, compatibilidad, BOM); disposiciones propuestas de O1-O8 y nota de FC-01 con `K.MainSha`; detección de BOM en el cierre del
   kit con una vía de lectura byte a byte; publicación como PROPUESTA con guardas si el preflight pasa; kit de revisión limitado a R1-R3, custodiado y sin
   lanzar. Sin Codex, sin A6-7, sin B1 ni FX-U2.
+
+## 191. A-7 ronda 2 publicada como PROPUESTA (blob `8a528133`, commit `e90b444d`), preflight dirigido 119/119 y guardas `run` PASS (decisiones §94)
+
+- **A-7 ronda 2** ([`I-62-A-7.md`](../../initiatives/I-62-A-7.md), blob `8a528133c7cccd83356e31f8fd79cd2ebb0cec15`), publicada en `e90b444d` (padre `b9334f22`):
+  ese commit modifica solo A-7 y añade `I-62-A7/r2/`; la evidencia de la ronda 1 no cambia. Cambios normativos solo por A62-A7-R1..R3 (A-7 §3.6):
+  - **R1:** la categoría (c) con seis papeles cerrados (contrato, delegación, entrega, TRX de la corrida de `CurrentSha`, TRX de la de `RedSha` si la
+    entrega exige RED según 16.8, hechos del relevo `RelayFacts`), un artefacto como máximo por papel, ruta y blob registrados, fidelidad por los bytes
+    (un BOM es parte de ellos), ausencia con la clasificación de 16.9 y sin sustitución, comprobación de ausencia que no es P-22, rechazo de lo no
+    designado; la medición no tiene hechos del relevo; si la exigencia de RED no se puede determinar porque falta la entrega, el TRX de `RedSha` ni se
+    admite ni se exige.
+  - **R2:** nuevo punto 7: el invalidador de A6-7 es A7-1, en el blob acordado, con el procedimiento que nombre la disposición (constructor, validador,
+    formato de la designación e implementación de la derivación del cierre del aceptante), no el SHA-256 de una instancia; qué anula la medición.
+  - **R3:** precisión expresa de A6-2, regla 1: los artefactos de (c) no versionados son, además del instrumento, excepciones a la clase de §20.3.1, solo
+    por el blob de sus bytes.
+  - Descriptivos: O1 (motivo de M-04), O7 (MV-3 y MV-4 sin lectura de contenido), aclaración de O2 en §3.5; fuentes L16 (16.8 y 16.9) y L17 (`RelayFacts`
+    y R10).
+- **Preflight dirigido** ([`I-62-A7/r2/preflight.md`](I-62-A7/r2/preflight.md); `python -I run_a7r2.py all`): **119 de 119** (entorno 14, TRX y RED 16,
+  `RelayFacts` 6, N4 y nc1 8, tipo B1 4, invalidador 4, compatibilidad 17, guardas 50). TRX de `RedSha` con RED (R9 y R10 en `MATCH`), ausente (sin
+  sustitución; REWORK de 16.9), no exigido, ajeno o sustituido; BOM: el blob se calcula con el BOM y una copia sin él no entra; `RelayFacts` presente,
+  ausente (R10 sin `MATCH`), sustituido y ajeno; nueve cierres con SHA-256 distintos que validan con el mismo procedimiento, y un cambio de cualquier pieza
+  (también de la derivación) cambia el invalidador; A-5, A-6 y las líneas del Owner sin cambio. El preflight corrigió la regla RED de las herramientas
+  (16.8, no `ExpectRed` de la delegación) y tres precisiones del texto antes de publicar.
+- **Guardas** (`r2/a7-guards.py`, autoprueba 46 de 46 mutantes): `run` sobre `b9334f22..e90b444d` = **PASS** en G1-G7 ([resultado](I-62-A7/r2/a7-guards-result-run.json)).
+- **Opcionales** ([`r2-dispositions/optional-dispositions.md`](I-62-A7/r2-dispositions/optional-dispositions.md)): O1 y O7 incorporados (descriptivos); O3
+  incorporado para (c) dentro de R1; O2 confirmado con una aclaración descriptiva; O4 y O5 verificados sin cambio normativo, con medidas para el kit; O6
+  sin cambio; O8 como regla del kit. Nota de FC-01: `MainSha_eval` = `K.MainSha` (16.13).
+- Sin revisión formal (decisiones §94, punto 6); sin Codex; A6-7 HELD.

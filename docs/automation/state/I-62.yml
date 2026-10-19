@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §94; evidencia §190) — preparar la segunda candidata de A-7 (R1 categoría (c) con TRX, hechos del relevo y RelayFacts; R2 invalidador por regla y procedimiento; R3 precisión de A6-2), pruebas dirigidas y guardas; publicar PROPUESTA si pasa; corregir la detección de BOM del kit de revisión; preparar y custodiar el kit acotado a R1-R3 sin lanzar; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §94; evidencia §190-§191) — A-7 ronda 2 publicada PROPUESTA (blob 8a528133, commit e90b444d; preflight 119/119; guardas run PASS); preparar y custodiar el kit de revisión acotado a R1-R3 con la detección de BOM corregida y la autorización pendiente; sin revisión formal sin disposición nueva; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
