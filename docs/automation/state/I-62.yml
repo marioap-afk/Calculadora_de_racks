@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §93; evidencia §187-§188) — kit de la revisión formal de A-7 R20261019T010200Z-4a72 congelado y custodiado (manifiesto c27db93e; autoprueba 283/283; mutación completa 181/181; prueba en seco con cero bloqueos); lanzar UNA vez python -B kit/launch.py (claude-cli 2.1.299), tope 3 600 s, sin reintento; auditor v5.5-a7; sin nuevas secciones de decisiones hasta auditar; sin Codex; sin A-7 AGREED automático"
+  next_action: "F6 (decisiones §93; evidencia §187-§189) — revisión formal de A-7 ejecutada: auditor NOT_ACCREDITED (lectura DEGRADED de un TRX con BOM del cierre); Architect CHANGES REQUIRED con A62-A7-R1..R3 y ocho OPTIONAL; esperar la disposición del Coordinator; A-7 PROPUESTA; A6-7 HELD; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

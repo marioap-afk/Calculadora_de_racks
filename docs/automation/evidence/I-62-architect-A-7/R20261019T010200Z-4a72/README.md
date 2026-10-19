@@ -425,3 +425,26 @@ be509bdb1cabde5adf8f08868677bbb7d0f1f8ad3a55e3276a7b1ef00dd7938b     1078  prep/
   comprobación previa de registro conforme, compuerta 11 con §93 (línea 1825, texto `4f66b738…`) y ninguna sección posterior. La prueba en seco anterior
   del preparador se conserva como `launch-dry-run-before-full-mutation.json`.
 
+## Resultado (añadido tras la corrida, sesión principal; decisiones §93)
+
+```text
+Sesión:          4945013a-d80e-43dc-bc95-d34dff85fcfe, de 2026-10-19T05:30:13Z a 2026-10-19T05:53:49Z, Outcome COMPLETED, salida 0, sin errores posteriores
+Transporte:      claude-cli 2.1.299 (295b49ec…), claude-opus-5-5 xhigh; kit con §93 fijada (manifiesto c27db93ef6834a3e…, custodia 3922f835)
+Uso:             90 turnos; herramientas {"Read": 61, "Grep": 27, "StructuredOutput": 1}
+Veredicto:       CHANGES REQUIRED
+REQUIRED:        3 (A62-A7-R1, A62-A7-R2, A62-A7-R3)
+OPTIONAL:        8 (A62-A7-O1, A62-A7-O2, A62-A7-O3, A62-A7-O4, A62-A7-O5, A62-A7-O6, A62-A7-O7, A62-A7-O8)
+Temas §93.3:     5 CONFORMS, 6 DOES_NOT_CONFORM
+Materialidad:    M-01 no/AGREE, M-02 yes/AGREE, M-03 yes/AGREE, M-04 yes/AGREE, M-05 yes/AGREE, M-06 no/AGREE, M-07 no/AGREE, M-08 no/AGREE
+Owner:           decisión requerida: False; consecuencias no identificadas: 0
+Impactos:        D-1 None (RevealsA7Defect False); FC: 8 de 8 sin defecto de A-7
+Acreditación:    NOT_ACCREDITED por el auditor v5.5-a7 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on the Coordinator disposition §93 after §92 pinned in owner_gate.py; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2231-L2233; declared and self-tested before the launch; decisions §93) (1 motivo: lectura DEGRADED de la línea 1 de un TRX con BOM); sin acreditación excepcional
+Clon tras corrida: HEAD 5158e4bc, estado limpio
+```
+
+El veredicto no es el acuerdo y la revisión no está acreditada: A-7 sigue PROPUESTA hasta la disposición del Coordinator (decisiones §93, punto 7). Ni
+Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS. Sin reintento (decisiones §93, punto 6).
+
+Archivos añadidos: `output.json` y `audit.json` (byte a byte, sin modificar), `runtime-evidence.json`, `launch/` (saneado), `launch-run.log`,
+`post-review.log`, `record-probe-final.log`, `launch-dry-run-final.json` y `host-checks-prelaunch.json`. La transcripción y `stdout.jsonl` no se versionan;
+sus SHA-256 están en `runtime-evidence.json`.

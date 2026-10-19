@@ -4714,3 +4714,32 @@ solo desde artefactos custodiados.
 - **Congelación:** `kit-manifest.json` `c27db93ef6834a3e…` (27 archivos), vuelto a congelar tras incorporar la mutación completa; **prueba en seco
   con `BlockingChecks` = []** y §93 como autorización, sin secciones posteriores. Host: checkout principal sin cambios (`95690c28`); I-64 limpio.
 - Siguiente: una invocación con `python -B kit/launch.py`, tope 3 600 s, sin reintento; auditor v5.5-a7. Sin secciones de decisiones nuevas hasta auditar.
+
+## 189. Revisión formal única de A-7 ejecutada (decisiones §93): NOT_ACCREDITED por un defecto de fidelidad; CHANGES REQUIRED con tres REQUIRED
+
+- **Una invocación** con `python -B kit/launch.py`, sin reintento: de 05:30:13Z a 05:53:49Z (2026-10-19), `Outcome` COMPLETED, salida 0, sin errores
+  posteriores ni de lanzamiento; 90 turnos; clon limpio después. Antes: kit custodiado en `3922f835` (manifiesto `c27db93ef6834a3e…`), prueba en seco con
+  cero bloqueos sobre la HEAD `3922f835`, comprobación previa de registro con código 0, I-64 sin conflicto y checkout principal sin cambios.
+- **Auditor** v5.5-a7 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on the Coordinator disposition §93 after §92 pinned in owner_gate.py; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2231-L2233; declared and self-tested before the launch; decisions §93) ([`audit.json`](I-62-architect-A-7/R20261019T010200Z-4a72/audit.json), sin modificar): **NOT_ACCREDITED**, un motivo: la lectura (llamada 50) de
+  `a6m7-measure/inputs/fixture-tests.trx`, que empieza con un BOM UTF-8, llegó con la línea 1 alterada (DEGRADED): la herramienta `Read` quitó el BOM y AP
+  16.24 solo admite como fiel la normalización del fin de línea. Es un defecto de la preparación del kit: su cierre no detectó los archivos con BOM.
+  Ejecución COMPLETED. Sin acreditación excepcional.
+- **Dictamen del Architect** ([`output.json`](I-62-architect-A-7/R20261019T010200Z-4a72/output.json)): **CHANGES REQUIRED**, tres REQUIRED y ocho OPTIONAL.
+  - **A62-A7-R1:** la categoría (c) está incompleta: la verificación lee también los TRX de las corridas que exige 16.9 (la de `CurrentSha` y, con RED,
+    la del `RedSha`) y los hechos del relevo de la sesión (`Termination`, `Remote`, `Ci`, `Routing`, `Denials`, y el archivo `RelayFacts` que cita por
+    SHA-256), cada uno con su ruta, su blob, su fidelidad y su ausencia en la designación.
+  - **A62-A7-R2:** el «cierre de VERIFY» que A6-7, regla 5, hace invalidador debe identificarse por la regla (A7-1 en el blob acordado) y por el
+    procedimiento de construcción y validación que nombre la disposición, no por el SHA-256 de una instancia; el SHA-256 del cierre concreto se custodia
+    con cada invocación, y se declara qué cambio cuenta como cambio del invalidador.
+  - **A62-A7-R3:** A6-2, regla 1, dice que el instrumento es «la única excepción a la clase de §20.3.1»; A7-1 (c) admite fuera de esa clase el contrato,
+    la delegación, la entrega y el TRX, así que A-7 tiene que declarar que, en su ámbito, también precisa A6-2, regla 1.
+  - OPTIONAL A62-A7-O1..O8: motivo de M-04 desfasado; la comprobación de cobertura solo en §3.5 y no en una reverificación de 16.7; ausencias que se
+    comprueban nombrando la ruta (N4, MAP_INVALID); camino de lectura real de `AGENTS.md` y del árbol de trabajo; dos lecturas de 16.13 omitidas (Classify
+    del estado en `BaseSha` y 16.3 en MB); la frase de varias categorías; MV-3 y MV-4 no leen contenido; `IgnorePath(I)` con `I.TaskId` en los controles.
+  - Temas de §93, punto 3: EFF/EFF^1 en B1, la distinción entre MAP_INVALID, entrada inexistente y cierre no construible, la regla de cobertura de
+    `clausemap`, las entradas de varias categorías y la ausencia de cambios no autorizados, CONFORMS; los demás, DOES_NOT_CONFORM por R1-R3.
+    Materialidad: las ocho AGREE (M-02 a M-05 sí). Ninguna decisión del Owner ni consecuencia reservada sin identificar.
+  - Impactos relacionados: la exclusión de `contract` no revela ningún defecto de A-7 (preocupaciones para el Coordinator: el punto 7 no se incorpora;
+    leer «orden declarada» como conjunto cerrado de forma expresa); las ocho propuestas FC, sin defecto de A-7, sin cambiar criterios de PASS ni excluir casos
+    válidos de C-24.
+- El veredicto no es el acuerdo: falta la disposición del Coordinator (decisiones §93, punto 7). A-7 sigue PROPUESTA. Sin Codex.
