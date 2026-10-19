@@ -1,0 +1,29 @@
+== UTC 2026-10-19T18:56:18Z
+== 1 DLL exacta
+module-list-after-netload.txt:RackCad.Plugin.dll D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows\RackCad.Plugin.dll 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5
+module-list-before-close.txt:RackCad.Plugin.dll D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows\RackCad.Plugin.dll 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5
+dll_now=81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5
+== 2 Valid
+ov02-valid 18:00:23Z consola: Valid; Paquete publicado en D:\r65-smoke\bd1fcf8a\f5-R20261019T1750Z\pkg-OV02; 3 archivos escritos
+== 3 validador
+checks=16 pass=16
+== 4/5 cargas y Q2
+Q2 member=ARM.1.PositiveY value=-337.213414649566 percent=100.000000000000 | mano lbf=337.213414649566 pct=100.000000000000 | dv=0.0e+00 dp=1.4e-14 IGUAL
+RESULTADO 6/6 IGUAL a la tabla derivada a mano
+Q2 percent repr = 99.99999999999997
+== 6 hashes originales
+IGUAL pkg-OV02/manifest.json
+IGUAL pkg-OV02/rackcad-ram-build.py
+IGUAL pkg-OV02/structural-loads.json
+IGUAL validator-v2-pkg-OV02.json (original)
+manifest.json
+rackcad-ram-build.py
+structural-loads.json
+== 7 POST y host
+DIFF clasificacion: INFORMAR (sin PROHIBIDO)
+1
+{"stop":false,"findings":[]}
+== 8 CI de la custodia
+202ae3ba run=39299627433 completed success
+04443a04 run=39299921430 completed success
+d4942f30 run=39300047567 completed success

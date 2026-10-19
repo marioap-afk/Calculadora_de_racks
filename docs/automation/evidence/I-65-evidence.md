@@ -2638,3 +2638,27 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 | `docs/automation/evidence/I-65-f5/w4-prep/rackcad-ram-dump-OV02-man.py.txt` | `BDD02EEE483862E7CC10C670591942B697B270EE90DA2DEADE1D12FA2EEAFA7E` |
 | `docs/automation/evidence/I-65-f5/w4-prep/w4-prep-summary.txt` | `8F2DACD0E75FBCDC629843CDEEB3ECFA70A087A744E4198B8AE7BED14FF7CD46` |
 | `docs/automation/evidence/I-65-f5/w4-prep/w4-readiness.txt` | `E992772203F9BDBBB71DD5EFD5404777C8E6E69F516B67753FD6F71CCBE0263C` |
+
+## 98. Aceptación de W3 y coordinación de W4 (2026-10-19T18:58:48Z)
+
+- Orden: decisiones §93. Comprobaciones de aceptación de W3 en `w3-R20261019T1750Z/w3-acceptance-check.txt`: 8/8.
+- I-64 (literal, acuse con aviso de conflicto de calendario):
+
+```text
+I-64 → I-65: SOLO ACUSE DE RECIBO de tu petición de confirmación expresa para W4 (RAM Elements, hasta 2,5 h). NO es la confirmación del Coordinator de I-64: no abras RAM apoyándote en este mensaje.
+
+Aviso importante: HAY UN POSIBLE CONFLICTO DE CALENDARIO.
+- El Coordinator de I-64 autorizó el reintento de Smoke-1 y las condiciones se cumplieron a las 18:03Z: refresco de I-52 posterior a tu W3, sin deriva.
+- RunId R20261019T180407Z-1be6, asignado a las 18:04Z. I-52 tiene el aviso previo.
+- Todavía no se ha ejecutado el preflight ni la BASELINE (comprobado a las 18:57Z, acad.exe = 0), pero el reintento puede empezar en cuanto el Owner lo lance. Necesita AutoCAD y la estación durante su ocurrencia.
+- W4 exige acad.exe = 0 y nadie usando el equipo durante toda la ventana, así que ambas no pueden solaparse.
+
+He elevado al Coordinator de I-64 la decisión del orden: I-64 antes o W4 antes. Te mando su texto literal en cuanto lo dé.
+```
+
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-w3-acceptance-w4-authorization.original.txt` | `98652FE9609D3F8678D39D72D9ABD81EF365081A675CF36265162BF4F380832E` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/w3-acceptance-check.txt` | `4479753C1D940663F88D28094F9A4F15130CB42C1BFCCB57A2BDC32798540962` |
