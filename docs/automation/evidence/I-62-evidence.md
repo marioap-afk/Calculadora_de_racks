@@ -4743,3 +4743,11 @@ solo desde artefactos custodiados.
     leer «orden declarada» como conjunto cerrado de forma expresa); las ocho propuestas FC, sin defecto de A-7, sin cambiar criterios de PASS ni excluir casos
     válidos de C-24.
 - El veredicto no es el acuerdo: falta la disposición del Coordinator (decisiones §93, punto 7). A-7 sigue PROPUESTA. Sin Codex.
+
+## 190. Decisiones §94: segunda candidata de A-7 (R1-R3) y corrección de la fidelidad de los BOM en el kit de revisión
+
+- Se conserva la revisión de `e71400a2` (NOT_ACCREDITED; CHANGES REQUIRED); A62-A7-R1..R3 aceptados como REQUIRED; sin acreditación excepcional ni
+  repetición. Encargos: segunda candidata de A-7 en el mismo archivo, con cambios normativos solo por R1-R3; pruebas dirigidas (dos TRX, `RelayFacts`,
+  N4, nc1, tipo B1, invalidador, compatibilidad, BOM); disposiciones propuestas de O1-O8 y nota de FC-01 con `K.MainSha`; detección de BOM en el cierre del
+  kit con una vía de lectura byte a byte; publicación como PROPUESTA con guardas si el preflight pasa; kit de revisión limitado a R1-R3, custodiado y sin
+  lanzar. Sin Codex, sin A6-7, sin B1 ni FX-U2.
