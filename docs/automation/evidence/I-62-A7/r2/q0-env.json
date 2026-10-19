@@ -1,0 +1,200 @@
+{
+ "Phase": "q0-env",
+ "Cases": [
+  {
+   "Caso": "ENV-W",
+   "Qué": "HEAD del worktree de I-62 (solo lectura)",
+   "Esperado": "b9334f22204c95872e7defe41bbdaaf849097585",
+   "Observado": "b9334f22204c95872e7defe41bbdaaf849097585",
+   "Cumple": true
+  },
+  {
+   "Caso": "CAND",
+   "Qué": "candidata A-7 ronda 2 (tras fix_a7r2_b.py y fix_a7r2_c.py) leída por completo",
+   "Esperado": "blob 8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+   "Observado": "blob 8a528133c7cccd83356e31f8fd79cd2ebb0cec15, 37205 bytes, 346 líneas, LF",
+   "Cumple": true
+  },
+  {
+   "Caso": "CAND-DIFF-B",
+   "Qué": "candidata 897d7fca… frente a 76eaba8a… (fix_a7r2_b.py)",
+   "Esperado": "solo las tres frases de fix_a7r2_b.py: punto 1 (c), punto 7, fila (c) de §3.3",
+   "Observado": "3 tramos: L137-L138 → L137-L139 (punto 1 (c)); L175-L175 → L176-L177 (punto 7); L189-L189 → L191-L191 (fila (c) de §3.3)",
+   "Cumple": true
+  },
+  {
+   "Caso": "CAND-DIFF-C",
+   "Qué": "candidata 8a528133… frente a 897d7fca… (fix_a7r2_c.py)",
+   "Esperado": "solo las tres frases de fix_a7r2_c.py: fila L16 de §2, punto 1 (c), punto 5 (c)",
+   "Observado": "3 tramos: L99-L99 → L99-L99 (fila L16 de §2); L137-L137 → L137-L137 (punto 1 (c)); L166-L166 → L166-L167 (punto 5 (c))",
+   "Cumple": true
+  },
+  {
+   "Caso": "PREV",
+   "Qué": "ronda 1 en la base (la que la ronda 2 corrige en el mismo archivo)",
+   "Esperado": "6c29747d61c5f689a195095ad3712e6d9dba62aa",
+   "Observado": "6c29747d61c5f689a195095ad3712e6d9dba62aa",
+   "Cumple": true
+  },
+  {
+   "Caso": "R1-EVID",
+   "Qué": "evidencia de la ronda 1 publicada (docs/automation/evidence/I-62-A7/, 35 archivos) frente a la local reutilizada",
+   "Esperado": "idéntica byte a byte (la ronda 2 no la toca; el resultado de la guarda run lo añadió el Coordinator)",
+   "Observado": "iguales 34; solo en la publicación: a7-guards-result-run.json; ningún archivo de r2/ publicado todavía: sí",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-derive_r4.py",
+   "Qué": "copia byte a byte reutilizada por identidad",
+   "Esperado": "SHA-256 3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426",
+   "Observado": "SHA-256 3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-designate_m7.py",
+   "Qué": "copia byte a byte reutilizada por identidad",
+   "Esperado": "SHA-256 491dcbd672518befa3cf74a64c7a9971992c66eee5bd122b3ae537a184f5a5c6",
+   "Observado": "SHA-256 491dcbd672518befa3cf74a64c7a9971992c66eee5bd122b3ae537a184f5a5c6",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-lib_r1r4.py",
+   "Qué": "copia byte a byte reutilizada por identidad",
+   "Esperado": "SHA-256 c3995a1cd377822593837c6e34eff30425de61da73b1928d5a0460ce93bfa8c5",
+   "Observado": "SHA-256 c3995a1cd377822593837c6e34eff30425de61da73b1928d5a0460ce93bfa8c5",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-make_eic_verify.py",
+   "Qué": "copia byte a byte reutilizada por identidad",
+   "Esperado": "SHA-256 58f13c6a8564fe9877e3a5bb40e8d46fccf1ce67ac174ccd6a4298ddad03a8d2",
+   "Observado": "SHA-256 58f13c6a8564fe9877e3a5bb40e8d46fccf1ce67ac174ccd6a4298ddad03a8d2",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-instrumento",
+   "Qué": "instrumento desde su objeto Git, sin modificar",
+   "Esperado": "blob 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Observado": "blob recalculado 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-aceptante",
+   "Qué": "aceptante desde su objeto Git, sin modificar",
+   "Esperado": "blob 434ef1fccb0d15762b30244b4a60928120698411",
+   "Observado": "blob recalculado 434ef1fccb0d15762b30244b4a60928120698411",
+   "Cumple": true
+  },
+  {
+   "Caso": "INPUTS",
+   "Qué": "entradas de la ronda 2: designaciones a7-designation/2 (esquema a7-designation-2.schema.json) y hechos del relevo sintéticos (relay-record/v2 del repositorio de I-62)",
+   "Esperado": "todas válidas contra su esquema (validador del subconjunto de lib_r1r4.py)",
+   "Observado": "11 archivos; con violaciones: relay-facts-NC2.json (solo el patrón de RunId de relay-record/v2 frente a los RunId de los controles del banco, ya conocido: decisiones §92, punto 6)",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-PHASES",
+   "Qué": "fases reutilizadas de la corrida anterior de este directorio (sin dependencia del texto): q3, q4",
+   "Esperado": "las piezas del procedimiento salvo el blob de A-7 y las designaciones, iguales byte a byte a las de esa corrida (A-7 897d7fca…)",
+   "Observado": "piezas iguales: sí; designaciones iguales: sí; archivos reutilizados: q3-n4-nc1.json a4d04a25335825e7…, q4-b1.json a1291d85c3d45091…",
+   "Cumple": true,
+   "Datos": {
+    "Files": {
+     "q3-n4-nc1.json": "a4d04a25335825e73ad6bd2adea038ad5dad84efeea0b2f97f2aaba18d3e7549",
+     "q4-b1.json": "a1291d85c3d45091ab17db2796888e097725f82bc195ed1d74bd607bebbc618a"
+    },
+    "PreviousA7Blob": "897d7fca742e1f9f60376be764a05c098f3afe55"
+   }
+  }
+ ],
+ "Prep": {
+  "RedTrx": "D:/r62-a7/evid-r2/inputs/fixture-tests-red.trx",
+  "Relay": {
+   "V": {
+    "Path": "D:/r62-a7/evid-r2/inputs/relay-facts-V.json",
+    "Sha256": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597"
+   },
+   "N4": {
+    "Path": "D:/r62-a6m7/bench/work/s-n4/relay-facts.json",
+    "Sha256": "c02b1e4c97b5b299f7f9bc1d7e4a9a5e1ec505bfe9a6ae31e4bea1ea703ae001"
+   },
+   "NC1": {
+    "Path": "D:/r62-a6m7/bench/work/s-nc1/relay-facts-V1.json",
+    "Sha256": "1343a4ccf84e375d0591e66404ac63a7aeb67d776f58f3542b17aefa91228ba8"
+   },
+   "NC2": {
+    "Path": "D:/r62-a7/evid-r2/inputs/relay-facts-NC2.json",
+    "Sha256": "cf0467197a01ee076040824780847a13b414de086ed3b1a78be3a8b07bda30c8"
+   },
+   "N5": {
+    "Path": "D:/r62-a6m7/bench/work/s-n5/relay-facts.json",
+    "Sha256": "1595107c1e6ebb026fec51a7cae77498e44f33a31f58504fb2924785091eb54e"
+   },
+   "N6": {
+    "Path": "D:/r62-a6m7/bench/work/s-n6/relay-facts.json",
+    "Sha256": "6f3f4bf9cd0cd48bbf5941a0dc0acf3ba394cb1d49e3a15cc31fed9b813577ac"
+   },
+   "N7A": {
+    "Path": "D:/r62-a6m7/bench/work/s-n7a/relay-facts.json",
+    "Sha256": "a591e109260fd207207ed2d82b329a02405aec34b8a85b438a95820325f4c9e4"
+   },
+   "N7B": {
+    "Path": "D:/r62-a6m7/bench/work/s-n7b/relay-facts.json",
+    "Sha256": "39dbc025bb7814b41db7a6f0f7b8871560c362be12765a6770f0371ada16cbe5"
+   }
+  },
+  "Designations": {
+   "V": {
+    "Path": "D:/r62-a7/evid-r2/designations/V.json",
+    "Sha256": "72b2b4c4b4210e49bd8ef63d6db9a217e20e34bdbc0055b5f41394a4c22cd0da"
+   },
+   "N4": {
+    "Path": "D:/r62-a7/evid-r2/designations/N4.json",
+    "Sha256": "84e3cc5a23761d02a080440204875c1e17ea0dfd67e95d4d39e6136e4e757c02"
+   },
+   "NC1": {
+    "Path": "D:/r62-a7/evid-r2/designations/NC1.json",
+    "Sha256": "eecab5dedab55ebc2c872d713c57d5849b6e7f5c1294088a1c1c0e11b2e36536"
+   },
+   "NC2": {
+    "Path": "D:/r62-a7/evid-r2/designations/NC2.json",
+    "Sha256": "b89bfff037ac7142d67a331a02d9ff361c3e3f7b9ce0d13a698d66baecdc66eb"
+   },
+   "N5": {
+    "Path": "D:/r62-a7/evid-r2/designations/N5.json",
+    "Sha256": "b7462c8c59ef19a7c17310d704d9ccebeebdd443794bae8ff0586953e545ade2"
+   },
+   "N6": {
+    "Path": "D:/r62-a7/evid-r2/designations/N6.json",
+    "Sha256": "2094a8c61e45c78620395697b8f8584611755fbb0d184cebbbdfda771724430d"
+   },
+   "N7A": {
+    "Path": "D:/r62-a7/evid-r2/designations/N7A.json",
+    "Sha256": "0ff1446bf462345be6adb4577b743afc3a56f721090c2ebed73a0a6df90254a7"
+   },
+   "N7B": {
+    "Path": "D:/r62-a7/evid-r2/designations/N7B.json",
+    "Sha256": "ce5b569d62806a96eac6620db06cbe8eafe4675f07e0595f913f1cb446430c82"
+   },
+   "M": {
+    "Path": "D:/r62-a7/evid-r2/designations/M.json",
+    "Sha256": "0b3b1f7eb488362f0816beefd9ede78630794fab467bdfc762d5f0306496c111"
+   }
+  },
+  "SchemaViolations": {
+   "relay-facts-V.json": [],
+   "designations/V.json": [],
+   "designations/N4.json": [],
+   "designations/NC1.json": [],
+   "relay-facts-NC2.json": [
+    "#/RunId pattern"
+   ],
+   "designations/NC2.json": [],
+   "designations/N5.json": [],
+   "designations/N6.json": [],
+   "designations/N7A.json": [],
+   "designations/N7B.json": [],
+   "designations/M.json": []
+  }
+ }
+}

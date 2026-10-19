@@ -1,0 +1,309 @@
+{
+ "Phase": "q5-invalidator",
+ "Cases": [
+  {
+   "Caso": "INV-DISTINCT",
+   "Qué": "cierres de V, N4, nc1, nc2, N5, N6, N7a, N7b y M con a7-designation/2 y el constructor r2",
+   "Esperado": "SHA-256 distintos por construcción, todos válidos bajo A7-1 con el mismo procedimiento (constructor, validador, formato de designación e implementación de la derivación)",
+   "Observado": "9 cierres, 9 SHA-256 distintos; aceptados 9; procedimiento: A-7 8a528133, constructor 0e5f9305525f…, validador 59e26e118697…, formato ae33ad31dde5…, designate_a7 759df4f0332b…, derive_r4 3de12c54e389…",
+   "Cumple": true,
+   "Datos": {
+    "Rows": [
+     {
+      "Case": "V",
+      "ESha256": "1c12a669efd809c1f4d983c743d98449e2315cd7e40c7c90c855b9ed5f8bd585",
+      "Accepted": true,
+      "Identity": {
+       "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+       "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+       "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+       "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+       "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+       "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+      }
+     },
+     {
+      "Case": "N4",
+      "ESha256": "62d06da54d87cc322f3f7885fef0aa05f474b26bb9cd1f3ed9df43c6f6b1300e",
+      "Accepted": true,
+      "Identity": {
+       "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+       "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+       "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+       "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+       "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+       "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+      }
+     },
+     {
+      "Case": "NC1",
+      "ESha256": "278d927bb6841b170cc2ab9d5658b496dbfa9ce80926c0d1e49e216008211056",
+      "Accepted": true,
+      "Identity": {
+       "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+       "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+       "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+       "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+       "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+       "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+      }
+     },
+     {
+      "Case": "NC2",
+      "ESha256": "a4c9e8d65b0a0d1bb5bf39214eaea4e5194633a7af494a25768c7eee927d4a1e",
+      "Accepted": true,
+      "Identity": {
+       "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+       "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+       "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+       "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+       "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+       "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+      }
+     },
+     {
+      "Case": "N5",
+      "ESha256": "dd71b1467acf0b393d3a82647548e27d811d476c7050ebe97e34e8d6f581b04d",
+      "Accepted": true,
+      "Identity": {
+       "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+       "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+       "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+       "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+       "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+       "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+      }
+     },
+     {
+      "Case": "N6",
+      "ESha256": "3a4045c3e160db7b9193e47a4619398857ef32b3be1776d2e94770f0a8694c98",
+      "Accepted": true,
+      "Identity": {
+       "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+       "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+       "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+       "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+       "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+       "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+      }
+     },
+     {
+      "Case": "N7A",
+      "ESha256": "075c4980eaaa3a2e7d2a19a6bb14d65c5b920086b570902e846e2ad3de5ac247",
+      "Accepted": true,
+      "Identity": {
+       "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+       "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+       "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+       "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+       "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+       "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+      }
+     },
+     {
+      "Case": "N7B",
+      "ESha256": "baa8ea47a84a17e201641eb41eb21966cf1ff42cf7db2e44225a99f787545677",
+      "Accepted": true,
+      "Identity": {
+       "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+       "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+       "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+       "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+       "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+       "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+      }
+     },
+     {
+      "Case": "M",
+      "ESha256": "0c4f308ec46ea29e0081f6058df7de89e35a931712182a7c7bcc90ac5abeebf3",
+      "Accepted": true,
+      "Identity": {
+       "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+       "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+       "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+       "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+       "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+       "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+      }
+     }
+    ],
+    "Identity": {
+     "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+     "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+     "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+     "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+     "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+     "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+    }
+   }
+  },
+  {
+   "Caso": "INV-INPUT-ONLY",
+   "Qué": "V con otros hechos del relevo (otra sesión): cambian solo las entradas de la invocación",
+   "Esperado": "otro cierre, válido, y el mismo invalidador: no anula la medición",
+   "Observado": "SHA-256 del cierre 36484200e7c6dc94 (antes 1c12a669efd809c1); validador: acepta; procedimiento igual: sí",
+   "Cumple": true
+  },
+  {
+   "Caso": "INV-PIECE",
+   "Qué": "un byte más en cada pieza del procedimiento nombrado (A-7; el constructor, el validador, el formato de la designación y la implementación de la derivación del cierre del aceptante: designate_a7.py y derive_r4.py), una a una",
+   "Esperado": "cada cambio es un cambio del invalidador (anula la medición y la elegibilidad, A7-1, punto 7) y solo cambia esa pieza",
+   "Observado": "A7Blob → cambia A7Blob; BuilderSha256 → cambia BuilderSha256; ValidatorSha256 → cambia ValidatorSha256; DesignationFormatSha256 → cambia DesignationFormatSha256; DerivationDesignateSha256 → cambia DerivationDesignateSha256; DerivationDeriveSha256 → cambia DerivationDeriveSha256",
+   "Cumple": true
+  },
+  {
+   "Caso": "INV-DERIVATION",
+   "Qué": "cambio de designate_a7.py y, aparte, de derive_r4.py (la implementación de la derivación del cierre del aceptante, pieza nueva del punto 7 tras fix_a7r2_b.py)",
+   "Esperado": "cada uno es un cambio del invalidador aunque el E de la invocación (y su SHA-256) no cambie; con la lista de piezas de la primera versión de la ronda 2 (sin la derivación) no se habría notado",
+   "Observado": "designate_a7.py: E 1c12a669efd8 (igual al de V: sí), cambia DerivationDesignateSha256; con la lista anterior cambia nada; derive_r4.py: E 1c12a669efd8 (igual al de V: sí), cambia DerivationDeriveSha256; con la lista anterior cambia nada",
+   "Cumple": true,
+   "Datos": {
+    "Rows": [
+     {
+      "Piece": "designate_a7.py",
+      "ESha256": "1c12a669efd809c1f4d983c743d98449e2315cd7e40c7c90c855b9ed5f8bd585",
+      "Changed": [
+       "DerivationDesignateSha256"
+      ],
+      "ChangedUnderRun1List": []
+     },
+     {
+      "Piece": "derive_r4.py",
+      "ESha256": "1c12a669efd809c1f4d983c743d98449e2315cd7e40c7c90c855b9ed5f8bd585",
+      "Changed": [
+       "DerivationDeriveSha256"
+      ],
+      "ChangedUnderRun1List": []
+     }
+    ]
+   }
+  }
+ ],
+ "Identity": {
+  "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+  "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+  "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+  "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+  "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+  "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+ },
+ "Rows": [
+  {
+   "Case": "V",
+   "ESha256": "1c12a669efd809c1f4d983c743d98449e2315cd7e40c7c90c855b9ed5f8bd585",
+   "Accepted": true,
+   "Identity": {
+    "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+    "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+    "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+    "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+    "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+    "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+   }
+  },
+  {
+   "Case": "N4",
+   "ESha256": "62d06da54d87cc322f3f7885fef0aa05f474b26bb9cd1f3ed9df43c6f6b1300e",
+   "Accepted": true,
+   "Identity": {
+    "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+    "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+    "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+    "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+    "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+    "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+   }
+  },
+  {
+   "Case": "NC1",
+   "ESha256": "278d927bb6841b170cc2ab9d5658b496dbfa9ce80926c0d1e49e216008211056",
+   "Accepted": true,
+   "Identity": {
+    "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+    "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+    "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+    "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+    "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+    "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+   }
+  },
+  {
+   "Case": "NC2",
+   "ESha256": "a4c9e8d65b0a0d1bb5bf39214eaea4e5194633a7af494a25768c7eee927d4a1e",
+   "Accepted": true,
+   "Identity": {
+    "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+    "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+    "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+    "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+    "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+    "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+   }
+  },
+  {
+   "Case": "N5",
+   "ESha256": "dd71b1467acf0b393d3a82647548e27d811d476c7050ebe97e34e8d6f581b04d",
+   "Accepted": true,
+   "Identity": {
+    "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+    "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+    "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+    "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+    "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+    "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+   }
+  },
+  {
+   "Case": "N6",
+   "ESha256": "3a4045c3e160db7b9193e47a4619398857ef32b3be1776d2e94770f0a8694c98",
+   "Accepted": true,
+   "Identity": {
+    "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+    "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+    "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+    "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+    "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+    "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+   }
+  },
+  {
+   "Case": "N7A",
+   "ESha256": "075c4980eaaa3a2e7d2a19a6bb14d65c5b920086b570902e846e2ad3de5ac247",
+   "Accepted": true,
+   "Identity": {
+    "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+    "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+    "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+    "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+    "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+    "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+   }
+  },
+  {
+   "Case": "N7B",
+   "ESha256": "baa8ea47a84a17e201641eb41eb21966cf1ff42cf7db2e44225a99f787545677",
+   "Accepted": true,
+   "Identity": {
+    "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+    "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+    "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+    "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+    "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+    "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+   }
+  },
+  {
+   "Case": "M",
+   "ESha256": "0c4f308ec46ea29e0081f6058df7de89e35a931712182a7c7bcc90ac5abeebf3",
+   "Accepted": true,
+   "Identity": {
+    "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+    "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+    "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+    "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+    "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+    "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+   }
+  }
+ ]
+}

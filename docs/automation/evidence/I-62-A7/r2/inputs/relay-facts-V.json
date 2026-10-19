@@ -1,0 +1,158 @@
+{
+ "Schema": "rackcad-relay-record/v2",
+ "TaskId": "T1",
+ "RunId": "R20261012T092000Z-c001",
+ "Attempt": 0,
+ "Phase": "VERIFICATION",
+ "WindowSeq": 1,
+ "PrevRelaySha256": null,
+ "Host": {
+  "HostLabelHash": "ad3bb9a2a5ca063760c9a3f9a03046a763c37e38014a721fb6b22a2c0eba8422",
+  "HostInstanceHash": "UNKNOWN",
+  "HostInstanceState": "UNOBSERVED",
+  "Os": "synthetic"
+ },
+ "Participant": null,
+ "Exit": {
+  "HeadSha": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "LsRemoteSha": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "OriginMainSha": "fbe25347799e5b801ef708454212335537448bd1",
+  "CleanTree": true,
+  "GitOperationInProgress": false,
+  "SummaryCommitSha": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "Fingerprint": {
+   "Kind": "NONE",
+   "Sha256": null,
+   "KeyNames": [],
+   "AcceptanceDecisionRef": null
+  },
+  "Processes": [],
+  "OpenDelegations": 1,
+  "DelegationStatus": "ACCEPTED_OPEN"
+ },
+ "Cession": {
+  "StartUtc": "2026-10-19T09:00:00Z",
+  "EndUtc": "2026-10-19T09:05:00Z",
+  "SessionOperated": false
+ },
+ "Outcome": {
+  "Kind": "COMPLETED",
+  "LaunchedPid": 4242,
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "TreeKilled": false,
+  "DeathConfirmed": true,
+  "OutputPath": "artifacts/orchestration/FX-U1/T1/0/R20261012T092000Z-c001/controller-output.json",
+  "OutputSha256": "4611d34653dff0f88940ae0ee17e3313f4dc82b72366ff83ce5b05d690080c60",
+  "OutputWrittenUtc": "2026-10-19T09:05:00Z",
+  "Acceptance": null
+ },
+ "Entry": {
+  "HeadSha": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "LsRemoteSha": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "CleanTree": true,
+  "Fingerprint": {
+   "Kind": "NONE",
+   "Sha256": null,
+   "KeyNames": [],
+   "AcceptanceDecisionRef": null
+  },
+  "FingerprintChanged": false,
+  "Processes": []
+ },
+ "RemoteFacts": {
+  "CurrentRun": {
+   "GhRunId": 37949808974,
+   "Event": "push",
+   "Ref": "refs/heads/fx/u1",
+   "HeadSha": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Status": "completed",
+   "Conclusion": "success",
+   "Jobs": [
+    {
+     "Name": "fixture-build",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "fixture-tests",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "core",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "docs",
+     "Conclusion": "success"
+    }
+   ]
+  },
+  "RedRun": {
+   "GhRunId": 37949800001,
+   "Event": "push",
+   "Ref": "refs/heads/fx/u1",
+   "HeadSha": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Status": "completed",
+   "Conclusion": "failure",
+   "Jobs": [
+    {
+     "Name": "fixture-build",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "fixture-tests",
+     "Conclusion": "failure"
+    }
+   ]
+  },
+  "TestArtifacts": [
+   {
+    "RunRef": "gh-37949808974",
+    "Name": "fixture-tests",
+    "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "Selected": 1,
+    "Passed": 1,
+    "Failed": 0,
+    "Skipped": 0,
+    "FailedTests": []
+   },
+   {
+    "RunRef": "gh-37949800001",
+    "Name": "fixture-tests",
+    "Sha256": "5e388d8774fd0f3cca15d7899a76b2155d2f98532b18b7f6ba0d0a033bde74f0",
+    "Selected": 2,
+    "Passed": 1,
+    "Failed": 1,
+    "Skipped": 0,
+    "FailedTests": [
+     "Fixture.Tests.CalculatorTests.SubtractReturnsDifference"
+    ]
+   }
+  ],
+  "OriginMainSha": "fbe25347799e5b801ef708454212335537448bd1",
+  "LsRemoteSha": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "Commands": [
+   "git ls-remote origin refs/heads/fx/u1",
+   "git rev-parse refs/remotes/origin/main",
+   "gh run view (synthetic)"
+  ],
+  "ObtainedUtc": "2026-10-19T09:05:30Z",
+  "Diagnosis": null
+ },
+ "RebaseMap": null,
+ "RoleInvocation": null,
+ "ReadAudit": {
+  "Coverage": "RECORDED",
+  "ReadsOutsideClosure": []
+ },
+ "InputFidelity": {
+  "path": "bmin_facts.py (objeto Git suelto en el -C)",
+  "blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+ },
+ "Disposition": "NONE",
+ "Notes": [
+  "Termination: Outcome COMPLETED y operacion 7 del descriptor codex-cli registrada (sintetico, preflight de A-7 r2).",
+  "Routing: modelo y effort efectivos = solicitados (RoutingEnforcement required; sintetico).",
+  "Denials: ninguna denegacion ni orden fallida pendiente (sintetico)."
+ ]
+}

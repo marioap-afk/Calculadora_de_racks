@@ -1,0 +1,495 @@
+{
+ "Base": "b9334f22204c95872e7defe41bbdaaf849097585",
+ "Candidate": {
+  "Added": 44,
+  "Base": "b9334f22204c95872e7defe41bbdaaf849097585",
+  "CandidateBlob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+  "Guards": {
+   "G1": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G2": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G3": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G4": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G5": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G6": {
+    "Findings": [],
+    "Status": "PASS"
+   },
+   "G7": {
+    "Findings": [],
+    "Status": "PASS"
+   }
+  },
+  "Head": "1aec259a9fb3a5ac353e37ad23e59e677ea17bce",
+  "Mode": "preview",
+  "Result": "PASS"
+ },
+ "ChangedAfterFixA7r2b": [
+  "rule1c-roles",
+  "rule1c-measurement",
+  "rule7-invalidator",
+  "table-c-roles",
+  "superseded-r2b"
+ ],
+ "ChangedAfterFixA7r2c": [
+  "L16",
+  "L16-168-lines",
+  "L16-168-quote",
+  "L16-168-required",
+  "rule1c-roles",
+  "rule5c-169",
+  "rule5c-undetermined",
+  "rule5c-absence-check",
+  "superseded-r2c"
+ ],
+ "Killed": 46,
+ "Mode": "selftest",
+ "Mutants": [
+  {
+   "Condition": "candidate",
+   "Guard": "ALL",
+   "Killed": null,
+   "Mutant": "la candidata sin mutar",
+   "Result": "PASS"
+  },
+  {
+   "Condition": "only-allowed",
+   "ExpectedFinding": "G1-only-allowed",
+   "Findings": 1,
+   "Guard": "G1",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "añade un archivo fuera de r2/ (docs/automation/evidence/I-62-A7/extra.txt)"
+  },
+  {
+   "Condition": "amendment-modified",
+   "ExpectedFinding": "G1-amendment-modified",
+   "Findings": 1,
+   "Guard": "G1",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "el commit no modifica la enmienda (la ronda 1 queda como está)"
+  },
+  {
+   "Condition": "r1-evidence",
+   "ExpectedFinding": "G2-protected(r1-evidence)",
+   "Findings": 1,
+   "Guard": "G2",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "cambia un archivo de la evidencia de la ronda 1 (I-62-A7/preflight.md)"
+  },
+  {
+   "Condition": "previous-round",
+   "ExpectedFinding": "G2-previous-round",
+   "Findings": 1,
+   "Guard": "G2",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "la cabecera declara otra ronda anterior"
+  },
+  {
+   "Condition": "rows",
+   "ExpectedFinding": "G3-rows",
+   "Findings": 1,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "falta la fila L17"
+  },
+  {
+   "Condition": "L16",
+   "ExpectedFinding": "G3-literal",
+   "Findings": 2,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "L16 con otro conjunto de líneas de 16.9 (sin la 638)"
+  },
+  {
+   "Condition": "L16-168-lines",
+   "ExpectedFinding": "G3-literal",
+   "Findings": 2,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "L16 sin las líneas 616-617 de 16.8 (la cita de «exige RED» queda fuera de las líneas citadas)"
+  },
+  {
+   "Condition": "L16-168-quote",
+   "ExpectedFinding": "G3-literal",
+   "Findings": 1,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "L16 con la cita de 16.8 alterada («o si» → «y si»)"
+  },
+  {
+   "Condition": "L16-168-required",
+   "ExpectedFinding": "G3-literal",
+   "Findings": 1,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "L16 vuelve a la fila anterior a fix_a7r2_c.py (solo AP 16.9, sin la definición de 16.8)"
+  },
+  {
+   "Condition": "L17",
+   "ExpectedFinding": "G3-literal",
+   "Findings": 1,
+   "Guard": "G3",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "L17 con una palabra cambiada en la cita"
+  },
+  {
+   "Condition": "points",
+   "ExpectedFinding": "G4-points",
+   "Findings": 2,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "el punto 7 (invalidador) deja de estar numerado"
+  },
+  {
+   "Condition": "rule1c-roles",
+   "ExpectedFinding": "G4-rule1c-roles",
+   "Findings": 2,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "(c): la condición del TRX de RedSha sin la referencia a 16.8 (vuelve a «(16.9, `Ci` y `Tests`)»)"
+  },
+  {
+   "Condition": "rule1c-measurement",
+   "ExpectedFinding": "G4-rule1c-measurement",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "(c) sin «la invocación de medición … no tiene hechos del relevo»"
+  },
+  {
+   "Condition": "rule1-a62r1",
+   "ExpectedFinding": "G4-rule1-a62r1",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "sin la precisión de A6-2, regla 1, en el punto 1"
+  },
+  {
+   "Condition": "rule2c",
+   "ExpectedFinding": "G4-rule2c",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 2 (c) sin «un artefacto como máximo por papel»"
+  },
+  {
+   "Condition": "rule5c",
+   "ExpectedFinding": "G4-rule5c",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 5 (c) sin los hechos del relevo"
+  },
+  {
+   "Condition": "rule5c-169",
+   "ExpectedFinding": "G4-rule5c-169",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 5 (c) sin la clasificación de 16.9"
+  },
+  {
+   "Condition": "rule5c-undetermined",
+   "ExpectedFinding": "G4-rule5c-undetermined",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 5 (c): con la exigencia de RED indeterminada, el TRX de RedSha se admite"
+  },
+  {
+   "Condition": "rule5c-absence-check",
+   "ExpectedFinding": "G4-rule5c-absence-check",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 5 (c): comprobar la ausencia vuelve a ser una lectura fuera del cierre"
+  },
+  {
+   "Condition": "rule5c-p22",
+   "ExpectedFinding": "G4-rule5c-p22",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 5 (c): la lectura de lo no designado deja de ser P-22"
+  },
+  {
+   "Condition": "rule6-relay",
+   "ExpectedFinding": "G4-rule6-relay",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 6 sin los hechos del relevo de la solicitud"
+  },
+  {
+   "Condition": "rule7-invalidator",
+   "ExpectedFinding": "G4-rule7-invalidator",
+   "Findings": 2,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 7 sin la implementación de la derivación del cierre del aceptante entre las piezas"
+  },
+  {
+   "Condition": "rule7-instance",
+   "ExpectedFinding": "G4-rule7-instance",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 7: el invalidador vuelve a ser el SHA-256 de un cierre"
+  },
+  {
+   "Condition": "rule7-annul",
+   "ExpectedFinding": "G4-rule7-annul",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "regla 7 sin lo que no anula la medición"
+  },
+  {
+   "Condition": "superseded",
+   "ExpectedFinding": "G4-superseded",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "reinsertada la frase de la ronda 1 «el resultado de pruebas (TRX) que la invocación verifica»"
+  },
+  {
+   "Condition": "superseded-r2b",
+   "ExpectedFinding": "G4-superseded",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "reinsertada la frase superada por fix_a7r2_b.py «si la delegación exige RED»"
+  },
+  {
+   "Condition": "superseded-r2c",
+   "ExpectedFinding": "G4-superseded",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "reinsertada la cita superada por fix_a7r2_c.py «exige RED (16.9, `Ci` y `Tests`)» (sin 16.8)"
+  },
+  {
+   "Condition": "s34-a62r1",
+   "ExpectedFinding": "G4-s34-a62r1",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§3.4 sin la viñeta de A6-2, regla 1"
+  },
+  {
+   "Condition": "s34-a67",
+   "ExpectedFinding": "G4-s34-a67",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§3.4 sin «no el SHA-256 de una instancia»"
+  },
+  {
+   "Condition": "superseded-34",
+   "ExpectedFinding": "G4-superseded-34",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§3.4 reinsertado «nombra ese cierre (su SHA-256)»"
+  },
+  {
+   "Condition": "s31-o7",
+   "ExpectedFinding": "G4-s31-o7",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§3.1 sin «las lecturas de contenido de MV-6 y MV-7»"
+  },
+  {
+   "Condition": "superseded-31",
+   "ExpectedFinding": "G4-superseded-31",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§3.1 vuelve a «las lecturas de MV-3, MV-4, MV-6 y MV-7»"
+  },
+  {
+   "Condition": "s35-o2",
+   "ExpectedFinding": "G4-s35-o2",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§3.5 sin la reverificación de 16.7"
+  },
+  {
+   "Condition": "s36",
+   "ExpectedFinding": "G4-s36",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "sin §3.6"
+  },
+  {
+   "Condition": "s5-m04",
+   "ExpectedFinding": "G4-s5-m04",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "motivo de M-04 sin la regla 5 vigente para (a)"
+  },
+  {
+   "Condition": "superseded-5",
+   "ExpectedFinding": "G4-superseded-5",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "motivo de M-04 vuelve a «sin lanzamiento en (a) y en el objeto de (b)»"
+  },
+  {
+   "Condition": "q-r2",
+   "ExpectedFinding": "G4-q-r2",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "sin la pregunta Q-A7R2-03"
+  },
+  {
+   "Condition": "a62r1-declared",
+   "ExpectedFinding": "G4-a62r1-declared",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§6 sin la precisión de A6-2, reglas 1 y 3"
+  },
+  {
+   "Condition": "table-absence",
+   "ExpectedFinding": "G4-table-absence",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "la columna de ausencia de (c) en §3.3 sin la clasificación de 16.9"
+  },
+  {
+   "Condition": "table-c-roles",
+   "ExpectedFinding": "G4-table-c-roles",
+   "Findings": 1,
+   "Guard": "G4",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "la fila (c) de §3.3 vuelve a «con RED» y sin «la medición no los tiene»"
+  },
+  {
+   "Condition": "amendment",
+   "ExpectedFinding": "G5-amendment",
+   "Findings": 1,
+   "Guard": "G5",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "Amendment ronda 1"
+  },
+  {
+   "Condition": "state",
+   "ExpectedFinding": "G5-state",
+   "Findings": 1,
+   "Guard": "G5",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "State PROPUESTA (ronda 1)"
+  },
+  {
+   "Condition": "architect",
+   "ExpectedFinding": "G5-architect",
+   "Findings": 1,
+   "Guard": "G5",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "Architect review sin la ronda 1"
+  },
+  {
+   "Condition": "previous-round",
+   "ExpectedFinding": "G5-previous-round",
+   "Findings": 1,
+   "Guard": "G5",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "sin el bloque Previous round"
+  },
+  {
+   "Condition": "amendment-scanned",
+   "ExpectedFinding": "e-mail address",
+   "Findings": 1,
+   "Guard": "G7",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "una dirección de correo en la enmienda modificada (en la ronda 2 la enmienda no es un archivo añadido)"
+  },
+  {
+   "Condition": "state-table",
+   "ExpectedFinding": "G5-state-table",
+   "Findings": 1,
+   "Guard": "G5",
+   "GuardStatus": "FAIL",
+   "Killed": true,
+   "Mutant": "§11: Architect ronda 2 LAUNCHED"
+  }
+ ],
+ "MutantsTotal": 46,
+ "Result": "PASS",
+ "UnchangedConditions": [
+  "G3 literal/lines/blob/anchor/extra para L1-L15",
+  "G4 scope, nochange, quote, categories, location, table, rule1, rule1a, rule2a, rule2-repeat, rule5a, residual, residual-coverage, superseded-35, q06",
+  "G5 classification, owner, no-agreed",
+  "G6 values, motive, header",
+  "G7 host-identity, users-path, e-mail",
+  "G2 pinned, header-claims, protected (surface, kit, I-64/I-65)"
+ ],
+ "UnchangedReusedFrom": "docs/automation/evidence/I-62-A7/p4-guards-selftest.json (SHA-256 7a670e4945fece2c6a54d24d7eadc052d1c721c5693aabac8b91c49ecd9c6732)"
+}

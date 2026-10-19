@@ -1,0 +1,61 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$comment": "a7-designation/2: per-invocation designation of an FX-02 VERIFY invocation (or of the A6-7 measurement) under the candidate A7-1 round 2 (I-62 A-7, point 2 (c)): it names the role of every custodied artifact of category (c) (at most one artifact per role) and registers its path and its blob. Part of the construction and validation procedure that A7-1 point 7 names as invalidator (identified by the SHA-256 of this file).",
+ "title": "a7-designation/2",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["Schema", "Case", "Repo", "AuthorityRevision", "Invocation", "RunPath", "Artifacts", "Instrument", "MapPath", "Adapter"],
+ "properties": {
+  "Schema": {"const": "a7-designation/2"},
+  "Case": {"type": "string"},
+  "Repo": {"type": "string", "minLength": 1},
+  "AuthorityRevision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+  "MainShaEval": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+  "Invocation": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["UnitId", "TaskId", "Attempt", "RunId", "Target"],
+   "properties": {
+    "UnitId": {"type": "string", "minLength": 1},
+    "TaskId": {"type": "string", "minLength": 1},
+    "Attempt": {"type": "integer", "minimum": 0},
+    "RunId": {"type": "string", "minLength": 1},
+    "Kind": {"enum": ["VERIFY", "MEASUREMENT"], "$comment": "absent = VERIFY; MEASUREMENT = the A6-7 measurement invocation, which produces no verification and has no relay facts (A7-1, point 1 (c), after fix_a7r2_b.py): no RELAY role"},
+    "Target": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": ["Commit", "Path", "Blob"],
+     "properties": {
+      "Commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+      "Path": {"type": "string", "minLength": 1},
+      "Blob": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"}
+     }
+    }
+   }
+  },
+  "RunPath": {"type": "string", "minLength": 1},
+  "Artifacts": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["Role", "Path", "Blob", "Custody"],
+    "properties": {
+     "Role": {"type": "string", "enum": ["CONTRACT", "DELEG", "H", "TRX_CURRENT", "TRX_RED", "RELAY"]},
+     "Path": {"type": "string", "pattern": "^[A-Za-z0-9_.@+-]+(/[A-Za-z0-9_.@+-]+)*$"},
+     "Blob": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+     "Custody": {"type": ["string", "null"]}
+    }
+   }
+  },
+  "Instrument": {
+   "type": ["object", "null"],
+   "additionalProperties": false,
+   "required": ["Path", "Blob"],
+   "properties": {"Path": {"type": "string"}, "Blob": {"type": "string", "pattern": "^[0-9a-f]{40}$"}}
+  },
+  "MapPath": {"type": "string", "minLength": 1},
+  "Adapter": {"type": "string"},
+  "DecisionRef": {"type": ["string", "null"]}
+ }
+}

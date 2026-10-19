@@ -1,0 +1,194 @@
+{
+ "Phase": "q6-compat",
+ "Cases": [
+  {
+   "Caso": "PIN-AUTOMATION_PLAN.md",
+   "Qué": "blob de docs/AUTOMATION_PLAN.md en la base b9334f22",
+   "Esperado": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Observado": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-README.md",
+   "Qué": "blob de docs/automation/agent-execution/README.md en la base b9334f22",
+   "Esperado": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Observado": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-I-62-A-1.md",
+   "Qué": "blob de docs/initiatives/I-62-A-1.md en la base b9334f22",
+   "Esperado": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Observado": "c01899a72b940503bb85a0fab42bc085c603fd0f",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-I-62-A-2.md",
+   "Qué": "blob de docs/initiatives/I-62-A-2.md en la base b9334f22",
+   "Esperado": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Observado": "f1e1d6f08d3cf677500794c7d0019433a4dc7d4e",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-I-62-A-3.md",
+   "Qué": "blob de docs/initiatives/I-62-A-3.md en la base b9334f22",
+   "Esperado": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+   "Observado": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-I-62-A-4.md",
+   "Qué": "blob de docs/initiatives/I-62-A-4.md en la base b9334f22",
+   "Esperado": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+   "Observado": "5e2ba68efdc1b902aa1c28aff4453b4b6973be7f",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-I-62-A-5.md",
+   "Qué": "blob de docs/initiatives/I-62-A-5.md en la base b9334f22",
+   "Esperado": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+   "Observado": "ad94ceedacbf3dbf70f0217a583978d0e32592fc",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-I-62-A-6.md",
+   "Qué": "blob de docs/initiatives/I-62-A-6.md en la base b9334f22",
+   "Esperado": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+   "Observado": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-I-62-consensus-freeze.md",
+   "Qué": "blob de docs/initiatives/I-62-consensus-freeze.md en la base b9334f22",
+   "Esperado": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Observado": "0f6b860837e2478db8525e1fb30a485bc4646816",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-I-62-proposal-v14.md",
+   "Qué": "blob de docs/initiatives/I-62-proposal-v14.md en la base b9334f22",
+   "Esperado": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Observado": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "Cumple": true
+  },
+  {
+   "Caso": "OWNER-A-6-S7-L1324",
+   "Qué": "línea del Owner: A-6 §7 L1324",
+   "Esperado": "sin cambio (mismo SHA-256 que en la ronda 1); A-7 r2 no la reescribe (tramo común ≤ 60 caracteres)",
+   "Observado": "SHA-256 83152eae4f451961; igual al del preflight de la ronda 1: sí; tramo común más largo con A-7 r2: 42",
+   "Cumple": true
+  },
+  {
+   "Caso": "OWNER-A-6-S7-L1325",
+   "Qué": "línea del Owner: A-6 §7 L1325",
+   "Esperado": "sin cambio (mismo SHA-256 que en la ronda 1); A-7 r2 no la reescribe (tramo común ≤ 60 caracteres)",
+   "Observado": "SHA-256 b52a46e34aea2926; igual al del preflight de la ronda 1: sí; tramo común más largo con A-7 r2: 40",
+   "Cumple": true
+  },
+  {
+   "Caso": "OWNER-decisiones-S78",
+   "Qué": "línea del Owner: decisiones §78",
+   "Esperado": "sin cambio (mismo SHA-256 que en la ronda 1); A-7 r2 no la reescribe (tramo común ≤ 60 caracteres)",
+   "Observado": "SHA-256 83152eae4f451961; igual al del preflight de la ronda 1: sí; tramo común más largo con A-7 r2: 42",
+   "Cumple": true
+  },
+  {
+   "Caso": "OWNER-decisiones-L890",
+   "Qué": "línea del Owner: decisiones L890",
+   "Esperado": "sin cambio (mismo SHA-256 que en la ronda 1); A-7 r2 no la reescribe (tramo común ≤ 60 caracteres)",
+   "Observado": "SHA-256 76fc967585300073; igual al del preflight de la ronda 1: sí; tramo común más largo con A-7 r2: 20",
+   "Cumple": true
+  },
+  {
+   "Caso": "OWNER-decisiones-L931",
+   "Qué": "línea del Owner: decisiones L931",
+   "Esperado": "sin cambio (mismo SHA-256 que en la ronda 1); A-7 r2 no la reescribe (tramo común ≤ 60 caracteres)",
+   "Observado": "SHA-256 7dcb195327e300bb; igual al del preflight de la ronda 1: sí; tramo común más largo con A-7 r2: 15",
+   "Cumple": true
+  },
+  {
+   "Caso": "COMPAT-A6-RULES",
+   "Qué": "reglas de A-6 que toca A7-1 en la ronda 2",
+   "Esperado": "A6-2, reglas 1 y 3, precisadas en su ámbito y declaradas en cabecera, §1, §3.4 y §6; ninguna otra (punto 8)",
+   "Observado": "cabecera: sí; §1: sí; §3.4: sí; §6: sí; punto 8: sí",
+   "Cumple": true,
+   "Datos": {
+    "Table": [
+     {
+      "Regla": "A6-1",
+      "Cómo": "no tocada"
+     },
+     {
+      "Regla": "A6-2, regla 1",
+      "Cómo": "precisada dentro del ámbito de A-7 (ronda 2, R3): además del instrumento, las entradas de (c) que no son artefactos versionados son excepciones a la clase de §20.3.1, solo por el blob de sus bytes custodiados"
+     },
+     {
+      "Regla": "A6-2, regla 2",
+      "Cómo": "sin cambio (la categoría (d) remite a ella)"
+     },
+     {
+      "Regla": "A6-2, regla 3",
+      "Cómo": "precisada dentro del ámbito de A-7: referencia de comparación (I6) por categoría; la AR para las autoridades de la unidad"
+     },
+     {
+      "Regla": "A6-3, reglas 1-7",
+      "Cómo": "sin cambio; la regla 6 (b) deriva del cierre de A7-1 tal como es y su RelayFacts son los de (c)"
+     },
+     {
+      "Regla": "A6-4 a A6-6, A6-8",
+      "Cómo": "no tocadas"
+     },
+     {
+      "Regla": "A6-7, reglas 5 y 7",
+      "Cómo": "sin cambio de texto: el «cierre de VERIFY» es A7-1 con el procedimiento nombrado (A7-1, punto 7)"
+     },
+     {
+      "Regla": "A6-9, regla 4 y tabla",
+      "Cómo": "sin cambio (C6 no nombra los hechos del relevo)"
+     }
+    ]
+   }
+  },
+  {
+   "Caso": "COMPAT-A5",
+   "Qué": "A-5 (A5-1, A5-2)",
+   "Esperado": "blob ad94ceed sin cambio; A-7 r2 declara A5-1 y A5-2 sin cambio y no crea B1",
+   "Observado": "blob ad94ceedacbf3dbf70f0217a583978d0e32592fc; «A5-1 y A5-2 sin cambio»: sí; «no crea B1»: sí",
+   "Cumple": true
+  }
+ ],
+ "A6RulesTouched": [
+  {
+   "Regla": "A6-1",
+   "Cómo": "no tocada"
+  },
+  {
+   "Regla": "A6-2, regla 1",
+   "Cómo": "precisada dentro del ámbito de A-7 (ronda 2, R3): además del instrumento, las entradas de (c) que no son artefactos versionados son excepciones a la clase de §20.3.1, solo por el blob de sus bytes custodiados"
+  },
+  {
+   "Regla": "A6-2, regla 2",
+   "Cómo": "sin cambio (la categoría (d) remite a ella)"
+  },
+  {
+   "Regla": "A6-2, regla 3",
+   "Cómo": "precisada dentro del ámbito de A-7: referencia de comparación (I6) por categoría; la AR para las autoridades de la unidad"
+  },
+  {
+   "Regla": "A6-3, reglas 1-7",
+   "Cómo": "sin cambio; la regla 6 (b) deriva del cierre de A7-1 tal como es y su RelayFacts son los de (c)"
+  },
+  {
+   "Regla": "A6-4 a A6-6, A6-8",
+   "Cómo": "no tocadas"
+  },
+  {
+   "Regla": "A6-7, reglas 5 y 7",
+   "Cómo": "sin cambio de texto: el «cierre de VERIFY» es A7-1 con el procedimiento nombrado (A7-1, punto 7)"
+  },
+  {
+   "Regla": "A6-9, regla 4 y tabla",
+   "Cómo": "sin cambio (C6 no nombra los hechos del relevo)"
+  }
+ ]
+}

@@ -1,0 +1,98 @@
+{
+ "Phase": "q2-relay",
+ "Cases": [
+  {
+   "Caso": "RELAY-POS",
+   "Qué": "hechos del relevo sintéticos (relay-record/v2: Outcome COMPLETED y operación 7, RemoteFacts con las corridas de CurrentSha y RedSha y sus TRX, Routing, Denials) designados con su papel, ruta y blob",
+   "Esperado": "una entrada RELAY; C6 no le da nombre (el instrumento no la lee); la solicitud lleva RelayFacts con su SHA-256 y R10 MATCH",
+   "Observado": "entrada: artifacts/orchestration/FX-U1/T1/0/R20261012T092000Z-c001/relay-facts.json 5ad9a3e7; Name(p) de C6 para la ruta: ninguno; R10 MATCH ({'Cited': 'ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597', 'Computed': 'ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597'})",
+   "Cumple": true
+  },
+  {
+   "Caso": "RELAY-ABSENT",
+   "Qué": "hechos del relevo ausentes",
+   "Esperado": "sin entrada, causa registrada; la solicitud no lleva RelayFacts (A7-1, punto 6: los de (c)) y R10 no puede dar MATCH: la salida no quedaría aceptada (A6-5, regla 2, exige R10 en MATCH); nada lo sustituye",
+   "Observado": "causa: ABSENT: the custodied file does not exist; aceptante: REJECT_FACTS, R10 MISMATCH ({'Missing': 'no data for this check and no NotApplicable declaration'})",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 1,
+     "Decision": "REJECT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "NOT_APPLICABLE",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MISMATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Missing": "no data for this check and no NotApplicable declaration"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "f9611885781670f163b6565f88cc71e229157531ace416d5de6e753a16efaca0"
+    }
+   }
+  },
+  {
+   "Caso": "RELAY-SUBST",
+   "Qué": "hechos del relevo sustituidos (otros bytes en la ruta designada; blob registrado sin cambio)",
+   "Esperado": "sin entrada (BLOB_MISMATCH); si la solicitud citara el SHA-256 registrado con esos bytes, R10 MISMATCH",
+   "Observado": "causa: BLOB_MISMATCH: the custodied bytes do not have the registered blob; aceptante con el SHA-256 citado y los bytes sustituidos: R10 MISMATCH ({'Cited': 'ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597', 'Computed': '23d3f58d4bcba57246789077de99ea53754c40daa718628d1a1a55a2b1d932ee'})",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 1,
+     "Decision": "REJECT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "NOT_APPLICABLE",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MISMATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597",
+      "Computed": "23d3f58d4bcba57246789077de99ea53754c40daa718628d1a1a55a2b1d932ee"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "10880b0fef006354667d8fcb741b280d3ca16a43dd476a5369b98963af6ad59c"
+    }
+   }
+  },
+  {
+   "Caso": "RELAY-FOREIGN",
+   "Qué": "hechos del relevo de otra corrida, en una ruta no designada",
+   "Esperado": "FOREIGN (no admitidos; su lectura sería P-22)",
+   "Observado": "validador: rechaza: FOREIGN artifacts/orchestration/FX-U1/T1/0/R20261011T081000Z-a000/relay-facts.json",
+   "Cumple": true
+  },
+  {
+   "Caso": "RELAY-MEASUREMENT",
+   "Qué": "invocación de medición M (a7-designation/2 con Invocation.Kind MEASUREMENT), sin hechos del relevo",
+   "Esperado": "sin entrada RELAY; no es una ausencia (la medición no los tiene: nada que clasificar por 16.9), solo una nota; validador acepta",
+   "Observado": "entradas RELAY: 0; ausencias RELAY: 0; nota: RELAY: not applicable to the measurement invocation (A7-1, point 1 (c); validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "RELAY-MEASUREMENT-DESIGNATED",
+   "Qué": "una medición cuya designación nombra hechos del relevo (papel inexistente para ella)",
+   "Esperado": "el constructor no los admite (causa registrada); un cierre que los incluya es FOREIGN; sin la marca Kind la medición no se distinguiría de una verificación (los admitiría): la marca es necesaria en el formato",
+   "Observado": "constructor: NOT_ADMITTED: the measurement invocation produces no verific; validador con la entrada: rechaza: FOREIGN ['relay-facts.json']; sin Kind: entrada RELAY sí",
+   "Cumple": true
+  }
+ ]
+}

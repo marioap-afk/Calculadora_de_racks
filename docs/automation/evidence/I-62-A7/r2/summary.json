@@ -1,0 +1,94 @@
+{
+ "Schema": "i62-a7r2-preflight-summary/1",
+ "Candidate": {
+  "Path": "docs/initiatives/I-62-A-7.md (candidata ronda 2, tras fix_a7r2_b.py y fix_a7r2_c.py)",
+  "Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15"
+ },
+ "CandidateRun1": "76eaba8a81bf55a458749ff112a7c440bbd3de53",
+ "CandidateRun2": "897d7fca742e1f9f60376be764a05c098f3afe55",
+ "PreviousRound": "6c29747d61c5f689a195095ad3712e6d9dba62aa",
+ "Base": "b9334f22204c95872e7defe41bbdaaf849097585",
+ "StartUtc": "2026-10-19T18:51:13Z",
+ "ReusedPhases": {
+  "q3-n4-nc1.json": "a4d04a25335825e73ad6bd2adea038ad5dad84efeea0b2f97f2aaba18d3e7549",
+  "q4-b1.json": "a1291d85c3d45091ab17db2796888e097725f82bc195ed1d74bd607bebbc618a"
+ },
+ "ToolChanges": [
+  "RED required per AP 16.8 (ChainRedSha null or BaseSha..CurrentSha touching ChainRedFiles), not D.RequiredTests[].ExpectRed",
+  "a7-designation/2 Invocation.Kind (MEASUREMENT: no RELAY role)",
+  "invalidator pieces include designate_a7.py and derive_r4.py"
+ ],
+ "Totals": {
+  "q0": {
+   "Cases": 14,
+   "Hold": 14
+  },
+  "q1": {
+   "Cases": 16,
+   "Hold": 16
+  },
+  "q2": {
+   "Cases": 6,
+   "Hold": 6
+  },
+  "q3": {
+   "Cases": 8,
+   "Hold": 8
+  },
+  "q4": {
+   "Cases": 4,
+   "Hold": 4
+  },
+  "q5": {
+   "Cases": 4,
+   "Hold": 4
+  },
+  "q6": {
+   "Cases": 17,
+   "Hold": 17
+  },
+  "q7": {
+   "Cases": 50,
+   "Hold": 50
+  }
+ },
+ "Hold": 119,
+ "Cases": 119,
+ "NotHolding": [],
+ "Guards": {
+  "Result": "PASS",
+  "Head": "cad7178cd7c704f62ab0504714688070ae58deb7",
+  "CandidateBlob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+  "Guards": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS",
+   "G4": "PASS",
+   "G5": "PASS",
+   "G6": "PASS",
+   "G7": "PASS"
+  }
+ },
+ "Selftest": {
+  "Result": "PASS",
+  "Killed": 46,
+  "Total": 46,
+  "Unchanged": [
+   "G3 literal/lines/blob/anchor/extra para L1-L15",
+   "G4 scope, nochange, quote, categories, location, table, rule1, rule1a, rule2a, rule2-repeat, rule5a, residual, residual-coverage, superseded-35, q06",
+   "G5 classification, owner, no-agreed",
+   "G6 values, motive, header",
+   "G7 host-identity, users-path, e-mail",
+   "G2 pinned, header-claims, protected (surface, kit, I-64/I-65)"
+  ]
+ },
+ "Invalidator": {
+  "A7Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+  "BuilderSha256": "0e5f9305525f8d0e91d09127dc1a0d2238883a37b28d29b08cfaf98803584aad",
+  "ValidatorSha256": "59e26e118697bc8371e0496d8b44490a5105e74536c5e67ca56343c854bc96b1",
+  "DesignationFormatSha256": "ae33ad31dde5f38094d766b6a576b3f354ff2e27066fa791718a751c9bf306c0",
+  "DerivationDesignateSha256": "759df4f0332b1e4557ab3460973323e3016e485d6cb92cb1793df56f01842ab9",
+  "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+ },
+ "ReusedFromRound1": "docs/automation/evidence/I-62-A7/ (sin cambio): reconstrucción estática p6, negativos de p3 no afectados, reproducción p1, preservación de p5 no afectada, guardas sin cambio"
+}
