@@ -1,0 +1,93 @@
+I-65 — OWNER DISPOSITION
+Privacy Containment / F5 Scope and Validation Preparation
+He revisado el informe de revisión `ffae0218`, con CI 4/4 satisfactorio.
+1. Decisión general
+F4 GATE PASS = ACKNOWLEDGED / UNCHANGED.
+F5 SCOPE = OV-I65-02 ONLY.
+F5 PREPARATION = AUTHORIZED.
+F5 EXECUTION = NOT AUTHORIZED.
+Antes de nuevas pruebas y capturas, doy prioridad al tratamiento de A65-F4F-07.
+2. Privacidad — A65-F4F-07
+C-1 = OWNER ACTION REQUIRED.
+Procederé a revisar la visibilidad del repositorio GitHub y establecerla como privada.
+El Coordinator deberá verificar posteriormente la visibilidad efectiva mediante mecanismos de solo lectura, sin intentar modificar los ajustes de mi cuenta.
+C-2 = PREPARATION ONLY.
+Prepara un plan de sustitución o redacción de las evidencias identificables, sin ejecutarlo todavía.
+C-3 = NOT AUTHORIZED.
+No reescribir historial Git, no realizar force-push, no borrar ramas ni alterar los SHA custodiados.
+C-4 = REQUIRED GOING FORWARD.
+No publicar capturas nuevas con datos personales, nombres de terceros, identificadores de cuenta, rutas comerciales o detalles innecesarios de organización y equipo.
+La redacción de nuevas evidencias debe preservar los datos técnicos necesarios para la validación.
+C-5 = ASSESSMENT ONLY.
+Identifica qué categorías de información justificarían notificar a terceros, sin divulgar sus datos en la documentación pública ni enviar avisos por cuenta propia.
+Aclara también la diferencia entre las 30 capturas identificables y las 29 clasificadas explícitamente en el resumen.
+No incluyas datos sensibles en nuevos documentos versionados.
+3. F5 — Alcance congelado
+Confirmo que F5 se limita a verificar OV-I65-02 conforme al Freeze.
+No autoriza nuevas funciones, combinaciones, peso propio, cargas distribuidas ni validación de resistencia estructural.
+4. OV-I65-02
+Apruebo conceptualmente la propuesta de seis cargas en REF-CANT-01, dos por brazo, incluyendo:
+
+* Unidades N y kN.
+* Fracciones 0 y 1.
+* Dos cargas sobre un mismo miembro.
+* Valores, posiciones y direcciones previstos por D-10b.
+
+FRACTION 1.0 = RETAIN.
+No sustituir el extremo 1.0 por 0.95 sin una nueva decisión del Owner.
+Prepara los valores esperados, transformaciones y tolerancias para revisión antes de ejecutar.
+Si RAM no admite o no reproduce correctamente una carga exactamente en el extremo, clasifícalo como hallazgo y detén la validación correspondiente.
+5. Candidato de F5
+Propón reutilizar `5a5ca577` únicamente si el procedimiento LIFECYCLE permite expresamente la reutilización del Candidato de hito F4 para F5.
+No extiendas automáticamente la excepción documental aprobada para F4.
+Si la gobernanza exige un SHA diferente, presenta la alternativa sin implementarla todavía.
+6. Referencia manual
+MANUAL REFERENCE = NEW INDEPENDENT MODEL.
+Prepara un procedimiento para construir el modelo manual de OV-I65-02 directamente desde la especificación congelada y la nueva tabla de cargas.
+No reutilices el volcado manual de P2 como referencia para cargas diferentes.
+La construcción podrá hacerse mediante Computer Use, condicionada a una autorización posterior.
+No abrir RAM ni guardar modelos todavía.
+7. Trazabilidad — A65-F4F-04
+OPTION 0 = APPROVED FOR PLANNING.
+Diseña una cadena de custodia externa con:
+
+* Identidad de RAM y su API.
+* PID e instante de inicio de sesión.
+* Ruta y hash del script ejecutado.
+* Huella del paquete.
+* Fecha de generación y hash del readback.
+* Fecha de generación y hash del volcado.
+* Relación documental entre ambos archivos y su sesión.
+
+No modificar código de producto ni asumir que marcas temporales y PID constituyen por sí solos una prueba criptográfica de procedencia.
+La opción 1 permanece sin autorización.
+8. Presupuesto
+Mantener por ahora:
+
+* Codex: 50/52.
+* Attempts: 7/9.
+* Workers de implementación: 0.
+* Cambios funcionales: 0.
+
+No ampliar presupuestos sin autorización.
+9. Entregable
+Presenta:
+
+1. Estado de privacidad y riesgos pendientes.
+2. Plan de tratamiento de evidencias sin reescribir historial.
+3. Matriz exacta de las seis cargas OV-I65-02.
+4. Valores y tolerancias esperados.
+5. Procedimiento propuesto del modelo manual.
+6. Conformidad de reutilización del Candidato con LIFECYCLE.
+7. Plan de trazabilidad de sesión.
+8. Ventanas necesarias de AutoCAD y RAM.
+9. Requisitos para revisión y cierre de F5.
+10. Decisiones pendientes del Owner.
+
+No publicar nuevas capturas identificables.
+No ejecutar AutoCAD ni RAM.
+No iniciar F7 ni READY final.
+F5 PREPARATION = GO.
+F5 EXECUTION = NO.
+HISTORY REWRITE = NO.
+Continúa con la preparación documental y detente antes de cualquier ejecución real.

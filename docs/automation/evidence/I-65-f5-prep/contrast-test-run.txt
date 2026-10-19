@@ -1,0 +1,12 @@
+IGUAL 0 hallazgos 
+DISTINTO 1 hallazgos (mutacion: load-value)
+ - carga P1: (-1010.0, 57.50128206169154) frente a (-1000.0, 57.50128206169154)
+DISTINTO 1 hallazgos (mutacion: node-coordinate)
+ - nudo ARM.1.PositiveY.J: coordenadas [0.0, 20.76716169689737, 6.1] frente a [0.0, 20.26716169689737, 6.1]
+DISTINTO 1 hallazgos (mutacion: extra-dump-member)
+ - miembros: lectura de vuelta 7, volcado 8
+DISTINTO 4 hallazgos 
+ - la lectura de vuelta no es READBACK OK: FAILED — DISCARD MODEL
+ - nudos: lectura de vuelta 0, volcado 8
+ - miembros: lectura de vuelta 0, volcado 7
+ - caso None: 0 en el volcado

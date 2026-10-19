@@ -2397,3 +2397,27 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 - Orden: decisiones §85. Solo lectura del Freeze, del código y de la evidencia; inventario de las 146 capturas de I-65 por un subagente de solo lectura (`sonnet`); comprobación de la visibilidad del repositorio con la API de GitHub (`private: false`, `visibility: public`). Sin AutoCAD, RAM, Codex ni Workers.
 - Custodia: `docs/initiatives/I-65-f5-scope-and-ready-review.md` SHA-256 `F4F6EFF3DC8886E2603E002C48BA7254FE41A32B715B396E277B2A679EC32424`.
 - El subagente del inventario creó tres archivos temporales con sus búsquedas en `%TEMP%` (fuera de los checkouts); no tocó el worktree.
+
+## 90. Preparación de F5 y contención de privacidad (2026-10-19T00:53:18Z)
+
+- Orden: decisiones §86. Solo lectura del Freeze, del código y de la evidencia; comprobaciones sin AutoCAD ni RAM; sin Codex ni Workers; sin
+  capturas nuevas. Los archivos de esta preparación no contienen datos personales (comprobado mecánicamente).
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-privacy-containment-f5-preparation.original.txt` | `A8EADA6C6FE3019A840675FEE4F4A0F9F1C4DDD46217F8443BCB3835454B0F1D` |
+| `docs/initiatives/I-65-f5-preparation.md` | `2511170EA4F1B8A7C0E47F89D9C2DE99AD3EA1F2DD83E09E4CA8E8DF9F8E7396` |
+| `docs/automation/evidence/I-65-f5-prep/contrast-test-run.txt` | `2F496D9C63595261A349BD08FFAC22B1FD4A544BD0FC6EA0B3DF330FFF95018B` |
+| `docs/automation/evidence/I-65-f5-prep/f5-dryrun-output.txt` | `FACB315F979532FCEC8AD06CDFAE6CB44AA9778FB528C7413D87DF34A354DFB6` |
+| `docs/automation/evidence/I-65-f5-prep/f5-dryrun.ps1.txt` | `7DC01426047E7BBED619DBD347E81E8DF908CC86A14B6877FA8C9F8B8641AA3D` |
+| `docs/automation/evidence/I-65-f5-prep/f5-manual-entry-sheet.py.txt` | `66D099C356F981FD1DC104768733959A5A715BE60C1667E5391F84F255E65C56` |
+| `docs/automation/evidence/I-65-f5-prep/ov-i65-02-manual-entry-sheet.json` | `B15B9F9E28BE3DB82AF3C1C65DA5E07ADCE877B28BF9438960848B7B40394ECA` |
+| `docs/automation/evidence/I-65-f5-prep/ov-i65-02.loads.json` | `D675D9F6BB537083A63571F08FB9884C1AB085A0ECA4AD1555EE98BEA4F8BA4C` |
+| `docs/automation/evidence/I-65-f5-prep/readback-dump-contrast.py.txt` | `0790930297D221DDEFEADAEF8E04611858B2E81446717155E754D34155114BB1` |
+| `docs/automation/evidence/I-65-f5-prep/redaction-candidates.txt` | `16B9413670E32EE0D12C139819CB66C9777B3D1B7BC5D875648C203708AF1F6A` |
+| `docs/automation/evidence/I-65-f5-prep/session-custody-test.jsonl` | `B8218171267B2A219295AC15BEC36D3A9F491F7C68365FBCE296D2BF0CCF2810` |
+| `docs/automation/evidence/I-65-f5-prep/session-custody.ps1.txt` | `5487544AEC2685C8554145B46D68BD4FE8FE9545E0B1628DEEE84D7FC080491B` |
+
+- Archivo de cargas de OV-I65-02: SHA-256 de los bytes LF `d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c`.
+- Visibilidad del repositorio a las 00:46Z: `public` (pendiente de la acción del Owner, C-1).

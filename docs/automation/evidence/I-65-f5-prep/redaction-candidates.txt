@@ -1,0 +1,36 @@
+# I-65 A65-F4F-07 / C-2 (preparado, no ejecutado): 30 capturas candidatas a redaccion hacia delante. Solo rutas y grupo; sin datos.
+# Prefijo: docs/automation/evidence/I-65-f4/
+# G1 = panel de navegacion de dialogo «Abrir» de RAM (tercera persona, carpetas comerciales, organizacion, nombre de pila)
+# G2 = barra de titulo de AutoCAD con la cuenta de Autodesk (+U = tambien usuario de Windows en una ruta; +O = tambien organizacion truncada)
+# G3 = solo usuario de Windows en una ruta
+# G4 = solo organizacion truncada en el panel de «Choose .NET Assembly»
+G1 p2-R20261016T2147Z/captures/03-dialogo-abre-en-carpeta-m05c-no-usado.jpg
+G1 p2-R20261016T2147Z/captures/04-script-del-paquete-seleccionado.jpg
+G1 p2-R20261016T2147Z/captures/12-incidente-renombrar-cancelado.jpg
+G1 p2-R20261016T2147Z/captures/13-volcado-generado-seleccionado.jpg
+G1 p2-R20261016T2147Z/captures/27-volcado-manual-seleccionado.jpg
+G1 w2-R20261017T0847Z/captures/03-ov01-script-del-paquete-seleccionado.jpg
+G1 w2-R20261017T0847Z/captures/06-ov01-volcado-seleccionado.jpg
+G1 w2-R20261017T0847Z/captures/11-ov04-script-seleccionado.jpg
+G1 w2-R20261017T0847Z/captures/16-ov05-script-seleccionado.jpg
+G1 w2-R20261017T0847Z/captures/22-ov06-script-seleccionado.jpg
+G1 w2-R20261017T0847Z/captures/27-ov07a-script-seleccionado.jpg
+G1 w2-R20261017T0847Z/captures/31-ov07b-script-seleccionado.jpg
+G2 smoke-745653e1/01-dibujo-desechable.jpg
+G2+U smoke-745653e1/03-aviso-seguridad-load-once.jpg
+G2 smoke-745653e1/04-dll-cargado.jpg
+G2 smoke-745653e1/07-linea-ref-cant-01-resuelta.jpg
+G2 smoke-745653e1/08-vista-frontal-insertada.jpg
+G2 smoke-745653e1/11-pasteclip-cancelado.jpg
+G2+U smoke-745653e1/13-resultado-unsupported.jpg
+G2 smoke-745653e1/15-cierre-sin-guardar.jpg
+G2 smoke2-51fc82f1/01-dibujo-desechable.jpg
+G2+O smoke2-51fc82f1/02-incidente-carpeta-test-tmp.jpg
+G2 smoke2-51fc82f1/05-dll-cargado.jpg
+G2 w1-R20261017T0847Z/captures/01-dibujo-nuevo-drawing1.jpg
+G2 w1-R20261017T0847Z/captures/07-ref-vista-frontal-insertada.jpg
+G3 smoke-745653e1/12-ruta-cargas.jpg
+G3 smoke-745653e1/14-resultado-unsupported-detalle.jpg
+G4 smoke-745653e1/02-netload-dll-i65-seleccionado.jpg
+G4 smoke2-51fc82f1/03-netload-dll-autorizado-seleccionado.jpg
+G4 w1-R20261017T0847Z/captures/02-netload-dll-candidato-seleccionado.jpg

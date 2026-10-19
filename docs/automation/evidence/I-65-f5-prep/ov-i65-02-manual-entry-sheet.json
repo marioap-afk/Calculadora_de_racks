@@ -1,0 +1,243 @@
+{
+ "source": "docs/initiatives/I-65-f4-ref-cant-01-manual-procedure.md (geometria) + docs/automation/evidence/I-65-f5-prep/ov-i65-02.loads.json (cargas)",
+ "units_interface": "Ingles (ft, kip) sin cambios de configuracion",
+ "restraints": {
+  "COL.FOOT": "dx dy dz rx ry rz",
+  "otros": "dx ry rz"
+ },
+ "releases": "ninguna",
+ "loadCase": {
+  "id": "REF1",
+  "category": "DL (la interfaz no ofrece Other; informativa)",
+  "selfWeight": "no",
+  "combinations": 0
+ },
+ "nodes": [
+  {
+   "n": 1,
+   "desc": "COL.FOOT",
+   "x_in": 0.0,
+   "y_in": 0.25,
+   "z_in": 6.1,
+   "x_ft": "0.00000000",
+   "y_ft": "0.02083333",
+   "z_ft": "0.50833333"
+  },
+  {
+   "n": 2,
+   "desc": "ARM.1.PositiveY.J",
+   "x_in": 0.0,
+   "y_in": 20.26716169689737,
+   "z_in": 6.1,
+   "x_ft": "0.00000000",
+   "y_ft": "1.68893014",
+   "z_ft": "0.50833333"
+  },
+  {
+   "n": 3,
+   "desc": "ARM.2.PositiveY.J",
+   "x_in": 0.0,
+   "y_in": 48.267161696897375,
+   "z_in": 6.1,
+   "x_ft": "0.00000000",
+   "y_ft": "4.02226347",
+   "z_ft": "0.50833333"
+  },
+  {
+   "n": 4,
+   "desc": "ARM.3.PositiveY.J",
+   "x_in": 0.0,
+   "y_in": 76.26716169689738,
+   "z_in": 6.1,
+   "x_ft": "0.00000000",
+   "y_ft": "6.35559681",
+   "z_ft": "0.50833333"
+  },
+  {
+   "n": 5,
+   "desc": "COL.TOP",
+   "x_in": 0.0,
+   "y_in": 90.75,
+   "z_in": 6.1,
+   "x_ft": "0.00000000",
+   "y_ft": "7.56250000",
+   "z_ft": "0.50833333"
+  },
+  {
+   "n": 6,
+   "desc": "ARM.1.PositiveY.TIP",
+   "x_in": 0.0,
+   "y_in": 21.810300688090436,
+   "z_in": -36.22609804415268,
+   "x_ft": "0.00000000",
+   "y_ft": "1.81752506",
+   "z_ft": "-3.01884150"
+  },
+  {
+   "n": 7,
+   "desc": "ARM.2.PositiveY.TIP",
+   "x_in": 0.0,
+   "y_in": 49.81030068809044,
+   "z_in": -36.22609804415268,
+   "x_ft": "0.00000000",
+   "y_ft": "4.15085839",
+   "z_ft": "-3.01884150"
+  },
+  {
+   "n": 8,
+   "desc": "ARM.3.PositiveY.TIP",
+   "x_in": 0.0,
+   "y_in": 77.81030068809044,
+   "z_in": -36.22609804415268,
+   "x_ft": "0.00000000",
+   "y_ft": "6.48419172",
+   "z_ft": "-3.01884150"
+  }
+ ],
+ "members": [
+  {
+   "m": 1,
+   "desc": "COL.1",
+   "I": 1,
+   "J": 2,
+   "length_in": 20.01716169689737,
+   "section": "W 12X26",
+   "material": "A992 Gr50",
+   "rotation": -90.0
+  },
+  {
+   "m": 2,
+   "desc": "COL.2",
+   "I": 2,
+   "J": 3,
+   "length_in": 28.0,
+   "section": "W 12X26",
+   "material": "A992 Gr50",
+   "rotation": -90.0
+  },
+  {
+   "m": 3,
+   "desc": "COL.3",
+   "I": 3,
+   "J": 4,
+   "length_in": 28.0,
+   "section": "W 12X26",
+   "material": "A992 Gr50",
+   "rotation": -90.0
+  },
+  {
+   "m": 4,
+   "desc": "COL.4",
+   "I": 4,
+   "J": 5,
+   "length_in": 14.48283830310262,
+   "section": "W 12X26",
+   "material": "A992 Gr50",
+   "rotation": -90.0
+  },
+  {
+   "m": 5,
+   "desc": "ARM.1.PositiveY",
+   "I": 2,
+   "J": 6,
+   "length_in": 42.35421884050472,
+   "section": "HSS_SQR 4X4X1_4",
+   "material": "A500 GrC rectangular",
+   "rotation": 0.0
+  },
+  {
+   "m": 6,
+   "desc": "ARM.2.PositiveY",
+   "I": 3,
+   "J": 7,
+   "length_in": 42.35421884050472,
+   "section": "HSS_SQR 4X4X1_4",
+   "material": "A500 GrC rectangular",
+   "rotation": 0.0
+  },
+  {
+   "m": 7,
+   "desc": "ARM.3.PositiveY",
+   "I": 4,
+   "J": 8,
+   "length_in": 42.35421884050472,
+   "section": "HSS_SQR 4X4X1_4",
+   "material": "A500 GrC rectangular",
+   "rotation": 0.0
+  }
+ ],
+ "loads": [
+  {
+   "id": "Q1",
+   "member_desc": "ARM.1.PositiveY",
+   "member": 5,
+   "fraction": 0,
+   "magnitude": "2000 N",
+   "value_lbf": -449.617886199421,
+   "value_kip": "-0.449617886",
+   "distance_in": 6.354218840504721,
+   "percent": "15.002564",
+   "direction": "global Y negativo (vertical de RAM, D-04)"
+  },
+  {
+   "id": "Q2",
+   "member_desc": "ARM.1.PositiveY",
+   "member": 5,
+   "fraction": 1,
+   "magnitude": "1.5 kN",
+   "value_lbf": -337.2134146495657,
+   "value_kip": "-0.337213415",
+   "distance_in": 42.35421884050472,
+   "percent": "100.000000",
+   "direction": "global Y negativo (vertical de RAM, D-04)"
+  },
+  {
+   "id": "Q3",
+   "member_desc": "ARM.2.PositiveY",
+   "member": 6,
+   "fraction": 0.25,
+   "magnitude": "750 lbf",
+   "value_lbf": -750.0,
+   "value_kip": "-0.750000000",
+   "distance_in": 15.354218840504721,
+   "percent": "36.251923",
+   "direction": "global Y negativo (vertical de RAM, D-04)"
+  },
+  {
+   "id": "Q4",
+   "member_desc": "ARM.2.PositiveY",
+   "member": 6,
+   "fraction": 0.9,
+   "magnitude": "1 kip",
+   "value_lbf": -1000.0,
+   "value_kip": "-1.000000000",
+   "distance_in": 38.75421884050472,
+   "percent": "91.500256",
+   "direction": "global Y negativo (vertical de RAM, D-04)"
+  },
+  {
+   "id": "Q5",
+   "member_desc": "ARM.3.PositiveY",
+   "member": 7,
+   "fraction": 0.5,
+   "magnitude": "300 kgf",
+   "value_lbf": -661.3867865546327,
+   "value_kip": "-0.661386787",
+   "distance_in": 24.35421884050472,
+   "percent": "57.501282",
+   "direction": "global Y negativo (vertical de RAM, D-04)"
+  },
+  {
+   "id": "Q6",
+   "member_desc": "ARM.3.PositiveY",
+   "member": 7,
+   "fraction": 0.75,
+   "magnitude": "4.5 kN",
+   "value_lbf": -1011.6402439486972,
+   "value_kip": "-1.011640244",
+   "distance_in": 33.35421884050472,
+   "percent": "78.750641",
+   "direction": "global Y negativo (vertical de RAM, D-04)"
+  }
+ ]
+}

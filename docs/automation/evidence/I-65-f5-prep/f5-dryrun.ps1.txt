@@ -1,0 +1,30 @@
+# Comprobacion en seco de F5 (preparacion, NO es evidencia de OV): con las DLL congeladas del Candidato, fuera de AutoCAD y de RAM,
+# construye el modelo de REF-CANT-01 con el archivo de cargas de OV-I65-02 y el paquete EN MEMORIA (sin publicador: no escribe nada),
+# y vuelca a la salida estandar la carga util (PAYLOAD) del script de construccion para contrastarla con la tabla derivada a mano.
+# Uso: pwsh -NoProfile -File f5_dryrun.ps1 <binDir> <designJson> <loadsJson> <outPayloadJson>
+param([string]$Bin, [string]$DesignPath, [string]$LoadsPath, [string]$OutPayload)
+$ErrorActionPreference = 'Stop'
+[void][Reflection.Assembly]::LoadFrom((Join-Path $Bin 'RackCad.Domain.dll'))
+$app = [Reflection.Assembly]::LoadFrom((Join-Path $Bin 'RackCad.Application.dll'))
+"Application: " + $app.GetCustomAttributes([Reflection.AssemblyInformationalVersionAttribute], $false)[0].InformationalVersion
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+$read = [RackCad.Application.StructuralAnalysis.Providers.RamElements.RamSectionMapReader]::Read([IO.File]::ReadAllText((Join-Path $Bin 'structural-analysis\ram-elements\section-material-map.json'), $utf8))
+$catalog = [RackCad.Application.StructuralSections.CsvStructuralSectionCatalogProvider]::new((Join-Path $Bin 'catalogs')).Load()
+$store = [RackCad.Application.Persistence.RackProjectStore]::new()
+$decode = [System.Func[byte[], RackCad.Domain.Systems.Cantilever.CantileverLineDesign]] { param([byte[]]$b) return $store.Deserialize([Text.Encoding]::UTF8.GetString($b)).CantileverLineDesign }.GetNewClosure()
+$loadBytes = [IO.File]::ReadAllBytes($LoadsPath)
+"loads_sha256=" + [BitConverter]::ToString([Security.Cryptography.SHA256]::HashData($loadBytes)).Replace('-', '').ToLower()
+$model = [RackCad.Application.Systems.Cantilever.CantileverStructuralExport]::Build('dryrun-rack', 'Cantilever', 0,
+    [Text.Encoding]::UTF8.GetBytes((Get-Content -LiteralPath $DesignPath -Raw)), $decode, $loadBytes, $read.Table, $catalog)
+"model=" + $model.Outcome + " diagnostics=" + @($model.Diagnostics).Count
+$model.Diagnostics | ForEach-Object { "  " + $_.Severity + " " + $_.Code + " (" + $_.Subject + ")" }
+# Carpeta ficticia: la fabrica solo valida que sea una ruta Windows absoluta; NO se escribe (no se llama al publicador).
+$opts = [RackCad.Application.StructuralAnalysis.Providers.RamElements.RamBuildPackageOptions]::new($read.Table, '1.0.0', 'D:\r65-dryrun-not-written\pkg-OV02', $loadBytes)
+$pkg = [RackCad.Application.StructuralAnalysis.Providers.RamElements.RamBuildPackageFactory]::CreateRamBuildPackage($model, $opts)
+"package=" + $pkg.Outcome + " files=" + @($pkg.Package.Files).Count
+$script = $pkg.Package.Files | Where-Object { $_.Name -eq 'rackcad-ram-build.py' }
+$text = [Text.Encoding]::UTF8.GetString($script.GetContent())
+$line = @($text -split "`n" | Where-Object { $_ -like 'PAYLOAD = *' })[0]
+Set-Content -LiteralPath $OutPayload -Value $line -Encoding utf8NoBOM -NoNewline
+"payload_line_written=" + $OutPayload
+"exists_D_r65_dryrun=" + (Test-Path -LiteralPath 'D:\r65-dryrun-not-written')

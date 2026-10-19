@@ -1,0 +1,99 @@
+"""I-65 A65-F4F-04 opcion 0 (fuera del producto): contraste de SOLO LECTURA entre la lectura de vuelta de un paquete
+(ram-readback.json, que lleva la huella del paquete) y el volcado del modelo generado (ram-dump.json) de la misma sesion.
+Demuestra que el volcado describe el MISMO contenido que el script leyo justo despues de construir el modelo. NO es una prueba
+criptografica de procedencia: dos sesiones con la misma geometria producen el mismo contenido (W2 = P2 byte a byte).
+Uso: python -I readback_dump_contrast.py <ram-readback.json> <ram-dump.json> <salida.json> [--mutate <campo>]
+"""
+import json
+import sys
+
+rb_path, dump_path, out_path = sys.argv[1:4]
+mutate = sys.argv[5] if len(sys.argv) > 5 and sys.argv[4] == "--mutate" else None
+rb = json.load(open(rb_path, encoding="utf-8"))
+dump = json.load(open(dump_path, encoding="utf-8"))
+if mutate == "load-value":
+    rb["values"]["loads"][0]["value"] *= 1.01
+elif mutate == "node-coordinate":
+    rb["values"]["nodes"][0]["coordinates"][1] += 0.5
+elif mutate == "extra-dump-member":
+    dump["members"].append(dict(dump["members"][0], id=999))
+TOL = 1e-9
+findings = []
+
+
+def near(a, b):
+    return abs(a - b) <= TOL * max(1.0, abs(a), abs(b))
+
+
+def vec(a, b):
+    return len(a) == len(b) and all(near(x, y) for x, y in zip(a, b))
+
+
+if rb.get("status") != "READBACK OK":
+    findings.append("la lectura de vuelta no es READBACK OK: " + str(rb.get("status")))
+if dump.get("status") != "DUMP OK":
+    findings.append("el volcado no es DUMP OK: " + str(dump.get("status")))
+v = rb.get("values", {})
+dn = {n["id"]: n for n in dump.get("nodes", [])}
+dm = {m["id"]: m for m in dump.get("members", [])}
+if len(dn) != len(v.get("nodes", [])):
+    findings.append("nudos: lectura de vuelta %d, volcado %d" % (len(v.get("nodes", [])), len(dn)))
+if len(dm) != len(v.get("members", [])):
+    findings.append("miembros: lectura de vuelta %d, volcado %d" % (len(v.get("members", [])), len(dm)))
+for n in v.get("nodes", []):
+    d = dn.get(n["ramId"])
+    if d is None:
+        findings.append("nudo %s (ramId %s) no esta en el volcado" % (n["id"], n["ramId"]))
+        continue
+    if not vec(n["coordinates"], d["coordinates"]):
+        findings.append("nudo %s: coordenadas %s frente a %s" % (n["id"], n["coordinates"], d["coordinates"]))
+    if n["restraints"] != d["restraints"]:
+        findings.append("nudo %s: apoyos distintos" % n["id"])
+    if d.get("description") != n["id"]:
+        findings.append("nudo %s: descripcion del volcado %r" % (n["id"], d.get("description")))
+member_ram = {}
+for m in v.get("members", []):
+    member_ram[m["id"]] = m["ramId"]
+    d = dm.get(m["ramId"])
+    if d is None:
+        findings.append("miembro %s no esta en el volcado" % m["id"])
+        continue
+    for key in ("section", "material", "description", "cardinalPoint", "axialBehavior", "releases"):
+        if m.get(key) != d.get(key):
+            findings.append("miembro %s: %s %r frente a %r" % (m["id"], key, m.get(key), d.get(key)))
+    for key in ("rotation", "springI", "springJ"):
+        if not near(m[key], d[key]):
+            findings.append("miembro %s: %s %r frente a %r" % (m["id"], key, m[key], d[key]))
+    for key in ("l1", "l2", "l3", "offsetI", "offsetJ"):
+        if not vec(m[key], d[key]):
+            findings.append("miembro %s: %s distinto" % (m["id"], key))
+case = v.get("loadCase") or {}
+dcase = [c for c in dump.get("loadCases", []) if c.get("id") == case.get("id")]
+if len(dcase) != 1:
+    findings.append("caso %r: %d en el volcado" % (case.get("id"), len(dcase)))
+else:
+    dl = {}
+    for ml in dcase[0].get("memberLoads", []):
+        dl.setdefault(ml["member"], []).extend(ml["loads"])
+    total = sum(len(x) for x in dl.values())
+    if total != len(v.get("loads", [])):
+        findings.append("cargas: lectura de vuelta %d, volcado %d" % (len(v.get("loads", [])), total))
+    for ld in v.get("loads", []):
+        cands = dl.get(member_ram.get(ld["member"]), [])
+        if ld["index"] >= len(cands):
+            findings.append("carga %s: el volcado no tiene la posicion %d en su miembro" % (ld["id"], ld["index"]))
+            continue
+        c = cands[ld["index"]]
+        if not (near(ld["value"], c["value"]) and near(ld["percent"], c["distance"]) and c["isPercentage"] == ld["isPercentage"] and c["direction"] == ld["direction"]):
+            findings.append("carga %s: %r frente a %r" % (ld["id"], (ld["value"], ld["percent"]), (c["value"], c["distance"])))
+    if not near(sum(case.get("selfWeight", [0])), sum(dcase[0].get("selfWeight", [0]))):
+        findings.append("peso propio distinto")
+if dump.get("combinations"):
+    findings.append("el volcado tiene combinaciones")
+result = {"schema": "rackcad-i65-readback-dump-contrast/v1", "readbackFingerprint": rb.get("analysisInputFingerprint"),
+          "verdict": "IGUAL" if not findings else "DISTINTO", "findings": findings, "mutation": mutate,
+          "counts": {"nodes": len(dn), "members": len(dm), "loads": len(v.get("loads", []))}}
+json.dump(result, open(out_path, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
+print(result["verdict"], len(findings), "hallazgos", "(mutacion: %s)" % mutate if mutate else "")
+for f in findings[:5]:
+    print(" -", f)
