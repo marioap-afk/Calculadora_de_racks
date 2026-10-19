@@ -1,0 +1,80 @@
+I-65 — OWNER DISPOSITION
+F5 Technical Acceptance / Candidate Preparation / Privacy Gate
+He revisado la preparación de F5 registrada en `511f2043`, con CI 4/4 satisfactorio.
+1. Disposición técnica de F5
+F5 LOAD SPECIFICATION = APPROVED.
+Apruebo las seis cargas propuestas para OV-I65-02:
+
+* Q1: 2000 N, brazo 1, fracción 0.
+* Q2: 1.5 kN, brazo 1, fracción 1.
+* Q3: 750 lbf, brazo 2, fracción 0.25.
+* Q4: 1 kip, brazo 2, fracción 0.9.
+* Q5: 300 kgf, brazo 3, fracción 0.5.
+* Q6: 4.5 kN, brazo 3, fracción 0.75.
+
+Todas corresponden al caso REF1 y dirección −Z, según la especificación preparada.
+Acepto la matriz de valores calculados como referencia para la validación, sujeta a revisión independiente.
+Mantén las tolerancias congeladas.
+Q2 conserva fracción de entrada 1.0 y su valor calculado cercano al 100 %. Registra las diferencias de representación numérica; no modifiques el algoritmo ni las tolerancias.
+2. Candidato propio de F5
+F5 CANDIDATE PREPARATION = AUTHORIZED.
+Apruebo utilizar un Candidato de hito propio conforme a LIFECYCLE §8.
+No reutilices la excepción documental del Candidato F4.
+Prepara:
+
+1. SHA propuesto.
+2. Alcance y documentación completos.
+3. Árbol limpio y rama actualizada.
+4. Core Full y UI Full.
+5. Builds exigidos.
+6. CI sobre el SHA exacto.
+7. Identidad del DLL y los archivos de cargas.
+8. Revisión independiente del Architect.
+9. Conformidad del Coordinator.
+10. Matriz de aceptación AC-F5-01..10.
+
+Detente antes de declarar formalmente el Candidato si corresponde una autorización separada del Owner.
+3. Referencia manual
+MANUAL MODEL OPERATOR = CLAUDE WITH COMPUTER USE, condicionado a la autorización posterior de W4.
+Construye el modelo desde la especificación congelada y la hoja de entrada manual de OV-I65-02.
+No derives los valores manuales del paquete generado por RackCad ni de su readback.
+No guardar modelos RAM sin autorización.
+4. Trazabilidad
+A65-F4F-04 OPTION 0 = APPROVED FOR F5.
+Utiliza los registros externos de sesión y el contraste independiente entre readback y volcado.
+Conserva la advertencia de que esta cadena de custodia es evidencia operativa y no una certificación criptográfica de procedencia.
+No modificar código de producto.
+5. Privacidad — condición previa
+PRIVACY HOLD = ACTIVE.
+No publicar nuevas capturas, volcados o registros que contengan información identificable mientras el repositorio continúe público.
+Una vez que yo cambie su visibilidad, comprueba mediante lectura que efectivamente es privado.
+C-2 = PLAN APPROVED, EXECUTION PENDING.
+Puedes mantener preparado el plan de redacción de las 30 imágenes. No modifiques aún las evidencias históricas.
+C-3 = NOT AUTHORIZED.
+No reescribir historial ni realizar force-push.
+Para nuevos registros de CI, elimina o redacta datos personales innecesarios antes de versionarlos.
+C-5 = PENDING OWNER DECISION.
+No notificar a terceros todavía.
+Si encuentras credenciales, tokens u otros secretos, informa inmediatamente del tipo y alcance de la exposición sin reproducir sus valores.
+6. Ejecución
+W3 AUTOCAD = NOT YET AUTHORIZED.
+W4 RAM = NOT YET AUTHORIZED.
+Prepara los procedimientos de ambas ventanas con sus condiciones de entrada, presupuestos, oráculos y STOP.
+La ejecución estará condicionada a la contención de privacidad, declaración del Candidato y autorización específica del Owner.
+7. Presupuesto
+Mantener:
+
+* Codex: 50/52.
+* Attempts: 7/9.
+* Sin Workers de implementación.
+* Sin modificaciones funcionales.
+
+8. Entregable
+Presenta el SHA propuesto del Candidato F5, los resultados de pruebas y CI, el veredicto del Architect, las condiciones de W3/W4 y el estado de privacidad.
+F5 SPECIFICATION = APPROVED.
+F5 CANDIDATE PREPARATION = GO.
+F5 CANDIDATE DECLARATION = PENDING.
+W3/W4 EXECUTION = NO.
+F5 GATE PASS = NO.
+READY FINAL = NO.
+Procede únicamente con las actividades autorizadas.

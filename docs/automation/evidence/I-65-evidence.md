@@ -2421,3 +2421,19 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 
 - Archivo de cargas de OV-I65-02: SHA-256 de los bytes LF `d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c`.
 - Visibilidad del repositorio a las 00:46Z: `public` (pendiente de la acción del Owner, C-1).
+
+## 91. Disposición de aceptación técnica de F5 y preparación del Candidato de hito de F5 (2026-10-19T01:36:25Z)
+
+- Orden: decisiones §87. Solo documentación en este commit (SHA propuesto del Candidato de hito de F5); producto igual al árbol de
+  `51fc82f1` (`src`, `tests`, `tools`, `Directory.Build.*` y `global.json` con los mismos árboles y blobs). Freeze (`4e6e1feb…`) y
+  ADR-0050 (`c18def42…`) sin cambios. Sin AutoCAD, RAM, NETLOAD, Codex ni Workers.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-f5-acceptance-candidate-privacy-gate.original.txt` | `85E1F40C9D40CE7071D4BF4292F7D6214B182D37BC29DB483D8D43204C7852EC` |
+| `docs/initiatives/I-65-f5-w3-w4-procedures.md` | `88625E4E4A85D9F08105B3BAC13C2912C0928C0E3C6DEF865E749654B2698519` |
+
+- La evidencia del Candidato (Core Full y UI Full locales, builds Debug, manifiesto de salida, identidad de la DLL, valores esperados del
+  validador v2 y CI del SHA exacto), la revisión del Architect, la conformidad del Coordinator y el bloque de declaración propuesto se
+  versionan en commits posteriores, como evidencia de ese SHA exacto.
