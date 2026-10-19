@@ -2583,3 +2583,45 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 |---|---|
 | `docs/automation/decisions/I-65-owner-disposition-privacy-resolution-f5-w3-authorization.original.txt` | `E3F4F5E5BA8967F3286E7818BBABFD50ADE47E7CBDFF2DECF094C6504EE7BA1B` |
 | `docs/initiatives/I-65-f5-w3-w4-operational-annex.md` | `C4CAB02E2F1BBFE848981651797FA6EC1E60402B9A35512DCC9826EA067EC9AB` |
+
+## 96. W3 (AutoCAD) sobre el Candidato de hito F5 (2026-10-19T18:04:51Z)
+
+- Orden: decisiones §90-§91. Carpeta local `D:\r65-smoke\bd1fcf8a\f5-R20261019T1750Z\` (sin `ram-readback.json`). Resultado propuesto:
+  **W3 = PASS** (informe `w3-R20261019T1750Z/w3-report.md`). Paquete `pkg-OV02`: `manifest.json` `f6cf8a91e2bbad814c8ffa60c3a9a4498f045443dd683d64fd2c7daba3b7ab85`,
+  `rackcad-ram-build.py` `f7ed0b0623da43bd434c2905e3949c7d342ca4b3cd1d4d90395e0766cd8e00f9`, `structural-loads.json` `d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c`.
+- Privacidad (política de §90): capturas recortadas; manifiesto e informe del validador versionados con el nombre del verificador
+  redactado (originales en local con su SHA-256); barrido: 0 secretos y 0 datos personales.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/baseline-summary.txt` | `ACDD257A4EFB72903EEA7083D5426E0057D53D2C60C08FDD285B9DB008822830` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/diff-classification.txt` | `26863F2F8BB50641EBD12166477A3B555FE23A9550FFFEDEB7FCBBE2D1750F85` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/diff-registry-keys.txt` | `4381FFDBA319EDC6B6A8A76B700A627C06C5F5CA34FD446996B83B77BE14D3EF` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/f5-identity-baseline.txt` | `6F2F86DC064255D9B6BDB0217519DA4EB6496E6D897AA193A9CEFC974DD77379` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/f5-identity-post.txt` | `22B15FFAD39AB76703C15D6E6BF84231D762E2DEEE99E8F696292F58AF9A5B14` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/host-coordination-w3-2026-10-19.md` | `8CAC16482448672938737CB7C911375583CD3DE7323D56313A307F91967D8C3D` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/k1-k2-compare.json` | `D5EE2EED235905698403496486182D7D2DAAE04B62D3756F98020C9E5926FC04` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/manifest-pkg-OV02.redacted.json` | `8722BDC87F27254D94069D9194ED498666460D906A36D2BA873E38D7D0792DA6` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/module-list-after-netload.txt` | `B34E66C67E81D1903110050F1D237E3BD7ADCEC5DF25752A566B005B7990BF70` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/module-list-before-close.txt` | `61CC6F9CD74B011D3E27518B39A9E0E88FD660C7CD1C3C8E227AAF169E93A3F6` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/package-and-originals-sha256.txt` | `FC1578E29C16C6A85A6D11324804FC9C3466C94A488A812A9753F9DF0A4018DD` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/payload-line-pkg-OV02.txt` | `025B530B61F49D8EC63E68BCD6FA310D178F556BBC5CA662516995ABA1E5BA2E` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/payload-vs-dryrun-pkg-OV02.txt` | `4CCF55A86C3634EE80D4C150E5DBCEA0300A65AC8DC5A9804B1C0BD7FC57013A` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/payload-vs-table-pkg-OV02.txt` | `4F18356141F4D4CBC55405271A035B15DD5813BF79E2164D1C763AF7B9CCEB78` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/post-summary.txt` | `06A80EE25D90F35DD55827C310458FF66D24E79A8066E358F8A7072949A00494` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/privacy-secrets-scan.txt` | `136CD4060A9A1AA86A8A01385827F662DD018F4A24CFFABDAD95DEADE7BD5A88` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/timeline.txt` | `AED9E24C54BE1936C6D99AF052146980916842614AF4967EF724B621BC7BE8BC` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/validator-v2-pkg-OV02.redacted.json` | `55031ACCCD8A522FA5D2D76B2DC03F173D26A0232CBB85FD91A6730F0C4429E1` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/w3-report.md` | `E411BDFAEEC7EBA7FABC2140ED13E20FA98198A0C65A77C5D6698EEC79541802` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/01-dibujo-nuevo-drawing1.jpg` | `01771079692C49F332C558E7C28BB29E9B1F915A90DF9D203A486107F15B576A` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/02-netload-dll-candidato-seleccionado.jpg` | `DFBEBE6049448927B40FDF0C72D30EF0320C825129F88214B829B673428569B8` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/03-aviso-seguridad-load-once.jpg` | `BDE2DA3A001447D91DCFE57373B93E10CEA9F50FBE35F57BBCEA8A7ADD822CE1` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/04-ref-columna-base-w12x26.jpg` | `D5D37A7B37A64F5DDCC70A9CD472087AD8B45FEE436A8470961DC41FDAF5699E` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/05-ref-brazo-hss4x4x1_4.jpg` | `4FE7F7CEB8A23A51D645EE78A4311EE92E74902E22720B22099DF71DBDD2FC2B` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/06-ref-linea-resuelta.jpg` | `3208B3FD4C3747211494FAF1D1F6A36802AB7F25E089ABFFB29CD702136C2BF5` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/07-ref-vista-frontal-insertada.jpg` | `E4BB1ACA65CD3CB21105D5D7BFD35E1CB07D2C4F7B8241D130F0C176A92C76D5` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/08-ov02-cargas-tecleadas.jpg` | `094C69DB7A1145A663D9FD8D8F29178F6921A8A57A21688B48A053DFDF913FF2` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/09-ov02-carpeta-tecleada.jpg` | `00AFC88A85EDDD60CBFD79D4FE2861165EDCB94293A03056D4AE29849970D8D5` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/10-ov02-consola-valid.jpg` | `197F98726972811172792510FBDABF6F0B047A464389E3A23E2611A3BF6406EE` |
+| `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/11-cierre-sin-guardar.jpg` | `D76ADA57D733EA9757015859FC733C31E7EA18A83D7CA8AB29060371253DDD89` |
