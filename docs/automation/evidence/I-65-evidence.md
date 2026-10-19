@@ -2508,3 +2508,64 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 | `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/tools/redact-expected-inputs.py.txt` | `9C67B98A1AC080A734C484D1D523435C66C0C291343B6677994C0DA2489460D2` |
 | `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/tools/secrets-scan.py.txt` | `DAE25FA9FE595CC90D37A357FEB5CF668375D29314D54253EB4EE881E1058DFB` |
 | `docs/automation/evidence/I-65-f5/coordinator-f5c-conformity.md` | `FD319001FC041CCBC30B9C08E4791DEEDF1F75AF0EAD7743CAEB9A8BEC324237` |
+
+## 94. Declaración del Candidato de hito de F5 `bd1fcf8a` (2026-10-19T02:50:54Z)
+
+- Orden: decisiones §89 (Owner: F5 MILESTONE CANDIDATE DECLARATION = AUTHORIZED, CONDITIONAL). Coordinator sin AutoCAD, RAM, NETLOAD,
+  Codex ni Workers; sin cambios de producto.
+- **Comprobaciones inmediatas (02:47:49Z): las ocho pasan** (`candidate-bd1fcf8a/declaration-recheck.txt`).
+- **Bloque de declaración (guía §7.1):**
+
+```text
+Candidate SHA:        bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109   (Candidato de HITO de F5, OV-I65-02; DECLARADO por autorizacion del Owner, decisiones §89; no es FINAL_CANDIDATE_SHA)
+Arbol limpio:         SI            <- al producir la evidencia local (§92; HEAD antes y despues = el SHA, status vacio)
+SDK resuelto:         8.0.423
+Core Full local:      PASS          (14390/14390)
+UI Full local:        PASS          (1637 superadas, 0 con error, 17 omitidas declaradas)
+Debug UI build:       PASS
+Debug Plugin build:   PASS          (DLL 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5, 1.0.0+bd1fcf8a; -o D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows, desviacion registrada de la guia §2, como en F4)
+CI exact SHA:         GREEN (run 39187567306, event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha exacto, job ui-tests success; 4/4)
+Owner validation:     required (OV-I65-02 en W3 AutoCAD + W4 RAM; no autorizadas)
+Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d72487ac8b5b1e5510cdd8aba231ab340541d91bebca2d560e8   <- medida a las 02:47:49Z; se vuelve a medir en W3
+```
+
+- **Custodia adicional del Candidato:**
+
+| Elemento | Valor |
+|---|---|
+| Tabla verificada | blob `d088e2a9…`; junto a la DLL `fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619` |
+| Archivo de cargas de OV-I65-02 | blob `dcc1a039…`; `D:\r65-smoke\bd1fcf8a\inputs\ov-i65-02.loads.json` `d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c` |
+| Valores esperados del validador v2 | `c61a6e1255783f3c59f3e236c0057bbd88b3b1eabbbe424ba7dced71f22ddaf8` (copia redactada versionada) |
+| Herramienta de F4 | `D:\r65-smoke\bd1fcf8a\ramtool\` (`.exe` `21290785…`, `.dll` `86298d2c…`) |
+| Architect | CONFORMANT WITH OBSERVATIONS, 0 REQUIRED, A65-F5C-01..09 OPTIONAL (decisiones §88-§89) |
+| Coordinator | CONFORMING (CD-I65-F5-16) |
+| Disposiciones del Owner | §86 (preparación), §87 (especificación y preparación del Candidato), §89 (declaración, A65-F5C-01, observaciones) |
+| Registro posterior | evidencia y conformidades (`daa6fb77`, `dad3b40e`), esta declaración y el anexo operativo: actos posteriores admitidos solo para este hito (CD-I65-F5-21) |
+| Anexo operativo de W3/W4 | `docs/initiatives/I-65-f5-w3-w4-operational-annex.md` (A65-F5C-03..06) |
+
+- **Matriz de la validación del hito F5** (todo sobre `bd1fcf8a`): OV-I65-02 en W3 (`pkg-OV02` `Valid`, 16/16, carga útil 6/6) y W4
+  (`READBACK OK`, volcados `DUMP OK`, comparador PASS con `LOADS` en PASS, cadena de custodia y contraste IGUAL): **PENDIENTE**.
+  AC-F5-01, 02 y 08 (Candidato) CUMPLEN; AC-F5-03 CUMPLE con esta declaración; AC-F5-04..07, 09 (cierre) y 10 PENDIENTES.
+- Visibilidad: `public` a las 02:47:49Z (PRIVACY HOLD). W3 = NO; W4 = NO; F5 GATE PASS = NO; READY FINAL = NO. Codex 50/52; `attempts` 7/9.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-f5-milestone-candidate-declaration.original.txt` | `C7B3741BEDA98EE59C830AB342BC709A607BE4608319E138B47131D616BB6FDA` |
+| `docs/initiatives/I-65-f5-w3-w4-operational-annex.md` | `FA1955083D2B35C65C1BCF5BB3DC9723CD5A798A4BCC7148D6ADB5FC9CB5CE21` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/declaration-recheck.txt` | `491F4DBEC3A57CC61F358D068BB25155E597653D9E386952B476B76D6CE16FEC` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/predeclaration-recheck.txt` | `A544F7F521988CC941131554FCDF00AEA92CE51F7DF2BC7166B67F263B32F657` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/local-evidence.txt` | `64EFD31E7B3FB48E5C3A1207F7566F24DE3653C75D160EC8FEF16C36F742B4DE` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/identity.txt` | `C0C0B2DA6C0614112634F04843C2EBDE327C786CE5CB016605ADD29A90E69B27` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/output-manifest.txt` | `BD096BEC0F2410449A61DAE28A3571BB77E55AF99E6CC5E86D978605B03A301F` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/ramtool-manifest.txt` | `3E6EC61F389A3F88E231665550D44E6A55509DC08D5D195398EB0F8F58C8780D` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/ci-run.txt` | `998B0AC830E094410CB3F84E669DBCF4B2C922F68F72D98E83CB786FD368E8F0` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/expected-inputs-summary.txt` | `812E73D7C68E8F1AC801C6C7E2D56B9796242DC7E7EEFC682FE9ADFA9D2F433D` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/f5-dryrun-candidate-output.txt` | `7845A74E31E407FB575E5DC9357DA9E659A5A6E095B4DAAFBE221DB451B4DF45` |
+| `docs/automation/evidence/I-65-f5/candidate-bd1fcf8a/f5-dryrun-candidate-identity.txt` | `7A9094441C5FE6B9FA7327EEB571812E8C042D3F870E6194948E7FE62C220C0C` |
+| `docs/automation/evidence/I-65-f5/architect-f5c-conformance.md` | `630648A36AB58923B9CA533150559BBF414C1A8EDE39E8A70FFD39DAEAC7C59B` |
+| `docs/automation/evidence/I-65-f5/coordinator-f5c-conformity.md` | `FD319001FC041CCBC30B9C08E4791DEEDF1F75AF0EAD7743CAEB9A8BEC324237` |
+| `docs/initiatives/I-65-f5-w3-w4-procedures.md` | `88625E4E4A85D9F08105B3BAC13C2912C0928C0E3C6DEF865E749654B2698519` |
+| `docs/initiatives/I-65-f5-preparation.md` | `2511170EA4F1B8A7C0E47F89D9C2DE99AD3EA1F2DD83E09E4CA8E8DF9F8E7396` |
+| `docs/automation/evidence/I-65-f5-prep/ov-i65-02.loads.json` | `D675D9F6BB537083A63571F08FB9884C1AB085A0ECA4AD1555EE98BEA4F8BA4C` |
+| `docs/automation/evidence/I-65-f5-prep/ov-i65-02-manual-entry-sheet.json` | `B15B9F9E28BE3DB82AF3C1C65DA5E07ADCE877B28BF9438960848B7B40394ECA` |
