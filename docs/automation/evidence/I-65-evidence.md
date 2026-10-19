@@ -2569,3 +2569,17 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 | `docs/initiatives/I-65-f5-preparation.md` | `2511170EA4F1B8A7C0E47F89D9C2DE99AD3EA1F2DD83E09E4CA8E8DF9F8E7396` |
 | `docs/automation/evidence/I-65-f5-prep/ov-i65-02.loads.json` | `D675D9F6BB537083A63571F08FB9884C1AB085A0ECA4AD1555EE98BEA4F8BA4C` |
 | `docs/automation/evidence/I-65-f5-prep/ov-i65-02-manual-entry-sheet.json` | `B15B9F9E28BE3DB82AF3C1C65DA5E07ADCE877B28BF9438960848B7B40394ECA` |
+
+## 95. Resolución del PRIVACY HOLD y autorización condicional de W3 (2026-10-19T17:32:29Z)
+
+- Orden: decisiones §90. Sin AutoCAD, RAM, NETLOAD, Codex ni Workers; sin cambios de producto. Visibilidad leída: `public` (API `private: false`, consulta anónima 200, 17:32:28Z) (aceptada
+  por el Owner como pública; ya no es condición bloqueante).
+- Evaluación limitada del impacto: CD-I65-F5-32. El Candidato `bd1fcf8a` se conserva; el anexo operativo recibe el §6 (sustitución de
+  W3-PR-01/W4-PR-01, política de evidencias nuevas y medición de la identidad del Candidato de F5 junto a la BASELINE custodiada).
+- Siguiente: petición de ventana a I-64 (confirmación expresa de su Coordinator en su chat) y aviso a I-52; después, preflight y W3.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-privacy-resolution-f5-w3-authorization.original.txt` | `E3F4F5E5BA8967F3286E7818BBABFD50ADE47E7CBDFF2DECF094C6504EE7BA1B` |
+| `docs/initiatives/I-65-f5-w3-w4-operational-annex.md` | `C4CAB02E2F1BBFE848981651797FA6EC1E60402B9A35512DCC9826EA067EC9AB` |

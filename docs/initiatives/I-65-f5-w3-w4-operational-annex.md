@@ -77,3 +77,26 @@ aparte del signo del valor: STOP y consulta, sin improvisar.
 
 Condiciones de entrada (W3-PR-01..08, W4-PR-01..06), pasos y oráculos (W3-01..08, W4-01..11), Q2 (§4.3), presupuestos y STOP de los
 procedimientos; tolerancias congeladas; matriz AC-F5-01..10 con la lectura de CD-I65-F5-24 para A65-F5C-08.
+
+## 6. Adenda: resolución del PRIVACY HOLD y autorización de W3 (decisiones §90, 2026-10-19)
+
+Por la disposición del Owner «Privacy Hold Resolution / F5 W3 AutoCAD Authorization»
+([texto literal](../automation/decisions/I-65-owner-disposition-privacy-resolution-f5-w3-authorization.original.txt)):
+
+- **W3-PR-01 y W4-PR-01 (repositorio privado comprobado por lectura) quedan sustituidas** por la decisión del Owner
+  «REPOSITORY VISIBILITY = PUBLIC / OWNER ACCEPTED». Antes de cada ventana se sigue registrando la visibilidad por lectura, como dato y
+  no como condición. También queda sustituida la regla del §2 de los procedimientos «No se abre ninguna ventana mientras el
+  repositorio sea público», y la última viñeta del §4 de este anexo.
+- **Política de evidencias nuevas (sustituye al PRIVACY HOLD como condición bloqueante):** nunca credenciales, tokens, secretos ni
+  información confidencial de terceros; se recorta o redacta la información identificable que no sea necesaria para demostrar
+  resultados técnicos; se conservan diagnósticos, valores y lo necesario para auditar las pruebas; si no puede prepararse una evidencia
+  segura, se custodia en local y se informa la limitación. Las reglas de recorte y redacción del §4 siguen vigentes. AC-F5-07 se
+  sigue cumpliendo en su forma literal: la evidencia versionada no lleva datos identificables innecesarios, y los originales con datos
+  de ese tipo quedan en local con su SHA-256 custodiado.
+- **Medición del host en W3:** la BASELINE y el POST usan `w1_hostsnap.ps1` **sin modificar** (`5c33a842…`, versión custodiada). Sus
+  líneas de DLL, manifiesto, tabla y cargas apuntan a la carpeta del Candidato de F4 (`D:\r65-smoke\5a5ca577\`) y son informativas.
+  La identidad del Candidato de F5 se mide aparte, con órdenes de solo lectura (SHA-256 y ProductVersion de la DLL, salida, tabla,
+  cargas, valores esperados y biblioteca; huella de la ACL de `D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows` por el mismo camino y
+  la misma página de códigos; cobertura por `TRUSTEDPATHS`; existencia de `pkg-OV02`), antes de NETLOAD y en el POST.
+- W3-PR-07 (comprobación en seco con las DLL del Candidato, 6/6) ya se cumplió (evidencia §92).
+- No cambian: oráculos, tolerancias, matriz AC-F5-01..10, presupuestos ni STOP. W4 = NO.
