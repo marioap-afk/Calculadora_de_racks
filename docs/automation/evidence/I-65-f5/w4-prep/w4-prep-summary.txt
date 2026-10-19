@@ -1,0 +1,7 @@
+preparacion de W4 (sin RAM), 2026-10-19T18:07:23Z
+ramtool D:\r65-smoke\bd1fcf8a\ramtool\RackCad.StructuralAnalysis.RamTool.exe sha256=21290785e13f2daee51b10b9d0b8911f86e73798e2cf49e668ce791a78e9ce7c
+dump-OV02-gen/rackcad-ram-dump.py sha256=4a1be499495701d5cec3a109d1c6ce8deb81faeddbc29bbbe82a1b003e4dea60 (= plantilla de P2 af262489 salvo la linea dumpFolder)
+dump-OV02-man/rackcad-ram-dump.py sha256=bdd02eee483862e7cc10c670591942b697b270ee90da2deade1d12fa2eeafa7e (= plantilla de P2 af262489 salvo la linea dumpFolder)
+ram-dump.json en las carpetas de volcado: gen=False man=False
+pkg-OV02: manifest.json=f6cf8a91e2bbad814c8ffa60c3a9a4498f045443dd683d64fd2c7daba3b7ab85, rackcad-ram-build.py=f7ed0b0623da43bd434c2905e3949c7d342ca4b3cd1d4d90395e0766cd8e00f9, structural-loads.json=d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c ram-readback.json=False
+incidencia: incident-prep 18:06:12Z error de escapado en Bash: dump-script publico en D:\r65-smoke\bd1fcf8a\f5-R20261019T1750Z$d (nombre literal, fuera de la corrida; script fbd085c0...); carpeta retirada; la segunda llamada fue rechazada (PACKAGE-DESTINATION-EXISTS); se regeneran los dos scripts con rutas literales

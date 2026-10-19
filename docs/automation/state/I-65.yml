@@ -7,7 +7,7 @@ automation_state:
   state: waiting-owner
   gate: F5
   attempts: 7
-  next_action: Owner: aceptacion de W3 (propuesta PASS, decisiones §91) y autorizacion separada de W4 RAM con su preparacion; el Coordinator no abre RAM.
+  next_action: Owner: aceptacion de W3 (propuesta PASS, §91) y autorizacion separada de W4 RAM (preparacion lista, §92); el Coordinator no abre RAM.
   last_evidence_commit: bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109
 execution_context:
   mode: manual

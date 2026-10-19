@@ -2625,3 +2625,16 @@ Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 b4ca2248db9c3d7
 | `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/09-ov02-carpeta-tecleada.jpg` | `00AFC88A85EDDD60CBFD79D4FE2861165EDCB94293A03056D4AE29849970D8D5` |
 | `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/10-ov02-consola-valid.jpg` | `197F98726972811172792510FBDABF6F0B047A464389E3A23E2611A3BF6406EE` |
 | `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/captures/11-cierre-sin-guardar.jpg` | `D76ADA57D733EA9757015859FC733C31E7EA18A83D7CA8AB29060371253DDD89` |
+
+## 97. Preparación de W4 (2026-10-19T18:07:23Z)
+
+- Orden: decisiones §92. Sin RAM, AutoCAD, Codex ni Workers. Resumen en `w4-prep/w4-prep-summary.txt`.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f5/w4-prep/dump-scripts-vs-p2-template.txt` | `F6FAC7EDFCAD5B352BD60360129E58ACC0420AC4CC7F4410E239E3EF532F8D9D` |
+| `docs/automation/evidence/I-65-f5/w4-prep/rackcad-ram-dump-OV02-gen.py.txt` | `4A1BE499495701D5CEC3A109D1C6CE8DEB81FAEDDBC29BBBE82A1B003E4DEA60` |
+| `docs/automation/evidence/I-65-f5/w4-prep/rackcad-ram-dump-OV02-man.py.txt` | `BDD02EEE483862E7CC10C670591942B697B270EE90DA2DEADE1D12FA2EEAFA7E` |
+| `docs/automation/evidence/I-65-f5/w4-prep/w4-prep-summary.txt` | `8F2DACD0E75FBCDC629843CDEEB3ECFA70A087A744E4198B8AE7BED14FF7CD46` |
+| `docs/automation/evidence/I-65-f5/w4-prep/w4-readiness.txt` | `E992772203F9BDBBB71DD5EFD5404777C8E6E69F516B67753FD6F71CCBE0263C` |
