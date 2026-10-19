@@ -1,0 +1,233 @@
+{
+ "ids": {
+  "RunId": "R20261019T010200Z-4a72",
+  "InvocationId": "I20261019T010200Z-4a72",
+  "LogicalReviewRequestId": "L20261019T010200Z-4a72",
+  "AttemptSeq": 1
+ },
+ "canonical": 190,
+ "bytes": 5053543,
+ "lines": 77134,
+ "groups": {
+  "resto": {
+   "Files": 21,
+   "Bytes": 2007503,
+   "Lines": 20121
+  },
+  "A7": {
+   "Files": 35,
+   "Bytes": 579256,
+   "Lines": 12554
+  },
+  "m7": {
+   "Files": 53,
+   "Bytes": 1005997,
+   "Lines": 16519
+  },
+  "r4": {
+   "Files": 7,
+   "Bytes": 335707,
+   "Lines": 5972
+  },
+  "kit-m7": {
+   "Files": 44,
+   "Bytes": 583283,
+   "Lines": 11793
+  },
+  "bmin": {
+   "Files": 30,
+   "Bytes": 541797,
+   "Lines": 10175
+  }
+ },
+ "run": {
+  "order.txt": [
+   4057,
+   "a5c37f714364"
+  ],
+  "prompt.md": [
+   77659,
+   "ba2804747151"
+  ]
+ },
+ "large": [
+  "docs/automation/evidence/I-62-A7/preflight.md",
+  "docs/automation/evidence/I-62-A7/run_a7.py",
+  "docs/automation/evidence/I-62-A6/m7/s91/d1/nc2/nc2-result.json",
+  "docs/automation/evidence/I-62-A6/m7/bench/README.md",
+  "docs/automation/evidence/I-62-A6/m7/readings/readings.md",
+  "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+  "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p7-derive.json",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/selftest_m7.py",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/tools_m7.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/tests/test_bmin_facts.py",
+  "docs/initiatives/I-62-proposal-v14.md",
+  "docs/AUTOMATION_PLAN.md",
+  "docs/automation/agent-execution/README.md",
+  "docs/initiatives/I-62-A-6.md",
+  "docs/initiatives/I-62-A-4.md",
+  "docs/initiatives/I-62-A-3.md",
+  "docs/initiatives/I-62-A-1.md",
+  "docs/automation/decisions/I-62.md",
+  "docs/automation/evidence/I-62-evidence.md"
+ ],
+ "reported": {
+  "NonUtf8": [],
+  "LinesOver2000Chars": [
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-CONTRACT.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-DELEG.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p7-derive.json"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/r4/r1probes/p9-n4.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p9-n4.json"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/r4/r1probes/p10-nc1.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": "docs/automation/evidence/I-62-A6/r4/readable/r1probes/p10-nc1.json"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/frozen/m7-run.snapshot.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Lines": [
+     2352,
+     2380,
+     2382
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/initiatives/I-62-A-3.md",
+    "Lines": [
+     1487
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "docs/automation/decisions/I-62.md",
+    "Lines": [
+     657,
+     734,
+     750,
+     768,
+     787,
+     805,
+     819
+    ],
+    "ReadableCopy": null
+   },
+   {
+    "Path": "prompt.md",
+    "Lines": [
+     326
+    ],
+    "ReadableCopy": null
+   }
+  ],
+  "LinesOver2000CharsWithoutReadableCopy": [
+   "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+   "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-CONTRACT.json",
+   "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-DELEG.json",
+   "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json",
+   "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/frozen/m7-run.snapshot.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json",
+   "docs/initiatives/I-62-proposal-v14.md",
+   "docs/initiatives/I-62-A-3.md",
+   "docs/automation/decisions/I-62.md",
+   "prompt.md"
+  ]
+ }
+}

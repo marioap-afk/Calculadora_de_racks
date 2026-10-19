@@ -1,0 +1,15 @@
+--- kit/owner_gate.py (pendiente)
++++ kit/owner_gate.py (fijado en §93)
+@@ -51,9 +51,9 @@
+ CLAUDE_LINE_PREFIX = "CLAUDE-CLI-I62 ="
+ SECTION_78 = "## 78. "
+ BASE_SECTION = 92                                                # decisiones §92: prepara A-7; «sin lanzar la revisión formal sin una disposición posterior»
+-AUTH_SECTION = None   # decisiones §93 (se fija con pin_authorization.py y se vuelve a congelar el kit)
+-AUTH_HEADING = None
+-AUTH_TEXT_SHA = None
++AUTH_SECTION = 93   # decisiones §93: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)
++AUTH_HEADING = "## 93. Disposición del Coordinator: revisión formal de A-7, cierre de insumos de VERIFY (2026-10-19 UTC)"
++AUTH_TEXT_SHA = "4f66b73832a045f86a5998922522d13267749522c491d183dd63fa7f7f4ba374"   # SHA-256 del texto de §93 (pin_authorization.py)
+ PENDING_REASON = ("authorization pending: a Coordinator disposition after §92 must be pinned (section number, heading, text SHA-256) and the kit "
+                   "re-frozen")
+ NUMBERED_RX = re.compile(r"^## ([0-9]+)\. ")

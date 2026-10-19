@@ -1,0 +1,79 @@
+I-62 — COORDINATOR DISPOSITION §93
+A-7 FORMAL REVIEW / VERIFY INPUT CLOSURE
+1. Autorización
+Autorizar UNA revisión formal independiente de A-7.
+Objeto:
+docs/initiatives/I-62-A-7.md
+Commit de publicación:
+6fee8fd6
+Identificar y verificar el blob completo cuyo prefijo es 6c29747d, usando el objeto efectivamente publicado.
+Alcance: exclusivamente A7-1 y sus consecuencias sobre el cierre de VERIFY de FX-02/F6 y la medición A6-7.
+A-7 continúa PROPUESTA hasta la revisión acreditada y el acuerdo posterior del Coordinator.
+2. Preparación eficiente
+Reutilizar el transporte claude-cli caracterizado, el auditor y las compuertas ya acreditadas, donde exista identidad y compatibilidad demostrables.
+Preparar un kit acotado a A-7.
+Usar validación incremental conforme a §88: repetir únicamente controles afectados y todos los preflight obligatorios.
+No dedicar otra jornada a reconstruir auditores o ejecutar cientos de mutantes sobre componentes idénticos.
+Si una autoridad exige una batería completa, identificar la cláusula exacta antes de ejecutarla.
+3. Revisión obligatoria del Architect
+Examinar:
+
+* A7-1 frente a V14 B.9, AUTOMATION_PLAN 16.13/16.24, RAE I6 y A-6.
+* Categorías de autoridades, objetos Target, artefactos custodiados e instrumento.
+* Procedencia, revisión de referencia, identidad y fidelidad por categoría.
+* EFF/EFF^1 en la validación de mapas de B1.
+* Distinción entre MAP_INVALID, entrada inexistente y cierre no construible.
+* Regla de cobertura de lecturas clausemap.
+* Entradas pertenecientes a varias categorías.
+* Compatibilidad con A-5 y A-6.
+* Ausencia de cambios no autorizados en contratos, oráculos, presupuestos y producción.
+* Aplicabilidad a N4, nc1 y N5–N7.
+* Suficiencia de los negativos y del preflight.
+
+Dictaminar expresamente la materialidad y si existe alguna consecuencia OWNER-RESERVED no identificada.
+4. D-1 / contract
+Examinar como impacto operativo relacionado, sin incluir automáticamente su corrección dentro de A-7.
+La propuesta excluye la orden contract del instrumento y mantiene Contract como obligación del Controller conforme a U-19.
+No incorporar el nuevo recálculo por supervisión del punto 7 del borrador: requiere una determinación de autoridad separada.
+No cambiar el instrumento ni el aceptante fijados por el Owner.
+5. Lecturas ambiguas
+Conservar la clasificación de §91 y examinar las propuestas FC-01, FC-04, FC-10, FC-12, FC-13, FC-16, FC-24 y FC-18.
+Verificar que las condiciones de fallo cerrado no cambian indirectamente los criterios normativos de PASS ni excluyen casos válidos necesarios para C-24.
+No aceptar interpretaciones ambiguas por mera coincidencia con la implementación.
+6. Kit y ejecución
+Preparar y custodiar el kit con:
+
+* manifest de insumos y blobs;
+* identidad del transporte;
+* comprobaciones de independencia;
+* autoprueba y negativos afectados;
+* record probe;
+* dry run con cero bloqueos.
+
+Si la preparación es conforme y las autorizaciones de revisión vigentes cubren la invocación, lanzar UNA revisión formal independiente.
+Límite de 3,600 segundos, sin reintento.
+Si surge un bloqueo de autoridad o identidad, STOP y reportar, sin improvisar excepciones.
+7. Resultado
+Ejecutar el auditor acreditado para el kit.
+Conservar íntegramente la salida y los resultados.
+AGREED del Architect exige cero hallazgos REQUIRED y auditor ACCREDITED.
+No declarar A-7 AGREED automáticamente: presentar el resultado al Coordinator.
+8. Límites
+No ejecutar Codex.
+No gastar la medición única A6-7.
+No crear B1 ni abrir FX-U2.
+No modificar I-65 ni infraestructura compartida.
+No alterar los acuerdos A-1..A-6.
+I-64 conserva prioridad de recursos.
+9. Entrega
+Informar:
+
+* blob completo y commit de A-7;
+* kit y controles incrementales;
+* resultado y auditor de la revisión;
+* hallazgos REQUIRED y opcionales;
+* viabilidad normativa del cierre en B1;
+* decisiones pendientes sobre D-1 y las lecturas ambiguas;
+* próximo paso mínimo hacia la medición A6-7.
+
+No declarar Controller ELIGIBLE, FX-02 PASS, F6 GATE PASS ni integración.

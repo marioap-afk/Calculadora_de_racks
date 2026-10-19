@@ -1,0 +1,6 @@
+RunId=R20261019T010200Z-4a72
+InvocationId=I20261019T010200Z-4a72
+LogicalReviewRequestId=L20261019T010200Z-4a72
+AttemptSeq=1
+SessionId=4945013a-d80e-43dc-bc95-d34dff85fcfe
+Generated=2026-10-19T01:02:00Z (una sola vez: uuid4 y 2 bytes hexadecimales aleatorios con secrets)

@@ -1,0 +1,514 @@
+{
+ "Base": "kit de A-6 ronda 4, kit-manifest.json b1342909562478e5f99015666fd59fb4e7020cd1337b43ae0a8e87d4049d1d41",
+ "New": "kit-manifest.json 444d9ba99865dd1a6690d6682c84f2ea077438e83f3629a5625a5f238b92c0da",
+ "Rows": [
+  {
+   "File": "kit/c3_analysis.py",
+   "OldSha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+   "NewSha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+   "Status": "IDENTICAL",
+   "DependsOn": "ninguna del transporte",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "SHA-256 = manifiesto b1342909: igual"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "casos G00-G58: 61/61, en selftest-result.json (autoprueba COMPLETA 283/283: auditoría 178/178, compuerta D-01 61/61, compuerta 11 40/40, coherencia 4/4; 2026-10-19T01:56:58Z → 2026-10-19T02:32:35Z)"
+    }
+   ]
+  },
+  {
+   "File": "kit/transport_gate.py",
+   "OldSha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+   "NewSha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+   "Status": "IDENTICAL",
+   "DependsOn": "closure.Transport (paths, session id)",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "SHA-256 = manifiesto b1342909: igual"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "G00-G58 sobre el cierre nuevo: 61/61"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "transport_gate.py init + set MEASURED + check: MEASURED, código 0"
+    },
+    {
+     "Kind": "REUSED",
+     "Detail": "mutación 40/40 de mutation-result.json 424c983e del kit de A-6 ronda 4 (191/191: post-review.py 133/133 sobre 4f46caa6, transport_gate.py 40/40 sobre e326b5b9, owner_gate.py 18/18)"
+    }
+   ]
+  },
+  {
+   "File": "kit/read_fidelity.py",
+   "OldSha256": "7b51116e5e4876c1416066994e282ad077661547ee5fb1dcb0fbcbd59e413cce",
+   "NewSha256": "7b51116e5e4876c1416066994e282ad077661547ee5fb1dcb0fbcbd59e413cce",
+   "Status": "IDENTICAL",
+   "DependsOn": "ninguna (no lo importa ningún componente)",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "SHA-256 = manifiesto b1342909: igual"
+    }
+   ]
+  },
+  {
+   "File": "kit/pin_authorization.py",
+   "OldSha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+   "NewSha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+   "Status": "IDENTICAL",
+   "DependsOn": "owner_gate.py (BASE_SECTION 92), closure.ObjectBlob",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "SHA-256 = manifiesto b1342909: igual"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "fijación real de §93: Ready True, línea 1825, blob True, LaterSections []"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "O30: PASS"
+    }
+   ]
+  },
+  {
+   "File": "kit/claude-cli-characterization.json",
+   "OldSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+   "NewSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+   "Status": "IDENTICAL",
+   "DependsOn": "blob 19b8a27e en 1c960c0a (worktree) y en el clon",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "SHA-256 = manifiesto b1342909: igual"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "verify_clone positiva: AllChecks True; guardas `run` iguales enteras a las custodiadas True; autoprueba de las guardas 44/44, igual entera a la custodiada True"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "verify_clone negativas (prep/neg-verify-result.json): N1-registro-alterado PASS"
+    }
+   ]
+  },
+  {
+   "File": "kit/order.txt",
+   "OldSha256": "d74e2aa1ce5eacc7dd6323cf3f3acec37fd6eb25f905ca4f2479dbca0cde5232",
+   "NewSha256": "a5c37f714364bc704c5f38218ae2b1a9209052c47834dcc5349684eb141be41b",
+   "Status": "CHANGED",
+   "DependsOn": "decisiones §93 del clon (bytes y SHA-256 declarados)",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "cuerpo pegado de §93 (s93_body.txt) = a5c37f71…, 4 057 bytes"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "verify_clone positiva: AllChecks True; guardas `run` iguales enteras a las custodiadas True; autoprueba de las guardas 44/44, igual entera a la custodiada True"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "launch 7-RunFiles: launch.py --dry-run: BlockingChecks []; NotRunInDryRun ['4-Version', '5-Auth']; AuthorizationSections [93]; LaterSections []"
+    }
+   ]
+  },
+  {
+   "File": "kit/owner_gate.py",
+   "OldSha256": "87ad933732b42655a992113e2e7fcc3eb4519dbb673063cee686df97838f75bb",
+   "NewSha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+   "Status": "CHANGED",
+   "DependsOn": "decisiones de la HEAD del worktree; A-7 y A-6 en la HEAD; closure.ObjectBlob",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "casos O00-O30 y L00: 40/40"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "casos 150-151p del registro: 20/20"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "mutation-targeted-result.json (mutación dirigida 56/56 muertos; post-review.py 37/37 sitios dirigidos de 122; owner_gate.py 19/19; 2026-10-19T02:33:24Z → 2026-10-19T03:14:55Z)"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "launch 11: launch.py --dry-run: BlockingChecks []; NotRunInDryRun ['4-Version', '5-Auth']; AuthorizationSections [93]; LaterSections []"
+    }
+   ]
+  },
+  {
+   "File": "kit/launch.py",
+   "OldSha256": "0ada02349afde4ffb8bb98f0eeca879190963d86dbc426c4bb94ee483e52a94c",
+   "NewSha256": "01f60c7ad9cfdf2d1a7fc5f89dc122c6d31893a2929a14f009c7d7209f5737af",
+   "Status": "CHANGED",
+   "DependsOn": "closure.Transport, owner_gate.OBJECT_BLOB, run de dos archivos",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "X01-X04: 4/4"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "launch.py --record-probe: código 0 = True (RecordProbe.Ok True, FrozenCommandGuard.Ok True)"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "launch.py --dry-run: BlockingChecks []; NotRunInDryRun ['4-Version', '5-Auth']; AuthorizationSections [93]; LaterSections []"
+    },
+    {
+     "Kind": "REUSED",
+     "Detail": "lógica G, R, P, D y comprobaciones 1-11 byte a byte (prep/diffs/launch.py.diff: constantes, docstring y la retirada de la comprobación de a6-r3.md); launch.py no tiene sitios de regla mutables"
+    }
+   ]
+  },
+  {
+   "File": "kit/post-review.py",
+   "OldSha256": "6c51758aaa9bc981f5f733e9fa9946d5402f8a9dbcbc543e580bdd1bab4b68cc",
+   "NewSha256": "303321f265152dc03a6fc7771bb69faed47f5167a80a7f03113e2839305d9653",
+   "Status": "CHANGED",
+   "DependsOn": "closure.json, owner_gate.py, transport_gate.py, result.schema.json",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "casos de auditoría genéricos (00-55, 126-149, 152-153): 89/89"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "casos de coherencia y esquema 55-121: 69/69"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "casos 150-151p: 20/20"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "mutation-targeted-result.json (mutación dirigida 56/56 muertos; post-review.py 37/37 sitios dirigidos de 122; owner_gate.py 19/19; 2026-10-19T02:33:24Z → 2026-10-19T03:14:55Z)"
+    },
+    {
+     "Kind": "REUSED",
+     "Detail": "85 sitios no dirigidos, byte a byte líneas de v5.4-a6r4: 133/133 de mutation-result.json 424c983e del kit de A-6 ronda 4 (191/191: post-review.py 133/133 sobre 4f46caa6, transport_gate.py 40/40 sobre e326b5b9, owner_gate.py 18/18)"
+    }
+   ]
+  },
+  {
+   "File": "kit/selftest-post-review.py",
+   "OldSha256": "3ae15c6364f23290b66c52ebe2fd2a5a83243c5f1cc0081d968388f857fbab8e",
+   "NewSha256": "e6deb731a303eac56a8186ad1141f687c9118940b314107877e154b087e45700",
+   "Status": "CHANGED",
+   "DependsOn": "todos los módulos del auditor y de las compuertas",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "selftest-result.json (autoprueba COMPLETA 283/283: auditoría 178/178, compuerta D-01 61/61, compuerta 11 40/40, coherencia 4/4; 2026-10-19T01:56:58Z → 2026-10-19T02:32:35Z)"
+    }
+   ]
+  },
+  {
+   "File": "kit/selftest-result.json",
+   "OldSha256": "5ac8c720634d69778e6abbd3b22ca856d37914c6c1bb800ec75d2879edc09125",
+   "NewSha256": "4d9655a08b3e5f5a3969eac8c37cf367ce0c4a260aeb3ea266084b2528b967c5",
+   "Status": "CHANGED",
+   "DependsOn": "Modules = los del kit",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "regenerado: selftest-result.json (autoprueba COMPLETA 283/283: auditoría 178/178, compuerta D-01 61/61, compuerta 11 40/40, coherencia 4/4; 2026-10-19T01:56:58Z → 2026-10-19T02:32:35Z)"
+    }
+   ]
+  },
+  {
+   "File": "kit/mutation-post-review.py",
+   "OldSha256": "4eaa1c8e33d0c706b3965b62e3fe544981f1e8fcd15352564d2613254a1a1305",
+   "NewSha256": "9ed3eca1d4687fa6adb7c6d56b7ddf9c72232aa2d238070c33f4fe2e95314640",
+   "Status": "CHANGED",
+   "DependsOn": "selftest-post-review.py",
+   "Controls": [
+    {
+     "Kind": "REUSED",
+     "Detail": "el juez sin cambio de lógica (docstring y una etiqueta; prep/diffs/mutation-post-review.py.diff)"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "usado por mutation-targeted.py: mutation-targeted-result.json (mutación dirigida 56/56 muertos; post-review.py 37/37 sitios dirigidos de 122; owner_gate.py 19/19; 2026-10-19T02:33:24Z → 2026-10-19T03:14:55Z)"
+    }
+   ]
+  },
+  {
+   "File": "kit/mutation-targeted.py",
+   "OldSha256": null,
+   "NewSha256": "44906dfde70d5ddcf81e23eb87ac0a04927865ddff46e795b605b1c9ace65ba0",
+   "Status": "NEW",
+   "DependsOn": "mutation-post-review.py",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "nuevo: mutation-targeted-result.json (mutación dirigida 56/56 muertos; post-review.py 37/37 sitios dirigidos de 122; owner_gate.py 19/19; 2026-10-19T02:33:24Z → 2026-10-19T03:14:55Z)"
+    }
+   ]
+  },
+  {
+   "File": "kit/mutation-targeted-result.json",
+   "OldSha256": null,
+   "NewSha256": "d1ed12225973bf87cc615c48fc54871075de02a3a98fdb4999321e4a6bb24b81",
+   "Status": "NEW",
+   "DependsOn": "post-review.py, owner_gate.py",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "mutation-targeted-result.json (mutación dirigida 56/56 muertos; post-review.py 37/37 sitios dirigidos de 122; owner_gate.py 19/19; 2026-10-19T02:33:24Z → 2026-10-19T03:14:55Z)"
+    }
+   ]
+  },
+  {
+   "File": "kit/result.schema.json",
+   "OldSha256": "f3dad55b008af984fb1ca6e57f32a311fd53d42d897fba1162bd8849f5a754ed",
+   "NewSha256": "116c393e4923f97ba6d5371a72a21b4bbb5805a88f6a35a36876d09dfbcd5305",
+   "Status": "CHANGED",
+   "DependsOn": "prep/gen_schema.py",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "casos de esquema 55, 87, 101-108g: 14/14"
+    }
+   ]
+  },
+  {
+   "File": "kit/prompt.template.md",
+   "OldSha256": "da40d1050c865e7032afc2a3502df32b4e80f0bb345d61ceb1cfb9605544a931",
+   "NewSha256": "c3ad10d5052dc2ae1fb17072a7422759a376c1a7e570a8a677ca42ef17a7e500",
+   "Status": "CHANGED",
+   "DependsOn": "ninguna",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "renderizado sin marcadores sin sustituir (make_closure.py --render-prompt)"
+    }
+   ]
+  },
+  {
+   "File": "kit/prompt.md",
+   "OldSha256": "a8dc5773499ae56cf06718f4aed1cf46723eb66e6f1511166f6bd5e3e33ed0b9",
+   "NewSha256": "ba2804747151173d9fe66838ec0ad6ab311a07462948854c3317468497afa8c8",
+   "Status": "CHANGED",
+   "DependsOn": "plantilla, cierre",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "renderizado (77 659 bytes, 573 líneas); copia del run idéntica (verify_clone y launch 7)"
+    }
+   ]
+  },
+  {
+   "File": "kit/make_closure.py",
+   "OldSha256": "1c9b52bf01ab2869bedf0f93983a3cf6ba46b50dd738f306fea719a39115ec6b",
+   "NewSha256": "a0d411070a82fa52dbd6b90a24826603e7c4e1d8c9fbffbf6db74b4a62e444d4",
+   "Status": "CHANGED",
+   "DependsOn": "clon 5158e4bc, kit-params.json",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "identity_checks y cierre: código 0 (190 archivos)"
+    }
+   ]
+  },
+  {
+   "File": "kit/closure.json",
+   "OldSha256": "694288d489188d44a3991da7eb914bb56ec477bbb745160df22aabcd8476b3e2",
+   "NewSha256": "7a0be56b9409ee61e7c3733b8a71dbfe601434b2a41f779f68a7062a5c1421ac",
+   "Status": "CHANGED",
+   "DependsOn": "make_closure.py",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "regenerado; launch 2-ClosureTransport: launch.py --dry-run: BlockingChecks []; NotRunInDryRun ['4-Version', '5-Auth']; AuthorizationSections [93]; LaterSections []"
+    }
+   ]
+  },
+  {
+   "File": "kit/kit-params.json",
+   "OldSha256": "c8d805f6d934cc0b8d18c7f7941382a1da387a91f5094e94ac97f9e983b92aa5",
+   "NewSha256": "e8982bf0ed92f8b2be1fd5c9e8439f011479f733b74a9b0f17540d594d31d18a",
+   "Status": "CHANGED",
+   "DependsOn": "prepare_clone.py",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "precondiciones todas en true (prep/phase/step1.out)"
+    }
+   ]
+  },
+  {
+   "File": "kit/prepare_clone.py",
+   "OldSha256": "0d23faf2f468e92cda65f634b610c7cc5a5c8b6edb0d19162fbcd603cc30cf0e",
+   "NewSha256": "fc0e0b24655de3fb9bfd3d84fc11bb76cedf43b3ed83b5c59fa38f7943dc5b28",
+   "Status": "CHANGED",
+   "DependsOn": "worktree (solo lectura)",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "ejecutado una vez: precondiciones en true, clon y run creados"
+    }
+   ]
+  },
+  {
+   "File": "kit/verify_clone.py",
+   "OldSha256": "b8eaee883d15b8a6f8a4b96e8abac6eb896f27467cfd092cfea31f82105daecf",
+   "NewSha256": "feb7d615a612e4ce17301d9dc2124ab85c2a5250739e4bab793310bb351b6c20",
+   "Status": "CHANGED",
+   "DependsOn": "clon, run, kit, worktree (solo lectura)",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "verify_clone positiva: AllChecks True; guardas `run` iguales enteras a las custodiadas True; autoprueba de las guardas 44/44, igual entera a la custodiada True"
+    },
+    {
+     "Kind": "RE-RUN",
+     "Detail": "verify_clone negativas (prep/neg-verify-result.json): N1-registro-alterado PASS; N2-orden-del-kit-alterada PASS; N3-evid-de-la-autoprueba-de-guardas PASS; N4-cabeza-de-las-guardas PASS"
+    }
+   ]
+  },
+  {
+   "File": "kit/clone-verification.json",
+   "OldSha256": "82926e1500b8b69f19e4b90b3de5c08f639256a518cdf5deb7a9165ade879ba3",
+   "NewSha256": "c75502f5507381bf8b05a5c6b6b990ba9b1d8f1f2e5aa18e432c3c134e464225",
+   "Status": "CHANGED",
+   "DependsOn": "verify_clone.py",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "regenerado: verify_clone positiva: AllChecks True; guardas `run` iguales enteras a las custodiadas True; autoprueba de las guardas 44/44, igual entera a la custodiada True"
+    }
+   ]
+  },
+  {
+   "File": "kit/transport-gate.json",
+   "OldSha256": "790191bdfc445fda9885a5c98dc2546eca9402153dde0fe2e3a5c1bf4fa3ce08",
+   "NewSha256": "6f78dbd5595aa2744c0b883b9af298289bf6b3b9e50473362857385ba79d14da",
+   "Status": "CHANGED",
+   "DependsOn": "closure.Transport, la caracterización",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "init + set MEASURED + check; launch 10: launch.py --dry-run: BlockingChecks []; NotRunInDryRun ['4-Version', '5-Auth']; AuthorizationSections [93]; LaterSections []"
+    }
+   ]
+  },
+  {
+   "File": "kit/make_manifest.py",
+   "OldSha256": "f160f9119ab57f6ca0fca672945b30a7245622ab92fcb14005a6237da323ddd8",
+   "NewSha256": "bf03ada1133dd82e396e26b87f477b419042fa2e908dbe5e13f6e2007ff55df1",
+   "Status": "CHANGED",
+   "DependsOn": "archivos de kit/ y del run",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "congelación: kit-manifest.json"
+    }
+   ]
+  },
+  {
+   "File": "kit/finish_kit.py",
+   "OldSha256": "74928bb9d4390499179305f6ee2257b3dd38cfda0a8110cce26a65bf9b5902b1",
+   "NewSha256": "e0c9c1eb7693b509e21402c309ded8ab76efd54065d03cb601b7218b3d597ec2",
+   "Status": "CHANGED",
+   "DependsOn": "ninguna en el lanzamiento",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "los pasos se ejecutaron uno a uno con sus mismas órdenes (no el script entero); sin efecto en el lanzamiento"
+    }
+   ]
+  },
+  {
+   "File": "kit/kit-manifest.json",
+   "OldSha256": null,
+   "NewSha256": "444d9ba99865dd1a6690d6682c84f2ea077438e83f3629a5625a5f238b92c0da",
+   "Status": "NEW",
+   "DependsOn": "todos los archivos de kit/ y del run",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "launch 1-KitIntegrity: launch.py --dry-run: BlockingChecks []; NotRunInDryRun ['4-Version', '5-Auth']; AuthorizationSections [93]; LaterSections []"
+    }
+   ]
+  },
+  {
+   "File": "run/order.txt",
+   "OldSha256": "d74e2aa1ce5eacc7dd6323cf3f3acec37fd6eb25f905ca4f2479dbca0cde5232",
+   "NewSha256": "a5c37f714364bc704c5f38218ae2b1a9209052c47834dcc5349684eb141be41b",
+   "Status": "CHANGED",
+   "DependsOn": "copia del kit",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "idéntico a la copia del kit; launch 7-RunFiles: launch.py --dry-run: BlockingChecks []; NotRunInDryRun ['4-Version', '5-Auth']; AuthorizationSections [93]; LaterSections []"
+    }
+   ]
+  },
+  {
+   "File": "run/prompt.md",
+   "OldSha256": "a8dc5773499ae56cf06718f4aed1cf46723eb66e6f1511166f6bd5e3e33ed0b9",
+   "NewSha256": "ba2804747151173d9fe66838ec0ad6ab311a07462948854c3317468497afa8c8",
+   "Status": "CHANGED",
+   "DependsOn": "copia del kit",
+   "Controls": [
+    {
+     "Kind": "RE-RUN",
+     "Detail": "idéntico a la copia del kit; launch 7-RunFiles: launch.py --dry-run: BlockingChecks []; NotRunInDryRun ['4-Version', '5-Auth']; AuthorizationSections [93]; LaterSections []"
+    }
+   ]
+  }
+ ],
+ "RemovedFromBase": [
+  "a6-r3.md",
+  "mutation-result.json"
+ ],
+ "Counts": {
+  "Rows": 29,
+  "Identical": 5,
+  "Changed": 21,
+  "New": 3,
+  "ReRun": 47,
+  "Reused": 4
+ },
+ "Times": {
+  "mutation.times": [
+   "2026-10-19T02:33:24Z",
+   "rc=0",
+   "2026-10-19T03:14:55Z"
+  ],
+  "neg-verify.times": [
+   "2026-10-19T01:57:03Z",
+   "rc=0",
+   "2026-10-19T02:06:18Z"
+  ],
+  "step11.times": [
+   "2026-10-19T03:16:12Z",
+   "rc=0",
+   "2026-10-19T03:16:14Z"
+  ],
+  "step12.times": [
+   "2026-10-19T03:16:24Z",
+   "rc=2",
+   "2026-10-19T03:16:40Z"
+  ],
+  "step6.times": [
+   "2026-10-19T01:54:35Z",
+   "2026-10-19T01:56:29Z"
+  ],
+  "step7.times": [
+   "2026-10-19T01:56:58Z",
+   "rc=0",
+   "2026-10-19T02:32:35Z"
+  ]
+ }
+}

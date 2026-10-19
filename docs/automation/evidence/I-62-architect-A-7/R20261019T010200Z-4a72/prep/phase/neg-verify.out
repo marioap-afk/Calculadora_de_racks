@@ -1,0 +1,5 @@
+N1-registro-alterado PASS 131.4
+N2-orden-del-kit-alterada PASS 162.4
+N3-evid-de-la-autoprueba-de-guardas PASS 135.8
+N4-cabeza-de-las-guardas PASS 124.2
+{"Result": "PASS", "RealKitUnchanged": true, "Cases": [["N1-registro-alterado", "PASS"], ["N2-orden-del-kit-alterada", "PASS"], ["N3-evid-de-la-autoprueba-de-guardas", "PASS"], ["N4-cabeza-de-las-guardas", "PASS"]]}

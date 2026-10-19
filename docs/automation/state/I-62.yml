@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §93; evidencia §187) — preparar el kit acotado de la revisión formal de A-7 (blob 6c29747d, commit 6fee8fd6) desde el kit acreditado de A-6 r4, con validación incremental; fijar §93; prueba en seco con cero bloqueos; UNA revisión con claude-cli 2.1.299, tope 3 600 s, sin reintento; auditor acreditado; sin nuevas secciones de decisiones hasta auditar; sin Codex; sin A-7 AGREED automático"
+  next_action: "F6 (decisiones §93; evidencia §187-§188) — kit de la revisión formal de A-7 R20261019T010200Z-4a72 congelado y custodiado (manifiesto c27db93e; autoprueba 283/283; mutación completa 181/181; prueba en seco con cero bloqueos); lanzar UNA vez python -B kit/launch.py (claude-cli 2.1.299), tope 3 600 s, sin reintento; auditor v5.5-a7; sin nuevas secciones de decisiones hasta auditar; sin Codex; sin A-7 AGREED automático"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

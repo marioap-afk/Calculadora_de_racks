@@ -1,0 +1,208 @@
+[
+ {
+  "File": "a6-r3.md",
+  "OldSha256": "51b285371fb0a4ecfe0751ffd6061fb5981384e262c881d4b639843ac4986b9d",
+  "NewSha256": null,
+  "Status": "REMOVED"
+ },
+ {
+  "File": "c3_analysis.py",
+  "OldSha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+  "NewSha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+  "Status": "IDENTICAL"
+ },
+ {
+  "File": "claude-cli-characterization.json",
+  "OldSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+  "NewSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+  "Status": "IDENTICAL"
+ },
+ {
+  "File": "clone-verification.json",
+  "OldSha256": "82926e1500b8b69f19e4b90b3de5c08f639256a518cdf5deb7a9165ade879ba3",
+  "NewSha256": "c75502f5507381bf8b05a5c6b6b990ba9b1d8f1f2e5aa18e432c3c134e464225",
+  "Status": "CHANGED"
+ },
+ {
+  "File": "closure.json",
+  "OldSha256": "694288d489188d44a3991da7eb914bb56ec477bbb745160df22aabcd8476b3e2",
+  "NewSha256": "7a0be56b9409ee61e7c3733b8a71dbfe601434b2a41f779f68a7062a5c1421ac",
+  "Status": "CHANGED"
+ },
+ {
+  "File": "finish_kit.py",
+  "OldSha256": "74928bb9d4390499179305f6ee2257b3dd38cfda0a8110cce26a65bf9b5902b1",
+  "NewSha256": "e0c9c1eb7693b509e21402c309ded8ab76efd54065d03cb601b7218b3d597ec2",
+  "Status": "CHANGED",
+  "Added": 65,
+  "Removed": 40
+ },
+ {
+  "File": "kit-manifest.json",
+  "OldSha256": "b1342909562478e5f99015666fd59fb4e7020cd1337b43ae0a8e87d4049d1d41",
+  "NewSha256": "444d9ba99865dd1a6690d6682c84f2ea077438e83f3629a5625a5f238b92c0da",
+  "Status": "CHANGED"
+ },
+ {
+  "File": "kit-params.json",
+  "OldSha256": "c8d805f6d934cc0b8d18c7f7941382a1da387a91f5094e94ac97f9e983b92aa5",
+  "NewSha256": "e8982bf0ed92f8b2be1fd5c9e8439f011479f733b74a9b0f17540d594d31d18a",
+  "Status": "CHANGED"
+ },
+ {
+  "File": "launch.py",
+  "OldSha256": "0ada02349afde4ffb8bb98f0eeca879190963d86dbc426c4bb94ee483e52a94c",
+  "NewSha256": "01f60c7ad9cfdf2d1a7fc5f89dc122c6d31893a2929a14f009c7d7209f5737af",
+  "Status": "CHANGED",
+  "Added": 28,
+  "Removed": 30
+ },
+ {
+  "File": "make_closure.py",
+  "OldSha256": "1c9b52bf01ab2869bedf0f93983a3cf6ba46b50dd738f306fea719a39115ec6b",
+  "NewSha256": "a0d411070a82fa52dbd6b90a24826603e7c4e1d8c9fbffbf6db74b4a62e444d4",
+  "Status": "CHANGED",
+  "Added": 503,
+  "Removed": 576
+ },
+ {
+  "File": "make_manifest.py",
+  "OldSha256": "f160f9119ab57f6ca0fca672945b30a7245622ab92fcb14005a6237da323ddd8",
+  "NewSha256": "bf03ada1133dd82e396e26b87f477b419042fa2e908dbe5e13f6e2007ff55df1",
+  "Status": "CHANGED",
+  "Added": 23,
+  "Removed": 23
+ },
+ {
+  "File": "mutation-post-review.py",
+  "OldSha256": "4eaa1c8e33d0c706b3965b62e3fe544981f1e8fcd15352564d2613254a1a1305",
+  "NewSha256": "9ed3eca1d4687fa6adb7c6d56b7ddf9c72232aa2d238070c33f4fe2e95314640",
+  "Status": "CHANGED",
+  "Added": 8,
+  "Removed": 7
+ },
+ {
+  "File": "mutation-result.json",
+  "OldSha256": "424c983eb68eaaa7052c491feafe98e5045df0d93a0fcc752dcab4cae926cf73",
+  "NewSha256": null,
+  "Status": "REMOVED"
+ },
+ {
+  "File": "mutation-targeted-result.json",
+  "OldSha256": null,
+  "NewSha256": "d1ed12225973bf87cc615c48fc54871075de02a3a98fdb4999321e4a6bb24b81",
+  "Status": "NEW"
+ },
+ {
+  "File": "mutation-targeted.py",
+  "OldSha256": null,
+  "NewSha256": "44906dfde70d5ddcf81e23eb87ac0a04927865ddff46e795b605b1c9ace65ba0",
+  "Status": "NEW"
+ },
+ {
+  "File": "order.txt",
+  "OldSha256": "d74e2aa1ce5eacc7dd6323cf3f3acec37fd6eb25f905ca4f2479dbca0cde5232",
+  "NewSha256": "a5c37f714364bc704c5f38218ae2b1a9209052c47834dcc5349684eb141be41b",
+  "Status": "CHANGED",
+  "Added": 72,
+  "Removed": 61
+ },
+ {
+  "File": "owner_gate.py",
+  "OldSha256": "87ad933732b42655a992113e2e7fcc3eb4519dbb673063cee686df97838f75bb",
+  "NewSha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+  "Status": "CHANGED",
+  "Added": 59,
+  "Removed": 51
+ },
+ {
+  "File": "pin_authorization.py",
+  "OldSha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+  "NewSha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+  "Status": "IDENTICAL"
+ },
+ {
+  "File": "post-review.py",
+  "OldSha256": "6c51758aaa9bc981f5f733e9fa9946d5402f8a9dbcbc543e580bdd1bab4b68cc",
+  "NewSha256": "303321f265152dc03a6fc7771bb69faed47f5167a80a7f03113e2839305d9653",
+  "Status": "CHANGED",
+  "Added": 113,
+  "Removed": 139
+ },
+ {
+  "File": "prepare_clone.py",
+  "OldSha256": "0d23faf2f468e92cda65f634b610c7cc5a5c8b6edb0d19162fbcd603cc30cf0e",
+  "NewSha256": "fc0e0b24655de3fb9bfd3d84fc11bb76cedf43b3ed83b5c59fa38f7943dc5b28",
+  "Status": "CHANGED",
+  "Added": 49,
+  "Removed": 51
+ },
+ {
+  "File": "prompt.md",
+  "OldSha256": "a8dc5773499ae56cf06718f4aed1cf46723eb66e6f1511166f6bd5e3e33ed0b9",
+  "NewSha256": "ba2804747151173d9fe66838ec0ad6ab311a07462948854c3317468497afa8c8",
+  "Status": "CHANGED"
+ },
+ {
+  "File": "prompt.template.md",
+  "OldSha256": "da40d1050c865e7032afc2a3502df32b4e80f0bb345d61ceb1cfb9605544a931",
+  "NewSha256": "c3ad10d5052dc2ae1fb17072a7422759a376c1a7e570a8a677ca42ef17a7e500",
+  "Status": "CHANGED",
+  "Added": 248,
+  "Removed": 247
+ },
+ {
+  "File": "read_fidelity.py",
+  "OldSha256": "7b51116e5e4876c1416066994e282ad077661547ee5fb1dcb0fbcbd59e413cce",
+  "NewSha256": "7b51116e5e4876c1416066994e282ad077661547ee5fb1dcb0fbcbd59e413cce",
+  "Status": "IDENTICAL"
+ },
+ {
+  "File": "result.schema.json",
+  "OldSha256": "f3dad55b008af984fb1ca6e57f32a311fd53d42d897fba1162bd8849f5a754ed",
+  "NewSha256": "116c393e4923f97ba6d5371a72a21b4bbb5805a88f6a35a36876d09dfbcd5305",
+  "Status": "CHANGED"
+ },
+ {
+  "File": "selftest-post-review.py",
+  "OldSha256": "3ae15c6364f23290b66c52ebe2fd2a5a83243c5f1cc0081d968388f857fbab8e",
+  "NewSha256": "e6deb731a303eac56a8186ad1141f687c9118940b314107877e154b087e45700",
+  "Status": "CHANGED",
+  "Added": 422,
+  "Removed": 493
+ },
+ {
+  "File": "selftest-result.json",
+  "OldSha256": "5ac8c720634d69778e6abbd3b22ca856d37914c6c1bb800ec75d2879edc09125",
+  "NewSha256": "4d9655a08b3e5f5a3969eac8c37cf367ce0c4a260aeb3ea266084b2528b967c5",
+  "Status": "CHANGED"
+ },
+ {
+  "File": "transport-gate.json",
+  "OldSha256": "790191bdfc445fda9885a5c98dc2546eca9402153dde0fe2e3a5c1bf4fa3ce08",
+  "NewSha256": "6f78dbd5595aa2744c0b883b9af298289bf6b3b9e50473362857385ba79d14da",
+  "Status": "CHANGED"
+ },
+ {
+  "File": "transport_gate.py",
+  "OldSha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+  "NewSha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+  "Status": "IDENTICAL"
+ },
+ {
+  "File": "verify_clone.py",
+  "OldSha256": "b8eaee883d15b8a6f8a4b96e8abac6eb896f27467cfd092cfea31f82105daecf",
+  "NewSha256": "feb7d615a612e4ce17301d9dc2124ab85c2a5250739e4bab793310bb351b6c20",
+  "Status": "CHANGED",
+  "Added": 94,
+  "Removed": 80
+ },
+ {
+  "File": "prep/gen_schema.py",
+  "OldSha256": "fa5e34cf4280dbf17b4da69093e9d542a5f2325f6e011c5448f6c3f42a9be8b0",
+  "NewSha256": "92a46900badeb26c82c9d05269d227b74e745d2bffbdb7b86cb42a37c6b75b74",
+  "Status": "CHANGED",
+  "Added": 48,
+  "Removed": 57
+ }
+]

@@ -4699,3 +4699,18 @@ solo desde artefactos custodiados.
 - Kit acotado a A-7 derivado del kit acreditado de A-6 ronda 4 (transporte `claude-cli` 2.1.299, `295b49ec…`, presente y sin cambio; auditor y compuertas
   reutilizados donde la identidad lo permita), con validación incremental (§88); §93 se fija como autorización; ninguna sección de decisiones nueva hasta
   lanzar y auditar; una invocación, tope de 3 600 s, sin reintento; auditor acreditado. Sin Codex, sin medición, sin B1 ni FX-U2.
+
+## 188. Kit de la revisión formal única de A-7 congelado y custodiado; mutación completa 181/181; prueba en seco con cero bloqueos (decisiones §93, puntos 2 y 6)
+
+- **Kit** [`R20261019T010200Z-4a72`](I-62-architect-A-7/R20261019T010200Z-4a72/README.md), derivado del kit acreditado de A-6 ronda 4 (`b1342909…`) con validación incremental
+  ([`prep/validation-matrix.md`](I-62-architect-A-7/R20261019T010200Z-4a72/prep/validation-matrix.md)): objeto A-7, blob `6c29747d`, publicación `6fee8fd6`; clon `D:\r62-arch-a7` en `5158e4bc`;
+  cierre de 190 archivos (incluido `I-62-evidence.md`, porque A-7 cita la evidencia §181); transporte `claude-cli` 2.1.299 (`295b49ec…`, Authenticode
+  válido de Anthropic, compuerta MEASURED con la caracterización de `1c960c0a`); auditor v5.5-a7; esquema `rackcad-a7-architect-review/0` con los once
+  temas de §93, punto 3, la materialidad M-01..M-08, la consecuencia reservada al Owner y los impactos relacionados D-1 y FC en campos aparte (sin el
+  punto 7 del borrador); §93 fijada en `owner_gate.py` (solo las tres constantes).
+- **Controles:** autoprueba 283/283 (auditoría 178, compuerta de transporte 61, compuerta 11 con la sonda viva 40, coherencia 4); `verify_clone` conforme,
+  con las guardas de A-7 reproducidas byte a byte, y 4 negativos; mutación dirigida 56/56; **mutación completa 181/181** (decisiones §88, punto 4: cambian
+  reglas del auditor, esquema y compuerta), de 2026-10-19T03:22:06Z a 2026-10-19T05:23:05Z; comprobación previa de registro con código 0, sin modelo.
+- **Congelación:** `kit-manifest.json` `c27db93ef6834a3e…` (27 archivos), vuelto a congelar tras incorporar la mutación completa; **prueba en seco
+  con `BlockingChecks` = []** y §93 como autorización, sin secciones posteriores. Host: checkout principal sin cambios (`95690c28`); I-64 limpio.
+- Siguiente: una invocación con `python -B kit/launch.py`, tope 3 600 s, sin reintento; auditor v5.5-a7. Sin secciones de decisiones nuevas hasta auditar.

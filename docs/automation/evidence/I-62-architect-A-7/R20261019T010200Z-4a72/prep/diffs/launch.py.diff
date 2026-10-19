@@ -1,0 +1,135 @@
+--- a6r4/launch.py
++++ a7/launch.py
+@@ -1,10 +1,11 @@
+-"""I-62, decisiones §85, punto 6: lanzador de la ÚNICA revisión formal independiente del Architect de la RONDA 4 de la enmienda A-6 (blob de la ronda 4
+-fijado en kit-params.json y en el cierre), acotada a A62-A6R3-R1 y a sus consecuencias directas, por una celda claude-cli medida y elegible
+-(autorización del Owner CLAUDE-CLI-I62 = A). Commit del clon: kit-params.json. Lo ejecuta la sesión principal, una sola vez y sin reintento, con la
+-orden congelada EXACTA `python -B kit/launch.py` desde la carpeta que contiene kit/, solo con el kit congelado y custodiado y solo después de una
+-disposición del Coordinator posterior a §85 fijada en owner_gate.py (§85, punto 6: «No lanzar revisión formal de ronda 4 hasta nueva disposición
+-del Coordinator»). Quien prepara el kit no lo lanza (solo sus modos --dry-run y --record-probe, que no ejecutan el binario). Derivado del launch.py
+-del kit acreditado de la ronda 3 (prep/adapt_launch.py): la misma lógica; cambian las constantes.
++"""I-62, decisiones §93: lanzador de la ÚNICA revisión formal independiente del Architect de la enmienda A-7 (blob 6c29747d… fijado en
++kit-params.json, en el cierre y en owner_gate.py), acotada a A7-1 y a sus consecuencias sobre el cierre de VERIFY de FX-02/F6 y la medición de
++A6-7, por una celda claude-cli medida y elegible (autorización del Owner CLAUDE-CLI-I62 = A). Commit del clon: kit-params.json. Lo ejecuta la sesión
++principal, una sola vez y sin reintento, con la orden congelada EXACTA `python -B kit/launch.py` desde la carpeta que contiene kit/, solo con el kit
++congelado y custodiado y solo con la disposición del Coordinator §93 (posterior a §92) fijada en owner_gate.py (§92, punto 9: «Sin lanzar la
++revisión formal sin una disposición posterior»). Quien prepara el kit no lo lanza (solo sus modos --dry-run y --record-probe, que no ejecutan el
++binario). Derivado del launch.py del kit acreditado de A-6 ronda 4 (R20261014T180556Z-5e02): la misma lógica; cambian las constantes (clon, run,
++session id, patrón de proyecto, archivos del run, blob del objeto) y se retira la comprobación de la premisa a6-r3.md, que este run no tiene.
+ 
+ Antes de lanzar comprueba, y se NIEGA a lanzar (código 2, sin escribir nada) si falla cualquiera de estas condiciones:
+   G. la orden es exactamente FROZEN_COMMAND (más, como mucho, --dry-run o --record-probe): se evalúa al importar, antes de cargar
+@@ -14,29 +15,28 @@
+   1. integridad del kit: cada archivo de kit-manifest.json con su SHA-256 (incluidos este script, transport_gate.py, owner_gate.py y
+      transport-gate.json);
+   2. transporte del cierre = constantes de este script (flags, --add-dir, session id, cwd, binario, tope, orden congelada) y ArgsTemplate del
+-     cierre = la plantilla; el cierre designa el blob de la ronda 4 de kit-params.json (distinto de los de las rondas 1, 2 y 3) y lleva el RunId del
+-     kit;
++     cierre = la plantilla; el cierre designa el blob de A-7 de kit-params.json (= owner_gate.OBJECT_BLOB) y lleva el RunId del kit;
+   3. binario elegible: existe en %APPDATA%, ruta resuelta = la del cierre, SHA-256 = 295b49ec…, firma Authenticode válida de «Anthropic, PBC»;
+   4. versión: `claude.exe --version` = «2.1.299 (Claude Code)», con la salida capturada en bytes y decodificada como UTF-8 estricto
+      (transport_gate.decode_cli_output);
+   5. autenticación: `claude.exe auth status --json` con loggedIn = true (salida en bytes, UTF-8 estricto; solo se conservan loggedIn, authMethod y
+      apiProvider; ni correo ni organización; ninguna credencial se lee);
+   6. clon: HEAD = el commit, separado (sin ninguna rama local), sin remoto, árbol limpio con ignorados, blobs designados, sin enlaces ni uniones;
+-  7. run: exactamente los tres archivos (order.txt, prompt.md y a6-r3.md; sin launch/), cada uno = copia del kit = RunFileHashes del cierre =
+-     kit-manifest.json, y a6-r3.md con el blob Git de la ronda 3 (e62f27b8);
++  7. run: exactamente los dos archivos (order.txt y prompt.md; sin launch/), cada uno = copia del kit = RunFileHashes del cierre =
++     kit-manifest.json;
+   8. sesión nueva: sin transcripción con el session id fijado en ningún proyecto y sin directorio de proyecto para el clon ni para el run (sin
+-     memoria previa; patrón D--r62-arch-a6r4*, que no casa con los de las rondas anteriores);
++     memoria previa; patrón D--r62-arch-a7*, que no casa con los de las revisiones anteriores);
+   9. longitud de la línea de órdenes de Windows (< 32 000 caracteres);
+  10. compuerta de transporte (D-01): transport-gate.json en MEASURED (sonda C3 de la lista exacta con --add-dir, en el registro de caracterización
+      fijado por su SHA-256) o ACCEPTED (aceptación explícita registrada), con sus predicados satisfechos (transport_gate.evaluate); la plantilla de
+      los argumentos que se van a lanzar = la de la compuerta;
+- 11. compuerta del Owner y de la autorización (owner_gate.py; decisiones §78, §56 y §85, punto 6), BLOQUEANTE: en la HEAD del worktree de I-62, la
+-     línea del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) como línea completa después de §78 y en la A-6 de la ronda 4 del clon; CLAUDE-CLI-I62 = A
+-     vigente y el binario medido = el del cierre; A-6 en la HEAD con el blob de la ronda 4 fijado; la autorización fijada en owner_gate.py (una
+-     disposición del Coordinator posterior a §85, con su número, su encabezado y el SHA-256 de su texto; el kit se entrega con la autorización
+-     PENDIENTE, y entonces la compuerta bloquea), con el blob completo como token literal y NINGUNA sección posterior; decisiones crece solo por
+-     añadido desde el clon, sin cambios sin commit, y la HEAD desciende del clon (solo lectura de git en el worktree). Se evalúa antes de las
+-     comprobaciones 4 y 5: si no pasa, el binario no se ejecuta (ni --version ni auth status).
++ 11. compuerta del Owner y de la autorización (owner_gate.py; decisiones §78, §56, §92, punto 9, y §93), BLOQUEANTE: en la HEAD del worktree de
++     I-62, la línea del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) como línea completa después de §78 y en la A-6 acordada del clon;
++     CLAUDE-CLI-I62 = A vigente y el binario medido = el del cierre; A-7 en la HEAD con el blob fijado y A-6 con el blob acordado; la autorización
++     fijada en owner_gate.py (la disposición del Coordinator §93, posterior a §92, con su número, su encabezado y el SHA-256 de su texto), con el
++     blob completo de A-7 como token literal y NINGUNA sección posterior; decisiones crece solo por añadido desde el clon, sin cambios sin commit,
++     y la HEAD desciende del clon (solo lectura de git en el worktree). Se evalúa antes de las comprobaciones 4 y 5: si no pasa, el binario no se
++     ejecuta (ni --version ni auth status).
+ Después escribe <run>/launch/preflight.json (Checks, FrozenCommandGuard, RecordProbe y Environment: nombres de las variables PYTHON*, GIT_*, CLAUDE*
+ y ANTHROPIC* y valores solo de las PYTHON*; el lanzador no pone ni quita ninguna) y las copias de los registros de la compuerta
+ (transport-characterization.json y, en ACCEPTED, transport-acceptance.json); espera AUTH_SETTLE_S = 120 s contados desde el final de `auth status`
+@@ -64,6 +64,7 @@
+                                               auth status: 4 y 5 quedan sin ejecutar), sin escribir en el kit, el run ni el clon y sin lanzar
+                                               (código 2 siempre); la 11 sí se evalúa (solo lectura de git)
+      python -B kit/launch.py --record-probe → G y solo la sonda P (código 0 si el registro funciona en este entorno)
++Las correcciones G, R, P y D y el resto de la lógica, byte a byte las del lanzador de A-6 ronda 4 (y de la ronda 3).
+ """
+ import datetime
+ import glob
+@@ -156,12 +157,12 @@
+ _spec = importlib.util.spec_from_file_location("owner_gate", os.path.join(KIT, "owner_gate.py"))
+ OG = importlib.util.module_from_spec(_spec)
+ _spec.loader.exec_module(OG)
+-CLONE, RUN = r"D:\r62-arch-a6r4", r"D:\r62-arch-a6r4-run"
++CLONE, RUN = r"D:\r62-arch-a7", r"D:\r62-arch-a7-run"
+ PARAMS = json.load(open(os.path.join(KIT, "kit-params.json"), encoding="utf-8"))
+ assert PARAMS.get("Provisional") is False and PARAMS.get("Clone") == CLONE and PARAMS.get("Run") == RUN, "kit-params.json provisional o de otro clon"
+-REV = PARAMS["CloneCommit"]   # commit del clon (A-6 ronda 4 publicada, el resultado `run` de sus guardas custodiado y decisiones §85)
++REV = PARAMS["CloneCommit"]   # commit del clon (A-7 publicada, el resultado `run` de sus guardas custodiado y decisiones §93)
+ WORKTREE = os.path.join(os.environ.get("USERPROFILE", ""), ".codex", "worktrees", "architecture-portabilidad-coordinador-principal")   # solo lectura (11)
+-SESSION_ID = "4cfdcf7d-0aa5-4a96-98ac-0c0a4832ec5b"   # uuid4 del único lanzamiento (generado una vez; prep/ids.txt)
++SESSION_ID = "4945013a-d80e-43dc-bc95-d34dff85fcfe"   # uuid4 del único lanzamiento (generado una vez; prep/ids.txt)
+ BIN_DISPLAY = r"%APPDATA%\Claude\claude-code\2.1.299\f0584be0fbaf\claude.exe"
+ BIN = os.path.join(os.environ.get("APPDATA", ""), "Claude", "claude-code", "2.1.299", "f0584be0fbaf", "claude.exe")
+ BIN_SHA = "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b"
+@@ -169,15 +170,14 @@
+ FLAGS = ["-p", "--model", "claude-opus-5-5", "--effort", "xhigh", "--output-format", "stream-json", "--verbose", "--safe-mode",
+          "--strict-mcp-config", "--no-chrome", "--tools", "Read,Grep,Glob", "--permission-mode", "dontAsk", "--permission-prompts", "none"]
+ ADD_DIR = ["--add-dir", RUN]   # D-01: solo se lanza si transport-gate.json ata la medición C3 o la aceptación registrada
+-RUN_FILES = ["order.txt", "prompt.md", "a6-r3.md"]
+-A6R3_BLOB = "e62f27b8b1329f1b9cfa69a707feb31d22bad1d1"   # a6-r3.md: el texto de A-6 de la ronda 3 (decisiones §83), premisa de la ronda 4
++RUN_FILES = ["order.txt", "prompt.md"]
+ LAUNCH_ENV_PREFIXES = ("PYTHON", "GIT_", "CLAUDE", "ANTHROPIC")   # §84.2: nombres en preflight.json; valores solo de las PYTHON*
+ TIMEOUT_S, KILL_GRACE_S = 3600, 60
+ AUTH_SETTLE_S = 120                                    # espera entre `auth status` y el lanzamiento (heredada del intento 2 de A-3)
+ AUTH_REFRESH_MARK = "Failed to refresh OAuth token"    # texto del result del intento 1 (TRANSPORT_AUTH_REFRESH_CONFLICT)
+ AUTH_DONE = []                                         # instante monotónico del final de `auth status` (preflight 5)
+ PROJECTS = os.path.join(os.path.expanduser("~"), ".claude", "projects")
+-PROJECT_DIR = os.path.join(PROJECTS, "D--r62-arch-a6r4")
++PROJECT_DIR = os.path.join(PROJECTS, "D--r62-arch-a7")
+ TRANSCRIPT = os.path.join(PROJECT_DIR, SESSION_ID + ".jsonl")
+ now = lambda: datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+ 
+@@ -239,7 +239,7 @@
+                                t["Binary"]["Path"] == BIN_DISPLAY and t["Binary"]["Sha256"] == BIN_SHA and t["Binary"]["Version"] == VERSION and
+                                t.get("TimeoutSeconds") == TIMEOUT_S and t.get("AuthSettleSeconds") == AUTH_SETTLE_S and
+                                closure["AuthorityRevision"] == REV and closure.get("ObjectBlob") == PARAMS["Object"]["Blob"] and
+-                               closure.get("ObjectBlob") not in (OG.A6R1_BLOB, OG.A6R2_BLOB, OG.A6R3_BLOB) and closure["Ids"]["RunId"] == OG.RUN_ID and
++                               closure.get("ObjectBlob") == OG.OBJECT_BLOB and closure["Ids"]["RunId"] == OG.RUN_ID and
+                                closure.get("Provisional") is False and t.get("LaunchCommand") == FROZEN_COMMAND and
+                                t.get("ArgsTemplate") == TG.templatize(args[1:])}
+     m = TG.measure_binary(BIN)
+@@ -276,11 +276,9 @@
+         s = sha_file(os.path.join(RUN, n)) if os.path.isfile(os.path.join(RUN, n)) else None
+         if not (s and s == sha_file(os.path.join(KIT, n)) == closure["RunFileHashes"][n]["Sha256"] == manifest["RunFiles"][n]["Sha256"]):
+             run_bad.append(n)
+-        elif n == "a6-r3.md" and git_blob(open(os.path.join(RUN, n), "rb").read()) != A6R3_BLOB:
+-            run_bad.append(n)
+     c["7-RunFiles"] = {"Ok": listing == sorted(RUN_FILES) and not run_bad, "Listing": listing, "Mismatches": run_bad}
+     prior = glob.glob(os.path.join(PROJECTS, "*", SESSION_ID + ".jsonl"))
+-    project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(PROJECTS, "D--r62-arch-a6r4*")))
++    project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(PROJECTS, "D--r62-arch-a7*")))
+     c["8-NewSession"] = {"Ok": not prior and not project_dirs, "PriorTranscripts": len(prior), "ProjectDirsForCloneOrRun": project_dirs}
+     cl = len(subprocess.list2cmdline(args))
+     c["9-CommandLine"] = {"Ok": cl < 32000, "Chars": cl}
+@@ -409,7 +407,7 @@
+         print(json.dumps({"Refused": rec["Aborted"]}, ensure_ascii=False))
+         return 2
+     rc = run_and_record(rec, [resolved] + args[1:], CLONE, prompt, out_dir, "run.json", TIMEOUT_S, TRANSCRIPT,
+-                        "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a6r4\\" + SESSION_ID + ".jsonl", CLONE)
++                        "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a7\\" + SESSION_ID + ".jsonl", CLONE)
+     print(json.dumps({k: rec.get(k) for k in ("SessionId", "Pid", "Start", "End", "ExitCode", "Killed", "TimedOut", "ResultMessage",
+                                               "TransportFailure", "PostRunErrors", "LaunchError", "Outcome", "OutcomeCategories")},
+                      ensure_ascii=False))

@@ -1,0 +1,305 @@
+{
+ "DryRun": "guarda de la orden congelada, sonda de registro (en un temporal que se borra) y preflight: no se ejecuta el binario, no se escribe en el kit, el run ni el clon y no se lanza",
+ "FrozenCommandGuard": {
+  "Ok": true,
+  "Problems": [],
+  "FrozenCommand": "python -B kit/launch.py",
+  "Enforced": true,
+  "OrigArgvTail": [
+   "-B",
+   "kit/launch.py",
+   "--dry-run"
+  ],
+  "ScriptArgResolvesToThisFile": true,
+  "ScriptArgIsDocumentedSpelling": true,
+  "Mode": [
+   "--dry-run"
+  ],
+  "Flags": {
+   "debug": 0,
+   "inspect": 0,
+   "interactive": 0,
+   "optimize": 0,
+   "dont_write_bytecode": 1,
+   "no_user_site": 0,
+   "no_site": 0,
+   "ignore_environment": 0,
+   "verbose": 0,
+   "bytes_warning": 0,
+   "quiet": 0,
+   "hash_randomization": 1,
+   "isolated": 0,
+   "dev_mode": false,
+   "utf8_mode": 0,
+   "warn_default_encoding": 0,
+   "safe_path": false,
+   "int_max_str_digits": 4300
+  },
+  "XOptions": {},
+  "Interpreter": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+  "PythonVersion": "3.13.14",
+  "Encodings": {
+   "LocalePreferred": "cp1252",
+   "FileSystem": "utf-8",
+   "Stdout": "cp1252",
+   "ConsoleOutputCP": 850,
+   "ConsoleCP": 850,
+   "OEMCP": 850,
+   "ACP": 1252
+  }
+ },
+ "RecordProbe": {
+  "Ok": true,
+  "Problems": [],
+  "TempDir": "%TEMP%\\r62-record-probe-7ly_x2ec",
+  "RecordFile": "record-probe.json",
+  "StandInChild": "sys.executable -B -I -c PROBE_CHILD (lee stdin, una línea JSON type=result, código 0)",
+  "RunAndRecordExit": 0,
+  "RecordWritten": true,
+  "RecordUnderTempDir": true,
+  "Interpreter": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+  "InterpreterSha256": "ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec",
+  "InterpreterMeasured": "C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\python.exe",
+  "RecordKeys": [
+   "Args",
+   "AuthSettle",
+   "CloneAfter",
+   "Cwd",
+   "End",
+   "EnvironmentVariableNames",
+   "Executable",
+   "ExecutableSha256",
+   "ExitCode",
+   "Killed",
+   "Outcome",
+   "OutcomeCategories",
+   "Pid",
+   "PostRunErrors",
+   "ProcessGoneAfter",
+   "PromptBytes",
+   "PromptSha256",
+   "ResultMessage",
+   "SessionId",
+   "Start",
+   "StderrBytes",
+   "StdoutLines",
+   "StdoutSha256",
+   "TasklistQuery",
+   "TimedOut",
+   "TimeoutSeconds",
+   "Transcript",
+   "TransportFailure",
+   "TransportGate"
+  ],
+  "MissingFields": [],
+  "NotJsonSerialisable": [],
+  "PostRunErrors": [],
+  "LaunchError": null,
+  "TasklistQuery": {
+   "ReturnCode": 0,
+   "StdoutBytes": 89,
+   "NonAsciiBytes": true
+  },
+  "ProcessGoneAfter": true,
+  "ExitCode": 0,
+  "ResultMessage": true,
+  "StdoutLines": 1,
+  "ChildStdinBytes": 13,
+  "Outcome": "COMPLETED",
+  "OutcomeCategories": [
+   "COMPLETED"
+  ],
+  "TempDirRemoved": true,
+  "RunLaunchExistedBefore": false,
+  "RunLaunchExistsAfter": false,
+  "KitListingUnchanged": true
+ },
+ "RecordProbeOk": true,
+ "BlockingChecks": [],
+ "AuthorizationSections": [
+  {
+   "Number": 93,
+   "Line": 1825,
+   "Heading": "## 93. Disposición del Coordinator: revisión formal de A-7, cierre de insumos de VERIFY (2026-10-19 UTC)",
+   "HeadingMatches": true,
+   "HasBlob": true,
+   "TextSha256": "4f66b73832a045f86a5998922522d13267749522c491d183dd63fa7f7f4ba374",
+   "TextSha256Matches": true
+  }
+ ],
+ "LaterSections": [],
+ "Environment": {
+  "Prefixes": [
+   "PYTHON",
+   "GIT_",
+   "CLAUDE",
+   "ANTHROPIC"
+  ],
+  "Names": [
+   "ANTHROPIC_BASE_URL",
+   "CLAUDECODE",
+   "CLAUDE_AGENT_SDK_MCP_NO_PREFIX",
+   "CLAUDE_AGENT_SDK_VERSION",
+   "CLAUDE_CODE_ACCOUNT_UUID",
+   "CLAUDE_CODE_CHILD_SESSION",
+   "CLAUDE_CODE_DESKTOP_APP_VERSION",
+   "CLAUDE_CODE_DISABLE_CRON",
+   "CLAUDE_CODE_DISABLE_TERMINAL_TITLE",
+   "CLAUDE_CODE_EAGER_FLUSH",
+   "CLAUDE_CODE_EMIT_TOOL_USE_SUMMARIES",
+   "CLAUDE_CODE_ENABLE_ASK_USER_QUESTION_TOOL",
+   "CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING",
+   "CLAUDE_CODE_ENTRYPOINT",
+   "CLAUDE_CODE_EXECPATH",
+   "CLAUDE_CODE_HOST_SESSION_ID",
+   "CLAUDE_CODE_MESSAGING_SOCKET",
+   "CLAUDE_CODE_MESSAGING_TOKEN",
+   "CLAUDE_CODE_OAUTH_SCOPES",
+   "CLAUDE_CODE_ORGANIZATION_UUID",
+   "CLAUDE_CODE_REPORT_FINDINGS",
+   "CLAUDE_CODE_SDK_HAS_HOST_AUTH_REFRESH",
+   "CLAUDE_CODE_SESSION_ATTENDED",
+   "CLAUDE_CODE_SESSION_ID",
+   "CLAUDE_CODE_SIMPLE",
+   "CLAUDE_CODE_STARTUP_FAILURE_RESULTS",
+   "CLAUDE_CODE_TERMINAL_MCP_TOOLS",
+   "CLAUDE_CODE_USER_EMAIL",
+   "CLAUDE_EFFORT",
+   "CLAUDE_PID",
+   "CLAUDE_PREVIEW_CLASSIFIER_FLOOR",
+   "GIT_EDITOR",
+   "PYTHONDONTWRITEBYTECODE",
+   "PYTHONUSERBASE"
+  ],
+  "PythonValues": {
+   "PYTHONDONTWRITEBYTECODE": "1",
+   "PYTHONUSERBASE": "%LOCALAPPDATA%\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages"
+  },
+  "SetOrStrippedByLauncher": [],
+  "ChildEnvironment": "heredado sin cambios (Popen sin env)"
+ },
+ "NotRunInDryRun": [
+  "4-Version",
+  "5-Auth"
+ ],
+ "Checks": {
+  "1-KitIntegrity": {
+   "Ok": true,
+   "Mismatches": [],
+   "Unlisted": []
+  },
+  "2-ClosureTransport": {
+   "Ok": true
+  },
+  "3-Binary": {
+   "Ok": true,
+   "Exists": true,
+   "Path": "%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe",
+   "Sha256": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b",
+   "Authenticode": "Valid",
+   "SignerIsAnthropic": true
+  },
+  "4-Version": {
+   "Ok": null,
+   "NotRun": "--dry-run: el binario no se ejecuta (`--version` solo en el lanzamiento real)"
+  },
+  "5-Auth": {
+   "Ok": null,
+   "NotRun": "--dry-run: el binario no se ejecuta (`auth status` solo en el lanzamiento real)"
+  },
+  "6-Clone": {
+   "Ok": true,
+   "Head": "5158e4bc17ad48160d8573b7f48f3923e3197f06",
+   "Detached": true,
+   "Clean": true,
+   "LocalBranches": [],
+   "Remotes": [],
+   "BlobMismatches": [],
+   "ReparsePoints": 0
+  },
+  "7-RunFiles": {
+   "Ok": true,
+   "Listing": [
+    "order.txt",
+    "prompt.md"
+   ],
+   "Mismatches": []
+  },
+  "8-NewSession": {
+   "Ok": true,
+   "PriorTranscripts": 0,
+   "ProjectDirsForCloneOrRun": []
+  },
+  "9-CommandLine": {
+   "Ok": true,
+   "Chars": 11591
+  },
+  "10-TransportGate": {
+   "Ok": true,
+   "Status": "MEASURED",
+   "LaunchArgsMatchTemplate": true,
+   "CharacterizationSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+   "AcceptanceSha256": null,
+   "Problems": []
+  },
+  "11-OwnerAndAuthorizationGate": {
+   "Ok": true,
+   "Problems": [],
+   "A6LineSha256": "83152eae4f451961b9dc43920aa60c6f0910d4d023e9e93d8f5d6160e7ac8b14",
+   "A6LineNumbers": [
+    1572
+   ],
+   "Section78Line": 1564,
+   "NearMissLines": [
+    1564,
+    1786
+   ],
+   "ClaudeCliLineSha256": "fbeade41f74d6694a621fe6294d9568d7b76b124b1fd78e415514582c5d6ee79",
+   "ClaudeCliLineNumbers": [
+    1085
+   ],
+   "ObjectBlob": "6c29747d61c5f689a195095ad3712e6d9dba62aa",
+   "ObjectBlobAtHead": "6c29747d61c5f689a195095ad3712e6d9dba62aa",
+   "ObjectBlobAtHeadMatches": true,
+   "A6AgreedBlob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+   "A6BlobAtHead": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+   "A6AgreedBlobAtHeadMatches": true,
+   "PinnedLineInA6": true,
+   "RunId": "R20261019T010200Z-4a72",
+   "BaseSection": 92,
+   "AuthorizationPending": false,
+   "AuthorizationSection": 93,
+   "AuthorizationHeading": "## 93. Disposición del Coordinator: revisión formal de A-7, cierre de insumos de VERIFY (2026-10-19 UTC)",
+   "AuthorizationTextSha256": "4f66b73832a045f86a5998922522d13267749522c491d183dd63fa7f7f4ba374",
+   "AuthorizationSections": [
+    {
+     "Number": 93,
+     "Line": 1825,
+     "Heading": "## 93. Disposición del Coordinator: revisión formal de A-7, cierre de insumos de VERIFY (2026-10-19 UTC)",
+     "HeadingMatches": true,
+     "HasBlob": true,
+     "TextSha256": "4f66b73832a045f86a5998922522d13267749522c491d183dd63fa7f7f4ba374",
+     "TextSha256Matches": true
+    }
+   ],
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 93,
+     "Line": 1825,
+     "Heading": "## 93. Disposición del Coordinator: revisión formal de A-7, cierre de insumos de VERIFY (2026-10-19 UTC)"
+    }
+   ],
+   "Authorized": true,
+   "DecisionsAppendOnlySinceClone": true,
+   "WorktreeDecisionsClean": true,
+   "HeadDescendsFromClone": true,
+   "BinarySha256MatchesClosure": true,
+   "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "WorktreeHead": "5158e4bc17ad48160d8573b7f48f3923e3197f06",
+   "DecisionsBlobAtHead": "1de169d072c79217f545f9eb7c19285df53dddc1",
+   "CloneCommit": "5158e4bc17ad48160d8573b7f48f3923e3197f06",
+   "Reads": "git rev-parse, show, hash-object (sin -w) y merge-base, con GIT_OPTIONAL_LOCKS=0; nada se escribe"
+  }
+ }
+}

@@ -1,0 +1,30 @@
+a6-r3.md                           REMOVED   51b285371fb0 -> - 
+c3_analysis.py                     IDENTICAL 4fc6115e2551 -> 4fc6115e2551 
+claude-cli-characterization.json   IDENTICAL 4ba6ba586440 -> 4ba6ba586440 
+clone-verification.json            CHANGED   82926e1500b8 -> c75502f55073 
+closure.json                       CHANGED   694288d48918 -> 7a0be56b9409 
+finish_kit.py                      CHANGED   74928bb9d439 -> e0c9c1eb7693 +65/-40
+kit-manifest.json                  CHANGED   b13429095624 -> 444d9ba99865 
+kit-params.json                    CHANGED   c8d805f6d934 -> e8982bf0ed92 
+launch.py                          CHANGED   0ada02349afd -> 01f60c7ad9cf +28/-30
+make_closure.py                    CHANGED   1c9b52bf01ab -> a0d411070a82 +503/-576
+make_manifest.py                   CHANGED   f160f9119ab5 -> bf03ada1133d +23/-23
+mutation-post-review.py            CHANGED   4eaa1c8e33d0 -> 9ed3eca1d468 +8/-7
+mutation-result.json               REMOVED   424c983eb68e -> - 
+mutation-targeted-result.json      NEW       - -> d1ed12225973 
+mutation-targeted.py               NEW       - -> 44906dfde70d 
+order.txt                          CHANGED   d74e2aa1ce5e -> a5c37f714364 +72/-61
+owner_gate.py                      CHANGED   87ad933732b4 -> 879d630a08d9 +59/-51
+pin_authorization.py               IDENTICAL a8e4070751ae -> a8e4070751ae 
+post-review.py                     CHANGED   6c51758aaa9b -> 303321f26515 +113/-139
+prepare_clone.py                   CHANGED   0d23faf2f468 -> fc0e0b24655d +49/-51
+prompt.md                          CHANGED   a8dc5773499a -> ba2804747151 
+prompt.template.md                 CHANGED   da40d1050c86 -> c3ad10d5052d +248/-247
+read_fidelity.py                   IDENTICAL 7b51116e5e48 -> 7b51116e5e48 
+result.schema.json                 CHANGED   f3dad55b008a -> 116c393e4923 
+selftest-post-review.py            CHANGED   3ae15c6364f2 -> e6deb731a303 +422/-493
+selftest-result.json               CHANGED   5ac8c720634d -> 4d9655a08b3e 
+transport-gate.json                CHANGED   790191bdfc44 -> 6f78dbd5595a 
+transport_gate.py                  IDENTICAL e326b5b92da5 -> e326b5b92da5 
+verify_clone.py                    CHANGED   b8eaee883d15 -> feb7d615a612 +94/-80
+prep/gen_schema.py                 CHANGED   fa5e34cf4280 -> 92a46900bade +48/-57

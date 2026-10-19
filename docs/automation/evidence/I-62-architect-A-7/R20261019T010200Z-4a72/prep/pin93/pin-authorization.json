@@ -1,0 +1,31 @@
+{
+ "Values": {
+  "AUTH_SECTION": 93,
+  "AUTH_HEADING": "## 93. Disposición del Coordinator: revisión formal de A-7, cierre de insumos de VERIFY (2026-10-19 UTC)",
+  "AUTH_TEXT_SHA": "4f66b73832a045f86a5998922522d13267749522c491d183dd63fa7f7f4ba374"
+ },
+ "Checks": {
+  "AfterBaseSection": true,
+  "BaseSection": 92,
+  "SectionsWithThatNumber": 1,
+  "SectionLine": 1825,
+  "HasBlobToken": true,
+  "Blob": "6c29747d61c5f689a195095ad3712e6d9dba62aa",
+  "RecomputedByGateFunctions": true,
+  "LaterSections": [],
+  "TextLines": 20
+ },
+ "Ready": true,
+ "PythonLines": [
+  "AUTH_SECTION = 93   # decisiones §93: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)",
+  "AUTH_HEADING = \"## 93. Disposición del Coordinator: revisión formal de A-7, cierre de insumos de VERIFY (2026-10-19 UTC)\"",
+  "AUTH_TEXT_SHA = \"4f66b73832a045f86a5998922522d13267749522c491d183dd63fa7f7f4ba374\"   # SHA-256 del texto de §93 (pin_authorization.py)"
+ ],
+ "FileSha256": "31e2db4caa5080e72085faddd124daeba0ad4f29991ccf10c7dab6cffdda93c7",
+ "CurrentPins": {
+  "Section": null,
+  "Heading": null,
+  "TextSha256": null
+ },
+ "Next": "sustituir en kit/owner_gate.py solo las tres líneas AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA por PythonLines; python -B kit/make_manifest.py; y, con la orden congelada desde la carpeta que contiene kit/, --record-probe y --dry-run (compuerta 11 en Ok, AuthorizationSections = esta sección, LaterSections = [])"
+}

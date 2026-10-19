@@ -1,0 +1,368 @@
+--- a6r4/post-review.py
++++ a7/post-review.py
+@@ -1,37 +1,33 @@
+-"""I-62, decisiones §85, punto 6: post-review audit v5.4-a6r4 of ONE claude-cli run of the ONE FORMAL REVIEW of ROUND 4 of amendment A-6
+-(docs/initiatives/I-62-A-6.md, round-4 blob pinned in the closure, PROPUESTA), bounded to A62-A6R3-R1 and its direct consequences, by an
+-independent ARCHITECT. Declared and self-tested BEFORE the launch (Owner CLAUDE-CLI-I62 = A; the launch also requires gate 11, owner_gate.py: the
+-Owner line of §78, the round-4 blob at the worktree HEAD and the Coordinator disposition after §85 pinned in owner_gate.py, with its number,
+-heading, full blob and text SHA-256, and no later section); the principal session runs it afterwards, never before, on the complete run, and the
+-auditor is not corrected after the run.
+-
+-v5.4-a6r4 = the v5.3-a6r3 auditor of round 3 (R20261013T183701Z-9f80, ACCREDITED, decisions §84-§85), derived by exact substitutions
+-(prep/adapt_post_review.py): every launch, transport-gate, stream-json, transcript, tool, read-fidelity, reference, direct-read, run-custody, clone,
+-run.json (Outcome, OutcomeCategories, PostRunErrors, fields), FrozenCommandGuard, RecordProbe and Environment rule of v5.3 is kept byte for byte
+-(the reviewer has ONLY Read, Grep and Glob, plus StructuredOutput; effective paths; read fidelity line by line against the commit; failed reads
+-never credited; prompt.md never a reference; run custody; clone clean after the run; the transport gate D-01 re-evaluated on the copies launch.py
+-wrote; preflight.json and run.json audited; the execution category and the Architect verdict reported separately in Categories). Changes:
+-  * preflight.json, gate 11 (round 4): the authorization pinned in the kit's owner_gate.py (pinned_authorization()) must not be pending and the
+-    record must carry AuthorizationPending = false (a new reason otherwise); the round-3 rule compares the record with the pinned values (section
+-    number, heading, full blob, text SHA-256, exactly one section, no later section) and with the round-4 blob (A6R4Blob) and the kit RunId;
+-  * schema coherence (rackcad-a6r4-architect-review/0): ids unique in Round3FindingResolution, NegativeCaseCoherence, EvidenceAdequacy,
+-    OptionalDispositionConformance, QuestionAnswers and ClosureRuleMechanical.Coverage/SubRules and, with a verdict, exactly A62-A6R3-R1,
+-    N4/NC1, the six evidence aspects, A62-A6R3-O1..O7, Q-A6R4-01..04, the three closure-rule cases and sub-rules i..v once each; A62-A6R3-R1 not
+-    CORRECTED => a linked REQUIRED, CORRECTED => none; a closure-rule case NOT_COVERED or with JudgmentStepRequired, or a sub-rule that introduces
+-    or substitutes an input => a linked REQUIRED, otherwise none; ClosureRuleMechanical NOT_TOTAL_OR_NOT_MECHANICAL => a linked REQUIRED,
+-    TOTAL_AND_MECHANICAL => none and every case covered without judgment and every sub-rule no/no; A69Compatibility CONTRADICTIONS => the list and
+-    a linked REQUIRED, NONE => neither; a negative case INCOHERENT => a linked REQUIRED, COHERENT => none; an evidence aspect INADEQUATE => a
+-    linked REQUIRED for the five mandatory aspects of decisions §85, point 3, a linked finding for O3_STRICT (point 4), ADEQUATE => no linked
+-    REQUIRED; DeltaPurity NOT_CONFIRMED => a linked REQUIRED, CONFIRMED => none; an optional DOES_NOT_CONFORM or a question NOT_SATISFIED => a
+-    linked finding; with a verdict, ClauseRefs in every element (nested ones too), no NOT_DETERMINED, every FindingIds entry exists and every
+-    REQUIRED is cited by at least one element; AGREED => no REQUIRED, no Owner decision pending, IfAgreed all true, R1 CORRECTED, the closure rule
+-    TOTAL_AND_MECHANICAL with every case covered without judgment and every sub-rule no/no, A69Compatibility NONE, N4 and NC1 COHERENT, every
+-    evidence aspect ADEQUATE, DeltaPurity CONFIRMED and O1..O7 CONFORMS; CHANGES REQUIRED or REJECTED => at least one REQUIRED;
+-  * schema validation: validate_schema requires Test-Json AND an in-process check of the measured keyword subset (schema_errors), because the
+-    pwsh 7.6.7 installed on 2026-10-14 validates only the first level of nesting with Test-Json (measured); the rule and its reason text are
+-    unchanged;
+-  * kept from v5.3: findings, NOT_ACCREDITED, BLOCKED — OWNER DECISION, IfAgreed, invocation ids, reviewed object, Step0 (seven booleans, now the
+-    round-4 Step 0) and the direct read of V14 L2333-L2334; the acceptor-contrast reference rule is retired with its field.
++"""I-62, decisiones §93: post-review audit v5.5-a7 of ONE claude-cli run of the ONE FORMAL REVIEW of amendment A-7
++(docs/initiatives/I-62-A-7.md, blob pinned in the closure and in owner_gate.py, PROPUESTA round 1), bounded to A7-1 and its consequences on the
++VERIFY input closure of FX-02/F6 and the A6-7 measurement, by an independent ARCHITECT. Declared and self-tested BEFORE the launch (Owner
++CLAUDE-CLI-I62 = A; the launch also requires gate 11, owner_gate.py: the Owner line of §78, the A-7 blob and the agreed A-6 blob at the worktree
++HEAD and the Coordinator disposition §93 (after §92) pinned in owner_gate.py, with its number, heading, full blob and text SHA-256, and no later
++section); the principal session runs it afterwards, never before, on the complete run, and the auditor is not corrected after the run.
++
++v5.5-a7 = the v5.4-a6r4 auditor of A-6 round 4 (R20261014T180556Z-5e02, ACCREDITED, decisions §89-§90): every launch, transport-gate, stream-json,
++transcript, tool, read-fidelity, reference, direct-read, run-custody, clone, run.json (Outcome, OutcomeCategories, PostRunErrors, fields),
++FrozenCommandGuard, RecordProbe, Environment and `Categories` rule is kept byte for byte (the reviewer has ONLY Read, Grep and Glob, plus
++StructuredOutput; effective paths; read fidelity line by line against the commit; failed reads never credited; prompt.md never a reference; run
++custody; clone clean after the run; the transport gate D-01 re-evaluated on the copies launch.py wrote; preflight.json and run.json audited; the
++execution category and the Architect verdict reported separately in Categories). The run has two files (order.txt, a premise, and prompt.md); the
++direct read is V14 B.9 L2231-L2233 (decisions §93, point 3: «A7-1 frente a V14 B.9»), taken from closure.json like before. Changes:
++  * preflight.json, gate 11 (A-7): the record carries ObjectBlob = the closure's object blob, ObjectBlobAtHeadMatches and A6AgreedBlobAtHeadMatches
++    true, AuthorizationPending = false and the authorization pinned in the kit's owner_gate.py (§93 after §92; number, heading, full blob, text
++    SHA-256, exactly one section, no later section) and the kit RunId; the rule of round 4 otherwise;
++  * schema coherence (rackcad-a7-architect-review/0): ids unique in TopicVerdicts, Materiality.Triggers, RelatedImpacts.FailClosedProposals and
++    QuestionAnswers and, with a verdict, exactly the eleven topics of decisions §93, point 3, M-01..M-08, the eight FC proposals of §93, point 5,
++    and Q-A7-01..06 once each; a topic DOES_NOT_CONFORM => a linked REQUIRED, CONFORMS => none; a trigger DISAGREE => a linked REQUIRED, AGREE =>
++    none, and A7Declared = the A-7 §5 table of the closure (MaterialityA7); OwnerDecisionRequired true <=> UnidentifiedConsequences non-empty;
++    RelatedImpacts (decisions §93, points 4 and 5) are separate: RevealsA7Defect true => a linked REQUIRED, false => none; ContractExclusionD1
++    CONCERNS_FOR_COORDINATOR <=> Concerns non-empty; an FC proposal CONCERNS_FOR_COORDINATOR <=> one of ChangesPassCriteria,
++    ExcludesValidC24Cases, ReliesOnImplementationCoincidence true; a question NOT_SATISFIED => a linked finding; with a verdict, ClauseRefs in every
++    element (nested ones too), no NOT_DETERMINED and no null in ContractExclusionD1 or OwnerDecisionRequired, every FindingIds entry exists and every
++    REQUIRED is cited by at least one element; AGREED => no REQUIRED, no Owner decision pending, IfAgreed all true, every topic CONFORMS, every
++    trigger AGREE and RevealsA7Defect false everywhere (concerns of the related impacts that reveal no A-7 defect do not block it); CHANGES
++    REQUIRED or REJECTED => at least one REQUIRED;
++  * kept from v5.4: findings (ids A62-A7-R<n> / A62-A7-O<n>), NOT_ACCREDITED, BLOCKED — OWNER DECISION, IfAgreed, invocation ids, reviewed object,
++    Step0 (seven booleans, now the A-7 Step 0), validate_schema (Test-Json AND schema_errors) and the direct read rule.
+ Small seams (list_dir, clone_git, clone_reparse, validate_schema, GATE, LAUNCH_DIR) let the self-test simulate a tampered run dir, launch dir or
+ clone without touching them; the real audit never changes them.
+ 
+@@ -52,8 +48,8 @@
+     or with glob/type is a violation; a Glob is a violation when its base leaves the clone and the run dir or when its scope (computed over the
+     files on disk) or its returned paths contain any non-closure file; any permission denial (transcript or result) is a violation;
+   * read fidelity of every Read; references (every Evidence and every ClauseRefs, nested ones included, and also every DirectReads) resolve to
+-    lines of a closure file or of a premise run file (order.txt, a6-r3.md), all delivered faithfully by Read in that very file; the direct read
+-    of V14 L2333-L2334 by Read in the V14 file, with an entry of DirectReads that covers it (a quotation inside A-6 is not a read of the source);
++    lines of a closure file or of a premise run file (order.txt), all delivered faithfully by Read in that very file; the direct read
++    of V14 L2231-L2233 by Read in the V14 file, with an entry of DirectReads that covers it (a quotation inside A-7 is not a read of the source);
+   * structured output: the result's structured_output equals the input of the last successful StructuredOutput call (and its attachment), is
+     valid against result.schema.json (Test-Json and schema_errors) and coherent (above);
+   * run custody: each run file = kit copy = closure RunFileHashes; the run dir holds only the run files and launch/; launch/ holds only the files
+@@ -76,14 +72,14 @@
+ import sys
+ import tempfile
+ 
+-AUDITOR_VERSION = "v5.4-a6r4 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on the Coordinator disposition after §85 pinned in owner_gate.py; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2333-L2334; declared and self-tested before the launch; decisions §85, point 6)"
++AUDITOR_VERSION = "v5.5-a7 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on the Coordinator disposition §93 after §92 pinned in owner_gate.py; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2231-L2233; declared and self-tested before the launch; decisions §93)"
+ REPLACEMENT_CHAR = chr(0xFFFD)   # U+FFFD in a tool result: a transport artifact, recorded
+ 
+ 
+ def setup(clone, run, kit):
+     global CLONE, RUN, KIT, CLOSURE, REV, IDS, ALLOWED_LC, RUN_FILES, RUN_FILES_LC, PREMISE_RUN, LONG_LINES, OBJECT_FILES, OBJECT, OBJECT_BLOB
+     global TRANSPORT, SESSION_ID, CLONE_REAL, RUN_REAL, ALLOWED_TOOLS, DESIGNATED, TG, OG, GATE
+-    global LAUNCH_DIR, LAUNCH_FILES, R3F_IDS, O3_IDS, NEG_IDS, CASES, SUBRULES, ASPECTS, MANDATORY, QUESTIONS, DIRECT, LAUNCH_COMMAND
++    global LAUNCH_DIR, LAUNCH_FILES, TOPICS, TRIGGERS, MAT_A7, FCS, QUESTIONS, DIRECT, LAUNCH_COMMAND
+     CLONE, RUN, KIT = clone, run, kit
+     CLOSURE = json.load(open(os.path.join(kit, "closure.json"), encoding="utf-8"))
+     assert norm(CLOSURE["RunDir"]).lower() == norm(run).lower(), "run dir distinto del RunDir del cierre"
+@@ -95,9 +91,9 @@
+     PREMISE_RUN = set(CLOSURE["PremiseRunFiles"])
+     LONG_LINES = {p: set(v) for p, v in CLOSURE["ReadPolicy"]["LongLines"].items()}
+     OBJECT_FILES, OBJECT, OBJECT_BLOB = dict(CLOSURE["ObjectFiles"]), CLOSURE["ObjectPath"], CLOSURE["ObjectBlob"]
+-    R3F_IDS, O3_IDS, NEG_IDS = list(CLOSURE["Round3FindingIds"]), list(CLOSURE["Round3OptionalIds"]), list(CLOSURE["NegativeCases"])
+-    CASES, SUBRULES = list(CLOSURE["ClosureRuleCases"]), list(CLOSURE["ClosureSubRules"])
+-    ASPECTS, MANDATORY, QUESTIONS = list(CLOSURE["EvidenceAspects"]), list(CLOSURE["MandatoryEvidenceAspects"]), list(CLOSURE["Round4QuestionIds"])
++    TOPICS, FCS, QUESTIONS = list(CLOSURE["Topics"]), list(CLOSURE["FailClosedProposals"]), list(CLOSURE["QuestionIds"])
++    MAT_A7 = dict(CLOSURE["MaterialityA7"])
++    TRIGGERS = sorted(MAT_A7)
+     DIRECT, LAUNCH_COMMAND = CLOSURE["DirectRead"], CLOSURE["Transport"]["LaunchCommand"]
+     TRANSPORT, SESSION_ID = CLOSURE["Transport"], CLOSURE["Transport"]["SessionId"]
+     ALLOWED_TOOLS = set(CLOSURE["AllowedTools"])
+@@ -499,15 +495,16 @@
+         auth = [a for a in (og.get("AuthorizationSections") or []) if isinstance(a, dict)]
+         pins = OG.pinned_authorization()
+         if OG.authorization_pending(pins) or og.get("AuthorizationPending") is not False:
+-            add("preflight: compuerta 11 (%s) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §85 fijada, o "
++            add("preflight: compuerta 11 (%s) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §92 fijada, o "
+                 "registro con AuthorizationPending distinto de false)" % OG.CHECK)
+-        if og.get("A6R4Blob") != OBJECT_BLOB or og.get("A6BlobAtHeadMatches") is not True or og.get("RunId") != IDS["RunId"] or \
++        if og.get("ObjectBlob") != OBJECT_BLOB or og.get("ObjectBlobAtHeadMatches") is not True or og.get("A6AgreedBlobAtHeadMatches") is not True or \
++                og.get("RunId") != IDS["RunId"] or \
+                 og.get("Authorized") is not True or og.get("LaterSections") != [] or len(auth) != 1 or \
+                 auth[0].get("Number") != pins["Section"] or auth[0].get("HeadingMatches") is not True or auth[0].get("HasBlob") is not True or \
+                 auth[0].get("TextSha256") != pins["TextSha256"] or og.get("AuthorizationTextSha256") != pins["TextSha256"] or \
+                 og.get("AuthorizationSection") != pins["Section"] or og.get("AuthorizationHeading") != pins["Heading"]:
+-            add("preflight: compuerta 11 (%s) sin el blob de la ronda 4 en la HEAD del worktree, sin la autorización fijada en owner_gate.py "
+-                "(sección posterior a §85, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella" % OG.CHECK)
++            add("preflight: compuerta 11 (%s) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en "
++                "owner_gate.py (sección posterior a §92, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella" % OG.CHECK)
+         fg = preflight.get("FrozenCommandGuard") if isinstance(preflight.get("FrozenCommandGuard"), dict) else {}
+         launch["FrozenCommandGuard"] = {k: fg.get(k) for k in ("Ok", "Enforced", "FrozenCommand", "OrigArgvTail", "Problems")}
+         if fg.get("Ok") is not True or fg.get("Enforced") is not True or fg.get("FrozenCommand") != LAUNCH_COMMAND or fg.get("Problems"):
+@@ -878,14 +875,16 @@
+ 
+ 
+ REF_RX = re.compile(r"^(.+):([1-9][0-9]*)(?:-([1-9][0-9]*))?$")
+-STEP0_KEYS = ("V14DirectReadL2333L2334", "OrderReadWhole", "Decisions85DeclaresOrderBytesAndSha256", "Decisions85RoundThreeDisposition",
+-              "GuardsRunModeBaseHeadResult", "SelftestA6TextBlobMatchesObject", "Round3OutputIdentifiesRunAndFindings")
++STEP0_KEYS = ("V14DirectReadB9L2231L2233", "OrderReadWhole", "Decisions93DeclaresOrderBytesAndSha256",
++              "Decisions93IdentifiesObjectAndAuthorizesReview", "Decisions90RecordsA6AgreedBlob", "GuardsRunModeBaseHeadResult",
++              "PreflightSummaryCandidateAndTotals")
+ NOT_DET = "NOT_DETERMINED"
+ BLOCKED = "BLOCKED " + chr(0x2014) + " OWNER DECISION"
+-ARRAYS = (("Round3FindingResolution", "Round3Finding"), ("NegativeCaseCoherence", "Case"), ("EvidenceAdequacy", "Aspect"),
+-          ("OptionalDispositionConformance", "Round3Optional"), ("QuestionAnswers", "Question"))
+-NESTED = (("ClosureRuleMechanical", "Coverage", "Case"), ("ClosureRuleMechanical", "SubRules", "SubRule"))
+-SINGLES = ("ClosureRuleMechanical", "A69Compatibility", "DeltaPurity")
++ARRAYS = (("TopicVerdicts", "Topic"), ("QuestionAnswers", "Question"))
++NESTED = (("Materiality", "Triggers", "Trigger"), ("RelatedImpacts", "FailClosedProposals", "Proposal"))
++SINGLES = ("Materiality", "OwnerReservedConsequence")
++NESTED_SINGLES = (("RelatedImpacts", "ContractExclusionD1"),)
++FC_FLAGS = ("ChangesPassCriteria", "ExcludesValidC24Cases", "ReliesOnImplementationCoincidence")
+ LAUNCH_ENV_PREFIXES = ("PYTHON", "GIT_", "CLAUDE", "ANTHROPIC")   # §84, punto 2 (los de launch.py)
+ RUN_JSON_FIELDS = ("SessionId", "Executable", "ExecutableSha256", "Args", "Cwd", "PromptSha256", "PromptBytes", "TimeoutSeconds", "TransportGate",
+                    "EnvironmentVariableNames", "AuthSettle", "Start", "PostRunErrors", "Pid", "End", "ExitCode", "Killed", "TimedOut",
+@@ -914,9 +913,13 @@
+     return [y if isinstance(y, dict) else {} for y in (x or [])]
+ 
+ 
++def dct(x):
++    return x if isinstance(x, dict) else {}
++
++
+ def collect_refs(result):
+     """→ [(group, ref, None)]: every Evidence of a finding and every ClauseRefs entry (no excerpts in this review)."""
+-    r = result if isinstance(result, dict) else {}
++    r = dct(result)
+     out = []
+     for key in ("RequiredFindings", "OptionalFindings"):
+         for x in items(r.get(key)):
+@@ -925,11 +928,13 @@
+         for x in items(r.get(key)):
+             out += [("%s[%s]" % (key, x.get(label)), ref, None) for ref in (x.get("ClauseRefs") or [])]
+     for parent, key, label in NESTED:
+-        for x in items((r.get(parent) if isinstance(r.get(parent), dict) else {}).get(key)):
++        for x in items(dct(r.get(parent)).get(key)):
+             out += [("%s.%s[%s]" % (parent, key, x.get(label)), ref, None) for ref in (x.get("ClauseRefs") or [])]
+     out += [("DirectReads", x.get("Ref"), None) for x in items(r.get("DirectReads"))]
+     for key in SINGLES:
+-        out += [(key, ref, None) for ref in ((r.get(key) or {}).get("ClauseRefs") or [])]
++        out += [(key, ref, None) for ref in (dct(r.get(key)).get("ClauseRefs") or [])]
++    for parent, key in NESTED_SINGLES:
++        out += [("%s.%s" % (parent, key), ref, None) for ref in (dct(dct(r.get(parent)).get(key)).get("ClauseRefs") or [])]
+     return out
+ 
+ 
+@@ -938,19 +943,17 @@
+     req, opt = items(result.get("RequiredFindings")), items(result.get("OptionalFindings"))
+     req_ids, opt_ids = [f.get("FindingId") for f in req], [f.get("FindingId") for f in opt]
+     all_ids = set(req_ids) | set(opt_ids)
+-    r3, neg, ev = items(result.get("Round3FindingResolution")), items(result.get("NegativeCaseCoherence")), items(result.get("EvidenceAdequacy"))
+-    od, qa = items(result.get("OptionalDispositionConformance")), items(result.get("QuestionAnswers"))
+-    crm = result.get("ClosureRuleMechanical") if isinstance(result.get("ClosureRuleMechanical"), dict) else {}
+-    cov, sub = items(crm.get("Coverage")), items(crm.get("SubRules"))
+-    a69 = result.get("A69Compatibility") if isinstance(result.get("A69Compatibility"), dict) else {}
+-    dp = result.get("DeltaPurity") if isinstance(result.get("DeltaPurity"), dict) else {}
+-    oac, ia, step0 = result.get("OwnerAuthorityCheck") or {}, result.get("IfAgreed") or {}, result.get("Step0") or {}
+-    owner = oac.get("OwnerDecisionRequired")
+-    arrays = (("Round3FindingResolution", r3, "Round3Finding", R3F_IDS), ("NegativeCaseCoherence", neg, "Case", NEG_IDS),
+-              ("EvidenceAdequacy", ev, "Aspect", ASPECTS), ("OptionalDispositionConformance", od, "Round3Optional", O3_IDS),
+-              ("QuestionAnswers", qa, "Question", QUESTIONS), ("ClosureRuleMechanical.Coverage", cov, "Case", CASES),
+-              ("ClosureRuleMechanical.SubRules", sub, "SubRule", SUBRULES))
+-    singles = (("ClosureRuleMechanical", crm), ("A69Compatibility", a69), ("DeltaPurity", dp))
++    tv, qa = items(result.get("TopicVerdicts")), items(result.get("QuestionAnswers"))
++    mat = dct(result.get("Materiality"))
++    trig = items(mat.get("Triggers"))
++    ri = dct(result.get("RelatedImpacts"))
++    d1, fcp = dct(ri.get("ContractExclusionD1")), items(ri.get("FailClosedProposals"))
++    orc, ia, step0 = dct(result.get("OwnerReservedConsequence")), dct(result.get("IfAgreed")), dct(result.get("Step0"))
++    owner = orc.get("OwnerDecisionRequired")
++    arrays = (("TopicVerdicts", tv, "Topic", TOPICS), ("QuestionAnswers", qa, "Question", QUESTIONS),
++              ("Materiality.Triggers", trig, "Trigger", TRIGGERS), ("RelatedImpacts.FailClosedProposals", fcp, "Proposal", FCS))
++    singles = (("Materiality", mat), ("OwnerReservedConsequence", orc), ("RelatedImpacts.ContractExclusionD1", d1))
++    impacts = [("RelatedImpacts.ContractExclusionD1", d1)] + [("RelatedImpacts.FailClosedProposals[%s]" % x.get("Proposal"), x) for x in fcp]
+ 
+     def linked(x):
+         return x.get("FindingIds") or []
+@@ -958,11 +961,8 @@
+     def has_req(x):
+         return any(i in req_ids for i in linked(x))
+ 
+-    def covered(x):
+-        return x.get("Status") == "COVERED" and x.get("JudgmentStepRequired") is False
+-
+-    def clean(x):
+-        return x.get("IntroducesInput") == "no" and x.get("SubstitutesInput") == "no"
++    def concerns(x):
++        return any(x.get(k) is True for k in FC_FLAGS)
+     if len(set(req_ids + opt_ids)) != len(req_ids + opt_ids):
+         c.append("identificadores de hallazgo repetidos")
+     for f in req:
+@@ -976,57 +976,37 @@
+         ids_ = [str(x.get(key)) for x in xs]
+         if len(set(ids_)) != len(ids_):
+             c.append("%s con identificadores repetidos" % label)
+-    for x in r3:
+-        if x.get("Status") != "CORRECTED" and not has_req(x):
+-            c.append("%s %s sin un REQUIRED vinculado" % (x.get("Round3Finding"), x.get("Status")))
+-        if x.get("Status") == "CORRECTED" and has_req(x):
+-            c.append("%s CORRECTED con un REQUIRED vinculado" % x.get("Round3Finding"))
+-    for x in cov:
+-        if not covered(x) and not has_req(x):
+-            c.append("ClosureRuleMechanical.Coverage[%s] NOT_COVERED o con un paso de juicio sin un REQUIRED vinculado" % x.get("Case"))
+-        if covered(x) and has_req(x):
+-            c.append("ClosureRuleMechanical.Coverage[%s] COVERED sin juicio con un REQUIRED vinculado" % x.get("Case"))
+-    for x in sub:
+-        if not clean(x) and not has_req(x):
+-            c.append("ClosureRuleMechanical.SubRules[%s] introduce o sustituye un insumo sin un REQUIRED vinculado" % x.get("SubRule"))
+-        if clean(x) and has_req(x):
+-            c.append("ClosureRuleMechanical.SubRules[%s] sin insumos introducidos ni sustituidos con un REQUIRED vinculado" % x.get("SubRule"))
+-    if crm.get("Assessment") == "NOT_TOTAL_OR_NOT_MECHANICAL" and not has_req(crm):
+-        c.append("ClosureRuleMechanical NOT_TOTAL_OR_NOT_MECHANICAL sin un REQUIRED vinculado")
+-    if crm.get("Assessment") == "TOTAL_AND_MECHANICAL" and has_req(crm):
+-        c.append("ClosureRuleMechanical TOTAL_AND_MECHANICAL con un REQUIRED vinculado")
+-    if crm.get("Assessment") == "TOTAL_AND_MECHANICAL" and (not all(covered(x) for x in cov) or not all(clean(x) for x in sub)):
+-        c.append("ClosureRuleMechanical TOTAL_AND_MECHANICAL con un caso no cubierto o con juicio, o con un apartado que introduce o sustituye un "
+-                 "insumo")
+-    if a69.get("Status") == "CONTRADICTIONS" and (not a69.get("Contradictions") or not has_req(a69)):
+-        c.append("A69Compatibility CONTRADICTIONS sin la lista de contradicciones o sin un REQUIRED vinculado")
+-    if a69.get("Status") == "NONE" and (a69.get("Contradictions") or has_req(a69)):
+-        c.append("A69Compatibility NONE con contradicciones en la lista o con un REQUIRED vinculado")
+-    for x in neg:
+-        if x.get("Status") == "INCOHERENT" and not has_req(x):
+-            c.append("NegativeCaseCoherence[%s] INCOHERENT sin un REQUIRED vinculado" % x.get("Case"))
+-        if x.get("Status") == "COHERENT" and has_req(x):
+-            c.append("NegativeCaseCoherence[%s] COHERENT con un REQUIRED vinculado" % x.get("Case"))
+-    for x in ev:
+-        mandatory = x.get("Aspect") in MANDATORY
+-        if x.get("Status") == "INADEQUATE" and mandatory and not has_req(x):
+-            c.append("EvidenceAdequacy[%s] INADEQUATE sin un REQUIRED vinculado (prueba obligatoria de decisiones §85, punto 3)" % x.get("Aspect"))
+-        if x.get("Status") == "INADEQUATE" and not mandatory and not linked(x):
+-            c.append("EvidenceAdequacy[%s] INADEQUATE sin un hallazgo vinculado" % x.get("Aspect"))
+-        if x.get("Status") == "ADEQUATE" and has_req(x):
+-            c.append("EvidenceAdequacy[%s] ADEQUATE con un REQUIRED vinculado" % x.get("Aspect"))
+-    if dp.get("Status") == "NOT_CONFIRMED" and not has_req(dp):
+-        c.append("DeltaPurity NOT_CONFIRMED sin un REQUIRED vinculado")
+-    if dp.get("Status") == "CONFIRMED" and has_req(dp):
+-        c.append("DeltaPurity CONFIRMED con un REQUIRED vinculado")
+-    for x in od:
+-        if x.get("Status") == "DOES_NOT_CONFORM" and not linked(x):
+-            c.append("OptionalDispositionConformance[%s] DOES_NOT_CONFORM sin un hallazgo vinculado" % x.get("Round3Optional"))
++    for x in tv:
++        if x.get("Status") == "DOES_NOT_CONFORM" and not has_req(x):
++            c.append("TopicVerdicts[%s] DOES_NOT_CONFORM sin un REQUIRED vinculado (tema obligatorio de decisiones §93, punto 3)" % x.get("Topic"))
++        if x.get("Status") == "CONFORMS" and has_req(x):
++            c.append("TopicVerdicts[%s] CONFORMS con un REQUIRED vinculado" % x.get("Topic"))
++    for x in trig:
++        if x.get("Assessment") == "DISAGREE" and not has_req(x):
++            c.append("Materiality.Triggers[%s] DISAGREE sin un REQUIRED vinculado" % x.get("Trigger"))
++        if x.get("Assessment") == "AGREE" and has_req(x):
++            c.append("Materiality.Triggers[%s] AGREE con un REQUIRED vinculado" % x.get("Trigger"))
+     for x in qa:
+         if x.get("Outcome") == "NOT_SATISFIED" and not linked(x):
+             c.append("QuestionAnswers[%s] NOT_SATISFIED sin un hallazgo vinculado" % x.get("Question"))
+-    if owner is True and not oac.get("AdditionalOwnerReservedConsequences"):
+-        c.append("OwnerDecisionRequired = true sin AdditionalOwnerReservedConsequences")
++    if owner is True and not orc.get("UnidentifiedConsequences"):
++        c.append("OwnerDecisionRequired = true sin UnidentifiedConsequences")
++    if owner is False and orc.get("UnidentifiedConsequences"):
++        c.append("OwnerDecisionRequired = false con UnidentifiedConsequences")
++    for label, x in impacts:
++        if x.get("RevealsA7Defect") is True and not has_req(x):
++            c.append("%s RevealsA7Defect = true sin un REQUIRED vinculado" % label)
++        if x.get("RevealsA7Defect") is False and has_req(x):
++            c.append("%s RevealsA7Defect = false con un REQUIRED vinculado (un impacto relacionado no condiciona el veredicto de A-7)" % label)
++    if d1.get("Status") == "CONCERNS_FOR_COORDINATOR" and not d1.get("Concerns"):
++        c.append("RelatedImpacts.ContractExclusionD1 CONCERNS_FOR_COORDINATOR sin Concerns")
++    if d1.get("Status") == "NO_CONCERN" and d1.get("Concerns"):
++        c.append("RelatedImpacts.ContractExclusionD1 NO_CONCERN con Concerns")
++    for x in fcp:
++        if x.get("Status") == "NO_CONCERN" and concerns(x):
++            c.append("RelatedImpacts.FailClosedProposals[%s] NO_CONCERN con %s en true" % (x.get("Proposal"), "/".join(FC_FLAGS)))
++        if x.get("Status") == "CONCERNS_FOR_COORDINATOR" and not concerns(x):
++            c.append("RelatedImpacts.FailClosedProposals[%s] CONCERNS_FOR_COORDINATOR sin ninguna de %s en true" % (x.get("Proposal"), "/".join(FC_FLAGS)))
+     if v != "NOT_ACCREDITED":
+         if any(step0.get(k) is not True for k in STEP0_KEYS):
+             c.append("con un veredicto, las siete booleanas de Step0 van en true")
+@@ -1037,14 +1017,18 @@
+             if sorted(got_) != sorted(want):
+                 c.append("%s debe disponer cada id una vez (faltan %s; sobran o repetidos %s)"
+                          % (label, [w for w in want if w not in got_], sorted({g for g in got_ if g not in want or got_.count(g) > 1})))
++        wrong_decl = [str(x.get("Trigger")) for x in trig if x.get("Trigger") in MAT_A7 and x.get("A7Declared") != MAT_A7[x.get("Trigger")]]
++        if wrong_decl:
++            c.append("con un veredicto, A7Declared distinto de lo que declara A-7 §5 (%s)" % ", ".join(wrong_decl))
+         for label, x in holders:
+             if not x.get("ClauseRefs"):
+                 c.append("con un veredicto, %s sin ClauseRefs" % label)
+-        undetermined = [label for label, x in singles if x.get("Assessment" if label == "ClosureRuleMechanical" else "Status") == NOT_DET]
++        undetermined = [k for k, bad in (("RelatedImpacts.ContractExclusionD1.Status", d1.get("Status") == NOT_DET),
++                                         ("RelatedImpacts.ContractExclusionD1.RevealsA7Defect", d1.get("RevealsA7Defect") is None)) if bad]
+         if undetermined:
+-            c.append("con un veredicto, NOT_DETERMINED no se admite (%s)" % ", ".join(undetermined))
++            c.append("con un veredicto, NOT_DETERMINED o null no se admiten (%s)" % ", ".join(undetermined))
+         if owner is None:
+-            c.append("con un veredicto, OwnerAuthorityCheck.OwnerDecisionRequired no admite null")
++            c.append("con un veredicto, OwnerReservedConsequence.OwnerDecisionRequired no admite null")
+         cited = set()
+         for _, x in holders:
+             cited |= set(linked(x))
+@@ -1053,22 +1037,12 @@
+             c.append("REQUIRED sin disposición: todo REQUIRED lo cita al menos un elemento evaluado (%s)" % ", ".join(str(i) for i in uncited))
+     if v == "AGREED" and (req or owner is not False or not ia or not all(ia.get(k) is True for k in ia)):
+         c.append("AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true")
+-    if v == "AGREED" and (len(r3) != len(R3F_IDS) or any(x.get("Status") != "CORRECTED" for x in r3)):
+-        c.append("AGREED exige A62-A6R3-R1 en CORRECTED")
+-    if v == "AGREED" and (crm.get("Assessment") != "TOTAL_AND_MECHANICAL" or len(cov) != len(CASES) or len(sub) != len(SUBRULES) or
+-                          not all(covered(x) for x in cov) or not all(clean(x) for x in sub)):
+-        c.append("AGREED exige ClosureRuleMechanical en TOTAL_AND_MECHANICAL, con los tres casos COVERED sin juicio y los cinco apartados sin "
+-                 "insumos introducidos ni sustituidos")
+-    if v == "AGREED" and a69.get("Status") != "NONE":
+-        c.append("AGREED exige A69Compatibility en NONE")
+-    if v == "AGREED" and (len(neg) != len(NEG_IDS) or any(x.get("Status") != "COHERENT" for x in neg)):
+-        c.append("AGREED exige N4 y NC1 en COHERENT")
+-    if v == "AGREED" and (len(ev) != len(ASPECTS) or any(x.get("Status") != "ADEQUATE" for x in ev)):
+-        c.append("AGREED exige los seis aspectos de EvidenceAdequacy en ADEQUATE")
+-    if v == "AGREED" and dp.get("Status") != "CONFIRMED":
+-        c.append("AGREED exige DeltaPurity en CONFIRMED")
+-    if v == "AGREED" and (len(od) != len(O3_IDS) or any(x.get("Status") != "CONFORMS" for x in od)):
+-        c.append("AGREED exige A62-A6R3-O1..O7 en CONFORMS")
++    if v == "AGREED" and (len(tv) != len(TOPICS) or any(x.get("Status") != "CONFORMS" for x in tv)):
++        c.append("AGREED exige los once temas de TopicVerdicts en CONFORMS")
++    if v == "AGREED" and (len(trig) != len(TRIGGERS) or any(x.get("Assessment") != "AGREE" for x in trig)):
++        c.append("AGREED exige los ocho disparadores de Materiality en AGREE")
++    if v == "AGREED" and (len(fcp) != len(FCS) or any(x.get("RevealsA7Defect") is not False for _, x in impacts)):
++        c.append("AGREED exige RevealsA7Defect = false en RelatedImpacts (ContractExclusionD1 y las ocho propuestas)")
+     if v != "AGREED" and any(x is not None for x in ia.values()):
+         c.append("IfAgreed debe ir en null salvo con AGREED")
+     if v in ("CHANGES REQUIRED", "REJECTED") and not req:

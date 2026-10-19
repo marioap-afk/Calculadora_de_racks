@@ -1,0 +1,6 @@
+{
+ "Written": "transport-gate.json",
+ "Status": "MEASURED",
+ "Sha256": "6f78dbd5595aa2744c0b883b9af298289bf6b3b9e50473362857385ba79d14da",
+ "Next": "python -B make_manifest.py --gate; después, custodiar el kit otra vez"
+}

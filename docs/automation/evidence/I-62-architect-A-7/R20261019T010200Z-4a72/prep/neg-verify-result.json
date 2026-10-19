@@ -1,0 +1,47 @@
+{
+ "Test": "verify_clone.py, pruebas negativas (copias alteradas del kit; kit real, clon y run sin cambio)",
+ "Cases": [
+  {
+   "Case": "N1-registro-alterado",
+   "Seconds": 131.4,
+   "ExitCode": 1,
+   "AllChecks": false,
+   "ExpectedCause": true,
+   "StdoutTail": "{\"AllChecks\": false, \"Head\": \"5158e4bc17ad48160d8573b7f48f3923e3197f06\", \"Files\": 4907, \"Reparse\": 0, \"Run\": [\"order.txt\", \"prompt.md\"], \"GuardsRun\": {\"ExitCode\": 0, \"Result\": \"PASS\", \"WholeEqualsCustodied\": true, \"DifferingTopLevelKeys\": []}, \"GuardsSelfTest\": {\"ExitCode\": 0, \"Result\": \"PASS\", \"Mutants\": 44, \"MutantsKilled\": 44, \"CandidateAdded\": 29, \"WholeEqualsCustodied\": true, \"DifferingTopLevelKeys\": []}}",
+   "StderrTail": "",
+   "Result": "PASS"
+  },
+  {
+   "Case": "N2-orden-del-kit-alterada",
+   "Seconds": 162.4,
+   "ExitCode": 1,
+   "AllChecks": false,
+   "ExpectedCause": true,
+   "StdoutTail": "{\"AllChecks\": false, \"Head\": \"5158e4bc17ad48160d8573b7f48f3923e3197f06\", \"Files\": 4907, \"Reparse\": 0, \"Run\": [\"order.txt\", \"prompt.md\"], \"GuardsRun\": {\"ExitCode\": 0, \"Result\": \"PASS\", \"WholeEqualsCustodied\": true, \"DifferingTopLevelKeys\": []}, \"GuardsSelfTest\": {\"ExitCode\": 0, \"Result\": \"PASS\", \"Mutants\": 44, \"MutantsKilled\": 44, \"CandidateAdded\": 29, \"WholeEqualsCustodied\": true, \"DifferingTopLevelKeys\": []}}",
+   "StderrTail": "",
+   "Result": "PASS"
+  },
+  {
+   "Case": "N3-evid-de-la-autoprueba-de-guardas",
+   "Seconds": 135.8,
+   "ExitCode": 1,
+   "AllChecks": false,
+   "ExpectedCause": true,
+   "StdoutTail": "{\"AllChecks\": false, \"Head\": \"5158e4bc17ad48160d8573b7f48f3923e3197f06\", \"Files\": 4907, \"Reparse\": 0, \"Run\": [\"order.txt\", \"prompt.md\"], \"GuardsRun\": {\"ExitCode\": 0, \"Result\": \"PASS\", \"WholeEqualsCustodied\": true, \"DifferingTopLevelKeys\": []}, \"GuardsSelfTest\": {\"ExitCode\": 0, \"Result\": \"PASS\", \"Mutants\": 44, \"MutantsKilled\": 44, \"CandidateAdded\": 30, \"WholeEqualsCustodied\": false, \"DifferingTopLevelKeys\": [\"Candidate\"]}}",
+   "StderrTail": "",
+   "Result": "PASS"
+  },
+  {
+   "Case": "N4-cabeza-de-las-guardas",
+   "Seconds": 124.2,
+   "ExitCode": 1,
+   "AllChecks": false,
+   "ExpectedCause": true,
+   "StdoutTail": "{\"AllChecks\": false, \"Head\": \"5158e4bc17ad48160d8573b7f48f3923e3197f06\", \"Files\": 4907, \"Reparse\": 0, \"Run\": [\"order.txt\", \"prompt.md\"], \"GuardsRun\": {\"ExitCode\": 0, \"Result\": \"PASS\", \"WholeEqualsCustodied\": false, \"DifferingTopLevelKeys\": [\"Head\"]}, \"GuardsSelfTest\": {\"ExitCode\": 0, \"Result\": \"PASS\", \"Mutants\": 44, \"MutantsKilled\": 44, \"CandidateAdded\": 29, \"WholeEqualsCustodied\": true, \"DifferingTopLevelKeys\": []}}",
+   "StderrTail": "",
+   "Result": "PASS"
+  }
+ ],
+ "RealKitUnchanged": true,
+ "Result": "PASS"
+}

@@ -1,0 +1,159 @@
+{
+ "Kit": "I-62: kit de la ÚNICA revisión formal independiente del Architect de la enmienda A-7 por claude-cli, acotada a A7-1 y a sus consecuencias sobre el cierre de VERIFY de FX-02/F6 y la medición de A6-7 (decisiones §93; Owner CLAUDE-CLI-I62 = A; lanzamiento con la orden congelada exacta y condicionado a la sonda de registro y a la compuerta 11: línea del Owner de §78, blobs de A-7 y de la A-6 acordada en la HEAD y la disposición del Coordinator §93, posterior a §92, fijada en owner_gate.py, sin ninguna sección posterior)",
+ "Ids": {
+  "RunId": "R20261019T010200Z-4a72",
+  "InvocationId": "I20261019T010200Z-4a72",
+  "LogicalReviewRequestId": "L20261019T010200Z-4a72",
+  "AttemptSeq": 1
+ },
+ "PreviousAttempts": [],
+ "PreviousRound": "ninguna: A-7 ronda 1 (kit derivado del de A-6 ronda 4, R20261014T180556Z-5e02, ACCREDITED)",
+ "Commit": "5158e4bc17ad48160d8573b7f48f3923e3197f06",
+ "Object": "docs/initiatives/I-62-A-7.md (blob 6c29747d61c5f689a195095ad3712e6d9dba62aa; publicación 6fee8fd6a96ce4ae45d116e34affee4ed1b1fd40)",
+ "Package": "ninguno (sin paquete del Architect: el prompt hace de paquete (decisiones §93, puntos 2 y 6: un kit acotado a A-7))",
+ "SessionId": "4945013a-d80e-43dc-bc95-d34dff85fcfe",
+ "Transport": "claude-cli 2.1.299 (%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe, SHA-256 295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b)",
+ "Auditor": "v5.5-a7 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 283/283; mutation-targeted-result.json (mutación DIRIGIDA a los sitios cambiados) AllKilled True, 56/56; batería COMPLETA (decisiones §88, punto 4: cambiaron reglas del auditor, esquema y compuerta) mutation-result.json AllKilled True, 181/181)",
+ "Clone": "D:/r62-arch-a7 (git clone --no-local -c core.autocrlf=false --single-branch desde el directorio común de git; HEAD separado en el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks, con la reproducción de las guardas de A-7)",
+ "Run": "D:/r62-arch-a7-run (order.txt y prompt.md, idénticos byte a byte a las copias del kit)",
+ "TransportGate": "MEASURED (D-01; launch.py solo lanza en MEASURED o ACCEPTED)",
+ "OwnerAndAuthorizationGate": "11-OwnerAndAuthorizationGate (owner_gate.py): launch.py solo lanza con la línea del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) después de §78, CLAUDE-CLI-I62 = A vigente, A-7 en la HEAD con el blob 6c29747d, la A-6 acordada y la disposición del Coordinator §93 (posterior a §92) fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin ninguna sección posterior; se evalúa en el momento del lanzamiento",
+ "AuthorizationPins": {
+  "Section": 93,
+  "Heading": "## 93. Disposición del Coordinator: revisión formal de A-7, cierre de insumos de VERIFY (2026-10-19 UTC)",
+  "TextSha256": "4f66b73832a045f86a5998922522d13267749522c491d183dd63fa7f7f4ba374"
+ },
+ "AuthorizationState": "FIJADA: decisiones §93 (encabezado y SHA-256 del texto en AuthorizationPins)",
+ "OwnerGateTested": {
+  "SelftestSha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+  "MutationSha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+  "CurrentSha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+  "ChangedSinceSelftestOrMutation": false
+ },
+ "LaunchCommand": "python -B kit/launch.py",
+ "Launch": "python -B kit/launch.py desde la carpeta que contiene kit/, por la sesión principal, una sola vez, sin flags ni variables añadidos (NO lanzado)",
+ "Files": {
+  "c3_analysis.py": {
+   "Bytes": 6070,
+   "Sha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7"
+  },
+  "claude-cli-characterization.json": {
+   "Bytes": 17086,
+   "Sha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c"
+  },
+  "clone-verification.json": {
+   "Bytes": 48669,
+   "Sha256": "c75502f5507381bf8b05a5c6b6b990ba9b1d8f1f2e5aa18e432c3c134e464225"
+  },
+  "closure.json": {
+   "Bytes": 219805,
+   "Sha256": "7a0be56b9409ee61e7c3733b8a71dbfe601434b2a41f779f68a7062a5c1421ac"
+  },
+  "finish_kit.py": {
+   "Bytes": 9485,
+   "Sha256": "e0c9c1eb7693b509e21402c309ded8ab76efd54065d03cb601b7218b3d597ec2"
+  },
+  "kit-params.json": {
+   "Bytes": 2373,
+   "Sha256": "e8982bf0ed92f8b2be1fd5c9e8439f011479f733b74a9b0f17540d594d31d18a"
+  },
+  "launch.py": {
+   "Bytes": 45834,
+   "Sha256": "01f60c7ad9cfdf2d1a7fc5f89dc122c6d31893a2929a14f009c7d7209f5737af"
+  },
+  "make_closure.py": {
+   "Bytes": 81714,
+   "Sha256": "a0d411070a82fa52dbd6b90a24826603e7c4e1d8c9fbffbf6db74b4a62e444d4"
+  },
+  "make_manifest.py": {
+   "Bytes": 9225,
+   "Sha256": "9bb67ebf1d59139ee73f18f1aff0ea026920c7d0306a6ee684d620b9dd493ebd"
+  },
+  "mutation-post-review.py": {
+   "Bytes": 7843,
+   "Sha256": "9ed3eca1d4687fa6adb7c6d56b7ddf9c72232aa2d238070c33f4fe2e95314640"
+  },
+  "mutation-result.json": {
+   "Bytes": 51402,
+   "Sha256": "ac6a6ebab163150a949b53478bab12a5e1c81f80cf2ef64dbff4550a3c26e3f6"
+  },
+  "mutation-targeted-result.json": {
+   "Bytes": 18496,
+   "Sha256": "d1ed12225973bf87cc615c48fc54871075de02a3a98fdb4999321e4a6bb24b81"
+  },
+  "mutation-targeted.py": {
+   "Bytes": 6237,
+   "Sha256": "44906dfde70d5ddcf81e23eb87ac0a04927865ddff46e795b605b1c9ace65ba0"
+  },
+  "order.txt": {
+   "Bytes": 4057,
+   "Sha256": "a5c37f714364bc704c5f38218ae2b1a9209052c47834dcc5349684eb141be41b"
+  },
+  "owner_gate.py": {
+   "Bytes": 17884,
+   "Sha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac"
+  },
+  "pin_authorization.py": {
+   "Bytes": 5588,
+   "Sha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc"
+  },
+  "post-review.py": {
+   "Bytes": 67915,
+   "Sha256": "303321f265152dc03a6fc7771bb69faed47f5167a80a7f03113e2839305d9653"
+  },
+  "prepare_clone.py": {
+   "Bytes": 9316,
+   "Sha256": "fc0e0b24655de3fb9bfd3d84fc11bb76cedf43b3ed83b5c59fa38f7943dc5b28"
+  },
+  "prompt.md": {
+   "Bytes": 77659,
+   "Sha256": "ba2804747151173d9fe66838ec0ad6ab311a07462948854c3317468497afa8c8"
+  },
+  "prompt.template.md": {
+   "Bytes": 36424,
+   "Sha256": "c3ad10d5052dc2ae1fb17072a7422759a376c1a7e570a8a677ca42ef17a7e500"
+  },
+  "read_fidelity.py": {
+   "Bytes": 4925,
+   "Sha256": "7b51116e5e4876c1416066994e282ad077661547ee5fb1dcb0fbcbd59e413cce"
+  },
+  "result.schema.json": {
+   "Bytes": 14788,
+   "Sha256": "116c393e4923f97ba6d5371a72a21b4bbb5805a88f6a35a36876d09dfbcd5305"
+  },
+  "selftest-post-review.py": {
+   "Bytes": 124017,
+   "Sha256": "e6deb731a303eac56a8186ad1141f687c9118940b314107877e154b087e45700"
+  },
+  "selftest-result.json": {
+   "Bytes": 145997,
+   "Sha256": "4d9655a08b3e5f5a3969eac8c37cf367ce0c4a260aeb3ea266084b2528b967c5"
+  },
+  "transport-gate.json": {
+   "Bytes": 1543,
+   "Sha256": "6f78dbd5595aa2744c0b883b9af298289bf6b3b9e50473362857385ba79d14da"
+  },
+  "transport_gate.py": {
+   "Bytes": 22485,
+   "Sha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf"
+  },
+  "verify_clone.py": {
+   "Bytes": 22733,
+   "Sha256": "feb7d615a612e4ce17301d9dc2124ab85c2a5250739e4bab793310bb351b6c20"
+  }
+ },
+ "RunFiles": {
+  "order.txt": {
+   "Path": "D:\\r62-arch-a7-run\\order.txt",
+   "Bytes": 4057,
+   "Sha256": "a5c37f714364bc704c5f38218ae2b1a9209052c47834dcc5349684eb141be41b",
+   "IdenticalToKitCopy": true
+  },
+  "prompt.md": {
+   "Path": "D:\\r62-arch-a7-run\\prompt.md",
+   "Bytes": 77659,
+   "Sha256": "ba2804747151173d9fe66838ec0ad6ab311a07462948854c3317468497afa8c8",
+   "IdenticalToKitCopy": true
+  }
+ }
+}

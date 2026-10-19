@@ -1,0 +1,63 @@
+{
+ "Schema": "a7-host-checks/1",
+ "UtcTime": "2026-10-19T01:58:27Z",
+ "MainCheckout": {
+  "Path": "D:/Documentos/Codex/Calculadora de racks",
+  "Branch": "main",
+  "Head": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+  "StatusLines": 0,
+  "OriginMainLocal": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "Reads": "git -C rev-parse y status --porcelain con GIT_OPTIONAL_LOCKS=0"
+ },
+ "I64": {
+  "Worktree": "architecture-workspace-persistente-rackcad",
+  "Head": "09f2f1c3",
+  "StatusLines": 0
+ },
+ "Processes": [
+  {
+   "Name": "acad.exe",
+   "Pid": 17380,
+   "Started": "2026-10-18T18:38:19.719619-06:00",
+   "CommandLineNamesI64": false,
+   "CommandLineNamesReviewClone": false,
+   "CommandLine": "\"C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe\"  /product ACAD /language \"en-US\""
+  },
+  {
+   "Name": "dotnet.exe",
+   "Pid": 23256,
+   "Started": "2026-10-18T19:53:15.729621-06:00",
+   "CommandLineNamesI64": false,
+   "CommandLineNamesReviewClone": false,
+   "CommandLine": "\"%USERPROFILE%\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe\" \"%USERPROFILE%\\AppData\\Local\\Microsoft\\dotnet\\sdk\\8.0.423\\MSBuild.dll\" /nologo /nodemode:1 /nodeReuse:true /low:false"
+  },
+  {
+   "Name": "dotnet.exe",
+   "Pid": 23784,
+   "Started": "2026-10-18T19:53:22.553154-06:00",
+   "CommandLineNamesI64": false,
+   "CommandLineNamesReviewClone": false,
+   "CommandLine": "\"%USERPROFILE%\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe\" \"%USERPROFILE%\\AppData\\Local\\Microsoft\\dotnet\\sdk\\8.0.423\\MSBuild.dll\" /nologo /nodemode:1 /nodeReuse:true /low:false"
+  },
+  {
+   "Name": "dotnet.exe",
+   "Pid": 8508,
+   "Started": "2026-10-18T19:53:25.819027-06:00",
+   "CommandLineNamesI64": false,
+   "CommandLineNamesReviewClone": false,
+   "CommandLine": "\"%USERPROFILE%\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe\" exec \"%USERPROFILE%\\AppData\\Local\\Microsoft\\dotnet\\sdk\\8.0.423\\Roslyn\\bincore\\VBCSCompiler.dll\" \"-pipename:4_LHY_cNvrIRAtd1kjknfFtJfomzatEioZB"
+  },
+  {
+   "Name": "python3.13.exe",
+   "Pid": 31204,
+   "Started": "2026-10-18T19:57:25.632304-06:00",
+   "CommandLineNamesI64": false,
+   "CommandLineNamesReviewClone": true,
+   "CommandLine": "%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe -I -B -X utf8 docs/automation/evidence/I-62-A7/a7-guards.py selftest --repo %USERPROFILE"
+  }
+ ],
+ "Load": {
+  "FreeRamGB": "24.1",
+  "CpuPercent": "84"
+ }
+}
