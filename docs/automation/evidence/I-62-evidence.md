@@ -4811,3 +4811,21 @@ solo desde artefactos custodiados.
   ajeno y discrepancia blob/manifiesto; fijación de §95 en `owner_gate.py`; nueva congelación y custodia; controles afectados, sonda y prueba en seco con
   cero bloqueos; binario, clon, checkout principal, I-64 y energía. Después: auditor v6.0-a7r2 sin acreditación excepcional. Sin Codex, sin B1 ni FX-U2.
   La anomalía de custodia de la ronda 1 queda registrada y sin reparar.
+
+## 194. Kit R20261019T201030Z-d1bf fijado en §95, vuelto a congelar y custodiado; integridad y fidelidad comprobadas; prueba en seco con cero bloqueos (decisiones §95, puntos 3 y 4)
+
+- **Integridad (§95, punto 3)** ([`prep/p5/integrity-checks.json`](I-62-architect-A-7/R20261019T201030Z-d1bf/prep/p5/integrity-checks.json)): la custodia en HEAD coincide con su
+  `MANIFEST.sha256` (217/217, la corrección de CRLF de `b23d71b8`); las 43 copias fieles, reproducidas desde `b432c40f` con `fidelity.encode`, coinciden con
+  el cierre, el manifiesto, el kit y el run; rechazo mecánico en 64 casos: BOM eliminado (12), normalización no permitida (28), copia alterada (21),
+  archivo ajeno al cierre o extra en el run (2) y discrepancia blob/manifiesto (5d5730ba con 31 discrepancias y un SHA-256 alterado). La anomalía de
+  custodia de la ronda 1 queda registrada y sin reparar.
+- **Fijación:** `pin_authorization.py` sobre el texto de decisiones de `6b00b2bf` → §95 (línea 1863, una sola sección, blob completo, sin secciones
+  posteriores); en `owner_gate.py` solo cambian las tres líneas AUTH_* (`3d420a9f` → `0064b35e`).
+- **Controles repetidos:** autoprueba 310/310 con la autorización FIJADA (L00 en PINNED, compuerta 11 real en Ok);
+  mutación dirigida de `owner_gate.py` fijado 19/19 con el arnés congelado
+  ([`prep/p5/mutation-owner-gate-pinned.json`](I-62-architect-A-7/R20261019T201030Z-d1bf/prep/p5/mutation-owner-gate-pinned.json)); la batería completa 207/207 sigue vigente para
+  los demás módulos (solo cambian las tres constantes).
+- **Congelación:** `kit-manifest.json` `68b0e64309408385…` (AuthorizationState FIJADA §95); sonda de registro con código 0; **prueba en seco con
+  `BlockingChecks` = []**, compuerta 11 con §95 y sin secciones posteriores; binario `claude-cli` 2.1.299 con su SHA-256 y Authenticode Valid de
+  Anthropic; clon limpio.
+- Siguiente: comprobaciones finales del host y UNA invocación (`python -B kit/launch.py`, 3 600 s, sin reintento); auditor v6.0-a7r2.

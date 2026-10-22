@@ -1,0 +1,1041 @@
+{
+ "Schema": "a7r2-s95-integrity/1",
+ "CloneCommit": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+ "WorktreeHead": "b23d71b8fd6aef934666d29b0de48c437d20ead5",
+ "A_Custody": {
+  "HeadEntries": 217,
+  "HeadMismatches": [],
+  "Neg5d5730baMismatches": 31,
+  "NegAlteredManifestMismatches": [
+   "kit/owner_gate.py"
+  ],
+  "Pass": true
+ },
+ "B_FaithfulCopies": {
+  "Copies": 43,
+  "Pass": true,
+  "Rows": [
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__r2__a7-guards.py.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "48fe40f8391de6edb04fbf8b91cb1c41ec9b9197e504dd12eabdacc9ea64b084",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__r2__b1-like__main__fixture-tests.trx.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "f800a835233af54dfb97f44abed78ff7d03ae7f75593fd009bd06c79ca3d1a8d",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__r2__b1-like__uc__fixture-tests.trx.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "bcec7b94a0d7d3013f1cb25efe8cecd4510e44764632af121e841cdf4f79badc",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__r2__check_a7_closure.py.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "5bbce3ea0208056f367d39db149afef35aad0bd3b9fab9e84149157ed8b39cb4",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__r2__derive_r4.py.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "59655fe6bd88eb508e79c1632c4fbc414b0a7a36ec68c2166cfe82508d0a0456",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__r2__inputs__fixture-tests-red.trx.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "74ac7000e504b9ed31c55daf0d05c5a6770e87ae82ffd86161b210656b77a036",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__a7-guards.py.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "3d7704751700dffc12dee7abd8ed985a6847dcdf38619ed88e0de6b6462b91ed",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__b1-like__main__fixture-tests.trx.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "c2cee3c14ee8f6c5aced86daecb71e5a7f334bc52188b0339bd117c8e32c40c1",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__b1-like__uc__fixture-tests.trx.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "880554293ac729ea66092e5ef9140b8ae490eb0d5d0a1f1168fee13518e7008a",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__check_a7_closure.py.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "aa001374ca4fe24aa9ef89874ef1979d4ef475d6f3b6687f50fa1847f36be873",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A7__derive_r4.py.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "a939540047bf513fb9ebab0021a2e8183fcb6f4279a897f39c82724a3197071b",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-architect-A-7__R20261019T010200Z-4a72__README.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "0696770b59fae01f283e078a8391638fef7428d34c0f68edf2c45f78981b559a",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__s91__d1__d1.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "36ccc4a223d17e8a38f7f4805d3bb55a00d6a7dc5aeda6f8061f1b5476a7e6ca",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__s91__risk-matrix.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "f336a3edaebc2c17e179cbf4baa26d8d44bca6b27bf6b96519681ad3a5ba92d4",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "1960a8703b2aa17ede8ad9d408e1bc1d4dacead7706b0a9c223ecbf92658183c",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "3ec645fac0fe2c5b655a9cd7bb4d3fc3e91271716f7b51c141d3578692af3bec",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "072ccb56a2e4954fdfead607ad88535895114461425f20e8d0e6a0f4f7b1c4a2",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "c36e33644f738a4c6a06cf577af7bcfb7f597924d8c6eae9071a1b800db83a01",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__bench__p3-n4.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "e4631c7999289bb15d98ad4ad1bd1f2942c8b6be8e2aadadb451c75166f038ce",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__bench__p4-nc1.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "08df0a30515cad5472395dcb039903a31451d9b8fcfc770e3bac7558328e64dd",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__readings__readings.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "afbf088b072c387642b0db9fade6824e5d521c728f040aa3344a6ab4c997fa6e",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p7-derive.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "67490a78d06d465e7101687353c657579007c25180034397de6727677b9e5c30",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p9-n4.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "5441d68d28412336dd4e725e943e54043f3fa79975fab88680943d653f982c23",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p10-nc1.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "f0113495c61299f07a32c401674e1224935bc7bdc9e43b074560dcf658f205c2",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__README.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "23e05733d261178b6c85a5ba9e0102f4da22d6fa9ee866890e4fe0007b2f2d81",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "e1f54e747c21c69630b84756d0f0eb1f5b9c066941a046cefd1de6d2f3b44dd5",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "1d65597bd7466651329e3816847dd3a7193e24e0f379919a3475342efb822365",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "abee3955664619061894dbfe68cd95a2a6764c5ee967257cc3274e32bef3eca5",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__accept__tests__test_bmin_accept.py.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "de87a835951535aa0fc328cc2cdc5f4b6aa0acd6a12d7eafa600732204ed4620",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "fe913e119a3974c94bcd4ff682fc5a015703e24d95e0ce3d489fcb59668475b6",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "8232fa83e1de2700e81b61b42207b81fa846b4f8674532f1c120918eb5a0449f",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "53b1acc301f681b6292374d51e451cdf75d76672261474b4f6573a1ed41f86f9",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "7a5440d02d3d5d1977ca533ca286c3bcb537f43e5f0b5d26a53968cf85b58beb",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "6581b266d2bee861d1c2fe8d3f9549c709d45df305266f4bb6d93235034139a4",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "ae421733e67f01d701c7d8b2402d057ce8f59b7ffadcd7a9ca195e89bae3813d",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__initiatives__I-62-proposal-v14.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "965d3b8c1e82954a63e0b7448e2ce975ea4984e22d238aaf9a62d82a181e21a4",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__AUTOMATION_PLAN.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "e159df8459aa37f67a939a41a70352de911b356ad3628dac0f83a9cf7e09266c",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__initiatives__I-62-A-4.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "a8cbca148235e1e4ed2be6c792c96294f131e2361bc52175feb3ce69e172ca68",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__initiatives__I-62-A-3.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "43b21cc71a9d034dff76623eaad4fcb98765407a132b02e508bd4f6d1ff31f04",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__initiatives__I-62-A-1.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "40bac2a93d8c2230abd07b86098055ff4ffe73d369cd1d5025cbacd159b73946",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__adr__0046-protocolo-de-ejecucion-delegada-de-agentes.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "8e2b4c3103c85f8a0cf9407fcfca753468fd192c2eebd406d786b4c260236c34",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__decisions__I-62.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "ddc42105d8e96b513aa09bee9d075f1f23a8d39e7b9692d5646116b9ab54978d",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   },
+   {
+    "Copy": "fiel__docs__automation__evidence__I-62-evidence.md.txt",
+    "OriginalBlobMatches": true,
+    "OriginalSha256Matches": true,
+    "CopySha256": "8c03fdec1796eddb9d73a35b3eb04cb5551ea1c58787a817c86b713e92cc41f4",
+    "ClosureMatches": true,
+    "ManifestMatches": true,
+    "EqualsKit": true,
+    "EqualsRun": true,
+    "VerifyProblems": []
+   }
+  ]
+ },
+ "C_Rejection": {
+  "Cases": 64,
+  "Pass": true,
+  "Rows": [
+   {
+    "Case": "C1-copia-regenerada-sin-BOM",
+    "Original": "docs/automation/evidence/I-62-A7/r2/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…)"
+    ]
+   },
+   {
+    "Case": "C1-escape-del-BOM-borrado-de-la-copia",
+    "Original": "docs/automation/evidence/I-62-A7/r2/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C1-copia-regenerada-sin-BOM",
+    "Original": "docs/automation/evidence/I-62-A7/r2/b1-like/uc/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…)"
+    ]
+   },
+   {
+    "Case": "C1-escape-del-BOM-borrado-de-la-copia",
+    "Original": "docs/automation/evidence/I-62-A7/r2/b1-like/uc/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C1-copia-regenerada-sin-BOM",
+    "Original": "docs/automation/evidence/I-62-A7/r2/inputs/fixture-tests-red.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 21ac649a9d71…; el original 5e388d8774fd…)"
+    ]
+   },
+   {
+    "Case": "C1-escape-del-BOM-borrado-de-la-copia",
+    "Original": "docs/automation/evidence/I-62-A7/r2/inputs/fixture-tests-red.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 21ac649a9d71…; el original 5e388d8774fd…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C1-copia-regenerada-sin-BOM",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…)"
+    ]
+   },
+   {
+    "Case": "C1-escape-del-BOM-borrado-de-la-copia",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C1-copia-regenerada-sin-BOM",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/uc/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…)"
+    ]
+   },
+   {
+    "Case": "C1-escape-del-BOM-borrado-de-la-copia",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/uc/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C1-copia-regenerada-sin-BOM",
+    "Original": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…)"
+    ]
+   },
+   {
+    "Case": "C1-escape-del-BOM-borrado-de-la-copia",
+    "Original": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C2-copia-LF-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-A7/r2/a7-guards.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (la copia no termina en LF, tiene CR o empieza por un BOM)"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFKC",
+    "Original": "docs/automation/evidence/I-62-A7/r2/a7-guards.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 8556afdbbeb5…; el original 57238da1a693…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFD",
+    "Original": "docs/automation/evidence/I-62-A7/r2/a7-guards.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (sin la línea separadora del cuerpo)"
+    ]
+   },
+   {
+    "Case": "C2-original-normalizado-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-A7/r2/a7-guards.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 4c11be028e37…; el original 57238da1a693…)"
+    ]
+   },
+   {
+    "Case": "C3-byte-0-alterado",
+    "Original": "docs/automation/evidence/I-62-A7/r2/a7-guards.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 94d023c7c2ce…; el original 57238da1a693…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-28340-alterado",
+    "Original": "docs/automation/evidence/I-62-A7/r2/a7-guards.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 f193513ce6dc…; el original 57238da1a693…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-56678-alterado",
+    "Original": "docs/automation/evidence/I-62-A7/r2/a7-guards.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (pie ausente o incompleto)"
+    ]
+   },
+   {
+    "Case": "C2-copia-LF-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (la copia no termina en LF, tiene CR o empieza por un BOM)"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFKC",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFD",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (sin la línea separadora del cuerpo)"
+    ]
+   },
+   {
+    "Case": "C2-original-normalizado-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 0291d655fa35…; el original 4ccdf2cecba5…)"
+    ]
+   },
+   {
+    "Case": "C3-byte-0-alterado",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 781ff9045047…; el original 4ccdf2cecba5…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-1933-alterado",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 d9258d7185e3…; el original 4ccdf2cecba5…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-3865-alterado",
+    "Original": "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (pie ausente o incompleto)"
+    ]
+   },
+   {
+    "Case": "C2-copia-LF-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (la copia no termina en LF, tiene CR o empieza por un BOM)"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFKC",
+    "Original": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFD",
+    "Original": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (sin la línea separadora del cuerpo)"
+    ]
+   },
+   {
+    "Case": "C2-original-normalizado-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 367de1009a33…; el original 2d71597996c8…)"
+    ]
+   },
+   {
+    "Case": "C3-byte-0-alterado",
+    "Original": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 d4af2a834981…; el original 2d71597996c8…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-3951-alterado",
+    "Original": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 93cc4bd646a8…; el original 2d71597996c8…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-7901-alterado",
+    "Original": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (pie ausente o incompleto)"
+    ]
+   },
+   {
+    "Case": "C2-copia-LF-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (la copia no termina en LF, tiene CR o empieza por un BOM)"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFKC",
+    "Original": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFD",
+    "Original": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (sin la línea separadora del cuerpo)"
+    ]
+   },
+   {
+    "Case": "C2-original-normalizado-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 8f5281ba2857…; el original 099000fb80a3…)"
+    ]
+   },
+   {
+    "Case": "C3-byte-0-alterado",
+    "Original": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 81bdb59f23c2…; el original 099000fb80a3…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-41425-alterado",
+    "Original": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 3482186a673c…; el original 099000fb80a3…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-82849-alterado",
+    "Original": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (pie ausente o incompleto)"
+    ]
+   },
+   {
+    "Case": "C2-copia-LF-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (la copia no termina en LF, tiene CR o empieza por un BOM)"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFKC",
+    "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFD",
+    "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (sin la línea separadora del cuerpo)"
+    ]
+   },
+   {
+    "Case": "C2-original-normalizado-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 ed46981eb630…; el original a8602cf05dad…)"
+    ]
+   },
+   {
+    "Case": "C3-byte-0-alterado",
+    "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 91698177251c…; el original a8602cf05dad…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-38114-alterado",
+    "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 410e44976635…; el original a8602cf05dad…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-76227-alterado",
+    "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (pie ausente o incompleto)"
+    ]
+   },
+   {
+    "Case": "C2-copia-LF-a-CRLF",
+    "Original": "docs/initiatives/I-62-proposal-v14.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (la copia no termina en LF, tiene CR o empieza por un BOM)"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFKC",
+    "Original": "docs/initiatives/I-62-proposal-v14.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 32d31a066b37…; el original ab55ad4f4add…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFD",
+    "Original": "docs/initiatives/I-62-proposal-v14.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (sin la línea separadora del cuerpo)"
+    ]
+   },
+   {
+    "Case": "C2-original-normalizado-a-CRLF",
+    "Original": "docs/initiatives/I-62-proposal-v14.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 3313421094bb…; el original ab55ad4f4add…)"
+    ]
+   },
+   {
+    "Case": "C3-byte-0-alterado",
+    "Original": "docs/initiatives/I-62-proposal-v14.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 805fd11f39ac…; el original ab55ad4f4add…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-172137-alterado",
+    "Original": "docs/initiatives/I-62-proposal-v14.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 82599e763fd7…; el original ab55ad4f4add…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-344272-alterado",
+    "Original": "docs/initiatives/I-62-proposal-v14.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (pie ausente o incompleto)"
+    ]
+   },
+   {
+    "Case": "C2-copia-LF-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-evidence.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (la copia no termina en LF, tiene CR o empieza por un BOM)"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFKC",
+    "Original": "docs/automation/evidence/I-62-evidence.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 81e58e40567b…; el original d96403b86d39…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C2-copia-normalizada-NFD",
+    "Original": "docs/automation/evidence/I-62-evidence.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (sin la línea separadora del cuerpo)"
+    ]
+   },
+   {
+    "Case": "C2-original-normalizado-a-CRLF",
+    "Original": "docs/automation/evidence/I-62-evidence.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 48308a937eaf…; el original d96403b86d39…)"
+    ]
+   },
+   {
+    "Case": "C3-byte-0-alterado",
+    "Original": "docs/automation/evidence/I-62-evidence.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 4f35e837f1e5…; el original d96403b86d39…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-217531-alterado",
+    "Original": "docs/automation/evidence/I-62-evidence.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no reproduce los bytes del original (SHA-256 1630246e6e1d…; el original d96403b86d39…)",
+     "la copia no es la codificación canónica de lo que decodifica"
+    ]
+   },
+   {
+    "Case": "C3-byte-435060-alterado",
+    "Original": "docs/automation/evidence/I-62-evidence.md",
+    "Rejected": true,
+    "Problems": [
+     "la copia no se decodifica (pie ausente o incompleto)"
+    ]
+   },
+   {
+    "Case": "C4-run-real-conforme",
+    "Rejected": false,
+    "Expected": "accepted"
+   },
+   {
+    "Case": "C4-copia-de-un-archivo-ajeno-al-cierre",
+    "Rejected": true,
+    "Mismatches": []
+   },
+   {
+    "Case": "C4-archivo-extra-en-el-run",
+    "Rejected": true,
+    "Mismatches": []
+   }
+  ],
+  "KitSelftestFidelity": {
+   "AllPass": true,
+   "Relevant": {
+    "FV02-cada-byte-alterado-se-detecta": "PASS",
+    "FV03-bom-eliminado-en-silencio": "PASS",
+    "FV04-copia-de-otro-original-con-los-mismos-bytes": "PASS",
+    "FV05-escritura-no-canonica": "PASS",
+    "FR01-coherente": "PASS",
+    "FR02-sin-faithfulcopies": "PASS",
+    "FR03-copia-fuera-del-final": "PASS",
+    "FR04-nombres-repetidos": "PASS",
+    "FR05-copia-como-premisa": "PASS",
+    "FR06-sin-copias": "PASS"
+   }
+  }
+ },
+ "AllPass": true
+}

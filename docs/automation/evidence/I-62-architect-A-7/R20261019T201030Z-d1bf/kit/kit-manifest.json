@@ -13,22 +13,22 @@
  "Package": "ninguno (sin paquete del Architect: el prompt hace de paquete (decisiones §94, punto 6: un kit de revisión limitado a R1-R3))",
  "SessionId": "3dd5ac31-ddf5-4e4a-b732-b913933a9ae3",
  "Transport": "claude-cli 2.1.299 (%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe, SHA-256 295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b)",
- "Auditor": "v6.0-a7r2 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 310/310; selftest-fidelity-result.json AllPass True, 53/53; batería COMPLETA de mutación (decisiones §88, punto 4: cambiaron reglas del auditor y la comprobación 7 del lanzador) mutation-result.json AllKilled True, 207/207 (post-review.py 129, transport_gate.py 40, owner_gate.py 19, fidelity.py 19))",
+ "Auditor": "v6.0-a7r2 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 310/310; selftest-fidelity-result.json AllPass True, 53/53; batería COMPLETA de mutación (decisiones §88, punto 4: cambiaron reglas del auditor y la comprobación 7 del lanzador) mutation-result.json AllKilled True, 207/207 (post-review.py 129, transport_gate.py 40, owner_gate.py 19, fidelity.py 19); MÓDULOS CAMBIADOS DESDE LA BATERÍA: ['owner_gate.py'])",
  "Clone": "D:/r62-arch-a7r2 (git clone --no-local -c core.autocrlf=false --single-branch desde el directorio común de git; HEAD separado en el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks, con la reproducción de las guardas de la ronda 2)",
  "Run": "D:/r62-arch-a7r2-run (order.txt, prompt.md, a7-r1.md y 43 copias fieles de los archivos que Read no entrega fielmente, decisiones §94, punto 5; idénticos byte a byte a las copias del kit)",
  "TransportGate": "MEASURED (D-01; launch.py solo lanza en MEASURED o ACCEPTED)",
  "OwnerAndAuthorizationGate": "11-OwnerAndAuthorizationGate (owner_gate.py): launch.py solo lanza con la línea del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) después de §78, CLAUDE-CLI-I62 = A vigente, A-7 en la HEAD con el blob 8a528133, la A-6 acordada y una disposición del Coordinator posterior a §94 fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin ninguna sección posterior; se evalúa en el momento del lanzamiento",
  "AuthorizationPins": {
-  "Section": null,
-  "Heading": null,
-  "TextSha256": null
+  "Section": 95,
+  "Heading": "## 95. Disposición del Coordinator: revisión formal acotada de A-7 ronda 2 (2026-10-22 UTC)",
+  "TextSha256": "9ba8fd5b647fa08ca769c9472889c72f33a26a79360313d481ab2423810dda88"
  },
- "AuthorizationState": "PENDIENTE: owner_gate.py entrega AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None; la compuerta 11 bloquea hasta fijar una disposición del Coordinator posterior a §94 que nombre esta revisión (pin_authorization.py) y volver a congelar el kit",
+ "AuthorizationState": "FIJADA: decisiones §95 (encabezado y SHA-256 del texto en AuthorizationPins)",
  "OwnerGateTested": {
-  "SelftestSha256": "3d420a9ff560c5bd88f811edff878da3f2d8056a531e9429b6412b82e5e80b19",
+  "SelftestSha256": "0064b35e9b2d6e15b58d7d69434808684772f3c7359b2d0a1af91d725d5e6c45",
   "MutationSha256": "3d420a9ff560c5bd88f811edff878da3f2d8056a531e9429b6412b82e5e80b19",
-  "CurrentSha256": "3d420a9ff560c5bd88f811edff878da3f2d8056a531e9429b6412b82e5e80b19",
-  "ChangedSinceSelftestOrMutation": false
+  "CurrentSha256": "0064b35e9b2d6e15b58d7d69434808684772f3c7359b2d0a1af91d725d5e6c45",
+  "ChangedSinceSelftestOrMutation": true
  },
  "LaunchCommand": "python -B kit/launch.py",
  "Launch": "python -B kit/launch.py desde la carpeta que contiene kit/, por la sesión principal, una sola vez, sin flags ni variables añadidos (NO lanzado)",
@@ -262,8 +262,8 @@
    "Sha256": "515ccfa37205aa1d9d1fccbd3eb3c2ed0c2b56b8bb67c56102d1a8b0bea3db0e"
   },
   "owner_gate.py": {
-   "Bytes": 18007,
-   "Sha256": "3d420a9ff560c5bd88f811edff878da3f2d8056a531e9429b6412b82e5e80b19"
+   "Bytes": 18197,
+   "Sha256": "0064b35e9b2d6e15b58d7d69434808684772f3c7359b2d0a1af91d725d5e6c45"
   },
   "pin_authorization.py": {
    "Bytes": 5588,
@@ -306,8 +306,8 @@
    "Sha256": "435f76f4dd00aee1c6047cea2ef463b8b524470635296414d6f6d70b6d6ac153"
   },
   "selftest-result.json": {
-   "Bytes": 171161,
-   "Sha256": "2edc585526ad07b2c43508f123f2137150d7f0bd167e6795a92eb7e72d48ff5e"
+   "Bytes": 171582,
+   "Sha256": "ba55c5997ce9effc979a4035a93d2c41c7eb6eae9d6804455682328db0c97233"
   },
   "transport-gate.json": {
    "Bytes": 1544,

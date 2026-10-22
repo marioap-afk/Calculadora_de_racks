@@ -13,17 +13,17 @@
  "RunId": "R20261019T201030Z-d1bf",
  "KitGateStatus": "MEASURED",
  "AuthorizationPinsForAuditCases": {
-  "Source": "SYNTHETIC (owner_gate.py del kit con la autorización pendiente; §94 sintética añadida a las decisiones del clon)",
+  "Source": "KIT (autorización fijada en owner_gate.py)",
   "Pins": {
    "Section": 95,
-   "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)",
-   "TextSha256": "ec9af54e8593b7bfca556b94d0417a7103cc05d8d065ff32807374452a586e5d"
+   "Heading": "## 95. Disposición del Coordinator: revisión formal acotada de A-7 ronda 2 (2026-10-22 UTC)",
+   "TextSha256": "9ba8fd5b647fa08ca769c9472889c72f33a26a79360313d481ab2423810dda88"
   }
  },
  "Modules": {
   "post-review.py": "f5cdef1ff2ca9d0217b641a2cf6adadbe909785eed75fba4b0fe8573fa467381",
   "transport_gate.py": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
-  "owner_gate.py": "3d420a9ff560c5bd88f811edff878da3f2d8056a531e9429b6412b82e5e80b19",
+  "owner_gate.py": "0064b35e9b2d6e15b58d7d69434808684772f3c7359b2d0a1af91d725d5e6c45",
   "pin_authorization.py": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
   "c3_analysis.py": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
   "result.schema.json": "9e53331784d4dd5ca4afb371479190c0882e70ec1bdcf196b71be28d3a23a6a3",
@@ -33,7 +33,7 @@
  },
  "KitDataModules": {
   "fidelity.py": "a84825e00112965f33c7530ffac6ff84353ff036f2773ee525ebd178e872c68f",
-  "owner_gate.py": "3d420a9ff560c5bd88f811edff878da3f2d8056a531e9429b6412b82e5e80b19",
+  "owner_gate.py": "0064b35e9b2d6e15b58d7d69434808684772f3c7359b2d0a1af91d725d5e6c45",
   "transport_gate.py": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
   "closure.json": "d19950bba9a19a8136a8301aa4535ffbdfc07e633f599a85033cc764d9a14e91"
  },
@@ -4374,11 +4374,11 @@
   {
    "Case": "O00c-modulo-del-kit-pendiente-o-fijado-entero",
    "Pins": {
-    "Section": null,
-    "Heading": null,
-    "TextSha256": null
+    "Section": 95,
+    "Heading": "## 95. Disposición del Coordinator: revisión formal acotada de A-7 ronda 2 (2026-10-22 UTC)",
+    "TextSha256": "9ba8fd5b647fa08ca769c9472889c72f33a26a79360313d481ab2423810dda88"
    },
-   "Pending": true,
+   "Pending": false,
    "Result": "PASS"
   },
   {
@@ -5471,19 +5471,33 @@
   },
   {
    "Case": "L00-compuerta-11-real",
-   "ExpectedState": "PENDING",
-   "WorktreeHead": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+   "ExpectedState": "PINNED",
+   "WorktreeHead": "6b00b2bf5759e109e3b7ff21a8327a42d0a1949d",
    "CloneCommitUsed": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
-   "Ok": false,
-   "Problems": [
-    "authorization pending: a Coordinator disposition after §94 must be pinned (section number, heading, text SHA-256) and the kit re-frozen"
-   ],
+   "Ok": true,
+   "Problems": [],
    "ObjectBlobAtHead": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
    "A6BlobAtHead": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
-   "AuthorizationPending": true,
-   "AuthorizationSections": [],
+   "AuthorizationPending": false,
+   "AuthorizationSections": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: revisión formal acotada de A-7 ronda 2 (2026-10-22 UTC)",
+     "HeadingMatches": true,
+     "HasBlob": true,
+     "TextSha256": "9ba8fd5b647fa08ca769c9472889c72f33a26a79360313d481ab2423810dda88",
+     "TextSha256Matches": true
+    }
+   ],
    "LaterSections": [],
-   "SectionsAfterBase": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: revisión formal acotada de A-7 ronda 2 (2026-10-22 UTC)"
+    }
+   ],
    "A6LineNumbers": [
     1572
    ],

@@ -1,0 +1,219 @@
+{
+ "Mutation": "DIRIGIDA: owner_gate.py fijado en §95 (decisiones §95, punto 4; §88, punto 3), con el arnés congelado del kit",
+ "Harness": {
+  "mutation-post-review.py": "8c275526bcfab0d295e74775bc9825fa508f1fe1e29404aaec71439b373f9007",
+  "selftest-post-review.py": "435f76f4dd00aee1c6047cea2ef463b8b524470635296414d6f6d70b6d6ac153"
+ },
+ "Pins": {
+  "Section": 95,
+  "Heading": "## 95. Disposición del Coordinator: revisión formal acotada de A-7 ronda 2 (2026-10-22 UTC)",
+  "TextSha256": "9ba8fd5b647fa08ca769c9472889c72f33a26a79360313d481ab2423810dda88"
+ },
+ "Baseline": {
+  "Cases": 309,
+  "Failing": [],
+  "FidelityUnitFailing": [],
+  "AllPass": true
+ },
+ "Module": {
+  "Name": "owner_gate.py",
+  "Sha256": "0064b35e9b2d6e15b58d7d69434808684772f3c7359b2d0a1af91d725d5e6c45",
+  "Sites": 19,
+  "Killed": 19
+ },
+ "Mutants": [
+  {
+   "Line": 148,
+   "Code": "probs.append(\"blob de A-7 no fijado en el kit (closure.ObjectBlob: 40 hexadecimales, igual al blob fijado %s…)\" % OBJECT_BLOB[:8])",
+   "Killed": true,
+   "KilledBy": [
+    "O12-blob-no-fijado",
+    "O12b-blob-fijado-de-la-ronda-1"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Line": 150,
+   "Code": "probs.append(\"la línea fijada del Owner A6-ADR0046-9-FX02 no está, como línea completa, en la A-6 acordada del commit del clon (A-6 §7)\")",
+   "Killed": true,
+   "KilledBy": [
+    "O27-linea-fijada-ausente-de-la-a6-acordada"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Line": 152,
+   "Code": "probs.append(\"decisiones sin un único encabezado §78 (%d)\" % len(s78))",
+   "Killed": true,
+   "KilledBy": [
+    "O28-dos-encabezados-78"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Line": 154,
+   "Code": "probs.append(\"falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 %s…)\" % A6_LINE_SHA[:8])",
+   "Killed": true,
+   "KilledBy": [
+    "O13-sin-la-linea-del-owner",
+    "O14-parafrasis",
+    "O15-fragmento-citado-en-tabla",
+    "O16-cita-con-sangria-de-bloque"
+   ],
+   "KillingCases": 6
+  },
+  {
+   "Line": 156,
+   "Code": "probs.append(\"la línea del Owner A6-ADR0046-9-FX02 no está registrada después del encabezado de decisiones §78\")",
+   "Killed": true,
+   "KilledBy": [
+    "O19-linea-antes-de-78"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Line": 158,
+   "Code": "probs.append(\"otra línea que empieza por «%s» distinta de la fijada (líneas %s)\" % (A6_LINE_PREFIX, [i + 1 for i in other_a6][:5]))",
+   "Killed": true,
+   "KilledBy": [
+    "O14-parafrasis",
+    "O17-espacio-final",
+    "O18-retorno-de-carro",
+    "O20-revocacion-anterior-a-la-autorizacion"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Line": 160,
+   "Code": "probs.append(\"falta, como línea completa de decisiones, la línea del Owner CLAUDE-CLI-I62 = A (SHA-256 %s…): autorización de revisión \"",
+   "Killed": true,
+   "KilledBy": [
+    "O21-sin-claude-cli-i62"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Line": 163,
+   "Code": "probs.append(\"otra línea que empieza por «%s» distinta de la fijada (líneas %s): autorización de revisión no verificable\"",
+   "Killed": true,
+   "KilledBy": [
+    "O21-sin-claude-cli-i62",
+    "O22-otra-linea-claude-cli-i62"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Line": 166,
+   "Code": "probs.append(\"docs/initiatives/I-62-A-7.md en la HEAD del worktree no tiene el blob de A-7 fijado en el kit (%s)\"",
+   "Killed": true,
+   "KilledBy": [
+    "O11-a7-en-la-head-con-otro-blob",
+    "O12-blob-no-fijado",
+    "O12b-blob-fijado-de-la-ronda-1"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Line": 169,
+   "Code": "probs.append(\"docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob acordado %s… (decisiones §90; §94, punto 2) (%s)\"",
+   "Killed": true,
+   "KilledBy": [
+    "O11b-a6-en-la-head-con-otro-blob",
+    "O11c-a6-ausente-en-la-head"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Line": 172,
+   "Code": "probs.append(PENDING_REASON)",
+   "Killed": true,
+   "KilledBy": [
+    "O00-autorizacion-pendiente-bloquea",
+    "O00b-pendiente-con-una-seccion-posterior-a-94"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Line": 175,
+   "Code": "probs.append(\"la autorización fijada (§%s) no es una sección posterior a §%d (decisiones §94, punto 6)\" % (a[\"Section\"], BASE_SECTION))",
+   "Killed": true,
+   "KilledBy": [
+    "O10-fijada-no-posterior-a-94",
+    "O10b-fijada-con-un-numero-que-no-es-entero"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Line": 177,
+   "Code": "probs.append(\"decisiones sin un único encabezado §%s (%d)\" % (a[\"Section\"], len(auth)))",
+   "Killed": true,
+   "KilledBy": [
+    "O08-sin-la-seccion-fijada",
+    "O09-dos-secciones-fijadas",
+    "O10b-fijada-con-un-numero-que-no-es-entero"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Line": 179,
+   "Code": "probs.append(\"falta la autorización: la sección §%s de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 \"",
+   "Killed": true,
+   "KilledBy": [
+    "O04-fijada-con-otro-texto",
+    "O05-fijada-con-otro-encabezado",
+    "O06-fijada-con-el-blob-abreviado",
+    "O07-fijada-con-el-blob-pegado"
+   ],
+   "KillingCases": 11
+  },
+  {
+   "Line": 183,
+   "Code": "probs.append(\"sección posterior a §%s en decisiones (%s): una disposición posterior tiene que revisarse antes de lanzar\"",
+   "Killed": true,
+   "KilledBy": [
+    "O02-seccion-posterior-a-la-fijada",
+    "O03-seccion-99-cualquiera-posterior"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Line": 187,
+   "Code": "probs.append(\"decisiones del worktree no crece solo por añadido desde el commit del clon (§94 o lo anterior cambiaron)\")",
+   "Killed": true,
+   "KilledBy": [
+    "O23-decision-94-cambiada-en-la-head",
+    "O23b-decision-92-cambiada-en-la-head"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Line": 189,
+   "Code": "probs.append(\"el archivo de decisiones del árbol de trabajo no es el de la HEAD (cambios sin commit)\")",
+   "Killed": true,
+   "KilledBy": [
+    "O24-cambios-sin-commit"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Line": 191,
+   "Code": "probs.append(\"la HEAD del worktree no desciende del commit del clon\")",
+   "Killed": true,
+   "KilledBy": [
+    "O25-head-no-desciende-del-clon"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Line": 194,
+   "Code": "probs.append(\"SHA-256 medido del binario distinto del cierre: la autorización de revisión no cubre otro binario\")",
+   "Killed": true,
+   "KilledBy": [
+    "O26-otro-binario"
+   ],
+   "KillingCases": 1
+  }
+ ],
+ "Survivors": [],
+ "AllKilled": true
+}

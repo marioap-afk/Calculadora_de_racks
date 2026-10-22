@@ -6,9 +6,9 @@ SessionId:      3dd5ac31-ddf5-4e4a-b732-b913933a9ae3 (uuid4, generado una vez el
 Orden:          decisiones §94 (línea 1846 en b432c40f; cuerpo pegado 3 522 bytes, SHA-256 515ccfa37205aa1d9d1fccbd3eb3c2ed0c2b56b8bb67c56102d1a8b0bea3db0e
                 = kit/order.txt = run/order.txt), puntos 5 (fidelidad) y 6 (kit limitado a R1-R3; «Sin revisión formal sin una disposición nueva del
                 Coordinator»). §94 es la última sección de decisiones en la HEAD b432c40f del worktree
-Autorización:   PENDIENTE. kit/owner_gate.py entrega AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None: la compuerta 11 BLOQUEA con el único
-                motivo «authorization pending» hasta que una disposición del Coordinator POSTERIOR a §94 que nombre esta revisión se fije con
-                pin_authorization.py y el kit se vuelva a congelar. Nada se fijó
+Autorización:   FIJADA: decisiones §95, «Disposición del Coordinator: revisión formal acotada de A-7 ronda 2 (2026-10-22 UTC)»,
+                línea 1863 en la HEAD 6b00b2bf; AUTH_TEXT_SHA 9ba8fd5b647fa08c…; fijada con pin_authorization.py
+                (prep/p5/pin95/). La versión PENDIENTE del kit está en la custodia de b23d71b8 (manifiesto 3499596d…)
 Consumo:        cubierto por CLAUDE-CLI-I62 = A (revisiones de ARCHITECT de I-62, solo lectura), la misma base que la ronda 1
 Objeto:         docs/initiatives/I-62-A-7.md, ronda 2, PROPUESTA, blob 8a528133c7cccd83356e31f8fd79cd2ebb0cec15 (37 205 bytes), publicado en
                 e90b444d5d23288e0b5a59881820377bee0d7d09 (padre b9334f22, con la ronda 1 6c29747d y §94) y registrado en b432c40f (resultado `run` de
@@ -28,9 +28,8 @@ Compuerta D-01: MEASURED sobre kit/claude-cli-characterization.json (SHA-256 4ba
 Compuerta 11:   BLOQUEANTE: línea del Owner de §78; CLAUDE-CLI-I62 = A y el mismo binario; A-7 en la HEAD = 8a528133 y A-6 = 4bc919dd (acordada);
                 decisiones solo por añadido desde el clon; la HEAD desciende del clon; una disposición posterior a §94 fijada (encabezado, blob
                 completo, SHA-256 del texto, una sola sección) y ninguna sección posterior. En el kit entregado: PENDIENTE
-Estado:         kit preparado, probado y CONGELADO con la autorización PENDIENTE (kit/kit-manifest.json, SHA-256 3499596df4292720a4390aeac7270a8f16ed2708c12590d0b3a3ae37e57425c5); sonda de registro en
-                Ok; prueba en seco bloqueada SOLO por la compuerta 11 con el motivo pendiente (4 y 5 no se ejecutan en seco). NO lanzado:
-                ningún claude.exe ni CLI de modelos ejecutado; ni red ni credenciales
+Estado:         kit FIJADO en §95, probado y vuelto a CONGELAR (kit/kit-manifest.json, SHA-256 68b0e643094083851d56f3aa3b786c23a0adf9157243594fa2eccd7580ffd87d);
+                sonda de registro en Ok; prueba en seco con BlockingChecks = [] (4 y 5 no se ejecutan en seco). Lanzamiento: abajo, «Fijación de §95»
 ```
 
 ## Qué piden §94 (puntos 5 y 6) y la disposición de la fase 2, y dónde se cubre
@@ -423,3 +422,40 @@ c2fae78324da4c30bba6935a906eaa1098a4ba0c4c3cda70584197bfc8795d88      2355  prep
 c61965e3a3e0db68352e3ad3b4f1de6614cad171c2d90e0aca73a34899039be7     86679  prep/p3/diffs/vs-phase1/selftest-post-review.py.diff
 f5d6f5be851f917efd552f38472e2c91fc280a3fc593f3ac6e2fca332d2ed2a7     23490  prep/p3/diffs/vs-phase1/verify_clone.py.diff
 ```
+
+## Fijación de §95 y nueva congelación (sesión principal; decisiones §95)
+
+1. **Integridad y fidelidad antes de usar ninguna copia** (§95, punto 3; `prep/p5/integrity_checks.py` → `prep/p5/integrity-checks.json`, AllPass):
+   - custodia en HEAD: los 217 blobs de la carpeta custodiada coinciden con su `MANIFEST.sha256` (la corrección de CRLF de `b23d71b8`); el mismo
+     verificador da 31 discrepancias en `5d5730ba` y detecta un SHA-256 alterado del manifiesto;
+   - las 43 copias fieles, reproducidas desde `b432c40f` (`git cat-file blob` del clon y `fidelity.encode`): blob y SHA-256 del original = cierre;
+     SHA-256 de la copia = cierre = manifiesto; regenerada = copia del kit = copia del run; `fidelity.verify` sin problemas;
+   - rechazo mecánico (`fidelity.verify` del kit y `run_files_check` de `launch.py`): BOM eliminado 12/12 (las seis copias con BOM regeneradas sin
+     él y el escape `\xEF\xBB\xBF` borrado), normalización no permitida 28/28 (LF→CRLF y NFKC/NFD de la copia; original normalizado a CRLF),
+     copia alterada 21/21 (un byte en tres posiciones), archivo ajeno al cierre 2/2 (copia de `docs/HANDOFF.md` y un archivo extra en el run;
+     el run real se acepta); y los negativos del kit (FV02-FV05, FR01-FR06) en PASS.
+2. **Registro y fijación:** §95 registrada solo por añadido en `6b00b2bf` (cuerpo pegado de 3 477 bytes, SHA-256 `2e2e36e7…`; decisiones del clon y de
+   `b23d71b8` como prefijos exactos). `python -B kit/pin_authorization.py <texto de decisiones de 6b00b2bf> 95` → Ready (línea 1863, una sola
+   sección, blob completo como token, sin secciones posteriores; `prep/p5/pin95/pin.json`; la copia temporal de decisiones, SHA-256 `9799381e…`, se
+   borró porque contiene la identidad Git del host y se reproduce con `git show 6b00b2bf:docs/automation/decisions/I-62.md`).
+   `prep/p5/pin95/apply_pin.py` sustituyó SOLO las líneas 56-58 de `owner_gate.py` (`3d420a9f` → `0064b35e`; `prep/p5/pin95/owner_gate.pin.diff`).
+3. **Controles repetidos por la fijación** (`prep/p5/chain_p5.sh`, `chain_p5.log`): autoprueba COMPLETA con la autorización fijada (2026-10-22T18:50:21Z →
+   2026-10-22T19:42:50Z) **310/310** (auditoría 204, compuerta de transporte 61, compuerta 11 40 con la sonda viva L00 en estado PINNED y la compuerta
+   real en Ok, coherencia 5); **mutación dirigida de `owner_gate.py` fijado 19/19** con el arnés congelado (`prep/p5/mutation_owner_gate.py`,
+   línea base 309 casos; 2026-10-22T19:42:50Z → 2026-10-22T20:05:44Z). La batería completa 207/207 se ejecutó con `owner_gate.py` pendiente; entre las dos versiones solo cambian
+   las tres constantes AUTH_*, ninguna línea de regla, así que sigue vigente para los demás módulos. Por eso el campo `Auditor` del manifiesto nombra
+   `owner_gate.py` entre los módulos cambiados desde la batería y `OwnerGateTested.ChangedSinceSelftestOrMutation` es true (la mutación del manifiesto
+   es la de `3d420a9f`); la dirigida cubre la versión fijada.
+4. **Nueva congelación:** `make_manifest.py` → `kit-manifest.json` SHA-256 `68b0e643094083851d56f3aa3b786c23a0adf9157243594fa2eccd7580ffd87d` (AuthorizationState FIJADA §95). Con la orden congelada: sonda de
+   registro con código 0 (`record-probe.json`) y prueba en seco (`launch-dry-run.json`) con **`BlockingChecks` = []**: compuerta 11 en Ok con
+   AuthorizationSections = [§95, línea 1863, encabezado, blob y SHA-256 del texto conformes] y LaterSections = []; comprobación 3 con el binario de
+   `claude-cli` 2.1.299, SHA-256 `295b49ec…`, Authenticode Valid y firmante Anthropic; comprobación 6 con el clon limpio en `b432c40f`. La prueba en
+   seco y la sonda de la versión pendiente se conservan como `launch-dry-run-pending.json` y `record-probe-pending.json`.
+5. **Dictámenes de §95, punto 6, en el esquema congelado** (§95, punto 4, solo permite cambiar las constantes de la autorización; el prompt y el esquema
+   no cambian): cierre de R1-R3 → `Round1FindingResolution`; fidelidad de los artefactos con BOM → la resolución de R1 (A7-1, punto 5: fidelidad por
+   los bytes) y `DeltaPurity`; integridad del cierre y categorías de entrada → R1 y `RegressionCheck` T05, T06 y T07; compatibilidad con A-5 y A-6 → R3,
+   `DeltaPurity` (sin cambios en A-6), `Materiality` y T09; impacto sobre B1 → T04; riesgos residuales y hallazgos nuevos → `KnownLimitations` y los
+   hallazgos `A62-A7R2-*`. El informe del resultado dirá cuáles quedan expresos y cuáles no.
+6. **Lanzamiento:** tras la custodia de este kit, las comprobaciones finales del host (binario, clon, checkout principal, I-64, alimentación y
+   retención de la suspensión con la pantalla encendida) y una sonda y una prueba en seco finales con cero bloqueos: UNA vez `python -B kit/launch.py`
+   desde esta carpeta, tope 3 600 s, sin reintento, y el auditor v6.0-a7r2 con la orden de «Lanzamiento».
