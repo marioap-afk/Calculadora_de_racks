@@ -37,3 +37,7 @@ docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/filedia.txt  -text
 docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/run.scr  -text
 docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/TRANSFER-METADATA.json  -text
 docs/automation/evidence/I-52-AUTH15-C1/run2-b7ee683e-PASS/SHA256SUMS  -text
+
+# I-62 (decisiones §94; evidencia §192) — custodia del kit de la revision de A-7 ronda 2. Sus SHA-256 estan en MANIFEST.sha256 y en el README de la
+# carpeta, y varias salidas crudas de Windows llevan CRLF: `-text` conserva los bytes exactos.
+docs/automation/evidence/I-62-architect-A-7/R20261019T201030Z-d1bf/**  -text
