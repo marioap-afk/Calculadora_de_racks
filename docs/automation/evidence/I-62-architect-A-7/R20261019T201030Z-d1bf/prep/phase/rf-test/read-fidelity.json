@@ -1,0 +1,91 @@
+{
+ "Transcript": "prep/phase/rf-test/synthetic-transcript.jsonl",
+ "TranscriptSha256": "175c75145f618d49cc0167335f656dd769537490a2364263ef300ede798b7e16",
+ "Clone": "D:\\r62-a7\\kit-review2\\p1\\clone",
+ "Filter": null,
+ "Command": "python read_fidelity.py <transcript> D:\\r62-a7\\kit-review2\\p1\\clone 3851370c566ecb147313ce048b87bfe1e81de410 <output json>",
+ "Rev": "3851370c566ecb147313ce048b87bfe1e81de410",
+ "Calls": [
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+   "Offset": null,
+   "Limit": null,
+   "Lines": 34,
+   "Faithful": 33,
+   "Altered": [
+    1
+   ],
+   "Unparsed": 0,
+   "Status": "DEGRADED",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   },
+   "FlaggedLinesInCall": [
+    1
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+   "Offset": null,
+   "Limit": null,
+   "Lines": 34,
+   "Faithful": 34,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   },
+   "FlaggedLinesInCall": [
+    1
+   ]
+  },
+  {
+   "Path": "zz-fidelity-fixture/invalid-utf8.txt",
+   "Offset": null,
+   "Limit": null,
+   "Lines": 3,
+   "Faithful": 2,
+   "Altered": [
+    2
+   ],
+   "Unparsed": 0,
+   "Status": "DEGRADED",
+   "Flags": {
+    "INVALID_UTF8": [
+     2
+    ]
+   },
+   "FlaggedLinesInCall": [
+    2
+   ]
+  },
+  {
+   "Path": "zz-fidelity-fixture/clean.txt",
+   "Offset": null,
+   "Limit": null,
+   "Lines": 1,
+   "Faithful": 1,
+   "Altered": [],
+   "Unparsed": 0,
+   "Status": "FAITHFUL_NORMALIZED",
+   "Flags": {},
+   "FlaggedLinesInCall": []
+  }
+ ],
+ "Summary": {
+  "Calls": 4,
+  "Faithful": 2,
+  "Degraded": 2,
+  "CallsOnFlaggedFiles": 3,
+  "DeliveredLinesByPath": {
+   "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx": 34,
+   "zz-fidelity-fixture/clean.txt": 1,
+   "zz-fidelity-fixture/invalid-utf8.txt": 2
+  }
+ }
+}

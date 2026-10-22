@@ -1,0 +1,50 @@
+{
+ "Test": "verify_clone.py corregido (decisiones §94, punto 5) en el entorno de prueba de la fase 1",
+ "VerifyCloneSha256": "93b70996a42ff5de86b33d32a07f21a002f1c93610033dfa37331ba9ea234a01",
+ "ReturnCodes": [
+  1,
+  1
+ ],
+ "Checks": {
+  "PosRunListingIsRunFiles": true,
+  "PosEveryCopyVerified": true,
+  "PosRunFilesMatchKitAndClosure": true,
+  "PosGuardsReproduced": true,
+  "NegAlteredCopyNotVerified": true,
+  "NegOtherCopiesVerified": true,
+  "NegAllChecksFalse": true,
+  "PosAllChecksWithOnlyTheTwoEnvironmentalTermsNeutralized": true
+ },
+ "AllPass": true,
+ "Environment": {
+  "PosAllChecks": false,
+  "PriorTranscriptsForSessionId": {
+   "SessionId": "4945013a-d80e-43dc-bc95-d34dff85fcfe",
+   "Found": 1
+  },
+  "ClaudeProjectDirsForCloneOrRun": [
+   "D--r62-arch-a7"
+  ]
+ },
+ "NegAlteredCopy": {
+  "Copy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+  "Record": {
+   "Bytes": 3882,
+   "Sha256": "f3aac335f0f7f3f9ff59f3d81b3eddd2e677f9b781d5adb3bd5d13fe0c4939d7",
+   "IdenticalToKitCopy": false,
+   "MatchesClosure": false,
+   "FaithfulCopyOf": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+   "OriginalBlobMatches": true,
+   "CopySha256Matches": false,
+   "VerifyProblems": [
+    "la copia no reproduce los bytes del original (SHA-256 e304dce6e51a…; el original 4ccdf2cecba5…)",
+    "la copia no es la codificación canónica de lo que decodifica"
+   ],
+   "FaithfulCopyVerified": false
+  }
+ },
+ "Stderr": [
+  "",
+  ""
+ ]
+}

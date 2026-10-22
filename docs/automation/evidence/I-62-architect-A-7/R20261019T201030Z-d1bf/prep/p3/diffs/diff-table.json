@@ -1,0 +1,332 @@
+[
+ {
+  "File": "a7-r1.md",
+  "LaunchedSha256": null,
+  "Phase1Sha256": null,
+  "NowSha256": "1ab7315ad0a2592b4fef50de28c54dc5904123771dd59d24c9768e6a309b5e6f",
+  "VsLaunched": "NEW",
+  "VsPhase1": "NEW",
+  "AddedVsLaunched": 280,
+  "RemovedVsLaunched": 0,
+  "AddedVsPhase1": 280,
+  "RemovedVsPhase1": 0
+ },
+ {
+  "File": "c3_analysis.py",
+  "LaunchedSha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+  "Phase1Sha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+  "NowSha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+  "VsLaunched": "IDENTICAL",
+  "VsPhase1": "IDENTICAL"
+ },
+ {
+  "File": "claude-cli-characterization.json",
+  "LaunchedSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+  "Phase1Sha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+  "NowSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+  "VsLaunched": "IDENTICAL",
+  "VsPhase1": "IDENTICAL"
+ },
+ {
+  "File": "clone-verification.json",
+  "LaunchedSha256": "c75502f5507381bf8b05a5c6b6b990ba9b1d8f1f2e5aa18e432c3c134e464225",
+  "Phase1Sha256": "c75502f5507381bf8b05a5c6b6b990ba9b1d8f1f2e5aa18e432c3c134e464225",
+  "NowSha256": "845886e97a854e7cddeb80a2643d59a3acf0048f3109ef69f9e983a1cd14d3c3",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED"
+ },
+ {
+  "File": "closure.json",
+  "LaunchedSha256": "7a0be56b9409ee61e7c3733b8a71dbfe601434b2a41f779f68a7062a5c1421ac",
+  "Phase1Sha256": "7a0be56b9409ee61e7c3733b8a71dbfe601434b2a41f779f68a7062a5c1421ac",
+  "NowSha256": "d19950bba9a19a8136a8301aa4535ffbdfc07e633f599a85033cc764d9a14e91",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED"
+ },
+ {
+  "File": "fidelity.py",
+  "LaunchedSha256": null,
+  "Phase1Sha256": "4080b8e04b96e9514b61ac8d7054714708103424fc6ced906900bef3cd4f2e9d",
+  "NowSha256": "a84825e00112965f33c7530ffac6ff84353ff036f2773ee525ebd178e872c68f",
+  "VsLaunched": "NEW",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 399,
+  "RemovedVsLaunched": 0,
+  "AddedVsPhase1": 11,
+  "RemovedVsPhase1": 4
+ },
+ {
+  "File": "finish_kit.py",
+  "LaunchedSha256": "e0c9c1eb7693b509e21402c309ded8ab76efd54065d03cb601b7218b3d597ec2",
+  "Phase1Sha256": "948084d291261c5044fbf8a10a5117a375564a66427888ac41ace2d5f45badd9",
+  "NowSha256": "0c9819346b6c7aabda5e61170aa0e389f03a822688170c9cbf02a7860c708ed7",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 81,
+  "RemovedVsLaunched": 58,
+  "AddedVsPhase1": 73,
+  "RemovedVsPhase1": 57
+ },
+ {
+  "File": "kit-manifest.json",
+  "LaunchedSha256": "c27db93ef6834a3e29bf36bd66f586c75b9281c46508ee2296ba14e86eab6327",
+  "Phase1Sha256": "c27db93ef6834a3e29bf36bd66f586c75b9281c46508ee2296ba14e86eab6327",
+  "NowSha256": "3499596df4292720a4390aeac7270a8f16ed2708c12590d0b3a3ae37e57425c5",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED"
+ },
+ {
+  "File": "kit-params.json",
+  "LaunchedSha256": "e8982bf0ed92f8b2be1fd5c9e8439f011479f733b74a9b0f17540d594d31d18a",
+  "Phase1Sha256": "e8982bf0ed92f8b2be1fd5c9e8439f011479f733b74a9b0f17540d594d31d18a",
+  "NowSha256": "86e4266095951624a1ba09ceeddd2fc67b84010e3edea2dfeb294b67ade20184",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED"
+ },
+ {
+  "File": "launch.py",
+  "LaunchedSha256": "01f60c7ad9cfdf2d1a7fc5f89dc122c6d31893a2929a14f009c7d7209f5737af",
+  "Phase1Sha256": "a3de39de75374c1d7e6ee6c4c40f050120b22388a563af63617bd0eb7fa1a15d",
+  "NowSha256": "17dda7259766ac645fd350c112609f678e7ec8ef477ef4783faaa1870e93e6c9",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 56,
+  "RemovedVsLaunched": 27,
+  "AddedVsPhase1": 31,
+  "RemovedVsPhase1": 22
+ },
+ {
+  "File": "make_closure.py",
+  "LaunchedSha256": "a0d411070a82fa52dbd6b90a24826603e7c4e1d8c9fbffbf6db74b4a62e444d4",
+  "Phase1Sha256": "daaf77d62f34a6691c6e08179649deccd5f60dc2d244f9c852b042bff1ca0244",
+  "NowSha256": "756459c09e7c88899c4e7cb1450ae8ac8eec548ca9f5dd3ebff8409f9112fa59",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 474,
+  "RemovedVsLaunched": 234,
+  "AddedVsPhase1": 327,
+  "RemovedVsPhase1": 204
+ },
+ {
+  "File": "make_manifest.py",
+  "LaunchedSha256": "9bb67ebf1d59139ee73f18f1aff0ea026920c7d0306a6ee684d620b9dd493ebd",
+  "Phase1Sha256": "c96afd35e600f41fd872c53bbcae2e66e29f783c38e12c8765ad1ff67b9208aa",
+  "NowSha256": "a7a7f6b3a7af2e212c91c1c49299f02e54b4def29a9a840b6bb364dfbf23ad22",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 48,
+  "RemovedVsLaunched": 37,
+  "AddedVsPhase1": 37,
+  "RemovedVsPhase1": 36
+ },
+ {
+  "File": "mutation-post-review.py",
+  "LaunchedSha256": "9ed3eca1d4687fa6adb7c6d56b7ddf9c72232aa2d238070c33f4fe2e95314640",
+  "Phase1Sha256": "f509d7606ff056fd2783c3a19f026f29ed318bf547d5bdfefe970c76d0569e15",
+  "NowSha256": "8c275526bcfab0d295e74775bc9825fa508f1fe1e29404aaec71439b373f9007",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 77,
+  "RemovedVsLaunched": 23,
+  "AddedVsPhase1": 9,
+  "RemovedVsPhase1": 8
+ },
+ {
+  "File": "mutation-result.json",
+  "LaunchedSha256": "ac6a6ebab163150a949b53478bab12a5e1c81f80cf2ef64dbff4550a3c26e3f6",
+  "Phase1Sha256": "ac6a6ebab163150a949b53478bab12a5e1c81f80cf2ef64dbff4550a3c26e3f6",
+  "NowSha256": "0215a272f13d0c2ae823f08b5495a2900d682e1e8cc74d2c43105318d0f2c85b",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED"
+ },
+ {
+  "File": "mutation-targeted-result.json",
+  "LaunchedSha256": "d1ed12225973bf87cc615c48fc54871075de02a3a98fdb4999321e4a6bb24b81",
+  "Phase1Sha256": "d1ed12225973bf87cc615c48fc54871075de02a3a98fdb4999321e4a6bb24b81",
+  "NowSha256": null,
+  "VsLaunched": "REMOVED",
+  "VsPhase1": "REMOVED"
+ },
+ {
+  "File": "mutation-targeted.py",
+  "LaunchedSha256": "44906dfde70d5ddcf81e23eb87ac0a04927865ddff46e795b605b1c9ace65ba0",
+  "Phase1Sha256": "1a3488e4adc002aaf9d0e711807db5909d7947d1d7b046a7871137709117180b",
+  "NowSha256": null,
+  "VsLaunched": "REMOVED",
+  "VsPhase1": "REMOVED",
+  "AddedVsLaunched": 0,
+  "RemovedVsLaunched": 96,
+  "AddedVsPhase1": 0,
+  "RemovedVsPhase1": 108
+ },
+ {
+  "File": "order.txt",
+  "LaunchedSha256": "a5c37f714364bc704c5f38218ae2b1a9209052c47834dcc5349684eb141be41b",
+  "Phase1Sha256": "a5c37f714364bc704c5f38218ae2b1a9209052c47834dcc5349684eb141be41b",
+  "NowSha256": "515ccfa37205aa1d9d1fccbd3eb3c2ed0c2b56b8bb67c56102d1a8b0bea3db0e",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 59,
+  "RemovedVsLaunched": 70,
+  "AddedVsPhase1": 59,
+  "RemovedVsPhase1": 70
+ },
+ {
+  "File": "owner_gate.py",
+  "LaunchedSha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+  "Phase1Sha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+  "NowSha256": "3d420a9ff560c5bd88f811edff878da3f2d8056a531e9429b6412b82e5e80b19",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 28,
+  "RemovedVsLaunched": 26,
+  "AddedVsPhase1": 28,
+  "RemovedVsPhase1": 26
+ },
+ {
+  "File": "pin_authorization.py",
+  "LaunchedSha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+  "Phase1Sha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+  "NowSha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+  "VsLaunched": "IDENTICAL",
+  "VsPhase1": "IDENTICAL"
+ },
+ {
+  "File": "post-review.py",
+  "LaunchedSha256": "303321f265152dc03a6fc7771bb69faed47f5167a80a7f03113e2839305d9653",
+  "Phase1Sha256": "80004643dd2f1d03877af94c9bccb8c66cad2a77ad41986dfdcc7087506ea402",
+  "NowSha256": "f5cdef1ff2ca9d0217b641a2cf6adadbe909785eed75fba4b0fe8573fa467381",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 151,
+  "RemovedVsLaunched": 90,
+  "AddedVsPhase1": 97,
+  "RemovedVsPhase1": 89
+ },
+ {
+  "File": "prepare_clone.py",
+  "LaunchedSha256": "fc0e0b24655de3fb9bfd3d84fc11bb76cedf43b3ed83b5c59fa38f7943dc5b28",
+  "Phase1Sha256": "fc0e0b24655de3fb9bfd3d84fc11bb76cedf43b3ed83b5c59fa38f7943dc5b28",
+  "NowSha256": "23ee99ef1a5e6a9232d0aed23f93559b25f5315626cfa2b2c453b35f4aff4da7",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 58,
+  "RemovedVsLaunched": 36,
+  "AddedVsPhase1": 58,
+  "RemovedVsPhase1": 36
+ },
+ {
+  "File": "prompt.md",
+  "LaunchedSha256": "ba2804747151173d9fe66838ec0ad6ab311a07462948854c3317468497afa8c8",
+  "Phase1Sha256": "ba2804747151173d9fe66838ec0ad6ab311a07462948854c3317468497afa8c8",
+  "NowSha256": "40c9de64b2c9d25bf9d69ee20eef1c72be578775ac3e8c3ca94e5e325d7eef2c",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED"
+ },
+ {
+  "File": "prompt.template.md",
+  "LaunchedSha256": "c3ad10d5052dc2ae1fb17072a7422759a376c1a7e570a8a677ca42ef17a7e500",
+  "Phase1Sha256": "713c6189006430163f3fb1210d97ffaafc6786b473f010c7fbd1ef3ebd28964a",
+  "NowSha256": "24b93624bf00ed378f47bd336cc28db6117c1e4eb200157d000c9320b0d86aab",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 241,
+  "RemovedVsLaunched": 223,
+  "AddedVsPhase1": 228,
+  "RemovedVsPhase1": 228
+ },
+ {
+  "File": "read_fidelity.py",
+  "LaunchedSha256": "7b51116e5e4876c1416066994e282ad077661547ee5fb1dcb0fbcbd59e413cce",
+  "Phase1Sha256": "da1457a1a035221ba41710f1bea6bcd28312c95d66199885accccf3a21f11cfa",
+  "NowSha256": "da1457a1a035221ba41710f1bea6bcd28312c95d66199885accccf3a21f11cfa",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "IDENTICAL",
+  "AddedVsLaunched": 19,
+  "RemovedVsLaunched": 2
+ },
+ {
+  "File": "result.schema.json",
+  "LaunchedSha256": "116c393e4923f97ba6d5371a72a21b4bbb5805a88f6a35a36876d09dfbcd5305",
+  "Phase1Sha256": "116c393e4923f97ba6d5371a72a21b4bbb5805a88f6a35a36876d09dfbcd5305",
+  "NowSha256": "9e53331784d4dd5ca4afb371479190c0882e70ec1bdcf196b71be28d3a23a6a3",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED"
+ },
+ {
+  "File": "selftest-fidelity-result.json",
+  "LaunchedSha256": null,
+  "Phase1Sha256": null,
+  "NowSha256": "df0506164f5019276479cd0d9039a5975974faf2a592b233f477de29c544b890",
+  "VsLaunched": "NEW",
+  "VsPhase1": "NEW"
+ },
+ {
+  "File": "selftest-fidelity.py",
+  "LaunchedSha256": null,
+  "Phase1Sha256": "288be8bcc3c6c4164b37efec06215854e853374ba9da1a3cad4b6801e428e8b4",
+  "NowSha256": "0ad71f0d3f3bd4be6986d0851910a095ff573e48193e9c106d7c53fefffd0da3",
+  "VsLaunched": "NEW",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 268,
+  "RemovedVsLaunched": 0,
+  "AddedVsPhase1": 12,
+  "RemovedVsPhase1": 1
+ },
+ {
+  "File": "selftest-post-review.py",
+  "LaunchedSha256": "e6deb731a303eac56a8186ad1141f687c9118940b314107877e154b087e45700",
+  "Phase1Sha256": "89b89aabe3dc0750a8a4666e0ecd0192d544533096177927b35f91ef4422ad9d",
+  "NowSha256": "435f76f4dd00aee1c6047cea2ef463b8b524470635296414d6f6d70b6d6ac153",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 660,
+  "RemovedVsLaunched": 303,
+  "AddedVsPhase1": 379,
+  "RemovedVsPhase1": 316
+ },
+ {
+  "File": "selftest-result.json",
+  "LaunchedSha256": "4d9655a08b3e5f5a3969eac8c37cf367ce0c4a260aeb3ea266084b2528b967c5",
+  "Phase1Sha256": "4d9655a08b3e5f5a3969eac8c37cf367ce0c4a260aeb3ea266084b2528b967c5",
+  "NowSha256": "2edc585526ad07b2c43508f123f2137150d7f0bd167e6795a92eb7e72d48ff5e",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED"
+ },
+ {
+  "File": "transport-gate.json",
+  "LaunchedSha256": "6f78dbd5595aa2744c0b883b9af298289bf6b3b9e50473362857385ba79d14da",
+  "Phase1Sha256": "6f78dbd5595aa2744c0b883b9af298289bf6b3b9e50473362857385ba79d14da",
+  "NowSha256": "a6cff4798f23c66fb505d06d4c67ed330830e41df6fc9c7f94c31968def14992",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED"
+ },
+ {
+  "File": "transport_gate.py",
+  "LaunchedSha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+  "Phase1Sha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+  "NowSha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+  "VsLaunched": "IDENTICAL",
+  "VsPhase1": "IDENTICAL"
+ },
+ {
+  "File": "verify_clone.py",
+  "LaunchedSha256": "feb7d615a612e4ce17301d9dc2124ab85c2a5250739e4bab793310bb351b6c20",
+  "Phase1Sha256": "93b70996a42ff5de86b33d32a07f21a002f1c93610033dfa37331ba9ea234a01",
+  "NowSha256": "fb3d8f133a2337b3119217658c72e00d125fa3c068e38814a7f944d910f0d19e",
+  "VsLaunched": "CHANGED",
+  "VsPhase1": "CHANGED",
+  "AddedVsLaunched": 100,
+  "RemovedVsLaunched": 49,
+  "AddedVsPhase1": 79,
+  "RemovedVsPhase1": 44
+ },
+ {
+  "File": "fiel__*.txt (43 copias fieles)",
+  "LaunchedSha256": null,
+  "Phase1Sha256": null,
+  "NowSha256": "2f2c23a5a88b5828cbf8f4259bcf491308e13d5ce24f661cedd6b4b10091698a",
+  "VsLaunched": "NEW",
+  "VsPhase1": "NEW (en la fase 1 las copias se generaban en el entorno de prueba, no en kit/)"
+ }
+]

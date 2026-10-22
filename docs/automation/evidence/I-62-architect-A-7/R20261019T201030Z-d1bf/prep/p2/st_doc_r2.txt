@@ -1,0 +1,30 @@
+"""Self-test of post-review.py v6.0-a7r2, of transport_gate.py, of owner_gate.py (A-7 round 2), of pin_authorization.values and of
+c3_analysis.analyze, run BEFORE the launch of the ONE formal review of ROUND 2 of amendment A-7, bounded to A62-A7-R1..R3 and their consequences
+(decisions §94, point 6). Adapted from the self-test of the A-7 round-1 kit (R20261019T010200Z-4a72, with the read-fidelity cases of phase 1): the
+same synthetic formats and the same transport, read, custody, launcher, gate and fidelity cases (00-55, 126-153, G00-G58, X01-X05, F00-F20), the
+specifics replaced by the round-2 closure (three run files besides the faithful copies: order.txt = the §94 body, a7-r1.md = the round-1 text, and
+prompt.md; the object is A-7 round 2; the direct read is AUTOMATION_PLAN 16.8 L616-L617) and the result schema rackcad-a7r2-architect-review/0, with:
+  * cases 56-121j for the coherence and coverage rules of the round-2 schema (Round1FindingResolution, DeltaPurity with its Changes,
+    RegressionCheck, the optional OptionalDispositionConformance, Materiality with its Triggers and A7Declared, OwnerReservedConsequence,
+    RelatedImpacts with ChangedByRound2, QuestionAnswers, AGREED, CHANGES REQUIRED, REJECTED, BLOCKED, NOT_ACCREDITED, schema; 114b-114g are nested
+    schema violations that only the auditor's in-process schema check detects, because the Test-Json of pwsh 7.6.7 validates only the first level
+    of nesting), the direct read of AUTOMATION_PLAN L616-L617 and the references of the nested elements;
+  * cases 150-151p for the preflight record of gate 11: the object blob and the agreed A-6 blob at the worktree HEAD and the authorization pinned in
+    owner_gate.py; the kit is delivered with the authorization PENDING, so the audit cases use SYNTHETIC pins (a synthetic §95 appended to the
+    clone's decisions, set on the auditor's module object, never on the file); case 151p checks that a kit with the authorization pending cannot be
+    accredited;
+  * cases O00-O30 (owner_gate.evaluate, pure, on decision texts built from the clone's decisions, which end at §94, plus a SYNTHETIC §95): the
+    authorization pending (blocked with the single «authorization pending: …» reason), pinned on a section after §94 (passes), a later section
+    (blocked), the object and agreed A-6 blobs and the inherited checks; O30 exercises pin_authorization.values; and the live probe L00
+    (owner_gate.check on the real I-62 worktree, read-only git, with the module exactly as the kit holds it: pending, it must block with only the
+    pending reason; pinned, it must pass with exactly the pinned section and no later section);
+  * cases X01-X05: launch.py and the auditor agree (RUN_JSON_FIELDS, outcome_categories on a set of records, the frozen command, the environment
+    prefixes and, X05, check 7 with the faithful copies: run_files_check); launch.py is read with ast, never imported (importing it would evaluate
+    its frozen-command guard);
+  * cases F00-F20 (read fidelity and faithful copies, decisions §94, point 5): flagged originals read on faithful lines (informational); the r1
+    failure reproduced (the TRX original with its BOM silently dropped: DEGRADED, a reason); the TRX through its copy, cited by the original path
+    (credited); the copy altered by one byte in the run, altered in delivery, absent, of another original, non-canonical, with the BOM dropped
+    inside it, and the original's blob pin altered (each a reason, nothing credited); a long line through the copy with and without its appendix
+    and truncated in the original (the TruncatedKnownLongLines rule); the direct read of AUTOMATION_PLAN through its copy; a copy cited as a
+    reference; and, only with the fixture of a test clone (zz-fidelity-fixture/), bare CR, NUL, invalid UTF-8 and every fixture copy (skipped, with a
+    PASS row that says so, when the closure has no fixture).

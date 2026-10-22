@@ -1,0 +1,23 @@
+--- kit/selftest-post-review.py@d188e9ee
++++ kit/selftest-post-review.py@435f76f4
+@@ -947,7 +947,7 @@
+     n_refs = len(PR.collect_refs(base_result()))
+     add(variant("48-transcripcion-sin-asistente", run_hook=hook(tx_filter=lambda e: e.get("type") != "assistant"),
+                 expected=["ningún mensaje del asistente", "structured_output del result distinto", "referencia sobre líneas no entregadas fielmente",
+-                          "lectura directa: docs/initiatives/I-62-proposal-v14.md:2231-2233 no entregadas"],
++                          "lectura directa: %s no entregadas fielmente" % ref(AP, 616, 617)],
+                 counts={"referencia sobre líneas no entregadas fielmente": n_refs}))
+     add(variant("49-transcripcion-sin-primer-usuario",
+                 run_hook=hook(tx_filter=lambda e: not (e.get("type") == "user" and isinstance((e.get("message") or {}).get("content"), str))),
+--- kit/post-review.py@e5626a7e
++++ kit/post-review.py@f5cdef1f
+@@ -62,7 +62,8 @@
+     files on disk) or its returned paths contain any non-closure file; any permission denial (transcript or result) is a violation;
+   * read fidelity of every Read; references (every Evidence and every ClauseRefs, nested ones included, and also every DirectReads) resolve to
+     lines of a closure file or of a premise run file (order.txt), all delivered faithfully by Read in that very file; the direct read
+-    of V14 L2231-L2233 by Read in the V14 file, with an entry of DirectReads that covers it (a quotation inside A-7 is not a read of the source);
++    of AUTOMATION_PLAN L616-L617 (the closure's DirectRead) by Read in that file or in its faithful copy, with an entry of DirectReads that
++    covers it (a quotation inside A-7 is not a read of the source);
+   * structured output: the result's structured_output equals the input of the last successful StructuredOutput call (and its attachment), is
+     valid against result.schema.json (Test-Json and schema_errors) and coherent (above);
+   * run custody: each run file = kit copy = closure RunFileHashes; the run dir holds only the run files and launch/; launch/ holds only the files

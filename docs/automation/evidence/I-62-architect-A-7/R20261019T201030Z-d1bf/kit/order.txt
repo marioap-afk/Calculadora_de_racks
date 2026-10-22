@@ -1,0 +1,68 @@
+I-62 — COORDINATOR DISPOSITION §94
+A-7 REVIEW / THREE REQUIRED CORRECTIONS / BOM FIDELITY
+1. Resultado histórico
+Conservar íntegramente la revisión de A-7 custodiada en e71400a2.
+Auditor = NOT_ACCREDITED.
+Architect reported = CHANGES REQUIRED.
+No otorgar acreditación excepcional ni repetir la misma revisión.
+Aceptar A62-A7-R1, R2 y R3 como hallazgos técnicos REQUIRED que deben corregirse.
+A-7 permanece PROPUESTA.
+2. Corrección de A-7
+Autorizar la preparación de una segunda candidata en el mismo archivo, con nuevo blob.
+Limitar los cambios normativos a:
+R1: completar la categoría (c) con los TRX pertinentes, hechos del relevo y RelayFacts. Definir origen, ruta, blob, fidelidad, ausencia y criterios de rechazo.
+R2: identificar el invalidador de A6-7 por la regla A7-1 y su procedimiento de derivación; definir qué modificaciones invalidan una medición sin utilizar el hash de una instancia como identidad normativa.
+R3: aclarar que A7-1 constituye, dentro de su ámbito, una precisión adicional a A6-2 para las categorías de artefactos custodiados.
+No modificar A-6, 16.24, RAE ni los blobs fijados del instrumento y del aceptante.
+3. Pruebas dirigidas
+Repetir únicamente las pruebas afectadas:
+
+* TRX de CurrentSha y RedSha;
+* RelayFacts presente, ausente, sustituido o ajeno;
+* N4 y nc1;
+* caso tipo B1 con EFF^1 distinto;
+* identidad normativa del invalidador;
+* compatibilidad A-5/A-6;
+* lectura fiel de archivos con BOM.
+
+Una ausencia válida debe conservar la clasificación de fallo que establezca 16.9; no inventar una entrada ni sustituirla.
+4. Opcionales
+Evaluar O1–O8 individualmente.
+O2: confirmar cobertura en reverificación de 16.7.
+O4–O5: verificar lecturas reales de AGENTS.md y 16.13.
+O7: distinguir consultas de objetos y lecturas de contenido en MV-3/MV-4.
+O8: conservar el significado de IgnorePath(I) en negativos.
+La nota sobre FC-01 debe utilizar K.MainSha como MainSha_eval.
+No modificar texto normativo adicional salvo que una contradicción REQUIRED lo exija y se justifique antes.
+5. Kit y fidelidad
+Corregir la detección de BOM en el cierre del kit de revisión.
+No tratar como fiel la eliminación silenciosa de un BOM.
+Si una herramienta de lectura no preserva los bytes requeridos, usar una vía permitida que entregue evidencia byte-exacta o detener la revisión.
+Reutilizar el transporte y las compuertas acreditadas que permanezcan idénticos.
+Aplicar validación incremental según §88 y repetir los negativos correspondientes al componente de fidelidad modificado.
+6. Publicación y revisión
+Si el preflight dirigido pasa, publicar la segunda candidata A-7 como PROPUESTA y ejecutar guardas sobre el commit exacto.
+Preparar y custodiar un kit de revisión limitado a R1–R3 y sus consecuencias.
+No lanzar revisión formal sin nueva disposición del Coordinator.
+7. D-1 y lecturas ambiguas
+Mantener preparadas, sin aplicación, las disposiciones de exclusión de contract y las condiciones FC.
+No incorporar un recálculo nuevo de Contract por supervisión.
+No rebajar nc2.
+8. Límites
+No ejecutar Codex.
+No gastar A6-7.
+No crear B1 ni abrir FX-U2.
+No modificar producción ni I-65.
+No iniciar otra enmienda.
+I-64 conserva prioridad de recursos.
+9. Entrega
+Reportar:
+
+* nuevo blob de A-7;
+* cierres de R1–R3 respaldados por pruebas;
+* resultado de fidelidad BOM;
+* negativos, guardas y CI;
+* disposiciones propuestas O1–O8;
+* preparación para una única revisión acotada.
+
+No declarar A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS.

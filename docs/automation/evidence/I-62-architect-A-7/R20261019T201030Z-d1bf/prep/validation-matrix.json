@@ -1,0 +1,282 @@
+{
+ "Matrix": "fase 1 de la corrección de fidelidad (decisiones §94, punto 5) frente al kit lanzado (manifiesto c27db93e…)",
+ "Rows": [
+  {
+   "Component": "c3_analysis.py",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+   "NowSha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+   "Why": "sin cambio",
+   "Controls": "reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)"
+  },
+  {
+   "Component": "claude-cli-characterization.json",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+   "NowSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+   "Why": "sin cambio",
+   "Controls": "reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)"
+  },
+  {
+   "Component": "clone-verification.json",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "c75502f5507381bf8b05a5c6b6b990ba9b1d8f1f2e5aa18e432c3c134e464225",
+   "NowSha256": "c75502f5507381bf8b05a5c6b6b990ba9b1d8f1f2e5aa18e432c3c134e464225",
+   "Why": "sin cambio",
+   "Controls": "artefacto o dato de r1: se regenera en la fase 2"
+  },
+  {
+   "Component": "closure.json",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "7a0be56b9409ee61e7c3733b8a71dbfe601434b2a41f779f68a7062a5c1421ac",
+   "NowSha256": "7a0be56b9409ee61e7c3733b8a71dbfe601434b2a41f779f68a7062a5c1421ac",
+   "Why": "sin cambio",
+   "Controls": "artefacto o dato de r1: se regenera en la fase 2"
+  },
+  {
+   "Component": "fidelity.py",
+   "Status": "NEW",
+   "LaunchedSha256": null,
+   "NowSha256": "4080b8e04b96e9514b61ac8d7054714708103424fc6ced906900bef3cd4f2e9d",
+   "Why": "detector de lo que Read no entrega fielmente (BOM, UTF-8 inválido, NUL, CR suelto, controles, líneas > 1 900 unidades UTF-16, U+FEFF interior, separadores Unicode, extensiones especiales), copia fiel RACKCAD-COPIA-FIEL/1 (codificación canónica, decodificación, distribución de líneas, verificación) y run_files_of",
+   "Controls": "selftest-fidelity 47/47 (entorno p1) y 47/47 (entorno r1); escaneo del cierre de r1; mutación dirigida 18/18"
+  },
+  {
+   "Component": "finish_kit.py",
+   "Status": "CHANGED",
+   "LaunchedSha256": "e0c9c1eb7693b509e21402c309ded8ab76efd54065d03cb601b7218b3d597ec2",
+   "NowSha256": "948084d291261c5044fbf8a10a5117a375564a66427888ac41ace2d5f45badd9",
+   "Why": "pasos 2b (copias) y 8b (selftest de fidelidad)",
+   "Controls": "sin ejecutar (fase 2: congelación)"
+  },
+  {
+   "Component": "kit-manifest.json",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "c27db93ef6834a3e29bf36bd66f586c75b9281c46508ee2296ba14e86eab6327",
+   "NowSha256": "c27db93ef6834a3e29bf36bd66f586c75b9281c46508ee2296ba14e86eab6327",
+   "Why": "sin cambio",
+   "Controls": "artefacto o dato de r1: se regenera en la fase 2"
+  },
+  {
+   "Component": "kit-params.json",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "e8982bf0ed92f8b2be1fd5c9e8439f011479f733b74a9b0f17540d594d31d18a",
+   "NowSha256": "e8982bf0ed92f8b2be1fd5c9e8439f011479f733b74a9b0f17540d594d31d18a",
+   "Why": "sin cambio",
+   "Controls": "artefacto o dato de r1: se regenera en la fase 2"
+  },
+  {
+   "Component": "launch.py",
+   "Status": "CHANGED",
+   "LaunchedSha256": "01f60c7ad9cfdf2d1a7fc5f89dc122c6d31893a2929a14f009c7d7209f5737af",
+   "NowSha256": "a3de39de75374c1d7e6ee6c4c40f050120b22388a563af63617bd0eb7fa1a15d",
+   "Why": "comprobación 7 con las copias fieles (run_files_check, fidelity.run_files_of)",
+   "Controls": "X05 PASS; sonda de registro True; prueba en seco: ya existe D:\\r62-arch-a7-run\\launch: una sola invocación, sin reintento"
+  },
+  {
+   "Component": "make_closure.py",
+   "Status": "CHANGED",
+   "LaunchedSha256": "a0d411070a82fa52dbd6b90a24826603e7c4e1d8c9fbffbf6db74b4a62e444d4",
+   "NowSha256": "daaf77d62f34a6691c6e08179649deccd5f60dc2d244f9c852b042bff1ca0244",
+   "Why": "detector sobre cada archivo del cierre, copias fieles (modo --faithful-copies), FaithfulCopies y RunFiles en el cierre, prompt con la lista de copias; un archivo no UTF-8 ya no detiene",
+   "Controls": "construcción p1 (prep/p1_build.py: 201 archivos, 33 copias, prompt y cierre)"
+  },
+  {
+   "Component": "make_manifest.py",
+   "Status": "CHANGED",
+   "LaunchedSha256": "9bb67ebf1d59139ee73f18f1aff0ea026920c7d0306a6ee684d620b9dd493ebd",
+   "NowSha256": "c96afd35e600f41fd872c53bbcae2e66e29f783c38e12c8765ad1ff67b9208aa",
+   "Why": "archivos del run con las copias",
+   "Controls": "prep/test_make_manifest_runfiles.py: True"
+  },
+  {
+   "Component": "mutation-post-review.py",
+   "Status": "CHANGED",
+   "LaunchedSha256": "9ed3eca1d4687fa6adb7c6d56b7ddf9c72232aa2d238070c33f4fe2e95314640",
+   "NowSha256": "f509d7606ff056fd2783c3a19f026f29ed318bf547d5bdfefe970c76d0569e15",
+   "Why": "la batería completa incluye fidelity.py; memo de verify/layout por contenido",
+   "Controls": "usado por la mutación dirigida"
+  },
+  {
+   "Component": "mutation-result.json",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "ac6a6ebab163150a949b53478bab12a5e1c81f80cf2ef64dbff4550a3c26e3f6",
+   "NowSha256": "ac6a6ebab163150a949b53478bab12a5e1c81f80cf2ef64dbff4550a3c26e3f6",
+   "Why": "sin cambio",
+   "Controls": "artefacto o dato de r1: se regenera en la fase 2"
+  },
+  {
+   "Component": "mutation-targeted-result.json",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "d1ed12225973bf87cc615c48fc54871075de02a3a98fdb4999321e4a6bb24b81",
+   "NowSha256": "d1ed12225973bf87cc615c48fc54871075de02a3a98fdb4999321e4a6bb24b81",
+   "Why": "sin cambio",
+   "Controls": "artefacto o dato de r1: se regenera en la fase 2"
+  },
+  {
+   "Component": "mutation-targeted.py",
+   "Status": "CHANGED",
+   "LaunchedSha256": "44906dfde70d5ddcf81e23eb87ac0a04927865ddff46e795b605b1c9ace65ba0",
+   "NowSha256": "1a3488e4adc002aaf9d0e711807db5909d7947d1d7b046a7871137709117180b",
+   "Why": "sitios dirigidos de la corrección",
+   "Controls": "es el control"
+  },
+  {
+   "Component": "order.txt",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "a5c37f714364bc704c5f38218ae2b1a9209052c47834dcc5349684eb141be41b",
+   "NowSha256": "a5c37f714364bc704c5f38218ae2b1a9209052c47834dcc5349684eb141be41b",
+   "Why": "sin cambio",
+   "Controls": "artefacto o dato de r1: se regenera en la fase 2"
+  },
+  {
+   "Component": "owner_gate.py",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+   "NowSha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+   "Why": "sin cambio",
+   "Controls": "reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)"
+  },
+  {
+   "Component": "pin_authorization.py",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+   "NowSha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+   "Why": "sin cambio",
+   "Controls": "reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)"
+  },
+  {
+   "Component": "post-review.py",
+   "Status": "CHANGED",
+   "LaunchedSha256": "303321f265152dc03a6fc7771bb69faed47f5167a80a7f03113e2839305d9653",
+   "NowSha256": "80004643dd2f1d03877af94c9bccb8c66cad2a77ad41986dfdcc7087506ea402",
+   "Why": "v5.6-a7: verificación de cada copia fiel contra los bytes del original, crédito de las líneas del original por la copia, canon con surrogateescape, FlaggedOriginalReads; la regla DEGRADED intacta",
+   "Controls": "selftest-post-review completo 304/305 (F00-F20: 21 casos); mutación dirigida 4/4"
+  },
+  {
+   "Component": "prepare_clone.py",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "fc0e0b24655de3fb9bfd3d84fc11bb76cedf43b3ed83b5c59fa38f7943dc5b28",
+   "NowSha256": "fc0e0b24655de3fb9bfd3d84fc11bb76cedf43b3ed83b5c59fa38f7943dc5b28",
+   "Why": "sin cambio",
+   "Controls": "reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)"
+  },
+  {
+   "Component": "prompt.md",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "ba2804747151173d9fe66838ec0ad6ab311a07462948854c3317468497afa8c8",
+   "NowSha256": "ba2804747151173d9fe66838ec0ad6ab311a07462948854c3317468497afa8c8",
+   "Why": "sin cambio",
+   "Controls": "artefacto o dato de r1: se regenera en la fase 2"
+  },
+  {
+   "Component": "prompt.template.md",
+   "Status": "CHANGED",
+   "LaunchedSha256": "c3ad10d5052dc2ae1fb17072a7422759a376c1a7e570a8a677ca42ef17a7e500",
+   "NowSha256": "713c6189006430163f3fb1210d97ffaafc6786b473f010c7fbd1ef3ebd28964a",
+   "Why": "sección de copias fieles; lecturas del Paso 0 por la copia si el archivo está marcado; reglas de referencia",
+   "Controls": "renderizado en p1"
+  },
+  {
+   "Component": "read_fidelity.py",
+   "Status": "CHANGED",
+   "LaunchedSha256": "7b51116e5e4876c1416066994e282ad077661547ee5fb1dcb0fbcbd59e413cce",
+   "NowSha256": "da1457a1a035221ba41710f1bea6bcd28312c95d66199885accccf3a21f11cfa",
+   "Why": "marcas del detector por llamada; surrogateescape",
+   "Controls": "prep/test_read_fidelity.py: True; el lanzado falla con UnicodeDecodeError"
+  },
+  {
+   "Component": "result.schema.json",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "116c393e4923f97ba6d5371a72a21b4bbb5805a88f6a35a36876d09dfbcd5305",
+   "NowSha256": "116c393e4923f97ba6d5371a72a21b4bbb5805a88f6a35a36876d09dfbcd5305",
+   "Why": "sin cambio",
+   "Controls": "reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)"
+  },
+  {
+   "Component": "selftest-fidelity.py",
+   "Status": "NEW",
+   "LaunchedSha256": null,
+   "NowSha256": "288be8bcc3c6c4164b37efec06215854e853374ba9da1a3cad4b6801e428e8b4",
+   "Why": "negativos del componente de fidelidad (FD, FE, FV, FR, FN, FX)",
+   "Controls": "es el control"
+  },
+  {
+   "Component": "selftest-post-review.py",
+   "Status": "CHANGED",
+   "LaunchedSha256": "e6deb731a303eac56a8186ad1141f687c9118940b314107877e154b087e45700",
+   "NowSha256": "89b89aabe3dc0750a8a4666e0ecd0192d544533096177927b35f91ef4422ad9d",
+   "Why": "casos F00-F20 y X05",
+   "Controls": "es el control"
+  },
+  {
+   "Component": "selftest-result.json",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "4d9655a08b3e5f5a3969eac8c37cf367ce0c4a260aeb3ea266084b2528b967c5",
+   "NowSha256": "4d9655a08b3e5f5a3969eac8c37cf367ce0c4a260aeb3ea266084b2528b967c5",
+   "Why": "sin cambio",
+   "Controls": "artefacto o dato de r1: se regenera en la fase 2"
+  },
+  {
+   "Component": "transport-gate.json",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "6f78dbd5595aa2744c0b883b9af298289bf6b3b9e50473362857385ba79d14da",
+   "NowSha256": "6f78dbd5595aa2744c0b883b9af298289bf6b3b9e50473362857385ba79d14da",
+   "Why": "sin cambio",
+   "Controls": "artefacto o dato de r1: se regenera en la fase 2"
+  },
+  {
+   "Component": "transport_gate.py",
+   "Status": "IDENTICAL",
+   "LaunchedSha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+   "NowSha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+   "Why": "sin cambio",
+   "Controls": "reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)"
+  },
+  {
+   "Component": "verify_clone.py",
+   "Status": "CHANGED",
+   "LaunchedSha256": "feb7d615a612e4ce17301d9dc2124ab85c2a5250739e4bab793310bb351b6c20",
+   "NowSha256": "93b70996a42ff5de86b33d32a07f21a002f1c93610033dfa37331ba9ea234a01",
+   "Why": "run = RunFiles del cierre; cada copia verificada contra el original en el commit",
+   "Controls": "prep/p1_verify_clone.py: {'PosRunListingIsRunFiles': True, 'PosEveryCopyVerified': True, 'PosRunFilesMatchKitAndClosure': True, 'PosGuardsReproduced': True, 'NegAlteredCopyNotVerified': True, 'NegOtherCopiesVerified': True, 'NegAllChecksFalse': True, 'PosAllChecksWithOnlyTheTwoEnvironmentalTermsNeutralized': True}"
+  }
+ ],
+ "R1Scan": {
+  "Files": 190,
+  "Flagged": 23,
+  "ByClass": {
+   "BOM": [
+    "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "docs/automation/evidence/I-62-A7/b1-like/uc/fixture-tests.trx",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx"
+   ],
+   "LONG_LINE": [
+    "docs/automation/decisions/I-62.md",
+    "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json",
+    "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+    "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-CONTRACT.json",
+    "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-DELEG.json",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/p10-nc1.json",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+    "docs/automation/evidence/I-62-A6/r4/r1probes/p9-n4.json",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/frozen/m7-run.snapshot.json",
+    "docs/initiatives/I-62-A-3.md",
+    "docs/initiatives/I-62-proposal-v14.md"
+   ],
+   "ZWNBSP": [
+    "docs/automation/evidence/I-62-A7/check_a7_closure.py",
+    "docs/automation/evidence/I-62-A7/derive_r4.py",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/derive_r4.py"
+   ]
+  },
+  "AllCopiesRoundTrip": true,
+  "AllBlobsMatchClosure": true
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "Test": "read_fidelity.py (decisiones §94, punto 5) sobre una transcripción sintética",
+ "Rev": "3851370c566ecb147313ce048b87bfe1e81de410",
+ "ReturnCode": 0,
+ "Checks": {
+  "TrxBomDroppedDegraded": true,
+  "TrxWithBomFaithful": true,
+  "NonUtf8ComparedWithoutException": true,
+  "CleanNotFlagged": true,
+  "SummaryCounts": true
+ },
+ "AllPass": true,
+ "Calls": [
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+   "Status": "DEGRADED",
+   "Altered": [
+    1
+   ],
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   },
+   "FlaggedLinesInCall": [
+    1
+   ]
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+   "Status": "FAITHFUL_NORMALIZED",
+   "Altered": [],
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   },
+   "FlaggedLinesInCall": [
+    1
+   ]
+  },
+  {
+   "Path": "zz-fidelity-fixture/invalid-utf8.txt",
+   "Status": "DEGRADED",
+   "Altered": [
+    2
+   ],
+   "Flags": {
+    "INVALID_UTF8": [
+     2
+    ]
+   },
+   "FlaggedLinesInCall": [
+    2
+   ]
+  },
+  {
+   "Path": "zz-fidelity-fixture/clean.txt",
+   "Status": "FAITHFUL_NORMALIZED",
+   "Altered": [],
+   "Flags": {},
+   "FlaggedLinesInCall": []
+  }
+ ]
+}

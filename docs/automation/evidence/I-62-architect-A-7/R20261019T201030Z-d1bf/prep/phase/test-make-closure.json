@@ -1,0 +1,78 @@
+{
+ "Test": "make_closure.faithful_copies()",
+ "Checks": {
+  "C1-bom": true,
+  "C2-limpio-sin-copia": true,
+  "C3-linea-larga-con-apendice": true,
+  "C5-no-utf8-con-copia": true,
+  "C4-codificador-infiel-stop": true
+ },
+ "AllPass": true,
+ "Entries": [
+  {
+   "Original": "t/bom.trx",
+   "OriginalBlob": "3dc6112dbec115c76e6b2642676784ed0bef8b6e",
+   "OriginalSha256": "3203b4e554341d622b690931043518ec332f845f702197588c61066f753e8919",
+   "OriginalBytes": 11,
+   "OriginalLines": 2,
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   },
+   "Copy": "fiel__t__bom.trx.txt",
+   "CopySha256": "cd95058559bf25eb6af3864fc102b6c5ea724f314722649071ad6c7ff5372b1b",
+   "CopyBytes": 1045,
+   "CopyLines": 18,
+   "CopyMaxLineChars": 203,
+   "ContinuedOriginalLines": [],
+   "AppendixLines": null,
+   "Format": "RACKCAD-COPIA-FIEL/1"
+  },
+  {
+   "Original": "t/long.txt",
+   "OriginalBlob": "71ed04f7f1a4e57bfd80acafd4c7d77295840921",
+   "OriginalSha256": "618185ce0d69f0fea215e30efbc7e374526197dbebb2d485de109fe98b4ff54a",
+   "OriginalBytes": 4003,
+   "OriginalLines": 2,
+   "Flags": {
+    "LONG_LINE": [
+     2
+    ]
+   },
+   "Copy": "fiel__t__long.txt.txt",
+   "CopySha256": "f1b0b8e59141b2a2a1956a9442c8be55c5af5eea08e1b8cc87b14e32b457b47e",
+   "CopyBytes": 5126,
+   "CopyLines": 20,
+   "CopyMaxLineChars": 1900,
+   "ContinuedOriginalLines": [
+    2
+   ],
+   "AppendixLines": [
+    4,
+    5
+   ],
+   "Format": "RACKCAD-COPIA-FIEL/1"
+  },
+  {
+   "Original": "t/bad.txt",
+   "OriginalBlob": "eb3c91a58d00ff9ddc02f4d045fe6821a7ff284c",
+   "OriginalSha256": "407aaa24f7671705809a18573e6ba4418379e57a18be76fad5b25117abd156d0",
+   "OriginalBytes": 4,
+   "OriginalLines": 1,
+   "Flags": {
+    "INVALID_UTF8": [
+     1
+    ]
+   },
+   "Copy": "fiel__t__bad.txt.txt",
+   "CopySha256": "aa6f27dac5125e4df29a65638d608c2243b7ef2273163f2b5556ed3c33b63b86",
+   "CopyBytes": 1040,
+   "CopyLines": 17,
+   "CopyMaxLineChars": 203,
+   "ContinuedOriginalLines": [],
+   "AppendixLines": null,
+   "Format": "RACKCAD-COPIA-FIEL/1"
+  }
+ ]
+}

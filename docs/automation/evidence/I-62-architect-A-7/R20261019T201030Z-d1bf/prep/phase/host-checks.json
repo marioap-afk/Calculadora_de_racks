@@ -1,0 +1,46 @@
+{
+ "Schema": "a7-host-checks/1",
+ "UtcTime": "2026-10-19T20:00:49Z",
+ "MainCheckout": {
+  "Path": "D:/Documentos/Codex/Calculadora de racks",
+  "Branch": "main",
+  "Head": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+  "StatusLines": 0,
+  "OriginMainLocal": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "Reads": "git -C rev-parse y status --porcelain con GIT_OPTIONAL_LOCKS=0"
+ },
+ "I64": {
+  "Worktree": "architecture-workspace-persistente-rackcad",
+  "Head": "09f2f1c3",
+  "StatusLines": 0
+ },
+ "W": {
+  "Worktree": "architecture-portabilidad-coordinador-principal",
+  "Head": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+  "StatusLines": 0
+ },
+ "R1Clone": {
+  "Path": "D:\\r62-arch-a7",
+  "Head": "5158e4bc17ad48160d8573b7f48f3923e3197f06",
+  "StatusLines": 0
+ },
+ "P1Clone": {
+  "Path": "D:\\r62-a7\\kit-review2\\p1\\clone",
+  "Head": "3851370c566ecb147313ce048b87bfe1e81de410",
+  "StatusLines": 0
+ },
+ "Processes": [
+  {
+   "Name": "acad.exe",
+   "Pid": 4396,
+   "Started": "2026-10-19T13:50:08.993868-06:00",
+   "CommandLineNamesI64": false,
+   "CommandLineNamesReviewClone": false,
+   "CommandLine": "\"C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe\" \"Y:\\INGENIERIA DE PROYECTOS\\COTIZACIONES\\Cotizaciones 2026\\1103-26 FEMSA TLAPA Selectivo\\1103-26 FEMSA Tlapa.dwg\""
+  }
+ ],
+ "Load": {
+  "FreeRamGB": "23.5",
+  "CpuPercent": "24"
+ }
+}

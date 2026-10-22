@@ -1,0 +1,144 @@
+def owner_cases():
+    """Gate 11 of the round-2 kit (owner_gate.evaluate, pure): the clone's decisions end at §94 (the base section); the authorization is a FUTURE
+    disposition after §94, played here by a SYNTHETIC §95 appended to the clone's text (never a real disposition)."""
+    cases = []
+    dec_lines = clone_decision_lines()
+    a6_text = "\n".join(PR.canon(A6))
+    blob, run_id = PR.OBJECT_BLOB, PR.IDS["RunId"]
+    sha_ok = PR.TRANSPORT["Binary"]["Sha256"]
+    a6l = next(l for l in dec_lines if OG.line_sha(l) == OG.A6_LINE_SHA)
+    claude_l = next(l for l in dec_lines if OG.line_sha(l) == OG.CLAUDE_LINE_SHA)
+    s78 = next(i for i, l in enumerate(dec_lines) if l.startswith("## 78. "))
+    s94 = next(i for i, l in enumerate(dec_lines) if l.startswith("## %d. " % BASE_SECTION))
+    assert not any(l.startswith("## ") for l in dec_lines[s94 + 1:]), "§94 no es la última sección de las decisiones del clon"
+    AS = SYNTH_AUTH_SECTION
+    base_lines = list(dec_lines)
+    dec_base = "\n".join(base_lines) + "\n"              # decisiones del clon (terminan en §94): el texto de referencia de la compuerta
+    syn_text = "\n" + "\n".join(synthetic_authorization(blob, run_id, AS)) + "\n"
+    dec_auth = dec_base + syn_text                        # la HEAD del worktree con una disposición posterior a §94 (SINTÉTICA)
+    pending = {"Section": None, "Heading": None, "TextSha256": None}
+
+    def pin(text, number=AS):
+        v = PA.values(text, number, blob)["Values"]
+        return {"Section": number, "Heading": v["AUTH_HEADING"], "TextSha256": v["AUTH_TEXT_SHA"]}
+    auth95 = pin(dec_auth)
+
+    def text(lines):
+        return "\n".join(lines) + "\n"
+
+    def before_auth(extra):
+        return text(base_lines + extra)
+
+    def replaced(old, new):
+        out = "\n".join(new if l == old else l for l in base_lines) + "\n"
+        assert out != dec_base or old == new
+        return out
+
+    def run_case(name, dec_head, expected=(), clean=True, descends=True, measured=None, clone_text=None, obj_head=None, pinned=None, ok=None,
+                 dec_cl=None, auth=None, a6_head=None):
+        ev_ = OG.evaluate(dec_head, dec_base if dec_cl is None else dec_cl, clean, descends, sha_ok if measured is None else measured, sha_ok,
+                          a6_text if clone_text is None else clone_text, blob if obj_head is None else obj_head, blob if pinned is None else pinned,
+                          run_id, OG.A6_AGREED_BLOB if a6_head is None else a6_head, auth95 if auth is None else auth)
+        got = ev_["Problems"]
+        missing = [e for e in expected if not any(e in g for g in got)]
+        unexpected = [g for g in got if not any(e in g for e in expected)]
+        want_ok = not expected if ok is None else ok
+        cases.append({"Case": name, "Expected": list(expected), "Got": got, "Missing": missing, "Unexpected": unexpected, "Ok": ev_["Ok"],
+                      "AuthorizationPending": ev_["AuthorizationPending"], "Authorized": ev_["Authorized"], "LaterSections": ev_["LaterSections"],
+                      "SectionsAfterBase": ev_["SectionsAfterBase"],
+                      "Result": "PASS" if not missing and not unexpected and ev_["Ok"] is want_ok else "FAIL"})
+        return ev_
+
+    PEND = OG.PENDING_REASON
+    NOAUTH, LATER, UNIQUE, NOTAFTER = "falta la autorización", "sección posterior a §%d" % AS, \
+        "decisiones sin un único encabezado §%d" % AS, "no es una sección posterior a §%d" % BASE_SECTION
+    e = run_case("O00-autorizacion-pendiente-bloquea", dec_base, [PEND], auth=pending)
+    if not (e["AuthorizationPending"] is True and e["AuthorizationSections"] == [] and e["LaterSections"] == [] and e["Problems"] == [PEND] and
+            e["SectionsAfterBase"] == []):
+        cases[-1]["Result"] = "FAIL"
+    e = run_case("O00b-pendiente-con-una-seccion-posterior-a-94", dec_base + "\n## %d. Nota (selftest)\n" % AS, [PEND], auth=pending)
+    if [x["Number"] for x in e["SectionsAfterBase"]] != [AS] or e["Problems"] != [PEND]:
+        cases[-1]["Result"] = "FAIL"
+    fresh = load("owner_gate_as_frozen", os.path.join(KITDATA, "owner_gate.py"))
+    pins = fresh.pinned_authorization()
+    structural = (all(v is None for v in pins.values()) or
+                  (type(pins["Section"]) is int and pins["Section"] > fresh.BASE_SECTION and str(pins["Heading"]).startswith("## %d. " % pins["Section"])
+                   and re.match(r"^[0-9a-f]{64}$", str(pins["TextSha256"])) is not None))
+    cases.append({"Case": "O00c-modulo-del-kit-pendiente-o-fijado-entero", "Pins": pins, "Pending": fresh.authorization_pending(pins),
+                  "Result": "PASS" if structural and fresh.BASE_SECTION == BASE_SECTION and fresh.PENDING_REASON == PEND and
+                  fresh.OBJECT_BLOB == blob and fresh.RUN_ID == run_id else "FAIL"})
+    run_case("O01-autorizacion-posterior-a-94-fijada-pasa", dec_auth)
+    run_case("O01b-autorizacion-con-el-texto-de-la-head-como-referencia", dec_auth, dec_cl=dec_auth)
+    run_case("O02-seccion-posterior-a-la-fijada", dec_auth + "\n## %d. Disposición del Coordinator: otra (selftest)\n\ntexto\n" % (AS + 1), [LATER])
+    run_case("O03-seccion-99-cualquiera-posterior", dec_auth + "\n## 99. Nota (selftest)\n", [LATER])
+    t = dec_auth.rstrip("\n") + " (selftest)\n"
+    run_case("O04-fijada-con-otro-texto", t, [NOAUTH])
+    t = dec_base + syn_text.replace("Disposición del Coordinator", "Disposición del Owner")
+    run_case("O05-fijada-con-otro-encabezado", t, [NOAUTH])
+    t = dec_base + syn_text.replace(blob, blob[:8] + "…")
+    run_case("O06-fijada-con-el-blob-abreviado", t, [NOAUTH], auth=pin(t))
+    t = dec_base + syn_text.replace(blob, blob + "0")
+    run_case("O07-fijada-con-el-blob-pegado", t, [NOAUTH], auth=pin(t))
+    run_case("O08-sin-la-seccion-fijada", dec_base, [UNIQUE + " (0)", NOAUTH])
+    run_case("O09-dos-secciones-fijadas", dec_auth + "\n## %d. Duplicado (selftest)\n" % AS, [UNIQUE + " (2)", NOAUTH])
+    run_case("O10-fijada-no-posterior-a-94", dec_base, [NOTAFTER, NOAUTH], auth=pin(dec_base, BASE_SECTION))
+    run_case("O10b-fijada-con-un-numero-que-no-es-entero", dec_auth, [NOTAFTER, "decisiones sin un único encabezado §%d (0)" % AS, NOAUTH],
+             auth=dict(auth95, Section=str(AS)))
+    run_case("O11-a7-en-la-head-con-otro-blob", dec_auth, ["no tiene el blob de A-7 fijado en el kit"], obj_head=OTHER_A7_BLOB)
+    run_case("O11b-a6-en-la-head-con-otro-blob", dec_auth, ["no tiene el blob acordado"], a6_head=OTHER_A6_BLOB)
+    run_case("O11c-a6-ausente-en-la-head", dec_auth, ["no tiene el blob acordado"], a6_head="")
+    run_case("O12-blob-no-fijado", dec_auth, ["blob de A-7 no fijado en el kit", "no tiene el blob de A-7 fijado", NOAUTH], pinned="")
+    run_case("O12b-blob-fijado-de-la-ronda-1", dec_auth, ["blob de A-7 no fijado en el kit", "no tiene el blob de A-7 fijado", NOAUTH],
+             pinned=OTHER_A7_BLOB, obj_head=OTHER_A7_BLOB)
+    para = a6l.replace("excepción limitada", "excepción acotada")
+    assert para != a6l
+    for name, new, exp in (
+            ("O13-sin-la-linea-del-owner", "(línea retirada)", ["falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02"]),
+            ("O14-parafrasis", para, ["falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02", "otra línea que empieza por «A6-ADR0046-9-FX02 =»"]),
+            ("O15-fragmento-citado-en-tabla", "| **Owner** | `" + a6l + "` |", ["falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02"]),
+            ("O16-cita-con-sangria-de-bloque", "> " + a6l, ["falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02"]),
+            ("O17-espacio-final", a6l + " ", ["falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02", "otra línea que empieza por «A6-ADR0046-9-FX02 =»"]),
+            ("O18-retorno-de-carro", a6l + "\r", ["falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02", "otra línea que empieza por «A6-ADR0046-9-FX02 =»"])):
+        t = replaced(a6l, new)
+        run_case(name, t + syn_text, exp, dec_cl=t, auth=pin(t + syn_text))
+    moved = base_lines[:s78] + [a6l] + [l for l in base_lines[s78:] if l != a6l]
+    t = text(moved)
+    run_case("O19-linea-antes-de-78", t + syn_text, ["no está registrada después del encabezado de decisiones §78"], dec_cl=t, auth=pin(t + syn_text))
+    t = before_auth(["A6-ADR0046-9-FX02 = B (revoca la determinación anterior)", ""])
+    run_case("O20-revocacion-anterior-a-la-autorizacion", t + syn_text, ["otra línea que empieza por «A6-ADR0046-9-FX02 =»"], dec_cl=t,
+             auth=pin(t + syn_text))
+    t = replaced(claude_l, "CLAUDE-CLI-I62 = (retirada)")
+    run_case("O21-sin-claude-cli-i62", t + syn_text, ["falta, como línea completa de decisiones, la línea del Owner CLAUDE-CLI-I62 = A",
+                                                      "otra línea que empieza por «CLAUDE-CLI-I62 =»"], dec_cl=t, auth=pin(t + syn_text))
+    t = before_auth(["CLAUDE-CLI-I62 = B (revocada)", ""])
+    run_case("O22-otra-linea-claude-cli-i62", t + syn_text, ["otra línea que empieza por «CLAUDE-CLI-I62 =»"], dec_cl=t, auth=pin(t + syn_text))
+    t = dec_auth.replace("suma 3 522 bytes", "suma 3 523 bytes")
+    assert t != dec_auth
+    run_case("O23-decision-94-cambiada-en-la-head", t, ["no crece solo por añadido"], dec_cl=dec_base)
+    t = dec_auth.replace("suma 3 299 bytes", "suma 3 298 bytes")
+    assert t != dec_auth
+    run_case("O23b-decision-92-cambiada-en-la-head", t, ["no crece solo por añadido"], dec_cl=dec_base)
+    run_case("O24-cambios-sin-commit", dec_auth, ["cambios sin commit"], clean=False)
+    run_case("O25-head-no-desciende-del-clon", dec_auth, ["no desciende del commit del clon"], descends=False)
+    run_case("O26-otro-binario", dec_auth, ["SHA-256 medido del binario distinto del cierre"], measured="0" * 64)
+    run_case("O27-linea-fijada-ausente-de-la-a6-acordada", dec_auth, ["no está, como línea completa, en la A-6 acordada"],
+             clone_text=a6_text.replace(a6l, para))
+    t = before_auth(["## 78. Duplicado (selftest)", ""])
+    run_case("O28-dos-encabezados-78", t + syn_text, ["decisiones sin un único encabezado §78 (2)"], dec_cl=t, auth=pin(t + syn_text))
+    run_case("O29-sha-del-texto-fijado-distinto", dec_auth, [NOAUTH], auth=dict(auth95, TextSha256="0" * 64))
+    v_ok = PA.values(dec_auth, AS, blob)
+    v_later = PA.values(dec_auth + "\n## %d. Otra (selftest)\n" % (AS + 1), AS, blob)
+    v_base = PA.values(dec_base, BASE_SECTION, blob)
+    v_none = PA.values(dec_base, AS, blob)
+    lines = PA.python_lines(v_ok["Values"])
+    ok30 = (v_ok["Ready"] is True and v_ok["Values"]["AUTH_HEADING"] == auth95["Heading"] and v_ok["Values"]["AUTH_TEXT_SHA"] == auth95["TextSha256"] and
+            v_later["Ready"] is False and [x["Number"] for x in v_later["Checks"]["LaterSections"]] == [AS + 1] and
+            v_base["Ready"] is False and v_base["Checks"]["AfterBaseSection"] is False and v_base["Checks"]["HasBlobToken"] is False and
+            v_none["Ready"] is False and v_none["Values"]["AUTH_HEADING"] is None and
+            len(lines) == 3 and lines[0].startswith("AUTH_SECTION = %d" % AS) and ast.literal_eval(lines[1].split(" = ", 1)[1]) == auth95["Heading"] and
+            ast.literal_eval(lines[2].split(" = ", 1)[1].split("   #")[0]) == auth95["TextSha256"])
+    cases.append({"Case": "O30-pin-authorization-valores", "Values": v_ok["Values"], "PythonLines": lines,
+                  "LaterReady": v_later["Ready"], "BaseSectionReady": v_base["Ready"], "AbsentReady": v_none["Ready"], "Result": "PASS" if ok30 else "FAIL"})
+    return cases
+
+

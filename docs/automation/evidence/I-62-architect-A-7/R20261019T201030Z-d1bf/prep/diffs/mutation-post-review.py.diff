@@ -1,0 +1,132 @@
+--- launched/mutation-post-review.py
++++ phase1/mutation-post-review.py
+@@ -17,6 +17,11 @@
+ tampering on top of the memo). They are deterministic for a fixed input, and the memo is bypassed while the junction of case 03 exists, so
+ every mutant is judged on the same inputs as the baseline.
+ Every temporary file lives under <kit>/../.tmp/st and is removed at the end (the self-test's guard against links applies).
++Read-fidelity correction (decisions §94, point 5): the battery also covers fidelity.py (every `mark(` of the detector and every `probs.append(` of
++verify and run_files_of). A fidelity.py mutant is judged first on the cases of selftest-fidelity.py and, only if they all pass, on the full case
++list of selftest-post-review.py with the auditor's fidelity module replaced (one failing case kills; Stage names the stage). For the other
++mutants fidelity.verify and fidelity.layout are memoized by content (MemoFid; never for a fidelity.py mutant). The baseline also requires every
++case of selftest-fidelity.py.
+ Usage: python -B mutation-post-review.py <out.json>
+ """
+ import hashlib
+@@ -31,11 +36,38 @@
+ _spec = importlib.util.spec_from_file_location("selftest_post_review", os.path.join(HERE, "selftest-post-review.py"))
+ ST = importlib.util.module_from_spec(_spec)
+ _spec.loader.exec_module(ST)
++_spec = importlib.util.spec_from_file_location("selftest_fidelity", os.path.join(HERE, "selftest-fidelity.py"))
++SF = importlib.util.module_from_spec(_spec)
++_spec.loader.exec_module(SF)
+ SITE_RX = {"post-review.py": re.compile(r'(?<![.\w])add\(|(?<![.\w])c\.append\(|row\["Problems"\]\.append\(|(?<![.\w])probs\.append\('),
+            "transport_gate.py": re.compile(r'(?<![.\w])probs\.append\('),
+-           "owner_gate.py": re.compile(r'(?<![.\w])probs\.append\(')}
++           "owner_gate.py": re.compile(r'(?<![.\w])probs\.append\('),
++           "fidelity.py": re.compile(r'(?<![.\w])mark\(|(?<![.\w])probs\.append\(')}
+ MEMO = {"schema": {}, "git": {}, "reparse": None, "run": {}}
+ SHARED = {"canon": {}, "universe": {}}
++FID_MEMO = {"verify": {}, "layout": {}}
++
++
++class MemoFid:
++    """The kit's fidelity module (decisions §94, point 5) with verify() and layout() memoized by CONTENT (path and SHA-256 of the bytes): the
++    cases that alter a copy change its content, so the memo never hides a difference. Never used for a fidelity.py mutant."""
++    def __init__(self, m):
++        self._m = m
++
++    def __getattr__(self, k):
++        return getattr(self._m, k)
++
++    def verify(self, path, data, copy_bytes):
++        k = (path, hashlib.sha256(data).digest(), None if copy_bytes is None else hashlib.sha256(copy_bytes).digest())
++        if k not in FID_MEMO["verify"]:
++            FID_MEMO["verify"][k] = self._m.verify(path, data, copy_bytes)
++        return list(FID_MEMO["verify"][k])
++
++    def layout(self, copy_bytes):
++        k = hashlib.sha256(copy_bytes).digest()
++        if k not in FID_MEMO["layout"]:
++            FID_MEMO["layout"][k] = self._m.layout(copy_bytes)
++        return FID_MEMO["layout"][k]
+ 
+ 
+ def sites(name):
+@@ -86,6 +118,8 @@
+         return MEMO["run"][name]
+     pr.validate_schema, pr.clone_git, pr.clone_reparse, pr.read_run_bytes = v, g, r, b
+     pr.canon_cache, pr.universe_cache = SHARED["canon"], SHARED["universe"]
++    if not getattr(pr, "FID_IS_MUTANT", False) and not isinstance(pr.FID, MemoFid):
++        pr.FID = MemoFid(pr.FID)
+     return pr
+ 
+ 
+@@ -94,34 +128,53 @@
+     return [c["Case"] for c in rows if c["Result"] != "PASS"], len(rows)
+ 
+ 
++def judge_fidelity(path):
++    """A fidelity.py mutant: first the cases of selftest-fidelity.py on the mutant module; only if all pass, the FULL case list of
++    selftest-post-review.py with the auditor's fidelity module replaced by the mutant (one failing case kills, so the verdict is that of running
++    everything). → (failing cases, stage)."""
++    fm = SF.load(path)
++    fails = ["selftest-fidelity: " + c["Case"] for c in SF.cases(fm) if c["Result"] != "PASS"]
++    if fails:
++        return fails, "selftest-fidelity"
++    pr = ST.load_auditor()
++    pr.FID, pr.FID_IS_MUTANT = fm, True
++    return judge(pr)[0], "selftest-post-review"
++
++
+ def main(out_path):
+     mut_dir = os.path.join(ST.TMPROOT, "mut")
+     os.makedirs(mut_dir, exist_ok=True)
+     failing, n_cases = judge(ST.load_auditor())
+-    doc = {"Mutation": "post-review.py v5.5-a7 + transport_gate.py + owner_gate.py (A-7): cada sitio de regla desactivado debe hacer fallar al "
+-                       "menos un caso del selftest",
++    fid_failing = [c["Case"] for c in SF.cases(SF.load()) if c["Result"] != "PASS"]
++    doc = {"Mutation": "post-review.py v5.6-a7 + transport_gate.py + owner_gate.py (A-7) + fidelity.py (decisiones §94, punto 5): cada sitio de "
++                       "regla desactivado debe hacer fallar al menos un caso del selftest",
+            "Environment": "SYNTHETIC" if ST._CLOSURE.get("Synthetic") else "REAL (clon y run del kit)",
+-           "Baseline": {"Cases": n_cases, "Failing": failing, "AllPass": not failing}, "Modules": {}, "Mutants": []}
+-    for name in ("post-review.py", "transport_gate.py", "owner_gate.py"):
++           "Baseline": {"Cases": n_cases, "Failing": failing, "FidelityUnitFailing": fid_failing, "AllPass": not failing and not fid_failing},
++           "Modules": {}, "Mutants": []}
++    for name in ("post-review.py", "transport_gate.py", "owner_gate.py", "fidelity.py"):
+         src, found = sites(name)
+         doc["Modules"][name] = {"Sha256": hashlib.sha256(open(os.path.join(HERE, name), "rb").read()).hexdigest(), "Sites": len(found)}
+         for k, (i, a, b) in enumerate(found):
+             path = os.path.join(mut_dir, "%s.m%03d.py" % (name.split(".")[0].replace("-", "_"), k))
+             open(path, "w", encoding="utf-8", newline="\n").write(mutant_source(src, i, a, b))
+-            if name == "post-review.py":
+-                pr = ST.load_auditor(path)
+-            elif name == "transport_gate.py":
+-                pr = ST.load_auditor()
+-                pr.TG = ST.load("transport_gate_mutant", path)
+-            else:
+-                pr = ST.load_auditor()
+-                pr.OG = ST.load("owner_gate_mutant", path)
++            stage = "selftest-post-review"
+             try:
+-                fails, _ = judge(pr)
++                if name == "fidelity.py":
++                    fails, stage = judge_fidelity(path)
++                else:
++                    if name == "post-review.py":
++                        pr = ST.load_auditor(path)
++                    elif name == "transport_gate.py":
++                        pr = ST.load_auditor()
++                        pr.TG = ST.load("transport_gate_mutant", path)
++                    else:
++                        pr = ST.load_auditor()
++                        pr.OG = ST.load("owner_gate_mutant", path)
++                    fails, _ = judge(pr)
+             except Exception as e:   # the mutant made a case raise: observable difference, recorded as a kill (see the docstring)
+                 fails = ["EXCEPTION %s: %s" % (type(e).__name__, str(e)[:200])]
+-            doc["Mutants"].append({"Module": name, "Line": i + 1, "Code": src[i].strip()[:150], "Killed": bool(fails), "KilledBy": fails[:4],
+-                                   "KillingCases": len(fails)})
++            doc["Mutants"].append({"Module": name, "Line": i + 1, "Code": src[i].strip()[:150], "Killed": bool(fails), "Stage": stage,
++                                   "KilledBy": fails[:4], "KillingCases": len(fails)})
+             print("%-18s %4d %-6s %s" % (name, i + 1, "KILLED" if fails else "ALIVE", (fails[:2] if fails else src[i].strip()[:80])))
+             sys.stdout.flush()
+             os.remove(path)

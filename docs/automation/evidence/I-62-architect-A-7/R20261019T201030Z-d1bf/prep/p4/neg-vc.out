@@ -1,0 +1,22 @@
+{
+ "Negative": "verify_clone.py (ronda 2) con un byte alterado en la copia fiel fiel__docs__automation__evidence__I-62-A7__r2__inputs__fixture-tests-red.trx.txt",
+ "ExitCode": 1,
+ "AllChecks": false,
+ "Target": {
+  "FaithfulCopyVerified": false,
+  "VerifyProblems": [
+   "la copia no reproduce los bytes del original (SHA-256 f0b0851b335b…; el original 5e388d8774fd…)",
+   "la copia no es la codificación canónica de lo que decodifica"
+  ],
+  "CopySha256Matches": false,
+  "IdenticalToKitCopy": false,
+  "OriginalBlobMatches": true
+ },
+ "OtherCopiesVerified": 42,
+ "OtherCopies": 42,
+ "GuardsRun": "PASS",
+ "CloneCleanAfter": true,
+ "RealKitClosureSha256": "d19950bba9a19a8136a8301aa4535ffbdfc07e633f599a85033cc764d9a14e91",
+ "Pass": true
+}
+exit=0

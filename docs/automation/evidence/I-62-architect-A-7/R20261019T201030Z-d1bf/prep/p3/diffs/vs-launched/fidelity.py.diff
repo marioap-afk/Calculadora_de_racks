@@ -1,0 +1,402 @@
+--- launched/fidelity.py
++++ r2/fidelity.py
+@@ -0,0 +1,399 @@
++"""Fidelidad de lectura del kit de revisión (decisiones §94, punto 5: corregir la detección de BOM en el cierre; no tratar como fiel la eliminación
++silenciosa de un BOM; si una herramienta de lectura no conserva los bytes requeridos, usar una vía permitida que entregue evidencia byte a byte o
++detener la revisión). Módulo compartido por make_closure.py (detecta y genera las copias), post-review.py (comprueba cada copia contra los bytes del
++original y acredita por ella las líneas del original), launch.py, verify_clone.py y make_manifest.py (archivos del run) y read_fidelity.py.
++
++1. Detector (scan). Marca cada archivo cuyos bytes Read no puede entregar fielmente, con las líneas afectadas (numeradas como las numera el auditor:
++   separadas por LF; un CR antes del LF es el final de línea CRLF, la única normalización aceptada por AP 16.24):
++     BOM               el archivo empieza por EF BB BF (Read lo elimina en silencio: medido en la línea 1 del TRX de r1, R20261019T010200Z-4a72);
++     INVALID_UTF8      bytes que no forman UTF-8 válido;
++     NUL               un byte 00;
++     BARE_CR           un CR que no forma CRLF (Read podría partir la línea y desplazar la numeración);
++     CONTROL           otros controles: U+0001-U+0008, TAB, U+000B, U+000C, U+000E-U+001F, U+007F y U+0080-U+009F (ninguno medido en r1);
++     LONG_LINE         más de FLAG_LINE_LIMIT = 1 900 unidades UTF-16 (el límite documentado de Read es 2 000 caracteres; margen de 100; el
++                       truncamiento real de claude-cli 2.1.299 no está medido: en 16 auditorías custodiadas TruncatedKnownLongLines salió vacío);
++     ZWNBSP            U+FEFF fuera del principio del archivo (el mismo punto de código que Read elimina al principio; su trato no está medido);
++     LINE_SEPARATOR    U+2028 o U+2029 (un separador de líneas que un lector podría tratar como salto);
++     UNMEASURED_CHAR   un punto de código no ASCII fuera del conjunto medido como entregado fielmente (MEASURED_NON_ASCII), salvo los que ya
++                       marcan otras clases (C1, U+FEFF, U+2028/U+2029, bytes no UTF-8): criterio conservador de la fase 2 (Coordinator, decisión
++                       (c)): su entrega por Read no está medida, así que el archivo se lee por su copia, donde ese carácter va como \\xHH;
++     SPECIAL_EXTENSION una extensión que Read interpreta (imagen, PDF, cuaderno): el archivo entero.
++   Un archivo marcado no se lee nunca por su ruta original: se lee su copia fiel.
++2. Copia fiel (encode, decode, layout, verify), formato RACKCAD-COPIA-FIEL/1: texto UTF-8 sin BOM, LF, ninguna línea de más de COPY_LINE_LIMIT =
++   1 900 caracteres, que representa sin pérdida los bytes exactos del original y que el propio detector no marca:
++     * las líneas 1..N de la copia son las líneas 1..N del original, con el mismo número (la cita usa la ruta y el número de línea del original);
++     * literales: el ASCII imprimible (el espacio, salvo al final de una línea de la copia) y los 34 puntos de código no ASCII que Read entregó
++       fielmente en r1 (MEASURED_NON_ASCII; medido sobre 4 374 líneas del audit.json custodiado en e71400a2, 4 294 de archivos del cierre y las
++       80 de order.txt: prep/measure_r1_literals.py);
++       cualquier otro byte se escribe \\xHH (HH en hexadecimal, mayúsculas; el BOM es \\xEF\\xBB\\xBF, el TAB \\x09, el CR \\x0D, cada byte de un
++       UTF-8 inválido el suyo); la barra invertida es \\\\;
++     * una línea del original que no cabe termina en \\> y sigue en el apéndice, en las líneas @n.2, @n.3… (en orden; se concatenan sin
++       separador); la línea N+1 separa el cuerpo del apéndice; el pie declara la ruta, el blob, el SHA-256, los bytes, las líneas, el salto
++       final y las marcas del original, y las reglas;
++     * la unión es exacta: las líneas del original se unen con LF, y tras la última solo si el original termina en LF.
++   La codificación es canónica (una sola copia por original): verify exige que la copia decodifique en los bytes exactos del original, que nombre
++   ese original y que sea la codificación canónica de lo que decodifica.
++3. run_files_of(closure): los archivos del run = RunFiles del cierre, cuyo final son exactamente las copias de FaithfulCopies (ninguna premisa).
++
++CLI (comprobación previa, solo lectura del clon con `git show`):
++  python -I fidelity.py scan <clon> <commit> <closure.json> <salida.json>   → marca cada archivo de CanonicalInputs, genera en memoria su copia y
++                                                                              comprueba su ida y vuelta; escribe el informe
++"""
++import hashlib
++import json
++import posixpath
++import re
++import subprocess
++import sys
++
++FORMAT = "RACKCAD-COPIA-FIEL/1"
++READ_LINE_LIMIT = 2000
++FLAG_LINE_LIMIT = 1900
++COPY_LINE_LIMIT = 1900
++COPY_PREFIX, COPY_SUFFIX = "fiel__", ".txt"
++BOM = b"\xef\xbb\xbf"
++MEASURED_NON_ASCII = frozenset(chr(c) for c in (
++    0x00A7, 0x00AA, 0x00AB, 0x00B7, 0x00BB, 0x00BF, 0x00C1, 0x00C9, 0x00D3, 0x00E1, 0x00E9, 0x00ED, 0x00F1, 0x00F3, 0x00FA, 0x00FC, 0x2013, 0x2014,
++    0x2026, 0x2192, 0x2194, 0x21D2, 0x21D4, 0x2205, 0x2208, 0x2216, 0x2227, 0x2229, 0x222A, 0x2260, 0x2264, 0x2265, 0x2286, 0x2287))
++CONTROL_CHARS = frozenset([chr(c) for c in range(0x01, 0x20) if c not in (0x0A, 0x0D)] + [chr(0x7F)] + [chr(c) for c in range(0x80, 0xA0)])
++SPECIAL_EXTENSIONS = (".ipynb", ".pdf", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".ico", ".svg")
++CLASSES = ("BOM", "INVALID_UTF8", "NUL", "BARE_CR", "CONTROL", "LONG_LINE", "ZWNBSP", "LINE_SEPARATOR", "UNMEASURED_CHAR", "SPECIAL_EXTENSION")
++OTHER_CLASS_CHARS = frozenset([chr(0xFEFF), chr(0x2028), chr(0x2029)])   # marcados por ZWNBSP/BOM o LINE_SEPARATOR, no por UNMEASURED_CHAR
++MARK = "\\>"
++SEP = "\\=== " + FORMAT + ": fin de las %d líneas del original; siguen el apéndice y el pie ==="
++FOOT, END = "\\=== pie ===", "\\=== fin ==="
++KEYS = ("Formato", "Original", "BlobOriginal", "Sha256Original", "BytesOriginal", "LíneasOriginal", "SaltoFinal", "Marcas", "Apéndice", "Literales",
++        "Escapes", "Unión", "Cita")
++APPENDIX_RX = re.compile(r"^@([1-9][0-9]*)\.([1-9][0-9]*)\|(.*)$")
++
++
++class CopyError(Exception):
++    pass
++
++
++def sha256(b):
++    return hashlib.sha256(b).hexdigest()
++
++
++def git_blob(b):
++    return hashlib.sha1(b"blob %d\x00" % len(b) + b).hexdigest()
++
++
++def utf16_len(s):
++    return sum(2 if ord(c) > 0xFFFF else 1 for c in s)
++
++
++def is_literal(c):
++    return 0x20 <= ord(c) <= 0x7E or c in MEASURED_NON_ASCII
++
++
++def split_lines(data):
++    """→ (líneas en bytes sin el LF, termina en LF). Un archivo vacío no tiene líneas."""
++    if not data:
++        return [], False
++    parts = data.split(b"\n")
++    final = data.endswith(b"\n")
++    return (parts[:-1] if final else parts), final
++
++
++# ------------------------------------------------------------------ 1. detector
++def scan(path, data):
++    """→ informe del archivo: Flags {clase: [líneas]} (0 = el archivo entero), Flagged, líneas, LF final, longitud máxima en UTF-16."""
++    lines, final = split_lines(data)
++    flags = {}
++
++    def mark(cls, n):
++        flags.setdefault(cls, []).append(n)
++    if posixpath.splitext(path.lower())[1] in SPECIAL_EXTENSIONS:
++        mark("SPECIAL_EXTENSION", 0)
++    max16, over_read = 0, []
++    for i, lb in enumerate(lines, 1):
++        core = lb[:-1] if lb.endswith(b"\r") and (i < len(lines) or final) else lb
++        if i == 1 and core.startswith(BOM):
++            mark("BOM", i)
++        try:
++            core.decode("utf-8")
++        except UnicodeDecodeError:
++            mark("INVALID_UTF8", i)
++        if b"\x00" in core:
++            mark("NUL", i)
++        if b"\r" in core:
++            mark("BARE_CR", i)
++        t = core.decode("utf-8", "surrogateescape")
++        if any(c in CONTROL_CHARS for c in t):
++            mark("CONTROL", i)
++        u = utf16_len(t)
++        if u > FLAG_LINE_LIMIT:
++            mark("LONG_LINE", i)
++        if u > READ_LINE_LIMIT:
++            over_read.append(i)
++        if chr(0xFEFF) in (t[1:] if i == 1 and t.startswith(chr(0xFEFF)) else t):
++            mark("ZWNBSP", i)
++        if chr(0x2028) in t or chr(0x2029) in t:
++            mark("LINE_SEPARATOR", i)
++        if any(ord(c) >= 0xA0 and not 0xDC80 <= ord(c) <= 0xDCFF and c not in MEASURED_NON_ASCII and c not in OTHER_CLASS_CHARS for c in t):
++            mark("UNMEASURED_CHAR", i)
++        max16 = max(max16, u)
++    return {"Path": path, "Bytes": len(data), "Sha256": sha256(data), "Blob": git_blob(data), "Lines": len(lines), "FinalNewline": final,
++            "MaxLineUtf16": max16, "LinesOverReadLimit": over_read, "Flags": {k: flags[k] for k in CLASSES if k in flags},
++            "Flagged": bool(flags)}
++
++
++def marks_text(flags):
++    if not flags:
++        return "ninguna"
++    out = []
++    for k in CLASSES:
++        if k in flags:
++            n = len(flags[k])
++            out.append("%s (%s)" % (k, "el archivo entero" if flags[k] == [0] else ("1 línea" if n == 1 else "%d líneas" % n)))
++    return "; ".join(out)
++
++
++def copy_name(path):
++    """Nombre del archivo de la copia en el run (plano): fiel__ + la ruta con / → __ + .txt."""
++    assert re.match(r"^[A-Za-z0-9_./-]+$", path) and "__" not in path and not path.startswith("/"), "ruta no admitida para una copia: %r" % path
++    return COPY_PREFIX + path.replace("/", "__") + COPY_SUFFIX
++
++
++# ------------------------------------------------------------------ 2. copia fiel
++def _tokens(lb):
++    out = []
++    for c in lb.decode("utf-8", "surrogateescape"):
++        o = ord(c)
++        if 0xDC80 <= o <= 0xDCFF:
++            out.append("\\x%02X" % (o - 0xDC00))
++        elif c == "\\":
++            out.append("\\\\")
++        elif is_literal(c):
++            out.append(c)
++        else:
++            out.extend("\\x%02X" % b for b in c.encode("utf-8"))
++    return out
++
++
++def _chunks(n, toks):
++    """Trozos de la línea n: el primero va al cuerpo; los siguientes, con el prefijo @n.k|, al apéndice. Ninguno pasa de COPY_LINE_LIMIT; un
++    espacio final se escribe \\x20; cada trozo no final termina en \\>."""
++    cum = [0]
++    for t in toks:
++        cum.append(cum[-1] + len(t))
++    out, pos, k = [], 0, 1
++    while True:
++        prefix = "" if k == 1 else "@%d.%d|" % (n, k)
++        tail = 3 if pos < len(toks) and toks[-1] == " " else 0
++        if len(prefix) + cum[-1] - cum[pos] + tail <= COPY_LINE_LIMIT:
++            rest = toks[pos:]
++            if rest and rest[-1] == " ":
++                rest = rest[:-1] + ["\\x20"]
++            out.append(prefix + "".join(rest))
++            return out
++        cap = COPY_LINE_LIMIT - len(prefix) - len(MARK)
++        j = pos
++        while j < len(toks) and cum[j + 1] - cum[pos] <= cap:
++            j += 1
++        out.append(prefix + "".join(toks[pos:j]) + MARK)
++        pos, k = j, k + 1
++
++
++def encode(path, data):
++    """→ bytes de la copia fiel canónica de `data` (el original de `path`). ValueError si la copia no pudiera ser legible fielmente."""
++    lines, final = split_lines(data)
++    info = scan(path, data)
++    body, appendix, continued = [], [], []
++    for n, lb in enumerate(lines, 1):
++        ch = _chunks(n, _tokens(lb))
++        body.append(ch[0])
++        appendix += ch[1:]
++        if len(ch) > 1:
++            continued.append(n)
++    N = len(lines)
++    if not appendix:
++        app = "vacío"
++    else:
++        where = ("línea %d" % (N + 2)) if len(appendix) == 1 else ("líneas %d-%d" % (N + 2, N + 1 + len(appendix)))
++        which = ("de 1 línea larga del original (la %d)" % continued[0]) if len(continued) == 1 else \
++            ("de %d líneas largas del original (de la %d a la %d)" % (len(continued), continued[0], continued[-1]))
++        app = "%s de esta copia: continuaciones %s" % (where, which)
++    values = {
++        "Formato": FORMAT, "Original": path, "BlobOriginal": git_blob(data), "Sha256Original": sha256(data), "BytesOriginal": "%d" % len(data),
++        "LíneasOriginal": "%d" % N, "SaltoFinal": "sí" if final else "no", "Marcas": marks_text(info["Flags"]), "Apéndice": app,
++        "Literales": "ASCII imprimible (el espacio, salvo al final de una línea de esta copia) y " + "".join(sorted(MEASURED_NON_ASCII)),
++        "Escapes": "\\\\ es una barra invertida; \\xHH es un byte (HH en hexadecimal, mayúsculas); \\> al final de una línea indica que la línea del "
++                   "original sigue en el apéndice",
++        "Unión": "la línea n del original es la línea n de esta copia, sin escapes, seguida de @n.2, @n.3… en orden y sin separador; las líneas "
++                 "del original se unen con LF, y tras la última solo si SaltoFinal es sí",
++        "Cita": "la ruta del original y el número n de su línea; nunca esta copia"}
++    trailer = [FOOT] + ["%s: %s" % (k, values[k]) for k in KEYS] + [END]
++    for t in trailer + [SEP % N]:
++        if not all(is_literal(c) for c in t) or t.endswith(" ") or len(t) > COPY_LINE_LIMIT:
++            raise ValueError("pie de la copia no legible fielmente (%s): %r" % (path, t[:80]))
++    text = "\n".join(body + [SEP % N] + appendix + trailer) + "\n"
++    return text.encode("utf-8")
++
++
++def _untoken(s):
++    out, i, cont = bytearray(), 0, False
++    while i < len(s):
++        c = s[i]
++        if c == "\\":
++            nx = s[i + 1:i + 2]
++            if nx == "\\":
++                out += b"\\"
++                i += 2
++            elif nx == "x" and re.fullmatch(r"[0-9A-F]{2}", s[i + 2:i + 4] or ""):
++                out.append(int(s[i + 2:i + 4], 16))
++                i += 4
++            elif nx == ">" and i + 2 == len(s):
++                cont, i = True, i + 2
++            else:
++                raise CopyError("escape no válido en la columna %d" % (i + 1))
++        else:
++            if not is_literal(c):
++                raise CopyError("carácter literal fuera del conjunto medido (U+%04X)" % ord(c))
++            out += c.encode("utf-8")
++            i += 1
++    return bytes(out), cont
++
++
++def _parse(copy_bytes):
++    """→ (ruta, bytes del original, {n: [líneas de la copia]}). CopyError si la estructura no es la del formato (no comprueba la canonicidad)."""
++    try:
++        text = copy_bytes.decode("utf-8")
++    except UnicodeDecodeError:
++        raise CopyError("la copia no es UTF-8")
++    if not text.endswith("\n") or "\r" in text or text.startswith(chr(0xFEFF)):
++        raise CopyError("la copia no termina en LF, tiene CR o empieza por un BOM")
++    L = text[:-1].split("\n")
++    sep = next((i for i, l in enumerate(L) if l.startswith("\\=== ")), None)
++    if sep is None or L[sep] != SEP % sep:
++        raise CopyError("sin la línea separadora del cuerpo")
++    j = sep + 1
++    while j < len(L) and L[j] != FOOT:
++        j += 1
++    if j >= len(L) or L[-1] != END or len(L) - j != len(KEYS) + 2:
++        raise CopyError("pie ausente o incompleto")
++    meta = {}
++    for k, line in zip(KEYS, L[j + 1:-1]):
++        if not line.startswith(k + ": "):
++            raise CopyError("pie: se esperaba %s" % k)
++        meta[k] = line[len(k) + 2:]
++    if meta["Formato"] != FORMAT or meta["SaltoFinal"] not in ("sí", "no"):
++        raise CopyError("pie: formato o salto final no válidos")
++    conts, where = {}, {n: [n] for n in range(1, sep + 1)}
++    for idx in range(sep + 1, j):
++        m = APPENDIX_RX.match(L[idx])
++        if not m:
++            raise CopyError("línea del apéndice no válida (%d)" % (idx + 1))
++        n, k = int(m.group(1)), int(m.group(2))
++        got = conts.setdefault(n, [])
++        if n > sep or k != len(got) + 2 or (conts and max(conts) != n):
++            raise CopyError("apéndice fuera de orden o de rango (%d)" % (idx + 1))
++        got.append(m.group(3))
++        where[n].append(idx + 1)
++    out = []
++    for n in range(1, sep + 1):
++        chunks = [L[n - 1]] + conts.get(n, [])
++        b = b""
++        for x, ch in enumerate(chunks):
++            part, cont = _untoken(ch)
++            if cont != (x < len(chunks) - 1):
++                raise CopyError("continuación \\> incoherente en la línea %d del original" % n)
++            b += part
++        out.append(b)
++    data = b"\n".join(out) + (b"\n" if meta["SaltoFinal"] == "sí" else b"")
++    return meta["Original"], data, where
++
++
++def decode(copy_bytes):
++    """→ (ruta del original, bytes del original). CopyError si la copia no tiene la estructura del formato."""
++    path, data, _ = _parse(copy_bytes)
++    return path, data
++
++
++def layout(copy_bytes):
++    """→ {n: [líneas de la copia que forman la línea n del original]} (la línea n del cuerpo y sus continuaciones del apéndice)."""
++    return _parse(copy_bytes)[2]
++
++
++def verify(path, data, copy_bytes):
++    """→ problemas (lista vacía si la copia entrega byte a byte el original `path` con bytes `data` y es canónica)."""
++    probs = []
++    if copy_bytes is None:
++        probs.append("copia ausente")
++        return probs
++    try:
++        p, d = decode(copy_bytes)
++    except CopyError as e:
++        probs.append("la copia no se decodifica (%s)" % e)
++        return probs
++    if p != path:
++        probs.append("la copia nombra otro original (%s)" % p)
++    if d != data:
++        probs.append("la copia no reproduce los bytes del original (SHA-256 %s…; el original %s…)" % (sha256(d)[:12], sha256(data)[:12]))
++    try:
++        canonical = encode(p, d)
++    except ValueError:
++        canonical = None
++    if copy_bytes != canonical:
++        probs.append("la copia no es la codificación canónica de lo que decodifica")
++    return probs
++
++
++# ------------------------------------------------------------------ 3. archivos del run
++def run_files_of(closure):
++    """→ RunFiles del cierre si su final son exactamente las copias de FaithfulCopies, en su orden, y ninguna es premisa; ValueError si no."""
++    probs = []
++    rf, copies = list(closure.get("RunFiles") or []), [e.get("Copy") for e in closure.get("FaithfulCopies", [{}])]
++    if None in copies:
++        probs.append("el cierre no declara FaithfulCopies (o una copia sin nombre)")
++    elif rf[len(rf) - len(copies):] != copies or len(rf) < len(copies):
++        probs.append("RunFiles no termina exactamente en las copias de FaithfulCopies")
++    if len(set(x.lower() for x in rf)) != len(rf):
++        probs.append("RunFiles con nombres repetidos")
++    if set(closure.get("PremiseRunFiles") or []) & set(c for c in copies if c):
++        probs.append("una copia fiel declarada como premisa")
++    if probs:
++        raise ValueError("; ".join(probs))
++    return rf
++
++
++# ------------------------------------------------------------------ CLI
++def _scan_closure(clone, rev, closure_path, out_path):
++    closure = json.load(open(closure_path, encoding="utf-8"))
++    rows, flagged = [], []
++    for r in closure["CanonicalInputs"]:
++        data = subprocess.run(["git", "-C", clone, "show", rev + ":" + r["Path"]], capture_output=True, check=True).stdout
++        info = scan(r["Path"], data)
++        row = {"Path": r["Path"], "Blob": info["Blob"], "BlobMatchesClosure": info["Blob"] == r["Blob"], "Bytes": info["Bytes"],
++               "Lines": info["Lines"], "Flags": info["Flags"], "LinesOverReadLimit": info["LinesOverReadLimit"], "MaxLineUtf16": info["MaxLineUtf16"]}
++        if info["Flagged"]:
++            cb = encode(r["Path"], data)
++            cl = cb.decode("utf-8").split("\n")[:-1]
++            lay = layout(cb)
++            row["Copy"] = {"Name": copy_name(r["Path"]), "Bytes": len(cb), "Sha256": sha256(cb), "Lines": len(cl),
++                           "MaxLineChars": max(len(x) for x in cl), "VerifyProblems": verify(r["Path"], data, cb),
++                           "CopyFlags": scan("copia.txt", cb)["Flags"],
++                           "BodyAligned": sorted(lay) == list(range(1, info["Lines"] + 1)) and all(lay[n][0] == n for n in lay)}
++            flagged.append(row)
++        rows.append(row)
++    by_class = {k: sorted(x["Path"] for x in flagged if k in x["Flags"]) for k in CLASSES}
++    doc = {"Detector": "fidelity.py scan (%s; FLAG_LINE_LIMIT %d, COPY_LINE_LIMIT %d)" % (FORMAT, FLAG_LINE_LIMIT, COPY_LINE_LIMIT),
++           "Closure": closure_path.replace("\\", "/").split("/")[-1], "ClosureSha256": sha256(open(closure_path, "rb").read()),
++           "Rev": rev, "Files": len(rows), "Flagged": len(flagged), "ByClass": {k: v for k, v in by_class.items() if v},
++           "AllCopiesRoundTrip": all(not x["Copy"]["VerifyProblems"] and not x["Copy"]["CopyFlags"] and x["Copy"]["BodyAligned"] and
++                                     x["Copy"]["MaxLineChars"] <= COPY_LINE_LIMIT for x in flagged),
++           "AllBlobsMatchClosure": all(x["BlobMatchesClosure"] for x in rows), "FlaggedFiles": flagged}
++    with open(out_path, "w", encoding="utf-8", newline="\n") as f:
++        f.write(json.dumps(doc, ensure_ascii=False, indent=1) + "\n")
++    print(json.dumps({k: doc[k] for k in ("Files", "Flagged", "AllCopiesRoundTrip", "AllBlobsMatchClosure")}, ensure_ascii=True))
++    return 0 if doc["AllCopiesRoundTrip"] and doc["AllBlobsMatchClosure"] else 1
++
++
++if __name__ == "__main__":
++    sys.stdout.reconfigure(errors="backslashreplace")
++    if len(sys.argv) == 6 and sys.argv[1] == "scan":
++        sys.exit(_scan_closure(*sys.argv[2:6]))
++    print(__doc__)
++    sys.exit(2)
++

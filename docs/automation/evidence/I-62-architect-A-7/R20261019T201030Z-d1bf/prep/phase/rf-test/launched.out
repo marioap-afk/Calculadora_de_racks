@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "D:\r62-a7\kit-review2\base-launched\kit\read_fidelity.py", line 74, in <module>
+    lines = canon(rel)
+  File "D:\r62-a7\kit-review2\base-launched\kit\read_fidelity.py", line 58, in canon
+    canon_cache[rel] = subprocess.check_output(["git", "-C", CLONE, "show", REV + ":" + rel]).decode("utf-8").replace("\r\n", "\n").split("\n")
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 13: invalid start byte

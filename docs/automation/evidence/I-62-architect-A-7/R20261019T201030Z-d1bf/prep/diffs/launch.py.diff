@@ -1,0 +1,75 @@
+--- launched/launch.py
++++ phase1/launch.py
+@@ -6,6 +6,8 @@
+ revisión formal sin una disposición posterior»). Quien prepara el kit no lo lanza (solo sus modos --dry-run y --record-probe, que no ejecutan el
+ binario). Derivado del launch.py del kit acreditado de A-6 ronda 4 (R20261014T180556Z-5e02): la misma lógica; cambian las constantes (clon, run,
+ session id, patrón de proyecto, archivos del run, blob del objeto) y se retira la comprobación de la premisa a6-r3.md, que este run no tiene.
++Corrección de fidelidad (decisiones §94, punto 5): la comprobación 7 toma los archivos del run del cierre (fidelity.run_files_of: order.txt,
++prompt.md y las copias fieles de los archivos que Read no entrega fielmente); el resto de la lógica no cambia.
+ 
+ Antes de lanzar comprueba, y se NIEGA a lanzar (código 2, sin escribir nada) si falla cualquiera de estas condiciones:
+   G. la orden es exactamente FROZEN_COMMAND (más, como mucho, --dry-run o --record-probe): se evalúa al importar, antes de cargar
+@@ -22,8 +24,8 @@
+   5. autenticación: `claude.exe auth status --json` con loggedIn = true (salida en bytes, UTF-8 estricto; solo se conservan loggedIn, authMethod y
+      apiProvider; ni correo ni organización; ninguna credencial se lee);
+   6. clon: HEAD = el commit, separado (sin ninguna rama local), sin remoto, árbol limpio con ignorados, blobs designados, sin enlaces ni uniones;
+-  7. run: exactamente los dos archivos (order.txt y prompt.md; sin launch/), cada uno = copia del kit = RunFileHashes del cierre =
+-     kit-manifest.json;
++  7. run: exactamente order.txt, prompt.md y las copias fieles de FaithfulCopies (decisiones §94, punto 5: fidelity.run_files_of exige que
++     RunFiles del cierre termine en esas copias; sin launch/), cada uno = copia del kit = RunFileHashes del cierre = kit-manifest.json;
+   8. sesión nueva: sin transcripción con el session id fijado en ningún proyecto y sin directorio de proyecto para el clon ni para el run (sin
+      memoria previa; patrón D--r62-arch-a7*, que no casa con los de las revisiones anteriores);
+   9. longitud de la línea de órdenes de Windows (< 32 000 caracteres);
+@@ -157,6 +159,9 @@
+ _spec = importlib.util.spec_from_file_location("owner_gate", os.path.join(KIT, "owner_gate.py"))
+ OG = importlib.util.module_from_spec(_spec)
+ _spec.loader.exec_module(OG)
++_spec = importlib.util.spec_from_file_location("fidelity", os.path.join(KIT, "fidelity.py"))
++FID = importlib.util.module_from_spec(_spec)
++_spec.loader.exec_module(FID)
+ CLONE, RUN = r"D:\r62-arch-a7", r"D:\r62-arch-a7-run"
+ PARAMS = json.load(open(os.path.join(KIT, "kit-params.json"), encoding="utf-8"))
+ assert PARAMS.get("Provisional") is False and PARAMS.get("Clone") == CLONE and PARAMS.get("Run") == RUN, "kit-params.json provisional o de otro clon"
+@@ -223,6 +228,27 @@
+                 "IsError": res.get("is_error"), "TerminalReason": res.get("terminal_reason"), "NumTurns": res.get("num_turns"),
+                 "Retry": "ninguno: el kit no reintenta; la sesión principal registra el intento y decide"}
+     return None
++
++
++def run_files_check(closure, manifest, run_dir, kit_dir):
++    """Comprobación 7: el run tiene exactamente order.txt, prompt.md y las copias fieles de FaithfulCopies (decisiones §94, punto 5;
++    fidelity.run_files_of) y nada más (tampoco launch/); cada archivo = copia del kit = RunFileHashes del cierre = kit-manifest.json.
++    → {Ok, Listing, Mismatches, Expected}. El self-test la ejerce leída con ast (caso X05)."""
++    listing = sorted(os.listdir(run_dir))
++    run_bad = []
++    try:
++        run_files = FID.run_files_of(closure)                 # order.txt, prompt.md y las copias fieles
++        if run_files[:len(RUN_FILES)] != RUN_FILES:
++            run_bad.append("RunFiles del cierre no empieza por %s" % RUN_FILES)
++    except ValueError as e:
++        run_files = list(RUN_FILES)
++        run_bad.append("cierre: %s" % e)
++    for n in run_files:
++        s = sha_file(os.path.join(run_dir, n)) if os.path.isfile(os.path.join(run_dir, n)) else None
++        k = sha_file(os.path.join(kit_dir, n)) if os.path.isfile(os.path.join(kit_dir, n)) else None
++        if not (s and s == k == (closure["RunFileHashes"].get(n) or {}).get("Sha256") == (manifest["RunFiles"].get(n) or {}).get("Sha256")):
++            run_bad.append(n)
++    return {"Ok": listing == sorted(run_files) and not run_bad, "Listing": listing, "Mismatches": run_bad, "Expected": run_files}
+ 
+ 
+ def preflight(dry_run=False):
+@@ -270,13 +296,7 @@
+     c["6-Clone"] = {"Ok": head == REV and status == "" and branches == [] and detached and remotes == [] and not blobs_bad and not reparse,
+                     "Head": head, "Detached": detached, "Clean": status == "", "LocalBranches": branches, "Remotes": remotes,
+                     "BlobMismatches": blobs_bad, "ReparsePoints": len(reparse)}
+-    listing = sorted(os.listdir(RUN))
+-    run_bad = []
+-    for n in RUN_FILES:
+-        s = sha_file(os.path.join(RUN, n)) if os.path.isfile(os.path.join(RUN, n)) else None
+-        if not (s and s == sha_file(os.path.join(KIT, n)) == closure["RunFileHashes"][n]["Sha256"] == manifest["RunFiles"][n]["Sha256"]):
+-            run_bad.append(n)
+-    c["7-RunFiles"] = {"Ok": listing == sorted(RUN_FILES) and not run_bad, "Listing": listing, "Mismatches": run_bad}
++    c["7-RunFiles"] = run_files_check(closure, manifest, RUN, KIT)
+     prior = glob.glob(os.path.join(PROJECTS, "*", SESSION_ID + ".jsonl"))
+     project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(PROJECTS, "D--r62-arch-a7*")))
+     c["8-NewSession"] = {"Ok": not prior and not project_dirs, "PriorTranscripts": len(prior), "ProjectDirsForCloneOrRun": project_dirs}

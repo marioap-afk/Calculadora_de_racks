@@ -1,0 +1,121 @@
+--- launched/post-review.py
++++ phase1/post-review.py
+@@ -28,6 +28,20 @@
+     REQUIRED or REJECTED => at least one REQUIRED;
+   * kept from v5.4: findings (ids A62-A7-R<n> / A62-A7-O<n>), NOT_ACCREDITED, BLOCKED — OWNER DECISION, IfAgreed, invocation ids, reviewed object,
+     Step0 (seven booleans, now the A-7 Step 0), validate_schema (Test-Json AND schema_errors) and the direct read rule.
++v5.6-a7 = v5.5-a7 plus the read-fidelity correction of decisions §94, point 5 (the r1 run R20261019T010200Z-4a72 was NOT_ACCREDITED because Read
++silently dropped the UTF-8 BOM of a TRX, line 1 DEGRADED, and the closure tooling had not detected BOM files). Every v5.5 rule is kept; in
++particular a Read of an ORIGINAL whose delivery is altered is still DEGRADED and a reason (a silently dropped BOM is never faithful), and the known
++truncation of a long line (ReadPolicy.LongLines; TruncatedKnownLongLines) still credits nothing. Added (fidelity.py, loaded from the kit):
++  * the run files are closure RunFiles, whose tail must be exactly the FaithfulCopies (fidelity.run_files_of): each file the detector flagged has a
++    faithful copy RACKCAD-COPIA-FIEL/1 in the run, read INSTEAD of the original, with the same line numbers (custody like every run file);
++  * every faithful copy, read or not, is verified against the original's exact bytes at the commit: fidelity.verify (decodes into exactly those
++    bytes, names that original, is the canonical encoding of what it decodes), its SHA-256 = the closure's CopySha256 and the original's blob = the
++    closure's OriginalBlob; any problem is a reason and the copy credits nothing;
++  * a verified copy credits line n of the ORIGINAL only when Read delivered faithfully line n of the copy and every continuation line @n.k of its
++    appendix (fidelity.layout); references, DirectReads and the direct read of V14 resolve against the original's lines, delivered by Read in the
++    original or in its faithful copy; a copy is never a reference (it is not a premise run file);
++  * the canonical text of a closure file is decoded with surrogateescape (a non-UTF-8 original no longer stops the audit: its altered delivery is
++    DEGRADED), and every Read of a flagged original is recorded (Fidelity.FlaggedOriginalReads; informational: the DEGRADED rule decides).
+ Small seams (list_dir, clone_git, clone_reparse, validate_schema, GATE, LAUNCH_DIR) let the self-test simulate a tampered run dir, launch dir or
+ clone without touching them; the real audit never changes them.
+ 
+@@ -72,21 +86,26 @@
+ import sys
+ import tempfile
+ 
+-AUDITOR_VERSION = "v5.5-a7 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on the Coordinator disposition §93 after §92 pinned in owner_gate.py; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2231-L2233; declared and self-tested before the launch; decisions §93)"
++AUDITOR_VERSION = "v5.6-a7 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on the Coordinator disposition §93 after §92 pinned in owner_gate.py; run.json Outcome and PostRunErrors; frozen command and record probe; direct read of V14 L2231-L2233; faithful copies RACKCAD-COPIA-FIEL/1 of the files Read cannot deliver faithfully, decisions §94, point 5; declared and self-tested before the launch; decisions §93)"
+ REPLACEMENT_CHAR = chr(0xFFFD)   # U+FFFD in a tool result: a transport artifact, recorded
+ 
+ 
+ def setup(clone, run, kit):
+     global CLONE, RUN, KIT, CLOSURE, REV, IDS, ALLOWED_LC, RUN_FILES, RUN_FILES_LC, PREMISE_RUN, LONG_LINES, OBJECT_FILES, OBJECT, OBJECT_BLOB
+     global TRANSPORT, SESSION_ID, CLONE_REAL, RUN_REAL, ALLOWED_TOOLS, DESIGNATED, TG, OG, GATE
+-    global LAUNCH_DIR, LAUNCH_FILES, TOPICS, TRIGGERS, MAT_A7, FCS, QUESTIONS, DIRECT, LAUNCH_COMMAND
++    global LAUNCH_DIR, LAUNCH_FILES, TOPICS, TRIGGERS, MAT_A7, FCS, QUESTIONS, DIRECT, LAUNCH_COMMAND, FID, FAITHFUL, COPY_OF
+     CLONE, RUN, KIT = clone, run, kit
+     CLOSURE = json.load(open(os.path.join(kit, "closure.json"), encoding="utf-8"))
+     assert norm(CLOSURE["RunDir"]).lower() == norm(run).lower(), "run dir distinto del RunDir del cierre"
+     REV, IDS = CLOSURE["AuthorityRevision"], CLOSURE["Ids"]
+     ALLOWED_LC = {r["Path"].lower(): r["Path"] for r in CLOSURE["CanonicalInputs"] + CLOSURE["AllowedTransitiveInputs"]}
+     DESIGNATED = {r["Path"]: r["Blob"] for r in CLOSURE["CanonicalInputs"]}
+-    RUN_FILES = list(CLOSURE["RunFiles"])
++    spec = importlib.util.spec_from_file_location("fidelity", os.path.join(kit, "fidelity.py"))
++    FID = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(FID)
++    RUN_FILES = FID.run_files_of(CLOSURE)                    # ValueError (no audit) if RunFiles does not end in exactly the FaithfulCopies
++    FAITHFUL = {e["Copy"]: e for e in CLOSURE["FaithfulCopies"]}
++    COPY_OF = {e["Original"]: e["Copy"] for e in CLOSURE["FaithfulCopies"]}
+     RUN_FILES_LC = {n.lower(): n for n in RUN_FILES}
+     PREMISE_RUN = set(CLOSURE["PremiseRunFiles"])
+     LONG_LINES = {p: set(v) for p, v in CLOSURE["ReadPolicy"]["LongLines"].items()}
+@@ -246,9 +265,16 @@
+ canon_cache = {}
+ 
+ 
++def canon_bytes(rel):
++    """Exact bytes of a closure file at the commit (the faithful copies are verified against them)."""
++    if ("bytes", rel) not in canon_cache:
++        canon_cache[("bytes", rel)] = subprocess.check_output(["git", "-C", CLONE, "show", REV + ":" + rel])
++    return canon_cache[("bytes", rel)]
++
++
+ def canon(rel):
+     if rel not in canon_cache:
+-        canon_cache[rel] = subprocess.check_output(["git", "-C", CLONE, "show", REV + ":" + rel]).decode("utf-8").replace("\r\n", "\n").split("\n")
++        canon_cache[rel] = canon_bytes(rel).decode("utf-8", "surrogateescape").replace("\r\n", "\n").split("\n")
+     return canon_cache[rel]
+ 
+ 
+@@ -737,6 +763,32 @@
+         if f["Status"] == "DEGRADED":
+             add("fidelidad: %s (Read, llamada %d) líneas alteradas %s" % (f["Path"], f["Index"], f["Altered"][:10]))
+ 
++    # ---------------- faithful copies (decisions §94, point 5): a copy is a run file read INSTEAD of its original; it credits the original's lines
++    flagged_reads = [dict(f, Copy=COPY_OF[f["Path"]], Flags=sorted(FAITHFUL[COPY_OF[f["Path"]]]["Flags"]))
++                     for f in fidelity if f["Kind"] == "CLOSURE" and f["Path"] in COPY_OF]
++    copies_doc = []
++    for name in sorted(FAITHFUL):
++        e = FAITHFUL[name]
++        try:
++            cb = read_run_bytes(name)
++        except OSError:
++            cb = None
++        ob = canon_bytes(e["Original"])
++        probs = FID.verify(e["Original"], ob, cb)
++        if cb is not None and sha(cb) != e["CopySha256"]:
++            probs.append("SHA-256 de la copia distinto del fijado en el cierre")
++        if FID.git_blob(ob) != e["OriginalBlob"]:
++            probs.append("blob del original distinto del fijado en el cierre")
++        credited = []
++        if probs:
++            add("copia fiel: %s no entrega byte a byte %s (blob %s): %s" % (name, e["Original"], e["OriginalBlob"][:8], "; ".join(probs[:4])))
++        else:
++            got = delivered.get(name, set())
++            credited = [n for n, ls in sorted(FID.layout(cb).items()) if all(x in got for x in ls)]
++            delivered.setdefault(e["Original"], set()).update(credited)
++        copies_doc.append({"Copy": name, "Original": e["Original"], "OriginalBlob": e["OriginalBlob"], "Flags": e["Flags"], "Verified": not probs,
++                           "Problems": probs, "CopyLinesDelivered": len(delivered.get(name, set())), "OriginalLinesCredited": len(credited)})
++
+     # ---------------- run custody
+     custody = {}
+     for n in RUN_FILES:
+@@ -828,7 +880,7 @@
+     dpath, da, db = DIRECT["Path"], int(DIRECT["Start"]), int(DIRECT["End"])
+     direct = {"Path": dpath, "Lines": [da, db], "DeliveredByRead": all(n in delivered.get(dpath, set()) for n in range(da, db + 1))}
+     if not direct["DeliveredByRead"]:
+-        add("lectura directa: %s:%d-%d no entregadas fielmente por Read en ese mismo archivo" % (dpath, da, db))
++        add("lectura directa: %s:%d-%d no entregadas fielmente por Read en ese mismo archivo ni en su copia fiel" % (dpath, da, db))
+     cover = []
+     for x in items(r_.get("DirectReads")):
+         m = REF_RX.match(str(x.get("Ref") or ""))
+@@ -861,6 +913,7 @@
+         "ToolAudit": {"Calls": len(rows), "WithProblems": [r for r in rows if r["Problems"]], "Rows": rows},
+         "Fidelity": {"Records": fidelity, "DeliveredLinesByPath": {k: len(v) for k, v in sorted(delivered.items())},
+                      "FailedReadsNeverCredited": failed_reads, "TruncatedKnownLongLines": truncated_known,
++                     "FaithfulCopies": copies_doc, "FlaggedOriginalReads": flagged_reads,
+                      "UnicodeReplacementChars": unicode_anomalies,
+                      "GrepContentLines": {"Total": len(grep_info), "Exact": sum(1 for x in grep_info if x["Exact"])}},
+         "CoverageInformational": coverage,

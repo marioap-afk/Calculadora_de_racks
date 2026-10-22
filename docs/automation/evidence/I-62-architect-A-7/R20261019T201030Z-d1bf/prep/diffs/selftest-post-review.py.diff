@@ -1,0 +1,344 @@
+--- launched/selftest-post-review.py
++++ phase1/selftest-post-review.py
+@@ -16,8 +16,16 @@
+     reason), pinned on §93 (passes), a later section (blocked), the object and agreed A-6 blobs and the inherited checks; O30 exercises
+     pin_authorization.values; and the live probe L00 (owner_gate.check on the real I-62 worktree, read-only git, with the module exactly as the kit
+     holds it: pinned, it must pass with exactly §93 and no later section; pending, it must block with only the pending reason);
+-  * cases X01-X04: launch.py and the auditor agree (RUN_JSON_FIELDS, outcome_categories on a set of records, the frozen command and the environment
+-    prefixes); launch.py is read with ast, never imported (importing it would evaluate its frozen-command guard).
++  * cases X01-X05: launch.py and the auditor agree (RUN_JSON_FIELDS, outcome_categories on a set of records, the frozen command, the environment
++    prefixes and, X05, check 7 with the faithful copies: run_files_check); launch.py is read with ast, never imported (importing it would evaluate
++    its frozen-command guard);
++  * cases F00-F20 (v5.6-a7, decisions §94, point 5: read fidelity and faithful copies): flagged originals read on faithful lines (informational);
++    the r1 failure reproduced (the TRX original with its BOM silently dropped: DEGRADED, a reason); the TRX through its copy, cited by the original
++    path (credited); the copy altered by one byte in the run, altered in delivery, absent, of another original, non-canonical, with the BOM dropped
++    inside it, and the original's blob pin altered (each a reason, nothing credited); a long line through the copy with and without its appendix
++    and truncated in the original (the existing TruncatedKnownLongLines rule); the direct read of V14 through its copy; a copy cited as a reference;
++    and, with the fixture of the phase-1 test clone (zz-fidelity-fixture/, only there), bare CR (the original's numbering shifted), NUL (a failed
++    read), invalid UTF-8 (U+FFFD substitution), and every fixture copy read and cited, plus a fixture copy altered by one byte.
+ 
+ Environment. By default it audits against the kit's closure (kit/closure.json: clone = closure Transport.Cwd, run = closure RunDir): the real
+ clone D:\\r62-arch-a7 and run D:\\r62-arch-a7-run. With RACKCAD_A7_KITDATA=<dir> it takes closure.json, the gate modules and the kit copies of
+@@ -109,12 +117,14 @@
+     out = {}
+     for node in tree.body:
+         if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) and \
+-                node.targets[0].id in ("FROZEN_COMMAND", "LAUNCH_ENV_PREFIXES", "RUN_JSON_FIELDS"):
++                node.targets[0].id in ("FROZEN_COMMAND", "LAUNCH_ENV_PREFIXES", "RUN_JSON_FIELDS", "RUN_FILES"):
+             out[node.targets[0].id] = ast.literal_eval(node.value)
+         if isinstance(node, ast.FunctionDef) and node.name == "outcome_categories":
+             ns = {}
+             exec(compile(ast.Module(body=[node], type_ignores=[]), "launch.py:outcome_categories", "exec"), ns)
+             out["outcome_categories"] = ns["outcome_categories"]
++        if isinstance(node, ast.FunctionDef) and node.name == "run_files_check":
++            out["run_files_check_node"] = node      # compiled in X05 with the auditor's fidelity module (decisions §94, point 5)
+     return out
+ 
+ 
+@@ -1300,6 +1310,259 @@
+     if rv[1]["Categories"].get("Execution") != "COMPLETED" or rv[1]["Categories"].get("ArchitectVerdict") != "AGREED":
+         rv[0]["Result"] = "FAIL"
+     add(rv)
++    for row in fidelity_cases():
++        cases.append(row)
++    return cases
++
++
++# ------------------------------------------------------------------ read fidelity and faithful copies (decisions §94, point 5; v5.6-a7)
++TRX = "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx"   # the r1 failure: line 1 DEGRADED (BOM dropped)
++TRX_MAIN, TRX_UC = "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx", "docs/automation/evidence/I-62-A7/b1-like/uc/fixture-tests.trx"
++FIX = "zz-fidelity-fixture/"                    # fixture of the phase-1 test clone (only there); the cases that need it are skipped elsewhere
++T03 = "T03_PROVENANCE_REVISION_IDENTITY_FIDELITY"
++
++
++def copy_of(orig):
++    return next(e for e in PR.CLOSURE["FaithfulCopies"] if e["Original"] == orig)["Copy"]
++
++
++def read_copy(r, orig, a=None, b=None, alter=None):
++    """Read of the faithful copy of `orig` in the run (lines a..b of the copy; whole by default); `alter(lines)` simulates a transport change."""
++    name = copy_of(orig)
++    L = lines_of(run=name)
++    a, b = (1, len(L)) if a is None else (a, b)
++    got = list(L[a - 1:b])
++    if alter:
++        got = alter(got)
++    inp = {"file_path": RUN + "\\" + name} if (a, b) == (1, len(L)) else {"file_path": RUN + "\\" + name, "offset": a, "limit": b - a + 1}
++    r.call("Read", inp, numbered(got, a))
++
++
++def copy_layout(orig):
++    return PR.FID.layout(PR.read_run_bytes(copy_of(orig)))
++
++
++def cite(rel, a, b=None):
++    def p(res, r):
++        tvd(res)[T03]["ClauseRefs"].append(ref(rel, a, b))
++    return p
++
++
++def fvariant(name, check=None, **kw):
++    row, out = variant(name, **kw)
++    if check is not None:
++        ok, detail = check(out)
++        row["FidelityCheck"] = detail
++        if not ok:
++            row["Result"] = "FAIL"
++    return row, out
++
++
++def copy_doc(out, orig):
++    return next((x for x in out["Fidelity"]["FaithfulCopies"] if x["Original"] == orig), {})
++
++
++def fidelity_cases():
++    cases = []
++    add = lambda rv: cases.append(rv[0])
++    BOMC = chr(0xFEFF)
++    trx_copy = copy_of(TRX)
++    custody = "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): "
++    not_faithful = "copia fiel: %s no entrega byte a byte %s"
++    not_delivered = "referencia sobre líneas no entregadas fielmente en TopicVerdicts[%s] (%s)"
++
++    # F00: the base flow reads flagged ORIGINALS (V14, decisions) only on lines Read delivers faithfully: accredited, recorded as informational
++    add(fvariant("F00-base-lecturas-de-originales-marcados-informativas", require_coherent=True,
++                 check=lambda out: (sorted({x["Path"] for x in out["Fidelity"]["FlaggedOriginalReads"]}) == sorted([DEC, V14]) and
++                                    all(x["Status"] == "FAITHFUL_NORMALIZED" for x in out["Fidelity"]["FlaggedOriginalReads"]) and
++                                    all(x["Verified"] for x in out["Fidelity"]["FaithfulCopies"]) and
++                                    len(out["Fidelity"]["FaithfulCopies"]) == len(PR.CLOSURE["FaithfulCopies"]),
++                                    {"FlaggedOriginalReads": [x["Path"] for x in out["Fidelity"]["FlaggedOriginalReads"]],
++                                     "CopiesVerified": sum(1 for x in out["Fidelity"]["FaithfulCopies"] if x["Verified"])})))
++
++    # F01: the r1 failure reproduced — the TRX ORIGINAL read directly, line 1 delivered without its BOM: DEGRADED, a reason (never faithful)
++    def bom_dropped(r):
++        L = lines_of(TRX)
++        r.call("Read", {"file_path": absp(TRX)}, numbered([L[0].lstrip(BOMC)] + L[1:]))
++    add(fvariant("F01-bom-original-leido-directamente", extra=bom_dropped, result_patch=cite(TRX, 1),
++                 expected=["fidelidad: %s (Read, llamada" % TRX, "líneas alteradas [1]", not_delivered % (T03, ref(TRX, 1))],
++                 counts={"fidelidad: ": 1}))
++
++    # F02: the TRX read through its faithful copy and cited by the ORIGINAL path: credited, accredited
++    n_trx = len(lines_of(TRX))
++    add(fvariant("F02-bom-copia-leida-y-citada", extra=lambda r: read_copy(r, TRX), result_patch=cite(TRX, 1, n_trx), require_coherent=True,
++                 check=lambda out: (copy_doc(out, TRX).get("OriginalLinesCredited") == n_trx and copy_doc(out, TRX).get("Verified") is True,
++                                    copy_doc(out, TRX))))
++
++    # F03: the copy altered by ONE byte in the run (read and cited): custody, the copy check and the reference
++    def flip(name, pos_from_text):
++        def rb(n):
++            b = ORIG_READ_RUN(n)
++            if n != name:
++                return b
++            i = b.index(pos_from_text)
++            return b[:i] + bytes([b[i] ^ 0x01]) + b[i + 1:]
++        return rb
++    try:
++        PR.read_run_bytes = flip(trx_copy, b"<TestRun ")
++        add(fvariant("F03-copia-alterada-un-byte-en-el-run", extra=lambda r: read_copy(r, TRX), result_patch=cite(TRX, 1, 3),
++                     expected=[custody + trx_copy, not_faithful % (trx_copy, TRX), "no reproduce los bytes del original",
++                               "SHA-256 de la copia distinto del fijado en el cierre", not_delivered % (T03, ref(TRX, 1, 3))]))
++    finally:
++        PR.read_run_bytes = ORIG_READ_RUN
++
++    # F04: the copy intact on disk, its line 1 delivered altered by the transport (the BOM escape dropped): DEGRADED on the copy, nothing credited
++    add(fvariant("F04-copia-entregada-alterada", extra=lambda r: read_copy(r, TRX, alter=lambda g: [g[0].replace("\\xEF\\xBB\\xBF", "", 1)] + g[1:]),
++                 result_patch=cite(TRX, 1),
++                 expected=["fidelidad: %s (Read, llamada" % trx_copy, "líneas alteradas [1]", not_delivered % (T03, ref(TRX, 1))]))
++
++    # F05-F07: a long line (V14 L2352): the copy with its appendix credits it; without the appendix it does not; the ORIGINAL truncates it
++    lay = copy_layout(V14)
++
++    def long_full(r):
++        read_copy(r, V14, 2350, 2353)
++        for x in lay[2352][1:]:
++            read_copy(r, V14, x, x)
++    add(fvariant("F05-linea-larga-copia-con-apendice", extra=long_full, result_patch=cite(V14, 2352), require_coherent=True,
++                 check=lambda out: (len(lay[2352]) >= 2 and copy_doc(out, V14).get("OriginalLinesCredited") == 4,
++                                    {"Chunks": len(lay[2352]), "Credited": copy_doc(out, V14).get("OriginalLinesCredited")})))
++    add(fvariant("F06-linea-larga-copia-sin-apendice", extra=lambda r: read_copy(r, V14, 2350, 2353), result_patch=cite(V14, 2352),
++                 expected=[not_delivered % (T03, ref(V14, 2352))]))
++
++    def long_truncated(r):
++        L = lines_of(V14)
++        got = L[2349:2353]
++        got[2] = got[2][:2000] + "…"
++        r.call("Read", {"file_path": absp(V14), "offset": 2350, "limit": 4}, numbered(got, 2350))
++    add(fvariant("F07-linea-larga-original-truncada", extra=long_truncated, result_patch=cite(V14, 2352),
++                 expected=[not_delivered % (T03, ref(V14, 2352))],
++                 check=lambda out: ([(x["Path"], x["Line"]) for x in out["Fidelity"]["TruncatedKnownLongLines"]] == [(V14, 2352)],
++                                    out["Fidelity"]["TruncatedKnownLongLines"])))
++
++    # F08: the direct read of V14 B.9 L2231-L2233 through its faithful copy satisfies Step 0
++    def direct_by_copy(r):
++        r.header()
++        read_copy(r, V14, *V14_READ)
++        step0(r, direct=False)
++        a7_reads(r)
++        evidence_reads(r)
++        acceptor_reads(r)
++        a6_reads(r)
++    add(fvariant("F08-lectura-directa-por-la-copia-de-v14", base=direct_by_copy, require_coherent=True,
++                 check=lambda out: (out["DirectRead"]["DeliveredByRead"] is True and
++                                    V14 not in [x["Path"] for x in out["Fidelity"]["FlaggedOriginalReads"]], out["DirectRead"])))
++
++    # F09: a faithful copy is never a reference (it is not a premise run file): cite the original
++    add(fvariant("F09-referencia-a-la-copia", extra=lambda r: read_copy(r, TRX),
++                 result_patch=lambda res, r: tvd(res)[T03]["ClauseRefs"].append(trx_copy + ":1"),
++                 expected=["referencia no canónica en TopicVerdicts[%s] (%s:1)" % (T03, trx_copy)]))
++
++    # F10-F14: the copy itself absent, another original's copy, a non-canonical spelling, the BOM silently dropped INSIDE the copy, and the
++    # original's blob pin altered in the closure: each a reason, nothing credited
++    main_copy, uc_copy = copy_of(TRX_MAIN), copy_of(TRX_UC)
++
++    def replace_run(name, fn):
++        def rb(n):
++            if n != name:
++                return ORIG_READ_RUN(n)
++            return fn(ORIG_READ_RUN(n))
++        return rb
++
++    def absent(n):
++        if n == trx_copy:
++            raise OSError("missing")
++        return ORIG_READ_RUN(n)
++    try:
++        PR.read_run_bytes = absent
++        add(fvariant("F10-copia-ausente", expected=[custody + trx_copy, not_faithful % (trx_copy, TRX), "copia ausente"]))
++    finally:
++        PR.read_run_bytes = ORIG_READ_RUN
++    try:
++        PR.read_run_bytes = replace_run(main_copy, lambda b: ORIG_READ_RUN(uc_copy))
++        add(fvariant("F11-copia-de-otro-original", expected=[custody + main_copy, not_faithful % (main_copy, TRX_MAIN),
++                                                               "la copia nombra otro original (%s)" % TRX_UC,
++                                                               "SHA-256 de la copia distinto del fijado en el cierre"]))
++    finally:
++        PR.read_run_bytes = ORIG_READ_RUN
++    try:
++        PR.read_run_bytes = replace_run(trx_copy, lambda b: b.replace(b"<TestRun ", b"\\x3CTestRun ", 1))
++        add(fvariant("F12-copia-no-canonica", expected=[custody + trx_copy, not_faithful % (trx_copy, TRX),
++                                                          "la copia no es la codificación canónica de lo que decodifica",
++                                                          "SHA-256 de la copia distinto del fijado en el cierre"]))
++    finally:
++        PR.read_run_bytes = ORIG_READ_RUN
++    try:
++        PR.read_run_bytes = replace_run(trx_copy, lambda b: PR.FID.encode(TRX, PR.canon_bytes(TRX)[3:]))
++        add(fvariant("F13-bom-eliminado-dentro-de-la-copia", extra=lambda r: read_copy(r, TRX), result_patch=cite(TRX, 1),
++                     expected=[custody + trx_copy, not_faithful % (trx_copy, TRX), "no reproduce los bytes del original",
++                               "SHA-256 de la copia distinto del fijado en el cierre", not_delivered % (T03, ref(TRX, 1))]))
++    finally:
++        PR.read_run_bytes = ORIG_READ_RUN
++    saved = PR.FAITHFUL[trx_copy]["OriginalBlob"]
++    try:
++        PR.FAITHFUL[trx_copy]["OriginalBlob"] = "0" * 40
++        add(fvariant("F14-blob-del-original-distinto-del-fijado", extra=lambda r: read_copy(r, TRX), result_patch=cite(TRX, 1),
++                     expected=["copia fiel: %s no entrega byte a byte %s (blob 00000000)" % (trx_copy, TRX),
++                               "blob del original distinto del fijado en el cierre", not_delivered % (T03, ref(TRX, 1))]))
++    finally:
++        PR.FAITHFUL[trx_copy]["OriginalBlob"] = saved
++
++    # F15-F20: the classes of the phase-1 fixture (bare CR, NUL, invalid UTF-8, controls, U+FEFF inside, a line separator, a PDF extension, a CRLF
++    # file with a BOM): the ORIGINAL delivered as Read could deliver it is DEGRADED or a failed read; the copy, read and cited, is credited
++    fx = [e["Original"] for e in PR.CLOSURE["FaithfulCopies"] if e["Original"].startswith(FIX)]
++    if not fx:
++        cases.append({"Case": "F15-F20-fixture-de-clases", "Result": "PASS", "Skipped": "sin el fixture de la fase 1 en este cierre"})
++        return cases
++
++    def orig_split_cr(r):
++        r.call("Read", {"file_path": absp(FIX + "bare-cr.txt")}, numbered(["linea 1", "antes", "despues del CR suelto", "linea 3"]))
++    add(fvariant("F15-cr-suelto-original-desplazado", extra=orig_split_cr, result_patch=cite(FIX + "bare-cr.txt", 3),
++                 expected=["fidelidad: %sbare-cr.txt (Read, llamada" % FIX, "líneas alteradas [2, 3, 4]",
++                           not_delivered % (T03, ref(FIX + "bare-cr.txt", 3))]))
++
++    def orig_nul_failed(r):
++        r.call("Read", {"file_path": absp(FIX + "nul-byte.txt")}, "This tool cannot read binary files.", is_error=True)
++    add(fvariant("F16-nul-original-lectura-fallida", extra=orig_nul_failed, result_patch=cite(FIX + "nul-byte.txt", 2),
++                 expected=[not_delivered % (T03, ref(FIX + "nul-byte.txt", 2))],
++                 check=lambda out: ([x["Path"] for x in out["Fidelity"]["FailedReadsNeverCredited"]] == [FIX + "nul-byte.txt"],
++                                    out["Fidelity"]["FailedReadsNeverCredited"])))
++
++    def orig_invalid(r):
++        L = lines_of(FIX + "invalid-utf8.txt")
++        r.call("Read", {"file_path": absp(FIX + "invalid-utf8.txt")},
++               numbered([L[0], "byte %s suelto y secuencia truncada %s" % (chr(0xFFFD), chr(0xFFFD)), L[2]]))
++    add(fvariant("F17-utf8-invalido-original-con-sustitucion", extra=orig_invalid, result_patch=cite(FIX + "invalid-utf8.txt", 2),
++                 expected=["fidelidad: %sinvalid-utf8.txt (Read, llamada" % FIX, "líneas alteradas [2]",
++                           not_delivered % (T03, ref(FIX + "invalid-utf8.txt", 2))],
++                 check=lambda out: (len(out["Fidelity"]["UnicodeReplacementChars"]) == 1, out["Fidelity"]["UnicodeReplacementChars"])))
++
++    def all_fixture_copies(r):
++        for o in fx:
++            read_copy(r, o)
++
++    def cite_all(res, r):
++        for o in fx:
++            tvd(res)[T03]["ClauseRefs"].append(ref(o, 1, len(lines_of(o))))
++    add(fvariant("F18-copias-del-fixture-leidas-y-citadas", extra=all_fixture_copies, result_patch=cite_all, require_coherent=True,
++                 check=lambda out: (all(copy_doc(out, o).get("OriginalLinesCredited") == len(lines_of(o)) for o in fx) and len(fx) == 10,
++                                    {o: copy_doc(out, o).get("OriginalLinesCredited") for o in fx})))
++
++    def orig_long_fixture(r):
++        L = lines_of(FIX + "long-line.txt")
++        r.call("Read", {"file_path": absp(FIX + "long-line.txt")}, numbered([L[0], L[1][:2000] + "…", L[2]]))
++    add(fvariant("F19-linea-larga-del-fixture-original-truncada", extra=orig_long_fixture, result_patch=cite(FIX + "long-line.txt", 1, 3),
++                 expected=[not_delivered % (T03, ref(FIX + "long-line.txt", 1, 3))],
++                 check=lambda out: ([(x["Path"], x["Line"]) for x in out["Fidelity"]["TruncatedKnownLongLines"]] == [(FIX + "long-line.txt", 2)],
++                                    out["Fidelity"]["TruncatedKnownLongLines"])))
++    try:
++        PR.read_run_bytes = replace_run(copy_of(FIX + "control.txt"), lambda b: b.replace(b"a\\x09b", b"a\\x09c", 1))
++        add(fvariant("F20-copia-del-fixture-alterada-un-byte", extra=lambda r: read_copy(r, FIX + "control.txt"),
++                     result_patch=cite(FIX + "control.txt", 1),
++                     expected=[custody + copy_of(FIX + "control.txt"), not_faithful % (copy_of(FIX + "control.txt"), FIX + "control.txt"),
++                               "no reproduce los bytes del original", "SHA-256 de la copia distinto del fijado en el cierre",
++                               not_delivered % (T03, ref(FIX + "control.txt", 1))]))
++    finally:
++        PR.read_run_bytes = ORIG_READ_RUN
+     return cases
+ 
+ 
+@@ -1686,6 +1949,35 @@
+         Launch=LAUNCH.get("FROZEN_COMMAND"), Closure=PR.LAUNCH_COMMAND)
+     row("X04-prefijos-de-entorno", tuple(LAUNCH.get("LAUNCH_ENV_PREFIXES") or ()) == tuple(PR.LAUNCH_ENV_PREFIXES) == ("PYTHON", "GIT_", "CLAUDE", "ANTHROPIC"),
+         Launch=list(LAUNCH.get("LAUNCH_ENV_PREFIXES") or ()), Auditor=list(PR.LAUNCH_ENV_PREFIXES))
++    # X05 (decisions §94, point 5): launch.py's check 7 (run_files_check, read with ast) expects exactly the auditor's run files (order.txt,
++    # prompt.md and the faithful copies) and blocks a closure without FaithfulCopies, a manifest without a copy, a run without a copy and a run
++    # with launch/
++    node = LAUNCH.get("run_files_check_node")
++    if node is None:
++        row("X05-comprobacion-7-del-lanzador-con-copias-fieles", False, Got="launch.py sin run_files_check")
++        return cases
++    ns = {"os": os, "FID": PR.FID, "RUN_FILES": LAUNCH["RUN_FILES"], "sha_file": lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()}
++    exec(compile(ast.Module(body=[node], type_ignores=[]), "launch.py:run_files_check", "exec"), ns)
++    f = ns["run_files_check"]
++    man = {"RunFiles": {n: {"Sha256": h["Sha256"]} for n, h in PR.CLOSURE["RunFileHashes"].items()}}
++    last = PR.RUN_FILES[-1]
++    ok_ = f(PR.CLOSURE, man, RUN, KITDATA)
++    no_fc = f({k: v for k, v in PR.CLOSURE.items() if k != "FaithfulCopies"}, man, RUN, KITDATA)
++    no_man = f(PR.CLOSURE, {"RunFiles": {n: v for n, v in man["RunFiles"].items() if n != last}}, RUN, KITDATA)
++    t1, t2 = os.path.join(TMPROOT, "x05a"), os.path.join(TMPROOT, "x05b")
++    for t, names, extra_dir in ((t1, PR.RUN_FILES[:-1], False), (t2, PR.RUN_FILES, True)):
++        os.makedirs(t, exist_ok=True)
++        for n in names:
++            shutil.copyfile(os.path.join(RUN, n), os.path.join(t, n))
++        if extra_dir:
++            os.makedirs(os.path.join(t, "launch"), exist_ok=True)
++    no_copy, with_launch = f(PR.CLOSURE, man, t1, KITDATA), f(PR.CLOSURE, man, t2, KITDATA)
++    row("X05-comprobacion-7-del-lanzador-con-copias-fieles",
++        ok_["Ok"] is True and ok_["Expected"] == PR.RUN_FILES and no_fc["Ok"] is False and any("FaithfulCopies" in str(x) for x in no_fc["Mismatches"]) and
++        no_man["Ok"] is False and no_man["Mismatches"] == [last] and no_copy["Ok"] is False and with_launch["Ok"] is False and
++        with_launch["Mismatches"] == [],
++        RunFiles=len(PR.RUN_FILES), Copies=len(PR.CLOSURE["FaithfulCopies"]), Consistent=ok_["Ok"], WithoutFaithfulCopies=no_fc["Mismatches"],
++        ManifestWithoutLast=no_man["Mismatches"], RunWithoutLast=no_copy["Ok"], RunWithLaunch=with_launch["Ok"])
+     return cases
+ 
+ 
+@@ -1715,7 +2007,9 @@
+            "AuthorizationPinsForAuditCases": PINS,
+            "Modules": {n: hashlib.sha256(open(os.path.join(HERE, n), "rb").read()).hexdigest()
+                        for n in ("post-review.py", "transport_gate.py", "owner_gate.py", "pin_authorization.py", "c3_analysis.py", "result.schema.json",
+-                                 "selftest-post-review.py", "launch.py")},
++                                 "selftest-post-review.py", "launch.py", "fidelity.py")},
++           "KitDataModules": {n: hashlib.sha256(open(os.path.join(KITDATA, n), "rb").read()).hexdigest()
++                              for n in ("fidelity.py", "owner_gate.py", "transport_gate.py", "closure.json")},
+            "CloneHeadAfterSelftest": head, "CloneCleanAfterSelftest": status.strip() == "" and head == pr.REV,
+            "RunFilesMatchKit": run_match, "RunDirListingAfterSelftest": run_listing,
+            "Cases": cases,

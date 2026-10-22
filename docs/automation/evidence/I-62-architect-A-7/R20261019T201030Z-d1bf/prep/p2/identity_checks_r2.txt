@@ -1,0 +1,99 @@
+def identity_checks():
+    P = PARAMS
+    pub, parent, grc = P["Publication"], P["PublicationParent"], P["GuardsRunCommit"]
+    obj_blob = P["Object"]["Blob"]
+    assert obj_blob == OBJECT_BLOB, "kit-params.json: Object.Blob distinto del fijado en owner_gate.py"
+    assert (P.get("PreviousObject") or {}).get("Blob") == PREV_BLOB, "kit-params.json: PreviousObject distinto de la ronda 1 (6c29747d)"
+    for c in (REV, pub, parent, grc):
+        assert git_ok("cat-file", "-e", c + "^{commit}"), "commit ausente en el clon: %s" % c
+    assert git("rev-parse", pub + "^").decode().strip() == parent, "el padre de la publicación no es %s" % parent[:8]
+    assert git("rev-parse", parent + ":" + OBJECT).decode().strip() == PREV_BLOB, "el padre de la publicación no tiene la ronda 1 (6c29747d)"
+    for c in (pub, grc, REV):
+        assert git("rev-parse", c + ":" + OBJECT).decode().strip() == obj_blob, "blob de A-7 (ronda 2) distinto en %s" % c
+    for c in (parent, pub, grc, REV):
+        assert git("rev-parse", c + ":" + A6).decode().strip() == OG.A6_AGREED_BLOB, "A-6 distinta de la acordada en %s" % c
+    for a, b in ((pub, grc), (grc, REV)):
+        assert git_ok("merge-base", "--is-ancestor", a, b), "%s no es antecesor de %s" % (a, b)
+    pub_files, now_files = dir_files(pub, A7R2_DIR), dir_files(REV, A7R2_DIR)
+    unchanged = all(git("rev-parse", pub + ":" + p).decode().strip() == git("rev-parse", REV + ":" + p).decode().strip() for p in pub_files)
+    added = set(now_files) - set(pub_files)
+    assert unchanged and added == {A7R2_RUN_RESULT} and set(P.get("A7EvidenceAddedAfterPublication") or []) == added, \
+        "I-62-A7/r2/ cambió después de la publicación además de añadir el resultado `run` (añadidos: %s)" % sorted(added)
+    r1_parent, r1_now = r1_evidence_files(parent), r1_evidence_files(REV)
+    assert r1_parent == r1_now and all(git("rev-parse", parent + ":" + p).decode().strip() == git("rev-parse", REV + ":" + p).decode().strip()
+                                       for p in r1_now), "el preflight de la ronda 1 (I-62-A7/ fuera de r2/) cambió desde el padre de la publicación"
+    trees = {}
+    for d, (t, custody) in PINNED_TREES.items():
+        got, at_custody = git("rev-parse", REV + ":" + d).decode().strip(), git("rev-parse", custody + ":" + d).decode().strip()
+        assert got == t == at_custody, "árbol %s distinto del fijado o del del commit que lo custodió (%s)" % (d, custody[:8])
+        trees[d] = {"Tree": t, "CustodyCommit": custody}
+    old = git("cat-file", "-p", DECISIONS_PREFIX_BLOB)
+    dec_b = git("show", REV + ":" + DECISIONS)
+    assert dec_b.startswith(old), "decisiones del clon no crece solo por añadido desde la registrada con §93 (blob 1de169d0, commit 5158e4bc)"
+    for c in (pub, grc, REV):
+        assert git("rev-parse", c + ":" + DECISIONS).decode().strip() == DECISIONS_AT_PUBLICATION, "decisiones en %s distinta de la de §94" % c[:8]
+    dec = dec_b.decode("utf-8").split("\n")
+    numbered = [(i, int(m.group(1))) for i, m in ((i, OG.NUMBERED_RX.match(l)) for i, l in enumerate(dec)) if m]
+    s_last = [i for i, n in numbered if n == LAST_SECTION]
+    assert BASE_SECTION == OG.BASE_SECTION and len(s_last) == 1 and max(n for _, n in numbered) == LAST_SECTION, \
+        "decisiones del clon: §94 no es la última sección numerada, una sola vez"
+    s94_text = OG.section_text(dec, s_last[0])
+    for tok in ("A62-A7-R1", "R2", "R3", "segunda candidata", "Sin revisión formal sin una disposición nueva del Coordinator"):
+        assert tok in s94_text, "§94 no registra «%s»" % tok
+    assert OG.authorization_pending(OG.pinned_authorization()), "owner_gate.py con una autorización fijada: este kit se entrega PENDIENTE"
+    run_res = json.loads(git("show", REV + ":" + A7R2_RUN_RESULT).decode("utf-8"))
+    assert run_res.get("Mode") == "run" and len(str(run_res.get("Base"))) >= 8 and parent.startswith(str(run_res.get("Base"))) and \
+        len(str(run_res.get("Head"))) >= 8 and pub.startswith(str(run_res.get("Head"))) and run_res.get("A7Blob") == obj_blob and \
+        run_res.get("Result") == "PASS", "el resultado `run` custodiado de la ronda 2 no es Mode run / Base = padre / Head = publicación / A7Blob = objeto / PASS"
+    st = json.loads(git("show", REV + ":" + A7R2_SELFTEST).decode("utf-8"))
+    assert st.get("Result") == "PASS" and st.get("Killed") == st.get("MutantsTotal") and st.get("MutantsTotal") and st.get("Base") == parent and \
+        (st.get("Candidate") or {}).get("CandidateBlob") == obj_blob, "la autoprueba custodiada de las guardas de la ronda 2 no es PASS sobre el objeto"
+    summ = json.loads(git("show", REV + ":" + A7R2_SUMMARY).decode("utf-8"))
+    assert (summ.get("Candidate") or {}).get("Blob") == obj_blob and summ.get("Hold") == summ.get("Cases") and summ.get("Cases") and \
+        summ.get("NotHolding") == [] and summ.get("Base") == parent and summ.get("PreviousRound") == PREV_BLOB, \
+        "summary.json de la ronda 2 no es el de la candidata con todos los casos cumplidos"
+    out1 = json.loads(git("show", REV + ":" + R1_OUTPUT).decode("utf-8"))
+    aud1 = json.loads(git("show", REV + ":" + R1_AUDIT).decode("utf-8"))
+    assert out1.get("RunId") == R1_RUN_ID and out1.get("ReviewedBlob") == PREV_BLOB and \
+        [f.get("FindingId") for f in out1.get("RequiredFindings") or []] == ROUND1_FINDINGS and \
+        [f.get("FindingId") for f in out1.get("OptionalFindings") or []] == ROUND1_OPTIONALS and out1.get("Verdict") == "CHANGES REQUIRED" and \
+        (aud1.get("Accreditation") or {}).get("Status") == "NOT_ACCREDITED", "la revisión de la ronda 1 custodiada no es la de R1-R3 y O1-O8"
+    a7 = git("show", REV + ":" + OBJECT).decode("utf-8")
+    a6 = git("show", REV + ":" + A6).decode("utf-8").split("\n")
+    assert sum(1 for l in a6 if OG.line_sha(l) == OG.A6_LINE_SHA) == 1, "A-6 acordada sin la línea (a) fijada, una vez"
+    assert sum(1 for l in dec if OG.line_sha(l) == OG.A6_LINE_SHA) == 1, "decisiones del clon sin la línea (a) del Owner (§78), una vez"
+    assert sum(1 for l in dec if OG.line_sha(l) == OG.CLAUDE_LINE_SHA) == 1, "decisiones sin la línea CLAUDE-CLI-I62 = A fijada"
+    header = a7.split("```")[1]
+    header_claims = {}
+    for p in (A1, A2, A3, A4, A5, A6, FREEZE, V14):
+        b = git("rev-parse", REV + ":" + p).decode().strip()
+        header_claims[p] = OG.token_in(header, b, "0-9a-f")
+        assert header_claims[p], "la cabecera de A-7 no cita el blob %s de %s" % (b[:8], p)
+    assert OG.token_in(header, PREV_BLOB, "0-9a-f"), "la cabecera de A-7 (Previous round) no cita el blob completo de la ronda 1"
+    manifests = [sha256_manifest(REV, d) for d in (A7R2_DIR, S91, S92)]
+    assert manifests[0]["NotListed"] == [A7R2_RUN_RESULT] and not manifests[1]["NotListed"] and not manifests[2]["NotListed"], \
+        "MANIFEST.sha256 incompletos: %s" % [(m["Dir"], m["NotListed"]) for m in manifests]
+    r1man = sha256_manifest(REV, A7_DIR)
+    assert [p for p in r1man["NotListed"] if not p.startswith((A7R2_DIR + "/", A7_DIR + "/r2-dispositions/"))] == [A7_RUN_RESULT], \
+        "MANIFEST.sha256 de la ronda 1 incompleto: %s" % r1man["NotListed"][:5]
+    readable = readable_manifest(REV, R4_READABLE)
+    assert {e["Canonical"] for e in readable} >= set(R4_CITED), "r4/readable/ sin copia legible de algún archivo citado por el preflight de A-7"
+    changed = [x for x in git("diff", "--name-status", parent, REV).decode("utf-8").split("\n") if x]
+    return {"CloneCommit": REV, "Publication": pub, "PublicationParent": parent, "GuardsRunCommit": grc,
+            "Round1AtPublicationParent": PREV_BLOB, "ObjectBlobAtPublicationGuardsRunAndClone": obj_blob,
+            "A6AgreedBlobAtParentPublicationGuardsRunAndClone": OG.A6_AGREED_BLOB,
+            "R2EvidenceUnchangedSincePublicationExceptRunResult": True, "A7EvidenceAddedAfterPublication": sorted(added),
+            "R1EvidenceUnchangedSinceParent": True, "R1EvidenceFiles": len(r1_now),
+            "A7R2EvidenceTree": git("rev-parse", REV + ":" + A7R2_DIR).decode().strip(), "PinnedTrees": trees,
+            "DecisionsAppendOnlySinceSection93Record": True, "DecisionsAtPublicationGuardsRunAndClone": DECISIONS_AT_PUBLICATION,
+            "Decisions94": {"Line": s_last[0] + 1, "Heading": dec[s_last[0]], "TextSha256": hashlib.sha256(s94_text.encode("utf-8")).hexdigest(),
+                            "LastNumberedSection": True},
+            "AuthorizationPending": True,
+            "GuardsRunResult": {"Mode": "run", "Base": run_res.get("Base"), "Head": run_res.get("Head"), "A7Blob": obj_blob, "Result": "PASS"},
+            "GuardsSelfTest": {"Result": "PASS", "Base": parent, "CandidateBlob": obj_blob, "MutantsTotal": st.get("MutantsTotal"),
+                               "Killed": st.get("Killed")},
+            "PreflightSummary": {"CandidateBlob": obj_blob, "Hold": summ.get("Hold"), "Cases": summ.get("Cases"), "PreviousRound": PREV_BLOB},
+            "Round1Review": {"RunId": R1_RUN_ID, "ReviewedBlob": PREV_BLOB, "RequiredFindings": ROUND1_FINDINGS, "OptionalFindings": ROUND1_OPTIONALS,
+                             "Verdict": "CHANGES REQUIRED", "Accreditation": "NOT_ACCREDITED"},
+            "OwnerLineOnceInA6AndInDecisions78": True, "ClaudeCliLinePinnedOnce": True, "A7HeaderCitesBlobs": header_claims,
+            "A7HeaderCitesRound1Blob": True, "Sha256Manifests": manifests + [r1man], "ReadableCopies": readable, "ChangedSincePublicationParent": changed}

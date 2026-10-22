@@ -1,0 +1,8 @@
+I-62 A-7 ronda 2: identificadores de la ÚNICA revisión formal (decisiones §94, punto 6), generados una vez el 2026-10-19 (UTC)
+RunId                  = R20261019T201030Z-d1bf
+InvocationId           = I20261019T201030Z-d1bf
+LogicalReviewRequestId = L20261019T201030Z-d1bf
+AttemptSeq             = 1
+SessionId (uuid4)      = 3dd5ac31-ddf5-4e4a-b732-b913933a9ae3
+Clon                   = D:\r62-arch-a7r2 (commit b432c40f8ca7b1e915dff531cb9a8cad6466bb0c)
+Run                    = D:\r62-arch-a7r2-run

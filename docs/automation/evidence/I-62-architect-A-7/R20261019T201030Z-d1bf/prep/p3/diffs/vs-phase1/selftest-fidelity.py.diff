@@ -1,0 +1,29 @@
+--- phase1/selftest-fidelity.py
++++ r2/selftest-fidelity.py
+@@ -78,7 +78,7 @@
+         ("FD03-linea-1901", "x.txt", b"a" * 1901, {"LONG_LINE": [1]}),
+         ("FD04-linea-1900", "x.txt", b"a" * 1900 + b"\n", {}),
+         ("FD05-linea-2001", "x.txt", b"a\n" + b"a" * 2001 + b"\n", {"LONG_LINE": [2]}),
+-        ("FD06-linea-utf16", "x.txt", ("\U0001F600" * 951).encode("utf-8"), {"LONG_LINE": [1]}),
++        ("FD06-linea-utf16", "x.txt", ("\U0001F600" * 951).encode("utf-8"), {"LONG_LINE": [1], "UNMEASURED_CHAR": [1]}),
+         ("FD07-cr-suelto", "x.txt", b"a\rb\nc\n", {"BARE_CR": [1]}),
+         ("FD08-crlf-aceptado", "x.txt", b"a\r\nb\r\n", {}),
+         ("FD09-cr-al-final-sin-lf", "x.txt", b"a\nb\r", {"BARE_CR": [2]}),
+@@ -101,6 +101,17 @@
+         row(name, got == want and list(got) == [k for k in F.CLASSES if k in want] and F.scan(path, data)["Flagged"] == bool(want),
+             Expected=want, Got=got)
+     i = F.scan("x.txt", b"a\n" + b"b" * 2001 + b"\n" + b"c" * 1950)
++    unm = [("FD22-no-medido-enie-mayuscula", (chr(0xD1) + "and" + chr(0xFA) + "\n").encode("utf-8"), {"UNMEASURED_CHAR": [1]}),
++           ("FD23-no-medido-por-linea", ("a\n" + chr(0x00D7) + " y " + chr(0x2248) + "\nb\n" + chr(0x2713) + "\n").encode("utf-8"), {"UNMEASURED_CHAR": [2, 4]}),
++           ("FD24-no-medido-nbsp-y-astral", (chr(0xA0) + "\n" + chr(0x1F600) + "\n").encode("utf-8"), {"UNMEASURED_CHAR": [1, 2]}),
++           ("FD25-medidos-no-marcan", ("".join(sorted(F.MEASURED_NON_ASCII)) + " " + chr(0x2013) + "\n").encode("utf-8"), {}),
++           ("FD26-otras-clases-no-son-no-medidos", (chr(0x85) + chr(0x2028) + "\n" + "x" + chr(0xFEFF) + "\n").encode("utf-8") + b"\xff\n",
++            {"INVALID_UTF8": [3], "CONTROL": [1], "ZWNBSP": [2], "LINE_SEPARATOR": [1]})]
++    for name, data, want in unm:
++        got = flags("x.txt", data)
++        row(name, got == want and list(got) == [k for k in F.CLASSES if k in want], Expected=want, Got=got)
++    row("FD27-conjunto-medido", len(F.MEASURED_NON_ASCII) == 34 and chr(0x2013) in F.MEASURED_NON_ASCII and chr(0xD1) not in F.MEASURED_NON_ASCII,
++        Size=len(F.MEASURED_NON_ASCII))
+     row("FD21-sobre-el-limite-de-read", i["LinesOverReadLimit"] == [2] and i["Flags"] == {"LONG_LINE": [2, 3]} and i["MaxLineUtf16"] == 2001 and
+         i["Lines"] == 3 and i["FinalNewline"] is False, Got=i)
+ 

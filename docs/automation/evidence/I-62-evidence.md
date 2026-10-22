@@ -4778,3 +4778,27 @@ solo desde artefactos custodiados.
   incorporado para (c) dentro de R1; O2 confirmado con una aclaración descriptiva; O4 y O5 verificados sin cambio normativo, con medidas para el kit; O6
   sin cambio; O8 como regla del kit. Nota de FC-01: `MainSha_eval` = `K.MainSha` (16.13).
 - Sin revisión formal (decisiones §94, punto 6); sin Codex; A6-7 HELD.
+
+## 192. Kit de la revisión formal única de A-7 ronda 2 (acotada a R1-R3) congelado y custodiado SIN lanzar; fidelidad de lectura corregida; autorización pendiente (decisiones §94, puntos 5 y 6)
+
+- **Kit** [`R20261019T201030Z-d1bf`](I-62-architect-A-7/R20261019T201030Z-d1bf/README.md), derivado del kit lanzado de la ronda 1 (`c27db93e…`) con validación incremental
+  ([`prep/p3/validation-matrix-r2.md`](I-62-architect-A-7/R20261019T201030Z-d1bf/prep/p3/validation-matrix-r2.md)): objeto A-7 ronda 2, blob `8a528133`, publicación `e90b444d`; clon
+  `D:\r62-arch-a7r2` en `b432c40f`; cierre de 246 archivos; el mismo transporte (`claude-cli` 2.1.299, `295b49ec…`, compuerta MEASURED) y las mismas
+  compuertas reutilizadas byte a byte; auditor v6.0-a7r2; esquema `rackcad-a7r2-architect-review/0` acotado a R1-R3 (resolución, pureza del delta,
+  no regresión de los temas CONFORMS, materialidad, O1-O8 opcional).
+- **Fidelidad (§94, punto 5):** detector `fidelity.py` (BOM, UTF-8 inválido, NUL, CR suelto, controles, líneas largas, U+FEFF, U+2028/2029, extensiones
+  que Read interpreta y puntos de código no medidos); los 43 archivos marcados se leen SOLO por su copia fiel RACKCAD-COPIA-FIEL/1 en el run; el auditor
+  verifica cada copia byte a byte contra el original y acredita la línea solo por la copia; un BOM eliminado en silencio nunca es fiel (DEGRADED ⇒
+  NOT_ACCREDITED). Negativos: autoprueba de fidelidad 53/53, casos F00-F20 de la autoprueba, negativa de
+  verify_clone con un byte alterado en la copia del TRX con BOM (PASS) y la batería completa con `fidelity.py`.
+- **Controles:** autoprueba 310/310 (auditoría 204, compuerta de transporte 61, compuerta 11 40 con la sonda viva, coherencia 5); verify_clone conforme con las guardas de r2 reproducidas
+  byte a byte; **mutación completa 207/207** (`post-review.py` 129/129, `transport_gate.py` 40/40, `owner_gate.py` 19/19, `fidelity.py` 19/19; decisiones §88, punto 4); sonda de registro con código 0.
+  La sesión principal corrigió dos defectos antes de la autoprueba completa: la expectativa del caso 48 (lectura directa de la ronda 1) y una docstring
+  del auditor; ninguna regla.
+- **Congelación:** `kit-manifest.json` `3499596df4292720…` (73 archivos, 43 de ellos copias fieles, custodiadas por
+  reproducción y no como archivos: cinco de sus rutas pasarían de MAX_PATH en este worktree; las 43 se regeneran byte a byte desde `b432c40f` con
+  `kit/fidelity.py`, [`prep/p4/faithful-regeneration.json`](I-62-architect-A-7/R20261019T201030Z-d1bf/prep/p4/faithful-regeneration.json)); **prueba en seco
+  bloqueada SOLO por la compuerta 11** con el motivo «authorization pending» (§94, punto 6). Host: checkout principal sin cambios (`95690c28`); I-64
+  limpio.
+- Sin revisión formal: exige una disposición del Coordinator posterior a §94 que la nombre, fijada con `pin_authorization.py`, y volver a congelar el
+  kit. Sin Codex; A6-7 HELD; ni A-7 AGREED, ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.

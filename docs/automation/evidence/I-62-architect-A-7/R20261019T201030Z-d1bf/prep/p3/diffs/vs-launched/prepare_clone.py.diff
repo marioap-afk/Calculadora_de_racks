@@ -1,0 +1,149 @@
+--- launched/prepare_clone.py
++++ r2/prepare_clone.py
+@@ -1,23 +1,26 @@
+-"""Paso del clon de la ÚNICA revisión formal de la enmienda A-7 (decisiones §93): crea el clon de lectura D:\\r62-arch-a7 y el run D:\\r62-arch-a7-run,
+-y escribe kit/kit-params.json. Lo ejecuta finish_kit.py (o quien prepara el kit), una sola vez. Derivado del prepare_clone.py del kit acreditado de
+-A-6 ronda 4 (R20261014T180556Z-5e02): el mismo clon (desde el directorio común de git, HEAD separado, sin ramas ni remoto) y las mismas
+-precondiciones de solo lectura, con el objeto, la evidencia y la sección de decisiones de A-7.
++"""Paso del clon de la ÚNICA revisión formal de la RONDA 2 de la enmienda A-7 (decisiones §94, punto 6): crea el clon de lectura
++D:\\r62-arch-a7r2 y el run D:\\r62-arch-a7r2-run, y escribe kit/kit-params.json. Lo ejecuta quien prepara el kit, una sola vez. Derivado del
++prepare_clone.py del kit de A-7 ronda 1 (R20261019T010200Z-4a72): el mismo clon (desde el directorio común de git, HEAD separado, sin ramas ni
++remoto) y las mismas precondiciones de solo lectura, con el objeto de la ronda 2, su evidencia (I-62-A7/r2/) y la sección §94.
+ 
+-Argumentos: <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT>, SHA completos. CLONE_COMMIT es el commit que contiene decisiones §93 (la orden del
+-kit y la autorización), la publicación de A-7 y la custodia del resultado `run` de sus guardas; PUBLICATION, el commit que publica A-7 (su padre no
+-tiene A-7); GUARDS_RUN_COMMIT, el que custodia el resultado `run` (docs/automation/evidence/I-62-A7/a7-guards-result-run.json).
++Argumentos: <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT>, SHA completos. CLONE_COMMIT es el commit que contiene decisiones §94 (la orden del
++kit), la publicación de la ronda 2 y la custodia del resultado `run` de sus guardas (b432c40f); PUBLICATION, el commit que publica la ronda 2
++(e90b444d; su padre tiene la ronda 1, blob 6c29747d…); GUARDS_RUN_COMMIT, el que custodia el resultado `run`
++(docs/automation/evidence/I-62-A7/r2/a7-guards-result-run.json).
+ Comprueba antes de escribir nada (solo lectura de git en el worktree de I-62, con GIT_OPTIONAL_LOCKS=0): los tres son commits; CLONE_COMMIT es
+-alcanzable desde la punta de la rama; PUBLICATION ≤ GUARDS_RUN_COMMIT ≤ CLONE_COMMIT; el padre de PUBLICATION no tiene A-7; PUBLICATION,
+-GUARDS_RUN_COMMIT y CLONE_COMMIT tienen el blob de A-7 fijado (6c29747d…) y la A-6 acordada (4bc919dd…); en CLONE_COMMIT, decisiones tiene §78,
+-§92 y §93, y §93 es su última sección numerada, y I-62-A7/ tiene el resultado `run` de las guardas; I-62-A7/ sin cambios desde la publicación salvo
+-añadidos; kit/order.txt es el cuerpo §93; ni el clon, ni el run, ni kit/kit-params.json existen todavía. Después (HEAD separado en el commit, sin
++alcanzable desde la punta de la rama; PUBLICATION ≤ GUARDS_RUN_COMMIT ≤ CLONE_COMMIT; el padre de PUBLICATION tiene la ronda 1 (6c29747d…);
++PUBLICATION, GUARDS_RUN_COMMIT y CLONE_COMMIT tienen el blob de la ronda 2 fijado (8a528133…) y la A-6 acordada (4bc919dd…); en CLONE_COMMIT,
++decisiones tiene §78, §92, §93 y §94, y §94 es su última sección numerada; I-62-A7/r2/ tiene el resultado `run` y no cambia desde la publicación
++salvo añadidos; la evidencia de la ronda 1 (I-62-A7/ fuera de r2/ y r2-dispositions/) no cambia del padre de la publicación al commit del clon; la
++revisión de la ronda 1 (docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/) está en el commit del clon; kit/order.txt es el cuerpo
++§94 y kit/a7-r1.md el blob de la ronda 1; ni el clon, ni el run, ni kit/kit-params.json existen todavía. Después (HEAD separado en el commit, sin
+ ramas locales ni remoto), clonando desde el directorio común de Git del worktree:
+-  git clone -q --no-local -c core.autocrlf=false --single-branch --branch <rama> <directorio común de git> D:\\r62-arch-a7
+-  git -C D:\\r62-arch-a7 checkout -q --detach <CLONE_COMMIT>
+-  git -C D:\\r62-arch-a7 branch -D <rama>
+-  git -C D:\\r62-arch-a7 remote remove origin
+-  git -C D:\\r62-arch-a7 reflog expire --expire=now --all ; git -C D:\\r62-arch-a7 gc -q --prune=now
+-  D:\\r62-arch-a7-run\\order.txt = copia byte a byte de kit/; prompt.md lo copia quien termina el kit tras renderizarlo
++  git clone -q --no-local -c core.autocrlf=false --single-branch --branch <rama> <directorio común de git> D:\\r62-arch-a7r2
++  git -C D:\\r62-arch-a7r2 checkout -q --detach <CLONE_COMMIT>
++  git -C D:\\r62-arch-a7r2 branch -D <rama>
++  git -C D:\\r62-arch-a7r2 remote remove origin
++  git -C D:\\r62-arch-a7r2 reflog expire --expire=now --all ; git -C D:\\r62-arch-a7r2 gc -q --prune=now
++  D:\\r62-arch-a7r2-run\\order.txt y a7-r1.md = copias byte a byte de kit/; prompt.md y las copias fieles los copia quien termina el kit
+ No escribe en el worktree ni en el repositorio de origen (git clone --no-local solo lee).
+ Uso: python -B prepare_clone.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT>
+ """
+@@ -31,17 +34,25 @@
+ import sys
+ 
+ KIT = os.path.dirname(os.path.abspath(__file__))
+-CLONE, RUN = r"D:\r62-arch-a7", r"D:\r62-arch-a7-run"
++CLONE, RUN = r"D:\r62-arch-a7r2", r"D:\r62-arch-a7r2-run"
+ WORKTREE = os.path.join(os.environ["USERPROFILE"], ".codex", "worktrees", "architecture-portabilidad-coordinador-principal")
+ WORKTREE_DISPLAY = "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal"
+ BRANCH = "architecture/portabilidad-coordinador-principal"
+ OBJECT = "docs/initiatives/I-62-A-7.md"
+-OBJECT_BLOB = "6c29747d61c5f689a195095ad3712e6d9dba62aa"
++OBJECT_BLOB = "8a528133c7cccd83356e31f8fd79cd2ebb0cec15"                 # A-7 ronda 2 (decisiones §94)
++PREV_BLOB = "6c29747d61c5f689a195095ad3712e6d9dba62aa"                   # A-7 ronda 1 (kit/a7-r1.md; padre de la publicación)
+ A6, A6_AGREED_BLOB = "docs/initiatives/I-62-A-6.md", "4bc919dd4768ab81abc74b70d3a4a3821c07feb5"
+-EVID = "docs/automation/evidence/I-62-A7/"
++R1EVID = "docs/automation/evidence/I-62-A7/"
++EVID = R1EVID + "r2/"
++R1EVID_EXCLUDE = (EVID, R1EVID + "r2-dispositions/")
++R1_REVIEW = "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/"
+ RUN_RESULT = EVID + "a7-guards-result-run.json"
+-ORDER_SHA = "a5c37f714364bc704c5f38218ae2b1a9209052c47834dcc5349684eb141be41b"
+-AUTH_SECTION = 93
++ORDER_SHA = "515ccfa37205aa1d9d1fccbd3eb3c2ed0c2b56b8bb67c56102d1a8b0bea3db0e"   # cuerpo pegado de §94 (3 522 bytes)
++LAST_SECTION = 94
++
++
++def git_blob(b):
++    return hashlib.sha1(b"blob %d\x00" % len(b) + b).hexdigest()
+ 
+ 
+ def wt(*a):
+@@ -68,32 +79,41 @@
+         if os.path.exists(p):
+             raise SystemExit("ya existe %s: no se rehace (una sola preparación por kit)" % p)
+     if hashlib.sha256(open(os.path.join(KIT, "order.txt"), "rb").read()).hexdigest() != ORDER_SHA:
+-        raise SystemExit("kit/order.txt distinto del cuerpo §93")
++        raise SystemExit("kit/order.txt distinto del cuerpo §94")
++    if git_blob(open(os.path.join(KIT, "a7-r1.md"), "rb").read()) != PREV_BLOB:
++        raise SystemExit("kit/a7-r1.md no es el blob 6c29747d de la ronda 1")
+     common = wt("rev-parse", "--path-format=absolute", "--git-common-dir").stdout.strip()
+     tip = wt("rev-parse", "refs/heads/" + BRANCH).stdout.strip()
+     parent = wt("rev-parse", pub + "^").stdout.strip()
+     blob = wt("rev-parse", clone_commit + ":" + OBJECT).stdout.strip()
+     dec = wt("show", clone_commit + ":docs/automation/decisions/I-62.md").stdout.split("\n")
+-    s93 = [i for i, l in enumerate(dec) if l.startswith("## %d. " % AUTH_SECTION)]
++    s_last = [i for i, l in enumerate(dec) if l.startswith("## %d. " % LAST_SECTION)]
+     numbered = [int(m.group(1)) for m in (re.match(r"^## ([0-9]+)\. ", l) for l in dec) if m]
+     ev_pub = set(x for x in wt("ls-tree", "-r", "--name-only", pub, "--", EVID).stdout.split("\n") if x)
+     ev_now = set(x for x in wt("ls-tree", "-r", "--name-only", clone_commit, "--", EVID).stdout.split("\n") if x)
++    r1_now = sorted(x for x in wt("ls-tree", "-r", "--name-only", clone_commit, "--", R1EVID).stdout.split("\n")
++                    if x and not x.startswith(R1EVID_EXCLUDE))
++    r1_parent = sorted(x for x in wt("ls-tree", "-r", "--name-only", parent, "--", R1EVID).stdout.split("\n") if x)
+     checks = {
+         "CommonGitDirFound": bool(common) and os.path.isdir(common),
+         "CommitsExist": all(wt("cat-file", "-e", c + "^{commit}").returncode == 0 for c in (clone_commit, pub, grc)),
+         "CloneCommitReachableFromBranchTip": wt("merge-base", "--is-ancestor", clone_commit, tip).returncode == 0,
+         "PublicationAncestorOfGuardsRun": wt("merge-base", "--is-ancestor", pub, grc).returncode == 0,
+         "GuardsRunAncestorOfCloneCommit": wt("merge-base", "--is-ancestor", grc, clone_commit).returncode == 0,
+-        "A7AbsentAtPublicationParent": wt("cat-file", "-e", parent + ":" + OBJECT).returncode != 0,
++        "Round1AtPublicationParent": wt("rev-parse", parent + ":" + OBJECT).stdout.strip() == PREV_BLOB,
+         "SameA7BlobAtPublicationGuardsRunAndClone": blob == OBJECT_BLOB and all(wt("rev-parse", c + ":" + OBJECT).stdout.strip() == blob
+                                                                                 for c in (pub, grc)),
+-        "AgreedA6BlobAtPublicationGuardsRunAndClone": all(wt("rev-parse", c + ":" + A6).stdout.strip() == A6_AGREED_BLOB
+-                                                          for c in (pub, grc, clone_commit)),
+-        "Decisions78_92_93AtCloneCommit": all(any(l.startswith("## %d. " % n) for l in dec) for n in (78, 92, 93)),
+-        "Decisions93IsTheLastSectionAtCloneCommit": len(s93) == 1 and bool(numbered) and max(numbered) == AUTH_SECTION,
+-        "GuardsRunResultAtCloneCommit": RUN_RESULT in ev_now,
+-        "A7EvidenceUnchangedSincePublication": all(wt("rev-parse", pub + ":" + p).stdout.strip() == wt("rev-parse", clone_commit + ":" + p).stdout.strip()
+-                                                   for p in ev_pub),
++        "AgreedA6BlobAtParentPublicationGuardsRunAndClone": all(wt("rev-parse", c + ":" + A6).stdout.strip() == A6_AGREED_BLOB
++                                                                for c in (parent, pub, grc, clone_commit)),
++        "Decisions78_92_93_94AtCloneCommit": all(any(l.startswith("## %d. " % n) for l in dec) for n in (78, 92, 93, 94)),
++        "Decisions94IsTheLastSectionAtCloneCommit": len(s_last) == 1 and bool(numbered) and max(numbered) == LAST_SECTION,
++        "GuardsRunResultAtCloneCommit": RUN_RESULT in ev_now and RUN_RESULT not in ev_pub,
++        "R2EvidenceUnchangedSincePublication": bool(ev_pub) and all(wt("rev-parse", pub + ":" + p).stdout.strip() ==
++                                                                    wt("rev-parse", clone_commit + ":" + p).stdout.strip() for p in ev_pub),
++        "R1EvidenceUnchangedFromParentToClone": r1_now == r1_parent and all(wt("rev-parse", parent + ":" + p).stdout.strip() ==
++                                                                            wt("rev-parse", clone_commit + ":" + p).stdout.strip() for p in r1_now),
++        "Round1ReviewAtCloneCommit": all(wt("cat-file", "-e", clone_commit + ":" + R1_REVIEW + n).returncode == 0
++                                         for n in ("output.json", "audit.json", "README.md")),
+     }
+     if not all(checks.values()):
+         print(json.dumps({"Refused": "precondiciones no satisfechas: no se escribe nada", "Checks": checks, "BranchTip": tip}, indent=1))
+@@ -109,13 +129,15 @@
+     for c in cmds:
+         run(c)
+     os.makedirs(RUN)
+-    shutil.copyfile(os.path.join(KIT, "order.txt"), os.path.join(RUN, "order.txt"))
++    for n in ("order.txt", "a7-r1.md"):
++        shutil.copyfile(os.path.join(KIT, n), os.path.join(RUN, n))
+     common_display = "<directorio común de git del worktree (el del repositorio de trabajo)>"
+     shown = [" ".join(c).replace(common, common_display) for c in cmds] + [
+-        "copia byte a byte de kit/order.txt (= cuerpo §93) → D:\\r62-arch-a7-run\\",
+-        "copia byte a byte de kit/prompt.md (renderizado por make_closure.py --render-prompt) → D:\\r62-arch-a7-run\\prompt.md"]
+-    params = {"Schema": "rackcad-a7-review-kit-params/0", "Provisional": False, "CloneCommit": clone_commit, "Publication": pub,
++        "copia byte a byte de kit/order.txt (= cuerpo §94) y kit/a7-r1.md (= blob 6c29747d de la ronda 1) → D:\\r62-arch-a7r2-run\\",
++        "copia byte a byte de kit/prompt.md y de las copias fieles kit/fiel__*.txt (make_closure.py) → D:\\r62-arch-a7r2-run\\"]
++    params = {"Schema": "rackcad-a7r2-review-kit-params/0", "Provisional": False, "CloneCommit": clone_commit, "Publication": pub,
+               "PublicationParent": parent, "GuardsRunCommit": grc, "Object": {"Path": OBJECT, "Blob": blob},
++              "PreviousObject": {"Path": OBJECT, "Blob": PREV_BLOB, "RunFile": "a7-r1.md"},
+               "A6Agreed": {"Path": A6, "Blob": A6_AGREED_BLOB},
+               "A7EvidenceAddedAfterPublication": sorted(ev_now - ev_pub), "Clone": CLONE, "Run": RUN, "Branch": BRANCH, "BranchTipAtClone": tip,
+               "Worktree": WORKTREE_DISPLAY, "CloneSource": common_display,

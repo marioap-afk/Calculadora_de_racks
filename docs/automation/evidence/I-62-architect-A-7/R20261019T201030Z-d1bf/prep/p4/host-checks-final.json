@@ -1,0 +1,47 @@
+{
+ "Schema": "a7r2-host-checks/1",
+ "UtcTime": "2026-10-22T18:13:56Z",
+ "MainCheckout": {
+  "Branch": "main",
+  "Head": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+  "StatusLines": 0,
+  "OriginMainLocal": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453"
+ },
+ "I64": {
+  "Worktree": "architecture-workspace-persistente-rackcad",
+  "Head": "09f2f1c3",
+  "StatusLines": 0
+ },
+ "W": {
+  "Worktree": "architecture-portabilidad-coordinador-principal",
+  "Head": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+  "StatusLines": 0
+ },
+ "R2Clone": {
+  "Path": "D:\\r62-arch-a7r2",
+  "Head": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+  "StatusLinesWithIgnored": 0
+ },
+ "R1Clone": {
+  "Path": "D:\\r62-arch-a7",
+  "Head": "5158e4bc17ad48160d8573b7f48f3923e3197f06",
+  "StatusLinesWithIgnored": 0
+ },
+ "R1Run": {
+  "Path": "D:\\r62-arch-a7-run",
+  "Entries": 3,
+  "NewestMtimeUtc": "2026-10-19T05:53:50Z"
+ },
+ "Processes": [
+  {
+   "Name": "acad.exe",
+   "Pid": 14588,
+   "Started": "2026-10-22T10:40:12.943893-06:00",
+   "CommandLine": "\"C:\\Program Files\\Autodesk\\AutoCAD 2025\\acad.exe\"  /product ACAD /language \"en-US\""
+  }
+ ],
+ "Load": {
+  "FreeRamGB": "23.6",
+  "CpuPercent": "43"
+ }
+}

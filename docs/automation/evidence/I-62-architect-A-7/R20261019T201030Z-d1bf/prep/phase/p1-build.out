@@ -1,0 +1,222 @@
+{
+ "Commit": "3851370c566ecb147313ce048b87bfe1e81de410",
+ "Canonical": 201,
+ "Bytes": 5057384,
+ "Copies": 33,
+ "Flagged": {
+  "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx": {
+   "BOM": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-A7/b1-like/uc/fixture-tests.trx": {
+   "BOM": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-A7/check_a7_closure.py": {
+   "ZWNBSP": [
+    111
+   ]
+  },
+  "docs/automation/evidence/I-62-A7/derive_r4.py": {
+   "ZWNBSP": [
+    49
+   ]
+  },
+  "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-CONTRACT.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-DELEG.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-A6/r4/r1probes/p9-n4.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-A6/r4/r1probes/p10-nc1.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/derive_r4.py": {
+   "ZWNBSP": [
+    49
+   ]
+  },
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/frozen/m7-run.snapshot.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx": {
+   "BOM": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json": {
+   "LONG_LINE": [
+    1
+   ]
+  },
+  "docs/initiatives/I-62-proposal-v14.md": {
+   "LONG_LINE": [
+    2352,
+    2380,
+    2382
+   ]
+  },
+  "docs/initiatives/I-62-A-3.md": {
+   "LONG_LINE": [
+    1487
+   ]
+  },
+  "docs/automation/decisions/I-62.md": {
+   "LONG_LINE": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805,
+    819
+   ]
+  },
+  "zz-fidelity-fixture/bare-cr.txt": {
+   "BARE_CR": [
+    2
+   ]
+  },
+  "zz-fidelity-fixture/bom.trx": {
+   "BOM": [
+    1
+   ]
+  },
+  "zz-fidelity-fixture/control.txt": {
+   "CONTROL": [
+    1,
+    2,
+    3
+   ]
+  },
+  "zz-fidelity-fixture/crlf-bom.txt": {
+   "BOM": [
+    1
+   ]
+  },
+  "zz-fidelity-fixture/doc.pdf": {
+   "SPECIAL_EXTENSION": [
+    0
+   ]
+  },
+  "zz-fidelity-fixture/invalid-utf8.txt": {
+   "INVALID_UTF8": [
+    2
+   ]
+  },
+  "zz-fidelity-fixture/line-separator.txt": {
+   "LINE_SEPARATOR": [
+    1
+   ]
+  },
+  "zz-fidelity-fixture/long-line.txt": {
+   "LONG_LINE": [
+    2
+   ]
+  },
+  "zz-fidelity-fixture/nul-byte.txt": {
+   "NUL": [
+    2
+   ]
+  },
+  "zz-fidelity-fixture/zwnbsp.txt": {
+   "ZWNBSP": [
+    2
+   ]
+  }
+ },
+ "ClosureSha256": "235ab12dc3de96e821e4b0729015d2a9a3a74570227ac35ea580388a9af54f15",
+ "PromptSha256": "95eea59de4820292e09306a410771bb3dff56fe85db06b80083dbc2f912775b0",
+ "RunListing": [
+  "fiel__docs__automation__decisions__I-62.md.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p10-nc1.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p7-derive.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p9-n4.json.txt",
+  "fiel__docs__automation__evidence__I-62-A7__b1-like__main__fixture-tests.trx.txt",
+  "fiel__docs__automation__evidence__I-62-A7__b1-like__uc__fixture-tests.trx.txt",
+  "fiel__docs__automation__evidence__I-62-A7__check_a7_closure.py.txt",
+  "fiel__docs__automation__evidence__I-62-A7__derive_r4.py.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt",
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+  "fiel__docs__initiatives__I-62-A-3.md.txt",
+  "fiel__docs__initiatives__I-62-proposal-v14.md.txt",
+  "fiel__zz-fidelity-fixture__bare-cr.txt.txt",
+  "fiel__zz-fidelity-fixture__bom.trx.txt",
+  "fiel__zz-fidelity-fixture__control.txt.txt",
+  "fiel__zz-fidelity-fixture__crlf-bom.txt.txt",
+  "fiel__zz-fidelity-fixture__doc.pdf.txt",
+  "fiel__zz-fidelity-fixture__invalid-utf8.txt.txt",
+  "fiel__zz-fidelity-fixture__line-separator.txt.txt",
+  "fiel__zz-fidelity-fixture__long-line.txt.txt",
+  "fiel__zz-fidelity-fixture__nul-byte.txt.txt",
+  "fiel__zz-fidelity-fixture__zwnbsp.txt.txt",
+  "order.txt",
+  "prompt.md"
+ ]
+}

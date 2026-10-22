@@ -1,0 +1,32 @@
+{
+ "Status": "MEASURED",
+ "ArgsTemplate": [
+  "-p",
+  "--model",
+  "claude-opus-5-5",
+  "--effort",
+  "xhigh",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+  "--safe-mode",
+  "--strict-mcp-config",
+  "--no-chrome",
+  "--tools",
+  "Read,Grep,Glob",
+  "--permission-mode",
+  "dontAsk",
+  "--permission-prompts",
+  "none",
+  "--add-dir",
+  "<add-dir>",
+  "--session-id",
+  "<session-id>",
+  "--json-schema",
+  "<json-schema>"
+ ],
+ "CharacterizationSha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c",
+ "AcceptanceSha256": null,
+ "Problems": [],
+ "Ok": true
+}

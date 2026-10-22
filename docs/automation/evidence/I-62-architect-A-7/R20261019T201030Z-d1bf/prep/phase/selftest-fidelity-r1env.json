@@ -1,0 +1,547 @@
+{
+ "Selftest": "fidelity.py (detector, copia fiel RACKCAD-COPIA-FIEL/1, run_files_of) — negativos del componente de fidelidad",
+ "Modules": {
+  "fidelity.py": "4080b8e04b96e9514b61ac8d7054714708103424fc6ced906900bef3cd4f2e9d",
+  "selftest-fidelity.py": "288be8bcc3c6c4164b37efec06215854e853374ba9da1a3cad4b6801e428e8b4"
+ },
+ "Cases": [
+  {
+   "Case": "FD01-bom",
+   "Result": "PASS",
+   "Expected": {
+    "BOM": [
+     1
+    ]
+   },
+   "Got": {
+    "BOM": [
+     1
+    ]
+   }
+  },
+  {
+   "Case": "FD02-bom-solo-al-principio",
+   "Result": "PASS",
+   "Expected": {
+    "ZWNBSP": [
+     2
+    ]
+   },
+   "Got": {
+    "ZWNBSP": [
+     2
+    ]
+   }
+  },
+  {
+   "Case": "FD03-linea-1901",
+   "Result": "PASS",
+   "Expected": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "Got": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Case": "FD04-linea-1900",
+   "Result": "PASS",
+   "Expected": {},
+   "Got": {}
+  },
+  {
+   "Case": "FD05-linea-2001",
+   "Result": "PASS",
+   "Expected": {
+    "LONG_LINE": [
+     2
+    ]
+   },
+   "Got": {
+    "LONG_LINE": [
+     2
+    ]
+   }
+  },
+  {
+   "Case": "FD06-linea-utf16",
+   "Result": "PASS",
+   "Expected": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "Got": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Case": "FD07-cr-suelto",
+   "Result": "PASS",
+   "Expected": {
+    "BARE_CR": [
+     1
+    ]
+   },
+   "Got": {
+    "BARE_CR": [
+     1
+    ]
+   }
+  },
+  {
+   "Case": "FD08-crlf-aceptado",
+   "Result": "PASS",
+   "Expected": {},
+   "Got": {}
+  },
+  {
+   "Case": "FD09-cr-al-final-sin-lf",
+   "Result": "PASS",
+   "Expected": {
+    "BARE_CR": [
+     2
+    ]
+   },
+   "Got": {
+    "BARE_CR": [
+     2
+    ]
+   }
+  },
+  {
+   "Case": "FD10-nul",
+   "Result": "PASS",
+   "Expected": {
+    "NUL": [
+     2
+    ]
+   },
+   "Got": {
+    "NUL": [
+     2
+    ]
+   }
+  },
+  {
+   "Case": "FD11-utf8-invalido",
+   "Result": "PASS",
+   "Expected": {
+    "INVALID_UTF8": [
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "Got": {
+    "INVALID_UTF8": [
+     1,
+     2,
+     3,
+     4
+    ]
+   }
+  },
+  {
+   "Case": "FD12-tab",
+   "Result": "PASS",
+   "Expected": {
+    "CONTROL": [
+     1
+    ]
+   },
+   "Got": {
+    "CONTROL": [
+     1
+    ]
+   }
+  },
+  {
+   "Case": "FD13-esc-del-c1",
+   "Result": "PASS",
+   "Expected": {
+    "CONTROL": [
+     1,
+     2,
+     3
+    ]
+   },
+   "Got": {
+    "CONTROL": [
+     1,
+     2,
+     3
+    ]
+   }
+  },
+  {
+   "Case": "FD14-zwnbsp-interior",
+   "Result": "PASS",
+   "Expected": {
+    "ZWNBSP": [
+     1
+    ]
+   },
+   "Got": {
+    "ZWNBSP": [
+     1
+    ]
+   }
+  },
+  {
+   "Case": "FD15-bom-y-zwnbsp",
+   "Result": "PASS",
+   "Expected": {
+    "BOM": [
+     1
+    ],
+    "ZWNBSP": [
+     1
+    ]
+   },
+   "Got": {
+    "BOM": [
+     1
+    ],
+    "ZWNBSP": [
+     1
+    ]
+   }
+  },
+  {
+   "Case": "FD16-separador-de-linea",
+   "Result": "PASS",
+   "Expected": {
+    "LINE_SEPARATOR": [
+     1,
+     2
+    ]
+   },
+   "Got": {
+    "LINE_SEPARATOR": [
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "Case": "FD17-extension-especial",
+   "Result": "PASS",
+   "Expected": {
+    "SPECIAL_EXTENSION": [
+     0
+    ]
+   },
+   "Got": {
+    "SPECIAL_EXTENSION": [
+     0
+    ]
+   }
+  },
+  {
+   "Case": "FD18-limpio",
+   "Result": "PASS",
+   "Expected": {},
+   "Got": {}
+  },
+  {
+   "Case": "FD19-vacio",
+   "Result": "PASS",
+   "Expected": {},
+   "Got": {}
+  },
+  {
+   "Case": "FD20-varias-clases-en-orden",
+   "Result": "PASS",
+   "Expected": {
+    "BOM": [
+     1
+    ],
+    "INVALID_UTF8": [
+     1
+    ],
+    "NUL": [
+     1
+    ],
+    "BARE_CR": [
+     1
+    ],
+    "CONTROL": [
+     1
+    ],
+    "LONG_LINE": [
+     1
+    ],
+    "ZWNBSP": [
+     1
+    ],
+    "LINE_SEPARATOR": [
+     1
+    ],
+    "SPECIAL_EXTENSION": [
+     0
+    ]
+   },
+   "Got": {
+    "BOM": [
+     1
+    ],
+    "INVALID_UTF8": [
+     1
+    ],
+    "NUL": [
+     1
+    ],
+    "BARE_CR": [
+     1
+    ],
+    "CONTROL": [
+     1
+    ],
+    "LONG_LINE": [
+     1
+    ],
+    "ZWNBSP": [
+     1
+    ],
+    "LINE_SEPARATOR": [
+     1
+    ],
+    "SPECIAL_EXTENSION": [
+     0
+    ]
+   }
+  },
+  {
+   "Case": "FD21-sobre-el-limite-de-read",
+   "Result": "PASS",
+   "Got": {
+    "Path": "x.txt",
+    "Bytes": 3954,
+    "Sha256": "50355f9719925dad6a0da9c7871e55345595ccac572cce401f4f3a5cad6bccd5",
+    "Blob": "2a44b65b5f4b1c8372267e071febb497186fd4a5",
+    "Lines": 3,
+    "FinalNewline": false,
+    "MaxLineUtf16": 2001,
+    "LinesOverReadLimit": [
+     2
+    ],
+    "Flags": {
+     "LONG_LINE": [
+      2,
+      3
+     ]
+    },
+    "Flagged": true
+   }
+  },
+  {
+   "Case": "FE01-ida-y-vuelta-exacta",
+   "Result": "PASS",
+   "Failing": [],
+   "Samples": 18
+  },
+  {
+   "Case": "FE02-copia-legible",
+   "Result": "PASS",
+   "Failing": []
+  },
+  {
+   "Case": "FE03-misma-numeracion",
+   "Result": "PASS",
+   "Failing": []
+  },
+  {
+   "Case": "FE04-bom-explicito",
+   "Result": "PASS",
+   "Got": [
+    "\\xEF\\xBB\\xBFuno\\x0D",
+    "dos\\x0D"
+   ]
+  },
+  {
+   "Case": "FE05-cr-explicito",
+   "Result": "PASS",
+   "Got": [
+    "antes\\x0Ddespues",
+    "b\\x0D"
+   ]
+  },
+  {
+   "Case": "FE06-bytes-invalidos-y-controles",
+   "Result": "PASS",
+   "Got": [
+    "a \\xFF b",
+    "\\xC3",
+    "\\xED\\xA0\\x80",
+    "\\xC0\\xAF fin",
+    "a\\x09b",
+    "ESC \\x1B[0m",
+    "DEL \\x7F",
+    "C1 \\xC2\\x85"
+   ]
+  },
+  {
+   "Case": "FE07-barras-invertidas",
+   "Result": "PASS",
+   "Got": [
+    "a \\x20",
+    " \\x20",
+    "",
+    "\\\\>\\\\\\\\",
+    "fin\\\\"
+   ]
+  },
+  {
+   "Case": "FE08-no-ascii-no-medido",
+   "Result": "PASS",
+   "Got": "\\xC3\\x91andú \\xE2\\x9C\\x93 \\xE2\\x89\\x88 \\xC3\\x97"
+  },
+  {
+   "Case": "FE09-determinista",
+   "Result": "PASS",
+   "Diff": [
+    6
+   ]
+  },
+  {
+   "Case": "FE10-cortes-de-linea",
+   "Result": "PASS",
+   "Lay": {
+    "1": [
+     1
+    ],
+    "2": [
+     2,
+     7
+    ],
+    "3": [
+     3
+    ],
+    "4": [
+     4,
+     8
+    ],
+    "5": [
+     5
+    ]
+   }
+  },
+  {
+   "Case": "FE11-espacio-final-en-un-corte",
+   "Result": "PASS",
+   "Got": [
+    "zzzzzz\\>",
+    "@1.2|z\\x20",
+    "3|wwwwww\\x20"
+   ]
+  },
+  {
+   "Case": "FV01-copia-ausente",
+   "Result": "PASS",
+   "Got": [
+    "copia ausente"
+   ]
+  },
+  {
+   "Case": "FV02-cada-byte-alterado-se-detecta",
+   "Result": "PASS",
+   "Positions": 3706,
+   "Missed": []
+  },
+  {
+   "Case": "FV03-bom-eliminado-en-silencio",
+   "Result": "PASS",
+   "Got": [
+    "la copia no reproduce los bytes del original (SHA-256 7b44416c98a5…; el original edcf9d45494c…)"
+   ]
+  },
+  {
+   "Case": "FV04-copia-de-otro-original-con-los-mismos-bytes",
+   "Result": "PASS",
+   "Got": [
+    "la copia nombra otro original (otra/ruta.trx)"
+   ]
+  },
+  {
+   "Case": "FV05-escritura-no-canonica",
+   "Result": "PASS",
+   "Got": [
+    "la copia no es la codificación canónica de lo que decodifica"
+   ]
+  },
+  {
+   "Case": "FV06-estructura-rota",
+   "Result": "PASS",
+   "Bad": {}
+  },
+  {
+   "Case": "FV07-linea-larga-unida",
+   "Result": "PASS",
+   "Got": [
+    "la copia no es la codificación canónica de lo que decodifica"
+   ]
+  },
+  {
+   "Case": "FR01-coherente",
+   "Result": "PASS",
+   "Got": [
+    "order.txt",
+    "prompt.md",
+    "fiel__a.txt",
+    "fiel__b.txt"
+   ]
+  },
+  {
+   "Case": "FR02-sin-faithfulcopies",
+   "Result": "PASS"
+  },
+  {
+   "Case": "FR03-copia-fuera-del-final",
+   "Result": "PASS"
+  },
+  {
+   "Case": "FR04-nombres-repetidos",
+   "Result": "PASS"
+  },
+  {
+   "Case": "FR05-copia-como-premisa",
+   "Result": "PASS"
+  },
+  {
+   "Case": "FR06-sin-copias",
+   "Result": "PASS"
+  },
+  {
+   "Case": "FN01-nombre-de-la-copia",
+   "Result": "PASS",
+   "Got": [
+    "fiel__docs__a__b.trx.txt",
+    "AssertionError",
+    "AssertionError"
+   ]
+  },
+  {
+   "Case": "FX01-trx-de-r1",
+   "Result": "PASS",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   },
+   "CopyLine1": "\\xEF\\xBB\\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+  }
+ ],
+ "Totals": {
+  "Cases": 47,
+  "Pass": 47
+ },
+ "AllPass": true
+}

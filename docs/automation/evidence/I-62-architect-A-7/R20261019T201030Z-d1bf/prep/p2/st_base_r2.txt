@@ -1,0 +1,184 @@
+# ------------------------------------------------------------------ the A-7 round-2 reads and the base result
+def read_range(r, rel, a, b):
+    r.call("Read", {"file_path": absp(rel), "offset": a, "limit": b - a + 1}, numbered(lines_of(rel)[a - 1:b], a))
+
+
+def read_run_range(r, name, a, b):
+    r.call("Read", {"file_path": RUN + "\\" + name, "offset": a, "limit": b - a + 1}, numbered(lines_of(run=name)[a - 1:b], a))
+
+
+def ap_direct(r):
+    read_range(r, AP, *AP_READ)
+
+
+def step0(r, direct=True):
+    if direct:
+        ap_direct(r)
+    r.call("Read", {"file_path": RUN + "\\order.txt"}, numbered(lines_of(run="order.txt")))
+    read_range(r, DEC, *closure_range(DEC, "## 94. "))
+    r.call("Read", {"file_path": absp(GRR)}, numbered(lines_of(GRR)))
+    r.call("Read", {"file_path": absp(SUMMARY)}, numbered(lines_of(SUMMARY)))
+    read_range(r, R1OUT, 1, 60)
+
+
+def a7_reads(r):
+    r.call("Read", {"file_path": absp(A7)}, numbered(lines_of(A7)))
+    r.call("Read", {"file_path": RUN + "\\a7-r1.md"}, numbered(lines_of(run="a7-r1.md")))
+
+
+def evidence_reads(r):
+    read_range(r, PREFLIGHT_MD, 1, 60)
+    r.call("Read", {"file_path": absp(DISP)}, numbered(lines_of(DISP)))
+
+
+def acceptor_reads(r):
+    read_range(r, ACC, 75, 90)
+    read_range(r, ACC, 2790, len(lines_of(ACC)))
+
+
+def a6_reads(r):
+    read_range(r, A6, 500, 799)
+
+
+def base_calls(r, direct=True):
+    r.header()
+    step0(r, direct)
+    a7_reads(r)
+    evidence_reads(r)
+    acceptor_reads(r)
+    a6_reads(r)
+
+
+def stop_calls(r):
+    r.header()
+    step0(r)
+
+
+def schema_keys(prop):
+    schema = json.load(open(SCHEMA, encoding="utf-8"))
+    return [k for k in schema["properties"][prop]["required"]]
+
+
+def sec_ref(prefix):
+    return ref(A7, *closure_range(A7, prefix))
+
+
+def a7_ref(label):
+    return ref(A7, *closure_range(A7, label))
+
+
+def preflight_ref():
+    return ref(PREFLIGHT_MD, 1, 3)
+
+
+ROUND1_ROWS = {"A62-A7-R1": "§3.6, fila R1", "A62-A7-R2": "§3.6, fila R2", "A62-A7-R3": "§3.6, fila R3"}
+REG_ROWS = {"T04_EFF_EFF1_B1_MAP_VALIDATION": "§3.1, Más allá de R7-A", "T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE": "A7-1, punto 5",
+            "T06_CLAUSEMAP_COVERAGE_RULE": "§3.5, residuo declarado (clausemap)", "T07_MULTI_CATEGORY_ENTRIES": "A7-1, punto 1",
+            "T09_NO_UNAUTHORIZED_CHANGES": "A7-1, punto 8"}
+
+
+def base_result():
+    ids = PR.IDS
+    return {
+        "Schema": "rackcad-a7r2-architect-review/0", "RunId": ids["RunId"], "InvocationId": ids["InvocationId"],
+        "LogicalReviewRequestId": ids["LogicalReviewRequestId"], "AttemptSeq": ids["AttemptSeq"], "RequestedRole": "ARCHITECT",
+        "Action": "REVIEW_DESIGN", "ReviewedUnit": "I-62", "ReviewedCommit": PR.REV, "ReviewedPath": PR.OBJECT, "ReviewedBlob": PR.OBJECT_BLOB,
+        "ReviewerMode": "SEPARATE SESSION", "SamePersonAsAuthor": "selftest",
+        "ReviewerDeclaredIdentity": {"Runtime": "x", "Model": "x", "Effort": "x", "SessionOrThread": "x"},
+        "InjectedContextDeclaration": {"State": "DECLARED", "Items": ["x"]},
+        "Step0": dict([("Basis", "INVOKER_VERIFIED_CLONE")] + [(k, True) for k in schema_keys("Step0") if k not in ("Basis", "Note")] + [("Note", "x")]),
+        "DirectReads": [{"Ref": ref(AP, 616, 617), "Purpose": "x"}],
+        "Reads": ["x"], "Verdict": "AGREED", "RequiredFindings": [], "OptionalFindings": [],
+        "Round1FindingResolution": [{"Round1Finding": f, "Status": "CORRECTED", "Rationale": "x", "ClauseRefs": [a7_ref(ROUND1_ROWS[f])], "FindingIds": []}
+                                    for f in PR.ROUND1],
+        "DeltaPurity": {"Status": "CONFIRMED",
+                        "Changes": [{"Change": k, "Assessment": "WITHIN_R1_R3", "Rationale": "x",
+                                     "ClauseRefs": [a7_ref("§3.6, tabla de correcciones de la ronda 2")], "FindingIds": []} for k in PR.CHANGES],
+                        "Rationale": "x", "ClauseRefs": [sec_ref("### 3.6 ")], "FindingIds": []},
+        "RegressionCheck": [{"Topic": t, "Status": "NO_REGRESSION", "Rationale": "x", "ClauseRefs": [a7_ref(REG_ROWS[t])], "FindingIds": []}
+                            for t in PR.REGRESSION],
+        "Materiality": {"Triggers": [{"Trigger": m, "A7Declared": PR.MAT_A7[m], "Assessment": "AGREE", "Rationale": "x",
+                                      "ClauseRefs": [a7_ref("§5, %s" % m)], "FindingIds": []} for m in PR.TRIGGERS],
+                        "Rationale": "x", "ClauseRefs": [sec_ref("## 5. ")], "FindingIds": []},
+        "OwnerReservedConsequence": {"OwnerDecisionRequired": False, "UnidentifiedConsequences": [], "Rationale": "x",
+                                     "ClauseRefs": [a7_ref("§7, consecuencias reservadas al Owner")], "FindingIds": []},
+        "RelatedImpacts": {"ChangedByRound2": False, "Note": "", "ClauseRefs": [a7_ref("§3.5, lo que A-7 no hace")], "FindingIds": []},
+        "QuestionAnswers": [{"Question": q, "Outcome": "SATISFIED", "Answer": "x", "ClauseRefs": [a7_ref("§8, %s" % q)], "FindingIds": []}
+                            for q in PR.QUESTIONS],
+        "IfAgreed": {k: True for k in IFAGREED_KEYS},
+        "KnownLimitations": [], "RecommendedNextAction": "x"}
+
+
+def rrd(res):
+    return {d["Round1Finding"]: d for d in res["Round1FindingResolution"]}
+
+
+def rgd(res):
+    return {d["Topic"]: d for d in res["RegressionCheck"]}
+
+
+def chd(res):
+    return {d["Change"]: d for d in res["DeltaPurity"]["Changes"]}
+
+
+def trd(res):
+    return {d["Trigger"]: d for d in res["Materiality"]["Triggers"]}
+
+
+def qad(res):
+    return {d["Question"]: d for d in res["QuestionAnswers"]}
+
+
+def odc(res):
+    return {d["Round1Optional"]: d for d in res.get("OptionalDispositionConformance", [])}
+
+
+def mat(res):
+    return res["Materiality"]
+
+
+def orc(res):
+    return res["OwnerReservedConsequence"]
+
+
+def dp(res):
+    return res["DeltaPurity"]
+
+
+def ri(res):
+    return res["RelatedImpacts"]
+
+
+def with_optionals(res, status="CONFORMS", ids=("A62-A7-O1", "A62-A7-O2", "A62-A7-O3")):
+    res["OptionalDispositionConformance"] = [{"Round1Optional": o, "Status": status, "Rationale": "x",
+                                              "ClauseRefs": [ref(DISP, 9 + int(o[-1]) - 1)], "FindingIds": []} for o in ids]
+    return res
+
+
+def req_finding(fid="A62-A7R2-R1", evidence=None):
+    return {"FindingId": fid, "Section": "§3.2 A7-1, punto 1 (c)", "ViolatedInvariant": "x", "Counterexample": "",
+            "Evidence": evidence or [a7_ref("A7-1, punto 1")], "WhyItMatters": "x", "CorrectionRequired": "x"}
+
+
+def opt_finding(fid="A62-A7R2-O1"):
+    return {"FindingId": fid, "Section": "§8", "Note": "x", "Evidence": [a7_ref("§8, Q-A7R2-01")], "SuggestedCorrection": "x"}
+
+
+def not_agreed(res, verdict):
+    res["Verdict"] = verdict
+    res["IfAgreed"] = {k: None for k in IFAGREED_KEYS}
+
+
+def changes_required(res, verdict="CHANGES REQUIRED"):
+    """A coherent CHANGES REQUIRED (or REJECTED) skeleton: one REQUIRED that leaves A62-A7-R1 in PARTIALLY_CORRECTED."""
+    not_agreed(res, verdict)
+    res["RequiredFindings"] = [req_finding()]
+    rrd(res)["A62-A7-R1"].update({"Status": "PARTIALLY_CORRECTED", "FindingIds": ["A62-A7R2-R1"]})
+
+
+def blocked(res):
+    """A coherent BLOCKED — OWNER DECISION skeleton."""
+    not_agreed(res, BLOCKED)
+    orc(res).update({"OwnerDecisionRequired": True, "UnidentifiedConsequences": ["x"]})
+
+

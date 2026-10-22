@@ -1,0 +1,49 @@
+{
+ "Schema": "rackcad-transport-gate/v1",
+ "Purpose": "desviación D-01: C1 midió la lista sin --add-dir; launch.py se niega a lanzar mientras Status = PENDING",
+ "RunId": "R20261019T201030Z-d1bf",
+ "SessionId": "3dd5ac31-ddf5-4e4a-b732-b913933a9ae3",
+ "Binary": {
+  "Path": "%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe",
+  "Sha256": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b",
+  "Version": "2.1.299 (Claude Code)"
+ },
+ "ArgsTemplate": [
+  "-p",
+  "--model",
+  "claude-opus-5-5",
+  "--effort",
+  "xhigh",
+  "--output-format",
+  "stream-json",
+  "--verbose",
+  "--safe-mode",
+  "--strict-mcp-config",
+  "--no-chrome",
+  "--tools",
+  "Read,Grep,Glob",
+  "--permission-mode",
+  "dontAsk",
+  "--permission-prompts",
+  "none",
+  "--add-dir",
+  "<add-dir>",
+  "--session-id",
+  "<session-id>",
+  "--json-schema",
+  "<json-schema>"
+ ],
+ "UnmeasuredInC1": [
+  "--add-dir"
+ ],
+ "Status": "MEASURED",
+ "Characterization": {
+  "Path": "D:\\r62-a7\\kit-review2\\kit\\claude-cli-characterization.json",
+  "Sha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c"
+ },
+ "Acceptance": null,
+ "Routes": {
+  "MEASURED": "vía a: el registro de caracterización R20261008T183600Z-char ya tiene Probes.C3 en PASS sobre la plantilla exacta (sonda C3 de decisiones §56, punto 7); set MEASURED <ese registro>; ninguna sonda nueva",
+  "ACCEPTED": "vía b: registro rackcad-transport-acceptance/v1 de la sesión principal o del Coordinator; después set ACCEPTED <caracterización> <aceptación>"
+ }
+}

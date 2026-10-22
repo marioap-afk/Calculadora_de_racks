@@ -1,0 +1,10 @@
+{
+ "Test": "make_manifest.run_files() con copias fieles",
+ "Checks": {
+  "Names": true,
+  "IdenticalToKitCopy": true,
+  "Sha256MatchesClosure": true
+ },
+ "AllPass": true,
+ "RunFiles": 35
+}

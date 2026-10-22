@@ -1,0 +1,35 @@
+{
+ "Patterns": {
+  "WindowsUser": 1,
+  "WindowsUser83": 1,
+  "ProfilePath": 3,
+  "GitName": 1,
+  "GitEmail": 1
+ },
+ "Hits": [],
+ "ExemptHits": [
+  {
+   "File": "fiel__docs__automation__decisions__I-62.md.txt",
+   "Root": "kit",
+   "Classes": {
+    "GitName": 3
+   }
+  },
+  {
+   "File": "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p10-nc1.json.txt",
+   "Root": "kit",
+   "Classes": {
+    "UsersPath": 1
+   }
+  },
+  {
+   "File": "fiel__docs__automation__evidence__I-62-evidence.md.txt",
+   "Root": "kit",
+   "Classes": {
+    "GitName": 3
+   }
+  }
+ ],
+ "FilesScanned": 260,
+ "Clean": true
+}

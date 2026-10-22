@@ -1,0 +1,30 @@
+--- phase1/mutation-post-review.py
++++ r2/mutation-post-review.py
+@@ -1,10 +1,11 @@
+-"""Mutation test of the auditor v5.5-a7 (post-review.py), of transport_gate.py (unchanged from A-6 round 4 and round 3: the D-01 gate and the explicit
+-Windows decoding of decisions §84, point 5) and of owner_gate.py (A-7: Owner line of §78, CLAUDE-CLI-I62, A-7 and agreed A-6 blobs at the worktree
+-HEAD and the Coordinator authorization §93 after §92, pinned with its number, heading, blob and text SHA-256 and no later section) for the ONE formal
+-review of amendment A-7 (decisions §93): «cada regla del auditor tiene un caso que falla sin ella», checked mechanically. The harness of the A-6
+-round-4 kit, unchanged except its names; it honours RACKCAD_A7_KITDATA like the self-test (by default, the real clone and run of the kit). The full
+-battery (every site of the three modules) is this script; mutation-targeted.py runs the same judge on the rule sites that changed (decisions §88,
+-point 3; §93, point 2).
++"""Mutation test of the auditor v6.0-a7r2 (post-review.py), of transport_gate.py (unchanged from A-6 round 4 and round 3: the D-01 gate and the
++explicit Windows decoding of decisions §84, point 5), of owner_gate.py (A-7 round 2: Owner line of §78, CLAUDE-CLI-I62, the round-2 A-7 and agreed
++A-6 blobs at the worktree HEAD and a Coordinator authorization after §94, pinned with its number, heading, blob and text SHA-256 and no later
++section; delivered PENDING, so the audit cases pin a synthetic §95) and of fidelity.py, for the ONE formal review of ROUND 2 of amendment A-7
++(decisions §94, point 6): «cada regla del auditor tiene un caso que falla sin ella», checked mechanically. The harness of the A-7 round-1 kit
++(R20261019T010200Z-4a72, with the read-fidelity extension of phase 1), unchanged except its names; it honours RACKCAD_A7_KITDATA like the self-test
++(by default, the real clone and run of the kit). This is the FULL battery (every site of the four modules), run once at the end of the kit's
++preparation (decisions §88, point 4: auditor rules and launcher check 7 changed).
+ 
+ A rule site is a line that appends a reason or a problem: `add(…)`, `c.append(…)` and `row["Problems"].append(…)` in post-review.py, and
+ `probs.append(…)` in the three modules (aggregating lines such as `for p in row["Problems"]: add(…)` are sites too). Each site is disabled in turn
+@@ -146,7 +147,7 @@
+     os.makedirs(mut_dir, exist_ok=True)
+     failing, n_cases = judge(ST.load_auditor())
+     fid_failing = [c["Case"] for c in SF.cases(SF.load()) if c["Result"] != "PASS"]
+-    doc = {"Mutation": "post-review.py v5.6-a7 + transport_gate.py + owner_gate.py (A-7) + fidelity.py (decisiones §94, punto 5): cada sitio de "
++    doc = {"Mutation": "post-review.py v6.0-a7r2 + transport_gate.py + owner_gate.py (A-7 ronda 2) + fidelity.py (decisiones §94, punto 5): cada sitio de "
+                        "regla desactivado debe hacer fallar al menos un caso del selftest",
+            "Environment": "SYNTHETIC" if ST._CLOSURE.get("Synthetic") else "REAL (clon y run del kit)",
+            "Baseline": {"Cases": n_cases, "Failing": failing, "FidelityUnitFailing": fid_failing, "AllPass": not failing and not fid_failing},

@@ -1,0 +1,113 @@
+--- phase1/owner_gate.py
++++ r2/owner_gate.py
+@@ -1,9 +1,11 @@
+-"""I-62, decisiones §93: compuerta del Owner y de la autorización de la ÚNICA revisión formal de la enmienda A-7 (preflight 11,
+-«11-OwnerAndAuthorizationGate», de launch.py). BLOQUEANTE. Adaptada de owner_gate.py del kit acreditado de A-6 ronda 4 (R20261014T180556Z-5e02,
+-manifiesto b1342909…): las funciones de sección, token, autorización y secciones posteriores, byte a byte; cambian el objeto (A-7 en lugar de la
+-A-6 de la ronda 4), la sección base (§92) y la autorización fijada (§93).
+-
+-§92, punto 9: «Sin lanzar la revisión formal sin una disposición posterior»; §93, punto 1: «Se autoriza UNA revisión formal independiente de A-7».
++"""I-62, decisiones §94: compuerta del Owner y de la autorización de la ÚNICA revisión formal de la RONDA 2 de la enmienda A-7 (preflight 11,
++«11-OwnerAndAuthorizationGate», de launch.py). BLOQUEANTE. Adaptada de owner_gate.py del kit de A-7 ronda 1 (R20261019T010200Z-4a72, a su vez
++del de A-6 ronda 4): las funciones de sección, token, autorización y secciones posteriores, byte a byte; cambian el objeto (A-7 ronda 2, blob
++8a528133…), la sección base (§94) y la autorización, que queda PENDIENTE en el kit entregado (AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None).
++
++§94, punto 6: «Preparar y custodiar un kit de revisión limitado a R1-R3 y sus consecuencias. Sin revisión formal sin una disposición nueva del
++Coordinator». La compuerta bloquea, con el único motivo PENDING_REASON, hasta que una disposición del Coordinator POSTERIOR a §94 que nombre esta
++revisión se fije en este módulo (pin_authorization.py) y el kit se vuelva a congelar.
+ launch.py se NIEGA a lanzar mientras esta compuerta no pase. Comprueba, en el worktree de I-62 en el momento del lanzamiento (solo lectura de git:
+ rev-parse, show, hash-object sin -w y merge-base, con GIT_OPTIONAL_LOCKS=0; nunca escribe en él):
+ 
+@@ -13,22 +15,22 @@
+       está, como línea completa, en la A-6 acordada del commit del clon (A-7 declara que las líneas (a) y (b) de A-6 §7 no cambian);
+   (b) la autorización de revisión vigente: la línea del Owner `CLAUDE-CLI-I62 = A (…)` (decisiones §56; SHA-256 = CLAUDE_LINE_SHA) existe como
+       línea completa; ninguna otra línea empieza por «CLAUDE-CLI-I62 =»; y el SHA-256 medido del binario (preflight 3) = el del cierre;
+-  (c) docs/initiatives/I-62-A-7.md en la HEAD del worktree tiene el blob fijado OBJECT_BLOB (= closure.ObjectBlob; el que identifica §93) y
+-      docs/initiatives/I-62-A-6.md tiene el blob acordado A6_AGREED_BLOB (decisiones §90; §93, punto 8: «Sin alterar los acuerdos A-1..A-6»);
+-  (d) AUTORIZACIÓN: una disposición del Coordinator POSTERIOR a §92 (BASE_SECTION: la disposición que preparó A-7 y prohibió lanzar la revisión
+-      sin una disposición posterior). Se fija en este módulo con AUTH_SECTION (su número), AUTH_HEADING (su encabezado, byte a byte) y
++  (c) docs/initiatives/I-62-A-7.md en la HEAD del worktree tiene el blob fijado OBJECT_BLOB (= closure.ObjectBlob; la ronda 2 de §94) y
++      docs/initiatives/I-62-A-6.md tiene el blob acordado A6_AGREED_BLOB (decisiones §90; §94, punto 2: «Sin modificar A-6»);
++  (d) AUTORIZACIÓN: una disposición del Coordinator POSTERIOR a §94 (BASE_SECTION: la disposición que pidió la segunda candidata y prohibió la
++      revisión formal sin una disposición nueva). Se fija en este módulo con AUTH_SECTION (su número), AUTH_HEADING (su encabezado, byte a byte) y
+       AUTH_TEXT_SHA (el SHA-256 de su texto), que pin_authorization.py calcula sobre el archivo de decisiones. Mientras falte cualquiera de las
+-      tres, la compuerta BLOQUEA con PENDING_REASON y no evalúa ninguna sección. Con las tres fijadas: AUTH_SECTION posterior a §92; EXACTAMENTE
++      tres, la compuerta BLOQUEA con PENDING_REASON y no evalúa ninguna sección. Con las tres fijadas: AUTH_SECTION posterior a §94; EXACTAMENTE
+       una sección «## <AUTH_SECTION>. »; su encabezado es, byte a byte, AUTH_HEADING; su texto contiene, como token literal, el blob completo de
+       A-7; y el SHA-256 de su texto es AUTH_TEXT_SHA. Texto de una sección: sus líneas desde el encabezado hasta antes del encabezado «## »
+-      siguiente (o el final), sin las líneas en blanco finales, unidas con LF y en UTF-8. En este kit, §93 está en el commit del clon y es su última
+-      sección (la orden del kit y la autorización son la misma disposición);
++      siguiente (o el final), sin las líneas en blanco finales, unidas con LF y en UTF-8. En este kit, §94 es la última sección del commit del clon
++      y la autorización tiene que ser una sección posterior, todavía inexistente;
+   (e) con la autorización fijada, NINGUNA sección posterior: un encabezado «## <n>. » con n > AUTH_SECTION bloquea la compuerta y se lista en
+       LaterSections (una disposición posterior tiene que revisarse antes de lanzar, aunque no nombre esta revisión); mientras está pendiente,
+-      LaterSections queda vacío y SectionsAfterBase lista, solo como información, las secciones posteriores a §92;
++      LaterSections queda vacío y SectionsAfterBase lista, solo como información, las secciones posteriores a §94;
+   además, para que (a)-(e) sean el registro de decisiones que continúa al del clon: el archivo del árbol de trabajo es el de la HEAD (sin cambios sin
+   commit: `git hash-object` con los filtros del repositorio = el blob de HEAD), la HEAD desciende del commit del clon y el texto de decisiones del
+-  commit del clon es prefijo exacto del de la HEAD (solo añadido: §78, §92, §93 y lo anterior, intactos).
++  commit del clon es prefijo exacto del de la HEAD (solo añadido: §78, §92, §93, §94 y lo anterior, intactos).
+ 
+ evaluate() es pura (la autoprueba la ejerce con textos sintéticos, en los dos estados, con su argumento auth); check() reúne sus entradas por git y
+ la llama con la autorización del módulo. Cada problema es una línea con probs.append; Ok = sin problemas. El resultado registra los SHA-256
+@@ -42,7 +44,7 @@
+ CHECK = "11-OwnerAndAuthorizationGate"
+ DECISIONS = "docs/automation/decisions/I-62.md"
+ OBJECT_PATH = "docs/initiatives/I-62-A-7.md"
+-OBJECT_BLOB = "6c29747d61c5f689a195095ad3712e6d9dba62aa"         # A-7, ronda 1 (publicada en 6fee8fd6; decisiones §93, objeto identificado)
++OBJECT_BLOB = "8a528133c7cccd83356e31f8fd79cd2ebb0cec15"         # A-7, ronda 2 (publicada en e90b444d; registrada en b432c40f; decisiones §94)
+ A6_PATH = "docs/initiatives/I-62-A-6.md"
+ A6_AGREED_BLOB = "4bc919dd4768ab81abc74b70d3a4a3821c07feb5"      # A-6 AGREED (decisiones §90); A-7 no la modifica
+ A6_LINE_SHA = "83152eae4f451961b9dc43920aa60c6f0910d4d023e9e93d8f5d6160e7ac8b14"
+@@ -50,15 +52,15 @@
+ CLAUDE_LINE_SHA = "fbeade41f74d6694a621fe6294d9568d7b76b124b1fd78e415514582c5d6ee79"
+ CLAUDE_LINE_PREFIX = "CLAUDE-CLI-I62 ="
+ SECTION_78 = "## 78. "
+-BASE_SECTION = 92                                                # decisiones §92: prepara A-7; «sin lanzar la revisión formal sin una disposición posterior»
+-AUTH_SECTION = 93   # decisiones §93: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)
+-AUTH_HEADING = "## 93. Disposición del Coordinator: revisión formal de A-7, cierre de insumos de VERIFY (2026-10-19 UTC)"
+-AUTH_TEXT_SHA = "4f66b73832a045f86a5998922522d13267749522c491d183dd63fa7f7f4ba374"   # SHA-256 del texto de §93 (pin_authorization.py)
+-PENDING_REASON = ("authorization pending: a Coordinator disposition after §92 must be pinned (section number, heading, text SHA-256) and the kit "
++BASE_SECTION = 94                                                # decisiones §94: segunda candidata; «Sin revisión formal sin una disposición nueva del Coordinator»
++AUTH_SECTION = None   # PENDIENTE: la disposición del Coordinator posterior a §94 que autorice esta revisión (pin_authorization.py)
++AUTH_HEADING = None
++AUTH_TEXT_SHA = None
++PENDING_REASON = ("authorization pending: a Coordinator disposition after §94 must be pinned (section number, heading, text SHA-256) and the kit "
+                   "re-frozen")
+ NUMBERED_RX = re.compile(r"^## ([0-9]+)\. ")
+ SECTION_RX = re.compile(r"^## ")
+-RUN_ID = "R20261019T010200Z-4a72"                                # RunId del kit (generado una vez; prep/ids.txt)
++RUN_ID = "R20261019T201030Z-d1bf"                                # RunId del kit (generado una vez; prep/p2/ids.txt)
+ WORKTREE_DISPLAY = "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal"
+ 
+ 
+@@ -164,25 +166,25 @@
+         probs.append("docs/initiatives/I-62-A-7.md en la HEAD del worktree no tiene el blob de A-7 fijado en el kit (%s)"
+                      % (object_blob_at_head or "ausente")[:12])
+     if not a6_ok:
+-        probs.append("docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob acordado %s… (decisiones §90; §93, punto 8) (%s)"
++        probs.append("docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob acordado %s… (decisiones §90; §94, punto 2) (%s)"
+                      % (A6_AGREED_BLOB[:8], (a6_blob_at_head or "ausente")[:12]))
+     if pending:
+         probs.append(PENDING_REASON)
+     else:
+         if not (type(a["Section"]) is int and a["Section"] > BASE_SECTION):
+-            probs.append("la autorización fijada (§%s) no es una sección posterior a §%d (decisiones §92, punto 9)" % (a["Section"], BASE_SECTION))
++            probs.append("la autorización fijada (§%s) no es una sección posterior a §%d (decisiones §94, punto 6)" % (a["Section"], BASE_SECTION))
+         if len(auth) != 1:
+             probs.append("decisiones sin un único encabezado §%s (%d)" % (a["Section"], len(auth)))
+         if not authorized:
+             probs.append("falta la autorización: la sección §%s de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 "
+-                         "como token literal y el SHA-256 de su texto fijado en el kit (%s…) (decisiones §93, punto 1)"
++                         "como token literal y el SHA-256 de su texto fijado en el kit (%s…) (decisiones §94, punto 6)"
+                          % (a["Section"], str(a["TextSha256"])[:8]))
+         if later:
+             probs.append("sección posterior a §%s en decisiones (%s): una disposición posterior tiene que revisarse antes de lanzar"
+                          % (a["Section"], ", ".join("§%d en la línea %d" % (x["Number"], x["Line"]) for x in later[:5])))
+     append_only = bool(dec_clone) and (dec_head or "").startswith(dec_clone)
+     if not append_only:
+-        probs.append("decisiones del worktree no crece solo por añadido desde el commit del clon (§93 o lo anterior cambiaron)")
++        probs.append("decisiones del worktree no crece solo por añadido desde el commit del clon (§94 o lo anterior cambiaron)")
+     if worktree_clean is not True:
+         probs.append("el archivo de decisiones del árbol de trabajo no es el de la HEAD (cambios sin commit)")
+     if head_descends is not True:

@@ -1,0 +1,140 @@
+--- launched/make_manifest.py
++++ r2/make_manifest.py
+@@ -1,7 +1,8 @@
+-"""Manifiesto del kit de la ÚNICA revisión formal de la enmienda A-7 (kit-manifest.json): bytes y SHA-256 de cada archivo de kit/ (salvo el propio
+-manifiesto) y de los dos archivos del run. launch.py lo exige entero (preflight 1: ningún archivo distinto y ninguno sin listar). Derivado del
+-make_manifest.py del kit acreditado de A-6 ronda 4. Es la congelación del kit (decisiones §93, punto 6). La cabecera registra la autorización fijada
+-(§93) o pendiente y si owner_gate.py cambió desde la autoprueba y la mutación dirigida (mutation-targeted-result.json).
++"""Manifiesto del kit de la ÚNICA revisión formal de la RONDA 2 de la enmienda A-7 (kit-manifest.json): bytes y SHA-256 de cada archivo de kit/
++(salvo el propio manifiesto) y de los archivos del run (order.txt, prompt.md, a7-r1.md y las copias fieles de FaithfulCopies, decisiones §94,
++punto 5). launch.py lo exige entero (preflight 1: ningún archivo distinto y ninguno sin listar). Derivado del make_manifest.py del kit de A-7
++ronda 1 (R20261019T010200Z-4a72). Es la congelación del kit (decisiones §94, punto 6). La cabecera registra la autorización fijada o pendiente
++(pendiente en el kit entregado) y si owner_gate.py cambió desde la autoprueba y la batería completa de mutación (mutation-result.json).
+ 
+ Uso: python -B make_manifest.py          → regenera el manifiesto completo (quien termina el kit, después del selftest y de la mutación)
+      python -B make_manifest.py --gate   → la sesión principal, después de un `transport_gate.py set`: comprueba que todos los demás archivos del
+@@ -17,8 +18,8 @@
+ if hasattr(sys.stdout, "reconfigure"):
+     sys.stdout.reconfigure(errors="backslashreplace")
+ KIT = os.path.dirname(os.path.abspath(__file__))
+-RUN = r"D:\r62-arch-a7-run"
+-RUN_FILES = ["order.txt", "prompt.md"]
++RUN = r"D:\r62-arch-a7r2-run"
++RUN_FILES = ["order.txt", "prompt.md", "a7-r1.md"]
+ MANIFEST = "kit-manifest.json"
+ GATE = "transport-gate.json"
+ 
+@@ -42,22 +43,20 @@
+     assert params.get("Provisional") is False and closure.get("Provisional") is False and not closure.get("Synthetic"), \
+         "kit provisional o sintético: no se escribe el manifiesto del kit real"
+     st = json.load(open(os.path.join(KIT, "selftest-result.json"), encoding="utf-8"))
+-    mp = os.path.join(KIT, "mutation-targeted-result.json")
+-    if os.path.isfile(mp):
+-        mu = json.load(open(mp, encoding="utf-8"))
+-        mutation = ("mutation-targeted-result.json (mutación DIRIGIDA a los sitios cambiados) AllKilled %s, %d/%d" % (mu["AllKilled"], mu["Totals"]["Killed"],
+-                    mu["Totals"]["Mutants"]))
+-        fp = os.path.join(KIT, "mutation-result.json")
+-        if os.path.isfile(fp):
+-            fu = json.load(open(fp, encoding="utf-8"))
+-            mutation += ("; batería COMPLETA (decisiones §88, punto 4: cambiaron reglas del auditor, esquema y compuerta) mutation-result.json "
+-                         "AllKilled %s, %d/%d" % (fu["AllKilled"], fu["Totals"]["Killed"], fu["Totals"]["Mutants"]))
+-        else:
+-            mutation += "; los sitios no cambiados reutilizan mutation-result.json 424c983e del kit de A-6 ronda 4 (191/191)"
+-        mutated_og = (mu.get("Modules") or {}).get("owner_gate.py", {}).get("Sha256")
++    sf = json.load(open(os.path.join(KIT, "selftest-fidelity-result.json"), encoding="utf-8"))
++    fp = os.path.join(KIT, "mutation-result.json")
++    mutated = {}
++    if os.path.isfile(fp):
++        fu = json.load(open(fp, encoding="utf-8"))
++        mutated = {n: r.get("Sha256") for n, r in (fu.get("Modules") or {}).items()}
++        stale = sorted(n for n, s in mutated.items() if not os.path.isfile(os.path.join(KIT, n)) or rec(os.path.join(KIT, n))["Sha256"] != s)
++        mutation = ("batería COMPLETA de mutación (decisiones §88, punto 4: cambiaron reglas del auditor y la comprobación 7 del lanzador) "
++                    "mutation-result.json AllKilled %s, %d/%d (%s)%s" % (fu["AllKilled"], fu["Totals"]["Killed"], fu["Totals"]["Mutants"],
++                                                                        ", ".join("%s %d" % (n, r["Sites"]) for n, r in fu["Modules"].items()),
++                                                                        "; MÓDULOS CAMBIADOS DESDE LA BATERÍA: %s" % stale if stale else ""))
+     else:
+-        mutation = "sin prueba de mutación en este kit (README, desviaciones)"
+-        mutated_og = None
++        mutation = "batería completa de mutación PENDIENTE (se ejecuta una sola vez, al final; el manifiesto se regenera después)"
++    mutated_og = mutated.get("owner_gate.py")
+     import importlib.util
+     spec = importlib.util.spec_from_file_location("owner_gate", os.path.join(KIT, "owner_gate.py"))
+     og = importlib.util.module_from_spec(spec)
+@@ -66,32 +65,35 @@
+     og_now = rec(os.path.join(KIT, "owner_gate.py"))["Sha256"]
+     t = closure["Transport"]
+     return {
+-        "Kit": "I-62: kit de la ÚNICA revisión formal independiente del Architect de la enmienda A-7 por claude-cli, acotada a A7-1 y a sus "
+-               "consecuencias sobre el cierre de VERIFY de FX-02/F6 y la medición de A6-7 (decisiones §93; Owner CLAUDE-CLI-I62 = A; lanzamiento con "
+-               "la orden congelada exacta y condicionado a la sonda de registro y a la compuerta 11: línea del Owner de §78, blobs de A-7 y de la "
+-               "A-6 acordada en la HEAD y la disposición del Coordinator §93, posterior a §92, fijada en owner_gate.py, sin ninguna sección posterior)",
++        "Kit": "I-62: kit de la ÚNICA revisión formal independiente del Architect de la RONDA 2 de la enmienda A-7 por claude-cli, acotada a "
++               "A62-A7-R1..R3 y a sus consecuencias (decisiones §94, punto 6; Owner CLAUDE-CLI-I62 = A; lanzamiento con la orden congelada exacta y "
++               "condicionado a la sonda de registro y a la compuerta 11: línea del Owner de §78, blobs de A-7 ronda 2 y de la A-6 acordada en la HEAD "
++               "y una disposición del Coordinator posterior a §94 que nombre esta revisión, fijada en owner_gate.py, sin ninguna sección posterior)",
+         "Ids": closure["Ids"], "PreviousAttempts": [],
+-        "PreviousRound": "ninguna: A-7 ronda 1 (kit derivado del de A-6 ronda 4, R20261014T180556Z-5e02, ACCREDITED)",
++        "PreviousRound": ("A-7 ronda 1: R20261019T010200Z-4a72 (blob 6c29747d; auditor NOT_ACCREDITED por una lectura DEGRADED de un TRX con BOM; "
++                          "Architect CHANGES REQUIRED con A62-A7-R1..R3; custodia e71400a2; decisiones §93 y §94)"),
+         "Commit": closure["AuthorityRevision"],
+         "Object": "%s (blob %s; publicación %s)" % (closure["ObjectPath"], closure["ObjectBlob"], closure["Publication"]["Commit"]),
+         "Package": "ninguno (%s)" % closure["PackageNote"],
+         "SessionId": t["SessionId"],
+         "Transport": "claude-cli %s (%s, SHA-256 %s)" % (t["Binary"]["Version"].split()[0], t["Binary"]["Path"], t["Binary"]["Sha256"]),
+-        "Auditor": "v5.5-a7 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass %s, %d/%d; %s)"
+-                   % (st["AllPass"], st["Totals"]["Pass"], st["Totals"]["Cases"], mutation),
+-        "Clone": "D:/r62-arch-a7 (git clone --no-local -c core.autocrlf=false --single-branch desde el directorio común de git; HEAD separado en "
+-                 "el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks, con la reproducción de las guardas de A-7)",
+-        "Run": "D:/r62-arch-a7-run (order.txt y prompt.md, idénticos byte a byte a las copias del kit)",
++        "Auditor": "v6.0-a7r2 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass %s, %d/%d; selftest-fidelity-result.json "
++                   "AllPass %s, %d/%d; %s)" % (st["AllPass"], st["Totals"]["Pass"], st["Totals"]["Cases"], sf["AllPass"], sf["Totals"]["Pass"],
++                                              sf["Totals"]["Cases"], mutation),
++        "Clone": "D:/r62-arch-a7r2 (git clone --no-local -c core.autocrlf=false --single-branch desde el directorio común de git; HEAD separado en "
++                 "el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks, con la reproducción de las guardas de la ronda 2)",
++        "Run": "D:/r62-arch-a7r2-run (order.txt, prompt.md, a7-r1.md y %d copias fieles de los archivos que Read no entrega fielmente, decisiones "
++               "§94, punto 5; idénticos byte a byte a las copias del kit)" % len(closure.get("FaithfulCopies") or []),
+         "TransportGate": "%s (D-01; launch.py solo lanza en MEASURED o ACCEPTED)" % gate_status(),
+         "OwnerAndAuthorizationGate": "%s (owner_gate.py): launch.py solo lanza con la línea del Owner A6-ADR0046-9-FX02 (SHA-256 %s…) después de §78, "
+-                                     "CLAUDE-CLI-I62 = A vigente, A-7 en la HEAD con el blob %s, la A-6 acordada y la disposición del Coordinator §93 "
+-                                     "(posterior a §92) fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin "
++                                     "CLAUDE-CLI-I62 = A vigente, A-7 en la HEAD con el blob %s, la A-6 acordada y una disposición del Coordinator "
++                                     "posterior a §94 fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin "
+                                      "ninguna sección posterior; se evalúa en el momento del lanzamiento"
+                                      % (closure["OwnerGate"]["Check"], closure["OwnerGate"]["A6LineSha256"][:8], closure["ObjectBlob"][:8]),
+         "AuthorizationPins": pins,
+         "AuthorizationState": ("PENDIENTE: owner_gate.py entrega AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None; la compuerta 11 bloquea hasta "
+-                               "fijar una disposición del Coordinator posterior a §92 (pin_authorization.py) y volver a congelar el kit"
+-                               if og.authorization_pending(pins) else
++                               "fijar una disposición del Coordinator posterior a §94 que nombre esta revisión (pin_authorization.py) y volver a "
++                               "congelar el kit" if og.authorization_pending(pins) else
+                                "FIJADA: decisiones §%s (encabezado y SHA-256 del texto en AuthorizationPins)" % pins["Section"]),
+         "OwnerGateTested": {"SelftestSha256": (st.get("Modules") or {}).get("owner_gate.py"), "MutationSha256": mutated_og, "CurrentSha256": og_now,
+                             "ChangedSinceSelftestOrMutation": og_now not in ((st.get("Modules") or {}).get("owner_gate.py"), ) or
+@@ -103,8 +105,15 @@
+ 
+ 
+ def run_files():
++    """Los archivos del run del cierre: order.txt, prompt.md y las copias fieles (decisiones §94, punto 5; fidelity.run_files_of)."""
++    import importlib.util
++    spec = importlib.util.spec_from_file_location("fidelity", os.path.join(KIT, "fidelity.py"))
++    fid = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(fid)
++    names = fid.run_files_of(json.load(open(os.path.join(KIT, "closure.json"), encoding="utf-8")))
++    assert names[:len(RUN_FILES)] == RUN_FILES, "RunFiles del cierre no empieza por %s" % RUN_FILES
+     out = {}
+-    for n in RUN_FILES:
++    for n in names:
+         r = rec(os.path.join(RUN, n))
+         out[n] = dict({"Path": os.path.join(RUN, n)}, **r, IdenticalToKitCopy=open(os.path.join(RUN, n), "rb").read() == open(os.path.join(KIT, n), "rb").read())
+     return out
+@@ -125,7 +134,9 @@
+     cur = json.load(open(os.path.join(KIT, MANIFEST), encoding="utf-8"))
+     changed = [n for n in kit_files() if n != GATE and (n not in cur["Files"] or rec(os.path.join(KIT, n)) != cur["Files"][n])]
+     changed += [n for n in cur["Files"] if n not in kit_files()]
+-    changed += ["run/" + n for n, r in run_files().items() if {k: r[k] for k in ("Bytes", "Sha256")} != {k: cur["RunFiles"][n][k] for k in ("Bytes", "Sha256")}]
++    now_run = run_files()
++    changed += ["run/" + n for n, r in now_run.items() if {k: r[k] for k in ("Bytes", "Sha256")} != {k: (cur["RunFiles"].get(n) or {}).get(k) for k in ("Bytes", "Sha256")}]
++    changed += ["run/" + n for n in cur["RunFiles"] if n not in now_run]
+     if changed:
+         print(json.dumps({"Refused": "además de transport-gate.json cambiaron otros archivos: no se escribe nada", "Changed": changed}, ensure_ascii=False))
+         return 2

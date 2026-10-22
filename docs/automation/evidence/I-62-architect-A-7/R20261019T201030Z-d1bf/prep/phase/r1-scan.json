@@ -1,0 +1,645 @@
+{
+ "Detector": "fidelity.py scan (RACKCAD-COPIA-FIEL/1; FLAG_LINE_LIMIT 1900, COPY_LINE_LIMIT 1900)",
+ "Closure": "closure.json",
+ "ClosureSha256": "7a0be56b9409ee61e7c3733b8a71dbfe601434b2a41f779f68a7062a5c1421ac",
+ "Rev": "5158e4bc17ad48160d8573b7f48f3923e3197f06",
+ "Files": 190,
+ "Flagged": 23,
+ "ByClass": {
+  "BOM": [
+   "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+   "docs/automation/evidence/I-62-A7/b1-like/uc/fixture-tests.trx",
+   "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx"
+  ],
+  "LONG_LINE": [
+   "docs/automation/decisions/I-62.md",
+   "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json",
+   "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+   "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-CONTRACT.json",
+   "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-DELEG.json",
+   "docs/automation/evidence/I-62-A6/r4/r1probes/p10-nc1.json",
+   "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+   "docs/automation/evidence/I-62-A6/r4/r1probes/p9-n4.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json",
+   "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json",
+   "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/frozen/m7-run.snapshot.json",
+   "docs/initiatives/I-62-A-3.md",
+   "docs/initiatives/I-62-proposal-v14.md"
+  ],
+  "ZWNBSP": [
+   "docs/automation/evidence/I-62-A7/check_a7_closure.py",
+   "docs/automation/evidence/I-62-A7/derive_r4.py",
+   "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/derive_r4.py"
+  ]
+ },
+ "AllCopiesRoundTrip": true,
+ "AllBlobsMatchClosure": true,
+ "FlaggedFiles": [
+  {
+   "Path": "docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+   "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff",
+   "BlobMatchesClosure": true,
+   "Bytes": 2772,
+   "Lines": 34,
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [],
+   "MaxLineUtf16": 505,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A7__b1-like__main__fixture-tests.trx.txt",
+    "Bytes": 3864,
+    "Sha256": "1858c656abda3d0fb88a0aced2d745820638a494f6c025bea9fab787dda95a35",
+    "Lines": 50,
+    "MaxLineChars": 505,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A7/b1-like/uc/fixture-tests.trx",
+   "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff",
+   "BlobMatchesClosure": true,
+   "Bytes": 2772,
+   "Lines": 34,
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [],
+   "MaxLineUtf16": 505,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A7__b1-like__uc__fixture-tests.trx.txt",
+    "Bytes": 3862,
+    "Sha256": "5c1928d8d8252097b8c8ed8578cc49c127e282451b26631d236e8ff6723cbd59",
+    "Lines": 50,
+    "MaxLineChars": 505,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A7/check_a7_closure.py",
+   "Blob": "500ea477b88aed6ce78c50948edef5a9378e8eef",
+   "BlobMatchesClosure": true,
+   "Bytes": 25267,
+   "Lines": 436,
+   "Flags": {
+    "ZWNBSP": [
+     111
+    ]
+   },
+   "LinesOverReadLimit": [],
+   "MaxLineUtf16": 164,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A7__check_a7_closure.py.txt",
+    "Bytes": 26370,
+    "Sha256": "742a3067bee5392d36449e431880ba282f777d526cdf973019feed36695f822d",
+    "Lines": 452,
+    "MaxLineChars": 203,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A7/derive_r4.py",
+   "Blob": "a6f87be801f9dbf33144e20ef5b6aaee6b11eab8",
+   "BlobMatchesClosure": true,
+   "Bytes": 13783,
+   "Lines": 364,
+   "Flags": {
+    "ZWNBSP": [
+     49
+    ]
+   },
+   "LinesOverReadLimit": [],
+   "MaxLineUtf16": 141,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A7__derive_r4.py.txt",
+    "Bytes": 14870,
+    "Sha256": "ac0f43fb7eae2c6afa336d07390f0daa4ee86f659057c372fa400b9485d93d9e",
+    "Lines": 380,
+    "MaxLineChars": 203,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+   "Blob": "3d49906470b7321aa1ff1a4bbc47ddaa2f05930e",
+   "BlobMatchesClosure": true,
+   "Bytes": 6696,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 6695,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt",
+    "Bytes": 7900,
+    "Sha256": "0fda9217ac2e22bdf65aae1234b300d5fe0ac9ea747914920349c4114d1c5ea8",
+    "Lines": 20,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-CONTRACT.json",
+   "Blob": "40c3796b02aa9c0cd1448a099b4ad43b2f792338",
+   "BlobMatchesClosure": true,
+   "Bytes": 3962,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 3961,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt",
+    "Bytes": 5173,
+    "Sha256": "59722c50bf3b1d113d2739602257a04f07dca91cd91c77f4cf8cfeaff36cd933",
+    "Lines": 19,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-DELEG.json",
+   "Blob": "be8e5dfa5fd1bfda6af030a58fb8d5fbcee4206e",
+   "BlobMatchesClosure": true,
+   "Bytes": 3975,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 3974,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt",
+    "Bytes": 5183,
+    "Sha256": "2c8c5adfbc77fd039a4154166ef1a2f472f5641bdeca955c2d2f03085c2efcb6",
+    "Lines": 19,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json",
+   "Blob": "2964326ae1f7108fc472cbc4c2a34886bfa9ccc3",
+   "BlobMatchesClosure": true,
+   "Bytes": 52072,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 52071,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt",
+    "Bytes": 53465,
+    "Sha256": "a6fed1e64034d4def848c840ab6f829de4a6dd437be3c8b7e91f7b7c7c16c2ab",
+    "Lines": 44,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A6/r4/r1probes/p7-derive.json",
+   "Blob": "906c704ace458d877ef6daaedbcb264fcff4d871",
+   "BlobMatchesClosure": true,
+   "Bytes": 81082,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 81081,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p7-derive.json.txt",
+    "Bytes": 82848,
+    "Sha256": "990449f03f14fde5e6207cdb89494ed897f795989db906c302f10090fa18e863",
+    "Lines": 59,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A6/r4/r1probes/p9-n4.json",
+   "Blob": "8b912b084a9629f57461bacb79af9c12e477bdc1",
+   "BlobMatchesClosure": true,
+   "Bytes": 27045,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 27044,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p9-n4.json.txt",
+    "Bytes": 29662,
+    "Sha256": "b80528dd90ef9d99c2751211772ee3d36c1f5e04fbdd25f0a0f103aafd6e9daa",
+    "Lines": 31,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-A6/r4/r1probes/p10-nc1.json",
+   "Blob": "58d49e2e65093ede0df3197f6c88476ac6fc4e6b",
+   "BlobMatchesClosure": true,
+   "Bytes": 37501,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 37500,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p10-nc1.json.txt",
+    "Bytes": 40528,
+    "Sha256": "ef57611d0164f390218774d32f4fc029d958a9a0cb6282f690f951e5ee395734",
+    "Lines": 37,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/derive_r4.py",
+   "Blob": "a6f87be801f9dbf33144e20ef5b6aaee6b11eab8",
+   "BlobMatchesClosure": true,
+   "Bytes": 13783,
+   "Lines": 364,
+   "Flags": {
+    "ZWNBSP": [
+     49
+    ]
+   },
+   "LinesOverReadLimit": [],
+   "MaxLineUtf16": 141,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt",
+    "Bytes": 14894,
+    "Sha256": "ac6b9fb1564644cfc97240ac4eef84cf1e219dc379d474a907f15967ac9c6989",
+    "Lines": 380,
+    "MaxLineChars": 203,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/frozen/m7-run.snapshot.json",
+   "Blob": "3f9318c24b515fc966c91f01df7c6f347993407c",
+   "BlobMatchesClosure": true,
+   "Bytes": 45716,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 45715,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt",
+    "Bytes": 47107,
+    "Sha256": "1d0091bfc1e07c0e2dc4109e6fda39d9f35067ae9c9fd033c09aef13ac5c36d4",
+    "Lines": 41,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+   "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff",
+   "BlobMatchesClosure": true,
+   "Bytes": 2772,
+   "Lines": 34,
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [],
+   "MaxLineUtf16": 505,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+    "Bytes": 3882,
+    "Sha256": "b70e4eee6ebff413f561a074ff29561b255116671e61de8bc72fc635b88bfe9a",
+    "Lines": 50,
+    "MaxLineChars": 505,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json",
+   "Blob": "150bbed82950853e3dcb331b99234222f2168543",
+   "BlobMatchesClosure": true,
+   "Bytes": 44637,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 44636,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt",
+    "Bytes": 46097,
+    "Sha256": "4a27957cecb36432d4c3dd24e60a88857ad8d3b3f78766a2b5f1393b148d7ed8",
+    "Lines": 40,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json",
+   "Blob": "beab3abd40b9ddfae7094eb09d77feac70e32e55",
+   "BlobMatchesClosure": true,
+   "Bytes": 2294,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 2293,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt",
+    "Bytes": 3470,
+    "Sha256": "f864612e2f39cff4e51d644481bce24654ad6451e43bf229ecbee9184b39d226",
+    "Lines": 18,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json",
+   "Blob": "b34cd0ce331f5ea2dc1a0873c1c56141bc986f1e",
+   "BlobMatchesClosure": true,
+   "Bytes": 2083,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 2082,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt",
+    "Bytes": 3255,
+    "Sha256": "d56b59a3f2c578d5158729912463721de62606607db6d8340236689242716aef",
+    "Lines": 18,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json",
+   "Blob": "a4821e2b6f20853611bd4263d8379267f0a17a7e",
+   "BlobMatchesClosure": true,
+   "Bytes": 2244,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 2243,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt",
+    "Bytes": 3418,
+    "Sha256": "fd741ad7e7ad96fed2b7e48e6549f0927198b9568ddb2961420ca6f7dcd30178",
+    "Lines": 18,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json",
+   "Blob": "be4685808202de4667267b01f55b342ac42b6ce6",
+   "BlobMatchesClosure": true,
+   "Bytes": 2393,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 2392,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt",
+    "Bytes": 3569,
+    "Sha256": "8cb267b0bca49e9cf87957726553a45c2baec3316755f9bb05675b67c932589b",
+    "Lines": 18,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json",
+   "Blob": "a66e75761bbe8cc023e45b30bd84da3196c8b2dd",
+   "BlobMatchesClosure": true,
+   "Bytes": 3168,
+   "Lines": 1,
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   },
+   "LinesOverReadLimit": [
+    1
+   ],
+   "MaxLineUtf16": 3167,
+   "Copy": {
+    "Name": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt",
+    "Bytes": 4341,
+    "Sha256": "a1aff6008518cdbb53d8862d84399ef6c92cc512463259c6a0fe7b791a8d99ad",
+    "Lines": 18,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/initiatives/I-62-proposal-v14.md",
+   "Blob": "34ad80ea1bfff144bfc5169f62920a4c904c1bfa",
+   "BlobMatchesClosure": true,
+   "Bytes": 342761,
+   "Lines": 3323,
+   "Flags": {
+    "LONG_LINE": [
+     2352,
+     2380,
+     2382
+    ]
+   },
+   "LinesOverReadLimit": [
+    2352,
+    2380,
+    2382
+   ],
+   "MaxLineUtf16": 3683,
+   "Copy": {
+    "Name": "fiel__docs__initiatives__I-62-proposal-v14.md.txt",
+    "Bytes": 344241,
+    "Sha256": "eed49f4f73967f55be076c80f06ca5d7115b2f8cab60eb4f8311d5b6112fc0fb",
+    "Lines": 3342,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/initiatives/I-62-A-3.md",
+   "Blob": "ea6721f78cb63fbc4f9d99563f3262eb36a32c5d",
+   "BlobMatchesClosure": true,
+   "Bytes": 200993,
+   "Lines": 1536,
+   "Flags": {
+    "LONG_LINE": [
+     1487
+    ]
+   },
+   "LinesOverReadLimit": [
+    1487
+   ],
+   "MaxLineUtf16": 2071,
+   "Copy": {
+    "Name": "fiel__docs__initiatives__I-62-A-3.md.txt",
+    "Bytes": 202477,
+    "Sha256": "1a0f60403f1125305b4114e844eb41d04bfd356ede847ad71eaa9dafe691b6d3",
+    "Lines": 1553,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  },
+  {
+   "Path": "docs/automation/decisions/I-62.md",
+   "Blob": "1de169d072c79217f545f9eb7c19285df53dddc1",
+   "BlobMatchesClosure": true,
+   "Bytes": 309483,
+   "Lines": 1844,
+   "Flags": {
+    "LONG_LINE": [
+     657,
+     734,
+     750,
+     768,
+     787,
+     805,
+     819
+    ]
+   },
+   "LinesOverReadLimit": [
+    657,
+    734,
+    750,
+    768,
+    787,
+    805,
+    819
+   ],
+   "MaxLineUtf16": 4971,
+   "Copy": {
+    "Name": "fiel__docs__automation__decisions__I-62.md.txt",
+    "Bytes": 310819,
+    "Sha256": "b9a0df1ef8b1bacc0ded6c25a023e218bf1106f42b4e3ed03b0435895e200615",
+    "Lines": 1869,
+    "MaxLineChars": 1900,
+    "VerifyProblems": [],
+    "CopyFlags": {},
+    "BodyAligned": true
+   }
+  }
+ ]
+}

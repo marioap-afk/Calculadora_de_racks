@@ -1,0 +1,328 @@
+{
+ "Mutation": "corrección de fidelidad de lectura (decisiones §94, punto 5): post-review.py v5.6-a7 y fidelity.py; mutación DIRIGIDA a los sitios de regla que cambiaron frente al kit lanzado de A-7 (R20261019T010200Z-4a72); cada sitio desactivado debe hacer fallar al menos un caso",
+ "Scope": "TARGETED",
+ "SelectionRule": "post-review.py: los sitios del bloque de copias fieles de audit() y el de la lectura directa cuyo mensaje cambió; fidelity.py: todos (mark( del detector y probs.append( de verify y run_files_of); transport_gate.py y owner_gate.py: ninguno (idénticos al kit lanzado)",
+ "ReusedFromLaunchedKit": {
+  "KitManifestSha256": "c27db93ef6834a3e29bf36bd66f586c75b9281c46508ee2296ba14e86eab6327",
+  "MutationResultSha256": "ac6a6ebab163150a949b53478bab12a5e1c81f80cf2ef64dbff4550a3c26e3f6",
+  "post-review.py": "303321f265152dc03a6fc7771bb69faed47f5167a80a7f03113e2839305d9653",
+  "transport_gate.py": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+  "owner_gate.py": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+  "Note": "batería COMPLETA del Coordinator sobre el kit lanzado (decisiones §88, punto 4), 181/181: los sitios no dirigidos de post-review.py y todos los de transport_gate.py y owner_gate.py son byte a byte los de esa batería"
+ },
+ "Environment": "REAL-CONTENT (clon y run de RACKCAD_A7_KITDATA o del kit)",
+ "KitData": "D:\\r62-a7\\kit-review2\\p1\\kitdata",
+ "Baseline": {
+  "Cases": 304,
+  "Failing": [],
+  "FidelityUnitCases": 47,
+  "FidelityUnitFailing": [],
+  "AllPass": true
+ },
+ "Modules": {
+  "post-review.py": {
+   "Sha256": "80004643dd2f1d03877af94c9bccb8c66cad2a77ad41986dfdcc7087506ea402",
+   "Sites": 125,
+   "Targeted": 4,
+   "Killed": 4
+  },
+  "fidelity.py": {
+   "Sha256": "4080b8e04b96e9514b61ac8d7054714708103424fc6ced906900bef3cd4f2e9d",
+   "Sites": 18,
+   "Targeted": 18,
+   "Killed": 18
+  },
+  "transport_gate.py": {
+   "Sha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+   "Sites": 40,
+   "Targeted": 0,
+   "Killed": 0
+  },
+  "owner_gate.py": {
+   "Sha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+   "Sites": 19,
+   "Targeted": 0,
+   "Killed": 0
+  }
+ },
+ "Mutants": [
+  {
+   "Module": "post-review.py",
+   "Line": 779,
+   "Code": "probs.append(\"SHA-256 de la copia distinto del fijado en el cierre\")",
+   "Killed": true,
+   "Stage": "selftest-post-review",
+   "KilledBy": [
+    "F03-copia-alterada-un-byte-en-el-run",
+    "F11-copia-de-otro-original",
+    "F12-copia-no-canonica",
+    "F13-bom-eliminado-dentro-de-la-copia"
+   ],
+   "KillingCases": 5
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 781,
+   "Code": "probs.append(\"blob del original distinto del fijado en el cierre\")",
+   "Killed": true,
+   "Stage": "selftest-post-review",
+   "KilledBy": [
+    "F14-blob-del-original-distinto-del-fijado"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 784,
+   "Code": "add(\"copia fiel: %s no entrega byte a byte %s (blob %s): %s\" % (name, e[\"Original\"], e[\"OriginalBlob\"][:8], \"; \".join(probs[:4])))",
+   "Killed": true,
+   "Stage": "selftest-post-review",
+   "KilledBy": [
+    "F03-copia-alterada-un-byte-en-el-run",
+    "F10-copia-ausente",
+    "F11-copia-de-otro-original",
+    "F12-copia-no-canonica"
+   ],
+   "KillingCases": 7
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 883,
+   "Code": "add(\"lectura directa: %s:%d-%d no entregadas fielmente por Read en ese mismo archivo ni en su copia fiel\" % (dpath, da, db))",
+   "Killed": true,
+   "Stage": "selftest-post-review",
+   "KilledBy": [
+    "48-transcripcion-sin-asistente",
+    "114-sin-lectura-directa-de-v14",
+    "115-cita-de-v14-leida-solo-en-a7"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 103,
+   "Code": "mark(\"SPECIAL_EXTENSION\", 0)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FD17-extension-especial",
+    "selftest-fidelity: FD20-varias-clases-en-orden"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 108,
+   "Code": "mark(\"BOM\", i)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FD01-bom",
+    "selftest-fidelity: FD15-bom-y-zwnbsp",
+    "selftest-fidelity: FD20-varias-clases-en-orden",
+    "selftest-fidelity: FX01-trx-de-r1"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 112,
+   "Code": "mark(\"INVALID_UTF8\", i)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FD11-utf8-invalido",
+    "selftest-fidelity: FD20-varias-clases-en-orden"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 114,
+   "Code": "mark(\"NUL\", i)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FD10-nul",
+    "selftest-fidelity: FD20-varias-clases-en-orden"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 116,
+   "Code": "mark(\"BARE_CR\", i)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FD07-cr-suelto",
+    "selftest-fidelity: FD09-cr-al-final-sin-lf",
+    "selftest-fidelity: FD20-varias-clases-en-orden"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 119,
+   "Code": "mark(\"CONTROL\", i)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FD12-tab",
+    "selftest-fidelity: FD13-esc-del-c1",
+    "selftest-fidelity: FD20-varias-clases-en-orden"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 122,
+   "Code": "mark(\"LONG_LINE\", i)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FD03-linea-1901",
+    "selftest-fidelity: FD05-linea-2001",
+    "selftest-fidelity: FD06-linea-utf16",
+    "selftest-fidelity: FD20-varias-clases-en-orden"
+   ],
+   "KillingCases": 5
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 126,
+   "Code": "mark(\"ZWNBSP\", i)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FD02-bom-solo-al-principio",
+    "selftest-fidelity: FD14-zwnbsp-interior",
+    "selftest-fidelity: FD15-bom-y-zwnbsp",
+    "selftest-fidelity: FD20-varias-clases-en-orden"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 128,
+   "Code": "mark(\"LINE_SEPARATOR\", i)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FD16-separador-de-linea",
+    "selftest-fidelity: FD20-varias-clases-en-orden"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 316,
+   "Code": "probs.append(\"copia ausente\")",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FV01-copia-ausente"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 321,
+   "Code": "probs.append(\"la copia no se decodifica (%s)\" % e)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FV02-cada-byte-alterado-se-detecta",
+    "selftest-fidelity: FV06-estructura-rota"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 324,
+   "Code": "probs.append(\"la copia nombra otro original (%s)\" % p)",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FV02-cada-byte-alterado-se-detecta",
+    "selftest-fidelity: FV04-copia-de-otro-original-con-los-mismos-bytes"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 326,
+   "Code": "probs.append(\"la copia no reproduce los bytes del original (SHA-256 %s…; el original %s…)\" % (sha256(d)[:12], sha256(data)[:12]))",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FV03-bom-eliminado-en-silencio"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 332,
+   "Code": "probs.append(\"la copia no es la codificación canónica de lo que decodifica\")",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FV02-cada-byte-alterado-se-detecta",
+    "selftest-fidelity: FV05-escritura-no-canonica",
+    "selftest-fidelity: FV07-linea-larga-unida"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 342,
+   "Code": "probs.append(\"el cierre no declara FaithfulCopies (o una copia sin nombre)\")",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FR02-sin-faithfulcopies"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 344,
+   "Code": "probs.append(\"RunFiles no termina exactamente en las copias de FaithfulCopies\")",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FR03-copia-fuera-del-final"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 346,
+   "Code": "probs.append(\"RunFiles con nombres repetidos\")",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FR04-nombres-repetidos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "fidelity.py",
+   "Line": 348,
+   "Code": "probs.append(\"una copia fiel declarada como premisa\")",
+   "Killed": true,
+   "Stage": "selftest-fidelity",
+   "KilledBy": [
+    "selftest-fidelity: FR05-copia-como-premisa"
+   ],
+   "KillingCases": 1
+  }
+ ],
+ "Survivors": [],
+ "Totals": {
+  "Mutants": 22,
+  "Killed": 22,
+  "KilledByException": 0
+ },
+ "AllKilled": true
+}

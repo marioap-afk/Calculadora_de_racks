@@ -1,0 +1,5510 @@
+{
+ "Selftest": "post-review.py v6.0-a7r2 + transport_gate.py + owner_gate.py (A-7 ronda 2) + pin_authorization.values + c3_analysis.analyze + coherencia con launch.py",
+ "Environment": "REAL (clon y run del kit)",
+ "Clone": "D:\\r62-arch-a7r2",
+ "Run": "D:\\r62-arch-a7r2-run",
+ "Rev": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+ "Object": {
+  "Path": "docs/initiatives/I-62-A-7.md",
+  "Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15"
+ },
+ "Provisional": false,
+ "SessionId": "3dd5ac31-ddf5-4e4a-b732-b913933a9ae3",
+ "RunId": "R20261019T201030Z-d1bf",
+ "KitGateStatus": "MEASURED",
+ "AuthorizationPinsForAuditCases": {
+  "Source": "SYNTHETIC (owner_gate.py del kit con la autorización pendiente; §94 sintética añadida a las decisiones del clon)",
+  "Pins": {
+   "Section": 95,
+   "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)",
+   "TextSha256": "ec9af54e8593b7bfca556b94d0417a7103cc05d8d065ff32807374452a586e5d"
+  }
+ },
+ "Modules": {
+  "post-review.py": "f5cdef1ff2ca9d0217b641a2cf6adadbe909785eed75fba4b0fe8573fa467381",
+  "transport_gate.py": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+  "owner_gate.py": "3d420a9ff560c5bd88f811edff878da3f2d8056a531e9429b6412b82e5e80b19",
+  "pin_authorization.py": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc",
+  "c3_analysis.py": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7",
+  "result.schema.json": "9e53331784d4dd5ca4afb371479190c0882e70ec1bdcf196b71be28d3a23a6a3",
+  "selftest-post-review.py": "435f76f4dd00aee1c6047cea2ef463b8b524470635296414d6f6d70b6d6ac153",
+  "launch.py": "17dda7259766ac645fd350c112609f678e7ec8ef477ef4783faaa1870e93e6c9",
+  "fidelity.py": "a84825e00112965f33c7530ffac6ff84353ff036f2773ee525ebd178e872c68f"
+ },
+ "KitDataModules": {
+  "fidelity.py": "a84825e00112965f33c7530ffac6ff84353ff036f2773ee525ebd178e872c68f",
+  "owner_gate.py": "3d420a9ff560c5bd88f811edff878da3f2d8056a531e9429b6412b82e5e80b19",
+  "transport_gate.py": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+  "closure.json": "d19950bba9a19a8136a8301aa4535ffbdfc07e633f599a85033cc764d9a14e91"
+ },
+ "CloneHeadAfterSelftest": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+ "CloneCleanAfterSelftest": true,
+ "RunFilesMatchKit": {
+  "order.txt": true,
+  "prompt.md": true,
+  "a7-r1.md": true,
+  "fiel__docs__automation__evidence__I-62-A7__r2__a7-guards.py.txt": true,
+  "fiel__docs__automation__evidence__I-62-A7__r2__b1-like__main__fixture-tests.trx.txt": true,
+  "fiel__docs__automation__evidence__I-62-A7__r2__b1-like__uc__fixture-tests.trx.txt": true,
+  "fiel__docs__automation__evidence__I-62-A7__r2__check_a7_closure.py.txt": true,
+  "fiel__docs__automation__evidence__I-62-A7__r2__derive_r4.py.txt": true,
+  "fiel__docs__automation__evidence__I-62-A7__r2__inputs__fixture-tests-red.trx.txt": true,
+  "fiel__docs__automation__evidence__I-62-A7__a7-guards.py.txt": true,
+  "fiel__docs__automation__evidence__I-62-A7__b1-like__main__fixture-tests.trx.txt": true,
+  "fiel__docs__automation__evidence__I-62-A7__b1-like__uc__fixture-tests.trx.txt": true,
+  "fiel__docs__automation__evidence__I-62-A7__check_a7_closure.py.txt": true,
+  "fiel__docs__automation__evidence__I-62-A7__derive_r4.py.txt": true,
+  "fiel__docs__automation__evidence__I-62-architect-A-7__R20261019T010200Z-4a72__README.md.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__m7__s91__d1__d1.md.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__m7__s91__risk-matrix.md.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p3-n4.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p4-nc1.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__m7__readings__readings.md.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p7-derive.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p9-n4.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p10-nc1.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__README.md.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__accept__tests__test_bmin_accept.py.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt": true,
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt": true,
+  "fiel__docs__initiatives__I-62-proposal-v14.md.txt": true,
+  "fiel__docs__AUTOMATION_PLAN.md.txt": true,
+  "fiel__docs__initiatives__I-62-A-4.md.txt": true,
+  "fiel__docs__initiatives__I-62-A-3.md.txt": true,
+  "fiel__docs__initiatives__I-62-A-1.md.txt": true,
+  "fiel__docs__adr__0046-protocolo-de-ejecucion-delegada-de-agentes.md.txt": true,
+  "fiel__docs__automation__decisions__I-62.md.txt": true,
+  "fiel__docs__automation__evidence__I-62-evidence.md.txt": true
+ },
+ "RunDirListingAfterSelftest": [
+  "a7-r1.md",
+  "fiel__docs__AUTOMATION_PLAN.md.txt",
+  "fiel__docs__adr__0046-protocolo-de-ejecucion-delegada-de-agentes.md.txt",
+  "fiel__docs__automation__decisions__I-62.md.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p3-n4.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p4-nc1.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__readings__readings.md.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__s91__d1__d1.md.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__s91__risk-matrix.md.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p10-nc1.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p7-derive.json.txt",
+  "fiel__docs__automation__evidence__I-62-A6__r4__r1probes__p9-n4.json.txt",
+  "fiel__docs__automation__evidence__I-62-A7__a7-guards.py.txt",
+  "fiel__docs__automation__evidence__I-62-A7__b1-like__main__fixture-tests.trx.txt",
+  "fiel__docs__automation__evidence__I-62-A7__b1-like__uc__fixture-tests.trx.txt",
+  "fiel__docs__automation__evidence__I-62-A7__check_a7_closure.py.txt",
+  "fiel__docs__automation__evidence__I-62-A7__derive_r4.py.txt",
+  "fiel__docs__automation__evidence__I-62-A7__r2__a7-guards.py.txt",
+  "fiel__docs__automation__evidence__I-62-A7__r2__b1-like__main__fixture-tests.trx.txt",
+  "fiel__docs__automation__evidence__I-62-A7__r2__b1-like__uc__fixture-tests.trx.txt",
+  "fiel__docs__automation__evidence__I-62-A7__r2__check_a7_closure.py.txt",
+  "fiel__docs__automation__evidence__I-62-A7__r2__derive_r4.py.txt",
+  "fiel__docs__automation__evidence__I-62-A7__r2__inputs__fixture-tests-red.trx.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__accept__tests__test_bmin_accept.py.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__README.md.txt",
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt",
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt",
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+  "fiel__docs__automation__evidence__I-62-architect-A-7__R20261019T010200Z-4a72__README.md.txt",
+  "fiel__docs__automation__evidence__I-62-evidence.md.txt",
+  "fiel__docs__initiatives__I-62-A-1.md.txt",
+  "fiel__docs__initiatives__I-62-A-3.md.txt",
+  "fiel__docs__initiatives__I-62-A-4.md.txt",
+  "fiel__docs__initiatives__I-62-proposal-v14.md.txt",
+  "order.txt",
+  "prompt.md"
+ ],
+ "Cases": [
+  {
+   "Case": "00-base-acreditada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "01-lectura-fuera-absoluta",
+   "Expected": [
+    "lectura fuera del cierre: D:/r62-arch-a7r2/docs/HANDOFF.md",
+    "lectura fuera del cierre (intento fallido"
+   ],
+   "Got": [
+    "llamada 13 (Read): lectura fuera del cierre: D:/r62-arch-a7r2/docs/HANDOFF.md",
+    "llamada 14 (Read): lectura fuera del cierre (intento fallido; sigue siendo una acción fuera del contrato): %USERPROFILE%/.claude/projects/D--Documentos-Codex-Calculadora-de-racks/memory/MEMORY.md"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "02-lectura-fuera-relativa",
+   "Expected": [
+    "lectura fuera del cierre"
+   ],
+   "Got": [
+    "llamada 13 (Read): lectura fuera del cierre: D:/r62-arch-a7r2/docs/HANDOFF.md",
+    "llamada 14 (Read): lectura fuera del cierre: D:/r62-arch-a7r2/../r62-arch-a3/docs/initiatives/I-62-A-3.md",
+    "llamada 15 (Read): lectura fuera del cierre: D:/r62-arch-a7r2/docs/automation/../../AGENTS.md"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "ExpectedCounts": {
+    "lectura fuera del cierre": 3
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "03-escape-por-union (junction)",
+   "Expected": [
+    "lectura fuera del cierre",
+    "Grep fuera del cierre",
+    "Glob fuera del clon y del run",
+    "el clon no quedó limpio",
+    "el clon tiene enlaces o uniones"
+   ],
+   "Got": [
+    "llamada 13 (Read): lectura fuera del cierre: D:/r62-arch-a7r2/zz-selftest-link/docs/initiatives/I-62-A-3.md",
+    "llamada 14 (Grep): Grep fuera del cierre: D:/r62-arch-a7r2/zz-selftest-link/docs/initiatives/I-62-A-3.md",
+    "llamada 15 (Glob): Glob fuera del clon y del run: zz-selftest-link/**/*.md (base D:/r62-arch-a7r2)",
+    "el clon no quedó limpio, cambió de HEAD, dejó de estar separado, ganó ramas o remotos",
+    "el clon tiene enlaces o uniones después de la corrida: ['D:/r62-arch-a7r2/zz-selftest-link']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "04-grep-directorios-y-fuera",
+   "Expected": [
+    "Grep sobre un directorio",
+    "Grep fuera del cierre",
+    "Grep sin path",
+    "Grep con glob o type"
+   ],
+   "Got": [
+    "llamada 13 (Grep): Grep sobre un directorio: D:/r62-arch-a7r2/docs",
+    "llamada 14 (Grep): Grep fuera del cierre: D:/r62-a7/kit-review2/.tmp/st/o",
+    "llamada 15 (Grep): Grep sin path (busca en el directorio de trabajo, que es un directorio)",
+    "llamada 16 (Grep): Grep con glob o type",
+    "llamada 17 (Grep): Grep sobre un directorio: D:/r62-arch-a7r2-run"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "ExpectedCounts": {
+    "Grep sobre un directorio": 2
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "05-glob-fuera-del-cierre",
+   "Expected": [
+    "Glob fuera del clon y del run",
+    "Glob alcanza",
+    "Glob devolvió una ruta fuera del cierre"
+   ],
+   "Got": [
+    "llamada 13 (Glob): Glob fuera del clon y del run: **/*.md (base D:/r62-a7/kit-review2/.tmp/st/o)",
+    "llamada 14 (Glob): Glob fuera del clon y del run: %USERPROFILE%/.claude/projects/**/*.jsonl (base D:/r62-arch-a7r2)",
+    "llamada 15 (Glob): Glob alcanza 48 archivo(s) fuera del cierre: docs/adr/*.md (p. ej., d:/r62-arch-a7r2/docs/adr/0001-ramas-por-iniciativa.md, d:/r62-arch-a7r2/docs/adr/0002-paso0-evidencia.md, d:/r62-arch-a7r2/docs/adr/0002-secuencia-dinamico-modular.md)",
+    "llamada 15 (Glob): Glob devolvió una ruta fuera del cierre: D:/r62-arch-a7r2/docs/adr/x.md",
+    "llamada 16 (Glob): Glob fuera del clon y del run: ../r62-arch-a3/** (base D:/r62-arch-a7r2)",
+    "llamada 17 (Glob): Glob devolvió una ruta fuera del cierre: D:/r62-arch-a7r2/docs/HANDOFF.md"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "ExpectedCounts": {
+    "Glob fuera del clon y del run": 3
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "06-glob-y-grep-aceptados",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "07-herramienta-denegada",
+   "Expected": [
+    "lectura fuera del cierre (intento fallido",
+    "permiso denegado",
+    "permission_denials: Read"
+   ],
+   "Got": [
+    "permission_denials: Read file_path=D:/r62-fixture/A2/README.md",
+    "llamada 13 (Read): lectura fuera del cierre (intento fallido; sigue siendo una acción fuera del contrato): D:/r62-fixture/A2/README.md",
+    "llamada 13 (Read): permiso denegado: Permission to read D:/r62-fixture/A2/README.md has been denied."
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "08-intento-de-bash",
+   "Expected": [
+    "herramienta no permitida (Bash)"
+   ],
+   "Got": [
+    "llamada 13 (Bash): herramienta no permitida (Bash)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "09-prompt-distinto",
+   "Expected": [
+    "fidelidad del prompt"
+   ],
+   "Got": [
+    "fidelidad del prompt: el primer mensaje de usuario es distinto de prompt.md"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "10-mensaje-de-usuario-extra",
+   "Expected": [
+    "mensajes de usuario además del prompt"
+   ],
+   "Got": [
+    "transcripción: 1 mensajes de usuario además del prompt (otro prompt o un resumen de compactación)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "11-modelo-y-effort-distintos",
+   "Expected": [
+    "modelo observado distinto",
+    "effort observado distinto",
+    "modelUsage con modelos distintos",
+    "mensaje del asistente con modelo"
+   ],
+   "Got": [
+    "stream-json: modelUsage con modelos distintos de claude-opus-5-5: ['claude-haiku-4-5', 'claude-opus-5-5']",
+    "stream-json: mensaje del asistente con modelo 'claude-sonnet-5'",
+    "transcripción: modelo observado distinto de claude-opus-5-5 en 1 mensajes del asistente: {'claude-sonnet-5': 1}",
+    "transcripción: effort observado distinto de xhigh en 1 mensajes del asistente: {'high': 1}"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "12-archivo-del-run-alterado",
+   "Expected": [
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): order.txt"
+   ],
+   "Got": [
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): order.txt"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "ExpectedCounts": {
+    "archivo del run distinto del custodiado": 1
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "13-sin-result-y-salida-1",
+   "Expected": [
+    "sin mensaje result",
+    "código de salida 1",
+    "proceso terminado",
+    "no hay resultado estructurado",
+    "llamada sin resultado",
+    "lectura directa: DirectReads sin una entrada",
+    "Outcome de run.json 'REVIEW_PROCESS_FAILURE'"
+   ],
+   "Got": [
+    "lanzamiento: código de salida 1 (se exige 0)",
+    "lanzamiento: proceso terminado por el invocador (Killed/TimedOut)",
+    "lanzamiento: Outcome de run.json 'REVIEW_PROCESS_FAILURE' (se exige COMPLETED; categorías registradas ['REVIEW_PROCESS_FAILURE', 'TRANSPORT_FAILURE'])",
+    "stream-json: sin mensaje result (terminación sin resultado)",
+    "llamada 13 (Read): llamada sin resultado (terminación incompleta)",
+    "no hay resultado estructurado",
+    "lectura directa: DirectReads sin una entrada que cubra docs/AUTOMATION_PLAN.md:616-617"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "REVIEW_PROCESS_FAILURE",
+   "Result": "PASS"
+  },
+  {
+   "Case": "14-referencia-sobre-lineas-no-leidas",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en Materiality (docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:82-87)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en Materiality (docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:82-87)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "15-referencia-a-prompt-o-fuera-de-rango",
+   "Expected": [
+    "referencia no canónica en Round1FindingResolution[A62-A7-R1] (prompt.md:1)",
+    "referencia no canónica en Round1FindingResolution[A62-A7-R1] (order.txt:99)"
+   ],
+   "Got": [
+    "referencia no canónica en Round1FindingResolution[A62-A7-R1] (prompt.md:1)",
+    "referencia no canónica en Round1FindingResolution[A62-A7-R1] (order.txt:99)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "16-parada-not-accredited-coherente",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "17-agreed-con-un-required",
+   "Expected": [
+    "AGREED exige cero REQUIRED",
+    "AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true",
+    "resultado: AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "18-changes-required-sin-required",
+   "Expected": [
+    "CHANGES REQUIRED sin ningún REQUIRED"
+   ],
+   "Got": [
+    "resultado: CHANGES REQUIRED sin ningún REQUIRED"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "19-agreed-con-un-disparador-en-desacuerdo",
+   "Expected": [
+    "Materiality.Triggers[M-08] DISAGREE sin un REQUIRED vinculado",
+    "AGREED exige los ocho disparadores de Materiality en AGREE"
+   ],
+   "Got": [
+    "resultado: Materiality.Triggers[M-08] DISAGREE sin un REQUIRED vinculado",
+    "resultado: AGREED exige los ocho disparadores de Materiality en AGREE"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "20-not-accredited-sin-motivo",
+   "Expected": [
+    "NOT_ACCREDITED sin el motivo en KnownLimitations"
+   ],
+   "Got": [
+    "resultado: NOT_ACCREDITED sin el motivo en KnownLimitations"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "21-structured-output-distinto",
+   "Expected": [
+    "structured_output del result distinto"
+   ],
+   "Got": [
+    "resultado: structured_output del result distinto de la última llamada StructuredOutput de la transcripción (o de su adjunto)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "22-cadena-lateral-y-subagentes",
+   "Expected": [
+    "entradas de cadena lateral",
+    "subagentes lanzados",
+    "mensajes de un subagente"
+   ],
+   "Got": [
+    "stream-json: subagentes lanzados",
+    "stream-json: mensajes de un subagente (parent_tool_use_id)",
+    "transcripción: 1 entradas de cadena lateral (subagentes)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "23-lanzamiento-e-init-distintos",
+   "Expected": [
+    "argumentos del lanzamiento distintos",
+    "herramientas del init distintas",
+    "permissionMode del init distinto",
+    "session_id del init distinto"
+   ],
+   "Got": [
+    "lanzamiento: argumentos del lanzamiento distintos de los del cierre (flags, --add-dir, --session-id o esquema)",
+    "stream-json: session_id del init distinto del fijado",
+    "stream-json: permissionMode del init distinto de dontAsk",
+    "stream-json: herramientas del init distintas de ['Glob', 'Grep', 'Read', 'StructuredOutput']: ['Bash', 'Glob', 'Grep', 'Read', 'StructuredOutput']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "24-lecturas-del-run-y-de-directorios",
+   "Expected": [
+    "lectura fuera del cierre (intento fallido",
+    "lectura de un directorio"
+   ],
+   "Got": [
+    "llamada 13 (Read): lectura fuera del cierre (intento fallido; sigue siendo una acción fuera del contrato): D:/r62-arch-a7r2-run/launch/stdout.jsonl",
+    "llamada 14 (Read): lectura de un directorio: D:/r62-arch-a7r2-run",
+    "llamada 15 (Read): lectura de un directorio: D:/r62-arch-a7r2/docs"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "ExpectedCounts": {
+    "lectura de un directorio": 2
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "25-referencias-a-order-y-a7-r1-aceptadas",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "26-lectura-fallida-y-degradada",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en Materiality (docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:82)",
+    "fidelidad: docs/initiatives/I-62-proposal-v14.md"
+   ],
+   "Got": [
+    "fidelidad: docs/initiatives/I-62-proposal-v14.md (Read, llamada 14) líneas alteradas [2531]",
+    "referencia sobre líneas no entregadas fielmente en Materiality (docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md:82)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS",
+   "FailedReadRecorded": true
+  },
+  {
+   "Case": "27-transcripcion-sesion-cwd-version",
+   "Expected": [
+    "transcripción: sesión distinta",
+    "transcripción: cwd distinto",
+    "transcripción: versión distinta"
+   ],
+   "Got": [
+    "transcripción: sesión distinta de la fijada en el kit (['11111111-1111-4111-8111-111111111111', '3dd5ac31-ddf5-4e4a-b732-b913933a9ae3']; archivo 3dd5ac31-ddf5-4e4a-b732-b913933a9ae3)",
+    "transcripción: cwd distinto del clon: D:/r62-a7/kit-review2/.tmp/st/o, D:/r62-arch-a7r2",
+    "transcripción: versión distinta de 2.1.299: ['2.1.289', '2.1.299']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "28-run-json-ausente",
+   "Expected": [
+    "lanzamiento: falta run.json"
+   ],
+   "Got": [
+    "lanzamiento: falta run.json en launch/"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "RUN_JSON_MISSING",
+   "Result": "PASS",
+   "ExecutionCategory": "RUN_JSON_MISSING"
+  },
+  {
+   "Case": "29-run-json-sessionid",
+   "Expected": [
+    "SessionId de run.json distinto"
+   ],
+   "Got": [
+    "lanzamiento: SessionId de run.json distinto del fijado en el kit"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "30-run-json-ejecutable-ruta",
+   "Expected": [
+    "ejecutable medido distinto del binario elegible"
+   ],
+   "Got": [
+    "lanzamiento: ejecutable medido distinto del binario elegible del cierre (ruta resuelta o SHA-256)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "31-run-json-ejecutable-sha",
+   "Expected": [
+    "ejecutable medido distinto del binario elegible"
+   ],
+   "Got": [
+    "lanzamiento: ejecutable medido distinto del binario elegible del cierre (ruta resuelta o SHA-256)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "32-run-json-cwd",
+   "Expected": [
+    "cwd del proceso distinto del clon"
+   ],
+   "Got": [
+    "lanzamiento: cwd del proceso distinto del clon"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "33-run-json-hashes",
+   "Expected": [
+    "PromptSha256 de run.json distinto",
+    "StdoutSha256 de run.json distinto",
+    "Transcript.Sha256 de run.json distinto"
+   ],
+   "Got": [
+    "lanzamiento: PromptSha256 de run.json distinto de prompt.md del run",
+    "lanzamiento: StdoutSha256 de run.json distinto del stdout.jsonl auditado",
+    "lanzamiento: Transcript.Sha256 de run.json distinto de la transcripción auditada"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "34-preflight-ausente",
+   "Expected": [
+    "lanzamiento: falta preflight.json"
+   ],
+   "Got": [
+    "lanzamiento: falta preflight.json en launch/"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "35-preflight-comprobaciones",
+   "Expected": [
+    "preflight: faltan comprobaciones ['9-CommandLine']",
+    "preflight: comprobaciones sin Ok: ['6-Clone']"
+   ],
+   "Got": [
+    "preflight: faltan comprobaciones ['9-CommandLine']",
+    "preflight: comprobaciones sin Ok: ['6-Clone']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "36-preflight-medidas",
+   "Expected": [
+    "preflight: binario medido",
+    "preflight: versión medida distinta",
+    "preflight: auth status sin loggedIn"
+   ],
+   "Got": [
+    "preflight: binario medido (ruta resuelta o SHA-256) distinto del cierre",
+    "preflight: versión medida distinta de 2.1.299 (Claude Code)",
+    "preflight: auth status sin loggedIn = true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "36b-preflight-ruta-del-binario",
+   "Expected": [
+    "preflight: binario medido"
+   ],
+   "Got": [
+    "preflight: binario medido (ruta resuelta o SHA-256) distinto del cierre"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "37-preflight-compuerta-y-sesion",
+   "Expected": [
+    "preflight: compuerta de transporte distinta",
+    "preflight: SessionId distinto"
+   ],
+   "Got": [
+    "preflight: SessionId distinto del fijado en el kit",
+    "preflight: compuerta de transporte distinta de kit/transport-gate.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "38-compuerta-pendiente",
+   "Expected": [
+    "compuerta de transporte: Status 'PENDING'",
+    "preflight: compuerta de transporte distinta"
+   ],
+   "Got": [
+    "preflight: compuerta de transporte distinta de kit/transport-gate.json",
+    "compuerta de transporte: Status 'PENDING': D-01 abierto (falta la medición C3 o la aceptación registrada)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "39-compuerta-copia-alterada",
+   "Expected": [
+    "compuerta de transporte: SHA-256 del registro de caracterización distinto"
+   ],
+   "Got": [
+    "compuerta de transporte: SHA-256 del registro de caracterización distinto del fijado en la compuerta"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "40-compuerta-copia-ausente",
+   "Expected": [
+    "compuerta de transporte: falta el registro de caracterización"
+   ],
+   "Got": [
+    "compuerta de transporte: falta el registro de caracterización"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "41-compuerta-aceptada-acreditada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "42-compuerta-aceptacion-invalida",
+   "Expected": [
+    "compuerta de transporte: SHA-256 del registro de aceptación distinto",
+    "compuerta de transporte: AcceptedBy distinto"
+   ],
+   "Got": [
+    "compuerta de transporte: SHA-256 del registro de aceptación distinto del fijado en la compuerta",
+    "compuerta de transporte: AcceptedBy distinto de principal-session | Coordinator"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "43-init-ausente",
+   "Expected": [
+    "stream-json: falta el mensaje init"
+   ],
+   "Got": [
+    "stream-json: falta el mensaje init"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "44-init-cwd-modelo-version-mcp",
+   "Expected": [
+    "cwd del init distinto",
+    "modelo del init distinto",
+    "versión del init distinta",
+    "servidores MCP en el init"
+   ],
+   "Got": [
+    "stream-json: cwd del init distinto del clon",
+    "stream-json: modelo del init distinto de claude-opus-5-5",
+    "stream-json: servidores MCP en el init",
+    "stream-json: versión del init distinta de 2.1.299"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "45-result-no-success",
+   "Expected": [
+    "el result no es success"
+   ],
+   "Got": [
+    "stream-json: el result no es success (subtype 'error_max_turns', is_error True)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "46-result-session-id",
+   "Expected": [
+    "session_id del result distinto"
+   ],
+   "Got": [
+    "stream-json: session_id del result distinto del fijado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "47-result-sin-structured-output",
+   "Expected": [
+    "el result no trae structured_output",
+    "no hay resultado estructurado",
+    "lectura directa: DirectReads sin una entrada"
+   ],
+   "Got": [
+    "stream-json: el result no trae structured_output",
+    "no hay resultado estructurado",
+    "lectura directa: DirectReads sin una entrada que cubra docs/AUTOMATION_PLAN.md:616-617"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "48-transcripcion-sin-asistente",
+   "Expected": [
+    "ningún mensaje del asistente",
+    "structured_output del result distinto",
+    "referencia sobre líneas no entregadas fielmente",
+    "lectura directa: docs/AUTOMATION_PLAN.md:616-617 no entregadas fielmente"
+   ],
+   "Got": [
+    "transcripción: ningún mensaje del asistente",
+    "resultado: structured_output del result distinto de la última llamada StructuredOutput de la transcripción (o de su adjunto)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/initiatives/I-62-A-7.md:238)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R2] (docs/initiatives/I-62-A-7.md:239)",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R3] (docs/initiatives/I-62-A-7.md:240)",
+    "referencia sobre líneas no entregadas fielmente en RegressionCheck[T04_EFF_EFF1_B1_MAP_VALIDATION] (docs/initiatives/I-62-A-7.md:115-119)",
+    "referencia sobre líneas no entregadas fielmente en RegressionCheck[T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE] (docs/initiatives/I-62-A-7.md:160-170)",
+    "referencia sobre líneas no entregadas fielmente en RegressionCheck[T06_CLAUSEMAP_COVERAGE_RULE] (docs/initiatives/I-62-A-7.md:220-228)",
+    "referencia sobre líneas no entregadas fielmente en RegressionCheck[T07_MULTI_CATEGORY_ENTRIES] (docs/initiatives/I-62-A-7.md:129-142)",
+    "referencia sobre líneas no entregadas fielmente en RegressionCheck[T09_NO_UNAUTHORIZED_CHANGES] (docs/initiatives/I-62-A-7.md:182-184)",
+    "referencia sobre líneas no entregadas fielmente en QuestionAnswers[Q-A7R2-01] (docs/initiatives/I-62-A-7.md:306)",
+    "referencia sobre líneas no entregadas fielmente en QuestionAnswers[Q-A7R2-02] (docs/initiatives/I-62-A-7.md:307)",
+    "referencia sobre líneas no entregadas fielmente en QuestionAnswers[Q-A7R2-03] (docs/initiatives/I-62-A-7.md:308)",
+    "referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-01] (docs/initiatives/I-62-A-7.md:260)",
+    "referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-02] (docs/initiatives/I-62-A-7.md:261)",
+    "referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-03] (docs/initiatives/I-62-A-7.md:262)",
+    "referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-04] (docs/initiatives/I-62-A-7.md:263)",
+    "referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-05] (docs/initiatives/I-62-A-7.md:264)",
+    "referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-06] (docs/initiatives/I-62-A-7.md:265)",
+    "referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-07] (docs/initiatives/I-62-A-7.md:266)",
+    "referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-08] (docs/initiatives/I-62-A-7.md:267)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity.Changes[R1_CATEGORY_C_ROLES] (docs/initiatives/I-62-A-7.md:236-243)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity.Changes[R2_INVALIDATOR_RULE_AND_PROCEDURE] (docs/initiatives/I-62-A-7.md:236-243)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity.Changes[R3_A62_RULE1_PRECISION] (docs/initiatives/I-62-A-7.md:236-243)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity.Changes[O1_M04_MOTIVE] (docs/initiatives/I-62-A-7.md:236-243)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity.Changes[O7_S31_MV6_MV7_CONTENT] (docs/initiatives/I-62-A-7.md:236-243)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity.Changes[O2_S35_REVERIFICATION] (docs/initiatives/I-62-A-7.md:236-243)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity.Changes[P1_RED_PER_16_8] (docs/initiatives/I-62-A-7.md:236-243)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity.Changes[P2_MEASUREMENT_WITHOUT_RELAY_FACTS] (docs/initiatives/I-62-A-7.md:236-243)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity.Changes[P3_DERIVATION_AS_INVALIDATOR_PIECE] (docs/initiatives/I-62-A-7.md:236-243)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity.Changes[P4_RED_UNDETERMINED] (docs/initiatives/I-62-A-7.md:236-243)",
+    "referencia sobre líneas no entregadas fielmente en DirectReads (docs/AUTOMATION_PLAN.md:616-617)",
+    "referencia sobre líneas no entregadas fielmente en Materiality (docs/initiatives/I-62-A-7.md:256-267)",
+    "referencia sobre líneas no entregadas fielmente en OwnerReservedConsequence (docs/initiatives/I-62-A-7.md:283-286)",
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity (docs/initiatives/I-62-A-7.md:230-243)",
+    "referencia sobre líneas no entregadas fielmente en RelatedImpacts (docs/initiatives/I-62-A-7.md:215-218)",
+    "lectura directa: docs/AUTOMATION_PLAN.md:616-617 no entregadas fielmente por Read en ese mismo archivo ni en su copia fiel"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "ExpectedCounts": {
+    "referencia sobre líneas no entregadas fielmente": 34
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "49-transcripcion-sin-primer-usuario",
+   "Expected": [
+    "transcripción: sin primer mensaje de usuario"
+   ],
+   "Got": [
+    "transcripción: sin primer mensaje de usuario"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "50-glob-puntos-tras-comodin",
+   "Expected": [
+    "Glob con `..` después de un comodín"
+   ],
+   "Got": [
+    "llamada 13 (Glob): Glob con `..` después de un comodín: docs/*/../../docs/automation/evidence/I-62-F6/FX-02/bmin/SPEC.md"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "51-run-dir-entrada-ajena",
+   "Expected": [
+    "directorio del run con entradas ajenas al run: ['intruso.txt']"
+   ],
+   "Got": [
+    "directorio del run con entradas ajenas al run: ['intruso.txt']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "52-launch-archivo-inesperado",
+   "Expected": [
+    "launch/ con archivos inesperados: ['notas.txt']"
+   ],
+   "Got": [
+    "launch/ con archivos inesperados: ['notas.txt']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "53-stdout-fuera-de-launch",
+   "Expected": [
+    "lanzamiento: stdout.jsonl fuera de"
+   ],
+   "Got": [
+    "lanzamiento: stdout.jsonl fuera de D:/r62-a7/kit-review2/.tmp/st/t/53/launch"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "54-clon-blob-cambiado",
+   "Expected": [
+    "el clon no conserva los blobs designados del cierre"
+   ],
+   "Got": [
+    "el clon no conserva los blobs designados del cierre"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "55-esquema-invalido",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "56-resolucion-abierta-sin-required",
+   "Expected": [
+    "Round1FindingResolution[A62-A7-R1] PARTIALLY_CORRECTED sin el REQUIRED residual vinculado"
+   ],
+   "Got": [
+    "resultado: Round1FindingResolution[A62-A7-R1] PARTIALLY_CORRECTED sin el REQUIRED residual vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "57-resolucion-corregida-con-required",
+   "Expected": [
+    "Round1FindingResolution[A62-A7-R2] CORRECTED con un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: Round1FindingResolution[A62-A7-R2] CORRECTED con un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "58-resolucion-no-corregida-sin-required",
+   "Expected": [
+    "Round1FindingResolution[A62-A7-R3] NOT_CORRECTED sin el REQUIRED residual vinculado"
+   ],
+   "Got": [
+    "resultado: Round1FindingResolution[A62-A7-R3] NOT_CORRECTED sin el REQUIRED residual vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "59-regresion-sin-required",
+   "Expected": [
+    "RegressionCheck[T06_CLAUSEMAP_COVERAGE_RULE] REGRESSION sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: RegressionCheck[T06_CLAUSEMAP_COVERAGE_RULE] REGRESSION sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "60-sin-regresion-con-required",
+   "Expected": [
+    "RegressionCheck[T04_EFF_EFF1_B1_MAP_VALIDATION] NO_REGRESSION con un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: RegressionCheck[T04_EFF_EFF1_B1_MAP_VALIDATION] NO_REGRESSION con un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "61-cambio-fuera-sin-required",
+   "Expected": [
+    "DeltaPurity.Changes[P1_RED_PER_16_8] OUTSIDE_R1_R3 sin un REQUIRED vinculado",
+    "DeltaPurity CONFIRMED con un cambio OUTSIDE_R1_R3"
+   ],
+   "Got": [
+    "resultado: DeltaPurity.Changes[P1_RED_PER_16_8] OUTSIDE_R1_R3 sin un REQUIRED vinculado (decisiones §94, punto 2)",
+    "resultado: DeltaPurity CONFIRMED con un cambio OUTSIDE_R1_R3"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "62-cambio-dentro-con-required",
+   "Expected": [
+    "DeltaPurity.Changes[O1_M04_MOTIVE] WITHIN_R1_R3 con un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: DeltaPurity.Changes[O1_M04_MOTIVE] WITHIN_R1_R3 con un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "63-pureza-no-confirmada-sin-cambio-fuera",
+   "Expected": [
+    "DeltaPurity NOT_CONFIRMED con todos los cambios WITHIN_R1_R3"
+   ],
+   "Got": [
+    "resultado: DeltaPurity NOT_CONFIRMED con todos los cambios WITHIN_R1_R3"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "64-pureza-no-confirmada-sin-required",
+   "Expected": [
+    "DeltaPurity NOT_CONFIRMED sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: DeltaPurity NOT_CONFIRMED sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "65-disparador-en-desacuerdo-sin-required",
+   "Expected": [
+    "Materiality.Triggers[M-03] DISAGREE sin un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: Materiality.Triggers[M-03] DISAGREE sin un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "66-disparador-de-acuerdo-con-required",
+   "Expected": [
+    "Materiality.Triggers[M-01] AGREE con un REQUIRED vinculado"
+   ],
+   "Got": [
+    "resultado: Materiality.Triggers[M-01] AGREE con un REQUIRED vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "67-declaracion-de-a7-mal-copiada",
+   "Expected": [
+    "con un veredicto, A7Declared distinto de lo que declara A-7 §5 (M-08)"
+   ],
+   "Got": [
+    "resultado: con un veredicto, A7Declared distinto de lo que declara A-7 §5 (M-08)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "68-pregunta-no-satisfecha-sin-hallazgo",
+   "Expected": [
+    "QuestionAnswers[Q-A7R2-02] NOT_SATISFIED sin un hallazgo vinculado"
+   ],
+   "Got": [
+    "resultado: QuestionAnswers[Q-A7R2-02] NOT_SATISFIED sin un hallazgo vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "69-disposicion-opcional-no-conforme-sin-hallazgo",
+   "Expected": [
+    "OptionalDispositionConformance[A62-A7-O2] DOES_NOT_CONFORM sin un hallazgo vinculado"
+   ],
+   "Got": [
+    "resultado: OptionalDispositionConformance[A62-A7-O2] DOES_NOT_CONFORM sin un hallazgo vinculado"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "70-disposiciones-opcionales-aceptadas",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "71-disposicion-opcional-repetida",
+   "Expected": [
+    "OptionalDispositionConformance con identificadores repetidos"
+   ],
+   "Got": [
+    "resultado: OptionalDispositionConformance con identificadores repetidos"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "72-disposicion-opcional-sin-referencias",
+   "Expected": [
+    "con un veredicto, OptionalDispositionConformance[A62-A7-O3] sin ClauseRefs"
+   ],
+   "Got": [
+    "resultado: con un veredicto, OptionalDispositionConformance[A62-A7-O3] sin ClauseRefs"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "73-disposicion-opcional-no-evaluada-sin-referencias-aceptada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "74-decision-del-owner-sin-consecuencias",
+   "Expected": [
+    "OwnerDecisionRequired = true sin UnidentifiedConsequences"
+   ],
+   "Got": [
+    "resultado: OwnerDecisionRequired = true sin UnidentifiedConsequences"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "75-sin-decision-del-owner-con-consecuencias",
+   "Expected": [
+    "OwnerDecisionRequired = false con UnidentifiedConsequences"
+   ],
+   "Got": [
+    "resultado: OwnerDecisionRequired = false con UnidentifiedConsequences"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "76-blocked-sin-decision-del-owner",
+   "Expected": [
+    "BLOCKED — OWNER DECISION sin OwnerDecisionRequired = true"
+   ],
+   "Got": [
+    "resultado: BLOCKED — OWNER DECISION sin OwnerDecisionRequired = true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "77-impactos-cambiados-sin-nota",
+   "Expected": [
+    "RelatedImpacts.ChangedByRound2 = true sin Note"
+   ],
+   "Got": [
+    "resultado: RelatedImpacts.ChangedByRound2 = true sin Note"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "78-impactos-cambiados-con-nota-aceptado",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "79-ifagreed-no-nulo-sin-agreed",
+   "Expected": [
+    "IfAgreed debe ir en null salvo con AGREED"
+   ],
+   "Got": [
+    "resultado: IfAgreed debe ir en null salvo con AGREED"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "80-agreed-con-ifagreed-falso",
+   "Expected": [
+    "AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "81-no-determinado-con-veredicto",
+   "Expected": [
+    "con un veredicto, NOT_DETERMINED o null no se admiten (DeltaPurity.Status, RelatedImpacts.ChangedByRound2)"
+   ],
+   "Got": [
+    "resultado: con un veredicto, NOT_DETERMINED o null no se admiten (DeltaPurity.Status, RelatedImpacts.ChangedByRound2)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "82-decision-del-owner-nula-con-veredicto",
+   "Expected": [
+    "OwnerReservedConsequence.OwnerDecisionRequired no admite null"
+   ],
+   "Got": [
+    "resultado: con un veredicto, OwnerReservedConsequence.OwnerDecisionRequired no admite null"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "83-paso0-falso-con-veredicto",
+   "Expected": [
+    "las siete booleanas de Step0 van en true"
+   ],
+   "Got": [
+    "resultado: con un veredicto, las siete booleanas de Step0 van en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "84-paso0-nulo-con-veredicto",
+   "Expected": [
+    "las siete booleanas de Step0 van en true"
+   ],
+   "Got": [
+    "resultado: con un veredicto, las siete booleanas de Step0 van en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "85-objeto-otro-blob",
+   "Expected": [
+    "objeto revisado distinto del designado"
+   ],
+   "Got": [
+    "resultado: objeto revisado distinto del designado (commit, ruta o blob)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "86-objeto-otro-commit",
+   "Expected": [
+    "objeto revisado distinto del designado"
+   ],
+   "Got": [
+    "resultado: objeto revisado distinto del designado (commit, ruta o blob)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "87-ids-de-invocacion-de-la-ronda-1",
+   "Expected": [
+    "identificadores de la invocación distintos"
+   ],
+   "Got": [
+    "resultado: identificadores de la invocación distintos de los del cierre"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "88-elementos-sin-referencias",
+   "Expected": [
+    "con un veredicto, Round1FindingResolution[A62-A7-R1] sin ClauseRefs",
+    "con un veredicto, RegressionCheck[T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE] sin ClauseRefs",
+    "con un veredicto, DeltaPurity.Changes[R2_INVALIDATOR_RULE_AND_PROCEDURE] sin ClauseRefs",
+    "con un veredicto, QuestionAnswers[Q-A7R2-03] sin ClauseRefs",
+    "con un veredicto, Materiality.Triggers[M-02] sin ClauseRefs",
+    "con un veredicto, Materiality sin ClauseRefs",
+    "con un veredicto, OwnerReservedConsequence sin ClauseRefs",
+    "con un veredicto, DeltaPurity sin ClauseRefs",
+    "con un veredicto, RelatedImpacts sin ClauseRefs"
+   ],
+   "Got": [
+    "resultado: con un veredicto, Round1FindingResolution[A62-A7-R1] sin ClauseRefs",
+    "resultado: con un veredicto, RegressionCheck[T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE] sin ClauseRefs",
+    "resultado: con un veredicto, QuestionAnswers[Q-A7R2-03] sin ClauseRefs",
+    "resultado: con un veredicto, Materiality.Triggers[M-02] sin ClauseRefs",
+    "resultado: con un veredicto, DeltaPurity.Changes[R2_INVALIDATOR_RULE_AND_PROCEDURE] sin ClauseRefs",
+    "resultado: con un veredicto, Materiality sin ClauseRefs",
+    "resultado: con un veredicto, OwnerReservedConsequence sin ClauseRefs",
+    "resultado: con un veredicto, DeltaPurity sin ClauseRefs",
+    "resultado: con un veredicto, RelatedImpacts sin ClauseRefs"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "89-findingids-inexistentes",
+   "Expected": [
+    "Round1FindingResolution[A62-A7-R3] cita en FindingIds hallazgos que no existen",
+    "RegressionCheck[T07_MULTI_CATEGORY_ENTRIES] cita en FindingIds hallazgos que no existen",
+    "DeltaPurity.Changes[P3_DERIVATION_AS_INVALIDATOR_PIECE] cita en FindingIds hallazgos que no existen",
+    "QuestionAnswers[Q-A7R2-01] cita en FindingIds hallazgos que no existen",
+    "Materiality.Triggers[M-04] cita en FindingIds hallazgos que no existen",
+    "DeltaPurity cita en FindingIds hallazgos que no existen",
+    "RelatedImpacts cita en FindingIds hallazgos que no existen"
+   ],
+   "Got": [
+    "resultado: Round1FindingResolution[A62-A7-R3] cita en FindingIds hallazgos que no existen",
+    "resultado: RegressionCheck[T07_MULTI_CATEGORY_ENTRIES] cita en FindingIds hallazgos que no existen",
+    "resultado: QuestionAnswers[Q-A7R2-01] cita en FindingIds hallazgos que no existen",
+    "resultado: Materiality.Triggers[M-04] cita en FindingIds hallazgos que no existen",
+    "resultado: DeltaPurity.Changes[P3_DERIVATION_AS_INVALIDATOR_PIECE] cita en FindingIds hallazgos que no existen",
+    "resultado: DeltaPurity cita en FindingIds hallazgos que no existen",
+    "resultado: RelatedImpacts cita en FindingIds hallazgos que no existen"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "90-ids-de-hallazgo-repetidos",
+   "Expected": [
+    "identificadores de hallazgo repetidos"
+   ],
+   "Got": [
+    "resultado: identificadores de hallazgo repetidos"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "91-required-sin-invariante-ni-contraejemplo",
+   "Expected": [
+    "A62-A7R2-R1 REQUIRED sin ViolatedInvariant ni Counterexample"
+   ],
+   "Got": [
+    "resultado: A62-A7R2-R1 REQUIRED sin ViolatedInvariant ni Counterexample"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "92-required-sin-evidencia",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "93-evidencia-fuera-del-cierre",
+   "Expected": [
+    "referencia no canónica en RequiredFindings[A62-A7R2-R1] (D:/r62-arch-a7r2/docs/HANDOFF.md:1)"
+   ],
+   "Got": [
+    "referencia no canónica en RequiredFindings[A62-A7R2-R1] (D:/r62-arch-a7r2/docs/HANDOFF.md:1)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "94-evidencia-sobre-lineas-no-leidas",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en RequiredFindings[A62-A7R2-R1] (docs/initiatives/I-62-A-6.md:10-12)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en RequiredFindings[A62-A7R2-R1] (docs/initiatives/I-62-A-6.md:10-12)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "95-evidencia-opcional-no-leida",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en OptionalFindings[A62-A7R2-O1]"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en OptionalFindings[A62-A7R2-O1] (docs/initiatives/I-62-proposal-v14.md:2408)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "96-required-sin-disposicion",
+   "Expected": [
+    "REQUIRED sin disposición: todo REQUIRED lo cita al menos un elemento evaluado (A62-A7R2-R2)"
+   ],
+   "Got": [
+    "resultado: REQUIRED sin disposición: todo REQUIRED lo cita al menos un elemento evaluado (A62-A7R2-R2)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "97-agreed-resolucion-no-corregida",
+   "Expected": [
+    "AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true",
+    "AGREED exige A62-A7-R1, R2 y R3 en CORRECTED"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true",
+    "resultado: AGREED exige A62-A7-R1, R2 y R3 en CORRECTED"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "98-agreed-pureza-no-confirmada",
+   "Expected": [
+    "AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true",
+    "AGREED exige DeltaPurity CONFIRMED con los diez cambios WITHIN_R1_R3"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true",
+    "resultado: AGREED exige DeltaPurity CONFIRMED con los diez cambios WITHIN_R1_R3"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "99-agreed-regresion",
+   "Expected": [
+    "AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true",
+    "AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true",
+    "resultado: AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "100-agreed-disparador-en-desacuerdo",
+   "Expected": [
+    "AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true",
+    "AGREED exige los ocho disparadores de Materiality en AGREE"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true",
+    "resultado: AGREED exige los ocho disparadores de Materiality en AGREE"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "101-agreed-con-decision-del-owner",
+   "Expected": [
+    "AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true"
+   ],
+   "Got": [
+    "resultado: AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "102-changes-required-coherente-aceptado",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "103-rejected-coherente-aceptado",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "104-rejected-sin-required",
+   "Expected": [
+    "REJECTED sin ningún REQUIRED"
+   ],
+   "Got": [
+    "resultado: REJECTED sin ningún REQUIRED"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "105-blocked-coherente-aceptado",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "106-agreed-con-un-opcional-aceptado",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "107-id-de-hallazgo-mal-formado",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "108-id-nuevo-con-el-espacio-de-la-ronda-1",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "109-referencia-absoluta",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "110-referencia-mal-formada",
+   "Expected": [
+    "referencia mal formada en Materiality",
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json",
+    "referencia mal formada en Materiality: 'order.txt'"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "111-esquema-estados-invalidos",
+   "Expected": [
+    "resultado: no valida contra result.schema.json",
+    "AGREED exige A62-A7-R1, R2 y R3 en CORRECTED",
+    "AGREED exige los ocho disparadores de Materiality en AGREE",
+    "AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION"
+   ],
+   "Got": [
+    "resultado: AGREED exige A62-A7-R1, R2 y R3 en CORRECTED",
+    "resultado: AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION",
+    "resultado: AGREED exige los ocho disparadores de Materiality en AGREE",
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "112-esquema-booleano-como-texto",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "113-esquema-veredicto-inexistente",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "114b-esquema-propiedad-sobrante-anidada",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "114c-esquema-campo-requerido-ausente-anidado",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "114d-esquema-texto-vacio-anidado",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "114e-esquema-elemento-de-lista-no-texto",
+   "Expected": [
+    "resultado: no valida contra result.schema.json",
+    "OwnerDecisionRequired = false con UnidentifiedConsequences"
+   ],
+   "Got": [
+    "resultado: OwnerDecisionRequired = false con UnidentifiedConsequences",
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "114f-esquema-null-no-admitido-anidado",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "114g-esquema-propiedad-sobrante-doble-anidada",
+   "Expected": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Got": [
+    "resultado: no valida contra result.schema.json"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": false,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "115-resolucion-ausente",
+   "Expected": [
+    "Round1FindingResolution debe disponer cada id una vez (faltan ['A62-A7-R3']",
+    "AGREED exige A62-A7-R1, R2 y R3 en CORRECTED"
+   ],
+   "Got": [
+    "resultado: Round1FindingResolution debe disponer cada id una vez (faltan ['A62-A7-R3']; sobran o repetidos [])",
+    "resultado: AGREED exige A62-A7-R1, R2 y R3 en CORRECTED"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "115b-resolucion-repetida",
+   "Expected": [
+    "Round1FindingResolution con identificadores repetidos",
+    "Round1FindingResolution debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: Round1FindingResolution con identificadores repetidos",
+    "resultado: Round1FindingResolution debe disponer cada id una vez (faltan ['A62-A7-R2']; sobran o repetidos ['A62-A7-R1'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "116-tema-de-regresion-ausente",
+   "Expected": [
+    "RegressionCheck debe disponer cada id una vez (faltan ['T09_NO_UNAUTHORIZED_CHANGES']",
+    "AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION"
+   ],
+   "Got": [
+    "resultado: RegressionCheck debe disponer cada id una vez (faltan ['T09_NO_UNAUTHORIZED_CHANGES']; sobran o repetidos [])",
+    "resultado: AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "116b-tema-de-regresion-repetido",
+   "Expected": [
+    "RegressionCheck con identificadores repetidos",
+    "RegressionCheck debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: RegressionCheck con identificadores repetidos",
+    "resultado: RegressionCheck debe disponer cada id una vez (faltan ['T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE']; sobran o repetidos ['T04_EFF_EFF1_B1_MAP_VALIDATION'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "117-cambio-ausente",
+   "Expected": [
+    "DeltaPurity.Changes debe disponer cada id una vez (faltan ['P4_RED_UNDETERMINED']",
+    "AGREED exige DeltaPurity CONFIRMED con los diez cambios WITHIN_R1_R3"
+   ],
+   "Got": [
+    "resultado: DeltaPurity.Changes debe disponer cada id una vez (faltan ['P4_RED_UNDETERMINED']; sobran o repetidos [])",
+    "resultado: AGREED exige DeltaPurity CONFIRMED con los diez cambios WITHIN_R1_R3"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "117b-cambio-repetido",
+   "Expected": [
+    "DeltaPurity.Changes con identificadores repetidos",
+    "DeltaPurity.Changes debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: DeltaPurity.Changes con identificadores repetidos",
+    "resultado: DeltaPurity.Changes debe disponer cada id una vez (faltan ['O7_S31_MV6_MV7_CONTENT']; sobran o repetidos ['R1_CATEGORY_C_ROLES'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "118-disparador-ausente",
+   "Expected": [
+    "Materiality.Triggers debe disponer cada id una vez (faltan ['M-07']",
+    "AGREED exige los ocho disparadores de Materiality"
+   ],
+   "Got": [
+    "resultado: Materiality.Triggers debe disponer cada id una vez (faltan ['M-07']; sobran o repetidos [])",
+    "resultado: AGREED exige los ocho disparadores de Materiality en AGREE"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "118b-disparador-repetido",
+   "Expected": [
+    "Materiality.Triggers con identificadores repetidos",
+    "Materiality.Triggers debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: Materiality.Triggers con identificadores repetidos",
+    "resultado: Materiality.Triggers debe disponer cada id una vez (faltan ['M-06']; sobran o repetidos ['M-01'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "119-pregunta-ausente",
+   "Expected": [
+    "QuestionAnswers debe disponer cada id una vez (faltan ['Q-A7R2-03']"
+   ],
+   "Got": [
+    "resultado: QuestionAnswers debe disponer cada id una vez (faltan ['Q-A7R2-03']; sobran o repetidos [])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "119b-pregunta-repetida",
+   "Expected": [
+    "QuestionAnswers con identificadores repetidos",
+    "QuestionAnswers debe disponer cada id una vez"
+   ],
+   "Got": [
+    "resultado: QuestionAnswers con identificadores repetidos",
+    "resultado: QuestionAnswers debe disponer cada id una vez (faltan ['Q-A7R2-02']; sobran o repetidos ['Q-A7R2-01'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "120-not-accredited-con-ids-repetidos",
+   "Expected": [
+    "RegressionCheck con identificadores repetidos"
+   ],
+   "Got": [
+    "resultado: RegressionCheck con identificadores repetidos"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "121-sin-lectura-directa-de-ap",
+   "Expected": [
+    "lectura directa: docs/AUTOMATION_PLAN.md:616-617 no entregadas fielmente",
+    "referencia sobre líneas no entregadas fielmente en DirectReads (docs/AUTOMATION_PLAN.md:616-617)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en DirectReads (docs/AUTOMATION_PLAN.md:616-617)",
+    "lectura directa: docs/AUTOMATION_PLAN.md:616-617 no entregadas fielmente por Read en ese mismo archivo ni en su copia fiel"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "121b-cita-de-ap-leida-solo-en-a7",
+   "Expected": [
+    "lectura directa: docs/AUTOMATION_PLAN.md:616-617 no entregadas fielmente",
+    "referencia sobre líneas no entregadas fielmente en DirectReads (docs/AUTOMATION_PLAN.md:616-617)",
+    "referencia sobre líneas no entregadas fielmente en Materiality (docs/AUTOMATION_PLAN.md:616-617)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en DirectReads (docs/AUTOMATION_PLAN.md:616-617)",
+    "referencia sobre líneas no entregadas fielmente en Materiality (docs/AUTOMATION_PLAN.md:616-617)",
+    "lectura directa: docs/AUTOMATION_PLAN.md:616-617 no entregadas fielmente por Read en ese mismo archivo ni en su copia fiel"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "121c-directreads-sin-ap",
+   "Expected": [
+    "lectura directa: DirectReads sin una entrada que cubra"
+   ],
+   "Got": [
+    "lectura directa: DirectReads sin una entrada que cubra docs/AUTOMATION_PLAN.md:616-617"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "121d-directreads-cubre-solo-616",
+   "Expected": [
+    "lectura directa: DirectReads sin una entrada que cubra"
+   ],
+   "Got": [
+    "lectura directa: DirectReads sin una entrada que cubra docs/AUTOMATION_PLAN.md:616-617"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "121e-cita-de-ap-tras-la-lectura-directa-aceptada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "121f-referencia-anidada-no-leida",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-02] (docs/initiatives/I-62-A-6.md:10-12)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-02] (docs/initiatives/I-62-A-6.md:10-12)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "121g-referencia-anidada-de-evidencia-leida",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "121h-referencia-de-la-pureza-no-leida",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity (docs/initiatives/I-62-A-6.md:10-12)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en DeltaPurity (docs/initiatives/I-62-A-6.md:10-12)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "121i-referencia-de-disposicion-opcional-no-leida",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en OptionalDispositionConformance[A62-A7-O1] (docs/initiatives/I-62-A-6.md:10-12)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en OptionalDispositionConformance[A62-A7-O1] (docs/initiatives/I-62-A-6.md:10-12)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "121j-referencia-a-la-ronda-1-y-a-su-salida-aceptada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "126-run-json-fallo-del-proceso",
+   "Expected": [
+    "código de salida 3",
+    "Outcome de run.json 'REVIEW_PROCESS_FAILURE'"
+   ],
+   "Got": [
+    "lanzamiento: código de salida 3 (se exige 0)",
+    "lanzamiento: Outcome de run.json 'REVIEW_PROCESS_FAILURE' (se exige COMPLETED; categorías registradas ['REVIEW_PROCESS_FAILURE'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "REVIEW_PROCESS_FAILURE",
+   "Result": "PASS"
+  },
+  {
+   "Case": "127-run-json-fallo-del-transporte",
+   "Expected": [
+    "Outcome de run.json 'TRANSPORT_FAILURE'"
+   ],
+   "Got": [
+    "lanzamiento: Outcome de run.json 'TRANSPORT_FAILURE' (se exige COMPLETED; categorías registradas ['TRANSPORT_FAILURE'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "TRANSPORT_FAILURE",
+   "Result": "PASS"
+  },
+  {
+   "Case": "128-run-json-sin-mensaje-result-registrado",
+   "Expected": [
+    "Outcome de run.json 'TRANSPORT_FAILURE'"
+   ],
+   "Got": [
+    "lanzamiento: Outcome de run.json 'TRANSPORT_FAILURE' (se exige COMPLETED; categorías registradas ['TRANSPORT_FAILURE'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "TRANSPORT_FAILURE",
+   "Result": "PASS"
+  },
+  {
+   "Case": "129-run-json-fallo-del-registro-posterior",
+   "Expected": [
+    "Outcome de run.json 'POST_RUN_RECORDING_FAILURE'",
+    "PostRunErrors de run.json no vacío"
+   ],
+   "Got": [
+    "lanzamiento: Outcome de run.json 'POST_RUN_RECORDING_FAILURE' (se exige COMPLETED; categorías registradas ['POST_RUN_RECORDING_FAILURE'])",
+    "lanzamiento: PostRunErrors de run.json no vacío o ausente: [{'Step': 'ProcessGoneAfter', 'Class': 'UnicodeDecodeError', 'Message': 'byte 0xe0'}]"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "POST_RUN_RECORDING_FAILURE",
+   "Result": "PASS"
+  },
+  {
+   "Case": "130-run-json-fallo-de-lanzamiento",
+   "Expected": [
+    "Outcome de run.json 'LAUNCH_FAILURE'",
+    "run.json registra un fallo de lanzamiento"
+   ],
+   "Got": [
+    "lanzamiento: Outcome de run.json 'LAUNCH_FAILURE' (se exige COMPLETED; categorías registradas ['LAUNCH_FAILURE'])",
+    "lanzamiento: run.json registra un fallo de lanzamiento (LaunchError o Aborted)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "LAUNCH_FAILURE",
+   "Result": "PASS"
+  },
+  {
+   "Case": "131-run-json-abortado",
+   "Expected": [
+    "Outcome de run.json 'LAUNCH_FAILURE'",
+    "run.json registra un fallo de lanzamiento"
+   ],
+   "Got": [
+    "lanzamiento: Outcome de run.json 'LAUNCH_FAILURE' (se exige COMPLETED; categorías registradas ['LAUNCH_FAILURE'])",
+    "lanzamiento: run.json registra un fallo de lanzamiento (LaunchError o Aborted)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "LAUNCH_FAILURE",
+   "Result": "PASS"
+  },
+  {
+   "Case": "132-run-json-outcome-incoherente",
+   "Expected": [
+    "código de salida 2",
+    "Outcome y OutcomeCategories de run.json incoherentes"
+   ],
+   "Got": [
+    "lanzamiento: código de salida 2 (se exige 0)",
+    "lanzamiento: Outcome y OutcomeCategories de run.json incoherentes con sus campos (recalculado: ['REVIEW_PROCESS_FAILURE'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "133-run-json-categorias-incoherentes",
+   "Expected": [
+    "Outcome y OutcomeCategories de run.json incoherentes"
+   ],
+   "Got": [
+    "lanzamiento: Outcome y OutcomeCategories de run.json incoherentes con sus campos (recalculado: ['COMPLETED'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "134-run-json-sin-outcome",
+   "Expected": [
+    "Outcome de run.json None",
+    "Outcome y OutcomeCategories de run.json incoherentes",
+    "run.json sin los campos del registro ['Outcome', 'OutcomeCategories']"
+   ],
+   "Got": [
+    "lanzamiento: Outcome de run.json None (se exige COMPLETED; categorías registradas None)",
+    "lanzamiento: Outcome y OutcomeCategories de run.json incoherentes con sus campos (recalculado: ['COMPLETED'])",
+    "lanzamiento: run.json sin los campos del registro ['Outcome', 'OutcomeCategories']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "OUTCOME_MISSING",
+   "Result": "PASS"
+  },
+  {
+   "Case": "135-run-json-sin-campos-del-registro",
+   "Expected": [
+    "run.json sin los campos del registro ['TasklistQuery', 'CloneAfter']"
+   ],
+   "Got": [
+    "lanzamiento: run.json sin los campos del registro ['TasklistQuery', 'CloneAfter']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "136-run-json-postrunerrors-ausente",
+   "Expected": [
+    "PostRunErrors de run.json no vacío o ausente",
+    "run.json sin los campos del registro ['PostRunErrors']"
+   ],
+   "Got": [
+    "lanzamiento: PostRunErrors de run.json no vacío o ausente: None",
+    "lanzamiento: run.json sin los campos del registro ['PostRunErrors']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "137-run-json-fallo-del-proceso-y-del-registro",
+   "Expected": [
+    "código de salida 1",
+    "proceso terminado por el invocador",
+    "Outcome de run.json 'REVIEW_PROCESS_FAILURE'",
+    "PostRunErrors de run.json no vacío"
+   ],
+   "Got": [
+    "lanzamiento: código de salida 1 (se exige 0)",
+    "lanzamiento: proceso terminado por el invocador (Killed/TimedOut)",
+    "lanzamiento: Outcome de run.json 'REVIEW_PROCESS_FAILURE' (se exige COMPLETED; categorías registradas ['REVIEW_PROCESS_FAILURE', 'POST_RUN_RECORDING_FAILURE'])",
+    "lanzamiento: PostRunErrors de run.json no vacío o ausente: [{'Step': 'Stdout', 'Class': 'OSError', 'Message': 'x'}]"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "REVIEW_PROCESS_FAILURE",
+   "Result": "PASS"
+  },
+  {
+   "Case": "138-preflight-sin-guarda-de-la-orden",
+   "Expected": [
+    "preflight: guarda de la orden congelada"
+   ],
+   "Got": [
+    "preflight: guarda de la orden congelada (FrozenCommandGuard) ausente, no aplicada, fallida o con otra orden que python -B kit/launch.py"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "139-preflight-guarda-no-aplicada",
+   "Expected": [
+    "preflight: guarda de la orden congelada"
+   ],
+   "Got": [
+    "preflight: guarda de la orden congelada (FrozenCommandGuard) ausente, no aplicada, fallida o con otra orden que python -B kit/launch.py"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "140-preflight-guarda-con-otra-orden",
+   "Expected": [
+    "preflight: guarda de la orden congelada"
+   ],
+   "Got": [
+    "preflight: guarda de la orden congelada (FrozenCommandGuard) ausente, no aplicada, fallida o con otra orden que python -B kit/launch.py"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "141-preflight-guarda-fallida",
+   "Expected": [
+    "preflight: guarda de la orden congelada"
+   ],
+   "Got": [
+    "preflight: guarda de la orden congelada (FrozenCommandGuard) ausente, no aplicada, fallida o con otra orden que python -B kit/launch.py"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "142-preflight-guarda-con-problemas",
+   "Expected": [
+    "preflight: guarda de la orden congelada"
+   ],
+   "Got": [
+    "preflight: guarda de la orden congelada (FrozenCommandGuard) ausente, no aplicada, fallida o con otra orden que python -B kit/launch.py"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "143-preflight-sin-sonda-de-registro",
+   "Expected": [
+    "preflight: sonda de registro"
+   ],
+   "Got": [
+    "preflight: sonda de registro (RecordProbe) ausente o fallida"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "144-preflight-sonda-fallida",
+   "Expected": [
+    "preflight: sonda de registro"
+   ],
+   "Got": [
+    "preflight: sonda de registro (RecordProbe) ausente o fallida"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "145-preflight-sin-entorno",
+   "Expected": [
+    "preflight: entorno del lanzador"
+   ],
+   "Got": [
+    "preflight: entorno del lanzador sin registrar o mal registrado (Environment: prefijos ['PYTHON', 'GIT_', 'CLAUDE', 'ANTHROPIC'], nombres y valores solo de PYTHON*)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "146-preflight-entorno-con-valor-no-python",
+   "Expected": [
+    "preflight: entorno del lanzador"
+   ],
+   "Got": [
+    "preflight: entorno del lanzador sin registrar o mal registrado (Environment: prefijos ['PYTHON', 'GIT_', 'CLAUDE', 'ANTHROPIC'], nombres y valores solo de PYTHON*)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "147-preflight-entorno-sin-valor-python",
+   "Expected": [
+    "preflight: entorno del lanzador"
+   ],
+   "Got": [
+    "preflight: entorno del lanzador sin registrar o mal registrado (Environment: prefijos ['PYTHON', 'GIT_', 'CLAUDE', 'ANTHROPIC'], nombres y valores solo de PYTHON*)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "148-preflight-entorno-otros-prefijos",
+   "Expected": [
+    "preflight: entorno del lanzador"
+   ],
+   "Got": [
+    "preflight: entorno del lanzador sin registrar o mal registrado (Environment: prefijos ['PYTHON', 'GIT_', 'CLAUDE', 'ANTHROPIC'], nombres y valores solo de PYTHON*)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "149-preflight-entorno-nombre-ajeno",
+   "Expected": [
+    "preflight: entorno del lanzador"
+   ],
+   "Got": [
+    "preflight: entorno del lanzador sin registrar o mal registrado (Environment: prefijos ['PYTHON', 'GIT_', 'CLAUDE', 'ANTHROPIC'], nombres y valores solo de PYTHON*)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "150-preflight-sin-compuerta-11",
+   "Expected": [
+    "preflight: faltan comprobaciones ['11-OwnerAndAuthorizationGate']",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) con la autorización pendiente",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: faltan comprobaciones ['11-OwnerAndAuthorizationGate']",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas A6-ADR0046-9-FX02 y CLAUDE-CLI-I62 = A, o con problemas",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §94 fijada, o registro con AuthorizationPending distinto de false)",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "150b-preflight-compuerta-11-otra-linea",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas A6-ADR0046-9-FX02 y CLAUDE-CLI-I62 = A, o con problemas"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "150c-preflight-compuerta-11-fallida",
+   "Expected": [
+    "preflight: comprobaciones sin Ok: ['11-OwnerAndAuthorizationGate']",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas"
+   ],
+   "Got": [
+    "preflight: comprobaciones sin Ok: ['11-OwnerAndAuthorizationGate']",
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin las líneas fijadas A6-ADR0046-9-FX02 y CLAUDE-CLI-I62 = A, o con problemas"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151-preflight-compuerta-11-sin-autorizacion",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151b-preflight-compuerta-11-blob-en-la-head",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151b2-preflight-compuerta-11-a6-en-la-head",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151c-preflight-compuerta-11-otro-runid",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151d-preflight-compuerta-11-seccion-posterior",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151e-preflight-compuerta-11-sha-del-texto",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151f-preflight-compuerta-11-encabezado",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151g-preflight-compuerta-11-dos-secciones",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151h-preflight-compuerta-11-no-autorizada",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151i-preflight-compuerta-11-sha-fijado-distinto",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151j-preflight-compuerta-11-otra-seccion",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151k-preflight-compuerta-11-sin-blob",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151l-preflight-compuerta-11-otro-objeto",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151m-preflight-compuerta-11-otra-seccion-fijada",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151n-preflight-compuerta-11-otro-encabezado-fijado",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151o-preflight-compuerta-11-registro-pendiente",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) con la autorización pendiente"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §94 fijada, o registro con AuthorizationPending distinto de false)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "151p-kit-con-la-autorizacion-pendiente",
+   "Expected": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) con la autorización pendiente"
+   ],
+   "Got": [
+    "preflight: compuerta 11 (11-OwnerAndAuthorizationGate) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §94 fijada, o registro con AuthorizationPending distinto de false)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "152-categorias-de-ejecucion-y-contenido",
+   "Expected": [
+    "código de salida 3",
+    "Outcome de run.json 'REVIEW_PROCESS_FAILURE'"
+   ],
+   "Got": [
+    "lanzamiento: código de salida 3 (se exige 0)",
+    "lanzamiento: Outcome de run.json 'REVIEW_PROCESS_FAILURE' (se exige COMPLETED; categorías registradas ['REVIEW_PROCESS_FAILURE'])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "REVIEW_PROCESS_FAILURE",
+   "Result": "PASS",
+   "CategoriesReported": {
+    "Execution": "REVIEW_PROCESS_FAILURE",
+    "ArchitectVerdict": "CHANGES REQUIRED",
+    "Note": "decisiones §84, punto 4: la categoría de ejecución y custodia (Outcome de run.json) y el resultado de contenido del Architect (Verdict) se informan por separado; cualquier defecto de integridad es un motivo y impide ACCREDITED"
+   }
+  },
+  {
+   "Case": "153-categoria-completed-acreditada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "F00-base-lecturas-de-originales-marcados-informativas",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS",
+   "FidelityCheck": {
+    "FlaggedOriginalReads": [
+     "docs/AUTOMATION_PLAN.md",
+     "docs/automation/decisions/I-62.md"
+    ],
+    "CopiesVerified": 43
+   }
+  },
+  {
+   "Case": "F01-bom-original-leido-directamente",
+   "Expected": [
+    "fidelidad: docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx (Read, llamada",
+    "líneas alteradas [1]",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx:1)"
+   ],
+   "Got": [
+    "fidelidad: docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx (Read, llamada 13) líneas alteradas [1]",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx:1)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "ExpectedCounts": {
+    "fidelidad: ": 1
+   },
+   "BadCounts": {},
+   "Result": "PASS"
+  },
+  {
+   "Case": "F02-bom-copia-leida-y-citada",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS",
+   "FidelityCheck": {
+    "Copy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+    "Original": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+    "OriginalBlob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff",
+    "Flags": {
+     "BOM": [
+      1
+     ]
+    },
+    "Verified": true,
+    "Problems": [],
+    "CopyLinesDelivered": 50,
+    "OriginalLinesCredited": 34
+   }
+  },
+  {
+   "Case": "F03-copia-alterada-un-byte-en-el-run",
+   "Expected": [
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+    "copia fiel: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+    "no reproduce los bytes del original",
+    "SHA-256 de la copia distinto del fijado en el cierre",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx:1-3)"
+   ],
+   "Got": [
+    "copia fiel: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx (blob 40295387): la copia no reproduce los bytes del original (SHA-256 e304dce6e51a…; el original 4ccdf2cecba5…); la copia no es la codificación canónica de lo que decodifica; SHA-256 de la copia distinto del fijado en el cierre",
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx:1-3)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "F04-copia-entregada-alterada",
+   "Expected": [
+    "fidelidad: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt (Read, llamada",
+    "líneas alteradas [1]",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx:1)"
+   ],
+   "Got": [
+    "fidelidad: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt (Read, llamada 13) líneas alteradas [1]",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx:1)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "F05-linea-larga-copia-con-apendice",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS",
+   "FidelityCheck": {
+    "Chunks": 2,
+    "Credited": 4
+   }
+  },
+  {
+   "Case": "F06-linea-larga-copia-sin-apendice",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/initiatives/I-62-proposal-v14.md:2352)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/initiatives/I-62-proposal-v14.md:2352)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "F07-linea-larga-original-truncada",
+   "Expected": [
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/initiatives/I-62-proposal-v14.md:2352)"
+   ],
+   "Got": [
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/initiatives/I-62-proposal-v14.md:2352)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS",
+   "FidelityCheck": [
+    {
+     "Path": "docs/initiatives/I-62-proposal-v14.md",
+     "Line": 2352,
+     "DeliveredChars": 2001,
+     "CanonicalChars": 2076
+    }
+   ]
+  },
+  {
+   "Case": "F08-lectura-directa-por-la-copia-de-automation-plan",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "ACCREDITED",
+   "Categories": "COMPLETED",
+   "ResultCoherence": [],
+   "Result": "PASS",
+   "FidelityCheck": {
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Lines": [
+     616,
+     617
+    ],
+    "DeliveredByRead": true,
+    "DirectReadsEntries": [
+     "docs/AUTOMATION_PLAN.md:616-617"
+    ]
+   }
+  },
+  {
+   "Case": "F09-referencia-a-la-copia",
+   "Expected": [
+    "referencia no canónica en Round1FindingResolution[A62-A7-R1] (fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt:1)"
+   ],
+   "Got": [
+    "referencia no canónica en Round1FindingResolution[A62-A7-R1] (fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt:1)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "F10-copia-ausente",
+   "Expected": [
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+    "copia fiel: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+    "copia ausente"
+   ],
+   "Got": [
+    "copia fiel: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx (blob 40295387): copia ausente",
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "F11-copia-de-otro-original",
+   "Expected": [
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): fiel__docs__automation__evidence__I-62-A7__b1-like__main__fixture-tests.trx.txt",
+    "copia fiel: fiel__docs__automation__evidence__I-62-A7__b1-like__main__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx",
+    "la copia nombra otro original (docs/automation/evidence/I-62-A7/b1-like/uc/fixture-tests.trx)",
+    "SHA-256 de la copia distinto del fijado en el cierre"
+   ],
+   "Got": [
+    "copia fiel: fiel__docs__automation__evidence__I-62-A7__b1-like__main__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-A7/b1-like/main/fixture-tests.trx (blob 40295387): la copia nombra otro original (docs/automation/evidence/I-62-A7/b1-like/uc/fixture-tests.trx); SHA-256 de la copia distinto del fijado en el cierre",
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): fiel__docs__automation__evidence__I-62-A7__b1-like__main__fixture-tests.trx.txt"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "F12-copia-no-canonica",
+   "Expected": [
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+    "copia fiel: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+    "la copia no es la codificación canónica de lo que decodifica",
+    "SHA-256 de la copia distinto del fijado en el cierre"
+   ],
+   "Got": [
+    "copia fiel: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx (blob 40295387): la copia no es la codificación canónica de lo que decodifica; SHA-256 de la copia distinto del fijado en el cierre",
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "F13-bom-eliminado-dentro-de-la-copia",
+   "Expected": [
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+    "copia fiel: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+    "no reproduce los bytes del original",
+    "SHA-256 de la copia distinto del fijado en el cierre",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx:1)"
+   ],
+   "Got": [
+    "copia fiel: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx (blob 40295387): la copia no reproduce los bytes del original (SHA-256 6f46e2ca05bc…; el original 4ccdf2cecba5…); SHA-256 de la copia distinto del fijado en el cierre",
+    "archivo del run distinto del custodiado (copia del kit y RunFileHashes del cierre): fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx:1)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "F14-blob-del-original-distinto-del-fijado",
+   "Expected": [
+    "copia fiel: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx (blob 00000000)",
+    "blob del original distinto del fijado en el cierre",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx:1)"
+   ],
+   "Got": [
+    "copia fiel: fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt no entrega byte a byte docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx (blob 00000000): blob del original distinto del fijado en el cierre",
+    "referencia sobre líneas no entregadas fielmente en Round1FindingResolution[A62-A7-R1] (docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx:1)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "SchemaValid": true,
+   "Accreditation": "NOT_ACCREDITED",
+   "Categories": "COMPLETED",
+   "Result": "PASS"
+  },
+  {
+   "Case": "F15-F20-fixture-de-clases",
+   "Result": "PASS",
+   "Skipped": "sin el fixture de la fase 1 en este cierre"
+  },
+  {
+   "Case": "G00-medida-c3-valida",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G01-pendiente",
+   "Expected": [
+    "D-01 abierto"
+   ],
+   "Got": [
+    "Status 'PENDING': D-01 abierto (falta la medición C3 o la aceptación registrada)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G02-plantilla-de-la-compuerta",
+   "Expected": [
+    "ArgsTemplate de la compuerta"
+   ],
+   "Got": [
+    "ArgsTemplate de la compuerta distinta de la plantilla del cierre"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G03-runid-de-la-compuerta",
+   "Expected": [
+    "RunId, SessionId o Binary de la compuerta"
+   ],
+   "Got": [
+    "RunId, SessionId o Binary de la compuerta distintos del cierre"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G04-sin-registro",
+   "Expected": [
+    "falta el registro de caracterización"
+   ],
+   "Got": [
+    "falta el registro de caracterización"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G05-registro-alterado",
+   "Expected": [
+    "SHA-256 del registro de caracterización distinto"
+   ],
+   "Got": [
+    "SHA-256 del registro de caracterización distinto del fijado en la compuerta"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G06-registro-ilegible",
+   "Expected": [
+    "registro de caracterización ilegible"
+   ],
+   "Got": [
+    "registro de caracterización ilegible"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G07-sin-binario-elegible",
+   "Expected": [
+    "no registra el binario elegible"
+   ],
+   "Got": [
+    "la caracterización no registra el binario elegible (SHA-256, versión y Usable)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G08-c1-otra-lista",
+   "Expected": [
+    "C1 no midió la lista"
+   ],
+   "Got": [
+    "C1 no midió la lista del lanzamiento sin --add-dir"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G09-c1-salida",
+   "Expected": [
+    "C1 sin código de salida 0"
+   ],
+   "Got": [
+    "C1 sin código de salida 0"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G10-stale",
+   "Expected": [
+    "Eligibility.STALE no es false"
+   ],
+   "Got": [
+    "Eligibility.STALE no es false"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G11-architect-no-elegible",
+   "Expected": [
+    "Eligibility.ARCHITECT no es ELIGIBLE"
+   ],
+   "Got": [
+    "Eligibility.ARCHITECT no es ELIGIBLE"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G12-sin-c3",
+   "Expected": [
+    "no tiene la sonda C3"
+   ],
+   "Got": [
+    "la caracterización no tiene la sonda C3"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G13-c3-veredicto",
+   "Expected": [
+    "C3 sin veredicto PASS limpio"
+   ],
+   "Got": [
+    "C3 sin veredicto PASS limpio"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G14-c3-plantilla-sin-add-dir",
+   "Expected": [
+    "C3 no midió la lista exacta"
+   ],
+   "Got": [
+    "C3 no midió la lista exacta del lanzamiento (con --add-dir)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G15-c3-argumentos",
+   "Expected": [
+    "los argumentos registrados de C3"
+   ],
+   "Got": [
+    "los argumentos registrados de C3 no corresponden a la plantilla"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G16-c3-binario",
+   "Expected": [
+    "C3 con otro binario o versión"
+   ],
+   "Got": [
+    "C3 con otro binario o versión"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G17-c3-salida",
+   "Expected": [
+    "C3 sin salida 0"
+   ],
+   "Got": [
+    "C3 sin salida 0 o terminada por el invocador"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G18-c3-result",
+   "Expected": [
+    "C3 sin result success"
+   ],
+   "Got": [
+    "C3 sin result success con structured_output"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G19-c3-init",
+   "Expected": [
+    "init de C3 distinto"
+   ],
+   "Got": [
+    "init de C3 distinto del esperado (herramientas, MCP, permissionMode, versión o modelo)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G20-c3-effort",
+   "Expected": [
+    "C3 con modelo o effort"
+   ],
+   "Got": [
+    "C3 con modelo o effort observado distinto"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G21-c3-lectura-anadida",
+   "Expected": [
+    "dentro del directorio añadido"
+   ],
+   "Got": [
+    "C3: la lectura dentro del directorio añadido no se entregó fiel o se denegó"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G22-c3-lectura-exterior",
+   "Expected": [
+    "lectura fuera del cwd"
+   ],
+   "Got": [
+    "C3: la lectura fuera del cwd y del directorio añadido no quedó denegada"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G23-c3-denegaciones",
+   "Expected": [
+    "permission_denials con rutas distintas"
+   ],
+   "Got": [
+    "C3: permission_denials con rutas distintas de la lectura exterior"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G24-sin-plantilla-medida",
+   "Expected": [
+    "Eligibility.MeasuredArgsTemplate"
+   ],
+   "Got": [
+    "Eligibility.MeasuredArgsTemplate distinta de la plantilla del lanzamiento"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G25-aceptada-valida",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G26-aceptacion-ausente",
+   "Expected": [
+    "falta el registro de aceptación"
+   ],
+   "Got": [
+    "falta el registro de aceptación"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G27-aceptacion-alterada",
+   "Expected": [
+    "SHA-256 del registro de aceptación distinto"
+   ],
+   "Got": [
+    "SHA-256 del registro de aceptación distinto del fijado en la compuerta"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G28-aceptacion-ilegible",
+   "Expected": [
+    "registro de aceptación ilegible"
+   ],
+   "Got": [
+    "registro de aceptación ilegible"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G29-aceptacion-Schema",
+   "Expected": [
+    "aceptación con otro esquema"
+   ],
+   "Got": [
+    "aceptación con otro esquema"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G30-aceptacion-RunId",
+   "Expected": [
+    "aceptación de otro RunId"
+   ],
+   "Got": [
+    "aceptación de otro RunId"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G31-aceptacion-Decision",
+   "Expected": [
+    "aceptación sin Decision"
+   ],
+   "Got": [
+    "aceptación sin Decision = ACCEPT_UNMEASURED_FLAG"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G32-aceptacion-UnmeasuredFlags",
+   "Expected": [
+    "aceptación con UnmeasuredFlags"
+   ],
+   "Got": [
+    "aceptación con UnmeasuredFlags distintos de ['--add-dir']"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G33-aceptacion-ArgsTemplate",
+   "Expected": [
+    "aceptación de otra plantilla"
+   ],
+   "Got": [
+    "aceptación de otra plantilla de argumentos"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G34-aceptacion-BinarySha256",
+   "Expected": [
+    "aceptación de otro binario"
+   ],
+   "Got": [
+    "aceptación de otro binario o versión"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G35-aceptacion-CharacterizationSha256",
+   "Expected": [
+    "aceptación sobre otro registro"
+   ],
+   "Got": [
+    "aceptación sobre otro registro de caracterización"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G36-aceptacion-AcceptedBy",
+   "Expected": [
+    "AcceptedBy distinto"
+   ],
+   "Got": [
+    "AcceptedBy distinto de principal-session | Coordinator"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G37-aceptacion-Authority",
+   "Expected": [
+    "aceptación sin Authority"
+   ],
+   "Got": [
+    "aceptación sin Authority, Rationale o At"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G38-sonda-lectura-anadida-denegada",
+   "ProbeVerdict": "FAIL",
+   "ProbeProblems": [
+    "la lectura dentro del directorio añadido no se entregó fiel o se denegó"
+   ],
+   "Expected": [
+    "C3 sin veredicto PASS limpio",
+    "lectura dentro del directorio añadido"
+   ],
+   "Got": [
+    "C3 sin veredicto PASS limpio",
+    "C3: la lectura dentro del directorio añadido no se entregó fiel o se denegó"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G39-sonda-lectura-exterior-entregada",
+   "ProbeVerdict": "FAIL",
+   "ProbeProblems": [
+    "la lectura exterior no quedó denegada (o no se intentó, o se entregó)"
+   ],
+   "Expected": [
+    "C3 sin veredicto PASS limpio",
+    "lectura fuera del cwd"
+   ],
+   "Got": [
+    "C3 sin veredicto PASS limpio",
+    "C3: la lectura fuera del cwd y del directorio añadido no quedó denegada"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G40-sonda-pass",
+   "ProbeVerdict": "PASS",
+   "ProbeProblems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G41-decodificacion-ascii",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": true,
+    "Bytes": 22,
+    "Bom": false,
+    "HexExcerpt": null
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G42-decodificacion-bom-utf8",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": true,
+    "Bytes": 25,
+    "Bom": true,
+    "HexExcerpt": null
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G43-decodificacion-utf8-no-ascii",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": true,
+    "Bytes": 28,
+    "Bom": false,
+    "HexExcerpt": null
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G44-decodificacion-cp850-informacion",
+   "Expected": [
+    "no es UTF-8 estricto"
+   ],
+   "Got": [
+    "salida del binario que no es UTF-8 estricto (posición 9: invalid continuation byte)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": false,
+    "Bytes": 26,
+    "Bom": false,
+    "HexExcerpt": "4e 46 4f 52 4d 41 43 49 e0 4e 3a 20 6e 6f 20 68 61"
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G45-decodificacion-utf8-invalido",
+   "Expected": [
+    "no es UTF-8 estricto"
+   ],
+   "Got": [
+    "salida del binario que no es UTF-8 estricto (posición 2: invalid continuation byte)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": false,
+    "Bytes": 6,
+    "Bom": false,
+    "HexExcerpt": "61 62 c3 28 63 64"
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G46-decodificacion-utf16-con-bom",
+   "Expected": [
+    "BOM UTF-16"
+   ],
+   "Got": [
+    "salida del binario con BOM UTF-16 (ff fe): no es UTF-8"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": false,
+    "Bytes": 44,
+    "Bom": false,
+    "HexExcerpt": "ff fe 32 00 2e 00 31 00 2e 00 32 00 39 00 39 00 20 00"
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G47-decodificacion-vacia",
+   "Expected": [
+    "salida del binario vacía"
+   ],
+   "Got": [
+    "salida del binario vacía (0 bytes)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": false,
+    "Bytes": 0,
+    "Bom": false,
+    "HexExcerpt": ""
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G47b-decodificacion-solo-espacios",
+   "Expected": [
+    "salida del binario vacía"
+   ],
+   "Got": [
+    "salida del binario vacía (3 bytes)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": false,
+    "Bytes": 3,
+    "Bom": false,
+    "HexExcerpt": "20 0d 0a"
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G48-decodificacion-no-bytes",
+   "Expected": [
+    "no capturada en bytes"
+   ],
+   "Got": [
+    "salida del binario no capturada en bytes (NoneType)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": false,
+    "Bytes": null,
+    "Bom": false,
+    "HexExcerpt": null
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G48b-decodificacion-texto-ya-decodificado",
+   "Expected": [
+    "no capturada en bytes"
+   ],
+   "Got": [
+    "salida del binario no capturada en bytes (str)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": false,
+    "Bytes": null,
+    "Bom": false,
+    "HexExcerpt": null
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G49-decodificacion-sin-contexto",
+   "Expected": [
+    "no es UTF-8 estricto"
+   ],
+   "Got": [
+    "salida del binario que no es UTF-8 estricto (posición 14: invalid continuation byte)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Record": {
+    "Ok": false,
+    "Bytes": 16,
+    "Bom": false,
+    "HexExcerpt": "e0"
+   },
+   "TextMatches": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "G50-sustituto-version-ascii",
+   "Record": {
+    "Version": "2.1.299 (Claude Code)",
+    "ReturnCode": 0,
+    "Decoding": {
+     "Encoding": "utf-8 (estricto; BOM UTF-8 inicial quitado y registrado)",
+     "Bytes": 23,
+     "Bom": false,
+     "HexExcerpt": null,
+     "Problems": [],
+     "Ok": true
+    }
+   },
+   "Problems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G51-sustituto-version-cp850",
+   "Record": {
+    "Version": null,
+    "ReturnCode": 0,
+    "Decoding": {
+     "Encoding": "utf-8 (estricto; BOM UTF-8 inicial quitado y registrado)",
+     "Bytes": 20,
+     "Bom": false,
+     "HexExcerpt": "4e 46 4f 52 4d 41 43 49 e0 4e 3a 20 32 2e 31 2e 32",
+     "Problems": [
+      "salida del binario que no es UTF-8 estricto (posición 9: invalid continuation byte)"
+     ],
+     "Ok": false
+    }
+   },
+   "Problems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G52-sustituto-version-utf16",
+   "Record": {
+    "Version": null,
+    "ReturnCode": 0,
+    "Decoding": {
+     "Encoding": "utf-8 (estricto; BOM UTF-8 inicial quitado y registrado)",
+     "Bytes": 44,
+     "Bom": false,
+     "HexExcerpt": "ff fe 32 00 2e 00 31 00 2e 00 32 00 39 00 39 00 20 00",
+     "Problems": [
+      "salida del binario con BOM UTF-16 (ff fe): no es UTF-8"
+     ],
+     "Ok": false
+    }
+   },
+   "Problems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G53-sustituto-version-vacia",
+   "Record": {
+    "Version": null,
+    "ReturnCode": 0,
+    "Decoding": {
+     "Encoding": "utf-8 (estricto; BOM UTF-8 inicial quitado y registrado)",
+     "Bytes": 0,
+     "Bom": false,
+     "HexExcerpt": "",
+     "Problems": [
+      "salida del binario vacía (0 bytes)"
+     ],
+     "Ok": false
+    }
+   },
+   "Problems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G54-sustituto-version-bom-utf8",
+   "Record": {
+    "Version": "2.1.299 (Claude Code)",
+    "ReturnCode": 0,
+    "Decoding": {
+     "Encoding": "utf-8 (estricto; BOM UTF-8 inicial quitado y registrado)",
+     "Bytes": 25,
+     "Bom": true,
+     "HexExcerpt": null,
+     "Problems": [],
+     "Ok": true
+    }
+   },
+   "Problems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G55-sustituto-auth-utf8-no-ascii",
+   "Record": {
+    "loggedIn": true,
+    "authMethod": "claude.ai",
+    "apiProvider": "firstParty",
+    "ReturnCode": 0,
+    "Decoding": {
+     "Encoding": "utf-8 (estricto; BOM UTF-8 inicial quitado y registrado)",
+     "Bytes": 141,
+     "Bom": false,
+     "HexExcerpt": null,
+     "Problems": [],
+     "Ok": true
+    }
+   },
+   "Problems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G56-sustituto-auth-cp850",
+   "Record": {
+    "loggedIn": null,
+    "DecodeError": true,
+    "ReturnCode": 0,
+    "Decoding": {
+     "Encoding": "utf-8 (estricto; BOM UTF-8 inicial quitado y registrado)",
+     "Bytes": 139,
+     "Bom": false,
+     "HexExcerpt": "a2",
+     "Problems": [
+      "salida del binario que no es UTF-8 estricto (posición 133: invalid start byte)"
+     ],
+     "Ok": false
+    }
+   },
+   "Problems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G57-sustituto-auth-json-invalido",
+   "Record": {
+    "loggedIn": null,
+    "ParseError": true,
+    "ReturnCode": 0,
+    "Decoding": {
+     "Encoding": "utf-8 (estricto; BOM UTF-8 inicial quitado y registrado)",
+     "Bytes": 14,
+     "Bom": false,
+     "HexExcerpt": null,
+     "Problems": [],
+     "Ok": true
+    }
+   },
+   "Problems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "G58-sustituto-auth-utf16",
+   "Record": {
+    "loggedIn": null,
+    "DecodeError": true,
+    "ReturnCode": 0,
+    "Decoding": {
+     "Encoding": "utf-8 (estricto; BOM UTF-8 inicial quitado y registrado)",
+     "Bytes": 280,
+     "Bom": false,
+     "HexExcerpt": "ff fe",
+     "Problems": [
+      "salida del binario con BOM UTF-16 (ff fe): no es UTF-8"
+     ],
+     "Ok": false
+    }
+   },
+   "Problems": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O00-autorizacion-pendiente-bloquea",
+   "Expected": [
+    "authorization pending: a Coordinator disposition after §94 must be pinned (section number, heading, text SHA-256) and the kit re-frozen"
+   ],
+   "Got": [
+    "authorization pending: a Coordinator disposition after §94 must be pinned (section number, heading, text SHA-256) and the kit re-frozen"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": true,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O00b-pendiente-con-una-seccion-posterior-a-94",
+   "Expected": [
+    "authorization pending: a Coordinator disposition after §94 must be pinned (section number, heading, text SHA-256) and the kit re-frozen"
+   ],
+   "Got": [
+    "authorization pending: a Coordinator disposition after §94 must be pinned (section number, heading, text SHA-256) and the kit re-frozen"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": true,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Nota (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O00c-modulo-del-kit-pendiente-o-fijado-entero",
+   "Pins": {
+    "Section": null,
+    "Heading": null,
+    "TextSha256": null
+   },
+   "Pending": true,
+   "Result": "PASS"
+  },
+  {
+   "Case": "O01-autorizacion-posterior-a-94-fijada-pasa",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": true,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O01b-autorizacion-con-el-texto-de-la-head-como-referencia",
+   "Expected": [],
+   "Got": [],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": true,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O02-seccion-posterior-a-la-fijada",
+   "Expected": [
+    "sección posterior a §95"
+   ],
+   "Got": [
+    "sección posterior a §95 en decisiones (§96 en la línea 1867): una disposición posterior tiene que revisarse antes de lanzar"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [
+    {
+     "Number": 96,
+     "Line": 1867,
+     "Heading": "## 96. Disposición del Coordinator: otra (selftest)"
+    }
+   ],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    },
+    {
+     "Number": 96,
+     "Line": 1867,
+     "Heading": "## 96. Disposición del Coordinator: otra (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O03-seccion-99-cualquiera-posterior",
+   "Expected": [
+    "sección posterior a §95"
+   ],
+   "Got": [
+    "sección posterior a §95 en decisiones (§99 en la línea 1867): una disposición posterior tiene que revisarse antes de lanzar"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [
+    {
+     "Number": 99,
+     "Line": 1867,
+     "Heading": "## 99. Nota (selftest)"
+    }
+   ],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    },
+    {
+     "Number": 99,
+     "Line": 1867,
+     "Heading": "## 99. Nota (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O04-fijada-con-otro-texto",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: la sección §95 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (ec9af54e…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O05-fijada-con-otro-encabezado",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: la sección §95 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (ec9af54e…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Owner: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O06-fijada-con-el-blob-abreviado",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: la sección §95 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (326c5444…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O07-fijada-con-el-blob-pegado",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: la sección §95 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (9732d384…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O08-sin-la-seccion-fijada",
+   "Expected": [
+    "decisiones sin un único encabezado §95 (0)",
+    "falta la autorización"
+   ],
+   "Got": [
+    "decisiones sin un único encabezado §95 (0)",
+    "falta la autorización: la sección §95 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (ec9af54e…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O09-dos-secciones-fijadas",
+   "Expected": [
+    "decisiones sin un único encabezado §95 (2)",
+    "falta la autorización"
+   ],
+   "Got": [
+    "decisiones sin un único encabezado §95 (2)",
+    "falta la autorización: la sección §95 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (ec9af54e…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    },
+    {
+     "Number": 95,
+     "Line": 1867,
+     "Heading": "## 95. Duplicado (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O10-fijada-no-posterior-a-94",
+   "Expected": [
+    "no es una sección posterior a §94",
+    "falta la autorización"
+   ],
+   "Got": [
+    "la autorización fijada (§94) no es una sección posterior a §94 (decisiones §94, punto 6)",
+    "falta la autorización: la sección §94 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (f53a8fd4…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O10b-fijada-con-un-numero-que-no-es-entero",
+   "Expected": [
+    "no es una sección posterior a §94",
+    "decisiones sin un único encabezado §95 (0)",
+    "falta la autorización"
+   ],
+   "Got": [
+    "la autorización fijada (§95) no es una sección posterior a §94 (decisiones §94, punto 6)",
+    "decisiones sin un único encabezado §95 (0)",
+    "falta la autorización: la sección §95 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (ec9af54e…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O11-a7-en-la-head-con-otro-blob",
+   "Expected": [
+    "no tiene el blob de A-7 fijado en el kit"
+   ],
+   "Got": [
+    "docs/initiatives/I-62-A-7.md en la HEAD del worktree no tiene el blob de A-7 fijado en el kit (6c29747d61c5)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O11b-a6-en-la-head-con-otro-blob",
+   "Expected": [
+    "no tiene el blob acordado"
+   ],
+   "Got": [
+    "docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob acordado 4bc919dd… (decisiones §90; §94, punto 2) (e62f27b8b132)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O11c-a6-ausente-en-la-head",
+   "Expected": [
+    "no tiene el blob acordado"
+   ],
+   "Got": [
+    "docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob acordado 4bc919dd… (decisiones §90; §94, punto 2) (ausente)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O12-blob-no-fijado",
+   "Expected": [
+    "blob de A-7 no fijado en el kit",
+    "no tiene el blob de A-7 fijado",
+    "falta la autorización"
+   ],
+   "Got": [
+    "blob de A-7 no fijado en el kit (closure.ObjectBlob: 40 hexadecimales, igual al blob fijado 8a528133…)",
+    "docs/initiatives/I-62-A-7.md en la HEAD del worktree no tiene el blob de A-7 fijado en el kit (8a528133c7cc)",
+    "falta la autorización: la sección §95 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (ec9af54e…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O12b-blob-fijado-de-la-ronda-1",
+   "Expected": [
+    "blob de A-7 no fijado en el kit",
+    "no tiene el blob de A-7 fijado",
+    "falta la autorización"
+   ],
+   "Got": [
+    "blob de A-7 no fijado en el kit (closure.ObjectBlob: 40 hexadecimales, igual al blob fijado 8a528133…)",
+    "docs/initiatives/I-62-A-7.md en la HEAD del worktree no tiene el blob de A-7 fijado en el kit (6c29747d61c5)",
+    "falta la autorización: la sección §95 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (ec9af54e…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O13-sin-la-linea-del-owner",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O14-parafrasis",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =»"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =» distinta de la fijada (líneas [1572])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O15-fragmento-citado-en-tabla",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O16-cita-con-sangria-de-bloque",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O17-espacio-final",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =»"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =» distinta de la fijada (líneas [1572])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O18-retorno-de-carro",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =»"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 83152eae…)",
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =» distinta de la fijada (líneas [1572])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O19-linea-antes-de-78",
+   "Expected": [
+    "no está registrada después del encabezado de decisiones §78"
+   ],
+   "Got": [
+    "la línea del Owner A6-ADR0046-9-FX02 no está registrada después del encabezado de decisiones §78"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O20-revocacion-anterior-a-la-autorizacion",
+   "Expected": [
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =»"
+   ],
+   "Got": [
+    "otra línea que empieza por «A6-ADR0046-9-FX02 =» distinta de la fijada (líneas [1862])"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1865,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O21-sin-claude-cli-i62",
+   "Expected": [
+    "falta, como línea completa de decisiones, la línea del Owner CLAUDE-CLI-I62 = A",
+    "otra línea que empieza por «CLAUDE-CLI-I62 =»"
+   ],
+   "Got": [
+    "falta, como línea completa de decisiones, la línea del Owner CLAUDE-CLI-I62 = A (SHA-256 fbeade41…): autorización de revisión no vigente",
+    "otra línea que empieza por «CLAUDE-CLI-I62 =» distinta de la fijada (líneas [1085]): autorización de revisión no verificable"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O22-otra-linea-claude-cli-i62",
+   "Expected": [
+    "otra línea que empieza por «CLAUDE-CLI-I62 =»"
+   ],
+   "Got": [
+    "otra línea que empieza por «CLAUDE-CLI-I62 =» distinta de la fijada (líneas [1862]): autorización de revisión no verificable"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1865,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O23-decision-94-cambiada-en-la-head",
+   "Expected": [
+    "no crece solo por añadido"
+   ],
+   "Got": [
+    "decisiones del worktree no crece solo por añadido desde el commit del clon (§94 o lo anterior cambiaron)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O23b-decision-92-cambiada-en-la-head",
+   "Expected": [
+    "no crece solo por añadido"
+   ],
+   "Got": [
+    "decisiones del worktree no crece solo por añadido desde el commit del clon (§94 o lo anterior cambiaron)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O24-cambios-sin-commit",
+   "Expected": [
+    "cambios sin commit"
+   ],
+   "Got": [
+    "el archivo de decisiones del árbol de trabajo no es el de la HEAD (cambios sin commit)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O25-head-no-desciende-del-clon",
+   "Expected": [
+    "no desciende del commit del clon"
+   ],
+   "Got": [
+    "la HEAD del worktree no desciende del commit del clon"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O26-otro-binario",
+   "Expected": [
+    "SHA-256 medido del binario distinto del cierre"
+   ],
+   "Got": [
+    "SHA-256 medido del binario distinto del cierre: la autorización de revisión no cubre otro binario"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O27-linea-fijada-ausente-de-la-a6-acordada",
+   "Expected": [
+    "no está, como línea completa, en la A-6 acordada"
+   ],
+   "Got": [
+    "la línea fijada del Owner A6-ADR0046-9-FX02 no está, como línea completa, en la A-6 acordada del commit del clon (A-6 §7)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O28-dos-encabezados-78",
+   "Expected": [
+    "decisiones sin un único encabezado §78 (2)"
+   ],
+   "Got": [
+    "decisiones sin un único encabezado §78 (2)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": true,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1865,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O29-sha-del-texto-fijado-distinto",
+   "Expected": [
+    "falta la autorización"
+   ],
+   "Got": [
+    "falta la autorización: la sección §95 de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 como token literal y el SHA-256 de su texto fijado en el kit (00000000…) (decisiones §94, punto 6)"
+   ],
+   "Missing": [],
+   "Unexpected": [],
+   "Ok": false,
+   "AuthorizationPending": false,
+   "Authorized": false,
+   "LaterSections": [],
+   "SectionsAfterBase": [
+    {
+     "Number": 95,
+     "Line": 1863,
+     "Heading": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)"
+    }
+   ],
+   "Result": "PASS"
+  },
+  {
+   "Case": "O30-pin-authorization-valores",
+   "Values": {
+    "AUTH_SECTION": 95,
+    "AUTH_HEADING": "## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)",
+    "AUTH_TEXT_SHA": "ec9af54e8593b7bfca556b94d0417a7103cc05d8d065ff32807374452a586e5d"
+   },
+   "PythonLines": [
+    "AUTH_SECTION = 95   # decisiones §95: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)",
+    "AUTH_HEADING = \"## 95. Disposición del Coordinator: autorización de la revisión formal de la ronda 2 de A-7 (selftest)\"",
+    "AUTH_TEXT_SHA = \"ec9af54e8593b7bfca556b94d0417a7103cc05d8d065ff32807374452a586e5d\"   # SHA-256 del texto de §95 (pin_authorization.py)"
+   ],
+   "LaterReady": false,
+   "BaseSectionReady": false,
+   "AbsentReady": false,
+   "Result": "PASS"
+  },
+  {
+   "Case": "X01-campos-de-run-json-iguales",
+   "Result": "PASS",
+   "Launch": [
+    "SessionId",
+    "Executable",
+    "ExecutableSha256",
+    "Args",
+    "Cwd",
+    "PromptSha256",
+    "PromptBytes",
+    "TimeoutSeconds",
+    "TransportGate",
+    "EnvironmentVariableNames",
+    "AuthSettle",
+    "Start",
+    "PostRunErrors",
+    "Pid",
+    "End",
+    "ExitCode",
+    "Killed",
+    "TimedOut",
+    "TasklistQuery",
+    "ProcessGoneAfter",
+    "StdoutSha256",
+    "StdoutLines",
+    "StderrBytes",
+    "ResultMessage",
+    "TransportFailure",
+    "Transcript",
+    "CloneAfter",
+    "Outcome",
+    "OutcomeCategories"
+   ],
+   "Auditor": [
+    "SessionId",
+    "Executable",
+    "ExecutableSha256",
+    "Args",
+    "Cwd",
+    "PromptSha256",
+    "PromptBytes",
+    "TimeoutSeconds",
+    "TransportGate",
+    "EnvironmentVariableNames",
+    "AuthSettle",
+    "Start",
+    "PostRunErrors",
+    "Pid",
+    "End",
+    "ExitCode",
+    "Killed",
+    "TimedOut",
+    "TasklistQuery",
+    "ProcessGoneAfter",
+    "StdoutSha256",
+    "StdoutLines",
+    "StderrBytes",
+    "ResultMessage",
+    "TransportFailure",
+    "Transcript",
+    "CloneAfter",
+    "Outcome",
+    "OutcomeCategories"
+   ]
+  },
+  {
+   "Case": "X02-categorias-iguales",
+   "Result": "PASS",
+   "Pairs": [
+    {
+     "Launch": [
+      "COMPLETED"
+     ],
+     "Auditor": [
+      "COMPLETED"
+     ]
+    },
+    {
+     "Launch": [
+      "REVIEW_PROCESS_FAILURE"
+     ],
+     "Auditor": [
+      "REVIEW_PROCESS_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "REVIEW_PROCESS_FAILURE"
+     ],
+     "Auditor": [
+      "REVIEW_PROCESS_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "REVIEW_PROCESS_FAILURE"
+     ],
+     "Auditor": [
+      "REVIEW_PROCESS_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "TRANSPORT_FAILURE"
+     ],
+     "Auditor": [
+      "TRANSPORT_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "TRANSPORT_FAILURE"
+     ],
+     "Auditor": [
+      "TRANSPORT_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "POST_RUN_RECORDING_FAILURE"
+     ],
+     "Auditor": [
+      "POST_RUN_RECORDING_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "LAUNCH_FAILURE"
+     ],
+     "Auditor": [
+      "LAUNCH_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "LAUNCH_FAILURE"
+     ],
+     "Auditor": [
+      "LAUNCH_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "LAUNCH_FAILURE"
+     ],
+     "Auditor": [
+      "LAUNCH_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "LAUNCH_FAILURE"
+     ],
+     "Auditor": [
+      "LAUNCH_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "REVIEW_PROCESS_FAILURE"
+     ],
+     "Auditor": [
+      "REVIEW_PROCESS_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "REVIEW_PROCESS_FAILURE"
+     ],
+     "Auditor": [
+      "REVIEW_PROCESS_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "REVIEW_PROCESS_FAILURE",
+      "POST_RUN_RECORDING_FAILURE",
+      "TRANSPORT_FAILURE"
+     ],
+     "Auditor": [
+      "REVIEW_PROCESS_FAILURE",
+      "POST_RUN_RECORDING_FAILURE",
+      "TRANSPORT_FAILURE"
+     ]
+    },
+    {
+     "Launch": [
+      "LAUNCH_FAILURE"
+     ],
+     "Auditor": [
+      "LAUNCH_FAILURE"
+     ]
+    }
+   ]
+  },
+  {
+   "Case": "X03-orden-congelada",
+   "Result": "PASS",
+   "Launch": "python -B kit/launch.py",
+   "Closure": "python -B kit/launch.py"
+  },
+  {
+   "Case": "X04-prefijos-de-entorno",
+   "Result": "PASS",
+   "Launch": [
+    "PYTHON",
+    "GIT_",
+    "CLAUDE",
+    "ANTHROPIC"
+   ],
+   "Auditor": [
+    "PYTHON",
+    "GIT_",
+    "CLAUDE",
+    "ANTHROPIC"
+   ]
+  },
+  {
+   "Case": "X05-comprobacion-7-del-lanzador-con-copias-fieles",
+   "Result": "PASS",
+   "RunFiles": 46,
+   "Copies": 43,
+   "Consistent": true,
+   "WithoutFaithfulCopies": [
+    "cierre: el cierre no declara FaithfulCopies (o una copia sin nombre)"
+   ],
+   "ManifestWithoutLast": [
+    "fiel__docs__automation__evidence__I-62-evidence.md.txt"
+   ],
+   "RunWithoutLast": false,
+   "RunWithLaunch": false
+  },
+  {
+   "Case": "L00-compuerta-11-real",
+   "ExpectedState": "PENDING",
+   "WorktreeHead": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+   "CloneCommitUsed": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+   "Ok": false,
+   "Problems": [
+    "authorization pending: a Coordinator disposition after §94 must be pinned (section number, heading, text SHA-256) and the kit re-frozen"
+   ],
+   "ObjectBlobAtHead": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+   "A6BlobAtHead": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+   "AuthorizationPending": true,
+   "AuthorizationSections": [],
+   "LaterSections": [],
+   "SectionsAfterBase": [],
+   "A6LineNumbers": [
+    1572
+   ],
+   "ClaudeCliLineNumbers": [
+    1085
+   ],
+   "Note": "binario no medido en la sonda: se pasa el SHA-256 del cierre; nada se escribe en el worktree",
+   "Result": "PASS"
+  }
+ ],
+ "Totals": {
+  "Cases": 310,
+  "Pass": 310,
+  "AuditCases": 204,
+  "AuditPass": 204,
+  "GateCases": 61,
+  "GatePass": 61,
+  "OwnerGateCases": 40,
+  "OwnerGatePass": 40,
+  "ConsistencyCases": 5,
+  "ConsistencyPass": 5
+ },
+ "AllPass": true
+}

@@ -1,0 +1,30 @@
+c3_analysis.py                 IDENTICAL 4fc6115e -> 4fc6115e | reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)
+claude-cli-characterization.json IDENTICAL 4ba6ba58 -> 4ba6ba58 | reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)
+clone-verification.json        IDENTICAL c75502f5 -> c75502f5 | artefacto o dato de r1: se regenera en la fase 2
+closure.json                   IDENTICAL 7a0be56b -> 7a0be56b | artefacto o dato de r1: se regenera en la fase 2
+fidelity.py                    NEW       - -> 4080b8e0 | selftest-fidelity 47/47 (entorno p1) y 47/47 (entorno r1); escaneo del cierre de r1; mutación dirigida 18/18
+finish_kit.py                  CHANGED   e0c9c1eb -> 948084d2 | sin ejecutar (fase 2: congelación)
+kit-manifest.json              IDENTICAL c27db93e -> c27db93e | artefacto o dato de r1: se regenera en la fase 2
+kit-params.json                IDENTICAL e8982bf0 -> e8982bf0 | artefacto o dato de r1: se regenera en la fase 2
+launch.py                      CHANGED   01f60c7a -> a3de39de | X05 PASS; sonda de registro True; prueba en seco: ya existe D:\r62-arch-a7-run\launch: una sola invocación, si
+make_closure.py                CHANGED   a0d41107 -> daaf77d6 | construcción p1 (prep/p1_build.py: 201 archivos, 33 copias, prompt y cierre)
+make_manifest.py               CHANGED   9bb67ebf -> c96afd35 | prep/test_make_manifest_runfiles.py: True
+mutation-post-review.py        CHANGED   9ed3eca1 -> f509d760 | usado por la mutación dirigida
+mutation-result.json           IDENTICAL ac6a6eba -> ac6a6eba | artefacto o dato de r1: se regenera en la fase 2
+mutation-targeted-result.json  IDENTICAL d1ed1222 -> d1ed1222 | artefacto o dato de r1: se regenera en la fase 2
+mutation-targeted.py           CHANGED   44906dfd -> 1a3488e4 | es el control
+order.txt                      IDENTICAL a5c37f71 -> a5c37f71 | artefacto o dato de r1: se regenera en la fase 2
+owner_gate.py                  IDENTICAL 879d630a -> 879d630a | reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)
+pin_authorization.py           IDENTICAL a8e40707 -> a8e40707 | reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)
+post-review.py                 CHANGED   303321f2 -> 80004643 | selftest-post-review completo 304/305 (F00-F20: 21 casos); mutación dirigida 4/4
+prepare_clone.py               IDENTICAL fc0e0b24 -> fc0e0b24 | reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)
+prompt.md                      IDENTICAL ba280474 -> ba280474 | artefacto o dato de r1: se regenera en la fase 2
+prompt.template.md             CHANGED   c3ad10d5 -> 713c6189 | renderizado en p1
+read_fidelity.py               CHANGED   7b51116e -> da1457a1 | prep/test_read_fidelity.py: True; el lanzado falla con UnicodeDecodeError
+result.schema.json             IDENTICAL 116c393e -> 116c393e | reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)
+selftest-fidelity.py           NEW       - -> 288be8bc | es el control
+selftest-post-review.py        CHANGED   e6deb731 -> 89b89aab | es el control
+selftest-result.json           IDENTICAL 4d9655a0 -> 4d9655a0 | artefacto o dato de r1: se regenera en la fase 2
+transport-gate.json            IDENTICAL 6f78dbd5 -> 6f78dbd5 | artefacto o dato de r1: se regenera en la fase 2
+transport_gate.py              IDENTICAL e326b5b9 -> e326b5b9 | reutilizado por identidad (selftest G00-G58 y O00-O30 re-ejecutados igualmente)
+verify_clone.py                CHANGED   feb7d615 -> 93b70996 | prep/p1_verify_clone.py: {'PosRunListingIsRunFiles': True, 'PosEveryCopyVerified': True, 'PosRunFilesMatchKitA

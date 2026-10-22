@@ -1,0 +1,656 @@
+{
+ "Mutation": "post-review.py v5.5-a7 + owner_gate.py (A-7): mutación DIRIGIDA a los sitios de regla que cambiaron frente al kit acreditado de A-6 ronda 4; cada sitio desactivado debe hacer fallar al menos un caso del selftest",
+ "Scope": "TARGETED",
+ "SelectionRule": "post-review.py: los sitios de coherence() y los de la regla del registro de la compuerta 11 en audit(); owner_gate.py: todos; transport_gate.py: ninguno (idéntico)",
+ "ReusedFromA6R4": {
+  "MutationResultSha256": "424c983eb68eaaa7052c491feafe98e5045df0d93a0fcc752dcab4cae926cf73",
+  "post-review.py": "133/133 sobre 4f46caa6 (los sitios no dirigidos son byte a byte los de v5.4-a6r4)",
+  "transport_gate.py": "40/40 sobre e326b5b9 (idéntico)"
+ },
+ "Environment": "REAL (clon y run del kit)",
+ "Baseline": {
+  "Cases": 282,
+  "Failing": [],
+  "AllPass": true
+ },
+ "Modules": {
+  "post-review.py": {
+   "Sha256": "303321f265152dc03a6fc7771bb69faed47f5167a80a7f03113e2839305d9653",
+   "Sites": 122,
+   "Targeted": 37,
+   "Killed": 37
+  },
+  "transport_gate.py": {
+   "Sha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+   "Sites": 40,
+   "Targeted": 0,
+   "Killed": 0
+  },
+  "owner_gate.py": {
+   "Sha256": "879d630a08d9fab2466ff434e158ef1f199887d8eafe555e9922e81f040c36ac",
+   "Sites": 19,
+   "Targeted": 19,
+   "Killed": 19
+  }
+ },
+ "Mutants": [
+  {
+   "Module": "post-review.py",
+   "Line": 494,
+   "Code": "add(\"preflight: compuerta 11 (%s) sin las líneas fijadas A6-ADR0046-9-FX02 y CLAUDE-CLI-I62 = A, o con problemas\" % OG.CHECK)",
+   "Killed": true,
+   "KilledBy": [
+    "150-preflight-sin-compuerta-11",
+    "150b-preflight-compuerta-11-otra-linea",
+    "150c-preflight-compuerta-11-fallida"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 498,
+   "Code": "add(\"preflight: compuerta 11 (%s) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §92 fijada, o \"",
+   "Killed": true,
+   "KilledBy": [
+    "150-preflight-sin-compuerta-11",
+    "151o-preflight-compuerta-11-registro-pendiente",
+    "151p-kit-con-la-autorizacion-pendiente"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 506,
+   "Code": "add(\"preflight: compuerta 11 (%s) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en \"",
+   "Killed": true,
+   "KilledBy": [
+    "150-preflight-sin-compuerta-11",
+    "151-preflight-compuerta-11-sin-autorizacion",
+    "151b-preflight-compuerta-11-blob-en-la-head",
+    "151b2-preflight-compuerta-11-a6-en-la-head"
+   ],
+   "KillingCases": 16
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 967,
+   "Code": "c.append(\"identificadores de hallazgo repetidos\")",
+   "Killed": true,
+   "KilledBy": [
+    "85-ids-de-hallazgo-repetidos"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 970,
+   "Code": "c.append(\"%s REQUIRED sin ViolatedInvariant ni Counterexample\" % f.get(\"FindingId\"))",
+   "Killed": true,
+   "KilledBy": [
+    "86-required-sin-invariante-ni-contraejemplo"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 974,
+   "Code": "c.append(\"%s cita en FindingIds hallazgos que no existen\" % label)",
+   "Killed": true,
+   "KilledBy": [
+    "84-findingids-inexistentes"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 978,
+   "Code": "c.append(\"%s con identificadores repetidos\" % label)",
+   "Killed": true,
+   "KilledBy": [
+    "109b-tema-repetido",
+    "110b-disparador-repetido",
+    "111b-propuesta-repetida",
+    "112b-pregunta-repetida"
+   ],
+   "KillingCases": 5
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 981,
+   "Code": "c.append(\"TopicVerdicts[%s] DOES_NOT_CONFORM sin un REQUIRED vinculado (tema obligatorio de decisiones §93, punto 3)\" % x.get(\"Topic\"))",
+   "Killed": true,
+   "KilledBy": [
+    "56-tema-no-conforme-sin-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 983,
+   "Code": "c.append(\"TopicVerdicts[%s] CONFORMS con un REQUIRED vinculado\" % x.get(\"Topic\"))",
+   "Killed": true,
+   "KilledBy": [
+    "57-tema-conforme-con-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 986,
+   "Code": "c.append(\"Materiality.Triggers[%s] DISAGREE sin un REQUIRED vinculado\" % x.get(\"Trigger\"))",
+   "Killed": true,
+   "KilledBy": [
+    "19-agreed-con-un-disparador-en-desacuerdo",
+    "58-disparador-en-desacuerdo-sin-required"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 988,
+   "Code": "c.append(\"Materiality.Triggers[%s] AGREE con un REQUIRED vinculado\" % x.get(\"Trigger\"))",
+   "Killed": true,
+   "KilledBy": [
+    "59-disparador-de-acuerdo-con-required"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 991,
+   "Code": "c.append(\"QuestionAnswers[%s] NOT_SATISFIED sin un hallazgo vinculado\" % x.get(\"Question\"))",
+   "Killed": true,
+   "KilledBy": [
+    "61-pregunta-no-satisfecha-sin-hallazgo"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 993,
+   "Code": "c.append(\"OwnerDecisionRequired = true sin UnidentifiedConsequences\")",
+   "Killed": true,
+   "KilledBy": [
+    "62-decision-del-owner-sin-consecuencias"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 995,
+   "Code": "c.append(\"OwnerDecisionRequired = false con UnidentifiedConsequences\")",
+   "Killed": true,
+   "KilledBy": [
+    "63-sin-decision-del-owner-con-consecuencias"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 998,
+   "Code": "c.append(\"%s RevealsA7Defect = true sin un REQUIRED vinculado\" % label)",
+   "Killed": true,
+   "KilledBy": [
+    "65-d1-revela-defecto-sin-required",
+    "67-fc-revela-defecto-sin-required"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1000,
+   "Code": "c.append(\"%s RevealsA7Defect = false con un REQUIRED vinculado (un impacto relacionado no condiciona el veredicto de A-7)\" % label)",
+   "Killed": true,
+   "KilledBy": [
+    "66-d1-sin-defecto-con-required",
+    "68-fc-sin-defecto-con-required"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1002,
+   "Code": "c.append(\"RelatedImpacts.ContractExclusionD1 CONCERNS_FOR_COORDINATOR sin Concerns\")",
+   "Killed": true,
+   "KilledBy": [
+    "69-d1-preocupaciones-sin-lista"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1004,
+   "Code": "c.append(\"RelatedImpacts.ContractExclusionD1 NO_CONCERN con Concerns\")",
+   "Killed": true,
+   "KilledBy": [
+    "70-d1-sin-preocupacion-con-lista",
+    "108e-esquema-elemento-de-lista-no-texto"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1007,
+   "Code": "c.append(\"RelatedImpacts.FailClosedProposals[%s] NO_CONCERN con %s en true\" % (x.get(\"Proposal\"), \"/\".join(FC_FLAGS)))",
+   "Killed": true,
+   "KilledBy": [
+    "71-fc-sin-preocupacion-con-bandera"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1009,
+   "Code": "c.append(\"RelatedImpacts.FailClosedProposals[%s] CONCERNS_FOR_COORDINATOR sin ninguna de %s en true\" % (x.get(\"Proposal\"), \"/\".join(FC_FLAGS)))",
+   "Killed": true,
+   "KilledBy": [
+    "72-fc-preocupacion-sin-bandera"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1012,
+   "Code": "c.append(\"con un veredicto, las siete booleanas de Step0 van en true\")",
+   "Killed": true,
+   "KilledBy": [
+    "78-paso0-falso-con-veredicto",
+    "79-paso0-nulo-con-veredicto"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1014,
+   "Code": "c.append(\"objeto revisado distinto del designado (commit, ruta o blob)\")",
+   "Killed": true,
+   "KilledBy": [
+    "80-objeto-otro-blob",
+    "81-objeto-otro-commit"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1018,
+   "Code": "c.append(\"%s debe disponer cada id una vez (faltan %s; sobran o repetidos %s)\"",
+   "Killed": true,
+   "KilledBy": [
+    "109-tema-ausente",
+    "109b-tema-repetido",
+    "110-disparador-ausente",
+    "110b-disparador-repetido"
+   ],
+   "KillingCases": 8
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1022,
+   "Code": "c.append(\"con un veredicto, A7Declared distinto de lo que declara A-7 §5 (%s)\" % \", \".join(wrong_decl))",
+   "Killed": true,
+   "KilledBy": [
+    "60-declaracion-de-a7-mal-copiada"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1025,
+   "Code": "c.append(\"con un veredicto, %s sin ClauseRefs\" % label)",
+   "Killed": true,
+   "KilledBy": [
+    "83-elementos-sin-referencias"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1029,
+   "Code": "c.append(\"con un veredicto, NOT_DETERMINED o null no se admiten (%s)\" % \", \".join(undetermined))",
+   "Killed": true,
+   "KilledBy": [
+    "76-no-determinado-con-veredicto"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1031,
+   "Code": "c.append(\"con un veredicto, OwnerReservedConsequence.OwnerDecisionRequired no admite null\")",
+   "Killed": true,
+   "KilledBy": [
+    "77-decision-del-owner-nula-con-veredicto"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1037,
+   "Code": "c.append(\"REQUIRED sin disposición: todo REQUIRED lo cita al menos un elemento evaluado (%s)\" % \", \".join(str(i) for i in uncited))",
+   "Killed": true,
+   "KilledBy": [
+    "91-required-sin-disposicion"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1039,
+   "Code": "c.append(\"AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true\")",
+   "Killed": true,
+   "KilledBy": [
+    "17-agreed-con-un-required",
+    "75-agreed-con-ifagreed-falso",
+    "92-agreed-tema-no-conforme",
+    "93-agreed-disparador-en-desacuerdo"
+   ],
+   "KillingCases": 6
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1041,
+   "Code": "c.append(\"AGREED exige los once temas de TopicVerdicts en CONFORMS\")",
+   "Killed": true,
+   "KilledBy": [
+    "17-agreed-con-un-required",
+    "92-agreed-tema-no-conforme",
+    "105-esquema-estados-invalidos",
+    "109-tema-ausente"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1043,
+   "Code": "c.append(\"AGREED exige los ocho disparadores de Materiality en AGREE\")",
+   "Killed": true,
+   "KilledBy": [
+    "19-agreed-con-un-disparador-en-desacuerdo",
+    "93-agreed-disparador-en-desacuerdo",
+    "105-esquema-estados-invalidos",
+    "110-disparador-ausente"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1045,
+   "Code": "c.append(\"AGREED exige RevealsA7Defect = false en RelatedImpacts (ContractExclusionD1 y las ocho propuestas)\")",
+   "Killed": true,
+   "KilledBy": [
+    "94-agreed-impacto-revela-defecto",
+    "106-esquema-booleano-como-texto",
+    "111-propuesta-ausente"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1047,
+   "Code": "c.append(\"IfAgreed debe ir en null salvo con AGREED\")",
+   "Killed": true,
+   "KilledBy": [
+    "74-ifagreed-no-nulo-sin-agreed"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1049,
+   "Code": "c.append(\"%s sin ningún REQUIRED\" % v)",
+   "Killed": true,
+   "KilledBy": [
+    "18-changes-required-sin-required",
+    "98-rejected-sin-required"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1051,
+   "Code": "c.append(\"BLOCKED — OWNER DECISION sin OwnerDecisionRequired = true\")",
+   "Killed": true,
+   "KilledBy": [
+    "64-blocked-sin-decision-del-owner"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1053,
+   "Code": "c.append(\"NOT_ACCREDITED sin el motivo en KnownLimitations\")",
+   "Killed": true,
+   "KilledBy": [
+    "20-not-accredited-sin-motivo"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "post-review.py",
+   "Line": 1055,
+   "Code": "c.append(\"identificadores de la invocación distintos de los del cierre\")",
+   "Killed": true,
+   "KilledBy": [
+    "82-ids-de-invocacion-de-otra-revision"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 146,
+   "Code": "probs.append(\"blob de A-7 no fijado en el kit (closure.ObjectBlob: 40 hexadecimales, igual al blob fijado %s…)\" % OBJECT_BLOB[:8])",
+   "Killed": true,
+   "KilledBy": [
+    "O12-blob-no-fijado",
+    "O12b-blob-fijado-de-otro-borrador"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 148,
+   "Code": "probs.append(\"la línea fijada del Owner A6-ADR0046-9-FX02 no está, como línea completa, en la A-6 acordada del commit del clon (A-6 §7)\")",
+   "Killed": true,
+   "KilledBy": [
+    "O27-linea-fijada-ausente-de-la-a6-acordada"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 150,
+   "Code": "probs.append(\"decisiones sin un único encabezado §78 (%d)\" % len(s78))",
+   "Killed": true,
+   "KilledBy": [
+    "O28-dos-encabezados-78"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 152,
+   "Code": "probs.append(\"falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 %s…)\" % A6_LINE_SHA[:8])",
+   "Killed": true,
+   "KilledBy": [
+    "O13-sin-la-linea-del-owner",
+    "O14-parafrasis",
+    "O15-fragmento-citado-en-tabla",
+    "O16-cita-con-sangria-de-bloque"
+   ],
+   "KillingCases": 6
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 154,
+   "Code": "probs.append(\"la línea del Owner A6-ADR0046-9-FX02 no está registrada después del encabezado de decisiones §78\")",
+   "Killed": true,
+   "KilledBy": [
+    "O19-linea-antes-de-78"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 156,
+   "Code": "probs.append(\"otra línea que empieza por «%s» distinta de la fijada (líneas %s)\" % (A6_LINE_PREFIX, [i + 1 for i in other_a6][:5]))",
+   "Killed": true,
+   "KilledBy": [
+    "O14-parafrasis",
+    "O17-espacio-final",
+    "O18-retorno-de-carro",
+    "O20-revocacion-anterior-a-93"
+   ],
+   "KillingCases": 4
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 158,
+   "Code": "probs.append(\"falta, como línea completa de decisiones, la línea del Owner CLAUDE-CLI-I62 = A (SHA-256 %s…): autorización de revisión \"",
+   "Killed": true,
+   "KilledBy": [
+    "O21-sin-claude-cli-i62"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 161,
+   "Code": "probs.append(\"otra línea que empieza por «%s» distinta de la fijada (líneas %s): autorización de revisión no verificable\"",
+   "Killed": true,
+   "KilledBy": [
+    "O21-sin-claude-cli-i62",
+    "O22-otra-linea-claude-cli-i62"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 164,
+   "Code": "probs.append(\"docs/initiatives/I-62-A-7.md en la HEAD del worktree no tiene el blob de A-7 fijado en el kit (%s)\"",
+   "Killed": true,
+   "KilledBy": [
+    "O11-a7-en-la-head-con-otro-blob",
+    "O12-blob-no-fijado",
+    "O12b-blob-fijado-de-otro-borrador"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 167,
+   "Code": "probs.append(\"docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob acordado %s… (decisiones §90; §93, punto 8) (%s)\"",
+   "Killed": true,
+   "KilledBy": [
+    "O11b-a6-en-la-head-con-otro-blob",
+    "O11c-a6-ausente-en-la-head"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 170,
+   "Code": "probs.append(PENDING_REASON)",
+   "Killed": true,
+   "KilledBy": [
+    "O00-autorizacion-pendiente-bloquea",
+    "O00b-pendiente-con-otra-seccion-posterior-a-92"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 173,
+   "Code": "probs.append(\"la autorización fijada (§%s) no es una sección posterior a §%d (decisiones §92, punto 9)\" % (a[\"Section\"], BASE_SECTION))",
+   "Killed": true,
+   "KilledBy": [
+    "O10-fijada-no-posterior-a-92",
+    "O10b-fijada-con-un-numero-que-no-es-entero"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 175,
+   "Code": "probs.append(\"decisiones sin un único encabezado §%s (%d)\" % (a[\"Section\"], len(auth)))",
+   "Killed": true,
+   "KilledBy": [
+    "O08-sin-la-seccion-fijada",
+    "O09-dos-secciones-fijadas",
+    "O10b-fijada-con-un-numero-que-no-es-entero"
+   ],
+   "KillingCases": 3
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 177,
+   "Code": "probs.append(\"falta la autorización: la sección §%s de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 \"",
+   "Killed": true,
+   "KilledBy": [
+    "O04-fijada-con-otro-texto",
+    "O05-fijada-con-otro-encabezado",
+    "O06-fijada-con-el-blob-abreviado",
+    "O07-fijada-con-el-blob-pegado"
+   ],
+   "KillingCases": 12
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 181,
+   "Code": "probs.append(\"sección posterior a §%s en decisiones (%s): una disposición posterior tiene que revisarse antes de lanzar\"",
+   "Killed": true,
+   "KilledBy": [
+    "O02-seccion-posterior-a-la-fijada",
+    "O03-seccion-99-cualquiera-posterior"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 185,
+   "Code": "probs.append(\"decisiones del worktree no crece solo por añadido desde el commit del clon (§93 o lo anterior cambiaron)\")",
+   "Killed": true,
+   "KilledBy": [
+    "O23-decision-93-cambiada-en-la-head",
+    "O23b-decision-92-cambiada-en-la-head"
+   ],
+   "KillingCases": 2
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 187,
+   "Code": "probs.append(\"el archivo de decisiones del árbol de trabajo no es el de la HEAD (cambios sin commit)\")",
+   "Killed": true,
+   "KilledBy": [
+    "O24-cambios-sin-commit"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 189,
+   "Code": "probs.append(\"la HEAD del worktree no desciende del commit del clon\")",
+   "Killed": true,
+   "KilledBy": [
+    "O25-head-no-desciende-del-clon"
+   ],
+   "KillingCases": 1
+  },
+  {
+   "Module": "owner_gate.py",
+   "Line": 192,
+   "Code": "probs.append(\"SHA-256 medido del binario distinto del cierre: la autorización de revisión no cubre otro binario\")",
+   "Killed": true,
+   "KilledBy": [
+    "O26-otro-binario"
+   ],
+   "KillingCases": 1
+  }
+ ],
+ "Survivors": [],
+ "Totals": {
+  "Mutants": 56,
+  "Killed": 56,
+  "KilledByException": 0
+ },
+ "AllKilled": true
+}

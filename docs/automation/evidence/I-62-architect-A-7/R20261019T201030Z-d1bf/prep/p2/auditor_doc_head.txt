@@ -1,0 +1,29 @@
+"""I-62, decisiones §94: post-review audit v6.0-a7r2 of ONE claude-cli run of the ONE FORMAL REVIEW of ROUND 2 of amendment A-7
+(docs/initiatives/I-62-A-7.md, blob 8a528133… pinned in the closure and in owner_gate.py, PROPUESTA round 2), bounded to A62-A7-R1..R3 and their
+consequences (decisions §94, point 6), by an independent ARCHITECT. Declared and self-tested BEFORE the launch (Owner CLAUDE-CLI-I62 = A; the launch
+also requires gate 11, owner_gate.py: the Owner line of §78, the A-7 blob and the agreed A-6 blob at the worktree HEAD and a Coordinator disposition
+AFTER §94 naming this review, pinned in owner_gate.py with its number, heading, full blob and text SHA-256, and no later section; the kit is
+delivered with that authorization PENDING); the principal session runs it afterwards, never before, on the complete run, and the auditor is not
+corrected after the run.
+
+v6.0-a7r2 = the v5.6-a7 auditor (the v5.5-a7 auditor of A-7 round 1, R20261019T010200Z-4a72, plus the read-fidelity correction of decisions §94,
+point 5: faithful copies RACKCAD-COPIA-FIEL/1, verified byte for byte against the originals and crediting the originals' lines): every launch,
+transport-gate, stream-json, transcript, tool, read-fidelity, faithful-copy, reference, direct-read, run-custody, clone, run.json, FrozenCommandGuard,
+RecordProbe, Environment and `Categories` rule is kept. The run has three files besides the faithful copies (order.txt, the §94 body, and a7-r1.md,
+the round-1 text, both premises; prompt.md); the direct read is AUTOMATION_PLAN 16.8 L616-L617 (the definition of «exige RED» that A7-1, point 1
+(c), cites), taken from closure.json like before. Changes:
+  * preflight.json, gate 11: the authorization pinned after §94 (messages); the rule of round 1 otherwise;
+  * schema coherence (rackcad-a7r2-architect-review/0), the round-N pattern of the A-6 rounds: ids unique in Round1FindingResolution,
+    RegressionCheck, QuestionAnswers, OptionalDispositionConformance, Materiality.Triggers and DeltaPurity.Changes and, with a verdict, exactly
+    A62-A7-R1..R3, the five round-1 CONFORMS topics, Q-A7R2-01..03, M-01..M-08 and the ten round-2 changes once each (OptionalDispositionConformance
+    is optional: any subset of A62-A7-O1..O8, no repeats); a resolution PARTIALLY_CORRECTED or NOT_CORRECTED => the residual REQUIRED linked,
+    CORRECTED => none; a topic REGRESSION => a linked REQUIRED, NO_REGRESSION => none; a change OUTSIDE_R1_R3 => a linked REQUIRED, WITHIN_R1_R3 =>
+    none, DeltaPurity CONFIRMED <=> no change OUTSIDE (NOT_CONFIRMED => a linked REQUIRED); a trigger DISAGREE => a linked REQUIRED, AGREE => none,
+    and A7Declared = the A-7 §5 table of the closure (MaterialityA7); a question NOT_SATISFIED and an optional disposition DOES_NOT_CONFORM => a
+    linked finding; OwnerDecisionRequired true <=> UnidentifiedConsequences non-empty; ChangedByRound2 true => a Note; with a verdict, ClauseRefs in
+    every element (optional dispositions NOT_ASSESSED excepted), no NOT_DETERMINED in DeltaPurity and no null in OwnerDecisionRequired or
+    ChangedByRound2, every FindingIds entry exists and every REQUIRED is cited by at least one element; AGREED => no REQUIRED, no Owner decision
+    pending, IfAgreed all true, R1-R3 CORRECTED, DeltaPurity CONFIRMED with the ten changes WITHIN, the five topics NO_REGRESSION and every
+    trigger AGREE; CHANGES REQUIRED or REJECTED => at least one REQUIRED;
+  * kept: findings (new ids A62-A7R2-R<n> / A62-A7R2-O<n>), NOT_ACCREDITED, BLOCKED — OWNER DECISION, IfAgreed, invocation ids, reviewed object,
+    Step0 (seven booleans, now the round-2 Step 0), validate_schema (Test-Json AND schema_errors) and the direct read rule.

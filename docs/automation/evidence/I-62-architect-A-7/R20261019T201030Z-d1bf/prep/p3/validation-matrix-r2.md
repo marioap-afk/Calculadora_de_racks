@@ -1,0 +1,34 @@
+| Componente | Estado | Lanzado | Fase 1 | Ahora | Dependencias | Por qué | Controles |
+|---|---|---|---|---|---|---|---|
+| a7-r1.md | NEW | - | - | 1ab7315a | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| c3_analysis.py | IDENTICAL | 4fc6115e | 4fc6115e | 4fc6115e | - | sin cambio | reutilizado por identidad |
+| claude-cli-characterization.json | IDENTICAL | 4ba6ba58 | 4ba6ba58 | 4ba6ba58 | - | sin cambio | reutilizado por identidad |
+| clone-verification.json | CHANGED | c75502f5 | c75502f5 | 845886e9 | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| closure.json | CHANGED | 7a0be56b | 7a0be56b | d19950bb | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| fidelity.py | NEW | - | 4080b8e0 | a84825e0 | closure.json | fase 1: detector y copia fiel RACKCAD-COPIA-FIEL/1; fase 2: clase UNMEASURED_CHAR (decisión (c)) y U+2013 en el conjunto medido (34 puntos de código, r1-literals.json) | selftest-fidelity 53/53; casos F del selftest; verify_clone; mutación completa 19/19 |
+| finish_kit.py | CHANGED | e0c9c1eb | 948084d2 | 0c981934 | todos | pasos de la ronda 2 (sin fijación; mutación completa al final; prueba en seco bloqueada solo por la compuerta 11) | pasos ejecutados uno a uno con sus mismas órdenes |
+| kit-manifest.json | CHANGED | c27db93e | c27db93e | 3499596d | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| kit-params.json | CHANGED | e8982bf0 | e8982bf0 | 86e42660 | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| launch.py | CHANGED | 01f60c7a | a3de39de | 17dda725 | fidelity.py, owner_gate.py, transport_gate.py, closure.json, kit-manifest.json | fase 1: comprobación 7 con las copias fieles; fase 2: clon, run, session id, patrón D--r62-arch-a7r2*, premisa a7-r1.md (blob 6c29747d) en la comprobación 7 | X01-X05 (5/5); sonda de registro: RecordProbe.Ok True; prueba en seco: BlockingChecks ['11-OwnerAndAuthorizationGate'], Problems 1 |
+| make_closure.py | CHANGED | a0d41107 | daaf77d6 | 756459c0 | fidelity.py, prompt.template.md, el clon | fase 1: detector y copias; fase 2: cierre de la ronda 2 (246 archivos), comprobaciones de identidad de la ronda 2, prompt de la ronda 2 | construcción real (closure.json, prompt.md, 43 copias); verify_clone True |
+| make_manifest.py | CHANGED | 9bb67ebf | c96afd35 | a7a7f6b3 | fidelity.py, owner_gate.py, closure.json | run con a7-r1.md y copias; autorización pendiente; mutación completa | congelación (kit-manifest.json) |
+| mutation-post-review.py | CHANGED | 9ed3eca1 | f509d760 | 8c275526 | selftest-post-review.py, selftest-fidelity.py | batería completa de cuatro módulos (incluye fidelity.py) | es el control: AllKilled True, 207/207 |
+| mutation-result.json | CHANGED | ac6a6eba | ac6a6eba | 0215a272 | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| mutation-targeted-result.json | REMOVED | d1ed1222 | d1ed1222 | - | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| mutation-targeted.py | REMOVED | 44906dfd | 1a3488e4 | - | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| order.txt | CHANGED | a5c37f71 | a5c37f71 | 515ccfa3 | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| owner_gate.py | CHANGED | 879d630a | 879d630a | 3d420a9f | pin_authorization.py, decisiones del worktree | objeto A-7 ronda 2 (8a528133), base §94, autorización PENDIENTE (AUTH_* = None) | selftest O00-O30 y L00 (40/40); mutación completa 19/19; prueba en seco: BlockingChecks ['11-OwnerAndAuthorizationGate'], Problems 1 |
+| pin_authorization.py | IDENTICAL | a8e40707 | a8e40707 | a8e40707 | - | sin cambio | reutilizado por identidad |
+| post-review.py | CHANGED | 303321f2 | 80004643 | f5cdef1f | fidelity.py, owner_gate.py, transport_gate.py, closure.json, result.schema.json | fase 1 (v5.6-a7): verificación de cada copia fiel contra los bytes del original y crédito por la copia; fase 2 (v6.0-a7r2): esquema y coherencia de la ronda 2 (Round1FindingResolution, DeltaPurity, RegressionCheck, OptionalDispositionConformance, Materiality, OwnerReservedConsequence, RelatedImpacts.ChangedByRound2, QuestionAnswers, IfAgreed de nueve campos), lectura directa AUTOMATION_PLAN L616-L617, registro de la compuerta 11 con §94 como base; sesión principal: docstring de la lectura directa (ninguna línea de código) | selftest-post-review 310/310 (auditoría 204/204, compuerta D-01 61/61, compuerta 11 40/40, coherencia 5/5); mutación completa 129/129 |
+| prepare_clone.py | CHANGED | fc0e0b24 | fc0e0b24 | 23ee99ef | el directorio común de git | precondiciones de la ronda 2 (catorce) | ejecutado una vez (kit-params.json, todas en true) |
+| prompt.md | CHANGED | ba280474 | ba280474 | 40c9de64 | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| prompt.template.md | CHANGED | c3ad10d5 | 713c6189 | 24b93624 | closure.json | fase 1: copias fieles; fase 2: alcance R1-R3 de la ronda 2 | renderizado (prompt.md) |
+| read_fidelity.py | CHANGED | 7b51116e | da1457a1 | da1457a1 | fidelity.py | fase 1: marcas del detector por llamada; surrogateescape (sin cambio en la fase 2) | reutilizado de la fase 1 |
+| result.schema.json | CHANGED | 116c393e | 116c393e | 9e533317 | prep/p2/gen_schema_r2.py | esquema rackcad-a7r2-architect-review/0 | casos 56-121j del selftest; mutación completa |
+| selftest-fidelity-result.json | NEW | - | - | df050616 | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| selftest-fidelity.py | NEW | - | 288be8bc | 0ad71f0d | fidelity.py | negativos del componente de fidelidad (fase 1) y de UNMEASURED_CHAR (fase 2) | es el control: 53/53 |
+| selftest-post-review.py | CHANGED | e6deb731 | 89b89aab | 435f76f4 | post-review.py y sus dependencias | casos F00-F20, X05 (fase 1); casos de la ronda 2 (fase 2); sesión principal: expectativa del caso 48 | es el control: selftest-post-review 310/310 (auditoría 204/204, compuerta D-01 61/61, compuerta 11 40/40, coherencia 5/5) |
+| selftest-result.json | CHANGED | 4d9655a0 | 4d9655a0 | 2edc5855 | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| transport-gate.json | CHANGED | 6f78dbd5 | 6f78dbd5 | a6cff479 | - | artefacto o dato regenerado para la ronda 2 | generado por su paso |
+| transport_gate.py | IDENTICAL | e326b5b9 | e326b5b9 | e326b5b9 | claude-cli-characterization.json | sin cambio | selftest G00-G58 (61/61); mutación completa 40/40 |
+| verify_clone.py | CHANGED | feb7d615 | 93b70996 | fb3d8f13 | fidelity.py, closure.json, kit-params.json, el clon, el worktree (solo lectura) | fase 1: run = RunFiles con copias verificadas; fase 2: objeto, commits, a7-r1.md y guardas de r2/ | AllChecks True; negativa de la ronda 2 (un byte de una copia): True |

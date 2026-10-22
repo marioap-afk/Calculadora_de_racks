@@ -1,0 +1,41 @@
+--- launched/finish_kit.py
++++ phase1/finish_kit.py
+@@ -7,13 +7,15 @@
+ Pasos, en orden; se detiene en el primero que falla (código distinto de 0) y no deshace nada:
+   1. prepare_clone.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT> → D:\\r62-arch-a7, D:\\r62-arch-a7-run\\order.txt y kit-params.json
+   2. make_closure.py --render-prompt                   → kit/prompt.md (desde prompt.template.md)
+-  3. copia byte a byte de kit/prompt.md                → D:\\r62-arch-a7-run\\prompt.md
++  2b. make_closure.py --faithful-copies                → kit/fiel__*.txt (copias fieles de los archivos marcados; decisiones §94, punto 5)
++  3. copia byte a byte de kit/prompt.md y de kit/fiel__*.txt → D:\\r62-arch-a7-run\\
+   4. make_closure.py                                   → kit/closure.json (cierre fijado por blob en CLONE_COMMIT)
+   5. fijación de §93: el texto de decisiones de la HEAD del worktree (git cat-file blob, solo lectura) → pin_authorization.py <texto> 93 (Ready) →
+      las tres líneas AUTH_* de kit/owner_gate.py (solo esas tres cambian)
+   6. transport_gate.py init y set MEASURED kit/claude-cli-characterization.json → kit/transport-gate.json (MEASURED, SHA-256 4ba6ba58…)
+   7. verify_clone.py                                   → kit/clone-verification.json (AllChecks, con la reproducción de las guardas de A-7)
+   8. selftest-post-review.py kit/selftest-result.json  → AllPass, sobre el clon y el run reales (L00: la compuerta 11 real, FIJADA en §93)
++  8b. selftest-fidelity.py kit/selftest-fidelity-result.json → AllPass (detector, copias fieles y sus negativos; decisiones §94, punto 5)
+   9. mutation-targeted.py kit/mutation-targeted-result.json → AllKilled en los sitios cambiados (con --no-mutation se omite y el manifiesto lo declara)
+  10. make_manifest.py                                  → kit/kit-manifest.json (congelación del kit)
+  11. python -B kit/launch.py --record-probe            → la orden congelada exacta, desde la carpeta que contiene kit/: código 0 (sonda de registro)
+@@ -103,8 +105,12 @@
+         return 2
+     step("1 prepare_clone", ["prepare_clone.py"] + pos)
+     step("2 render prompt", ["make_closure.py", "--render-prompt"])
++    step("2b faithful copies", ["make_closure.py", "--faithful-copies"])
+     shutil.copyfile(os.path.join(KIT, "prompt.md"), os.path.join(RUN, "prompt.md"))
+-    print("== 3 prompt.md copiado al run")
++    copies = sorted(n for n in os.listdir(KIT) if n.startswith("fiel__"))
++    for n in copies:
++        shutil.copyfile(os.path.join(KIT, n), os.path.join(RUN, n))
++    print("== 3 prompt.md y %d copias fieles copiados al run" % len(copies))
+     step("4 closure", ["make_closure.py"])
+     pin_section()
+     if hashlib.sha256(open(CHAR, "rb").read()).hexdigest() != CHAR_SHA:
+@@ -113,6 +119,7 @@
+     step("6b gate set MEASURED", ["transport_gate.py", "set", "MEASURED", CHAR])
+     step("7 verify_clone", ["verify_clone.py"])
+     step("8 selftest", ["selftest-post-review.py", os.path.join(KIT, "selftest-result.json")])
++    step("8b selftest de fidelidad", ["selftest-fidelity.py", os.path.join(KIT, "selftest-fidelity-result.json")])
+     if "--no-mutation" not in argv:
+         step("9 mutation (dirigida)", ["mutation-targeted.py", os.path.join(KIT, "mutation-targeted-result.json")])
+     step("10 manifest", ["make_manifest.py"])

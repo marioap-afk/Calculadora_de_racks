@@ -1,0 +1,96 @@
+--- launched/prompt.template.md
++++ phase1/prompt.template.md
+@@ -81,20 +81,21 @@
+ 
+ ## Paso 0, antes de cualquier lectura sustantiva
+ 
+-1. **Lectura directa de V14 (obligatoria).** Lee con Read `{{CLONE}}\docs\initiatives\I-62-proposal-v14.md` con `offset` {{V14_DIRECT_OFFSET}} y
++1. **Lectura directa de V14 (obligatoria).** Lee con Read `{{READ_V14}}` con `offset` {{V14_DIRECT_OFFSET}} y
+    `limit` {{V14_DIRECT_LIMIT}}: incluye las líneas {{V14_DIRECT}} (B.9: `Target`, `AuthorityRevision` y `CanonicalInputs[]`). Tiene que ser una llamada a Read sobre
+-   ese archivo: la cita que hace A-7 de esas líneas no es una lectura de V14. Regístrala en `DirectReads` (`docs/initiatives/I-62-proposal-v14.md:{{V14_DIRECT}}`).
++   ese archivo (si es una copia fiel, tiene la misma numeración de líneas que V14): la cita que hace A-7 de esas líneas no es una lectura de V14.
++   Regístrala en `DirectReads` (`docs/initiatives/I-62-proposal-v14.md:{{V14_DIRECT}}`).
+ 2. Lee entera, con Read, `{{RUN}}\order.txt` (la orden vigente, {{ORDER_LINES}} líneas): punto 1 (líneas {{ORDER_P1}}), punto 2 ({{ORDER_P2}}), punto 3 ({{ORDER_P3}}),
+    punto 4 ({{ORDER_P4}}), punto 5 ({{ORDER_P5}}), punto 6 ({{ORDER_P6}}), punto 7 ({{ORDER_P7}}), punto 8 ({{ORDER_P8}}) y punto 9 ({{ORDER_P9}}).
+-3. Lee con Read las líneas {{DEC93}} de `{{CLONE}}\docs\automation\decisions\I-62.md` (decisiones §93). Comprueba que la línea {{DEC93_SOURCE}} declara el
++3. Lee con Read las líneas {{DEC93}} de `{{READ_DEC}}` (decisiones §93). Comprueba que la línea {{DEC93_SOURCE}} declara el
+    cuerpo pegado de §93 con 4 057 bytes y el SHA-256 de arriba; que el párrafo de las líneas {{DEC93_OBJECT}} identifica el objeto (`docs/initiatives/I-62-A-7.md`,
+    commit de publicación `6fee8fd6…`, blob completo de arriba); y que los puntos 1-9 (líneas {{DEC93_P1}}-{{DEC93_P9}}) registran lo que dice `order.txt` (con la
+    redacción del registro), y el punto 1 autoriza UNA revisión formal de A-7.
+ 4. Lee con Read las líneas {{DEC90_AGREED}} del mismo archivo (decisiones §90, acuerdo registrado): A-6 AGREED sobre el blob `4bc919dd…`, el que cita la
+    cabecera de A-7.
+-5. Lee entero, con Read, `{{CLONE}}\{{GRR}}` ({{GRR_LINES}} líneas): {{GRR_KEYS}} deben dar `A7Blob` = el blob del objeto, `Base` = el padre de la
++5. Lee entero, con Read, `{{READ_GRR}}` (`{{GRR}}`, {{GRR_LINES}} líneas): {{GRR_KEYS}} deben dar `A7Blob` = el blob del objeto, `Base` = el padre de la
+    publicación (`{{PUB_PARENT}}`), `Head` = la publicación (abreviada, `6fee8fd6`), `Mode` run y `Result` PASS.
+-6. Lee con Read, en `{{CLONE}}\{{SUMMARY}}`, las líneas {{SUMMARY_CAND}} (`Candidate.Blob` = el blob del objeto), {{SUMMARY_HOLD}} (`Hold` = `Cases` y
++6. Lee con Read, en `{{READ_SUMMARY}}` (`{{SUMMARY}}`), las líneas {{SUMMARY_CAND}} (`Candidate.Blob` = el blob del objeto), {{SUMMARY_HOLD}} (`Hold` = `Cases` y
+    `NotHolding` vacío) y {{SUMMARY_ST}} (autoprueba de las guardas).
+ 
+ Si algo no coincide, o si un archivo del run o del objeto no se puede leer, para: `Verdict` = `"NOT_ACCREDITED"`, con el motivo en `KnownLimitations`.
+@@ -104,7 +105,18 @@
+ **Archivos del run** (`{{RUN}}\`):
+ - `order.txt`: la orden vigente (disposición §93; 4 057 bytes, {{ORDER_LINES}} líneas). Su SHA-256 es el que declara decisiones §93 en el commit. Puede ser
+   referencia (`order.txt:<línea>`);
+-- `prompt.md`: este mismo texto. No hace falta leerlo y nunca es referencia.
++- `prompt.md`: este mismo texto. No hace falta leerlo y nunca es referencia;
++- {{FAITHFUL_COUNT}} **copias fieles** `fiel__*.txt` (abajo, «Copias fieles»): cada una se lee EN LUGAR de su original; nunca son referencia.
++
++**Copias fieles (lectura byte a byte).** Read no entrega fielmente los bytes de algunos archivos del cierre: elimina en silencio un BOM inicial (una
++eliminación silenciosa nunca es una entrega fiel), trunca las líneas largas y no garantiza los bytes de controles, CR sueltos, NUL, UTF-8 inválido,
++U+FEFF interior ni separadores de línea Unicode. Cada archivo así tiene en el run una copia fiel (formato RACKCAD-COPIA-FIEL/1) con los bytes exactos
++del original y **la misma numeración de líneas**: la línea n de la copia es la línea n del original. En la copia, `\\` es una barra invertida y `\xHH`
++es un byte escrito explícitamente (el BOM es `\xEF\xBB\xBF`, un TAB `\x09`, un CR `\x0D`, cada byte de un UTF-8 inválido el suyo, y un espacio al
++final de una línea `\x20`); fuera de eso, el texto es literal. Una línea del original que no cabe termina en `\>` y sigue en el apéndice, después de
++la última línea del original, en las líneas `@n.2|…`, `@n.3|…`, que se concatenan en orden y sin separador. El pie de la copia declara la ruta, el
++blob, el SHA-256 y las marcas del original. **Lee siempre la copia y nunca el original** de estos archivos:
++{{FAITHFUL_COPIES}}
+ 
+ Todas las rutas que siguen son relativas al clon `{{CLONE}}` y están en el commit de arriba.
+ 
+@@ -181,14 +193,16 @@
+ 
+ ## Reglas de lectura (el invocador audita después cada llamada)
+ 
+-**Regla de esta revisión.** Toda referencia `ruta:línea` o `ruta:inicio-fin` apunta solo a líneas que leíste con Read **en ese mismo archivo** y que te
+-llegaron fielmente. Una cita de una fuente dentro de A-7 no es una lectura de la fuente: para citar `docs/initiatives/I-62-proposal-v14.md:2233`
+-tienes que haber leído con Read la línea 2233 de ese archivo; si solo leíste la cita en A-7, cita la línea de A-7.
++**Regla de esta revisión.** Toda referencia `ruta:línea` o `ruta:inicio-fin` apunta solo a líneas que leíste con Read **en ese mismo archivo** (o, si
++tiene copia fiel, en su copia fiel) y que te llegaron fielmente. Una cita de una fuente dentro de A-7 no es una lectura de la fuente: para citar
++`docs/initiatives/I-62-proposal-v14.md:2233` tienes que haber leído con Read la línea 2233 de ese archivo o de su copia fiel; si solo leíste la cita en
++A-7, cita la línea de A-7.
+ 
+ Cada ruta se comprueba por su **efecto**: resuelta contra el directorio de trabajo, con `.` y `..` colapsados y los enlaces resueltos.
+ 
+ - **Read:**
+-  - usa la ruta absoluta, solo de archivos del cierre bajo `{{CLONE}}` o de los dos archivos del run;
++  - usa la ruta absoluta, solo de archivos del cierre bajo `{{CLONE}}` o de los archivos del run (`order.txt`, `prompt.md` y las copias fieles);
++  - nunca leas con Read el original de un archivo que tiene copia fiel (lista de «Copias fieles»): lee la copia;
+   - en los archivos de más de 60 000 bytes ({{LARGE_FILES}}), usa `offset` y `limit` de **300 líneas como máximo**;
+   - haz una sola lectura por llamada. Si una lectura falla por el tamaño de su salida, repite ese rango en tramos más cortos.
+ - **Grep:** solo con `path` = un **archivo** de la lista (del cierre o del run), sin `glob` ni `type`. Nunca un directorio. Sin `path`, Grep busca en
+@@ -204,8 +218,10 @@
+   - red y web; subagentes u otros agentes; escribir.
+ - Un intento rechazado o fallido fuera del cierre sigue siendo una acción fuera del contrato, y una denegación de permiso se registra como violación.
+ - **Lecturas fallidas.** Una llamada que falla o no devuelve contenido no acredita nada y no puede sostener una referencia.
+-- **Líneas de más de 2 000 caracteres.** Read las entrega truncadas: {{LONG_LINES}}. Una línea truncada no cuenta como entregada: no la cites y, si
+-  te hiciera falta, decláralo en `KnownLimitations`. Para los tres JSON de una sola línea de `r4/r1probes/`, lee y cita la copia de `readable/` (arriba).
++- **Archivos que Read no entrega fielmente** (BOM, líneas largas, controles, CR sueltos, NUL, UTF-8 inválido): léelos solo por su copia fiel (arriba).
++  Una línea con `\>` al final solo cuenta como entregada si lees también sus continuaciones `@n.2|…` del apéndice. Si, aun así, una línea no te llega
++  fiel, no la cites y, si te hiciera falta, decláralo en `KnownLimitations`. Para los tres JSON de una sola línea de `r4/r1probes/` puedes leer y citar
++  la copia legible de `readable/` (arriba), que es otro archivo del cierre.
+ - **Contexto.** El cierre es grande: lee los rangos que necesites. Una compactación automática del contexto añade a la transcripción un mensaje que el
+   auditor cuenta como un segundo mensaje de usuario, y la corrida queda sin acreditar.
+ - **Unicode.** El texto canónico es UTF-8, con caracteres como ≤ ≥ ≠ → ∖ ∩ ∪ « » ^ y acentos.
+@@ -218,8 +234,10 @@
+ - Una referencia es `ruta:línea` o `ruta:inicio-fin`: la ruta, relativa al clon para los archivos del cierre (p. ej.,
+   `docs/initiatives/I-62-A-7.md:{{A7_RULE}}`), y el nombre suelto para el archivo del run que puede ser premisa (`order.txt:12`). Sin rutas absolutas ni
+   barras invertidas. `prompt.md` nunca es referencia.
+-- Cita solo líneas que hayas leído enteras con Read en ese archivo y que te llegaron fielmente. El invocador comprueba que Read te entregó cada línea
+-  citada, también en `DirectReads` y en los `ClauseRefs` de los elementos anidados.
++- Una copia fiel nunca es referencia: cita la ruta del **original** con el número de línea que muestra la copia (es el mismo). El invocador comprueba
++  cada copia contra los bytes del original y acredita la línea del original solo si la copia te la entregó entera y fiel.
++- Cita solo líneas que hayas leído enteras con Read en ese archivo (o en su copia fiel) y que te llegaron fielmente. El invocador comprueba que Read te
++  entregó cada línea citada, también en `DirectReads` y en los `ClauseRefs` de los elementos anidados.
+ - **Números de línea exactos:** los que Read muestra a la izquierda. Una referencia desplazada, aunque sea en una línea, no se acredita. Antes de
+   entregar, contrasta cada referencia con la salida de Read de la que sale.
+ 

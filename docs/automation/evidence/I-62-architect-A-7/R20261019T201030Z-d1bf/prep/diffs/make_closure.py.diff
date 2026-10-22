@@ -1,0 +1,337 @@
+--- launched/make_closure.py
++++ phase1/make_closure.py
+@@ -29,14 +29,21 @@
+   * la evidencia de I-62 (I-62-evidence.md, §180-§187; evidencia y no autoridad: A-7 cita la evidencia §181).
+   Fuera: docs/automation/evidence/I-62-C1C3/ y todo material de I-65; el resto de I-62-A6/ (r1-r4 salvo lo citado, m7/ fuera de lo de arriba);
+   las revisiones anteriores (directorios de los kits y salidas); transcripciones, memoria, fixture y el repositorio de la entrega.
+-Un archivo del cierre que no sea texto UTF-8 se informa (todos, con su ruta) y detiene el script; los archivos con líneas de más de 2 000
+-caracteres se informan con su copia legible (ReportedFiles). Los rangos se calculan aquí, mecánicamente, desde los encabezados, las filas y las
+-líneas citadas (con su primera línea comprobada); el script falla si algo no coincide.
++Fidelidad de lectura (decisiones §94, punto 5; fidelity.py): cada archivo del cierre pasa por el detector (BOM, UTF-8 inválido, NUL, CR suelto,
++otros controles, líneas de más de 1 900 unidades UTF-16, U+FEFF interior, separadores de línea Unicode, extensiones que Read interpreta). Cada
++archivo marcado tiene una COPIA FIEL (RACKCAD-COPIA-FIEL/1: los bytes exactos, sin pérdida, con la misma numeración de líneas) que es un archivo más
++del run (fiel__<ruta con / → __>.txt) y que el revisor lee EN LUGAR del original; el cierre la lista en FaithfulCopies (blob y SHA-256 del original,
++marcas con sus líneas, SHA-256 de la copia) y el prompt manda leerla, nunca el original. Si la copia de un archivo marcado no decodificara en sus
++bytes exactos o no fuera legible fielmente, el script se detiene (STOP). El archivo premisa del run (order.txt) no puede estar marcado (STOP). Un
++archivo que no sea UTF-8 ya no detiene el script: queda marcado INVALID_UTF8 y se lee por su copia. Los rangos se calculan aquí, mecánicamente,
++desde los encabezados, las filas y las líneas citadas (con su primera línea comprobada); el script falla si algo no coincide.
+ 
+ Uso:
+   python -B make_closure.py --render-prompt    → renderiza kit/prompt.md desde kit/prompt.template.md (clon de kit-params.json)
++  python -B make_closure.py --faithful-copies  → escribe en kit/ las copias fieles (fiel__*.txt) de los archivos marcados del cierre y borra
++                                                  las fiel__*.txt que sobren; quien termina el kit las copia byte a byte al run
+   python -B make_closure.py                    → escribe kit/closure.json (exige que kit/prompt.md sea el renderizado y que el run tenga
+-                                                  exactamente order.txt y prompt.md, iguales a las copias del kit)
++                                                  exactamente order.txt, prompt.md y las copias fieles, iguales a las copias del kit)
+ No escribe en el clon, en el run ni en el repositorio.
+ """
+ import hashlib
+@@ -54,6 +61,10 @@
+ _spec = importlib.util.spec_from_file_location("owner_gate", os.path.join(KIT, "owner_gate.py"))
+ OG = importlib.util.module_from_spec(_spec)
+ _spec.loader.exec_module(OG)
++_spec = importlib.util.spec_from_file_location("fidelity", os.path.join(KIT, "fidelity.py"))
++FID = importlib.util.module_from_spec(_spec)
++_spec.loader.exec_module(FID)
++BYTES = {}                                                    # bytes de cada archivo del cierre (git show), para el detector y las copias
+ 
+ CLONE_FIXED, RUN_FIXED = r"D:\r62-arch-a7", r"D:\r62-arch-a7-run"
+ IDS = {"RunId": "R20261019T010200Z-4a72", "InvocationId": "I20261019T010200Z-4a72", "LogicalReviewRequestId": "L20261019T010200Z-4a72",
+@@ -536,13 +547,17 @@
+ 
+ 
+ def describe(b, path):
++    """Un archivo que no es UTF-8 ya no detiene: se describe con surrogateescape, queda marcado INVALID_UTF8 por fidelity.scan y se lee por su
++    copia fiel (decisiones §94, punto 5)."""
+     try:
+-        t = b.decode("utf-8")
+-    except UnicodeDecodeError as e:
+-        raise NotUtf8("%s: %s" % (path, e))
++        b.decode("utf-8")
++        charset = "UTF-8"
++    except UnicodeDecodeError:
++        charset = "NOT-UTF-8"
++    t = b.decode("utf-8", "surrogateescape")
+     return {"Bytes": len(b), "Lines": len(lines_of(t)), "Sha256": hashlib.sha256(b).hexdigest(),
+             "LinesOver2000Chars": [i + 1 for i, x in enumerate(t.split("\n")) if len(x) > 2000],
+-            "Encoding": {"Charset": "UTF-8", "Bom": b.startswith(b"\xef\xbb\xbf"), "LineEnding": "LF" if b"\r\n" not in b else "CRLF",
++            "Encoding": {"Charset": charset, "Bom": b.startswith(b"\xef\xbb\xbf"), "LineEnding": "LF" if b"\r\n" not in b else "CRLF",
+                          "FinalNewline": b.endswith(b"\n")}}, t
+ 
+ 
+@@ -556,6 +571,7 @@
+ 
+ def rec(p, rev, why, scope, rf, label):
+     b = git("show", rev + ":" + p)
++    BYTES[p] = b
+     r, t = describe(b, p)
+     blob = git("rev-parse", rev + ":" + p).decode().strip()
+     r = dict({"Path": p, "Blob": blob}, **r)
+@@ -726,7 +742,8 @@
+     body = r["PromptLabel"]
+     if rs:
+         body += ": " + "; ".join("%s %s" % (short_label(r["Path"], g["Section"]), range_text(g)) for g in rs)
+-    return head + ", " + body + "."
++    fc = (r.get("Fidelity") or {}).get("FaithfulCopy")
++    return head + ", " + body + "." + (" **Léelo solo en su copia fiel** `%s` (run; misma numeración)." % fc if fc else "")
+ 
+ 
+ def readable_selection(rev, rdir, canonicals):
+@@ -775,7 +792,9 @@
+ 
+ def table(rows):
+     w = max(len(r["Path"]) for r in rows)
+-    return "\n".join("%-*s  blob %s  %s bytes  %s líneas" % (w, r["Path"], r["Blob"], fmt_n(r["Bytes"]), fmt_n(r["Lines"])) for r in rows)
++    fc = lambda r: (r.get("Fidelity") or {}).get("FaithfulCopy")
++    return "\n".join("%-*s  blob %s  %s bytes  %s líneas%s" % (w, r["Path"], r["Blob"], fmt_n(r["Bytes"]), fmt_n(r["Lines"]),
++                                                             ("  → léelo en la copia fiel del run " + fc(r)) if fc(r) else "") for r in rows)
+ 
+ 
+ def lit_checklist(lits, by):
+@@ -792,6 +811,49 @@
+ 
+ def readable_of(can_paths, readable):
+     return {e["Canonical"]: e["Readable"] for e in readable if e["Canonical"] in can_paths}
++
++
++def faithful_copies(can):
++    """Detector y copias fieles (decisiones §94, punto 5). → (informe del detector por ruta, [(nombre de la copia, bytes)], FaithfulCopies).
++    STOP si la copia de un archivo marcado no decodifica en sus bytes exactos, no es canónica o no es legible fielmente."""
++    fid, copies, entries, names = {}, [], [], set(n.lower() for n in RUN_FILES)
++    for r in can:
++        p = r["Path"]
++        info = FID.scan(p, BYTES[p])
++        assert info["Blob"] == r["Blob"] and info["Lines"] == r["Lines"], "detector: blob o líneas distintos de los del registro (%s)" % p
++        fid[p] = info
++        if not info["Flagged"]:
++            continue
++        name = FID.copy_name(p)
++        assert name.lower() not in names, "nombre de copia repetido: %s" % name
++        names.add(name.lower())
++        cb = FID.encode(p, BYTES[p])
++        if FID.verify(p, BYTES[p], cb) or FID.scan(name, cb)["Flagged"]:
++            raise SystemExit("STOP: la copia fiel de %s no entrega sus bytes exactos o no es legible fielmente" % p)
++        lay = FID.layout(cb)
++        cl = cb.decode("utf-8").split("\n")[:-1]
++        cont = sorted(n for n, ls in lay.items() if len(ls) > 1)
++        extra = sum(len(lay[n]) - 1 for n in cont)
++        entries.append({"Original": p, "OriginalBlob": r["Blob"], "OriginalSha256": r["Sha256"], "OriginalBytes": r["Bytes"],
++                        "OriginalLines": info["Lines"], "Flags": info["Flags"], "Copy": name, "CopySha256": FID.sha256(cb), "CopyBytes": len(cb),
++                        "CopyLines": len(cl), "CopyMaxLineChars": max(len(x) for x in cl), "ContinuedOriginalLines": cont,
++                        "AppendixLines": [info["Lines"] + 2, info["Lines"] + 1 + extra] if extra else None, "Format": FID.FORMAT})
++        copies.append((name, cb))
++    return fid, copies, entries
++
++
++def marks_list(flags):
++    def lines(v):
++        if v == [0]:
++            return "el archivo entero"
++        s = ", ".join(str(x) for x in v[:12]) + ((" y %d más" % (len(v) - 12)) if len(v) > 12 else "")
++        return ("línea " if len(v) == 1 else "líneas ") + s
++    return "; ".join("%s: %s" % (k, lines(v)) for k, v in flags.items())
++
++
++def read_path(p, flagged):
++    """Ruta absoluta que el revisor lee con Read: la copia fiel en el run si el archivo está marcado; si no, el archivo en el clon."""
++    return (RUN + "\\" + flagged[p]["Copy"]) if p in flagged else (CLONE + "\\" + p.replace("/", "\\"))
+ 
+ 
+ def order_points(run_lines):
+@@ -810,20 +872,24 @@
+     return out
+ 
+ 
+-def render_prompt(can, Ls, run, ident, lits):
++def render_prompt(can, Ls, run, ident, lits, fc_entries):
+     tpl = open(os.path.join(KIT, "prompt.template.md"), encoding="utf-8").read()
+     by = {r["Path"]: r for r in can}
++    flagged = {e["Original"]: e for e in fc_entries}
++    faithful = "\n".join("- `%s` (%s) → `%s\\%s` (%s líneas%s)" % (
++        e["Original"], marks_list(e["Flags"]), RUN, e["Copy"], fmt_n(e["CopyLines"]),
++        ("; las continuaciones de %s están en el apéndice, líneas %d-%d de la copia" % (
++            ("la línea %d" % e["ContinuedOriginalLines"][0]) if len(e["ContinuedOriginalLines"]) == 1 else
++            ("las líneas %s" % ", ".join(str(x) for x in e["ContinuedOriginalLines"][:12]) +
++             ((" y %d más" % (len(e["ContinuedOriginalLines"]) - 12)) if len(e["ContinuedOriginalLines"]) > 12 else "")),
++            e["AppendixLines"][0], e["AppendixLines"][1])) if e["AppendixLines"] else "") for e in fc_entries)
+     g = {p: {x["Section"]: x for x in by[p]["LineRanges"]} for p in by}
+     dec, a7, ga, a6 = g[DECISIONS], by[OBJECT], g[OBJECT], g[A6]
+     a7_map = "; ".join("%s %s" % ((x["Section"] if x["Section"] in ("cabecera",) else
+                                    re.sub(r"^#+ ", "", x["Section"]).split(" — ")[0].split(" (")[0]), range_text(x))
+                        for x in a7["LineRanges"] if x["Section"] != "entero" and (x["Section"] == "cabecera" or x["Section"].startswith("#")))
+-    large = [r["Path"] for r in can if r["Bytes"] > LARGE] + [n for n in PREMISE_RUN_FILES if run[n]["Bytes"] > LARGE]
+-    rmap = readable_of(set(by), ident["ReadableCopies"])
+-    long_lines = ["%s %s%s" % (r["Path"], ", ".join(str(n) for n in r["LinesOver2000Chars"]),
+-                               (" (copia legible: `%s`)" % rmap[r["Path"]]) if r["Path"] in rmap else "")
+-                  for r in can if r["LinesOver2000Chars"]] + \
+-                 ["%s %s" % (n, ", ".join(str(k) for k in run[n]["LinesOver2000Chars"])) for n in PREMISE_RUN_FILES if run[n]["LinesOver2000Chars"]]
++    large = [r["Path"] for r in can if r["Bytes"] > LARGE and r["Path"] not in flagged] + \
++            [n for n in PREMISE_RUN_FILES if run[n]["Bytes"] > LARGE] + [e["Copy"] for e in fc_entries if e["CopyBytes"] > LARGE]
+     grouped_prefixes = (A7_DIR + "/", M7 + "/", R4_DIR + "/", KITM7 + "/", PKG_DIR + "/")
+     entries = [prompt_entry(k + 1, r) for k, r in enumerate([r for r in can if r["Path"] != OBJECT and not r["Path"].startswith(grouped_prefixes)])]
+     sec = lambda p: range_text([x for x in a7["LineRanges"] if x["Section"].startswith("### " + p + " ") or x["Section"].startswith("## " + p + " ")][0])
+@@ -894,7 +960,10 @@
+                                          if x["Section"].startswith("## ")),
+         "{{CLOSURE_LIST}}": "\n".join(entries),
+         "{{LARGE_FILES}}": ", ".join("`%s`" % p for p in large),
+-        "{{LONG_LINES}}": "; ".join(long_lines) if long_lines else "ninguna",
++        "{{FAITHFUL_COPIES}}": faithful if faithful else "(ninguna: ningún archivo del cierre está marcado)",
++        "{{FAITHFUL_COUNT}}": str(len(fc_entries)),
++        "{{READ_V14}}": read_path(V14, flagged), "{{READ_DEC}}": read_path(DECISIONS, flagged),
++        "{{READ_GRR}}": read_path(A7_RUN_RESULT, flagged), "{{READ_SUMMARY}}": read_path(A7_SUMMARY, flagged),
+     }
+     for k, v in rep.items():
+         assert k in tpl, "marcador ausente en la plantilla: %s" % k
+@@ -939,25 +1008,46 @@
+     assert order_text_check(Ls[DECISIONS]), "decisiones §93 no declara el SHA-256 y los bytes del cuerpo pegado"
+     mat = materiality_a7(Ls[OBJECT])
+     assert mat == MATERIALITY_A7_EXPECTED, "A-7 §5 (Activado) distinto de lo esperado: %s" % mat
++    fid, copies, fc_entries = faithful_copies(can)
++    for r in can:
++        r["Fidelity"] = {"Flags": fid[r["Path"]]["Flags"], "FaithfulCopy": FID.copy_name(r["Path"]) if fid[r["Path"]]["Flagged"] else None}
++    run_files = RUN_FILES + [n for n, _ in copies]
++    if mode == "copies":
++        stale = [n for n in os.listdir(out_dir) if n.startswith(FID.COPY_PREFIX) and n not in dict(copies)]
++        for n in stale:
++            os.remove(os.path.join(out_dir, n))
++        for n, cb in copies:
++            with open(os.path.join(out_dir, n), "wb") as f:
++                f.write(cb)
++        return {"Written": [{"Copy": n, "Original": e["Original"], "Bytes": len(cb), "Sha256": FID.sha256(cb), "Flags": e["Flags"]}
++                            for (n, cb), e in zip(copies, fc_entries)], "Removed": stale}
+     rd = run_files_described(run_dir, out_dir)
+     run = {n: rd[n][0] for n in rd}
+     assert run["order.txt"]["Sha256"] == ORDER_TEXT[1] and run["order.txt"]["Bytes"] == ORDER_TEXT[2], "order.txt distinto del cuerpo §93 custodiado"
++    for n in PREMISE_RUN_FILES:
++        pb = open(os.path.join(run_dir if os.path.isfile(os.path.join(run_dir, n)) else out_dir, n), "rb").read()
++        if FID.scan(n, pb)["Flagged"]:
++            raise SystemExit("STOP: el archivo premisa del run %s no es legible fielmente por Read: %s" % (n, FID.scan(n, pb)["Flags"]))
+     run["order.txt"]["_Lines"] = lines_of(rd["order.txt"][1])
+-    prompt = render_prompt(can, Ls, run, ident, lits)
++    prompt = render_prompt(can, Ls, run, ident, lits, fc_entries)
+     run["order.txt"].pop("_Lines")
+     if mode == "render":
+         return prompt
+     assert open(os.path.join(out_dir, "prompt.md"), "rb").read() == prompt.encode("utf-8"), "prompt.md distinto del renderizado: --render-prompt"
+     listing = sorted(os.listdir(run_dir))
+-    assert listing == sorted(RUN_FILES), "el run debe tener exactamente %s (tiene %s)" % (RUN_FILES, listing)
++    assert listing == sorted(run_files), "el run debe tener exactamente %s (tiene %s)" % (run_files, listing)
+     corpus = set()
+     for r in can:
+         corpus |= {c for c in texts[r["Path"]] if ord(c) > 127}
+-    for n in RUN_FILES:
++    for n in run_files:
+         b = open(os.path.join(run_dir, n), "rb").read()
+         assert b == open(os.path.join(out_dir, n), "rb").read(), "%s del run distinto de la copia del kit" % n
+-        if n != "prompt.md":
++        if n in PREMISE_RUN_FILES:
+             corpus |= {c for c in rd[n][1] if ord(c) > 127}
++    for n, cb in copies:
++        assert open(os.path.join(run_dir, n), "rb").read() == cb, "copia fiel del run distinta de la generada desde el clon: %s" % n
++        run[n] = describe(cb, n)[0]
++        assert not FID.scan(n, cb)["Flagged"] and run[n]["Encoding"]["Charset"] == "UTF-8", "copia fiel no legible: %s" % n
+     pb = open(os.path.join(run_dir, "prompt.md"), "rb").read()
+     assert not pb.endswith(b"\n") and b"\r" not in pb, "prompt.md con salto final o CR"
+     run["prompt.md"] = describe(pb, "prompt.md")[0]
+@@ -965,17 +1055,30 @@
+                             "en el commit): autoriza esta revisión, fija su alcance (punto 1), los temas obligatorios (punto 3), los impactos "
+                             "relacionados (puntos 4 y 5), el kit (puntos 2 y 6), el resultado (punto 7) y los límites (punto 8)",
+                "prompt.md": "kit/prompt.md renderizado desde kit/prompt.template.md; stdin literal del proceso claude-cli; nunca es premisa"}
++    for e in fc_entries:
++        sources[e["Copy"]] = ("copia fiel %s de %s (blob %s, SHA-256 %s…; marcas: %s): el revisor la lee EN LUGAR del original; nunca es premisa ni "
++                              "referencia (se cita el original con el número de línea que muestra la copia)"
++                              % (FID.FORMAT, e["Original"], e["OriginalBlob"][:8], e["OriginalSha256"][:12], marks_list(e["Flags"])))
+     run_hashes = {n: {"Bytes": run[n]["Bytes"], "Lines": run[n]["Lines"], "Sha256": run[n]["Sha256"], "LinesOver2000Chars": run[n]["LinesOver2000Chars"],
+                       "Encoding": run[n]["Encoding"], "Source": sources[n], "PremiseAllowed": n in PREMISE_RUN_FILES,
+-                      "LineRanges": [{"Section": "entero", "Start": 1, "End": run[n]["Lines"]}]} for n in RUN_FILES}
++                      "LineRanges": [{"Section": "entero", "Start": 1, "End": run[n]["Lines"]}]} for n in run_files}
+     run_hashes["order.txt"]["IdentityCheck"] = {"DecisionsSection": "§" + ORDER_TEXT[0], "Sha256DeclaredInDecisions": True, "BytesDeclaredInDecisions": ORDER_TEXT[2]}
+     rmap = readable_of({r["Path"] for r in can}, ident["ReadableCopies"])
+-    reported = {"NonUtf8": [],
+-                "LinesOver2000Chars": [{"Path": r["Path"], "Lines": r["LinesOver2000Chars"], "ReadableCopy": rmap.get(r["Path"])}
+-                                       for r in can if r["LinesOver2000Chars"]] +
+-                                      [{"Path": n, "Lines": run[n]["LinesOver2000Chars"], "ReadableCopy": None}
+-                                       for n in RUN_FILES if run[n]["LinesOver2000Chars"]]}
+-    reported["LinesOver2000CharsWithoutReadableCopy"] = [x["Path"] for x in reported["LinesOver2000Chars"] if not x["ReadableCopy"]]
++    fmap = {e["Original"]: e["Copy"] for e in fc_entries}
++    reported = {"NonUtf8": [r["Path"] for r in can if "INVALID_UTF8" in r["Fidelity"]["Flags"]],
++                "LinesOver2000Chars": [{"Path": r["Path"], "Lines": r["LinesOver2000Chars"], "ReadableCopy": rmap.get(r["Path"]),
++                                        "FaithfulCopy": fmap.get(r["Path"])} for r in can if r["LinesOver2000Chars"]] +
++                                      [{"Path": n, "Lines": run[n]["LinesOver2000Chars"], "ReadableCopy": None, "FaithfulCopy": None}
++                                       for n in run_files if run[n]["LinesOver2000Chars"]],
++                "Fidelity": {"Detector": "fidelity.py (%s; marca más de %d unidades UTF-16 por línea; copias de %d caracteres por línea como máximo)"
++                                         % (FID.FORMAT, FID.FLAG_LINE_LIMIT, FID.COPY_LINE_LIMIT),
++                             "Files": len(can), "Flagged": len(fc_entries),
++                             "ByClass": {k: [r["Path"] for r in can if k in r["Fidelity"]["Flags"]] for k in FID.CLASSES
++                                         if any(k in r["Fidelity"]["Flags"] for r in can)},
++                             "FlaggedWithoutFaithfulCopy": [r["Path"] for r in can if r["Fidelity"]["Flags"] and r["Path"] not in fmap]}}
++    reported["LinesOver2000CharsWithoutReadableCopy"] = [x["Path"] for x in reported["LinesOver2000Chars"] if not x["ReadableCopy"] and not x["FaithfulCopy"]]
++    assert not reported["Fidelity"]["FlaggedWithoutFaithfulCopy"] and \
++        not [p for p in reported["LinesOver2000CharsWithoutReadableCopy"] if p not in run_files], "archivos del cierre marcados sin copia fiel"
+     for r in can:
+         r.pop("PromptLabel", None)
+     project = re.sub(r"[^A-Za-z0-9]", "-", CLONE)            # nombre del directorio de proyecto de claude-cli (D:\r62-arch-a7 → D--r62-arch-a7)
+@@ -1029,7 +1132,8 @@
+                       "Characterization": "claude-cli-characterization.json de R20261016T185242Z-char (decisiones §87, puntos 2-3; evidencia §174), "
+                                           "copia en kit/ del registro del commit 1c960c0a (blob 19b8a27e): C1 completada, C3 PASS sobre la plantilla "
+                                           "con --add-dir"},
+-        "RunDir": RUN, "RunFiles": RUN_FILES, "PremiseRunFiles": PREMISE_RUN_FILES, "RunFileHashes": run_hashes,
++        "RunDir": RUN, "RunFiles": run_files, "PremiseRunFiles": PREMISE_RUN_FILES, "RunFileHashes": run_hashes,
++        "FaithfulCopies": fc_entries,
+         "RunCustody": "el auditor compara el SHA-256 de cada archivo del run con RunFileHashes y con la copia del kit; el directorio del run solo admite "
+                       "esos dos archivos y, después del lanzamiento, el subdirectorio launch/, que solo admite los archivos que escribe launch.py",
+         "IdentityVerification": "el revisor no ejecuta git: el invocador verifica el clon antes del lanzamiento (verify_clone.py → clone-verification.json, "
+@@ -1043,17 +1147,26 @@
+             "Closure": "el cierre es por archivo; `LineRanges` orienta (Scope SECTIONS o HEADER) o cubre el archivo entero (ENTIRE). Los rangos no "
+                        "limitan: un archivo del cierre puede leerse entero o por otros rangos",
+             "Read": "ruta absoluta de un archivo del cierre bajo el clon, o de un archivo del run; en archivos de más de 60 000 bytes, offset y limit de "
+-                    "300 líneas como máximo",
++                    "300 líneas como máximo; un archivo marcado por el detector de fidelidad se lee SOLO por su copia fiel (FaithfulCopies)",
++            "FaithfulCopies": "decisiones §94, punto 5: cada archivo del cierre cuyos bytes Read no puede entregar fielmente (fidelity.py: BOM, UTF-8 "
++                              "inválido, NUL, CR suelto, controles, líneas de más de 1 900 unidades UTF-16, U+FEFF interior, separadores de línea "
++                              "Unicode, extensiones que Read interpreta) tiene una copia fiel %s en el run, con la misma numeración de líneas; el "
++                              "prompt manda leer la copia, nunca el original. El auditor comprueba que cada copia es la codificación canónica de los "
++                              "bytes exactos del original (blob fijado) y acredita la línea n del original solo si Read entregó fielmente la línea n "
++                              "de la copia y todas sus continuaciones del apéndice; una lectura del original cuya entrega esté alterada sigue siendo "
++                              "DEGRADED (motivo) y la eliminación silenciosa de un BOM nunca es fiel" % FID.FORMAT,
+             "Grep": "solo con `path` = un ARCHIVO del cierre o del run; sin `glob` ni `type`; nunca un directorio ni sin `path`",
+             "Glob": "su alcance (path + patrón) solo puede contener archivos del cierre o del run (I-62-A7/, m7/s91/, m7/s92/, m7/bench/designations/, "
+                     "el kit a6m7-measure y bmin/ están enteros en el cierre; el resto de m7/, de r4/ y de I-62-A6/ no)",
+             "LargeFileThresholdBytes": LARGE, "MaxRangeLines": 300,
+-            "LargeFiles": [r["Path"] for r in can if r["Bytes"] > LARGE] + [n for n in PREMISE_RUN_FILES if run[n]["Bytes"] > LARGE],
+-            "LongLines": {r["Path"]: r["LinesOver2000Chars"] for r in can if r["LinesOver2000Chars"]},
+-            "ClauseRefs": "toda referencia (`ruta:línea` o `ruta:inicio-fin`) apunta a líneas leídas enteras con Read en ese mismo archivo y entregadas "
+-                          "fielmente: de archivos del cierre (ruta relativa al clon) o de order.txt (nombre suelto); nunca de prompt.md. Una cita de "
+-                          "una fuente dentro de A-7 no es una lectura de la fuente",
+-            "DirectRead": "V14 L2231-L2233 se leen con Read en docs/initiatives/I-62-proposal-v14.md (Paso 0) y constan en DirectReads",
++            "LargeFiles": [r["Path"] for r in can if r["Bytes"] > LARGE] + [n for n in PREMISE_RUN_FILES if run[n]["Bytes"] > LARGE] +
++                          [e["Copy"] for e in fc_entries if e["CopyBytes"] > LARGE],
++            "LongLines": {r["Path"]: r["Fidelity"]["Flags"]["LONG_LINE"] for r in can if "LONG_LINE" in r["Fidelity"]["Flags"]},
++            "ClauseRefs": "toda referencia (`ruta:línea` o `ruta:inicio-fin`) apunta a líneas leídas enteras con Read en ese mismo archivo, o en su "
++                          "copia fiel, y entregadas fielmente: de archivos del cierre (ruta relativa al clon) o de order.txt (nombre suelto); nunca de "
++                          "prompt.md ni de una copia fiel (se cita el original). Una cita de una fuente dentro de A-7 no es una lectura de la fuente",
++            "DirectRead": "V14 L2231-L2233 se leen con Read en docs/initiatives/I-62-proposal-v14.md o en su copia fiel (Paso 0) y constan en "
++                          "DirectReads",
+             "FailedReads": "una llamada que falla o no devuelve contenido es una lectura fallida: no acredita contenido",
+         },
+         "ReportedFiles": reported,
+@@ -1111,7 +1224,8 @@
+         g["Bytes"] += r["Bytes"]
+         g["Lines"] += r["Lines"]
+     return {"ids": IDS, "canonical": len(can), "bytes": sum(r["Bytes"] for r in can), "lines": sum(r["Lines"] for r in can), "groups": by_group,
+-            "run": {n: (run[n]["Bytes"], run[n]["Sha256"][:12]) for n in RUN_FILES},
++            "run": {n: (run[n]["Bytes"], run[n]["Sha256"][:12]) for n in run_files},
++            "faithful": {e["Original"]: [e["Copy"], e["CopyBytes"], e["Flags"]] for e in fc_entries},
+             "large": closure["ReadPolicy"]["LargeFiles"], "reported": reported}
+ 
+ 
+@@ -1134,6 +1248,9 @@
+         b = prompt.encode("utf-8")
+         print(json.dumps({"Written": "prompt.md", "Bytes": len(b), "Lines": len(lines_of(prompt)), "Sha256": hashlib.sha256(b).hexdigest()}))
+         return 0
++    if "--faithful-copies" in argv:
++        print(json.dumps(build_kit(CLONE_FIXED, params["CloneCommit"], RUN_FIXED, KIT, params, "copies"), ensure_ascii=False, indent=1))
++        return 0
+     print(json.dumps(build_kit(CLONE_FIXED, params["CloneCommit"], RUN_FIXED, KIT, params, "closure"), ensure_ascii=False, indent=1))
+     return 0
+ 

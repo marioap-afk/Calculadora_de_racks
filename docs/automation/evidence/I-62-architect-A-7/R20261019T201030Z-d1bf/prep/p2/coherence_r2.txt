@@ -1,0 +1,11 @@
+STEP0_KEYS = ("AP168DirectReadL616L617", "OrderReadWhole", "Decisions94DeclaresOrderBytesAndSha256",
+              "Decisions94AcceptsR1R3AndAuthorizesSecondCandidate", "GuardsRunModeBaseHeadResult", "PreflightSummaryCandidateAndTotals",
+              "Round1OutputIdentifiesRunAndFindings")
+NOT_DET = "NOT_DETERMINED"
+BLOCKED = "BLOCKED " + chr(0x2014) + " OWNER DECISION"
+ARRAYS = (("Round1FindingResolution", "Round1Finding"), ("RegressionCheck", "Topic"), ("QuestionAnswers", "Question"),
+          ("OptionalDispositionConformance", "Round1Optional"))
+NESTED = (("Materiality", "Triggers", "Trigger"), ("DeltaPurity", "Changes", "Change"))
+SINGLES = ("Materiality", "OwnerReservedConsequence", "DeltaPurity", "RelatedImpacts")
+NESTED_SINGLES = ()
+OPEN_RESOLUTION = ("PARTIALLY_CORRECTED", "NOT_CORRECTED")

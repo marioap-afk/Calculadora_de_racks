@@ -1,0 +1,289 @@
+    # ---- result schema and coherence (A-7 round 2: rackcad-a7r2-architect-review/0)
+    def extra_field(res, r):
+        res["Extra"] = 1
+    add(variant("55-esquema-invalido", result_patch=extra_field, expected=["resultado: no valida contra result.schema.json"], schema_valid=False))
+
+    def p(name, fn, expected=(), counts=None, schema_valid=True, coherent=False, run_hook=None, base=None, extra=None):
+        add(variant(name, extra=extra, result_patch=lambda res, r: fn(res), expected=expected, counts=counts, schema_valid=schema_valid,
+                    require_coherent=coherent, run_hook=run_hook, base=base))
+
+    def cr(extra, verdict="CHANGES REQUIRED"):
+        def f(res):
+            changes_required(res, verdict)
+            extra(res)
+        return f
+
+    def bl(extra):
+        def f(res):
+            blocked(res)
+            extra(res)
+        return f
+    R, O = "A62-A7R2-R1", "A62-A7R2-O1"
+    RR1, RR2, RR3 = "A62-A7-R1", "A62-A7-R2", "A62-A7-R3"
+    DPC, RIL = "DeltaPurity.Changes", "RelatedImpacts"
+
+    def r1_to_r2(res):
+        """Move the REQUIRED link from R1 to R2 (so «REQUIRED sin disposición» does not fire)."""
+        rrd(res)[RR1]["FindingIds"] = []
+        rrd(res)[RR2].update({"Status": "NOT_CORRECTED", "FindingIds": [R]})
+    p("56-resolucion-abierta-sin-required", cr(r1_to_r2), ["Round1FindingResolution[A62-A7-R1] PARTIALLY_CORRECTED sin el REQUIRED residual vinculado"])
+    p("57-resolucion-corregida-con-required", cr(lambda res: rrd(res)[RR2].update({"FindingIds": [R]})),
+      ["Round1FindingResolution[A62-A7-R2] CORRECTED con un REQUIRED vinculado"])
+    p("58-resolucion-no-corregida-sin-required", cr(lambda res: rrd(res)[RR3].update({"Status": "NOT_CORRECTED"})),
+      ["Round1FindingResolution[A62-A7-R3] NOT_CORRECTED sin el REQUIRED residual vinculado"])
+    p("59-regresion-sin-required", cr(lambda res: rgd(res)["T06_CLAUSEMAP_COVERAGE_RULE"].update({"Status": "REGRESSION"})),
+      ["RegressionCheck[T06_CLAUSEMAP_COVERAGE_RULE] REGRESSION sin un REQUIRED vinculado"])
+    p("60-sin-regresion-con-required", cr(lambda res: rgd(res)["T04_EFF_EFF1_B1_MAP_VALIDATION"].update({"FindingIds": [R]})),
+      ["RegressionCheck[T04_EFF_EFF1_B1_MAP_VALIDATION] NO_REGRESSION con un REQUIRED vinculado"])
+    p("61-cambio-fuera-sin-required", cr(lambda res: chd(res)["P1_RED_PER_16_8"].update({"Assessment": "OUTSIDE_R1_R3"})),
+      [DPC + "[P1_RED_PER_16_8] OUTSIDE_R1_R3 sin un REQUIRED vinculado", "DeltaPurity CONFIRMED con un cambio OUTSIDE_R1_R3"])
+    p("62-cambio-dentro-con-required", cr(lambda res: chd(res)["O1_M04_MOTIVE"].update({"FindingIds": [R]})),
+      [DPC + "[O1_M04_MOTIVE] WITHIN_R1_R3 con un REQUIRED vinculado"])
+    p("63-pureza-no-confirmada-sin-cambio-fuera", cr(lambda res: dp(res).update({"Status": "NOT_CONFIRMED", "FindingIds": [R]})),
+      ["DeltaPurity NOT_CONFIRMED con todos los cambios WITHIN_R1_R3"])
+
+    def nc_no_req(res):
+        chd(res)["P2_MEASUREMENT_WITHOUT_RELAY_FACTS"].update({"Assessment": "OUTSIDE_R1_R3", "FindingIds": [R]})
+        dp(res).update({"Status": "NOT_CONFIRMED"})
+    p("64-pureza-no-confirmada-sin-required", cr(nc_no_req), ["DeltaPurity NOT_CONFIRMED sin un REQUIRED vinculado"])
+    p("65-disparador-en-desacuerdo-sin-required", cr(lambda res: trd(res)["M-03"].update({"Assessment": "DISAGREE"})),
+      ["Materiality.Triggers[M-03] DISAGREE sin un REQUIRED vinculado"])
+    p("66-disparador-de-acuerdo-con-required", cr(lambda res: trd(res)["M-01"].update({"FindingIds": [R]})),
+      ["Materiality.Triggers[M-01] AGREE con un REQUIRED vinculado"])
+    p("67-declaracion-de-a7-mal-copiada", lambda res: trd(res)["M-08"].update({"A7Declared": "yes"}),
+      ["con un veredicto, A7Declared distinto de lo que declara A-7 §5 (M-08)"])
+    p("68-pregunta-no-satisfecha-sin-hallazgo", cr(lambda res: qad(res)["Q-A7R2-02"].update({"Outcome": "NOT_SATISFIED"})),
+      ["QuestionAnswers[Q-A7R2-02] NOT_SATISFIED sin un hallazgo vinculado"])
+    p("69-disposicion-opcional-no-conforme-sin-hallazgo",
+      lambda res: odc(with_optionals(res))["A62-A7-O2"].update({"Status": "DOES_NOT_CONFORM"}),
+      ["OptionalDispositionConformance[A62-A7-O2] DOES_NOT_CONFORM sin un hallazgo vinculado"])
+    p("70-disposiciones-opcionales-aceptadas", lambda res: with_optionals(res), coherent=True)
+    p("71-disposicion-opcional-repetida", lambda res: with_optionals(res, ids=("A62-A7-O1", "A62-A7-O1")),
+      ["OptionalDispositionConformance con identificadores repetidos"])
+    p("72-disposicion-opcional-sin-referencias", lambda res: odc(with_optionals(res))["A62-A7-O3"].update({"ClauseRefs": []}),
+      ["con un veredicto, OptionalDispositionConformance[A62-A7-O3] sin ClauseRefs"])
+
+    def od_not_assessed(res):
+        with_optionals(res, status="NOT_ASSESSED")
+        for x in res["OptionalDispositionConformance"]:
+            x["ClauseRefs"] = []
+    p("73-disposicion-opcional-no-evaluada-sin-referencias-aceptada", od_not_assessed, coherent=True)
+    p("74-decision-del-owner-sin-consecuencias", bl(lambda res: orc(res).update({"UnidentifiedConsequences": []})),
+      ["OwnerDecisionRequired = true sin UnidentifiedConsequences"])
+    p("75-sin-decision-del-owner-con-consecuencias", lambda res: orc(res).update({"UnidentifiedConsequences": ["x"]}),
+      ["OwnerDecisionRequired = false con UnidentifiedConsequences"])
+    p("76-blocked-sin-decision-del-owner", lambda res: not_agreed(res, BLOCKED), ["BLOCKED — OWNER DECISION sin OwnerDecisionRequired = true"])
+    p("77-impactos-cambiados-sin-nota", lambda res: ri(res).update({"ChangedByRound2": True, "Note": " "}),
+      ["RelatedImpacts.ChangedByRound2 = true sin Note"])
+    p("78-impactos-cambiados-con-nota-aceptado", lambda res: ri(res).update({"ChangedByRound2": True, "Note": "x"}), coherent=True)
+    p("79-ifagreed-no-nulo-sin-agreed", cr(lambda res: res["IfAgreed"].update({"SuitableForCoordinatorAgreement": True})),
+      ["IfAgreed debe ir en null salvo con AGREED"])
+    p("80-agreed-con-ifagreed-falso", lambda res: res["IfAgreed"].update({"MaterialityConfirmed": False}),
+      ["AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true"])
+    p("81-no-determinado-con-veredicto", cr(lambda res: (dp(res).update({"Status": "NOT_DETERMINED"}), ri(res).update({"ChangedByRound2": None}))),
+      ["con un veredicto, NOT_DETERMINED o null no se admiten (DeltaPurity.Status, RelatedImpacts.ChangedByRound2)"])
+    p("82-decision-del-owner-nula-con-veredicto", cr(lambda res: orc(res).update({"OwnerDecisionRequired": None})),
+      ["OwnerReservedConsequence.OwnerDecisionRequired no admite null"])
+    p("83-paso0-falso-con-veredicto", lambda res: res["Step0"].update({"Decisions94DeclaresOrderBytesAndSha256": False}),
+      ["las siete booleanas de Step0 van en true"])
+    p("84-paso0-nulo-con-veredicto", lambda res: res["Step0"].update({"AP168DirectReadL616L617": None}), ["las siete booleanas de Step0 van en true"])
+    p("85-objeto-otro-blob", lambda res: res.update({"ReviewedBlob": OTHER_A7_BLOB}), ["objeto revisado distinto del designado"])
+    p("86-objeto-otro-commit", lambda res: res.update({"ReviewedCommit": PR.CLOSURE["Publication"]["Parent"]}), ["objeto revisado distinto del designado"])
+    p("87-ids-de-invocacion-de-la-ronda-1", lambda res: res.update({"RunId": "R20261019T010200Z-4a72"}), ["identificadores de la invocación distintos"])
+
+    def no_refs(res):
+        rrd(res)[RR1]["ClauseRefs"] = []
+        rgd(res)["T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE"]["ClauseRefs"] = []
+        chd(res)["R2_INVALIDATOR_RULE_AND_PROCEDURE"]["ClauseRefs"] = []
+        qad(res)["Q-A7R2-03"]["ClauseRefs"] = []
+        trd(res)["M-02"]["ClauseRefs"] = []
+        for x in (mat(res), orc(res), dp(res), ri(res)):
+            x["ClauseRefs"] = []
+    p("88-elementos-sin-referencias", no_refs, ["con un veredicto, Round1FindingResolution[A62-A7-R1] sin ClauseRefs",
+                                                "con un veredicto, RegressionCheck[T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE] sin ClauseRefs",
+                                                "con un veredicto, DeltaPurity.Changes[R2_INVALIDATOR_RULE_AND_PROCEDURE] sin ClauseRefs",
+                                                "con un veredicto, QuestionAnswers[Q-A7R2-03] sin ClauseRefs",
+                                                "con un veredicto, Materiality.Triggers[M-02] sin ClauseRefs",
+                                                "con un veredicto, Materiality sin ClauseRefs",
+                                                "con un veredicto, OwnerReservedConsequence sin ClauseRefs",
+                                                "con un veredicto, DeltaPurity sin ClauseRefs",
+                                                "con un veredicto, RelatedImpacts sin ClauseRefs"])
+
+    def fid_missing(res):
+        rrd(res)[RR3]["FindingIds"] = ["A62-A7R2-O7"]
+        rgd(res)["T07_MULTI_CATEGORY_ENTRIES"]["FindingIds"] = ["A62-A7R2-O9"]
+        chd(res)["P3_DERIVATION_AS_INVALIDATOR_PIECE"]["FindingIds"] = ["A62-A7R2-O8"]
+        qad(res)["Q-A7R2-01"]["FindingIds"] = ["A62-A7R2-O6"]
+        trd(res)["M-04"]["FindingIds"] = ["A62-A7R2-O5"]
+        dp(res)["FindingIds"] = ["A62-A7R2-O4"]
+        ri(res)["FindingIds"] = ["A62-A7R2-O3"]
+    p("89-findingids-inexistentes", fid_missing, ["Round1FindingResolution[A62-A7-R3] cita en FindingIds hallazgos que no existen",
+                                                  "RegressionCheck[T07_MULTI_CATEGORY_ENTRIES] cita en FindingIds hallazgos que no existen",
+                                                  DPC + "[P3_DERIVATION_AS_INVALIDATOR_PIECE] cita en FindingIds hallazgos que no existen",
+                                                  "QuestionAnswers[Q-A7R2-01] cita en FindingIds hallazgos que no existen",
+                                                  "Materiality.Triggers[M-04] cita en FindingIds hallazgos que no existen",
+                                                  "DeltaPurity cita en FindingIds hallazgos que no existen",
+                                                  RIL + " cita en FindingIds hallazgos que no existen"])
+    p("90-ids-de-hallazgo-repetidos", lambda res: res.update({"OptionalFindings": [opt_finding(), opt_finding()]}),
+      ["identificadores de hallazgo repetidos"])
+    p("91-required-sin-invariante-ni-contraejemplo", cr(lambda res: res["RequiredFindings"][0].update({"ViolatedInvariant": " ", "Counterexample": ""})),
+      ["A62-A7R2-R1 REQUIRED sin ViolatedInvariant ni Counterexample"])
+    p("92-required-sin-evidencia", cr(lambda res: res["RequiredFindings"][0].update({"Evidence": []})),
+      ["resultado: no valida contra result.schema.json"], schema_valid=False)
+    p("93-evidencia-fuera-del-cierre", cr(lambda res: res["RequiredFindings"][0].update({"Evidence": ["docs/HANDOFF.md:1"]})),
+      ["referencia no canónica en RequiredFindings[A62-A7R2-R1] (%s:1)" % PR.userless(PR.norm(absp("docs/HANDOFF.md")))])
+    p("94-evidencia-sobre-lineas-no-leidas", cr(lambda res: res["RequiredFindings"][0].update({"Evidence": [ref(A6, 10, 12)]})),
+      ["referencia sobre líneas no entregadas fielmente en RequiredFindings[A62-A7R2-R1] (%s)" % ref(A6, 10, 12)])
+    p("95-evidencia-opcional-no-leida", lambda res: res.update({"OptionalFindings": [dict(opt_finding(), Evidence=[ref(V14, 2408)])]}),
+      ["referencia sobre líneas no entregadas fielmente en OptionalFindings[A62-A7R2-O1]"])
+    p("96-required-sin-disposicion", cr(lambda res: res["RequiredFindings"].append(req_finding("A62-A7R2-R2"))),
+      ["REQUIRED sin disposición: todo REQUIRED lo cita al menos un elemento evaluado (A62-A7R2-R2)"])
+
+    def agreed_with(update):
+        def f(res):
+            res["RequiredFindings"] = [req_finding()]
+            update(res)
+        return f
+    AG0 = "AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true"
+    p("97-agreed-resolucion-no-corregida", agreed_with(lambda res: rrd(res)[RR2].update({"Status": "NOT_CORRECTED", "FindingIds": [R]})),
+      [AG0, "AGREED exige A62-A7-R1, R2 y R3 en CORRECTED"])
+
+    def ag_impure(res):
+        chd(res)["P4_RED_UNDETERMINED"].update({"Assessment": "OUTSIDE_R1_R3", "FindingIds": [R]})
+        dp(res).update({"Status": "NOT_CONFIRMED", "FindingIds": [R]})
+    p("98-agreed-pureza-no-confirmada", agreed_with(ag_impure), [AG0, "AGREED exige DeltaPurity CONFIRMED con los diez cambios WITHIN_R1_R3"])
+    p("99-agreed-regresion", agreed_with(lambda res: rgd(res)["T09_NO_UNAUTHORIZED_CHANGES"].update({"Status": "REGRESSION", "FindingIds": [R]})),
+      [AG0, "AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION"])
+    p("100-agreed-disparador-en-desacuerdo", agreed_with(lambda res: trd(res)["M-05"].update({"Assessment": "DISAGREE", "FindingIds": [R]})),
+      [AG0, "AGREED exige los ocho disparadores de Materiality en AGREE"])
+
+    def agreed_owner(res):
+        orc(res).update({"OwnerDecisionRequired": True, "UnidentifiedConsequences": ["x"]})
+    p("101-agreed-con-decision-del-owner", agreed_owner, [AG0])
+
+    def cr_ok(res):
+        res["OptionalFindings"] = [opt_finding()]
+        rrd(res)[RR2].update({"Status": "NOT_CORRECTED", "FindingIds": [R, O]})
+        rgd(res)["T06_CLAUSEMAP_COVERAGE_RULE"].update({"FindingIds": [O]})
+        chd(res)["P1_RED_PER_16_8"].update({"Assessment": "OUTSIDE_R1_R3", "FindingIds": [R]})
+        dp(res).update({"Status": "NOT_CONFIRMED", "FindingIds": [R]})
+        trd(res)["M-06"].update({"Assessment": "DISAGREE", "FindingIds": [R]})
+        qad(res)["Q-A7R2-03"].update({"Outcome": "NOT_SATISFIED", "FindingIds": [O]})
+        odc(with_optionals(res))["A62-A7-O2"].update({"Status": "DOES_NOT_CONFORM", "FindingIds": [O]})
+        ri(res).update({"ChangedByRound2": True, "Note": "x", "FindingIds": [R]})
+    p("102-changes-required-coherente-aceptado", cr(cr_ok), coherent=True)
+    p("103-rejected-coherente-aceptado", cr(lambda res: trd(res)["M-07"].update({"Assessment": "DISAGREE", "FindingIds": [R]}), "REJECTED"), coherent=True)
+    p("104-rejected-sin-required", lambda res: not_agreed(res, "REJECTED"), ["REJECTED sin ningún REQUIRED"])
+    p("105-blocked-coherente-aceptado", bl(lambda res: None), coherent=True)
+
+    def ag_ok(res):
+        res["OptionalFindings"] = [opt_finding()]
+        qad(res)["Q-A7R2-01"].update({"Outcome": "NOT_SATISFIED", "FindingIds": [O]})
+        rgd(res)["T07_MULTI_CATEGORY_ENTRIES"]["FindingIds"] = [O]
+    p("106-agreed-con-un-opcional-aceptado", ag_ok, coherent=True)
+    p("107-id-de-hallazgo-mal-formado", lambda res: res.update({"OptionalFindings": [dict(opt_finding(), FindingId="A62-A7R2-1")]}),
+      ["resultado: no valida contra result.schema.json"], schema_valid=False)
+
+    def r1_space_fid(res):
+        res["RequiredFindings"][0]["FindingId"] = "A62-A7-R4"
+        rrd(res)[RR1]["FindingIds"] = ["A62-A7-R4"]
+    p("108-id-nuevo-con-el-espacio-de-la-ronda-1", cr(r1_space_fid), ["resultado: no valida contra result.schema.json"], schema_valid=False)
+    p("109-referencia-absoluta", lambda res: mat(res).update({"ClauseRefs": [absp(A7) + ":" + str(closure_range(A7, "## 5. ")[0])]}),
+      ["resultado: no valida contra result.schema.json"], schema_valid=False)
+    p("110-referencia-mal-formada", lambda res: mat(res).update({"ClauseRefs": ["order.txt"]}),
+      ["referencia mal formada en Materiality", "resultado: no valida contra result.schema.json"], schema_valid=False)
+    p("111-esquema-estados-invalidos", lambda res: (rrd(res)[RR1].update({"Status": "MAYBE"}), trd(res)["M-01"].update({"Assessment": "OK"}),
+                                                    rgd(res)["T04_EFF_EFF1_B1_MAP_VALIDATION"].update({"Status": "IGNORED"})),
+      ["resultado: no valida contra result.schema.json", "AGREED exige A62-A7-R1, R2 y R3 en CORRECTED",
+       "AGREED exige los ocho disparadores de Materiality en AGREE", "AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION"],
+      schema_valid=False)
+    p("112-esquema-booleano-como-texto", lambda res: ri(res).update({"ChangedByRound2": "false"}),
+      ["resultado: no valida contra result.schema.json"], schema_valid=False)
+    p("113-esquema-veredicto-inexistente", lambda res: not_agreed(res, "ACCEPTED"), ["resultado: no valida contra result.schema.json"],
+      schema_valid=False)
+    # nested schema violations that Test-Json of pwsh 7.6.7 does not see (only the in-process check of the auditor does)
+    p("114b-esquema-propiedad-sobrante-anidada", lambda res: res["Step0"].update({"Extra": True}), ["resultado: no valida contra result.schema.json"],
+      schema_valid=False)
+    p("114c-esquema-campo-requerido-ausente-anidado", lambda res: rrd(res)[RR1].pop("Rationale"), ["resultado: no valida contra result.schema.json"],
+      schema_valid=False)
+    p("114d-esquema-texto-vacio-anidado", lambda res: mat(res).update({"Rationale": ""}), ["resultado: no valida contra result.schema.json"],
+      schema_valid=False)
+    p("114e-esquema-elemento-de-lista-no-texto", lambda res: orc(res).update({"UnidentifiedConsequences": [1]}),
+      ["resultado: no valida contra result.schema.json", "OwnerDecisionRequired = false con UnidentifiedConsequences"], schema_valid=False)
+    p("114f-esquema-null-no-admitido-anidado", lambda res: orc(res).update({"Rationale": None}),
+      ["resultado: no valida contra result.schema.json"], schema_valid=False)
+    p("114g-esquema-propiedad-sobrante-doble-anidada", lambda res: chd(res)["R1_CATEGORY_C_ROLES"].update({"X": 1}),
+      ["resultado: no valida contra result.schema.json"], schema_valid=False)
+
+    # ---- coverage of the round-2 arrays
+    def drop(path, field, value):
+        def f(res):
+            holder = res if len(path) == 1 else res[path[0]]
+            holder[path[-1]] = [x for x in holder[path[-1]] if x[field] != value]
+        return f
+
+    def dup(path, field, value, replace):
+        def f(res):
+            holder = res if len(path) == 1 else res[path[0]]
+            items_ = holder[path[-1]]
+            src = next(x for x in items_ if x[field] == value)
+            holder[path[-1]] = [copy.deepcopy(src) if x[field] == replace else x for x in items_]
+        return f
+    p("115-resolucion-ausente", drop(["Round1FindingResolution"], "Round1Finding", RR3),
+      ["Round1FindingResolution debe disponer cada id una vez (faltan ['A62-A7-R3']", "AGREED exige A62-A7-R1, R2 y R3 en CORRECTED"])
+    p("115b-resolucion-repetida", dup(["Round1FindingResolution"], "Round1Finding", RR1, RR2),
+      ["Round1FindingResolution con identificadores repetidos", "Round1FindingResolution debe disponer cada id una vez"])
+    p("116-tema-de-regresion-ausente", drop(["RegressionCheck"], "Topic", "T09_NO_UNAUTHORIZED_CHANGES"),
+      ["RegressionCheck debe disponer cada id una vez (faltan ['T09_NO_UNAUTHORIZED_CHANGES']",
+       "AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION"])
+    p("116b-tema-de-regresion-repetido", dup(["RegressionCheck"], "Topic", "T04_EFF_EFF1_B1_MAP_VALIDATION", "T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE"),
+      ["RegressionCheck con identificadores repetidos", "RegressionCheck debe disponer cada id una vez"])
+    p("117-cambio-ausente", drop(["DeltaPurity", "Changes"], "Change", "P4_RED_UNDETERMINED"),
+      ["DeltaPurity.Changes debe disponer cada id una vez (faltan ['P4_RED_UNDETERMINED']",
+       "AGREED exige DeltaPurity CONFIRMED con los diez cambios WITHIN_R1_R3"])
+    p("117b-cambio-repetido", dup(["DeltaPurity", "Changes"], "Change", "R1_CATEGORY_C_ROLES", "O7_S31_MV6_MV7_CONTENT"),
+      ["DeltaPurity.Changes con identificadores repetidos", "DeltaPurity.Changes debe disponer cada id una vez"])
+    p("118-disparador-ausente", drop(["Materiality", "Triggers"], "Trigger", "M-07"),
+      ["Materiality.Triggers debe disponer cada id una vez (faltan ['M-07']", "AGREED exige los ocho disparadores de Materiality"])
+    p("118b-disparador-repetido", dup(["Materiality", "Triggers"], "Trigger", "M-01", "M-06"),
+      ["Materiality.Triggers con identificadores repetidos", "Materiality.Triggers debe disponer cada id una vez"])
+    p("119-pregunta-ausente", drop(["QuestionAnswers"], "Question", "Q-A7R2-03"),
+      ["QuestionAnswers debe disponer cada id una vez (faltan ['Q-A7R2-03']"])
+    p("119b-pregunta-repetida", dup(["QuestionAnswers"], "Question", "Q-A7R2-01", "Q-A7R2-02"),
+      ["QuestionAnswers con identificadores repetidos", "QuestionAnswers debe disponer cada id una vez"])
+
+    def stop_with_dup(res):
+        stop(res, None)
+        res["RegressionCheck"] = [{"Topic": "T04_EFF_EFF1_B1_MAP_VALIDATION", "Status": "NO_REGRESSION", "Rationale": "x", "ClauseRefs": [],
+                                   "FindingIds": []}] * 2
+    p("120-not-accredited-con-ids-repetidos", stop_with_dup, ["RegressionCheck con identificadores repetidos"], base=stop_calls)
+
+    # ---- direct read of AUTOMATION_PLAN 16.8 L616-L617 (round 2; the rule of v5.x) and the references of nested elements
+    apd = ref(AP, 616, 617)
+    p("121-sin-lectura-directa-de-ap", lambda res: None,
+      ["lectura directa: %s no entregadas fielmente" % apd, "referencia sobre líneas no entregadas fielmente en DirectReads (%s)" % apd],
+      base=lambda r: base_calls(r, direct=False))
+    p("121b-cita-de-ap-leida-solo-en-a7", lambda res: mat(res)["ClauseRefs"].append(apd),
+      ["lectura directa: %s no entregadas fielmente" % apd, "referencia sobre líneas no entregadas fielmente en DirectReads (%s)" % apd,
+       "referencia sobre líneas no entregadas fielmente en Materiality (%s)" % apd], base=lambda r: base_calls(r, direct=False))
+    p("121c-directreads-sin-ap", lambda res: res.update({"DirectReads": [{"Ref": sec_ref("### 3.4 "), "Purpose": "x"}]}),
+      ["lectura directa: DirectReads sin una entrada que cubra"])
+    p("121d-directreads-cubre-solo-616", lambda res: res.update({"DirectReads": [{"Ref": ref(AP, 616), "Purpose": "x"}]}),
+      ["lectura directa: DirectReads sin una entrada que cubra"])
+
+    def cited_after_direct(res):
+        mat(res)["ClauseRefs"].append(apd)
+        rrd(res)[RR1]["ClauseRefs"].append(apd)
+        res["DirectReads"].append({"Ref": sec_ref("### 3.4 "), "Purpose": "x"})
+    p("121e-cita-de-ap-tras-la-lectura-directa-aceptada", cited_after_direct, coherent=True)
+    p("121f-referencia-anidada-no-leida", lambda res: trd(res)["M-02"]["ClauseRefs"].append(ref(A6, 10, 12)),
+      ["referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-02] (%s)" % ref(A6, 10, 12)])
+    p("121g-referencia-anidada-de-evidencia-leida", lambda res: chd(res)["R1_CATEGORY_C_ROLES"]["ClauseRefs"].append(preflight_ref()), coherent=True)
+    p("121h-referencia-de-la-pureza-no-leida", lambda res: dp(res)["ClauseRefs"].append(ref(A6, 10, 12)),
+      ["referencia sobre líneas no entregadas fielmente en DeltaPurity (%s)" % ref(A6, 10, 12)])
+    p("121i-referencia-de-disposicion-opcional-no-leida",
+      lambda res: odc(with_optionals(res))["A62-A7-O1"]["ClauseRefs"].append(ref(A6, 10, 12)),
+      ["referencia sobre líneas no entregadas fielmente en OptionalDispositionConformance[A62-A7-O1] (%s)" % ref(A6, 10, 12)])
+    p("121j-referencia-a-la-ronda-1-y-a-su-salida-aceptada",
+      lambda res: rrd(res)[RR3]["ClauseRefs"].extend(["a7-r1.md:197-200", ref(R1OUT, 3), ref(DISP, 11)]), coherent=True)
+

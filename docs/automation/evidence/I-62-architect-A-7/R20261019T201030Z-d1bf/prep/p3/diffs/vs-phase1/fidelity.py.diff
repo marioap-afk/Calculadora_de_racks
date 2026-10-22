@@ -1,0 +1,46 @@
+--- phase1/fidelity.py
++++ r2/fidelity.py
+@@ -14,13 +14,17 @@
+                        truncamiento real de claude-cli 2.1.299 no está medido: en 16 auditorías custodiadas TruncatedKnownLongLines salió vacío);
+      ZWNBSP            U+FEFF fuera del principio del archivo (el mismo punto de código que Read elimina al principio; su trato no está medido);
+      LINE_SEPARATOR    U+2028 o U+2029 (un separador de líneas que un lector podría tratar como salto);
++     UNMEASURED_CHAR   un punto de código no ASCII fuera del conjunto medido como entregado fielmente (MEASURED_NON_ASCII), salvo los que ya
++                       marcan otras clases (C1, U+FEFF, U+2028/U+2029, bytes no UTF-8): criterio conservador de la fase 2 (Coordinator, decisión
++                       (c)): su entrega por Read no está medida, así que el archivo se lee por su copia, donde ese carácter va como \\xHH;
+      SPECIAL_EXTENSION una extensión que Read interpreta (imagen, PDF, cuaderno): el archivo entero.
+    Un archivo marcado no se lee nunca por su ruta original: se lee su copia fiel.
+ 2. Copia fiel (encode, decode, layout, verify), formato RACKCAD-COPIA-FIEL/1: texto UTF-8 sin BOM, LF, ninguna línea de más de COPY_LINE_LIMIT =
+    1 900 caracteres, que representa sin pérdida los bytes exactos del original y que el propio detector no marca:
+      * las líneas 1..N de la copia son las líneas 1..N del original, con el mismo número (la cita usa la ruta y el número de línea del original);
+-     * literales: el ASCII imprimible (el espacio, salvo al final de una línea de la copia) y los 33 puntos de código no ASCII que Read entregó
+-       fielmente en r1 (MEASURED_NON_ASCII; medido sobre 4 294 líneas del audit.json custodiado en e71400a2: prep/measure_r1_literals.py);
++     * literales: el ASCII imprimible (el espacio, salvo al final de una línea de la copia) y los 34 puntos de código no ASCII que Read entregó
++       fielmente en r1 (MEASURED_NON_ASCII; medido sobre 4 374 líneas del audit.json custodiado en e71400a2, 4 294 de archivos del cierre y las
++       80 de order.txt: prep/measure_r1_literals.py);
+        cualquier otro byte se escribe \\xHH (HH en hexadecimal, mayúsculas; el BOM es \\xEF\\xBB\\xBF, el TAB \\x09, el CR \\x0D, cada byte de un
+        UTF-8 inválido el suyo); la barra invertida es \\\\;
+      * una línea del original que no cabe termina en \\> y sigue en el apéndice, en las líneas @n.2, @n.3… (en orden; se concatenan sin
+@@ -49,11 +53,12 @@
+ COPY_PREFIX, COPY_SUFFIX = "fiel__", ".txt"
+ BOM = b"\xef\xbb\xbf"
+ MEASURED_NON_ASCII = frozenset(chr(c) for c in (
+-    0x00A7, 0x00AA, 0x00AB, 0x00B7, 0x00BB, 0x00BF, 0x00C1, 0x00C9, 0x00D3, 0x00E1, 0x00E9, 0x00ED, 0x00F1, 0x00F3, 0x00FA, 0x00FC, 0x2014,
++    0x00A7, 0x00AA, 0x00AB, 0x00B7, 0x00BB, 0x00BF, 0x00C1, 0x00C9, 0x00D3, 0x00E1, 0x00E9, 0x00ED, 0x00F1, 0x00F3, 0x00FA, 0x00FC, 0x2013, 0x2014,
+     0x2026, 0x2192, 0x2194, 0x21D2, 0x21D4, 0x2205, 0x2208, 0x2216, 0x2227, 0x2229, 0x222A, 0x2260, 0x2264, 0x2265, 0x2286, 0x2287))
+ CONTROL_CHARS = frozenset([chr(c) for c in range(0x01, 0x20) if c not in (0x0A, 0x0D)] + [chr(0x7F)] + [chr(c) for c in range(0x80, 0xA0)])
+ SPECIAL_EXTENSIONS = (".ipynb", ".pdf", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".ico", ".svg")
+-CLASSES = ("BOM", "INVALID_UTF8", "NUL", "BARE_CR", "CONTROL", "LONG_LINE", "ZWNBSP", "LINE_SEPARATOR", "SPECIAL_EXTENSION")
++CLASSES = ("BOM", "INVALID_UTF8", "NUL", "BARE_CR", "CONTROL", "LONG_LINE", "ZWNBSP", "LINE_SEPARATOR", "UNMEASURED_CHAR", "SPECIAL_EXTENSION")
++OTHER_CLASS_CHARS = frozenset([chr(0xFEFF), chr(0x2028), chr(0x2029)])   # marcados por ZWNBSP/BOM o LINE_SEPARATOR, no por UNMEASURED_CHAR
+ MARK = "\\>"
+ SEP = "\\=== " + FORMAT + ": fin de las %d líneas del original; siguen el apéndice y el pie ==="
+ FOOT, END = "\\=== pie ===", "\\=== fin ==="
+@@ -126,6 +131,8 @@
+             mark("ZWNBSP", i)
+         if chr(0x2028) in t or chr(0x2029) in t:
+             mark("LINE_SEPARATOR", i)
++        if any(ord(c) >= 0xA0 and not 0xDC80 <= ord(c) <= 0xDCFF and c not in MEASURED_NON_ASCII and c not in OTHER_CLASS_CHARS for c in t):
++            mark("UNMEASURED_CHAR", i)
+         max16 = max(max16, u)
+     return {"Path": path, "Bytes": len(data), "Sha256": sha256(data), "Blob": git_blob(data), "Lines": len(lines), "FinalNewline": final,
+             "MaxLineUtf16": max16, "LinesOverReadLimit": over_read, "Flags": {k: flags[k] for k in CLASSES if k in flags},

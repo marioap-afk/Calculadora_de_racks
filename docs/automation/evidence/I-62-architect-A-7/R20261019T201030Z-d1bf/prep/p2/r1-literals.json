@@ -1,0 +1,75 @@
+{
+ "Source": {
+  "AuditCommit": "e71400a2c7e842b4c8662e51675932623429bedf",
+  "AuditPath": "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/audit.json",
+  "AuditSha256": "26f32a06fe4630fe6ef9a5929db135f638f47a697dd6f4f436b19cbd649c0699",
+  "CloneHead": "5158e4bc17ad48160d8573b7f48f3923e3197f06"
+ },
+ "FaithfulLinesMeasured": 4374,
+ "FaithfulLinesByKind": {
+  "CLOSURE": 4294,
+  "RUN": 80
+ },
+ "PrintableAsciiMeasured": 95,
+ "PrintableAsciiMissing": [],
+ "NonAsciiCodePoints": [
+  "U+00A7",
+  "U+00AA",
+  "U+00AB",
+  "U+00B7",
+  "U+00BB",
+  "U+00BF",
+  "U+00C1",
+  "U+00C9",
+  "U+00D3",
+  "U+00E1",
+  "U+00E9",
+  "U+00ED",
+  "U+00F1",
+  "U+00F3",
+  "U+00FA",
+  "U+00FC",
+  "U+2013",
+  "U+2014",
+  "U+2026",
+  "U+2192",
+  "U+2194",
+  "U+21D2",
+  "U+21D4",
+  "U+2205",
+  "U+2208",
+  "U+2216",
+  "U+2227",
+  "U+2229",
+  "U+222A",
+  "U+2260",
+  "U+2264",
+  "U+2265",
+  "U+2286",
+  "U+2287"
+ ],
+ "NonAsciiCount": 34,
+ "ControlCharsMeasured": [],
+ "LinesWithTab": 0,
+ "LinesWithTrailingSpace": 0,
+ "LinesWithLeadingSpace": 1708,
+ "LinesWithNonBmp": 0,
+ "MaxLineChars": {
+  "Chars": 1167,
+  "At": "docs/initiatives/I-62-A-6.md:1212"
+ },
+ "MaxLineBytes": {
+  "Bytes": 1183,
+  "At": "docs/initiatives/I-62-A-6.md:1212"
+ },
+ "NotDelivered": [
+  {
+   "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+   "Index": 50,
+   "Altered": [
+    1
+   ]
+  }
+ ],
+ "TruncatedKnownLongLines": []
+}
