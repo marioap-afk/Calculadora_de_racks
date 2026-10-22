@@ -4802,3 +4802,12 @@ solo desde artefactos custodiados.
   limpio.
 - Sin revisión formal: exige una disposición del Coordinator posterior a §94 que la nombre, fijada con `pin_authorization.py`, y volver a congelar el
   kit. Sin Codex; A6-7 HELD; ni A-7 AGREED, ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 193. Decisiones §95: revisión formal acotada de A-7 ronda 2 autorizada
+
+- Una revisión formal independiente de A-7 ronda 2 (blob `8a528133`), con el kit `R20261019T201030Z-d1bf` (manifiesto `3499596d…`, SHA-256 completo
+  verificado contra la custodia de `b23d71b8`), limitada a A62-A7-R1..R3 y sus consecuencias directas. O1-O8 aceptados como no bloqueantes. Antes:
+  integridad de la custodia en HEAD, reproducción de las 43 copias fieles y rechazo mecánico de BOM eliminado, normalización, copia alterada, archivo
+  ajeno y discrepancia blob/manifiesto; fijación de §95 en `owner_gate.py`; nueva congelación y custodia; controles afectados, sonda y prueba en seco con
+  cero bloqueos; binario, clon, checkout principal, I-64 y energía. Después: auditor v6.0-a7r2 sin acreditación excepcional. Sin Codex, sin B1 ni FX-U2.
+  La anomalía de custodia de la ronda 1 queda registrada y sin reparar.

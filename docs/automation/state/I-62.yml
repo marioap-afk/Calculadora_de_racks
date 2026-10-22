@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §94; evidencia §190-§192) — A-7 ronda 2 PROPUESTA (blob 8a528133); kit de la revisión acotada a R1-R3 R20261019T201030Z-d1bf congelado y custodiado SIN lanzar (manifiesto 3499596d; fidelidad de lectura corregida; autoprueba 310/310; mutación completa 207/207; prueba en seco bloqueada solo por la autorización pendiente); la revisión exige una disposición nueva del Coordinator; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §95; evidencia §193) — fijar §95 en owner_gate.py del kit R20261019T201030Z-d1bf, repetir los controles afectados, volver a congelar y custodiar; sonda y prueba en seco con cero bloqueos; UNA revisión (python -B kit/launch.py, 3 600 s, sin reintento) y auditor v6.0-a7r2; sin secciones de decisiones nuevas hasta auditar; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
