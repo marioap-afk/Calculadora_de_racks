@@ -4856,3 +4856,26 @@ solo desde artefactos custodiados.
   4; compatibilidad con A-5, A-6, EFF/EFF^1, invalidador, autorizaciones del Owner, presupuestos y oráculos de FX-02; corrección del mecanismo de
   citas del kit y dictamen explícito sobre A-5; publicación PROPUESTA con guardas y CI; kit acotado preparado sin lanzar. Sin Codex, sin A6-7, sin
   B1 ni FX-U2.
+
+## 197. A-7 ronda 3 publicada como PROPUESTA (blob `8bcccb2f`, commit `37ac6ca4`), preflight dirigido 161/161 y guardas `run` PASS (decisiones §96)
+
+- **A-7 ronda 3** ([`I-62-A-7.md`](../../initiatives/I-62-A-7.md), blob `8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff`), publicada en `37ac6ca4` (padre `5da2007f`):
+  ese commit modifica solo A-7 y añade `I-62-A7/r3/`; la evidencia de las rondas 1 y 2 y la custodia de la revisión de la ronda 2 no cambian. Cambio
+  normativo solo por A62-A7R2-R1 (A-7 §3.7), en A7-1, puntos 1 (c), 2 (c) y 5 (c): séptimo papel, solo en la reverificación de 16.7 sin conflictos, el
+  registro de rebase de la sesión (`relay-record/v2`, `Phase: REBASE`, con su `RebaseMap`), por el blob de sus bytes, en el directorio del intento con su
+  propio `RunId` registrado; coherente con el contrato (`MainBeforeSha` = `K.MainSha`, `AuthorityRevision` con la igualdad de 16.7), la delegación
+  (`BaseSha`), la entrega (su `CurrentSha` con imagen `Target.commit` e igualdad de `patch-id`) y `main` (`MainAfterSha` posterior a `MainBeforeSha` y
+  antecesor de `Target.commit`); `MainSha_eval` = su `MainAfterSha` (16.13); sin un registro coherente (o sin la entrega), sin cierre ni lanzamiento; en
+  cualquier otra invocación, no admitido. (a), (b), (d) y los puntos 3, 4, 6, 7 y 8 sin cambio (comprobado por segmentos normalizados). Descriptivos:
+  cabecera, §2 (L18-L22), §3.3, §3.4, §3.7, §4, §5, §6, §8 (Q-A7R3-01..03), §10, §11 y el Anexo. Los opcionales A62-A7R2-O1..O4 no se incorporan.
+- **Piezas del procedimiento** (A7-1, punto 7): constructor, validador, formato `a7-designation/3` y `designate_a7.py` nuevos; `derive_r4.py` sin cambio.
+- **Preflight dirigido** ([`I-62-A7/r3/preflight.md`](I-62-A7/r3/preflight.md); `python -I run_a7r3.py all`): **161 de 161** (entorno y delta 21, fases de la ronda 2 con las piezas nuevas 38, compatibilidad 24, guardas 40, RebaseMap 38). RebaseMap sobre
+  un rebase real del repositorio de V (main avanza en `docs/WORKFLOW.md`; 20 commits rebasados con `patch-id` iguales): registro válido con
+  `MainSha_eval` = `MainAfterSha` y las lecturas de Evaluate en esa revisión; ausente, sin bytes, blob alterado, sustituido (sin avance de main, otro
+  main, otro rebase), de otra tarea, intento o entrega, `RunId` incorrecto (registro, directorio, reutilizado, formato, otro papel), incoherente (nueve
+  variantes) y sin entrega: sin cierre y rechazo del validador; uso en una VERIFY ordinaria, un control y la medición: no admitido y, inyectado, ajeno;
+  entradas añadidas o inventadas rechazadas; aceptante fijado ACCEPT_FACTS (R9 y R10 MATCH); compatibilidad con A-5, A-6, EFF/EFF^1, el invalidador, las
+  autorizaciones del Owner, los presupuestos y los oráculos de FX-02.
+- **Guardas** (`r3/a7-guards.py`, autoprueba 38 de 38 mutantes de las condiciones nuevas o cambiadas): `run` sobre `5da2007f..37ac6ca4` = **PASS** en G1-G7
+  ([resultado](I-62-A7/r3/a7-guards-result-run.json)).
+- Sin revisión formal (decisiones §96, punto 7); kit acotado por preparar; sin Codex; A6-7 HELD.

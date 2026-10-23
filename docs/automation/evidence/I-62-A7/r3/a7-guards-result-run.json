@@ -1,0 +1,38 @@
+{
+ "A7Blob": "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff",
+ "Added": 58,
+ "Base": "5da2007f45160ced37b958a3a772c46ac64874ee",
+ "Guards": {
+  "G1": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G2": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G3": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G4": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G5": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G6": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G7": {
+   "Findings": [],
+   "Status": "PASS"
+  }
+ },
+ "Head": "37ac6ca4a6f0a04268ac357764bb74f843eb3a08",
+ "Mode": "run",
+ "Result": "PASS"
+}
