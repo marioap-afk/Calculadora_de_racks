@@ -4847,3 +4847,12 @@ solo desde artefactos custodiados.
   Opcionales A62-A7R2-O1..O4 (precisiones descriptivas). Comprobado por la sesión principal en las fuentes del clon.
 - Impacto sobre A6-7: A-7 no puede acordarse con una REQUIRED abierta y su corrección cambia piezas del invalidador (constructor, validador, formato
   de la designación), así que tiene que preceder a cualquier disposición de A6-7, regla 7; A6-7 sigue HELD. Sin otra ronda automática (§95, punto 7).
+
+## 196. Decisiones §96: A-7 ronda 3 limitada a la admisión del RebaseMap (A62-A7R2-R1)
+
+- Se conserva la revisión de `3f912c84` (NOT_ACCREDITED; CHANGES REQUIRED); A62-A7R2-R1 aceptado como REQUIRED; A-7 sigue PROPUESTA. Encargos: A-7
+  ronda 3 que admita en (c) el `RebaseMap` solo en la reverificación de 16.7 (origen, ruta, blob, `RunId`, fidelidad, ausencia, sustitución u otra
+  corrida, rechazo e incoherencias, `MainSha_eval`); constructor, validador y formato de la designación; preflight dirigido con los casos de §96, punto
+  4; compatibilidad con A-5, A-6, EFF/EFF^1, invalidador, autorizaciones del Owner, presupuestos y oráculos de FX-02; corrección del mecanismo de
+  citas del kit y dictamen explícito sobre A-5; publicación PROPUESTA con guardas y CI; kit acotado preparado sin lanzar. Sin Codex, sin A6-7, sin
+  B1 ni FX-U2.

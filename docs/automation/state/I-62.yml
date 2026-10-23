@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §95; evidencia §195) — revisión formal de A-7 ronda 2 ejecutada: Architect CHANGES REQUIRED (A62-A7R2-R1: RebaseMap de la reverificación de 16.7 no admitido en A7-1 (c)); auditor NOT_ACCREDITED (una referencia no canónica); A-7 sigue PROPUESTA; A6-7 HELD; espera la disposición del Coordinator; sin otra ronda automática; sin Codex"
+  next_action: "F6 (decisiones §96; evidencia §196) — preparar A-7 ronda 3 (RebaseMap en (c) solo en la reverificación de 16.7, con MainSha_eval), constructor, validador y formato de la designación; preflight dirigido y compatibilidad; publicar PROPUESTA con guardas y CI; corregir el mecanismo de citas del kit y añadir el dictamen de A-5; kit acotado sin lanzar; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
