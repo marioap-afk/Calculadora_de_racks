@@ -459,3 +459,33 @@ f5d6f5be851f917efd552f38472e2c91fc280a3fc593f3ac6e2fca332d2ed2a7     23490  prep
 6. **Lanzamiento:** tras la custodia de este kit, las comprobaciones finales del host (binario, clon, checkout principal, I-64, alimentación y
    retención de la suspensión con la pantalla encendida) y una sonda y una prueba en seco finales con cero bloqueos: UNA vez `python -B kit/launch.py`
    desde esta carpeta, tope 3 600 s, sin reintento, y el auditor v6.0-a7r2 con la orden de «Lanzamiento».
+
+## Resultado (añadido tras la corrida, sesión principal; decisiones §95)
+
+```text
+Sesión:          3dd5ac31-ddf5-4e4a-b732-b913933a9ae3, de 2026-10-22T20:17:12Z a 2026-10-22T20:30:53Z, Outcome COMPLETED, salida 0, sin errores posteriores
+Transporte:      claude-cli 2.1.299 (295b49ec…), claude-opus-5-5 xhigh; kit fijado en §95 (manifiesto 68b0e64309408385…, custodia e42d23d1)
+Uso:             55 turnos; herramientas {"Read": 45, "Grep": 8, "StructuredOutput": 1}
+Veredicto:       CHANGES REQUIRED
+R1-R3:           A62-A7-R1 PARTIALLY_CORRECTED, A62-A7-R2 CORRECTED, A62-A7-R3 CORRECTED
+REQUIRED:        1 (A62-A7R2-R1)
+OPTIONAL:        4 (A62-A7R2-O1, A62-A7R2-O2, A62-A7R2-O3, A62-A7R2-O4)
+Pureza:          DeltaPurity CONFIRMED (10 de 10 cambios WITHIN_R1_R3)
+Regresión:       T04_EFF_EFF1_B1_MAP_VALIDATION NO_REGRESSION, T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE NO_REGRESSION, T06_CLAUSEMAP_COVERAGE_RULE NO_REGRESSION, T07_MULTI_CATEGORY_ENTRIES NO_REGRESSION, T09_NO_UNAUTHORIZED_CHANGES NO_REGRESSION
+Materialidad:    M-01 no/AGREE, M-02 yes/AGREE, M-03 yes/AGREE, M-04 yes/AGREE, M-05 yes/AGREE, M-06 no/AGREE, M-07 no/AGREE, M-08 no/AGREE
+Owner:           decisión requerida: False; consecuencias no identificadas: 0
+Impactos:        ChangedByRound2 False
+Preguntas:       Q-A7R2-01 NOT_SATISFIED, Q-A7R2-02 SATISFIED, Q-A7R2-03 SATISFIED
+O1-O8:           CONFORMS, CONFORMS, CONFORMS, NOT_ASSESSED, NOT_ASSESSED, CONFORMS, CONFORMS, CONFORMS
+Fidelidad:       43 copias fieles verificadas (todas Verified, sin problemas); el revisor leyó 4 de ellas (501 líneas acreditadas por la copia); lecturas fallidas 0; lecturas de originales marcados 0; ninguna DEGRADED
+Acreditación:    NOT_ACCREDITED por el auditor v6.0-a7r2 (1 motivo: referencia no canónica en OptionalDispositionConformance[A62-A7-O3] (D:/r62-arch-a7r2/docs/initiatives/I-62-A7.md:167-168)); sin acreditación excepcional
+Clon tras corrida: HEAD b432c40f, estado limpio
+```
+
+El veredicto no es el acuerdo y la revisión no está acreditada: A-7 sigue PROPUESTA (decisiones §95, puntos 1 y 7). La REQUIRED nueva, A62-A7R2-R1, se
+informa al Coordinator sin iniciar otra ronda. Ni A-7 AGREED, ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS. Sin reintento (decisiones §95,
+punto 5).
+
+Archivos añadidos: `output.json` y `audit.json` (byte a byte, sin modificar), `runtime-evidence.json`, `launch/` (saneado) y `prep/p6/` (precondiciones
+finales, sonda y prueba en seco finales, registro del lanzamiento, orden y registro del auditor; las salidas crudas de tubería como texto UTF-8
+saneado). La transcripción y `stdout.jsonl` no se versionan; sus SHA-256 están en `runtime-evidence.json`.

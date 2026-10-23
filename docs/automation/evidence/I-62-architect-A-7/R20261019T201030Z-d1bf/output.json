@@ -1,0 +1,801 @@
+{
+ "Schema": "rackcad-a7r2-architect-review/0",
+ "RunId": "R20261019T201030Z-d1bf",
+ "InvocationId": "I20261019T201030Z-d1bf",
+ "LogicalReviewRequestId": "L20261019T201030Z-d1bf",
+ "AttemptSeq": 1,
+ "RequestedRole": "ARCHITECT",
+ "Action": "REVIEW_DESIGN",
+ "ReviewedUnit": "I-62",
+ "ReviewedCommit": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+ "ReviewedPath": "docs/initiatives/I-62-A-7.md",
+ "ReviewedBlob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+ "ReviewerMode": "SEPARATE SESSION",
+ "SamePersonAsAuthor": "No como sesión IA. Soy un proceso claude-cli nuevo; el proveedor del revisor es Anthropic (Claude). No tengo acceso a la transcripción ni a la memoria de la sesión autora de A-7 y de sus preflights, ni a las de la revisión de la ronda 1, el banco, el kit, §91/§92, B-min o el Coordinator. No puedo determinar el proveedor del autor con mis insumos: output.json de la ronda 1 (L14) menciona un worktree bajo .codex como indicio, sin verificación. Por el contexto, el operador humano que dirige la sesión autora y que lanza esta revisión es el mismo Owner u operador; no lo puedo verificar con mis herramientas.",
+ "ReviewerDeclaredIdentity": {
+  "Runtime": "claude-cli (Claude Agent SDK), según el texto del entorno; informativo",
+  "Model": "claude-opus-5-5, según el texto del entorno del runtime; informativo, nunca acredita",
+  "Effort": "UNKNOWN",
+  "SessionOrThread": "UNKNOWN"
+ },
+ "InjectedContextDeclaration": {
+  "State": "DECLARED",
+  "Items": [
+   "Prompt de sistema del runtime (Claude Agent SDK / Claude Code), con las descripciones de las herramientas Glob, Grep, Read y StructuredOutput y las pautas del harness",
+   "Información del entorno: directorio de trabajo D:\\r62-arch-a7r2, directorio adicional D:\\r62-arch-a7r2-run, plataforma win32, shell PowerShell, versión del SO, directorio scratchpad, id del modelo claude-opus-5-5, fecha 2026-10-22 y lista de modelos Claude",
+   "Instantánea de git status inyectada: rama HEAD, rama principal main, árbol limpio, últimos commits (b432c40f, e90b444d, b9334f22, e71400a2, 3922f835) con sus asuntos",
+   "Identificador de cuenta: dirección de correo del usuario (declarada solo por su tipo)",
+   "Identificador de cuenta: nombre de usuario de Git (declarado solo por su tipo)",
+   "Mensaje del usuario: el texto de la orden de esta revisión (prompt)",
+   "Recordatorios de sistema intermedios del harness que piden informar brevemente del progreso (sin contenido técnico)"
+  ]
+ },
+ "Step0": {
+  "Basis": "INVOKER_VERIFIED_CLONE",
+  "AP168DirectReadL616L617": true,
+  "OrderReadWhole": true,
+  "Decisions94DeclaresOrderBytesAndSha256": true,
+  "Decisions94AcceptsR1R3AndAuthorizesSecondCandidate": true,
+  "GuardsRunModeBaseHeadResult": true,
+  "PreflightSummaryCandidateAndTotals": true,
+  "Round1OutputIdentifiesRunAndFindings": true,
+  "Note": "Paso 1: Read de la copia fiel de AUTOMATION_PLAN, offset 608 y limit 18; L616-617 se entregaron enteras. Paso 2: order.txt leído entero (68 líneas). Paso 3: decisiones L1849 declara 3 522 bytes y el SHA-256 515ccfa3…3db0e; L1853 acepta R1, R2 y R3 como REQUIRED; L1854 autoriza la segunda candidata con los cambios limitados a R1-R3; L1853-1861 registran los puntos 1-9 de order.txt. Paso 4: a7-guards-result-run.json da A7Blob 8a528133… (L2), Base b9334f22 (L4), Head e90b444d (L35), Mode run (L36) y Result PASS (L37). Paso 5: summary.json da Candidate.Blob 8a528133… (L5), Hold 119 = Cases 119 con NotHolding vacío (L55-57) y autoprueba PASS 46/46 (L72-84). Paso 6: output.json de la ronda 1 da RunId R20261019T010200Z-4a72 (L3), ReviewedBlob 6c29747d… (L12) y RequiredFindings A62-A7-R1, R2 y R3 (L177-244)."
+ },
+ "DirectReads": [
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:616-617",
+   "Purpose": "Lectura directa obligatoria (Paso 0): cuándo una entrega «exige RED», que citan A7-1, punto 1 (c) y punto 5 (c), y la fila L16 de A-7 §2. El literal coincide."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:628-643",
+   "Purpose": "Fila L16: tabla de 16.9, con las señales «sesión → Controller» (L630, L635, L638, L639, L641, L643), Ci con la corrida del RedSha y Tests con «las fallidas del TRX del RedSha»."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1079",
+   "Purpose": "Fila L1: clase de CanonicalInputs (artefactos versionados)."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:1098-1099",
+   "Purpose": "Fila L2: el cierre fija los blobs y se recalcula."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2231",
+   "Purpose": "Fila L3: Target obligatorio en la verificación."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2233",
+   "Purpose": "Fila L4: CanonicalInputs en la AuthorityRevision."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2250-2251",
+   "Purpose": "Fila L5: solo se lee el cierre; un relay-record/v2 por lanzamiento."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:490",
+   "Purpose": "Fila L6: definición de AuthorityRevision."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:823-826",
+   "Purpose": "Fila L7: Resolve, paso 3 (AR y MainSha_eval)."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:821",
+   "Purpose": "Fila L8: mapa en EFF."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:902-908",
+   "Purpose": "Fila L8 y O7: MV-3 y MV-4 comparan blobs; MV-6 y MV-7 leen contenido en EFF^1."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:1264",
+   "Purpose": "Fila L9: clase CanonicalInputs en 16.24."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:1276",
+   "Purpose": "Fila L9: el cierre fija la AR y los blobs."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:1279-1280",
+   "Purpose": "Fila L9: una lectura fuera del cierre es P-22."
+  },
+  {
+   "Ref": "docs/automation/agent-execution/README.md:565",
+   "Purpose": "Fila L10: regla I6."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:532-535",
+   "Purpose": "Filas L11 y R3: «la única excepción a la clase de §20.3.1»."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:539-541",
+   "Purpose": "Fila L11: comprobación contra la AuthorityRevision de las demás entradas."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:600-617",
+   "Purpose": "Filas L12 y L17: A6-3, regla 6 (b), RelayFacts y omisiones."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:673-675",
+   "Purpose": "Fila L17: aceptación solo con R10 en MATCH."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:781-786",
+   "Purpose": "Fila L13 y R2: invalidadores de A6-7, regla 5."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:789-794",
+   "Purpose": "Fila L13 y R2: disposición de A6-7, regla 7."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:841-843",
+   "Purpose": "Fila L14: A6-9, regla 4."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:851-871",
+   "Purpose": "Fila L14: tabla de derivación (C6 nombra *.trx como TRX; sin nombre para los hechos del relevo)."
+  },
+  {
+   "Ref": "docs/automation/agent-execution/README.md:219-222",
+   "Purpose": "Fila L15: controles con ruta y copias propias."
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:815-816",
+   "Purpose": "A-7 §1 y §3.2: ubicación después de A6-8."
+  },
+  {
+   "Ref": "docs/automation/evidence/I-62-A6/m7/s91/i6-determination.md:1-77",
+   "Purpose": "Determinación de §91 que A-7 cita como origen; base de R3 (D, H y TRX fuera de la clase)."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:593-595",
+   "Purpose": "Reverificación de 16.7 (en el ámbito de A7-1): «con el RebaseMap como entrada»."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:813-814",
+   "Purpose": "MainSha_eval de la reverificación = el MainSha nuevo del RebaseMap (A-7 §3.5 lo cita)."
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:575",
+   "Purpose": "El registro de rebase tiene un RunId propio y vive en el directorio del intento."
+  }
+ ],
+ "Reads": [
+  "D:\\r62-arch-a7r2-run\\order.txt: 1-68 (entero)",
+  "D:\\r62-arch-a7r2-run\\a7-r1.md: 1-279 (entero)",
+  "docs/AUTOMATION_PLAN.md (copia fiel del run): 488-492, 569-600, 608-625, 626-665, 806-816, 817-828, 898-919, 1182-1323",
+  "docs/automation/decisions/I-62.md (copia fiel del run): 1570-1573, 1846-1861",
+  "docs/automation/evidence/I-62-A7/r2/a7-guards-result-run.json: 1-38 (entero)",
+  "docs/automation/evidence/I-62-A7/r2/summary.json: 1-94 (entero)",
+  "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/output.json: 1-20, 170-249, 245-524",
+  "docs/initiatives/I-62-A-7.md: 1-346 (entero)",
+  "docs/initiatives/I-62-A-6.md: 483-632, 633-877, 1204-1219, 1318-1326",
+  "docs/initiatives/I-62-proposal-v14.md (copia fiel del run): 382-395, 500-557, 1073-1102, 1786-1791, 2108-2115, 2223-2252, 2790-2797; Grep (relay-record/v2, WindowSeq, RebaseMap)",
+  "docs/automation/agent-execution/README.md: 217-235, 535-584",
+  "docs/INITIATIVE_LIFECYCLE.md: 66-95, 152-222",
+  "docs/automation/evidence/I-62-A7/r2/preflight.md: 1-294 (entero, en dos tramos)",
+  "docs/automation/evidence/I-62-A7/r2-dispositions/optional-dispositions.md: 1-23 (entero)",
+  "docs/automation/evidence/I-62-A6/m7/s91/i6-determination.md: 1-77 (entero)",
+  "docs/automation/evidence/I-62-A7/r2/designations/V.json: 1-63 (entero)",
+  "docs/automation/evidence/I-62-A7/r2/designations/M.json: 1-57 (entero)",
+  "docs/automation/evidence/I-62-A7/r2/a7-designation-2.schema.json: 1-61 (entero)",
+  "docs/automation/evidence/I-62-A7/r2/inputs/relay-facts-V.json: 1-158 (entero)",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md: 17-96; Grep (rebase)",
+  "docs/automation/evidence/I-62-A7/r2/check_a7_closure.py (copia fiel del run): 92-136; Grep (rebase/16.7/reverif; UNDETERMINED)",
+  "docs/automation/evidence/I-62-A7/r2/make_eic_a7.py: Grep (rebase/reverif; sin coincidencias)",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py: 2350-2379, 2560-2599; Grep (Files / file outside the closure)",
+  "docs/initiatives/I-62-A-7.md: Grep (rebase/16.7)",
+  "docs/automation/evidence/I-62-A7/r2/check_a7_closure.py (original): un Grep sin coincidencias; repetido sobre la copia fiel; ningún contenido usado"
+ ],
+ "Verdict": "CHANGES REQUIRED",
+ "RequiredFindings": [
+  {
+   "FindingId": "A62-A7R2-R1",
+   "Section": "§3.2, A7-1: ámbito (L125-128), punto 1 (c) (L136-139), punto 2 (c) (L148-152) y punto 5 (c) (L162-169); §3.3, fila (c) (L192)",
+   "ViolatedInvariant": "El cierre contiene lo que la acción necesita, y el Controller solo lee el cierre (V14 L1079 y L2250-2251; AP 16.24 L1264 y L1279-1280: una lectura fuera es P-22). Según AP 16.7, la reverificación del Controller se hace «sobre la misma delegación y la misma entrega con el RebaseMap como entrada», con las imágenes y el MainSha nuevo, y la parte RED usa la corrida del RedSha original «registrada en el relevo del trabajo» (L593-595). Según AP 16.13, en esa reverificación MainSha_eval es «el MainSha nuevo del RebaseMap» (L813-814), y A7-1, punto 2 (a), usa MainSha_eval como revisión de lectura de las autoridades EXTERNAL y de WORKFLOW.md y AUTOMATION_PLAN.md en Evaluate (L144-145). El registro de rebase es un registro propio de la sesión, con su RunId, en el directorio del intento (AP L575; V14 B.8.7 L2112-2114). Es distinto del relay-record/v2 del lanzamiento del trabajo (V14 L2251; controller-contracts L86-93).",
+   "Counterexample": "Reverificación de 16.7 de FX-02, que está en el ámbito de A7-1 (L126) y de A-7 §3.5 (L224-225). Main avanza después de que el Worker escribe, y la sesión rebasa sin conflictos: registra, con un RunId propio, un RebaseMap con el MainSha nuevo M2. El Controller tiene que leer ese RebaseMap, porque Identity se comprueba sobre los originales y sus imágenes (AP L634) y MainSha_eval = M2. Además, para Termination, Routing, Denials y la parte RED, tiene que leer los hechos del relevo del trabajo. A7-1 (c) admite seis papeles cerrados, «un artefacto como máximo por papel» (L150). Solo hay un papel de hechos del relevo, descrito como los que alimentan Termination, Remote, Ci, Routing y Denials (L138). «Ninguna otra entrada se admite» (L129), y lo no designado o de otro papel no entra: su lectura es P-22 (L168-169). Resultado: o la lectura del RebaseMap es P-22 (INVALID_REVIEW_CONTEXT), o faltan los hechos del trabajo (Termination en BLOCKED; sin RelayFacts, R10 no da MATCH y la salida no se acepta, A-6 L673-675). Además, la supervisión no puede fijar las entradas de (a) en MainSha_eval sin el RebaseMap, que la regla no identifica como entrada. Ni el constructor ni el validador de la ronda 2, que son piezas del invalidador, mencionan la reverificación ni el RebaseMap (búsqueda sin coincidencias), y el preflight de la ronda 2 no la ejerce.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-7.md:125-128",
+    "docs/initiatives/I-62-A-7.md:129-130",
+    "docs/initiatives/I-62-A-7.md:136-139",
+    "docs/initiatives/I-62-A-7.md:143-152",
+    "docs/initiatives/I-62-A-7.md:162-169",
+    "docs/initiatives/I-62-A-7.md:192",
+    "docs/initiatives/I-62-A-7.md:224-225",
+    "docs/AUTOMATION_PLAN.md:575",
+    "docs/AUTOMATION_PLAN.md:584-590",
+    "docs/AUTOMATION_PLAN.md:593-595",
+    "docs/AUTOMATION_PLAN.md:634",
+    "docs/AUTOMATION_PLAN.md:813-814",
+    "docs/initiatives/I-62-proposal-v14.md:386-390",
+    "docs/initiatives/I-62-proposal-v14.md:2112-2114",
+    "docs/initiatives/I-62-proposal-v14.md:2250-2251",
+    "docs/initiatives/I-62-proposal-v14.md:2794-2795",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:86-93",
+    "docs/initiatives/I-62-A-6.md:673-675",
+    "docs/initiatives/I-62-A-6.md:717-720"
+   ],
+   "WhyItMatters": "La reverificación de 16.7 está de forma expresa en el ámbito de A7-1 y de A6-5, regla 7. Su cierre forma parte del «cierre de VERIFY» que A7-1, punto 7, convierte en invalidador de A6-7. Si la regla no admite el RebaseMap, una reverificación de FX-02 no puede terminar en una salida conforme e ingerible. Corregirlo después de la medición cambiaría el constructor, el validador y el formato de la designación, que son piezas del invalidador, y la medición única se anularía sin reutilización (A6-7, reglas 4 y 5). Es el mismo tipo de hueco que A62-A7-R1 para la verificación: un elemento congelable que no se puede ejecutar en un caso de su ámbito y que no tiene obligación de prueba.",
+   "CorrectionRequired": "Dentro de §94, punto 2, R1 (hechos del relevo, con origen, ruta, blob, fidelidad, ausencia y criterios de rechazo), completar la categoría (c) para la reverificación de 16.7 con el RebaseMap que registra la sesión: el registro de rebase del directorio del intento, o el rebase-map.json custodiado de V14 B.8.7. Hay dos formas. (1) Un papel propio en la designación, solo para la reverificación, con su origen, ruta y blob, fidelidad por los bytes, ausencia y rechazo de lo no designado o ajeno. Sin RebaseMap no se puede fijar MainSha_eval ni calcular (a), así que no hay cierre ni lanzamiento de la reverificación. (2) Declarar de forma expresa que, en la reverificación, el artefacto único de hechos del relevo incluye el RebaseMap además de los hechos del trabajo, y de qué registros se compone. En los dos casos, fijar que MainSha_eval de (a) en la reverificación se toma de ese RebaseMap, y ajustar §3.3. Antes de la disposición de A6-7, regla 7, ajustar el constructor, el validador y el formato de la designación, y añadir al preflight los casos de la reverificación: RebaseMap presente, ausente, sustituido y ajeno, y MainSha_eval igual al MainSha nuevo."
+  }
+ ],
+ "OptionalFindings": [
+  {
+   "FindingId": "A62-A7R2-O1",
+   "Section": "§3.2, A7-1, punto 5 (c), exigencia de RED indeterminada (L166-167)",
+   "Note": "El texto solo trata como indeterminada la exigencia de RED de 16.8 cuando «falta la entrega». El validador, que es una pieza del invalidador, devuelve «indeterminada» también cuando la delegación no tiene ChainRedSha o ChainRedFiles utilizables, o cuando CurrentSha o BaseSha no nombran un commit con ChainRedSha no nulo; es el caso de nc1 sobre una delegación de corrección. En los datos de FX-02 (ChainRedSha nulo) no cambia nada, y la lectura natural del punto 1 (c) (solo se admite si la exigencia consta) coincide con el validador. Aun así, la regla es más estrecha que su procedimiento.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-7.md:166-167",
+    "docs/automation/evidence/I-62-A7/r2/check_a7_closure.py:96-116",
+    "docs/automation/evidence/I-62-A7/r2/preflight.md:22",
+    "docs/AUTOMATION_PLAN.md:616-617"
+   ],
+   "SuggestedCorrection": "Decir que la exigencia de RED es indeterminada cuando falta la entrega o cuando un término de 16.8 (ChainRedSha, ChainRedFiles, BaseSha o CurrentSha) falta o no nombra un commit existente. En ese caso, el TRX de la corrida de RedSha ni se admite ni se exige, y se registra la causa."
+  },
+  {
+   "FindingId": "A62-A7R2-O2",
+   "Section": "§3.2, A7-1, punto 1 (c) (L138-139) y punto 2 (c) (L148-152): origen de los hechos del relevo",
+   "Note": "La regla dice «los hechos del relevo de la sesión», custodiados antes de lanzar, pero no dice de qué registro o registros salen. Hay un relay-record/v2 por lanzamiento, y Termination, Routing y Denials son hechos del lanzamiento del trabajo. Los hechos sintéticos del preflight son, en cambio, el registro de la propia invocación de verificación: Phase VERIFICATION, el RunId de la invocación V, en su directorio y con el Outcome de la salida del Controller. Ese registro no puede existir antes de lanzar. La mecánica de R10 no depende de ello, pero el origen queda abierto para la preparación del kit.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-7.md:136-139",
+    "docs/initiatives/I-62-A-7.md:148-152",
+    "docs/automation/evidence/I-62-A7/r2/inputs/relay-facts-V.json:4-6",
+    "docs/automation/evidence/I-62-A7/r2/inputs/relay-facts-V.json:45-46",
+    "docs/automation/evidence/I-62-A7/r2/designations/V.json:10",
+    "docs/automation/evidence/I-62-A7/r2/designations/V.json:57-60",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:86-93",
+    "docs/initiatives/I-62-proposal-v14.md:1790"
+   ],
+   "SuggestedCorrection": "Precisar, junto con la corrección de A62-A7R2-R1, que los hechos del relevo son los del lanzamiento del trabajo cuya entrega se verifica, más los hechos remotos y de CI que la sesión obtiene antes de lanzar, custodiados antes del lanzamiento, y nunca el registro de la propia invocación. Ajustar en consecuencia los datos sintéticos del preflight."
+  },
+  {
+   "FindingId": "A62-A7R2-O3",
+   "Section": "Cabecera, «Previous amendments», A-6 (L21-23)",
+   "Note": "La cabecera dice que A7-1 admite como excepción a la clase de §20.3.1 «los artefactos custodiados de la categoría (c)», todos. El texto normativo (punto 1, L141-142) y §3.4 (L197-199) lo limitan a las entradas de (c) que no son artefactos versionados (la delegación, la entrega, los TRX y los hechos del relevo). La norma es clara; la cabecera es más amplia.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-7.md:21-23",
+    "docs/initiatives/I-62-A-7.md:141-142",
+    "docs/initiatives/I-62-A-7.md:197-199"
+   ],
+   "SuggestedCorrection": "En la cabecera, decir «las entradas de (c) que no son artefactos versionados», como en el punto 1."
+  },
+  {
+   "FindingId": "A62-A7R2-O4",
+   "Section": "§3.6, lista de secciones cambiadas (L232-234)",
+   "Note": "La lista de secciones que cambian no incluye el Anexo no normativo, que la ronda 2 sí cambió: la revisión acotada a R1-R3 y el kit con lectura fiel (L339-340, frente a a7-r1.md L273). No afecta a la norma.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-7.md:232-234",
+    "docs/initiatives/I-62-A-7.md:339-340",
+    "a7-r1.md:273"
+   ],
+   "SuggestedCorrection": "Añadir «y el Anexo (no normativo)» a la lista de §3.6."
+  }
+ ],
+ "Round1FindingResolution": [
+  {
+   "Round1Finding": "A62-A7-R1",
+   "Status": "PARTIALLY_CORRECTED",
+   "Rationale": "Lo que pidió el hallazgo está corregido para la verificación, los controles y la medición. (c) nombra el TRX de la corrida de CurrentSha y, si la entrega exige RED según 16.8 (L616-617, que he leído directamente), el de la corrida de RedSha. También nombra los hechos del relevo (RelayFacts) cuyo SHA-256 cita la verificación, con ruta y blob registrados en la designación, fidelidad por los bytes, ausencia sin sustitución y con la clasificación de 16.9, comprobación de ausencia que no es P-22 y rechazo de lo no designado (L136-139, L148-152, L162-169). La derivación identifica cada TRX por la designación, y los RelayFacts de la solicitud son los de (c) (L171-174). Es coherente con C6 de A6-9 (dos TRX con el nombre TRX; el aceptante guarda Files como conjunto de pares, bmin_accept L2361-2368) y con R10 (A-6 L600-601, L673-675). Las pruebas del preflight de la ronda 2 lo respaldan: TRX-POS, TRX-POS-R9, RELAY-* y N4/NC1. Queda un residuo: al cerrar los papeles en seis, con uno como máximo por papel, la reverificación de 16.7 (en el ámbito) queda sin admisión para el RebaseMap que tiene que leer (A62-A7R2-R1).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:136-139",
+    "docs/initiatives/I-62-A-7.md:148-152",
+    "docs/initiatives/I-62-A-7.md:162-169",
+    "docs/initiatives/I-62-A-7.md:171-174",
+    "docs/initiatives/I-62-A-7.md:192",
+    "a7-r1.md:122-123",
+    "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/output.json:178-204",
+    "docs/AUTOMATION_PLAN.md:616-617",
+    "docs/AUTOMATION_PLAN.md:638-639",
+    "docs/automation/evidence/I-62-A7/r2/preflight.md:52-58",
+    "docs/automation/evidence/I-62-A7/r2/preflight.md:73-78",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2588-2591",
+    "docs/AUTOMATION_PLAN.md:593-595"
+   ],
+   "FindingIds": [
+    "A62-A7R2-R1"
+   ]
+  },
+  {
+   "Round1Finding": "A62-A7-R2",
+   "Status": "CORRECTED",
+   "Rationale": "El punto 7, que es nuevo, identifica el «cierre de VERIFY» de A6-7 con la regla A7-1 en el blob acordado más el procedimiento de construcción y validación que nombra la disposición de A6-7, regla 7. Cada pieza se identifica por su blob o su SHA-256: el constructor, el validador, el formato de la designación y la implementación de la derivación del cierre del aceptante. Declara de forma expresa que el invalidador no es el SHA-256 de un cierre concreto (que se custodia con su invocación), qué anula la medición (otro blob de A-7, una A-n que cambie la regla, un cambio de pieza) y qué no la anula (L175-181). §3.4 sustituye la frase de la ronda 1 «nombra ese cierre (su SHA-256)» (a7-r1.md L171-172) por la regla y el procedimiento (L206-208). Es compatible con A6-7, reglas 5 y 7 (A-6 L781-786, L789-794). q5 lo prueba: nueve cierres distintos, todos válidos, con el mismo procedimiento; los cambios de pieza son cambios del invalidador.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:175-181",
+    "docs/initiatives/I-62-A-7.md:206-208",
+    "a7-r1.md:171-172",
+    "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/output.json:205-221",
+    "docs/initiatives/I-62-A-6.md:781-786",
+    "docs/initiatives/I-62-A-6.md:789-794",
+    "docs/automation/evidence/I-62-A7/r2/preflight.md:129-132"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round1Finding": "A62-A7-R3",
+   "Status": "CORRECTED",
+   "Rationale": "El punto 1 declara en su ámbito que las entradas de (c) que no son artefactos versionados son excepciones a la clase de §20.3.1, además del instrumento de A6-2, regla 1, y que se admiten solo por el blob de sus bytes (L141-142). La precisión de A6-2, regla 1, figura en la cabecera (L21-23), en §1 (L75-76), en §3.4 (L197-203, con la alternativa que deja la determinación de §91), en §4 (L251) y en §6 (L275). Así se resuelve el conflicto con «la única excepción» (A-6 L532-535), sin editar A-6 y como prevé LIFECYCLE §6 (L214, L218). Coincide con i6-determination L49-51. COMPAT-A6-RULES del preflight se ajustó. Queda solo una imprecisión descriptiva de la cabecera (A62-A7R2-O3).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:21-23",
+    "docs/initiatives/I-62-A-7.md:75-76",
+    "docs/initiatives/I-62-A-7.md:141-142",
+    "docs/initiatives/I-62-A-7.md:197-203",
+    "docs/initiatives/I-62-A-7.md:251",
+    "docs/initiatives/I-62-A-7.md:275",
+    "docs/initiatives/I-62-A-6.md:532-535",
+    "docs/INITIATIVE_LIFECYCLE.md:214",
+    "docs/INITIATIVE_LIFECYCLE.md:218",
+    "docs/automation/evidence/I-62-A6/m7/s91/i6-determination.md:49-51",
+    "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/output.json:222-243",
+    "docs/automation/evidence/I-62-A7/r2/preflight.md:153"
+   ],
+   "FindingIds": [
+    "A62-A7R2-O3"
+   ]
+  }
+ ],
+ "DeltaPurity": {
+  "Status": "CONFIRMED",
+  "Changes": [
+   {
+    "Change": "R1_CATEGORY_C_ROLES",
+    "Assessment": "WITHIN_R1_R3",
+    "Rationale": "Seis papeles, uno como máximo por papel, ruta y blob registrados, fidelidad por los bytes, ausencia con la clasificación de 16.9 y rechazo de lo no designado. Es lo que pide §94 para R1 (TRX pertinentes, hechos del relevo y RelayFacts, con origen, ruta, blob, fidelidad, ausencia y rechazo). Que siga incompleto para la reverificación (A62-A7R2-R1) es un defecto de corrección, no un cambio fuera de alcance.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:136-139",
+     "docs/initiatives/I-62-A-7.md:148-152",
+     "docs/initiatives/I-62-A-7.md:162-169",
+     "docs/initiatives/I-62-A-7.md:171-174",
+     "order.txt:13",
+     "docs/automation/decisions/I-62.md:1854"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "R2_INVALIDATOR_RULE_AND_PROCEDURE",
+    "Assessment": "WITHIN_R1_R3",
+    "Rationale": "El punto 7 identifica el invalidador por la regla y el procedimiento, y dice qué lo anula. Es exactamente R2 de §94.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:175-181",
+     "docs/initiatives/I-62-A-7.md:206-208",
+     "order.txt:14"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "R3_A62_RULE1_PRECISION",
+    "Assessment": "WITHIN_R1_R3",
+    "Rationale": "Precisión de A6-2, regla 1, en el ámbito, para las entradas de (c) no versionadas; es lo que pide §94 para R3.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:141-142",
+     "docs/initiatives/I-62-A-7.md:21-23",
+     "docs/initiatives/I-62-A-7.md:197-203",
+     "order.txt:15"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "O1_M04_MOTIVE",
+    "Assessment": "WITHIN_R1_R3",
+    "Rationale": "Descriptivo. Los motivos de M-03 y M-04 se reescriben con la semántica vigente de la regla 5 y con los artefactos que añade R1; la columna «Activado» no cambia.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:262-263",
+     "docs/initiatives/I-62-A-7.md:160-170",
+     "a7-r1.md:210-211"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "O7_S31_MV6_MV7_CONTENT",
+    "Assessment": "WITHIN_R1_R3",
+    "Rationale": "Descriptivo y correcto: MV-3 y MV-4 comparan identificadores de blob, y MV-6 y MV-7 leen contenido en EFF^1. El punto 1 (a) ya decía «cuyo contenido lee».",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:115-119",
+     "docs/AUTOMATION_PLAN.md:904-907",
+     "docs/initiatives/I-62-A-7.md:131-133"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "O2_S35_REVERIFICATION",
+    "Assessment": "WITHIN_R1_R3",
+    "Rationale": "Descriptivo. «El kit de cada invocación» ya incluía la reverificación, que está en el ámbito; la frase lo hace explícito sin añadir obligaciones al cierre, como pide §94, punto 4.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:224-225",
+     "a7-r1.md:188",
+     "order.txt:31"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "P1_RED_PER_16_8",
+    "Assessment": "WITHIN_R1_R3",
+    "Rationale": "Define qué TRX son pertinentes (R1) con la condición literal de 16.8, que usan las filas Ci y Tests de 16.9. No añade insumos: el TRX de RedSha solo entra cuando se exige RED.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:136-138",
+     "docs/initiatives/I-62-A-7.md:99",
+     "docs/AUTOMATION_PLAN.md:616-617",
+     "docs/AUTOMATION_PLAN.md:638-639"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "P2_MEASUREMENT_WITHOUT_RELAY_FACTS",
+    "Assessment": "WITHIN_R1_R3",
+    "Rationale": "Es una consecuencia de añadir los hechos del relevo a (c) en un ámbito que incluye la medición. Coincide con A6-7, regla 1 (R4 y R10 no aplicables porque la medición no produce una verificación).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:139",
+     "docs/initiatives/I-62-A-6.md:768-770",
+     "docs/initiatives/I-62-A-6.md:771"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "P3_DERIVATION_AS_INVALIDATOR_PIECE",
+    "Assessment": "WITHIN_R1_R3",
+    "Rationale": "§94, punto 2, R2, pide identificar el invalidador por la regla «y su procedimiento de derivación»; la implementación de la derivación del cierre del aceptante es parte de ese procedimiento (INV-DERIVATION).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:176-177",
+     "order.txt:14",
+     "docs/automation/evidence/I-62-A7/r2/preflight.md:132"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "P4_RED_UNDETERMINED",
+    "Assessment": "WITHIN_R1_R3",
+    "Rationale": "Es parte de la ausencia y de los criterios de rechazo de (c) que pide R1, sin sustitución. Su alcance es más estrecho que el del validador (A62-A7R2-O1, opcional).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:166-167",
+     "order.txt:13",
+     "order.txt:28"
+    ],
+    "FindingIds": []
+   }
+  ],
+  "Rationale": "Todos los cambios normativos están en A7-1, puntos 1, 2, 5, 6 y 7, y se deben a R1, R2 o R3. Los puntos 3, 4 y 8 y las categorías (a), (b) y (d) conservan el texto de la ronda 1 (comparación de a7-r1.md con A-7, línea a línea). Los cambios de otras secciones son descriptivos. El Anexo no normativo también cambió y §3.6 no lo menciona (A62-A7R2-O4).",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-7.md:232-243",
+   "docs/initiatives/I-62-A-7.md:153-159",
+   "docs/initiatives/I-62-A-7.md:182-184",
+   "a7-r1.md:134-140",
+   "a7-r1.md:151-153",
+   "order.txt:12-16"
+  ],
+  "FindingIds": [
+   "A62-A7R2-O4"
+  ]
+ },
+ "RegressionCheck": [
+  {
+   "Topic": "T04_EFF_EFF1_B1_MAP_VALIDATION",
+   "Status": "NO_REGRESSION",
+   "Rationale": "El punto 1 (a) y el punto 2 (a) no cambian, así que se conserva la fijación en EFF y EFF^1 de las lecturas de contenido de MV-6 y MV-7. En B1R2-E y B1R2-R9 hay las mismas seis fijaciones en EFF^1 que en la ronda 1, con R9 en MATCH con A7-1 r2 y en MISMATCH con R7-A.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:131-133",
+    "docs/initiatives/I-62-A-7.md:143-148",
+    "docs/AUTOMATION_PLAN.md:902-908",
+    "docs/automation/evidence/I-62-A7/r2/preflight.md:99-100",
+    "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/output.json:401-415"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE",
+   "Status": "NO_REGRESSION",
+   "Rationale": "El punto 5 (a), el (b) y la frase de (c) sin contrato o delegación no cambian. La ronda 2 solo añade en (c) los artefactos nuevos y la comprobación de ausencia, que no es P-22. MAP_INVALID sigue siendo la regla que trata una entrada de (a) ausente, sin sustitución.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:160-170",
+    "a7-r1.md:141-147",
+    "docs/AUTOMATION_PLAN.md:910-918",
+    "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/output.json:416-428"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "T06_CLAUSEMAP_COVERAGE_RULE",
+   "Status": "NO_REGRESSION",
+   "Rationale": "El residuo de §3.5 no cambia, salvo la aclaración descriptiva de la reverificación. B1R2-UC sigue dando un rechazo falso con NO_LAUNCH_S-03, y B1R2-CIT deja lanzar.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:220-228",
+    "a7-r1.md:184-191",
+    "docs/automation/evidence/I-62-A7/r2/preflight.md:101-102",
+    "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/output.json:429-442"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "T07_MULTI_CATEGORY_ENTRIES",
+   "Status": "NO_REGRESSION",
+   "Rationale": "La frase de pertenencia múltiple y la de un blob por revisión no cambian. «Un artefacto como máximo por papel» limita la designación de (c), no que una misma entrada esté en (c) y en (b).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:129-130",
+    "docs/initiatives/I-62-A-7.md:146-148",
+    "docs/initiatives/I-62-A-7.md:150",
+    "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/output.json:443-456"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "T09_NO_UNAUTHORIZED_CHANGES",
+   "Status": "NO_REGRESSION",
+   "Rationale": "El punto 8 (el antiguo 7) conserva los límites. Las guardas run sobre la publicación pasan G1-G7: diff limitado y superficies protegidas. A-6, 16.24, RAE y los blobs del instrumento y del aceptante no cambian, como exige §94, punto 2.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:182-184",
+    "docs/initiatives/I-62-A-7.md:271-272",
+    "docs/automation/evidence/I-62-A7/r2/a7-guards-result-run.json:1-38",
+    "docs/automation/decisions/I-62.md:1854",
+    "docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/output.json:473-484"
+   ],
+   "FindingIds": []
+  }
+ ],
+ "OptionalDispositionConformance": [
+  {
+   "Round1Optional": "A62-A7-O1",
+   "Status": "CONFORMS",
+   "Rationale": "Incorporado: el motivo de M-04 coincide ahora con la regla 5 vigente.",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A7/r2-dispositions/optional-dispositions.md:9",
+    "docs/initiatives/I-62-A-7.md:263",
+    "docs/initiatives/I-62-A-7.md:160-170"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round1Optional": "A62-A7-O2",
+   "Status": "CONFORMS",
+   "Rationale": "Se confirma sin cambio normativo y se aclara en §3.5; es coherente con §94, punto 4. La aclaración depende de MainSha_eval del RebaseMap, que se relaciona con A62-A7R2-R1 en el cierre del Controller, no en la comprobación del kit.",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A7/r2-dispositions/optional-dispositions.md:10",
+    "docs/initiatives/I-62-A-7.md:224-225",
+    "order.txt:31"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round1Optional": "A62-A7-O3",
+   "Status": "CONFORMS",
+   "Rationale": "Incorporado para (c) dentro de R1 (punto 5 (c)). Para (a) y (b) se apoya en lecturas de árboles de commits.",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A7/r2-dispositions/optional-dispositions.md:11",
+    "docs/initiatives/I-62-A7.md:167-168"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round1Optional": "A62-A7-O4",
+   "Status": "NOT_ASSESSED",
+   "Rationale": "La disposición depende de la configuración del clon del kit (core.autocrlf, -C limpio), que no he comprobado.",
+   "ClauseRefs": [],
+   "FindingIds": []
+  },
+  {
+   "Round1Optional": "A62-A7-O5",
+   "Status": "NOT_ASSESSED",
+   "Rationale": "La disposición depende de la coincidencia de blobs en los datos de FX-02 y de la comprobación del kit, que no he comprobado.",
+   "ClauseRefs": [],
+   "FindingIds": []
+  },
+  {
+   "Round1Optional": "A62-A7-O6",
+   "Status": "CONFORMS",
+   "Rationale": "Sin cambio. Con pertenencia por el par {Path, Blob} y un blob por revisión (punto 2 (a)), la frase es coherente.",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A7/r2-dispositions/optional-dispositions.md:14",
+    "docs/initiatives/I-62-A-7.md:146-148"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round1Optional": "A62-A7-O7",
+   "Status": "CONFORMS",
+   "Rationale": "Incorporado en §3.1 y correcto según MV-3..MV-7.",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A7/r2-dispositions/optional-dispositions.md:15",
+    "docs/initiatives/I-62-A-7.md:117-118",
+    "docs/AUTOMATION_PLAN.md:904-907"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Round1Optional": "A62-A7-O8",
+   "Status": "CONFORMS",
+   "Rationale": "Queda como regla del kit: la designación fija I.TaskId en la ruta del control. La medición ya lo hace con T1-m7.",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A7/r2-dispositions/optional-dispositions.md:16",
+    "docs/automation/evidence/I-62-A7/r2/designations/M.json:8",
+    "docs/initiatives/I-62-A-7.md:173-174"
+   ],
+   "FindingIds": []
+  }
+ ],
+ "Materiality": {
+  "Triggers": [
+   {
+    "Trigger": "M-01",
+    "A7Declared": "no",
+    "Assessment": "AGREE",
+    "Rationale": "No hay dueño nuevo. El procedimiento del invalidador lo nombra la disposición del Coordinator que ya prevé A6-7, regla 7; 16.9 y 16.13 siguen siendo las dueñas de las reglas.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:260",
+     "docs/INITIATIVE_LIFECYCLE.md:83",
+     "docs/initiatives/I-62-A-6.md:789-794"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-02",
+    "A7Declared": "yes",
+    "Assessment": "AGREE",
+    "Rationale": "Cambia el significado persistido de input-closure/v1: la referencia de I6 por categoría y las entradas nuevas de (c).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:261",
+     "docs/INITIATIVE_LIFECYCLE.md:84"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-03",
+    "A7Declared": "yes",
+    "Assessment": "AGREE",
+    "Rationale": "Lecturas que serían P-22, incluidos los TRX y los hechos del relevo, pasan a estar dentro del cierre.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:262",
+     "docs/INITIATIVE_LIFECYCLE.md:85"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-04",
+    "A7Declared": "yes",
+    "Assessment": "AGREE",
+    "Rationale": "Ausencias con efecto definido, recálculo e invalidador por la regla y su procedimiento.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:263",
+     "docs/INITIATIVE_LIFECYCLE.md:86"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-05",
+    "A7Declared": "yes",
+    "Assessment": "AGREE",
+    "Rationale": "Lo consumen el invocador, el auditor, los validadores y el aceptante, a través de la derivación y de RelayFacts.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:264",
+     "docs/INITIATIVE_LIFECYCLE.md:87"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-06",
+    "A7Declared": "no",
+    "Assessment": "AGREE",
+    "Rationale": "Es una regla cerrada, con papeles cerrados; no crea ningún punto de extensión.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:265",
+     "docs/INITIATIVE_LIFECYCLE.md:88"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-07",
+    "A7Declared": "no",
+    "Assessment": "AGREE",
+    "Rationale": "Solo se aplica a FX-02 en F6.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:266",
+     "docs/INITIATIVE_LIFECYCLE.md:89"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-08",
+    "A7Declared": "no",
+    "Assessment": "AGREE",
+    "Rationale": "No toca ADR-0046 #9 ni los blobs del instrumento y del aceptante; el M-08 de A-6 sigue cubierto por la línea (a) del Owner.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:267",
+     "docs/INITIATIVE_LIFECYCLE.md:90",
+     "docs/initiatives/I-62-A-6.md:1219"
+    ],
+    "FindingIds": []
+   }
+  ],
+  "Rationale": "R1-R3 no cambian la columna «Activado». La corrección que pide A62-A7R2-R1 tampoco cambiaría ningún disparador: añade una entrada a (c) dentro de los mismos M-02..M-05.",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-7.md:256-267",
+   "docs/INITIATIVE_LIFECYCLE.md:81-90"
+  ],
+  "FindingIds": []
+ },
+ "OwnerReservedConsequence": {
+  "OwnerDecisionRequired": false,
+  "UnidentifiedConsequences": [],
+  "Rationale": "R1-R3 y la corrección pendiente no cambian el alcance, los no-objetivos, las decisiones del Owner ni ningún escenario OV. Tampoco tocan ADR-0046 #9 ni los blobs fijados. Las líneas (a) y (b) del Owner constan y siguen cubriendo lo que nombran.",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-7.md:283-286",
+   "docs/INITIATIVE_LIFECYCLE.md:94",
+   "docs/automation/decisions/I-62.md:1572",
+   "docs/initiatives/I-62-A-6.md:1324",
+   "docs/initiatives/I-62-A-6.md:1325"
+  ],
+  "FindingIds": []
+ },
+ "RelatedImpacts": {
+  "ChangedByRound2": false,
+  "Note": "R1-R3 no cambian la exclusión de contract (D-1), que sigue siendo una disposición aparte (§3.5), ni las propuestas FC. La nota de FC-01 está en las disposiciones propuestas, no en A-7.",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-7.md:217-218",
+   "docs/automation/decisions/I-62.md:1859",
+   "order.txt:47-50",
+   "docs/automation/evidence/I-62-A7/r2-dispositions/optional-dispositions.md:20-23"
+  ],
+  "FindingIds": []
+ },
+ "QuestionAnswers": [
+  {
+   "Question": "Q-A7R2-01",
+   "Outcome": "NOT_SATISFIED",
+   "Answer": "Para la verificación y los controles, sí. Cubre lo que lee 16.9: el TRX de CurrentSha para Tests y Ci, el de RedSha solo si se exige RED según 16.8, y los hechos del relevo para Termination, Remote, Ci, Routing y Denials. No admite insumos innecesarios: el TRX de RedSha queda fuera sin exigencia de RED, la medición no tiene hechos del relevo y un tercer TRX es FOREIGN. No cubre la reverificación de 16.7, que está en el ámbito: tiene que leer el RebaseMap (AP 16.7 L593; MainSha_eval, 16.13 L813-814), que es un registro propio de la sesión, y los seis papeles cerrados, con uno como máximo por papel, no lo admiten (A62-A7R2-R1).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:306",
+    "docs/initiatives/I-62-A-7.md:136-139",
+    "docs/initiatives/I-62-A-7.md:148-152",
+    "docs/AUTOMATION_PLAN.md:628-643",
+    "docs/AUTOMATION_PLAN.md:593-595",
+    "docs/AUTOMATION_PLAN.md:813-814"
+   ],
+   "FindingIds": [
+    "A62-A7R2-R1"
+   ]
+  },
+  {
+   "Question": "Q-A7R2-02",
+   "Outcome": "SATISFIED",
+   "Answer": "Es coherente. A6-3, regla 6 (b), define RelayFacts como los hechos que cita la verificación, con el SHA-256 citado, y A7-1, punto 6, fija que son los bytes de (c). R10 compara el SHA-256 citado con esos bytes, y A6-5, regla 2, exige R10 en MATCH, así que unos hechos ausentes o sustituidos dejan la salida sin aceptar (fallo cerrado). C6 no les da nombre. Una orden --file sobre ellos daría R9 MISMATCH, porque el aceptante solo admite pares (Name, Sha256) de C6. Su ruta sí está en C4: un hashes --paths sobre ella sería una lectura permitida, no P-22. La medición no tiene hechos del relevo, como prevé A6-7, regla 1 (R10 no aplicable). Conviene precisar su origen (A62-A7R2-O2).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:307",
+    "docs/initiatives/I-62-A-7.md:171-174",
+    "docs/initiatives/I-62-A-6.md:600-601",
+    "docs/initiatives/I-62-A-6.md:673-675",
+    "docs/initiatives/I-62-A-6.md:868-870",
+    "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py:2588-2591"
+   ],
+   "FindingIds": [
+    "A62-A7R2-O2"
+   ]
+  },
+  {
+   "Question": "Q-A7R2-03",
+   "Outcome": "SATISFIED",
+   "Answer": "Sí. Antes de cada VERIFY se compara el blob de A-7 y el blob o SHA-256 de cada pieza que nombra la disposición de A6-7, regla 7, con las que nombra la disposición que autoriza esa VERIFY; A6-7, regla 7, exige que sean las mismas. El SHA-256 del cierre concreto se custodia, pero no invalida. q5 muestra cierres distintos y válidos con el mismo procedimiento, y que cada cambio de pieza, incluida la derivación, es un cambio del invalidador. La corrección de A62-A7R2-R1 cambiará piezas antes de la medición, lo que no afecta a esta respuesta.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:308",
+    "docs/initiatives/I-62-A-7.md:175-181",
+    "docs/initiatives/I-62-A-6.md:792-793",
+    "docs/automation/evidence/I-62-A7/r2/preflight.md:129-132"
+   ],
+   "FindingIds": []
+  }
+ ],
+ "IfAgreed": {
+  "ScopeLimitedToR1R3AndConsequences": null,
+  "Round1FindingsCorrected": null,
+  "DeltaLimitedToR1R3": null,
+  "NoRegressionOfRound1Conformities": null,
+  "MaterialityConfirmed": null,
+  "NoUnidentifiedOwnerReservedConsequence": null,
+  "NoUnauthorizedChanges": null,
+  "RelatedImpactsUnchangedOrDeclared": null,
+  "SuitableForCoordinatorAgreement": null
+ },
+ "KnownLimitations": [
+  "No he podido ejecutar git, las guardas, el constructor, el validador, designate_a7/derive_r4, el instrumento ni el aceptante. Uso los resultados custodiados (resultado run, summary.json, preflight.md) como evidencia, no como autoridad.",
+  "No tengo en el cierre la semántica completa de relay-record/v2 (V14 B.7 y el esquema del repositorio). Por eso no he podido determinar si, en una verificación sin rebase, Termination, Remote, Ci, Routing y Denials salen de un único registro custodiable antes de lanzar (de ahí A62-A7R2-O2). A62-A7R2-R1 se apoya solo en textos leídos: AP 16.6 L575, 16.7 L593-595, 16.13 L813-814 y V14 B.8.7 L2112-2114.",
+  "Hice un Grep sobre el original de docs/automation/evidence/I-62-A7/r2/check_a7_closure.py, que tiene copia fiel. No hubo coincidencias ni usé su contenido; repetí la búsqueda sobre la copia fiel. Las búsquedas sin coincidencias en el constructor y el validador no se citan como referencia.",
+  "No he leído enteros el paquete B-min, el kit a6m7-measure ni la evidencia m7 (solo las partes citadas). Las disposiciones O4 y O5 quedan NOT_ASSESSED.",
+  "No juzgo la disposición del Coordinator posterior a §94 que autoriza este lanzamiento: no está en el clon. La orden vigente es §94 (order.txt).",
+  "Sin compactación del contexto durante la revisión."
+ ],
+ "RecommendedNextAction": "El Coordinator dispone A62-A7R2-R1 como REQUIRED. Su corrección es admisible dentro de §94, punto 2, R1 (hechos del relevo): admitir en (c) el RebaseMap de la reverificación de 16.7, con su origen, ruta, blob, fidelidad, ausencia y rechazo, y fijar de él MainSha_eval. Después: una tercera candidata en el mismo archivo, limitada a esa corrección y a sus consecuencias en §3.3, el constructor, el validador y el formato de la designación; un preflight dirigido con la reverificación (RebaseMap presente, ausente, sustituido y ajeno); y una revisión acotada, todo antes de cualquier disposición de A6-7, regla 7. Los opcionales A62-A7R2-O1..O4 se disponen a criterio del Coordinator. A-7 sigue PROPUESTA; no hay acuerdo ni medición."
+}

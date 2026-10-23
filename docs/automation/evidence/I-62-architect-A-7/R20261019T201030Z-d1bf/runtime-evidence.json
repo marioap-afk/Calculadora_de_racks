@@ -1,0 +1,91 @@
+{
+ "RunId": "R20261019T201030Z-d1bf",
+ "InvocationId": "I20261019T201030Z-d1bf",
+ "AttemptSeq": 1,
+ "Transport": "claude-cli 2.1.299 (%APPDATA%/Claude/claude-code/2.1.299/f0584be0fbaf/claude.exe, SHA-256 295b49ec…, Authenticode Valid de Anthropic), claude-opus-5-5 xhigh; caracterización 4ba6ba58…; compuerta D-01 MEASURED",
+ "LaunchCommand": "python -B kit/launch.py (orden congelada exacta, desde la carpeta que contiene kit/; la salida estándar se redirigió a prep/p6/launch-run.log)",
+ "Authority": "decisiones §95 (Coordinator; blob 8a528133c7cccd83356e31f8fd79cd2ebb0cec15 en la sección; texto fijado 9ba8fd5b…; línea 1863 en 6b00b2bf); Owner CLAUDE-CLI-I62 = A; línea del Owner de §78; compuertas 10 y 11 en Ok; prueba en seco final con cero bloqueos",
+ "Kit": {
+  "Manifest": "68b0e643094083851d56f3aa3b786c23a0adf9157243594fa2eccd7580ffd87d",
+  "CustodyCommit": "e42d23d1",
+  "FullMutation": "207/207 (decisiones §88, punto 4) y dirigida de owner_gate.py fijado 19/19",
+  "Selftest": "310/310 con la autorización fijada"
+ },
+ "Session": {
+  "SessionId": "3dd5ac31-ddf5-4e4a-b732-b913933a9ae3",
+  "Outcome": "COMPLETED",
+  "OutcomeCategories": [
+   "COMPLETED"
+  ],
+  "Start": "2026-10-22T20:17:12.428041Z",
+  "End": "2026-10-22T20:30:53.680483Z",
+  "ExitCode": 0,
+  "Killed": false,
+  "TimedOut": false,
+  "TransportFailure": null,
+  "PostRunErrors": [],
+  "LaunchError": null,
+  "Cwd": "D:/r62-arch-a7r2",
+  "AddDir": "D:/r62-arch-a7r2-run",
+  "TimeoutSeconds": 3600,
+  "Retry": "ninguno"
+ },
+ "Usage": {
+  "num_turns": 55,
+  "total_cost_usd": 4.8866264,
+  "duration_ms": 819035,
+  "subtype": "success",
+  "is_error": false,
+  "tools": {
+   "Read": 45,
+   "Grep": 8,
+   "StructuredOutput": 1
+  },
+  "note": "coste equivalente informado por el runtime; cuota de la suscripción"
+ },
+ "Stdout": {
+  "Path": "D:/r62-arch-a7r2-run/launch/stdout.jsonl (no versionado: contiene rutas del perfil del usuario)",
+  "Sha256": "7d83ecb2f3c2ad4cd05cc2fc0a36aaefeeb3480b5ca4889d68e328eed186c84d"
+ },
+ "Transcript": {
+  "Versioned": false,
+  "Path": "%USERPROFILE%/.claude/projects/D--r62-arch-a7r2/3dd5ac31-ddf5-4e4a-b732-b913933a9ae3.jsonl",
+  "Sha256": "a9ad9bb24636966248c6d2d31b58d9996cf806abefd7854db4940a2f6627dfa5"
+ },
+ "Output": {
+  "File": "output.json",
+  "Sha256": "8b44495390d4aabfb35faa50c13bc1de6bf8fe3b4bb3c84f69c70a5f71adca4b"
+ },
+ "Audit": {
+  "File": "audit.json",
+  "Sha256": "8108c0c3f63a0463ab30fcc5e8e7950c90ee48ddd00e2981ef941d8907d17f9e",
+  "Auditor": "v6.0-a7r2 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on a Coordinator disposition after §94 pinned in owner_gate.py (pending in the kit as delivered); run.json Outcome and PostRunErrors; frozen command and record probe; direct read of AUTOMATION_PLAN L616-L617; faithful copies RACKCAD-COPIA-FIEL/1 of the files Read cannot deliver faithfully, decisions §94, point 5; round-2 schema rackcad-a7r2-architect-review/0; declared and self-tested before the launch; decisions §94)",
+  "Accreditation": {
+   "Status": "NOT_ACCREDITED",
+   "Reasons": [
+    "referencia no canónica en OptionalDispositionConformance[A62-A7-O3] (D:/r62-arch-a7r2/docs/initiatives/I-62-A7.md:167-168)"
+   ]
+  },
+  "Categories": {
+   "Execution": "COMPLETED",
+   "ArchitectVerdict": "CHANGES REQUIRED",
+   "Note": "decisiones §84, punto 4: la categoría de ejecución y custodia (Outcome de run.json) y el resultado de contenido del Architect (Verdict) se informan por separado; cualquier defecto de integridad es un motivo y impide ACCREDITED"
+  },
+  "Unmodified": true
+ },
+ "ReadFidelity": {
+  "FaithfulCopies": 43,
+  "FaithfulCopiesVerified": 43,
+  "FaithfulCopiesRead": 4,
+  "OriginalLinesCreditedByCopy": 501,
+  "FailedReadsNeverCredited": 0,
+  "FlaggedOriginalReads": 0,
+  "UnicodeReplacementChars": [],
+  "Note": "ninguna lectura DEGRADED: los archivos marcados (BOM incluido) se leyeron por su copia fiel (decisiones §94, punto 5)"
+ },
+ "CloneAfterRun": {
+  "Head": "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c",
+  "StatusPorcelainIgnored": ""
+ },
+ "Independence": "proceso claude-cli nuevo con session id fijado; sin la transcripción ni la memoria de la sesión autora; entorno heredado de la sesión que lanza, como en las rondas anteriores; mismo proveedor que la sesión que prepara (declarado)"
+}

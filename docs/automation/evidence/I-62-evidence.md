@@ -4829,3 +4829,21 @@ solo desde artefactos custodiados.
   `BlockingChecks` = []**, compuerta 11 con §95 y sin secciones posteriores; binario `claude-cli` 2.1.299 con su SHA-256 y Authenticode Valid de
   Anthropic; clon limpio.
 - Siguiente: comprobaciones finales del host y UNA invocación (`python -B kit/launch.py`, 3 600 s, sin reintento); auditor v6.0-a7r2.
+
+## 195. Revisión formal única de A-7 ronda 2 (R20261019T201030Z-d1bf): Architect CHANGES REQUIRED (una REQUIRED nueva, A62-A7R2-R1); auditor NOT_ACCREDITED por una referencia no canónica (decisiones §95)
+
+- **Corrida** ([`README`](I-62-architect-A-7/R20261019T201030Z-d1bf/README.md), [`runtime-evidence.json`](I-62-architect-A-7/R20261019T201030Z-d1bf/runtime-evidence.json)): `python -B kit/launch.py`, una vez, de
+  2026-10-22T20:17:12Z a 2026-10-22T20:30:53Z, Outcome COMPLETED, salida 0; 55 turnos, 54 llamadas a herramientas;
+  clon limpio después. Precondiciones previas: host, corriente, sonda y prueba en seco finales con cero bloqueos.
+- **Auditor v6.0-a7r2** ([`audit.json`](I-62-architect-A-7/R20261019T201030Z-d1bf/audit.json)): **NOT_ACCREDITED**, un motivo: referencia no canónica en OptionalDispositionConformance[A62-A7-O3] (D:/r62-arch-a7r2/docs/initiatives/I-62-A7.md:167-168)
+  (la entrada de A62-A7-O3 en `OptionalDispositionConformance` cita una ruta absoluta de un archivo inexistente, `I-62-A7.md` en lugar de
+  `I-62-A-7.md`). Sin acreditación excepcional (§95, punto 6). Fidelidad de lectura: 43 copias fieles, ninguna lectura DEGRADED ni de un original
+  marcado; el defecto de BOM de la ronda 1 no se repite.
+- **Architect** ([`output.json`](I-62-architect-A-7/R20261019T201030Z-d1bf/output.json)): **CHANGES REQUIRED**. A62-A7-R1 PARTIALLY_CORRECTED, R2 y R3 CORRECTED; DeltaPurity CONFIRMED
+  (10/10 WITHIN_R1_R3); los cinco temas sin regresión (incluido T04, B1); materialidad 8 AGREE; sin decisión del Owner; impactos relacionados sin cambio;
+  Q-A7R2-01 NOT_SATISFIED, Q-A7R2-02 y 03 SATISFIED. **A62-A7R2-R1 (REQUIRED):** A7-1 (c) no admite el `RebaseMap` de la reverificación de 16.7, que
+  está en su ámbito (A-7 L125-130): con seis papeles cerrados y uno como máximo por papel, el Controller tendría que leerlo fuera del cierre (P-22) o
+  quedarse sin los hechos del relevo del trabajo, y la supervisión no podría fijar `MainSha_eval` de (a) (AP 16.7 L593-595, 16.13 L813-814, L575).
+  Opcionales A62-A7R2-O1..O4 (precisiones descriptivas). Comprobado por la sesión principal en las fuentes del clon.
+- Impacto sobre A6-7: A-7 no puede acordarse con una REQUIRED abierta y su corrección cambia piezas del invalidador (constructor, validador, formato
+  de la designación), así que tiene que preceder a cualquier disposición de A6-7, regla 7; A6-7 sigue HELD. Sin otra ronda automática (§95, punto 7).

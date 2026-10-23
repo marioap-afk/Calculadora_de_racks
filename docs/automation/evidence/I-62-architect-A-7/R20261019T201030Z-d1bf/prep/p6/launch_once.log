@@ -1,0 +1,8 @@
+host True 2026-10-22T20:14:46Z []
+2026-10-22T20:14:49Z PowerLineStatus Online
+2026-10-22T20:14:50Z record-probe rc=0
+2026-10-22T20:15:06Z dry-run rc=2
+{"DryRunZeroBlocking": true, "Conditions": {"ZeroBlocking": true, "Gate11Ok": true, "AuthorizationSection95": true, "NoLaterSections": true, "RecordProbeAndGuard": true, "Binary": true, "CloneClean": true, "AllOtherChecksOk": true, "NotRunInDryRun": true}, "BlockingChecks": [], "Gate11Problems": []}
+2026-10-22T20:15:07Z LAUNCH START
+2026-10-22T20:30:54Z LAUNCH END rc=0
+2026-10-22T20:30:54Z DONE
