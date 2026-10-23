@@ -1,0 +1,38 @@
+{
+ "Added": 54,
+ "Base": "5da2007f45160ced37b958a3a772c46ac64874ee",
+ "CandidateBlob": "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff",
+ "Guards": {
+  "G1": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G2": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G3": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G4": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G5": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G6": {
+   "Findings": [],
+   "Status": "PASS"
+  },
+  "G7": {
+   "Findings": [],
+   "Status": "PASS"
+  }
+ },
+ "Head": "a81164dcbe91cb99df5d827f87ae1dda3a5e256e",
+ "Mode": "preview",
+ "Result": "PASS"
+}

@@ -1,0 +1,181 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$comment": "a7-designation/3: per-invocation designation of an FX-02 VERIFY invocation (the verification, its 16.7 reverification, a negative control) or of the A6-7 measurement under the candidate A7-1 round 3 (I-62 A-7, point 2 (c)): it names the role of every custodied artifact of category (c) (at most one artifact per role) and registers its path and its blob; the rebase record (role REBASE) only in the reverification (Invocation.Kind REVERIFICATION), with its RunId registered. MainSha_eval is derived (K.MainSha, or the MainAfterSha of the rebase record in the reverification), never designated. Part of the construction and validation procedure that A7-1 point 7 names as invalidator (identified by the SHA-256 of this file).",
+ "title": "a7-designation/3",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "Schema",
+  "Case",
+  "Repo",
+  "AuthorityRevision",
+  "Invocation",
+  "RunPath",
+  "Artifacts",
+  "Instrument",
+  "MapPath",
+  "Adapter"
+ ],
+ "properties": {
+  "Schema": {
+   "const": "a7-designation/3"
+  },
+  "Case": {
+   "type": "string"
+  },
+  "Repo": {
+   "type": "string",
+   "minLength": 1
+  },
+  "AuthorityRevision": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{40}$"
+  },
+  "Invocation": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "UnitId",
+    "TaskId",
+    "Attempt",
+    "RunId",
+    "Target"
+   ],
+   "properties": {
+    "UnitId": {
+     "type": "string",
+     "minLength": 1
+    },
+    "TaskId": {
+     "type": "string",
+     "minLength": 1
+    },
+    "Attempt": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "RunId": {
+     "type": "string",
+     "minLength": 1
+    },
+    "Kind": {
+     "enum": [
+      "VERIFY",
+      "REVERIFICATION",
+      "MEASUREMENT"
+     ],
+     "$comment": "absent = VERIFY; REVERIFICATION = the 16.7 reverification without conflicts (the only kind with a REBASE role); MEASUREMENT = the A6-7 measurement invocation, which produces no verification and has no relay facts (no RELAY role)"
+    },
+    "Target": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "Commit",
+      "Path",
+      "Blob"
+     ],
+     "properties": {
+      "Commit": {
+       "type": "string",
+       "pattern": "^[0-9a-f]{40}$"
+      },
+      "Path": {
+       "type": "string",
+       "minLength": 1
+      },
+      "Blob": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^[0-9a-f]{40}$"
+      }
+     }
+    }
+   }
+  },
+  "RunPath": {
+   "type": "string",
+   "minLength": 1
+  },
+  "Artifacts": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Role",
+     "Path",
+     "Blob",
+     "Custody"
+    ],
+    "properties": {
+     "Role": {
+      "type": "string",
+      "enum": [
+       "CONTRACT",
+       "DELEG",
+       "H",
+       "TRX_CURRENT",
+       "TRX_RED",
+       "RELAY",
+       "REBASE"
+      ]
+     },
+     "Path": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.@+-]+(/[A-Za-z0-9_.@+-]+)*$"
+     },
+     "Blob": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+     },
+     "Custody": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "RunId": {
+      "type": "string",
+      "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$",
+      "$comment": "only for the REBASE role, where it is required (checked by the builder and the validator: the JSON-schema subset of the bench has no conditional keywords): the RunId of the rebase record (16.6), the name of its directory"
+     }
+    }
+   }
+  },
+  "Instrument": {
+   "type": [
+    "object",
+    "null"
+   ],
+   "additionalProperties": false,
+   "required": [
+    "Path",
+    "Blob"
+   ],
+   "properties": {
+    "Path": {
+     "type": "string"
+    },
+    "Blob": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{40}$"
+    }
+   }
+  },
+  "MapPath": {
+   "type": "string",
+   "minLength": 1
+  },
+  "Adapter": {
+   "type": "string"
+  },
+  "DecisionRef": {
+   "type": [
+    "string",
+    "null"
+   ]
+  }
+ }
+}

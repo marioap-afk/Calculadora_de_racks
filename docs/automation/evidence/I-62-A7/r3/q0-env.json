@@ -1,0 +1,571 @@
+{
+ "Phase": "q0-env",
+ "Cases": [
+  {
+   "Caso": "ENV-W",
+   "Qué": "HEAD del worktree de I-62 (solo lectura)",
+   "Esperado": "5da2007f45160ced37b958a3a772c46ac64874ee",
+   "Observado": "5da2007f45160ced37b958a3a772c46ac64874ee",
+   "Cumple": true
+  },
+  {
+   "Caso": "CAND",
+   "Qué": "candidata A-7 ronda 3 leída por completo",
+   "Esperado": "LF, sin CR",
+   "Observado": "blob 8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff, 45668 bytes, 393 líneas",
+   "Cumple": true
+  },
+  {
+   "Caso": "PREV",
+   "Qué": "ronda 2 en la base (la que la ronda 3 corrige en el mismo archivo)",
+   "Esperado": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+   "Observado": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+   "Cumple": true
+  },
+  {
+   "Caso": "DELTA-A71",
+   "Qué": "texto normalizado de cada punto y categoría de A7-1 frente a la ronda 2 (§96, puntos 2 y 3)",
+   "Esperado": "solo cambian los puntos 1 (c), 2 (c) y 5 (c); el alcance, los rótulos, (a), (b), (d) y los puntos 3, 4, 6, 7 y 8 sin cambio",
+   "Observado": "segmentos cambiados: 1 (c), 2 (c), 5 (c) (de 21)",
+   "Cumple": true,
+   "Datos": {
+    "Segments": [
+     "0-",
+     "1-",
+     "1a",
+     "1b",
+     "1c",
+     "1d",
+     "2-",
+     "2a",
+     "2b",
+     "2c",
+     "2d",
+     "3-",
+     "4-",
+     "5-",
+     "5a",
+     "5b",
+     "5c",
+     "5d",
+     "6-",
+     "7-",
+     "8-"
+    ]
+   }
+  },
+  {
+   "Caso": "DELTA-SECTIONS",
+   "Qué": "tramos del diff fuera de §3.2, por sección",
+   "Esperado": "solo las secciones descriptivas que declara §3.7: cabecera, §2, §3.3, §3.4, §3.7, §4, §5, §6, §8, §10, §11 y el Anexo",
+   "Observado": "23 tramos; secciones: ## 10. Evidencia, ## 11. Estado de revisión, ## 2. Fuentes (literales en la, ## 4. Semántica antes y despué, ## 5. Materialidad (M-01..M-08, ## 6. No cambia producción; co, ## 8. Preguntas para la revisi, ## Anexo (no normativo) — apli, ### 3.2 A7-1 — Admisión de los, ### 3.3 Categorías de entrada, ### 3.4 Relación con A-6 y con, ### 3.7 Corrección de la ronda, HEADER; fuera de lo declarado: ninguna",
+   "Cumple": true,
+   "Datos": {
+    "Hunks": [
+     {
+      "Old": [
+       4,
+       4
+      ],
+      "New": [
+       4,
+       4
+      ],
+      "Sections": [
+       "HEADER"
+      ]
+     },
+     {
+      "Old": [
+       25,
+       25
+      ],
+      "New": [
+       25,
+       25
+      ],
+      "Sections": [
+       "HEADER"
+      ]
+     },
+     {
+      "Old": [
+       28,
+       29
+      ],
+      "New": [
+       28,
+       32
+      ],
+      "Sections": [
+       "HEADER"
+      ]
+     },
+     {
+      "Old": [
+       39,
+       40
+      ],
+      "New": [
+       42,
+       43
+      ],
+      "Sections": [
+       "HEADER"
+      ]
+     },
+     {
+      "Old": [
+       48,
+       48
+      ],
+      "New": [
+       51,
+       51
+      ],
+      "Sections": [
+       "HEADER"
+      ]
+     },
+     {
+      "Old": [
+       51,
+       52
+      ],
+      "New": [
+       54,
+       55
+      ],
+      "Sections": [
+       "HEADER"
+      ]
+     },
+     {
+      "Old": [
+       58,
+       59
+      ],
+      "New": [
+       61,
+       62
+      ],
+      "Sections": [
+       "HEADER"
+      ]
+     },
+     {
+      "Old": [
+       101,
+       100
+      ],
+      "New": [
+       104,
+       108
+      ],
+      "Sections": [
+       "## 2. Fuentes (literales en la base de esta preparación, `bb439090`)"
+      ]
+     },
+     {
+      "Old": [
+       138,
+       139
+      ],
+      "New": [
+       146,
+       150
+      ],
+      "Sections": [
+       "### 3.2 A7-1 — Admisión de los insumos del cierre de VERIFY de FX-02"
+      ]
+     },
+     {
+      "Old": [
+       150,
+       152
+      ],
+      "New": [
+       161,
+       170
+      ],
+      "Sections": [
+       "### 3.2 A7-1 — Admisión de los insumos del cierre de VERIFY de FX-02"
+      ]
+     },
+     {
+      "Old": [
+       167,
+       170
+      ],
+      "New": [
+       185,
+       191
+      ],
+      "Sections": [
+       "### 3.2 A7-1 — Admisión de los insumos del cierre de VERIFY de FX-02"
+      ]
+     },
+     {
+      "Old": [
+       192,
+       192
+      ],
+      "New": [
+       213,
+       213
+      ],
+      "Sections": [
+       "### 3.3 Categorías de entrada"
+      ]
+     },
+     {
+      "Old": [
+       205,
+       205
+      ],
+      "New": [
+       226,
+       227
+      ],
+      "Sections": [
+       "### 3.4 Relación con A-6 y con R7-A"
+      ]
+     },
+     {
+      "Old": [
+       245,
+       244
+      ],
+      "New": [
+       267,
+       278
+      ],
+      "Sections": [
+       "### 3.7 Corrección de la ronda 3 (decisiones §96)"
+      ]
+     },
+     {
+      "Old": [
+       252,
+       251
+      ],
+      "New": [
+       286,
+       286
+      ],
+      "Sections": [
+       "## 4. Semántica antes y después"
+      ]
+     },
+     {
+      "Old": [
+       262,
+       263
+      ],
+      "New": [
+       297,
+       298
+      ],
+      "Sections": [
+       "## 5. Materialidad (M-01..M-08)"
+      ]
+     },
+     {
+      "Old": [
+       274,
+       274
+      ],
+      "New": [
+       309,
+       309
+      ],
+      "Sections": [
+       "## 6. No cambia producción; compatibilidad con A-1..A-6; guardas y preflight"
+      ]
+     },
+     {
+      "Old": [
+       310,
+       309
+      ],
+      "New": [
+       345,
+       355
+      ],
+      "Sections": [
+       "## 8. Preguntas para la revisión"
+      ]
+     },
+     {
+      "Old": [
+       322,
+       322
+      ],
+      "New": [
+       368,
+       368
+      ],
+      "Sections": [
+       "## 10. Evidencia"
+      ]
+     },
+     {
+      "Old": [
+       324,
+       323
+      ],
+      "New": [
+       370,
+       370
+      ],
+      "Sections": [
+       "## 10. Evidencia"
+      ]
+     },
+     {
+      "Old": [
+       330,
+       331
+      ],
+      "New": [
+       377,
+       378
+      ],
+      "Sections": [
+       "## 11. Estado de revisión"
+      ]
+     },
+     {
+      "Old": [
+       334,
+       334
+      ],
+      "New": [
+       381,
+       381
+      ],
+      "Sections": [
+       "## 11. Estado de revisión"
+      ]
+     },
+     {
+      "Old": [
+       339,
+       340
+      ],
+      "New": [
+       386,
+       387
+      ],
+      "Sections": [
+       "## Anexo (no normativo) — aplicación prevista"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "Caso": "R3-ABSENT",
+   "Qué": "ningún archivo de r3/ publicado en la base",
+   "Esperado": "I-62-A7/r3/ vacío",
+   "Observado": "0 archivos",
+   "Cumple": true
+  },
+  {
+   "Caso": "R2-EVID",
+   "Qué": "evidencia de la ronda 2 (I-62-A7/r2/) en la base frente a su MANIFEST.sha256",
+   "Esperado": "idéntica (la ronda 3 no la toca)",
+   "Observado": "48 entradas; discrepancias: ninguna",
+   "Cumple": true
+  },
+  {
+   "Caso": "R2-REVIEW",
+   "Qué": "custodia de la revisión de la ronda 2 (output.json, audit.json y su evidencia) en la base",
+   "Esperado": "el árbol de 3f912c84, sin cambio (§96, punto 1)",
+   "Observado": "árbol a07efc376153 (en 3f912c84: a07efc376153)",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-derive_r4.py",
+   "Qué": "copia byte a byte de la pieza de la ronda 2 (sin cambio en la ronda 3)",
+   "Esperado": "SHA-256 3de12c54e3893b7c",
+   "Observado": "SHA-256 3de12c54e3893b7c",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-make_eic_verify.py",
+   "Qué": "copia byte a byte de la pieza de la ronda 2 (sin cambio en la ronda 3)",
+   "Esperado": "SHA-256 58f13c6a8564fe98",
+   "Observado": "SHA-256 58f13c6a8564fe98",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-designate_m7.py",
+   "Qué": "copia byte a byte de la pieza de la ronda 2 (sin cambio en la ronda 3)",
+   "Esperado": "SHA-256 491dcbd672518bef",
+   "Observado": "SHA-256 491dcbd672518bef",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-lib_r1r4.py",
+   "Qué": "copia byte a byte de la pieza de la ronda 2 (sin cambio en la ronda 3)",
+   "Esperado": "SHA-256 c3995a1cd3778225",
+   "Observado": "SHA-256 c3995a1cd3778225",
+   "Cumple": true
+  },
+  {
+   "Caso": "REUSE-check_citation_blobs.py",
+   "Qué": "copia byte a byte de la pieza de la ronda 2 (sin cambio en la ronda 3)",
+   "Esperado": "SHA-256 e99ea7105d82a426",
+   "Observado": "SHA-256 e99ea7105d82a426",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIECE-a7-designation-3.schema.json",
+   "Qué": "pieza del procedimiento (A7-1, punto 7): ronda 2 → ronda 3",
+   "Esperado": "cambia solo si depende del registro de rebase (constructor, validador, formato, designate_a7); derive_r4.py sin cambio",
+   "Observado": "ae33ad31dde5… → a897f617a9ea… (cambia)",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIECE-check_a7_closure.py",
+   "Qué": "pieza del procedimiento (A7-1, punto 7): ronda 2 → ronda 3",
+   "Esperado": "cambia solo si depende del registro de rebase (constructor, validador, formato, designate_a7); derive_r4.py sin cambio",
+   "Observado": "59e26e118697… → 2afa162156eb… (cambia)",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIECE-derive_r4.py",
+   "Qué": "pieza del procedimiento (A7-1, punto 7): ronda 2 → ronda 3",
+   "Esperado": "cambia solo si depende del registro de rebase (constructor, validador, formato, designate_a7); derive_r4.py sin cambio",
+   "Observado": "3de12c54e389… → 3de12c54e389… (sin cambio)",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIECE-designate_a7.py",
+   "Qué": "pieza del procedimiento (A7-1, punto 7): ronda 2 → ronda 3",
+   "Esperado": "cambia solo si depende del registro de rebase (constructor, validador, formato, designate_a7); derive_r4.py sin cambio",
+   "Observado": "759df4f0332b… → b0d4bf136e62… (cambia)",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIECE-make_eic_a7.py",
+   "Qué": "pieza del procedimiento (A7-1, punto 7): ronda 2 → ronda 3",
+   "Esperado": "cambia solo si depende del registro de rebase (constructor, validador, formato, designate_a7); derive_r4.py sin cambio",
+   "Observado": "0e5f9305525f… → 8ebe617d87e1… (cambia)",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-instrumento",
+   "Qué": "instrumento desde su objeto Git, sin modificar",
+   "Esperado": "blob 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Observado": "blob recalculado 9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Cumple": true
+  },
+  {
+   "Caso": "PIN-aceptante",
+   "Qué": "aceptante desde su objeto Git, sin modificar",
+   "Esperado": "blob 434ef1fccb0d15762b30244b4a60928120698411",
+   "Observado": "blob recalculado 434ef1fccb0d15762b30244b4a60928120698411",
+   "Cumple": true
+  },
+  {
+   "Caso": "INPUTS",
+   "Qué": "designaciones a7-designation/3 de las invocaciones del banco (esquema a7-designation-3.schema.json) y hechos del relevo sintéticos (relay-record/v2)",
+   "Esperado": "todas válidas salvo el patrón de RunId de los controles del banco, ya conocido (decisiones §92, punto 6)",
+   "Observado": "11 archivos; con violaciones: relay-facts-NC2.json",
+   "Cumple": true
+  }
+ ],
+ "Prep": {
+  "RedTrx": "D:/r62-a7/evid-r3/inputs/fixture-tests-red.trx",
+  "Relay": {
+   "V": {
+    "Path": "D:/r62-a7/evid-r3/inputs/relay-facts-V.json",
+    "Sha256": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597"
+   },
+   "N4": {
+    "Path": "D:/r62-a6m7/bench/work/s-n4/relay-facts.json",
+    "Sha256": "c02b1e4c97b5b299f7f9bc1d7e4a9a5e1ec505bfe9a6ae31e4bea1ea703ae001"
+   },
+   "NC1": {
+    "Path": "D:/r62-a6m7/bench/work/s-nc1/relay-facts-V1.json",
+    "Sha256": "1343a4ccf84e375d0591e66404ac63a7aeb67d776f58f3542b17aefa91228ba8"
+   },
+   "NC2": {
+    "Path": "D:/r62-a7/evid-r3/inputs/relay-facts-NC2.json",
+    "Sha256": "cf0467197a01ee076040824780847a13b414de086ed3b1a78be3a8b07bda30c8"
+   },
+   "N5": {
+    "Path": "D:/r62-a6m7/bench/work/s-n5/relay-facts.json",
+    "Sha256": "1595107c1e6ebb026fec51a7cae77498e44f33a31f58504fb2924785091eb54e"
+   },
+   "N6": {
+    "Path": "D:/r62-a6m7/bench/work/s-n6/relay-facts.json",
+    "Sha256": "6f3f4bf9cd0cd48bbf5941a0dc0acf3ba394cb1d49e3a15cc31fed9b813577ac"
+   },
+   "N7A": {
+    "Path": "D:/r62-a6m7/bench/work/s-n7a/relay-facts.json",
+    "Sha256": "a591e109260fd207207ed2d82b329a02405aec34b8a85b438a95820325f4c9e4"
+   },
+   "N7B": {
+    "Path": "D:/r62-a6m7/bench/work/s-n7b/relay-facts.json",
+    "Sha256": "39dbc025bb7814b41db7a6f0f7b8871560c362be12765a6770f0371ada16cbe5"
+   }
+  },
+  "Designations": {
+   "V": {
+    "Path": "D:/r62-a7/evid-r3/designations/V.json",
+    "Sha256": "c1d94eaff8b4e5bdde7b8760ae454193c6353d5083ade23774c1fc5f1aa48079"
+   },
+   "N4": {
+    "Path": "D:/r62-a7/evid-r3/designations/N4.json",
+    "Sha256": "b7d35d14f15c3d479efa61c32936352200751d3b1b6d53794fc975905f626e70"
+   },
+   "NC1": {
+    "Path": "D:/r62-a7/evid-r3/designations/NC1.json",
+    "Sha256": "0fba6afc8c39f4238510ac289e4cdb82724911b35fecf294c3d14d213efb2121"
+   },
+   "NC2": {
+    "Path": "D:/r62-a7/evid-r3/designations/NC2.json",
+    "Sha256": "697690b6a7de0ee5bf070605724f2d8551ca31d98e5ebebe442498930910276f"
+   },
+   "N5": {
+    "Path": "D:/r62-a7/evid-r3/designations/N5.json",
+    "Sha256": "7e1bcdaf8a00b7b18ece7a0dce1201aae06130b2e59cc6f61ec76d32d34f524b"
+   },
+   "N6": {
+    "Path": "D:/r62-a7/evid-r3/designations/N6.json",
+    "Sha256": "db7eb27afdef9707457736c09c4351d8f0a53acb7902e63ec5c4646bc6427f43"
+   },
+   "N7A": {
+    "Path": "D:/r62-a7/evid-r3/designations/N7A.json",
+    "Sha256": "1dbb93cc866d5ed382a6c09d4168a7d88d5a0c6a462047650b602a4b570d3167"
+   },
+   "N7B": {
+    "Path": "D:/r62-a7/evid-r3/designations/N7B.json",
+    "Sha256": "ea2208637686e7ca821e75569183a9be310757ca21eac8fc9beb312942d3b8a0"
+   },
+   "M": {
+    "Path": "D:/r62-a7/evid-r3/designations/M.json",
+    "Sha256": "8aaa3eff5fa974f8a46c4348c348ba7915316c91488da725dad7f9c0560006c2"
+   }
+  },
+  "SchemaViolations": {
+   "relay-facts-V.json": [],
+   "designations/V.json": [],
+   "designations/N4.json": [],
+   "designations/NC1.json": [],
+   "relay-facts-NC2.json": [
+    "#/RunId pattern"
+   ],
+   "designations/NC2.json": [],
+   "designations/N5.json": [],
+   "designations/N6.json": [],
+   "designations/N7A.json": [],
+   "designations/N7B.json": [],
+   "designations/M.json": []
+  }
+ },
+ "CandidateBlob": "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff"
+}

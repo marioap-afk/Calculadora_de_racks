@@ -1,0 +1,83 @@
+{
+ "Schema": "i62-a7r3-preflight-summary/1",
+ "Candidate": {
+  "Path": "docs/initiatives/I-62-A-7.md (candidata ronda 3)",
+  "Blob": "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff"
+ },
+ "PreviousRound": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+ "Base": "5da2007f45160ced37b958a3a772c46ac64874ee",
+ "StartUtc": "2026-10-23T17:46:36Z",
+ "ToolChanges": [
+  "a7-designation/3: role REBASE (with its RunId) and Invocation.Kind REVERIFICATION; MainShaEval no longer designated",
+  "builder and validator: the rebase record of the 16.7 reverification, its coherence and MainSha_eval = MainAfterSha",
+  "designate_a7.py: REBASE without Name in C6, not admitted outside the reverification, path in the attempt directory"
+ ],
+ "Totals": {
+  "q0": {
+   "Cases": 21,
+   "Hold": 21
+  },
+  "q1": {
+   "Cases": 16,
+   "Hold": 16
+  },
+  "q2": {
+   "Cases": 6,
+   "Hold": 6
+  },
+  "q3": {
+   "Cases": 8,
+   "Hold": 8
+  },
+  "q4": {
+   "Cases": 4,
+   "Hold": 4
+  },
+  "q5": {
+   "Cases": 4,
+   "Hold": 4
+  },
+  "q6": {
+   "Cases": 24,
+   "Hold": 24
+  },
+  "q7": {
+   "Cases": 40,
+   "Hold": 40
+  },
+  "q8": {
+   "Cases": 38,
+   "Hold": 38
+  }
+ },
+ "Hold": 161,
+ "Cases": 161,
+ "NotHolding": [],
+ "Guards": {
+  "Result": "PASS",
+  "Head": "a81164dcbe91cb99df5d827f87ae1dda3a5e256e",
+  "CandidateBlob": "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff",
+  "Guards": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS",
+   "G4": "PASS",
+   "G5": "PASS",
+   "G6": "PASS",
+   "G7": "PASS"
+  }
+ },
+ "Selftest": {
+  "Result": "PASS",
+  "Killed": 38,
+  "Total": 38
+ },
+ "Invalidator": {
+  "A7Blob": "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff",
+  "BuilderSha256": "8ebe617d87e19d0b703e3225184ec26090d8eb70181e65f272d0848ee1269f09",
+  "ValidatorSha256": "2afa162156ebb17aaeac0f5c3a5919efe23f87e486f2ca71b8475ef7565a0f50",
+  "DesignationFormatSha256": "a897f617a9ea19bdc4f6b35c6bcb44d36d864b186457e0d56752f1b1e0368e1b",
+  "DerivationDesignateSha256": "b0d4bf136e620ee5fa162f966f0ab28155ff8951ec36f1ce5bc2ae0142942222",
+  "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+ }
+}

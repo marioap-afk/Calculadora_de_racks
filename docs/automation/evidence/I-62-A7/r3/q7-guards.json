@@ -1,0 +1,307 @@
+{
+ "Phase": "q7-guards",
+ "Cases": [
+  {
+   "Caso": "GUARD-PREVIEW",
+   "Qué": "guardas G1-G7 sobre el commit hipotético (base 5da2007f + candidata r3 como modificación + este directorio bajo I-62-A7/r3/)",
+   "Esperado": "PASS en las siete",
+   "Observado": "G1 PASS; G2 PASS; G3 PASS; G4 PASS; G5 PASS; G6 PASS; G7 PASS",
+   "Cumple": true,
+   "Datos": {
+    "Head": "a81164dcbe91cb99df5d827f87ae1dda3a5e256e"
+   }
+  },
+  {
+   "Caso": "GUARD-SELFTEST",
+   "Qué": "autoprueba: un mutante por condición nueva o cambiada en la ronda 3",
+   "Esperado": "candidata PASS y todos los mutantes muertos",
+   "Observado": "candidata PASS; mutantes muertos 38 de 38",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G1-only-allowed",
+   "Qué": "añade un archivo fuera de r3/ (docs/automation/evidence/I-62-A7/extra.txt)",
+   "Esperado": "G1 FAIL (G1-only-allowed)",
+   "Observado": "G1 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G1-amendment-modified",
+   "Qué": "el commit no modifica la enmienda (la ronda 2 queda como está)",
+   "Esperado": "G1 FAIL (G1-amendment-modified)",
+   "Observado": "G1 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-r2-evidence",
+   "Qué": "cambia un archivo de la evidencia de la ronda 2 (I-62-A7/r2/preflight.md)",
+   "Esperado": "G2 FAIL (G2-protected(r1-evidence))",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-r2-review",
+   "Qué": "cambia la custodia de la revisión de la ronda 2 (output.json)",
+   "Esperado": "G2 FAIL (G2-protected(surface))",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-previous-round",
+   "Qué": "la cabecera declara otra ronda 2",
+   "Esperado": "G2 FAIL (G2-previous-round)",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-rows",
+   "Qué": "falta la fila L22",
+   "Esperado": "G3 FAIL (G3-rows)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-L18",
+   "Qué": "L18 con una palabra cambiada en la cita",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-L19",
+   "Qué": "L19 sin las líneas 593-595 (la cita de la reverificación queda fuera de las líneas citadas)",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-L20",
+   "Qué": "L20 con la cita alterada («sin conflictos» → «con conflictos»)",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-L21",
+   "Qué": "L21 cita otro blob del esquema relay-record/v2",
+   "Esperado": "G3 FAIL (G3-blob)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-L22",
+   "Qué": "L22 con la cita alterada («del diario» → «de la sesión»)",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule1c-roles",
+   "Qué": "(c) vuelve a «—; y los hechos del relevo» (texto de la ronda 2)",
+   "Esperado": "G4 FAIL (G4-rule1c-roles)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule1c-rebase",
+   "Qué": "(c) sin «solo en la reverificación de 16.7 sin conflictos»",
+   "Esperado": "G4 FAIL (G4-rule1c-rebase)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule1c-measurement",
+   "Qué": "(c): la medición o la verificación con registro de rebase",
+   "Esperado": "G4 FAIL (G4-rule1c-measurement)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c",
+   "Qué": "2 (c) sin el registro de rebase entre los papeles",
+   "Esperado": "G4 FAIL (G4-rule2c)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-rebase-path",
+   "Qué": "2 (c): el registro de rebase sin su propio `RunId` como directorio",
+   "Esperado": "G4 FAIL (G4-rule2c-rebase-path)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-coherence",
+   "Qué": "2 (c): la coherencia sin el `MainBeforeSha` = `K.MainSha`",
+   "Esperado": "G4 FAIL (G4-rule2c-coherence)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-mse",
+   "Qué": "2 (c): `MainSha_eval` deja de ser el `MainAfterSha` del registro",
+   "Esperado": "G4 FAIL (G4-rule2c-mse)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-mse",
+   "Qué": "2 (c): `MainAfterSha` sin la condición de ascendencia de `Target.commit`",
+   "Esperado": "G4 FAIL (G4-rule2c-mse)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule5c-rebase-absent",
+   "Qué": "5 (c): sin registro de rebase la reverificación sigue con `K.MainSha`",
+   "Esperado": "G4 FAIL (G4-rule5c-rebase-absent)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule5c-rebase-not-admitted",
+   "Qué": "5 (c): un registro de rebase se admite en cualquier invocación",
+   "Esperado": "G4 FAIL (G4-rule5c-rebase-not-admitted)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-superseded-r3",
+   "Qué": "reinsertada la frase de la ronda 2 «no tiene hechos del relevo (A6-7, regla 1);»",
+   "Esperado": "G4 FAIL (G4-superseded)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s36",
+   "Qué": "§3.6 deja de cerrar antes de §3.7 (sin el título de §3.6)",
+   "Esperado": "G4 FAIL (G4-s36)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s37",
+   "Qué": "sin §3.7",
+   "Esperado": "G4 FAIL (G4-s37)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s34-rebase",
+   "Qué": "§3.4 sin el registro de rebase fuera de C6",
+   "Esperado": "G4 FAIL (G4-s34-rebase)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s4-rebase",
+   "Qué": "§4 sin la fila del registro de rebase",
+   "Esperado": "G4 FAIL (G4-s4-rebase)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s5-rebase",
+   "Qué": "motivo de M-04 sin la ausencia del registro de rebase",
+   "Esperado": "G4 FAIL (G4-s5-rebase)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s6-a5-rebase",
+   "Qué": "§6 sin la nota de A-5 sobre la reverificación",
+   "Esperado": "G4 FAIL (G4-s6-a5-rebase)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-q-r3",
+   "Qué": "sin la pregunta Q-A7R3-03",
+   "Esperado": "G4 FAIL (G4-q-r3)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-table-absence",
+   "Qué": "la columna de ausencia de (c) en §3.3 sin la reverificación",
+   "Esperado": "G4 FAIL (G4-table-absence)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-table-c-roles",
+   "Qué": "la fila (c) de §3.3 sin el registro de rebase",
+   "Esperado": "G4 FAIL (G4-table-c-roles)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-a62r1-declared",
+   "Qué": "la cabecera sin la precisión de A6-2, regla 1 (sección acotada por «Previous rounds»)",
+   "Esperado": "G4 FAIL (G4-a62r1-declared)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-amendment",
+   "Qué": "Amendment ronda 2",
+   "Esperado": "G5 FAIL (G5-amendment)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-state",
+   "Qué": "State PROPUESTA (ronda 2)",
+   "Esperado": "G5 FAIL (G5-state)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-architect",
+   "Qué": "Architect review sin la ronda 2",
+   "Esperado": "G5 FAIL (G5-architect)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-previous-round",
+   "Qué": "sin el bloque Previous rounds",
+   "Esperado": "G5 FAIL (G5-previous-round)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-state-table",
+   "Qué": "§11: Architect ronda 3 LAUNCHED",
+   "Esperado": "G5 FAIL (G5-state-table)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G7-amendment-scanned",
+   "Qué": "una dirección de correo en la enmienda modificada",
+   "Esperado": "G7 FAIL (e-mail address)",
+   "Observado": "G7 FAIL",
+   "Cumple": true
+  }
+ ],
+ "Preview": {
+  "Result": "PASS",
+  "Head": "a81164dcbe91cb99df5d827f87ae1dda3a5e256e",
+  "CandidateBlob": "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff",
+  "Guards": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS",
+   "G4": "PASS",
+   "G5": "PASS",
+   "G6": "PASS",
+   "G7": "PASS"
+  }
+ },
+ "Selftest": {
+  "Result": "PASS",
+  "Killed": 38,
+  "Total": 38
+ }
+}
