@@ -5027,3 +5027,12 @@ solo desde artefactos custodiados.
   bloqueada SOLO por la compuerta 11** con el motivo «authorization pending» (§98, punto 7).
 - Sin revisión formal: exige una disposición del Coordinator posterior a §98 que la nombre, fijada con `pin_authorization.py`, y volver a congelar el
   kit. Sin Codex; A6-7 HELD; sin B1 ni FX-U2; ni A-7 AGREED, ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 205. Decisiones §99: revisión formal única de A-7 ronda 4 autorizada
+
+- Una revisión formal independiente de A-7 ronda 4 (blob `ebb3a87b`, publicación `99de338d`) con el kit `R20261024T041128Z-4825` custodiado en
+  `736a3805` (manifiesto `46b9c465…`). Fijación de §99 con `pin_authorization.py` (solo las constantes de autorización y lo que de ellas se deriva),
+  nueva congelación y custodia; validación incremental solo de lo afectado por la fijación (compuerta 11, L00 en estado PINNED, mutación dirigida de
+  `owner_gate.py`, integridad del manifiesto y del clon, copias fieles, sonda de registro y prueba en seco), sin repetir los 209 mutantes ni
+  reconstruir el kit; preflight con STOP ante cualquier fallo; UNA invocación, 3 600 s, sin reintento; auditor congelado sin acreditación
+  excepcional; ninguna sección de decisiones posterior hasta auditar. Sin Codex, sin A6-7, sin B1 ni FX-U2, sin tocar A-1..A-6.
