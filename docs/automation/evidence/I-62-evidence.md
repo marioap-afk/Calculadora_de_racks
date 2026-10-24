@@ -4916,3 +4916,21 @@ solo desde artefactos custodiados.
   pruebas, el cierre ni el preflight de 161 casos); preflight obligatorio, incluida la comprobación de que `preflight_text_r2.py` no interviene en la
   evaluación del objeto publicado; UNA invocación, 3 600 s, sin reintento; auditor congelado sin acreditación excepcional. Sin Codex, sin A6-7, sin B1
   ni FX-U2, sin tocar A-1..A-6.
+
+## 200. Kit R20261023T180846Z-62bd fijado en §97, vuelto a congelar y custodiado; validación incremental; prueba en seco con cero bloqueos (decisiones §97, puntos 2-4)
+
+- **Fijación:** `pin_authorization.py` sobre el texto de decisiones de `92aa4d0c` → §97 (línea 1897, una sola sección, blob completo de A-7, sin
+  secciones posteriores); en `owner_gate.py` solo cambian las tres líneas AUTH_* (`7e0cf27a` → `e2a36774`). El manifiesto pendiente `84a9883d…` se
+  verificó antes contra la custodia de `000fd6eb` (SHA-256 completo).
+- **Validación incremental (§97, punto 3)** ([`prep/p97/targeted-validation.json`](I-62-architect-A-7/R20261023T180846Z-62bd/prep/p97/targeted-validation.json)): casos O00-O30
+  39/39; L00 sobre el worktree real en estado FIJADO (PASS); casos de auditoría que leen la autorización fijada (00, 150-151p, 152, 153)
+  23/23; mutación dirigida de `owner_gate.py` fijado 19/19, juzgada sobre los casos O, los únicos que mataron sus
+  sitios en la batería completa. Sin repetir las 321 pruebas, los 209 mutantes, el cierre ni el preflight de 161 casos.
+- **Congelación y preflight (§97, punto 4):** `kit-manifest.json` `d4f78a4bc6c51a89…` (FIJADA §97); sonda de registro con código 0;
+  **prueba en seco con `BlockingChecks` = []** (compuerta 11 con §97 y sin secciones posteriores; binario `claude-cli` 2.1.299 con su SHA-256 y
+  Authenticode Valid de Anthropic; clon limpio; run = kit = cierre = manifiesto); 42 copias fieles reproducidas desde `b9bfae50` y cotejadas byte a
+  byte; checkout principal sin cambios; I-64 limpio y sin procesos; corriente conectada. `preflight_text_r2.py` no interviene en la evaluación del
+  objeto publicado ([`prep/p97/preflight-text-r2-non-intervention.json`](I-62-architect-A-7/R20261023T180846Z-62bd/prep/p97/preflight-text-r2-non-intervention.json)): no está en `r3/`;
+  en `r3/` solo lo carga `r2lib.main()`, que el ejecutor de la ronda 3 no llama; las guardas sobre la publicación dan PASS sin él.
+- Siguiente: UNA invocación (`python -B kit/launch.py`, 3 600 s, sin reintento) y el auditor congelado v7.0-a7r3, sin secciones de decisiones nuevas
+  hasta auditar.

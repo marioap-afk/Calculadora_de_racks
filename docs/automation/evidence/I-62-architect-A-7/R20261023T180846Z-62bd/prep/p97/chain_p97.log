@@ -1,0 +1,9 @@
+2026-10-24T01:09:51Z START s9-manifest-pinned
+2026-10-24T01:09:52Z END s9-manifest-pinned rc=0
+2026-10-24T01:09:52Z START s10-record-probe-pinned
+2026-10-24T01:09:53Z END s10-record-probe-pinned rc=0
+2026-10-24T01:09:53Z START s11-dry-run-pinned
+2026-10-24T01:10:08Z END s11-dry-run-pinned rc=2
+2026-10-24T01:10:08Z START s11-check-pinned
+2026-10-24T01:10:09Z END s11-check-pinned rc=0
+2026-10-24T01:10:09Z DONE

@@ -54,9 +54,9 @@ CLAUDE_LINE_SHA = "fbeade41f74d6694a621fe6294d9568d7b76b124b1fd78e415514582c5d6e
 CLAUDE_LINE_PREFIX = "CLAUDE-CLI-I62 ="
 SECTION_78 = "## 78. "
 BASE_SECTION = 96                                                # decisiones §96: tercera candidata; «no lanzar una nueva revisión formal sin disposición posterior»
-AUTH_SECTION = None   # PENDIENTE: la disposición del Coordinator posterior a §96 que autorice esta revisión (pin_authorization.py)
-AUTH_HEADING = None
-AUTH_TEXT_SHA = None
+AUTH_SECTION = 97   # decisiones §97: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)
+AUTH_HEADING = "## 97. Disposición del Coordinator: revisión formal acotada de A-7 ronda 3 (2026-10-24 UTC)"
+AUTH_TEXT_SHA = "df12f445c8a6d812c386eff2d009e3a2ef6c4e60b528b0c318c91dc97ca9db6e"   # SHA-256 del texto de §97 (pin_authorization.py)
 PENDING_REASON = ("authorization pending: a Coordinator disposition after §96 must be pinned (section number, heading, text SHA-256) and the kit "
                   "re-frozen")
 NUMBERED_RX = re.compile(r"^## ([0-9]+)\. ")

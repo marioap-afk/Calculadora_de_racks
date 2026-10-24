@@ -7,9 +7,9 @@ Orden:          decisiones §96 (línea 1880 en b9bfae50; cuerpo pegado 3 198 by
                 = kit/order.txt = run/order.txt), puntos 6 (kit con referencias comprobadas, componentes congelados reutilizados, validación
                 incremental según §88 y dictamen expreso sobre A-5 además de A-6) y 7 («Preparar el kit acotado, pero no lanzar una nueva revisión
                 formal sin disposición posterior»). §96 es la última sección de decisiones en la HEAD b9bfae50 del worktree
-Autorización:   PENDIENTE: owner_gate.py entrega AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None; la compuerta 11 bloquea con el único motivo
-                «authorization pending» hasta que una disposición del Coordinator POSTERIOR a §96 que nombre esta revisión se fije y el kit se
-                vuelva a congelar (abajo, «Lanzamiento»)
+Autorización:   FIJADA: decisiones §97, «Disposición del Coordinator: revisión formal acotada de A-7 ronda 3 (2026-10-24 UTC)», línea 1897 en la
+                HEAD 92aa4d0c; AUTH_TEXT_SHA df12f445c8a6d812…; fijada con pin_authorization.py (prep/p97/). La versión PENDIENTE del kit está en la
+                custodia de 000fd6eb (manifiesto 84a9883d…); abajo, «Fijación de §97»
 Consumo:        cubierto por CLAUDE-CLI-I62 = A (revisiones de ARCHITECT de I-62, solo lectura), la misma base que las rondas 1 y 2
 Objeto:         docs/initiatives/I-62-A-7.md, ronda 3, PROPUESTA, blob 8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff (45 668 bytes, 393 líneas), publicado en
                 37ac6ca4a6f0a04268ac357764bb74f843eb3a08 (padre 5da2007f, con la ronda 2 8a528133 y §96) y registrado en b9bfae50 (resultado `run` de
@@ -29,8 +29,9 @@ Compuerta D-01: MEASURED sobre kit/claude-cli-characterization.json (SHA-256 4ba
 Compuerta 11:   BLOQUEANTE: línea del Owner de §78; CLAUDE-CLI-I62 = A y el mismo binario; A-7 en la HEAD = 8bcccb2f y A-6 = 4bc919dd (acordada);
                 decisiones solo por añadido desde el clon; la HEAD desciende del clon; una disposición posterior a §96 fijada (encabezado, blob
                 completo, SHA-256 del texto, una sola sección) y ninguna sección posterior. En el kit entregado: PENDIENTE
-Estado:         kit CONGELADO con la autorización PENDIENTE (kit/kit-manifest.json, SHA-256 84a9883def489347d2a5a4d5bf2aff8bfc2dac6bb77ec3e4be6107a0c482765f, 71 archivos más el manifiesto); sonda de registro en Ok;
-                prueba en seco bloqueada SOLO por la compuerta 11 con el motivo «authorization pending» (4 y 5 no se ejecutan en seco). NO lanzado
+Estado:         kit FIJADO en §97 y vuelto a CONGELAR (kit/kit-manifest.json, SHA-256 d4f78a4bc6c51a89d955cbac1fa10492e173031b256e2b31334395e816c3317b);
+                sonda de registro en Ok; prueba en seco con BlockingChecks = [] (4 y 5 no se ejecutan en seco). La versión pendiente (manifiesto
+                84a9883def489347d2a5a4d5bf2aff8bfc2dac6bb77ec3e4be6107a0c482765f) se custodió en 000fd6eb. Lanzamiento: abajo, «Fijación de §97»
 ```
 
 ## Qué pide §96 y dónde se cubre
@@ -218,3 +219,32 @@ exactos). Las 42 copias fieles `kit/fiel__*.txt` se custodian por reproducción 
 
 `prep/` contiene los scripts de derivación y de preparación, los diffs frente al kit de la ronda 2, las salidas crudas de la cadena y
 los resultados de la negativa, la reproducción, el host y la privacidad. Ninguna transcripción, credencial ni archivo de autenticación.
+
+## Fijación de §97 y nueva congelación (sesión principal; decisiones §97)
+
+1. **§97 registrada** solo por añadido en `92aa4d0c` (decisiones, línea 1897; cuerpo pegado de 3 960 bytes, SHA-256
+   `7de62cee3f1ac622a76f917ff9629a5cb223e676fc8f3044f44f3da71eb33b98`), con el blob completo de A-7 y el manifiesto del kit verificado contra la custodia
+   de `000fd6eb` (`84a9883d…`, SHA-256 completo idéntico al del kit local).
+2. **Fijación** (`prep/p97/pin.json`, `prep/p97/apply_pin.py`, `prep/p97/owner_gate.pin.diff`): `pin_authorization.py` sobre el texto de decisiones de
+   `92aa4d0c` → Ready (número posterior a §96, una sola sección, blob completo, ninguna sección posterior); en `owner_gate.py` cambian SOLO las líneas
+   57-59 (AUTH_*): `7e0cf27a` → `e2a36774`.
+3. **Validación incremental (§97, punto 3; `prep/p97/targeted-validation.json`):** la fijación cambia tres constantes de un módulo; se repiten las
+   pruebas que las leen: casos O00-O30 39/39; L00 sobre el worktree real en estado FIJADO (PASS; §97 como única sección autorizada, sin secciones
+   posteriores); casos de auditoría que construyen o comparan el registro de la compuerta 11 con la autorización del KIT (00, 150-151p, 152 y 153)
+   23/23; mutación dirigida de los 19 sitios de `owner_gate.py` fijado 19/19, juzgada sobre los casos O, los únicos que los mataron en la batería
+   completa. No se repiten las 321 pruebas, los 209 mutantes, el cierre ni el preflight de 161 casos (componentes y dependencias sin cambio).
+4. **Congelación:** `kit/kit-manifest.json` `d4f78a4bc6c51a89d955cbac1fa10492e173031b256e2b31334395e816c3317b` (AuthorizationState FIJADA §97; `OwnerGateTested` informa que
+   `owner_gate.py` cambió desde la batería completa, solo en las tres constantes, cubiertas por el paso 3); sonda de registro en Ok (`record-probe.json`;
+   la pendiente en `record-probe-pending.json`); **prueba en seco con `BlockingChecks` = []** (`launch-dry-run.json`; la pendiente en
+   `launch-dry-run-pending.json`): compuerta 11 en Ok con §97 y sin secciones posteriores, binario `claude-cli` 2.1.299 con su SHA-256 y Authenticode
+   Valid de Anthropic, clon limpio, run = kit = cierre = manifiesto.
+5. **Preflight obligatorio (§97, punto 4):** blob de A-7 en la HEAD = `8bcccb2f`; 42 copias fieles reproducidas desde `b9bfae50` y cotejadas byte a byte
+   con el kit, el cierre y el manifiesto nuevo (AllReproduced, `prep/p97/faithful-regeneration-pinned.json`); host (`prep/p97/host-checks-prelaunch.json`,
+   2026-10-24T01:11:48Z): checkout principal en `95690c28` con 0 líneas de estado; I-64 en `09f2f1c3` con 0 líneas y sin procesos suyos; corriente conectada; sin
+   directorio de proyecto previo para el clon ni transcripción con el session id. **`preflight_text_r2.py` no interviene** en la evaluación del objeto
+   publicado (`prep/p97/check_preflight_text_r2.py` → `preflight-text-r2-non-intervention.json`, NonIntervention): no está en `r3/` en ningún commit; el de
+   `r2/` conserva su blob `a773a873` desde `e90b444d`; A-7 no lo nombra; en `r3/` solo lo carga `r2lib.main()` (el ejecutor de la ronda 2), que el
+   ejecutor de la ronda 3 no llama; las guardas sobre la publicación real dan PASS sin él; su único efecto fue el commit hipotético de la autoprueba
+   de las guardas.
+6. Lanzamiento: UNA vez `python -B kit/launch.py` desde esta carpeta (tope 3 600 s, sin reintento) y el auditor congelado v7.0-a7r3 sobre la corrida
+   completa, sin acreditación excepcional.

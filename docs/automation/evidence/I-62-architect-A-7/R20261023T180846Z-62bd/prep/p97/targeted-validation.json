@@ -1,0 +1,413 @@
+{
+ "Schema": "a7r3-targeted-validation-s97/1",
+ "Why": "decisiones §97, punto 3: la fijación solo cambia AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA de owner_gate.py (prep/p97/owner_gate.pin.diff); se repiten las pruebas que leen esas constantes y la mutación dirigida del módulo cambiado (§88, punto 3), juzgada sobre los casos O, los únicos que mataron sus 19 sitios en la batería completa; las 321 pruebas y los 209 mutantes de los demás componentes siguen vigentes (sin cambio)",
+ "Modules": {
+  "owner_gate.py": "e2a36774af6759e61b6c2f7ff76b70703f0e0e34345a6ff00ca290f2ef10e5cb",
+  "post-review.py": "e1d6b1b26da7f61f036d820ab94a944fb357810d3945146dcfbecda9d66c8ca0",
+  "selftest-post-review.py": "318ef54023219db4ef0f0cbccbc583b36387703d51e653667be106af50bb34ec",
+  "mutation-post-review.py": "cf120dd8647249e0279ca9e029830bc08130810d3e02d667c692ce05928cc35f",
+  "transport_gate.py": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf",
+  "fidelity.py": "a84825e00112965f33c7530ffac6ff84353ff036f2773ee525ebd178e872c68f"
+ },
+ "SelftestTargeted": {
+  "OwnerCases": 39,
+  "OwnerPass": 39,
+  "L00": {
+   "ExpectedState": "PINNED",
+   "Ok": true,
+   "Problems": [],
+   "AuthorizationSections": [
+    {
+     "Number": 97,
+     "Line": 1897,
+     "Heading": "## 97. Disposición del Coordinator: revisión formal acotada de A-7 ronda 3 (2026-10-24 UTC)",
+     "HeadingMatches": true,
+     "HasBlob": true,
+     "TextSha256": "df12f445c8a6d812c386eff2d009e3a2ef6c4e60b528b0c318c91dc97ca9db6e",
+     "TextSha256Matches": true
+    }
+   ],
+   "LaterSections": [],
+   "ObjectBlobAtHead": "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff",
+   "A6BlobAtHead": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5",
+   "WorktreeHead": "92aa4d0ce27d37696ff016100d5c29de28bbb6f1",
+   "Result": "PASS"
+  },
+  "AuditCases": [
+   {
+    "Case": "00-base-acreditada",
+    "Result": "PASS",
+    "Accreditation": "ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "150-preflight-sin-compuerta-11",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "150b-preflight-compuerta-11-otra-linea",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "150c-preflight-compuerta-11-fallida",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151-preflight-compuerta-11-sin-autorizacion",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151b-preflight-compuerta-11-blob-en-la-head",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151b2-preflight-compuerta-11-a6-en-la-head",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151c-preflight-compuerta-11-otro-runid",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151d-preflight-compuerta-11-seccion-posterior",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151e-preflight-compuerta-11-sha-del-texto",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151f-preflight-compuerta-11-encabezado",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151g-preflight-compuerta-11-dos-secciones",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151h-preflight-compuerta-11-no-autorizada",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151i-preflight-compuerta-11-sha-fijado-distinto",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151j-preflight-compuerta-11-otra-seccion",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151k-preflight-compuerta-11-sin-blob",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151l-preflight-compuerta-11-otro-objeto",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151m-preflight-compuerta-11-otra-seccion-fijada",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151n-preflight-compuerta-11-otro-encabezado-fijado",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151o-preflight-compuerta-11-registro-pendiente",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "151p-kit-con-la-autorizacion-pendiente",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "152-categorias-de-ejecucion-y-contenido",
+    "Result": "PASS",
+    "Accreditation": "NOT_ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   },
+   {
+    "Case": "153-categoria-completed-acreditada",
+    "Result": "PASS",
+    "Accreditation": "ACCREDITED",
+    "Missing": [],
+    "Unexpected": []
+   }
+  ],
+  "AuditPass": 23,
+  "PinsForAuditCases": {
+   "Source": "KIT (autorización fijada en owner_gate.py)",
+   "Pins": {
+    "Section": 97,
+    "Heading": "## 97. Disposición del Coordinator: revisión formal acotada de A-7 ronda 3 (2026-10-24 UTC)",
+    "TextSha256": "df12f445c8a6d812c386eff2d009e3a2ef6c4e60b528b0c318c91dc97ca9db6e"
+   }
+  },
+  "Failing": [],
+  "AllPass": true
+ },
+ "MutationTargeted": {
+  "Module": "owner_gate.py",
+  "Sha256": "e2a36774af6759e61b6c2f7ff76b70703f0e0e34345a6ff00ca290f2ef10e5cb",
+  "Sites": 19,
+  "BaselineFailing": [],
+  "Killed": 19,
+  "Mutants": [
+   {
+    "Line": 149,
+    "Code": "probs.append(\"blob de A-7 no fijado en el kit (closure.ObjectBlob: 40 hexadecimales, igual al blob fijado %s…)\" % OBJECT_BLOB[:8])",
+    "Killed": true,
+    "KilledBy": [
+     "O12-blob-no-fijado",
+     "O12b-blob-fijado-de-la-ronda-2"
+    ],
+    "KillingCases": 2
+   },
+   {
+    "Line": 151,
+    "Code": "probs.append(\"la línea fijada del Owner A6-ADR0046-9-FX02 no está, como línea completa, en la A-6 acordada del commit del clon (A-6 §7)\")",
+    "Killed": true,
+    "KilledBy": [
+     "O27-linea-fijada-ausente-de-la-a6-acordada"
+    ],
+    "KillingCases": 1
+   },
+   {
+    "Line": 153,
+    "Code": "probs.append(\"decisiones sin un único encabezado §78 (%d)\" % len(s78))",
+    "Killed": true,
+    "KilledBy": [
+     "O28-dos-encabezados-78"
+    ],
+    "KillingCases": 1
+   },
+   {
+    "Line": 155,
+    "Code": "probs.append(\"falta, como línea completa de decisiones, la línea del Owner A6-ADR0046-9-FX02 de §78 (SHA-256 %s…)\" % A6_LINE_SHA[:8])",
+    "Killed": true,
+    "KilledBy": [
+     "O13-sin-la-linea-del-owner",
+     "O14-parafrasis",
+     "O15-fragmento-citado-en-tabla",
+     "O16-cita-con-sangria-de-bloque"
+    ],
+    "KillingCases": 6
+   },
+   {
+    "Line": 157,
+    "Code": "probs.append(\"la línea del Owner A6-ADR0046-9-FX02 no está registrada después del encabezado de decisiones §78\")",
+    "Killed": true,
+    "KilledBy": [
+     "O19-linea-antes-de-78"
+    ],
+    "KillingCases": 1
+   },
+   {
+    "Line": 159,
+    "Code": "probs.append(\"otra línea que empieza por «%s» distinta de la fijada (líneas %s)\" % (A6_LINE_PREFIX, [i + 1 for i in other_a6][:5]))",
+    "Killed": true,
+    "KilledBy": [
+     "O14-parafrasis",
+     "O17-espacio-final",
+     "O18-retorno-de-carro",
+     "O20-revocacion-anterior-a-la-autorizacion"
+    ],
+    "KillingCases": 4
+   },
+   {
+    "Line": 161,
+    "Code": "probs.append(\"falta, como línea completa de decisiones, la línea del Owner CLAUDE-CLI-I62 = A (SHA-256 %s…): autorización de revisión \"",
+    "Killed": true,
+    "KilledBy": [
+     "O21-sin-claude-cli-i62"
+    ],
+    "KillingCases": 1
+   },
+   {
+    "Line": 164,
+    "Code": "probs.append(\"otra línea que empieza por «%s» distinta de la fijada (líneas %s): autorización de revisión no verificable\"",
+    "Killed": true,
+    "KilledBy": [
+     "O21-sin-claude-cli-i62",
+     "O22-otra-linea-claude-cli-i62"
+    ],
+    "KillingCases": 2
+   },
+   {
+    "Line": 167,
+    "Code": "probs.append(\"docs/initiatives/I-62-A-7.md en la HEAD del worktree no tiene el blob de A-7 fijado en el kit (%s)\"",
+    "Killed": true,
+    "KilledBy": [
+     "O11-a7-en-la-head-con-otro-blob",
+     "O12-blob-no-fijado",
+     "O12b-blob-fijado-de-la-ronda-2"
+    ],
+    "KillingCases": 3
+   },
+   {
+    "Line": 170,
+    "Code": "probs.append(\"docs/initiatives/I-62-A-6.md en la HEAD del worktree no tiene el blob acordado %s… (decisiones §90; §96, punto 3) (%s)\"",
+    "Killed": true,
+    "KilledBy": [
+     "O11b-a6-en-la-head-con-otro-blob",
+     "O11c-a6-ausente-en-la-head"
+    ],
+    "KillingCases": 2
+   },
+   {
+    "Line": 173,
+    "Code": "probs.append(PENDING_REASON)",
+    "Killed": true,
+    "KilledBy": [
+     "O00-autorizacion-pendiente-bloquea",
+     "O00b-pendiente-con-una-seccion-posterior-a-96"
+    ],
+    "KillingCases": 2
+   },
+   {
+    "Line": 176,
+    "Code": "probs.append(\"la autorización fijada (§%s) no es una sección posterior a §%d (decisiones §96, punto 7)\" % (a[\"Section\"], BASE_SECTION))",
+    "Killed": true,
+    "KilledBy": [
+     "O10-fijada-no-posterior-a-96",
+     "O10b-fijada-con-un-numero-que-no-es-entero"
+    ],
+    "KillingCases": 2
+   },
+   {
+    "Line": 178,
+    "Code": "probs.append(\"decisiones sin un único encabezado §%s (%d)\" % (a[\"Section\"], len(auth)))",
+    "Killed": true,
+    "KilledBy": [
+     "O08-sin-la-seccion-fijada",
+     "O09-dos-secciones-fijadas",
+     "O10b-fijada-con-un-numero-que-no-es-entero"
+    ],
+    "KillingCases": 3
+   },
+   {
+    "Line": 180,
+    "Code": "probs.append(\"falta la autorización: la sección §%s de decisiones no tiene, a la vez, el encabezado fijado, el blob completo de A-7 \"",
+    "Killed": true,
+    "KilledBy": [
+     "O04-fijada-con-otro-texto",
+     "O05-fijada-con-otro-encabezado",
+     "O06-fijada-con-el-blob-abreviado",
+     "O07-fijada-con-el-blob-pegado"
+    ],
+    "KillingCases": 11
+   },
+   {
+    "Line": 184,
+    "Code": "probs.append(\"sección posterior a §%s en decisiones (%s): una disposición posterior tiene que revisarse antes de lanzar\"",
+    "Killed": true,
+    "KilledBy": [
+     "O02-seccion-posterior-a-la-fijada",
+     "O03-seccion-99-cualquiera-posterior"
+    ],
+    "KillingCases": 2
+   },
+   {
+    "Line": 188,
+    "Code": "probs.append(\"decisiones del worktree no crece solo por añadido desde el commit del clon (§96 o lo anterior cambiaron)\")",
+    "Killed": true,
+    "KilledBy": [
+     "O23-decision-96-cambiada-en-la-head",
+     "O23b-decision-92-cambiada-en-la-head"
+    ],
+    "KillingCases": 2
+   },
+   {
+    "Line": 190,
+    "Code": "probs.append(\"el archivo de decisiones del árbol de trabajo no es el de la HEAD (cambios sin commit)\")",
+    "Killed": true,
+    "KilledBy": [
+     "O24-cambios-sin-commit"
+    ],
+    "KillingCases": 1
+   },
+   {
+    "Line": 192,
+    "Code": "probs.append(\"la HEAD del worktree no desciende del commit del clon\")",
+    "Killed": true,
+    "KilledBy": [
+     "O25-head-no-desciende-del-clon"
+    ],
+    "KillingCases": 1
+   },
+   {
+    "Line": 195,
+    "Code": "probs.append(\"SHA-256 medido del binario distinto del cierre: la autorización de revisión no cubre otro binario\")",
+    "Killed": true,
+    "KilledBy": [
+     "O26-otro-binario"
+    ],
+    "KillingCases": 1
+   }
+  ],
+  "AllKilled": true
+ },
+ "AllPass": true
+}

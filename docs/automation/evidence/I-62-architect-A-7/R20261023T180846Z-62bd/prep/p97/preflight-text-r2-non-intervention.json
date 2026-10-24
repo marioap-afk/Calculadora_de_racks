@@ -1,0 +1,41 @@
+{
+ "1-AbsentFromR3": {
+  "37ac6ca4": [],
+  "b9bfae50": [],
+  "92aa4d0c": []
+ },
+ "2-R2CopyBlob": {
+  "e90b444d": "a773a8733574182eafd768b0a74d70ecc41179bc",
+  "37ac6ca4": "a773a8733574182eafd768b0a74d70ecc41179bc",
+  "92aa4d0c": "a773a8733574182eafd768b0a74d70ecc41179bc"
+ },
+ "3-A7MentionsIt": 0,
+ "4-References": {
+  "Lines": [
+   "docs/automation/evidence/I-62-A7/r3/r2lib.py:1062:    PT = _load('preflight_text_r2')"
+  ],
+  "EnclosingFunctionsInR2lib": [
+   "main"
+  ],
+  "Run_a7r3CallsR2Main": []
+ },
+ "5-GuardsRunOnPublication": {
+  "Result": "PASS",
+  "WholeEqualsCustodied": true,
+  "Base": "5da2007f45160ced37b958a3a772c46ac64874ee",
+  "Head": "37ac6ca4a6f0a04268ac357764bb74f843eb3a08",
+  "AddedByPublication": 57,
+  "AddedNamedPreflightText": []
+ },
+ "6-GuardsSelfTestOnly": {
+  "EvidRemovedBeforePublication": {
+   "preflight_text_r2.py": {
+    "Source": "docs/automation/evidence/I-62-A7/r2/preflight_text_r2.py",
+    "Blob": "a773a8733574182eafd768b0a74d70ecc41179bc",
+    "Ok": true
+   }
+  },
+  "WholeEqualsCustodied": true
+ },
+ "NonIntervention": true
+}

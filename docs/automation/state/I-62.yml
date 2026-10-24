@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §97; evidencia §199) — fijar §97 en el kit R20261023T180846Z-62bd con pin_authorization.py, volver a congelar, validación incremental y preflight obligatorio; UNA revisión formal de A-7 ronda 3 (8bcccb2f) con python -B kit/launch.py; auditor congelado; ninguna sección de decisiones nueva hasta auditar; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §97; evidencia §199-§200) — kit R20261023T180846Z-62bd fijado en §97 y custodiado (manifiesto d4f78a4b; prueba en seco con cero bloqueos); lanzar UNA vez python -B kit/launch.py (3 600 s, sin reintento) y auditar con v7.0-a7r3; sin secciones de decisiones nuevas hasta auditar; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

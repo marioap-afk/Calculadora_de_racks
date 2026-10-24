@@ -13,22 +13,22 @@
  "Package": "ninguno (sin paquete del Architect: el prompt hace de paquete (decisiones §96, punto 7: el kit acotado a A62-A7R2-R1))",
  "SessionId": "a720544e-1ac0-43d9-96bd-ae39e1090dfb",
  "Transport": "claude-cli 2.1.299 (%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe, SHA-256 295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b)",
- "Auditor": "v7.0-a7r3 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 321/321; selftest-fidelity-result.json AllPass True, 53/53; batería COMPLETA de mutación (decisiones §88, punto 4: cambiaron reglas del auditor y la comprobación 7 del lanzador) mutation-result.json AllKilled True, 209/209 (post-review.py 131, transport_gate.py 40, owner_gate.py 19, fidelity.py 19))",
+ "Auditor": "v7.0-a7r3 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 321/321; selftest-fidelity-result.json AllPass True, 53/53; batería COMPLETA de mutación (decisiones §88, punto 4: cambiaron reglas del auditor y la comprobación 7 del lanzador) mutation-result.json AllKilled True, 209/209 (post-review.py 131, transport_gate.py 40, owner_gate.py 19, fidelity.py 19); MÓDULOS CAMBIADOS DESDE LA BATERÍA: ['owner_gate.py'])",
  "Clone": "D:/r62-arch-a7r3 (git clone --no-local -c core.autocrlf=false --single-branch desde el directorio común de git; HEAD separado en el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks, con la reproducción de las guardas de la ronda 3)",
  "Run": "D:/r62-arch-a7r3-run (order.txt, prompt.md, a7-r2.md y 42 copias fieles de los archivos que Read no entrega fielmente, decisiones §94, punto 5; idénticos byte a byte a las copias del kit)",
  "TransportGate": "MEASURED (D-01; launch.py solo lanza en MEASURED o ACCEPTED)",
  "OwnerAndAuthorizationGate": "11-OwnerAndAuthorizationGate (owner_gate.py): launch.py solo lanza con la línea del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) después de §78, CLAUDE-CLI-I62 = A vigente, A-7 en la HEAD con el blob 8bcccb2f, la A-6 acordada y una disposición del Coordinator posterior a §96 fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin ninguna sección posterior; se evalúa en el momento del lanzamiento",
  "AuthorizationPins": {
-  "Section": null,
-  "Heading": null,
-  "TextSha256": null
+  "Section": 97,
+  "Heading": "## 97. Disposición del Coordinator: revisión formal acotada de A-7 ronda 3 (2026-10-24 UTC)",
+  "TextSha256": "df12f445c8a6d812c386eff2d009e3a2ef6c4e60b528b0c318c91dc97ca9db6e"
  },
- "AuthorizationState": "PENDIENTE: owner_gate.py entrega AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None; la compuerta 11 bloquea hasta fijar una disposición del Coordinator posterior a §96 que nombre esta revisión (pin_authorization.py) y volver a congelar el kit",
+ "AuthorizationState": "FIJADA: decisiones §97 (encabezado y SHA-256 del texto en AuthorizationPins)",
  "OwnerGateTested": {
   "SelftestSha256": "7e0cf27aa84f433ebb0e046bbb0147dc76e273bbcb78548156c780fd633cac74",
   "MutationSha256": "7e0cf27aa84f433ebb0e046bbb0147dc76e273bbcb78548156c780fd633cac74",
-  "CurrentSha256": "7e0cf27aa84f433ebb0e046bbb0147dc76e273bbcb78548156c780fd633cac74",
-  "ChangedSinceSelftestOrMutation": false
+  "CurrentSha256": "e2a36774af6759e61b6c2f7ff76b70703f0e0e34345a6ff00ca290f2ef10e5cb",
+  "ChangedSinceSelftestOrMutation": true
  },
  "LaunchCommand": "python -B kit/launch.py",
  "Launch": "python -B kit/launch.py desde la carpeta que contiene kit/, por la sesión principal, una sola vez, sin flags ni variables añadidos (NO lanzado)",
@@ -258,8 +258,8 @@
    "Sha256": "adb11535f24cac2874ddef13af712cc56eebece8905fe948db2f0077b3dd87b2"
   },
   "owner_gate.py": {
-   "Bytes": 17967,
-   "Sha256": "7e0cf27aa84f433ebb0e046bbb0147dc76e273bbcb78548156c780fd633cac74"
+   "Bytes": 18157,
+   "Sha256": "e2a36774af6759e61b6c2f7ff76b70703f0e0e34345a6ff00ca290f2ef10e5cb"
   },
   "pin_authorization.py": {
    "Bytes": 5588,
