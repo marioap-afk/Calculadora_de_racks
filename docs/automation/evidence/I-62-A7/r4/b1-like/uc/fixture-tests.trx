@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="3619581b-60b0-429d-91f7-089b4c713498" name="@runnervmmprz5 2026-10-09 15:11:23" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-09T15:11:23.6324849+00:00" queuing="2026-10-09T15:11:23.6324850+00:00" start="2026-10-09T15:11:20.8419198+00:00" finish="2026-10-09T15:11:23.6377133+00:00" />
+  <TestSettings name="default" id="a8fe9e81-61b7-45f6-8fef-f13555925639">
+    <Deployment runDeploymentRoot="_runnervmmprz5_2026-10-09_15_11_23" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9d78b27e-1ae3-4e7b-b90c-3768fcb7a1be" testId="0e9da1b3-b641-6f12-8920-f164df0d2653" testName="Fixture.Tests.CalculatorTests.AddSumsTwoIntegers" computerName="runnervmmprz5" duration="00:00:00.0057790" startTime="2026-10-09T15:11:23.5284442+00:00" endTime="2026-10-09T15:11:23.5284632+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9d78b27e-1ae3-4e7b-b90c-3768fcb7a1be" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Fixture.Tests.CalculatorTests.AddSumsTwoIntegers" storage="/home/runner/work/rackcad-i62-fixture/rackcad-i62-fixture/tests/fixture.tests/bin/release/net8.0/fixture.tests.dll" id="0e9da1b3-b641-6f12-8920-f164df0d2653">
+      <Execution id="9d78b27e-1ae3-4e7b-b90c-3768fcb7a1be" />
+      <TestMethod codeBase="/home/runner/work/rackcad-i62-fixture/rackcad-i62-fixture/tests/Fixture.Tests/bin/Release/net8.0/Fixture.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fixture.Tests.CalculatorTests" name="AddSumsTwoIntegers" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="0e9da1b3-b641-6f12-8920-f164df0d2653" executionId="9d78b27e-1ae3-4e7b-b90c-3768fcb7a1be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.17]   Discovering: Fixture.Tests
+[xUnit.net 00:00:00.29]   Discovered:  Fixture.Tests
+[xUnit.net 00:00:00.29]   Starting:    Fixture.Tests
+[xUnit.net 00:00:00.34]   Finished:    Fixture.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

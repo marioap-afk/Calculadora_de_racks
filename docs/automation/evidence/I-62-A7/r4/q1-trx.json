@@ -1,0 +1,340 @@
+{
+ "Phase": "q1-trx",
+ "Cases": [
+  {
+   "Caso": "TRX-POS",
+   "Qué": "la entrega exige RED (16.8: ChainRedSha nulo en la delegación del banco): TRX de la corrida de CurrentSha y TRX de la de RedSha designados con su papel, ruta y blob",
+   "Esperado": "dos entradas TRX en el cierre; validador acepta; designate_a7 válida; C6 con (TRX, sha) de cada una",
+   "Observado": "RedRequired True (16.8: ChainRedSha is null); entradas TRX: artifacts/ci/R37949808974/fixture-tests.trx 40295387, artifacts/ci/R37949800001/fixture-tests.trx 5fd8860b; validador: acepta; C6: [('CONTRACT', '8f34367053cf'), ('DELEG', 'f380200c402f'), ('H', '5a6f76ba4fa3'), ('TRX', '4ccdf2cecba5'), ('TRX', '5e388d8774fd')]",
+   "Cumple": true,
+   "Datos": {
+    "Entries": [
+     {
+      "Path": "artifacts/ci/R37949808974/fixture-tests.trx",
+      "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff"
+     },
+     {
+      "Path": "artifacts/ci/R37949800001/fixture-tests.trx",
+      "Blob": "5fd8860bdd6fe21268faf1b10d0df4d9b4743f92"
+     }
+    ],
+    "Closure": "f7af33468b8959d669b16f00313af3fa8df59bfa1eaa93739ae86c5dd7fc669a"
+   }
+  },
+  {
+   "Caso": "TRX-POS-R9",
+   "Qué": "aceptante fijado sobre dos corridas `trx --file TRX=` (los dos TRX designados), con el cierre derivado",
+   "Esperado": "R9 MATCH (el cierre fija los dos TRX en C6); R10 MATCH (RelayFacts = la entrada RELAY de (c)); ACCEPT_FACTS",
+   "Observado": "ACCEPT_FACTS rc 0; R9 MATCH; R10 MATCH; cero escrituras: sí",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "NOT_APPLICABLE",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597",
+      "Computed": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "52e2332cdd974a30bd30ca94eb33959cf2f84bac9fc3ecd7f4d17d51a2de9cef"
+    }
+   }
+  },
+  {
+   "Caso": "TRX-RED-FACTS",
+   "Qué": "hechos del instrumento sobre el TRX de RedSha",
+   "Esperado": "la prueba con ExpectRed entre las fallidas (lo que lee Tests RedPart de 16.9)",
+   "Observado": "rc 0; FailedTests ['Fixture.Tests.CalculatorTests.SubtractReturnsDifference']; Sha256 = el de C6: sí",
+   "Cumple": true
+  },
+  {
+   "Caso": "TRX-RED-AUSENTE",
+   "Qué": "RED exigido y el TRX de RedSha sin bytes custodiados",
+   "Esperado": "sin entrada, causa registrada, nada sustituido (ni el TRX de CurrentSha ni otra copia); el validador acepta el cierre",
+   "Observado": "entradas TRX: ['artifacts/ci/R37949808974/fixture-tests.trx']; ausencia: ABSENT: the custodied file does not exist; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "TRX-RED-ABSENT-169",
+   "Qué": "clasificación de 16.9 con el TRX de RedSha ausente: la lectura de ese TRX con el cierre derivado",
+   "Esperado": "R9 MISMATCH sobre la corrida del TRX de RedSha (fuera del cierre, P-22): Tests RedPart no puede ser pass (AP 16.9 fila 10, «las fallidas del TRX del RedSha»), así que Tests no pasa (REWORK) y nada lo sustituye",
+   "Observado": "REJECT_FACTS; R9 MISMATCH (trx-red: Inputs[0]: file outside the closure); C6 del cierre: [('CONTRACT', '8f34367053cf'), ('DELEG', 'f380200c402f'), ('H', '5a6f76ba4fa3'), ('TRX', '4ccdf2cecba5')]",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 1,
+     "Decision": "REJECT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "NOT_APPLICABLE",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MISMATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [
+      "trx-red: Inputs[0]: file outside the closure"
+     ],
+     "R9ViolationCount": 1,
+     "R10": {
+      "Cited": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597",
+      "Computed": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "90c223ee7311b68bcfa3e7f80e8c8381ed93d4e4f77245e42efeddf55e5106dc"
+    }
+   }
+  },
+  {
+   "Caso": "TRX-RED-NO-DESIGNADO",
+   "Qué": "RED exigido y el TRX de RedSha sin designar",
+   "Esperado": "sin entrada, causa registrada, nada sustituido (ni el TRX de CurrentSha ni otra copia); el validador acepta el cierre",
+   "Observado": "entradas TRX: ['artifacts/ci/R37949808974/fixture-tests.trx']; ausencia: NOT_DESIGNATED: the delivery requires RED (16.8: ChainRedSha is null) and the designation names no TRX of the RedSha run (16.9: Tests and Ci RedPart cannot be pass); no entry, nothing substituted; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "TRX-RED-NOT-REQUIRED",
+   "Qué": "la entrega no exige RED según 16.8 (ChainRedSha 53436cb2… no nulo; git diff --name-only BaseSha..CurrentSha no toca ChainRedFiles = [tests/Fixture.Tests/Fixture.Tests.csproj]); ExpectRed del contrato sin cambio (true) y la designación nombra un TRX de RedSha",
+   "Esperado": "RedRequired false en constructor y validador; el constructor no admite el TRX de RedSha (causa registrada); un cierre que lo incluya es rechazado (FOREIGN: no hay ese papel); el cierre sin él se acepta",
+   "Observado": "RedRequired False / False (16.8: ChainRedSha 53436cb20adf1fe87dc91b0382dd3123a1fac44f is not null and git diff --name-only BaseSha..CurrentSha does not touch ChainRedFiles: RED is not required (16.9 Ci RedPart not_applicable, citing the ChainRedSha run)); constructor: NOT_ADMITTED: the delivery does not require RED (16.8: ChainRedSha 53436cb20adf1fe87dc91b0382dd3123a1fac44f is not null and git diff --name-only BaseSha..CurrentSha does not touch ChainRedFiles: RED is not required (16.9 Ci RedPart not_applicable, citing the ChainRedSha run)), so rule 1 (c) has no TRX of the RedSha run; validador: acepta; con la entrada del TRX de RedSha: rechaza: FOREIGN ['artifacts/ci/R37949800001/fixture-tests.trx']",
+   "Cumple": true,
+   "Datos": {
+    "Detail": {
+     "RedRequired": false,
+     "ValidatorRedRequired": false,
+     "Basis": "16.8: ChainRedSha 53436cb20adf1fe87dc91b0382dd3123a1fac44f is not null and git diff --name-only BaseSha..CurrentSha does not touch ChainRedFiles: RED is not required (16.9 Ci RedPart not_applicable, citing the ChainRedSha run)",
+     "TrxRedEntry": false,
+     "TrxRedAbsence": "NOT_ADMITTED: the delivery does not require RED (16.8: ChainRedSha 53436cb20adf1fe87dc91b0382dd3123a1fac44f is not null and git diff --name-only BaseSha..CurrentSha does not touch ChainRedFiles: RED is not required (16.9 Ci RedPart not_applicable, citing the ChainRedSha run)), so rule 1 (c) has no TRX of the RedSha run",
+     "Accepted": true,
+     "AcceptedWithRedEntry": false,
+     "ForeignWithRedEntry": [
+      "artifacts/ci/R37949800001/fixture-tests.trx"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "RED-DIV-EXPECTRED",
+   "Qué": "divergencia de la regla anterior de las herramientas (RED si algún RequiredTests[].ExpectRed de la delegación es true) frente a 16.8, con las mismas entradas de TRX-RED-NOT-REQUIRED (una delegación de una cadena que ya acreditó un RED: A5 obliga a ExpectRed = el del contrato, y 16.8 dice que ExpectRed «es siempre el del contrato»)",
+   "Esperado": "la regla anterior exige RED y admite (y, sin designar, exige) el TRX de RedSha donde 16.8 no lo exige: las dos reglas divergen, y la regla 16.8 (la de las herramientas ahora) da la respuesta de 16.8",
+   "Observado": "regla anterior: RedRequired True, entrada del TRX de RedSha sí, validador con ella: acepta, sin designar: NOT_DESIGNATED: the delivery requires RED (superseded tool r; regla 16.8: RedRequired False, sin designar: sin ausencia del TRX de RedSha (no se exige)",
+   "Cumple": true,
+   "Datos": {
+    "Old": {
+     "RedRequired": true,
+     "ValidatorRedRequired": true,
+     "Basis": "superseded tool rule (negative evidence): some D.RequiredTests[].ExpectRed is true",
+     "TrxRedEntry": true,
+     "TrxRedAbsence": null,
+     "Accepted": true,
+     "AcceptedWithRedEntry": true,
+     "ForeignWithRedEntry": []
+    }
+   }
+  },
+  {
+   "Caso": "RED-169-TOUCH",
+   "Qué": "ChainRedSha no nulo y git diff --name-only BaseSha..CurrentSha toca ChainRedFiles = [tests/Fixture.Tests/CalculatorTests.cs]",
+   "Esperado": "la entrega exige RED (16.8): el TRX de RedSha entra; validador acepta; las dos reglas coinciden aquí",
+   "Observado": "RedRequired True / True (16.8: ChainRedSha 53436cb20adf1fe87dc91b0382dd3123a1fac44f is not null and git diff --name-only BaseSha..CurrentSha touches ChainRedFiles: tests/Fixture.Tests/CalculatorTests.cs); entrada del TRX de RedSha: sí; validador: acepta; regla anterior: RedRequired True",
+   "Cumple": true
+  },
+  {
+   "Caso": "RED-DIV-NULL",
+   "Qué": "ChainRedSha nulo y ningún RequiredTests con ExpectRed true (divergencia de principio)",
+   "Esperado": "16.8: la entrega exige RED (ChainRedSha nulo): el TRX de RedSha entra y el validador acepta; la regla anterior diría lo contrario",
+   "Observado": "regla 16.8: RedRequired True / True, entrada sí, validador acepta; regla anterior: RedRequired False, constructor: NOT_ADMITTED: the delivery does not requ, validador con la entrada: rechaza (FOREIGN)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RED-UNDETERMINED",
+   "Qué": "ChainRedSha no nulo y la entrega ausente (sin CurrentSha): la exigencia de RED de 16.8 no se puede determinar; A7-1, regla 5 (c), tras fix_a7r2_c.py: «el TRX de la corrida de `RedSha` ni se admite ni se exige, y se registra la causa»",
+   "Esperado": "coincide con el texto: RedRequired indeterminado en constructor y validador; designado, el TRX de RedSha no se admite (causa registrada) y un cierre que lo incluya es FOREIGN; sin designar, no se exige (ninguna ausencia por él) y la causa queda registrada (RedBasis); el resto del cierre se acepta",
+   "Observado": "RedRequired None / None; designado: NOT_ADMITTED: UNDETERMINED: ChainRedSha 53436cb20adf1fe87dc91b0382dd31, validador con la entrada: rechaza: FOREIGN; sin designar: ausencias del TRX de RedSha 0, RedBasis UNDETERMINED: ChainRedSha 53436cb20adf1f; validador: acepta",
+   "Cumple": true,
+   "Datos": {
+    "Detail": {
+     "RedRequired": null,
+     "ValidatorRedRequired": null,
+     "Basis": "UNDETERMINED: ChainRedSha 53436cb20adf1fe87dc91b0382dd3123a1fac44f is not null and CurrentSha is not available (no usable handoff in (c), or its CurrentSha is not a commit of the -C): git diff --name-only BaseSha..CurrentSha cannot be computed",
+     "TrxRedEntry": false,
+     "TrxRedAbsence": "NOT_ADMITTED: UNDETERMINED: ChainRedSha 53436cb20adf1fe87dc91b0382dd3123a1fac44f is not null and CurrentSha is not available (no usable handoff in (c), or its CurrentSha is not a commit of the -C): git diff --name-only BaseSha..CurrentSha cannot be computed; rule 1 (c) admits the TRX of the RedSha run only if the delivery requires RED",
+     "Accepted": true,
+     "AcceptedWithRedEntry": false,
+     "ForeignWithRedEntry": [
+      "artifacts/ci/R37949800001/fixture-tests.trx"
+     ]
+    }
+   }
+  },
+  {
+   "Caso": "TRX-THIRD",
+   "Qué": "un tercer TRX no designado: en el cierre y como lectura",
+   "Esperado": "validador: FOREIGN; aceptante: R9 MISMATCH sobre su lectura (P-22)",
+   "Observado": "validador: rechaza FOREIGN; aceptante: REJECT_FACTS, R9 MISMATCH (trx-third: Inputs[0]: file outside the closure)",
+   "Cumple": true
+  },
+  {
+   "Caso": "TRX-REPLACED",
+   "Qué": "el TRX de RedSha sustituido por otros bytes (el blob registrado no cambia)",
+   "Esperado": "sin entrada (BLOB_MISMATCH), nada sustituido",
+   "Observado": "causa: BLOB_MISMATCH: the custodied bytes do not have the registered blob; entradas TRX: ['artifacts/ci/R37949808974/fixture-tests.trx']",
+   "Cumple": true
+  },
+  {
+   "Caso": "BOM-POS",
+   "Qué": "el TRX del banco empieza con un BOM UTF-8: su blob se calcula sobre los bytes con el BOM",
+   "Esperado": "entrada con el blob de los bytes con BOM (= el registrado, 40295387…); el blob sin el BOM es otro; los hechos del instrumento citan el SHA-256 de los bytes con BOM",
+   "Observado": "BOM: sí; blob con BOM 40295387 (registrado 40295387); sin BOM 5582335a; Sha256 de los hechos = SHA-256 con BOM: sí",
+   "Cumple": true
+  },
+  {
+   "Caso": "BOM-STRIPPED",
+   "Qué": "una copia del TRX sin el BOM (bytes distintos) en la ruta designada; el blob registrado es el de los bytes con BOM",
+   "Esperado": "sin entrada (BLOB_MISMATCH: quitar el BOM no es fiel); su lectura queda fuera del cierre (R9 MISMATCH)",
+   "Observado": "causa: BLOB_MISMATCH: the custodied bytes do not have the registered blob; aceptante: REJECT_FACTS, R9 MISMATCH",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 1,
+     "Decision": "REJECT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "NOT_APPLICABLE",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MISMATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [
+      "trx-nobom: Inputs[0]: file outside the closure"
+     ],
+     "R9ViolationCount": 1,
+     "R10": {
+      "Cited": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597",
+      "Computed": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "326daab3ce422e591338fc3fd1f9b140db33ac5f963f65e019bc56f79008383d"
+    }
+   }
+  },
+  {
+   "Caso": "ABSENCE-CHECK",
+   "Qué": "comprobar que la entrega designada falta (handoff --allow-absent sobre su ruta de custodia) con el cierre sin entrega (como N4)",
+   "Esperado": "no es una lectura fuera del cierre ni aporta contenido (A7-1, punto 5 (c)): R9 MATCH; los hechos dicen Present false",
+   "Observado": "hechos: {'Present': False}; aceptante: ACCEPT_FACTS, R9 MATCH; C6 del cierre sin H: sí",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "NOT_APPLICABLE",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597",
+      "Computed": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "c111b4bda5d0227b68c480c1825b47d2f08b5f9a966733660290c816dcafc99a"
+    }
+   }
+  }
+ ],
+ "Runs": {
+  "trx-current": {
+   "Name": "trx-current",
+   "Envelope": "D:/r62-a7/work/r4/q12/env/trx-current.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a7/work/deliv",
+    "--file",
+    "TRX=D:/r62-a6m7/bench/work/in-v/fixture-tests.trx",
+    "--sha256",
+    "TRX=4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "--filter-substring",
+    "Subtract"
+   ]
+  },
+  "trx-red": {
+   "Name": "trx-red",
+   "Envelope": "D:/r62-a7/work/r4/q12/env/trx-red.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a7/work/deliv",
+    "--file",
+    "TRX=D:/r62-a7/evid-r4/inputs/fixture-tests-red.trx",
+    "--sha256",
+    "TRX=5e388d8774fd0f3cca15d7899a76b2155d2f98532b18b7f6ba0d0a033bde74f0",
+    "--filter-substring",
+    "Subtract"
+   ]
+  },
+  "trx-third": {
+   "Name": "trx-third",
+   "Envelope": "D:/r62-a7/work/r4/q12/env/trx-third.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a7/work/deliv",
+    "--file",
+    "TRX=D:/r62-a7/work/r4/q12/third.trx",
+    "--sha256",
+    "TRX=22aa806237663b2cf1e32c2c5c5501b8439e26321d7171398b726698d8f4bccb",
+    "--filter-substring",
+    "Subtract"
+   ]
+  },
+  "trx-nobom": {
+   "Name": "trx-nobom",
+   "Envelope": "D:/r62-a7/work/r4/q12/env/trx-nobom.json",
+   "Argv": [
+    "trx",
+    "--repo",
+    "D:/r62-a7/work/deliv",
+    "--file",
+    "TRX=D:/r62-a7/work/r4/q12/fixture-tests-sin-bom.trx",
+    "--sha256",
+    "TRX=6f46e2ca05bc1872dc96f723a210f273841948b4f1d8faae40e3bcaf34960f52",
+    "--filter-substring",
+    "Subtract"
+   ]
+  }
+ }
+}

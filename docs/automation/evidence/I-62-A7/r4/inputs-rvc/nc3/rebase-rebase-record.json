@@ -1,0 +1,231 @@
+{
+ "Schema": "rackcad-relay-record/v2",
+ "TaskId": "T1",
+ "RunId": "R20261023T100000Z-0b01",
+ "Attempt": 0,
+ "Phase": "REBASE",
+ "WindowSeq": 1,
+ "PrevRelaySha256": null,
+ "Host": {
+  "HostLabelHash": "ad3bb9a2a5ca063760c9a3f9a03046a763c37e38014a721fb6b22a2c0eba8422",
+  "HostInstanceHash": "UNKNOWN",
+  "HostInstanceState": "UNOBSERVED",
+  "Os": "synthetic"
+ },
+ "Participant": null,
+ "Exit": {
+  "HeadSha": "bea150bcc76ba6a07d365721116c983ba523e705",
+  "LsRemoteSha": "bea150bcc76ba6a07d365721116c983ba523e705",
+  "OriginMainSha": "3627de0c90c8d367af18c2e769a90304f7b51d19",
+  "CleanTree": true,
+  "GitOperationInProgress": false,
+  "SummaryCommitSha": "bea150bcc76ba6a07d365721116c983ba523e705",
+  "Fingerprint": {
+   "Kind": "NONE",
+   "Sha256": null,
+   "KeyNames": [],
+   "AcceptanceDecisionRef": null
+  },
+  "Processes": [],
+  "OpenDelegations": 1,
+  "DelegationStatus": "ACCEPTED_OPEN"
+ },
+ "Cession": {
+  "StartUtc": "2026-10-19T09:00:00Z",
+  "EndUtc": "2026-10-19T09:05:00Z",
+  "SessionOperated": false
+ },
+ "Outcome": {
+  "Kind": "COMPLETED",
+  "LaunchedPid": 4242,
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "TreeKilled": false,
+  "DeathConfirmed": true,
+  "OutputPath": "artifacts/orchestration/FX-U1/T1/0/R20261023T100000Z-0b01/rebase-record.json",
+  "OutputSha256": "c31b887503809d013e82580c96ba729d8b4271027e55f1c9e98481c9790c9ccf",
+  "OutputWrittenUtc": "2026-10-19T09:05:00Z",
+  "Acceptance": null
+ },
+ "Entry": {
+  "HeadSha": "bea150bcc76ba6a07d365721116c983ba523e705",
+  "LsRemoteSha": "bea150bcc76ba6a07d365721116c983ba523e705",
+  "CleanTree": true,
+  "Fingerprint": {
+   "Kind": "NONE",
+   "Sha256": null,
+   "KeyNames": [],
+   "AcceptanceDecisionRef": null
+  },
+  "FingerprintChanged": false,
+  "Processes": []
+ },
+ "RemoteFacts": null,
+ "RebaseMap": {
+  "MainBeforeSha": "fbe25347799e5b801ef708454212335537448bd1",
+  "MainAfterSha": "3627de0c90c8d367af18c2e769a90304f7b51d19",
+  "BranchBeforeSha": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "BranchAfterSha": "bea150bcc76ba6a07d365721116c983ba523e705",
+  "MaterializationCloseSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+  "MaterializationCloseImageSha": "bc84d5ac37013d8dd8f7b409c2f1df9466c4c148",
+  "AuthorityRevision": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+  "AuthorityRevisionImageSha": "bc84d5ac37013d8dd8f7b409c2f1df9466c4c148",
+  "UnitDocBlobsEqual": true,
+  "UnitChangeSectionsEqual": true,
+  "BaseSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "BaseImageSha": "6644e286d2799969d33fbc35c73ac3548f473cdb",
+  "ChainBaseSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "ChainBaseImageSha": "6644e286d2799969d33fbc35c73ac3548f473cdb",
+  "Commits": [
+   {
+    "OriginalSha": "eea0114ac78badf89d4bc497b5a69fb591ed923b",
+    "ImageSha": "2a653040501696f7b705aa0a2d183bf693bb730a",
+    "PatchId": null,
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "54f2a4a8f53eb6834448394781600f6343d9a246",
+    "ImageSha": "3d45fd39f5790f82e4604d3773db81dac6e24ce5",
+    "PatchId": "eb69f93bdd9a1a2fde08416d52a3a72f8d0f5f55",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "b9c554c4d90667e28e477aa3bdf90663964c4321",
+    "ImageSha": "deebdafca8708629866c2595c6e9b1a88f325610",
+    "PatchId": "384fdada9c0d66fcd21ab5b812c06f72fc1d1741",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+    "ImageSha": "bc84d5ac37013d8dd8f7b409c2f1df9466c4c148",
+    "PatchId": "da14b3a0a9b5306fb1f51c39b968e463bfe17fe3",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "5a3a7d69d650dfa9d0349c5464e245936dc2e187",
+    "ImageSha": "bb19caf07df33c266a15818f3181ef8049b680af",
+    "PatchId": "88417cde0468e637a1ec6b19b4bd3d88ee97d05b",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "1a4fc9c62bb564d7c51fad8158876a5d5a8a5bdf",
+    "ImageSha": "d2c1bcb1670335c22cf4a1706123bafb309251ef",
+    "PatchId": "3271a99716e5ad69063792c802782553dee17eac",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "d30fb6a9d26c0b5cb189a30b98ec97d0edcb7b99",
+    "ImageSha": "1a25e9a53287abe3df2d8214c5f014d373baa1c2",
+    "PatchId": "c4e8de21a5fd306bcd27b7b66c91f1ac1dec993a",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "ae25b596a11fe3508ac60a3ef7de5dc23df971ce",
+    "ImageSha": "b29fac1a452935e12de89226e4c4bf128e929815",
+    "PatchId": "f47937728e78db7b509771b4a04493edea20dc26",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "cc21e1d258f0816c01b0927f49b138aec7c9a365",
+    "ImageSha": "7c37fd35635cce98047af2b47a419ab2c68a2a38",
+    "PatchId": "f463da39d568e63e2b6229110aaddaae9ea825ae",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "badbf9304a270a96cdc13f7c6030e76735517136",
+    "ImageSha": "17433b6372f6c2b1a11a04f1962e7daa454624c2",
+    "PatchId": "947e0b42c114f2197d66b3ba18b738a55ddee628",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "9ce50a5ec3dad421c277424c3df861b3591ac224",
+    "ImageSha": "26d7f1da82313f5e46007c1295a6b9172e5d1a06",
+    "PatchId": "0f01a46dd2bfe7f9c684a86c5747b1d68562b879",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "1d2f14bf9036f730f288bb04b5b0a9c8e0727ac9",
+    "ImageSha": "b23f8b1ad539dbd3ea62938af1e2759a6ae7928c",
+    "PatchId": "4acf17e5fec424c360cb42f86f7b1c6a254ef373",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "f4f5929ff1ba995ae8e0c387b76a79eeca7ca886",
+    "ImageSha": "b28b94857e921c8d725e4c3befc5917947275277",
+    "PatchId": "204305a4081df47fb78410fff7d90098bf35115d",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "ead6119f08bf118bef1538269a3954c63ddae142",
+    "ImageSha": "e7f5045d3052b08262d0f54be3ae0997b2fed5c2",
+    "PatchId": "a5f0ea170bf6655860a2f1ab4429cf088f08ae34",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "cabed54738f56e846bd77be321cace10d053094d",
+    "ImageSha": "89c73654c8aaf7ba855612136104ce76d3bc99b1",
+    "PatchId": "55e8689620b34d4e2372e4318c3dea37a27d54b3",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "b6d294ede5e1ce7e9412447629b2b9d77ffec0d4",
+    "ImageSha": "aa6c82e3463aebbb81173989d820f425e8ddd270",
+    "PatchId": "060c92f484fee3ff771f2d338d31f81bd6a25649",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "c785def9bcfa5b50f08e25ecc394649ae690a19a",
+    "ImageSha": "418a49cf6145abd2fd9668f9ee1e155cec12649d",
+    "PatchId": "eccb0cfe242611ebb96db5e68a6c7fe3dc07fd4f",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "ImageSha": "6644e286d2799969d33fbc35c73ac3548f473cdb",
+    "PatchId": "5bb6e5697757286868b33b97709ff08c362b767a",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+    "ImageSha": "9e41ce085dd2cd64cf2eb0a06610db372d31eaad",
+    "PatchId": "38d96fa14a0d6e829c60a54a412c00483f79cb83",
+    "PatchIdEqual": true
+   },
+   {
+    "OriginalSha": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+    "ImageSha": "bea150bcc76ba6a07d365721116c983ba523e705",
+    "PatchId": "c161d723f53d736c0bc452847f6c05713db773c4",
+    "PatchIdEqual": true
+   }
+  ],
+  "StateFields": [
+   {
+    "Field": "chains[T1].chain_base_sha",
+    "OriginalSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+    "ImageSha": "6644e286d2799969d33fbc35c73ac3548f473cdb"
+   }
+  ],
+  "CiRuns": [
+   {
+    "OriginalSha": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+    "GhRunId": 37949800001
+   }
+  ],
+  "Unmapped": [],
+  "ConflictPaths": [],
+  "CoordinatorDecision": null
+ },
+ "RoleInvocation": null,
+ "ReadAudit": {
+  "Coverage": "RECORDED",
+  "ReadsOutsideClosure": []
+ },
+ "InputFidelity": {
+  "path": "bmin_facts.py (objeto Git suelto en el -C)",
+  "blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+ },
+ "Disposition": "NONE",
+ "Notes": [
+  "Rebase de 16.7 posterior a la entrega, sin conflictos: main avanza y la rama de la unidad se rebasa (sintetico, preflight de A-7 r3)."
+ ]
+}

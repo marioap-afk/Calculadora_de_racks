@@ -1,0 +1,256 @@
+{
+ "Phase": "q10-modalities",
+ "Cases": [
+  {
+   "Caso": "MOD-V-NOINST",
+   "Qué": "verificación V sin el instrumento (Instrument null)",
+   "Esperado": "cierre sin la entrada (d); MainSha_eval = K.MainSha; validador acepta; designate_a7 válida",
+   "Observado": "constructor: cierre; MainSha_eval fbe25347; entrada del instrumento: 0; validador: acepta; designate_a7: válida",
+   "Cumple": true
+  },
+  {
+   "Caso": "MOD-V-INST-INJECTED",
+   "Qué": "cierre de V sin el instrumento con la entrada del instrumento añadida a mano",
+   "Esperado": "el validador la marca ajena",
+   "Observado": "validador rechaza (ajenas 1)",
+   "Cumple": true
+  },
+  {
+   "Caso": "MOD-RV-NOINST",
+   "Qué": "reverificación RV sin el instrumento",
+   "Esperado": "cierre sin (d); MainSha_eval = MainAfterSha; validador acepta; designate_a7 válida",
+   "Observado": "constructor: cierre; MainSha_eval 3627de0c; entrada del instrumento: 0; validador: acepta; designate_a7: válida",
+   "Cumple": true
+  },
+  {
+   "Caso": "MOD-RVC-NOINST",
+   "Qué": "nc1 sobre RV sin el instrumento",
+   "Esperado": "cierre sin (d); MainSha_eval = MainAfterSha; validador acepta",
+   "Observado": "constructor: cierre; MainSha_eval 3627de0c; entrada del instrumento: 0; validador: acepta; designate_a7: válida",
+   "Cumple": true
+  },
+  {
+   "Caso": "MOD-RVC-RERUN",
+   "Qué": "reejecución de transporte de nc1 sobre RV (RunId nuevo y hechos del relevo propios; las mismas copias)",
+   "Esperado": "cierre; MainSha_eval = MainAfterSha; validador acepta; designate_a7 válida",
+   "Observado": "constructor: cierre; MainSha_eval 3627de0c; entrada del instrumento: 1; validador: acepta; designate_a7: válida",
+   "Cumple": true
+  },
+  {
+   "Caso": "MOD-NC3-V",
+   "Qué": "nc3 de la verificación ordinaria V (Kind VERIFY; copias del banco en T1-nc3)",
+   "Esperado": "cierre; MainSha_eval = K.MainSha; validador acepta; designate_a7 válida",
+   "Observado": "constructor: cierre; MainSha_eval fbe25347; entrada del instrumento: 1; validador: acepta; designate_a7: válida",
+   "Cumple": true
+  },
+  {
+   "Caso": "MOD-NC3-V-REBASE",
+   "Qué": "nc3 de V con un registro de rebase designado",
+   "Esperado": "no se admite (NOT_ADMITTED); E idéntico al de MOD-NC3-V",
+   "Observado": "ausencia: NOT_ADMITTED: only the 16.7 reverification and the controls ; E igual: True",
+   "Cumple": true
+  },
+  {
+   "Caso": "O1-C1-STATIC",
+   "Qué": "C1 del cierre derivado de RV (tabla de A6-9 sin cambio)",
+   "Esperado": "contiene Target.commit (la imagen de CurrentSha) y K.MainSha; no contiene MainAfterSha ni las demás imágenes del rebase (la diferencia que registra A62-A7R3-O1)",
+   "Observado": "Target.commit: True; K.MainSha: True; MainAfterSha: False; imágenes en C1: 0 de 19",
+   "Cumple": true
+  },
+  {
+   "Caso": "O1-RV-CLAUSEMAP",
+   "Qué": "clausemap --main MainSha_eval (= MainAfterSha, 16.13) en RV, con el aceptante fijado y el cierre derivado de RV",
+   "Esperado": "R9 MISMATCH por el commit MainAfterSha fuera de C1: rechazo falso, nunca aceptación falsa (residuo de A62-A7R3-O1)",
+   "Observado": "clausemap rc 0; REJECT_FACTS; R9 MISMATCH (18 violaciones; con MainAfterSha: 10; primera: clausemap-rv-mse: GitCalls[0]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19^{commit})",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 1,
+     "Decision": "REJECT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MISMATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [
+      "clausemap-rv-mse: GitCalls[0]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19^{commit}",
+      "clausemap-rv-mse: GitCalls[2]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rv-mse: GitCalls[3]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rv-mse: GitCalls[4]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rv-mse: GitCalls[6]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rv-mse: GitCalls[8]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rv-mse: GitCalls[24]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rv-mse: GitCalls[27]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rv-mse: GitCalls[30]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rv-mse: GitCalls[34]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19"
+     ],
+     "R9ViolationCount": 18,
+     "R10": {
+      "Cited": "3ff77b4af9c0d22d3ecf348ccae22e59df1e84bf0a1714f8f3fe642ec8495562",
+      "Computed": "3ff77b4af9c0d22d3ecf348ccae22e59df1e84bf0a1714f8f3fe642ec8495562"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "e5c2c7663b0ef70336591d991d2b7084c5c0b10816af55ae8d3479ef9271e850"
+    }
+   }
+  },
+  {
+   "Caso": "O1-RVC-CLAUSEMAP",
+   "Qué": "la misma orden en nc2 sobre RV, con el cierre derivado del control",
+   "Esperado": "R9 MISMATCH, como en RV (el control hereda el residuo)",
+   "Observado": "clausemap rc 0; REJECT_FACTS; R9 MISMATCH (18 violaciones)",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 1,
+     "Decision": "REJECT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MISMATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [
+      "clausemap-rvc-nc2-mse: GitCalls[0]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19^{commit}",
+      "clausemap-rvc-nc2-mse: GitCalls[2]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rvc-nc2-mse: GitCalls[3]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rvc-nc2-mse: GitCalls[4]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rvc-nc2-mse: GitCalls[6]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rvc-nc2-mse: GitCalls[8]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rvc-nc2-mse: GitCalls[24]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rvc-nc2-mse: GitCalls[27]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rvc-nc2-mse: GitCalls[30]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19",
+      "clausemap-rvc-nc2-mse: GitCalls[34]: object outside the closure: 3627de0c90c8d367af18c2e769a90304f7b51d19"
+     ],
+     "R9ViolationCount": 18,
+     "R10": {
+      "Cited": "7c9f8c4731bdb54c3625a98b6d52009fd78b6d1227cfa066ae6a32f5288047ad",
+      "Computed": "7c9f8c4731bdb54c3625a98b6d52009fd78b6d1227cfa066ae6a32f5288047ad"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "18644791fc3d4051cc56bf30394c918ea9dbe1b863c72f45d9e262577488cc87"
+    }
+   }
+  },
+  {
+   "Caso": "O1-RV-CLAUSEMAP-KMAIN",
+   "Qué": "informativo: clausemap --main K.MainSha con el cierre derivado de RV (no es la lectura que ordena 16.13 en la reverificación)",
+   "Esperado": "R9 MATCH: la discrepancia de O1-RV-CLAUSEMAP se debe solo a MainAfterSha",
+   "Observado": "clausemap rc 0; ACCEPT_FACTS; R9 MATCH",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "3ff77b4af9c0d22d3ecf348ccae22e59df1e84bf0a1714f8f3fe642ec8495562",
+      "Computed": "3ff77b4af9c0d22d3ecf348ccae22e59df1e84bf0a1714f8f3fe642ec8495562"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "211029ed5e8e7edefcba65f15e75649e6f132aeee62440976d24cc440527a65b"
+    }
+   }
+  },
+  {
+   "Caso": "O1-V-CLAUSEMAP",
+   "Qué": "verificación ordinaria V (MainSha_eval = K.MainSha) en el mismo -C: clausemap --main K.MainSha con su cierre derivado",
+   "Esperado": "R9 MATCH: la verificación ordinaria no tiene el residuo de A62-A7R3-O1",
+   "Observado": "clausemap rc 0; ACCEPT_FACTS; R9 MATCH",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597",
+      "Computed": "ab36aa0fda2c54f87f3c461f778daea5f67a4388f9898c5a0f62659b6edb5597"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "83430e89c441ab1d606e445a6a1da118f69184adcb16380341d6383bd9fad411"
+    }
+   }
+  },
+  {
+   "Caso": "O2-FIXTURE",
+   "Qué": "segundo rebase real (16.7 admite dos recuperaciones por TaskId, AP L598): main avanza otra vez y la rama ya rebasada se rebasa sin conflictos",
+   "Esperado": "commits de la imagen 1 → imagen 2 con patch-id igual",
+   "Observado": "main 3627de0c → e3c6e2cc; 20 commits; patch-id iguales: True",
+   "Cumple": true
+  },
+  {
+   "Caso": "O2-RV2-CHAINED",
+   "Qué": "segunda reverificación con el registro del segundo rebase (encadenado: imágenes 1 → imágenes 2, MainBeforeSha = MainAfterSha del primero)",
+   "Esperado": "sin cierre ni lanzamiento: el registro no es coherente (punto 2 (c): «MainBeforeSha of the RebaseMap is not K.MainSha»); nada lo sustituye",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): MainBeforeSha of the RebaseMap is not K.MainSha (another rebase); nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (MainBeforeSha is not K.MainSha; AuthorityRevision is not the contract's or the 16.7 equalities )",
+   "Cumple": true
+  },
+  {
+   "Caso": "O2-RV2-COMPOSED",
+   "Qué": "segunda reverificación con el registro del segundo rebase (compuesto: originales → imágenes 2, BaseSha de la delegación; MainBeforeSha = MainAfterSha del primero)",
+   "Esperado": "sin cierre ni lanzamiento: el registro no es coherente (punto 2 (c): «MainBeforeSha of the RebaseMap is not K.MainSha»); nada lo sustituye",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): MainBeforeSha of the RebaseMap is not K.MainSha (another rebase); nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (MainBeforeSha is not K.MainSha))",
+   "Cumple": true
+  },
+  {
+   "Caso": "O2-RVC2",
+   "Qué": "nc1 sobre las entradas de la segunda reverificación (copia de su registro)",
+   "Esperado": "sin cierre: la reverificación identificada no cumple el punto 2 (c)",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the identified reverification does not satisfy point 2 (c) (rule 2 (c): MainBeforeSha of the RebaseMap is not K.MainSha (another rebase));",
+   "Cumple": true
+  },
+  {
+   "Caso": "O2-RV2-BOTH",
+   "Qué": "segunda reverificación con los dos registros (el del primer rebase y el del segundo)",
+   "Esperado": "sin cierre (DESIGNATION: un artefacto como máximo por papel)",
+   "Observado": "constructor: DESIGNATION",
+   "Cumple": true
+  }
+ ],
+ "SecondRebase": {
+  "Repo": "D:/r62-a7/work/r4/rebase-repo-2",
+  "MainAfter2": "e3c6e2cc46006be18d084ccb37780569ba2db626",
+  "BranchAfter2": "e86e2898b5b8915a2f76b51322c780c8fc5c12e9",
+  "Commits": 20
+ }
+}

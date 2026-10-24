@@ -1,0 +1,219 @@
+{
+ "Phase": "q3-n4-nc1",
+ "Cases": [
+  {
+   "Caso": "N4-E",
+   "Qué": "N4: E de A7-1 r2 (a7-designation/2 con TRX_RED y RELAY) frente al E de la ronda 1 / R7-A custodiado en el banco",
+   "Esperado": "el E r2 es el de la ronda 1 más las entradas TRX_RED y RELAY (en el mismo orden); validador acepta; ausencias de la invocación registradas (N4: la entrega)",
+   "Observado": "quitando 2 entradas (fixture-tests.trx, relay-facts.json), bytes iguales al E del banco: sí; validador: acepta; ausencias (c): H ABSENT",
+   "Cumple": true,
+   "Datos": {
+    "ESha256": "62d06da54d87cc322f3f7885fef0aa05f474b26bb9cd1f3ed9df43c6f6b1300e"
+   }
+  },
+  {
+   "Caso": "N4-CLOSURE",
+   "Qué": "N4: cierre del aceptante derivado (designate_a7 + derive_r4 sin cambio) frente al del banco",
+   "Esperado": "superconjunto del cierre de la ronda 1 (más C4 de las dos rutas nuevas y C6 del segundo TRX), con las mismas omisiones",
+   "Observado": "superconjunto: sí; omisiones iguales: sí; C6: [('CONTRACT', '8f34367053cf'), ('DELEG', 'e7a9114e20d2'), ('TRX', '4ccdf2cecba5'), ('TRX', '5e388d8774fd')]",
+   "Cumple": true
+  },
+  {
+   "Caso": "N4-A-R2",
+   "Qué": "N4: la misma solicitud del banco (N4-A) con el cierre derivado r2",
+   "Esperado": "mismo resultado del aceptante que en el banco (las comprobaciones no dependen del cierre salvo R9, monótona: un cierre mayor no crea violaciones); cero escrituras en el repositorio del banco",
+   "Observado": "ACCEPT_FACTS rc 0; comprobaciones iguales a las del banco: sí; RelayFacts del banco = entrada RELAY de (c): sí; cero escrituras: sí",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "c02b1e4c97b5b299f7f9bc1d7e4a9a5e1ec505bfe9a6ae31e4bea1ea703ae001",
+      "Computed": "c02b1e4c97b5b299f7f9bc1d7e4a9a5e1ec505bfe9a6ae31e4bea1ea703ae001"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "c82a922dd1fa452ebf76113b3305080cd16f1f35ce081bef3d83a213d0351092"
+    },
+    "Bench": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    }
+   }
+  },
+  {
+   "Caso": "NC1-E",
+   "Qué": "NC1: E de A7-1 r2 (a7-designation/2 con TRX_RED y RELAY) frente al E de la ronda 1 / R7-A custodiado en el banco",
+   "Esperado": "el E r2 es el de la ronda 1 más las entradas TRX_RED y RELAY (en el mismo orden); validador acepta; ausencias de la invocación registradas (N4: la entrega)",
+   "Observado": "quitando 2 entradas (fixture-tests.trx, relay-facts.json), bytes iguales al E del banco: sí; validador: acepta; ausencias (c): ninguna",
+   "Cumple": true,
+   "Datos": {
+    "ESha256": "278d927bb6841b170cc2ab9d5658b496dbfa9ce80926c0d1e49e216008211056"
+   }
+  },
+  {
+   "Caso": "NC1-CLOSURE",
+   "Qué": "NC1: cierre del aceptante derivado (designate_a7 + derive_r4 sin cambio) frente al del banco",
+   "Esperado": "superconjunto del cierre de la ronda 1 (más C4 de las dos rutas nuevas y C6 del segundo TRX), con las mismas omisiones",
+   "Observado": "superconjunto: sí; omisiones iguales: sí; C6: [('CONTRACT', '8f34367053cf'), ('DELEG', '195930e9e4f6'), ('H', 'a7bd1b78c9a6'), ('TRX', '4ccdf2cecba5'), ('TRX', '5e388d8774fd')]",
+   "Cumple": true
+  },
+  {
+   "Caso": "NC1-V1-R2",
+   "Qué": "NC1: la misma solicitud del banco (NC1-V1-A) con el cierre derivado r2",
+   "Esperado": "mismo resultado del aceptante que en el banco (las comprobaciones no dependen del cierre salvo R9, monótona: un cierre mayor no crea violaciones); cero escrituras en el repositorio del banco",
+   "Observado": "ACCEPT_FACTS rc 0; comprobaciones iguales a las del banco: sí; RelayFacts del banco = entrada RELAY de (c): sí; cero escrituras: sí",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "MATCH",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "1343a4ccf84e375d0591e66404ac63a7aeb67d776f58f3542b17aefa91228ba8",
+      "Computed": "1343a4ccf84e375d0591e66404ac63a7aeb67d776f58f3542b17aefa91228ba8"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "1334de564c1e765711881d1828fabe861978f8cbfaa5e07b4eea4f28858a4816"
+    },
+    "Bench": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "MATCH",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    }
+   }
+  },
+  {
+   "Caso": "NC1-V2-R2",
+   "Qué": "NC1: la misma solicitud del banco (NC1-V2-A) con el cierre derivado r2",
+   "Esperado": "mismo resultado del aceptante que en el banco (las comprobaciones no dependen del cierre salvo R9, monótona: un cierre mayor no crea violaciones); cero escrituras en el repositorio del banco",
+   "Observado": "ACCEPT_FACTS rc 0; comprobaciones iguales a las del banco: sí; cero escrituras: sí",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "bfa61cb8b2cb6dd2c1a17a23d5602cf256974b2b9648488b77936219ace5e939",
+      "Computed": "bfa61cb8b2cb6dd2c1a17a23d5602cf256974b2b9648488b77936219ace5e939"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "f20c6ba8c9a3b301746bfb6bf2663565becf2f75b5496a4142812e8070b515e1"
+    },
+    "Bench": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    }
+   }
+  },
+  {
+   "Caso": "NC1-V3-R2",
+   "Qué": "NC1: la misma solicitud del banco (NC1-V3-A) con el cierre derivado r2",
+   "Esperado": "mismo resultado del aceptante que en el banco (las comprobaciones no dependen del cierre salvo R9, monótona: un cierre mayor no crea violaciones); cero escrituras en el repositorio del banco",
+   "Observado": "ACCEPT_FACTS rc 0; comprobaciones iguales a las del banco: sí; cero escrituras: sí",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "MATCH",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "21da8f4f3dd1c50f0e244c0729bb0e1013cd9f42cf5479fc6234d6c019d5fb62",
+      "Computed": "21da8f4f3dd1c50f0e244c0729bb0e1013cd9f42cf5479fc6234d6c019d5fb62"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "c0f478b7215ee8fcb55033dc8f418598c215e74f8ee075e583caf3e3fd87cbce"
+    },
+    "Bench": {
+     "R1": "MATCH",
+     "R10": "MATCH",
+     "R2": "MATCH",
+     "R3": "MATCH",
+     "R4": "NOT_APPLICABLE",
+     "R5": "MATCH",
+     "R6": "MATCH",
+     "R7": "MATCH",
+     "R8": "MANUAL",
+     "R9": "MATCH"
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,332 @@
+{
+ "Phase": "q8-rebasemap",
+ "Cases": [
+  {
+   "Caso": "RB-FIXTURE",
+   "Qué": "rebase real del repositorio de V: main avanza un commit (solo docs/WORKFLOW.md) y los commits de la rama de la unidad se rebasan sin conflictos; registro de rebase relay-record/v2 con Phase REBASE",
+   "Esperado": "patch-id iguales; documentos de la unidad iguales en la AR y su imagen; registro y designación válidos contra sus esquemas",
+   "Observado": "main fbe25347 → 3627de0c (docs/WORKFLOW.md); 20 commits; patch-id iguales: True; docs de la unidad iguales: True; esquema del registro: válido; esquema de la designación: válida",
+   "Cumple": true,
+   "Datos": {
+    "Fixture": {
+     "Repo": "D:/r62-a7/work/r4/rebase-repo",
+     "MainBefore": "fbe25347799e5b801ef708454212335537448bd1",
+     "MainAfter": "3627de0c90c8d367af18c2e769a90304f7b51d19",
+     "BranchBefore": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+     "BranchAfter": "bea150bcc76ba6a07d365721116c983ba523e705",
+     "Commits": 20,
+     "PatchIdsEqual": true,
+     "UnitDocsEqual": true,
+     "MainChange": [
+      "docs/WORKFLOW.md"
+     ],
+     "RebaseRecord": "D:/r62-a7/evid-r4/inputs-rebase/rebase-record.json",
+     "Designation": "D:/r62-a7/evid-r4/designations-r4/RV.json"
+    }
+   }
+  },
+  {
+   "Caso": "RB-POS",
+   "Qué": "reverificación de 16.7 con su registro de rebase presente, verificado y coherente",
+   "Esperado": "cierre construido; MainSha_eval = MainAfterSha del RebaseMap (≠ K.MainSha); la entrada del registro en CanonicalInputs; validador acepta; designate_a7 válida; derivación del cierre del aceptante con C6 sin nombre para el registro; EFF y EFF^1 = los de V",
+   "Observado": "MainShaEval 3627de0c (MainAfterSha of the RebaseMap of the rebase record R20261023T100000Z-0b01 (16.13: 16.7 reverification)); K.MainSha fbe25347; entrada del registro: 1; validador: acepta (fuente MainAfterSha of the rebase record R20261023T100000Z-0b01); designate_a7: válida; C6: [('CONTRACT', '8f34367053cf'), ('DELEG', 'f380200c402f'), ('H', '5a6f76ba4fa3'), ('TRX', '4ccdf2cecba5'), ('TRX', '5e388d8774fd')]; EFF fbe25347 / EFF^1 930288c5 (V: fbe25347 / 930288c5)",
+   "Cumple": true,
+   "Datos": {
+    "Closure": "83d00f4789af65414808fe5f42b8e28ac0141a712a22f30ca5d2d509daf6edc3"
+   }
+  },
+  {
+   "Caso": "RB-MSE-READS",
+   "Qué": "lecturas de (a) en MainSha_eval en la reverificación (Evaluate: WORKFLOW.md y AUTOMATION_PLAN.md)",
+   "Esperado": "WORKFLOW.md fijado con su blob en MainAfterSha (distinto del de K.MainSha) y clasificado por el validador como la lectura de Evaluate en MainSha_eval",
+   "Observado": "par (WORKFLOW.md, a5d12cc5) en el cierre: True; etiquetas: a:16.13-EVALUATE@MainSha_eval, b:DIFF; en K.MainSha el blob es 446c32ba",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-MSE-KMAIN",
+   "Qué": "cierre de la reverificación con las lecturas de MainSha_eval fijadas en K.MainSha (como si no hubiera RebaseMap)",
+   "Esperado": "el validador lo rechaza (falta la entrada en MainAfterSha)",
+   "Observado": "validador: rechaza; faltan 2",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-MSE-DESIGNATED",
+   "Qué": "designación que fija MainShaEval = K.MainSha (MainSha_eval designado en lugar de derivado)",
+   "Esperado": "el formato lo rechaza: el constructor no da cierre, el validador da un problema, el esquema lo rechaza",
+   "Observado": "constructor: DESIGNATION_FORMAT; validador: ['DESIGNATION: MainShaEval is designated (MainSha_eval is derived, never designated)']; esquema: ['#/MainShaEval additionalProperties']",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-ABSENT",
+   "Qué": "reverificación sin registro de rebase designado (obligatorio)",
+   "Esperado": "sin cierre (NO_CLOSURE: designates no rebase record) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 5 (c): the reverification designates no rebase record: MainSha_eval cannot be fixed (no closure, no launch); nothing substitutes it (no other rec; validador: rechaza (rule 5 (c): the reverification has no designated rebase record (MainSha_eval cannot be fixed))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-ABSENT-FILE",
+   "Qué": "registro designado sin bytes custodiados",
+   "Esperado": "sin cierre (NO_CLOSURE: absent, unregistered) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 5 (c): the rebase record is absent, unregistered, with another blob or unreadable: MainSha_eval cannot be fixed; nothing substitutes it (no other; validador: rechaza (rule 5 (c): the rebase record is absent, unregistered, with another blob or unreadable)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-BLOB-REGISTERED",
+   "Qué": "blob registrado alterado (un dígito)",
+   "Esperado": "sin cierre (NO_CLOSURE: absent, unregistered) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 5 (c): the rebase record is absent, unregistered, with another blob or unreadable: MainSha_eval cannot be fixed; nothing substitutes it (no other; validador: rechaza (rule 5 (c): the rebase record is absent, unregistered, with another blob or unreadable)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-BLOB-BYTES",
+   "Qué": "bytes custodiados alterados (un byte más) con el blob registrado del original",
+   "Esperado": "sin cierre (NO_CLOSURE: absent, unregistered) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 5 (c): the rebase record is absent, unregistered, with another blob or unreadable: MainSha_eval cannot be fixed; nothing substitutes it (no other; validador: rechaza (rule 5 (c): the rebase record is absent, unregistered, with another blob or unreadable)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-SUBST-NOADVANCE",
+   "Qué": "registro sustituido (blob registrado): MainAfterSha = MainBeforeSha (main no avanza; MainSha_eval sería K.MainSha)",
+   "Esperado": "sin cierre (NO_CLOSURE: MainAfterSha is not a commit after) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): MainAfterSha is not a commit after MainBeforeSha from which Target.commit descends (a rebase onto another main, or no advance of main); no; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (MainAfterSha is not after MainBeforeSha or Target.commit does not descend from it))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-SUBST-OTHERMAIN",
+   "Qué": "registro sustituido (blob registrado): MainAfterSha = un commit de main del que no desciende Target.commit",
+   "Esperado": "sin cierre (NO_CLOSURE: MainAfterSha is not a commit after) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): MainAfterSha is not a commit after MainBeforeSha from which Target.commit descends (a rebase onto another main, or no advance of main); no; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (MainAfterSha is not after MainBeforeSha or Target.commit does not descend from it))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-SUBST-MAINBEFORE",
+   "Qué": "registro de otro rebase (blob registrado): MainBeforeSha ≠ K.MainSha",
+   "Esperado": "sin cierre (NO_CLOSURE: MainBeforeSha of the RebaseMap is not K.MainSha) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): MainBeforeSha of the RebaseMap is not K.MainSha (another rebase); nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (MainBeforeSha is not K.MainSha))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-OTHER-TASK",
+   "Qué": "registro de otra corrida: otra tarea (TaskId T2)",
+   "Esperado": "sin cierre (NO_CLOSURE: another task or attempt) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the rebase record belongs to another task or attempt; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (another task or attempt))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-OTHER-ATTEMPT",
+   "Qué": "registro de otra corrida: otro intento (Attempt 1)",
+   "Esperado": "sin cierre (NO_CLOSURE: another task or attempt) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the rebase record belongs to another task or attempt; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (another task or attempt))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-OTHER-DELIVERY",
+   "Qué": "registro de otra entrega: Commits no asigna el CurrentSha de la entrega",
+   "Esperado": "sin cierre (NO_CLOSURE: does not map the CurrentSha) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the RebaseMap does not map the CurrentSha of the delivery to Target.commit with equal patch-id (a rebase of another delivery or run); noth; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (the CurrentSha of the delivery is not mapped to Target.commit with equal patch-id))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-RUNID-RECORD",
+   "Qué": "RunId del registro distinto del registrado en la designación",
+   "Esperado": "sin cierre (NO_CLOSURE: RunId of the rebase record is not the registered one) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the RunId of the rebase record is not the registered one (another run); nothing substitutes it (no other record, no other run, not K.MainS; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (RunId is not the registered one))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-RUNID-DIR",
+   "Qué": "el directorio de la ruta no es el RunId registrado",
+   "Esperado": "sin cierre (NO_CLOSURE: attempt directory) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the rebase record is not in the attempt directory artifacts/orchestration/<UnitId>/<TaskId>/<Attempt>/<RunId>/ named with its registered R; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (path not in the attempt directory, in a directory named with its registered RunId))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-RUNID-REUSED",
+   "Qué": "el registro usa el RunId de la reverificación (16.6: un RunId propio)",
+   "Esperado": "sin cierre (NO_CLOSURE: that of the reverification) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the RunId of the rebase record is that of the reverification, the delegation or the delivery (16.6: its own RunId); nothing substitutes it; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (RunId is that of the reverification, the delegation or the delivery))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-RUNID-FORMAT",
+   "Qué": "RunId registrado sin la forma de 16.6",
+   "Esperado": "sin cierre (DESIGNATION) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: DESIGNATION REBASE with a RunId that is not R<yyyyMMddTHHmmssZ>-<4 hex> (16.6); validador: rechaza (DESIGNATION: the REBASE role needs its RunId (R<yyyyMMddTHHmmssZ>-<4 hex>) and no other role has one)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-RUNID-OTHER-ROLE",
+   "Qué": "RunId registrado en otro papel (solo el registro de rebase lo lleva)",
+   "Esperado": "sin cierre (DESIGNATION) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: DESIGNATION the RunId is registered for the REBASE role and only for it (rule 2 (c)); validador: rechaza (DESIGNATION: the REBASE role needs its RunId (R<yyyyMMddTHHmmssZ>-<4 hex>) and no other role has one)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-CONFLICTS",
+   "Qué": "registro incoherente: RebaseMap con rutas en conflicto",
+   "Esperado": "sin cierre (NO_CLOSURE: conflict paths) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the RebaseMap records conflict paths or unmapped entries (no 16.7 reverification without conflicts); nothing substitutes it (no other reco; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (conflict paths or unmapped entries))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-UNMAPPED",
+   "Qué": "registro incoherente: RebaseMap con entradas sin mapear",
+   "Esperado": "sin cierre (NO_CLOSURE: conflict paths or unmapped) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the RebaseMap records conflict paths or unmapped entries (no 16.7 reverification without conflicts); nothing substitutes it (no other reco; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (conflict paths or unmapped entries))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-PATCHID",
+   "Qué": "registro incoherente: el commit de la entrega con patch-id distinto",
+   "Esperado": "sin cierre (NO_CLOSURE: equal patch-id) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the RebaseMap does not map the CurrentSha of the delivery to Target.commit with equal patch-id (a rebase of another delivery or run); noth; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (the CurrentSha of the delivery is not mapped to Target.commit with equal patch-id))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-NOIMAGE",
+   "Qué": "registro incoherente: un commit sin imagen",
+   "Esperado": "sin cierre (NO_CLOSURE: commit without image) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the RebaseMap has no commits or a commit without image; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (no commits, or a commit without image))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-AR",
+   "Qué": "registro incoherente: AuthorityRevision del RebaseMap distinta de la del contrato",
+   "Esperado": "sin cierre (NO_CLOSURE: AuthorityRevision) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the AuthorityRevision of the RebaseMap is not the contract's or its 16.7 equalities are not recorded; nothing substitutes it (no other rec; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (AuthorityRevision is not the contract's or the 16.7 equalities are not recorded))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-UNITDOC",
+   "Qué": "registro incoherente: igualdad de 16.7 de los UNIT_DOC no registrada",
+   "Esperado": "sin cierre (NO_CLOSURE: AuthorityRevision) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the AuthorityRevision of the RebaseMap is not the contract's or its 16.7 equalities are not recorded; nothing substitutes it (no other rec; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (AuthorityRevision is not the contract's or the 16.7 equalities are not recorded))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-BASESHA",
+   "Qué": "registro incoherente: BaseSha del RebaseMap distinto del de la delegación",
+   "Esperado": "sin cierre (NO_CLOSURE: BaseSha) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): BaseSha of the RebaseMap is not the BaseSha of the delegation; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (BaseSha is not the delegation's))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-PHASE",
+   "Qué": "registro incoherente: registro con Phase WORK",
+   "Esperado": "sin cierre (NO_CLOSURE: Phase REBASE) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the rebase record is not a relay-record/v2 with Phase REBASE; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (not a relay-record/v2 with Phase REBASE))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-NOMAP",
+   "Qué": "registro incoherente: registro sin RebaseMap",
+   "Esperado": "sin cierre (NO_CLOSURE: no RebaseMap) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the rebase record has no RebaseMap; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (no RebaseMap))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-NO-H",
+   "Qué": "reverificación sin la entrega (la coherencia del registro no se puede comprobar)",
+   "Esperado": "sin cierre (NO_CLOSURE: without the delivery) y el validador rechaza el cierre de RB-POS con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 5 (c): without the delivery the coherence of the rebase record cannot be checked: no closure; nothing substitutes it (no other record, no other r; validador: rechaza (rule 2 (c) / 5 (c): the rebase record is not coherent (no delivery to check the commit mapping))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-MISUSE-V",
+   "Qué": "V (VERIFY) con un registro de rebase designado",
+   "Esperado": "no se admite: no entra en el cierre (E idéntico al de V sin él), ausencia NOT_ADMITTED registrada, MainSha_eval = K.MainSha; con la entrada añadida a mano, el validador la marca ajena y designate_a7 la rechaza",
+   "Observado": "E igual al de V: True; ausencia: NOT_ADMITTED: only the 16.7 reverification and the controls ; MainSha_eval fbe25347; validador sobre E: acepta; con la entrada inyectada: rechaza (ajenas 1), designate_a7 ['REBASE_NOT_ADMITTED']",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-MISUSE-N4",
+   "Qué": "N4 (VERIFY) con un registro de rebase designado",
+   "Esperado": "no se admite: no entra en el cierre (E idéntico al de N4 sin él), ausencia NOT_ADMITTED registrada, MainSha_eval = K.MainSha; con la entrada añadida a mano, el validador la marca ajena y designate_a7 la rechaza",
+   "Observado": "E igual al de N4: True; ausencia: NOT_ADMITTED: only the 16.7 reverification and the controls ; MainSha_eval fbe25347; validador sobre E: acepta; con la entrada inyectada: rechaza (ajenas 1), designate_a7 ['REBASE_NOT_ADMITTED']",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-MISUSE-M",
+   "Qué": "M (MEASUREMENT) con un registro de rebase designado",
+   "Esperado": "no se admite: no entra en el cierre (E idéntico al de M sin él), ausencia NOT_ADMITTED registrada, MainSha_eval = K.MainSha; con la entrada añadida a mano, el validador la marca ajena y designate_a7 la rechaza",
+   "Observado": "E igual al de M: True; ausencia: NOT_ADMITTED: only the 16.7 reverification and the controls ; MainSha_eval fbe25347; validador sobre E: acepta; con la entrada inyectada: rechaza (ajenas 1), designate_a7 ['REBASE_NOT_ADMITTED']",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-EXTRA-RECORD",
+   "Qué": "cierre de la reverificación con un segundo registro de rebase no designado",
+   "Esperado": "validador: ajeno; designate_a7: UNDESIGNATED_INPUT",
+   "Observado": "validador rechaza (ajenas 1); designate_a7 ['UNDESIGNATED_INPUT']",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-EXTRA-INVENTED",
+   "Qué": "cierre con una entrada inventada (WORKFLOW.md con un blob que no es el de ninguna revisión de lectura)",
+   "Esperado": "el validador la marca ajena",
+   "Observado": "validador rechaza (ajenas 1)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-EXTRA-ROLE",
+   "Qué": "designación con dos registros de rebase (un artefacto como máximo por papel)",
+   "Esperado": "sin cierre (DESIGNATION); el validador da un problema",
+   "Observado": "constructor DESIGNATION; validador ['DESIGNATION: role REBASE designated twice (at most one artifact per role)']",
+   "Cumple": true
+  },
+  {
+   "Caso": "RB-ACCEPTOR",
+   "Qué": "aceptante fijado (A-6 sin cambio) sobre las dos corridas trx con el cierre derivado de la reverificación",
+   "Esperado": "ACCEPT_FACTS: R9 MATCH (C6 fija los dos TRX), R10 MATCH (RelayFacts de (c)); el registro de rebase no entra en C6 ni lo lee el instrumento",
+   "Observado": "ACCEPT_FACTS rc 0; R9 MATCH; R10 MATCH; cero escrituras: True",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "NOT_APPLICABLE",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "3ff77b4af9c0d22d3ecf348ccae22e59df1e84bf0a1714f8f3fe642ec8495562",
+      "Computed": "3ff77b4af9c0d22d3ecf348ccae22e59df1e84bf0a1714f8f3fe642ec8495562"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "bd103124a6e8facaa07e9ff7152b2407d4e73ae4f40cf355ddd120a4e26b6085"
+    }
+   }
+  },
+  {
+   "Caso": "RB-B-INCLUSION",
+   "Qué": "informativo (Q-A7R3-03): (b) de la reverificación con el BaseSha de la delegación (la ronda 3 no cambia (b))",
+   "Esperado": "registrado: git diff --name-only BaseSha..Target.commit incluye la ruta que main cambió (docs/WORKFLOW.md), fijada en Target.commit; no es una lectura fuera del cierre",
+   "Observado": "(b) WORKFLOW.md: ['a5d12cc5']; entradas (b): 6",
+   "Cumple": true
+  }
+ ],
+ "Fixture": {
+  "Repo": "D:/r62-a7/work/r4/rebase-repo",
+  "MainBefore": "fbe25347799e5b801ef708454212335537448bd1",
+  "MainAfter": "3627de0c90c8d367af18c2e769a90304f7b51d19",
+  "BranchBefore": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "BranchAfter": "bea150bcc76ba6a07d365721116c983ba523e705",
+  "Commits": 20,
+  "PatchIdsEqual": true,
+  "UnitDocsEqual": true,
+  "MainChange": [
+   "docs/WORKFLOW.md"
+  ],
+  "RebaseRecord": "D:/r62-a7/evid-r4/inputs-rebase/rebase-record.json",
+  "Designation": "D:/r62-a7/evid-r4/designations-r4/RV.json"
+ }
+}

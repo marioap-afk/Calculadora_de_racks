@@ -1,0 +1,523 @@
+{
+ "Phase": "q9-controls-on-rv",
+ "Cases": [
+  {
+   "Caso": "RVC-MUTVALUES",
+   "Qué": "valores de las mutaciones de los controles (RAE §10 para nc1-nc3; V14 D.3 y G.2 para N4-N7b, que solo nombran el efecto)",
+   "Esperado": "los del banco de A6-7 (evidencia §181), campo a campo",
+   "Observado": "n5 igual, n7a igual, n7b igual, nc1 igual, nc2 igual, nc3 igual",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SCHEMA",
+   "Qué": "designaciones a7-designation/4 de los ocho controles sobre RV (Kind REVERIFICATION_CONTROL, Source)",
+   "Esperado": "las ocho válidas contra el esquema; Source.Control fuera de la lista, inválido",
+   "Observado": "violaciones: ninguna; nc9: ['#/Source/Control enum']",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-NC1",
+   "Qué": "nc1 (Identity) sobre las entradas de RV: copias en T1-nc1, mutación del control, hechos del relevo propios, Target y Source = RV",
+   "Esperado": "cierre construido; MainSha_eval = MainAfterSha de la copia (≠ K.MainSha); la copia del registro en CanonicalInputs con el blob del de RV; validador acepta; designate_a7 válida; derivación del aceptante sin nombre en C6 para el registro",
+   "Observado": "MainShaEval 3627de0c (R20261023T101000Z-0c02); copia del registro: 1 (661a8619); validador: acepta; designate_a7: válida; C6: CONTRACT, DELEG, H, TRX; omisiones: C1.D.ChainRedSha FIELD_NULL, C1.H.CurrentSha NOT_A_COMMIT, C1.RevList(D.BaseSha..H.CurrentSha) PRIMITIVE_EMPTY",
+   "Cumple": true,
+   "Datos": {
+    "Closure": "10356fe480168686fa8deee2497b1ffde4726952a230f17160fe79f095bf3423",
+    "MutatedFields": [
+     "CurrentSha"
+    ]
+   }
+  },
+  {
+   "Caso": "REL-NC1",
+   "Qué": "entradas de nc1 (Identity) frente a las de RV (contrapartida estática del oráculo relativo de RAE §10)",
+   "Esperado": "(a), (b), (d), MainSha_eval, EFF, EFF^1, Target y BaseSha idénticos; en (c), copias salvo los hechos del relevo (propios) y el papel mutado",
+   "Observado": "CONTRACT copia; DELEG copia; H mutado; REBASE copia; RELAY propio; TRX_CURRENT copia; TRX_RED copia; sin discrepancias",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-NC2",
+   "Qué": "nc2 (Scope) sobre las entradas de RV: copias en T1-nc2, mutación del control, hechos del relevo propios, Target y Source = RV",
+   "Esperado": "cierre construido; MainSha_eval = MainAfterSha de la copia (≠ K.MainSha); la copia del registro en CanonicalInputs con el blob del de RV; validador acepta; designate_a7 válida; derivación del aceptante sin nombre en C6 para el registro",
+   "Observado": "MainShaEval 3627de0c (R20261023T101000Z-0c02); copia del registro: 1 (661a8619); validador: acepta; designate_a7: válida; C6: CONTRACT, DELEG, H, TRX; omisiones: C1.D.ChainRedSha FIELD_NULL",
+   "Cumple": true,
+   "Datos": {
+    "Closure": "8fb78ba8c279a3867d09e9097114d742f948e4f08e8233ce94adc48dbd9b3348",
+    "MutatedFields": [
+     "AllowedWriteScope"
+    ]
+   }
+  },
+  {
+   "Caso": "REL-NC2",
+   "Qué": "entradas de nc2 (Scope) frente a las de RV (contrapartida estática del oráculo relativo de RAE §10)",
+   "Esperado": "(a), (b), (d), MainSha_eval, EFF, EFF^1, Target y BaseSha idénticos; en (c), copias salvo los hechos del relevo (propios) y el papel mutado",
+   "Observado": "CONTRACT copia; DELEG mutado; H copia; REBASE copia; RELAY propio; TRX_CURRENT copia; TRX_RED copia; sin discrepancias",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-NC3",
+   "Qué": "nc3 (FreeText) sobre las entradas de RV: copias en T1-nc3, mutación del control, hechos del relevo propios, Target y Source = RV",
+   "Esperado": "cierre construido; MainSha_eval = MainAfterSha de la copia (≠ K.MainSha); la copia del registro en CanonicalInputs con el blob del de RV; validador acepta; designate_a7 válida; derivación del aceptante sin nombre en C6 para el registro",
+   "Observado": "MainShaEval 3627de0c (R20261023T101000Z-0c02); copia del registro: 1 (661a8619); validador: acepta; designate_a7: válida; C6: CONTRACT, DELEG, H, TRX; omisiones: C1.D.ChainRedSha FIELD_NULL",
+   "Cumple": true,
+   "Datos": {
+    "Closure": "b53800e549dc4aa7acf64c56c0434ac6c54eb8b49021e987293206d371fdc7cb",
+    "MutatedFields": [
+     "WorkCompleted"
+    ]
+   }
+  },
+  {
+   "Caso": "REL-NC3",
+   "Qué": "entradas de nc3 (FreeText) frente a las de RV (contrapartida estática del oráculo relativo de RAE §10)",
+   "Esperado": "(a), (b), (d), MainSha_eval, EFF, EFF^1, Target y BaseSha idénticos; en (c), copias salvo los hechos del relevo (propios) y el papel mutado",
+   "Observado": "CONTRACT copia; DELEG copia; H mutado; REBASE copia; RELAY propio; TRX_CURRENT copia; TRX_RED copia; sin discrepancias",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-N4",
+   "Qué": "N4 (handoff ausente) sobre las entradas de RV: copias en T1-n4, mutación del control, hechos del relevo propios, Target y Source = RV",
+   "Esperado": "cierre construido; MainSha_eval = MainAfterSha de la copia (≠ K.MainSha); la copia del registro en CanonicalInputs con el blob del de RV; validador acepta; designate_a7 válida; derivación del aceptante sin nombre en C6 para el registro",
+   "Observado": "MainShaEval 3627de0c (R20261023T101000Z-0c02); copia del registro: 1 (661a8619); validador: acepta; designate_a7: válida; C6: CONTRACT, DELEG, TRX; omisiones: C1.D.ChainRedSha FIELD_NULL, C1.H.BaseSha INPUT_ABSENT, C1.H.CurrentSha INPUT_ABSENT, C1.H.RedSha INPUT_ABSENT, C1.RevList(D.BaseSha..H.CurrentSha) INPUT_ABSENT, C6.H INPUT_ABSENT",
+   "Cumple": true,
+   "Datos": {
+    "Closure": "09fbb0d20fc8509c22cf5b6091cb580ee43d25b57ed5abfba592bce3c45513ae",
+    "MutatedFields": null
+   }
+  },
+  {
+   "Caso": "REL-N4",
+   "Qué": "entradas de N4 (handoff ausente) frente a las de RV (contrapartida estática del oráculo relativo de RAE §10)",
+   "Esperado": "(a), (b), (d), MainSha_eval, EFF, EFF^1, Target y BaseSha idénticos; en (c), copias salvo los hechos del relevo (propios) y el papel mutado",
+   "Observado": "CONTRACT copia; DELEG copia; H ausente; REBASE copia; RELAY propio; TRX_CURRENT copia; TRX_RED copia; sin discrepancias",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-N5",
+   "Qué": "N5 (0 pruebas) sobre las entradas de RV: copias en T1-n5, mutación del control, hechos del relevo propios, Target y Source = RV",
+   "Esperado": "cierre construido; MainSha_eval = MainAfterSha de la copia (≠ K.MainSha); la copia del registro en CanonicalInputs con el blob del de RV; validador acepta; designate_a7 válida; derivación del aceptante sin nombre en C6 para el registro",
+   "Observado": "MainShaEval 3627de0c (R20261023T101000Z-0c02); copia del registro: 1 (661a8619); validador: acepta; designate_a7: válida; C6: CONTRACT, DELEG, H, TRX; omisiones: C1.D.ChainRedSha FIELD_NULL",
+   "Cumple": true,
+   "Datos": {
+    "Closure": "4ea43f73bc3cc81a6cae51334ebcbf736baf6c7c15b8c552c7a5f86bc783ff5f",
+    "MutatedFields": [
+     "TestResults"
+    ]
+   }
+  },
+  {
+   "Caso": "REL-N5",
+   "Qué": "entradas de N5 (0 pruebas) frente a las de RV (contrapartida estática del oráculo relativo de RAE §10)",
+   "Esperado": "(a), (b), (d), MainSha_eval, EFF, EFF^1, Target y BaseSha idénticos; en (c), copias salvo los hechos del relevo (propios) y el papel mutado",
+   "Observado": "CONTRACT copia; DELEG copia; H mutado; REBASE copia; RELAY propio; TRX_CURRENT copia; TRX_RED copia; sin discrepancias",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-N6",
+   "Qué": "N6 (trabajo sin commit) sobre las entradas de RV: copias en T1-n6, mutación del control, hechos del relevo propios, Target y Source = RV",
+   "Esperado": "cierre construido; MainSha_eval = MainAfterSha de la copia (≠ K.MainSha); la copia del registro en CanonicalInputs con el blob del de RV; validador acepta; designate_a7 válida; derivación del aceptante sin nombre en C6 para el registro",
+   "Observado": "MainShaEval 3627de0c (R20261023T101000Z-0c02); copia del registro: 1 (661a8619); validador: acepta; designate_a7: válida; C6: CONTRACT, DELEG, H, TRX; omisiones: C1.D.ChainRedSha FIELD_NULL",
+   "Cumple": true,
+   "Datos": {
+    "Closure": "d13c2ddaeb3240b481b7a2686dacdd11e7f7f5eae04f6f9222777952518f09b6",
+    "MutatedFields": null
+   }
+  },
+  {
+   "Caso": "REL-N6",
+   "Qué": "entradas de N6 (trabajo sin commit) frente a las de RV (contrapartida estática del oráculo relativo de RAE §10)",
+   "Esperado": "(a), (b), (d), MainSha_eval, EFF, EFF^1, Target y BaseSha idénticos; en (c), copias salvo los hechos del relevo (propios) y el papel mutado",
+   "Observado": "CONTRACT copia; DELEG copia; H copia; REBASE copia; RELAY propio; TRX_CURRENT copia; TRX_RED copia; sin discrepancias",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-N7A",
+   "Qué": "N7a (otra corrida, Identity pass) sobre las entradas de RV: copias en T1-n7a, mutación del control, hechos del relevo propios, Target y Source = RV",
+   "Esperado": "cierre construido; MainSha_eval = MainAfterSha de la copia (≠ K.MainSha); la copia del registro en CanonicalInputs con el blob del de RV; validador acepta; designate_a7 válida; derivación del aceptante sin nombre en C6 para el registro",
+   "Observado": "MainShaEval 3627de0c (R20261023T101000Z-0c02); copia del registro: 1 (661a8619); validador: acepta; designate_a7: válida; C6: CONTRACT, DELEG, H, TRX; omisiones: C1.D.ChainRedSha FIELD_NULL",
+   "Cumple": true,
+   "Datos": {
+    "Closure": "b31d604933cbb6597815847af1943cb7d3008bf0352d729f99371070a09e3d30",
+    "MutatedFields": [
+     "DelegationRunId"
+    ]
+   }
+  },
+  {
+   "Caso": "REL-N7A",
+   "Qué": "entradas de N7a (otra corrida, Identity pass) frente a las de RV (contrapartida estática del oráculo relativo de RAE §10)",
+   "Esperado": "(a), (b), (d), MainSha_eval, EFF, EFF^1, Target y BaseSha idénticos; en (c), copias salvo los hechos del relevo (propios) y el papel mutado",
+   "Observado": "CONTRACT copia; DELEG copia; H mutado; REBASE copia; RELAY propio; TRX_CURRENT copia; TRX_RED copia; sin discrepancias",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-N7B",
+   "Qué": "N7b (otra corrida, Identity fail) sobre las entradas de RV: copias en T1-n7b, mutación del control, hechos del relevo propios, Target y Source = RV",
+   "Esperado": "cierre construido; MainSha_eval = MainAfterSha de la copia (≠ K.MainSha); la copia del registro en CanonicalInputs con el blob del de RV; validador acepta; designate_a7 válida; derivación del aceptante sin nombre en C6 para el registro",
+   "Observado": "MainShaEval 3627de0c (R20261023T101000Z-0c02); copia del registro: 1 (661a8619); validador: acepta; designate_a7: válida; C6: CONTRACT, DELEG, H, TRX; omisiones: C1.D.ChainRedSha FIELD_NULL",
+   "Cumple": true,
+   "Datos": {
+    "Closure": "67a6819574d98a2a28db7331be7a79044b795ec872890ea40336f9106b5eaac2",
+    "MutatedFields": [
+     "CurrentSha",
+     "DelegationRunId"
+    ]
+   }
+  },
+  {
+   "Caso": "REL-N7B",
+   "Qué": "entradas de N7b (otra corrida, Identity fail) frente a las de RV (contrapartida estática del oráculo relativo de RAE §10)",
+   "Esperado": "(a), (b), (d), MainSha_eval, EFF, EFF^1, Target y BaseSha idénticos; en (c), copias salvo los hechos del relevo (propios) y el papel mutado",
+   "Observado": "CONTRACT copia; DELEG copia; H mutado; REBASE copia; RELAY propio; TRX_CURRENT copia; TRX_RED copia; sin discrepancias",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-REBASE-BYTES",
+   "Qué": "nc1: copia del registro con un byte más (blob registrado el de esos bytes)",
+   "Esperado": "sin cierre (NO_CLOSURE: «not the copy of the reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the rebase record of the control is not the copy of the reverification's (same blob and RunId) in artifacts/orchestration/<UnitId>/<TaskId>-<control>/<Attempt; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the rebase record of the control is not the copy of the reverification's (same blob and RunId) under <TaskI)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-REBASE-OTHER",
+   "Qué": "nc1: la copia sustituida por otro registro de rebase con el mismo RunId (otro MainAfterSha), blob registrado",
+   "Esperado": "sin cierre (NO_CLOSURE: «not the copy of the reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the rebase record of the control is not the copy of the reverification's (same blob and RunId) in artifacts/orchestration/<UnitId>/<TaskId>-<control>/<Attempt; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the rebase record of the control is not the copy of the reverification's (same blob and RunId) under <TaskI)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-REBASE-RUNID",
+   "Qué": "nc1: copia con otro RunId (registrado y en su directorio)",
+   "Esperado": "sin cierre (NO_CLOSURE: «not the copy of the reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the rebase record of the control is not the copy of the reverification's (same blob and RunId) in artifacts/orchestration/<UnitId>/<TaskId>-<control>/<Attempt; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the rebase record of the control is not the copy of the reverification's (same blob and RunId) under <TaskI)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-REBASE-PATH-TASK",
+   "Qué": "nc1: la copia en el directorio del intento de la tarea (el original de RV), no en el del control",
+   "Esperado": "sin cierre (NO_CLOSURE: «not the copy of the reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the rebase record of the control is not the copy of the reverification's (same blob and RunId) in artifacts/orchestration/<UnitId>/<TaskId>-<control>/<Attempt; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the rebase record of the control is not the copy of the reverification's (same blob and RunId) under <TaskI)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-REBASE-PATH-OTHERCTL",
+   "Qué": "nc1: la copia en la ruta de otro control (T1-nc2)",
+   "Esperado": "sin cierre (NO_CLOSURE: «not the copy of the reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the rebase record of the control is not the copy of the reverification's (same blob and RunId) in artifacts/orchestration/<UnitId>/<TaskId>-<control>/<Attempt; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the rebase record of the control is not the copy of the reverification's (same blob and RunId) under <TaskI)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-REBASE-ABSENT",
+   "Qué": "nc1 sin copia del registro designada",
+   "Esperado": "sin cierre (NO_CLOSURE: «designates no copy of the rebase record») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 5 (c): the control designates no copy of the rebase record of the reverification: MainSha_eval cannot be fixed; nothing substitutes it (no other record, no other run; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the control designates no copy of the rebase record of the reverification))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-REBASE-NOBYTES",
+   "Qué": "nc1: copia designada sin bytes custodiados",
+   "Esperado": "sin cierre (NO_CLOSURE: «copy of the rebase record is absent») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 5 (c): the copy of the rebase record is absent, unregistered, with another blob or unreadable; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the copy of the rebase record is absent, unregistered, with another blob or unreadable))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-N4-REBASE-ABSENT",
+   "Qué": "N4 (entrega ausente) sin copia del registro",
+   "Esperado": "sin cierre (NO_CLOSURE: «designates no copy of the rebase record») y el validador rechaza el cierre de RVC-N4 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 5 (c): the control designates no copy of the rebase record of the reverification: MainSha_eval cannot be fixed; nothing substitutes it (no other record, no other run; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the control designates no copy of the rebase record of the reverification))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SOURCE-SHA",
+   "Qué": "nc1: Source con otro SHA-256 de la designación de RV",
+   "Esperado": "sin cierre (NO_CLOSURE: «does not have the identified SHA-256») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the designation of the reverification does not have the identified SHA-256; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the designation of the reverification does not have the identified SHA-256))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SOURCE-ABSENT",
+   "Qué": "nc1: la designación identificada no existe",
+   "Esperado": "sin cierre (NO_CLOSURE: «absent or unreadable») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 5 (c): the designation of the identified reverification is absent or unreadable; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the designation of the reverification is absent or unreadable))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SOURCE-KIND-V",
+   "Qué": "nc1: Source = la designación de la verificación ordinaria V (Kind VERIFY), con su SHA-256",
+   "Esperado": "sin cierre (NO_CLOSURE: «is not that of a 16.7 reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the identified designation is not that of a 16.7 reverification (a7-designation/4) with that RunId; nothing substitutes it (no other record, no other run, not; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the identified designation is not that of a 16.7 reverification with that RunId))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SOURCE-RUNID",
+   "Qué": "nc1: Source con otro RunId de reverificación",
+   "Esperado": "sin cierre (NO_CLOSURE: «is not that of a 16.7 reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the identified designation is not that of a 16.7 reverification (a7-designation/4) with that RunId; nothing substitutes it (no other record, no other run, not; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the identified designation is not that of a 16.7 reverification with that RunId))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SOURCE-INCOHERENT",
+   "Qué": "nc1 sobre una reverificación cuyo registro no es coherente (MainBeforeSha ≠ K.MainSha); la copia es la de ese registro",
+   "Esperado": "sin cierre (NO_CLOSURE: «does not satisfy point 2 (c)») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the identified reverification does not satisfy point 2 (c) (rule 2 (c): MainBeforeSha of the RebaseMap is not K.MainSha (another rebase)); nothing substitutes; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the reverification does not satisfy point 2 (c): MainBeforeSha is not K.MainSha))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SOURCE-NO-H",
+   "Qué": "nc1 sobre una reverificación sin entrega (no se puede comprobar su coherencia)",
+   "Esperado": "sin cierre (NO_CLOSURE: «has no present, blob-verified H») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 5 (c): the reverification has no present, blob-verified H; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the reverification has no present, blob-verified H))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-TARGET",
+   "Qué": "nc1 con el Target de V (el commit original), no el de RV",
+   "Esperado": "sin cierre (NO_CLOSURE: «does not have the Target of the reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the control does not have the Target of the reverification; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the control has another Target than the reverification))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-TASK",
+   "Qué": "nc1 con otra tarea (TaskId T2)",
+   "Esperado": "sin cierre (NO_CLOSURE: «does not have the TaskId») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the control does not have the TaskId of the reverification; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the control has another TaskId than the reverification; the rebase record of the control is not the copy of)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-ATTEMPT",
+   "Qué": "nc1 con otro intento (Attempt 1)",
+   "Esperado": "sin cierre (NO_CLOSURE: «does not have the Attempt») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the control does not have the Attempt of the reverification; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the control has another Attempt than the reverification; the rebase record of the control is not the copy o)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-AR",
+   "Qué": "nc1 con otra AuthorityRevision",
+   "Esperado": "sin cierre (NO_CLOSURE: «AuthorityRevision of the reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the control does not have the AuthorityRevision of the reverification; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (AUTHORITY_REVISION: E.AuthorityRevision is not the designated AuthorityRevision)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-RUNID-SELF",
+   "Qué": "nc1 con el RunId de RV",
+   "Esperado": "sin cierre (NO_CLOSURE: «no RunId of its own») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the control has no RunId of its own (it is that of the reverification or of the rebase record); nothing substitutes it (no other record, no other run, not K.M; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the control has no RunId of its own))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-RUNID-REBASE",
+   "Qué": "nc1 con el RunId del registro de rebase",
+   "Esperado": "sin cierre (NO_CLOSURE: «no RunId of its own») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the control has no RunId of its own (it is that of the reverification or of the rebase record); nothing substitutes it (no other record, no other run, not K.M; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the control has no RunId of its own))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SUBST-DELEG",
+   "Qué": "nc1: la delegación sustituida por otra (la copia del banco para nc1: otro ExpectedWorktree), en la ruta del control",
+   "Esperado": "sin cierre (NO_CLOSURE: «is not the copy of the reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the DELEG of the control is not the copy of the reverification's (same blob and the same path, or the control path for the delegation and the delivery): an un; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the DELEG of the control is not the copy of the reverification's (another blob)))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SUBST-TRX",
+   "Qué": "nc1: el TRX de CurrentSha de la corrida original (V), con los mismos bytes que el de la imagen pero de otra corrida",
+   "Esperado": "sin cierre (NO_CLOSURE: «is not the copy of the reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the TRX_CURRENT of the control is not the copy of the reverification's (same blob and the same path, or the control path for the delegation and the delivery):; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the TRX_CURRENT of the control is not the copy of the reverification's (another path: another run)))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SUBST-TRXRED-ABSENT",
+   "Qué": "nc1 sin el TRX de RedSha que RV designa",
+   "Esperado": "sin cierre (NO_CLOSURE: «is not the copy of the reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the TRX_RED of the control is not the copy of the reverification's (same blob and the same path, or the control path for the delegation and the delivery): an ; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the TRX_RED of the control is not the copy of the reverification's (designated in only one of them)))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SUBST-H-PATH",
+   "Qué": "nc2: la copia de la entrega en la ruta de la tarea, no en la del control",
+   "Esperado": "sin cierre (NO_CLOSURE: «not in the control path») y el validador rechaza el cierre de RVC-NC2 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the H of the control is not in the control path <TaskId>-<control>/<Attempt>/; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the H of the control is not in the control path))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-MUT-NONE",
+   "Qué": "nc1 con la entrega idéntica a la de RV (mutación no aplicada)",
+   "Esperado": "sin cierre (NO_CLOSURE: «does not apply its mutation») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): nc1 does not apply its mutation (the H is the reverification's); nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (nc1: the mutation is not applied))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-MUT-EXTRA",
+   "Qué": "nc1 con CurrentSha inexistente y, además, otro WorkCompleted (un campo fuera de su mutación)",
+   "Esperado": "sin cierre (NO_CLOSURE: «differs outside its mutated fields») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the H of nc1 differs outside its mutated fields (WorkCompleted); nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (nc1: the H differs outside the mutated fields (WorkCompleted)))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-MUT-ROLE",
+   "Qué": "nc2 con la delegación de RV sin mutar y la entrega mutada (la mutación en otro papel)",
+   "Esperado": "sin cierre (NO_CLOSURE: «is not the copy of the reverification») y el validador rechaza el cierre de RVC-NC2 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the H of the control is not the copy of the reverification's (same blob and the same path, or the control path for the delegation and the delivery): an unauth; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the H of the control is not the copy of the reverification's (another blob); nc2: the mutation is not appli)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-NC1-EXISTS",
+   "Qué": "nc1 con un CurrentSha que sí es un commit del -C (K.MainSha)",
+   "Esperado": "sin cierre (NO_CLOSURE: «is a commit of the -C») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the CurrentSha of nc1 is a commit of the -C (RAE §10: inexistente); nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (nc1: the CurrentSha of the copy is a commit of the -C (RAE §10: inexistente)))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-N4-PRESENT",
+   "Qué": "N4 con la entrega presente (copia de la de RV)",
+   "Esperado": "sin cierre (NO_CLOSURE: «leaves the delivery absent») y el validador rechaza el cierre de RVC-N4 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): n4 leaves the delivery absent and the control has one; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (n4 leaves the delivery absent and the control has one))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-N6-MUTATED",
+   "Qué": "N6 (sin mutación en las entradas) con la entrega mutada",
+   "Esperado": "sin cierre (NO_CLOSURE: «is not the copy of the reverification») y el validador rechaza el cierre de RVC-N6 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the H of the control is not the copy of the reverification's (same blob and the same path, or the control path for the delegation and the delivery): an unauth; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the H of the control is not the copy of the reverification's (another blob)))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-N7A-CURRENT",
+   "Qué": "N7a (Identity pass) con otro CurrentSha además de otra corrida",
+   "Esperado": "sin cierre (NO_CLOSURE: «differs outside its mutated fields») y el validador rechaza el cierre de RVC-N7A con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the H of n7a differs outside its mutated fields (CurrentSha); nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (n7a: the H differs outside the mutated fields (CurrentSha)))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-N7B-NORUN",
+   "Qué": "N7b con otro CurrentSha pero de la misma corrida",
+   "Esperado": "sin cierre (NO_CLOSURE: «is not of another run») y el validador rechaza el cierre de RVC-N7B con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the delivery of n7b is not of another run; nothing substitutes it (no other record, no other run, not K.MainSha); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (n7b: the delivery is not of another run))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-NO-SOURCE",
+   "Qué": "designación REVERIFICATION_CONTROL sin Source",
+   "Esperado": "sin cierre (DESIGNATION: «Source is designated only») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: DESIGNATION Source is designated only (and always) for a control on the inputs of a reverification (A7-1 round 4, point 2 (c)); validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the control does not identify its reverification (Source)); DESIGNATION: Source only (and always) in a cont)",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SOURCE-ON-VERIFY",
+   "Qué": "designación VERIFY (V) con un Source",
+   "Esperado": "sin cierre (DESIGNATION)",
+   "Observado": "constructor: DESIGNATION",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-MSE-DESIGNATED",
+   "Qué": "nc1 con MainShaEval designado",
+   "Esperado": "sin cierre (DESIGNATION_FORMAT) y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: DESIGNATION_FORMAT MainShaEval in the designation: MainSha_eval is derived (K.MainSha, or the MainAfterSha of the rebase record in the 16.7 reverification), never designated; validador: rechaza (DESIGNATION: MainShaEval is designated (MainSha_eval is derived, never designated))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-SOURCE-SHAPE",
+   "Qué": "nc1 con Source.Control fuera de la lista (nc9)",
+   "Esperado": "sin cierre (NO_CLOSURE: «does not identify its reverification») y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the control does not identify its reverification (Source: Control, RunId, Designation, DesignationSha256); nothing substitutes it (no other record, no other r; validador: rechaza (rule 2 (c) / 5 (c): the control on the inputs of a reverification is not coherent (the control does not identify its reverification (Source)))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-EXTRA-ROLE",
+   "Qué": "nc1 con dos registros de rebase designados (la copia y el original de RV)",
+   "Esperado": "sin cierre (DESIGNATION) y el validador rechaza el cierre de RVC-NC1 con esa designación",
+   "Observado": "constructor: DESIGNATION role REBASE designated twice (rule 2 (c): at most one artifact per role); validador: rechaza (DESIGNATION: role REBASE designated twice (at most one artifact per role))",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-EXTRA-RECORD",
+   "Qué": "cierre de nc1 sobre RV con el registro original de RV (ruta de la tarea) añadido a mano",
+   "Esperado": "validador: ajeno; designate_a7: UNDESIGNATED_INPUT",
+   "Observado": "validador rechaza (ajenas 1); designate_a7 ['UNDESIGNATED_INPUT']",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-MISUSE-V-NC1",
+   "Qué": "nc1 de la verificación ordinaria V (Kind VERIFY) con un registro de rebase designado (uso indebido)",
+   "Esperado": "no se admite: E idéntico al de nc1 sin él, ausencia NOT_ADMITTED, MainSha_eval = K.MainSha; inyectado a mano, ajeno para el validador y REBASE_NOT_ADMITTED para designate_a7",
+   "Observado": "E igual: True; ausencia: NOT_ADMITTED: only the 16.7 reverification and the controls on its inp; MainSha_eval fbe25347; inyectado: rechaza (ajenas 1), designate_a7 ['REBASE_NOT_ADMITTED', 'KPR-4']",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-MISUSE-V-AS-RVC",
+   "Qué": "nc1 de V (copias de V, Target de V) presentado como control de RV (Kind REVERIFICATION_CONTROL, Source = RV, copia del registro)",
+   "Esperado": "sin cierre: no tiene el Target de RV ni sus copias",
+   "Observado": "constructor: NO_CLOSURE rule 2 (c): the control does not have the Target of the reverification; nothing substitutes it (no other record, no othe",
+   "Cumple": true
+  },
+  {
+   "Caso": "RVC-ACCEPTOR",
+   "Qué": "aceptante fijado (A-6 sin cambio) sobre las dos corridas trx con el cierre derivado de nc2 sobre RV",
+   "Esperado": "ACCEPT_FACTS: R9 MATCH (C6 fija los dos TRX), R10 MATCH (hechos del relevo propios del control); la copia del registro no entra en C6",
+   "Observado": "ACCEPT_FACTS rc 0; R9 MATCH; R10 MATCH; cero escrituras: True",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "NOT_APPLICABLE",
+      "R7": "NOT_APPLICABLE",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "7c9f8c4731bdb54c3625a98b6d52009fd78b6d1227cfa066ae6a32f5288047ad",
+      "Computed": "7c9f8c4731bdb54c3625a98b6d52009fd78b6d1227cfa066ae6a32f5288047ad"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "335c03614b48f64313efd7ce1d9852a7a78a18948929201c3f12f6c8982978ec"
+    }
+   }
+  }
+ ],
+ "Controls": {
+  "nc1": {
+   "RunId": "R20261024T110001Z-0e01",
+   "Designation": "designations-r4/RVC-NC1.json"
+  },
+  "nc2": {
+   "RunId": "R20261024T110002Z-0e02",
+   "Designation": "designations-r4/RVC-NC2.json"
+  },
+  "nc3": {
+   "RunId": "R20261024T110003Z-0e03",
+   "Designation": "designations-r4/RVC-NC3.json"
+  },
+  "n4": {
+   "RunId": "R20261024T110004Z-0e04",
+   "Designation": "designations-r4/RVC-N4.json"
+  },
+  "n5": {
+   "RunId": "R20261024T110005Z-0e05",
+   "Designation": "designations-r4/RVC-N5.json"
+  },
+  "n6": {
+   "RunId": "R20261024T110006Z-0e06",
+   "Designation": "designations-r4/RVC-N6.json"
+  },
+  "n7a": {
+   "RunId": "R20261024T110007Z-0e07",
+   "Designation": "designations-r4/RVC-N7A.json"
+  },
+  "n7b": {
+   "RunId": "R20261024T110008Z-0e08",
+   "Designation": "designations-r4/RVC-N7B.json"
+  }
+ }
+}

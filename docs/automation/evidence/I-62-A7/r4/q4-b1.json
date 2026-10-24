@@ -1,0 +1,136 @@
+{
+ "Phase": "q4-b1",
+ "Cases": [
+  {
+   "Caso": "B1R2-E",
+   "Qué": "B1-like (candidate-b, EFF^1 con los blobs anteriores a la activación) con a7-designation/2 y el constructor r2 (mismos commits sintéticos que en la ronda 1)",
+   "Esperado": "las mismas fijaciones en EFF^1 que en la ronda 1 (6, blob distinto del de la AR) más TRX_RED y RELAY; validador acepta",
+   "Observado": "commits iguales a la ronda 1: sí; entradas en EFF^1 con blob distinto de la AR: 6; (c): CONTRACT, DELEG, H, TRX_CURRENT, TRX_RED, RELAY; validador: acepta",
+   "Cumple": true
+  },
+  {
+   "Caso": "B1R2-R9",
+   "Qué": "clausemap por la forma declarada y el aceptante fijado, con el cierre derivado del E r2 y con el de R7-A",
+   "Esperado": "R9 MATCH con A7-1 r2; R9 MISMATCH con R7-A (lecturas en EFF^1 fuera del cierre); R10 MATCH con los hechos del relevo de (c)",
+   "Observado": "clausemap rc 0; A7 r2: ACCEPT_FACTS, R9 MATCH, R10 MATCH; R7-A: REJECT_FACTS, R9 MISMATCH (12 violaciones); cero escrituras: sí",
+   "Cumple": true,
+   "Datos": {
+    "A7": {
+     "Rc": 0,
+     "Decision": "ACCEPT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [],
+     "R9ViolationCount": 0,
+     "R10": {
+      "Cited": "a67ff3c7f8797acbdbf1c37d2d47f4ea0c4de238a6d783d6cccf65203e121fab",
+      "Computed": "a67ff3c7f8797acbdbf1c37d2d47f4ea0c4de238a6d783d6cccf65203e121fab"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "8d14e69706525c7256ebe4ba57c3824ff0d2dc180b85528995299437e17b8771"
+    },
+    "R7A": {
+     "Rc": 1,
+     "Decision": "REJECT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MISMATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [
+      "r00-clausemap: GitCalls[18]: object outside the closure: 07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+      "r00-clausemap: GitCalls[19]: object outside the closure: 6415c33bd2f86fa05444e00b630d7fed5e5d7a22",
+      "r00-clausemap: GitCalls[21]: object outside the closure: 884ed305ce242bda575cef74a9eff8c28ce7b67c",
+      "r00-clausemap: GitCalls[22]: object outside the closure: 64ae952b6fb01ce206200c64d2a1d8683b5a297d",
+      "r00-clausemap: GitCalls[24]: object outside the closure: 82ca9b38865bd93e8de6134a368b905cba9fc627",
+      "r00-clausemap: GitCalls[26]: object outside the closure: 0e3ed262add5154b975dab1931f729bcae2e31ea",
+      "r00-clausemap: Inputs[7]: rev:path outside the closure",
+      "r00-clausemap: Inputs[8]: rev:path outside the closure",
+      "r00-clausemap: Inputs[10]: rev:path outside the closure",
+      "r00-clausemap: Inputs[11]: rev:path outside the closure"
+     ],
+     "R9ViolationCount": 12,
+     "R10": {
+      "Cited": "a67ff3c7f8797acbdbf1c37d2d47f4ea0c4de238a6d783d6cccf65203e121fab",
+      "Computed": "a67ff3c7f8797acbdbf1c37d2d47f4ea0c4de238a6d783d6cccf65203e121fab"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "37265cfe63cf60559c82bfbf47e69804162966bda98d897fe4e1a67658688864"
+    }
+   }
+  },
+  {
+   "Caso": "B1R2-UC",
+   "Qué": "residuo declarado (§3.5): Calculator.cs cambió antes de la AR; clausemap lo compara en EFF^1, EFF y MainSha_eval",
+   "Esperado": "sin cambio respecto de la ronda 1: R9 MISMATCH con el cierre de A7-1 r2 (rechazo falso, nunca aceptación falsa) y la precondición de cobertura bloquea el lanzamiento (S-03)",
+   "Observado": "aceptante: REJECT_FACTS, R9 MISMATCH; precondición: NO_LAUNCH_S-03 (Calculator.cs)",
+   "Cumple": true,
+   "Datos": {
+    "Acceptor": {
+     "Rc": 1,
+     "Decision": "REJECT_FACTS",
+     "Checks": {
+      "R1": "MATCH",
+      "R2": "MATCH",
+      "R3": "MATCH",
+      "R4": "NOT_APPLICABLE",
+      "R5": "NOT_APPLICABLE",
+      "R6": "MATCH",
+      "R7": "MATCH",
+      "R8": "MANUAL",
+      "R9": "MISMATCH",
+      "R10": "MATCH"
+     },
+     "R9Violations": [
+      "r00-clausemap-uc: GitCalls[35]: object outside the closure: 73e8502c5fed4cff98d53e3ca880ac5598fac597",
+      "r00-clausemap-uc: Inputs[18]: rev:path outside the closure",
+      "r00-clausemap-uc: Inputs[19]: rev:path outside the closure"
+     ],
+     "R9ViolationCount": 3,
+     "R10": {
+      "Cited": "56770ad1b616cc1d18233b7e047086542e591ac69d844d7a75a79e13cfb1ba5a",
+      "Computed": "56770ad1b616cc1d18233b7e047086542e591ac69d844d7a75a79e13cfb1ba5a"
+     },
+     "ZeroWrite": true,
+     "StdoutSha256": "521a0c8caec61e36dcaf582ac3569f674a68caba210691b682b64ce373b195ad"
+    }
+   }
+  },
+  {
+   "Caso": "B1R2-CIT",
+   "Qué": "precondición de cobertura en el caso B1-like principal",
+   "Esperado": "se puede lanzar (AUTOMATION_PLAN en EFF^1 está fijado por el cierre)",
+   "Observado": "LAUNCH_MAY_PROCEED",
+   "Cumple": true
+  }
+ ],
+ "Commits": {
+  "AuthorityRevision": "2345c8d957be9dde69e3b566505119f91714611b",
+  "BaseSha": "a3515d92669df443272b31d4835cc9416bac1641",
+  "Target": "a2c8347d1222db9c2fcfecd9a84e4d768c5f6cdd",
+  "EFF": "88ab34c398f03070c94a584f95196a394d869f7c",
+  "EFF^1": "55d190043458f461f187588ea79d8e9839440e28",
+  "Variant-uc": {
+   "AuthorityRevision": "88970c806c42b63fb81230d5e66bbb9881d17b92",
+   "BaseSha": "685ec6cd1db8f6b68df72ed5ffc36de8d588563a",
+   "Target": "4397f6d21a6e18e57db246b72624f57a811afba9"
+  }
+ }
+}

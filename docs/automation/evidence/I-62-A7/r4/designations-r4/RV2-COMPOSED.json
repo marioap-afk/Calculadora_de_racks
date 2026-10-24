@@ -1,0 +1,70 @@
+{
+ "Schema": "a7-designation/4",
+ "Case": "RV2-composed",
+ "Repo": "D:/r62-a7/work/r4/rebase-repo-2",
+ "AuthorityRevision": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+ "Invocation": {
+  "UnitId": "FX-U1",
+  "TaskId": "T1",
+  "Attempt": 0,
+  "RunId": "R20261024T121000Z-0f02",
+  "Target": {
+   "Commit": "e86e2898b5b8915a2f76b51322c780c8fc5c12e9",
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Blob": "380892ee869194aa4bd56dcf32dfd76ef0203ab9"
+  },
+  "Kind": "REVERIFICATION"
+ },
+ "RunPath": "artifacts/orchestration/FX-U1/T1/0/R20261024T121000Z-0f02/",
+ "Instrument": {
+  "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+  "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+ },
+ "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+ "Adapter": "codex-cli",
+ "Artifacts": [
+  {
+   "Role": "DELEG",
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T090000Z-d001/output.json",
+   "Blob": "357535569153737a15748456f3a9694d88708225",
+   "Custody": "D:/r62-a6m7/bench/work/in-v/deleg.json"
+  },
+  {
+   "Role": "H",
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261012T091000Z-a001/worker-handoff.json",
+   "Blob": "954c1dbd4854bf9e54fcbab00a656059efba719c",
+   "Custody": "D:/r62-a6m7/bench/work/in-v/handoff.json"
+  },
+  {
+   "Role": "CONTRACT",
+   "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+   "Blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+   "Custody": null
+  },
+  {
+   "Role": "TRX_CURRENT",
+   "Path": "artifacts/ci/R37949808975/fixture-tests.trx",
+   "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff",
+   "Custody": "D:/r62-a7/evid-r4/inputs-rebase/fixture-tests-current-image.trx"
+  },
+  {
+   "Role": "TRX_RED",
+   "Path": "artifacts/ci/R37949800001/fixture-tests.trx",
+   "Blob": "5fd8860bdd6fe21268faf1b10d0df4d9b4743f92",
+   "Custody": "D:/r62-a7/evid-r4/inputs/fixture-tests-red.trx"
+  },
+  {
+   "Role": "RELAY",
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261023T101000Z-0c02/relay-facts.json",
+   "Blob": "ce6386602520a2f6af912c592499bc263a714a4f",
+   "Custody": "D:/r62-a7/evid-r4/inputs-rebase/relay-facts-RV.json"
+  },
+  {
+   "Role": "REBASE",
+   "Path": "artifacts/orchestration/FX-U1/T1/0/R20261024T120000Z-0f01/rebase-record.json",
+   "Blob": "91469ac77ef97bed9c02f14f9b6f884a32d247d4",
+   "Custody": "D:/r62-a7/work/r4/q10/rebase-record-2-composed.json",
+   "RunId": "R20261024T120000Z-0f01"
+  }
+ ]
+}

@@ -1,0 +1,63 @@
+{
+ "Schema": "a7-designation/4",
+ "Case": "B1-LIKE-main",
+ "Repo": "D:/r62-a7/work/b1r2",
+ "AuthorityRevision": "2345c8d957be9dde69e3b566505119f91714611b",
+ "Invocation": {
+  "UnitId": "FX-U2",
+  "TaskId": "T1",
+  "Attempt": 0,
+  "RunId": "R20261017T092000Z-b1v1",
+  "Target": {
+   "Commit": "a2c8347d1222db9c2fcfecd9a84e4d768c5f6cdd",
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Blob": "a04c1096f6ac8bc0b733b7f38a0a5690039ba455"
+  }
+ },
+ "RunPath": "artifacts/orchestration/FX-U2/T1/0/R20261017T092000Z-b1v1/",
+ "Artifacts": [
+  {
+   "Role": "DELEG",
+   "Path": "artifacts/orchestration/FX-U2/T1/0/R20261017T090000Z-b1d1/output.json",
+   "Blob": "6624d3ae4bc6a63ea1b771f4ccd4138ce7aa01e6",
+   "Custody": "D:/r62-a7/evid-r4/b1-like/main/deleg.json"
+  },
+  {
+   "Role": "H",
+   "Path": "artifacts/orchestration/FX-U2/T1/0/R20261017T091000Z-b1a1/worker-handoff.json",
+   "Blob": "e8bb7ccbe04e7a387443c25dda6ad154c0c3ef9a",
+   "Custody": "D:/r62-a7/evid-r4/b1-like/main/handoff.json"
+  },
+  {
+   "Role": "CONTRACT",
+   "Path": "docs/automation/decisions/FX-U2-T1.gate-contract.json",
+   "Blob": "f1f3b22ab696a22e25f1cc74d4f83cb371c22419",
+   "Custody": "D:/r62-a7/evid-r4/b1-like/main/FX-U2-T1.gate-contract.json"
+  },
+  {
+   "Role": "TRX_CURRENT",
+   "Path": "artifacts/ci/R37949808974/fixture-tests.trx",
+   "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff",
+   "Custody": "D:/r62-a7/evid-r4/b1-like/main/fixture-tests.trx"
+  },
+  {
+   "Role": "TRX_RED",
+   "Path": "artifacts/ci/R37949800001/fixture-tests.trx",
+   "Blob": "5fd8860bdd6fe21268faf1b10d0df4d9b4743f92",
+   "Custody": "D:/r62-a7/evid-r4/inputs/fixture-tests-red.trx"
+  },
+  {
+   "Role": "RELAY",
+   "Path": "artifacts/orchestration/FX-U2/T1/0/R20261017T092000Z-b1v1/relay-facts.json",
+   "Blob": "fdbbb3492b9b06bdf615253f3322ee95125a2b6a",
+   "Custody": "D:/r62-a7/evid-r4/b1-like/main/relay-facts.json"
+  }
+ ],
+ "Instrument": {
+  "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+  "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+ },
+ "MapPath": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+ "Adapter": "codex-cli",
+ "DecisionRef": "BANCO-A7R2-B1LIKE"
+}

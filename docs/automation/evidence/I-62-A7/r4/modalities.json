@@ -1,0 +1,379 @@
+{
+ "Schema": "i62-a7r4-modalities/1",
+ "Modalities": [
+  {
+   "Id": "M1",
+   "Modality": "Verificación (VERIFY ordinaria)",
+   "Inputs": "Categorías (a) en la AuthorityRevision, `MainSha_eval`, EFF y EFF^1; (b) objeto del `Target`, `git diff --name-only BaseSha..Target.commit`, decisiones y estado; (c) contrato, delegación, entrega, TRX de `CurrentSha` y, si la entrega exige RED, de `RedSha`, hechos del relevo; (d) instrumento, si se admite.",
+   "Provenance": "`Target` = `CurrentSha` de la entrega; artefactos custodiados en la ruta de la tarea (directorio del `RunId` de sus bytes); hechos del relevo de la invocación.",
+   "Closure": "A7-1 sin cambio desde la ronda 3; `MainSha_eval` = `K.MainSha`; sin registro de rebase.",
+   "Mutations": "Ninguna.",
+   "Checks": "Constructor, validador, designate_a7 y derivación de A6-9; un registro de rebase designado no se admite (ajeno si se inyecta).",
+   "Expected": "Cierre válido.",
+   "Cases": [
+    {
+     "Case": "q1:TRX-POS",
+     "Holds": true
+    },
+    {
+     "Case": "q2:RELAY-POS",
+     "Holds": true
+    },
+    {
+     "Case": "q5:INV-DISTINCT",
+     "Holds": true
+    },
+    {
+     "Case": "q8:RB-MISUSE-V",
+     "Holds": true
+    },
+    {
+     "Case": "q10:O1-V-CLAUSEMAP",
+     "Holds": true
+    }
+   ],
+   "AllHold": true
+  },
+  {
+   "Id": "M2",
+   "Modality": "VERIFY con y sin el instrumento",
+   "Inputs": "Las de cada invocación; (d) solo si el cierre admite el instrumento (A6-2, regla 1).",
+   "Provenance": "La designación (`Instrument` o `null`).",
+   "Closure": "A7-1, punto 1 (d): la entrada del instrumento solo en la invocación que lo admite.",
+   "Mutations": "Ninguna.",
+   "Checks": "Cierre con y sin (d) en V, RV y un control sobre RV; una entrada del instrumento en un cierre sin él es ajena.",
+   "Expected": "Cierre válido en los dos casos; ajena la entrada inyectada.",
+   "Cases": [
+    {
+     "Case": "q1:TRX-POS",
+     "Holds": true
+    },
+    {
+     "Case": "q10:MOD-V-NOINST",
+     "Holds": true
+    },
+    {
+     "Case": "q10:MOD-V-INST-INJECTED",
+     "Holds": true
+    },
+    {
+     "Case": "q10:MOD-RV-NOINST",
+     "Holds": true
+    },
+    {
+     "Case": "q10:MOD-RVC-NOINST",
+     "Holds": true
+    }
+   ],
+   "AllHold": true
+  },
+  {
+   "Id": "M3",
+   "Modality": "Controles nc1, nc2, nc3, N4, N5, N6, N7a y N7b de la verificación ordinaria",
+   "Inputs": "Copias de las entradas de la verificación, con el campo mutado del control (RAE §10; V14 D.3), y sus hechos del relevo.",
+   "Provenance": "Copias en `artifacts/orchestration/<UnitId>/<TaskId>-<control>/`; `Target` de la verificación real (contratos de FX-02, L23).",
+   "Closure": "A7-1 como en la verificación; `MainSha_eval` = `K.MainSha`; sin registro de rebase.",
+   "Mutations": "nc1 `CurrentSha` inexistente; nc2 `AllowedWriteScope`; nc3 término de gate en `WorkCompleted`; N4 entrega ausente; N5 0 pruebas; N6 ninguna (estado del `-C`); N7a y N7b otra corrida.",
+   "Checks": "Cierre de cada control; un registro de rebase designado no se admite.",
+   "Expected": "Cierre válido; el registro de rebase, no admitido.",
+   "Cases": [
+    {
+     "Case": "q3:N4-E",
+     "Holds": true
+    },
+    {
+     "Case": "q3:NC1-E",
+     "Holds": true
+    },
+    {
+     "Case": "q5:INV-DISTINCT",
+     "Holds": true
+    },
+    {
+     "Case": "q10:MOD-NC3-V",
+     "Holds": true
+    },
+    {
+     "Case": "q10:MOD-NC3-V-REBASE",
+     "Holds": true
+    },
+    {
+     "Case": "q8:RB-MISUSE-N4",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-MISUSE-V-NC1",
+     "Holds": true
+    }
+   ],
+   "AllHold": true
+  },
+  {
+   "Id": "M4",
+   "Modality": "Rebase de 16.7 antes de escribir (contrato y delegación reemitidos)",
+   "Inputs": "Las de una verificación ordinaria con el contrato y la delegación nuevos.",
+   "Provenance": "Reemisión de 16.7; el registro de rebase no es entrada de la verificación.",
+   "Closure": "El de M1 con el `K.MainSha` del contrato reemitido.",
+   "Mutations": "Ninguna.",
+   "Checks": "Las de M1.",
+   "Expected": "Cierre válido (igual que M1).",
+   "Cases": [
+    {
+     "Case": "q1:TRX-POS",
+     "Holds": true
+    },
+    {
+     "Case": "q8:RB-MISUSE-V",
+     "Holds": true
+    }
+   ],
+   "AllHold": true
+  },
+  {
+   "Id": "M5",
+   "Modality": "Reverificación inicial de 16.7, sin conflictos",
+   "Inputs": "Las de la verificación más el registro de rebase (`relay-record/v2`, `Phase: REBASE`, `RebaseMap`); TRX de `CurrentSha'` (imagen) y de `RedSha` original.",
+   "Provenance": "Registro en el directorio del intento de la tarea, con su `RunId` registrado; `Target` = la imagen de `CurrentSha`.",
+   "Closure": "A7-1, punto 2 (c) de la ronda 3, sin cambio: registro coherente con su entrega, su `Target` y su contrato; `MainSha_eval` = `MainAfterSha`.",
+   "Mutations": "Ninguna.",
+   "Checks": "Registro ausente, sustituido, de otra corrida, `RunId` incorrecto, blob alterado, incoherente o sin entrega: sin cierre.",
+   "Expected": "Cierre válido solo con el registro coherente.",
+   "Cases": [
+    {
+     "Case": "q8:RB-POS",
+     "Holds": true
+    },
+    {
+     "Case": "q8:RB-MSE-READS",
+     "Holds": true
+    },
+    {
+     "Case": "q8:RB-ABSENT",
+     "Holds": true
+    },
+    {
+     "Case": "q8:RB-SUBST-MAINBEFORE",
+     "Holds": true
+    },
+    {
+     "Case": "q8:RB-NO-H",
+     "Holds": true
+    },
+    {
+     "Case": "q8:RB-ACCEPTOR",
+     "Holds": true
+    }
+   ],
+   "AllHold": true
+  },
+  {
+   "Id": "M6",
+   "Modality": "Controles nc1, nc2, nc3, N4, N5, N6, N7a y N7b sobre las entradas de la reverificación (A62-A7R3-R1)",
+   "Inputs": "Copias de las entradas de la reverificación VERIFIED (RAE §10), con la copia de su registro de rebase, el campo mutado del control y sus hechos del relevo.",
+   "Provenance": "Designación con `Kind` REVERIFICATION_CONTROL y `Source` (`RunId` y SHA-256 de la designación de la reverificación); copias de la delegación, la entrega y el registro en `<TaskId>-<control>/<Attempt>/`; contrato y TRX en sus rutas; `Target` de la reverificación.",
+   "Closure": "A7-1 ronda 4, punto 2 (c): reverificación identificada y coherente con sus propias entradas; mismo `UnitId`, `TaskId`, `Attempt`, `AuthorityRevision` y `Target`; `RunId` propio; copia del registro con el mismo blob y `RunId`; copias del resto, salvo los hechos del relevo y el artefacto mutado; `MainSha_eval` = `MainAfterSha`.",
+   "Mutations": "Las de M3, en el mismo artefacto y campo; ninguna otra (mutación ausente, de más, en otro papel o de otro control: sin cierre).",
+   "Checks": "Cierre de los ocho; cotejo de entradas con RV (oráculo relativo estático); sustitución y manipulación de la copia, de la identidad, del vínculo y de las copias; formato; aceptante.",
+   "Expected": "Cierre válido con `MainSha_eval` = `MainAfterSha` y entradas iguales a las de RV salvo la mutación; sin cierre en todo lo demás.",
+   "Cases": [
+    {
+     "Case": "q9:RVC-NC1",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-NC2",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-NC3",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-N4",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-N5",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-N6",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-N7A",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-N7B",
+     "Holds": true
+    },
+    {
+     "Case": "q9:REL-NC1",
+     "Holds": true
+    },
+    {
+     "Case": "q9:REL-NC2",
+     "Holds": true
+    },
+    {
+     "Case": "q9:REL-N4",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-REBASE-BYTES",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-REBASE-OTHER",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-SOURCE-INCOHERENT",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-SUBST-DELEG",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-MUT-NONE",
+     "Holds": true
+    },
+    {
+     "Case": "q9:RVC-ACCEPTOR",
+     "Holds": true
+    }
+   ],
+   "AllHold": true
+  },
+  {
+   "Id": "M7",
+   "Modality": "Segunda recuperación de 16.7 y sus controles",
+   "Inputs": "Las de la reverificación con el registro del segundo rebase.",
+   "Provenance": "16.7 la permite (como máximo dos recuperaciones por `TaskId`, AP L598).",
+   "Closure": "El registro no es coherente (punto 2 (c): `MainBeforeSha` ≠ `K.MainSha`; encadenado, tampoco asigna el `CurrentSha` de la entrega): sin cierre ni lanzamiento; exclusión declarada en §3.5 (A62-A7R3-O2), sin enmienda nueva.",
+   "Mutations": "Ninguna.",
+   "Checks": "Registro encadenado, registro compuesto, control sobre la segunda reverificación y los dos registros juntos.",
+   "Expected": "Sin cierre en todos los casos; el caso vuelve al Coordinator.",
+   "Cases": [
+    {
+     "Case": "q10:O2-FIXTURE",
+     "Holds": true
+    },
+    {
+     "Case": "q10:O2-RV2-CHAINED",
+     "Holds": true
+    },
+    {
+     "Case": "q10:O2-RV2-COMPOSED",
+     "Holds": true
+    },
+    {
+     "Case": "q10:O2-RVC2",
+     "Holds": true
+    },
+    {
+     "Case": "q10:O2-RV2-BOTH",
+     "Holds": true
+    }
+   ],
+   "AllHold": true
+  },
+  {
+   "Id": "M8",
+   "Modality": "Medición de A6-7",
+   "Inputs": "Las de una VERIFY sin hechos del relevo (no produce una verificación).",
+   "Provenance": "Kit de la medición; `Kind` MEASUREMENT.",
+   "Closure": "A7-1 sin cambio; `MainSha_eval` = `K.MainSha`; sin registro de rebase (A-7 no la admite sin una reverificación aplicable).",
+   "Mutations": "Ninguna.",
+   "Checks": "Hechos del relevo y registro de rebase designados: no admitidos.",
+   "Expected": "Cierre válido sin hechos del relevo ni registro.",
+   "Cases": [
+    {
+     "Case": "q2:RELAY-MEASUREMENT",
+     "Holds": true
+    },
+    {
+     "Case": "q2:RELAY-MEASUREMENT-DESIGNATED",
+     "Holds": true
+    },
+    {
+     "Case": "q8:RB-MISUSE-M",
+     "Holds": true
+    }
+   ],
+   "AllHold": true
+  },
+  {
+   "Id": "M9",
+   "Modality": "Reejecución de transporte de una invocación (16.8)",
+   "Inputs": "Las mismas entradas, con un `RunId` nuevo y sus propios hechos del relevo.",
+   "Provenance": "La designación de la reejecución.",
+   "Closure": "El de la invocación reejecutada.",
+   "Mutations": "Ninguna nueva.",
+   "Checks": "nc1 sobre RV reejecutado.",
+   "Expected": "Cierre válido.",
+   "Cases": [
+    {
+     "Case": "q10:MOD-RVC-RERUN",
+     "Holds": true
+    }
+   ],
+   "AllHold": true
+  },
+  {
+   "Id": "M10",
+   "Modality": "A62-A7R3-O1: C1 de la derivación del aceptante en la reverificación y en sus controles",
+   "Inputs": "Una ejecución del instrumento que lee en `MainSha_eval`.",
+   "Provenance": "El instrumento y el aceptante fijados (A-6 sin cambio).",
+   "Closure": "La tabla de A6-9 no lleva `MainAfterSha` ni las imágenes distintas de `Target.commit` a C1 (residuo declarado en §3.5; no se da por resuelto).",
+   "Mutations": "Ninguna.",
+   "Checks": "C1 estático; clausemap con `--main MainAfterSha` en RV y en nc2 sobre RV; contraste con `--main K.MainSha` y con la verificación ordinaria.",
+   "Expected": "R9 MISMATCH en la reverificación y en sus controles (rechazo falso, nunca aceptación falsa); R9 MATCH en la verificación ordinaria.",
+   "Cases": [
+    {
+     "Case": "q10:O1-C1-STATIC",
+     "Holds": true
+    },
+    {
+     "Case": "q10:O1-RV-CLAUSEMAP",
+     "Holds": true
+    },
+    {
+     "Case": "q10:O1-RVC-CLAUSEMAP",
+     "Holds": true
+    },
+    {
+     "Case": "q10:O1-RV-CLAUSEMAP-KMAIN",
+     "Holds": true
+    },
+    {
+     "Case": "q10:O1-V-CLAUSEMAP",
+     "Holds": true
+    }
+   ],
+   "AllHold": true
+  }
+ ],
+ "Excluded": [
+  {
+   "Item": "Recuperación con conflictos",
+   "Reason": "16.7: `git rebase --abort` y STOP al Coordinator; no hay reverificación ni invocación VERIFY que cerrar."
+  },
+  {
+   "Item": "nc4",
+   "Reason": "RAE §10: control de aceptación sin invocación; fuera del ámbito de A7-1 (solo invocaciones VERIFY y la medición)."
+  },
+  {
+   "Item": "N8, N9 y N10",
+   "Reason": "V14 D.3: negativos de sesión sin invocación; fuera del ámbito."
+  },
+  {
+   "Item": "PLAN",
+   "Reason": "Fuera del ámbito de A-7 (la planificación no tiene cierre de VERIFY)."
+  }
+ ],
+ "Budget": "A-7 no cambia presupuestos (A7-1, punto 8). V14 D.3 cuenta 11 lanzamientos base de Codex (planificación, verificación, Architect y los 8 controles con invocación), un pool de 4 reejecuciones de transporte (como máximo 2 por fase) y un tope de 15; no reserva lanzamientos para la reverificación de 16.7. Una reverificación, sus controles y una segunda recuperación solo se lanzan si P-07 lo permite con ese tope (16.8; 16.7: «suma al tope de invocaciones lo mismo que una recuperación»). Este preflight no fija si el tope alcanza en la ronda real (riesgo no demostrado).",
+ "Total": true
+}

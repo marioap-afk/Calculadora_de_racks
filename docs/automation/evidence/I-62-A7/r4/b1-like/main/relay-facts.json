@@ -1,0 +1,129 @@
+{
+ "Schema": "rackcad-relay-record/v2",
+ "TaskId": "T1",
+ "RunId": "R20261017T092000Z-b1v1",
+ "Attempt": 0,
+ "Phase": "VERIFICATION",
+ "WindowSeq": 1,
+ "PrevRelaySha256": null,
+ "Host": {
+  "HostLabelHash": "ad3bb9a2a5ca063760c9a3f9a03046a763c37e38014a721fb6b22a2c0eba8422",
+  "HostInstanceHash": "UNKNOWN",
+  "HostInstanceState": "UNOBSERVED",
+  "Os": "synthetic"
+ },
+ "Participant": null,
+ "Exit": {
+  "HeadSha": "a2c8347d1222db9c2fcfecd9a84e4d768c5f6cdd",
+  "LsRemoteSha": "a2c8347d1222db9c2fcfecd9a84e4d768c5f6cdd",
+  "OriginMainSha": "88ab34c398f03070c94a584f95196a394d869f7c",
+  "CleanTree": true,
+  "GitOperationInProgress": false,
+  "SummaryCommitSha": "a2c8347d1222db9c2fcfecd9a84e4d768c5f6cdd",
+  "Fingerprint": {
+   "Kind": "NONE",
+   "Sha256": null,
+   "KeyNames": [],
+   "AcceptanceDecisionRef": null
+  },
+  "Processes": [],
+  "OpenDelegations": 1,
+  "DelegationStatus": "ACCEPTED_OPEN"
+ },
+ "Cession": {
+  "StartUtc": "2026-10-19T09:00:00Z",
+  "EndUtc": "2026-10-19T09:05:00Z",
+  "SessionOperated": false
+ },
+ "Outcome": {
+  "Kind": "COMPLETED",
+  "LaunchedPid": 4242,
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "TreeKilled": false,
+  "DeathConfirmed": true,
+  "OutputPath": "artifacts/orchestration/FX-U1/T1/0/R20261017T092000Z-b1v1/controller-output.json",
+  "OutputSha256": "af259d1837f73783dc979214f334a3690817501ac84c1925da565464fcd90eb6",
+  "OutputWrittenUtc": "2026-10-19T09:05:00Z",
+  "Acceptance": null
+ },
+ "Entry": {
+  "HeadSha": "a2c8347d1222db9c2fcfecd9a84e4d768c5f6cdd",
+  "LsRemoteSha": "a2c8347d1222db9c2fcfecd9a84e4d768c5f6cdd",
+  "CleanTree": true,
+  "Fingerprint": {
+   "Kind": "NONE",
+   "Sha256": null,
+   "KeyNames": [],
+   "AcceptanceDecisionRef": null
+  },
+  "FingerprintChanged": false,
+  "Processes": []
+ },
+ "RemoteFacts": {
+  "CurrentRun": {
+   "GhRunId": 37949808974,
+   "Event": "push",
+   "Ref": "refs/heads/fx/u1",
+   "HeadSha": "a2c8347d1222db9c2fcfecd9a84e4d768c5f6cdd",
+   "Status": "completed",
+   "Conclusion": "success",
+   "Jobs": [
+    {
+     "Name": "fixture-build",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "fixture-tests",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "core",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "docs",
+     "Conclusion": "success"
+    }
+   ]
+  },
+  "RedRun": null,
+  "TestArtifacts": [
+   {
+    "RunRef": "gh-37949808974",
+    "Name": "fixture-tests",
+    "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+    "Selected": 1,
+    "Passed": 1,
+    "Failed": 0,
+    "Skipped": 0,
+    "FailedTests": []
+   }
+  ],
+  "OriginMainSha": "88ab34c398f03070c94a584f95196a394d869f7c",
+  "LsRemoteSha": "a2c8347d1222db9c2fcfecd9a84e4d768c5f6cdd",
+  "Commands": [
+   "git ls-remote origin refs/heads/fx/u1",
+   "git rev-parse refs/remotes/origin/main",
+   "gh run view (synthetic)"
+  ],
+  "ObtainedUtc": "2026-10-19T09:05:30Z",
+  "Diagnosis": null
+ },
+ "RebaseMap": null,
+ "RoleInvocation": null,
+ "ReadAudit": {
+  "Coverage": "RECORDED",
+  "ReadsOutsideClosure": []
+ },
+ "InputFidelity": {
+  "path": "bmin_facts.py (objeto Git suelto en el -C)",
+  "blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+ },
+ "Disposition": "NONE",
+ "Notes": [
+  "Termination: Outcome COMPLETED y operacion 7 del descriptor codex-cli registrada (sintetico, preflight de A-7 r2).",
+  "Routing: modelo y effort efectivos = solicitados (RoutingEnforcement required; sintetico).",
+  "Denials: ninguna denegacion ni orden fallida pendiente (sintetico)."
+ ]
+}

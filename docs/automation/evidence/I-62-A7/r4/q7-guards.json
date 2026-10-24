@@ -1,0 +1,356 @@
+{
+ "Phase": "q7-guards",
+ "Cases": [
+  {
+   "Caso": "GUARD-PREVIEW",
+   "Qué": "guardas G1-G7 sobre el commit hipotético (base 2405a919 + candidata r4 como modificación + este directorio bajo I-62-A7/r4/)",
+   "Esperado": "PASS en las siete",
+   "Observado": "G1 PASS; G2 PASS; G3 PASS; G4 PASS; G5 PASS; G6 PASS; G7 PASS",
+   "Cumple": true,
+   "Datos": {
+    "Head": "e5727109ff34210fca29642ef93b90754051fc52"
+   }
+  },
+  {
+   "Caso": "GUARD-SELFTEST",
+   "Qué": "autoprueba: un mutante por condición nueva o cambiada en la ronda 4",
+   "Esperado": "candidata PASS y todos los mutantes muertos",
+   "Observado": "candidata PASS; mutantes muertos 45 de 45",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G1-only-allowed",
+   "Qué": "añade un archivo fuera de r4/ (docs/automation/evidence/I-62-A7/extra.txt)",
+   "Esperado": "G1 FAIL (G1-only-allowed)",
+   "Observado": "G1 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G1-amendment-modified",
+   "Qué": "el commit no modifica la enmienda (la ronda 3 queda como está)",
+   "Esperado": "G1 FAIL (G1-amendment-modified)",
+   "Observado": "G1 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-r3-evidence",
+   "Qué": "cambia un archivo de la evidencia de la ronda 3 (I-62-A7/r3/preflight.md)",
+   "Esperado": "G2 FAIL (G2-protected(r1-evidence))",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-r3-review",
+   "Qué": "cambia la custodia de la revisión de la ronda 3 (output.json)",
+   "Esperado": "G2 FAIL (G2-protected(surface))",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-pinned",
+   "Qué": "cambia los contratos del Controller de FX-02 (fuente L24)",
+   "Esperado": "G2 FAIL (G2-pinned)",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G2-previous-round",
+   "Qué": "la cabecera declara otra ronda 3",
+   "Esperado": "G2 FAIL (G2-previous-round)",
+   "Observado": "G2 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-rows",
+   "Qué": "falta la fila L27",
+   "Esperado": "G3 FAIL (G3-rows)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-L23",
+   "Qué": "L23 con la cita alterada («último» → «primer»)",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-L24",
+   "Qué": "L24 cita otro blob de los contratos del Controller",
+   "Esperado": "G3 FAIL (G3-blob)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-L25",
+   "Qué": "L25 sin la línea 537 (la cita queda fuera de las líneas citadas)",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-L26",
+   "Qué": "L26 con la cita alterada («igual» → «distinto»)",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G3-L27",
+   "Qué": "L27 con la cita alterada (N6 → BLOCKED)",
+   "Esperado": "G3 FAIL (G3-literal)",
+   "Observado": "G3 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule1c-rebase",
+   "Qué": "1 (c) sin los controles sobre las entradas de la reverificación",
+   "Esperado": "G4 FAIL (G4-rule1c-rebase)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule1c-measurement",
+   "Qué": "1 (c): cualquier otra invocación con registro de rebase",
+   "Esperado": "G4 FAIL (G4-rule1c-measurement)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c",
+   "Qué": "2 (c) sin los controles entre los que nombran el registro de rebase",
+   "Esperado": "G4 FAIL (G4-rule2c)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-rebase-path",
+   "Qué": "2 (c): el registro de la reverificación fuera del directorio del intento",
+   "Esperado": "G4 FAIL (G4-rule2c-rebase-path)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-mse",
+   "Qué": "2 (c): la frase de `MainSha_eval` de la reverificación sin cerrar",
+   "Esperado": "G4 FAIL (G4-rule2c-mse)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-control-source",
+   "Qué": "2 (c): la reverificación identificada sin el SHA-256 de su designación",
+   "Esperado": "G4 FAIL (G4-rule2c-control-source)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-control-link",
+   "Qué": "2 (c): el control sin el `Target` de la reverificación ni un `RunId` propio",
+   "Esperado": "G4 FAIL (G4-rule2c-control-link)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-control-copy",
+   "Qué": "2 (c): la copia del registro sin el mismo blob",
+   "Esperado": "G4 FAIL (G4-rule2c-control-copy)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-control-copies",
+   "Qué": "2 (c): las copias sin la misma ruta",
+   "Esperado": "G4 FAIL (G4-rule2c-control-copies)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule2c-control-mse",
+   "Qué": "2 (c): la coherencia comprobada con la entrega del control",
+   "Esperado": "G4 FAIL (G4-rule2c-control-mse)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule5c-control",
+   "Qué": "5 (c): la entrega del control fija `MainSha_eval`",
+   "Esperado": "G4 FAIL (G4-rule5c-control)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-rule5c-rebase-not-admitted",
+   "Qué": "5 (c): un registro de rebase se admite en la verificación ordinaria, sus controles y la medición",
+   "Esperado": "G4 FAIL (G4-rule5c-rebase-not-admitted)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-superseded-r4",
+   "Qué": "reinsertada la frase de la ronda 3 «en cualquier otra invocación, un registro de rebase designado no se admite»",
+   "Esperado": "G4 FAIL (G4-superseded)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s34-rebase",
+   "Qué": "§3.4: el registro y su copia con nombre en C6",
+   "Esperado": "G4 FAIL (G4-s34-rebase)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s34-o3",
+   "Qué": "§3.4 sin el registro de rebase en la enumeración (A62-A7R3-O3)",
+   "Esperado": "G4 FAIL (G4-s34-o3)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s35-r3o1",
+   "Qué": "§3.5 sin el residuo de A62-A7R3-O1",
+   "Esperado": "G4 FAIL (G4-s35-r3o1)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s35-r3o2",
+   "Qué": "§3.5: la segunda reverificación con cierre",
+   "Esperado": "G4 FAIL (G4-s35-r3o2)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s37-r4note",
+   "Qué": "§3.7 sin la nota de la ronda 4",
+   "Esperado": "G4 FAIL (G4-s37-r4note)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s38",
+   "Qué": "sin el título de §3.8",
+   "Esperado": "G4 FAIL (G4-s38)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s38-matrix",
+   "Qué": "§3.8 sin la referencia a la matriz completa",
+   "Esperado": "G4 FAIL (G4-s38-matrix)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s4-o3",
+   "Qué": "§4 sin la excepción a la clase de §20.3.1 (A62-A7R3-O3)",
+   "Esperado": "G4 FAIL (G4-s4-o3)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s5-rebase",
+   "Qué": "motivo de M-04 sin los controles sobre la reverificación",
+   "Esperado": "G4 FAIL (G4-s5-rebase)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-s6-a5-rebase",
+   "Qué": "§6 sin la nota de A-5",
+   "Esperado": "G4 FAIL (G4-s6-a5-rebase)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-q-r4",
+   "Qué": "sin la pregunta Q-A7R4-03",
+   "Esperado": "G4 FAIL (G4-q-r4)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-q-r3-answers",
+   "Qué": "sin las respuestas de la revisión de la ronda 3",
+   "Esperado": "G4 FAIL (G4-q-r3-answers)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-table-absence",
+   "Qué": "la columna de ausencia de (c) en §3.3 sin el control sobre la reverificación",
+   "Esperado": "G4 FAIL (G4-table-absence)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G4-table-c-roles",
+   "Qué": "la fila (c) de §3.3 sin la copia en los controles",
+   "Esperado": "G4 FAIL (G4-table-c-roles)",
+   "Observado": "G4 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-amendment",
+   "Qué": "Amendment ronda 3",
+   "Esperado": "G5 FAIL (G5-amendment)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-state",
+   "Qué": "State PROPUESTA (ronda 3)",
+   "Esperado": "G5 FAIL (G5-state)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-architect",
+   "Qué": "Architect review sin el resultado de la ronda 3",
+   "Esperado": "G5 FAIL (G5-architect)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-previous-round",
+   "Qué": "Previous rounds sin la ronda 3 en su forma",
+   "Esperado": "G5 FAIL (G5-previous-round)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G5-state-table",
+   "Qué": "§11: Architect ronda 4 LAUNCHED",
+   "Esperado": "G5 FAIL (G5-state-table)",
+   "Observado": "G5 FAIL",
+   "Cumple": true
+  },
+  {
+   "Caso": "MUT-G7-amendment-scanned",
+   "Qué": "una dirección de correo en la enmienda modificada",
+   "Esperado": "G7 FAIL (e-mail address)",
+   "Observado": "G7 FAIL",
+   "Cumple": true
+  }
+ ],
+ "Preview": {
+  "Result": "PASS",
+  "Head": "e5727109ff34210fca29642ef93b90754051fc52",
+  "CandidateBlob": "ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3",
+  "Guards": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS",
+   "G4": "PASS",
+   "G5": "PASS",
+   "G6": "PASS",
+   "G7": "PASS"
+  }
+ },
+ "Selftest": {
+  "Result": "PASS",
+  "Killed": 45,
+  "Total": 45
+ }
+}

@@ -1,0 +1,95 @@
+{
+ "Schema": "i62-a7r4-preflight-summary/1",
+ "Candidate": {
+  "Path": "docs/initiatives/I-62-A-7.md (candidata ronda 4)",
+  "Blob": "ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3"
+ },
+ "PreviousRound": "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff",
+ "Base": "2405a919b8ce42c8b0b971d97e5f20294059b1e9",
+ "StartUtc": "2026-10-24T04:01:07Z",
+ "ToolChanges": [
+  "a7-designation/4: Invocation.Kind REVERIFICATION_CONTROL with Source (Control, RunId, Designation, DesignationSha256)",
+  "builder and validator: a control on the inputs of a reverification admits the copy of its rebase record; coherence of the identified reverification with its own inputs; copies, mutation and link checked; MainSha_eval = its MainAfterSha",
+  "designate_a7.py: REBASE admitted in REVERIFICATION_CONTROL, in the attempt directory of the control path"
+ ],
+ "Modalities": {
+  "Total": true,
+  "Count": 10
+ },
+ "Totals": {
+  "q0": {
+   "Cases": 21,
+   "Hold": 21
+  },
+  "q1": {
+   "Cases": 16,
+   "Hold": 16
+  },
+  "q2": {
+   "Cases": 6,
+   "Hold": 6
+  },
+  "q3": {
+   "Cases": 8,
+   "Hold": 8
+  },
+  "q4": {
+   "Cases": 4,
+   "Hold": 4
+  },
+  "q5": {
+   "Cases": 4,
+   "Hold": 4
+  },
+  "q6": {
+   "Cases": 25,
+   "Hold": 25
+  },
+  "q7": {
+   "Cases": 47,
+   "Hold": 47
+  },
+  "q8": {
+   "Cases": 38,
+   "Hold": 38
+  },
+  "q9": {
+   "Cases": 59,
+   "Hold": 59
+  },
+  "q10": {
+   "Cases": 17,
+   "Hold": 17
+  }
+ },
+ "Hold": 245,
+ "Cases": 245,
+ "NotHolding": [],
+ "Guards": {
+  "Result": "PASS",
+  "Head": "e5727109ff34210fca29642ef93b90754051fc52",
+  "CandidateBlob": "ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3",
+  "Guards": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS",
+   "G4": "PASS",
+   "G5": "PASS",
+   "G6": "PASS",
+   "G7": "PASS"
+  }
+ },
+ "Selftest": {
+  "Result": "PASS",
+  "Killed": 45,
+  "Total": 45
+ },
+ "Invalidator": {
+  "A7Blob": "ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3",
+  "BuilderSha256": "addf51b2838dfaaa4a33c77f64fc6e5686207a81ee30485800e468e9954cf95c",
+  "ValidatorSha256": "2d6a891b1321b29cdef6fd6caac2fc42f39699408864456c6fef3f18c7b22080",
+  "DesignationFormatSha256": "0d8effb2caf9e64992ed2b025cbb6db593b3dd383600ce18d976119bfdb79dcc",
+  "DerivationDesignateSha256": "7ea39a5401f4d7345da55b728785c1a4b9cab0748b952c43ae3357f4321167d3",
+  "DerivationDeriveSha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+ }
+}

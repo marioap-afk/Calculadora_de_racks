@@ -1,0 +1,63 @@
+{
+ "Schema": "rackcad-worker-handoff/v1",
+ "TaskId": "T1",
+ "RunId": "R20261017T101000Z-b2a1",
+ "DelegationRunId": "R20261017T100000Z-b2d1",
+ "Initiative": "FX-U2",
+ "Gate": "FX-U2-T1",
+ "Attempt": 0,
+ "BaseSha": "685ec6cd1db8f6b68df72ed5ffc36de8d588563a",
+ "RedSha": null,
+ "CurrentSha": "4397f6d21a6e18e57db246b72624f57a811afba9",
+ "Branch": "fx/u2",
+ "Worktree": "D:/r62-a7/work/b1r2",
+ "Pushed": true,
+ "FilesChanged": [
+  "docs/automation/decisions/FX-U2.md",
+  "src/Fixture.Lib/Calculator.cs"
+ ],
+ "WorkCompleted": "Añadí Subtract a Calculator con su prueba (entrega simulada R3).",
+ "TestsExecuted": [
+  {
+   "RunRef": "r3-red",
+   "Command": "dotnet test --filter FullyQualifiedName~Subtract",
+   "Phase": "RED",
+   "TreeSha": null,
+   "ResultsFile": null
+  },
+  {
+   "RunRef": "r3-green",
+   "Command": "dotnet test --filter FullyQualifiedName~Subtract",
+   "Phase": "GREEN",
+   "TreeSha": null,
+   "ResultsFile": null
+  }
+ ],
+ "TestResults": [
+  {
+   "RunRef": "r3-green",
+   "Selected": 1,
+   "Passed": 1,
+   "Failed": 0,
+   "Skipped": 0,
+   "FailedTests": []
+  }
+ ],
+ "Evidence": [
+  "Revisados los Candidates de prueba del lote: ninguno falla."
+ ],
+ "UnexpectedFindings": [],
+ "KnownLimitations": [],
+ "Deviations": [],
+ "OpenQuestions": [],
+ "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+ "Disposition": "NONE",
+ "TriggeredStopConditions": [],
+ "RecommendedNextAction": "Verificar T1 (R3).",
+ "Worker": {
+  "Provider": "synthetic",
+  "ModelRequested": "synthetic-worker",
+  "EffortRequested": "high",
+  "Trailer": "Co-Authored-By: R3 Synthetic Worker (FX-U2 T1)"
+ }
+}
