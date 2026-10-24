@@ -4967,3 +4967,36 @@ solo desde artefactos custodiados.
   REBASE en los controles derivados de una reverificación válida, con su identidad, vínculos, coherencia, `MainSha_eval`, reproducción sin
   sustituciones, mutaciones propias y rechazo de lo ajeno; preflight con nc1, nc2 y N4 derivados de una reverificación y sin regresiones; O1-O3 dentro
   de la matriz, sin enmiendas nuevas; publicación PROPUESTA con guardas y CI; kit acotado sin revisión formal. Sin Codex, sin A6-7, sin B1 ni FX-U2.
+
+## 203. A-7 ronda 4 publicada como PROPUESTA (blob `ebb3a87b`, commit `99de338d`), matriz de modalidades total, preflight dirigido 245/245 y guardas `run` PASS (decisiones §98)
+
+- **A-7 ronda 4** ([`I-62-A-7.md`](../../initiatives/I-62-A-7.md), blob `ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3`), publicada en `99de338d` (padre `2405a919`): ese
+  commit modifica solo A-7 y añade `I-62-A7/r4/`; la evidencia de las rondas 1 a 3 y la custodia de la revisión de la ronda 3 no cambian. Cambio normativo
+  solo por A62-A7R3-R1 (A-7 §3.8), en A7-1, puntos 1 (c), 2 (c) y 5 (c): un control negativo con invocación sobre las entradas de una reverificación de
+  16.7 (RAE §10) admite la copia del registro de rebase de esa reverificación (mismo blob y mismo `RunId`, en el directorio del intento de la ruta del
+  control); su designación identifica la reverificación por su `RunId` y por el SHA-256 de su designación; el control tiene su `UnitId`, `TaskId`,
+  `Attempt`, `AuthorityRevision` y `Target` y un `RunId` propio; la coherencia es la de la reverificación, comprobada con sus entradas y no con la entrega
+  mutada (nc1) o ausente (N4) del control; `MainSha_eval` = su `MainAfterSha`; cada otro artefacto de (c) es copia (mismo blob y misma ruta; la delegación
+  y la entrega, en la ruta del control), salvo los hechos del relevo (registro propio) y el artefacto con los campos mutados, que difiere solo en ellos;
+  si no, sin cierre ni lanzamiento. En la verificación ordinaria, sus controles y la medición de A6-7, el registro sigue sin admitirse. Descriptivos:
+  cabecera, §2 (L23-L27), §3.3, §3.4 (con A62-A7R3-O3), §3.5 (residuos de A62-A7R3-O1 y O2), §3.7, §3.8 (nueva, con la matriz resumida), §4 (con O3), §5,
+  §6, §8 (Q-A7R4-01..03), §10, §11 y el Anexo.
+- **Piezas del procedimiento** (A7-1, punto 7): formato `a7-designation/4` (Kind REVERIFICATION_CONTROL con `Source`), constructor, validador
+  (independiente del constructor) y `designate_a7.py` nuevos; `derive_r4.py`, `make_eic_verify.py`, `designate_m7.py`, `lib_r1r4.py` y
+  `check_citation_blobs.py`, copias byte a byte de la ronda 3.
+- **Matriz de modalidades** ([`I-62-A7/r4/modalities.md`](I-62-A7/r4/modalities.md)): 10 modalidades, todas con sus casos
+  conformes (verificación con y sin instrumento; controles ordinarios; rebase antes de escribir; reverificación inicial; los ocho controles sobre la
+  reverificación; segunda recuperación, sin cierre y declarada; medición; reejecución; A62-A7R3-O1); exclusiones documentadas (recuperación con
+  conflictos, nc4, N8-N10, PLAN) y nota de presupuestos (A-7 no los cambia; el tope de D.3 frente a una reverificación queda como riesgo no demostrado).
+- **Preflight dirigido** ([`I-62-A7/r4/preflight.md`](I-62-A7/r4/preflight.md); `python -I run_a7r4.py all`): **245 de 245**
+  (entorno y delta 21; fases de las rondas 2 y 3 repetidas con las piezas nuevas, sin regresión, 76; compatibilidad 25; guardas 47; controles sobre la reverificación 59; modalidades, O1 y O2 17).
+  Controles sobre RV: nc1, nc2, nc3, N4, N5, N6, N7a y N7b con cierre, `MainSha_eval` = `MainAfterSha` y entradas iguales a las de RV salvo la mutación
+  (contrapartida estática del oráculo relativo); sustitución y manipulación de la copia del registro, de la identidad de RV, del vínculo y de las copias,
+  mutación ausente, de más o en otro papel, formato y uso indebido: sin cierre y rechazo del validador; aceptante fijado ACCEPT_FACTS sobre un control.
+  A62-A7R3-O1, evaluado sin declararlo resuelto: C1 de la derivación no contiene `MainAfterSha` ni las imágenes; `clausemap --main MainAfterSha` da R9
+  MISMATCH en RV y en sus controles (rechazo falso, nunca aceptación falsa) y R9 MATCH con `K.MainSha` y en la verificación ordinaria. A62-A7R3-O2: sobre un
+  segundo rebase real, la segunda reverificación y sus controles no tienen cierre.
+- **Guardas** (`r4/a7-guards.py`, autoprueba 45 de 45 mutantes de las condiciones nuevas o cambiadas): `run` sobre
+  `2405a919..99de338d` = **PASS** en G1-G7 ([resultado](I-62-A7/r4/a7-guards-result-run.json)).
+- Sin revisión formal (decisiones §98, punto 7); kit acotado por preparar; sin Codex; A6-7 HELD; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6
+  GATE PASS.
