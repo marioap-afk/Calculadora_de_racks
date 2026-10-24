@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §97; evidencia §199-§201) — revisión formal de A-7 ronda 3 hecha y custodiada: auditor ACCREDITED; Architect CHANGES REQUIRED con A62-A7R3-R1 (registro de rebase en los controles negativos sobre una reverificación de 16.7) y O1-O3; A62-A7R2-R1 PARTIALLY_CORRECTED; A-7 sigue PROPUESTA; espera disposición del Coordinator; sin otra ronda sin disposición; sin Codex; A6-7 HELD; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §98; evidencia §202) — matriz estática de modalidades del cierre de VERIFY (ordinaria, reverificación de 16.7, controles negativos ordinarios y derivados, N4-N7, segunda recuperación, con y sin instrumento); A-7 ronda 4 limitada a A62-A7R3-R1 (REBASE en los controles derivados de una reverificación válida); preflight con nc1, nc2 y N4 derivados y sin regresiones; publicar PROPUESTA con guardas y CI; kit acotado sin revisión formal; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

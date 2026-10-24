@@ -4958,3 +4958,12 @@ solo desde artefactos custodiados.
   L535-539, L634-635; A-7 L185-190; `a7-designation-3.schema.json` L61-68).
 - Impacto sobre A6-7: A-7 no puede acordarse con una REQUIRED abierta y su corrección cambia piezas del invalidador (formato, constructor, validador,
   `designate_a7`), así que tiene que preceder a cualquier disposición de A6-7, regla 7; A6-7 sigue HELD. Sin otra ronda sin disposición (§97, punto 8).
+
+## 202. Decisiones §98: resultado de la ronda 3 registrado; ronda 4 limitada a los controles negativos tras la reverificación (A62-A7R3-R1)
+
+- Revisión de A-7 ronda 3 ACCREDITED, Architect CHANGES REQUIRED; A62-A7R3-R1 aceptado como REQUIRED; A62-A7R2-R1 PARTIALLY_CORRECTED; A-7 sigue
+  PROPUESTA; se conserva `068d3368`. Encargos: matriz estática de todas las modalidades (VERIFY ordinaria, reverificación de 16.7, controles negativos
+  ordinarios y derivados de una reverificación, N4-N7, segunda recuperación, con y sin instrumento) antes de cualquier kit; A-7 ronda 4 que admita
+  REBASE en los controles derivados de una reverificación válida, con su identidad, vínculos, coherencia, `MainSha_eval`, reproducción sin
+  sustituciones, mutaciones propias y rechazo de lo ajeno; preflight con nc1, nc2 y N4 derivados de una reverificación y sin regresiones; O1-O3 dentro
+  de la matriz, sin enmiendas nuevas; publicación PROPUESTA con guardas y CI; kit acotado sin revisión formal. Sin Codex, sin A6-7, sin B1 ni FX-U2.
