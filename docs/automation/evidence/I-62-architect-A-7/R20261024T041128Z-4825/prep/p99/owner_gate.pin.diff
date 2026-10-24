@@ -1,0 +1,15 @@
+--- kit/owner_gate.py@9d4a8f96
++++ kit/owner_gate.py@f76fa4b9
+@@ -54,9 +54,9 @@
+ CLAUDE_LINE_PREFIX = "CLAUDE-CLI-I62 ="
+ SECTION_78 = "## 78. "
+ BASE_SECTION = 98                                                # decisiones §98: cuarta candidata; «no ejecutar revisión formal sin nueva disposición»
+-AUTH_SECTION = None   # PENDIENTE: la disposición del Coordinator posterior a §98 que autorice esta revisión (pin_authorization.py)
+-AUTH_HEADING = None
+-AUTH_TEXT_SHA = None
++AUTH_SECTION = 99   # decisiones §99: disposición del Coordinator que autoriza el lanzamiento (pin_authorization.py)
++AUTH_HEADING = "## 99. Disposición del Coordinator: revisión formal única de A-7 ronda 4 (2026-10-24 UTC)"
++AUTH_TEXT_SHA = "e69527b801f1fcb7c728e96eeaaedb67fba5cc8f69a3382059c4efcb908e5cf7"   # SHA-256 del texto de §99 (pin_authorization.py)
+ PENDING_REASON = ("authorization pending: a Coordinator disposition after §98 must be pinned (section number, heading, text SHA-256) and the kit "
+                   "re-frozen")
+ NUMBERED_RX = re.compile(r"^## ([0-9]+)\. ")

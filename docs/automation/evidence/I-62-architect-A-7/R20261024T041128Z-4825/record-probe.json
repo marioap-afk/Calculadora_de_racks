@@ -2,7 +2,7 @@
  "RecordProbe": {
   "Ok": true,
   "Problems": [],
-  "TempDir": "%TEMP%\\r62-record-probe-ux6ptaul",
+  "TempDir": "%TEMP%\\r62-record-probe-7r36yxea",
   "RecordFile": "record-probe.json",
   "StandInChild": "sys.executable -B -I -c PROBE_CHILD (lee stdin, una línea JSON type=result, código 0)",
   "RunAndRecordExit": 0,

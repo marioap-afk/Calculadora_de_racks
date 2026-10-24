@@ -1,0 +1,16 @@
+2026-10-24T18:15:36Z START s9-manifest-pinned
+2026-10-24T18:15:36Z END s9-manifest-pinned rc=0
+2026-10-24T18:15:37Z START s10-record-probe-pinned
+2026-10-24T18:15:38Z END s10-record-probe-pinned rc=0
+2026-10-24T18:15:38Z START s11-dry-run-pinned
+2026-10-24T18:15:55Z END s11-dry-run-pinned rc=2
+2026-10-24T18:15:55Z START s11-check-pinned
+2026-10-24T18:15:55Z END s11-check-pinned rc=0
+2026-10-24T18:15:56Z START s10-convert-pinned
+2026-10-24T18:15:56Z END s10-convert-pinned rc=0
+2026-10-24T18:15:56Z START s13-regen-pinned
+2026-10-24T18:15:57Z END s13-regen-pinned rc=1
+2026-10-24T18:15:57Z STOP s13-regen-pinned (esperado 0)
+2026-10-24T18:16:09Z START s13-regen-pinned (repetido tras corregir la ruta del clon en chain_p99.sh)
+2026-10-24T18:16:13Z END s13-regen-pinned rc=0
+2026-10-24T18:16:14Z DONE

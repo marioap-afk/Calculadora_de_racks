@@ -51,7 +51,7 @@
  "RecordProbe": {
   "Ok": true,
   "Problems": [],
-  "TempDir": "%TEMP%\\r62-record-probe-j7a_f6a2",
+  "TempDir": "%TEMP%\\r62-record-probe-pom6jq9q",
   "RecordFile": "record-probe.json",
   "StandInChild": "sys.executable -B -I -c PROBE_CHILD (lee stdin, una línea JSON type=result, código 0)",
   "RunAndRecordExit": 0,
@@ -115,10 +115,18 @@
   "KitListingUnchanged": true
  },
  "RecordProbeOk": true,
- "BlockingChecks": [
-  "11-OwnerAndAuthorizationGate"
+ "BlockingChecks": [],
+ "AuthorizationSections": [
+  {
+   "Number": 99,
+   "Line": 1932,
+   "Heading": "## 99. Disposición del Coordinator: revisión formal única de A-7 ronda 4 (2026-10-24 UTC)",
+   "HeadingMatches": true,
+   "HasBlob": true,
+   "TextSha256": "e69527b801f1fcb7c728e96eeaaedb67fba5cc8f69a3382059c4efcb908e5cf7",
+   "TextSha256Matches": true
+  }
  ],
- "AuthorizationSections": [],
  "LaterSections": [],
  "Environment": {
   "Prefixes": [
@@ -329,10 +337,8 @@
    "Problems": []
   },
   "11-OwnerAndAuthorizationGate": {
-   "Ok": false,
-   "Problems": [
-    "authorization pending: a Coordinator disposition after §98 must be pinned (section number, heading, text SHA-256) and the kit re-frozen"
-   ],
+   "Ok": true,
+   "Problems": [],
    "A6LineSha256": "83152eae4f451961b9dc43920aa60c6f0910d4d023e9e93d8f5d6160e7ac8b14",
    "A6LineNumbers": [
     1572
@@ -355,21 +361,37 @@
    "PinnedLineInA6": true,
    "RunId": "R20261024T041128Z-4825",
    "BaseSection": 98,
-   "AuthorizationPending": true,
-   "AuthorizationSection": null,
-   "AuthorizationHeading": null,
-   "AuthorizationTextSha256": null,
-   "AuthorizationSections": [],
+   "AuthorizationPending": false,
+   "AuthorizationSection": 99,
+   "AuthorizationHeading": "## 99. Disposición del Coordinator: revisión formal única de A-7 ronda 4 (2026-10-24 UTC)",
+   "AuthorizationTextSha256": "e69527b801f1fcb7c728e96eeaaedb67fba5cc8f69a3382059c4efcb908e5cf7",
+   "AuthorizationSections": [
+    {
+     "Number": 99,
+     "Line": 1932,
+     "Heading": "## 99. Disposición del Coordinator: revisión formal única de A-7 ronda 4 (2026-10-24 UTC)",
+     "HeadingMatches": true,
+     "HasBlob": true,
+     "TextSha256": "e69527b801f1fcb7c728e96eeaaedb67fba5cc8f69a3382059c4efcb908e5cf7",
+     "TextSha256Matches": true
+    }
+   ],
    "LaterSections": [],
-   "SectionsAfterBase": [],
-   "Authorized": false,
+   "SectionsAfterBase": [
+    {
+     "Number": 99,
+     "Line": 1932,
+     "Heading": "## 99. Disposición del Coordinator: revisión formal única de A-7 ronda 4 (2026-10-24 UTC)"
+    }
+   ],
+   "Authorized": true,
    "DecisionsAppendOnlySinceClone": true,
    "WorktreeDecisionsClean": true,
    "HeadDescendsFromClone": true,
    "BinarySha256MatchesClosure": true,
    "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
-   "WorktreeHead": "94a04af7c663eac44016b4011cdffead714a530a",
-   "DecisionsBlobAtHead": "a11371b052543e85aac62096ead6c39b98cdb157",
+   "WorktreeHead": "de96a7f523cff59b87a33e2c3bb810ef08a120ca",
+   "DecisionsBlobAtHead": "f9aeab8000d84025c1acef109a91a08b7a7095d1",
    "CloneCommit": "94a04af7c663eac44016b4011cdffead714a530a",
    "Reads": "git rev-parse, show, hash-object (sin -w) y merge-base, con GIT_OPTIONAL_LOCKS=0; nada se escribe"
   }

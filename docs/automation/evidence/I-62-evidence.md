@@ -5036,3 +5036,19 @@ solo desde artefactos custodiados.
   `owner_gate.py`, integridad del manifiesto y del clon, copias fieles, sonda de registro y prueba en seco), sin repetir los 209 mutantes ni
   reconstruir el kit; preflight con STOP ante cualquier fallo; UNA invocación, 3 600 s, sin reintento; auditor congelado sin acreditación
   excepcional; ninguna sección de decisiones posterior hasta auditar. Sin Codex, sin A6-7, sin B1 ni FX-U2, sin tocar A-1..A-6.
+
+## 206. Kit R20261024T041128Z-4825 fijado en §99, vuelto a congelar y custodiado; validación incremental; prueba en seco con cero bloqueos (decisiones §99, puntos 2-4)
+
+- **Fijación:** el kit se cotejó antes con la custodia de `736a3805` (manifiesto `46b9c465…` y los 73 archivos); `pin_authorization.py` sobre el
+  texto de decisiones de `de96a7f5` → §99 (línea 1932, una sola sección, blob completo de A-7, sin secciones posteriores); en `owner_gate.py` solo
+  cambian las tres líneas AUTH_* (`9d4a8f96` → `f76fa4b9`).
+- **Validación incremental (§99, punto 3)** ([`prep/p99/targeted-validation.json`](I-62-architect-A-7/R20261024T041128Z-4825/prep/p99/targeted-validation.json)): casos de la
+  compuerta 11 39/39; L00 sobre el worktree real en estado PINNED (PASS); casos de auditoría que leen la autorización fijada
+  23/23; mutación dirigida de `owner_gate.py` fijado 19/19. Sin repetir la autoprueba de 321 casos ni los 209 mutantes
+  ni reconstruir el kit.
+- **Congelación y preflight (§99, puntos 2 y 4):** `kit-manifest.json` `90b9cf93171b7c17…` (FIJADA §99); sonda de registro con código 0;
+  **prueba en seco con `BlockingChecks` = []** (compuerta 11 con §99 y sin secciones posteriores; binario `claude-cli` 2.1.299 con su SHA-256 y
+  Authenticode Valid de Anthropic; integridad del kit; clon limpio; run = kit = cierre = manifiesto); 43 copias fieles reproducidas desde `94a04af7`;
+  checkout principal sin cambios; I-64 limpio y sin procesos; corriente conectada.
+- Siguiente: prueba en seco final sobre la HEAD de esta custodia, UNA invocación (`python -B kit/launch.py`, 3 600 s, sin reintento) y el auditor
+  congelado v7.0-a7r4, sin secciones de decisiones nuevas hasta auditar.

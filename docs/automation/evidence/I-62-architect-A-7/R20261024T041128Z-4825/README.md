@@ -7,9 +7,9 @@ Orden:          decisiones §98 (línea 1915 en 94a04af7; cuerpo pegado 3 740 by
                 = kit/order.txt = run/order.txt), puntos 6 (reutilizar componentes congelados idénticos y sus evidencias; validación incremental)
                 y 7 («Preparar el kit acotado, pero no ejecutar revisión formal sin nueva disposición»). §98 es la última sección de decisiones en
                 la HEAD 94a04af7 del worktree
-Autorización:   PENDIENTE: owner_gate.py entrega AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None; la compuerta 11 bloquea con el único motivo
-                «authorization pending» hasta que una disposición del Coordinator POSTERIOR a §98 que nombre esta revisión se fije y el kit se
-                vuelva a congelar (abajo, «Lanzamiento»)
+Autorización:   FIJADA: decisiones §99, «Disposición del Coordinator: revisión formal única de A-7 ronda 4 (2026-10-24 UTC)», línea 1932 en la
+                HEAD de96a7f5; AUTH_TEXT_SHA e69527b801f1fcb7…; fijada con pin_authorization.py (prep/p99/). La versión PENDIENTE del kit está en la
+                custodia de 736a3805 (manifiesto 46b9c465…); abajo, «Fijación de §99»
 Consumo:        cubierto por CLAUDE-CLI-I62 = A (revisiones de ARCHITECT de I-62, solo lectura), la misma base que las rondas 1 a 3
 Objeto:         docs/initiatives/I-62-A-7.md, ronda 4, PROPUESTA, blob ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3 (58 618 bytes, 476 líneas), publicado en
                 99de338d105640f9390201678f02dd2a1d3f69a8 (padre 2405a919, con la ronda 3 8bcccb2f y §98) y registrado en 94a04af7 (resultado `run` de
@@ -28,9 +28,9 @@ Orden de lanzamiento: EXACTAMENTE `python -B kit/launch.py`, desde la carpeta qu
 Compuerta D-01: MEASURED sobre kit/claude-cli-characterization.json (SHA-256 4ba6ba58…, byte a byte la de las rondas 1 a 3); transport_gate.py byte a byte
 Compuerta 11:   BLOQUEANTE: línea del Owner de §78; CLAUDE-CLI-I62 = A y el mismo binario; A-7 en la HEAD = ebb3a87b y A-6 = 4bc919dd (acordada);
                 decisiones solo por añadido desde el clon; la HEAD desciende del clon; una disposición posterior a §98 fijada (encabezado, blob
-                completo, SHA-256 del texto, una sola sección) y ninguna sección posterior. En el kit entregado: PENDIENTE
-Estado:         kit CONGELADO con la autorización PENDIENTE (kit/kit-manifest.json, SHA-256 46b9c465f9f10d30d38fed9477c7c87d9b62f6cf812cbfc74e8773833342a115, 73 archivos más el manifiesto); sonda de registro en Ok;
-                prueba en seco bloqueada SOLO por la compuerta 11 con el motivo «authorization pending» (4 y 5 no se ejecutan en seco). NO lanzado
+                completo, SHA-256 del texto, una sola sección) y ninguna sección posterior. Fijada en §99 (prueba en seco: Ok)
+Estado:         kit FIJADO en §99 y vuelto a congelar (kit/kit-manifest.json, SHA-256 90b9cf93171b7c17e02f3d4416b1dd711ddabf9fab1f57eb58571a37ae41cdf5, 73 archivos más el manifiesto); sonda de
+                registro en Ok; prueba en seco con BlockingChecks = [] (cero bloqueos; 4 y 5 no se ejecutan en seco)
 ```
 
 ## Qué pide §98 y dónde se cubre
@@ -193,14 +193,35 @@ base sin fallos.
   memoria libre 27.7 GB, CPU 23 %.
 - La preparación no tocó el worktree de I-64 ni el checkout principal (solo `rev-parse` y `status` con GIT_OPTIONAL_LOCKS=0).
 
-## Lanzamiento (no ejecutado; exige una disposición nueva)
+## Fijación de §99 (decisiones §99, puntos 2-4)
+
+- **Registro:** §99 por añadido en `de96a7f5` (línea 1932; cuerpo pegado de 2 695 bytes, SHA-256 `0bf8aee4d1457d2877964e849846076b2cd045ef7efd1db86e7d0a20d83acc36`). Antes de
+  fijar, el kit se cotejó con la custodia de `736a3805`: manifiesto `46b9c465…` igual y los 73 archivos con su SHA-256 (`prep/p99/kit-integrity-before-pin.txt`).
+- **Fijación:** `pin_authorization.py` sobre el texto de decisiones de `de96a7f5` (blob `f9aeab80`): Ready; una sola sección §99, posterior a §98,
+  con el blob completo de A-7 como token y ninguna sección posterior (`prep/p99/pin.json`). En `owner_gate.py` solo cambian las tres líneas AUTH_*
+  (`9d4a8f96` → `f76fa4b9`; `prep/p99/owner_gate.pin.diff`, `prep/p99/apply_pin.py`).
+- **Validación incremental (§99, punto 3)** (`prep/p99/targeted-validation.json`): casos de la compuerta 11 39/39; L00 sobre el worktree real en
+  estado PINNED (PASS); casos de auditoría que leen la autorización fijada (00, 150-151p, 152, 153) 23/23; mutación dirigida de `owner_gate.py` fijado
+  19/19, juzgada sobre los casos de la compuerta 11. Sin repetir la autoprueba de 321 casos ni los 209 mutantes. La cabecera del manifiesto marca
+  `owner_gate.py` como cambiado desde la autoprueba y la mutación (`ChangedSinceSelftestOrMutation`): es la fijación, validada aquí.
+- **Congelación y preflight (§99, puntos 2 y 4)** (`prep/p99/chain_p99.sh`, registro `prep/p99/chain_p99.log`): manifiesto `90b9cf93171b7c17…` (FIJADA §99);
+  sonda de registro con código 0 (`record-probe.json`; la del kit pendiente, `record-probe-pending.json`); **prueba en seco con `BlockingChecks` = []**
+  (`launch-dry-run.json`; la del kit pendiente, `launch-dry-run-pending.json`): compuerta 11 en Ok con §99 y sin secciones posteriores; binario
+  `claude-cli` 2.1.299 con su SHA-256 y Authenticode Valid de Anthropic; integridad del kit; clon limpio en `94a04af7`; run = kit = cierre =
+  manifiesto. 43/43 copias fieles reproducidas desde `94a04af7` (`prep/p99/faithful-regeneration-pinned.json`; la primera ejecución de ese paso
+  falló solo porque la ruta del clon de la orden quedó con un retorno de carro al escribir el script; corregida y repetida, código 0).
+- **Host** (`prep/p99/host-checks-prelaunch.json`, 2026-10-24T18:16:30Z): checkout principal en `main`, HEAD `95690c28`, 0 líneas de estado; worktree de I-64 en
+  `09f2f1c3` con 0 líneas y ningún proceso vigilado; corriente conectada (batería al 100 %, sin descarga); la sesión retiene la suspensión por
+  inactividad mientras corre el lanzamiento.
+
+## Lanzamiento
 
 1. Una disposición del Coordinator POSTERIOR a §98 que nombre esta revisión (RunId R20261024T041128Z-4825, objeto ebb3a87b) en las decisiones de la
-   rama; ninguna sección posterior a ella hasta lanzar y auditar.
+   rama; ninguna sección posterior a ella hasta lanzar y auditar. **Hecho: §99.**
 2. Fijarla: `python -B kit/pin_authorization.py <texto de decisiones de la HEAD> <número>` (Ready: número posterior a §98, una sola sección, blob
-   completo como token, ninguna sección posterior) y sustituir SOLO las tres líneas AUTH_* de `kit/owner_gate.py`.
+   completo como token, ninguna sección posterior) y sustituir SOLO las tres líneas AUTH_* de `kit/owner_gate.py`. **Hecho.**
 3. Volver a congelar: `python -B kit/make_manifest.py`; repetir la autoprueba de la compuerta 11 y la sonda L00 en estado FIJADO y la mutación dirigida
-   de `owner_gate.py`, como en las rondas 2 y 3.
+   de `owner_gate.py`, como en las rondas 2 y 3. **Hecho.**
 4. Desde esta carpeta: `python -B kit/launch.py --record-probe` (código 0) y `python -B kit/launch.py --dry-run` (código 2, `BlockingChecks` = []);
    después, UNA vez, `python -B kit/launch.py` (tope 3 600 s, sin reintento) y el auditor sobre la corrida completa:
 
@@ -232,7 +253,7 @@ exactos). Las 43 copias fieles `kit/fiel__*.txt` se custodian por reproducción 
 | `kit/make_manifest.py` | 12 009 | `19867c0743320a460bc53620f80177a96ecee932aacdc6be9ab359cad746bd8d` |
 | `kit/mutation-post-review.py` | 11 182 | `e7c12abdd76150555487a03557e12b2727a041ee67bde4c9a6c9c0929251f58e` |
 | `kit/order.txt` | 3 740 | `8b73975d9822a430f1a726268d4005609974dbdcc85a0674bf00dbb9e9018acf` |
-| `kit/owner_gate.py` | 17 972 | `9d4a8f96007a83543047b3db685792922e676538c9a26eb3b9bfe8ef08dc9025` |
+| `kit/owner_gate.py` | 18 161 | `f76fa4b967247c00ded6adca1515f586d623bbd38e5e587780cb220cd2061460` |
 | `kit/pin_authorization.py` | 5 588 | `a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc` |
 | `kit/post-review.py` | 77 053 | `7a024e30e80bf75f2b90073462c06a70ed5d8fc2f480c3fcd90ca7efeb518897` |
 | `kit/prepare_clone.py` | 11 550 | `ec34615caaf1e36f7165757d677fcde469973af04f978b83654302a76b468c36` |
@@ -249,9 +270,11 @@ exactos). Las 43 copias fieles `kit/fiel__*.txt` se custodian por reproducción 
 | `kit/transport-gate.json` | 1 544 | `41821d5404a56af20175e328e12492049e0cf1206688557ff150061e51f30f7c` |
 | `kit/transport_gate.py` | 22 485 | `e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf` |
 | `kit/verify_clone.py` | 30 635 | `b6e7a333254e5e6c0920e3923eebbb359758c853e6dee0166a416de0da4c6d06` |
-| `kit/kit-manifest.json` | 30 788 | `46b9c465f9f10d30d38fed9477c7c87d9b62f6cf812cbfc74e8773833342a115` |
-| `record-probe.json` | 2 919 | `cad13d1ea5a78910070b46ffa264e2981bebbdf91f57f24247f1605219880db8` |
-| `launch-dry-run.json` | 15 570 | `a76ddd32d5c9462b208ef46e2cd1b8213d65a26560bb3a534c960fd17f4aec3a` |
+| `kit/kit-manifest.json` | 30 826 | `90b9cf93171b7c17e02f3d4416b1dd711ddabf9fab1f57eb58571a37ae41cdf5` |
+| `record-probe.json` | 2 919 | `86dbe5fec5798d7a64f4233f968f04be9d917fd0e8218737552afdd2aa8ebbc8` |
+| `record-probe-pending.json` | 2 919 | `cad13d1ea5a78910070b46ffa264e2981bebbdf91f57f24247f1605219880db8` |
+| `launch-dry-run.json` | 16 374 | `e52cf57671dbab07590d30b11e8568669b993efb2670da0a89b7f44ef972bfce` |
+| `launch-dry-run-pending.json` | 15 570 | `a76ddd32d5c9462b208ef46e2cd1b8213d65a26560bb3a534c960fd17f4aec3a` |
 | `launch-dry-run-before-mutation.json` | 15 570 | `8b684c5765f82e6b89b994eb0a64f99b3a6f3ea0dc77ad6db5391217d931503a` |
 
 `prep/` contiene los scripts de derivación y de preparación, la salida del desplazamiento (`prep/shifted/`), los diffs frente al kit de

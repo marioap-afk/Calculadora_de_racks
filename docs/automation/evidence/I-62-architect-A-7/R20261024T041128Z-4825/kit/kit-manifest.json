@@ -13,22 +13,22 @@
  "Package": "ninguno (sin paquete del Architect: el prompt hace de paquete (decisiones §98, punto 7: el kit acotado a A62-A7R3-R1))",
  "SessionId": "bd018dcb-165f-437d-bcfc-c8adaed5d774",
  "Transport": "claude-cli 2.1.299 (%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe, SHA-256 295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b)",
- "Auditor": "v7.0-a7r4 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 321/321; selftest-fidelity-result.json AllPass True, 53/53; mutación DIRIGIDA (decisiones §98, punto 6: componentes congelados idénticos y validación incremental) targeted-mutation-result.json AllPass True: reglas de post-review.py, transport_gate.py, owner_gate.py y fidelity.py con los mismos sitios que en la ronda 3 True (su batería completa, 209/209, sigue siendo la evidencia aplicable) y owner_gate.py 19/19 sobre los casos de la compuerta 11)",
+ "Auditor": "v7.0-a7r4 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 321/321; selftest-fidelity-result.json AllPass True, 53/53; mutación DIRIGIDA (decisiones §98, punto 6: componentes congelados idénticos y validación incremental) targeted-mutation-result.json AllPass True: reglas de post-review.py, transport_gate.py, owner_gate.py y fidelity.py con los mismos sitios que en la ronda 3 True (su batería completa, 209/209, sigue siendo la evidencia aplicable) y owner_gate.py 19/19 sobre los casos de la compuerta 11; MÓDULOS CAMBIADOS DESDE LA MUTACIÓN: ['owner_gate.py'])",
  "Clone": "D:/r62-arch-a7r4 (git clone --no-local -c core.autocrlf=false --single-branch desde el directorio común de git; HEAD separado en el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks, con la reproducción de las guardas de la ronda 4)",
  "Run": "D:/r62-arch-a7r4-run (order.txt, prompt.md, a7-r3.md y 43 copias fieles de los archivos que Read no entrega fielmente, decisiones §94, punto 5; idénticos byte a byte a las copias del kit)",
  "TransportGate": "MEASURED (D-01; launch.py solo lanza en MEASURED o ACCEPTED)",
  "OwnerAndAuthorizationGate": "11-OwnerAndAuthorizationGate (owner_gate.py): launch.py solo lanza con la línea del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) después de §78, CLAUDE-CLI-I62 = A vigente, A-7 en la HEAD con el blob ebb3a87b, la A-6 acordada y una disposición del Coordinator posterior a §98 fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin ninguna sección posterior; se evalúa en el momento del lanzamiento",
  "AuthorizationPins": {
-  "Section": null,
-  "Heading": null,
-  "TextSha256": null
+  "Section": 99,
+  "Heading": "## 99. Disposición del Coordinator: revisión formal única de A-7 ronda 4 (2026-10-24 UTC)",
+  "TextSha256": "e69527b801f1fcb7c728e96eeaaedb67fba5cc8f69a3382059c4efcb908e5cf7"
  },
- "AuthorizationState": "PENDIENTE: owner_gate.py entrega AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None; la compuerta 11 bloquea hasta fijar una disposición del Coordinator posterior a §98 que nombre esta revisión (pin_authorization.py) y volver a congelar el kit",
+ "AuthorizationState": "FIJADA: decisiones §99 (encabezado y SHA-256 del texto en AuthorizationPins)",
  "OwnerGateTested": {
   "SelftestSha256": "9d4a8f96007a83543047b3db685792922e676538c9a26eb3b9bfe8ef08dc9025",
   "MutationSha256": "9d4a8f96007a83543047b3db685792922e676538c9a26eb3b9bfe8ef08dc9025",
-  "CurrentSha256": "9d4a8f96007a83543047b3db685792922e676538c9a26eb3b9bfe8ef08dc9025",
-  "ChangedSinceSelftestOrMutation": false
+  "CurrentSha256": "f76fa4b967247c00ded6adca1515f586d623bbd38e5e587780cb220cd2061460",
+  "ChangedSinceSelftestOrMutation": true
  },
  "LaunchCommand": "python -B kit/launch.py",
  "Launch": "python -B kit/launch.py desde la carpeta que contiene kit/, por la sesión principal, una sola vez, sin flags ni variables añadidos (NO lanzado)",
@@ -258,8 +258,8 @@
    "Sha256": "8b73975d9822a430f1a726268d4005609974dbdcc85a0674bf00dbb9e9018acf"
   },
   "owner_gate.py": {
-   "Bytes": 17972,
-   "Sha256": "9d4a8f96007a83543047b3db685792922e676538c9a26eb3b9bfe8ef08dc9025"
+   "Bytes": 18161,
+   "Sha256": "f76fa4b967247c00ded6adca1515f586d623bbd38e5e587780cb220cd2061460"
   },
   "pin_authorization.py": {
    "Bytes": 5588,
