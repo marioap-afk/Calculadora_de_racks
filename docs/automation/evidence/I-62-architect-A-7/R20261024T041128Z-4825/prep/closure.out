@@ -1,0 +1,952 @@
+{
+ "ids": {
+  "RunId": "R20261024T041128Z-4825",
+  "InvocationId": "I20261024T041128Z-4825",
+  "LogicalReviewRequestId": "L20261024T041128Z-4825",
+  "AttemptSeq": 1
+ },
+ "canonical": 321,
+ "bytes": 6441006,
+ "lines": 103307,
+ "groups": {
+  "resto": {
+   "Files": 22,
+   "Bytes": 2131458,
+   "Lines": 22089
+  },
+  "A7r3": {
+   "Files": 109,
+   "Bytes": 1175364,
+   "Lines": 22523
+  },
+  "A7r2": {
+   "Files": 58,
+   "Bytes": 699595,
+   "Lines": 12706
+  },
+  "r2-review": {
+   "Files": 3,
+   "Bytes": 281672,
+   "Lines": 7500
+  },
+  "m7": {
+   "Files": 55,
+   "Bytes": 1027837,
+   "Lines": 16521
+  },
+  "kit-m7": {
+   "Files": 44,
+   "Bytes": 583283,
+   "Lines": 11793
+  },
+  "bmin": {
+   "Files": 30,
+   "Bytes": 541797,
+   "Lines": 10175
+  }
+ },
+ "run": {
+  "order.txt": [
+   3740,
+   "8b73975d9822"
+  ],
+  "prompt.md": [
+   125348,
+   "57dd3627e335"
+  ],
+  "a7-r3.md": [
+   45668,
+   "1146c622e840"
+  ],
+  "fiel__docs__initiatives__I-62-A-7.md.txt": [
+   59762,
+   "461c4f8e929b"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r4__a7-guards.py.txt": [
+   69797,
+   "2e1dc10a223d"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r4__b1-like__main__fixture-tests.trx.txt": [
+   3870,
+   "b99f549a5891"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r4__b1-like__uc__fixture-tests.trx.txt": [
+   3868,
+   "84f0fa2b9dda"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r4__check_a7_closure.py.txt": [
+   44211,
+   "0a96596368db"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r4__derive_r4.py.txt": [
+   14876,
+   "4bd7b824611a"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r4__inputs-rebase__fixture-tests-current-image.trx.txt": [
+   3885,
+   "b94cc9953ad3"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r4__inputs__fixture-tests-red.trx.txt": [
+   5360,
+   "2823b49529e2"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r3__a7-guards.py.txt": [
+   60169,
+   "ba5ea4482487"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r3__b1-like__main__fixture-tests.trx.txt": [
+   3870,
+   "cc48ea95c8eb"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r3__b1-like__uc__fixture-tests.trx.txt": [
+   3868,
+   "91c8cd127a86"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r3__check_a7_closure.py.txt": [
+   35463,
+   "be115bd0ed84"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r3__derive_r4.py.txt": [
+   14876,
+   "378ff1bbedd0"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r3__inputs-rebase__fixture-tests-current-image.trx.txt": [
+   3885,
+   "7b8da4f2c43a"
+  ],
+  "fiel__docs__automation__evidence__I-62-A7__r3__inputs__fixture-tests-red.trx.txt": [
+   5360,
+   "f38fcbdfaa63"
+  ],
+  "fiel__docs__automation__evidence__I-62-A6__m7__s91__d1__d1.md.txt": [
+   30962,
+   "36ccc4a223d1"
+  ],
+  "fiel__docs__automation__evidence__I-62-A6__m7__s91__risk-matrix.md.txt": [
+   6261,
+   "f336a3edaebc"
+  ],
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt": [
+   7903,
+   "1960a8703b2a"
+  ],
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt": [
+   5176,
+   "3ec645fac0fe"
+  ],
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt": [
+   5186,
+   "072ccb56a2e4"
+  ],
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt": [
+   53468,
+   "c36e33644f73"
+  ],
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p3-n4.json.txt": [
+   18162,
+   "e4631c799928"
+  ],
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p4-nc1.json.txt": [
+   7177,
+   "08df0a30515c"
+  ],
+  "fiel__docs__automation__evidence__I-62-A6__m7__readings__readings.md.txt": [
+   63587,
+   "afbf088b072c"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__README.md.txt": [
+   24325,
+   "23e05733d261"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt": [
+   14897,
+   "e1f54e747c21"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt": [
+   47110,
+   "1d65597bd746"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt": [
+   3885,
+   "abee39556646"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__accept__tests__test_bmin_accept.py.txt": [
+   76229,
+   "de87a8359515"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt": [
+   46100,
+   "fe913e119a39"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt": [
+   3473,
+   "8232fa83e1de"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt": [
+   3258,
+   "53b1acc301f6"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt": [
+   3421,
+   "7a5440d02d3d"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt": [
+   3572,
+   "6581b266d2be"
+  ],
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt": [
+   4344,
+   "ae421733e67f"
+  ],
+  "fiel__docs__initiatives__I-62-proposal-v14.md.txt": [
+   344274,
+   "965d3b8c1e82"
+  ],
+  "fiel__docs__AUTOMATION_PLAN.md.txt": [
+   156310,
+   "e159df8459aa"
+  ],
+  "fiel__docs__initiatives__I-62-A-4.md.txt": [
+   63494,
+   "a8cbca148235"
+  ],
+  "fiel__docs__initiatives__I-62-A-3.md.txt": [
+   202510,
+   "43b21cc71a9d"
+  ],
+  "fiel__docs__initiatives__I-62-A-1.md.txt": [
+   79082,
+   "40bac2a93d8c"
+  ],
+  "fiel__docs__adr__0046-protocolo-de-ejecucion-delegada-de-agentes.md.txt": [
+   10979,
+   "8e2b4c3103c8"
+  ],
+  "fiel__docs__automation__decisions__I-62.md.txt": [
+   330606,
+   "440ceec8f233"
+  ],
+  "fiel__docs__automation__evidence__I-62-evidence.md.txt": [
+   462766,
+   "70dfa470e88b"
+  ]
+ },
+ "faithful": {
+  "docs/initiatives/I-62-A-7.md": [
+   "fiel__docs__initiatives__I-62-A-7.md.txt",
+   59762,
+   {
+    "LONG_LINE": [
+     237
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r4/a7-guards.py": [
+   "fiel__docs__automation__evidence__I-62-A7__r4__a7-guards.py.txt",
+   69797,
+   {
+    "UNMEASURED_CHAR": [
+     32
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r4/b1-like/main/fixture-tests.trx": [
+   "fiel__docs__automation__evidence__I-62-A7__r4__b1-like__main__fixture-tests.trx.txt",
+   3870,
+   {
+    "BOM": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r4/b1-like/uc/fixture-tests.trx": [
+   "fiel__docs__automation__evidence__I-62-A7__r4__b1-like__uc__fixture-tests.trx.txt",
+   3868,
+   {
+    "BOM": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py": [
+   "fiel__docs__automation__evidence__I-62-A7__r4__check_a7_closure.py.txt",
+   44211,
+   {
+    "ZWNBSP": [
+     302
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r4/derive_r4.py": [
+   "fiel__docs__automation__evidence__I-62-A7__r4__derive_r4.py.txt",
+   14876,
+   {
+    "ZWNBSP": [
+     49
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r4/inputs-rebase/fixture-tests-current-image.trx": [
+   "fiel__docs__automation__evidence__I-62-A7__r4__inputs-rebase__fixture-tests-current-image.trx.txt",
+   3885,
+   {
+    "BOM": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r4/inputs/fixture-tests-red.trx": [
+   "fiel__docs__automation__evidence__I-62-A7__r4__inputs__fixture-tests-red.trx.txt",
+   5360,
+   {
+    "BOM": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r3/a7-guards.py": [
+   "fiel__docs__automation__evidence__I-62-A7__r3__a7-guards.py.txt",
+   60169,
+   {
+    "UNMEASURED_CHAR": [
+     23
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r3/b1-like/main/fixture-tests.trx": [
+   "fiel__docs__automation__evidence__I-62-A7__r3__b1-like__main__fixture-tests.trx.txt",
+   3870,
+   {
+    "BOM": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r3/b1-like/uc/fixture-tests.trx": [
+   "fiel__docs__automation__evidence__I-62-A7__r3__b1-like__uc__fixture-tests.trx.txt",
+   3868,
+   {
+    "BOM": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r3/check_a7_closure.py": [
+   "fiel__docs__automation__evidence__I-62-A7__r3__check_a7_closure.py.txt",
+   35463,
+   {
+    "ZWNBSP": [
+     194
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r3/derive_r4.py": [
+   "fiel__docs__automation__evidence__I-62-A7__r3__derive_r4.py.txt",
+   14876,
+   {
+    "ZWNBSP": [
+     49
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r3/inputs-rebase/fixture-tests-current-image.trx": [
+   "fiel__docs__automation__evidence__I-62-A7__r3__inputs-rebase__fixture-tests-current-image.trx.txt",
+   3885,
+   {
+    "BOM": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A7/r3/inputs/fixture-tests-red.trx": [
+   "fiel__docs__automation__evidence__I-62-A7__r3__inputs__fixture-tests-red.trx.txt",
+   5360,
+   {
+    "BOM": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A6/m7/s91/d1/d1.md": [
+   "fiel__docs__automation__evidence__I-62-A6__m7__s91__d1__d1.md.txt",
+   30962,
+   {
+    "UNMEASURED_CHAR": [
+     159
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A6/m7/s91/risk-matrix.md": [
+   "fiel__docs__automation__evidence__I-62-A6__m7__s91__risk-matrix.md.txt",
+   6261,
+   {
+    "UNMEASURED_CHAR": [
+     15,
+     28
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json": [
+   "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt",
+   7903,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-CONTRACT.json": [
+   "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt",
+   5176,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-DELEG.json": [
+   "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt",
+   5186,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json": [
+   "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt",
+   53468,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A6/m7/bench/p3-n4.json": [
+   "fiel__docs__automation__evidence__I-62-A6__m7__bench__p3-n4.json.txt",
+   18162,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A6/m7/bench/p4-nc1.json": [
+   "fiel__docs__automation__evidence__I-62-A6__m7__bench__p4-nc1.json.txt",
+   7177,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-A6/m7/readings/readings.md": [
+   "fiel__docs__automation__evidence__I-62-A6__m7__readings__readings.md.txt",
+   63587,
+   {
+    "UNMEASURED_CHAR": [
+     346,
+     348
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/README.md": [
+   "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__README.md.txt",
+   24325,
+   {
+    "UNMEASURED_CHAR": [
+     169,
+     189,
+     209
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/derive_r4.py": [
+   "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt",
+   14897,
+   {
+    "ZWNBSP": [
+     49
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/frozen/m7-run.snapshot.json": [
+   "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt",
+   47110,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx": [
+   "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+   3885,
+   {
+    "BOM": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py": [
+   "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__accept__tests__test_bmin_accept.py.txt",
+   76229,
+   {
+    "UNMEASURED_CHAR": [
+     306,
+     319
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json": [
+   "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt",
+   46100,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json": [
+   "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt",
+   3473,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json": [
+   "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt",
+   3258,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json": [
+   "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt",
+   3421,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json": [
+   "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt",
+   3572,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json": [
+   "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt",
+   4344,
+   {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  ],
+  "docs/initiatives/I-62-proposal-v14.md": [
+   "fiel__docs__initiatives__I-62-proposal-v14.md.txt",
+   344274,
+   {
+    "LONG_LINE": [
+     2352,
+     2380,
+     2382
+    ],
+    "UNMEASURED_CHAR": [
+     1579,
+     1594,
+     1595,
+     1780,
+     1864,
+     2018,
+     2183,
+     2195,
+     3078,
+     3084,
+     3131,
+     3146,
+     3225
+    ]
+   }
+  ],
+  "docs/AUTOMATION_PLAN.md": [
+   "fiel__docs__AUTOMATION_PLAN.md.txt",
+   156310,
+   {
+    "UNMEASURED_CHAR": [
+     605
+    ]
+   }
+  ],
+  "docs/initiatives/I-62-A-4.md": [
+   "fiel__docs__initiatives__I-62-A-4.md.txt",
+   63494,
+   {
+    "UNMEASURED_CHAR": [
+     112,
+     375
+    ]
+   }
+  ],
+  "docs/initiatives/I-62-A-3.md": [
+   "fiel__docs__initiatives__I-62-A-3.md.txt",
+   202510,
+   {
+    "LONG_LINE": [
+     1487
+    ],
+    "UNMEASURED_CHAR": [
+     264,
+     741,
+     864,
+     865,
+     866,
+     870,
+     871,
+     872,
+     876,
+     877,
+     880,
+     881,
+     883,
+     884,
+     887,
+     889,
+     895,
+     1209,
+     1246,
+     1302,
+     1349,
+     1444,
+     1469,
+     1473,
+     1488,
+     1490
+    ]
+   }
+  ],
+  "docs/initiatives/I-62-A-1.md": [
+   "fiel__docs__initiatives__I-62-A-1.md.txt",
+   79082,
+   {
+    "UNMEASURED_CHAR": [
+     100,
+     147
+    ]
+   }
+  ],
+  "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md": [
+   "fiel__docs__adr__0046-protocolo-de-ejecucion-delegada-de-agentes.md.txt",
+   10979,
+   {
+    "UNMEASURED_CHAR": [
+     53
+    ]
+   }
+  ],
+  "docs/automation/decisions/I-62.md": [
+   "fiel__docs__automation__decisions__I-62.md.txt",
+   330606,
+   {
+    "LONG_LINE": [
+     657,
+     734,
+     750,
+     768,
+     787,
+     805,
+     819
+    ],
+    "UNMEASURED_CHAR": [
+     73,
+     929
+    ]
+   }
+  ],
+  "docs/automation/evidence/I-62-evidence.md": [
+   "fiel__docs__automation__evidence__I-62-evidence.md.txt",
+   462766,
+   {
+    "UNMEASURED_CHAR": [
+     112,
+     780,
+     1142,
+     1366,
+     1370,
+     1416,
+     1955,
+     2046,
+     2377,
+     2922,
+     3130,
+     3138,
+     3228,
+     3621,
+     3769,
+     3872,
+     3924
+    ]
+   }
+  ]
+ },
+ "large": [
+  "docs/automation/evidence/I-62-A7/r4/a7-guards.py",
+  "docs/automation/evidence/I-62-A7/r4/preflight.md",
+  "docs/automation/evidence/I-62-A7/r4/r2lib.py",
+  "docs/automation/evidence/I-62-A7/r3/r2lib.py",
+  "docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/audit.json",
+  "docs/automation/evidence/I-62-A6/m7/s91/d1/nc2/nc2-result.json",
+  "docs/automation/evidence/I-62-A6/m7/bench/README.md",
+  "docs/automation/evidence/I-62-A6/m7/readings/readings.md",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/selftest_m7.py",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/tools_m7.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+  "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/tests/test_bmin_facts.py",
+  "docs/initiatives/I-62-proposal-v14.md",
+  "docs/AUTOMATION_PLAN.md",
+  "docs/automation/agent-execution/README.md",
+  "docs/initiatives/I-62-A-6.md",
+  "docs/initiatives/I-62-A-4.md",
+  "docs/initiatives/I-62-A-3.md",
+  "docs/initiatives/I-62-A-1.md",
+  "docs/automation/decisions/I-62.md",
+  "docs/automation/evidence/I-62-evidence.md",
+  "fiel__docs__automation__evidence__I-62-A7__r4__a7-guards.py.txt",
+  "fiel__docs__automation__evidence__I-62-A7__r3__a7-guards.py.txt",
+  "fiel__docs__automation__evidence__I-62-A6__m7__readings__readings.md.txt",
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__accept__tests__test_bmin_accept.py.txt",
+  "fiel__docs__initiatives__I-62-proposal-v14.md.txt",
+  "fiel__docs__AUTOMATION_PLAN.md.txt",
+  "fiel__docs__initiatives__I-62-A-4.md.txt",
+  "fiel__docs__initiatives__I-62-A-3.md.txt",
+  "fiel__docs__initiatives__I-62-A-1.md.txt",
+  "fiel__docs__automation__decisions__I-62.md.txt",
+  "fiel__docs__automation__evidence__I-62-evidence.md.txt"
+ ],
+ "reported": {
+  "NonUtf8": [],
+  "LinesOver2000Chars": [
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-CONTRACT.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-DELEG.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/bench/p3-n4.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-A6__m7__bench__p3-n4.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-A6/m7/bench/p4-nc1.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-A6__m7__bench__p4-nc1.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/frozen/m7-run.snapshot.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt"
+   },
+   {
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json",
+    "Lines": [
+     1
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt"
+   },
+   {
+    "Path": "docs/initiatives/I-62-proposal-v14.md",
+    "Lines": [
+     2352,
+     2380,
+     2382
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__initiatives__I-62-proposal-v14.md.txt"
+   },
+   {
+    "Path": "docs/initiatives/I-62-A-3.md",
+    "Lines": [
+     1487
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__initiatives__I-62-A-3.md.txt"
+   },
+   {
+    "Path": "docs/automation/decisions/I-62.md",
+    "Lines": [
+     657,
+     734,
+     750,
+     768,
+     787,
+     805,
+     819
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": "fiel__docs__automation__decisions__I-62.md.txt"
+   },
+   {
+    "Path": "prompt.md",
+    "Lines": [
+     527,
+     543
+    ],
+    "ReadableCopy": null,
+    "FaithfulCopy": null
+   }
+  ],
+  "Fidelity": {
+   "Detector": "fidelity.py (RACKCAD-COPIA-FIEL/1; marca más de 1900 unidades UTF-16 por línea; copias de 1900 caracteres por línea como máximo)",
+   "Files": 321,
+   "Flagged": 43,
+   "ByClass": {
+    "BOM": [
+     "docs/automation/evidence/I-62-A7/r4/b1-like/main/fixture-tests.trx",
+     "docs/automation/evidence/I-62-A7/r4/b1-like/uc/fixture-tests.trx",
+     "docs/automation/evidence/I-62-A7/r4/inputs-rebase/fixture-tests-current-image.trx",
+     "docs/automation/evidence/I-62-A7/r4/inputs/fixture-tests-red.trx",
+     "docs/automation/evidence/I-62-A7/r3/b1-like/main/fixture-tests.trx",
+     "docs/automation/evidence/I-62-A7/r3/b1-like/uc/fixture-tests.trx",
+     "docs/automation/evidence/I-62-A7/r3/inputs-rebase/fixture-tests-current-image.trx",
+     "docs/automation/evidence/I-62-A7/r3/inputs/fixture-tests-red.trx",
+     "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx"
+    ],
+    "LONG_LINE": [
+     "docs/initiatives/I-62-A-7.md",
+     "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+     "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-CONTRACT.json",
+     "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-DELEG.json",
+     "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json",
+     "docs/automation/evidence/I-62-A6/m7/bench/p3-n4.json",
+     "docs/automation/evidence/I-62-A6/m7/bench/p4-nc1.json",
+     "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/frozen/m7-run.snapshot.json",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json",
+     "docs/initiatives/I-62-proposal-v14.md",
+     "docs/initiatives/I-62-A-3.md",
+     "docs/automation/decisions/I-62.md"
+    ],
+    "ZWNBSP": [
+     "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py",
+     "docs/automation/evidence/I-62-A7/r4/derive_r4.py",
+     "docs/automation/evidence/I-62-A7/r3/check_a7_closure.py",
+     "docs/automation/evidence/I-62-A7/r3/derive_r4.py",
+     "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/derive_r4.py"
+    ],
+    "UNMEASURED_CHAR": [
+     "docs/automation/evidence/I-62-A7/r4/a7-guards.py",
+     "docs/automation/evidence/I-62-A7/r3/a7-guards.py",
+     "docs/automation/evidence/I-62-A6/m7/s91/d1/d1.md",
+     "docs/automation/evidence/I-62-A6/m7/s91/risk-matrix.md",
+     "docs/automation/evidence/I-62-A6/m7/readings/readings.md",
+     "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/README.md",
+     "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+     "docs/initiatives/I-62-proposal-v14.md",
+     "docs/AUTOMATION_PLAN.md",
+     "docs/initiatives/I-62-A-4.md",
+     "docs/initiatives/I-62-A-3.md",
+     "docs/initiatives/I-62-A-1.md",
+     "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+     "docs/automation/decisions/I-62.md",
+     "docs/automation/evidence/I-62-evidence.md"
+    ]
+   },
+   "FlaggedWithoutFaithfulCopy": []
+  },
+  "LinesOver2000CharsWithoutReadableCopy": [
+   "prompt.md"
+  ]
+ }
+}

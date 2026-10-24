@@ -1,0 +1,607 @@
+{
+ "Kit": "I-62: kit de la ÚNICA revisión formal independiente del Architect de la RONDA 4 de la enmienda A-7 por claude-cli, acotada a A62-A7R3-R1 y a sus consecuencias (decisiones §98, puntos 2, 6 y 7; Owner CLAUDE-CLI-I62 = A; lanzamiento con la orden congelada exacta y condicionado a la sonda de registro y a la compuerta 11: línea del Owner de §78, blobs de A-7 ronda 4 y de la A-6 acordada en la HEAD y una disposición del Coordinator posterior a §98 que nombre esta revisión, fijada en owner_gate.py, sin ninguna sección posterior)",
+ "Ids": {
+  "RunId": "R20261024T041128Z-4825",
+  "InvocationId": "I20261024T041128Z-4825",
+  "LogicalReviewRequestId": "L20261024T041128Z-4825",
+  "AttemptSeq": 1
+ },
+ "PreviousAttempts": [],
+ "PreviousRound": "A-7 ronda 3: R20261023T180846Z-62bd (blob 8bcccb2f; auditor ACCREDITED; Architect CHANGES REQUIRED con A62-A7R3-R1 y A62-A7R3-O1..O3; custodia 068d3368; decisiones §97 y §98)",
+ "Commit": "94a04af7c663eac44016b4011cdffead714a530a",
+ "Object": "docs/initiatives/I-62-A-7.md (blob ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3; publicación 99de338d105640f9390201678f02dd2a1d3f69a8)",
+ "Package": "ninguno (sin paquete del Architect: el prompt hace de paquete (decisiones §98, punto 7: el kit acotado a A62-A7R3-R1))",
+ "SessionId": "bd018dcb-165f-437d-bcfc-c8adaed5d774",
+ "Transport": "claude-cli 2.1.299 (%APPDATA%\\Claude\\claude-code\\2.1.299\\f0584be0fbaf\\claude.exe, SHA-256 295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b)",
+ "Auditor": "v7.0-a7r4 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass True, 321/321; selftest-fidelity-result.json AllPass True, 53/53; mutación DIRIGIDA (decisiones §98, punto 6: componentes congelados idénticos y validación incremental) targeted-mutation-result.json AllPass True: reglas de post-review.py, transport_gate.py, owner_gate.py y fidelity.py con los mismos sitios que en la ronda 3 True (su batería completa, 209/209, sigue siendo la evidencia aplicable) y owner_gate.py 19/19 sobre los casos de la compuerta 11)",
+ "Clone": "D:/r62-arch-a7r4 (git clone --no-local -c core.autocrlf=false --single-branch desde el directorio común de git; HEAD separado en el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks, con la reproducción de las guardas de la ronda 4)",
+ "Run": "D:/r62-arch-a7r4-run (order.txt, prompt.md, a7-r3.md y 43 copias fieles de los archivos que Read no entrega fielmente, decisiones §94, punto 5; idénticos byte a byte a las copias del kit)",
+ "TransportGate": "MEASURED (D-01; launch.py solo lanza en MEASURED o ACCEPTED)",
+ "OwnerAndAuthorizationGate": "11-OwnerAndAuthorizationGate (owner_gate.py): launch.py solo lanza con la línea del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) después de §78, CLAUDE-CLI-I62 = A vigente, A-7 en la HEAD con el blob ebb3a87b, la A-6 acordada y una disposición del Coordinator posterior a §98 fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin ninguna sección posterior; se evalúa en el momento del lanzamiento",
+ "AuthorizationPins": {
+  "Section": null,
+  "Heading": null,
+  "TextSha256": null
+ },
+ "AuthorizationState": "PENDIENTE: owner_gate.py entrega AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None; la compuerta 11 bloquea hasta fijar una disposición del Coordinator posterior a §98 que nombre esta revisión (pin_authorization.py) y volver a congelar el kit",
+ "OwnerGateTested": {
+  "SelftestSha256": "9d4a8f96007a83543047b3db685792922e676538c9a26eb3b9bfe8ef08dc9025",
+  "MutationSha256": "9d4a8f96007a83543047b3db685792922e676538c9a26eb3b9bfe8ef08dc9025",
+  "CurrentSha256": "9d4a8f96007a83543047b3db685792922e676538c9a26eb3b9bfe8ef08dc9025",
+  "ChangedSinceSelftestOrMutation": false
+ },
+ "LaunchCommand": "python -B kit/launch.py",
+ "Launch": "python -B kit/launch.py desde la carpeta que contiene kit/, por la sesión principal, una sola vez, sin flags ni variables añadidos (NO lanzado)",
+ "Files": {
+  "a7-r3.md": {
+   "Bytes": 45668,
+   "Sha256": "1146c622e84068306d59897abafc18ce032bd2707e47708a0193a3510b194cbd"
+  },
+  "c3_analysis.py": {
+   "Bytes": 6070,
+   "Sha256": "4fc6115e2551b68efd46a20504764f2313f894eaddbb2e59b16dcdf72c1ecbb7"
+  },
+  "claude-cli-characterization.json": {
+   "Bytes": 17086,
+   "Sha256": "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c"
+  },
+  "clone-verification.json": {
+   "Bytes": 102924,
+   "Sha256": "79fad1b9400a8abd98af3ee3ca4f0f8b9572b6d98c245956016cbbfef5ab3e18"
+  },
+  "closure.json": {
+   "Bytes": 503448,
+   "Sha256": "1134b70315ae2919a10bed8653ef1261574ddb0861d391bdeee8af4409c810e2"
+  },
+  "fidelity.py": {
+   "Bytes": 21072,
+   "Sha256": "a84825e00112965f33c7530ffac6ff84353ff036f2773ee525ebd178e872c68f"
+  },
+  "fiel__docs__AUTOMATION_PLAN.md.txt": {
+   "Bytes": 156310,
+   "Sha256": "e159df8459aa37f67a939a41a70352de911b356ad3628dac0f83a9cf7e09266c"
+  },
+  "fiel__docs__adr__0046-protocolo-de-ejecucion-delegada-de-agentes.md.txt": {
+   "Bytes": 10979,
+   "Sha256": "8e2b4c3103c85f8a0cf9407fcfca753468fd192c2eebd406d786b4c260236c34"
+  },
+  "fiel__docs__automation__decisions__I-62.md.txt": {
+   "Bytes": 330606,
+   "Sha256": "440ceec8f23344ef046d62f3d2ed75e55388de453b815e07a02b7f766b3be347"
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt": {
+   "Bytes": 53468,
+   "Sha256": "c36e33644f738a4c6a06cf577af7bcfb7f597924d8c6eae9071a1b800db83a01"
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p3-n4.json.txt": {
+   "Bytes": 18162,
+   "Sha256": "e4631c7999289bb15d98ad4ad1bd1f2942c8b6be8e2aadadb451c75166f038ce"
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p4-nc1.json.txt": {
+   "Bytes": 7177,
+   "Sha256": "08df0a30515cad5472395dcb039903a31451d9b8fcfc770e3bac7558328e64dd"
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__readings__readings.md.txt": {
+   "Bytes": 63587,
+   "Sha256": "afbf088b072c387642b0db9fade6824e5d521c728f040aa3344a6ab4c997fa6e"
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__s91__d1__d1.md.txt": {
+   "Bytes": 30962,
+   "Sha256": "36ccc4a223d17e8a38f7f4805d3bb55a00d6a7dc5aeda6f8061f1b5476a7e6ca"
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__s91__risk-matrix.md.txt": {
+   "Bytes": 6261,
+   "Sha256": "f336a3edaebc2c17e179cbf4baa26d8d44bca6b27bf6b96519681ad3a5ba92d4"
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt": {
+   "Bytes": 7903,
+   "Sha256": "1960a8703b2aa17ede8ad9d408e1bc1d4dacead7706b0a9c223ecbf92658183c"
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt": {
+   "Bytes": 5176,
+   "Sha256": "3ec645fac0fe2c5b655a9cd7bb4d3fc3e91271716f7b51c141d3578692af3bec"
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt": {
+   "Bytes": 5186,
+   "Sha256": "072ccb56a2e4954fdfead607ad88535895114461425f20e8d0e6a0f4f7b1c4a2"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__a7-guards.py.txt": {
+   "Bytes": 60169,
+   "Sha256": "ba5ea4482487edc760d11301592ff5449006d82389694246876a23e894f7350c"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__b1-like__main__fixture-tests.trx.txt": {
+   "Bytes": 3870,
+   "Sha256": "cc48ea95c8eb341b60b9c1d36e967b735b78cd3f7d5c4628b6dc82fd5aa182ec"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__b1-like__uc__fixture-tests.trx.txt": {
+   "Bytes": 3868,
+   "Sha256": "91c8cd127a86b9459c6255e72c495dbc403d5d1b8572cf477f55e0cf2c1eea85"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__check_a7_closure.py.txt": {
+   "Bytes": 35463,
+   "Sha256": "be115bd0ed84f4a734d86581b53a4a42e38d759535252c2f7c6318f6e1493f76"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__derive_r4.py.txt": {
+   "Bytes": 14876,
+   "Sha256": "378ff1bbedd0e506c9f30e37094fdb950f98b0c111ee378defd83c2f4e3c3d24"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__inputs-rebase__fixture-tests-current-image.trx.txt": {
+   "Bytes": 3885,
+   "Sha256": "7b8da4f2c43a82140682edc2a26e0d59400d75dbd08824034c958120b6913dbe"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__inputs__fixture-tests-red.trx.txt": {
+   "Bytes": 5360,
+   "Sha256": "f38fcbdfaa6329163d2583a9ff03807a19e2e165ccc03c5cf4fd1f5f6887a23b"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__a7-guards.py.txt": {
+   "Bytes": 69797,
+   "Sha256": "2e1dc10a223d4c535a52485cad7d39c35378c7c15f0b1c94802a06425e570c16"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__b1-like__main__fixture-tests.trx.txt": {
+   "Bytes": 3870,
+   "Sha256": "b99f549a589124b3c64fe35184435ba5aa56af0dc8e1cdbcfc2147e7ff56fa89"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__b1-like__uc__fixture-tests.trx.txt": {
+   "Bytes": 3868,
+   "Sha256": "84f0fa2b9dda5a79d8d656f05485c11ad7503de64b583ff38a64121800d8585d"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__check_a7_closure.py.txt": {
+   "Bytes": 44211,
+   "Sha256": "0a96596368dbabb0d4d50200aebdf5c9a2b4e2982806bc2c515b192e8ee2b5f1"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__derive_r4.py.txt": {
+   "Bytes": 14876,
+   "Sha256": "4bd7b824611acb19896ff8f43f9655096a4576033200ba72f6fc3f2134826d8c"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__inputs-rebase__fixture-tests-current-image.trx.txt": {
+   "Bytes": 3885,
+   "Sha256": "b94cc9953ad32e47fdad54aeb8a41490dac7314ca739532d03faabcb1893128f"
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__inputs__fixture-tests-red.trx.txt": {
+   "Bytes": 5360,
+   "Sha256": "2823b49529e2e948d564c6ec5d42f4cbb6f811e8b9a6007a6485b19dddbead2c"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__accept__tests__test_bmin_accept.py.txt": {
+   "Bytes": 76229,
+   "Sha256": "de87a835951535aa0fc328cc2cdc5f4b6aa0acd6a12d7eafa600732204ed4620"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt": {
+   "Bytes": 46100,
+   "Sha256": "fe913e119a3974c94bcd4ff682fc5a015703e24d95e0ce3d489fcb59668475b6"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt": {
+   "Bytes": 3473,
+   "Sha256": "8232fa83e1de2700e81b61b42207b81fa846b4f8674532f1c120918eb5a0449f"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt": {
+   "Bytes": 3258,
+   "Sha256": "53b1acc301f681b6292374d51e451cdf75d76672261474b4f6573a1ed41f86f9"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt": {
+   "Bytes": 3421,
+   "Sha256": "7a5440d02d3d5d1977ca533ca286c3bcb537f43e5f0b5d26a53968cf85b58beb"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt": {
+   "Bytes": 3572,
+   "Sha256": "6581b266d2bee861d1c2fe8d3f9549c709d45df305266f4bb6d93235034139a4"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt": {
+   "Bytes": 4344,
+   "Sha256": "ae421733e67f01d701c7d8b2402d057ce8f59b7ffadcd7a9ca195e89bae3813d"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__README.md.txt": {
+   "Bytes": 24325,
+   "Sha256": "23e05733d261178b6c85a5ba9e0102f4da22d6fa9ee866890e4fe0007b2f2d81"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt": {
+   "Bytes": 14897,
+   "Sha256": "e1f54e747c21c69630b84756d0f0eb1f5b9c066941a046cefd1de6d2f3b44dd5"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt": {
+   "Bytes": 47110,
+   "Sha256": "1d65597bd7466651329e3816847dd3a7193e24e0f379919a3475342efb822365"
+  },
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt": {
+   "Bytes": 3885,
+   "Sha256": "abee3955664619061894dbfe68cd95a2a6764c5ee967257cc3274e32bef3eca5"
+  },
+  "fiel__docs__automation__evidence__I-62-evidence.md.txt": {
+   "Bytes": 462766,
+   "Sha256": "70dfa470e88b1971d6dbe98fbda7bccce2176f20d5cd51a81a8c9f50397a2b52"
+  },
+  "fiel__docs__initiatives__I-62-A-1.md.txt": {
+   "Bytes": 79082,
+   "Sha256": "40bac2a93d8c2230abd07b86098055ff4ffe73d369cd1d5025cbacd159b73946"
+  },
+  "fiel__docs__initiatives__I-62-A-3.md.txt": {
+   "Bytes": 202510,
+   "Sha256": "43b21cc71a9d034dff76623eaad4fcb98765407a132b02e508bd4f6d1ff31f04"
+  },
+  "fiel__docs__initiatives__I-62-A-4.md.txt": {
+   "Bytes": 63494,
+   "Sha256": "a8cbca148235e1e4ed2be6c792c96294f131e2361bc52175feb3ce69e172ca68"
+  },
+  "fiel__docs__initiatives__I-62-A-7.md.txt": {
+   "Bytes": 59762,
+   "Sha256": "461c4f8e929b8e60df82c36a14bb52320b6a90cabf15d43b5c4d04fccdfb4633"
+  },
+  "fiel__docs__initiatives__I-62-proposal-v14.md.txt": {
+   "Bytes": 344274,
+   "Sha256": "965d3b8c1e82954a63e0b7448e2ce975ea4984e22d238aaf9a62d82a181e21a4"
+  },
+  "finish_kit.py": {
+   "Bytes": 12105,
+   "Sha256": "8155e62aafdaf0bd61993b167c7deb1f24cae7069acc09279e292c61dd0e84ae"
+  },
+  "kit-params.json": {
+   "Bytes": 2724,
+   "Sha256": "35af0debf77e2f788e3899b3063d02f1877984d127628659fc65eb21a8175cc5"
+  },
+  "launch.py": {
+   "Bytes": 48260,
+   "Sha256": "93aa11d819c2e8fd748e131e783feda736e02f4ccc36f15402e6a7252375b7a0"
+  },
+  "make_closure.py": {
+   "Bytes": 111553,
+   "Sha256": "b168fd501b15b678295f1307d7043dc359102d30ea9ec54aae51c5646938e57b"
+  },
+  "make_manifest.py": {
+   "Bytes": 12009,
+   "Sha256": "19867c0743320a460bc53620f80177a96ecee932aacdc6be9ab359cad746bd8d"
+  },
+  "mutation-post-review.py": {
+   "Bytes": 11182,
+   "Sha256": "e7c12abdd76150555487a03557e12b2727a041ee67bde4c9a6c9c0929251f58e"
+  },
+  "order.txt": {
+   "Bytes": 3740,
+   "Sha256": "8b73975d9822a430f1a726268d4005609974dbdcc85a0674bf00dbb9e9018acf"
+  },
+  "owner_gate.py": {
+   "Bytes": 17972,
+   "Sha256": "9d4a8f96007a83543047b3db685792922e676538c9a26eb3b9bfe8ef08dc9025"
+  },
+  "pin_authorization.py": {
+   "Bytes": 5588,
+   "Sha256": "a8e4070751ae604010149c8678aa9320766c533230bf92de3aa2e88ea6e571cc"
+  },
+  "post-review.py": {
+   "Bytes": 77053,
+   "Sha256": "7a024e30e80bf75f2b90073462c06a70ed5d8fc2f480c3fcd90ca7efeb518897"
+  },
+  "prepare_clone.py": {
+   "Bytes": 11550,
+   "Sha256": "ec34615caaf1e36f7165757d677fcde469973af04f978b83654302a76b468c36"
+  },
+  "prompt.md": {
+   "Bytes": 125348,
+   "Sha256": "57dd3627e335952162a422c01472da31eee637366f87aeb8c00aa5afc1c36de9"
+  },
+  "prompt.template.md": {
+   "Bytes": 44748,
+   "Sha256": "3d60a9569e65c515760ed758d48ba5cbe814c177d7da32d31a8e2f50763c20fd"
+  },
+  "read_fidelity.py": {
+   "Bytes": 6143,
+   "Sha256": "da1457a1a035221ba41710f1bea6bcd28312c95d66199885accccf3a21f11cfa"
+  },
+  "result.schema.json": {
+   "Bytes": 24213,
+   "Sha256": "60aec9b8088e0f5b43dec592ec4d5e803b44df8247d55663549065aa96e34b3c"
+  },
+  "selftest-fidelity-result.json": {
+   "Bytes": 9062,
+   "Sha256": "df0506164f5019276479cd0d9039a5975974faf2a592b233f477de29c544b890"
+  },
+  "selftest-fidelity.py": {
+   "Bytes": 18240,
+   "Sha256": "0ad71f0d3f3bd4be6986d0851910a095ff573e48193e9c106d7c53fefffd0da3"
+  },
+  "selftest-post-review.py": {
+   "Bytes": 154367,
+   "Sha256": "86213c6fa6a196b1966c09d53ca4c61929151a39a3c1b1519348b81386fa3572"
+  },
+  "selftest-result.json": {
+   "Bytes": 181477,
+   "Sha256": "a6e5738f4d85bb20df7ca2640f36a0bb5bad5d4d44b7659751f2f7016f59ec5a"
+  },
+  "targeted-mutation-result.json": {
+   "Bytes": 8898,
+   "Sha256": "93c4c1fa1d988db84bb6fa0b5b08fae186e0759f976878a3d66f58fecd3c0c4b"
+  },
+  "targeted-mutation.py": {
+   "Bytes": 7124,
+   "Sha256": "4d7656b0c488a927669a169f89d77af0ab3fc6868c9cd8b2aca71d767a4d3bb8"
+  },
+  "transport-gate.json": {
+   "Bytes": 1544,
+   "Sha256": "41821d5404a56af20175e328e12492049e0cf1206688557ff150061e51f30f7c"
+  },
+  "transport_gate.py": {
+   "Bytes": 22485,
+   "Sha256": "e326b5b92da5ff2b53d05a7d64f90dbb09bf098ab4eeda5a92597d6fc36e6fbf"
+  },
+  "verify_clone.py": {
+   "Bytes": 30635,
+   "Sha256": "b6e7a333254e5e6c0920e3923eebbb359758c853e6dee0166a416de0da4c6d06"
+  }
+ },
+ "RunFiles": {
+  "order.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\order.txt",
+   "Bytes": 3740,
+   "Sha256": "8b73975d9822a430f1a726268d4005609974dbdcc85a0674bf00dbb9e9018acf",
+   "IdenticalToKitCopy": true
+  },
+  "prompt.md": {
+   "Path": "D:\\r62-arch-a7r4-run\\prompt.md",
+   "Bytes": 125348,
+   "Sha256": "57dd3627e335952162a422c01472da31eee637366f87aeb8c00aa5afc1c36de9",
+   "IdenticalToKitCopy": true
+  },
+  "a7-r3.md": {
+   "Path": "D:\\r62-arch-a7r4-run\\a7-r3.md",
+   "Bytes": 45668,
+   "Sha256": "1146c622e84068306d59897abafc18ce032bd2707e47708a0193a3510b194cbd",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__initiatives__I-62-A-7.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__initiatives__I-62-A-7.md.txt",
+   "Bytes": 59762,
+   "Sha256": "461c4f8e929b8e60df82c36a14bb52320b6a90cabf15d43b5c4d04fccdfb4633",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__a7-guards.py.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r4__a7-guards.py.txt",
+   "Bytes": 69797,
+   "Sha256": "2e1dc10a223d4c535a52485cad7d39c35378c7c15f0b1c94802a06425e570c16",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__b1-like__main__fixture-tests.trx.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r4__b1-like__main__fixture-tests.trx.txt",
+   "Bytes": 3870,
+   "Sha256": "b99f549a589124b3c64fe35184435ba5aa56af0dc8e1cdbcfc2147e7ff56fa89",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__b1-like__uc__fixture-tests.trx.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r4__b1-like__uc__fixture-tests.trx.txt",
+   "Bytes": 3868,
+   "Sha256": "84f0fa2b9dda5a79d8d656f05485c11ad7503de64b583ff38a64121800d8585d",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__check_a7_closure.py.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r4__check_a7_closure.py.txt",
+   "Bytes": 44211,
+   "Sha256": "0a96596368dbabb0d4d50200aebdf5c9a2b4e2982806bc2c515b192e8ee2b5f1",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__derive_r4.py.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r4__derive_r4.py.txt",
+   "Bytes": 14876,
+   "Sha256": "4bd7b824611acb19896ff8f43f9655096a4576033200ba72f6fc3f2134826d8c",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__inputs-rebase__fixture-tests-current-image.trx.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r4__inputs-rebase__fixture-tests-current-image.trx.txt",
+   "Bytes": 3885,
+   "Sha256": "b94cc9953ad32e47fdad54aeb8a41490dac7314ca739532d03faabcb1893128f",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r4__inputs__fixture-tests-red.trx.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r4__inputs__fixture-tests-red.trx.txt",
+   "Bytes": 5360,
+   "Sha256": "2823b49529e2e948d564c6ec5d42f4cbb6f811e8b9a6007a6485b19dddbead2c",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__a7-guards.py.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r3__a7-guards.py.txt",
+   "Bytes": 60169,
+   "Sha256": "ba5ea4482487edc760d11301592ff5449006d82389694246876a23e894f7350c",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__b1-like__main__fixture-tests.trx.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r3__b1-like__main__fixture-tests.trx.txt",
+   "Bytes": 3870,
+   "Sha256": "cc48ea95c8eb341b60b9c1d36e967b735b78cd3f7d5c4628b6dc82fd5aa182ec",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__b1-like__uc__fixture-tests.trx.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r3__b1-like__uc__fixture-tests.trx.txt",
+   "Bytes": 3868,
+   "Sha256": "91c8cd127a86b9459c6255e72c495dbc403d5d1b8572cf477f55e0cf2c1eea85",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__check_a7_closure.py.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r3__check_a7_closure.py.txt",
+   "Bytes": 35463,
+   "Sha256": "be115bd0ed84f4a734d86581b53a4a42e38d759535252c2f7c6318f6e1493f76",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__derive_r4.py.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r3__derive_r4.py.txt",
+   "Bytes": 14876,
+   "Sha256": "378ff1bbedd0e506c9f30e37094fdb950f98b0c111ee378defd83c2f4e3c3d24",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__inputs-rebase__fixture-tests-current-image.trx.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r3__inputs-rebase__fixture-tests-current-image.trx.txt",
+   "Bytes": 3885,
+   "Sha256": "7b8da4f2c43a82140682edc2a26e0d59400d75dbd08824034c958120b6913dbe",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A7__r3__inputs__fixture-tests-red.trx.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A7__r3__inputs__fixture-tests-red.trx.txt",
+   "Bytes": 5360,
+   "Sha256": "f38fcbdfaa6329163d2583a9ff03807a19e2e165ccc03c5cf4fd1f5f6887a23b",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__s91__d1__d1.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A6__m7__s91__d1__d1.md.txt",
+   "Bytes": 30962,
+   "Sha256": "36ccc4a223d17e8a38f7f4805d3bb55a00d6a7dc5aeda6f8061f1b5476a7e6ca",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__s91__risk-matrix.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A6__m7__s91__risk-matrix.md.txt",
+   "Bytes": 6261,
+   "Sha256": "f336a3edaebc2c17e179cbf4baa26d8d44bca6b27bf6b96519681ad3a5ba92d4",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt",
+   "Bytes": 7903,
+   "Sha256": "1960a8703b2aa17ede8ad9d408e1bc1d4dacead7706b0a9c223ecbf92658183c",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt",
+   "Bytes": 5176,
+   "Sha256": "3ec645fac0fe2c5b655a9cd7bb4d3fc3e91271716f7b51c141d3578692af3bec",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt",
+   "Bytes": 5186,
+   "Sha256": "072ccb56a2e4954fdfead607ad88535895114461425f20e8d0e6a0f4f7b1c4a2",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt",
+   "Bytes": 53468,
+   "Sha256": "c36e33644f738a4c6a06cf577af7bcfb7f597924d8c6eae9071a1b800db83a01",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p3-n4.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A6__m7__bench__p3-n4.json.txt",
+   "Bytes": 18162,
+   "Sha256": "e4631c7999289bb15d98ad4ad1bd1f2942c8b6be8e2aadadb451c75166f038ce",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__bench__p4-nc1.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A6__m7__bench__p4-nc1.json.txt",
+   "Bytes": 7177,
+   "Sha256": "08df0a30515cad5472395dcb039903a31451d9b8fcfc770e3bac7558328e64dd",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-A6__m7__readings__readings.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-A6__m7__readings__readings.md.txt",
+   "Bytes": 63587,
+   "Sha256": "afbf088b072c387642b0db9fade6824e5d521c728f040aa3344a6ab4c997fa6e",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__README.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__README.md.txt",
+   "Bytes": 24325,
+   "Sha256": "23e05733d261178b6c85a5ba9e0102f4da22d6fa9ee866890e4fe0007b2f2d81",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt",
+   "Bytes": 14897,
+   "Sha256": "e1f54e747c21c69630b84756d0f0eb1f5b9c066941a046cefd1de6d2f3b44dd5",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt",
+   "Bytes": 47110,
+   "Sha256": "1d65597bd7466651329e3816847dd3a7193e24e0f379919a3475342efb822365",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+   "Bytes": 3885,
+   "Sha256": "abee3955664619061894dbfe68cd95a2a6764c5ee967257cc3274e32bef3eca5",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__accept__tests__test_bmin_accept.py.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__accept__tests__test_bmin_accept.py.txt",
+   "Bytes": 76229,
+   "Sha256": "de87a835951535aa0fc328cc2cdc5f4b6aa0acd6a12d7eafa600732204ed4620",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt",
+   "Bytes": 46100,
+   "Sha256": "fe913e119a3974c94bcd4ff682fc5a015703e24d95e0ce3d489fcb59668475b6",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt",
+   "Bytes": 3473,
+   "Sha256": "8232fa83e1de2700e81b61b42207b81fa846b4f8674532f1c120918eb5a0449f",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt",
+   "Bytes": 3258,
+   "Sha256": "53b1acc301f681b6292374d51e451cdf75d76672261474b4f6573a1ed41f86f9",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt",
+   "Bytes": 3421,
+   "Sha256": "7a5440d02d3d5d1977ca533ca286c3bcb537f43e5f0b5d26a53968cf85b58beb",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt",
+   "Bytes": 3572,
+   "Sha256": "6581b266d2bee861d1c2fe8d3f9549c709d45df305266f4bb6d93235034139a4",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt",
+   "Bytes": 4344,
+   "Sha256": "ae421733e67f01d701c7d8b2402d057ce8f59b7ffadcd7a9ca195e89bae3813d",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__initiatives__I-62-proposal-v14.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__initiatives__I-62-proposal-v14.md.txt",
+   "Bytes": 344274,
+   "Sha256": "965d3b8c1e82954a63e0b7448e2ce975ea4984e22d238aaf9a62d82a181e21a4",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__AUTOMATION_PLAN.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__AUTOMATION_PLAN.md.txt",
+   "Bytes": 156310,
+   "Sha256": "e159df8459aa37f67a939a41a70352de911b356ad3628dac0f83a9cf7e09266c",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__initiatives__I-62-A-4.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__initiatives__I-62-A-4.md.txt",
+   "Bytes": 63494,
+   "Sha256": "a8cbca148235e1e4ed2be6c792c96294f131e2361bc52175feb3ce69e172ca68",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__initiatives__I-62-A-3.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__initiatives__I-62-A-3.md.txt",
+   "Bytes": 202510,
+   "Sha256": "43b21cc71a9d034dff76623eaad4fcb98765407a132b02e508bd4f6d1ff31f04",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__initiatives__I-62-A-1.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__initiatives__I-62-A-1.md.txt",
+   "Bytes": 79082,
+   "Sha256": "40bac2a93d8c2230abd07b86098055ff4ffe73d369cd1d5025cbacd159b73946",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__adr__0046-protocolo-de-ejecucion-delegada-de-agentes.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__adr__0046-protocolo-de-ejecucion-delegada-de-agentes.md.txt",
+   "Bytes": 10979,
+   "Sha256": "8e2b4c3103c85f8a0cf9407fcfca753468fd192c2eebd406d786b4c260236c34",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__decisions__I-62.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__decisions__I-62.md.txt",
+   "Bytes": 330606,
+   "Sha256": "440ceec8f23344ef046d62f3d2ed75e55388de453b815e07a02b7f766b3be347",
+   "IdenticalToKitCopy": true
+  },
+  "fiel__docs__automation__evidence__I-62-evidence.md.txt": {
+   "Path": "D:\\r62-arch-a7r4-run\\fiel__docs__automation__evidence__I-62-evidence.md.txt",
+   "Bytes": 462766,
+   "Sha256": "70dfa470e88b1971d6dbe98fbda7bccce2176f20d5cd51a81a8c9f50397a2b52",
+   "IdenticalToKitCopy": true
+  }
+ }
+}

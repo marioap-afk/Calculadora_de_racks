@@ -1,0 +1,205 @@
+--- r3/verify_clone.py
++++ r4/verify_clone.py
+@@ -1,39 +1,39 @@
+-"""Verificación mecánica del clon limpio y del run de la ÚNICA revisión formal de la RONDA 3 de la enmienda A-7 (decisiones §96, puntos 6 y 7)
++"""Verificación mecánica del clon limpio y del run de la ÚNICA revisión formal de la RONDA 4 de la enmienda A-7 (decisiones §98, puntos 6 y 7)
+ por claude-cli, antes del lanzamiento (la identidad la verifica el invocador, porque el revisor no tiene herramientas de ejecución), con la
+-reproducción de las comprobaciones estáticas de la ronda 3 (guardas r3/a7-guards.py). Derivado del verify_clone.py del kit de A-7 ronda 2
+-(R20261019T201030Z-d1bf, a su vez del de la ronda 1 con la corrección de fidelidad de la fase 1): las mismas comprobaciones del clon, del run, del
+-registro de caracterización y de la sesión nueva; cambian el objeto (8bcccb2f), los commits, la premisa de la ronda 2 (a7-r2.md) y las guardas
+-reproducidas (las de r3/).
++reproducción de las comprobaciones estáticas de la ronda 4 (guardas r4/a7-guards.py). Derivado del verify_clone.py del kit de A-7 ronda 3
++(R20261023T180846Z-62bd, a su vez del de la ronda 1 con la corrección de fidelidad de la fase 1): las mismas comprobaciones del clon, del run, del
++registro de caracterización y de la sesión nueva; cambian el objeto (ebb3a87b), los commits, la premisa de la ronda 3 (a7-r3.md) y las guardas
++reproducidas (las de r4/).
+ 
+ Comprueba: kit-params.json no provisional; HEAD = CloneCommit, separado (sin ninguna rama local); sin remotos; árbol limpio (también sin
+ ignorados); ningún objeto fuera de la historia de HEAD y ninguna etiqueta fuera de ella; los blobs designados (los de CanonicalInputs del cierre); la
+-historia del objeto (la ronda 2, 8a528133, en el padre de la publicación y en la publicación de la ronda 2, e90b444d; el blob de la ronda 3 en la
+-publicación, en la custodia de las guardas y en el commit del clon; la A-6 acordada en los cuatro; r3/a7-guards.py, q7-guards-selftest.json,
+-summary.json y preflight.md de r3/ sin cambio desde la publicación; el resultado `run` sin cambio desde su custodia; I-62-A7/r3/ ausente en el padre
+-de la publicación; la evidencia de la ronda 2, I-62-A7/r2/, sin cambio del padre de la publicación al commit del clon; la revisión de la ronda 2
+-(output.json, audit.json, README.md) igual a su custodia 3f912c84); commits presentes (los de la ronda 3, §96, la custodia de la revisión de la
+-ronda 2, el kit de la ronda 2 fijado en §95, §95, la ronda 2 y su registro, §94, §93, la ronda 1 y su registro, §92, §91, la preparación de la
++historia del objeto (la ronda 3, 8bcccb2f, en el padre de la publicación y en la publicación de la ronda 3, 37ac6ca4; el blob de la ronda 4 en la
++publicación, en la custodia de las guardas y en el commit del clon; la A-6 acordada en los cuatro; r4/a7-guards.py, q7-guards-selftest.json,
++summary.json y preflight.md de r4/ sin cambio desde la publicación; el resultado `run` sin cambio desde su custodia; I-62-A7/r4/ ausente en el padre
++de la publicación; la evidencia de la ronda 3, I-62-A7/r3/, sin cambio del padre de la publicación al commit del clon; la revisión de la ronda 3
++(output.json, audit.json, README.md) igual a su custodia 068d3368); commits presentes (los de la ronda 4, §98, la custodia de la revisión de la
++ronda 3, el kit de la ronda 3 fijado en §97 y su custodia, §97, la ronda 3 y su registro, §96, la custodia de la revisión de la ronda 2 y su kit, §95, la
++ronda 2 y su registro, §94, §93, la ronda 1 y su registro, §92, §91, la preparación de la
+ medición, el acuerdo de A-6, la caracterización de 2.1.299, el paquete B-min y la base del mapa) y ausentes (los del Freeze y de V14, anteriores al
+ rebase); sin enlaces simbólicos ni uniones en el árbol de trabajo ni entradas 120000 en el índice; core.autocrlf; el run (exactamente order.txt,
+-prompt.md, a7-r2.md y las copias fieles de FaithfulCopies, fidelity.run_files_of; order.txt con el SHA-256 y los bytes que declara decisiones §96 en
+-el commit; a7-r2.md = el blob de la ronda 2 en el padre de la publicación; cada archivo idéntico a la copia del kit y a RunFileHashes del cierre;
++prompt.md, a7-r3.md y las copias fieles de FaithfulCopies, fidelity.run_files_of; order.txt con el SHA-256 y los bytes que declara decisiones §98 en
++el commit; a7-r3.md = el blob de la ronda 3 en el padre de la publicación; cada archivo idéntico a la copia del kit y a RunFileHashes del cierre;
+ prompt.md sin salto de línea final ni CR y en UTF-8; cada copia fiel, decisiones §94, punto 5: fidelity.verify contra los bytes exactos del original
+ en el commit, sin problemas, blob del original y SHA-256 de la copia = los del cierre); el registro de caracterización que fija la compuerta
+ (decisiones §87: copia en kit/; su SHA-256 = el fijado = el de transport-gate.json, y su blob = el del registro en el commit 1c960c0a, leído del
+ worktree con git de solo lectura y del clon); que no exista ningún directorio de proyecto de claude-cli para el clon o el run (patrón
+-D--r62-arch-a7r3*) ni una transcripción con el session id fijado; y una preflight de las guardas de la ronda 3 (evidencia del invocador: el revisor
+-no la ejecuta), con la salida y los temporales en <kit-review>/.tmp/ex1, que se borra. Como en los kits de las rondas 1 y 2, la preflight ejecuta el
+-r3/a7-guards.py del clon con --repo = el worktree de la rama, solo lectura (las guardas leen con GIT_OPTIONAL_LOCKS=0 y --no-replace-objects;
++D--r62-arch-a7r4*) ni una transcripción con el session id fijado; y una preflight de las guardas de la ronda 4 (evidencia del invocador: el revisor
++no la ejecuta), con la salida y los temporales en <kit-review>/.tmp/ex1, que se borra. Como en los kits de las rondas 1 a 3, la preflight ejecuta el
++r4/a7-guards.py del clon con --repo = el worktree de la rama, solo lectura (las guardas leen con GIT_OPTIONAL_LOCKS=0 y --no-replace-objects;
+ ninguna escritura en el worktree):
+-  * `a7-guards.py run --repo <worktree> --base 5da2007f… --head 37ac6ca4…` (SHA completos, como los registra el resultado custodiado): su salida,
++  * `a7-guards.py run --repo <worktree> --base 2405a919… --head 99de338d…` (SHA completos, como los registra el resultado custodiado): su salida,
+     entera, igual al resultado `run` custodiado (PASS);
+-  * `a7-guards.py selftest --repo <worktree> --cand <A-7 del clon> --evid <copia de I-62-A7/r3/ tal como estaba cuando se ejecutó la autoprueba>
++  * `a7-guards.py selftest --repo <worktree> --cand <A-7 del clon> --evid <copia de I-62-A7/r4/ tal como estaba cuando se ejecutó la autoprueba>
+     --base <padre de la publicación>`: Result PASS, todos los mutantes muertos, e igual entera a la autoprueba custodiada (q7-guards-selftest.json).
+-    La copia de --evid se escribe desde el commit de publicación con los archivos que existían cuando run_a7r3.py ejecutó la autoprueba (fase q7,
+-    primera orden; antes de escribir q7-guards-selftest.json, q7-guards-preview.json, q7-guards.json, summary.json, preflight.md y MANIFEST.sha256)
+-    MÁS preflight_text_r2.py: una copia byte a byte de r2/preflight_text_r2.py (blob a773a873) que estaba en el área del preflight durante esa
+-    ejecución y se borró antes de regenerar MANIFEST.sha256 y publicar (orden de las 18:00:03 UTC del 2026-10-23); el conjunto se comprueba contra el
+-    número de archivos añadidos que registra la autoprueba custodiada (53 = 52 archivos + la enmienda) y contra el commit hipotético entero.
++    La copia de --evid se escribe desde el commit de publicación con los archivos que existían cuando run_a7r4.py ejecutó la autoprueba (fase q7,
++    primera orden; antes de escribir q7-guards-selftest.json, q7-guards-preview.json, q7-guards.json, summary.json, modalities.md, modalities.json,
++    preflight.md y MANIFEST.sha256); en la ronda 4 ningún archivo se borró del área del preflight antes de publicar. El conjunto se comprueba contra
++    el número de archivos añadidos que registra la autoprueba custodiada y contra el commit hipotético entero.
+ Las guardas escriben solo --out y su --tmp; se ejecutan con el intérprete aislado (-I -B) y el cwd en el clon, que se comprueba limpio al terminar;
+ el worktree, sin cambio de HEAD ni de estado. No ejecuta el constructor ni el validador del cierre de A7-1, el paquete B-min ni el kit de la medición.
+ Escribe clone-verification.json junto a este script. No escribe en el clon ni en el worktree.
+@@ -51,25 +51,26 @@
+ import sys
+ 
+ KIT = os.path.dirname(os.path.abspath(__file__))
+-CLONE, RUN = r"D:\r62-arch-a7r3", r"D:\r62-arch-a7r3-run"
++CLONE, RUN = r"D:\r62-arch-a7r4", r"D:\r62-arch-a7r4-run"
+ OBJECT = "docs/initiatives/I-62-A-7.md"
+-OBJECT_BLOB = "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff"   # A-7 ronda 3
+-PREV_BLOB = "8a528133c7cccd83356e31f8fd79cd2ebb0cec15"     # A-7 ronda 2 (a7-r2.md)
++OBJECT_BLOB = "ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3"   # A-7 ronda 4
++PREV_BLOB = "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff"     # A-7 ronda 3 (a7-r3.md)
+ A6, A6_AGREED_BLOB = "docs/initiatives/I-62-A-6.md", "4bc919dd4768ab81abc74b70d3a4a3821c07feb5"
+-SESSION_ID = "a720544e-1ac0-43d9-96bd-ae39e1090dfb"
++SESSION_ID = "bd018dcb-165f-437d-bcfc-c8adaed5d774"
+ A7EV = "docs/automation/evidence/I-62-A7/"
+-EV = A7EV + "r3/"
+-R2EV = A7EV + "r2/"
++EV = A7EV + "r4/"
++R2EV = A7EV + "r3/"
+ GUARDS, SELFTEST, GUARDS_RUN_RESULT, PREFLIGHT, SUMMARY = (EV + n for n in ("a7-guards.py", "q7-guards-selftest.json", "a7-guards-result-run.json",
+                                                                              "preflight.md", "summary.json"))
+-R2_PUBLICATION, R2_GUARDS_RUN = "e90b444d5d23288e0b5a59881820377bee0d7d09", "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c"
++R2_PUBLICATION, R2_GUARDS_RUN = "37ac6ca4a6f0a04268ac357764bb74f843eb3a08", "b9bfae50a82ba59c834658e54d7699662ee298bb"   # la ronda 3
+ R1_PUBLICATION, R1_GUARDS_RUN = "6fee8fd6a96ce4ae45d116e34affee4ed1b1fd40", "5e3141a2f10bbfc5e4fe1dfe5823382da841efd1"
+-R2_REVIEW_CUSTODY = "3f912c84465468dda7625470c7fe8d605ae60e06"
+-R2_REVIEW = "docs/automation/evidence/I-62-architect-A-7/R20261019T201030Z-d1bf/"
+-EVID_NOT_YET_AT_SELFTEST = ["q7-guards-selftest.json", "q7-guards-preview.json", "q7-guards.json", "summary.json", "preflight.md", "MANIFEST.sha256"]
+-EVID_REMOVED_BEFORE_PUBLICATION = {"preflight_text_r2.py": (R2EV + "preflight_text_r2.py", "a773a8733574182eafd768b0a74d70ecc41179bc")}
+-ORDER_TEXTS = {"order.txt": ("96", "adb11535f24cac2874ddef13af712cc56eebece8905fe948db2f0077b3dd87b2", 3198)}
+-RUN_FILES = ["order.txt", "prompt.md", "a7-r2.md"]
++R2_REVIEW_CUSTODY = "068d3368a8034277404bdb0aac28891907b2d156"   # la revisión de la ronda 3
++R2_REVIEW = "docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/"
++EVID_NOT_YET_AT_SELFTEST = ["q7-guards-selftest.json", "q7-guards-preview.json", "q7-guards.json", "summary.json", "modalities.md", "modalities.json",
++                            "preflight.md", "MANIFEST.sha256"]
++EVID_REMOVED_BEFORE_PUBLICATION = {}   # ronda 4: nada se borró del área del preflight antes de publicar
++ORDER_TEXTS = {"order.txt": ("98", "8b73975d9822a430f1a726268d4005609974dbdcc85a0674bf00dbb9e9018acf", 3740)}
++RUN_FILES = ["order.txt", "prompt.md", "a7-r3.md"]
+ TMP = os.path.join(os.path.dirname(KIT), ".tmp", "ex1")
+ WORKTREE = os.path.join(os.environ["USERPROFILE"], ".codex", "worktrees", "architecture-portabilidad-coordinador-principal")   # solo lectura
+ 
+@@ -111,7 +112,7 @@
+     "kit-params.json provisional, sintético o de otro clon"
+ REV, PUBLICATION, PUB_PARENT, GUARDS_RUN = params["CloneCommit"], params["Publication"], params["PublicationParent"], params["GuardsRunCommit"]
+ assert params["Object"]["Blob"] == OBJECT_BLOB and params["PreviousObject"]["Blob"] == PREV_BLOB, "kit-params.json con otro objeto"
+-GUARDS_RUN_BASE, GUARDS_RUN_HEAD = PUB_PARENT, PUBLICATION   # completas, tal como las registra el resultado `run` custodiado de la ronda 3
++GUARDS_RUN_BASE, GUARDS_RUN_HEAD = PUB_PARENT, PUBLICATION   # completas, tal como las registra el resultado `run` custodiado de la ronda 4
+ closure = json.load(open(os.path.join(KIT, "closure.json"), encoding="utf-8"))
+ gate = json.load(open(os.path.join(KIT, "transport-gate.json"), encoding="utf-8"))
+ _spec = importlib.util.spec_from_file_location("fidelity", os.path.join(KIT, "fidelity.py"))
+@@ -126,15 +127,22 @@
+              (REV, GUARDS): at(PUBLICATION, GUARDS), (REV, SELFTEST): at(PUBLICATION, SELFTEST), (REV, PREFLIGHT): at(PUBLICATION, PREFLIGHT),
+              (REV, SUMMARY): at(PUBLICATION, SUMMARY), (REV, GUARDS_RUN_RESULT): at(GUARDS_RUN, GUARDS_RUN_RESULT)}
+ for _n in ("output.json", "audit.json", "README.md"):
+-    AT_COMMIT[(REV, R2_REVIEW + _n)] = at(R2_REVIEW_CUSTODY, R2_REVIEW + _n)   # la revisión de la ronda 2, tal como se custodió
+-PRESENT = {REV: "commit del clon (registro de la ronda 3: resultado `run` de sus guardas; decisiones §96)",
+-           PUBLICATION: "publicación de la ronda 3 de A-7 (8bcccb2f)", PUB_PARENT: "padre de la publicación (decisiones §96; base de las guardas)",
+-           R2_REVIEW_CUSTODY: "custodia de la revisión de A-7 ronda 2 (R20261019T201030Z-d1bf; decisiones §95)",
++    AT_COMMIT[(REV, R2_REVIEW + _n)] = at(R2_REVIEW_CUSTODY, R2_REVIEW + _n)   # la revisión de la ronda 3, tal como se custodió
++PRESENT = {REV: "commit del clon (registro de la ronda 4: resultado `run` de sus guardas; decisiones §98)",
++           PUBLICATION: "publicación de la ronda 4 de A-7 (ebb3a87b)", PUB_PARENT: "padre de la publicación (decisiones §98; base de las guardas)",
++           R2_REVIEW_CUSTODY: "custodia de la revisión de A-7 ronda 3 (R20261023T180846Z-62bd; decisiones §97)",
++           "850dd7dc2352715a6f7ea2893114d16aa0eeb739": "kit de la revisión de A-7 ronda 3 fijado en §97 y vuelto a congelar",
++           "92aa4d0ce27d37696ff016100d5c29de28bbb6f1": "decisiones §97",
++           "000fd6eb745f3db5f68b27e73563fb529d6ca3e2": "custodia del kit de la revisión de A-7 ronda 3 (pendiente)",
++           R2_GUARDS_RUN: "registro de A-7 ronda 3 (resultado `run` de sus guardas)",
++           R2_PUBLICATION: "publicación de A-7 ronda 3 (8bcccb2f)",
++           "5da2007f45160ced37b958a3a772c46ac64874ee": "decisiones §96",
++           "3f912c84465468dda7625470c7fe8d605ae60e06": "custodia de la revisión de A-7 ronda 2 (R20261019T201030Z-d1bf; decisiones §95)",
+            "e42d23d12845972912c2b46703c306f8b88a24f1": "kit de la revisión de A-7 ronda 2 fijado en §95 y vuelto a congelar",
+            "6b00b2bf5759e109e3b7ff21a8327a42d0a1949d": "decisiones §95",
+            "b23d71b8fd6aef934666d29b0de48c437d20ead5": "custodia del kit de la revisión de A-7 ronda 2 con los bytes exactos",
+-           R2_GUARDS_RUN: "registro de A-7 ronda 2 (resultado `run` de sus guardas; disposiciones propuestas de O1-O8)",
+-           R2_PUBLICATION: "publicación de A-7 ronda 2 (8a528133)",
++           "b432c40f8ca7b1e915dff531cb9a8cad6466bb0c": "registro de A-7 ronda 2 (resultado `run` de sus guardas; disposiciones propuestas de O1-O8)",
++           "e90b444d5d23288e0b5a59881820377bee0d7d09": "publicación de A-7 ronda 2 (8a528133)",
+            "b9334f22204c95872e7defe41bbdaaf849097585": "decisiones §94",
+            "e71400a2c7e842b4c8662e51675932623429bedf": "custodia de la revisión de A-7 ronda 1 (R20261019T010200Z-4a72; decisiones §93)",
+            "3922f835a00df1bc2851a78aa2d95b4778818fb1": "kit de la revisión de A-7 ronda 1 congelado y custodiado",
+@@ -181,8 +189,8 @@
+     text = dec_section(REV, num)
+     run[n]["MatchesDecisions"] = (run[n]["Sha256"] == want_sha and ("`%s`" % want_sha) in text and run[n]["Bytes"] == size and
+                                   ("%d %03d bytes" % (size // 1000, size % 1000)) in text)
+-r2b = open(os.path.join(RUN, "a7-r2.md"), "rb").read() if os.path.isfile(os.path.join(RUN, "a7-r2.md")) else b""
+-run["a7-r2.md"].update({"GitBlob": git_blob(r2b), "IsRound2Blob": git_blob(r2b) == PREV_BLOB,
++r2b = open(os.path.join(RUN, "a7-r3.md"), "rb").read() if os.path.isfile(os.path.join(RUN, "a7-r3.md")) else b""
++run["a7-r3.md"].update({"GitBlob": git_blob(r2b), "IsRound2Blob": git_blob(r2b) == PREV_BLOB,
+                         "EqualsObjectAtPublicationParent": r2b == git("show", PUB_PARENT + ":" + OBJECT, binary=True).stdout})
+ pb = open(os.path.join(RUN, "prompt.md"), "rb").read()
+ pb.decode("utf-8")
+@@ -202,7 +210,7 @@
+ char_external_ok = (char_in_kit and char_sha == CHAR_SHA and git_blob(char_bytes) == CHAR_BLOB and char_blob_at_commit == CHAR_BLOB and
+                     char_blob_in_clone == CHAR_BLOB)
+ projects = os.path.join(os.path.expanduser("~"), ".claude", "projects")
+-project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(projects, "D--r62-arch-a7r3*")))
++project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(projects, "D--r62-arch-a7r4*")))
+ prior_sessions = glob.glob(os.path.join(projects, "*", SESSION_ID + ".jsonl"))
+ ev_pub = set(n for n in git("ls-tree", "-r", "--name-only", PUBLICATION, "--", EV).stdout.split("\n") if n)
+ ev_now = set(n for n in git("ls-tree", "-r", "--name-only", REV, "--", EV).stdout.split("\n") if n)
+@@ -229,7 +237,7 @@
+     "Blobs": {p: {"Expected": want[p], "Got": blobs[p], "Match": blobs[p] == want[p]} for p in want},
+     "BlobsAtCommits": at_commit,
+     "Round2AtPublicationParent": at(PUB_PARENT, OBJECT) == PREV_BLOB,
+-    "A7R3EvidenceAtPublicationParent": sorted(ev_parent),
++    "A7R4EvidenceAtPublicationParent": sorted(ev_parent),
+     "A7EvidenceAddedAfterPublication": sorted(ev_now - ev_pub), "A7EvidenceRemovedAfterPublication": sorted(ev_pub - ev_now),
+     "Round2Evidence": {"FilesAtParent": len(r2ev_parent), "FilesAtClone": len(r2ev_now), "SameList": r2ev_parent == r2ev_now,
+                        "ChangedBlobs": r2ev_changed},
+@@ -243,7 +251,7 @@
+                                   "Blob": git_blob(char_bytes), "PinnedBlob": CHAR_BLOB, "Commit": CHAR_COMMIT, "RepoPath": CHAR_REPO_PATH,
+                                   "BlobAtCommit": char_blob_at_commit, "BlobInClone": char_blob_in_clone, "ExternalCopyOk": char_external_ok,
+                                   "MatchesGate": char_sha == gate["Characterization"]["Sha256"], "GateStatus": gate.get("Status")},
+-    "ClaudeProjectDirsForCloneOrRun": {"Pattern": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a7r3*", "Found": project_dirs},
++    "ClaudeProjectDirsForCloneOrRun": {"Pattern": "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a7r4*", "Found": project_dirs},
+     "PriorTranscriptsForSessionId": {"SessionId": SESSION_ID, "Found": len(prior_sessions)},
+     "ClosureIdentity": {"AuthorityRevision": closure["AuthorityRevision"], "ObjectBlob": closure["ObjectBlob"], "Provisional": closure.get("Provisional")},
+ }
+@@ -282,7 +290,7 @@
+     open(os.path.join(evid_dir, n), "wb").write(rb_)
+ evid_count = len(evid_names) + len(EVID_REMOVED_BEFORE_PUBLICATION)
+ r = guards(["selftest", "--repo", WORKTREE, "--cand", os.path.join(CLONE, OBJECT), "--evid", evid_dir, "--base", PUB_PARENT], out_st)
+-pre["SelfTest"] = {"Command": "python -I -B -X utf8 %s selftest --repo <worktree> --cand <A-7 del clon> --evid <copia de I-62-A7/r3/ en %s, %d "
++pre["SelfTest"] = {"Command": "python -I -B -X utf8 %s selftest --repo <worktree> --cand <A-7 del clon> --evid <copia de I-62-A7/r4/ en %s, %d "
+                               "archivos, más %s> --base %s --out <temporal> --tmp <temporal> (script del clon; cwd = el clon; solo lectura de git)"
+                               % (GUARDS, PUBLICATION[:8], len(evid_names), ", ".join(sorted(EVID_REMOVED_BEFORE_PUBLICATION)), PUB_PARENT[:8]),
+                    "EvidFiles": evid_count, "EvidExcluded": EVID_NOT_YET_AT_SELFTEST,
+@@ -311,12 +319,12 @@
+                     doc["StatusIgnored"] == "" and doc["CommitsReachableFromAllRefs"] == doc["CommitsReachableFromHead"] and
+                     not doc["TagsNotMergedIntoHead"] and all(v["Match"] for v in doc["Blobs"].values()) and
+                     all(v["Expected"] == v["Got"] and v["Got"] for v in at_commit.values()) and doc["Round2AtPublicationParent"] and
+-                    doc["A7R3EvidenceAtPublicationParent"] == [] and
++                    doc["A7R4EvidenceAtPublicationParent"] == [] and
+                     doc["PublicationParentOf"] == PUB_PARENT and doc["A7EvidenceAddedAfterPublication"] == [GUARDS_RUN_RESULT] and
+                     doc["A7EvidenceAddedAfterPublication"] == params["A7EvidenceAddedAfterPublication"] and
+                     not doc["A7EvidenceRemovedAfterPublication"] and
+                     doc["Round2Evidence"]["SameList"] and not r2ev_changed and bool(r2ev_now) and
+-                    run["a7-r2.md"]["IsRound2Blob"] and run["a7-r2.md"]["EqualsObjectAtPublicationParent"] and
++                    run["a7-r3.md"]["IsRound2Blob"] and run["a7-r3.md"]["EqualsObjectAtPublicationParent"] and
+                     all(v["Present"] for v in doc["CommitsPresent"].values()) and not any(v["Present"] for v in doc["CommitsAbsent"].values()) and
+                     doc["IndexSymlinks"] == 0 and not reparse and doc["CoreAutocrlf"] == "false" and run_listing == sorted(RUN_FILES_ALL) and
+                     all(v["IdenticalToKitCopy"] and v["MatchesClosure"] for v in run.values()) and

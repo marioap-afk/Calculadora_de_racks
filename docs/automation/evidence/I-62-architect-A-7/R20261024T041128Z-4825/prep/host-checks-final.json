@@ -1,0 +1,44 @@
+{
+ "Schema": "a7r4-host-checks/1",
+ "UtcTime": "2026-10-24T07:00:28Z",
+ "MainCheckout": {
+  "Branch": "main",
+  "Head": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f",
+  "StatusLines": 0,
+  "OriginMainLocal": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453"
+ },
+ "I64": {
+  "Worktree": "architecture-workspace-persistente-rackcad",
+  "Head": "09f2f1c3",
+  "StatusLines": 0
+ },
+ "W": {
+  "Worktree": "architecture-portabilidad-coordinador-principal",
+  "Head": "94a04af7c663eac44016b4011cdffead714a530a",
+  "StatusLines": 0
+ },
+ "R4Clone": {
+  "Path": "D:\\r62-arch-a7r4",
+  "Head": "94a04af7c663eac44016b4011cdffead714a530a",
+  "StatusLinesWithIgnored": 0
+ },
+ "R3Clone": {
+  "Path": "D:\\r62-arch-a7r3",
+  "Head": "b9bfae50a82ba59c834658e54d7699662ee298bb",
+  "StatusLinesWithIgnored": 0
+ },
+ "R3Run": {
+  "Path": "D:\\r62-arch-a7r3-run",
+  "Entries": 46,
+  "NewestMtimeUtc": "2026-10-24T01:30:39Z"
+ },
+ "ClaudeCodeVersionsInstalled": [
+  "2.1.299",
+  "2.1.308"
+ ],
+ "Processes": [],
+ "Load": {
+  "FreeRamGB": "27.7",
+  "CpuPercent": "23"
+ }
+}

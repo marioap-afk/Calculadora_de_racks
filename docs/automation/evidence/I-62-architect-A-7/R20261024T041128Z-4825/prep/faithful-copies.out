@@ -1,0 +1,556 @@
+{
+ "Written": [
+  {
+   "Copy": "fiel__docs__initiatives__I-62-A-7.md.txt",
+   "Original": "docs/initiatives/I-62-A-7.md",
+   "Bytes": 59762,
+   "Sha256": "461c4f8e929b8e60df82c36a14bb52320b6a90cabf15d43b5c4d04fccdfb4633",
+   "Flags": {
+    "LONG_LINE": [
+     237
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r4__a7-guards.py.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r4/a7-guards.py",
+   "Bytes": 69797,
+   "Sha256": "2e1dc10a223d4c535a52485cad7d39c35378c7c15f0b1c94802a06425e570c16",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     32
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r4__b1-like__main__fixture-tests.trx.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r4/b1-like/main/fixture-tests.trx",
+   "Bytes": 3870,
+   "Sha256": "b99f549a589124b3c64fe35184435ba5aa56af0dc8e1cdbcfc2147e7ff56fa89",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r4__b1-like__uc__fixture-tests.trx.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r4/b1-like/uc/fixture-tests.trx",
+   "Bytes": 3868,
+   "Sha256": "84f0fa2b9dda5a79d8d656f05485c11ad7503de64b583ff38a64121800d8585d",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r4__check_a7_closure.py.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py",
+   "Bytes": 44211,
+   "Sha256": "0a96596368dbabb0d4d50200aebdf5c9a2b4e2982806bc2c515b192e8ee2b5f1",
+   "Flags": {
+    "ZWNBSP": [
+     302
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r4__derive_r4.py.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r4/derive_r4.py",
+   "Bytes": 14876,
+   "Sha256": "4bd7b824611acb19896ff8f43f9655096a4576033200ba72f6fc3f2134826d8c",
+   "Flags": {
+    "ZWNBSP": [
+     49
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r4__inputs-rebase__fixture-tests-current-image.trx.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r4/inputs-rebase/fixture-tests-current-image.trx",
+   "Bytes": 3885,
+   "Sha256": "b94cc9953ad32e47fdad54aeb8a41490dac7314ca739532d03faabcb1893128f",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r4__inputs__fixture-tests-red.trx.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r4/inputs/fixture-tests-red.trx",
+   "Bytes": 5360,
+   "Sha256": "2823b49529e2e948d564c6ec5d42f4cbb6f811e8b9a6007a6485b19dddbead2c",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r3__a7-guards.py.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r3/a7-guards.py",
+   "Bytes": 60169,
+   "Sha256": "ba5ea4482487edc760d11301592ff5449006d82389694246876a23e894f7350c",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     23
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r3__b1-like__main__fixture-tests.trx.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r3/b1-like/main/fixture-tests.trx",
+   "Bytes": 3870,
+   "Sha256": "cc48ea95c8eb341b60b9c1d36e967b735b78cd3f7d5c4628b6dc82fd5aa182ec",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r3__b1-like__uc__fixture-tests.trx.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r3/b1-like/uc/fixture-tests.trx",
+   "Bytes": 3868,
+   "Sha256": "91c8cd127a86b9459c6255e72c495dbc403d5d1b8572cf477f55e0cf2c1eea85",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r3__check_a7_closure.py.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r3/check_a7_closure.py",
+   "Bytes": 35463,
+   "Sha256": "be115bd0ed84f4a734d86581b53a4a42e38d759535252c2f7c6318f6e1493f76",
+   "Flags": {
+    "ZWNBSP": [
+     194
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r3__derive_r4.py.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r3/derive_r4.py",
+   "Bytes": 14876,
+   "Sha256": "378ff1bbedd0e506c9f30e37094fdb950f98b0c111ee378defd83c2f4e3c3d24",
+   "Flags": {
+    "ZWNBSP": [
+     49
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r3__inputs-rebase__fixture-tests-current-image.trx.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r3/inputs-rebase/fixture-tests-current-image.trx",
+   "Bytes": 3885,
+   "Sha256": "7b8da4f2c43a82140682edc2a26e0d59400d75dbd08824034c958120b6913dbe",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A7__r3__inputs__fixture-tests-red.trx.txt",
+   "Original": "docs/automation/evidence/I-62-A7/r3/inputs/fixture-tests-red.trx",
+   "Bytes": 5360,
+   "Sha256": "f38fcbdfaa6329163d2583a9ff03807a19e2e165ccc03c5cf4fd1f5f6887a23b",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__s91__d1__d1.md.txt",
+   "Original": "docs/automation/evidence/I-62-A6/m7/s91/d1/d1.md",
+   "Bytes": 30962,
+   "Sha256": "36ccc4a223d17e8a38f7f4805d3bb55a00d6a7dc5aeda6f8061f1b5476a7e6ca",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     159
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__s91__risk-matrix.md.txt",
+   "Original": "docs/automation/evidence/I-62-A6/m7/s91/risk-matrix.md",
+   "Bytes": 6261,
+   "Sha256": "f336a3edaebc2c17e179cbf4baa26d8d44bca6b27bf6b96519681ad3a5ba92d4",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     15,
+     28
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__acceptor-stdout.json.txt",
+   "Original": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/acceptor-stdout.json",
+   "Bytes": 7903,
+   "Sha256": "1960a8703b2aa17ede8ad9d408e1bc1d4dacead7706b0a9c223ecbf92658183c",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-CONTRACT.json.txt",
+   "Original": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-CONTRACT.json",
+   "Bytes": 5176,
+   "Sha256": "3ec645fac0fe2c5b655a9cd7bb4d3fc3e91271716f7b51c141d3578692af3bec",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__s92__contract__out__s92-nc2-r__envelope-read-json-DELEG.json.txt",
+   "Original": "docs/automation/evidence/I-62-A6/m7/s92/contract/out/s92-nc2-r/envelope-read-json-DELEG.json",
+   "Bytes": 5186,
+   "Sha256": "072ccb56a2e4954fdfead607ad88535895114461425f20e8d0e6a0f4f7b1c4a2",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__bench__p1-build.json.txt",
+   "Original": "docs/automation/evidence/I-62-A6/m7/bench/p1-build.json",
+   "Bytes": 53468,
+   "Sha256": "c36e33644f738a4c6a06cf577af7bcfb7f597924d8c6eae9071a1b800db83a01",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__bench__p3-n4.json.txt",
+   "Original": "docs/automation/evidence/I-62-A6/m7/bench/p3-n4.json",
+   "Bytes": 18162,
+   "Sha256": "e4631c7999289bb15d98ad4ad1bd1f2942c8b6be8e2aadadb451c75166f038ce",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__bench__p4-nc1.json.txt",
+   "Original": "docs/automation/evidence/I-62-A6/m7/bench/p4-nc1.json",
+   "Bytes": 7177,
+   "Sha256": "08df0a30515cad5472395dcb039903a31451d9b8fcfc770e3bac7558328e64dd",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-A6__m7__readings__readings.md.txt",
+   "Original": "docs/automation/evidence/I-62-A6/m7/readings/readings.md",
+   "Bytes": 63587,
+   "Sha256": "afbf088b072c387642b0db9fade6824e5d521c728f040aa3344a6ab4c997fa6e",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     346,
+     348
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__README.md.txt",
+   "Original": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/README.md",
+   "Bytes": 24325,
+   "Sha256": "23e05733d261178b6c85a5ba9e0102f4da22d6fa9ee866890e4fe0007b2f2d81",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     169,
+     189,
+     209
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__derive_r4.py.txt",
+   "Original": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/derive_r4.py",
+   "Bytes": 14897,
+   "Sha256": "e1f54e747c21c69630b84756d0f0eb1f5b9c066941a046cefd1de6d2f3b44dd5",
+   "Flags": {
+    "ZWNBSP": [
+     49
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__frozen__m7-run.snapshot.json.txt",
+   "Original": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/frozen/m7-run.snapshot.json",
+   "Bytes": 47110,
+   "Sha256": "1d65597bd7466651329e3816847dd3a7193e24e0f379919a3475342efb822365",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__kits__FX-02__a6m7-measure__inputs__fixture-tests.trx.txt",
+   "Original": "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx",
+   "Bytes": 3885,
+   "Sha256": "abee3955664619061894dbfe68cd95a2a6764c5ee967257cc3274e32bef3eca5",
+   "Flags": {
+    "BOM": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__accept__tests__test_bmin_accept.py.txt",
+   "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/tests/test_bmin_accept.py",
+   "Bytes": 76229,
+   "Sha256": "de87a835951535aa0fc328cc2cdc5f4b6aa0acd6a12d7eafa600732204ed4620",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     306,
+     319
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-clausemap.json.txt",
+   "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-clausemap.json",
+   "Bytes": 46100,
+   "Sha256": "fe913e119a3974c94bcd4ff682fc5a015703e24d95e0ce3d489fcb59668475b6",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-contract.json.txt",
+   "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-contract.json",
+   "Bytes": 3473,
+   "Sha256": "8232fa83e1de2700e81b61b42207b81fa846b4f8674532f1c120918eb5a0449f",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-diff.json.txt",
+   "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-diff.json",
+   "Bytes": 3258,
+   "Sha256": "53b1acc301f681b6292374d51e451cdf75d76672261474b4f6573a1ed41f86f9",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-hashes.json.txt",
+   "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-hashes.json",
+   "Bytes": 3421,
+   "Sha256": "7a5440d02d3d5d1977ca533ca286c3bcb537f43e5f0b5d26a53968cf85b58beb",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-identity.json.txt",
+   "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-identity.json",
+   "Bytes": 3572,
+   "Sha256": "6581b266d2bee861d1c2fe8d3f9549c709d45df305266f4bb6d93235034139a4",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-F6__FX-02__bmin__e2e__out__envelope-scope.json.txt",
+   "Original": "docs/automation/evidence/I-62-F6/FX-02/bmin/e2e/out/envelope-scope.json",
+   "Bytes": 4344,
+   "Sha256": "ae421733e67f01d701c7d8b2402d057ce8f59b7ffadcd7a9ca195e89bae3813d",
+   "Flags": {
+    "LONG_LINE": [
+     1
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__initiatives__I-62-proposal-v14.md.txt",
+   "Original": "docs/initiatives/I-62-proposal-v14.md",
+   "Bytes": 344274,
+   "Sha256": "965d3b8c1e82954a63e0b7448e2ce975ea4984e22d238aaf9a62d82a181e21a4",
+   "Flags": {
+    "LONG_LINE": [
+     2352,
+     2380,
+     2382
+    ],
+    "UNMEASURED_CHAR": [
+     1579,
+     1594,
+     1595,
+     1780,
+     1864,
+     2018,
+     2183,
+     2195,
+     3078,
+     3084,
+     3131,
+     3146,
+     3225
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__AUTOMATION_PLAN.md.txt",
+   "Original": "docs/AUTOMATION_PLAN.md",
+   "Bytes": 156310,
+   "Sha256": "e159df8459aa37f67a939a41a70352de911b356ad3628dac0f83a9cf7e09266c",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     605
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__initiatives__I-62-A-4.md.txt",
+   "Original": "docs/initiatives/I-62-A-4.md",
+   "Bytes": 63494,
+   "Sha256": "a8cbca148235e1e4ed2be6c792c96294f131e2361bc52175feb3ce69e172ca68",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     112,
+     375
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__initiatives__I-62-A-3.md.txt",
+   "Original": "docs/initiatives/I-62-A-3.md",
+   "Bytes": 202510,
+   "Sha256": "43b21cc71a9d034dff76623eaad4fcb98765407a132b02e508bd4f6d1ff31f04",
+   "Flags": {
+    "LONG_LINE": [
+     1487
+    ],
+    "UNMEASURED_CHAR": [
+     264,
+     741,
+     864,
+     865,
+     866,
+     870,
+     871,
+     872,
+     876,
+     877,
+     880,
+     881,
+     883,
+     884,
+     887,
+     889,
+     895,
+     1209,
+     1246,
+     1302,
+     1349,
+     1444,
+     1469,
+     1473,
+     1488,
+     1490
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__initiatives__I-62-A-1.md.txt",
+   "Original": "docs/initiatives/I-62-A-1.md",
+   "Bytes": 79082,
+   "Sha256": "40bac2a93d8c2230abd07b86098055ff4ffe73d369cd1d5025cbacd159b73946",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     100,
+     147
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__adr__0046-protocolo-de-ejecucion-delegada-de-agentes.md.txt",
+   "Original": "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md",
+   "Bytes": 10979,
+   "Sha256": "8e2b4c3103c85f8a0cf9407fcfca753468fd192c2eebd406d786b4c260236c34",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     53
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__decisions__I-62.md.txt",
+   "Original": "docs/automation/decisions/I-62.md",
+   "Bytes": 330606,
+   "Sha256": "440ceec8f23344ef046d62f3d2ed75e55388de453b815e07a02b7f766b3be347",
+   "Flags": {
+    "LONG_LINE": [
+     657,
+     734,
+     750,
+     768,
+     787,
+     805,
+     819
+    ],
+    "UNMEASURED_CHAR": [
+     73,
+     929
+    ]
+   }
+  },
+  {
+   "Copy": "fiel__docs__automation__evidence__I-62-evidence.md.txt",
+   "Original": "docs/automation/evidence/I-62-evidence.md",
+   "Bytes": 462766,
+   "Sha256": "70dfa470e88b1971d6dbe98fbda7bccce2176f20d5cd51a81a8c9f50397a2b52",
+   "Flags": {
+    "UNMEASURED_CHAR": [
+     112,
+     780,
+     1142,
+     1366,
+     1370,
+     1416,
+     1955,
+     2046,
+     2377,
+     2922,
+     3130,
+     3138,
+     3228,
+     3621,
+     3769,
+     3872,
+     3924
+    ]
+   }
+  }
+ ],
+ "Removed": []
+}

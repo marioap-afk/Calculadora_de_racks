@@ -5000,3 +5000,30 @@ solo desde artefactos custodiados.
   `2405a919..99de338d` = **PASS** en G1-G7 ([resultado](I-62-A7/r4/a7-guards-result-run.json)).
 - Sin revisión formal (decisiones §98, punto 7); kit acotado por preparar; sin Codex; A6-7 HELD; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6
   GATE PASS.
+
+## 204. Kit de la revisión formal única de A-7 ronda 4 (acotada a A62-A7R3-R1) congelado y custodiado SIN lanzar; mutación dirigida; autorización pendiente (decisiones §98, puntos 6 y 7)
+
+- **Kit** [`R20261024T041128Z-4825`](I-62-architect-A-7/R20261024T041128Z-4825/README.md), derivado del kit de la ronda 3 con la autorización pendiente (custodia `000fd6eb`) en dos pasos
+  (desplazamiento de una ronda con marcadores y ediciones semánticas exactas), con 8 componentes reutilizados byte a byte y diffs del
+  resto ([`prep/diffs/diff-table.json`](I-62-architect-A-7/R20261024T041128Z-4825/prep/diffs/diff-table.json)): objeto A-7 ronda 4, blob `ebb3a87b`, publicación `99de338d`; clon
+  `D:\r62-arch-a7r4` en `94a04af7`; cierre de 321 archivos (A-7 r4, preflights de las rondas 4 y 3, revisión de la ronda 3, fuentes L1-L27 con los
+  contratos del controlador, A-5 y A-6 enteras, decisiones hasta §98; fuera, el preflight y la revisión de la ronda 2); Paso 0 con lectura directa
+  de RAE §10 L219-L226; el mismo transporte (`claude-cli` 2.1.299, `295b49ec…`, compuerta MEASURED); auditor v7.0-a7r4 (el código de reglas de
+  v7.0-a7r3 con los datos de la ronda 4); esquema `rackcad-a7r4-architect-review/0` (once cambios de §3.8, doce temas de regresión, dictamen A-5/A-6,
+  Q-A7R4-01..03).
+- **Objeto marcado:** A-7 ronda 4 tiene una línea de 1 941 unidades UTF-16 (L237, fila (c) de §3.3), marcada `LONG_LINE` por `fidelity.py`; el
+  revisor la lee por su copia fiel (43 copias en total, custodiadas por reproducción,
+  [`prep/faithful-regeneration.json`](I-62-architect-A-7/R20261024T041128Z-4825/prep/faithful-regeneration.json)).
+- **Controles:** autoprueba 321/321 (auditoría 214, compuerta de transporte 61, compuerta 11 40 con la sonda viva, coherencia 6; repetida tras corregir dos casos de la derivación,
+  F00 y O03, sin tocar el auditor: la primera ejecución, 319/321, está en `prep/selftest-result-run1.json`), autoprueba de fidelidad 53/53,
+  negativa de verify_clone con un byte alterado en una copia fiel (PASS); verify_clone conforme con las guardas de r4/ reproducidas enteras (`run`
+  PASS; autoprueba 45/45 mutantes, Added 101). **Mutación dirigida** (§98, punto 6:
+  componentes congelados idénticos y validación incremental) en lugar de la batería completa: `kit/targeted-mutation.py` comprueba que las reglas de
+  `post-review.py`, `transport_gate.py`, `owner_gate.py` y `fidelity.py` tienen los mismos sitios que en la ronda 3 (cuya batería, 209/209, sigue
+  siendo la evidencia aplicable; `transport_gate.py` y `fidelity.py` byte a byte) y muta `owner_gate.py` sobre los casos de la compuerta 11
+  (19/19). Riesgo registrado: que los casos de la ronda 4 maten los mutantes de las reglas idénticas se infiere de la
+  ronda 3, no se volvió a ejecutar.
+- **Congelación:** `kit-manifest.json` `46b9c465f9f10d30…` (74 archivos, 43 de ellos copias fieles); **prueba en seco
+  bloqueada SOLO por la compuerta 11** con el motivo «authorization pending» (§98, punto 7).
+- Sin revisión formal: exige una disposición del Coordinator posterior a §98 que la nombre, fijada con `pin_authorization.py`, y volver a congelar el
+  kit. Sin Codex; A6-7 HELD; sin B1 ni FX-U2; ni A-7 AGREED, ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.

@@ -1,0 +1,781 @@
+--- r3/selftest-post-review.py
++++ r4/selftest-post-review.py
+@@ -1,17 +1,17 @@
+-"""Self-test of post-review.py v7.0-a7r3, of transport_gate.py, of owner_gate.py (A-7 round 3), of pin_authorization.values and of
+-c3_analysis.analyze, run BEFORE the launch of the ONE formal review of ROUND 3 of amendment A-7, bounded to A62-A7R2-R1 and its consequences
+-(decisions §96, points 2, 3 and 6). Adapted from the self-test of the A-7 round-2 kit (R20261019T201030Z-d1bf, itself from round 1 with the
++"""Self-test of post-review.py v7.0-a7r4, of transport_gate.py, of owner_gate.py (A-7 round 4), of pin_authorization.values and of
++c3_analysis.analyze, run BEFORE the launch of the ONE formal review of ROUND 4 of amendment A-7, bounded to A62-A7R3-R1 and its consequences
++(decisions §98, points 2 and 7). Adapted from the self-test of the A-7 round-3 kit (R20261023T180846Z-62bd, itself from round 1 with the
+ read-fidelity cases of phase 1): the same synthetic formats and the same transport, read, custody, launcher, gate and fidelity cases (00-55,
+-126-153, G00-G58, X01-X05, F00-F20), the specifics replaced by the round-3 closure (three run files besides the faithful copies: order.txt = the §96
+-body, a7-r2.md = the round-2 text, and prompt.md; the object is A-7 round 3; the direct read is AUTOMATION_PLAN 16.7 L593-L595) and the result
+-schema rackcad-a7r3-architect-review/0, with:
+-  * cases 56-121j for the coherence and coverage rules of the round-3 schema (PriorFindingResolution of A62-A7R2-R1, DeltaPurity with its
+-    Changes WITHIN_SCOPE | OUTSIDE_SCOPE, RegressionCheck of what round 2 found corrected or conforming, CompatibilityVerdicts A5 and A6 — the
+-    explicit verdict of decisions §96, point 6: 69-73, 81, 88, 89, 100b, 102, 111, 114h, 114i, 121i —, Materiality with its Triggers and
+-    A7Declared, OwnerReservedConsequence, QuestionAnswers, AGREED, CHANGES REQUIRED, REJECTED, BLOCKED, NOT_ACCREDITED, schema; 77-78: the round-2
++126-153, G00-G58, X01-X05, F00-F20), the specifics replaced by the round-4 closure (three run files besides the faithful copies: order.txt = the §98
++body, a7-r3.md = the round-3 text, and prompt.md; the object is A-7 round 4; the direct read is RAE §10 L219-L226) and the result
++schema rackcad-a7r4-architect-review/0, with:
++  * cases 56-121j for the coherence and coverage rules of the round-4 schema (PriorFindingResolution of A62-A7R3-R1, DeltaPurity with its
++    Changes WITHIN_SCOPE | OUTSIDE_SCOPE, RegressionCheck of what round 3 found corrected or conforming, CompatibilityVerdicts A5 and A6 — the
++    verdict of decisions §98, point 4: 69-73, 81, 88, 89, 100b, 102, 111, 114h, 114i, 121i —, Materiality with its Triggers and
++    A7Declared, OwnerReservedConsequence, QuestionAnswers, AGREED, CHANGES REQUIRED, REJECTED, BLOCKED, NOT_ACCREDITED, schema; 77-78: the round-3
+     fields OptionalDispositionConformance and RelatedImpacts are rejected by the schema; 114b-114i are nested schema violations that only the
+     auditor's in-process schema check detects, because the Test-Json of pwsh 7.6.7 validates only the first level of nesting), the direct read of
+-    AUTOMATION_PLAN L593-L595 and the references of the nested elements;
++    RAE §10 L219-L226 and the references of the nested elements;
+   * the reference mechanism of decisions §96, point 6 («Exigir referencias relativas válidas, presentes en el cierre y comprobadas contra el
+     archivo real»): 15, 93-93h and 109 (a file outside the closure, the misspelled path of round 2 docs/initiatives/I-62-A7.md, `..`, backslashes,
+     an absolute path into the clone, another spelling that the schema admits, a premise with another spelling or by its absolute path): the schema
+@@ -19,11 +19,11 @@
+     range, or not the exact relative path); 93f shows the auditor's exactness rule on its own (schema valid); F09 a faithful copy cited; X06 the
+     reference pattern of result.schema.json against every closure path, the premises and the negatives;
+   * cases 150-151p for the preflight record of gate 11: the object blob and the agreed A-6 blob at the worktree HEAD and the authorization pinned in
+-    owner_gate.py; the kit is delivered with the authorization PENDING, so the audit cases use SYNTHETIC pins (a synthetic §97 appended to the
++    owner_gate.py; the kit is delivered with the authorization PENDING, so the audit cases use SYNTHETIC pins (a synthetic §99 appended to the
+     clone's decisions, set on the auditor's module object, never on the file); case 151p checks that a kit with the authorization pending cannot be
+     accredited;
+-  * cases O00-O30 (owner_gate.evaluate, pure, on decision texts built from the clone's decisions, which end at §96, plus a SYNTHETIC §97): the
+-    authorization pending (blocked with the single «authorization pending: …» reason), pinned on a section after §96 (passes), a later section
++  * cases O00-O30 (owner_gate.evaluate, pure, on decision texts built from the clone's decisions, which end at §98, plus a SYNTHETIC §99): the
++    authorization pending (blocked with the single «authorization pending: …» reason), pinned on a section after §98 (passes), a later section
+     (blocked), the object and agreed A-6 blobs and the inherited checks; O30 exercises pin_authorization.values; and the live probe L00
+     (owner_gate.check on the real I-62 worktree, read-only git, with the module exactly as the kit holds it: pending, it must block with only the
+     pending reason; pinned, it must pass with exactly the pinned section and no later section);
+@@ -34,11 +34,11 @@
+     failure reproduced (the TRX original with its BOM silently dropped: DEGRADED, a reason); the TRX through its copy, cited by the original path
+     (credited); the copy altered by one byte in the run, altered in delivery, absent, of another original, non-canonical, with the BOM dropped
+     inside it, and the original's blob pin altered (each a reason, nothing credited); a long line through the copy with and without its appendix
+-    and truncated in the original (the TruncatedKnownLongLines rule); the direct read of AUTOMATION_PLAN through its copy; a copy cited as a
++    and truncated in the original (the TruncatedKnownLongLines rule); the direct read of RAE §10 on its original (RAE has no faithful copy in round 4); a copy cited as a
+     reference; and, only with the fixture of a test clone (zz-fidelity-fixture/), bare CR, NUL, invalid UTF-8 and every fixture copy (skipped, with a
+     PASS row that says so, when the closure has no fixture).
+ Environment. By default it audits against the kit's closure (kit/closure.json: clone = closure Transport.Cwd, run = closure RunDir): the real
+-clone D:\\r62-arch-a7r2 and run D:\\r62-arch-a7r2-run. With RACKCAD_A7_KITDATA=<dir> it takes closure.json, the gate modules and the kit copies of
++clone D:\\r62-arch-a7r4 and run D:\\r62-arch-a7r4-run. With RACKCAD_A7_KITDATA=<dir> it takes closure.json, the gate modules and the kit copies of
+ the run files from <dir>; post-review.py and result.schema.json always come from this kit directory.
+ Synthetic claude-cli runs (transcript JSONL in the format measured by the characterization C1, stream-json stdout, and the <run>/launch files
+ launch.py writes: run.json, preflight.json, stderr.txt and the copies of the transport-gate evidence). Each case audits against a SYNTHETIC gate
+@@ -86,29 +86,30 @@
+ A7 = _CLOSURE["ObjectPath"]
+ ADR46 = "docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes.md"
+ ADR48 = "docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion.md"
+-EVID = "docs/automation/evidence/I-62-A7/r3"                 # el preflight de la ronda 3
++EVID = "docs/automation/evidence/I-62-A7/r4"                 # el preflight de la ronda 4
+ GRR, SUMMARY, PREFLIGHT_MD = EVID + "/a7-guards-result-run.json", EVID + "/summary.json", EVID + "/preflight.md"
+-Q6 = EVID + "/q6-compat.json"                                # la compatibilidad del preflight de la ronda 3 (A-5, A-6, …)
+-R2OUT = "docs/automation/evidence/I-62-architect-A-7/R20261019T201030Z-d1bf/output.json"
++Q6 = EVID + "/q6-compat.json"                                # la compatibilidad del preflight de la ronda 4 (A-5, A-6, …)
++R2OUT = "docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/output.json"
+ PKG = "docs/automation/evidence/I-62-F6/FX-02/bmin"
+ SPEC = PKG + "/SPEC.md"
+ ACC = _CLOSURE["AcceptorPath"]
+ TOOLF = PKG + "/tool/bmin_facts.py"
+-OTHER_A7_BLOB = "8a528133c7cccd83356e31f8fd79cd2ebb0cec15"   # la ronda 2 de A-7: nunca el objeto de esta revisión
++OTHER_A7_BLOB = "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff"   # la ronda 3 de A-7: nunca el objeto de esta revisión
+ OTHER_A6_BLOB = "e62f27b8b1329f1b9cfa69a707feb31d22bad1d1"   # la A-6 de la ronda 3: nunca la acordada
+ C3_ADD = r"D:\r62-c3-probe\add\canary-add.txt"
+ C3_OUT = r"D:\r62-c3-probe\out\canary-out.txt"
+ DELETE = object()
+ CLONE_MUTATED = False     # True while the junction of case 03 exists (the mutation harness bypasses its caches then)
+ BLOCKED = "BLOCKED " + chr(0x2014) + " OWNER DECISION"
+-IFAGREED_KEYS = ("ScopeLimitedToR2R1AndConsequences", "PriorFindingCorrected", "DeltaLimitedToR2R1", "NoRegressionOfPriorConformities",
++IFAGREED_KEYS = ("ScopeLimitedToR3R1AndConsequences", "PriorFindingCorrected", "DeltaLimitedToR3R1", "NoRegressionOfPriorConformities",
+                  "CompatibleWithA5AndA6", "MaterialityConfirmed", "NoUnidentifiedOwnerReservedConsequence", "NoUnauthorizedChanges",
+                  "SuitableForCoordinatorAgreement")
+ V14_READ = (2223, 2241)                       # a V14 range used by the fidelity cases (B.9)
+-AP_DIRECT = (593, 595)                        # AUTOMATION_PLAN 16.7, the reverification «después de escribir, sin conflictos» (L19 of A-7 §2)
+-AP_READ = (585, 603)                          # the direct read of Step 0 (AUTOMATION_PLAN 16.7 L593-L595 inside; the prompt's offset and limit)
+-BASE_SECTION = 96                             # decisions §96: the last section of the clone; the authorization has to come after it
+-SYNTH_AUTH_SECTION = 97                       # synthetic disposition after §96 (the kit is delivered with the authorization PENDING)
++DIRECT_FILE = _CLOSURE["DirectRead"]["Path"]  # round 4: RAE §10 (docs/automation/agent-execution/README.md; L15 and L23 of A-7 §2)
++AP_DIRECT = (_CLOSURE["DirectRead"]["Start"], _CLOSURE["DirectRead"]["End"])   # L219-L226: the controls on the inputs of the VERIFIED verification
++AP_READ = (AP_DIRECT[0] - 8, AP_DIRECT[1] + 8)   # the direct read of Step 0 (the prompt's offset and limit, with L219-L226 inside)
++BASE_SECTION = 98                             # decisions §98: the last section of the clone; the authorization has to come after it
++SYNTH_AUTH_SECTION = 99                       # synthetic disposition after §98 (the kit is delivered with the authorization PENDING)
+ USER_RX = re.compile(r'(?i)[a-z]:(?:\\\\|\\|/)+users(?:\\\\|\\|/)+[^\\/"\s]+')
+ 
+ 
+@@ -157,13 +158,13 @@
+ 
+ 
+ def synthetic_authorization(blob, run_id, number=SYNTH_AUTH_SECTION):
+-    """Lines of a SYNTHETIC Coordinator disposition after §96 (not a real disposition), appended to the clone's decisions by the self-test."""
+-    return ["## %d. Disposición del Coordinator: autorización de la revisión formal de la ronda 3 de A-7 (selftest)" % number, "",
++    """Lines of a SYNTHETIC Coordinator disposition after §98 (not a real disposition), appended to the clone's decisions by the self-test."""
++    return ["## %d. Disposición del Coordinator: autorización de la revisión formal de la ronda 4 de A-7 (selftest)" % number, "",
+             "Texto sintético de la autoprueba, no una disposición real: autoriza el lanzamiento único del kit %s sobre el blob %s." % (run_id, blob)]
+ 
+ 
+ def apply_pins(og):
+-    """While the kit's owner_gate.py held the authorization pending, the audit cases would need a pinned authorization: SYNTHETIC pins (§97 appended
++    """While the kit's owner_gate.py held the authorization pending, the audit cases would need a pinned authorization: SYNTHETIC pins (§99 appended
+     to the clone's decisions; values from pin_authorization.values) set on the auditor's owner_gate module object (never on the file). With the
+     kit's pins set (§93, as delivered), they are used as they are."""
+     global PINS
+@@ -172,7 +173,7 @@
+         v = PA.values(text, SYNTH_AUTH_SECTION, PR.OBJECT_BLOB)
+         assert v["Ready"], v
+         og.AUTH_SECTION, og.AUTH_HEADING, og.AUTH_TEXT_SHA = SYNTH_AUTH_SECTION, v["Values"]["AUTH_HEADING"], v["Values"]["AUTH_TEXT_SHA"]
+-        PINS = {"Source": "SYNTHETIC (owner_gate.py del kit con la autorización pendiente; §97 sintética añadida a las decisiones del clon)",
++        PINS = {"Source": "SYNTHETIC (owner_gate.py del kit con la autorización pendiente; §99 sintética añadida a las decisiones del clon)",
+                 "Pins": og.pinned_authorization()}
+     else:
+         PINS = {"Source": "KIT (autorización fijada en owner_gate.py)", "Pins": og.pinned_authorization()}
+@@ -240,7 +241,7 @@
+     return d
+ 
+ 
+-# ------------------------------------------------------------------ synthetic transport-gate evidence (unchanged from the round-3 kit)
++# ------------------------------------------------------------------ synthetic transport-gate evidence (unchanged from the round-4 kit)
+ def c3_stream(add_reply, out_reply, out_error=True, denial=True, add_error=False):
+     msgs = [{"type": "system", "subtype": "init", "cwd": r"D:\r62-cli-char", "session_id": "c3", "tools": ["Glob", "Grep", "Read", "StructuredOutput"],
+              "mcp_servers": [], "model": MODEL, "permissionMode": "dontAsk", "claude_code_version": VERSION.split()[0], "apiKeySource": "none"}]
+@@ -315,12 +316,12 @@
+ 
+ 
+ def environment_record():
+-    """The Environment record of launch.py (the launcher's environment record of round 3, §84, point 2)."""
++    """The Environment record of launch.py (the launcher's environment record of round 4, §84, point 2)."""
+     return {"Prefixes": list(PR.LAUNCH_ENV_PREFIXES), "Names": ["CLAUDECODE", "GIT_EDITOR", "PYTHONDONTWRITEBYTECODE"],
+             "PythonValues": {"PYTHONDONTWRITEBYTECODE": "1"}, "SetOrStrippedByLauncher": [], "ChildEnvironment": "heredado sin cambios"}
+ 
+ 
+-# ------------------------------------------------------------------ synthetic run (the round-3 one, with the A-7 record of gate 11)
++# ------------------------------------------------------------------ synthetic run (the round-4 one, with the A-7 record of gate 11)
+ class Run:
+     def __init__(self):
+         self.tx, self.so, self.n, self.turns = [], [], 0, 0
+@@ -426,7 +427,7 @@
+         return tpath, spath, launch, gate
+ 
+ 
+-# ------------------------------------------------------------------ the A-7 round-3 reads and the base result
++# ------------------------------------------------------------------ the A-7 round-4 reads and the base result
+ def read_range(r, rel, a, b):
+     r.call("Read", {"file_path": absp(rel), "offset": a, "limit": b - a + 1}, numbered(lines_of(rel)[a - 1:b], a))
+ 
+@@ -436,14 +437,14 @@
+ 
+ 
+ def ap_direct(r):
+-    read_range(r, AP, *AP_READ)
++    read_range(r, DIRECT_FILE, *AP_READ)
+ 
+ 
+ def step0(r, direct=True):
+     if direct:
+         ap_direct(r)
+     r.call("Read", {"file_path": RUN + "\\order.txt"}, numbered(lines_of(run="order.txt")))
+-    read_range(r, DEC, *closure_range(DEC, "## 96. "))
++    read_range(r, DEC, *closure_range(DEC, "## 98. "))
+     r.call("Read", {"file_path": absp(GRR)}, numbered(lines_of(GRR)))
+     r.call("Read", {"file_path": absp(SUMMARY)}, numbered(lines_of(SUMMARY)))
+     read_range(r, R2OUT, 1, 230)
+@@ -451,7 +452,7 @@
+ 
+ def a7_reads(r):
+     r.call("Read", {"file_path": absp(A7)}, numbered(lines_of(A7)))
+-    r.call("Read", {"file_path": RUN + "\\a7-r2.md"}, numbered(lines_of(run="a7-r2.md")))
++    r.call("Read", {"file_path": RUN + "\\a7-r3.md"}, numbered(lines_of(run="a7-r3.md")))
+ 
+ 
+ def evidence_reads(r):
+@@ -499,8 +500,11 @@
+     return ref(PREFLIGHT_MD, 1, 3)
+ 
+ 
+-PRIOR_ROWS = {"A62-A7R2-R1": "§3.7, fila A62-A7R2-R1"}
+-REG_ROWS = {"R1_TRX_AND_RELAYFACTS_AS_CORRECTED": "§3.6, fila R1", "R2_INVALIDATOR_RULE_AND_PROCEDURE": "§3.6, fila R2",
++PRIOR_ROWS = {"A62-A7R3-R1": "§3.8, fila A62-A7R3-R1"}
++REG_ROWS = {"R2R1_REVERIFICATION_RECORD_AS_CORRECTED": "§3.7, fila A62-A7R2-R1",
++            "R2R1_NON_ADMISSION_ORDINARY_VERIFY_AND_MEASUREMENT": "§4, fila del registro de rebase",
++            "Q_A7R3_02_DELIVERY_FAIL_CLOSED": "§8, Q-A7R3-02", "Q_A7R3_03_CATEGORY_B_BASESHA": "§8, Q-A7R3-03",
++            "R1_TRX_AND_RELAYFACTS_AS_CORRECTED": "§3.6, fila R1", "R2_INVALIDATOR_RULE_AND_PROCEDURE": "§3.6, fila R2",
+             "R3_A62_RULE1_PRECISION": "§3.6, fila R3",
+             "T04_EFF_EFF1_B1_MAP_VALIDATION": "§3.1, Más allá de R7-A", "T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE": "A7-1, punto 5",
+             "T06_CLAUSEMAP_COVERAGE_RULE": "§3.5, residuo declarado (clausemap)", "T07_MULTI_CATEGORY_ENTRIES": "A7-1, punto 1",
+@@ -510,21 +514,21 @@
+ def base_result():
+     ids = PR.IDS
+     return {
+-        "Schema": "rackcad-a7r3-architect-review/0", "RunId": ids["RunId"], "InvocationId": ids["InvocationId"],
++        "Schema": "rackcad-a7r4-architect-review/0", "RunId": ids["RunId"], "InvocationId": ids["InvocationId"],
+         "LogicalReviewRequestId": ids["LogicalReviewRequestId"], "AttemptSeq": ids["AttemptSeq"], "RequestedRole": "ARCHITECT",
+         "Action": "REVIEW_DESIGN", "ReviewedUnit": "I-62", "ReviewedCommit": PR.REV, "ReviewedPath": PR.OBJECT, "ReviewedBlob": PR.OBJECT_BLOB,
+         "ReviewerMode": "SEPARATE SESSION", "SamePersonAsAuthor": "selftest",
+         "ReviewerDeclaredIdentity": {"Runtime": "x", "Model": "x", "Effort": "x", "SessionOrThread": "x"},
+         "InjectedContextDeclaration": {"State": "DECLARED", "Items": ["x"]},
+         "Step0": dict([("Basis", "INVOKER_VERIFIED_CLONE")] + [(k, True) for k in schema_keys("Step0") if k not in ("Basis", "Note")] + [("Note", "x")]),
+-        "DirectReads": [{"Ref": ref(AP, *AP_DIRECT), "Purpose": "x"}],
++        "DirectReads": [{"Ref": ref(DIRECT_FILE, *AP_DIRECT), "Purpose": "x"}],
+         "Reads": ["x"], "Verdict": "AGREED", "RequiredFindings": [], "OptionalFindings": [],
+         "PriorFindingResolution": [{"PriorFinding": f, "Status": "CORRECTED", "Rationale": "x", "ClauseRefs": [a7_ref(PRIOR_ROWS[f])], "FindingIds": []}
+                                    for f in PR.ROUND1],
+         "DeltaPurity": {"Status": "CONFIRMED",
+                         "Changes": [{"Change": k, "Assessment": "WITHIN_SCOPE", "Rationale": "x",
+-                                     "ClauseRefs": [a7_ref("§3.7, tabla de la corrección de la ronda 3")], "FindingIds": []} for k in PR.CHANGES],
+-                        "Rationale": "x", "ClauseRefs": [sec_ref("### 3.7 ")], "FindingIds": []},
++                                     "ClauseRefs": [a7_ref("§3.8, tabla de la corrección de la ronda 4")], "FindingIds": []} for k in PR.CHANGES],
++                        "Rationale": "x", "ClauseRefs": [sec_ref("### 3.8 ")], "FindingIds": []},
+         "RegressionCheck": [{"Topic": t, "Status": "NO_REGRESSION", "Rationale": "x", "ClauseRefs": [a7_ref(REG_ROWS[t])], "FindingIds": []}
+                             for t in PR.REGRESSION],
+         "CompatibilityVerdicts": {"A5": {"Status": "COMPATIBLE", "Rationale": "x", "ClauseRefs": [a7_ref("§6, A-5")], "FindingIds": []},
+@@ -576,13 +580,13 @@
+     return res["DeltaPurity"]
+ 
+ 
+-def req_finding(fid="A62-A7R3-R1", evidence=None):
++def req_finding(fid="A62-A7R4-R1", evidence=None):
+     return {"FindingId": fid, "Section": "§3.2 A7-1, punto 1 (c)", "ViolatedInvariant": "x", "Counterexample": "",
+             "Evidence": evidence or [a7_ref("A7-1, punto 1")], "WhyItMatters": "x", "CorrectionRequired": "x"}
+ 
+ 
+-def opt_finding(fid="A62-A7R3-O1"):
+-    return {"FindingId": fid, "Section": "§8", "Note": "x", "Evidence": [a7_ref("§8, Q-A7R3-01")], "SuggestedCorrection": "x"}
++def opt_finding(fid="A62-A7R4-O1"):
++    return {"FindingId": fid, "Section": "§8", "Note": "x", "Evidence": [a7_ref("§8, Q-A7R4-01")], "SuggestedCorrection": "x"}
+ 
+ 
+ def not_agreed(res, verdict):
+@@ -591,10 +595,10 @@
+ 
+ 
+ def changes_required(res, verdict="CHANGES REQUIRED"):
+-    """A coherent CHANGES REQUIRED (or REJECTED) skeleton: one REQUIRED that leaves A62-A7R2-R1 in PARTIALLY_CORRECTED."""
++    """A coherent CHANGES REQUIRED (or REJECTED) skeleton: one REQUIRED that leaves A62-A7R3-R1 in PARTIALLY_CORRECTED."""
+     not_agreed(res, verdict)
+     res["RequiredFindings"] = [req_finding()]
+-    rrd(res)["A62-A7R2-R1"].update({"Status": "PARTIALLY_CORRECTED", "FindingIds": ["A62-A7R3-R1"]})
++    rrd(res)["A62-A7R3-R1"].update({"Status": "PARTIALLY_CORRECTED", "FindingIds": ["A62-A7R4-R1"]})
+ 
+ 
+ def blocked(res):
+@@ -775,11 +779,11 @@
+                                                                   % ref(ADR48, a48, b48)], result_patch=ref_unread))
+ 
+     def ref_bad(res, r):
+-        rrd(res)["A62-A7R2-R1"]["ClauseRefs"] += ["prompt.md:1", "order.txt:99"]
++        rrd(res)["A62-A7R3-R1"]["ClauseRefs"] += ["prompt.md:1", "order.txt:99"]
+     add(variant("15-referencia-a-prompt-o-fuera-de-rango", expected=[
+         "resultado: no valida contra result.schema.json",
+-        "referencia no canónica en PriorFindingResolution[A62-A7R2-R1] (prompt.md:1: no es un archivo del cierre ni una premisa del run)",
+-        "referencia no canónica en PriorFindingResolution[A62-A7R2-R1] (order.txt:99: líneas fuera de rango del archivo)"],
++        "referencia no canónica en PriorFindingResolution[A62-A7R3-R1] (prompt.md:1: no es un archivo del cierre ni una premisa del run)",
++        "referencia no canónica en PriorFindingResolution[A62-A7R3-R1] (order.txt:99: líneas fuera de rango del archivo)"],
+                 result_patch=ref_bad, schema_valid=False))
+ 
+     def stop(res, r):
+@@ -798,7 +802,7 @@
+ 
+     def agreed_with_required(res, r):
+         res["RequiredFindings"] = [req_finding()]
+-        rgd(res)["T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE"].update({"Status": "REGRESSION", "FindingIds": ["A62-A7R3-R1"]})
++        rgd(res)["T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE"].update({"Status": "REGRESSION", "FindingIds": ["A62-A7R4-R1"]})
+     add(variant("17-agreed-con-un-required", result_patch=agreed_with_required, expected=["AGREED exige cero REQUIRED",
+                                                                                           "AGREED exige todos los temas de RegressionCheck en NO_REGRESSION"]))
+ 
+@@ -808,7 +812,7 @@
+ 
+     def agreed_trigger_disagree(res, r):
+         res["OptionalFindings"] = [opt_finding()]
+-        trd(res)["M-08"].update({"Assessment": "DISAGREE", "FindingIds": ["A62-A7R3-O1"]})
++        trd(res)["M-08"].update({"Assessment": "DISAGREE", "FindingIds": ["A62-A7R4-O1"]})
+     add(variant("19-agreed-con-un-disparador-en-desacuerdo", result_patch=agreed_trigger_disagree,
+                 expected=["Materiality.Triggers[M-08] DISAGREE sin un REQUIRED vinculado", "AGREED exige los ocho disparadores de Materiality en AGREE"]))
+ 
+@@ -845,7 +849,7 @@
+                 counts={"lectura de un directorio": 2}))
+ 
+     def ref_run(res, r):
+-        rrd(res)["A62-A7R2-R1"]["ClauseRefs"] += ["order.txt:3-9", "order.txt:43", "a7-r2.md:121-125"]
++        rrd(res)["A62-A7R3-R1"]["ClauseRefs"] += ["order.txt:3-9", "order.txt:43", "a7-r3.md:121-125"]
+         mat(res)["ClauseRefs"].append("order.txt:1")
+     add(variant("25-referencias-a-order-y-a7-r2-aceptadas", result_patch=ref_run, require_coherent=True))
+ 
+@@ -953,7 +957,7 @@
+     n_refs = len(PR.collect_refs(base_result()))
+     add(variant("48-transcripcion-sin-asistente", run_hook=hook(tx_filter=lambda e: e.get("type") != "assistant"),
+                 expected=["ningún mensaje del asistente", "structured_output del result distinto", "referencia sobre líneas no entregadas fielmente",
+-                          "lectura directa: %s no entregadas fielmente" % ref(AP, *AP_DIRECT)],
++                          "lectura directa: %s no entregadas fielmente" % ref(DIRECT_FILE, *AP_DIRECT)],
+                 counts={"referencia sobre líneas no entregadas fielmente": n_refs}))
+     add(variant("49-transcripcion-sin-primer-usuario",
+                 run_hook=hook(tx_filter=lambda e: not (e.get("type") == "user" and isinstance((e.get("message") or {}).get("content"), str))),
+@@ -979,7 +983,7 @@
+     finally:
+         PR.clone_git = orig_git
+ 
+-    # ---- result schema and coherence (A-7 round 3: rackcad-a7r3-architect-review/0)
++    # ---- result schema and coherence (A-7 round 4: rackcad-a7r4-architect-review/0)
+     def extra_field(res, r):
+         res["Extra"] = 1
+     add(variant("55-esquema-invalido", result_patch=extra_field, expected=["resultado: no valida contra result.schema.json"], schema_valid=False))
+@@ -999,7 +1003,7 @@
+             blocked(res)
+             extra(res)
+         return f
+-    R, O, PF = "A62-A7R3-R1", "A62-A7R3-O1", "A62-A7R2-R1"
++    R, O, PF = "A62-A7R4-R1", "A62-A7R4-O1", "A62-A7R3-R1"
+     DPC, CVA5, CVA6 = "DeltaPurity.Changes", "CompatibilityVerdicts.A5", "CompatibilityVerdicts.A6"
+     SV = "resultado: no valida contra result.schema.json"
+     NC = "no es un archivo del cierre ni una premisa del run"
+@@ -1012,28 +1016,28 @@
+     def open_unlinked(res):
+         rrd(res)[PF]["FindingIds"] = []
+         link_elsewhere(res)
+-    p("56-resolucion-abierta-sin-required", cr(open_unlinked), ["PriorFindingResolution[A62-A7R2-R1] PARTIALLY_CORRECTED sin el REQUIRED residual vinculado"])
++    p("56-resolucion-abierta-sin-required", cr(open_unlinked), ["PriorFindingResolution[A62-A7R3-R1] PARTIALLY_CORRECTED sin el REQUIRED residual vinculado"])
+     p("57-resolucion-corregida-con-required", cr(lambda res: rrd(res)[PF].update({"Status": "CORRECTED"})),
+-      ["PriorFindingResolution[A62-A7R2-R1] CORRECTED con un REQUIRED vinculado"])
++      ["PriorFindingResolution[A62-A7R3-R1] CORRECTED con un REQUIRED vinculado"])
+ 
+     def not_corrected_unlinked(res):
+         rrd(res)[PF].update({"Status": "NOT_CORRECTED", "FindingIds": []})
+         link_elsewhere(res)
+     p("58-resolucion-no-corregida-sin-required", cr(not_corrected_unlinked),
+-      ["PriorFindingResolution[A62-A7R2-R1] NOT_CORRECTED sin el REQUIRED residual vinculado"])
++      ["PriorFindingResolution[A62-A7R3-R1] NOT_CORRECTED sin el REQUIRED residual vinculado"])
+     p("59-regresion-sin-required", cr(lambda res: rgd(res)["T06_CLAUSEMAP_COVERAGE_RULE"].update({"Status": "REGRESSION"})),
+       ["RegressionCheck[T06_CLAUSEMAP_COVERAGE_RULE] REGRESSION sin un REQUIRED vinculado"])
+     p("60-sin-regresion-con-required", cr(lambda res: rgd(res)["R1_TRX_AND_RELAYFACTS_AS_CORRECTED"].update({"FindingIds": [R]})),
+       ["RegressionCheck[R1_TRX_AND_RELAYFACTS_AS_CORRECTED] NO_REGRESSION con un REQUIRED vinculado"])
+-    p("61-cambio-fuera-sin-required", cr(lambda res: chd(res)["R2R1_REBASE_COHERENCE"].update({"Assessment": "OUTSIDE_SCOPE"})),
+-      [DPC + "[R2R1_REBASE_COHERENCE] OUTSIDE_SCOPE sin un REQUIRED vinculado", "DeltaPurity CONFIRMED con un cambio OUTSIDE_SCOPE"])
++    p("61-cambio-fuera-sin-required", cr(lambda res: chd(res)["R3R1_ANCHORED_COHERENCE_AND_MAINSHA_EVAL"].update({"Assessment": "OUTSIDE_SCOPE"})),
++      [DPC + "[R3R1_ANCHORED_COHERENCE_AND_MAINSHA_EVAL] OUTSIDE_SCOPE sin un REQUIRED vinculado", "DeltaPurity CONFIRMED con un cambio OUTSIDE_SCOPE"])
+     p("62-cambio-dentro-con-required", cr(lambda res: chd(res)["DESCRIPTIVE_SECTIONS"].update({"FindingIds": [R]})),
+       [DPC + "[DESCRIPTIVE_SECTIONS] WITHIN_SCOPE con un REQUIRED vinculado"])
+     p("63-pureza-no-confirmada-sin-cambio-fuera", cr(lambda res: dp(res).update({"Status": "NOT_CONFIRMED", "FindingIds": [R]})),
+       ["DeltaPurity NOT_CONFIRMED con todos los cambios WITHIN_SCOPE"])
+ 
+     def nc_no_req(res):
+-        chd(res)["R2R1_MAINSHA_EVAL_FROM_REBASEMAP"].update({"Assessment": "OUTSIDE_SCOPE", "FindingIds": [R]})
++        chd(res)["R3R1_CONTROL_LINK"].update({"Assessment": "OUTSIDE_SCOPE", "FindingIds": [R]})
+         dp(res).update({"Status": "NOT_CONFIRMED"})
+     p("64-pureza-no-confirmada-sin-required", cr(nc_no_req), ["DeltaPurity NOT_CONFIRMED sin un REQUIRED vinculado"])
+     p("65-disparador-en-desacuerdo-sin-required", cr(lambda res: trd(res)["M-03"].update({"Assessment": "DISAGREE"})),
+@@ -1042,9 +1046,9 @@
+       ["Materiality.Triggers[M-01] AGREE con un REQUIRED vinculado"])
+     p("67-declaracion-de-a7-mal-copiada", lambda res: trd(res)["M-08"].update({"A7Declared": "yes"}),
+       ["con un veredicto, A7Declared distinto de lo que declara A-7 §5 (M-08)"])
+-    p("68-pregunta-no-satisfecha-sin-hallazgo", cr(lambda res: qad(res)["Q-A7R3-02"].update({"Outcome": "NOT_SATISFIED"})),
+-      ["QuestionAnswers[Q-A7R3-02] NOT_SATISFIED sin un hallazgo vinculado"])
+-    # the explicit verdict on A-5 and A-6 (decisions §96, point 6)
++    p("68-pregunta-no-satisfecha-sin-hallazgo", cr(lambda res: qad(res)["Q-A7R4-02"].update({"Outcome": "NOT_SATISFIED"})),
++      ["QuestionAnswers[Q-A7R4-02] NOT_SATISFIED sin un hallazgo vinculado"])
++    # the verdict on A-5 and A-6 (decisions §98, point 4)
+     p("69-compatibilidad-a5-incompatible-sin-required", cr(lambda res: cvd(res)["A5"].update({"Status": "INCOMPATIBLE"})),
+       [CVA5 + " INCOMPATIBLE sin un REQUIRED vinculado"])
+     p("70-compatibilidad-a6-compatible-con-required", cr(lambda res: cvd(res)["A6"].update({"FindingIds": [R]})),
+@@ -1060,7 +1064,7 @@
+       ["OwnerDecisionRequired = false con UnidentifiedConsequences"])
+     p("76-blocked-sin-decision-del-owner", lambda res: not_agreed(res, BLOCKED), ["BLOCKED — OWNER DECISION sin OwnerDecisionRequired = true"])
+     p("77-disposiciones-opcionales-de-la-ronda-2-rechazadas-por-el-esquema",
+-      lambda res: res.update({"OptionalDispositionConformance": [{"Round1Optional": "A62-A7R2-O1", "Status": "CONFORMS", "Rationale": "x",
++      lambda res: res.update({"OptionalDispositionConformance": [{"Round1Optional": "A62-A7R3-O1", "Status": "CONFORMS", "Rationale": "x",
+                                                                    "ClauseRefs": [], "FindingIds": []}]}), [SV], schema_valid=False)
+     p("78-impactos-relacionados-de-la-ronda-2-rechazados-por-el-esquema",
+       lambda res: res.update({"RelatedImpacts": {"ChangedByRound2": False, "Note": "", "ClauseRefs": [], "FindingIds": []}}), [SV], schema_valid=False)
+@@ -1072,25 +1076,25 @@
+       ["con un veredicto, NOT_DETERMINED o null no se admiten (DeltaPurity.Status, CompatibilityVerdicts.A6.Status)"])
+     p("82-decision-del-owner-nula-con-veredicto", cr(lambda res: orc(res).update({"OwnerDecisionRequired": None})),
+       ["OwnerReservedConsequence.OwnerDecisionRequired no admite null"])
+-    p("83-paso0-falso-con-veredicto", lambda res: res["Step0"].update({"Decisions96DeclaresOrderBytesAndSha256": False}),
++    p("83-paso0-falso-con-veredicto", lambda res: res["Step0"].update({"Decisions98DeclaresOrderBytesAndSha256": False}),
+       ["las siete booleanas de Step0 van en true"])
+-    p("84-paso0-nulo-con-veredicto", lambda res: res["Step0"].update({"AP167DirectReadL593L595": None}), ["las siete booleanas de Step0 van en true"])
++    p("84-paso0-nulo-con-veredicto", lambda res: res["Step0"].update({"RAE10DirectReadL219L226": None}), ["las siete booleanas de Step0 van en true"])
+     p("85-objeto-otro-blob", lambda res: res.update({"ReviewedBlob": OTHER_A7_BLOB}), ["objeto revisado distinto del designado"])
+     p("86-objeto-otro-commit", lambda res: res.update({"ReviewedCommit": PR.CLOSURE["Publication"]["Parent"]}), ["objeto revisado distinto del designado"])
+-    p("87-ids-de-invocacion-de-la-ronda-2", lambda res: res.update({"RunId": "R20261019T201030Z-d1bf"}), ["identificadores de la invocación distintos"])
++    p("87-ids-de-invocacion-de-la-ronda-2", lambda res: res.update({"RunId": "R20261023T180846Z-62bd"}), ["identificadores de la invocación distintos"])
+ 
+     def no_refs(res):
+         rrd(res)[PF]["ClauseRefs"] = []
+         rgd(res)["T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE"]["ClauseRefs"] = []
+-        chd(res)["R2R1_ABSENCE_AND_NON_ADMISSION"]["ClauseRefs"] = []
+-        qad(res)["Q-A7R3-03"]["ClauseRefs"] = []
++        chd(res)["R3R1_ABSENCE_AND_NON_ADMISSION"]["ClauseRefs"] = []
++        qad(res)["Q-A7R4-03"]["ClauseRefs"] = []
+         trd(res)["M-02"]["ClauseRefs"] = []
+         for x in (mat(res), orc(res), dp(res), cvd(res)["A6"]):
+             x["ClauseRefs"] = []
+-    p("88-elementos-sin-referencias", no_refs, ["con un veredicto, PriorFindingResolution[A62-A7R2-R1] sin ClauseRefs",
++    p("88-elementos-sin-referencias", no_refs, ["con un veredicto, PriorFindingResolution[A62-A7R3-R1] sin ClauseRefs",
+                                                 "con un veredicto, RegressionCheck[T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE] sin ClauseRefs",
+-                                                "con un veredicto, DeltaPurity.Changes[R2R1_ABSENCE_AND_NON_ADMISSION] sin ClauseRefs",
+-                                                "con un veredicto, QuestionAnswers[Q-A7R3-03] sin ClauseRefs",
++                                                "con un veredicto, DeltaPurity.Changes[R3R1_ABSENCE_AND_NON_ADMISSION] sin ClauseRefs",
++                                                "con un veredicto, QuestionAnswers[Q-A7R4-03] sin ClauseRefs",
+                                                 "con un veredicto, Materiality.Triggers[M-02] sin ClauseRefs",
+                                                 "con un veredicto, Materiality sin ClauseRefs",
+                                                 "con un veredicto, OwnerReservedConsequence sin ClauseRefs",
+@@ -1098,31 +1102,31 @@
+                                                 "con un veredicto, " + CVA6 + " sin ClauseRefs"])
+ 
+     def fid_missing(res):
+-        rrd(res)[PF]["FindingIds"] = ["A62-A7R3-O7"]
+-        rgd(res)["T07_MULTI_CATEGORY_ENTRIES"]["FindingIds"] = ["A62-A7R3-O9"]
+-        chd(res)["PROCEDURE_PIECES_ROUND3"]["FindingIds"] = ["A62-A7R3-O8"]
+-        qad(res)["Q-A7R3-01"]["FindingIds"] = ["A62-A7R3-O6"]
+-        trd(res)["M-04"]["FindingIds"] = ["A62-A7R3-O5"]
+-        dp(res)["FindingIds"] = ["A62-A7R3-O4"]
+-        cvd(res)["A5"]["FindingIds"] = ["A62-A7R3-O3"]
+-    p("89-findingids-inexistentes", fid_missing, ["PriorFindingResolution[A62-A7R2-R1] cita en FindingIds hallazgos que no existen",
++        rrd(res)[PF]["FindingIds"] = ["A62-A7R4-O7"]
++        rgd(res)["T07_MULTI_CATEGORY_ENTRIES"]["FindingIds"] = ["A62-A7R4-O9"]
++        chd(res)["PROCEDURE_PIECES_ROUND4"]["FindingIds"] = ["A62-A7R4-O8"]
++        qad(res)["Q-A7R4-01"]["FindingIds"] = ["A62-A7R4-O6"]
++        trd(res)["M-04"]["FindingIds"] = ["A62-A7R4-O5"]
++        dp(res)["FindingIds"] = ["A62-A7R4-O4"]
++        cvd(res)["A5"]["FindingIds"] = ["A62-A7R4-O3"]
++    p("89-findingids-inexistentes", fid_missing, ["PriorFindingResolution[A62-A7R3-R1] cita en FindingIds hallazgos que no existen",
+                                                   "RegressionCheck[T07_MULTI_CATEGORY_ENTRIES] cita en FindingIds hallazgos que no existen",
+-                                                  DPC + "[PROCEDURE_PIECES_ROUND3] cita en FindingIds hallazgos que no existen",
+-                                                  "QuestionAnswers[Q-A7R3-01] cita en FindingIds hallazgos que no existen",
++                                                  DPC + "[PROCEDURE_PIECES_ROUND4] cita en FindingIds hallazgos que no existen",
++                                                  "QuestionAnswers[Q-A7R4-01] cita en FindingIds hallazgos que no existen",
+                                                   "Materiality.Triggers[M-04] cita en FindingIds hallazgos que no existen",
+                                                   "DeltaPurity cita en FindingIds hallazgos que no existen",
+                                                   CVA5 + " cita en FindingIds hallazgos que no existen"])
+     p("90-ids-de-hallazgo-repetidos", lambda res: res.update({"OptionalFindings": [opt_finding(), opt_finding()]}),
+       ["identificadores de hallazgo repetidos"])
+     p("91-required-sin-invariante-ni-contraejemplo", cr(lambda res: res["RequiredFindings"][0].update({"ViolatedInvariant": " ", "Counterexample": ""})),
+-      ["A62-A7R3-R1 REQUIRED sin ViolatedInvariant ni Counterexample"])
++      ["A62-A7R4-R1 REQUIRED sin ViolatedInvariant ni Counterexample"])
+     p("92-required-sin-evidencia", cr(lambda res: res["RequiredFindings"][0].update({"Evidence": []})), [SV], schema_valid=False)
+     # ---- the reference mechanism (decisions §96, point 6): relative, exact, present in the closure, checked against the real file
+     a5r = closure_range(A7, "## 5. ")[0]
+     p("93-evidencia-fuera-del-cierre", cr(lambda res: res["RequiredFindings"][0].update({"Evidence": ["docs/HANDOFF.md:1"]})),
+-      [SV, "referencia no canónica en RequiredFindings[A62-A7R3-R1] (docs/HANDOFF.md:1: %s)" % NC], schema_valid=False)
++      [SV, "referencia no canónica en RequiredFindings[A62-A7R4-R1] (docs/HANDOFF.md:1: %s)" % NC], schema_valid=False)
+     p("93b-referencia-mal-escrita-de-la-ronda-2", cr(lambda res: res["RequiredFindings"][0].update({"Evidence": ["docs/initiatives/I-62-A7.md:120"]})),
+-      [SV, "referencia no canónica en RequiredFindings[A62-A7R3-R1] (docs/initiatives/I-62-A7.md:120: %s)" % NC], schema_valid=False)
++      [SV, "referencia no canónica en RequiredFindings[A62-A7R4-R1] (docs/initiatives/I-62-A7.md:120: %s)" % NC], schema_valid=False)
+     dd = EVID + "/../r3/summary.json:3"
+     p("93c-referencia-con-punto-punto", lambda res: mat(res)["ClauseRefs"].append(dd),
+       [SV, "referencia no canónica en Materiality (%s: %s)" % (dd, NE)], schema_valid=False)
+@@ -1138,11 +1142,11 @@
+     p("93h-premisa-por-su-ruta-absoluta", lambda res: mat(res)["ClauseRefs"].append(RUN + "\\order.txt:3"),
+       [SV, "referencia no canónica en Materiality (%s/order.txt:3: %s)" % (PR.userless(RUN), NE)], schema_valid=False)
+     p("94-evidencia-sobre-lineas-no-leidas", cr(lambda res: res["RequiredFindings"][0].update({"Evidence": [ref(A6, 10, 12)]})),
+-      ["referencia sobre líneas no entregadas fielmente en RequiredFindings[A62-A7R3-R1] (%s)" % ref(A6, 10, 12)])
++      ["referencia sobre líneas no entregadas fielmente en RequiredFindings[A62-A7R4-R1] (%s)" % ref(A6, 10, 12)])
+     p("95-evidencia-opcional-no-leida", lambda res: res.update({"OptionalFindings": [dict(opt_finding(), Evidence=[ref(V14, 2408)])]}),
+-      ["referencia sobre líneas no entregadas fielmente en OptionalFindings[A62-A7R3-O1]"])
+-    p("96-required-sin-disposicion", cr(lambda res: res["RequiredFindings"].append(req_finding("A62-A7R3-R2"))),
+-      ["REQUIRED sin disposición: todo REQUIRED lo cita al menos un elemento evaluado (A62-A7R3-R2)"])
++      ["referencia sobre líneas no entregadas fielmente en OptionalFindings[A62-A7R4-O1]"])
++    p("96-required-sin-disposicion", cr(lambda res: res["RequiredFindings"].append(req_finding("A62-A7R4-R2"))),
++      ["REQUIRED sin disposición: todo REQUIRED lo cita al menos un elemento evaluado (A62-A7R4-R2)"])
+ 
+     def agreed_with(update):
+         def f(res):
+@@ -1151,12 +1155,12 @@
+         return f
+     AG0 = "AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true"
+     p("97-agreed-resolucion-no-corregida", agreed_with(lambda res: rrd(res)[PF].update({"Status": "NOT_CORRECTED", "FindingIds": [R]})),
+-      [AG0, "AGREED exige el hallazgo previo A62-A7R2-R1 en CORRECTED"])
++      [AG0, "AGREED exige el hallazgo previo A62-A7R3-R1 en CORRECTED"])
+ 
+     def ag_impure(res):
+-        chd(res)["S33_ROW_C_AND_S34_C6_NOTE"].update({"Assessment": "OUTSIDE_SCOPE", "FindingIds": [R]})
++        chd(res)["S33_S34_S4_WITH_O3"].update({"Assessment": "OUTSIDE_SCOPE", "FindingIds": [R]})
+         dp(res).update({"Status": "NOT_CONFIRMED", "FindingIds": [R]})
+-    p("98-agreed-pureza-no-confirmada", agreed_with(ag_impure), [AG0, "AGREED exige DeltaPurity CONFIRMED con todos los cambios de la ronda 3 WITHIN_SCOPE"])
++    p("98-agreed-pureza-no-confirmada", agreed_with(ag_impure), [AG0, "AGREED exige DeltaPurity CONFIRMED con todos los cambios de la ronda 4 WITHIN_SCOPE"])
+     p("99-agreed-regresion", agreed_with(lambda res: rgd(res)["T09_NO_UNAUTHORIZED_CHANGES"].update({"Status": "REGRESSION", "FindingIds": [R]})),
+       [AG0, "AGREED exige todos los temas de RegressionCheck en NO_REGRESSION"])
+     p("100-agreed-disparador-en-desacuerdo", agreed_with(lambda res: trd(res)["M-05"].update({"Assessment": "DISAGREE", "FindingIds": [R]})),
+@@ -1172,10 +1176,10 @@
+         res["OptionalFindings"] = [opt_finding()]
+         rrd(res)[PF].update({"Status": "NOT_CORRECTED", "FindingIds": [R, O]})
+         rgd(res)["T06_CLAUSEMAP_COVERAGE_RULE"].update({"FindingIds": [O]})
+-        chd(res)["R2R1_REBASE_COHERENCE"].update({"Assessment": "OUTSIDE_SCOPE", "FindingIds": [R]})
++        chd(res)["R3R1_ANCHORED_COHERENCE_AND_MAINSHA_EVAL"].update({"Assessment": "OUTSIDE_SCOPE", "FindingIds": [R]})
+         dp(res).update({"Status": "NOT_CONFIRMED", "FindingIds": [R]})
+         trd(res)["M-06"].update({"Assessment": "DISAGREE", "FindingIds": [R]})
+-        qad(res)["Q-A7R3-03"].update({"Outcome": "NOT_SATISFIED", "FindingIds": [O]})
++        qad(res)["Q-A7R4-03"].update({"Outcome": "NOT_SATISFIED", "FindingIds": [O]})
+         cvd(res)["A6"].update({"Status": "INCOMPATIBLE", "FindingIds": [R]})
+         cvd(res)["A5"].update({"FindingIds": [O]})
+     p("102-changes-required-coherente-aceptado", cr(cr_ok), coherent=True)
+@@ -1185,15 +1189,15 @@
+ 
+     def ag_ok(res):
+         res["OptionalFindings"] = [opt_finding()]
+-        qad(res)["Q-A7R3-01"].update({"Outcome": "NOT_SATISFIED", "FindingIds": [O]})
++        qad(res)["Q-A7R4-01"].update({"Outcome": "NOT_SATISFIED", "FindingIds": [O]})
+         rgd(res)["T07_MULTI_CATEGORY_ENTRIES"]["FindingIds"] = [O]
+     p("106-agreed-con-un-opcional-aceptado", ag_ok, coherent=True)
+-    p("107-id-de-hallazgo-mal-formado", lambda res: res.update({"OptionalFindings": [dict(opt_finding(), FindingId="A62-A7R3-1")]}), [SV],
++    p("107-id-de-hallazgo-mal-formado", lambda res: res.update({"OptionalFindings": [dict(opt_finding(), FindingId="A62-A7R4-1")]}), [SV],
+       schema_valid=False)
+ 
+     def r2_space_fid(res):
+-        res["RequiredFindings"][0]["FindingId"] = "A62-A7R2-R2"
+-        rrd(res)[PF]["FindingIds"] = ["A62-A7R2-R2"]
++        res["RequiredFindings"][0]["FindingId"] = "A62-A7R3-R2"
++        rrd(res)[PF]["FindingIds"] = ["A62-A7R3-R2"]
+     p("108-id-nuevo-con-el-espacio-de-la-ronda-2", cr(r2_space_fid), [SV], schema_valid=False)
+     p("109-referencia-absoluta", lambda res: mat(res).update({"ClauseRefs": [absp(A7) + ":" + str(a5r)]}),
+       [SV, "referencia no canónica en Materiality (%s:%d: %s)" % (PR.userless(absp(A7)), a5r, NE)], schema_valid=False)
+@@ -1202,7 +1206,7 @@
+     p("111-esquema-estados-invalidos", lambda res: (rrd(res)[PF].update({"Status": "MAYBE"}), trd(res)["M-01"].update({"Assessment": "OK"}),
+                                                     rgd(res)["T04_EFF_EFF1_B1_MAP_VALIDATION"].update({"Status": "IGNORED"}),
+                                                     cvd(res)["A6"].update({"Status": "PARTIAL"})),
+-      [SV, "AGREED exige el hallazgo previo A62-A7R2-R1 en CORRECTED", "AGREED exige los ocho disparadores de Materiality en AGREE",
++      [SV, "AGREED exige el hallazgo previo A62-A7R3-R1 en CORRECTED", "AGREED exige los ocho disparadores de Materiality en AGREE",
+        "AGREED exige todos los temas de RegressionCheck en NO_REGRESSION", "AGREED exige A-5 y A-6 COMPATIBLE"], schema_valid=False)
+     p("112-esquema-booleano-como-texto", lambda res: res["Step0"].update({"OrderReadWhole": "true"}), [SV, "las siete booleanas de Step0 van en true"],
+       schema_valid=False)
+@@ -1214,13 +1218,13 @@
+     p("114e-esquema-elemento-de-lista-no-texto", lambda res: orc(res).update({"UnidentifiedConsequences": [1]}),
+       [SV, "OwnerDecisionRequired = false con UnidentifiedConsequences"], schema_valid=False)
+     p("114f-esquema-null-no-admitido-anidado", lambda res: orc(res).update({"Rationale": None}), [SV], schema_valid=False)
+-    p("114g-esquema-propiedad-sobrante-doble-anidada", lambda res: chd(res)["R2R1_REBASE_COHERENCE"].update({"X": 1}), [SV], schema_valid=False)
++    p("114g-esquema-propiedad-sobrante-doble-anidada", lambda res: chd(res)["R3R1_ANCHORED_COHERENCE_AND_MAINSHA_EVAL"].update({"X": 1}), [SV], schema_valid=False)
+     p("114h-esquema-propiedad-sobrante-en-la-compatibilidad", lambda res: cvd(res)["A5"].update({"X": 1}), [SV], schema_valid=False)
+     p("114i-esquema-compatibilidad-ausente", lambda res: res["CompatibilityVerdicts"].pop("A5"),
+       [SV, "con un veredicto, " + CVA5 + " sin ClauseRefs", "con un veredicto, NOT_DETERMINED o null no se admiten (CompatibilityVerdicts.A5.Status)",
+        "AGREED exige A-5 y A-6 COMPATIBLE"], schema_valid=False)
+ 
+-    # ---- coverage of the round-3 arrays
++    # ---- coverage of the round-4 arrays
+     def drop(path, field, value):
+         def f(res):
+             holder = res if len(path) == 1 else res[path[0]]
+@@ -1235,27 +1239,27 @@
+             holder[path[-1]] = [copy.deepcopy(src) if x[field] == replace else x for x in items_]
+         return f
+     p("115-resolucion-ausente", drop(["PriorFindingResolution"], "PriorFinding", PF),
+-      ["PriorFindingResolution debe disponer cada id una vez (faltan ['A62-A7R2-R1']", "AGREED exige el hallazgo previo A62-A7R2-R1 en CORRECTED"])
++      ["PriorFindingResolution debe disponer cada id una vez (faltan ['A62-A7R3-R1']", "AGREED exige el hallazgo previo A62-A7R3-R1 en CORRECTED"])
+     p("115b-resolucion-repetida", lambda res: res["PriorFindingResolution"].append(copy.deepcopy(res["PriorFindingResolution"][0])),
+       ["PriorFindingResolution con identificadores repetidos", "PriorFindingResolution debe disponer cada id una vez",
+-       "AGREED exige el hallazgo previo A62-A7R2-R1 en CORRECTED"])
++       "AGREED exige el hallazgo previo A62-A7R3-R1 en CORRECTED"])
+     p("116-tema-de-regresion-ausente", drop(["RegressionCheck"], "Topic", "R3_A62_RULE1_PRECISION"),
+       ["RegressionCheck debe disponer cada id una vez (faltan ['R3_A62_RULE1_PRECISION']",
+        "AGREED exige todos los temas de RegressionCheck en NO_REGRESSION"])
+     p("116b-tema-de-regresion-repetido", dup(["RegressionCheck"], "Topic", "R2_INVALIDATOR_RULE_AND_PROCEDURE", "T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE"),
+       ["RegressionCheck con identificadores repetidos", "RegressionCheck debe disponer cada id una vez"])
+-    p("117-cambio-ausente", drop(["DeltaPurity", "Changes"], "Change", "PROCEDURE_PIECES_ROUND3"),
+-      ["DeltaPurity.Changes debe disponer cada id una vez (faltan ['PROCEDURE_PIECES_ROUND3']",
+-       "AGREED exige DeltaPurity CONFIRMED con todos los cambios de la ronda 3 WITHIN_SCOPE"])
+-    p("117b-cambio-repetido", dup(["DeltaPurity", "Changes"], "Change", "R2R1_REBASE_ROLE_REVERIFICATION_ONLY", "DESCRIPTIVE_SECTIONS"),
++    p("117-cambio-ausente", drop(["DeltaPurity", "Changes"], "Change", "PROCEDURE_PIECES_ROUND4"),
++      ["DeltaPurity.Changes debe disponer cada id una vez (faltan ['PROCEDURE_PIECES_ROUND4']",
++       "AGREED exige DeltaPurity CONFIRMED con todos los cambios de la ronda 4 WITHIN_SCOPE"])
++    p("117b-cambio-repetido", dup(["DeltaPurity", "Changes"], "Change", "R3R1_REBASE_COPY_IN_REVERIFICATION_CONTROLS", "DESCRIPTIVE_SECTIONS"),
+       ["DeltaPurity.Changes con identificadores repetidos", "DeltaPurity.Changes debe disponer cada id una vez"])
+     p("118-disparador-ausente", drop(["Materiality", "Triggers"], "Trigger", "M-07"),
+       ["Materiality.Triggers debe disponer cada id una vez (faltan ['M-07']", "AGREED exige los ocho disparadores de Materiality"])
+     p("118b-disparador-repetido", dup(["Materiality", "Triggers"], "Trigger", "M-01", "M-06"),
+       ["Materiality.Triggers con identificadores repetidos", "Materiality.Triggers debe disponer cada id una vez"])
+-    p("119-pregunta-ausente", drop(["QuestionAnswers"], "Question", "Q-A7R3-03"),
+-      ["QuestionAnswers debe disponer cada id una vez (faltan ['Q-A7R3-03']"])
+-    p("119b-pregunta-repetida", dup(["QuestionAnswers"], "Question", "Q-A7R3-01", "Q-A7R3-02"),
++    p("119-pregunta-ausente", drop(["QuestionAnswers"], "Question", "Q-A7R4-03"),
++      ["QuestionAnswers debe disponer cada id una vez (faltan ['Q-A7R4-03']"])
++    p("119b-pregunta-repetida", dup(["QuestionAnswers"], "Question", "Q-A7R4-01", "Q-A7R4-02"),
+       ["QuestionAnswers con identificadores repetidos", "QuestionAnswers debe disponer cada id una vez"])
+ 
+     def stop_with_dup(res):
+@@ -1264,35 +1268,35 @@
+                                    "FindingIds": []}] * 2
+     p("120-not-accredited-con-ids-repetidos", stop_with_dup, ["RegressionCheck con identificadores repetidos"], base=stop_calls)
+ 
+-    # ---- direct read of AUTOMATION_PLAN 16.7 L593-L595 (round 3; the rule of v5.x) and the references of nested elements
+-    apd = ref(AP, *AP_DIRECT)
+-    p("121-sin-lectura-directa-de-ap", lambda res: None,
++    # ---- direct read of RAE §10 L219-L226 (round 4; the rule of v5.x) and the references of nested elements
++    apd = ref(DIRECT_FILE, *AP_DIRECT)
++    p("121-sin-lectura-directa-de-rae", lambda res: None,
+       ["lectura directa: %s no entregadas fielmente" % apd, "referencia sobre líneas no entregadas fielmente en DirectReads (%s)" % apd],
+       base=lambda r: base_calls(r, direct=False))
+-    p("121b-cita-de-ap-leida-solo-en-a7", lambda res: mat(res)["ClauseRefs"].append(apd),
++    p("121b-cita-de-rae-leida-solo-en-a7", lambda res: mat(res)["ClauseRefs"].append(apd),
+       ["lectura directa: %s no entregadas fielmente" % apd, "referencia sobre líneas no entregadas fielmente en DirectReads (%s)" % apd,
+        "referencia sobre líneas no entregadas fielmente en Materiality (%s)" % apd], base=lambda r: base_calls(r, direct=False))
+-    p("121c-directreads-sin-ap", lambda res: res.update({"DirectReads": [{"Ref": sec_ref("### 3.4 "), "Purpose": "x"}]}),
++    p("121c-directreads-sin-rae", lambda res: res.update({"DirectReads": [{"Ref": sec_ref("### 3.4 "), "Purpose": "x"}]}),
+       ["lectura directa: DirectReads sin una entrada que cubra"])
+-    p("121d-directreads-cubre-solo-593", lambda res: res.update({"DirectReads": [{"Ref": ref(AP, AP_DIRECT[0]), "Purpose": "x"}]}),
++    p("121d-directreads-cubre-solo-la-primera-linea", lambda res: res.update({"DirectReads": [{"Ref": ref(DIRECT_FILE, AP_DIRECT[0]), "Purpose": "x"}]}),
+       ["lectura directa: DirectReads sin una entrada que cubra"])
+ 
+     def cited_after_direct(res):
+         mat(res)["ClauseRefs"].append(apd)
+         rrd(res)[PF]["ClauseRefs"].append(apd)
+         res["DirectReads"].append({"Ref": sec_ref("### 3.4 "), "Purpose": "x"})
+-    p("121e-cita-de-ap-tras-la-lectura-directa-aceptada", cited_after_direct, coherent=True)
++    p("121e-cita-de-rae-tras-la-lectura-directa-aceptada", cited_after_direct, coherent=True)
+     p("121f-referencia-anidada-no-leida", lambda res: trd(res)["M-02"]["ClauseRefs"].append(ref(A6, 10, 12)),
+       ["referencia sobre líneas no entregadas fielmente en Materiality.Triggers[M-02] (%s)" % ref(A6, 10, 12)])
+-    p("121g-referencia-anidada-de-evidencia-leida", lambda res: chd(res)["R2R1_REBASE_COHERENCE"]["ClauseRefs"].append(preflight_ref()), coherent=True)
++    p("121g-referencia-anidada-de-evidencia-leida", lambda res: chd(res)["R3R1_ANCHORED_COHERENCE_AND_MAINSHA_EVAL"]["ClauseRefs"].append(preflight_ref()), coherent=True)
+     p("121h-referencia-de-la-pureza-no-leida", lambda res: dp(res)["ClauseRefs"].append(ref(A6, 10, 12)),
+       ["referencia sobre líneas no entregadas fielmente en DeltaPurity (%s)" % ref(A6, 10, 12)])
+     p("121i-referencia-de-la-compatibilidad-no-leida", lambda res: cvd(res)["A6"]["ClauseRefs"].append(ref(A6, 10, 12)),
+       ["referencia sobre líneas no entregadas fielmente en %s (%s)" % (CVA6, ref(A6, 10, 12))])
+-    p("121j-referencia-a-la-ronda-2-y-a-su-salida-aceptada",
+-      lambda res: rrd(res)[PF]["ClauseRefs"].extend(["a7-r2.md:197-200", ref(R2OUT, 3), ref(Q6, 3)]), coherent=True)
+-
+-    # ---- run.json of the launcher (the round-3 rules, decisions §84, point 4)
++    p("121j-referencia-a-la-ronda-3-y-a-su-salida-aceptada",
++      lambda res: rrd(res)[PF]["ClauseRefs"].extend(["a7-r3.md:197-200", ref(R2OUT, 3), ref(Q6, 3)]), coherent=True)
++
++    # ---- run.json of the launcher (the round-4 rules, decisions §84, point 4)
+     out_ = "Outcome de run.json"
+     add(variant("126-run-json-fallo-del-proceso", run_hook=hook(run_patch={"ExitCode": 3}),
+                 expected=["código de salida 3", out_ + " 'REVIEW_PROCESS_FAILURE'"]))
+@@ -1326,7 +1330,7 @@
+                 expected=["código de salida 1", "proceso terminado por el invocador", out_ + " 'REVIEW_PROCESS_FAILURE'",
+                           "PostRunErrors de run.json no vacío"]))
+ 
+-    # ---- preflight.json of the launcher (the round-3 rules, decisions §84, points 2 and 3)
++    # ---- preflight.json of the launcher (the round-4 rules, decisions §84, points 2 and 3)
+     fcg, rpb, env = "preflight: guarda de la orden congelada", "preflight: sonda de registro", "preflight: entorno del lanzador"
+ 
+     def pf(fn):
+@@ -1409,9 +1413,9 @@
+ 
+ # ------------------------------------------------------------------ read fidelity and faithful copies (decisions §94, point 5; v5.6-a7)
+ TRX = "docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/inputs/fixture-tests.trx"   # the r1 failure: line 1 DEGRADED (BOM dropped)
+-TRX_MAIN, TRX_UC = EVID + "/b1-like/main/fixture-tests.trx", EVID + "/b1-like/uc/fixture-tests.trx"   # the round-3 B1-like case
++TRX_MAIN, TRX_UC = EVID + "/b1-like/main/fixture-tests.trx", EVID + "/b1-like/uc/fixture-tests.trx"   # the round-4 B1-like case
+ FIX = "zz-fidelity-fixture/"                    # fixture of the phase-1 test clone (only there); the cases that need it are skipped elsewhere
+-T03 = "A62-A7R2-R1"                            # the element the fidelity cases cite from
++T03 = "A62-A7R3-R1"                            # the element the fidelity cases cite from
+ 
+ 
+ def copy_of(orig):
+@@ -1463,9 +1467,10 @@
+     not_faithful = "copia fiel: %s no entrega byte a byte %s"
+     not_delivered = "referencia sobre líneas no entregadas fielmente en PriorFindingResolution[%s] (%s)"
+ 
+-    # F00: the base flow reads flagged ORIGINALS (V14, decisions) only on lines Read delivers faithfully: accredited, recorded as informational
++    # F00: the base flow reads flagged ORIGINALS (decisions and, in round 4, the object A-7, flagged LONG_LINE at L237 with 1 941 UTF-16 units, under
++    # Read's 2 000) only on lines Read delivers faithfully: accredited, recorded as informational
+     add(fvariant("F00-base-lecturas-de-originales-marcados-informativas", require_coherent=True,
+-                 check=lambda out: (sorted({x["Path"] for x in out["Fidelity"]["FlaggedOriginalReads"]}) == sorted([DEC, AP]) and
++                 check=lambda out: (sorted({x["Path"] for x in out["Fidelity"]["FlaggedOriginalReads"]}) == sorted([DEC, A7]) and
+                                     all(x["Status"] == "FAITHFUL_NORMALIZED" for x in out["Fidelity"]["FlaggedOriginalReads"]) and
+                                     all(x["Verified"] for x in out["Fidelity"]["FaithfulCopies"]) and
+                                     len(out["Fidelity"]["FaithfulCopies"]) == len(PR.CLOSURE["FaithfulCopies"]),
+@@ -1531,18 +1536,19 @@
+                  check=lambda out: ([(x["Path"], x["Line"]) for x in out["Fidelity"]["TruncatedKnownLongLines"]] == [(V14, 2352)],
+                                     out["Fidelity"]["TruncatedKnownLongLines"])))
+ 
+-    # F08: the direct read of AUTOMATION_PLAN 16.7 L593-L595 through its faithful copy satisfies Step 0
++    # F08 (round 4): the direct read of RAE §10 L219-L226, which has no faithful copy, on its original satisfies Step 0 (in round 3 it was
++    # AUTOMATION_PLAN 16.7 through its faithful copy)
+     def direct_by_copy(r):
+         r.header()
+-        read_copy(r, AP, *AP_READ)
++        read_range(r, DIRECT_FILE, *AP_READ)
+         step0(r, direct=False)
+         a7_reads(r)
+         evidence_reads(r)
+         acceptor_reads(r)
+         a6_reads(r)
+-    add(fvariant("F08-lectura-directa-por-la-copia-de-automation-plan", base=direct_by_copy, require_coherent=True,
++    add(fvariant("F08-lectura-directa-de-rae-en-su-original", base=direct_by_copy, require_coherent=True,
+                  check=lambda out: (out["DirectRead"]["DeliveredByRead"] is True and
+-                                    AP not in [x["Path"] for x in out["Fidelity"]["FlaggedOriginalReads"]], out["DirectRead"])))
++                                    DIRECT_FILE not in [x["Path"] for x in out["Fidelity"]["FlaggedOriginalReads"]], out["DirectRead"])))
+ 
+     # F09: a faithful copy is never a reference (it is not a premise run file): cite the original
+     add(fvariant("F09-referencia-a-la-copia", extra=lambda r: read_copy(r, TRX),
+@@ -1662,8 +1668,8 @@
+ 
+ # ------------------------------------------------------------------ gate 11 cases (owner_gate.evaluate on decision texts built from the clone's; A-7)
+ def owner_cases():
+-    """Gate 11 of the round-3 kit (owner_gate.evaluate, pure): the clone's decisions end at §96 (the base section); the authorization is a FUTURE
+-    disposition after §96, played here by a SYNTHETIC §97 appended to the clone's text (never a real disposition)."""
++    """Gate 11 of the round-4 kit (owner_gate.evaluate, pure): the clone's decisions end at §98 (the base section); the authorization is a FUTURE
++    disposition after §98, played here by a SYNTHETIC §99 appended to the clone's text (never a real disposition)."""
+     cases = []
+     dec_lines = clone_decision_lines()
+     a6_text = "\n".join(PR.canon(A6))
+@@ -1673,12 +1679,12 @@
+     claude_l = next(l for l in dec_lines if OG.line_sha(l) == OG.CLAUDE_LINE_SHA)
+     s78 = next(i for i, l in enumerate(dec_lines) if l.startswith("## 78. "))
+     s_base = next(i for i, l in enumerate(dec_lines) if l.startswith("## %d. " % BASE_SECTION))
+-    assert not any(l.startswith("## ") for l in dec_lines[s_base + 1:]), "§96 no es la última sección de las decisiones del clon"
++    assert not any(l.startswith("## ") for l in dec_lines[s_base + 1:]), "§98 no es la última sección de las decisiones del clon"
+     AS = SYNTH_AUTH_SECTION
+     base_lines = list(dec_lines)
+-    dec_base = "\n".join(base_lines) + "\n"              # decisiones del clon (terminan en §96): el texto de referencia de la compuerta
++    dec_base = "\n".join(base_lines) + "\n"              # decisiones del clon (terminan en §98): el texto de referencia de la compuerta
+     syn_text = "\n" + "\n".join(synthetic_authorization(blob, run_id, AS)) + "\n"
+-    dec_auth = dec_base + syn_text                        # la HEAD del worktree con una disposición posterior a §96 (SINTÉTICA)
++    dec_auth = dec_base + syn_text                        # la HEAD del worktree con una disposición posterior a §98 (SINTÉTICA)
+     pending = {"Section": None, "Heading": None, "TextSha256": None}
+ 
+     def pin(text, number=AS):
+@@ -1719,7 +1725,7 @@
+     if not (e["AuthorizationPending"] is True and e["AuthorizationSections"] == [] and e["LaterSections"] == [] and e["Problems"] == [PEND] and
+             e["SectionsAfterBase"] == []):
+         cases[-1]["Result"] = "FAIL"
+-    e = run_case("O00b-pendiente-con-una-seccion-posterior-a-96", dec_base + "\n## %d. Nota (selftest)\n" % AS, [PEND], auth=pending)
++    e = run_case("O00b-pendiente-con-una-seccion-posterior-a-98", dec_base + "\n## %d. Nota (selftest)\n" % AS, [PEND], auth=pending)
+     if [x["Number"] for x in e["SectionsAfterBase"]] != [AS] or e["Problems"] != [PEND]:
+         cases[-1]["Result"] = "FAIL"
+     fresh = load("owner_gate_as_frozen", os.path.join(KITDATA, "owner_gate.py"))
+@@ -1730,10 +1736,10 @@
+     cases.append({"Case": "O00c-modulo-del-kit-pendiente-o-fijado-entero", "Pins": pins, "Pending": fresh.authorization_pending(pins),
+                   "Result": "PASS" if structural and fresh.BASE_SECTION == BASE_SECTION and fresh.PENDING_REASON == PEND and
+                   fresh.OBJECT_BLOB == blob and fresh.RUN_ID == run_id else "FAIL"})
+-    run_case("O01-autorizacion-posterior-a-96-fijada-pasa", dec_auth)
++    run_case("O01-autorizacion-posterior-a-98-fijada-pasa", dec_auth)
+     run_case("O01b-autorizacion-con-el-texto-de-la-head-como-referencia", dec_auth, dec_cl=dec_auth)
+     run_case("O02-seccion-posterior-a-la-fijada", dec_auth + "\n## %d. Disposición del Coordinator: otra (selftest)\n\ntexto\n" % (AS + 1), [LATER])
+-    run_case("O03-seccion-99-cualquiera-posterior", dec_auth + "\n## 99. Nota (selftest)\n", [LATER])
++    run_case("O03-seccion-101-cualquiera-posterior", dec_auth + "\n## 101. Nota (selftest)\n", [LATER])
+     t = dec_auth.rstrip("\n") + " (selftest)\n"
+     run_case("O04-fijada-con-otro-texto", t, [NOAUTH])
+     t = dec_base + syn_text.replace("Disposición del Coordinator", "Disposición del Owner")
+@@ -1744,7 +1750,7 @@
+     run_case("O07-fijada-con-el-blob-pegado", t, [NOAUTH], auth=pin(t))
+     run_case("O08-sin-la-seccion-fijada", dec_base, [UNIQUE + " (0)", NOAUTH])
+     run_case("O09-dos-secciones-fijadas", dec_auth + "\n## %d. Duplicado (selftest)\n" % AS, [UNIQUE + " (2)", NOAUTH])
+-    run_case("O10-fijada-no-posterior-a-96", dec_base, [NOTAFTER, NOAUTH], auth=pin(dec_base, BASE_SECTION))
++    run_case("O10-fijada-no-posterior-a-98", dec_base, [NOTAFTER, NOAUTH], auth=pin(dec_base, BASE_SECTION))
+     run_case("O10b-fijada-con-un-numero-que-no-es-entero", dec_auth, [NOTAFTER, "decisiones sin un único encabezado §%d (0)" % AS, NOAUTH],
+              auth=dict(auth95, Section=str(AS)))
+     run_case("O11-a7-en-la-head-con-otro-blob", dec_auth, ["no tiene el blob de A-7 fijado en el kit"], obj_head=OTHER_A7_BLOB)
+@@ -1775,9 +1781,9 @@
+                                                       "otra línea que empieza por «CLAUDE-CLI-I62 =»"], dec_cl=t, auth=pin(t + syn_text))
+     t = before_auth(["CLAUDE-CLI-I62 = B (revocada)", ""])
+     run_case("O22-otra-linea-claude-cli-i62", t + syn_text, ["otra línea que empieza por «CLAUDE-CLI-I62 =»"], dec_cl=t, auth=pin(t + syn_text))
+-    t = dec_auth.replace("suma 3 198 bytes", "suma 3 199 bytes")
++    t = dec_auth.replace("suma 3 740 bytes", "suma 3 199 bytes")
+     assert t != dec_auth
+-    run_case("O23-decision-96-cambiada-en-la-head", t, ["no crece solo por añadido"], dec_cl=dec_base)
++    run_case("O23-decision-98-cambiada-en-la-head", t, ["no crece solo por añadido"], dec_cl=dec_base)
+     t = dec_auth.replace("suma 3 299 bytes", "suma 3 298 bytes")
+     assert t != dec_auth
+     run_case("O23b-decision-92-cambiada-en-la-head", t, ["no crece solo por añadido"], dec_cl=dec_base)
+@@ -2074,7 +2080,7 @@
+         RunFiles=len(PR.RUN_FILES), Copies=len(PR.CLOSURE["FaithfulCopies"]), Consistent=ok_["Ok"], WithoutFaithfulCopies=no_fc["Mismatches"],
+         ManifestWithoutLast=no_man["Mismatches"], RunWithoutLast=no_copy["Ok"], RunWithLaunch=with_launch["Ok"])
+     # X06 (decisions §96, point 6): the reference pattern of result.schema.json (the same in every Ref, Evidence and ClauseRefs) admits every
+-    # closure path and the premise run files, and none of the negatives (the misspelled path of round 2, absolute, leading slash, backslashes,
++    # closure path and the premise run files, and none of the negatives (the misspelled path of round 3, absolute, leading slash, backslashes,
+     # `..`, `.`, a faithful copy, prompt.md, the round-1 premise, a file outside the closure, no line, line 0, another spelling of a premise)
+     pats = []
+ 
+@@ -2117,7 +2123,7 @@
+     gate_rows = [c for c in cases if c["Case"].startswith("G")]
+     owner_rows = [c for c in cases if c["Case"].startswith(("O", "L"))]
+     x_rows = [c for c in cases if c["Case"].startswith("X")]
+-    doc = {"Selftest": "post-review.py v7.0-a7r3 + transport_gate.py + owner_gate.py (A-7 ronda 3) + pin_authorization.values + c3_analysis.analyze + "
++    doc = {"Selftest": "post-review.py v7.0-a7r4 + transport_gate.py + owner_gate.py (A-7 ronda 4) + pin_authorization.values + c3_analysis.analyze + "
+                        "coherencia con launch.py y patrón de referencias del esquema",
+            "Environment": "SYNTHETIC" if pr.CLOSURE.get("Synthetic") else "REAL (clon y run del kit)",
+            "Clone": CLONE, "Run": RUN, "Rev": pr.REV, "Object": {"Path": pr.OBJECT, "Blob": pr.OBJECT_BLOB}, "Provisional": pr.CLOSURE.get("Provisional"),

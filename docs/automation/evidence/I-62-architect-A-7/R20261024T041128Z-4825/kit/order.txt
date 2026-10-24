@@ -1,0 +1,81 @@
+I-62 — COORDINATOR DISPOSITION §98
+A-7 ROUND 3 / NEGATIVE CONTROLS AFTER REVERIFICATION
+1. Dictamen
+Registrar append-only:
+
+* Review A-7 ronda 3 = ACCREDITED.
+* Architect = CHANGES REQUIRED.
+* A62-A7R3-R1 = ACCEPTED REQUIRED.
+* A62-A7R2-R1 = PARTIALLY_CORRECTED.
+
+Mantener A-7 como PROPUESTA y conservar íntegramente el resultado custodiado en 068d3368.
+2. Corrección autorizada
+Autorizar PREPARACIÓN de A-7 ronda 4, exclusivamente para resolver A62-A7R3-R1.
+Extender la admisión del papel REBASE a los controles negativos de RAE §10 que deriven de una reverificación válida de 16.7.
+Exigir:
+
+* identidad de la reverificación de origen;
+* `RunId`, tarea e intento vinculados;
+* `RebaseMap` coherente con el registro original;
+* `MainSha_eval` derivado de la reverificación válida;
+* reproducción de entradas sin sustituciones no autorizadas;
+* aplicación de las mutaciones específicas de cada control negativo;
+* rechazo de registros ajenos, inventados o incompatibles.
+
+No admitir REBASE en VERIFY ordinaria ni en la medición A6-7 cuando no exista reverificación aplicable.
+3. Matriz de cobertura obligatoria
+Antes de construir otro kit, verificar estáticamente todas las modalidades:
+
+* VERIFY ordinaria.
+* Reverificación inicial de 16.7.
+* nc1, nc2, nc3 y demás controles negativos con invocación, tanto ordinarios como derivados de reverificación.
+* N4–N7 y sus variantes aplicables.
+* Segunda recuperación de 16.7, si el protocolo la permite; si no existe una ruta autorizada, documentar la exclusión.
+* VERIFY con instrumento y sin instrumento.
+
+Para cada modalidad identificar entradas, procedencia, cierre, mutaciones permitidas, comprobaciones y resultado esperado.
+No inventar escenarios ni ampliar presupuestos.
+4. Preflight dirigido
+Actualizar únicamente las piezas dependientes:
+
+* texto afectado de A7-1;
+* formato de designación;
+* constructor;
+* validador;
+* `designate_a7`;
+* guardas y negativos afectados.
+
+Ejecutar nc1, nc2 y N4 derivados de reverificación, incluyendo casos de sustitución y manipulación de RebaseMap.
+Verificar también que los casos previamente conformes no sufran regresiones.
+Conservar A-5, A-6, EFF/EFF^1, oráculos y líneas Owner intactos.
+5. Opcionales
+O1: registrar la diferencia entre el cierre de A7-1 y la derivación del aceptante respecto de MainAfterSha e imágenes de rebase. Evaluar si afecta a los escenarios obligatorios; no declararla resuelta sin evidencia.
+O2: comprobar la segunda recuperación de 16.7 dentro de la matriz de cobertura.
+O3: corregir únicamente la enumeración descriptiva correspondiente.
+No añadir otra enmienda por estos opcionales.
+6. Eficiencia
+Reutilizar componentes congelados idénticos y sus evidencias aplicables.
+Evitar reconstruir auditores, ejecutar cientos de mutantes o preparar otra revisión completa hasta que la matriz de modalidades demuestre que el cierre es total.
+Aplicar validación incremental cuando la autoridad y las dependencias lo permitan.
+7. Publicación
+Si el preflight es conforme, publicar A-7 ronda 4 como PROPUESTA con nuevo blob.
+Ejecutar las guardas sobre el commit exacto y custodiar CI.
+Preparar el kit acotado, pero no ejecutar revisión formal sin nueva disposición.
+8. Límites
+No ejecutar Codex.
+No consumir A6-7.
+No crear B1 ni abrir FX-U2.
+No modificar A-1..A-6, producción, I-65 ni D.5.
+I-64 mantiene prioridad de recursos.
+9. Entrega
+Informar:
+
+* matriz completa de modalidades;
+* corrección exacta de A7-1;
+* resultados de nc1, nc2 y N4 derivados de reverificación;
+* clasificación de O1–O3;
+* negativos, guardas y CI;
+* riesgos sin demostrar;
+* blob final y preparación para una revisión acotada.
+
+No declarar A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS.

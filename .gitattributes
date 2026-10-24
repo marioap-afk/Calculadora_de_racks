@@ -45,3 +45,7 @@ docs/automation/evidence/I-62-architect-A-7/R20261019T201030Z-d1bf/**  -text
 # I-62 (decisiones §96; evidencia §198) — custodia del kit de la revision de A-7 ronda 3. Sus SHA-256 estan en MANIFEST.sha256 y en el README de la
 # carpeta; `-text` conserva los bytes exactos de las salidas crudas de Windows.
 docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/**  -text
+
+# I-62 (decisiones §98; evidencia §204) — custodia del kit de la revision de A-7 ronda 4. Sus SHA-256 estan en MANIFEST.sha256 y en el README de la
+# carpeta; `-text` conserva los bytes exactos de las salidas crudas de Windows.
+docs/automation/evidence/I-62-architect-A-7/R20261024T041128Z-4825/**  -text

@@ -1,0 +1,99 @@
+--- r3/finish_kit.py
++++ r4/finish_kit.py
+@@ -1,35 +1,38 @@
+-"""Termina el kit de la ÚNICA revisión formal de la RONDA 3 de la enmienda A-7 (decisiones §96, puntos 6 y 7). Lo ejecuta quien prepara el kit, una vez,
++"""Termina el kit de la ÚNICA revisión formal de la RONDA 4 de la enmienda A-7 (decisiones §98, puntos 6 y 7). Lo ejecuta quien prepara el kit, una vez,
+ desde el directorio kit/ o con su ruta. NO lanza el revisor y NO ejecuta el binario de claude (launch.py solo con --record-probe y --dry-run).
+-Derivado del finish_kit.py del kit de A-7 ronda 2 (R20261019T201030Z-d1bf, a su vez del de la ronda 1): las mismas funciones step y frozen y la
+-misma secuencia; cambian el clon y el run (D:\\r62-arch-a7r3*), la premisa (a7-r2.md) y la sección base (§96). La autorización se entrega
+-PENDIENTE (el paso 5 lo comprueba), la mutación es la batería COMPLETA de mutation-post-review.py (decisiones §88, punto 4: cambiaron el auditor,
+-v7.0-a7r3, y el esquema del resultado; una sola vez, al final) y la prueba en seco exige BlockingChecks = solo la compuerta 11, con el único
+-motivo de la autorización pendiente.
++Derivado del finish_kit.py del kit de A-7 ronda 3 (R20261023T180846Z-62bd, a su vez del de la ronda 1): las mismas funciones step y frozen y la
++misma secuencia; cambian el clon y el run (D:\\r62-arch-a7r4*), la premisa (a7-r3.md) y la sección base (§98). La autorización se entrega
++PENDIENTE (el paso 5 lo comprueba), la mutación es la DIRIGIDA de targeted-mutation.py (decisiones §98, punto 6: reutilizar componentes
++congelados idénticos y sus evidencias; validación incremental: las reglas del auditor v7.0-a7r4, de la compuerta D-01 y de la fidelidad tienen los
++mismos sitios que en la ronda 3, cuya batería completa sigue siendo la evidencia aplicable, y owner_gate.py se muta sobre los casos de la compuerta
++11; una sola vez, al final; con --full-mutation, la batería completa de mutation-post-review.py) y la prueba en seco exige BlockingChecks = solo la
++compuerta 11, con el único motivo de la autorización pendiente.
+ 
+ Pasos, en orden; se detiene en el primero que falla (código distinto de 0) y no deshace nada:
+-  1. prepare_clone.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT> → D:\\r62-arch-a7r3, D:\\r62-arch-a7r3-run\\{order.txt,a7-r2.md} y
++  1. prepare_clone.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT> → D:\\r62-arch-a7r4, D:\\r62-arch-a7r4-run\\{order.txt,a7-r3.md} y
+      kit-params.json (con --clone-ready se omite: prepare_clone.py se ejecuta una sola vez y ya se ejecutó; se exige kit-params.json con esos commits)
+   2. make_closure.py --render-prompt                   → kit/prompt.md (desde prompt.template.md)
+   2b. make_closure.py --faithful-copies                → kit/fiel__*.txt (copias fieles de los archivos marcados; decisiones §94, punto 5)
+-  3. copia byte a byte de kit/prompt.md y de kit/fiel__*.txt → D:\\r62-arch-a7r3-run\\
++  3. copia byte a byte de kit/prompt.md y de kit/fiel__*.txt → D:\\r62-arch-a7r4-run\\
+   4. make_closure.py                                   → kit/closure.json (cierre fijado por blob en CLONE_COMMIT)
+   5. autorización PENDIENTE: owner_gate.py con AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None (no se fija nada; la fijará, si la hay, una
+-     disposición del Coordinator posterior a §96 con pin_authorization.py, y el kit se volverá a congelar)
++     disposición del Coordinator posterior a §98 con pin_authorization.py, y el kit se volverá a congelar)
+   6. transport_gate.py init y set MEASURED kit/claude-cli-characterization.json → kit/transport-gate.json (MEASURED, SHA-256 4ba6ba58…)
+-  7. verify_clone.py                                   → kit/clone-verification.json (AllChecks, con la reproducción de las guardas de la ronda 3)
++  7. verify_clone.py                                   → kit/clone-verification.json (AllChecks, con la reproducción de las guardas de la ronda 4)
+   8. selftest-post-review.py kit/selftest-result.json  → AllPass, sobre el clon y el run reales (L00: la compuerta 11 real, PENDIENTE)
+   8b. selftest-fidelity.py kit/selftest-fidelity-result.json → AllPass (detector, copias fieles y sus negativos; decisiones §94, punto 5)
+-  9. make_manifest.py                                  → kit/kit-manifest.json (congelación previa a la batería)
++  9. make_manifest.py                                  → kit/kit-manifest.json (congelación previa a la mutación)
+  10. python -B kit/launch.py --record-probe            → la orden congelada exacta, desde la carpeta que contiene kit/: código 0 (sonda de registro)
+- 11. python -B kit/launch.py --dry-run                 → ../launch-dry-run-before-full-mutation.json: código 2 siempre en seco; se exige
++ 11. python -B kit/launch.py --dry-run                 → ../launch-dry-run-before-mutation.json: código 2 siempre en seco; se exige
+                                                          BlockingChecks = [11-OwnerAndAuthorizationGate] con Problems = [PENDING_REASON],
+                                                          AuthorizationPending, FrozenCommandGuard y RecordProbe en Ok, AuthorizationSections = []
+                                                          y LaterSections = []; 4 y 5 sin ejecutar
+- 12. mutation-post-review.py kit/mutation-result.json  → AllKilled (batería COMPLETA de los cuatro módulos; con --no-mutation se omite y el
+-                                                         manifiesto lo declara), y después 9-11 otra vez (manifiesto final, ../record-probe.json y
+-                                                         ../launch-dry-run.json con la misma condición)
++ 12. targeted-mutation.py kit/targeted-mutation-result.json → AllPass (mutación DIRIGIDA, decisiones §98, punto 6; con --full-mutation,
++                                                         mutation-post-review.py kit/mutation-result.json, la batería COMPLETA de los cuatro módulos;
++                                                         con --no-mutation se omite y el manifiesto lo declara), y después 9-11 otra vez (manifiesto
++                                                         final, ../record-probe.json y ../launch-dry-run.json con la misma condición)
+ Los pasos 10 y 11 se ejecutan SIN flags ni variables añadidos (la orden congelada): la guarda de launch.py los rechazaría.
+-Uso: python -B finish_kit.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT> [--clone-ready] [--no-mutation]
++Uso: python -B finish_kit.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT> [--clone-ready] [--no-mutation | --full-mutation]
+ """
+ import hashlib
+ import json
+@@ -40,7 +43,7 @@
+ import sys
+ 
+ KIT = os.path.dirname(os.path.abspath(__file__))
+-RUN = r"D:\r62-arch-a7r3-run"
++RUN = r"D:\r62-arch-a7r4-run"
+ CHAR = os.path.join(KIT, "claude-cli-characterization.json")
+ CHAR_SHA = "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c"
+ GATE11 = "11-OwnerAndAuthorizationGate"
+@@ -89,7 +92,7 @@
+ 
+ 
+ def check_pending():
+-    """Paso 5: la autorización se entrega PENDIENTE (decisiones §96, punto 7: la revisión exige una disposición del Coordinator posterior)."""
++    """Paso 5: la autorización se entrega PENDIENTE (decisiones §98, punto 7: la revisión exige una disposición del Coordinator posterior)."""
+     og = owner_gate()
+     if not og.authorization_pending(og.pinned_authorization()) or (og.AUTH_SECTION, og.AUTH_HEADING, og.AUTH_TEXT_SHA) != (None, None, None):
+         raise SystemExit("STOP: owner_gate.py no entrega la autorización pendiente")
+@@ -141,9 +144,12 @@
+     step("8 selftest", ["selftest-post-review.py", os.path.join(KIT, "selftest-result.json")])
+     step("8b selftest de fidelidad", ["selftest-fidelity.py", os.path.join(KIT, "selftest-fidelity-result.json")])
+     step("9 manifest", ["make_manifest.py"])
+-    probe_and_dry_run("launch-dry-run-before-full-mutation.json")
++    probe_and_dry_run("launch-dry-run-before-mutation.json")
+     if "--no-mutation" not in argv:
+-        step("12 mutation (batería COMPLETA)", ["mutation-post-review.py", os.path.join(KIT, "mutation-result.json")])
++        if "--full-mutation" in argv:
++            step("12 mutation (batería COMPLETA)", ["mutation-post-review.py", os.path.join(KIT, "mutation-result.json")])
++        else:
++            step("12 mutation (DIRIGIDA, decisiones §98, punto 6)", ["targeted-mutation.py", os.path.join(KIT, "targeted-mutation-result.json")])
+         step("9 manifest (final)", ["make_manifest.py"])
+         d, g = probe_and_dry_run("launch-dry-run.json")
+     else:
+@@ -153,7 +159,7 @@
+                       "Gate11": {k: g.get(k) for k in ("Ok", "Problems", "A6LineNumbers", "ClaudeCliLineNumbers", "ObjectBlobAtHeadMatches",
+                                                        "A6AgreedBlobAtHeadMatches", "AuthorizationPending", "AuthorizationSections", "LaterSections",
+                                                        "SectionsAfterBase")},
+-                      "Next": "custodiar el kit; la revisión solo puede lanzarse después de una disposición del Coordinator posterior a §96 que la "
++                      "Next": "custodiar el kit; la revisión solo puede lanzarse después de una disposición del Coordinator posterior a §98 que la "
+                               "nombre, fijada con pin_authorization.py en owner_gate.py y con el kit vuelto a congelar; entonces, una vez, desde la "
+                               "carpeta que contiene kit/: python -B kit/launch.py"}, ensure_ascii=False))
+     return 0

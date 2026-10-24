@@ -1,0 +1,6 @@
+I-62 A-7 ronda 4: identificadores de la ÚNICA revisión formal acotada (decisiones §98, punto 7), generados una vez el 2026-10-24T04:11:28Z (UTC)
+RunId                  = R20261024T041128Z-4825
+InvocationId           = I20261024T041128Z-4825
+LogicalReviewRequestId = L20261024T041128Z-4825
+AttemptSeq             = 1
+SessionId              = bd018dcb-165f-437d-bcfc-c8adaed5d774

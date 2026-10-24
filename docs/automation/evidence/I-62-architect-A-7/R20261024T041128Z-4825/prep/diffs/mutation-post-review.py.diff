@@ -1,0 +1,30 @@
+--- r3/mutation-post-review.py
++++ r4/mutation-post-review.py
+@@ -1,11 +1,11 @@
+-"""Mutation test of the auditor v7.0-a7r3 (post-review.py), of transport_gate.py (unchanged from A-6 round 4 and round 3: the D-01 gate and the
+-explicit Windows decoding of decisions §84, point 5), of owner_gate.py (A-7 round 3: Owner line of §78, CLAUDE-CLI-I62, the round-3 A-7 and agreed
+-A-6 blobs at the worktree HEAD and a Coordinator authorization after §96, pinned with its number, heading, blob and text SHA-256 and no later
+-section; delivered PENDING, so the audit cases pin a synthetic §97) and of fidelity.py, for the ONE formal review of ROUND 3 of amendment A-7
+-(decisions §96, points 6 and 7): «cada regla del auditor tiene un caso que falla sin ella», checked mechanically. The harness of the A-7 round-2
+-kit (R20261019T201030Z-d1bf, itself the round-1 harness with the read-fidelity extension of phase 1), unchanged except its names; it honours
++"""Mutation test of the auditor v7.0-a7r4 (post-review.py), of transport_gate.py (unchanged from A-6 round 4 and round 3: the D-01 gate and the
++explicit Windows decoding of decisions §84, point 5), of owner_gate.py (A-7 round 4: Owner line of §78, CLAUDE-CLI-I62, the round-4 A-7 and agreed
++A-6 blobs at the worktree HEAD and a Coordinator authorization after §98, pinned with its number, heading, blob and text SHA-256 and no later
++section; delivered PENDING, so the audit cases pin a synthetic §99) and of fidelity.py, for the ONE formal review of ROUND 4 of amendment A-7
++(decisions §98, points 6 and 7): «cada regla del auditor tiene un caso que falla sin ella», checked mechanically. The harness of the A-7 round-3
++kit (R20261023T180846Z-62bd, itself the round-1 harness with the read-fidelity extension of phase 1), unchanged except its names; it honours
+ RACKCAD_A7_KITDATA like the self-test (by default, the real clone and run of the kit). This is the FULL battery (every site of the four modules),
+-run once at the end of the kit's preparation (decisions §88, point 4: the auditor, v7.0-a7r3 with the reference-exactness rule, and the result
++run once at the end of the kit's preparation (decisions §88, point 4: the auditor, v7.0-a7r4 with the reference-exactness rule, and the result
+ schema changed).
+ 
+ A rule site is a line that appends a reason or a problem: `add(…)`, `c.append(…)` and `row["Problems"].append(…)` in post-review.py, and
+@@ -148,7 +148,7 @@
+     os.makedirs(mut_dir, exist_ok=True)
+     failing, n_cases = judge(ST.load_auditor())
+     fid_failing = [c["Case"] for c in SF.cases(SF.load()) if c["Result"] != "PASS"]
+-    doc = {"Mutation": "post-review.py v7.0-a7r3 + transport_gate.py + owner_gate.py (A-7 ronda 3) + fidelity.py (decisiones §94, punto 5): cada sitio de "
++    doc = {"Mutation": "post-review.py v7.0-a7r4 + transport_gate.py + owner_gate.py (A-7 ronda 4) + fidelity.py (decisiones §94, punto 5): cada sitio de "
+                        "regla desactivado debe hacer fallar al menos un caso del selftest",
+            "Environment": "SYNTHETIC" if ST._CLOSURE.get("Synthetic") else "REAL (clon y run del kit)",
+            "Baseline": {"Cases": n_cases, "Failing": failing, "FidelityUnitFailing": fid_failing, "AllPass": not failing and not fid_failing},

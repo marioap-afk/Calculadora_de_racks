@@ -1,0 +1,168 @@
+--- r3/launch.py
++++ r4/launch.py
+@@ -1,14 +1,14 @@
+-"""I-62, decisiones §96: lanzador de la ÚNICA revisión formal independiente del Architect de la RONDA 3 de la enmienda A-7 (blob 8bcccb2f…
+-fijado en kit-params.json, en el cierre y en owner_gate.py), acotada a A62-A7R2-R1 y a sus consecuencias, por una celda claude-cli medida y
++"""I-62, decisiones §98: lanzador de la ÚNICA revisión formal independiente del Architect de la RONDA 4 de la enmienda A-7 (blob ebb3a87b…
++fijado en kit-params.json, en el cierre y en owner_gate.py), acotada a A62-A7R3-R1 y a sus consecuencias, por una celda claude-cli medida y
+ elegible (autorización del Owner CLAUDE-CLI-I62 = A). Commit del clon: kit-params.json. Lo ejecuta la sesión principal, una sola vez y sin
+ reintento, con la orden congelada EXACTA `python -B kit/launch.py` desde la carpeta que contiene kit/, solo con el kit congelado y custodiado y solo
+-con una disposición del Coordinator POSTERIOR a §96 que nombre esta revisión fijada en owner_gate.py (§96, punto 7: «Preparar el kit acotado, pero
+-no lanzar una nueva revisión formal sin disposición posterior»); en el kit entregado esa autorización está PENDIENTE y la compuerta 11 bloquea.
++con una disposición del Coordinator POSTERIOR a §98 que nombre esta revisión fijada en owner_gate.py (§98, punto 7: «Preparar el kit acotado, pero
++no ejecutar revisión formal sin nueva disposición»); en el kit entregado esa autorización está PENDIENTE y la compuerta 11 bloquea.
+ Quien prepara el kit no lo lanza (solo sus modos --dry-run y --record-probe, que no ejecutan el binario). Derivado del launch.py del kit de A-7
+-ronda 2 (R20261019T201030Z-d1bf, a su vez del de la ronda 1 con la corrección de fidelidad de la fase 1): la misma lógica; cambian las constantes
+-(clon, run, session id, patrón de proyecto, archivos del run) y la premisa de la ronda anterior (a7-r2.md con el blob 8a528133 de la ronda 2).
+-Corrección de fidelidad (decisiones §94, punto 5; reutilizada por §96, punto 6): la comprobación 7 toma los archivos del run del cierre
+-(fidelity.run_files_of: order.txt, prompt.md, a7-r2.md y las copias fieles de los archivos que Read no entrega fielmente).
++ronda 3 (R20261023T180846Z-62bd, a su vez del de la ronda 1 con la corrección de fidelidad de la fase 1): la misma lógica; cambian las constantes
++(clon, run, session id, patrón de proyecto, archivos del run) y la premisa de la ronda anterior (a7-r3.md con el blob 8bcccb2f de la ronda 3).
++Corrección de fidelidad (decisiones §94, punto 5; reutilizada por §98, punto 6): la comprobación 7 toma los archivos del run del cierre
++(fidelity.run_files_of: order.txt, prompt.md, a7-r3.md y las copias fieles de los archivos que Read no entrega fielmente).
+ 
+ Antes de lanzar comprueba, y se NIEGA a lanzar (código 2, sin escribir nada) si falla cualquiera de estas condiciones:
+   G. la orden es exactamente FROZEN_COMMAND (más, como mucho, --dry-run o --record-probe): se evalúa al importar, antes de cargar
+@@ -25,20 +25,20 @@
+   5. autenticación: `claude.exe auth status --json` con loggedIn = true (salida en bytes, UTF-8 estricto; solo se conservan loggedIn, authMethod y
+      apiProvider; ni correo ni organización; ninguna credencial se lee);
+   6. clon: HEAD = el commit, separado (sin ninguna rama local), sin remoto, árbol limpio con ignorados, blobs designados, sin enlaces ni uniones;
+-  7. run: exactamente order.txt, prompt.md, a7-r2.md y las copias fieles de FaithfulCopies (decisiones §94, punto 5: fidelity.run_files_of exige
++  7. run: exactamente order.txt, prompt.md, a7-r3.md y las copias fieles de FaithfulCopies (decisiones §94, punto 5: fidelity.run_files_of exige
+      que RunFiles del cierre termine en esas copias; sin launch/), cada uno = copia del kit = RunFileHashes del cierre = kit-manifest.json, y
+-     a7-r2.md con el blob Git de la ronda 2 (8a528133);
++     a7-r3.md con el blob Git de la ronda 3 (8bcccb2f);
+   8. sesión nueva: sin transcripción con el session id fijado en ningún proyecto y sin directorio de proyecto para el clon ni para el run (sin
+-     memoria previa; patrón D--r62-arch-a7r3*, que no casa con los de las revisiones anteriores: D--r62-arch-a7r2* de la ronda 2 y D--r62-arch-a7
++     memoria previa; patrón D--r62-arch-a7r4*, que no casa con los de las revisiones anteriores: D--r62-arch-a7r3* de la ronda 3 y D--r62-arch-a7
+      de la ronda 1);
+   9. longitud de la línea de órdenes de Windows (< 32 000 caracteres);
+  10. compuerta de transporte (D-01): transport-gate.json en MEASURED (sonda C3 de la lista exacta con --add-dir, en el registro de caracterización
+      fijado por su SHA-256) o ACCEPTED (aceptación explícita registrada), con sus predicados satisfechos (transport_gate.evaluate); la plantilla de
+      los argumentos que se van a lanzar = la de la compuerta;
+- 11. compuerta del Owner y de la autorización (owner_gate.py; decisiones §78, §56 y §96, punto 7), BLOQUEANTE: en la HEAD del worktree de
++ 11. compuerta del Owner y de la autorización (owner_gate.py; decisiones §78, §56 y §98, punto 7), BLOQUEANTE: en la HEAD del worktree de
+      I-62, la línea del Owner A6-ADR0046-9-FX02 (SHA-256 83152eae…) como línea completa después de §78 y en la A-6 acordada del clon;
+      CLAUDE-CLI-I62 = A vigente y el binario medido = el del cierre; A-7 en la HEAD con el blob fijado y A-6 con el blob acordado; la autorización
+-     fijada en owner_gate.py (una disposición del Coordinator posterior a §96, con su número, su encabezado y el SHA-256 de su texto; PENDIENTE en el
++     fijada en owner_gate.py (una disposición del Coordinator posterior a §98, con su número, su encabezado y el SHA-256 de su texto; PENDIENTE en el
+      kit entregado: la compuerta bloquea con el único motivo de la autorización pendiente), con el
+      blob completo de A-7 como token literal y NINGUNA sección posterior; decisiones crece solo por añadido desde el clon, sin cambios sin commit,
+      y la HEAD desciende del clon (solo lectura de git en el worktree). Se evalúa antes de las comprobaciones 4 y 5: si no pasa, el binario no se
+@@ -70,7 +70,7 @@
+                                               auth status: 4 y 5 quedan sin ejecutar), sin escribir en el kit, el run ni el clon y sin lanzar
+                                               (código 2 siempre); la 11 sí se evalúa (solo lectura de git)
+      python -B kit/launch.py --record-probe → G y solo la sonda P (código 0 si el registro funciona en este entorno)
+-Las correcciones G, R, P y D y el resto de la lógica, byte a byte las del lanzador de A-6 ronda 4 (y de la ronda 3).
++Las correcciones G, R, P y D y el resto de la lógica, byte a byte las del lanzador de A-6 ronda 4 (y de las rondas 2 y 3 de A-7).
+ """
+ import datetime
+ import glob
+@@ -166,13 +166,13 @@
+ _spec = importlib.util.spec_from_file_location("fidelity", os.path.join(KIT, "fidelity.py"))
+ FID = importlib.util.module_from_spec(_spec)
+ _spec.loader.exec_module(FID)
+-CLONE, RUN = r"D:\r62-arch-a7r3", r"D:\r62-arch-a7r3-run"
++CLONE, RUN = r"D:\r62-arch-a7r4", r"D:\r62-arch-a7r4-run"
+ PARAMS = json.load(open(os.path.join(KIT, "kit-params.json"), encoding="utf-8"))
+ assert PARAMS.get("Provisional") is False and PARAMS.get("Clone") == CLONE and PARAMS.get("Run") == RUN, "kit-params.json provisional o de otro clon"
+-REV = PARAMS["CloneCommit"]   # commit del clon (A-7 ronda 3 publicada y registrada, el resultado `run` de sus guardas custodiado y decisiones §96)
++REV = PARAMS["CloneCommit"]   # commit del clon (A-7 ronda 4 publicada y registrada, el resultado `run` de sus guardas custodiado y decisiones §98)
+ WORKTREE = os.path.join(os.environ.get("USERPROFILE", ""), ".codex", "worktrees", "architecture-portabilidad-coordinador-principal")   # solo lectura (11)
+-SESSION_ID = "a720544e-1ac0-43d9-96bd-ae39e1090dfb"   # uuid4 del único lanzamiento (generado una vez; prep/ids.txt)
+-A7R2_BLOB = "8a528133c7cccd83356e31f8fd79cd2ebb0cec15"   # a7-r2.md: el texto de A-7 de la ronda 2 (commit e90b444d), premisa de la ronda 3
++SESSION_ID = "bd018dcb-165f-437d-bcfc-c8adaed5d774"   # uuid4 del único lanzamiento (generado una vez; prep/ids.txt)
++A7R3_BLOB = "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff"   # a7-r3.md: el texto de A-7 de la ronda 3 (commit 37ac6ca4), premisa de la ronda 4
+ BIN_DISPLAY = r"%APPDATA%\Claude\claude-code\2.1.299\f0584be0fbaf\claude.exe"
+ BIN = os.path.join(os.environ.get("APPDATA", ""), "Claude", "claude-code", "2.1.299", "f0584be0fbaf", "claude.exe")
+ BIN_SHA = "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b"
+@@ -180,14 +180,14 @@
+ FLAGS = ["-p", "--model", "claude-opus-5-5", "--effort", "xhigh", "--output-format", "stream-json", "--verbose", "--safe-mode",
+          "--strict-mcp-config", "--no-chrome", "--tools", "Read,Grep,Glob", "--permission-mode", "dontAsk", "--permission-prompts", "none"]
+ ADD_DIR = ["--add-dir", RUN]   # D-01: solo se lanza si transport-gate.json ata la medición C3 o la aceptación registrada
+-RUN_FILES = ["order.txt", "prompt.md", "a7-r2.md"]
++RUN_FILES = ["order.txt", "prompt.md", "a7-r3.md"]
+ LAUNCH_ENV_PREFIXES = ("PYTHON", "GIT_", "CLAUDE", "ANTHROPIC")   # §84.2: nombres en preflight.json; valores solo de las PYTHON*
+ TIMEOUT_S, KILL_GRACE_S = 3600, 60
+ AUTH_SETTLE_S = 120                                    # espera entre `auth status` y el lanzamiento (heredada del intento 2 de A-3)
+ AUTH_REFRESH_MARK = "Failed to refresh OAuth token"    # texto del result del intento 1 (TRANSPORT_AUTH_REFRESH_CONFLICT)
+ AUTH_DONE = []                                         # instante monotónico del final de `auth status` (preflight 5)
+ PROJECTS = os.path.join(os.path.expanduser("~"), ".claude", "projects")
+-PROJECT_DIR = os.path.join(PROJECTS, "D--r62-arch-a7r3")
++PROJECT_DIR = os.path.join(PROJECTS, "D--r62-arch-a7r4")
+ TRANSCRIPT = os.path.join(PROJECT_DIR, SESSION_ID + ".jsonl")
+ now = lambda: datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+ 
+@@ -236,7 +236,7 @@
+ 
+ 
+ def run_files_check(closure, manifest, run_dir, kit_dir):
+-    """Comprobación 7: el run tiene exactamente order.txt, prompt.md, a7-r2.md y las copias fieles de FaithfulCopies (decisiones §94, punto 5;
++    """Comprobación 7: el run tiene exactamente order.txt, prompt.md, a7-r3.md y las copias fieles de FaithfulCopies (decisiones §94, punto 5;
+     fidelity.run_files_of) y nada más (tampoco launch/); cada archivo = copia del kit = RunFileHashes del cierre = kit-manifest.json.
+     → {Ok, Listing, Mismatches, Expected}. El self-test la ejerce leída con ast (caso X05)."""
+     listing = sorted(os.listdir(run_dir))
+@@ -302,13 +302,13 @@
+                     "Head": head, "Detached": detached, "Clean": status == "", "LocalBranches": branches, "Remotes": remotes,
+                     "BlobMismatches": blobs_bad, "ReparsePoints": len(reparse)}
+     c["7-RunFiles"] = run_files_check(closure, manifest, RUN, KIT)
+-    r2p = os.path.join(RUN, "a7-r2.md")
+-    c["7-RunFiles"]["A7R2GitBlob"] = git_blob(open(r2p, "rb").read()) if os.path.isfile(r2p) else None
+-    if c["7-RunFiles"]["A7R2GitBlob"] != A7R2_BLOB:
++    r2p = os.path.join(RUN, "a7-r3.md")
++    c["7-RunFiles"]["A7R3GitBlob"] = git_blob(open(r2p, "rb").read()) if os.path.isfile(r2p) else None
++    if c["7-RunFiles"]["A7R3GitBlob"] != A7R3_BLOB:
+         c["7-RunFiles"]["Ok"] = False
+-        c["7-RunFiles"]["Mismatches"].append("a7-r2.md sin el blob de la ronda 2 (8a528133)")
++        c["7-RunFiles"]["Mismatches"].append("a7-r3.md sin el blob de la ronda 3 (8bcccb2f)")
+     prior = glob.glob(os.path.join(PROJECTS, "*", SESSION_ID + ".jsonl"))
+-    project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(PROJECTS, "D--r62-arch-a7r3*")))
++    project_dirs = sorted(os.path.basename(p) for p in glob.glob(os.path.join(PROJECTS, "D--r62-arch-a7r4*")))
+     c["8-NewSession"] = {"Ok": not prior and not project_dirs, "PriorTranscripts": len(prior), "ProjectDirsForCloneOrRun": project_dirs}
+     cl = len(subprocess.list2cmdline(args))
+     c["9-CommandLine"] = {"Ok": cl < 32000, "Chars": cl}
+@@ -343,7 +343,7 @@
+ 
+ 
+ def base_record(session_id, executable, executable_sha, args, cwd, prompt, timeout_s, gate, settle):
+-    """Campos de run.json anteriores al lanzamiento (los de la ronda 2, sin cambios); comunes al lanzamiento real y a la sonda P."""
++    """Campos de run.json anteriores al lanzamiento (los de la ronda 3, sin cambios); comunes al lanzamiento real y a la sonda P."""
+     return {"SessionId": session_id, "Executable": executable, "ExecutableSha256": executable_sha, "Args": args, "Cwd": cwd,
+             "PromptSha256": hashlib.sha256(prompt).hexdigest(), "PromptBytes": len(prompt), "TimeoutSeconds": timeout_s,
+             "TransportGate": gate,
+@@ -437,7 +437,7 @@
+         print(json.dumps({"Refused": rec["Aborted"]}, ensure_ascii=False))
+         return 2
+     rc = run_and_record(rec, [resolved] + args[1:], CLONE, prompt, out_dir, "run.json", TIMEOUT_S, TRANSCRIPT,
+-                        "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a7r3\\" + SESSION_ID + ".jsonl", CLONE)
++                        "%USERPROFILE%\\.claude\\projects\\D--r62-arch-a7r4\\" + SESSION_ID + ".jsonl", CLONE)
+     print(json.dumps({k: rec.get(k) for k in ("SessionId", "Pid", "Start", "End", "ExitCode", "Killed", "TimedOut", "ResultMessage",
+                                               "TransportFailure", "PostRunErrors", "LaunchError", "Outcome", "OutcomeCategories")},
+                      ensure_ascii=False))
+@@ -462,7 +462,7 @@
+     try:
+         try:
+             spawn_and_wait(rec, procs, cmd, cwd, stdin_bytes, out_dir, timeout_s)
+-        except Exception as e:   # el hijo no arrancó o la espera falló: queda en el registro (en la ronda 2: traza y sin run.json)
++        except Exception as e:   # el hijo no arrancó o la espera falló: queda en el registro (en la ronda 3: traza y sin run.json)
+             p = procs[0] if procs else None
+             rec["LaunchError"] = {"Class": type(e).__name__, "Message": str(e)[:500], "ChildRunning": p is not None and p.poll() is None}
+         if procs:
+@@ -475,7 +475,7 @@
+ 
+ 
+ def spawn_and_wait(rec, procs, cmd, cwd, stdin_bytes, out_dir, timeout_s):
+-    """Lanzamiento, stdin y tope, sin cambios frente a la ronda 2 salvo los parámetros y `procs`, que recibe el proceso nada más crearlo."""
++    """Lanzamiento, stdin y tope, sin cambios frente a la ronda 3 salvo los parámetros y `procs`, que recibe el proceso nada más crearlo."""
+     with open(os.path.join(out_dir, "stdout.jsonl"), "wb") as fo, open(os.path.join(out_dir, "stderr.txt"), "wb") as fe:
+         p = subprocess.Popen(cmd, cwd=cwd, stdin=subprocess.PIPE, stdout=fo, stderr=fe)
+         procs.append(p)
+@@ -509,7 +509,7 @@
+ 
+ def post_run(rec, p, out_dir, transcript, transcript_display, repo):
+     """R: pasos posteriores al fin del proceso. Cada uno va aparte: su excepción queda en rec["PostRunErrors"] (paso, clase, mensaje) y los
+-    demás siguen. tasklist se captura en BYTES y el PID se busca en bytes: en la ronda 2, text=True con -X utf8 decodificó como UTF-8 la salida
++    demás siguen. tasklist se captura en BYTES y el PID se busca en bytes: en la ronda 3, text=True con -X utf8 decodificó como UTF-8 la salida
+     de tasklist en la página de la consola (cp850: «INFORMACIÓN:» con 0xE0), el hilo lector lanzó UnicodeDecodeError, q.stdout quedó en None y
+     el TypeError de la línea siguiente abortó launch.py antes de escribir run.json."""
+     so = []

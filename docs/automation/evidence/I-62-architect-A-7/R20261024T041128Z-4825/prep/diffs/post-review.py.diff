@@ -1,0 +1,120 @@
+--- r3/post-review.py
++++ r4/post-review.py
+@@ -1,11 +1,20 @@
+-"""I-62, decisiones §96: post-review audit v7.0-a7r3 of ONE claude-cli run of the ONE FORMAL REVIEW of ROUND 3 of amendment A-7
+-(docs/initiatives/I-62-A-7.md, blob 8bcccb2f… pinned in the closure and in owner_gate.py, PROPUESTA round 3), bounded to A62-A7R2-R1 and its direct
+-consequences (decisions §96, points 2 and 6), by an independent ARCHITECT. Declared and self-tested BEFORE the launch (Owner CLAUDE-CLI-I62 = A; the
++"""I-62, decisiones §98: post-review audit v7.0-a7r4 of ONE claude-cli run of the ONE FORMAL REVIEW of ROUND 4 of amendment A-7
++(docs/initiatives/I-62-A-7.md, blob ebb3a87b… pinned in the closure and in owner_gate.py, PROPUESTA round 4), bounded to A62-A7R3-R1 and its direct
++consequences (decisions §98, points 2 and 7), by an independent ARCHITECT. Declared and self-tested BEFORE the launch (Owner CLAUDE-CLI-I62 = A; the
+ launch also requires gate 11, owner_gate.py: the Owner line of §78, the A-7 blob and the agreed A-6 blob at the worktree HEAD and a Coordinator
+-disposition AFTER §96 naming this review, pinned in owner_gate.py with its number, heading, full blob and text SHA-256, and no later section; the kit
++disposition AFTER §98 naming this review, pinned in owner_gate.py with its number, heading, full blob and text SHA-256, and no later section; the kit
+ is delivered with that authorization PENDING); the principal session runs it afterwards, never before, on the complete run, and the auditor is not
+ corrected after the run.
+ 
++v7.0-a7r4 = the v7.0-a7r3 auditor (its text below, shifted one round by prep/shift_r4.py) with: the round-4 schema
++rackcad-a7r4-architect-review/0 (PriorFindingResolution of A62-A7R3-R1; the eleven changes of A-7 §3.8 in DeltaPurity; RegressionCheck of the twelve
++topics that round 3 found corrected or conforming; CompatibilityVerdicts A5 and A6, now on decisions §98, point 4: «Conservar A-5, A-6, EFF/EFF^1,
++oráculos y líneas Owner intactos»; Q-A7R4-01..03); the closure's DirectRead is RAE §10 L219-L226 (the negative controls run on copies of every input
++of the VERIFIED verification of the last WorkRunId, with the relative oracle); the round-4 Step 0 (STEP0_KEYS); gate 11 after §98; and the premise
++a7-r3.md (the round-3 text). The reference mechanism of decisions §96, point 6 (schema families, exactness of the written path, presence in the
++closure, faithful delivery) and every other rule are unchanged.
++
++Paragraph of v7.0-a7r3, as round 3 wrote it (round-3 numbers):
+ v7.0-a7r3 = the v6.0-a7r2 auditor (text below) with: the round-3 schema rackcad-a7r3-architect-review/0 (PriorFindingResolution of A62-A7R2-R1;
+ DeltaPurity WITHIN_SCOPE | OUTSIDE_SCOPE; RegressionCheck of what round 2 found corrected or conforming; CompatibilityVerdicts A5 and A6, the
+ explicit verdict on A-5 and A-6 of decisions §96, point 6; Q-A7R3-01..03; no OptionalDispositionConformance and no RelatedImpacts); the closure lists
+@@ -102,7 +111,7 @@
+ import sys
+ import tempfile
+ 
+-AUDITOR_VERSION = "v7.0-a7r3 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on a Coordinator disposition after §96 pinned in owner_gate.py (pending in the kit as delivered); run.json Outcome and PostRunErrors; frozen command and record probe; direct read of AUTOMATION_PLAN L593-L595; faithful copies RACKCAD-COPIA-FIEL/1 of the files Read cannot deliver faithfully; round-3 schema rackcad-a7r3-architect-review/0 with the explicit A-5 and A-6 compatibility verdicts; non-canonical references shown as written; declared and self-tested before the launch; decisions §96)"
++AUDITOR_VERSION = "v7.0-a7r4 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on a Coordinator disposition after §98 pinned in owner_gate.py (pending in the kit as delivered); run.json Outcome and PostRunErrors; frozen command and record probe; direct read of AUTOMATION_PLAN L593-L595; faithful copies RACKCAD-COPIA-FIEL/1 of the files Read cannot deliver faithfully; round-4 schema rackcad-a7r4-architect-review/0 with the explicit A-5 and A-6 compatibility verdicts; non-canonical references shown as written; declared and self-tested before the launch; decisions §98)"
+ REPLACEMENT_CHAR = chr(0xFFFD)   # U+FFFD in a tool result: a transport artifact, recorded
+ 
+ 
+@@ -126,7 +135,7 @@
+     PREMISE_RUN = set(CLOSURE["PremiseRunFiles"])
+     LONG_LINES = {p: set(v) for p, v in CLOSURE["ReadPolicy"]["LongLines"].items()}
+     OBJECT_FILES, OBJECT, OBJECT_BLOB = dict(CLOSURE["ObjectFiles"]), CLOSURE["ObjectPath"], CLOSURE["ObjectBlob"]
+-    ROUND1, OPTIONALS, QUESTIONS = list(CLOSURE["PriorFindings"]), [], list(CLOSURE["QuestionIds"])   # round 3: A62-A7R2-R1; no optionals
++    ROUND1, OPTIONALS, QUESTIONS = list(CLOSURE["PriorFindings"]), [], list(CLOSURE["QuestionIds"])   # round 4: A62-A7R3-R1; no optionals
+     REGRESSION, CHANGES = list(CLOSURE["RegressionTopics"]), list(CLOSURE["DeltaChanges"])
+     MAT_A7 = dict(CLOSURE["MaterialityA7"])
+     TRIGGERS = sorted(MAT_A7)
+@@ -538,7 +547,7 @@
+         auth = [a for a in (og.get("AuthorizationSections") or []) if isinstance(a, dict)]
+         pins = OG.pinned_authorization()
+         if OG.authorization_pending(pins) or og.get("AuthorizationPending") is not False:
+-            add("preflight: compuerta 11 (%s) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §96 fijada, o "
++            add("preflight: compuerta 11 (%s) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §98 fijada, o "
+                 "registro con AuthorizationPending distinto de false)" % OG.CHECK)
+         if og.get("ObjectBlob") != OBJECT_BLOB or og.get("ObjectBlobAtHeadMatches") is not True or og.get("A6AgreedBlobAtHeadMatches") is not True or \
+                 og.get("RunId") != IDS["RunId"] or \
+@@ -547,7 +556,7 @@
+                 auth[0].get("TextSha256") != pins["TextSha256"] or og.get("AuthorizationTextSha256") != pins["TextSha256"] or \
+                 og.get("AuthorizationSection") != pins["Section"] or og.get("AuthorizationHeading") != pins["Heading"]:
+             add("preflight: compuerta 11 (%s) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en "
+-                "owner_gate.py (sección posterior a §96, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella" % OG.CHECK)
++                "owner_gate.py (sección posterior a §98, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella" % OG.CHECK)
+         fg = preflight.get("FrozenCommandGuard") if isinstance(preflight.get("FrozenCommandGuard"), dict) else {}
+         launch["FrozenCommandGuard"] = {k: fg.get(k) for k in ("Ok", "Enforced", "FrozenCommand", "OrigArgvTail", "Problems")}
+         if fg.get("Ok") is not True or fg.get("Enforced") is not True or fg.get("FrozenCommand") != LAUNCH_COMMAND or fg.get("Problems"):
+@@ -952,9 +961,9 @@
+ 
+ 
+ REF_RX = re.compile(r"^(.+):([1-9][0-9]*)(?:-([1-9][0-9]*))?$")
+-STEP0_KEYS = ("AP167DirectReadL593L595", "OrderReadWhole", "Decisions96DeclaresOrderBytesAndSha256",
+-              "Decisions96AcceptsR2R1AndAuthorizesThirdCandidate", "GuardsRunModeBaseHeadResult", "PreflightSummaryCandidateAndTotals",
+-              "Round2OutputIdentifiesRunAndFindings")
++STEP0_KEYS = ("RAE10DirectReadL219L226", "OrderReadWhole", "Decisions98DeclaresOrderBytesAndSha256",
++              "Decisions98AcceptsR3R1AndAuthorizesFourthCandidate", "GuardsRunModeBaseHeadResult", "PreflightSummaryCandidateAndTotals",
++              "Round3OutputIdentifiesRunAndFindings")
+ NOT_DET = "NOT_DETERMINED"
+ BLOCKED = "BLOCKED " + chr(0x2014) + " OWNER DECISION"
+ ARRAYS = (("PriorFindingResolution", "PriorFinding"), ("RegressionCheck", "Topic"), ("QuestionAnswers", "Question"))
+@@ -1022,7 +1031,7 @@
+     req_ids, opt_ids = [f.get("FindingId") for f in req], [f.get("FindingId") for f in opt]
+     all_ids = set(req_ids) | set(opt_ids)
+     rr, rg, qa = items(result.get("PriorFindingResolution")), items(result.get("RegressionCheck")), items(result.get("QuestionAnswers"))
+-    od = []                                                                        # round 3: no optional dispositions
++    od = []                                                                        # round 4: no optional dispositions
+     cv = dct(result.get("CompatibilityVerdicts"))
+     compat = [("CompatibilityVerdicts.%s" % k, dct(cv.get(k))) for k in COMPAT_KEYS]
+     mat, dp = dct(result.get("Materiality")), dct(result.get("DeltaPurity"))
+@@ -1065,7 +1074,7 @@
+             c.append("RegressionCheck[%s] NO_REGRESSION con un REQUIRED vinculado" % x.get("Topic"))
+     for x in ch:
+         if x.get("Assessment") == "OUTSIDE_SCOPE" and not has_req(x):
+-            c.append("DeltaPurity.Changes[%s] OUTSIDE_SCOPE sin un REQUIRED vinculado (decisiones §96, punto 2)" % x.get("Change"))
++            c.append("DeltaPurity.Changes[%s] OUTSIDE_SCOPE sin un REQUIRED vinculado (decisiones §98, punto 2)" % x.get("Change"))
+         if x.get("Assessment") == "WITHIN_SCOPE" and has_req(x):
+             c.append("DeltaPurity.Changes[%s] WITHIN_SCOPE con un REQUIRED vinculado" % x.get("Change"))
+     if dp.get("Status") == "CONFIRMED" and any(x.get("Assessment") == "OUTSIDE_SCOPE" for x in ch):
+@@ -1074,7 +1083,7 @@
+         c.append("DeltaPurity NOT_CONFIRMED con todos los cambios WITHIN_SCOPE")
+     for label, x in compat:
+         if x.get("Status") == "INCOMPATIBLE" and not has_req(x):
+-            c.append("%s INCOMPATIBLE sin un REQUIRED vinculado (decisiones §96, punto 6)" % label)
++            c.append("%s INCOMPATIBLE sin un REQUIRED vinculado (decisiones §98, punto 4)" % label)
+         if x.get("Status") == "COMPATIBLE" and has_req(x):
+             c.append("%s COMPATIBLE con un REQUIRED vinculado" % label)
+     if dp.get("Status") == "NOT_CONFIRMED" and not has_req(dp):
+@@ -1122,13 +1131,13 @@
+     if v == "AGREED" and (req or owner is not False or not ia or not all(ia.get(k) is True for k in ia)):
+         c.append("AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true")
+     if v == "AGREED" and (len(rr) != len(ROUND1) or any(x.get("Status") != "CORRECTED" for x in rr)):
+-        c.append("AGREED exige el hallazgo previo A62-A7R2-R1 en CORRECTED")
++        c.append("AGREED exige el hallazgo previo A62-A7R3-R1 en CORRECTED")
+     if v == "AGREED" and (dp.get("Status") != "CONFIRMED" or len(ch) != len(CHANGES) or any(x.get("Assessment") != "WITHIN_SCOPE" for x in ch)):
+-        c.append("AGREED exige DeltaPurity CONFIRMED con todos los cambios de la ronda 3 WITHIN_SCOPE")
++        c.append("AGREED exige DeltaPurity CONFIRMED con todos los cambios de la ronda 4 WITHIN_SCOPE")
+     if v == "AGREED" and (len(rg) != len(REGRESSION) or any(x.get("Status") != "NO_REGRESSION" for x in rg)):
+         c.append("AGREED exige todos los temas de RegressionCheck en NO_REGRESSION")
+     if v == "AGREED" and any(x.get("Status") != "COMPATIBLE" for _, x in compat):
+-        c.append("AGREED exige A-5 y A-6 COMPATIBLE (CompatibilityVerdicts, decisiones §96, punto 6)")
++        c.append("AGREED exige A-5 y A-6 COMPATIBLE (CompatibilityVerdicts, decisiones §98, punto 4)")
+     if v == "AGREED" and (len(trig) != len(TRIGGERS) or any(x.get("Assessment") != "AGREE" for x in trig)):
+         c.append("AGREED exige los ocho disparadores de Materiality en AGREE")
+     if v != "AGREED" and any(x is not None for x in ia.values()):

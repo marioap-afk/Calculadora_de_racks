@@ -1,0 +1,118 @@
+"""Mutación DIRIGIDA del kit de la RONDA 4 de A-7 (decisiones §98, punto 6: «Reutilizar componentes congelados idénticos y sus evidencias
+aplicables» y «Aplicar validación incremental cuando la autoridad y las dependencias lo permitan»), en lugar de repetir la batería completa de la
+ronda 3 (209/209: post-review.py 131, transport_gate.py 40, owner_gate.py 19, fidelity.py 19; kit/mutation-result.json del kit
+R20261023T180846Z-62bd, custodiado en 000fd6eb). Dos partes, comprobadas aquí mecánicamente y sin modificar ningún módulo del kit:
+  A. identidad de las reglas frente a la ronda 3: los cuatro módulos de la ronda 3 se leen del clon (git cat-file en 000fd6eb, la custodia del kit de
+     la ronda 3 con la autorización PENDIENTE, como este kit); transport_gate.py y fidelity.py deben ser byte a byte los mismos; en post-review.py y
+     owner_gate.py los sitios de mutación del arnés congelado (mutation-post-review.SITE_RX: las llamadas que añaden un problema) deben ser los
+     mismos, en el mismo orden y con el mismo código una vez vaciado el texto de los literales (cambian solo mensajes, versión, docstring y constantes
+     de datos: objeto, §98, RunId y la tupla del Paso 0 de la ronda 4), así que cada mutante de la ronda 4 es el de la ronda 3 sobre la misma regla
+     y la batería completa de la ronda 3 sigue siendo la evidencia aplicable;
+  B. owner_gate.py, cuyas constantes cambian: sus sitios del arnés congelado, mutados uno a uno con mutant_source() y juzgados sobre owner_cases()
+     de la autoprueba (los casos de la compuerta 11, los que los mataron en la batería completa), con la línea base en PASS; como la validación
+     incremental de §97.
+Uso: python -X utf8 -B targeted-mutation.py <salida.json>   (después de selftest-post-review.py; escribe en <kit>/../.tmp/st y lo borra)
+"""
+import hashlib
+import importlib.util
+import json
+import os
+import re
+import subprocess
+import sys
+
+sys.dont_write_bytecode = True
+HERE = os.path.dirname(os.path.abspath(__file__))
+_spec = importlib.util.spec_from_file_location("mutation_post_review", os.path.join(HERE, "mutation-post-review.py"))
+MP = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(MP)
+ST = MP.ST
+R3_COMMIT = "000fd6eb745f3db5f68b27e73563fb529d6ca3e2"
+R3_KIT = "docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/kit/"
+R3_BATTERY = {"post-review.py": 131, "transport_gate.py": 40, "owner_gate.py": 19, "fidelity.py": 19}
+MODULES = ("post-review.py", "owner_gate.py", "transport_gate.py", "fidelity.py")
+STR_RX = re.compile(r'"(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\'')
+
+
+def site_codes(text, name):
+    out = []
+    for line in text.split("\n"):
+        s = line.strip()
+        if s.startswith("#") or s.startswith("def "):
+            continue
+        if MP.SITE_RX[name].search(line):
+            out.append(STR_RX.sub('""', line.split("#")[0]).strip())
+    return out
+
+
+def rule_identity(clone):
+    env = dict(os.environ, GIT_OPTIONAL_LOCKS="0")
+    out = {}
+    for n in MODULES:
+        r3 = subprocess.run(["git", "-C", clone, "cat-file", "blob", "%s:%s%s" % (R3_COMMIT, R3_KIT, n)], capture_output=True, env=env,
+                            check=True).stdout
+        r4 = open(os.path.join(HERE, n), "rb").read()
+        c3, c4 = site_codes(r3.decode("utf-8"), n), site_codes(r4.decode("utf-8"), n)
+        diff = [(k, a, b) for k, (a, b) in enumerate(zip(c3, c4)) if a != b]
+        out[n] = {"Round3": "%s:%s%s" % (R3_COMMIT[:8], R3_KIT, n), "Sha256Round3": hashlib.sha256(r3).hexdigest(),
+                  "Sha256Round4": hashlib.sha256(r4).hexdigest(), "ByteIdentical": r3 == r4, "SitesRound3": len(c3), "SitesRound4": len(c4),
+                  "SitesInRound3Battery": R3_BATTERY[n],
+                  "SameSitesModuloStrings": len(c3) == len(c4) == R3_BATTERY[n] and not diff,
+                  "Differences": [{"Site": k, "Round3": a[:160], "Round4": b[:160]} for k, a, b in diff][:10]}
+    ok = all(v["SameSitesModuloStrings"] for v in out.values()) and out["transport_gate.py"]["ByteIdentical"] and out["fidelity.py"]["ByteIdentical"]
+    return out, ok
+
+
+def judge_owner(og_path=None):
+    p = ST.load_auditor()
+    if og_path:
+        p.OG = ST.load("owner_gate_mutant", og_path)
+    ST.init_globals(p)
+    return [c["Case"] for c in ST.owner_cases() if c["Result"] != "PASS"]
+
+
+def owner_gate_targeted():
+    mut_dir = os.path.join(ST.TMPROOT, "mut98")
+    os.makedirs(mut_dir, exist_ok=True)
+    base_fail = judge_owner()
+    src, found = MP.sites("owner_gate.py")
+    mutants = []
+    for k, (i, a, b) in enumerate(found):
+        path = os.path.join(mut_dir, "owner_gate.m%03d.py" % k)
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(MP.mutant_source(src, i, a, b))
+        try:
+            fails = judge_owner(path)
+        except Exception as e:
+            fails = ["EXCEPTION %s: %s" % (type(e).__name__, str(e)[:200])]
+        mutants.append({"Line": i + 1, "Code": src[i].strip()[:150], "Killed": bool(fails), "KilledBy": fails[:4], "KillingCases": len(fails)})
+        os.remove(path)
+    r = {"Module": "owner_gate.py", "Sha256": hashlib.sha256(open(os.path.join(HERE, "owner_gate.py"), "rb").read()).hexdigest(),
+         "Sites": len(found), "BaselineFailing": base_fail, "Killed": sum(1 for m in mutants if m["Killed"]), "Mutants": mutants}
+    r["AllKilled"] = not base_fail and bool(found) and all(m["Killed"] for m in mutants)
+    return r
+
+
+def main(out_path):
+    params = json.load(open(os.path.join(HERE, "kit-params.json"), encoding="utf-8"))
+    ident, ident_ok = rule_identity(params["Clone"])
+    og = owner_gate_targeted()
+    doc = {"Schema": "a7r4-targeted-mutation/1",
+           "Why": "decisiones §98, punto 6: reutilizar componentes congelados idénticos y sus evidencias aplicables; validación incremental. La "
+                  "batería completa de la ronda 3 (209/209) sigue siendo la evidencia de las reglas idénticas (parte A); owner_gate.py, cuyas "
+                  "constantes cambian, se muta de forma dirigida sobre los casos de la compuerta 11 (parte B)",
+           "Round3MutationResult": "kit/mutation-result.json del kit R20261023T180846Z-62bd (custodia 000fd6eb): AllKilled 209/209",
+           "Modules": {n: {"Sha256": v["Sha256Round4"]} for n, v in ident.items()},
+           "RuleIdentity": ident, "RuleIdentityOk": ident_ok, "OwnerGateTargeted": og, "AllPass": ident_ok and og["AllKilled"]}
+    text = ST.USER_RX.sub("%USERPROFILE%", json.dumps(doc, ensure_ascii=False, indent=1))
+    with open(out_path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text + "\n")
+    print(json.dumps({"RuleIdentity": {n: "%s %d/%d" % (v["SameSitesModuloStrings"], v["SitesRound3"], v["SitesRound4"]) for n, v in ident.items()},
+                      "OwnerGate": "%d/%d" % (og["Killed"], og["Sites"]), "BaselineFailing": og["BaselineFailing"], "AllPass": doc["AllPass"]},
+                     ensure_ascii=False))
+    ST.safe_remove_tmproot()
+    return 0 if doc["AllPass"] else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(os.path.abspath(sys.argv[1])))
