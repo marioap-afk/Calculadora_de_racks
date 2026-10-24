@@ -1,0 +1,61 @@
+--- r2/finish_kit.py
++++ r3/finish_kit.py
+@@ -1,21 +1,22 @@
+-"""Termina el kit de la ÚNICA revisión formal de la RONDA 2 de la enmienda A-7 (decisiones §94, punto 6). Lo ejecuta quien prepara el kit, una vez,
++"""Termina el kit de la ÚNICA revisión formal de la RONDA 3 de la enmienda A-7 (decisiones §96, puntos 6 y 7). Lo ejecuta quien prepara el kit, una vez,
+ desde el directorio kit/ o con su ruta. NO lanza el revisor y NO ejecuta el binario de claude (launch.py solo con --record-probe y --dry-run).
+-Derivado del finish_kit.py del kit de A-7 ronda 1 (R20261019T010200Z-4a72): las mismas funciones step y frozen; cambian el clon y el run, la
+-autorización (PENDIENTE: no hay paso de fijación; el paso 5 comprueba que owner_gate.py la entrega pendiente), la mutación (la batería COMPLETA de
+-mutation-post-review.py, decisiones §88, punto 4, porque cambiaron reglas del auditor y la comprobación 7 del lanzador; una sola vez, al final) y la
+-condición de la prueba en seco (BlockingChecks = solo la compuerta 11, con el único motivo de la autorización pendiente).
++Derivado del finish_kit.py del kit de A-7 ronda 2 (R20261019T201030Z-d1bf, a su vez del de la ronda 1): las mismas funciones step y frozen y la
++misma secuencia; cambian el clon y el run (D:\\r62-arch-a7r3*), la premisa (a7-r2.md) y la sección base (§96). La autorización se entrega
++PENDIENTE (el paso 5 lo comprueba), la mutación es la batería COMPLETA de mutation-post-review.py (decisiones §88, punto 4: cambiaron el auditor,
++v7.0-a7r3, y el esquema del resultado; una sola vez, al final) y la prueba en seco exige BlockingChecks = solo la compuerta 11, con el único
++motivo de la autorización pendiente.
+ 
+ Pasos, en orden; se detiene en el primero que falla (código distinto de 0) y no deshace nada:
+-  1. prepare_clone.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT> → D:\\r62-arch-a7r2, D:\\r62-arch-a7r2-run\\{order.txt,a7-r1.md} y
++  1. prepare_clone.py <CLONE_COMMIT> <PUBLICATION> <GUARDS_RUN_COMMIT> → D:\\r62-arch-a7r3, D:\\r62-arch-a7r3-run\\{order.txt,a7-r2.md} y
+      kit-params.json (con --clone-ready se omite: prepare_clone.py se ejecuta una sola vez y ya se ejecutó; se exige kit-params.json con esos commits)
+   2. make_closure.py --render-prompt                   → kit/prompt.md (desde prompt.template.md)
+   2b. make_closure.py --faithful-copies                → kit/fiel__*.txt (copias fieles de los archivos marcados; decisiones §94, punto 5)
+-  3. copia byte a byte de kit/prompt.md y de kit/fiel__*.txt → D:\\r62-arch-a7r2-run\\
++  3. copia byte a byte de kit/prompt.md y de kit/fiel__*.txt → D:\\r62-arch-a7r3-run\\
+   4. make_closure.py                                   → kit/closure.json (cierre fijado por blob en CLONE_COMMIT)
+   5. autorización PENDIENTE: owner_gate.py con AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None (no se fija nada; la fijará, si la hay, una
+-     disposición del Coordinator posterior a §94 con pin_authorization.py, y el kit se volverá a congelar)
++     disposición del Coordinator posterior a §96 con pin_authorization.py, y el kit se volverá a congelar)
+   6. transport_gate.py init y set MEASURED kit/claude-cli-characterization.json → kit/transport-gate.json (MEASURED, SHA-256 4ba6ba58…)
+-  7. verify_clone.py                                   → kit/clone-verification.json (AllChecks, con la reproducción de las guardas de la ronda 2)
++  7. verify_clone.py                                   → kit/clone-verification.json (AllChecks, con la reproducción de las guardas de la ronda 3)
+   8. selftest-post-review.py kit/selftest-result.json  → AllPass, sobre el clon y el run reales (L00: la compuerta 11 real, PENDIENTE)
+   8b. selftest-fidelity.py kit/selftest-fidelity-result.json → AllPass (detector, copias fieles y sus negativos; decisiones §94, punto 5)
+   9. make_manifest.py                                  → kit/kit-manifest.json (congelación previa a la batería)
+@@ -39,7 +40,7 @@
+ import sys
+ 
+ KIT = os.path.dirname(os.path.abspath(__file__))
+-RUN = r"D:\r62-arch-a7r2-run"
++RUN = r"D:\r62-arch-a7r3-run"
+ CHAR = os.path.join(KIT, "claude-cli-characterization.json")
+ CHAR_SHA = "4ba6ba586440ce5c9374c383a9a1b787cf42a17d8451c5d27e762c555cfc2a8c"
+ GATE11 = "11-OwnerAndAuthorizationGate"
+@@ -88,7 +89,7 @@
+ 
+ 
+ def check_pending():
+-    """Paso 5: la autorización se entrega PENDIENTE (decisiones §94, punto 6: la revisión exige una disposición del Coordinator posterior)."""
++    """Paso 5: la autorización se entrega PENDIENTE (decisiones §96, punto 7: la revisión exige una disposición del Coordinator posterior)."""
+     og = owner_gate()
+     if not og.authorization_pending(og.pinned_authorization()) or (og.AUTH_SECTION, og.AUTH_HEADING, og.AUTH_TEXT_SHA) != (None, None, None):
+         raise SystemExit("STOP: owner_gate.py no entrega la autorización pendiente")
+@@ -152,7 +153,7 @@
+                       "Gate11": {k: g.get(k) for k in ("Ok", "Problems", "A6LineNumbers", "ClaudeCliLineNumbers", "ObjectBlobAtHeadMatches",
+                                                        "A6AgreedBlobAtHeadMatches", "AuthorizationPending", "AuthorizationSections", "LaterSections",
+                                                        "SectionsAfterBase")},
+-                      "Next": "custodiar el kit; la revisión solo puede lanzarse después de una disposición del Coordinator posterior a §94 que la "
++                      "Next": "custodiar el kit; la revisión solo puede lanzarse después de una disposición del Coordinator posterior a §96 que la "
+                               "nombre, fijada con pin_authorization.py en owner_gate.py y con el kit vuelto a congelar; entonces, una vez, desde la "
+                               "carpeta que contiene kit/: python -B kit/launch.py"}, ensure_ascii=False))
+     return 0

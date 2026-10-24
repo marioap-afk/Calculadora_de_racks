@@ -1,0 +1,233 @@
+--- r2/post-review.py
++++ r3/post-review.py
+@@ -1,10 +1,26 @@
+-"""I-62, decisiones §94: post-review audit v6.0-a7r2 of ONE claude-cli run of the ONE FORMAL REVIEW of ROUND 2 of amendment A-7
+-(docs/initiatives/I-62-A-7.md, blob 8a528133… pinned in the closure and in owner_gate.py, PROPUESTA round 2), bounded to A62-A7-R1..R3 and their
+-consequences (decisions §94, point 6), by an independent ARCHITECT. Declared and self-tested BEFORE the launch (Owner CLAUDE-CLI-I62 = A; the launch
+-also requires gate 11, owner_gate.py: the Owner line of §78, the A-7 blob and the agreed A-6 blob at the worktree HEAD and a Coordinator disposition
+-AFTER §94 naming this review, pinned in owner_gate.py with its number, heading, full blob and text SHA-256, and no later section; the kit is
+-delivered with that authorization PENDING); the principal session runs it afterwards, never before, on the complete run, and the auditor is not
++"""I-62, decisiones §96: post-review audit v7.0-a7r3 of ONE claude-cli run of the ONE FORMAL REVIEW of ROUND 3 of amendment A-7
++(docs/initiatives/I-62-A-7.md, blob 8bcccb2f… pinned in the closure and in owner_gate.py, PROPUESTA round 3), bounded to A62-A7R2-R1 and its direct
++consequences (decisions §96, points 2 and 6), by an independent ARCHITECT. Declared and self-tested BEFORE the launch (Owner CLAUDE-CLI-I62 = A; the
++launch also requires gate 11, owner_gate.py: the Owner line of §78, the A-7 blob and the agreed A-6 blob at the worktree HEAD and a Coordinator
++disposition AFTER §96 naming this review, pinned in owner_gate.py with its number, heading, full blob and text SHA-256, and no later section; the kit
++is delivered with that authorization PENDING); the principal session runs it afterwards, never before, on the complete run, and the auditor is not
+ corrected after the run.
++
++v7.0-a7r3 = the v6.0-a7r2 auditor (text below) with: the round-3 schema rackcad-a7r3-architect-review/0 (PriorFindingResolution of A62-A7R2-R1;
++DeltaPurity WITHIN_SCOPE | OUTSIDE_SCOPE; RegressionCheck of what round 2 found corrected or conforming; CompatibilityVerdicts A5 and A6, the
++explicit verdict on A-5 and A-6 of decisions §96, point 6; Q-A7R3-01..03; no OptionalDispositionConformance and no RelatedImpacts); the closure lists
++PriorFindings, RegressionTopics, DeltaChanges, QuestionIds, MaterialityA7 and DirectRead (AUTOMATION_PLAN 16.7 L593-L595: the reverification with the
++RebaseMap as input); the round-3 Step 0; gate 11 after §96; and the message of a non-canonical reference, which shows the reference as written and
++why it is not canonical (outside the closure, or lines out of range): in round 2 the reviewer cited docs/initiatives/I-62-A7.md, relative and
++well formed but not a closure file, and the old message showed its absolute resolution; and the EXACTNESS of every reference: the path as
++written must be exactly the relative path of a closure file (or the exact name of a premise run file), so `..`, `.`, backslashes, absolute
++paths into the clone and other spellings that resolve to a closure file are non-canonical too (the schema rejects them first; this is the
++second, independent layer). Coherence of the new fields: a compatibility verdict
++INCOMPATIBLE => a linked REQUIRED, COMPATIBLE => none; with a verdict, no NOT_DETERMINED and ClauseRefs in both; AGREED => A-5 and A-6 COMPATIBLE,
++A62-A7R2-R1 CORRECTED, every change WITHIN_SCOPE and every topic NO_REGRESSION. The run has three files besides the faithful copies (order.txt, the
++§96 body, and a7-r2.md, the round-2 text, both premises; prompt.md). Every other rule is kept.
++
++Text of v6.0-a7r2 (with round 2's numbers):
+ 
+ v6.0-a7r2 = the v5.6-a7 auditor (the v5.5-a7 auditor of A-7 round 1, R20261019T010200Z-4a72, plus the read-fidelity correction of decisions §94,
+ point 5: faithful copies RACKCAD-COPIA-FIEL/1, verified byte for byte against the originals and crediting the originals' lines): every launch,
+@@ -86,7 +102,7 @@
+ import sys
+ import tempfile
+ 
+-AUDITOR_VERSION = "v6.0-a7r2 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on a Coordinator disposition after §94 pinned in owner_gate.py (pending in the kit as delivered); run.json Outcome and PostRunErrors; frozen command and record probe; direct read of AUTOMATION_PLAN L616-L617; faithful copies RACKCAD-COPIA-FIEL/1 of the files Read cannot deliver faithfully, decisions §94, point 5; round-2 schema rackcad-a7r2-architect-review/0; declared and self-tested before the launch; decisions §94)"
++AUDITOR_VERSION = "v7.0-a7r3 (claude-cli; Read/Grep/Glob only; transport gate D-01; Owner and authorization gate 11 on a Coordinator disposition after §96 pinned in owner_gate.py (pending in the kit as delivered); run.json Outcome and PostRunErrors; frozen command and record probe; direct read of AUTOMATION_PLAN L593-L595; faithful copies RACKCAD-COPIA-FIEL/1 of the files Read cannot deliver faithfully; round-3 schema rackcad-a7r3-architect-review/0 with the explicit A-5 and A-6 compatibility verdicts; non-canonical references shown as written; declared and self-tested before the launch; decisions §96)"
+ REPLACEMENT_CHAR = chr(0xFFFD)   # U+FFFD in a tool result: a transport artifact, recorded
+ 
+ 
+@@ -110,7 +126,7 @@
+     PREMISE_RUN = set(CLOSURE["PremiseRunFiles"])
+     LONG_LINES = {p: set(v) for p, v in CLOSURE["ReadPolicy"]["LongLines"].items()}
+     OBJECT_FILES, OBJECT, OBJECT_BLOB = dict(CLOSURE["ObjectFiles"]), CLOSURE["ObjectPath"], CLOSURE["ObjectBlob"]
+-    ROUND1, OPTIONALS, QUESTIONS = list(CLOSURE["Round1Findings"]), list(CLOSURE["Round1Optionals"]), list(CLOSURE["QuestionIds"])
++    ROUND1, OPTIONALS, QUESTIONS = list(CLOSURE["PriorFindings"]), [], list(CLOSURE["QuestionIds"])   # round 3: A62-A7R2-R1; no optionals
+     REGRESSION, CHANGES = list(CLOSURE["RegressionTopics"]), list(CLOSURE["DeltaChanges"])
+     MAT_A7 = dict(CLOSURE["MaterialityA7"])
+     TRIGGERS = sorted(MAT_A7)
+@@ -522,7 +538,7 @@
+         auth = [a for a in (og.get("AuthorizationSections") or []) if isinstance(a, dict)]
+         pins = OG.pinned_authorization()
+         if OG.authorization_pending(pins) or og.get("AuthorizationPending") is not False:
+-            add("preflight: compuerta 11 (%s) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §94 fijada, o "
++            add("preflight: compuerta 11 (%s) con la autorización pendiente (owner_gate.py del kit sin la disposición posterior a §96 fijada, o "
+                 "registro con AuthorizationPending distinto de false)" % OG.CHECK)
+         if og.get("ObjectBlob") != OBJECT_BLOB or og.get("ObjectBlobAtHeadMatches") is not True or og.get("A6AgreedBlobAtHeadMatches") is not True or \
+                 og.get("RunId") != IDS["RunId"] or \
+@@ -531,7 +547,7 @@
+                 auth[0].get("TextSha256") != pins["TextSha256"] or og.get("AuthorizationTextSha256") != pins["TextSha256"] or \
+                 og.get("AuthorizationSection") != pins["Section"] or og.get("AuthorizationHeading") != pins["Heading"]:
+             add("preflight: compuerta 11 (%s) sin el blob de A-7 o el de la A-6 acordada en la HEAD del worktree, sin la autorización fijada en "
+-                "owner_gate.py (sección posterior a §94, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella" % OG.CHECK)
++                "owner_gate.py (sección posterior a §96, encabezado, blob completo y SHA-256 del texto) o con una sección posterior a ella" % OG.CHECK)
+         fg = preflight.get("FrozenCommandGuard") if isinstance(preflight.get("FrozenCommandGuard"), dict) else {}
+         launch["FrozenCommandGuard"] = {k: fg.get(k) for k in ("Ok", "Enforced", "FrozenCommand", "OrigArgvTail", "Problems")}
+         if fg.get("Ok") is not True or fg.get("Enforced") is not True or fg.get("FrozenCommand") != LAUNCH_COMMAND or fg.get("Problems"):
+@@ -869,10 +885,17 @@
+         if in_range and excerpt is not None:
+             found = " ".join(str(excerpt).split()) in " ".join(" ".join(lines[a - 1:b]).split()) and bool(str(excerpt).strip())
+         shown = "%s:%s" % (rel if kind in ("CLOSURE", "RUN") else userless(rel), m.group(2) + ("-" + m.group(3) if m.group(3) else ""))
+-        ref_check.append({"Group": group, "Ref": shown, "Kind": kind, "Lines": [a, b], "InRange": in_range,
++        written = userless(str(ref))
++        exact = kind in ("CLOSURE", "RUN") and rel_in == rel    # v7.0-a7r3: the path as written = the closure path or the premise name
++        ref_check.append({"Group": group, "Ref": shown, "Written": written, "Exact": exact, "Kind": kind, "Lines": [a, b], "InRange": in_range,
+                           "ExcerptFound": (found if excerpt is not None else None), "DeliveredFaithfully": delivered_ok})
+         if not in_range:
+-            add("referencia no canónica en %s (%s)" % (group, shown))
++            # v7.0-a7r3: the reference as written and why (decisions §96, point 6); the rule itself is unchanged
++            why = "líneas fuera de rango del archivo" if kind == "CLOSURE" or (kind == "RUN" and rel in PREMISE_RUN) else \
++                "no es un archivo del cierre ni una premisa del run"
++            add("referencia no canónica en %s (%s: %s)" % (group, written, why))
++        elif not exact:
++            add("referencia no canónica en %s (%s: no es la ruta relativa exacta de un archivo del cierre ni el nombre exacto de una premisa del run)" % (group, written))
+         elif not delivered_ok:
+             add("referencia sobre líneas no entregadas fielmente en %s (%s)" % (group, shown))
+ 
+@@ -929,16 +952,16 @@
+ 
+ 
+ REF_RX = re.compile(r"^(.+):([1-9][0-9]*)(?:-([1-9][0-9]*))?$")
+-STEP0_KEYS = ("AP168DirectReadL616L617", "OrderReadWhole", "Decisions94DeclaresOrderBytesAndSha256",
+-              "Decisions94AcceptsR1R3AndAuthorizesSecondCandidate", "GuardsRunModeBaseHeadResult", "PreflightSummaryCandidateAndTotals",
+-              "Round1OutputIdentifiesRunAndFindings")
++STEP0_KEYS = ("AP167DirectReadL593L595", "OrderReadWhole", "Decisions96DeclaresOrderBytesAndSha256",
++              "Decisions96AcceptsR2R1AndAuthorizesThirdCandidate", "GuardsRunModeBaseHeadResult", "PreflightSummaryCandidateAndTotals",
++              "Round2OutputIdentifiesRunAndFindings")
+ NOT_DET = "NOT_DETERMINED"
+ BLOCKED = "BLOCKED " + chr(0x2014) + " OWNER DECISION"
+-ARRAYS = (("Round1FindingResolution", "Round1Finding"), ("RegressionCheck", "Topic"), ("QuestionAnswers", "Question"),
+-          ("OptionalDispositionConformance", "Round1Optional"))
++ARRAYS = (("PriorFindingResolution", "PriorFinding"), ("RegressionCheck", "Topic"), ("QuestionAnswers", "Question"))
+ NESTED = (("Materiality", "Triggers", "Trigger"), ("DeltaPurity", "Changes", "Change"))
+-SINGLES = ("Materiality", "OwnerReservedConsequence", "DeltaPurity", "RelatedImpacts")
+-NESTED_SINGLES = ()
++SINGLES = ("Materiality", "OwnerReservedConsequence", "DeltaPurity")
++NESTED_SINGLES = (("CompatibilityVerdicts", "A5"), ("CompatibilityVerdicts", "A6"))
++COMPAT_KEYS = ("A5", "A6")
+ OPEN_RESOLUTION = ("PARTIALLY_CORRECTED", "NOT_CORRECTED")
+ LAUNCH_ENV_PREFIXES = ("PYTHON", "GIT_", "CLAUDE", "ANTHROPIC")   # §84, punto 2 (los de launch.py)
+ RUN_JSON_FIELDS = ("SessionId", "Executable", "ExecutableSha256", "Args", "Cwd", "PromptSha256", "PromptBytes", "TimeoutSeconds", "TransportGate",
+@@ -998,18 +1021,19 @@
+     req, opt = items(result.get("RequiredFindings")), items(result.get("OptionalFindings"))
+     req_ids, opt_ids = [f.get("FindingId") for f in req], [f.get("FindingId") for f in opt]
+     all_ids = set(req_ids) | set(opt_ids)
+-    rr, rg, qa = items(result.get("Round1FindingResolution")), items(result.get("RegressionCheck")), items(result.get("QuestionAnswers"))
+-    od = items(result.get("OptionalDispositionConformance"))
++    rr, rg, qa = items(result.get("PriorFindingResolution")), items(result.get("RegressionCheck")), items(result.get("QuestionAnswers"))
++    od = []                                                                        # round 3: no optional dispositions
++    cv = dct(result.get("CompatibilityVerdicts"))
++    compat = [("CompatibilityVerdicts.%s" % k, dct(cv.get(k))) for k in COMPAT_KEYS]
+     mat, dp = dct(result.get("Materiality")), dct(result.get("DeltaPurity"))
+     trig, ch = items(mat.get("Triggers")), items(dp.get("Changes"))
+-    orc, ri, ia, step0 = dct(result.get("OwnerReservedConsequence")), dct(result.get("RelatedImpacts")), dct(result.get("IfAgreed")), \
+-        dct(result.get("Step0"))
+-    owner, changed = orc.get("OwnerDecisionRequired"), ri.get("ChangedByRound2")
+-    arrays = (("Round1FindingResolution", rr, "Round1Finding", ROUND1), ("RegressionCheck", rg, "Topic", REGRESSION),
++    orc, ia, step0 = dct(result.get("OwnerReservedConsequence")), dct(result.get("IfAgreed")), dct(result.get("Step0"))
++    owner = orc.get("OwnerDecisionRequired")
++    arrays = (("PriorFindingResolution", rr, "PriorFinding", ROUND1), ("RegressionCheck", rg, "Topic", REGRESSION),
+               ("QuestionAnswers", qa, "Question", QUESTIONS), ("Materiality.Triggers", trig, "Trigger", TRIGGERS),
+               ("DeltaPurity.Changes", ch, "Change", CHANGES))
+-    singles = (("Materiality", mat), ("OwnerReservedConsequence", orc), ("DeltaPurity", dp), ("RelatedImpacts", ri))
+-    optional = [("OptionalDispositionConformance[%s]" % x.get("Round1Optional"), x) for x in od]
++    singles = (("Materiality", mat), ("OwnerReservedConsequence", orc), ("DeltaPurity", dp)) + tuple(compat)
++    optional = []
+ 
+     def linked(x):
+         return x.get("FindingIds") or []
+@@ -1025,29 +1049,34 @@
+     for label, x in holders + optional:
+         if any(i not in all_ids for i in linked(x)):
+             c.append("%s cita en FindingIds hallazgos que no existen" % label)
+-    for label, xs, key in [(a, b, k) for a, b, k, _ in arrays] + [("OptionalDispositionConformance", od, "Round1Optional")]:
++    for label, xs, key in [(a, b, k) for a, b, k, _ in arrays]:
+         ids_ = [str(x.get(key)) for x in xs]
+         if len(set(ids_)) != len(ids_):
+             c.append("%s con identificadores repetidos" % label)
+     for x in rr:
+         if x.get("Status") in OPEN_RESOLUTION and not has_req(x):
+-            c.append("Round1FindingResolution[%s] %s sin el REQUIRED residual vinculado" % (x.get("Round1Finding"), x.get("Status")))
++            c.append("PriorFindingResolution[%s] %s sin el REQUIRED residual vinculado" % (x.get("PriorFinding"), x.get("Status")))
+         if x.get("Status") == "CORRECTED" and has_req(x):
+-            c.append("Round1FindingResolution[%s] CORRECTED con un REQUIRED vinculado" % x.get("Round1Finding"))
++            c.append("PriorFindingResolution[%s] CORRECTED con un REQUIRED vinculado" % x.get("PriorFinding"))
+     for x in rg:
+         if x.get("Status") == "REGRESSION" and not has_req(x):
+             c.append("RegressionCheck[%s] REGRESSION sin un REQUIRED vinculado" % x.get("Topic"))
+         if x.get("Status") == "NO_REGRESSION" and has_req(x):
+             c.append("RegressionCheck[%s] NO_REGRESSION con un REQUIRED vinculado" % x.get("Topic"))
+     for x in ch:
+-        if x.get("Assessment") == "OUTSIDE_R1_R3" and not has_req(x):
+-            c.append("DeltaPurity.Changes[%s] OUTSIDE_R1_R3 sin un REQUIRED vinculado (decisiones §94, punto 2)" % x.get("Change"))
+-        if x.get("Assessment") == "WITHIN_R1_R3" and has_req(x):
+-            c.append("DeltaPurity.Changes[%s] WITHIN_R1_R3 con un REQUIRED vinculado" % x.get("Change"))
+-    if dp.get("Status") == "CONFIRMED" and any(x.get("Assessment") == "OUTSIDE_R1_R3" for x in ch):
+-        c.append("DeltaPurity CONFIRMED con un cambio OUTSIDE_R1_R3")
+-    if dp.get("Status") == "NOT_CONFIRMED" and ch and all(x.get("Assessment") == "WITHIN_R1_R3" for x in ch):
+-        c.append("DeltaPurity NOT_CONFIRMED con todos los cambios WITHIN_R1_R3")
++        if x.get("Assessment") == "OUTSIDE_SCOPE" and not has_req(x):
++            c.append("DeltaPurity.Changes[%s] OUTSIDE_SCOPE sin un REQUIRED vinculado (decisiones §96, punto 2)" % x.get("Change"))
++        if x.get("Assessment") == "WITHIN_SCOPE" and has_req(x):
++            c.append("DeltaPurity.Changes[%s] WITHIN_SCOPE con un REQUIRED vinculado" % x.get("Change"))
++    if dp.get("Status") == "CONFIRMED" and any(x.get("Assessment") == "OUTSIDE_SCOPE" for x in ch):
++        c.append("DeltaPurity CONFIRMED con un cambio OUTSIDE_SCOPE")
++    if dp.get("Status") == "NOT_CONFIRMED" and ch and all(x.get("Assessment") == "WITHIN_SCOPE" for x in ch):
++        c.append("DeltaPurity NOT_CONFIRMED con todos los cambios WITHIN_SCOPE")
++    for label, x in compat:
++        if x.get("Status") == "INCOMPATIBLE" and not has_req(x):
++            c.append("%s INCOMPATIBLE sin un REQUIRED vinculado (decisiones §96, punto 6)" % label)
++        if x.get("Status") == "COMPATIBLE" and has_req(x):
++            c.append("%s COMPATIBLE con un REQUIRED vinculado" % label)
+     if dp.get("Status") == "NOT_CONFIRMED" and not has_req(dp):
+         c.append("DeltaPurity NOT_CONFIRMED sin un REQUIRED vinculado")
+     for x in trig:
+@@ -1058,15 +1087,10 @@
+     for x in qa:
+         if x.get("Outcome") == "NOT_SATISFIED" and not linked(x):
+             c.append("QuestionAnswers[%s] NOT_SATISFIED sin un hallazgo vinculado" % x.get("Question"))
+-    for x in od:
+-        if x.get("Status") == "DOES_NOT_CONFORM" and not linked(x):
+-            c.append("OptionalDispositionConformance[%s] DOES_NOT_CONFORM sin un hallazgo vinculado" % x.get("Round1Optional"))
+     if owner is True and not orc.get("UnidentifiedConsequences"):
+         c.append("OwnerDecisionRequired = true sin UnidentifiedConsequences")
+     if owner is False and orc.get("UnidentifiedConsequences"):
+         c.append("OwnerDecisionRequired = false con UnidentifiedConsequences")
+-    if changed is True and not str(ri.get("Note") or "").strip():
+-        c.append("RelatedImpacts.ChangedByRound2 = true sin Note")
+     if v != "NOT_ACCREDITED":
+         if any(step0.get(k) is not True for k in STEP0_KEYS):
+             c.append("con un veredicto, las siete booleanas de Step0 van en true")
+@@ -1083,7 +1107,8 @@
+         for label, x in holders + [(lb, x) for lb, x in optional if x.get("Status") != "NOT_ASSESSED"]:
+             if not x.get("ClauseRefs"):
+                 c.append("con un veredicto, %s sin ClauseRefs" % label)
+-        undetermined = [k for k, bad in (("DeltaPurity.Status", dp.get("Status") == NOT_DET), ("RelatedImpacts.ChangedByRound2", changed is None)) if bad]
++        undetermined = [k for k, bad in [("DeltaPurity.Status", dp.get("Status") == NOT_DET)] +
++                        [("%s.Status" % label, x.get("Status") in (NOT_DET, None)) for label, x in compat] if bad]
+         if undetermined:
+             c.append("con un veredicto, NOT_DETERMINED o null no se admiten (%s)" % ", ".join(undetermined))
+         if owner is None:
+@@ -1097,11 +1122,13 @@
+     if v == "AGREED" and (req or owner is not False or not ia or not all(ia.get(k) is True for k in ia)):
+         c.append("AGREED exige cero REQUIRED, ninguna decisión del Owner pendiente e IfAgreed todo en true")
+     if v == "AGREED" and (len(rr) != len(ROUND1) or any(x.get("Status") != "CORRECTED" for x in rr)):
+-        c.append("AGREED exige A62-A7-R1, R2 y R3 en CORRECTED")
+-    if v == "AGREED" and (dp.get("Status") != "CONFIRMED" or len(ch) != len(CHANGES) or any(x.get("Assessment") != "WITHIN_R1_R3" for x in ch)):
+-        c.append("AGREED exige DeltaPurity CONFIRMED con los diez cambios WITHIN_R1_R3")
++        c.append("AGREED exige el hallazgo previo A62-A7R2-R1 en CORRECTED")
++    if v == "AGREED" and (dp.get("Status") != "CONFIRMED" or len(ch) != len(CHANGES) or any(x.get("Assessment") != "WITHIN_SCOPE" for x in ch)):
++        c.append("AGREED exige DeltaPurity CONFIRMED con todos los cambios de la ronda 3 WITHIN_SCOPE")
+     if v == "AGREED" and (len(rg) != len(REGRESSION) or any(x.get("Status") != "NO_REGRESSION" for x in rg)):
+-        c.append("AGREED exige los cinco temas de RegressionCheck en NO_REGRESSION")
++        c.append("AGREED exige todos los temas de RegressionCheck en NO_REGRESSION")
++    if v == "AGREED" and any(x.get("Status") != "COMPATIBLE" for _, x in compat):
++        c.append("AGREED exige A-5 y A-6 COMPATIBLE (CompatibilityVerdicts, decisiones §96, punto 6)")
+     if v == "AGREED" and (len(trig) != len(TRIGGERS) or any(x.get("Assessment") != "AGREE" for x in trig)):
+         c.append("AGREED exige los ocho disparadores de Materiality en AGREE")
+     if v != "AGREED" and any(x is not None for x in ia.values()):

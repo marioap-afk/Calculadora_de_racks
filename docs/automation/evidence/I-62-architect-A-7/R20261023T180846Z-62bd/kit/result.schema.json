@@ -1,0 +1,874 @@
+{
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "Schema",
+  "RunId",
+  "InvocationId",
+  "LogicalReviewRequestId",
+  "AttemptSeq",
+  "RequestedRole",
+  "Action",
+  "ReviewedUnit",
+  "ReviewedCommit",
+  "ReviewedPath",
+  "ReviewedBlob",
+  "ReviewerMode",
+  "SamePersonAsAuthor",
+  "ReviewerDeclaredIdentity",
+  "InjectedContextDeclaration",
+  "Step0",
+  "DirectReads",
+  "Reads",
+  "Verdict",
+  "RequiredFindings",
+  "OptionalFindings",
+  "PriorFindingResolution",
+  "DeltaPurity",
+  "RegressionCheck",
+  "CompatibilityVerdicts",
+  "Materiality",
+  "OwnerReservedConsequence",
+  "QuestionAnswers",
+  "IfAgreed",
+  "KnownLimitations",
+  "RecommendedNextAction"
+ ],
+ "properties": {
+  "Schema": {
+   "enum": [
+    "rackcad-a7r3-architect-review/0"
+   ]
+  },
+  "RunId": {
+   "type": "string",
+   "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+  },
+  "InvocationId": {
+   "type": "string",
+   "pattern": "^I[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+  },
+  "LogicalReviewRequestId": {
+   "type": "string",
+   "pattern": "^L[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$"
+  },
+  "AttemptSeq": {
+   "type": "integer",
+   "enum": [
+    1
+   ]
+  },
+  "RequestedRole": {
+   "enum": [
+    "ARCHITECT"
+   ]
+  },
+  "Action": {
+   "enum": [
+    "REVIEW_DESIGN"
+   ]
+  },
+  "ReviewedUnit": {
+   "enum": [
+    "I-62"
+   ]
+  },
+  "ReviewedCommit": {
+   "type": [
+    "string",
+    "null"
+   ],
+   "pattern": "^[0-9a-f]{40}$"
+  },
+  "ReviewedPath": {
+   "enum": [
+    "docs/initiatives/I-62-A-7.md"
+   ]
+  },
+  "ReviewedBlob": {
+   "type": [
+    "string",
+    "null"
+   ],
+   "pattern": "^[0-9a-f]{40}$"
+  },
+  "ReviewerMode": {
+   "enum": [
+    "SAME-SESSION ROLE",
+    "SEPARATE SESSION",
+    "EXTERNAL HUMAN"
+   ]
+  },
+  "SamePersonAsAuthor": {
+   "type": "string",
+   "minLength": 1
+  },
+  "ReviewerDeclaredIdentity": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Runtime",
+    "Model",
+    "Effort",
+    "SessionOrThread"
+   ],
+   "properties": {
+    "Runtime": {
+     "type": "string"
+    },
+    "Model": {
+     "type": "string"
+    },
+    "Effort": {
+     "type": "string"
+    },
+    "SessionOrThread": {
+     "type": "string"
+    }
+   }
+  },
+  "InjectedContextDeclaration": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "State",
+    "Items"
+   ],
+   "properties": {
+    "State": {
+     "enum": [
+      "DECLARED",
+      "NONE"
+     ]
+    },
+    "Items": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "Step0": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Basis",
+    "AP167DirectReadL593L595",
+    "OrderReadWhole",
+    "Decisions96DeclaresOrderBytesAndSha256",
+    "Decisions96AcceptsR2R1AndAuthorizesThirdCandidate",
+    "GuardsRunModeBaseHeadResult",
+    "PreflightSummaryCandidateAndTotals",
+    "Round2OutputIdentifiesRunAndFindings",
+    "Note"
+   ],
+   "properties": {
+    "Basis": {
+     "enum": [
+      "INVOKER_VERIFIED_CLONE"
+     ]
+    },
+    "AP167DirectReadL593L595": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "OrderReadWhole": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "Decisions96DeclaresOrderBytesAndSha256": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "Decisions96AcceptsR2R1AndAuthorizesThirdCandidate": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "GuardsRunModeBaseHeadResult": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "PreflightSummaryCandidateAndTotals": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "Round2OutputIdentifiesRunAndFindings": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "Note": {
+     "type": "string"
+    }
+   }
+  },
+  "DirectReads": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Ref",
+     "Purpose"
+    ],
+    "properties": {
+     "Ref": {
+      "type": "string",
+      "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+     },
+     "Purpose": {
+      "type": "string",
+      "minLength": 1
+     }
+    }
+   }
+  },
+  "Reads": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "Verdict": {
+   "enum": [
+    "AGREED",
+    "CHANGES REQUIRED",
+    "REJECTED",
+    "BLOCKED — OWNER DECISION",
+    "NOT_ACCREDITED"
+   ]
+  },
+  "RequiredFindings": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "FindingId",
+     "Section",
+     "ViolatedInvariant",
+     "Counterexample",
+     "Evidence",
+     "WhyItMatters",
+     "CorrectionRequired"
+    ],
+    "properties": {
+     "FindingId": {
+      "type": "string",
+      "pattern": "^A62-A7R3-R[1-9][0-9]*$"
+     },
+     "Section": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ViolatedInvariant": {
+      "type": "string"
+     },
+     "Counterexample": {
+      "type": "string"
+     },
+     "Evidence": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+      },
+      "minItems": 1
+     },
+     "WhyItMatters": {
+      "type": "string",
+      "minLength": 1
+     },
+     "CorrectionRequired": {
+      "type": "string",
+      "minLength": 1
+     }
+    }
+   }
+  },
+  "OptionalFindings": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "FindingId",
+     "Section",
+     "Note",
+     "Evidence",
+     "SuggestedCorrection"
+    ],
+    "properties": {
+     "FindingId": {
+      "type": "string",
+      "pattern": "^A62-A7R3-O[1-9][0-9]*$"
+     },
+     "Section": {
+      "type": "string",
+      "minLength": 1
+     },
+     "Note": {
+      "type": "string",
+      "minLength": 1
+     },
+     "Evidence": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+      },
+      "minItems": 1
+     },
+     "SuggestedCorrection": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "PriorFindingResolution": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "PriorFinding",
+     "Status",
+     "Rationale",
+     "ClauseRefs",
+     "FindingIds"
+    ],
+    "properties": {
+     "PriorFinding": {
+      "enum": [
+       "A62-A7R2-R1"
+      ]
+     },
+     "Status": {
+      "enum": [
+       "CORRECTED",
+       "PARTIALLY_CORRECTED",
+       "NOT_CORRECTED"
+      ]
+     },
+     "Rationale": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ClauseRefs": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+      }
+     },
+     "FindingIds": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^A62-A7R3-(R|O)[1-9][0-9]*$"
+      }
+     }
+    }
+   }
+  },
+  "DeltaPurity": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Status",
+    "Changes",
+    "Rationale",
+    "ClauseRefs",
+    "FindingIds"
+   ],
+   "properties": {
+    "Status": {
+     "enum": [
+      "CONFIRMED",
+      "NOT_CONFIRMED",
+      "NOT_DETERMINED"
+     ]
+    },
+    "Changes": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "Change",
+       "Assessment",
+       "Rationale",
+       "ClauseRefs",
+       "FindingIds"
+      ],
+      "properties": {
+       "Change": {
+        "enum": [
+         "R2R1_REBASE_ROLE_REVERIFICATION_ONLY",
+         "R2R1_REBASE_PATH_AND_RUNID",
+         "R2R1_REBASE_COHERENCE",
+         "R2R1_MAINSHA_EVAL_FROM_REBASEMAP",
+         "R2R1_ABSENCE_AND_NON_ADMISSION",
+         "S33_ROW_C_AND_S34_C6_NOTE",
+         "DESCRIPTIVE_SECTIONS",
+         "PROCEDURE_PIECES_ROUND3"
+        ]
+       },
+       "Assessment": {
+        "enum": [
+         "WITHIN_SCOPE",
+         "OUTSIDE_SCOPE"
+        ]
+       },
+       "Rationale": {
+        "type": "string",
+        "minLength": 1
+       },
+       "ClauseRefs": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+        }
+       },
+       "FindingIds": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "pattern": "^A62-A7R3-(R|O)[1-9][0-9]*$"
+        }
+       }
+      }
+     }
+    },
+    "Rationale": {
+     "type": "string",
+     "minLength": 1
+    },
+    "ClauseRefs": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+     }
+    },
+    "FindingIds": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^A62-A7R3-(R|O)[1-9][0-9]*$"
+     }
+    }
+   }
+  },
+  "RegressionCheck": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Topic",
+     "Status",
+     "Rationale",
+     "ClauseRefs",
+     "FindingIds"
+    ],
+    "properties": {
+     "Topic": {
+      "enum": [
+       "R1_TRX_AND_RELAYFACTS_AS_CORRECTED",
+       "R2_INVALIDATOR_RULE_AND_PROCEDURE",
+       "R3_A62_RULE1_PRECISION",
+       "T04_EFF_EFF1_B1_MAP_VALIDATION",
+       "T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE",
+       "T06_CLAUSEMAP_COVERAGE_RULE",
+       "T07_MULTI_CATEGORY_ENTRIES",
+       "T09_NO_UNAUTHORIZED_CHANGES"
+      ]
+     },
+     "Status": {
+      "enum": [
+       "NO_REGRESSION",
+       "REGRESSION"
+      ]
+     },
+     "Rationale": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ClauseRefs": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+      }
+     },
+     "FindingIds": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^A62-A7R3-(R|O)[1-9][0-9]*$"
+      }
+     }
+    }
+   }
+  },
+  "CompatibilityVerdicts": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "A5",
+    "A6"
+   ],
+   "properties": {
+    "A5": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "Status",
+      "Rationale",
+      "ClauseRefs",
+      "FindingIds"
+     ],
+     "properties": {
+      "Status": {
+       "enum": [
+        "COMPATIBLE",
+        "INCOMPATIBLE",
+        "NOT_DETERMINED"
+       ]
+      },
+      "Rationale": {
+       "type": "string",
+       "minLength": 1
+      },
+      "ClauseRefs": {
+       "type": "array",
+       "items": {
+        "type": "string",
+        "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+       }
+      },
+      "FindingIds": {
+       "type": "array",
+       "items": {
+        "type": "string",
+        "pattern": "^A62-A7R3-(R|O)[1-9][0-9]*$"
+       }
+      }
+     }
+    },
+    "A6": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "Status",
+      "Rationale",
+      "ClauseRefs",
+      "FindingIds"
+     ],
+     "properties": {
+      "Status": {
+       "enum": [
+        "COMPATIBLE",
+        "INCOMPATIBLE",
+        "NOT_DETERMINED"
+       ]
+      },
+      "Rationale": {
+       "type": "string",
+       "minLength": 1
+      },
+      "ClauseRefs": {
+       "type": "array",
+       "items": {
+        "type": "string",
+        "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+       }
+      },
+      "FindingIds": {
+       "type": "array",
+       "items": {
+        "type": "string",
+        "pattern": "^A62-A7R3-(R|O)[1-9][0-9]*$"
+       }
+      }
+     }
+    }
+   }
+  },
+  "Materiality": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Triggers",
+    "Rationale",
+    "ClauseRefs",
+    "FindingIds"
+   ],
+   "properties": {
+    "Triggers": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "Trigger",
+       "A7Declared",
+       "Assessment",
+       "Rationale",
+       "ClauseRefs",
+       "FindingIds"
+      ],
+      "properties": {
+       "Trigger": {
+        "enum": [
+         "M-01",
+         "M-02",
+         "M-03",
+         "M-04",
+         "M-05",
+         "M-06",
+         "M-07",
+         "M-08"
+        ]
+       },
+       "A7Declared": {
+        "enum": [
+         "yes",
+         "no"
+        ]
+       },
+       "Assessment": {
+        "enum": [
+         "AGREE",
+         "DISAGREE"
+        ]
+       },
+       "Rationale": {
+        "type": "string",
+        "minLength": 1
+       },
+       "ClauseRefs": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+        }
+       },
+       "FindingIds": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "pattern": "^A62-A7R3-(R|O)[1-9][0-9]*$"
+        }
+       }
+      }
+     }
+    },
+    "Rationale": {
+     "type": "string",
+     "minLength": 1
+    },
+    "ClauseRefs": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+     }
+    },
+    "FindingIds": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^A62-A7R3-(R|O)[1-9][0-9]*$"
+     }
+    }
+   }
+  },
+  "OwnerReservedConsequence": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "OwnerDecisionRequired",
+    "UnidentifiedConsequences",
+    "Rationale",
+    "ClauseRefs",
+    "FindingIds"
+   ],
+   "properties": {
+    "OwnerDecisionRequired": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "UnidentifiedConsequences": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "Rationale": {
+     "type": "string",
+     "minLength": 1
+    },
+    "ClauseRefs": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+     }
+    },
+    "FindingIds": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^A62-A7R3-(R|O)[1-9][0-9]*$"
+     }
+    }
+   }
+  },
+  "QuestionAnswers": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Question",
+     "Outcome",
+     "Answer",
+     "ClauseRefs",
+     "FindingIds"
+    ],
+    "properties": {
+     "Question": {
+      "enum": [
+       "Q-A7R3-01",
+       "Q-A7R3-02",
+       "Q-A7R3-03"
+      ]
+     },
+     "Outcome": {
+      "enum": [
+       "SATISFIED",
+       "NOT_SATISFIED"
+      ]
+     },
+     "Answer": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ClauseRefs": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^(?:docs/initiatives/I-62-(?:A-[1-7]|proposal-v14|consensus-freeze)\\.md|docs/(?:AUTOMATION_PLAN|INITIATIVE_LIFECYCLE)\\.md|docs/adr/0046-protocolo-de-ejecucion-delegada-de-agentes\\.md|docs/adr/0048-ejecucion-delegada-portable-roles-binding-y-autoverificacion\\.md|docs/automation/decisions/I-62\\.md|docs/automation/evidence/I-62-evidence\\.md|docs/automation/agent-execution/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|docs/automation/evidence/I-62-(?:A6|A7|F6|architect-A-7)/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*(?:/[A-Za-z0-9_@+-][A-Za-z0-9_.@+-]*)*|order\\.txt|a7-r2\\.md):[1-9][0-9]*(-[1-9][0-9]*)?$"
+      }
+     },
+     "FindingIds": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^A62-A7R3-(R|O)[1-9][0-9]*$"
+      }
+     }
+    }
+   }
+  },
+  "IfAgreed": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "ScopeLimitedToR2R1AndConsequences",
+    "PriorFindingCorrected",
+    "DeltaLimitedToR2R1",
+    "NoRegressionOfPriorConformities",
+    "CompatibleWithA5AndA6",
+    "MaterialityConfirmed",
+    "NoUnidentifiedOwnerReservedConsequence",
+    "NoUnauthorizedChanges",
+    "SuitableForCoordinatorAgreement"
+   ],
+   "properties": {
+    "ScopeLimitedToR2R1AndConsequences": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "PriorFindingCorrected": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "DeltaLimitedToR2R1": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "NoRegressionOfPriorConformities": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "CompatibleWithA5AndA6": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "MaterialityConfirmed": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "NoUnidentifiedOwnerReservedConsequence": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "NoUnauthorizedChanges": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "SuitableForCoordinatorAgreement": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    }
+   }
+  },
+  "KnownLimitations": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "RecommendedNextAction": {
+   "type": "string"
+  }
+ }
+}

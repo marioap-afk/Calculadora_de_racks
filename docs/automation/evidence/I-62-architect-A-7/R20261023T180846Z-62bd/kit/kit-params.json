@@ -1,0 +1,58 @@
+{
+ "Schema": "rackcad-a7r3-review-kit-params/0",
+ "Provisional": false,
+ "CloneCommit": "b9bfae50a82ba59c834658e54d7699662ee298bb",
+ "Publication": "37ac6ca4a6f0a04268ac357764bb74f843eb3a08",
+ "PublicationParent": "5da2007f45160ced37b958a3a772c46ac64874ee",
+ "GuardsRunCommit": "b9bfae50a82ba59c834658e54d7699662ee298bb",
+ "Object": {
+  "Path": "docs/initiatives/I-62-A-7.md",
+  "Blob": "8bcccb2fd2cea480f73ee5bf5a1583e0c9eaf1ff"
+ },
+ "PreviousObject": {
+  "Path": "docs/initiatives/I-62-A-7.md",
+  "Blob": "8a528133c7cccd83356e31f8fd79cd2ebb0cec15",
+  "RunFile": "a7-r2.md"
+ },
+ "A6Agreed": {
+  "Path": "docs/initiatives/I-62-A-6.md",
+  "Blob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5"
+ },
+ "A7EvidenceAddedAfterPublication": [
+  "docs/automation/evidence/I-62-A7/r3/a7-guards-result-run.json"
+ ],
+ "Clone": "D:\\r62-arch-a7r3",
+ "Run": "D:\\r62-arch-a7r3-run",
+ "Branch": "architecture/portabilidad-coordinador-principal",
+ "BranchTipAtClone": "b9bfae50a82ba59c834658e54d7699662ee298bb",
+ "Worktree": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+ "CloneSource": "<directorio común de git del worktree (el del repositorio de trabajo)>",
+ "PreparedAt": "2026-10-23T18:34:01Z",
+ "PreconditionChecks": {
+  "CommonGitDirFound": true,
+  "CommitsExist": true,
+  "CloneCommitReachableFromBranchTip": true,
+  "PublicationAncestorOfGuardsRun": true,
+  "GuardsRunAncestorOfCloneCommit": true,
+  "Round2AtPublicationParent": true,
+  "R3EvidenceAbsentAtPublicationParent": true,
+  "SameA7BlobAtPublicationGuardsRunAndClone": true,
+  "AgreedA6BlobAtParentPublicationGuardsRunAndClone": true,
+  "Decisions78_95_96AtCloneCommit": true,
+  "Decisions96IsTheLastSectionAtCloneCommit": true,
+  "GuardsRunResultAtCloneCommit": true,
+  "R3EvidenceUnchangedSincePublication": true,
+  "R2EvidenceUnchangedFromParentToClone": true,
+  "Round2ReviewAtCloneCommit": true
+ },
+ "Commands": [
+  "git clone -q --no-local -c core.autocrlf=false --single-branch --branch architecture/portabilidad-coordinador-principal <directorio común de git del worktree (el del repositorio de trabajo)> D:\\r62-arch-a7r3",
+  "git -C D:\\r62-arch-a7r3 checkout -q --detach b9bfae50a82ba59c834658e54d7699662ee298bb",
+  "git -C D:\\r62-arch-a7r3 branch -D architecture/portabilidad-coordinador-principal",
+  "git -C D:\\r62-arch-a7r3 remote remove origin",
+  "git -C D:\\r62-arch-a7r3 reflog expire --expire=now --all",
+  "git -C D:\\r62-arch-a7r3 gc -q --prune=now",
+  "copia byte a byte de kit/order.txt (= cuerpo §96) y kit/a7-r2.md (= blob 8a528133 de la ronda 2) → D:\\r62-arch-a7r3-run\\",
+  "copia byte a byte de kit/prompt.md y de las copias fieles kit/fiel__*.txt (make_closure.py) → D:\\r62-arch-a7r3-run\\"
+ ]
+}

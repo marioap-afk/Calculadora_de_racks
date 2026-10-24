@@ -1,0 +1,350 @@
+--- r2/a7-r2.md
++++ r3/a7-r2.md
+@@ -0,0 +1,347 @@
++# I-62 Amendment A-7 — Admisión de los insumos del cierre de VERIFY de FX-02 en F6
++
++```text
++Amendment: A-7 (candidata, ronda 2; preparada, no enviada; ninguna revisión de la ronda 2 lanzada)
++
++Initiative / Unit: I-62
++
++Freeze:
++FREEZE_SHA     = b64a3b640c7ee3bd77636e7a3218ae0ebac2dd43
++record         = docs/initiatives/I-62-consensus-freeze.md (blob 0f6b860837e2478db8525e1fb30a485bc4646816)
++proposal       = docs/initiatives/I-62-proposal-v14.md
++  commit       = 4c617e82b32b6c810b68d75fc19472efed22b393
++  blob         = 34ad80ea1bfff144bfc5169f62920a4c904c1bfa
++
++Previous amendments:
++A-1 AGREED (decisiones §43; docs/initiatives/I-62-A-1.md, blob c01899a72b940503bb85a0fab42bc085c603fd0f). A-7 no la modifica.
++A-2 AGREED (decisiones §57; docs/initiatives/I-62-A-2.md, blob f1e1d6f08d3cf677500794c7d0019433a4dc7d4e). A-7 no la modifica.
++A-3 AGREED (decisiones §61; docs/initiatives/I-62-A-3.md, blob ea6721f78cb63fbc4f9d99563f3262eb36a32c5d). A-7 no la modifica.
++A-4 AGREED (decisiones §64; docs/initiatives/I-62-A-4.md, blob 5e2ba68efdc1b902aa1c28aff4453b4b6973be7f). A-7 no la modifica.
++A-5 AGREED (decisiones §73; docs/initiatives/I-62-A-5.md, blob ad94ceedacbf3dbf70f0217a583978d0e32592fc). A-7 no la modifica.
++A-6 AGREED (decisiones §90; docs/initiatives/I-62-A-6.md, blob 4bc919dd4768ab81abc74b70d3a4a3821c07feb5). A-7 no edita su texto; dentro de su
++ámbito precisa A6-2, regla 1 (además del instrumento, admite como excepción a la clase de §20.3.1 los artefactos custodiados de la categoría (c), solo
++por el blob de sus bytes) y regla 3 (fija contra qué revisión se comprueba el blob de las entradas que deja «contra la AuthorityRevision») (§3.4)
++
++Previous round:
++ronda 1 = blob 6c29747d61c5f689a195095ad3712e6d9dba62aa (commit 6fee8fd6). Revisión formal R20261019T010200Z-4a72 (decisiones §93-§94; evidencia §189):
++auditor NOT_ACCREDITED (una lectura degradada de un TRX con BOM del cierre del kit); Architect CHANGES REQUIRED (A62-A7-R1..R3; A62-A7-O1..O8).
++Decisiones §94: R1-R3 ACCEPTED REQUIRED, sin acreditación excepcional ni repetición. La ronda 1 se conserva en Git; la ronda 2 se corrige en este mismo
++archivo, con blob nuevo (§3.6)
++
++Applies-to: I-62
++
++Scope:
++solo el cierre efectivo de insumos (rackcad-input-closure/v1) de las invocaciones VERIFY del EXECUTION_CONTROLLER de FX-02 en F6 (Topología A): la
++verificación, su reverificación de AUTOMATION_PLAN 16.7 y cada control negativo con invocación; y el de la invocación de medición de A6-7, con o sin el
++instrumento de A-6. Nunca la planificación (PLAN), producción, otras unidades, escenarios, roles o topologías; D.5 queda excluida
++
++Classification: MATERIAL POST-FREEZE AMENDMENT, candidata (decisiones §91, punto 2; §92, punto 2; §94, punto 2). Una regla, A7-1, por añadido al final
++de V14 D.3, después del párrafo de A6-8, corregida en la ronda 2 solo por A62-A7-R1..R3 (§3.6). M-02, M-03, M-04 y M-05 sí; M-01, M-06, M-07 y M-08 no
++(§5)
++
++Authority:
++Architect independiente + Coordinator (LIFECYCLE §6). Ninguna consecuencia OWNER-RESERVED identificada (§7)
++
++Origin:
++decisiones §91, punto 2 (determinación docs/automation/evidence/I-62-A6/m7/s91/i6-determination.md, custodiada en 703f1c3f) y §92, punto 2; referencia
++técnica: la variante R7-A del banco de la medición (evidencia §181; docs/automation/evidence/I-62-A6/m7/bench/). Ronda 2: decisiones §94 sobre la
++revisión R20261019T010200Z-4a72
++
++Architect review:
++ronda 1: CHANGES REQUIRED, NOT_ACCREDITED (R20261019T010200Z-4a72). Ronda 2: NOT LAUNCHED. Ninguna revisión formal sin una disposición nueva del
++Coordinator (decisiones §94, punto 6)
++
++Owner decision:
++no requerida (§7). Las líneas (a) A6-ADR0046-9-FX02 y (b) A6-CONTROLLER-MEDICION-CONSUMO de A-6 §7 no cambian
++
++State:
++PROPUESTA (ronda 2). No aplicada: ningún texto congelado, materializado ni de producción cambia por este registro. Sin invocación, sin medición y sin
++revisión formal de la ronda 2.
++```
++
++## 1. Alcance
++
++A-7 corrige el hueco que la determinación de decisiones §91 encontró en el cierre de insumos de las invocaciones VERIFY de FX-02: leídas al pie de la
++letra, V14 B.9 L2233 («`{Path, Blob}` en la `AuthorityRevision`»), RAE §15.2 I6 y A6-2, regla 3, no admiten en ese cierre el objeto que la verificación
++tiene que leer (V14 B.9 L2231), ni el contrato (que no está en el árbol de la `AuthorityRevision`), ni la delegación, la entrega, los TRX y los hechos
++del relevo (que no están en ningún árbol), ni las lecturas en EFF, EFF^1 y `MainSha_eval` que exige la resolución de autoridades de AUTOMATION_PLAN 16.13. Sin esa admisión, toda
++VERIFY de FX-02, con o sin el instrumento, hace lecturas fuera del cierre (P-22) y la medición de A6-7 no tiene un cierre válido.
++
++- **Qué hace.** Una regla, A7-1, añadida al final de V14 D.3 después de A6-8: el cierre de esas invocaciones se compone de cuatro categorías de entradas
++  (autoridades; objetos versionados del `Target`; artefactos custodiados; instrumento), y cada categoría tiene definidos su origen, su identidad, la
++  revisión contra la que se comprueba su blob, su fidelidad y el tratamiento de su ausencia.
++- **Dónde.** Un párrafo al final de V14 D.3, a continuación del de A6-8 (A-6 §3.11), que termina en «…otra corrección de A-6 y otra determinación del
++  Owner.» (A-6 L815-L816). Ninguna otra cláusula cambia de texto.
++- **Qué no hace.** No cambia el texto de V14 §20.3.1 ni B.9, AUTOMATION_PLAN 16.24, RAE §15, A-1..A-6 ni sus objetos acordados; dentro de su ámbito
++  precisa A6-2, reglas 1 y 3, sin editarlas (§3.4). No cambia la receta 16.4,
++  el adapter, los esquemas, los presupuestos, los roles, los permisos, el instrumento, el aceptante, la tabla de derivación de A6-9, los oráculos ni las
++  autorizaciones del Owner. No autoriza ninguna invocación ni consumo. No se aplica fuera de su ámbito (§3.5).
++
++## 2. Fuentes (literales en la base de esta preparación, `bb439090`)
++
++| Id | Fuente (blob) | Línea | Literal |
++|---|---|---|---|
++| L1 | V14 §20.3.1 (`34ad80ea`) | 1079 | `CanonicalInputs[]`: «los artefactos versionados que la acción necesita: el objeto exacto, sus registros de revisión y sus autoridades» |
++| L2 | V14 §20.3.1 | 1098-1099 | «El cierre fija la `AuthorityRevision`, el blob de cada archivo y el blob de cada instrucción de la que se derivó una obligación. Si cambia uno de esos blobs, el cierre se recalcula antes de lanzar.» |
++| L3 | V14 B.9 | 2231 | `Target`: «`{commit, path, blob}`; **obligatorio** en revisión y verificación» |
++| L4 | V14 B.9 | 2233 | `CanonicalInputs[]`: «`{Path, Blob}` en la `AuthorityRevision`» |
++| L5 | V14 B.9 | 2250-2251 | el revisor «puede leer `CanonicalInputs` y `AllowedTransitiveInputs` y ejecutar `AllowedActions`, y nada más» |
++| L6 | AP 16.3 (`f525cb1e`) | 490 | «`AuthorityRevision` es el SHA del commit cuyo árbol contiene los documentos y los cambios normativos de la propia unidad que obligan a la delegación.» |
++| L7 | AP 16.13 (Resolve, paso 3) | 823-826 | `UNIT_DOC`/`UNIT_CHANGE` → `AR`; `EXTERNAL` y P = I62 → `MainSha_eval` |
++| L8 | AP 16.13 (Resolve, paso 2; Validate) | 821, 902-908 | «M := mapa en EFF (ruta fija); válido contra el esquema en EFF»; MV-3, MV-4, MV-6 y MV-7 comparan EFF^1 con EFF |
++| L9 | AP 16.24 | 1264, 1276, 1279-1280 | `CanonicalInputs`: el objeto exacto, sus registros de revisión y sus autoridades; «el cierre fija la `AuthorityRevision` y los blobs»; una lectura fuera del cierre es P-22 |
++| L10 | RAE §15.2 I6 (`592dcfd4`) | 565 | «todo blob coincide con el de la `AuthorityRevision`; si cambia uno, el cierre se recalcula» |
++| L11 | A-6 A6-2, reglas 1 y 3 (`4bc919dd`) | 532-535, 539-541 | el instrumento es «la única excepción a la clase de §20.3.1»; «Las demás entradas conservan sin cambio esa comprobación contra la `AuthorityRevision`» |
++| L12 | A-6 A6-3, regla 6 (b) | 600-617 | aplicación de la tabla de A6-9 cuando falta una entrada: omisión registrada, sin sustitución |
++| L13 | A-6 A6-7, reglas 5 y 7 | 781-783, 789-794 | el cierre de VERIFY es un invalidador; una disposición fija cómo el cierre «que fija el kit» cubre las lecturas legítimas del instrumento |
++| L14 | A-6 A6-9, regla 4, y tabla | 841-843, 851-871 | el cierre del aceptante se deriva del cierre efectivo «y de las entradas que ese cierre fija por blob (la delegación, la entrega, el contrato y la invocación del rol)» |
++| L15 | RAE §10 | 219-222 | los controles usan «el mismo prompt, salvo la ruta de entrada y el `RunId`», con «una ruta `<task>-ncN` y un registro propios, con copias de todas las entradas» |
++| L16 | AP 16.8 (RED de la cadena); AP 16.9 | 616-617; 630, 635, 638, 639, 641, 643 | `Termination`, `Remote`, `Routing` y `Denials` con la señal «sesión → Controller»; `Ci` con la corrida de `CurrentSha` y, si la entrega exige RED, la del `RedSha`; `Tests` con «las fallidas del TRX del `RedSha`»; una entrega «**exige RED** si `ChainRedSha` es `null` o si `git diff --name-only BaseSha..CurrentSha` toca `ChainRedFiles`» (16.8) |
++| L17 | A-6 A6-3, regla 6 (b); A6-5, regla 2 | 600-601, 673-675 | «`RelayFacts` = los hechos del relevo que cita la verificación, con el SHA-256 citado»; una salida solo queda aceptada con R10 en `MATCH` |
++
++## 3. Delta
++
++### 3.1 Motivo
++
++- **El hueco** (decisiones §91; determinación `i6-determination.md`). L4 y L10 piden que el blob de toda entrada sea el de la `AuthorityRevision`, que L6 y
++  L7 fijan como la del contrato. Pero la verificación lee el objeto exacto en `Target.commit` (L3), el contrato de gate (ausente en la `AuthorityRevision`),
++  la delegación, la entrega y el TRX (fuera de Git), y la resolución de 16.13 lee el mapa en EFF, la derivación en EFF^1 y las autoridades EXTERNAL en
++  `MainSha_eval` (L7, L8). A6-9, regla 4 (L14), presupone esas entradas, y A6-7, regla 7 (L13), su cobertura, pero ninguna regla acordada las admite.
++- **La corrección.** Cada entrada Git del cierre se fija en la revisión en que el protocolo ordena leerla, y cada artefacto fuera de Git por el blob de sus
++  bytes custodiados. La comprobación de I6 se hace contra esa misma referencia. Para las autoridades de la unidad, la referencia sigue siendo la
++  `AuthorityRevision`, como hoy.
++- **Por qué es mínima.** Solo fija la referencia de comparación de cada categoría. No añade insumos que la verificación no necesite (L1, L9), no cambia la
++  derivación del cierre del aceptante (A6-9) ni sus omisiones (A6-3, regla 6 (b)), y se limita a FX-02 en F6.
++- **Más allá de R7-A.** La variante R7-A del banco fija en la `AuthorityRevision` los insumos de la resolución por el mapa. En el fixture FX-U1 los blobs
++  coinciden en la `AuthorityRevision`, EFF, EFF^1 y `MainSha_eval` (banco, caso E-EFF-COVERAGE), así que A7-1 y R7-A dan el mismo cierre. En un fixture
++  construido según A5-1 (B1), EFF^1 lleva el estado anterior a la activación y sus blobs difieren: con R7-A, las lecturas de contenido de MV-6 y MV-7
++  en EFF^1 quedarían fuera del cierre en la ronda de C-24 (MV-3 y MV-4 solo comparan identificadores de objetos de los árboles). A7-1 las admite
++  fijándolas en EFF^1.
++
++### 3.2 A7-1 — Admisión de los insumos del cierre de VERIFY de FX-02
++
++Ubicación: al final de V14 D.3, a continuación del párrafo de A6-8 (A-6 §3.11). Ninguna línea de D.3 cambia de texto.
++
++> «**Admisión de los insumos del cierre de VERIFY de FX-02 (A-7).** Solo para el cierre efectivo de insumos (`rackcad-input-closure/v1`) de las
++> invocaciones VERIFY del EXECUTION_CONTROLLER de la Topología A (FX-02) en F6 —la verificación, su reverificación de 16.7 y cada control negativo con
++> invocación— y de la invocación de medición de la regla de A-6 sobre la elegibilidad, con o sin el instrumento de A-6, y sin cambiar el texto de
++> §20.3.1, de B.9, de AUTOMATION_PLAN 16.24 ni de su procedimiento subordinado:
++> 1. **categorías:** cada entrada `{Path, Blob}` del cierre pertenece al menos a una de estas categorías, y ninguna otra entrada se admite; si
++>    pertenece a más de una, su blob coincide con la referencia de cada una de ellas:
++>    (a) **autoridades:** las autoridades que el contrato cita, las instrucciones automáticas del directorio de trabajo, los insumos transitivos del
++>    punto fijo de 16.24 y los archivos cuyo contenido lee la resolución de autoridades de 16.13: el mapa y su esquema, cada archivo MODIFIED del
++>    mapa, y `WORKFLOW.md` y `AUTOMATION_PLAN.md` en las lecturas de Evaluate y de Validate;
++>    (b) **objetos versionados del `Target`:** el objeto exacto del `Target`, cada ruta de `git diff --name-only <BaseSha>..<Target.commit>`, con el
++>    `BaseSha` de la delegación, y el archivo de decisiones y el de estado de la unidad;
++>    (c) **artefactos custodiados:** el contrato de gate de la tarea; la delegación; la entrega; cada resultado de pruebas (TRX) de las corridas que
++>    la verificación lee según 16.9 —el de la corrida de `CurrentSha` y, si la entrega exige RED (16.8; 16.9, `Ci` y `Tests`), el de la corrida de
++>    `RedSha`—; y los hechos del relevo de la sesión (`RelayFacts`) que alimentan `Termination`, `Remote`, `Ci`, `Routing` y `Denials`, cuyo SHA-256 cita
++>    la verificación; la invocación de medición, que no produce una verificación, no tiene hechos del relevo (A6-7, regla 1);
++>    (d) **instrumento:** la entrada de la regla de A-6 sobre la admisión del instrumento, solo en una invocación que lo admita.
++>    En este ámbito, las entradas de (c) que no son artefactos versionados son, además del instrumento de A6-2, regla 1, excepciones a la clase de
++>    §20.3.1, y se admiten solo por el blob de sus bytes custodiados;
++> 2. **origen, identidad y revisión:** (a) cada entrada, por su blob en la revisión en que AUTOMATION_PLAN 16.3 y 16.13 ordenan leerla: la
++>    `AuthorityRevision` del contrato para los documentos y cambios de la unidad, las instrucciones automáticas y los transitivos; `MainSha_eval` para
++>    las autoridades EXTERNAL y para `WORKFLOW.md` y `AUTOMATION_PLAN.md` en Evaluate; EFF para el mapa, su esquema y cada archivo MODIFIED, y para
++>    `WORKFLOW.md` y `AUTOMATION_PLAN.md` en Validate; EFF^1 para cada archivo MODIFIED y para `AUTOMATION_PLAN.md` en Validate. Una misma ruta puede
++>    figurar con un blob por cada revisión de lectura en que difiera, y una misma entrada puede figurar en más de una lista del cierre cuando 16.24 lo
++>    exige; (b) por su blob en `Target.commit`; (c) por el blob Git de los bytes que la supervisión custodia antes de lanzar, calculado con
++>    `git hash-object --no-filters`, en las rutas que fija la designación de la invocación; la designación nombra el papel de cada artefacto (contrato,
++>    delegación, entrega, TRX de la corrida de `CurrentSha`, TRX de la corrida de `RedSha`, hechos del relevo), con un artefacto como máximo por papel,
++>    y registra la ruta y el blob de cada uno; la delegación y la entrega van bajo `artifacts/orchestration/`, en la ruta de la tarea o del control
++>    (RAE §10), en un directorio cuyo nombre es el `RunId` de sus propios bytes; (d) por la regla de A-6;
++> 3. **comprobación de blobs (I6):** la coincidencia de blobs del cierre se comprueba contra la referencia de su categoría: (a) la revisión de lectura
++>    de cada entrada, que para los documentos y cambios de la unidad es la `AuthorityRevision`, sin cambio; (b) `Target.commit`; (c) el blob de los
++>    bytes custodiados; (d) el blob que fija A-6. Un cambio de cualquiera de esos blobs, de una de esas revisiones, del `BaseSha` o de la designación
++>    obliga a recalcular el cierre antes de lanzar;
++> 4. **fidelidad:** cada entrada tiene su registro de fidelidad de 16.24 por el mismo camino de lectura que usará el Controller: (a) y (b), como objetos
++>    Git de su revisión; (c), como los bytes custodiados en el directorio de trabajo, verificados por su blob; (d), por la regla de A-6 sobre la
++>    fidelidad del instrumento. Sin FAITHFUL o FAITHFUL_NORMALIZED no hay lanzamiento (P-24);
++> 5. **ausencia:** (a) una entrada de (a) que no existe en su revisión no aporta entrada; su ausencia la tratan las reglas que la exigen (16.3, 16.13,
++>    por ejemplo como MAP_INVALID, o 16.24) y nada la sustituye; (b) sin el objeto exacto del `Target` en `Target.commit` no hay lanzamiento; una ruta
++>    del diff que no existe en `Target.commit` y un registro de la unidad que no existe en ese commit no aportan entrada; (c) sin un contrato y una
++>    delegación presentes, con el blob registrado y legibles, (a) y (b) no se pueden calcular y no hay lanzamiento; la entrega, un TRX o los hechos del
++>    relevo que no existen, cuyos bytes no tienen el blob registrado o que no son legibles no aportan entrada; la ausencia se registra con su causa en la
++>    custodia del cierre, nada la sustituye (ni otra copia, ni otra corrida, ni otro papel, ni el `Target`) y la invocación sigue las reglas de 16.9 y de
++>    A-6 para una entrada o una señal ausente, con la clasificación de fallo que fija 16.9; si la exigencia de RED de 16.8 no se puede determinar porque
++>    falta la entrega, el TRX de la corrida de `RedSha` ni se admite ni se exige, y se registra la causa; comprobar que un artefacto designado falta, en la ruta que
++>    fija la designación, no es una lectura fuera del cierre ni aporta contenido. Un artefacto no designado, de otra corrida, de otro papel o con un
++>    blob distinto del registrado no entra en el cierre, y su lectura es una lectura fuera del cierre (P-22); (d) la regla de A-6 sobre la vía del
++>    instrumento;
++> 6. **auditoría y derivación:** las lecturas registradas de la invocación, del Controller y del instrumento, se auditan contra este cierre (P-22). El
++>    cierre del aceptante se deriva de él con la regla de A-6 sobre la independencia y la de A-6 en D.6, regla 6 (b), identificando el contrato, la
++>    delegación, la entrega y cada TRX solo por las rutas de la designación, y los hechos del relevo de la solicitud son los de (c); la salida de la
++>    invocación se escribe en `IgnorePath(I)`;
++> 7. **invalidador:** el «cierre de VERIFY» que la regla de A-6 sobre la elegibilidad hace invalidador es esta regla, en el blob acordado de A-7,
++>    aplicada con el procedimiento de construcción y de validación que nombra la disposición de esa regla, identificado por el blob o el SHA-256 de cada
++>    pieza (el constructor, el validador, el formato de la designación y la implementación de la derivación del cierre del aceptante). No es el SHA-256
++>    de un cierre concreto: el cierre de cada invocación difiere por
++>    construcción (su `Target`, su `RunId`, las copias de cada control) y su SHA-256 se custodia con esa invocación. Anulan la medición y la elegibilidad
++>    otro blob de A-7, una A-n que cambie esta regla o un cambio de cualquier pieza del procedimiento nombrado; no las anula el cierre concreto de una
++>    invocación construido y validado con ese procedimiento sobre sus propias entradas;
++> 8. **límites:** esta regla solo fija la composición del cierre y la referencia de comparación de sus entradas. No cambia la receta 16.4, el adapter, los
++>    esquemas, los presupuestos, los roles, los permisos, los blobs del instrumento y del aceptante, los oráculos ni ninguna otra regla de A-6; no se
++>    aplica a la planificación, a otras unidades, escenarios, roles o topologías, a producción ni a D.5.»
++
++### 3.3 Categorías de entrada
++
++| Categoría | Contenido | Origen | Identidad | Revisión (referencia de I6) | Fidelidad (camino de lectura) | Ausencia |
++|---|---|---|---|---|---|---|
++| **(a) Autoridades** | autoridades que cita el contrato; instrucciones automáticas (`AGENTS.md`); transitivos del punto fijo; mapa, esquema y archivos MODIFIED del mapa; `WORKFLOW.md` y `AUTOMATION_PLAN.md` en Evaluate y Validate | árboles de las revisiones de lectura | `{Path, Blob}` con el blob en esa revisión; un blob por revisión en que difiera | `AuthorityRevision` (UNIT_DOC, UNIT_CHANGE, instrucciones, transitivos); `MainSha_eval` (EXTERNAL; Evaluate); EFF y EFF^1 (Validate) | objeto Git de su revisión | sin entrada; la tratan 16.3, 16.13 (p. ej., MAP_INVALID) o 16.24; sin sustitución |
++| **(b) Objetos del `Target`** | objeto exacto; rutas de `git diff --name-only BaseSha..Target.commit`; decisiones y estado de la unidad | árbol de `Target.commit` | `{Path, Blob}` con el blob en `Target.commit` | `Target.commit` | objeto Git de `Target.commit` | objeto ausente: sin lanzamiento; ruta borrada o registro ausente: sin entrada |
++| **(c) Artefactos custodiados** | contrato de gate; delegación; entrega; TRX de la corrida de `CurrentSha` y, si la entrega exige RED, de la de `RedSha`; hechos del relevo (`RelayFacts`; la medición no los tiene) | bytes custodiados antes de lanzar, en las rutas de la designación, un artefacto como máximo por papel (delegación y entrega en un directorio con el `RunId` de sus bytes, en la ruta de la tarea o del control) | `{Path, Blob}` con el blob Git de los bytes, registrado en la designación | blob de los bytes custodiados | bytes del directorio de trabajo verificados por su blob (un BOM forma parte de los bytes) | contrato o delegación ausentes: sin cierre y sin lanzamiento; entrega, TRX o relevo ausentes: sin entrada, causa registrada, sin sustitución, clasificación de 16.9; comprobar la ausencia no es P-22; un artefacto no designado, de otro papel o con otro blob no entra (su lectura es P-22) |
++| **(d) Instrumento** | entrada y acción de A6-2 | objeto Git del `-C` (A6-3) | `{Path de procedencia, Blob 9a829b0e}` | blob de A-6 | A6-4, regla 1 | A6-3 |
++
++### 3.4 Relación con A-6 y con R7-A
++
++- **A6-2, regla 1.** Dice que la entrada del instrumento es «la única excepción a la clase de §20.3.1». Dentro de su ámbito, A7-1 la precisa: los
++  artefactos de (c) que no son artefactos versionados (la delegación, la entrega, los TRX y los hechos del relevo) también son excepciones a esa clase y
++  se admiten solo por el blob de sus bytes custodiados (A7-1, punto 1). Es la alternativa que deja la determinación de §91, que los sitúa fuera de la
++  clase; no se funda que quepan en ella como «registros de revisión».
++- **A6-2, regla 3.** Deja «contra la `AuthorityRevision`» la comprobación de toda entrada distinta del instrumento. A7-1 la conserva para las autoridades
++  de la unidad y, solo en su ámbito, fija otra referencia para las demás entradas de (a), y para (b) y (c). A6-2 no se edita: A7-1 es la A-n posterior
++  que precisa sus reglas 1 y 3 en ese ámbito (LIFECYCLE §6).
++- **A6-3, regla 6 (b), y A6-9, regla 4.** Sin cambio. La derivación usa el cierre de A7-1 tal como es; las omisiones de (i)-(v) siguen igual, y la
++  identificación por rutas de la designación es la que A-6 §3.18 ya atribuye al kit.
++- **A6-7, reglas 5 y 7.** El «cierre de VERIFY» de la regla 5 es A7-1 con el procedimiento de construcción y de validación que nombra la disposición de
++  la regla 7 (A7-1, punto 7), no el SHA-256 de una instancia. La medición y cada VERIFY posterior usan esa regla y ese procedimiento; cada invocación
++  custodia el SHA-256 de su cierre concreto, que difiere por construcción.
++- **R7-A.** Referencia técnica (decisiones §92, punto 3). En el escenario del banco, A7-1 y R7-A componen el mismo cierre, entrada a entrada (§3.1), y
++  sus resultados (77 de 77 en el banco; 113 de 113 en el kit) se reutilizan por identidad. A7-1 añade a R7-A la fijación en EFF, EFF^1 y `MainSha_eval`
++  de las entradas de (a) que 16.13 lee allí. R7-B sigue rechazado (decisiones §92, punto 3).
++
++### 3.5 Lo que A-7 no hace
++
++No admite lecturas del árbol de trabajo real de I-62 ni de otro repositorio (A6-3, regla 4); no admite copias de otras corridas no designadas; no cambia
++P-22, P-24 ni P-25; no cambia la regla de I6 fuera de su ámbito; no toca el oráculo de C-24 (A6-6) ni el de los controles negativos; no cambia la
++contabilidad de D.3; no excluye ni añade órdenes del instrumento (la exclusión de `contract` es una disposición aparte del Coordinator, decisiones §92,
++punto 4); no crea B1 ni abre FX-U2.
++
++**Residuo declarado (lecturas de `clausemap` fuera de las revisiones de 16.13).** La orden `clausemap` del instrumento fijado compara cada cita del
++contrato también en EFF^1, EFF y `MainSha_eval`. En una unidad I62, 16.13 lee las citas UNIT_DOC y UNIT_CHANGE en la `AuthorityRevision` (Resolve, paso
++3), y A7-1 solo admite las revisiones en que el protocolo ordena leer. Si una de esas citas tiene otro blob en EFF^1, EFF o `MainSha_eval`, el aceptante da
++R9 `MISMATCH` sobre `clausemap` aunque el cierre sea el de A7-1: un rechazo falso, nunca una aceptación falsa (preflight de A-7, caso B1-UC-R9). No ocurre
++en el fixture FX-U1. A7-1 no amplía el cierre a esas lecturas, que la verificación no necesita. El kit de cada invocación, también de la reverificación
++de 16.7 con su `MainSha_eval` de 16.13, lo comprueba antes de lanzar:
++si alguna lectura de contenido que `clausemap` hace de una cita del contrato cae en una revisión en que el blob de esa ruta no es el de una entrada del
++cierre, no hay lanzamiento y el caso vuelve al Coordinator (S-03); una revisión en que la ruta no existe no aporta lectura. Una cita cuya lectura sí
++está fijada por el cierre (por ejemplo, `AUTOMATION_PLAN.md` en EFF^1, categoría (a)) no bloquea.
++
++### 3.6 Correcciones de la ronda 2 (decisiones §94)
++
++Cambios normativos solo por A62-A7-R1..R3 (decisiones §94, punto 2), en A7-1, puntos 1, 2, 5, 6 y 7 (nuevo; el anterior punto 7 pasa a ser el 8). Los
++demás puntos de A7-1 conservan el texto de la ronda 1. Las demás secciones que cambian son descriptivas: la cabecera, §1, §2 (fuentes L16 y L17), §3.1
++(O7), §3.3, §3.4, §3.5 (O2), esta sección, §4, §5 (M-03 y M-04, O1), §6, §8, §10 y §11.
++
++| Hallazgo de la ronda 1 | Corrección | Dónde | Prueba de la ronda 2 |
++|---|---|---|---|
++| R1: la categoría (c) no incluye los TRX que lee 16.9 (el de `RedSha` con RED) ni los hechos del relevo y `RelayFacts` | (c) con seis papeles cerrados, un artefacto como máximo por papel, ruta y blob registrados, fidelidad por los bytes, ausencia con la clasificación de 16.9 sin sustitución, comprobación de ausencia que no es P-22, y rechazo de lo no designado | A7-1, puntos 1 (c), 2 (c), 5 (c) y 6; §3.3 | `I-62-A7/` (preflight de la ronda 2): dos TRX; relevo presente, ausente, sustituido y ajeno; N4; nc1; tipo B1 |
++| R2: el invalidador de A6-7 identificado por el SHA-256 de una instancia | invalidador = A7-1 en el blob acordado más el procedimiento de construcción y de validación nombrado por la disposición; el SHA-256 de cada cierre concreto se custodia con su invocación; lista de lo que anula la medición | A7-1, punto 7 (nuevo); §3.4 | preflight: cierres distintos por invocación, todos válidos con el mismo procedimiento; un cambio de pieza cambia el invalidador |
++| R3: A7-1 (c) contradice A6-2, regla 1 («la única excepción») sin declararlo | precisión expresa de A6-2, regla 1, dentro del ámbito de A-7: los artefactos de (c) no versionados son excepciones a la clase de §20.3.1 por el blob de sus bytes | A7-1, punto 1; cabecera; §1; §3.4; §4; §6 | preflight: compatibilidad con A-6 (A6-2, reglas 1 y 3) |
++| O1: el motivo de M-04 no coincidía con la regla 5 | motivo reescrito con la semántica vigente (descriptivo, necesario por R1) | §5 | guardas |
++| O7: MV-3 y MV-4 no leen contenido | «lecturas de contenido de MV-6 y MV-7» (descriptivo) | §3.1 | guardas |
++| O2, O3-O6, O8 | disposiciones propuestas en la evidencia de la ronda 2; O2 se aclara en §3.5 (descriptivo) y O3 queda cubierto para (c) por R1; sin otro cambio normativo (decisiones §94, punto 4) | — | — |
++
++## 4. Semántica antes y después
++
++| Aspecto | Antes (lectura literal) | Después (A7-1, solo en su ámbito) |
++|---|---|---|
++| Objeto verificado | no admisible como `CanonicalInputs` (blob distinto del de la `AuthorityRevision`); lecturas en `Target.commit` → P-22 | admitido por su blob en `Target.commit` |
++| Contrato | ausente en la `AuthorityRevision`: no admisible | admitido por el blob de sus bytes custodiados |
++| Delegación, entrega, TRX y hechos del relevo | no son artefactos versionados: no admisibles | admitidos por el blob de sus bytes custodiados, en las rutas de la designación, como excepción a la clase de §20.3.1 (precisión de A6-2, regla 1) |
++| Insumos de 16.13 en EFF, EFF^1 y `MainSha_eval` | admisibles solo si su blob coincide con el de la `AuthorityRevision` | admitidos por su blob en la revisión de lectura |
++| Autoridades de la unidad | `AuthorityRevision` | sin cambio |
++| Instrumento | A6-2 | sin cambio |
++
++## 5. Materialidad (M-01..M-08)
++
++| M | Activado | Motivo |
++|---|---|---|
++| M-01 | no | ningún dueño nuevo de reglas ni de estado: el cierre lo sigue calculando el Principal (16.24) y lo audita el invocador |
++| M-02 | **sí** | cambia el significado persistido de `rackcad-input-closure/v1` y de la `RoleInvocation` de las VERIFY de FX-02: la referencia de I6 de las entradas de (a) leídas fuera de la `AuthorityRevision`, (b) y (c) ya no es la `AuthorityRevision`; mismo criterio que A-6 §5, M-02 |
++| M-03 | **sí** | cambia el comportamiento observable del piloto: lecturas que hoy serían P-22 (objeto, contrato, delegación, entrega, TRX, hechos del relevo, EFF^1) quedan dentro del cierre |
++| M-04 | **sí** | cambia qué falla y cómo: ausencias con efecto definido ((a) sin entrada, tratada por 16.3, 16.13 o 16.24; (b) sin el objeto del `Target` no hay lanzamiento, y una ruta o un registro ausentes no aportan entrada; (c) sin contrato o delegación no hay cierre ni lanzamiento, y una entrega, un TRX o los hechos del relevo ausentes no aportan entrada ni se sustituyen, con la clasificación de 16.9), recálculo ante el cambio de cualquier referencia e invalidador identificado por la regla y su procedimiento |
++| M-05 | **sí** | cambia un contrato que consumen el invocador, el auditor, los validadores y el aceptante (vía la derivación de A6-9) |
++| M-06 | no | ningún punto de extensión: una regla cerrada, para un rol, una acción, un escenario y una fase |
++| M-07 | no | ningún mecanismo transversal: solo FX-02 en F6 |
++| M-08 | no | ningún ADR cambia ni se reinterpreta: no toca ADR-0046 #9 (el instrumento sigue regido por A-6 y la línea (a) del Owner) |
++
++## 6. No cambia producción; compatibilidad con A-1..A-6; guardas y preflight
++
++- **Diff permitido** del commit de publicación: solo este archivo y `docs/automation/evidence/I-62-A7/`. Superficies prohibidas: V14, el registro del
++  Freeze, A-1..A-6, AUTOMATION_PLAN, RAE, esquemas, adapters, producción (`src/`, `tests/`), I-64, I-65 y el kit de la medición.
++- **A-5.** A5-1 y A5-2 sin cambio: A7-1 no toca la construcción de B1 ni el presupuesto de Principal de FX-U2; en B1 la regla es la misma, con la unidad y
++  el contrato de B1.
++- **A-6.** Ninguna regla cambia de texto. Dentro de su ámbito, A7-1 precisa A6-2, reglas 1 y 3; la relación con A6-2, A6-3, A6-7 y A6-9 está en §3.4.
++  Las líneas (a) y (b) del Owner siguen cubriendo lo que nombran.
++- **Oráculos, presupuestos y autorizaciones.** Sin cambio: el oráculo de C-24 (A6-6), el relativo de los controles (RAE §10), las filas de D.3, la
++  medición única de A6-7 y las decisiones del Owner registradas (§78 y las demás).
++- **Guardas y preflight:** `docs/automation/evidence/I-62-A7/` (§10).
++
++## 7. Consecuencias reservadas al Owner
++
++Ninguna identificada. A-7 no cambia el alcance, los no-objetivos, OD-1..OD-7, la matriz OV ni ningún escenario OV-I62; no toca ADR-0046 #9 ni los blobs del
++instrumento y del aceptante, de modo que la determinación `A6-ADR0046-9-FX02 = A` (decisiones §78) sigue cubriendo lo que cubre; y no autoriza ninguna
++invocación ni consumo. La línea (b) de A-6 §7, con el trío vigente, sigue siendo necesaria para la medición. Si el Architect o el Coordinator
++identifican otra consecuencia OWNER-RESERVED, la enmienda se detiene (BLOCKED — OWNER DECISION).
++
++## 8. Preguntas para la revisión
++
++| Id | Pregunta |
++|---|---|
++| Q-A7-01 | A7-1 fija la referencia de I6 por categoría sin editar V14 B.9, RAE §15.2 ni A6-2. ¿Basta su ubicación en D.3, después de A6-8, como regla específica posterior para FX-02 en F6? |
++| Q-A7-02 | La categoría (a) fija cada insumo de 16.13 en su revisión de lectura (`MainSha_eval`, EFF, EFF^1), más allá de R7-A, porque en B1 los blobs de EFF^1 difieren. ¿Es esa la lectura correcta de «autoridades» para el cierre de VERIFY? |
++| Q-A7-03 | El ámbito incluye la invocación de medición de A6-7, que no es una invocación de rol (A6-7, regla 2) pero deriva su cierre igual (A6-3, regla 6 (b)). ¿Es correcto incluirla? |
++| Q-A7-04 | La regla de rutas de la designación (delegación y entrega bajo el `RunId` de sus bytes) evita que `Name(p)` de C6 quede indefinido en N7a y N7b. ¿Debe ser normativa, como en A7-1, regla 2 (c), o basta como regla del kit? |
++| Q-A7-05 | La categoría (b) cierra la lista de registros de la unidad en el archivo de decisiones y el de estado. ¿Es suficiente para la verificación de 16.9? |
++| Q-A7-06 | El residuo de §3.5 (`clausemap` compara las citas del contrato en revisiones que 16.13 no lee en una unidad I62) se trata con una comprobación de fallo cerrado del kit y no ampliando el cierre. ¿Es aceptable, o la regla debería admitir esas lecturas? |
++
++Respuestas de la revisión de la ronda 1 (R20261019T010200Z-4a72): Q-A7-02, Q-A7-03, Q-A7-04 y Q-A7-06 SATISFIED; Q-A7-01 NOT_SATISFIED por R3 y Q-A7-05
++NOT_SATISFIED por R1, ambos corregidos en la ronda 2 (§3.6).
++
++**Preguntas de la ronda 2:**
++
++| Id | Pregunta |
++|---|---|
++| Q-A7R2-01 | La categoría (c) nombra seis papeles cerrados (contrato, delegación, entrega, TRX de `CurrentSha`, TRX de `RedSha`, hechos del relevo), con un artefacto como máximo por papel. ¿Cubre lo que lee 16.9 sin admitir insumos innecesarios? |
++| Q-A7R2-02 | Los hechos del relevo entran en el cierre y en la solicitud del aceptante (`RelayFacts`, R10), pero la tabla de A6-9 no les da nombre en C6, así que el instrumento no los lee. ¿Es coherente con A6-3, regla 6 (b), y A6-5, regla 2? |
++| Q-A7R2-03 | El invalidador se identifica por la regla y por las piezas del procedimiento que nombra la disposición (A7-1, punto 7). ¿Basta para comprobar antes de cada VERIFY si la medición sigue vigente? |
++
++## 9. Separabilidad
++
++A7-1 es una sola regla. Es separable de A-6 en cuanto a la verificación sin instrumento (corrige el cierre de cualquier VERIFY de FX-02), pero la medición
++de A6-7 depende de ella: sin A-7 no hay un cierre de VERIFY válido. Su categoría (d) remite a A-6.
++
++## 10. Evidencia
++
++- Determinación de §91: `docs/automation/evidence/I-62-A6/m7/s91/i6-determination.md` (`703f1c3f`).
++- Banco de la medición y kit: `docs/automation/evidence/I-62-A6/m7/bench/` (R7-A, 77 de 77) y `docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure/`
++  (113 de 113).
++- Preflight de A-7: `docs/automation/evidence/I-62-A7/` (guardas de alcance, validador del cierre de A7-1, negativos de entradas ausentes, reemplazadas y
++  ajenas, compatibilidad con A-5 y A-6, preservación de oráculos, presupuestos y líneas del Owner, reproducción sobre R7-A); el de la ronda 2, en
++  `docs/automation/evidence/I-62-A7/r2/`.
++- Revisión de la ronda 1: `docs/automation/evidence/I-62-architect-A-7/R20261019T010200Z-4a72/` (kit, `output.json`, `audit.json`, `README.md`).
++
++## 11. Estado de revisión
++
++| Autoridad | Estado | Registro |
++|---|---|---|
++| Owner | ninguna consecuencia reservada identificada | — |
++| Architect independiente | ronda 1: CHANGES REQUIRED (R20261019T010200Z-4a72), NOT_ACCREDITED; ronda 2: NOT LAUNCHED, hasta una disposición nueva del Coordinator | decisiones §93-§94 |
++| Coordinator | ronda 1: A62-A7-R1..R3 aceptados como REQUIRED; sin veredicto sobre la ronda 2 | decisiones §94 |
++
++Mientras A-7 sea PROPUESTA, se corrige en este mismo archivo, con blob nuevo, y la historia queda en Git: la ronda 1 es el blob `6c29747d…` del commit
++`6fee8fd6`. Una vez acordada, solo la corrige, revoca o sustituye la A-n siguiente
++(LIFECYCLE §6).
++
++## Anexo (no normativo) — aplicación prevista
++
++1. **Revisión formal** de A-7 ronda 2 (una, acotada a R1-R3 y sus consecuencias), con una disposición del Coordinator que la autorice y un kit cuyo
++   cierre detecte los archivos que la herramienta de lectura no entrega byte a byte (BOM, líneas largas) y dé una vía de lectura fiel.
++2. **Acuerdo** del Architect y del Coordinator sobre el blob exacto.
++3. **Disposiciones del Coordinator previas a la medición:** lecturas del aceptante (A6-5, regla 6), exclusión de `contract` (decisiones §92, punto 4) y la
++   de A6-7, regla 7, que nombra el cierre de A7-1 y la regla de reconstrucción.
++4. **Kit:** nueva preparación del kit de la medición con el cierre de A7-1, sin `contract`, con el `RunId` en la forma de AP 16.6 y con el shell de la
++   invocación identificado (decisiones §92, punto 6); congelado y autoprobado sin lanzar.
++5. **Medición de A6-7**, con OD-2 y la línea (b) del Owner, después de la disposición de medición.
++

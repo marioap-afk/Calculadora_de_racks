@@ -1,0 +1,6 @@
+I-62 A-7 ronda 3: identificadores de la ÚNICA revisión formal acotada (decisiones §96, punto 6), generados una vez el 2026-10-23T18:08:46Z (UTC)
+RunId                  = R20261023T180846Z-62bd
+InvocationId           = I20261023T180846Z-62bd
+LogicalReviewRequestId = L20261023T180846Z-62bd
+AttemptSeq             = 1
+SessionId              = a720544e-1ac0-43d9-96bd-ae39e1090dfb

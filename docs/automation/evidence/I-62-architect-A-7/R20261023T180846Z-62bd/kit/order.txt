@@ -1,0 +1,92 @@
+I-62 — COORDINATOR DISPOSITION §96
+A-7 ROUND 2 / REBASEMAP REQUIRED CORRECTION
+1. Resultado histórico
+Conservar íntegramente la revisión de A-7 ronda 2 custodiada en 3f912c84.
+Auditor = NOT_ACCREDITED.
+Architect reported = CHANGES REQUIRED.
+No conceder acreditación excepcional ni modificar output.json, audit.json o la evidencia histórica.
+A62-A7R2-R1 = ACCEPTED REQUIRED.
+A-7 permanece PROPUESTA.
+2. Corrección autorizada
+Preparar A-7 ronda 3, limitada a resolver la admisión de RebaseMap en la reverificación de AUTOMATION_PLAN 16.7.
+La categoría (c) debe admitir RebaseMap exclusivamente cuando la modalidad de reverificación lo requiere.
+Definir:
+
+* origen y ruta;
+* identidad y blob de los bytes custodiados;
+* RunId;
+* fidelidad;
+* ausencia;
+* sustitución o pertenencia a otra corrida;
+* rechazo ante incoherencias;
+* derivación de MainSha_eval.
+
+No admitir RebaseMap indiscriminadamente en las verificaciones ordinarias.
+3. Cierre y derivación
+Actualizar únicamente las superficies de A-7 que dependen de esta corrección:
+
+* definición de la categoría (c);
+* constructor del cierre;
+* validador;
+* formato de la designación;
+* referencias descriptivas afectadas.
+
+Conservar las demás reglas de A7-1 y los resultados acreditados que no dependan de RebaseMap.
+No modificar A-6, AUTOMATION_PLAN 16.24 ni RAE.
+4. Pruebas
+Ejecutar pruebas dirigidas sobre:
+
+* RebaseMap válido y presente;
+* RebaseMap ausente cuando es obligatorio;
+* RebaseMap sustituido;
+* RebaseMap de otra corrida;
+* RunId incorrecto;
+* blob alterado;
+* derivación correcta de MainSha_eval;
+* uso indebido de RebaseMap en una VERIFY ordinaria;
+* compatibilidad con N4, nc1 y el caso tipo B1.
+
+Exigir que las entradas adicionales o inventadas sean rechazadas mecánicamente.
+No ejecutar Codex.
+5. Compatibilidad
+Verificar expresamente:
+
+* A-5;
+* A-6;
+* EFF/EFF^1;
+* regla del invalidador;
+* autorizaciones Owner;
+* presupuestos;
+* oráculos de FX-02.
+
+Conservar el alcance material previamente delimitado.
+6. Kit de revisión
+Corregir el mecanismo que permitió una referencia a una ruta absoluta inexistente.
+Exigir referencias relativas válidas, presentes en el cierre y comprobadas contra el archivo real.
+No alterar el resultado de la revisión anterior.
+Reutilizar los componentes congelados compatibles y validar incrementalmente conforme a §88.
+La revisión siguiente debe incluir un dictamen explícito sobre compatibilidad con A-5, además de A-6.
+7. Publicación
+Si el preflight dirigido es conforme, publicar A-7 ronda 3 como PROPUESTA con un blob nuevo.
+Ejecutar guardas sobre el commit exacto y custodiar CI.
+Preparar el kit acotado, pero no lanzar una nueva revisión formal sin disposición posterior.
+8. Límites
+No ejecutar Codex.
+No consumir A6-7.
+No crear B1.
+No abrir FX-U2.
+No modificar producción, I-65 ni D.5.
+No iniciar otra enmienda.
+I-64 conserva prioridad de recursos.
+9. Entrega
+Informar:
+
+* blob de A-7 ronda 3;
+* delta exacto;
+* preflight de RebaseMap;
+* compatibilidad con A-5/A-6;
+* negativos, guardas y CI;
+* corrección del mecanismo de citas;
+* preparación para una sola revisión acotada.
+
+No declarar A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS.

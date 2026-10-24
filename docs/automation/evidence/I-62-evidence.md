@@ -4879,3 +4879,30 @@ solo desde artefactos custodiados.
 - **Guardas** (`r3/a7-guards.py`, autoprueba 38 de 38 mutantes de las condiciones nuevas o cambiadas): `run` sobre `5da2007f..37ac6ca4` = **PASS** en G1-G7
   ([resultado](I-62-A7/r3/a7-guards-result-run.json)).
 - Sin revisión formal (decisiones §96, punto 7); kit acotado por preparar; sin Codex; A6-7 HELD.
+
+## 198. Kit de la revisión formal única de A-7 ronda 3 (acotada a A62-A7R2-R1) congelado y custodiado SIN lanzar; mecanismo de citas corregido; dictamen A-5/A-6 en el esquema; autorización pendiente (decisiones §96, puntos 6 y 7)
+
+- **Kit** [`R20261023T180846Z-62bd`](I-62-architect-A-7/R20261023T180846Z-62bd/README.md), derivado del kit de la ronda 2 (`R20261019T201030Z-d1bf`, fijado en §95) con siete componentes
+  reutilizados byte a byte y diffs del resto ([`prep/diffs/diff-table.json`](I-62-architect-A-7/R20261023T180846Z-62bd/prep/diffs/diff-table.json)): objeto A-7 ronda 3, blob `8bcccb2f`,
+  publicación `37ac6ca4`; clon `D:\r62-arch-a7r3` en `b9bfae50`; cierre de 262 archivos (A-7 r3, preflights de las rondas 3 y 2, revisión de la
+  ronda 2, fuentes L1-L22 con el esquema `relay-record/v2`, A-5 y A-6 enteras, decisiones §90-§96; fuera, el preflight y la revisión de la ronda 1 y
+  `r4/`); Paso 0 con lectura directa de AUTOMATION_PLAN 16.7 L593-L595; el mismo transporte (`claude-cli` 2.1.299, `295b49ec…`, compuerta MEASURED);
+  auditor v7.0-a7r3; esquema `rackcad-a7r3-architect-review/0`.
+- **Mecanismo de citas (§96, punto 6):** el patrón de referencias del esquema solo admite las rutas de las familias del cierre y las dos premisas,
+  relativas, con `/` y sin segmentos que empiecen por punto (todas las del cierre pasan; la ruta de la ronda 2 y las absolutas, con barras invertidas,
+  `..` o `.` no); el auditor comprueba cada referencia contra el cierre y las líneas del archivo real, exige que la ruta escrita sea la relativa exacta
+  (regla nueva) e informa la referencia tal como se escribió y por qué no es canónica; el prompt muestra todas las rutas del cierre y pide una
+  autocomprobación antes de entregar. **Corrección del registro (por añadido):** la referencia de la ronda 2 estaba escrita relativa,
+  `docs/initiatives/I-62-A7.md:167-168` (`output.json`, línea 560), no absoluta como dicen §195 y §96, punto 6: el mensaje del auditor v6.0-a7r2 mostraba
+  su resolución absoluta.
+- **Compatibilidad (§96, punto 6):** `CompatibilityVerdicts` A5 y A6 en el esquema; el auditor exige su coherencia y los dos COMPATIBLE para AGREED.
+- **Controles:** autoprueba 321/321 (auditoría 214, compuerta de transporte 61, compuerta 11 40 con la sonda viva, coherencia 6), autoprueba de fidelidad 53/53,
+  negativa de verify_clone con un byte alterado en una copia fiel (PASS); verify_clone conforme con las guardas de r3/ reproducidas enteras; **mutación
+  completa 209/209** (`post-review.py` 131/131, `transport_gate.py` 40/40, `owner_gate.py` 19/19, `fidelity.py` 19/19; decisiones §88, punto 4). Al reproducir la autoprueba de las guardas de r3/ se
+  comprobó que se ejecutó con `preflight_text_r2.py` (copia byte a byte del de `r2/`, blob `a773a873`) en el área del preflight, borrado antes de
+  publicar: con él la reproducción es exacta; el resultado `run` sobre la publicación no depende de ello.
+- **Congelación:** `kit-manifest.json` `84a9883def489347…` (72 archivos, 42 de ellos copias fieles, custodiadas por
+  reproducción, [`prep/faithful-regeneration.json`](I-62-architect-A-7/R20261023T180846Z-62bd/prep/faithful-regeneration.json)); **prueba en seco bloqueada SOLO por la compuerta 11** con el
+  motivo «authorization pending» (§96, punto 7). La app instaló claude-code 2.1.308 junto al 2.1.299 medido (riesgo registrado).
+- Sin revisión formal: exige una disposición del Coordinator posterior a §96 que la nombre, fijada con `pin_authorization.py`, y volver a congelar el
+  kit. Sin Codex; A6-7 HELD; sin B1 ni FX-U2; ni A-7 AGREED, ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.

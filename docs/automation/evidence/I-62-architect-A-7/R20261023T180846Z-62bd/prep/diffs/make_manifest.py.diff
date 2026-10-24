@@ -1,0 +1,73 @@
+--- r2/make_manifest.py
++++ r3/make_manifest.py
+@@ -1,7 +1,8 @@
+-"""Manifiesto del kit de la ÚNICA revisión formal de la RONDA 2 de la enmienda A-7 (kit-manifest.json): bytes y SHA-256 de cada archivo de kit/
+-(salvo el propio manifiesto) y de los archivos del run (order.txt, prompt.md, a7-r1.md y las copias fieles de FaithfulCopies, decisiones §94,
++"""Manifiesto del kit de la ÚNICA revisión formal de la RONDA 3 de la enmienda A-7 (kit-manifest.json): bytes y SHA-256 de cada archivo de kit/
++(salvo el propio manifiesto) y de los archivos del run (order.txt, prompt.md, a7-r2.md y las copias fieles de FaithfulCopies, decisiones §94,
+ punto 5). launch.py lo exige entero (preflight 1: ningún archivo distinto y ninguno sin listar). Derivado del make_manifest.py del kit de A-7
+-ronda 1 (R20261019T010200Z-4a72). Es la congelación del kit (decisiones §94, punto 6). La cabecera registra la autorización fijada o pendiente
++ronda 2 (R20261019T201030Z-d1bf, a su vez del de la ronda 1). Es la congelación del kit (decisiones §96, punto 7). La cabecera registra la
++autorización fijada o pendiente
+ (pendiente en el kit entregado) y si owner_gate.py cambió desde la autoprueba y la batería completa de mutación (mutation-result.json).
+ 
+ Uso: python -B make_manifest.py          → regenera el manifiesto completo (quien termina el kit, después del selftest y de la mutación)
+@@ -18,8 +19,8 @@
+ if hasattr(sys.stdout, "reconfigure"):
+     sys.stdout.reconfigure(errors="backslashreplace")
+ KIT = os.path.dirname(os.path.abspath(__file__))
+-RUN = r"D:\r62-arch-a7r2-run"
+-RUN_FILES = ["order.txt", "prompt.md", "a7-r1.md"]
++RUN = r"D:\r62-arch-a7r3-run"
++RUN_FILES = ["order.txt", "prompt.md", "a7-r2.md"]
+ MANIFEST = "kit-manifest.json"
+ GATE = "transport-gate.json"
+ 
+@@ -65,34 +66,35 @@
+     og_now = rec(os.path.join(KIT, "owner_gate.py"))["Sha256"]
+     t = closure["Transport"]
+     return {
+-        "Kit": "I-62: kit de la ÚNICA revisión formal independiente del Architect de la RONDA 2 de la enmienda A-7 por claude-cli, acotada a "
+-               "A62-A7-R1..R3 y a sus consecuencias (decisiones §94, punto 6; Owner CLAUDE-CLI-I62 = A; lanzamiento con la orden congelada exacta y "
+-               "condicionado a la sonda de registro y a la compuerta 11: línea del Owner de §78, blobs de A-7 ronda 2 y de la A-6 acordada en la HEAD "
+-               "y una disposición del Coordinator posterior a §94 que nombre esta revisión, fijada en owner_gate.py, sin ninguna sección posterior)",
++        "Kit": "I-62: kit de la ÚNICA revisión formal independiente del Architect de la RONDA 3 de la enmienda A-7 por claude-cli, acotada a "
++               "A62-A7R2-R1 y a sus consecuencias (decisiones §96, puntos 2, 3, 6 y 7; Owner CLAUDE-CLI-I62 = A; lanzamiento con la orden congelada "
++               "exacta y condicionado a la sonda de registro y a la compuerta 11: línea del Owner de §78, blobs de A-7 ronda 3 y de la A-6 acordada en "
++               "la HEAD y una disposición del Coordinator posterior a §96 que nombre esta revisión, fijada en owner_gate.py, sin ninguna sección "
++               "posterior)",
+         "Ids": closure["Ids"], "PreviousAttempts": [],
+-        "PreviousRound": ("A-7 ronda 1: R20261019T010200Z-4a72 (blob 6c29747d; auditor NOT_ACCREDITED por una lectura DEGRADED de un TRX con BOM; "
+-                          "Architect CHANGES REQUIRED con A62-A7-R1..R3; custodia e71400a2; decisiones §93 y §94)"),
++        "PreviousRound": ("A-7 ronda 2: R20261019T201030Z-d1bf (blob 8a528133; auditor NOT_ACCREDITED por una referencia no canónica del revisor; "
++                          "Architect CHANGES REQUIRED con A62-A7R2-R1; custodia 3f912c84; decisiones §95 y §96)"),
+         "Commit": closure["AuthorityRevision"],
+         "Object": "%s (blob %s; publicación %s)" % (closure["ObjectPath"], closure["ObjectBlob"], closure["Publication"]["Commit"]),
+         "Package": "ninguno (%s)" % closure["PackageNote"],
+         "SessionId": t["SessionId"],
+         "Transport": "claude-cli %s (%s, SHA-256 %s)" % (t["Binary"]["Version"].split()[0], t["Binary"]["Path"], t["Binary"]["Sha256"]),
+-        "Auditor": "v6.0-a7r2 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass %s, %d/%d; selftest-fidelity-result.json "
++        "Auditor": "v7.0-a7r3 (declarado y autoprobado antes del lanzamiento: selftest-result.json AllPass %s, %d/%d; selftest-fidelity-result.json "
+                    "AllPass %s, %d/%d; %s)" % (st["AllPass"], st["Totals"]["Pass"], st["Totals"]["Cases"], sf["AllPass"], sf["Totals"]["Pass"],
+                                               sf["Totals"]["Cases"], mutation),
+-        "Clone": "D:/r62-arch-a7r2 (git clone --no-local -c core.autocrlf=false --single-branch desde el directorio común de git; HEAD separado en "
+-                 "el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks, con la reproducción de las guardas de la ronda 2)",
+-        "Run": "D:/r62-arch-a7r2-run (order.txt, prompt.md, a7-r1.md y %d copias fieles de los archivos que Read no entrega fielmente, decisiones "
++        "Clone": "D:/r62-arch-a7r3 (git clone --no-local -c core.autocrlf=false --single-branch desde el directorio común de git; HEAD separado en "
++                 "el commit, sin ramas locales; sin remoto; clone-verification.json AllChecks, con la reproducción de las guardas de la ronda 3)",
++        "Run": "D:/r62-arch-a7r3-run (order.txt, prompt.md, a7-r2.md y %d copias fieles de los archivos que Read no entrega fielmente, decisiones "
+                "§94, punto 5; idénticos byte a byte a las copias del kit)" % len(closure.get("FaithfulCopies") or []),
+         "TransportGate": "%s (D-01; launch.py solo lanza en MEASURED o ACCEPTED)" % gate_status(),
+         "OwnerAndAuthorizationGate": "%s (owner_gate.py): launch.py solo lanza con la línea del Owner A6-ADR0046-9-FX02 (SHA-256 %s…) después de §78, "
+                                      "CLAUDE-CLI-I62 = A vigente, A-7 en la HEAD con el blob %s, la A-6 acordada y una disposición del Coordinator "
+-                                     "posterior a §94 fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin "
++                                     "posterior a §96 fijada en owner_gate.py (número, encabezado y SHA-256 de su texto, con el blob completo) sin "
+                                      "ninguna sección posterior; se evalúa en el momento del lanzamiento"
+                                      % (closure["OwnerGate"]["Check"], closure["OwnerGate"]["A6LineSha256"][:8], closure["ObjectBlob"][:8]),
+         "AuthorizationPins": pins,
+         "AuthorizationState": ("PENDIENTE: owner_gate.py entrega AUTH_SECTION, AUTH_HEADING y AUTH_TEXT_SHA en None; la compuerta 11 bloquea hasta "
+-                               "fijar una disposición del Coordinator posterior a §94 que nombre esta revisión (pin_authorization.py) y volver a "
++                               "fijar una disposición del Coordinator posterior a §96 que nombre esta revisión (pin_authorization.py) y volver a "
+                                "congelar el kit" if og.authorization_pending(pins) else
+                                "FIJADA: decisiones §%s (encabezado y SHA-256 del texto en AuthorizationPins)" % pins["Section"]),
+         "OwnerGateTested": {"SelftestSha256": (st.get("Modules") or {}).get("owner_gate.py"), "MutationSha256": mutated_og, "CurrentSha256": og_now,

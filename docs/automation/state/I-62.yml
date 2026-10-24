@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §96; evidencia §196-§197) — A-7 ronda 3 publicada PROPUESTA (blob 8bcccb2f, commit 37ac6ca4; preflight 161/161; guardas run PASS); preparar y custodiar el kit de revisión acotado a A62-A7R2-R1 con el mecanismo de citas corregido y el dictamen de A-5, con la autorización pendiente; sin revisión formal sin disposición nueva; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §96; evidencia §196-§198) — A-7 ronda 3 PROPUESTA (blob 8bcccb2f); kit de la revisión acotada a A62-A7R2-R1 R20261023T180846Z-62bd congelado y custodiado SIN lanzar (manifiesto 84a9883d; mecanismo de citas corregido; dictamen A-5/A-6; autoprueba 321/321; mutación completa 209/209; prueba en seco bloqueada solo por la autorización pendiente); la revisión exige una disposición del Coordinator posterior a §96; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
