@@ -4906,3 +4906,13 @@ solo desde artefactos custodiados.
   motivo «authorization pending» (§96, punto 7). La app instaló claude-code 2.1.308 junto al 2.1.299 medido (riesgo registrado).
 - Sin revisión formal: exige una disposición del Coordinator posterior a §96 que la nombre, fijada con `pin_authorization.py`, y volver a congelar el
   kit. Sin Codex; A6-7 HELD; sin B1 ni FX-U2; ni A-7 AGREED, ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 199. Decisiones §97: revisión formal acotada de A-7 ronda 3 autorizada
+
+- Una revisión formal independiente de A-7 ronda 3 (blob `8bcccb2f`, publicación `37ac6ca4`) con el kit `R20261023T180846Z-62bd` (manifiesto
+  `84a9883d…`, SHA-256 completo verificado contra la custodia de `000fd6eb`), limitada a A62-A7R2-R1 y sus consecuencias directas, con veredictos
+  explícitos sobre el `RebaseMap`, `MainSha_eval`, la compatibilidad con A-5 y A-6, EFF/EFF^1, A7-1 fuera del delta, las referencias y las lecturas.
+  Fijación de §97 con `pin_authorization.py`, nueva congelación y validación incremental (sin repetir automáticamente los 209 mutantes, las 321
+  pruebas, el cierre ni el preflight de 161 casos); preflight obligatorio, incluida la comprobación de que `preflight_text_r2.py` no interviene en la
+  evaluación del objeto publicado; UNA invocación, 3 600 s, sin reintento; auditor congelado sin acreditación excepcional. Sin Codex, sin A6-7, sin B1
+  ni FX-U2, sin tocar A-1..A-6.
