@@ -5052,3 +5052,27 @@ solo desde artefactos custodiados.
   checkout principal sin cambios; I-64 limpio y sin procesos; corriente conectada.
 - Siguiente: prueba en seco final sobre la HEAD de esta custodia, UNA invocación (`python -B kit/launch.py`, 3 600 s, sin reintento) y el auditor
   congelado v7.0-a7r4, sin secciones de decisiones nuevas hasta auditar.
+
+## 207. Revisión formal única de A-7 ronda 4 (R20261024T041128Z-4825): auditor ACCREDITED; Architect AGREED (0 REQUIRED; A62-A7R3-R1 CORRECTED; dos OPTIONAL) (decisiones §99)
+
+- **Corrida** ([`README`](I-62-architect-A-7/R20261024T041128Z-4825/README.md), [`runtime-evidence.json`](I-62-architect-A-7/R20261024T041128Z-4825/runtime-evidence.json)): `python -B kit/launch.py`, una vez, de
+  2026-10-24T18:21:25Z a 2026-10-24T18:35:37Z, Outcome COMPLETED, salida 0; 47 turnos, 46 llamadas a herramientas;
+  clon limpio después. Precondiciones previas: prueba en seco final con cero bloqueos en `00b1e86c`, host y corriente.
+- **Auditor v7.0-a7r4** ([`audit.json`](I-62-architect-A-7/R20261024T041128Z-4825/audit.json)): **ACCREDITED**, 0 motivos; sin acreditación excepcional. Las 261 referencias del
+  revisor son exactas, están en rango y se entregaron fielmente; 43 copias fieles verificadas (A-7 ronda 4 incluida, marcada `LONG_LINE`),
+  ninguna lectura DEGRADED ni de un original marcado; lectura directa de RAE §10 L219-L226 entregada. La cadena de versión del auditor conserva el
+  texto de la ronda 3 sobre la lectura directa (etiqueta, sin efecto en la regla).
+- **Architect** ([`output.json`](I-62-architect-A-7/R20261024T041128Z-4825/output.json)): **AGREED**, 0 REQUIRED. **A62-A7R3-R1 CORRECTED**: la admisión de la copia del registro en los
+  controles sobre la reverificación, la identidad de la reverificación de origen, el vínculo de `RunId`, tarea e intento, la copia con el mismo blob y
+  `RunId`, las copias sin sustitución, las mutaciones propias de cada control, la coherencia anclada en la reverificación con `MainSha_eval` = su
+  `MainAfterSha`, el rechazo sin sustituto y la no admisión en la VERIFY ordinaria, sus controles y la medición, contrastados con el validador y q9
+  (59/59). DeltaPurity CONFIRMED (11/11 WITHIN_SCOPE); los doce temas sin regresión; A-5 y A-6 COMPATIBLE; materialidad 8 AGREE; sin decisión del
+  Owner; Q-A7R4-01..03 SATISFIED; `IfAgreed` en true en todos sus puntos. **OPTIONAL:** A62-A7R4-O1, las remisiones de §3.5 (L282 y L284) dicen
+  «A6-7, regla 4» y «A6-7, regla 7 (b)» y deberían decir A6-5, regla 4 y regla 7 (b) (errata descriptiva; basta con que la disposición la registre);
+  A62-A7R4-O2, el coste operativo del rechazo falso de O1 en la reverificación y sus controles (INVALID_OUTPUT por A6-5, regla 4: reejecuciones que
+  cuentan en D.3 y, a la tercera, STOP P-04 o control no superado) no está a la vista; su mitigación es la disposición de A6-7, regla 7, que puede
+  limitar las órdenes del instrumento. Límites declarados: sin ejecución de código; no leyó el constructor ni `designate_a7.py`; el riesgo de
+  presupuesto de D.3 para la reverificación y sus controles, que declara la matriz, no lo pudo comprobar.
+- Siguiente (§99, punto 7): la disposición del Coordinator de acuerdo definitivo de A-7 sobre el blob `ebb3a87b` (con O1 y O2 dispuestos sin otra
+  enmienda, o, si corrige el archivo, con un blob nuevo y su identidad verificada antes del acuerdo); después, las disposiciones previas a la medición
+  de A6-7 (regla 7, con la mitigación de O2), la nueva preparación de su kit y la medición, solo con sus autorizaciones. A6-7 sigue HELD.

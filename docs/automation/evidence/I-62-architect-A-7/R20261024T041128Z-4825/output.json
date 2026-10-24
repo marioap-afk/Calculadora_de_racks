@@ -1,0 +1,825 @@
+{
+ "Schema": "rackcad-a7r4-architect-review/0",
+ "RunId": "R20261024T041128Z-4825",
+ "InvocationId": "I20261024T041128Z-4825",
+ "LogicalReviewRequestId": "L20261024T041128Z-4825",
+ "AttemptSeq": 1,
+ "RequestedRole": "ARCHITECT",
+ "Action": "REVIEW_DESIGN",
+ "ReviewedUnit": "I-62",
+ "ReviewedCommit": "94a04af7c663eac44016b4011cdffead714a530a",
+ "ReviewedPath": "docs/initiatives/I-62-A-7.md",
+ "ReviewedBlob": "ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3",
+ "ReviewerMode": "SEPARATE SESSION",
+ "SamePersonAsAuthor": "Como sesión IA, no. Soy un proceso claude-cli nuevo; el proveedor del revisor es Anthropic (Claude, claude-opus-5-5). No tengo acceso a la transcripción ni a la memoria de la sesión autora de A-7 ni de sus preflights, de las revisiones de las rondas 1 a 3, del banco, del kit a6m7-measure, de §91/§92, de B-min ni del Coordinator. Con mis insumos no puedo determinar el proveedor del autor, porque A-7 no lo declara. Por el contexto (mismo nombre de usuario de Git en los commits recientes, que solo declaro por su tipo), el operador humano que lanza esta revisión parece ser el mismo Owner u operador que dirige la sesión autora, pero no lo puedo verificar con mis herramientas.",
+ "ReviewerDeclaredIdentity": {
+  "Runtime": "claude-cli (Claude Agent SDK)",
+  "Model": "claude-opus-5-5",
+  "Effort": "UNKNOWN",
+  "SessionOrThread": "UNKNOWN"
+ },
+ "InjectedContextDeclaration": {
+  "State": "DECLARED",
+  "Items": [
+   "Prompt de sistema del harness del Claude Agent SDK / Claude Code: reglas de uso de herramientas, descripciones de Read, Grep, Glob y StructuredOutput, orientación de la sesión (una nota sobre ultrareview, reglas sobre pronombres y sobre informar con fidelidad) y la ruta de un directorio scratchpad",
+   "Entorno: directorio de trabajo D:\\r62-arch-a7r4, directorio adicional D:\\r62-arch-a7r4-run, plataforma win32, shell PowerShell, versión del SO (Windows 11 Pro)",
+   "Nombre e identificador del modelo (claude-opus-5-5), fecha de corte de conocimiento y fecha actual (2026-10-24)",
+   "Instantánea de git status: HEAD separado, rama principal main, árbol limpio y los asuntos de los cinco commits recientes (94a04af7, 99de338d, 2405a919, 068d3368, 850dd7dc)",
+   "Identificador de cuenta: dirección de correo del usuario (solo su tipo; no reproduzco el valor)",
+   "Identificador de cuenta: nombre de usuario de Git (solo su tipo; no reproduzco el valor)",
+   "Contadores de tokens restantes y recordatorios periódicos del sistema que piden informar en pocas palabras de lo que estoy haciendo"
+  ]
+ },
+ "Step0": {
+  "Basis": "INVOKER_VERIFIED_CLONE",
+  "RAE10DirectReadL219L226": true,
+  "OrderReadWhole": true,
+  "Decisions98DeclaresOrderBytesAndSha256": true,
+  "Decisions98AcceptsR3R1AndAuthorizesFourthCandidate": true,
+  "GuardsRunModeBaseHeadResult": true,
+  "PreflightSummaryCandidateAndTotals": true,
+  "Round3OutputIdentifiesRunAndFindings": true,
+  "Note": "Comprobado con Read. (1) RAE §10, leído con offset 211 y limit 24 (L211-234): los controles se ejecutan solo sobre las entradas de la verificación EXECUTION_VERIFIED del último WorkRunId, con el mismo prompt salvo la ruta de entrada y el RunId, cada uno con una ruta <task>-ncN y un registro propios y con copias de todas las entradas que conservan sus TaskId, RunId, DelegationRunId y Attempt internos salvo el campo mutado; oráculo relativo en L224-226. (2) order.txt, entero (81 líneas). (3) Decisiones §98, L1915-1930, en la copia fiel: L1918 declara 3 740 bytes y el SHA-256 8b73975d…; L1922-1930 registran los puntos 1-9 de order.txt; el punto 1 acepta A62-A7R3-R1 como REQUIRED y el punto 2 autoriza preparar la ronda 4 solo para resolver A62-A7R3-R1 (REBASE en los controles negativos derivados de una reverificación válida de 16.7). (4) a7-guards-result-run.json: A7Blob ebb3a87b…, Base 2405a919…, Head 99de338d…, Mode run, Result PASS, G1-G7 en PASS. (5) summary.json: Candidate.Blob ebb3a87b…, Hold 245 = Cases 245, NotHolding vacío y autoprueba PASS con 45 de 45. (6) output.json de la ronda 3: RunId R20261023T180846Z-62bd, ReviewedBlob 8bcccb2f… y RequiredFindings con A62-A7R3-R1. Sin Bash no puedo recalcular blobs ni SHA-256: la identidad de los bytes es la que verificó el invocador."
+ },
+ "DirectReads": [
+  {
+   "Ref": "docs/automation/agent-execution/README.md:219-226",
+   "Purpose": "Lectura directa obligatoria (Paso 0). RAE §10 (L15 y L23 de A-7 §2): controles solo sobre las entradas de la verificación VERIFIED del último WorkRunId, con ruta y registro propios y copias de todas las entradas salvo el campo mutado; oráculo relativo frente a la verificación real"
+  },
+  {
+   "Ref": "docs/automation/agent-execution/README.md:565",
+   "Purpose": "L10: regla I6"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:575",
+   "Purpose": "L18: el registro de rebase tiene un RunId propio y vive en el directorio del intento"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:584-588",
+   "Purpose": "L19: registro del rebase con Phase REBASE y RebaseMap"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:593-595",
+   "Purpose": "L19: reverificación sin conflictos, sobre la misma delegación y la misma entrega, con el RebaseMap como entrada"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:598",
+   "Purpose": "Como máximo dos recuperaciones por TaskId (residuo de A62-A7R3-O2)"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:813-814",
+   "Purpose": "L20: MainSha_eval = K.MainSha, salvo en la reverificación de 16.7 sin conflictos (MainSha nuevo del RebaseMap)"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:536-537",
+   "Purpose": "L25: orden de commits; ninguna escritura de la sesión hasta terminar la verificación, la reverificación y los controles"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:634-635",
+   "Purpose": "L26: Identity tras un rebase, sobre los originales del RebaseMap y sus imágenes; Remote con origin/main = MainSha"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:616-617",
+   "Purpose": "L16: exigencia de RED de 16.8"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:630-643",
+   "Purpose": "L16: tabla de las catorce comprobaciones de 16.9"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:549-550",
+   "Purpose": "16.5: en el caso sin conflictos de 16.7, el RebaseMap solo sustituye a la reemisión del contrato para la reverificación de la misma entrega (base del residuo de O2)"
+  },
+  {
+   "Ref": "docs/AUTOMATION_PLAN.md:490",
+   "Purpose": "L6: definición de AuthorityRevision"
+  },
+  {
+   "Ref": "docs/automation/agent-execution/schemas/relay-record.v2.schema.json:32",
+   "Purpose": "L21: Phase admite REBASE"
+  },
+  {
+   "Ref": "docs/automation/agent-execution/schemas/relay-record.v2.schema.json:1042-1260",
+   "Purpose": "L21: campos del RebaseMap (MainBeforeSha, MainAfterSha, AuthorityRevision, igualdades, BaseSha, Commits[], Unmapped, ConflictPaths)"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2110-2114",
+   "Purpose": "L22: un rebase dentro de una ventana va en el RebaseMap del relay-record/v2 del diario"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2441",
+   "Purpose": "L27: los ocho controles con invocación de D.3 (nc1-nc3, N4-N7b)"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2231",
+   "Purpose": "L3: Target obligatorio en la verificación"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2233",
+   "Purpose": "L4: CanonicalInputs {Path, Blob} en la AuthorityRevision"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-proposal-v14.md:2250-2251",
+   "Purpose": "L5: el revisor lee CanonicalInputs y AllowedTransitiveInputs y nada más"
+  },
+  {
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:23",
+   "Purpose": "L24: nc1..N7b son VERIFY con el mismo prompt y el Target de la verificación real"
+  },
+  {
+   "Ref": "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:41",
+   "Purpose": "TaskId de la RoleInvocation (T1), común a la verificación y a los controles: base del vínculo TaskId del control"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:532-535",
+   "Purpose": "L11: A6-2, regla 1 («la única excepción»), precisada por A7-1"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:539-541",
+   "Purpose": "L11: A6-2, regla 3"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:600-617",
+   "Purpose": "L12 y L17: A6-3, regla 6 (b): RelayFacts y omisiones sin sustitución"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:673-686",
+   "Purpose": "L17: A6-5, regla 2: salida aceptada solo con R9 y R10 en MATCH"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:689-699",
+   "Purpose": "A6-5, regla 4: salida no aceptada (la regla que de verdad describe §3.5, L282)"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:721-726",
+   "Purpose": "A6-5, regla 7 (a) y (b): con y sin ejecuciones (la regla que de verdad describe §3.5, L284)"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:778-780",
+   "Purpose": "A6-7, regla 4 (fallo de la medición), que §3.5 cita por error"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:781-786",
+   "Purpose": "L13: A6-7, regla 5 (invalidadores)"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:789-794",
+   "Purpose": "L13: A6-7, regla 7 (sin apartado (b))"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:841-843",
+   "Purpose": "L14: A6-9, regla 4"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:848-872",
+   "Purpose": "L14: tabla de derivación (C1 sin MainAfterSha; Name de C6)"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-6.md:815-816",
+   "Purpose": "A-7 §1 y §3.2: fin del párrafo de A6-8"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-5.md:175-199",
+   "Purpose": "A5-1, para la compatibilidad"
+  },
+  {
+   "Ref": "docs/initiatives/I-62-A-5.md:216",
+   "Purpose": "A5-2, regla 4 (presupuestos de FX-02), para la compatibilidad"
+  }
+ ],
+ "Reads": [
+  "docs/automation/agent-execution/README.md: 211-234, 559-568",
+  "order.txt: 1-81 (entero)",
+  "docs/automation/decisions/I-62.md (copia fiel): 1915-1930",
+  "docs/automation/evidence/I-62-A7/r4/a7-guards-result-run.json: 1-38 (entero)",
+  "docs/automation/evidence/I-62-A7/r4/summary.json: 1-95 (entero)",
+  "docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/output.json: 1-300, 417-558, 674-725",
+  "docs/initiatives/I-62-A-7.md (copia fiel): 1-476 (entero) y el apéndice de la línea 237",
+  "a7-r3.md: 125-314",
+  "docs/AUTOMATION_PLAN.md (copia fiel): 486-665, 805-829",
+  "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md: 15-49",
+  "docs/automation/agent-execution/schemas/relay-record.v2.schema.json: 24-35, 1040-1261",
+  "docs/initiatives/I-62-proposal-v14.md (copia fiel): 2108-2115, 2229-2252, 2433-2447",
+  "docs/automation/evidence/I-62-A7/r4/modalities.md: 1-117 (entero)",
+  "docs/automation/evidence/I-62-A7/r4/a7-designation-4.schema.json: 1-222 (entero)",
+  "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py (copia fiel): 1-215, 380-514; Grep REVERIFICATION_CONTROL/Source/mutat/RELAY y def delivery_requires_red",
+  "docs/initiatives/I-62-A-6.md: 524-733, 751-874, 1318-1326",
+  "docs/automation/evidence/I-62-A7/r4/designations-r4/RVC-NC1.json: 1-76 (entero)",
+  "docs/automation/evidence/I-62-A7/r4/designations-r4/RV.json: 1-70 (entero)",
+  "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json: 1-523 (entero); Grep sin coincidencias",
+  "docs/automation/evidence/I-62-A7/r4/preflight.md: 1-60, 114-195, 303-324; Grep de encabezados",
+  "docs/INITIATIVE_LIFECYCLE.md: 66-95, 152-222",
+  "docs/initiatives/I-62-A-5.md: 169-222"
+ ],
+ "Verdict": "AGREED",
+ "RequiredFindings": [],
+ "OptionalFindings": [
+  {
+   "FindingId": "A62-A7R4-O1",
+   "Section": "§3.5, residuo declarado de A62-A7R3-O1 (L278-285): las remisiones «(A6-7, regla 4)» de L282 y «(A6-7, regla 7 (b))» de L284",
+   "Note": "Las dos remisiones nombran una regla equivocada de A-6. Lo que describe L282 (el aceptante da R9 MISMATCH y la salida no se acepta) lo fija A6-5, regla 4 (A-6 L689-699). Lo que describe L284 (una invocación sin ejecuciones del instrumento) es A6-5, regla 7 (b) (A-6 L724-726). A6-7, regla 4 (L778-780), trata del fallo de la medición de elegibilidad, que este residuo excluye expresamente, y A6-7, regla 7 (L789-794), no tiene apartado (b). En el resto de A-7, A6-5 se cita bien (L108, L17). El sentido se deduce del contexto y la sección es descriptiva: es una precisión sin cambio de significado.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-7.md:282",
+    "docs/initiatives/I-62-A-7.md:284",
+    "docs/initiatives/I-62-A-6.md:689-699",
+    "docs/initiatives/I-62-A-6.md:721-726",
+    "docs/initiatives/I-62-A-6.md:778-780",
+    "docs/initiatives/I-62-A-6.md:789-794",
+    "docs/initiatives/I-62-A-7.md:108"
+   ],
+   "SuggestedCorrection": "Sustituir «(A6-7, regla 4)» por «(A6-5, regla 4)» y «(A6-7, regla 7 (b))» por «(A6-5, regla 7 (b))». Si se quiere conservar el blob acordado, basta con que la disposición del Coordinator registre la errata."
+  },
+  {
+   "FindingId": "A62-A7R4-O2",
+   "Section": "§3.5, residuo de A62-A7R3-O1 (L278-285); Anexo, punto 3 (L472-473); pregunta Q-A7R4-03 (L434)",
+   "Note": "El residuo dice bien que la salida no se acepta y que nunca hay aceptación falsa, pero no deja a la vista su coste operativo. Por A6-5, regla 4, una salida no aceptada es INVALID_OUTPUT: se reejecuta con un RunId nuevo, cada reejecución cuenta en los topes de D.3 y, a la tercera, hay STOP P-04 y, en un control, control no superado. Con el mismo instrumento y las mismas órdenes, cada reejecución repite el rechazo falso (q10, O1-RV-CLAUSEMAP y O1-RVC-CLAUSEMAP). Q-A7R4-03 lo llama «fallo cerrado», pero el fallo llega después del lanzamiento, a diferencia de la precondición de clausemap (L273-276), que impide lanzar. A6-7, regla 7, permite que la disposición previa a la medición limite las órdenes del instrumento a las lecturas que el cierre admite, y el Anexo, punto 3, no lo menciona para la reverificación y sus controles. No es un defecto normativo: la regla no cambia y §98, punto 5, excluye cualquier enmienda por los opcionales.",
+   "Evidence": [
+    "docs/initiatives/I-62-A-7.md:278-285",
+    "docs/initiatives/I-62-A-7.md:273-276",
+    "docs/initiatives/I-62-A-7.md:434",
+    "docs/initiatives/I-62-A-7.md:472-473",
+    "docs/initiatives/I-62-A-6.md:689-699",
+    "docs/initiatives/I-62-A-6.md:789-794",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:315-316"
+   ],
+   "SuggestedCorrection": "Hacer constar en §3.5, o en la disposición de A6-7, regla 7, que en la reverificación y en sus controles con el instrumento el efecto es el de A6-5, regla 4 (reejecuciones contadas en D.3 y, en un control, control no superado), y que esa disposición es el lugar para limitar las órdenes que leen en MainSha_eval o en las imágenes del rebase, o para registrar que se asume ese riesgo."
+  }
+ ],
+ "PriorFindingResolution": [
+  {
+   "PriorFinding": "A62-A7R3-R1",
+   "Status": "CORRECTED",
+   "Rationale": "Lo que pidió el hallazgo (output.json de la ronda 3, L190-219) y lo que exige §98, punto 2 (decisiones L1923; order.txt L13-25), queda definido en el texto normativo. (1) Admisión: el registro de rebase entra en (c) en la reverificación y en cada control negativo con invocación que se ejecuta sobre sus entradas (RAE §10), que recibe una copia (L157-161, frente a a7-r3 L147-150). (2) Identidad de la reverificación de origen: la designación del control la identifica por su RunId y por el SHA-256 de su designación, y esa designación tiene que cumplir el punto 2 (c) con sus propias entradas (L181-183). (3) Vínculo de RunId, tarea e intento: el control tiene el UnitId, el TaskId, el Attempt, la AuthorityRevision y el Target de la reverificación, y un RunId propio (L183-184), como piden RAE L219-221 y los contratos L23 y L41. (4) RebaseMap coherente con el registro original: la copia tiene el mismo blob y el mismo RunId, registrados, en <TaskId>-<control>/<Attempt>/<RunId>/ (L184-186; AP L575). (5) Reproducción sin sustituciones no autorizadas: cada otro artefacto de (c) es una copia con el mismo blob y la misma ruta; la delegación y la entrega van en la ruta del control; los hechos del relevo son los del registro propio que prevé RAE §10 (L186-188). (6) Mutaciones propias de cada control: solo difiere el artefacto con los campos mutados, y solo en ellos, o falta la entrega en N4 (L188-189). (7) Coherencia anclada en la reverificación y comprobada con sus entradas, no con la entrega mutada (nc1) o ausente (N4), y MainSha_eval = el MainAfterSha de ese registro (L189-191; AP L813-814). (8) Rechazo de registros ajenos, inventados o incompatibles, sin sustituto (L209-211). (9) No admisión en la verificación ordinaria, en sus controles y en la medición (L161, L211-212; order.txt L25). El validador lo aplica tal como está escrito (check_a7_closure L115-203), y q9 lo ejerce: los ocho controles sobre RV con su cotejo de entradas y los negativos de identidad, vínculo, copia, ruta, sustitución, manipulación del RebaseMap y mutación ausente, de más o en otro papel (59 de 59). La tabla de §3.3, §4, la matriz y Q-A7R3-01 se ajustaron como pedía la corrección. No queda nada abierto.",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/output.json:190-219",
+    "docs/automation/decisions/I-62.md:1923",
+    "order.txt:13-25",
+    "docs/initiatives/I-62-A-7.md:157-161",
+    "a7-r3.md:147-150",
+    "docs/initiatives/I-62-A-7.md:181-191",
+    "docs/initiatives/I-62-A-7.md:209-212",
+    "docs/initiatives/I-62-A-7.md:237",
+    "docs/initiatives/I-62-A-7.md:355",
+    "docs/initiatives/I-62-A-7.md:342",
+    "docs/automation/agent-execution/README.md:219-226",
+    "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:23",
+    "docs/AUTOMATION_PLAN.md:575",
+    "docs/AUTOMATION_PLAN.md:813-814",
+    "docs/AUTOMATION_PLAN.md:634-635",
+    "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py:115-203",
+    "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:19-37",
+    "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:175-398"
+   ],
+   "FindingIds": []
+  }
+ ],
+ "DeltaPurity": {
+  "Status": "CONFIRMED",
+  "Changes": [
+   {
+    "Change": "R3R1_REBASE_COPY_IN_REVERIFICATION_CONTROLS",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "1 (c) amplía el séptimo papel a «cada control negativo con invocación que se ejecuta sobre sus entradas (RAE §10)», que recibe una copia, con las corridas de CurrentSha' y RedSha iguales que en la reverificación, y cierra la lista: «ninguna otra invocación (la verificación ordinaria, sus controles y la medición) tiene registro de rebase». Es exactamente lo que autoriza §98, punto 2: REBASE en los controles derivados de una reverificación válida, y en ningún otro sitio.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:157-161",
+     "a7-r3.md:147-150",
+     "order.txt:13-14",
+     "docs/automation/decisions/I-62.md:1923"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "R3R1_CONTROL_IDENTIFIES_REVERIFICATION",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "Identifica la reverificación de origen por su RunId y por el SHA-256 de su designación, que tiene que cumplir el punto 2 (c) con su propio registro, su entrega, su Target y su contrato (§98: «identidad de la reverificación de origen»). El formato a7-designation/4 lo lleva en Source, y q9 rechaza un SHA-256 distinto, una designación ausente, una de V, otro RunId y una reverificación incoherente o sin entrega.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:181-183",
+     "docs/automation/evidence/I-62-A7/r4/a7-designation-4.schema.json:181-220",
+     "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:231-272",
+     "order.txt:17"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "R3R1_CONTROL_LINK",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "El control tiene el UnitId, el TaskId, el Attempt, la AuthorityRevision y el Target de la reverificación, y un RunId propio (§98: «RunId, tarea e intento vinculados»). Coincide con RAE §10 (copias que conservan los ids internos; RunId propio de la invocación) y con los contratos de FX-02 (Target de la verificación real, L23; TaskId T1 común, L41). q9 rechaza otro Target, otra tarea, otro intento, otra AuthorityRevision y el RunId de RV o del registro.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:183-184",
+     "docs/automation/agent-execution/README.md:219-222",
+     "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:23",
+     "docs/automation/evidence/I-62-F6/kits/FX-02/controller-contracts.md:41",
+     "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:273-314"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "R3R1_RECORD_COPY_AND_PATH",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "La copia del registro tiene el mismo blob y el mismo RunId, registrados, y va en artifacts/orchestration/<UnitId>/<TaskId>-<control>/<Attempt>/, en un directorio con ese RunId, como pedía la corrección («en la ruta del control, como la delegación y la entrega»; AP L575). q9 rechaza un byte de más, otro registro con el mismo RunId, otro RunId, la ruta de la tarea, la de otro control, la copia ausente y la copia sin bytes.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:184-186",
+     "docs/AUTOMATION_PLAN.md:575",
+     "docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/output.json:219",
+     "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:175-230"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "R3R1_COPIES_AND_MUTATIONS",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "Cada otro artefacto de (c) es una copia del de la reverificación (mismo blob y misma ruta; la delegación y la entrega, en la ruta del control). Las excepciones son los hechos del relevo, que son los del registro propio de RAE §10, y el artefacto que lleva los campos mutados, que solo difiere en ellos, o la entrega ausente en N4. Responde a §98 («reproducción de entradas sin sustituciones no autorizadas»; «mutaciones específicas de cada control») y a RAE L221 («salvo el campo mutado»). D.3 solo nombra el efecto de N4-N7b (V14 L2441); los campos los fija el procedimiento (validador, L107-112), que forma parte del invalidador (punto 7), y una realización distinta falla cerrada. q9 ejerce la sustitución de la delegación y del TRX, el TRX de RedSha ausente, la entrega fuera de la ruta del control y las mutaciones ausente, de más, en otro papel o de otra naturaleza.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:186-189",
+     "docs/automation/agent-execution/README.md:219-222",
+     "docs/initiatives/I-62-proposal-v14.md:2441",
+     "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py:107-112",
+     "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py:169-200",
+     "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:315-398",
+     "order.txt:21-22"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "R3R1_ANCHORED_COHERENCE_AND_MAINSHA_EVAL",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "En el control, la coherencia del registro es la de la reverificación, comprobada con sus entradas y no con la entrega mutada (nc1) o ausente (N4) del control, y MainSha_eval es el MainAfterSha de ese registro (§98: «RebaseMap coherente con el registro original», «MainSha_eval derivado de la reverificación válida»; AP L813-814). El validador relee de su custodia el CONTRACT, la DELEG, la H y el REBASE de RV, les aplica la coherencia de la ronda 3 y devuelve su MainAfterSha. RVC-NC1 y RVC-N4 dan MainSha_eval = MainAfterSha.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:189-191",
+     "docs/initiatives/I-62-A-7.md:211",
+     "docs/AUTOMATION_PLAN.md:813-814",
+     "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py:136-155",
+     "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py:203",
+     "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:19-30",
+     "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:79-95"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "R3R1_ABSENCE_AND_NON_ADMISSION",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "5 (c): si la reverificación identificada, su registro, la copia o alguna copia del control no cumplen el punto 2 (c), no hay cierre ni lanzamiento y nada los sustituye. La entrega mutada o ausente no impide fijar MainSha_eval. En la verificación ordinaria, sus controles y la medición, el registro designado no se admite (§98: «rechazo de registros ajenos, inventados o incompatibles»; sin REBASE sin una reverificación aplicable). Comprobado con RVC-MISUSE-V-NC1, RVC-MISUSE-V-AS-RVC y MOD-NC3-V-REBASE.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:209-212",
+     "docs/initiatives/I-62-A-7.md:161",
+     "order.txt:23-25",
+     "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:441-454",
+     "docs/automation/evidence/I-62-A7/r4/preflight.md:313"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "S33_S34_S4_WITH_O3",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "Son descriptivos y reflejan la norma. La fila (c) de §3.3 recoge la copia en el control, su origen, su identidad (con el RunId y el SHA-256 de la designación de RV) y su ausencia. §3.4 añade el registro de rebase a la enumeración (A62-A7R3-O3) y la nota de C6 sobre la copia. La fila de §4 dice «como excepción a la clase de §20.3.1» (A62-A7R3-O3). §98, punto 5, autoriza corregir solo la enumeración descriptiva de O3, y así se ha hecho.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:237",
+     "docs/initiatives/I-62-A-7.md:242-246",
+     "docs/initiatives/I-62-A-7.md:250-253",
+     "docs/initiatives/I-62-A-7.md:355",
+     "a7-r3.md:213",
+     "a7-r3.md:218-221",
+     "a7-r3.md:286",
+     "order.txt:54",
+     "docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/output.json:254-264"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "S35_RESIDUALS_O1_O2",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "Dos residuos declarados sin cambio normativo, como manda §98, punto 5. O1: C1 de A6-9 no tiene MainAfterSha ni las imágenes distintas de Target.commit; se registra el rechazo falso R9, nunca una aceptación falsa, sin darlo por resuelto, y q10 lo evalúa (O1-*). O2: la segunda recuperación no tiene cierre (MainBeforeSha ≠ K.MainSha) y vuelve al Coordinator, lo que documenta la exclusión que pide §98, punto 3, comprobada en q10 (O2-*). Las remisiones a A-6 de L282 y L284 son erróneas (A62-A7R4-O1), y el coste operativo de O1 se podría hacer visible (A62-A7R4-O2); ninguna de las dos cosas cambia el significado.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:278-291",
+     "order.txt:51-55",
+     "docs/automation/decisions/I-62.md:1926",
+     "docs/automation/evidence/I-62-A7/r4/preflight.md:314-323",
+     "docs/AUTOMATION_PLAN.md:549-550",
+     "docs/AUTOMATION_PLAN.md:598"
+    ],
+    "FindingIds": [
+     "A62-A7R4-O1",
+     "A62-A7R4-O2"
+    ]
+   },
+   {
+    "Change": "DESCRIPTIVE_SECTIONS",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "La cabecera (ronda 4, rondas previas, clasificación, origen, estado), §2 con L23-L27 (comprobadas contra RAE L219-221, contratos L23, AP L536-537 y L634-635 y V14 L2441), la nota de §3.7, §3.8 con la matriz resumida, M-03 y M-04 de §5, la nota de A-5 en §6, las preguntas y respuestas de §8, §10, §11 y el Anexo solo reflejan la corrección o el estado. q0 DELTA-SECTIONS no encuentra tramos fuera de lo declarado.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:3-4",
+     "docs/initiatives/I-62-A-7.md:32-35",
+     "docs/initiatives/I-62-A-7.md:44-46",
+     "docs/initiatives/I-62-A-7.md:114-118",
+     "docs/initiatives/I-62-A-7.md:314-315",
+     "docs/initiatives/I-62-A-7.md:321-346",
+     "docs/initiatives/I-62-A-7.md:366-367",
+     "docs/initiatives/I-62-A-7.md:377-378",
+     "docs/initiatives/I-62-A-7.md:425-434",
+     "docs/initiatives/I-62-A-7.md:448-452",
+     "docs/initiatives/I-62-A-7.md:459-463",
+     "docs/initiatives/I-62-A-7.md:469-470",
+     "docs/automation/evidence/I-62-A7/r4/preflight.md:32-33"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Change": "PROCEDURE_PIECES_ROUND4",
+    "Assessment": "WITHIN_SCOPE",
+    "Rationale": "El texto del punto 7 es idéntico al de la ronda 3. Cambian el constructor, el validador, el formato a7-designation/4 y designate_a7.py; derive_r4.py no cambia. Son las piezas dependientes que nombra §98, punto 4, y quedan identificadas por su SHA-256. Con A6-7 sin consumir, ninguna medición se anula.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:220-226",
+     "a7-r3.md:196-202",
+     "docs/automation/evidence/I-62-A7/r4/preflight.md:42-46",
+     "docs/automation/evidence/I-62-A7/r4/summary.json:87-94",
+     "docs/automation/decisions/I-62.md:1925"
+    ],
+    "FindingIds": []
+   }
+  ],
+  "Rationale": "Los cambios normativos están solo en A7-1, puntos 1 (c), 2 (c) y 5 (c), y todos responden a A62-A7R3-R1. El alcance, (a), (b), (d) y los puntos 3, 4, 6, 7 y 8 son idénticos a los de la ronda 3, y lo demás es descriptivo, como declara §3.8. Los residuos de O1 y O2 y la enumeración de O3 se tratan sin ninguna enmienda nueva (§98, punto 5), y las piezas actualizadas son solo las dependientes (punto 4).",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-7.md:323-327",
+   "docs/automation/decisions/I-62.md:1923",
+   "docs/automation/decisions/I-62.md:1925",
+   "docs/automation/evidence/I-62-A7/r4/preflight.md:32-33",
+   "a7-r3.md:133-136"
+  ],
+  "FindingIds": [
+   "A62-A7R4-O1",
+   "A62-A7R4-O2"
+  ]
+ },
+ "RegressionCheck": [
+  {
+   "Topic": "R2R1_REVERIFICATION_RECORD_AS_CORRECTED",
+   "Status": "NO_REGRESSION",
+   "Rationale": "El papel, la ruta en el directorio del intento con su propio RunId, la coherencia (Phase, RunId, TaskId/Attempt, sin conflictos ni commits sin imagen, MainBeforeSha = K.MainSha, AR con las igualdades, BaseSha, CurrentSha → Target.commit) y MainSha_eval = MainAfterSha no cambian. Solo se precisa «de la reverificación» (L174-181 frente a a7-r3 L163-170). La ausencia y la sustitución en la reverificación son iguales (L206-209 frente a a7-r3 L185-188), y q8 se repite con 38 de 38.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:174-181",
+    "a7-r3.md:163-170",
+    "docs/initiatives/I-62-A-7.md:206-209",
+    "a7-r3.md:185-188",
+    "docs/automation/evidence/I-62-A7/r4/summary.json:52-55"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "R2R1_NON_ADMISSION_ORDINARY_VERIFY_AND_MEASUREMENT",
+   "Status": "NO_REGRESSION",
+   "Rationale": "La no admisión se mantiene y ahora nombra expresamente la verificación ordinaria, sus controles y la medición (L161, L211-212). El validador marca el REBASE como no aplicable fuera de REVERIFICATION y REVERIFICATION_CONTROL. Comprobado en q8 RB-MISUSE-*, q9 RVC-MISUSE-V-NC1 y q10 MOD-NC3-V-REBASE, y en la matriz (M1, M3, M8).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:161",
+    "docs/initiatives/I-62-A-7.md:211-212",
+    "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py:460-463",
+    "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:441-447",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:313",
+    "docs/automation/evidence/I-62-A7/r4/modalities.md:75-83"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "Q_A7R3_02_DELIVERY_FAIL_CLOSED",
+   "Status": "NO_REGRESSION",
+   "Rationale": "En la reverificación, sin la entrega con la que se comprueba la coherencia no hay cierre (L206-209, igual que en la ronda 3). La excepción para la entrega mutada o ausente vale solo en el control, porque su coherencia se ancla en la reverificación, como ya apuntaba la respuesta de la ronda 3, y una reverificación sin entrega deja también sus controles sin cierre (RVC-SOURCE-NO-H).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:206-211",
+    "a7-r3.md:185-188",
+    "docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/output.json:696-708",
+    "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:266-272"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "Q_A7R3_03_CATEGORY_B_BASESHA",
+   "Status": "NO_REGRESSION",
+   "Rationale": "La categoría (b) es idéntica (BaseSha de la delegación). En los controles sobre RV, la delegación es una copia (en nc2 solo cambia AllowedWriteScope), así que (b) coincide con la de RV (REL-*: BaseSha y Target idénticos).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:152-153",
+    "a7-r3.md:142-143",
+    "docs/automation/evidence/I-62-architect-A-7/R20261023T180846Z-62bd/output.json:711-722",
+    "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:51-57"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "R1_TRX_AND_RELAYFACTS_AS_CORRECTED",
+   "Status": "NO_REGRESSION",
+   "Rationale": "Los papeles TRX de CurrentSha y RedSha, la exigencia de RED de 16.8 y los RelayFacts no cambian (L154-157 frente a a7-r3 L144-147). «En ella» pasa a «en ellos» para incluir los controles. q1-q3 se repiten con las piezas de la ronda 4: 16/16, 6/6 y 8/8.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:154-157",
+    "a7-r3.md:144-147",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:12-14"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "R2_INVALIDATOR_RULE_AND_PROCEDURE",
+   "Status": "NO_REGRESSION",
+   "Rationale": "El punto 7 es idéntico. Las piezas cambiadas se identifican por su SHA-256 (summary.json, Invalidator), q5 se cumple con 4 de 4 y no hay ninguna medición consumida que anular.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:220-226",
+    "a7-r3.md:196-202",
+    "docs/automation/evidence/I-62-A7/r4/summary.json:87-94",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:137",
+    "docs/initiatives/I-62-A-6.md:781-786"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "R3_A62_RULE1_PRECISION",
+   "Status": "NO_REGRESSION",
+   "Rationale": "La frase de excepción del punto 1 (L163-164 = a7-r3 L152-153) no cambia, y §3.4 y §4 nombran ahora el registro de rebase y su copia como excepción a la clase de §20.3.1 (A62-A7R3-O3 tratado). La precisión de A6-2, regla 1, se conserva.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:163-164",
+    "a7-r3.md:152-153",
+    "docs/initiatives/I-62-A-7.md:242-246",
+    "docs/initiatives/I-62-A-7.md:355",
+    "docs/initiatives/I-62-A-6.md:532-535"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "T04_EFF_EFF1_B1_MAP_VALIDATION",
+   "Status": "NO_REGRESSION",
+   "Rationale": "1 (a) y 2 (a) son idénticos. En los controles sobre RV, EFF y EFF^1 salen del mismo MainSha_eval que en RV (REL-*: idénticos). q4 se cumple (4/4) y COMPAT-EFF también.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:149-151",
+    "a7-r3.md:139-141",
+    "docs/initiatives/I-62-A-7.md:165-170",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:15",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:140"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE",
+   "Status": "NO_REGRESSION",
+   "Rationale": "5 (a) y (b) son idénticos. El cierre no construible nuevo del control sobre RV está en (c) y no se confunde con MAP_INVALID, que sigue tratando 16.13.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:199-201",
+    "a7-r3.md:178-180",
+    "docs/initiatives/I-62-A-7.md:209-211"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "T06_CLAUSEMAP_COVERAGE_RULE",
+   "Status": "NO_REGRESSION",
+   "Rationale": "El residuo de clausemap y su precondición de fallo cerrado (L268-276) son textualmente iguales a los de la ronda 3 (a7-r3 L242-250). El residuo de C1 (O1) se añade aparte, sin tocar la regla de cobertura.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:268-276",
+    "a7-r3.md:242-250"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "T07_MULTI_CATEGORY_ENTRIES",
+   "Status": "NO_REGRESSION",
+   "Rationale": "La pertenencia múltiple y el blob por revisión (L147-148 y L168-170) no cambian. «Un artefacto como máximo por papel» sigue limitando la designación, también la del control (RVC-EXTRA-ROLE: dos REBASE → DESIGNATION).",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:147-148",
+    "docs/initiatives/I-62-A-7.md:168-170",
+    "a7-r3.md:137-138",
+    "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:427-433"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Topic": "T09_NO_UNAUTHORIZED_CHANGES",
+   "Status": "NO_REGRESSION",
+   "Rationale": "Las guardas run sobre la publicación dan G1-G7 en PASS (diff limitado a A-7 y r4/; superficies protegidas y la evidencia y la revisión de la ronda 3 intactas). q6 confirma los blobs de V14, el Freeze, A-1..A-6, AUTOMATION_PLAN, RAE, el esquema y los contratos, y las cinco líneas del Owner. El punto 8 es idéntico. Se respetan los límites de §98, punto 8.",
+   "ClauseRefs": [
+    "docs/automation/evidence/I-62-A7/r4/a7-guards-result-run.json:1-38",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:118-134",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:150-155",
+    "docs/initiatives/I-62-A-7.md:227-229",
+    "docs/initiatives/I-62-A-7.md:375-376",
+    "docs/automation/decisions/I-62.md:1929"
+   ],
+   "FindingIds": []
+  }
+ ],
+ "CompatibilityVerdicts": {
+  "A5": {
+   "Status": "COMPATIBLE",
+   "Rationale": "A5-1 regula la construcción de B1 y su precondición, y A5-2 la sesión de Principal de FX-U2 y los presupuestos de FX-02 (regla 4: 11 base, pool 4, tope 15, sin cambio). La ronda 4 no toca F_seed, F_norm, F_eff, el mapa ni los topes. Admitir la copia del registro en los controles sobre RV no crea invocaciones, porque RAE §10 ya exige los controles sobre la verificación VERIFIED, y el punto 8 sigue excluyendo los presupuestos. §6 lo declara: el registro solo entra en la reverificación y en sus controles, que A-5 no regula. El riesgo de que el tope de D.3 no baste para RV más sus controles es operativo (modalities.md, Presupuestos) y no cambia A-5.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-5.md:175-199",
+    "docs/initiatives/I-62-A-5.md:216",
+    "docs/initiatives/I-62-A-7.md:377-378",
+    "docs/initiatives/I-62-A-7.md:227-229",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:141",
+    "docs/automation/evidence/I-62-A7/r4/modalities.md:112-114"
+   ],
+   "FindingIds": []
+  },
+  "A6": {
+   "Status": "COMPATIBLE",
+   "Rationale": "A-6 no se edita (blob 4bc919dd, q6). La precisión declarada de A6-2, reglas 1 y 3, se conserva, y el registro de rebase y su copia entran como entradas no versionadas de (c), por el blob de sus bytes. A6-3, regla 6 (b), y A6-5, regla 2: los RelayFacts del control son los de su registro propio, y R10 da MATCH (RVC-ACCEPTOR). A6-5, regla 7, ya incluye en su ámbito la reverificación y cada control. A6-7, reglas 1, 5 y 7: la medición no admite el registro, y el invalidador sigue siendo la regla más sus piezas, cambiadas antes de cualquier medición. A6-9, regla 4, y su tabla, sin cambio: la ruta de la copia no tiene Name en C6, y C1 sin MainAfterSha ni las imágenes es una consecuencia de la tabla que A-7 declara como residuo (rechazo falso, nunca aceptación falsa), no una contradicción. Las remisiones de §3.5 a «A6-7, regla 4» y «regla 7 (b)» deberían decir A6-5 (A62-A7R4-O1), pero no cambian la compatibilidad.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-6.md:532-535",
+    "docs/initiatives/I-62-A-6.md:539-541",
+    "docs/initiatives/I-62-A-6.md:600-617",
+    "docs/initiatives/I-62-A-6.md:673-686",
+    "docs/initiatives/I-62-A-6.md:717-733",
+    "docs/initiatives/I-62-A-6.md:759-770",
+    "docs/initiatives/I-62-A-6.md:781-786",
+    "docs/initiatives/I-62-A-6.md:789-794",
+    "docs/initiatives/I-62-A-6.md:841-843",
+    "docs/initiatives/I-62-A-6.md:848-872",
+    "docs/initiatives/I-62-A-7.md:240-259",
+    "docs/initiatives/I-62-A-7.md:278-285",
+    "docs/initiatives/I-62-A-7.md:379-380",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:142",
+    "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:455-487"
+   ],
+   "FindingIds": [
+    "A62-A7R4-O1"
+   ]
+  }
+ },
+ "Materiality": {
+  "Triggers": [
+   {
+    "Trigger": "M-01",
+    "A7Declared": "no",
+    "Assessment": "AGREE",
+    "Rationale": "La ronda 4 no crea ningún dueño de reglas ni de estado: el cierre lo calcula el Principal y lo audita el invocador, también el del control sobre RV.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:364",
+     "docs/INITIATIVE_LIFECYCLE.md:83"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-02",
+    "A7Declared": "yes",
+    "Assessment": "AGREE",
+    "Rationale": "El significado persistido de input-closure/v1 y de la RoleInvocation de las VERIFY de FX-02 sigue cambiado, ahora también para los controles sobre RV (registro de rebase como entrada de (c) y MainSha_eval derivado).",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:365",
+     "docs/INITIATIVE_LIFECYCLE.md:84"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-03",
+    "A7Declared": "yes",
+    "Assessment": "AGREE",
+    "Rationale": "Cambia el comportamiento observable: la lectura de la copia del registro en los controles sobre RV queda dentro del cierre. §5 lo declara.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:366",
+     "docs/INITIATIVE_LIFECYCLE.md:85"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-04",
+    "A7Declared": "yes",
+    "Assessment": "AGREE",
+    "Rationale": "Hay un fallo cerrado nuevo: sin una reverificación válida y la copia de su registro, el control no tiene cierre ni lanzamiento. §5 lo declara.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:367",
+     "docs/initiatives/I-62-A-7.md:209-211",
+     "docs/INITIATIVE_LIFECYCLE.md:86"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-05",
+    "A7Declared": "yes",
+    "Assessment": "AGREE",
+    "Rationale": "Cambia un contrato que consumen el invocador, el auditor, los validadores y el aceptante (vía A6-9), con el formato de designación nuevo.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:368",
+     "docs/INITIATIVE_LIFECYCLE.md:87"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-06",
+    "A7Declared": "no",
+    "Assessment": "AGREE",
+    "Rationale": "La regla sigue cerrada: un rol, una acción, un escenario y una fase. La lista de controles es la cerrada de RAE §10 y D.3.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:369",
+     "docs/INITIATIVE_LIFECYCLE.md:88"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-07",
+    "A7Declared": "no",
+    "Assessment": "AGREE",
+    "Rationale": "No introduce ningún mecanismo transversal: solo FX-02 en F6.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:370",
+     "docs/INITIATIVE_LIFECYCLE.md:89"
+    ],
+    "FindingIds": []
+   },
+   {
+    "Trigger": "M-08",
+    "A7Declared": "no",
+    "Assessment": "AGREE",
+    "Rationale": "No toca ADR-0046 #9 ni los blobs del instrumento y del aceptante. La línea (a) del Owner sigue cubriendo lo que nombra.",
+    "ClauseRefs": [
+     "docs/initiatives/I-62-A-7.md:371",
+     "docs/initiatives/I-62-A-6.md:1324",
+     "docs/INITIATIVE_LIFECYCLE.md:90"
+    ],
+    "FindingIds": []
+   }
+  ],
+  "Rationale": "La ronda 4 no cambia la columna «Activado» de §5 y solo amplía los motivos de M-03 y M-04 a los controles sobre RV. Coincido con las ocho declaraciones.",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-7.md:360-371",
+   "docs/INITIATIVE_LIFECYCLE.md:81-90",
+   "docs/initiatives/I-62-A-7.md:44-46"
+  ],
+  "FindingIds": []
+ },
+ "OwnerReservedConsequence": {
+  "OwnerDecisionRequired": false,
+  "UnidentifiedConsequences": [],
+  "Rationale": "La ronda 4 no cambia el alcance, los no-objetivos, OD-1..OD-7, la matriz OV ni ningún escenario. No toca ADR-0046 #9 ni los blobs del instrumento y del aceptante. No autoriza ninguna invocación ni consumo: los controles sobre RV ya los exige RAE §10 y caben en los topes de D.3, que no cambian. Las líneas del Owner (A-6 §7, L1324 y L1325) siguen intactas (q6, COMPAT-OWNER). No identifico ninguna consecuencia OWNER-RESERVED que A-7 no identifique.",
+  "ClauseRefs": [
+   "docs/initiatives/I-62-A-7.md:385-390",
+   "docs/INITIATIVE_LIFECYCLE.md:94",
+   "docs/initiatives/I-62-A-6.md:1324",
+   "docs/initiatives/I-62-A-6.md:1325",
+   "docs/automation/evidence/I-62-A7/r4/preflight.md:139"
+  ],
+  "FindingIds": []
+ },
+ "QuestionAnswers": [
+  {
+   "Question": "Q-A7R4-01",
+   "Outcome": "SATISFIED",
+   "Answer": "Sí. El control sobre RV lee el mismo RebaseMap porque admite la copia del registro de RV, con el mismo blob y el mismo RunId, y no otro registro. Su coherencia se comprueba con las entradas de RV, no con la entrega mutada o ausente, y MainSha_eval es su MainAfterSha, como en la reverificación (AP L813-814). Así, Identity sobre los originales y sus imágenes y Remote con el MainSha nuevo tienen la misma fuente que en RV (AP L634-635), como exige el oráculo relativo de RAE §10. La no admisión en la verificación ordinaria, en sus controles y en la medición queda escrita en 1 (c) y 5 (c), y q9 y q10 la ejercen.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:432",
+    "docs/initiatives/I-62-A-7.md:157-161",
+    "docs/initiatives/I-62-A-7.md:189-191",
+    "docs/initiatives/I-62-A-7.md:211-212",
+    "docs/automation/agent-execution/README.md:224-226",
+    "docs/AUTOMATION_PLAN.md:634-635",
+    "docs/AUTOMATION_PLAN.md:813-814",
+    "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:19-37"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Question": "Q-A7R4-02",
+   "Outcome": "SATISFIED",
+   "Answer": "Sí. «Copias de todas las entradas … salvo el campo mutado» se lee como copia por blob (y por ruta, salvo la delegación y la entrega, que van en la ruta del control), con los ids internos conservados. Los hechos del relevo son los del «registro propio» que el mismo RAE §10 da a cada control. El RunId y el SHA-256 de la designación fijan sin ambigüedad de qué reverificación son copia y de dónde sale MainSha_eval. D.3 solo nombra el efecto de N4-N7b, y el procedimiento (punto 7) fija los campos mutados de cada uno; una realización distinta falla cerrada, nunca da una aceptación falsa. q9 rechaza las sustituciones y las mutaciones indebidas.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:433",
+    "docs/initiatives/I-62-A-7.md:181-189",
+    "docs/automation/agent-execution/README.md:219-222",
+    "docs/initiatives/I-62-proposal-v14.md:2441",
+    "docs/automation/evidence/I-62-A7/r4/check_a7_closure.py:107-112",
+    "docs/automation/evidence/I-62-A7/r4/q9-controls-on-rv.json:315-398"
+   ],
+   "FindingIds": []
+  },
+  {
+   "Question": "Q-A7R4-03",
+   "Outcome": "SATISFIED",
+   "Answer": "Es aceptable en el ámbito de A-7 y conforme a §98, punto 5 (ninguna enmienda por los opcionales). O2: la segunda reverificación y sus controles no tienen cierre ni lanzamiento por el punto 2 (c), y el caso vuelve al Coordinator; es la exclusión que documenta §98, punto 3, coherente con el RebaseMap único de 16.13, y q10 la comprueba. O1: el rechazo falso R9 nunca da una aceptación falsa, pero no es un «sin lanzamiento»: la salida no aceptada sigue A6-5, regla 4 (reejecuciones contadas en D.3 y, en un control, control no superado). Las remisiones de §3.5 a A6-7 deberían decir A6-5 (A62-A7R4-O1), y conviene hacer visible el coste y el lugar de la mitigación, la disposición de A6-7, regla 7 (A62-A7R4-O2). Ninguna de las dos cosas exige cambiar A-7 para acordarla.",
+   "ClauseRefs": [
+    "docs/initiatives/I-62-A-7.md:434",
+    "docs/initiatives/I-62-A-7.md:278-291",
+    "order.txt:51-55",
+    "docs/automation/decisions/I-62.md:1926",
+    "docs/initiatives/I-62-A-6.md:689-699",
+    "docs/automation/evidence/I-62-A7/r4/preflight.md:314-323"
+   ],
+   "FindingIds": [
+    "A62-A7R4-O1",
+    "A62-A7R4-O2"
+   ]
+  }
+ ],
+ "IfAgreed": {
+  "ScopeLimitedToR3R1AndConsequences": true,
+  "PriorFindingCorrected": true,
+  "DeltaLimitedToR3R1": true,
+  "NoRegressionOfPriorConformities": true,
+  "CompatibleWithA5AndA6": true,
+  "MaterialityConfirmed": true,
+  "NoUnidentifiedOwnerReservedConsequence": true,
+  "NoUnauthorizedChanges": true,
+  "SuitableForCoordinatorAgreement": true
+ },
+ "KnownLimitations": [
+  "Sin Bash ni ejecución de código: no recalculé blobs ni SHA-256, ni ejecuté las guardas, el constructor, el validador, designate_a7, el instrumento, el aceptante ni el kit. La identidad de los bytes es la que verificó el invocador, y los resultados del preflight (245/245, la autoprueba 45/45 y las guardas run en PASS) son evidencia de apoyo leída, no reproducida.",
+  "Del procedimiento leí entero el formato a7-designation/4 y las partes del validador de la ronda 4 que tratan el control sobre RV (L1-215 y L380-514). No leí el constructor (make_eic_a7.py), designate_a7.py, r4phases.py, run_a7r4.py ni el código de B-min: lo que concluyo sobre el procedimiento se apoya en el validador y en los resultados de q0, q6, q7, q9 y q10.",
+  "Los campos mutados de N4-N7b salen del banco de A6-7 (evidencia §181), que el validador cita (L107-112) y que q9 RVC-MUTVALUES compara. La evidencia §181 del banco no está entre mis lecturas, así que no comprobé esa correspondencia con la fuente.",
+  "Observación fuera del alcance de A62-A7R3-R1, preexistente desde la ronda 2 y no evaluada como hallazgo: en una cadena con ChainRedSha no nulo, la exigencia de RED de un control cuya entrega tiene un CurrentSha inexistente (nc1) o ausente (N4) no se puede determinar. El validador deja entonces el TRX de RedSha sin admitir (L453-455), y para los controles sobre RV exige además que esté designado igual que en RV (L177-178). En FX-02, la primera delegación tiene ChainRedSha nulo y el caso no se da.",
+  "Lo que A-7 y sus preflights citan de fuera del cierre (los preflights de las rondas 1 y 2, el repositorio del fixture FX-U1, la evidencia §181 del banco y el riesgo de presupuesto de D.3 para RV más sus controles que declara modalities.md) no lo puedo comprobar.",
+  "La autorización de esta invocación (la disposición posterior a §98, compuerta 11) no está en el cierre; mi orden vigente es §98 (order.txt), y no juzgo esa autorización."
+ ],
+ "RecommendedNextAction": "Que el Coordinator registre por añadido el resultado de esta revisión cuando el auditor acredite la corrida: Architect AGREED sobre el blob ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3, con A62-A7R3-R1 CORRECTED y dos OPTIONAL. Que disponga A62-A7R4-O1 (remisiones de §3.5 a A6-5, reglas 4 y 7 (b)) y A62-A7R4-O2 (coste de O1 en la reverificación y en sus controles, que se puede tratar en la disposición de A6-7, regla 7) sin abrir otra enmienda; si decide corregirlos en el archivo, el blob nuevo exigiría volver a verificar la identidad antes del acuerdo. Después, que emita su propio veredicto sobre el blob exacto (Anexo, punto 2) y siga con las disposiciones previas a la medición, la nueva preparación del kit y la medición de A6-7 solo con sus autorizaciones, sin declarar Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS."
+}

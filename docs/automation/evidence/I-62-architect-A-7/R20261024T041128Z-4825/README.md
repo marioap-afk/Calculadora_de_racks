@@ -280,3 +280,35 @@ exactos). Las 43 copias fieles `kit/fiel__*.txt` se custodian por reproducción 
 `prep/` contiene los scripts de derivación y de preparación, la salida del desplazamiento (`prep/shifted/`), los diffs frente al kit de
 la ronda 3, las salidas crudas de la cadena y los resultados de la negativa, la reproducción, el host y la privacidad. `base3/` (el kit de
 la ronda 3 de partida) no se vuelve a custodiar: está en `000fd6eb`. Ninguna transcripción, credencial ni archivo de autenticación.
+
+## Resultado (añadido tras la corrida, sesión principal; decisiones §99)
+
+```text
+Sesión:          bd018dcb-165f-437d-bcfc-c8adaed5d774, de 2026-10-24T18:21:25Z a 2026-10-24T18:35:37Z, Outcome COMPLETED, salida 0, sin errores posteriores
+Transporte:      claude-cli 2.1.299 (295b49ec…), claude-opus-5-5 xhigh; kit fijado en §99 (manifiesto 90b9cf93171b7c17…, custodia 00b1e86c)
+Uso:             47 turnos; herramientas {"Read": 41, "Grep": 4, "StructuredOutput": 1}
+Veredicto:       AGREED
+A62-A7R3-R1:     CORRECTED (FindingIds ninguno)
+REQUIRED:        0 ()
+OPTIONAL:        2 (A62-A7R4-O1, A62-A7R4-O2)
+Pureza:          DeltaPurity CONFIRMED (11 de 11 cambios WITHIN_SCOPE)
+Regresión:       R2R1_REVERIFICATION_RECORD_AS_CORRECTED NO_REGRESSION, R2R1_NON_ADMISSION_ORDINARY_VERIFY_AND_MEASUREMENT NO_REGRESSION, Q_A7R3_02_DELIVERY_FAIL_CLOSED NO_REGRESSION, Q_A7R3_03_CATEGORY_B_BASESHA NO_REGRESSION, R1_TRX_AND_RELAYFACTS_AS_CORRECTED NO_REGRESSION, R2_INVALIDATOR_RULE_AND_PROCEDURE NO_REGRESSION, R3_A62_RULE1_PRECISION NO_REGRESSION, T04_EFF_EFF1_B1_MAP_VALIDATION NO_REGRESSION, T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE NO_REGRESSION, T06_CLAUSEMAP_COVERAGE_RULE NO_REGRESSION, T07_MULTI_CATEGORY_ENTRIES NO_REGRESSION, T09_NO_UNAUTHORIZED_CHANGES NO_REGRESSION
+Compatibilidad:  A-5 COMPATIBLE; A-6 COMPATIBLE
+Materialidad:    M-01 no/AGREE, M-02 yes/AGREE, M-03 yes/AGREE, M-04 yes/AGREE, M-05 yes/AGREE, M-06 no/AGREE, M-07 no/AGREE, M-08 no/AGREE
+Owner:           decisión requerida: False; consecuencias no identificadas: 0
+Preguntas:       Q-A7R4-01 SATISFIED, Q-A7R4-02 SATISFIED, Q-A7R4-03 SATISFIED
+Referencias:     261, todas exactas, en rango y entregadas fielmente
+Fidelidad:       43 copias fieles verificadas; lecturas fallidas acreditadas 0; lecturas de originales marcados 0; lectura directa RAE §10 L219-L226 entregada
+Acreditación:    ACCREDITED por el auditor v7.0-a7r4 (0 motivos); sin acreditación excepcional
+Clon tras corrida: HEAD 94a04af7, estado limpio
+```
+
+Architect AGREED (0 REQUIRED; A62-A7R3-R1 CORRECTED; OPTIONAL A62-A7R4-O1 y A62-A7R4-O2) y auditor ACCREDITED (0 motivos): se custodia el
+resultado y se solicita la disposición del Coordinator de acuerdo definitivo de A-7 (decisiones §99, punto 7). A-7 sigue PROPUESTA hasta esa
+disposición; el veredicto del Architect no es el acuerdo. Ni A-7 AGREED, ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS. Sin reintento.
+Nota sobre el auditor: la cadena de versión y la docstring de `post-review.py` conservan el texto de la ronda 3 («direct read of AUTOMATION_PLAN
+L593-L595»); la regla lee la lectura directa del cierre, RAE §10 L219-L226, que es lo que `audit.json` comprueba (`DirectRead`, entregada por Read).
+
+Archivos añadidos: `output.json` y `audit.json` (byte a byte, sin modificar), `runtime-evidence.json`, `launch/` (saneado) y los nuevos de `prep/p99/`
+(prueba en seco final, registro del lanzamiento y del auditor; las salidas de tubería como texto UTF-8 saneado). La transcripción y `stdout.jsonl` no
+se versionan; sus SHA-256 están en `runtime-evidence.json`.

@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §99; evidencia §205-§206) — kit R20261024T041128Z-4825 fijado en §99 y custodiado (manifiesto 90b9cf93; prueba en seco con cero bloqueos); lanzar UNA vez python -B kit/launch.py (3 600 s, sin reintento) y auditar con v7.0-a7r4; sin secciones de decisiones nuevas hasta auditar; sin Codex; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §99; evidencia §205-§207) — revisión formal única de A-7 ronda 4 hecha y custodiada: auditor ACCREDITED; Architect AGREED (0 REQUIRED; A62-A7R3-R1 CORRECTED; OPTIONAL A62-A7R4-O1 remisiones de §3.5 a A6-5 y A62-A7R4-O2 coste de O1 en la reverificación); A-7 sigue PROPUESTA; espera la disposición del Coordinator de acuerdo definitivo de A-7; después, disposiciones previas a la medición de A6-7, nueva preparación de su kit y la medición solo con sus autorizaciones; sin otra ronda sin disposición; sin Codex; A6-7 HELD; sin A-7 AGREED, Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
