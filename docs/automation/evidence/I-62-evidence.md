@@ -4934,3 +4934,27 @@ solo desde artefactos custodiados.
   en `r3/` solo lo carga `r2lib.main()`, que el ejecutor de la ronda 3 no llama; las guardas sobre la publicación dan PASS sin él.
 - Siguiente: UNA invocación (`python -B kit/launch.py`, 3 600 s, sin reintento) y el auditor congelado v7.0-a7r3, sin secciones de decisiones nuevas
   hasta auditar.
+
+## 201. Revisión formal única de A-7 ronda 3 (R20261023T180846Z-62bd): auditor ACCREDITED; Architect CHANGES REQUIRED (una REQUIRED nueva, A62-A7R3-R1); A62-A7R2-R1 PARTIALLY_CORRECTED (decisiones §97)
+
+- **Corrida** ([`README`](I-62-architect-A-7/R20261023T180846Z-62bd/README.md), [`runtime-evidence.json`](I-62-architect-A-7/R20261023T180846Z-62bd/runtime-evidence.json)): `python -B kit/launch.py`, una vez, de
+  2026-10-24T01:16:51Z a 2026-10-24T01:30:37Z, Outcome COMPLETED, salida 0; 55 turnos, 54 llamadas a herramientas;
+  clon limpio después. Precondiciones previas: prueba en seco final con cero bloqueos en `850dd7dc`, host, corriente y la no intervención de
+  `preflight_text_r2.py`.
+- **Auditor v7.0-a7r3** ([`audit.json`](I-62-architect-A-7/R20261023T180846Z-62bd/audit.json)): **ACCREDITED**, 0 motivos; sin acreditación excepcional. Las 230 referencias del
+  revisor son exactas, están en rango y se entregaron fielmente (el mecanismo de citas corregido, §96, punto 6); 42 copias fieles verificadas, ninguna
+  lectura DEGRADED ni de un original marcado; lectura directa de AUTOMATION_PLAN L593-L595 entregada.
+- **Architect** ([`output.json`](I-62-architect-A-7/R20261023T180846Z-62bd/output.json)): **CHANGES REQUIRED**. A62-A7R2-R1 PARTIALLY_CORRECTED: correcto para la reverificación misma (papel,
+  ruta y `RunId`, coherencia, `MainSha_eval` = `MainAfterSha`, ausencia y no admisión en la VERIFY ordinaria y la medición). DeltaPurity CONFIRMED
+  (8/8 WITHIN_SCOPE); los ocho temas sin regresión; A-5 COMPATIBLE y A-6 COMPATIBLE; materialidad 8 AGREE; sin decisión del Owner; Q-A7R3-01
+  NOT_SATISFIED, Q-A7R3-02 y 03 SATISFIED. **A62-A7R3-R1 (REQUIRED):** los controles negativos con invocación (RAE §10) se ejecutan sobre las
+  entradas, con copias de todas ellas, de la verificación EXECUTION_VERIFIED del último `WorkRunId`, que tras un rebase sin conflictos es la
+  reverificación de 16.7; A7-1 r3 solo admite el registro de rebase en `Kind` REVERIFICATION («en cualquier otra invocación… no se admite», L188), así
+  que esos controles leen fuera del cierre (P-22) o fallan su oráculo relativo (Identity y Remote), y la coherencia se anclaría a la entrega mutada o
+  ausente del control. Corrección propuesta: admitir la copia del registro de esa reverificación en sus controles, con la coherencia anclada a la
+  reverificación real, y ajustar el formato de la designación, el constructor, el validador y `designate_a7`, con nc1, nc2 y N4 sobre la reverificación
+  en el preflight. Opcionales A62-A7R3-O1 (la tabla de A6-9 no lleva `MainAfterSha` ni las imágenes a C1: residuo del aceptante en la reverificación),
+  O2 (segunda recuperación de 16.7) y O3 (enumeración descriptiva). Comprobado por la sesión principal en las fuentes del clon (RAE L219-226; AP
+  L535-539, L634-635; A-7 L185-190; `a7-designation-3.schema.json` L61-68).
+- Impacto sobre A6-7: A-7 no puede acordarse con una REQUIRED abierta y su corrección cambia piezas del invalidador (formato, constructor, validador,
+  `designate_a7`), así que tiene que preceder a cualquier disposición de A6-7, regla 7; A6-7 sigue HELD. Sin otra ronda sin disposición (§97, punto 8).

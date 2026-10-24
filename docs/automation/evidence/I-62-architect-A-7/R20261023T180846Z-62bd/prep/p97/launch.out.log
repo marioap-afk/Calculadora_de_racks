@@ -1,0 +1,1 @@
+{"SessionId": "a720544e-1ac0-43d9-96bd-ae39e1090dfb", "Pid": 18840, "Start": "2026-10-24T01:16:51.177836Z", "End": "2026-10-24T01:30:37.961746Z", "ExitCode": 0, "Killed": false, "TimedOut": false, "ResultMessage": true, "TransportFailure": null, "PostRunErrors": [], "LaunchError": null, "Outcome": "COMPLETED", "OutcomeCategories": ["COMPLETED"]}

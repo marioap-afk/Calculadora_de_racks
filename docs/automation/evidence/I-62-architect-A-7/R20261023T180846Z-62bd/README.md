@@ -248,3 +248,33 @@ los resultados de la negativa, la reproducción, el host y la privacidad. Ningun
    de las guardas.
 6. Lanzamiento: UNA vez `python -B kit/launch.py` desde esta carpeta (tope 3 600 s, sin reintento) y el auditor congelado v7.0-a7r3 sobre la corrida
    completa, sin acreditación excepcional.
+
+## Resultado (añadido tras la corrida, sesión principal; decisiones §97)
+
+```text
+Sesión:          a720544e-1ac0-43d9-96bd-ae39e1090dfb, de 2026-10-24T01:16:51Z a 2026-10-24T01:30:37Z, Outcome COMPLETED, salida 0, sin errores posteriores
+Transporte:      claude-cli 2.1.299 (295b49ec…), claude-opus-5-5 xhigh; kit fijado en §97 (manifiesto d4f78a4bc6c51a89…, custodia 850dd7dc)
+Uso:             55 turnos; herramientas {"Read": 48, "Grep": 5, "StructuredOutput": 1}
+Veredicto:       CHANGES REQUIRED
+A62-A7R2-R1:     PARTIALLY_CORRECTED (FindingIds A62-A7R3-R1, A62-A7R3-O1, A62-A7R3-O2)
+REQUIRED:        1 (A62-A7R3-R1)
+OPTIONAL:        3 (A62-A7R3-O1, A62-A7R3-O2, A62-A7R3-O3)
+Pureza:          DeltaPurity CONFIRMED (8 de 8 cambios WITHIN_SCOPE)
+Regresión:       R1_TRX_AND_RELAYFACTS_AS_CORRECTED NO_REGRESSION, R2_INVALIDATOR_RULE_AND_PROCEDURE NO_REGRESSION, R3_A62_RULE1_PRECISION NO_REGRESSION, T04_EFF_EFF1_B1_MAP_VALIDATION NO_REGRESSION, T05_MAP_INVALID_ABSENT_NONCONSTRUCTIBLE NO_REGRESSION, T06_CLAUSEMAP_COVERAGE_RULE NO_REGRESSION, T07_MULTI_CATEGORY_ENTRIES NO_REGRESSION, T09_NO_UNAUTHORIZED_CHANGES NO_REGRESSION
+Compatibilidad:  A-5 COMPATIBLE; A-6 COMPATIBLE
+Materialidad:    M-01 no/AGREE, M-02 yes/AGREE, M-03 yes/AGREE, M-04 yes/AGREE, M-05 yes/AGREE, M-06 no/AGREE, M-07 no/AGREE, M-08 no/AGREE
+Owner:           decisión requerida: False; consecuencias no identificadas: 0
+Preguntas:       Q-A7R3-01 NOT_SATISFIED, Q-A7R3-02 SATISFIED, Q-A7R3-03 SATISFIED
+Referencias:     230, todas exactas, en rango y entregadas fielmente
+Fidelidad:       42 copias fieles verificadas; lecturas fallidas acreditadas 0; lecturas de originales marcados 0; lectura directa AP L593-L595 entregada
+Acreditación:    ACCREDITED por el auditor v7.0-a7r3 (0 motivos); sin acreditación excepcional
+Clon tras corrida: HEAD b9bfae50, estado limpio
+```
+
+La revisión está acreditada, pero el veredicto es CHANGES REQUIRED: A-7 sigue PROPUESTA (decisiones §97, puntos 1, 7 y 8). La REQUIRED nueva,
+A62-A7R3-R1 (los controles negativos con invocación que se ejecutan sobre las entradas de una reverificación de 16.7 VERIFIED no admiten el registro
+de rebase), se informa al Coordinator sin iniciar otra ronda. Ni A-7 AGREED, ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS. Sin reintento.
+
+Archivos añadidos: `output.json` y `audit.json` (byte a byte, sin modificar), `runtime-evidence.json`, `launch/` (saneado) y los nuevos de `prep/p97/`
+(prueba en seco final, registro del lanzamiento y del auditor; las salidas de tubería como texto UTF-8 saneado). La transcripción y `stdout.jsonl` no
+se versionan; sus SHA-256 están en `runtime-evidence.json`.
