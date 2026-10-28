@@ -2728,3 +2728,57 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | Archivo | SHA-256 |
 |---|---|
 | `docs/automation/decisions/I-65-owner-disposition-w4-acceptance-f5-final-review-gate-closure.original.txt` | `96E8600C2984FABCA2835727F5173B779EABAE1B363CBB500FBF39DE3C2C8BE9` |
+
+## 101. Revisión final del Architect y criterios de cierre de F5 (2026-10-28T19:58:57Z)
+
+- Orden: decisiones §96-§97. Architect por subagente de solo lectura; Coordinator sin AutoCAD, RAM, Codex ni Workers.
+- Custodia (SHA-256; filas comprobadas contra el índice antes del commit):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f5/architect-f5-final-conformance.md` | `1A7215E3887CF8997018860E4972DA5778840B463A32AA8054E716F72A2E5D97` |
+| `docs/automation/evidence/I-65-f5/architect-f5-final.prompt.md` | `0559FA388C4D06404865406DB2BEAED81B2CCE437758A8F78AF21294E2DAF2FD` |
+| `docs/automation/evidence/I-65-f5/architect-f5-final-k5-transcript-scan.json` | `AA4B3EED1FEB64D1D382FDD285E9909BBDCB039570296A9EC9142CC36700EA81` |
+| `docs/automation/evidence/I-65-f5/f5-final-review/custody-recheck.txt` | `ADCC965B6B52E2583B56F6805C75B6331A37509E87FCE8564C914E9F593D250F` |
+| `docs/automation/evidence/I-65-f5/f5-final-review/custody-rows-92-100.txt` | `4DD94A10315E31C2BE458778C2A5E76581285FA753CA6CCAEA37B86A1A0C6AF9` |
+| `docs/automation/evidence/I-65-f5/f5-final-review/tools-sha256-at-close.txt` | `B479F746E4D5C22E3F2ADA58601F7FE0175F3CD464CD61AC28284371314EC9B8` |
+
+- **OV-I65-02 (W3 + W4 + comparador) = PASS.** Filas del comparador:
+
+| Clasificación | Filas |
+|---|---|
+| PASS (10) | NODE-COORDINATES, CONNECTIVITY, LOCAL-AXES, SECTION-NAME, MATERIAL-NAME, MEMBER-DEFAULTS, RELEASES-SUPPORTS, LOADS, COMBINATIONS (0 y 0, CMB-3), CASE-CATEGORY |
+| NOT_EVALUATED (2) | SECTION-PROPERTIES, MATERIAL-PROPERTIES (D-09; no se convierten en PASS) |
+| INFORMATIVE (2) | MANUAL-CASE-CATEGORY (`DL`), SELF-WEIGHT (0, 0, 0 en ambos modelos) |
+
+  FAIL: 0. INCOMPLETE: 0. Q2 = 99.99999999999997 % (diferencia de representación de 2 ulp frente al 100 % de la hoja, ≈1.2e-14 in frente a la tolerancia de 0.02 in).
+
+- **Matriz AC-F5-01..10 (`I-65-f5-w3-w4-procedures.md` §5):**
+
+| Criterio | Estado | Evidencia |
+|---|---|---|
+| AC-F5-01 | CUMPLE | decisiones §85-§87; Codex 50/52, `attempts` 7/9, 0 Workers |
+| AC-F5-02 | CUMPLE | Freeze `4e6e1feb…` y ADR-0050 `c18def42…` en `bd1fcf8a` y en este commit; sin A-n |
+| AC-F5-03 | CUMPLE | evidencia §92-§94; declaración CD-I65-F5-27; aceptación CD-I65-F5-30 |
+| AC-F5-04 | CUMPLE | W3 (§91, evidencia §96): `Valid`, 16/16, 6/6; aceptación CD-I65-F5-43 |
+| AC-F5-05 | CUMPLE | W4 (§95, evidencia §99): `READBACK OK` con huella `8f36e3ce…`, `DUMP OK` ×2, comparador PASS con LOADS PASS, `manualDumpSha256` `12c89479…`, Q2 reproducida; aceptación CD-I65-F5-52 |
+| AC-F5-06 | CUMPLE | `session-custody-w4.jsonl` (mismo PID), contraste IGUAL; evidencia operativa, no criptográfica |
+| AC-F5-07 | CUMPLE | barridos W3 29/0 y W4 38/0; revisión visual del Architect (punto 14); política de §90 |
+| AC-F5-08 | CUMPLE | producto igual a `51fc82f1`; generado y manual descartados sin guardar; sin análisis (evidencia operativa) |
+| AC-F5-09 | CUMPLE | Architect CONFORMANT WITH OBSERVATIONS sin REQUIRED (CD-I65-F5-56) y Coordinator CONFORMING (CD-I65-F5-58), versionados en este commit |
+| AC-F5-10 | **PENDIENTE** | este commit de cierre → árbol limpio → Core Full local → push → CI del SHA exacto → GATE PASS registrado después |
+
+- **LIFECYCLE §7:**
+
+| Punto | Estado | Evidencia |
+|---|---|---|
+| 1. resultado observado | CUMPLE | hito del Owner: W3 PASS (CD-I65-F5-43) y W4 PASS (CD-I65-F5-52) |
+| 2. RED→GREEN | NO APLICA | sin comportamiento nuevo ni bugfix en F5 (0 archivos fuera de `docs/` desde `51fc82f1`) |
+| 3. pruebas y evidencia | CUMPLE | Candidato: Core 14390/14390, UI 1637 + 17 omitidas, builds, CI 39187567306 4/4 (§92); W3 y W4 PASS |
+| 4. CI del SHA de cierre | **PENDIENTE** | CI de este commit |
+| 5. revisión del Coordinator | CUMPLE | CD-I65-F5-58 |
+| 6. orden commit → árbol limpio → evidencia local → push → CI | **PENDIENTE** | Core Full local sobre este HEAD y CI |
+| 7. rebase entre gates | CUMPLE | sin rebase; `origin/main` = `bb0d5522` (fetch fresco 2026-10-28T19:58:56Z, 0 detrás) |
+
+- **SHA documental de cierre de F5 = este commit.** Candidato de hito `bd1fcf8a`; código = árbol de `51fc82f1`. El CI de este commit no da
+  evidencia nueva a `bd1fcf8a` (AGENTS, «Commit documental»).

@@ -1,0 +1,31 @@
+{
+ "transcript_sha256": "B1743BE9ECA984379EA33D4999C29F5BD5825E058D9527C7CD4282E87B0509DA",
+ "tool_uses": 93,
+ "first_command": {
+  "n": 1,
+  "cmd": "pwd; git -C \"C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural\" rev-parse HEAD; git -C \"C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural\" rev-parse --abbrev-ref HEAD; git -C \"C:/Users/<usuario>/.codex/worktrees/architec"
+ },
+ "counts": {
+  "python": 0,
+  "ram_or_acad": 1,
+  "write_outside_worktree": 0,
+  "read_outside_worktree": 0,
+  "main_checkout_mentions": 0,
+  "relative_dotnet_io": 0
+ },
+ "findings": {
+  "python": [],
+  "ram_or_acad": [
+   {
+    "n": 93,
+    "ts": "2026-10-28T19:51:19.767Z",
+    "tool": "Bash",
+    "cmd": "W=\"C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural\"; cd \"$W\" && git -C \"$W\" diff --no-index --stat docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/manual-rackcad-ram-dump.py.txt docs/automation/evidence/I-65-f5/w4-prep/rackcad-ram-dump-OV02-gen.py.txt; git -"
+   }
+  ],
+  "write_outside_worktree": [],
+  "read_outside_worktree": [],
+  "main_checkout_mentions": [],
+  "relative_dotnet_io": []
+ }
+}
