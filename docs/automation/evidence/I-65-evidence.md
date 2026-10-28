@@ -2782,3 +2782,19 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 
 - **SHA documental de cierre de F5 = este commit.** Candidato de hito `bd1fcf8a`; código = árbol de `51fc82f1`. El CI de este commit no da
   evidencia nueva a `bd1fcf8a` (AGENTS, «Commit documental»).
+
+## 102. Cierre de F5: evidencia del SHA documental de cierre `45aaad6e` (2026-10-28T20:09:10Z)
+
+- Orden: decisiones §96-§98. Sin AutoCAD, RAM, Codex ni Workers; sin cambios de producto.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f5/close-45aaad6e/ci-run.txt` | `F3FBAC6AFED1409EC7228A94929CE2FE7EEA5BA80039DCC93A5E504D49293029` |
+| `docs/automation/evidence/I-65-f5/close-45aaad6e/local-evidence.txt` | `FDAA67F213B36043EEC30F1F996AF72119318EC998C922EE2D043E5EDD368837` |
+
+- Core Full local sobre `45aaad6e` (árbol limpio antes y después): **14390/14390**, 0 con error, 243 s; TRX `0b99869553851be24028b846b53c481250e1b237845f7ec79804adaccae350cb` (no versionado).
+- CI 40759871854: `push`, rama exacta, `head_sha` `45aaad6e281a39d1b1cbd2627d02f9a533eada5d`, 4/4 jobs `success` (Tests (Domain + Application), UI Tests,
+  Build UI, Build Plugin without AutoCAD). Resumen técnico sin datos personales (el JSON crudo de la API no se versiona).
+- AC-F5-10 y LIFECYCLE §7 puntos 4 y 6: **CUMPLE**. **GATE PASS de F5** registrado en decisiones §98 (CD-I65-F5-61). Candidato de hito
+  `bd1fcf8a`; no es READY.

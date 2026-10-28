@@ -1,0 +1,16 @@
+run_id=40759871854
+workflow=CI
+event=push
+branch=architecture/interop-analisis-estructural
+head_sha=45aaad6e281a39d1b1cbd2627d02f9a533eada5d
+status=completed
+conclusion=success
+run_attempt=1
+created_at=2026-10-28T20:03:43Z
+updated_at=2026-10-28T20:08:19Z
+jobs:
+  - UI Tests (WPF controls, net8.0-windows) | completed | success | 2026-10-28T20:03:45Z -> 2026-10-28T20:08:18Z
+  - Build UI (WPF, valida API de Application) | completed | success | 2026-10-28T20:03:45Z -> 2026-10-28T20:04:50Z
+  - Tests (Domain + Application) | completed | success | 2026-10-28T20:03:45Z -> 2026-10-28T20:05:23Z
+  - Build Plugin without AutoCAD | completed | success | 2026-10-28T20:05:25Z -> 2026-10-28T20:07:14Z
+nota=resumen de campos tecnicos de la API de GitHub; el JSON crudo no se versiona (trae datos personales del autor y del actor)
