@@ -5076,3 +5076,16 @@ solo desde artefactos custodiados.
 - Siguiente (§99, punto 7): la disposición del Coordinator de acuerdo definitivo de A-7 sobre el blob `ebb3a87b` (con O1 y O2 dispuestos sin otra
   enmienda, o, si corrige el archivo, con un blob nuevo y su identidad verificada antes del acuerdo); después, las disposiciones previas a la medición
   de A6-7 (regla 7, con la mitigación de O2), la nueva preparación de su kit y la medición, solo con sus autorizaciones. A6-7 sigue HELD.
+
+## 208. Decisiones §100: A-7 AGREED (blob `ebb3a87b`); recuperación de la medición de A6-7 autorizada solo como preparación, sin Codex
+
+- **Acuerdo:** Architect AGREED (R20261024T041128Z-4825), auditor ACCREDITED, cero REQUIRED, A62-A7R3-R1 CORRECTED / CLOSED; Coordinator AGREED
+  (decisiones §100, punto 1) sobre `docs/initiatives/I-62-A-7.md`, blob `ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3`, sin tocar el objeto. Custodia: `output.json`
+  (blob `f89e38bc`), `audit.json` (blob `758cea69`) y el resto del resultado en `902b26cd` (evidencia §207); la disposición, en decisiones §100
+  con el SHA-256 de su cuerpo.
+- **Opcionales:** A62-A7R4-O1 ACCEPTED NON-BLOCKING (errata de §3.5: A6-5, no A6-7; registrada en §100, blob sin cambio); A62-A7R4-O2 ACCEPTED
+  OPERATIONAL RESIDUAL (rechazo falso R9 en la reverificación y sus controles; sin PASS ni contadores ampliados; órdenes del instrumento restringidas
+  a las de cobertura demostrada antes de medir).
+- **Siguiente:** preparación de A6-7 (disposición única previa a la medición, kit `a6m7-measure` actualizado de forma incremental, preflight
+  estático, identidad pasiva de Codex, líneas del Owner para la identidad vigente; la solicitud de B1, preparada aparte). Sin Codex, sin consumo,
+  sin B1 ni FX-U2, sin D.5 ni enmiendas nuevas.
