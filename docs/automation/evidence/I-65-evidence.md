@@ -2837,3 +2837,35 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/initiatives/I-65-f7-conformance-review.md` | `3C82AAF7864E8C04E55686B64FCDFE1148B1A58DB1E14D0377DEAB32B2D7B0DF` |
 | `docs/initiatives/I-65-ready-final-plan.md` | `B45EB67015408ADDB20FE7A5E9D7699F12B4B6B705F1AB278C1DE5F63ACA28B5` |
 | `README.md` | `34A1A0A405514956C813DBECB37966F2C17B2DF670DCF3CDDB7EFDB900471F2E` |
+
+## 106. Relectura del Architect y criterios de cierre de F7 (2026-10-28T21:30:42Z)
+
+- Orden: decisiones §101-§102. `CI` de `ecefcd64`: run 40771860368, 4/4 `success`. Sin AutoCAD, RAM, Codex ni Workers.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f7/architect-f7-review-r2.md` | `5A074FC53869D2B88D6973E13CA12BADC783DC2CD8D3705A0CDB652C37547DB4` |
+| `docs/automation/evidence/I-65-f7/architect-f7-r2-k5-transcript-scan.json` | `BE84A634FD467275C16DCD304DFF34E48355AB5F77A4EDCE697117EFB4FC9AD5` |
+| `docs/initiatives/I-65-ready-final-plan.md` | `759DD5D69DA089F398F1A90B94CA953BBF1DBA5D7D0A00CF5EE7A06A1D2EF0DE` |
+
+- **Matriz AC-F7-01..12 (`I-65-f7-preparation.md` §2):**
+
+| Criterio | Estado | Evidencia |
+|---|---|---|
+| AC-F7-01 | CUMPLE | decisiones §99; Codex 50/52, `attempts` 7/9, 0 Workers |
+| AC-F7-02 | CUMPLE | solo `docs/` y `README.md` desde `bd1fcf8a`; Freeze y ADR-0050 intactos; sin A-n (se repite sobre el SHA de cierre) |
+| AC-F7-03 | **PENDIENTE** | regresión Full local y CI del SHA de cierre |
+| AC-F7-04 | CUMPLE | revisión de conformidad §7; Architect r1 punto 3 y r2 |
+| AC-F7-05 | CUMPLE | revisión de conformidad §1-§6 |
+| AC-F7-06 | CUMPLE | `I-65-foundations-entry.md` (A65-F7-01 cerrada) |
+| AC-F7-07 | CUMPLE | `interoperabilidad-ram-elements.md` y fila del README (A65-F7-02 cerrada) |
+| AC-F7-08 | CUMPLE | plan de READY R-D3..R-D7 y R-D11; estado |
+| AC-F7-09 | CUMPLE | `I-65-ready-final-plan.md` (A65-F7-11 corregida) |
+| AC-F7-10 | CUMPLE | §103-§106 comparadas con los blobs del índice antes de cada commit |
+| AC-F7-11 | CUMPLE | Architect CONFORMANT WITH OBSERVATIONS sin REQUIRED (CD-I65-F7-13); Coordinator CONFORMING (CD-I65-F7-15) |
+| AC-F7-12 | **PENDIENTE** | commit de cierre (este) → árbol limpio → regresión Full local → push → CI → GATE PASS registrado después |
+
+- **LIFECYCLE §7:** 1 CUMPLE; 2 NO APLICA; 3 PENDIENTE (regresión Full del SHA de cierre); 4 PENDIENTE (CI del SHA de cierre); 5 CUMPLE
+  (CD-I65-F7-15); 6 PENDIENTE; 7 CUMPLE (fetch fresco 2026-10-28T21:30:41Z, 0 detrás).
+- **SHA documental de cierre de F7 = este commit.** Producto = árbol de `51fc82f1`.

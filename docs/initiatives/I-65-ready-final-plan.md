@@ -22,7 +22,7 @@
 | R-D8 | **F7-OBS-01** (`RACKAYUDA` sin `RACKRAMPAQUETE`) | seguimiento en `docs/ideas-futuras.md` o cambio de código autorizado antes del Candidato final | seguimiento (no lo exige el Freeze; evita SHA nuevo y consumo) |
 | R-D9 | **OV-I65-08** (round-trip tras reabrir el DWG) | autorizar guardar y reabrir un DWG desechable en la carpeta de la corrida | autorizar, con el DWG desechable fuera del repositorio |
 | R-D10 | **Presupuesto** | ver §5 | sin ampliar si se eligen R-D1 (a) y R-D3 opción 0 |
-| R-D11 | **Tabla de secciones y materiales en el Autoloader** (CD-I65-F4-10, diferido): hoy solo viaja en la salida de compilación del Plugin | mantener el diferimiento como limitación de V1 o autorizar el cambio de `deploy/verify-bundle.ps1` y del paquete (cambio fuera de `docs/`, SHA nuevo) | mantener el diferimiento, declarado en la guía y en la entrada de FOUNDATIONS |
+| R-D11 | **Tabla de secciones y materiales en el Autoloader** (CD-I65-F4-10, diferido): hoy solo viaja en la salida de compilación del Plugin | mantener el diferimiento como limitación de V1 o autorizar el cambio: `deploy/verify-bundle.ps1`, el target `AssembleAutoloaderBundle` de `RackCad.Plugin.csproj` y la inversión de la prueba `LaTablaNoViajaEnElPaqueteDelAutoloader_NiElDestinoDelPaqueteSeToca` (código y pruebas: Worker, Codex y `attempts`; SHA nuevo) | mantener el diferimiento, declarado en la guía y en la entrada de FOUNDATIONS |
 
 ## 2. Secuencia READY-01..09 para I-65
 
@@ -68,8 +68,10 @@ con ambas coberturas.
 | Architect | READY-06 (+1 relectura si surge un REQUIRED corregible) | igual | igual |
 | Host | AutoCAD 2-2.5 h; RAM 1.5-2 h con R-D2 A (3 h o más con C) | igual | igual |
 
+Si el Owner autoriza R-D11 (tabla en el Autoloader): +1 Codex, +1 `attempts` y 1 Worker más, en cualquiera de las columnas.
+
 Con las opciones recomendadas, el presupuesto vigente basta. Cualquier ampliación (p. ej., Codex 56 y `max_attempts` 11) se decide solo si
-el Owner elige R-D1 (b) o la opción 1 de R-D3.
+el Owner elige R-D1 (b), la opción 1 de R-D3 o R-D11.
 
 ## 6. Riesgos
 
