@@ -1,0 +1,24 @@
+w4-owner-release 2026-10-28T02:32:34Z W4 HOST COORDINATION = OWNER RELEASED (disposicion 2026-10-27); I-62 sin operacion de pantalla (02:32Z)
+w4-preflight 02:32:13Z S-01..S-09 correctos; arboles de bases iguales a W2 PRE/POST por el mismo metodo (e70bfff0, b8e46d28); los valores ccdc2346/4cb742a5 del anexo §1.3 vienen de otro metodo (lectura DIF-04)
+ram-open 02:32:51Z pid 11464 (una sola RAMElements.exe; acad=0)
+license-wait 02:41:25Z RAM detenido en el splash 'Verificando licencia' desde la apertura; aparece una ventana de bentley.licensing.service.exe (no visible para el operador); acceso a CONNECTION Client denegado por el usuario; sin modelo ni scripts ejecutados; STOP del operador (W4 §4.4: licencia o dialogo no previsto) a la espera del Owner
+w4-resume-disposition 2026-10-28T12:02:48Z Owner: W4 RESUME = AUTHORIZED (sesion en CONNECTION Client hecha por el Owner); ventana original (02:32:51Z + 2.5 h = 05:02:51Z) VENCIDA sin consumo
+ram-operativo 12:03:47Z pid 11464 fuera del splash; barra 'Licencia: Desconocido' (mismo estado que P1); Archivo > Nuevo abre modelo vacio sin dialogos (Elementos: 0)
+w4b-preflight 12:04:48Z S-01..S-10 correctos (w4b-pre/summary.txt); identicos a w4-pre salvo S-01 ram=1 (pid 11464, misma instancia autorizada); Config.ini sin cambios desde w4-pre; 0 readbacks y 0 volcados en la corrida
+w4b-window inicio 12:04:48Z limite 14:34:48Z (2.5 h, nueva ventana controlada segun la disposicion de reanudacion)
+i62-check 12:05Z peticion enviada (msg ccc4f1d3); RAM no se toca hasta la respuesta
+i62-reply 12:05:30Z I-62: sin operacion de pantalla en las proximas 2.5 h (solo shell y git)
+custody session-start 12:05:30Z
+gen-build 12:06:37Z Ejecutar archivo pkg-OV02/rackcad-ram-build.py (f7ed0b06) -> consola 'READBACK OK' huella 8f36e3ce...; ram-readback.json e7481e04 (captura 01)
+gen-dump 12:07:30Z Ejecutar archivo dump-OV02-gen/rackcad-ram-dump.py (4a1be499) -> 'DUMP OK'; ram-dump.json e5cf0ead; 8 nudos, 7 miembros, 2 casos, 0 combinaciones (captura 02)
+contrast 12:07:50Z readback_dump_contrast.py -> IGUAL, 0 hallazgos (8/7/6)
+gen-discard 12:08:17Z Archivo > Nuevo -> 'El modelo ha sido modificado. Desea salvarlo?' -> No; modelo vacio
+man-build 12:08Z-12:28Z modelo manual desde la hoja aprobada (ft/kip, sin cambiar unidades): 8 nudos, apoyos, 7 miembros, secciones, materiales, giros, REF1 'REF manual' DL sin combinaciones, 6 cargas puntuales Y en %; incidencias: (a) primer lote de materiales sin aplicar (celdas fuera de edicion; rehecho con espera tras el doble clic), (b) Escape para salir del editor de Q1 quito la seleccion (rejilla vacia, sin cambio de datos; reseleccion con Todo), (c) interrupcion del usuario ~12:16Z-12:26Z sin acciones
+man-dump 12:29:01Z Ejecutar archivo dump-OV02-man/rackcad-ram-dump.py (bdd02eee; el dialogo abrio en dump-OV02-gen, de donde no se ejecuto nada) -> 'DUMP OK'; ram-dump.json 12c89479; revisado contra la hoja (no contra el generado): SIN ERROR DE ENTRADA (manual-dump-vs-sheet.txt)
+man-discard 12:29:58Z Archivo > Nuevo -> 'El modelo ha sido modificado. Desea salvarlo?' -> No; modelo vacio (Elementos: 0)
+ram-close 12:30:07Z RAM cerrado sin aviso (modelo vacio); Config.ini reescrito a las 12:30:07Z
+custody session-end 12:30:20Z ramCount=0
+post 12:31:00Z w4b-post/summary.txt: identidades iguales al preflight; paquete con sus 3 originales intactos + ram-readback.json; DLL 81299b87 intacta; Config.ini e51d5ae3 (solo estado de interfaz)
+k2 12:31Z k1-w4 vs k2-w4: sin STOP (OWN: dos originales sin versionar en I-65; SIGNAL: HEAD de I-62 avanzo, limpio, igual a su remoto)
+compare 12:31Z ramtool compare sin --*-unread -> PASS (exit 0); w4-comparison-report.json
+window-end 12:31Z ventana usada 12:04:48Z-12:31Z (~27 min de 2.5 h)

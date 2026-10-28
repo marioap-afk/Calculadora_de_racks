@@ -1,0 +1,14 @@
+I-65 — OWNER DISPOSITION / Simplificación de coordinación
+Como Owner, aclaro que actualmente las iniciativas activas son I-62 e I-65. I-64 lleva semanas sin ejecutar operaciones.
+W4 HOST COORDINATION = OWNER RELEASED.
+No es necesario seguir solicitando confirmaciones a I-64 ni mantener bloqueada W4 por una operación antigua o no activa.
+Autorizo continuar con W4 bajo las condiciones técnicas ya aprobadas, comprobando únicamente:
+
+1. Que AutoCAD y RAM estén cerrados.
+2. Que nadie esté utilizando el equipo.
+3. Que I-62 no tenga una operación activa que requiera control exclusivo de la pantalla.
+4. Que el preflight técnico de W4 sea satisfactorio.
+
+No repitas revisiones o autorizaciones ya completadas.
+Mantén las condiciones de STOP técnicas y el presupuesto aprobado.
+Ejecuta W4 y presenta sus resultados. No declares todavía GATE PASS de F5.

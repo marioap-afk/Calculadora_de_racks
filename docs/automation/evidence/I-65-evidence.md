@@ -2662,3 +2662,60 @@ He elevado al Coordinator de I-64 la decisión del orden: I-64 antes o W4 antes.
 |---|---|
 | `docs/automation/decisions/I-65-owner-disposition-w3-acceptance-w4-authorization.original.txt` | `98652FE9609D3F8678D39D72D9ABD81EF365081A675CF36265162BF4F380832E` |
 | `docs/automation/evidence/I-65-f5/w3-R20261019T1750Z/w3-acceptance-check.txt` | `4479753C1D940663F88D28094F9A4F15130CB42C1BFCCB57A2BDC32798540962` |
+
+## 99. W4 (RAM Elements) sobre el Candidato de hito F5 (2026-10-28T12:35:23Z)
+
+- Orden: decisiones §94-§95. Informe: `w4-R20261019T1750Z/w4-report.md`. Corrida local `D:\r65-smoke\bd1fcf8a\f5-R20261019T1750Z\`.
+- Mensajes literales de las sesiones vecinas (datos, no autorizaciones):
+
+```text
+I-52 → I-65: W4 (solo RAM) no es incompatible con ninguna operación de I-52 (sin sesión de host ni P2 H10 activos); no emito STOP. Dato para tu coordinación, no mío: I-64 tiene en curso el reintento de Smoke-1 (RunId R20261019T180407Z-1be6) con su propia BASELINE/POST; tu condición «acad.exe=0» y el orden frente a esa ocurrencia los resuelves con I-64. No necesito aviso de RAM ni recomprobación tras W4.
+
+I-62 → I-65: sin operación de pantalla. En las próximas 2.5 h solo hago preparación por archivos, git y CI (medición de A6-7: lectura de documentos, scripts de Python, commits); sin Computer Use, sin ventanas del host, sin herramientas GUI, sin Codex y sin claude-cli. La comprobación pasiva de la identidad de Codex solo lee archivos y la lista de procesos. Puedes abrir RAM.
+
+I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantalla (ni Computer Use, ni ventanas del host, ni herramientas GUI); solo shell y git.
+```
+
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-w4-host-coordination-released.original.txt` | `1DD84A30B27712BDCFEBA61CFE6C767048322CE98368D5A2D9E59DEF76A198DF` |
+| `docs/automation/decisions/I-65-owner-disposition-w4-resume.original.txt` | `129FBA77DD8055F7D25E799083EE403948E2B3E49850CFD784F4A28A7E40E485` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/config-ini-diff-w4.txt` | `84F7E59D95A575A01B4D8F332CE56CA20AB461C0E76B6740179A805D47357A72` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/generated-ram-dump.json` | `E5CF0EADF282B64C1721D71EE8B4652F5D3370A197D787BA5F28BDE57988BD65` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/k1-k2-w4-compare.redacted.json` | `BD11ED7E8EF238677664C1C3749F6294FF71DED62A4B4DF335465B6587B205AD` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/manual-dump-vs-sheet.txt` | `6E517BC5C8650B0B347745E785E0588B12F6EE877F275EAE0F5080086149A8D1` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/manual-ram-dump.json` | `12C89479FA2BF54ADDE27A1D0C4AFFC18BBD0469E77CD72C1FB5D0335910AEF2` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/privacy-secrets-scan.txt` | `52ED4655AE3D261CA462A5E69FC355160AAA4897121978A8DFDC743000AD4169` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/ram-readback.json` | `E7481E040EA57F3A29EC7CB4478C90A7CC95BEA51189857EA7F8B1DD5FEE5319` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/readback-dump-contrast-OV02.json` | `35A86BF9C1B94F3892B18CA0852340B513979974AC1DD0A999857C359B13ADDA` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/session-custody-w4.jsonl` | `DC65A0B5FE57E8DF21B986B95C2D7E6675935EB37113F30A55AE055A036886E3` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/timeline-w4.txt` | `7B506C359586E7028593293ED3309C20069BCE8C3309B3159A0203E21559DE35` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/w4-comparison-console.txt` | `892F9706D72CA760193D93D1F8677D91EC316225685DB7D2605CC0A71715E391` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/w4-comparison-report.json` | `23C00544FB75B303AB688438C3C6E1C8E9FF9576BD8963DAF13B7681AEF7870B` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/w4-pre-summary.txt` | `1FFDC71D481DB9DB9EA0A9FE98FA408954BE30259255146DC5B8E26DC0462096` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/w4-report.md` | `FA975523B5E95347AA9FFEF24651118B0AA636A21CA6F7C03A56FE94B8A4D5B3` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/w4_captures.ps1.txt` | `462270974ECAC7AA45E27BEC94E6AFC226931A907131D4AFACFB4A77A0616072` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/w4_manual_vs_sheet.py.txt` | `7387D9D9877FC328C019C34565CA9703584FFFC2387EA7910FC0BED3A3ED3D40` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/w4b-post-summary.txt` | `E450A99E3934E6707BE03D3061824DEBDFEBED97EE7DE1C2A95927E40330480D` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/w4b-pre-summary.txt` | `D28E87BC6C78EE76EAE53C58A023ED9A4B320F82082EBEA22312F447C48C0942` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/00-ram-operativo-barra-licencia.jpg` | `8E49B1F33298FEDEA0C4F9D9C4998659B2B4564F3AD622C45F1D604DBCC6B086` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/01-readback-ok-consola.jpg` | `3F375A345135CECCD23389DA26FA058E444575C74FD8646B4248220F6F7B4650` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/01a-script-paquete-seleccionado.jpg` | `40A362241640C95D1F5E7E9C9F8B967A21F03E090B9A35E255BAD4FA3E3A148B` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/02-dump-gen-ok-consola.jpg` | `0AD3E82C675A36467E77D73F297ABF59C4C8A8F64C83C09DAC7EE17E45520924` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/02a-volcado-generado-seleccionado.jpg` | `36E2AA5A66660F0D6F6B505710D56785C2D0A7B7F98843786A8B754B8044B8CE` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/03-descartar-generado-no.jpg` | `8AB23E15096C48C092D3B981947E6F08981B6312752A6E55CC1FADD99C2DACFD` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/04-manual-nudos.jpg` | `835E8E8D7EB2CE5A44D57D309CC19CE1C7C2726F4C44C6BB72B033791FC3E650` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/05-manual-apoyos.jpg` | `F49986019B8EBD45E638E24A05FC45CA12307BD7516797495790D1025A0DED26` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/06-manual-conectividad.jpg` | `F791F9304C53843B558921768CBD23645A686F014749C55A163E757FB51CE9E0` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/07-manual-secciones.jpg` | `E6A918490AD36721D29131DC4EFF5D0A18BAA6D167D437AE03BD83538423CF73` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/08-manual-materiales.jpg` | `BA63DF8C2B3976703CEE2AF6F5333F3180E9B38B3666F40465D2F4863334F2CE` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/09-manual-giros.jpg` | `B3415F53A3069D68CD07DF6D38B6CD56981FDBAD4290651DA2D5333A19924F96` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/10-manual-estados-de-carga-sin-combinaciones.jpg` | `95E42A6A26451861AB51FB7E47E96EF4B0FC677172C2249947100F8FECB02F29` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/11-manual-cargas-puntual-1.jpg` | `0032D0E923AF81EEB6968D8A4DB1964BC34CE4CC5B5AE3253D443A6BCA400099` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/12-manual-cargas-puntual-2.jpg` | `F3231AC24C42B47B0E091654190E565E262AA19C3FEA1B42D29EA99C76B968D2` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/13-dump-man-ok-consola.jpg` | `BDFC85B61475E638EC6C7E20C8BDBBCC748AB52D1D8AD7272E203CF69EA0713F` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/13a-volcado-manual-seleccionado.jpg` | `3DF89D432210C81C1A4F9D39E6E5E93755CD95441B75DEF6055E2F6CB06F7DD2` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/14-descartar-manual-no.jpg` | `99EFECB0312C964DBABDCF3618DFA45F960B75A9E923D465CCDF42A38B95D179` |
+| `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/15-modelo-vacio-antes-de-cerrar.jpg` | `8BEA978F1836949201FDE9B09EF69DE00A7C4BE30F5D43924F8C56EDDAEC55ED` |

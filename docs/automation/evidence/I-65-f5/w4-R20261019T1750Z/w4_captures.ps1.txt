@@ -1,0 +1,36 @@
+# W4 (I-65): copia las capturas de la sesion a la corrida; recorta o tapa lo identificable que no es necesario (panel lateral de los dialogos).
+param([Parameter(Mandatory)][string]$ToolResults, [Parameter(Mandatory)][string]$Out)
+$ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.Drawing
+New-Item -ItemType Directory -Force -Path $Out | Out-Null
+function Src([string]$suffix) { $f = @(Get-ChildItem -LiteralPath $ToolResults -Filter "mcp-computer-use-blob-*-$suffix.jpg"); if ($f.Count -ne 1) { throw "captura ${suffix}: $($f.Count)" }; $f[0].FullName }
+function SaveJpg($bmp, [string]$name) { $bmp.Save((Join-Path $Out $name), [System.Drawing.Imaging.ImageFormat]::Jpeg) }
+function Copy1([string]$suffix, [string]$name) { Copy-Item -LiteralPath (Src $suffix) -Destination (Join-Path $Out $name) -Force }
+function Crop([string]$suffix, [string]$name, [int]$x, [int]$y, [int]$w, [int]$h) {
+  $img = [System.Drawing.Image]::FromFile((Src $suffix)); $bmp = New-Object System.Drawing.Bitmap $w, $h
+  $g = [System.Drawing.Graphics]::FromImage($bmp); $g.DrawImage($img, (New-Object System.Drawing.Rectangle 0, 0, $w, $h), (New-Object System.Drawing.Rectangle $x, $y, $w, $h), [System.Drawing.GraphicsUnit]::Pixel)
+  $g.Dispose(); $img.Dispose(); SaveJpg $bmp $name; $bmp.Dispose() }
+function Redact([string]$suffix, [string]$name, [int]$x, [int]$y, [int]$w, [int]$h) {
+  $img = [System.Drawing.Image]::FromFile((Src $suffix)); $bmp = New-Object System.Drawing.Bitmap $img; $img.Dispose()
+  $g = [System.Drawing.Graphics]::FromImage($bmp); $g.FillRectangle([System.Drawing.Brushes]::Gray, $x, $y, $w, $h); $g.Dispose()
+  SaveJpg $bmp $name; $bmp.Dispose() }
+Copy1 'telc7e' '00-ram-operativo-barra-licencia.jpg'
+Redact 'ukqpq4' '01a-script-paquete-seleccionado.jpg' 0 26 266 214
+Copy1 '7omi8p' '01-readback-ok-consola.jpg'
+Redact 'ayduzg' '02a-volcado-generado-seleccionado.jpg' 0 26 266 214
+Copy1 'mq63ex' '02-dump-gen-ok-consola.jpg'
+Crop 'mupjro' '03-descartar-generado-no.jpg' 296 170 136 46
+Copy1 'jx7uyr' '04-manual-nudos.jpg'
+Copy1 '0tw5br' '05-manual-apoyos.jpg'
+Copy1 'njhchf' '06-manual-conectividad.jpg'
+Copy1 '06w8gb' '07-manual-secciones.jpg'
+Copy1 '3y6xua' '08-manual-materiales.jpg'
+Copy1 'aoxg26' '09-manual-giros.jpg'
+Copy1 'zj6fo9' '10-manual-estados-de-carga-sin-combinaciones.jpg'
+Copy1 '9xgill' '11-manual-cargas-puntual-1.jpg'
+Copy1 'bm2g6j' '12-manual-cargas-puntual-2.jpg'
+Redact '0n1u4g' '13a-volcado-manual-seleccionado.jpg' 0 26 266 214
+Copy1 'fz6ljd' '13-dump-man-ok-consola.jpg'
+Copy1 'e9sobi' '14-descartar-manual-no.jpg'
+Copy1 'hn4xos' '15-modelo-vacio-antes-de-cerrar.jpg'
+Get-ChildItem -LiteralPath $Out | Sort-Object Name | ForEach-Object { $_.Name + '  ' + (Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash.ToLower() + '  ' + $_.Length }

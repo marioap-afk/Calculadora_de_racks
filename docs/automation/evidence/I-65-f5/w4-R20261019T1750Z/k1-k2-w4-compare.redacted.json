@@ -1,0 +1,26 @@
+{
+ "stop": false,
+ "findings": [
+  {
+   "class": "OWN",
+   "where": "c:\\users\\<usuario>\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+   "head": [
+    "b1029790cf6c042a096f07c61ec0ad8198931a6a",
+    "b1029790cf6c042a096f07c61ec0ad8198931a6a"
+   ],
+   "status": [
+    "?? docs/automation/decisions/I-65-owner-disposition-w4-host-coordination-released.original.txt",
+    "?? docs/automation/decisions/I-65-owner-disposition-w4-resume.original.txt"
+   ]
+  },
+  {
+   "class": "SIGNAL",
+   "where": "c:\\users\\<usuario>\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "what": "HEAD advanced, clean, equals its remote (own session)",
+   "head": [
+    "2019566ae4ea263471f9d39eeb6b5a4f5142b469",
+    "ef30d97c53951074a5be733d25d5e83e6ad2e648"
+   ]
+  }
+ ]
+}
