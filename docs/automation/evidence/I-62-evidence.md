@@ -5124,3 +5124,23 @@ solo desde artefactos custodiados.
   registra los bytes CRLF del archivo de trabajo (`core.autocrlf` sin regla `-text` en esa carpeta). Los otros 42 archivos coinciden con su
   FREEZE. El kit v2 y s100 llevan regla `-text`.
 - Sin Codex, sin consumo de A6-7, sin B1 ni FX-U2, sin sección de decisiones; ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 210. Decisiones §101: disposición única de la medición de A6-7 registrada; trío de Codex estable; líneas del Owner solicitadas, aún no registradas
+
+- **Disposición:** decisiones §101; el cuerpo pegado (5 239 bytes, SHA-256 `092944bcd63e846a…`) está en
+  [`s101/s101-body.txt`](I-62-A6/m7/s101/s101-body.txt). Adopta como base el §1 del borrador de s100 (blob `5ac22f89`), con las decisiones A-E en
+  lugar de sus opciones, e incorpora los once marcadores del kit v2, con la referencia de las lecturas en §101.
+- **Decisiones A-E:** A, `TRX_RED` `NOT_DESIGNATED` solo para esta medición; B, sin recálculo de `Contract` por la supervisión; C, sin
+  reverificación ni `MainAfterSha` en la medición, y R9 y P-07 sin ampliar el presupuesto para la reverificación, que no queda acreditada; D,
+  medición directa, sin sonda de A2-P2; E, se registra la variante de `AuthorityResolution` efectivamente producida y su fundamento.
+- **Puertas del kit v2, solo lectura** (`check_kit` y `check_decisions` sobre el archivo de trabajo;
+  [`s101/decisions-gate.json`](I-62-A6/m7/s101/decisions-gate.json)): el kit coincide con su FREEZE. §101 es la única sección posterior a §100
+  con todos los marcadores, y la de las lecturas remite a §101, que nombra A6-5, regla 6. Los dos únicos problemas son las líneas del Owner, que aún
+  no constan (esperado): esta sección no las reproduce.
+- **Identidad de Codex (pasiva, §101, punto 3)** ([`s101/identity/obs7.json`](I-62-A6/m7/s101/identity/obs7.json), 2026-10-28T12:06:23Z):
+  binario `5c1b5596…`, AppVersion 26.1023.6123.0 y huella `0A9F6A34…` con los 106 nombres de la línea base; acompañantes `4c99510126c2ea89`;
+  pwsh del runtime `362a356c…`. Igual al trío de §101 y a las observaciones de s100. 2 procesos de Codex
+  vivos: la app de escritorio sigue abierta.
+- **Siguiente:** las dos líneas del Owner, literales e independientes (OD-2 y `A6-CONTROLLER-MEDICION-CONSUMO`); después, el preflight de §101,
+  punto 7, y solo si pasan todas las puertas, `bash run_m7.sh launch`, una vez. Sin Codex ni consumo hasta entonces; ni Controller ELIGIBLE,
+  ni FX-02 PASS, ni F6 GATE PASS.

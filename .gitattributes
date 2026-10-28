@@ -54,3 +54,7 @@ docs/automation/evidence/I-62-architect-A-7/R20261024T041128Z-4825/**  -text
 # MANIFEST.sha256 de cada carpeta; `-text` conserva los bytes exactos.
 docs/automation/evidence/I-62-F6/kits/FX-02/a6m7-measure-v2/**  -text
 docs/automation/evidence/I-62-A6/m7/s100/**  -text
+
+# I-62 (decisiones §101; evidencia §210) — cuerpo de §101, identidad de Codex y puerta de decisiones del kit v2. Sus SHA-256 están
+# en MANIFEST.sha256; `-text` conserva los bytes exactos.
+docs/automation/evidence/I-62-A6/m7/s101/**  -text

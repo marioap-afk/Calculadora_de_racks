@@ -1,0 +1,93 @@
+I-62 — COORDINATOR DISPOSITION §101
+A6-7 SINGLE CONTROLLER MEASUREMENT / FINAL PRECONDITIONS
+1. Autoridad y objetivo
+A-5, A-6 y A-7 = AGREED.
+Autorizar preparar el lanzamiento único de medición A6-7 para el EXECUTION_CONTROLLER de FX-02/F6, utilizando B-min y el kit v2 custodiado en 79a4f6cd.
+Kit:
+kits/FX-02/a6m7-measure-v2/
+FREEZE:
+fc355540bf66cb10cdcd2783cec00f37778639b9339e7b34d5f698aee7fc2aad
+La medición no equivale a VERIFY, no produce C-24 PASS y no acredita automáticamente al Controller.
+2. Decisiones aisladas
+A — TRX_RED:
+Aceptar NOT_DESIGNATED exclusivamente para esta medición, como ausencia declarada y no sustituida. No fabricar TRX ni derivar de esa ausencia un PASS de Ci/Tests. La ronda posterior conserva sus obligaciones propias.
+B — Contract:
+No incorporar el recálculo nuevo por supervisión.
+El Controller conserva Contract como comprobación obligatoria conforme a U-19, utilizando lecturas fieles de CONTRACT y DELEG. La orden contract queda excluida del instrumento.
+C — O2:
+La medición no utiliza reverificación ni MainAfterSha. La cobertura A7-1 §3.5 debe permanecer LAUNCH_MAY_PROCEED.
+Para la reverificación posterior, conservar el riesgo R9 y el control P-07 sin ampliar presupuesto. No declarar esa modalidad acreditada.
+D — Codex:
+Seleccionar medición directa A6-7. No ejecutar una sonda previa A2-P2.
+E — AuthorityResolution:
+Registrar la variante V5 o R3 efectivamente producida y su fundamento normativo. No considerar válidas dos semánticas contradictorias por mera aceptación del comparador. Una contradicción impide la elegibilidad definitiva.
+3. Trío exacto de Codex
+BinaryHash:
+5c1b55966bf9f757dcbf00065c9a6cb862ead55d34b015f1be1939ff18e43943
+AppVersion:
+26.1023.6123.0
+Fingerprint:
+0A9F6A344C965BE17650A2559601DB8768AE8DCFAC6BEB7DEEFC615AE4E7F550
+Celda:
+codex-cli / gpt-6-luna / high
+Verificar pasivamente identidad y estabilidad inmediatamente antes de solicitar consumo y antes/después de la invocación.
+Toda actualización o cambio de huella: STOP.
+4. Disposición única de medición
+Adoptar como base el texto literal custodiado en:
+docs/automation/evidence/I-62-A6/m7/s100/pre-measurement-disposition-draft.md
+Incorporar a esta sección los marcadores M7-* completos y exactos del kit v2, sin abreviarlos y sustituyendo M7-LECTURAS por la referencia §101.
+No modificar los demás marcadores, órdenes, blobs o criterios.
+El conjunto declarado mantiene once órdenes permitidas, sin contract, y trece ejecuciones del instrumento.
+La regla de reconstrucción es reconstruct_runs_m7.py v3.
+La preparación del objeto del instrumento queda limitada a la escritura expresamente autorizada por A6-3 regla 1 y no autoriza workspace-write al Controller.
+5. Lecturas y condiciones FC
+Aplicar las lecturas compatibles y las condiciones FC-01, FC-04, FC-10, FC-12, FC-13, FC-16, FC-18 y FC-24 conforme al ámbito documentado en s92.
+No modificar el significado de U-19.
+Cualquier condición FC activada: fallo cerrado y remisión al Coordinator, nunca aceptación automática.
+No presentar interpretaciones ambiguas como normas generales fuera de FX-02.
+6. Autorización Owner
+Registrar §101 y custodiar su texto.
+Esta disposición por sí sola NO autoriza consumo.
+Solicitar después, como líneas literales independientes:
+OD-2, para el fingerprint 0A9F6A344C965BE17650A2559601DB8768AE8DCFAC6BEB7DEEFC615AE4E7F550 y binario 5c1b55966bf9f757dcbf00065c9a6cb862ead55d34b015f1be1939ff18e43943.
+A6-CONTROLLER-MEDICION-CONSUMO, una sola invocación read-only del trío exacto y con el instrumento fijado.
+No interpretar el silencio ni autorizaciones de identidades anteriores como aprobación.
+7. Preflight y ejecución
+Después de ambas autorizaciones:
+
+* comprobar identidad, huella y binario exactos;
+* confirmar el cierre A7-1 y la cobertura clausemap;
+* verificar las once órdenes declaradas;
+* confirmar el RunId y el directorio -C;
+* cerrar la app de escritorio de Codex y comprobar ausencia de procesos incompatibles;
+* comprobar aislamiento y presupuesto;
+* preparar el objeto del instrumento con el procedimiento autorizado;
+* verificar identidad en el punto de uso;
+* ejecutar todas las puertas previstas.
+
+Solo si todas pasan, ejecutar UNA vez:
+bash run_m7.sh launch
+Límite 600 segundos, sin reintento.
+No modificar configuración, sandbox, trust_level, permisos ni otras ramas.
+8. Resultado
+Conservar el resultado completo y el comparador sin correcciones retrospectivas.
+Distinguir capacidades DEMONSTRATED y NOT_DEMONSTRATED.
+Controller ELIGIBLE únicamente tras demostrar todas las operaciones REQUIRED, reconstrucción fiel y precondiciones normativas, con disposición posterior del Coordinator.
+No conceder PASS parcial.
+9. Límites
+No abrir FX-U2 ni crear B1 por esta disposición.
+No ejecutar nuevas sondas o enmiendas.
+No modificar producción, I-64, I-65 ni D.5.
+I-64 conserva prioridad de recursos.
+10. Entrega
+Informar:
+
+* commit de §101 y CI;
+* identidad vigente;
+* registro de las autorizaciones Owner;
+* preflight final;
+* resultado de la medición, si llegó a ejecutarse;
+* capacidades demostradas y faltantes;
+* decisión siguiente hacia C-24.
+
+No declarar Controller ELIGIBLE, FX-02 PASS, F6 GATE PASS ni integración anticipadamente.

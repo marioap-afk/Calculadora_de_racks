@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §100; evidencia §208-§209) — A-7 AGREED; kit v2 de la medición A6-7 preparado y congelado sin lanzar (kits/FX-02/a6m7-measure-v2, FREEZE fc355540; autotest 114/114; preflight estático sin FAIL); trío vigente de Codex 5c1b5596/26.1023.6123.0/0A9F6A34; siguiente: disposición única del Coordinator posterior a §100 (borrador en I-62-A6/m7/s100/), líneas OD-2 y (b) del Owner, cierre de la app de Codex, prep_write.py y bash run_m7.sh launch, una vez; sin Codex ni consumo hasta entonces; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §101; evidencia §210) — disposición única de la medición de A6-7 registrada (§101: TRX_RED NOT_DESIGNATED solo para la medición; sin recálculo de Contract; sin reverificación; medición directa; variante de AuthorityResolution registrada); kit v2 a6m7-measure-v2 (FREEZE fc355540) y trío 5c1b5596/26.1023.6123.0/0A9F6A34 estables; siguiente: líneas OD-2 y A6-CONTROLLER-MEDICION-CONSUMO del Owner, literales; después, preflight de §101 punto 7 (app de Codex cerrada, prep_write.py, puertas) y bash run_m7.sh launch, una vez; sin Codex ni consumo hasta entonces; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
