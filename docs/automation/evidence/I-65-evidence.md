@@ -2808,3 +2808,16 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 |---|---|
 | `docs/automation/decisions/I-65-owner-disposition-f5-acceptance-f7-authorization.original.txt` | `C9C2D257AA833581DE9E962783953384328958C7DDA2687FBC1B9619F24F991F` |
 | `docs/initiatives/I-65-f7-preparation.md` | `EA7A87F5CEFFEA7B73EF5436EF5632446A8E491B89104C2348AD54379E3F70DF` |
+
+## 104. Entregables documentales de F7 (2026-10-28T21:04:56Z)
+
+- Orden: decisiones §99-§100. Sin AutoCAD, RAM, Codex ni Workers. `CI` de `cbfa4112`: run 40768039908, 4/4 `success`.
+- Custodia (SHA-256 de los blobs del índice, no de la copia de trabajo):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/initiatives/I-65-f7-conformance-review.md` | `FAD12BBE1D6B1637A6EC1E6EC0F7E40D8FE4D0593BA660F9A6F7741170290BE3` |
+| `docs/initiatives/I-65-foundations-entry.md` | `8914F42829E0223771641082ECF0128B7F3E06D1E8A1A7F707E52E50D5A5FD6B` |
+| `docs/guias/interoperabilidad-ram-elements.md` | `44F512BD5EFEAC9377B6770015D5853DE59C2D99C8A173EF14FFDE8F9EACA422` |
+| `docs/initiatives/I-65-ready-final-plan.md` | `C82D6C6108BA244DF3168D2DA300695CDDBF9E24DA5A634FD02C464A7181A9EE` |
+| `README.md` | `984CDFE5DAE53AE7FEEDD8E6F6DDC1A77F0ED80455CF50817781943AB921094B` |
