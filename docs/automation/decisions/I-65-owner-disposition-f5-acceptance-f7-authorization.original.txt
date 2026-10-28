@@ -1,0 +1,83 @@
+I-65 — OWNER DISPOSITION
+F5 Gate Acceptance / F7 Authorization
+He revisado el cierre de F5 registrado en `e7c1fcf1`, con CI 40760733099 en PASS 4/4.
+1. Aceptación de F5
+F5 GATE PASS = ACKNOWLEDGED / ACCEPTED.
+Reconozco:
+
+* Candidato de hito `bd1fcf8a`.
+* SHA de cierre `45aaad6e`.
+* Core Full 14390/14390.
+* CI del SHA exacto en verde.
+* Architect CONFORMANT WITH OBSERVATIONS, 0 REQUIRED.
+* Coordinator CONFORMING.
+* OV-I65-02 PASS.
+* Cero cambios funcionales posteriores al Candidato.
+
+No solicito repetir W3 ni W4.
+2. Autorización de F7
+F7 PREPARATION AND EXECUTION = AUTHORIZED, exclusivamente dentro del alcance congelado.
+F7 comprende:
+
+* Revisión de conformidad.
+* Regresión Full.
+* Preparación de entrada de FOUNDATIONS.
+* Guía de uso.
+* Verificación de ADR-0050.
+* Evidencia y documentación de cierre.
+
+No autoriza nuevas funciones, cambios de arquitectura ni ampliaciones del contrato estructural.
+3. Gobernanza
+Continúa conforme a Workflow V2, I-61 y LIFECYCLE.
+Antes de ejecutar, identifica los criterios exactos de aceptación de F7 y el presupuesto necesario.
+Si alguna actividad exige cambios funcionales, una nueva decisión arquitectónica, consumo extraordinario de Codex o modificación del Freeze, detente y solicita autorización.
+4. Hallazgos residuales
+Conserva y evalúa para READY:
+
+* A65-F4F-04: trazabilidad de sesión.
+* A65-F4F-08: codificación del script de captura.
+* A65-F5F-03/04/05: limitaciones y desviaciones operativas.
+* A65-F5F-08: independencia del modelo manual.
+* C-5: valoración de exposición de información de terceros.
+
+No conviertas hallazgos OPTIONAL en REQUIRED sin justificación basada en el contrato.
+5. Control de custodia
+Mantén la comparación directa entre los hashes registrados y los blobs del repositorio antes de cada commit de evidencia.
+No sobrescribas ni elimines evidencia histórica.
+6. READY final
+Prepara una propuesta para READY-01..09, incluyendo:
+
+* Candidato final propio.
+* Repetición de OV-I65-01..07.
+* Ejecución de OV-I65-08.
+* Revisión independiente del Architect.
+* Resolución o disposición de hallazgos materiales.
+* Conflicto de integración con I-64.
+* Presupuesto de Codex e intentos.
+
+No declares READY ni integres la rama.
+7. Presupuesto
+Conserva:
+
+* Codex 50/52.
+* Attempts 7/9.
+* Sin Workers de implementación.
+* Sin cambios funcionales.
+
+8. Entregable
+Presenta:
+
+1. Matriz de aceptación de F7.
+2. Resultados de regresión Full.
+3. Conformidad con ADR-0050 y Freeze.
+4. Estado de FOUNDATIONS.
+5. Guía de uso.
+6. Hallazgos y limitaciones.
+7. Determinación GATE PASS / NO-GO de F7.
+8. Plan de READY final.
+
+F5 = CLOSED / GATE PASS.
+F7 = AUTHORIZED WITHIN FREEZE.
+READY FINAL = NO.
+INTEGRATION = NO.
+Continúa con F7 y detente antes de declarar READY final.

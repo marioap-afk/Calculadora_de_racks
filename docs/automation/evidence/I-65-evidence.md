@@ -2798,3 +2798,13 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
   Build UI, Build Plugin without AutoCAD). Resumen técnico sin datos personales (el JSON crudo de la API no se versiona).
 - AC-F5-10 y LIFECYCLE §7 puntos 4 y 6: **CUMPLE**. **GATE PASS de F5** registrado en decisiones §98 (CD-I65-F5-61). Candidato de hito
   `bd1fcf8a`; no es READY.
+
+## 103. Aceptación de F5 y autorización de F7 (2026-10-28T20:58:32Z)
+
+- Orden: decisiones §99. Sin AutoCAD, RAM, Codex ni Workers.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-f5-acceptance-f7-authorization.original.txt` | `C9C2D257AA833581DE9E962783953384328958C7DDA2687FBC1B9619F24F991F` |
+| `docs/initiatives/I-65-f7-preparation.md` | `EA7A87F5CEFFEA7B73EF5436EF5632446A8E491B89104C2348AD54379E3F70DF` |
