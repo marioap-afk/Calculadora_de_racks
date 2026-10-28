@@ -1,0 +1,198 @@
+--- v1/tools_m7.py
++++ v2/tools_m7.py
+@@ -63,7 +63,6 @@
+         'identity': ['identity', '--repo', T, '--branch', L.BR, '--base', L.TIP, '--current', L.G, '--red', L.RED],
+         'diff': ['diff', '--repo', T, '--from', L.TIP, '--to', L.G],
+         'scope': ['scope', '--repo', T, '--from', L.TIP, '--to', L.G] + fa('DELEG', d),
+-        'contract': ['contract', '--repo', T] + fa('CONTRACT', k) + fa('DELEG', d),
+         'hashes': ['hashes', '--repo', T, '--rev', L.G, '--paths'] + sorted(L.DELIV_FILES),
+         'cleantree': ['cleantree', '--repo', T, '--ignore-path', L.IGNORE_PATH],
+         'handoff': ['handoff', '--repo', T] + fa('H', h) + ['--schema-rev', L.G],
+@@ -72,8 +71,10 @@
+         'trx': ['trx', '--repo', T] + fa('TRX', t) + ['--filter-substring', 'Subtract'],
+         'read-text': ['read-text', '--repo', T, '--rev', L.G, '--path', L.DEC, '--lines', '1-1'],
+         'read-json': ['read-json', '--repo', T, '--rev', L.G, '--path', L.K] + sum([['--pointer', x] for x in L.JSON_POINTERS], []),
++        'read-json-contract': ['read-json', '--repo', T] + fa('CONTRACT', k) + sum([['--pointer', x] for x in L.CONTRACT_POINTERS], []),
++        'read-json-deleg': ['read-json', '--repo', T] + fa('DELEG', d) + sum([['--pointer', x] for x in L.CONTRACT_POINTERS], []),
+     }
+-    return [(n, o[n]) for n in L.ORDERS]
++    return [(n, o[n]) for n in L.EXEC_LABELS]
+ 
+ 
+ def pw_sq(s):
+@@ -103,7 +104,7 @@
+     ('P15', 'B', 'hashes', 'git rev-parse ' + ' '.join('%s:%s' % (L.G, p) for p in sorted(L.DELIV_FILES))),
+     ('P16', 'B', 'hashes', 'git hash-object --no-filters -- ' + ' '.join(sorted(L.DELIV_FILES))),
+     ('P17', 'B', 'read-json', 'git rev-parse %s:%s' % (L.G, L.K)),
+-    ('P18', 'B', 'contract', 'git hash-object --no-filters -- <REPO>/' + ' <REPO>/'.join((L.K, L.DELEG_E, L.H_E, L.TRX_PLACE))),
++    ('P18', 'B', 'read-json-contract', 'git hash-object --no-filters -- <REPO>/' + ' <REPO>/'.join((L.K, L.DELEG_E, L.H_E, L.TRX_PLACE))),
+     ('P19', 'B', 'read-text', 'git rev-parse %s:%s' % (L.G, L.DEC)),
+     ('P20', 'B', 'handoff', 'git rev-parse %s:%s' % (L.G, L.HANDOFF_SCHEMA)),
+     ('P21', 'B', 'freetext', 'git rev-parse %s:%s' % (L.MAIN, L.AP)),
+@@ -141,7 +142,7 @@
+ 
+ def arm_prompt(git, py, template=None, T=L.CDIR):
+     t = L.rbytes(template or TEMPLATE).decode('ascii')
+-    orders = ['C4 a C15 (instrumento de hechos; una orden por ejecucion, copiada literalmente):', '']
++    orders = ['C4 a C16 (instrumento de hechos; una orden por ejecucion, copiada literalmente):', '']
+     for k, (name, argv) in enumerate(order_argvs(T)):
+         orders.append('C%d (%s):' % (k + 4, name))
+         orders.append(inner_cmd(argv, git, py))
+@@ -156,8 +157,8 @@
+         raise SystemExit('unfilled placeholder in the prompt')
+     if '"' in t:
+         raise SystemExit('the armed prompt must not contain double quotes')
+-    if t.count(L.B) != 12:
+-        raise SystemExit('the full blob id must appear exactly in the twelve orders')
++    if t.count(L.B) != len(L.EXEC_LABELS):
++        raise SystemExit('the full blob id must appear exactly in the thirteen instrument executions')
+     return t
+ 
+ 
+@@ -195,7 +196,7 @@
+         'EffectiveSha': H40, 'ClauseMapBlob': H40,
+         'UnitProtocol': {'type': 'string', 'enum': ['rackcad-protocol/I61', 'rackcad-protocol/I62']}})
+     props = {
+-        'Schema': {'type': 'string', 'enum': ['rackcad-a6m7-measurement/1']},
++        'Schema': {'type': 'string', 'enum': ['rackcad-a6m7-measurement/2']},
+         'Mode': {'type': 'string', 'enum': ['A6-7_MEDICION']},
+         'RunId': {'type': 'string', 'enum': [L.RUN_ID]},
+         'ShellInvocations': {'type': 'integer', 'minimum': 1},
+@@ -218,14 +219,16 @@
+         'Reads': _obj({'ContractPointersJson': _obj({'Objective': J, 'Schema': J, 'MainSha': J, 'AuthorityRevision': J}),
+                        'DecisionsFirstLineJson': J, 'DecisionsFirstLineNonAsciiCount': I, 'HandoffFieldsJson': J,
+                        'TrxSha256': H64, 'TrxCountersJson': J, 'TrxFilterSelected': _arr(S), 'FreeTextTermsJson': J,
+-                       'FreeTextMatchCount': I, 'ContractA5MissingJson': J, 'ContractSupersededEqual': B}),
++                       'FreeTextMatchCount': I,
++                       'ContractScopeJson': _obj(dict((p[1:], J) for p in L.CONTRACT_POINTERS)),
++                       'DelegScopeJson': _obj(dict((p[1:], J) for p in L.CONTRACT_POINTERS))}),
+         'ClauseMap': _obj({'Eff': N40, 'EffParent1': N40, 'MapBlob': N40}),
+         'AuthorityResolution': _arr(ar_item, 'Forma de AuthorityResolution (paso 5 de Resolve, AP 16.13), una fila por cita del contrato.'),
+         'Findings': _arr(S),
+     }
+     sch = _obj(props, 'Salida de la medicion A6-7 (I-62) del EXECUTION_CONTROLLER de FX-02: hechos, contrastes primarios y '
+                       'resolucion por el mapa de clausulas; no es una verificacion.')
+-    sch['title'] = 'rackcad-a6m7-measurement/1'
++    sch['title'] = 'rackcad-a6m7-measurement/2'
+     if strict:
+         def strip(x):
+             if isinstance(x, dict):
+@@ -434,14 +437,11 @@
+             if sum(count_whole(x, t) for x in texts if isinstance(x, str)) > 0:
+                 matches += 1
+     o['FreeText'] = {'ApBlob': apb, 'Terms': terms, 'MatchCount': matches}
+-    sid = lambda x, key: x.get(key)
+-    a5 = {'Invariants': [x for x in Kd['Invariants'] if x not in set(deleg['Invariants'])],
+-          'StopConditions': [x['Id'] for x in Kd['StopConditions'] if x['Id'] not in set(y['Id'] for y in deleg['StopConditions'])],
+-          'Authorities': [t for t in ('|'.join([x['Path'], x['Section'], x['Class']]) for x in Kd['Authorities'])
+-                          if t not in set('|'.join([y['Path'], y['Section'], y['Class']]) for y in deleg['Authorities'])],
+-          'RequiredTests': [x['Filter'] for x in Kd['RequiredTests'] if x['Filter'] not in [y['Filter'] for y in deleg['RequiredTests']]],
+-          'RoleRequirements': [x['Role'] for x in Kd['RoleRequirements'] if x['Role'] not in set(y['Role'] for y in deleg['RoleRequirements'])]}
+-    o['Contract'] = {'A5Missing': a5, 'SupersededEqual': L.canon(Kd['SupersededCommits']) == L.canon(deleg['SupersededCommits'])}
++    # kit v2 (D-1): no `contract` order; the oracle of the two read-json --file reads is the values of the eight Contract pointers in
++    # the bytes that each --file names (the contract file of the -C tree and the custodied delegation)
++    kfile = json.loads(L.rbytes(os.path.join(T, *L.K.split('/'))).decode('utf-8'))
++    o['ContractScope'] = dict((ptr, kfile[ptr[1:]]) for ptr in L.CONTRACT_POINTERS)
++    o['DelegScope'] = dict((ptr, deleg[ptr[1:]]) for ptr in L.CONTRACT_POINTERS)
+     # clause map: EFF by the 16.14 derivation on Git primitives (first-parent merges of MAIN and the trailer line)
+     logz = L.git(T, 'log', '--no-show-signature', '-z', '--format=%H%n%B', L.MAIN).stdout
+     tcs = []
+@@ -682,7 +682,7 @@
+     envs = {}
+     for r in runs:
+         try:
+-            envs.setdefault(r['Argv'][0], json.loads(L.rbytes(r['EnvelopePath']).decode('ascii')))
++            envs.setdefault(L.exec_label(r['Argv']), json.loads(L.rbytes(r['EnvelopePath']).decode('ascii')))
+         except Exception:
+             pass
+     F = lambda order: (envs.get(order) or {}).get('Facts') or {}
+@@ -726,7 +726,7 @@
+     pre_in = inner(pre_it)
+     pre_lines = [x.strip() for x in out_lines(pre_it.get('aggregated_output'))] if pre_it else []
+     out_runs = get('Runs') if isinstance(get('Runs'), list) else []
+-    runs_link = len(out_runs) == 12 and [r.get('Order') for r in out_runs] == list(L.ORDERS)
++    runs_link = len(out_runs) == len(L.EXEC_LABELS) and [r.get('Order') for r in out_runs] == [L.EXEC_ORDER[x] for x in L.EXEC_LABELS]
+     for r in out_runs if runs_link else []:
+         it = citem(r.get('Invocation'))
+         rr = [x for x in runs if it is not None and x.get('ItemId') == it.get('id')]
+@@ -741,7 +741,9 @@
+             runs_link = False
+     op('OP2_ejecucion_desde_objeto_aislada', [
+         ('session log reconstructible with the named rule', rc.get('Reconstructible') is True, rc.get('Problems')),
+-        ('each of the 12 orders executed at least once', all(per_order[n] for n in L.ORDERS), [n for n in L.ORDERS if not per_order[n]]),
++        ('each of the 11 declared orders executed at least once, and the two read-json --file reads (CONTRACT, DELEG)',
++         all(per_order[n] for n in L.ORDERS) and all(x in envs for x in ('read-json-contract', 'read-json-deleg')),
++         [n for n in L.ORDERS if not per_order[n]] + [x for x in ('read-json-contract', 'read-json-deleg') if x not in envs]),
+         ('every execution: declared git and declared interpreter by full path, exit 0', bool(runs) and all(
+             same_path(r.get('Git'), dec['Git']) and same_path(r.get('Interpreter'), dec['Py']) and r.get('ExitCode') == 0 for r in runs)),
+         ('every envelope: Runtime.Isolated true, declared Python version, Error null, bytes = reconstructed SHA-256', bool(env_ok) and all(env_ok)),
+@@ -749,7 +751,7 @@
+          pre_it is not None and inst_idx and cidx(get('Preconditions', 'Invocation')) < inst_idx[0]
+          and all(('cat-file -t ' + c) in pre_in for c in PRECOND_COMMITS) and all(('Test-Path -LiteralPath ' + f) in pre_in for f in precond_files(T))
+          and pre_lines.count('commit') >= len(PRECOND_COMMITS) and pre_lines.count('True') >= len(precond_files(T))),
+-        ('output Runs: 12 rows in order, linked to the recorded executions (exit code, FactsSha256)', runs_link),
++        ('output Runs: 13 rows in order (the 13 instrument executions), linked to the recorded executions (exit code, FactsSha256)', runs_link),
+         ('acceptor R1 R2 R3 MATCH', all(st.get(x) == 'MATCH' for x in ('R1', 'R2', 'R3')), dict((x, st.get(x)) for x in ('R1', 'R2', 'R3'))),
+     ])
+ 
+@@ -857,10 +859,11 @@
+          and len(F('freetext').get('Matches') or []) == O['FreeText']['MatchCount']),
+         ('output FreeTextTermsJson (ASCII JSON) and FreeTextMatchCount = oracle', jok(rd.get('FreeTextTermsJson'), O['FreeText']['Terms'])
+          and rd.get('FreeTextMatchCount') == O['FreeText']['MatchCount']),
+-        ('contract envelope A5Missing and SupersededEqual = oracle', F('contract').get('A5Missing') == O['Contract']['A5Missing']
+-         and F('contract').get('SupersededEqual') == O['Contract']['SupersededEqual']),
+-        ('output ContractA5MissingJson (ASCII JSON) and ContractSupersededEqual = oracle', jok(rd.get('ContractA5MissingJson'), O['Contract']['A5Missing'])
+-         and rd.get('ContractSupersededEqual') == O['Contract']['SupersededEqual']),
++        ('read-json --file CONTRACT and DELEG envelopes: Values of the eight Contract pointers = the custodied bytes',
++         (F('read-json-contract').get('Values') or {}) == O['ContractScope'] and (F('read-json-deleg').get('Values') or {}) == O['DelegScope']),
++        ('output ContractScopeJson and DelegScopeJson: ASCII JSON text equal to the custodied values',
++         all(jok((rd.get('ContractScopeJson') or {}).get(p[1:]), O['ContractScope'][p]) and jok((rd.get('DelegScopeJson') or {}).get(p[1:]), O['DelegScope'][p])
++             for p in L.CONTRACT_POINTERS)),
+         ('primaries P17-P21, P24 recorded and equal', pok('P17', 'P18', 'P19', 'P20', 'P21', 'P24'), pbad('P17', 'P18', 'P19', 'P20', 'P21', 'P24')),
+     ])
+ 
+@@ -901,7 +904,7 @@
+         ('output.json present, strict JSON, valid against schema.m7.json (no mandatory field omitted)', out is not None and not oprobs, oprobs[:10]),
+         ('ShellInvocations = number of recorded shell executions', o.get('ShellInvocations') == len(items), [o.get('ShellInvocations'), len(items)]),
+         ('every cited C<n> is a recorded execution', all(cidx(c) is not None for c in cited)),
+-        ('Runs 12 rows, Primary 24 rows, AuthorityResolution non-empty', len(out_runs) == 12 and len(prim_rows) == 24 and bool(ar)),
++        ('Runs 13 rows, Primary 24 rows, AuthorityResolution non-empty', len(out_runs) == len(L.EXEC_LABELS) and len(prim_rows) == 24 and bool(ar)),
+     ])
+ 
+     # ---- record items
+@@ -1162,12 +1165,14 @@
+     return [
+         'M7-CELDA: codex-cli / gpt-6-luna / high; EXECUTION_CONTROLLER de FX-02 en F6',
+         'M7-TRIO: BinaryHash %s, AppVersion %s, huella %s' % (t['BinaryHash'], t['AppVersion'], t['Fingerprint']),
+-        'M7-INSTRUMENTO: blob %s; orden declarada <git> --no-replace-objects cat-file blob %s | <interprete> -I - <orden> ...' % (L.B, L.B),
++        'M7-INSTRUMENTO: blob %s; orden declarada <git> --no-replace-objects cat-file blob %s | <interprete> -I - <orden> ...; <orden> una de: %s; sin contract' % (
++            L.B, L.B, ', '.join(L.ORDERS)),
+         'M7-INTERPRETE: %s; %s; SHA-256 %s' % (p['Interpreter']['Path'], p['Interpreter']['Version'], p['Interpreter']['Sha256']),
+         'M7-GIT: %s; %s; SHA-256 %s' % (p['Git']['Path'], p['Git']['Version'], p['Git']['Sha256']),
+         'M7-C: %s; instantanea SHA-256 %s' % (p['RepoWin'], L.sha256_file(L.FROZEN + '/m7-run.snapshot.json')),
+-        'M7-CIERRE: R7-A; E SHA-256 %s; cierre derivado SHA-256 %s; registro de derivacion SHA-256 %s' % (
+-            L.sha256_file(L.FROZEN + '/E.json'), L.sha256_file(L.FROZEN + '/closure.json'), L.sha256_file(L.FROZEN + '/derivation.json')),
++        'M7-CIERRE: A7-1 (a7-designation/4, Kind MEASUREMENT); designacion SHA-256 %s; E SHA-256 %s; cierre derivado SHA-256 %s; registro de derivacion SHA-256 %s' % (
++            L.sha256_file(L.FROZEN + '/designation-M.json'), L.sha256_file(L.FROZEN + '/E.json'), L.sha256_file(L.FROZEN + '/closure.json'),
++            L.sha256_file(L.FROZEN + '/derivation.json')),
+         'M7-RECONSTRUCCION: %s SHA-256 %s' % (p['ReconstructionRule'], L.sha256_file(L.KIT + '/' + p['ReconstructionRule'])),
+         'M7-ESCRITURA: autorizada la escritura de preparacion de A6-3, regla 1, en %s; DecisionRef %s' % (p['RepoWin'], L.DECISION_REF),
+     ]
+@@ -1187,13 +1192,16 @@
+     G = _load('gates_m7')
+     files = G.kit_files(L.KIT)
+     fr = {'Schema': 'i62-a6m7-freeze/1', 'FrozenUtc': L.utc(),
+-          'Authority': 'I-62, A-6 AGREED (blob 4bc919dd), decisiones §90 punto 3: preparacion de la medicion A6-7; no lanza, no autoriza consumo',
++          'Authority': 'I-62, A-6 AGREED (blob 4bc919dd) y A-7 AGREED (blob ebb3a87b), decisiones §100, puntos 3 y 4: kit v2 de la medicion A6-7 '
++                       '(actualizacion incremental del kit 459a3440); no lanza, no autoriza consumo',
+           'Files': dict((f, {'Bytes': os.path.getsize(os.path.join(L.KIT, f)), 'Sha256': L.sha256_file(os.path.join(L.KIT, f))}) for f in files)}
+     d = declared()
+     t = arm_prompt(d['Git'], d['Py'])
+     fr['ArmedPrompt'] = {'Sha256': L.sha256(t.encode('utf-8')), 'Chars': len(t), 'SanitizedCopy': 'frozen/prompt.m7.armed.sanitized.txt'}
+     fr['Snapshot'] = {'Path': 'frozen/m7-run.snapshot.json', 'Sha256': L.sha256_file(L.FROZEN + '/m7-run.snapshot.json')}
+     fr['Oracle'] = {'Path': 'frozen/oracle.json', 'Sha256': L.sha256_file(ORACLE)}
++    fr['Designation'] = {'Path': 'frozen/designation-M.json', 'Sha256': L.sha256_file(L.FROZEN + '/designation-M.json')}
++    fr['ClosureValidation'] = {'Path': 'frozen/closure-validation.json', 'Sha256': L.sha256_file(L.FROZEN + '/closure-validation.json')}
+     fr['E'] = {'Path': 'frozen/E.json', 'Sha256': L.sha256_file(L.FROZEN + '/E.json')}
+     fr['Closure'] = {'Path': 'frozen/closure.json', 'Sha256': L.sha256_file(L.FROZEN + '/closure.json')}
+     fr['DerivationRecord'] = {'Path': 'frozen/derivation.json', 'Sha256': L.sha256_file(L.FROZEN + '/derivation.json')}

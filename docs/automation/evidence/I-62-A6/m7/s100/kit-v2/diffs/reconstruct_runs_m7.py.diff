@@ -1,0 +1,29 @@
+--- v1/reconstruct_runs_m7.py
++++ v2/reconstruct_runs_m7.py
+@@ -5,6 +5,11 @@
+ # Codex is %USERPROFILE%\.cache\codex-runtimes\...\pwsh.exe and the reference rejects '.cache', so it cannot reconstruct ANY
+ # execution through that shell (finding of the kit). Git and the interpreter keep the reference path check. Everything else,
+ # including every completeness, envelope and exit rule, is the reference unchanged.
++# v3 (kit v2 of the measurement, decisiones §100, punto 3; D-1): the order of every instrument execution must be one of the DECLARED
++# set (identity, diff, scope, hashes, cleantree, read-text, read-json, trx, handoff, freetext, clausemap): `contract` is no longer in
++# TOOL_COMMANDS, so a recorded execution of `contract` makes the log NOT reconstructible (no request). Also declared (preflight of
++# A-7, F8, case RECON-HEADER): v2 removed from the reference one statement without effect, `if env.get('Command') != p['Argv'][0]:
++# pass`; nothing else differs from what this header declares.
+ # Stdlib only, no side effects except the optional envelope files written by --env-dir.
+ #
+ #   python -I reconstruct_runs_m7.py --log EVENTS.jsonl --blob <pinned blob> [--env-dir DIR]
+@@ -35,11 +40,11 @@
+ import re
+ import sys
+ 
+-RULE = 'reconstruct_runs_m7/2'
++RULE = 'reconstruct_runs_m7/3'
+ FACTS_SCHEMA = 'rackcad-bmin-facts/0-experimental'
+ ALLOWED_EVENTS = ('thread.started', 'turn.started', 'item.started', 'item.updated', 'item.completed', 'turn.completed')
+-TOOL_COMMANDS = ('identity', 'diff', 'scope', 'contract', 'hashes', 'cleantree', 'read-text', 'read-json', 'trx',
+-                 'handoff', 'freetext', 'clausemap')
++TOOL_COMMANDS = ('identity', 'diff', 'scope', 'hashes', 'cleantree', 'read-text', 'read-json', 'trx',
++                 'handoff', 'freetext', 'clausemap')   # v3: the declared set, without `contract`
+ OUTER_BARE = set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-./:@]_')
+ INNER_BARE = set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_./:=+-')
+ WIN_ABS = re.compile(r'[A-Za-z]:\\(?:[^\\/:*?"<>|\x00-\x1f]+\\)*[^\\/:*?"<>|\x00-\x1f]+')

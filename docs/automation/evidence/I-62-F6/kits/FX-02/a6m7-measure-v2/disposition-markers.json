@@ -1,0 +1,20 @@
+{
+ "Schema": "i62-a6m7-disposition-markers/1",
+ "Markers": [
+  "M7-CELDA: codex-cli / gpt-6-luna / high; EXECUTION_CONTROLLER de FX-02 en F6",
+  "M7-TRIO: BinaryHash 5c1b55966bf9f757dcbf00065c9a6cb862ead55d34b015f1be1939ff18e43943, AppVersion 26.1023.6123.0, huella 0A9F6A344C965BE17650A2559601DB8768AE8DCFAC6BEB7DEEFC615AE4E7F550",
+  "M7-INSTRUMENTO: blob 9a829b0eeb1210238052b1feac06cfa8f7964aed; orden declarada <git> --no-replace-objects cat-file blob 9a829b0eeb1210238052b1feac06cfa8f7964aed | <interprete> -I - <orden> ...; <orden> una de: identity, diff, scope, hashes, cleantree, handoff, freetext, clausemap, trx, read-text, read-json; sin contract",
+  "M7-INTERPRETE: %LOCALAPPDATA%\\Microsoft\\WindowsApps\\python.exe; Python 3.13.14; SHA-256 ad169f4cb4bfb78c7a5c030a4529c19d6643276778e33994c93e145b6191c3ec",
+  "M7-GIT: %USERPROFILE%\\AppData\\Local\\Programs\\Git\\cmd\\git.exe; git version 2.54.0.windows.1; SHA-256 81ef35ae005ca9318018d18e3327578ce939fb99feaad6b2d7c8ab15f3de8db5",
+  "M7-C: D:\\r62-a6m7\\m7-run2; instantanea SHA-256 1d2d4d1d92a3c42b4fc07c14c13e963a30624a90c7ee6f962318348368c104ed",
+  "M7-CIERRE: A7-1 (a7-designation/4, Kind MEASUREMENT); designacion SHA-256 a5d45905768febd2bca72fa70436562b52ff69306b15ea67d331f7bbf895afad; E SHA-256 0488409ceec42e54edcbb0b9f68b91eb0128a71b5f8edb99b3cb201d853b1cd5; cierre derivado SHA-256 2c5cedf14b9390eae13102084990063951ec00fc8a2bc70b51f039e668049674; registro de derivacion SHA-256 716463df3ba80e1712d1d879260c3db32932c151d1e62a5122a46c8cdc7d50b6",
+  "M7-RECONSTRUCCION: reconstruct_runs_m7.py SHA-256 f5f8f269efdb881bc395a0a7a244d7d9fe00bbce23f56306ae6efc0d2a6af834",
+  "M7-ESCRITURA: autorizada la escritura de preparacion de A6-3, regla 1, en D:\\r62-a6m7\\m7-run2; DecisionRef I62-A6-7-M7"
+ ],
+ "Computed": [
+  "M7-KIT: FREEZE.json SHA-256 <SHA-256 de FREEZE.json>"
+ ],
+ "Variable": [
+  "M7-LECTURAS: disposicion de A6-5, regla 6: \u00a7<N>"
+ ]
+}

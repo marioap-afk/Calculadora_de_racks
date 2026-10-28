@@ -1,0 +1,82 @@
+{
+ "Absences": [
+  [
+   "TRX_RED",
+   "NOT_DESIGNATED: the delivery requires RED (16.8: ChainRedSha is null) and the designation names no TRX of the RedSha run (16.9: Tests and Ci RedPart cannot be pass); no entry, nothing substituted"
+  ],
+  [
+   "16.13:MV-6",
+   "absent at EFF: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+  ],
+  [
+   "16.13:MV-6",
+   "absent at EFF^1: no entry; treated by the rule that requires it (16.3, 16.13, 16.24)"
+  ]
+ ],
+ "Closure": {
+  "Counts": {
+   "Commits": 7,
+   "Files": 4,
+   "Objects": 0,
+   "Paths": 49,
+   "Refs": 3,
+   "RevPaths": 89
+  },
+  "Files": [
+   "CONTRACT",
+   "DELEG",
+   "H",
+   "TRX"
+  ],
+  "Path": "D:/r62-a6m7/kit2/frozen/closure.json",
+  "Sha256": "2c5cedf14b9390eae13102084990063951ec00fc8a2bc70b51f039e668049674"
+ },
+ "E": {
+  "Entries": 16,
+  "Path": "D:/r62-a6m7/kit2/frozen/E.json",
+  "Sha256": "0488409ceec42e54edcbb0b9f68b91eb0128a71b5f8edb99b3cb201d853b1cd5"
+ },
+ "Omitted": [
+  [
+   "C1.D.ChainRedSha",
+   "FIELD_NULL"
+  ]
+ ],
+ "Record": {
+  "Path": "D:/r62-a6m7/kit2/frozen/derivation.json",
+  "Sha256": "716463df3ba80e1712d1d879260c3db32932c151d1e62a5122a46c8cdc7d50b6"
+ },
+ "Validation": {
+  "Absences": [
+   {
+    "Category": "c",
+    "Cause": "NOT_DESIGNATED",
+    "Path": null,
+    "Role": "TRX_RED"
+   },
+   {
+    "Category": "a",
+    "Cause": "absent",
+    "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+    "Revision": "EFF",
+    "Role": "a:16.13-MV6@EFF"
+   },
+   {
+    "Category": "a",
+    "Cause": "absent",
+    "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+    "Revision": "EFF^1",
+    "Role": "a:16.13-MV6@EFF^1"
+   }
+  ],
+  "Accepted": true,
+  "Foreign": [],
+  "Missing": [],
+  "Problems": [],
+  "RedRequired": true
+ },
+ "Vector": {
+  "Path": "D:/r62-a6m7/kit2/frozen/vector.json",
+  "Sha256": "3faa920e09077b3bc969b025eae983a3522232697c5f4b529d6b00b1f7db013d"
+ }
+}

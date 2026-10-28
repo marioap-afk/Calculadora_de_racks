@@ -1,0 +1,346 @@
+[
+ {
+  "File": "FREEZE.json",
+  "Status": "CHANGED",
+  "V1": "459a3440af3d9b553d55d4cfc84b7a40ab3a58ab2ac178af01a23f144ba3cae8",
+  "V2": "fc355540bf66cb10cdcd2783cec00f37778639b9339e7b34d5f698aee7fc2aad"
+ },
+ {
+  "File": "README.md",
+  "Status": "CHANGED",
+  "V1": "dc33f3133b1ea09185eefee0520fb5c585067a6c7d3d2d1f4d3f052dbd519ccc",
+  "V2": "e76192b11691de7b45e009ef9130c94f47b33ca7b1bc013df97ab5fc2de0dcc8",
+  "Added": 81,
+  "Removed": 187
+ },
+ {
+  "File": "a7-designation-4.schema.json",
+  "Status": "NEW",
+  "V1": null,
+  "V2": "0d8effb2caf9e64992ed2b025cbb6db593b3dd383600ce18d976119bfdb79dcc"
+ },
+ {
+  "File": "baseline-keynames-0A9F6A34.json",
+  "Status": "NEW",
+  "V1": null,
+  "V2": "9ef171c902210581369ee400abfb4f2e2f7e5911d0a518bdd217e790b972570c"
+ },
+ {
+  "File": "baseline-keynames-F909F480.json",
+  "Status": "REMOVED",
+  "V1": "076637c550ff0b3109447ef00263ff087749f0aaa71f299d524e43b8cf82b70b",
+  "V2": null
+ },
+ {
+  "File": "build_m7.py",
+  "Status": "CHANGED",
+  "V1": "95d383138e94ace0bef7dfb121a69b68377b42b0c7e05d44ec42ab8d6b01ba42",
+  "V2": "508064195b1de97286c8f9dc898599dfaf952a81912035e4c1bb2caa492a230f",
+  "Added": 72,
+  "Removed": 51
+ },
+ {
+  "File": "cfg-fp.ps1",
+  "Status": "IDENTICAL",
+  "V1": "b1d833c0abc06fec6e27367b6df2715e7cdca321f0d6c6fbadb9f634e6a31bab",
+  "V2": "b1d833c0abc06fec6e27367b6df2715e7cdca321f0d6c6fbadb9f634e6a31bab"
+ },
+ {
+  "File": "check_a7_closure.py",
+  "Status": "NEW",
+  "V1": null,
+  "V2": "2d6a891b1321b29cdef6fd6caac2fc42f39699408864456c6fef3f18c7b22080",
+  "Added": 704,
+  "Removed": 0
+ },
+ {
+  "File": "check_citation_blobs.py",
+  "Status": "NEW",
+  "V1": null,
+  "V2": "e99ea7105d82a4262e6998ff767f08341bdae92c24fb31560393f8283e69f737",
+  "Added": 170,
+  "Removed": 0
+ },
+ {
+  "File": "derive_r4.py",
+  "Status": "IDENTICAL",
+  "V1": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426",
+  "V2": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+ },
+ {
+  "File": "designate_a7.py",
+  "Status": "NEW",
+  "V1": null,
+  "V2": "7ea39a5401f4d7345da55b728785c1a4b9cab0748b952c43ae3357f4321167d3",
+  "Added": 185,
+  "Removed": 0
+ },
+ {
+  "File": "designate_m7.py",
+  "Status": "REMOVED",
+  "V1": "491dcbd672518befa3cf74a64c7a9971992c66eee5bd122b3ae537a184f5a5c6",
+  "V2": null
+ },
+ {
+  "File": "disposition-markers.json",
+  "Status": "CHANGED",
+  "V1": "73507ad7afc7fb2c1f4fd5736b00fc95b0df6062ebe5f0016c31158c645fa1b9",
+  "V2": "d448dc2979222ec59fb17424e5102f863ce293ace7eaaa80714746bc2f868f26"
+ },
+ {
+  "File": "frozen/E.json",
+  "Status": "CHANGED",
+  "V1": "137c7c3bba6591c84fdef4c5f6ef443f72da1cfd871478968c64a5c7cb5a1152",
+  "V2": "0488409ceec42e54edcbb0b9f68b91eb0128a71b5f8edb99b3cb201d853b1cd5"
+ },
+ {
+  "File": "frozen/closure-validation.json",
+  "Status": "NEW",
+  "V1": null,
+  "V2": "d53b39ea38e54c489c12e46ffae79ba45afd8b3c733da37e7aeb359c9aeed16c"
+ },
+ {
+  "File": "frozen/closure.json",
+  "Status": "CHANGED",
+  "V1": "3d1a065f47c80c61f43d6b887a5fbe428dd628591b038a625e210c74629d09aa",
+  "V2": "2c5cedf14b9390eae13102084990063951ec00fc8a2bc70b51f039e668049674"
+ },
+ {
+  "File": "frozen/derivation.json",
+  "Status": "CHANGED",
+  "V1": "b2f0e609bf2ea14e29a13b4a8154e380fc253901e334f437ae56f8a3f3b08c1b",
+  "V2": "716463df3ba80e1712d1d879260c3db32932c151d1e62a5122a46c8cdc7d50b6"
+ },
+ {
+  "File": "frozen/designation-M.json",
+  "Status": "CHANGED",
+  "V1": "649836bb04148998a585a8870ffd018ebc27509838d83116b7f5e03dcd7d2321",
+  "V2": "a5d45905768febd2bca72fa70436562b52ff69306b15ea67d331f7bbf895afad"
+ },
+ {
+  "File": "frozen/m7-run.snapshot.json",
+  "Status": "CHANGED",
+  "V1": "43a8caf6304edb034c3be3fd5677b35a9b3de238570ce1b71582badbcfbbc9f1",
+  "V2": "1d2d4d1d92a3c42b4fc07c14c13e963a30624a90c7ee6f962318348368c104ed"
+ },
+ {
+  "File": "frozen/m7-run.snapshot.record.json",
+  "Status": "CHANGED",
+  "V1": "480eda42e691d41426e853853daffd110d2757e94a59c381512f569d571a0de3",
+  "V2": "a635794d68eb6495818ab8cde70bd1b7e03e2d1a4d8b1c9f32d71512b63a9335"
+ },
+ {
+  "File": "frozen/oracle.json",
+  "Status": "CHANGED",
+  "V1": "2e0c1a0dd31f436ce2520d91a91686ee5abffd199634c569929011dddf6fd020",
+  "V2": "46da73745d36077f9a08e1dd50019fb8b5ddc9dfd3c1d94abb8f1c506cb8291f"
+ },
+ {
+  "File": "frozen/prompt.m7.armed.sanitized.txt",
+  "Status": "CHANGED",
+  "V1": "cda591148a604168f8d21b881a6382135c1ae0a4afaecbee3546e612f1c95a85",
+  "V2": "2a09948b750a763080fe5bcd426b72cd22acf2711365a3f38a13157973f22ba9"
+ },
+ {
+  "File": "frozen/vector.json",
+  "Status": "CHANGED",
+  "V1": "0fca987a274406f24df5987f323875d5f74bb7a2cacb397bdd4d0b6e0d504134",
+  "V2": "3faa920e09077b3bc969b025eae983a3522232697c5f4b529d6b00b1f7db013d"
+ },
+ {
+  "File": "gates_m7.py",
+  "Status": "CHANGED",
+  "V1": "5f4a3b9186a1b6ef9be7e664b57c05ec633cd2d8fee1be9c513fee895a321e79",
+  "V2": "9acc3b351c04fdfdb01fb986c4166dbb813b329b5ac5a67cfc6385523bfb4015",
+  "Added": 1,
+  "Removed": 1
+ },
+ {
+  "File": "inputs/deleg.json",
+  "Status": "CHANGED",
+  "V1": "8a3dfd5132d3c547a0ce70895af14d699d3ee3169d6f5ed7f41c874d48ce4149",
+  "V2": "47589a1b6b4e726c38c3e2463dde60691da7472311c2276f4dd94521ed5db346"
+ },
+ {
+  "File": "inputs/fixture-tests.trx",
+  "Status": "IDENTICAL",
+  "V1": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+  "V2": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513"
+ },
+ {
+  "File": "inputs/handoff.json",
+  "Status": "CHANGED",
+  "V1": "6494a738c65f168fe5705f7eff58850fa3b288f0210778f4a8c009d984c52b7e",
+  "V2": "7a771e5a2d2ee252664eaa71455996d47e92458e4ad6f044907dc42647cceadd"
+ },
+ {
+  "File": "inputs/r4-designation-M.json",
+  "Status": "NEW",
+  "V1": null,
+  "V2": "ede01da2051009a52d57cb3c7b06bb8fc1e01712a3ca06d8b95c667dfe2de259"
+ },
+ {
+  "File": "lib_kit.py",
+  "Status": "CHANGED",
+  "V1": "7c1b605033bc57c2ece2fe54c629928095e381f27f4c93baf41fd4cc8c626da5",
+  "V2": "852e56ff8125f6cbbfe9ba08c491df015a2f7ffc5c2c638f2bd694d8d8cb4d1e",
+  "Added": 23,
+  "Removed": 8
+ },
+ {
+  "File": "line-b.txt",
+  "Status": "CHANGED",
+  "V1": "dda4b3f9c1db0183a38e5400777a2a21d524aa4b92ad684d5c5cae1b2fc4cf27",
+  "V2": "d2f0891c99ad660ba4a3536f319c3f9162f0e79de8061785b83c43bec4db9f4a",
+  "Added": 1,
+  "Removed": 1
+ },
+ {
+  "File": "line-od2.txt",
+  "Status": "CHANGED",
+  "V1": "3b33dd56cbae5fddab9a9431e7ad9b83170e6782e0161385bc324789634b7f25",
+  "V2": "769c2a8a900fc36236e949fb2e459ad14a68b648ef32299d3e0c3c928b9d4493",
+  "Added": 1,
+  "Removed": 1
+ },
+ {
+  "File": "m7-params.json",
+  "Status": "CHANGED",
+  "V1": "c3c9227368b88f488f5cd93f9c3cb8fad696ee38cd2d3ff01edbbfa82e621777",
+  "V2": "dedf0f937d687f53c2483f06df8a8231a5f01f4bdae58bebcd37e28d3e0bb9dc"
+ },
+ {
+  "File": "make_eic_a7.py",
+  "Status": "NEW",
+  "V1": null,
+  "V2": "addf51b2838dfaaa4a33c77f64fc6e5686207a81ee30485800e468e9954cf95c",
+  "Added": 708,
+  "Removed": 0
+ },
+ {
+  "File": "make_eic_verify.py",
+  "Status": "IDENTICAL",
+  "V1": "58f13c6a8564fe9877e3a5bb40e8d46fccf1ce67ac174ccd6a4298ddad03a8d2",
+  "V2": "58f13c6a8564fe9877e3a5bb40e8d46fccf1ce67ac174ccd6a4298ddad03a8d2"
+ },
+ {
+  "File": "pou_check.py",
+  "Status": "IDENTICAL",
+  "V1": "c3490925c63d24747952663470725487a6e45b90e2128e122910d3e49d81db7d",
+  "V2": "c3490925c63d24747952663470725487a6e45b90e2128e122910d3e49d81db7d"
+ },
+ {
+  "File": "pou_m7.py",
+  "Status": "IDENTICAL",
+  "V1": "7e3f9e734e668921de021c989f0e288234fe7e10fd5aba94394b5c0393af3c3a",
+  "V2": "7e3f9e734e668921de021c989f0e288234fe7e10fd5aba94394b5c0393af3c3a"
+ },
+ {
+  "File": "prep_clone.py",
+  "Status": "CHANGED",
+  "V1": "26df36d543a8273e4153c8da57cdbb45131988d8fc8f047682e0b358ba414979",
+  "V2": "941ed55d5995e3f56e2a396a26c193e118d00defb23c38df4e80c0c6547aeb87",
+  "Added": 1,
+  "Removed": 1
+ },
+ {
+  "File": "prep_write.py",
+  "Status": "IDENTICAL",
+  "V1": "d427e47adf9f5e713c74c3bc7349850697139f83a0b25b62100ffd6f57dfaff0",
+  "V2": "d427e47adf9f5e713c74c3bc7349850697139f83a0b25b62100ffd6f57dfaff0"
+ },
+ {
+  "File": "procs-snapshot.ps1",
+  "Status": "IDENTICAL",
+  "V1": "f879db305dd296d30241cca75cf61ac0a5828077cd2be6277e4128f934afedaf",
+  "V2": "f879db305dd296d30241cca75cf61ac0a5828077cd2be6277e4128f934afedaf"
+ },
+ {
+  "File": "prompt.m7.template.txt",
+  "Status": "CHANGED",
+  "V1": "e36f6f8623b480f13747c45a4719873262cbc74c1ca4fedf8fc94347189f4d16",
+  "V2": "c199e1f86950bd381ca59b8971f6781e0def0ec28c3f2d77a23e156f1bf22d54",
+  "Added": 18,
+  "Removed": 17
+ },
+ {
+  "File": "reconstruct_runs.py",
+  "Status": "IDENTICAL",
+  "V1": "5dc9f78ee40e0f54efc5d14b2ec84dc12dd4a6c1d63b66b0c07a9d2be33338da",
+  "V2": "5dc9f78ee40e0f54efc5d14b2ec84dc12dd4a6c1d63b66b0c07a9d2be33338da"
+ },
+ {
+  "File": "reconstruct_runs_m7.py",
+  "Status": "CHANGED",
+  "V1": "1eceeceecfebf994e3bce0af7818dfaa2144b99fb1339897745c2fe9ea7141ab",
+  "V2": "f5f8f269efdb881bc395a0a7a244d7d9fe00bbce23f56306ae6efc0d2a6af834",
+  "Added": 8,
+  "Removed": 3
+ },
+ {
+  "File": "run_m7.sh",
+  "Status": "IDENTICAL",
+  "V1": "d5979bfd43f6610a7c9b4108a3481c8badaf711a825ac4b9e4e0f58ce08acdec",
+  "V2": "d5979bfd43f6610a7c9b4108a3481c8badaf711a825ac4b9e4e0f58ce08acdec"
+ },
+ {
+  "File": "schema.m7.json",
+  "Status": "CHANGED",
+  "V1": "50cba8b4d10010e213f357ddda46cf0edbc8dfdeca4374e9a72894a7de125c5b",
+  "V2": "19ffdce996ce3f651ca1ac363b97892a56afdbcb81a3950276b7d107d66ca2dc"
+ },
+ {
+  "File": "schema.m7.strict-projection.json",
+  "Status": "CHANGED",
+  "V1": "6446d99c3d9720d890b753ece5fa0c0e29b71dbe329f9a1be8904df34c334fab",
+  "V2": "42f444ef5aeb4a4b55ed481661f8655ec104eadc9c8a732b66167eef740416c6"
+ },
+ {
+  "File": "selftest-report.json",
+  "Status": "CHANGED",
+  "V1": "a1040c110bebca7c1dd82544a45e7a0f5e607e0b2a9311c9d800062255258684",
+  "V2": "bed9ebc164b8dce8e6cb5eabcbd515643fb405d94ac01004ae18ec693fdfad45"
+ },
+ {
+  "File": "selftest_m7.py",
+  "Status": "CHANGED",
+  "V1": "40d9559ca77cb2e2778d353c3f9b77cda6131a5115f5e3fc6e2a971f4fd1cf3b",
+  "V2": "316fcf312132927ffd838aeb53c7c347adc2470866a2c6c45a15df4b61115a38",
+  "Added": 72,
+  "Removed": 35
+ },
+ {
+  "File": "selftest_m7.sh",
+  "Status": "IDENTICAL",
+  "V1": "329204dc0067c189f5b64723e4a6c7109f57fff810f83b8cbebc55d670f7ebc6",
+  "V2": "329204dc0067c189f5b64723e4a6c7109f57fff810f83b8cbebc55d670f7ebc6"
+ },
+ {
+  "File": "table_m7.py",
+  "Status": "CHANGED",
+  "V1": "a0765733be3e140f01afe1818d3a1ff630e83cb1970acba22e593f322574c1e3",
+  "V2": "e653b30ad7483cc09a4111764d032c32004c1fdbe531e1febf64f63e33f9076e",
+  "Added": 3,
+  "Removed": 2
+ },
+ {
+  "File": "table_r3.py",
+  "Status": "IDENTICAL",
+  "V1": "ec4d9a8ec0f665f74660bf517526b0a1c097efe630feda1f83297c8661851c9b",
+  "V2": "ec4d9a8ec0f665f74660bf517526b0a1c097efe630feda1f83297c8661851c9b"
+ },
+ {
+  "File": "table_r4.py",
+  "Status": "IDENTICAL",
+  "V1": "e1efb54a7f9189c715780cfd130f2ea8540e70d9c5739adff3aa12a5bb5f2797",
+  "V2": "e1efb54a7f9189c715780cfd130f2ea8540e70d9c5739adff3aa12a5bb5f2797"
+ },
+ {
+  "File": "tools_m7.py",
+  "Status": "CHANGED",
+  "V1": "b830a1d9c00bcac368d710929984ac747258610adc8488faf406ad04db07bf7a",
+  "V2": "a694f08d5271b32fe33b36a0006d2f2f5cfea04438340f0425fdebd44f62e599",
+  "Added": 38,
+  "Removed": 30
+ }
+]

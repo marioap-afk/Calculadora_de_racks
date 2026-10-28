@@ -1,0 +1,184 @@
+# build_m7.py - build-time steps of the A6-7 measurement kit v2 (I-62; A-6 and A-7 AGREED; decisiones §100, puntos 3 y 4): custodied
+# inputs, the designation of M against the -C (a7-designation/4, Invocation.Kind MEASUREMENT), the VERIFY closure of M under A7-1 (E
+# with make_eic_a7.py, designation check with designate_a7.py, derived closure with derive_r4.py and its omission record, and the
+# closure validator check_a7_closure.py), the sealed oracle (tools_m7.py), the armed prompt, the schemas and the freeze.
+# Kit v1 (FREEZE 459a3440) built the closure with make_eic_verify.py R7-A and designate_m7.py (a6m7-designation/1); A-7 AGREED
+# (blob ebb3a87b) replaces R7-A with A7-1, whose procedure pieces (builder, validator, designation format, designate_a7) are the
+# round-4 ones, byte for byte (docs/automation/evidence/I-62-A7/r4/). TRX_RED: the delivery requires RED by 16.8 (ChainRedSha null),
+# but no TRX of a RedSha run exists for FX-U1 (every fixture TRX is the CurrentSha one, blob 40295387); the designation names none
+# and the builder records the absence (NOT_DESIGNATED) instead of a synthesized file (pre-measurement disposition, point on origins).
+# Stdlib only. Never executes Codex or any model CLI; every git call is read-only.
+#   python -I build_m7.py inputs | designation | closure | oracle | schema | prompt | markers | freeze
+import importlib.util, json, os, sys
+
+sys.dont_write_bytecode = True
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def _load(name):
+    s = importlib.util.spec_from_file_location(name, os.path.join(HERE, name + '.py'))
+    m = importlib.util.module_from_spec(s)
+    s.loader.exec_module(m)
+    return m
+
+
+L = _load('lib_kit')
+for _k in [k for k in os.environ if k.upper().startswith('GIT_')]:
+    del os.environ[_k]                                    # bench modules call git by name with the inherited environment
+MEV = _load('make_eic_verify')
+A7B = _load('make_eic_a7')
+DSA = _load('designate_a7')
+CHK = _load('check_a7_closure')
+DV = _load('derive_r4')
+
+BENCH = 'D:/r62-a6m7/bench'
+R4_M = 'D:/r62-a7/evid-r4/designations/M.json'           # round-4 a7-designation/4 of M (bench -C), Kind MEASUREMENT
+R4_M_SHA = None                                          # pinned below from the custodied copy (kit/inputs/r4-designation-M.json)
+R4_M_COPY = L.INPUTS + '/r4-designation-M.json'
+I62_COMMIT = '2019566ae4ea263471f9d39eeb6b5a4f5142b469'  # decisiones §100 (A-7 AGREED): the instrument path/blob is checked there
+DESIG = L.FROZEN + '/designation-M.json'
+E_PATH = L.FROZEN + '/E.json'
+VEC = L.FROZEN + '/vector.json'
+CLOSURE = L.FROZEN + '/closure.json'
+RECORD = L.FROZEN + '/derivation.json'
+VALID = L.FROZEN + '/closure-validation.json'
+
+
+def wjson_local(p, obj):
+    """Work JSON as the benches write the tool / acceptor inputs: UTF-8, indent 1, ensure_ascii False, LF."""
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    with open(p, 'w', encoding='utf-8', newline='\n') as fh:
+        fh.write(json.dumps(obj, ensure_ascii=False, indent=1) + '\n')
+    return p
+
+
+def input_objects(worktree):
+    deleg = json.loads(L.rbytes(L.R2_INP + '/deleg-deliv.json').decode('utf-8'))
+    deleg['ExpectedWorktree'] = worktree
+    hand = json.loads(L.rbytes(L.R2_INP + '/handoff-deliv.json').decode('utf-8'))
+    hand['Worktree'] = worktree
+    return deleg, hand
+
+
+def cmd_inputs():
+    """Custodied inputs of M (RAE §10 copies of the real verification's inputs; only the worktree field names the -C).
+    Method check: the same transformation with the bench copy reproduces the bench bytes of M (work/in-m). Unchanged from v1."""
+    rep = {}
+    tmp = L.KIT + '/.build-tmp'
+    L.rmtree(tmp)
+    d, h = input_objects('D:/r62-a6m7/bench/c-m')
+    wjson_local(tmp + '/deleg.json', d)
+    wjson_local(tmp + '/handoff.json', h)
+    for n in ('deleg.json', 'handoff.json'):
+        a, b = L.sha256_file(tmp + '/' + n), L.sha256_file(BENCH + '/work/in-m/' + n)
+        rep['MethodReproducesBench:' + n] = {'Built': a, 'Bench': b, 'Equal': a == b}
+    L.rmtree(tmp)
+    d, h = input_objects(L.CDIR)
+    wjson_local(L.CUSTODY['DELEG'], d)
+    wjson_local(L.CUSTODY['H'], h)
+    L.wbytes(L.CUSTODY['TRX'], L.rbytes(L.R2_INP + '/fixture-tests.trx'))
+    for r, p in sorted(L.CUSTODY.items()):
+        rep[r] = {'Path': p, 'Sha256': L.sha256_file(p), 'Blob': L.blob_sha1(L.rbytes(p))}
+    ok = all(v['Equal'] for k, v in rep.items() if k.startswith('MethodReproducesBench'))
+    print(json.dumps(rep, indent=1, sort_keys=True))
+    return 0 if ok else 1
+
+
+def cmd_designation():
+    """a7-designation/4 of M for the -C: the round-4 designation M (custodied copy) with Repo = the -C, the custody of DELEG, H and
+    TRX_CURRENT in kit/inputs (their blobs recomputed from those bytes: only the worktree field differs from the bench copies), the
+    RunId of kit v2 (AP 16.6 form) and its RunPath, no TRX_RED (no RedSha run TRX exists; the builder records the absence), and the
+    DecisionRef of the measurement disposition."""
+    if not os.path.isfile(R4_M_COPY):
+        L.wbytes(R4_M_COPY, L.rbytes(R4_M))
+    des = L.rjson(R4_M_COPY)
+    if des.get('Schema') != 'a7-designation/4' or des['Invocation'].get('Kind') != 'MEASUREMENT':
+        raise SystemExit('the round-4 designation M is not an a7-designation/4 MEASUREMENT')
+    des['Repo'] = L.CDIR
+    des['Invocation']['RunId'] = L.RUN_ID
+    des['RunPath'] = L.RUN_PATH
+    role_custody = {'DELEG': L.CUSTODY['DELEG'], 'H': L.CUSTODY['H'], 'TRX_CURRENT': L.CUSTODY['TRX']}
+    arts = []
+    for a in des['Artifacts']:
+        if a['Role'] == 'TRX_RED':
+            continue
+        a = dict(a)
+        if a['Role'] in role_custody:
+            a['Custody'] = role_custody[a['Role']]
+            a['Blob'] = L.blob_sha1(L.rbytes(a['Custody']))
+        arts.append(a)
+    des['Artifacts'] = arts
+    des['DecisionRef'] = L.DECISION_REF
+    inv = dict(des['Invocation'])
+    inv.pop('Kind')
+    if inv != L.invocation() or des['RunPath'] != L.RUN_PATH:
+        raise SystemExit('designation M is not the measurement invocation of this kit')
+    wjson_local(DESIG, des)
+    base = L.rjson(R4_M_COPY)
+    diff = sorted(k for k in set(base) | set(des) if base.get(k) != des.get(k))
+    print(json.dumps({'Designation': DESIG, 'Sha256': L.sha256_file(DESIG), 'R4CopySha256': L.sha256_file(R4_M_COPY),
+                      'FieldsDifferingFromR4M': diff, 'Roles': [a['Role'] for a in arts]}, indent=1))
+    return 0
+
+
+def counts(c):
+    return dict((k, len(c[k])) for k in ('Commits', 'RevPaths', 'Refs', 'Paths', 'Objects', 'Files'))
+
+
+def cmd_closure():
+    des = L.rjson(DESIG)
+    E, rep = A7B.build(des, 'no-entry', True, False, '16.8')
+    L.wbytes(E_PATH, MEV.serialize(E))
+    E2 = json.loads(L.rbytes(E_PATH).decode('utf-8'))
+    chk = DSA.check(des, E2)
+    if not chk['Ok'] or chk['Vector'] is None:
+        print(json.dumps({'DesignationCheck': chk['Problems']}, indent=1))
+        return 1
+    vec = dict(chk['Vector'], E=E_PATH)
+    wjson_local(VEC, vec)
+    res = DV.derive_vector(vec)
+    wjson_local(CLOSURE, res['Closure'])
+    val = CHK.check(des, E2, i62_repo=L.expand('%USERPROFILE%') + '/' + L.W_REL, i62_commit=I62_COMMIT)
+    wjson_local(VALID, L.sanitize(val))
+    wjson_local(RECORD, {'Schema': 'a6m7-closure-derivation/2', 'Rule': 'A7-1 (A-7 AGREED, blob ebb3a87b; decisiones §100)',
+                         'Designation': DESIG, 'DesignationSha256': L.sha256_file(DESIG),
+                         'Vector': VEC, 'VectorSha256': L.sha256_file(VEC), 'E': E_PATH, 'ESha256': L.sha256_file(E_PATH),
+                         'Closure': CLOSURE, 'ClosureSha256': L.sha256_file(CLOSURE),
+                         'Validation': VALID, 'ValidationSha256': L.sha256_file(VALID), 'Accepted': val.get('Accepted'),
+                         'BuilderAbsences': rep.get('Absences'), 'BuilderNotes': rep.get('Notes'),
+                         'DesignationCheck': {'Ok': chk['Ok'], 'Problems': chk['Problems'], 'Names': chk['Names']},
+                         'Omitted': res['Omitted'], 'Inputs': res['Inputs']})
+    mine = res['Closure']
+    out = {'E': {'Path': E_PATH, 'Sha256': L.sha256_file(E_PATH), 'Entries': len(E['CanonicalInputs'])},
+           'Closure': {'Path': CLOSURE, 'Sha256': L.sha256_file(CLOSURE), 'Counts': counts(mine), 'Files': sorted(f['Name'] for f in mine['Files'])},
+           'Omitted': sorted((o['Term'], o['Cause']) for o in res['Omitted']),
+           'Absences': [(a.get('Role'), a.get('Cause') or a.get('Detail')) for a in rep.get('Absences') or []],
+           'Validation': {'Accepted': val.get('Accepted'), 'Problems': val.get('Problems'), 'Foreign': val.get('Foreign'), 'Missing': val.get('Missing'),
+                          'RedRequired': val.get('RedRequired'), 'Absences': val.get('Absences')},
+           'Record': {'Path': RECORD, 'Sha256': L.sha256_file(RECORD)}, 'Vector': {'Path': VEC, 'Sha256': L.sha256_file(VEC)}}
+    print(json.dumps(L.sanitize(out), indent=1, sort_keys=True, default=str))
+    # the only category (c) absence is TRX_RED (NOT_DESIGNATED); the category (a) absences are the fixture's (16.13 MV-6:
+    # PROMPT_TEMPLATES.md absent at EFF and EFF^1, as in the v1 E, which is byte-identical in its canonical inputs)
+    c_abs = [a.get('Role') for a in val.get('Absences') or [] if a.get('Category') == 'c']
+    ok = val.get('Accepted') is True and sorted(out['Closure']['Files']) == ['CONTRACT', 'DELEG', 'H', 'TRX'] and c_abs == ['TRX_RED'] \
+        and all(a.get('Category') in ('a', 'c') for a in val.get('Absences') or [])
+    return 0 if ok else 1
+
+
+def main(argv):
+    cmd = argv[1] if len(argv) > 1 else ''
+    if cmd == 'inputs':
+        return cmd_inputs()
+    if cmd == 'designation':
+        return cmd_designation()
+    if cmd == 'closure':
+        return cmd_closure()
+    if cmd in ('oracle', 'schema', 'prompt', 'markers', 'freeze'):
+        T = _load('tools_m7')
+        return T.build_step(cmd)
+    sys.stderr.write('usage: python -I build_m7.py inputs|designation|closure|oracle|schema|prompt|markers|freeze\n')
+    return 64
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

@@ -1,0 +1,40 @@
+OK        Autoridad y piezas — A-6 AGREED (§90) en la HEAD de W
+OK        Autoridad y piezas — A-7 AGREED (§100) en la HEAD de W
+OK        Autoridad y piezas — instrumento B-min en la HEAD de W
+OK        Autoridad y piezas — aceptante B-min en la HEAD de W
+OK        Autoridad y piezas — última sección de decisiones = §100 (la disposición tiene que ser posterior)
+OK        Autoridad y piezas — SHA-256 del instrumento (objeto Git)
+OK        Autoridad y piezas — SHA-256 del aceptante (objeto Git)
+OK        Puertas del kit — Kit (cada archivo = FREEZE.json, ninguno nuevo)
+PENDIENTE Puertas del kit — Decisiones (disposición única tras §100 con los marcadores; M7-LECTURAS; líneas del Owner)
+OK        Puertas del kit — Identidad antes (huella, nombres de claves, un único codex.exe, binario, AppVersion, acompañantes, pwsh del ru
+OK        Puertas del kit — P-07 (ningún lanzamiento previo; marcador ausente)
+PENDIENTE Puertas del kit — Estado del -C (instantánea congelada + exactamente el objeto del instrumento; registro de P-W)
+OK        Puertas del kit — Pwsh del runtime (presente, SHA-256)
+OK        Puertas del kit — Git estático (sin git.* en los directorios vigilados)
+OK        Puertas del kit — Entorno del hijo (sin GIT_*; pwsh del runtime primero; capturado como run_m7.sh, capture_launch_env.sh)
+PENDIENTE Puertas del kit — P-02 procesos (ningún codex.exe vivo; ninguno con el -C)
+OK        Puertas del kit — Proyecto de Claude del -C (ninguno)
+OK        Puertas del kit — Texto armado (SHA-256 = FREEZE)
+OK        Cierre y kit — cierre A7-1 aceptado por el validador (check_a7_closure.py)
+OK        Cierre y kit — cobertura de A-7 §3.5 (clausemap en EFF^1, EFF y MainSha_eval = K.MainSha) — mitigación de O2 en la medición
+OK        Cierre y kit — autotest del kit v2
+OK        Cierre y kit — texto armado sin la orden contract; 13 ejecuciones del instrumento
+OK        Cierre y kit — regla de reconstrucción v3: contract fuera del conjunto declarado
+OK        Cierre y kit — kit v1 sin cambios (FREEZE 459a3440) y su -C intacto
+OK        Host — checkout principal sin cambios
+OK        Host — worktree de I-64 sin cambios
+PENDIENTE Pendiente de autorización o de un paso posterior — disposición del Coordinator posterior a §100 con los marcadores de disposition-markers.json y M7-LECTURAS
+PENDIENTE Pendiente de autorización o de un paso posterior — línea OD-2 del Owner para la huella 0A9F6A34… y el binario 5c1b5596… (line-od2.txt), línea completa tras la di
+PENDIENTE Pendiente de autorización o de un paso posterior — línea (b) A6-CONTROLLER-MEDICION-CONSUMO del Owner para el trío vigente (line-b.txt), línea completa tras la d
+PENDIENTE Pendiente de autorización o de un paso posterior — app de escritorio de Codex cerrada (ningún codex.exe vivo; P-02)
+PENDIENTE Pendiente de autorización o de un paso posterior — python -I prep_write.py: escritura del objeto del instrumento en el -C (A6-3, regla 1), solo tras la disposici
+PENDIENTE Pendiente de autorización o de un paso posterior — comprobación del punto de uso (pou_m7.py, (i)-(viii) de A6-3, regla 3) con el pwsh del runtime, después de pre
+PENDIENTE Pendiente de autorización o de un paso posterior — I-64 sin trabajo crítico en el momento del lanzamiento
+SESION    Solo en la sesión real — identidad real antes y después (huella, binario, versión, acompañantes) y estado de autenticación
+SESION    Solo en la sesión real — forma exacta con que 26.1023 registra las órdenes; shell real (pwsh del runtime, -NoProfile o cmd) y su modo d
+SESION    Solo en la sesión real — sobres sin alterar, separables de stderr y sin truncar (clausemap ≈ 44 KB)
+SESION    Solo en la sesión real — el alias de Python arranca dentro del sandbox; git por nombre en el entorno real = Git declarado
+SESION    Solo en la sesión real — tiempo dentro del tope de 600 s; el modelo copia literalmente las 18 ejecuciones y rellena el esquema completo
+SESION    Solo en la sesión real — modelo y effort efectivos (turn_context) = gpt-6-luna / high; escritura de -o
+{"OK": 23, "PENDIENTE": 10, "SESION": 6}

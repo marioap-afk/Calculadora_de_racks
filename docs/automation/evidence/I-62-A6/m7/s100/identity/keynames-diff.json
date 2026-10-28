@@ -1,0 +1,12 @@
+{
+ "Schema": "i62-codex-keynames-diff/1",
+ "Baseline": "baseline-keynames-F909F480.json (107)",
+ "Current": "baseline-keynames-0A9F6A34.json (106)",
+ "Removed": [
+  "[plugins.\"code-review@openai-bundled\"]",
+  "plugins.\"code-review@openai-bundled\".enabled"
+ ],
+ "Added": [
+  "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE"
+ ]
+}

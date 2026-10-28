@@ -1,0 +1,222 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$comment": "a7-designation/4: per-invocation designation of an FX-02 VERIFY invocation (the verification, its 16.7 reverification, a negative control) or of the A6-7 measurement under the candidate A7-1 round 4 (I-62 A-7, point 2 (c)): it names the role of every custodied artifact of category (c) (at most one artifact per role) and registers its path and its blob; the rebase record (role REBASE, with its RunId registered) only in the reverification (Invocation.Kind REVERIFICATION) and, as its copy, in a negative control with invocation on the inputs of that reverification (Invocation.Kind REVERIFICATION_CONTROL, RAE \u00a710), whose designation identifies the reverification (Source). MainSha_eval is derived (K.MainSha, or the MainAfterSha of the rebase record of the reverification), never designated. Part of the construction and validation procedure that A7-1 point 7 names as invalidator (identified by the SHA-256 of this file).",
+ "title": "a7-designation/4",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "Schema",
+  "Case",
+  "Repo",
+  "AuthorityRevision",
+  "Invocation",
+  "RunPath",
+  "Artifacts",
+  "Instrument",
+  "MapPath",
+  "Adapter"
+ ],
+ "properties": {
+  "Schema": {
+   "const": "a7-designation/4"
+  },
+  "Case": {
+   "type": "string"
+  },
+  "Repo": {
+   "type": "string",
+   "minLength": 1
+  },
+  "AuthorityRevision": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{40}$"
+  },
+  "Invocation": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "UnitId",
+    "TaskId",
+    "Attempt",
+    "RunId",
+    "Target"
+   ],
+   "properties": {
+    "UnitId": {
+     "type": "string",
+     "minLength": 1
+    },
+    "TaskId": {
+     "type": "string",
+     "minLength": 1
+    },
+    "Attempt": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "RunId": {
+     "type": "string",
+     "minLength": 1
+    },
+    "Kind": {
+     "enum": [
+      "VERIFY",
+      "REVERIFICATION",
+      "REVERIFICATION_CONTROL",
+      "MEASUREMENT"
+     ],
+     "$comment": "absent = VERIFY (the verification and the negative controls on its inputs); REVERIFICATION = the 16.7 reverification without conflicts; REVERIFICATION_CONTROL = a negative control with invocation on the inputs of that reverification (RAE \u00a710), with Source; only these two kinds have a REBASE role; MEASUREMENT = the A6-7 measurement invocation, which produces no verification and has no relay facts (no RELAY role)"
+    },
+    "Target": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "Commit",
+      "Path",
+      "Blob"
+     ],
+     "properties": {
+      "Commit": {
+       "type": "string",
+       "pattern": "^[0-9a-f]{40}$"
+      },
+      "Path": {
+       "type": "string",
+       "minLength": 1
+      },
+      "Blob": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^[0-9a-f]{40}$"
+      }
+     }
+    }
+   }
+  },
+  "RunPath": {
+   "type": "string",
+   "minLength": 1
+  },
+  "Artifacts": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "Role",
+     "Path",
+     "Blob",
+     "Custody"
+    ],
+    "properties": {
+     "Role": {
+      "type": "string",
+      "enum": [
+       "CONTRACT",
+       "DELEG",
+       "H",
+       "TRX_CURRENT",
+       "TRX_RED",
+       "RELAY",
+       "REBASE"
+      ]
+     },
+     "Path": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.@+-]+(/[A-Za-z0-9_.@+-]+)*$"
+     },
+     "Blob": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+     },
+     "Custody": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "RunId": {
+      "type": "string",
+      "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$",
+      "$comment": "only for the REBASE role, where it is required (checked by the builder and the validator: the JSON-schema subset of the bench has no conditional keywords): the RunId of the rebase record (16.6), the name of its directory; in a REVERIFICATION_CONTROL, the RunId of the record of the reverification, whose copy it is"
+     }
+    }
+   }
+  },
+  "Instrument": {
+   "type": [
+    "object",
+    "null"
+   ],
+   "additionalProperties": false,
+   "required": [
+    "Path",
+    "Blob"
+   ],
+   "properties": {
+    "Path": {
+     "type": "string"
+    },
+    "Blob": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{40}$"
+    }
+   }
+  },
+  "MapPath": {
+   "type": "string",
+   "minLength": 1
+  },
+  "Adapter": {
+   "type": "string"
+  },
+  "DecisionRef": {
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "Source": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "Control",
+    "RunId",
+    "Designation",
+    "DesignationSha256"
+   ],
+   "properties": {
+    "Control": {
+     "enum": [
+      "nc1",
+      "nc2",
+      "nc3",
+      "n4",
+      "n5",
+      "n6",
+      "n7a",
+      "n7b"
+     ],
+     "$comment": "the control (RAE \u00a710 nc1-nc3; V14 D.3 N4-N7b), as in its path artifacts/orchestration/<UnitId>/<TaskId>-<control>/"
+    },
+    "RunId": {
+     "type": "string",
+     "pattern": "^R[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$",
+     "$comment": "the RunId of the reverification"
+    },
+    "Designation": {
+     "type": "string",
+     "minLength": 1,
+     "$comment": "the custodied a7-designation/4 of the reverification"
+    },
+    "DesignationSha256": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{64}$"
+    }
+   },
+   "$comment": "only (and always) for Invocation.Kind REVERIFICATION_CONTROL (checked by the builder and the validator): the reverification whose inputs the control copies"
+  }
+ }
+}

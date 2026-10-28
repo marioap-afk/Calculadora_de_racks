@@ -1,0 +1,11 @@
+--- v1/gates_m7.py
++++ v2/gates_m7.py
+@@ -51,7 +51,7 @@
+         self.expect = {'BinaryHash': p['Trio']['BinaryHash'], 'AppVersion': p['Trio']['AppVersion'],
+                        'Fingerprint': p['Trio']['Fingerprint'], 'Companions': p['Codex']['CompanionsSha256First16'],
+                        'RuntimePwshSha256': p['RuntimePwsh']['Sha256']}
+-        self.baseline = L.KIT + '/baseline-keynames-F909F480.json'
++        self.baseline = L.KIT + '/' + p['Codex']['KeyNamesBaseline']
+         self.git = L.expand(p['Git']['Path'])
+         self.py = L.expand(p['Interpreter']['Path'])
+         self.params = p

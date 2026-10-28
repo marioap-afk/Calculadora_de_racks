@@ -1,0 +1,244 @@
+{
+ "ArmedPrompt": {
+  "Chars": 17486,
+  "SanitizedCopy": "frozen/prompt.m7.armed.sanitized.txt",
+  "Sha256": "a2d500d83596f9338d7546972b1150218d2a48b8eaf1c4244fe98b50144f14c6"
+ },
+ "Authority": "I-62, A-6 AGREED (blob 4bc919dd) y A-7 AGREED (blob ebb3a87b), decisiones \u00a7100, puntos 3 y 4: kit v2 de la medicion A6-7 (actualizacion incremental del kit 459a3440); no lanza, no autoriza consumo",
+ "Closure": {
+  "Path": "frozen/closure.json",
+  "Sha256": "2c5cedf14b9390eae13102084990063951ec00fc8a2bc70b51f039e668049674"
+ },
+ "ClosureValidation": {
+  "Path": "frozen/closure-validation.json",
+  "Sha256": "d53b39ea38e54c489c12e46ffae79ba45afd8b3c733da37e7aeb359c9aeed16c"
+ },
+ "DerivationRecord": {
+  "Path": "frozen/derivation.json",
+  "Sha256": "716463df3ba80e1712d1d879260c3db32932c151d1e62a5122a46c8cdc7d50b6"
+ },
+ "Designation": {
+  "Path": "frozen/designation-M.json",
+  "Sha256": "a5d45905768febd2bca72fa70436562b52ff69306b15ea67d331f7bbf895afad"
+ },
+ "E": {
+  "Path": "frozen/E.json",
+  "Sha256": "0488409ceec42e54edcbb0b9f68b91eb0128a71b5f8edb99b3cb201d853b1cd5"
+ },
+ "Files": {
+  "README.md": {
+   "Bytes": 9484,
+   "Sha256": "e76192b11691de7b45e009ef9130c94f47b33ca7b1bc013df97ab5fc2de0dcc8"
+  },
+  "a7-designation-4.schema.json": {
+   "Bytes": 5651,
+   "Sha256": "0d8effb2caf9e64992ed2b025cbb6db593b3dd383600ce18d976119bfdb79dcc"
+  },
+  "baseline-keynames-0A9F6A34.json": {
+   "Bytes": 4163,
+   "Sha256": "9ef171c902210581369ee400abfb4f2e2f7e5911d0a518bdd217e790b972570c"
+  },
+  "build_m7.py": {
+   "Bytes": 10086,
+   "Sha256": "508064195b1de97286c8f9dc898599dfaf952a81912035e4c1bb2caa492a230f"
+  },
+  "cfg-fp.ps1": {
+   "Bytes": 1479,
+   "Sha256": "b1d833c0abc06fec6e27367b6df2715e7cdca321f0d6c6fbadb9f634e6a31bab"
+  },
+  "check_a7_closure.py": {
+   "Bytes": 43092,
+   "Sha256": "2d6a891b1321b29cdef6fd6caac2fc42f39699408864456c6fef3f18c7b22080"
+  },
+  "check_citation_blobs.py": {
+   "Bytes": 8299,
+   "Sha256": "e99ea7105d82a4262e6998ff767f08341bdae92c24fb31560393f8283e69f737"
+  },
+  "derive_r4.py": {
+   "Bytes": 13783,
+   "Sha256": "3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426"
+  },
+  "designate_a7.py": {
+   "Bytes": 10580,
+   "Sha256": "7ea39a5401f4d7345da55b728785c1a4b9cab0748b952c43ae3357f4321167d3"
+  },
+  "disposition-markers.json": {
+   "Bytes": 1925,
+   "Sha256": "d448dc2979222ec59fb17424e5102f863ce293ace7eaaa80714746bc2f868f26"
+  },
+  "frozen/E.json": {
+   "Bytes": 9222,
+   "Sha256": "0488409ceec42e54edcbb0b9f68b91eb0128a71b5f8edb99b3cb201d853b1cd5"
+  },
+  "frozen/closure-validation.json": {
+   "Bytes": 8283,
+   "Sha256": "d53b39ea38e54c489c12e46ffae79ba45afd8b3c733da37e7aeb359c9aeed16c"
+  },
+  "frozen/closure.json": {
+   "Bytes": 14317,
+   "Sha256": "2c5cedf14b9390eae13102084990063951ec00fc8a2bc70b51f039e668049674"
+  },
+  "frozen/derivation.json": {
+   "Bytes": 2483,
+   "Sha256": "716463df3ba80e1712d1d879260c3db32932c151d1e62a5122a46c8cdc7d50b6"
+  },
+  "frozen/designation-M.json": {
+   "Bytes": 1673,
+   "Sha256": "a5d45905768febd2bca72fa70436562b52ff69306b15ea67d331f7bbf895afad"
+  },
+  "frozen/m7-run.snapshot.json": {
+   "Bytes": 45717,
+   "Sha256": "1d2d4d1d92a3c42b4fc07c14c13e963a30624a90c7ee6f962318348368c104ed"
+  },
+  "frozen/m7-run.snapshot.record.json": {
+   "Bytes": 2230,
+   "Sha256": "a635794d68eb6495818ab8cde70bd1b7e03e2d1a4d8b1c9f32d71512b63a9335"
+  },
+  "frozen/oracle.json": {
+   "Bytes": 26676,
+   "Sha256": "46da73745d36077f9a08e1dd50019fb8b5ddc9dfd3c1d94abb8f1c506cb8291f"
+  },
+  "frozen/prompt.m7.armed.sanitized.txt": {
+   "Bytes": 16732,
+   "Sha256": "2a09948b750a763080fe5bcd426b72cd22acf2711365a3f38a13157973f22ba9"
+  },
+  "frozen/vector.json": {
+   "Bytes": 1073,
+   "Sha256": "3faa920e09077b3bc969b025eae983a3522232697c5f4b529d6b00b1f7db013d"
+  },
+  "gates_m7.py": {
+   "Bytes": 25982,
+   "Sha256": "9acc3b351c04fdfdb01fb986c4166dbb813b329b5ac5a67cfc6385523bfb4015"
+  },
+  "inputs/deleg.json": {
+   "Bytes": 6299,
+   "Sha256": "47589a1b6b4e726c38c3e2463dde60691da7472311c2276f4dd94521ed5db346"
+  },
+  "inputs/fixture-tests.trx": {
+   "Bytes": 2772,
+   "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513"
+  },
+  "inputs/handoff.json": {
+   "Bytes": 1684,
+   "Sha256": "7a771e5a2d2ee252664eaa71455996d47e92458e4ad6f044907dc42647cceadd"
+  },
+  "inputs/r4-designation-M.json": {
+   "Bytes": 1863,
+   "Sha256": "ede01da2051009a52d57cb3c7b06bb8fc1e01712a3ca06d8b95c667dfe2de259"
+  },
+  "lib_kit.py": {
+   "Bytes": 14563,
+   "Sha256": "852e56ff8125f6cbbfe9ba08c491df015a2f7ffc5c2c638f2bd694d8d8cb4d1e"
+  },
+  "line-b.txt": {
+   "Bytes": 876,
+   "Sha256": "d2f0891c99ad660ba4a3536f319c3f9162f0e79de8061785b83c43bec4db9f4a"
+  },
+  "line-od2.txt": {
+   "Bytes": 161,
+   "Sha256": "769c2a8a900fc36236e949fb2e459ad14a68b648ef32299d3e0c3c928b9d4493"
+  },
+  "m7-params.json": {
+   "Bytes": 3025,
+   "Sha256": "dedf0f937d687f53c2483f06df8a8231a5f01f4bdae58bebcd37e28d3e0bb9dc"
+  },
+  "make_eic_a7.py": {
+   "Bytes": 47842,
+   "Sha256": "addf51b2838dfaaa4a33c77f64fc6e5686207a81ee30485800e468e9954cf95c"
+  },
+  "make_eic_verify.py": {
+   "Bytes": 18620,
+   "Sha256": "58f13c6a8564fe9877e3a5bb40e8d46fccf1ce67ac174ccd6a4298ddad03a8d2"
+  },
+  "pou_check.py": {
+   "Bytes": 24195,
+   "Sha256": "c3490925c63d24747952663470725487a6e45b90e2128e122910d3e49d81db7d"
+  },
+  "pou_m7.py": {
+   "Bytes": 7441,
+   "Sha256": "7e3f9e734e668921de021c989f0e288234fe7e10fd5aba94394b5c0393af3c3a"
+  },
+  "prep_clone.py": {
+   "Bytes": 6755,
+   "Sha256": "941ed55d5995e3f56e2a396a26c193e118d00defb23c38df4e80c0c6547aeb87"
+  },
+  "prep_write.py": {
+   "Bytes": 5934,
+   "Sha256": "d427e47adf9f5e713c74c3bc7349850697139f83a0b25b62100ffd6f57dfaff0"
+  },
+  "procs-snapshot.ps1": {
+   "Bytes": 1236,
+   "Sha256": "f879db305dd296d30241cca75cf61ac0a5828077cd2be6277e4128f934afedaf"
+  },
+  "prompt.m7.template.txt": {
+   "Bytes": 6667,
+   "Sha256": "c199e1f86950bd381ca59b8971f6781e0def0ec28c3f2d77a23e156f1bf22d54"
+  },
+  "reconstruct_runs.py": {
+   "Bytes": 18603,
+   "Sha256": "5dc9f78ee40e0f54efc5d14b2ec84dc12dd4a6c1d63b66b0c07a9d2be33338da"
+  },
+  "reconstruct_runs_m7.py": {
+   "Bytes": 25143,
+   "Sha256": "f5f8f269efdb881bc395a0a7a244d7d9fe00bbce23f56306ae6efc0d2a6af834"
+  },
+  "run_m7.sh": {
+   "Bytes": 7275,
+   "Sha256": "d5979bfd43f6610a7c9b4108a3481c8badaf711a825ac4b9e4e0f58ce08acdec"
+  },
+  "schema.m7.json": {
+   "Bytes": 16864,
+   "Sha256": "19ffdce996ce3f651ca1ac363b97892a56afdbcb81a3950276b7d107d66ca2dc"
+  },
+  "schema.m7.strict-projection.json": {
+   "Bytes": 16194,
+   "Sha256": "42f444ef5aeb4a4b55ed481661f8655ec104eadc9c8a732b66167eef740416c6"
+  },
+  "selftest-report.json": {
+   "Bytes": 37663,
+   "Sha256": "bed9ebc164b8dce8e6cb5eabcbd515643fb405d94ac01004ae18ec693fdfad45"
+  },
+  "selftest_m7.py": {
+   "Bytes": 66711,
+   "Sha256": "316fcf312132927ffd838aeb53c7c347adc2470866a2c6c45a15df4b61115a38"
+  },
+  "selftest_m7.sh": {
+   "Bytes": 796,
+   "Sha256": "329204dc0067c189f5b64723e4a6c7109f57fff810f83b8cbebc55d670f7ebc6"
+  },
+  "table_m7.py": {
+   "Bytes": 7992,
+   "Sha256": "e653b30ad7483cc09a4111764d032c32004c1fdbe531e1febf64f63e33f9076e"
+  },
+  "table_r3.py": {
+   "Bytes": 14518,
+   "Sha256": "ec4d9a8ec0f665f74660bf517526b0a1c097efe630feda1f83297c8661851c9b"
+  },
+  "table_r4.py": {
+   "Bytes": 3817,
+   "Sha256": "e1efb54a7f9189c715780cfd130f2ea8540e70d9c5739adff3aa12a5bb5f2797"
+  },
+  "tools_m7.py": {
+   "Bytes": 71394,
+   "Sha256": "a694f08d5271b32fe33b36a0006d2f2f5cfea04438340f0425fdebd44f62e599"
+  }
+ },
+ "FrozenUtc": "2026-10-28T03:02:52Z",
+ "Oracle": {
+  "Path": "frozen/oracle.json",
+  "Sha256": "46da73745d36077f9a08e1dd50019fb8b5ddc9dfd3c1d94abb8f1c506cb8291f"
+ },
+ "ReconstructionRule": {
+  "Path": "reconstruct_runs_m7.py",
+  "Sha256": "f5f8f269efdb881bc395a0a7a244d7d9fe00bbce23f56306ae6efc0d2a6af834"
+ },
+ "ReferenceReconstructionRule": {
+  "Path": "reconstruct_runs.py",
+  "Sha256": "5dc9f78ee40e0f54efc5d14b2ec84dc12dd4a6c1d63b66b0c07a9d2be33338da"
+ },
+ "Schema": "i62-a6m7-freeze/1",
+ "Snapshot": {
+  "Path": "frozen/m7-run.snapshot.json",
+  "Sha256": "1d2d4d1d92a3c42b4fc07c14c13e963a30624a90c7ee6f962318348368c104ed"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "Designation": "D:/r62-a6m7/kit2/frozen/designation-M.json",
+ "Sha256": "a5d45905768febd2bca72fa70436562b52ff69306b15ea67d331f7bbf895afad",
+ "R4CopySha256": "ede01da2051009a52d57cb3c7b06bb8fc1e01712a3ca06d8b95c667dfe2de259",
+ "FieldsDifferingFromR4M": [
+  "Artifacts",
+  "DecisionRef",
+  "Invocation",
+  "Repo",
+  "RunPath"
+ ],
+ "Roles": [
+  "DELEG",
+  "H",
+  "CONTRACT",
+  "TRX_CURRENT"
+ ]
+}

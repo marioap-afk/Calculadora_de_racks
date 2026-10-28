@@ -1,0 +1,33 @@
+{
+ "Oracle": "D:/r62-a6m7/kit2/frozen/oracle.json",
+ "Sha256": "46da73745d36077f9a08e1dd50019fb8b5ddc9dfd3c1d94abb8f1c506cb8291f",
+ "Eff": "fbe25347799e5b801ef708454212335537448bd1",
+ "Candidates": 1,
+ "Terms": [
+  "GATE PASS",
+  "GATE_PASS",
+  "Candidato",
+  "Candidate",
+  "FINAL_CANDIDATE_SHA",
+  "gate cerrado",
+  "gate closed",
+  "cierre del gate",
+  "rama integrada",
+  "integrada en main",
+  "integrated into main",
+  "merged into main",
+  "lista para integrar",
+  "ready to merge",
+  "Owner Validation APROBADA",
+  "Owner Validation APPROVED"
+ ],
+ "DiffPaths": [
+  "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+  "src/Fixture.Lib/Calculator.cs",
+  "tests/Fixture.Tests/CalculatorTests.cs"
+ ],
+ "Commits": [
+  "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+  "b417d36cb820a27c78d6c7d50c234460469c89f8"
+ ]
+}

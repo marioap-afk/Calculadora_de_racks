@@ -1,0 +1,387 @@
+{
+ "Accepted": true,
+ "Readings": {
+  "AbsentA": "no-entry",
+  "PathRule": "text",
+  "RedRule": "16.8"
+ },
+ "NoClosureExpected": [],
+ "Foreign": [],
+ "Duplicates": [],
+ "Missing": [],
+ "Overlaps": [],
+ "ListViolations": [],
+ "Problems": [],
+ "Absences": [
+  {
+   "Category": "c",
+   "Role": "TRX_RED",
+   "Path": null,
+   "Cause": "NOT_DESIGNATED"
+  },
+  {
+   "Category": "a",
+   "Role": "a:16.13-MV6@EFF",
+   "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+   "Revision": "EFF",
+   "Cause": "absent"
+  },
+  {
+   "Category": "a",
+   "Role": "a:16.13-MV6@EFF^1",
+   "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+   "Revision": "EFF^1",
+   "Cause": "absent"
+  }
+ ],
+ "RepeatedPairs": [
+  {
+   "Path": "AGENTS.md",
+   "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+   "Lists": [
+    "CanonicalInputs",
+    "AutomaticInstructions"
+   ]
+  },
+  {
+   "Path": "docs/WORKFLOW.md",
+   "Blob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "Lists": [
+    "AllowedTransitiveInputs",
+    "AllowedTransitiveInputs"
+   ]
+  },
+  {
+   "Path": "docs/automation/agent-execution/README.md",
+   "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Lists": [
+    "AllowedTransitiveInputs",
+    "AllowedTransitiveInputs"
+   ]
+  }
+ ],
+ "UnregisteredBlobs": [],
+ "RedRequired": true,
+ "NotApplicableRoles": [],
+ "Classified": [
+  {
+   "List": "CanonicalInputs",
+   "Path": "docs/automation/decisions/FX-U1-T1.gate-contract.json",
+   "Blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+   "Categories": [
+    "c"
+   ],
+   "Labels": [
+    "c:CONTRACT"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "docs/automation/decisions/FX-U1.md",
+   "Blob": "d3f3ec72974a65e05ebd7ad4d1c0b3ced7a07c93",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:AUTHORITY:UNIT_DOC@AR"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "docs/automation/state/FX-U1.yml",
+   "Blob": "52a3f7d77a4df1a2e70e5d443eece3384cebd670",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:AUTHORITY:UNIT_DOC@AR"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Blob": "73e8502c5fed4cff98d53e3ca880ac5598fac597",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:AUTHORITY:UNIT_CHANGE@AR"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+   "Blob": "cd43240b64a3d587915fa852d5fbf5947b8d8fe2",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:AUTHORITY:UNIT_CHANGE@AR"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "AGENTS.md",
+   "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:AUTHORITY:EXTERNAL@MainSha_eval",
+    "a:INSTRUCTION@AR"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "docs/AUTOMATION_PLAN.md",
+   "Blob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:16.13-EVALUATE@MainSha_eval",
+    "a:16.13-MV6@EFF",
+    "a:16.13-MV6@EFF^1",
+    "a:16.13-VALIDATE@EFF",
+    "a:16.13-VALIDATE@EFF^1",
+    "a:AUTHORITY:EXTERNAL@MainSha_eval",
+    "a:OBLIGATION-READ@AR"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+   "Blob": "0863f2c65dde4e895117f69dbb525dd13c824415",
+   "Categories": [
+    "b"
+   ],
+   "Labels": [
+    "b:DIFF"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "Blob": "380892ee869194aa4bd56dcf32dfd76ef0203ab9",
+   "Categories": [
+    "b"
+   ],
+   "Labels": [
+    "b:DIFF",
+    "b:TARGET"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+   "Blob": "a9d18f4d1506f1754b446a65f2c6ef90f1609d5a",
+   "Categories": [
+    "b"
+   ],
+   "Labels": [
+    "b:DIFF"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "docs/automation/decisions/FX-U1.md",
+   "Blob": "3fcfffc1aa7ad442422d4da2e5edaf89c48239ea",
+   "Categories": [
+    "b"
+   ],
+   "Labels": [
+    "b:RECORD"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "docs/automation/state/FX-U1.yml",
+   "Blob": "a9fea86d076d3a21a6217fa82641e33013fb1340",
+   "Categories": [
+    "b"
+   ],
+   "Labels": [
+    "b:RECORD"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json",
+   "Blob": "8358efbf0fa00b6deb0edd03997b8f801c29b1e2",
+   "Categories": [
+    "c"
+   ],
+   "Labels": [
+    "c:DELEG"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json",
+   "Blob": "b56992662d942b122cc365e5176b7a7daa1fd6d1",
+   "Categories": [
+    "c"
+   ],
+   "Labels": [
+    "c:H"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "artifacts/ci/R37949808974/fixture-tests.trx",
+   "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff",
+   "Categories": [
+    "c"
+   ],
+   "Labels": [
+    "c:TRX_CURRENT"
+   ]
+  },
+  {
+   "List": "CanonicalInputs",
+   "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+   "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed",
+   "Categories": [
+    "d"
+   ],
+   "Labels": [
+    "d:INSTRUMENT"
+   ]
+  },
+  {
+   "List": "AllowedTransitiveInputs",
+   "Path": "docs/WORKFLOW.md",
+   "Blob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:16.13-EVALUATE@MainSha_eval",
+    "a:16.13-MV6@EFF",
+    "a:16.13-MV6@EFF^1",
+    "a:16.13-VALIDATE@EFF",
+    "a:OBLIGATION-READ@AR"
+   ]
+  },
+  {
+   "List": "AllowedTransitiveInputs",
+   "Path": "docs/automation/agent-execution/README.md",
+   "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:16.13-MV6@EFF",
+    "a:16.13-MV6@EFF^1",
+    "a:OBLIGATION-READ@AR"
+   ]
+  },
+  {
+   "List": "AllowedTransitiveInputs",
+   "Path": "docs/automation/agent-execution/compatibility/I62-clause-map.json",
+   "Blob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:16.13-MAP@EFF",
+    "a:OBLIGATION-READ@EFF"
+   ]
+  },
+  {
+   "List": "AllowedTransitiveInputs",
+   "Path": "docs/automation/agent-execution/compatibility/clause-map.schema.json",
+   "Blob": "6b54dda9579d694200d8fc9ec26a4a846eef529b",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:16.13-MAP_SCHEMA@EFF",
+    "a:OBLIGATION-READ@EFF"
+   ]
+  },
+  {
+   "List": "AllowedTransitiveInputs",
+   "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+   "Blob": "cc3c9cf76b2247f3312e99bd447554326cc3700a",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:OBLIGATION-READ@AR"
+   ]
+  },
+  {
+   "List": "AllowedTransitiveInputs",
+   "Path": "docs/INITIATIVE_LIFECYCLE.md",
+   "Blob": "f19896a8f1a7c82f74bac7231636f68462a87271",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:16.13-MV6@EFF",
+    "a:16.13-MV6@EFF^1"
+   ]
+  },
+  {
+   "List": "AllowedTransitiveInputs",
+   "Path": "docs/WORKFLOW.md",
+   "Blob": "446c32ba6a91f9a712a0758038ae0a46ab1c970f",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:16.13-EVALUATE@MainSha_eval",
+    "a:16.13-MV6@EFF",
+    "a:16.13-MV6@EFF^1",
+    "a:16.13-VALIDATE@EFF",
+    "a:OBLIGATION-READ@AR"
+   ]
+  },
+  {
+   "List": "AllowedTransitiveInputs",
+   "Path": "docs/automation/agent-execution/README.md",
+   "Blob": "592dcfd45e8743fd83b3423249fbd3c73e3d3055",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:16.13-MV6@EFF",
+    "a:16.13-MV6@EFF^1",
+    "a:OBLIGATION-READ@AR"
+   ]
+  },
+  {
+   "List": "AllowedTransitiveInputs",
+   "Path": "docs/automation/agent-execution/routing.md",
+   "Blob": "bba08fc4686d7192deeb559752636a467103b4b1",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:16.13-MV6@EFF",
+    "a:16.13-MV6@EFF^1"
+   ]
+  },
+  {
+   "List": "AutomaticInstructions",
+   "Path": "AGENTS.md",
+   "Blob": "69b1f03282a128993ba348ba1e44a1b6b9c95040",
+   "Categories": [
+    "a"
+   ],
+   "Labels": [
+    "a:INSTRUCTION@AR"
+   ]
+  }
+ ],
+ "InvocationKind": "MEASUREMENT",
+ "MainShaEvalSource": "K.MainSha",
+ "Revisions": {
+  "AR": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+  "MainSha_eval": "fbe25347799e5b801ef708454212335537448bd1",
+  "EFF": "fbe25347799e5b801ef708454212335537448bd1",
+  "EFF^1": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+  "Target.commit": "b417d36cb820a27c78d6c7d50c234460469c89f8"
+ }
+}

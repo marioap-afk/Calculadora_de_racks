@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §100; evidencia §208) — A-7 AGREED (blob ebb3a87b; Architect R20261024T041128Z-4825 ACCREDITED; Coordinator §100); O1 errata registrada, O2 residuo operativo; preparar la medición de A6-7: disposición única previa a la medición (A6-7 regla 7 y cierre efectivo, identidad de contrato/delegación/entrega/TRX/RelayFacts, lecturas del aceptante, exclusión de contract por D-1 con U-19, FC-01/04/10/12/13/16/18/24, reconstrucción de las ejecuciones, shell/Python/Git efectivos, mitigación de O2, presupuesto de D.3), kit a6m7-measure actualizado de forma incremental con preflight estático, identidad pasiva de Codex y líneas del Owner; sin Codex ni consumo; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §100; evidencia §208-§209) — A-7 AGREED; kit v2 de la medición A6-7 preparado y congelado sin lanzar (kits/FX-02/a6m7-measure-v2, FREEZE fc355540; autotest 114/114; preflight estático sin FAIL); trío vigente de Codex 5c1b5596/26.1023.6123.0/0A9F6A34; siguiente: disposición única del Coordinator posterior a §100 (borrador en I-62-A6/m7/s100/), líneas OD-2 y (b) del Owner, cierre de la app de Codex, prep_write.py y bash run_m7.sh launch, una vez; sin Codex ni consumo hasta entonces; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

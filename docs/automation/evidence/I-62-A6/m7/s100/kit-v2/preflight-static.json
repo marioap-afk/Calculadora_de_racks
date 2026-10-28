@@ -1,0 +1,445 @@
+{
+ "Schema": "i62-a6m7-v2-static-preflight/1",
+ "UtcTime": "2026-10-28T03:04:27Z",
+ "Kit": "D:/r62-a6m7/kit2",
+ "FreezeSha256": "fc355540bf66cb10cdcd2783cec00f37778639b9339e7b34d5f698aee7fc2aad",
+ "WorktreeHead": "2019566ae4ea263471f9d39eeb6b5a4f5142b469",
+ "Summary": {
+  "OK": 23,
+  "PENDIENTE": 10,
+  "SESION": 6
+ },
+ "NoFail": true,
+ "Rows": [
+  {
+   "Group": "Autoridad y piezas",
+   "Condition": "A-6 AGREED (§90) en la HEAD de W",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Head": "2019566ae4ea263471f9d39eeb6b5a4f5142b469",
+    "Path": "docs/initiatives/I-62-A-6.md",
+    "Blob": "4bc919dd4768ab81abc74b70d3a4a3821c07feb5"
+   }
+  },
+  {
+   "Group": "Autoridad y piezas",
+   "Condition": "A-7 AGREED (§100) en la HEAD de W",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Head": "2019566ae4ea263471f9d39eeb6b5a4f5142b469",
+    "Path": "docs/initiatives/I-62-A-7.md",
+    "Blob": "ebb3a87b0b33ddf1d6418f4e9f4fb4195d1555d3"
+   }
+  },
+  {
+   "Group": "Autoridad y piezas",
+   "Condition": "instrumento B-min en la HEAD de W",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Head": "2019566ae4ea263471f9d39eeb6b5a4f5142b469",
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/tool/bmin_facts.py",
+    "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+   }
+  },
+  {
+   "Group": "Autoridad y piezas",
+   "Condition": "aceptante B-min en la HEAD de W",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Head": "2019566ae4ea263471f9d39eeb6b5a4f5142b469",
+    "Path": "docs/automation/evidence/I-62-F6/FX-02/bmin/accept/bmin_accept.py",
+    "Blob": "434ef1fccb0d15762b30244b4a60928120698411"
+   }
+  },
+  {
+   "Group": "Autoridad y piezas",
+   "Condition": "última sección de decisiones = §100 (la disposición tiene que ser posterior)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Last": 100
+   }
+  },
+  {
+   "Group": "Autoridad y piezas",
+   "Condition": "SHA-256 del instrumento (objeto Git)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Blob": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+   }
+  },
+  {
+   "Group": "Autoridad y piezas",
+   "Condition": "SHA-256 del aceptante (objeto Git)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Blob": "434ef1fccb0d15762b30244b4a60928120698411"
+   }
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "Kit (cada archivo = FREEZE.json, ninguno nuevo)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "FreezeSha256": "fc355540bf66cb10cdcd2783cec00f37778639b9339e7b34d5f698aee7fc2aad",
+    "Files": 49
+   }
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "Decisiones (disposición única tras §100 con los marcadores; M7-LECTURAS; líneas del Owner)",
+   "Status": "PENDIENTE",
+   "Reason": "rechazo previsto hasta la autorización o el paso que la sigue",
+   "Detail": [
+    "no single Coordinator disposition after section 100 contains every marker"
+   ]
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "Identidad antes (huella, nombres de claves, un único codex.exe, binario, AppVersion, acompañantes, pwsh del runtime)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Differs": []
+   }
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "P-07 (ningún lanzamiento previo; marcador ausente)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {}
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "Estado del -C (instantánea congelada + exactamente el objeto del instrumento; registro de P-W)",
+   "Status": "PENDIENTE",
+   "Reason": "rechazo previsto hasta la autorización o el paso que la sigue",
+   "Detail": [
+    "state of the -C is not the frozen snapshot plus exactly the instrument loose object: []",
+    "no held preparation write (A6-3 rule 1) with DecisionRef I62-A6-7-M7 in out/prep-write.json",
+    "no registered config of the preparation write (out/registered-config.json)"
+   ]
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "Pwsh del runtime (presente, SHA-256)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {}
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "Git estático (sin git.* en los directorios vigilados)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Dirs": [
+     {
+      "Dir": "%LOCALAPPDATA%\\Microsoft\\WindowsApps",
+      "Method": "listdir",
+      "Matches": []
+     },
+     {
+      "Dir": "C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0",
+      "Method": "listdir",
+      "Matches": []
+     },
+     {
+      "Dir": "C:\\WINDOWS\\System32",
+      "Method": "listdir",
+      "Matches": []
+     },
+     {
+      "Dir": "C:\\WINDOWS\\System",
+      "Method": "listdir",
+      "Matches": []
+     },
+     {
+      "Dir": "C:\\WINDOWS",
+      "Method": "listdir",
+      "Matches": []
+     },
+     {
+      "Dir": "D:/r62-a6m7/m7-run2",
+      "Method": "listdir",
+      "Matches": []
+     },
+     {
+      "Dir": "%USERPROFILE%\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell",
+      "Method": "listdir",
+      "Matches": []
+     }
+    ]
+   }
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "Entorno del hijo (sin GIT_*; pwsh del runtime primero; capturado como run_m7.sh, capture_launch_env.sh)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "GitVariables": [],
+    "PathFirst": "%USERPROFILE%\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell",
+    "NoDefaultCurrentDirectoryInExePath": "1"
+   }
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "P-02 procesos (ningún codex.exe vivo; ninguno con el -C)",
+   "Status": "PENDIENTE",
+   "Reason": "rechazo previsto hasta la autorización o el paso que la sigue",
+   "Detail": [
+    "P-02: 2 codex.exe process(es) alive (no other codex.exe may run at the launch)"
+   ]
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "Proyecto de Claude del -C (ninguno)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Path": "%USERPROFILE%\\.claude\\projects\\D--r62-a6m7-m7-run2"
+   }
+  },
+  {
+   "Group": "Puertas del kit",
+   "Condition": "Texto armado (SHA-256 = FREEZE)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Sha256": "a2d500d83596f9338d7546972b1150218d2a48b8eaf1c4244fe98b50144f14c6",
+    "Chars": 17486
+   }
+  },
+  {
+   "Group": "Cierre y kit",
+   "Condition": "cierre A7-1 aceptado por el validador (check_a7_closure.py)",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Omitted": [
+     [
+      "C1.D.ChainRedSha",
+      "FIELD_NULL"
+     ]
+    ],
+    "BuilderAbsences": [
+     "TRX_RED",
+     "16.13:MV-6",
+     "16.13:MV-6"
+    ]
+   }
+  },
+  {
+   "Group": "Cierre y kit",
+   "Condition": "cobertura de A-7 §3.5 (clausemap en EFF^1, EFF y MainSha_eval = K.MainSha) — mitigación de O2 en la medición",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Rc": 0,
+    "Result": "LAUNCH_MAY_PROCEED",
+    "Blocking": []
+   }
+  },
+  {
+   "Group": "Cierre y kit",
+   "Condition": "autotest del kit v2",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Holding": 114,
+    "Total": 114,
+    "ByGroup": {
+     "A": {
+      "Holding": 6,
+      "Total": 6
+     },
+     "B": {
+      "Holding": 9,
+      "Total": 9
+     },
+     "D": {
+      "Holding": 7,
+      "Total": 7
+     },
+     "G": {
+      "Holding": 48,
+      "Total": 48
+     },
+     "N": {
+      "Holding": 25,
+      "Total": 25
+     },
+     "P": {
+      "Holding": 9,
+      "Total": 9
+     },
+     "S": {
+      "Holding": 3,
+      "Total": 3
+     },
+     "U": {
+      "Holding": 7,
+      "Total": 7
+     }
+    }
+   }
+  },
+  {
+   "Group": "Cierre y kit",
+   "Condition": "texto armado sin la orden contract; 13 ejecuciones del instrumento",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "BlobCount": 13
+   }
+  },
+  {
+   "Group": "Cierre y kit",
+   "Condition": "regla de reconstrucción v3: contract fuera del conjunto declarado",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Rule": "reconstruct_runs_m7/3",
+    "Orders": [
+     "identity",
+     "diff",
+     "scope",
+     "hashes",
+     "cleantree",
+     "read-text",
+     "read-json",
+     "trx",
+     "handoff",
+     "freetext",
+     "clausemap"
+    ]
+   }
+  },
+  {
+   "Group": "Cierre y kit",
+   "Condition": "kit v1 sin cambios (FREEZE 459a3440) y su -C intacto",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Host",
+   "Condition": "checkout principal sin cambios",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Branch": "main",
+    "Head": "95690c28dc6268e61dff32a0cbc33cc9fde3d47f"
+   }
+  },
+  {
+   "Group": "Host",
+   "Condition": "worktree de I-64 sin cambios",
+   "Status": "OK",
+   "Reason": null,
+   "Detail": {
+    "Head": "09f2f1c3"
+   }
+  },
+  {
+   "Group": "Pendiente de autorización o de un paso posterior",
+   "Condition": "disposición del Coordinator posterior a §100 con los marcadores de disposition-markers.json y M7-LECTURAS",
+   "Status": "PENDIENTE",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Pendiente de autorización o de un paso posterior",
+   "Condition": "línea OD-2 del Owner para la huella 0A9F6A34… y el binario 5c1b5596… (line-od2.txt), línea completa tras la disposición",
+   "Status": "PENDIENTE",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Pendiente de autorización o de un paso posterior",
+   "Condition": "línea (b) A6-CONTROLLER-MEDICION-CONSUMO del Owner para el trío vigente (line-b.txt), línea completa tras la disposición",
+   "Status": "PENDIENTE",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Pendiente de autorización o de un paso posterior",
+   "Condition": "app de escritorio de Codex cerrada (ningún codex.exe vivo; P-02)",
+   "Status": "PENDIENTE",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Pendiente de autorización o de un paso posterior",
+   "Condition": "python -I prep_write.py: escritura del objeto del instrumento en el -C (A6-3, regla 1), solo tras la disposición",
+   "Status": "PENDIENTE",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Pendiente de autorización o de un paso posterior",
+   "Condition": "comprobación del punto de uso (pou_m7.py, (i)-(viii) de A6-3, regla 3) con el pwsh del runtime, después de prep_write",
+   "Status": "PENDIENTE",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Pendiente de autorización o de un paso posterior",
+   "Condition": "I-64 sin trabajo crítico en el momento del lanzamiento",
+   "Status": "PENDIENTE",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Solo en la sesión real",
+   "Condition": "identidad real antes y después (huella, binario, versión, acompañantes) y estado de autenticación",
+   "Status": "SESION",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Solo en la sesión real",
+   "Condition": "forma exacta con que 26.1023 registra las órdenes; shell real (pwsh del runtime, -NoProfile o cmd) y su modo de lenguaje",
+   "Status": "SESION",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Solo en la sesión real",
+   "Condition": "sobres sin alterar, separables de stderr y sin truncar (clausemap ≈ 44 KB)",
+   "Status": "SESION",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Solo en la sesión real",
+   "Condition": "el alias de Python arranca dentro del sandbox; git por nombre en el entorno real = Git declarado",
+   "Status": "SESION",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Solo en la sesión real",
+   "Condition": "tiempo dentro del tope de 600 s; el modelo copia literalmente las 18 ejecuciones y rellena el esquema completo",
+   "Status": "SESION",
+   "Reason": null,
+   "Detail": null
+  },
+  {
+   "Group": "Solo en la sesión real",
+   "Condition": "modelo y effort efectivos (turn_context) = gpt-6-luna / high; escritura de -o",
+   "Status": "SESION",
+   "Reason": null,
+   "Detail": null
+  }
+ ]
+}

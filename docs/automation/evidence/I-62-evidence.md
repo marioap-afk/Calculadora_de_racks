@@ -5089,3 +5089,38 @@ solo desde artefactos custodiados.
 - **Siguiente:** preparación de A6-7 (disposición única previa a la medición, kit `a6m7-measure` actualizado de forma incremental, preflight
   estático, identidad pasiva de Codex, líneas del Owner para la identidad vigente; la solicitud de B1, preparada aparte). Sin Codex, sin consumo,
   sin B1 ni FX-U2, sin D.5 ni enmiendas nuevas.
+
+## 209. Medición de A6-7: kit v2 preparado, congelado y autoprobado sin lanzar; borrador de la disposición única; identidad vigente de Codex (decisiones §100, puntos 3-5)
+
+- **Identidad de Codex (pasiva, §100, punto 5)** ([`s100/identity/`](I-62-A6/m7/s100/identity/obs6.json)): Codex se actualizó otra vez. El trío
+  vigente es binario `5c1b5596…` (etiqueta `08d187884f2330d1`, del 2026-10-27), AppVersion 26.1023.6123.0, huella `0A9F6A34…` con 106 nombres
+  de clave: se retiró la sección del plugin `code-review@openai-bundled` y se añadió una clave `mcp_servers.node_repl.env.*` (solo nombres). Los
+  acompañantes son `4c99510126c2ea89` y el pwsh del runtime no cambió (`362a356c…`). Tres observaciones iguales entre 02:32Z y 02:49Z. El trío del
+  kit v1 ya no rige; Git 2.54.0 y Python 3.13.14 siguen siendo los declarados.
+- **Kit v2** ([`kits/FX-02/a6m7-measure-v2/`](I-62-F6/kits/FX-02/a6m7-measure-v2/README.md); FREEZE `fc355540bf66cb10…`, 49 archivos), actualización
+  incremental del kit `459a3440`, que no cambia:
+  - trío vigente y su línea base de nombres;
+  - cierre A7-1 en lugar de R7-A (`a7-designation/4` MEASUREMENT; constructor, validador y `designate_a7` reutilizados byte a byte de
+    `I-62-A7/r4/`), aceptado por el validador; la única omisión es `C1.D.ChainRedSha FIELD_NULL`, y `TRX_RED` queda `NOT_DESIGNATED`;
+  - orden declarada de 11 órdenes sin `contract` (D-1), más dos `read-json --file` de CONTRACT y DELEG con los ocho punteros de `Contract`
+    (13 ejecuciones del instrumento);
+  - regla de reconstrucción v3 (conjunto declarado; cabecera con la sentencia retirada, F8);
+  - `RunId` `R20261028T024440Z-27a9`, con la forma de AP 16.6, y `-C` propio, `D:\r62-a6m7\m7-run2`;
+  - disposición posterior a §100; esquema `/2`.
+
+  Autotest **114/114**, con un caso nuevo: todo registro con `contract` es no reconstruible con v3.
+- **Preflight estático** ([`s100/kit-v2/preflight-static.json`](I-62-A6/m7/s100/kit-v2/preflight-static.json)): OK 23, PENDIENTE 10, SESION 6,
+  sin ningún FAIL. Pendientes: la disposición única, las dos líneas del Owner, el cierre de la app de Codex (2 procesos vivos), `prep_write.py`
+  y el punto de uso. Las condiciones de la sesión real están marcadas. Cobertura de A-7 §3.5 sobre el cierre de la medición: LAUNCH_MAY_PROCEED.
+- **Borrador de la disposición única** ([`s100/pre-measurement-disposition-draft.md`](I-62-A6/m7/s100/pre-measurement-disposition-draft.md)): una
+  sección con los marcadores literales del kit y las líneas del Owner para el trío vigente (preparadas, no autorizadas). Cinco cuestiones aisladas,
+  sin enmienda:
+  - A: no hay un TRX real de `RedSha`;
+  - B: el recálculo de `Contract` por la supervisión sería un control nuevo;
+  - C: el residuo de O2 en la reverificación;
+  - D: la nueva actualización de Codex, con la sonda opcional;
+  - E: la lectura de `AuthorityResolution`.
+- **Observación sobre la custodia del kit v1** (sin cambio, solo por añadido): en `HEAD`, `baseline-keynames-F909F480.json` tiene LF, y su FREEZE
+  registra los bytes CRLF del archivo de trabajo (`core.autocrlf` sin regla `-text` en esa carpeta). Los otros 42 archivos coinciden con su
+  FREEZE. El kit v2 y s100 llevan regla `-text`.
+- Sin Codex, sin consumo de A6-7, sin B1 ni FX-U2, sin sección de decisiones; ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.

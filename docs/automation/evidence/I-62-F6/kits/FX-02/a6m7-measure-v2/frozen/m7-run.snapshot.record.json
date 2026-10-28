@@ -1,0 +1,67 @@
+{
+ "Checks": {
+  "AbbrevRef": true,
+  "AutocrlfFalse": true,
+  "Commit:1746b404": true,
+  "Commit:53436cb2": true,
+  "Commit:95bdc29d": true,
+  "Commit:b417d36c": true,
+  "Commit:fbe25347": true,
+  "ContractBlobAtTarget": true,
+  "Head": true,
+  "IgnorePathIgnored": true,
+  "InstrumentObjectAbsent": true,
+  "NoGraftsNoAlternates": true,
+  "NoReplaceRefs": true,
+  "NotShallow": true,
+  "OriginBranch": true,
+  "OriginMain": true,
+  "StatusClean": true,
+  "StatusIgnored": true
+ },
+ "Dest": "D:/r62-a6m7/m7-run2",
+ "Method": "shutil.copytree of the source (refs, packed-refs, objects, index, worktree), then git update-index -q --refresh once",
+ "Placed": {
+  "DELEG": {
+   "CustodySha256": "47589a1b6b4e726c38c3e2463dde60691da7472311c2276f4dd94521ed5db346",
+   "Path": "artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json",
+   "Sha256": "47589a1b6b4e726c38c3e2463dde60691da7472311c2276f4dd94521ed5db346"
+  },
+  "H": {
+   "CustodySha256": "7a771e5a2d2ee252664eaa71455996d47e92458e4ad6f044907dc42647cceadd",
+   "Path": "artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json",
+   "Sha256": "7a771e5a2d2ee252664eaa71455996d47e92458e4ad6f044907dc42647cceadd"
+  },
+  "TRX": {
+   "CustodySha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+   "Path": "artifacts/orchestration/FX-U1/T1-m7/0/R20261028T024440Z-27a9/ci-current/fixture-tests.trx",
+   "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513"
+  }
+ },
+ "Schema": "i62-a6m7-prep-clone/1",
+ "Snapshot": {
+  "Config": {
+   "Local": {
+    "Exists": true,
+    "Sha256": "e2d2286782661c26fba88a30a4deb25970c22224542ba7acae536b7e02b1243e"
+   },
+   "Worktree": {
+    "Exists": false,
+    "Sha256": null
+   }
+  },
+  "GitFiles": 263,
+  "IndexSha256": "e4a1cff09a9f7d0202701b3b1a2a4d9113cdf75bf86c335f81ceca12cf087aa3",
+  "Path": "D:/r62-a6m7/kit2/frozen/m7-run.snapshot.json",
+  "Refs": 9,
+  "Sha256": "1d2d4d1d92a3c42b4fc07c14c13e963a30624a90c7ee6f962318348368c104ed",
+  "StatusZ": [
+   "!! artifacts/"
+  ],
+  "WorktreeFiles": 81
+ },
+ "Source": "D:/r62-a6r2/r3/deliv",
+ "SourceHead": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+ "SourceUnchanged": true,
+ "UtcTime": "2026-10-28T02:48:49Z"
+}

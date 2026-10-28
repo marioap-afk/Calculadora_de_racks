@@ -1,0 +1,281 @@
+--- v1/selftest_m7.py
++++ v2/selftest_m7.py
+@@ -1,7 +1,7 @@
+ # selftest_m7.py - self-tests of the A6-7 measurement kit (I-62), WITHOUT launching anything: Codex is never executed (the
+ # launch step runs only with a stub binary compiled into a temporary directory under the kit), the runtime pwsh of Codex is
+ # never executed (the PATH pwsh 7 stands for it), config.toml, auth.json and the sessions are never read (fixtures), and the
+-# measurement -C (D:\r62-a6m7\m7-run) is only read: every write goes to scratch copies under <kit>/.selftest, removed at the end.
++# measurement -C (lib_kit.CDIR, kit v2: D:\r62-a6m7\m7-run2) is only read: every write goes to scratch copies under <kit>/.selftest, removed at the end.
+ #   python -I selftest_m7.py [--keep]      -> selftest-report.json (canonical, sanitized); exit 0 iff every case holds
+ import base64, copy, glob, importlib.util, json, os, re, shutil, subprocess, sys, time, uuid
+ 
+@@ -45,18 +45,19 @@
+ # ------------------------------------------------------------------ A. static
+ def group_static():
+     reuse = {'derive_r4.py': '3de12c54e3893b7c8689825f69bc8fd2a9cea767eaa6d0f77d5361f1ff29c426',
+-             'designate_m7.py': '491dcbd672518befa3cf74a64c7a9971992c66eee5bd122b3ae537a184f5a5c6',
+              'make_eic_verify.py': '58f13c6a8564fe9877e3a5bb40e8d46fccf1ce67ac174ccd6a4298ddad03a8d2',
+-             'table_m7.py': 'a0765733be3e140f01afe1818d3a1ff630e83cb1970acba22e593f322574c1e3',
++             'make_eic_a7.py': 'addf51b2838dfaaa4a33c77f64fc6e5686207a81ee30485800e468e9954cf95c',
++             'designate_a7.py': '7ea39a5401f4d7345da55b728785c1a4b9cab0748b952c43ae3357f4321167d3',
++             'check_a7_closure.py': '2d6a891b1321b29cdef6fd6caac2fc42f39699408864456c6fef3f18c7b22080',
++             'a7-designation-4.schema.json': '0d8effb2caf9e64992ed2b025cbb6db593b3dd383600ce18d976119bfdb79dcc',
++             'check_citation_blobs.py': 'e99ea7105d82a4262e6998ff767f08341bdae92c24fb31560393f8283e69f737',
+              'table_r3.py': 'ec4d9a8ec0f665f74660bf517526b0a1c097efe630feda1f83297c8661851c9b',
+              'table_r4.py': 'e1efb54a7f9189c715780cfd130f2ea8540e70d9c5739adff3aa12a5bb5f2797',
+              'reconstruct_runs.py': '5dc9f78ee40e0f54efc5d14b2ec84dc12dd4a6c1d63b66b0c07a9d2be33338da',
+              'pou_check.py': 'c3490925c63d24747952663470725487a6e45b90e2128e122910d3e49d81db7d',
+              'cfg-fp.ps1': 'b1d833c0abc06fec6e27367b6df2715e7cdca321f0d6c6fbadb9f634e6a31bab',
+              'procs-snapshot.ps1': 'f879db305dd296d30241cca75cf61ac0a5828077cd2be6277e4128f934afedaf',
+-             'baseline-keynames-F909F480.json': '076637c550ff0b3109447ef00263ff087749f0aaa71f299d524e43b8cf82b70b',
+-             'line-od2.txt': '3b33dd56cbae5fddab9a9431e7ad9b83170e6782e0161385bc324789634b7f25',
+-             'line-b.txt': 'dda4b3f9c1db0183a38e5400777a2a21d524aa4b92ad684d5c5cae1b2fc4cf27'}
++             }
+     got = dict((f, L.sha256_file(L.KIT + '/' + f)) for f in reuse)
+     case('A', 'REUSE-BYTES', 'every reused file byte-identical to its source (bench, v5 kit, r2static, Owner lines)',
+          dict((f, got[f] == reuse[f]) for f in reuse), got == reuse)
+@@ -110,11 +111,11 @@
+     case('A', 'REFERENCE-RUNTIME-SHELL', 'FINDING: rendered with the runtime pwsh of Codex (%USERPROFILE%\\.cache\\...\\pwsh.exe) the reference rule '
+          'rejects every order (component .cache); v2 reconstructs them', sorted(set(ref_runtime)),
+          set(ref_runtime) == {'outer: shell is not an absolute path to pwsh.exe'})
+-    case('A', 'PROMPT', 'armed prompt: ASCII, no double quote, the full blob only in the 12 orders, abbreviated name in C2, no oracle value, every '
++    case('A', 'PROMPT', 'armed prompt: ASCII, no double quote, the full blob only in the 13 instrument executions, abbreviated name in C2, no oracle value, every '
+          'order as written in the prompt reconstructible by v2 (runtime pwsh) and by the reference (a pwsh path without dot components) to the same '
+          'argv; SHA-256 = FREEZE',
+          {'Chars': len(text), 'BlobCount': text.count(L.B), 'Sha256': L.sha256(text.encode('utf-8'))},
+-         all(ord(c) < 128 for c in text) and '"' not in text and text.count(L.B) == 12 and L.B12 in text and all(rec_ok)
++         all(ord(c) < 128 for c in text) and '"' not in text and text.count(L.B) == len(L.EXEC_LABELS) and L.B12 in text and all(rec_ok)
+          and 'acceptor' not in text.lower() and 'aceptante' not in text.lower() and 'SPEC' not in text and 'controller-verification' not in text
+          and L.sha256(text.encode('utf-8')) == L.rjson(L.KIT + '/FREEZE.json')['ArmedPrompt']['Sha256'])
+     src = L.rbytes(L.KIT + '/tools_m7.py').decode('utf-8')
+@@ -133,14 +134,45 @@
+             'Runs': [dict((k, r.get(k)) for k in KEYS) for r in res['Runs']]}
+ 
+ 
++def nocontract(b):
++    """kit v2: the log without its executions of `contract` (both events of each such item; lines kept byte for byte), so that the
++    reconstruction rule v3 (declared order set) is compared with the reference on the rest of the log."""
++    lines = b.split(b'\n')
++    drop = set()
++    for line in lines:
++        try:
++            it = json.loads(line.decode('utf-8')).get('item')
++        except Exception:
++            continue
++        if isinstance(it, dict) and it.get('type') == 'command_execution' and L.B in (it.get('command') or '') \
++                and ' -I - contract ' in (it.get('command') or ''):
++            drop.add(it.get('id'))
++    if not drop:
++        return b
++    keep = []
++    for line in lines:
++        try:
++            it = json.loads(line.decode('utf-8')).get('item')
++        except Exception:
++            it = None
++        if isinstance(it, dict) and it.get('id') in drop:
++            continue
++        keep.append(line)
++    return b'\n'.join(keep)
++
++
+ def group_recon():
+     files = sorted(glob.glob('D:/r62-a6r3/r1/s-recon/*-events.jsonl')) + sorted(glob.glob('D:/r62-a6r4/r1/s-*/session-events.jsonl')) \
+         + sorted(glob.glob('D:/r62-a6m7/bench/work/s-*/session-events.jsonl')) \
+         + sorted(glob.glob(os.path.join(W, 'docs', 'automation', 'evidence', 'I-62-F6', 'OD-2*', '*', '*events.jsonl')))
+     same, diffs = 0, []
+     ok_runs = None
++    rejected = []
+     for f in files:
+-        b = L.rbytes(f)
++        b0 = L.rbytes(f)
++        b = nocontract(b0)
++        if b != b0:
++            rejected.append((os.path.basename(f), rbrief(R2.reconstruct(b0, L.B))['R'], rbrief(R2.reconstruct(b0, L.B))['P'][:1]))
+         a, c = rbrief(R1.reconstruct(b, L.B)), rbrief(R2.reconstruct(b, L.B))
+         if a == c:
+             same += 1
+@@ -151,19 +183,23 @@
+     exp_diff = sorted(x[0] for x in diffs)
+     fo = [x for x in diffs if x[0] == 'F-outer-flags-events.jsonl']
+     fc = [x for x in diffs if x[0] == 'F-cmd-shell-events.jsonl']
+-    case('B', 'V2-EQ-REFERENCE', 'every r3/r4/bench/custodied log: same reconstruction as the reference (Reconstructible, Runs, Problems), except '
++    case('B', 'V2-EQ-REFERENCE', 'every r3/r4/bench/custodied log, without its executions of contract (kit v2): same reconstruction as the reference (Reconstructible, Runs, Problems), except '
+          'F-outer-flags (the -NoProfile rendering v2 adds) and F-cmd-shell (both not reconstructible; message differs: cmd with &)',
+          {'Logs': len(files), 'Identical': same, 'Different': exp_diff},
+          exp_diff == ['F-cmd-shell-events.jsonl', 'F-outer-flags-events.jsonl'] and fo and fo[0][1] is False and fo[0][2] is True
+          and fc and fc[0][1] is False and fc[0][2] is False and same == len(files) - 2)
++    case('B', 'V3-CONTRACT-NOT-RECONSTRUCTIBLE', 'kit v2 (D-1): every log with an execution of contract is NOT reconstructible under v3 (declared '
++         'order set: inner: unknown tool command), whatever the reference gives; without those executions v3 = the reference (V2-EQ-REFERENCE)',
++         {'LogsWithContract': len(rejected), 'V3Reconstructible': [x[0] for x in rejected if x[1]], 'Problems': sorted(set(str(x[2]) for x in rejected))[:4]},
++         bool(rejected) and not any(x[1] for x in rejected))
+     # F-outer-flags under v2 = the OK log runs (argv and envelopes)
+-    b = L.rbytes('D:/r62-a6r3/r1/s-recon/F-outer-flags-events.jsonl')
++    b = nocontract(L.rbytes('D:/r62-a6r3/r1/s-recon/F-outer-flags-events.jsonl'))
+     v = rbrief(R2.reconstruct(b, L.B))
+     case('B', 'V2-NOPROFILE-R3CASE', 'F-outer-flags (r3) under v2: reconstructible with the argv and envelope SHA-256 of OK',
+          {'Reconstructible': v['R'], 'Runs': len(v['Runs'])},
+          v['R'] and [(r['Argv'], r['EnvelopeSha256']) for r in v['Runs']] == [(r['Argv'], r['EnvelopeSha256']) for r in ok_runs])
+     # new renderings and malformed variants, on the OK log of r3
+-    okb = L.rbytes('D:/r62-a6r3/r1/s-recon/OK-events.jsonl')
++    okb = nocontract(L.rbytes('D:/r62-a6r3/r1/s-recon/OK-events.jsonl'))
+ 
+     def rewrite(fn):
+         out = []
+@@ -234,7 +270,7 @@
+     enc = rewrite(lambda p: R2.render_command([p['Shell'], '-EncodedCommand', base64.b64encode(pw_inner(p).encode('utf-16-le')).decode()]))
+     e1, e2 = R1.reconstruct(enc, L.B), R2.reconstruct(enc, L.B)
+     case('B', 'V2-ENCODED-NOT-IDENTIFIED', 'LIMIT (unchanged from the reference): an execution that does not name the blob (-EncodedCommand) is '
+-         'not identified; reference and v2 both count 0 executions (the comparator then reports the 12 orders as not executed)',
++         'not identified; reference and v2 both count 0 executions (the comparator then reports the declared orders as not executed)',
+          {'Reference': e1['InstrumentExecutions'], 'V2': e2['InstrumentExecutions']}, e1['InstrumentExecutions'] == 0 and e2['InstrumentExecutions'] == 0)
+     case('B', 'V2-MALFORMED', 'every malformed or unlisted rendering fails closed under v2 (cmd with & %% ^ ! >, unquoted or bare paths, quoted args, '
+          'second pipe, no -I, no --no-replace-objects, double space, /C, /d /c, /s /c, relative cmd, pwsh inner under cmd, other pwsh flags or order, '
+@@ -243,19 +279,19 @@
+ 
+ 
+ # ------------------------------------------------------------------ fixtures: scratch -C copies, decisions, identity, stub
+-def fixture_decisions(path, drop=(), alter=None, owner=('line-od2.txt', 'line-b.txt'), owner_before=False, lect='§92', lect_section=True,
++def fixture_decisions(path, drop=(), alter=None, owner=('line-od2.txt', 'line-b.txt'), owner_before=False, lect='§102', lect_section=True,
+                       two=False, no90=False, owner_mut=None):
+     markers = G7.expected_markers(G7.Config())
+     lines = ['# I-62 decisiones (fixture del autotest; no es el archivo real)', '']
+     if not no90:
+-        lines += ['## 90. Disposicion del Coordinator: A-6 AGREED (fixture)', '', 'texto', '']
++        lines += ['## 100. Disposicion del Coordinator: A-7 AGREED (fixture)', '', 'texto', '']
+     ol = []
+     for n in owner:
+         t = L.rbytes(L.KIT + '/' + n).decode('utf-8')
+         ol.append(owner_mut(n, t) if owner_mut else t)
+     if owner_before:
+         lines += ol + ['']
+-    body = ['## 91. Disposicion del Coordinator: medicion A6-7 del Controller de FX-02 (fixture)', '']
++    body = ['## 101. Disposicion del Coordinator: medicion A6-7 del Controller de FX-02 (fixture)', '']
+     for m in markers:
+         if m.split(':', 1)[0] in drop:
+             continue
+@@ -264,11 +300,11 @@
+         body.append('- M7-LECTURAS: disposicion de A6-5, regla 6: ' + lect)
+     lines += body + ['']
+     if two:
+-        lines += [body[0].replace('## 91.', '## 93.')] + body[1:] + ['']
++        lines += [body[0].replace('## 101.', '## 103.')] + body[1:] + ['']
+     if not owner_before:
+         lines += ol + ['']
+     if lect_section:
+-        lines += ['## 92. Disposicion del Coordinator: lecturas normativas del aceptante (A6-5, regla 6) (fixture)', '', 'texto', '']
++        lines += ['## 102. Disposicion del Coordinator: lecturas normativas del aceptante (A6-5, regla 6) (fixture)', '', 'texto', '']
+     L.wbytes(path, ('\n'.join(lines) + '\n').encode('utf-8'))
+     return path
+ 
+@@ -330,9 +366,9 @@
+     raise SystemExit('no noise line')
+ 
+ 
+-# ------------------------------------------------------------------ S. synthetic session: the 17 executions really run in pwsh 7
++# ------------------------------------------------------------------ S. synthetic session: the 18 executions really run in pwsh 7
+ def run_session(T, env):
+-    """C1..C17 exactly as the prompt orders them, through the PATH pwsh 7 (never the runtime pwsh), cwd = T, launch environment.
++    """C1..C18 exactly as the prompt orders them, through the PATH pwsh 7 (never the runtime pwsh), cwd = T, launch environment.
+     Returns the Codex-format log (the shell rendered as the runtime pwsh, like Codex records it) and the raw executions."""
+     if os.path.normcase(os.path.dirname(PWSH7)) == os.path.normcase(os.path.dirname(DEC['Pwsh'])):
+         raise SystemExit('refusing: the PATH pwsh is the runtime pwsh')
+@@ -343,7 +379,7 @@
+                ('C3', T7.precond_script(T))]
+     for name, argv in T7.order_argvs(T):
+         scripts.append(('I:' + name, T7.inner_cmd(argv, DEC['Git'], DEC['Py'])))
+-    scripts.append(('C16', T7.primary_script('A', T)))
++    scripts.append(('C17', T7.primary_script('A', T)))
+     execs = []
+     for label, s in scripts:
+         p = sh([PWSH7, '-NoLogo', '-NoProfile', '-NonInteractive', '-Command', s], cwd=T, env=env, timeout=900)
+@@ -352,7 +388,7 @@
+     eff = cm['Facts']['Derive']['Eff']
+     sB = T7.primary_script('B', T).replace('<Eff>', eff)
+     p = sh([PWSH7, '-NoLogo', '-NoProfile', '-NonInteractive', '-Command', sB], cwd=T, env=env, timeout=900)
+-    execs.append({'Label': 'C17', 'Script': sB, 'Rc': p.returncode, 'Stdout': p.stdout, 'Stderr': p.stderr})
++    execs.append({'Label': 'C18', 'Script': sB, 'Rc': p.returncode, 'Stdout': p.stdout, 'Stderr': p.stderr})
+     tid = str(uuid.uuid4())
+     ev = [{'type': 'thread.started', 'thread_id': tid}, {'type': 'turn.started'},
+           {'type': 'item.completed', 'item': {'id': 'item_0', 'type': 'agent_message', 'text': 'Controller sintetico del autotest m7 (sin modelo).'}}]
+@@ -381,12 +417,12 @@
+     c = lambda label: 'C%d' % ([x['Label'] for x in execs].index(label) + 1)
+     g = lines(by['C1'])
+     pre = lines(by['C3'])
+-    segA = T7.segments(by['C16']['Stdout'].decode('utf-8', 'replace'))
+-    segB = T7.segments(by['C17']['Stdout'].decode('utf-8', 'replace'))
++    segA = T7.segments(by['C17']['Stdout'].decode('utf-8', 'replace'))
++    segB = T7.segments(by['C18']['Stdout'].decode('utf-8', 'replace'))
+     prim = []
+     for pid, blk, order, _ in T7.PRIMARY:
+         seg = (segA if blk == 'A' else segB).get(pid, [])
+-        prim.append({'Id': pid, 'Invocation': 'C16' if blk == 'A' else 'C17', 'GitCommand': T7.primary_cmd(pid, eff, T), 'OutputLines': [s.strip() for s in seg],
++        prim.append({'Id': pid, 'Invocation': 'C17' if blk == 'A' else 'C18', 'GitCommand': T7.primary_cmd(pid, eff, T), 'OutputLines': [s.strip() for s in seg],
+                      'InstrumentValue': 'facts of ' + order, 'Equal': True})
+     idf = F('identity')
+     cm = F('clausemap')
+@@ -395,14 +431,14 @@
+            'RevisionSha': cm['Resolve']['Ar'] if ci['Class'] in ('UNIT_DOC', 'UNIT_CHANGE') else cm['Resolve']['ContractMainSha'], 'Parts': [],
+            'EffectiveSha': cm['Derive']['Eff'], 'ClauseMapBlob': mapb, 'UnitProtocol': 'rackcad-protocol/I62'} for ci in cm['Resolve']['Citations']]
+     jd = lambda v: json.dumps(v, ensure_ascii=True)
+-    o = {'Schema': 'rackcad-a6m7-measurement/1', 'Mode': 'A6-7_MEDICION', 'RunId': L.RUN_ID, 'ShellInvocations': len(execs),
++    o = {'Schema': 'rackcad-a6m7-measurement/2', 'Mode': 'A6-7_MEDICION', 'RunId': L.RUN_ID, 'ShellInvocations': len(execs),
+          'GitByName': {'Invocation': 'C1', 'WhereLines': [l for l in g if re.match(r'^[A-Za-z]:\\', l)],
+                        'ExecPath': [l for l in g if 'libexec/git-core' in l][0], 'Version': [l for l in g if l.startswith('git version')][0]},
+          'Delivery': {'Invocation': 'C2', 'ObjectType': lines(by['C2'])[0], 'RehashedId': lines(by['C2'])[1]},
+          'Preconditions': {'Invocation': 'C3', 'Commits': [{'Sha': s, 'Type': t} for s, t in zip(T7.PRECOND_COMMITS, pre[:4])],
+                            'Files': [{'Path': f, 'Exists': v == 'True'} for f, v in zip(T7.precond_files(T), pre[4:])]},
+-         'Runs': [{'Order': n, 'Invocation': c('I:' + n), 'ExitCode': by['I:' + n]['Rc'], 'FactsSha256': env[n]['FactsSha256'],
+-                   'ErrorCode': None} for n in L.ORDERS],
++         'Runs': [{'Order': L.EXEC_ORDER[n], 'Invocation': c('I:' + n), 'ExitCode': by['I:' + n]['Rc'], 'FactsSha256': env[n]['FactsSha256'],
++                   'ErrorCode': None} for n in L.EXEC_LABELS],
+          'Primary': prim,
+          'Identity': {'Head': idf['Head'], 'AbbrevRef': idf['AbbrevRef'], 'Toplevel': idf['Toplevel'], 'OriginBranch': idf['OriginBranch'],
+                       'OriginMain': idf['OriginMain'], 'BaseIsAncestorOfCurrent': idf['Ancestry']['base->current'],
+@@ -418,8 +454,9 @@
+                    'DecisionsFirstLineJson': jd(F('read-text')['Lines'][0]['Text']), 'DecisionsFirstLineNonAsciiCount': F('read-text')['NonAsciiCount'],
+                    'HandoffFieldsJson': jd(F('handoff')['Fields']), 'TrxSha256': F('trx')['Sha256'], 'TrxCountersJson': jd(F('trx')['Counters']),
+                    'TrxFilterSelected': F('trx')['FilterSelected'], 'FreeTextTermsJson': jd(F('freetext')['Terms']),
+-                   'FreeTextMatchCount': len(F('freetext')['Matches']), 'ContractA5MissingJson': jd(F('contract')['A5Missing']),
+-                   'ContractSupersededEqual': F('contract')['SupersededEqual']},
++                   'FreeTextMatchCount': len(F('freetext')['Matches']),
++                   'ContractScopeJson': dict((p[1:], jd(F('read-json-contract')['Values'][p])) for p in L.CONTRACT_POINTERS),
++                   'DelegScopeJson': dict((p[1:], jd(F('read-json-deleg')['Values'][p])) for p in L.CONTRACT_POINTERS)},
+          'ClauseMap': {'Eff': cm['Derive']['Eff'], 'EffParent1': cm['Derive']['EffParent1'], 'MapBlob': mapb},
+          'AuthorityResolution': ar, 'Findings': []}
+     return o
+@@ -560,9 +597,9 @@
+     sroot = ST + '/sessions'
+     session_record(sroot, tid)
+     rcn = R2.reconstruct(events, L.B, env_dir=ST + '/env-s')
+-    case('S', 'SYNTH-RECON', 'the synthetic Codex-format log of the 17 executions reconstructs with v2: 12 instrument executions, rendering R1, '
++    case('S', 'SYNTH-RECON', 'the synthetic Codex-format log of the 18 executions reconstructs with v3: 13 instrument executions, rendering R1, '
+          'declared git and interpreter', {'Reconstructible': rcn['Reconstructible'], 'Executions': rcn['InstrumentExecutions'], 'Problems': rcn['Problems'][:2]},
+-         rcn['Reconstructible'] and rcn['InstrumentExecutions'] == 12 and all(r['Rendering'] == 'R1' for r in rcn['Runs']))
++         rcn['Reconstructible'] and rcn['InstrumentExecutions'] == len(L.EXEC_LABELS) and all(r['Rendering'] == 'R1' for r in rcn['Runs']))
+     # request + real acceptor on c1 + table
+     runs = [{'Name': 'r%02d-%s' % (r['Seq'], r['Argv'][0]), 'Envelope': r['EnvelopePath'], 'Argv': r['Argv']} for r in rcn['Runs']]
+     consts = {'Repo': c1, 'Tool': {'PinnedBlob': L.B, 'RunFrom': 'object', 'GitObject': {'GitDir': c1, 'Blob': L.B}},
+@@ -588,7 +625,7 @@
+          acc['Rc'] == 0 and acc['Decision'] == 'ACCEPT_FACTS' and tb['Accepted'] and acc['Provenance']['Ok'])
+     idfx = ST + '/idfix'
+     home = make_identity_fixture(idfx)
+-    stubdir = ST + '/stubbin/e78bad9887fa50cf'
++    stubdir = ST + '/stubbin/' + P['Codex']['Label']
+     stub = build_stub(stubdir)
+     cfgI = G7.Config()
+     cfgI.cfg_home, cfgI.appx_version, cfgI.codex_bin_root, cfgI.codex_path, cfgI.baseline = home, '9.9.9.9', ST + '/stubbin', stub, idfx + '/baseline.json'
+@@ -699,11 +736,11 @@
+     dec_case('altered-interpreter-sha', alter=lambda m: m.replace(P['Interpreter']['Sha256'], P['Interpreter']['Sha256'][:-1] + '0'))
+     dec_case('altered-closure-sha', alter=lambda m: m.replace(L.sha256_file(L.FROZEN + '/E.json'), '0' * 64))
+     dec_case('no-lecturas', lect=None)
+-    dec_case('lecturas-section-absent', lect='§97')
++    dec_case('lecturas-section-absent', lect='§107')
+     dec_case('lecturas-section-without-A6-5', lect_section=False)
+     dec_case('od2-missing', owner=('line-b.txt',))
+     dec_case('b-missing', owner=('line-od2.txt',))
+-    dec_case('od2-altered', owner_mut=lambda n, t: t.replace('6EFA5B0E', '6EFA5B0F') if n == 'line-od2.txt' else t)
++    dec_case('od2-altered', owner_mut=lambda n, t: t.replace('0A9F6A34', '0A9F6A35') if n == 'line-od2.txt' else t)
+     dec_case('b-not-complete-line', owner_mut=lambda n, t: ('- ' + t) if n == 'line-b.txt' else t)
+     dec_case('owner-before-disposition', owner_before=True)
+     dec_case('no-section-90', no90=True)

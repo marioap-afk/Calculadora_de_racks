@@ -1,0 +1,8 @@
+--- v1/prep_clone.py
++++ v2/prep_clone.py
+@@ -1,4 +1,4 @@
+-# prep_clone.py - creates the -C of the A6-7 measurement (I-62), D:\r62-a6m7\m7-run, deterministically from the r2 part (d)
++# prep_clone.py - creates the -C of the A6-7 measurement (I-62), lib_kit.CDIR (kit v2: D:\r62-a6m7\m7-run2), deterministically from the r2 part (d)
+ # delivery repository D:\r62-a6r2\r3\deliv (read only), keeping its refs and history (git diff TIP..G needs both commits), places
+ # the input copies of the designation of M under the kit paths (KPR-2: delegation and delivery at their E paths; the TRX under
+ # the ignored run directory), refreshes the index stat data once, and records the state snapshot that the gates freeze

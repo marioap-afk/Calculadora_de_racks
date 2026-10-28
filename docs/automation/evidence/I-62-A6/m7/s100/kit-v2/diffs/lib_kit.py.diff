@@ -1,0 +1,55 @@
+--- v1/lib_kit.py
++++ v2/lib_kit.py
+@@ -1,7 +1,7 @@
+-# lib_kit.py - shared helpers of the A6-7 measurement kit (I-62, A-6 AGREED, decisiones §90). Stdlib only.
+-# Constants of the measurement M (designation a6m7-designation/1 of the bench, I.TaskId = T1-m7), sanitizing, canonical JSON,
++# lib_kit.py - shared helpers of the A6-7 measurement kit v2 (I-62, A-6 and A-7 AGREED, decisiones §90 and §100). Stdlib only.
++# Constants of the measurement M (designation a7-designation/4, Kind MEASUREMENT, I.TaskId = T1-m7), sanitizing, canonical JSON,
+ # git through the DECLARED git by full path with every GIT_* variable removed, and the zero-write snapshot of the -C.
+-# Never writes outside D:\r62-a6m7\kit and D:\r62-a6m7\m7-run (and the temporary areas the self-tests create under the kit).
++# Never writes outside the kit directory and its -C D:\r62-a6m7\m7-run2 (and the temporary areas the self-tests create under the kit).
+ import datetime, hashlib, json, os, re, shutil, stat, subprocess, sys
+ 
+ sys.dont_write_bytecode = True
+@@ -13,8 +13,8 @@
+ MARKER = KIT + '/M7_LAUNCHED'                       # P-07: created before the launch, never deleted
+ 
+ # ------------------------------------------------------------------ the -C of the measurement and its source
+-CDIR = 'D:/r62-a6m7/m7-run'
+-CDIR_WIN = 'D:\\r62-a6m7\\m7-run'
++CDIR = 'D:/r62-a6m7/m7-run2'                       # kit v2: own -C (v1: D:/r62-a6m7/m7-run, untouched)
++CDIR_WIN = 'D:\\r62-a6m7\\m7-run2'
+ SRC_DELIV = 'D:/r62-a6r2/r3/deliv'                   # read only (r2 part (d) delivery repository)
+ R2_INP = 'D:/r62-a6r2/r3/runs/d/inputs'              # read only (round-2 inputs: delegation, delivery, TRX)
+ W_REL = '.codex/worktrees/architecture-portabilidad-coordinador-principal'
+@@ -49,12 +49,27 @@
+ UNIT, TASK, ATTEMPT = 'FX-U1', 'T1-m7', 0
+ D_RUN = 'R20261012T090000Z-d001'
+ H_RUN = 'R20261012T091000Z-a001'
+-RUN_ID = 'R20261016T000000Z-m7m0'                    # RunId of M (bench designation M, unchanged)
++RUN_ID = 'R20261028T024440Z-27a9'                    # RunId of M (kit v2: the AP 16.6 form R<UTC>Z-<4 hex>; decisiones §92, punto 6)
+ DECISION_REF = 'I62-A6-7-M7'                         # DecisionRef that the Coordinator's measurement disposition carries
+-ORDERS = ['identity', 'diff', 'scope', 'contract', 'hashes', 'cleantree', 'handoff', 'freetext', 'clausemap', 'trx',
+-          'read-text', 'read-json']
++ORDERS = ['identity', 'diff', 'scope', 'hashes', 'cleantree', 'handoff', 'freetext', 'clausemap', 'trx', 'read-text', 'read-json']
++# kit v2: ORDERS is the DECLARED order set, the B-min orders without `contract` (D-1; decisiones §100, punto 3). A run whose Argv[0] is
++# outside it is not reconstructible (reconstruct_runs_m7.py v3). The instrument executions of the measurement are the 11 orders plus two
++# read-json --file reads of CONTRACT and DELEG with the eight pointers of Contract (how the Controller keeps verifying Contract, with U-19,
++# without `contract`).
++CONTRACT_POINTERS = ['/AllowedWriteScope', '/ForbiddenWriteScope', '/Invariants', '/StopConditions', '/Authorities', '/RequiredTests',
++                     '/RoleRequirements', '/SupersededCommits']
++EXEC_LABELS = ORDERS + ['read-json-contract', 'read-json-deleg']
++EXEC_ORDER = dict([(n, n) for n in ORDERS] + [('read-json-contract', 'read-json'), ('read-json-deleg', 'read-json')])
+ JSON_POINTERS = ['/Objective', '/Schema', '/MainSha', '/AuthorityRevision']
+ HANDOFF_FIELDS = ['TaskId', 'Attempt', 'DelegationRunId', 'RunId', 'BaseSha', 'RedSha', 'CurrentSha', 'Branch', 'Worktree', 'Worker']
++
++
++def exec_label(argv):
++    """Execution label of an instrument argv: its order, or read-json-contract / read-json-deleg for the two read-json --file reads."""
++    a = list(argv or [])
++    if a[:1] == ['read-json'] and '--file' in a and a.index('--file') + 1 < len(a):
++        return 'read-json-' + a[a.index('--file') + 1].split('=', 1)[0].lower()
++    return a[0] if a else None
+ 
+ 
+ def deliv_path(run, name):

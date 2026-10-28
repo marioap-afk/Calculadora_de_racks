@@ -1,0 +1,27 @@
+{
+ "DELEG": {
+  "Blob": "8358efbf0fa00b6deb0edd03997b8f801c29b1e2",
+  "Path": "D:/r62-a6m7/kit2/inputs/deleg.json",
+  "Sha256": "47589a1b6b4e726c38c3e2463dde60691da7472311c2276f4dd94521ed5db346"
+ },
+ "H": {
+  "Blob": "b56992662d942b122cc365e5176b7a7daa1fd6d1",
+  "Path": "D:/r62-a6m7/kit2/inputs/handoff.json",
+  "Sha256": "7a771e5a2d2ee252664eaa71455996d47e92458e4ad6f044907dc42647cceadd"
+ },
+ "MethodReproducesBench:deleg.json": {
+  "Bench": "e46ed08bb43c39d26ca7a31f9e772ddea597d4dbc6b9769d3c51914e836d1ef7",
+  "Built": "e46ed08bb43c39d26ca7a31f9e772ddea597d4dbc6b9769d3c51914e836d1ef7",
+  "Equal": true
+ },
+ "MethodReproducesBench:handoff.json": {
+  "Bench": "702253d6ddc972adc0920a9dc65b6a3744792a6b9df312767c62ca216f440652",
+  "Built": "702253d6ddc972adc0920a9dc65b6a3744792a6b9df312767c62ca216f440652",
+  "Equal": true
+ },
+ "TRX": {
+  "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff",
+  "Path": "D:/r62-a6m7/kit2/inputs/fixture-tests.trx",
+  "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513"
+ }
+}

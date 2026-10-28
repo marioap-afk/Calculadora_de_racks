@@ -1,0 +1,818 @@
+{
+ "AuthorityResolution": {
+  "Fixed": [
+   "Path",
+   "Section",
+   "Class",
+   "EffectiveSha",
+   "ClauseMapBlob",
+   "UnitProtocol"
+  ],
+  "Readings": {
+   "R3": {
+    "Rows": [
+     {
+      "Class": "UNIT_DOC",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "docs/automation/decisions/FX-U1.md",
+      "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Section": "documento completo",
+      "UnitProtocol": "rackcad-protocol/I62"
+     },
+     {
+      "Class": "UNIT_DOC",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "docs/automation/state/FX-U1.yml",
+      "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Section": "documento completo",
+      "UnitProtocol": "rackcad-protocol/I62"
+     },
+     {
+      "Class": "UNIT_CHANGE",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "src/Fixture.Lib/Calculator.cs",
+      "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Section": "documento completo",
+      "UnitProtocol": "rackcad-protocol/I62"
+     },
+     {
+      "Class": "UNIT_CHANGE",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+      "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Section": "documento completo",
+      "UnitProtocol": "rackcad-protocol/I62"
+     },
+     {
+      "Class": "EXTERNAL",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "AGENTS.md",
+      "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Section": "## Jobs requeridos",
+      "UnitProtocol": "rackcad-protocol/I62"
+     },
+     {
+      "Class": "EXTERNAL",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Section": "## 16. Ejecuci\u00f3n delegada bajo orden del Coordinator",
+      "UnitProtocol": "rackcad-protocol/I62"
+     }
+    ],
+    "Source": "banco r3 lib_r3.authority_from (RevisionSha = --main for every row)"
+   },
+   "V5": {
+    "Rows": [
+     {
+      "Class": "UNIT_DOC",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "docs/automation/decisions/FX-U1.md",
+      "RevisionSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+      "Section": "documento completo",
+      "UnitProtocol": "rackcad-protocol/I62"
+     },
+     {
+      "Class": "UNIT_DOC",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "docs/automation/state/FX-U1.yml",
+      "RevisionSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+      "Section": "documento completo",
+      "UnitProtocol": "rackcad-protocol/I62"
+     },
+     {
+      "Class": "UNIT_CHANGE",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "src/Fixture.Lib/Calculator.cs",
+      "RevisionSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+      "Section": "documento completo",
+      "UnitProtocol": "rackcad-protocol/I62"
+     },
+     {
+      "Class": "UNIT_CHANGE",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+      "RevisionSha": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+      "Section": "documento completo",
+      "UnitProtocol": "rackcad-protocol/I62"
+     },
+     {
+      "Class": "EXTERNAL",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "AGENTS.md",
+      "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Section": "## Jobs requeridos",
+      "UnitProtocol": "rackcad-protocol/I62"
+     },
+     {
+      "Class": "EXTERNAL",
+      "ClauseMapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+      "EffectiveSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Mode": "NORMAL",
+      "Parts": [],
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "RevisionSha": "fbe25347799e5b801ef708454212335537448bd1",
+      "Section": "## 16. Ejecuci\u00f3n delegada bajo orden del Coordinator",
+      "UnitProtocol": "rackcad-protocol/I62"
+     }
+    ],
+    "Source": "kit a2p2-v5 probe_tools.evaluate_i62 (RevisionSha = K.AuthorityRevision for UNIT_DOC/UNIT_CHANGE, K.MainSha for EXTERNAL)"
+   }
+  }
+ },
+ "ClauseMap": {
+  "Candidates": [
+   "fbe25347799e5b801ef708454212335537448bd1"
+  ],
+  "Eff": "fbe25347799e5b801ef708454212335537448bd1",
+  "EffParent1": "930288c51ab1b5dbd370c8ebf9206d78670b89a0",
+  "FirstParentMerges": [
+   "fbe25347799e5b801ef708454212335537448bd1"
+  ],
+  "MapBlob": "4d49d3e1a63d2b6128c9d9eeac473156a421571a",
+  "StateBlob": "a9fea86d076d3a21a6217fa82641e33013fb1340",
+  "TrailerCommits": [
+   "a9f6c929e74ef92edfee557c3572b090f48bc318"
+  ]
+ },
+ "CleanTree": {
+  "CheckIgnoreOutput": [
+   ".gitignore:1:artifacts/orchestration/\tartifacts/orchestration/FX-U1/T1-m7/0/R20261028T024440Z-27a9/output.json"
+  ],
+  "CheckIgnoreRc": 0,
+  "StatusIgnored": [
+   "!! artifacts/"
+  ],
+  "StatusPorcelain": []
+ },
+ "ContractScope": {
+  "/AllowedWriteScope": [
+   "src/Fixture.Lib/Calculator.cs",
+   "tests/Fixture.Tests/CalculatorTests.cs",
+   "docs/automation/evidence/FX-U1-agent/**"
+  ],
+  "/Authorities": [
+   {
+    "Class": "UNIT_DOC",
+    "Path": "docs/automation/decisions/FX-U1.md",
+    "Section": "documento completo"
+   },
+   {
+    "Class": "UNIT_DOC",
+    "Path": "docs/automation/state/FX-U1.yml",
+    "Section": "documento completo"
+   },
+   {
+    "Class": "UNIT_CHANGE",
+    "Path": "src/Fixture.Lib/Calculator.cs",
+    "Section": "documento completo"
+   },
+   {
+    "Class": "UNIT_CHANGE",
+    "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+    "Section": "documento completo"
+   },
+   {
+    "Class": "EXTERNAL",
+    "Path": "AGENTS.md",
+    "Section": "## Jobs requeridos"
+   },
+   {
+    "Class": "EXTERNAL",
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Section": "## 16. Ejecuci\u00f3n delegada bajo orden del Coordinator"
+   }
+  ],
+  "/ForbiddenWriteScope": [
+   ".github/**",
+   ".gitattributes",
+   "AGENTS.md",
+   "CLAUDE.md",
+   "FIXTURE-MANIFEST.json",
+   "docs/AUTOMATION_PLAN.md",
+   "docs/WORKFLOW.md",
+   "docs/INITIATIVE_LIFECYCLE.md",
+   "docs/automation/agent-execution/**",
+   "docs/automation/decisions/**",
+   "src/Fixture.Lib/Fixture.Lib.csproj",
+   "tests/Fixture.Tests/Fixture.Tests.csproj"
+  ],
+  "/Invariants": [
+   "Calculator.Add conserva su firma y su comportamiento.",
+   "Sin paquetes ni dependencias nuevas.",
+   "P-16: ning\u00fan artefacto nombra, configura ni usa un repositorio o una unidad reales."
+  ],
+  "/RequiredTests": [
+   {
+    "ExpectRed": true,
+    "Filter": "FullyQualifiedName~Subtract",
+    "MinSelected": 1,
+    "Project": "tests/Fixture.Tests/Fixture.Tests.csproj"
+   }
+  ],
+  "/RoleRequirements": [
+   {
+    "Action": "CUSTODY",
+    "EligibleCells": [],
+    "Independence": [],
+    "Mandatory": [
+     "PRINCIPAL_COORDINATION.level",
+     "PRINCIPAL_COORDINATION.effort",
+     "PRINCIPAL_COORDINATION.remote-facts",
+     "PRINCIPAL_COORDINATION.introspection",
+     "PRINCIPAL_COORDINATION.repo-write"
+    ],
+    "Materialization": null,
+    "Profile": "PRINCIPAL_COORDINATION",
+    "Role": "PRINCIPAL_COORDINATOR"
+   },
+   {
+    "Action": "PLAN",
+    "EligibleCells": [],
+    "Independence": [
+     {
+      "Actor": "REQUIRED",
+      "Context": "REQUIRED",
+      "Provider": "PREFERRED",
+      "ReferenceRole": "WORKER",
+      "Session": "REQUIRED"
+     }
+    ],
+    "Mandatory": [
+     "CONTROLLER_PLANNING.effort",
+     "CONTROLLER_PLANNING.level",
+     "CONTROLLER_PLANNING.read",
+     "CONTROLLER_PLANNING.tool-use",
+     "CONTROLLER_PLANNING.structured-output"
+    ],
+    "Materialization": null,
+    "Profile": "CONTROLLER_PLANNING",
+    "Role": "EXECUTION_CONTROLLER"
+   },
+   {
+    "Action": "IMPLEMENT",
+    "EligibleCells": [],
+    "Independence": [],
+    "Mandatory": [
+     "ROUTINE_IMPLEMENTATION.effort",
+     "ROUTINE_IMPLEMENTATION.level",
+     "ROUTINE_IMPLEMENTATION.tool-use",
+     "ROUTINE_IMPLEMENTATION.write-commit-push"
+    ],
+    "Materialization": null,
+    "Profile": "ROUTINE_IMPLEMENTATION",
+    "Role": "WORKER"
+   },
+   {
+    "Action": "REVIEW_DESIGN",
+    "EligibleCells": [],
+    "Independence": [
+     {
+      "Actor": "REQUIRED",
+      "Context": "REQUIRED",
+      "Provider": "PREFERRED",
+      "ReferenceRole": "AUTHOR",
+      "Session": "REQUIRED"
+     }
+    ],
+    "Mandatory": [
+     "ARCHITECTURE_REVIEW.effort",
+     "ARCHITECTURE_REVIEW.level",
+     "ARCHITECTURE_REVIEW.read"
+    ],
+    "Materialization": null,
+    "Profile": "ARCHITECTURE_REVIEW",
+    "Role": "ARCHITECT"
+   }
+  ],
+  "/StopConditions": [
+   {
+    "Id": "S-T1-01",
+    "Text": "Un cambio fuera de AllowedWriteScope o dentro de ForbiddenWriteScope: STOP sin corregir por cuenta propia."
+   },
+   {
+    "Id": "S-T1-02",
+    "Text": "Huella de codex-cli distinta de la l\u00ednea base aceptada (P-01): STOP del transporte afectado."
+   },
+   {
+    "Id": "S-T1-03",
+    "Text": "Cualquier referencia a un repositorio o unidad reales (P-16): STOP."
+   }
+  ],
+  "/SupersededCommits": []
+ },
+ "DelegScope": {
+  "/AllowedWriteScope": [
+   "src/Fixture.Lib/Calculator.cs",
+   "tests/Fixture.Tests/CalculatorTests.cs",
+   "docs/automation/evidence/FX-U1-agent/**"
+  ],
+  "/Authorities": [
+   {
+    "Class": "UNIT_DOC",
+    "Path": "docs/automation/decisions/FX-U1.md",
+    "Section": "documento completo"
+   },
+   {
+    "Class": "UNIT_DOC",
+    "Path": "docs/automation/state/FX-U1.yml",
+    "Section": "documento completo"
+   },
+   {
+    "Class": "UNIT_CHANGE",
+    "Path": "src/Fixture.Lib/Calculator.cs",
+    "Section": "documento completo"
+   },
+   {
+    "Class": "UNIT_CHANGE",
+    "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+    "Section": "documento completo"
+   },
+   {
+    "Class": "EXTERNAL",
+    "Path": "AGENTS.md",
+    "Section": "## Jobs requeridos"
+   },
+   {
+    "Class": "EXTERNAL",
+    "Path": "docs/AUTOMATION_PLAN.md",
+    "Section": "## 16. Ejecuci\u00f3n delegada bajo orden del Coordinator"
+   }
+  ],
+  "/ForbiddenWriteScope": [
+   ".github/**",
+   ".gitattributes",
+   "AGENTS.md",
+   "CLAUDE.md",
+   "FIXTURE-MANIFEST.json",
+   "docs/AUTOMATION_PLAN.md",
+   "docs/WORKFLOW.md",
+   "docs/INITIATIVE_LIFECYCLE.md",
+   "docs/automation/agent-execution/**",
+   "docs/automation/decisions/**",
+   "src/Fixture.Lib/Fixture.Lib.csproj",
+   "tests/Fixture.Tests/Fixture.Tests.csproj"
+  ],
+  "/Invariants": [
+   "Calculator.Add conserva su firma y su comportamiento.",
+   "Sin paquetes ni dependencias nuevas.",
+   "P-16: ning\u00fan artefacto nombra, configura ni usa un repositorio o una unidad reales."
+  ],
+  "/RequiredTests": [
+   {
+    "ExpectRed": true,
+    "Filter": "FullyQualifiedName~Subtract",
+    "MinSelected": 1,
+    "Project": "tests/Fixture.Tests/Fixture.Tests.csproj"
+   }
+  ],
+  "/RoleRequirements": [
+   {
+    "Action": "CUSTODY",
+    "EligibleCells": [],
+    "Independence": [],
+    "Mandatory": [
+     "PRINCIPAL_COORDINATION.level",
+     "PRINCIPAL_COORDINATION.effort",
+     "PRINCIPAL_COORDINATION.remote-facts",
+     "PRINCIPAL_COORDINATION.introspection",
+     "PRINCIPAL_COORDINATION.repo-write"
+    ],
+    "Materialization": null,
+    "Profile": "PRINCIPAL_COORDINATION",
+    "Role": "PRINCIPAL_COORDINATOR"
+   },
+   {
+    "Action": "PLAN",
+    "EligibleCells": [],
+    "Independence": [
+     {
+      "Actor": "REQUIRED",
+      "Context": "REQUIRED",
+      "Provider": "PREFERRED",
+      "ReferenceRole": "WORKER",
+      "Session": "REQUIRED"
+     }
+    ],
+    "Mandatory": [
+     "CONTROLLER_PLANNING.effort",
+     "CONTROLLER_PLANNING.level",
+     "CONTROLLER_PLANNING.read",
+     "CONTROLLER_PLANNING.tool-use",
+     "CONTROLLER_PLANNING.structured-output"
+    ],
+    "Materialization": null,
+    "Profile": "CONTROLLER_PLANNING",
+    "Role": "EXECUTION_CONTROLLER"
+   },
+   {
+    "Action": "IMPLEMENT",
+    "EligibleCells": [],
+    "Independence": [],
+    "Mandatory": [
+     "ROUTINE_IMPLEMENTATION.effort",
+     "ROUTINE_IMPLEMENTATION.level",
+     "ROUTINE_IMPLEMENTATION.tool-use",
+     "ROUTINE_IMPLEMENTATION.write-commit-push"
+    ],
+    "Materialization": null,
+    "Profile": "ROUTINE_IMPLEMENTATION",
+    "Role": "WORKER"
+   },
+   {
+    "Action": "REVIEW_DESIGN",
+    "EligibleCells": [],
+    "Independence": [
+     {
+      "Actor": "REQUIRED",
+      "Context": "REQUIRED",
+      "Provider": "PREFERRED",
+      "ReferenceRole": "AUTHOR",
+      "Session": "REQUIRED"
+     }
+    ],
+    "Mandatory": [
+     "ARCHITECTURE_REVIEW.effort",
+     "ARCHITECTURE_REVIEW.level",
+     "ARCHITECTURE_REVIEW.read"
+    ],
+    "Materialization": null,
+    "Profile": "ARCHITECTURE_REVIEW",
+    "Role": "ARCHITECT"
+   }
+  ],
+  "/StopConditions": [
+   {
+    "Id": "S-T1-01",
+    "Text": "Un cambio fuera de AllowedWriteScope o dentro de ForbiddenWriteScope: STOP sin corregir por cuenta propia."
+   },
+   {
+    "Id": "S-T1-02",
+    "Text": "Huella de codex-cli distinta de la l\u00ednea base aceptada (P-01): STOP del transporte afectado."
+   },
+   {
+    "Id": "S-T1-03",
+    "Text": "Cualquier referencia a un repositorio o unidad reales (P-16): STOP."
+   }
+  ],
+  "/SupersededCommits": []
+ },
+ "Delivery": {
+  "ObjectType": "blob",
+  "RehashedId": "9a829b0eeb1210238052b1feac06cfa8f7964aed"
+ },
+ "Diff": {
+  "Commits": [
+   "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "b417d36cb820a27c78d6c7d50c234460469c89f8"
+  ],
+  "Paths": [
+   "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+   "src/Fixture.Lib/Calculator.cs",
+   "tests/Fixture.Tests/CalculatorTests.cs"
+  ]
+ },
+ "ExpectedPrimary": {
+  "P01": [
+   "b417d36cb820a27c78d6c7d50c234460469c89f8"
+  ],
+  "P02": [
+   "fx/u1"
+  ],
+  "P03": [
+   "D:/r62-a6m7/m7-run2"
+  ],
+  "P04": [
+   "b417d36cb820a27c78d6c7d50c234460469c89f8"
+  ],
+  "P05": [
+   "fbe25347799e5b801ef708454212335537448bd1"
+  ],
+  "P06": [
+   "0"
+  ],
+  "P07": [
+   "0"
+  ],
+  "P08": [
+   "0"
+  ],
+  "P09": [
+   "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+   "src/Fixture.Lib/Calculator.cs",
+   "tests/Fixture.Tests/CalculatorTests.cs"
+  ],
+  "P10": [
+   "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "b417d36cb820a27c78d6c7d50c234460469c89f8"
+  ],
+  "P11": null,
+  "P12": [],
+  "P13": [
+   "!! artifacts/"
+  ],
+  "P14": [
+   ".gitignore:1:artifacts/orchestration/\tartifacts/orchestration/FX-U1/T1-m7/0/R20261028T024440Z-27a9/output.json",
+   "0"
+  ],
+  "P15": [
+   "0863f2c65dde4e895117f69dbb525dd13c824415",
+   "380892ee869194aa4bd56dcf32dfd76ef0203ab9",
+   "a9d18f4d1506f1754b446a65f2c6ef90f1609d5a"
+  ],
+  "P16": [
+   "0863f2c65dde4e895117f69dbb525dd13c824415",
+   "380892ee869194aa4bd56dcf32dfd76ef0203ab9",
+   "a9d18f4d1506f1754b446a65f2c6ef90f1609d5a"
+  ],
+  "P17": [
+   "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0"
+  ],
+  "P18": [
+   "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+   "8358efbf0fa00b6deb0edd03997b8f801c29b1e2",
+   "b56992662d942b122cc365e5176b7a7daa1fd6d1",
+   "40295387f9b489d2bf7ff4e517adc2d99c0d35ff"
+  ],
+  "P19": [
+   "3fcfffc1aa7ad442422d4da2e5edaf89c48239ea"
+  ],
+  "P20": [
+   "cc3c9cf76b2247f3312e99bd447554326cc3700a"
+  ],
+  "P21": [
+   "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5"
+  ],
+  "P22": [
+   "fbe25347799e5b801ef708454212335537448bd1"
+  ],
+  "P23": [
+   "4d49d3e1a63d2b6128c9d9eeac473156a421571a"
+  ],
+  "P24": [
+   "a9fea86d076d3a21a6217fa82641e33013fb1340"
+  ]
+ },
+ "Files": {
+  "CONTRACT": {
+   "Blob": "628d89af5f21e4e14cbe7c3c14f0dd8fb5a490e0",
+   "Path": "D:/r62-a6m7/m7-run2/docs/automation/decisions/FX-U1-T1.gate-contract.json",
+   "Sha256": "8f34367053cf94a7e1523252731b23c84b53f8117dafe4658912bc96c20d5adc"
+  },
+  "DELEG": {
+   "Blob": "8358efbf0fa00b6deb0edd03997b8f801c29b1e2",
+   "Path": "D:/r62-a6m7/m7-run2/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json",
+   "Sha256": "47589a1b6b4e726c38c3e2463dde60691da7472311c2276f4dd94521ed5db346"
+  },
+  "H": {
+   "Blob": "b56992662d942b122cc365e5176b7a7daa1fd6d1",
+   "Path": "D:/r62-a6m7/m7-run2/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json",
+   "Sha256": "7a771e5a2d2ee252664eaa71455996d47e92458e4ad6f044907dc42647cceadd"
+  },
+  "TRX": {
+   "Blob": "40295387f9b489d2bf7ff4e517adc2d99c0d35ff",
+   "Path": "D:/r62-a6m7/m7-run2/artifacts/orchestration/FX-U1/T1-m7/0/R20261028T024440Z-27a9/ci-current/fixture-tests.trx",
+   "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513"
+  }
+ },
+ "FreeText": {
+  "ApBlob": "f525cb1e9d24db3cf5fa5c8e013be7edbdb5e6a5",
+  "MatchCount": 0,
+  "Terms": [
+   "GATE PASS",
+   "GATE_PASS",
+   "Candidato",
+   "Candidate",
+   "FINAL_CANDIDATE_SHA",
+   "gate cerrado",
+   "gate closed",
+   "cierre del gate",
+   "rama integrada",
+   "integrada en main",
+   "integrated into main",
+   "merged into main",
+   "lista para integrar",
+   "ready to merge",
+   "Owner Validation APROBADA",
+   "Owner Validation APPROVED"
+  ]
+ },
+ "GitByName": {
+  "DeclaredPath": "%LOCALAPPDATA%\\Programs\\Git\\cmd\\git.exe",
+  "ExecPath": "%LOCALAPPDATA%/Programs/Git/mingw64/libexec/git-core",
+  "Version": "git version 2.54.0.windows.1"
+ },
+ "HandoffFields": {
+  "Attempt": 0,
+  "BaseSha": "95bdc29d428b35d2188a10e1c5462d6caf2be4df",
+  "Branch": "fx/u1",
+  "CurrentSha": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "DelegationRunId": "R20261012T090000Z-d001",
+  "RedSha": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+  "RunId": "R20261012T091000Z-a001",
+  "TaskId": "T1",
+  "Worker": {
+   "EffortRequested": "high",
+   "ModelRequested": "synthetic-worker",
+   "Provider": "synthetic",
+   "Trailer": "Co-Authored-By: R3 Synthetic Worker (FX-U1 T1)"
+  },
+  "Worktree": "D:/r62-a6m7/m7-run2"
+ },
+ "HandoffSchemaBlob": "cc3c9cf76b2247f3312e99bd447554326cc3700a",
+ "Hashes": [
+  {
+   "Path": "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md",
+   "RevBlob": "0863f2c65dde4e895117f69dbb525dd13c824415",
+   "RevBlobSha256": "dd33bb6e9a54acf1c63e4b5c10dd53b5f2e10ebc9ef3f2dbbc9da653304fe7d9",
+   "WorktreeRawBlobSha1": "0863f2c65dde4e895117f69dbb525dd13c824415",
+   "WorktreeSha256": "dd33bb6e9a54acf1c63e4b5c10dd53b5f2e10ebc9ef3f2dbbc9da653304fe7d9"
+  },
+  {
+   "Path": "src/Fixture.Lib/Calculator.cs",
+   "RevBlob": "380892ee869194aa4bd56dcf32dfd76ef0203ab9",
+   "RevBlobSha256": "6c8f7e514afc9580cd4b7b0687426b30ed0252973a618f425ab2a2588ca4e791",
+   "WorktreeRawBlobSha1": "380892ee869194aa4bd56dcf32dfd76ef0203ab9",
+   "WorktreeSha256": "6c8f7e514afc9580cd4b7b0687426b30ed0252973a618f425ab2a2588ca4e791"
+  },
+  {
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs",
+   "RevBlob": "a9d18f4d1506f1754b446a65f2c6ef90f1609d5a",
+   "RevBlobSha256": "23000852a19e66da8c63625083d623f6916bc31209a89a68f795110d20d5a506",
+   "WorktreeRawBlobSha1": "a9d18f4d1506f1754b446a65f2c6ef90f1609d5a",
+   "WorktreeSha256": "23000852a19e66da8c63625083d623f6916bc31209a89a68f795110d20d5a506"
+  }
+ ],
+ "Identity": {
+  "AbbrevRef": "fx/u1",
+  "Ancestry": {
+   "base->current": true,
+   "base->red": true,
+   "red->current": true
+  },
+  "Head": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "OriginBranch": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "OriginMain": "fbe25347799e5b801ef708454212335537448bd1",
+  "Toplevel": "D:/r62-a6m7/m7-run2"
+ },
+ "Note": "computed by the supervision from Git primitives (declared git by full path, GIT_* removed, --no-replace-objects) and the custodied bytes only; never with the instrument, the acceptor or the SPEC",
+ "Preconditions": {
+  "Commits": {
+   "53436cb20adf1fe87dc91b0382dd3123a1fac44f": "commit",
+   "95bdc29d428b35d2188a10e1c5462d6caf2be4df": "commit",
+   "b417d36cb820a27c78d6c7d50c234460469c89f8": "commit",
+   "fbe25347799e5b801ef708454212335537448bd1": "commit"
+  },
+  "Files": {
+   "D:/r62-a6m7/m7-run2/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json": true,
+   "D:/r62-a6m7/m7-run2/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json": true,
+   "D:/r62-a6m7/m7-run2/artifacts/orchestration/FX-U1/T1-m7/0/R20261028T024440Z-27a9/ci-current/fixture-tests.trx": true,
+   "D:/r62-a6m7/m7-run2/docs/automation/decisions/FX-U1-T1.gate-contract.json": true,
+   "D:/r62-a6m7/m7-run2/docs/automation/evidence/FX-U1-agent/T1/worker-notes.md": true,
+   "D:/r62-a6m7/m7-run2/src/Fixture.Lib/Calculator.cs": true,
+   "D:/r62-a6m7/m7-run2/tests/Fixture.Tests/CalculatorTests.cs": true
+  }
+ },
+ "PrimaryCommands": {
+  "P01": "git rev-parse HEAD",
+  "P02": "git rev-parse --abbrev-ref HEAD",
+  "P03": "git rev-parse --show-toplevel",
+  "P04": "git rev-parse refs/remotes/origin/fx/u1",
+  "P05": "git rev-parse refs/remotes/origin/main",
+  "P06": "git merge-base --is-ancestor 95bdc29d428b35d2188a10e1c5462d6caf2be4df b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "P07": "git merge-base --is-ancestor 95bdc29d428b35d2188a10e1c5462d6caf2be4df 53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+  "P08": "git merge-base --is-ancestor 53436cb20adf1fe87dc91b0382dd3123a1fac44f b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "P09": "git diff --name-only --no-renames 95bdc29d428b35d2188a10e1c5462d6caf2be4df..b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "P10": "git rev-list --reverse 95bdc29d428b35d2188a10e1c5462d6caf2be4df..b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "P11": "git log --no-show-signature '--format=%H%x20%(trailers:key=Co-Authored-By,valueonly,separator=%x7C)' 95bdc29d428b35d2188a10e1c5462d6caf2be4df..b417d36cb820a27c78d6c7d50c234460469c89f8",
+  "P12": "git --no-optional-locks status --porcelain",
+  "P13": "git --no-optional-locks status --porcelain --ignored",
+  "P14": "git check-ignore -v --no-index artifacts/orchestration/FX-U1/T1-m7/0/R20261028T024440Z-27a9/output.json",
+  "P15": "git rev-parse b417d36cb820a27c78d6c7d50c234460469c89f8:docs/automation/evidence/FX-U1-agent/T1/worker-notes.md b417d36cb820a27c78d6c7d50c234460469c89f8:src/Fixture.Lib/Calculator.cs b417d36cb820a27c78d6c7d50c234460469c89f8:tests/Fixture.Tests/CalculatorTests.cs",
+  "P16": "git hash-object --no-filters -- docs/automation/evidence/FX-U1-agent/T1/worker-notes.md src/Fixture.Lib/Calculator.cs tests/Fixture.Tests/CalculatorTests.cs",
+  "P17": "git rev-parse b417d36cb820a27c78d6c7d50c234460469c89f8:docs/automation/decisions/FX-U1-T1.gate-contract.json",
+  "P18": "git hash-object --no-filters -- D:/r62-a6m7/m7-run2/docs/automation/decisions/FX-U1-T1.gate-contract.json D:/r62-a6m7/m7-run2/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T090000Z-d001/output.json D:/r62-a6m7/m7-run2/artifacts/orchestration/FX-U1/T1-m7/0/R20261012T091000Z-a001/worker-handoff.json D:/r62-a6m7/m7-run2/artifacts/orchestration/FX-U1/T1-m7/0/R20261028T024440Z-27a9/ci-current/fixture-tests.trx",
+  "P19": "git rev-parse b417d36cb820a27c78d6c7d50c234460469c89f8:docs/automation/decisions/FX-U1.md",
+  "P20": "git rev-parse b417d36cb820a27c78d6c7d50c234460469c89f8:docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+  "P21": "git rev-parse fbe25347799e5b801ef708454212335537448bd1:docs/AUTOMATION_PLAN.md",
+  "P22": "git rev-list --first-parent --merges fbe25347799e5b801ef708454212335537448bd1",
+  "P23": "git rev-parse fbe25347799e5b801ef708454212335537448bd1:docs/automation/agent-execution/compatibility/I62-clause-map.json",
+  "P24": "git rev-parse b417d36cb820a27c78d6c7d50c234460469c89f8:docs/automation/state/FX-U1.yml"
+ },
+ "ReadJson": {
+  "/AuthorityRevision": "1746b404e57d69170ecfc084fd24fa3e699916d7",
+  "/MainSha": "fbe25347799e5b801ef708454212335537448bd1",
+  "/Objective": "A\u00f1adir a Fixture.Lib la operaci\u00f3n Calculator.Subtract(int a, int b) con su prueba en Fixture.Tests: primero la prueba en RED y despu\u00e9s la implementaci\u00f3n en GREEN.",
+  "/Schema": "rackcad-gate-contract/v2"
+ },
+ "ReadText": {
+  "Blob": "3fcfffc1aa7ad442422d4da2e5edaf89c48239ea",
+  "Line1": "# FX-U1 \u2014 decisiones y \u00f3rdenes del Coordinator del fixture (SISTEMA BAJO PRUEBA)",
+  "NonAsciiCount": 2
+ },
+ "Repo": "D:/r62-a6m7/m7-run2",
+ "Schema": "i62-a6m7-oracle/1",
+ "Scope": [
+  {
+   "AllowedCoveredBy": [
+    "docs/automation/evidence/FX-U1-agent/**"
+   ],
+   "ForbiddenCoveredBy": [],
+   "Path": "docs/automation/evidence/FX-U1-agent/T1/worker-notes.md"
+  },
+  {
+   "AllowedCoveredBy": [
+    "src/Fixture.Lib/Calculator.cs"
+   ],
+   "ForbiddenCoveredBy": [],
+   "Path": "src/Fixture.Lib/Calculator.cs"
+  },
+  {
+   "AllowedCoveredBy": [
+    "tests/Fixture.Tests/CalculatorTests.cs"
+   ],
+   "ForbiddenCoveredBy": [],
+   "Path": "tests/Fixture.Tests/CalculatorTests.cs"
+  }
+ ],
+ "Trailer": [
+  {
+   "Commit": "53436cb20adf1fe87dc91b0382dd3123a1fac44f",
+   "Count": 1,
+   "ValueSha256": [
+    "de4f53ff1bfdc7cf2ff87a43830166dbda03792d29e6d5ffd4ad85e94bd4807d"
+   ],
+   "ValuesSha256": "9011613498b4aa2378bd2229b19c57357d385adf15063d755e6e1d0a0c516cdf"
+  },
+  {
+   "Commit": "b417d36cb820a27c78d6c7d50c234460469c89f8",
+   "Count": 1,
+   "ValueSha256": [
+    "de4f53ff1bfdc7cf2ff87a43830166dbda03792d29e6d5ffd4ad85e94bd4807d"
+   ],
+   "ValuesSha256": "9011613498b4aa2378bd2229b19c57357d385adf15063d755e6e1d0a0c516cdf"
+  }
+ ],
+ "Trx": {
+  "Counters": {
+   "aborted": "0",
+   "completed": "0",
+   "disconnected": "0",
+   "error": "0",
+   "executed": "1",
+   "failed": "0",
+   "inProgress": "0",
+   "inconclusive": "0",
+   "notExecuted": "0",
+   "notRunnable": "0",
+   "passed": "1",
+   "passedButRunAborted": "0",
+   "pending": "0",
+   "timeout": "0",
+   "total": "1",
+   "warning": "0"
+  },
+  "FailedTests": [],
+  "FilterSelected": [],
+  "Sha256": "4ccdf2cecba561259b877a471d577f1afa6ac4a9ad00ceb4fa0417e7c61a7513",
+  "Tests": [
+   {
+    "Outcome": "Passed",
+    "TestName": "Fixture.Tests.CalculatorTests.AddSumsTwoIntegers"
+   }
+  ]
+ }
+}

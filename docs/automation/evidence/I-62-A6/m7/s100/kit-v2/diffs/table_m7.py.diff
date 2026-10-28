@@ -1,0 +1,19 @@
+--- v1/table_m7.py
++++ v2/table_m7.py
+@@ -1,5 +1,6 @@
+ # table_m7.py - request construction and acceptance table of the A6-7 measurement M (I-62, A-6, decisiones §90), and the
+-# closure cotejo with the designation check (designate_m7.py) for every request of this bench. Stdlib only; never writes.
++# closure cotejo with the designation check for every request of this bench. Stdlib only; never writes. Kit v2 (decisiones §100):
++# the designation check is designate_a7.py (A7-1, a7-designation/4) instead of designate_m7.py; nothing else changes.
+ #
+ # M is not a role invocation of FX-02 (A6-7 rule 2) and produces no verification: its request carries no Verification and
+ # no RelayFacts and declares R4 and R10 not applicable (A6-7 rule 1: "R4 y R10 no aplicables, porque la medicion no produce
+@@ -22,7 +23,7 @@
+ 
+ TB = _load('table_r3')
+ T4 = _load('table_r4')
+-DS = _load('designate_m7')
++DS = _load('designate_a7')
+ M_NA = {'R4': 'A6-7 rule 1: the measurement produces no verification (no Verification in the request)',
+         'R10': 'A6-7 rule 1: the measurement has no relay facts (no RelayFacts in the request)'}
+ 
