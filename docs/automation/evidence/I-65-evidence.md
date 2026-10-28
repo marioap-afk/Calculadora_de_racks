@@ -2719,3 +2719,12 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/13a-volcado-manual-seleccionado.jpg` | `3DF89D432210C81C1A4F9D39E6E5E93755CD95441B75DEF6055E2F6CB06F7DD2` |
 | `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/14-descartar-manual-no.jpg` | `99EFECB0312C964DBABDCF3618DFA45F960B75A9E923D465CCDF42A38B95D179` |
 | `docs/automation/evidence/I-65-f5/w4-R20261019T1750Z/captures/15-modelo-vacio-antes-de-cerrar.jpg` | `8BEA978F1836949201FDE9B09EF69DE00A7C4BE30F5D43924F8C56EDDAEC55ED` |
+
+## 100. Aceptación de W4 y autorización de la revisión final de F5 (2026-10-28T19:37:18Z)
+
+- Orden: decisiones §96. Ninguna evidencia nueva de host: sin AutoCAD ni RAM.
+- Custodia (SHA-256):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-w4-acceptance-f5-final-review-gate-closure.original.txt` | `96E8600C2984FABCA2835727F5173B779EABAE1B363CBB500FBF39DE3C2C8BE9` |
