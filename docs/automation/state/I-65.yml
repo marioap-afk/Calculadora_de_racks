@@ -7,7 +7,7 @@ automation_state:
   state: in-progress
   gate: F7
   attempts: 7
-  next_action: Architect: revision independiente de solo lectura de F7 (entregables §100); despues, conformidad del Coordinator, commit de cierre de F7, regresion Full local y CI (I-65-f7-preparation.md).
+  next_action: Architect: relectura de F7 sobre el SHA corregido (A65-F7-01/02 REQUIRED corregidas, §101); despues, conformidad del Coordinator, commit de cierre de F7, regresion Full local y CI.
   last_evidence_commit: 45aaad6e281a39d1b1cbd2627d02f9a533eada5d
 execution_context:
   mode: manual

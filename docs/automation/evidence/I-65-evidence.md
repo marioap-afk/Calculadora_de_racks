@@ -2821,3 +2821,19 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/guias/interoperabilidad-ram-elements.md` | `44F512BD5EFEAC9377B6770015D5853DE59C2D99C8A173EF14FFDE8F9EACA422` |
 | `docs/initiatives/I-65-ready-final-plan.md` | `C82D6C6108BA244DF3168D2DA300695CDDBF9E24DA5A634FD02C464A7181A9EE` |
 | `README.md` | `984CDFE5DAE53AE7FEEDD8E6F6DDC1A77F0ED80455CF50817781943AB921094B` |
+
+## 105. Primera revisión del Architect de F7 y correcciones (2026-10-28T21:25:23Z)
+
+- Orden: decisiones §100-§101. `CI` de `8b2117c3`: run 40768948090, 4/4 `success`. Sin AutoCAD, RAM, Codex ni Workers.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f7/architect-f7-review-r1.md` | `3EC8E8BAC4D9CB89E8C57B9CD965F2FC2A03FF91E3B928C9123B7E2D3714A517` |
+| `docs/automation/evidence/I-65-f7/architect-f7.prompt.md` | `2D32E879BAB73BA7E87266C3735872E43512A6997288EBFBA075D2B229CBD7B4` |
+| `docs/automation/evidence/I-65-f7/architect-f7-r1-k5-transcript-scan.json` | `0305781897D95F3F1F6C164D8D765E253371EA8BE94918928C6432F2640D4A72` |
+| `docs/initiatives/I-65-foundations-entry.md` | `D73ACC3773A060699295278881FD7858098D5A7BBF1AFA76D3735E542390C9AF` |
+| `docs/guias/interoperabilidad-ram-elements.md` | `C099881D920DD1880CEE4C9040B06A1F3522DCFF8565AB1879FE2C4F646CF746` |
+| `docs/initiatives/I-65-f7-conformance-review.md` | `3C82AAF7864E8C04E55686B64FCDFE1148B1A58DB1E14D0377DEAB32B2D7B0DF` |
+| `docs/initiatives/I-65-ready-final-plan.md` | `B45EB67015408ADDB20FE7A5E9D7699F12B4B6B705F1AB278C1DE5F63ACA28B5` |
+| `README.md` | `34A1A0A405514956C813DBECB37966F2C17B2DF670DCF3CDDB7EFDB900471F2E` |

@@ -25,15 +25,25 @@ junto a la advertencia: «These assumptions are hypotheses for transfer equivale
 ## 2. Requisitos
 
 - **AutoCAD** con el Plugin de RackCad cargado y un dibujo con el rack Cantilever.
-- **Tabla de secciones y materiales** `structural-analysis\ram-elements\section-material-map.json` junto al DLL del Plugin. Cada fila
-  enlaza una sección y un material del catálogo con su nombre en RAM. Una fila en estado `proposed` (sin verificar por el ingeniero)
-  bloquea la exportación: el comando responde `Unsupported` y no escribe nada.
+- **Tabla de secciones y materiales** `structural-analysis\ram-elements\section-material-map.json` junto al DLL del Plugin. **Solo
+  viaja en la salida de compilación del Plugin** (la que usa la validación manual con el DLL Debug). El paquete del Autoloader no la
+  incluye (decisión CD-I65-F4-10, diferida): con una instalación por Autoloader el comando responde `Unavailable` («Falta la tabla de
+  secciones y materiales junto al Plugin») y no escribe nada.
+  - Esquema `rackcad-ram-elements-section-map/v1`. Cada fila enlaza `sectionId` y `materialId` del catálogo de RackCad con su sección en
+    RAM (`ramSection`: `name`, `table`, `country`) y su material (`ramMaterial`), con las propiedades esperadas (`expectedMaterial`:
+    módulo elástico, coeficiente de Poisson o módulo de cortante, peso unitario y su `source`) y el estado `status` (`proposed` o
+    `verified`, con `verifiedBy` y `verifiedOn`).
+  - Una fila `proposed` (sin verificar por el ingeniero) bloquea la exportación: el comando responde `Unsupported` y no escribe nada.
+    Verificar una fila es un cambio autorizado del producto (la tabla se versiona en `assets/` y se recompila el Plugin), nunca una
+    edición de la copia que está junto al DLL.
 - **Catálogo de secciones estructurales** de RackCad disponible.
 - **Archivo de cargas** (sección 3).
 - **RAM Elements** con su API Python `ramelements` (verificada: versión 0.1.0) y la licencia de Bentley activa. La comprobación de
   licencia puede tardar o quedarse en «Verificando licencia» hasta que el usuario inicia sesión en Bentley CONNECTION Client.
-- Para comparar: la herramienta de consola `RackCad.StructuralAnalysis.RamTool` (carpeta `tools/`, fuera del producto), compilada desde
-  el mismo commit que el Plugin.
+- Para volcar y comparar: la herramienta de consola `RackCad.StructuralAnalysis.RamTool` (proyecto
+  `tools/RackCad.StructuralAnalysis.RamTool/`, fuera del producto y del Autoloader), compilada desde el mismo commit que el Plugin, por
+  ejemplo con `dotnet build tools/RackCad.StructuralAnalysis.RamTool/RackCad.StructuralAnalysis.RamTool.csproj -c Debug -o <carpeta>`;
+  el ejecutable es `RackCad.StructuralAnalysis.RamTool.exe` en esa carpeta. `RackCad.StructuralAnalysis.RamTool.exe help` muestra su uso.
 
 ## 3. Archivo de cargas
 
@@ -58,8 +68,9 @@ JSON con el esquema `rackcad-structural-loads/v1`. Cada carga apunta a un brazo 
 | `magnitude` | número positivo |
 | `unit` | `N`, `kN`, `lbf`, `kip`, `kgf` (1 lbf = 4.4482216152605 N; 1 kgf = 9.80665 N) |
 
-Propiedades desconocidas, duplicadas o ausentes, unidades desconocidas, posiciones fuera de rango o más de 24 cargas por miembro son
-errores (`LOADS-*`); nada se corrige en silencio. RackCad convierte cada carga a lbf y su posición a la distancia sobre el miembro
+Propiedades desconocidas, duplicadas o ausentes, unidades desconocidas, magnitudes no positivas o posiciones fuera de rango son errores
+`LOADS-*` con resultado `Invalid`. Más de 24 cargas en un mismo miembro da `LOAD-COUNT-EXCEEDED` con resultado `Unsupported`. Si el
+archivo no existe o no se puede leer, el comando responde `Unavailable`. Nada se corrige en silencio. RackCad convierte cada carga a lbf y su posición a la distancia sobre el miembro
 analítico (que incluye el tramo rígido hasta el eje de la columna). En RAM la carga aparece en `GLOBAL_Y` con signo negativo (el eje
 vertical de RAM es Y).
 
@@ -69,7 +80,8 @@ vertical de RAM es Y).
 2. **Índice de estación** (desde 0).
 3. **Archivo de cargas:** ruta del JSON.
 4. **Carpeta NUEVA del paquete:** ruta Windows **absoluta** con `\` (por ejemplo `D:\proyectos\rack-a\ram-est0`). La carpeta no debe
-   existir: el paquete nunca sobrescribe. Una ruta relativa, con `/`, con `.` o `..` da `RAM-PACKAGE-FOLDER-INVALID`.
+   existir (el paquete nunca sobrescribe: `PACKAGE-DESTINATION-EXISTS`) y su carpeta padre sí (`PACKAGE-PARENT-MISSING`). Una ruta
+   relativa, con `/`, con `.` o `..` da `RAM-PACKAGE-FOLDER-INVALID`.
 
 El resultado se escribe en la línea de comandos:
 
@@ -78,7 +90,7 @@ El resultado se escribe en la línea de comandos:
 | `Valid` | paquete publicado; muestra la **huella de entrada** y los archivos escritos |
 | `Unsupported` | la estación o la tabla piden algo fuera de V1 (diagnóstico con código, p. ej. `ARM-SLOPE-UNSUPPORTED`, `ARM-ARRANGEMENT-UNSUPPORTED`, fila sin verificar) |
 | `Invalid` | entrada incorrecta (archivo de cargas, carpeta, diseño) |
-| `Unavailable` | falta la tabla, el catálogo o la publicación falló |
+| `Unavailable` | falta la tabla (p. ej., instalación por Autoloader), el catálogo o el archivo de cargas, o la publicación falló |
 
 Con cualquier resultado distinto de `Valid` **no queda ninguna carpeta a medias**. El paquete contiene tres archivos:
 
@@ -94,14 +106,16 @@ Guarda la huella de entrada: identifica la exportación y la verifica la lectura
 
 1. Abre RAM Elements y crea un **modelo nuevo y vacío**. No uses un modelo con nudos, miembros o casos.
 2. En la consola de Python de RAM, **Ejecutar archivo…** y elige `rackcad-ram-build.py` **dentro de la carpeta del paquete**.
-3. El script comprueba, **antes de escribir nada**: (a) versión de `ramelements` y funciones del núcleo; (b) modelo vacío; (c) carga útil
-   coherente. Si una falla, se niega y el modelo queda intacto.
+3. El script comprueba, **sin escribir en el modelo**: (a) versión de `ramelements` y funciones del núcleo; (b) modelo vacío; (c) carga
+   útil coherente. Después crea `ram-readback.json` en la carpeta del paquete, en modo exclusivo. Si una comprobación falla, no toca el
+   modelo y deja la negativa en ese archivo (`FAILED — DISCARD MODEL` con las diferencias `gate: …`).
 4. Construye en el par de unidades `LB_IN`, lee de vuelta todo lo escrito y lo compara con lo esperado.
-5. Imprime **`READBACK OK`** o **`FAILED — DISCARD MODEL`** con la lista de diferencias y la huella de entrada, y escribe
-   `ram-readback.json` en la carpeta del paquete. Ese archivo se crea en modo exclusivo: **cada carpeta admite una sola ejecución**.
+5. Imprime **`READBACK OK`** o **`FAILED — DISCARD MODEL`** con la lista de diferencias y la huella de entrada, y lo deja escrito en
+   `ram-readback.json`.
 
-Con `FAILED — DISCARD MODEL`, descarta el modelo sin guardarlo y revisa el paquete: los elementos parciales que queden no son válidos. No
-analices el modelo antes del volcado del paso 3.
+**Cada carpeta admite una sola ejecución**, también si fue una negativa: para reintentar, exporta un paquete nuevo en otra carpeta. Con
+`FAILED — DISCARD MODEL`, descarta el modelo sin guardarlo: los elementos parciales que queden no son válidos. No analices el modelo antes
+del volcado del paso 3.
 
 ## 6. Paso 3 — Volcar el modelo (misma sesión)
 
@@ -112,16 +126,20 @@ analices el modelo antes del volcado del paso 3.
    ```
 
 2. En la misma sesión de RAM, sin analizar, ejecuta `rackcad-ram-dump.py` de esa carpeta. Lee el modelo en `LB_IN` (si el modelo estaba
-   en otras unidades, las cambia y las restaura), no escribe en el modelo, imprime **`DUMP OK`** y crea `ram-dump.json` (una vez por
-   carpeta).
-3. Descarta el modelo sin guardarlo.
+   en otras unidades, las cambia y las restaura), no escribe en el modelo, imprime **`DUMP OK`** o **`DUMP FAILED`** y crea
+   `ram-dump.json` (una vez por carpeta). Un volcado `DUMP FAILED` no sirve para comparar: el comparador lo rechaza.
+3. Si RAM muestra el diálogo «los resultados se perderán», responde **No** y detente: el volcado se hace sobre un modelo **no analizado**
+   (Freeze D-11).
+4. Descarta el modelo sin guardarlo.
 
 ## 7. Paso 4 — Modelo de referencia manual
 
 Para comparar hace falta un segundo modelo **independiente**: constrúyelo a mano en un modelo nuevo de RAM desde la especificación de la
-estación y del archivo de cargas (nunca copiando el modelo generado), vuélcalo con su propio `rackcad-ram-dump.py` (carpeta nueva) y
-descártalo sin guardar. La referencia `REF-CANT-01` y su hoja de entrada están en la
-[Proposal V3.1](../initiatives/I-65-proposal-v3.1.md) §15 y en los procedimientos de validación de I-65.
+estación y del archivo de cargas (nunca copiando el modelo generado), aplica las cargas como cargas puntuales en miembro, vuélcalo **sin
+analizarlo** con su propio `rackcad-ram-dump.py` (carpeta nueva) y descártalo sin guardar. La referencia `REF-CANT-01` está en la
+[Proposal V3.1](../initiatives/I-65-proposal-v3.1.md) §15; las hojas de entrada y el orden de trabajo usados en I-65 están en el
+[procedimiento de la primera corrida en RAM](../initiatives/I-65-f4-p2-ram-first-run-procedure.md) y en los
+[procedimientos de F5](../initiatives/I-65-f5-w3-w4-procedures.md).
 
 ## 8. Paso 5 — Comparar
 
@@ -159,12 +177,15 @@ comparador rechazan lo que deben; no es parte del flujo de uso.
 
 | Situación | Qué hacer |
 |---|---|
-| `Unsupported` por fila sin verificar | el ingeniero verifica la fila de la tabla (cambio autorizado del catálogo); no editar la tabla junto al DLL |
+| `Unavailable` por falta de la tabla | usar el DLL de la salida de compilación del Plugin; el Autoloader no lleva la tabla (CD-I65-F4-10) |
+| `Unsupported` por fila sin verificar | el ingeniero verifica la fila de la tabla (cambio autorizado del producto); no editar la tabla junto al DLL |
 | `RAM-PACKAGE-FOLDER-INVALID` | teclear una ruta absoluta con `\` |
-| la carpeta ya existe | elegir otra: nada se sobrescribe |
-| el script se niega por modelo no vacío | crear un modelo nuevo y vacío |
+| la carpeta ya existe / falta la carpeta padre | elegir otra / crear la carpeta padre: nada se sobrescribe |
+| el script se niega por modelo no vacío | crear un modelo nuevo y vacío **y** exportar un paquete nuevo: la carpeta ya se usó |
 | el script se niega por versión o función del núcleo | la API de RAM cambió: no forzar; actualizar el adaptador es trabajo de una iniciativa |
-| `FAILED — DISCARD MODEL` | descartar sin guardar; revisar diferencias; no reutilizar la carpeta |
+| `FAILED — DISCARD MODEL` | descartar sin guardar; revisar diferencias; exportar un paquete nuevo para reintentar |
+| `DUMP FAILED` | descartar el volcado; repetir con un script de volcado en carpeta nueva sobre un modelo no analizado |
+| diálogo «los resultados se perderán» | responder **No** y detenerse: el modelo se analizó antes de volcar |
 | RAM se queda en «Verificando licencia» | iniciar sesión en Bentley CONNECTION Client; no cambiar el licenciamiento desde RackCad |
 | el comparador da `STALE` | la lectura de vuelta no corresponde al manifiesto: repetir desde un paquete nuevo |
 
@@ -176,3 +197,5 @@ comparador rechazan lo que deben; no es parte del flujo de uso.
 - La relación entre un volcado y la sesión de RAM que lo produjo es operativa (registro de sesión), no criptográfica.
 - La densidad del acero de RAM y la de AISC difieren (≈ −0.62 %); la edición del catálogo de RAM no está identificada formalmente.
 - El paso dentro de RAM es manual por diseño (ADR-0050 Decisión 7).
+- La tabla de secciones y materiales no viaja en el Autoloader (CD-I65-F4-10, diferido): el comando solo funciona con la salida de
+  compilación del Plugin.

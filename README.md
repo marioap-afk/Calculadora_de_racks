@@ -44,7 +44,7 @@ Después ejecuta `RACKCAD`. El procedimiento completo y el formato de evidencia 
 | `RACKBOMTOTAL` | Generar el BOM consolidado. |
 | `RACKLAYOUT` / `RACKRELLENAR` | Colocar racks en una rejilla o sitio. |
 | `RACKSECCION` | Ver una sección estructural del catálogo AISC e insertarla como geometría. También desde `RACKCAD` → «Generar perfil estructural». |
-| `RACKRAMPAQUETE` | Exportar una estación de un rack Cantilever como paquete de construcción para RAM Elements (equivalencia de transferencia; sin análisis ni resultados). |
+| `RACKRAMPAQUETE` | Exportar una estación de un rack Cantilever como paquete de construcción para RAM Elements (equivalencia de transferencia; sin análisis ni resultados). Requiere la tabla de secciones y materiales de la salida de compilación del Plugin; no está disponible con el Autoloader. |
 | `RACKAYUDA` | Consultar comandos y alias dentro de AutoCAD. |
 
 Cómo elegir la primera vista, insertar varias vistas de una vez y proyectar racks se explica en la

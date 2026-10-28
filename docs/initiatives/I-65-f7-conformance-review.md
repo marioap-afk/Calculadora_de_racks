@@ -31,13 +31,13 @@
 | D-04 ejes y orientación | CONFORME | `RamLocalAxes`; `StructuralAnalysisRamElementsAxesTests`; filas LOCAL-AXES PASS en OV-I65-01 y 02; OV-I65-06 |
 | D-05 idealización | CONFORME | golden de `REF-CANT-01` (`StructuralAnalysisCantileverGoldenTests`); coordenadas PASS en OV-01 y 02 |
 | D-06 secciones | CONFORME | nombres de RAM por la tabla verificada; SECTION-NAME PASS |
-| D-07 materiales | CONFORME / LIMITACIÓN | MATERIAL-NAME PASS; propiedades NOT_EVALUATED por la API (hoja D-09 firmada); DIF-01 −0.62 % informativa |
+| D-07 materiales | CONFORME / LIMITACIÓN | MATERIAL-NAME PASS; propiedades NOT_EVALUATED (la API no las lee; dependen de la firma de ingeniería de las filas, decisión del Owner D-09 de F4-D, que no es la D-09 del Freeze); DIF-01 −0.62 % informativa |
 | D-08 errores, versión, escritura atómica | CONFORME | `StructuralExportOutcome`; `StructuralPackagePublisher`; OV-I65-03 (sin carpeta) y OV-I65-07 (puerta de versión) |
 | D-09 paquete de RAM | CONFORME | `RamBuildPackageFactory`, plantilla fija; OV-01..07; paquete `Valid` 16/16 en W1 y W3 |
 | D-10 supuestos (Q-O3) | CONFORME / LIMITACIÓN | supuestos con identificador y advertencia literal en el manifiesto; equivalencia ≠ validación |
 | D-10b canal de cargas | CONFORME | `StructuralLoadFileReader` (`rackcad-structural-loads/v1`); OV-I65-02 PASS (6/6 en valor, posición y dirección) |
-| D-11 equivalencia | CONFORME | comparador con la matriz §4; PASS en OV-01 (W2) y OV-02 (W4) contra modelos manuales independientes |
-| D-12 provenance | CONFORME / LIMITACIÓN | huellas de fuente y de entrada; `STALE` en el comparador; volcado ligado a la sesión solo por evidencia operativa (A65-F4F-04, abierta para READY) |
+| D-11 equivalencia | CONFORME / LIMITACIÓN | comparador con la matriz §4; PASS en OV-01 (W2) y OV-02 (W4) contra modelos manuales construidos desde la especificación; su independencia es por fuente y por firma numérica, no por operador (A65-F5F-08, abierta para READY) |
+| D-12 provenance | CONFORME / LIMITACIÓN | huellas de fuente y de entrada; `Stale` si la huella de la lectura de vuelta no es la del manifiesto (`StructuralReadbackComparison.cs:481`) y `Rejected` si el volcado generado no coincide con los valores de esa lectura de vuelta (`FirstBindingMismatch`, l. 486); la ligadura del volcado a su sesión es solo operativa (A65-F4F-04, abierta para READY) |
 | D-13 capacidad para ID30 y comando mínimo | CONFORME | `BuildStructuralModel`, `CompareReadbacks`, `CreateRamBuildPackage`, `RamDumpReader`; un solo archivo de comando (`RackRamElementsCommands.cs`) con su guarda; sin `Analyze` ni `ReadResults` |
 | D-14 análisis y resultados | CONFORME | no existen; guarda de ADR-0017 (INV-11) |
 | D-15 ADR-0050 | CONFORME | aceptado antes de F1 (Q-O6); texto congelado sin cambios |
@@ -50,7 +50,7 @@ protegidos por la suite Core del producto sin cambios. La regresión Full de F7 
 ## 4. Matriz de equivalencia (§4)
 
 Cada fila evaluable dio PASS en OV-I65-01 (W2) y OV-I65-02 (W4). Las propiedades de sección y material son NOT_EVALUATED (la API no las
-lee; D-09) y la categoría manual y el peso propio, INFORMATIVE. No hay filas de comportamiento (F6 fuera). **CONFORME, con la limitación
+lee; firma de ingeniería D-09 de F4-D) y la categoría manual y el peso propio, INFORMATIVE. No hay filas de comportamiento (F6 fuera). **CONFORME, con la limitación
 declarada.**
 
 ## 5. Validación del Owner (§5)
@@ -84,8 +84,17 @@ declarada.**
 | 9. ADR-0017 | CONFORME | sin utilización, ratios ni veredictos |
 | Cláusula de compatibilidad con ADR-0005, ADR-0017, ADR-0021 §10 y ADR-0040 D3 | CONFORME | sin cambios de API ni de texto de esos ADR |
 
-**EXP-01:** ninguna discrepancia de clase A entre código, ADR-0050 y Freeze. La ausencia de huella en el volcado (Decisión 8) es una
-limitación conocida y dispuesta (opción 0 en F5; decisión del Owner pendiente para READY), no una contradicción con algo consumido.
+**EXP-01:** ninguna discrepancia de clase A entre código, ADR-0050 y Freeze. Sobre la Decisión 8 y el volcado sin huella:
+
+- El Freeze, en D-11 (la regla específica), define el volcado como un script fijo sin entradas del paquete y aplica `STALE` a la lectura
+  de vuelta. El volcado del modelo manual no puede llevar huella por construcción. Leer D-12 como «todo volcado lleva huella» haría
+  inejecutables D-11 y OV-I65-01.
+- El código cierra la vigencia de forma transitiva: `Stale` cuando la huella de la lectura de vuelta no es la del manifiesto, y `Rejected`
+  cuando el volcado generado no coincide con los valores de esa lectura de vuelta.
+- Lo único que queda abierto es la procedencia de sesión del volcado (A65-F4F-04, OPTIONAL; opción 0 aprobada para F5 en CD-I65-F5-11).
+
+Una EXP-01 de clase A exige una contradicción que afecte algo consumido (LIFECYCLE §4); aquí no la hay. Si el Owner eligiera la opción 1
+(huella o nonce en el volcado), haría falta una A-n.
 
 **Estado del ADR:** «aceptado» desde 2026-10-11, sin edición. El índice de ADR se actualiza en el cierre de I-65 (nota del propio ADR y
 CD-I65-F0-05); el número 0050 se comprueba en READY-04 contra `main`.
@@ -96,5 +105,6 @@ CD-I65-F0-05); el número 0050 se comprueba en READY-04 contra `main`.
 |---|---|---|
 | F7-OBS-01 | La ayuda integrada (`RACKAYUDA`, `RackCommandReference`) no lista `RACKRAMPAQUETE`. El Freeze no lo exige (D-13: comando de línea mínimo, sin WPF ni menús). Añadirlo es código fuera de F7: decisión del Owner (READY o seguimiento). | NON-MATERIAL |
 | F7-OBS-02 | El README no listaba el comando (WORKFLOW §8): se añade su fila y el enlace a la guía en F7. | EDITORIAL |
+| F7-OBS-03 | La tabla de secciones y materiales no viaja en el Autoloader (CD-I65-F4-10, diferido): con esa instalación el comando responde `Unavailable`. La guía, el README y la entrada «Provider Boundary» lo declaran como requisito y límite de V1 (corrección de A65-F7-02); la decisión de incluirla en el Autoloader queda para READY-01. | NON-MATERIAL (limitación conocida) |
 
 **Resultado del Coordinator:** sin desviaciones materiales; conforme con el Freeze y ADR-0050 dentro del alcance de F7.
