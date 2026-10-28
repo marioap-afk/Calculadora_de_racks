@@ -1,0 +1,23 @@
+HEAD=e8e6893c6b35fa9c8808ff5625e44085aa021415 dirty=0
+sdk=8.0.423
+start=2026-10-28T21:30:56Z
+--- Core Full
+Correctas! - Con error:     0, Superado: 14390, Omitido:     0, Total: 14390, Duración: 1 m 45 s - RackCad.Tests.dll (net8.0)
+core_exit=0 secs=148
+core_trx_sha256=34ce753f2cbaa28a7072330e896bf4ce3704322c059c24a0af410d56b1d2d3ff
+--- UI Full
+Correctas! - Con error:     0, Superado:  1637, Omitido:    17, Total:  1654, Duración: 4 m 53 s - RackCad.UI.Tests.dll (net8.0)
+ui_exit=0 secs=313
+ui_trx_sha256=5dec474efadd1ed8ae37a27e9e8f009fc89d8013564c6948ef503d6e2cf71e11
+--- Build UI Debug
+    0 Errores
+ui_build_exit=0
+--- Build Plugin Debug (salida nueva fuera del repositorio)
+    0 Errores
+plugin_build_exit=0
+plugin_dll_sha256=6695dd28bc010d999b13b35789fe72c9cc469cef04015a968e2562d44b949212
+--- Build herramienta Debug
+    0 Errores
+tool_build_exit=0
+end=2026-10-28T21:39:06Z
+HEAD_after=e8e6893c6b35fa9c8808ff5625e44085aa021415 dirty_after=0

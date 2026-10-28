@@ -2869,3 +2869,18 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 - **LIFECYCLE §7:** 1 CUMPLE; 2 NO APLICA; 3 PENDIENTE (regresión Full del SHA de cierre); 4 PENDIENTE (CI del SHA de cierre); 5 CUMPLE
   (CD-I65-F7-15); 6 PENDIENTE; 7 CUMPLE (fetch fresco 2026-10-28T21:30:41Z, 0 detrás).
 - **SHA documental de cierre de F7 = este commit.** Producto = árbol de `51fc82f1`.
+
+## 107. Cierre de F7: evidencia del SHA documental de cierre `e8e6893c` (2026-10-28T21:43:29Z)
+
+- Orden: decisiones §99-§103. Sin AutoCAD, RAM, Codex ni Workers; sin cambios de producto.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-f7/close-e8e6893c/ci-run.txt` | `AC95EEF74A1BCD60DB284BCB443F94E699BF205B1007D0045F9868AAB30DCA7A` |
+| `docs/automation/evidence/I-65-f7/close-e8e6893c/local-evidence.txt` | `E3A25D6356962490CD7ACAA5F898C30D4C9A81FD186BE335B13C9379ACA6A16A` |
+
+- Regresión Full local sobre `e8e6893c` (árbol limpio antes y después, SDK 8.0.423): Core «Correctas! - Con error:     0, Superado: 14390, Omitido:     0, Total: 14390, Duración: 1 m 45 s - RackCad.Tests.dll (net8.0)»; UI «Correctas! - Con error:     0, Superado:  1637, Omitido:    17, Total:  1654, Duración: 4 m 53 s - RackCad.UI.Tests.dll (net8.0)»; builds Debug
+  de UI, Plugin y herramienta con salida 0. TRX de Core `34ce753f2cbaa28a7072330e896bf4ce3704322c059c24a0af410d56b1d2d3ff` y de UI `5dec474efadd1ed8ae37a27e9e8f009fc89d8013564c6948ef503d6e2cf71e11` (no versionados).
+- CI 40773745604: `push`, `refs/heads/architecture/interop-analisis-estructural`, `head_sha` `e8e6893c6b35fa9c8808ff5625e44085aa021415`, 4/4 jobs `success`.
+- AC-F7-03, AC-F7-12 y LIFECYCLE §7 puntos 3, 4 y 6: **CUMPLE**. **GATE PASS de F7** registrado en decisiones §103 (CD-I65-F7-17).

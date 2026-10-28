@@ -3,21 +3,21 @@ automation_state:
   initiative: I-65
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
-  current_phase: f7-closing
-  state: validating
+  current_phase: f7-closed
+  state: waiting-owner
   gate: F7
   attempts: 7
-  next_action: Coordinator: evidencia del SHA documental de cierre de F7 (arbol limpio, regresion Full local: Core, UI y builds Debug, push, CI del SHA exacto); GATE PASS de F7 solo si queda en verde, registrado despues (decisiones §102).
-  last_evidence_commit: 45aaad6e281a39d1b1cbd2627d02f9a533eada5d
+  next_action: Owner: decisiones R-D1..R-D11 del plan de READY final (docs/initiatives/I-65-ready-final-plan.md) y orden expresa para iniciar READY-01..09; sin READY, Candidato final ni integracion hasta entonces.
+  last_evidence_commit: e8e6893c6b35fa9c8808ff5625e44085aa021415
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: F7
-  next_role: Coordinator
-  implementation_authorization: NO de codigo; F7 = AUTHORIZED WITHIN FREEZE; F7 REVIEW = HECHA (Architect CONFORMANT WITH OBSERVATIONS, 0 REQUIRED; Coordinator CONFORMING, §102); F7 GATE PASS = CONDICIONADO a la regresion Full y al CI del SHA de cierre; READY FINAL = NO; INTEGRATION = NO; HISTORY REWRITE = NO
+  next_role: Owner (decisiones previas a READY)
+  implementation_authorization: NO (la autorizacion de F7 termino con su GATE PASS, CD-I65-F7-17/18); READY FINAL = NO; INTEGRATION = NO; HISTORY REWRITE = NO
   milestone_candidate: {sha: 5a5ca57731ebbbbc41ed4f702698709d5e128a86, scope: hito F4 (no FINAL_CANDIDATE_SHA), dll: c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, ci: 38977069487 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS sin REQUIRED, coordinator: CONFORMING, gate: F4 GATE PASS sobre el SHA de cierre 1e7d8fc2 (CI 39052279094), owner_validation: W1 PASS y W2 PASS (aceptadas por el Owner, decisiones §80 y §82)}
   f5_milestone_candidate: {sha: bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109, scope: hito F5 (OV-I65-02; no FINAL_CANDIDATE_SHA), dll: 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, loads: d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c, ci: 39187567306 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS (A65-F5C-01..09 OPTIONAL), coordinator: CONFORMING, final_review: Architect CONFORMANT WITH OBSERVATIONS (A65-F5F-01..08 OPTIONAL) y Coordinator CONFORMING (decisiones §97), gate: F5 GATE PASS sobre el SHA de cierre 45aaad6e (CI 40759871854), predeclaration_recheck: 2026-10-19T02:22:50Z, declared: 2026-10-19 (decisiones §89, CD-I65-F5-27), owner_validation: W3 PASS y W4 PASS (aceptadas por el Owner, decisiones §93 y §96)}
-  owner_decisions_open: [procedencia del volcado ligada a la sesion para READY (A65-F4F-04), codificacion del script de ACL (A65-F4F-08), independencia del operador del modelo manual para READY (A65-F5F-08), reglas de procedimiento para READY (A65-F5F-03/04/05), presupuesto de Codex y attempts para READY, C-5 notificaciones (sin cambios)]
-  not_authorized: [repetir W3 o W4, integrar la rama, F6, implementacion nueva, cambios en src/, alterar el checkout principal, AutoCAD, NETLOAD, nuevas corridas en RAM Elements, analisis estructural, guardar modelos de RAM, declaracion de READY final o FINAL_CANDIDATE_SHA, integracion, superar 52 invocaciones de Codex o max_attempts 9, cambios del Freeze o de ADR-0050, tolerancias, codigo de I-52, I-62, I-64 o ID30, integracion con Workspace, interfaz grafica]
+  owner_decisions_open: [R-D1 orden de integracion con I-64, R-D2 referencia manual (reduccion reservada al Owner), R-D3 A65-F4F-04, R-D4 A65-F5F-08, R-D5 A65-F5F-03/04/05, R-D6 A65-F4F-08, R-D7 C-5, R-D8 F7-OBS-01 RACKAYUDA, R-D9 OV-I65-08 round-trip, R-D10 presupuesto, R-D11 tabla en el Autoloader, orden de inicio de READY]
+  not_authorized: [READY final, FINAL_CANDIDATE_SHA, repetir W3 o W4, integrar la rama, F6, implementacion nueva, cambios en src/, alterar el checkout principal, AutoCAD, NETLOAD, nuevas corridas en RAM Elements, analisis estructural, guardar modelos de RAM, declaracion de READY final o FINAL_CANDIDATE_SHA, integracion, superar 52 invocaciones de Codex o max_attempts 9, cambios del Freeze o de ADR-0050, tolerancias, codigo de I-52, I-62, I-64 o ID30, integracion con Workspace, interfaz grafica]
