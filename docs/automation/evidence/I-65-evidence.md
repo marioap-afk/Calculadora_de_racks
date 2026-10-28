@@ -2884,3 +2884,16 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
   de UI, Plugin y herramienta con salida 0. TRX de Core `34ce753f2cbaa28a7072330e896bf4ce3704322c059c24a0af410d56b1d2d3ff` y de UI `5dec474efadd1ed8ae37a27e9e8f009fc89d8013564c6948ef503d6e2cf71e11` (no versionados).
 - CI 40773745604: `push`, `refs/heads/architecture/interop-analisis-estructural`, `head_sha` `e8e6893c6b35fa9c8808ff5625e44085aa021415`, 4/4 jobs `success`.
 - AC-F7-03, AC-F7-12 y LIFECYCLE §7 puntos 3, 4 y 6: **CUMPLE**. **GATE PASS de F7** registrado en decisiones §103 (CD-I65-F7-17).
+
+## 108. Aceptación de F7 y preparación de READY final (2026-10-28T22:30:35Z)
+
+- Orden: decisiones §104. Lecturas de solo lectura del árbol (`deploy/`, `eng/ci/`, guardas G1 y C02, censos de comandos y de la ayuda,
+  `StructuralFingerprints.AnalysisInput`, que no depende de la carpeta del paquete) y `git diff --name-only bb0d5522 <I-64>`. Sin AutoCAD, RAM,
+  Codex ni Workers.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-f7-acceptance-ready-preparation.original.txt` | `FEB8BD856C8EB3D72ECC4753B3517CEFC8DA3348A134F1590B5A88E9713AD5AE` |
+| `docs/initiatives/I-65-ready-preparation.md` | `35D162744FC6093080908D731F7DCAADAC1873B338C8739AF1A1D02418939964` |
+| `docs/initiatives/I-65-ov08-procedure.md` | `A3CEF322C9D8E20906715BAEAFBB2190D0366BD0E7CC121F0A0B44B67F08ACA7` |

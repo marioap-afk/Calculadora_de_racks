@@ -1,0 +1,72 @@
+I-65 — OWNER DISPOSITION
+F7 Acceptance / READY Final Preparation
+He revisado el cierre de F7 registrado en `77774aef`, con CI 40774332468, 4/4 satisfactorio.
+1. Aceptación
+F7 GATE PASS = ACKNOWLEDGED / ACCEPTED.
+Reconozco:
+
+* SHA de cierre `e8e6893c`.
+* Core Full 14390/14390.
+* UI Full 1637 PASS, con 17 omisiones declaradas.
+* Builds Debug satisfactorios.
+* Architect CONFORMANT WITH OBSERVATIONS, 0 REQUIRED después de corregir los dos hallazgos documentales.
+* Coordinator CONFORMING.
+* AC-F7-01..12 cumplidos.
+* Freeze y ADR-0050 intactos.
+
+2. READY final
+READY FINAL PREPARATION = AUTHORIZED.
+No autorizo todavía declarar el Candidato final, ejecutar OV-I65-08 ni integrar la rama.
+Prepara la matriz READY-01..09 y verifica los criterios exactos de LIFECYCLE.
+3. Decisiones preliminares
+R-D1: preferencia por integrar I-65 antes de I-64, condicionada al estado actual de ambas iniciativas y a las reglas de integración.
+R-D2: preferencia por reutilizar los volcados manuales custodiados, siempre que las identidades y especificaciones coincidan. No reutilizar readbacks automáticos como evidencia nueva.
+R-D3: mantener la trazabilidad externa de sesión, opción 0, con sus limitaciones declaradas.
+R-D4: aceptar la construcción manual mediante Computer Use como evidencia de equivalencia entre mecanismos de entrada, sin presentarla como validación independiente de ingeniería.
+R-D9: preparar el procedimiento de OV-I65-08, incluyendo guardado, reapertura y persistencia DWG, sin ejecutarlo.
+R-D10: conservar por ahora el presupuesto de Codex 50/52 y attempts 7/9.
+No cierres R-D5 a R-D8 sin presentar sus textos y opciones exactas.
+4. R-D11 — Distribución de tabla
+Investiga el impacto de que la tabla de secciones/materiales solo se copie a la salida del Plugin y no al Autoloader.
+Determina:
+
+1. Si el Autoloader es un mecanismo de distribución actualmente soportado.
+2. Si `RACKRAMPAQUETE` debe funcionar desde esa distribución según el Freeze.
+3. Cuál es el cambio mínimo necesario.
+4. Qué pruebas y regresiones requeriría.
+5. Si debe tramitarse mediante una enmienda A-n.
+6. Su impacto en el SHA y el presupuesto.
+
+R-D11 IMPLEMENTATION = NOT AUTHORIZED.
+5. RACKAYUDA
+Evalúa por separado incorporar `RACKRAMPAQUETE` a la ayuda interna.
+Presenta el cambio mínimo, sus pruebas y su encaje con el Freeze.
+No modificar código todavía.
+6. Candidato final
+Prepara la estrategia para crear un FINAL_CANDIDATE_SHA propio que incluya todas las decisiones materiales necesarias.
+No reutilizar excepciones documentales anteriores.
+Identifica las pruebas que deben repetirse sobre ese SHA.
+7. Restricciones
+No abrir AutoCAD ni RAM.
+No modificar producto ni Freeze.
+No consumir Codex ni attempts adicionales.
+No iniciar integración.
+No declarar READY.
+8. Entregable
+Presenta:
+
+1. Matriz READY-01..09.
+2. Texto y opciones exactas de R-D5 a R-D8.
+3. Estado de R-D1 a R-D11.
+4. Evaluación de R-D11.
+5. Evaluación de RACKAYUDA.
+6. Procedimiento propuesto OV-I65-08.
+7. Plan del Candidato final.
+8. Presupuesto y riesgos.
+9. Decisiones que requieren autorización del Owner.
+
+F7 = CLOSED / GATE PASS.
+READY PREPARATION = GO.
+READY EXECUTION = NO.
+INTEGRATION = NO.
+Continúa únicamente con la preparación y detente antes de cualquier ejecución real.
