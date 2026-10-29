@@ -1,0 +1,47 @@
+[
+ {
+  "Case": "NEG-QU-1 g0_acceptance ACCEPTED sin I62-CLASSIFICATION en el G0",
+  "Scope": "File",
+  "Expect": [
+   "I-S16"
+  ],
+  "Find": "  g0_acceptance:\n    state: PENDING\n    decision: null\n",
+  "Replace": "  g0_acceptance:\n    state: ACCEPTED\n    decision:\n      path: docs/automation/decisions/I-66.md\n      blob: b9b3488248cdb8ca4c99205bb82ae5578ed15c63\n"
+ },
+ {
+  "Case": "NEG-QU-2 el mismo G0 aceptado como transición (marcadores I62 de I-P09)",
+  "Scope": "Pair",
+  "Expect": [
+   "I-P09"
+  ],
+  "Find": "  g0_acceptance:\n    state: PENDING\n    decision: null\n",
+  "Replace": "  g0_acceptance:\n    state: ACCEPTED\n    decision:\n      path: docs/automation/decisions/I-66.md\n      blob: b9b3488248cdb8ca4c99205bb82ae5578ed15c63\n"
+ },
+ {
+  "Case": "NEG-QU-3 record_version que salta (3 en vez de 2)",
+  "Scope": "Pair",
+  "Expect": [
+   "I-P01"
+  ],
+  "Find": "  record_version: 2\n",
+  "Replace": "  record_version: 3\n"
+ },
+ {
+  "Case": "NEG-QU-4 aceptación del Principal sin su marcador (decisiones del BOOTSTRAP)",
+  "Scope": "Pair",
+  "Expect": [
+   "I-P09"
+  ],
+  "Find": "        blob: b9b3488248cdb8ca4c99205bb82ae5578ed15c63\n",
+  "Replace": "        blob: 5c6a57e82305ee95fcaa0b77f95d165032b4c29b\n"
+ },
+ {
+  "Case": "NEG-QU-5 Q0 con g0_acceptance PENDING",
+  "Scope": "File",
+  "Expect": [
+   "I-S15"
+  ],
+  "Find": "  point: QU\n  point_kind: ORDINARY\n",
+  "Replace": "  point: Q0\n  point_kind: null\n"
+ }
+]
