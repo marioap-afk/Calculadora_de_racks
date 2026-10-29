@@ -37,3 +37,13 @@ Full de gate van sobre sus propios SHA. SDK 8.0.423 de usuario; prueba `tests/Ra
 
 Core completo sobre la misma copia con el GREEN y la versión R1 de la prueba (11 casos nuevos): 12 606 correctas, 0 con error. Las pruebas existentes
 no cambian (F-4).
+
+## 2. RED de G1 (commit `3581f65eecdc2c8bbd296dc2987ce0c00b2f45d6`)
+
+- **Commit RED:** solo `tests/RackCad.Tests/I66PlacedCloneTests.cs`, sobre el Freeze `69d015ec` (blob congelado `15f41ab3`); el código de producto es el de
+  la base `bb0d5522` (`git diff bb0d5522 3581f65e -- src` vacío).
+- **Corrida local** en el worktree, árbol limpio antes y después, SDK 8.0.423 de usuario, filtro `FullyQualifiedName~I66PlacedCloneTests`:
+  **12 con error, 6 correctas, 18 en total**. Fallan, dos casos cada una, N-1, N-2, N-3, N-4, N-7 y N-8, todas porque el clon deja los cuatro campos por
+  defecto (`null`, `0`, `0`, `null`). Pasan las de conservación: N-5 (tres casos), N-9 y N-10 (dos casos). Coincide con el RED esperado del Freeze §6.
+- **CI del commit RED:** se espera el job de pruebas Core en rojo por esas mismas pruebas; su run id se registra con el QH.
+

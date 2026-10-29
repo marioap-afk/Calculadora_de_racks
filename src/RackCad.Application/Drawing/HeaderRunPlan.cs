@@ -58,6 +58,11 @@ namespace RackCad.Application.Drawing
             double WorldX(double localX) => placement.Mirrored ? placement.InsertionX - localX : placement.InsertionX + localX;
             double WorldY(double localY) => placement.InsertionY + localY;
 
+            // The drawer puts a vertical dimension's line at p1.X + DimensionOffset, so the X-mirrored nested reference moves it to the
+            // other side: its flat offset flips sign. A horizontal one's offset runs along Y and stays (same rule as PushBackMirror.Instance).
+            var vertical = source.Role == HeaderBlockRole.Dimension
+                           && System.Math.Abs(source.ConnectionAnchor.X - source.Insertion.X) < System.Math.Abs(source.ConnectionAnchor.Y - source.Insertion.Y);
+
             var clone = new HeaderBlockInstance
             {
                 Role = source.Role,
@@ -68,7 +73,11 @@ namespace RackCad.Application.Drawing
                 MirroredX = placement.Mirrored ? !source.MirroredX : source.MirroredX,
                 MirroredY = source.MirroredY, // a Y-axis flip carries through unchanged (placements only shift/X-mirror)
                 ConnectionAnchor = new Point2D(WorldX(source.ConnectionAnchor.X), WorldY(source.ConnectionAnchor.Y)),
-                Insertion = new Point2D(WorldX(source.Insertion.X), WorldY(source.Insertion.Y))
+                Insertion = new Point2D(WorldX(source.Insertion.X), WorldY(source.Insertion.Y)),
+                Text = source.Text,
+                TextHeight = source.TextHeight,
+                DimensionOffset = placement.Mirrored && vertical ? -source.DimensionOffset : source.DimensionOffset,
+                DimensionStyleName = source.DimensionStyleName
             };
 
             foreach (var pair in source.DynamicParameters)
