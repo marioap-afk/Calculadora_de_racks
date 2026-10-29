@@ -3,7 +3,7 @@
 Unit: `I-66`. Workflow: V2. Rama `fix/placedclone-copia-anotaciones`, base `bb0d5522`. Contrato:
 [I-66-placedclone-copia-anotaciones.md](I-66-placedclone-copia-anotaciones.md). Decisiones: [decisions/I-66.md](../automation/decisions/I-66.md).
 
-Barrido de solo lectura sobre la base. Cada afirmación lleva su clase: `MEASURED` (leído en el código), `INFERENCE` o `UNKNOWN`. Las rutas son de
+Versión R2, tras la revisión R1 del Architect (ARCH-B-01, ARCH-B-02 y ARCH-B-10; decisiones §5.1). Barrido de solo lectura sobre la base. Cada afirmación lleva su clase: `MEASURED` (leído en el código), `INFERENCE` o `UNKNOWN`. Las rutas son de
 `src/` salvo que se diga otra cosa.
 
 ## DC-01. Comportamiento observable actual
@@ -29,7 +29,13 @@ Barrido de solo lectura sobre la base. Cada afirmación lleva su clase: `MEASURE
   derivada de las dos líneas anteriores.
 - Precedente en el código: `PushBackMirror.Instance` (`RackCad.Application/Systems/PushBack/PushBackMirror.cs:43-75`) refleja respecto de un eje vertical,
   copia los cuatro campos e invierte el signo de `DimensionOffset` solo en cotas verticales (mismo criterio de eje que el dibujante). MEASURED.
-- Ningún ADR ni Freeze integrado gobierna `PlacedClone`. MEASURED (sin referencias en `docs/adr/`).
+- **ADR-0011** (aceptado) gobierna el contrato de `Flatten`: «Agrupar no puede cambiar la geometría: aplanar el plan debe reproducir las instancias
+  originales» (`docs/adr/0011-parametros-dinamicos-con-patron-array.md:36-37`), y cita al agrupador y al dibujante. Ningún Freeze integrado gobierna
+  `PlacedClone`. MEASURED. (La versión R1 de este Discovery decía que ningún ADR lo gobernaba: era falso, ARCH-B-01.)
+- **Contradicción con ese contrato (EXP-01, clase B, más abajo):** `PlacedClone` conserva `RotationRadians` (`HeaderRunPlan.cs:67`) e invierte
+  `MirroredX`, mientras que una pieza `R(θ)·S(m,1)` dentro de una referencia `S(−1,1)` equivale a `R(−θ)·S(−m,1)` (regla de composición documentada
+  en `PushBackMirror.cs:22-25` y aplicada en `:61`). Hay piezas rotadas en grupos con colocaciones espejadas: diagonales con `RotationRadians = atan2`
+  (`LateralHeaderLayoutBuilder.cs:316,324,343`) en las cabeceras alternas del Dinámico (`DynamicSystemLateralBuilder.cs:144-155`). MEASURED.
 
 ## DC-03. Persistencia
 
@@ -53,8 +59,8 @@ a `Flatten`: construye la definición anidada desde `group.Instances`) o → `Fl
   meter un decorado en un grupo. MEASURED (los cuatro filtros de Push Back: INFERENCE, heredan de grupos que no los tienen).
 - **Llamadores de `Flatten` fuera de pruebas:** `DynamicSystemPlantaBuilder:84`, `DynamicSystemLateralBuilder:250`, `PushBackSystemPlantaBuilder:72`
   (aplana, filtra y reagrupa en `:157` antes de dibujar), `PushBackCompositePlanta:45/200/288` (aplana y reagrupa en `:62`), y en UI
-  `PushBackPreviewModel:114`, `PushBackPreviewRenderer:107` y `RackDynamicSystemWindow.xaml.cs:2640`. Ninguno lee los cuatro campos de un clon. Ningún BOM
-  llama a `Flatten`. MEASURED.
+  `PushBackPreviewModel:114`, `PushBackPreviewRenderer:107` y `RackDynamicSystemWindow.xaml.cs:2640`; además `PushBackSystemPlantaBuilder.Build:161`,
+  sin llamadores en `src/` (omitido en R1, ARCH-B-10). Ninguno lee los cuatro campos de un clon. Ningún BOM llama a `Flatten`. MEASURED.
 - **Otros clones que tampoco copian todos los campos** (fuera de alcance; DC-09): prototipo del agrupador (`HeaderInstanceGrouper.cs:72-89`), los dos
   `RigidClone` de cama, `CloneAt` de Push Back, y `Translated`/`Translate` del Selectivo (copian `Text` y `TextHeight` pero no la cota). MEASURED.
 - Inventario: búsqueda de `new HeaderGroup(`, `Flatten()`, `new HeaderBlockInstance` y lecturas de los cuatro campos en `src/` y `tests/`. Sin huecos
@@ -90,7 +96,18 @@ No consume ni extiende ninguna fundación registrada: `HeaderRunPlan` y `HeaderB
 | M-05 | no activado | el contrato de `Flatten` (equivalente plano del plan) no cambia: el arreglo lo cumple para más entradas |
 | M-06 | no activado | ningún punto de extensión |
 | M-07 | no activado | ningún mecanismo transversal |
-| M-08 | no activado | ningún ADR ni Freeze integrado gobierna `PlacedClone` |
+| M-08 | no activado | ADR-0011 gobierna el contrato de `Flatten`; el cambio no lo modifica ni lo reinterpreta: hace que `Flatten` reproduzca más campos de la instancia dibujada |
 
-**Arquetipo propuesto: EXTENSION.** Expansiones evaluadas: EXP-01..EXP-09 no se activan. EXP-08 (defecto preexistente que el cambio haría visible) se
-evaluó en negativo: el arreglo no hace visible ningún otro defecto; los clones hermanos de DC-05 siguen igual de latentes y quedan fuera de alcance.
+**Arquetipo propuesto: EXTENSION.**
+
+**Expansiones (R2).** EXP-02..EXP-07 y EXP-09 no se activan.
+
+- **EXP-01, activada y cerrada como clase B** (propuesta del Architect en ARCH-B-02, confirmada por el Coordinator en las decisiones §5.1). Pregunta:
+  ¿la rotación conservada de las piezas rotadas en colocaciones espejadas afecta a algo que I-66 consume? Respuesta: no, y es demostrable. I-66 consume
+  el contrato de ADR-0011 solo para los puntos y los cuatro campos de los decorados. El dibujante no lee `RotationRadians` ni `MirroredX` de una
+  anotación (`LateralHeaderDrawer.cs:258-282`, un `DBText` sin rotación) ni de una cota, cuya rotación sale solo de los dos puntos (`:341-349`)
+  (DC-02). Los decorados nunca entran en un grupo (DC-04, DC-05). La rotación está fijada por los hashes de `Flatten`
+  (`tests/RackCad.Tests/DynamicNullOverrideGoldenTests.cs:61,68`), y corregirla cambiaría esas salidas y la vista previa (M-03) (DC-06). Queda fuera de
+  alcance como hallazgo lateral. INFERENCE, sin ejecutar: la vista previa de Push Back dibuja las diagonales aplanadas con esa rotación
+  (`PushBackPreviewRenderer.cs:40,56,107`).
+- **EXP-08, en negativo:** el arreglo no hace visible ni empeora ningún defecto. La rotación anterior y los clones hermanos de DC-05 siguen igual.

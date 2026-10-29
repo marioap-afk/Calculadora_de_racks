@@ -1,6 +1,6 @@
 # I-66 — PlacedClone copia los campos de texto y de cota
 
-Status: G0 PASS; Discovery hecho ([I-66-discovery.md](I-66-discovery.md)); Freeze en revisión; NOT INTEGRATED
+Status: G0 PASS; Discovery R2 ([I-66-discovery.md](I-66-discovery.md)); Freeze R2 en re-revisión; NOT INTEGRATED
 
 Workflow: V2 (unidad nueva; la base `bb0d5522` contiene el merge normativo de V2 y la pausa de activación terminó: `integration/I-56`)
 
@@ -9,6 +9,8 @@ Initiative: I-66. Unit: `I-66`. Arquetipo propuesto: EXTENSION (sin disparadores
 Branch: `fix/placedclone-copia-anotaciones` (worktree `~/.codex/worktrees/fix-placedclone-copia-anotaciones`)
 
 Decisiones: [`docs/automation/decisions/I-66.md`](../automation/decisions/I-66.md).
+
+Consumes: ninguna fundación (el contrato de `Flatten` lo gobierna ADR-0011, aceptado). Extends: ninguna. Introduces: ninguna.
 
 ## Propósito
 
@@ -26,7 +28,7 @@ I-61 y WORKFLOW siguen siendo la única autoridad de esta unidad. Sin delegació
 
 ## Fuera de alcance
 
-Meter anotaciones en grupos ARRAY; cambiar `HeaderInstanceGrouper`, `Flatten`, el dibujante del Plugin, la UI, el esquema o la persistencia; los
+Meter anotaciones en grupos ARRAY; cambiar `HeaderInstanceGrouper`, el cuerpo de `Flatten` (solo cambia su clon por colocación), el dibujante del Plugin, la UI, el esquema o la persistencia; los
 demás hallazgos de I-50; cualquier cambio en I-64 o I-65.
 
 ## Coordinación
