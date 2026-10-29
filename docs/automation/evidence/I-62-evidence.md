@@ -5225,3 +5225,41 @@ solo desde artefactos custodiados.
   [`I-62-R1/owner-106-body.txt`](I-62-R1/owner-106-body.txt).
 - **Siguiente:** reclamo y bootstrap de I-66 según WORKFLOW §4.1; AT-1 (autoverificación al abrir) y AT-2 (BOOTSTRAP `state/v2` en sombra validado
   por `StateV2Validator`). Sin A6-7, sin Codex, sin integración. Ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 216. R1a: I-66 abierta como unidad piloto; AT-1 y AT-2 PASS con evidencia y CI en su rama (decisiones §105-§106)
+
+- **Unidad piloto:** I-66 «PlacedClone copia los campos de texto y de cota» (I-50 H4), rama `fix/placedclone-copia-anotaciones`, base `origin/main`
+  `bb0d5522`. Reclamo `e1cd88bf` (primer push aceptado, 14:05Z, `Claim-Id: e289db83-b7f7-4c6e-91c6-d2551e393055`) y bootstrap `1aed0306` (contrato,
+  decisiones con la autorización del Owner de §106, fila en ROADMAP), por el caso (d) de WORKFLOW §2. I-61 y WORKFLOW son su única autoridad.
+  Clasificación V2; arquetipo propuesto EXTENSION, que decide el Coordinator.
+- **AT-1** (`89166be5`, `docs/automation/evidence/I-66-R1/autoverificacion/` de esa rama):
+  - observación `get_session("self")` a las 14:04:45Z: `claude-opus-5-5`, effort `xhigh`, sesión `local_f00c654e…`;
+  - preflight `rackcad-preflight/v1` `P20261029T140445Z-717f` (CUSTODY): MATCH / ELIGIBLE, igual al oráculo E1;
+  - validación: Test-Json en las dos fases, reglas C1-C8 de README §13.2 y saneamiento §13.4: VALID y CLEAN;
+  - negativos mecánicos sobre la observación real: effort `high` → BELOW_REQUIRED / STOP P-09 (E3); `high` con el agregado MATCH → P-14 por C6;
+    effort sin observar → UNKNOWN / P-10 (E4). Todos conformes;
+  - productor `r1a_at1.py`, que importa `I-62-F2/f2-mc.py` de `41ccfdcf` sin copiar su código.
+- **AT-2** (punto `70434e0f`; validación `8e23b0d2`):
+  - binding `rackcad-binding/v1` `B20261029T141351Z-af6a` del Principal A (UNIT, PENDING): Test-Json y reglas B1-B10 de README §14.2 por
+    `I-62-F3/f3-mc.py`, disposición PENDING sin fallos;
+  - punto BOOTSTRAP `docs/automation/evidence/I-66-R1/state.v2.yml` (record_version 1), en la forma canónica de `YamlSubset`, con sus `StateRef` al
+    binding, al preflight, a `docs/automation/decisions/I-66.md` y a `docs/AUTOMATION_PLAN.md` en el árbol del commit;
+  - `StateV2Validator` (validador de producción de F4, DLL compilada en `41ccfdcf`, SHA-256 `d7150126…`) sobre el árbol real de `70434e0f`:
+    invariantes de archivo y de historia sin violaciones;
+  - cuatro negativos sobre copias del punto real, todos detectados: blob del binding alterado (I-S13, I-S14), aceptación ACCEPTED en BOOTSTRAP
+    (I-S01, I-S16), preflight inexistente (I-S13) y clave desconocida (B.8.1);
+  - convención SH-1: no existe `I62_EFFECTIVE_SHA`; `protocol.effective_sha` registra la revisión `41ccfdcf`, cuyos textos aplica la sombra, y
+    `claim_parent_contains_effective` es false porque la base no la contiene.
+- **CI de I-66:** `e1cd88bf` 40888032107; `1aed0306` 40888365338; `89166be5` 40888907040; `70434e0f` 40889638185; `8e23b0d2` 40889783957, todas success.
+- **Qué operó realmente:** la autoverificación con un metadato del runtime ligado al instante; la producción y validación del preflight y del binding
+  con los controles F2 y F3 acreditados; la escritura de un punto `state/v2` real y su validación mecánica en el árbol del commit, con negativos que
+  prueban que el validador lo vigila. **Qué no:** el negativo de effort es mecánico (no hubo una sesión real con effort inferior; FX-01 sí lo mostró);
+  la autoverificación no tiene contraste desde otra sesión; no hay G0, QU, QH ni transferencia todavía.
+- **A-8 candidata** (§105, punto 5), solo borrador, sin aplicar ni pedir revisión: [`I-62-R1/a8-candidata-borrador.md`](I-62-R1/a8-candidata-borrador.md),
+  con los cuatro cambios (A8-1 perfil `I62_R1`; A8-2 vigencia por lista cerrada; A8-3 gate F6-R1, OV-I62-01/-02/-05 (a) y OD-1-R1; A8-4 incrementos con
+  gate propio, sin rebajar FX-02/C-24). Corrige la lista de puntos de la propuesta: G0 no es un punto durable y Q7 es de ventana delegada; los de R1 son
+  BOOTSTRAP, QU, QH y QR.
+- **Siguiente (AT-3):** G0 en sombra del Coordinator en las decisiones de I-66 → QU; trabajo directo de A en I-66 hasta un punto intermedio; QH de A con
+  un oráculo sellado por la supervisión; el Owner abre la sesión B, que se autoverifica, reconstruye solo desde el repositorio y publica su
+  RESUME_DECISION antes de la comparación mecánica (comparador de FX-04a).
+- Sin A6-7, sin Codex, sin integración. Ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.

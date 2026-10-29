@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6/R1 (decisiones §105-§106; evidencia §215) — R1 «Principal portable» aprobada como primera entrega; piloto en sombra R1a sobre I-66 (I-50 H4, fix/placedclone-copia-anotaciones) con la conformidad del Owner (esta sesión = Principal A); siguiente: reclamo y bootstrap de I-66, AT-1 (autoverificación) y AT-2 (BOOTSTRAP state/v2 en sombra con StateV2Validator); A-8 solo candidata, sin revisión; A6-7 congelada (0/1); sin Codex ni integración; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6/R1 (decisiones §105-§106; evidencia §215-§216) — piloto R1a I-66 abierto (fix/placedclone-copia-anotaciones, 8e23b0d2): AT-1 (autoverificación, preflight VALID, negativos E3/C6/E4) y AT-2 (BOOTSTRAP state/v2 en sombra, StateV2Validator 0 violaciones, negativos 4/4) PASS con CI; A-8 solo borrador (I-62-R1/a8-candidata-borrador.md), sin revisión; siguiente: disposición del Coordinator para AT-3 (G0 en sombra y QU, trabajo directo de A, QH con oráculo sellado, sesión B del Owner); A6-7 congelada (0/1); sin Codex ni integración; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
