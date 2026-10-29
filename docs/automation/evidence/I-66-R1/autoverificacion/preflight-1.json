@@ -1,0 +1,160 @@
+{
+  "Schema": "rackcad-preflight/v1",
+  "PreflightId": "P20261029T140445Z-717f",
+  "UnitId": "I-66",
+  "Role": "PRINCIPAL_COORDINATOR",
+  "Action": "CUSTODY",
+  "ProtocolSet": "rackcad-protocol/I62",
+  "Profile": {
+    "ProfileId": "PRINCIPAL_COORDINATION",
+    "RoutingBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+  },
+  "Host": {
+    "HostLabelHash": "63077eb13294b21695ab1d1c013de751a805000013ae0eaf238f5dc90fc51174",
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "HostInstanceState": "OBSERVED",
+    "Os": "Microsoft Windows 10.0.26300"
+  },
+  "ObservedUtc": "2026-10-29T14:04:45.388Z",
+  "Actor": {
+    "AdapterId": "claude-desktop-session",
+    "InstanceId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+    "InstanceIdSource": "get_session(\"self\").sessionId",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Session": {
+    "AdapterId": "claude-desktop-session",
+    "SessionId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Adapter": {
+    "AdapterId": "claude-desktop-session",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "DescriptorRef": {
+      "Path": "adapters/claude-desktop-session.md",
+      "Blob": "7f45923527a860713819d1ccf29dcb375b680369"
+    }
+  },
+  "AdapterFacts": {
+    "SchemaRef": {
+      "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+      "Path": "schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+      "Blob": "f246717f1cc2915bbac61ccd96fcd9676039b106"
+    },
+    "Facts": {
+      "SchemaId": "rackcad-adapter-claude-desktop-session-facts/v1",
+      "AuthState": "AUTHENTICATED",
+      "MetadataSource": "get_session",
+      "ReportedModel": {
+        "State": "OBSERVED",
+        "Value": "claude-opus-5-5"
+      },
+      "ReportedEffort": {
+        "State": "OBSERVED",
+        "Value": "xhigh"
+      },
+      "IsRunning": "TRUE",
+      "PermissionMode": {
+        "State": "OBSERVED",
+        "Value": "bypassPermissions"
+      }
+    }
+  },
+  "Fingerprint": {
+    "Kind": "UNVERIFIED",
+    "Sha256": null,
+    "KeyNames": [],
+    "AcceptanceDecisionRef": null
+  },
+  "Requirements": [
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.level",
+      "Mandatory": true,
+      "Required": "Frontera",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "Frontera",
+        "Source": "get_session(\"self\").model = claude-opus-5-5; nivel por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-29T14:04:44.941Z, 2026-10-29T14:04:46.185Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-29T14:04:45.388Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.effort",
+      "Mandatory": true,
+      "Required": "Long-horizon",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "Long-horizon",
+        "Source": "get_session(\"self\").effort = xhigh; traducción por model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f; ventana UTC [2026-10-29T14:04:44.941Z, 2026-10-29T14:04:46.185Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-29T14:04:45.388Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.remote-facts",
+      "Mandatory": true,
+      "Required": "read",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "read",
+        "Source": "git ls-remote origin refs/heads/fix/placedclone-copia-anotaciones refs/heads/main en invocación de esta sesión: rc=0; refs/heads/fix/placedclone-copia-anotaciones=e1cd88bfa515258e99b34ccad6bbaec837beff13, refs/heads/main=bb0d5522e8411f66a51fdfb3f1f0d0514b737453; ventana UTC [2026-10-29T14:05:32.760Z, 2026-10-29T14:05:33.407Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-29T14:05:33.407Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.introspection",
+      "Mandatory": true,
+      "Required": "RUNTIME_OBSERVED",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "RUNTIME_OBSERVED",
+        "Source": "get_session(\"self\") respondió con model, effort y sessionId; nivel de la fuente según adapters/claude-desktop-session.md blob 7f45923527a860713819d1ccf29dcb375b680369; ventana UTC [2026-10-29T14:04:44.941Z, 2026-10-29T14:04:46.185Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-29T14:04:45.388Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    },
+    {
+      "RequirementId": "PRINCIPAL_COORDINATION.repo-write",
+      "Mandatory": true,
+      "Required": "write",
+      "Observation": {
+        "State": "OBSERVED",
+        "Value": "write",
+        "Source": "get_session(\"self\").permissionMode=bypassPermissions; git push -u origin fix/placedclone-copia-anotaciones (push del commit de reclamo, sin force): rc=0, [new branch] fix/placedclone-copia-anotaciones -> fix/placedclone-copia-anotaciones; el remoto lo acepto; ventana UTC [2026-10-29T14:05:18.324Z, 2026-10-29T14:05:22.572Z]",
+        "Assurance": "RUNTIME_OBSERVED",
+        "ObservedUtc": "2026-10-29T14:05:22.572Z"
+      },
+      "Status": "MATCH",
+      "Contradiction": false,
+      "ContradictionEvidence": null
+    }
+  ],
+  "ConfigurationStatus": "MATCH",
+  "Causes": [],
+  "Disposition": "ELIGIBLE",
+  "StopConditions": [],
+  "Invalidators": {
+    "HostInstanceHash": "dc8562f9b88f24dc35dbb1b17114aa07abebc8d78f048ab42d0d377d9d44429a",
+    "AdapterVersion": "UNKNOWN",
+    "BinaryPathHash": null,
+    "AuthState": "AUTHENTICATED",
+    "FingerprintSha256": "UNKNOWN",
+    "CatalogEntryBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+    "RoutingBlob": "bba08fc4686d7192deeb559752636a467103b4b1"
+  }
+}

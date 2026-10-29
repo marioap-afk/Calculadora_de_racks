@@ -1,0 +1,13 @@
+{
+  "Tool": "mcp__ccd_session_mgmt__get_session",
+  "Argument": "self",
+  "WindowUtc": ["2026-10-29T14:04:44.941Z", "2026-10-29T14:04:46.185Z"],
+  "Fields": {
+    "sessionId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+    "model": "claude-opus-5-5",
+    "effort": "xhigh",
+    "permissionMode": "bypassPermissions",
+    "isRunning": true,
+    "lastActivityAt": "2026-10-29T14:04:45.388Z"
+  }
+}

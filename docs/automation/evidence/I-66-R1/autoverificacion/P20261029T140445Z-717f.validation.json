@@ -1,0 +1,41 @@
+{
+  "PreflightId": "P20261029T140445Z-717f",
+  "File": "preflight-1.json",
+  "FileSha256": "eaf7e26ed87489f9f851534a4b5b38e6f85afc445c8d736f0abb87096dfc9ff0",
+  "AuthorityRevision": "41ccfdcf692fb319bb7e8ff4de7edeaa4f1c5134",
+  "AuthorityRevisionRole": "revisión en sombra de los textos I62 (materializados e inactivos) de I-62",
+  "PowerShell": "7.6.9",
+  "Phase1": {
+    "Schema": "docs/automation/agent-execution/schemas/preflight.v1.schema.json",
+    "Blob": "6a0540796a473e887677e5043d2105b932b5865f",
+    "Command": "Test-Json -SchemaFile",
+    "Result": true,
+    "Detail": "True"
+  },
+  "Phase2": {
+    "Schema": "docs/automation/agent-execution/schemas/adapters/claude-desktop-session.facts.v1.schema.json",
+    "Blob": "f246717f1cc2915bbac61ccd96fcd9676039b106",
+    "Command": "Test-Json -SchemaFile",
+    "Result": true,
+    "Detail": "True"
+  },
+  "Rules": {
+    "C1": true,
+    "C2": true,
+    "C3": true,
+    "C4": true,
+    "C5": true,
+    "C6": true,
+    "C7": true,
+    "C8": true
+  },
+  "Sanitization": {
+    "Rule": "README §13.4",
+    "PatternHits": [],
+    "Redactions": 0,
+    "Result": "CLEAN"
+  },
+  "Outcome": "VALID",
+  "ValidatedUtc": "2026-10-29T14:09:27.940Z",
+  "Accepted": true
+}

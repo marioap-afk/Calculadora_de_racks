@@ -1,0 +1,116 @@
+{
+  "Scenario": "AT-1 de R1a (I-62 decisiones §105, punto 4): autoverificación del Principal A al abrir I-66",
+  "Unit": "I-66",
+  "Role": "PRINCIPAL_COORDINATOR",
+  "Action": "CUSTODY",
+  "Authority": "I-62 decisiones §105 (Coordinator) y §106 (conformidad del Owner); I-61 y WORKFLOW gobiernan I-66; este registro no autoriza nada",
+  "ShadowAuthorityRevision": "41ccfdcf692fb319bb7e8ff4de7edeaa4f1c5134",
+  "Producer": "r1a_at1.py sobre docs/automation/evidence/I-62-F2/f2-mc.py (blob 0081fd944d31a45c24cc8b7d1987fcf536b884ae) de esa revisión",
+  "Session": {
+    "AdapterId": "claude-desktop-session",
+    "SessionId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+    "Model": "claude-opus-5-5",
+    "Effort": "xhigh",
+    "PermissionMode": "bypassPermissions",
+    "ObservedUtc": "2026-10-29T14:04:45.388Z",
+    "WindowUtc": [
+      "2026-10-29T14:04:44.941Z",
+      "2026-10-29T14:04:46.185Z"
+    ]
+  },
+  "Real": {
+    "PreflightId": "P20261029T140445Z-717f",
+    "File": "preflight-1.json",
+    "Oracle": "E1",
+    "Expected": {
+      "ConfigurationStatus": "MATCH",
+      "Causes": [],
+      "Disposition": "ELIGIBLE",
+      "StopConditions": []
+    },
+    "Observed": {
+      "ConfigurationStatus": "MATCH",
+      "Causes": [],
+      "Disposition": "ELIGIBLE",
+      "StopConditions": []
+    },
+    "Match": true,
+    "Validation": {
+      "Outcome": "VALID",
+      "Accepted": true
+    }
+  },
+  "Negatives": [
+    {
+      "Case": "N1-EFFORT-BELOW",
+      "Oracle": "E3",
+      "Mutation": "ReportedEffort xhigh → high (Deep) sobre la observación real; el resto sin cambios",
+      "Expected": {
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "STOP",
+        "StopConditions": [
+          "P-09"
+        ]
+      },
+      "Observed": {
+        "ConfigurationStatus": "BELOW_REQUIRED",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "STOP",
+        "StopConditions": [
+          "P-09"
+        ]
+      },
+      "Match": true
+    },
+    {
+      "Case": "N2-FORGED-MATCH",
+      "Oracle": "README §13.2 C6",
+      "Mutation": "effort high (Deep) con el agregado MATCH/ELIGIBLE del preflight real",
+      "Expected": {
+        "Outcome": "P-14",
+        "C6": false
+      },
+      "Observed": {
+        "Outcome": "P-14",
+        "C6": false
+      },
+      "Match": true
+    },
+    {
+      "Case": "N3-EFFORT-UNOBSERVED",
+      "Oracle": "E4",
+      "Mutation": "fila de effort sin observar (NOT_OBSERVED)",
+      "Expected": {
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "StopConditions": [
+          "P-10"
+        ]
+      },
+      "Observed": {
+        "ConfigurationStatus": "UNKNOWN",
+        "Causes": [
+          "PRINCIPAL_COORDINATION.effort"
+        ],
+        "Disposition": "NOT_ELIGIBLE",
+        "StopConditions": [
+          "P-10"
+        ]
+      },
+      "Match": true
+    }
+  ],
+  "Limitations": [
+    "los negativos son mecánicos: mutan una copia de la observación real; no hubo una sesión real con effort inferior (FX-01 ya lo demostró con cambios de effort hechos por el Owner)",
+    "el contraste independiente con get_session lo hace la propia sesión observada; una sesión B puede repetirlo desde fuera con el sessionId en AT-3"
+  ],
+  "Verdict": "PASS"
+}

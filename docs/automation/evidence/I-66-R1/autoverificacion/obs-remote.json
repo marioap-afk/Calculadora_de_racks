@@ -1,0 +1,15 @@
+{
+  "RemoteFacts": {
+    "Command": "git ls-remote origin refs/heads/fix/placedclone-copia-anotaciones refs/heads/main",
+    "Rc": 0,
+    "Refs": {"refs/heads/fix/placedclone-copia-anotaciones": "e1cd88bfa515258e99b34ccad6bbaec837beff13", "refs/heads/main": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453"},
+    "WindowUtc": ["2026-10-29T14:05:32.760Z", "2026-10-29T14:05:33.407Z"]
+  },
+  "RepoWrite": {
+    "Command": "git push -u origin fix/placedclone-copia-anotaciones (push del commit de reclamo, sin force)",
+    "Rc": 0,
+    "Result": "[new branch] fix/placedclone-copia-anotaciones -> fix/placedclone-copia-anotaciones; el remoto lo acepto",
+    "PushedCommit": "e1cd88bfa515258e99b34ccad6bbaec837beff13",
+    "WindowUtc": ["2026-10-29T14:05:18.324Z", "2026-10-29T14:05:22.572Z"]
+  }
+}
