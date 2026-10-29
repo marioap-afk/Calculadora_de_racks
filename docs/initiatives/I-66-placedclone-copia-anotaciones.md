@@ -1,6 +1,6 @@
 # I-66 — PlacedClone copia los campos de texto y de cota
 
-Status: G0 PASS; Discovery R2 ([I-66-discovery.md](I-66-discovery.md)); Freeze R2 en re-revisión; NOT INTEGRATED
+Status: G0 PASS; Discovery R3 ([I-66-discovery.md](I-66-discovery.md)); Freeze R3 en re-revisión; NOT INTEGRATED
 
 Workflow: V2 (unidad nueva; la base `bb0d5522` contiene el merge normativo de V2 y la pausa de activación terminó: `integration/I-56`)
 

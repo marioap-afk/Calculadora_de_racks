@@ -3,7 +3,7 @@
 Unit: `I-66`. Workflow: V2. Rama `fix/placedclone-copia-anotaciones`, base `bb0d5522`. Contrato:
 [I-66-placedclone-copia-anotaciones.md](I-66-placedclone-copia-anotaciones.md). Decisiones: [decisions/I-66.md](../automation/decisions/I-66.md).
 
-Versión R2, tras la revisión R1 del Architect (ARCH-B-01, ARCH-B-02 y ARCH-B-10; decisiones §5.1). Barrido de solo lectura sobre la base. Cada afirmación lleva su clase: `MEASURED` (leído en el código), `INFERENCE` o `UNKNOWN`. Las rutas son de
+Versión R3, tras la revisión R1 del Architect (ARCH-B-01, ARCH-B-02 y ARCH-B-10) y su re-revisión R2 (ARCH-A-09, ARCH-B-12); decisiones §6.1 y §6.2. Barrido de solo lectura sobre la base. Cada afirmación lleva su clase: `MEASURED` (leído en el código), `INFERENCE` o `UNKNOWN`. Las rutas son de
 `src/` salvo que se diga otra cosa.
 
 ## DC-01. Comportamiento observable actual
@@ -102,7 +102,7 @@ No consume ni extiende ninguna fundación registrada: `HeaderRunPlan` y `HeaderB
 
 **Expansiones (R2).** EXP-02..EXP-07 y EXP-09 no se activan.
 
-- **EXP-01, activada y cerrada como clase B** (propuesta del Architect en ARCH-B-02, confirmada por el Coordinator en las decisiones §5.1). Pregunta:
+- **EXP-01, activada y cerrada como clase B** (propuesta del Architect en ARCH-B-02, confirmada por el Coordinator en las decisiones §6.1 y por los dos revisores del Architect en la re-revisión R2, §6.2). Pregunta:
   ¿la rotación conservada de las piezas rotadas en colocaciones espejadas afecta a algo que I-66 consume? Respuesta: no, y es demostrable. I-66 consume
   el contrato de ADR-0011 solo para los puntos y los cuatro campos de los decorados. El dibujante no lee `RotationRadians` ni `MirroredX` de una
   anotación (`LateralHeaderDrawer.cs:258-282`, un `DBText` sin rotación) ni de una cota, cuya rotación sale solo de los dos puntos (`:341-349`)
