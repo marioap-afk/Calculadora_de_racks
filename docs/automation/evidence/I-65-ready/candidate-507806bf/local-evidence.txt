@@ -1,0 +1,34 @@
+HEAD=507806bfcc37cf956836e9cb96bba114da4cec60 dirty=0
+sdk=8.0.423
+start=2026-10-29T03:17:40Z
+--- Core Full
+Correctas! - Con error:     0, Superado: 14392, Omitido:     0, Total: 14392, Duración: 1 m 47 s - RackCad.Tests.dll (net8.0)
+core_exit=0 secs=151
+core_trx_sha256=9e49fd55a55f4c01557da052ee6b7fcc9ab26d7261cb032bb4df9c9f4b9eafd9
+--- UI Full
+Correctas! - Con error:     0, Superado:  1637, Omitido:    17, Total:  1654, Duración: 5 m 38 s - RackCad.UI.Tests.dll (net8.0)
+ui_exit=0 secs=358
+ui_trx_sha256=ff692d04bfac321c7e3a03b338c3c3010176bc5e77219f978705094e0ad22ade
+--- Build UI Debug
+    0 Errores
+ui_build_exit=0
+--- Build Plugin Debug (salida nueva D:/r65-smoke/507806bf/bin-Debug-net8.0-windows, 2026-10-29T03:26:15Z..2026-10-29T03:26:28Z)
+    0 Errores
+plugin_build_exit=0
+plugin_dll_sha256=31e2fd3716228894d2fad4eef4f1ad0ade68c53dc42a274b27b7da49486d5255
+--- Build herramienta Debug (D:/r65-smoke/507806bf/ramtool)
+    0 Errores
+tool_build_exit=0
+--- Publicacion del bundle (carpeta nueva D:/r65-smoke/507806bf/bundle; contraste con el bundle de f2ed2a7e)
+head=507806bfcc37cf956836e9cb96bba114da4cec60
+build-bundle exit=0; harness exit=0
+bundle files=25; ProductVersion=1.0.0+507806bfcc37cf956836e9cb96bba114da4cec60
+table present=True; table sha256=FC3D91464AC48A15730661EFCD50ECB770114559C68BDEFAE67E0816972DB619; blob d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2 content sha256=FC3D91464AC48A15730661EFCD50ECB770114559C68BDEFAE67E0816972DB619; equal=True
+vs before: added=[] removed=[] changed=[Contents/RackCad.Application.dll, Contents/RackCad.Plugin.dll, Contents/RackCad.Domain.dll, Contents/RackCad.UI.dll]
+verify: OK: bundle verificado (158 comprobaciones). DLL identicos al publish y catalogos identicos a assets/catalogs y tabla de secciones y materiales identica a su fuente aprobada (SHA-256); solo archivos RackCad y datos permitidos; cero DLL Autodesk.
+harness: OK: harness del verificador — 14 casos superados (1 valido + 13 negativos).
+bundle_evidence_exit=0
+--- Identidad y entradas de las ventanas
+identity_exit=0
+end=2026-10-29T03:27:37Z
+HEAD_after=507806bfcc37cf956836e9cb96bba114da4cec60 dirty_after=0

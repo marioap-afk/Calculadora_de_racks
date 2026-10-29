@@ -3080,3 +3080,40 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/guias/despliegue.md` | `BDBE378B68641CE30E7B4CFAC13891B06D2331719443195581DBDF6A9382A2A7` |
 | `docs/guias/interoperabilidad-ram-elements.md` | `289CF05F846A77631E42A2AA613669A873D22A9030A373DDB975938079F76980` |
 | `docs/initiatives/I-65-ready-final-candidate-preparation.md` | `C4AE2C4131233F3E66489652A9FA5BD4492E966880760C8C0FAE4F9ECBC3BE47` |
+
+## 115. READY-05 — evidencia local y CI del SHA propuesto `507806bf` (2026-10-29T03:28:52Z)
+
+- **Regresión local** sobre `507806bfcc37cf956836e9cb96bba114da4cec60` (03:17:40Z-03:27:37Z, SDK 8.0.423, árbol limpio antes y después):
+  - Core 14392/14392 (TRX `9e49fd55…afd9`);
+  - UI 1637 superadas y 17 omitidas (TRX `ff692d04…2ade`);
+  - builds Debug de UI, Plugin y herramienta con 0 errores;
+  - DLL del Plugin `31e2fd3716228894d2fad4eef4f1ad0ade68c53dc42a274b27b7da49486d5255`;
+  - bundle (25 archivos, tabla `FC3D9146…`, 158 comprobaciones, 14 casos).
+  - Detalle en `candidate-507806bf/local-evidence.txt`, `identity.txt` y `bundle-evidence.txt`.
+- **CI** 40811163677 (`push`, `refs/heads/architecture/interop-analisis-estructural`, `head_sha` `507806bf`): 4/4 `success` (`candidate-507806bf/ci-run.txt`).
+- **Entradas de las ventanas en `D:\r65-smoke\507806bf\`:**
+  - `inputs\` con siete archivos de cargas desde los blobs;
+  - `expected-inputs.json` y `expected-inputs-ov02.json` (copias redactadas versionadas);
+  - `output-manifest.txt`;
+  - comprobaciones en seco conformes.
+- Sin AutoCAD, RAM, NETLOAD ni Codex; `ApplicationPlugins` del usuario sigue vacía.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/local-evidence.txt` | `78B71B582D7B3E668F1F5700AA9A4E3FD93B4DD92EF479D7A6BBE8350FB46091` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/ci-run.txt` | `0829B9872804312D6B9D3302EE9BD82427B7B4EA331205F6D59D12FEE3E62780` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/identity.txt` | `11908936DF88501A4CD12A440A21B224C529F4448D6D213180454F1BDAEB0F9E` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/output-manifest.txt` | `4A7770EF291D1B828FDB3D7F05FBC04EEF3EBDE95E394B1C84A7C33F7C7CE4A3` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/ramtool-manifest.txt` | `C0AD711F67A4AFD5561839FCD17674BA3361A7C0E54774648D6FB7C0D8FE4E17` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/bundle-evidence.txt` | `03A2AB42FFD15A4CF09F16A2D7E8F2614781ACDFFEBA7C38DBC610BCB84DFBB0` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/w1-dryrun-output.txt` | `8A19D1C08EF8E3DECA756A67B742FD67BF20E0B9253E49DD50F682845C794C4B` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/f5-dryrun-output.txt` | `A46D936CFF322234C10AFD3E5FB571581436AB86D9CEF57859672A6FAB52AA7A` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/f5-dryrun-compare.txt` | `3D64E708C7F0282DDE2054EDF0FE0380E86BF1889DC9BA665D1857AF26CB054B` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/expected-inputs.redacted.json` | `AE138383B67C4F4125E08036B9FCE73D9B9F9F50C0D7D69A2F6293689004F323` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/expected-inputs-ov02.redacted.json` | `EBB4C4A47E32AA781B0639FC38DF92A116179CD2C40D5CF7905333B7D97129A6` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/bundle-inventory.txt` | `E7BC1773A78CD545BE255DA63AEE63F231599971BC6C7F421704DA0EE09842C2` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/tools/fc-evidence.sh.txt` | `47C7FF2E73EECDF2D2B6F79D0FC43E3BAE81CBF0F8332603AA2B73ECBA918F1E` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/tools/fc-identity.ps1.txt` | `9340256715E4B2C0DCF9FE6117F93ACA9DB5C8535C19A9F9001A2B64DF2C723C` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/tools/bundle-evidence.ps1.txt` | `E728C88AA41EDE81CA39DA5F62011DD81720132434F28686AA024537DEC24CCC` |
+| `docs/automation/evidence/I-65-ready/candidate-507806bf/tools/README.txt` | `9D87BF80CCD89B568A2E1414D0C518C35F89CD6FA37BA9C7CFC40D1A5D65E634` |

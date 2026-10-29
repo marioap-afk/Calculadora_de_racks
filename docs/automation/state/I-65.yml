@@ -7,15 +7,15 @@ automation_state:
   state: in-progress
   gate: READY (Candidato final propuesto; READY-05..09 sobre el SHA propuesto)
   attempts: 7
-  next_action: Coordinator: evidencia local con el arbol limpio y CI exacta sobre el SHA propuesto (commit de §111-§112), READY-05..09 con Architect y Coordinator (READY-06) y solicitud de declaracion al Owner (docs/initiatives/I-65-final-candidate.md §10); sin AutoCAD ni RAM.
-  last_evidence_commit: f2ed2a7ef0461eb07a163bbde3ef701a53549035
+  next_action: Architect y Coordinator: READY-06 (conformidad completa) y READY-09 sobre 507806bf; despues, solicitud de declaracion al Owner (docs/initiatives/I-65-final-candidate.md §10); sin AutoCAD ni RAM.
+  last_evidence_commit: 507806bfcc37cf956836e9cb96bba114da4cec60
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
 execution_chain:
   gate: READY (Candidato final propuesto; READY-05..09 sobre el SHA propuesto)
-  next_role: Coordinator (evidencia del Candidato propuesto) y Architect (READY-06)
+  next_role: Architect (READY-06 sobre 507806bf)
   implementation_authorization: NINGUNA VIGENTE (R-D11 consumida y aceptada, §111); Codex 55/57; attempts 7/11; Workers adicionales 0; READY PREPARATION = GO (§111); FINAL CANDIDATE PREPARATION = AUTHORIZED; FINAL CANDIDATE DECLARATION = PENDING OWNER AUTHORIZATION; W-R1 / W-R2 EXECUTION = NO; INTEGRATION = NO; HISTORY REWRITE = NO
   milestone_candidate: {sha: 5a5ca57731ebbbbc41ed4f702698709d5e128a86, scope: hito F4 (no FINAL_CANDIDATE_SHA), dll: c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, ci: 38977069487 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS sin REQUIRED, coordinator: CONFORMING, gate: F4 GATE PASS sobre el SHA de cierre 1e7d8fc2 (CI 39052279094), owner_validation: W1 PASS y W2 PASS (aceptadas por el Owner, decisiones §80 y §82)}
   f5_milestone_candidate: {sha: bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109, scope: hito F5 (OV-I65-02; no FINAL_CANDIDATE_SHA), dll: 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, loads: d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c, ci: 39187567306 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS (A65-F5C-01..09 OPTIONAL), coordinator: CONFORMING, final_review: Architect CONFORMANT WITH OBSERVATIONS (A65-F5F-01..08 OPTIONAL) y Coordinator CONFORMING (decisiones §97), gate: F5 GATE PASS sobre el SHA de cierre 45aaad6e (CI 40759871854), predeclaration_recheck: 2026-10-19T02:22:50Z, declared: 2026-10-19 (decisiones §89, CD-I65-F5-27), owner_validation: W3 PASS y W4 PASS (aceptadas por el Owner, decisiones §93 y §96)}
