@@ -3,21 +3,21 @@ automation_state:
   initiative: I-65
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
-  current_phase: rd11-closing
-  state: validating
-  gate: R-D11 (gate correctivo previo a READY)
+  current_phase: ready-preparation
+  state: waiting-owner
+  gate: READY (preparacion tras el gate R-D11)
   attempts: 7
-  next_action: Coordinator: sobre el SHA de cierre del gate R-D11, arbol limpio, Core y UI Full, builds Debug y publicacion del bundle en carpeta nueva; push y CI; registro del GATE PASS en un commit posterior; despues preparacion de READY (sin ejecutarla).
-  last_evidence_commit: 6a58c2b1891174bb5120f0e9e3fb8e13ed952832
+  next_action: Owner: A65-RD11-01 (a/b), HB-01..05 (si/no y autorizacion de host), orden de iniciar READY-01..09 con las correcciones documentales preparadas, ventanas W-R1/W-R2 (docs/initiatives/I-65-ready-final-candidate-preparation.md); sin ejecucion hasta su orden.
+  last_evidence_commit: f2ed2a7ef0461eb07a163bbde3ef701a53549035
 execution_context:
   mode: manual
   automation_enabled: false
   worktree: architecture-interop-analisis-estructural
 execution_chain:
-  gate: R-D11 (gate correctivo previo a READY)
-  next_role: Coordinator (ejecucion delegada del gate R-D11)
-  implementation_authorization: R-D11 IMPLEMENTATION = AUTHORIZED WITHIN DEFINED SCOPE (decisiones §105); trabajo delegado terminado (EXECUTION_VERIFIED 6a58c2b1, §106); Codex 55/57; attempts 7/11; Workers 1/1; RACKAYUDA CHANGE = NO; READY EXECUTION = NO; AUTOCAD / RAM EXECUTION = NO; FINAL CANDIDATE DECLARATION = NO; INTEGRATION = NO; HISTORY REWRITE = NO
+  gate: READY (preparacion tras el gate R-D11)
+  next_role: Owner (decisiones previas a READY)
+  implementation_authorization: NINGUNA VIGENTE (R-D11 cerrado: GATE PASS sobre f2ed2a7e, §109; autorizacion consumida); Codex 55/57; attempts 7/11; Workers 1/1; RACKAYUDA CHANGE = NO; READY PREPARATION = HECHA (§110); READY EXECUTION = NO; AUTOCAD / RAM EXECUTION = NO; FINAL CANDIDATE DECLARATION = NO; INTEGRATION = NO; HISTORY REWRITE = NO
   milestone_candidate: {sha: 5a5ca57731ebbbbc41ed4f702698709d5e128a86, scope: hito F4 (no FINAL_CANDIDATE_SHA), dll: c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, ci: 38977069487 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS sin REQUIRED, coordinator: CONFORMING, gate: F4 GATE PASS sobre el SHA de cierre 1e7d8fc2 (CI 39052279094), owner_validation: W1 PASS y W2 PASS (aceptadas por el Owner, decisiones §80 y §82)}
   f5_milestone_candidate: {sha: bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109, scope: hito F5 (OV-I65-02; no FINAL_CANDIDATE_SHA), dll: 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, loads: d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c, ci: 39187567306 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS (A65-F5C-01..09 OPTIONAL), coordinator: CONFORMING, final_review: Architect CONFORMANT WITH OBSERVATIONS (A65-F5F-01..08 OPTIONAL) y Coordinator CONFORMING (decisiones §97), gate: F5 GATE PASS sobre el SHA de cierre 45aaad6e (CI 40759871854), predeclaration_recheck: 2026-10-19T02:22:50Z, declared: 2026-10-19 (decisiones §89, CD-I65-F5-27), owner_validation: W3 PASS y W4 PASS (aceptadas por el Owner, decisiones §93 y §96)}
-  owner_decisions_open: [aceptacion del gate R-D11, autorizacion de host de la prueba del bundle dentro de AutoCAD (HB-01..05), inicio de READY-01..09, ventanas W-R1/W-R2 y OV-I65-08, integracion]
-  not_authorized: [READY final, FINAL_CANDIDATE_SHA, ejecucion de READY, integrar la rama, F6, cambios fuera del alcance de R-D11, contenido de la tabla, mapeos, unidades, tolerancias, modelo neutral, adaptador RAM, comandos de producto, RACKAYUDA, alterar el checkout principal, AutoCAD, NETLOAD, instalar en ApplicationPlugins, RAM Elements, guardar modelos de RAM, superar 57 invocaciones de Codex, max_attempts 11 o un Worker, cambios del Freeze o de ADR-0050, codigo de I-52, I-62, I-64 o ID30]
+  owner_decisions_open: [A65-RD11-01 fin de linea de la tabla (a aceptar / b -text en unidad posterior), HB-01..05 prueba del bundle en AutoCAD y autorizacion de host, inicio de READY-01..09 con las correcciones documentales, ventanas W-R1/W-R2 y OV-I65-08, declaracion de FINAL_CANDIDATE_SHA, integracion]
+  not_authorized: [ejecucion de READY, FINAL_CANDIDATE_SHA, integrar la rama, F6, implementacion nueva, cambios en src/, RACKAYUDA, alterar el checkout principal, AutoCAD, NETLOAD, instalar en ApplicationPlugins, RAM Elements, guardar modelos de RAM, superar 57 invocaciones de Codex, max_attempts 11 o un Worker, cambios del Freeze o de ADR-0050, codigo de I-52, I-62, I-64 o ID30]

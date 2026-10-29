@@ -3026,3 +3026,22 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-rd11/coordinator-rd11-conformity.md` | `0C7752DD4BBFAFE34320973DBE893AB80297F33790BE19FD81152D7F3E134525` |
 | `docs/initiatives/I-65-rd11-autoloader-gate.md` | `855BC68D7C227BB8F21564BDFEB263A97ABB219B58EABAD55EA89952E74EAB1C` |
 | `docs/initiatives/I-65-foundations-entry.md` | `B298D8627657CB2953258F860E4FBA7FB45A23781F16DDEC980F49B9CF0B7A1D` |
+
+## 113. Gate R-D11 — cierre y preparación de READY (2026-10-29T01:49:34Z)
+
+- **Regresión local** sobre `f2ed2a7e` (01:35:04Z-01:44:48Z, SDK 8.0.423, árbol limpio antes y después): Core 14392/14392 (TRX
+  `9cda0ea6…83de`); UI 1637 superadas y 17 omitidas (TRX `ea848126…8b96`); builds Debug con 0 errores; DLL del Plugin
+  `fd1251d47fcb3f801f66a77cffad032b81fb5f79dc04c4ec3091378dc763ffaf` en `D:\r65-smoke\rd11-close-f2ed2a7e\`; bundle en
+  `D:\r65-smoke\rd11-close-f2ed2a7e-bundle\` (25 archivos, tabla `FC3D9146…`, 158 comprobaciones, 14 casos). Detalle en
+  `close-f2ed2a7e/local-evidence.txt`.
+- **CI** 40802284606 (`push`, `refs/heads/architecture/interop-analisis-estructural`, `head_sha` `f2ed2a7e`): 4/4 `success`
+  (`close-f2ed2a7e/ci-run.txt`).
+- **Preparación de READY:** `I-65-ready-final-candidate-preparation.md`; herramienta `wr_hostsnap.ps1` preparada y no ejecutada.
+- Sin AutoCAD, RAM ni Codex. `ApplicationPlugins` del usuario sigue vacía.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-rd11/close-f2ed2a7e/local-evidence.txt` | `F5AFA6E445B46981CEB73CFFB6B1EED9E477119EF9222F3E33F934F8443A1EED` |
+| `docs/automation/evidence/I-65-rd11/close-f2ed2a7e/ci-run.txt` | `91916B74A1B58195628C0F27B9D34F51E3496502FAAE8C9A8DB642C141351C99` |
+| `docs/initiatives/I-65-ready-final-candidate-preparation.md` | `284C9EA94236B51435526DCF9EE80E9F32B7FF670BF331C23EAF0B35B82E0DC0` |
