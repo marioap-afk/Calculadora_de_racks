@@ -3366,3 +3366,14 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-ready/wr1a-R20261029T1633Z/wr1-15-dump-scripts.txt` | `CA8933D69B290F9436826F9D53CC60EE44B0DF621A2D15D982DDE0DC4AF4F2B8` |
 | `docs/automation/evidence/I-65-ready/wr1a-R20261029T1633Z/wr1a-captures.ps1.txt` | `129E63148F02E9C07252960B0447ADD945D5B281FCD9DB447C8A9BB231D2347E` |
 | `docs/automation/evidence/I-65-ready/wr1a-R20261029T1633Z/wr1a-report.md` | `D885A768724B98C554E95C4E3127C846CD8F2025B85E42487A340311F5CBC5B2` |
+
+## 121. Aceptación de W-R1a y autorización de W-R1b (2026-10-29T21:07:39Z)
+
+- Disposición del Owner registrada (decisiones §119, CD-I65-FC-47..51): **W-R1a = ACCEPTED / PASS**; **W-R1b = CONDITIONAL GO** (HB-01..05 sobre `4a03b65b`); W-R2 = NO.
+- Hasta este registro, sin AutoCAD, RAM, NETLOAD, instalación en `ApplicationPlugins` ni Codex después del POST de W-R1a (evidencia §120).
+- El preflight de host (Owner §4) y HB-01..05 se registran en la corrida `D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\hb\` y en la evidencia de W-R1b.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-wr1a-acceptance-wr1b-authorization.original.txt` | `E123E95A2DB83D3CD27D6BD923E182F9EC3B187EDFA7C7D89DD50AED81B8BE34` |

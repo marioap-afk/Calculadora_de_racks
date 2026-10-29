@@ -1,0 +1,104 @@
+I-65 — OWNER DISPOSITION
+W-R1a Acceptance / W-R1b Autoloader Authorization
+He revisado el informe de W-R1a registrado en `b65f7d5d`, con CI 40924816826 en PASS 4/4.
+1. Aceptación de W-R1a
+W-R1a = ACCEPTED / PASS.
+Reconozco:
+
+* OV-01 Valid, validador 16/16 y carga útil 117/117.
+* OV-02 Valid, validador 16/16 y seis cargas correctas.
+* OV-03 con los cinco rechazos esperados.
+* OV-04 con paquete válido.
+* OV-08 con sus 13 pasos conformes.
+* Persistencia del DWG y H1 = H2.
+* BOM consistente.
+* Inyecciones y scripts de volcado preparados.
+* POST sin cambios prohibidos.
+* CI y custodia satisfactorios.
+
+El caso legacy de OV-08 permanece NOT_EVALUATED, sin convertirlo en PASS.
+2. Incidencias operativas
+Acepto las cinco desviaciones registradas como incidencias no bloqueantes para W-R1a, sujetas a conservar íntegra su trazabilidad.
+En particular:
+
+* Las seis pulsaciones de destino desconocido permanecen como incertidumbre operativa; no declarar que se comprobó su inocuidad.
+* La segunda instancia de AutoCAD se cerró sin cargar RackCad.
+* El uso de SetForegroundWindow no autoriza técnicas adicionales de control no permitidas.
+* El posible cambio del portapapeles queda registrado.
+* El nombre Drawing1.dwg se acepta porque la persistencia y la identidad del archivo fueron verificadas.
+
+No repetir pruebas satisfactorias por estas incidencias salvo que aparezca evidencia de alteración material.
+3. Autorización W-R1b
+W-R1b AUTOLOADER EXECUTION = CONDITIONAL GO.
+Autorizo la ventana controlada de HB-01..05 sobre el Candidato final declarado:
+`4a03b65b375d468c220dd68400d5dfd955bf043e`
+Solo cuando se cumplan todas las condiciones de entrada.
+4. Preflight de host
+Antes de instalar o abrir AutoCAD:
+
+1. Confirmar que nadie esté utilizando el equipo.
+2. Comprobar que I-62 no tenga una operación activa de pantalla.
+3. Confirmar que AutoCAD y RAM estén cerrados.
+4. Capturar BASELINE de ApplicationPlugins, TRUSTEDPATHS, SECURELOAD, perfil y permisos.
+5. Verificar que no exista una instalación de RackCad que pueda sobrescribirse.
+6. Comprobar identidad del bundle y de la DLL del Candidato.
+7. Confirmar rutas de instalación y eliminación reversible.
+8. Registrar los hashes y el estado de los checkouts.
+
+Ante una condición incumplida, STOP.
+5. Instalación temporal
+Autorizo:
+
+* Instalar exclusivamente el bundle del Candidato final en ApplicationPlugins.
+* Utilizar el mecanismo normal de Autoloader.
+* Abrir una única instancia de AutoCAD.
+* Aceptar únicamente el aviso estándar «Load Once».
+* Verificar que el módulo cargado procede del bundle instalado.
+* Comprobar que la tabla de secciones y materiales se encuentra en la ruta esperada.
+
+No modificar TRUSTEDPATHS, SECURELOAD, el registro protegido ni otras instalaciones.
+6. HB-01..05
+Ejecuta los cinco escenarios conforme al procedimiento aprobado.
+Para HB-04:
+
+* HB-04(a): utilizar la copia controlada `hb-ref.dwg` del mismo rack y comprobar la igualdad de huellas.
+* HB-04(b): verificar independientemente los 117 valores de REF-CANT-01 con el paquete correspondiente.
+
+Exigir los oráculos establecidos, incluido el verificador del bundle con inventario base y sus 160 comprobaciones cuando corresponda.
+No alterar el oráculo ni sustituir una prueba real del Autoloader por NETLOAD.
+7. Cierre y reversibilidad
+Al completar HB:
+
+1. Cerrar AutoCAD.
+2. Retirar únicamente la instalación temporal de RackCad.
+3. Confirmar que no quedan archivos de staging ni residuos de instalación.
+4. Ejecutar POST.
+5. Comparar ApplicationPlugins, permisos, registro y configuración protegida contra BASELINE.
+6. Custodiar capturas, resultados, hashes y diferencias.
+7. Registrar cualquier desviación sin corregirla silenciosamente.
+
+Si la desinstalación no restaura el estado protegido esperado, STOP y presenta el estado exacto.
+8. Restricciones
+W-R1a = PASS.
+W-R1b = CONDITIONAL GO.
+W-R2 RAM = NO.
+OWNER VALIDATION FINAL = PENDING.
+INTEGRATION = NO.
+No modificar producto, Freeze, ADR, tabla ni tolerancias.
+No consumir Codex ni nuevos attempts sin autorización.
+No iniciar otras pruebas de AutoCAD o RAM fuera de HB-01..05.
+9. Entregable
+Presenta:
+
+1. Resultados HB-01..05.
+2. Prueba de carga real del Autoloader.
+3. Validación de la tabla.
+4. Resultados HB-04(a/b).
+5. Integridad del bundle.
+6. Estado de desinstalación.
+7. BASELINE/POST y checkouts.
+8. Incidencias.
+9. CI y custodia.
+10. Recomendación PASS / NO-GO para W-R1b.
+
+Al terminar, detente antes de W-R2 y solicita su autorización por separado.
