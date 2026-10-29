@@ -1,0 +1,26 @@
+head=4a03b65b375d468c220dd68400d5dfd955bf043e
+window=2026-10-29T04:04:30Z..2026-10-29T04:05:28Z
+build-bundle exit=0; harness exit=0
+bundle files=25; ProductVersion=1.0.0+4a03b65b375d468c220dd68400d5dfd955bf043e
+table present=True; table sha256=FC3D91464AC48A15730661EFCD50ECB770114559C68BDEFAE67E0816972DB619; blob d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2 content sha256=FC3D91464AC48A15730661EFCD50ECB770114559C68BDEFAE67E0816972DB619; equal=True
+vs before: added=[] removed=[] changed=[Contents/RackCad.Plugin.dll, Contents/RackCad.Application.dll, Contents/RackCad.UI.dll, Contents/RackCad.Domain.dll]
+verify: OK: bundle verificado (158 comprobaciones). DLL identicos al publish y catalogos identicos a assets/catalogs y tabla de secciones y materiales identica a su fuente aprobada (SHA-256); solo archivos RackCad y datos permitidos; cero DLL Autodesk.
+harness: OK: harness del verificador — 14 casos superados (1 valido + 13 negativos).
+  OK  [valido] bundle valido aceptado (exit 0)
+  OK  [dll-autodesk] rechazado (exit 1): Archivo Autodesk prohibido
+  OK  [dll-modificado] rechazado (exit 1): no coincide (SHA-256) con su copia del publish
+  OK  [catalogo-extra] rechazado (exit 1): Catalogo no autorizado en el bundle
+  OK  [catalogo-ausente] rechazado (exit 1): Falta en el bundle un catalogo autorizado
+  OK  [catalogo-modificado] rechazado (exit 1): Catalogo modificado respecto a assets/catalogs
+  OK  [catalogo-subcarpeta] rechazado (exit 1): subcarpeta inesperada
+  OK  [archivo-extrano] rechazado (exit 1): Archivo no autorizado en el bundle
+  OK  [version-incorrecta] rechazado (exit 1): AppVersion del manifiesto
+  OK  [series-incorrecta] rechazado (exit 1): SeriesMax del manifiesto
+  OK  [tabla-ausente] rechazado (exit 1): Falta la tabla de secciones y materiales en el bundle
+  OK  [tabla-modificada] rechazado (exit 1): Tabla de secciones y materiales modificada respecto a la fuente aprobada
+  OK  [tabla-ruta-no-autorizada] rechazado (exit 1): Archivo no autorizado en el bundle
+  OK  [tabla-archivo-extra] rechazado (exit 1): Archivo no autorizado en el bundle
+reader:
+  == tabla objetivo : Outcome Valid; diagnosticos 0
+     row AISC-HSS-RECT-HSS4X4X_250 | United States/HSS_SQR/HSS_SQR 4X4X1_4 | ASTM-A500-GRC -> A500 GrC rectangular | status Verified verified=True | E 29000 ksi | nu 0.3 | G null | W 490 pcf | source chars 1001 | verifiedBy chars 43 non-ascii [U+00E9,U+2014] | verifiedOn 2026-10-16
+     row AISC-W-W12X26 | United States/W/W 12X26 | ASTM-A992-GR50 -> A992 Gr50 | status Verified verified=True | E 29000 ksi | nu 0.3 | G null | W 490 pcf | source chars 860 | verifiedBy chars 43 non-ascii [U+00E9,U+2014] | verifiedOn 2026-10-16

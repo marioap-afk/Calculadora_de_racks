@@ -3142,3 +3142,31 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/initiatives/I-65-final-candidate.md` | `D38F564A4F308575C14A59343E19FF30D9A935D164FC69C4B1B875804566DB6B` |
 | `docs/initiatives/I-65-ready-wr1-wr2-procedures.md` | `C6F440CF335A4F85996AE744398CB7E4CBBDC37B42DE7D357B1609A53C2DB734` |
 | `docs/initiatives/I-65-foundations-entry.md` | `1C986AB405FB69CEAE1DAFBC4AB92C8B2D21B80A270AC267EED48B1A81D1B88E` |
+
+## 117. READY-05 — evidencia local y CI del nuevo SHA propuesto `4a03b65b` (2026-10-29T04:05:50Z)
+
+- **Regresión local** sobre `4a03b65b375d468c220dd68400d5dfd955bf043e` (2026-10-29T03:54:41Z-2026-10-29T04:05:37Z, SDK 8.0.423, árbol limpio antes y después):
+  - Core 14392/14392 (TRX `dd4a009b…`);
+  - UI 1637 superadas y 17 omitidas (TRX `acc4439b…`);
+  - builds Debug con 0 errores;
+  - DLL del Plugin `0f5a508e03a34cce45cd005a0fef336d1b160894e0836a5f786d2ec966db0959`.
+- **Bundle:** 25 archivos; verificador 158; harness 14. Medición en seco de HB-02 (1) con `-BaselineInventoryPath`: **160** y reproducibilidad conforme (`candidate-4a03b65b/hb02-dryrun-verify.txt`).
+- **CI** 40814761082 (`push`, rama exacta, `head_sha` `4a03b65b`): 4/4 `success`.
+- Sin AutoCAD, RAM, NETLOAD ni Codex; `ApplicationPlugins` del usuario sigue vacía.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/local-evidence.txt` | `D6C06439B40B7A265F30CDE9178F520678CBCC79208A82D9FF34C936C6B04C35` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/identity.txt` | `933B9C1B1C828387BC3553214A2B89CDB215A336307EDC8A500241EF6522198F` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/output-manifest.txt` | `9939F6DAC42ACD89549D65B60DD5D36124E99AF69808AA97099A5C332E1EACBC` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/ramtool-manifest.txt` | `4FBE3EA5BE1790C20C2673339B9CA2FBA26BDAC8F59472686952474FB33EB343` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/bundle-evidence.txt` | `305EE703F34C0480D3DB49F00F61DFAFD305CC0F0D3C204BDF78FCC4F95C686B` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/w1-dryrun-output.txt` | `5BD387AE2A16C1A831C1B70E05A66FD18622BB6FCBD0A7858AFD15E647C9CF72` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/f5-dryrun-output.txt` | `7B5A3262A577DB37C899360751F621FCC16AB5AB3D2674BE1AE88146EC5BAC07` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/f5-dryrun-compare.txt` | `3D64E708C7F0282DDE2054EDF0FE0380E86BF1889DC9BA665D1857AF26CB054B` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/expected-inputs.redacted.json` | `DF70871407FE023642030E03C3F1500566C5647893AC06E5885FD0A2B62FB899` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/expected-inputs-ov02.redacted.json` | `C6A42068BC45E434C501F094FDB813C8E42CA63D2FD7E300F8E39309466CCAD0` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/hb02-dryrun-verify.txt` | `FEBBB2FFE086EDBBEC1A158C43E0C28749C3463155FBC05D1E8DE5694E3B0E70` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/ci-run.txt` | `B5167B5F9FB8E27F32DB25CDD922AC20BCD469E419B6D0F00B8378375BD93A99` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/bundle-inventory.txt` | `9AAC3C851EF78AAEF617E5BA5B99A43A6EAB66FD3F5E269E3B9994318559D680` |
