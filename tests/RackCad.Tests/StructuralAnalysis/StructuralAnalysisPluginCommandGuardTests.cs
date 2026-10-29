@@ -315,7 +315,7 @@ using Autodesk.AutoCAD.Runtime;
             Assert.Equal(new[] { Cmd.CommandPath }, StructuralAnalysisGuards.G1ExactPathAllowList);
         }
 
-        // ================================================================ the table travels with the Plugin build, not with the bundle
+        // ================================================================ the table travels with the Plugin build and with the bundle
 
         private static XElement[] TableContentElements()
         {
@@ -350,19 +350,83 @@ using Autodesk.AutoCAD.Runtime;
         }
 
         [Fact]
-        public void LaTablaNoViajaEnElPaqueteDelAutoloader_NiElDestinoDelPaqueteSeToca()
+        public void ElTargetDelBundleCopiaLaTablaDesdeSuFuenteALaMismaRutaRelativaQueLaCompilacion()
         {
-            var root = RepoRoot().FullName;
-            var project = File.ReadAllText(Path.Combine(root, "src", "RackCad.Plugin", "RackCad.Plugin.csproj"));
-            var target = project.Substring(project.IndexOf("<Target Name=\"AssembleAutoloaderBundle\"", StringComparison.Ordinal));
+            var path = Path.Combine(RepoRoot().FullName, Cmd.ProjectPath.Replace('/', Path.DirectorySeparatorChar));
+            var target = XDocument.Load(path).Descendants("Target")
+                .Single(element => (string)element.Attribute("Name") == "AssembleAutoloaderBundle");
 
-            Assert.DoesNotContain("structural-analysis", target, StringComparison.Ordinal);
-            Assert.DoesNotContain("section-material-map", target, StringComparison.Ordinal);
+            Assert.Equal("$(BundleRoot)\\Contents", (string)target.Descendants("BundleContents").Single());
 
-            foreach (var file in Directory.GetFiles(Path.Combine(root, "deploy"), "*", SearchOption.AllDirectories)
-                         .Where(path => new[] { ".ps1", ".xml", ".json", ".md", ".template" }.Contains(Path.GetExtension(path).ToLowerInvariant())))
+            var sources = target.Elements("ItemGroup").SelectMany(group => group.Elements())
+                .Where(element => ((string)element.Attribute("Include") ?? string.Empty).Replace('\\', '/') ==
+                    "$(MSBuildProjectDirectory)/../../assets/structural-analysis/ram-elements/section-material-map.json")
+                .ToArray();
+            Assert.Single(sources);
+            var itemName = sources[0].Name.LocalName;
+
+            var copies = target.Elements("Copy")
+                .Where(element => (string)element.Attribute("SourceFiles") == "@(" + itemName + ")")
+                .ToArray();
+            Assert.Single(copies);
+
+            var destination = ((string)copies[0].Attribute("DestinationFolder") ?? string.Empty).Replace('\\', '/');
+            Assert.Equal("$(BundleContents)/structural-analysis/ram-elements", destination);
+
+            var linked = (string)Assert.Single(TableContentElements()).Attribute("Link");
+            Assert.Equal(linked, destination.Substring("$(BundleContents)/".Length) + "/section-material-map.json");
+
+            var assemblies = string.Join(";", target.Descendants("BundleAssemblies").Select(element => (string)element.Attribute("Include")));
+            foreach (var dll in new[] { "RackCad.Plugin.dll", "RackCad.Application.dll", "RackCad.Domain.dll", "RackCad.UI.dll" })
             {
-                Assert.DoesNotContain("section-material-map", File.ReadAllText(file), StringComparison.Ordinal);
+                Assert.Contains("$(PublishDir)" + dll, assemblies, StringComparison.Ordinal);
+            }
+            Assert.Equal(4, assemblies.Split(';', StringSplitOptions.RemoveEmptyEntries).Length);
+        }
+
+        [Fact]
+        public void ElVerificadorDelBundleAdmiteSoloLaRutaDeLaTablaYExigeSuIdentidadConLaFuente()
+        {
+            var text = File.ReadAllText(Path.Combine(RepoRoot().FullName, "deploy", "verify-bundle.ps1"));
+
+            foreach (var expected in new[]
+                     {
+                         "Contents/structural-analysis/ram-elements/section-material-map.json",
+                         "SectionMapSourcePath",
+                         "assets\\structural-analysis\\ram-elements\\section-material-map.json",
+                         "Falta la tabla de secciones y materiales en el bundle",
+                         "Tabla de secciones y materiales modificada respecto a la fuente aprobada (SHA-256)",
+                         "Archivo no autorizado en el bundle",
+                         "Archivo Autodesk prohibido en el bundle",
+                         "Catalogo modificado respecto a assets/catalogs",
+                     })
+            {
+                Assert.Contains(expected, text, StringComparison.Ordinal);
+            }
+        }
+
+        [Fact]
+        public void ElHarnessDelVerificadorCubreLaTablaConElValidoYCuatroNegativos()
+        {
+            var text = File.ReadAllText(Path.Combine(RepoRoot().FullName, "deploy", "test-verify-bundle.ps1"));
+
+            foreach (var name in new[]
+                     {
+                         "tabla-ausente", "tabla-modificada", "tabla-ruta-no-autorizada", "tabla-archivo-extra",
+                         "valido", "dll-autodesk", "dll-modificado", "catalogo-extra", "catalogo-ausente",
+                         "catalogo-modificado", "catalogo-subcarpeta", "archivo-extrano", "version-incorrecta", "series-incorrecta",
+                     })
+            {
+                Assert.Contains("-Name \"" + name + "\"", text, StringComparison.Ordinal);
+            }
+
+            foreach (var expected in new[]
+                     {
+                         "Falta la tabla de secciones y materiales en el bundle",
+                         "Tabla de secciones y materiales modificada respecto a la fuente aprobada",
+                     })
+            {
+                Assert.Contains(expected, text, StringComparison.Ordinal);
             }
         }
     }
