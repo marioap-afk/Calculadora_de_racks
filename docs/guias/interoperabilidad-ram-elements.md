@@ -25,10 +25,10 @@ junto a la advertencia: «These assumptions are hypotheses for transfer equivale
 ## 2. Requisitos
 
 - **AutoCAD** con el Plugin de RackCad cargado y un dibujo con el rack Cantilever.
-- **Tabla de secciones y materiales** `structural-analysis\ram-elements\section-material-map.json` junto al DLL del Plugin. **Solo
-  viaja en la salida de compilación del Plugin** (la que usa la validación manual con el DLL Debug). El paquete del Autoloader no la
-  incluye (decisión CD-I65-F4-10, diferida): con una instalación por Autoloader el comando responde `Unavailable` («Falta la tabla de
-  secciones y materiales junto al Plugin») y no escribe nada.
+- **Tabla de secciones y materiales** `structural-analysis\ram-elements\section-material-map.json` junto al DLL del Plugin. Viaja
+  en la salida de compilación del Plugin y en el bundle del Autoloader (`Contents\structural-analysis\ram-elements\`), idéntica a la
+  fuente aprobada: el verificador del bundle lo exige (decisión R-D11, que revierte CD-I65-F4-10). Si falta, el comando responde
+  `Unavailable` («Falta la tabla de secciones y materiales junto al Plugin») y no escribe nada.
   - Esquema `rackcad-ram-elements-section-map/v1`. Cada fila enlaza `sectionId` y `materialId` del catálogo de RackCad con su sección en
     RAM (`ramSection`: `name`, `table`, `country`) y su material (`ramMaterial`), con las propiedades esperadas (`expectedMaterial`:
     módulo elástico, coeficiente de Poisson o módulo de cortante, peso unitario y su `source`) y el estado `status` (`proposed` o
@@ -90,7 +90,7 @@ El resultado se escribe en la línea de comandos:
 | `Valid` | paquete publicado; muestra la **huella de entrada** y los archivos escritos |
 | `Unsupported` | la estación o la tabla piden algo fuera de V1 (diagnóstico con código, p. ej. `ARM-SLOPE-UNSUPPORTED`, `ARM-ARRANGEMENT-UNSUPPORTED`, fila sin verificar) |
 | `Invalid` | entrada incorrecta (archivo de cargas, carpeta, diseño) |
-| `Unavailable` | falta la tabla (p. ej., instalación por Autoloader), el catálogo o el archivo de cargas, o la publicación falló |
+| `Unavailable` | falta la tabla junto al Plugin, el catálogo o el archivo de cargas, o la publicación falló |
 
 Con cualquier resultado distinto de `Valid` **no queda ninguna carpeta a medias**. El paquete contiene tres archivos:
 
@@ -177,7 +177,7 @@ comparador rechazan lo que deben; no es parte del flujo de uso.
 
 | Situación | Qué hacer |
 |---|---|
-| `Unavailable` por falta de la tabla | usar el DLL de la salida de compilación del Plugin; el Autoloader no lleva la tabla (CD-I65-F4-10) |
+| `Unavailable` por falta de la tabla | comprobar que `structural-analysis\ram-elements\section-material-map.json` está junto al DLL del Plugin (con el Autoloader, en `Contents\`); reinstalar el bundle con `deploy\install-bundle.ps1` o usar la salida de compilación del Plugin |
 | `Unsupported` por fila sin verificar | el ingeniero verifica la fila de la tabla (cambio autorizado del producto); no editar la tabla junto al DLL |
 | `RAM-PACKAGE-FOLDER-INVALID` | teclear una ruta absoluta con `\` |
 | la carpeta ya existe / falta la carpeta padre | elegir otra / crear la carpeta padre: nada se sobrescribe |
@@ -197,5 +197,3 @@ comparador rechazan lo que deben; no es parte del flujo de uso.
 - La relación entre un volcado y la sesión de RAM que lo produjo es operativa (registro de sesión), no criptográfica.
 - La densidad del acero de RAM y la de AISC difieren (≈ −0.62 %); la edición del catálogo de RAM no está identificada formalmente.
 - El paso dentro de RAM es manual por diseño (ADR-0050 Decisión 7).
-- La tabla de secciones y materiales no viaja en el Autoloader (CD-I65-F4-10, diferido): el comando solo funciona con la salida de
-  compilación del Plugin.

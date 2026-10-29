@@ -15,6 +15,9 @@
     - Contents\catalogs\ matching the authorized source assets\catalogs EXACTLY: same relative
       paths, each byte-identical (SHA-256); extra, missing, modified, renamed or sub-foldered
       catalogs are rejected. The authoritative inventory is derived from the source, never hardcoded;
+    - Contents\structural-analysis\ram-elements\section-material-map.json, the approved section/material
+      table, ONLY at that exact path and byte-identical (SHA-256) to the approved source table; a missing,
+      modified or relocated table, or any other file under Contents\structural-analysis\, is rejected;
     - no other file anywhere in the bundle; in particular no Autodesk-named DLL.
   Manifest checks: AppVersion, ComponentEntry Version, ModuleName, SeriesMin and SeriesMax match the
   central source (Directory.Build.props) or the values passed in.
@@ -49,6 +52,11 @@
   Authorized catalog source the bundle's Contents\catalogs must match exactly. Defaults to
   assets\catalogs in the repository.
 
+.PARAMETER SectionMapSourcePath
+  Approved source table the bundle's Contents\structural-analysis\ram-elements\section-material-map.json
+  must match byte for byte (SHA-256). Defaults to
+  assets\structural-analysis\ram-elements\section-material-map.json in the repository.
+
 .EXAMPLE
   pwsh deploy\verify-bundle.ps1 -BundlePath src\RackCad.Plugin\bin\Release\net8.0-windows\publish\RackCad.bundle
 #>
@@ -63,7 +71,8 @@ param(
     [string]$InventoryOutPath,
     [string]$BaselineInventoryPath,
     [string]$PublishDir,
-    [string]$CatalogsSourceDir
+    [string]$CatalogsSourceDir,
+    [string]$SectionMapSourcePath
 )
 
 Set-StrictMode -Version Latest
@@ -75,6 +84,7 @@ $script:RackCadDlls = @(
     "RackCad.Plugin.dll",
     "RackCad.UI.dll")
 $script:CatalogExtensions = @(".csv", ".json", ".dwg")
+$script:SectionMapRelativePath = "Contents/structural-analysis/ram-elements/section-material-map.json"
 # Matches every Autodesk assembly shipped with AutoCAD 2025 (AcCoreMgd, AcDbMgd, AcMgd, AcTcMgd,
 # AdWindows, AdUiMgd, acdbmgdbrep, AcMNUParser, ...). RackCad.*.dll never matches this.
 $script:AutodeskDllPattern = '(?i)^(Ac[A-Z]|Ad[A-Z]|Autodesk|acdb).+\.dll$'
@@ -160,6 +170,10 @@ function Assert-Allowlist {
         }
         elseif ($rel -imatch '^Contents/catalogs/') {
             $allowed = $script:CatalogExtensions -contains $file.Extension.ToLowerInvariant()
+        }
+        elseif ($rel -ceq $script:SectionMapRelativePath) {
+            # The approved section/material table, only at this exact path (its identity is checked below).
+            $allowed = $true
         }
         Assert-True $allowed "Archivo no autorizado en el bundle (solo RackCad + datos permitidos): $rel"
     }
@@ -268,6 +282,24 @@ function Assert-CatalogsMatchSource {
     }
 }
 
+function Assert-SectionMapMatchesSource {
+    param(
+        [Parameter(Mandatory = $true)][string]$Root,
+        [Parameter(Mandatory = $true)][string]$SourcePath)
+
+    # The section/material table must be present at its exact path and byte-identical (SHA-256) to the
+    # approved source table. The allowlist already rejects it anywhere else.
+    Assert-True (Test-Path -LiteralPath $SourcePath -PathType Leaf) `
+        "No existe la tabla fuente aprobada de secciones y materiales: $SourcePath"
+    $bundleTable = Join-Path $Root ($script:SectionMapRelativePath -replace '/', '\')
+    Assert-True (Test-Path -LiteralPath $bundleTable -PathType Leaf) `
+        "Falta la tabla de secciones y materiales en el bundle: $script:SectionMapRelativePath"
+    $bundleHash = (Get-FileHash -LiteralPath $bundleTable -Algorithm SHA256).Hash
+    $sourceHash = (Get-FileHash -LiteralPath $SourcePath -Algorithm SHA256).Hash
+    Assert-True ($bundleHash -eq $sourceHash) `
+        "Tabla de secciones y materiales modificada respecto a la fuente aprobada (SHA-256): $script:SectionMapRelativePath"
+}
+
 function Get-Inventory {
     param([Parameter(Mandatory = $true)][string]$Root)
 
@@ -310,10 +342,14 @@ function Invoke-VerifyBundle {
     $publish = if ($PublishDir) { [System.IO.Path]::GetFullPath($PublishDir) } else { Split-Path -Parent $root }
     $catalogsSource = if ($CatalogsSourceDir) { [System.IO.Path]::GetFullPath($CatalogsSourceDir) } `
         else { Join-Path (Split-Path -Parent $PSScriptRoot) "assets\catalogs" }
+    $sectionMapSource = if ($SectionMapSourcePath) { [System.IO.Path]::GetFullPath($SectionMapSourcePath) } `
+        else { Join-Path (Split-Path -Parent $PSScriptRoot) "assets\structural-analysis\ram-elements\section-material-map.json" }
     Write-Host "Fuentes: publish=$publish"
     Write-Host "         catalogos=$catalogsSource"
+    Write-Host "         tabla=$sectionMapSource"
     Assert-DllsMatchPublish -Root $root -PublishDir $publish
     Assert-CatalogsMatchSource -Root $root -CatalogsSourceDir $catalogsSource
+    Assert-SectionMapMatchesSource -Root $root -SourcePath $sectionMapSource
 
     $inventory = Get-Inventory -Root $root
     Write-Host ""
@@ -333,7 +369,7 @@ function Invoke-VerifyBundle {
     }
 
     Write-Host ""
-    Write-Host "OK: bundle verificado ($script:assertionCount comprobaciones). DLL identicos al publish y catalogos identicos a assets/catalogs (SHA-256); solo archivos RackCad y datos permitidos; cero DLL Autodesk."
+    Write-Host "OK: bundle verificado ($script:assertionCount comprobaciones). DLL identicos al publish y catalogos identicos a assets/catalogs y tabla de secciones y materiales identica a su fuente aprobada (SHA-256); solo archivos RackCad y datos permitidos; cero DLL Autodesk."
 }
 
 # Dot-sourcing exposes the functions to a harness without verifying a real bundle.
