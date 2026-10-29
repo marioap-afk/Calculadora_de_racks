@@ -1,0 +1,60 @@
+I-62 — COORDINATOR DISPOSITION §105
+R1 FUNCTIONAL FIRST / SHADOW PILOT
+1. Cambio de estrategia
+Aprobar R1 «Principal portable» como primera entrega funcional objetivo.
+Prioridad: entregar una capacidad utilizable lo antes posible y extenderla después mediante implementaciones pequeñas.
+No esperar a FX-02, A6-7 ni a la integración completa de I-62 para preparar R1.
+2. R1a — Piloto en sombra
+Autorizar preparación inmediata de R1a, reutilizando las implementaciones y validadores existentes.
+Seleccionar como candidato I-50 H4, sujeto a verificar que la unidad esté disponible, tenga autoridad vigente y no interfiera con otra sesión.
+Antes de ejecutar el piloto sobre la unidad real, obtener la conformidad del Owner prevista en la propuesta.
+El piloto deberá demostrar:
+
+* autoverificación del Principal;
+* BOOTSTRAP y custodia state/v2 en sombra;
+* validación mecánica;
+* transferencia entre sesiones independientes;
+* reanudación sin memoria privada;
+* continuación hasta el gate siguiente;
+* retorno seguro a DIRECT_ONLY.
+
+I-61 mantiene toda la autoridad operativa. Los registros de R1a no autorizan acciones que I-61 prohíba.
+3. Reutilización
+Utilizar FX-01, FX-04a y FX-05, StateV2Validator, Core y las herramientas de aceptación ya acreditadas.
+No crear un nuevo sistema de validación si los componentes existentes satisfacen el requisito.
+Aplicar validación incremental.
+4. Primera implementación
+Preparar únicamente lo necesario para ejecutar AT-1 y AT-2 del piloto:
+AT-1: autoverificación de identidad, modelo y esfuerzo, incluido negativo de esfuerzo insuficiente.
+AT-2: creación y validación del BOOTSTRAP state/v2 en sombra.
+Estas actividades deben producir evidencia y CI, no solamente una propuesta documental.
+No activar el plano I-62 ni modificar el protocolo vigente.
+5. R1b — Activación posterior
+Preparar una candidata A-8 estrictamente limitada a los cuatro cambios descritos en propuesta-entrega-1.md:
+
+* perfil I62_R1;
+* vigencia mediante lista cerrada;
+* gate F6-R1 y Owner Validation aplicable;
+* increments posteriores con gates independientes.
+
+No aplicar A-8 ni solicitar su revisión formal hasta completar el primer resultado funcional de R1a y recibir nueva disposición.
+No rebajar C-24 ni alterar las obligaciones de FX-02.
+6. Límites
+No reanudar A6-7.
+No ejecutar Codex para FX-02.
+No crear B1 ni abrir FX-U2.
+No modificar I-64, I-65 ni infraestructura compartida.
+No integrar ni activar R1b por esta orden.
+7. Entrega
+Reportar exclusivamente:
+
+* unidad piloto seleccionada y autoridad;
+* conformidad pendiente o recibida del Owner;
+* AT-1 y AT-2, con evidencia;
+* qué funcionalidad operó realmente;
+* qué falta para demostrar la transferencia entre sesiones;
+* commits y CI;
+* siguiente incremento ejecutable.
+
+El objetivo es alcanzar AT-1 y AT-2 funcionales antes de ampliar el alcance.
+No iniciar nuevas rondas extensas de arquitectura, kits o mutaciones sin un bloqueo normativo concreto.

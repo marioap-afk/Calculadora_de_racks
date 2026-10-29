@@ -5205,3 +5205,23 @@ solo desde artefactos custodiados.
   - pruebas AT-1..AT-6;
   - incrementos R2-R7.
 - Diseño y planificación solamente: sin implementación, integración, enmienda ni kit de revisión. Ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 215. Decisiones §105-§106: R1 aprobada como primera entrega; piloto R1a sobre I-66 (I-50 H4) con la conformidad del Owner
+
+- **Disposición:** decisiones §105; el cuerpo pegado (2 965 bytes, SHA-256 `ebec2d6e41b5972f…`) está en
+  [`I-62-R1/s105-body.txt`](I-62-R1/s105-body.txt).
+- **Disponibilidad del candidato (§105, punto 2), comprobada sobre el remoto tras `git fetch`:**
+  - I-50 H4 sigue abierto en `origin/main` `bb0d5522`: `HeaderRunPlan.PlacedClone` no copia `Text`, `TextHeight`, `DimensionOffset` ni
+    `DimensionStyleName` (último cambio del archivo: `99c73502`, I-23);
+  - ninguna de las cuatro ramas remotas activas (`architecture/interop-analisis-estructural`, `architecture/workspace-persistente-rackcad`,
+    `feature/rackmirror-espejo-semantico` y esta) tiene commits sobre `src/RackCad.Application/Drawing/HeaderRunPlan.cs` que no estén en `main`;
+  - el identificador I-66 está libre: la fila más alta es I-64 en `main` e I-65 en su rama, y no hay ninguna referencia a I-66, I-67 ni I-68 en `docs/`
+    de ninguna rama remota.
+- **Autoridad:** WORKFLOW §2, caso (d), con la autorización explícita del Owner (decisiones §106). I-61 y WORKFLOW gobiernan I-66; R1a solo añade
+  registros en sombra que nunca autorizan nada.
+- **Interferencia:** el piloto no toca I-64 ni I-65 ni la pantalla. I-65 preguntó por el uso exclusivo de la pantalla y se le respondió que no; su
+  ventana W-R1a quedó en pausa por uso del equipo del Owner.
+- **Conformidad del Owner:** decisiones §106 (14:01:37Z), «Conforme, A = esta sesión». Su texto está en
+  [`I-62-R1/owner-106-body.txt`](I-62-R1/owner-106-body.txt).
+- **Siguiente:** reclamo y bootstrap de I-66 según WORKFLOW §4.1; AT-1 (autoverificación al abrir) y AT-2 (BOOTSTRAP `state/v2` en sombra validado
+  por `StateV2Validator`). Sin A6-7, sin Codex, sin integración. Ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
