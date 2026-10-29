@@ -5274,3 +5274,26 @@ solo desde artefactos custodiados.
 - **Coordinación con I-65:** I-65 abrió su ventana W-R1a de AutoCAD (~16:37Z, hasta ~19:30Z como máximo) y pidió que la petición al Owner de abrir B
   espere a su aviso de cierre (parada WR1-ST-02 si el Owner usa el equipo durante la ventana). Aceptado: I-62 no usa la pantalla.
 - Sin A6-7, sin FX-02, sin Codex, sin activar I62_R1 ni aplicar A-8, sin integración.
+
+## 218. AT-3 preparado en I-66: G0, QU, RED → GREEN de H4, QH validado y oráculo sellado; A terminado sobre I-66 (decisiones §107)
+
+- **G0** (`3ef613bf`, decisiones de I-66 §4): G0 = PASS sobre `8e23b0d2` por orden del Coordinator. La observación en sombra acepta el binding del Principal
+  A y deja `g0_acceptance` PENDING: sin A-8, la única aplicabilidad materializada que admite `state/v2` es I62_DELEGATED, cuyo marcador exige
+  `StateV2Validator` (I-P09), y escribirlo sería falso. Q0 sigue prohibido (I-S15).
+- **QU** (`31736f4e`, rv2): par BOOTSTRAP → QU de `StateV2Validator` sin violaciones (archivo, par, historia, historia del par, historia B1), forma canónica,
+  5/5 negativos (custodiado en I-66 `validacion/validator-qu.json`).
+- **Trabajo funcional de A según WORKFLOW e INITIATIVE_LIFECYCLE (V2):** Discovery Core (`e7f2dc63`), Freeze breve con revisión del Architect en
+  SAME-SESSION ROLE (dos subagentes independientes; R1 y R2 CHANGES REQUIRED, R3 **AGREED** sobre `7cdbc39f`, blob `c57ad038`), Freeze `69d015ec`,
+  **RED** `3581f65e` (local 12 con error / 6 correctas; CI con 12 fallos, exactamente los casos RED) y **GREEN** `beec69e4` (I66 18/18, Core Full local
+  12 613/0, CI en success). Defecto latente: ninguna salida actual cambia. G1 sigue abierto.
+- **QH** (`5d52e5d8b2590e0e65b9a9f746b07923e2bb8a78`, rv3): Principal RELEASED; handoff `I-66-R1/qh/HANDOFF-B.md` y esquema `qh/response.r1.schema.json`; designación acotada del
+  titular siguiente en las decisiones de I-66 §8. Par QU → QH: **PASS**, sin violaciones y con forma canónica; 5/5 negativos (I-S04, I-P07, I-P05, I-P09,
+  I-S13) ([`I-62-R1/AT-3/validator-qh.json`](I-62-R1/AT-3/validator-qh.json)).
+- **Oráculo sellado** antes de que B empiece: SHA-256 canónico `dfaf76ff6722bd07bbdde2abd975134d77afd704587288de735278c031f2dca6` (27 campos: 15 hechos y 12 de decisión), derivado del estado del QH con
+  `r1a_resume_oracle.py` (SHA-256 `5afb9f2b158cb81a184bbdaee38546789786ace2f8aab7055a7dad951449e3a9`), que reutiliza los hechos y `compare_v2` de FX-04a. El oráculo y la herramienta quedan fuera del
+  repositorio hasta la comparación ([`I-62-R1/AT-3/oracle-seal.json`](I-62-R1/AT-3/oracle-seal.json)).
+- **Terminación de A sobre I-66:** después de `5d52e5d8` esta sesión no escribe en la rama de I-66; sigue solo como supervisión de I-62.
+- **Instrucción para B** (única, §107.5), texto exacto en [`I-62-R1/AT-3/b-kickoff.txt`](I-62-R1/AT-3/b-kickoff.txt) (SHA-256 `2e1c31879a0bcb61…`).
+  La petición al Owner espera al aviso de cierre de la ventana W-R1a de I-65, que lo pidió así; W-R1a está en parada desde las 17:00Z con AutoCAD abierto.
+- **CI de I-66:** `3ef613bf` 40913766108 success; `31736f4e` 40914338890 success; `e7f2dc63` 40915195817 success; `2ba93704` 40915247713 success; `97b31aad` 40918594262 success; `7cdbc39f` 40920669069 success; `69d015ec` 40921291125 success; `3581f65e` 40921461957 failure; `beec69e4` 40921659395 success; `5d52e5d8` 40922636316 success.
+- Sin A6-7, sin FX-02, sin Codex, sin activar I62_R1 ni aplicar A-8, sin integración. AT-3 no está acreditado todavía: falta la sesión B.

@@ -1,0 +1,23 @@
+{
+ "Unit": "I-66",
+ "QH": "5d52e5d8b2590e0e65b9a9f746b07923e2bb8a78",
+ "StatePath": "docs/automation/evidence/I-66-R1/state.v2.yml",
+ "OracleCanonicalSha256": "dfaf76ff6722bd07bbdde2abd975134d77afd704587288de735278c031f2dca6",
+ "OracleCanonicalForm": "json.dumps(oracle, sort_keys=True, ensure_ascii=False), UTF-8 (fx04a_real.sha)",
+ "OracleFileSha256": "82bcb841c29e236e4042307bb7cfbdab7226c6454887bb62d9330d168a324896",
+ "OracleFields": {
+  "facts": 15,
+  "decision": 12
+ },
+ "OracleLocation": "fuera de todo repositorio y de la rama de I-66, en la carpeta temporal de la sesión de supervisión; no se entrega a B",
+ "ToolSha256": "5afb9f2b158cb81a184bbdaee38546789786ace2f8aab7055a7dad951449e3a9",
+ "ToolName": "r1a_resume_oracle.py (oracle / hash / compare; importa fx04a_real.py de I-62-F6/kits/FX-04a sin copiarlo)",
+ "FxToolBlob": "de5620a1939fcaaa5d96a4f30540304973cae16a",
+ "ResponseSchema": {
+  "Path": "docs/automation/evidence/I-66-R1/qh/response.r1.schema.json",
+  "Blob": "0164236a098d2fddcc5c8bd06be26d40eaed2909"
+ },
+ "Comparison": "compare_v2 de fx04a_real.py: igualdad exacta campo a campo; stops_in_force y preconditions como conjuntos; nada se normaliza después",
+ "BKickoffText": "I-66, rama fix/placedclone-copia-anotaciones. Reconstruye el trabajo desde el repositorio.\n",
+ "BKickoffSha256": "2e1c31879a0bcb6196c245fc68d31ddca203d588518ceddd7737e96ac0375a06"
+}

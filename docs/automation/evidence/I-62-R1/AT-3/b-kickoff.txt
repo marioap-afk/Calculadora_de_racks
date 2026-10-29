@@ -1,0 +1,1 @@
+I-66, rama fix/placedclone-copia-anotaciones. Reconstruye el trabajo desde el repositorio.

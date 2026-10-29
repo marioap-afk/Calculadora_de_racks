@@ -1,0 +1,79 @@
+{
+  "Validator": "RackCad.Tests.StateV2Validator (F4 production validator, I-62)",
+  "DllSha256": "D7150126E43F8430A7042C32DF68C80EA99697458D7F651B9E86F0C2C6C42A8A",
+  "Repo": "origin of I-66 (local worktree of fix/placedclone-copia-anotaciones)",
+  "StatePath": "docs/automation/evidence/I-66-R1/state.v2.yml",
+  "Prev": "31736f4e0082b80c9c3fea19dfa582ac7a22677d",
+  "PrevPoint": "QU",
+  "PrevRecordVersion": 2,
+  "PrevStateBlobSha256": "5563e06ebf6e914e076e8f8df72974931c60661d922c0bee8a8b85aedd5080a0",
+  "Next": "5d52e5d8b2590e0e65b9a9f746b07923e2bb8a78",
+  "NextPoint": "QH",
+  "NextRecordVersion": 3,
+  "NextStateBlobSha256": "8324df52883dd258e694db8f0187786f3b9ef341ef9addb148b265489decaad1",
+  "CanonicalForm": true,
+  "FilePrev": null,
+  "FileNext": null,
+  "Pair": null,
+  "HistoryNext": null,
+  "PairHistory": null,
+  "B1History": null,
+  "Negatives": [
+    {
+      "Case": "NEG-QH-1 titular HELD en un QH",
+      "Scope": "File",
+      "Expected": [
+        "I-S04"
+      ],
+      "Observed": [
+        "I-S04"
+      ],
+      "Caught": true
+    },
+    {
+      "Case": "NEG-QH-2 binding cambiado fuera de QR o del QU de su aceptación",
+      "Scope": "Pair",
+      "Expected": [
+        "I-P07"
+      ],
+      "Observed": [
+        "I-P07"
+      ],
+      "Caught": true
+    },
+    {
+      "Case": "NEG-QH-3 attempts que crece en un QH",
+      "Scope": "Pair",
+      "Expected": [
+        "I-P05"
+      ],
+      "Observed": [
+        "I-P05"
+      ],
+      "Caught": true
+    },
+    {
+      "Case": "NEG-QH-4 g0_acceptance decidida fuera de un QU",
+      "Scope": "Pair",
+      "Expected": [
+        "I-P09"
+      ],
+      "Observed": [
+        "I-P09"
+      ],
+      "Caught": true
+    },
+    {
+      "Case": "NEG-QH-5 handoff citado con un blob que no está en el árbol",
+      "Scope": "File",
+      "Expected": [
+        "I-S13"
+      ],
+      "Observed": [
+        "I-S13"
+      ],
+      "Caught": true
+    }
+  ],
+  "Verdict": "PASS"
+}
