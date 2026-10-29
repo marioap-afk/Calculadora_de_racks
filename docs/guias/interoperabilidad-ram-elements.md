@@ -26,8 +26,9 @@ junto a la advertencia: «These assumptions are hypotheses for transfer equivale
 
 - **AutoCAD** con el Plugin de RackCad cargado y un dibujo con el rack Cantilever.
 - **Tabla de secciones y materiales** `structural-analysis\ram-elements\section-material-map.json` junto al DLL del Plugin. Viaja
-  en la salida de compilación del Plugin y en el bundle del Autoloader (`Contents\structural-analysis\ram-elements\`), idéntica a la
-  fuente aprobada: el verificador del bundle lo exige (decisión R-D11, que revierte CD-I65-F4-10). Si falta, el comando responde
+  en la salida de compilación del Plugin y en el bundle del Autoloader (`Contents\structural-analysis\ram-elements\`), igual a la
+  fuente del checkout de compilación (el contenido del blob aprobado salvo el fin de línea): el verificador del bundle lo exige
+  (decisión R-D11, que revierte CD-I65-F4-10). Si falta, el comando responde
   `Unavailable` («Falta la tabla de secciones y materiales junto al Plugin») y no escribe nada.
   - Esquema `rackcad-ram-elements-section-map/v1`. Cada fila enlaza `sectionId` y `materialId` del catálogo de RackCad con su sección en
     RAM (`ramSection`: `name`, `table`, `country`) y su material (`ramMaterial`), con las propiedades esperadas (`expectedMaterial`:
@@ -177,7 +178,7 @@ comparador rechazan lo que deben; no es parte del flujo de uso.
 
 | Situación | Qué hacer |
 |---|---|
-| `Unavailable` por falta de la tabla | comprobar que `structural-analysis\ram-elements\section-material-map.json` está junto al DLL del Plugin (con el Autoloader, en `Contents\`); reinstalar el bundle con `deploy\install-bundle.ps1` o usar la salida de compilación del Plugin |
+| `Unavailable` por falta de la tabla | comprobar que `structural-analysis\ram-elements\section-material-map.json` está junto al DLL del Plugin (con el Autoloader, en `Contents\`); reinstalar el bundle con `deploy\install-bundle.ps1 -Build` (o con un bundle generado por `deploy\build-bundle.ps1`, que lo verifica) o usar la salida de compilación del Plugin |
 | `Unsupported` por fila sin verificar | el ingeniero verifica la fila de la tabla (cambio autorizado del producto); no editar la tabla junto al DLL |
 | `RAM-PACKAGE-FOLDER-INVALID` | teclear una ruta absoluta con `\` |
 | la carpeta ya existe / falta la carpeta padre | elegir otra / crear la carpeta padre: nada se sobrescribe |

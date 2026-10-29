@@ -2,6 +2,9 @@
 
 - **Estado:** PREPARACIÓN (orden del Owner, [decisiones](../automation/decisions/I-65.md) §105, punto 7). **READY EXECUTION = NO.** No
   declara READY, no fija `FINAL_CANDIDATE_SHA`, no abre AutoCAD ni RAM, no instala en `ApplicationPlugins` y no integra.
+- **Sustituido** (decisiones §112) por [I-65-final-candidate.md](I-65-final-candidate.md) y
+  [I-65-ready-wr1-wr2-procedures.md](I-65-ready-wr1-wr2-procedures.md). Se conserva como preparación histórica. Su §5.3 decía «huella de
+  entrada igual a la de WR1-02» para HB, lo que no es posible con otro rack: la lectura vigente está en §112.
 - **Sustituye para READY** a [I-65-ready-preparation.md](I-65-ready-preparation.md) (§104), que se conserva como preparación histórica.
   Sus §2 y §3 quedan resueltos por §105.
 - **Autoridades:**

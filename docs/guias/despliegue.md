@@ -53,6 +53,7 @@ catalogs\                  ← datos maestros + geometría
   header-templates.json
   defaults.json
   blocks-library.dwg       ← OPCIONAL en el bundle: activo del usuario, no versionado; ver §5
+structural-analysis\ram-elements\section-material-map.json  ← tabla de RACKRAMPAQUETE
 ```
 
 > Copia la carpeta **entera**. Si copias solo `RackCad.Plugin.dll`, AutoCAD no encontrará
@@ -245,8 +246,9 @@ bloqueado, rollback tras respaldo, segunda ejecución, rutas con espacios y orig
 
 `deploy\verify-bundle.ps1` valida un `RackCad.bundle` ya armado: estructura, nombres, rutas, versión y
 series del manifiesto (contra `Directory.Build.props`) y una **allowlist recursiva fail-closed** que
-prueba que solo se distribuyen los cuatro DLL de RackCad y catálogos permitidos —cero DLL Autodesk
-(ADR-0003)—; además imprime el inventario con hashes SHA-256.
+prueba que solo se distribuyen los cuatro DLL de RackCad, los catálogos permitidos y la tabla de secciones y
+materiales en su ruta exacta, igual en SHA-256 a su fuente —cero DLL Autodesk (ADR-0003)—; además imprime el
+inventario con hashes SHA-256.
 
 ```powershell
 pwsh deploy\verify-bundle.ps1 -BundlePath src\RackCad.Plugin\bin\Release\net8.0-windows\publish\RackCad.bundle
