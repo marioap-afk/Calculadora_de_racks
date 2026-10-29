@@ -1,0 +1,59 @@
+{
+ "Kit": {
+  "Ok": true,
+  "Problems": [],
+  "FreezeSha256": "fc355540bf66cb10cdcd2783cec00f37778639b9339e7b34d5f698aee7fc2aad",
+  "Files": 49
+ },
+ "Decisions": {
+  "File": "%USERPROFILE%\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal\\docs\\automation\\decisions\\I-62.md",
+  "Search": {
+   "Section90Line": 1949,
+   "Candidates": [
+    {
+     "Section": 101,
+     "Line": 1977,
+     "Missing": []
+    },
+    {
+     "Section": 102,
+     "Line": 2019,
+     "Missing": [
+      "M7-CELDA",
+      "M7-TRIO",
+      "M7-INSTRUMENTO",
+      "M7-INTERPRETE",
+      "M7-GIT",
+      "M7-C",
+      "M7-CIERRE",
+      "M7-RECONSTRUCCION",
+      "M7-ESCRITURA",
+      "M7-KIT"
+     ]
+    }
+   ]
+  },
+  "Disposition": {
+   "Section": 101,
+   "Line": 1977
+  },
+  "ReadingsDisposition": {
+   "Section": 101,
+   "Ok": true
+  },
+  "line-od2.txt": {
+   "CompleteLineAt": [
+    2027
+   ],
+   "AfterDisposition": true
+  },
+  "line-b.txt": {
+   "CompleteLineAt": [
+    2028
+   ],
+   "AfterDisposition": true
+  },
+  "Problems": [],
+  "Ok": true
+ }
+}

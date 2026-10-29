@@ -5144,3 +5144,12 @@ solo desde artefactos custodiados.
 - **Siguiente:** las dos líneas del Owner, literales e independientes (OD-2 y `A6-CONTROLLER-MEDICION-CONSUMO`); después, el preflight de §101,
   punto 7, y solo si pasan todas las puertas, `bash run_m7.sh launch`, una vez. Sin Codex ni consumo hasta entonces; ni Controller ELIGIBLE,
   ni FX-02 PASS, ni F6 GATE PASS.
+
+## 211. Decisiones §102: líneas del Owner registradas (OD-2 y A6-CONTROLLER-MEDICION-CONSUMO para el trío vigente); puerta de decisiones del kit sin problemas
+
+- **Líneas:** decisiones §102; el texto pegado (1 039 bytes, SHA-256 `41c467c36e8af651…`) está en
+  [`s101/owner-102-body.txt`](I-62-A6/m7/s101/owner-102-body.txt): byte a byte `line-od2.txt` y `line-b.txt` del kit v2, sin otro texto.
+- **Puertas del kit v2, solo lectura** ([`s101/decisions-gate-102.json`](I-62-A6/m7/s101/decisions-gate-102.json)): el kit coincide con su FREEZE;
+  la disposición es §101 y las dos líneas son líneas completas posteriores a ella. Sin problemas.
+- **Siguiente:** el preflight de §101, punto 7 (app de escritorio de Codex cerrada, `python -I prep_write.py`, puertas) y, solo si todo pasa,
+  `bash run_m7.sh launch`, una vez. Ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
