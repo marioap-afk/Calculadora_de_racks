@@ -45,5 +45,15 @@ no cambian (F-4).
 - **Corrida local** en el worktree, árbol limpio antes y después, SDK 8.0.423 de usuario, filtro `FullyQualifiedName~I66PlacedCloneTests`:
   **12 con error, 6 correctas, 18 en total**. Fallan, dos casos cada una, N-1, N-2, N-3, N-4, N-7 y N-8, todas porque el clon deja los cuatro campos por
   defecto (`null`, `0`, `0`, `null`). Pasan las de conservación: N-5 (tres casos), N-9 y N-10 (dos casos). Coincide con el RED esperado del Freeze §6.
-- **CI del commit RED:** se espera el job de pruebas Core en rojo por esas mismas pruebas; su run id se registra con el QH.
+- **CI del commit RED:** se espera el job de pruebas Core en rojo por esas mismas pruebas; su run id se registra con el QH (§3).
+
+## 3. GREEN de G1 (commit `beec69e44e49d8362c3b5441fd6b9d7dc356740e`) y CI de RED y GREEN
+
+- **GREEN:** solo `src/RackCad.Application/Drawing/HeaderRunPlan.cs` (más el registro §2). Corridas locales en el worktree, árbol limpio antes y después:
+  - focal y relevantes (`I66PlacedCloneTests`, `HeaderInstanceGrouperTests`, `DynamicNullOverrideGoldenTests` y las caracterizaciones de cotas): 44 correctas,
+    0 con error; `I66PlacedCloneTests` 18/18;
+  - Core Full: 12 613 correctas de 12 613, 0 con error.
+- **CI:** RED `push` 40921461957 con el job de pruebas Core en rojo, como se esperaba: 12 con error, exactamente los doce casos RED de
+  `I66PlacedCloneTests`, y 12 601 correctas de 12 613; GREEN `push` 40921659395 en success, con sus cuatro jobs.
+- Esta Core Full es del GREEN, no del cierre de G1: el cierre exige su propia Core Full sobre el SHA de cierre (Freeze §8).
 
