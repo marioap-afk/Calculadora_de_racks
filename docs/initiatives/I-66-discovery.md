@@ -3,7 +3,8 @@
 Unit: `I-66`. Workflow: V2. Rama `fix/placedclone-copia-anotaciones`, base `bb0d5522`. Contrato:
 [I-66-placedclone-copia-anotaciones.md](I-66-placedclone-copia-anotaciones.md). Decisiones: [decisions/I-66.md](../automation/decisions/I-66.md).
 
-Versión R3, tras la revisión R1 del Architect (ARCH-B-01, ARCH-B-02 y ARCH-B-10) y su re-revisión R2 (ARCH-A-09, ARCH-B-12); decisiones §6.1 y §6.2. Barrido de solo lectura sobre la base. Cada afirmación lleva su clase: `MEASURED` (leído en el código), `INFERENCE` o `UNKNOWN`. Las rutas son de
+Versión R3.1, tras la revisión R1 del Architect (ARCH-B-01, ARCH-B-02 y ARCH-B-10), su re-revisión R2 (ARCH-A-09, ARCH-B-12) y la R3 (ARCH-B-15);
+decisiones §6.1, §6.2 y §6.3. Barrido de solo lectura sobre la base. Cada afirmación lleva su clase: `MEASURED` (leído en el código), `INFERENCE` o `UNKNOWN`. Las rutas son de
 `src/` salvo que se diga otra cosa.
 
 ## DC-01. Comportamiento observable actual
@@ -30,8 +31,10 @@ Versión R3, tras la revisión R1 del Architect (ARCH-B-01, ARCH-B-02 y ARCH-B-1
 - Precedente en el código: `PushBackMirror.Instance` (`RackCad.Application/Systems/PushBack/PushBackMirror.cs:43-75`) refleja respecto de un eje vertical,
   copia los cuatro campos e invierte el signo de `DimensionOffset` solo en cotas verticales (mismo criterio de eje que el dibujante). MEASURED.
 - **ADR-0011** (aceptado) gobierna el contrato de `Flatten`: «Agrupar no puede cambiar la geometría: aplanar el plan debe reproducir las instancias
-  originales» (`docs/adr/0011-parametros-dinamicos-con-patron-array.md:36-37`), y cita al agrupador y al dibujante. Ningún Freeze integrado gobierna
-  `PlacedClone`. MEASURED. (La versión R1 de este Discovery decía que ningún ADR lo gobernaba: era falso, ARCH-B-01.)
+  originales» (`docs/adr/0011-parametros-dinamicos-con-patron-array.md:36-37`), y cita al agrupador y al dibujante. Literalmente cubre la ida y vuelta
+  del agrupador, que nunca crea colocaciones espejadas (`HeaderInstanceGrouper.cs:91-93`); el Freeze §1 extiende la equivalencia a las colocaciones
+  espejadas de los builders como decisión propia, apoyada en la intención declarada del código (`HeaderRunPlan.cs:55-57`). Ningún Freeze integrado
+  gobierna `PlacedClone`. MEASURED. (La versión R1 de este Discovery decía que ningún ADR lo gobernaba: era falso, ARCH-B-01.)
 - **Contradicción con ese contrato (EXP-01, clase B, más abajo):** `PlacedClone` conserva `RotationRadians` (`HeaderRunPlan.cs:67`) e invierte
   `MirroredX`, mientras que una pieza `R(θ)·S(m,1)` dentro de una referencia `S(−1,1)` equivale a `R(−θ)·S(−m,1)` (regla de composición documentada
   en `PushBackMirror.cs:22-25` y aplicada en `:61`). Hay piezas rotadas en grupos con colocaciones espejadas: diagonales con `RotationRadians = atan2`
@@ -96,7 +99,7 @@ No consume ni extiende ninguna fundación registrada: `HeaderRunPlan` y `HeaderB
 | M-05 | no activado | el contrato de `Flatten` (equivalente plano del plan) no cambia: el arreglo lo cumple para más entradas |
 | M-06 | no activado | ningún punto de extensión |
 | M-07 | no activado | ningún mecanismo transversal |
-| M-08 | no activado | ADR-0011 gobierna el contrato de `Flatten`; el cambio no lo modifica ni lo reinterpreta: hace que `Flatten` reproduzca más campos de la instancia dibujada |
+| M-08 | no activado | ADR-0011 cubre literalmente la ida y vuelta del agrupador, que el cambio no toca (sus colocaciones nunca son espejadas y F-2 es ahí una copia); la extensión a las colocaciones espejadas es una decisión del Freeze que recoge la intención del código (`HeaderRunPlan.cs:55-57`) y no reinterpreta el ADR |
 
 **Arquetipo propuesto: EXTENSION.**
 
