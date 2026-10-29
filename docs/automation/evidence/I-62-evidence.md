@@ -5178,3 +5178,12 @@ solo desde artefactos custodiados.
     texto armado; cierre A7-1; cobertura LAUNCH_MAY_PROCEED; autotest; regla v3; kit v1 intacto; host.
 - **Siguiente:** vuelve al Coordinator. No se prepara nada para el trío nuevo sin su disposición. Ni Controller ELIGIBLE, ni FX-02 PASS, ni F6
   GATE PASS.
+
+## 213. Decisiones §103: STOP aceptado (consumo de A6-7 = 0/1); trío candidato `0c09e45b`/26.1023.6621.0/`FEA91A79`; recuperación incremental tras estabilidad observada
+
+- **Disposición:** decisiones §103; el cuerpo pegado (2 737 bytes, SHA-256 `ddc17d32e77d3d20…`) está en
+  [`s103/s103-body.txt`](I-62-A6/m7/s103/s103-body.txt).
+- **Estado:** medición de A6-7 no lanzada, consumo 0/1; Controller NOT_DEMONSTRATED; FX-02/C-24 UNVERIFIED. §101, §102 y la evidencia histórica,
+  sin cambios. Las líneas de §102 no se reutilizan.
+- **Siguiente:** observaciones pasivas separadas de la identidad candidata y, solo tras estabilidad, la copia recuperada del kit, su validación
+  incremental, un FREEZE nuevo y la secuencia de lanzamiento concentrada (A-G de §103, punto 4). Sin `prep_write.py`, sin Codex.

@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6 (decisiones §101-§102; evidencia §210-§212) — STOP por §101 punto 3 antes de prep_write: Codex se actualizó después de §101 (binario 0c09e45b, etiqueta 0ab0e7a8f3779036, AppVersion 26.1023.6621.0, huella FEA91A79 con los mismos 106 nombres de clave); el trío de §101/§102 (5c1b5596/26.1023.6123.0/0A9F6A34) ya no rige; medición de A6-7 no lanzada, sin consumo, -C sin tocar; preflight final 23 OK / 1 FAIL (identidad) / 4 pendientes / 6 de sesión; siguiente: disposición del Coordinator; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
+  next_action: "F6 (decisiones §103; evidencia §213) — STOP de §101 aceptado: A6-7 no lanzada, consumo 0/1, Controller NOT_DEMONSTRATED, FX-02/C-24 UNVERIFIED; trío candidato 0c09e45b/26.1023.6621.0/FEA91A79: observaciones pasivas separadas y, tras estabilidad, kit recuperado (copia del v2 con el trío nuevo), validación incremental, FREEZE nuevo y secuencia de lanzamiento concentrada A-G; sin prep_write ni Codex; las líneas de §102 no se reutilizan; sin Controller ELIGIBLE, FX-02 PASS ni F6 GATE PASS"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

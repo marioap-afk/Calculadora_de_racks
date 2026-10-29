@@ -1,0 +1,63 @@
+I-62 — COORDINATOR DISPOSITION §103
+CODEX RUNTIME UPDATE / A6-7 MEASUREMENT RECOVERY
+1. Reconocimiento del STOP
+Aceptar el STOP registrado en 8f115648.
+La medición A6-7 no fue lanzada.
+Consumo A6-7 = 0/1.
+Controller = NOT_DEMONSTRATED.
+FX-02/C-24 = UNVERIFIED.
+Conservar intactos los registros §101 y §102 y la evidencia histórica.
+No reutilizar OD-2 ni A6-CONTROLLER-MEDICION-CONSUMO correspondientes al trío anterior.
+2. Identidad nueva
+Candidato:
+BinaryHash:
+0c09e45bc76433756eb2d492f6db0ce6f269967e6618f4a6ae73e2fa239694b8
+AppVersion:
+26.1023.6621.0
+Fingerprint:
+FEA91A79D45CCA7BB434512BD88710B0F65B578D80A033FF0F077ADECE8EE508
+Autorizar únicamente observaciones pasivas de identidad.
+Comprobar binario, versión, huella y ejecutables acompañantes en varias observaciones separadas.
+No invocar Codex ni leer valores de config.toml.
+Si cambia la identidad, registrar la observación y detener la preparación asociada a ese trío.
+3. Recuperación incremental
+Solo después de estabilidad observada:
+
+* conservar el kit v2 histórico intacto;
+* preparar una copia recuperada para el nuevo trío;
+* actualizar únicamente referencias de binario, versión, fingerprint, acompañantes y dependencias necesarias;
+* conservar A-5, A-6 y A-7 AGREED;
+* conservar los blobs del instrumento y aceptante;
+* conservar el cierre A7-1 y sus controles normativos;
+* repetir las autopruebas afectadas y verificar FREEZE, manifest y privacidad;
+* evitar la repetición de baterías exhaustivas de mutación sobre componentes idénticos.
+
+No ejecutar prep_write.py ni crear el objeto del instrumento todavía.
+4. Reducir la ventana de exposición
+Preparar una secuencia de lanzamiento concentrada:
+A. Disposición Coordinator para el trío nuevo y el kit recuperado.
+B. Autorizaciones Owner exactas para ese trío.
+C. Cierre de la aplicación de escritorio de Codex.
+D. Preflight final con identidad inmediatamente anterior al lanzamiento.
+E. Escritura de preparación autorizada.
+F. Comprobación del punto de uso.
+G. Única medición A6-7.
+La autorización de consumo no se presupone ni se hereda.
+No iniciar tareas documentales o revisiones largas entre D y G.
+5. Límites
+No modificar config.toml, trust_level, sandbox, permisos ni el mecanismo de actualización de Codex.
+No ejecutar Codex sin la nueva autorización Owner.
+No abrir FX-U2 ni crear B1.
+No modificar producción, I-64, I-65 ni D.5.
+I-64 mantiene prioridad de recursos.
+6. Entrega
+Reportar únicamente:
+
+* estabilidad de la nueva identidad;
+* componentes del kit afectados;
+* validación incremental;
+* FREEZE recuperado;
+* estado de las autorizaciones;
+* condiciones restantes para lanzar A6-7.
+
+No declarar Controller ELIGIBLE, FX-02 PASS, F6 GATE PASS ni integración.

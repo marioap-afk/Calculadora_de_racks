@@ -58,3 +58,7 @@ docs/automation/evidence/I-62-A6/m7/s100/**  -text
 # I-62 (decisiones §101; evidencia §210) — cuerpo de §101, identidad de Codex y puerta de decisiones del kit v2. Sus SHA-256 están
 # en MANIFEST.sha256; `-text` conserva los bytes exactos.
 docs/automation/evidence/I-62-A6/m7/s101/**  -text
+
+# I-62 (decisiones §103; evidencia §213 y siguientes) — recuperación de la medición A6-7 para el trío nuevo de Codex. Sus SHA-256 están
+# en MANIFEST.sha256; `-text` conserva los bytes exactos.
+docs/automation/evidence/I-62-A6/m7/s103/**  -text
