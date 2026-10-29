@@ -3170,3 +3170,29 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-ready/candidate-4a03b65b/hb02-dryrun-verify.txt` | `FEBBB2FFE086EDBBEC1A158C43E0C28749C3463155FBC05D1E8DE5694E3B0E70` |
 | `docs/automation/evidence/I-65-ready/candidate-4a03b65b/ci-run.txt` | `B5167B5F9FB8E27F32DB25CDD922AC20BCD469E419B6D0F00B8378375BD93A99` |
 | `docs/automation/evidence/I-65-ready/candidate-4a03b65b/bundle-inventory.txt` | `9AAC3C851EF78AAEF617E5BA5B99A43A6EAB66FD3F5E269E3B9994318559D680` |
+
+## 118. READY-06 y READY-09 sobre `4a03b65b` (2026-10-29T04:18:55Z)
+
+- **Relectura del Architect:** 2026-10-29T04:06:19Z..2026-10-29T04:16:50Z (subagente opus, solo lectura).
+  - Informe: `I-65-ready/architect-ready06-r2-conformance.md`; prompt: `architect-ready06-r2.prompt.md`.
+  - K5: `107E45E5F709A2C5296C6FF07ECF8EDCB3F815AFF86913FA59A9EC4034F57868`, 61 usos de herramientas; intérpretes, AutoCAD/RAM y escrituras = 0; 1 lectura fuera del worktree (declarada).
+  - Objeto suelto `c81dde4a…`: tipo `tree`, inalcanzable (DEV-I65-FC-03).
+  - K1/K2: 1 SIGNAL (I-62 en su propio worktree).
+- **Conformidad del Coordinator:** `I-65-ready/coordinator-ready06-conformity.md` (CONFORMING).
+- **READY-09:** `I-65-ready/ready09-4a03b65b.txt`.
+- **READY-04 repetido (2026-10-29T04:18:57Z):** `origin/main` = `bb0d5522` = merge-base de `4a03b65b`; la rama remota = `813d0cee`; I-64 (`09f2f1c3`) sin integrar.
+  - `git diff --name-only 4a03b65b..813d0cee` fuera de `docs/`: vacío.
+  - SDK resuelto: 8.0.423.
+- **CI:**
+  - del SHA propuesto `4a03b65b`: 40814761082, 4/4;
+  - del commit de evidencia `813d0cee`: 40815831852, 4/4.
+- Sin AutoCAD, RAM, NETLOAD ni Codex; `ApplicationPlugins` del usuario sigue vacía.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-ready/architect-ready06-r2.prompt.md` | `D68A6D39D46164FC1D7121743E7151EE824562CF89E4F515012D1762DBF5D3CD` |
+| `docs/automation/evidence/I-65-ready/architect-ready06-r2-conformance.md` | `37A94E89EA2BE5EF5560DB33EC1F9415298AFA5D94A4EAB3D9509F1672ED0230` |
+| `docs/automation/evidence/I-65-ready/architect-ready06-r2-k5-transcript-scan.json` | `46C2D5B4E84B5F1547459A1C44B45977E3326C2831CA0370164631B70D7C69D9` |
+| `docs/automation/evidence/I-65-ready/ready09-4a03b65b.txt` | `02A4CFF644C24635E2D43D36072FC20CEE935CDD3FC6D2981BA14A1964507E8D` |
+| `docs/automation/evidence/I-65-ready/coordinator-ready06-conformity.md` | `5F22921E301DF354ADDD70F538BE174531E0A204DEF54715AE6B8D6AF002B406` |

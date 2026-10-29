@@ -1,0 +1,12 @@
+READY-09 sobre 4a03b65b375d468c220dd68400d5dfd955bf043e (2026-10-29T04:17:08Z)
+acuerdo 3872fcc0:docs/initiatives/I-65-proposal-v3.1.md = 11062a915c4c174ede180830c8ab3173ee7b6666
+a9d7080b^:docs/initiatives/I-65-proposal-v3.1.md = 11062a915c4c174ede180830c8ab3173ee7b6666
+a9d7080b:docs/initiatives/I-65-proposal-v3.1.md = 4e6e1feb4d83aa291707c72ad12f89411ff1d37a
+4a03b65b375d468c220dd68400d5dfd955bf043e:docs/initiatives/I-65-proposal-v3.1.md = 4e6e1feb4d83aa291707c72ad12f89411ff1d37a
+commits que tocan el Freeze desde a9d7080b hasta 4a03b65b375d468c220dd68400d5dfd955bf043e: 0
+lineas cambiadas por a9d7080b en el Freeze: 3	3	docs/initiatives/I-65-proposal-v3.1.md
+archivos cambiados por a9d7080b: docs/initiatives/I-65-proposal-v3.1.md 
+freeze-delta en 4a03b65b375d468c220dd68400d5dfd955bf043e: 0
+contrato: freeze_ref: docs/initiatives/I-65-proposal-v3.1.md freeze_delta_ref: null amendment_refs: [] 
+ADR-0050 4a03b65b375d468c220dd68400d5dfd955bf043e = c18def42fe283aba0fa69ffc482647fb04ccdc46; commits desde ed8154c3: 0
+fuera de docs/ desde 6a58c2b1: 0; desde 4a03b65b375d468c220dd68400d5dfd955bf043e hasta HEAD: 0
