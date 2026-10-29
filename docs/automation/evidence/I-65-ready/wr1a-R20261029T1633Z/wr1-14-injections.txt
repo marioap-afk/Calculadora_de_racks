@@ -1,0 +1,9 @@
+== inject unknown-section -> inj-OV05 exit=0
+  Injected package published in 'D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\inj-OV05' (fault: unknown-section; mutation: members[0].section: 'HSS_SQR 4X4X1_4' -> 'HSS_SQR INEXISTENTE-99'; embedded folder: D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\inj-OV05).
+== inject inverted-axes -> inj-OV06 exit=0
+  Injected package published in 'D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\inj-OV06' (fault: inverted-axes; mutation: members[0].l2: the expected local axis 2 of the first member is inverted; embedded folder: D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\inj-OV06).
+== inject wrong-version -> inj-OV07a exit=0
+  Injected package published in 'D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\inj-OV07a' (fault: wrong-version; mutation: capabilities.version: '0.1.0' -> '999.0.0'; embedded folder: D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\inj-OV07a).
+== inject missing-core-function -> inj-OV07b exit=0
+  Injected package published in 'D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\inj-OV07b' (fault: missing-core-function; mutation: capabilities.coreFunctions: the nonexistent function 'rackcad_nonexistent_function' is required; embedded folder: D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\inj-OV07b).
+pkg-OV01 unchanged=True

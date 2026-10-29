@@ -1,0 +1,16 @@
+{
+ "result": "IGUAL",
+ "checks": 117,
+ "findings": [],
+ "analysisInputFingerprint": "73635936b33b3a7c151f865729de02e52540366074bdae021d4d4a35ba5d13ea",
+ "packageFolder": "D:\\r65-smoke\\4a03b65b\\wr1-R20261029T1633Z\\pkg-OV01",
+ "capabilities": {
+  "version": "0.1.0",
+  "coreFunctions": 35
+ },
+ "tolerances": {
+  "relative": 1e-09,
+  "percent": 1e-09,
+  "axes": 1e-09
+ }
+}

@@ -1,0 +1,140 @@
+{
+ "validatorVersion": 2,
+ "package": "D:\\r65-smoke\\4a03b65b\\wr1-R20261029T1633Z\\ov08\\pkg-B",
+ "typedFolder": "D:\\r65-smoke\\4a03b65b\\wr1-R20261029T1633Z\\ov08\\pkg-B",
+ "expectedInputs": "D:\\r65-smoke\\4a03b65b\\expected-inputs.json",
+ "expectedInputsSha256": "13e8678f74c5355822a39b615f6acb72a0dfd09bf2f658decd34adae08e04e0f",
+ "result": "PASS",
+ "checks": [
+  {
+   "id": "V-01",
+   "result": "PASS",
+   "detail": "carpeta existe=True; archivos=['manifest.json', 'rackcad-ram-build.py', 'structural-loads.json']; esperados=['manifest.json', 'rackcad-ram-build.py', 'structural-loads.json']"
+  },
+  {
+   "id": "V-02",
+   "result": "PASS",
+   "detail": "carpetas temporales del publicador en la carpeta padre: []"
+  },
+  {
+   "id": "V-03",
+   "result": "PASS",
+   "detail": "tres archivos no vacios: {'manifest.json': 9599, 'rackcad-ram-build.py': 18190, 'structural-loads.json': 592}"
+  },
+  {
+   "id": "V-04",
+   "result": "PASS",
+   "detail": "manifest.json: UTF-8 estricto, JSON valido, sin BOM=True"
+  },
+  {
+   "id": "V-05",
+   "result": "PASS",
+   "detail": "files[] del manifiesto frente a los bytes reales: {'rackcad-ram-build.py': '72a8b52da1504fa78894d9c70562b79c2f165eeb91c63ad955d512446f4fec79', 'structural-loads.json': '25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05'}"
+  },
+  {
+   "id": "V-06",
+   "result": "PASS",
+   "detail": "loadsFile={'name': 'structural-loads.json', 'sha256': '25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05'}; bytes del paquete 25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05; archivo de cargas aprobado 25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05"
+  },
+  {
+   "id": "V-07",
+   "result": "PASS",
+   "detail": "structural-loads.json identico byte a byte al archivo de cargas aprobado (D:\\r65-smoke\\4a03b65b\\inputs\\ref-cant-01.loads.json)"
+  },
+  {
+   "id": "V-08",
+   "result": "PASS",
+   "detail": "packageFolder='D:\\\\r65-smoke\\\\4a03b65b\\\\wr1-R20261029T1633Z\\\\ov08\\\\pkg-B'; tecleada='D:\\\\r65-smoke\\\\4a03b65b\\\\wr1-R20261029T1633Z\\\\ov08\\\\pkg-B'; carpeta real='D:\\\\r65-smoke\\\\4a03b65b\\\\wr1-R20261029T1633Z\\\\ov08\\\\pkg-B'"
+  },
+  {
+   "id": "V-09",
+   "result": "PASS",
+   "detail": "schema=rackcad-ram-build-manifest/v1 adapter={'name': 'rackcad-ram-elements-adapter', 'version': '1.0.0'} target={'product': 'RAM Elements', 'productVersion': '26.00.01.015', 'productVersionStatus': 'declared, not verified', 'package': 'ramelements', 'packageVersion': '0.1.0', 'units': 'LB_IN'}"
+  },
+  {
+   "id": "V-10",
+   "result": "PASS",
+   "detail": "source={'rackId': '973e7734-7005-4c06-aa03-9f7b9ad6afc9', 'kind': 'Cantilever', 'stationIndex': 0, 'sourceFingerprint': '2fb3c99f8f23e2afa08136fc8e92ec8897b049a3c3185fa583c65d3199f8f872', 'generatorVersion': 'rackcad-structural-model/1'}; analysisInputFingerprint=f69400f658bea7b74a59d5cd963e05a777641a821c19206706e8ec689b6d15eb"
+  },
+  {
+   "id": "V-11",
+   "result": "PASS",
+   "detail": "carpeta efectiva='D:\\\\r65-smoke\\\\4a03b65b\\\\wr1-R20261029T1633Z\\\\ov08\\\\pkg-B'; manifiesto='D:\\\\r65-smoke\\\\4a03b65b\\\\wr1-R20261029T1633Z\\\\ov08\\\\pkg-B'; tecleada='D:\\\\r65-smoke\\\\4a03b65b\\\\wr1-R20261029T1633Z\\\\ov08\\\\pkg-B'; ruta real='D:\\\\r65-smoke\\\\4a03b65b\\\\wr1-R20261029T1633Z\\\\ov08\\\\pkg-B'; huella efectiva=f69400f658bea7b74a59d5cd963e05a777641a821c19206706e8ec689b6d15eb; fallidas=ninguna"
+  },
+  {
+   "id": "V-12",
+   "result": "PASS",
+   "detail": "readback={'name': 'ram-readback.json', 'repeatsAnalysisInputFingerprint': True}"
+  },
+  {
+   "id": "V-13",
+   "result": "PASS",
+   "detail": "filas del manifiesto frente a la tabla distribuida: ['AISC-HSS-RECT-HSS4X4X_250 todo igual', 'AISC-W-W12X26 todo igual']"
+  },
+  {
+   "id": "V-14",
+   "result": "PASS",
+   "detail": "mapping.rowsSha256=54ca9f6c80376d857755e68fc16d7de58a771b52cb0a0b7fa452a5df6191c98c; calculado con el DLL sobre la tabla distribuida=54ca9f6c80376d857755e68fc16d7de58a771b52cb0a0b7fa452a5df6191c98c"
+  },
+  {
+   "id": "V-15",
+   "result": "PASS",
+   "detail": "verifiedBy en bytes UTF-8 (<redactado: hex UTF-8 del verificador>) presente 2 veces sin escapes \\u ni caracteres de sustitucion"
+  },
+  {
+   "id": "V-16",
+   "result": "PASS",
+   "detail": "supuestos del piloto registrados: 7; advertencia presente"
+  }
+ ],
+ "facts": {
+  "manifest.json": {
+   "bytes": 9599,
+   "sha256Bytes": "7c8d9ca34528fe9f2edca31f1f891dc229242a03f9bfb1a6c9f950591507f632",
+   "hasCR": false,
+   "bom": false,
+   "sha256NormalizedLF": "7c8d9ca34528fe9f2edca31f1f891dc229242a03f9bfb1a6c9f950591507f632"
+  },
+  "rackcad-ram-build.py": {
+   "bytes": 18190,
+   "sha256Bytes": "72a8b52da1504fa78894d9c70562b79c2f165eeb91c63ad955d512446f4fec79",
+   "hasCR": false,
+   "bom": false,
+   "sha256NormalizedLF": "72a8b52da1504fa78894d9c70562b79c2f165eeb91c63ad955d512446f4fec79"
+  },
+  "structural-loads.json": {
+   "bytes": 592,
+   "sha256Bytes": "25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05",
+   "hasCR": false,
+   "bom": false,
+   "sha256NormalizedLF": "25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05"
+  },
+  "assumptions": {
+   "sha256": "ab580fafa69551a1be49c0651bcbcf8468b91e7bd728e8d4f5dd196a23948818",
+   "warning": "These assumptions are hypotheses for transfer equivalence only; they are not a structural validation.",
+   "ids": [
+    "ASM-PROP-01",
+    "CON-01",
+    "IDL-NO-OFFSETS",
+    "LOD-01",
+    "SUP-01",
+    "SUP-02",
+    "SUP-03"
+   ],
+   "exclusions": [
+    "The base, the plates, the gussets, the spacers, the bracing and the round bars are not modelled as elements (SUP-02, IDL-06, CD-I65-F1-14).",
+    "No self weight, no load combinations, no nodal loads, no distributed loads and no local loads.",
+    "No springs, no rigid end offsets and no releases (D-02, D-09)."
+   ]
+  },
+  "manifest_values": {
+   "rackId": "973e7734-7005-4c06-aa03-9f7b9ad6afc9",
+   "sourceFingerprint": "2fb3c99f8f23e2afa08136fc8e92ec8897b049a3c3185fa583c65d3199f8f872",
+   "generatorVersion": "rackcad-structural-model/1",
+   "analysisInputFingerprint": "f69400f658bea7b74a59d5cd963e05a777641a821c19206706e8ec689b6d15eb",
+   "rowsSha256": "54ca9f6c80376d857755e68fc16d7de58a771b52cb0a0b7fa452a5df6191c98c",
+   "units": "LB_IN",
+   "packageVersion": "0.1.0"
+  }
+ }
+}

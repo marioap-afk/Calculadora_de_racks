@@ -1,0 +1,113 @@
+# W-R1a (I-65): copia las capturas de la sesion a la corrida; recorta lo identificable que no es necesario (barra de titulo con la cuenta de Autodesk, Explorador del usuario, barra de tareas).
+param([Parameter(Mandatory)][string]$ToolResults, [Parameter(Mandatory)][string]$Out)
+$ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.Drawing
+New-Item -ItemType Directory -Force -Path $Out | Out-Null
+function Src([string]$suffix) { $f = @(Get-ChildItem -LiteralPath $ToolResults -Filter "mcp-computer-use-blob-*-$suffix.jpg"); if ($f.Count -ne 1) { throw "captura ${suffix}: $($f.Count)" }; $f[0].FullName }
+function Copy1([string]$suffix, [string]$name) { Copy-Item -LiteralPath (Src $suffix) -Destination (Join-Path $Out $name) -Force }
+function Crop([string]$suffix, [string]$name, [int]$x, [int]$y, [int]$w, [int]$h) {
+  $img = [System.Drawing.Image]::FromFile((Src $suffix))
+  if ($x + $w -gt $img.Width -or $y + $h -gt $img.Height) { $iw = $img.Width; $ih = $img.Height; $img.Dispose(); throw "recorte fuera de ${suffix}: ${iw}x${ih}" }
+  $bmp = New-Object System.Drawing.Bitmap $w, $h
+  $g = [System.Drawing.Graphics]::FromImage($bmp); $g.DrawImage($img, (New-Object System.Drawing.Rectangle 0, 0, $w, $h), (New-Object System.Drawing.Rectangle $x, $y, $w, $h), [System.Drawing.GraphicsUnit]::Pixel)
+  $g.Dispose(); $img.Dispose(); $bmp.Save((Join-Path $Out $name), [System.Drawing.Imaging.ImageFormat]::Jpeg); $bmp.Dispose() }
+# AutoCAD a escala 0.5 (728x409): sin barra de titulo (cuenta), sin paleta de propiedades ni barra de tareas
+function Acad05([string]$s, [string]$n) { Crop $s $n 0 14 565 358 }
+# AutoCAD a escala 0.6 (874x491)
+function Acad06([string]$s, [string]$n) { Crop $s $n 0 16 678 430 }
+function Acad06P([string]$s, [string]$n) { Crop $s $n 0 16 874 430 }
+# Editor WPF a escala 1 (1456x819): solo la ventana del editor (el Explorador del usuario queda fuera)
+function Editor1([string]$s, [string]$n) { Crop $s $n 0 0 1157 610 }
+# Parte A
+Acad05 '1hadgz' 'A01-dibujo-nuevo-drawing1.jpg'
+Copy1 'nrqk90' 'A02-netload-dll-candidato-seleccionado.jpg'
+Copy1 'hsrixp' 'A03-aviso-seguridad-load-once.jpg'
+Copy1 'i4ndof' 'A04-ref-topologia.jpg'
+Copy1 '64tnsc' 'A05-ref-columna-base-w12x26.jpg'
+Crop 'w20k0l' 'A06-ref-brazo-hss4x4x1_4.jpg' 193 50 777 510
+Copy1 'rd4vnf' 'A07-ref-linea-resuelta-resumen.jpg'
+Acad05 'i4yuuv' 'A08-ref-vista-frontal-insertada.jpg'
+Copy1 'ihl472' 'A09-ov01-carpeta-tecleada.jpg'
+Copy1 'meofbc' 'A10-ov01-consola-valid.jpg'
+Copy1 'mapzyr' 'A11-ov02-cargas-tecleadas.jpg'
+Copy1 'j4janv' 'A12-ov02-carpeta-tecleada.jpg'
+Copy1 '6650i3' 'A13-ov02-consola-valid.jpg'
+Copy1 '5jmj5r' 'A14-ov04-cargas-tecleadas.jpg'
+Copy1 'a8zd9q' 'A15-ov04-carpeta-tecleada.jpg'
+Copy1 'k5voyr' 'A16-ov04-consola-valid.jpg'
+Editor1 'ocurv2' 'A17-ov03a-linea-doble-resuelta.jpg'
+Copy1 'sqxzly' 'A18-ov03a-cargas-tecleadas.jpg'
+Copy1 '11j02p' 'A19-ov03a-carpeta-tecleada.jpg'
+Copy1 '51tizh' 'A20-ov03a-consola-station-face-unsupported.jpg'
+Editor1 'yunwj4' 'A21-ov03b-linea-negy-resuelta.jpg'
+Copy1 'uz6zhy' 'A22-ov03b-cargas-tecleadas.jpg'
+Copy1 'voaeg1' 'A23-ov03b-carpeta-tecleada.jpg'
+Copy1 'c89dhe' 'A24-ov03b-consola-station-side-unsupported.jpg'
+Editor1 'c60plu' 'A25-ov03c-linea-pendiente-3-resuelta.jpg'
+Copy1 'jcgket' 'A26-ov03c-cargas-tecleadas.jpg'
+Copy1 '9l4ww6' 'A27-ov03c-carpeta-tecleada.jpg'
+Copy1 '9k0gyt' 'A28-ov03c-consola-arm-slope-unsupported.jpg'
+Copy1 'stzo70' 'A29-ov03d-brazo-canal-doble-c4x5_4.jpg'
+Editor1 'r1pamm' 'A30-ov03d-linea-resuelta.jpg'
+Copy1 'fcz8n1' 'A31-ov03d-cargas-tecleadas.jpg'
+Copy1 '1gjayx' 'A32-ov03d-carpeta-tecleada.jpg'
+Copy1 'gnazqu' 'A33-ov03d-consola-arm-arrangement-unsupported.jpg'
+Copy1 't5plz9' 'A34-ov03e-brazo-hss4x4x5_16.jpg'
+Editor1 'sw1uz0' 'A35-ov03e-linea-resuelta.jpg'
+Copy1 '6jjxaz' 'A36-ov03e-cargas-tecleadas.jpg'
+Copy1 '000ikh' 'A37-ov03e-carpeta-tecleada.jpg'
+Copy1 '70rkha' 'A38-ov03e-consola-material-row-missing.jpg'
+Copy1 'l5ei3r' 'A39-cierre-sin-guardar.jpg'
+# Incidencias
+Editor1 'w1y33b' 'I01-dialogo-columna-sin-foco-1700z.jpg'
+Crop '2756jn' 'I02-segunda-acad-arrancando.jpg' 240 120 393 248
+# Parte B (OV-08)
+Acad06 'yeetnx' 'B01-dibujo-nuevo-drawing1.jpg'
+Copy1 'ig9sn6' 'B02-netload-dll-candidato-seleccionado.jpg'
+Acad06 'l0yus3' 'B03-aviso-seguridad-load-once.jpg'
+Copy1 'oyvwub' 'B04-o801-rackcad-menu.jpg'
+Copy1 'bxgs2s' 'B05-o801-rackayuda-1.jpg'
+Copy1 'n6nvxa' 'B06-o801-rackayuda-2.jpg'
+Copy1 'cbii0r' 'B07-o801-rackayuda-3-sin-rackrampaquete.jpg'
+Copy1 '7bi1jc' 'B08-o802-columna-base.jpg'
+Copy1 'v5gybz' 'B09-o802-brazo.jpg'
+Copy1 'j2m6w5' 'B10-o802-resumen.jpg'
+Acad06 '28pw0h' 'B11-o802-frontal-insertado.jpg'
+Acad06P '0551nj' 'B12-o802-propiedades-bloque.jpg'
+Copy1 '4qdpsy' 'B13-o803-guid-editor.jpg'
+Acad06 '7h1zz6' 'B14-o803-actualizado-60.jpg'
+Acad06 'jj70t5' 'B15-o803-actualizado-48.jpg'
+Copy1 'k2z0jo' 'B16-o803-posicion-sin-cambios.jpg'
+Acad06 'kdeymb' 'B17-o804-lateral-insertada.jpg'
+Acad06 'b6bhdz' 'B18-o804-planta-insertada.jpg'
+Copy1 'n9nwgb' 'B19-o804-racklista-un-rack-tres-vistas.jpg'
+Copy1 'gwdspv' 'B20-o805-bom-editor.jpg'
+Copy1 'dlqxar' 'B21-o805-rackbomtotal.jpg'
+Copy1 'x8hhj1' 'B22-o806-cargas-tecleadas.jpg'
+Copy1 'm9ct09' 'B23-o806-carpeta-pkg-a.jpg'
+Copy1 'ks4mto' 'B24-o806-consola-valid-h1.jpg'
+Copy1 'xjc8zu' 'B25-o807-guardar-carpeta-corrida.jpg'
+Copy1 'kdmxsv' 'B26-o807-guardar-en-ov08.jpg'
+Copy1 'racysj' 'B27-o807-abrir-ov08.jpg'
+Acad06 'v88c90' 'B28-o807-reabierto-sin-avisos.jpg'
+Crop 'egh7do' 'B29-o808-editor-reabierto.jpg' 0 0 1157 610
+Copy1 'cjs7ry' 'B30-o808-componentes.jpg'
+Copy1 '9xak28' 'B31-o809-cargas-tecleadas.jpg'
+Copy1 '73a41f' 'B32-o809-carpeta-pkg-b.jpg'
+Copy1 'cxpjq9' 'B33-o809-consola-valid-h2.jpg'
+Copy1 'p5bt20' 'B34-o810-separacion-60.jpg'
+Acad06 'r9rlci' 'B35-o810-tres-vistas-redibujadas-qsave.jpg'
+Copy1 'ibsqzs' 'B36-o810-reabierto-60-persistido.jpg'
+Acad06 '13wj3d' 'B37-o810-vuelta-a-48.jpg'
+Acad06 'uj42q3' 'B38-o811-selectivo-insertado.jpg'
+Copy1 '3a6my5' 'B39-o811-consola-unsupported-selectivo.jpg'
+Copy1 'j28hzj' 'B40-o811-cancel-seleccion.jpg'
+Copy1 'oac96l' 'B41-o811-cancel-estacion.jpg'
+Copy1 'w2i8w0' 'B42-o811-cancel-cargas.jpg'
+Copy1 'ef1ho8' 'B43-o811-cancel-carpeta.jpg'
+Copy1 '4xnhhd' 'B44-o812-rackduplicar.jpg'
+Copy1 'xi4bhz' 'B45-o812-copy.jpg'
+Copy1 'ktstpb' 'B46-o812-racklista-tres-racks.jpg'
+Copy1 'mrk8v7' 'B47-o812-guid-duplicado.jpg'
+Acad06 'mrukbd' 'B48-o813-cierre-sin-guardar.jpg'
+Get-ChildItem -LiteralPath $Out -File | Measure-Object | ForEach-Object { 'capturas=' + $_.Count }
