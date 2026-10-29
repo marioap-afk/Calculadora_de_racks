@@ -1,0 +1,14 @@
+{
+  "Tool": "mcp__ccd_session_mgmt__get_usage",
+  "ObservedUtc": "2026-10-29T14:11:30Z",
+  "Plan": {
+    "status": "ok",
+    "plan": "Max",
+    "windows": [
+      {"label": "5-hour limit", "percentUsed": 3},
+      {"label": "Weekly · all models", "percentUsed": 3}
+    ],
+    "extraUsage": {"enabled": false}
+  },
+  "LimitWarning": false
+}

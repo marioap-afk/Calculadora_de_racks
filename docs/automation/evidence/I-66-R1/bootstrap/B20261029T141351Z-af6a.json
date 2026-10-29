@@ -1,0 +1,83 @@
+{
+  "Schema": "rackcad-binding/v1",
+  "BindingId": "B20261029T141351Z-af6a",
+  "UnitId": "I-66",
+  "Scope": "UNIT",
+  "TaskId": null,
+  "Role": "PRINCIPAL_COORDINATOR",
+  "ProtocolSet": "rackcad-protocol/I62",
+  "Actor": {
+    "AdapterId": "claude-desktop-session",
+    "InstanceId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+    "InstanceIdSource": "get_session(\"self\").sessionId",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Session": {
+    "AdapterId": "claude-desktop-session",
+    "SessionId": "local_f00c654e-0079-486a-99fc-575ebe82ca43",
+    "Assurance": "RUNTIME_OBSERVED"
+  },
+  "Cell": {
+    "CellId": "claude-desktop-session:claude-opus-5-5:Long-horizon",
+    "CatalogBlob": "166d978d114e635bbef67e295c2ec1da73af6d1f",
+    "AdapterId": "claude-desktop-session",
+    "Model": "claude-opus-5-5",
+    "EffortSemantic": "Long-horizon",
+    "EffortProvider": "xhigh"
+  },
+  "PreflightRef": {
+    "PreflightId": "P20261029T140445Z-717f",
+    "Location": {
+      "Kind": "CUSTODIED",
+      "Path": "docs/automation/evidence/I-66-R1/autoverificacion/preflight-1.json",
+      "Commit": "89166be5ba8cbd7484f2f4ca5f7e851859f2fb29",
+      "Blob": "b565c814f615caa0f78641db96f508f4ebc1d4c2"
+    },
+    "Sha256": "3f7b4b9c7761625893172d8430160582ff3251b051520ca03c7787bad3e89d06"
+  },
+  "Eligibility": {
+    "MeasuredInvocation": {
+      "State": "MEASURED",
+      "RunRef": "local_f00c654e-0079-486a-99fc-575ebe82ca43: operación de esta sesión con effort de cliente xhigh observada por get_session(\"self\") a las 2026-10-29T14:04:45.388Z (preflight P20261029T140445Z-717f), con lecturas, escrituras, git y push en la misma sesión"
+    },
+    "ConsumptionCovered": "MEASURED",
+    "CatalogVerifiedOn": "2026-09-30",
+    "Stale": false
+  },
+  "Independence": {
+    "Requirements": [],
+    "Satisfaction": []
+  },
+  "RejectedAlternatives": [
+    "codex-cli: decisiones de I-62 §105, punto 6 (sin Codex) y R1 excluye la ejecución delegada",
+    "codex-desktop-session: no es esta sesión; sin preflight de la unidad, el rol y la acción",
+    "claude-cli: no es una sesión de nivel superior que orqueste; sin preflight",
+    "claude-subagent: comparte la sesión de su padre; no puede ser el Principal; sin preflight"
+  ],
+  "RoutingReason": "routing.md §9 sobre §8 (PRINCIPAL_COORDINATION, CUSTODY): única candidata con preflight vigente para I-66/PRINCIPAL_COORDINATOR/CUSTODY (P20261029T140445Z-717f), con level, effort, remote-facts, introspection y repo-write en MATCH (ConfigurationStatus MATCH); celda claude-desktop-session:claude-opus-5-5:Long-horizon; catálogo model-catalog.md blob 166d978d114e635bbef67e295c2ec1da73af6d1f verificado el 2026-09-30, no STALE; consumo medido: get_usage (2026-10-29T14:11:30Z) informa plan Max, extraUsage deshabilitado y sin aviso de límite; conformidad del Owner para esta sesión como Principal A: decisiones de I-62 §106",
+  "EscalationConditions": [
+    "effort observado por debajo de Long-horizon: CUSTODY en BELOW_REQUIRED y STOP P-09 de CUSTODY (16.16)",
+    "cambio de un invalidador del preflight (host, versión o ruta del adapter, autenticación, huella, blob del catálogo o de routing.md): observación nueva, sin reconfiguración automática",
+    "aviso de límite de uso o de créditos: consumo no cubierto (P-10) y decisión del Coordinator",
+    "binding REJECTED en el G0 en sombra: sin Principal aceptado en la sombra; el trabajo directo de I-66 sigue por WORKFLOW"
+  ],
+  "CountersSnapshot": {
+    "Attempts": 0,
+    "CorrectionLaunches": [],
+    "BlockedReruns": [],
+    "RebaseRecoveries": [],
+    "Invocations": []
+  },
+  "Custody": {
+    "FromBindingId": null,
+    "CessionRunId": null
+  },
+  "Acceptance": {
+    "State": "PENDING",
+    "Basis": null,
+    "DecisionRef": null,
+    "AuthorizationRef": null,
+    "MaterializationCheck": null,
+    "Utc": null
+  }
+}

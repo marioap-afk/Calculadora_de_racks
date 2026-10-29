@@ -1,0 +1,116 @@
+schema: rackcad-automation-state/v2
+automation_state:
+  initiative: I-66
+  branch: fix/placedclone-copia-anotaciones
+  claim_id: e289db83-b7f7-4c6e-91c6-d2551e393055
+  current_phase: DISCOVERY
+  state: claimed
+  gate: none
+  attempts: 0
+  next_action: "Discovery de I-66 por trabajo directo (WORKFLOW e INITIATIVE_LIFECYCLE). En la sombra R1a: decisión G0 en sombra del Coordinator sobre la clasificación y el binding del Principal A, sin efecto sobre el trabajo directo"
+  last_evidence_commit: 89166be5ba8cbd7484f2f4ca5f7e851859f2fb29
+protocol:
+  set: rackcad-protocol/I62
+  effective_sha: 41ccfdcf692fb319bb7e8ff4de7edeaa4f1c5134
+  basis:
+    claim_id: e289db83-b7f7-4c6e-91c6-d2551e393055
+    claim_commit: e1cd88bfa515258e99b34ccad6bbaec837beff13
+    claim_parent_sha: bb0d5522e8411f66a51fdfb3f1f0d0514b737453
+    claim_parent_contains_effective: false
+    adoption_at: G0
+  g0_acceptance:
+    state: PENDING
+    decision: null
+custody:
+  record_version: 1
+  point: BOOTSTRAP
+  point_kind: null
+  last_rebase: null
+  rebase_history: []
+  principal:
+    state: HELD
+    binding:
+      path: docs/automation/evidence/I-66-R1/bootstrap/B20261029T141351Z-af6a.json
+      blob: 0d74802326123bcf9ae4f321f874fdcc5acaa3ca
+    acceptance:
+      state: PENDING
+      decision: null
+    preflight:
+      path: docs/automation/evidence/I-66-R1/autoverificacion/preflight-1.json
+      blob: b565c814f615caa0f78641db96f508f4ebc1d4c2
+    designation: null
+    since_record_version: 1
+  window:
+    seq: 0
+    state: CLOSED
+  task_intent: null
+  last_window: null
+  chains: []
+  unverified_commits: []
+counters:
+  correction_launches: []
+  blocked_reruns: []
+  rebase_recoveries: []
+  invocations: []
+execution_context:
+  adapter_id: claude-desktop-session
+  session_id: local_f00c654e-0079-486a-99fc-575ebe82ca43
+  reported_model: claude-opus-5-5
+  reported_effort: xhigh
+  observed_utc: 2026-10-29T14:04:45.388Z
+orchestration:
+  loop:
+    type: NONE
+    phase: NONE
+    instance_id: null
+    object: null
+    authorization: null
+    action_validity: null
+  next_action:
+    role: PRINCIPAL_COORDINATOR
+    action: AWAIT_COORDINATOR_DECISION
+    target: null
+    unit: I-66
+    gate: G0
+    task_id: null
+    required_inputs:
+      - path: docs/automation/decisions/I-66.md
+        blob: 5c6a57e82305ee95fcaa0b77f95d165032b4c29b
+    required_capabilities:
+      - PRINCIPAL_COORDINATION.level
+      - PRINCIPAL_COORDINATION.effort
+      - PRINCIPAL_COORDINATION.remote-facts
+      - PRINCIPAL_COORDINATION.introspection
+      - PRINCIPAL_COORDINATION.repo-write
+    required_independence: NOT_REQUIRED
+    invocation_permission: null
+    budget_remaining: {}
+    expected_output: "QU en sombra en un solo commit: entrada de decisiones de I-66 con los marcadores de G0 en sombra, Claim-Id y BootstrapRecordVersion 1; versión de B20261029T141351Z-af6a con Acceptance decidida; g0_acceptance y principal.acceptance transicionados con StateRef a esos blobs"
+    completion_condition: "decisión G0 en sombra del Coordinator en docs/automation/decisions/I-66.md con I62-CLASSIFICATION e I62-PRINCIPAL-BINDING: B20261029T141351Z-af6a, Claim-Id e289db83-b7f7-4c6e-91c6-d2551e393055 y BootstrapRecordVersion: 1"
+    stop_conditions:
+      - "registro en sombra (R1a): no autoriza ninguna acción que I-61 o WORKFLOW no autoricen"
+      - "P-15: sin contratos Controller/Worker ni delegaciones (R1 excluye la ejecución delegada)"
+      - "P-09: CUSTODY en BELOW_REQUIRED"
+      - codex-cli no se invoca (decisiones de I-62 §105, punto 6)
+    escalation_conditions:
+      - "I62-CLASSIFICATION: REJECTED: la sombra se detiene; I-66 sigue como unidad DIRECT_ONLY por WORKFLOW"
+      - "I62-PRINCIPAL-BINDING REJECTED: sin Principal aceptado en la sombra; observación y propuesta nuevas en un QU"
+  review_requests: []
+  findings: []
+  architect_budgets: []
+  budgets:
+    review_rounds: 0
+    logical_requests: 0
+    architect_launches: 0
+    transport_reruns: []
+    correction_rounds: 0
+    corrections_by_lineage: []
+    caps:
+      path: docs/AUTOMATION_PLAN.md
+      blob: 07b97bd3eef3a36bae3180bd7eb24b176b8049f0
+  reviewer_closures: []
+  escalation:
+    state: NONE
+    reason: null
+    required_decision: null
+  autonomy_gaps: []

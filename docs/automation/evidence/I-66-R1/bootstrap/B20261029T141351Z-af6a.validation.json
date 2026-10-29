@@ -1,0 +1,23 @@
+{
+  "BindingId": "B20261029T141351Z-af6a",
+  "File": "B20261029T141351Z-af6a.json",
+  "FileSha256": "93e91b3df98f7df69eaaff742d1a8d0906a4211203ef8628894f3c2e3bbff6ea",
+  "AuthorityRevision": "41ccfdcf692fb319bb7e8ff4de7edeaa4f1c5134",
+  "PowerShell": "7.6.9",
+  "Phase1": {
+    "Schema": "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+    "Blob": "13501476b775ca18c4c61ba3e1793796b51067d9",
+    "Command": "Test-Json -SchemaFile",
+    "Result": true,
+    "Detail": "True"
+  },
+  "Rules": "B1-B10 de README §14.2 por f3-mc.binding_disposition (blob 1bab344fe24339c322c53204c99649cb1c415371)",
+  "Disposition": "PENDING",
+  "FailedRules": [],
+  "Expected": {
+    "Disposition": "PENDING",
+    "FailedRules": []
+  },
+  "ValidatedUtc": "2026-10-29T14:13:53.000Z",
+  "Accepted": true
+}
