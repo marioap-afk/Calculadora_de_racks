@@ -1,0 +1,29 @@
+{
+  "BindingId": "B20261029T141351Z-af6a",
+  "File": "qu/B20261029T141351Z-af6a.json",
+  "FileSha256": "9bc99324ea709bfef5567c6269218bc6e8674d96d2c21dfc439736c8f0b0d1bb",
+  "AuthorityRevision": "41ccfdcf692fb319bb7e8ff4de7edeaa4f1c5134",
+  "PowerShell": "7.6.9",
+  "Phase1": {
+    "Schema": "docs/automation/agent-execution/schemas/binding.v1.schema.json",
+    "Blob": "13501476b775ca18c4c61ba3e1793796b51067d9",
+    "Command": "Test-Json -SchemaFile",
+    "Result": true,
+    "Detail": "True"
+  },
+  "Rules": "B1-B10 de README §14.2 por f3-mc.binding_disposition (blob 1bab344fe24339c322c53204c99649cb1c415371); B10 contra la versión PENDING docs/automation/evidence/I-66-R1/bootstrap/B20261029T141351Z-af6a.json",
+  "DecisionRef": {
+    "Path": "docs/automation/decisions/I-66.md",
+    "Blob": "b9b3488248cdb8ca4c99205bb82ae5578ed15c63",
+    "Commit": "3ef613bf7c47cfa7ab850d71a55b68a3bc6414ef",
+    "Marker": "I62-PRINCIPAL-BINDING: B20261029T141351Z-af6a ACCEPTED"
+  },
+  "Disposition": "ACCEPTED",
+  "FailedRules": [],
+  "Expected": {
+    "Disposition": "ACCEPTED",
+    "FailedRules": []
+  },
+  "ValidatedUtc": "2026-10-29T16:42:08.549Z",
+  "Accepted": true
+}
