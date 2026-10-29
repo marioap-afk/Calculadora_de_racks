@@ -37,7 +37,7 @@ requires_owner_validation: true
 automation:
   enabled: false
   auto_merge: false
-  max_attempts: 9
+  max_attempts: 11
 ---
 
 # I-65 — Structural Analysis Interop Foundation + RAM Elements Adapter

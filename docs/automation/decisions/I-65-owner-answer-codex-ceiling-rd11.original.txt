@@ -1,0 +1,8 @@
+Pregunta del Coordinator (chat de I-65, 2026-10-29, herramienta de preguntas del escritorio; cabecera «Techo Codex»):
+Corrección de mi estimación de `95aae3f1`: puse «+1 Codex» para R-D11, pero en I-65 cada cadena delegada consume 5 invocaciones de Codex: planificación, verificación y los controles nc1, nc2 y nc3. Así lo registran CD-I65-F1-02, F3-02, F4-02 y el contrato de F4-D. Con el techo de 54, nc3 sería la invocación 55. Habría un STOP por P-07 y no podría escribir en Git hasta terminar los controles (AUTOMATION_PLAN 16.4, paso 5), así que el gate no puede cerrarse. Con un solo Worker, un REWORK es STOP en cualquier caso. ¿Qué techo de Codex autorizas para el gate de R-D11?
+Opciones presentadas:
+- Codex 57 (Recomendado): 5 invocaciones para la cadena y 2 de reserva, solo para reemitir una planificación rechazada (P-03) o para una reverificación o un fallo de transporte. Workers sigue en 1: un REWORK es STOP. Attempts sigue en 11.
+- Codex 55: Exactamente la cadena. Cualquier reemisión o reverificación sería STOP por P-07.
+- Mantener 54: Ejecuto planificación, Worker, verificación, nc1 y nc2, y me detengo por P-07 antes de nc3, sin escribir en Git, hasta tu siguiente decisión.
+Respuesta del Owner (opción elegida):
+Codex 57 (Recomendado)

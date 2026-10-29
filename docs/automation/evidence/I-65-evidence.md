@@ -2897,3 +2897,26 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/decisions/I-65-owner-disposition-f7-acceptance-ready-preparation.original.txt` | `FEB8BD856C8EB3D72ECC4753B3517CEFC8DA3348A134F1590B5A88E9713AD5AE` |
 | `docs/initiatives/I-65-ready-preparation.md` | `35D162744FC6093080908D731F7DCAADAC1873B338C8739AF1A1D02418939964` |
 | `docs/initiatives/I-65-ov08-procedure.md` | `A3CEF322C9D8E20906715BAEAFBB2190D0366BD0E7CC121F0A0B44B67F08ACA7` |
+
+## 109. Decisiones de READY y preparación del gate correctivo R-D11 (2026-10-29T00:42:25Z)
+
+- Orden: decisiones §105. Lectura de solo lectura de `RackCad.Plugin.csproj`, `deploy/*.ps1`, `eng/ci/verify-autocad-references.ps1`,
+  `RackRamElementsCommands.cs`, la prueba de distribución y las guías (hechos RD11-F-01..09 del contrato del gate).
+- **Bundle previo sin tabla** (contrato del gate §3): `deploy/build-bundle.ps1 -Configuration Release -Output
+  D:\r65-smoke\rd11-before-95aae3f1\publish` desde `95aae3f1` con AutoCAD cerrado, de 00:37:03Z a 00:37:38Z: código 0; 24 archivos sin
+  `Contents/structural-analysis/`; verificador OK (153 comprobaciones); `test-verify-bundle.ps1` OK (10 casos); la tabla solo está suelta en la
+  carpeta de publicación (SHA-256 `FC3D91464AC48A15730661EFCD50ECB770114559C68BDEFAE67E0816972DB619`). Registros locales: `build-bundle.log`
+  `51F55566…9088`, `test-verify-bundle.log` `91C116EE…52BD`, inventario `EE32FE93…82FA` (CRLF; la copia versionada solo cambia el fin de
+  línea a LF).
+- `ApplicationPlugins` del usuario: existe y está **vacía**; la de todos los usuarios solo contiene `AcVBA2025.Bundle` (solo lectura).
+- Selección del filtro `FullyQualifiedName~RackCad.Tests.StructuralAnalysis` en `95aae3f1`: **1795**, todas superadas.
+- Controller: binario y `config.toml` de CD-I65-F4-109 → CD-I65-RG-07. Sin invocaciones de Codex, Workers, AutoCAD ni RAM en este registro.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-ready-decisions-autoloader-gate.original.txt` | `3EF9E3689C2806D05CD89F110932854B14F4F1FBB0000E97B55FCFDFB333EBEC` |
+| `docs/automation/decisions/I-65-owner-answer-codex-ceiling-rd11.original.txt` | `1176312CF3A3D3C2DE23DDF9DD33FEC96C369E1B6D9D679D6193DCF9F0A111B7` |
+| `docs/initiatives/I-65-rd11-autoloader-gate.md` | `13565A7DC34640A6D91BEB215AB9A2260745BDB2DC339C32BC742531255EC005` |
+| `docs/automation/evidence/I-65-rd11/bundle-before-95aae3f1-inventory.txt` | `A293F51EE4511C17233E2DE6A4C7BA5B7C806A0848D44939CA89D66C366C00D1` |
+| `docs/initiatives/I-65-interop-analisis-estructural.md` | `E2AA09A72194EB7A59C6C19575385EE1BED329FFA2426A333205CA161FFD8625` |

@@ -1,0 +1,94 @@
+I-65 — OWNER DISPOSITION
+READY Decisions / Autoloader Correction Gate
+He revisado la preparación de READY registrada en `95aae3f1`, con CI 40780532934, 4/4 satisfactorio.
+1. Decisión general
+READY DECISIONS = APPROVED AS SPECIFIED BELOW.
+R-D11 = OPTION B — CORRECT AUTOLOADER DISTRIBUTION.
+Autorizo preparar y ejecutar un gate correctivo delimitado antes de READY, exclusivamente para garantizar que la tabla verificada de secciones y materiales se distribuya con el Autoloader soportado.
+No autorizo todavía declarar READY, crear el Candidato final ni integrar I-65.
+2. Decisiones R-D1..R-D10
+
+* R-D1: I-65 integra antes de I-64, sujeto a verificar el estado real de `main` y de ambas iniciativas antes de la integración.
+* R-D2: reutilizar los volcados manuales verificados para OV-01 y OV-02, bajo igualdad de especificaciones e identidades. No reutilizar readbacks automáticos.
+* R-D3: mantener la opción 0 de trazabilidad operativa de sesión, con sus limitaciones.
+* R-D4: aceptar el modelo manual introducido mediante Computer Use como evidencia de equivalencia de mecanismos de entrada, no como validación independiente de ingeniería.
+* R-D5: opción 1 para sus tres apartados: medición uniforme de bases RAM, contraste readback-volcado después del cierre y un proceso nuevo de RAM por ventana, con cierre ante STOP de licencia.
+* R-D6: opción 1. Corregir la herramienta de captura para independizarla de la página de códigos, sin alterar código de producto ni evidencias históricas.
+* R-D7 / C-5: opción A. No solicito notificaciones voluntarias por ahora. Esta decisión no sustituye ninguna obligación legal o contractual que pueda existir.
+* R-D8: opción A. Diferir la inclusión de `RACKRAMPAQUETE` en RACKAYUDA, sin enmienda A-n.
+* R-D9: aprobar la preparación de OV-I65-08 conforme al procedimiento versionado, incluido el guardado y reapertura del DWG desechable. La ejecución real requiere autorización posterior.
+* R-D10: ampliar el techo de presupuesto conforme al punto 5.
+
+Mantén las limitaciones aceptadas A65-F4R-07, DIF-01 y edición formal del catálogo RAM = UNKNOWN. No conviertas esos diferimientos en afirmaciones de validación estructural.
+3. R-D11 — Corrección del Autoloader
+R-D11 IMPLEMENTATION = AUTHORIZED WITHIN DEFINED SCOPE.
+Alcance permitido:
+
+1. Incorporar la tabla aprobada de secciones y materiales al bundle Autoloader.
+2. Ajustar la lista permitida de `verify-bundle.ps1` exclusivamente para admitir esa tabla en su ruta correcta.
+3. Exigir identidad exacta contra la tabla fuente aprobada.
+4. Actualizar `test-verify-bundle.ps1` con controles positivos y negativos.
+5. Actualizar las pruebas de distribución que actualmente impiden incluirla.
+6. Actualizar documentación estrictamente necesaria.
+
+No modificar el contenido de la tabla ni sus filas `verified`.
+No modificar mapeos, unidades, tolerancias, modelo neutral, adaptador RAM ni comandos de producto.
+No ampliar el alcance a RACKAYUDA.
+Según la evaluación presentada, esta corrección no altera elementos congelados y no requiere A-n. Si aparece una modificación al Freeze, STOP.
+4. Gate correctivo
+Ejecuta el protocolo de implementación aplicable:
+
+* Revisión de alcance y límites.
+* RED con pruebas que reproduzcan el defecto de distribución.
+* GREEN con la corrección mínima.
+* Pruebas positivas y negativas del verificador del bundle.
+* Publicación local del Autoloader en carpeta desechable.
+* Comprobación de inclusión, ruta e identidad de la tabla.
+* Core Full y UI Full.
+* Builds correspondientes.
+* CI del SHA exacto.
+* Revisión independiente del Architect.
+* Conformidad del Coordinator.
+* Registro formal del gate correctivo.
+
+No sustituyas una prueba real del Autoloader por una prueba de NETLOAD. Si la aceptación exige probar el bundle dentro de AutoCAD, prepara esa ejecución y solicita autorización de host por separado.
+5. Presupuesto
+Autorizo elevar los techos de I-65 a:
+
+* Codex: 54 invocaciones máximas, desde 50 consumidas.
+* Attempts: 11 máximos, desde 7 consumidos.
+* Workers de implementación: máximo 1 para el cambio R-D11.
+
+Esta ampliación es un techo, no una instrucción de consumir todos los recursos.
+Prioriza la corrección mínima. Ante defectos no previstos, conflictos o ampliación de alcance, detente y presenta la decisión correspondiente.
+6. Custodia y regresión
+Mantén el control de hashes contra los blobs reales del repositorio.
+Documenta la diferencia entre:
+
+* Bundle previo sin tabla.
+* Bundle corregido con tabla.
+* Rechazo de tablas alteradas o rutas no autorizadas.
+* Comportamiento del comando bajo el mecanismo de distribución soportado.
+
+No reescribas historial ni modifiques evidencias de F4, F5 o F7.
+7. READY
+Después del gate correctivo, prepara:
+
+1. La conciliación de READY-01..09.
+2. El nuevo SHA de producto.
+3. Un Candidato final propio con las decisiones materiales incorporadas.
+4. La matriz OV-I65-01..08.
+5. El procedimiento de las ventanas W-R1 y W-R2.
+6. El presupuesto remanente y los riesgos de integración.
+
+No declares automáticamente el Candidato final ni READY.
+8. Restricciones
+F7 = CLOSED / GATE PASS.
+R-D11 CORRECTIVE GATE = AUTHORIZED.
+RACKAYUDA CHANGE = NO.
+READY PREPARATION = AUTHORIZED.
+READY EXECUTION = NO.
+AUTOCAD / RAM EXECUTION = NO.
+FINAL CANDIDATE DECLARATION = NO.
+INTEGRATION = NO.
+Procede con el gate correctivo bajo el alcance y presupuesto establecidos. Presenta su resultado y detente antes de cualquier validación real de host o declaración de READY.
