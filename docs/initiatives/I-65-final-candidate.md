@@ -16,14 +16,21 @@ decisiones [§111-§112](../automation/decisions/I-65.md)).
 
 ## 1. Frontera del Candidato
 
-- **SHA propuesto:** el commit que registra este documento y las decisiones §111-§112. Su SHA exacto consta en la evidencia posterior
-  (§114 de la evidencia y siguientes); un commit no puede contener su propio SHA.
+- **SHA propuesto:** el commit que registra la versión vigente de este documento y las decisiones §111-§114. Su SHA exacto consta en la
+  evidencia posterior (§116 y siguientes); un commit no puede contener su propio SHA.
+- **Historia de la ronda:**
+  - el primer SHA propuesto fue `507806bf` (decisiones §111-§112), con READY-05 en `ba4494b2`;
+  - el Architect lo declaró NON-CONFORMING por A65-FC-01 (REQUIRED: el oráculo de HB-02 decía 158 comprobaciones y son 160 con
+    `-BaselineInventoryPath`);
+  - la corrección, solo documental, crea el SHA propuesto vigente y reinicia READY-02 (LIFECYCLE §9);
+  - la evidencia de `507806bf` se conserva y no se traslada.
 - **Contiene:**
   - todas las disposiciones del Owner hasta §111, con A65-RD11-01 = A;
   - las cuatro correcciones documentales (§2.2);
   - el registro de READY-01..04;
   - la matriz OV-I65-01..08 con HB-01..05;
-  - los procedimientos completos de W-R1 y W-R2.
+  - los procedimientos completos de W-R1 y W-R2;
+  - la corrección de A65-FC-01 y las aclaraciones de A65-FC-02..13 (§114).
 - **Producto:** el árbol de `6a58c2b1` (GREEN de R-D11) en `src/`, `tests/`, `tools/`, `assets/`, `deploy/`, `eng/`, `.github/` y los
   archivos de build. Entre `6a58c2b1` y el SHA propuesto solo cambian `docs/`.
 - **Es propio:** no reutiliza `5a5ca577` (hito F4) ni `bd1fcf8a` (hito F5), ni la excepción documental de F4 (CD-I65-F4-178/184) ni
@@ -50,14 +57,14 @@ decisiones [§111-§112](../automation/decisions/I-65.md)).
 | ID | Estado | Base |
 |---|---|---|
 | READY-01 | **CUMPLE** | Freeze `I-65-proposal-v3.1.md` completo y sin A-n (`amendment_refs: []`). Diferimientos decididos por el Owner: A65-F4R-07, DIF-01 y la edición del catálogo de RAM (UNKNOWN) como limitaciones (§105); RACKAYUDA diferida sin A-n (R-D8 = A); F6 fuera del alcance (Q-O5). La tabla fuera del Autoloader quedó resuelta por R-D11 B (GATE PASS `f2ed2a7e`, aceptado en §111). RD11-OBS-01 (fin de línea) queda resuelta por A65-RD11-01 = A |
-| READY-02 | **CUMPLE en el SHA propuesto** | Gates cerrados: F1 (`4514a99a`), F3 (`1d8c713e`), F4 (`1e7d8fc2`), F5 (`45aaad6e`), F7 (`e8e6893c`) y R-D11 (`f2ed2a7e`). Decisiones R-D1..R-D11 y §111 versionadas; sin A-n. Documentos de producto listos: README, guía de I-65 y guía de despliegue, con las cuatro correcciones de §2.2. Las entradas de FOUNDATIONS están redactadas en [I-65-foundations-entry.md](I-65-foundations-entry.md) y se publican al integrar (LIFECYCLE §4.1) |
-| READY-03 | **CUMPLE en el SHA propuesto** | 0 REQUIRED abiertos; 0 discrepancias A; ninguna decisión material o del Owner pendiente sobre el contenido. A65-RD11-01 decidida (A, §111); C-5 decidida (A); R-D1..R-D11 decididas; HB-01..05 aprobada para READY (§111). Lo que queda del Owner son **actos posteriores** a READY (declaración, ventanas, Owner Validation e integración), no decisiones sobre el Candidato |
-| READY-04 | **CUMPLE** (preflight 2026-10-29T03:00:47Z; evidencia §114) | `git fetch origin` fresco: `origin/main` = `bb0d5522` = merge-base; 0 commits detrás; rama remota = HEAD local. No hace falta rebase. No hay cierre previo, así que la ruta R no aplica. R-D1: I-64 (`09f2f1c3`) sin integrar. **Se repite justo antes de declarar**: si `main` avanzó, rebase, SHA nuevo y READY desde 02 |
+| READY-02 | **CUMPLE en el SHA propuesto** | Gates cerrados: F1 (`4514a99a`), F3 (`1d8c713e`), F4 (`1e7d8fc2`), F5 (`45aaad6e`), F7 (`e8e6893c`) y R-D11 (`f2ed2a7e`). Decisiones R-D1..R-D11 y §111 versionadas, más §113 (READY-05 del primer SHA propuesto) y §114 (A65-FC-01..13 dispuestos); sin A-n. Documentos de producto listos: README, guía de I-65 y guía de despliegue, con las cuatro correcciones de §2.2. Las entradas de FOUNDATIONS están redactadas en [I-65-foundations-entry.md](I-65-foundations-entry.md) y se publican al integrar (LIFECYCLE §4.1) |
+| READY-03 | **CUMPLE en el SHA propuesto** | 0 REQUIRED abiertos: A65-FC-01, el único de la conformidad sobre `507806bf`, queda corregido en este SHA; 0 discrepancias A; ninguna decisión material o del Owner pendiente sobre el contenido. A65-RD11-01 decidida (A, §111); C-5 decidida (A); R-D1..R-D11 decididas; HB-01..05 aprobada para READY (§111). Lo que queda del Owner son **actos posteriores** a READY (declaración, ventanas, Owner Validation e integración), no decisiones sobre el Candidato |
+| READY-04 | **CUMPLE** (preflight 2026-10-29T03:00:47Z; evidencia §114) | `git fetch origin` fresco: `origin/main` = `bb0d5522` = merge-base; 0 commits detrás; rama remota = HEAD local. No hace falta rebase. No hay cierre previo, así que la ruta R no aplica. R-D1: I-64 (`09f2f1c3`) sin integrar. Número de ADR libre: `main` llega a 0049, I-64 usa 0047, I-62 usa 0048 y solo I-65 usa 0050 (A65-FC-09; evidencia §116). **Se repite justo antes de declarar:** fetch fresco; `origin/main` = merge-base; rama remota = punta; `git diff --name-only <SHA>..<punta>` solo en `docs/`; I-64 sin integrar; ADR 0050 libre; mismo SDK resuelto. Si `main` avanzó: rebase, SHA nuevo y READY desde 02 |
 | READY-05 | **Se evalúa sobre el SHA propuesto** (evidencia posterior) | Core Full y UI Full locales; builds Debug de UI y Plugin; build de la herramienta; publicación del bundle; CI `push` exacta 4/4 (§4) |
 | READY-06 | **Se evalúa sobre el SHA propuesto** (evidencia posterior) | Conformidad completa de Architect y Coordinator (§7) |
-| READY-07 | **Se evalúa sobre el SHA propuesto** | Árbol limpio; ningún cambio ni commit pendiente de producto (R-D8 A, R-D11 hecho); HEAD identificado |
+| READY-07 | **Se evalúa sobre el SHA propuesto** | Árbol limpio; ningún cambio ni commit pendiente de producto (R-D8 A, R-D11 hecho); HEAD identificado. Se lee como «Candidato = el SHA propuesto; la punta de la rama solo añade `docs/`» |
 | READY-08 | **CUMPLE en el SHA propuesto** | Matriz de §6 completa: OV-I65-01..08 asignadas a I-65 por el Freeze §5 y preparadas para el SHA final; ninguna retirada; HB-01..05 se añade como complemento aprobado por el Owner |
-| READY-09 | **Se evalúa sobre el SHA propuesto** | Acuerdo exacto: blob `11062a91` (commit `3872fcc0`); commit de Freeze `a9d7080b` con solo la línea `Frozen` (blob `4e6e1feb`); Freeze único e inmutable desde entonces; diff permitido; compatibilidad de fuente V1; secuencia de A-n vacía. Comprobación preliminar en la preparación: sin hallazgos |
+| READY-09 | **Se evalúa sobre el SHA propuesto** | Acuerdo exacto: blob `11062a91` (commit `3872fcc0`); commit de Freeze `a9d7080b` que cambia solo las tres líneas de cabecera enumeradas en el acuerdo, Estado, `Frozen` y Coordinator/Architect (blob `4e6e1feb`; A65-FC-07); Freeze único e inmutable desde entonces; diff permitido; compatibilidad de fuente V1; secuencia de A-n vacía. Comprobación preliminar en la preparación: sin hallazgos |
 
 `FINAL_CANDIDATE_SHA` se fija solo cuando READY-05..09 consten sobre el SHA propuesto **y** el Owner lo declare.
 
@@ -179,7 +186,7 @@ Los dos se midieron en disco el 2026-10-29 (evidencia §114) y coinciden con lo 
 | 1 | Evidencia sobre el SHA propuesto (§4), READY-05..09 y conformidades | LIFECYCLE §8-§9 |
 | 2 | **Declaración de `FINAL_CANDIDATE_SHA` por el Owner** (§10), con un fetch fresco inmediatamente antes (READY-04) | guía manual §7.1 |
 | 3 | W-R1 y W-R2 con autorización de cada ventana; Owner Validation firmada por el Owner | procedimientos; guía §7 |
-| 4 | **Cierre documental** (commit nuevo, solo `docs/`, sin agruparse con el Candidato): HANDOFF §8-§12; ROADMAP `integrada (fecha)`; entradas de FOUNDATIONS publicadas; contrato de la iniciativa; evidencia final. `git diff --name-only <Candidato>..HEAD` sin nada fuera de `docs/`, `README.md` y `CLAUDE.md`. Core Full y UI Full locales, más CI exacta del cierre | WORKFLOW §4.5.4, §11.4; AGENTS.md («Cierre documental de iniciativa») |
+| 4 | **Cierre documental** (commit nuevo, solo `docs/`, sin agruparse con el Candidato): HANDOFF §8-§12; ROADMAP `integrada (fecha)`; índice de ADR (`docs/adr/README.md`, ADR-0050); `docs/ideas-futuras.md` (A65-RD11-04 y 07, RACKAYUDA por R-D8, la guarda de `BuildStructuralModel` y la opción `-text` de la tabla); entradas de FOUNDATIONS publicadas con `Status: STABLE` literal y la base de verificación del Candidato; contrato de la iniciativa (`status`, §8 y §13, desactualizados); evidencia final (A65-FC-08). `git diff --name-only <Candidato>..HEAD` sin nada fuera de `docs/`, `README.md` y `CLAUDE.md`. Core Full y UI Full locales, más CI exacta del cierre | WORKFLOW §4.5.4, §11.4; AGENTS.md («Cierre documental de iniciativa») |
 | 5 | Fetch inmediatamente antes del merge. Si `main` avanzó: **ruta R** (conservar la ronda, rebasar, Candidato nuevo publicado solo, READY, conformidad, Full, CI y Owner Validation que correspondan, y cierre nuevo) | WORKFLOW §11.5 |
 | 6 | Merge `--no-ff` con primer padre = `origin/main`, sin `checkout` de `main` en el checkout principal (merge por plomería, como en integraciones anteriores); push de `main` | WORKFLOW §4.5.5 |
 | 7 | CI posterior al merge sobre `MERGE_SHA` (4 jobs y artefacto de cobertura) y cobertura del Candidato por `workflow_dispatch` | WORKFLOW §4.5.6-§4.5.7 |
@@ -227,7 +234,10 @@ Los dos se midieron en disco el 2026-10-29 (evidencia §114) y coinciden con lo 
   - DIF-01;
   - edición del catálogo de RAM UNKNOWN;
   - A65-F4R-07;
-  - RACKAYUDA diferida.
+  - RACKAYUDA diferida;
+  - R-D3: la trazabilidad de la sesión de RAM es operativa, no criptográfica;
+  - R-D4: el modelo manual introducido con Computer Use prueba la equivalencia de los mecanismos de entrada, no es una validación de
+    ingeniería independiente (A65-FC-10).
 
 ## 10. Decisiones pendientes y solicitud exacta para declarar el Candidato final
 
@@ -239,10 +249,10 @@ Los dos se midieron en disco el 2026-10-29 (evidencia §114) y coinciden con lo 
 4. Owner Validation.
 5. Integrar, como orden aparte.
 
-**Lecturas que el Owner puede revisar antes de declarar:**
+**Confirmaciones que forman parte de la declaración** (no son decisiones previas de READY-03; A65-FC-02):
 
 - la frontera de §1;
-- la lectura del oráculo de huella de HB-04 (§112).
+- la lectura del oráculo de huella de HB-04 (CD-I65-FC-13), porque el Owner aprobó esos oráculos (§111, condición 6).
 
 **Solicitud** (se completa con el SHA y la evidencia cuando READY-05..09 consten):
 
@@ -259,5 +269,7 @@ Los dos se midieron en disco el 2026-10-29 (evidencia §114) y coinciden con lo 
 > - **Hallazgos residuales:** <lista>.
 > - **Frontera:** confirmo que los commits posteriores a ese SHA solo registran evidencia, conformidades, la declaración, autorizaciones e
 >   informes de ese SHA exacto, sin cambiar producto, Freeze, tabla, tolerancias, oráculos, matriz ni procedimientos.
+> - **HB-04:** reconozco la lectura CD-I65-FC-13. La huella de entrada incluye la identidad del rack. HB-04 (a) compara la huella sobre
+>   el mismo rack (copia del DWG de OV-08) y HB-04 (b) ejecuta el paso aprobado con REF-CANT-01 nuevo y la carga útil 117/117.
 > - **Lo que no cubre la declaración:** las ventanas (W-R1, que incluye OV-08 y HB-01..05, y W-R2) y la integración siguen pendientes de
 >   autorizaciones separadas.

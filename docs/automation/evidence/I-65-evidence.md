@@ -3117,3 +3117,28 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-ready/candidate-507806bf/tools/fc-identity.ps1.txt` | `9340256715E4B2C0DCF9FE6117F93ACA9DB5C8535C19A9F9001A2B64DF2C723C` |
 | `docs/automation/evidence/I-65-ready/candidate-507806bf/tools/bundle-evidence.ps1.txt` | `E728C88AA41EDE81CA39DA5F62011DD81720132434F28686AA024537DEC24CCC` |
 | `docs/automation/evidence/I-65-ready/candidate-507806bf/tools/README.txt` | `9D87BF80CCD89B568A2E1414D0C518C35F89CD6FA37BA9C7CFC40D1A5D65E634` |
+
+## 116. READY-06 ronda 1 sobre `507806bf` y corrección documental (2026-10-29T03:53:57Z)
+
+- **Revisión del Architect:** 2026-10-29T03:29:21Z..2026-10-29T03:49:46Z (subagente opus, solo lectura).
+  - Informe: `I-65-ready/architect-ready06-r1-conformance.md`; prompt: `architect-ready06.prompt.md`.
+  - K5: `9E86A4CA26F2598748B0F1E38A86D181B07CEF242E8C48545CBDFD277DEB4269`, 98 usos de herramientas, todos los contadores en 0.
+  - K1/K2: 1 SIGNAL; la punta de I-62 avanzó en su propio worktree, limpia e igual a su remota (sin STOP).
+- **Medición en seco de HB-02 (1)**, de solo lectura, sobre `D:\r65-smoke\507806bf\bundle\` (`verify-bundle.ps1 -BaselineInventoryPath`):
+  - exit 0, `160 comprobaciones`;
+  - «Reproducibilidad: … coinciden»;
+  - inventario `ec416e3b…`.
+- **Preflight de READY-04 repetido (2026-10-29T03:53:58Z):** `origin/main` = `bb0d5522` = merge-base; la rama remota = `ba4494b2`; I-64 sin integrar.
+  - Números de ADR (A65-FC-09): main hasta 0049 (sin 0047 ni 0048); I-64 añade 0047; I-62 añade 0048; rackmirror ninguno nuevo; solo I-65 usa 0050.
+- Sin AutoCAD, RAM, NETLOAD ni Codex; `ApplicationPlugins` del usuario sigue vacía.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-ready/architect-ready06.prompt.md` | `92BB3D60C7FB053B740245BD4890E7070D03AFD81CD950B67D3242BFCE907498` |
+| `docs/automation/evidence/I-65-ready/architect-ready06-r1-conformance.md` | `A08DBFF7E3D367FD1456FD554CFAAAFB69C6BA94D24A2AB5F717F9C5F7DFD104` |
+| `docs/automation/evidence/I-65-ready/architect-ready06-r1-k5-transcript-scan.json` | `2F6DD78DC2A5DD4591589A7B8AF09C6F3AF58F1D1AEB0DB89882A21FC79E7874` |
+| `docs/automation/evidence/I-65-ready/hb02-dryrun-verify-507806bf.txt` | `BA00563F2729688AA2297E8DD54131458D05F6D6AC72029C164CAC9353BBD8AA` |
+| `docs/initiatives/I-65-final-candidate.md` | `D38F564A4F308575C14A59343E19FF30D9A935D164FC69C4B1B875804566DB6B` |
+| `docs/initiatives/I-65-ready-wr1-wr2-procedures.md` | `C6F440CF335A4F85996AE744398CB7E4CBBDC37B42DE7D357B1609A53C2DB734` |
+| `docs/initiatives/I-65-foundations-entry.md` | `1C986AB405FB69CEAE1DAFBC4AB92C8B2D21B80A270AC267EED48B1A81D1B88E` |

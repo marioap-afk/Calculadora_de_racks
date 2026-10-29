@@ -4,7 +4,9 @@
   por la conformidad de READY-06 ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1; [WORKFLOW](../WORKFLOW.md) §11.4).
 - **Fuente:** Freeze [Proposal V3.1](I-65-proposal-v3.1.md) §7 («Introduces» y «Extends») y
   [ADR-0050](../adr/0050-interoperabilidad-analisis-estructural.md) (aceptado). Verificadas contra el código del Candidato de hito F5
-  `bd1fcf8a` (producto = árbol de `51fc82f1`).
+  `bd1fcf8a` (producto = árbol de `51fc82f1`). El C# de `src/` no cambia hasta el Candidato final (producto = árbol de `6a58c2b1`:
+  R-D11 solo cambia la distribución), y READY-06 las revisa sobre él. Al publicarlas, la base de verificación pasa a ser
+  `FINAL_CANDIDATE_SHA` y `Status` se escribe literalmente `STABLE` (A65-FC-08).
 - **Condición de `STABLE`:** el registro exige ADR aceptado o Freeze **integrado**, código existente, pruebas identificables, autoridad y
   mutación coincidentes con el código, sin EXP-01 A abierta y con un punto de extensión declarado. Hoy faltan la integración en `main` y
   la conformidad de READY-06; hasta entonces, el estado es la propuesta para la publicación.
@@ -47,7 +49,7 @@ Mutation contract: sin exportacion parcial; nada se sobrescribe; el script de RA
 Extension point: un proveedor nuevo agrega su carpeta con traductor, fabrica de paquete y lectores, su comando en la lista de permiso y su propia guarda de identificadores (la guarda G1 vigente es especifica de RAM); un ensamblado propio solo si trae una dependencia binaria (ADR-0050 D4).
 Decision source: [ADR-0050](adr/0050-interoperabilidad-analisis-estructural.md) Decisiones 4, 6 y 7; Freeze integrado de I-65 (D-01, D-06, D-07, D-08, D-09, D-13).
 Protecting tests: `StructuralAnalysisSourceGuardTests`, `StructuralAnalysisPluginCommandGuardTests`, `StructuralAnalysisPluginCommandProductTableTests`, `StructuralAnalysisRamElementsGuardTests`, `StructuralAnalysisRamElementsHardeningGuardTests`, `StructuralAnalysisRamElementsPackageGoldenTests`, `StructuralAnalysisRamElementsPackageManifestTests`, `StructuralAnalysisRamElementsPackagePayloadTests`, `StructuralAnalysisRamElementsPackageTemplateTests`, `StructuralAnalysisRamElementsPackageValidationTests`, `StructuralAnalysisRamElementsPackageWriterTests`, `StructuralAnalysisRamElementsDumpReaderTests`, `StructuralAnalysisRamElementsDumpTemplateTests`, `StructuralAnalysisRamElementsMapReaderTests`, `StructuralAnalysisSectionMapVerifiedTests`, `StructuralAnalysisRamElementsAxesTests`.
-Known limitations: la tabla no tiene atributo `-text`, asi que en un checkout de Windows con conversion de fin de linea la copia junto al DLL y la del bundle llevan CRLF (el contenido del blob aprobado salvo el fin de linea; el verificador del bundle compara con la fuente del checkout de compilacion; las huellas se calculan sobre filas canonicas; RD11-OBS-01); API `ramelements` 0.1.0 (puerta de capacidad); propiedades de seccion y material no legibles por la API (NOT_EVALUATED; dependen de la firma de ingenieria D-09 de F4-D); edicion formal del catalogo de RAM desconocida; el paso dentro de RAM es manual; la relacion volcado-sesion es operativa, no criptografica (A65-F4F-04).
+Known limitations: la tabla no tiene atributo `-text`, asi que en un checkout de Windows con conversion de fin de linea la copia junto al DLL y la del bundle llevan CRLF (el contenido del blob aprobado salvo el fin de linea; el verificador del bundle compara con la fuente del checkout de compilacion; las huellas se calculan sobre filas canonicas; RD11-OBS-01, aceptada por el Owner con A65-RD11-01 = A); API `ramelements` 0.1.0 (puerta de capacidad); propiedades de seccion y material no legibles por la API (NOT_EVALUATED; dependen de la firma de ingenieria D-09 de F4-D); edicion formal del catalogo de RAM desconocida; el paso dentro de RAM es manual; la relacion volcado-sesion es operativa, no criptografica (A65-F4F-04).
 Last changed by: I-65
 ```
 
