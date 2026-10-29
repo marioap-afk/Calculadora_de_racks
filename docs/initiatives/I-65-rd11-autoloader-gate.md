@@ -114,7 +114,7 @@ autorización de host aparte.
 | Paso | Acción | Oráculo |
 |---|---|---|
 | HB-01 | BASELINE del host con la herramienta de R-D6; K1/K2; AutoCAD y RAM cerrados; listado de las dos carpetas `ApplicationPlugins` | sin RackCad.bundle previo |
-| HB-02 | `pwsh deploy\install-bundle.ps1` con el bundle publicado del SHA validado (staging, respaldo y sustitución verificada) | `…\ApplicationPlugins\RackCad.bundle\Contents\structural-analysis\ram-elements\section-material-map.json` con SHA-256 `FC3D9146…B619` |
+| HB-02 | `pwsh deploy\install-bundle.ps1 -SourceBundlePath <bundle>` con el bundle publicado **y verificado** por `deploy\build-bundle.ps1` desde el SHA validado (staging, respaldo y sustitución verificada); se registra `git ls-files --eol` de la tabla en el checkout de compilación | `…\ApplicationPlugins\RackCad.bundle\Contents\structural-analysis\ram-elements\section-material-map.json` igual (SHA-256) a la fuente del checkout de compilación, y esa fuente igual al blob `d088e2a9` salvo el fin de línea: `FC3D9146…B619` con LF o `B22F7D9D…2E7D` con CRLF (A65-RD11-02; decisión del Owner sobre A65-RD11-01) |
 | HB-03 | Abrir AutoCAD **sin** NETLOAD | los módulos de `acad.exe` incluyen `RackCad.Plugin.dll` desde `ApplicationPlugins\RackCad.bundle\Contents` |
 | HB-04 | `RACKCANTILEVER` con REF-CANT-01; `RACKRAMPAQUETE` → estación 0, cargas de referencia, carpeta nueva fuera del repositorio | `Valid`, tres archivos, huella de entrada igual a la del DLL de compilación del mismo SHA |
 | HB-05 | Cerrar AutoCAD sin guardar; desinstalar (borrar `RackCad.bundle` de la carpeta del usuario); POST/DIFF; K1/K2 | carpeta del usuario vacía de nuevo; DIFF sin PROHIBIDO |

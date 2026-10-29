@@ -3005,3 +3005,24 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-rd11/bundle-after-efe7cc06-evidence.txt` | `E79DB15A5B3BFA5A3FD6FD30ED685C109337532422DA1DE7E9324D8B30093EF8` |
 | `docs/automation/evidence/I-65-rd11/red-harness-reproduction.txt` | `F851A298082849C9A92FF38E527CDFBBB1A3381074BC7A785FA98E0D7FBE77B4` |
 | `docs/automation/evidence/I-65-rd11/install-desechable.txt` | `B7BD1770BDA657756C7EA50048AB3CE51F7A29337C6C191DA4B8515EB5111C5E` |
+
+## 112. Gate R-D11 — revisión del Architect y conformidad de cierre (2026-10-29T01:34:30Z)
+
+- **Architect:** cesión 2026-10-29T01:21:47Z - 2026-10-29T01:32:48Z; K1/K2 sin cambios en el checkout principal ni en los demás worktrees;
+  K5: 52 llamadas, 0 intérpretes, 0 RAM/AutoCAD, 0 accesos fuera del worktree y 0 menciones del checkout
+  principal; primera orden `pwd`. Informe extraído de la transcripción (SHA-256 del texto original `D9911B144F1A40E1D156E30880A5078324D12DAF94FFB8FE7A9CC824DC0F57C0`); la
+  copia versionada solo cambia la cuenta de Windows por `<usuario>` (§90) y el fin de línea.
+- **Coordinator:** CONFORMING (`coordinator-rd11-conformity.md`).
+- **Diff del gate** (`95aae3f1..bf6ef110`): los siete archivos del alcance, tres documentos de la unidad y 50 archivos de
+  `docs/automation/`; Freeze `4e6e1feb`, ADR-0050 `c18def42` y tabla `d088e2a9` iguales en los dos extremos.
+- Sin AutoCAD, RAM ni Codex. Contadores: Codex 55/57; `attempts` 7/11; Workers 1/1.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-rd11/architect-rd11-conformance.md` | `961D4CA117575ED1F218EE3747361307F2FAD1117F17859C21D7B332F07E6978` |
+| `docs/automation/evidence/I-65-rd11/architect-rd11.prompt.md` | `1E84B3597C2C5A7AE7A5C9144C202B63712FAE82185D63651CD0C6B34682A6FC` |
+| `docs/automation/evidence/I-65-rd11/architect-rd11-k5-transcript-scan.json` | `B00E52FB2F1B45653B7B27F8EB4C7B140D41FAF51756552B77A59745547A3FC0` |
+| `docs/automation/evidence/I-65-rd11/coordinator-rd11-conformity.md` | `0C7752DD4BBFAFE34320973DBE893AB80297F33790BE19FD81152D7F3E134525` |
+| `docs/initiatives/I-65-rd11-autoloader-gate.md` | `855BC68D7C227BB8F21564BDFEB263A97ABB219B58EABAD55EA89952E74EAB1C` |
+| `docs/initiatives/I-65-foundations-entry.md` | `B298D8627657CB2953258F860E4FBA7FB45A23781F16DDEC980F49B9CF0B7A1D` |

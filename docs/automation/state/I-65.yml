@@ -3,11 +3,11 @@ automation_state:
   initiative: I-65
   branch: architecture/interop-analisis-estructural
   claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
-  current_phase: rd11-gate
+  current_phase: rd11-closing
   state: validating
   gate: R-D11 (gate correctivo previo a READY)
   attempts: 7
-  next_action: Coordinator: revision del Architect sobre el SHA de esta evidencia, conformidad y cierre del gate R-D11 (Full local, builds, publicacion del bundle y CI del SHA de cierre); despues preparacion de READY; sin AutoCAD ni RAM.
+  next_action: Coordinator: sobre el SHA de cierre del gate R-D11, arbol limpio, Core y UI Full, builds Debug y publicacion del bundle en carpeta nueva; push y CI; registro del GATE PASS en un commit posterior; despues preparacion de READY (sin ejecutarla).
   last_evidence_commit: 6a58c2b1891174bb5120f0e9e3fb8e13ed952832
 execution_context:
   mode: manual
