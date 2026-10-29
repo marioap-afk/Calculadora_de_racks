@@ -7,7 +7,7 @@ automation_state:
   state: validating
   gate: R-D11 (gate correctivo previo a READY)
   attempts: 7
-  next_action: Coordinator: evidencia local del bundle corregido (publicacion en carpeta desechable, identidad de la tabla, rechazos, lector), revision del Architect, conformidad y cierre del gate R-D11 (Full local y CI del SHA de cierre); sin AutoCAD ni RAM.
+  next_action: Coordinator: revision del Architect sobre el SHA de esta evidencia, conformidad y cierre del gate R-D11 (Full local, builds, publicacion del bundle y CI del SHA de cierre); despues preparacion de READY; sin AutoCAD ni RAM.
   last_evidence_commit: 6a58c2b1891174bb5120f0e9e3fb8e13ed952832
 execution_context:
   mode: manual

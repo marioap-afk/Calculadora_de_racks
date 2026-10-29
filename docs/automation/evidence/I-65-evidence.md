@@ -2985,3 +2985,23 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc3/R20261029T011319Z-0475/mutation.json` | `5F65BEED99D05447A22FE7A1001D5133776549D5780F43B0B5AEC13FF49E3668` | transitorio `DA1F3B8B5E00512B…`; fin de línea normalizado por Git |
 | `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc3/R20261029T011319Z-0475/controller-verification.json` | `F0BDE929C3070F9644C1216368CC7BF13ED083EF6997EECB41BE593D2BC8711B` | igual al transitorio |
 | `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc3/R20261029T011319Z-0475/relay-record.json` | `9FCD2C0379F40ED6D553CBDB2B1148C0E3902DA169E3C5500BC0B280F0F17D4A` | igual al transitorio |
+
+## 111. Gate R-D11 — evidencia local del bundle corregido (2026-10-29T01:20:38Z)
+
+- **Bundle previo** (§109): 24 archivos, sin tabla; verificador 153 comprobaciones; harness 10 casos.
+- **Bundle corregido** desde `efe7cc06` (01:17:43Z-01:19:09Z): 25 archivos; tabla `FC3D9146…B619` = blob `d088e2a9`; cambian solo los
+  cuatro DLL (ProductVersion `1.0.0+efe7cc06…`); verificador 158 comprobaciones; harness 14 casos; lector `Valid`, dos filas `verified`.
+  Registros locales: inventario `BA596653…B822`, `build-bundle.log` `43B10F61…9699`, `test-verify-bundle.log` `65C87C98…B5B1`.
+- **CI del GREEN** (40797712877, job del Plugin): la tabla del bundle de la CI es `b22f7d9d…2e7d` = el mismo blob con CRLF (RD11-OBS-01).
+- **RED del harness reproducido** (`red-harness-reproduction.txt`): código 1 en «valido».
+- **Instalación desechable** (`install-desechable.txt`): 25 archivos, tabla `FC3D9146…`, ruta del comando presente; `ApplicationPlugins`
+  vacía antes y después.
+- Sin AutoCAD, RAM ni Codex en esta evidencia.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-rd11/bundle-after-efe7cc06-inventory.txt` | `CFEBD510B135BB721A0BF767E9F1B4D0D6B7983D18A197AD769FCEE4433351A2` |
+| `docs/automation/evidence/I-65-rd11/bundle-after-efe7cc06-evidence.txt` | `E79DB15A5B3BFA5A3FD6FD30ED685C109337532422DA1DE7E9324D8B30093EF8` |
+| `docs/automation/evidence/I-65-rd11/red-harness-reproduction.txt` | `F851A298082849C9A92FF38E527CDFBBB1A3381074BC7A785FA98E0D7FBE77B4` |
+| `docs/automation/evidence/I-65-rd11/install-desechable.txt` | `B7BD1770BDA657756C7EA50048AB3CE51F7A29337C6C191DA4B8515EB5111C5E` |

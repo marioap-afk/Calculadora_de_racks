@@ -1,0 +1,9 @@
+Reproduccion independiente del RED del harness (sesion, 2026-10-29, sin AutoCAD)
+- harness del RED: git show 42b9dcdf:deploy/test-verify-bundle.ps1 (SHA-256 6D2867830557BDC4F6DEEB3836E4F724D190D9A1D269BDD740D56C44D7BBCC3B)
+- verificador de la base: git show 91f82d6d:deploy/verify-bundle.ps1 (SHA-256 956A25BBF7FFEEB69CD9D10BF7C150EDB0A122941EB12DBD1625E78329B87C52)
+- bundle: D:\r65-smoke\rd11-before-95aae3f1\publish\RackCad.bundle (bundle previo sin tabla, 95aae3f1)
+- orden: pwsh -NoProfile -File test-verify-bundle.red.ps1 -SourceBundle <bundle> -PublishDir <publish> -VerifyScript verify-bundle.base.ps1
+  -CatalogsSourceDir <worktree>\assets\catalogs -PropsPath <worktree>\Directory.Build.props
+- resultado: codigo 1; registro local red-harness.log SHA-256 64DD318C19A993EFB253119FB41A6D6FA0FEA853E87071C49EF51F856E0277D8
+- lineas de resultado (sin la ruta temporal del harness):
+  | Harness del verificador fallido. FALLO [valido]: el bundle fuente no contiene la tabla de secciones y materiales
