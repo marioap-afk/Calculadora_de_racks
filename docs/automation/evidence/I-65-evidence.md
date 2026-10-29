@@ -2920,3 +2920,68 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/initiatives/I-65-rd11-autoloader-gate.md` | `13565A7DC34640A6D91BEB215AB9A2260745BDB2DC339C32BC742531255EC005` |
 | `docs/automation/evidence/I-65-rd11/bundle-before-95aae3f1-inventory.txt` | `A293F51EE4511C17233E2DE6A4C7BA5B7C806A0848D44939CA89D66C366C00D1` |
 | `docs/initiatives/I-65-interop-analisis-estructural.md` | `E2AA09A72194EB7A59C6C19575385EE1BED329FFA2426A333205CA161FFD8625` |
+
+## 110. Gate R-D11 — cadena delegada `RD11-AUTOLOADER-TABLE` (2026-10-29T01:16:47Z)
+
+| RunId | Fase | Participante | Resultado |
+|---|---|---|---|
+| `R20261029T004516Z-bf20` | PLANNING (intento 7) | Codex `gpt-6-luna`/`high` (51) | A1-A8 `pass`; seis colecciones exactas; `claude-sonnet-5-5`/`high`, ROUTINE_IMPLEMENTATION |
+| `R20261029T004947Z-3d0f` | CONTROL nc4 | sin invocación | A3 `fail`, resto `pass`: oráculo cumplido |
+| `R20261029T005052Z-2be3` | WORK (intento 7) | subagente `claude-sonnet-5-5`/`high` (86 mensajes) | RED `42b9dcdf`, GREEN `6a58c2b1`; 57 llamadas; 0 errores; 0 denegaciones; ningún intérprete; `IMPLEMENTATION_COMPLETE` |
+| `R20261029T010523Z-2b56` | VERIFICATION | Codex `gpt-6-luna`/`high` (52) | **`EXECUTION_VERIFIED`/`NONE`**, 14/14 `pass`, `VerifiedSha` `6a58c2b1` |
+| `R20261029T010925Z-6184` | CONTROL nc1 | Codex `gpt-6-luna`/`high` (53) | `EXECUTION_BLOCKED/STOP`, `FailureClass` `Identity`: **oráculo cumplido** |
+| `R20261029T011102Z-2d41` | CONTROL nc2 | Codex `gpt-6-luna`/`high` (54) | `EXECUTION_BLOCKED/STOP`, `FailureClass` `Scope`: **oráculo cumplido** |
+| `R20261029T011319Z-0475` | CONTROL nc3 | Codex `gpt-6-luna`/`high` (55) | `EXECUTION_REWORK_REQUIRED/REWORK`, `FailureClass` `FreeText`: **oráculo cumplido** |
+
+- **CI:** RED `40797120699` (Core `failure` por aserción; Plugin `skipped` por `needs`); GREEN `40797712877` (4/4 `success`).
+- **Controles del Owner:** K1/K2 antes y después de cada cesión (planificación, trabajo, verificación y nc1-nc3) sin cambios en el checkout
+  principal (2151 rastreados, resumen `d0105e960dc69c52`) ni en los otros cinco worktrees; K3 primera orden `pwd`; K4 alcance mecánico
+  `pass` (7 archivos); K5 sin intérpretes, RAM, AutoCAD ni accesos de herramientas de archivo fuera del worktree, con la lectura de D1.
+- **Procesos:** en las entradas, `git.exe` ilegibles hijos de `claude.exe` (PID 25508, la app de escritorio) creados unos 3 s después
+  del fin de cada cesión y ya terminados al releerlos: falso P-02 conocido.
+- **Prompt del Worker:** SHA-256 normalizado `03A3A5CCEADFFC111E07C5CB92E2B1EE4D6D39344C336D5439FE92506C5E6213`; igual al primer mensaje de la transcripción
+  (`4DC39016C16037E5…`).
+- Custodia (columna 2: SHA-256 del blob del índice):
+
+| Archivo | SHA-256 | Procedencia |
+|---|---|---|
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T004516Z-bf20/gate-contract.json` | `FC0EAA80AB13CA0310517AE134DD3A654BFDABF867657AA869D1B22BBE52BF3B` | transitorio `7F2CB1142842510A…`; cuenta de Windows redactada como `<usuario>` (§90) |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T004516Z-bf20/prompt.md` | `DD6F468FAC4FB5180E9FA07D96FE0A26EE52E2E40E8E25A7263A83C044ECE03D` | transitorio `3647F1B56F33265A…`; cuenta de Windows redactada como `<usuario>` (§90) |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T004516Z-bf20/delegation.json` | `8D6FD7CBF849B587F57339B723CA9C5BF415486BCB0C84348C69B64DD963B44F` | transitorio `F89120B90A28B560…`; cuenta de Windows redactada como `<usuario>` (§90) |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T004516Z-bf20/acceptance.json` | `F63ED8E87F2A0609E93A3E525BE3432CAB092BCD7FFFC768091DF2BAC9D3ABF3` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T004516Z-bf20/exactness.json` | `F56C55C6395A9D1C516D5919407B9D019D89BB8834816223173A4DF0CACE031B` | transitorio `D0CBC2F19D9B1FBA…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T004516Z-bf20/relay-record.json` | `48672CCF927B3437B6AFF47529E9D7EB52292F1E1E1CECF551D1AFCC376B7D73` | transitorio `A919B66AF709F92E…`; cuenta de Windows redactada como `<usuario>` (§90) |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc4/R20261029T004947Z-3d0f/delegation.json` | `13908C04534830F1472FE3C493148E6F3BB1885CFC15ED6BE69DC2184013579A` | transitorio `13079193DD19B3A6…`; cuenta de Windows redactada como `<usuario>` (§90) |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc4/R20261029T004947Z-3d0f/acceptance.json` | `3E2CF552A67987E07980129A4EE22D159D58F513569A0045CE798E7181754755` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc4/R20261029T004947Z-3d0f/relay-record.json` | `5FA272BB92FDC7CC3B464442A8041AE0DE2127BAA983C9FB1C394EBA26DDE475` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T005052Z-2be3/prompt.md` | `51945EB35DA365FC413F6E1D6CAC4EFA45D8D794BD11BE2325E2559A2312F2A0` | transitorio `9A7609A0DEBFE66F…`; cuenta de Windows redactada como `<usuario>` (§90) |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T005052Z-2be3/worker-handoff.json` | `A8F78C4A94CA3B3CC129C8584006F7E07B2725797FEA43712185508B1C36A062` | transitorio `FD4957E004C0930A…`; cuenta de Windows redactada como `<usuario>` (§90) |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T005052Z-2be3/relay-record.json` | `B3ED0C328CDDD0AD45842B9294E85F8AD967A09EBB0E5B30EC17B947313A9454` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T005052Z-2be3/exit-reread.txt` | `4D4CB5A6CAB9228A64434A46370BDC3A98B195A2C497EABF8934F8B1B896A9CA` | transitorio `07CE93152A2DAA8E…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T005052Z-2be3/k5-transcript-scan.json` | `44643D65CBD124300B4F9905398959E891137FFCDC188804390605566E611AA5` | transitorio `B92418E522893B63…`; cuenta de Windows redactada como `<usuario>` (§90); fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T005052Z-2be3/transcript-facts.json` | `E8C7358C376635614931547B7625562645E9DA96735D52D26DCC71E6B2A571BD` | transitorio `EE9E89B6AB1E2522…`; cuenta de Windows redactada como `<usuario>` (§90); fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/prompt.md` | `372FD7B331D97B77DCB18C4B8B590416B31E7EBE23334C9575310AA0622C9438` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/controller-verification.json` | `8CDD8ADE784C5DFAD85BB41787E91D0C856DF0CE5484999E72BE235DA9CA7EC6` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/relay-record.json` | `30A66EA24A589642B049BD179DA7DB4FACEDF29B465A06E723F34E46154291A0` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/coherence.txt` | `C6435824E47A2C0A1A61F913841BC05CA88255BE84CB1DBCDF3598F463B5513F` | transitorio `B6BEA444F6DA957C…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/trx-summary.json` | `BBEE4F2D0E63C406458988F70D7B4EC6161EA0830E2E9EB7A7CFB533575F605A` | transitorio `BDCB3AED0347DF2D…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/scope-mechanical.json` | `E080A0992EAEB0AC2A1645703FA3826FD428DD4F0F8FF8442C16331A4D2A5C4C` | transitorio `D11BB350A507A5C8…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/coordinator-dispositions-rd11.md` | `42F4FE5359752C727CD31398C11ED92619E4344C7F7B043632B7B3D12A6E6182` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/k-rd11-plan-compare.json` | `D5EE2EED235905698403496486182D7D2DAAE04B62D3756F98020C9E5926FC04` | transitorio `C088C85BFA563FB0…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/k-rd11-work-compare.json` | `DF6C436C7747638247E65C74B7285FE4486607AD2B9C7C0B72F589B2B1EE4EE3` | transitorio `F3D22C24750E5A81…`; cuenta de Windows redactada como `<usuario>` (§90); fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/k-rd11-ver-compare.json` | `D5EE2EED235905698403496486182D7D2DAAE04B62D3756F98020C9E5926FC04` | transitorio `C088C85BFA563FB0…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/k-rd11-nc1-compare.json` | `D5EE2EED235905698403496486182D7D2DAAE04B62D3756F98020C9E5926FC04` | transitorio `C088C85BFA563FB0…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/k-rd11-nc2-compare.json` | `D5EE2EED235905698403496486182D7D2DAAE04B62D3756F98020C9E5926FC04` | transitorio `C088C85BFA563FB0…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE/R20261029T010523Z-2b56/k-rd11-nc3-compare.json` | `D5EE2EED235905698403496486182D7D2DAAE04B62D3756F98020C9E5926FC04` | transitorio `C088C85BFA563FB0…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc1/R20261029T010925Z-6184/prompt.md` | `097E98A0D4B3A98C5CFC8CDA49B0CAEB6715FE002A55F2D2EE34D2B258D7E172` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc1/R20261029T010925Z-6184/mutation.json` | `B1FF79964728752EDFA3428CC181C4C8707472AB4F3AC3FDEFE231818E73A4CC` | transitorio `971DD01393E01909…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc1/R20261029T010925Z-6184/controller-verification.json` | `F6A5664E679E0C1493AB44BC8EEAC2B595E5B3481DC5D331454CF4112915317C` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc1/R20261029T010925Z-6184/relay-record.json` | `56311AFE5D0F2C66DC16905DC404EBBB60F95AA9B7A41FEE8168BA569DAF538A` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc2/R20261029T011102Z-2d41/prompt.md` | `6C72E91FE4962F61B67BBCD03EEEA27A4D34B1219FE778650DBE24BE92AF44C9` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc2/R20261029T011102Z-2d41/mutation.json` | `1CF0D770D63FEEA46BD424A3F0BE864589FF4A10D8742093D51E6DB2EA2268A6` | transitorio `E494E9F647B6DC1B…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc2/R20261029T011102Z-2d41/controller-verification.json` | `4FC45886AF8D5A2D856B5B3E58BDA5E8AFEB58A20AC3671342DB9A881CACAD9E` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc2/R20261029T011102Z-2d41/relay-record.json` | `991319964E5D4E5C9183707FDF846E80295334EC9CDEBFDA012B6CBA69AFF9E0` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc3/R20261029T011319Z-0475/prompt.md` | `94C18B80B261F300058EECE34838FAB3F914FFF46B2A5F53CB7C869118E74E8D` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc3/R20261029T011319Z-0475/mutation.json` | `5F65BEED99D05447A22FE7A1001D5133776549D5780F43B0B5AEC13FF49E3668` | transitorio `DA1F3B8B5E00512B…`; fin de línea normalizado por Git |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc3/R20261029T011319Z-0475/controller-verification.json` | `F0BDE929C3070F9644C1216368CC7BF13ED083EF6997EECB41BE593D2BC8711B` | igual al transitorio |
+| `docs/automation/evidence/I-65-pilot/RD11-AUTOLOADER-TABLE-nc3/R20261029T011319Z-0475/relay-record.json` | `9FCD2C0379F40ED6D553CBDB2B1148C0E3902DA169E3C5500BC0B280F0F17D4A` | igual al transitorio |

@@ -1,0 +1,21 @@
+{
+ "field": "delegation.AllowedWriteScope",
+ "excluded": "README.md",
+ "from": [
+  "src/RackCad.Plugin/RackCad.Plugin.csproj",
+  "deploy/verify-bundle.ps1",
+  "deploy/test-verify-bundle.ps1",
+  "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs",
+  "README.md",
+  "docs/guias/despliegue.md",
+  "docs/guias/interoperabilidad-ram-elements.md"
+ ],
+ "to": [
+  "src/RackCad.Plugin/RackCad.Plugin.csproj",
+  "deploy/verify-bundle.ps1",
+  "deploy/test-verify-bundle.ps1",
+  "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs",
+  "docs/guias/despliegue.md",
+  "docs/guias/interoperabilidad-ram-elements.md"
+ ]
+}

@@ -1,0 +1,710 @@
+{
+ "Schema": "rackcad-relay-record/v1",
+ "TaskId": "RD11-AUTOLOADER-TABLE",
+ "RunId": "R20261029T005052Z-2be3",
+ "Attempt": 7,
+ "Phase": "WORK",
+ "Participant": {
+  "Kind": "subagent",
+  "Profile": "ROUTINE_IMPLEMENTATION",
+  "ModelRequested": "sonnet",
+  "EffortRequested": "high",
+  "ModelEffective": "claude-sonnet-5-5",
+  "EffortEffective": "high",
+  "EffectiveSource": "transcripcion del subagente agent-a60b6dc89b22731b0.jsonl: 86 mensajes con model claude-sonnet-5-5 (effort solicitado high en la invocacion)",
+  "EffectiveSourceSha256": "4DC39016C16037E512E16FE938ED725334B91AFF0C2B5FEE12D300DD3F6F29AA"
+ },
+ "Exit": {
+  "HeadSha": "91f82d6d83731f48d445c7ad007a814b65c6caa6",
+  "LsRemoteSha": "91f82d6d83731f48d445c7ad007a814b65c6caa6",
+  "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "CleanTree": true,
+  "GitOperationInProgress": false,
+  "SummaryCommitSha": "91f82d6d83731f48d445c7ad007a814b65c6caa6",
+  "ConfigTomlSha256": "0A9F6A344C965BE17650A2559601DB8768AE8DCFAC6BEB7DEEFC615AE4E7F550",
+  "ConfigTomlKeys": [
+   "model",
+   "model_reasoning_effort",
+   "service_tier",
+   "notify",
+   "[windows]",
+   "sandbox",
+   "[desktop]",
+   "keepRemoteControlAwakeWhilePluggedIn",
+   "reviewDelivery",
+   "followUpQueueMode",
+   "conversationDetailMode",
+   "ambient-suggestions-enabled",
+   "[desktop.open-in-target-preferences]",
+   "global",
+   "[desktop.open-in-target-preferences.perPath]",
+   "[marketplaces.openai-bundled]",
+   "source_type",
+   "source",
+   "[marketplaces.openai-primary-runtime]",
+   "source_type",
+   "source",
+   "[plugins.\"documents@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"spreadsheets@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"presentations@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"outlook-email@openai-curated\"]",
+   "enabled",
+   "[plugins.\"github@openai-curated\"]",
+   "enabled",
+   "[plugins.\"pdf@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"template-creator@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"visualize@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"chrome@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"browser@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"outlook-calendar@openai-curated\"]",
+   "enabled",
+   "[plugins.\"teams@openai-curated\"]",
+   "enabled",
+   "[plugins.\"codex-app-tools@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"unified-computer-use@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"computer-use@openai-bundled\"]",
+   "enabled",
+   "[features]",
+   "js_repl",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[mcp_servers.node_repl]",
+   "args",
+   "command",
+   "env_vars",
+   "startup_timeout_sec",
+   "[mcp_servers.node_repl.env]",
+   "NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+   "NODE_REPL_NODE_MODULE_DIRS",
+   "NODE_REPL_NODE_PATH",
+   "NODE_REPL_TRUSTED_CODE_PATHS",
+   "CODEX_HOME",
+   "BROWSER_USE_AVAILABLE_BACKENDS",
+   "BROWSER_USE_TINYSKY_ENABLED",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+   "BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+   "BROWSER_USE_CODEX_APP_VERSION",
+   "NODE_REPL_TRUSTED_SERVICES",
+   "SKY_CUA_NATIVE_PIPE",
+   "SKY_CUA_NATIVE_PIPE_DIRECTORY",
+   "CODEX_CLI_PATH",
+   "NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE",
+   "[shell_environment_policy.set]",
+   "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+   "[tui]",
+   "screen_reader_detection_done"
+  ],
+  "Processes": [
+   {
+    "Pid": 22372,
+    "ParentPid": 43220,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:54:54.9675720Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 27832,
+    "ParentPid": 1252,
+    "Name": "codex-windows-sandbox-service.exe",
+    "CreationDateUtc": "2026-10-27T22:27:38.0218620Z",
+    "Classification": "nominal-exclusion"
+   },
+   {
+    "Pid": 45940,
+    "ParentPid": 6148,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-27T22:28:05.4293120Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 45524,
+    "ParentPid": 6148,
+    "Name": "codex-computer-use-swift.exe",
+    "CreationDateUtc": "2026-10-27T22:28:13.0261480Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 7956,
+    "ParentPid": 6148,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-27T22:28:38.9868720Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 30212,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-28T12:25:24.0857350Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 7644,
+    "ParentPid": 30212,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-29T00:50:49.1649790Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 784,
+    "ParentPid": 7644,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-29T00:50:49.1889090Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 44884,
+    "ParentPid": 784,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-29T00:50:52.3967640Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 27764,
+    "ParentPid": 44884,
+    "Name": "python3.13.exe",
+    "CreationDateUtc": "2026-10-29T00:50:52.4796670Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 28056,
+    "ParentPid": 27764,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-29T00:50:52.8988380Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 14456,
+    "ParentPid": 25508,
+    "Name": "git.exe",
+    "CreationDateUtc": "2026-10-29T00:50:55.7097840Z",
+    "Classification": "unattributable"
+   },
+   {
+    "Pid": 30300,
+    "ParentPid": 14456,
+    "Name": "git.exe",
+    "CreationDateUtc": "2026-10-29T00:50:55.7625500Z",
+    "Classification": "unattributable"
+   },
+   {
+    "Pid": 23328,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:54:55.2320470Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 44956,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:54:55.6033520Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 44372,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:54:55.6663350Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 11708,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:54:56.0162300Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 8864,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:54:56.9381200Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 25508,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:54:59.3775620Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 44276,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:54:59.9277850Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 19436,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:55:12.8206540Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 3764,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:56:43.8795320Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 39400,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-27T21:56:43.8795320Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 21424,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-28T02:29:20.7305270Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 35816,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-28T02:31:16.1757420Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 44216,
+    "ParentPid": 22372,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-28T02:32:51.9815740Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 14456,
+    "ParentPid": 25508,
+    "Name": "git.exe",
+    "CreationDateUtc": "2026-10-29T00:50:55.7097840Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 33444,
+    "ParentPid": 19436,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-27T21:55:12.9754470Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 28324,
+    "ParentPid": 19436,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-27T21:55:17.3847910Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 16484,
+    "ParentPid": 19436,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-28T02:29:23.2525780Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 39836,
+    "ParentPid": 19436,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-28T02:29:23.3542340Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 29600,
+    "ParentPid": 19436,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-28T02:31:16.9131450Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 41312,
+    "ParentPid": 19436,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-28T02:31:16.9860390Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 32024,
+    "ParentPid": 21424,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-28T02:29:20.7425370Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 39216,
+    "ParentPid": 35816,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-28T02:31:16.2020080Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 19528,
+    "ParentPid": 30212,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-28T12:25:24.1118740Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 44952,
+    "ParentPid": 14456,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-29T00:50:55.7183930Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 30300,
+    "ParentPid": 14456,
+    "Name": "git.exe",
+    "CreationDateUtc": "2026-10-29T00:50:55.7625500Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 24776,
+    "ParentPid": 784,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-29T00:50:49.2018060Z",
+    "Classification": "session-descendant"
+   }
+  ],
+  "OpenDelegations": 0
+ },
+ "Cession": {
+  "StartUtc": "2026-10-29T00:50:59Z",
+  "EndUtc": "2026-10-29T01:02:05Z",
+  "SessionOperated": false
+ },
+ "Outcome": {
+  "Kind": "COMPLETED",
+  "LaunchedPid": null,
+  "ExitCode": null,
+  "TerminalEvent": "subagent-completed",
+  "TreeKilled": false,
+  "DeathConfirmed": true,
+  "OutputPath": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/worker-handoff.json",
+  "OutputSha256": "FD4957E004C0930A8D4E1AD08AA902DE9F2F7933FBE29821F4BB79EF2FA9EB25",
+  "OutputWrittenUtc": "2026-10-29T01:01:48Z",
+  "Acceptance": null
+ },
+ "Entry": {
+  "HeadSha": "6a58c2b1891174bb5120f0e9e3fb8e13ed952832",
+  "LsRemoteSha": "6a58c2b1891174bb5120f0e9e3fb8e13ed952832",
+  "CleanTree": true,
+  "ConfigTomlSha256": "0A9F6A344C965BE17650A2559601DB8768AE8DCFAC6BEB7DEEFC615AE4E7F550",
+  "ConfigTomlKeys": [
+   "model",
+   "model_reasoning_effort",
+   "service_tier",
+   "notify",
+   "[windows]",
+   "sandbox",
+   "[desktop]",
+   "keepRemoteControlAwakeWhilePluggedIn",
+   "reviewDelivery",
+   "followUpQueueMode",
+   "conversationDetailMode",
+   "ambient-suggestions-enabled",
+   "[desktop.open-in-target-preferences]",
+   "global",
+   "[desktop.open-in-target-preferences.perPath]",
+   "[marketplaces.openai-bundled]",
+   "source_type",
+   "source",
+   "[marketplaces.openai-primary-runtime]",
+   "source_type",
+   "source",
+   "[plugins.\"documents@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"spreadsheets@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"presentations@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"outlook-email@openai-curated\"]",
+   "enabled",
+   "[plugins.\"github@openai-curated\"]",
+   "enabled",
+   "[plugins.\"pdf@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"template-creator@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"visualize@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"chrome@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"browser@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"outlook-calendar@openai-curated\"]",
+   "enabled",
+   "[plugins.\"teams@openai-curated\"]",
+   "enabled",
+   "[plugins.\"codex-app-tools@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"unified-computer-use@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"computer-use@openai-bundled\"]",
+   "enabled",
+   "[features]",
+   "js_repl",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[mcp_servers.node_repl]",
+   "args",
+   "command",
+   "env_vars",
+   "startup_timeout_sec",
+   "[mcp_servers.node_repl.env]",
+   "NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+   "NODE_REPL_NODE_MODULE_DIRS",
+   "NODE_REPL_NODE_PATH",
+   "NODE_REPL_TRUSTED_CODE_PATHS",
+   "CODEX_HOME",
+   "BROWSER_USE_AVAILABLE_BACKENDS",
+   "BROWSER_USE_TINYSKY_ENABLED",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+   "BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+   "BROWSER_USE_CODEX_APP_VERSION",
+   "NODE_REPL_TRUSTED_SERVICES",
+   "SKY_CUA_NATIVE_PIPE",
+   "SKY_CUA_NATIVE_PIPE_DIRECTORY",
+   "CODEX_CLI_PATH",
+   "NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE",
+   "[shell_environment_policy.set]",
+   "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+   "[tui]",
+   "screen_reader_detection_done"
+  ],
+  "ConfigChanged": false,
+  "Processes": [
+   {
+    "Pid": 27832,
+    "ParentPid": 1252,
+    "Name": "codex-windows-sandbox-service.exe",
+    "CreationDateUtc": "2026-10-27T22:27:38.0218620Z",
+    "Classification": "nominal-exclusion"
+   },
+   {
+    "Pid": 45940,
+    "ParentPid": 6148,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-27T22:28:05.4293120Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 45524,
+    "ParentPid": 6148,
+    "Name": "codex-computer-use-swift.exe",
+    "CreationDateUtc": "2026-10-27T22:28:13.0261480Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 7956,
+    "ParentPid": 6148,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-27T22:28:38.9868720Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 3480,
+    "ParentPid": 31316,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-29T01:02:05.2366470Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 30356,
+    "ParentPid": 3480,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-29T01:02:05.5214510Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 25944,
+    "ParentPid": 30356,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-29T01:02:05.6089480Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 19260,
+    "ParentPid": 25508,
+    "Name": "git.exe",
+    "CreationDateUtc": "2026-10-29T01:02:08.2393680Z",
+    "Classification": "unattributable"
+   },
+   {
+    "Pid": 3372,
+    "ParentPid": 19260,
+    "Name": "git.exe",
+    "CreationDateUtc": "2026-10-29T01:02:08.3455500Z",
+    "Classification": "unattributable"
+   }
+  ]
+ },
+ "RemoteFacts": {
+  "CurrentRun": {
+   "GhRunId": 40797712877,
+   "Event": "push",
+   "Ref": "refs/heads/architecture/interop-analisis-estructural",
+   "HeadSha": "6a58c2b1891174bb5120f0e9e3fb8e13ed952832",
+   "Status": "completed",
+   "Conclusion": "success",
+   "Jobs": [
+    {
+     "Name": "UI Tests (WPF controls, net8.0-windows)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Build UI (WPF, valida API de Application)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Tests (Domain + Application)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Build Plugin without AutoCAD",
+     "Conclusion": "success"
+    }
+   ]
+  },
+  "RedRun": {
+   "GhRunId": 40797120699,
+   "Event": "push",
+   "Ref": "refs/heads/architecture/interop-analisis-estructural",
+   "HeadSha": "42b9dcdfd8ce8a5de5819f5e7b33b659ac3e1a81",
+   "Status": "completed",
+   "Conclusion": "failure",
+   "Jobs": [
+    {
+     "Name": "UI Tests (WPF controls, net8.0-windows)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Build UI (WPF, valida API de Application)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Tests (Domain + Application)",
+     "Conclusion": "failure"
+    },
+    {
+     "Name": "Build Plugin without AutoCAD",
+     "Conclusion": "skipped"
+    }
+   ]
+  },
+  "TestArtifacts": [
+   {
+    "RunRef": "ci-40797712877-core",
+    "Name": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T010523Z-2b56/ci-core/core.trx",
+    "Sha256": "641FB59AFBF7F6BE76E4FA1A363945E408CEEABB486126500C574D3A7540268A",
+    "Selected": 14392,
+    "Passed": 14392,
+    "Failed": 0,
+    "FailedTests": []
+   },
+   {
+    "RunRef": "ci-40797712877-ui",
+    "Name": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T010523Z-2b56/ci-ui/ui.trx",
+    "Sha256": "297E9D438D8BB860E8FFBEFC84E03624255A342A8769951A23EE71E0D7497270",
+    "Selected": 1654,
+    "Passed": 1637,
+    "Failed": 0,
+    "FailedTests": []
+   },
+   {
+    "RunRef": "ci-40797120699-core",
+    "Name": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T010523Z-2b56/ci-core-red/core.trx",
+    "Sha256": "817D870AA8D81053B972AD4713F908477BBB61E0CEA071D9BB5890B5A2BC53E1",
+    "Selected": 14392,
+    "Passed": 14390,
+    "Failed": 2,
+    "FailedTests": [
+     "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElTargetDelBundleCopiaLaTablaDesdeSuFuenteALaMismaRutaRelativaQueLaCompilacion",
+     "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElVerificadorDelBundleAdmiteSoloLaRutaDeLaTablaYExigeSuIdentidadConLaFuente"
+    ]
+   }
+  ],
+  "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "LsRemoteSha": "6a58c2b1891174bb5120f0e9e3fb8e13ed952832",
+  "Commands": [
+   "gh run view 40797712877|40797120699 --json databaseId,event,headBranch,headSha,status,conclusion,jobs",
+   "gh run download 40797712877 --name rackcad-core-test-diagnostics|rackcad-ui-test-diagnostics; gh run download 40797120699 --name rackcad-core-test-diagnostics",
+   "git fetch origin; git rev-parse origin/main; git ls-remote origin refs/heads/architecture/interop-analisis-estructural"
+  ],
+  "ObtainedUtc": "2026-10-29T01:05:32Z",
+  "Diagnosis": null
+ },
+ "RebaseMap": null,
+ "Disposition": "NONE",
+ "Notes": [
+  "Worker subagente de la PRIMERA delegacion de RD11-AUTOLOADER-TABLE segun el paquete aceptado de R20261029T004516Z-bf20: modelo sonnet (claude-sonnet-5-5) y effort high. Prompt enviado = prompt.md (SHA-256 normalizado 03A3A5CCEADFFC111E07C5CB92E2B1EE4D6D39344C336D5439FE92506C5E6213; del archivo 9A7609A0DEBFE66F8203D5651F26BEE034A717E222552715DC8DD197599449DC); igualdad exacta (raw) del primer mensaje de la transcripcion con prompt.md.",
+  "Duracion del subagente: 578398 ms; 57 llamadas de herramienta; 0 errores de herramienta; 0 denegaciones; 0 avisos de limite; ninguna invocacion de un interprete (barrido estricto de K5; el heuristico laxo marco la escritura de worker-handoff.json, falso positivo). Entrega: IMPLEMENTATION_COMPLETE, RedSha 42b9dcdfd8ce8a5de5819f5e7b33b659ac3e1a81, CurrentSha 6a58c2b1891174bb5120f0e9e3fb8e13ed952832.",
+  "LaunchedPid null; terminacion confirmada por la notificacion. Salida: dos git.exe ilegibles (14456, 30300) releidos a los 2 s, terminados. Entrada: HEAD = ls-remote = 6a58c2b1, arbol limpio, sin operacion Git en curso, config.toml sin cambios, ningun descendiente nuevo de la sesion; dos git.exe ilegibles (19260 y su hijo 3372), hijos de claude.exe (PID 25508, la app de escritorio), creados a las 01:02:08Z, 3 s despues del fin de la cesion, ya terminados al releerlos a las 01:02:18Z: falso P-02 conocido de las apps del host.",
+  "Controles del Owner (CD-I65-F4-32): K1/K2 antes y despues sin cambios en el checkout principal (2151 rastreados, mismo resumen d0105e960dc69c52) ni en los otros cinco worktrees; solo el worktree propio avanzo de 91f82d6d a 6a58c2b1 con arbol limpio. K3: la primera orden del Worker fue pwd y la entrega registra pwd, Get-Location y [Environment]::CurrentDirectory. K5: transcripcion sin interpretes, sin RAM Elements ni AutoCAD, sin lecturas ni escrituras de herramientas de archivo fuera del worktree y sin E/S .NET relativa; UNA mencion del checkout principal: la ultima llamada (n.o 57, 01:01:52Z) ejecuto git -C con el checkout principal y status --short, de solo lectura y no declarada (disposicion D1 del Coordinator; el indice del checkout principal no se reescribio).",
+  "Comprobaciones mecanicas de la sesion: alcance contra la delegacion PASS (7 archivos, sin descubiertos ni prohibidos); el RED solo toca la prueba de distribucion y el harness; git diff RED..GREEN = README.md, deploy/verify-bundle.ps1, docs/guias/despliegue.md, docs/guias/interoperabilidad-ram-elements.md y src/RackCad.Plugin/RackCad.Plugin.csproj (sin pruebas ni harness); blob de la tabla en 6a58c2b1 = d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2; RED ancestro de GREEN; trailers Co-Authored-By: Claude Sonnet 5.5 en ambos commits.",
+  "CI: RED 40797120699 con Tests (Domain + Application) en failure, Build UI y UI Tests en success y Build Plugin without AutoCAD en skipped (ci.yml: needs tests y build-ui); CurrentSha 40797712877 con los cuatro jobs en success; en su job del Plugin, verify-bundle.ps1 OK (158 comprobaciones) con la tabla en Contents/structural-analysis/ram-elements/section-material-map.json (SHA-256 b22f7d9d...2e7d = el blob aprobado con fin de linea CRLF del checkout de Windows de la CI) y el harness con 14 casos (1 valido + 13 negativos).",
+  "TRX (resumen de la sesion): Core GREEN 14392/14392, filtro RackCad.Tests.StructuralAnalysis* {\"selected\": 1797, \"Passed\": 1797}; Core RED 14392 ejecutadas, 2 fallidas (fuera del filtro: 0), filtro {\"selected\": 1797, \"Passed\": 1795, \"Failed\": 2}; tipos de fallo {\"Assert.Contains() Failure\": 1, \"Assert.Single() Failure\": 1}; sin errores de compilacion.",
+  "TRX de UI: tests/RackCad.UI.Tests tiene 17 atributos Skip; el logger TRX los registra como UnitTestResult NotExecuted, los cuenta en total (1654) y no en executed (1637) y deja Counters notExecuted=0. Es la convencion del logger, no una contradiccion (precedentes I-61 R20261001T035734Z-74c2 e I-63 evidencia §37.4)."
+ ]
+}

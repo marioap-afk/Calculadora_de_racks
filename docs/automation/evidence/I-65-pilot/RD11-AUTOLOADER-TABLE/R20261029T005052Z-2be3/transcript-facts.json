@@ -1,0 +1,22 @@
+{
+ "transcript_sha256": "4DC39016C16037E512E16FE938ED725334B91AFF0C2B5FEE12D300DD3F6F29AA",
+ "assistant_messages": 86,
+ "models": {
+  "claude-sonnet-5-5": 86
+ },
+ "tool_uses": 57,
+ "tool_errors": 0,
+ "denials": 0,
+ "python_commands": [
+  "{\"file_path\": \"C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/worker-handoff.json\", \"content\": \"{\\n  \\\"Schema\\\": \\\"rackcad-worker-handoff/v1\\\",\\n  \\\"TaskId\\\": \\\"RD11-AUTOLOADER-TABLE\\\","
+ ],
+ "prompt_sha256_normalized": "03A3A5CCEADFFC111E07C5CB92E2B1EE4D6D39344C336D5439FE92506C5E6213",
+ "prompt_file_sha256": "9A7609A0DEBFE66F8203D5651F26BEE034A717E222552715DC8DD197599449DC",
+ "prompt_match": {
+  "raw": true,
+  "dedent2_skip1": false,
+  "dedent2": false
+ },
+ "prompt_contained": true,
+ "first_user_len": 23874
+}
