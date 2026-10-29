@@ -1,0 +1,121 @@
+I-65 — OWNER DISPOSITION
+FINAL_CANDIDATE_SHA Declaration / W-R1a Authorization
+He revisado la preparación final registrada en `f5861993`, con CI 40817078446, 4/4 satisfactorio.
+1. Declaración del Candidato final
+FINAL_CANDIDATE_DECLARATION = AUTHORIZED, CONDITIONAL.
+Autorizo declarar:
+`FINAL_CANDIDATE_SHA = 4a03b65b375d468c220dd68400d5dfd955bf043e`
+Rama: `architecture/interop-analisis-estructural`.
+Antes de registrar la declaración:
+
+1. Repite READY-04 con fetch fresco.
+2. Confirma que `origin/main` no avanzó respecto del merge-base aprobado.
+3. Verifica SHA exacto y árbol limpio.
+4. Comprueba Freeze y ADR-0050 intactos.
+5. Confirma la DLL `0f5a508e03a34cce45cd005a0fef336d1b160894e0836a5f786d2ec966db0959`.
+6. Verifica tabla, cargas, herramientas y bundle.
+7. Confirma Core Full 14392/14392, UI Full y CI del SHA exacto.
+8. Confirma las conformidades del Architect y Coordinator, sin REQUIRED pendientes.
+
+Si alguna condición falla, STOP.
+La declaración fija el Candidato final para su validación; no equivale a aceptar las pruebas operativas aún pendientes ni a autorizar integración.
+2. Disposición de A65-FC-16/17/19
+OPTION A = APPROVED.
+Acepto registrar las tres observaciones como precisiones operativas dentro de las autorizaciones de ventana.
+Conserva el texto íntegro y la trazabilidad de cada observación.
+No modifiques los criterios, oráculos, tolerancias, procedimientos ni el contrato congelado.
+Si alguna precisión exige una modificación material, STOP y solicita nueva autorización.
+3. HB-04
+CD-I65-FC-13 = ACCEPTED.
+Apruebo la interpretación:
+
+* HB-04(a): comparación de la huella sobre el mismo rack, utilizando una copia controlada del DWG de OV-08.
+* HB-04(b): construcción de REF-CANT-01 nuevo, verificando independientemente la carga útil 117/117.
+
+No compares las huellas de racks con GUID diferentes como si debieran ser idénticas.
+No elimines ningún criterio de aceptación aprobado.
+4. División de W-R1
+W-R1 = TWO CONTROLLED WINDOWS.
+Dividir la validación de AutoCAD:
+W-R1a — Functional Validation
+Incluye:
+
+* OV-I65-01.
+* OV-I65-02.
+* OV-I65-03.
+* OV-I65-04.
+* OV-I65-08.
+* Preparación de inyecciones y volcados correspondientes, sin ejecutar RAM.
+* Persistencia, guardado y reapertura del DWG desechable.
+
+W-R1b — Autoloader Validation
+Reservada para HB-01..05, con instalación temporal reversible en ApplicationPlugins.
+W-R1b requiere autorización posterior después de aceptar W-R1a.
+5. Autorización W-R1a
+W-R1a AUTOCAD EXECUTION = CONDITIONAL GO.
+Autorizo ejecutar W-R1a después de declarar el Candidato final, sujeto a:
+
+1. Host libre y sin operaciones de pantalla de I-62.
+2. AutoCAD y RAM cerrados.
+3. Preflight y BASELINE satisfactorios.
+4. DLL exacta del Candidato final.
+5. Verificación de bloques, cargas, tabla y herramientas.
+6. Carpeta desechable nueva, sin sobrescrituras.
+7. Una sola carga NETLOAD no persistente, con «Load Once».
+8. Presupuesto de pruebas y condiciones STOP conforme al procedimiento.
+9. Capturas y evidencia técnica custodiadas.
+10. Cierre sin guardar los dibujos que no requieran persistencia para OV-08.
+
+No solicitar confirmaciones a iniciativas inactivas, salvo que exista una operación real concurrente del host.
+6. OV-I65-08
+Autorizo expresamente el guardado y reapertura del DWG desechable requeridos por OV-08.
+Verifica los criterios de:
+
+* Creación y actualización del rack.
+* Round-trip.
+* Vistas y geometría.
+* BOM.
+* Persistencia y recuperación de datos.
+* Identificadores y comportamiento de duplicación.
+* Exportación antes y después del guardado.
+* Igualdad H1 = H2 para el mismo rack.
+* Diagnósticos de errores previstos.
+
+Si una prueba legacy requiere un DWG anterior que no está disponible, informa NOT_EVALUATED cuando así lo permita la matriz; no declares PASS por inferencia.
+7. Condiciones de parada
+STOP ante:
+
+* Identidades o hashes inesperados.
+* Conflictos reales de uso del equipo.
+* Modificaciones protegidas del host.
+* Error de carga del módulo.
+* Cambio inesperado de producto.
+* Fallo de persistencia.
+* Diferencias materiales de H1/H2.
+* Incumplimiento de un oráculo.
+* Necesidad de modificar código.
+* Reintentos no autorizados.
+
+No alteres datos ni criterios para obtener PASS.
+8. Después de W-R1a
+Realiza POST y verifica la integridad del host y de los checkouts.
+Custodia:
+
+* Evidencias por OV.
+* DWG desechable cuando el procedimiento exija conservarlo.
+* Paquetes generados y hashes.
+* Resultados de H1/H2.
+* Incidencias y diferencias.
+* Estado de CI y repositorios.
+
+Presenta el informe para mi aceptación antes de W-R1b.
+9. Restricciones
+FINAL_CANDIDATE_DECLARATION = CONDITIONAL GO.
+W-R1a = CONDITIONAL GO.
+W-R1b = NO.
+W-R2 RAM = NO.
+OWNER VALIDATION FINAL = PENDING.
+INTEGRATION = NO.
+No modificar código, Freeze, ADR-0050, tabla, tolerancias ni procedimientos aprobados.
+No consumir Codex ni attempts adicionales salvo autorización específica.
+Continúa con la declaración y W-R1a dentro del alcance. Detente antes de W-R1b.

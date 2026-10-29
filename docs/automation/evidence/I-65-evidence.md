@@ -3196,3 +3196,25 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-ready/architect-ready06-r2-k5-transcript-scan.json` | `46C2D5B4E84B5F1547459A1C44B45977E3326C2831CA0370164631B70D7C69D9` |
 | `docs/automation/evidence/I-65-ready/ready09-4a03b65b.txt` | `02A4CFF644C24635E2D43D36072FC20CEE935CDD3FC6D2981BA14A1964507E8D` |
 | `docs/automation/evidence/I-65-ready/coordinator-ready06-conformity.md` | `5F22921E301DF354ADDD70F538BE174531E0A204DEF54715AE6B8D6AF002B406` |
+
+## 119. Declaración de `FINAL_CANDIDATE_SHA` = `4a03b65b` (2026-10-29T13:51:35Z)
+
+- **Comprobaciones previas del Owner:** 8/8 pasan; fetch fresco 2026-10-29T13:47:54Z (`I-65-ready/candidate-4a03b65b/declaration-recheck.txt`).
+- **Bloque de la guía §7.1 del Candidato final:**
+  - commit: `4a03b65b375d468c220dd68400d5dfd955bf043e` (rama `architecture/interop-analisis-estructural`, base `bb0d5522`);
+  - DLL: `D:\r65-smoke\4a03b65b\bin-Debug-net8.0-windows\RackCad.Plugin.dll`, SHA-256 `0f5a508e03a34cce45cd005a0fef336d1b160894e0836a5f786d2ec966db0959`, ProductVersion `1.0.0+4a03b65b375d468c220dd68400d5dfd955bf043e` (salida `-o` fuera del worktree, como en F4/F5);
+  - tabla junto al DLL `fc3d9146…b619` = fuente del checkout (`i/lf w/lf`, blob `d088e2a9…`);
+  - pruebas: Core Full 14392/14392; UI Full 1637 superadas y 17 omitidas declaradas; builds Debug de UI, Plugin y herramienta con 0 errores (evidencia §117);
+  - CI: `push` 40814761082, `head_sha` exacto, 4/4 `success` con `UI Tests`;
+  - bundle del Autoloader: 25 archivos, inventario `33e660b2…`, DLL `60e1dd44…`;
+  - versión de AutoCAD y biblioteca: se miden en la BASELINE de W-R1a (B-05, X-04).
+- **Coordinación de host para W-R1a:** `I-65-ready/wr1a-host-coordination.md` (I-62: sin operación de pantalla en 3.5 h).
+- Sin AutoCAD, RAM, NETLOAD ni Codex hasta este registro; `ApplicationPlugins` del usuario vacía.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-final-candidate-declaration-wr1a-authorization.original.txt` | `59AB11B758125F1C8DD4E66BCD834CCCA84EF94C44EC1221B203B7B6CA50D5D6` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/declaration-recheck.txt` | `73CA85C3B7832F9E46CBEBD026058B32E941C43FD5DCD7DFCA45CC796713EB91` |
+| `docs/automation/evidence/I-65-ready/candidate-4a03b65b/tools/declaration-recheck.ps1.txt` | `44D898B5FFA8DE6F20F50D44A35F34DDD23052967ABF204D1710160AB342787F` |
+| `docs/automation/evidence/I-65-ready/wr1a-host-coordination.md` | `6E850F3DADA571DD1D1D0FE3C94D93E0087061D2E18C3598DA00567BBF3D2B07` |

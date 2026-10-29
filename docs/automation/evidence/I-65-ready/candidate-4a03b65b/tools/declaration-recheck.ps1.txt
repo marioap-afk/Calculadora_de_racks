@@ -1,0 +1,175 @@
+# I-65: las ocho comprobaciones del Owner antes de registrar la declaracion de FINAL_CANDIDATE_SHA (solo lectura salvo git fetch y
+# el archivo de salida y manifiestos temporales en el scratchpad). Sin AutoCAD ni RAM.
+# Uso: pwsh -NoProfile -File declaration_recheck.ps1 <worktree> <scratchpad-i65> <out.txt>
+param([string]$Wt, [string]$Sp, [string]$Out)
+$ErrorActionPreference = 'Stop'
+$X = '4a03b65b375d468c220dd68400d5dfd955bf043e'
+$BASE = 'bb0d5522e8411f66a51fdfb3f1f0d0514b737453'
+$BR = 'architecture/interop-analisis-estructural'
+$smk = 'D:\r65-smoke\4a03b65b'
+$bin = Join-Path $smk 'bin-Debug-net8.0-windows'
+$utf8 = New-Object Text.UTF8Encoding($false)
+$L = New-Object Collections.Generic.List[string]
+$fail = New-Object Collections.Generic.List[string]
+function Sha([string]$p) { (Get-FileHash -LiteralPath $p -Algorithm SHA256).Hash.ToLower() }
+function G { $r = & git -C $Wt @args; if ($LASTEXITCODE -ne 0) { throw "git $args" }; ($r -join "`n").Trim() }
+function Chk([string]$name, [bool]$ok, [string]$detail) { $L.Add(("{0} {1} {2}" -f ($(if ($ok) { 'OK  ' } else { 'FAIL' })), $name, $detail)); if (-not $ok) { $fail.Add($name) } }
+function Manifest([string]$dir, [string]$out) {
+    $rows = Get-ChildItem -LiteralPath $dir -Recurse -File | Sort-Object { $_.FullName.Substring($dir.Length + 1).Replace('\', '/') } -Culture ([Globalization.CultureInfo]::InvariantCulture) | ForEach-Object {
+        "{0}  {1}  {2}" -f $_.FullName.Substring($dir.Length + 1).Replace('\', '/'), (Sha $_.FullName), $_.Length
+    }
+    [IO.File]::WriteAllText($out, (($rows -join "`n") + "`n"), $utf8)
+    @($rows).Count
+}
+function BlobSha([string]$rev, [string]$path) {
+    $psi = New-Object Diagnostics.ProcessStartInfo 'git', "-C `"$Wt`" cat-file blob ${rev}:$path"
+    $psi.RedirectStandardOutput = $true; $psi.UseShellExecute = $false
+    $pr = [Diagnostics.Process]::Start($psi); $ms = New-Object IO.MemoryStream; $pr.StandardOutput.BaseStream.CopyTo($ms); $pr.WaitForExit()
+    $h = [Security.Cryptography.SHA256]::Create().ComputeHash($ms.ToArray())
+    -join ($h | ForEach-Object { $_.ToString('x2') })
+}
+
+$L.Add("== UTC antes del fetch " + [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))
+# 1-2. READY-04 con fetch fresco; origin/main sin avance respecto del merge-base aprobado
+& git -C $Wt fetch origin 2>&1 | Out-Null
+if ($LASTEXITCODE -ne 0) { throw 'fetch' }
+$L.Add("== 1-2 READY-04 (fetch fresco " + [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ') + ")")
+$om = G rev-parse origin/main
+$mb = G merge-base $X $om
+Chk '1.origin-main=base-aprobada' ($om -eq $BASE) "origin/main=$om"
+Chk '2.merge-base=base-aprobada' ($mb -eq $BASE) "merge-base($($X.Substring(0,8)),origin/main)=$mb"
+Chk '2.main-sin-avance' ((G rev-list --count "$X..origin/main") -eq '0') ("commits de origin/main fuera del Candidato=" + (G rev-list --count "$X..origin/main"))
+$i64 = G rev-parse origin/architecture/workspace-persistente-rackcad
+& git -C $Wt merge-base --is-ancestor $i64 $om; $i64in = ($LASTEXITCODE -eq 0)
+Chk '1.I-64-sin-integrar' (-not $i64in) "I-64=$($i64.Substring(0,8)) integrada=$i64in"
+$adrMain = @(& git -C $Wt ls-tree --name-only origin/main docs/adr/ | Where-Object { $_ -match '/0050-' })
+Chk '1.ADR-0050-libre-en-main' ($adrMain.Count -eq 0) ("ADR 0050 en origin/main=" + $adrMain.Count)
+# 3. SHA exacto y arbol limpio
+$L.Add('== 3 SHA exacto y arbol limpio')
+Chk '3.tipo' ((G cat-file -t $X) -eq 'commit') "cand=$X"
+& git -C $Wt merge-base --is-ancestor $X HEAD; Chk '3.ancestro-de-HEAD' ($LASTEXITCODE -eq 0) ''
+$head = G rev-parse HEAD; $ob = G rev-parse "origin/$BR"
+Chk '3.HEAD=rama-remota' ($head -eq $ob) "HEAD=$head origin/$BR=$ob"
+$st = @(& git -C $Wt status --porcelain --untracked-files=all)
+$other = @($st | Where-Object { $_ -notmatch 'I-65-owner-disposition-final-candidate-declaration-wr1a-authorization\.original\.txt$' })
+Chk '3.arbol-limpio' ($other.Count -eq 0) ("lineas de status ajenas al original de la disposicion=" + $other.Count + "; " + ($st -join ' | '))
+$outX = G diff --name-only $X HEAD -- . ':(exclude)docs'
+Chk '3.solo-docs-tras-el-Candidato' ($outX -eq '') "archivos fuera de docs/ entre $($X.Substring(0,8)) y HEAD=$(@($outX -split "`n" | Where-Object { $_ }).Count)"
+$outR = G diff --name-only 6a58c2b1 $X -- . ':(exclude)docs'
+Chk '3.producto=6a58c2b1' ($outR -eq '') 'arbol fuera de docs/ de 6a58c2b1 = el del Candidato'
+Chk '3.padre' ((G rev-parse "$X^") -eq (G rev-parse ba4494b2)) 'padre del Candidato = ba4494b2'
+# 4. Freeze y ADR-0050
+$L.Add('== 4 Freeze y ADR-0050')
+foreach ($rev in @($X, 'HEAD')) {
+    $fz = G rev-parse "${rev}:docs/initiatives/I-65-proposal-v3.1.md"
+    $adr = G rev-parse "${rev}:docs/adr/0050-interoperabilidad-analisis-estructural.md"
+    Chk "4.freeze@$rev" ($fz.StartsWith('4e6e1feb')) "blob=$fz"
+    Chk "4.adr0050@$rev" ($adr.StartsWith('c18def42')) "blob=$adr"
+}
+$fzLog = G log --format=%h a9d7080b..HEAD -- docs/initiatives/I-65-proposal-v3.1.md
+Chk '4.sin-commits-sobre-el-Freeze' ($fzLog -eq '') "commits a9d7080b..HEAD sobre el Freeze=$(@($fzLog -split "`n" | Where-Object { $_ }).Count)"
+# 5. DLL
+$L.Add('== 5 DLL del Plugin')
+$dll = Join-Path $bin 'RackCad.Plugin.dll'
+$dh = Sha $dll; $pv = (Get-Item -LiteralPath $dll).VersionInfo.ProductVersion
+Chk '5.dll' ($dh -eq '0f5a508e03a34cce45cd005a0fef336d1b160894e0836a5f786d2ec966db0959') "sha256=$dh"
+Chk '5.productVersion' ($pv -eq "1.0.0+$X") "productVersion=$pv"
+$tmpd = Join-Path $Sp 'fc\recheck-tmp'; [void](New-Item -ItemType Directory -Force -Path $tmpd)
+$n1 = Manifest $bin (Join-Path $tmpd 'output-manifest.txt')
+$m1 = Sha (Join-Path $tmpd 'output-manifest.txt')
+Chk '5.manifiesto-salida' ($n1 -eq 32 -and $m1 -eq '9939f6dac42acd89549d65b60dd5d36124e99af69808aa97099a5c332e1eacbc') "files=$n1 sha256=$m1 (recalculado)"
+Chk '5.manifiesto-custodiado' ((Sha (Join-Path $smk 'output-manifest.txt')) -eq $m1) 'output-manifest.txt de la carpeta = recalculado'
+# 6. Tabla, cargas, herramientas, bundle, biblioteca
+$L.Add('== 6 tabla, cargas, valores esperados, herramientas, bundle y biblioteca')
+$tp = 'assets/structural-analysis/ram-elements/section-material-map.json'
+$tbin = Sha (Join-Path $bin 'structural-analysis\ram-elements\section-material-map.json')
+$tsrc = Sha (Join-Path $Wt $tp.Replace('/', '\'))
+Chk '6.tabla-salida' ($tbin -eq 'fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619') "sha256=$tbin"
+Chk '6.tabla=fuente-del-checkout' ($tbin -eq $tsrc) "fuente=$tsrc"
+Chk '6.tabla-blob' ((G rev-parse "${X}:$tp").StartsWith('d088e2a9') -and (BlobSha $X $tp) -eq $tsrc) ('blob=' + (G rev-parse "${X}:$tp") + ' bytes del blob = fuente')
+$L.Add('    eol: ' + ((& git -C $Wt ls-files --eol -- $tp) -join ' '))
+$loads = [ordered]@{
+    'ref-cant-01.loads.json' = @('tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.loads.json', '25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05')
+    'ov03a-double-face.loads.json' = @('docs/automation/evidence/I-65-f4/w1-prep/loads/ov03a-double-face.loads.json', '8e05faadbfc2304b0cebea1bf4f1187c3734391ccaaff0792c5f661444ebe87b')
+    'ov03b-negative-y.loads.json' = @('docs/automation/evidence/I-65-f4/w1-prep/loads/ov03b-negative-y.loads.json', '87e642305c6aa758ec7e6b07d7940272c91557ca23f03737c137959cba80de90')
+    'ov03c-slope-over-10deg.loads.json' = @('docs/automation/evidence/I-65-f4/w1-prep/loads/ov03c-slope-over-10deg.loads.json', '25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05')
+    'ov03d-paired-channels.loads.json' = @('docs/automation/evidence/I-65-f4/w1-prep/loads/ov03d-paired-channels.loads.json', '25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05')
+    'ov03e-section-without-row.loads.json' = @('docs/automation/evidence/I-65-f4/w1-prep/loads/ov03e-section-without-row.loads.json', '25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05')
+    'ov-i65-02.loads.json' = @('docs/automation/evidence/I-65-f5-prep/ov-i65-02.loads.json', 'd675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c')
+}
+$inDir = Join-Path $smk 'inputs'
+Chk '6.cargas-recuento' (@(Get-ChildItem -LiteralPath $inDir -File).Count -eq 7) ("archivos en inputs=" + @(Get-ChildItem -LiteralPath $inDir -File).Count)
+foreach ($k in $loads.Keys) {
+    $h = Sha (Join-Path $inDir $k); $b = BlobSha $X $loads[$k][0]
+    Chk "6.carga:$k" ($h -eq $loads[$k][1] -and $b -eq $h) "sha256=$($h.Substring(0,8)) blob@cand=$($b.Substring(0,8))"
+}
+Chk '6.expected-inputs' ((Sha (Join-Path $smk 'expected-inputs.json')) -eq '13e8678f74c5355822a39b615f6acb72a0dfd09bf2f658decd34adae08e04e0f') ''
+Chk '6.expected-inputs-ov02' ((Sha (Join-Path $smk 'expected-inputs-ov02.json')) -eq 'f1a7c036cc71c888ce81372735ccf475f4a5e24c31eb0a0ecb6c6e3591fe1dff') ''
+$n2 = Manifest (Join-Path $smk 'ramtool') (Join-Path $tmpd 'ramtool-manifest.txt')
+$m2 = Sha (Join-Path $tmpd 'ramtool-manifest.txt')
+Chk '6.herramienta-del-producto' ($n2 -eq 11 -and $m2 -eq '4fbe3ea5be1790c20c2673339b9ca2fba26bdac8f59472686952474fb33eb343') "ramtool files=$n2 manifiesto=$m2 (recalculado)"
+$tools = [ordered]@{
+    'rd11\wr_hostsnap.ps1' = 'f867318c37330ebe61b658f54ab690959b44553d8d8ee36424d90f85a4832a54'
+    'smoke2_regdiff.ps1' = '353ecc74d023c4e35d2fe9089014b62185b956938d8afeb661ebf89872891aa5'
+    'w1_idle.ps1' = 'ac61c01bae9975e335b5632bb0ed6066f341f1005cb44af3fd30c06e690fa760'
+    'smoke2_expected_inputs.ps1' = '0c84a4d0c4145b82505bb5c759cf03489c598da79794bfaba164bbfc0333f379'
+    'validate_smoke2_package_v2.py' = '1f56b8cba1a64f908c46eb5691930891c3dc0ef1d9bf8ed9c45f8e5f8bdd297a'
+    'p2_payload_vs_manual.py' = 'a10d5b46938cc88ce4700e491c00a4beb6a90167c21c684ec2c57d8c45f959fa'
+    'f5_dryrun_compare.py' = '39ac443a5a20368afbab217309c9e8afa27af77e7e7dcf97cdfd0aa950f85265'
+    'w1_dryrun.ps1' = 'f5725f602ce16f051a996f86c36d854f6472556f0dd8de8660f8ad603627bfb1'
+    'f5_dryrun.ps1' = '7dc01426047e7bbed619dbd347e81e8df908cc86a14b6877fa8c9f8b8641aa3d'
+    'w2_readiness.ps1' = '466f7a933042b34e423eb021cf99dd942c57a45d62391db306935d0297bab827'
+    'w2_hostsnap.ps1' = '6904a43965de69b33b78c304cd57d1958b31b2018121906cf22d034724ff5485'
+    'session_custody.ps1' = '5487544aec2685c8554145b46d68bd4fe8fe9545e0b1628deee84d7fc080491b'
+    'readback_dump_contrast.py' = '0790930297d221ddefeadaef8e04611858b2e81446717155e754d34155114bb1'
+    'secrets_scan.py' = 'bcccaf9123923eca9f998c078ba3850d6d934c133d3d170ce1b969abe4fa9fb3'
+}
+foreach ($k in $tools.Keys) { $h = Sha (Join-Path $Sp $k); Chk "6.herramienta:$k" ($h -eq $tools[$k]) "sha256=$($h.Substring(0,16))" }
+$bdir = Join-Path $smk 'bundle\publish\RackCad.bundle'
+$inv = Join-Path $smk 'bundle\inventory.txt'
+$bfiles = @(Get-ChildItem -LiteralPath $bdir -Recurse -File)
+Chk '6.bundle-recuento' ($bfiles.Count -eq 25) "files=$($bfiles.Count)"
+Chk '6.bundle-inventario' ((Sha $inv) -eq '33e660b2e3781b72ba24f37f1ac97526c409301e71bb91869aa7c968c64bf7d5') ''
+$bad = 0; $rowsN = 0
+foreach ($line in [IO.File]::ReadAllLines($inv)) {
+    if ($line -notmatch '^([0-9a-f]{64})  (.+)$') { continue }
+    $rowsN++
+    $p = Join-Path $bdir $Matches[2].Replace('/', '\')
+    if (-not (Test-Path -LiteralPath $p) -or (Sha $p) -ne $Matches[1]) { $bad++ }
+}
+Chk '6.bundle-archivos=inventario' ($rowsN -eq 25 -and $bad -eq 0) "filas=$rowsN distintos=$bad"
+$bp = Join-Path $bdir 'Contents\RackCad.Plugin.dll'
+Chk '6.bundle-dll' ((Sha $bp) -eq '60e1dd44741d14b96ea0a379e901e806abb4d65c5783411786f611f35e604c33' -and (Get-Item -LiteralPath $bp).VersionInfo.ProductVersion -eq "1.0.0+$X") 'DLL del bundle 60e1dd44, 1.0.0+<SHA>'
+Chk '6.bundle-tabla' ((Sha (Join-Path $bdir 'Contents\structural-analysis\ram-elements\section-material-map.json')) -eq $tsrc) 'tabla del bundle = fuente del checkout'
+$set = Get-Content -Raw -LiteralPath (Join-Path $env:APPDATA 'RackCad\settings.json') | ConvertFrom-Json
+$lib = $set.BlockLibraryPath
+Chk '6.biblioteca' ($lib -eq 'D:\Base_de_datos_AutoCAD_V.0.dwg' -and (Sha $lib) -eq 'b4ca2248db9c3d72487ac8b5b1e5510cdd8aba231ab340541d91bebca2d560e8') "ruta=$lib"
+# 7. Pruebas y CI del SHA exacto
+$L.Add('== 7 Core Full, UI Full y CI del SHA exacto')
+$ev = Join-Path $Wt 'docs\automation\evidence\I-65-ready\candidate-4a03b65b\local-evidence.txt'
+$le = [IO.File]::ReadAllText($ev)
+Chk '7.evidencia-local-sobre-el-SHA' ($le.Contains("HEAD=$X dirty=0") -and $le.Contains('dirty_after=0')) 'arbol limpio antes y despues'
+Chk '7.core' ($le -match 'Con error:\s+0, Superado: 14392, Omitido:\s+0, Total: 14392') 'Core 14392/14392'
+Chk '7.ui' ($le -match 'Con error:\s+0, Superado:\s+1637, Omitido:\s+17, Total:\s+1654') 'UI 1637 superadas, 17 omitidas, 0 con error'
+Chk '7.builds' (([regex]::Matches($le, '0 Errores')).Count -eq 3) 'builds Debug UI, Plugin y herramienta con 0 errores'
+$R = 'marioap-afk/Calculadora_de_racks'
+$run = (& gh api "repos/$R/actions/runs/40814761082" --jq '[.id,.event,.head_branch,.head_sha,.status,.conclusion,.run_attempt]|@tsv') -split "`t"
+Chk '7.ci' ($run[1] -eq 'push' -and $run[2] -eq $BR -and $run[3] -eq $X -and $run[4] -eq 'completed' -and $run[5] -eq 'success') ("run=" + ($run -join ' '))
+$jobs = @(& gh api "repos/$R/actions/runs/40814761082/jobs" --jq '.jobs[]|"\(.name) = \(.conclusion)"')
+Chk '7.ci-jobs' ($jobs.Count -eq 4 -and @($jobs | Where-Object { $_ -like '* = success' }).Count -eq 4 -and @($jobs | Where-Object { $_ -like 'UI Tests*' }).Count -eq 1) ($jobs -join '; ')
+$latest = (& gh api "repos/$R/actions/runs?head_sha=$X&event=push" --jq '[.workflow_runs[]|"\(.id):\(.conclusion)"]|join(",")')
+$L.Add("    ejecuciones push con head_sha exacto: $latest")
+# 8. Conformidades
+$L.Add('== 8 conformidades')
+$ar = [IO.File]::ReadAllText((Join-Path $Wt 'docs\automation\evidence\I-65-ready\architect-ready06-r2-conformance.md'))
+$req = @([regex]::Matches($ar, '(?m)^\| A65-FC-\d+ \|[^\n]*\| REQUIRED \|')).Count
+Chk '8.architect' ($ar.Contains('**CONFORMING**') -and $req -eq 0 -and $ar.Contains('Los 13 están **CERRADOS**')) "ronda 2 CONFORMING; filas REQUIRED=$req; A65-FC-01..13 cerrados"
+$co = [IO.File]::ReadAllText((Join-Path $Wt 'docs\automation\evidence\I-65-ready\coordinator-ready06-conformity.md'))
+Chk '8.coordinator' ($co.Contains('## Veredicto del Coordinator: **CONFORMING** sobre `4a03b65b`')) 'CONFORMING'
+# Host
+$L.Add('== host (informativo para W-R1a)')
+$L.Add('acad=' + @(Get-Process -Name acad -ErrorAction SilentlyContinue).Count + ' ram=' + @(Get-Process -Name RAMElements -ErrorAction SilentlyContinue).Count)
+$L.Add('== resultado: ' + $(if ($fail.Count -eq 0) { 'TODAS LAS COMPROBACIONES PASAN' } else { 'STOP: ' + ($fail -join ', ') }))
+$L.Add('== UTC fin ' + [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))
+[IO.File]::WriteAllText($Out, (($L -join "`n") + "`n"), $utf8)
+$L
