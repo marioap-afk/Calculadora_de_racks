@@ -1,0 +1,37 @@
+{
+ "Schema": "i62-codex-passive-observation/1",
+ "ObservedUtcStart": "2026-10-29T03:49:09Z",
+ "CodexBinaries": [
+  {
+   "Path": "%LOCALAPPDATA%/OpenAI/Codex/bin/0ab0e7a8f3779036/codex.exe",
+   "Size": 357330736,
+   "MtimeUtc": "2026-10-28T20:30:09Z",
+   "Sha256": "0c09e45bc76433756eb2d492f6db0ce6f269967e6618f4a6ae73e2fa239694b8"
+  }
+ ],
+ "Companions": {
+  "Label": "0ab0e7a8f3779036",
+  "Lines": [
+   "codex-code-mode-host.exe 510687c53c57f52dbf105b8b0050f595d255ab6dafc968c00940c782aa5141c2",
+   "codex-command-runner.exe 703da629e33744461f3e9546c85a5cf88c8d82f4fc415772633befc456cb6c50",
+   "codex-windows-sandbox-setup.exe 36a924e5ba8a8a4b5639be027a4cd37d535ae8593a2f8f75d3f8ddfc1c063ab6",
+   "codex.exe 0c09e45bc76433756eb2d492f6db0ce6f269967e6618f4a6ae73e2fa239694b8"
+  ],
+  "Sha256First16": "5acad578fdf46e64"
+ },
+ "AppVersion": "26.1023.6621.0",
+ "Fingerprint": {
+  "Sha256": "FEA91A79D45CCA7BB434512BD88710B0F65B578D80A033FF0F077ADECE8EE508",
+  "Length": 4879,
+  "LastWriteTimeUtc": "2026-10-29T03:45:25.782Z",
+  "KeyNamesCount": 106,
+  "KeyNamesEqualBaseline0A9F6A34": true
+ },
+ "RuntimePwsh": {
+  "Path": "%USERPROFILE%/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+  "Sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139",
+  "RuntimeBundleVersion": "26.1020.11618"
+ },
+ "CodexProcessCount": 2,
+ "ObservedUtcEnd": "2026-10-29T03:49:12Z"
+}

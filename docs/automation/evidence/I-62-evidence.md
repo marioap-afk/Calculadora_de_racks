@@ -5153,3 +5153,28 @@ solo desde artefactos custodiados.
   la disposición es §101 y las dos líneas son líneas completas posteriores a ella. Sin problemas.
 - **Siguiente:** el preflight de §101, punto 7 (app de escritorio de Codex cerrada, `python -I prep_write.py`, puertas) y, solo si todo pasa,
   `bash run_m7.sh launch`, una vez. Ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 212. STOP antes de la escritura de preparación (decisiones §101, punto 3): Codex se actualizó después de §101; la medición de A6-7 no se lanzó y no hubo consumo
+
+- **Hecho** (observación pasiva [`s101/stop/obs8.json`](I-62-A6/m7/s101/stop/obs8.json), 2026-10-29T03:49:09Z, y registro de identidad de la puerta
+  del kit [`s101/stop/preflight-identity.json`](I-62-A6/m7/s101/stop/preflight-identity.json), 2026-10-29T03:49:51Z):
+  - binario `0c09e45bc76433756eb2d492f6db0ce6f269967e6618f4a6ae73e2fa239694b8` (etiqueta `0ab0e7a8f3779036`, mtime 2026-10-28T20:30:09Z);
+  - AppVersion 26.1023.6621.0;
+  - huella `FEA91A79D45CCA7BB434512BD88710B0F65B578D80A033FF0F077ADECE8EE508`: `config.toml` reescrito a las 2026-10-29T03:45:25.782Z, con el mismo tamaño
+    (4879 bytes) y los mismos 106 nombres de clave. Cambió un valor, que no se lee;
+  - acompañantes `5acad578fdf46e64`; pwsh del runtime sin cambio (`362a356c…`); 2 procesos de Codex vivos.
+
+  El trío de §101 y §102 (`5c1b5596…`/26.1023.6123.0/`0A9F6A34…`) ya no rige. La actualización del binario es posterior a la observación de
+  §210 (2026-10-28T12:06Z) y anterior al registro de las líneas del Owner (§102).
+- **Efecto:** STOP por §101, punto 3 («Toda actualización o cambio de huella: STOP»), y por A6-7, regla 5. Las líneas de §102 nombran el trío
+  anterior y no autorizan nada para el nuevo (§101, punto 6). No se ejecutó `prep_write.py`: el `-C` sigue en su instantánea congelada (la puerta
+  de estado ve una diferencia vacía), y el kit no tiene `out/` ni marcador P-07. Sin Codex, sin consumo de A6-7 y sin gastar su único intento.
+- **Preflight final de §101, punto 7, sin lanzar** ([`s101/stop/preflight.json`](I-62-A6/m7/s101/stop/preflight.json); script
+  [`preflight_final.py`](I-62-A6/m7/s101/stop/preflight_final.py), derivado del de s100 con la disposición en §101 y las líneas en §102):
+  23 OK, 1 FAIL y 4 pendientes, más 6 condiciones que solo se comprueban en la sesión real.
+  - **FAIL:** identidad antes (BinaryHash, AppVersion, Fingerprint, Companions).
+  - **Pendientes:** estado del `-C` y `prep_write`; P-02 (2 `codex.exe` vivos); punto de uso.
+  - **OK:** kit = FREEZE; decisiones (§101, más las líneas en §102); P-07; pwsh del runtime; Git estático; entorno del hijo; proyecto de Claude;
+    texto armado; cierre A7-1; cobertura LAUNCH_MAY_PROCEED; autotest; regla v3; kit v1 intacto; host.
+- **Siguiente:** vuelve al Coordinator. No se prepara nada para el trío nuevo sin su disposición. Ni Controller ELIGIBLE, ni FX-02 PASS, ni F6
+  GATE PASS.
