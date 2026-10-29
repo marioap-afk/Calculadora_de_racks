@@ -1,0 +1,61 @@
+{
+  "Validator": "RackCad.Tests.StateV2Validator (F4 production validator, I-62)",
+  "DllSha256": "D7150126E43F8430A7042C32DF68C80EA99697458D7F651B9E86F0C2C6C42A8A",
+  "Repo": "origin of I-66 (local worktree of fix/placedclone-copia-anotaciones)",
+  "Commit": "70434e0fb217a0d8055dbff792763a7939cf7529",
+  "StatePath": "docs/automation/evidence/I-66-R1/state.v2.yml",
+  "StateBlobSha256": "2166aed704aab78545bb8274ef21b755150a057a9e3e068bb9c31bcea4fb3568",
+  "Point": "BOOTSTRAP",
+  "RecordVersion": 1,
+  "CanonicalForm": true,
+  "File": null,
+  "History": null,
+  "Negatives": [
+    {
+      "Case": "NEG-1 blob del binding alterado",
+      "Expected": [
+        "I-S13",
+        "I-S14"
+      ],
+      "Observed": [
+        "I-S13",
+        "I-S14"
+      ],
+      "Caught": true
+    },
+    {
+      "Case": "NEG-2 aceptación del Principal ACCEPTED en BOOTSTRAP",
+      "Expected": [
+        "I-S01",
+        "I-S16"
+      ],
+      "Observed": [
+        "I-S01",
+        "I-S14",
+        "I-S16"
+      ],
+      "Caught": true
+    },
+    {
+      "Case": "NEG-3 preflight inexistente en el árbol",
+      "Expected": [
+        "I-S13"
+      ],
+      "Observed": [
+        "I-S13"
+      ],
+      "Caught": true
+    },
+    {
+      "Case": "NEG-4 clave desconocida (forma cerrada B.8.1)",
+      "Expected": [
+        "B.8.1"
+      ],
+      "Observed": [
+        "B.8.1"
+      ],
+      "Caught": true
+    }
+  ],
+  "Verdict": "PASS"
+}
