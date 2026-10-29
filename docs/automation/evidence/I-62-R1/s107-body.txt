@@ -1,0 +1,72 @@
+I-62 — COORDINATOR DISPOSITION §107
+R1a / I-66 / REAL SESSION TRANSFER
+1. Resultados anteriores
+Aceptar AT-1 = PASS y AT-2 = PASS, sobre la evidencia custodiada en I-66 y registrada en I-62 §216.
+Conservar sus limitaciones declaradas. No considerar acreditada todavía la portabilidad entre sesiones.
+R1a sigue en SHADOW.
+I-61 y WORKFLOW mantienen toda la autoridad operativa.
+2. Objetivo inmediato
+Autorizar AT-3: demostrar transferencia y reanudación reales entre dos sesiones independientes sobre I-66.
+No iniciar otra iniciativa ni preparar nuevos kits de revisión generales.
+3. Preparación del handoff
+En I-66, emitir el G0 correspondiente mediante la autoridad de WORKFLOW y registrar la observación en sombra.
+Continuar con QU y trabajo funcional directo de la sesión A sobre el defecto H4 de PlacedClone.
+Exigir:
+
+* cambio funcional acotado;
+* prueba RED antes de la corrección;
+* corrección GREEN;
+* evidencia Git y CI;
+* estado state/v2 válido;
+* límites de alcance y autoridad intactos.
+
+No declarar completada I-66 todavía.
+4. Transferencia QH
+Cuando exista un punto intermedio reproducible:
+
+* crear QH en sombra;
+* custodiar el estado;
+* sellar un oráculo mecánico de reanudación;
+* publicar el handoff;
+* verificar integridad y CI;
+* terminar la sesión A sobre I-66.
+
+El oráculo no se entrega a B.
+5. Sesión B
+No abrir B automáticamente.
+Cuando QH esté completo, solicitar al Owner abrir una sesión nueva e independiente.
+Entregar a B únicamente la identificación de I-66, su rama y la instrucción de reconstruir el trabajo desde el repositorio.
+B debe:
+
+* autoverificarse;
+* recuperar contexto desde Git;
+* verificar estado y autoridad;
+* formular su decisión de reanudación;
+* publicar esa decisión antes de conocer el oráculo;
+* continuar solo si las comprobaciones de I-61/WORKFLOW lo permiten.
+
+6. Comparación
+Comparar mecánicamente la decisión de B contra el oráculo sellado.
+AT-3 = PASS únicamente si identidad, contexto, punto de reanudación y decisión coinciden con los criterios aprobados.
+Una coincidencia de texto sin reanudación efectiva no basta.
+7. Continuación
+Tras AT-3, preparar AT-4: continuar I-66 hasta el gate siguiente y comprobar el resultado funcional.
+No incorporar nuevas capacidades al protocolo antes de terminar este flujo.
+8. Límites
+No reanudar A6-7 ni FX-02.
+No ejecutar Codex para el piloto.
+No activar I62_R1.
+No aplicar A-8.
+No modificar I-64, I-65 ni infraestructura compartida.
+9. Entrega
+Informar:
+
+* G0 y QU;
+* avance funcional RED/GREEN;
+* QH y evidencia;
+* oráculo sellado;
+* estado de AT-3;
+* acción exacta requerida del Owner para abrir B;
+* commits y CI.
+
+Priorizar una transferencia funcional, no más documentación arquitectónica.

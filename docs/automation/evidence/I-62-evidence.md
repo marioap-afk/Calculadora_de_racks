@@ -5263,3 +5263,14 @@ solo desde artefactos custodiados.
   un oráculo sellado por la supervisión; el Owner abre la sesión B, que se autoverifica, reconstruye solo desde el repositorio y publica su
   RESUME_DECISION antes de la comparación mecánica (comparador de FX-04a).
 - Sin A6-7, sin Codex, sin integración. Ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
+
+## 217. Decisiones §107: AT-1 y AT-2 aceptados; AT-3 autorizado sobre I-66 (G0, QU, trabajo directo de A, QH, sesión B)
+
+- **Disposición:** decisiones §107; el cuerpo pegado (2 737 bytes, SHA-256 `264f27364966f431…`) está en
+  [`I-62-R1/s107-body.txt`](I-62-R1/s107-body.txt).
+- **Orden de ejecución en I-66** (rama `fix/placedclone-copia-anotaciones`): G0 por WORKFLOW con su observación en sombra; QU en sombra; Discovery,
+  Freeze breve y revisión del Architect según INITIATIVE_LIFECYCLE §4-§6 (I-66 es V2); RED y GREEN de H4 con CI; QH en sombra con un oráculo
+  sellado fuera del repositorio y su SHA-256 publicado antes de que B empiece; fin de A sobre I-66; petición al Owner para abrir B.
+- **Coordinación con I-65:** I-65 abrió su ventana W-R1a de AutoCAD (~16:37Z, hasta ~19:30Z como máximo) y pidió que la petición al Owner de abrir B
+  espere a su aviso de cierre (parada WR1-ST-02 si el Owner usa el equipo durante la ventana). Aceptado: I-62 no usa la pantalla.
+- Sin A6-7, sin FX-02, sin Codex, sin activar I62_R1 ni aplicar A-8, sin integración.
