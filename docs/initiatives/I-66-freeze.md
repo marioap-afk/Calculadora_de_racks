@@ -1,6 +1,6 @@
 # I-66 — Freeze: PlacedClone copia los campos de texto y de cota
 
-Frozen: NO
+Frozen: YES
 
 Unit: `I-66`. Workflow: V2. Archetype: EXTENSION. Rama `fix/placedclone-copia-anotaciones`, base `bb0d5522`.
 Contrato: [I-66-placedclone-copia-anotaciones.md](I-66-placedclone-copia-anotaciones.md). Decisiones: [decisions/I-66.md](../automation/decisions/I-66.md).
