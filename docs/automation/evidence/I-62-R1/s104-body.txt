@@ -1,0 +1,63 @@
+I-62 — COORDINATOR DISPOSITION §104
+FUNCTIONAL FIRST / INCREMENTAL DELIVERY STRATEGY
+1. Cambio de prioridad
+El objetivo inmediato de I-62 deja de ser completar toda la arquitectura antes de obtener valor.
+La prioridad es entregar lo antes posible una versión mínima funcional, segura y utilizable en una iniciativa real de RackCad.
+Después se desarrollarán incrementos cortos para ampliar la funcionalidad a otras iniciativas.
+2. Primera entrega
+Evaluar los componentes ya implementados y acreditados para identificar la capacidad mínima que puede activarse sin depender de FX-02/C-24.
+Considerar especialmente FX-01, FX-04a, FX-05 y los controles mecánicos disponibles.
+La primera entrega debe permitir un flujo real y delimitado, no solamente documentación o una demostración sintética.
+No declarar funcional ninguna capacidad cuya operación real no esté demostrada.
+3. Integración parcial
+Determinar qué requisitos del Freeze, de I-61, de I-62 y del proceso de integración impiden una primera entrega parcial.
+Preparar una propuesta de cambio mínimo para permitir activación por capacidades, si resulta necesaria.
+No sustituir unilateralmente los gates existentes ni activar superficies inactivas.
+Mantener I-61 vigente para todas las operaciones no cubiertas por la primera entrega autorizada.
+4. Alcance mínimo
+Definir:
+
+* funciones incluidas;
+* funciones explícitamente excluidas;
+* iniciativa piloto;
+* pruebas de aceptación;
+* límites de autonomía;
+* mecanismos de reversión;
+* condiciones de fallo cerrado;
+* autoridad necesaria para integrar.
+
+Evitar incluir nuevas capacidades que no sean indispensables para la primera entrega.
+5. FX-02 y A6-7
+Conservar íntegramente el trabajo y las autorizaciones existentes.
+No consumir la medición de A6-7 ni iniciar otro ciclo de recuperación del runtime mientras se decide la primera entrega.
+FX-02 continuará como incremento posterior si no es indispensable para la versión mínima.
+No rebajar sus criterios ni declarar C-24 PASS.
+6. Incrementos posteriores
+Proponer una secuencia corta de ampliaciones independientes, priorizadas por valor para RackCad:
+
+* verificación del Controller;
+* ejecución delegada más autónoma;
+* controles de seguridad de Workers;
+* compatibilidad con distintas topologías;
+* adopción por I-64 e I-65;
+* automatización adicional.
+
+Cada incremento debe producir una capacidad demostrable y tener sus propias condiciones de aceptación.
+7. Límites
+DESIGN AND PLANNING AUTHORIZATION = YES.
+IMPLEMENTATION AND INTEGRATION AUTHORIZATION = NO hasta aprobar el alcance mínimo y sus gates.
+No modificar producción, I-64, I-65 ni infraestructura compartida.
+No iniciar otra enmienda extensa ni construir kits de revisión por esta orden.
+8. Entrega
+Entregar una propuesta ejecutiva breve con:
+
+1. versión mínima funcional recomendada;
+2. componentes que pueden reutilizarse;
+3. bloqueos normativos concretos;
+4. cambio mínimo de autoridad necesario;
+5. iniciativa piloto;
+6. pruebas mínimas de aceptación;
+7. secuencia de incrementos posteriores;
+8. primera acción de implementación ejecutable.
+
+Priorizar decisiones que permitan empezar a implementar, no más investigación general.

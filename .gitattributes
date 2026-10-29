@@ -62,3 +62,7 @@ docs/automation/evidence/I-62-A6/m7/s101/**  -text
 # I-62 (decisiones §103; evidencia §213 y siguientes) — recuperación de la medición A6-7 para el trío nuevo de Codex. Sus SHA-256 están
 # en MANIFEST.sha256; `-text` conserva los bytes exactos.
 docs/automation/evidence/I-62-A6/m7/s103/**  -text
+
+# I-62 (decisiones §104; evidencia §214) — primera entrega funcional: cuerpo de §104 y propuesta ejecutiva. Sus SHA-256 están en
+# MANIFEST.sha256; `-text` conserva los bytes exactos.
+docs/automation/evidence/I-62-R1/**  -text

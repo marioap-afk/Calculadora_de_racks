@@ -5187,3 +5187,21 @@ solo desde artefactos custodiados.
   sin cambios. Las líneas de §102 no se reutilizan.
 - **Siguiente:** observaciones pasivas separadas de la identidad candidata y, solo tras estabilidad, la copia recuperada del kit, su validación
   incremental, un FREEZE nuevo y la secuencia de lanzamiento concentrada (A-G de §103, punto 4). Sin `prep_write.py`, sin Codex.
+
+## 214. Decisiones §104: primero lo funcional; propuesta ejecutiva de la primera entrega (R1 «Principal portable»); recuperación de §103 detenida
+
+- **Disposición:** decisiones §104; el cuerpo pegado (3 203 bytes, SHA-256 `6a07bc719fe62a0a…`) está en
+  [`I-62-R1/s104-body.txt`](I-62-R1/s104-body.txt).
+- **Recuperación de §103 detenida por §104, punto 5:** se hizo una sola observación pasiva de las tres previstas
+  ([`s103/identity/obs9.json`](I-62-A6/m7/s103/identity/obs9.json), 2026-10-29T03:59:28Z), igual al trío candidato `0c09e45b`/26.1023.6621.0/`FEA91A79`,
+  con los 106 nombres de la línea base. Las dos siguientes se cancelaron antes de ejecutarse. No se preparó la copia del kit, el kit v2 sigue
+  intacto, no se ejecutó `prep_write.py` y el consumo de A6-7 sigue en 0/1.
+- **Propuesta** ([`I-62-R1/propuesta-entrega-1.md`](I-62-R1/propuesta-entrega-1.md)):
+  - R1 «Principal portable»: autoverificación al abrir, custodia `state/v2` en puntos durables, reanudación verificada por otro Principal y
+    separación de planos. Se apoya en FX-01, FX-04a y FX-05 PASS y deja fuera toda ejecución delegada, que sigue con I-61;
+  - bloqueos B1-B7 del Freeze;
+  - R1a, piloto en sombra sin enmienda; R1b, A-8 corta con OD-1-R1;
+  - piloto candidato: I-50 H4 (`HeaderRunPlan.PlacedClone`, Application, pruebas Core);
+  - pruebas AT-1..AT-6;
+  - incrementos R2-R7.
+- Diseño y planificación solamente: sin implementación, integración, enmienda ni kit de revisión. Ni Controller ELIGIBLE, ni FX-02 PASS, ni F6 GATE PASS.
