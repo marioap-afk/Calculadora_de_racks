@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "E1 (decisiones §109): publicar la A-8 de dos reglas y su única revisión concentrada del Architect; con A-8 acordada, RED → GREEN de eng/automation/initiative-state.ps1, CI, PF-1 y update del estado de I-62; PF-2 con una sesión nueva del Owner; AT-3 de I-66 sigue esperando la sesión B; sin Codex ni integración"
+  next_action: "E1 (decisiones §110): A-8 ronda 2 (d4db4b30, blob d2b319ff) corrige A62-A8-R1..R6; falta la decisión OWNER-RESERVED del Owner sobre el alcance y el acuerdo formal del Coordinator sobre la ronda 2; después, RED → GREEN, CI, PF-1, update del estado y PF-2; AT-3 de I-66 sigue esperando la sesión B; sin Codex ni integración"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
