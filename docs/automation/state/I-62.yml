@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "E1 (decisiones §110): A-8 ronda 2 (d4db4b30, blob d2b319ff) corrige A62-A8-R1..R6; falta la decisión OWNER-RESERVED del Owner sobre el alcance y el acuerdo formal del Coordinator sobre la ronda 2; después, RED → GREEN, CI, PF-1, update del estado y PF-2; AT-3 de I-66 sigue esperando la sesión B; sin Codex ni integración"
+  next_action: "Coordinator: acuerdo formal de A-8 ronda 2 (d4db4b30, blob d2b319ff; decisiones §110), con el alcance ya aprobado por el Owner (§111); después, RED → GREEN de E1, CI, PF-1, update del estado y PF-2; AT-3 de I-66 sigue esperando la sesión B; sin Codex ni integración"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual
