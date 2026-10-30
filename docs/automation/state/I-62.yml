@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "F6/R1 (decisiones §107; evidencia §217-§218) — AT-3 preparado en I-66: G0, QU, RED 3581f65e → GREEN beec69e4, QH 5d52e5d8 validado (PASS) y oráculo sellado (dfaf76ff…); A terminado sobre I-66; siguiente: el Owner abre la sesión B con el texto de I-62-R1/AT-3/b-kickoff.txt tras el cierre de W-R1a de I-65; B publica su RESUME_DECISION antes de la comparación mecánica; A-8 solo borrador; A6-7 congelada (0/1); sin Codex ni integración"
+  next_action: "Coordinator: decidir la propuesta E1 (decisiones §108; I-62-R1/propuesta-e1-estado.md): script de estado v1 resume/update/check con pruebas Core y A-8 de dos reglas; Owner: rama de entrega desde origin/main. En paralelo, AT-3 de I-66: el Owner abre la sesión B con el texto de I-62-R1/AT-3/b-kickoff.txt; sin Codex ni integración"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

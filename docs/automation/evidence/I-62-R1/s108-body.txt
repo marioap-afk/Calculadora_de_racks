@@ -1,0 +1,42 @@
+I-62 — COORDINATOR DISPOSITION
+SIMPLIFICACIÓN Y ENTREGA FUNCIONAL
+El Owner establece como prioridad que I-62 sea utilizable por las iniciativas existentes, sin aumentar innecesariamente el número de iniciativas abiertas.
+1. Objetivo inmediato
+Implementar y entregar un mecanismo mínimo de persistencia y recuperación de contexto entre sesiones.
+Una sesión nueva debe poder abrir el worktree de una iniciativa existente, leer su estado desde Git e identificar qué trabajo puede continuar.
+2. Prohibición de nuevas iniciativas auxiliares
+No abrir nuevas iniciativas, unidades piloto ni ramas exclusivamente para validar I-62 sin autorización expresa del Owner.
+Reutilizar las iniciativas y evidencias existentes.
+I-66 conserva su propósito funcional de corregir PlacedClone, pero no debe convertirse en un programa permanente de validación del protocolo.
+3. Implementación mínima
+Concentrar el trabajo de I-62 en:
+
+* estado persistente y comprensible;
+* recuperación automática desde Git;
+* identificación del siguiente paso ejecutable;
+* actualización del estado al terminar una tarea;
+* validaciones básicas mediante herramientas existentes.
+
+Evitar añadir componentes que no sean indispensables para estas capacidades.
+4. Reutilización
+Aprovechar las implementaciones F1–F4, StateV2Validator, preflight y herramientas ya desarrolladas.
+No construir nuevos auditores, esquemas o kits por defecto.
+5. Integración
+Identificar el cambio mínimo de autoridad necesario para hacer utilizable esta funcionalidad en las iniciativas existentes.
+No activar unilateralmente superficies inactivas ni declarar satisfechos gates pendientes.
+Si el Freeze actual impide una primera entrega, presentar únicamente el bloqueo exacto y el cambio mínimo necesario para resolverlo.
+6. Incrementos posteriores
+Después de la primera entrega funcional, incorporar mediante cambios pequeños las capacidades adicionales de Controller, ejecución delegada, seguridad y autonomía.
+No abrir una iniciativa nueva por cada incremento.
+7. Entrega requerida
+Presentar una propuesta de implementación breve que indique:
+
+* qué código existente permite recuperar contexto hoy;
+* qué falta para hacerlo utilizable;
+* archivos concretos que deben cambiar;
+* prueba funcional mínima sobre un worktree existente;
+* autoridad necesaria;
+* primera acción ejecutable.
+
+No iniciar otra ronda extensa de diseño o revisión.
+La prioridad es entregar funcionalidad, no ampliar el protocolo.
