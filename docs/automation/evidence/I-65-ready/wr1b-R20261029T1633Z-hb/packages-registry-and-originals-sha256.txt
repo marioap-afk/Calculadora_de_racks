@@ -1,0 +1,35 @@
+20b7053689c18e7091efed14eda7e0eba1204fef3b2bc79cfdd496481df4cc56  hb/pkg-HB/manifest.json
+f89f8f5e64416c73d0e0770214205b8b7423e5183d3eb31a2ca3e1a0adda3cce  hb/pkg-HB/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05  hb/pkg-HB/structural-loads.json
+0082378323243ed10183239209f769d28102ae7a6bb8cb7d7efe2a30be31c1ee  hb/validator-v2-pkg-HB.json (original)
+fe74a991c42419324bdbb6c91bd9fa14e2b55be37939589be6a35031d98f579a  hb/pkg-HB2/manifest.json
+7abf2f62ea85ec766f04867186beaacd757e61b8e50b2ef685c0d9f4ea005a04  hb/pkg-HB2/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05  hb/pkg-HB2/structural-loads.json
+829a7a6dc0ae6bf86f049968d4786e879205fb3f2748e2e5ec4353bef85ecbe3  hb/validator-v2-pkg-HB2.json (original)
+13430739eb82fd1c9f6898a5acb2056bb71961fc583662cc7e04004f9e4e0e59  hb/baseline/hkcu-applications.reg
+f52448b760c7e9a06d641ccb9943a21d0aad383e5322629b0feea6f9d871a267  hb/baseline/hkcu-fixedprofile.reg
+be9ec134f9b1c638e838a74769252999ee6cad6a6e9dce560c744f3032d549ea  hb/baseline/hkcu-installedapplications.reg
+dd27f202b0ec94eaf72dd7b57e42a34036b8a4456c56b70701f36faf26daef8b  hb/baseline/hkcu-loaded.reg
+1d7aac3dad60def180d9b059f501aa7b4a26842ba433e7e5cc87f7bcb3b5c559  hb/baseline/hkcu-profiles.reg
+7d1debf2173e0da569184589110e931fb7efbed46d2d4ac7891f551b12665f9f  hb/baseline/hklm-applications.reg
+13430739eb82fd1c9f6898a5acb2056bb71961fc583662cc7e04004f9e4e0e59  hb/recheck-pre-install/baseline/hkcu-applications.reg
+f52448b760c7e9a06d641ccb9943a21d0aad383e5322629b0feea6f9d871a267  hb/recheck-pre-install/baseline/hkcu-fixedprofile.reg
+be9ec134f9b1c638e838a74769252999ee6cad6a6e9dce560c744f3032d549ea  hb/recheck-pre-install/baseline/hkcu-installedapplications.reg
+dd27f202b0ec94eaf72dd7b57e42a34036b8a4456c56b70701f36faf26daef8b  hb/recheck-pre-install/baseline/hkcu-loaded.reg
+1d7aac3dad60def180d9b059f501aa7b4a26842ba433e7e5cc87f7bcb3b5c559  hb/recheck-pre-install/baseline/hkcu-profiles.reg
+7d1debf2173e0da569184589110e931fb7efbed46d2d4ac7891f551b12665f9f  hb/recheck-pre-install/baseline/hklm-applications.reg
+5bf0c807ca5c1ff45fd41630844e84f718d890f9abbf8139ee6821a040bde570  hb/post/hkcu-applications.reg
+f52448b760c7e9a06d641ccb9943a21d0aad383e5322629b0feea6f9d871a267  hb/post/hkcu-fixedprofile.reg
+be9ec134f9b1c638e838a74769252999ee6cad6a6e9dce560c744f3032d549ea  hb/post/hkcu-installedapplications.reg
+90629234864be8fa99fb9c0b8c849e720edeb39769a28f544a46747d8f852b34  hb/post/hkcu-loaded.reg
+30195c0329cd81e6d04a8b51ba316ab2ba44d7f45c858a4d67ad18e5281a634c  hb/post/hkcu-profiles.reg
+7d1debf2173e0da569184589110e931fb7efbed46d2d4ac7891f551b12665f9f  hb/post/hklm-applications.reg
+ac2c8014d05c5aaa6abcd384ddf7724834a41eaeb78fc4a140f98d92c3e948bb  ov08/hb-ref.dwg
+2502297eade1e7eaace57b00d86fcdecab3b237e3db1df487da0868f7e883151  ov08/Drawing1.dwg
+ac2c8014d05c5aaa6abcd384ddf7724834a41eaeb78fc4a140f98d92c3e948bb  ov08/Drawing1.bak
+bc3540d76a65a7b69c81b8c59382f0f18b11870b129a50f6ead22dbb1d1700c0  hb/hb01-roots.txt (original completo)
+8e9caf9f5e797d0113c60fc403eece6f514c97e04527047ad760f3027c296314  hb/hb02-roots.txt (original completo)
+9fce681e50a02945aa6a6963820237d19b1c9c0b750a385086d1aac8fad3f9af  hb/hb05b-roots.txt (original completo)
+c5ec43a9af036b285e202af136f4269653338325461cecc48f9b680fe7cdb897  hb/hb05c-roots.txt (original completo)
+nota: los manifest.json y los informes del validador originales contienen el nombre del verificador; se versionan copias redactadas y estos SHA-256.
+nota: las exportaciones .reg (contienen rutas con la cuenta de Windows) quedan en local; el residuo del Autoloader se versiona saneado en hb05c-autoloader-residue.txt.

@@ -1,0 +1,35 @@
+# I-65 W-R1b HB-05b: inventario del RackCad.bundle instalado, comparacion con el de HB-02 y retirada de ESA ruta literal.
+# Si el inventario difiere: copia las diferencias a <Hb>\hb05b-diff\, desinstala igualmente y sale con 3 (hallazgo -> STOP tras restaurar).
+# Uso: pwsh -NoProfile -File hb05b_uninstall.ps1 -Hb <corrida>\hb
+param([Parameter(Mandatory)][string]$Hb)
+$ErrorActionPreference = 'Stop'
+$L = New-Object Collections.Generic.List[string]
+$L.Add("time_utc=" + [DateTime]::UtcNow.ToString('o'))
+if (@(Get-Process -Name acad -ErrorAction SilentlyContinue).Count -ne 0) { throw 'acad abierto' }
+$root = Join-Path $env:APPDATA 'Autodesk\ApplicationPlugins'
+$r = Join-Path $root 'RackCad.bundle'
+if (-not (Test-Path -LiteralPath $r -PathType Container)) { throw "no existe $r" }
+if ((Split-Path -Leaf $r) -ne 'RackCad.bundle' -or (Split-Path -Parent $r) -ne $root) { throw 'ruta inesperada' }
+$inv = Get-ChildItem -LiteralPath $r -Recurse -Force -File | Sort-Object FullName | ForEach-Object { $_.FullName.Substring($r.Length + 1).Replace('\','/') + '  ' + (Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash.ToLower() + '  ' + $_.Length }
+$t = ($inv -join "`n") + "`n"
+[IO.File]::WriteAllText((Join-Path $Hb 'hb05b-installed-inventory.txt'), $t)
+$before = [IO.File]::ReadAllText((Join-Path $Hb 'hb02-installed-inventory.txt'))
+$dirsNow = @(Get-ChildItem -LiteralPath $r -Recurse -Force -Directory).Count
+$L.Add("files=" + @($inv).Count + " dirs=" + $dirsNow + " inventory_sha256=" + [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($t))).ToLower())
+$same = ($t -ceq $before)
+$L.Add("inventory_equal_to_hb02=" + $same)
+$code = 0
+if (-not $same) {
+  $code = 3
+  $d = Join-Path $Hb 'hb05b-diff'; New-Item -ItemType Directory -Path $d | Out-Null
+  $b = @($before.TrimEnd("`n").Split("`n")); $a = @($inv)
+  foreach ($x in (Compare-Object $b $a)) { $L.Add("diff " + $x.SideIndicator + " " + $x.InputObject) }
+  foreach ($x in ($a | Where-Object { $b -notcontains $_ })) { $rel = ($x -split '  ')[0]; $dst = Join-Path $d ($rel.Replace('/','_')); Copy-Item -LiteralPath (Join-Path $r $rel.Replace('/','\')) -Destination $dst }
+}
+Remove-Item -LiteralPath $r -Recurse -Force
+$L.Add("removed=" + (-not (Test-Path -LiteralPath $r)))
+$left = @(Get-ChildItem -LiteralPath $root -Force -Name)
+$L.Add("user_root_after count=" + $left.Count + " entries=" + ($left -join ','))
+$L | Set-Content -LiteralPath (Join-Path $Hb 'hb05b-uninstall.txt') -Encoding utf8NoBOM
+$L
+exit $code

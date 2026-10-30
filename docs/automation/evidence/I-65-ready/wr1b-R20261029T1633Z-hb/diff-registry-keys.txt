@@ -1,0 +1,27 @@
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU0"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU1"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU2"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU3"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU4"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU5"
+hkcu-profiles NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU6"
+hkcu-profiles NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Variables :: "VIEWBACKSTATUS"
+hkcu-fixedprofile IGUAL
+hkcu-applications NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad\Groups :: @
+hkcu-applications NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad\Groups :: <clave>
+hkcu-applications NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad :: "DESCRIPTION"
+hkcu-applications NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad :: "LOADCTRLS"
+hkcu-applications NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad :: "LOADER"
+hkcu-applications NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad :: "MANAGED"
+hkcu-applications NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad :: <clave>
+hkcu-installedapplications IGUAL
+hkcu-loaded NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll :: "Name"
+hkcu-loaded NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll :: "Type"
+hkcu-loaded NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll :: <clave>
+hkcu-loaded NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings :: "RackCad.Plugin"
+hkcu-loaded NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings :: <clave>
+hkcu-loaded NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle :: "ProductCode"
+hkcu-loaded NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle :: "Publisher"
+hkcu-loaded NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle :: "Version"
+hkcu-loaded NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle :: <clave>
+hklm-applications IGUAL

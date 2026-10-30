@@ -1,0 +1,30 @@
+# I-65 W-R1b (HB-01 / HB-05b / HB-05c): listados de las cuatro raices de ApplicationPlugins, referencias RackCad.bundle en las
+# exportaciones .reg de una fase y cobertura booleana de TRUSTEDPATHS sobre la raiz del usuario. SOLO LECTURA salvo <OutDir>\<Tag>-*.txt.
+# Uso: pwsh -NoProfile -File hb_roots.ps1 -OutDir <corrida>\hb -Tag hb01|hb02|hb05b|hb05c [-RegDir <corrida>\hb\baseline]
+param([Parameter(Mandatory)][string]$OutDir, [Parameter(Mandatory)][string]$Tag, [string]$RegDir)
+$ErrorActionPreference = 'Stop'
+$roots = [ordered]@{ 'root1-user' = "$env:APPDATA\Autodesk\ApplicationPlugins"; 'root2-programdata' = "$env:ProgramData\Autodesk\ApplicationPlugins"; 'root3-programfiles' = "$env:ProgramFiles\Autodesk\ApplicationPlugins"; 'root4-programfilesx86' = "${env:ProgramFiles(x86)}\Autodesk\ApplicationPlugins" }
+$L = New-Object Collections.Generic.List[string]
+$L.Add("time_utc=" + [DateTime]::UtcNow.ToString('o'))
+$L.Add("acad=" + @(Get-Process -Name acad -ErrorAction SilentlyContinue).Count + " ram=" + @(Get-Process -Name RAMElements -ErrorAction SilentlyContinue).Count)
+foreach ($k in $roots.Keys) {
+  $r = $roots[$k]
+  if (-not (Test-Path -LiteralPath $r)) { $L.Add("$k ABSENT"); continue }
+  $items = @(Get-ChildItem -LiteralPath $r -Recurse -Force | Sort-Object FullName | ForEach-Object { $_.FullName.Substring($r.Length + 1) + $(if ($_.PSIsContainer) { '\' } else { '  ' + $_.Length }) })
+  $top = @(Get-ChildItem -LiteralPath $r -Force -Name)
+  $L.Add("$k top=" + $top.Count + " recursive=" + $items.Count + " rackcad_top=" + @($top | Where-Object { $_ -match 'RackCad' }).Count + " rackcad_any=" + @($items | Where-Object { $_ -match 'RackCad' }).Count)
+  foreach ($i in $items) { $L.Add("  $k | $i") }
+}
+if ($RegDir) {
+  $n = 0
+  foreach ($f in @(Get-ChildItem -LiteralPath $RegDir -Filter *.reg | Sort-Object Name)) { $c = ([regex]::Matches((Get-Content -LiteralPath $f.FullName -Raw), 'RackCad\.bundle', 'IgnoreCase')).Count; $n += $c; $L.Add("reg_refs " + $f.Name + "=" + $c) }
+  $L.Add("reg_refs_total=" + $n)
+}
+$prod = 'Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409'
+$prof = (Get-ItemProperty -LiteralPath "HKCU:\$prod\Profiles").'(default)'
+$tp = [string](Get-ItemProperty -LiteralPath "HKCU:\$prod\Profiles\$prof\Variables" -Name TRUSTEDPATHS).TRUSTEDPATHS
+$u = $roots['root1-user']; $d = Join-Path $u 'RackCad.bundle\Contents'; $cov = $false; $covd = $false
+foreach ($e in @($tp.Split(';') | Where-Object { $_ -ne '' })) { $t = [Environment]::ExpandEnvironmentVariables($e.Trim()).TrimEnd('\'); $rec = $t.EndsWith('\...'); if ($rec) { $t = $t.Substring(0, $t.Length - 4) }; if (-not $t) { continue }; if (($u -ieq $t) -or ($rec -and $u.StartsWith($t + '\', [StringComparison]::OrdinalIgnoreCase))) { $cov = $true }; if (($d -ieq $t) -or ($rec -and $d.StartsWith($t + '\', [StringComparison]::OrdinalIgnoreCase))) { $covd = $true } }
+$L.Add("trustedpaths_covers_user_applicationplugins=" + $cov + " trustedpaths_covers_bundle_contents=" + $covd)
+$L | Set-Content -LiteralPath (Join-Path $OutDir "$Tag-roots.txt") -Encoding utf8NoBOM
+$L | Where-Object { $_ -notmatch '^  ' }

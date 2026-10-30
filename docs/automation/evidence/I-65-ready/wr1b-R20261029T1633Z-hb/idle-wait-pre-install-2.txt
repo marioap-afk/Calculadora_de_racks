@@ -1,0 +1,5 @@
+time_utc=2026-10-30T01:55:00.5923998Z user_idle_seconds=81.2 foreground_process=claude acad=0 ram=0
+time_utc=2026-10-30T01:55:11.9623460Z user_idle_seconds=92.5 foreground_process=claude acad=0 ram=0
+time_utc=2026-10-30T01:55:23.3025367Z user_idle_seconds=103.9 foreground_process=claude acad=0 ram=0
+time_utc=2026-10-30T01:55:34.6754424Z user_idle_seconds=115.2 foreground_process=claude acad=0 ram=0
+time_utc=2026-10-30T01:55:46.0777807Z user_idle_seconds=126.7 foreground_process=claude acad=0 ram=0

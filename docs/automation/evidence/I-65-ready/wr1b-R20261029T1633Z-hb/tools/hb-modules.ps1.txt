@@ -1,0 +1,12 @@
+# I-65 W-R1b: modulos RackCad.* cargados en acad.exe (ruta y SHA-256). SOLO LECTURA salvo el archivo de salida.
+# Uso: pwsh -NoProfile -File hb_modules.ps1 -Out <archivo>
+param([Parameter(Mandatory)][string]$Out)
+$ErrorActionPreference = 'Stop'
+$p = @(Get-Process -Name acad -ErrorAction SilentlyContinue)
+$L = New-Object Collections.Generic.List[string]
+$m = @()
+if ($p.Count -eq 1) { $m = @($p[0].Modules | Where-Object { $_.ModuleName -like 'RackCad*' } | Sort-Object ModuleName) }
+$L.Add("time_utc=" + [DateTime]::UtcNow.ToString('o') + " acad_count=" + $p.Count + " acad_pid=" + $(if ($p.Count -ge 1) { ($p | ForEach-Object { $_.Id }) -join ',' } else { '-' }) + " rackcad_plugin_count=" + @($m | Where-Object { $_.ModuleName -ieq 'RackCad.Plugin.dll' }).Count)
+foreach ($x in $m) { $L.Add($x.ModuleName + " " + $x.FileName + " " + (Get-FileHash -Algorithm SHA256 -LiteralPath $x.FileName).Hash.ToLower()) }
+$L | Set-Content -LiteralPath $Out -Encoding utf8NoBOM
+$L

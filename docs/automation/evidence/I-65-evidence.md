@@ -3377,3 +3377,101 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | Archivo | SHA-256 |
 |---|---|
 | `docs/automation/decisions/I-65-owner-disposition-wr1a-acceptance-wr1b-authorization.original.txt` | `E123E95A2DB83D3CD27D6BD923E182F9EC3B187EDFA7C7D89DD50AED81B8BE34` |
+
+## 122. W-R1b ejecutada sobre `4a03b65b`: HB-01..HB-05b conformes y STOP en HB-05c (2026-10-30T02:13:19Z)
+
+- **Corrida:** `D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\hb\` (BASELINE 21:09:50Z, comprobada otra vez a las 01:54:02Z; POST a las 02:05:4xZ).
+- **Ventana de pantalla:** AutoCAD pid 29912, de 01:56:41Z a 02:04:42Z; bundle instalado de 01:55:56Z a 02:05:28Z.
+- **Carga desde el Autoloader:** sin NETLOAD; aviso estándar → «Load Once». Módulos desde `%APPDATA%\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\`: Plugin `60e1dd44…`, Application `f5aa8a57…`, Domain `faae0407…` y UI `f92fd60c…`.
+- **Bundle:**
+  - inventario `33e660b2…` (25 archivos);
+  - `verify-bundle -BaselineInventoryPath` con 160 comprobaciones, en origen e instalado;
+  - inventario instalado `5d777353…`, igual antes de retirarlo;
+  - tabla `fc3d9146…` = fuente (`i/lf w/lf`).
+- **Paquetes:**
+
+  | Paquete | Archivos | Huella | Validador | Carga útil |
+  |---|---|---|---|---|
+  | `hb\pkg-HB` | manifest `20b70536…`, script `f89f8f5e…`, cargas `25f48e7f…` | `f69400f658bea7b74a59d5cd963e05a777641a821c19206706e8ec689b6d15eb` (= H1 = H2) | 16/16 | 117/117 |
+  | `hb\pkg-HB2` | manifest `fe74a991…`, script `7abf2f62…`, cargas `25f48e7f…` | `b7032b9f576ad7324f56f8a588fa555943095dad94008059239d2afa3f1394b9` | 16/16 | 117/117 |
+
+  `hb-ref.dwg` `ac2c8014…` sin cambios.
+- **Desinstalación:** raíz del usuario vacía = HB-01.
+- **POST:**
+  - PROHIBIDO en B-04 `hkcu-applications` (`13430739…` → `5bf0c807…`) y `hkcu-loaded` (`dd27f202…` → `90629234…`): residuo del Autoloader, 4 referencias `RackCad.bundle`;
+  - INFORMAR en `hkcu-profiles`;
+  - todo lo demás igual;
+  - K1 = K2 (`d0105e96…`).
+- **Privacidad (§90):**
+  - rutas con `<usuario>`;
+  - manifiestos e informes del validador con el verificador redactado;
+  - listados de las raíces de Program Files reducidos a recuentos y huellas;
+  - capturas recortadas y con el nombre de la cuenta y de la organización tapados;
+  - exportaciones del registro, paquetes originales y capturas originales en local, con su SHA-256;
+  - barrido `secrets_scan.py` con 0 coincidencias.
+- Informe: `I-65-ready/wr1b-R20261029T1633Z-hb/wr1b-report.md`. Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-host-release-wr1b.original.txt` | `B08B8E2E3B1A8C03F58D0C0FB434E79A7EDF22A71711C51EF7E6356608788331` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/baseline-summary.txt` | `0CB825CEA0B27089581E7F391DD8C2BEB3105607E82A52926DB9BAA1AC76341F` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures-sources.txt` | `2C39E5D1B9B5415D321F91881F536EA894BEF4EDCF4505933E2080D42ED95C62` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB03-aviso-seguridad-load-once.jpg` | `7D28F1EEC8165982DBA31520410062285DFB5304197F1E8B03DAA9859DFA5648` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB03-historial-sin-netload.jpg` | `A2DA2A7BBC642616EF994A8DCFBF254F9CC261728210A3BBD50482D0B2540EE1` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04a-cargas-tecleadas.jpg` | `54518DB70EA8F5402E9B1035DC967EBF1BBCD3A9669139E15B68616CC2C86D66` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04a-carpeta-pkg-HB-tecleada.jpg` | `998384CDEB80ADC71CD6521F10FCCAA093B8055934C8547E97533F036EC83250` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04a-consola-valid-huella-H1.jpg` | `1A92529CB6392681E41A13FE8745702745CE8C18DB9203A968C5FD3932BD1186` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04a-hb-ref-abierto-vista-frontal.jpg` | `167134612CFDEB495775F11B31B17A8CAE7FC853521D06377F8CE3015694F9DC` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04a-select-file-ov08.jpg` | `DA176DF6111ADF70C244CFD4EB196E2DB4498A149457DB3B64690150DB7BB552` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04b-cargas-tecleadas.jpg` | `AC1780885CA37B86F0320F1D1AA58499E2645A0913B96E67BCFE61C7D8AB3D8A` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04b-carpeta-pkg-HB2-tecleada.jpg` | `42539AFDAE178CD01E2E5149E5EEF434B0DEF929D027898B50FE8F35A4A2A6E0` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04b-consola-valid.jpg` | `9894B21980AA441C04A9F7739145C572FBA5939E4A997BFCDFD879719CBBDDE3` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04b-ref-brazo-hss4x4x1_4.jpg` | `8047B7AC810ABD0376417DD4B6F82E0908ECD97F5946E0DA0453F53694F74E4D` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04b-ref-columna-base-w12x26.jpg` | `96832390C66DD68414D98ACC0EA77B1A8774E392F5918D365368F3853C2208BC` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04b-ref-linea-resuelta-resumen.jpg` | `4349B76E9CDE2AE0F8E5A5FCA7455DE1D18FA737AF8BD4683C4162C486EF6BDB` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04b-ref-topologia.jpg` | `408F26986817C14AD73E6D876AD2B08C5B8B427EF8A53684A0EC0E518F94914B` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB04b-vista-frontal-insertada.jpg` | `B80FCC8E51666BB5485124B25B7FDA18ACB61A3079CE0A7DD4AF1DB825784A5E` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/captures/HB05a-cerrar-sin-guardar.jpg` | `F4C370A8F787B1307ABF97D8160B8AC0CC3B678791EBAC793A83555DA95EA613` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/declaration-recheck-wr1b-2.txt` | `98447A0E1BCBA5F5FAC3C01B41EEE29DFCFAB614E196A0346B2C51B08FFA730B` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/declaration-recheck-wr1b.txt` | `28CD8984F44D60F73FC8A0BD36A94F50E2800C5D0AFEA4261C05583819914614` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/diff-registry-keys.txt` | `1E6300385AD1B1CFDC86E6455C1AF6BBF7C39E2CE5AB026FC96D25B86C032480` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb01-recheck-roots.txt` | `0C9A0F8842BFFDFF4E2B98E29F2E6CFCC2B266D1FCE263CA339AD9B8AF1C210E` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb01-roots.txt` | `6DA20AD623FD528D2F5F110CBFACFECBF16D43954224969BE06AFFC96DA8E9C9` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb02-1-verify-source.txt` | `FEBBB2FFE086EDBBEC1A158C43E0C28749C3463155FBC05D1E8DE5694E3B0E70` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb02-2-install.txt` | `E4B2040E0B184212FA5204AAC038BFCAD725F30BB4DC967326B6E7741C22060A` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb02-3-verify-installed.txt` | `D706D08110BDE73301722684954A31848B6A34264ED53EBE083BE624F78BD45E` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb02-4-table.txt` | `0207D3E20BAA159F1524B46BC054F9AFABCBAFBD818BFB2B64106D844EF921A8` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb02-installed-inventory.txt` | `5D777353673C98EFBB3DFFD52E9A142436195A4C6C19E283F8F078EECB06090E` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb02-roots.txt` | `A2F4B964A388B1AF5BF6A5FAD1E3187E3197F4A6945855CA1C2C0A0FF8ABEDBF` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb05b-installed-inventory.txt` | `5D777353673C98EFBB3DFFD52E9A142436195A4C6C19E283F8F078EECB06090E` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb05b-roots.txt` | `5039EC339D332CDE01FE862F6E8DDC32A11BA605CA81E7B5338C7C00AC7A0E4B` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb05b-uninstall.txt` | `9905D79C320CB5D794970C9F74E4D13BB9B44BFBDFD980A48F00890411A65C9A` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb05c-autoloader-residue.txt` | `8B6AC5B3B2B4992697AC4673400D233674A52CC117FBA43FEDC7243E8C87D2DE` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb05c-registry-lastwrite.txt` | `4005492DDCFA6B24D46D48D6FB8923A4225415DFB20BB15F2E925BFB6199DB1C` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb05c-registry-search-rackcad.txt` | `3B5560C753312400F1ECD407D465EB6717173D5CAB63E13D7B70D1112944B630` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/hb05c-roots.txt` | `85CCA9DF1C4E7EEA24CCFB4FBE1215E11F6E596A9FD681858FB90843995DD9D7` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/host-coordination-wr1b.md` | `F5D3C0C7DB77D03E2646EC261A2A47AE64EA91651270D33EFEB4B34FD2ECC127` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/idle-wait-pre-install-1.txt` | `9DCF75112426D1D645A50FF541217F029D80CB5066831AFCB86DE8A0429144DD` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/idle-wait-pre-install-2.txt` | `6ED3BDE826852923A03D52FDD3A100ED31B177DE0257D3F76B835E7827F5BA81` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/k1-k2-compare.json` | `D5EE2EED235905698403496486182D7D2DAAE04B62D3756F98020C9E5926FC04` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/manifest-pkg-HB.redacted.json` | `3678BE7317E0FB29AB6023AEC97C274E972120CF44963C2E65EDA517B4C3FF7A` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/manifest-pkg-HB2.redacted.json` | `CC23768C356551A2BF1AA4C5FAECF564AD064A34A12534CD75CD2990B4E068A8` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/module-list-HB-after-start.txt` | `FE18A5A60EA49FA27C70562573B0DF524218F117DF4AA5D75824E8425ABD20F3` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/module-list-HB-before-close.txt` | `16226696D5B1E1FDEAB0B4D3DA1059F6E0C154074E6F93B528178AEC3E0059A0` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/packages-registry-and-originals-sha256.txt` | `8CD3C39E88FFC8849814B1098D3C290E72F0D55644F1D10EF1AD8B66FD0749F8` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/payload-vs-manual-pkg-HB.json` | `187033AD5CDE6ADE28C7D941D6C6F9E193A2B8E7A66EFCEA06D5D5E7E83B99E3` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/payload-vs-manual-pkg-HB2.json` | `C47B765EC284A934B51484C7D1DFE09C81F43EB48A685DC400B2FA02148AA571` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/post-summary.txt` | `B0EB44B3E32314F89666D5F2673084CA500D45CC4B5F8967160E3CD985597CB4` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/privacy-secrets-scan.txt` | `F1FE96F0C11FC304FF3963885A7642120CB1F31F98F048E9D54636F41F2F97A3` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recheck-pre-install-summary.txt` | `BB73497F4A06954F9C12A51011EB4510A050662E9CA13F6FC906765F704DE563` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/timeline.txt` | `81FD6FB0481D4F8794D68CD20B0B225FF173E2B8279CE29EE5949CED6BAF1A4A` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/tools/hb-modules.ps1.txt` | `FD791D26F0E236324247DBAF940E59192AA79E419DB9F954F1C519095E03BB56` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/tools/hb-roots.ps1.txt` | `76CAF458E9CC8E470418E07882FD849798DF609AEACF4E757800701CBF8CA63E` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/tools/hb05b-uninstall.ps1.txt` | `4DAA9A4892F7C0F9685E65A669249E1E72977E117379F65625F65F65C633CF16` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/tools/hb05b-uninstall.v1-failed.ps1.txt` | `6980E4C6A271C618E5AB625D0EF653171290F09B78D637DEE5583C352A31C53E` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/tools/reg-lastwrite.ps1.txt` | `6A40F720F6E1E297E362841D56FE731BBEE40E4F399C167F375B3BFBA94D17B0` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/tools/tools-sha256.txt` | `4D07E571084E63235AF2EEEC33BC8CD254F2DA1248F970FFB85AEF851405A3C0` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/tools/wr1b-captures.ps1.txt` | `BFE4D2AFC125D6FB70186F4BA285A1AF183E9985AD43C7F495B2C6F498EF0B88` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/validator-v2-pkg-HB.redacted.json` | `AAD0DEF0FCCDD9611C8E6280FAA4D683D0A90556B66A0A8214E4C2D0A905000C` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/validator-v2-pkg-HB2.redacted.json` | `F3D8646527CCB3D8C3A06E7822FF6AA205E6B6ABC2D694838EE817F374CE05D3` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/wr1b-report.md` | `DE3DD71725E4B6E252779277DAC54CDDA297AE32FBF9080CAF513B8A4A82709D` |

@@ -1,0 +1,16 @@
+I-65 — OWNER RELEASE / W-R1b
+W-R1b HOST RELEASE = AUTHORIZED.
+Autorizo utilizar exclusivamente el equipo para ejecutar HB-03 a HB-05, instalar temporalmente el Autoloader, comprobar su funcionamiento en AutoCAD, desinstalarlo y realizar POST.
+Confirma antes de instalar:
+
+* Inactividad del equipo de al menos 120 segundos.
+* BASELINE e identidades intactas.
+* AutoCAD y RAM cerrados.
+* I-62 sin operaciones de pantalla.
+
+No es necesario solicitar nuevas confirmaciones a I-64 ni I-52.
+Mantén las condiciones de STOP y la restauración obligatoria del host.
+Si detectas actividad del usuario, suspende las operaciones de pantalla y conserva el estado seguro.
+W-R2 = NO.
+INTEGRATION = NO.
+Al terminar, presenta el resultado de W-R1b para aceptación.

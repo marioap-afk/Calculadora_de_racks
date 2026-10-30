@@ -1,0 +1,77 @@
+== UTC antes del fetch 2026-10-29T21:08:49Z
+== 1-2 READY-04 (fetch fresco 2026-10-29T21:08:50Z)
+OK   1.origin-main=base-aprobada origin/main=bb0d5522e8411f66a51fdfb3f1f0d0514b737453
+OK   2.merge-base=base-aprobada merge-base(4a03b65b,origin/main)=bb0d5522e8411f66a51fdfb3f1f0d0514b737453
+OK   2.main-sin-avance commits de origin/main fuera del Candidato=0
+OK   1.I-64-sin-integrar I-64=09f2f1c3 integrada=False
+OK   1.ADR-0050-libre-en-main ADR 0050 en origin/main=0
+== 3 SHA exacto y arbol limpio
+OK   3.tipo cand=4a03b65b375d468c220dd68400d5dfd955bf043e
+OK   3.ancestro-de-HEAD 
+OK   3.HEAD=rama-remota HEAD=8692cb39c539909a81b8ad4a3de192f6242e5bec origin/architecture/interop-analisis-estructural=8692cb39c539909a81b8ad4a3de192f6242e5bec
+OK   3.arbol-limpio lineas de status ajenas al original de la disposicion=0; 
+OK   3.solo-docs-tras-el-Candidato archivos fuera de docs/ entre 4a03b65b y HEAD=0
+OK   3.producto=6a58c2b1 arbol fuera de docs/ de 6a58c2b1 = el del Candidato
+OK   3.padre padre del Candidato = ba4494b2
+== 4 Freeze y ADR-0050
+OK   4.freeze@4a03b65b375d468c220dd68400d5dfd955bf043e blob=4e6e1feb4d83aa291707c72ad12f89411ff1d37a
+OK   4.adr0050@4a03b65b375d468c220dd68400d5dfd955bf043e blob=c18def42fe283aba0fa69ffc482647fb04ccdc46
+OK   4.freeze@HEAD blob=4e6e1feb4d83aa291707c72ad12f89411ff1d37a
+OK   4.adr0050@HEAD blob=c18def42fe283aba0fa69ffc482647fb04ccdc46
+OK   4.sin-commits-sobre-el-Freeze commits a9d7080b..HEAD sobre el Freeze=0
+== 5 DLL del Plugin
+OK   5.dll sha256=0f5a508e03a34cce45cd005a0fef336d1b160894e0836a5f786d2ec966db0959
+OK   5.productVersion productVersion=1.0.0+4a03b65b375d468c220dd68400d5dfd955bf043e
+OK   5.manifiesto-salida files=32 sha256=9939f6dac42acd89549d65b60dd5d36124e99af69808aa97099a5c332e1eacbc (recalculado)
+OK   5.manifiesto-custodiado output-manifest.txt de la carpeta = recalculado
+== 6 tabla, cargas, valores esperados, herramientas, bundle y biblioteca
+OK   6.tabla-salida sha256=fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619
+OK   6.tabla=fuente-del-checkout fuente=fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619
+OK   6.tabla-blob blob=d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2 bytes del blob = fuente
+    eol: i/lf    w/lf    attr/                 	assets/structural-analysis/ram-elements/section-material-map.json
+OK   6.cargas-recuento archivos en inputs=7
+OK   6.carga:ref-cant-01.loads.json sha256=25f48e7f blob@cand=25f48e7f
+OK   6.carga:ov03a-double-face.loads.json sha256=8e05faad blob@cand=8e05faad
+OK   6.carga:ov03b-negative-y.loads.json sha256=87e64230 blob@cand=87e64230
+OK   6.carga:ov03c-slope-over-10deg.loads.json sha256=25f48e7f blob@cand=25f48e7f
+OK   6.carga:ov03d-paired-channels.loads.json sha256=25f48e7f blob@cand=25f48e7f
+OK   6.carga:ov03e-section-without-row.loads.json sha256=25f48e7f blob@cand=25f48e7f
+OK   6.carga:ov-i65-02.loads.json sha256=d675d9f6 blob@cand=d675d9f6
+OK   6.expected-inputs 
+OK   6.expected-inputs-ov02 
+OK   6.herramienta-del-producto ramtool files=11 manifiesto=4fbe3ea5be1790c20c2673339b9ca2fba26bdac8f59472686952474fb33eb343 (recalculado)
+OK   6.herramienta:rd11\wr_hostsnap.ps1 sha256=f867318c37330ebe
+OK   6.herramienta:smoke2_regdiff.ps1 sha256=353ecc74d023c4e3
+OK   6.herramienta:w1_idle.ps1 sha256=ac61c01bae9975e3
+OK   6.herramienta:smoke2_expected_inputs.ps1 sha256=0c84a4d0c4145b82
+OK   6.herramienta:validate_smoke2_package_v2.py sha256=1f56b8cba1a64f90
+OK   6.herramienta:p2_payload_vs_manual.py sha256=a10d5b46938cc88c
+OK   6.herramienta:f5_dryrun_compare.py sha256=39ac443a5a20368a
+OK   6.herramienta:w1_dryrun.ps1 sha256=f5725f602ce16f05
+OK   6.herramienta:f5_dryrun.ps1 sha256=7dc01426047e7bbe
+OK   6.herramienta:w2_readiness.ps1 sha256=466f7a933042b34e
+OK   6.herramienta:w2_hostsnap.ps1 sha256=6904a43965de69b3
+OK   6.herramienta:session_custody.ps1 sha256=5487544aec2685c8
+OK   6.herramienta:readback_dump_contrast.py sha256=0790930297d221dd
+OK   6.herramienta:secrets_scan.py sha256=bcccaf9123923eca
+OK   6.bundle-recuento files=25
+OK   6.bundle-inventario 
+OK   6.bundle-archivos=inventario filas=25 distintos=0
+OK   6.bundle-dll DLL del bundle 60e1dd44, 1.0.0+<SHA>
+OK   6.bundle-tabla tabla del bundle = fuente del checkout
+OK   6.biblioteca ruta=D:\Base_de_datos_AutoCAD_V.0.dwg
+== 7 Core Full, UI Full y CI del SHA exacto
+OK   7.evidencia-local-sobre-el-SHA arbol limpio antes y despues
+OK   7.core Core 14392/14392
+OK   7.ui UI 1637 superadas, 17 omitidas, 0 con error
+OK   7.builds builds Debug UI, Plugin y herramienta con 0 errores
+OK   7.ci run=40814761082 push architecture/interop-analisis-estructural 4a03b65b375d468c220dd68400d5dfd955bf043e completed success 1
+OK   7.ci-jobs Build UI (WPF, valida API de Application) = success; UI Tests (WPF controls, net8.0-windows) = success; Tests (Domain + Application) = success; Build Plugin without AutoCAD = success
+    ejecuciones push con head_sha exacto: 40814761082:success
+== 8 conformidades
+OK   8.architect ronda 2 CONFORMING; filas REQUIRED=0; A65-FC-01..13 cerrados
+OK   8.coordinator CONFORMING
+== host (informativo para W-R1a)
+acad=0 ram=0
+== resultado: TODAS LAS COMPROBACIONES PASAN
+== UTC fin 2026-10-29T21:09:00Z

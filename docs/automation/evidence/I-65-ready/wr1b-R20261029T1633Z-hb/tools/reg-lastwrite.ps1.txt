@@ -1,0 +1,19 @@
+# I-65 W-R1b: hora de ultima escritura (UTC) de claves HKCU y valores con 'RackCad' de AssemblyMap. SOLO LECTURA.
+# Uso: pwsh -NoProfile -File reg_lastwrite.ps1 <subclave HKCU>...
+$ErrorActionPreference = 'Stop'
+Add-Type -Namespace R65 -Name Reg -MemberDefinition @'
+[DllImport("advapi32.dll", CharSet = CharSet.Unicode)] public static extern int RegOpenKeyEx(UIntPtr hKey, string subKey, int options, int samDesired, out UIntPtr result);
+[DllImport("advapi32.dll", CharSet = CharSet.Unicode)] public static extern int RegQueryInfoKey(UIntPtr hKey, IntPtr cls, IntPtr lpcClass, IntPtr r, IntPtr subKeys, IntPtr maxSub, IntPtr maxCls, IntPtr values, IntPtr maxValName, IntPtr maxValLen, IntPtr sec, out long lastWrite);
+[DllImport("advapi32.dll")] public static extern int RegCloseKey(UIntPtr hKey);
+'@
+$HKCU = [UIntPtr]::new([uint64]2147483649)
+foreach ($k in $args) {
+  $h = [UIntPtr]::Zero
+  $rc = [R65.Reg]::RegOpenKeyEx($HKCU, $k, 0, 0x20019, [ref]$h)
+  if ($rc -ne 0) { "{0} OPEN_ERROR {1}" -f $k, $rc; continue }
+  $ft = 0L; [void][R65.Reg]::RegQueryInfoKey($h, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [ref]$ft)
+  [void][R65.Reg]::RegCloseKey($h)
+  "{0} last_write_utc={1}" -f ($k -replace [regex]::Escape($env:USERNAME), '<usuario>'), [DateTime]::FromFileTimeUtc($ft).ToString('o')
+}
+$am = 'HKCU:\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\AssemblyMap'
+if (Test-Path -LiteralPath $am) { $p = Get-ItemProperty -LiteralPath $am; foreach ($n in ($p.PSObject.Properties | Where-Object { $_.Name -notlike 'PS*' -and ($_.Name -match 'RackCad' -or [string]$_.Value -match 'RackCad') })) { "AssemblyMap value " + $n.Name + " = " + (([string]$n.Value) -replace [regex]::Escape($env:USERNAME), '<usuario>') } }

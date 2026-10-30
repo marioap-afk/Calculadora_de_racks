@@ -1,0 +1,39 @@
+time_utc=2026-10-30T01:56:09.4935089Z
+acad=0 ram=0
+root1-user top=1 recursive=30 rackcad_top=1 rackcad_any=30
+  root1-user | RackCad.bundle\
+  root1-user | RackCad.bundle\Contents\
+  root1-user | RackCad.bundle\Contents\catalogs\
+  root1-user | RackCad.bundle\Contents\catalogs\base-plates.csv  353
+  root1-user | RackCad.bundle\Contents\catalogs\blocks.csv  6979
+  root1-user | RackCad.bundle\Contents\catalogs\connection-layout.csv  2850
+  root1-user | RackCad.bundle\Contents\catalogs\connection-points.csv  1352
+  root1-user | RackCad.bundle\Contents\catalogs\defaults.json  495
+  root1-user | RackCad.bundle\Contents\catalogs\flow-bed-profiles.csv  599
+  root1-user | RackCad.bundle\Contents\catalogs\header-templates.json  2813
+  root1-user | RackCad.bundle\Contents\catalogs\mensulas.csv  365
+  root1-user | RackCad.bundle\Contents\catalogs\secciones.csv  1282
+  root1-user | RackCad.bundle\Contents\catalogs\seguridad.csv  1505
+  root1-user | RackCad.bundle\Contents\catalogs\structural-section-sources.csv  301
+  root1-user | RackCad.bundle\Contents\catalogs\structural-section-status.csv  26
+  root1-user | RackCad.bundle\Contents\catalogs\structural-sections-c.csv  9052
+  root1-user | RackCad.bundle\Contents\catalogs\structural-sections-hss-rect.csv  93588
+  root1-user | RackCad.bundle\Contents\catalogs\structural-sections-l.csv  38455
+  root1-user | RackCad.bundle\Contents\catalogs\structural-sections-manifest.json  1541
+  root1-user | RackCad.bundle\Contents\catalogs\structural-sections-s.csv  6732
+  root1-user | RackCad.bundle\Contents\catalogs\structural-sections-w.csv  71118
+  root1-user | RackCad.bundle\Contents\catalogs\views.csv  244
+  root1-user | RackCad.bundle\Contents\RackCad.Application.dll  2222080
+  root1-user | RackCad.bundle\Contents\RackCad.Domain.dll  120320
+  root1-user | RackCad.bundle\Contents\RackCad.Plugin.dll  249856
+  root1-user | RackCad.bundle\Contents\RackCad.UI.dll  901120
+  root1-user | RackCad.bundle\Contents\structural-analysis\
+  root1-user | RackCad.bundle\Contents\structural-analysis\ram-elements\
+  root1-user | RackCad.bundle\Contents\structural-analysis\ram-elements\section-material-map.json  3279
+  root1-user | RackCad.bundle\PackageContents.xml  1918
+root2-programdata ABSENT
+root3-programfiles top=1 recursive=5 rackcad_top=0 rackcad_any=0
+root4-programfilesx86 top=2 recursive=568 rackcad_top=0 rackcad_any=0
+trustedpaths_covers_user_applicationplugins=False trustedpaths_covers_bundle_contents=False
+
+nota: el detalle de las raices de Program Files (root3, root4) queda en local; aqui solo su recuento y RackCad = 0
