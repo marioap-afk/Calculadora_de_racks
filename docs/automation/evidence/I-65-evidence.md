@@ -3533,3 +3533,14 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/tools/rr-post.ps1.txt` | `C4CC44E696D8079F0D4F3C7C2795E352673E850974D26CC55A50F5E3B1EF42C0` |
 | `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/tools/rr-precheck.ps1.txt` | `A4425BE7A454848A103523E133158BE48E885241A9F8EDDCC075053D8CEB71A6` |
 | `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/tools/tools-sha256.txt` | `E63D10849AD693A0D29753330237DFEFF9B3157AD39B8C76B354AF4B6F96B0DF` |
+
+## 124. Aceptación global de W-R1b y autorización de W-R2 (2026-10-30T22:52:53Z)
+
+- Disposición del Owner registrada (decisiones §122, CD-I65-FC-66..70): **W-R1b GLOBAL = ACCEPTED / PASS**; limpieza de `AssemblyMap` y de los restos históricos del registro **NO autorizada**; **W-R2 = CONDITIONAL GO** (OV-I65-01, 02, 04..07 sobre `4a03b65b`).
+- Hasta este registro, después de la recuperación (evidencia §123), no ha habido AutoCAD, RAM, escrituras en el registro ni uso de Codex.
+- El preflight (Owner §4) y W-R2 se registran en la corrida `D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\` y en la evidencia de W-R2.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-wr1b-acceptance-wr2-authorization.original.txt` | `147D9F39A0E2DA82F35273165F0D0FC66CE50EF6D560922BF5DFB559CA4EBD4D` |
