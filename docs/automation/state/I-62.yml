@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: owner-decision
   attempts: 0
-  next_action: "Coordinator: decidir la propuesta E1 (decisiones §108; I-62-R1/propuesta-e1-estado.md): script de estado v1 resume/update/check con pruebas Core y A-8 de dos reglas; Owner: rama de entrega desde origin/main. En paralelo, AT-3 de I-66: el Owner abre la sesión B con el texto de I-62-R1/AT-3/b-kickoff.txt; sin Codex ni integración"
+  next_action: "E1 (decisiones §109): publicar la A-8 de dos reglas y su única revisión concentrada del Architect; con A-8 acordada, RED → GREEN de eng/automation/initiative-state.ps1, CI, PF-1 y update del estado de I-62; PF-2 con una sesión nueva del Owner; AT-3 de I-66 sigue esperando la sesión B; sin Codex ni integración"
   last_evidence_commit: 0afee4d3a783f214b6f5c7f4b887864b6101048a
 execution_context:
   mode: manual

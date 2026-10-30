@@ -1,0 +1,54 @@
+I-62 — COORDINATOR DISPOSITION §109
+E1 / MINIMUM FUNCTIONAL DELIVERY
+Se aprueba E1 como primera entrega funcional independiente de I-62.
+Objetivo: que cualquier sesión pueda recuperar el estado y siguiente paso de una iniciativa existente mediante Git, y actualizar ese estado al terminar una tarea.
+1. Alcance aprobado
+Implementar exclusivamente:
+
+* `eng/automation/initiative-state.ps1`, con `resume`, `update` y `check`.
+* Pruebas automatizadas correspondientes.
+* Ajuste mínimo a AUTOMATION_PLAN §8.
+* Una instrucción de descubrimiento en CLAUDE.md.
+
+Los resultados CONTINUE, WAIT, DONE y STOP son informativos; nunca sustituyen la autoridad de WORKFLOW o I-61.
+2. A-8
+Preparar y someter a una única revisión concentrada del Architect la A-8 de dos reglas propuesta en E1.
+Resolver solamente defectos materiales de esas dos reglas.
+No ampliar el alcance ni reabrir F6.
+La aprobación de esta disposición no sustituye el acuerdo formal de A-8.
+3. Implementación
+Después de que A-8 quede acordada:
+
+* Crear primero pruebas RED.
+* Implementar la solución mínima GREEN.
+* Ejecutar pruebas focalizadas y CI.
+* Probar `resume` en modo de solo lectura en los worktrees existentes.
+* Actualizar el estado de I-62 mediante `update`.
+* Publicar evidencia breve de funcionamiento.
+
+No generar kits adicionales ni baterías generales de mutación.
+4. Compatibilidad
+No cambiar los estados de I-64, I-65, I-66 ni I-52.
+Los estados faltantes, incompletos o inválidos deben producir mensajes claros y seguros.
+No introducir `state/v2` ni convertir automáticamente archivos v1.
+5. Entrega independiente
+Una vez acreditada E1, proponer la rama de entrega mínima desde main.
+No crear esa rama hasta obtener autorización expresa del Owner.
+No integrar a main sin los gates aplicables.
+6. Límites
+No abrir nuevas iniciativas auxiliares.
+No reanudar FX-02 ni A6-7.
+No activar Controller o Worker.
+No modificar I-64, I-65 ni código productivo.
+No iniciar una revisión arquitectónica adicional fuera de A-8.
+7. Siguiente reporte
+Entregar solamente:
+
+1. Resultado de revisión de A-8.
+2. Commits de implementación.
+3. Pruebas RED/GREEN y CI.
+4. Resultados de PF-1.
+5. Estado de PF-2.
+6. Bloqueos concretos para integrar E1.
+
+Prioridad absoluta: funcionalidad demostrable e integración mínima, no más infraestructura de validación.
