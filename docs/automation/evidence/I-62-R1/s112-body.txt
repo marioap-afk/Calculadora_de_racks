@@ -1,0 +1,47 @@
+I-62 — COORDINATOR DISPOSITION §112
+A-8 AGREED / E1 IMPLEMENTATION GO
+1. Acuerdo
+A-8 ronda 2 = AGREED para el blob exacto d2b319ff, commit d4db4b30.
+Se consideran las seis correcciones REQUIRED de la revisión del Architect y la aprobación de alcance del Owner registrada en §111.
+El acuerdo se limita a E1 y sus reglas de entrega independiente.
+2. Implementación inmediata
+Autorizar implementación de E1 en la rama I-62 conforme a A-8 acordada.
+Utilizar los borradores existentes, sin rediseñar.
+Ejecutar y publicar:
+
+* RED con las pruebas correspondientes;
+* GREEN con el script `initiative-state.ps1`;
+* pruebas Core focalizadas;
+* CI;
+* PF-1 oficial sobre los cinco worktrees, en modo de solo lectura.
+
+No modificar estados de iniciativas ajenas.
+3. PF-2
+Cuando GREEN y PF-1 estén acreditados, actualizar el estado propio de I-62 mediante `update`.
+Preparar la instrucción mínima necesaria para que una sesión nueva ejecute `resume`.
+No exigir handoffs adicionales ni oráculos de portabilidad propios de R1a.
+4. Entrega independiente
+Preparar evidencia breve para el gate E1.
+La rama de entrega desde main sigue pendiente de autorización expresa del Owner.
+No integrar E1 hasta cumplir sus gates y obtener autorización.
+5. READY-06
+A-8 y la revisión del candidato de entrega son objetos distintos.
+Si READY-06 exige conformidad del Architect sobre el candidato final, esa revisión puntual está permitida como gate obligatorio de entrega. No se autoriza una revisión adicional del diseño de A-8.
+6. Límites
+No abrir nuevas iniciativas.
+No iniciar kits ni auditorías generales.
+No reanudar FX-02, A6-7 ni F6 por esta disposición.
+No modificar I-64, I-65, I-66 ni I-52.
+No abrir la sesión B de I-66 para validar E1.
+No alterar WORKFLOW ni código de producción.
+7. Reporte siguiente
+Informar únicamente:
+
+1. Commits RED/GREEN.
+2. Pruebas y CI.
+3. PF-1 oficial.
+4. Resultado del `update` de I-62.
+5. Preparación de PF-2.
+6. Bloqueos concretos para la entrega independiente.
+
+Prioridad: terminar una herramienta ejecutable y utilizable, sin ampliar el alcance.
