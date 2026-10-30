@@ -1,0 +1,97 @@
+{
+ "Unit": "I-62 E1",
+ "Check": "PF-1 (A-8 §3.2)",
+ "Commit": "9115c3e7e37782f8080a7a1d4d4992b03be15dd9",
+ "ScriptPath": "eng/automation/initiative-state.ps1",
+ "ScriptBlob": "f3516784e8b1e67ef298087ea1f0ccd30bed6f12",
+ "ScriptSha256": "92aee02249fbb0100859dd68da7b036ffcef731f5db1d02a8f6000ab19b358a5",
+ "RunAtUtc": "2026-10-30T22:58:28Z",
+ "Independent": "pf1.py: Git (--no-optional-locks) + PyYAML, sin el script",
+ "PF1": "PASS",
+ "Rows": [
+  {
+   "Worktree": "architecture-portabilidad-coordinador-principal",
+   "Branch": "architecture/portabilidad-coordinador-principal",
+   "Exit": 0,
+   "Verdict": "WAIT owner-decision",
+   "Reasons": [],
+   "StateFile": "docs/automation/state/I-62.yml",
+   "Independent": {
+    "Verdict": "WAIT owner-decision",
+    "Reasons": []
+   },
+   "VerdictMatches": true,
+   "Unchanged": true
+  },
+  {
+   "Worktree": "architecture-workspace-persistente-rackcad",
+   "Branch": "architecture/workspace-persistente-rackcad",
+   "Exit": 0,
+   "Verdict": "WAIT waiting",
+   "Reasons": [],
+   "StateFile": "docs/automation/state/I-64.yml",
+   "Independent": {
+    "Verdict": "WAIT waiting",
+    "Reasons": []
+   },
+   "VerdictMatches": true,
+   "Unchanged": true
+  },
+  {
+   "Worktree": "architecture-interop-analisis-estructural",
+   "Branch": "architecture/interop-analisis-estructural",
+   "Exit": 2,
+   "Verdict": "STOP",
+   "Reasons": [
+    "next_action: valor sin comillas que YAML no admite (usa comillas dobles): Coordinator: preflight de W-R2 (Owner §4) y OV-I65-01, 02, 04..07 en RAM segun decisiones §122; informe para la validacion final del Owner y parada.",
+    "state fuera del vocabulario de AUTOMATION_PLAN seccion 8: in-progress",
+    "gate fuera del vocabulario de AUTOMATION_PLAN seccion 8: READY (FINAL_CANDIDATE_SHA = 4a03b65b declarado, §117; W-R1a ACCEPTED/PASS, §119; W-R1b ACCEPTED/PASS (global), §122; W-R2 CONDITIONAL GO en curso, §122; Owner Validation e integracion pendientes)"
+   ],
+   "StateFile": "docs/automation/state/I-65.yml",
+   "Independent": {
+    "Verdict": "STOP",
+    "Reasons": [
+     "state file is not valid YAML"
+    ]
+   },
+   "VerdictMatches": true,
+   "Unchanged": true
+  },
+  {
+   "Worktree": "fix-placedclone-copia-anotaciones",
+   "Branch": "fix/placedclone-copia-anotaciones",
+   "Exit": 2,
+   "Verdict": "STOP",
+   "Reasons": [
+    "ningun docs/automation/state/*.yml declara branch: fix/placedclone-copia-anotaciones (update -Init crea uno)"
+   ],
+   "StateFile": null,
+   "Independent": {
+    "Verdict": "STOP",
+    "Reasons": [
+     "no state for branch"
+    ]
+   },
+   "VerdictMatches": true,
+   "Unchanged": true
+  },
+  {
+   "Worktree": "feature-rackmirror-espejo-semantico",
+   "Branch": "feature/rackmirror-espejo-semantico",
+   "Exit": 2,
+   "Verdict": "STOP",
+   "Reasons": [
+    "ningun docs/automation/state/*.yml declara branch: feature/rackmirror-espejo-semantico (update -Init crea uno)"
+   ],
+   "StateFile": null,
+   "Independent": {
+    "Verdict": "STOP",
+    "Reasons": [
+     "no state for branch"
+    ]
+   },
+   "VerdictMatches": true,
+   "Unchanged": true
+  }
+ ]
+}

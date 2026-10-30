@@ -1,0 +1,1 @@
+I-62. En este worktree ejecuta `pwsh eng/automation/initiative-state.ps1 resume` y continúa según su resultado.
