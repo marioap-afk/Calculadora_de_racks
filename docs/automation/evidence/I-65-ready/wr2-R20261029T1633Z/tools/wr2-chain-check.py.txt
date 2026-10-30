@@ -1,0 +1,54 @@
+"""I-65 W-R2 (WR2-13): coherencia de la cadena de custodia de la sesion de RAM (evidencia operativa, no criptografica: R-D3).
+Comprueba en <Run>\\wr2-session.jsonl: un unico PID; inicio de RAM <= creacion de cada lectura de vuelta <= creacion de su volcado (OV-01,
+OV-02) <= cierre (session-end con ramCount 0); cada pre-run anterior a su post-run y con la salida inexistente. SOLO LECTURA.
+Uso: python -I wr2_chain_check.py <Run> <salida.txt>"""
+import datetime
+import json
+import sys
+
+run, out = sys.argv[1:3]
+ev = [json.loads(l) for l in open(run + "\\wr2-session.jsonl", encoding="utf-8") if l.strip()]
+
+
+def ts(s):
+    s = s.replace("Z", "")
+    if "." in s:
+        a, b = s.split(".")
+        s = a + "." + (b + "000000")[:6]
+    return datetime.datetime.fromisoformat(s)
+
+
+L, bad = [], []
+start = [e for e in ev if e["phase"] == "session-start"]
+end = [e for e in ev if e["phase"] == "session-end"]
+pids = sorted({e["ramPid"] for e in ev if "ramPid" in e})
+L.append("eventos=%d session-start=%d session-end=%d pids=%s" % (len(ev), len(start), len(end), pids))
+if len(start) != 1 or len(end) != 1 or len(pids) != 1:
+    bad.append("sesion o PID no unicos")
+t0 = ts(start[0]["ramStartUtc"])
+tend = ts(end[0]["observedUtc"])
+if end[0].get("ramCount") != 0:
+    bad.append("session-end sin ramCount 0")
+pre = {e["output"]: e for e in ev if e["phase"] == "pre-run"}
+post = {e["output"]: e for e in ev if e["phase"] == "post-run"}
+L.append("pre-run=%d post-run=%d" % (len(pre), len(post)))
+if set(pre) != set(post) or len(pre) != 9:
+    bad.append("pre-run y post-run no emparejados (se esperan 9)")
+for o in sorted(post):
+    p, q = pre.get(o), post[o]
+    c = ts(q["creationUtc"])
+    ok = p is not None and not p["outputExistsBefore"] and ts(p["observedUtc"]) <= c <= tend and t0 <= c and q["ramPid"] == pids[0]
+    name = o.split("\\")[-2] + "/" + o.split("\\")[-1]
+    L.append("%s %s creacion=%s sha256=%s" % ("OK  " if ok else "FAIL", name, q["creationUtc"], q["outputSha256"][:8]))
+    if not ok:
+        bad.append(name)
+for pkg, dump in (("pkg-OV01", "dump-OV01-gen"), ("pkg-OV02", "dump-OV02-gen")):
+    rb = [q for o, q in post.items() if "\\%s\\" % pkg in o][0]
+    du = [q for o, q in post.items() if "\\%s\\" % dump in o][0]
+    ok = t0 <= ts(rb["creationUtc"]) <= ts(du["creationUtc"]) <= tend
+    L.append("%s cadena %s: inicio %s <= lectura %s <= volcado %s <= cierre %s" % ("OK  " if ok else "FAIL", pkg, start[0]["ramStartUtc"], rb["creationUtc"], du["creationUtc"], end[0]["observedUtc"]))
+    if not ok:
+        bad.append("cadena " + pkg)
+L.append("RESULTADO=" + ("COHERENTE" if not bad else "INCOHERENTE " + ",".join(bad)))
+open(out, "w", encoding="utf-8", newline="\n").write("\n".join(L) + "\n")
+print("\n".join(L))

@@ -1,0 +1,44 @@
+# I-65 W-R2 (WR2-14, WR2-AC-05): comprobaciones POST de SOLO LECTURA despues de cerrar RAM.
+# Archivos de las nueve carpetas (los tres originales = lista custodiada de W-R1a; unico archivo nuevo: ram-readback.json o ram-dump.json),
+# medicion aparte de pkg-OV02, dump-OV02-gen y del volcado manual de OV-02, y diferencias de Config.ini por NOMBRE de clave (sin valores).
+# Unicas escrituras: <Run>\wr2-post-checks.txt. Sale con 3 si algo no cuadra.
+# Uso: pwsh -NoProfile -File wr2_post.ps1 -Run D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z -Worktree <worktree>
+param([Parameter(Mandatory)][string]$Run, [Parameter(Mandatory)][string]$Worktree)
+$ErrorActionPreference = 'Stop'
+$outFile = Join-Path $Run 'wr2-post-checks.txt'
+if (Test-Path -LiteralPath $outFile) { throw "ya existe $outFile" }
+$L = New-Object Collections.Generic.List[string]
+$bad = New-Object Collections.Generic.List[string]
+function Sha([string]$p) { (Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLower() }
+function Check([string]$id, [bool]$ok, [string]$text) { $L.Add(("{0} {1} {2}" -f $(if ($ok) { 'OK  ' } else { 'FAIL' }), $id, $text)); if (-not $ok) { $bad.Add($id) } }
+$L.Add("time_utc=" + [DateTime]::UtcNow.ToString('o'))
+$n = @(Get-Process | Where-Object { $_.ProcessName -match '^(acad|accoreconsole|RAMElements)$' }).Count
+Check 'Q1.procesos' ($n -eq 0) "acad/accoreconsole/RAMElements=$n"
+$list = Join-Path $Worktree 'docs\automation\evidence\I-65-ready\wr1a-R20261029T1633Z\package-dwg-and-originals-sha256.txt'
+$dirs = 'pkg-OV01', 'pkg-OV02', 'pkg-OV04', 'inj-OV05', 'inj-OV06', 'inj-OV07a', 'inj-OV07b', 'dump-OV01-gen', 'dump-OV02-gen'
+$exp = @{}
+foreach ($line in (Get-Content -LiteralPath $list)) { if ($line -match '^([0-9a-f]{64})  (\S+)/(\S+)$' -and $dirs -contains $Matches[2]) { $exp[$Matches[2] + '/' + $Matches[3]] = $Matches[1] } }
+foreach ($d in $dirs) {
+  $new = $(if ($d -like 'dump-*') { 'ram-dump.json' } else { 'ram-readback.json' })
+  $files = @(Get-ChildItem -File -Force -LiteralPath (Join-Path $Run $d) | Sort-Object Name)
+  $want = @(@($exp.Keys | Where-Object { $_.StartsWith("$d/") } | ForEach-Object { $_.Substring($d.Length + 1) }) + $new | Sort-Object)
+  $have = @($files | ForEach-Object { $_.Name })
+  $same = ($want -join ',') -ceq ($have -join ',')
+  foreach ($f in $files) { $k = "$d/" + $f.Name; if ($exp.ContainsKey($k) -and (Sha $f.FullName) -ne $exp[$k]) { $same = $false; $L.Add("     $k distinto") } }
+  Check "Q2.$d" $same (($files | ForEach-Object { $_.Name + ':' + (Sha $_.FullName).Substring(0, 8) }) -join ',')
+}
+# Medicion aparte (WR2-PR-06): pkg-OV02, dump-OV02-gen y el volcado manual de OV-02
+$m2 = 'D:\r65-smoke\bd1fcf8a\f5-R20261019T1750Z\dump-OV02-man'
+Check 'Q3.manual-OV02' ((Sha "$m2\ram-dump.json") -eq '12c89479fa2bf54adde27a1d0c4affc18bbd0469e77cd72c1fb5d0335910aef2') ("ram-dump.json=" + (Sha "$m2\ram-dump.json") + " carpeta=" + ((@(Get-ChildItem -File -Force -LiteralPath $m2 | Sort-Object Name) | ForEach-Object { $_.Name }) -join ','))
+Check 'Q3.manual-OV01' ((Sha 'D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-R20261016T2147Z\dump-man\ram-dump.json') -eq 'c4a98fb0ea798031de2b3052d81eae89f42b731a92f06dbfa97f148ade9ba23b') 'c4a98fb0'
+# Config.ini: nombres de clave con valor distinto o presentes solo en un lado (sin valores)
+function Ini([string]$p) { $h = [ordered]@{}; $sec = ''; foreach ($line in (Get-Content -LiteralPath $p)) { if ($line -match '^\s*\[(.+)\]\s*$') { $sec = $Matches[1]; continue }; if ($line -match '^\s*([^=;#]+?)\s*=(.*)$') { $h["[$sec] " + $Matches[1]] = $Matches[2] } }; $h }
+$a = Ini (Join-Path $Run 'w2-pre\Config.ini.before'); $b = Ini (Join-Path $Run 'w2-post\Config.ini.after')
+$keys = @(@($a.Keys) + @($b.Keys) | Sort-Object -Unique)
+$diff = @(foreach ($k in $keys) { if (-not $a.Contains($k)) { "NUEVA $k" } elseif (-not $b.Contains($k)) { "BORRADA $k" } elseif ($a[$k] -cne $b[$k]) { "CAMBIADA $k" } })
+$L.Add("Q4 Config.ini before=" + (Sha (Join-Path $Run 'w2-pre\Config.ini.before')).Substring(0, 8) + " after=" + (Sha (Join-Path $Run 'w2-post\Config.ini.after')).Substring(0, 8) + " claves_distintas=" + $diff.Count)
+foreach ($x in $diff) { $L.Add("     $x") }
+$L.Add("RESULTADO=" + $(if ($bad.Count) { 'FAIL ' + ($bad -join ',') } else { 'PASS' }))
+$L | Set-Content -LiteralPath $outFile -Encoding utf8NoBOM
+$L | ForEach-Object { $_ -replace [regex]::Escape($env:USERNAME), '<usuario>' }
+if ($bad.Count) { exit 3 }

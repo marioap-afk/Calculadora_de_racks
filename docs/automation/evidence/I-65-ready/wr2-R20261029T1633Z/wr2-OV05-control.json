@@ -1,0 +1,161 @@
+{
+  "schema": "rackcad-structural-comparison/v1",
+  "verdict": "REJECTED",
+  "reason": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions.",
+  "inputs": {
+    "manifestFingerprint": "73635936b33b3a7c151f865729de02e52540366074bdae021d4d4a35ba5d13ea",
+    "readbackFingerprint": "73635936b33b3a7c151f865729de02e52540366074bdae021d4d4a35ba5d13ea",
+    "manifestSha256": "1b856befd7b834747d27f4cacbe605a4f21427872a2a39569f017fb2136bf929",
+    "readbackSha256": "9ab452295ed8d1fcba3fc3d68063457614a5540d48309017e5a58b2201aa0313",
+    "generatedDumpSha256": "f5789d1ce923a648b77b192571c7271ac40901043ae92301e443624e4f664be0",
+    "manualDumpSha256": "c4a98fb0ea798031de2b3052d81eae89f42b731a92f06dbfa97f148ade9ba23b"
+  },
+  "tolerances": {
+    "nodePositionInches": 0.02,
+    "axisDegrees": 0.1,
+    "loadValuePercent": 0.1,
+    "loadPositionInches": 0.02
+  },
+  "rows": [
+    {
+      "id": "NODE-COORDINATES",
+      "name": "Node coordinates (paired by position)",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "CONNECTIVITY",
+      "name": "Connectivity (end nodes of the members, I to J)",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "LOCAL-AXES",
+      "name": "Local axes l1, l2 and l3",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "SECTION-NAME",
+      "name": "Section name",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "MATERIAL-NAME",
+      "name": "Material name",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "SECTION-PROPERTIES",
+      "name": "Section properties (A, Ix, Iy, J)",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "MATERIAL-PROPERTIES",
+      "name": "Material properties (E, nu or G, unit weight)",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "MEMBER-DEFAULTS",
+      "name": "Cardinal point, end offsets, stiffness factors, axial behaviour and springs",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "RELEASES-SUPPORTS",
+      "name": "Releases and support flags",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "LOADS",
+      "name": "Point loads on the members, by case with loads",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "COMBINATIONS",
+      "name": "Load combinations (none expected)",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "CASE-CATEGORY",
+      "name": "Category of the generated case with loads",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "MANUAL-CASE-CATEGORY",
+      "name": "Category of the manual case with loads",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    },
+    {
+      "id": "SELF-WEIGHT",
+      "name": "Self weight of the cases with loads",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The package is a fault injection (unknown-section): its read-back is not approved: exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+    }
+  ]
+}

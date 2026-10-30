@@ -3544,3 +3544,109 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | Archivo | SHA-256 |
 |---|---|
 | `docs/automation/decisions/I-65-owner-disposition-wr1b-acceptance-wr2-authorization.original.txt` | `147D9F39A0E2DA82F35273165F0D0FC66CE50EF6D560922BF5DFB559CA4EBD4D` |
+
+## 125. W-R2 ejecutada sobre `4a03b65b`: OV-I65-01, 02 y 04..07 (2026-10-30T23:23:22Z)
+
+- **Corrida:** `D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\`, con `w2-pre`, `w2-post`, `wr2-preflight(-2)`, `wr2-session.jsonl`, `wr2-captures` y los informes del comparador.
+- **RAM:** de 22:59:40Z a 23:16:28Z, pid 7584. Nueve scripts: `pkg-OV01`, `dump-OV01-gen`, `pkg-OV02`, `dump-OV02-gen`, `pkg-OV04`, `inj-OV05`, `inj-OV06`, `inj-OV07a` e `inj-OV07b`.
+- **Nuevos archivos:**
+
+  | Tipo | Archivos |
+  |---|---|
+  | Lecturas de vuelta | `ff9d770a`, `455a2b40`, `73af980d`, `9ab45229`, `15ff2655`, `0f397cd8`, `10e549bb` |
+  | Volcados | `f5789d1c` y `e5cf0ead` |
+
+- **Resultados de los comparadores:**
+  - OV-01: PASS (0), con `c4a98fb0`;
+  - OV-02: PASS (0), con `12c89479`, `LOADS` en PASS y Q2;
+  - control de OV-05: REJECTED (2);
+  - contrastes: IGUAL;
+  - cadena de custodia: COHERENTE.
+- **POST:** identidades y bases iguales; `Config.ini` `de651e69`, con 3 claves de interfaz; K2 = K1.
+- **Privacidad (§90):**
+  - capturas recortadas, con el panel de navegación del diálogo «Abrir» tapado;
+  - rutas con `<usuario>`;
+  - `Config.ini` (antes y después) y los originales de las capturas, en local con su SHA-256;
+  - barrido `secrets_scan.py` con 0 coincidencias.
+- Informe: `I-65-ready/wr2-R20261029T1633Z/wr2-report.md`. Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures-sources.txt` | `2371382BD83CD8A91FE421D11844AFDBA4F7415C9FA262ED47B564F1AFD43E6A` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/01-ram-modelo-nuevo-vacio.jpg` | `E3603D2ADB7CC36D82012CD664F0FA00A06DD26B76C8BD87956C13FE66903C31` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/02-ov01-script-del-paquete-seleccionado.jpg` | `CCF989D76921416AAA1162CE35E1643E691C19E5E3967F549C08853A79E72CBF` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/03-ov01-consola-readback-ok-huella.jpg` | `AC11118173261B08D3F015C1FC2A995E1B8AA32FA316B773ECDFCEF3842F7732` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/04-ov01-barra-estado-elementos-15.jpg` | `B873842DC72B8ED004ABFF80546165C22EF54CFEA29DBE3F30C0885703761276` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/05-ov01-volcado-seleccionado.jpg` | `7C54BBF09E12F7E58CC9D189B38095DAA18282EA5B39E10A19E65CE138A82A40` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/06-ov01-consola-dump-ok.jpg` | `1CEE44C329C7FAFD6DF3EA565B65B4BC0EE5F8D077CEA2497B6212951FC0BF8A` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/07-ov01-descartar-no.jpg` | `8798E5B6A4B93B7EFFA663F70E7717221E53CA8D00E5C4CE15EECCF56A04B893` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/08-ov02-script-del-paquete-seleccionado.jpg` | `6824377F526F547EAECD19B10622D19F3DACFD7A0B64FD9F042483DBD639974B` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/09-ov02-consola-readback-ok-huella.jpg` | `18838A9E986226BB24DE5EFFD424CE154655B461DD683768CDC941C3913EBB58` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/10-ov02-volcado-seleccionado.jpg` | `5E97D3164664F21349C615F357CBB7E5DF63F4BDA9D1DD2CE34C03F884B9EC4B` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/11-ov02-consola-dump-ok.jpg` | `5A124B307373A8825C5DD9838D6C9BC72285FB39152C1D700E8181B6CDE16050` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/12-ov02-descartar-no.jpg` | `8798E5B6A4B93B7EFFA663F70E7717221E53CA8D00E5C4CE15EECCF56A04B893` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/13-ov04-nudo-de-prueba-0-0-0.jpg` | `08ED8E60A59A117590DAEE790031BCA0928BB284F754FB4EF0349B0455787221` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/14-ov04-barra-estado-elementos-1-antes.jpg` | `818BBBDEA8F61AB3677931D0624DB0B893FF6211B8010D0DBE33DB4D94799060` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/15-ov04-script-seleccionado.jpg` | `5D366EA601FE4DE611E7123C00FCE97D9FC95CD821D322100A6228FC3ECA2B65` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/16-ov04-consola-gate-1-nodo.jpg` | `059864DE516873B19F48DD91164FB7A08E7DD9C4BACF2B34666CA88DBC29065C` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/17-ov04-barra-estado-elementos-1-despues.jpg` | `C13D55B5355A0E5E06E859F488FFBA27AC3E0B4570325CF9B288AABAD09314ED` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/18-ov04-rejilla-nudos-despues.jpg` | `D058670F1DC8261DFFE0AF8F19DD78BD63C6B5ADAF258FE94CC7AB9329903DC1` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/19-ov04-descartar-no.jpg` | `8798E5B6A4B93B7EFFA663F70E7717221E53CA8D00E5C4CE15EECCF56A04B893` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/20-ov05-script-seleccionado.jpg` | `B77D7B2DAC1DC89180DE9ED792C34D2BE1C94E93C266949D9F84E09746459A5C` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/21-ov05-consola-seccion-rechazada.jpg` | `4F5A5EA572E80B8DF4AC76CDF7838642981C99986CEEC3302ABA09928CFF7598` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/22-ov05-barra-estado-elementos-9-parcial.jpg` | `68635F93128504469760787BEBFD57458C02005B4ADF479F1AD85C52103E980B` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/23-ov05-parcial-nudos.jpg` | `6FA483BE330201D2E30DF417F0B19F80D5D57A0DF6937FDA811088747FDD8B3A` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/24-ov05-parcial-miembros.jpg` | `8F07E82F206D61D6154F6749730678042BA1927ABA5BC2C7C6B52814BF53C6D0` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/25-ov05-descartar-no.jpg` | `8798E5B6A4B93B7EFFA663F70E7717221E53CA8D00E5C4CE15EECCF56A04B893` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/26-ov06-script-seleccionado.jpg` | `202197CAEC262B880318A72C624C3AB0130267061B5A192B52B609C978C4C133` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/27-ov06-consola-eje-local-2.jpg` | `F79CD25167EFC058095853CA3E293EEAC56FCBDADC00DBAF7359C3D7E9422B7B` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/28-ov06-barra-estado-elementos-15.jpg` | `AD2BEF81CB8A2C959527A8EF3FA7F186C206BCE21D0B2F6DF70D23591A10B7C7` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/29-ov06-descartar-no.jpg` | `8798E5B6A4B93B7EFFA663F70E7717221E53CA8D00E5C4CE15EECCF56A04B893` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/30-ov07a-barra-estado-vacio-antes.jpg` | `D77B8756E448C356EFA3F9942FBB7EB13243C5401074C039D73E5C5FABAD0F91` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/31-ov07a-script-seleccionado.jpg` | `CF7AD3AF2D38434C4DD17760F4734FC48B5DA59228C0F5378FABFCF5758D579F` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/32-ov07a-consola-gate-version.jpg` | `F52BCEB05D13E891F554E8EA05BC6DB64517FE7EB6DFCAEA6619D3703CB4595C` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/33-ov07a-barra-estado-vacio-despues.jpg` | `D77B8756E448C356EFA3F9942FBB7EB13243C5401074C039D73E5C5FABAD0F91` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/34-ov07b-barra-estado-vacio-antes.jpg` | `D77B8756E448C356EFA3F9942FBB7EB13243C5401074C039D73E5C5FABAD0F91` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/35-ov07b-script-seleccionado.jpg` | `1022806536AB61AA166549C35F87965F03AFA10763DAA180986F53B0A2EA5132` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/36-ov07b-consola-gate-funcion.jpg` | `87E6AB2BAAE6786D945D0489DFE87D047A7D79E3CDE57ADD2EF8AAABDC063681` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/captures/37-ov07b-barra-estado-vacio-despues.jpg` | `D77B8756E448C356EFA3F9942FBB7EB13243C5401074C039D73E5C5FABAD0F91` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/custody-chain.txt` | `11D48748C5B1F95E82808B426F3D19ADBE58C1CF873F5BEAFA9AE310B87A48CA` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/db-tree-python-post.txt` | `D743E8D46913B680FB13A91EEEBD7272AD1B14948255BE829C699ADCA134B568` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/db-tree-python-pre.txt` | `D743E8D46913B680FB13A91EEEBD7272AD1B14948255BE829C699ADCA134B568` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/dump-OV01-gen-ram-dump.json` | `F5789D1CE923A648B77B192571C7271AC40901043AE92301E443624E4F664BE0` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/dump-OV02-gen-ram-dump.json` | `E5CF0EADF282B64C1721D71EE8B4652F5D3370A197D787BA5F28BDE57988BD65` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/idle-pre-open.txt` | `983AD959B0EF4768662B3C51196FD7BFC43ADC032842217EFB3FF5F47A5E8985` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/inj-OV05-ram-readback.json` | `9AB452295ED8D1FCBA3FC3D68063457614A5540D48309017E5A58B2201AA0313` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/inj-OV06-ram-readback.json` | `15FF2655DEBE13CE747DFC1E4C176400219F74A65AE5FD66A4935C84373DA510` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/inj-OV07a-ram-readback.json` | `0F397CD8ADDCECD6F956D9EB9CD483CEA7BA1F1441238B3B70009A6ED815B8A4` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/inj-OV07b-ram-readback.json` | `10E549BB86211477EF4EFED63D03EC0D192352CABB9E67FDCA471C2CFA01A479` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/k1-k2-compare.json` | `3D2EC6EF392064DDD61F739324C6E73AD238BD345F5F28A2309762E3EAB66804` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/local-files-sha256.txt` | `2CF22085ECBCFE492D99FB45C3C3A8909E5B011D16561814D33DA621D75A966C` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/pkg-OV01-ram-readback.json` | `FF9D770AAD9AC3673F996DAA024F81656B9E8A136E3248A31CB30BC17262C1BE` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/pkg-OV02-ram-readback.json` | `455A2B40FEEE25DF48DC4ACC776286E8BAF104FC4821A08A2230574A37A8979F` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/pkg-OV04-ram-readback.json` | `73AF980D9200FE2D9BF290735A67CB36BE6BDF1210C274B3EF8600C881695874` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/post-checks.txt` | `8C00B7245F330DCF50840F886FAE08C1C6C45FB503000CF6B49E2C0CBD644094` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/preflight-v1-no-tool-check.txt` | `7E2B8C3B60AB43B149BE1F11A0920AF37039852174112BD1B34A76F719335E6D` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/preflight.txt` | `6F4E3D9E795BB5BC49854CB3B4D6C5758D5AF253B6A194DC2BF9C406EE38CFBF` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/privacy-secrets-scan.txt` | `156BC3328012CEA16F84E9CA7CF6A39A6C9BB472CAED3CB54AC94E9D717B7C6E` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/readback-dump-contrast-OV01.json` | `B466AE35D93826C2E8D114F187EAE8833A6B776139593A0A26AF8BDAE169F236` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/readback-dump-contrast-OV02.json` | `D8C10E66941B32D5273C8B66C9809694D01E822571B325D58026614D625EF53C` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/readiness.txt` | `F14E04A9DD2ED79726213838A4A6871296B108B1D798B589B6BA21E91BD7A514` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/session-custody.jsonl` | `5D391EE8E7578C4807B0F163E443EDEED482B1FCCCBC1AADEA4F21EB20AA7DA7` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/timeline.txt` | `9B380CA16EB305112C51660BFD1F8BD588F4C2100B3171D8043B379CC71BD7A0` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/tools/db-tree-python.py.txt` | `B433B461DC670757B21572D4F5E54692B15B402763925020D3593B4D8A04FA89` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/tools/tools-sha256.txt` | `CA08F8BED6DFB09369195D88E046F52E8A0E02CF30F7D6F02F6143B15EC5B633` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/tools/wr2-captures.ps1.txt` | `DB83C81D28EE4F371481BFDB5E7505BEDA91435E36BC5FBA9DCB29D5F6F7EC4B` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/tools/wr2-chain-check.py.txt` | `73151D7FFA7319663DB2464847B0A1A20E875EF9819165CBEF044E48C7A7C269` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/tools/wr2-post.ps1.txt` | `044AAC50B321B32A34129AC71612233BFB0D8997224BAA87DDF18D5FBAE650F4` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/tools/wr2-preflight.ps1.txt` | `10EEBCA03ABE42A9BF01CC878C8B30BD7180CB6334536574C6DEA6AFC32A9F4E` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/tools/wr2-preflight.v1-no-tool-check.ps1.txt` | `0D3EE03A8825D342CB0FBD3881155FF429CF0D8F7E830D379D0B1E3188D38EAA` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/w2-post-summary.txt` | `4A3F933528DDAEC8F599F647AA3A212C436DC1456D6732C818B003B04E4D5D6F` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/w2-pre-summary.txt` | `34E5173987D04777C5C5B750A784F50C946015411A3AD13C9EF4CEE52EF41A2A` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/wr2-OV01-comparison-console.txt` | `7DF29CF5EC6E5B8F7527D4451A110BA254A0479B4999F68FFB28FA429DC93296` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/wr2-OV01-comparison.json` | `7DF29CF5EC6E5B8F7527D4451A110BA254A0479B4999F68FFB28FA429DC93296` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/wr2-OV02-comparison-console.txt` | `8D43539E1EFFA497D13D44E5F29EE0EF90C1CDD7AA807537FF2AA028654B518A` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/wr2-OV02-comparison.json` | `8D43539E1EFFA497D13D44E5F29EE0EF90C1CDD7AA807537FF2AA028654B518A` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/wr2-OV05-control-console.txt` | `7EAD17F6A7ADB502E743964441E3C851E4280113EDF0EBE1D2F0012380FADBAB` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/wr2-OV05-control.json` | `7EAD17F6A7ADB502E743964441E3C851E4280113EDF0EBE1D2F0012380FADBAB` |
+| `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/wr2-report.md` | `A39E8BEAF841F6F4E26ACF49B2061F39DAD4ECB1FAB413A82C70012B986C32E5` |

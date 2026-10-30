@@ -1,0 +1,56 @@
+# W-R2 (I-65): copia las capturas de RAM a la corrida. Las de la consola, la rejilla, la barra de estado y los avisos ya se tomaron
+# recortadas a la zona tecnica. Las del dialogo «Abrir» se recortan al dialogo y se tapa su panel de navegacion (nombres de personas, de
+# la organizacion y carpetas ajenas). La del modelo vacio se recorta sin la barra de tareas.
+param([Parameter(Mandatory)][string]$ToolResults, [Parameter(Mandatory)][string]$Out)
+$ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.Drawing
+New-Item -ItemType Directory -Force -Path $Out | Out-Null
+function Src([string]$suffix) { $f = @(Get-ChildItem -LiteralPath $ToolResults -Filter "mcp-computer-use-blob-*-$suffix.jpg"); if ($f.Count -ne 1) { throw "captura ${suffix}: $($f.Count)" }; $f[0].FullName }
+function Copy1([string]$suffix, [string]$name) { Copy-Item -LiteralPath (Src $suffix) -Destination (Join-Path $Out $name) -Force }
+# Recorta [x, y, w, h] y tapa rectangulos [x, y, w, h] (coordenadas del recorte) con gris solido
+function Crop([string]$suffix, [string]$name, [int[]]$rect, [int[][]]$boxes) {
+  $img = [System.Drawing.Image]::FromFile((Src $suffix))
+  $bmp = New-Object System.Drawing.Bitmap $rect[2], $rect[3]
+  $g = [System.Drawing.Graphics]::FromImage($bmp)
+  $g.DrawImage($img, (New-Object System.Drawing.Rectangle 0, 0, $rect[2], $rect[3]), (New-Object System.Drawing.Rectangle $rect[0], $rect[1], $rect[2], $rect[3]), [System.Drawing.GraphicsUnit]::Pixel)
+  $brush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(128, 128, 128))
+  foreach ($b in $boxes) { $g.FillRectangle($brush, $b[0], $b[1], $b[2], $b[3]) }
+  $brush.Dispose(); $g.Dispose(); $img.Dispose(); $bmp.Save((Join-Path $Out $name), [System.Drawing.Imaging.ImageFormat]::Jpeg); $bmp.Dispose() }
+$dlg = @(408, 188, 717, 404); $nav = @(,@(0, 86, 336, 258))
+Crop 'jk8fh3' '01-ram-modelo-nuevo-vacio.jpg' @(0, 0, 1456, 782) @()
+Crop 'ep5w5u' '02-ov01-script-del-paquete-seleccionado.jpg' $dlg $nav
+Copy1 'ieyn2b' '03-ov01-consola-readback-ok-huella.jpg'
+Copy1 'pf5re0' '04-ov01-barra-estado-elementos-15.jpg'
+Crop '5jpvxs' '05-ov01-volcado-seleccionado.jpg' $dlg $nav
+Copy1 'hj6kmz' '06-ov01-consola-dump-ok.jpg'
+Copy1 'tjc7ti' '07-ov01-descartar-no.jpg'
+Crop 's0veoa' '08-ov02-script-del-paquete-seleccionado.jpg' $dlg $nav
+Copy1 '63kf3h' '09-ov02-consola-readback-ok-huella.jpg'
+Crop '1isa1p' '10-ov02-volcado-seleccionado.jpg' $dlg $nav
+Copy1 'a0zkgo' '11-ov02-consola-dump-ok.jpg'
+Copy1 'zp2x3g' '12-ov02-descartar-no.jpg'
+Copy1 'przkxg' '13-ov04-nudo-de-prueba-0-0-0.jpg'
+Copy1 'xa81x0' '14-ov04-barra-estado-elementos-1-antes.jpg'
+Crop 'bhnwnx' '15-ov04-script-seleccionado.jpg' $dlg $nav
+Copy1 '2mzvz9' '16-ov04-consola-gate-1-nodo.jpg'
+Copy1 'e8ezhx' '17-ov04-barra-estado-elementos-1-despues.jpg'
+Copy1 'ezd0xt' '18-ov04-rejilla-nudos-despues.jpg'
+Copy1 '25rsdy' '19-ov04-descartar-no.jpg'
+Crop 'p72g6x' '20-ov05-script-seleccionado.jpg' $dlg $nav
+Copy1 'xsgg8u' '21-ov05-consola-seccion-rechazada.jpg'
+Copy1 'vqauu9' '22-ov05-barra-estado-elementos-9-parcial.jpg'
+Copy1 'wyet85' '23-ov05-parcial-nudos.jpg'
+Copy1 'bazdi6' '24-ov05-parcial-miembros.jpg'
+Copy1 'fa840e' '25-ov05-descartar-no.jpg'
+Crop 'q8hyzr' '26-ov06-script-seleccionado.jpg' $dlg $nav
+Copy1 'ncp50y' '27-ov06-consola-eje-local-2.jpg'
+Copy1 'vnn0em' '28-ov06-barra-estado-elementos-15.jpg'
+Copy1 'fn9esd' '29-ov06-descartar-no.jpg'
+Copy1 'zkp2xb' '30-ov07a-barra-estado-vacio-antes.jpg'
+Crop '7gbzfd' '31-ov07a-script-seleccionado.jpg' $dlg $nav
+Copy1 'jnk813' '32-ov07a-consola-gate-version.jpg'
+Copy1 'm5e7ij' '33-ov07a-barra-estado-vacio-despues.jpg'
+Copy1 'j8di6o' '34-ov07b-barra-estado-vacio-antes.jpg'
+Crop 'hvcx2c' '35-ov07b-script-seleccionado.jpg' $dlg $nav
+Copy1 '77wnjx' '36-ov07b-consola-gate-funcion.jpg'
+Copy1 'lafkcn' '37-ov07b-barra-estado-vacio-despues.jpg'

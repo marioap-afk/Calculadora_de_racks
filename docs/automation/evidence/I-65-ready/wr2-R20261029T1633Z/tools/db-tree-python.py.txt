@@ -1,0 +1,20 @@
+"""I-65 W-R2 (WR2-PR-04): arboles de las bases de RAM con el metodo de Python de W2 (§1 del procedimiento de F4; los valores
+ccdc2346/4cb742a5 de los procedimientos de READY §1.2). SOLO LECTURA. Formato: una linea "<ruta relativa con />  <sha256>  <bytes>\\n"
+por archivo, en orden ordinal de la ruta relativa; SHA-256 del texto UTF-8. (`w2_hostsnap.ps1` da e70bfff0/b8e46d28 con su propio
+formato para los mismos archivos: A65-F5F-03.)
+Uso: python -I db_tree_python.py"""
+import hashlib
+import os
+
+DB = r"C:\Program Files\Bentley\Engineering\RAM Elements\Database"
+for sub in (r"Sections\United States", r"Materials\United States"):
+    root = os.path.join(DB, sub)
+    rows = []
+    for dp, dn, fn in os.walk(root):
+        for f in fn:
+            p = os.path.join(dp, f)
+            b = open(p, "rb").read()
+            rows.append((os.path.relpath(p, root).replace(os.sep, "/"), hashlib.sha256(b).hexdigest(), len(b)))
+    rows.sort(key=lambda x: x[0])
+    text = "".join("%s  %s  %d\n" % r for r in rows)
+    print("%s files=%d tree_sha256(python)=%s" % (sub.replace("\\", "/"), len(rows), hashlib.sha256(text.encode("utf-8")).hexdigest()))
