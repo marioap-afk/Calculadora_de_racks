@@ -1,0 +1,37 @@
+time_utc=2026-10-30T21:45:54.9152239Z
+R1 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad existe=False
+R1 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle existe=False
+R2 B-04 hkcu-applications.reg refs=0
+R2 B-04 hkcu-fixedprofile.reg refs=0
+R2 B-04 hkcu-installedapplications.reg refs=0
+R2 B-04 hkcu-loaded.reg refs=0
+R2 B-04 hkcu-profiles.reg refs=0
+R2 B-04 hklm-applications.reg refs=0
+R2 B-04 refs_total=0
+R2 busqueda HKCU\Software claves=8
+R2   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Applications\RackCad
+R2   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\AssemblyMap
+R2   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+R2   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Applications\RackCad
+R2   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\AssemblyMap
+R2   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+R2   HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\AssemblyMap
+R2   HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths
+R2 busqueda HKLM\SOFTWARE\Autodesk claves=0
+R5 AssemblyMap AppManagerPlugin = C:\Program Files (x86)\Autodesk\ApplicationPlugins\Autodesk AppManager.bundle\Contents\Windows\2025\AppManagerPlugin.dll apunta_al_bundle_temporal=False destino_existe=True
+R5 AssemblyMap FeaturedAppsPlugin = C:\Program Files (x86)\Autodesk\ApplicationPlugins\Autodesk FeaturedApps.bundle\Contents\Windows\2025\Win64\FeaturedAppsPlugin.dll apunta_al_bundle_temporal=False destino_existe=True
+R5 AssemblyMap RackCad.Plugin = C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\RackCad.Plugin.dll apunta_al_bundle_temporal=True destino_existe=False
+R4 regdiff HB-01 vs POST de recuperacion:
+R4   hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU0"
+R4   hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU1"
+R4   hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU2"
+R4   hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU3"
+R4   hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU4"
+R4   hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU5"
+R4   hkcu-profiles NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU6"
+R4   hkcu-profiles NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Variables :: "VIEWBACKSTATUS"
+R4   hkcu-fixedprofile IGUAL
+R4   hkcu-applications IGUAL
+R4   hkcu-installedapplications IGUAL
+R4   hkcu-loaded IGUAL
+R4   hklm-applications IGUAL

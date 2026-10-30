@@ -1,0 +1,77 @@
+time_utc=2026-10-30T21:34:38.9401981Z
+P6 acad_accoreconsole_ramelements=0
+P6 procesos_desde_carpeta_autocad=0 procesos_desde_carpeta_ram=0 ruta_no_legible=161
+P5 procesos_con_modulo_RackCad=0 procesos_sin_acceso_a_modulos=0
+P5 fondo AdskAccessService.exe
+P5 fondo AdskAccessService.exe
+P5 fondo AdskAccessServiceHost.exe
+P5 fondo AdskLicensingService.exe
+P5 fondo Bentley.Connect.Client.exe
+P5 fondo Bentley.Licensing.Service.exe
+P5 fondo Bentley.Structural.PropertyCatalog.Server.exe
+P5 servicio AdskLicensingService Running Automatic
+P5 servicio Autodesk Access Service Host Running Automatic
+P5 servicio Autodesk CER Service Running Automatic
+P5 servicio Bentley Property Catalog Service Running Automatic
+P3 resumen_post_hb_vs_previo diferencias=0
+P3 resumen_baseline_hb01_vs_previo diferencias=6
+P3   => B-04 hkcu-profiles 30195c0329cd81e6d04a8b51ba316ab2ba44d7f45c858a4d67ad18e5281a634c
+P3   => B-04 hkcu-applications 5bf0c807ca5c1ff45fd41630844e84f718d890f9abbf8139ee6821a040bde570
+P3   => B-04 hkcu-loaded 90629234864be8fa99fb9c0b8c849e720edeb39769a28f544a46747d8f852b34
+P3   <= B-04 hkcu-profiles 1d7aac3dad60def180d9b059f501aa7b4a26842ba433e7e5cc87f7bcb3b5c559
+P3   <= B-04 hkcu-applications 13430739eb82fd1c9f6898a5acb2056bb71961fc583662cc7e04004f9e4e0e59
+P3   <= B-04 hkcu-loaded dd27f202b0ec94eaf72dd7b57e42a34036b8a4456c56b70701f36faf26daef8b
+P3 hkcu-profiles post_hb=30195c03 previo=30195c03 baseline_hb01=1d7aac3d previo_igual_post=True previo_igual_baseline=False
+P3 hkcu-fixedprofile post_hb=f52448b7 previo=f52448b7 baseline_hb01=f52448b7 previo_igual_post=True previo_igual_baseline=True
+P3 hkcu-applications post_hb=5bf0c807 previo=5bf0c807 baseline_hb01=13430739 previo_igual_post=True previo_igual_baseline=False
+P3 hkcu-installedapplications post_hb=be9ec134 previo=be9ec134 baseline_hb01=be9ec134 previo_igual_post=True previo_igual_baseline=True
+P3 hkcu-loaded post_hb=90629234 previo=90629234 baseline_hb01=dd27f202 previo_igual_post=True previo_igual_baseline=False
+P3 hklm-applications post_hb=7d1debf2 previo=7d1debf2 baseline_hb01=7d1debf2 previo_igual_post=True previo_igual_baseline=True
+P4 applications-rackcad subclaves_RackCad_en_el_padre=1 nombre_exacto=True
+P1 backup-applications-rackcad.reg sha256=627cfbef5f2c0f3ad1c7e5d5d09d6b83f929f605e9c1a7455b379e4f538881ba bytes=2314
+P3 applications-rackcad bloque_post_hb_sha256=2610284287011d4225084e81f1fa0385b3001daf8f78256a46e7a9aa828bc75b bloque_actual_sha256=2610284287011d4225084e81f1fa0385b3001daf8f78256a46e7a9aa828bc75b coincide=True
+P4 loaded-rackcad-bundle subclaves_RackCad_en_el_padre=1 nombre_exacto=True
+P1 backup-loaded-rackcad-bundle.reg sha256=8b98159f2bb1d880f07707ebefeb6c512090a7a1de2bc73b2a0cbfb83b0ad5ff bytes=1564
+P3 loaded-rackcad-bundle bloque_post_hb_sha256=b91f054a77ddd267f92357a0e70978798d1c4a025e7a4bb9120863d37c6368d7 bloque_actual_sha256=b91f054a77ddd267f92357a0e70978798d1c4a025e7a4bb9120863d37c6368d7 coincide=True
+P2 inventory.txt sha256=313d3ab0d8740d4211d56056a59ac620b01ccffa6199226dfac02af94fd30422 lineas=16
+P4 LOADER_en_el_bundle_del_usuario=True LOADER_existe=False
+P4 ProductCode_es_el_bundle_del_usuario=True
+P4 bundle_del_usuario_existe=False
+P4 root1 rackcad=0
+P4 root2 ABSENT
+P4 root3 rackcad=0
+P4 root4 rackcad=0
+P4 productos_autocad_hkcu=R24.3\ACAD-7101:409,R24.3\ACAD-7104:40A,R24.3\ACAD-7117:409,R25.0\ACAD-8101:409
+P4 busqueda HKCU\Software claves=10 valores=10
+P4   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Applications\RackCad
+P4   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\AssemblyMap
+P4   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+P4   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Applications\RackCad
+P4   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\AssemblyMap
+P4   HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+P4   HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad
+P4   HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\AssemblyMap
+P4   HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+P4   HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths
+P4 busqueda HKLM\SOFTWARE\Autodesk claves=0 valores=0
+P5 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications last_write_utc=2026-10-30T01:56:55.9352452Z
+P5 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad last_write_utc=2026-10-30T01:56:55.9352452Z
+P5 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad\Groups last_write_utc=2026-10-30T01:56:55.9352452Z
+P5 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded last_write_utc=2026-10-30T01:56:55.9330116Z
+P5 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle last_write_utc=2026-10-30T01:56:55.9352452Z
+P5 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings last_write_utc=2026-10-30T01:56:55.9352452Z
+P5 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll last_write_utc=2026-10-30T01:56:55.9352452Z
+P5 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\AssemblyMap last_write_utc=2026-10-30T01:56:55.9352452Z
+AM valores=3 subclaves=0
+AM AppManagerPlugin String = C:\Program Files (x86)\Autodesk\ApplicationPlugins\Autodesk AppManager.bundle\Contents\Windows\2025\AppManagerPlugin.dll apunta_al_bundle_temporal=False destino_existe=True
+AM FeaturedAppsPlugin String = C:\Program Files (x86)\Autodesk\ApplicationPlugins\Autodesk FeaturedApps.bundle\Contents\Windows\2025\Win64\FeaturedAppsPlugin.dll apunta_al_bundle_temporal=False destino_existe=True
+AM RackCad.Plugin String = C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\RackCad.Plugin.dll apunta_al_bundle_temporal=True destino_existe=False
+STOP=7
+STOP P4 referencia fuera del alcance: HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Applications\RackCad
+STOP P4 referencia fuera del alcance: HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\AssemblyMap
+STOP P4 referencia fuera del alcance: HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+STOP P4 referencia fuera del alcance: HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Applications\RackCad
+STOP P4 referencia fuera del alcance: HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\AssemblyMap
+STOP P4 referencia fuera del alcance: HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+STOP P4 referencia fuera del alcance: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths
+RESULTADO=STOP

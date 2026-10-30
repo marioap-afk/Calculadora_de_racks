@@ -1,0 +1,11 @@
+# Transcripcion de backup-applications-rackcad.reg (local, SHA-256 627cfbef5f2c0f3ad1c7e5d5d09d6b83f929f605e9c1a7455b379e4f538881ba; UTF-16 de reg.exe export); cuenta sustituida por <usuario>, LOADER decodificado de hex(2)
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad]
+"LOADER"=REG_EXPAND_SZ:"%UserProfile%\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle.\Contents\RackCad.Plugin.dll"
+"LOADCTRLS"=dword:00000002
+"DESCRIPTION"="Comandos: RACKCAD, RACKSELECTIVO, RACKSISTEMADINAMICO, RACKCABECERA, QUICKCABECERA, QUICKCAMA, RACKEDITAR, RACKDUPLICAR, RACKLISTA, RACKBOMTOTAL, RACKLAYOUT, RACKRELLENAR, RACKAYUDA."
+"MANAGED"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad\Groups]
+@=""

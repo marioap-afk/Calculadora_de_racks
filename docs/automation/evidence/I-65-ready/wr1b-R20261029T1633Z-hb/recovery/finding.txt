@@ -1,0 +1,110 @@
+time_utc=2026-10-30T21:42:06.6330170Z
+acad=0 accoreconsole=0 ram=0
+== Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser last_write_utc=2025-10-27T18:43:08.8402967Z subclaves=15FCE767F24F74D1,BlockPreviewUser
+== perfil 15FCE767F24F74D1 last_write_utc=2026-10-29T13:42:26.2986683Z subclaves=3DGS Configuration,AcEPlotX,AEC,AlertsState,Applications,AssemblyMap,AutodeskApps,CONSTRAINT,DwgConvert,FileNavAddedPlaces,FileNavExtensions,FixedProfile,InfoCenter,InstalledApplications,Loaded,MiniDump,MTEXT,Profiles,Recent File List,ShareDwgSettings,Variables,WebServices
+15FCE767F24F74D1\Applications last_write_utc=2026-07-23T19:42:04.6695622Z subclaves=8 subclaves_RackCad=RackCad
+KEY HKCU\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Applications\RackCad last_write_utc=2026-07-23T19:42:04.6695622Z subkeys=1 values=4
+  VALUE DESCRIPTION String = Comandos: RACKCAD, RACKSELECTIVO, RACKSISTEMADINAMICO, RACKCABECERA, QUICKCABECERA, QUICKCAMA, RACKEDITAR, RACKDUPLICAR, RACKLISTA, RACKBOMTOTAL, RACKLAYOUT, RACKRELLENAR, RACKAYUDA.
+  VALUE LOADCTRLS DWord = 2
+  VALUE LOADER ExpandString = %UserProfile%\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle.\Contents\RackCad.Plugin.dll
+  VALUE MANAGED DWord = 1
+KEY HKCU\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Applications\RackCad\Groups last_write_utc=2026-07-23T19:42:04.6727620Z subkeys=0 values=1
+  VALUE @ String = 
+EXPORT export-15FCE767F24F74D1-applications-rackcad.reg rc=0 sha256=f4f8f8ada91b0fa1bd901601ecde88f7ac271a32f2431dc49eaf0a1164b20454
+15FCE767F24F74D1\Loaded last_write_utc=2026-07-23T19:42:04.7416328Z subclaves=4 subclaves_RackCad=C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+KEY HKCU\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle last_write_utc=2026-07-23T19:42:04.7468264Z subkeys=2 values=3
+  VALUE ProductCode String = C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+  VALUE Publisher String = RackCad
+  VALUE Version String = 1.0.0
+KEY HKCU\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll last_write_utc=2026-07-23T19:42:04.7468264Z subkeys=0 values=2
+  VALUE Name String = RackCad
+  VALUE Type DWord = 1
+KEY HKCU\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings last_write_utc=2026-07-23T19:42:04.7458003Z subkeys=0 values=1
+  VALUE RackCad.Plugin String = 
+EXPORT export-15FCE767F24F74D1-loaded-rackcad.reg rc=0 sha256=ef98f7c2233d32a904160e8a4d8e793f0c36f8868c8d4eb10f0549867f589706
+15FCE767F24F74D1\AssemblyMap last_write_utc=2026-07-23T19:42:04.6743231Z valores=3
+  AM AppManagerPlugin = C:\Program Files (x86)\Autodesk\ApplicationPlugins\Autodesk AppManager.bundle\Contents\Windows\2025\AppManagerPlugin.dll apunta_al_bundle_temporal=False destino_existe=True
+  AM FeaturedAppsPlugin = C:\Program Files (x86)\Autodesk\ApplicationPlugins\Autodesk FeaturedApps.bundle\Contents\Windows\2025\Win64\FeaturedAppsPlugin.dll apunta_al_bundle_temporal=False destino_existe=True
+  AM RackCad.Plugin = C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\RackCad.Plugin.dll apunta_al_bundle_temporal=True destino_existe=False
+== perfil BlockPreviewUser last_write_utc=2026-10-23T21:13:39.0206784Z subclaves=3DGS Configuration,AcEPlotX,AEC,AlertsState,Applications,AssemblyMap,AutodeskApps,CONSTRAINT,DwgConvert,FileNavAddedPlaces,FileNavExtensions,FixedProfile,InfoCenter,InstalledApplications,Loaded,MiniDump,MTEXT,Profiles,Recent File List,ShareDwgSettings,Variables,WebServices
+BlockPreviewUser\Applications last_write_utc=2026-07-28T22:09:24.5199066Z subclaves=8 subclaves_RackCad=RackCad
+KEY HKCU\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Applications\RackCad last_write_utc=2026-07-28T22:09:24.5219083Z subkeys=1 values=4
+  VALUE DESCRIPTION String = Comandos: RACKCAD, RACKSELECTIVO, RACKSISTEMADINAMICO, RACKCABECERA, QUICKCABECERA, QUICKCAMA, RACKEDITAR, RACKDUPLICAR, RACKLISTA, RACKBOMTOTAL, RACKLAYOUT, RACKRELLENAR, RACKAYUDA.
+  VALUE LOADCTRLS DWord = 2
+  VALUE LOADER ExpandString = %UserProfile%\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle.\Contents\RackCad.Plugin.dll
+  VALUE MANAGED DWord = 1
+KEY HKCU\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Applications\RackCad\Groups last_write_utc=2026-07-28T22:09:24.5219083Z subkeys=0 values=1
+  VALUE @ String = 
+EXPORT export-BlockPreviewUser-applications-rackcad.reg rc=0 sha256=8d967cca2bdb2c9ff277a23bb8ba5954df0b13df216b90f7f234b71760d819f7
+BlockPreviewUser\Loaded last_write_utc=2026-07-28T22:09:24.5931696Z subclaves=4 subclaves_RackCad=C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+KEY HKCU\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle last_write_utc=2026-07-28T22:09:24.5941768Z subkeys=2 values=3
+  VALUE ProductCode String = C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+  VALUE Publisher String = RackCad
+  VALUE Version String = 1.0.0
+KEY HKCU\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll last_write_utc=2026-07-28T22:09:24.5951768Z subkeys=0 values=2
+  VALUE Name String = RackCad
+  VALUE Type DWord = 1
+KEY HKCU\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings last_write_utc=2026-07-28T22:09:24.5941768Z subkeys=0 values=1
+  VALUE RackCad.Plugin String = 
+EXPORT export-BlockPreviewUser-loaded-rackcad.reg rc=0 sha256=130ce99d41dce5955cd4d67110bd39e314081e24d38257becf2cfa5af811f20e
+BlockPreviewUser\AssemblyMap last_write_utc=2026-07-28T22:09:24.5229235Z valores=3
+  AM AppManagerPlugin = C:\Program Files (x86)\Autodesk\ApplicationPlugins\Autodesk AppManager.bundle\Contents\Windows\2025\AppManagerPlugin.dll apunta_al_bundle_temporal=False destino_existe=True
+  AM FeaturedAppsPlugin = C:\Program Files (x86)\Autodesk\ApplicationPlugins\Autodesk FeaturedApps.bundle\Contents\Windows\2025\Win64\FeaturedAppsPlugin.dll apunta_al_bundle_temporal=False destino_existe=True
+  AM RackCad.Plugin = C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\RackCad.Plugin.dll apunta_al_bundle_temporal=True destino_existe=False
+== TypedPaths last_write_utc=2026-10-14T18:45:42.1107545Z valores=19
+  TP url6 = C:\Users\<usuario>\.claude\worktrees\feature-cantilever-mvp-final\src\RackCad.Plugin\bin\Debug\net8.0-windows\publish\RackCad.bundle
+== reg query HKCU\Software\appdatalow /f RackCad claves=54
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Applications\RackCad
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\AssemblyMap
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackCommandHelpWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackConsolidatedBomWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackCustomPropertiesWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackDynamicSystemWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackFlowBedWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackFrameConfiguratorWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackFrames.RackFrameConfiguratorWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackListWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackMainMenuWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackProjectVariablesWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackPushBackSystemWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackSelectiveWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackWarehouseFillWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackWarehouseLayoutWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.StructuralSections.StructuralSectionInspectorWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.Cantilever.RackCantileverWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.Dynamic.RackDynamicSystemWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.FlowBed.RackFlowBedWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.PushBack.RackPushBackSystemWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.Selective.RackSelectiveWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Recent File List
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Applications\RackCad
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\AssemblyMap
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackCommandHelpWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackConsolidatedBomWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackCustomPropertiesWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackDynamicSystemWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackFlowBedWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackFrameConfiguratorWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackFrames.RackFrameConfiguratorWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackListWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackMainMenuWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackProjectVariablesWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackPushBackSystemWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackSelectiveWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackWarehouseFillWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackWarehouseLayoutWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.StructuralSections.StructuralSectionInspectorWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.Cantilever.RackCantileverWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.Dynamic.RackDynamicSystemWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.FlowBed.RackFlowBedWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.PushBack.RackPushBackSystemWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.Selective.RackSelectiveWindow
+  HKEY_CURRENT_USER\Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Recent File List

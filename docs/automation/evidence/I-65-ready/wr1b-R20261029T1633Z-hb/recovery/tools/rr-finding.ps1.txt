@@ -1,0 +1,62 @@
+# I-65 W-R1b, recuperacion del registro: inventario de SOLO LECTURA de las referencias 'RackCad.bundle' fuera de las dos claves autorizadas
+# (STOP del precheck). Unicas escrituras: archivos nuevos en <Hb>\recovery\finding\ (reg.exe export de las copias de appdatalow e informe).
+# Uso: pwsh -NoProfile -File rr_finding.ps1 -Hb D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\hb
+param([Parameter(Mandatory)][string]$Hb)
+$ErrorActionPreference = 'Stop'
+$out = Join-Path $Hb 'recovery\finding'
+if (Test-Path -LiteralPath $out) { throw "ya existe $out" }
+New-Item -ItemType Directory -Path $out | Out-Null
+$bundle = Join-Path $env:APPDATA 'Autodesk\ApplicationPlugins\RackCad.bundle'
+$loadedName = $bundle.Replace('\', '/')
+$u = [regex]::Escape($env:USERNAME)
+function Red([string]$s) { $s -replace $u, '<usuario>' }
+function Sha([string]$p) { (Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLower() }
+Add-Type -Namespace RF65 -Name Reg -MemberDefinition @'
+[DllImport("advapi32.dll")] public static extern int RegQueryInfoKey(Microsoft.Win32.SafeHandles.SafeRegistryHandle hKey, IntPtr cls, IntPtr lpcClass, IntPtr r, IntPtr subKeys, IntPtr maxSub, IntPtr maxCls, IntPtr values, IntPtr maxValName, IntPtr maxValLen, IntPtr sec, out long lastWrite);
+'@
+function LastWrite([Microsoft.Win32.RegistryKey]$k) { $ft = 0L; [void][RF65.Reg]::RegQueryInfoKey($k.Handle, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [ref]$ft); [DateTime]::FromFileTimeUtc($ft).ToString('o') }
+$HKCU = [Microsoft.Win32.Registry]::CurrentUser
+$L = New-Object Collections.Generic.List[string]
+$L.Add("time_utc=" + [DateTime]::UtcNow.ToString('o'))
+$L.Add("acad=" + @(Get-Process -Name acad -ErrorAction SilentlyContinue).Count + " accoreconsole=" + @(Get-Process -Name accoreconsole -ErrorAction SilentlyContinue).Count + " ram=" + @(Get-Process -Name RAMElements -ErrorAction SilentlyContinue).Count)
+$walk = {
+  param($k, $path)
+  $L.Add("KEY " + (Red $path) + " last_write_utc=" + (LastWrite $k) + " subkeys=" + $k.SubKeyCount + " values=" + $k.ValueCount)
+  foreach ($v in ($k.GetValueNames() | Sort-Object)) { $data = $k.GetValue($v, $null, 'DoNotExpandEnvironmentNames'); $L.Add("  VALUE " + $(if ($v -eq '') { '@' } else { $v }) + " " + $k.GetValueKind($v) + " = " + (Red ([string]$data))) }
+  foreach ($s in ($k.GetSubKeyNames() | Sort-Object)) { $c = $k.OpenSubKey($s); & $walk $c "$path\$s"; $c.Close() }
+}
+$core = 'Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser'
+$ck = $HKCU.OpenSubKey($core)
+$L.Add("== $core last_write_utc=" + (LastWrite $ck) + " subclaves=" + (($ck.GetSubKeyNames() | Sort-Object) -join ','))
+foreach ($p in ($ck.GetSubKeyNames() | Sort-Object)) {
+  $pk = $ck.OpenSubKey($p)
+  $L.Add("== perfil $p last_write_utc=" + (LastWrite $pk) + " subclaves=" + (($pk.GetSubKeyNames() | Sort-Object) -join ','))
+  foreach ($parent in 'Applications', 'Loaded') {
+    $ppk = $pk.OpenSubKey($parent)
+    if (-not $ppk) { $L.Add("$p\$parent AUSENTE"); continue }
+    $hits = @($ppk.GetSubKeyNames() | Where-Object { $_ -match 'RackCad' })
+    $L.Add("$p\$parent last_write_utc=" + (LastWrite $ppk) + " subclaves=" + $ppk.SubKeyCount + " subclaves_RackCad=" + (Red ($hits -join ',')))
+    foreach ($h in $hits) {
+      $k = $ppk.OpenSubKey($h); & $walk $k "HKCU\$core\$p\$parent\$h"; $k.Close()
+      $f = Join-Path $out ("export-" + $p + "-" + $parent.ToLower() + "-rackcad.reg")
+      & reg.exe export "HKCU\$core\$p\$parent\$h" $f 2>&1 | Out-Null
+      $L.Add("EXPORT " + (Split-Path -Leaf $f) + " rc=" + $LASTEXITCODE + " sha256=" + $(if (Test-Path -LiteralPath $f) { Sha $f } else { 'n/a' }))
+    }
+    $ppk.Close()
+  }
+  $am = $pk.OpenSubKey('AssemblyMap')
+  if ($am) { $L.Add("$p\AssemblyMap last_write_utc=" + (LastWrite $am) + " valores=" + $am.ValueCount); foreach ($v in ($am.GetValueNames() | Sort-Object)) { $d = [string]$am.GetValue($v); $L.Add("  AM $v = " + (Red $d) + " apunta_al_bundle_temporal=" + $d.StartsWith($bundle + '\', [StringComparison]::OrdinalIgnoreCase) + " destino_existe=" + (Test-Path -LiteralPath $d)) }; $am.Close() } else { $L.Add("$p\AssemblyMap AUSENTE") }
+  $pk.Close()
+}
+$ck.Close()
+# TypedPaths del Explorador: solo los valores que nombran RackCad.bundle (el resto de la lista no se lee en claro)
+$tk = $HKCU.OpenSubKey('Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths')
+$L.Add("== TypedPaths last_write_utc=" + (LastWrite $tk) + " valores=" + $tk.ValueCount)
+foreach ($v in ($tk.GetValueNames() | Sort-Object)) { $d = [string]$tk.GetValue($v); if ($d -match 'RackCad\.bundle') { $L.Add("  TP $v = " + (Red $d)) } }
+$tk.Close()
+# Busqueda 'RackCad' (no solo .bundle) dentro de appdatalow
+$q = @(& reg.exe query "HKCU\Software\appdatalow" /s /f 'RackCad' 2>$null | Where-Object { $_ -match '^HKEY_' })
+$L.Add("== reg query HKCU\Software\appdatalow /f RackCad claves=" + $q.Count)
+foreach ($k in $q) { $L.Add("  " + (Red $k)) }
+$L | Set-Content -LiteralPath (Join-Path $out 'finding.txt') -Encoding utf8NoBOM
+$L | ForEach-Object { Red $_ }

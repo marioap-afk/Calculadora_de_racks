@@ -3475,3 +3475,61 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/validator-v2-pkg-HB.redacted.json` | `AAD0DEF0FCCDD9611C8E6280FAA4D683D0A90556B66A0A8214E4C2D0A905000C` |
 | `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/validator-v2-pkg-HB2.redacted.json` | `F3D8646527CCB3D8C3A06E7822FF6AA205E6B6ABC2D694838EE817F374CE05D3` |
 | `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/wr1b-report.md` | `DE3DD71725E4B6E252779277DAC54CDDA297AE32FBF9080CAF513B8A4A82709D` |
+
+## 123. W-R1b: recuperación controlada del registro (opción A) sobre `4a03b65b` (2026-10-30T21:59:30Z)
+
+- **Corrida:** `D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\hb\recovery\`, de 21:28Z a 21:54Z del 2026-10-30. Incluye:
+  - el estado previo, en `baseline`;
+  - `precheck`, `finding` y `cleanup`;
+  - el POST, en `post`;
+  - `post-checks`.
+- **Sin AutoCAD, sin RAM y sin operaciones de pantalla.** Única escritura en el registro: dos `reg.exe delete … /f`, a las 21:44:52Z.
+- **Respaldos** (locales):
+
+  | Respaldo | SHA-256 | Bytes |
+  |---|---|---|
+  | `backup-applications-rackcad.reg` | `627cfbef…` | 2314 |
+  | `backup-loaded-rackcad-bundle.reg` | `8b98159f…` | 1564 |
+
+  Inventario `313d3ab0…`. Las transcripciones con la cuenta sustituida se versionan.
+- **Clasificación:** el *precheck* paró con su regla propia por siete referencias preexistentes fuera de alcance. Seis están en `appdatalow\…\CoreUser`, con última escritura en julio de 2026, y una en `TypedPaths`, del 14 de octubre de 2026. Se inventariaron solo leyendo y no se tocaron.
+- **POST:**
+  - B-04 `hkcu-applications` = `13430739…` y `hkcu-loaded` = `dd27f202…`, iguales a HB-01;
+  - 0 referencias en B-04;
+  - frente a HB-01 solo difiere `hkcu-profiles` (INFORMAR);
+  - TRUSTEDPATHS, SECURELOAD, ACL y raíces iguales a HB-01;
+  - `AssemblyMap` sin cambios: `RackCad.Plugin` apunta al bundle temporal y su valor anterior no se puede establecer;
+  - K3 = K2, `stop=false`.
+- **Privacidad (§90):**
+  - rutas con `<usuario>`;
+  - exportaciones `.reg` (respaldos, estado previo, POST y copias de CoreUser) en local, con su SHA-256;
+  - listados de las raíces de Program Files reducidos a recuentos;
+  - de `TypedPaths` solo se lee en claro el valor que nombra `RackCad.bundle`;
+  - barrido `secrets_scan.py` con 0 coincidencias.
+- Informe: `I-65-ready/wr1b-R20261029T1633Z-hb/recovery/recovery-report.md`. Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-wr1b-registry-recovery.original.txt` | `6DA1A4232E8E7092176C434C0BD29A2ACC3242F233B51E11AA7A179A3426F41E` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/backup-applications-rackcad.redacted.txt` | `9C94DAEC11BD94CB899A8BCEA97BFD1C397ACAA53EC567CF0BA5EF6D1C06CC97` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/backup-loaded-rackcad-bundle.redacted.txt` | `2B0878CED96FC803D3B4D0673CEE290B3A59B2B69EB76A0BA9CE78A104749C71` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/cleanup.txt` | `E719B4D468A8E078586817DC61FF380C83E26CA2380227D20F89560822A3FCBB` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/finding.txt` | `E815F6E03DC547B8EEE85A193F931EE3C0579DA036C7E72D930A1192A7D2E416` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/inventory.redacted.txt` | `966F0EC724063C7F3E7DA9B035EF7448D42829A37E3A80E6E3F2FEF39CF87526` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/k2-k3-compare.json` | `FD757E2A69813AB5BF8808EFDA720ACACFBF239F6E302AAC565C79A82AC4B604` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/local-files-sha256.txt` | `441220F0C31602DF385296222B06E2514B73F268C63957755FCEF34299BA09C7` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/post-checks.txt` | `49F6E246BB30F543CE70EA376C754F122AD7D6DD582AD55506D639F900CFD367` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/post-summary.txt` | `8DAE6AD8E47D94219EB3104A869DC32DD0DB31D1866E3F894E6199E3FBB91B64` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/pre-summary.txt` | `F83255403594F461A8ED7AC6A6DEC4A3D163480DC48D8507AFA6BD23E8A78E6A` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/precheck.txt` | `EEA0421F71D99BF2EEC955C0FF57CDE8253808085971F1CC0922A7C3128FB951` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/privacy-secrets-scan.txt` | `745857876D2F1566D4BE23D6FCC328844FBED5A336B08200E2AEC0C92C48A9E5` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/recovery-report.md` | `84EB1572C89DDA921C4B81C09153D637053EC133079275E01538EBC3C56C004D` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/regdiff-hb01-vs-recovery-post.txt` | `CD8C6B0B443E71D9A77891BA7A9EA37ECBCFB576FCE270C18E7DE7F4DCB8E986` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/rr-post-lastwrite.txt` | `EC8424ECCA9F2F694E01C6274EE687681FFA76EEDAB6EE0100EC87B197A1CF96` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/rr-post-roots.txt` | `1901C8157DB836A9A6B483F775A82E8D6DEF32F9E7ED1875EF4E91AEF2C84C62` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/timeline.txt` | `75E6680FC78DDBA8336AD6BDB7154154B6254C5F3303EC6D92CFCF0E99D810EA` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/tools/rr-cleanup.ps1.txt` | `03C207B562728D886FAF3D6967525153B8AD14D8C3A3C232B97EC25FC068B862` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/tools/rr-finding.ps1.txt` | `EFD2972A00F14E4593643CE489A9E63520729CD8B9104854860E76E8E3998EE2` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/tools/rr-post.ps1.txt` | `C4CC44E696D8079F0D4F3C7C2795E352673E850974D26CC55A50F5E3B1EF42C0` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/tools/rr-precheck.ps1.txt` | `A4425BE7A454848A103523E133158BE48E885241A9F8EDDCC075053D8CEB71A6` |
+| `docs/automation/evidence/I-65-ready/wr1b-R20261029T1633Z-hb/recovery/tools/tools-sha256.txt` | `E63D10849AD693A0D29753330237DFEFF9B3157AD39B8C76B354AF4B6F96B0DF` |

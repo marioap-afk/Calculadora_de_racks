@@ -1,0 +1,69 @@
+I-65 — OWNER DISPOSITION
+W-R1b Registry Recovery / Controlled Cleanup
+He revisado el resultado de W-R1b registrado en `c4216d86`, con CI 40990483363, 4/4 satisfactorio.
+1. Decisión
+W-R1b FUNCTIONAL VALIDATION = ACCEPTED / PASS.
+Reconozco los resultados de HB-01..04 y de HB-05a/b.
+REGISTRY RECOVERY = OPTION A, CONDITIONALLY AUTHORIZED.
+Autorizo una recuperación controlada del registro, exclusivamente para las entradas creadas por la ejecución del Autoloader de I-65.
+W-R1b todavía no recibe PASS global.
+2. Alcance autorizado
+Antes de cualquier escritura:
+
+1. Exporta como respaldo las dos claves nuevas y sus valores.
+2. Conserva sus rutas exactas, tipos, datos y hashes de respaldo.
+3. Contrasta nuevamente la BASELINE y el POST.
+4. Confirma que las claves pertenecen a la instalación temporal de RackCad.
+5. Comprueba que ninguna otra aplicación o proceso está utilizando esas entradas.
+6. Verifica que AutoCAD y RAM están cerrados.
+
+Solo si las comprobaciones pasan, elimina:
+
+* La clave `Applications\RackCad` creada durante HB.
+* La entrada `Loaded\...\RackCad.bundle` creada durante HB.
+
+No elimines ramas superiores ni otras entradas.
+3. AssemblyMap
+ASSEMBLYMAP MODIFICATION = NOT AUTHORIZED.
+No borres ni edites el valor `RackCad.Plugin` mientras su valor anterior no pueda establecerse de forma fiable.
+Documenta si permanece y si apunta a la ruta temporal del bundle.
+Si se demuestra que es una entrada nueva creada exclusivamente durante HB, presenta la evidencia antes de solicitar su eliminación.
+4. POST de recuperación
+Después de la limpieza:
+
+* Comprueba que las dos claves autorizadas ya no existen.
+* Comprueba que no quedan referencias activas al bundle desinstalado.
+* Verifica TRUSTEDPATHS, SECURELOAD, permisos y ApplicationPlugins.
+* Compara los estados protegidos con la BASELINE.
+* Clasifica por separado cualquier diferencia de AssemblyMap.
+* Custodia el respaldo, las operaciones realizadas y el resultado.
+
+No declares restauración exacta si existe alguna diferencia protegida sin resolver.
+5. Condiciones de parada
+STOP si:
+
+* Alguna clave ya no coincide con lo medido.
+* Existe actividad de AutoCAD o RAM.
+* La clave pertenece también a otra instalación.
+* Aparece una diferencia nueva.
+* No se puede identificar el alcance exacto de la eliminación.
+* La operación exige modificar AssemblyMap.
+
+No intentes una recuperación adicional no autorizada.
+6. Entregable
+Presenta:
+
+1. Respaldo e inventario de las claves.
+2. Evidencia de que fueron creadas durante HB.
+3. Operaciones de eliminación.
+4. POST actualizado.
+5. Estado de AssemblyMap.
+6. Diferencias restantes respecto de BASELINE.
+7. Recomendación PASS / NO-GO para W-R1b.
+
+W-R1b FUNCTIONAL = PASS.
+W-R1b GLOBAL = PENDING REGISTRY RECOVERY.
+W-R2 = NO.
+INTEGRATION = NO.
+No abrir AutoCAD ni RAM, no modificar código y no realizar otras operaciones de registro.
+Detente después del informe de recuperación.

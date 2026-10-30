@@ -1,0 +1,16 @@
+[applications-rackcad] KEY HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad last_write_utc=2026-10-30T01:56:55.9352452Z subkeys=1 values=4
+[applications-rackcad]   VALUE DESCRIPTION String = Comandos: RACKCAD, RACKSELECTIVO, RACKSISTEMADINAMICO, RACKCABECERA, QUICKCABECERA, QUICKCAMA, RACKEDITAR, RACKDUPLICAR, RACKLISTA, RACKBOMTOTAL, RACKLAYOUT, RACKRELLENAR, RACKAYUDA.
+[applications-rackcad]   VALUE LOADCTRLS DWord = 2
+[applications-rackcad]   VALUE LOADER ExpandString = %UserProfile%\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle.\Contents\RackCad.Plugin.dll
+[applications-rackcad]   VALUE MANAGED DWord = 1
+[applications-rackcad] KEY HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad\Groups last_write_utc=2026-10-30T01:56:55.9352452Z subkeys=0 values=1
+[applications-rackcad]   VALUE @ String = 
+[loaded-rackcad-bundle] KEY HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle last_write_utc=2026-10-30T01:56:55.9352452Z subkeys=2 values=3
+[loaded-rackcad-bundle]   VALUE ProductCode String = C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+[loaded-rackcad-bundle]   VALUE Publisher String = RackCad
+[loaded-rackcad-bundle]   VALUE Version String = 1.0.0
+[loaded-rackcad-bundle] KEY HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll last_write_utc=2026-10-30T01:56:55.9352452Z subkeys=0 values=2
+[loaded-rackcad-bundle]   VALUE Name String = RackCad
+[loaded-rackcad-bundle]   VALUE Type DWord = 1
+[loaded-rackcad-bundle] KEY HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings last_write_utc=2026-10-30T01:56:55.9352452Z subkeys=0 values=1
+[loaded-rackcad-bundle]   VALUE RackCad.Plugin String = 
