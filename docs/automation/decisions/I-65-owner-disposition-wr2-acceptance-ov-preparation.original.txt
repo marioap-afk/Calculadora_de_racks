@@ -1,0 +1,81 @@
+I-65 — OWNER DISPOSITION
+W-R2 Acceptance / Final Owner Validation Preparation
+He revisado el informe de W-R2 registrado en `fad6f937`, con CI 41144265116, 4/4 satisfactorio.
+1. Aceptación de W-R2
+W-R2 = ACCEPTED / PASS.
+Reconozco:
+
+* OV-I65-01 y OV-I65-02 con READBACK OK, volcados independientes y comparadores PASS.
+* Q2 reproducida conforme al contrato.
+* OV-I65-04..07 con los rechazos previstos.
+* Cero combinaciones verificadas mediante CMB-3.
+* Peso propio excluido.
+* Integridad de paquetes, scripts y volcados.
+* Trazabilidad operativa conforme a R-D3 y R-D5.
+* Preflight y POST satisfactorios.
+* Modelos descartados sin guardar.
+* CI y custodia en verde.
+
+Acepto las incidencias documentadas como no bloqueantes para la validez de W-R2, conservando su trazabilidad.
+2. Matriz final
+Reconozco la cobertura completa de:
+
+* OV-I65-01..07.
+* OV-I65-08.
+* HB-01..05.
+
+Mantén expresamente:
+
+* Legacy de OV-08 = NOT_EVALUATED.
+* Propiedades de sección y material = NOT_EVALUATED mediante API; respaldo documental D-09.
+* DIF-01 = INFORMATIVE.
+* Peso propio excluido.
+* Categoría de caso manual = INFORMATIVE.
+
+No conviertas estos estados en PASS por inferencia.
+3. Validación final del Owner
+OWNER VALIDATION PREPARATION = AUTHORIZED.
+Prepara la ficha de validación de la guía §7 con:
+
+1. Identidad del FINAL_CANDIDATE_SHA.
+2. Matriz completa de pruebas.
+3. Resultados de W-R1a, W-R1b y W-R2.
+4. Limitaciones técnicas y de ingeniería.
+5. Evidencia de integridad y trazabilidad.
+6. Estado de los hallazgos residuales.
+7. Riesgos de integración.
+8. Decisiones que requieren mi firma.
+
+No atribuyas mi firma ni declares Owner Validation completa sin una decisión posterior explícita.
+4. Preintegración
+Realiza únicamente comprobaciones de lectura:
+
+* Estado actualizado de origin/main.
+* Diferencias frente a la rama I-65.
+* Conflictos de integración.
+* Dependencias con I-62 e I-64.
+* READY-01..09.
+* Estado de FOUNDATIONS y ADR-0050.
+
+No hagas merge, rebase ni modificaciones de la rama principal.
+5. Restricciones
+W-R1a = PASS.
+W-R1b = PASS.
+W-R2 = PASS.
+OWNER VALIDATION = PENDING SIGNATURE.
+INTEGRATION = NOT AUTHORIZED.
+No modificar código, Freeze, ADR-0050, tabla ni tolerancias.
+No abrir AutoCAD ni RAM.
+No consumir Codex ni attempts adicionales.
+6. Entregable
+Presenta:
+
+1. Ficha de Owner Validation lista para aprobación.
+2. Matriz consolidada OV-I65-01..08 y HB-01..05.
+3. Resultado de READY-01..09.
+4. Lista de hallazgos aceptados y riesgos residuales.
+5. Estado actualizado de integración.
+6. Recomendación GO / NO-GO.
+7. Texto exacto de autorización requerido para integrar.
+
+Detente antes de firmar la validación o integrar I-65.

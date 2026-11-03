@@ -3650,3 +3650,30 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/wr2-OV05-control-console.txt` | `7EAD17F6A7ADB502E743964441E3C851E4280113EDF0EBE1D2F0012380FADBAB` |
 | `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/wr2-OV05-control.json` | `7EAD17F6A7ADB502E743964441E3C851E4280113EDF0EBE1D2F0012380FADBAB` |
 | `docs/automation/evidence/I-65-ready/wr2-R20261029T1633Z/wr2-report.md` | `A39E8BEAF841F6F4E26ACF49B2061F39DAD4ECB1FAB413A82C70012B986C32E5` |
+
+## 126. Aceptación de W-R2, preintegración y ficha de Owner Validation (2026-11-03T15:30:22Z)
+
+- Disposición del Owner registrada (decisiones §124, CD-I65-FC-76..80): **W-R2 = ACCEPTED / PASS**; OWNER VALIDATION PREPARATION = AUTHORIZED; OWNER VALIDATION = PENDING SIGNATURE; INTEGRATION = NOT AUTHORIZED.
+- Preintegración solo de lectura (`I-65-ready/preintegration-20261103/`), con fetch fresco el 2026-11-03:
+  - `origin/main` = `bb0d5522` = merge-base, 0 commits detrás;
+  - merge simulado con `main` sin conflictos y con el árbol de la rama;
+  - con I-62 e I-66, merge limpio;
+  - con I-64, conflicto solo en los dos censos de comandos, que I-64 reconcilia después (R-D1);
+  - ADR 0050 libre;
+  - FOUNDATIONS sin publicar hasta el cierre.
+- Ficha: [I-65-owner-validation-sheet.md](../initiatives/I-65-owner-validation-sheet.md), preparada y sin firma. Contiene identidad, matriz, ventanas, limitaciones, integridad, hallazgos, riesgos, decisiones del Owner, READY-01..09 y el texto exacto de autorización.
+- Sin AutoCAD, RAM, registro, Codex ni cambios de código después de W-R2.
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-disposition-wr2-acceptance-ov-preparation.original.txt` | `854DCA3B2D41393AF07E6E80A254029925EAD27D71DAF9A46F776F8344D6162F` |
+| `docs/initiatives/I-65-owner-validation-sheet.md` | `71A68221F93A9CD799A76A1F9E6A63A109ADA6D3AA6E44EE41AB2F97C4B87C0E` |
+| `docs/automation/evidence/I-65-ready/preintegration-20261103/mergetree-I65-I-62.txt` | `90214A5B8DE3CA8C1FF7AD469619084EAAC8C68F62E3C2318EC9B3A830E1B3AF` |
+| `docs/automation/evidence/I-65-ready/preintegration-20261103/mergetree-I65-I-64.txt` | `2E1C8227EAF07AF2B56A7D4FFB04B295C8471FFB0F350B468738FB6B318D7DE4` |
+| `docs/automation/evidence/I-65-ready/preintegration-20261103/mergetree-I65-I-66.txt` | `F92CC740EA04BF2D546A13315B43EB0DD171BBE7138058D7753C6A740027759D` |
+| `docs/automation/evidence/I-65-ready/preintegration-20261103/overlap-I65-I-62.txt` | `2DBF447D1BA6A44FEEF6A01FF7C1F12CC25B5DFEAB8DB426A82691CE14126637` |
+| `docs/automation/evidence/I-65-ready/preintegration-20261103/overlap-I65-I-64.txt` | `4385A2CE3F7B787B621F4A183E262B8CA4362BB008501C7E4CFD98C621ABAC19` |
+| `docs/automation/evidence/I-65-ready/preintegration-20261103/overlap-I65-I-66.txt` | `2DBF447D1BA6A44FEEF6A01FF7C1F12CC25B5DFEAB8DB426A82691CE14126637` |
+| `docs/automation/evidence/I-65-ready/preintegration-20261103/preintegration-checks.md` | `942500FF1802ACE41F7405117FEA220E2C54CDCA4DF8918644DA0D11EF2B316F` |
+| `docs/automation/evidence/I-65-ready/preintegration-20261103/privacy-secrets-scan.txt` | `0F85E4DC52C85AD377DBCDDE693CDE27636D5864C38BCDD85CD81C12164BCE0A` |
