@@ -1,0 +1,61 @@
+I-65 — Owner Decision
+Environment B — Final Architecture Simplification
+He revisado la guía del entorno B y el Modelo S.
+Acepto como base la máquina virtual independiente, sin acceso a los checkouts del host y sin credenciales de escritura de GitHub dentro del entorno Worker.
+Antes de autorizar el despliegue, necesito resolver la complejidad operativa de publicación.
+1. Objetivo
+Evaluar exclusivamente una simplificación del Modelo S que preserve:
+
+* Aislamiento entre Workers y checkout principal.
+* Ausencia de credenciales de escritura en el entorno Worker.
+* Identidad exacta de commits RED/GREEN.
+* CI independiente para cada commit.
+* Evidencia reproducible.
+* Autoridades de I-61.
+
+La solución no debe requerir intervención manual del Owner en cada push si existe una alternativa compatible con las autoridades actuales.
+2. Comparación requerida
+Compara únicamente:
+S1 — Publicación manual
+El Modelo S ya documentado, con publicación desde el clon autorizado del host.
+S2 — Publicador separado
+Un proceso o servicio independiente del Worker recibe un paquete verificable, valida sus commits y publica en GitHub usando credenciales que el Worker no puede acceder.
+No implementes S2 todavía.
+3. Evaluación
+Determina:
+
+1. Si S2 puede implementarse sin cambiar el protocolo I-61.
+2. Qué autoridad controla la publicación.
+3. Cómo se comprueba la identidad y el orden RED/GREEN.
+4. Qué ocurre si la publicación falla o se interrumpe.
+5. Cómo se impide que el Worker acceda a las credenciales del publicador.
+6. Qué infraestructura adicional requiere.
+7. Qué riesgos nuevos introduce.
+8. Qué alternativa resulta más sencilla de operar para futuras iniciativas.
+
+No supongas que separar procesos equivale automáticamente a separar privilegios.
+4. Autoridades
+No autorices unilateralmente desviaciones de I-61.
+Si S1 o S2 necesitan una excepción o cambio de autoridad, identifica el documento y el responsable exactos.
+No modifiques Workflow V2, I-61 ni I-62.
+5. Restricciones
+No crear la VM todavía.
+No instalar software.
+No modificar permisos, credenciales o configuración de GitHub.
+No iniciar Workers.
+No reanudar F4.
+No modificar código de RackCad.
+6. Entregable
+Presenta una comparación breve S1 vs S2 y una recomendación definitiva que priorice:
+
+1. Protección del repositorio y los checkouts.
+2. Cumplimiento de autoridades.
+3. Autonomía operativa.
+4. Facilidad de recuperación.
+5. Complejidad mínima.
+
+No abras otra iniciativa ni produzcas nuevas propuestas extensas.
+ENVIRONMENT DEPLOYMENT = NO.
+F4 IMPLEMENTATION = NO.
+WORKER EXECUTION = NO.
+Detente tras entregar la comparación.

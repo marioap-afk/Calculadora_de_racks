@@ -1,0 +1,76 @@
+{
+ "core-green": {
+  "sha256": "EE5E11EDAD5437641D1B4BF8B39B83EA8C58C0AFA1E7BE47B7D2BC85F965FBF7",
+  "counters": {
+   "total": "14390",
+   "executed": "14390",
+   "passed": "14390",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 1795,
+   "Passed": 1795
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "ui-green": {
+  "sha256": "F2A1ECCB1E6EA6850FED971FA329236B4831E981B49613CA2FE8219E1CAC0B1A",
+  "counters": {
+   "total": "1654",
+   "executed": "1637",
+   "passed": "1637",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 0
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "core-red": {
+  "sha256": "FCB33660F0C6A525325A1A1031F7FBD4250CA6B926F37840EB4429B693E60E0B",
+  "counters": {
+   "total": "14390",
+   "executed": "14390",
+   "passed": "14377",
+   "failed": "13",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 1795,
+   "Passed": 1782,
+   "Failed": 13
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {
+   "Assert.Equal() Failure": 8,
+   "Assert.All() Failure": 3,
+   "Se esperaba Valid; resultado Unsupported": 1,
+   "La tabla distribuida no trae el campo verifiedOn esperado.": 1
+  },
+  "failed_filter_names": [
+   "RackCad.Tests.StructuralAnalysisPluginCommandProductTableTests.ConLaTablaDeProducto_LaEstacionEsValida_ConModelo_YSinElDiagnosticoDeFilaSinVerificar",
+   "RackCad.Tests.StructuralAnalysisPluginCommandProductTableTests.ConLaTablaDeProducto_LaFabricaDaUnPaqueteValidoEnMemoria_SinCrearLaCarpeta",
+   "RackCad.Tests.StructuralAnalysisPluginCommandProductTableTests.LaTablaDeProductoSeLeeYTodasSusFilasEstanVerified",
+   "RackCad.Tests.StructuralAnalysisRamElementsMapReaderTests.ConLaTablaTalComoSeEntregaLaExportacionDeRefCant01EsValidaYNoHayFilasSinVerificar",
+   "RackCad.Tests.StructuralAnalysisRamElementsMapReaderTests.ElArchivoDeDatosEsValidoYTieneExactamenteLasDosFilasVerifiedDeRefCant01",
+   "RackCad.Tests.StructuralAnalysisRamElementsMapReaderTests.ElArchivoDeDatosTraeLosValoresDeIngenieriaYLaVerificacionAprobados",
+   "RackCad.Tests.StructuralAnalysisRamElementsPackageValidationTests.ConLaTablaDelProductoTalComoSeEntregaElResultadoEsValidoConContenidoEnMemoria",
+   "RackCad.Tests.StructuralAnalysisSectionMapVerifiedTests.CambiarUnCampoDeUnaFilaVerifiedCambiaLaHuellaDelPaquete",
+   "RackCad.Tests.StructuralAnalysisSectionMapVerifiedTests.ElLectorLeLaTablaDistribuidaValidaSinDiagnosticosConLasDosFilasVerified",
+   "RackCad.Tests.StructuralAnalysisSectionMapVerifiedTests.LaFabricaDaUnPaqueteValidoEnMemoriaConLaTablaDistribuidaSinEscribirLaCarpeta",
+   "RackCad.Tests.StructuralAnalysisSectionMapVerifiedTests.LaFilaDeLaColumnaLlevaLosValoresAprobadosPorElOwner",
+   "RackCad.Tests.StructuralAnalysisSectionMapVerifiedTests.LaFilaDelBrazoLlevaLosValoresAprobadosPorElOwner",
+   "RackCad.Tests.StructuralAnalysisSectionMapVerifiedTests.RefCant01ConLaTablaDistribuidaEsValidoConLosMismosDiagnosticosQueConLaTablaVerifiedDeFixture"
+  ]
+ }
+}

@@ -1,0 +1,11 @@
+== tabla distribuida actual : Outcome Valid
+   row AISC-HSS-RECT-HSS4X4X_250 | //HSS_SQR 4X4X1_4 | ASTM-A500-GRC -> A500 GrC rectangular | status Proposed verified=False | E null | nu  | G null | W null | source chars 0 | by '' on ''
+   row AISC-W-W12X26 | //W 12X26 | ASTM-A992-GR50 -> A992 Gr50 | status Proposed verified=False | E null | nu  | G null | W null | source chars 0 | by '' on ''
+== candidata proposed (valores finales, status proposed) : Outcome Valid
+   row AISC-HSS-RECT-HSS4X4X_250 | United States/HSS_SQR/HSS_SQR 4X4X1_4 | ASTM-A500-GRC -> A500 GrC rectangular | status Proposed verified=False | E 29000 ksi | nu 0.3 | G null | W 490 pcf | source chars 1001 | by '' on ''
+   row AISC-W-W12X26 | United States/W/W 12X26 | ASTM-A992-GR50 -> A992 Gr50 | status Proposed verified=False | E 29000 ksi | nu 0.3 | G null | W 490 pcf | source chars 860 | by '' on ''
+== candidata verified (valores finales, D-09 null) : Outcome Invalid
+   diag RAM-MAP-VERIFIED-INCOMPLETE | Invalid | $.rows[0].verifiedBy
+   diag RAM-MAP-VERIFIED-INCOMPLETE | Invalid | $.rows[0].verifiedOn
+   diag RAM-MAP-VERIFIED-INCOMPLETE | Invalid | $.rows[1].verifiedBy
+   diag RAM-MAP-VERIFIED-INCOMPLETE | Invalid | $.rows[1].verifiedOn

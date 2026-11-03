@@ -1,0 +1,8 @@
+herramientas locales del Coordinator usadas en W3/W4 (A65-F5F-03); medidas en el cierre de F5, 2026-10-28T19:58:47Z; fecha = ultima modificacion (UTC)
+evidencia operativa: hash actual = anexo operativo §1 y fecha anterior a W3 (2026-10-19T17:50Z); no prueba la identidad en el momento del uso
+5c33a842fa1a39d4dd9ce9ec1dd4b9143b3271fceeca0d59d570f3b551b35ba4  w1_hostsnap.ps1  2026-10-17T04:52:40Z
+ac61c01bae9975e335b5632bb0ed6066f341f1005cb44af3fd30c06e690fa760  w1_idle.ps1  2026-10-17T08:49:46Z
+1f56b8cba1a64f908c46eb5691930891c3dc0ef1d9bf8ed9c45f8e5f8bdd297a  validate_smoke2_package_v2.py  2026-10-16T20:38:26Z
+39ac443a5a20368afbab217309c9e8afa27af77e7e7dcf97cdfd0aa950f85265  f5_dryrun_compare.py  2026-10-19T01:40:09Z
+466f7a933042b34e423eb021cf99dd942c57a45d62391db306935d0297bab827  w2_readiness.ps1  2026-10-17T09:13:06Z
+6904a43965de69b33b78c304cd57d1958b31b2018121906cf22d034724ff5485  w2_hostsnap.ps1  2026-10-17T15:55:19Z

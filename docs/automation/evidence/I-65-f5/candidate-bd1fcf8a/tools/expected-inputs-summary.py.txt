@@ -1,0 +1,37 @@
+"""Resumen saneado de expected-inputs.json del Candidato de F5 frente al de F4. Uso: python -I expected_inputs_summary.py <f4.json> <f5.json> <out.txt>"""
+import hashlib
+import json
+import sys
+
+BS = chr(92)
+a = json.load(open(sys.argv[1], encoding="utf-8-sig"))
+b = json.load(open(sys.argv[2], encoding="utf-8-sig"))
+raw = open(sys.argv[2], "rb").read()
+
+
+def strip(d):
+    d = json.loads(json.dumps(d))
+    for k in ("generatedUtc", "applicationDll", "loads"):
+        d.pop(k, None)
+    d["table"].pop("path", None)
+    return d
+
+
+diff = sorted(k for k in set(a) | set(b) if a.get(k) != b.get(k))
+lines = [
+    "archivo=D:" + BS + "r65-smoke" + BS + "bd1fcf8a" + BS + "expected-inputs.json sha256_bytes_en_disco=%s bytes=%d hasCR=%s (CRLF de ConvertTo-Json; cf. A65-F4F-01)"
+    % (hashlib.sha256(raw).hexdigest(), len(raw), b"\r" in raw),
+    "generado_con=smoke2_expected_inputs.ps1 y el RackCad.Application.dll de la salida del Candidato",
+    "applicationDll.productVersion=%s" % b["applicationDll"]["productVersion"],
+    "table.path=%s" % b["table"]["path"],
+    "table.sha256Bytes=%s bytes=%d hasCR=%s" % (b["table"]["sha256Bytes"], b["table"]["bytes"], b["table"]["hasCR"]),
+    "loads.path=%s" % b["loads"]["path"],
+    "loads.sha256Bytes=%s bytes=%d hasCR=%s" % (b["loads"]["sha256Bytes"], b["loads"]["bytes"], b["loads"]["hasCR"]),
+    "mappingRowsSha256AllRows=%s rows=%d" % (b["mappingRowsSha256AllRows"], len(b["rows"])),
+    "claves_distintas_de_F4=%s" % ",".join(diff),
+    "igual_a_F4_salvo_generatedUtc_applicationDll_loads_y_table.path=%s" % (strip(a) == strip(b)),
+    "F4.loads.sha256Bytes=%s F4.mappingRowsSha256AllRows=%s" % (a["loads"]["sha256Bytes"], a["mappingRowsSha256AllRows"]),
+    "no_versionado=el archivo completo (PRIVACY HOLD: incluye el nombre del verificador de la tabla); se custodia su SHA-256",
+]
+open(sys.argv[3], "w", encoding="utf-8", newline="\n").write("\n".join(lines) + "\n")
+print("\n".join(lines))

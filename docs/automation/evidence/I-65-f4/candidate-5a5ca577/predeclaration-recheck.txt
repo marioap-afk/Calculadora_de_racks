@@ -1,0 +1,56 @@
+== UTC 2026-10-17T02:30:49Z
+== 1 READY-04 fetch fresco
+origin/main=bb0d5522e8411f66a51fdfb3f1f0d0514b737453
+merge-base=bb0d5522e8411f66a51fdfb3f1f0d0514b737453
+behind=0
+== 2 SHA exacto
+cand=5a5ca57731ebbbbc41ed4f702698709d5e128a86
+ancestor-of-HEAD=yes
+HEAD=55a228baddbb33793336ff872488228a91ec7c32
+origin-branch=55a228baddbb33793336ff872488228a91ec7c32
+files-changed-5a5ca577..HEAD-outside-docs:
+0
+commits-5a5ca577..HEAD:
+55a228ba I-65 F4: revision del Architect sobre 5a5ca577 (CONFORMANT WITH OBSERVATIONS) y propuesta de declaracion (decisiones §76)
+9a6f69d6 I-65 F4: disposicion de hallazgos, estrategia A y autorizacion de la revision del Architect (decisiones §75)
+e8c7f73a I-65 F4: evidencia del SHA propuesto 5a5ca577 para el Candidato de hito (evidencia §79)
+product-tree src/tests/tools 51fc82f1 vs 5a5ca577:
+(vacio = identico)
+== 3 arbol limpio
+0
+== 4 Freeze y ADR-0050
+100644 blob c18def42fe283aba0fa69ffc482647fb04ccdc46	docs/adr/0050-interoperabilidad-analisis-estructural.md
+100644 blob 4e6e1feb4d83aa291707c72ad12f89411ff1d37a	docs/initiatives/I-65-proposal-v3.1.md
+100644 blob c18def42fe283aba0fa69ffc482647fb04ccdc46	docs/adr/0050-interoperabilidad-analisis-estructural.md
+100644 blob 4e6e1feb4d83aa291707c72ad12f89411ff1d37a	docs/initiatives/I-65-proposal-v3.1.md
+== 5 DLL y tabla
+table-path-at-cand=assets/structural-analysis/ram-elements/section-material-map.json
+docs/automation/evidence/I-65-f4/f4d-table-target.json
+table-blob-at-cand=d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2
+docs/automation/evidence/I-65-f4/f4d-table-target.json
+table-blob-at-HEAD=d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2
+docs/automation/evidence/I-65-f4/f4d-table-target.json
+manifest-sha256=ed2875e42fb467f0294df15f8e688d968ff058942e7e98b5bb0c8cbf7b5db22b
+manifest-rows-ok=32 bad=0
+files-on-disk=32
+dll=c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07
+ramtool RackCad.StructuralAnalysis.RamTool.dll d421c82b08e5a450e64b940b3309d04345f13e41b4b24394f6cd79bc4b949538
+ramtool RackCad.StructuralAnalysis.RamTool.exe 0b56e198331b7eec69c5c9efb41b0aa863a547aa5e4c458d3e66e69752878720
+loads=25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05
+manual-dump-on-disk=c4a98fb0ea798031de2b3052d81eae89f42b731a92f06dbfa97f148ade9ba23b
+fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619 */d/r65-smoke/5a5ca577/bin-Debug-net8.0-windows/structural-analysis/ram-elements/section-material-map.json
+table-blob-content-sha256=fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619
+table-next-to-dll-gitblob=d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2
+== 6 CI
+[{"conclusion":"success","createdAt":"2026-10-16T22:39:44Z","databaseId":38977069487,"event":"push","headBranch":"architecture/interop-analisis-estructural","status":"completed"}]
+[{"conclusion":"success","databaseId":38985460930,"event":"push","status":"completed"}]
+== biblioteca de bloques (solo lectura)
+override= D:\Base_de_datos_AutoCAD_V.0.dwg
+sha256= b4ca2248db9c3d72487ac8b5b1e5510cdd8aba231ab340541d91bebca2d560e8
+== procesos acad/RAM
+ApplicationFrameHost.exe     22584 Console                    1    50,696 KB
+== 7 REQUIRED nuevos
+HEAD=origin=55a228baddbb33793336ff872488228a91ec7c32 (sin commits nuevos desde el registro de la revision del Architect)
+architect-f4c REQUIRED count: 0
+15:**Veredicto sobre `5a5ca57731ebbbbc41ed4f702698709d5e128a86`: CONFORMANT WITH OBSERVATIONS.** No hay ningún hallazgo REQUIRED; registro 8 observaciones OPTIONAL nuevas (A65-F4C-01..08).
+architect-f4c sha256=33022b6facd725e2cf1103d2b7d8c2facdc6107468d809c6d360758935003b12

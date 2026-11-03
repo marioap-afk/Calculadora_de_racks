@@ -1,0 +1,17 @@
+# I-65 F4-D: lee la tabla objetivo con el lector del producto (RackCad.Application.dll congelado del smoke, commit 745653e1).
+# Solo lectura. Uso: pwsh -NoProfile -File reader_check_f4d.ps1 <carpeta-dll> <tabla-objetivo.json>
+param([string]$DllDir, [string]$Target)
+$ErrorActionPreference = 'Stop'
+[void][System.Reflection.Assembly]::LoadFrom((Join-Path $DllDir 'RackCad.Domain.dll'))
+$app = [System.Reflection.Assembly]::LoadFrom((Join-Path $DllDir 'RackCad.Application.dll'))
+$reader = $app.GetType('RackCad.Application.StructuralAnalysis.Providers.RamElements.RamSectionMapReader')
+$read = $reader.GetMethod('Read', [type[]]@([string]))
+$json = [System.IO.File]::ReadAllText($Target, (New-Object System.Text.UTF8Encoding($false)))
+$r = $read.Invoke($null, @($json))
+"== tabla objetivo : Outcome $($r.Outcome); diagnosticos $(@($r.Diagnostics).Count)"
+foreach ($d in $r.Diagnostics) { "   diag $($d.Code) | $($d.ImpliedOutcome) | $($d.Subject)" }
+foreach ($row in $r.Table.Rows) {
+    $m = $row.ExpectedMaterial
+    $byCodes = ($row.VerifiedBy.ToCharArray() | Where-Object { [int]$_ -gt 127 } | ForEach-Object { 'U+{0:X4}' -f [int]$_ }) -join ','
+    "   row $($row.SectionId.Value) | $($row.RamSectionCountry)/$($row.RamSectionTable)/$($row.RamSectionName) | $($row.MaterialId.Value) -> $($row.RamMaterial) | status $($row.Status) verified=$($row.IsVerified) | E $($m.ElasticModulus.Value) $($m.ElasticModulus.Unit) | nu $($m.PoissonRatio) | G $(if ($m.ShearModulus) { 'set' } else { 'null' }) | W $($m.UnitWeight.Value) $($m.UnitWeight.Unit) | source chars $($m.Source.Length) | verifiedBy chars $($row.VerifiedBy.Length) non-ascii [$byCodes] | verifiedOn $($row.VerifiedOn)"
+}

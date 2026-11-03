@@ -1,0 +1,14 @@
+eventos=20 session-start=1 session-end=1 pids=[7584]
+pre-run=9 post-run=9
+OK   dump-OV01-gen/ram-dump.json creacion=2026-10-30T23:07:32.2492418Z sha256=f5789d1c
+OK   dump-OV02-gen/ram-dump.json creacion=2026-10-30T23:09:54.4693720Z sha256=e5cf0ead
+OK   inj-OV05/ram-readback.json creacion=2026-10-30T23:12:59.6397856Z sha256=9ab45229
+OK   inj-OV06/ram-readback.json creacion=2026-10-30T23:14:04.5454943Z sha256=15ff2655
+OK   inj-OV07a/ram-readback.json creacion=2026-10-30T23:15:03.4152957Z sha256=0f397cd8
+OK   inj-OV07b/ram-readback.json creacion=2026-10-30T23:16:00.1604543Z sha256=10e549bb
+OK   pkg-OV01/ram-readback.json creacion=2026-10-30T23:06:06.8679969Z sha256=ff9d770a
+OK   pkg-OV02/ram-readback.json creacion=2026-10-30T23:09:10.7363388Z sha256=455a2b40
+OK   pkg-OV04/ram-readback.json creacion=2026-10-30T23:11:58.6459360Z sha256=73af980d
+OK   cadena pkg-OV01: inicio 2026-10-30T22:59:40.1561586Z <= lectura 2026-10-30T23:06:06.8679969Z <= volcado 2026-10-30T23:07:32.2492418Z <= cierre 2026-10-30T23:16:42.3220346Z
+OK   cadena pkg-OV02: inicio 2026-10-30T22:59:40.1561586Z <= lectura 2026-10-30T23:09:10.7363388Z <= volcado 2026-10-30T23:09:54.4693720Z <= cierre 2026-10-30T23:16:42.3220346Z
+RESULTADO=COHERENTE

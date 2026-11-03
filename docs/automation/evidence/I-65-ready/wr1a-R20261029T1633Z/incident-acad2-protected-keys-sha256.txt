@@ -1,0 +1,9 @@
+13430739eb82fd1c9f6898a5acb2056bb71961fc583662cc7e04004f9e4e0e59  hkcu-applications.reg
+be9ec134f9b1c638e838a74769252999ee6cad6a6e9dce560c744f3032d549ea  hkcu-installedapplications.reg
+dd27f202b0ec94eaf72dd7b57e42a34036b8a4456c56b70701f36faf26daef8b  hkcu-loaded.reg
+7d1debf2173e0da569184589110e931fb7efbed46d2d4ac7891f551b12665f9f  hklm-applications.reg
+13430739eb82fd1c9f6898a5acb2056bb71961fc583662cc7e04004f9e4e0e59  baseline/hkcu-applications.reg
+be9ec134f9b1c638e838a74769252999ee6cad6a6e9dce560c744f3032d549ea  baseline/hkcu-installedapplications.reg
+dd27f202b0ec94eaf72dd7b57e42a34036b8a4456c56b70701f36faf26daef8b  baseline/hkcu-loaded.reg
+7d1debf2173e0da569184589110e931fb7efbed46d2d4ac7891f551b12665f9f  baseline/hklm-applications.reg
+nota: cada exportacion de incident-acad2 es identica a la de la BASELINE (mismos SHA-256); las .reg quedan en local

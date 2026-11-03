@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-D-SECTION-MAP-VERIFIED",
+  "RunId": "R20261016T161137Z-e795",
+  "DelegationRunId": "R20261016T153804Z-5fdd",
+  "WorkRunId": "R20261016T154337Z-8aed",
+  "Attempt": 7,
+  "VerifiedSha": "51fc82f131a287ef66458a433c614c389033769d",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false. El PID 36848 señalado en la salida está en exit-reread-work.txt como alive=[] tras releerlo a los 2 s; la cesión comenzó después, a las 15:43:47Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json corresponde a TaskId F4-D-SECTION-MAP-VERIFIED, RunId R20261016T154337Z-8aed, DelegationRunId R20261016T153804Z-5fdd y Attempt 7. relay-record-work.json registra OutputWrittenUtc=2026-10-16T16:01:14Z, posterior a Cession.StartUtc=2026-10-16T15:43:47Z; la salida y los SHA coinciden."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídas desde Git las autoridades de la delegación con AuthorityRevision=e886b5577ad565ef4a55bb2e535b7d463f345b79, incluidas decisión I-65 §62 y autorización literal D-09/D-10, contrato F4-D, tabla objetivo, ADR-0050 y AGENTS.md. La decisión §62 autoriza únicamente el alcance y condiciones recogidos en el contrato."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "relay-record-planning.json registra A1-A8=pass. Delegation y gate-contract coinciden en Authorities (16), AllowedWriteScope (6), ForbiddenWriteScope (78), Invariants (11), RequiredTests (1) y StopConditions (30); RequiredTests es RackCad.Tests.StructuralAnalysis, MinSelected=1789, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural devuelven 51fc82f131a287ef66458a433c614c389033769d. Branch/worktree coinciden con la delegación. BaseSha c487262fca9536bc769b6a6b704b82d556fce8fb es ancestro de CurrentSha; RedSha 2188a1d7b1b42c81076634221e00732193d0678f también es ancestro."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=51fc82f131a287ef66458a433c614c389033769d y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, igual a MainSha. Entry registra HEAD y remoto iguales al CurrentSha. No fue necesario ejecutar ls-remote en este entorno."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only c487262fca9536bc769b6a6b704b82d556fce8fb 51fc82f131a287ef66458a433c614c389033769d devuelve solo StructuralAnalysisPluginCommandProductTableTests.cs, StructuralAnalysisSectionMapVerifiedTests.cs y section-material-map.json. Cada ruta está cubierta por AllowedWriteScope de delegation.json: dos rutas exactas de pruebas y la ruta exacta de la tabla. No hay intersección con ForbiddenWriteScope; los diffs Base..Red y Base..Current quedan dentro del alcance."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 vacío; relay-record-work.json Entry.CleanTree=true. git check-ignore -v confirma que artifacts/ está ignorado para las entradas de sesión. La entrega informa que C:\\RackCad-F4D-NoExiste\\paquete-estacion-0 no existe y las pruebas comprueban que no se crea."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts identifica ambas corridas como push de refs/heads/architecture/interop-analisis-estructural. RED 38927278590 mide RedSha 2188a1d7b1b42c81076634221e00732193d0678f y el job Core falla; el TRX confirma 13 fallidas de 1795 seleccionadas. Current 38928508008 mide exactamente CurrentSha y termina success con los cuatro jobs requeridos success. TRX Core: 14390/14390; UI: 1637/1637 ejecutadas, 1654 total, 17 Skip según la convención documentada."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Los TRX CI verifican el filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysis: RED selecciona 1795 (1782 pass, 13 fail) y GREEN 1795 (1795 pass), superando MinSelected=1789. El TRX RED contiene fallos de aserción/resultado, no fallos de compilación. git diff e886b557..fe9b6720 -- tests/ identifica las cinco ChainRedFiles; el diff RedSha..CurrentSha no toca tests/, y git diff --name-only RedSha CurrentSha -- tests/ está vacío. git show CurrentSha de las pruebas acredita D-INV-01/02/03 con las dos filas, literales y lector; D-INV-04 con REF-CANT-01 Valid, paquete válido en memoria y huella sensible; D-INV-05 con fixtures proposed en precedencia y traducción; D-INV-06 con comprobaciones de no escritura/publicación. El diff aporta RED/GREEN e INV-14/guardas. D-INV-07 y controles operativos constan en relevo y entrega."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B c487262fca9536bc769b6a6b704b82d556fce8fb..51fc82f131a287ef66458a433c614c389033769d muestra ambos commits con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al valor literal worker-handoff.json Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5/medium con RoutingEnforcement=required. relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=medium; WorkerStatus e identidad de ejecución concuerdan."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json contra AUTOMATION_PLAN §16.10; no contienen términos prohibidos."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones, 0 avisos de límite, 0 errores de herramienta y ninguna invocación de intérprete. No hay denegación ni orden fallida pendiente registrada."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El STOP P-02 de la revisión previa se resolvió para esta misma entrega: la relectura de PID registró que el proceso señalado ya había terminado antes de iniciar la cesión.",
+    "El resultado UI registra 17 pruebas Skip como total no ejecutado por la convención del logger; 1637 pruebas ejecutadas pasaron y ninguna falló."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación contra 51fc82f131a287ef66458a433c614c389033769d."
+}

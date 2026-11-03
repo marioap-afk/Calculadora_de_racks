@@ -1,0 +1,52 @@
+{
+ "collections": {
+  "Authorities": {
+   "exact": false,
+   "only_orthographic": false
+  },
+  "AllowedWriteScope": {
+   "exact": true,
+   "only_orthographic": false
+  },
+  "ForbiddenWriteScope": {
+   "exact": false,
+   "only_orthographic": false
+  },
+  "Invariants": {
+   "exact": true,
+   "only_orthographic": false
+  },
+  "RequiredTests": {
+   "exact": true,
+   "only_orthographic": false
+  },
+  "StopConditions": {
+   "exact": true,
+   "only_orthographic": false
+  }
+ },
+ "scope_conflicts": [],
+ "acceptance": {
+  "A1": "pass",
+  "A2": "pass",
+  "A3": "pass",
+  "A4": "fail",
+  "A5": "fail",
+  "A6": "pass",
+  "A7": "pass",
+  "A8": "pass"
+ },
+ "verdict": "FAIL",
+ "authorities_1_path": {
+  "contract": "docs/automation/decisions/I-65-owner-authorization-d09-d10-f4d.original.txt",
+  "delegation": "docs/automation/decisions/I-65-owner-authorization-d09-d10-f4-d.original.txt"
+ },
+ "forbidden_63": {
+  "contract": ".github/",
+  "delegation": " .github/"
+ },
+ "analysis_sha256": {
+  "expected": "15c626b405fb279d6f86519fe544175a0446a04555f00e9e50abd2961d4c4696",
+  "delegation": "15c626b405fb279d6f86519fe544175a0446a04555f00e9e50abd2961d4c4696"
+ }
+}

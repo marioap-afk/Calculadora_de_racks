@@ -1,0 +1,31 @@
+== HKCU\Software\Autodesk
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\AssemblyMap
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackCommandHelpWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackConsolidatedBomWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackCustomPropertiesWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackDynamicSystemWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackFlowBedWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackFrameConfiguratorWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackFrames.RackFrameConfiguratorWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackListWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackMainMenuWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackProjectVariablesWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackPushBackSystemWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackSelectiveWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackWarehouseFillWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.RackWarehouseLayoutWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.StructuralSections.StructuralSectionInspectorWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.Cantilever.RackCantileverWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.Dynamic.RackDynamicSystemWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.FlowBed.RackFlowBedWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.PushBack.RackPushBackSystemWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\RackCad.UI.Systems.Selective.RackSelectiveWindow
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Recent File List
+Fin de la b£squeda: 42 coincidencias encontradas.
+== HKLM\SOFTWARE\Autodesk
+Fin de la b£squeda: 0 coincidencias encontradas.

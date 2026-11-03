@@ -1,0 +1,14 @@
+# Transcripcion de backup-loaded-rackcad-bundle.reg (local, SHA-256 8b98159f2bb1d880f07707ebefeb6c512090a7a1de2bc73b2a0cbfb83b0ad5ff; UTF-16 de reg.exe export); cuenta sustituida por <usuario>, LOADER decodificado de hex(2)
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle]
+"ProductCode"="C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle"
+"Version"="1.0.0"
+"Publisher"="RackCad"
+
+[HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings]
+"RackCad.Plugin"=""
+
+[HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll]
+"Type"=dword:00000001
+"Name"="RackCad"

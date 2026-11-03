@@ -1,0 +1,156 @@
+# I-65 W-R1b, recuperacion del registro (opcion A del Owner): comprobaciones PREVIAS. SOLO LECTURA del registro y de los procesos.
+# Unicas escrituras: archivos nuevos en <Hb>\recovery\precheck\ (respaldo con reg.exe export, inventario e informe).
+# Uso: pwsh -NoProfile -File rr_precheck.ps1 -Hb D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\hb
+# Requiere <Hb>\recovery\baseline\ (wr_hostsnap.ps1 -Phase baseline -Run <Hb>\recovery) tomado justo antes. Sale con 3 si hay STOP.
+param([Parameter(Mandatory)][string]$Hb)
+$ErrorActionPreference = 'Stop'
+$out = Join-Path $Hb 'recovery\precheck'
+if (Test-Path -LiteralPath $out) { throw "ya existe $out" }
+New-Item -ItemType Directory -Path $out | Out-Null
+$prod = 'Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409'
+$bundle = Join-Path $env:APPDATA 'Autodesk\ApplicationPlugins\RackCad.bundle'
+$loadedName = $bundle.Replace('\', '/')
+$L = New-Object Collections.Generic.List[string]
+$stop = New-Object Collections.Generic.List[string]
+function Sha([string]$p) { (Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLower() }
+function TextSha([string]$s) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($s))).ToLower() }
+Add-Type -Namespace RR65 -Name Reg -MemberDefinition @'
+[DllImport("advapi32.dll")] public static extern int RegQueryInfoKey(Microsoft.Win32.SafeHandles.SafeRegistryHandle hKey, IntPtr cls, IntPtr lpcClass, IntPtr r, IntPtr subKeys, IntPtr maxSub, IntPtr maxCls, IntPtr values, IntPtr maxValName, IntPtr maxValLen, IntPtr sec, out long lastWrite);
+'@
+function LastWrite([Microsoft.Win32.RegistryKey]$k) { $ft = 0L; [void][RR65.Reg]::RegQueryInfoKey($k.Handle, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [ref]$ft); [DateTime]::FromFileTimeUtc($ft).ToString('o') }
+$HKCU = [Microsoft.Win32.Registry]::CurrentUser
+$L.Add("time_utc=" + [DateTime]::UtcNow.ToString('o'))
+
+# 6. AutoCAD y RAM cerrados (y nada cargado desde RackCad en ningun proceso legible)
+$named = @(Get-Process | Where-Object { $_.ProcessName -match '^(acad|accoreconsole|RAMElements)$' })
+$L.Add("P6 acad_accoreconsole_ramelements=" + $named.Count)
+if ($named.Count) { $stop.Add('P6 hay un proceso de AutoCAD o de RAM') }
+$loc = (Get-ItemProperty -LiteralPath "HKLM:\SOFTWARE\Autodesk\AutoCAD\R25.0\ACAD-8101:409").AcadLocation.TrimEnd('\')
+$ramDir = 'C:\Program Files\Bentley\Engineering\RAM Elements'
+$cim = @(Get-CimInstance Win32_Process)
+$fromAcad = @($cim | Where-Object { $_.ExecutablePath -and $_.ExecutablePath.StartsWith($loc + '\', [StringComparison]::OrdinalIgnoreCase) })
+$fromRam = @($cim | Where-Object { $_.ExecutablePath -and $_.ExecutablePath.StartsWith($ramDir + '\', [StringComparison]::OrdinalIgnoreCase) })
+$L.Add("P6 procesos_desde_carpeta_autocad=" + $fromAcad.Count + " procesos_desde_carpeta_ram=" + $fromRam.Count + " ruta_no_legible=" + @($cim | Where-Object { -not $_.ExecutablePath }).Count)
+if ($fromAcad.Count -or $fromRam.Count) { $stop.Add('P6 hay procesos lanzados desde la carpeta de AutoCAD o de RAM') }
+$withMod = 0; $denied = 0
+foreach ($p in Get-Process) { try { if (@($p.Modules | Where-Object { $_.ModuleName -match 'RackCad' }).Count) { $withMod++ } } catch { $denied++ } }
+$L.Add("P5 procesos_con_modulo_RackCad=" + $withMod + " procesos_sin_acceso_a_modulos=" + $denied)
+if ($withMod) { $stop.Add('P5 un proceso tiene cargado un modulo RackCad') }
+foreach ($p in @($cim | Where-Object { $_.Name -match 'Adsk|Autodesk|Bentley' } | Sort-Object Name)) { $L.Add("P5 fondo " + $p.Name) }
+foreach ($s in @(Get-Service | Where-Object { $_.DisplayName -match 'Autodesk|Bentley' } | Sort-Object Name)) { $L.Add("P5 servicio " + $s.Name + " " + $s.Status + " " + $s.StartType) }
+
+# 3. BASELINE y POST contrastados de nuevo: el estado previo (recovery\baseline) debe ser igual al POST de HB (hb\post)
+$skip = '^(time_utc|X-02|X-03)'
+$a = @(Get-Content -LiteralPath (Join-Path $Hb 'post\summary.txt') | Where-Object { $_ -notmatch $skip })
+$b = @(Get-Content -LiteralPath (Join-Path $Hb 'recovery\baseline\summary.txt') | Where-Object { $_ -notmatch $skip })
+$d = @(Compare-Object $a $b)
+$L.Add("P3 resumen_post_hb_vs_previo diferencias=" + $d.Count)
+foreach ($x in $d) { $L.Add("P3   " + $x.SideIndicator + " " + $x.InputObject) }
+if ($d.Count) { $stop.Add('P3 el estado previo no es igual al POST de HB') }
+$h0 = @(Get-Content -LiteralPath (Join-Path $Hb 'baseline\summary.txt') | Where-Object { $_ -notmatch $skip })
+$d0 = @(Compare-Object $h0 $b)
+$L.Add("P3 resumen_baseline_hb01_vs_previo diferencias=" + $d0.Count)
+foreach ($x in $d0) { $L.Add("P3   " + $x.SideIndicator + " " + $x.InputObject) }
+foreach ($n in 'hkcu-profiles', 'hkcu-fixedprofile', 'hkcu-applications', 'hkcu-installedapplications', 'hkcu-loaded', 'hklm-applications') {
+  $sp = Sha (Join-Path $Hb "post\$n.reg"); $sr = Sha (Join-Path $Hb "recovery\baseline\$n.reg"); $sb = Sha (Join-Path $Hb "baseline\$n.reg")
+  $L.Add("P3 $n post_hb=" + $sp.Substring(0, 8) + " previo=" + $sr.Substring(0, 8) + " baseline_hb01=" + $sb.Substring(0, 8) + " previo_igual_post=" + ($sp -eq $sr) + " previo_igual_baseline=" + ($sr -eq $sb))
+  if ($sp -ne $sr) { $stop.Add("P3 $n cambio desde el POST de HB") }
+}
+
+# 1-2. Respaldo (reg.exe export de cada clave) e inventario exacto (rutas, tipos, datos sin expandir, hora de ultima escritura)
+$targets = [ordered]@{ 'applications-rackcad' = @("$prod\Applications", 'RackCad'); 'loaded-rackcad-bundle' = @("$prod\Loaded", $loadedName) }
+$inv = New-Object Collections.Generic.List[string]
+foreach ($t in $targets.Keys) {
+  $parent, $name = $targets[$t]
+  $pk = $HKCU.OpenSubKey($parent)
+  $hits = @($pk.GetSubKeyNames() | Where-Object { $_ -match 'RackCad' })
+  $L.Add("P4 $t subclaves_RackCad_en_el_padre=" + $hits.Count + " nombre_exacto=" + ($hits -ccontains $name))
+  if ($hits.Count -ne 1 -or -not ($hits -ccontains $name)) { $stop.Add("P4 $t no se identifica una unica clave exacta") ; $pk.Close(); continue }
+  $f = Join-Path $out "backup-$t.reg"
+  & reg.exe export "HKCU\$parent\$name" $f 2>&1 | Out-Null
+  if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $f)) { $stop.Add("P1 $t no se pudo exportar"); $pk.Close(); continue }
+  $L.Add("P1 backup-$t.reg sha256=" + (Sha $f) + " bytes=" + (Get-Item -LiteralPath $f).Length)
+  $walk = {
+    param($k, $rel)
+    $inv.Add("[$t] KEY HKCU\$parent\$rel last_write_utc=" + (LastWrite $k) + " subkeys=" + $k.SubKeyCount + " values=" + $k.ValueCount)
+    foreach ($v in ($k.GetValueNames() | Sort-Object)) {
+      $kind = $k.GetValueKind($v); $data = $k.GetValue($v, $null, 'DoNotExpandEnvironmentNames')
+      $shown = if ($data -is [byte[]]) { [Convert]::ToHexString($data) } elseif ($data -is [string[]]) { $data -join '|' } else { [string]$data }
+      $inv.Add("[$t]   VALUE " + $(if ($v -eq '') { '@' } else { $v }) + " " + $kind + " = " + $shown)
+    }
+    foreach ($s in ($k.GetSubKeyNames() | Sort-Object)) { $c = $k.OpenSubKey($s); & $walk $c "$rel\$s"; $c.Close() }
+  }
+  $k = $pk.OpenSubKey($name); & $walk $k $name; $k.Close(); $pk.Close()
+  # el bloque exportado ahora = el bloque de la exportacion del POST de HB (lo medido)
+  $postReg = Join-Path $Hb $(if ($t -like 'applications*') { 'post\hkcu-applications.reg' } else { 'post\hkcu-loaded.reg' })
+  $pref = "[HKEY_CURRENT_USER\$parent\$name"
+  $block = {
+    param($file)
+    $on = $false; $acc = New-Object Collections.Generic.List[string]
+    foreach ($line in (Get-Content -LiteralPath $file)) {
+      if ($line -match '^\[') { $on = ($line -ceq ($pref + ']')) -or $line.StartsWith($pref + '\', [StringComparison]::Ordinal) }
+      if ($on) { $acc.Add($line) }
+    }
+    ($acc -join "`n").TrimEnd()
+  }
+  $bp = & $block $postReg; $bn = & $block $f
+  $L.Add("P3 $t bloque_post_hb_sha256=" + (TextSha $bp) + " bloque_actual_sha256=" + (TextSha $bn) + " coincide=" + ($bp -ceq $bn))
+  if ($bp -cne $bn -or -not $bp) { $stop.Add("P3 $t ya no coincide con lo medido en el POST de HB") }
+}
+$inv | Set-Content -LiteralPath (Join-Path $out 'inventory.txt') -Encoding utf8NoBOM
+$L.Add("P2 inventory.txt sha256=" + (Sha (Join-Path $out 'inventory.txt')) + " lineas=" + $inv.Count)
+
+# 4. Pertenencia a la instalacion temporal: LOADER y ProductCode apuntan al bundle del usuario, que ya no existe; ninguna otra raiz tiene RackCad
+$app = $HKCU.OpenSubKey("$prod\Applications\RackCad")
+if ($app) {
+  $loader = [string]$app.GetValue('LOADER', $null, 'DoNotExpandEnvironmentNames'); $app.Close()
+  $exp = [Environment]::ExpandEnvironmentVariables($loader)
+  $own = $exp.StartsWith($bundle + '.\', [StringComparison]::OrdinalIgnoreCase) -or $exp.StartsWith($bundle + '\', [StringComparison]::OrdinalIgnoreCase)
+  $L.Add("P4 LOADER_en_el_bundle_del_usuario=" + $own + " LOADER_existe=" + (Test-Path -LiteralPath $exp))
+  if (-not $own) { $stop.Add('P4 LOADER no apunta al bundle temporal') }
+}
+$ld = $HKCU.OpenSubKey("$prod\Loaded\$loadedName")
+if ($ld) {
+  $pc = [string]$ld.GetValue('ProductCode'); $ld.Close()
+  $L.Add("P4 ProductCode_es_el_bundle_del_usuario=" + ($pc -ceq $loadedName))
+  if ($pc -cne $loadedName) { $stop.Add('P4 ProductCode no es el bundle temporal') }
+}
+$L.Add("P4 bundle_del_usuario_existe=" + (Test-Path -LiteralPath $bundle))
+if (Test-Path -LiteralPath $bundle) { $stop.Add('P4 el bundle temporal sigue instalado') }
+$i = 0
+foreach ($r in @("$env:APPDATA\Autodesk\ApplicationPlugins", "$env:ProgramData\Autodesk\ApplicationPlugins", "$env:ProgramFiles\Autodesk\ApplicationPlugins", "${env:ProgramFiles(x86)}\Autodesk\ApplicationPlugins")) { $i++; if (Test-Path -LiteralPath $r) { $n = @(Get-ChildItem -Recurse -Force -Name -LiteralPath $r | Where-Object { $_ -match 'RackCad' }).Count; $L.Add("P4 root$i rackcad=" + $n); if ($n) { $stop.Add("P4 root$i contiene RackCad") } } else { $L.Add("P4 root$i ABSENT") } }
+$rel = @($HKCU.OpenSubKey('Software\Autodesk\AutoCAD').GetSubKeyNames())
+$prods = @(foreach ($x in $rel) { $k = $HKCU.OpenSubKey("Software\Autodesk\AutoCAD\$x"); if ($k) { foreach ($y in $k.GetSubKeyNames()) { "$x\$y" }; $k.Close() } })
+$L.Add("P4 productos_autocad_hkcu=" + ($prods -join ','))
+# Referencias 'RackCad.bundle' en HKCU\Software y HKLM\SOFTWARE\Autodesk (claves, nombres y datos)
+foreach ($root in 'HKCU\Software', 'HKLM\SOFTWARE\Autodesk') {
+  $q = @(& reg.exe query $root /s /f 'RackCad.bundle' 2>$null)
+  $keys = @($q | Where-Object { $_ -match '^HKEY_' }); $vals = @($q | Where-Object { $_ -match '^\s+\S' -and $_ -match 'RackCad\.bundle' })
+  $L.Add("P4 busqueda $root claves=" + $keys.Count + " valores=" + $vals.Count)
+  foreach ($k in $keys) { $L.Add("P4   " + ($k -replace [regex]::Escape($env:USERNAME), '<usuario>')) }
+  foreach ($k in $keys) { $inside = $k.StartsWith("HKEY_CURRENT_USER\$prod\Applications\RackCad", [StringComparison]::Ordinal) -or $k.StartsWith("HKEY_CURRENT_USER\$prod\Loaded\$loadedName", [StringComparison]::Ordinal) -or ($k -ceq "HKEY_CURRENT_USER\$prod\AssemblyMap"); if (-not $inside) { $stop.Add("P4 referencia fuera del alcance: " + ($k -replace [regex]::Escape($env:USERNAME), '<usuario>')) } }
+}
+
+# 5. Nadie las ha tocado desde HB: hora de ultima escritura de las claves y de sus padres (la ventana de AutoCAD fue 01:56:41Z-02:04:42Z)
+foreach ($p in "$prod\Applications", "$prod\Applications\RackCad", "$prod\Applications\RackCad\Groups", "$prod\Loaded", "$prod\Loaded\$loadedName", "$prod\Loaded\$loadedName\#AssemblyMappings", "$prod\Loaded\$loadedName\./Contents/RackCad.Plugin.dll", "$prod\AssemblyMap") {
+  $k = $HKCU.OpenSubKey($p)
+  if (-not $k) { $L.Add("P5 " + ($p -replace [regex]::Escape($env:USERNAME), '<usuario>') + " AUSENTE"); continue }
+  $lw = LastWrite $k; $k.Close()
+  $L.Add("P5 " + ($p -replace [regex]::Escape($env:USERNAME), '<usuario>') + " last_write_utc=" + $lw)
+  if ([DateTime]::Parse($lw).ToUniversalTime() -gt [DateTime]::Parse('2026-10-30T02:04:42Z').ToUniversalTime()) { $stop.Add("P5 escrita despues de cerrar AutoCAD: $p") }
+}
+# AssemblyMap: solo lectura; nombres de valor y si el dato apunta al bundle temporal
+$am = $HKCU.OpenSubKey("$prod\AssemblyMap")
+if ($am) {
+  $names = @($am.GetValueNames() | Sort-Object)
+  $L.Add("AM valores=" + $names.Count + " subclaves=" + $am.SubKeyCount)
+  foreach ($v in $names) { $data = [string]$am.GetValue($v, $null, 'DoNotExpandEnvironmentNames'); $L.Add("AM " + $v + " " + $am.GetValueKind($v) + " = " + ($data -replace [regex]::Escape($env:USERNAME), '<usuario>') + " apunta_al_bundle_temporal=" + $data.StartsWith($bundle + '\', [StringComparison]::OrdinalIgnoreCase) + " destino_existe=" + $(if ($data) { Test-Path -LiteralPath $data } else { 'n/a' })) }
+  $am.Close()
+} else { $L.Add("AM AUSENTE") }
+
+$L.Add("STOP=" + $stop.Count)
+foreach ($s in $stop) { $L.Add("STOP " + $s) }
+$L.Add("RESULTADO=" + $(if ($stop.Count) { 'STOP' } else { 'PASS' }))
+$L | Set-Content -LiteralPath (Join-Path $out 'precheck.txt') -Encoding utf8NoBOM
+$L | ForEach-Object { $_ -replace [regex]::Escape($env:USERNAME), '<usuario>' }
+if ($stop.Count) { exit 3 }

@@ -1,0 +1,20 @@
+P01-reubicado                positivo  V-11 esperado=PASS observado=PASS OK
+P02-espacio-y-no-ascii       positivo  V-11 esperado=PASS observado=PASS OK
+N01-ruta-alterada            negativo  V-11 esperado=FAIL observado=FAIL OK
+N02-separadores-barra        negativo  V-11 esperado=FAIL observado=FAIL OK
+N03-escape-menos-uno         negativo  V-11 esperado=FAIL observado=FAIL OK
+N04-escape-menos-dos         negativo  V-11 esperado=FAIL observado=FAIL OK
+N05-escape-mas-uno           negativo  V-11 esperado=FAIL observado=FAIL OK
+N06-mayusculas               negativo  V-11 esperado=FAIL observado=FAIL OK
+N07-barra-final              negativo  V-11 esperado=FAIL observado=FAIL OK
+N08-separador-doble          negativo  V-11 esperado=FAIL observado=FAIL OK
+N09-manifiesto-alterado      negativo  V-11 esperado=FAIL observado=FAIL OK
+N10-destino-real-distinto    negativo  V-11 esperado=FAIL observado=FAIL OK
+N11-payload-no-literal       negativo  V-11 esperado=FAIL observado=FAIL OK
+N12-payload-reasignado       negativo  V-11 esperado=FAIL observado=FAIL OK
+N13-lectura-distinta         negativo  V-11 esperado=FAIL observado=FAIL OK
+N14-huella-alterada          negativo  V-11 esperado=FAIL observado=FAIL OK
+N15-caracter-parecido        negativo  V-11 esperado=FAIL observado=FAIL OK
+N16-tecleada-distinta        negativo  V-11 esperado=FAIL observado=FAIL OK
+P01-reubicado                control   V-11 con el validador v1=FAIL (defecto original reproducido: True)
+RESULTADO PASS | positivos 2 | negativos 16 | paquete real sin cambios True

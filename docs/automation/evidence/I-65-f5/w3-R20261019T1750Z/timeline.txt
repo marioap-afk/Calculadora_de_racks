@@ -1,0 +1,13 @@
+owner-waiver 2026-10-19T17:50:41Z el Owner (Coordinator de I-64) acepta como confirmacion de I-64 el texto pegado en el chat de I-65 (07-owner-pasted-i64-confirmation-text.txt), recibido ~17:46Z: «ya, no es necesario tanta burocracia, nomas hazlo»
+window: inicio <= 19:46Z; <= 60 min desde la apertura de AutoCAD; antes de 23:59Z
+pre-open 17:51:30Z dll=81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5 acad=0
+incident 17:53:15Z segunda acad.exe abierta por el operador (segunda llamada a open_application mientras la primera instancia cargaba); sin NETLOAD ni dibujo de prueba en ninguna
+incident-resolved 17:53:48Z instancia sobrante pid 13364 cerrada con CloseMainWindow (Drawing1 sin cambios, sin NETLOAD); queda una sola acad.exe pid 29152 (inicio 17:51:31Z)
+new-drawing 17:54:17Z Drawing1 (instancia pid 29152)
+pre-netload 17:55:24Z 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5 table fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619; dialogo navegado con doble clic (no admite teclear la ruta)
+netload-load-once 17:55:58Z
+ref-resolved 17:58:15Z 2 estaciones · 1 intervalos · altura comun 90.5 in · 1 paneles arriostrados · 2 separadores · 2 tensores · 4 componentes en el BOM
+ref-inserted 17:58:39Z bloque RACKCAD_CANTILEVER_REF-CANT-01_-_frontal_FRONTAL (310 contornos); aviso INSUNITS no bloqueante
+pre-generation 18:00:03Z pkg-OV02 exists=False; carpeta tecleada D:\r65-smoke\bd1fcf8a\f5-R20261019T1750Z\pkg-OV02
+ov02-valid 18:00:23Z consola: Valid; Paquete publicado en D:\r65-smoke\bd1fcf8a\f5-R20261019T1750Z\pkg-OV02; 3 archivos escritos
+acad-closed 18:01:09Z acad=0 ram=0

@@ -1,0 +1,45 @@
+"""I-65 segundo smoke: DIAGNOSTICO de SOLO LECTURA del FAIL de V-11 (no sustituye ni corrige el resultado oficial del validador).
+
+Uso: python -I diag_v11_smoke2.py <carpeta-paquete> <carpeta-tecleada> <huella-de-la-consola> <salida.json>
+Decodifica la constante PAYLOAD del script con ast.literal_eval (sin ejecutar el script) y json.loads, y cuenta la carpeta tecleada en
+los bytes del script a cada nivel de escape: crudo, escapado JSON y escapado JSON dentro de un literal de Python.
+"""
+import ast
+import hashlib
+import json
+import os
+import sys
+
+pkg, typed, console_fp, out = sys.argv[1:5]
+raw = open(os.path.join(pkg, "rackcad-ram-build.py"), "rb").read()
+text = raw.decode("utf-8")
+manifest = json.loads(open(os.path.join(pkg, "manifest.json"), "rb").read().decode("utf-8"))
+tree = ast.parse(text)
+payload_literal = None
+for node in tree.body:
+    if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "PAYLOAD" for t in node.targets):
+        payload_literal = ast.literal_eval(node.value)
+payload = json.loads(payload_literal)
+json_escaped = json.dumps(typed)[1:-1]
+python_of_json = json.dumps(json_escaped)[1:-1]
+fp_manifest = manifest["analysisInputFingerprint"]
+facts = {
+    "scriptSha256": hashlib.sha256(raw).hexdigest(),
+    "payload.packageFolder": payload.get("packageFolder"),
+    "payload.analysisInputFingerprint": payload.get("analysisInputFingerprint"),
+    "packageFolder == tecleada": payload.get("packageFolder") == typed,
+    "packageFolder == manifest.packageFolder": payload.get("packageFolder") == manifest.get("packageFolder"),
+    "huella payload == manifiesto": payload.get("analysisInputFingerprint") == fp_manifest,
+    "huella consola == manifiesto": console_fp == fp_manifest,
+    "ocurrencias de la carpeta en los bytes del script": {
+        "cruda": text.count(typed),
+        "escapada JSON (lo que busca V-11)": text.count(json_escaped),
+        "escapada JSON dentro de un literal de Python": text.count(python_of_json),
+    },
+}
+facts["conclusion"] = ("V-11 falso negativo del validador: la carpeta esta embebida, con doble escape" if
+                       facts["packageFolder == tecleada"] and facts["huella payload == manifiesto"] and
+                       facts["ocurrencias de la carpeta en los bytes del script"]["escapada JSON dentro de un literal de Python"] >= 1
+                       else "NO concluyente: revisar")
+open(out, "x", encoding="utf-8", newline="\n").write(json.dumps(facts, ensure_ascii=False, indent=2) + "\n")
+print(json.dumps(facts, ensure_ascii=False, indent=2))

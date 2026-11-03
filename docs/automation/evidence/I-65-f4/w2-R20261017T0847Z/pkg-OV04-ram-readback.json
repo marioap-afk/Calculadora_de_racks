@@ -1,0 +1,15 @@
+{
+  "adapterVersion": "1.0.0",
+  "analysisInputFingerprint": "f5ce900c14ee768bb85670e814099d58947857778077ced8f81d371a8858d663",
+  "differences": [
+    "gate: the model has 1 nodes"
+  ],
+  "schema": "rackcad-ram-readback/v1",
+  "status": "FAILED \u2014 DISCARD MODEL",
+  "values": {
+    "loadCase": null,
+    "loads": [],
+    "members": [],
+    "nodes": []
+  }
+}

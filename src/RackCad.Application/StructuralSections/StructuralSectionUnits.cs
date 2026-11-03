@@ -23,7 +23,7 @@ namespace RackCad.Application.StructuralSections
         public const double SquareInchesToSquareMillimeters = 645.16;
 
         /// <summary>Exact quotient 0.45359237 kg / 0.3048 m. Computed, so no digit is lost to a literal.</summary>
-        public static readonly double PoundsPerFootToKilogramsPerMeter = 0.45359237d / 0.3048d;
+        public static readonly double PoundsPerFootToKilogramsPerMeter = MassUnits.KilogramsPerPound / 0.3048d;
 
         private const double InchesPerFoot = LengthUnits.InchesPerFoot;
         private const double MillimetersPerMeter = 1000d;

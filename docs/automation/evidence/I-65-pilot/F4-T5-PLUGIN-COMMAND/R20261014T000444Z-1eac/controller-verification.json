@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T5-PLUGIN-COMMAND",
+  "RunId": "R20261014T000444Z-1eac",
+  "DelegationRunId": "R20261013T234354Z-7203",
+  "WorkRunId": "R20261013T234619Z-b5ef",
+  "Attempt": 6,
+  "VerifiedSha": "e610ea496c06df22a8309b70cb83136f51255dec",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession terminó en 2026-10-14T00:01:01Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente: TaskId F4-T5-PLUGIN-COMMAND, Attempt 6, DelegationRunId R20261013T234354Z-7203 y RunId R20261013T234619Z-b5ef. Outcome.OutputWrittenUtc=2026-10-14T00:00:38Z, posterior a Cession.StartUtc=2026-10-13T23:46:25Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision HEAD dio exit 0; MainSha bb0d5522… es merge-base de MainSha y AuthorityRevision, y los diffs de las rutas EXTERNAL entre ese merge-base y AuthorityRevision, y entre AuthorityRevision y BaseSha, están vacíos. Leídas por git show las autoridades de AUTOMATION_PLAN §16, README §8, Proposal v3.1, implementación F4, decisión I-65 §37/§41/§42, ADR-0050 y AGENTS.md en las revisiones indicadas."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json y gate-contract.json coinciden en las colecciones requeridas por A3-A5; relay-record-planning.json registra A1-A8 en pass. RequiredTests exige FullyQualifiedName~RackCad.Tests.StructuralAnalysisPluginCommand, MinSelected=12, ExpectRed=true; la entrega declara y acredita RED."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD = e610ea496c06df22a8309b70cb83136f51255dec; rama architecture/interop-analisis-estructural y raíz C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural coinciden con la delegación. BaseSha y RedSha son ancestros de HEAD; refs/remotes/origin/architecture/interop-analisis-estructural = HEAD."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts registra LsRemoteSha=e610ea496c06df22a8309b70cb83136f51255dec y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git ls-remote no conectó desde este entorno; se usaron RemoteFacts conforme a la instrucción. git rev-parse refs/remotes/origin/main = bb0d5522e8411f66a51fdfb3f1f0d0514b737453."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha enumera solo tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuard.cs y StructuralAnalysisPluginCommandGuardTests.cs. Ambos están cubiertos por AllowedWriteScope tests/RackCad.Tests/StructuralAnalysis/; ninguno coincide con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 está vacío. git check-ignore -v sobre el TRX bajo artifacts/orchestration/... informa .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: 38487578349, event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=CurrentSha; los cuatro jobs requeridos están en success. TRX Core CurrentSha: 14384/14384. RemoteFacts.RedRun: 38487208404, push a la misma ref y RedSha; job Core en failure. Su TRX existe y muestra 25 fallos, sin errores de compilación."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX RED 38487208404: filtro seleccionado=114, pasaron=92, fallaron=22; las fallas son de pruebas sobre el comando/Content, no de compilación. TRX CurrentSha 38487578349: 14384/14384; el filtro selecciona 114, 114 pasaron y 0 fallaron. Cobertura leída con git show HEAD:<ruta>: D-13 y forma del comando — ElArchivoDelComandoTieneUnSoloRegistroYElNombreSoloEnElAtributo, ElArchivoDelComandoCumpleLaRegla C01-C08; fallo cerrado, resultado/diagnósticos, retorno antes de publicar y escritura visible — CumpleLaRegla C09 y C15-C18, más pruebas de variantes; perfil solo de tabla — CumpleLaRegla C10; prohibiciones — CumpleLaRegla C11-C14 y variantes; Content, ubicación de tabla y paquete — ElProyectoDelPluginGanaUnSoloElementoContentParaLaTabla, ElElementoContentDeLaTablaYLaTablaExisten, LaTablaNoViajaEnElPaqueteDelAutoloader_NiElDestinoDelPaqueteSeToca; tabla proposed sin paquete — ConLaTablaDeProducto_LaEstacionEsUnsupported_ConElDiagnosticoDeFilaSinVerificar_YSinModelo y ConLaTablaDeProducto_LaFabricaNoDaPaquete_AsiQueElComandoNoEscribeNada; censos/G1 — CustomPropertiesCommandGuardTests.TGrd08_ElCensoDeComandosEsElDeAperturaMasRackPropiedadesRprRackProyectarYRpy, SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA y StructuralAnalysisRamElementsGuardTests.G1_CON_LA_LISTA_VACIA_EL_UNICO_INFRACTOR_EN_SRC_ES_EL_ARCHIVO_DEL_COMANDO, todos pasan en el TRX completo. La entrega informa builds locales Debug de Plugin y Release de solución con 0 errores y sin advertencias nuevas atribuibles; CI Build Plugin without AutoCAD también success. RT=21 archivos. ChainRedFiles resultantes (21): tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs; tests/RackCad.Tests/SelectiveEditorOpenTests.cs; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/generated.dump.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/generated.readback.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/manual-a.dump.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/manual-b.dump.json; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningDumpReaderTests.cs; StructuralAnalysisComparisonHardeningIncompleteTests.cs; StructuralAnalysisComparisonHardeningMetricTests.cs; StructuralAnalysisComparisonHardeningReadbackTests.cs; StructuralAnalysisComparisonHardeningRehearsalTests.cs; StructuralAnalysisComparisonHardeningSupport.cs; StructuralAnalysisComparisonHardeningToolTests.cs; StructuralAnalysisComparisonRowTests.cs; StructuralAnalysisComparisonSupport.cs; StructuralAnalysisComparisonToolTests.cs; StructuralAnalysisPluginCommandGuard.cs; StructuralAnalysisPluginCommandGuardTests.cs; StructuralAnalysisPluginCommandProductTableTests.cs; StructuralAnalysisRamElementsGuardTests.cs; StructuralAnalysisSourceGuardTests.cs — las últimas rutas son relativas a tests/RackCad.Tests/StructuralAnalysis/. git diff RedSha CurrentSha -- tests/ está vacío."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%P%n%B BaseSha..CurrentSha muestra que los tres commits 28fe112e, e413b9a2 y e610ea49 contienen `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. Coincide con el literal Worker.Trailer y el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5/medium; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=medium."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Búsqueda sin distinguir mayúsculas de los términos de AUTOMATION_PLAN §16.10 en WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json: cero coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Denials=null; Notes registra cero denegaciones y cero avisos de límite. El error de git add está identificado como superado; los dos commits RED y el RED vigente e413b9a2 están presentes y verificables en Git."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La entrega declara la desviación de dos commits RED: 28fe112e quedó sin las pruebas por un git add fallido y e413b9a2 completó el RED. El diff de e413b9a2 a CurrentSha no cambia pruebas y la corrida push de e413b9a2 acredita el RED requerido.",
+    "El diff neto BaseSha..CurrentSha solo contiene los dos archivos de la guarda; el comando y el Content están presentes en CurrentSha y el registro de trabajo informa que se restauraron desde f1d9a51d.",
+    "git ls-remote no tuvo conectividad en esta verificación; Remote se contrastó con RemoteFacts del relevo y las referencias remotas locales."
+  ],
+  "RecommendedNextAction": "Entregar esta verificación al Coordinator para la revisión de la entrega."
+}

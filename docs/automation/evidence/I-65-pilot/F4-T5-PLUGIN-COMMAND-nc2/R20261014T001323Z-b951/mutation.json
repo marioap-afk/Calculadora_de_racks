@@ -1,0 +1,18 @@
+{
+ "field": "delegation.AllowedWriteScope",
+ "excluded": "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuard.cs",
+ "from": [
+  "src/RackCad.Plugin/RackRamElementsCommands.cs",
+  "src/RackCad.Plugin/RackCad.Plugin.csproj",
+  "tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs",
+  "tests/RackCad.Tests/SelectiveEditorOpenTests.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ],
+ "to": [
+  "src/RackCad.Plugin/RackRamElementsCommands.cs",
+  "src/RackCad.Plugin/RackCad.Plugin.csproj",
+  "tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs",
+  "tests/RackCad.Tests/SelectiveEditorOpenTests.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs"
+ ]
+}

@@ -1,0 +1,14 @@
+Q1 member=ARM.1.PositiveY value=-449.617886199421 percent=15.002564123383 | mano lbf=449.617886199421 pct=15.002564123383 | dv=0.0e+00 dp=0.0e+00 IGUAL
+Q2 member=ARM.1.PositiveY value=-337.213414649566 percent=100.000000000000 | mano lbf=337.213414649566 pct=100.000000000000 | dv=0.0e+00 dp=1.4e-14 IGUAL
+Q3 member=ARM.2.PositiveY value=-750.000000000000 percent=36.251923092537 | mano lbf=750.000000000000 pct=36.251923092537 | dv=0.0e+00 dp=7.1e-15 IGUAL
+Q4 member=ARM.2.PositiveY value=-1000.000000000000 percent=91.500256412338 | mano lbf=1000.000000000000 pct=91.500256412338 | dv=0.0e+00 dp=1.4e-14 IGUAL
+Q5 member=ARM.3.PositiveY value=-661.386786554633 percent=57.501282061692 | mano lbf=661.386786554633 pct=57.501282061692 | dv=0.0e+00 dp=7.1e-15 IGUAL
+Q6 member=ARM.3.PositiveY value=-1011.640243948697 percent=78.750641030846 | mano lbf=1011.640243948697 pct=78.750641030846 | dv=0.0e+00 dp=1.4e-14 IGUAL
+loads=6 nodes=8 members=7 units=LB_IN case={'id': 'REF1', 'category': 'OTHER'} fingerprint=3dd3f8bc85a1a28c6c03c10c8f93f93b1b6a9d60a6c08b62ac313ab65ad83c7c
+RESULTADO 6/6 IGUAL a la tabla derivada a mano
+Q1 percent repr = 15.002564123383088
+Q2 percent repr = 99.99999999999997
+Q3 percent repr = 36.251923092537304
+Q4 percent repr = 91.50025641233829
+Q5 percent repr = 57.50128206169154
+Q6 percent repr = 78.75064103084576

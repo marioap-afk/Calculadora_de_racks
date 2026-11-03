@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2-SOURCE-ENTRY",
+  "RunId": "R20261011T180413Z-2afc",
+  "DelegationRunId": "R20261011T173529Z-98df",
+  "WorkRunId": "R20261011T173811Z-0167",
+  "Attempt": 2,
+  "VerifiedSha": "0070ae40c8cccf8ec9d384881f344c3fd5dd865f",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true, LaunchedPid=null; Cession.StartUtc=2026-10-11T17:38:23Z, EndUtc=2026-10-11T18:03:48Z. La salida registrada a las 18:03:11Z es posterior al inicio."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente: Schema=rackcad-worker-handoff/v1; TaskId=F4-T2-SOURCE-ENTRY, Attempt=2, DelegationRunId=R20261011T173529Z-98df, RunId=R20261011T173811Z-0167; coincide con contrato, delegación y relevo. Branch y Worktree coinciden con los declarados."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídos con git show: AUTOMATION_PLAN §16 (incl. 16.9–16.10) y agent-execution/README §8 en dc609362; propuesta V3.1 Frozen: yes, concreción F4, decisiones §26 y ADR-0050 en la revisión de autoridad. AuthorityRevision dc609362 es ancestro de BaseSha. merge-base(MainSha, AuthorityRevision)=bb0d5522; sin cambios externos entre MainSha y AuthorityRevision ni entre AuthorityRevision y BaseSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación de delegación con gate-contract: AllowedWriteScope 5/5, ForbiddenWriteScope 81/81, Invariants 8/8, StopConditions 29/29, Authorities 16/16 y RequiredTests 1/1 iguales. RequiredTests: RackCad.Tests.StructuralAnalysisSourceEntry, MinSelected=15, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural = 0070ae40c8cccf8ec9d384881f344c3fd5dd865f; refs/remotes/origin/main = bb0d5522e8411f66a51fdfb3f1f0d0514b737453. Rama y raíz del worktree coinciden. merge-base --is-ancestor confirma BaseSha dc609362..RedSha 2e92a0df y RedSha..CurrentSha; entregas coinciden con esos SHA."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.RemoteFacts: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, LsRemoteSha=0070ae40c8cccf8ec9d384881f344c3fd5dd865f. Entry refleja BaseSha y Exit refleja el mismo estado previo; el relevo indica el cambio esperado durante la cesión. git ls-remote no conectó por restricción de red; uso los RemoteFacts, permitido por las instrucciones."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha da 7 archivos, todos cubiertos por AllowedWriteScope de delegation.json: CantileverStructuralModelSource.cs y CantileverStructuralExport.cs; StructuralModelBuilder.cs y StructuralDiagnostic.cs; StructuralAnalysisCantileverBoundaryTests.cs, StructuralAnalysisSourceEntryHardeningTests.cs y StructuralAnalysisSourceEntryTests.cs, cubiertos por el prefijo tests/RackCad.Tests/StructuralAnalysis/. Sin intersección con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short vacío; relevo Entry CleanTree=true. git check-ignore -v confirma que la ruta del paquete de entradas queda ignorada por .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: event=push, ref exacta refs/heads/architecture/interop-analisis-estructural, head_sha=CurrentSha y los cuatro jobs requeridos en success. RemoteFacts.RedRun: push del RedSha, job Core failure. TRX Current Core: 13703/13703 pasaron; UI: 1654 total, 1637 pasaron, 17 UnitTestResult NotExecuted, 0 fallidas. Red Core TRX: 49 fallidas globales; hubo corrida propia del RedSha."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Core CurrentSha, SHA-256 E3B203710C62208BB66EE60E57BA4B74D11B9C2B61AFA1096C9F02136FCEDC2F: filtro RackCad.Tests.StructuralAnalysisSourceEntry seleccionó 66, pasaron 66, fallaron 0; Full 13703/13703. TRX RED, SHA-256 44E4F0C5807DE32C38A78FF55AB7E2C5C3D68FD58DE30B0410787F5710226585: filtro seleccionó 66, 19 pasaron y 47 fallaron; hubo resultados de pruebas, no fallo de compilación. La entrega coincide. Invariantes observados en pruebas del diff y verdes en Current TRX: lectura única, bytes intactos y huella (`LaFuncionDeDecodificacionRecibeExactamenteLosBytesDelDisenoUnaSolaVez`, `LaSourceFingerprintSeCalculaSobreLosBytesPersistidosIntactos`, mutación de copia, mismos bytes, espacios); kind de sobre con/sin distinción de mayúsculas, kind ajeno sin decodificar, null y excepciones; golden REF-CANT-01 INV-06. Constructor: excepciones de fuente, ArgumentNullException, modelo sin nudos/miembros, apoyos duplicados y supuestos ausentes. Bloqueo de línea y conservación del código de estación; permiso W/HSS rectangular/S y rechazo de otras familias y enums no definidos; límite sin(0.01°); clasificación de roles, pieza sintética no clasificada y REF-CANT-01 Valid. Guardas existentes de Cantilever sin cambios y verdes en Full; StructuralAnalysisSourceGuardTests cubre G1–G4, INV11, INV14, INV16 y D07; StructuralAnalysisCantileverGoldenTests y las suites F1/F3 también pasan. La única prueba existente editada es StructuralAnalysisCantileverBoundaryTests.cs: dos aserciones para el diagnóstico de línea; StructuralAnalysisModelBuilderTests.cs no cambia. RT = git diff ChainBaseSha..RedSha -- tests/: esos tres archivos de pruebas; git diff RedSha..CurrentSha -- tests/ vacío. ChainRedFiles resultantes: tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs, tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceEntryHardeningTests.cs, tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceEntryTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra el trailer en ambos commits. Valor literal de Worker.Trailer: \"Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\"; coincide con el modelo efectivo claude-sonnet-5-5 del relevo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegación solicita claude-sonnet-5-5/high; relay-record-work registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high. Handoff también declara claude-sonnet-5-5/high; no hay discrepancia."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction del handoff contra la lista de AUTOMATION_PLAN §16.10; no se encontraron coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.Notes registra 78 llamadas, 2 errores de herramienta superados y 0 denegaciones; sin aviso de límite. La invocación python3 --version está declarada y contrastada con el relevo y el diff; la disposición entregada DEV-I65-F4-05 la clasifica como desviación no bloqueante, y C-08 no se activa porque no se requirió Python para compilar ni probar. Sin condiciones de parada registradas."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "Los TRX verificados coinciden con sus SHA-256 registrados para Core GREEN, UI y Core RED.",
+    "La consulta directa de ls-remote no estuvo disponible por restricción de red; Remote se evaluó con los hechos del relevo, conforme a la instrucción específica.",
+    "El registro del trabajo documenta una invocación python3 --version; la disposición DEV-I65-F4-05 la trata como desviación de proceso no bloqueante."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación y continuar la secuencia de la sesión responsable."
+}

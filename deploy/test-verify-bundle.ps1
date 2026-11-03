@@ -14,7 +14,8 @@
     - a modified catalog (no longer matching assets\catalogs);
     - a catalog in an unexpected sub-folder;
     - a disallowed file;
-    - a wrong manifest version and a wrong AutoCAD series.
+    - a wrong manifest version and a wrong AutoCAD series;
+    - the section/material table: missing, modified, in an unauthorized path, and an extra file next to it.
   Every case works on a throwaway COPY under %TEMP%; the real bundle, publish and repo are never
   mutated. The CI guard (eng\ci\verify-autocad-references.ps1) runs this after publishing, so the
   cases are covered in CI without editing .github\workflows\ci.yml.
@@ -136,6 +137,9 @@ try {
 
     # 1. Valid bundle is accepted.
     $b = New-BundleCopy -Root $temporaryRoot -Name "01-valido"
+    if (-not (Test-Path -LiteralPath (Join-Path $b "Contents\structural-analysis\ram-elements\section-material-map.json") -PathType Leaf)) {
+        throw "FALLO [valido]: el bundle fuente no contiene la tabla de secciones y materiales en Contents/structural-analysis/ram-elements/section-material-map.json"
+    }
     Assert-Pass -Name "valido" -BundlePath $b
 
     # 2. Autodesk DLL smuggled in.
@@ -185,8 +189,30 @@ try {
     Assert-Reject -Name "series-incorrecta" -BundlePath $b -ExpectSubstring "SeriesMax del manifiesto" `
         -ExtraArgs @("-ExpectedSeriesMax", "R26.0")
 
+    # 11. Section/material table missing.
+    $b = New-BundleCopy -Root $temporaryRoot -Name "11-tabla-ausente"
+    Remove-Item -LiteralPath (Join-Path $b "Contents\structural-analysis\ram-elements\section-material-map.json") -Force
+    Assert-Reject -Name "tabla-ausente" -BundlePath $b -ExpectSubstring "Falta la tabla de secciones y materiales en el bundle"
+
+    # 12. Section/material table modified (one byte appended).
+    $b = New-BundleCopy -Root $temporaryRoot -Name "12-tabla-modificada"
+    Add-FileBytes -Path (Join-Path $b "Contents\structural-analysis\ram-elements\section-material-map.json")
+    Assert-Reject -Name "tabla-modificada" -BundlePath $b `
+        -ExpectSubstring "Tabla de secciones y materiales modificada respecto a la fuente aprobada"
+
+    # 13. Section/material table copied (not moved) to an unauthorized path inside Contents.
+    $b = New-BundleCopy -Root $temporaryRoot -Name "13-tabla-ruta-no-autorizada"
+    Copy-Item -LiteralPath (Join-Path $b "Contents\structural-analysis\ram-elements\section-material-map.json") `
+        -Destination (Join-Path $b "Contents\section-material-map.json") -Force
+    Assert-Reject -Name "tabla-ruta-no-autorizada" -BundlePath $b -ExpectSubstring "Archivo no autorizado en el bundle"
+
+    # 14. Extra file next to the table.
+    $b = New-BundleCopy -Root $temporaryRoot -Name "14-tabla-archivo-extra"
+    Set-Content -LiteralPath (Join-Path $b "Contents\structural-analysis\ram-elements\otra.json") -Value "{}" -Encoding utf8
+    Assert-Reject -Name "tabla-archivo-extra" -BundlePath $b -ExpectSubstring "Archivo no autorizado en el bundle"
+
     Write-Host ""
-    Write-Host "OK: harness del verificador — $script:passed casos superados (1 valido + 9 negativos)."
+    Write-Host "OK: harness del verificador — $script:passed casos superados (1 valido + 13 negativos)."
 }
 catch {
     Write-Error "Harness del verificador fallido. $($_.Exception.Message)"

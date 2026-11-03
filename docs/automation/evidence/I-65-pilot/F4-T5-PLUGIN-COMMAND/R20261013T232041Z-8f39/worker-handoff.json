@@ -1,0 +1,123 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T5-PLUGIN-COMMAND",
+  "RunId": "R20261013T232041Z-8f39",
+  "DelegationRunId": "R20261013T231726Z-7d47",
+  "Initiative": "I-65",
+  "Gate": "F4",
+  "Attempt": 5,
+  "BaseSha": "af04ddb539f5bfd15cf057d0bad336cba9315f30",
+  "RedSha": "a2a8b86899a54d009c79b983ae088379b2fce408",
+  "CurrentSha": "f1d9a51db0718f5a2efeba9699938fdb91b209ac",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "src/RackCad.Plugin/RackRamElementsCommands.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs"
+  ],
+  "WorkCompleted": "RED: corregida la muestra de StructuralAnalysisPluginCommandGuardTests.cs (la linea de declaracion de namespace de la muestra sintetica se compone en tiempo de ejecucion); suite Core completa antes del commit con solo los fallos admitidos; commit RED a2a8b868 y push. GREEN: creado src/RackCad.Plugin/RackRamElementsCommands.cs (comando RACKRAMPAQUETE) y anadido el elemento Content de la tabla al .csproj; filtro 98/98 en verde, suite Core 14368/14368 en verde, Plugin compilado hacia artifacts/ con 0 errores, solucion en Release con 0 errores; commit GREEN f1d9a51d y push. Ningun archivo de pruebas cambio entre RED y GREEN.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-full",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=red-full.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/5/R20261013T232041Z-8f39/tests/red-full",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/5/R20261013T232041Z-8f39/tests/red-full/red-full.trx"
+    },
+    {
+      "RunRef": "red-filter",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisPluginCommand\" --logger \"trx;LogFileName=red-filter.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/5/R20261013T232041Z-8f39/tests/red-filter",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/5/R20261013T232041Z-8f39/tests/red-filter/red-filter.trx"
+    },
+    {
+      "RunRef": "green-filter",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisPluginCommand\" --logger \"trx;LogFileName=green-filter.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/5/R20261013T232041Z-8f39/tests/green-filter",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/5/R20261013T232041Z-8f39/tests/green-filter/green-filter.trx"
+    },
+    {
+      "RunRef": "green-full",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --no-build --logger \"trx;LogFileName=green-full.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/5/R20261013T232041Z-8f39/tests/green-full",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/5/R20261013T232041Z-8f39/tests/green-full/green-full.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-full",
+      "Selected": 14368,
+      "Passed": 14347,
+      "Failed": 21,
+      "Skipped": 0,
+      "FailedTests": [
+        "StructuralAnalysisPluginCommandGuardTests: 17 pruebas que leen el archivo del comando, el elemento Content o el .csproj (ElArchivoDelComandoNoTieneNingunaViolacion; ElArchivoDelComandoTieneUnSoloRegistroYElNombreSoloEnElAtributo; ElArchivoDelComandoCumpleLaRegla C01..C14 en 14 casos; ElProyectoDelPluginGanaUnSoloElementoContentParaLaTabla; ElElementoContentDeLaTablaYLaTablaExisten)",
+        "SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA",
+        "CustomPropertiesCommandGuardTests.TGrd08_ElCensoDeComandosEsElDeAperturaMasRackPropiedadesRprRackProyectarYRpy",
+        "StructuralAnalysisRamElementsGuardTests.G1_CON_LA_LISTA_VACIA_EL_UNICO_INFRACTOR_EN_SRC_ES_EL_ARCHIVO_DEL_COMANDO"
+      ]
+    },
+    {
+      "RunRef": "red-filter",
+      "Selected": 98,
+      "Passed": 80,
+      "Failed": 18,
+      "Skipped": 0,
+      "FailedTests": [
+        "ElArchivoDelComandoNoTieneNingunaViolacion",
+        "ElArchivoDelComandoTieneUnSoloRegistroYElNombreSoloEnElAtributo",
+        "ElArchivoDelComandoCumpleLaRegla (14 casos, C01..C14)",
+        "ElProyectoDelPluginGanaUnSoloElementoContentParaLaTabla",
+        "ElElementoContentDeLaTablaYLaTablaExisten"
+      ]
+    },
+    {
+      "RunRef": "green-filter",
+      "Selected": 98,
+      "Passed": 98,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-full",
+      "Selected": 14368,
+      "Passed": 14368,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "(0) Directorio efectivo al empezar: pwd (Bash) = /d/Documentos/Codex/Calculadora de racks; Get-Location (PowerShell) = D:\\Documentos\\Codex\\Calculadora de racks; [Environment]::CurrentDirectory = D:\\Documentos\\Codex\\Calculadora de racks. No son el worktree. Toda operacion de archivos uso rutas absolutas bajo C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural; git siempre con -C; dotnet con ruta absoluta del proyecto o la solucion; sin cd ni Set-Location; no se leyo ni se escribio en el checkout principal. Antes de editar: git status limpio, HEAD = BaseSha y ls-remote = BaseSha.",
+    "(1) Invariantes y pruebas que los observan (todas en StructuralAnalysisPluginCommandGuardTests.cs y StructuralAnalysisPluginCommandProductTableTests.cs): D-13 forma del archivo y comando unico canonico = reglas C01 y C02 y ElArchivoDelComandoTieneUnSoloRegistroYElNombreSoloEnElAtributo; flujo (seleccion, kind, estacion, cargas, carpeta) = C03; catalogo = C04; tabla desde Assembly.Location con RamSectionMapReader = C05; entrada de F4-T2 con bytes y decodificador = C06; paquete y publicacion con la carpeta embebida = C07; mensajes con diagnosticos, huella y archivos = C08; fallo cerrado, System.Exception y Unavailable = C09; perfil solo de la tabla y version constante unica = C10; prohibiciones de INV-12 = C11, C12, C13, C14; Content de la tabla y la tabla en assets = ElProyectoDelPluginGanaUnSoloElementoContentParaLaTabla, ElElementoContentDeLaTablaYLaTablaExisten; la tabla no viaja en el paquete del autoloader = LaTablaNoViajaEnElPaqueteDelAutoloader_NiElDestinoDelPaqueteSeToca; ruta unica de G1 = LaRutaDelComandoEsLaUnicaRutaDeLaListaDePermisoDeG1 y G1_CON_LA_LISTA_VACIA_EL_UNICO_INFRACTOR_EN_SRC_ES_EL_ARCHIVO_DEL_COMANDO; con la tabla de producto (filas proposed) el comando responde Unsupported sin escribir: StructuralAnalysisPluginCommandProductTableTests; censos: SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA (38) y CustomPropertiesCommandGuardTests.TGrd08_ElCensoDeComandosEsElDeAperturaMasRackPropiedadesRprRackProyectarYRpy.",
+    "(2) Plugin: dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -o <worktree>/artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/5/R20261013T232041Z-8f39/build = 0 errores, 2 advertencias (ambas MSB3277 de conflictos de referencias de AutoCAD, preexistentes); la salida contiene structural-analysis/ram-elements/section-material-map.json. Solucion: dotnet build RackCad.sln -c Release = 0 errores, 63 advertencias, todas preexistentes (MSB3277 de AutoCAD y analizadores xUnit1026, xUnit2000, xUnit2013, xUnit2017, xUnit2029, xUnit2031 de pruebas existentes); ninguna menciona RackRamElementsCommands ni StructuralAnalysisPluginCommand; sin advertencias CS, NU ni NETSDK. Registros en work/plugin-build.log y work/sln-release.log de la carpeta del intento.",
+    "(3) Elemento Content anadido al .csproj (unico cambio, 3 lineas): <Content Include=\"..\\..\\assets\\structural-analysis\\ram-elements\\section-material-map.json\" Link=\"structural-analysis/ram-elements/section-material-map.json\"><CopyToOutputDirectory>Always</CopyToOutputDirectory></Content> dentro del ItemGroup de catalogs; el destino del paquete del autoloader no se toco.",
+    "(4) Las cuatro ediciones de pruebas existentes estan en 3e1ef603 (no se tocaron aqui): CustomPropertiesCommandGuardTests.cs lineas 51-55 (lista propia de I-65 con RACKRAMPAQUETE); SelectiveEditorOpenTests.cs lineas 549-552 (comentario) y 561 (conteo 37 a 38); StructuralAnalysisSourceGuardTests.cs lineas 38-39, 71, 73, 76, 101, 113 y 379-384 (lista de G1 con la ruta unica y su constante compartida); StructuralAnalysisRamElementsGuardTests.cs lineas 179, 182 y 185-196 (segunda barrida con la constante y la prueba de infractores).",
+    "(5) Pruebas que pasan ya en el RED (80 de 98 del filtro): las autopruebas de la guarda sobre la muestra sintetica y sus variantes e inserciones, la prueba de cobertura de reglas, la prueba de ruta unica de G1 (la constante ya existe), la prueba de que la tabla no viaja en el paquete del autoloader y las del archivo de tabla del producto; no dependen del archivo del comando ni del Content. Las 18 que fallan lo hacen por aserciones o archivo ausente.",
+    "(6) Diff exacto de la correccion en StructuralAnalysisPluginCommandGuardTests.cs: linea 32 'namespace RackCad.Plugin' pasa a '@@NS@@ RackCad.Plugin'; y el cierre de la muestra pasa de '\"\"\").Replace(\"\\r\\n\", \"\\n\");' a '\"\"\").Replace(\"\\r\\n\", \"\\n\").Replace(\"@@NS@@\", \"name\" + \"space\");'. No debilita lo observado: el texto de la muestra tras la composicion es identico al anterior, byte a byte. Verificado: el unico 'namespace' en columna 0 de cada uno de los tres archivos nuevos es su propia declaracion (lineas 6, 10 y 12).",
+    "(7) Se partio de la copia retenida del GREEN del intento 4 (hold-RackRamElementsCommands.cs.txt y hold-RackCad.Plugin.csproj.txt) tras revisarla contra los invariantes del paquete y contra la guarda; se entrego sin diferencias: el archivo del comando es identico y el .csproj es la copia completa, cuyo unico cambio respecto al HEAD es el elemento Content de (3). Comprobaciones adicionales: git diff entre el RED y el GREEN en tests/ es vacio; git diff --name-only BaseSha..CurrentSha contiene solo los dos archivos de src autorizados mas el archivo de la correccion RED."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "El comando no se ejecuto en AutoCAD (prohibido); su comportamiento se fija por la guarda de texto, la compilacion del Plugin y las pruebas de la tabla de producto.",
+    "Con la tabla del producto tal como se entrega (filas proposed) el comando responde Unsupported y no escribe; no se trataron filas proposed como verified."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller de los SHA RED a2a8b868 y GREEN f1d9a51d y recogida de las corridas push.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

@@ -1,0 +1,16 @@
+time_utc=2026-10-30T21:53:39.4093275Z
+acad=0 ram=0
+root1-user top=0 recursive=0 rackcad_top=0 rackcad_any=0
+root2-programdata ABSENT
+root3-programfiles top=1 recursive=5 rackcad_top=0 rackcad_any=0
+root4-programfilesx86 top=2 recursive=568 rackcad_top=0 rackcad_any=0
+reg_refs hkcu-applications.reg=0
+reg_refs hkcu-fixedprofile.reg=0
+reg_refs hkcu-installedapplications.reg=0
+reg_refs hkcu-loaded.reg=0
+reg_refs hkcu-profiles.reg=0
+reg_refs hklm-applications.reg=0
+reg_refs_total=0
+trustedpaths_covers_user_applicationplugins=False trustedpaths_covers_bundle_contents=False
+
+nota: el detalle de las raices de Program Files (root3, root4) queda en local; aqui solo su recuento y RackCad = 0

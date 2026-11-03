@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F3-T1-MAP-AND-TRANSLATION",
+  "RunId": "R20261011T070847Z-f93c",
+  "DelegationRunId": "R20261011T061951Z-7db1",
+  "WorkRunId": "R20261011T062529Z-8e09",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true y LaunchedPid=null. Cession.StartUtc=2026-10-11T06:26:53Z; Outcome.OutputWrittenUtc=2026-10-11T06:59:14Z; Cession.EndUtc=2026-10-11T06:59:39Z."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json contiene TaskId, RunId, DelegationRunId, Attempt, BaseSha, rama y worktree esperados, y su fecha de salida es posterior al inicio. Sin embargo, CurrentSha declara deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; además, SHA-256 de la copia evaluada D588B5DC5707F24C9F90C0E499D06F2D4914AA7C1741024E04F5785162E2419D difiere de Outcome.OutputSha256 ABE242EEC485AA250FFB37A1C06C9E392143303E9F96AA2D0ACC7CCA50AD93B2. El registro y el propio texto del handoff señalan 16fa9e7649e139798d41188db5bbe8b3be94e086."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "La delegación y el contrato fijan AuthorityRevision=bf2d347836904275955e1a8059051271a76c51e2 y MainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453; BaseSha es AuthorityRevision. Git confirma MainSha ancestro de AuthorityRevision, merge-base=MainSha y diff de rutas EXTERNAL entre ambos vacío. Leí desde AuthorityRevision el Freeze (Frozen: yes), concreción F3, decisión §17, registros P1 y ADR-0050; desde MainSha, AUTOMATION_PLAN, AGENTS.md y autoridades EXTERNAL."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación de delegation.json con gate-contract.json: AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions por ID, Authorities por Path/Section/Class y RequiredTests son iguales. RequiredTests fija tests/RackCad.Tests/RackCad.Tests.csproj, filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElements, MinSelected=30 y ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural dan ambos 16fa9e7649e139798d41188db5bbe8b3be94e086; BaseSha es ancestro de RedSha y RedSha de ese tip. La entrega declara otro CurrentSha (deadbeefdeadbeefdeadbeefdeadbeefdeadbeef), por lo que HEAD y la referencia remota no son iguales al CurrentSha entregado."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts informa OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y LsRemoteSha=16fa9e7649e139798d41188db5bbe8b3be94e086; coinciden con refs/remotes/origin/main y la punta local/remota de la rama. No ejecuté git ls-remote; usé los hechos remotos registrados, como permite la instrucción de la sesión."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..16fa9e7649e139798d41188db5bbe8b3be94e086 arroja 18 rutas, todas cubiertas por AllowedWriteScope de delegation.json y ninguna por ForbiddenWriteScope. assets/structural-analysis/ram-elements/section-material-map.json está cubierta por esa ruta exacta; StructuralMaterialProfile.cs y CantileverStructuralModelSource.cs por sus entradas exactas; RamBuildPlan.cs, RamElementsDiagnosticCodes.cs, RamElementsTranslator.cs, RamLocalAxes.cs, RamSectionMapReader.cs, RamSectionMapRow.cs y RamSectionMaterialTable.cs por src/RackCad.Application/StructuralAnalysis/Providers/RamElements/; StructuralAnalysisRamElementsAssumptionsTests.cs, StructuralAnalysisRamElementsAxesTests.cs, StructuralAnalysisRamElementsFixtures.cs, StructuralAnalysisRamElementsGuardTests.cs, StructuralAnalysisRamElementsMapReaderTests.cs, StructuralAnalysisRamElementsProjectionTests.cs, StructuralAnalysisRamElementsTranslationTests.cs y StructuralAnalysisSourceGuardTests.cs por tests/RackCad.Tests/StructuralAnalysis/. El diff del guard en RED muestra (a) solo RamElements bajo Providers, (b) la exención exacta del archivo de plantilla y (c) G1ExactPathAllowList sigue vacía."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 está vacío. git check-ignore -v sobre la ruta de artifacts de entrada devuelve .gitignore:3: artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.Ci-38119516204 es push de refs/heads/architecture/interop-analisis-estructural, HeadSha 16fa9e7649e139798d41188db5bbe8b3be94e086, completada con los cuatro jobs requeridos en success. No acredita el CurrentSha declarado en el handoff (deadbeef…); no hay corrida suministrada para ese SHA. RedPart pasa: corrida push 38119009179 sobre RedSha 1c1e8650a7ce3c3ecf7fbe6095fc5ce75cc580b3, Core failure."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Lectura de los TRX: filtro selecciona 296 en RED y 296 en GREEN; RequiredTests pide al menos 30. RED: 269 fallidas y 27 superadas; el TRX contiene fallos NotImplementedException y aserciones, sin señales CSxxxx ni Build FAILED. GREEN: 296/296 superadas; Core completo 13242/13242. Los conteos coinciden con TestResults del handoff y el diff; los SHA-256 de los TRX coinciden con TestArtifacts del relevo. Los nombres/código revisados cubren D-06/D-07 (UnaTablaInvalidaEsInvalidaConSuCodigoYNoSeProyecta; exactamente dos filas proposed y valores de ingeniería nulos), A65-F1-01/02 (fila completa con prefijos; CambiarUnCampoDeUnaFilaVerifiedUsadaCambiaLaHuellaDeEntradaDelAnalisis para los 14 campos), INV-08 (CadaBanderaNeutralSeMapeaALaDeRamDelDocumentoYSoloAEsa para las seis banderas), INV-07 (12 direcciones × 3 giros desde p1-report.json; regla y reproducción del vector en L2), D-04/D-03 y golden (nudos, miembros, restricciones, ejes, theta y cargas; los literales de carga −1000, −2000 y ForceUnits.ToPoundsForce(500, ForceUnit.KilogramForce), y porcentajes 57.50128206169155, 36.25192309253731 y 78.75064103084577 coinciden con sección 8), D-08 (diagnósticos y ausencia de plan para entradas inválidas/unsupported), A65-F1-07 (siete enunciados exactos) y guardas (a)-(c), D-01/D-13 y frontera neutral. StructuralMaterialProfile.cs cambia aditivamente; el diff confirma que CantileverStructuralModelSource.cs solo cambia los enunciados. git diff RedSha CurrentSha -- tests/ está vacío. RT/ChainRedFiles resultantes: tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsAssumptionsTests.cs; StructuralAnalysisRamElementsAxesTests.cs; StructuralAnalysisRamElementsFixtures.cs; StructuralAnalysisRamElementsGuardTests.cs; StructuralAnalysisRamElementsMapReaderTests.cs; StructuralAnalysisRamElementsProjectionTests.cs; StructuralAnalysisRamElementsTranslationTests.cs; StructuralAnalysisSourceGuardTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "Worker.Trailer literal: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. git log --format=%B BaseSha..16fa9e7649e139798d41188db5bbe8b3be94e086 muestra ese trailer en ambos commits."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5/high; relay-record-work.json Notes registra el modelo efectivo claude-sonnet-5-5 y effort high. Coinciden y RoutingEnforcement es required."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Busqué los términos de AUTOMATION_PLAN §16.10 en WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction del handoff; no hubo coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 84 llamadas, 0 errores de herramienta, 0 denegaciones, 0 avisos de límite y ninguna orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "StopCondition",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "Contradicción verificable entre el CurrentSha deadbeef… de worker-handoff.json y el HEAD, la rama remota, RemoteFacts y los resultados de CI, todos en 16fa9e7649e139798d41188db5bbe8b3be94e086.",
+    "El hash de la copia del handoff no coincide con el OutputSha256 registrado al finalizar el trabajo."
+  ],
+  "RecommendedNextAction": "Resolver la discrepancia del handoff y registrar una entrega verificable antes de repetir la revisión."
+}

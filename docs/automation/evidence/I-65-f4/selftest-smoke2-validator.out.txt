@@ -1,0 +1,6 @@
+ok             PASS failed=[] expected=[] -> OK
+verifiedby     FAIL failed=['V-13', 'V-15'] expected=['V-13', 'V-15'] -> OK
+loads          FAIL failed=['V-05', 'V-06', 'V-07'] expected=['V-05', 'V-06', 'V-07'] -> OK
+rowsha         FAIL failed=['V-14'] expected=['V-14'] -> OK
+fingerprint    FAIL failed=['V-05', 'V-11'] expected=['V-05', 'V-11'] -> OK
+SELFTEST PASS

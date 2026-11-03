@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# I-65 READY: evidencia local del SHA propuesto del Candidato final, con el arbol limpio antes y despues (AGENTS.md, fila FINAL_CANDIDATE_SHA):
+# Core Full, UI Full, builds Debug de UI, Plugin y herramienta (salidas nuevas en D:/r65-smoke/<sha8>/), bundle del Autoloader
+# (build-bundle.ps1 + harness en D:/r65-smoke/<sha8>/bundle, contraste con el bundle del cierre de R-D11) e identidad de las entradas.
+# Uso: bash fc_evidence.sh <out-dir>
+set -u
+WT="C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural"
+DN="C:/Users/<usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe"
+SP="$(cd "$(dirname "$0")/.." && pwd)"
+OUT="$1"; mkdir -p "$OUT"
+cd "$WT" || exit 9
+H=$(git -C "$WT" rev-parse HEAD); S8=${H:0:8}; SMK="D:/r65-smoke/$S8"
+[ -e "$SMK" ] && { echo "ya existe $SMK"; exit 8; }
+[ -n "$(git -C "$WT" status --porcelain)" ] && { echo "arbol sucio"; exit 7; }
+L="$OUT/local-evidence.txt"
+{ echo "HEAD=$H dirty=$(git -C "$WT" status --porcelain | wc -l)"; echo "sdk=$("$DN" --version)"; echo "start=$(date -u +%FT%TZ)"; } > "$L"
+t0=$(date +%s); "$DN" test tests/RackCad.Tests/RackCad.Tests.csproj --logger "trx;LogFileName=core-full-$S8.trx" --results-directory "$OUT" > "$OUT/core.txt" 2>&1; e=$?
+{ echo "--- Core Full"; grep -E "Superado:|Passed!|Failed!|Con error" "$OUT/core.txt" | tail -1; echo "core_exit=$e secs=$(( $(date +%s)-t0 ))";
+  echo "core_trx_sha256=$(sha256sum "$OUT/core-full-$S8.trx" | cut -d' ' -f1)"; } >> "$L"
+t0=$(date +%s); "$DN" test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --logger "trx;LogFileName=ui-full-$S8.trx" --results-directory "$OUT" > "$OUT/ui.txt" 2>&1; e=$?
+{ echo "--- UI Full"; grep -E "Superado:|Passed!|Failed!|Con error" "$OUT/ui.txt" | tail -1; echo "ui_exit=$e secs=$(( $(date +%s)-t0 ))";
+  echo "ui_trx_sha256=$(sha256sum "$OUT/ui-full-$S8.trx" | cut -d' ' -f1)"; } >> "$L"
+"$DN" build src/RackCad.UI/RackCad.UI.csproj -c Debug > "$OUT/ui-build.txt" 2>&1; e=$?
+{ echo "--- Build UI Debug"; grep -E "[0-9]+ Error|[0-9]+ errores|error\(es\)" "$OUT/ui-build.txt" | tail -1; echo "ui_build_exit=$e"; } >> "$L"
+s=$(date -u +%FT%TZ); "$DN" build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -o "$SMK/bin-Debug-net8.0-windows" > "$OUT/plugin-build.txt" 2>&1; e=$?
+{ echo "--- Build Plugin Debug (salida nueva $SMK/bin-Debug-net8.0-windows, $s..$(date -u +%FT%TZ))"; grep -E "[0-9]+ Error|[0-9]+ errores|error\(es\)" "$OUT/plugin-build.txt" | tail -1; echo "plugin_build_exit=$e";
+  echo "plugin_dll_sha256=$(sha256sum "$SMK/bin-Debug-net8.0-windows/RackCad.Plugin.dll" 2>/dev/null | cut -d' ' -f1)"; } >> "$L"
+"$DN" build tools/RackCad.StructuralAnalysis.RamTool/RackCad.StructuralAnalysis.RamTool.csproj -c Debug -o "$SMK/ramtool" > "$OUT/tool-build.txt" 2>&1; e=$?
+{ echo "--- Build herramienta Debug ($SMK/ramtool)"; grep -E "[0-9]+ Error|[0-9]+ errores|error\(es\)" "$OUT/tool-build.txt" | tail -1; echo "tool_build_exit=$e"; } >> "$L"
+pwsh -NoProfile -File "$(cygpath -w "$SP/rd11/bundle_evidence.ps1")" -Out "$(cygpath -w "$SMK/bundle")" -Before "D:\\r65-smoke\\rd11-close-f2ed2a7e-bundle\\inventory.txt" > "$OUT/bundle-evidence.txt" 2>&1; e=$?
+{ echo "--- Publicacion del bundle (carpeta nueva $SMK/bundle; contraste con el bundle de f2ed2a7e)"; grep -E "^head=|build-bundle exit|bundle files|table present|vs before|^verify:|^harness:" "$OUT/bundle-evidence.txt"; echo "bundle_evidence_exit=$e"; } >> "$L"
+pwsh -NoProfile -File "$(cygpath -w "$SP/fc/fc_identity.ps1")" "$(cygpath -w "$WT")" "$H" "$(cygpath -w "$OUT")" "$(cygpath -w "$SP")" > "$OUT/identity-run.txt" 2>&1; e=$?
+{ echo "--- Identidad y entradas de las ventanas"; echo "identity_exit=$e"; } >> "$L"
+{ echo "end=$(date -u +%FT%TZ)"; echo "HEAD_after=$(git -C "$WT" rev-parse HEAD) dirty_after=$(git -C "$WT" status --porcelain | wc -l)"; } >> "$L"
+cat "$L"

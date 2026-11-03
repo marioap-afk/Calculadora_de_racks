@@ -1,0 +1,86 @@
+I-65 — OWNER DISPOSITION
+F4 Candidate Findings and Architect Conformance Authorization
+He revisado la preparación del Candidato F4 publicada en `5a5ca577` y `e8c7f73a`, ambos con CI 4/4 satisfactorio.
+1. Decisión general
+F4 CANDIDATE PREPARATION = ACCEPTED.
+Apruebo `5a5ca577` como SHA propuesto para el Candidato de hito, sujeto a la revisión de conformidad pendiente.
+No autorizo todavía declarar formalmente el Candidato ni ejecutar la validación final en AutoCAD o RAM Elements.
+2. Disposición de hallazgos
+Registra las siguientes decisiones:
+
+* A65-F4R-07: aceptar como limitación documentada el mensaje `Valid` del comando en ausencia de tabla. No modificar el código para esta versión.
+* A65-F4R-02: aceptar la limitación de la lectura de vuelta; mantener el volcado del modelo generado dentro de la misma sesión de RAM.
+* A65-F4D-02, 03, 04, 05 y 09: diferir como mejoras posteriores no bloqueantes, conservando trazabilidad.
+* A65-F1-06: cerrar como NO CHANGE, si la revisión confirma que no altera el contrato congelado.
+* A65-F4R-06: resolver conforme a CMB-3 y la verificación real de M-05c y P2. Cero combinaciones en ambos modelos constituye una comparación efectiva, no una omisión.
+* A65-F4R-08: cerrar con la evidencia del segundo smoke, aprobado después de corregir V-11.
+* DIF-04: registrar compatibilidad observada con AISC v16.0 y mantener la edición formal del catálogo RAM como UNKNOWN.
+
+Ninguna de estas disposiciones amplía el alcance del Freeze ni autoriza modificar código.
+3. Modelo manual de referencia
+OD-F4-11 = STRATEGY A APPROVED, CONDITIONAL.
+Autorizo reutilizar el volcado manual custodiado durante P2 como referencia de equivalencia para el Candidato final.
+Condiciones:
+
+1. Verificar los hashes del volcado y su especificación.
+2. Comprobar las identidades exactas de RAM Elements, API y bases de secciones/materiales.
+3. Confirmar que el modelo del Candidato conserva los parámetros de REF-CANT-01.
+4. Mantener el origen del volcado manual independiente del modelo generado.
+5. No reutilizar el readback automático de P2 como evidencia de la nueva ejecución.
+
+Si cambia alguna identidad o parámetro relevante, detener la reutilización y presentar la necesidad de reconstruir el modelo manual.
+La estrategia A no autoriza guardar ni abrir archivos de modelos RAM existentes.
+4. Revisión independiente
+ARCHITECT CONFORMANCE REVIEW = AUTHORIZED.
+Solicita una revisión independiente, de solo lectura, al Architect sobre el SHA exacto `5a5ca577`.
+La revisión debe comprobar:
+
+* Conformidad con Proposal V3.1 y ADR-0050.
+* Cumplimiento del alcance F4.
+* Disposiciones de los hallazgos anteriores.
+* Invariantes y guardas.
+* Riesgos residuales.
+* Matriz de pruebas finales.
+* Compatibilidad con la estrategia A del modelo manual.
+* Ausencia de hallazgos REQUIRED abiertos.
+
+No ejecutar Workers de implementación ni modificar código.
+5. Declaración del Candidato
+Si el Architect devuelve AGREED o CONFORMANT sin REQUIRED, prepara la declaración formal del Candidato según LIFECYCLE §8.
+Antes de declararlo, verifica nuevamente:
+
+* SHA exacto.
+* Estado limpio.
+* CI del SHA.
+* Freeze intacto.
+* Ausencia de nuevas decisiones pendientes.
+* Integridad del DLL y la tabla verificada.
+
+No declares automáticamente el Candidato si el procedimiento requiere un acto adicional del Owner.
+En ese caso, entrégame la propuesta final y solicita la autorización correspondiente.
+6. Límites
+No abrir AutoCAD.
+No ejecutar NETLOAD.
+No ejecutar RAM Elements.
+No ejecutar pruebas de inyección reales.
+No modificar producto, tabla, tolerancias ni Freeze.
+No iniciar F5, F6 o F7.
+No declarar GATE PASS de F4.
+7. Entregable
+Presenta:
+
+1. Disposiciones registradas.
+2. Veredicto del Architect.
+3. Estado de READY-01 a READY-09.
+4. SHA definitivo propuesto.
+5. Riesgos y limitaciones aceptadas.
+6. Confirmación de la estrategia A.
+7. Autorización exacta pendiente para declarar el Candidato.
+8. Condiciones de ejecución de W1 y W2.
+
+F4 CANDIDATE SHA = 5a5ca577 PROPOSED.
+ARCHITECT REVIEW = AUTHORIZED.
+CANDIDATE DECLARATION = PENDING.
+FINAL AUTOCAD / RAM VALIDATION = NOT AUTHORIZED.
+F4 GATE PASS = NO.
+Continúa con la revisión y detente antes de declarar el Candidato o ejecutar las pruebas finales.

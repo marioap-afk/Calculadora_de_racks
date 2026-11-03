@@ -1,0 +1,44 @@
+# I-65 P2: preflight y preparacion de la corrida (lecturas + copias nuevas fuera del repositorio). No abre RAM.
+param([Parameter(Mandatory)][string]$P2)
+$ErrorActionPreference = 'Stop'
+if (Test-Path -LiteralPath $P2) { throw "ya existe $P2" }
+$pkg = 'D:\r65-smoke\51fc82f1\run-R20261016T1918Z\pkg-01'
+$wt = Get-Content 'C:\Users\ALEJAN~1\AppData\Local\Temp\claude\D--Documentos-Codex-Calculadora-de-racks\6890e406-f2b3-4b75-bc5a-bab5161b3dbc\scratchpad\i65\wt-path.txt'
+$toolSrc = Join-Path $wt 'tools\RackCad.StructuralAnalysis.RamTool\bin\Debug\net8.0'
+$ram = 'C:\Program Files\Bentley\Engineering\RAM Elements\RAMElements.exe'
+$rp = 'C:\Program Files\Bentley\Engineering\RAM Elements\python\ramelements'
+$cfg = Join-Path $env:APPDATA 'Bentley\Engineering\RAM Elements\26.0.1\RE\Config.ini'
+function FSha([string]$p) { (Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLower() }
+function TSha([string]$s) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($s))).ToLower() }
+New-Item -ItemType Directory -Path $P2 | Out-Null
+foreach ($d in 'host-before', 'captures', 'host-after') { New-Item -ItemType Directory -Path (Join-Path $P2 $d) | Out-Null }
+Add-Type -Namespace W -Name U -MemberDefinition '[StructLayout(LayoutKind.Sequential)] public struct LII { public uint cbSize; public uint dwTime; } [DllImport("user32.dll")] public static extern bool GetLastInputInfo(ref LII p);'
+$lii = New-Object W.U+LII; $lii.cbSize = 8; [void][W.U]::GetLastInputInfo([ref]$lii)
+$idle = [math]::Round(([Environment]::TickCount64 % 4294967296 - $lii.dwTime) / 1000.0, 1)
+$L = @()
+$L += "time_utc=" + (Get-Date).ToUniversalTime().ToString('o')
+$L += "PF-01 ram=" + @(Get-Process -Name RAMElements -ErrorAction SilentlyContinue).Count + " acad=" + @(Get-Process -Name acad -ErrorAction SilentlyContinue).Count + " user_idle_seconds=" + $idle
+$L += "PF-03 ramexe sha256=" + (FSha $ram) + " version=" + (Get-Item -LiteralPath $ram).VersionInfo.FileVersion
+$man = (Get-ChildItem -Recurse -File -Force -LiteralPath $rp | Sort-Object FullName | ForEach-Object { $_.FullName.Substring($rp.Length + 1).Replace('\','/') + "  " + (FSha $_.FullName) + "  " + $_.Length }) -join "`n"
+$ver = (Select-String -LiteralPath (Join-Path $rp '__init__.py') -Pattern '^__version__').Line.Trim()
+$L += "PF-03 ramelements tree_sha256=" + (TSha ($man + "`n")) + " files=" + @(Get-ChildItem -Recurse -File -Force -LiteralPath $rp).Count + " " + $ver
+foreach ($n in 'manifest.json', 'rackcad-ram-build.py', 'structural-loads.json') { $L += "PF-03 pkg $n " + (FSha (Join-Path $pkg $n)) }
+$L += "PF-03 pkg files=" + @(Get-ChildItem -Force -LiteralPath $pkg).Count + " readback_exists=" + (Test-Path -LiteralPath (Join-Path $pkg 'ram-readback.json'))
+Copy-Item -LiteralPath $cfg -Destination (Join-Path $P2 'host-before\RE-Config.ini.before')
+$L += "PF-04 config sha256=" + (FSha $cfg) + " backup_sha256=" + (FSha (Join-Path $P2 'host-before\RE-Config.ini.before')) + " mtime=" + (Get-Item -LiteralPath $cfg).LastWriteTimeUtc.ToString('o')
+$frozen = Join-Path $P2 'ramtool-ad595b42'
+Copy-Item -LiteralPath $toolSrc -Destination $frozen -Recurse
+$same = $true
+foreach ($f in Get-ChildItem -File -Recurse -LiteralPath $toolSrc) { $rel = $f.FullName.Substring($toolSrc.Length + 1); if ((FSha $f.FullName) -ne (FSha (Join-Path $frozen $rel))) { $same = $false } }
+$exe = Join-Path $frozen 'RackCad.StructuralAnalysis.RamTool.exe'
+$L += "PF-05 tool frozen identical=" + $same + " exe=" + (FSha $exe) + " dll=" + (FSha (Join-Path $frozen 'RackCad.StructuralAnalysis.RamTool.dll')) + " app=" + (FSha (Join-Path $frozen 'RackCad.Application.dll')) + " version=" + [System.Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $frozen 'RackCad.StructuralAnalysis.RamTool.dll')).ProductVersion
+foreach ($k in 'dump-gen', 'dump-man') {
+  $o = Join-Path $P2 $k
+  $txt = & $exe dump-script --out $o --adapter-version 1.0.0 2>&1
+  $code = $LASTEXITCODE
+  $sc = Join-Path $o 'rackcad-ram-dump.py'
+  $L += "PF-05 $k exit=$code script_sha256=" + $(if (Test-Path -LiteralPath $sc) { FSha $sc } else { 'ABSENT' }) + " files=" + @(Get-ChildItem -Force -LiteralPath $o -ErrorAction SilentlyContinue).Count
+  $L += "PF-05 $k output: " + (($txt | ForEach-Object { "$_" }) -join ' | ')
+}
+$L | Set-Content -LiteralPath (Join-Path $P2 'host-before\preflight.txt') -Encoding utf8NoBOM
+$L

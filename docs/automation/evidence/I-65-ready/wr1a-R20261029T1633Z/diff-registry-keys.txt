@@ -1,0 +1,27 @@
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\OpenSaveAnavDialogs :: "InitialDirectory"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU0"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU1"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU10"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU2"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU3"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU4"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU5"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU6"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU7"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU8"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "FileNameMRU9"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Save Drawing As :: "InitialDirectory"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU0"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU1"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU2"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU3"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU4"
+hkcu-profiles NUEVO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "FileNameMRU5"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "InitialDirectory"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File :: "InitialFilterIndex"
+hkcu-profiles BORRADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Variables :: "VIEWBACKSTATUS"
+hkcu-fixedprofile IGUAL
+hkcu-applications IGUAL
+hkcu-installedapplications IGUAL
+hkcu-loaded IGUAL
+hklm-applications IGUAL

@@ -1,0 +1,6 @@
+run=40802284606 event=push ref=refs/heads/architecture/interop-analisis-estructural head_sha=f2ed2a7ef0461eb07a163bbde3ef701a53549035 status=completed conclusion=success created=2026-10-29T01:45:03Z updated=2026-10-29T01:48:28Z
+job Tests (Domain + Application): success
+job Build UI (WPF, valida API de Application): success
+job UI Tests (WPF controls, net8.0-windows): success
+job Build Plugin without AutoCAD: success
+plugin job: verificador OK (158 comprobaciones); tabla del bundle de la CI b22f7d9dc45c6f59a37d29477e5d9a21fa0b61062d780b57805d93366dbb2e7d (blob d088e2a9 con CRLF); harness 14 casos (1 valido + 13 negativos); Plugin Release publish y solution Release build sin advertencias

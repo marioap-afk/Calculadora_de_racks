@@ -1,0 +1,356 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-65",
+  "Gate": "F4",
+  "TaskId": "F4-T4-COMPARATOR-AND-TOOL",
+  "Objective": "F4 de I-65, cuarta de cinco tareas (reparto de CD-I65-F4-09) (decisiones I-65 §26, CD-I65-F4-02), con F4 IMPLEMENTATION AUTHORIZATION = YES, CONDITIONAL, F4 ONLY del Owner: el comparador NEUTRAL puro (CompareReadbacks de D-13) del volcado del modelo generado contra el del modelo manual, con la lectura de vuelta y la huella del paquete, y su informe determinista, segun docs/initiatives/I-65-f4-implementation.md seccion 5, el paquete de validacion de ingenieria §3 F (tabla de evaluadores de la matriz §4) y la Proposal V3.1 congelada (D-11, D-12, D-13, §3 INV-13, §4). Un archivo NUEVO src/RackCad.Application/StructuralAnalysis/StructuralReadbackComparison.cs que consume los tipos neutrales de lectura de StructuralReadback.cs (F4-T3); y la HERRAMIENTA DE CONSOLA fuera del producto de D-11 (seccion 6 de la concrecion, decision CD-I65-F4-09): un proyecto nuevo tools/RackCad.StructuralAnalysis.RamTool/ (precedente tools/RackCad.StructuralSections.Import), una entrada en RackCad.sln y una ProjectReference en tests/RackCad.Tests/RackCad.Tests.csproj, con las subordenes de script de volcado, comparacion e inyeccion de fallos. Pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/ con namespace RackCad.Tests y clases cuyo nombre empieza por StructuralAnalysisComparison. NO incluye: cambios del proveedor ni de los tipos de lectura (la version del adaptador del script de volcado sale del manifiesto del paquete o de un argumento explicito); el comando del Plugin (T5); ninguna corrida de RAM Elements ni de Python; nada de F5-F7, interfaz ni Workspace.",
+  "AuthorityRevision": "34831380a2f2fd7a2cf5bdd8de05c3281f9efc50",
+  "MainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-65-proposal-v3.1.md",
+      "Section": "archivo completo (Frozen: yes); en especial D-11, D-12, D-13, §3 (INV-13) y §4",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-f4-implementation.md",
+      "Section": "archivo completo (en especial §0, §1, §5 y §7)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-f4-engineering-validation-package.md",
+      "Section": "archivo completo (en especial §2 y §3)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-f4-preparation.md",
+      "Section": "archivo completo (en especial §5 y §6)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65.md",
+      "Section": "archivo completo (en especial §21, §26 y §27)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65-owner-authorization-f4.original.txt",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-interop-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/adr/0050-interoperabilidad-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/StructuralAnalysis/StructuralReadbackComparison.cs",
+    "tools/RackCad.StructuralAnalysis.RamTool/",
+    "RackCad.sln",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/StructuralAnalysis/"
+  ],
+  "ForbiddenWriteScope": [
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.design.json",
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.loads.json",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCanonicalizerTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverFixtures.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverGoldenTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverIdealisationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisFingerprintTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisLoadFileReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisMaterialProfileTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelBuilderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisOutcomeTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsAssumptionsTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsAxesTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpPayloadTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpRoundTripTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpSourceTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpSupport.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpTemplateTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpTransferReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsFixtures.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsGuardTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningPackageTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningRaceTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningTemplateTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsMapReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageContentTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageGoldenTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageManifestTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackagePayloadTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageTemplateTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageValidationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageWriterTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsProjectionTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsTranslationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceEntryHardeningTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceEntryTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisUnitTests.cs",
+    "src/RackCad.Application/StructuralAnalysis/Providers/",
+    "src/RackCad.Application/Systems/",
+    "assets/",
+    "tools/RackCad.StructuralSections.Import/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Workspace/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/CantileverSourceGuardTests.cs",
+    "tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs",
+    "tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs",
+    "tests/RackCad.Tests/LengthUnitsAuthorityGuardTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/Golden/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "deploy/",
+    "eng/",
+    ".github/",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/"
+  ],
+  "Invariants": [
+    "D-11 y D-13 (comparador puro): una funcion publica neutral CompareReadbacks que recibe la lectura neutral del volcado del generado, la del manual, el resultado neutral de la lectura de vuelta y la huella de entrada del manifiesto, y devuelve un informe; sin E/S, sin estado, determinista (mismas entradas -> mismo informe y mismos bytes del informe serializado); sin identidad ni convencion de proveedor (G1), sin referencias a Systems ni Providers (G2), sin literales de conversion (G4)",
+    "Rechazos de D-11: lectura de vuelta no aprobada (estado de fallo, incluidos los rechazos gate) -> informe rechazado; huella de entrada de la lectura de vuelta distinta de la del manifiesto -> STALE; en ambos casos ninguna fila se da por aprobada",
+    "Emparejamiento: nudos por posicion con la tolerancia de 0.02 in de la matriz de la seccion 4; un nudo con dos candidatos dentro de la tolerancia, o un candidato emparejado dos veces, hace FAIL la fila de emparejamiento (nunca se resuelve en silencio); miembros por su par de nudos emparejados sin importar el orden, y luego el sentido I a J debe coincidir (un miembro con los nudos invertidos hace FAIL la conectividad)",
+    "Filas de la matriz de la seccion 4 que evalua el comparador (paquete de validacion de ingenieria seccion 3 F), con las tolerancias del Freeze SIN alterar (OD-F4-04): coordenadas de nudos 0.02 in; conectividad exacta; ejes locales l1, l2 y l3 con 0.1 grados entre vectores correspondientes; seccion y material por nombre exacto; punto cardinal, offsets, factores de rigidez, comportamiento axial y resortes con los valores por defecto (centroide, 0, 1, normal, 0) exactos en ambos; liberaciones y banderas de apoyo exactas; cargas por miembro y por caso con cargas: mismo numero, valor con 0.1 por ciento, posicion con 0.02 in en distancia absoluta desde el nudo I y direccion exacta; combinaciones: ninguna en ambos; los casos sin cargas se ignoran en ambos",
+    "Categoria y filas no evaluadas: el caso con cargas del generado debe tener la categoria OTHER (si no, FAIL); la categoria del caso del manual es INFORMATIVE; el peso propio de los casos con cargas se informa como INFORMATIVE; las filas de propiedades de seccion (A, Ix, Iy, J) y de material (E, nu o G, peso unitario) salen NOT_EVALUATED con el motivo de que las evalua la hoja firmada del ingeniero; si un volcado no pudo leer las combinaciones, esa fila sale NOT_EVALUATED con su motivo",
+    "Informe determinista rackcad-structural-comparison/v1: una entrada por fila de la seccion 4 con veredicto PASS, FAIL, INFORMATIVE o NOT_EVALUATED, el delta maximo y las primeras diferencias en orden estable; veredicto global PASS solo si todas las filas evaluadas estan en PASS y ninguna en FAIL, STALE o rechazo; numeros con cultura invariante; serializacion con LF y sin marcas de tiempo",
+    "INV-13 con pruebas positivas y negativas sobre lecturas neutrales sinteticas construidas en la prueba: iguales -> PASS; un nudo desplazado 1 mm -> FAIL; seccion cambiada -> FAIL; eje local invertido (columna con giro de +90 frente a -90) -> FAIL; carga multiplicada por 1000 -> FAIL; emparejamiento ambiguo -> FAIL; lectura de vuelta con estado de fallo -> rechazo; huella distinta -> STALE; categoria del generado distinta de OTHER -> FAIL; miembro con nudos invertidos -> FAIL; categoria del manual distinta -> solo INFORMATIVE; la misma carga dada en porcentaje y en distancia -> PASS; bordes de tolerancia 0.019 frente a 0.021 in, 0.09 frente a 0.11 grados y 0.09 frente a 0.11 por ciento",
+    "Herramienta de consola fuera del producto (D-11; CD-I65-F4-09): proyecto nuevo tools/RackCad.StructuralAnalysis.RamTool/ (net8.0, Exe, solo BCL, referencia RackCad.Application, InternalsVisibleTo RackCad.Tests si hace falta), registrado en RackCad.sln bajo la carpeta tools y referenciado por tests/RackCad.Tests/RackCad.Tests.csproj con una unica ProjectReference (unicas ediciones de esos dos archivos); no entra al paquete del Plugin ni al autoloader; subordenes: (1) script de volcado: renderiza la plantilla del volcado de T3 con una carpeta NUEVA y la publica con el escritor atomico neutral (nunca sobrescribe); (2) comparacion: lee manifest.json y ram-readback.json de la carpeta del paquete y los dos volcados con los lectores de T3, llama a CompareReadbacks, imprime el informe, lo escribe en un archivo nuevo si se pide (nunca sobrescribe) y sale con un codigo distinto para PASS, FAIL o rechazo, y entrada invalida; (3) inyeccion de fallos de OV-I65-05, 06 y 07: a partir de un paquete valido produce en una carpeta NUEVA un paquete con UNA sola mutacion semantica de la carga util (seccion inexistente con espacio; ejes esperados alterados de un miembro; version esperada alterada; funcion del nucleo inexistente) mas la carpeta embebida nueva, y su manifiesto marcado como inyeccion de fallo con la mutacion y el SHA-256 del paquete de origen; pruebas de la herramienta sobre archivos temporales: codigos de salida, no sobrescritura, inyeccion con una sola mutacion (comparando la carga util decodificada con la de origen) y que el producto (Providers y StructuralAnalysis) no contiene el marcador de inyeccion; la solucion completa compila en Release sin ninguna advertencia (el job Build Plugin without AutoCAD de la CI compila la solucion con -NoWarnings)",
+    "Forma del cambio y restricciones del Owner: un unico archivo de produccion nuevo en Application y el proyecto nuevo de la herramienta; pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/, namespace RackCad.Tests, clases cuyo nombre empieza por StructuralAnalysisComparison; ninguna prueba existente cambia; ninguna prueba ejecuta Python ni RAM Elements; ninguna prueba nueva contiene los tokens de INV-14 ni los parte en varios literales y la exencion de INV-14 sigue en sus cuatro rutas exactas (si una prueba necesita el nombre del modulo del proveedor, lo obtiene con StructuralAnalysisRamElementsHardeningScans.ToolName; CD-I65-F4-13); sin analisis, resultados, ratios ni veredictos estructurales (INV-11): el informe compara la transferencia, no valida el diseno; G1, G2, G4, INV-11 e INV-16 en verde; solo BCL"
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.StructuralAnalysisComparison",
+      "MinSelected": 25,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED: esqueleto compilable del comparador y de la herramienta (proyecto, solucion y referencia ya en el RED) y pruebas focales de INV-13, de la herramienta, emparejamiento, filas de la seccion 4, categorias, filas no evaluadas, rechazos, informe determinista y bordes de tolerancia, que fallan por asercion o excepcion (sin errores de compilacion), con seleccion >= 25; push propio antes del GREEN",
+    "Commit GREEN: implementacion en el alcance permitido sin modificar ningun archivo de pruebas del RED; suite Core completa en verde, incluidas F1, F3, T1, T2, T3 y las guardas",
+    "Comprobacion mecanica antes de aceptar EXECUTION_VERIFIED: git diff --name-only BaseSha..CurrentSha contenido en el AllowedWriteScope de la delegacion y sin interseccion con su ForbiddenWriteScope; en tests/ solo altas",
+    "worker-handoff.json conforme al esquema, con los SHA de RED y GREEN, el trailer real del Worker, los conteos del filtro en RED y GREEN y, en Evidence, por invariante la prueba que lo observa y el informe serializado de un caso PASS y de un caso FAIL",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success y corrida push del RED con el job Core en failure"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar algo fuera de AllowedWriteScope (los tipos de lectura de T3, el proveedor, Systems, assets, otros archivos neutrales, Domain, Plugin, UI, otro proyecto de tools, otro .csproj) o modificar una prueba existente o editar RackCad.sln o el .csproj de pruebas mas alla de la entrada y la referencia de la herramienta"
+    },
+    {
+      "Id": "C-02",
+      "Text": "D-11, D-13, la matriz de la seccion 4 o una concrecion de I-65-f4-implementation.md no puede implementarse tal como esta (requiere A-n, Architect u Owner)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "Los tipos neutrales de lectura de T3 no permiten evaluar una fila de la seccion 4 que el comparador debe evaluar; no se cambian esos tipos en esta tarea"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52, o de tocar superficies de ID30 o Workspace"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un invariante del contrato no puede mostrar un RED observable antes del cambio correcto"
+    },
+    {
+      "Id": "C-07",
+      "Text": "Hace falta cambiar una tolerancia del Freeze, convertir una fila informativa en criterio o al reves, o presentar la comparacion como validacion estructural"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta una dependencia binaria, un paquete NuGet nuevo, Python o RAM Elements para compilar o probar, o ejecutar RAM Elements o un interprete Python por cualquier motivo"
+    },
+    {
+      "Id": "C-09",
+      "Text": "Una guarda existente falla por el cambio y la unica salida seria editarla, debilitarla o anadir una exencion"
+    },
+    {
+      "Id": "C-10",
+      "Text": "Aparece una cuestion material de arquitectura, autoridad o semantica congelada"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagente de la sesion de escritorio",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "medium",
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda U-04 y en el piloto de G3 de I-61; evidencia de I-61 §15)",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/codex-cli/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "Codex CLI, solo lectura",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda PR-1 y en G3 de I-61; evidencia de I-61 §§14-15)",
+      "VerifiedOn": "2026-09-30"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Coordinator I-65",
+  "IssuedUtc": "2026-10-11T20:25:27Z"
+}

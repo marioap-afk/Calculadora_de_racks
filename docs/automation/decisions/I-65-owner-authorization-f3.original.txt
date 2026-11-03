@@ -1,0 +1,82 @@
+I-65 — Owner Authorization: F3 RAM Elements Adapter
+Continúa I-65 desde el cierre de F1 en `237d03ebdf6d8c2efea0ae917f85f3bf18f00a5e`.
+Decisión del Owner
+F1 = ACCEPTED.
+Reconozco el GATE PASS registrado sobre `4514a99a` y autorizo exclusivamente:
+F3 — RAM Elements Adapter.
+La autorización incluye diseñar, implementar, probar y cerrar F3 bajo Workflow V2 y el protocolo I-61 vigente.
+No incluye F4, F5, F6 ni integración final con Workspace.
+1. Preflight
+Antes de implementar:
+
+* Verifica el estado de la rama y origin/main.
+* Confirma el cierre de F1 y sus evidencias.
+* Comprueba que las autoridades congeladas siguen vigentes.
+* Identifica conflictos con iniciativas paralelas.
+* Confirma las rutas exactas autorizadas para F3.
+* Establece un presupuesto nuevo de hasta 14 invocaciones Codex para F3, sin alterar configuraciones del entorno.
+
+Detente ante conflictos de autoridad o cambios incompatibles con el Freeze.
+2. Alcance autorizado
+Implementa el adaptador RAM Elements de acuerdo con Proposal V3.1 y ADR-0050.
+Debe incluir:
+
+1. Traducción determinista del StructuralModel neutral a la representación de RAM.
+2. Generación del script Python compatible con la API oficialmente verificada.
+3. Mapeo explícito de secciones y materiales mediante una tabla de proveedor validable.
+4. Conversión de unidades exclusivamente en la frontera autorizada.
+5. Manifiesto de procedencia y huellas de integridad.
+6. Escritura atómica en una carpeta de destino controlada.
+7. Validación estricta previa a la exportación.
+8. Diagnósticos tipados y rechazo de datos incompletos o no soportados.
+9. Guardas que impidan modificaciones fuera de la frontera del adaptador.
+10. Pruebas de contrato, determinismo, equivalencia de datos y fallos controlados.
+
+3. Observaciones de F1
+Incorpora explícitamente al contrato de F3 las observaciones A65-F1-01, 02, 04, 05 y 07.
+Resuelve o documenta los pendientes CD-I65-F1-19:
+
+* Orden de banderas Tx..Rz de los apoyos respecto a RAM.
+* Prioridad de fusión de nudos de columna.
+
+Toda resolución debe respetar el Freeze. Si requiere cambiarlo, detente y solicita decisión del Owner.
+4. Restricciones
+
+* No modificar RackCad Domain.
+* No incorporar tipos RAM dentro del StructuralModel neutral.
+* No modificar ID30 ni I-62.
+* No introducir interfaces gráficas nuevas.
+* No ejecutar análisis automáticamente.
+* No importar resultados estructurales.
+* No sobrescribir modelos RAM existentes.
+* No inferir propiedades mecánicas de nombres comerciales.
+* No representar hipótesis simplificadas como validación estructural.
+
+Mantén el manejo de componentes fuera de V1 conforme al contrato congelado y documenta las exclusiones.
+5. Protocolo de implementación
+Aplica I-61:
+
+* Contrato de gate antes de delegar.
+* Controller para planificación y verificación.
+* Worker con commits RED/GREEN.
+* Pruebas y controles negativos.
+* Revisión independiente del Architect.
+* CI sobre el SHA exacto de cierre.
+
+No declares GATE PASS hasta cumplir los requisitos de INITIATIVE_LIFECYCLE.
+6. Entregable
+Al finalizar F3, entrega:
+
+1. SHA de cierre y CI.
+2. Descripción de cambios.
+3. Mecanismo de generación del paquete RAM.
+4. Tabla de mapeos y reglas de unidades.
+5. Resultados de pruebas y controles negativos.
+6. Observaciones del Architect.
+7. Riesgos residuales.
+8. Cumplimiento del Freeze.
+9. Recomendación para F4.
+10. Estado explícito de autorización.
+
+IMPLEMENTATION AUTHORIZATION = F3 ONLY.
+Detente al concluir F3. No avances automáticamente a F4.

@@ -1,0 +1,13 @@
+# I-65 - preflight de integracion (Owner, decision Final Owner Validation / Integration Authorization, punto 3); solo lectura
+time_utc=2026-11-03T16:06:13Z
+1-2 fetch fresco; origin/main=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 (esperado bb0d5522e8411f66a51fdfb3f1f0d0514b737453)
+3 READY-04: merge-base=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 behind=0 ahead=175 rama_remota=b6e060ba7f974ebe1c67b04e6bef9b2a7f20c9bd HEAD=b6e060ba7f974ebe1c67b04e6bef9b2a7f20c9bd
+3 READY-04: ADR en main: 0046 0049 - 0050 solo en I-65; I-64 sin integrar: no
+4 Candidato: commit 4a03b65b375d468c220dd68400d5dfd955bf043e ancestro_de_HEAD=si; arbol: status --short (sin contar el original nuevo) = 0
+5 cambios desde el Candidato fuera de docs/: 0; src/tests/tools/assets/deploy/eng/.github: 0
+6 docs/initiatives/I-65-proposal-v3.1.md cand=4e6e1feb4d83aa291707c72ad12f89411ff1d37a head=4e6e1feb4d83aa291707c72ad12f89411ff1d37a
+6 docs/adr/0050-interoperabilidad-analisis-estructural.md cand=c18def42fe283aba0fa69ffc482647fb04ccdc46 head=c18def42fe283aba0fa69ffc482647fb04ccdc46
+6 assets/structural-analysis/ram-elements/section-material-map.json cand=d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2 head=d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2
+6 tolerancias: viven en el codigo del comparador y en el Freeze; 0 cambios de src/tools/tests desde el Candidato y Freeze identico
+7 READY-05..09: mismo FINAL_CANDIDATE_SHA (evidencia de READY-05, conformidad READY-06, READY-09 y matriz siguen siendo de ese SHA); contrato amendment_refs: 1 linea vacia
+coordinacion: ListAgents sin sesiones activas (I-62, I-64, I-52 cerradas): sin acuse posible; main se comprueba con fetch justo antes del merge

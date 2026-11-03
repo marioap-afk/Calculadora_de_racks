@@ -1,0 +1,11 @@
+{
+  "schema": "rackcad-structural-loads/v1",
+  "loads": [
+    { "id": "Q1", "target": { "level": 1, "side": "PositiveY" }, "positionBasis": "physicalArmFraction", "position": 0, "direction": "-Z", "magnitude": 2000, "unit": "N" },
+    { "id": "Q2", "target": { "level": 1, "side": "PositiveY" }, "positionBasis": "physicalArmFraction", "position": 1, "direction": "-Z", "magnitude": 1.5, "unit": "kN" },
+    { "id": "Q3", "target": { "level": 2, "side": "PositiveY" }, "positionBasis": "physicalArmFraction", "position": 0.25, "direction": "-Z", "magnitude": 750, "unit": "lbf" },
+    { "id": "Q4", "target": { "level": 2, "side": "PositiveY" }, "positionBasis": "physicalArmFraction", "position": 0.9, "direction": "-Z", "magnitude": 1, "unit": "kip" },
+    { "id": "Q5", "target": { "level": 3, "side": "PositiveY" }, "positionBasis": "physicalArmFraction", "position": 0.5, "direction": "-Z", "magnitude": 300, "unit": "kgf" },
+    { "id": "Q6", "target": { "level": 3, "side": "PositiveY" }, "positionBasis": "physicalArmFraction", "position": 0.75, "direction": "-Z", "magnitude": 4.5, "unit": "kN" }
+  ]
+}

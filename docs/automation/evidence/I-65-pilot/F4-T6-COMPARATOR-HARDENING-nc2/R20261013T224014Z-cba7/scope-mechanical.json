@@ -1,0 +1,8 @@
+{
+ "files": 20,
+ "pass": false,
+ "uncovered": [
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamDumpReader.cs"
+ ],
+ "forbidden_hits": []
+}

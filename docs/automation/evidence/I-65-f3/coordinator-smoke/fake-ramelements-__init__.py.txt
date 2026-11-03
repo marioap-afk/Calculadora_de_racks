@@ -1,0 +1,247 @@
+# FAKE ramelements (Coordinator smoke harness for I-65 F3; NOT RAM Elements). Mimics only what P1 measured and what the installed
+# package source declares, to exercise the control flow of the generated build script. It is not evidence of RAM behaviour.
+import enum
+import json
+import math
+import os
+from dataclasses import dataclass
+
+__version__ = os.environ.get("SIM_VERSION", "0.1.0")
+
+_SECTIONS = {"W 12X26", "HSS_SQR 4X4X1_4", "W 10X49", "S 10X35", "IPE 200"}
+_MATERIALS = {"A992 Gr50", "A500 GrC rectangular", "A36", "A36 (weightless)"}
+
+
+class Units(enum.IntEnum):
+    KIP_FT = 4
+    LB_IN = 7
+    N_MM = 10
+
+    @property
+    def label(self):
+        return {4: "kip-ft", 7: "lb-in", 10: "N-mm"}[int(self)]
+
+    def __str__(self):
+        return self.label
+
+
+class CardinalPoint(enum.IntEnum):
+    CENTROID = 0
+
+
+class AxialBehavior(enum.IntEnum):
+    NORMAL = 0
+
+
+class LoadDirection(str, enum.Enum):
+    GLOBAL_X = "X"
+    GLOBAL_Y = "Y"
+    GLOBAL_Z = "Z"
+
+
+@dataclass(frozen=True)
+class Restraints:
+    dx: bool = False
+    dy: bool = False
+    dz: bool = False
+    rx: bool = False
+    ry: bool = False
+    rz: bool = False
+
+
+FIXED = Restraints(True, True, True, True, True, True)
+PINNED = Restraints(True, True, True)
+
+
+@dataclass(frozen=True)
+class EndReleases:
+    i_m33: bool = False
+    i_m22: bool = False
+    i_v2: bool = False
+    i_v3: bool = False
+    j_m33: bool = False
+    j_m22: bool = False
+    j_v2: bool = False
+    j_v3: bool = False
+    torsion: bool = False
+    axial: bool = False
+
+
+@dataclass(frozen=True)
+class PointLoad:
+    direction: LoadDirection
+    value: float
+    distance: float
+    is_percentage: bool
+    category: int = 0
+
+
+class _Node:
+    def __init__(self, nid, x, y, z, restraints, description):
+        self.id = nid
+        self._xyz = (float(x), float(y), float(z))
+        self.restraints = Restraints(bool(restraints.dx), bool(restraints.dy), bool(restraints.dz),
+                                     bool(restraints.rx), bool(restraints.ry), bool(restraints.rz))
+        self.description = description
+
+    def get_coordinates(self):
+        return self._xyz
+
+
+class _Nodes:
+    def __init__(self):
+        self._items = {}
+
+    def add(self, x, y, z, restraints=Restraints(), description=""):
+        nid = len(self._items) + 1
+        node = _Node(nid, x, y, z, restraints, description)
+        self._items[nid] = node
+        return node
+
+    def __len__(self):
+        return len(self._items)
+
+    def __getitem__(self, nid):
+        return self._items[nid]
+
+    def __iter__(self):
+        return iter(self._items.values())
+
+
+def _cross(a, b):
+    return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
+
+
+def _unit(a):
+    n = math.sqrt(sum(c * c for c in a))
+    return tuple(c / n for c in a)
+
+
+class _Member:
+    def __init__(self, model, mid, i, j):
+        self._model = model
+        self.id = mid
+        self.i = i
+        self.j = j
+        self.section = ""
+        self.material = ""
+        self.rotation = 0.0
+        self.description = ""
+        self.cardinal_point = CardinalPoint.CENTROID
+        self.rigid_end_offset_i = (0.0, 0.0, 0.0)
+        self.rigid_end_offset_j = (0.0, 0.0, 0.0)
+        self.axial_behavior = AxialBehavior.NORMAL
+        self.rotational_stiffness_i = 0.0
+        self.rotational_stiffness_j = 0.0
+        self.end_releases = EndReleases()
+        self._loads = {}
+
+    def get_stiffness_factors(self):
+        return (1.0, 1.0, 1.0, 1.0)
+
+    def get_local_axes(self):
+        a = self._model.nodes[self.i].get_coordinates()
+        b = self._model.nodes[self.j].get_coordinates()
+        l1 = _unit(tuple(q - p for p, q in zip(a, b)))
+        if math.hypot(l1[0], l1[2]) <= 1e-12:
+            l3 = (0.0, 0.0, 1.0)
+        else:
+            l3 = _unit(_cross(l1, (0.0, 1.0, 0.0)))
+        l2 = _cross(l3, l1)
+        t = math.radians(self.rotation)
+        c, s = math.cos(t), math.sin(t)
+        r2 = tuple(c * p + s * q for p, q in zip(l2, l3))
+        r3 = tuple(-s * p + c * q for p, q in zip(l2, l3))
+        return (l1, r2, r3)
+
+    def add_point_load(self, load_case, direction, value, distance=50.0, is_percentage=True, category=0):
+        if load_case not in self._model.load_condition._cases:
+            raise ValueError("load case not found: " + load_case)
+        loads = self._loads.setdefault(load_case, [])
+        if len(loads) >= 24:
+            raise RuntimeError("24-slot limit reached")
+        loads.append(PointLoad(LoadDirection(str(direction.value)), float(value), float(distance), bool(is_percentage), category))
+
+    def point_load_count(self, load_case):
+        return len(self._loads.get(load_case, []))
+
+    def get_point_load(self, load_case, index):
+        return self._loads[load_case][index]
+
+
+class _Members:
+    def __init__(self, model):
+        self._model = model
+        self._items = {}
+
+    def add(self, node_i, node_j, section, material="", rotation=0.0, description=""):
+        mid = len(self._items) + 1
+        member = _Member(self._model, mid, node_i, node_j)
+        self._items[mid] = member  # created first: a rejected name leaves an orphan, as measured in P1 (S1)
+        if section:
+            if section not in _SECTIONS:
+                raise ValueError("Section not found: " + section)
+            member.section = section
+        if material:
+            if material not in _MATERIALS:
+                raise ValueError("Material not found: " + material)
+            member.material = material
+        member.rotation = float(rotation)
+        member.description = description
+        return member
+
+    def __len__(self):
+        return len(self._items)
+
+    def __iter__(self):
+        return iter(self._items.values())
+
+
+class _LoadCase:
+    def __init__(self, lc_id, description, category):
+        self.id = lc_id
+        self.description = description
+        self.category = str(category)
+        self.self_weight = (0.0, 0.0, 0.0)
+
+
+class _LoadCondition:
+    def __init__(self):
+        self._cases = {"CM": _LoadCase("CM", "Carga Muerta", "DL")}
+
+    def add_load_case(self, lc_id, description, category):
+        if lc_id in self._cases:
+            raise ValueError("duplicate load case " + lc_id)
+        self._cases[lc_id] = _LoadCase(lc_id, description, category)
+
+    def __getitem__(self, lc_id):
+        return self._cases[lc_id]
+
+    def __iter__(self):
+        return iter(self._cases.values())
+
+
+class _Units:
+    def __init__(self):
+        self.current = Units.KIP_FT
+
+    def set(self, units):
+        self.current = Units(int(units))
+
+
+class _Model:
+    def __init__(self):
+        self.nodes = _Nodes()
+        self.members = _Members(self)
+        self.load_condition = _LoadCondition()
+        self.units = _Units()
+        self.title = ""
+        if os.environ.get("SIM_NONEMPTY") == "1":
+            self.nodes.add(0.0, 0.0, 0.0)
+
+
+_MODEL = _Model()
+
+
+def model():
+    return _MODEL

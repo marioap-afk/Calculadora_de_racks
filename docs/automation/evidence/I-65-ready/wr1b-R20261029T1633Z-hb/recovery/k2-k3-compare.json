@@ -1,0 +1,25 @@
+{
+ "stop": false,
+ "findings": [
+  {
+   "class": "OWN",
+   "where": "c:\\users\\<usuario>\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+   "head": [
+    "8692cb39c539909a81b8ad4a3de192f6242e5bec",
+    "c4216d86476f3d938cb944f625a9a72792c29396"
+   ],
+   "status": [
+    "?? docs/automation/decisions/I-65-owner-disposition-wr1b-registry-recovery.original.txt"
+   ]
+  },
+  {
+   "class": "SIGNAL",
+   "where": "c:\\users\\<usuario>\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "what": "HEAD advanced, clean, equals its remote (own session)",
+   "head": [
+    "19aad6d3ce4944fb0d9e8108af0696bf0257c467",
+    "40f5c58adf5b61a1577d24ae90698af748de7a94"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+{
+ "transcript_sha256": "8207A2E8A1B91F4F802F35AE9FE52E019C885592678DE86F2A0481F75F0D37FD",
+ "assistant_messages": 51,
+ "models": {
+  "claude-sonnet-5-5": 51
+ },
+ "tool_uses": 31,
+ "tool_errors": 1,
+ "denials": 0,
+ "python_commands": [
+  "{\"file_path\": \"C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/6/R20261013T234619Z-b5ef/worker-handoff.json\", \"content\": \"{\\n  \\\"Schema\\\": \\\"rackcad-worker-handoff/v1\\\",\\n  \\\"TaskId\\\": \\\"F4-T5-PLUGIN-COMMAND\\\",\\n"
+ ],
+ "prompt_sha256_normalized": "8E3D5991BB46A5377409A113FB4582CE3664428B66F51407AB2BEA0457699407",
+ "prompt_file_sha256": "0D5ACE7DDD49486600AF0CCD4BA02A5C955D933D451DE19606F75A25D05DABF6",
+ "prompt_match": {
+  "raw": true,
+  "dedent2_skip1": false,
+  "dedent2": false
+ },
+ "prompt_contained": true,
+ "first_user_len": 21753
+}

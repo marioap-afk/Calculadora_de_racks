@@ -1,0 +1,14 @@
+Instalacion con deploy/install-bundle.ps1 en un destino DESECHABLE (sesion, 2026-10-29; nunca ApplicationPlugins)
+- orden: pwsh -NoProfile -File deploy\install-bundle.ps1 -SourceBundlePath D:\r65-smoke\rd11-efe7cc06\publish\RackCad.bundle
+  -TargetBundlePath D:\r65-smoke\rd11-efe7cc06\install-desechable\RackCad.bundle
+- resultado: codigo 0; 25 archivos instalados; tabla instalada en Contents\structural-analysis\ram-elements\section-material-map.json
+  con SHA-256 FC3D91464AC48A15730661EFCD50ECB770114559C68BDEFAE67E0816972DB619 (= contenido del blob d088e2a9); sin restos de staging ni respaldo
+- ruta que RACKRAMPAQUETE resuelve (carpeta del DLL del Plugin + structural-analysis\ram-elements\section-material-map.json) en el
+  diseno instalado: existe
+- %AppData%\Autodesk\ApplicationPlugins: 0 elementos antes y despues
+- registro local install-desechable.log SHA-256 F53C73F0E19E2E92ED1C8F6327E3AE197141E1128FE9FBD95BDF5E525C4EADAB
+- lineas del instalador (sin rutas de staging):
+  Activando bundle nuevo en: D:\r65-smoke\rd11-efe7cc06\install-desechable\RackCad.bundle
+  RackCad instalado en: D:\r65-smoke\rd11-efe7cc06\install-desechable\RackCad.bundle
+  Los catalogos CSV/JSON corresponden al bundle nuevo; no se fusionan con la instalacion anterior.
+  Abre AutoCAD 2025; los comandos quedan disponibles sin NETLOAD.

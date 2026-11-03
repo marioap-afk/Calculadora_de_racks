@@ -1,0 +1,349 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-65",
+  "Gate": "F1",
+  "TaskId": "F1-T2-CANTILEVER-SOURCE",
+  "Objective": "F1 de I-65, segunda y ultima tarea (decisiones I-65 §10, CD-I65-F1-01): la FUENTE Cantilever del Structural Analysis Model segun la Proposal V3.1 congelada (D-04, D-05 con IDL-01..10, D-10, D-10b, D-12, D-13 y §15) y las concreciones CD-I65-F1-13..16 (decisiones I-65 §13), con el golden de REF-CANT-01 derivado a mano por el Coordinator en docs/initiatives/I-65-f1-ref-cant-01.md. Un unico archivo de produccion nuevo, src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs, que implementa la abstraccion neutral IStructuralModelSource de F1-T1 (verificada en 1692804a) a partir del CantileverLineDesign ya deserializado y del catalogo, resolviendo con CantileverLineResolver: idealizacion analitica de una estacion de una cara PositiveY, apoyos y supuestos, vector de peralte, cargas colocadas desde el archivo, diagnosticos de fuera de V1. Con el resto de F1-T1, de REF-CANT-01 y del archivo de cargas se obtiene un StructuralModel valido, determinista y con el golden derivado a mano. Pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/ con namespace RackCad.Tests y clases cuyo nombre empieza por StructuralAnalysisCantilever; fixtures del diseno y de las cargas bajo tests/RackCad.Tests/StructuralAnalysis/Fixtures/. NO incluye: el adaptador o paquete de RAM Elements ni la regla de ejes locales de RAM (F3), el comando del Plugin, la lectura del sobre, el volcado y el comparador (F4), cargas de OV (F5), analisis (F6), UI ni escritura de archivos.",
+  "AuthorityRevision": "ff0c57c7125ae268bcb42b2d56c0d5255e9a69ed",
+  "MainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-65-proposal-v3.1.md",
+      "Section": "archivo completo (Frozen: yes); en especial D-04, D-05 (IDL-01..10 y REF-CANT-01), D-10, D-10b, D-12, D-13, §3 (INV-04, 05, 06, 07 y 09) y §15",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-f1-ref-cant-01.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65.md",
+      "Section": "archivo completo (en especial §9, §10, §11, §12 y §13)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-interop-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-discovery.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65-owner-decision-freeze-f1.original.txt",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/adr/0050-interoperabilidad-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0009-identidad-guid-embebida-en-dwg.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0022-geometria-parametrica-de-secciones-estructurales.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0024-fundacion-cantilever-base-columna.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0017-validacion-cargas-diferida-ram-elements.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs",
+    "src/RackCad.Application/StructuralAnalysis/",
+    "tests/RackCad.Tests/StructuralAnalysis/"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/StructuralAnalysis/Providers/",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCanonicalizerTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisFingerprintTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisLoadFileReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisMaterialProfileTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelBuilderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisModelTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisOutcomeTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisUnitTests.cs",
+    "src/RackCad.Application/Systems/Dynamic/",
+    "src/RackCad.Application/Systems/FlowBed/",
+    "src/RackCad.Application/Systems/Larguero/",
+    "src/RackCad.Application/Systems/PushBack/",
+    "src/RackCad.Application/Systems/Selective/",
+    "src/RackCad.Application/Systems/Shared/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Workspace/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/CantileverSourceGuardTests.cs",
+    "tests/RackCad.Tests/CantileverRoundTwoSourceGuardTests.cs",
+    "tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs",
+    "tests/RackCad.Tests/LengthUnitsAuthorityGuardTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/Golden/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "assets/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/"
+  ],
+  "Invariants": [
+    "INV-06 e IDL-01..08 (golden de CD-I65-F1-15, docs/initiatives/I-65-f1-ref-cant-01.md seccion 3): de REF-CANT-01 (estacion 0) la fuente Cantilever con BuildStructuralModel produce un modelo Valid con EXACTAMENTE los nudos COL.FOOT (0, -6.1, 0.25), ARM.1.PositiveY.J (0, -6.1, 20.26716169689737), ARM.2.PositiveY.J (0, -6.1, 48.267161696897375), ARM.3.PositiveY.J (0, -6.1, 76.26716169689738), COL.TOP (0, -6.1, 90.75), ARM.1.PositiveY.TIP (0, 36.22609804415268, 21.810300688090436), ARM.2.PositiveY.TIP (0, 36.22609804415268, 49.81030068809044) y ARM.3.PositiveY.TIP (0, 36.22609804415268, 77.81030068809044), tolerancia 1e-9 in; miembros COL.1..COL.4 (columna partida en los nudos J, de abajo arriba) y ARM.1.PositiveY, ARM.2.PositiveY y ARM.3.PositiveY (de J a TIP) con las secciones, roles, piezas de origen y vectores de peralte de esa tabla (tolerancia 1e-12); los literales se copian de la tabla y no se recalculan; las colocaciones resueltas de entrada (seccion 2 del mismo documento) se comprueban tambien como literales; nudos en puntos de insercion de bloque o en caras hacen fallar la prueba",
+    "IDL-01..08 (reglas): eje analitico = eje centroidal (origen del marco de PrismaticSectionInstance mas eje longitudinal), nunca la geometria de bloque; COL.FOOT en el inicio fisico de la columna (z = ColumnStartZ); COL.TOP en su fin fisico; ARM.<nivel>.<lado>.J = interseccion en el plano Y-Z del eje del brazo prolongado con el eje de la columna; ARM.<nivel>.<lado>.TIP = eje del brazo en su fin fisico; sin offsets rigidos; base no modelada (SUP-02); IDL-08: fusion de nudos 0.001 in, separacion minima entre nudos de la columna 0.05 in (menor -> Invalid, sin fusion silenciosa), desviacion de un eje respecto del plano de la estacion 0.01 in (mayor -> Unsupported), angular 0.01 grados, nudo J fuera de COL.FOOT-COL.TOP -> Invalid",
+    "D-04 (sistema neutral): coordenadas del sistema local de la estacion (datum CantileverColumnBaseDatum, antes del desplazamiento de linea OriginX: la estacion 1 del mismo diseno da las mismas coordenadas locales que la 0), dextrogiro, Z arriba, pulgadas por cantidades tipadas; solo estaciones de una cara PositiveY",
+    "INV-07 (parte neutral de F1): el vector del eje de peralte de cada miembro se deriva del marco de su PrismaticSectionInstance incluidos RotationRadians y Mirrored; prueba con colocaciones sinteticas de giro 0, 90 y 12.3456 grados, con y sin espejo, cuyo oraculo es PrismaticSectionInstance.SectionTransform aplicado a la direccion local de peralte; una rotacion no nula ignorada hace fallar la prueba. La regla de ejes locales del programa de analisis y el giro emitido son de F3",
+    "IDL-09, IDL-10 y CD-I65-F1-14 (fuera de V1): estacion de doble cara, estacion de una cara NegativeY, brazo de canales pareados (DoubleChannelFacing o DoubleChannelBackToBack, por plantilla o por excepcion de celda), inclinacion de brazo mayor que 10 grados y estacion o linea bloqueada por el resolver -> Unsupported sin modelo; familias C o L -> Unsupported (constructor neutral de F1-T1); arriostramientos, barras redondas, separadores, placas y cartelas no se modelan como elementos y su presencia no hace Unsupported la estacion",
+    "D-10 (supuestos): COL.FOOT con las seis banderas restringidas e id SUP-01; cada uno de los demas nudos con Tx, Ry y Rz restringidos y Ty, Tz y Rx libres e id SUP-03; ninguna liberacion (id CON-01); supuestos del modelo exactamente SUP-01, SUP-02, SUP-03, CON-01, IDL-NO-OFFSETS, ASM-PROP-01 y LOD-01, con enunciados neutrales sin nombres de proveedor y sin afirmar validacion estructural (Owner Q-O3)",
+    "INV-09 y D-10b (cargas): las cargas salen SOLO del archivo leido por StructuralLoadFileReader; destino (nivel, lado) -> miembro ARM.<nivel>.<lado>; nivel fuera de rango o lado distinto del de la estacion -> Invalid; posicion = distancia rigida de IDL-06 (de J al inicio fisico del brazo a lo largo de su eje) + fraccion x longitud fisica del brazo, medida desde el nudo I (J); magnitud = la fuerza en lbf que entrega el lector (conversion unica de ForceUnits); direccion global -Z; con el archivo de cargas del fixture (P1 0.5 de 1000 lbf, P2 0.25 de 2 kip, P3 0.75 de 500 kgf) las posiciones son 24.35421884050472, 15.354218840504721 y 33.35421884050472 in (tolerancia 1e-9) y las magnitudes 1000, 2000 y ForceUnits.ToPoundsForce(500, kgf) lbf (exactas); una carga derivada del producto o una posicion sobre la longitud fisica sin la parte rigida hace fallar la prueba",
+    "D-12 e INV-04 (identidad y huellas): RackId = el del alcance (sobre, ADR-0009), no el Line.Id del diseno; Kind del alcance = Cantilever (otro -> Invalid); indice de estacion fuera de rango -> Invalid; SourceFingerprint desde los bytes del Design del fixture; mismo diseno y mismas entradas -> mismo JSON canonico y misma huella; cambiar la longitud de corte del brazo, la seccion de columna o el archivo de cargas -> modelo y AnalysisInputFingerprint distintos",
+    "CD-I65-F1-03 y CD-I65-F1-16 (fuente): un unico archivo nuevo src/RackCad.Application/Systems/Cantilever/CantileverStructuralModelSource.cs que implementa IStructuralModelSource de F1-T1 con el CantileverLineDesign ya deserializado y el catalogo como entradas y resuelve con CantileverLineResolver y CantileverCataloguePolicies; no lee el sobre ni deserializa bytes; cumple sin cambios CantileverSourceGuardTests, CantileverRoundTwoSourceGuardTests, CantileverPluginSourceGuardTests y las guardas G1-G4, INV-11, INV-14 e INV-16 de F1-T1 (Systems no referencia Providers ni tokens de proveedor); cambios en src/RackCad.Application/StructuralAnalysis/ solo aditivos, sin cambiar el comportamiento ni las pruebas de F1-T1",
+    "Forma del cambio: pruebas nuevas en archivos NUEVOS de tests/RackCad.Tests/StructuralAnalysis/ (fixtures del diseno y de las cargas de REF-CANT-01 bajo tests/RackCad.Tests/StructuralAnalysis/Fixtures/, leidos desde la raiz del repositorio; ninguna prueba depende de un hash literal de bytes de un archivo de texto), namespace RackCad.Tests y clases cuyo nombre empieza por StructuralAnalysisCantilever; ninguna prueba existente (incluidas las nueve de F1-T1) se modifica, borra ni renombra; Domain, Plugin, UI, Providers, Units, StructuralSections, los demas sistemas y los .csproj no cambian; solo BCL"
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.StructuralAnalysisCantilever",
+      "MinSelected": 20,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED: esqueleto de produccion que compila (CantileverStructuralModelSource con cuerpos que lanzan NotImplementedException o devuelven un valor que las pruebas rechazan), fixtures y pruebas focales de INV-04, 05, 06, 07 (parte neutral) y 09 y de IDL-01..10, D-04, D-10, D-10b y D-12 que fallan por asercion o excepcion (sin errores de compilacion), con seleccion >= 20; push propio antes del GREEN",
+    "Commit GREEN: implementacion en el alcance permitido sin modificar ningun archivo de pruebas del RED ni pruebas existentes; suite Core completa en verde, incluidas las pruebas de F1-T1, CantileverSourceGuardTests, CantileverRoundTwoSourceGuardTests, CantileverPluginSourceGuardTests, LengthUnitsAuthorityGuardTests y NamespaceFolderGuardTests",
+    "Comprobacion mecanica antes de aceptar EXECUTION_VERIFIED: git diff --name-only BaseSha..CurrentSha contenido en el AllowedWriteScope de la delegacion y sin interseccion con su ForbiddenWriteScope; git diff --name-status BaseSha..CurrentSha -- tests/ solo con altas bajo tests/RackCad.Tests/StructuralAnalysis/",
+    "worker-handoff.json conforme al esquema, con los SHA de RED y GREEN, el trailer real del Worker, los conteos del filtro en RED y GREEN y, en Evidence, la comparacion del golden",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success y corrida push del RED con el job Core en failure"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar Domain, Plugin, UI, Providers, Units, StructuralSections, otros sistemas, otro archivo de Systems/Cantilever distinto de CantileverStructuralModelSource.cs o cualquier .csproj, o modificar, borrar o renombrar una prueba existente (incluidas las de F1-T1)"
+    },
+    {
+      "Id": "C-02",
+      "Text": "IDL-01..10, D-04, D-05, D-10, D-10b, D-12, D-13 o una concrecion CD-I65-F1-13..16 no puede implementarse tal como esta congelada o decidida (requiere A-n o Architect)"
+    },
+    {
+      "Id": "C-03",
+      "Text": "El golden de CD-I65-F1-15 no coincide con lo que dan las reglas IDL sobre las colocaciones del resolver; no se ajusta el golden ni la implementacion para forzar la igualdad: parada con la diferencia exacta"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52, o de tocar superficies de ID30"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un INV del contrato no puede mostrar un RED observable antes del cambio correcto"
+    },
+    {
+      "Id": "C-07",
+      "Text": "Hace falta inferir un material, un grado de acero o una propiedad mecanica, o exponer un modelo parcial"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta una dependencia binaria, un paquete NuGet nuevo, Python o RAM Elements para compilar o probar"
+    },
+    {
+      "Id": "C-09",
+      "Text": "Una guarda existente del repositorio (incluidas CantileverSourceGuardTests y las guardas de F1-T1) falla por el cambio y la unica salida seria debilitarla o anadirle una excepcion"
+    },
+    {
+      "Id": "C-10",
+      "Text": "Aparece una cuestion material de arquitectura, autoridad o semantica congelada (se reconsidera la revision del Architect)"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagente de la sesion de escritorio",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "medium",
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda U-04 y en el piloto de G3 de I-61; evidencia de I-61 §15)",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/codex-cli/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "Codex CLI, solo lectura",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md (medido en la sonda PR-1 y en G3 de I-61; evidencia de I-61 §§14-15)",
+      "VerifiedOn": "2026-09-30"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Coordinator I-65",
+  "IssuedUtc": "2026-10-11T04:43:58Z"
+}

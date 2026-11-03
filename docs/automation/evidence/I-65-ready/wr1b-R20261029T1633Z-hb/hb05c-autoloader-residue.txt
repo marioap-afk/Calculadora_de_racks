@@ -1,0 +1,19 @@
+# Bloques con 'RackCad' en las exportaciones B-04 del POST de HB (hb\post); en la BASELINE de HB-01 no existe ninguno
+== hkcu-applications (post 5bf0c807ca5c1ff45fd41630844e84f718d890f9abbf8139ee6821a040bde570; baseline 13430739eb82fd1c9f6898a5acb2056bb71961fc583662cc7e04004f9e4e0e59; 'RackCad' en la baseline: 0)
+[HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad]
+"LOADER"=REG_EXPAND_SZ:"%UserProfile%\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle.\Contents\RackCad.Plugin.dll"
+"LOADCTRLS"=dword:00000002
+"DESCRIPTION"="Comandos: RACKCAD, RACKSELECTIVO, RACKSISTEMADINAMICO, RACKCABECERA, QUICKCABECERA, QUICKCAMA, RACKEDITAR, RACKDUPLICAR, RACKLISTA, RACKBOMTOTAL, RACKLAYOUT, RACKRELLENAR, RACKAYUDA."
+"MANAGED"=dword:00000001
+[HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad\Groups]
+@=""
+== hkcu-loaded (post 90629234864be8fa99fb9c0b8c849e720edeb39769a28f544a46747d8f852b34; baseline dd27f202b0ec94eaf72dd7b57e42a34036b8a4456c56b70701f36faf26daef8b; 'RackCad' en la baseline: 0)
+[HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle]
+"ProductCode"="C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle"
+"Version"="1.0.0"
+"Publisher"="RackCad"
+[HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings]
+"RackCad.Plugin"=""
+[HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll]
+"Type"=dword:00000001
+"Name"="RackCad"

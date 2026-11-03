@@ -1,0 +1,2 @@
+time_utc=2026-10-30T01:57:43.9319015Z acad_count=1 acad_pid=29912 rackcad_plugin_count=1
+RackCad.Plugin.dll C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\RackCad.Plugin.dll 60e1dd44741d14b96ea0a379e901e806abb4d65c5783411786f611f35e604c33

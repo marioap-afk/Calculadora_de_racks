@@ -1,0 +1,51 @@
+{
+ "ObtainedUtc": "2026-10-12T07:34:24Z",
+ "final_sha256": "A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399",
+ "expected": "A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399",
+ "hash_pass": true,
+ "status_porcelain_all_untracked": [],
+ "staged": [],
+ "bom_utf8": true,
+ "crlf_lines": 129,
+ "lf_only_lines": 0,
+ "ramtool_present": false,
+ "projects": [
+  {
+   "name": "RackCad.Domain",
+   "path": "src\\RackCad.Domain\\RackCad.Domain.csproj"
+  },
+  {
+   "name": "RackCad.Application",
+   "path": "src\\RackCad.Application\\RackCad.Application.csproj"
+  },
+  {
+   "name": "RackCad.UI",
+   "path": "src\\RackCad.UI\\RackCad.UI.csproj"
+  },
+  {
+   "name": "RackCad.Plugin",
+   "path": "src\\RackCad.Plugin\\RackCad.Plugin.csproj"
+  },
+  {
+   "name": "RackCad.Tests",
+   "path": "tests\\RackCad.Tests\\RackCad.Tests.csproj"
+  },
+  {
+   "name": "RackCad.UI.Tests",
+   "path": "tests\\RackCad.UI.Tests\\RackCad.UI.Tests.csproj"
+  },
+  {
+   "name": "RackCad.StructuralSections.Import",
+   "path": "tools\\RackCad.StructuralSections.Import\\RackCad.StructuralSections.Import.csproj"
+  }
+ ],
+ "project_files_missing": [],
+ "config_guids_without_project": [],
+ "worktree_files_modified_since_2026-10-12T07:12:00": [
+  "RackCad.sln"
+ ],
+ "clean_pass": true,
+ "bom_pass": true,
+ "others_pass": true,
+ "all_pass": true
+}

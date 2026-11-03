@@ -1,0 +1,5 @@
+time_utc=2026-10-17T08:49:31.8121636Z
+default_console_codepage=850
+B-08 acadlocation cp=850 sha256=d1bcd226ff16163ac621422013a9350c7e41f3de583859d9a73e9fc651db465b
+B-08 acadlocation cp=65001 sha256=7d64e54b780eab472a3b5be8f95b70c50e6e8adcc87a39a726892d9c401e661c
+reference (smokes 1 y 2, consola UTF-8)=7d64e54b780eab472a3b5be8f95b70c50e6e8adcc87a39a726892d9c401e661c

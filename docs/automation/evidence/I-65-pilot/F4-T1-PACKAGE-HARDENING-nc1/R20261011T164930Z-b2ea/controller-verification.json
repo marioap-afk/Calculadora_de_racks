@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T1-PACKAGE-HARDENING",
+  "RunId": "R20261011T164930Z-b2ea",
+  "DelegationRunId": "R20261011T163137Z-5315",
+  "WorkRunId": "R20261011T163420Z-5bee",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true, LaunchedPid=null; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json concuerda en TaskId, RunId, DelegationRunId, Attempt, BaseSha, rama y worktree; OutputWrittenUtc 2026-10-11T16:39:17Z es posterior a Cession.StartUtc 16:34:25Z. Pero declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, distinto del HEAD Git f5c6b88564d287b09966c353ee493d3db2a20b28. La entrega no identifica el commit observado."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha terminó con código 0. Las autoridades EXTERNAL indicadas en delegation.json no tienen cambios entre MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y AuthorityRevision f64014f312f3b4f849e26dcee6dd713cbace146e. Entre AuthorityRevision y BaseSha, de las rutas de unidad comprobadas solo cambió docs/automation/decisions/I-65.md (UNIT_DOC); proposal, concreción F4 y ADR-0050 permanecen sin cambios."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé delegation.json con gate-contract.json: Unit, Gate, TaskId, AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions, Authorities, RequiredTests, AuthorityRevision, MainSha y RoutingEnforcement coinciden exactamente; cubren A3-A5."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD y git rev-parse origin/architecture/interop-analisis-estructural devuelven ambos f5c6b88564d287b09966c353ee493d3db2a20b28; merge-base --is-ancestor BaseSha HEAD terminó con código 0. RedSha=null coincide con la corrección autorizada. Falla HEAD=CurrentSha de la entrega: el handoff declara deadbeefdeadbeefdeadbeefdeadbeefdeadbeef."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y LsRemoteSha=f5c6b88564d287b09966c353ee493d3db2a20b28. origin/main local coincide con OriginMainSha; la punta remota coincide con HEAD Git. LsRemoteSha no coincide con el CurrentSha escrito en el handoff; esa discrepancia está registrada en Handoff e Identity."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only ab2a0fe249f065af0403ce78a25cb17e0826b806..HEAD da únicamente tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs. La entrada tests/RackCad.Tests/StructuralAnalysis/ de AllowedWriteScope la cubre; ninguna entrada de ForbiddenWriteScope la cubre. Comparé contra los alcances de delegation.json, archivo por archivo."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no devolvió cambios. git check-ignore -v sobre el paquete de entrada muestra .gitignore:3:artifacts/ para worker-handoff.json."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "RemoteFacts.CurrentRun 38156339767: event=push, ref=refs/heads/architecture/interop-analisis-estructural, HeadSha=f5c6b88564d287b09966c353ee493d3db2a20b28, completed/success. Los cuatro jobs requeridos —Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD— constan en success. RedPart no aplica según DEV-I65-F4-02: la corrección solo repara una aserción de meta-prueba y no cambia comportamiento de producto; RemoteFacts.RedRun 38154104233 corresponde a ChainRedSha 53bfcd94, push de la rama exacta con job Core en failure. El TRX de esa corrida registra 109 fallos Core."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "TRX de CurrentRun 38156339767: Core total/ejecutadas/aprobadas=13637/13637/13637, fallidas=0; filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElementsHardening seleccionó 154 (mínimo 20), todas aprobadas. UI TRX: total=1654, executed=1637, passed=1637, failed=0; los 17 Skip explican la diferencia según la convención del logger registrada. El diff BaseSha..HEAD contiene solo StructuralAnalysisRamElementsHardeningGuardTests.cs (+20/-2): git show HEAD -- <ruta> confirma WholeToken y la autoprueba, que rechaza el token partido y acepta el entero, incluso con comillas escapadas. DEV-I65-F4-02 justifica RedPart=not_applicable; RedRun 38154104233/TRX core.trx aporta el RED vigente de ChainRedSha, con 103 fallos dentro del filtro de 153 seleccionadas. Cobertura en el TRX verde: tercera puerta/orden sin escrituras y prefijo gate (MainEvaluaLasTresPuertasAntesDeAbrirElArchivoYDeCualquierEscritura, SiAlgunaPuertaFallaElModeloNoRecibeNingunaLlamadaDeEscritura, TodoRechazoDeCualquierPuertaVaADifferencesConElPrefijoGateYElEstadoSigueSiendoElDeFallo); giro modulo 360 y lectura de vuelta (LaLecturaDeVueltaComparaElGiroConLaFuncionModulo360YLaToleranciaRelativa); descripción no comparada (LaLecturaDeVueltaNoComparaLaDescripcion); escritura robusta/respaldo/cierre (LaSerializacionYLaEscrituraDeLaLecturaDeVueltaEstanDentroDelManejoDeErrores, ElRespaldoMinimoLlevaElEstadoDeFalloLaHuellaDeEntradaYElError, ElArchivoSeCierraSiempreEnFinallyYElEstadoSeImprimeSiempre); D-09 y carga REF-CANT-01 (LaPuertaYLaEscrituraSiguenElOrdenDeD09, ElScriptGeneradoDeRefCant01CumpleLaGuarda); carpeta embebida y regla de carpeta (LaCarpetaDeLasOpcionesLaDelPaqueteYLaDeLaCargaUtilSonLaMismaEnLaReferencia, UnaCarpetaConUnSegmentoQueTerminaEnPuntoOEspacioOQueEsUnNombreReservadoEsInvalidaYSinContenido); carrera del destino (SiElDestinoApareceComoCarpetaEntreLaComprobacionYElRenombradoElResultadoEsUnFalloYLoPreexistenteQuedaIntacto); exención INV-14 y autoprueba del literal entero (ElInv14EximeExactamenteCuatroRutasExactas, ElPatronDelLiteralEnteroAceptaComillasEscapadasYRechazaLaPalabraPartida); E/S neutral en el escritor (EnLaCapaNeutralLaEntradaYSalidaDeArchivosSoloApareceEnElEscritorDePaquetes). El diff ChainBaseSha..HEAD conserva los cinco archivos existentes autorizados y las pruebas nuevas en archivos separados; la corrección del intento solo toca la prueba GuardTests indicada."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B ab2a0fe249f065af0403ce78a25cb17e0826b806..HEAD muestra un commit con trailer literal «Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>», igual a Worker.Trailer en worker-handoff.json y coherente con Participant.ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5 / medium; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=medium. Concuerdan con los valores solicitados; RoutingEnforcement=required."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé los campos de texto de worker-handoff.json contra todos los términos de AUTOMATION_PLAN §16.10; no encontré coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones y 0 avisos de límite. Outcome confirma finalización del subagente; el error de lectura de una ruta inexistente se declara superado y no consta una orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "El handoff identifica CurrentSha como deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, mientras Git local, la punta remota, RemoteFacts y la corrida push identifican f5c6b88564d287b09966c353ee493d3db2a20b28.",
+    "La discrepancia impide atribuir el commit observado a la identidad declarada en la entrega; se registra como evidencia contradictoria S-04."
+  ],
+  "RecommendedNextAction": "Registrar la discrepancia de SHA y solicitar al Coordinator que determine el siguiente paso."
+}

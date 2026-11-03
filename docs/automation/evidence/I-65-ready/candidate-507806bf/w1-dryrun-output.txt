@@ -1,0 +1,33 @@
+Application: D:\r65-smoke\507806bf\bin-Debug-net8.0-windows\RackCad.Application.dll 1.0.0+507806bfcc37cf956836e9cb96bba114da4cec60
+Tabla: Valid
+---- REF-CANT-01 (OV-01/OV-04) | cargas ref-cant-01.loads.json 25f48e7f | esperado Valid
+     resultado: Valid -> OK
+---- OV-03 a doble cara | cargas ov03a-double-face.loads.json 8e05faad | esperado STATION-FACE-UNSUPPORTED
+     resultado: Unsupported -> OK
+       Blocking STATION-FACE-UNSUPPORTED (station-0)
+---- OV-03 b NegativeY | cargas ov03b-negative-y.loads.json 87e64230 | esperado STATION-SIDE-UNSUPPORTED
+     resultado: Unsupported -> OK
+       Blocking STATION-SIDE-UNSUPPORTED (station-0)
+---- OV-03 c pendiente 3 por 12 | cargas ov03c-slope-over-10deg.loads.json 25f48e7f | esperado ARM-SLOPE-UNSUPPORTED
+     resultado: Unsupported -> OK
+       Blocking ARM-SLOPE-UNSUPPORTED (ARM.1.PositiveY)
+       Blocking ARM-SLOPE-UNSUPPORTED (ARM.2.PositiveY)
+       Blocking ARM-SLOPE-UNSUPPORTED (ARM.3.PositiveY)
+---- OV-03 d canal doble enfrentada C4X5.4 | cargas ov03d-paired-channels.loads.json 25f48e7f | esperado ARM-ARRANGEMENT-UNSUPPORTED
+     resultado: Unsupported -> OK
+       Blocking ARM-ARRANGEMENT-UNSUPPORTED (ARM.1.PositiveY)
+       Blocking ARM-ARRANGEMENT-UNSUPPORTED (ARM.2.PositiveY)
+       Blocking ARM-ARRANGEMENT-UNSUPPORTED (ARM.3.PositiveY)
+---- OV-03 e brazo HSS4X4X5/16 sin fila | cargas ov03e-section-without-row.loads.json 25f48e7f | esperado MATERIAL-ROW-MISSING
+     resultado: Unsupported -> OK
+       Blocking MATERIAL-ROW-MISSING (AISC-HSS-RECT-HSS4X4X_313)
+---- CONTROL e con cargas en NegativeY | cargas ov03b-negative-y.loads.json 87e64230 | esperado (control)
+     resultado: Invalid
+       Blocking LOAD-TARGET-UNKNOWN (N1)
+       Blocking LOAD-TARGET-UNKNOWN (N2)
+       Blocking LOAD-TARGET-UNKNOWN (N3)
+---- CONTROL c con cargas en NegativeY | cargas ov03b-negative-y.loads.json 87e64230 | esperado (control)
+     resultado: Unsupported
+       Blocking ARM-SLOPE-UNSUPPORTED (ARM.1.PositiveY)
+       Blocking ARM-SLOPE-UNSUPPORTED (ARM.2.PositiveY)
+       Blocking ARM-SLOPE-UNSUPPORTED (ARM.3.PositiveY)

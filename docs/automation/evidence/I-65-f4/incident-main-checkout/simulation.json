@@ -1,0 +1,7 @@
+{
+ "reconstructed_pre_modification_sha256": "A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399",
+ "simulated_after_call_25_sha256": "4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C",
+ "current_main_checkout_sha256": "4F38D61B8C09C84404D6E58C5E8F3FBB1D62E504699E2C078AD44F9EEF579C4C",
+ "identical_byte_for_byte": true,
+ "method": "blob de HEAD (5317eece) con LF->CRLF y BOM (estado tras checkout con core.autocrlf=true) transformado por simulate-worker-call-25.ps1 (la orden literal de la llamada 25 con la ruta de una copia)"
+}

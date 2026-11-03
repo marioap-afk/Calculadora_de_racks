@@ -1,0 +1,63 @@
+{
+ "core-green": {
+  "sha256": "641FB59AFBF7F6BE76E4FA1A363945E408CEEABB486126500C574D3A7540268A",
+  "counters": {
+   "total": "14392",
+   "executed": "14392",
+   "passed": "14392",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 1797,
+   "Passed": 1797
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "ui-green": {
+  "sha256": "297E9D438D8BB860E8FFBEFC84E03624255A342A8769951A23EE71E0D7497270",
+  "counters": {
+   "total": "1654",
+   "executed": "1637",
+   "passed": "1637",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 0
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "core-red": {
+  "sha256": "817D870AA8D81053B972AD4713F908477BBB61E0CEA071D9BB5890B5A2BC53E1",
+  "counters": {
+   "total": "14392",
+   "executed": "14392",
+   "passed": "14390",
+   "failed": "2",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 1797,
+   "Passed": 1795,
+   "Failed": 2
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {
+   "Assert.Contains() Failure": 1,
+   "Assert.Single() Failure": 1
+  },
+  "failed_filter_names": [
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElTargetDelBundleCopiaLaTablaDesdeSuFuenteALaMismaRutaRelativaQueLaCompilacion",
+   "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElVerificadorDelBundleAdmiteSoloLaRutaDeLaTablaYExigeSuIdentidadConLaFuente"
+  ]
+ }
+}

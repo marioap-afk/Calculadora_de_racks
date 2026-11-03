@@ -1,0 +1,12 @@
+{
+ "schema": "rackcad-i65-readback-dump-contrast/v1",
+ "readbackFingerprint": "8f36e3ce24d508e8e7ec01ea70f0dd6afc6cdfe7e37d9e842b17b5880a6f1d87",
+ "verdict": "IGUAL",
+ "findings": [],
+ "mutation": null,
+ "counts": {
+  "nodes": 8,
+  "members": 7,
+  "loads": 6
+ }
+}

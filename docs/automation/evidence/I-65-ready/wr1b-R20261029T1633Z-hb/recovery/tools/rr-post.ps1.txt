@@ -1,0 +1,38 @@
+# I-65 W-R1b, POST de recuperacion del registro: comprobaciones de SOLO LECTURA tras rr_cleanup.ps1.
+# Unicas escrituras: archivos nuevos en <Hb>\recovery\post-checks\ (copias .reg para el diff y el informe).
+# Uso: pwsh -NoProfile -File rr_post.ps1 -Hb D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\hb -Tools <scratchpad>\i65
+param([Parameter(Mandatory)][string]$Hb, [Parameter(Mandatory)][string]$Tools)
+$ErrorActionPreference = 'Stop'
+$out = Join-Path $Hb 'recovery\post-checks'
+if (Test-Path -LiteralPath $out) { throw "ya existe $out" }
+New-Item -ItemType Directory -Path $out | Out-Null
+$prod = 'Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409'
+$bundle = Join-Path $env:APPDATA 'Autodesk\ApplicationPlugins\RackCad.bundle'
+$loadedName = $bundle.Replace('\', '/')
+$u = [regex]::Escape($env:USERNAME)
+function Red([string]$s) { $s -replace $u, '<usuario>' }
+$HKCU = [Microsoft.Win32.Registry]::CurrentUser
+$L = New-Object Collections.Generic.List[string]
+$L.Add("time_utc=" + [DateTime]::UtcNow.ToString('o'))
+# 1. Las dos claves autorizadas ya no existen
+foreach ($p in "$prod\Applications\RackCad", "$prod\Loaded\$loadedName") { $k = $HKCU.OpenSubKey($p); $L.Add("R1 " + (Red $p) + " existe=" + [bool]$k); if ($k) { $k.Close() } }
+# 2. Referencias al bundle desinstalado: B-04 (exportaciones del POST de recuperacion) y busqueda en el registro
+$n = 0; foreach ($f in @(Get-ChildItem -LiteralPath (Join-Path $Hb 'recovery\post') -Filter *.reg | Sort-Object Name)) { $c = ([regex]::Matches((Get-Content -LiteralPath $f.FullName -Raw), 'RackCad\.bundle', 'IgnoreCase')).Count; $n += $c; $L.Add("R2 B-04 " + $f.Name + " refs=" + $c) }
+$L.Add("R2 B-04 refs_total=" + $n)
+foreach ($root in 'HKCU\Software', 'HKLM\SOFTWARE\Autodesk') {
+  $q = @(& reg.exe query $root /s /f 'RackCad.bundle' 2>$null | Where-Object { $_ -match '^HKEY_' })
+  $L.Add("R2 busqueda $root claves=" + $q.Count)
+  foreach ($k in $q) { $L.Add("R2   " + (Red $k)) }
+}
+$am = $HKCU.OpenSubKey("$prod\AssemblyMap")
+foreach ($v in @($am.GetValueNames() | Sort-Object)) { $d = [string]$am.GetValue($v); $L.Add("R5 AssemblyMap " + $v + " = " + (Red $d) + " apunta_al_bundle_temporal=" + $d.StartsWith($bundle + '\', [StringComparison]::OrdinalIgnoreCase) + " destino_existe=" + (Test-Path -LiteralPath $d)) }
+$am.Close()
+# 3. Diff de claves y nombres de valor HB-01 (BASELINE) frente al POST de recuperacion (smoke2_regdiff sobre copias)
+foreach ($ph in 'baseline', 'post') { New-Item -ItemType Directory -Path (Join-Path $out "cmp-hb01\$ph") | Out-Null }
+foreach ($f in @(Get-ChildItem -LiteralPath (Join-Path $Hb 'baseline') -Filter *.reg)) { Copy-Item -LiteralPath $f.FullName -Destination (Join-Path $out 'cmp-hb01\baseline') }
+foreach ($f in @(Get-ChildItem -LiteralPath (Join-Path $Hb 'recovery\post') -Filter *.reg)) { Copy-Item -LiteralPath $f.FullName -Destination (Join-Path $out 'cmp-hb01\post') }
+& pwsh -NoProfile -File (Join-Path $Tools 'smoke2_regdiff.ps1') -Run (Join-Path $out 'cmp-hb01') -Out (Join-Path $out 'regdiff-hb01-vs-recovery-post.txt') | Out-Null
+$L.Add("R4 regdiff HB-01 vs POST de recuperacion:")
+foreach ($line in (Get-Content -LiteralPath (Join-Path $out 'regdiff-hb01-vs-recovery-post.txt'))) { $L.Add("R4   " + (Red $line)) }
+$L | Set-Content -LiteralPath (Join-Path $out 'post-checks.txt') -Encoding utf8NoBOM
+$L | ForEach-Object { Red $_ }

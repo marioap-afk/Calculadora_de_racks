@@ -1,0 +1,106 @@
+I-65 — OWNER DECISION
+Final Owner Validation / Integration Authorization
+He revisado la ficha de Owner Validation de I-65, registrada en `b6e060ba`, con CI 41664702018 en PASS 4/4.
+1. Owner Validation final
+OWNER VALIDATION FINAL = APPROVED.
+Apruebo la validación final de I-65 sobre:
+`FINAL_CANDIDATE_SHA = 4a03b65b375d468c220dd68400d5dfd955bf043e`
+Acepto la matriz OV-I65-01..08 y HB-01..05 con resultado global APROBADO para el alcance congelado de V1.
+Mantengo expresamente:
+
+* Legacy de OV-08 = NOT_EVALUATED.
+* Propiedades de sección y material = NOT_EVALUATED mediante API, respaldadas por D-09.
+* DIF-01 = INFORMATIVE.
+* Peso propio excluido.
+* Categoría del caso manual = INFORMATIVE.
+* Edición formal del catálogo RAM = UNKNOWN.
+* Trazabilidad de sesión operativa, no criptográfica.
+* Equivalencia de transferencia, no certificación de resistencia estructural.
+
+Acepto las limitaciones y hallazgos residuales documentados en la ficha de Owner Validation, sin modificar su clasificación.
+2. Autorización de integración
+INTEGRATION I-65 → main = AUTHORIZED, CONDITIONAL.
+Autorizo integrar la rama:
+`architecture/interop-analisis-estructural`
+conforme a WORKFLOW §4.5 y §11.4–§11.6 y a LIFECYCLE.
+3. Preflight obligatorio
+Antes de cualquier operación de integración:
+
+1. Ejecutar fetch fresco.
+2. Confirmar que `origin/main` continúa exactamente en `bb0d5522`.
+3. Repetir READY-04.
+4. Verificar SHA del Candidato y árbol limpio.
+5. Confirmar que desde el Candidato no hay cambios funcionales.
+6. Comprobar Freeze, ADR-0050, tabla y tolerancias.
+7. Confirmar que el resto de las condiciones READY siguen vigentes.
+
+Si `main` avanzó, STOP. No hacer rebase ni integrar automáticamente.
+4. Commit de cierre
+Prepara el commit de cierre documental de I-65 con:
+
+* HANDOFF §8–12.
+* ROADMAP actualizado a integrada.
+* Tres entradas de FOUNDATIONS publicadas con `Status: STABLE`.
+* Corrección editorial A65-FC-18.
+* Estado final de la iniciativa.
+* Hallazgos futuros en `ideas-futuras`.
+* Evidencia de cierre y trazabilidad.
+
+No modificar código de producto, Freeze, ADR-0050, tabla ni tolerancias.
+Exigir árbol limpio y CI verde sobre el SHA exacto de cierre.
+5. Merge controlado
+Después de validar el commit de cierre:
+
+1. Comprobar la base de integración.
+2. Construir el merge mediante `git merge-tree`.
+3. Crear el commit de merge con `git commit-tree`, sin utilizar el checkout principal.
+4. Verificar los padres del merge y el árbol resultante.
+5. Publicar en `main` mediante push ordinario, sin force.
+
+Si aparece un conflicto o una diferencia de producto inesperada, STOP.
+6. Comprobaciones posteriores
+Después del push:
+
+* Verificar CI del MERGE_SHA en verde.
+* Confirmar el artifact de cobertura exigido.
+* Ejecutar la cobertura del Candidato mediante workflow_dispatch.
+* Crear el tag anotado `integration/I-65`, conforme al procedimiento.
+* Custodiar los resultados y actualizar el registro final.
+
+No declarar integración completa hasta terminar las comprobaciones obligatorias.
+7. Limpieza
+La limpieza de la rama y del worktree queda autorizada exclusivamente después de:
+
+* CI del merge satisfactorio.
+* Cobertura validada.
+* Tag de integración creado.
+* Custodia completa.
+* Ausencia de cambios locales no publicados.
+
+No eliminar archivos personales ni otros worktrees.
+8. Coordinación
+I-65 integra antes que I-64 según R-D1.
+El ajuste posterior del censo de comandos 38→39 corresponde a I-64 cuando integre su propia iniciativa.
+No modificar I-62, I-64 ni sus ramas.
+9. Restricciones
+OWNER VALIDATION = APPROVED.
+INTEGRATION = CONDITIONAL GO.
+FORCE PUSH = NO.
+AUTOMATIC REBASE = NO.
+AUTOCAD / RAM = NO.
+PRODUCT CODE CHANGES = NO.
+CODEX / ATTEMPTS = NO ADDITIONAL CONSUMPTION.
+10. Entregable
+Presenta:
+
+1. Resultado del preflight.
+2. SHA del commit documental de cierre.
+3. SHA del merge.
+4. Estado del CI y cobertura.
+5. Confirmación de FOUNDATIONS y ADR.
+6. Resultado del tag `integration/I-65`.
+7. Estado de ramas y worktrees.
+8. Incidencias y limitaciones residuales.
+9. Estado final de I-65.
+
+Procede dentro de estas condiciones y detente ante cualquier incumplimiento.

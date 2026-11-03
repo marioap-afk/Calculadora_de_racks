@@ -1,0 +1,120 @@
+{
+ "core-green": {
+  "sha256": "E3B203710C62208BB66EE60E57BA4B74D11B9C2B61AFA1096C9F02136FCEDC2F",
+  "counters": {
+   "total": "13703",
+   "executed": "13703",
+   "passed": "13703",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 66,
+   "Passed": 66
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "ui-green": {
+  "sha256": "C0E2C7AEA6FDB0D4869DD6309B794FFF98F461F4E7FA53EB2964F90FB4113FA6",
+  "counters": {
+   "total": "1654",
+   "executed": "1637",
+   "passed": "1637",
+   "failed": "0",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 0
+  },
+  "n_failed_outside_filter": 0,
+  "failed_outside_filter": [],
+  "failure_kinds": {}
+ },
+ "core-red": {
+  "sha256": "44E4F0C5807DE32C38A78FF55AB7E2C5C3D68FD58DE30B0410787F5710226585",
+  "counters": {
+   "total": "13703",
+   "executed": "13703",
+   "passed": "13654",
+   "failed": "49",
+   "error": "0",
+   "notExecuted": "0"
+  },
+  "filter": {
+   "selected": 66,
+   "Failed": 47,
+   "Passed": 19
+  },
+  "n_failed_outside_filter": 2,
+  "failed_outside_filter": [
+   "RackCad.Tests.StructuralAnalysisCantileverBoundaryTests.UnaEstacionBloqueadaPorElResolverEsUnsupportedSinModelo",
+   "RackCad.Tests.StructuralAnalysisCantileverBoundaryTests.UnaLineaBloqueadaPorElResolverEsUnsupportedSinModelo"
+  ],
+  "failure_kinds": {
+   "System.NotImplementedException ": 23,
+   "Assert.Contains() Failure": 2,
+   "Assert.Equal() Failure": 10,
+   "Assert.Throws() Failure": 5,
+   "Assert.False() Failure\nExpected": 1,
+   "System.IndexOutOfRangeException ": 1,
+   "Assert.All() Failure": 1,
+   "Assert.Single() Failure": 1,
+   "System.NullReferenceException ": 1,
+   "System.ArgumentException ": 1,
+   "System.InvalidOperationException ": 1
+  },
+  "failed_filter_names": [
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.CualquierOtraFamiliaIncluidoUnValorNoDefinidoDelEnumEsUnsupported(family: -1)",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.CualquierOtraFamiliaIncluidoUnValorNoDefinidoDelEnumEsUnsupported(family: 99)",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.DosApoyosEnElMismoNudoSonInvalidos",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.ElBloqueoDeLaLineaCompletaTieneSuPropioCodigoYSuSujetoNombraLaLinea",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.LaColumnaYElCuerpoDeBrazoSonPiezasModeladas(role: Arm)",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.LaColumnaYElCuerpoDeBrazoSonPiezasModeladas(role: Column)",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.LasPiezasDeRefCant01SeClasificanTodasYLaLineaSigueValida",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnModeloSinMiembrosEsInvalidConSuPropioCodigo",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnModeloSinNudosEsInvalidConSuPropioCodigo",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnRolSinClasificarEsUnclassified",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnSupuestoReferenciadoPorUnApoyoQueNoEstaDeclaradoEsInvalido",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnSupuestoReferenciadoPorUnaLiberacionQueNoEstaDeclaradoEsInvalido",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaComponenteEliminadaMayorQueElSenoDeUnaCentesimaDeGradoSeRechaza",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaEstacionQueNoSeResuelveBloqueaLaLineaYSeInformaComoLinea",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.ArgumentException))",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.IndexOutOfRangeException))",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.InvalidOperationException))",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaExcepcionDeLaFuenteEsUnavailableSinModelo(exceptionType: typeof(System.NullReferenceException))",
+   "RackCad.Tests.StructuralAnalysisSourceEntryHardeningTests.UnaPiezaSinteticaSinClasificarHaceLaEstacionUnsupportedConCodigoNuevo",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.BytesQueElAlmacenNoPuedeLeerSonUnavailableSinModelo(text: \"\")",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.BytesQueElAlmacenNoPuedeLeerSonUnavailableSinModelo(text: \"this is not json\")",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico(kind: \"CANTILEVER\")",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico(kind: \"Cantilever\")",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico(kind: \"cantilever\")",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.LaEntradaYLaFuenteDanElMismoModeloGeometrico",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.LaFuncionDeDecodificacionRecibeExactamenteLosBytesDelDisenoUnaSolaVez",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.LaSourceFingerprintSeCalculaSobreLosBytesPersistidosIntactos",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 0)",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 1)",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 2)",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 3)",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.LosArgumentosNulosConservanArgumentNullException(which: 4)",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.MismosBytesDanLaMismaHuellaYElMismoModelo",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \" \")",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \"Dynamic\")",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \"pushback\")",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.OtroKindDelSobreDaElDiagnosticoExistenteSinLlamarALaFuncion(kind: \"selective\")",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.RefCant01PorLaEntradaEsValidaYReproduceLosLiteralesDelGoldenDeInv06",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnArchivoDeCargasInvalidoPorLaEntradaEsInvalidSinModelo",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnCambioSoloDeEspaciosEnLosBytesCambiaLaHuellaYConservaLaGeometria",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnDisenoQueHaceFallarAlResolverEsUnavailableSinModelo",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnIndiceDeEstacionFueraDeRangoPorLaEntradaEsInvalidSinModelo",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo(exceptionType: typeof(System.FormatException))",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo(exceptionType: typeof(System.InvalidOperationException))",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaExcepcionDeLaFuncionDeDecodificacionEsUnavailableSinModelo(exceptionType: typeof(System.NullReferenceException))",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaFuncionQueAlteraSuCopiaDeLosBytesNoCambiaLaHuella",
+   "RackCad.Tests.StructuralAnalysisSourceEntryTests.UnaFuncionQueDevuelveNullEsInvalidSinModeloNiExcepcion"
+  ]
+ }
+}

@@ -1,0 +1,15 @@
+{
+  "adapterVersion": "1.0.0",
+  "analysisInputFingerprint": "f5ce900c14ee768bb85670e814099d58947857778077ced8f81d371a8858d663",
+  "differences": [
+    "exception: ValueError: Section not found: \"HSS_SQR INEXISTENTE-99\". Section names must include a space and match the database exactly (e.g. \"W 14X22\", not \"W14X22\"). Check your instructions for valid name examples and conventions."
+  ],
+  "schema": "rackcad-ram-readback/v1",
+  "status": "FAILED \u2014 DISCARD MODEL",
+  "values": {
+    "loadCase": null,
+    "loads": [],
+    "members": [],
+    "nodes": []
+  }
+}

@@ -1,0 +1,6 @@
+Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad last_write_utc=2026-10-30T01:56:55.9352452Z
+Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded$U OPEN_ERROR 2
+Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\AssemblyMap last_write_utc=2026-10-30T01:56:55.9352452Z
+Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications last_write_utc=2026-10-30T01:56:55.9352452Z
+Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded last_write_utc=2026-10-30T01:56:55.9330116Z
+AssemblyMap value RackCad.Plugin = C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\RackCad.Plugin.dll

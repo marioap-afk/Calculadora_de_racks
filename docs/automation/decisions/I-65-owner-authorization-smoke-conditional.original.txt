@@ -1,0 +1,63 @@
+I-65 — OWNER DISPOSITION
+Host Release Coordination and Smoke Authorization
+He revisado el informe de compilación del DLL y las respuestas de I-52 e I-64.
+1. Decisión del Owner
+Apruebo la identidad del DLL de smoke:
+
+* Código: `745653e1ecf10850a009e6c3d305e44ea55facbe`
+* Archivo: `RackCad.Plugin.dll`
+* SHA-256: `2e04a4bb47b04012fab1fd04b0c9d11e5ec3dcaf01ba1aabbb9764a9c5c6e41d`
+
+No autorices la sustitución silenciosa de ese binario.
+2. Ventana de host
+Como Owner, autorizo reservar una ventana exclusiva de AutoCAD para I-65, condicionada a que:
+
+1. I-52 confirme que no existe una operación de host activa o reservada incompatible.
+2. I-64 confirme que su Smoke-1 no ocupará el host durante esa ventana.
+3. Se obtengan referencias frescas del perfil, TRUSTEDPATHS, SECURELOAD y acad.exe.
+4. El preflight confirme el estado limpio del host.
+5. Exista un procedimiento POST para identificar cambios.
+
+Solicita a los Coordinators de I-52 e I-64 una confirmación expresa de ausencia de conflicto y el orden de ejecución.
+No interpretes un acuse de recibo como ACK.
+3. Smoke
+AUTOCAD SMOKE = CONDITIONALLY AUTHORIZED.
+Cuando estén satisfechas las condiciones anteriores, autorizo exclusivamente:
+
+* Abrir una instancia de AutoCAD.
+* Cargar una sola vez el DLL identificado, mediante NETLOAD no persistente.
+* Ejecutar RACKRAMPAQUETE sobre el fixture del piloto.
+* Comprobar el resultado `Unsupported` con `MATERIAL-ROW-UNVERIFIED`.
+* Confirmar que no se genera ninguna carpeta de paquete.
+* Capturar evidencias.
+* Cerrar AutoCAD.
+* Ejecutar POST y comparar contra la línea base.
+
+No modificar configuraciones de carga ni seguridad.
+Si AutoCAD rechaza la carga por motivos de confianza o seguridad, detente. No desactives controles para continuar.
+4. Orden y coordinación
+Da prioridad a las ventanas ya formalmente liberadas de I-52 e I-64.
+Si ninguna tiene una ventana autorizada, solicita una ventana exclusiva de I-65 y deja constancia de las respuestas.
+No abras AutoCAD mientras exista una sesión activa de otra iniciativa o una restricción de host pendiente.
+5. Ingeniería
+Mantén las dos filas en `proposed` hasta completar las fuentes técnicas y la validación.
+La aceptación del DLL no constituye validación estructural.
+No ejecutes RAM Elements.
+6. Entregable
+Después de recibir las confirmaciones y realizar el smoke permitido, entrega:
+
+1. Hora y ventana utilizada.
+2. ACK y referencias de liberación.
+3. Hash del DLL efectivamente cargado.
+4. Resultado visible de RACKRAMPAQUETE.
+5. Evidencia de ausencia de paquete.
+6. Resultado de POST.
+7. Incidencias o cambios detectados.
+8. Recomendación para F4-D.
+
+Si alguna condición no se satisface, no ejecutes el smoke y reporta el bloqueo concreto.
+HOST WINDOW = CONDITIONALLY RESERVED.
+SMOKE = CONDITIONALLY AUTHORIZED.
+MAPPING UPDATE = NO.
+RAM EXECUTION = NO.
+F4 GATE PASS = NO.

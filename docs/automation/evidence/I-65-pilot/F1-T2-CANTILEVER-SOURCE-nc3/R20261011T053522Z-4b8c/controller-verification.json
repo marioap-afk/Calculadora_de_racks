@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T2-CANTILEVER-SOURCE",
+  "RunId": "R20261011T053522Z-4b8c",
+  "DelegationRunId": "R20261011T044358Z-f76f",
+  "WorkRunId": "R20261011T044815Z-7eae",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession terminó 2026-10-11T05:19:03Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente y Schema=rackcad-worker-handoff/v1; TaskId, Attempt, DelegationRunId y RunId coinciden con la delegación y WorkRunId indicados. OutputWrittenUtc=05:18:38Z es posterior a Cession.StartUtc=04:49:17Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí con git show las autoridades de UNIT_DOC en ff0c57c7125ae268bcb42b2d56c0d5255e9a69ed, incluidas Proposal V3.1 (Frozen: yes), golden REF-CANT-01 y decisiones I-65 §§10–13; leí ADR-0050 allí y las autoridades EXTERNAL en bb0d5522e8411f66a51fdfb3f1f0d0514b737453, incluidas AUTOMATION_PLAN §16, agent-execution README §8 y AGENTS.md."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json coinciden en TaskId, AllowedWriteScope, ForbiddenWriteScope, RequiredTests (filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisCantilever, mínimo 20, ExpectRed=true) y 29 StopConditions; el registro de planificación consigna A1–A8 en pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural = 667a3991a106afe4e18c88500f65382e69301c69; rama architecture/interop-analisis-estructural. merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha devolvió 0 en ambos casos. Los SHA, rama y worktree de la entrega coinciden."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=667a3991a106afe4e18c88500f65382e69301c69 y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, igual a CurrentSha y MainSha. Usé RemoteFacts; no ejecuté git ls-remote."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha produjo 8 rutas, todas cubiertas por AllowedWriteScope de delegation.json y ninguna por ForbiddenWriteScope: StructuralDiagnostic.cs por src/RackCad.Application/StructuralAnalysis/; CantileverStructuralModelSource.cs por su ruta exacta; ref-cant-01.design.json, ref-cant-01.loads.json, StructuralAnalysisCantileverBoundaryTests.cs, StructuralAnalysisCantileverFixtures.cs, StructuralAnalysisCantileverGoldenTests.cs y StructuralAnalysisCantileverIdealisationTests.cs por tests/RackCad.Tests/StructuralAnalysis/."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no produjo cambios. git check-ignore -v sobre el paquete de entrada identificó .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 38114105131: event=push, ref exacta refs/heads/architecture/interop-analisis-estructural, head_sha=CurrentSha; los cuatro jobs requeridos están en success. TRX Core: 12946/12946 pass. TRX UI: 1654 total, 1637 pass, 0 fail y 17 NotExecuted, consistente con los 17 Skip registrados. RedRun 38114028511 es push del RedSha; Tests (Domain + Application)=failure. TRX Core RED: 12946 ejecutadas, 78 fallidas, 12868 pasadas."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "El TRX RED contiene 80 pruebas StructuralAnalysisCantilever, 78 fallidas y 2 pasadas; las fallidas son de prueba y hay 0 marcadores de error de compilación. La sesión registra 80/80 en GREEN filtrado y 12946/12946 en Core completo; el TRX CI GREEN confirma las 80 focales aprobadas. ChainBaseSha=ff0c57c7125ae268bcb42b2d56c0d5255e9a69ed, ChainRedSha=null; ChainRedFiles resultantes del diff de tests BaseSha..RedSha: los seis archivos nuevos enumerados en Scope. git diff --name-only RedSha CurrentSha -- tests/ está vacío. El código de las pruebas en CurrentSha contrasta los literales de golden §3 y colocaciones §2: INV-06/IDL-01..08 y D-04 en StructuralAnalysisCantileverGoldenTests; IDL-08 (fusión, separación, plano, ángulo y J) e INV-07 (giros 0, 90 y 12.3456, con espejo, oráculo SectionTransform) en StructuralAnalysisCantileverIdealisationTests; INV-05, IDL-09/10 y lectura de CD-I65-F1-14 en StructuralAnalysisCantileverBoundaryTests y StructuralAnalysisCantileverGoldenTests; D-10, INV-09/D-10b y D-12/INV-04 en GoldenTests y BoundaryTests. El TRX GREEN registra esas 80 focales en pass."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra ambos commits con el trailer literal declarado: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>; coincide con el modelo efectivo del registro de trabajo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json solicita claude-sonnet-5-5/high; relay-record-work.json registra modelo efectivo sonnet (alias claude-sonnet-5-5) y effort high. Coinciden modelo y effort."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "El campo WorkCompleted de worker-handoff.json contiene un término reservado por AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 64 llamadas, cero resultados de herramienta con error, cero denegaciones de permisos o credenciales, cero avisos de límite y ninguna orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "WorkCompleted en worker-handoff.json incumple la comprobación FreeText por contener un término reservado de §16.10; el resto de las comprobaciones evaluadas pasa."
+  ],
+  "RecommendedNextAction": "Corregir WorkCompleted en una nueva entrega y volver a verificar."
+}

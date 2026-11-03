@@ -1,0 +1,113 @@
+"""Solo lectura: compara las tablas W y HSS_SQR de la base instalada de RAM con el catalogo AISC v16.0 del repositorio y busca marcas de edicion.
+Uso: python -I ram_edition_probe.py <ram_db_sections_us> <repo_catalog_dir> <ram_install_dir>"""
+import csv
+import hashlib
+import os
+import re
+import sys
+
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+ram, cat, inst = sys.argv[1], sys.argv[2], sys.argv[3]
+
+
+def read_sec(path):
+    rows = {}
+    with open(path, encoding="latin-1", newline="") as f:
+        lines = f.read().splitlines()
+    header = lines[1].split("\t")
+    for line in lines[2:]:
+        if not line.strip():
+            continue
+        parts = line.split("\t")
+        rec = dict(zip(header, parts))
+        key = norm(rec["Name"])
+        rows[key] = rec
+    return header, rows
+
+
+def norm(name):
+    n = name.strip()
+    if n.startswith("HSS_SQR "):
+        n = "HSS" + n[len("HSS_SQR "):].replace("_", "/")
+    elif n.startswith("W "):
+        n = "W" + n[2:]
+    return n.upper()
+
+
+def read_cat(path):
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        return {r["manualLabel"].upper(): r for r in csv.DictReader(f)}
+
+
+def num(s):
+    try:
+        return float(s)
+    except (TypeError, ValueError):
+        return None
+
+
+def compare(name, ram_rows, cat_rows, pairs, select=None):
+    cat_keys = {k for k, v in cat_rows.items() if (select is None or select(v))}
+    ram_keys = set(ram_rows)
+    both = sorted(ram_keys & cat_keys)
+    only_ram = sorted(ram_keys - cat_keys)
+    only_cat = sorted(cat_keys - ram_keys)
+    diffs = []
+    for k in both:
+        for rk, ck in pairs:
+            a, b = num(ram_rows[k].get(rk)), num(cat_rows[k].get(ck))
+            if a is None or b is None:
+                continue
+            if abs(a - b) > 1e-9 * max(1.0, abs(b)):
+                diffs.append((k, ck, a, b))
+    print("==", name, "RAM rows", len(ram_keys), "catalog rows", len(cat_keys), "common", len(both))
+    print("   only in RAM (", len(only_ram), "):", only_ram[:40])
+    print("   only in catalog (", len(only_cat), "):", only_cat[:40])
+    print("   property differences on common rows:", len(diffs))
+    for d in diffs[:40]:
+        print("     ", d)
+
+
+_, w = read_sec(os.path.join(ram, "W.sec"))
+_, h = read_sec(os.path.join(ram, "HSS_SQR.sec"))
+cw = read_cat(os.path.join(cat, "structural-sections-w.csv"))
+ch = read_cat(os.path.join(cat, "structural-sections-hss-rect.csv"))
+wp = [("area", "A"), ("I33loc", "Ix"), ("I22loc", "Iy"), ("J", "J"), ("cw", "Cw"), ("d", "d"), ("bf", "bf"), ("tw", "tw"), ("tf", "tf"),
+      ("Z33loc", "Zx"), ("Z22loc", "Zy"), ("w33top", "Sx"), ("w22top", "Sy")]
+hp = [("area", "A"), ("I33loc", "Ix"), ("I22loc", "Iy"), ("J", "J"), ("a", "Ht"), ("b", "B"), ("t", "tdes"), ("Z33loc", "Zx"), ("w33top", "Sx")]
+compare("W", w, cw, wp)
+compare("HSS_SQR", h, ch, hp, select=lambda v: v["Ht"] == v["B"])
+
+print("== edition markers in RAM install (text-like files, read-only)")
+pat = re.compile(r"(Shapes Database|v1[3-7]\.0|1[3-7]th Edition|AISC Manual|Steel Construction Manual)", re.I)
+exts = {".txt", ".ini", ".xml", ".htm", ".html", ".csv", ".sec", ".mat", ".json", ".config", ".md", ".rtf"}
+hits = 0
+for base, dirs, files in os.walk(os.path.join(inst, "Database")):
+    for fn in files:
+        if os.path.splitext(fn)[1].lower() not in exts:
+            continue
+        p = os.path.join(base, fn)
+        try:
+            if os.path.getsize(p) > 20_000_000:
+                continue
+            txt = open(p, encoding="latin-1").read()
+        except OSError:
+            continue
+        for m in pat.finditer(txt):
+            s = max(0, m.start() - 80)
+            print("  ", os.path.relpath(p, inst), "|", txt[s:m.end() + 80].replace("\r", " ").replace("\n", " ").replace("\t", " "))
+            hits += 1
+            if hits > 60:
+                break
+        if hits > 60:
+            break
+    if hits > 60:
+        break
+print("   hits", hits)
+print("== install-root files whose name suggests release notes or readme")
+for fn in sorted(os.listdir(inst)):
+    if re.search(r"(release|readme|notes|whatsnew|changelog)", fn, re.I):
+        print("  ", fn)
+for fn in ("W.sec", "HSS_SQR.sec"):
+    p = os.path.join(ram, fn)
+    print("sha256", fn, hashlib.sha256(open(p, "rb").read()).hexdigest())

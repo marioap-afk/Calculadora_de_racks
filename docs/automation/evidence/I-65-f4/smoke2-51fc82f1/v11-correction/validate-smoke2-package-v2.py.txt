@@ -1,0 +1,198 @@
+"""I-65 segundo smoke: validacion de SOLO LECTURA del paquete generado por RACKRAMPAQUETE. Version 2 (correccion de V-11).
+
+Cambio frente a la version 1 (validate-smoke2-package.py.txt, SHA-256 8b19a9c7...): solo V-11 y la escritura exclusiva del informe.
+V-11 ya no busca la carpeta como texto: recupera la carpeta EFECTIVA deshaciendo la misma serializacion que usa el producto
+(RamBuildScriptTemplate: JSON de la carga util -> Escape de literal de Python -> PAYLOAD = "..."; el script la lee con
+json.loads(PAYLOAD)). Analiza el script con ast (nunca lo ejecuta), exige una unica asignacion de PAYLOAD a un literal de cadena y la
+lectura json.loads(PAYLOAD), y compara la carpeta efectiva, sin normalizar, con la del manifiesto, con la tecleada y con la ruta real.
+
+Uso: python -I validate_smoke2_package_v2.py <carpeta-paquete> <expected-inputs.json> <carpeta-tecleada> <salida.json>
+  <carpeta-paquete>  carpeta publicada por el comando (la que se busca en disco).
+  <carpeta-tecleada> el texto EXACTO que se tecleo en "Carpeta NUEVA del paquete" (ruta Windows con barras invertidas).
+Compara el paquete REAL con sus ENTRADAS EFECTIVAS (tabla distribuida junto al DLL y archivo de cargas aprobado, ambos con SHA-256
+de bytes en expected-inputs.json, calculado con el RackCad.Application.dll de la salida compilada). No usa huellas de fixtures
+(A65-F4D-07). Hashes de bytes y comparaciones normalizadas (fin de linea) se registran por separado (A65-F4D-01). Comprueba que
+verifiedBy llega al manifiesto como UTF-8 sin sustituciones (A65-F4D-10). No escribe nada salvo el informe de salida.
+"""
+import ast
+import hashlib
+import json
+import os
+import re
+import sys
+
+pkg, expected_path, typed, out_path = sys.argv[1:5]
+exp = json.load(open(expected_path, encoding="utf-8-sig"))
+E = exp["expected"]
+checks = []
+facts = {}
+
+
+def check(cid, ok, detail):
+    checks.append({"id": cid, "result": "PASS" if ok else "FAIL", "detail": detail})
+
+
+def sha(b):
+    return hashlib.sha256(b).hexdigest()
+
+
+HEX64 = re.compile(r"^[0-9a-f]{64}$")
+WINDOWS_ABSOLUTE = re.compile(r"^(?:[A-Za-z]:\\|\\\\[^\\/]+\\[^\\/]+)")
+
+
+def effective_payload(script_text):
+    """La carga util como la lee el script, sin ejecutarlo: literal de Python (capa 1) y despues json.loads (capa 2)."""
+    tree = ast.parse(script_text)
+    stores = [n for n in ast.walk(tree) if isinstance(n, ast.Name) and n.id == "PAYLOAD" and isinstance(n.ctx, (ast.Store, ast.Del))]
+    assigns = [n for n in tree.body if isinstance(n, ast.Assign) and len(n.targets) == 1
+               and isinstance(n.targets[0], ast.Name) and n.targets[0].id == "PAYLOAD"]
+    if len(stores) != 1 or len(assigns) != 1:
+        raise ValueError("PAYLOAD debe asignarse exactamente una vez en el nivel superior (asignaciones=%d)" % len(stores))
+    value = assigns[0].value
+    if not (isinstance(value, ast.Constant) and isinstance(value.value, str)):
+        raise ValueError("PAYLOAD no es un literal de cadena (%s)" % type(value).__name__)
+    reads = [n for n in ast.walk(tree) if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == "loads"
+             and isinstance(n.func.value, ast.Name) and n.func.value.id == "json" and len(n.args) == 1 and not n.keywords
+             and isinstance(n.args[0], ast.Name) and n.args[0].id == "PAYLOAD"]
+    uses = [n for n in ast.walk(tree) if isinstance(n, ast.Name) and n.id == "PAYLOAD" and isinstance(n.ctx, ast.Load)]
+    if len(reads) != 1 or len(uses) != 1:
+        raise ValueError("el script no lee PAYLOAD exactamente una vez como json.loads(PAYLOAD) (lecturas=%d, usos=%d)" % (len(reads), len(uses)))
+    data = json.loads(value.value)
+    if not isinstance(data, dict):
+        raise ValueError("la carga util no es un objeto JSON")
+    return data
+
+
+def check_v11(script_text, manifest_folder, typed_folder, package_arg, fingerprint):
+    """V-11: la carpeta efectiva del script = carpeta del manifiesto = carpeta tecleada = ruta real del paquete, sin normalizar."""
+    try:
+        data = effective_payload(script_text)
+    except Exception as ex:  # noqa: BLE001
+        return False, "carga util no recuperable sin ejecutar el script: %r" % ex
+    folder = data.get("packageFolder")
+    real = os.path.abspath(package_arg)
+    try:
+        same_destination = isinstance(folder, str) and os.path.isdir(folder) and os.path.samefile(folder, package_arg)
+    except OSError:
+        same_destination = False
+    parts = {
+        "carpeta efectiva es texto": isinstance(folder, str),
+        "== carpeta del manifiesto": folder == manifest_folder,
+        "== carpeta tecleada": folder == typed_folder,
+        "== ruta real del paquete (sin normalizar)": folder == real,
+        "mismo destino en disco": same_destination,
+        "ruta Windows absoluta": isinstance(folder, str) and WINDOWS_ABSOLUTE.match(folder) is not None,
+        "sin '/' ni caracteres de control": isinstance(folder, str) and "/" not in folder and all(ord(c) >= 32 for c in folder),
+        "forma canonica (sin separadores dobles, finales ni '..')": isinstance(folder, str) and os.path.normpath(folder) == folder,
+        "huella efectiva == manifiesto": data.get("analysisInputFingerprint") == fingerprint and HEX64.match(str(fingerprint)) is not None,
+        "huella en el texto del script": bool(fingerprint) and fingerprint in script_text,
+    }
+    failed = [k for k, ok in parts.items() if not ok]
+    detail = "carpeta efectiva=%r; manifiesto=%r; tecleada=%r; ruta real=%r; huella efectiva=%s; fallidas=%s" % (
+        folder, manifest_folder, typed_folder, real, data.get("analysisInputFingerprint"), failed or "ninguna")
+    return not failed, detail
+
+# V-01 carpeta y archivos
+exists = os.path.isdir(pkg)
+names = sorted(os.listdir(pkg)) if exists else []
+check("V-01", exists and names == sorted(E["files"]) and all(os.path.isfile(os.path.join(pkg, n)) for n in names),
+      "carpeta existe=%s; archivos=%s; esperados=%s" % (exists, names, sorted(E["files"])))
+parent = os.path.dirname(os.path.normpath(pkg))
+leftovers = [n for n in (os.listdir(parent) if os.path.isdir(parent) else []) if ".tmp-" in n]
+check("V-02", not leftovers, "carpetas temporales del publicador en la carpeta padre: %s" % leftovers)
+raw = {}
+for n in E["files"]:
+    p = os.path.join(pkg, n)
+    if os.path.isfile(p):
+        b = open(p, "rb").read()
+        raw[n] = b
+        facts[n] = {"bytes": len(b), "sha256Bytes": sha(b), "hasCR": b"\r" in b, "bom": b[:3] == b"\xef\xbb\xbf",
+                    "sha256NormalizedLF": sha(b.replace(b"\r\n", b"\n"))}
+check("V-03", len(raw) == 3 and all(facts[n]["bytes"] > 0 for n in raw), "tres archivos no vacios: %s" % {n: facts[n]["bytes"] for n in raw})
+
+m = None
+mb = raw.get("manifest.json", b"")
+try:
+    text = mb.decode("utf-8", errors="strict")
+    m = json.loads(text)
+    check("V-04", not facts["manifest.json"]["bom"], "manifest.json: UTF-8 estricto, JSON valido, sin BOM=%s" % (not facts["manifest.json"]["bom"]))
+except Exception as ex:  # noqa: BLE001
+    check("V-04", False, "manifest.json no es UTF-8 estricto o JSON valido: %r" % ex)
+
+if m is not None:
+    files = {f["name"]: f["sha256"] for f in m.get("files", [])}
+    check("V-05", files.get("rackcad-ram-build.py") == facts.get("rackcad-ram-build.py", {}).get("sha256Bytes")
+          and files.get("structural-loads.json") == facts.get("structural-loads.json", {}).get("sha256Bytes") and len(files) == 2,
+          "files[] del manifiesto frente a los bytes reales: %s" % files)
+    lf = m.get("loadsFile", {})
+    lb = raw.get("structural-loads.json", b"")
+    check("V-06", lf.get("name") == E["loadsFileName"] and lf.get("sha256") == sha(lb) == exp["loads"]["sha256Bytes"],
+          "loadsFile=%s; bytes del paquete %s; archivo de cargas aprobado %s" % (lf, sha(lb), exp["loads"]["sha256Bytes"]))
+    check("V-07", lb == open(exp["loads"]["path"], "rb").read(), "structural-loads.json identico byte a byte al archivo de cargas aprobado (%s)" % exp["loads"]["path"])
+    check("V-08", m.get("packageFolder") == typed and os.path.normcase(os.path.normpath(typed)) == os.path.normcase(os.path.normpath(pkg)),
+          "packageFolder=%r; tecleada=%r; carpeta real=%r" % (m.get("packageFolder"), typed, pkg))
+    ad, tg = m.get("adapter", {}), m.get("target", {})
+    check("V-09", m.get("schema") == E["schema"] and ad.get("name") == E["adapterName"] and ad.get("version") == E["adapterVersion"]
+          and tg.get("product") == E["product"] and tg.get("productVersion") == E["productVersion"]
+          and tg.get("productVersionStatus") == E["productVersionStatus"] and tg.get("package") == E["package"],
+          "schema=%s adapter=%s target=%s" % (m.get("schema"), ad, tg))
+    src = m.get("source", {})
+    fp = m.get("analysisInputFingerprint", "")
+    check("V-10", str(src.get("kind", "")).lower() == "cantilever" and src.get("stationIndex") == 0 and bool(src.get("rackId"))
+          and HEX64.match(str(src.get("sourceFingerprint", ""))) is not None and HEX64.match(fp) is not None,
+          "source=%s; analysisInputFingerprint=%s" % (src, fp))
+    try:
+        script = raw.get("rackcad-ram-build.py", b"").decode("utf-8", errors="strict")
+        v11_ok, v11_detail = check_v11(script, m.get("packageFolder"), typed, pkg, fp)
+    except UnicodeDecodeError as ex:
+        v11_ok, v11_detail = False, "rackcad-ram-build.py no es UTF-8 estricto: %r" % ex
+    check("V-11", v11_ok, v11_detail)
+    rb = m.get("readback", {})
+    check("V-12", rb.get("name") == E["readbackName"] and rb.get("repeatsAnalysisInputFingerprint") is True, "readback=%s" % rb)
+    mp = m.get("mapping", {})
+    rows = {r.get("sectionId"): r for r in mp.get("rows", [])}
+    exp_rows = {r["sectionId"]: r for r in exp["rows"]}
+    row_ok, row_detail = True, []
+    for sid, er in exp_rows.items():
+        r = rows.get(sid)
+        if r is None:
+            row_ok = False
+            row_detail.append("%s ausente" % sid)
+            continue
+        em = r.get("expectedMaterial", {}) or {}
+        cmp = {
+            "ramSection": r.get("ramSection") == {"name": er["ramName"], "table": er["ramTable"], "country": er["ramCountry"]},
+            "materialId": r.get("materialId") == er["materialId"], "ramMaterial": r.get("ramMaterial") == er["ramMaterial"],
+            "elasticModulus": em.get("elasticModulus") == er["elasticModulus"], "poissonRatio": em.get("poissonRatio") == er["poissonRatio"],
+            "shearModulus": em.get("shearModulus") is None, "unitWeight": em.get("unitWeight") == er["unitWeight"],
+            "source": em.get("source") == er["source"], "status": r.get("status") == "verified",
+            "verifiedBy": r.get("verifiedBy") == E["verifiedBy"] == er["verifiedBy"], "verifiedOn": r.get("verifiedOn") == E["verifiedOn"],
+            "canonicalText": r.get("canonicalText") == er["canonicalText"]}
+        if not all(cmp.values()):
+            row_ok = False
+        row_detail.append("%s %s" % (sid, {k: v for k, v in cmp.items() if not v} or "todo igual"))
+    check("V-13", row_ok and len(rows) == len(exp_rows), "filas del manifiesto frente a la tabla distribuida: %s" % row_detail)
+    check("V-14", mp.get("rowsSha256") == exp["mappingRowsSha256AllRows"],
+          "mapping.rowsSha256=%s; calculado con el DLL sobre la tabla distribuida=%s" % (mp.get("rowsSha256"), exp["mappingRowsSha256AllRows"]))
+    vb = E["verifiedBy"].encode("utf-8")
+    count_raw = mb.count(b'"verifiedBy": "' + vb + b'"') + mb.count(b'"verifiedBy":"' + vb + b'"')
+    check("V-15", count_raw == 2 and b"\\u00e9" not in mb.lower() and b"\\u2014" not in mb.lower() and "�" not in mb.decode("utf-8", "replace"),
+          "verifiedBy en bytes UTF-8 (%s) presente %d veces sin escapes \\u ni caracteres de sustitucion" % (vb.hex(), count_raw))
+    asm = m.get("assumptions", {})
+    facts["assumptions"] = {"sha256": asm.get("sha256"), "warning": asm.get("warning"), "ids": [i.get("id") for i in asm.get("items", [])],
+                            "exclusions": m.get("exclusions")}
+    check("V-16", HEX64.match(str(asm.get("sha256", ""))) is not None and bool(asm.get("warning")) and bool(asm.get("items")),
+          "supuestos del piloto registrados: %d; advertencia presente" % len(asm.get("items", [])))
+    facts["manifest_values"] = {"rackId": src.get("rackId"), "sourceFingerprint": src.get("sourceFingerprint"),
+                                "generatorVersion": src.get("generatorVersion"), "analysisInputFingerprint": fp,
+                                "rowsSha256": mp.get("rowsSha256"), "units": tg.get("units"), "packageVersion": tg.get("packageVersion")}
+result = "PASS" if checks and all(c["result"] == "PASS" for c in checks) else "FAIL"
+report = {"validatorVersion": 2, "package": pkg, "typedFolder": typed, "expectedInputs": expected_path,
+          "expectedInputsSha256": sha(open(expected_path, "rb").read()), "result": result, "checks": checks, "facts": facts}
+with open(out_path, "x", encoding="utf-8", newline="\n") as fh:
+    json.dump(report, fh, ensure_ascii=False, indent=1)
+    fh.write("\n")
+print(result, sum(c["result"] == "PASS" for c in checks), "/", len(checks))
+for c in checks:
+    if c["result"] != "PASS":
+        print(" ", c["id"], c["detail"][:300])

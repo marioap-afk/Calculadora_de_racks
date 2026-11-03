@@ -1,0 +1,18 @@
+"""Contrasta la linea PAYLOAD de la comprobacion en seco de F5 con la tabla derivada a mano (preparacion §4). Uso: python -I f5_dryrun_compare.py <payload-line.txt>"""
+import ast, json, sys
+line = open(sys.argv[1], encoding="utf-8").read()
+payload = json.loads(ast.literal_eval(line.split("=", 1)[1].strip()))
+rigid = 6.354218840504721; Lphys = 36.0; Lan = 42.35421884050472; NPL = 4.4482216152605
+hand = {"Q1": (1,0.0,2000/NPL), "Q2": (1,1.0,1500/NPL), "Q3": (2,0.25,750.0), "Q4": (2,0.9,1000.0), "Q5": (3,0.5,300*9.80665/NPL), "Q6": (3,0.75,4500/NPL)}
+ok = True
+for ld in payload["loads"]:
+    lvl, f, lbf = hand[ld["id"]]
+    pct = 100*(rigid+f*Lphys)/Lan
+    dv = abs(-ld["value"] - lbf); dp = abs(ld["percent"] - pct)
+    good = ld["member"] == "ARM.%d.PositiveY" % lvl and ld["direction"] == "GLOBAL_Y" and ld["value"] < 0 and dv <= 1e-9*max(1,lbf) and dp <= 1e-9*100
+    ok &= good
+    print("%s member=%s value=%.12f percent=%.12f | mano lbf=%.12f pct=%.12f | dv=%.1e dp=%.1e %s" % (ld["id"], ld["member"], ld["value"], ld["percent"], lbf, pct, dv, dp, "IGUAL" if good else "DIFERENTE"))
+print("loads=%d nodes=%d members=%d units=%s case=%s fingerprint=%s" % (len(payload["loads"]), len(payload["nodes"]), len(payload["members"]), payload["units"], payload["loadCase"], payload["analysisInputFingerprint"]))
+print("RESULTADO", "6/6 IGUAL a la tabla derivada a mano" if ok and len(payload["loads"]) == 6 else "DIFERENCIA")
+for ld in payload["loads"]:
+    print("%s percent repr = %r" % (ld["id"], ld["percent"]))

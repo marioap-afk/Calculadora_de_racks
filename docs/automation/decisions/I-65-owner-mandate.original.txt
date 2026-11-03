@@ -1,0 +1,1010 @@
+Coordina exclusivamente una nueva iniciativa de RackCad:
+
+# <NEXT_FREE_INITIATIVE_ID> — Structural Analysis Interop Foundation + RAM Elements Adapter
+
+Workflow:
+V2
+
+Archetype:
+NEW ARCHITECTURE
+
+Priority:
+HIGH / PARALLEL PRODUCT TRACK
+
+======================================================================
+CONTEXT
+======================================================================
+
+RackCad necesita una integración estructural con RAM Elements.
+
+El objetivo a largo plazo es poder derivar desde RackCad un modelo estructural
+analizable, transferirlo a RAM Elements y, si las interfaces reales lo
+permiten, evolucionar posteriormente hacia automatización de análisis y
+recuperación de resultados.
+
+NO asumir desde el inicio que RAM Elements permite:
+
+- API completa;
+- COM;
+- CLI;
+- automatización de análisis;
+- lectura de resultados;
+- edición directa del archivo;
+- integración bidireccional.
+
+Discovery debe verificar las capacidades reales de la versión disponible.
+
+======================================================================
+CURRENT BASELINE
+======================================================================
+
+Last canonical main known by Master Orchestrator:
+
+bb0d5522e8411f66a51fdfb3f1f0d0514b737453
+
+I-63 / ID20 is CLOSED / INTEGRATED / VERIFIED.
+
+Do NOT assume the SHA remains current.
+Verify origin/main during preflight.
+
+Relevant active/parallel tracks may include:
+
+- ID30 / Persistent RackCad Workspace
+- I-62 / Agent Infrastructure Evolution
+
+This initiative must remain isolated from both unless a shared authority
+conflict is discovered.
+
+======================================================================
+AUTHORITIES
+======================================================================
+
+Before architecture work, read and follow current repo authorities:
+
+- docs/WORKFLOW.md
+- AGENTS.md
+- docs/INITIATIVE_LIFECYCLE.md
+- docs/FOUNDATIONS.md
+- docs/initiatives/PROMPT_TEMPLATES.md
+- current I-61 Agent Execution Protocol
+- relevant RackCad geometry/domain authorities
+- relevant profile/material/BOM authorities
+- current units conventions
+- current rack identity/view foundations
+
+Use:
+
+REFERENCE OVER REPETITION.
+
+Use I-61 for implementation execution after Freeze.
+
+Coordinator owns Gate PASS.
+
+======================================================================
+GOAL
+======================================================================
+
+Create a provider-neutral Structural Analysis Interop foundation and the
+first RAM Elements adapter.
+
+Preferred architecture:
+
+RackCad Product Model
+        ↓
+Structural Analysis Model
+        ↓
+RAM Elements Adapter
+        ↓
+RAM Elements
+
+Do NOT couple RackCad Domain directly to RAM-specific types.
+
+RAM Elements should be a derived analysis consumer, not a persistence
+authority for RackCad.
+
+======================================================================
+CORE PRINCIPLE
+======================================================================
+
+RackCad / DWG
+= product/design authority
+
+Structural Analysis Model
+= derived neutral analytical representation
+
+RAM Elements
+= external analysis consumer
+
+It must remain possible to regenerate the analysis model from RackCad.
+
+RackCad must not require a RAM file in order to reconstruct or open the
+rack correctly.
+
+======================================================================
+FIRST DISCOVERY QUESTION
+======================================================================
+
+Before designing the adapter, determine exactly:
+
+WHAT SUPPORTED INTEGRATION SURFACES DOES THE CURRENT RAM ELEMENTS VERSION
+ACTUALLY PROVIDE?
+
+Investigate current official Bentley/RAM Elements documentation and the
+installed environment.
+
+Characterize, where applicable:
+
+- public API / SDK;
+- COM / automation object model;
+- .NET interoperability;
+- command-line support;
+- supported import/export formats;
+- documented model interchange;
+- batch analysis capabilities;
+- result extraction capabilities;
+- scripting;
+- report/data export;
+- licensing restrictions;
+- version-specific limitations.
+
+Prefer official/documented integration surfaces.
+
+Do not reverse-engineer proprietary file formats as the default solution.
+
+If no supported programmatic interface exists, say so explicitly and design
+the safest supported interchange path instead.
+
+Record:
+
+- RAM Elements exact version;
+- documentation source;
+- date verified;
+- relevant interface/version.
+
+======================================================================
+TRANSPORT PRIORITY
+======================================================================
+
+Preferred:
+
+1. supported API/SDK;
+2. supported machine-readable interchange;
+3. documented CLI/batch interface;
+4. stable exported/imported files;
+5. Computer Use only for unavoidable GUI operations.
+
+Computer Use must NOT become the semantic integration layer if a supported
+machine-readable interface exists.
+
+Do not automate mouse clicks merely to simulate an API without first
+establishing that no better supported mechanism exists.
+
+======================================================================
+STRUCTURAL ANALYSIS MODEL
+======================================================================
+
+Discovery/Proposal must define a neutral model sufficient for the first
+vertical slice.
+
+Conceptually it may contain:
+
+StructuralModel
+├── Metadata
+├── Units
+├── Nodes
+├── Members
+├── Sections
+├── Materials
+├── Supports
+├── Releases
+├── LoadCases
+├── Loads
+├── LoadCombinations
+└── Diagnostics
+
+Names are hypotheses.
+
+Do not freeze types until Discovery.
+
+The neutral model must NOT contain RAM-specific identifiers as its semantic
+identity.
+
+Provider-specific IDs belong in adapter mapping/provenance.
+
+======================================================================
+FIRST VERSION SCOPE
+======================================================================
+
+Do NOT attempt complete RackCad → RAM coverage in V1.
+
+Select one small, structurally understandable vertical slice.
+
+Preferred candidate to evaluate:
+
+a single rack frame / Cabecera / Selectivo structural frame
+
+with enough information to prove:
+
+- nodes;
+- member geometry;
+- sections;
+- material;
+- orientation;
+- connectivity;
+- supports;
+- releases if applicable;
+- one controlled load case if appropriate.
+
+Final pilot choice must come from Discovery.
+
+Do not include mezzanine + all rack systems simultaneously.
+
+======================================================================
+EQUIVALENCE TARGET
+======================================================================
+
+The first meaningful success criterion is NOT:
+
+"RAM opens a file."
+
+It is:
+
+A model generated from RackCad is structurally equivalent, under the frozen
+mapping contract, to a reference model created manually in RAM Elements.
+
+Define an equivalence matrix covering relevant facts such as:
+
+- node coordinates;
+- connectivity;
+- member type;
+- local orientation;
+- section;
+- material;
+- releases;
+- supports;
+- load values;
+- load locations;
+- combinations if in scope.
+
+Owner/engineering validation must compare the generated model against a
+known manual reference.
+
+======================================================================
+UNITS
+======================================================================
+
+Treat units as a critical contract.
+
+RackCad may use inches or other internal/product units.
+
+RAM may use another unit system.
+
+Do NOT scatter conversion constants through mappings.
+
+Define one explicit structural-unit boundary.
+
+Every transferred quantity must have known dimensions, including as applicable:
+
+- length;
+- area;
+- force;
+- moment;
+- stress;
+- mass;
+- density;
+- distributed load.
+
+Adapter performs provider-specific conversion.
+
+Require tests designed specifically to detect:
+
+- inch/mm errors;
+- lb/N or kgf/N confusion;
+- distributed-load scaling;
+- moment-unit scaling.
+
+Fail closed on unknown units.
+
+======================================================================
+SECTIONS
+======================================================================
+
+A RackCad component name is NOT automatically a structural section.
+
+Discovery must characterize current profile authorities.
+
+Define explicit mapping:
+
+RackCad profile identity
+        ↓
+StructuralSection
+        ↓
+RAM section representation
+
+StructuralSection should contain the actual properties required by the chosen
+analysis strategy.
+
+Do not use display strings as primary identity.
+
+Determine whether RAM can consume:
+
+- catalog sections;
+- user-defined sections;
+- parametric shapes;
+- arbitrary section properties.
+
+Do not fabricate unavailable section properties.
+
+======================================================================
+MATERIALS
+======================================================================
+
+Define explicit structural material mapping.
+
+Do not infer properties merely from product names.
+
+Characterize what RackCad currently knows and what must come from a structural
+engineering catalog/configuration.
+
+Examples potentially needed:
+
+E
+G
+Poisson ratio
+density
+yield strength
+
+Only include properties required by the frozen slice.
+
+Keep product material identity distinct from provider-specific RAM material
+identity.
+
+======================================================================
+MEMBER IDEALIZATION
+======================================================================
+
+This is an architectural decision.
+
+RackCad geometry represents physical product geometry.
+
+Structural analysis may require analytical centerlines / member idealization.
+
+Freeze must define:
+
+- analytical node locations;
+- eccentricities;
+- centerline conventions;
+- member endpoints;
+- offsets;
+- local axes;
+- member orientation;
+- connectivity tolerances.
+
+Do NOT simply export visible CAD line endpoints unless those are proven to
+represent the analytical model.
+
+======================================================================
+CONNECTIONS / RELEASES
+======================================================================
+
+Rack connections may not be equivalent to fully fixed or fully pinned joints.
+
+Discovery must identify what the current product/domain knows versus what must
+be introduced as explicit structural-analysis assumptions.
+
+Do not silently select fixed/pinned releases because they are convenient.
+
+If connection stiffness/semi-rigidity is not available in V1:
+
+record the explicit analysis assumption and scope limitation.
+
+======================================================================
+SUPPORTS
+======================================================================
+
+Define how base/support conditions are represented.
+
+Do not infer foundation/losa stiffness unless explicitly modeled.
+
+V1 may use a controlled support assumption for equivalence testing, provided
+it is explicit.
+
+Future anchor/slab modeling is separate unless Freeze explicitly includes it.
+
+======================================================================
+LOADS
+======================================================================
+
+Separate:
+
+PRODUCT FACTS
+from
+STRUCTURAL LOAD MODEL.
+
+For example:
+
+pallet mass/weight
+≠ automatically
+analysis nodal load.
+
+Define a structural-load translation layer.
+
+Questions include:
+
+- tributary distribution;
+- point vs distributed load;
+- load direction;
+- dead/live/storage categorization;
+- impact/dynamic factors;
+- seismic mass;
+- self-weight;
+- combinations.
+
+Do NOT introduce engineering assumptions invisibly.
+
+For the first slice, keep load scope intentionally small and auditable.
+
+======================================================================
+LOAD COMBINATIONS
+======================================================================
+
+Do not implement a complete design-code engine in this initiative unless
+Discovery proves one already exists and can be reused.
+
+If load combinations are required for the pilot:
+
+use a small explicitly frozen reference set.
+
+RMI/AISC/seismic/code-level automation is a future structural-design layer
+unless explicitly claimed.
+
+======================================================================
+ANALYSIS RESULTS
+======================================================================
+
+Treat result import as a SECOND capability.
+
+First prove reliable model export/interchange.
+
+Discovery should determine whether RAM permits supported extraction of:
+
+- displacements;
+- reactions;
+- member forces;
+- moments;
+- utilization/design ratios;
+- warnings/errors.
+
+Classify:
+
+SUPPORTED NOW
+SUPPORTED LATER
+NOT EXPOSED
+UNKNOWN
+
+Do not make bidirectional results a blocker for the first adapter if the
+interface does not support them cleanly.
+
+======================================================================
+AUTOMATED ANALYSIS
+======================================================================
+
+Similarly classify whether RackCad can programmatically:
+
+- create/update RAM model;
+- save;
+- request analysis;
+- detect completion;
+- retrieve solver status;
+- retrieve results.
+
+Do not promise:
+
+RackCad → Analyze → Results
+
+until this has been demonstrated against the real installed RAM environment.
+
+======================================================================
+MODEL VERSIONING / PROVENANCE
+======================================================================
+
+Structural export must be attributable to a specific RackCad source state.
+
+Evaluate recording:
+
+- source RackId / structural source identity;
+- source authored/effective revision or fingerprint;
+- RackCad commit/version where appropriate;
+- adapter version;
+- RAM version;
+- unit system;
+- mapping profile.
+
+Do not turn this into unnecessary persisted product metadata unless required.
+
+The main goal is reproducibility and stale-result detection.
+
+======================================================================
+STALE RESULTS
+======================================================================
+
+Future result import must not silently present results belonging to an older
+RackCad model.
+
+Design for a relationship such as:
+
+AnalysisInputFingerprint
+↔
+AnalysisResultFingerprint
+
+If source state differs:
+
+STALE
+
+Do not use stale structural results as if current.
+
+Actual result import may remain future scope.
+
+======================================================================
+ERROR MODEL
+======================================================================
+
+No silent partial export.
+
+Define typed diagnostics for cases such as:
+
+- unsupported rack/system;
+- missing profile mapping;
+- missing material;
+- invalid units;
+- disconnected analytical model;
+- unsupported connection;
+- invalid load;
+- unavailable RAM interface;
+- RAM version unsupported;
+- adapter failure.
+
+Prefer:
+
+Valid
+Unsupported(reason)
+Invalid(reason)
+Unavailable(reason)
+
+or equivalent frozen model.
+
+======================================================================
+PARALLEL OWNERSHIP
+======================================================================
+
+ID30 owns:
+
+- Workspace / PaletteSet;
+- WPF product UX;
+- AutoCAD selection/event architecture;
+- RACKEDITAR session UX.
+
+I-62 owns:
+
+- agent/process infrastructure;
+- provider portability;
+- orchestration protocol.
+
+This initiative owns:
+
+- Structural Analysis Model;
+- structural mapping;
+- units boundary;
+- sections/material mapping;
+- RAM adapter;
+- structural equivalence tests.
+
+Do NOT modify ID30 UI to add final RAM buttons during this initiative.
+
+Do NOT modify I-62 infrastructure.
+
+If a shared Product/Domain authority must change:
+
+STOP
+→ report to Master Orchestrator
+→ coordinate ownership before writing.
+
+======================================================================
+ID30 FUTURE INTEGRATION
+======================================================================
+
+Prepare a neutral application-level capability that ID30 can later invoke.
+
+Conceptually:
+
+BuildStructuralModel(...)
+ExportToRam(...)
+Analyze(...)            // only if supported
+ReadResults(...)        // only if supported
+
+Names are hypotheses.
+
+No Workspace implementation here.
+
+Later UI integration should be thin.
+
+======================================================================
+I-63 / PROJECT SUMMARY
+======================================================================
+
+I-63 is available as a stable foundation.
+
+Do not use ProjectSummary as a structural model.
+
+It may provide project/rack discovery metadata in future consumers, but
+structural analysis requires its own explicit analytical representation.
+
+Do not recalculate or duplicate I-63 metrics without need.
+
+======================================================================
+MEZZANINE FUTURE
+======================================================================
+
+Design neutral StructuralModel so it can plausibly support future mezzanine
+analysis:
+
+- columns;
+- primary beams;
+- secondary beams;
+- bracing;
+- floor/deck loads.
+
+Do NOT implement mezzanine merely to prove genericity.
+
+Avoid premature abstractions based only on hypothetical future systems.
+
+======================================================================
+SECURITY / FILE SAFETY
+======================================================================
+
+Do not overwrite user RAM files by default.
+
+For generated files use explicit controlled destinations.
+
+Before modifying an existing external engineering file:
+
+require explicit contract/authorization.
+
+Prefer generated test fixtures or disposable copies during development.
+
+======================================================================
+TESTING STRATEGY
+======================================================================
+
+Require several test layers.
+
+PURE TESTS:
+- units;
+- node/member mapping;
+- orientation;
+- sections;
+- material mapping;
+- supports/releases;
+- loads;
+- deterministic neutral model.
+
+ADAPTER CONTRACT TESTS:
+- neutral model → provider representation;
+- unsupported facts fail closed.
+
+REFERENCE/GOLDEN TESTS:
+- known small RackCad source;
+- expected structural model.
+
+RAM INTEGRATION TEST:
+- only where installed/licensed environment exists;
+- open/import generated model;
+- compare against manual reference.
+
+Do not make local RAM installation a requirement for ordinary Core unit tests.
+
+======================================================================
+OWNER / ENGINEERING VALIDATION
+======================================================================
+
+Plan early validation.
+
+After the first thin vertical slice, Owner should compare:
+
+RackCad generated model
+vs
+manual RAM model
+
+before expanding system coverage.
+
+Validate:
+
+- geometry;
+- sections;
+- materials;
+- supports;
+- releases;
+- orientation;
+- loads;
+- RAM warnings;
+- analysis behavior where applicable.
+
+Do not wait until all rack systems are implemented.
+
+======================================================================
+EXTERNAL RESEARCH
+======================================================================
+
+RAM Elements capabilities are time/version sensitive.
+
+Use current official sources during Discovery.
+
+Record citations/URLs and verified date in initiative evidence.
+
+Community sources may supplement undocumented behavior but must not replace
+official interface authority.
+
+If documentation conflicts with installed behavior:
+
+record both
+and fail closed until reconciled.
+
+======================================================================
+I-61 EXECUTION PROTOCOL
+======================================================================
+
+Use the current integrated I-61 protocol.
+
+Coordinator owns:
+
+- architecture;
+- Freeze;
+- Gate PASS.
+
+Execution Controller may:
+
+- classify tasks;
+- choose model/effort;
+- delegate;
+- verify execution.
+
+Workers implement/test/commit.
+
+This initiative is a strong routing test:
+
+Research/API characterization
+→ stronger reasoning/research profile
+
+Neutral structural model
+→ architecture-heavy
+
+Mechanical mappings/tests
+→ efficient/balanced worker
+
+Adapter/debugging
+→ stronger coding profile as needed
+
+Final conformance
+→ independent review when risk warrants
+
+Record I-61 friction for I-62.
+
+Do NOT adopt unintegrated I-62 behavior mid-initiative.
+
+======================================================================
+ARCHITECT REVIEW
+======================================================================
+
+NEW ARCHITECTURE requires Coordinator ↔ Architect consensus.
+
+Architect must challenge especially:
+
+- RAM coupling leaking into Domain;
+- graphical geometry mistaken for analytical geometry;
+- unit errors;
+- product name used as section identity;
+- hidden connection assumptions;
+- hidden support assumptions;
+- hidden load assumptions;
+- provider file becoming RackCad authority;
+- unsupported API assumptions;
+- UI automation used instead of supported interface;
+- stale analysis results;
+- over-generalizing before first vertical slice;
+- trying to cover every system in V1.
+
+Implementation requires:
+
+Coordinator = AGREED
+Architect = AGREED
+
+on the same Freeze.
+
+======================================================================
+SUGGESTED FUNCTIONAL GATES
+======================================================================
+
+Use INITIATIVE_LIFECYCLE.md.
+
+Do not create micro-gates.
+
+Suggested shape:
+
+F0 — Discovery
+     - RAM Elements interface characterization
+     - RackCad structural source characterization
+     - manual reference model
+     - Proposal / Freeze
+
+F1 — Neutral Structural Analysis Model
+     - units
+     - nodes/members
+     - sections/materials
+     - supports/releases
+     - diagnostics
+
+F2 — First RackCad → StructuralModel vertical slice
+
+F3 — RAM Elements Adapter
+     - first supported transport
+     - deterministic export
+
+F4 — Thin real-RAM integration
+     - generated vs manual equivalence
+
+     → EARLY OWNER / ENGINEERING VALIDATION
+
+F5 — Controlled loads
+     - only frozen first-slice scope
+
+F6 — Optional automation/results capability
+     ONLY if supported and frozen
+
+F7 — Conformance / regression / performance / documentation
+
+READY — Final Candidate
+
+Exact gates may change after Freeze.
+
+======================================================================
+OUT OF SCOPE UNLESS DISCOVERY/FREEZE EXPLICITLY JUSTIFIES
+======================================================================
+
+NO:
+
+- all rack systems in V1;
+- full RMI/AISC design engine;
+- full seismic-code automation;
+- slab/foundation design;
+- anchor design;
+- optimization/sizing;
+- automatic member selection;
+- mezzanine complete support;
+- final Workspace UI;
+- semantic grips;
+- live analysis after every RackCad edit;
+- automatic overwriting of RAM files;
+- reverse engineering proprietary RAM formats;
+- treating RAM results as RackCad persistence authority.
+
+======================================================================
+SUCCESS CRITERIA
+======================================================================
+
+The initiative succeeds when:
+
+1. the real supported RAM Elements integration surface is documented;
+
+2. RackCad has a provider-neutral Structural Analysis Model;
+
+3. units have one explicit conversion boundary;
+
+4. sections/materials have explicit mappings;
+
+5. analytical geometry is distinct from graphical geometry;
+
+6. structural assumptions are explicit;
+
+7. one real RackCad vertical slice produces a valid structural model;
+
+8. RAM adapter transfers that model through a supported mechanism;
+
+9. generated model is compared against a manual RAM reference;
+
+10. provider-specific details remain outside RackCad Domain;
+
+11. ordinary Core tests do not require RAM installed;
+
+12. no UI dependency on ID30 is introduced;
+
+13. future result import/automation capabilities are classified honestly;
+
+14. Owner/engineering validation occurs before broad expansion.
+
+======================================================================
+FIRST RESPONSE REQUIRED
+======================================================================
+
+Before production implementation, return:
+
+1. real repo preflight;
+2. current origin/main;
+3. next free Initiative-Id;
+4. branch/worktree claim;
+5. active initiative/hotspot conflicts;
+6. Workflow V2 + I-61 bootstrap status;
+
+7. exact installed RAM Elements version, if observable;
+
+8. official RAM Elements integration mechanisms found:
+   - API/SDK;
+   - COM;
+   - CLI;
+   - import/export;
+   - automation;
+   - results access;
+
+9. official sources and dates verified;
+
+10. installed-environment validation of those mechanisms where possible;
+
+11. current RackCad geometry/domain authorities relevant to the first slice;
+
+12. current profile/section authorities;
+
+13. current material authorities;
+
+14. current units conventions;
+
+15. candidate first structural vertical slice;
+
+16. reference manual RAM model strategy;
+
+17. proposed StructuralModel;
+
+18. analytical geometry mapping;
+
+19. section mapping strategy;
+
+20. material mapping strategy;
+
+21. support/release assumptions;
+
+22. first-load scope;
+
+23. error/diagnostic model;
+
+24. RAM adapter boundary;
+
+25. provider transport recommendation;
+
+26. automated-analysis capability verdict;
+
+27. result-import capability verdict;
+
+28. stale/result provenance strategy;
+
+29. ownership boundary vs ID30 and I-62;
+
+30. test/equivalence matrix;
+
+31. early Owner/engineering validation plan;
+
+32. Consumes / Extends / Introduces;
+
+33. proposed Freeze;
+
+34. Architect review package;
+
+35. functional gates;
+
+36. initial I-61 routing plan;
+
+37. explicit status:
+
+IMPLEMENTATION AUTHORIZATION = NO
+
+until Coordinator + Architect agree on the same Freeze.
+
+Do not guess RAM capabilities.
+Verify them before freezing the adapter architecture.

@@ -1,0 +1,20 @@
+{
+ "transcript_sha256": "862F269244352ED368F2F3858D607A02CA4CEE5FB5FBF28D5E79B27DF44EA10C",
+ "assistant_messages": 34,
+ "models": {
+  "claude-sonnet-5-5": 34
+ },
+ "tool_uses": 22,
+ "tool_errors": 0,
+ "denials": 0,
+ "python_commands": [],
+ "prompt_sha256_normalized": "C2A3B0A4AC7F52DFC4E070239776F485C41DE7D7636BA8DF4AAAB06C6B41A35D",
+ "prompt_file_sha256": "2A2643F56221DD29A7521A062251F6C12E3DF7B831D5F3559EEF86824F7D82B5",
+ "prompt_match": {
+  "raw": true,
+  "dedent2_skip1": false,
+  "dedent2": false
+ },
+ "prompt_contained": true,
+ "first_user_len": 14527
+}

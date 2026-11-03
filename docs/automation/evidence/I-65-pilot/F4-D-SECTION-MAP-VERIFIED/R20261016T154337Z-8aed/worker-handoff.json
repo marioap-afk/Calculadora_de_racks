@@ -1,0 +1,102 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-D-SECTION-MAP-VERIFIED",
+  "RunId": "R20261016T154337Z-8aed",
+  "DelegationRunId": "R20261016T153804Z-5fdd",
+  "Initiative": "I-65",
+  "Gate": "F4",
+  "Attempt": 7,
+  "BaseSha": "c487262fca9536bc769b6a6b704b82d556fce8fb",
+  "RedSha": "2188a1d7b1b42c81076634221e00732193d0678f",
+  "CurrentSha": "51fc82f131a287ef66458a433c614c389033769d",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+  "Pushed": true,
+  "FilesChanged": [
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandProductTableTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSectionMapVerifiedTests.cs"
+  ],
+  "WorkCompleted": "Las tres pruebas (dos en StructuralAnalysisSectionMapVerifiedTests.cs, una en StructuralAnalysisPluginCommandProductTableTests.cs) usan ahora como carpeta del paquete la constante privada PackageFolder = @\"C:\\RackCad-F4D-NoExiste\\paquete-estacion-0\" en lugar de Path.Combine(Path.GetTempPath(), ...). Commit RED (tabla devuelta al blob de e886b557) y commit GREEN (solo la tabla, blob d088e2a9). Ambos publicados.",
+  "TestsExecuted": [
+    {
+      "RunRef": "PRE",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysis\" --logger \"trx;LogFileName=PRE.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/7/R20261016T154337Z-8aed/tests/pre",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/7/R20261016T154337Z-8aed/tests/pre/PRE.trx"
+    },
+    {
+      "RunRef": "RED",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysis\" --logger \"trx;LogFileName=RED.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/7/R20261016T154337Z-8aed/tests/red",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/7/R20261016T154337Z-8aed/tests/red/RED.trx"
+    },
+    {
+      "RunRef": "GREEN",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysis\" --logger \"trx;LogFileName=GREEN.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/7/R20261016T154337Z-8aed/tests/green",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/7/R20261016T154337Z-8aed/tests/green/GREEN.trx"
+    },
+    {
+      "RunRef": "CORE",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=CORE.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/7/R20261016T154337Z-8aed/tests/core",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/7/R20261016T154337Z-8aed/tests/core/CORE.trx"
+    }
+  ],
+  "TestResults": [
+    { "RunRef": "PRE", "Selected": 1795, "Passed": 1795, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    {
+      "RunRef": "RED",
+      "Selected": 1795,
+      "Passed": 1782,
+      "Failed": 13,
+      "Skipped": 0,
+      "FailedTests": [
+        "StructuralAnalysisRamElementsMapReaderTests.ElArchivoDeDatosEsValidoYTieneExactamenteLasDosFilasVerifiedDeRefCant01",
+        "StructuralAnalysisRamElementsMapReaderTests.ConLaTablaTalComoSeEntregaLaExportacionDeRefCant01EsValidaYNoHayFilasSinVerificar",
+        "StructuralAnalysisRamElementsMapReaderTests.ElArchivoDeDatosTraeLosValoresDeIngenieriaYLaVerificacionAprobados",
+        "StructuralAnalysisSectionMapVerifiedTests.CambiarUnCampoDeUnaFilaVerifiedCambiaLaHuellaDelPaquete",
+        "StructuralAnalysisSectionMapVerifiedTests.RefCant01ConLaTablaDistribuidaEsValidoConLosMismosDiagnosticosQueConLaTablaVerifiedDeFixture",
+        "StructuralAnalysisSectionMapVerifiedTests.ElLectorLeLaTablaDistribuidaValidaSinDiagnosticosConLasDosFilasVerified",
+        "StructuralAnalysisSectionMapVerifiedTests.LaFilaDeLaColumnaLlevaLosValoresAprobadosPorElOwner",
+        "StructuralAnalysisSectionMapVerifiedTests.LaFabricaDaUnPaqueteValidoEnMemoriaConLaTablaDistribuidaSinEscribirLaCarpeta",
+        "StructuralAnalysisSectionMapVerifiedTests.LaFilaDelBrazoLlevaLosValoresAprobadosPorElOwner",
+        "StructuralAnalysisPluginCommandProductTableTests.ConLaTablaDeProducto_LaEstacionEsValida_ConModelo_YSinElDiagnosticoDeFilaSinVerificar",
+        "StructuralAnalysisPluginCommandProductTableTests.ConLaTablaDeProducto_LaFabricaDaUnPaqueteValidoEnMemoria_SinCrearLaCarpeta",
+        "StructuralAnalysisPluginCommandProductTableTests.LaTablaDeProductoSeLeeYTodasSusFilasEstanVerified",
+        "StructuralAnalysisRamElementsPackageValidationTests.ConLaTablaDelProductoTalComoSeEntregaElResultadoEsValidoConContenidoEnMemoria"
+      ]
+    },
+    { "RunRef": "GREEN", "Selected": 1795, "Passed": 1795, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "CORE", "Selected": 14390, "Passed": 14390, "Failed": 0, "Skipped": 0, "FailedTests": [] }
+  ],
+  "Evidence": [
+    "(1) Directorio efectivo al empezar: pwd (Bash) = /d/Documentos/Codex/Calculadora de racks; PowerShell Get-Location = D:\\Documentos\\Codex\\Calculadora de racks; [Environment]::CurrentDirectory = D:\\Documentos\\Codex\\Calculadora de racks (el checkout principal, no el worktree). Toda operacion de archivos uso rutas ABSOLUTAS bajo el worktree y git siempre con git -C <worktree>; dotnet con rutas absolutas. No hubo archivos temporales fuera de work/ (solo work/build.log) ni sondas compiladas en tests/; no se escribio ni leyo en el checkout principal.",
+    "(2) Invariantes y la prueba que los observa: la tabla distribuida se lee Valid sin diagnosticos y con las dos filas Verified -> StructuralAnalysisSectionMapVerifiedTests.ElLectorLeLaTablaDistribuidaValidaSinDiagnosticosConLasDosFilasVerified; valores aprobados de columna y brazo -> LaFilaDeLaColumnaLlevaLosValoresAprobadosPorElOwner y LaFilaDelBrazoLlevaLosValoresAprobadosPorElOwner; REF-CANT-01 Valid con los mismos diagnosticos que la tabla de fixture -> RefCant01ConLaTablaDistribuidaEsValidoConLosMismosDiagnosticosQueConLaTablaVerifiedDeFixture; paquete Valid en memoria sin escribir la carpeta -> LaFabricaDaUnPaqueteValidoEnMemoriaConLaTablaDistribuidaSinEscribirLaCarpeta y ConLaTablaDeProducto_LaFabricaDaUnPaqueteValidoEnMemoria_SinCrearLaCarpeta; la huella cambia al cambiar un campo de fila -> CambiarUnCampoDeUnaFilaVerifiedCambiaLaHuellaDelPaquete; todas las filas Verified del producto -> LaTablaDeProductoSeLeeYTodasSusFilasEstanVerified.",
+    "(3) Tabla: en el RED el blob es 815328674d542f7e8ed099c910e11c1c62f491a1 = e886b557:assets/structural-analysis/ram-elements/section-material-map.json (proposed). En el GREEN el blob es d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2 = e886b557:docs/automation/evidence/I-65-f4/f4d-table-target.json, y git rev-parse HEAD:assets/... da ese mismo blob. git diff --name-only RED GREEN = solo la tabla; git diff --name-only BaseSha GREEN = solo las dos pruebas.",
+    "(4) Diff: en ambos archivos se anade const string PackageFolder = @\"C:\\RackCad-F4D-NoExiste\\paquete-estacion-0\" (mas un comentario) y las tres lineas var folder = Path.Combine(Path.GetTempPath(), \"rackcad-f4d-\" + Guid...) pasan a var folder = PackageFolder. No se toco ninguna asercion; las comprobaciones Directory.Exists/File.Exists de la carpeta siguen, ahora sobre la cadena fija (no existe en ningun SO). No debilita nada: la carpeta solo es una cadena que la fabrica valida sintacticamente y no escribe; los usings siguen en uso (System.IO por File/Directory, System por StringComparer).",
+    "(5) dotnet build RackCad.sln -c Release: 0 errores, 63 advertencias (preexistentes, de analizadores xUnit y similares; ninguna CS, MSB, NU o NETSDK en los dos archivos del diff). Log en work/build.log.",
+    "(6) Pruebas que pasan ya en el RED: 1782 de 1795. Son las que no dependen del contenido de la tabla (o la leen de fixtures), y las tres pruebas corregidas pasan o fallan segun la tabla, no por la carpeta: con la tabla verified (corrida PRE, previa al RED) las 1795 pasan; con la proposed fallan 13 por asercion (Assert.Equal / estado de fila), ninguno por compilacion."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "TreeSha es null en las corridas porque se ejecutaron con cambios sin confirmar en el arbol (PRE y RED antes del commit RED; GREEN y CORE con la tabla copiada antes del commit GREEN).",
+    "La CI de Linux no se espero ni se ejecuto aqui; la correccion se razona por la regla sintactica de IsAbsoluteNormalisedFolder."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "El Principal recoge las corridas push de la CI en 51fc82f1 y verifica la entrega.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

@@ -1,0 +1,48 @@
+# I-65 R-D11: publicacion local del bundle desde el HEAD limpio del worktree en una carpeta desechable NUEVA, verificador, harness,
+# comparacion con el bundle previo y lector del producto sobre la tabla del bundle. Sin AutoCAD, sin instalar.
+# Uso: pwsh -NoProfile -File bundle_evidence.ps1 -Out D:\r65-smoke\rd11-<sha8> -Before D:\r65-smoke\rd11-before-95aae3f1\inventory.txt
+param([Parameter(Mandatory)][string]$Out, [Parameter(Mandatory)][string]$Before)
+$ErrorActionPreference = 'Stop'
+$wt = 'C:\Users\<usuario>\.codex\worktrees\architecture-interop-analisis-estructural'
+$sp = Split-Path -Parent $PSCommandPath
+if (Test-Path $Out) { throw "La carpeta ya existe: $Out" }
+if (Get-Process -Name acad -ErrorAction SilentlyContinue) { throw 'AutoCAD abierto: no se publica' }
+if (git -C $wt status --porcelain) { throw 'arbol sucio' }
+$head = (git -C $wt rev-parse HEAD).Trim()
+New-Item -ItemType Directory -Path $Out | Out-Null
+$pub = Join-Path $Out 'publish'
+$inv = Join-Path $Out 'inventory.txt'
+$t0 = (Get-Date).ToUniversalTime().ToString('s') + 'Z'
+& pwsh -NoProfile -File (Join-Path $wt 'deploy\build-bundle.ps1') -Configuration Release -Output $pub -InventoryOutPath $inv *> (Join-Path $Out 'build-bundle.log')
+$buildExit = $LASTEXITCODE
+& pwsh -NoProfile -File (Join-Path $wt 'deploy\test-verify-bundle.ps1') -SourceBundle (Join-Path $pub 'RackCad.bundle') -PublishDir $pub *> (Join-Path $Out 'test-verify-bundle.log')
+$harnessExit = $LASTEXITCODE
+$t1 = (Get-Date).ToUniversalTime().ToString('s') + 'Z'
+$bundle = Join-Path $pub 'RackCad.bundle'
+$table = Join-Path $bundle 'Contents\structural-analysis\ram-elements\section-material-map.json'
+$tableSha = if (Test-Path $table) { (Get-FileHash $table -Algorithm SHA256).Hash } else { $null }
+$blob = (git -C $wt rev-parse 'HEAD:assets/structural-analysis/ram-elements/section-material-map.json').Trim()
+$tmp = Join-Path $Out 'table-from-blob.json'
+cmd /c "git -C `"$wt`" show HEAD:assets/structural-analysis/ram-elements/section-material-map.json > `"$tmp`""
+$blobSha = (Get-FileHash $tmp -Algorithm SHA256).Hash
+Remove-Item $tmp
+$files = @(Get-ChildItem $bundle -Recurse -File)
+$cur = @(Get-Content $inv | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })
+$old = @(Get-Content $Before | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })
+$curPaths = $cur | ForEach-Object { ($_ -split '\s+', 2)[1] }
+$oldPaths = $old | ForEach-Object { ($_ -split '\s+', 2)[1] }
+$added = @($curPaths | Where-Object { $oldPaths -notcontains $_ })
+$removed = @($oldPaths | Where-Object { $curPaths -notcontains $_ })
+$changed = @($cur | Where-Object { $old -notcontains $_ } | ForEach-Object { ($_ -split '\s+', 2)[1] } | Where-Object { $added -notcontains $_ })
+$reader = & pwsh -NoProfile -File (Join-Path $sp '..\reader_check_f4d.ps1') (Join-Path $bundle 'Contents') $table
+"head=$head"
+"window=$t0..$t1"
+"build-bundle exit=$buildExit; harness exit=$harnessExit"
+"bundle files=$($files.Count); ProductVersion=$((Get-Item (Join-Path $bundle 'Contents\RackCad.Plugin.dll')).VersionInfo.ProductVersion)"
+"table present=$([bool]$tableSha); table sha256=$tableSha; blob $blob content sha256=$blobSha; equal=$($tableSha -eq $blobSha)"
+"vs before: added=[$($added -join ', ')] removed=[$($removed -join ', ')] changed=[$($changed -join ', ')]"
+"verify: " + ((Get-Content (Join-Path $Out 'build-bundle.log') | Select-String 'OK: bundle verificado') -join ' ')
+"harness: " + ((Get-Content (Join-Path $Out 'test-verify-bundle.log') | Select-String 'OK: harness') -join ' ')
+(Get-Content (Join-Path $Out 'test-verify-bundle.log') | Select-String '^\s+OK\s+\[') | ForEach-Object { '  ' + $_.Line.Trim() }
+'reader:'
+$reader | ForEach-Object { '  ' + $_ }

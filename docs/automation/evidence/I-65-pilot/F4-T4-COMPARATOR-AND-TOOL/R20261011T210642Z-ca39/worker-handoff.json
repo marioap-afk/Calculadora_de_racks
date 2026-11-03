@@ -1,0 +1,108 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T4-COMPARATOR-AND-TOOL",
+  "RunId": "R20261011T210642Z-ca39",
+  "DelegationRunId": "R20261011T210328Z-2ee6",
+  "Initiative": "I-65",
+  "Gate": "F4",
+  "Attempt": 3,
+  "BaseSha": "c8f3aa884abbc86c1c0cf4ff112dadda0c26fa68",
+  "RedSha": "c4660703dd6cb38406dc296698138499076fddcf",
+  "CurrentSha": "7efacd78a8ad411a639953fb21d587e66e8d5475",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+  "Pushed": true,
+  "FilesChanged": [
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonSupport.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs"
+  ],
+  "WorkCompleted": "Correccion de la cadena F4-T4. RED (c4660703): las dos aserciones defectuosas corregidas (marcador de inyeccion con \"$.\" + RamToolInjection.Marker en orden ordinal; nombres de archivo en el orden ordinal real manifest.json, rackcad-ram-build.py, structural-loads.json), CS0649 (SpringI = 0) y xUnit2013 (Assert.Single) resueltos, y la implementacion (StructuralReadbackComparison.cs y tools/RackCad.StructuralAnalysis.RamTool/) devuelta al esqueleto de b51adf28 (RamToolCompare.cs, RamToolDumpScript.cs y RamToolInject.cs eliminados). GREEN (7efacd78): la implementacion restaurada byte a byte desde 0e9bbc29, sin otro cambio.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-focal",
+      "Command": "cd \"C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural\" && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisComparison\" --logger \"trx;LogFileName=red-focal.trx\" --results-directory artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/3/R20261011T210642Z-ca39/tests/red-focal",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/3/R20261011T210642Z-ca39/tests/red-focal/red-focal.trx"
+    },
+    {
+      "RunRef": "red-relevant",
+      "Command": "cd \"C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural\" && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --filter \"FullyQualifiedName~StructuralAnalysisSourceGuardTests|FullyQualifiedName~StructuralAnalysisRamElementsHardeningGuardTests|FullyQualifiedName~StructuralAnalysisRamElementsGuardTests\" --logger \"trx;LogFileName=red-relevant.trx\" --results-directory artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/3/R20261011T210642Z-ca39/tests/red-relevant",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/3/R20261011T210642Z-ca39/tests/red-relevant/red-relevant.trx"
+    },
+    {
+      "RunRef": "green-focal",
+      "Command": "cd \"C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural\" && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisComparison\" --logger \"trx;LogFileName=green-focal.trx\" --results-directory artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/3/R20261011T210642Z-ca39/tests/green-focal",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/3/R20261011T210642Z-ca39/tests/green-focal/green-focal.trx"
+    },
+    {
+      "RunRef": "green-core",
+      "Command": "cd \"C:\\Users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural\" && /c/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --logger \"trx;LogFileName=green-core.trx\" --results-directory artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/3/R20261011T210642Z-ca39/tests/green-core",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T4-COMPARATOR-AND-TOOL/3/R20261011T210642Z-ca39/tests/green-core/green-core.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-focal",
+      "Selected": 81,
+      "Passed": 6,
+      "Failed": 75,
+      "Skipped": 0,
+      "FailedTests": [
+        "75 pruebas focales fallan por NotImplementedException del esqueleto (lista completa en el TRX de red-focal)"
+      ]
+    },
+    {
+      "RunRef": "red-relevant",
+      "Selected": 137,
+      "Passed": 137,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-focal",
+      "Selected": 81,
+      "Passed": 81,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-core",
+      "Selected": 14078,
+      "Passed": 14078,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "(1) Diff exacto de las pruebas (git diff c8f3aa88 c4660703 -- tests; 4 lineas, sin otro archivo de pruebas): StructuralAnalysisComparisonSupport.cs linea 43: 'public double SpringI;' -> 'public double SpringI = 0;' (mismo valor por defecto 0 que ya observaba la prueba; solo deja de ser un campo sin asignar, CS0649). StructuralAnalysisComparisonToolTests.cs linea 345: el arreglo esperado de nombres pasa de [LoadFileName, ManifestFileName, ScriptFileName] a [ManifestFileName, ScriptFileName, LoadFileName], el orden ordinal real de manifest.json, rackcad-ram-build.py, structural-loads.json (la prueba compara con la lista ordenada con StringComparer.Ordinal; el esperado anterior era inalcanzable). Linea 382: el arreglo esperado de rutas cambiadas usa \"$.\" + RamToolInjection.Marker en lugar del literal \"$.faultInjection\" y se ordena con StringComparer.Ordinal, igual que lo observado. Linea 447: Assert.Equal(1, Regex.Matches(...).Count) -> Assert.Single(Regex.Matches(...)) (xUnit2013, misma semantica: exactamente una ProjectReference). No debilita nada: las mismas propiedades se observan (conjunto exacto de tres archivos, conjunto exacto de tres rutas cambiadas con el marcador real, una sola ProjectReference); solo se corrige el valor esperado inalcanzable y el idioma de la asercion.",
+    "(2) git diff 0e9bbc29 7efacd78a8ad411a639953fb21d587e66e8d5475 -- src tools RackCad.sln: vacio (0 bytes). git diff c4660703 7efacd78 -- tests: vacio.",
+    "(3) Conteos del filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisComparison: RED 81 seleccionadas, 6 pasan, 75 fallan por NotImplementedException del esqueleto (ninguna por compilacion); GREEN 81/81. Pasan ya en el RED: StructuralAnalysisComparisonRowTests.The_comparator_does_no_input_output_and_keeps_no_clock_or_state (el esqueleto no tiene E/S ni reloj; guarda de forma), StructuralAnalysisComparisonVerdictTests.The_tolerances_are_the_ones_of_the_freeze (las constantes de tolerancia estan en el esqueleto), StructuralAnalysisComparisonToolTests.The_product_does_not_contain_the_marker_of_an_injection (el producto no contiene el marcador antes ni despues), The_exit_codes_are_distinct_and_pass_is_zero (constantes de salida en el esqueleto), The_tool_is_in_the_solution_under_tools_and_in_the_tests_project_but_not_in_the_plugin y The_tool_is_an_executable_with_only_the_application_reference_and_no_package (proyecto, entrada de solucion y referencia ya existen en el esqueleto). Autopruebas de INV-14 y de literales partidos (StructuralAnalysisSourceGuardTests, StructuralAnalysisRamElementsHardeningGuardTests, StructuralAnalysisRamElementsGuardTests) en el RED: 137/137. Suite Core completa en GREEN: 14078/14078.",
+    "(4) dotnet build RackCad.sln -c Release -v:minimal (salida en work/release-build.txt): 0 errores, 63 advertencias, todas anteriores a la tarea (MSB3277 de conflictos de referencias de AutoCAD del Plugin y xUnit2013 de pruebas existentes de otros archivos); 0 advertencias en archivos del diff; CS0649 y xUnit2013 ya no aparecen en StructuralAnalysisComparisonSupport.cs ni en StructuralAnalysisComparisonToolTests.cs (antes 65 advertencias)."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "Las corridas de pruebas se hicieron con el arbol de trabajo sin confirmar (antes del commit), por eso TreeSha es null; el contenido probado equivale a src, tools y tests del commit siguiente (el diff 0e9bbc29 vacio y el de pruebas vacio se comprobaron sobre el commit)."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller de la entrega de la correccion (RED c4660703, GREEN 7efacd78).",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

@@ -1650,3 +1650,48 @@ providers, evitando dos representaciones de la matriz D-06. **No cambiar semánt
   `ComputedParametersRackMetricIdsTests` vive en `RackMetricIdsTests.cs`).
 
 Ninguno es necesario para READY ni corrige una afirmación normativa falsa; no se aplicaron antes de integrar.
+
+## I-65 — hallazgos fuera de alcance y seguimientos (2026-11-03, registrados sin corregir)
+
+### FOLLOWUP-I65-01 — desinstalar el bundle del Autoloader no limpia el registro de usuario
+
+**Hallazgo** (W-R1b, HB-05c; aceptado por el Owner en las decisiones §122). Al primer arranque de AutoCAD con el bundle en
+`%APPDATA%\Autodesk\ApplicationPlugins`, AutoCAD escribe en HKCU `Applications\RackCad` (`LOADCTRLS` = 2 y `LOADER` hacia el DLL del bundle),
+`Loaded\…\RackCad.bundle` y el valor `AssemblyMap\RackCad.Plugin`, aunque se pulse «Load Once». Borrar la carpeta del bundle no limpia esas
+entradas, y AutoCAD intenta cargar en cada arranque un DLL que ya no existe. Los perfiles de baja integridad
+`HKCU\Software\appdatalow\…\CoreUser\*` conservan además copias de instalaciones anteriores.
+
+**Seguimiento:** documentar en la guía de despliegue un procedimiento de desinstalación que cubra esas entradas, o un script de
+desinstalación con respaldo previo, y decidir con el Owner qué se limpia. En el equipo de validación quedan, por decisión del Owner,
+`AssemblyMap\RackCad.Plugin` y las copias de `appdatalow`.
+
+### FOLLOWUP-I65-02 — guarda de productor único del modelo estructural
+
+`StructuralModelBuilder.BuildStructuralModel` es hoy el único productor del `StructuralModel`, pero ninguna guarda lo impone (FOUNDATIONS,
+«Structural Analysis Model», Known limitations). Una guarda de fuente lo fijaría.
+
+### FOLLOWUP-I65-03 — `RACKRAMPAQUETE` imprimiría `Valid` sin tabla (A65-F4R-07)
+
+Limitación documentada (decisiones CD-I65-F4-168). `RackRamElementsCommands` mostraría «Valid.» si un resultado `Valid` llegara con
+`Table == null`; el Architect recomendó informar `Invalid`. Sin cambio en V1.
+
+### Ampliaciones de alcance diferidas por el Freeze de I-65
+
+- Más casos Cantilever: doble cara, `NegativeY`, inclinación de más de 10°, C/L y canales pareados (hoy rechazados con su código, OV-I65-03).
+- Peso propio, combinaciones, momentos y cargas distribuidas.
+- Análisis y lectura de resultados (D-14; F6 queda fuera del alcance, Q-O5).
+- Otros sistemas (implementar `IStructuralModelSource`) y otros proveedores (carpeta propia bajo `Providers/`).
+- RACKAYUDA con el comando nuevo (R-D8 = A).
+
+### Limitaciones de ingeniería que siguen abiertas
+
+- Edición formal del catálogo de RAM: UNKNOWN (DIF-04).
+- DIF-01 (peso unitario de RAM frente a AISC, −0.62 %): informativa; no vale si interviene el peso propio.
+- Trazabilidad de las sesiones de RAM: operativa, no criptográfica (R-D3, opción 0).
+- Propiedades de sección y material: la API no las expone; dependen de D-09.
+
+### Precisión documental de los procedimientos de READY
+
+Los procedimientos de READY (§1.2) citan los árboles de las bases de RAM con el método de Python, pero dicen medirlos con
+`w2_hostsnap.ps1`, que usa otro formato (A65-F5F-03). W-R2 midió con los dos (decisiones CD-I65-FC-69 (a)). Conviene unificar el texto si
+se reutilizan.

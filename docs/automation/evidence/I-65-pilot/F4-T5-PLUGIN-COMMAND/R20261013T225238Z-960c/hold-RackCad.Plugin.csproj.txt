@@ -1,0 +1,77 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <OutputType>Library</OutputType>
+    <AutoCADInstallDir Condition="'$(AutoCADInstallDir)' == ''">C:\Program Files\Autodesk\AutoCAD 2025</AutoCADInstallDir>
+    <UseAutoCADNuGetReferences Condition="'$(UseAutoCADNuGetReferences)' == ''">false</UseAutoCADNuGetReferences>
+  </PropertyGroup>
+  <!-- Compile-only references for CI. AutoCAD remains required at runtime; Autodesk runtime
+       assets are excluded and its DLLs must not be redistributed. -->
+  <ItemGroup Condition="'$(UseAutoCADNuGetReferences)' == 'true'">
+    <PackageReference Include="AutoCAD.NET"
+                      Version="[25.0.1]"
+                      PrivateAssets="all"
+                      ExcludeAssets="runtime" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RackCad.Domain\RackCad.Domain.csproj" />
+    <ProjectReference Include="..\RackCad.Application\RackCad.Application.csproj" />
+    <ProjectReference Include="..\RackCad.UI\RackCad.UI.csproj" />
+  </ItemGroup>
+  <!-- Ship versioned catalogs next to the plugin DLL so JsonRackCatalogProvider.FromBaseDirectory() resolves them. -->
+  <ItemGroup>
+    <Content Include="..\..\assets\catalogs\*.json;..\..\assets\catalogs\*.csv;..\..\assets\catalogs\*.dwg" Link="catalogs\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\assets\structural-analysis\ram-elements\section-material-map.json" Link="structural-analysis/ram-elements/section-material-map.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseAutoCADNuGetReferences)' != 'true'">
+    <Reference Include="AcCoreMgd">
+      <HintPath>$(AutoCADInstallDir)\AcCoreMgd.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="AcDbMgd">
+      <HintPath>$(AutoCADInstallDir)\AcDbMgd.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="AcMgd">
+      <HintPath>$(AutoCADInstallDir)\AcMgd.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Assemble the AutoCAD Autoloader bundle from the PUBLISH output. The canonical, reproducible
+       flow is `dotnet publish` (deploy\build-bundle.ps1 wraps it; deploy\verify-bundle.ps1 checks it);
+       a plain `dotnet build` no longer emits a bundle. Layout: RackCad.bundle\PackageContents.xml
+       (generated from deploy\RackCad.bundle\PackageContents.template.xml with the central
+       $(RackCadVersion) and AutoCAD series — never hand-duplicated) + Contents\{the four RackCad DLLs,
+       catalogs\}. Copy that folder to %AppData%\Autodesk\ApplicationPlugins\ (or run
+       deploy\install-bundle.ps1) for auto-load. Autodesk compile references stay out of the output
+       (ADR-0003): the bundle carries only RackCad assemblies and its own catalogs. -->
+  <Target Name="AssembleAutoloaderBundle" AfterTargets="Publish">
+    <PropertyGroup>
+      <BundleRoot>$(PublishDir)RackCad.bundle</BundleRoot>
+      <BundleContents>$(BundleRoot)\Contents</BundleContents>
+      <PackageContentsTemplate>$(MSBuildProjectDirectory)\..\..\deploy\RackCad.bundle\PackageContents.template.xml</PackageContentsTemplate>
+      <_BundleManifestText>$([System.IO.File]::ReadAllText('$(PackageContentsTemplate)'))</_BundleManifestText>
+      <_BundleManifestText>$(_BundleManifestText.Replace('@RACKCAD_VERSION@', '$(RackCadVersion)'))</_BundleManifestText>
+      <_BundleManifestText>$(_BundleManifestText.Replace('@RACKCAD_SERIES_MIN@', '$(RackCadAutoCADSeriesMin)'))</_BundleManifestText>
+      <_BundleManifestText>$(_BundleManifestText.Replace('@RACKCAD_SERIES_MAX@', '$(RackCadAutoCADSeriesMax)'))</_BundleManifestText>
+    </PropertyGroup>
+    <ItemGroup>
+      <BundleAssemblies Include="$(PublishDir)RackCad.Plugin.dll;$(PublishDir)RackCad.Application.dll;$(PublishDir)RackCad.Domain.dll;$(PublishDir)RackCad.UI.dll" />
+      <BundleCatalogFiles Include="$(MSBuildProjectDirectory)\..\..\assets\catalogs\*.json;$(MSBuildProjectDirectory)\..\..\assets\catalogs\*.csv;$(MSBuildProjectDirectory)\..\..\assets\catalogs\*.dwg" />
+    </ItemGroup>
+    <!-- The bundle is generated output, not a writable source. Recreate it on every publish so
+         removed catalogs and assemblies cannot survive from an older configuration. -->
+    <RemoveDir Directories="$(BundleRoot)" />
+    <MakeDir Directories="$(BundleRoot)" />
+    <WriteLinesToFile File="$(BundleRoot)\PackageContents.xml" Lines="$(_BundleManifestText)" Overwrite="true" WriteOnlyWhenDifferent="false" Encoding="UTF-8" />
+    <Copy SourceFiles="@(BundleAssemblies)" DestinationFolder="$(BundleContents)" SkipUnchangedFiles="false" />
+    <Copy SourceFiles="@(BundleCatalogFiles)" DestinationFiles="@(BundleCatalogFiles->'$(BundleContents)\catalogs\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
+    <Message Importance="high" Text="RackCad Autoloader bundle v$(RackCadVersion): $(BundleRoot)" />
+  </Target>
+</Project>

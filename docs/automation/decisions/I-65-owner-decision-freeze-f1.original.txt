@@ -1,0 +1,55 @@
+I-65 — Owner Decision: Conditional GO for Freeze and F1
+Continúa I-65 desde el estado publicado en `dc3afdda`.
+Decisión del Owner
+Apruebo condicionalmente el Freeze de Proposal V3.1 y la aceptación de ADR-0050.
+Autorizo F1 únicamente después de completar satisfactoriamente las verificaciones siguientes.
+1. Verificación previa
+
+* Confirma que todas las ejecuciones pendientes de CI hayan terminado en PASS.
+* Verifica el blob exacto de Proposal V3.1 (`11062a91…`).
+* Confirma que el Architect mantiene AGREED sobre esos mismos bytes.
+* Verifica que no aparecieron conflictos con iniciativas paralelas.
+* Confirma que ADR-0050 corresponde a la arquitectura acordada y no introduce cambios incompatibles con autoridades existentes.
+
+Si alguna condición falla, detente y presenta el conflicto.
+2. Freeze
+Si todo está conforme:
+
+* Registra ADR-0050 como ACCEPTED.
+* Ejecuta el Freeze conforme a Workflow V2.
+* Mantén inmutable el alcance congelado.
+* Registra el SHA exacto del Freeze y la evidencia del consenso Coordinator–Architect.
+
+No aproveches el Freeze para introducir cambios adicionales al diseño.
+3. Autorización F1
+F1 IMPLEMENTATION AUTHORIZATION = YES, exclusivamente para el alcance definido en Proposal V3.1.
+Aplica el protocolo I-61 vigente.
+Mantén las fronteras de propiedad de ID30, I-62 y demás iniciativas paralelas.
+No implementes F3, F4, F5, F6 ni integraciones de interfaz gráfica durante F1.
+4. Requisitos de ingeniería
+La implementación debe conservar estos contratos:
+
+* RackCad/DWG es la autoridad de diseño.
+* StructuralModel es una representación analítica derivada.
+* RAM Elements es un consumidor externo.
+* Las propiedades de materiales requieren mapeos explícitos, trazables y validados.
+* Las idealizaciones de apoyos, conexiones y cargas no constituyen validación estructural.
+* No se permiten conversiones de unidades implícitas.
+* Ningún modelo inválido puede exportarse parcialmente.
+* Los Core tests no dependen de RAM instalado.
+
+No infieras automáticamente grados de acero ni propiedades mecánicas a partir del nombre del perfil.
+5. Entregable al concluir F1
+Presenta:
+
+1. SHA final y estado de CI.
+2. Cambios implementados.
+3. Pruebas y resultados.
+4. Invariantes verificadas.
+5. Riesgos residuales.
+6. Cumplimiento del Freeze.
+7. Veredicto de conformidad.
+8. Recomendación para el siguiente gate.
+
+No avances automáticamente a F3 ni a ningún otro gate.
+La autorización concedida termina al concluir F1.

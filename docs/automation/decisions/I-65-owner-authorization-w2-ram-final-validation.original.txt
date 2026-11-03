@@ -1,0 +1,146 @@
+I-65 — OWNER AUTHORIZATION
+F4 Final Validation — W2 RAM Elements
+He revisado el informe de W1 registrado en `35550123` y `5990c353`, ambos con CI 4/4 satisfactorio.
+1. Decisión
+W1 = ACCEPTED / PASS.
+Reconozco:
+
+* Los paquetes `pkg-OV01` y `pkg-OV04` generados como Valid, ambos con validador 16/16.
+* La coincidencia 117/117 con REF-CANT-01.
+* Los cinco escenarios OV-03 con diagnósticos correctos y sin paquete.
+* El resultado de preflight/POST sin cambios prohibidos.
+* La recomprobación de I-52 sin deriva.
+
+W2 PROCEDURE PREPARATION = AUTHORIZED.
+W2 RAM EXECUTION = CONDITIONAL GO.
+La autorización de ejecución solo entra en vigor cuando el procedimiento de W2 esté versionado, su CI sea satisfactoria y se cumplan todas las condiciones de entrada.
+2. Procedimiento obligatorio
+Prepara y publica un procedimiento paso a paso antes de abrir RAM Elements.
+Debe especificar para cada caso:
+
+* Paquete y SHA-256 exactos.
+* Estado inicial exigido del modelo.
+* Script que se ejecutará.
+* Resultado esperado.
+* Evidencia que determina PASS/FAIL.
+* Condiciones de parada.
+* Procedimiento para descartar el modelo sin guardar.
+
+No alteres los paquetes ya generados ni los inyectados.
+3. OV-I65-01 — Equivalencia final
+Autoriza una sola ejecución de `pkg-OV01` sobre un modelo nuevo y vacío.
+Exige:
+
+1. READBACK OK.
+2. Huella de entrada coincidente.
+3. Volcado independiente dentro de la misma sesión.
+4. Comparación con el volcado manual de P2 `c4a98fb0…`.
+5. Registro explícito del hash del volcado manual en el informe.
+6. Comparador PASS sobre geometría, conectividad, orientaciones, perfiles, materiales, apoyos, liberaciones y cargas.
+7. Cero combinaciones verificadas conforme a CMB-3.
+
+No reutilices el readback automático de P2.
+Mantén DIF-01 como limitación informativa, sin peso propio.
+4. OV-I65-04 — Modelo no vacío
+Autoriza ejecutar `pkg-OV04` sobre un modelo desechable que contenga previamente un nudo de prueba.
+Resultado obligatorio:
+
+* Rechazo antes de cualquier escritura.
+* El modelo conserva exactamente su contenido inicial.
+* No se genera lectura de vuelta válida.
+
+No utilices el modelo generado durante OV-01 para esta prueba.
+5. OV-I65-05 — Sección inexistente
+Ejecuta `inj-OV05` sobre un modelo nuevo y vacío.
+Resultado esperado:
+
+* Error controlado y mensaje FAILED — DISCARD MODEL.
+* Evidencia del rechazo de la sección.
+* Ningún resultado presentado como válido.
+
+Si RAM deja elementos parciales, documenta su estado y descarta el modelo sin guardar.
+6. OV-I65-06 — Orientación invertida
+Ejecuta `inj-OV06` sobre un modelo nuevo y vacío.
+Resultado esperado:
+
+* Detección de ejes/orientación incompatibles.
+* FAILED, sin READBACK OK.
+* Modelo descartado sin guardar.
+
+7. OV-I65-07 — Incompatibilidad de API
+Ejecuta por separado:
+
+* `inj-OV07a`: versión API incorrecta.
+* `inj-OV07b`: función API inexistente.
+
+Cada prueba requiere un modelo nuevo y vacío.
+Resultado esperado:
+
+* Rechazo antes de crear elementos.
+* Modelo permanece vacío.
+* Sin lectura de vuelta válida.
+
+8. Condiciones de seguridad
+Antes de abrir RAM:
+
+1. Confirmar que nadie utiliza el equipo.
+2. Confirmar que RAM está cerrado.
+3. Comprobar el hash de `RAMElements.exe` y la versión `ramelements` 0.1.0.
+4. Confirmar integridad de las bases de secciones y materiales.
+5. Verificar hashes de paquetes y scripts.
+6. Confirmar que los destinos de readback están vacíos.
+7. Respaldar `Config.ini`.
+8. Avisar a I-64 y confirmar ausencia de conflicto con sus capturas.
+9. Preparar la fotografía K1/K2 de los checkouts.
+
+Utiliza Computer Use mediante los permisos normales de la aplicación.
+No ejecutes análisis estructural.
+9. Reglas de ejecución
+
+* Una ejecución por paquete.
+* Un modelo desechable por escenario.
+* No reintentar tras un fallo inesperado.
+* No modificar configuraciones de seguridad.
+* No guardar modelos de RAM.
+* No utilizar otros scripts.
+* No modificar código o datos de RackCad.
+* No reutilizar la lectura de vuelta de P2 como resultado final.
+
+Si una condición de parada se cumple, registra el resultado y detén las operaciones dependientes. No ocultes fallos ni cambies paquetes para conseguir PASS.
+10. Evidencia y cierre
+Registra:
+
+* Identidades y hashes antes y después.
+* Capturas de RAM.
+* Consola y diagnósticos.
+* Lecturas de vuelta y volcados.
+* Informe del comparador.
+* Confirmación de cero combinaciones.
+* Cambios de `Config.ini`.
+* Estado final de los checkouts.
+* Avisos de apertura y cierre de la ventana.
+
+Si W2 termina, presenta un informe con el resultado de cada OV y las diferencias frente a los oráculos.
+11. Límites
+W1 = PASS.
+W2 PREPARATION = APPROVED.
+W2 RAM EXECUTION = CONDITIONAL GO.
+PRODUCT CODE CHANGES = NO.
+AUTOCAD EXECUTION = NO.
+STRUCTURAL ANALYSIS = NO.
+F4 GATE PASS = NOT YET AUTHORIZED.
+No iniciar F5, F6 ni F7.
+Después de W2, detente y solicita la revisión final de cierre de F4, incluso si todas las pruebas pasan.
+12. Entregable
+Presenta:
+
+1. Resultado de OV-01 y OV-04 a OV-07.
+2. Matriz de equivalencia.
+3. Fallos controlados y evidencias.
+4. Integridad de los paquetes.
+5. Resultado de preflight/POST.
+6. Estado del host.
+7. Desviaciones e incidencias.
+8. Recomendación GO / NO-GO para GATE PASS de F4.
+
+Continúa autónomamente dentro del alcance autorizado y detente antes de declarar GATE PASS.

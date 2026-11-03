@@ -1,0 +1,113 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-D-SECTION-MAP-VERIFIED",
+  "RunId": "R20261016T145459Z-8301",
+  "DelegationRunId": "R20261016T144346Z-4eaf",
+  "Initiative": "I-65",
+  "Gate": "F4",
+  "Attempt": 6,
+  "BaseSha": "e886b5577ad565ef4a55bb2e535b7d463f345b79",
+  "RedSha": "fe9b6720b7b261a63b4ff7b4a246255dec8b7265",
+  "CurrentSha": "d548fb0bee59b6145b65aa6cde8a8e99936d3e1e",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural",
+  "Pushed": true,
+  "FilesChanged": [
+    "assets/structural-analysis/ram-elements/section-material-map.json",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandProductTableTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsMapReaderTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageValidationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsTranslationTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSectionMapVerifiedTests.cs"
+  ],
+  "WorkCompleted": "RED (fe9b6720): prueba nueva StructuralAnalysisSectionMapVerifiedTests (6 pruebas) y las ediciones nombradas proposed -> verified en cuatro archivos de pruebas; 13 fallos por asercion de 1795 con la tabla proposed. GREEN (d548fb0b): solo la tabla, copia byte a byte del archivo objetivo; filtro 1795/1795, suite completa 14390/14390, RackCad.sln Release 0 errores.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-filter",
+      "Command": "C:/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysis\" --logger \"trx;LogFileName=red-filter.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/6/R20261016T145459Z-8301/tests/red-filter",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/6/R20261016T145459Z-8301/tests/red-filter/red-filter.trx"
+    },
+    {
+      "RunRef": "green-filter",
+      "Command": "C:/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysis\" --logger \"trx;LogFileName=green-filter.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/6/R20261016T145459Z-8301/tests/green-filter",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/6/R20261016T145459Z-8301/tests/green-filter/green-filter.trx"
+    },
+    {
+      "RunRef": "green-full",
+      "Command": "C:/Users/alejandra-mendoza/AppData/Local/Microsoft/dotnet/dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=green-full.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/6/R20261016T145459Z-8301/tests/green-full",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-D-SECTION-MAP-VERIFIED/6/R20261016T145459Z-8301/tests/green-full/green-full.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-filter",
+      "Selected": 1795,
+      "Passed": 1782,
+      "Failed": 13,
+      "Skipped": 0,
+      "FailedTests": [
+        "StructuralAnalysisSectionMapVerifiedTests.CambiarUnCampoDeUnaFilaVerifiedCambiaLaHuellaDelPaquete",
+        "StructuralAnalysisSectionMapVerifiedTests.RefCant01ConLaTablaDistribuidaEsValidoConLosMismosDiagnosticosQueConLaTablaVerifiedDeFixture",
+        "StructuralAnalysisSectionMapVerifiedTests.ElLectorLeLaTablaDistribuidaValidaSinDiagnosticosConLasDosFilasVerified",
+        "StructuralAnalysisSectionMapVerifiedTests.LaFilaDeLaColumnaLlevaLosValoresAprobadosPorElOwner",
+        "StructuralAnalysisSectionMapVerifiedTests.LaFabricaDaUnPaqueteValidoEnMemoriaConLaTablaDistribuidaSinEscribirLaCarpeta",
+        "StructuralAnalysisSectionMapVerifiedTests.LaFilaDelBrazoLlevaLosValoresAprobadosPorElOwner",
+        "StructuralAnalysisRamElementsPackageValidationTests.ConLaTablaDelProductoTalComoSeEntregaElResultadoEsValidoConContenidoEnMemoria",
+        "StructuralAnalysisPluginCommandProductTableTests.ConLaTablaDeProducto_LaEstacionEsValida_ConModelo_YSinElDiagnosticoDeFilaSinVerificar",
+        "StructuralAnalysisPluginCommandProductTableTests.ConLaTablaDeProducto_LaFabricaDaUnPaqueteValidoEnMemoria_SinCrearLaCarpeta",
+        "StructuralAnalysisPluginCommandProductTableTests.LaTablaDeProductoSeLeeYTodasSusFilasEstanVerified",
+        "StructuralAnalysisRamElementsMapReaderTests.ElArchivoDeDatosEsValidoYTieneExactamenteLasDosFilasVerifiedDeRefCant01",
+        "StructuralAnalysisRamElementsMapReaderTests.ConLaTablaTalComoSeEntregaLaExportacionDeRefCant01EsValidaYNoHayFilasSinVerificar",
+        "StructuralAnalysisRamElementsMapReaderTests.ElArchivoDeDatosTraeLosValoresDeIngenieriaYLaVerificacionAprobados"
+      ]
+    },
+    {
+      "RunRef": "green-filter",
+      "Selected": 1795,
+      "Passed": 1795,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-full",
+      "Selected": 14390,
+      "Passed": 14390,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "(1) Directorio efectivo al empezar: pwd (Bash) = /d/Documentos/Codex/Calculadora de racks; Get-Location (PowerShell) = D:\\Documentos\\Codex\\Calculadora de racks; [Environment]::CurrentDirectory = D:\\Documentos\\Codex\\Calculadora de racks. Ninguno es el worktree. Toda operacion de archivos uso rutas absolutas bajo el worktree; git siempre con git -C; dotnet con la ruta absoluta del proyecto o la solucion; no se uso cd ni Set-Location ni ningun interprete Python. Un heredoc de Bash escribio un archivo temporal de prueba (y el archivo de sondeo en work/) con ruta absoluta del worktree; el archivo temporal se elimino y git status quedo limpio.",
+    "Previo: git status limpio, HEAD = BaseSha e886b5577ad565ef4a55bb2e535b7d463f345b79 y ls-remote origin igual a BaseSha.",
+    "(2) Invariantes y pruebas: D-INV-01/D-INV-02 (valores y literales de cada fila) -> StructuralAnalysisSectionMapVerifiedTests.LaFilaDeLaColumnaLlevaLosValoresAprobadosPorElOwner y .LaFilaDelBrazoLlevaLosValoresAprobadosPorElOwner (name/table/country, materialId, ramMaterial, E 29000 ksi, nu 0.3, G null, 490 pcf, source completo, verifiedBy de 43 caracteres, verifiedOn); lector Valid, sin diagnosticos, dos filas Verified -> .ElLectorLeLaTablaDistribuidaValidaSinDiagnosticosConLasDosFilasVerified; D-INV-04 REF-CANT-01 -> .RefCant01ConLaTablaDistribuidaEsValidoConLosMismosDiagnosticosQueConLaTablaVerifiedDeFixture; paquete en memoria sin escribir -> .LaFabricaDaUnPaqueteValidoEnMemoriaConLaTablaDistribuidaSinEscribirLaCarpeta; huella INV-04 -> .CambiarUnCampoDeUnaFilaVerifiedCambiaLaHuellaDelPaquete. Se conservan las pruebas de tabla proposed de fixture (precedencia, traduccion).",
+    "(3) Blobs de la tabla: git hash-object assets/structural-analysis/ram-elements/section-material-map.json (antes del commit GREEN) = d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2; git rev-parse BaseSha:docs/automation/evidence/I-65-f4/f4d-table-target.json = d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2; git rev-parse HEAD:assets/structural-analysis/ram-elements/section-material-map.json (despues del commit) = d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2. Los tres iguales. git diff --name-only RED GREEN = solo la tabla; git diff --name-only BaseSha RED no incluye la tabla.",
+    "(4) Observado con la tabla verified: lector Valid con 0 diagnosticos y dos filas Verified (IsVerified). REF-CANT-01 (estacion 0) con la tabla distribuida: Valid, Model no nulo, 0 diagnosticos; con la tabla verified de fixture F.RefTable(): Valid, 0 diagnosticos; el conjunto de codigos es identico (vacio) y la prueba lo asevera. Paquete en memoria: Valid, Package no nulo, carpeta bajo Path.GetTempPath() inexistente antes y despues. AnalysisInputFingerprint con la tabla distribuida = 4defdcd411b065edc75dcda93ffa6f6e170e21cf64e140f54b90b5528d3e3167; con verifiedOn cambiado a 2026-10-17 en una copia en memoria (sigue Valid) = ed11f1508e86058633954005d9941fb85f5d99304d419b9ba11be952190c3604. Estos valores se midieron con una prueba temporal no versionada (eliminada) y coinciden con lo que asevera la prueba de huella.",
+    "(5) dotnet build RackCad.sln -c Release: 0 errores, 63 advertencias, todas preexistentes (xUnit2013/2029/2031/2000 y similares en otros archivos); ninguna advertencia CS, MSB, NU o NETSDK en los archivos del diff (filtrado por nombre de archivo, sin resultados). Registro en work/build.log.",
+    "(6) Pruebas que pasan ya en el RED: 1782 de 1795, entre ellas las que usan tablas proposed de fixture creadas en su propio archivo (UnaFilaProposedNuncaSeTrataComoVerified, LaPrecedenciaEsLaDeCdI65F104InvalidGanaAUnsupported, UnResultadoQueNoEsValidoSePropagaConSuResultadoYSinPlan, que no leen la tabla distribuida), LasDosFilasDelArchivoLlevanLosNombresQueRamAceptoEnP1 y UnKindDistintoDeCantilever_NoEsElDelSobreCantilever (no dependen del estado de la tabla), y el resto de la seleccion ajena a la tabla.",
+    "(7) Diffs de las ediciones nombradas (git diff BaseSha RED sobre cada archivo): MapReaderTests: la primera prueba pasa a exigir Verified e IsVerified y los mismos dos ids; la segunda exige table, country, E 29000, nu 0.3, G null, peso 490, source no vacio, verifiedBy y verifiedOn aprobados (antes todo null); la tercera exige Valid con Model y 0 diagnosticos MaterialRowUnverified (antes Unsupported, sin modelo y 2 diagnosticos). PackageValidationTests: la prueba de tabla del producto exige Valid con Package y sin diagnosticos bloqueantes, con el modelo construido a partir de la tabla del producto (ver Deviations); la de precedencia usa una tabla proposed de fixture (F.Table(F.Document(F.ColumnRow(), ProposedArmRow()))) y conserva todas sus aserciones (Invalid, FolderInvalid, SectionRowUnverified, ImpliedOutcome Unsupported). TranslationTests: la prueba de propagacion usa la misma tabla proposed de fixture con un ayudante privado nuevo y conserva sus aserciones (Unsupported, MaterialRowUnverified, ModelNotValid, sin plan). ProductTableTests: lee Verified, estacion Valid con modelo, fabrica Valid con carpeta absoluta bajo Path.GetTempPath() que no se crea, kind distinto sin cambios, comentario de clase actualizado. No se debilita ninguna observacion: las aserciones de comportamiento proposed se conservan en tablas de fixture o se reemplazan por sus equivalentes verified."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [],
+  "Deviations": [
+    "En PackageValidationTests.ConLaTablaDelProductoTalComoSeEntregaElResultadoEsValidoConContenidoEnMemoria el modelo se construye con la tabla del producto (F.ValidRefModel(shipped.Table)) y no con la tabla de fixture: un modelo construido con los materiales de fixture (E 111.5, peso 222.5) no coincide con los de la tabla del producto y la fabrica da Invalid. La cobertura buscada (paquete Valid con contenido en memoria con la tabla del producto) se mantiene."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller sobre el SHA d548fb0bee59b6145b65aa6cde8a8e99936d3e1e y recogida de las corridas push.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "rackcad-ram-elements-section-map/v1",
+  "rows": [
+    {
+      "sectionId": "AISC-W-W12X26",
+      "ramSection": {
+        "name": "W 12X26",
+        "table": "W",
+        "country": "United States"
+      },
+      "materialId": "ASTM-A992-GR50",
+      "ramMaterial": "A992 Gr50",
+      "expectedMaterial": {
+        "elasticModulus": {
+          "value": 29000,
+          "unit": "ksi"
+        },
+        "poissonRatio": 0.3,
+        "shearModulus": null,
+        "unitWeight": {
+          "value": 490,
+          "unit": "pcf"
+        },
+        "source": "Geometry: AISC Shapes Database v16.0 (Aug 2023; file SHA-256 82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496), row W12X26 as published: A 7.65 in2, Ix 204 in4, Iy 17.3 in4, J 0.300 in4; independent derivation within 0.24 %. Material: ASTM A992/A992M Grade 50 (current ASTM edition A992/A992M-22). E 29000 ksi and nu 0.30: modeling conventions for structural steel accepted at verification; primary citation not read in I-65. Unit weight 490 pcf: steel density implied by the AISC v16.0 HSS nominal weights (median 490.00 pcf). RAM: United States/W/W 12X26, material A992 Gr50 (E 29000 ksi, nu 0.3, 486.94 pcf). DIF-01: RAM unit weight -0.62 %, informative only for the pilot transfer test without self weight; RAM values are not equivalent for later analyses. RAM catalog formal edition not verified. Ref: I-65 F4 engineering approval package."
+      },
+      "status": "verified",
+      "verifiedBy": "Mario Pérez — Owner / Engineering Validator",
+      "verifiedOn": "2026-10-16"
+    },
+    {
+      "sectionId": "AISC-HSS-RECT-HSS4X4X_250",
+      "ramSection": {
+        "name": "HSS_SQR 4X4X1_4",
+        "table": "HSS_SQR",
+        "country": "United States"
+      },
+      "materialId": "ASTM-A500-GRC",
+      "ramMaterial": "A500 GrC rectangular",
+      "expectedMaterial": {
+        "elasticModulus": {
+          "value": 29000,
+          "unit": "ksi"
+        },
+        "poissonRatio": 0.3,
+        "shearModulus": null,
+        "unitWeight": {
+          "value": 490,
+          "unit": "pcf"
+        },
+        "source": "Geometry: AISC Shapes Database v16.0 (Aug 2023; file SHA-256 82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496), row HSS4X4X1/4 as published: tnom 0.25 in, tdes 0.233 in (0.93 tnom), A 3.37 in2, Ix = Iy 7.80 in4, J 12.8 in4; independent derivation with outside corner radius 2 tdes within 0.15 %. Material: ASTM A500/A500M Grade C, square and rectangular (current ASTM edition A500/A500M-23). E 29000 ksi and nu 0.30: modeling conventions for structural steel accepted at verification; primary citation not read in I-65. Unit weight 490 pcf: steel density implied by the AISC v16.0 HSS nominal weights (median 490.00 pcf). RAM: United States/HSS_SQR/HSS_SQR 4X4X1_4, material A500 GrC rectangular, not A500 GrC rounded (E 29000 ksi, nu 0.3, 486.94 pcf). DIF-01: RAM unit weight -0.62 %, informative only for the pilot transfer test without self weight; RAM values are not equivalent for later analyses. RAM catalog formal edition not verified. Ref: I-65 F4 engineering approval package."
+      },
+      "status": "verified",
+      "verifiedBy": "Mario Pérez — Owner / Engineering Validator",
+      "verifiedOn": "2026-10-16"
+    }
+  ]
+}

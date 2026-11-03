@@ -1,0 +1,90 @@
+# I-65 READY: identidad de la salida del SHA propuesto del Candidato final y entradas de las ventanas W-R1/W-R2.
+# Lee la salida compilada y los blobs del SHA; escribe solo en <OutDir> y en D:\r65-smoke\<sha8>\ (output-manifest.txt, inputs\,
+# expected-inputs*.json). Las comprobaciones en seco no escriben paquetes. Sin AutoCAD ni RAM.
+# Uso: pwsh -NoProfile -File fc_identity.ps1 <worktree> <sha> <OutDir> <scratchpad-i65>
+param([string]$Wt, [string]$Sha, [string]$OutDir, [string]$Sp)
+$ErrorActionPreference = 'Stop'
+$s8 = $Sha.Substring(0, 8)
+$smk = "D:\r65-smoke\$s8"
+$bin = Join-Path $smk 'bin-Debug-net8.0-windows'
+$tool = Join-Path $smk 'ramtool'
+$bundle = Join-Path $smk 'bundle\publish\RackCad.bundle'
+$utf8 = New-Object Text.UTF8Encoding($false)
+function Sha([string]$p) { (Get-FileHash -LiteralPath $p -Algorithm SHA256).Hash.ToLower() }
+function Manifest([string]$dir, [string]$out) {
+    $rows = Get-ChildItem -LiteralPath $dir -Recurse -File | Sort-Object { $_.FullName.Substring($dir.Length + 1).Replace('\', '/') } -Culture ([Globalization.CultureInfo]::InvariantCulture) | ForEach-Object {
+        "{0}  {1}  {2}" -f $_.FullName.Substring($dir.Length + 1).Replace('\', '/'), (Sha $_.FullName), $_.Length
+    }
+    [IO.File]::WriteAllText($out, (($rows -join "`n") + "`n"), $utf8)
+    @($rows).Count
+}
+function Blob([string]$path, [string]$dest) {
+    $psi = New-Object Diagnostics.ProcessStartInfo 'git', "-C `"$Wt`" cat-file blob ${Sha}:$path"
+    $psi.RedirectStandardOutput = $true; $psi.UseShellExecute = $false
+    $pr = [Diagnostics.Process]::Start($psi); $ms = New-Object IO.MemoryStream; $pr.StandardOutput.BaseStream.CopyTo($ms); $pr.WaitForExit()
+    if ($pr.ExitCode -ne 0) { throw "git cat-file fallo: $path" }
+    if (Test-Path -LiteralPath $dest) { throw "ya existe: $dest" }
+    [IO.File]::WriteAllBytes($dest, $ms.ToArray())
+}
+$L = @()
+$L += "sha=$Sha"
+$n1 = Manifest $bin (Join-Path $smk 'output-manifest.txt')
+Copy-Item -LiteralPath (Join-Path $smk 'output-manifest.txt') -Destination (Join-Path $OutDir 'output-manifest.txt')
+$n2 = Manifest $tool (Join-Path $OutDir 'ramtool-manifest.txt')
+$L += "output_dir=$bin files=$n1 manifest_sha256=" + (Sha (Join-Path $smk 'output-manifest.txt'))
+$L += "ramtool_dir=$tool files=$n2 manifest_sha256=" + (Sha (Join-Path $OutDir 'ramtool-manifest.txt'))
+foreach ($f in 'RackCad.Plugin.dll', 'RackCad.Application.dll', 'RackCad.Domain.dll', 'RackCad.UI.dll') {
+    $p = Join-Path $bin $f
+    $L += "{0} sha256={1} productVersion={2}" -f $f, (Sha $p), (Get-Item -LiteralPath $p).VersionInfo.ProductVersion
+}
+foreach ($f in 'RackCad.StructuralAnalysis.RamTool.dll', 'RackCad.StructuralAnalysis.RamTool.exe') {
+    $p = Join-Path $tool $f
+    $L += "ramtool/{0} sha256={1} productVersion={2}" -f $f, (Sha $p), (Get-Item -LiteralPath $p).VersionInfo.ProductVersion
+}
+$tablePath = 'assets/structural-analysis/ram-elements/section-material-map.json'
+$table = Join-Path $bin 'structural-analysis\ram-elements\section-material-map.json'
+$src = Join-Path $Wt $tablePath.Replace('/', '\')
+$tb = [IO.File]::ReadAllBytes($table)
+$L += "table sha256=" + (Sha $table) + " bytes=$($tb.Length) hasCR=" + ([Array]::IndexOf($tb, [byte]13) -ge 0) + " equal_to_checkout_source=" + ((Sha $table) -eq (Sha $src)) + " blob_at_sha=" + (& git -C $Wt rev-parse "${Sha}:$tablePath").Trim()
+$L += "table checkout eol: " + ((& git -C $Wt ls-files --eol -- $tablePath) -join ' ')
+$bp = Join-Path $bundle 'Contents\RackCad.Plugin.dll'
+$bt = Join-Path $bundle 'Contents\structural-analysis\ram-elements\section-material-map.json'
+$L += "bundle files=" + @(Get-ChildItem -Recurse -File -LiteralPath $bundle).Count + " inventory_sha256=" + (Sha (Join-Path $smk 'bundle\inventory.txt')) + " plugin_sha256=" + (Sha $bp) + " productVersion=" + (Get-Item -LiteralPath $bp).VersionInfo.ProductVersion + " table_sha256=" + (Sha $bt) + " table_equal_to_checkout_source=" + ((Sha $bt) -eq (Sha $src))
+# Entradas de las ventanas desde los blobs del SHA exacto
+$inputs = Join-Path $smk 'inputs'
+[void](New-Item -ItemType Directory -Path $inputs)
+$loads = [ordered]@{
+    'ref-cant-01.loads.json' = @('tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.loads.json', '25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05')
+    'ov03a-double-face.loads.json' = @('docs/automation/evidence/I-65-f4/w1-prep/loads/ov03a-double-face.loads.json', '8e05faadbfc2304b0cebea1bf4f1187c3734391ccaaff0792c5f661444ebe87b')
+    'ov03b-negative-y.loads.json' = @('docs/automation/evidence/I-65-f4/w1-prep/loads/ov03b-negative-y.loads.json', '87e642305c6aa758ec7e6b07d7940272c91557ca23f03737c137959cba80de90')
+    'ov03c-slope-over-10deg.loads.json' = @('docs/automation/evidence/I-65-f4/w1-prep/loads/ov03c-slope-over-10deg.loads.json', '25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05')
+    'ov03d-paired-channels.loads.json' = @('docs/automation/evidence/I-65-f4/w1-prep/loads/ov03d-paired-channels.loads.json', '25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05')
+    'ov03e-section-without-row.loads.json' = @('docs/automation/evidence/I-65-f4/w1-prep/loads/ov03e-section-without-row.loads.json', '25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05')
+    'ov-i65-02.loads.json' = @('docs/automation/evidence/I-65-f5-prep/ov-i65-02.loads.json', 'd675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c')
+}
+foreach ($k in $loads.Keys) {
+    $dest = Join-Path $inputs $k
+    Blob $loads[$k][0] $dest
+    $h = Sha $dest
+    if ($h -ne $loads[$k][1]) { throw "cargas distintas: $k $h" }
+    $L += "input $k sha256=$h"
+}
+# Valores esperados del validador v2 (con el RackCad.Application.dll de esta salida); un proceso por llamada
+foreach ($pair in @(@('ref-cant-01.loads.json', 'expected-inputs.json'), @('ov-i65-02.loads.json', 'expected-inputs-ov02.json'))) {
+    $o = Join-Path $smk $pair[1]
+    & pwsh -NoProfile -File (Join-Path $Sp 'smoke2_expected_inputs.ps1') $bin (Join-Path $inputs $pair[0]) $o *> (Join-Path $OutDir ($pair[1] + '.log'))
+    if ($LASTEXITCODE -ne 0) { throw "smoke2_expected_inputs fallo: $($pair[1])" }
+    $L += "expected $($pair[1]) sha256=" + (Sha $o)
+}
+# Comprobaciones en seco (no son evidencia de OV)
+$design = Join-Path $Wt 'docs\automation\evidence\I-65-f1\ref-cant-01.design.json'
+& pwsh -NoProfile -File (Join-Path $Sp 'w1_dryrun.ps1') $bin $design $inputs (Join-Path $inputs 'ref-cant-01.loads.json') *> (Join-Path $OutDir 'w1-dryrun-output.txt')
+$L += "w1_dryrun exit=$LASTEXITCODE ok_lines=" + @(Select-String -LiteralPath (Join-Path $OutDir 'w1-dryrun-output.txt') -Pattern '-> OK').Count + " mismatch_lines=" + @(Select-String -LiteralPath (Join-Path $OutDir 'w1-dryrun-output.txt') -Pattern 'NO COINCIDE').Count
+$pl = Join-Path $OutDir 'f5-payload-line.txt'
+& pwsh -NoProfile -File (Join-Path $Sp 'f5_dryrun.ps1') $bin $design (Join-Path $inputs 'ov-i65-02.loads.json') $pl *> (Join-Path $OutDir 'f5-dryrun-output.txt')
+$L += "f5_dryrun exit=$LASTEXITCODE"
+$cmp = & python -I (Join-Path $Sp 'f5_dryrun_compare.py') $pl 2>&1
+$cmp | Set-Content -LiteralPath (Join-Path $OutDir 'f5-dryrun-compare.txt') -Encoding utf8NoBOM
+$L += "f5_dryrun_compare exit=$LASTEXITCODE last=" + @($cmp)[-1]
+[IO.File]::WriteAllText((Join-Path $OutDir 'identity.txt'), (($L -join "`n") + "`n"), $utf8)
+$L

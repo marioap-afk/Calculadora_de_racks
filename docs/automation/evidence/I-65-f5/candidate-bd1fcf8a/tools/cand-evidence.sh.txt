@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Evidencia local del SHA propuesto del Candidato de hito de F5. Uso: bash cand_evidence.sh <sha8> <out>
+set -u
+WT="C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural"
+DN="C:/Users/<usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe"
+S8="$1"; OUT="$2"; SMK="D:/r65-smoke/$S8"
+cd "$WT" || exit 9
+{ echo "HEAD=$(git -C "$WT" rev-parse HEAD) dirty=$(git -C "$WT" status --porcelain | wc -l)"; echo "start=$(date -u +%FT%TZ)"; } > "$OUT/00-head.txt"
+"$DN" --version > "$OUT/01-sdk.txt" 2>&1
+t0=$(date +%s); "$DN" test tests/RackCad.Tests/RackCad.Tests.csproj --logger "trx;LogFileName=core.trx" --results-directory "$OUT/trx" > "$OUT/02-core.txt" 2>&1; e=$?; echo "core_exit=$e secs=$(( $(date +%s)-t0 ))" >> "$OUT/02-core.txt"
+t0=$(date +%s); "$DN" test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --logger "trx;LogFileName=ui.trx" --results-directory "$OUT/trx" > "$OUT/03-ui.txt" 2>&1; e=$?; echo "ui_exit=$e secs=$(( $(date +%s)-t0 ))" >> "$OUT/03-ui.txt"
+"$DN" build src/RackCad.UI/RackCad.UI.csproj -c Debug > "$OUT/04-ui-build.txt" 2>&1; echo "ui_build_exit=$?" >> "$OUT/04-ui-build.txt"
+s=$(date -u +%FT%TZ); "$DN" build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -o "$SMK/bin-Debug-net8.0-windows" > "$OUT/05-plugin-build.txt" 2>&1; e=$?; echo "plugin_build_exit=$e start=$s end=$(date -u +%FT%TZ)" >> "$OUT/05-plugin-build.txt"
+"$DN" build tools/RackCad.StructuralAnalysis.RamTool/RackCad.StructuralAnalysis.RamTool.csproj -c Debug -o "$SMK/ramtool" > "$OUT/06-tool-build.txt" 2>&1; echo "tool_build_exit=$?" >> "$OUT/06-tool-build.txt"
+{ echo "HEAD_after=$(git -C "$WT" rev-parse HEAD) dirty_after=$(git -C "$WT" status --porcelain | wc -l)"; echo "end=$(date -u +%FT%TZ)"; } >> "$OUT/00-head.txt"
+echo DONE

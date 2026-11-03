@@ -1,0 +1,30 @@
+"""Lista (solo lectura) los archivos del checkout principal modificados en una ventana UTC, separando .git del arbol de trabajo."""
+import datetime
+import json
+import os
+import sys
+
+MAIN = r"D:\Documentos\Codex\Calculadora de racks"
+start = datetime.datetime.fromisoformat(sys.argv[1]).replace(tzinfo=datetime.timezone.utc).timestamp()
+end = datetime.datetime.fromisoformat(sys.argv[2]).replace(tzinfo=datetime.timezone.utc).timestamp()
+out = {"window": [sys.argv[1], sys.argv[2]], "worktree_files": [], "git_dir_files": []}
+for dirpath, dirnames, filenames in os.walk(MAIN):
+    for f in filenames:
+        p = os.path.join(dirpath, f)
+        try:
+            m = os.stat(p).st_mtime
+        except OSError:
+            continue
+        if start <= m <= end:
+            rel = os.path.relpath(p, MAIN).replace("\\", "/")
+            row = {"path": rel, "mtime_utc": datetime.datetime.fromtimestamp(m, datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")}
+            (out["git_dir_files"] if rel.startswith(".git/") else out["worktree_files"]).append(row)
+for k in ("worktree_files", "git_dir_files"):
+    out[k].sort(key=lambda r: r["mtime_utc"])
+json.dump(out, open(sys.argv[3], "w", encoding="utf-8"), indent=1)
+print("worktree files in window:", len(out["worktree_files"]))
+for r in out["worktree_files"][:40]:
+    print(" ", r["mtime_utc"], r["path"])
+print(".git files in window:", len(out["git_dir_files"]))
+for r in out["git_dir_files"][:40]:
+    print(" ", r["mtime_utc"], r["path"])

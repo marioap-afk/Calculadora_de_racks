@@ -1,0 +1,140 @@
+{
+ "validatorVersion": 2,
+ "package": "D:\\r65-smoke\\bd1fcf8a\\f5-R20261019T1750Z\\pkg-OV02",
+ "typedFolder": "D:\\r65-smoke\\bd1fcf8a\\f5-R20261019T1750Z\\pkg-OV02",
+ "expectedInputs": "D:\\r65-smoke\\bd1fcf8a\\expected-inputs.json",
+ "expectedInputsSha256": "c61a6e1255783f3c59f3e236c0057bbd88b3b1eabbbe424ba7dced71f22ddaf8",
+ "result": "PASS",
+ "checks": [
+  {
+   "id": "V-01",
+   "result": "PASS",
+   "detail": "carpeta existe=True; archivos=['manifest.json', 'rackcad-ram-build.py', 'structural-loads.json']; esperados=['manifest.json', 'rackcad-ram-build.py', 'structural-loads.json']"
+  },
+  {
+   "id": "V-02",
+   "result": "PASS",
+   "detail": "carpetas temporales del publicador en la carpeta padre: []"
+  },
+  {
+   "id": "V-03",
+   "result": "PASS",
+   "detail": "tres archivos no vacios: {'manifest.json': 9595, 'rackcad-ram-build.py': 18583, 'structural-loads.json': 1112}"
+  },
+  {
+   "id": "V-04",
+   "result": "PASS",
+   "detail": "manifest.json: UTF-8 estricto, JSON valido, sin BOM=True"
+  },
+  {
+   "id": "V-05",
+   "result": "PASS",
+   "detail": "files[] del manifiesto frente a los bytes reales: {'rackcad-ram-build.py': 'f7ed0b0623da43bd434c2905e3949c7d342ca4b3cd1d4d90395e0766cd8e00f9', 'structural-loads.json': 'd675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c'}"
+  },
+  {
+   "id": "V-06",
+   "result": "PASS",
+   "detail": "loadsFile={'name': 'structural-loads.json', 'sha256': 'd675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c'}; bytes del paquete d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c; archivo de cargas aprobado d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c"
+  },
+  {
+   "id": "V-07",
+   "result": "PASS",
+   "detail": "structural-loads.json identico byte a byte al archivo de cargas aprobado (D:\\r65-smoke\\bd1fcf8a\\inputs\\ov-i65-02.loads.json)"
+  },
+  {
+   "id": "V-08",
+   "result": "PASS",
+   "detail": "packageFolder='D:\\\\r65-smoke\\\\bd1fcf8a\\\\f5-R20261019T1750Z\\\\pkg-OV02'; tecleada='D:\\\\r65-smoke\\\\bd1fcf8a\\\\f5-R20261019T1750Z\\\\pkg-OV02'; carpeta real='D:\\\\r65-smoke\\\\bd1fcf8a\\\\f5-R20261019T1750Z\\\\pkg-OV02'"
+  },
+  {
+   "id": "V-09",
+   "result": "PASS",
+   "detail": "schema=rackcad-ram-build-manifest/v1 adapter={'name': 'rackcad-ram-elements-adapter', 'version': '1.0.0'} target={'product': 'RAM Elements', 'productVersion': '26.00.01.015', 'productVersionStatus': 'declared, not verified', 'package': 'ramelements', 'packageVersion': '0.1.0', 'units': 'LB_IN'}"
+  },
+  {
+   "id": "V-10",
+   "result": "PASS",
+   "detail": "source={'rackId': 'ef9c8bf9-ba13-4e3c-992c-4333d60c014e', 'kind': 'Cantilever', 'stationIndex': 0, 'sourceFingerprint': 'a7cf54885c245f121163f64c7429a95476a70e91199651c5d4062cb759a4bab2', 'generatorVersion': 'rackcad-structural-model/1'}; analysisInputFingerprint=8f36e3ce24d508e8e7ec01ea70f0dd6afc6cdfe7e37d9e842b17b5880a6f1d87"
+  },
+  {
+   "id": "V-11",
+   "result": "PASS",
+   "detail": "carpeta efectiva='D:\\\\r65-smoke\\\\bd1fcf8a\\\\f5-R20261019T1750Z\\\\pkg-OV02'; manifiesto='D:\\\\r65-smoke\\\\bd1fcf8a\\\\f5-R20261019T1750Z\\\\pkg-OV02'; tecleada='D:\\\\r65-smoke\\\\bd1fcf8a\\\\f5-R20261019T1750Z\\\\pkg-OV02'; ruta real='D:\\\\r65-smoke\\\\bd1fcf8a\\\\f5-R20261019T1750Z\\\\pkg-OV02'; huella efectiva=8f36e3ce24d508e8e7ec01ea70f0dd6afc6cdfe7e37d9e842b17b5880a6f1d87; fallidas=ninguna"
+  },
+  {
+   "id": "V-12",
+   "result": "PASS",
+   "detail": "readback={'name': 'ram-readback.json', 'repeatsAnalysisInputFingerprint': True}"
+  },
+  {
+   "id": "V-13",
+   "result": "PASS",
+   "detail": "filas del manifiesto frente a la tabla distribuida: ['AISC-HSS-RECT-HSS4X4X_250 todo igual', 'AISC-W-W12X26 todo igual']"
+  },
+  {
+   "id": "V-14",
+   "result": "PASS",
+   "detail": "mapping.rowsSha256=54ca9f6c80376d857755e68fc16d7de58a771b52cb0a0b7fa452a5df6191c98c; calculado con el DLL sobre la tabla distribuida=54ca9f6c80376d857755e68fc16d7de58a771b52cb0a0b7fa452a5df6191c98c"
+  },
+  {
+   "id": "V-15",
+   "result": "PASS",
+   "detail": "verifiedBy en bytes UTF-8 (<redactado: hex UTF-8 del verificador>) presente 2 veces sin escapes \\u ni caracteres de sustitucion"
+  },
+  {
+   "id": "V-16",
+   "result": "PASS",
+   "detail": "supuestos del piloto registrados: 7; advertencia presente"
+  }
+ ],
+ "facts": {
+  "manifest.json": {
+   "bytes": 9595,
+   "sha256Bytes": "f6cf8a91e2bbad814c8ffa60c3a9a4498f045443dd683d64fd2c7daba3b7ab85",
+   "hasCR": false,
+   "bom": false,
+   "sha256NormalizedLF": "f6cf8a91e2bbad814c8ffa60c3a9a4498f045443dd683d64fd2c7daba3b7ab85"
+  },
+  "rackcad-ram-build.py": {
+   "bytes": 18583,
+   "sha256Bytes": "f7ed0b0623da43bd434c2905e3949c7d342ca4b3cd1d4d90395e0766cd8e00f9",
+   "hasCR": false,
+   "bom": false,
+   "sha256NormalizedLF": "f7ed0b0623da43bd434c2905e3949c7d342ca4b3cd1d4d90395e0766cd8e00f9"
+  },
+  "structural-loads.json": {
+   "bytes": 1112,
+   "sha256Bytes": "d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c",
+   "hasCR": false,
+   "bom": false,
+   "sha256NormalizedLF": "d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c"
+  },
+  "assumptions": {
+   "sha256": "ab580fafa69551a1be49c0651bcbcf8468b91e7bd728e8d4f5dd196a23948818",
+   "warning": "These assumptions are hypotheses for transfer equivalence only; they are not a structural validation.",
+   "ids": [
+    "ASM-PROP-01",
+    "CON-01",
+    "IDL-NO-OFFSETS",
+    "LOD-01",
+    "SUP-01",
+    "SUP-02",
+    "SUP-03"
+   ],
+   "exclusions": [
+    "The base, the plates, the gussets, the spacers, the bracing and the round bars are not modelled as elements (SUP-02, IDL-06, CD-I65-F1-14).",
+    "No self weight, no load combinations, no nodal loads, no distributed loads and no local loads.",
+    "No springs, no rigid end offsets and no releases (D-02, D-09)."
+   ]
+  },
+  "manifest_values": {
+   "rackId": "ef9c8bf9-ba13-4e3c-992c-4333d60c014e",
+   "sourceFingerprint": "a7cf54885c245f121163f64c7429a95476a70e91199651c5d4062cb759a4bab2",
+   "generatorVersion": "rackcad-structural-model/1",
+   "analysisInputFingerprint": "8f36e3ce24d508e8e7ec01ea70f0dd6afc6cdfe7e37d9e842b17b5880a6f1d87",
+   "rowsSha256": "54ca9f6c80376d857755e68fc16d7de58a771b52cb0a0b7fa452a5df6191c98c",
+   "units": "LB_IN",
+   "packageVersion": "0.1.0"
+  }
+ }
+}

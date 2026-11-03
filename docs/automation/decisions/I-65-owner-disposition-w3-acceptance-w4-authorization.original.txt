@@ -1,0 +1,86 @@
+I-65 — OWNER DISPOSITION
+W3 Acceptance and Conditional W4 Authorization
+He recibido la recomprobación de I-52 posterior a W3, custodiada en `d4942f30`.
+1. Estado del host
+Acepto la clasificación de I-52:
+
+* Sin deriva en AutoCAD, perfil, TRUSTEDPATHS, SECURELOAD ni Applications.
+* Rutas de permisos y archivos de P2 intactos.
+* Cambios menores de interfaz y doble arranque registrados como INFORMAR, sin acción correctiva.
+
+Esto no sustituye la aceptación técnica de W3.
+2. Aceptación de W3
+W3 = CONDITIONAL ACCEPTANCE.
+Antes de declararla PASS, comprueba la evidencia custodiada de OV-I65-02:
+
+1. DLL exacta del Candidato F5.
+2. `pkg-OV02` generado como Valid.
+3. Validador 16/16.
+4. Seis cargas correctas en valor, posición y dirección.
+5. Q2 conservando la representación acordada de fracción 1.0.
+6. Hashes originales intactos.
+7. POST y coordinación del host satisfactorios.
+8. CI de la custodia en verde.
+
+Si alguno falla, no declares PASS y detente.
+Si todos están documentados, W3 = ACCEPTED / PASS sin necesidad de otra autorización.
+3. Preparación y ejecución de W4
+W4 RAM EXECUTION = CONDITIONAL GO, exclusivamente después de W3 PASS.
+Antes de abrir RAM:
+
+* Confirma la identidad de RAM Elements, su API y las bases de secciones y materiales.
+* Comprueba la integridad de `pkg-OV02`, sus scripts y destinos.
+* Respalda `Config.ini`.
+* Obtén confirmación expresa de I-64 para W4 y avisa a I-52.
+* Comprueba que nadie utilice el equipo.
+* Verifica que RAM y AutoCAD estén cerrados.
+* Ejecuta el preflight y el registro de sesión de la opción 0.
+* Respeta la ventana máxima de 2.5 horas.
+
+4. Alcance de W4
+Autorizo:
+
+1. Construir una vez el modelo generado mediante `pkg-OV02`.
+2. Comprobar READBACK OK, incluyendo las seis cargas y Q2.
+3. Obtener el volcado independiente en la misma sesión.
+4. Descartar el modelo sin guardar.
+5. Construir un modelo manual nuevo desde la especificación y la hoja de entrada aprobada, mediante Computer Use.
+6. Obtener su volcado.
+7. Descartarlo sin guardar.
+8. Ejecutar el comparador y el contraste independiente entre lectura de vuelta y volcado.
+9. Custodiar evidencias redactadas.
+10. Cerrar RAM y ejecutar POST.
+
+No utilizar el modelo generado como fuente para construir la referencia manual.
+5. Condiciones de aceptación
+W4 solo podrá declararse satisfactoria con:
+
+* Lectura de vuelta completa y correcta.
+* Seis cargas reproducidas en magnitud, posición y dirección dentro de tolerancias.
+* Comparador PASS.
+* Cero combinaciones conforme a CMB-3.
+* Peso propio excluido.
+* Trazabilidad externa completa de sesión.
+* Sin cambios prohibidos de archivos o configuración.
+
+6. Paradas
+STOP ante:
+
+* Error de preflight.
+* Conflicto con I-64.
+* Identidad o hash incorrecto.
+* READBACK FAILED.
+* Desviación de Q2 fuera de tolerancia.
+* Escrituras inesperadas.
+* Diferencias no justificadas con la referencia manual.
+* Límite de tiempo alcanzado.
+
+No modificar código ni paquetes, ni repetir una ejecución fallida sin autorización.
+7. Restricciones
+W3 = PASS ONLY IF TECHNICAL EVIDENCE CONFIRMS IT.
+W4 = CONDITIONAL GO.
+F5 GATE PASS = NO.
+F7 = NO.
+READY FINAL = NO.
+No abrir AutoCAD nuevamente ni ejecutar análisis estructural.
+Al terminar W4, entrega el informe completo y detente antes de la revisión final del gate.

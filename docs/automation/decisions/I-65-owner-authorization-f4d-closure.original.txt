@@ -1,0 +1,70 @@
+I-65 — OWNER AUTHORIZATION
+F4-D Final Negative Controls and Gate Closure
+He revisado el informe de F4-D sobre el GREEN `51fc82f1`.
+Reconozco los resultados satisfactorios de implementación, pruebas, CI, Controller y revisión independiente del Architect.
+1. Decisión del Owner
+F4-D CONTINUATION = APPROVED.
+Autorizo completar exclusivamente los controles negativos pendientes, la custodia y el cierre documental de F4-D.
+2. Presupuesto
+Codex invocation cap = 52.
+Conserva las 48 invocaciones ya consumidas.
+Las cuatro invocaciones adicionales quedan limitadas a:
+
+* nc2 — Scope.
+* nc3 — FreeText.
+* Hasta dos repeticiones justificadas, únicamente si alguna salida es inválida o existe un fallo de transporte previsto por el protocolo.
+
+No reinicies contadores.
+Mantén `attempts = 7` y `max_attempts = 9`.
+No utilices este presupuesto para planificaciones nuevas, Workers, modificaciones de código ni otras tareas.
+3. Ejecución
+
+1. Comprueba que HEAD y el SHA verificado `51fc82f1` siguen intactos.
+2. Confirma que la verificación del Controller corresponde a `R20261016T161137Z-e795`.
+3. Ejecuta nc2 y nc3 conforme al contrato vigente.
+4. Aplica los controles K1–K6.
+5. Comprueba los resultados contra sus oráculos.
+6. Registra las desviaciones conforme al protocolo, sin modificar salidas históricas.
+7. Si los controles son aceptables, realiza la custodia y el registro en Git.
+8. Ejecuta Core Full y espera la CI del SHA exacto de cierre.
+9. Entrega el informe final de F4-D.
+
+Si aparece una condición STOP o un problema que requiera cambiar código, no amplíes el alcance. Detente y presenta la incidencia.
+4. Integridad
+Mantén la tabla aprobada idéntica byte a byte al objetivo custodiado.
+Para ambas filas deben permanecer:
+`verifiedBy = "Mario Pérez — Owner / Engineering Validator"`
+`verifiedOn = "2026-10-16"`
+No alteres geometría, materiales, textos `source`, tolerancias ni el Freeze.
+No modifiques código de producción.
+5. Alcance excluido
+
+* No abrir AutoCAD.
+* No ejecutar RAM Elements.
+* No realizar NETLOAD.
+* No compilar todavía un nuevo DLL para el segundo smoke.
+* No declarar Candidato de hito.
+* No iniciar F5, F6 o F7.
+* No declarar GATE PASS de F4 completo.
+
+6. Entregable
+Presenta:
+
+1. Resultado de nc2 y nc3.
+2. SHA final y CI.
+3. Confirmación del diff de las dos filas.
+4. Resultados Core y pruebas focales.
+5. Veredicto del Controller y Architect.
+6. Desviaciones documentadas.
+7. Consumo final de Codex e intentos.
+8. Estado del contrato F4-D.
+9. Riesgos pendientes.
+10. Recomendación para el siguiente smoke con las filas verificadas.
+
+F4-D COMPLETION = AUTHORIZED.
+CODEX CAP = 52.
+F4 PRODUCT CHANGES = NOT AUTHORIZED.
+AUTOCAD EXECUTION = NO.
+RAM EXECUTION = NO.
+F4 GATE PASS = NO.
+Completa el cierre de F4-D y detente antes de preparar la siguiente ejecución real.

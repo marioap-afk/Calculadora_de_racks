@@ -1,0 +1,153 @@
+I-65 — COORDINATOR SESSION RECOVERY
+Structural Analysis Interop Foundation + RAM Elements Adapter
+Workflow: V2
+Archetype: NEW ARCHITECTURE
+Role: Coordinator de I-65
+Priority: HIGH — RECOVERY / F4 COMPLETION PLANNING
+1. Mandato
+Asume la continuidad de I-65 — Structural Analysis Interop Foundation + RAM Elements Adapter.
+La sesión anterior del Coordinator fue bloqueada por los mecanismos de seguridad de Anthropic durante una investigación de aislamiento de Workers en Windows.
+Esta nueva sesión no debe continuar esos experimentos ni intentar sortear las restricciones que provocaron el bloqueo.
+Tu objetivo es recuperar el estado verificable de I-65 y preparar la continuación de su trabajo funcional de ingeniería estructural.
+No reinicies la iniciativa, no repitas Discovery y no descartes el trabajo implementado.
+2. Estado conocido
+La iniciativa se desarrolla en la rama:
+`architecture/interop-analisis-estructural`
+Último commit publicado y confirmado antes de los experimentos sintéticos:
+`2c9b4ca6`
+Este SHA es una referencia de recuperación, no una afirmación de que sigue siendo HEAD.
+Verifica el estado real del repositorio.
+Situación conocida:
+
+* F0 — Discovery: completado.
+* P1 — Investigación y ejecución real de RAM Elements: completada.
+* Freeze de Proposal V3.1: aprobado.
+* ADR-0050: aceptado.
+* F1 — Structural Analysis Model: GATE PASS.
+* F3 — RAM Elements Adapter: GATE PASS.
+* F4-T1: verificada.
+* F4-T2: verificada.
+* F4-T3: verificada.
+* F4-T4: verificada.
+* F4-T5: pendiente, sin implementación confirmada.
+* F4: INCOMPLETE / BLOCKED.
+* F5: no autorizada.
+* F6: fuera de V1.
+
+No se ha ejecutado la primera integración real de F4 en RAM Elements.
+3. Incidente previo
+Durante F4 se identificó que un Worker modificó inadvertidamente el archivo `RackCad.sln` del checkout principal.
+El incidente fue investigado, reproducido y restaurado.
+La restauración quedó documentada en:
+`2c9b4ca6`
+El checkout principal quedó limpio y su archivo de solución restaurado.
+No repitas la restauración.
+Posteriormente se realizaron pruebas sintéticas para estudiar controles de ejecución, pero el desarrollo de C4 fue detenido y la sesión terminó bloqueada por el clasificador de seguridad.
+No continúes los experimentos con LowLaunch, niveles de integridad de Windows, restricciones de procesos, ACL, wrappers o técnicas para impedir la ejecución de herramientas.
+La investigación general de infraestructura corresponde a I-62 y a los responsables autorizados del entorno.
+4. Preflight obligatorio
+Antes de actuar, realiza comprobaciones de solo lectura:
+
+1. Verifica rama, HEAD, origin/main y estado del worktree.
+2. Confirma que el checkout principal continúa limpio.
+3. Verifica la integridad del Freeze y ADR-0050.
+4. Consulta `docs/WORKFLOW.md`, `AGENTS.md`, `docs/INITIATIVE_LIFECYCLE.md` y las autoridades actuales de I-61.
+5. Recupera los contratos y decisiones de I-65.
+6. Confirma los SHA verificados de F4-T1 a F4-T4.
+7. Comprueba las fronteras con I-52, I-62, I-64 e ID30.
+8. Identifica si existen cambios nuevos desde `2c9b4ca6`.
+
+No asumas que el checkout o las ramas permanecen exactamente en el estado previo.
+5. Evidencias relevantes
+Consulta los archivos versionados de I-65:
+
+* `docs/initiatives/I-65-discovery.md`
+* `docs/initiatives/I-65-f4-preparation.md`
+* `docs/initiatives/I-65-f4-engineering-validation-package.md`
+* `docs/initiatives/I-65-f4-partial-closure.md`
+* `docs/automation/decisions/I-65.md`
+* `docs/automation/evidence/I-65-f4/`
+* `docs/adr/0050-interoperabilidad-analisis-estructural.md`
+
+Usa los archivos actuales como autoridad y las referencias de este prompt únicamente como contexto inicial.
+6. Trabajo pendiente de F4
+La tarea funcional principal es F4-T5: integración del comando de exportación en el Plugin de RackCad.
+Además, el Architect señaló observaciones que deben resolverse o recibir una disposición explícita antes de la primera corrida real:
+
+* A65-F4-01: métrica de emparejamiento de nudos.
+* A65-F4-03: relación entre el volcado generado y la construcción.
+* A65-F4-04: comparación de paquetes de inyección.
+* A65-F4-05: categoría vacía en casos sin cargas.
+* A65-F4-06: ensayo general.
+
+No modifiques todavía el código.
+Estudia si T5 y estas observaciones pueden abordarse como una unidad funcional acotada, sin introducir arquitectura adicional ni modificar el Freeze.
+7. Condiciones de ingeniería
+Antes de declarar F4 completada, siguen pendientes:
+
+* Verificar las dos filas de sección/material.
+* Confirmar las propiedades contra fuentes técnicas independientes.
+* Resolver documentalmente la diferencia de peso unitario de −0.62 %, sin cambiar arbitrariamente tolerancias.
+* Preparar y revisar el modelo manual `REF-CANT-01`.
+* Ejecutar la comparación real entre el modelo generado desde RackCad y el modelo manual en RAM Elements.
+* Completar las validaciones positivas y negativas previstas.
+* Obtener la revisión de conformidad correspondiente.
+
+No confundas equivalencia de transferencia con validación estructural del producto.
+8. Política de ejecución
+IMPLEMENTATION AUTHORIZATION = NO.
+La presente orden autoriza únicamente:
+
+* Recuperación de contexto.
+* Lectura y verificación del repositorio.
+* Análisis de pendientes.
+* Revisión del alcance de F4-T5.
+* Preparación de una propuesta de continuación.
+* Identificación de autorizaciones necesarias.
+
+No autoriza:
+
+* Nuevas delegaciones a Workers.
+* Modificaciones de código.
+* Cambios de infraestructura.
+* Experimentos de aislamiento.
+* Reanudación automática de F4.
+* Ejecución de RAM Elements.
+* Nuevos commits.
+* Modificaciones del checkout principal.
+* Cambios en I-61 o I-62.
+
+No intentes reinterpretar una restricción de seguridad para continuar operaciones previamente detenidas.
+9. Coordinación con I-62
+I-62 conserva la responsabilidad sobre la evolución general de la infraestructura de agentes.
+No esperes necesariamente a que I-62 esté completamente integrado, pero tampoco ejecutes Workers sin un mecanismo de aislamiento aprobado y verificado.
+Puedes identificar alternativas operativas autorizadas, como un entorno aislado administrado por el Owner o TI.
+Limítate a requisitos y planificación. No configures esos entornos desde esta sesión.
+10. Entregable requerido
+Después del preflight, entrega un único informe conciso:
+
+1. Estado real de rama, HEAD y origin/main.
+2. Integridad del checkout principal.
+3. Estado exacto de F0, F1, F3 y F4.
+4. Código aprovechable de T1–T4.
+5. Alcance restante de T5.
+6. Observaciones del Architect pendientes.
+7. Estado de la validación de ingeniería.
+8. Conflictos con iniciativas paralelas.
+9. Alternativas autorizables para completar F4.
+10. Presupuesto e intentos nuevos que se necesitarían.
+11. Riesgos residuales.
+12. Recomendación GO / NO-GO para reanudar implementación.
+13. Autorizaciones específicas que requiere el Coordinator del Owner.
+
+No generes nueva documentación versionada ni nuevos contratos durante esta recuperación.
+Detente después del informe y espera mi decisión.
+11. Resultado esperado
+El objetivo de esta sesión es recuperar la coordinación técnica de I-65 sin repetir trabajo ni prolongar innecesariamente las investigaciones de infraestructura.
+SESSION RECOVERY = AUTHORIZED.
+REPOSITORY READ-ONLY REVIEW = AUTHORIZED.
+F4 IMPLEMENTATION = NOT AUTHORIZED.
+WORKER DELEGATION = NOT AUTHORIZED.
+SECURITY EXPERIMENTATION = NOT AUTHORIZED.
+RAM EXECUTION = NOT AUTHORIZED.
+Mantén I-65 en INCOMPLETE / BLOCKED hasta una autorización posterior del Owner.

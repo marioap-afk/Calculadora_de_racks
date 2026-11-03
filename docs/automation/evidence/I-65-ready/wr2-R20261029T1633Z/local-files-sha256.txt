@@ -1,0 +1,6 @@
+# <corrida> = D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\ (local)
+e51d5ae39f1a2931273697fc282490d05144ee0a7a8c9dac73814b6abf97d25a  w2-pre/Config.ini.before
+de651e69c5c03b59510cf3e6364c87ce04dac297e5a7daf91e70ef122d579b0d  w2-post/Config.ini.after
+b15b9f9e28be3db82af3c1c65da5e07adce877b28bf9438960848b7b40394eca  wr2-preflight-2/ov-i65-02-manual-entry-sheet.4a03b65b.blob
+b15b9f9e28be3db82af3c1c65da5e07adce877b28bf9438960848b7b40394eca  wr2-preflight/ov-i65-02-manual-entry-sheet.4a03b65b.blob
+nota: Config.ini de RAM (antes y despues) puede contener rutas del usuario: queda en local; sus diferencias por nombre de clave estan en post-checks.txt.

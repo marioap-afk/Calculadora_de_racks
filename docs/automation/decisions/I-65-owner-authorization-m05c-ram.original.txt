@@ -1,0 +1,73 @@
+I-65 — OWNER DISPOSITION
+RAM M-05c Authorization / Engineering Validation
+He revisado la preparación publicada en `54ee711a` y `93606ea0`, ambos con CI 4/4 satisfactorio.
+1. Decisión del Owner
+M-05c RAM EXECUTION = APPROVED, LIMITED.
+Autorizo una única campaña controlada de medición M-05c en RAM Elements, exclusivamente para caracterizar el comportamiento de lectura de combinaciones.
+Esta autorización no incluye ejecutar el adaptador de RackCad, generar el paquete definitivo ni validar REF-CANT-01.
+2. Alcance de M-05c
+Ejecuta el procedimiento preparado utilizando dos modelos nuevos y desechables:
+
+* MZ: casos A y B, sin combinaciones.
+* MP: mismos casos, con `C1 = 1.2A + 1.6B`.
+
+Verifica:
+
+1. Que el volcado identifica correctamente C1, sus casos y factores.
+2. Que distingue cero combinaciones de una lectura incompleta.
+3. Que los errores no producen PASS global.
+4. Que el resultado permite tomar una decisión fundamentada sobre OD-F4-14.
+
+No modifiques ni guardes modelos existentes.
+No ejecutes el adaptador ni abras AutoCAD.
+3. Seguridad y evidencia
+
+* Utiliza exclusivamente los scripts de prueba autorizados.
+* Crea modelos nuevos y vacíos.
+* Escribe evidencias en carpetas nuevas.
+* No sobrescribas archivos existentes.
+* Cierra RAM sin guardar.
+* Detente ante diálogos inesperados o comportamientos que comprometan datos.
+* Conserva capturas, versiones, hashes y resultados.
+
+Si Computer Use no obtiene acceso normal, prepara la ejecución manual y solicita intervención del Owner.
+4. Secciones y materiales
+V-07: confirmo provisionalmente los nombres:
+
+* `A992 Gr50`.
+* `A500 GrC rectangular`.
+
+No autorices sustituciones automáticas por grados o materiales similares.
+La coincidencia de nombres no constituye aprobación de propiedades mecánicas.
+V-01 a V-06 y V-08 a V-09: siguen sujetos a validación técnica.
+En la misma sesión RAM de M-05c puedes inspeccionar en modo solo lectura los nombres y tablas de secciones/materiales, sin modificarlos.
+5. Host AutoCAD
+Acepto el procedimiento propuesto de preflight/POST como base para la futura ventana de I-65.
+Esto no constituye RELEASE.
+No ejecutes NETLOAD ni abras AutoCAD.
+Antes de autorizar el smoke deberán quedar definidos:
+
+* ACK de I-52 e I-64.
+* Orden y ventana.
+* Identidad exacta del DLL.
+* Captura previa y comparación POST.
+* Aprobación de carga única.
+
+6. Entregable
+Presenta:
+
+1. Resultado de M-05c.
+2. Evidencia real de RAM.
+3. Clasificación de lectura de combinaciones.
+4. Resolución propuesta para OD-F4-14.
+5. Datos de catálogo y materiales observados.
+6. Riesgos y limitaciones pendientes.
+7. Recomendación GO / NO-GO para continuar F4.
+
+No modifiques código de producción.
+No actualices las filas a `verified`.
+No declares GATE PASS.
+RAM EXECUTION = M-05c ONLY.
+AUTOCAD EXECUTION = NO.
+MAPPING UPDATE = NO.
+F4 GATE PASS = NO.

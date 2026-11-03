@@ -1,0 +1,12 @@
+keys_w3=['adapterVersion', 'analysisInputFingerprint', 'capabilities', 'loadCase', 'loads', 'members', 'nodes', 'packageFolder', 'schema', 'tolerances', 'units']
+adapterVersion IGUAL
+analysisInputFingerprint DISTINTO
+capabilities IGUAL
+loadCase IGUAL
+loads IGUAL
+members IGUAL
+nodes IGUAL
+packageFolder DISTINTO
+schema IGUAL
+tolerances IGUAL
+units IGUAL

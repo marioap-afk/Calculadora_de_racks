@@ -1,0 +1,5 @@
+f6cf8a91e2bbad814c8ffa60c3a9a4498f045443dd683d64fd2c7daba3b7ab85  pkg-OV02/manifest.json
+f7ed0b0623da43bd434c2905e3949c7d342ca4b3cd1d4d90395e0766cd8e00f9  pkg-OV02/rackcad-ram-build.py
+d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c  pkg-OV02/structural-loads.json
+fd4cc35875c31a1d523005170e4bef788d46ad7cee09c20c3676767056013c72  validator-v2-pkg-OV02.json (original)
+nota: manifest.json y el informe del validador originales contienen el nombre del verificador; se versionan copias redactadas y estos SHA-256

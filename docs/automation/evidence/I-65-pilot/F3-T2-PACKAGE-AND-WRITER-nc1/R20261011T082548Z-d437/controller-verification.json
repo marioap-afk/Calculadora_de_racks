@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F3-T2-PACKAGE-AND-WRITER",
+  "RunId": "R20261011T082548Z-d437",
+  "DelegationRunId": "R20261011T072637Z-c92e",
+  "WorkRunId": "R20261011T073033Z-b3ec",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, TerminalEvent=subagent-completed; Cession.SessionOperated=false. OutputWrittenUtc=2026-10-11T08:14:47Z, posterior a Cession.StartUtc=2026-10-11T07:31:56Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json tiene Schema=rackcad-worker-handoff/v1, TaskId=F3-T2-PACKAGE-AND-WRITER, Attempt=0, DelegationRunId=R20261011T072637Z-c92e y RunId=R20261011T073033Z-b3ec. El registro del trabajo identifica OutputPath y OutputWrittenUtc posteriores al inicio de la cesión. La discrepancia de CurrentSha se evalúa en Identity."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídas las autoridades UNIT_DOC y UNIT_CHANGE desde AuthorityRevision e0c1120bcda13f90b7c4c8ad861ddd702c1ac891, y las EXTERNAL desde MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git merge-base devolvió MainSha; git diff --name-only MainSha..AuthorityRevision para las rutas EXTERNAL requeridas no devolvió cambios. git cat-file -e confirmó las rutas declaradas; docs/AUTOMATION_PLAN.md §16 y README §8 consultados desde MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json coinciden en AllowedWriteScope, ForbiddenWriteScope, RequiredTests, ExpectedEvidence, Invariants, StopConditions y Authorities. A3-A5 constan pass en relay-record-planning.json; las seis colecciones comparadas satisfacen los alcances, pruebas e invariantes requeridos."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural = e3ae36d0d6cb1f13de685ed0f9825d2b5a71ecf5; BaseSha e0c1120bcda13f90b7c4c8ad861ddd702c1ac891 y RedSha 60014790d64a3a8c6c99a408b0afca668a77b4f1 son ancestros de HEAD (merge-base --is-ancestor exit 0). Rama y worktree coinciden, pero worker-handoff.json declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, distinto de HEAD, la rama remota local y RemoteFacts.CurrentRun.HeadSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y LsRemoteSha=e3ae36d0d6cb1f13de685ed0f9825d2b5a71ecf5; coinciden con MainSha y la identidad Git observada. git rev-parse refs/remotes/origin/main = bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git ls-remote no pudo conectarse a github.com por la restricción de red; se usaron RemoteFacts según las instrucciones."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..HEAD produjo 12 rutas, todas cubiertas por AllowedWriteScope de delegation.json y ninguna por ForbiddenWriteScope: RamBuildManifest.cs, RamBuildPackageFactory.cs, RamBuildPayload.cs y RamBuildScriptTemplate.cs -> src/RackCad.Application/StructuralAnalysis/Providers/RamElements/; StructuralPackageWriter.cs -> ruta exacta src/RackCad.Application/StructuralAnalysis/StructuralPackageWriter.cs; StructuralAnalysisRamElementsPackageContentTests.cs, StructuralAnalysisRamElementsPackageGoldenTests.cs, StructuralAnalysisRamElementsPackageManifestTests.cs, StructuralAnalysisRamElementsPackagePayloadTests.cs, StructuralAnalysisRamElementsPackageTemplateTests.cs, StructuralAnalysisRamElementsPackageValidationTests.cs y StructuralAnalysisRamElementsPackageWriterTests.cs -> tests/RackCad.Tests/StructuralAnalysis/. El diff contiene solo esas altas."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 vacío; relay-record-work.json Entry.CleanTree=true. git check-ignore -v sobre la ruta de artifacts/orchestration/.../inputs/worker-handoff.json confirmó exclusión por .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: push, ref refs/heads/architecture/interop-analisis-estructural, head_sha e3ae36d0d6cb1f13de685ed0f9825d2b5a71ecf5, concluida success; los cuatro jobs requeridos están success. TRX CurrentSha: Core 13483/13483 pasaron; UI 1654 total, 1637 ejecutadas y pasaron, 0 fallidas; 17 Skip figuran como diferencia total-ejecutadas con Counters.notExecuted=0 conforme al logger. RedPart: RemoteFacts.RedRun es push del SHA 60014790d64a3a8c6c99a408b0afca668a77b4f1 y el job Core terminó failure."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Los TRX copiados confirman el filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElementsPackage: RED 241 seleccionadas, 230 fallidas y 11 pasaron (error=0); GREEN 241 seleccionadas y 241 pasaron; Core Full GREEN 13483/13483. Coinciden con TestResults de la entrega; el RED incluye fallos de pruebas/excepciones, no de compilación. git diff --name-only ChainBaseSha..RedSha -- tests/ y la comprobación RT identifican estos ChainRedFiles: tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageContentTests.cs, StructuralAnalysisRamElementsPackageGoldenTests.cs, StructuralAnalysisRamElementsPackageManifestTests.cs, StructuralAnalysisRamElementsPackagePayloadTests.cs, StructuralAnalysisRamElementsPackageTemplateTests.cs, StructuralAnalysisRamElementsPackageValidationTests.cs y StructuralAnalysisRamElementsPackageWriterTests.cs. git diff --name-only RedSha..HEAD -- tests/ está vacío. Cobertura inspeccionada con git show HEAD:<ruta>: contenido/determinismo/bytes/UTF-8/LF/ASCII, ContentTests; carga util, capacidades y funciones P1, PayloadTests; equivalencia del golden, GoldenTests (8 nudos, 7 miembros y 3 cargas; literales cotejados con sección 8 y tolerancias); INV-10 y variantes que la guarda rechaza, TemplateTests; manifiesto, advertencia literal, exclusiones, filas y sensibilidad de huellas, ManifestTests; validación previa, Unsupported/Invalid y ausencia de contenido parcial, ValidationTests; INV-05 y fallos inyectados sin destino ni temporal, WriterTests. StructuralAnalysisSourceGuardTests y StructuralAnalysisRamElementsGuardTests cubren INV-14 y la exención limitada al archivo de pruebas de plantilla; el Core Full registrado pasó."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "Worker.Trailer literal: \"Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\". git log --format=%B BaseSha..HEAD confirma ese trailer en los dos commits RED y GREEN; coincide con el modelo efectivo claude-sonnet-5-5 del registro."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5 con effort Semantic=Deep, Provider=high y RoutingEnforcement=required. relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high; Worker declara el mismo modelo y esfuerzo."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json; el escaneo de los términos definidos en AUTOMATION_PLAN §16.10 encontró 0 coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones y 0 avisos de límite. El único error descrito fue un heredoc mal cerrado, código 2, superado; no queda orden fallida pendiente ni solicitud de permisos o credenciales."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "La copia de worker-handoff.json informa CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef mientras Git y la corrida CI exacta identifican e3ae36d0d6cb1f13de685ed0f9825d2b5a71ecf5.",
+    "El SHA-256 de la copia worker-handoff.json es DEAD31EFAC36B81C8C0D5654B7875DC09AF1DD4392D84D5962D4953A2AF34C63; relay-record-work.json registra para OutputPath el hash 48A72F2166D43D8BDDC60CB9D0EE9A503FC216302AA0C28B276C5D505C004C94.",
+    "Las disposiciones CD-I65-F3-12 a CD-I65-F3-14 concuerdan con lo comprobado: se declaró una lectura de p1-report.json con Python y la plantilla no se ejecutó; el tipo StructuralPackagePublisher evita cambiar la guarda existente; las lecturas declaradas del producto y las limitaciones de lectura de vuelta aparecen en la entrega. El simulacro indicado es externo a los TRX."
+  ],
+  "RecommendedNextAction": "Aclarar la discrepancia del hash y reemitir una entrega cuyo CurrentSha coincida con la identidad comprobada, luego repetir esta verificación."
+}

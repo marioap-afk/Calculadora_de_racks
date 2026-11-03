@@ -1,0 +1,162 @@
+{
+  "schema": "rackcad-structural-comparison/v1",
+  "verdict": "PASS",
+  "reason": null,
+  "inputs": {
+    "manifestFingerprint": "f5ce900c14ee768bb85670e814099d58947857778077ced8f81d371a8858d663",
+    "readbackFingerprint": "f5ce900c14ee768bb85670e814099d58947857778077ced8f81d371a8858d663",
+    "manifestSha256": "6b013b62423e6e1590849a9bacdd5e4242d6930db6de040cc3f62507444a4edc",
+    "readbackSha256": "0848b78528518a0d9b26c48188ef6feb2ebc6e8c0640d3cbe2836394f607116e",
+    "generatedDumpSha256": "f5789d1ce923a648b77b192571c7271ac40901043ae92301e443624e4f664be0",
+    "manualDumpSha256": "c4a98fb0ea798031de2b3052d81eae89f42b731a92f06dbfa97f148ade9ba23b"
+  },
+  "tolerances": {
+    "nodePositionInches": 0.02,
+    "axisDegrees": 0.1,
+    "loadValuePercent": 0.1,
+    "loadPositionInches": 0.02
+  },
+  "rows": [
+    {
+      "id": "NODE-COORDINATES",
+      "name": "Node coordinates (paired by position)",
+      "verdict": "PASS",
+      "maxDelta": 0,
+      "unit": "in",
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The nodes are paired by position; the delta is the Euclidean distance between a node and its nearest counterpart."
+    },
+    {
+      "id": "CONNECTIVITY",
+      "name": "Connectivity (end nodes of the members, I to J)",
+      "verdict": "PASS",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": null
+    },
+    {
+      "id": "LOCAL-AXES",
+      "name": "Local axes l1, l2 and l3",
+      "verdict": "PASS",
+      "maxDelta": 0,
+      "unit": "deg",
+      "differenceCount": 0,
+      "differences": [],
+      "note": "The angle between corresponding vectors is the arc cosine of their normalised dot product, clamped to [-1, 1]."
+    },
+    {
+      "id": "SECTION-NAME",
+      "name": "Section name",
+      "verdict": "PASS",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": null
+    },
+    {
+      "id": "MATERIAL-NAME",
+      "name": "Material name",
+      "verdict": "PASS",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": null
+    },
+    {
+      "id": "SECTION-PROPERTIES",
+      "name": "Section properties (A, Ix, Iy, J)",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "Evaluated by the signed verification sheet of the engineer; the program API does not expose section or material properties."
+    },
+    {
+      "id": "MATERIAL-PROPERTIES",
+      "name": "Material properties (E, nu or G, unit weight)",
+      "verdict": "NOT_EVALUATED",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "Evaluated by the signed verification sheet of the engineer; the program API does not expose section or material properties."
+    },
+    {
+      "id": "MEMBER-DEFAULTS",
+      "name": "Cardinal point, end offsets, stiffness factors, axial behaviour and springs",
+      "verdict": "PASS",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "Both models must carry the defaults exactly: centroid, no offsets, stiffness factors of 1, normal axial behaviour, no springs."
+    },
+    {
+      "id": "RELEASES-SUPPORTS",
+      "name": "Releases and support flags",
+      "verdict": "PASS",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": null
+    },
+    {
+      "id": "LOADS",
+      "name": "Point loads on the members, by case with loads",
+      "verdict": "PASS",
+      "maxDelta": 0,
+      "unit": "percent",
+      "differenceCount": 0,
+      "differences": [],
+      "note": "Largest difference of a load value, in percent of the manual value; largest difference of a load position 0 in."
+    },
+    {
+      "id": "COMBINATIONS",
+      "name": "Load combinations (none expected)",
+      "verdict": "PASS",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": null
+    },
+    {
+      "id": "CASE-CATEGORY",
+      "name": "Category of the generated case with loads",
+      "verdict": "PASS",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": null
+    },
+    {
+      "id": "MANUAL-CASE-CATEGORY",
+      "name": "Category of the manual case with loads",
+      "verdict": "INFORMATIVE",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "Manual case category: DL (informative; the program never read back a category created in its interface)."
+    },
+    {
+      "id": "SELF-WEIGHT",
+      "name": "Self weight of the cases with loads",
+      "verdict": "INFORMATIVE",
+      "maxDelta": null,
+      "unit": null,
+      "differenceCount": 0,
+      "differences": [],
+      "note": "Self weight multipliers: generated case REF1 (0, 0, 0); manual case REF1 (0, 0, 0) (informative)."
+    }
+  ]
+}
+exit=0

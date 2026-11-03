@@ -1,0 +1,5 @@
+DIFF clasificacion: INFORMAR (sin PROHIBIDO)
+- NetLoadDialog FileNameMRU0..10 e InitialDirectory: desplazamiento del MRU por el NETLOAD de la DLL del Candidato (MRU0 = D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows\RackCad.Plugin.dll)
+- RackCantileverWindow Bounds: ventana del editor maximizada
+- FixedProfile Application Window Position: posicion de la ventana principal
+- Sin cambios: TRUSTEDPATHS (a9ba0fd1, 19), SECURELOAD=1, Applications HKCU/HKLM, InstalledApplications, Loaded, acad.exe, ApplicationPlugins, variables de entorno, ACL (acadlocation, dllfolder F4, 4 rutas de I-52), AppData\RackCad, biblioteca

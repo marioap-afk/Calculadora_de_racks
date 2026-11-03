@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4-COMPARATOR-AND-TOOL",
+  "RunId": "R20261011T212230Z-4f4f",
+  "DelegationRunId": "R20261011T210328Z-2ee6",
+  "WorkRunId": "R20261011T210642Z-ca39",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; cesion 21:06:46–21:13:43Z."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json está presente; TaskId, RunId, DelegationRunId, Attempt y hora de entrega coinciden con el relevo. Sin embargo, CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; el relevo y Git identifican 7efacd78a8ad411a639953fb21d587e66e8d5475."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git show confirma los documentos UNIT_DOC/UNIT_CHANGE en AuthorityRevision 34831380a2f2fd7a2cf5bdd8de05c3281f9efc50 y EXTERNAL en MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453. AuthorityRevision es ancestro de BaseSha; git diff de las rutas EXTERNAL entre MainSha, AuthorityRevision y BaseSha no muestra cambios."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación de delegation.json y gate-contract.json: AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y Authorities coinciden. StopConditions coinciden en ids y orden; C-07 está abreviado en la delegación, diferencia declarada en coordinator-dispositions-f4t4c.md (DEV-I65-F4-11)."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural dan ambos 7efacd78a8ad411a639953fb21d587e66e8d5475, no el CurrentSha declarado deadbeef…; BaseSha c8f3aa88 es ancestro de HEAD y RedSha c4660703 está entre ambos. Rama y worktree coinciden."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json registra LsRemoteSha=7efacd78a8ad411a639953fb21d587e66e8d5475 y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git ls-remote no pudo conectarse a GitHub; según los hechos remotos disponibles, LsRemoteSha no coincide con el CurrentSha declarado deadbeef…"
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha..HEAD devuelve únicamente tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonSupport.cs y StructuralAnalysisComparisonToolTests.cs; ambos están cubiertos por tests/RackCad.Tests/StructuralAnalysis/. El CurrentSha declarado deadbeef… no existe en Git, así que no se puede validar el rango BaseSha..CurrentSha requerido."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch muestra árbol limpio en architecture/interop-analisis-estructural. git check-ignore -v sobre inputs/gate-contract.json devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX: corrida push 38175418046, ref refs/heads/architecture/interop-analisis-estructural, SHA 7efacd78…, los cuatro jobs requeridos en success; core.trx 14078/14078 y ui.trx 1654 total, 1637 aprobadas, 0 fallidas (17 NotExecuted según la convención indicada). No acredita el CurrentSha declarado deadbeef…. RED: corrida push 38175189302 sobre c4660703…, job Core failure; su TRX muestra 75 fallidas."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Core del RED: filtro StructuralAnalysisComparison selecciona 81, 6 aprobadas y 75 fallidas por comportamiento del esqueleto, no compilación; TRX Core de 7efacd78…: 81/81 focales y 14078/14078 totales. Coinciden los conteos del relevo. En el diff del RED, las pruebas observan pureza/determinismo, rechazos y STALE, emparejamiento y conectividad, filas/tolerancias, categorías, NOT_EVALUATED, serialización, herramienta e inyecciones; el diff de pruebas RedSha..HEAD está vacío. RT y ChainRedFiles resultantes: tests/RackCad.Tests/RackCad.Tests.csproj y StructuralAnalysisComparisonRowTests.cs, StructuralAnalysisComparisonSupport.cs, StructuralAnalysisComparisonToolTests.cs, StructuralAnalysisComparisonVerdictTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD muestra en ambos commits el trailer literal declarado: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>; coincide con ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5/medium; relay-record-work.json registra Participant.ModelEffective=claude-sonnet-5-5 y EffortEffective=medium."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisión de los campos de texto libre de worker-handoff.json contra la lista de AUTOMATION_PLAN §16.10: no hay coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones, 0 avisos de límite y ninguna invocación de intérprete. El único error de herramienta consignado fue superado; no queda una orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "El CurrentSha de worker-handoff.json es deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; el HEAD, la rama remota registrada y la corrida CI apuntan a 7efacd78a8ad411a639953fb21d587e66e8d5475.",
+    "El diff real BaseSha..HEAD contiene dos archivos de pruebas permitidos; el rango solicitado con el CurrentSha declarado no es resoluble.",
+    "Las corridas CI y TRX aportadas concuerdan para los SHA reales de RED y GREEN, pero el GREEN no coincide con el SHA declarado en la entrega."
+  ],
+  "RecommendedNextAction": "Corregir y reemitir worker-handoff.json con el CurrentSha verificado y repetir la verificación de identidad y evidencia vinculada a ese SHA."
+}

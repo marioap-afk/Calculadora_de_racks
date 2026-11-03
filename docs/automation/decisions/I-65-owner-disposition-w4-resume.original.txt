@@ -1,0 +1,14 @@
+I-65 — OWNER DISPOSITION / W4 Resume
+Como Owner, confirmo que ya inicié sesión personalmente en Bentley CONNECTION Client.
+W4 RESUME = AUTHORIZED, condicionado a verificar que RAM Elements haya superado la comprobación de licencia.
+
+1. Comprueba si RAM está operativo y permite abrir un modelo nuevo y vacío.
+2. Si continúa bloqueado, cierra RAM e informa. No intentes modificar el licenciamiento.
+3. Si está operativo, repite las comprobaciones inmediatas de integridad y confirma que no existen readbacks previos.
+4. Inicia OV-I65-02 conforme al procedimiento W4 ya autorizado, sin regenerar paquetes.
+5. Si la ventana original de 2.5 horas venció, inicia una nueva ventana controlada con su propio preflight y límite de 2.5 horas.
+
+No hace falta repetir coordinaciones con I-64 ni I-52. Comprueba únicamente que I-62 no esté utilizando la pantalla.
+Mantén todas las condiciones de STOP y el presupuesto original.
+F5 GATE PASS = NO, hasta completar W4 y su revisión final.
+Procede con W4 y entrega el informe de resultados.

@@ -1,0 +1,14 @@
+{
+ "stop": false,
+ "findings": [
+  {
+   "class": "OWN",
+   "where": "c:\\users\\<usuario>\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+   "head": [
+    "91f82d6d83731f48d445c7ad007a814b65c6caa6",
+    "6a58c2b1891174bb5120f0e9e3fb8e13ed952832"
+   ],
+   "status": []
+  }
+ ]
+}

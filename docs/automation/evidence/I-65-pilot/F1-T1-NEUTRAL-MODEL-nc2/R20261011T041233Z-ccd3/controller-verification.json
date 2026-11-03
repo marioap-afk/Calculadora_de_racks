@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T1-NEUTRAL-MODEL",
+  "RunId": "R20261011T041233Z-ccd3",
+  "DelegationRunId": "R20261011T032206Z-7516",
+  "WorkRunId": "R20261011T032758Z-3556",
+  "Attempt": 0,
+  "VerifiedSha": "1692804a3e81a607d81d924c9345f02fe7f9a41f",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession.StartUtc=2026-10-11T03:29:04Z, EndUtc=03:59:41Z y SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente en la ruta correspondiente a WorkRunId R20261011T032758Z-3556; Schema=rackcad-worker-handoff/v1, TaskId, DelegationRunId y Attempt coinciden; RunId=R20261011T032758Z-3556; OutputWrittenUtc=03:59:17Z, posterior al inicio de cesión."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídos con git show en AuthorityRevision 9d0c661968542350929af267ada689b943898206 la Proposal V3.1 (Frozen: yes) y docs/automation/decisions/I-65.md §§9–11, incluidas CD-I65-F1-04..10 y ADR-0050. Con MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453, merge-base(MainSha, AuthorityRevision)=MainSha; diff de las rutas EXTERNAL de MainSha a AuthorityRevision y de AuthorityRevision a BaseSha vacío. AuthorityRevision es ancestro de BaseSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json comparado con delegation.json: A3, cero entradas de AllowedWriteScope de la delegación fuera del alcance permitido del contrato; A4, ForbiddenWriteScope coincide; A5, invariantes, IDs de StopConditions, las 16 autoridades (ruta/sección/clase) y RequiredTests coinciden. relay-record-planning.json registra A1–A8 en pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Git: branch --show-current=architecture/interop-analisis-estructural; rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural ambos 1692804a3e81a607d81d924c9345f02fe7f9a41f. merge-base --is-ancestor devuelve 0 para BaseSha→RedSha, RedSha→CurrentSha y BaseSha→CurrentSha. Handoff y worktree coinciden con la delegación."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y LsRemoteSha=1692804a3e81a607d81d924c9345f02fe7f9a41f; origin/main local coincide con MainSha. La consulta git ls-remote no pudo conectar con GitHub por el proxy; se usan los RemoteFacts registrados, según la instrucción."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha contiene 24 rutas; comprobación mecánica contra AllowedWriteScope del contrato: 0 fuera; contra ForbiddenWriteScope: 0 coincidencias. git diff --name-status BaseSha CurrentSha -- tests/ muestra solo 9 altas bajo tests/RackCad.Tests/StructuralAnalysis/. Archivos nuevos inspeccionados con git show CurrentSha:<ruta>: namespace RackCad.Tests y clases StructuralAnalysis*."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 --untracked-files=all vacío; git diff --quiet y git diff --cached --quiet devuelven 0. git check-ignore -v confirma que artifacts/orchestration/I-65/F1-T1-NEUTRAL-MODEL/0/R20261011T032758Z-3556/worker-handoff.json está ignorado por .gitignore."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 38109857453: event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=CurrentSha; los cuatro jobs requeridos figuran en success. RedRun 38109425352 es push de la misma ref y RedSha; Tests (Domain + Application)=failure. TRX Current Core: 12866 Passed, 0 Failed; UI: 1637 Passed, 0 Failed y 17 NotExecuted (total 1654, consistente con los 17 Skip documentados)."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Core RED 38109425352: filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysis selecciona 271; 104 Passed, 167 Failed, 0 errores de compilación. Mensajes de fallo: 159 NotImplementedException, 5 Assert.Throws, 1 Assert.Contains, 1 Assert.Equal y 1 violación INV-16. Core CurrentSha 38109857453: 271/271 del filtro pasaron; suite completa 12866/12866. Coincide con TestResults de la entrega. En pruebas leídas con git show CurrentSha:<ruta>: INV-01 G1/G2/G3 y autopruebas en StructuralAnalysisSourceGuardTests; INV-02/03 cantidades, conversiones exactas y tolerancia 1e-12 en StructuralAnalysisUnitTests; INV-15/D-10b forma estricta en StructuralAnalysisLoadFileReaderTests; INV-16 propietario único, igualdad bit a bit y guarda en SourceGuardTests y UnitTests; D-02/D-08 modelo, precedencia y solo Valid expone modelo en ModelTests, OutcomeTests y ModelBuilderTests; D-06/D-07 perfil explícito, MaterialGrade sin efecto, sección desconocida/familias C y L/sistema no US_CUSTOMARY/propiedades ausentes en MaterialProfileTests y ModelBuilderTests; INV-05 partes neutrales y límite 24/25 cargas en ModelTests y ModelBuilderTests; INV-04/D-12 estabilidad y sensibilidad en FingerprintTests y CanonicalizerTests; D-13 fuente neutral y ausencia de Analyze/ReadResults/escrituras en ModelBuilderTests; INV-11/14 autoguardas en SourceGuardTests. Q-O3 se observa en ElModeloNoAfirmaValidacionEstructuralEnSusNombresNiSupuestos. Forma del cambio: diff sin Systems, Providers, Domain, Plugin, UI ni .csproj; ninguna prueba existente modificada. RT=git diff --name-only ChainBaseSha RedSha -- tests/ comprende las 9 pruebas nuevas indicadas; git diff --name-only RedSha CurrentSha -- tests/ está vacío. ChainRedFiles resultantes: StructuralAnalysisCanonicalizerTests.cs, StructuralAnalysisFingerprintTests.cs, StructuralAnalysisLoadFileReaderTests.cs, StructuralAnalysisMaterialProfileTests.cs, StructuralAnalysisModelBuilderTests.cs, StructuralAnalysisModelTests.cs, StructuralAnalysisOutcomeTests.cs, StructuralAnalysisSourceGuardTests.cs y StructuralAnalysisUnitTests.cs, todas bajo tests/RackCad.Tests/StructuralAnalysis/."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra en ambos commits el trailer declarado en Worker.Trailer: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegación: celda claude-sonnet-5-5, effort high, RoutingEnforcement=required. Handoff solicita claude-sonnet-5-5/high; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Escaneo de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json: sin coincidencias con los términos restringidos de AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes: 0 denegaciones de permisos/credenciales y 0 avisos de límite; tres errores transitorios fueron superados por llamadas posteriores y no queda orden fallida pendiente. La sesión no operó durante la cesión; las notas de procesos registran que los bash efímeros detectados después de ella ya no existían al releerlos."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La consulta externa git ls-remote no fue accesible desde este entorno; Remote se contrastó con RemoteFacts del registro del trabajo y con las referencias locales."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación en el relevo y continuar con F1-T2-CANTILEVER-SOURCE según la planificación."
+}

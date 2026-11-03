@@ -1,0 +1,12 @@
+archivo=D:\r65-smoke\bd1fcf8a\expected-inputs.json sha256_bytes_en_disco=c61a6e1255783f3c59f3e236c0057bbd88b3b1eabbbe424ba7dced71f22ddaf8 bytes=7210 hasCR=True (CRLF de ConvertTo-Json; cf. A65-F4F-01)
+generado_con=smoke2_expected_inputs.ps1 y el RackCad.Application.dll de la salida del Candidato
+applicationDll.productVersion=1.0.0+bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109
+table.path=D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows\structural-analysis\ram-elements\section-material-map.json
+table.sha256Bytes=fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619 bytes=3279 hasCR=False
+loads.path=D:\r65-smoke\bd1fcf8a\inputs\ov-i65-02.loads.json
+loads.sha256Bytes=d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c bytes=1112 hasCR=False
+mappingRowsSha256AllRows=54ca9f6c80376d857755e68fc16d7de58a771b52cb0a0b7fa452a5df6191c98c rows=2
+claves_distintas_de_F4=applicationDll,generatedUtc,loads,table
+igual_a_F4_salvo_generatedUtc_applicationDll_loads_y_table.path=True
+F4.loads.sha256Bytes=25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05 F4.mappingRowsSha256AllRows=54ca9f6c80376d857755e68fc16d7de58a771b52cb0a0b7fa452a5df6191c98c
+no_versionado=el archivo completo (PRIVACY HOLD: incluye el nombre del verificador de la tabla); se custodia su SHA-256

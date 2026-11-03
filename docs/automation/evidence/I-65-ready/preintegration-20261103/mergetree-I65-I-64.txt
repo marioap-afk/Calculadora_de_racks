@@ -1,0 +1,3 @@
+f2ecf5e5c76bd68dfbdae13bab3ed7639ff5a6a0
+tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs
+tests/RackCad.Tests/SelectiveEditorOpenTests.cs

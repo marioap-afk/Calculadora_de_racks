@@ -1,0 +1,16 @@
+{
+ "field": "delegation.AllowedWriteScope",
+ "excluded": "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamBuildManifest.cs",
+ "from": [
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/",
+  "src/RackCad.Application/StructuralAnalysis/StructuralPackageWriter.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ],
+ "to": [
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamBuildPackageFactory.cs",
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamBuildPayload.cs",
+  "src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamBuildScriptTemplate.cs",
+  "src/RackCad.Application/StructuralAnalysis/StructuralPackageWriter.cs",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ]
+}

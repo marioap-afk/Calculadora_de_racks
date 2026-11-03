@@ -1,0 +1,18 @@
+time_utc=2026-10-30T23:18:58.5801842Z
+OK   Q1.procesos acad/accoreconsole/RAMElements=0
+OK   Q2.pkg-OV01 manifest.json:96925f91,rackcad-ram-build.py:e2d0b8cd,ram-readback.json:ff9d770a,structural-loads.json:25f48e7f
+OK   Q2.pkg-OV02 manifest.json:753bd7de,rackcad-ram-build.py:9a3d536d,ram-readback.json:455a2b40,structural-loads.json:d675d9f6
+OK   Q2.pkg-OV04 manifest.json:fa9bb3f6,rackcad-ram-build.py:05ebc7fe,ram-readback.json:73af980d,structural-loads.json:25f48e7f
+OK   Q2.inj-OV05 manifest.json:1b856bef,rackcad-ram-build.py:4d0ef35a,ram-readback.json:9ab45229,structural-loads.json:25f48e7f
+OK   Q2.inj-OV06 manifest.json:92920154,rackcad-ram-build.py:897dbcd6,ram-readback.json:15ff2655,structural-loads.json:25f48e7f
+OK   Q2.inj-OV07a manifest.json:71da3757,rackcad-ram-build.py:3ff69cd4,ram-readback.json:0f397cd8,structural-loads.json:25f48e7f
+OK   Q2.inj-OV07b manifest.json:458aa751,rackcad-ram-build.py:1bcfcbe3,ram-readback.json:10e549bb,structural-loads.json:25f48e7f
+OK   Q2.dump-OV01-gen rackcad-ram-dump.py:22400e22,ram-dump.json:f5789d1c
+OK   Q2.dump-OV02-gen rackcad-ram-dump.py:61925fce,ram-dump.json:e5cf0ead
+OK   Q3.manual-OV02 ram-dump.json=12c89479fa2bf54adde27a1d0c4affc18bbd0469e77cd72c1fb5d0335910aef2 carpeta=rackcad-ram-dump.py,ram-dump.json
+OK   Q3.manual-OV01 c4a98fb0
+Q4 Config.ini before=e51d5ae3 after=de651e69 claves_distintas=3
+     CAMBIADA [Actions] accPythonConsole
+     CAMBIADA [Actions] accQANew
+     CAMBIADA [DefaultFolders] PythonScripts
+RESULTADO=PASS

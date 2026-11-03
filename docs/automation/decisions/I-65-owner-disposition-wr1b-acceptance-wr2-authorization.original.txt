@@ -1,0 +1,96 @@
+I-65 — OWNER DISPOSITION
+W-R1b Global Acceptance / W-R2 RAM Authorization
+He revisado el informe de recuperación registrado en `b5a6f723`, con CI 41135069646 en PASS 4/4.
+1. Aceptación de W-R1b
+W-R1b GLOBAL = ACCEPTED / PASS.
+Acepto:
+
+* HB-01..04 satisfactorios.
+* Carga real mediante Autoloader, sin NETLOAD.
+* Tabla verificada y disponible para RACKRAMPAQUETE.
+* HB-04(a) con igualdad de huellas del mismo rack.
+* HB-04(b) con 117/117 valores correctos.
+* Bundle íntegro y desinstalación de archivos.
+* Recuperación de las dos claves nuevas del registro.
+* POST protegido equivalente a BASELINE.
+* Checkouts intactos.
+
+La continuación después de la parada inicial del script de recuperación queda aceptada, porque las referencias adicionales fueron identificadas como anteriores a HB y no se modificaron.
+2. Residuos históricos del registro
+ASSEMBLYMAP AND HISTORICAL REGISTRY CLEANUP = NOT AUTHORIZED.
+Conserva como hallazgos documentados:
+
+* La entrada RackCad.Plugin en AssemblyMap.
+* Las referencias históricas de appdatalow.
+* La necesidad de limpiar entradas HKCU creadas por AutoCAD al utilizar el Autoloader.
+
+No presentes esos residuos como eliminados ni declares que todo el equipo es idéntico a BASELINE.
+No vuelvas a modificar el registro sin autorización específica.
+3. Autorización W-R2
+W-R2 RAM EXECUTION = CONDITIONAL GO.
+Autorizo la validación final en RAM Elements sobre el Candidato declarado:
+`4a03b65b375d468c220dd68400d5dfd955bf043e`
+La ejecución queda condicionada a un preflight técnico satisfactorio y ausencia de conflictos reales de uso del equipo.
+4. Preflight W-R2
+Antes de abrir RAM:
+
+1. Confirmar AutoCAD y RAM cerrados.
+2. Confirmar que nadie necesita la pantalla.
+3. Coordinar exclusivamente con I-62 si tiene alguna operación de pantalla activa.
+4. Verificar RAM Elements, API y bases de perfiles/materiales.
+5. Comprobar los hashes de paquetes, inyecciones y scripts.
+6. Confirmar destinos sin readbacks previos.
+7. Respaldar Config.ini.
+8. Verificar los volcados manuales aprobados por R-D2.
+9. Preparar la cadena de custodia conforme a R-D3 y R-D5.
+10. Confirmar el estado limpio de los checkouts.
+
+No es necesario pedir confirmaciones a iniciativas inactivas.
+5. Validación final
+Ejecuta las pruebas de RAM correspondientes a OV-I65-01, 02 y 04..07 conforme al procedimiento aprobado.
+
+* Modelo nuevo y vacío por escenario, salvo la precondición deliberada de OV-04.
+* Una ejecución por paquete.
+* Lectura de vuelta y volcado independiente.
+* Comparación con los volcados manuales autorizados.
+* Confirmación de cero combinaciones.
+* Peso propio excluido.
+* Rechazos seguros ante entradas incompatibles.
+* Conservación de la evidencia de fallos parciales.
+* Descarte de modelos sin guardar.
+
+Mantén las tolerancias y oráculos congelados.
+6. Condiciones de parada
+STOP ante:
+
+* Conflicto real con el usuario o I-62.
+* Identidad o hash incorrecto.
+* Bloqueo de licencia.
+* Fallo inesperado de lectura de vuelta.
+* Diferencias fuera de tolerancia.
+* Escrituras no previstas.
+* Pérdida de trazabilidad.
+* Necesidad de regenerar un paquete.
+* Incumplimiento de algún oráculo.
+
+No reintentar automáticamente.
+7. Cierre
+Después de W-R2:
+
+* Cerrar RAM sin guardar modelos.
+* Ejecutar POST.
+* Comparar el estado del host.
+* Custodiar lecturas, volcados, comparaciones, capturas y hashes.
+* Confirmar CI de la custodia.
+* Presentar la matriz final OV-I65-01..08, separando PASS de NOT_EVALUATED.
+
+8. Restricciones
+W-R1a = PASS.
+W-R1b = PASS.
+W-R2 = CONDITIONAL GO.
+OWNER VALIDATION FINAL = PENDING.
+INTEGRATION = NO.
+No modificar producto, Freeze, ADR-0050, tabla ni tolerancias.
+No consumir Codex ni attempts adicionales.
+No abrir AutoCAD ni tocar ApplicationPlugins o el registro.
+Al terminar W-R2, detente y presenta el informe para la validación final del Owner.

@@ -1,0 +1,32 @@
+# W-R1b (I-65): copia las capturas de HB a la corrida; tapa lo identificable que no es necesario (nombre de la cuenta de Windows en
+# una ruta y nombre de la organizacion en OneDrive). Las capturas ya se tomaron recortadas a la zona tecnica.
+param([Parameter(Mandatory)][string]$ToolResults, [Parameter(Mandatory)][string]$Out)
+$ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.Drawing
+New-Item -ItemType Directory -Force -Path $Out | Out-Null
+function Src([string]$suffix) { $f = @(Get-ChildItem -LiteralPath $ToolResults -Filter "mcp-computer-use-blob-*-$suffix.jpg"); if ($f.Count -ne 1) { throw "captura ${suffix}: $($f.Count)" }; $f[0].FullName }
+function Copy1([string]$suffix, [string]$name) { Copy-Item -LiteralPath (Src $suffix) -Destination (Join-Path $Out $name) -Force }
+# Copia tapando rectangulos [x, y, w, h] con gris solido
+function Redact([string]$suffix, [string]$name, [int[][]]$boxes) {
+  $img = [System.Drawing.Image]::FromFile((Src $suffix))
+  $bmp = New-Object System.Drawing.Bitmap $img.Width, $img.Height
+  $g = [System.Drawing.Graphics]::FromImage($bmp); $g.DrawImage($img, 0, 0, $img.Width, $img.Height)
+  $brush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(128, 128, 128))
+  foreach ($b in $boxes) { $g.FillRectangle($brush, $b[0], $b[1], $b[2], $b[3]) }
+  $brush.Dispose(); $g.Dispose(); $img.Dispose(); $bmp.Save((Join-Path $Out $name), [System.Drawing.Imaging.ImageFormat]::Jpeg); $bmp.Dispose() }
+Redact '8go39t' 'HB03-aviso-seguridad-load-once.jpg' @(,@(96, 140, 132, 21))
+Copy1 '5cxies' 'HB03-historial-sin-netload.jpg'
+Redact 'b8ng0b' 'HB04a-select-file-ov08.jpg' @(,@(4, 235, 94, 24))
+Copy1 '9jtxi1' 'HB04a-hb-ref-abierto-vista-frontal.jpg'
+Copy1 'viodw9' 'HB04a-cargas-tecleadas.jpg'
+Copy1 'azblz8' 'HB04a-carpeta-pkg-HB-tecleada.jpg'
+Copy1 'fcvcci' 'HB04a-consola-valid-huella-H1.jpg'
+Copy1 'gyum94' 'HB04b-ref-topologia.jpg'
+Copy1 'l8v29c' 'HB04b-ref-columna-base-w12x26.jpg'
+Copy1 'pym0jv' 'HB04b-ref-brazo-hss4x4x1_4.jpg'
+Copy1 'zaeqxo' 'HB04b-ref-linea-resuelta-resumen.jpg'
+Copy1 '5zst5s' 'HB04b-vista-frontal-insertada.jpg'
+Copy1 'nhqylh' 'HB04b-cargas-tecleadas.jpg'
+Copy1 '7f6f6e' 'HB04b-carpeta-pkg-HB2-tecleada.jpg'
+Copy1 'wpt6yz' 'HB04b-consola-valid.jpg'
+Copy1 'y6fkdm' 'HB05a-cerrar-sin-guardar.jpg'

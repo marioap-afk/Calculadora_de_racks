@@ -1,0 +1,25 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-65
+  branch: architecture/interop-analisis-estructural
+  claim_id: 0b4aad79-068e-4a57-a2c2-dc8f23406778
+  current_phase: integrated
+  state: completed
+  gate: INTEGRATION (READY = PASS; FINAL_CANDIDATE_SHA = 4a03b65b declarado, §117; Owner Validation final APPROVED, §125; integracion autorizada por el Owner, §125; hechos posteriores al merge en el tag integration/I-65)
+  attempts: 7
+  next_action: Ninguna en I-65 (integrada el 2026-11-03; hechos posteriores al merge en el tag integration/I-65; limpieza por orden del Owner despues del tag); seguimientos en docs/ideas-futuras.md (seccion de I-65).
+  last_evidence_commit: 4a03b65b375d468c220dd68400d5dfd955bf043e
+execution_context:
+  mode: manual
+  automation_enabled: false
+  worktree: architecture-interop-analisis-estructural
+execution_chain:
+  gate: INTEGRATION (READY = PASS; FINAL_CANDIDATE_SHA = 4a03b65b declarado, §117; Owner Validation final APPROVED, §125; integracion autorizada por el Owner, §125; hechos posteriores al merge en el tag integration/I-65)
+  next_role: Ninguno (integracion autorizada por el Owner, §125; compuertas posteriores en el tag integration/I-65)
+  closure: integrada el 2026-11-03 por autorizacion del Owner (§125); MERGE_SHA, CI posterior y cobertura en el tag integration/I-65; limpieza despues del tag por orden del Owner
+  implementation_authorization: NINGUNA VIGENTE (R-D11 consumida y aceptada, §111); Codex 55/57; attempts 7/11; Workers adicionales 0; FINAL_CANDIDATE_SHA DECLARADO (§117); W-R1a = ACCEPTED/PASS (§119); W-R1b = ACCEPTED/PASS (§122); W-R2 = ACCEPTED/PASS (§124); OWNER VALIDATION = APPROVED (§125); INTEGRATION = AUTHORIZED, CONDITIONAL (§125); HISTORY REWRITE = NO
+  milestone_candidate: {sha: 5a5ca57731ebbbbc41ed4f702698709d5e128a86, scope: hito F4 (no FINAL_CANDIDATE_SHA), dll: c72b759d2ecf5bf9e9ea8172e4035abee966c0a57005748c9b1d421dad19ac07, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, ci: 38977069487 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS sin REQUIRED, coordinator: CONFORMING, gate: F4 GATE PASS sobre el SHA de cierre 1e7d8fc2 (CI 39052279094), owner_validation: W1 PASS y W2 PASS (aceptadas por el Owner, decisiones §80 y §82)}
+  f5_milestone_candidate: {sha: bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109, scope: hito F5 (OV-I65-02; no FINAL_CANDIDATE_SHA), dll: 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, loads: d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c, ci: 39187567306 4/4, core_full: 14390/14390, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMANT WITH OBSERVATIONS (A65-F5C-01..09 OPTIONAL), coordinator: CONFORMING, final_review: Architect CONFORMANT WITH OBSERVATIONS (A65-F5F-01..08 OPTIONAL) y Coordinator CONFORMING (decisiones §97), gate: F5 GATE PASS sobre el SHA de cierre 45aaad6e (CI 40759871854), predeclaration_recheck: 2026-10-19T02:22:50Z, declared: 2026-10-19 (decisiones §89, CD-I65-F5-27), owner_validation: W3 PASS y W4 PASS (aceptadas por el Owner, decisiones §93 y §96)}
+  final_candidate: {sha: 4a03b65b375d468c220dd68400d5dfd955bf043e, scope: FINAL_CANDIDATE_SHA de READY, dll: 0f5a508e03a34cce45cd005a0fef336d1b160894e0836a5f786d2ec966db0959, table_blob: d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2, bundle_inventory: 33e660b2e3781b72ba24f37f1ac97526c409301e71bb91869aa7c968c64bf7d5, ci: 40814761082 4/4, core_full: 14392/14392, ui_full: 1637 superadas y 17 omitidas, architect: CONFORMING (ronda 2, A65-FC-14..19 OPTIONAL), coordinator: CONFORMING, predeclaration_recheck: 2026-10-29T13:47:54Z, declared: 2026-10-29 (decisiones §117, CD-I65-FC-32), owner_validation: APPROVED (Owner, §125; W-R1a, W-R1b y W-R2 PASS; NOT_EVALUATED e INFORMATIVE declarados en la ficha)}
+  owner_decisions_open: [limpieza de AssemblyMap y de los restos historicos de appdatalow (NO autorizada, §122)]
+  not_authorized: [cambios funcionales durante la integracion, force push, rebase automatico, commits directos en main, AutoCAD, RAM Elements, modificar el registro, modificar I-62, I-64 o sus ramas, Codex o attempts adicionales]

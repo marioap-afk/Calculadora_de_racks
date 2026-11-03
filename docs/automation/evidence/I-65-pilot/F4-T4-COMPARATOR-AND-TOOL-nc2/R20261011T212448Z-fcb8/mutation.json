@@ -1,0 +1,18 @@
+{
+ "field": "delegation.AllowedWriteScope",
+ "excluded": "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonSupport.cs",
+ "from": [
+  "src/RackCad.Application/StructuralAnalysis/StructuralReadbackComparison.cs",
+  "tools/RackCad.StructuralAnalysis.RamTool/",
+  "RackCad.sln",
+  "tests/RackCad.Tests/RackCad.Tests.csproj",
+  "tests/RackCad.Tests/StructuralAnalysis/"
+ ],
+ "to": [
+  "src/RackCad.Application/StructuralAnalysis/StructuralReadbackComparison.cs",
+  "tools/RackCad.StructuralAnalysis.RamTool/",
+  "RackCad.sln",
+  "tests/RackCad.Tests/RackCad.Tests.csproj",
+  "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs"
+ ]
+}

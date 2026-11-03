@@ -1,0 +1,1 @@
+okPair=True okVerified=False okClass=False okRed=True notPass=0 => False

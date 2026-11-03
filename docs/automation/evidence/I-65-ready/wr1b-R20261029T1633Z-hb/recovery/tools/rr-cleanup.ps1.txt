@@ -1,0 +1,93 @@
+# I-65 W-R1b, recuperacion del registro (opcion A del Owner): puerta inmediata y borrado de EXACTAMENTE dos claves de HKCU:
+#   ...\ACAD-8101:409\Applications\RackCad   y   ...\ACAD-8101:409\Loaded\<bundle del usuario con '/'>
+# No toca AssemblyMap, los padres, las copias de appdatalow ni ninguna otra entrada. Unicas escrituras fuera del registro:
+# archivos nuevos en <Hb>\recovery\cleanup\. Sale con 3 (sin borrar) si la puerta falla, con 4 si falla un borrado.
+# Uso: pwsh -NoProfile -File rr_cleanup.ps1 -Hb D:\r65-smoke\4a03b65b\wr1-R20261029T1633Z\hb
+param([Parameter(Mandatory)][string]$Hb)
+$ErrorActionPreference = 'Stop'
+$out = Join-Path $Hb 'recovery\cleanup'
+if (Test-Path -LiteralPath $out) { throw "ya existe $out" }
+New-Item -ItemType Directory -Path $out | Out-Null
+$prod = 'Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409'
+$bundle = Join-Path $env:APPDATA 'Autodesk\ApplicationPlugins\RackCad.bundle'
+$loadedName = $bundle.Replace('\', '/')
+$u = [regex]::Escape($env:USERNAME)
+function Red([string]$s) { $s -replace $u, '<usuario>' }
+function Sha([string]$p) { (Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLower() }
+Add-Type -Namespace RC65 -Name Reg -MemberDefinition @'
+[DllImport("advapi32.dll")] public static extern int RegQueryInfoKey(Microsoft.Win32.SafeHandles.SafeRegistryHandle hKey, IntPtr cls, IntPtr lpcClass, IntPtr r, IntPtr subKeys, IntPtr maxSub, IntPtr maxCls, IntPtr values, IntPtr maxValName, IntPtr maxValLen, IntPtr sec, out long lastWrite);
+'@
+$HKCU = [Microsoft.Win32.Registry]::CurrentUser
+function LastWrite([string]$path) { $k = $HKCU.OpenSubKey($path); if (-not $k) { return 'AUSENTE' }; $ft = 0L; [void][RC65.Reg]::RegQueryInfoKey($k.Handle, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero, [ref]$ft); $k.Close(); [DateTime]::FromFileTimeUtc($ft).ToString('o') }
+function SubNames([string]$path) { $k = $HKCU.OpenSubKey($path); $n = @($k.GetSubKeyNames() | Sort-Object); $k.Close(); $n }
+function AmState { $k = $HKCU.OpenSubKey("$prod\AssemblyMap"); $s = (@($k.GetValueNames() | Sort-Object | ForEach-Object { $_ + '|' + $k.GetValueKind($_) + '|' + [string]$k.GetValue($_, $null, 'DoNotExpandEnvironmentNames') }) -join "`n"); $k.Close(); $s }
+$L = New-Object Collections.Generic.List[string]
+$gate = New-Object Collections.Generic.List[string]
+function Log([string]$s) { $L.Add([DateTime]::UtcNow.ToString('HH:mm:ss.fff') + 'Z ' + (Red $s)) }
+$baselineUtc = [DateTime]::Parse('2026-10-29T21:09:50Z').ToUniversalTime()
+$acadClosedUtc = [DateTime]::Parse('2026-10-30T02:04:42Z').ToUniversalTime()
+Log "inicio"
+
+# ---- Puerta ----
+$named = @(Get-Process | Where-Object { $_.ProcessName -match '^(acad|accoreconsole|RAMElements)$' })
+$withMod = 0; foreach ($p in Get-Process) { try { if (@($p.Modules | Where-Object { $_.ModuleName -match 'RackCad' }).Count) { $withMod++ } } catch { } }
+Log ("G1 acad_accoreconsole_ramelements=" + $named.Count + " procesos_con_modulo_RackCad=" + $withMod)
+if ($named.Count -or $withMod) { $gate.Add('G1 AutoCAD, RAM o un modulo RackCad activo') }
+$targets = [ordered]@{ 'applications-rackcad' = @("$prod\Applications", 'RackCad'); 'loaded-rackcad-bundle' = @("$prod\Loaded", $loadedName) }
+foreach ($t in $targets.Keys) {
+  $parent, $name = $targets[$t]
+  $f = Join-Path $out "pre-$t.reg"
+  & reg.exe export "HKCU\$parent\$name" $f 2>&1 | Out-Null
+  $same = (Test-Path -LiteralPath $f) -and ((Sha $f) -eq (Sha (Join-Path $Hb "recovery\precheck\backup-$t.reg")))
+  Log ("G2 $t reexportada_igual_al_respaldo=" + $same + " sha256=" + $(if (Test-Path -LiteralPath $f) { Sha $f } else { 'n/a' }))
+  if (-not $same) { $gate.Add("G2 $t ya no coincide con el respaldo") }
+  $hits = @(SubNames $parent | Where-Object { $_ -match 'RackCad' })
+  Log ("G2 $t subclaves_RackCad_en_el_padre=" + $hits.Count + " nombre_exacto=" + ($hits -ccontains $name))
+  if ($hits.Count -ne 1 -or -not ($hits -ccontains $name)) { $gate.Add("G2 $t alcance no identificable") }
+}
+$scope = @("$prod\Applications\RackCad", "$prod\Applications\RackCad\Groups", "$prod\Loaded\$loadedName", "$prod\Loaded\$loadedName\#AssemblyMappings", "$prod\Loaded\$loadedName\./Contents/RackCad.Plugin.dll")
+foreach ($p in $scope) {
+  $lw = LastWrite $p
+  Log ("G3 " + $p + " last_write_utc=" + $lw)
+  if ($lw -eq 'AUSENTE') { $gate.Add("G3 falta $p"); continue }
+  $d = [DateTime]::Parse($lw).ToUniversalTime()
+  if ($d -le $baselineUtc -or $d -gt $acadClosedUtc) { $gate.Add("G3 $p no se escribio dentro de la ventana de AutoCAD de HB") }
+}
+# Referencias preexistentes fuera de alcance (no se tocan): deben seguir siendo anteriores a la BASELINE
+$core = 'Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser'
+$outside = @("$core\15FCE767F24F74D1\Applications\RackCad", "$core\15FCE767F24F74D1\Loaded\$loadedName", "$core\15FCE767F24F74D1\AssemblyMap", "$core\BlockPreviewUser\Applications\RackCad", "$core\BlockPreviewUser\Loaded\$loadedName", "$core\BlockPreviewUser\AssemblyMap", 'Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths')
+$before = @{}
+foreach ($p in $outside) {
+  $lw = LastWrite $p; $before[$p] = $lw
+  Log ("G4 fuera_de_alcance " + $p + " last_write_utc=" + $lw)
+  if ($lw -eq 'AUSENTE' -or [DateTime]::Parse($lw).ToUniversalTime() -ge $baselineUtc) { $gate.Add("G4 $p no es preexistente") }
+}
+$am0 = AmState; $amLw0 = LastWrite "$prod\AssemblyMap"
+$appSub0 = @(SubNames "$prod\Applications"); $ldSub0 = @(SubNames "$prod\Loaded")
+Log ("G5 AssemblyMap last_write_utc=" + $amLw0 + " estado_sha256=" + [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($am0))).ToLower())
+Log ("G5 Applications subclaves=" + $appSub0.Count + " Loaded subclaves=" + $ldSub0.Count)
+Log ("PUERTA=" + $(if ($gate.Count) { 'STOP' } else { 'PASS' }))
+foreach ($g in $gate) { Log "PUERTA_STOP $g" }
+if ($gate.Count) { $L | Set-Content -LiteralPath (Join-Path $out 'cleanup.txt') -Encoding utf8NoBOM; $L; exit 3 }
+
+# ---- Borrado: una clave cada vez, comprobando antes de pasar a la siguiente ----
+foreach ($t in $targets.Keys) {
+  $parent, $name = $targets[$t]
+  $key = "HKCU\$parent\$name"
+  Log ("D orden: reg.exe delete `"" + $key + "`" /f")
+  $o = @(& reg.exe delete $key /f 2>&1); $rc = $LASTEXITCODE
+  Log ("D $t rc=" + $rc + " salida=" + (($o | ForEach-Object { [string]$_ }) -join ' '))
+  $gone = -not ($HKCU.OpenSubKey("$parent\$name"))
+  $sub = @(SubNames $parent); $prev = $(if ($t -like 'applications*') { $appSub0 } else { $ldSub0 })
+  $exact = (@(Compare-Object $prev $sub -CaseSensitive).Count -eq 1) -and (@(Compare-Object $prev $sub -CaseSensitive | Where-Object { $_.SideIndicator -eq '<=' -and $_.InputObject -ceq $name }).Count -eq 1)
+  Log ("D $t ausente=" + $gone + " padre_existe=" + [bool]$HKCU.OpenSubKey($parent) + " solo_falta_esa_subclave=" + $exact + " subclaves_padre=" + $sub.Count)
+  if ($rc -ne 0 -or -not $gone -or -not $exact) { Log "D_STOP $t"; $L | Set-Content -LiteralPath (Join-Path $out 'cleanup.txt') -Encoding utf8NoBOM; $L; exit 4 }
+}
+
+# ---- Despues: AssemblyMap y referencias fuera de alcance intactas ----
+$am1 = AmState; $amLw1 = LastWrite "$prod\AssemblyMap"
+Log ("A AssemblyMap igual=" + ($am0 -ceq $am1) + " last_write_igual=" + ($amLw0 -eq $amLw1) + " last_write_utc=" + $amLw1)
+foreach ($p in $outside) { $lw = LastWrite $p; Log ("A fuera_de_alcance " + $p + " last_write_igual=" + ($lw -eq $before[$p])) }
+Log "fin"
+$L | Set-Content -LiteralPath (Join-Path $out 'cleanup.txt') -Encoding utf8NoBOM
+$L

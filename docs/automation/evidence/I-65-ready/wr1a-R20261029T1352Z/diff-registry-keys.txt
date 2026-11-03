@@ -1,0 +1,17 @@
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU0"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU1"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU10"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU2"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU3"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU4"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU5"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU6"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU7"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU8"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "FileNameMRU9"
+hkcu-profiles CAMBIADO HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\NetLoadDialog :: "InitialDirectory"
+hkcu-fixedprofile IGUAL
+hkcu-applications IGUAL
+hkcu-installedapplications IGUAL
+hkcu-loaded IGUAL
+hklm-applications IGUAL

@@ -1,0 +1,51 @@
+== UTC 2026-10-19T02:47:49Z
+== 1 fetch fresco y origin/main
+origin/main=bb0d5522e8411f66a51fdfb3f1f0d0514b737453
+merge-base(cand,origin/main)=bb0d5522e8411f66a51fdfb3f1f0d0514b737453
+behind(HEAD..origin/main)=0
+== 2 SHA exacto y arbol limpio
+cand=bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109
+ancestor-of-HEAD=yes
+HEAD=dad3b40e8c804e8e07625ffb035e943ae76c5874
+origin-branch=dad3b40e8c804e8e07625ffb035e943ae76c5874
+status-porcelain-lines(excl. original de la disposicion)=0
+status: ?? docs/automation/decisions/I-65-owner-disposition-f5-milestone-candidate-declaration.original.txt
+== 3 Freeze y ADR-0050
+bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109: 100644 blob c18def42fe283aba0fa69ffc482647fb04ccdc46	docs/adr/0050-interoperabilidad-analisis-estructural.md
+bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109: 100644 blob 4e6e1feb4d83aa291707c72ad12f89411ff1d37a	docs/initiatives/I-65-proposal-v3.1.md
+HEAD: 100644 blob c18def42fe283aba0fa69ffc482647fb04ccdc46	docs/adr/0050-interoperabilidad-analisis-estructural.md
+HEAD: 100644 blob 4e6e1feb4d83aa291707c72ad12f89411ff1d37a	docs/initiatives/I-65-proposal-v3.1.md
+== 4 identidades
+D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows\RackCad.Plugin.dll 81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5
+D:\r65-smoke\bd1fcf8a\bin-Debug-net8.0-windows\structural-analysis\ram-elements\section-material-map.json fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619
+D:\r65-smoke\bd1fcf8a\inputs\ov-i65-02.loads.json d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c
+D:\r65-smoke\bd1fcf8a\expected-inputs.json c61a6e1255783f3c59f3e236c0057bbd88b3b1eabbbe424ba7dced71f22ddaf8
+D:\Base_de_datos_AutoCAD_V.0.dwg b4ca2248db9c3d72487ac8b5b1e5510cdd8aba231ab340541d91bebca2d560e8
+D:\r65-smoke\bd1fcf8a\ramtool\RackCad.StructuralAnalysis.RamTool.exe 21290785e13f2daee51b10b9d0b8911f86e73798e2cf49e668ce791a78e9ce7c
+productVersion=1.0.0+bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109
+table-blob-at-cand=d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2
+loads-blob-at-cand=dcc1a039d2fbff63a617f7498d06b9e18c302b37 sha256=d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c
+== 5 pruebas y CI del SHA
+cand-bd1fcf8a/02-core.txt:Correctas! - Con error:     0, Superado: 14390, Omitido:     0, Total: 14390, Duración: 2 m 35 s - RackCad.Tests.dll (net8.0)
+cand-bd1fcf8a/02-core.txt:core_exit=0 secs=253
+cand-bd1fcf8a/03-ui.txt:Correctas! - Con error:     0, Superado:  1637, Omitido:    17, Total:  1654, Duración: 9 m 50 s - RackCad.UI.Tests.dll (net8.0)
+cand-bd1fcf8a/03-ui.txt:ui_exit=0 secs=627
+run=39187567306 event=push branch=architecture/interop-analisis-estructural head_sha=bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109 status=completed conclusion=success attempt=1
+  job Build UI (WPF, valida API de Application) = success
+  job Tests (Domain + Application) = success
+  job UI Tests (WPF controls, net8.0-windows) = success
+  job Build Plugin without AutoCAD = success
+== 6/7 REQUIRED y conformidades
+filas-REQUIRED-en-tabla=0
+0 hallazgos REQUIRED y 9 OPTIONAL
+**CONFORMING** para `bd1fcf8a`
+== 8 sin modificaciones funcionales posteriores
+files-outside-docs cand..HEAD=0
+files-outside-docs 51fc82f1..cand=0
+dad3b40e I-65 F5: revision del Architect y conformidad del Coordinator sobre bd1fcf8a; bloque §7.1 propuesto (decisiones §88, evidencia §93)
+daa6fb77 I-65 F5: evidencia del SHA propuesto bd1fcf8a para el Candidato de hito de F5 (evidencia §92)
+== host
+acad=0 ram=0
+== visibilidad
+visibility=public private=false
+anon=200

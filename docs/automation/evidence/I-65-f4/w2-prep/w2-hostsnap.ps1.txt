@@ -1,0 +1,48 @@
+# I-65 W2 (RAM Elements, validacion final de F4 sobre el Candidato 5a5ca577): PRE / POST de SOLO LECTURA.
+# Uso: pwsh -NoProfile -File w2_hostsnap.ps1 -Phase pre|post -Run D:\r65-smoke\5a5ca577\ov-R20261017T0847Z
+# Unicas escrituras: la carpeta nueva <Run>\w2-<phase>\ (resumen, copia de Config.ini en PRE). No abre RAM.
+param([Parameter(Mandatory)][ValidateSet('pre','post')][string]$Phase, [Parameter(Mandatory)][string]$Run)
+$ErrorActionPreference = 'Stop'
+$dir = Join-Path $Run "w2-$Phase"
+if (Test-Path -LiteralPath $dir) { throw "ya existe $dir" }
+New-Item -ItemType Directory -Path $dir | Out-Null
+$ram = 'C:\Program Files\Bentley\Engineering\RAM Elements\RAMElements.exe'
+$rp = 'C:\Program Files\Bentley\Engineering\RAM Elements\python\ramelements'
+$db = 'C:\Program Files\Bentley\Engineering\RAM Elements\Database'
+$cfg = Join-Path $env:APPDATA 'Bentley\Engineering\RAM Elements\26.0.1\RE\Config.ini'
+$manual = 'D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-R20261016T2147Z\dump-man\ram-dump.json'
+function FSha([string]$p) { (Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLower() }
+function TSha([string]$s) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($s))).ToLower() }
+function Tree([string]$root) { (Get-ChildItem -Recurse -File -Force -LiteralPath $root | Sort-Object FullName | ForEach-Object { $_.FullName.Substring($root.Length + 1).Replace('\','/') + "  " + (FSha $_.FullName) + "  " + $_.Length }) -join "`n" }
+Add-Type -Namespace W2I -Name U -MemberDefinition @'
+[StructLayout(LayoutKind.Sequential)] public struct LII { public uint cbSize; public uint dwTime; }
+[DllImport("user32.dll")] public static extern bool GetLastInputInfo(ref LII p);
+'@
+$lii = New-Object W2I.U+LII; $lii.cbSize = 8; [void][W2I.U]::GetLastInputInfo([ref]$lii)
+$L = @()
+$L += "time_utc=" + (Get-Date).ToUniversalTime().ToString('o')
+$L += "S-01 ram=" + @(Get-Process -Name RAMElements -ErrorAction SilentlyContinue).Count + " acad=" + @(Get-Process -Name acad -ErrorAction SilentlyContinue).Count
+$L += "S-02 ramexe sha256=" + (FSha $ram) + " version=" + (Get-Item -LiteralPath $ram).VersionInfo.FileVersion
+$ver = (Select-String -LiteralPath (Join-Path $rp '__init__.py') -Pattern '^__version__').Line.Trim()
+$L += "S-03 ramelements tree_sha256=" + (TSha ((Tree $rp) + "`n")) + " files=" + @(Get-ChildItem -Recurse -File -Force -LiteralPath $rp).Count + " " + $ver
+$L += "S-04 db sections_us tree_sha256=" + (TSha ((Tree (Join-Path $db 'Sections\United States')) + "`n")) + " W.sec=" + (FSha (Join-Path $db 'Sections\United States\W.sec')) + " HSS_SQR.sec=" + (FSha (Join-Path $db 'Sections\United States\HSS_SQR.sec'))
+$L += "S-05 db materials_us tree_sha256=" + (TSha ((Tree (Join-Path $db 'Materials\United States')) + "`n")) + " Steel.mat=" + (FSha (Join-Path $db 'Materials\United States\Steel.mat'))
+$L += "S-06 config sha256=" + (FSha $cfg) + " mtime=" + (Get-Item -LiteralPath $cfg).LastWriteTimeUtc.ToString('o')
+$ps = @(Select-String -LiteralPath $cfg -Pattern '^\s*PythonScripts\s*=' | ForEach-Object { $_.Line.Trim() })
+$L += "S-06 config " + ($ps -join ' | ')
+if ($Phase -eq 'pre') { Copy-Item -LiteralPath $cfg -Destination (Join-Path $dir 'Config.ini.before'); $L += "S-06 config backup_sha256=" + (FSha (Join-Path $dir 'Config.ini.before')) }
+else { Copy-Item -LiteralPath $cfg -Destination (Join-Path $dir 'Config.ini.after') }
+foreach ($d in 'pkg-OV01', 'pkg-OV04', 'inj-OV05', 'inj-OV06', 'inj-OV07a', 'inj-OV07b', 'dump-OV01-gen') {
+  $p = Join-Path $Run $d
+  $files = @(Get-ChildItem -File -Force -LiteralPath $p | Sort-Object Name)
+  $L += "S-07 $d files=" + $files.Count + " " + (($files | ForEach-Object { $_.Name + ':' + (FSha $_.FullName) }) -join ',')
+}
+$L += "S-08 manual_dump_p2 sha256=" + (FSha $manual)
+$L += "S-09 user_idle_seconds=" + [math]::Round(([Environment]::TickCount64 % 4294967296 - $lii.dwTime) / 1000.0, 1)
+$L | Set-Content -LiteralPath (Join-Path $dir 'summary.txt') -Encoding utf8NoBOM
+if ($Phase -eq 'post') {
+  "=== DIFF summary (pre vs post, excluding time and idle)"
+  Compare-Object (Get-Content (Join-Path $Run 'w2-pre\summary.txt') | Where-Object { $_ -notmatch '^(time_utc|S-09|S-06 config backup)' }) (Get-Content (Join-Path $dir 'summary.txt') | Where-Object { $_ -notmatch '^(time_utc|S-09)' }) | ForEach-Object { $_.SideIndicator + ' ' + $_.InputObject }
+  "=== post"
+}
+$L

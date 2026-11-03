@@ -1,0 +1,8 @@
+2026-10-30T01:55:55Z
+Preparando bundle nuevo en: C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\.RackCad.bundle.stage-7ef17529f7294ce08d7830ab3c9cb3d9
+Activando bundle nuevo en: C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle
+RackCad instalado en: C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle
+Los catalogos CSV/JSON corresponden al bundle nuevo; no se fusionan con la instalacion anterior.
+Abre AutoCAD 2025; los comandos quedan disponibles sin NETLOAD.
+exit=0
+2026-10-30T01:55:56Z

@@ -1,0 +1,5 @@
+time_utc=2026-10-30T02:04:18.0968228Z acad_count=1 acad_pid=29912 rackcad_plugin_count=1
+RackCad.Application.dll C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\RackCad.Application.dll f5aa8a57109ca76e2301141004ec2200d60025b1d508616b9a3c5f08d27ea1d8
+RackCad.Domain.dll C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\RackCad.Domain.dll faae0407f332afe4175389c173aa786e7b0f272d5694cb83ce1c615870a0a39a
+RackCad.Plugin.dll C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\RackCad.Plugin.dll 60e1dd44741d14b96ea0a379e901e806abb4d65c5783411786f611f35e604c33
+RackCad.UI.dll C:\Users\<usuario>\AppData\Roaming\Autodesk\ApplicationPlugins\RackCad.bundle\Contents\RackCad.UI.dll f92fd60c497b0c6ad579c924911ee189aec9e75940ad6daf91b422183a5edd6c

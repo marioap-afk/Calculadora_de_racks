@@ -1,0 +1,373 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "RD11-AUTOLOADER-TABLE",
+  "RunId": "R20261029T004516Z-bf20",
+  "Initiative": "I-65",
+  "Unit": "I-65",
+  "Gate": "R-D11",
+  "Attempt": 7,
+  "AuthorityRevision": "91f82d6d83731f48d445c7ad007a814b65c6caa6",
+  "MainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "BaseSha": "91f82d6d83731f48d445c7ad007a814b65c6caa6",
+  "ExpectedBranch": "architecture/interop-analisis-estructural",
+  "ExpectedWorktree": "C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261029T004516Z-bf20"
+  },
+  "TaskClass": "Implementación de pruebas",
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "Medium",
+    "Breadth": "High",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Medium",
+    "Horizon": "Medium"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagente de la sesion de escritorio",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "RoutingReason": "28 de octubre de 2026. Los comandos solicitados dieron rama architecture/interop-analisis-estructural, HEAD 91f82d6d83731f48d445c7ad007a814b65c6caa6, origin/main bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y log 91f82d6d, 95aae3f1, 77774aef; MainSha coincide con origin/main, por lo que no se activa S-13. El contrato de revisión 91f82d6d fija el alcance y la cadena RED/GREEN. La tarea se clasifica como implementación de pruebas: sus cambios verificables principales son el harness y pruebas junto a un target MSBuild, un verificador PowerShell y documentación. Sensibilidad arquitectónica media, coste de fallo alto por la cadena única y ausencia de rework, amplitud alta por los archivos y las fases coordinadas, herramientas altas, ambigüedad baja por el contrato preciso, repetición mecánica media y horizonte medio por caber en una invocación. Según routing.md §1–§4, la clase parte de Balanced; el coste de fallo alto la eleva un escalón a Deep, sin compensación de repetición mecánica alta. La celda Anthropic claude-sonnet-5-5 es la única EligibleCell que permite write-commit-push; su catálogo está verificado el 2026-09-30 y reporta la capacidad y efforts medium/high medidos en U-04 y en el piloto de I-61; el piloto documenta el Worker con high. Elijo su effort probado high y perfil ROUTINE_IMPLEMENTATION, el perfil de la clase de implementación de pruebas. El preflight comparó Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions con el contrato, elemento a elemento y en orden; dio igualdad exacta en las seis colecciones, incluidas Section y Class de Authorities. Sin archivos nuevos; el RED afecta solo la prueba de distribución y el harness; el GREEN afecta solo el target, el verificador y los tres documentos enumerados. El Worker debe informar al inicio el directorio efectivo y operar con rutas absolutas según el contrato.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "required",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-65-rd11-autoloader-gate.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65-owner-disposition-ready-decisions-autoloader-gate.original.txt",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65-owner-answer-codex-ceiling-rd11.original.txt",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/decisions/I-65.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-ready-preparation.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-proposal-v3.1.md",
+      "Section": "archivo completo (Frozen: yes)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-65-interop-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/adr/0050-interoperabilidad-analisis-estructural.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/adr/0003-referencias-autocad-para-ci.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "AGENTS.md",
+      "Section": "## Convenciones arquitectonicas (obligatorias)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Section": "## 7. Gates funcionales",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "## 16. Ejecución delegada bajo orden del Coordinator",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "## 1. Clases de tarea y ## 4. Algoritmo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/initiatives/PROMPT_TEMPLATES.md",
+      "Section": "## G. Delegación de ejecución",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "Objective": "Ejecutar la tarea RD11-AUTOLOADER-TABLE conforme al contrato de gate de revisión 91f82d6d: hacer que la tabla aprobada assets/structural-analysis/ram-elements/section-material-map.json viaje byte a byte en el bundle del Autoloader en Contents/structural-analysis/ram-elements/section-material-map.json, junto a la ubicación donde RACKRAMPAQUETE ya la busca. Seguir una cadena RED -> GREEN. RED: modificar solo la prueba de distribución tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs, sustituyendo LaTablaNoViajaEnElPaqueteDelAutoloader_NiElDestinoDelPaqueteSeToca por pruebas positivas, y añadir los casos al harness deploy/test-verify-bundle.ps1. GREEN: modificar solo el target AssembleAutoloaderBundle de src/RackCad.Plugin/RackCad.Plugin.csproj, deploy/verify-bundle.ps1 y la documentación estrictamente necesaria en README.md, docs/guias/despliegue.md y docs/guias/interoperabilidad-ram-elements.md. No crear archivos nuevos. Operar dentro del worktree esperado con rutas absolutas y aplicar los controles del contrato.",
+  "AllowedWriteScope": [
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "deploy/verify-bundle.ps1",
+    "deploy/test-verify-bundle.ps1",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs",
+    "README.md",
+    "docs/guias/despliegue.md",
+    "docs/guias/interoperabilidad-ram-elements.md",
+    "src/RackCad.Application/"
+  ],
+  "ForbiddenWriteScope": [
+    "assets/structural-analysis/ram-elements/section-material-map.json",
+    "assets/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Application/",
+    "src/RackCad.UI/",
+    "src/RackCad.Plugin/RackRamElementsCommands.cs",
+    "src/RackCad.Plugin/RackAyudaCommands.cs",
+    "src/RackCad.Plugin/Systems/",
+    "src/RackCad.Plugin/Views/",
+    "src/RackCad.Plugin/Drawing/",
+    "src/RackCad.Plugin/KindHandlers/",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuard.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandProductTableTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsGuardTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsHardeningGuardTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisSourceGuardTests.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsFixtures.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/Fixtures/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.Tests/Golden/",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "tests/RackCad.UI.Tests/",
+    "deploy/RackCad.bundle/",
+    "deploy/build-bundle.ps1",
+    "deploy/install-bundle.ps1",
+    "deploy/test-install-bundle.ps1",
+    "docs/guias/agregar-un-sistema.md",
+    "docs/guias/catalogos-y-plantillas.md",
+    "docs/guias/generacion-cabecera-lateral.md",
+    "docs/guias/geometria-secciones-estructurales.md",
+    "docs/guias/glosario.md",
+    "docs/guias/modelo-de-datos.md",
+    "docs/guias/secciones-estructurales.md",
+    "docs/guias/validacion-manual-autocad.md",
+    "docs/guias/variables-y-formulas.md",
+    "docs/guias/vistas-ligadas-y-proyeccion.md",
+    "docs/ARCHITECTURE.md",
+    "docs/AUTOMATION_PLAN.md",
+    "docs/FOUNDATIONS.md",
+    "docs/HANDOFF.md",
+    "docs/INITIATIVE_LIFECYCLE.md",
+    "docs/ROADMAP.md",
+    "docs/WORKFLOW.md",
+    "docs/adr/",
+    "docs/architecture/",
+    "docs/archivo/",
+    "docs/auditoria-arquitectura-2026-07.md",
+    "docs/automation/",
+    "docs/context-packs/",
+    "docs/ideas-futuras.md",
+    "docs/initiatives/",
+    "tools/",
+    "eng/",
+    ".github/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    ".gitattributes",
+    ".gitignore",
+    ".editorconfig",
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
+  "Invariants": [
+    "RD-INV-01 (contrato del gate seccion 2): el target AssembleAutoloaderBundle de src/RackCad.Plugin/RackCad.Plugin.csproj copia la tabla desde su fuente unica assets/structural-analysis/ram-elements/section-material-map.json, byte a byte (Copy de MSBuild, sin transformarla), a Contents/structural-analysis/ram-elements/section-material-map.json dentro del bundle, la misma ruta relativa que el Link del elemento Content de la tabla (structural-analysis/ram-elements/section-material-map.json); los cuatro DLL de RackCad, catalogs/, PackageContents.xml y la regeneracion completa (RemoveDir y MakeDir) no cambian; el elemento Content de la tabla no cambia; ningun nombre nuevo del proyecto contiene StructuralAnalysis.RamTool",
+    "RD-INV-02: deploy/verify-bundle.ps1 sigue siendo una lista permitida fail-closed; admite la tabla SOLO en la ruta exacta Contents/structural-analysis/ram-elements/section-material-map.json; exige que exista; exige que su SHA-256 sea igual al de la tabla fuente aprobada (parametro nuevo -SectionMapSourcePath; por omision assets/structural-analysis/ram-elements/section-material-map.json del repositorio, igual que -CatalogsSourceDir); rechaza cualquier otro archivo bajo Contents/structural-analysis/ y la tabla en cualquier otra ruta; ninguna comprobacion existente (DLL de Autodesk, cuatro DLL, DLL iguales al publish, catalogos iguales a assets/catalogs, manifiesto, version y series) se relaja, se elimina ni cambia su mensaje",
+    "RD-INV-03: deploy/test-verify-bundle.ps1 acepta el bundle valido con la tabla y rechaza, cada uno con su motivo en la salida, al menos: tabla ausente, tabla modificada (un byte anadido), tabla en una ruta no autorizada dentro de Contents y un archivo extra junto a la tabla; los nueve casos negativos actuales se conservan sin cambios; trabaja solo sobre copias en su carpeta temporal propia, que crea y borra; el resumen final cuenta los casos reales",
+    "RD-INV-04: en tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs cambia SOLO LaTablaNoViajaEnElPaqueteDelAutoloader_NiElDestinoDelPaqueteSeToca, sustituida por pruebas positivas que observan RD-INV-01 (el target copia la tabla desde la fuente a esa ruta, leyendo el XML del proyecto), RD-INV-02 (el verificador nombra la ruta exacta, exige presencia e igualdad SHA-256 con la fuente) y RD-INV-03 (el harness tiene los casos nuevos); las demas pruebas del archivo, las guardas G1, C01-C18, C02 y los censos no se editan ni se eximen",
+    "RD-INV-05: en el GREEN el blob de assets/structural-analysis/ram-elements/section-material-map.json sigue siendo d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2; ningun .cs de src/ cambia; RACKRAMPAQUETE y su forma de buscar la tabla (carpeta del DLL del Plugin) no cambian; nada de tools/, assets/, eng/ ni .github/ cambia",
+    "RD-INV-06: la documentacion solo quita la limitacion de CD-I65-F4-10 (la tabla no viajaba en el Autoloader) y dice que la tabla viaja en el bundle en esa ruta; conserva literalmente las demas limitaciones (DIF-01, edicion del catalogo de RAM UNKNOWN, A65-F4R-07, propiedades NOT_EVALUATED, peso propio excluido, paso manual en RAM) y nada presenta la tabla como validacion estructural ni como certificacion del material",
+    "RD-INV-07: controles del Owner K1-K6 (decisiones I-65 seccion 41, CD-I65-F4-32) y condicion C-12; ninguna ejecucion de AutoCAD, RAM Elements ni de un interprete Python; ninguna ejecucion de install-bundle.ps1 ni escritura en ApplicationPlugins",
+    "Forma (contrato del gate seccion 2): RED = un commit que SOLO cambia tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs y deploy/test-verify-bundle.ps1; falla por asercion (job Core: las pruebas positivas no encuentran la tabla en el target ni en el verificador) y en el harness (job del Plugin), nunca por compilacion; GREEN = un commit que SOLO cambia src/RackCad.Plugin/RackCad.Plugin.csproj, deploy/verify-bundle.ps1 y la documentacion nombrada (git diff RED..GREEN sin archivos de pruebas ni del harness); comprobacion local del Worker con deploy/build-bundle.ps1 -Output dentro de su carpeta work/ (AutoCAD cerrado) y el harness sobre ese bundle, en RED (el harness falla) y en GREEN (pasa)",
+    "Sin cambio (Freeze de I-65 y ADR-0050): el Freeze, ADR-0050 y el contrato de cuatro DLL de ADR-0003 (solo se anade un archivo de datos al bundle); RACKAYUDA (R-D8 A); ninguna A-n; cualquier modificacion de un elemento congelado es una parada",
+    "Controles operativos del Owner (decisiones de I-65 seccion 41, CD-I65-F4-32): toda operacion sobre archivos y proyectos con ruta ABSOLUTA dentro del worktree C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural; git siempre con -C y esa ruta; ninguna API .NET de archivos con ruta relativa; no depender de cd ni Set-Location entre llamadas (el directorio de proceso de la sesion es el checkout principal D:/Documentos/Codex/Calculadora de racks, zona prohibida); primera accion: informar pwd, Get-Location y [Environment]::CurrentDirectory y registrarlos en la entrega"
+  ],
+  "AcceptanceCriteria": [
+    "RED: hacer primero compilable el cambio limitado a la prueba de distribución y el harness. El filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysis selecciona al menos 1795 pruebas; las nuevas pruebas positivas fallan por aserción y el proyecto compila sin que el fallo sea de compilación. El harness falla sobre un bundle sin la tabla. Empujar el commit RED antes de iniciar GREEN para que su propia corrida push registre el fallo del job Core.",
+    "GREEN: el diff RED..GREEN modifica solo src/RackCad.Plugin/RackCad.Plugin.csproj, deploy/verify-bundle.ps1, README.md, docs/guias/despliegue.md y docs/guias/interoperabilidad-ram-elements.md; no cambia la prueba ni el harness del RED. El blob de la tabla conserva SHA-256 d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2.",
+    "RD-INV-01: el target AssembleAutoloaderBundle copia byte a byte desde la fuente aprobada a Contents/structural-analysis/ram-elements/section-material-map.json, sin modificar el elemento Content, los cuatro DLL de RackCad, catalogs/, PackageContents.xml ni la regeneración completa, y sin añadir nombres de proyecto que contengan StructuralAnalysis.RamTool.",
+    "RD-INV-02: el verificador fail-closed admite la tabla solo en la ruta exacta indicada, comprueba presencia y SHA-256 frente a -SectionMapSourcePath con el fallback del repositorio, rechaza archivos adicionales bajo Contents/structural-analysis/ y conserva intactas todas las comprobaciones y mensajes existentes.",
+    "RD-INV-03: el harness acepta el bundle válido y rechaza con motivo los cuatro casos nuevos: tabla ausente, modificada con un byte añadido, en ruta no autorizada y archivo extra junto a ella. Conserva los nueve negativos actuales sin cambios, usa únicamente copias en su directorio temporal propio y muestra el recuento real de casos.",
+    "RD-INV-04: la única prueba sustituida en StructuralAnalysisPluginCommandGuardTests.cs observa el target leyendo el XML del proyecto, la ruta/presencia/hash del verificador y los casos nuevos del harness; conserva las demás pruebas, guardas y censos.",
+    "RD-INV-05: ningún .cs de src/, RACKRAMPAQUETE, tools/, assets/, eng/ ni .github/ cambia, y la tabla conserva el blob aprobado.",
+    "RD-INV-06: los documentos editados solo eliminan la limitación CD-I65-F4-10 y reflejan la ubicación nueva; conservan literalmente DIF-01, la edición del catálogo de RAM UNKNOWN, A65-F4R-07, NOT_EVALUATED, la exclusión del peso propio y el paso manual en RAM, sin presentar la tabla como validación estructural ni certificación del material.",
+    "RD-INV-07 y forma RED/GREEN: cumplir los controles K1-K6 y C-12, sin ejecutar AutoCAD, RAM Elements, Python ni install-bundle.ps1 y sin escribir en ApplicationPlugins. RED y GREEN siguen la separación de archivos indicada por el contrato y los fallos RED son observables antes del cambio de producción.",
+    "En GREEN, el filtro requerido y la suite Core completa pasan; la solución compila en Release sin advertencias nuevas atribuibles al diff. deploy/build-bundle.ps1 -Output publica dentro de work/ del Worker un bundle con la tabla en Contents/structural-analysis/ram-elements/section-material-map.json y SHA-256 igual a la fuente; verify-bundle acepta y el harness pasa el caso válido, los nueve negativos existentes y los nuevos.",
+    "El Worker informa al inicio pwd, Get-Location y [Environment]::CurrentDirectory y los registra en la entrega. Todas las operaciones de archivos y proyectos usan rutas absolutas dentro del worktree; Git usa -C con su ruta. El handoff registra los SHA de RED y GREEN, el trailer real, conteos del filtro, por invariante la prueba o caso del harness correspondiente, el directorio efectivo, el inventario y hashes del bundle, y las salidas del verificador y harness en RED y GREEN.",
+    "La rama se empuja sin force. La corrida push del SHA exacto GREEN tiene los cuatro jobs requeridos en success y la corrida push propia del SHA RED tiene el job Core en failure."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.StructuralAnalysis",
+      "MinSelected": 1795,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Commit RED: solo la prueba de distribucion y el harness; las pruebas positivas fallan por asercion (sin errores de compilacion); seleccion del filtro >= 1795; harness local fallido sobre el bundle sin tabla; push propio antes del GREEN",
+    "Commit GREEN: solo el target del proyecto del Plugin, el verificador y la documentacion nombrada; git diff RED..GREEN sin pruebas ni harness; filtro y suite Core completa en verde; solucion en Release sin advertencias nuevas atribuibles al diff; bundle publicado localmente en work/ con la tabla en Contents/structural-analysis/ram-elements/section-material-map.json, SHA-256 igual al de la fuente; verificador y harness en verde",
+    "Comprobacion mecanica antes de aceptar EXECUTION_VERIFIED: git diff --name-only BaseSha..CurrentSha contenido en el AllowedWriteScope de la delegacion y sin interseccion con su ForbiddenWriteScope; blob de la tabla en CurrentSha = d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2",
+    "worker-handoff.json conforme al esquema, con los SHA de RED y GREEN, el trailer real del Worker, los conteos del filtro en RED y GREEN y, en Evidence, el directorio efectivo, por invariante la prueba o el caso del harness que lo observa, el inventario del bundle publicado en GREEN (rutas y SHA-256) y las salidas del verificador y del harness en RED y GREEN",
+    "Push de la rama sin force; corrida push del SHA exacto de GREEN con los cuatro jobs requeridos en success y corrida push del RED con el job Core en failure"
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive/irreversible action not authorized"
+    },
+    {
+      "Id": "S-06",
+      "Text": "missing credentials/permissions"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch/worktree ownership conflict"
+    },
+    {
+      "Id": "S-09",
+      "Text": "dependency not integrated"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify authority revision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "main movement invalidates exact-SHA assumptions"
+    },
+    {
+      "Id": "S-14",
+      "Text": "initiative contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "Cambio del hash de config.toml"
+    },
+    {
+      "Id": "P-02",
+      "Text": "Participante vivo ajeno, proceso no atribuible o mas de una delegacion abierta"
+    },
+    {
+      "Id": "P-03",
+      "Text": "Delegacion fuera del contrato"
+    },
+    {
+      "Id": "P-04",
+      "Text": "Tope de BLOCKED alcanzado"
+    },
+    {
+      "Id": "P-05",
+      "Text": "Invocacion distinta del paquete aceptado"
+    },
+    {
+      "Id": "P-06",
+      "Text": "Aviso de limite de uso o de creditos"
+    },
+    {
+      "Id": "P-07",
+      "Text": "Una invocacion excederia el tope de invocaciones"
+    },
+    {
+      "Id": "P-08",
+      "Text": "La sesion opero durante una cesion"
+    },
+    {
+      "Id": "C-01",
+      "Text": "Hace falta tocar algo fuera de AllowedWriteScope (un .cs de src/, la tabla, otro asset, tools, eng, .github, build-bundle.ps1, install-bundle.ps1, test-install-bundle.ps1, PackageContents.template.xml, otra prueba u otro documento)"
+    },
+    {
+      "Id": "C-02",
+      "Text": "Hace falta cambiar el contenido, el fin de linea o la ruta de la tabla, .gitattributes o el elemento Content de la tabla"
+    },
+    {
+      "Id": "C-03",
+      "Text": "El bundle con la tabla no pasa el verificador o el harness, o la unica salida seria relajar, eliminar o cambiar una comprobacion existente del verificador"
+    },
+    {
+      "Id": "C-04",
+      "Text": "Necesidad de leer o consumir codigo no integrado de I-64, I-62 o I-52, o de tocar superficies de ID30 o Workspace"
+    },
+    {
+      "Id": "C-05",
+      "Text": "Cualquier escritura fuera de AllowedWriteScope, salvo la carpeta work/ propia y la carpeta temporal que el harness crea y borra"
+    },
+    {
+      "Id": "C-06",
+      "Text": "Un invariante del contrato no puede mostrar un RED observable antes del cambio del target y del verificador"
+    },
+    {
+      "Id": "C-07",
+      "Text": "Hace falta un DLL adicional en el bundle, cambiar el contrato de cuatro DLL, aceptar un archivo de Autodesk o cambiar el comportamiento de RACKRAMPAQUETE"
+    },
+    {
+      "Id": "C-08",
+      "Text": "Hace falta una dependencia binaria, un paquete NuGet nuevo, Python, AutoCAD o RAM Elements, ejecutar AutoCAD, RAM Elements o un interprete Python por cualquier motivo, o ejecutar install-bundle.ps1 o escribir en ApplicationPlugins"
+    },
+    {
+      "Id": "C-09",
+      "Text": "Una guarda existente falla por el cambio y la unica salida seria editarla, debilitarla o anadir una exencion"
+    },
+    {
+      "Id": "C-10",
+      "Text": "Aparece una cuestion material de arquitectura, autoridad o semantica congelada, o una modificacion del Freeze"
+    },
+    {
+      "Id": "C-11",
+      "Text": "AutoCAD esta abierto y deploy/build-bundle.ps1 se niega a publicar: parar sin cerrar AutoCAD"
+    },
+    {
+      "Id": "C-12",
+      "Text": "Cambio no atribuible en el checkout principal o en otro worktree durante la cesion (fotografia antes y despues: estado Git de todos los worktrees y SHA-256 de los archivos rastreados del checkout principal), escritura por ruta relativa resuelta fuera del worktree, o directorio efectivo no informado"
+    }
+  ],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 4,
+  "ChainBaseSha": "91f82d6d83731f48d445c7ad007a814b65c6caa6",
+  "ChainRedSha": null,
+  "ChainRedFiles": [],
+  "CorrectionOf": null,
+  "ExpectedHandoffPath": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion RD11, CONTROLLER_PLANNING)"
+}

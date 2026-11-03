@@ -1,0 +1,73 @@
+I-65 — OWNER DISPOSITION
+Engineering Approval Package — D-01 to D-08
+He revisado el paquete de ingeniería publicado en `8d16eb52`, con CI 38509256792 en PASS 4/4.
+1. Geometría — D-01
+D-01 = APPROVED.
+Acepto las propiedades geométricas publicadas para W12X26 y HSS 4X4X1/4 conforme a la AISC Shapes Database v16.0, cuya procedencia y SHA-256 fueron comprobados.
+Esto incluye A, Ix, Iy, J y las propiedades adicionales de sección documentadas en el paquete.
+La geometría puede clasificarse como VERIFIED respecto a esa publicación.
+Las derivaciones matemáticas complementarias deben permanecer identificadas como DERIVED.
+2. Convenciones geométricas — D-02
+D-02 = APPROVED AS DERIVED.
+Acepto la relación 0.93 entre espesor de diseño y nominal y el radio exterior 2·tdes como convenciones utilizadas para reproducir las propiedades publicadas.
+No las presentes como citas normativas verificadas cuando no se haya leído la fuente correspondiente.
+Estas convenciones no se incorporarán como nuevos parámetros a las filas del adaptador.
+3. Propiedades mecánicas — D-03 y D-04
+D-03 = APPROVED AS MODELING CONVENTION.
+Acepto E = 29,000 ksi para los dos materiales del piloto.
+D-04 = APPROVED AS MODELING CONVENTION.
+Acepto ν = 0.30.
+Estos valores se adoptan expresamente como hipótesis de material para la equivalencia de transferencia de REF-CANT-01.
+No se consideran una certificación independiente de las propiedades reales de fabricación.
+Mantén las citas normativas no leídas como pendientes, sin atribuirles verificación documental.
+4. Peso unitario — D-05
+D-05 = APPROVED FOR PILOT ONLY.
+Acepto 490 pcf como referencia de material para las filas del piloto.
+DIF-01 permanece documentada:
+
+* Referencia: 490 pcf.
+* RAM: aproximadamente 486.94 pcf.
+* Diferencia: −0.62 %.
+
+La diferencia está fuera de la tolerancia original y se acepta exclusivamente como limitación informativa para la prueba de transferencia sin peso propio.
+No modifiques tolerancias ni extiendas esta aceptación a modelos que utilicen peso propio.
+5. Referencias ASTM — D-06
+D-06 = APPROVED AS REFERENCE IDENTITIES.
+Utiliza:
+
+* ASTM A992/A992M-22.
+* ASTM A500/A500M-23, Grade C.
+
+Distingue la edición de referencia de la identidad del material de RAM y del certificado de material real.
+Fy y Fu quedan informativos y fuera de los parámetros que se escriben en las filas.
+6. Oráculo de material — D-07
+D-07 = APPROVED: POISSON RATIO.
+Utiliza `poissonRatio = 0.30` y `shearModulus = null`, según el contrato existente.
+No introduzcas una segunda fuente de G ni infieras propiedades adicionales.
+7. Procedencia — D-08
+D-08 = VARIANT B APPROVED IN PRINCIPLE.
+Acepto la Variante B de los textos `source` para las dos filas, condicionada a una última comprobación mecánica de que coinciden literalmente con el paquete de aprobación, son compatibles con el esquema y describen correctamente las limitaciones de las fuentes.
+No cambies el texto sin una nueva disposición si encuentras alguna discrepancia material.
+8. Firma y actualización — D-09 y D-10
+D-09 = PENDING FINAL OWNER CONFIRMATION.
+No asignes todavía `verifiedBy` ni `verifiedOn`.
+Prepara una declaración breve de conformidad técnica que pueda aprobar expresamente como verificador, dejando claro que se refiere solo al modelo analítico del piloto.
+D-10 = NOT YET AUTHORIZED.
+No emitas todavía el contrato F4-D, no ejecutes Workers y no habilites los contadores de Codex e intentos.
+9. Entregable
+Presenta únicamente:
+
+1. Estado de D-01 a D-08.
+2. Texto literal final de las dos filas, incluyendo `source`.
+3. Declaración de conformidad técnica lista para aprobación.
+4. Campos exactos pendientes de D-09.
+5. Confirmación de que el contrato F4-D puede ejecutarse sin nuevas decisiones arquitectónicas.
+6. Solicitud concreta de autorización para F4-D.
+
+No repitas la investigación de perfiles ni abras nuevos ciclos documentales.
+ENGINEERING BASIS = ACCEPTED FOR REF-CANT-01.
+FINAL ENGINEERING SIGN-OFF = PENDING.
+MAPPING UPDATE = NO.
+AUTOCAD EXECUTION = NO.
+RAM EXECUTION = NO.
+F4 GATE PASS = NO.

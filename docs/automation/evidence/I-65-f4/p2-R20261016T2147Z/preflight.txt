@@ -1,0 +1,14 @@
+time_utc=2026-10-16T21:47:27.0964005Z
+PF-01 ram=0 acad=0 user_idle_seconds=6.7
+PF-03 ramexe sha256=7dcb48555741fa368f5d5f6a14e760fe0662dd5c0b3cc53f6e88f1c0231e7970 version=26.00.01.15
+PF-03 ramelements tree_sha256=f71a017f49573030219a4213465c9ec454d3b6282f3f60b648a4300bfeba0a60 files=30 __version__ = "0.1.0"
+PF-03 pkg manifest.json 19fba962297badc95dd008bcf8d1477993c55a7ff8b5347d68e311e246f53a78
+PF-03 pkg rackcad-ram-build.py d9b41aab69643c01971e756fb9323a8f35dad6b33008598655c753fe2f92d719
+PF-03 pkg structural-loads.json 25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05
+PF-03 pkg files=3 readback_exists=False
+PF-04 config sha256=2505ca6e50eb722d418085f4b4382693d8ac1f894fb1fdfac51272f1e3a6282e backup_sha256=2505ca6e50eb722d418085f4b4382693d8ac1f894fb1fdfac51272f1e3a6282e mtime=2026-10-14T02:03:19.5727980Z
+PF-05 tool frozen identical=True exe=01869e1bdb9ae0aa23b64e79aef1c61e5f2ba9f9ef727543b6374ebe56c1cb15 dll=5eff996df56abb612c2f63c705f8e185d13f379765b3c58cd565735394ae7d4e app=3dcdb1f05f8ae47bb35547f93ea819cace400b4bd82c60edcb1a4fadb5c2abb4 version=1.0.0+ad595b4240abc1bc3b24f09d0f37181e34e2ae31
+PF-05 dump-gen exit=0 script_sha256=d30c9802589aa50fee79c72ea38b013b17f5f854e1d288a1c4c8e72028b1ed0e files=1
+PF-05 dump-gen output: Dump script published in 'D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-R20261016T2147Z\dump-gen'; it embeds the folder 'D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-R20261016T2147Z\dump-gen'.
+PF-05 dump-man exit=0 script_sha256=af26248953f033ccaf82d9435b85c282b7bd647e532d2642d86d9e3322d47f29 files=1
+PF-05 dump-man output: Dump script published in 'D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-R20261016T2147Z\dump-man'; it embeds the folder 'D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-R20261016T2147Z\dump-man'.

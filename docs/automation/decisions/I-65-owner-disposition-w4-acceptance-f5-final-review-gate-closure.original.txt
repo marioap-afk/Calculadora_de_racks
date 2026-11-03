@@ -1,0 +1,82 @@
+I-65 — OWNER DISPOSITION
+W4 Acceptance / F5 Final Conformance Review and Gate Closure
+He revisado el informe de W4 registrado en `2824dcef`, con CI run 40689115438, 4/4 satisfactorio.
+1. Aceptación
+W4 = ACCEPTED / PASS.
+Reconozco:
+
+* READBACK OK, con 8 nudos, 7 miembros y 6 cargas.
+* Coincidencia de la huella de entrada con el paquete de W3.
+* Comparador PASS, código 0, contra el modelo manual construido desde la especificación independiente.
+* Q2 reproducida conforme al valor previsto para fracción 1.0.
+* CMB-3 cumplida, con cero combinaciones.
+* Peso propio excluido.
+* Contraste entre readback y volcado satisfactorio.
+* Evidencia de sesión conforme a la opción 0.
+* Integridad del paquete, DLL y entorno.
+* Modelos descartados sin guardar.
+
+Acepto el bloqueo inicial de licenciamiento como incidencia externa recuperada mediante una nueva ventana y preflight. No requiere repetir W4.
+2. Revisión independiente
+F5 FINAL CONFORMANCE REVIEW = AUTHORIZED.
+Solicita al Architect una revisión independiente, de solo lectura, sobre el Candidato declarado:
+`bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109`
+La revisión debe evaluar explícitamente:
+
+1. Freeze y ADR-0050.
+2. AC-F5-01..10.
+3. Integridad del Candidato y del paquete OV-I65-02.
+4. Resultados de W3 y W4.
+5. Seis cargas: unidades, magnitudes, direcciones y posiciones.
+6. Tratamiento de Q2 en el límite de fracción 1.0.
+7. Independencia del modelo manual.
+8. CMB-3 y peso propio excluido.
+9. Trazabilidad de sesión y sus limitaciones.
+10. Incidencias, restricciones y condiciones de STOP.
+11. Estado de los hallazgos OPTIONAL previos.
+12. Ausencia de cambios funcionales posteriores al Candidato.
+
+Distingue PASS, FAIL, INCOMPLETE, INFORMATIVE y NOT_EVALUATED.
+3. Criterios de cierre
+Después del informe del Architect:
+
+* Verifica los requisitos de LIFECYCLE §7.
+* Revisa todos los AC-F5.
+* Confirma que no existan REQUIRED abiertos.
+* Verifica árbol limpio, rama, Freeze y hashes.
+* Determina el SHA documental de cierre.
+* Ejecuta Core Full y CI sobre ese SHA conforme al procedimiento.
+* Registra la conformidad del Coordinator.
+
+F5 GATE PASS = CONDITIONAL.
+Solo emite GATE PASS si se satisfacen todos los criterios y el procedimiento de ciclo de vida permite al Coordinator registrar la determinación.
+Si aparece cualquier incumplimiento material, detente con NO-GO y presenta la decisión pendiente.
+4. Observaciones e incidencias
+Conserva las incidencias de W4 sin reescribir las evidencias históricas.
+Mantén la privacidad de nuevas capturas, sin reinstaurar como bloqueo la visibilidad pública del repositorio.
+No conviertas propiedades NOT_EVALUATED en PASS.
+5. Restricciones
+No abrir AutoCAD ni RAM.
+No repetir W3 ni W4 sin autorización.
+No modificar producto, tabla, Freeze, ADR ni tolerancias.
+No consumir Codex ni nuevos attempts.
+No iniciar F7.
+No declarar READY final ni integrar la rama.
+6. Entregable
+Presenta:
+
+1. Veredicto final del Architect.
+2. Matriz AC-F5-01..10.
+3. Confirmación de OV-I65-02 PASS o bloqueo.
+4. Hashes y custodia.
+5. Pruebas y CI del SHA de cierre.
+6. Hallazgos residuales.
+7. Determinación GATE PASS / NO-GO.
+8. Estado y requisitos para F7.
+
+W4 = PASS.
+F5 FINAL REVIEW = AUTHORIZED.
+F5 GATE PASS = CONDITIONAL ON CONFORMANCE.
+F7 IMPLEMENTATION = NO.
+READY FINAL = NO.
+Continúa con la revisión final y detente después del informe de cierre de F5.

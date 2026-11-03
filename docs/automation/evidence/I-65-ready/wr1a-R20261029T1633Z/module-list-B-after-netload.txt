@@ -1,0 +1,2 @@
+time_utc=2026-10-29T17:19:13.5795591Z acad_pid=23584 acad_count=1 rackcad_plugin_count=1
+RackCad.Plugin.dll D:\r65-smoke\4a03b65b\bin-Debug-net8.0-windows\RackCad.Plugin.dll 0f5a508e03a34cce45cd005a0fef336d1b160894e0836a5f786d2ec966db0959

@@ -1,0 +1,1 @@
+NOT LAUNCHED 2026-10-13T21:44:52Z: Worker postponed before invocation. acad.exe PID 37696 (start 2026-10-13T21:11:56Z) had the I-64 Debug DLL loaded from architecture-workspace-persistente-rackcad; Owner order (decisiones seccion 41, OD-GO s.8): I-64 window keeps priority. No participant launched; cession-start.txt of this run is void; a new WorkRunId will be prepared.

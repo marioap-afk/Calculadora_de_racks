@@ -1,0 +1,34 @@
+--- Config.ini antes (w4-pre = w4b-pre, 505a3592)
++++ Config.ini despues (w4b-post, e51d5ae3)
+@@ -5,18 +5,19 @@
+ accCopilot=1
+ accEquivalentLateralForces=1
+ AccHeClipboardPaste=1
+-accLoadConditionsManager=5
++accLoadConditionsManager=6
+ accLoads=3
+ accLocalAxes=2
+ accMatDB=2
+ accModelTemplates=1
+ accMultipleView=2
+-accPythonConsole=13
++accPythonConsole=15
+ accQANew=8
+ accQAUndo=4
++accRequireSignIn=2
+ accResponseSpectrum=1
+ accSeccDB=3
+-AccSelectAllElements=4
++AccSelectAllElements=5
+ accTruss=1
+ accUndo=1
+ accUnitSystem=2
+@@ -32,7 +33,7 @@
+ DisclaimerAccepted=True
+ 
+ [DefaultFolders]
+-PythonScripts=D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV07b
++PythonScripts=D:\r65-smoke\bd1fcf8a\f5-R20261019T1750Z\dump-OV02-man
+ 
+ [DialogTemplates]
+ frmTemplatesEditHeight=572

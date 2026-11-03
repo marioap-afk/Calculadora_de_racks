@@ -1,0 +1,39 @@
+96925f91a629c79ea2283ac8396683149c003cf7b47c9814a8d6894a3662d67b  pkg-OV01/manifest.json
+e2d0b8cd417b0c4a3e7848ba8a9189b29919c048a148d928417fffc5432a0b1f  pkg-OV01/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05  pkg-OV01/structural-loads.json
+a19b5180d891dc5d7eff53e68808dc39d3f0266bf581dcc89ae0a86be634f98d  validator-v2-pkg-OV01.json (original)
+753bd7de08be1beac43eaad21df83dc9abd2c06d8b1388fffa66c6931d82ac77  pkg-OV02/manifest.json
+9a3d536db8ea15ba228d631b5b3dfebd4f7805b9260dd1b3d99246704e3657e6  pkg-OV02/rackcad-ram-build.py
+d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c  pkg-OV02/structural-loads.json
+0c921a0d91adcb44845f49308ba074b5d3507fe6cf9c2aff4d4b43cd61d37d55  validator-v2-pkg-OV02.json (original)
+fa9bb3f65c6845201171f4781bd4930ba903b5df6ba64bdf0dd06ea3309ae42b  pkg-OV04/manifest.json
+05ebc7fe57a3f79d86ff87e0e6689867b76b93b0b1679e3381db3667f203114d  pkg-OV04/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05  pkg-OV04/structural-loads.json
+4c0b07dfc37f1f98aa10376ed138e2a94c3387e7c4b468349e5e5aae19921008  validator-v2-pkg-OV04.json (original)
+9af16121e234fcb336c1397c038af609240611d8dc95b0e0c1c8762ab7f1104a  ov08/pkg-A/manifest.json
+dd36309a749711727f8f67857022b776d56622a2d50238bbe22eb910e4d20a8c  ov08/pkg-A/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05  ov08/pkg-A/structural-loads.json
+ac8eadd7dc153af839ce863ea032a8f97c2a9f7ae636b45cc9910ecc1c505b9b  validator-v2-ov08-pkg-A.json (original)
+7c8d9ca34528fe9f2edca31f1f891dc229242a03f9bfb1a6c9f950591507f632  ov08/pkg-B/manifest.json
+72a8b52da1504fa78894d9c70562b79c2f165eeb91c63ad955d512446f4fec79  ov08/pkg-B/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05  ov08/pkg-B/structural-loads.json
+6fd0890e464935918aee2445f1cfc467b614533e735e5b1828b343f6e71c06eb  validator-v2-ov08-pkg-B.json (original)
+1b856befd7b834747d27f4cacbe605a4f21427872a2a39569f017fb2136bf929  inj-OV05/manifest.json
+4d0ef35a97d959f524fbbebd62badb6428808dbcedee07253db6ac58e00728e0  inj-OV05/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05  inj-OV05/structural-loads.json
+929201543df54694b2cb728c73e8f1db51b00ce2fb5965a2c37fe081ff76ac5f  inj-OV06/manifest.json
+897dbcd6288f90399b113be1f4da6c2822253ff9267eb73133e91489205f1813  inj-OV06/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05  inj-OV06/structural-loads.json
+71da37575a28050d32447cb6d020deeed7f373edb854347be317685eee346556  inj-OV07a/manifest.json
+3ff69cd4fef03f2dd83694233c637fc59233fb257b2fa19e874507bdb1a7f529  inj-OV07a/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05  inj-OV07a/structural-loads.json
+458aa751ee1a8ff8a1a4a0dcd3a7fff8b5c19db52ae43200ac62161c81ab7b54  inj-OV07b/manifest.json
+1bcfcbe33f11cb86de849cfea761cdd43b2bf8e3a5b0182e6701a31cb75f518c  inj-OV07b/rackcad-ram-build.py
+25f48e7f75d879c4668c3d9b37f69fda0cd5442a407c03ff76362754623cae05  inj-OV07b/structural-loads.json
+2502297eade1e7eaace57b00d86fcdecab3b237e3db1df487da0868f7e883151  ov08/Drawing1.dwg
+ac2c8014d05c5aaa6abcd384ddf7724834a41eaeb78fc4a140f98d92c3e948bb  ov08/Drawing1.bak
+ac2c8014d05c5aaa6abcd384ddf7724834a41eaeb78fc4a140f98d92c3e948bb  ov08/hb-ref.dwg
+22400e22548c8f2f28ad25170adaab44d871e4c9523c8c3abdbdfebe27dc7747  dump-OV01-gen/rackcad-ram-dump.py
+61925fcec5972895775f1267ada10bc7d1620230419d196df0c0ca0f1be651a1  dump-OV02-gen/rackcad-ram-dump.py
+nota: los manifest.json y los informes del validador originales contienen el nombre del verificador; se versionan copias redactadas y estos SHA-256.
+nota: el DWG de OV-08 se guardo como ov08/Drawing1.dwg (desviacion de nombre, decisiones §118); hb-ref.dwg = copia byte a byte del primer guardado (= Drawing1.bak).

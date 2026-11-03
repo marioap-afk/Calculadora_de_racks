@@ -1,0 +1,68 @@
+OK   estado DUMP OK, errores []
+OK   combinaciones []
+OK   nudos 8
+OK   nudo 1 coordenadas [0.0, 0.24999996000000002, 6.09999996] frente a [0.0, 0.25, 6.1] (delta max 4.00e-08 in)
+OK   nudo 1 apoyos [True, True, True, True, True, True]
+OK   nudo 2 coordenadas [0.0, 20.26716168, 6.09999996] frente a [0.0, 20.26716169689737, 6.1] (delta max 4.00e-08 in)
+OK   nudo 2 apoyos [True, False, False, False, True, True]
+OK   nudo 3 coordenadas [0.0, 48.267161640000005, 6.09999996] frente a [0.0, 48.267161696897375, 6.1] (delta max 5.69e-08 in)
+OK   nudo 3 apoyos [True, False, False, False, True, True]
+OK   nudo 4 coordenadas [0.0, 76.26716171999999, 6.09999996] frente a [0.0, 76.26716169689738, 6.1] (delta max 4.00e-08 in)
+OK   nudo 4 apoyos [True, False, False, False, True, True]
+OK   nudo 5 coordenadas [0.0, 90.75, 6.09999996] frente a [0.0, 90.75, 6.1] (delta max 4.00e-08 in)
+OK   nudo 5 apoyos [True, False, False, False, True, True]
+OK   nudo 6 coordenadas [0.0, 21.81030072, -36.226098] frente a [0.0, 21.810300688090436, -36.22609804415268] (delta max 4.42e-08 in)
+OK   nudo 6 apoyos [True, False, False, False, True, True]
+OK   nudo 7 coordenadas [0.0, 49.81030068, -36.226098] frente a [0.0, 49.81030068809044, -36.22609804415268] (delta max 4.42e-08 in)
+OK   nudo 7 apoyos [True, False, False, False, True, True]
+OK   nudo 8 coordenadas [0.0, 77.81030064000001, -36.226098] frente a [0.0, 77.81030068809044, -36.22609804415268] (delta max 4.81e-08 in)
+OK   nudo 8 apoyos [True, False, False, False, True, True]
+OK   miembros 7
+OK   miembro 1 I->J 1->2
+OK   miembro 1 seccion W 12X26
+OK   miembro 1 material A992 Gr50
+OK   miembro 1 giro -90.0
+OK   miembro 1 sin liberaciones y con valores por omision
+OK   miembro 2 I->J 2->3
+OK   miembro 2 seccion W 12X26
+OK   miembro 2 material A992 Gr50
+OK   miembro 2 giro -90.0
+OK   miembro 2 sin liberaciones y con valores por omision
+OK   miembro 3 I->J 3->4
+OK   miembro 3 seccion W 12X26
+OK   miembro 3 material A992 Gr50
+OK   miembro 3 giro -90.0
+OK   miembro 3 sin liberaciones y con valores por omision
+OK   miembro 4 I->J 4->5
+OK   miembro 4 seccion W 12X26
+OK   miembro 4 material A992 Gr50
+OK   miembro 4 giro -90.0
+OK   miembro 4 sin liberaciones y con valores por omision
+OK   miembro 5 I->J 2->6
+OK   miembro 5 seccion HSS_SQR 4X4X1_4
+OK   miembro 5 material A500 GrC rectangular
+OK   miembro 5 giro 0.0
+OK   miembro 5 sin liberaciones y con valores por omision
+OK   miembro 6 I->J 3->7
+OK   miembro 6 seccion HSS_SQR 4X4X1_4
+OK   miembro 6 material A500 GrC rectangular
+OK   miembro 6 giro 0.0
+OK   miembro 6 sin liberaciones y con valores por omision
+OK   miembro 7 I->J 4->8
+OK   miembro 7 seccion HSS_SQR 4X4X1_4
+OK   miembro 7 material A500 GrC rectangular
+OK   miembro 7 giro 0.0
+OK   miembro 7 sin liberaciones y con valores por omision
+OK   casos ['CM', 'REF1']
+OK   CM sin cargas
+OK   REF1 peso propio [0.0, 0.0, 0.0]
+INFO REF1 categoria DL (la interfaz no ofrece Other; informativa)
+OK   cargas en REF1 6
+OK   Q1 miembro 5 posicion 1: -449.617886 lbf (hoja -449.617886199421, rel 4.4e-10), 15.002564 % (hoja 15.002564), dir Y
+OK   Q2 miembro 5 posicion 2: -337.213415 lbf (hoja -337.2134146495657, rel 1.0e-09), 100.0 % (hoja 100.000000), dir Y
+OK   Q3 miembro 6 posicion 1: -750.0 lbf (hoja -750.0, rel 0.0e+00), 36.251923 % (hoja 36.251923), dir Y
+OK   Q4 miembro 6 posicion 2: -1000.0 lbf (hoja -1000.0, rel 0.0e+00), 91.500256 % (hoja 91.500256), dir Y
+OK   Q5 miembro 7 posicion 1: -661.386787 lbf (hoja -661.3867865546327, rel 6.7e-10), 57.501282 % (hoja 57.501282), dir Y
+OK   Q6 miembro 7 posicion 2: -1011.640244 lbf (hoja -1011.6402439486972, rel 5.1e-11), 78.750641 % (hoja 78.750641), dir Y
+RESUMEN delta max coordenadas 5.69e-08 in; delta rel max valor 1.0e-09; delta max posicion 0.0e+00 %
+VEREDICTO SIN ERROR DE ENTRADA

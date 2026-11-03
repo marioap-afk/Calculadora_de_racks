@@ -1,0 +1,14 @@
+{
+ "stop": false,
+ "findings": [
+  {
+   "class": "SIGNAL",
+   "where": "c:\\users\\<usuario>\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "what": "HEAD advanced, clean, equals its remote (own session)",
+   "head": [
+    "9115c3e7e37782f8080a7a1d4d4992b03be15dd9",
+    "a08afecc17ee69ed95c7a85508dad47e788a35b4"
+   ]
+  }
+ ]
+}

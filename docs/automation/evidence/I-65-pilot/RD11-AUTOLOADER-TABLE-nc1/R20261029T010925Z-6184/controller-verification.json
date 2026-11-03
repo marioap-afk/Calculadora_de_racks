@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "RD11-AUTOLOADER-TABLE",
+  "RunId": "R20261029T010925Z-6184",
+  "DelegationRunId": "R20261029T004516Z-bf20",
+  "WorkRunId": "R20261029T005052Z-2be3",
+  "Attempt": 7,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.EndUtc=2026-10-29T01:02:05Z y OutputWrittenUtc=2026-10-29T01:01:48Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente; TaskId=RD11-AUTOLOADER-TABLE, Attempt=7 y DelegationRunId=R20261029T004516Z-bf20 coinciden. RunId=R20261029T005052Z-2be3; la fecha de entrega antecede al fin de cesión y es posterior a Cession.StartUtc. El CurrentSha declarado se comprueba separadamente en Identity."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí las autoridades desde Git: AUTOMATION_PLAN §§16.3, 16.8–16.10, execution README §8, contrato docs/initiatives/I-65-rd11-autoloader-gate.md, decisiones I-65 §105, disposición del Owner y respuesta sobre techo Codex, ADR-0050, ADR-0003 y AGENTS.md. AuthorityRevision=91f82d6d83731f48d445c7ad007a814b65c6caa6; planning A1–A8=pass; Owner autorizó techo Codex 57."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json y gate-contract.json coinciden en TaskId, AuthorityRevision, MainSha, BaseSha, rama, worktree, alcance permitido/prohibido y RequiredTests. La delegación conserva ChainRedSha=null y ChainRedFiles=[]; la comparación A3–A5 no muestra desviación del contrato."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "Órdenes Git: rev-parse HEAD, BaseSha, RedSha y CurrentSha real; merge-base --is-ancestor BaseSha RedSha y RedSha HEAD, ambos exit 0. HEAD y refs/remotes/origin/architecture/interop-analisis-estructural son 6a58c2b1891174bb5120f0e9e3fb8e13ed952832. Pero worker-handoff.json declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, que no corresponde al HEAD real ni identifica la entrega."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=6a58c2b1891174bb5120f0e9e3fb8e13ed952832, igual al HEAD real; OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, igual a MainSha. La sesión registró el comando git ls-remote; no fue necesario sustituirlo por una consulta adicional."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha HEAD enumera README.md, deploy/test-verify-bundle.ps1, deploy/verify-bundle.ps1, docs/guias/despliegue.md, docs/guias/interoperabilidad-ram-elements.md, src/RackCad.Plugin/RackCad.Plugin.csproj y tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs. Cada archivo está cubierto por la entrada exacta homónima de delegation.json AllowedWriteScope; ninguno coincide con ForbiddenWriteScope. scope-mechanical.json registra files=7, pass=true, uncovered=[] y forbidden_hits=[]."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short no produjo salida. git check-ignore -v para los siete archivos del diff no produjo coincidencias; la ruta de la entrega no está ignorada."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX: corrida push 40797712877, refs/heads/architecture/interop-analisis-estructural, HEAD 6a58c2b1891174bb5120f0e9e3fb8e13ed952832, cuatro jobs requeridos en success. RedPart: push 40797120699 corresponde al RedSha 42b9dcdfd8ce8a5de5819f5e7b33b659ac3e1a81 y el job Core terminó failure; Plugin quedó skipped por needs, conforme a la disposición D2 y al contrato. La CI se cotejó con el HEAD real y RemoteFacts."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RequiredTests: TRX Core RED 40797120699 selecciona 1797 (mínimo 1795), 1795 pasan y 2 fallan por las aserciones de ElTargetDelBundleCopiaLaTablaDesdeSuFuenteALaMismaRutaRelativaQueLaCompilacion y ElVerificadorDelBundleAdmiteSoloLaRutaDeLaTablaYExigeSuIdentidadConLaFuente; 0 errores de compilación. Core Current 40797712877: 14392/14392 pasan; según TestResults del relevo, filtro estructural 1797/1797. El diff Base..Red en tests contiene solo StructuralAnalysisPluginCommandGuardTests.cs; RT/ChainRedFiles=[tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs], y diff Red..HEAD -- tests/ está vacío. En el código de HEAD, git show confirma las pruebas de RD-INV-01, RD-INV-02 y RD-INV-03; la salida de harness registrada en relay-record-work.json es 14/14. RD-INV-04: diff Base..Red de ese único archivo de prueba; RD-INV-05: diff Base..HEAD contiene solo los siete archivos enumerados y rev-parse HEAD:assets/structural-analysis/ram-elements/section-material-map.json devuelve d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2; RD-INV-06: diff Red..HEAD cambia README.md y las dos guías nombradas; RD-INV-07 y controles del Owner cotejados con relay-record-work.json y disposiciones D1–D6. El TRX UI actual registra total=1654, executed=1637, passed=1637, failed=0; 17 casos Skip constan como NotExecuted según la convención documentada."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "Worker.Trailer literal de worker-handoff.json: \"Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\". git show -s --format=%B RedSha y HEAD muestra ese trailer en ambos commits. Modelo efectivo en relay-record-work.json Notes: claude-sonnet-5-5; coincide con los trailers."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5 con effort high (Semantic=Deep); relay-record-work.json Notes confirma modelo efectivo sonnet (claude-sonnet-5-5) y effort high. Sin discrepancia de enrutamiento."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json contra la lista de AUTOMATION_PLAN §16.10; no encontré coincidencias prohibidas."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 errores de herramienta, 0 denegaciones y 0 avisos de límite; no hay denegación ni orden fallida pendiente registrada."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La entrada nc1 muta CurrentSha en worker-handoff.json a deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; Git confirma que el HEAD real es 6a58c2b1891174bb5120f0e9e3fb8e13ed952832.",
+    "Las señales remotas, CI y pruebas se cotejaron con el HEAD real y los registros de relevo. La clasificación no atribuye identidad al SHA falso declarado en la entrega."
+  ],
+  "RecommendedNextAction": "Registrar la discrepancia de identidad y remitir esta verificación al Coordinator para su resolución."
+}

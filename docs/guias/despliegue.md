@@ -53,6 +53,7 @@ catalogs\                  ← datos maestros + geometría
   header-templates.json
   defaults.json
   blocks-library.dwg       ← OPCIONAL en el bundle: activo del usuario, no versionado; ver §5
+structural-analysis\ram-elements\section-material-map.json  ← tabla de RACKRAMPAQUETE
 ```
 
 > Copia la carpeta **entera**. Si copias solo `RackCad.Plugin.dll`, AutoCAD no encontrará
@@ -89,7 +90,7 @@ automática, abajo).
 
 Para que RackCad **cargue solo al abrir AutoCAD** (sin `NETLOAD`), se usa un *bundle* del
 Autoloader: una carpeta **`RackCad.bundle`** con un `PackageContents.xml` + `Contents\` (los
-DLL y `catalogs\`), colocada en un `ApplicationPlugins`.
+DLL, `catalogs\` y la tabla de secciones y materiales), colocada en un `ApplicationPlugins`.
 
 **El `dotnet publish` lo arma solo** (flujo canónico y reproducible; `deploy\build-bundle.ps1` lo
 envuelve y lo verifica fail-closed). Tras publicar el plugin queda en:
@@ -100,6 +101,7 @@ src\RackCad.Plugin\bin\Release\net8.0-windows\publish\RackCad.bundle\
   Contents\
     RackCad.Plugin.dll  (+ Application/Domain/UI)
     catalogs\  (CSV/JSON de producto; blocks-library.dwg es opcional y pertenece al usuario)
+    structural-analysis\ram-elements\section-material-map.json  (tabla de RACKRAMPAQUETE; idéntica a assets\)
 ```
 
 Generarlo y verificarlo desde el repositorio (AutoCAD **cerrado**):
@@ -164,7 +166,7 @@ runtime, pero **se reemplaza en la siguiente actualización**.
 ### Compartir la app y publicar versiones nuevas
 
 El bundle **no es un artefacto que se mantenga a mano**: el target `AssembleAutoloaderBundle` del
-`.csproj` elimina y **regenera completo** `RackCad.bundle` (DLLs frescos + `catalogs\`) en cada
+`.csproj` elimina y **regenera completo** `RackCad.bundle` (DLLs frescos, `catalogs\` y la tabla) en cada
 `dotnet publish`. Esto evita que sobrevivan archivos de configuraciones anteriores. El
 `PackageContents.xml` **se genera** desde `deploy\RackCad.bundle\PackageContents.template.xml`
 sustituyendo la versión y las series de AutoCAD; la versión es **única** (`RackCadVersion` en
@@ -244,8 +246,9 @@ bloqueado, rollback tras respaldo, segunda ejecución, rutas con espacios y orig
 
 `deploy\verify-bundle.ps1` valida un `RackCad.bundle` ya armado: estructura, nombres, rutas, versión y
 series del manifiesto (contra `Directory.Build.props`) y una **allowlist recursiva fail-closed** que
-prueba que solo se distribuyen los cuatro DLL de RackCad y catálogos permitidos —cero DLL Autodesk
-(ADR-0003)—; además imprime el inventario con hashes SHA-256.
+prueba que solo se distribuyen los cuatro DLL de RackCad, los catálogos permitidos y la tabla de secciones y
+materiales en su ruta exacta, igual en SHA-256 a su fuente —cero DLL Autodesk (ADR-0003)—; además imprime el
+inventario con hashes SHA-256.
 
 ```powershell
 pwsh deploy\verify-bundle.ps1 -BundlePath src\RackCad.Plugin\bin\Release\net8.0-windows\publish\RackCad.bundle

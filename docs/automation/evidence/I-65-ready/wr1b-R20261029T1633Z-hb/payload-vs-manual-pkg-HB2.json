@@ -1,0 +1,16 @@
+{
+ "result": "IGUAL",
+ "checks": 117,
+ "findings": [],
+ "analysisInputFingerprint": "b7032b9f576ad7324f56f8a588fa555943095dad94008059239d2afa3f1394b9",
+ "packageFolder": "D:\\r65-smoke\\4a03b65b\\wr1-R20261029T1633Z\\hb\\pkg-HB2",
+ "capabilities": {
+  "version": "0.1.0",
+  "coreFunctions": 35
+ },
+ "tolerances": {
+  "relative": 1e-09,
+  "percent": 1e-09,
+  "axes": 1e-09
+ }
+}

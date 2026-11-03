@@ -1,0 +1,6 @@
+time_utc=2026-10-17T09:13:11.2638823Z
+R-01 ram=0 acad=0
+R-02 ramexe sha256=7dcb48555741fa368f5d5f6a14e760fe0662dd5c0b3cc53f6e88f1c0231e7970 version=26.00.01.15
+R-03 ramelements tree_sha256=f71a017f49573030219a4213465c9ec454d3b6282f3f60b648a4300bfeba0a60 files=30 __version__ = "0.1.0"
+R-04 config sha256=2c5939572c66032fc5ecf8204c5b4d9dc6f8d0efb7695eacfc2c0c1ea3489d4a mtime=2026-10-16T22:17:16.7518613Z
+R-05 config PythonScripts lines=1 -> PythonScripts=D:\r65-smoke\51fc82f1\run-R20261016T1918Z\p2-R20261016T2147Z\dump-man

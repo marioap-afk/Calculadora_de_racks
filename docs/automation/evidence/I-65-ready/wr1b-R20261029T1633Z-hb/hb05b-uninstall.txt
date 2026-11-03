@@ -1,0 +1,5 @@
+time_utc=2026-10-30T02:05:28.1617438Z
+files=25 dirs=4 inventory_sha256=5d777353673c98efbb3dffd52e9a142436195a4c6c19e283f8f078eecb06090e
+inventory_equal_to_hb02=True
+removed=True
+user_root_after count=0 entries=

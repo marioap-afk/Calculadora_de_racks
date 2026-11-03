@@ -1,0 +1,1004 @@
+{
+ "Schema": "rackcad-relay-record/v1",
+ "TaskId": "F1-T1-NEUTRAL-MODEL",
+ "RunId": "R20261011T032758Z-3556",
+ "Attempt": 0,
+ "Phase": "WORK",
+ "Participant": {
+  "Kind": "subagent",
+  "Profile": "ROUTINE_IMPLEMENTATION",
+  "ModelRequested": "sonnet",
+  "EffortRequested": "high",
+  "ModelEffective": "claude-sonnet-5-5",
+  "EffortEffective": "high",
+  "EffectiveSource": "transcripcion del subagente agent-ad0f5f5d10b58f7be.jsonl: 143 mensajes con model claude-sonnet-5-5 y effort high",
+  "EffectiveSourceSha256": "DA73EB84F0509C5E2CC74E1F21BFF74BC1212E5A0325DB86A79361EC6548309F"
+ },
+ "Exit": {
+  "HeadSha": "9d0c661968542350929af267ada689b943898206",
+  "LsRemoteSha": "9d0c661968542350929af267ada689b943898206",
+  "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "CleanTree": true,
+  "GitOperationInProgress": false,
+  "SummaryCommitSha": "9d0c661968542350929af267ada689b943898206",
+  "ConfigTomlSha256": "F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113",
+  "ConfigTomlKeys": [
+   "model",
+   "model_reasoning_effort",
+   "service_tier",
+   "notify",
+   "[windows]",
+   "sandbox",
+   "[desktop]",
+   "keepRemoteControlAwakeWhilePluggedIn",
+   "reviewDelivery",
+   "followUpQueueMode",
+   "conversationDetailMode",
+   "ambient-suggestions-enabled",
+   "[desktop.open-in-target-preferences]",
+   "global",
+   "[desktop.open-in-target-preferences.perPath]",
+   "[marketplaces.openai-bundled]",
+   "source_type",
+   "source",
+   "[marketplaces.openai-primary-runtime]",
+   "source_type",
+   "source",
+   "[plugins.\"documents@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"spreadsheets@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"presentations@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"outlook-email@openai-curated\"]",
+   "enabled",
+   "[plugins.\"github@openai-curated\"]",
+   "enabled",
+   "[plugins.\"pdf@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"template-creator@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"visualize@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"chrome@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"browser@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"outlook-calendar@openai-curated\"]",
+   "enabled",
+   "[plugins.\"teams@openai-curated\"]",
+   "enabled",
+   "[plugins.\"codex-app-tools@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"unified-computer-use@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"computer-use@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"code-review@openai-bundled\"]",
+   "enabled",
+   "[features]",
+   "js_repl",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[mcp_servers.node_repl]",
+   "args",
+   "command",
+   "env_vars",
+   "startup_timeout_sec",
+   "[mcp_servers.node_repl.env]",
+   "NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+   "NODE_REPL_NODE_MODULE_DIRS",
+   "NODE_REPL_NODE_PATH",
+   "NODE_REPL_TRUSTED_CODE_PATHS",
+   "CODEX_HOME",
+   "BROWSER_USE_AVAILABLE_BACKENDS",
+   "BROWSER_USE_TINYSKY_ENABLED",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+   "BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+   "BROWSER_USE_CODEX_APP_VERSION",
+   "NODE_REPL_TRUSTED_SERVICES",
+   "SKY_CUA_NATIVE_PIPE",
+   "SKY_CUA_NATIVE_PIPE_DIRECTORY",
+   "CODEX_CLI_PATH",
+   "NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+   "[shell_environment_policy.set]",
+   "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+   "[tui]",
+   "screen_reader_detection_done"
+  ],
+  "Processes": [
+   {
+    "Pid": 10244,
+    "ParentPid": 30660,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:41.6499600Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 24108,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T20:39:07.3570720Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 27556,
+    "ParentPid": 1256,
+    "Name": "codex-windows-sandbox-service.exe",
+    "CreationDateUtc": "2026-10-11T02:51:26.2747490Z",
+    "Classification": "nominal-exclusion"
+   },
+   {
+    "Pid": 17280,
+    "ParentPid": 14540,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-11T02:52:02.5500870Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 23836,
+    "ParentPid": 14540,
+    "Name": "codex-computer-use-swift.exe",
+    "CreationDateUtc": "2026-10-11T02:52:13.0624400Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 18252,
+    "ParentPid": 14540,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-11T02:52:57.4816510Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 16456,
+    "ParentPid": 17280,
+    "Name": "codex-code-mode-host.exe",
+    "CreationDateUtc": "2026-10-11T02:55:13.3452380Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 14324,
+    "ParentPid": 24108,
+    "Name": "cmd.exe",
+    "CreationDateUtc": "2026-10-11T03:28:59.8734100Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 31516,
+    "ParentPid": 14324,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-11T03:29:00.0667640Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 27764,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.1392120Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 22580,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.7142330Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 31240,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.7986280Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34120,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:43.1950500Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 20316,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:44.1693540Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 33384,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:49.6345950Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 16188,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:50.4027340Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37512,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:59.6783410Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 38340,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.1293070Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37052,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.8490300Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37552,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.9339230Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 18312,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.3458670Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 9088,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T01:10:54.3870480Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 16004,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-11T02:28:46.5616840Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 20716,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:38:00.6105150Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26968,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-09T22:38:01.0871840Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 24884,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.7820400Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 28920,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T01:10:47.7980970Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34156,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:55.2969980Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 21588,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T01:10:56.1817450Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37348,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:39:09.0132100Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34208,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T20:39:09.5067130Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26484,
+    "ParentPid": 38340,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.1614020Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 22536,
+    "ParentPid": 18312,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.8518280Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26444,
+    "ParentPid": 9088,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:54.5447390Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 24872,
+    "ParentPid": 24108,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:39:07.4565200Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 17900,
+    "ParentPid": 14324,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-11T03:28:59.9108720Z",
+    "Classification": "session-descendant"
+   }
+  ],
+  "OpenDelegations": 0
+ },
+ "Cession": {
+  "StartUtc": "2026-10-11T03:29:04Z",
+  "EndUtc": "2026-10-11T03:59:41Z",
+  "SessionOperated": false
+ },
+ "Outcome": {
+  "Kind": "COMPLETED",
+  "LaunchedPid": null,
+  "ExitCode": null,
+  "TerminalEvent": "subagent-completed",
+  "TreeKilled": false,
+  "DeathConfirmed": true,
+  "OutputPath": "artifacts/orchestration/I-65/F1-T1-NEUTRAL-MODEL/0/R20261011T032758Z-3556/worker-handoff.json",
+  "OutputSha256": "DF5268CA0CFB5629B539B52A5E51293B1C913CDE1617913283B2F5AEF3BE531C",
+  "OutputWrittenUtc": "2026-10-11T03:59:17Z",
+  "Acceptance": null
+ },
+ "Entry": {
+  "HeadSha": "1692804a3e81a607d81d924c9345f02fe7f9a41f",
+  "LsRemoteSha": "1692804a3e81a607d81d924c9345f02fe7f9a41f",
+  "CleanTree": true,
+  "ConfigTomlSha256": "F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113",
+  "ConfigTomlKeys": [
+   "model",
+   "model_reasoning_effort",
+   "service_tier",
+   "notify",
+   "[windows]",
+   "sandbox",
+   "[desktop]",
+   "keepRemoteControlAwakeWhilePluggedIn",
+   "reviewDelivery",
+   "followUpQueueMode",
+   "conversationDetailMode",
+   "ambient-suggestions-enabled",
+   "[desktop.open-in-target-preferences]",
+   "global",
+   "[desktop.open-in-target-preferences.perPath]",
+   "[marketplaces.openai-bundled]",
+   "source_type",
+   "source",
+   "[marketplaces.openai-primary-runtime]",
+   "source_type",
+   "source",
+   "[plugins.\"documents@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"spreadsheets@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"presentations@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"outlook-email@openai-curated\"]",
+   "enabled",
+   "[plugins.\"github@openai-curated\"]",
+   "enabled",
+   "[plugins.\"pdf@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"template-creator@openai-primary-runtime\"]",
+   "enabled",
+   "[plugins.\"visualize@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"chrome@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"browser@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"outlook-calendar@openai-curated\"]",
+   "enabled",
+   "[plugins.\"teams@openai-curated\"]",
+   "enabled",
+   "[plugins.\"codex-app-tools@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"unified-computer-use@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"computer-use@openai-bundled\"]",
+   "enabled",
+   "[plugins.\"code-review@openai-bundled\"]",
+   "enabled",
+   "[features]",
+   "js_repl",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[projects.<redactado>]",
+   "trust_level",
+   "[mcp_servers.node_repl]",
+   "args",
+   "command",
+   "env_vars",
+   "startup_timeout_sec",
+   "[mcp_servers.node_repl.env]",
+   "NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+   "NODE_REPL_NODE_MODULE_DIRS",
+   "NODE_REPL_NODE_PATH",
+   "NODE_REPL_TRUSTED_CODE_PATHS",
+   "CODEX_HOME",
+   "BROWSER_USE_AVAILABLE_BACKENDS",
+   "BROWSER_USE_TINYSKY_ENABLED",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+   "NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+   "BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+   "BROWSER_USE_CODEX_APP_VERSION",
+   "NODE_REPL_TRUSTED_SERVICES",
+   "SKY_CUA_NATIVE_PIPE",
+   "SKY_CUA_NATIVE_PIPE_DIRECTORY",
+   "CODEX_CLI_PATH",
+   "NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+   "[shell_environment_policy.set]",
+   "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+   "[tui]",
+   "screen_reader_detection_done"
+  ],
+  "ConfigChanged": false,
+  "Processes": [
+   {
+    "Pid": 10244,
+    "ParentPid": 30660,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:41.6499600Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 24108,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T20:39:07.3570720Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 27556,
+    "ParentPid": 1256,
+    "Name": "codex-windows-sandbox-service.exe",
+    "CreationDateUtc": "2026-10-11T02:51:26.2747490Z",
+    "Classification": "nominal-exclusion"
+   },
+   {
+    "Pid": 17280,
+    "ParentPid": 14540,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-11T02:52:02.5500870Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 23836,
+    "ParentPid": 14540,
+    "Name": "codex-computer-use-swift.exe",
+    "CreationDateUtc": "2026-10-11T02:52:13.0624400Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 18252,
+    "ParentPid": 14540,
+    "Name": "codex.exe",
+    "CreationDateUtc": "2026-10-11T02:52:57.4816510Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 16456,
+    "ParentPid": 17280,
+    "Name": "codex-code-mode-host.exe",
+    "CreationDateUtc": "2026-10-11T02:55:13.3452380Z",
+    "Classification": "owner-app"
+   },
+   {
+    "Pid": 14280,
+    "ParentPid": 24108,
+    "Name": "cmd.exe",
+    "CreationDateUtc": "2026-10-11T03:59:40.4485310Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 27708,
+    "ParentPid": 14280,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-11T03:59:40.6737240Z",
+    "Classification": "own-tree"
+   },
+   {
+    "Pid": 29648,
+    "ParentPid": 18312,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T03:59:42.8481870Z",
+    "Classification": "unattributable"
+   },
+   {
+    "Pid": 10340,
+    "ParentPid": 29648,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T03:59:42.8911330Z",
+    "Classification": "unattributable"
+   },
+   {
+    "Pid": 27764,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.1392120Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 22580,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.7142330Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 31240,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:42.7986280Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34120,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:43.1950500Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 20316,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:44.1693540Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 33384,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:49.6345950Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 16188,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:50.4027340Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37512,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:37:59.6783410Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 38340,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.1293070Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37052,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.8490300Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37552,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.9339230Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 18312,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.3458670Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 9088,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-10T01:10:54.3870480Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 16004,
+    "ParentPid": 10244,
+    "Name": "claude.exe",
+    "CreationDateUtc": "2026-10-11T02:28:46.5616840Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 20716,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:38:00.6105150Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26968,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-09T22:38:01.0871840Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 24884,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.7820400Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 28920,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T01:10:47.7980970Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34156,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:55.2969980Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 21588,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T01:10:56.1817450Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 37348,
+    "ParentPid": 37512,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:39:09.0132100Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 34208,
+    "ParentPid": 37512,
+    "Name": "pwsh.exe",
+    "CreationDateUtc": "2026-10-10T20:39:09.5067130Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26484,
+    "ParentPid": 38340,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-09T22:38:04.1614020Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 22536,
+    "ParentPid": 18312,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:46.8518280Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 29648,
+    "ParentPid": 18312,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T03:59:42.8481870Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 26444,
+    "ParentPid": 9088,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T01:10:54.5447390Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 24872,
+    "ParentPid": 24108,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-10T20:39:07.4565200Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 10340,
+    "ParentPid": 29648,
+    "Name": "bash.exe",
+    "CreationDateUtc": "2026-10-11T03:59:42.8911330Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 14660,
+    "ParentPid": 14280,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-11T03:59:40.5249560Z",
+    "Classification": "session-descendant"
+   },
+   {
+    "Pid": 33356,
+    "ParentPid": 10340,
+    "Name": "conhost.exe",
+    "CreationDateUtc": "2026-10-11T03:59:42.9053750Z",
+    "Classification": "session-descendant"
+   }
+  ]
+ },
+ "RemoteFacts": {
+  "CurrentRun": {
+   "GhRunId": 38109857453,
+   "Event": "push",
+   "Ref": "refs/heads/architecture/interop-analisis-estructural",
+   "HeadSha": "1692804a3e81a607d81d924c9345f02fe7f9a41f",
+   "Status": "completed",
+   "Conclusion": "success",
+   "Jobs": [
+    {
+     "Name": "Build UI (WPF, valida API de Application)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Tests (Domain + Application)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "UI Tests (WPF controls, net8.0-windows)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Build Plugin without AutoCAD",
+     "Conclusion": "success"
+    }
+   ]
+  },
+  "RedRun": {
+   "GhRunId": 38109425352,
+   "Event": "push",
+   "Ref": "refs/heads/architecture/interop-analisis-estructural",
+   "HeadSha": "172d53fcde34e6b7468923b974d017bed73729a2",
+   "Status": "completed",
+   "Conclusion": "failure",
+   "Jobs": [
+    {
+     "Name": "Build UI (WPF, valida API de Application)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "UI Tests (WPF controls, net8.0-windows)",
+     "Conclusion": "success"
+    },
+    {
+     "Name": "Tests (Domain + Application)",
+     "Conclusion": "failure"
+    },
+    {
+     "Name": "Build Plugin without AutoCAD",
+     "Conclusion": "skipped"
+    }
+   ]
+  },
+  "TestArtifacts": [
+   {
+    "RunRef": "ci-38109857453-core",
+    "Name": "artifacts/orchestration/I-65/F1-T1-NEUTRAL-MODEL/0/R20261011T040119Z-5751/ci-core/core.trx",
+    "Sha256": "7800C6936861BBA5BAEC10DB807DB39D20BE7B1A089755A8A7AB510450E84B9B",
+    "Selected": 12866,
+    "Passed": 12866,
+    "Failed": 0,
+    "FailedTests": []
+   },
+   {
+    "RunRef": "ci-38109857453-ui",
+    "Name": "artifacts/orchestration/I-65/F1-T1-NEUTRAL-MODEL/0/R20261011T040119Z-5751/ci-ui/ui.trx",
+    "Sha256": "DF8E160AFDE7D56FECEC9B9344D0D2C4EAC4717AD2134B9758B8C753D31F2BFE",
+    "Selected": 1654,
+    "Passed": 1637,
+    "Failed": 0,
+    "FailedTests": []
+   },
+   {
+    "RunRef": "ci-38109425352-core",
+    "Name": "artifacts/orchestration/I-65/F1-T1-NEUTRAL-MODEL/0/R20261011T040119Z-5751/ci-core-red/core.trx",
+    "Sha256": "04027DCA1CE7BCA17232A6F70A88323C0CC934658D95B01A51EB93A701063506",
+    "Selected": 12866,
+    "Passed": 12699,
+    "Failed": 167,
+    "FailedTests": [
+     "RackCad.Tests.StructuralAnalysisCanonicalizerTests.ElMismoDisenoYLasMismasEntradasDanElMismoJson",
+     "RackCad.Tests.StructuralAnalysisCanonicalizerTests.ElOrdenDeEntradaNoCambiaLaFormaCanonica_OrdenOrdinalPorId",
+     "RackCad.Tests.StructuralAnalysisCanonicalizerTests.LaCulturaDelHiloNoCambiaLaFormaCanonica",
+     "RackCad.Tests.StructuralAnalysisCanonicalizerTests.LaFormaCanonicaCambiaCuandoCambiaLaGeometriaPeroNoCuandoSoloCambiaElOrden",
+     "RackCad.Tests.StructuralAnalysisCanonicalizerTests.LaFormaCanonicaEsJsonValidoConElCasoREF1LasPartesYLasPropiedadesAusentesComoNull",
+     "RackCad.Tests.StructuralAnalysisCanonicalizerTests.LaFormaCanonicaNoContieneTextoQueAfirmeValidacionEstructural",
+     "RackCad.Tests.StructuralAnalysisCanonicalizerTests.LosBytesSonUtf8SinBomYConSaltosLf",
+     "RackCad.Tests.StructuralAnalysisCanonicalizerTests.LosDoblesVanEnFormatoDeIdaYVueltaYElCeroNegativoSeNormaliza",
+     "RackCad.Tests.StructuralAnalysisCanonicalizerTests.NoHayMarcasDeTiempoEnLaFormaCanonica",
+     "RackCad.Tests.StructuralAnalysisFingerprintTests.ElHashEsSha256EnHexadecimalMinusculaConUnVectorConocido",
+     "RackCad.Tests.StructuralAnalysisFingerprintTests.LaHuellaDeEntradaDeAnalisisEsEstableParaLasMismasEntradas",
+     "RackCad.Tests.StructuralAnalysisFingerprintTests.LaHuellaDeEntradaDeAnalisisEsSensibleACadaComponente",
+     "RackCad.Tests.StructuralAnalysisFingerprintTests.LaHuellaDeFilasDeMapeoNoDependeDelOrdenYCambiaConElTexto",
+     "RackCad.Tests.StructuralAnalysisFingerprintTests.LaHuellaDeFuenteEsEstableParaLosMismosValoresPrimitivos",
+     "RackCad.Tests.StructuralAnalysisFingerprintTests.LaHuellaDeFuenteEsSensibleACadaComponente",
+     "RackCad.Tests.StructuralAnalysisFingerprintTests.LaHuellaDeFuenteNoConfundeLosLimitesEntreCampos",
+     "RackCad.Tests.StructuralAnalysisFingerprintTests.LaHuellaDeSupuestosNoDependeDelOrdenYCambiaConElEnunciado",
+     "RackCad.Tests.StructuralAnalysisFingerprintTests.LosHashesDeMetadataDelModeloSeRepitenAlRegenerarlo",
+     "RackCad.Tests.StructuralAnalysisFingerprintTests.SoloLaVersionDelAdaptadorCambiaLaHuellaSiElModeloNoCambia",
+     "RackCad.Tests.StructuralAnalysisLoadFileReaderTests.CadaDesviacionDeLaFormaExactaEsInvalidYNoDejaArchivo",
+     "RackCad.Tests.StructuralAnalysisLoadFileReaderTests.DosArchivosConElMismoContenidoLogicoPeroDistintosBytesTienenDistintoHash",
+     "RackCad.Tests.StructuralAnalysisLoadFileReaderTests.ElHashDelArchivoEsElSha256DeSusBytesExactos",
+     "RackCad.Tests.StructuralAnalysisLoadFileReaderTests.LaLecturaEsEstrictaNoCoercionaNiAdivina",
+     "RackCad.Tests.StructuralAnalysisLoadFileReaderTests.LasCincoUnidadesDeLaTablaSeAceptan",
+     "RackCad.Tests.StructuralAnalysisLoadFileReaderTests.LosHallazgosDeVariasCargasSeAcumulanSinDetenerseEnElPrimero",
+     "RackCad.Tests.StructuralAnalysisLoadFileReaderTests.UnArchivoNuloOSinBytesEsInvalid",
+     "RackCad.Tests.StructuralAnalysisLoadFileReaderTests.UnArchivoValidoSeLeeConSusCargasEnOrdenYConvertidasALibrasFuerza",
+     "RackCad.Tests.StructuralAnalysisLoadFileReaderTests.UnBomUtf8SeToleraYElHashCubreLosBytesOriginalesIncluidoElBom",
+     "RackCad.Tests.StructuralAnalysisMaterialProfileTests.ElIdDeMaterialEsOrdinalYNoAdmiteVacios",
+     "RackCad.Tests.StructuralAnalysisMaterialProfileTests.ElMaterialDelModeloEsElDeLaFilaParaCadaSeccionUsada",
+     "RackCad.Tests.StructuralAnalysisMaterialProfileTests.ElMaterialNoSeInfierePorFamiliaDesignacionNiNombreDeLaSeccion",
+     "RackCad.Tests.StructuralAnalysisMaterialProfileTests.ElPerfilBuscaPorIdDeSeccionExactoYRechazaDuplicados",
+     "RackCad.Tests.StructuralAnalysisMaterialProfileTests.ElProductoNoTrajoFilasEnF1",
+     "RackCad.Tests.StructuralAnalysisMaterialProfileTests.ElTextoCanonicoDeLaFilaEsDeterministaYCambiaConCadaCampo",
+     "RackCad.Tests.StructuralAnalysisMaterialProfileTests.UnaFilaSinVerificadorOSinFechaNoEstaVerificada",
+     "RackCad.Tests.StructuralAnalysisMaterialProfileTests.UnaFilaVerificadaTieneVerificadorYFecha",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.ConFilaElMaterialEsElDeLaFilaAunqueMaterialGradeDigaOtro",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.CualquierLiberacionVerdaderaEsUnsupported",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.ElPerfilDeProductoNoTieneFilasAsiQueTodoDisenoEsUnsupported",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.LaConstruccionEsPuraYRepetibleSobreLasMismasEntradas",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.LaMetadataLlevaLaFuenteLasHuellasYLaVersionDelGenerador",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.LaPosicionDeLaCargaEsLaDistanciaAbsolutaDesdeElNudoIYLaMagnitudeSeConvierteALbf",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.LaPrecedenciaDelResultadoAgregadoSeAplicaALosHallazgosDelConstructor",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.LasFamiliasCYLSonUnsupportedYNoExponenModelo",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.LasPropiedadesAusentesSonAusenciaExplicitaConDiagnosticoNoBloqueante",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.UnDestinoQueLaFuenteNoResuelveEsInvalid",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.UnDisenoValidoProduceUnModeloConTodasSusPartes",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.UnPeralteParaleloAlEjeDelMiembroEsInvalid",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.UnaCargaFueraDelMiembroEsInvalid",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.UnaCargaSinUnidadEsInvalidYLaFuenteNiSiquieraSeConsulta",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.UnaFilaConSistemaNativoDistintoDeUsCustomaryEsUnsupported",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.UnaFilaDeMaterialAusenteEsUnsupportedAunqueElCatalogoTengaMaterialGrade",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.UnaFilaSinVerificadorOSinFechaEsUnsupported",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.UnaSeccionAusenteDelCatalogoEsInvalidYNoExponeModelo",
+     "RackCad.Tests.StructuralAnalysisModelBuilderTests.VeinticuatroCargasEnUnMiembroSonValidasYVeinticincoSonUnsupported",
+     "RackCad.Tests.StructuralAnalysisModelTests.ElModeloNoAfirmaValidacionEstructuralEnSusNombresNiSupuestos",
+     "RackCad.Tests.StructuralAnalysisModelTests.ElModeloTieneUnUnicoCasoREF1DeCategoriaOtraSinPesoPropio",
+     "RackCad.Tests.StructuralAnalysisModelTests.LaCargaPuntualEsEnMenosZGlobalConMagnitudDeFuerzaYPosicionDeLongitudTipadas",
+     "RackCad.Tests.StructuralAnalysisModelTests.LasColeccionesDelModeloSonDeSoloLecturaYNoComparteElOrigen",
+     "RackCad.Tests.StructuralAnalysisModelTests.LasLiberacionesTienenDiezBanderasLocalesYNingunaPorOmision",
+     "RackCad.Tests.StructuralAnalysisModelTests.LasPropiedadesDeSeccionAusentesSonNulasNuncaCero",
+     "RackCad.Tests.StructuralAnalysisModelTests.LosApoyosTienenSeisBanderasGlobalesYUnIdDeSupuesto",
+     "RackCad.Tests.StructuralAnalysisModelTests.LosNudosYMiembrosExigenIdsNoVaciosYElMiembroGuardaSusReferencias",
+     "RackCad.Tests.StructuralAnalysisOutcomeTests.CualquierDiagnosticoBloqueanteDejaElModeloFueraAunqueSeLeEntregue",
+     "RackCad.Tests.StructuralAnalysisOutcomeTests.LaPrecedenciaEsUnavailableInvalidUnsupportedValid",
+     "RackCad.Tests.StructuralAnalysisOutcomeTests.SinDiagnosticosOSoloNoBloqueantesElResultadoEsValid",
+     "RackCad.Tests.StructuralAnalysisOutcomeTests.SoloValidExponeElModeloYConservaLosDiagnosticosNoBloqueantes",
+     "RackCad.Tests.StructuralAnalysisOutcomeTests.UnDiagnosticoIncoherenteSeRechaza",
+     "RackCad.Tests.StructuralAnalysisOutcomeTests.UnDiagnosticoLlevaCodigoSeveridadResultadoImplicadoYSujeto",
+     "RackCad.Tests.StructuralAnalysisOutcomeTests.UnSoloDiagnosticoBloqueanteImponeSuResultado",
+     "RackCad.Tests.StructuralAnalysisSourceGuardTests.INV16_LA_MASA_DE_LIBRA_Y_LA_GRAVEDAD_ESTANDAR_TIENEN_UN_SOLO_PROPIETARIO_EN_TODO_SRC",
+     "RackCad.Tests.StructuralAnalysisUnitTests.AreaEInerciaGuardanPulgadasSinConversionYSeComparanPorValor",
+     "RackCad.Tests.StructuralAnalysisUnitTests.ForceUnits_ElKilogramoFuerzaEsUnKilogramoPorLaGravedadEstandar",
+     "RackCad.Tests.StructuralAnalysisUnitTests.ForceUnits_ElKilonewtonEsMilNewtons",
+     "RackCad.Tests.StructuralAnalysisUnitTests.ForceUnits_ElKipEsMilLibrasFuerzaConUnaSolaMultiplicacionExacta",
+     "RackCad.Tests.StructuralAnalysisUnitTests.ForceUnits_IdaYVueltaConTolerancia_1e12",
+     "RackCad.Tests.StructuralAnalysisUnitTests.ForceUnits_LaTablaEsCerradaYSusSimbolosSonOrdinales",
+     "RackCad.Tests.StructuralAnalysisUnitTests.ForceUnits_LibraFuerzaYNewtonUsanElMismoOperadorYElMismoFactor",
+     "RackCad.Tests.StructuralAnalysisUnitTests.ForceUnits_UnSimboloFueraDeLaTablaNoEsUnaUnidad",
+     "RackCad.Tests.StructuralAnalysisUnitTests.LasFabricasRechazanMagnitudesNoFinitas",
+     "RackCad.Tests.StructuralAnalysisUnitTests.StructuralForce_SoloSeCreaConUnidadYGuardaLibrasFuerza",
+     "RackCad.Tests.StructuralAnalysisUnitTests.StructuralLength_IdaYVueltaPulgadaMilimetroConTolerancia_1e12",
+     "RackCad.Tests.StructuralAnalysisUnitTests.StructuralLength_LasEscalasExactasSeConservan",
+     "RackCad.Tests.StructuralAnalysisUnitTests.StructuralLength_LosMilimetrosPasanPorLaAutoridadDeLongitud",
+     "RackCad.Tests.StructuralAnalysisUnitTests.StructuralSectionUnits_ConsumeMassUnitsEnLugarDeSuPropioLiteral",
+     "RackCad.Tests.StructuralAnalysisUnitTests.StructuralSectionUnits_EsElArchivoOriginalSalvoElReemplazoDelLiteral"
+    ]
+   }
+  ],
+  "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "LsRemoteSha": "1692804a3e81a607d81d924c9345f02fe7f9a41f",
+  "Commands": [
+   "gh run list --branch architecture/interop-analisis-estructural --event push --limit 4 --json databaseId,headSha,status,conclusion",
+   "gh run view 38109857453 --json databaseId,event,headBranch,headSha,status,conclusion,jobs",
+   "gh run view 38109425352 --json databaseId,event,headBranch,headSha,status,conclusion,jobs",
+   "gh run download 38109857453 --name rackcad-core-test-diagnostics --dir artifacts/orchestration/I-65/F1-T1-NEUTRAL-MODEL/0/R20261011T040119Z-5751/ci-core",
+   "gh run download 38109857453 --name rackcad-ui-test-diagnostics --dir artifacts/orchestration/I-65/F1-T1-NEUTRAL-MODEL/0/R20261011T040119Z-5751/ci-ui",
+   "gh run download 38109425352 --name rackcad-core-test-diagnostics --dir artifacts/orchestration/I-65/F1-T1-NEUTRAL-MODEL/0/R20261011T040119Z-5751/ci-core-red",
+   "git fetch origin; git rev-parse origin/main; git ls-remote origin refs/heads/architecture/interop-analisis-estructural"
+  ],
+  "ObtainedUtc": "2026-10-11T04:03:18Z",
+  "Diagnosis": null
+ },
+ "RebaseMap": null,
+ "Disposition": "NONE",
+ "Notes": [
+  "Worker subagente segun el paquete aceptado de R20261011T032206Z-7516 (F1-T1-NEUTRAL-MODEL, Attempt 0, primera delegacion de la cadena): modelo sonnet (alias de claude-sonnet-5-5) y effort high, llamada Agent en primer plano (general-purpose). Prompt enviado = prompt.md (igualdad de texto con fin de linea normalizado; SHA-256 normalizado A91B47300689203A89292E41D82950D1D620E55F023340CA47C47317CA29D39D; SHA-256 del archivo BBA8F55FB09C94A1BFF43A4B95C937901950FF6217D5EB215959D2770EFA33A8).",
+  "Duracion del subagente: 1776020 ms (dentro del tope de 60 min); 87 llamadas de herramienta; 360792 tokens. Resultado final: WorkerStatus IMPLEMENTATION_COMPLETE, RedSha 172d53fcde34e6b7468923b974d017bed73729a2, CurrentSha 1692804a3e81a607d81d924c9345f02fe7f9a41f.",
+  "LaunchedPid null: subagente sin PID propio; terminacion confirmada por la notificacion con resultado final. config.toml en salida y entrada = F909F480E535E0D3D64817972361077B13AEFEEDF5EB191B5E6B941E7E1C8113, mismos nombres de claves (ConfigChanged false).",
+  "Procesos en la entrada: dos bash.exe (29648 y 10340) con linea de ordenes ilegible en la foto, hijos del claude.exe 18312 (ayudante de la sesion del 2026-10-10), creados a las 03:59:42Z, DESPUES del fin de la cesion (03:59:41Z), durante la propia comprobacion de entrada; releidos por PID a los 2 s: ya no existian (falso P-02 conocido, leccion de I-61). Creados en la ventana de la cesion y vivos: solo servidores de compilacion (dotnet 35924 VBCSCompiler.dll; dotnet 17772 y 36716 MSBuild.dll /nodemode:1) y procesos del Owner o del sistema sin la ruta del worktree (pwsh 26428 y 21884 del codex.exe 17280 del Owner, EXCEL /automation, servicios). Ningun participante ajeno, ningun session-descendant nuevo vivo distinto de la cadena del comprobador, ningun huerfano de la lista cerrada.",
+  "Senal Denials (sesion, desde la transcripcion del Worker): 87 llamadas; 0 denegaciones de permisos o credenciales; 0 avisos de limite (P-06); 3 errores superados por las llamadas siguientes: dos heredoc de Bash con comillas sin cerrar (codigo 2) y un bloqueo del arnes a una orden de PowerShell cuya cadena XPath //t:UnitTestResult leyo como ruta protegida (no borraba nada); ninguna orden fallida pendiente.",
+  "Comprobaciones mecanicas independientes de la sesion: (1) Scope: git diff --name-only 9d0c6619..1692804a = 24 archivos (12 de src/RackCad.Application/StructuralAnalysis/, MassUnits.cs, ForceUnits.cs, StructuralSectionUnits.cs y 9 de tests/RackCad.Tests/StructuralAnalysis/), todos en AllowedWriteScope y ninguno en ForbiddenWriteScope: PASS. (2) git diff --name-status 9d0c6619..1692804a -- tests/ solo altas (A) bajo tests/RackCad.Tests/StructuralAnalysis/; git diff --name-only RedSha CurrentSha -- tests/ vacio.",
+  "TRX (resumen de la sesion): Core GREEN 12866/12866, filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysis 271 seleccionadas y 271 superadas; Core RED 12866 ejecutadas, 167 fallidas, todas dentro del filtro (271 seleccionadas, 104 superadas, 167 fallidas: 159 System.NotImplementedException, 5 Assert.Throws, 1 Assert.Contains, 1 Assert.Equal, 1 violacion de INV-16), sin errores de compilacion (el job compilo y ejecuto).",
+  "TRX de UI: tests/RackCad.UI.Tests tiene 17 atributos Skip; el logger TRX los registra como UnitTestResult NotExecuted, los cuenta en total (1654) y no en executed (1637) y deja Counters notExecuted=0. Es la convencion del logger, no una contradiccion (precedentes I-61 R20261001T035734Z-74c2 e I-63 evidencia §37.4).",
+  "El Worker escribio fuera del arbol versionado solo bajo artifacts/orchestration/I-65/F1-T1-NEUTRAL-MODEL/0/R20261011T032758Z-3556/ (ignorado por git): tests/ (TRX locales), work/ y worker-handoff.json. Arbol limpio en la entrada; HEAD = ls-remote = 1692804a; origin/main sin cambio (bb0d5522)."
+ ]
+}

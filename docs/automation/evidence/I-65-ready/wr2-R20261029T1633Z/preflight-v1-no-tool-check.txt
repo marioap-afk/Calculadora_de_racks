@@ -1,0 +1,38 @@
+time_utc=2026-10-30T22:56:16.3094681Z
+OK   P1.procesos acad/accoreconsole/RAMElements=0
+OK   T.ramtool files=11 manifest_sha256=4fbe3ea5be1790c20c2673339b9ca2fba26bdac8f59472686952474fb33eb343
+OK   P5.lista entradas=23 (7 paquetes x 3 + 2 scripts de volcado)
+OK   P5.pkg-OV01 archivos=manifest.json,rackcad-ram-build.py,structural-loads.json
+OK   P5.pkg-OV02 archivos=manifest.json,rackcad-ram-build.py,structural-loads.json
+OK   P5.pkg-OV04 archivos=manifest.json,rackcad-ram-build.py,structural-loads.json
+OK   P5.inj-OV05 archivos=manifest.json,rackcad-ram-build.py,structural-loads.json
+OK   P5.inj-OV06 archivos=manifest.json,rackcad-ram-build.py,structural-loads.json
+OK   P5.inj-OV07a archivos=manifest.json,rackcad-ram-build.py,structural-loads.json
+OK   P5.inj-OV07b archivos=manifest.json,rackcad-ram-build.py,structural-loads.json
+OK   P5.dump-OV01-gen archivos=rackcad-ram-dump.py
+OK   P5.dump-OV02-gen archivos=rackcad-ram-dump.py
+OK   P6.pkg-OV01 ram-readback.json existe=False
+OK   P6.pkg-OV02 ram-readback.json existe=False
+OK   P6.pkg-OV04 ram-readback.json existe=False
+OK   P6.inj-OV05 ram-readback.json existe=False
+OK   P6.inj-OV06 ram-readback.json existe=False
+OK   P6.inj-OV07a ram-readback.json existe=False
+OK   P6.inj-OV07b ram-readback.json existe=False
+OK   P6.dump-OV01-gen ram-dump.json existe=False
+OK   P6.dump-OV02-gen ram-dump.json existe=False
+OK   P8.manual-OV01 c4a98fb0ea798031de2b3052d81eae89f42b731a92f06dbfa97f148ade9ba23b
+OK   P8.manual-OV02 12c89479fa2bf54adde27a1d0c4affc18bbd0469e77cd72c1fb5d0335910aef2
+OK   P8.plantilla.dump-OV01-gen lineas_distintas=1 solo_dumpFolder=True
+OK   P8.plantilla.dump-OV02-gen lineas_distintas=1 solo_dumpFolder=True
+OK   P8.spec docs/initiatives/I-65-f1-ref-cant-01.md blob 4a03b65b=45cde765 HEAD=45cde765 51fc82f1=45cde765
+OK   P8.spec docs/automation/evidence/I-65-f1/ref-cant-01.design.json blob 4a03b65b=2cec9656 HEAD=2cec9656 51fc82f1=2cec9656
+OK   P8.spec tests/RackCad.Tests/StructuralAnalysis/Fixtures/ref-cant-01.loads.json blob 4a03b65b=3855c268 HEAD=3855c268 51fc82f1=3855c268
+OK   P8.spec docs/automation/evidence/I-65-f4/p2-R20261016T2147Z/manual-entry-sheet.json blob 4a03b65b=a720c0d1 HEAD=a720c0d1 bd1fcf8a=a720c0d1
+OK   P8.spec docs/automation/evidence/I-65-f5-prep/ov-i65-02-manual-entry-sheet.json blob 4a03b65b=6dc0d8da HEAD=6dc0d8da bd1fcf8a=6dc0d8da
+OK   P8.spec docs/automation/evidence/I-65-f5-prep/ov-i65-02.loads.json blob 4a03b65b=dcc1a039 HEAD=dcc1a039 bd1fcf8a=dcc1a039
+OK   P8.hoja-OV02 contenido sha256=b15b9f9e28be3db82af3c1c65da5e07adce877b28bf9438960848b7b40394eca
+OK   P8.cargas-OV02 d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c
+OK   P10.producto git diff 4a03b65b..HEAD -- src deploy assets: 0 archivos
+OK   P10.worktree status=0 HEAD=3f28120a
+OK   P10.principal status=0
+RESULTADO=PASS

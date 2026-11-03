@@ -1,0 +1,16 @@
+{
+ "real": {
+  "files": 8,
+  "outside_allowed": [],
+  "in_forbidden": [],
+  "Scope": "pass"
+ },
+ "nc2": {
+  "files": 8,
+  "outside_allowed": [
+   "src/RackCad.Application/StructuralAnalysis/StructuralDiagnostic.cs"
+  ],
+  "in_forbidden": [],
+  "Scope": "fail"
+ }
+}

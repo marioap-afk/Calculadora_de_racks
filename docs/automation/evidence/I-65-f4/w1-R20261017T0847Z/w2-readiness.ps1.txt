@@ -1,0 +1,16 @@
+# I-65 W2: estado de preparacion de RAM Elements, SOLO LECTURA (no abre RAM ni escribe nada fuera de la salida estandar).
+$ErrorActionPreference = 'Stop'
+$ram = 'C:\Program Files\Bentley\Engineering\RAM Elements\RAMElements.exe'
+$rp = 'C:\Program Files\Bentley\Engineering\RAM Elements\python\ramelements'
+$cfg = Join-Path $env:APPDATA 'Bentley\Engineering\RAM Elements\26.0.1\RE\Config.ini'
+function FSha([string]$p) { (Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLower() }
+function TSha([string]$s) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($s))).ToLower() }
+"time_utc=" + (Get-Date).ToUniversalTime().ToString('o')
+"R-01 ram=" + @(Get-Process -Name RAMElements -ErrorAction SilentlyContinue).Count + " acad=" + @(Get-Process -Name acad -ErrorAction SilentlyContinue).Count
+"R-02 ramexe sha256=" + (FSha $ram) + " version=" + (Get-Item -LiteralPath $ram).VersionInfo.FileVersion
+$man = (Get-ChildItem -Recurse -File -Force -LiteralPath $rp | Sort-Object FullName | ForEach-Object { $_.FullName.Substring($rp.Length + 1).Replace('\','/') + "  " + (FSha $_.FullName) + "  " + $_.Length }) -join "`n"
+$ver = (Select-String -LiteralPath (Join-Path $rp '__init__.py') -Pattern '^__version__').Line.Trim()
+"R-03 ramelements tree_sha256=" + (TSha ($man + "`n")) + " files=" + @(Get-ChildItem -Recurse -File -Force -LiteralPath $rp).Count + " " + $ver
+"R-04 config sha256=" + (FSha $cfg) + " mtime=" + (Get-Item -LiteralPath $cfg).LastWriteTimeUtc.ToString('o')
+$ps = @(Select-String -LiteralPath $cfg -Pattern '^\s*PythonScripts\s*=' | ForEach-Object { $_.Line.Trim() })
+"R-05 config PythonScripts lines=" + $ps.Count + " -> " + (($ps | ForEach-Object { $_ -replace [regex]::Escape($env:USERNAME), '<usuario>' }) -join ' | ')

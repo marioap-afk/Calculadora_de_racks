@@ -1,0 +1,95 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T5-PLUGIN-COMMAND",
+  "RunId": "R20261013T234619Z-b5ef",
+  "DelegationRunId": "R20261013T234354Z-7203",
+  "Initiative": "I-65",
+  "Gate": "F4",
+  "Attempt": 6,
+  "BaseSha": "932fcd87ec9c51c00c702e3dd9d7a050619ab0d7",
+  "RedSha": "e413b9a2377912c957725282ec49d5b6a8994146",
+  "CurrentSha": "e610ea496c06df22a8309b70cb83136f51255dec",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural",
+  "Pushed": true,
+  "FilesChanged": [
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuard.cs",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs"
+  ],
+  "WorkCompleted": "Se anadieron a la guarda del comando cuatro reglas estructurales (C15 a C18) con autopruebas por variante sintetica: una sola publicacion posterior a las tres comprobaciones != Valid; cada bloque no Valid informa Outcome y Diagnostics con el ayudante visible y termina con return; el ayudante visible escribe con editor.WriteMessage un texto que incluye el resultado; ninguna otra API de escritura de archivos o carpetas. La muestra conforme se completo con un bloque Invalid, los mensajes de los tres bloques y el ayudante Show. El RED se hizo con el comando y el Content desactivados (git rm y checkout de af04ddb5 del csproj) y el GREEN los restauro byte a byte desde f1d9a51d: git diff f1d9a51d..CurrentSha -- src es vacio, sin defecto real en el comando. Desviacion de procedimiento: el primer commit RED (28fe112e) salio sin las dos pruebas porque el git add fallo por la ruta ya borrada del comando; no se pudo deshacer sin amend ni force y se completo con un segundo commit RED (e413b9a2, arbol en RED con las pruebas). RedSha es el segundo; git diff e413b9a2..CurrentSha -- tests es vacio.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-full2",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=red-full.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/6/R20261013T234619Z-b5ef/tests/red-full2",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/6/R20261013T234619Z-b5ef/tests/red-full2/red-full.trx"
+    },
+    {
+      "RunRef": "green-focal",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysisPluginCommand\" --logger \"trx;LogFileName=green-focal.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/6/R20261013T234619Z-b5ef/tests/green-focal",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/6/R20261013T234619Z-b5ef/tests/green-focal/green-focal.trx"
+    },
+    {
+      "RunRef": "green-full",
+      "Command": "C:\\Users\\alejandra-mendoza\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=green-full.trx\" --results-directory C:/Users/alejandra-mendoza/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/6/R20261013T234619Z-b5ef/tests/green-full",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/F4-T5-PLUGIN-COMMAND/6/R20261013T234619Z-b5ef/tests/green-full/green-full.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-full2",
+      "Selected": 14384,
+      "Passed": 14359,
+      "Failed": 25,
+      "Skipped": 0,
+      "FailedTests": [
+        "CustomPropertiesCommandGuardTests.TGrd08_ElCensoDeComandosEsElDeAperturaMasRackPropiedadesRprRackProyectarYRpy",
+        "StructuralAnalysisRamElementsGuardTests.G1_CON_LA_LISTA_VACIA_EL_UNICO_INFRACTOR_EN_SRC_ES_EL_ARCHIVO_DEL_COMANDO",
+        "SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA",
+        "StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoCumpleLaRegla (C01 a C18, 18 casos: C01 C02 C03 C04 C05 C06 C07 C08 C09 C10 C11 C12 C13 C14 C15 C16 C17 C18)",
+        "StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoNoTieneNingunaViolacion",
+        "StructuralAnalysisPluginCommandGuardTests.ElArchivoDelComandoTieneUnSoloRegistroYElNombreSoloEnElAtributo",
+        "StructuralAnalysisPluginCommandGuardTests.ElProyectoDelPluginGanaUnSoloElementoContentParaLaTabla",
+        "StructuralAnalysisPluginCommandGuardTests.ElElementoContentDeLaTablaYLaTablaExisten"
+      ]
+    },
+    { "RunRef": "green-focal", "Selected": 114, "Passed": 114, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "green-full", "Selected": 14384, "Passed": 14384, "Failed": 0, "Skipped": 0, "FailedTests": [] }
+  ],
+  "Evidence": [
+    "(0) Directorio efectivo al empezar: pwd (Bash) = /d/Documentos/Codex/Calculadora de racks; Get-Location = D:\\Documentos\\Codex\\Calculadora de racks; [Environment]::CurrentDirectory = D:\\Documentos\\Codex\\Calculadora de racks. No es el worktree. Toda operacion de archivos uso rutas absolutas del worktree y git -C <worktree>; no se leyo ni se ejecuto git sobre el checkout principal y no se escribio fuera del worktree. No se invoco Python ni AutoCAD.",
+    "(0b) Antes de editar: git status limpio, HEAD = BaseSha 932fcd87 y ls-remote = BaseSha.",
+    "(1) Invariantes observados por prueba (sobre el texto del comando, sin seam): unica publicacion tras las tres comprobaciones: StructuralAnalysisPluginCommandGuardTests ElArchivoDelComandoCumpleLaRegla(C15) y variantes C15; bloques no Valid que informan Outcome y Diagnostics y vuelven antes de publicar: CumpleLaRegla(C16) y variantes C16; mensaje visible con el resultado: CumpleLaRegla(C17) y variantes C17; solo el publicador escribe: CumpleLaRegla(C18) e inserciones C18; reglas C01 a C14 anteriores intactas. Un registro unico del comando y su nombre solo en el atributo: ElArchivoDelComandoTieneUnSoloRegistroYElNombreSoloEnElAtributo; tabla en el Content y fuera del paquete del autoloader: ElProyectoDelPluginGanaUnSoloElementoContentParaLaTabla y LaTablaNoViajaEnElPaqueteDelAutoloader_NiElDestinoDelPaqueteSeToca.",
+    "(2) Compilacion del Plugin: dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -o artifacts/.../R20261013T234619Z-b5ef/build: sin errores; solo advertencias preexistentes MSB3277 de conflictos de Microsoft.VisualBasic y System.Drawing con ensamblados de AutoCAD. dotnet build RackCad.sln -c Release: Compilacion correcta, 0 errores, 63 advertencias, todas MSB3277 preexistentes; ninguna CS, NU ni NETSDK; ninguna atribuible al diff.",
+    "(3) Elemento Content anadido (restaurado de f1d9a51d, sin cambios): Include ../../assets/structural-analysis/ram-elements/section-material-map.json, Link structural-analysis/ram-elements/section-material-map.json, CopyToOutputDirectory Always.",
+    "(4) Las cuatro ediciones de pruebas existentes no cambian respecto de 3e1ef603 (CustomPropertiesCommandGuardTests, SelectiveEditorOpenTests, StructuralAnalysisSourceGuardTests, StructuralAnalysisRamElementsGuardTests); git diff --name-only BaseSha..CurrentSha solo lista las dos rutas de la guarda.",
+    "(5) Pruebas que pasan ya en el RED: las autopruebas de C01 a C18 (muestra conforme, comentarios ignorados, todas las variantes e inserciones, una variante al menos por regla), NamespaceFolderGuardTests y el resto de la suite, porque solo leen texto sintetico o no dependen del comando. Fallan por asercion (25) solo las que leen el archivo real del comando o el Content y las tres ediciones de censo, conteo y lista de G1 que dependen del comando; el RED se corrio sobre el arbol completo, 22 de los 25 fallos estan dentro del filtro focal.",
+    "(6) Reglas nuevas. C15: una sola new StructuralPackagePublisher().Write( y despues de toda comprobacion X.Outcome != Valid, con al menos tres sujetos distintos; variantes: publicacion movida antes de la comprobacion del paquete y publicacion duplicada. C16: cada if (x.Outcome != StructuralExportOutcome.Valid ...) { } llama a Show con x.Outcome y x.Diagnostics y termina con return;; variantes: bloque sin return, sin Show, con Show sin los diagnosticos, con Show sin x.Outcome. C17: un unico Show que recibe un StructuralExportOutcome y cuyo editor.WriteMessage incluye ese resultado, directamente o por una variable local; variantes: texto sin resultado y escritura por otro medio. C18: sin File.Write*, File.Create*, File.AppendAll*, File.Copy, File.Move, Directory.Create*, FileStream ni StreamWriter; inserciones File.WriteAllText, File.Copy, new StreamWriter, Directory.CreateDirectory. Prueba que observa el archivo real: ElArchivoDelComandoCumpleLaRegla para cada Cnn y ElArchivoDelComandoNoTieneNingunaViolacion.",
+    "(7) git diff f1d9a51d..e610ea49 -- src: vacio. No hubo defecto real en el comando.",
+    "Commits: 28fe112e (RED incompleto, sin las pruebas), e413b9a2 (RED con las pruebas), e610ea49 (GREEN con el resumen de estado). Remoto = e610ea49."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "La observacion es estructural sobre el texto del comando: la suite Core no compila el Plugin y Application esta prohibido, de modo que el comportamiento en AutoCAD solo lo cubre la validacion manual del comando."
+  ],
+  "Deviations": [
+    "Dos commits RED en lugar de uno: el primer git add (con la ruta del comando ya borrada) fallo sin anadir los archivos de pruebas, el commit salio con solo el borrado del comando y el csproj y se subio; sin amend ni force se completo con el segundo commit RED (e413b9a2). El arbol de 28fe112e no contiene las reglas nuevas, por eso RedSha es e413b9a2.",
+    "La corrida RED registrada es de la suite completa sobre el arbol antes del commit (TreeSha null); no se repitio el filtro focal sobre el commit RED."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller de la entrega, incluida la desviacion de los dos commits RED.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "medium",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

@@ -1,0 +1,59 @@
+"""Comprobaciones posteriores (SOLO LECTURA) de la restauracion de RackCad.sln en el checkout principal."""
+import datetime
+import hashlib
+import json
+import os
+import re
+import subprocess
+import sys
+
+MAIN = r"D:\Documentos\Codex\Calculadora de racks"
+OUT = sys.argv[1]
+since = datetime.datetime.fromisoformat(sys.argv[2]).replace(tzinfo=datetime.timezone.utc).timestamp()
+EXPECTED = "A06892EAE7EA841CED3612961C77FE83815794C1D9110B8FEE184B443086E399"
+
+
+def git(*a):
+    r = subprocess.run(["git", "--no-optional-locks", "-C", MAIN] + list(a), capture_output=True)
+    if r.returncode != 0:
+        raise SystemExit("git %s failed: %s" % (a, r.stderr.decode("utf-8", "replace")))
+    return r.stdout.decode("utf-8", "replace")
+
+
+path = os.path.join(MAIN, "RackCad.sln")
+b = open(path, "rb").read()
+sha = hashlib.sha256(b).hexdigest().upper()
+text = b.decode("utf-8-sig")
+projects = re.findall(r'^Project\("\{[^}]+\}"\) = "([^"]+)", "([^"]+)", "\{([^}]+)\}"', text, re.M)
+proj_files = [(n, p, g) for n, p, g in projects if p.lower().endswith(".csproj")]
+missing = [p for n, p, g in proj_files if not os.path.exists(os.path.join(MAIN, p))]
+guids = {g for n, p, g in projects}
+cfg_guids = set(re.findall(r"^\t\t\{([0-9A-F-]+)\}\.", text, re.M | re.I))
+changed = []
+for dirpath, dirnames, filenames in os.walk(MAIN):
+    if os.sep + ".git" in dirpath + os.sep and (dirpath.endswith(os.sep + ".git") or (os.sep + ".git" + os.sep) in dirpath + os.sep):
+        continue
+    for f in filenames:
+        p = os.path.join(dirpath, f)
+        try:
+            if os.stat(p).st_mtime >= since:
+                changed.append(os.path.relpath(p, MAIN).replace("\\", "/"))
+        except OSError:
+            pass
+res = {
+    "ObtainedUtc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    "final_sha256": sha, "expected": EXPECTED, "hash_pass": sha == EXPECTED,
+    "status_porcelain_all_untracked": git("status", "--porcelain=v1", "--untracked-files=all").splitlines(),
+    "staged": git("diff", "--cached", "--name-only").splitlines(),
+    "bom_utf8": b.startswith(b"\xef\xbb\xbf"), "crlf_lines": b.count(b"\r\n"), "lf_only_lines": b.count(b"\n") - b.count(b"\r\n"),
+    "ramtool_present": "RamTool" in text,
+    "projects": [{"name": n, "path": p} for n, p, g in proj_files], "project_files_missing": missing,
+    "config_guids_without_project": sorted(cfg_guids - guids),
+    "worktree_files_modified_since_" + sys.argv[2]: changed,
+}
+res["clean_pass"] = res["status_porcelain_all_untracked"] == [] and res["staged"] == []
+res["bom_pass"] = res["bom_utf8"] and not res["ramtool_present"] and not missing and not res["config_guids_without_project"]
+res["others_pass"] = changed == ["RackCad.sln"]
+res["all_pass"] = res["hash_pass"] and res["clean_pass"] and res["bom_pass"] and res["others_pass"]
+json.dump(res, open(OUT, "w", encoding="utf-8"), indent=1)
+print(json.dumps(res, indent=1))

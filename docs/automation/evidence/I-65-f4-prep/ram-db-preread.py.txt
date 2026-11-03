@@ -1,0 +1,35 @@
+# I-65 F4 preparation: passive pre-read of the installed RAM Elements database files.
+# Read-only: opens the text files in binary mode, hashes them and prints the requested rows.
+# Does not start RAM Elements, does not import ramelements and writes nothing.
+# Usage: python -I ram_db_preread.py "<RAM Elements install dir>\Database"
+import hashlib
+import os
+import sys
+
+DB = sys.argv[1]
+FILES = [
+    ("Sections/United States/W.sec", ["W 12X26"]),
+    ("Sections/United States/HSS_SQR.sec", ["HSS_SQR 4X4X1_4"]),
+    ("Materials/United States/Steel.mat", ["A992 Gr50", "A500 GrC rectangular", "A36"]),
+]
+TARGETS = {"W 12X26", "HSS_SQR 4X4X1_4", "A992 Gr50", "A500 GrC rectangular"}
+
+for rel, names in FILES:
+    raw = open(os.path.join(DB, rel), "rb").read()
+    lines = raw.decode("ascii").split("\r\n")
+    header = lines[1].split("\t")
+    print("FILE %s bytes=%d sha256=%s tag=%s" % (rel, len(raw), hashlib.sha256(raw).hexdigest(), lines[0]))
+    for line in lines[2:]:
+        cells = line.split("\t")
+        if cells and cells[0] in names:
+            print("  ROW " + " | ".join("%s=%s" % (h, v) for h, v in zip(header, cells)))
+
+print("EXACT-NAME OCCURRENCES (all .sec and .mat under the database folder)")
+for root, _, files in os.walk(DB):
+    for f in sorted(files):
+        if f.lower().endswith((".sec", ".mat")):
+            path = os.path.join(root, f)
+            for line in open(path, encoding="latin-1").read().splitlines():
+                name = line.split("\t")[0]
+                if name in TARGETS:
+                    print("  %s -> %s" % (name, os.path.relpath(path, DB).replace(os.sep, "/")))

@@ -1,0 +1,34 @@
+blocked=False stations=2 colHeight=90.5
+station0 OriginX=0 face=Single side=PositiveY blocked=False
+  sdiag [Info] CANT_ARM_SQUARE_CUT_AT_SLOPED_PLATE — El perfil va cortado a escuadra y la placa de conexion es un plano vertical, asi que la cara de arranque NO queda a ras: penetra hasta 0.0729 in por su parte alta y deja hasta 0.0729 in de holgura por la baja. Es una aproximacion visual declarada; resolver un corte inclinado o una preparacion de extremo sigue fuera de alcance.
+  sdiag [Info] CANT_ARM_SQUARE_CUT_AT_SLOPED_PLATE — El perfil va cortado a escuadra y la placa de conexion es un plano vertical, asi que la cara de arranque NO queda a ras: penetra hasta 0.0729 in por su parte alta y deja hasta 0.0729 in de holgura por la baja. Es una aproximacion visual declarada; resolver un corte inclinado o una preparacion de extremo sigue fuera de alcance.
+  sdiag [Info] CANT_ARM_SQUARE_CUT_AT_SLOPED_PLATE — El perfil va cortado a escuadra y la placa de conexion es un plano vertical, asi que la cara de arranque NO queda a ras: penetra hasta 0.0729 in por su parte alta y deja hasta 0.0729 in de holgura por la baja. Es una aproximacion visual declarada; resolver un corte inclinado o una preparacion de extremo sigue fuera de alcance.
+COL: sec=AISC-W-W12X26 L=90.5 rot=0 mir=False
+   O=(-0,-6.1,0.25) E=(0,-6.1,90.75)
+   Z=(0,0,1) Y=(0,1,0) X=(1,0,0)
+   colBottomPlate t=0.25 ResolvedColumnHeight=90.5 ColumnHeight=90.5
+BASE-PositiveY: sec=AISC-W-W12X26 L=48 rot=0 mir=False
+   O=(0,0.25,6.1) E=(0,48.25,6.1)
+   Z=(0,1,0) Y=(0,-0,1) X=(-1,0,0)
+L0 punch=0 side=PositiveY arr=Single cut=36 slope=0.4375 ang=0.036442192609432884 members=1
+  ARM CANT-STN-L1-PY-BODY-1: sec=AISC-HSS-RECT-HSS4X4X_250 L=36 rot=0 mir=False
+   O=(0,0.25,20.498672113564037) E=(0,36.22609804415268,21.810300688090436)
+   Z=(0,0.9993360567820188,0.03643412707017777) Y=(0,-0.03643412707017777,0.9993360567820188) X=(-1,0,0)
+   cell PlateBottomZ=18.5 PlateTopZ=26.5 BodyBottomZ=18.5 BodyTopZ=22.497344227128075
+L1 punch=7 side=PositiveY arr=Single cut=36 slope=0.4375 ang=0.036442192609432884 members=1
+  ARM CANT-STN-L2-PY-BODY-1: sec=AISC-HSS-RECT-HSS4X4X_250 L=36 rot=0 mir=False
+   O=(0,0.25,48.49867211356404) E=(0,36.22609804415268,49.81030068809044)
+   Z=(0,0.9993360567820188,0.03643412707017777) Y=(0,-0.03643412707017777,0.9993360567820188) X=(-1,0,0)
+   cell PlateBottomZ=46.5 PlateTopZ=54.5 BodyBottomZ=46.5 BodyTopZ=50.497344227128075
+L2 punch=14 side=PositiveY arr=Single cut=36 slope=0.4375 ang=0.036442192609432884 members=1
+  ARM CANT-STN-L3-PY-BODY-1: sec=AISC-HSS-RECT-HSS4X4X_250 L=36 rot=0 mir=False
+   O=(0,0.25,76.49867211356404) E=(0,36.22609804415268,77.81030068809044)
+   Z=(0,0.9993360567820188,0.03643412707017777) Y=(0,-0.03643412707017777,0.9993360567820188) X=(-1,0,0)
+   cell PlateBottomZ=74.5 PlateTopZ=82.5 BodyBottomZ=74.5 BodyTopZ=78.49734422712808
+plate ColumnBottom t=0.25
+plate BaseFront t=0.25
+plate BaseRear t=0.25
+plate ArmMounting t=0.25
+plate ArmMounting t=0.25
+plate ArmMounting t=0.25
+arm-mount-plate-thickness check: 0.25,0.25,0.25

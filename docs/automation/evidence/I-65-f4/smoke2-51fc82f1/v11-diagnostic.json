@@ -1,0 +1,15 @@
+{
+  "scriptSha256": "d9b41aab69643c01971e756fb9323a8f35dad6b33008598655c753fe2f92d719",
+  "payload.packageFolder": "D:\\r65-smoke\\51fc82f1\\run-R20261016T1918Z\\pkg-01",
+  "payload.analysisInputFingerprint": "505941e2ca42a02dd85b72629579bcd27e4900f80c69ebd41bb8ea73c0a5ba61",
+  "packageFolder == tecleada": true,
+  "packageFolder == manifest.packageFolder": true,
+  "huella payload == manifiesto": true,
+  "huella consola == manifiesto": true,
+  "ocurrencias de la carpeta en los bytes del script": {
+    "cruda": 0,
+    "escapada JSON (lo que busca V-11)": 0,
+    "escapada JSON dentro de un literal de Python": 1
+  },
+  "conclusion": "V-11 falso negativo del validador: la carpeta esta embebida, con doble escape"
+}

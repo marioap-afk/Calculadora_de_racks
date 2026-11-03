@@ -1,0 +1,47 @@
+# I-65 A65-F4F-04 opcion 0: cadena de custodia EXTERNA de una sesion de RAM (fuera del producto; solo lectura salvo el registro).
+# Anade una linea JSON por evento a <Log> (archivo nuevo o existente de la corrida). No abre ni controla RAM.
+# Fases:
+#   session-start                      : identidad de RAM y de su API; PID e instante de inicio de la UNICA RAMElements.exe
+#   pre-run  -Target <script>          : ruta y SHA-256 del script justo antes de «Ejecutar archivo…»; salida aun inexistente
+#   post-run -Target <salida>          : instante de creacion/escritura y SHA-256 del archivo generado; el PID de RAM sigue vivo y es el mismo
+#   session-end                        : RAM cerrada (PID ya no existe)
+# Las rutas se registran sin nombre de usuario (C-4). Las marcas de tiempo y el PID NO son prueba criptografica de procedencia.
+param([Parameter(Mandatory)][ValidateSet('session-start','pre-run','post-run','session-end')][string]$Phase,
+      [Parameter(Mandatory)][string]$Log, [string]$Target, [string]$Expected)
+$ErrorActionPreference = 'Stop'
+function FSha([string]$p) { (Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLower() }
+function TSha([string]$s) { [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($s))).ToLower() }
+function Clean([string]$s) { if ($s) { $s -replace [regex]::Escape($env:USERNAME), '<usuario>' } else { $s } }
+$ram = 'C:\Program Files\Bentley\Engineering\RAM Elements\RAMElements.exe'
+$rp = 'C:\Program Files\Bentley\Engineering\RAM Elements\python\ramelements'
+$e = [ordered]@{ phase = $Phase; observedUtc = (Get-Date).ToUniversalTime().ToString('o') }
+$procs = @(Get-Process -Name RAMElements -ErrorAction SilentlyContinue)
+switch ($Phase) {
+  'session-start' {
+    if ($procs.Count -ne 1) { throw "se esperaba exactamente una RAMElements.exe y hay $($procs.Count)" }
+    $man = (Get-ChildItem -Recurse -File -Force -LiteralPath $rp | Sort-Object FullName | ForEach-Object { $_.FullName.Substring($rp.Length + 1).Replace('\','/') + "  " + (FSha $_.FullName) + "  " + $_.Length }) -join "`n"
+    $e.ramExeSha256 = FSha $ram; $e.ramExeVersion = (Get-Item -LiteralPath $ram).VersionInfo.FileVersion
+    $e.ramelementsTreeSha256 = TSha ($man + "`n"); $e.ramelementsVersion = (Select-String -LiteralPath (Join-Path $rp '__init__.py') -Pattern '^__version__').Line.Trim()
+    $e.ramPid = $procs[0].Id; $e.ramStartUtc = $procs[0].StartTime.ToUniversalTime().ToString('o')
+  }
+  'pre-run' {
+    if (-not (Test-Path -LiteralPath $Target)) { throw "no existe el script $Target" }
+    $e.script = Clean $Target; $e.scriptSha256 = FSha $Target
+    if ($Expected -and $e.scriptSha256 -ne $Expected.ToLower()) { throw "SHA-256 del script distinto del esperado" }
+    $out = Join-Path (Split-Path $Target) $(if ($Target -like '*dump*') { 'ram-dump.json' } else { 'ram-readback.json' })
+    $e.output = Clean $out; $e.outputExistsBefore = (Test-Path -LiteralPath $out)
+    if ($e.outputExistsBefore) { throw "la salida ya existe: $out" }
+    $e.ramPid = $(if ($procs.Count -eq 1) { $procs[0].Id } else { $null })
+  }
+  'post-run' {
+    $f = Get-Item -LiteralPath $Target
+    $e.output = Clean $Target; $e.outputSha256 = FSha $Target
+    $e.creationUtc = $f.CreationTimeUtc.ToString('o'); $e.lastWriteUtc = $f.LastWriteTimeUtc.ToString('o')
+    $e.ramPid = $(if ($procs.Count -eq 1) { $procs[0].Id } else { $null })
+    $e.ramStartUtc = $(if ($procs.Count -eq 1) { $procs[0].StartTime.ToUniversalTime().ToString('o') } else { $null })
+    if ($Target -like '*readback*') { $j = Get-Content -LiteralPath $Target -Raw | ConvertFrom-Json; $e.readbackStatus = $j.status; $e.readbackFingerprint = $j.analysisInputFingerprint }
+  }
+  'session-end' { $e.ramCount = $procs.Count }
+}
+($e | ConvertTo-Json -Compress) | Add-Content -LiteralPath $Log -Encoding utf8NoBOM
+$e | ConvertTo-Json -Compress

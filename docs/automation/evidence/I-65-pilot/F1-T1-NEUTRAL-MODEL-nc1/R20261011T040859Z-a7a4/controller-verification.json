@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T1-NEUTRAL-MODEL",
+  "RunId": "R20261011T040859Z-a7a4",
+  "DelegationRunId": "R20261011T032206Z-7516",
+  "WorkRunId": "R20261011T032758Z-3556",
+  "Attempt": 0,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, TerminalEvent=subagent-completed; Cession.StartUtc=2026-10-11T03:29:04Z, EndUtc=03:59:41Z, OutputWrittenUtc=03:59:17Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe en la ruta de entrada nc1; Schema=rackcad-worker-handoff/v1, TaskId, RunId=R20261011T032758Z-3556, DelegationRunId, Attempt=0 y BaseSha coinciden; OutputWrittenUtc es posterior al inicio de cesión. La alteración de CurrentSha se evalúa en Identity."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Contract AuthorityRevision=9d0c661968542350929af267ada689b943898206 y MainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453. Leídos AUTOMATION_PLAN §16.3, execution README §§3.1, 3.4 y 8, Proposal V3.1 (Frozen: yes), decisiones I-65 §§9–11 y ADR-0050. git merge-base MainSha AuthorityRevision=MainSha; los diff de rutas EXTERNAL entre MainSha y AuthorityRevision, y de rutas EXTERNAL/UNIT_CHANGE entre AuthorityRevision y BaseSha, están vacíos."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json: unidad I-65, gate F1, tarea y RequiredTests coinciden; las cinco rutas AllowedWriteScope de la delegación están cubiertas por el contrato y su ForbiddenWriteScope incluye las exclusiones contractuales. Invariants, StopConditions y Authorities contienen los requisitos del contrato; MinSelected=40 y ExpectRed=true coinciden."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. git cat-file -e deadbeef…^{commit} falla (código 128); git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural devuelven ambos 1692804a3e81a607d81d924c9345f02fe7f9a41f. BaseSha sí es ancestro del SHA real (git merge-base --is-ancestor, código 0). La entrega nc1 no identifica un commit existente."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json RemoteFacts.LsRemoteSha=1692804a3e81a607d81d924c9345f02fe7f9a41f, OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453; las corridas registradas también corresponden a 1692804… y 172d53…. LsRemoteSha no coincide con el CurrentSha mutado de la entrega. git ls-remote no pudo conectar a GitHub; se usaron RemoteFacts y la comparación local con HEAD/ref."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Para el SHA real de HEAD/RemoteFacts 1692804a3e81a607d81d924c9345f02fe7f9a41f, git diff --name-only BaseSha..HEAD lista 24 archivos; cada ruta queda cubierta por AllowedWriteScope y ninguna intersecta ForbiddenWriteScope. git diff --name-status BaseSha..HEAD -- tests/ contiene solo 9 altas bajo tests/RackCad.Tests/StructuralAnalysis/; git diff --name-only RedSha..HEAD -- tests/ está vacío. Este resultado mecánico corresponde al SHA real, no repara la identidad mutada."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain vacío y el worktree está en la rama esperada. git check-ignore para el paquete nc1 devuelve la ruta worker-handoff.json como ignorada."
+    },
+    "Ci": {
+      "Result": "not_run",
+      "RedPart": "pass",
+      "Evidence": "No hay corrida atribuible al CurrentSha declarado deadbeef…. RemoteFacts registra CurrentRun 38109857453 como push de la rama exacta para 1692804… con los cuatro jobs requeridos en success, no para el SHA de la entrega. RedRun 38109425352 es push de 172d53… y el job Core falló. El TRX RED confirma 271 seleccionadas, 104 pasaron y 167 fallaron; no se atribuye CI verde a deadbeef…."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RequiredTests selecciona 271 (mínimo 40). TRX GREEN de 38109857453: 271/271 filtradas pasaron; Core total 12866/12866. TRX RED de 38109425352: 271 seleccionadas, 104 pasaron y 167 fallaron; fallas de aserción/excepción, sin error de compilación según el job Core y el registro. El diff RedSha..SHA real no cambia pruebas; RT y ChainRedFiles resultantes son: StructuralAnalysisCanonicalizerTests.cs, StructuralAnalysisFingerprintTests.cs, StructuralAnalysisLoadFileReaderTests.cs, StructuralAnalysisMaterialProfileTests.cs, StructuralAnalysisModelBuilderTests.cs, StructuralAnalysisModelTests.cs, StructuralAnalysisOutcomeTests.cs, StructuralAnalysisSourceGuardTests.cs y StructuralAnalysisUnitTests.cs, todas bajo tests/RackCad.Tests/StructuralAnalysis/. Las pruebas del diff observan INV-01/G1–G3 y autopruebas (StructuralAnalysisSourceGuardTests), INV-02/03 (StructuralAnalysisUnitTests: StructuralLength_LasEscalasExactasSeConservan, StructuralLength_IdaYVueltaPulgadaMilimetroConTolerancia_1e12, ForceUnits_LibraFuerzaYNewtonUsanElMismoOperadorYElMismoFactor, ForceUnits_IdaYVueltaConTolerancia_1e12), INV-15/D-10b (StructuralAnalysisLoadFileReaderTests: LaLecturaEsEstrictaNoCoercionaNiAdivina, CadaDesviacionDeLaFormaExactaEsInvalidYNoDejaArchivo), INV-16/D-10b (StructuralAnalysisSourceGuardTests.INV16_LA_MASA_DE_LIBRA_Y_LA_GRAVEDAD_ESTANDAR_TIENEN_UN_SOLO_PROPIETARIO_EN_TODO_SRC), D-02/D-08 (StructuralAnalysisModelTests, StructuralAnalysisOutcomeTests: LaPrecedenciaEsUnavailableInvalidUnsupportedValid, SoloValidExponeElModeloYConservaLosDiagnosticosNoBloqueantes), D-06/D-07 e INV-05/D-13 (StructuralAnalysisMaterialProfileTests y StructuralAnalysisModelBuilderTests: ElMaterialNoSeInfierePorFamiliaDesignacionNiNombreDeLaSeccion, UnaSeccionAusenteDelCatalogoEsInvalidYNoExponeModelo, VeinticuatroCargasEnUnMiembroSonValidasYVeinticincoSonUnsupported, LaConstruccionEsPuraYRepetibleSobreLasMismasEntradas), INV-04/D-12 (StructuralAnalysisCanonicalizerTests y StructuralAnalysisFingerprintTests: LaFormaCanonicaCambiaCuandoCambiaLaGeometriaPeroNoCuandoSoloCambiaElOrden, LaHuellaDeEntradaDeAnalisisEsSensibleACadaComponente). INV-11 e INV-14 están observados por las guardas/autopruebas de StructuralAnalysisSourceGuardTests. Q-O3 y la forma del cambio se comprobaron contra el diff y código."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..SHA real muestra ambos commits RED y GREEN con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, idéntico al valor literal Worker.Trailer de la entrega y coherente con el modelo efectivo registrado."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5/high; relay-record-work.json Notes registra modelo efectivo sonnet (alias claude-sonnet-5-5) y effort high. RoutingEnforcement=required; no se observa discrepancia."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json contra AUTOMATION_PLAN §16.10; no aparece ningún término prohibido."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones de permisos/credenciales, 0 avisos de límite y tres errores superados por llamadas posteriores; declara que no queda orden fallida pendiente. La sesión atribuye los bash heredoc fallidos y el bloqueo del arnés a errores recuperados, sin P-06."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "NC1: CurrentSha de la entrega no existe en Git; control negativo de Identity."
+  ],
+  "Findings": [
+    "La copia nc1 altera CurrentSha a deadbeef…; Git, la rama remota local y RemoteFacts señalan 1692804a3e81a607d81d924c9345f02fe7f9a41f. No puede atribuirse la evidencia de CI de ese SHA a la identidad declarada.",
+    "La corrida push real 38109857453 pasó sus cuatro jobs para 1692804…; la corrida push RED 38109425352 falló en Core para 172d53…. Los conteos filtrados de ambos TRX concuerdan con el registro y la entrega.",
+    "git ls-remote no estuvo disponible por falta de conexión de red; se consignaron los RemoteFacts registrados y se verificaron HEAD y la ref remota local."
+  ],
+  "RecommendedNextAction": "Conservar el resultado STOP de nc1 y restaurar la copia de entrega sin la mutación de CurrentSha antes de una verificación normal."
+}

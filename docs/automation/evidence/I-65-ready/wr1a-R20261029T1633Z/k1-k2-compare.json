@@ -1,0 +1,23 @@
+{
+ "stop": false,
+ "findings": [
+  {
+   "class": "SIGNAL",
+   "where": "c:\\users\\<usuario>\\.codex\\worktrees\\architecture-portabilidad-coordinador-principal",
+   "what": "HEAD advanced, clean, equals its remote (own session)",
+   "head": [
+    "6f7d34bb423c541c7dc998fec6d4568c78b5d79e",
+    "19aad6d3ce4944fb0d9e8108af0696bf0257c467"
+   ]
+  },
+  {
+   "class": "SIGNAL",
+   "where": "c:\\users\\<usuario>\\.codex\\worktrees\\fix-placedclone-copia-anotaciones",
+   "what": "HEAD advanced, clean, equals its remote (own session)",
+   "head": [
+    "8e23b0d2aeb1ccfbbc71490d4665c8efc6cd87cc",
+    "5d52e5d8b2590e0e65b9a9f746b07923e2bb8a78"
+   ]
+  }
+ ]
+}

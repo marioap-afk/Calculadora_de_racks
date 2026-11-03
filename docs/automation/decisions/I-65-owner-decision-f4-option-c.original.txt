@@ -1,0 +1,68 @@
+I-65 — Owner Decision: Option C and Checkout Incident Containment
+Continúa I-65 desde el estado publicado en `1b518628`.
+1. Decisión del Owner
+OPTION C — APPROVED.
+No autorizo nuevas delegaciones de implementación para F4-T5 con el mecanismo actual.
+Detén F4 en su estado parcialmente implementado y prepara el informe de cierre de la parte implementable.
+No declares GATE PASS de F4.
+T5 y las observaciones A65-F4-01, 03, 04, 05 y 06 permanecen pendientes de una autorización posterior.
+2. Incidente del checkout principal
+Antes del cierre, realiza una inspección estrictamente de solo lectura sobre:
+`D:\Documentos\Codex\Calculadora de racks\RackCad.sln`
+Debes:
+
+1. Comparar el archivo actual contra HEAD.
+2. Identificar cada modificación.
+3. Determinar cuáles están respaldadas por la transcripción del Worker.
+4. Comprobar si existen otras modificaciones no confirmadas en el checkout principal.
+5. Conservar los hashes y el diff como evidencia.
+6. Preparar un procedimiento de restauración limitado al cambio no autorizado.
+
+No ejecutes `git checkout`, `git restore`, `reset` ni ninguna operación que altere el checkout principal sin una autorización posterior.
+Si hay cambios legítimos mezclados, identifícalos y conserva ambos conjuntos.
+3. Cierre parcial de F4
+Prepara el informe con:
+
+* Estado verificado de T1–T4.
+* Estado detenido de T5.
+* SHA y CI de cada tarea.
+* Resultados de las pruebas.
+* Consumo de Codex e intentos.
+* Desviaciones del protocolo.
+* Observaciones pendientes del Architect.
+* Estado de los mapeos de materiales y secciones.
+* Condiciones necesarias para completar F4.
+* Confirmación de que no se ejecutó RAM Elements.
+
+Clasifica F4 como INCOMPLETE / BLOCKED o el equivalente permitido por las autoridades del repositorio.
+No declares que está cerrado satisfactoriamente.
+4. Escalamiento a I-62
+Prepara un paquete de escalamiento que describa los problemas de I-61 detectados durante I-65:
+
+* Invocaciones de herramientas prohibidas.
+* Escrituras fuera del worktree.
+* Resolución inesperada de rutas relativas.
+* Controles de alcance incompletos.
+* Controles negativos con falsos positivos.
+* Necesidad de verificar el checkout principal antes y después de cada delegación.
+
+Prioriza controles mecánicos y verificables sobre nuevas prohibiciones textuales en los prompts.
+No modifiques infraestructura de I-62 desde esta iniciativa.
+5. Restricciones
+No ejecutes nuevos Workers de implementación.
+No ejecutes RAM Elements.
+No modifiques código de producción.
+No amplíes el presupuesto de Codex.
+No alteres el Freeze ni ADR-0050.
+6. Entregable
+Presenta:
+
+1. Informe parcial de F4.
+2. Evidencia del incidente del checkout principal.
+3. Procedimiento seguro de restauración.
+4. Paquete de escalamiento a I-62.
+5. Riesgos pendientes.
+6. Recomendación de reanudación de I-65.
+
+IMPLEMENTATION AUTHORIZATION = NO.
+La continuación de F4 requiere una nueva decisión del Owner.

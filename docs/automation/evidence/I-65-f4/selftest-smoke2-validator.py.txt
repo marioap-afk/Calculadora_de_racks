@@ -1,0 +1,73 @@
+"""Autoprueba del validador del segundo smoke con paquetes SINTETICOS (no del producto). Uso: python -I selftest_smoke2_validator.py <S> <base>"""
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import sys
+
+S, base = sys.argv[1], sys.argv[2]
+exp_path = "D:/r65-smoke/51fc82f1/expected-inputs.json"
+exp = json.load(open(exp_path, encoding="utf-8-sig"))
+BS = chr(92)
+
+
+def build(name, mutate=None):
+    root = os.path.join(base, name)
+    shutil.rmtree(root, ignore_errors=True)
+    pkg = os.path.join(root, "pkg-01")
+    os.makedirs(pkg)
+    typed = pkg.replace("/", BS)
+    loads = open(exp["loads"]["path"], "rb").read()
+    fp = "ab" * 32
+    script = ("# synthetic\nPACKAGE_FOLDER = %s\nFINGERPRINT = '%s'\n" % (json.dumps(typed), fp)).encode("utf-8")
+    rows = []
+    for r in exp["rows"]:
+        rows.append({"sectionId": r["sectionId"], "ramSection": {"name": r["ramName"], "table": r["ramTable"], "country": r["ramCountry"]},
+                     "materialId": r["materialId"], "ramMaterial": r["ramMaterial"],
+                     "expectedMaterial": {"elasticModulus": r["elasticModulus"], "poissonRatio": r["poissonRatio"], "shearModulus": None,
+                                          "unitWeight": r["unitWeight"], "source": r["source"]},
+                     "status": "verified", "verifiedBy": r["verifiedBy"], "verifiedOn": r["verifiedOn"], "canonicalText": r["canonicalText"]})
+    E = exp["expected"]
+    m = {"schema": E["schema"], "adapter": {"name": E["adapterName"], "version": E["adapterVersion"]},
+         "target": {"product": E["product"], "productVersion": E["productVersion"], "productVersionStatus": E["productVersionStatus"],
+                    "package": E["package"], "packageVersion": "0.1.0", "units": "in-lbf"},
+         "source": {"rackId": "synthetic", "kind": "Cantilever", "stationIndex": 0, "sourceFingerprint": "cd" * 32, "generatorVersion": "x"},
+         "analysisInputFingerprint": fp, "packageFolder": typed,
+         "loadsFile": {"name": "structural-loads.json", "sha256": hashlib.sha256(loads).hexdigest()},
+         "mapping": {"rowsSha256": exp["mappingRowsSha256AllRows"], "rows": rows},
+         "assumptions": {"sha256": "ef" * 32, "warning": "w", "items": [{"id": "A1", "statement": "s"}]}, "exclusions": [],
+         "files": [{"name": "rackcad-ram-build.py", "sha256": hashlib.sha256(script).hexdigest()},
+                   {"name": "structural-loads.json", "sha256": hashlib.sha256(loads).hexdigest()}],
+         "readback": {"name": "ram-readback.json", "repeatsAnalysisInputFingerprint": True}}
+    if mutate:
+        m, script, loads = mutate(m, script, loads)
+    open(os.path.join(pkg, "manifest.json"), "wb").write(json.dumps(m, ensure_ascii=False, indent=2).encode("utf-8"))
+    open(os.path.join(pkg, "rackcad-ram-build.py"), "wb").write(script)
+    open(os.path.join(pkg, "structural-loads.json"), "wb").write(loads)
+    return pkg, typed
+
+
+def run(name, mutate, expect_fail):
+    pkg, typed = build(name, mutate)
+    out = os.path.join(base, name + ".report.json")
+    r = subprocess.run([sys.executable, "-I", os.path.join(S, "validate_smoke2_package.py"), pkg, exp_path, typed, out], capture_output=True, text=True)
+    rep = json.load(open(out, encoding="utf-8"))
+    failed = sorted(c["id"] for c in rep["checks"] if c["result"] != "PASS")
+    ok = (failed == expect_fail)
+    print("%-14s %s failed=%s expected=%s -> %s" % (name, rep["result"], failed, expect_fail, "OK" if ok else "MISMATCH"))
+    return ok
+
+
+def m_escape(m, s, l):
+    return m, s, l
+
+
+results = [
+    run("ok", None, []),
+    run("verifiedby", lambda m, s, l: (dict(m, mapping=dict(m["mapping"], rows=[dict(r, verifiedBy="Mario Perez - Owner / Engineering Validator") for r in m["mapping"]["rows"]])), s, l), ["V-13", "V-15"]),
+    run("loads", lambda m, s, l: (m, s, l.replace(b"\n", b"\r\n")), ["V-05", "V-06", "V-07"]),
+    run("rowsha", lambda m, s, l: (dict(m, mapping=dict(m["mapping"], rowsSha256="00" * 32)), s, l), ["V-14"]),
+    run("fingerprint", lambda m, s, l: (m, s.replace(b"abab", b"0000", 1), l), ["V-05", "V-11"]),
+]
+print("SELFTEST", "PASS" if all(results) else "FAIL")

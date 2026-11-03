@@ -1,0 +1,9 @@
+time_utc=2026-10-19T18:06:34.1521317Z
+R-01 ram=0 acad=0
+R-02 ramexe sha256=7dcb48555741fa368f5d5f6a14e760fe0662dd5c0b3cc53f6e88f1c0231e7970 version=26.00.01.15
+R-03 ramelements tree_sha256=f71a017f49573030219a4213465c9ec454d3b6282f3f60b648a4300bfeba0a60 files=30 __version__ = "0.1.0"
+R-04 config sha256=505a3592172ee0ed246c198201d02cc8aca494d67d3159d8761b9e01f6795387 mtime=2026-10-17T16:21:22.9361121Z
+R-05 config PythonScripts lines=1 -> PythonScripts=D:\r65-smoke\5a5ca577\ov-R20261017T0847Z\inj-OV07b
+Sections\United States\W.sec dffd9e0082a8955572f1a21989938c2985952d7e7cffd714295d0e53dbd7b977
+Sections\United States\HSS_SQR.sec 992ddac9a9b130da0426dfa761ebde2a8c39fc77736302d5e6431b41c1d93df0
+Materials\United States\Steel.mat 2a8b423964d2ba3580273de2d8a29d5e70c9e6dceefa1f892a40bb8cd1139ce1

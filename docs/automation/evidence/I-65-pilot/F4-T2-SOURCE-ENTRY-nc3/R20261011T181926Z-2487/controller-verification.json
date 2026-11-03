@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2-SOURCE-ENTRY",
+  "RunId": "R20261011T181926Z-2487",
+  "DelegationRunId": "R20261011T173529Z-98df",
+  "WorkRunId": "R20261011T173811Z-0167",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; OutputWrittenUtc=2026-10-11T18:03:11Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe en la ruta de entrada; TaskId, RunId, DelegationRunId y Attempt coinciden con la delegación. OutputWrittenUtc 18:03:11Z es posterior a Cession.StartUtc 17:38:23Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídos con git show desde MainSha bb0d5522 y AuthorityRevision dc609362: AUTOMATION_PLAN §16, README de agent-execution §8, Proposal v3.1 (Frozen: yes), concreción F4, decisiones I-65 §26 y ADR-0050. AGENTS.md leído desde MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json coinciden en AllowedWriteScope, ForbiddenWriteScope, RequiredTests, Invariants y ExpectedEvidence; Unit, TaskId, AuthorityRevision y MainSha también corresponden."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current=architecture/interop-analisis-estructural; --show-toplevel coincide con el worktree esperado. HEAD=CurrentSha=refs/remotes/origin/architecture-interop-analisis-estructural=0070ae40. merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha: ambos exit 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work RemoteFacts registra OriginMainSha=bb0d5522 y LsRemoteSha=CurrentSha=0070ae40; refs locales origin/main y origin/branch coinciden. git ls-remote no pudo conectar en este entorno; se usan los RemoteFacts registrados, según la alternativa autorizada."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha produjo 7 rutas; cada una queda cubierta por AllowedWriteScope de delegation.json y ninguna coincide con ForbiddenWriteScope: StructuralDiagnostic.cs y StructuralModelBuilder.cs (exactas); CantileverStructuralExport.cs y CantileverStructuralModelSource.cs (exactas); StructuralAnalysisCantileverBoundaryTests.cs, StructuralAnalysisSourceEntryHardeningTests.cs y StructuralAnalysisSourceEntryTests.cs (prefijo tests/RackCad.Tests/StructuralAnalysis/)."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain vacío. git check-ignore -v sobre el paquete de entrada informa .gitignore:3, artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX identifican CurrentRun 38161863583: event=push, ref exacta, HeadSha=CurrentSha, completed/success; los cuatro jobs requeridos success. Core TRX: 13703 aprobadas, 0 fallidas. RedRun 38161386081 corresponde al RedSha, push en la misma ref; job Core failure. TRX RED: 49 fallidas, sin errores de compilación. UI TRX: total 1654, ejecutadas/aprobadas 1637, 17 UnitTestResult NotExecuted; Counters notExecuted=0 corresponde a la convención declarada del logger."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RequiredTests: filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisSourceEntry, mínimo 15. TRX CurrentSha selecciona 66 y aprueba 66; TRX RedSha selecciona 66, aprueba 19 y falla 47 por aserción/excepción, no compilación. La selección cubre bytes intactos y SourceFingerprint, cambio solo de espacios, kind sin distinguir mayúsculas y kind alternativo sin invocar decoder, decoder null/excepciones, excepciones de fuente/resolver y argumentos nulos; pruebas de constructor vacío, apoyos duplicados y supuestos ausentes; bloqueo de línea/código/sujeto; familias W, HSS rectangular y S más enum indefinido; umbral de 0.01 grados; inventario con pieza sintética no clasificada y REF-CANT-01 válido frente al golden INV-06. Los nombres correspondientes incluyen LaFuncionDeDecodificacionRecibeExactamenteLosBytesDelDisenoUnaSolaVez, ElKindDelSobreCantileverSeCompararSinDistinguirMayusculasYSeTraduceAlKindCanonico, UnaExcepcionDeLaFuenteEsUnavailableSinModelo, DosApoyosEnElMismoNudoSonInvalidos, ElBloqueoDeLaLineaCompletaTieneSuPropioCodigoYSuSujetoNombraLaLinea, CualquierOtraFamiliaIncluidoUnValorNoDefinidoDelEnumEsUnsupported, UnaComponenteEliminadaMayorQueElSenoDeUnaCentesimaDeGradoSeRechaza, UnaPiezaSinteticaSinClasificarHaceLaEstacionUnsupportedConCodigoNuevo y LasPiezasDeRefCant01SeClasificanTodasYLaLineaSigueValida. Las guardas existentes y el golden no fueron editados; las dos aserciones de BoundaryTests cambian para el bloqueo de línea. RT desde ChainBaseSha a RedSha contiene BoundaryTests.cs, SourceEntryHardeningTests.cs y SourceEntryTests.cs; git diff RedSha CurrentSha -- tests/ no produjo rutas."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha muestra dos commits; ambos contienen exactamente el trailer declarado por Worker.Trailer: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegación solicitó claude-sonnet-5-5/high; relay-record-work Participant registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "El cotejo de términos completos de AUTOMATION_PLAN §16.10 encontró una coincidencia reservada en worker-handoff.json, propiedad WorkCompleted (grupo de términos, índice 0)."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes registra 78 llamadas, 2 errores de herramienta superados, 0 denegaciones y 0 avisos de límite. El registro no señala órdenes fallidas pendientes ni condición STOP activada."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "WorkCompleted contiene una frase reservada de AUTOMATION_PLAN §16.10; es el único fallo de las 14 comprobaciones.",
+    "DEV-I65-F4-05: el registro confirma la única invocación python3 --version con salida descartada; la disposición entregada la clasifica como desviación no bloqueante porque no fue dependencia para compilar ni probar.",
+    "git ls-remote no estuvo disponible por falta de conexión; Remote se contrastó con RemoteFacts y las referencias locales.",
+    "El TRX UI registra 17 resultados NotExecuted aunque Counters.notExecuted sea 0; coinciden total 1654 y executed 1637."
+  ],
+  "RecommendedNextAction": "Corregir WorkCompleted para eliminar la coincidencia reservada y repetir la verificación sobre la entrega corregida."
+}

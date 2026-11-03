@@ -1,0 +1,69 @@
+I-65 — OWNER DISPOSITION
+Second Smoke Acceptance / RAM First Run Readiness
+He revisado el resultado publicado en `b9507106`, con CI 4/4 satisfactorio.
+1. Decisión
+SECOND SMOKE = ACCEPTED / PASS AFTER VALIDATOR CORRECTION.
+Reconozco el resultado 16/16 del validador corregido y sus 18 pruebas positivas y negativas.
+El resultado histórico de 15/16 debe conservarse como evidencia, sin alterarlo ni sustituirlo.
+2. Paquete seleccionado
+PACKAGE SELECTION = EXISTING VALIDATED PACKAGE.
+Selecciono el paquete generado en:
+`D:\r65-smoke\51fc82f1\run-R20261016T1918Z\pkg-01`
+Sus archivos y hashes son los registrados en la evidencia del segundo smoke.
+No regeneres el paquete ni modifiques su contenido.
+Antes de ejecutar, determina si el script puede ejecutarse desde esa carpeta y escribir su lectura de vuelta sin alterar los tres archivos originales.
+Si la ejecución requiere reubicar el paquete o cambiar la ruta embebida, detente y presenta una propuesta específica.
+3. Preparación de P2
+P2 READINESS = AUTHORIZED.
+Prepara una revisión de solo lectura del script y del procedimiento de primera ejecución en RAM Elements.
+Comprueba:
+
+* Identidad del paquete.
+* Versión de RAM y API.
+* Ruta efectiva de `ram-readback.json`.
+* Requisitos de modelo vacío.
+* Validación de secciones y materiales.
+* Tratamiento de errores y modelos parciales.
+* Condiciones de parada.
+* Procedimiento para descartar el modelo sin guardar.
+* Posibles cambios en configuración de usuario.
+* Disponibilidad de licencia.
+
+No ejecutes todavía P2.
+4. OD-F4-07 y OD-F4-08
+OD-F4-07: acepta preparar la primera corrida de construcción y lectura de vuelta del modelo, seguida de la comparación frente a la referencia manual.
+OD-F4-08: el operador propuesto será Claude mediante Computer Use, sujeto a una autorización específica posterior y a la disponibilidad normal del acceso.
+Si Computer Use no obtiene acceso, utiliza el procedimiento manual existente; no intentes evitar restricciones.
+5. Equivalencia
+Mantén separados:
+
+* Construcción válida dentro de RAM.
+* Lectura de vuelta completa.
+* Comparación contra REF-CANT-01 manual.
+* Validación de ingeniería del modelo.
+
+La primera no demuestra automáticamente las demás.
+Mantén CMB-3, DIF-01 informativa y la exclusión del peso propio.
+6. Host
+Coordina con I-52 e I-64 cualquier actividad que pueda afectar sus recursos compartidos.
+No abras AutoCAD ni ejecutes NETLOAD.
+No presupongas que RAM necesita una ventana de AutoCAD, pero verifica las autoridades vigentes antes de ejecutarlo.
+7. Entregable
+Presenta:
+
+1. Confirmación de que el paquete original permanecerá intacto.
+2. Ruta exacta de escritura del readback.
+3. Identidad y versiones de RAM y API.
+4. Condiciones de seguridad de P2.
+5. Procedimiento de ejecución y cierre.
+6. Preparación de REF-CANT-01 manual.
+7. Secuencia de validación de equivalencia.
+8. Riesgos y límites pendientes.
+9. Autorización exacta que necesitarías para ejecutar P2.
+
+SECOND SMOKE = PASS.
+P2 PREPARATION = AUTHORIZED.
+RAM EXECUTION = NOT YET AUTHORIZED.
+AUTOCAD EXECUTION = NO.
+F4 GATE PASS = NO.
+Continúa únicamente con la preparación y detente antes de abrir RAM Elements.

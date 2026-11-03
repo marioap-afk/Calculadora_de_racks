@@ -1,0 +1,4 @@
+time_utc=2026-10-30T01:56:07Z
+i/lf    w/lf    attr/                 	assets/structural-analysis/ram-elements/section-material-map.json
+source_sha256=fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619
+installed_sha256=fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619

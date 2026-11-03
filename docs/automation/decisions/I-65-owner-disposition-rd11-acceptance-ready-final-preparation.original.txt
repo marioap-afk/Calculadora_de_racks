@@ -1,0 +1,118 @@
+I-65 — OWNER DISPOSITION
+R-D11 Acceptance / READY Final Preparation and Validation Planning
+He revisado el cierre del gate correctivo R-D11 registrado en `d53367e5`, con CI 40802756413, 4/4 satisfactorio.
+1. Aceptación
+R-D11 GATE PASS = ACKNOWLEDGED / ACCEPTED.
+Reconozco:
+
+* GREEN `6a58c2b1`.
+* SHA de cierre `f2ed2a7e`.
+* Core Full 14392/14392.
+* UI Full 1637 PASS, 17 omisiones declaradas.
+* Builds Debug correctos.
+* CI del SHA exacto en verde.
+* Architect CONFORMANT WITH OBSERVATIONS, 0 REQUIRED.
+* Control de bundle con tabla incorporada.
+* Rechazos de tabla ausente, modificada, fuera de ruta y archivos adicionales.
+
+No solicito repetir el gate correctivo.
+2. A65-RD11-01
+OPTION A = APPROVED.
+Para R-D11, la identidad exacta de la tabla empaquetada se define respecto de los bytes de la tabla fuente del checkout utilizado para compilar.
+Se acepta que un checkout con finales de línea CRLF produzca un SHA-256 distinto de otro checkout con LF.
+Esto no autoriza modificar datos de la tabla ni sustituir filas verificadas.
+No modificar `.gitattributes` ni introducir una nueva unidad de implementación.
+Registra expresamente esta decisión y su alcance para satisfacer READY-03.
+3. READY — Correcciones documentales
+READY DOCUMENTARY RECONCILIATION = AUTHORIZED.
+Autoriza realizar las cuatro correcciones documentales identificadas en la preparación de READY, siempre que no alteren el contrato congelado, las tolerancias ni los oráculos.
+Comprueba y registra el efecto de cada corrección.
+No modificar código de producto.
+4. HB-01..05 — Validación real del Autoloader
+HB-01..05 = APPROVED FOR READY VALIDATION.
+Incluye dentro de W-R1 la prueba real del bundle instalado mediante Autoloader en AutoCAD.
+Autorizo preparar una instalación temporal y reversible en `ApplicationPlugins`, únicamente en una ventana de host expresamente liberada.
+Condiciones:
+
+1. Captura BASELINE previa de `ApplicationPlugins`.
+2. Confirmación de que no existe una instalación activa de RackCad que vaya a sobrescribirse.
+3. Instalación exclusivamente del bundle del Candidato final.
+4. Verificación de que AutoCAD carga el módulo desde el Autoloader.
+5. Confirmación de que `RACKRAMPAQUETE` encuentra la tabla y puede generar un paquete válido.
+6. Evaluación de HB-01..05 con sus oráculos aprobados.
+7. Cierre de AutoCAD.
+8. Desinstalación de la copia temporal.
+9. POST y comprobación de restauración exacta del estado previo.
+
+No alterar TRUSTEDPATHS ni desactivar SECURELOAD.
+Si aparece una instalación existente o una diferencia protegida, STOP.
+5. Inicio de READY
+READY-01..09 PREPARATION = AUTHORIZED.
+Autoriza ejecutar la conciliación documental y técnica previa a la declaración del Candidato final.
+Prepara:
+
+* Resolución de READY-01..03.
+* Preflight READY-04.
+* Suites y CI requeridas.
+* Matriz OV-I65-01..08.
+* Evidencia de HB-01..05.
+* Identidad de las herramientas y DLL.
+* Condiciones de READY-06.
+* Plan de cierre e integración.
+
+No declares READY automáticamente.
+6. Candidato final
+FINAL CANDIDATE PREPARATION = AUTHORIZED.
+Prepara un Candidato final propio que incorpore las decisiones materiales y el cambio R-D11.
+No reutilices los SHA de los Candidatos de F4 o F5.
+Antes de declararlo, presenta:
+
+* SHA exacto propuesto.
+* Estado de READY-01..09.
+* CI y regresión.
+* Hallazgos residuales.
+* Matriz y procedimientos completos.
+* Presupuesto de host.
+
+FINAL CANDIDATE DECLARATION = PENDING OWNER AUTHORIZATION.
+7. Ventanas de host
+W-R1 AUTOCAD PREPARATION = AUTHORIZED.
+W-R1 EXECUTION = NOT YET AUTHORIZED.
+W-R2 RAM PREPARATION = AUTHORIZED.
+W-R2 EXECUTION = NOT YET AUTHORIZED.
+Incluye OV-I65-08, con guardado, cierre y reapertura del DWG desechable, en el procedimiento de W-R1.
+Conserva el modelo manual y los volcados aprobados solo bajo las condiciones de R-D2.
+No reutilices readbacks anteriores como resultado del Candidato final.
+8. Presupuesto
+Mantener:
+
+* Codex 55/57.
+* Attempts 7/11.
+* Workers adicionales: ninguno.
+
+No iniciar otra cadena de implementación sin un nuevo presupuesto y autorización.
+9. Restricciones
+No abrir AutoCAD ni RAM todavía.
+No modificar Freeze, ADR-0050, tabla ni tolerancias.
+No reescribir historial.
+No integrar I-65.
+No iniciar funciones nuevas.
+10. Entregable
+Presenta:
+
+1. Disposición registrada de A65-RD11-01.
+2. Conciliación de READY-01..09.
+3. SHA propuesto del Candidato final.
+4. Resultado de las correcciones documentales.
+5. Procedimientos completos W-R1 y W-R2.
+6. Matriz OV-I65-01..08 y HB-01..05.
+7. Presupuesto restante.
+8. Riesgos y decisiones pendientes.
+9. Solicitud exacta para declarar el Candidato final.
+
+R-D11 = CLOSED / GATE PASS.
+READY PREPARATION = GO.
+FINAL CANDIDATE DECLARATION = NO.
+W-R1 / W-R2 EXECUTION = NO.
+INTEGRATION = NO.
+Continúa únicamente con la preparación y detente antes de declarar el Candidato final o utilizar los hosts.

@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "RD11-AUTOLOADER-TABLE",
+  "RunId": "R20261029T010523Z-2b56",
+  "DelegationRunId": "R20261029T004516Z-bf20",
+  "WorkRunId": "R20261029T005052Z-2be3",
+  "Attempt": 7,
+  "VerifiedSha": "6a58c2b1891174bb5120f0e9e3fb8e13ed952832",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false. No process launch remained pending."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json tiene Schema rackcad-worker-handoff/v1, TaskId RD11-AUTOLOADER-TABLE, Attempt 7, DelegationRunId R20261029T004516Z-bf20, RunId R20261029T005052Z-2be3, BaseSha 91f82d6d83731f48d445c7ad007a814b65c6caa6 y CurrentSha 6a58c2b1891174bb5120f0e9e3fb8e13ed952832. La fecha de entrega del relevo, Outcome.OutputWrittenUtc=2026-10-29T01:01:48Z, es posterior a Cession.StartUtc=2026-10-29T00:50:59Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí las autoridades desde Git. La revisión 91f82d6d83731f48d445c7ad007a814b65c6caa6 es el BaseSha; `git rev-parse origin/main` dio bb0d5522e8411f66a51fdfb3f1f0d0514b737453, igual a MainSha. Las rutas, secciones y clases de autoridad de la delegación corresponden al contrato."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé delegación y contrato: AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests, Authorities y StopConditions coinciden. RequiredTests exige FullyQualifiedName~RackCad.Tests.StructuralAnalysis, MinSelected=1795 y ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "`git rev-parse HEAD` y la referencia local `refs/remotes/origin/architecture/interop-analisis-estructural` dieron 6a58c2b1891174bb5120f0e9e3fb8e13ed952832; la rama y ruta de worktree coinciden con la delegación. `git merge-base --is-ancestor BaseSha HEAD` y `git merge-base --is-ancestor RedSha CurrentSha` terminaron con código 0. RemoteFacts registra el mismo LsRemoteSha y OriginMainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "Usé RemoteFacts del relay-record-work.json porque no consulté `git ls-remote`: LsRemoteSha=6a58c2b1891174bb5120f0e9e3fb8e13ed952832 coincide con CurrentSha; OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 coincide con MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "`git diff --name-only BaseSha CurrentSha` lista README.md, deploy/test-verify-bundle.ps1, deploy/verify-bundle.ps1, docs/guias/despliegue.md, docs/guias/interoperabilidad-ram-elements.md, src/RackCad.Plugin/RackCad.Plugin.csproj y tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs. Cada ruta está cubierta por su entrada exacta correspondiente de delegation.json: README.md, los dos scripts deploy, las dos guías, el proyecto Plugin y el archivo de pruebas. Ninguna ruta coincide con ForbiddenWriteScope. El diff BaseSha..RedSha contiene solo el harness y el archivo de pruebas; RedSha..CurrentSha contiene solo las cinco rutas GREEN enumeradas en el contrato."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "`git status --short` no produjo salida. `git check-ignore -v artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T010523Z-2b56/verification.json` confirmó que la ruta está ignorada por `.gitignore:3:artifacts/`."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts identifica las corridas push de la rama exacta: RED 40797120699, head 42b9dcdfd8ce8a5de5819f5e7b33b659ac3e1a81, Core failure; CurrentSha 40797712877, head 6a58c2b1891174bb5120f0e9e3fb8e13ed952832, los cuatro jobs requeridos success. RED: el job Plugin fue skipped por `needs`, según D2; el contrato exige el fallo Core. TRX RED: 14.392 ejecutadas, dos fallidas; el filtro seleccionó 1.797, con 1.795 pasadas y 2 fallidas. Current Core TRX: 14.392/14.392 pasadas. UI TRX: total 1.654, ejecutadas y pasadas 1.637, fallidas 0; las 17 restantes son Skip/NotExecuted según la convención indicada. La tabla CRLF del bundle CI (SHA-256 b22f7d9d…2e7d) está descrita por D6 como conversión del checkout Windows."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Leí los TRX de las copias proporcionadas. En la corrida RED del filtro `FullyQualifiedName~RackCad.Tests.StructuralAnalysis`: 1.797 seleccionadas, 1.795 pasadas, 2 fallidas; ambas fallidas son las pruebas nuevas del target y del verificador y el TRX registra fallos de aserción, no de compilación. En CurrentSha: 1.797 seleccionadas y 1.797 pasadas; Core completa 14.392/14.392. El harness GREEN registra 14 casos pasados (1 válido + 13 negativos); el handoff registra RED del harness con el caso válido fallido. Las pruebas del diff observan RD-INV-01 en ElTargetDelBundleCopiaLaTablaDesdeSuFuenteALaMismaRutaRelativaQueLaCompilacion; RD-INV-02 en ElVerificadorDelBundleAdmiteSoloLaRutaDeLaTablaYExigeSuIdentidadConLaFuente y los casos del harness; RD-INV-03 en ElHarnessDelVerificadorCubreLaTablaConElValidoYCuatroNegativos. El diff de pruebas BaseSha..RedSha sustituye solo el método señalado para RD-INV-04. Para RD-INV-05, el blob de CurrentSha para assets/structural-analysis/ram-elements/section-material-map.json es d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2 y no cambian archivos .cs de src/. RD-INV-06 está cubierto por las tres guías del diff descritas en el handoff. RD-INV-07 y controles operativos se contrastaron con relay-record-work.json y disposiciones D1-D6. ChainBaseSha=91f82d6d83731f48d445c7ad007a814b65c6caa6; `git diff --name-only ChainBaseSha RedSha -- tests/` da StructuralAnalysisPluginCommandGuardTests.cs. `git diff --name-only RedSha CurrentSha` no toca ese archivo ni RT; ChainRedFiles resultante: [tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs]."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "El valor literal de Worker.Trailer en worker-handoff.json es `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. `git log --format=%B BaseSha..CurrentSha` muestra ese trailer tanto en RED como en GREEN; relay-record-work.json Notes identifica el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "La delegación solicita modelo claude-sonnet-5-5 con effort high y RoutingEnforcement=required. relay-record-work.json Notes identifica al Worker como claude-sonnet-5-5/high y confirma que el primer mensaje coincide con el prompt enviado."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé el texto libre de worker-handoff.json contra los términos de AUTOMATION_PLAN §16.10; no encontré ninguno."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones, 0 errores de herramienta y 0 avisos de límite. No hay orden fallida pendiente en los registros examinados."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La disposición D1 documenta una lectura no declarada del estado del checkout principal durante el relevo; el Coordinator determinó que no tuvo efectos y que C-12 no se materializa. K1/K2 y el índice quedaron sin cambios.",
+    "D2 documenta que el job Plugin de la corrida RED fue omitido por sus dependencias; el contrato requiere para RED el fallo del job Core, confirmado por el TRX."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación contra el SHA 6a58c2b1891174bb5120f0e9e3fb8e13ed952832."
+}

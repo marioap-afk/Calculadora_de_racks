@@ -1,0 +1,163 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "RD11-AUTOLOADER-TABLE",
+  "RunId": "R20261029T005052Z-2be3",
+  "DelegationRunId": "R20261029T004516Z-bf20",
+  "Initiative": "I-65",
+  "Gate": "R-D11",
+  "Attempt": 7,
+  "BaseSha": "91f82d6d83731f48d445c7ad007a814b65c6caa6",
+  "RedSha": "42b9dcdfd8ce8a5de5819f5e7b33b659ac3e1a81",
+  "CurrentSha": "6a58c2b1891174bb5120f0e9e3fb8e13ed952832",
+  "Branch": "architecture/interop-analisis-estructural",
+  "Worktree": "C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural",
+  "Pushed": true,
+  "FilesChanged": [
+    "README.md",
+    "deploy/test-verify-bundle.ps1",
+    "deploy/verify-bundle.ps1",
+    "docs/guias/despliegue.md",
+    "docs/guias/interoperabilidad-ram-elements.md",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs"
+  ],
+  "WorkCompleted": "Cadena RED -> GREEN de RD11-AUTOLOADER-TABLE ejecutada en un commit RED (42b9dcdf, solo la prueba de distribucion y el harness) y un commit GREEN (6a58c2b1, solo el target del Plugin, el verificador, README y dos guias), ambos empujados sin force. El target AssembleAutoloaderBundle copia la tabla desde su fuente a Contents/structural-analysis/ram-elements/section-material-map.json; verify-bundle.ps1 la admite solo en esa ruta exacta y exige SHA-256 igual a la fuente (-SectionMapSourcePath); el harness pasa a 1 valido + 13 negativos; la documentacion refleja la nueva ubicacion y retira solo la limitacion CD-I65-F4-10. El blob de la tabla en CurrentSha es d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2 (sin cambios).",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-build-bundle",
+      "Command": "pwsh -NoProfile -File C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/deploy/build-bundle.ps1 -Configuration Release -Output C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/publish-red",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/build-bundle-red.log"
+    },
+    {
+      "RunRef": "red-harness",
+      "Command": "pwsh -NoProfile -File C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/deploy/test-verify-bundle.ps1 -SourceBundle C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/publish-red/RackCad.bundle -PublishDir C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/publish-red",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/harness-red.log"
+    },
+    {
+      "RunRef": "red-structural",
+      "Command": "/c/Users/<usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysis\" --logger \"trx;LogFileName=red-structural.trx\" --results-directory C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/tests/red-structural",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/tests/red-structural/red-structural.trx"
+    },
+    {
+      "RunRef": "green-build-bundle",
+      "Command": "pwsh -NoProfile -File C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/deploy/build-bundle.ps1 -Configuration Release -Output C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/publish-green -InventoryOutPath C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/inventory-green.txt",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/build-bundle-green.log"
+    },
+    {
+      "RunRef": "green-harness",
+      "Command": "pwsh -NoProfile -File C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/deploy/test-verify-bundle.ps1 -SourceBundle C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/publish-green/RackCad.bundle -PublishDir C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/publish-green",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/harness-green.log"
+    },
+    {
+      "RunRef": "green-structural",
+      "Command": "/c/Users/<usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.StructuralAnalysis\" --logger \"trx;LogFileName=green-structural.trx\" --results-directory C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/tests/green-structural",
+      "Phase": "GREEN",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/tests/green-structural/green-structural.trx"
+    },
+    {
+      "RunRef": "green-core",
+      "Command": "/c/Users/<usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=green-core.trx\" --results-directory C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/tests/green-core",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/tests/green-core/green-core.trx"
+    },
+    {
+      "RunRef": "green-solution-build",
+      "Command": "/c/Users/<usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe build C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural/RackCad.sln -c Release",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/work/build-sln-release.log"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-structural",
+      "Selected": 1797,
+      "Passed": 1795,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElTargetDelBundleCopiaLaTablaDesdeSuFuenteALaMismaRutaRelativaQueLaCompilacion",
+        "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.ElVerificadorDelBundleAdmiteSoloLaRutaDeLaTablaYExigeSuIdentidadConLaFuente"
+      ]
+    },
+    {
+      "RunRef": "red-harness",
+      "Selected": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "valido"
+      ]
+    },
+    {
+      "RunRef": "green-harness",
+      "Selected": 14,
+      "Passed": 14,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-structural",
+      "Selected": 1797,
+      "Passed": 1797,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-core",
+      "Selected": 14392,
+      "Passed": 14392,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "(1) Directorio efectivo informado al empezar, tal cual: pwd (Bash) = /d/Documentos/Codex/Calculadora de racks; Get-Location (PowerShell) = D:\\Documentos\\Codex\\Calculadora de racks; [Environment]::CurrentDirectory = D:\\Documentos\\Codex\\Calculadora de racks (el checkout principal, no el worktree). Declaracion: todas las operaciones de archivos (lectura, edicion, mkdir) usaron rutas absolutas bajo C:/Users/<usuario>/.codex/worktrees/architecture-interop-analisis-estructural; git siempre con -C esa ruta; dotnet y pwsh -File con rutas absolutas; ningun cd ni Set-Location; los archivos del repositorio se editaron solo con la herramienta de edicion. No hubo archivos temporales fuera de artifacts/orchestration/I-65/RD11-AUTOLOADER-TABLE/7/R20261029T005052Z-2be3/ (work/ y tests/), salvo la carpeta temporal que el harness crea y borra por si mismo. No se leyo ni se escribio nada en el checkout principal. No se invoco Python, AutoCAD, RAM Elements ni install-bundle.ps1; AutoCAD estaba cerrado (build-bundle.ps1 no se nego). Antes de editar: git status limpio, HEAD = BaseSha = remoto, blob de la tabla d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2.",
+    "(2) RD-INV-01 (target copia la tabla desde la fuente a Contents/structural-analysis/ram-elements/, misma ruta relativa que el Link del Content, cuatro DLL intactos): prueba StructuralAnalysisPluginCommandGuardTests.ElTargetDelBundleCopiaLaTablaDesdeSuFuenteALaMismaRutaRelativaQueLaCompilacion (lee el XML del proyecto); ademas el bundle GREEN publicado contiene la tabla con SHA-256 igual a la fuente.",
+    "(2) RD-INV-02 (verificador fail-closed: ruta exacta, presencia, SHA-256 contra -SectionMapSourcePath, mensajes existentes intactos): prueba StructuralAnalysisPluginCommandGuardTests.ElVerificadorDelBundleAdmiteSoloLaRutaDeLaTablaYExigeSuIdentidadConLaFuente y los casos del harness tabla-ausente, tabla-modificada, tabla-ruta-no-autorizada y tabla-archivo-extra; los nueve negativos previos siguen pasando sin cambios.",
+    "(2) RD-INV-03 (harness: valido con tabla + cuatro negativos nuevos, nueve previos conservados, solo copias en su carpeta temporal, recuento real): prueba StructuralAnalysisPluginCommandGuardTests.ElHarnessDelVerificadorCubreLaTablaConElValidoYCuatroNegativos y la salida del harness GREEN: 14 casos superados (1 valido + 13 negativos).",
+    "(2) RD-INV-04 (solo se sustituye LaTablaNoViajaEnElPaqueteDelAutoloader_NiElDestinoDelPaqueteSeToca por tres pruebas positivas; el resto del archivo intacto): git diff de StructuralAnalysisPluginCommandGuardTests.cs entre BaseSha y RedSha; el filtro GREEN pasa 1797/1797 (1795 previas + 2 netas de la sustitucion de 1 por 3).",
+    "(2) RD-INV-05 (blob de la tabla sin cambio, ningun .cs de src/, tools/, assets/, eng/ ni .github/ cambia): git rev-parse CurrentSha:assets/structural-analysis/ram-elements/section-material-map.json = d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2; git diff --name-only BaseSha..CurrentSha lista solo los siete archivos del alcance.",
+    "(2) RD-INV-06 (documentacion): git diff de README.md, docs/guias/despliegue.md y docs/guias/interoperabilidad-ram-elements.md; solo se retira la viñeta de limitacion CD-I65-F4-10 y se actualiza la ubicacion de la tabla; las demas limitaciones de la seccion 11 quedan literalmente.",
+    "(2) RD-INV-07 y forma RED/GREEN: git diff --name-only BaseSha..RedSha = deploy/test-verify-bundle.ps1 y tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs; git diff --name-only RedSha..CurrentSha = README.md, deploy/verify-bundle.ps1, docs/guias/despliegue.md, docs/guias/interoperabilidad-ram-elements.md, src/RackCad.Plugin/RackCad.Plugin.csproj (sin pruebas ni harness).",
+    "(3) RED, build-bundle.ps1 sobre el bundle de BaseSha (target y verificador sin cambios): codigo 0; resumen: 'OK: bundle verificado (153 comprobaciones)' con 24 archivos y sin tabla. RED, test-verify-bundle.ps1 sobre ese bundle: codigo 1; 'Harness del verificador fallido. FALLO [valido]: el bundle fuente no contiene la tabla de secciones y materiales en Contents/structural-analysis/ram-elements/section-material-map.json'.",
+    "(3) GREEN, build-bundle.ps1: codigo 0; resumen: 'OK: bundle verificado (158 comprobaciones). DLL identicos al publish y catalogos identicos a assets/catalogs y tabla de secciones y materiales identica a su fuente aprobada (SHA-256); solo archivos RackCad y datos permitidos; cero DLL Autodesk.' GREEN, test-verify-bundle.ps1: codigo 0; 'OK: harness del verificador - 14 casos superados (1 valido + 13 negativos).' con los casos tabla-ausente (Falta la tabla de secciones y materiales en el bundle), tabla-modificada (Tabla de secciones y materiales modificada respecto a la fuente aprobada), tabla-ruta-no-autorizada y tabla-archivo-extra (Archivo no autorizado en el bundle), cada uno rechazado con exit 1.",
+    "(4) Inventario del bundle GREEN (25 archivos; sha256  ruta): 1d632563abe50d3f85856078e1524b294ae91cd03ba1df1824e992af346dd86b Contents/catalogs/structural-sections-manifest.json; 23536e17ecfe2304b0ce5f07cb328afd0c1a8373d4ca59c40fcda9d80b37ab62 Contents/catalogs/base-plates.csv; 25f184187e21ed5f36faff11b1ffe3b4038e8666cae663d9f34e74f6acec6d18 PackageContents.xml; 474c67e1623786809cb28d10a1242a96b00463bb3a186656daed019d05a08eac Contents/catalogs/seguridad.csv; 564464ab608dc68c78cf6a6c9746033b3a155c61f976d9aa6676c63cfac2f697 Contents/RackCad.Domain.dll; 57ca9be5816960a5d9f4a180e89a5889e9be7a1b4aa56a5ca4d42cab8e92ed8e Contents/catalogs/flow-bed-profiles.csv; 6b5077003388735502febac99281266b37c3688faeea2d2ab1bdb399e44bf2fc Contents/catalogs/structural-sections-l.csv; 761711dcf592e0d5b90a62f963ba2d3c1fb86039eeb17b75ec3a28a55812eb8f Contents/RackCad.UI.dll; 7b4b7677a8f307499892c97d74619590877c865617ebcca313204b2fda762874 Contents/catalogs/blocks.csv; 7b4cb158af88769bd90ab9ce2ce3d21010edb7f7fb334e591917b6f5342e6d7d Contents/catalogs/structural-section-status.csv; 87a8b4511bdf633ce6b0a7ddb1f1fe82838ac7543297b176c6ec9bfd198df879 Contents/RackCad.Application.dll; 8e5f2e9c22eeb54210ce49c8ba145ec5a102de430a533244e37d5d0da65f5ee1 Contents/catalogs/secciones.csv; 903e12147ccdda4ae45e1cca27db6f93597d78fa101bba0a8bd33626919c2081 Contents/catalogs/mensulas.csv; 9259f672cddc6855e321e0483f819f5875967145c6f218571f3d8e1fdce78f1e Contents/catalogs/structural-sections-w.csv; 945931d2cab5a7df322e3b329ce4cf7f55586535d8a3a4824a4efa6bed44715e Contents/catalogs/header-templates.json; ad2ac2302fc92d5c956ff1fd2f94c2ac91338609166a3fa74abfaee03298b385 Contents/catalogs/structural-section-sources.csv; bad65d2ffc652dbb23f003406de7125814dff85fcd1a85bc3787b15d51041075 Contents/catalogs/views.csv; c081cd93f95a1bbd5f701c6975d18803aa6cc2e798d94b5038544383e8cf3707 Contents/catalogs/structural-sections-s.csv; c9a27a10f87ca6bb5a615a39fed070bb75949150f43b9dcfbc44c19e6d847929 Contents/catalogs/connection-layout.csv; cd4df19aff84fb5f71be7ba83f71764e5ab2418e072a504a4681bd4a48bfe473 Contents/catalogs/connection-points.csv; e42871a455ad2f78e9c9550e6b9d65431b678bb6cc867c841ec4e6bbef66f63e Contents/catalogs/structural-sections-c.csv; eeb44e182b13808bff376649211a9408e3fee7ed91eef102ef4ede2a9d40d189 Contents/catalogs/defaults.json; f70879b2849760b068fa216f34d3817625d6b6e285c8ab1b0d61d1ccf33d4093 Contents/RackCad.Plugin.dll; fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619 Contents/structural-analysis/ram-elements/section-material-map.json; fdc8e3e436dfa33421d0ed8a06f8cac7b82c232f997802b6a95cc25498443f0d Contents/catalogs/structural-sections-hss-rect.csv. Comparacion SHA-256 de la tabla (sha256sum): assets/structural-analysis/ram-elements/section-material-map.json del worktree = fc3d91464ac48a15730661efcd50ecb770114559c68bdefae67e0816972db619 = la del bundle GREEN (iguales). Respecto al bundle de BaseSha son 24 archivos mas la tabla.",
+    "(5) dotnet build RackCad.sln -c Release: codigo 0, 0 errores, 63 advertencias en el resumen final (104 lineas de advertencia contando duplicados entre proyectos): MSB3277 (conflicto de referencias de AutoCAD en el Plugin, previo al diff) y xUnit1026/2000/2013/2017/2029/2031 en archivos de pruebas ajenos al diff; ninguna advertencia CS, NU ni NETSDK, y ninguna apunta a RackCad.Plugin.csproj ni a StructuralAnalysisPluginCommandGuardTests.cs.",
+    "(6) Pruebas que pasan ya en el RED: ElHarnessDelVerificadorCubreLaTablaConElValidoYCuatroNegativos (lee el texto del harness, que cambia en el mismo commit RED) y las 1795 previas; fallan por asercion en el RED solo ElTargetDelBundleCopiaLaTablaDesdeSuFuenteALaMismaRutaRelativaQueLaCompilacion (Assert.Single sobre una coleccion vacia: el target aun no tiene el elemento de la tabla) y ElVerificadorDelBundleAdmiteSoloLaRutaDeLaTablaYExigeSuIdentidadConLaFuente (el verificador aun no nombra la tabla). Seleccion RED 1797 (>= 1795), compilacion sin errores.",
+    "TreeSha es null en todas las corridas porque se ejecutaron sobre el arbol de trabajo antes de confirmar el commit correspondiente. Las corridas push de CI de los SHA RED y GREEN las recoge el Principal; no se esperaron."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "Las corridas locales se hicieron sobre el arbol de trabajo sin confirmar (TreeSha null); la verificacion por SHA exacto depende de las corridas push del Principal.",
+    "Las pruebas C# no ejecutan pwsh: la admision y el rechazo reales del verificador los observa el harness (job del Plugin), no el job Core."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "El Controller verifica mecanicamente el diff BaseSha..CurrentSha contra el alcance, el blob de la tabla y la entrega; el Principal recoge las corridas push de los SHA RED y GREEN.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

@@ -1,0 +1,59 @@
+I-65 — OWNER DISPOSITION
+F4 Engineering Validation and Host Readiness
+He revisado la preparación publicada en `71baf43b` y `27dd4778`, ambas con CI satisfactoria.
+Autorizo avanzar en las condiciones previas de validación de F4, sin autorizar todavía la primera corrida en RAM Elements.
+1. Verificación de ingeniería
+OD-F4-02: el Owner asumirá provisionalmente la verificación de las dos filas de sección y material.
+Prepara la hoja existente para su revisión, con las fuentes independientes y las diferencias visibles.
+No atribuyas firma, fecha de aprobación ni validación final sin mi confirmación expresa.
+OD-F4-03: acepto utilizar la base de RAM como representación de las propiedades que consume el adaptador, contrastadas con fuentes de ingeniería externas.
+DIF-01: aceptada exclusivamente como diferencia informativa en el piloto sin peso propio. La tolerancia permanece intacta.
+DIF-02: pendiente de verificar ν o G contra una fuente técnica adecuada.
+DIF-03: la base Montilla no se utilizará como fuente de autoridad para el piloto mientras no se identifique.
+DIF-04: confirmar la edición del catálogo de RAM antes de verificar las filas.
+2. Actualización de las filas
+OD-F4-12 = CONDITIONAL APPROVAL.
+Autorizo preparar la modificación de las filas `proposed` a `verified`, pero no ejecutarla hasta que haya validado expresamente sus propiedades y fuentes.
+Cuando se cumpla esa condición, presenta el contrato acotado, las rutas y el presupuesto necesario.
+No reinicies contadores sin autorización.
+3. Smoke de AutoCAD
+OD-F4-13 = PREPARATION APPROVED.
+Prepara la solicitud formal de ACK + RELEASE conforme a las condiciones actuales de I-52 e I-64.
+No abras AutoCAD, no ejecutes NETLOAD y no modifiques el perfil de seguridad sin la liberación correspondiente.
+La prueba deberá:
+
+* Utilizar el DLL exacto de un SHA identificado.
+* Comprobar el fallo cerrado con las filas aún `proposed`.
+* Registrar la salida visible y ausencia de paquete generado.
+* Capturar el perfil previo y realizar la comparación POST.
+* Respetar la ventana de host de I-52 e I-64.
+
+Si no existe una herramienta aprobada para las capturas y la comparación del perfil, identifica el procedimiento manual de solo lectura que puede utilizarse sin desarrollar infraestructura nueva.
+4. Combinaciones — OD-F4-14
+No autorizo cambiar el criterio de aceptación para convertir automáticamente `INCOMPLETE` en `PASS`.
+Revisa el Freeze, D-11, los requisitos de OV-I65-01 y el alcance de la referencia manual.
+Determina si las combinaciones:
+
+* Están explícitamente fuera del modelo piloto; o
+* Existen, pero no pueden verificarse con las interfaces disponibles.
+
+Presenta una disposición contractual concreta que distinga ambos casos.
+No cambies código ni contratos congelados durante esta revisión.
+5. Entregable
+Presenta únicamente:
+
+1. Hoja de ingeniería lista para mi validación.
+2. Fuentes y valores aún por confirmar.
+3. Solicitud de liberación de host.
+4. Procedimiento de preflight y POST de AutoCAD.
+5. Resolución propuesta para OD-F4-14.
+6. Contrato y presupuesto de la futura actualización a `verified`.
+7. Secuencia mínima para llegar a la primera corrida real en RAM.
+
+No repitas Discovery, F1, F3 ni las implementaciones verificadas de F4.
+ENGINEERING PREPARATION = APPROVED.
+MAPPING UPDATE = PENDING ENGINEERING APPROVAL.
+AUTOCAD EXECUTION = NOT AUTHORIZED.
+RAM EXECUTION = NOT AUTHORIZED.
+F4 GATE PASS = NOT AUTHORIZED.
+Continúa únicamente con estas actividades y detente antes de cualquier cambio de producción o ejecución sobre el host.

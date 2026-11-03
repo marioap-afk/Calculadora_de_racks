@@ -1,0 +1,173 @@
+"""I-65 segundo smoke: pruebas positivas y negativas de V-11 (validador v2). Solo LEE el paquete real; trabaja sobre copias.
+
+Uso: python -I test_v11_validator.py <validador-v2> <validador-v1> <expected-inputs.json> <raiz-nueva-de-pruebas> <salida.json>
+Cada caso copia los tres archivos del paquete real a <raiz>/<caso>/..., reubica la carga util con la MISMA serializacion que el
+producto (JSON -> Escape de literal de Python, RamBuildScriptTemplate.Escape) y aplica UNA mutacion. Ejecuta el validador v2 como
+subproceso y lee el resultado de V-11. Positivos: V-11 PASS. Negativos: V-11 FAIL. N11 comprueba ademas que el script no se ejecuto.
+"""
+import ast
+import hashlib
+import json
+import os
+import subprocess
+import sys
+
+v2, v1, expected, root, out = sys.argv[1:6]
+REAL = "D:\\r65-smoke\\51fc82f1\\run-R20261016T1918Z\\pkg-01"
+NAMES = ["manifest.json", "rackcad-ram-build.py", "structural-loads.json"]
+real_bytes = {n: open(os.path.join(REAL, n), "rb").read() for n in NAMES}
+real_sha_before = {n: hashlib.sha256(b).hexdigest() for n, b in real_bytes.items()}
+os.makedirs(root)  # nueva; falla si existe
+os.makedirs(os.path.join(root, "reports"))
+script0 = real_bytes["rackcad-ram-build.py"].decode("utf-8")
+manifest0 = real_bytes["manifest.json"].decode("utf-8")
+lines0 = script0.split("\n")
+PREFIX = 'PAYLOAD = "'
+idx = [i for i, line in enumerate(lines0) if line.startswith(PREFIX)]
+assert len(idx) == 1, idx
+IDX = idx[0]
+json0 = ast.literal_eval(lines0[IDX][len("PAYLOAD = "):])  # texto JSON de la carga util del paquete real
+folder0 = json.loads(json0)["packageFolder"]
+assert folder0 == REAL, folder0
+fp0 = json.loads(json0)["analysisInputFingerprint"]
+
+
+def py_escape(text):
+    """Igual que RamBuildScriptTemplate.Escape: primero la barra invertida, despues la comilla."""
+    return text.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def jpath(path):
+    """Una ruta como aparece dentro de un texto JSON (sin las comillas)."""
+    return json.dumps(path)[1:-1]
+
+
+def build_script(json_text=None, line=None, extra=None, replace=None):
+    lines = list(lines0)
+    lines[IDX] = line if line is not None else PREFIX + py_escape(json_text) + '"'
+    text = "\n".join(lines)
+    if replace:
+        assert text.count(replace[0]) == 1, replace[0]
+        text = text.replace(replace[0], replace[1])
+    if extra:
+        text = text.replace(lines[IDX] + "\n", lines[IDX] + "\n" + extra + "\n", 1)
+    return text
+
+
+def relocate_json(new_folder, folder_in_payload=None):
+    target = folder_in_payload if folder_in_payload is not None else new_folder
+    assert json0.count(jpath(folder0)) == 1
+    return json0.replace(jpath(folder0), jpath(target))
+
+
+def relocate_manifest(new_folder):
+    assert manifest0.count(jpath(folder0)) == 1
+    return manifest0.replace(jpath(folder0), jpath(new_folder))
+
+
+def write_pkg(pkg_dir, script_text, manifest_text):
+    os.makedirs(pkg_dir)
+    open(os.path.join(pkg_dir, "rackcad-ram-build.py"), "wb").write(script_text.encode("utf-8"))
+    open(os.path.join(pkg_dir, "manifest.json"), "wb").write(manifest_text.encode("utf-8"))
+    open(os.path.join(pkg_dir, "structural-loads.json"), "wb").write(real_bytes["structural-loads.json"])
+
+
+def case_dir(name):
+    return os.path.join(root, name, "pkg-01")
+
+
+cases = []
+
+
+def add(name, kind, description, script_text, manifest_text, pkg_arg, typed, physical=None):
+    write_pkg(physical or pkg_arg, script_text, manifest_text)
+    cases.append({"case": name, "kind": kind, "description": description, "pkg": pkg_arg, "typed": typed})
+
+
+# Positivos
+p = case_dir("P01-reubicado")
+add("P01-reubicado", "positivo", "copia exacta reubicada con la misma serializacion del producto", build_script(relocate_json(p)), relocate_manifest(p), p, p)
+p = os.path.join(root, "P02 carpeta \u00f1 espacio", "pkg-01")
+add("P02-espacio-y-no-ascii", "positivo", "ruta con espacio y n con tilde (escape \\u00f1 en el JSON)", build_script(relocate_json(p)), relocate_manifest(p), p, p)
+
+# Negativos (cada uno parte de la reubicacion valida de P01 y cambia UNA cosa)
+p = case_dir("N01-ruta-alterada")
+add("N01-ruta-alterada", "negativo", "carga util apunta a pkg-02", build_script(relocate_json(p, p[:-2] + "02")), relocate_manifest(p), p, p)
+p = case_dir("N02-separadores-barra")
+add("N02-separadores-barra", "negativo", "carga util con '/' en lugar de '\\'", build_script(relocate_json(p, p.replace("\\", "/"))), relocate_manifest(p), p, p)
+p = case_dir("N03-escape-menos-uno")
+raw_json = relocate_json(p).replace(jpath(p), p)  # capa JSON ausente: la ruta va sin escapar dentro del JSON
+add("N03-escape-menos-uno", "negativo", "falta la capa de escape JSON (un nivel de escape)", build_script(raw_json), relocate_manifest(p), p, p)
+p = case_dir("N04-escape-menos-dos")
+raw_json = relocate_json(p).replace(jpath(p), p)
+add("N04-escape-menos-dos", "negativo", "sin ningun escape de la barra invertida (solo comillas)",
+    build_script(line=PREFIX + raw_json.replace('"', '\\"') + '"'), relocate_manifest(p), p, p)
+p = case_dir("N05-escape-mas-uno")
+add("N05-escape-mas-uno", "negativo", "doble capa JSON (un nivel de escape de mas)",
+    build_script(relocate_json(p).replace(jpath(p), jpath(jpath(p)))), relocate_manifest(p), p, p)
+p = case_dir("N06-mayusculas")
+add("N06-mayusculas", "negativo", "misma ruta con 'R65' en mayuscula (mismo destino en disco)", build_script(relocate_json(p, p.replace("r65-smoke", "R65-smoke"))), relocate_manifest(p), p, p)
+p = case_dir("N07-barra-final")
+add("N07-barra-final", "negativo", "barra invertida final", build_script(relocate_json(p, p + "\\")), relocate_manifest(p), p, p)
+p = case_dir("N08-separador-doble")
+add("N08-separador-doble", "negativo", "separador doble interior", build_script(relocate_json(p, p.replace("\\51fc82f1", "\\\\51fc82f1"))), relocate_manifest(p), p, p)
+p = case_dir("N09-manifiesto-alterado")
+add("N09-manifiesto-alterado", "negativo", "carga util correcta; manifiesto apunta a pkg-02", build_script(relocate_json(p)), relocate_manifest(p[:-2] + "02"), p, p)
+p = case_dir("N10-destino-real-distinto")
+moved = os.path.join(root, "N10-destino-real-distinto", "movido", "pkg-01")
+add("N10-destino-real-distinto", "negativo", "carga util, manifiesto y tecleada = ruta A; el paquete esta en la ruta B",
+    build_script(relocate_json(p)), relocate_manifest(p), moved, p, physical=moved)
+p = case_dir("N11-payload-no-literal")
+sentinel = os.path.join(root, "N11-payload-no-literal", "SE-EJECUTO.txt")
+add("N11-payload-no-literal", "negativo", "PAYLOAD es una expresion con efecto lateral (no debe ejecutarse)",
+    build_script(line="PAYLOAD = __import__(\"pathlib\").Path(" + repr(sentinel) + ").write_text(\"ejecutado\") or \"{}\""), relocate_manifest(p), p, p)
+p = case_dir("N12-payload-reasignado")
+add("N12-payload-reasignado", "negativo", "segunda asignacion de PAYLOAD con otra carpeta",
+    build_script(relocate_json(p), extra=PREFIX + py_escape(relocate_json(p, p[:-2] + "02")) + '"'), relocate_manifest(p), p, p)
+p = case_dir("N13-lectura-distinta")
+add("N13-lectura-distinta", "negativo", "el script transforma PAYLOAD antes de json.loads",
+    build_script(relocate_json(p), replace=("data = json.loads(PAYLOAD)", "data = json.loads(PAYLOAD.replace(\"pkg-01\", \"pkg-02\"))")), relocate_manifest(p), p, p)
+p = case_dir("N14-huella-alterada")
+fp_bad = ("0" if fp0[0] != "0" else "1") + fp0[1:]
+add("N14-huella-alterada", "negativo", "huella de la carga util distinta del manifiesto", build_script(relocate_json(p).replace(fp0, fp_bad)), relocate_manifest(p), p, p)
+p = case_dir("N15-caracter-parecido")
+add("N15-caracter-parecido", "negativo", "guion U+2010 en lugar de '-' en la carga util", build_script(relocate_json(p, p.replace("r65-smoke", "r65\u2010smoke"))), relocate_manifest(p), p, p)
+p = case_dir("N16-tecleada-distinta")
+add("N16-tecleada-distinta", "negativo", "carga util y manifiesto correctos; la carpeta tecleada usa '/'", build_script(relocate_json(p)), relocate_manifest(p), p, p.replace("\\", "/"))
+
+results, ok_all = [], True
+for c in cases:
+    rep = os.path.join(root, "reports", c["case"] + "-v2.json")
+    proc = subprocess.run([sys.executable, "-I", v2, c["pkg"], expected, c["typed"], rep], capture_output=True, text=True, encoding="utf-8")
+    r = json.load(open(rep, encoding="utf-8"))
+    v11 = [x for x in r["checks"] if x["id"] == "V-11"][0]
+    want = "PASS" if c["kind"] == "positivo" else "FAIL"
+    good = v11["result"] == want
+    if c["case"].startswith("N11"):
+        good = good and not os.path.exists(sentinel)
+        c["sentinelAbsent"] = not os.path.exists(sentinel)
+    ok_all &= good
+    results.append(dict(c, expectedV11=want, observedV11=v11["result"], ok=good, v11Detail=v11["detail"], validatorExit=proc.returncode))
+    print("%-28s %-9s V-11 esperado=%s observado=%s %s" % (c["case"], c["kind"], want, v11["result"], "OK" if good else "**NO**"))
+
+# Reproduccion del defecto original: el validador v1 sobre la copia reubicada P01 (debe dar V-11 FAIL)
+rep = os.path.join(root, "reports", "P01-reubicado-v1.json")
+p = case_dir("P01-reubicado")
+subprocess.run([sys.executable, "-I", v1, p, expected, p, rep], capture_output=True, text=True, encoding="utf-8")
+r1 = json.load(open(rep, encoding="utf-8"))
+v1_v11 = [x for x in r1["checks"] if x["id"] == "V-11"][0]
+print("%-28s %-9s V-11 con el validador v1=%s (defecto original reproducido: %s)" % ("P01-reubicado", "control", v1_v11["result"], v1_v11["result"] == "FAIL"))
+ok_all &= v1_v11["result"] == "FAIL"
+
+real_sha_after = {n: hashlib.sha256(open(os.path.join(REAL, n), "rb").read()).hexdigest() for n in NAMES}
+ok_all &= real_sha_after == real_sha_before
+summary = {"result": "PASS" if ok_all else "FAIL", "validatorV2Sha256": hashlib.sha256(open(v2, "rb").read()).hexdigest(),
+           "validatorV1Sha256": hashlib.sha256(open(v1, "rb").read()).hexdigest(), "root": root,
+           "positives": sum(1 for x in results if x["kind"] == "positivo"), "negatives": sum(1 for x in results if x["kind"] == "negativo"),
+           "v1OnRelocatedCopy": v1_v11["result"], "realPackageUnchanged": real_sha_after == real_sha_before,
+           "realPackageSha256": real_sha_after, "cases": results}
+with open(out, "x", encoding="utf-8", newline="\n") as fh:
+    json.dump(summary, fh, ensure_ascii=False, indent=1)
+    fh.write("\n")
+print("RESULTADO", summary["result"], "| positivos", summary["positives"], "| negativos", summary["negatives"],
+      "| paquete real sin cambios", summary["realPackageUnchanged"])

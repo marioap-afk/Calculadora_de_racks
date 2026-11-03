@@ -1,0 +1,85 @@
+I-65 — OWNER AUTHORIZATION
+F4 Final Conformance Review and Gate Closure
+He revisado el resultado de W2 publicado en `bbe113f5`, con CI 4/4 satisfactorio.
+1. Decisión del Owner
+W2 = ACCEPTED / PASS.
+Reconozco los resultados documentados de OV-I65-01 y OV-I65-04 a OV-I65-07, así como la matriz de validación final formada por W1 y W2.
+F4 FINAL CONFORMANCE REVIEW = AUTHORIZED.
+Autorizo solicitar la revisión independiente del Architect y realizar la determinación final de cierre de F4 conforme a Workflow V2, INITIATIVE_LIFECYCLE e I-61.
+La aceptación de W2 no equivale automáticamente a GATE PASS.
+2. Revisión independiente
+Solicita al Architect una revisión de solo lectura de la evidencia completa de F4 sobre el Candidato declarado:
+`5a5ca57731ebbbbc41ed4f702698709d5e128a86`
+Debe comprobar:
+
+* Freeze y ADR-0050 intactos.
+* Identidad del Candidato, DLL y tabla verificada.
+* Resultado de W1.
+* Resultado de W2.
+* OV-I65-01 y OV-I65-03..07.
+* Integridad de paquetes, readbacks y volcados.
+* Comparación contra el volcado manual custodiado de P2.
+* CMB-3, DIF-01 y las limitaciones declaradas.
+* Rechazos seguros de modelos incompatibles.
+* Ausencia de cambios de producto después del SHA del Candidato.
+* Cumplimiento de las condiciones de aceptación de F4.
+
+Distingue explícitamente PASS, FAIL, INCOMPLETE y NOT_EVALUATED.
+No conviertas limitaciones documentadas en resultados evaluados.
+3. Incidencias aceptadas
+Conserva las incidencias operativas registradas en W1 y W2.
+No considero que los elementos parciales de OV-05 invaliden automáticamente la prueba, porque el contrato exige FAILED — DISCARD MODEL y el modelo fue descartado sin guardar.
+Para OV-04 y OV-07 debe mantenerse la evidencia de rechazo antes de escribir elementos.
+No elimines ni reescribas las salidas históricas.
+4. Limitaciones del hito
+Mantén expresamente:
+
+* La equivalencia de transferencia no es validación de resistencia estructural.
+* Las propiedades de sección y material dependen de D-09.
+* El peso propio permanece excluido.
+* DIF-01 sigue siendo informativa.
+* La edición formal del catálogo RAM es UNKNOWN.
+* La estrategia A del volcado manual solo vale para F4.
+* La lectura de commits documentales posteriores solo vale para este Candidato de hito.
+* El conflicto de censos con I-64 continúa pendiente para integración.
+
+5. Determinación del Gate
+Si el Architect concluye CONFORMANT sin hallazgos REQUIRED abiertos:
+
+1. Revisa todos los criterios de cierre de F4.
+2. Verifica el árbol limpio y el estado de la rama.
+3. Confirma que no hay cambios materiales desde el SHA del Candidato.
+4. Comprueba CI y pruebas sobre el SHA correspondiente.
+5. Registra la conformidad del Coordinator.
+6. Emite GATE PASS únicamente si el ciclo de vida lo permite.
+7. Custodia la evidencia y actualiza el estado de I-65.
+
+Si falta algún requisito, registra NO-GO o BLOCKED con el motivo exacto. No declares PASS por inferencia.
+6. Restricciones
+No modificar código de producto.
+No abrir AutoCAD.
+No ejecutar RAM Elements.
+No repetir W1 ni W2.
+No modificar paquetes o evidencia histórica.
+No cambiar el Freeze, ADR-0050 ni las tolerancias.
+No iniciar F5, F6 o F7.
+No declarar READY final ni integrar la iniciativa.
+7. Entregable
+Presenta:
+
+1. Veredicto del Architect.
+2. Matriz final OV-I65-01 y 03..07.
+3. Resultado del control de integridad.
+4. Estado de CI y SHA de cierre.
+5. Disposiciones de hallazgos residuales.
+6. Determinación GATE PASS / NO-GO de F4.
+7. Riesgos y limitaciones para fases posteriores.
+8. Recomendación para el siguiente gate.
+
+W1 = PASS.
+W2 = PASS.
+F4 FINAL REVIEW = AUTHORIZED.
+F4 GATE PASS = CONDITIONAL ON CONFORMANCE.
+F5 IMPLEMENTATION = NO.
+FINAL READY = NO.
+Continúa con la revisión final y detente al emitir el informe de cierre de F4.

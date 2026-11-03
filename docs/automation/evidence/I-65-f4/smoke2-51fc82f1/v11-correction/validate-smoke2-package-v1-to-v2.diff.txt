@@ -1,0 +1,115 @@
+--- validate-smoke2-package.py (v1, 8b19a9c7)
++++ validate-smoke2-package-v2.py (v2, 1f56b8cb)
+@@ -1,6 +1,12 @@
+-"""I-65 segundo smoke: validacion de SOLO LECTURA del paquete generado por RACKRAMPAQUETE.
++"""I-65 segundo smoke: validacion de SOLO LECTURA del paquete generado por RACKRAMPAQUETE. Version 2 (correccion de V-11).
+ 
+-Uso: python -I validate_smoke2_package.py <carpeta-paquete> <expected-inputs.json> <carpeta-tecleada> <salida.json>
++Cambio frente a la version 1 (validate-smoke2-package.py.txt, SHA-256 8b19a9c7...): solo V-11 y la escritura exclusiva del informe.
++V-11 ya no busca la carpeta como texto: recupera la carpeta EFECTIVA deshaciendo la misma serializacion que usa el producto
++(RamBuildScriptTemplate: JSON de la carga util -> Escape de literal de Python -> PAYLOAD = "..."; el script la lee con
++json.loads(PAYLOAD)). Analiza el script con ast (nunca lo ejecuta), exige una unica asignacion de PAYLOAD a un literal de cadena y la
++lectura json.loads(PAYLOAD), y compara la carpeta efectiva, sin normalizar, con la del manifiesto, con la tecleada y con la ruta real.
++
++Uso: python -I validate_smoke2_package_v2.py <carpeta-paquete> <expected-inputs.json> <carpeta-tecleada> <salida.json>
+   <carpeta-paquete>  carpeta publicada por el comando (la que se busca en disco).
+   <carpeta-tecleada> el texto EXACTO que se tecleo en "Carpeta NUEVA del paquete" (ruta Windows con barras invertidas).
+ Compara el paquete REAL con sus ENTRADAS EFECTIVAS (tabla distribuida junto al DLL y archivo de cargas aprobado, ambos con SHA-256
+@@ -8,6 +14,7 @@
+ (A65-F4D-07). Hashes de bytes y comparaciones normalizadas (fin de linea) se registran por separado (A65-F4D-01). Comprueba que
+ verifiedBy llega al manifiesto como UTF-8 sin sustituciones (A65-F4D-10). No escribe nada salvo el informe de salida.
+ """
++import ast
+ import hashlib
+ import json
+ import os
+@@ -30,6 +37,60 @@
+ 
+ 
+ HEX64 = re.compile(r"^[0-9a-f]{64}$")
++WINDOWS_ABSOLUTE = re.compile(r"^(?:[A-Za-z]:\\|\\\\[^\\/]+\\[^\\/]+)")
++
++
++def effective_payload(script_text):
++    """La carga util como la lee el script, sin ejecutarlo: literal de Python (capa 1) y despues json.loads (capa 2)."""
++    tree = ast.parse(script_text)
++    stores = [n for n in ast.walk(tree) if isinstance(n, ast.Name) and n.id == "PAYLOAD" and isinstance(n.ctx, (ast.Store, ast.Del))]
++    assigns = [n for n in tree.body if isinstance(n, ast.Assign) and len(n.targets) == 1
++               and isinstance(n.targets[0], ast.Name) and n.targets[0].id == "PAYLOAD"]
++    if len(stores) != 1 or len(assigns) != 1:
++        raise ValueError("PAYLOAD debe asignarse exactamente una vez en el nivel superior (asignaciones=%d)" % len(stores))
++    value = assigns[0].value
++    if not (isinstance(value, ast.Constant) and isinstance(value.value, str)):
++        raise ValueError("PAYLOAD no es un literal de cadena (%s)" % type(value).__name__)
++    reads = [n for n in ast.walk(tree) if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == "loads"
++             and isinstance(n.func.value, ast.Name) and n.func.value.id == "json" and len(n.args) == 1 and not n.keywords
++             and isinstance(n.args[0], ast.Name) and n.args[0].id == "PAYLOAD"]
++    uses = [n for n in ast.walk(tree) if isinstance(n, ast.Name) and n.id == "PAYLOAD" and isinstance(n.ctx, ast.Load)]
++    if len(reads) != 1 or len(uses) != 1:
++        raise ValueError("el script no lee PAYLOAD exactamente una vez como json.loads(PAYLOAD) (lecturas=%d, usos=%d)" % (len(reads), len(uses)))
++    data = json.loads(value.value)
++    if not isinstance(data, dict):
++        raise ValueError("la carga util no es un objeto JSON")
++    return data
++
++
++def check_v11(script_text, manifest_folder, typed_folder, package_arg, fingerprint):
++    """V-11: la carpeta efectiva del script = carpeta del manifiesto = carpeta tecleada = ruta real del paquete, sin normalizar."""
++    try:
++        data = effective_payload(script_text)
++    except Exception as ex:  # noqa: BLE001
++        return False, "carga util no recuperable sin ejecutar el script: %r" % ex
++    folder = data.get("packageFolder")
++    real = os.path.abspath(package_arg)
++    try:
++        same_destination = isinstance(folder, str) and os.path.isdir(folder) and os.path.samefile(folder, package_arg)
++    except OSError:
++        same_destination = False
++    parts = {
++        "carpeta efectiva es texto": isinstance(folder, str),
++        "== carpeta del manifiesto": folder == manifest_folder,
++        "== carpeta tecleada": folder == typed_folder,
++        "== ruta real del paquete (sin normalizar)": folder == real,
++        "mismo destino en disco": same_destination,
++        "ruta Windows absoluta": isinstance(folder, str) and WINDOWS_ABSOLUTE.match(folder) is not None,
++        "sin '/' ni caracteres de control": isinstance(folder, str) and "/" not in folder and all(ord(c) >= 32 for c in folder),
++        "forma canonica (sin separadores dobles, finales ni '..')": isinstance(folder, str) and os.path.normpath(folder) == folder,
++        "huella efectiva == manifiesto": data.get("analysisInputFingerprint") == fingerprint and HEX64.match(str(fingerprint)) is not None,
++        "huella en el texto del script": bool(fingerprint) and fingerprint in script_text,
++    }
++    failed = [k for k, ok in parts.items() if not ok]
++    detail = "carpeta efectiva=%r; manifiesto=%r; tecleada=%r; ruta real=%r; huella efectiva=%s; fallidas=%s" % (
++        folder, manifest_folder, typed_folder, real, data.get("analysisInputFingerprint"), failed or "ninguna")
++    return not failed, detail
+ 
+ # V-01 carpeta y archivos
+ exists = os.path.isdir(pkg)
+@@ -80,10 +141,12 @@
+     check("V-10", str(src.get("kind", "")).lower() == "cantilever" and src.get("stationIndex") == 0 and bool(src.get("rackId"))
+           and HEX64.match(str(src.get("sourceFingerprint", ""))) is not None and HEX64.match(fp) is not None,
+           "source=%s; analysisInputFingerprint=%s" % (src, fp))
+-    script = raw.get("rackcad-ram-build.py", b"").decode("utf-8", errors="replace")
+-    folder_json = json.dumps(typed)[1:-1]
+-    check("V-11", fp in script and (typed in script or folder_json in script),
+-          "huella de entrada embebida en el script=%s; carpeta embebida=%s" % (fp in script, typed in script or folder_json in script))
++    try:
++        script = raw.get("rackcad-ram-build.py", b"").decode("utf-8", errors="strict")
++        v11_ok, v11_detail = check_v11(script, m.get("packageFolder"), typed, pkg, fp)
++    except UnicodeDecodeError as ex:
++        v11_ok, v11_detail = False, "rackcad-ram-build.py no es UTF-8 estricto: %r" % ex
++    check("V-11", v11_ok, v11_detail)
+     rb = m.get("readback", {})
+     check("V-12", rb.get("name") == E["readbackName"] and rb.get("repeatsAnalysisInputFingerprint") is True, "readback=%s" % rb)
+     mp = m.get("mapping", {})
+@@ -124,9 +187,9 @@
+                                 "generatorVersion": src.get("generatorVersion"), "analysisInputFingerprint": fp,
+                                 "rowsSha256": mp.get("rowsSha256"), "units": tg.get("units"), "packageVersion": tg.get("packageVersion")}
+ result = "PASS" if checks and all(c["result"] == "PASS" for c in checks) else "FAIL"
+-report = {"package": pkg, "typedFolder": typed, "expectedInputs": expected_path,
++report = {"validatorVersion": 2, "package": pkg, "typedFolder": typed, "expectedInputs": expected_path,
+           "expectedInputsSha256": sha(open(expected_path, "rb").read()), "result": result, "checks": checks, "facts": facts}
+-with open(out_path, "w", encoding="utf-8", newline="\n") as fh:
++with open(out_path, "x", encoding="utf-8", newline="\n") as fh:
+     json.dump(report, fh, ensure_ascii=False, indent=1)
+     fh.write("\n")
+ print(result, sum(c["result"] == "PASS" for c in checks), "/", len(checks))

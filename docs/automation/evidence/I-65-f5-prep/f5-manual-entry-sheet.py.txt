@@ -1,0 +1,35 @@
+"""I-65 F5 (preparacion): hoja de entrada del modelo manual de OV-I65-02, INDEPENDIENTE del paquete.
+- Geometria, secciones, materiales, giros y apoyos: la hoja generada por p2_manual_entry_sheet.py desde la especificacion congelada
+  (docs/initiatives/I-65-f4-ref-cant-01-manual-procedure.md); no lee el paquete ni ningun volcado.
+- Cargas: del archivo de cargas de OV-I65-02 y de las formulas de D-10b (distancia rigida de IDL-06 + fraccion x 36 in; porcentaje del
+  miembro analitico de 42.35421884050472 in; 1 lbf = 4.4482216152605 N; 1 kgf = 9.80665 N). No usa la carga util del producto.
+- Unidades de la interfaz sin cambiar la configuracion de RAM (Ingles): cargas puntuales en kip; posicion en % del miembro.
+Uso: python -I f5_manual_entry_sheet.py <hoja-geometria.json> <ov-i65-02.loads.json> <salida.json>
+"""
+import json
+import sys
+
+geom_path, loads_path, out_path = sys.argv[1:4]
+g = json.load(open(geom_path, encoding="utf-8"))
+loads = json.load(open(loads_path, encoding="utf-8"))["loads"]
+RIGID = 6.354218840504721
+PHYS = 36.0
+ANALYTIC = 42.35421884050472
+TO_LBF = {"lbf": 1.0, "kip": 1000.0, "N": 1.0 / 4.4482216152605, "kN": 1000.0 / 4.4482216152605, "kgf": 9.80665 / 4.4482216152605}
+member_of = {m["desc"]: m["m"] for m in g["members"]}
+rows = []
+for ld in loads:
+    assert ld["direction"] == "-Z" and ld["target"]["side"] == "PositiveY" and ld["positionBasis"] == "physicalArmFraction"
+    desc = "ARM.%d.PositiveY" % ld["target"]["level"]
+    lbf = ld["magnitude"] * TO_LBF[ld["unit"]]
+    distance = RIGID + ld["position"] * PHYS
+    pct = 100.0 * distance / ANALYTIC
+    rows.append({"id": ld["id"], "member_desc": desc, "member": member_of[desc], "fraction": ld["position"],
+                 "magnitude": "%s %s" % (ld["magnitude"], ld["unit"]), "value_lbf": -lbf, "value_kip": "%.9f" % (-lbf / 1000.0),
+                 "distance_in": distance, "percent": "%.6f" % pct, "direction": "global Y negativo (vertical de RAM, D-04)"})
+out = {"source": "docs/initiatives/I-65-f4-ref-cant-01-manual-procedure.md (geometria) + docs/automation/evidence/I-65-f5-prep/ov-i65-02.loads.json (cargas)",
+       "units_interface": g["units_interface"], "restraints": g["restraints"], "releases": g["releases"],
+       "loadCase": g["loadCase"], "nodes": g["nodes"], "members": g["members"], "loads": rows}
+json.dump(out, open(out_path, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
+for r in rows:
+    print(r["id"], r["member_desc"], "member", r["member"], r["value_kip"], "kip @", r["percent"], "%")

@@ -1,0 +1,69 @@
+I-65 — OWNER DISPOSITION
+M-05c Acceptance / OD-F4-14 Resolution / Engineering Next Steps
+He revisado los resultados de M-05c publicados en `e88af4ed`, con CI 38499458179 en PASS 4/4.
+1. Aceptación de M-05c
+M-05c = ACCEPTED.
+Reconozco como verificada la lectura de combinaciones para la versión y los componentes exactos ensayados:
+
+* Ejecutable de RAM Elements identificado por su SHA-256.
+* API `ramelements` 0.1.0.
+* Script de volcado del adaptador 1.0.0.
+
+Esta aceptación no se extiende automáticamente a versiones diferentes.
+2. OD-F4-14
+OD-F4-14 = APPROVED — CMB-3.
+Para REF-CANT-01:
+
+* Cero combinaciones en ambos volcados válidos permite PASS en esa parte de la comparación.
+* Una o más combinaciones en cualquiera de los modelos produce FAIL y STOP.
+* Un volcado FAILED se rechaza.
+* Una combinación no verificable produce STOP.
+* Si cambia cualquiera de las identidades/versiones vinculadas a M-05c, la capacidad queda INCOMPLETE hasta repetir su verificación.
+
+No cambies el Freeze ni modifiques código para implementar esta disposición si el comportamiento actual ya la soporta.
+3. Configuración de RAM
+Config.ini = PRESERVE CURRENT STATE.
+No restaures la copia previa.
+Conserva la evidencia de las diferencias y no modifiques adicionalmente la configuración.
+4. Catálogo y materiales
+Reconozco las identidades observadas en RAM:
+
+* United States / W / `W 12X26`.
+* United States / HSS_SQR / `HSS_SQR 4X4X1_4`.
+* United States / Steel / `A992 Gr50`.
+* United States / Steel / `A500 GrC rectangular`.
+
+La base «Montilla» no se utilizará como autoridad.
+La edición formal del catálogo continúa sin verificarse. Las propiedades mecánicas y geométricas deben validarse contra fuentes técnicas independientes antes de marcar filas como `verified`.
+5. Próxima prioridad
+Concentra la continuación en dos actividades:
+A. Validación de ingeniería
+Prepara para mi aprobación final las propiedades exactas de las dos filas, con sus fuentes y las discrepancias documentadas.
+No asignes todavía `verifiedBy` ni `verifiedOn`.
+B. Liberación de AutoCAD
+Mantén la coordinación con I-52 e I-64 para obtener ACK + RELEASE y una ventana de smoke.
+No abras AutoCAD ni ejecutes NETLOAD hasta contar con la liberación correspondiente.
+6. Límites
+
+* No ejecutar nuevamente RAM Elements.
+* No ejecutar el adaptador.
+* No modificar las filas de mapeo.
+* No implementar código nuevo.
+* No declarar Candidato ni GATE PASS de F4.
+* No consumir nuevas invocaciones Codex.
+
+7. Entregable
+Presenta únicamente:
+
+1. Registro de M-05c aceptada y OD-F4-14 resuelta.
+2. Tabla final de propiedades para mi validación técnica.
+3. Fuentes independientes y diferencias pendientes.
+4. Estado de ACK + RELEASE de I-52 e I-64.
+5. Decisiones exactas necesarias para iniciar el smoke y actualizar las filas.
+
+M-05c = PASS.
+OD-F4-14 = RESOLVED.
+AUTOCAD EXECUTION = NO.
+MAPPING UPDATE = NO.
+RAM ADAPTER EXECUTION = NO.
+F4 GATE PASS = NO.

@@ -1,0 +1,105 @@
+I-65 — OWNER DISPOSITION
+Privacy Hold Resolution / F5 W3 AutoCAD Authorization
+He revisado la declaración del Candidato F5 registrada en `696628f0`, con CI 4/4 satisfactorio.
+1. Candidato F5
+F5 MILESTONE CANDIDATE = ACCEPTED / DECLARED.
+Reconozco como Candidato formal:
+`bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109`
+Acepto la conformidad del Architect y Coordinator, sin REQUIRED abiertos.
+Ratifico las disposiciones de A65-F5C-08 y A65-F5C-09 descritas en el informe, siempre que no cambien los criterios técnicos congelados.
+2. Privacidad — disposición formal
+REPOSITORY VISIBILITY = PUBLIC / OWNER ACCEPTED.
+PRIVACY HOLD = LIFTED AS A BLOCKING CONDITION FOR F5.
+Como Owner, decido expresamente mantener público el repositorio.
+Conozco que existen capturas históricas con información identificable y no solicito su eliminación ni una reescritura del historial.
+Para nuevas evidencias:
+
+* No publicar credenciales, tokens, secretos ni información confidencial de terceros.
+* Recortar o redactar información identificable que no sea necesaria para demostrar resultados técnicos.
+* Conservar diagnósticos, valores y demás evidencia que permita auditar las pruebas.
+* Si no puede prepararse una evidencia segura, custodiarla localmente y reportar la limitación.
+
+Esta disposición sustituye la condición de repositorio privado de W3/W4.
+No autoriza divulgar datos adicionales de terceros ni elimina obligaciones aplicables de protección de datos.
+3. Evaluación del impacto documental
+Realiza una evaluación limitada del impacto de levantar PRIVACY HOLD sobre:
+
+* AC-F5-07.
+* Matriz de W3/W4.
+* A65-F5C-01.
+* Condiciones de entrada.
+
+Si es suficiente registrar una disposición documental sin alterar oráculos, tolerancias ni matriz técnica, conserva el Candidato actual.
+Si se requiere cambiar materialmente un criterio de aceptación, STOP y presenta la propuesta de nuevo SHA.
+No cambies unilateralmente los criterios para obtener PASS.
+4. Preparación de W3
+W3 AUTOCAD EXECUTION = CONDITIONAL GO.
+Autorizo una única ventana controlada de AutoCAD para OV-I65-02 conforme al procedimiento de W3 y al anexo operativo versionado.
+La ejecución requiere:
+
+1. Resolver documentalmente el impacto de privacidad anterior.
+2. Confirmación expresa del Coordinator de I-64 en su chat para la ventana exacta.
+3. Aviso a I-52.
+4. Host sin uso y sin instancias de AutoCAD o RAM.
+5. BASELINE y preflight satisfactorios.
+6. Identidad íntegra del DLL y de los archivos autorizados.
+
+5. Identidad del Candidato
+Usa únicamente:
+
+* DLL `RackCad.Plugin.dll`, SHA-256 `81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5`.
+* Tabla y biblioteca de bloques aprobadas.
+* Archivo de cargas OV-I65-02 con SHA `d675d9f6…`.
+* Validador y herramientas de la versión custodiada.
+
+No cargar DLL anteriores.
+6. Ejecución de W3
+Autorizo:
+
+1. Abrir una sola instancia de AutoCAD.
+2. Una carga NETLOAD no persistente de la DLL exacta, utilizando «Load Once».
+3. Construir REF-CANT-01 en un dibujo desechable.
+4. Aplicar el archivo de las seis cargas de OV-I65-02.
+5. Generar un único paquete `pkg-OV02` en una carpeta nueva.
+6. Validar el paquete mediante las 16 comprobaciones.
+7. Comparar las seis cargas con los valores esperados aprobados.
+8. Comprobar la representación de Q2 en el extremo del brazo.
+9. Capturar evidencia técnica saneada.
+10. Cerrar AutoCAD sin guardar.
+11. Ejecutar POST y clasificar las diferencias del host.
+
+7. Oráculos
+Exigir:
+
+* Paquete `Valid`.
+* Validador 16/16.
+* Seis cargas correctas en magnitud, posición y dirección.
+* Huella de entrada consistente.
+* Q2 conservando la posición calculada a partir de fracción 1.0.
+* Sin cambios prohibidos en el host.
+* Integridad de DLL, tabla y paquete.
+
+No alterar tolerancias ni corregir datos para conseguir PASS.
+8. Presupuesto
+
+* Un único NETLOAD.
+* Un intento de generación.
+* Sin reintentos.
+* Sin cambios de código.
+* Codex 0.
+* Workers de implementación 0.
+
+Un fallo inesperado implica STOP y reporte.
+9. Después de W3
+Custodia resultados, hashes y evidencia.
+Si W3 da PASS, presenta la preparación de W4 para autorización separada.
+No abras RAM Elements todavía.
+10. Restricciones
+PRIVACY HOLD AS BLOCKER = LIFTED.
+F5 CANDIDATE = DECLARED.
+W3 AUTOCAD = CONDITIONAL GO.
+W4 RAM = NO.
+F5 GATE PASS = NO.
+READY FINAL = NO.
+No iniciar F7 ni integrar la iniciativa.
+Procede dentro de las condiciones establecidas y detente antes de W4.

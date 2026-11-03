@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- I-65 F4-T4: herramienta de consola del analisis estructural. NO es codigo de producto y NO entra al
+       bundle: el Plugin no la referencia y AssembleAutoloaderBundle copia explicitamente los CUATRO DLL de
+       RackCad, asi que este ejecutable no puede colarse en la instalacion.
+
+       Hace tres cosas que el producto no puede hacer: generar el script de volcado en una carpeta nueva,
+       comparar el volcado del modelo generado con el del modelo manual, y producir los paquetes de
+       inyeccion de fallos de OV-I65-05, 06 y 07. Solo BCL (ADR-0012): cero NuGet. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RackCad.StructuralAnalysis.RamTool</RootNamespace>
+    <AssemblyName>RackCad.StructuralAnalysis.RamTool</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <!-- Las pruebas de la herramienta viven en tests/RackCad.Tests, que corre en el job de CI existente. -->
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RackCad.Application\RackCad.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="RackCad.Tests" />
+  </ItemGroup>
+</Project>

@@ -12,6 +12,20 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
+**I-65 — Structural Analysis Interop Foundation + RAM Elements Adapter — INTEGRADA** el **2026-11-03**
+(`architecture/interop-analisis-estructural`, Workflow V2). Fundación **neutral de análisis estructural** en Application pura: el
+`StructuralModel` derivado de un rack (nodos, miembros, secciones, materiales, apoyos, liberaciones y supuestos explícitos), con cargas
+solo por el canal explícito `rackcad-structural-loads/v1` y huellas de fuente y de entrada; frontera de unidades de análisis (`ForceUnits`,
+`MassUnits`) y frontera de proveedores. Primer proveedor: **RAM Elements**. `RACKRAMPAQUETE` publica un paquete de construcción
+(manifiesto, script de plantilla fija y cargas) que el ingeniero ejecuta en la consola de Python de RAM: construye sobre un modelo vacío,
+lee de vuelta y nunca analiza ni guarda. La tabla de secciones y materiales viaja junto al DLL y en el bundle del Autoloader. V1 cubre
+una estación Cantilever de una cara y es **equivalencia de transferencia**, no validación estructural. Decisión en
+[ADR-0050](adr/0050-interoperabilidad-analisis-estructural.md), **aceptado** por el Owner; entradas de [FOUNDATIONS](FOUNDATIONS.md)
+«Structural Analysis Model», «Structural Analysis Units Boundary» y «Structural Analysis Provider Boundary». Guía:
+[interoperabilidad con RAM Elements](guias/interoperabilidad-ram-elements.md). [Evidencia](automation/evidence/I-65-evidence.md),
+[decisiones](automation/decisions/I-65.md), [ficha de Owner Validation](initiatives/I-65-owner-validation-sheet.md) y tag
+`integration/I-65` (SHAs de cierre y merge, CI posterior y cobertura).
+
 **I-63 — Computed Parameters & Project Summary Foundation (ID20) — INTEGRADA** el **2026-10-04**
 (`architecture/parametros-calculados-resumen-proyecto`, Workflow V2). Fundación de **parámetros calculados de solo lectura** y
 **resumen neutral de proyecto** en Application pura (`RackCad.Application.ComputedParameters`): métricas por rack `Rack.Frentes` y
@@ -1502,6 +1516,12 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-65 (2026-11-03) — OWNER VALIDATION APROBADA.** Candidato final validado por el Owner en AutoCAD 2025 y RAM Elements 2026:
+OV-I65-01..08 y HB-01..05 PASS en W-R1a, W-R1b y W-R2, con evidencia local Full, builds y CI exacta. Siguen NOT_EVALUATED el legado de
+OV-08 y las propiedades de sección y material (respaldo D-09); INFORMATIVE DIF-01 y la categoría del caso manual; peso propio excluido.
+Identidades del Candidato, del DLL y de las aplicaciones en la [ficha](initiatives/I-65-owner-validation-sheet.md) y en la
+[evidencia](automation/evidence/I-65-evidence.md) §119-§127.
+
 **I-63 (2026-10-04) — SIN OWNER VALIDATION (NOT APPLICABLE, Freeze §22).** Candidato final con READY-01..09 PASS, conformidad
 READY-06 CONFORMING del Architect y del Coordinator, evidencia local Full, builds y CI exacta; identidades en la
 [evidencia](automation/evidence/I-63-evidence.md) §61.
@@ -2057,6 +2077,25 @@ veredicto.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### Sin trabajo activo de I-65 (integrada el 2026-11-03)
+
+La fundación de análisis estructural de I-65 ([ADR-0050](adr/0050-interoperabilidad-analisis-estructural.md); FOUNDATIONS «Structural
+Analysis Model», «Structural Analysis Units Boundary» y «Structural Analysis Provider Boundary») queda disponible. Un sistema nuevo
+implementa `IStructuralModelSource`, y un proveedor nuevo agrega su carpeta bajo `StructuralAnalysis/Providers/`. Al integrarse I-65, las
+ramas activas se rebasan sobre el nuevo `main` antes de su propia integración. **I-64** tiene un conflicto conocido en los dos censos de
+comandos (`CustomPropertiesCommandGuardTests` y `SelectiveEditorOpenTests`): ambas ramas suben el censo de 37 a 38 (`RACKRAMPAQUETE` y
+`RACKPANEL`) e **I-64 lo reconcilia a 39** (R-D1). I-62 e I-66 se fusionan sin conflicto (`git merge-tree`). Todas comparten
+`docs/ROADMAP.md`.
+
+Seguimientos fuera del Freeze, registrados en [ideas-futuras](ideas-futuras.md) (sección de I-65):
+
+- **FOLLOWUP-I65-01:** desinstalar el bundle del Autoloader borrando la carpeta no limpia las entradas que AutoCAD escribe en el registro
+  de usuario. En el equipo de validación quedan, por decisión del Owner, `AssemblyMap\RackCad.Plugin` y copias históricas en
+  `appdatalow`.
+- **FOLLOWUP-I65-02:** guarda de productor único del `StructuralModel`.
+- **FOLLOWUP-I65-03:** `RACKRAMPAQUETE` imprimiría `Valid` sin tabla (A65-F4R-07, limitación documentada).
+- Ampliaciones de alcance diferidas y limitaciones de ingeniería abiertas (catálogo de RAM UNKNOWN, DIF-01, trazabilidad operativa).
 
 ### Sin trabajo activo de I-63 (integrada el 2026-10-04)
 
@@ -3911,6 +3950,11 @@ visualmente** y no debe presentarse como tal.
 la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
+
+**Cierre de I-65 — 2026-11-03:** Candidato final con READY PASS (Architect y Coordinator CONFORMING), evidencia local Full, builds y
+CI exacta, y Owner Validation APROBADA (W-R1a, W-R1b y W-R2). El commit de cierre (solo documental) lleva su propio CI. El merge
+`--no-ff`, la CI posterior al merge con cobertura y la cobertura diferida del Candidato se registran en `integration/I-65`; la limpieza,
+por orden del Owner, va después del tag.
 
 **Cierre de I-63 — 2026-10-04:** Candidato final con READY PASS (Architect y Coordinator CONFORMING), evidencia local Full, builds y
 CI exacta; Owner Validation NOT APPLICABLE. El commit de cierre (solo documental) lleva su propio CI; merge `--no-ff`, CI posterior al

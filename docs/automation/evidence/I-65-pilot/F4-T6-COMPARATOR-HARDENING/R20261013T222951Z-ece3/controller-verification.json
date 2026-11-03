@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T6-COMPARATOR-HARDENING",
+  "RunId": "R20261013T222951Z-ece3",
+  "DelegationRunId": "R20261013T213942Z-4bec",
+  "WorkRunId": "R20261013T214908Z-260e",
+  "Attempt": 3,
+  "VerifiedSha": "6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.TerminalEvent=subagent-completed, DeathConfirmed=true, LaunchedPid=null; Cession.StartUtc=2026-10-13T21:49:15Z y EndUtc=2026-10-13T22:28:01Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente en la entrada esperada para WorkRunId R20261013T214908Z-260e. TaskId, Attempt=3 y DelegationRunId coinciden; RunId=R20261013T214908Z-260e; OutputWrittenUtc=2026-10-13T22:27:31Z es posterior al inicio de cesión. WorkerStatus=IMPLEMENTATION_COMPLETE; TriggeredStopConditions vacío."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídas desde Git las autoridades indicadas: la Proposal v3.1 en ef353615 declara Frozen: yes; I-65-f4-implementation.md §9-§10 concreta F4-T6; decisions/I-65.md §41 contiene la disposición vigente; ADR-0050 está aceptado. git merge-base bb0d5522e8411f66a51fdfb3f1f0d0514b737453 ef3536156f6a69cdee42a687930877eefc4a585b = bb0d5522e8411f66a51fdfb3f1f0d0514b737453. Entre MainSha y AuthorityRevision solo cambia docs/adr/0050-interoperabilidad-analisis-estructural.md, declarado UNIT_CHANGE; los EXTERNAL indicados se leen en MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación de gate-contract.json y delegation.json: iguales Authorities, Invariants (11), StopConditions, RequiredTests, AllowedWriteScope y ForbiddenWriteScope. TaskId, Unit, Gate, AuthorityRevision, MainSha y RoutingEnforcement también coinciden. RequiredTests: proyecto Core, filtro FullyQualifiedName~RackCad.Tests.StructuralAnalysisComparison, MinSelected=101, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD = 6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1; rama architecture/interop-analisis-estructural; refs/remotes/origin/architecture/interop-analisis-estructural coincide con HEAD. La entrega identifica el worktree delegado y BaseSha ef353615..., RedSha d655071b... y CurrentSha 6422e5b.... merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha terminan ambos con código 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "git ls-remote no pudo conectar a GitHub (código 128); uso RemoteFacts del registro: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 y LsRemoteSha=6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1. refs/remotes/origin/main local coincide con MainSha; la referencia remota de la rama coincide con CurrentSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Evalué los 20 nombres de git diff --name-only BaseSha..CurrentSha contra AllowedWriteScope y ForbiddenWriteScope de delegation.json. Cobertura exacta: src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamDumpReader.cs y RamTransferReaders.cs (cada uno por su entrada exacta); src/RackCad.Application/StructuralAnalysis/StructuralReadback.cs y StructuralReadbackComparison.cs (cada uno por su entrada exacta). Prefijo tests/RackCad.Tests/StructuralAnalysis/: Fixtures/rehearsal/generated.dump.json, generated.readback.json, manual-a.dump.json, manual-b.dump.json; StructuralAnalysisComparisonHardeningDumpReaderTests.cs, StructuralAnalysisComparisonHardeningIncompleteTests.cs, StructuralAnalysisComparisonHardeningMetricTests.cs, StructuralAnalysisComparisonHardeningReadbackTests.cs, StructuralAnalysisComparisonHardeningRehearsalTests.cs, StructuralAnalysisComparisonHardeningSupport.cs, StructuralAnalysisComparisonHardeningToolTests.cs, StructuralAnalysisComparisonRowTests.cs, StructuralAnalysisComparisonSupport.cs y StructuralAnalysisComparisonToolTests.cs. Prefijo tools/RackCad.StructuralAnalysis.RamTool/: RamToolCommands.cs y RamToolCompare.cs. Sin intersecciones prohibidas; scope-mechanical.json informa files=20, pass=true, uncovered=[] y forbidden_hits=[]."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 vacío. git check-ignore -v para la ruta del paquete worker-handoff.json devuelve .gitignore:3, artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y los TRX de las copias de entrada: corrida 38477281815, event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1, concluida success; los cuatro jobs requeridos terminaron success. Corrida RED 38476630564: push a la misma ref, head_sha=d655071b4d00b30526292df6b1d765477cb83446, job Tests (Domain + Application)=failure; el TRX del RED confirma pruebas ejecutadas y fallos de prueba."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Core RED: 14,269 ejecutadas, RequiredTests seleccionó 272 (mínimo 101), 141 passed y 131 failed; fallos por aserción/excepción, sin fallo de compilación. Ejemplos del TRX: Assert.NotEqual esperaba Not Valid y obtuvo Valid; Assert.Equal esperaba Incomplete y obtuvo Pass. TRX Core actual: 14,269/14,269 passed; selección 272/272 passed. TRX UI: 1,654 resultados, 1,637 ejecutados y 17 UnitTestResult NotExecuted por Skip; cero fallidos. Cobertura observada en Core actual: A65-F4-01, Node_tolerance_edge_is_two_hundredths_of_an_inch (0.019 pasa, 0.021 falla); The_nodes_are_paired_by_euclidean_distance_not_by_the_largest_coordinate (0.015/0.015/0 falla, 0.010/0.010/0 pasa, 0.0116/0.0116/0.0116 falla); The_value_of_a_load_is_relative_to_the_manual_value (m=999/g=1000 falla, m=1000/g=1000.9 pasa); A_manual_value_of_zero_is_compared_in_absolute_value_against_one_millionth_of_a_pound (0/0 pasa, 0/0.001 falla). A65-F4-02: Combinations_nobody_could_read_never_give_a_pass_and_no_failing_row_gives_incomplete y pruebas de opción, decisión, informe INCOMPLETE y código propio. A65-F4-03: pruebas de desajustes del read-back, ausencia de values, rechazo por misma ruta/mismos bytes, inputs con huellas, y A_report_without_inputs_is_byte_for_byte_the_one_of_before. A65-F4-04: inyección siempre rechazada y The_mark_is_recognised_only_in_the_tool_and_not_in_the_product; también The_product_does_not_contain_the_marker_of_an_injection. A65-F4-05: categoría ausente, null, espacios y vacía con cargas inválidas; vacía sin cargas válida; prueba registra semántica NOT MEASURED. A65-F4-06: ensayo sintético pasa con -90 y 270; falla con +90, porcentaje de un decimal y miembro invertido. The_other_tolerances_of_the_freeze_and_the_other_rows_do_not_change pasa. D1 limita la ligadura a los campos presentes en read_back. RT = git diff --name-only BaseSha RedSha -- tests/: los 14 archivos listados en Scope bajo tests/. delegation.json trae ChainRedFiles=[] y ChainRedSha=null; git diff --name-only RedSha CurrentSha -- tests/ vacío, por lo que no cambió RT ni ChainRedFiles."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha muestra dos commits y ambos incluyen literalmente Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al valor Worker.Trailer de la entrega. El registro de trabajo indica modelo efectivo claude-sonnet-5-5 y effort high."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Worker.ModelRequested=claude-sonnet-5-5 y EffortRequested=high; relay-record-work.json registra el mismo modelo y effort efectivos. RoutingEnforcement=required; no hay discrepancia."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json; no hay coincidencias con los términos de AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes informa 0 denegaciones y 0 errores de herramienta; no registra una denegación ni orden fallida pendiente. La cesión registra SessionOperated=false."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "D1: read_back no registra los extremos I/J de miembros; el Coordinator acota la ligadura a los campos registrados y anota esa limitación para revisión.",
+    "DEV-I65-F4-19: 30 llamadas comenzaron con cd a la ruta absoluta del worktree y luego usaron rutas relativas dentro de esa llamada. El registro K1/K2/K5 no muestra efectos externos; D2 indica que C-12 no se activa.",
+    "git ls-remote no conectó en este entorno; Remote se contrastó con RemoteFacts del registro de trabajo y las referencias remotas locales."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación y conservar D1 como limitación y DEV-I65-F4-19 como desviación de procedimiento."
+}

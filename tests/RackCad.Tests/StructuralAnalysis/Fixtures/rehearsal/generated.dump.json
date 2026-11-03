@@ -1,0 +1,598 @@
+{
+  "schema": "rackcad-ram-dump/v1",
+  "status": "DUMP OK",
+  "adapterVersion": "1.0.0-fixture",
+  "initialUnits": "LB_IN",
+  "readUnits": "LB_IN",
+  "unitsRestored": false,
+  "nodes": [
+    {
+      "id": 101,
+      "description": "ARM.1.PositiveY.J",
+      "coordinates": [
+        0,
+        20.26716169689737,
+        6.1
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 102,
+      "description": "ARM.1.PositiveY.TIP",
+      "coordinates": [
+        0,
+        21.810300688090436,
+        -36.22609804415268
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 103,
+      "description": "ARM.2.PositiveY.J",
+      "coordinates": [
+        0,
+        48.267161696897375,
+        6.1
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 104,
+      "description": "ARM.2.PositiveY.TIP",
+      "coordinates": [
+        0,
+        49.81030068809044,
+        -36.22609804415268
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 105,
+      "description": "ARM.3.PositiveY.J",
+      "coordinates": [
+        0,
+        76.26716169689738,
+        6.1
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 106,
+      "description": "ARM.3.PositiveY.TIP",
+      "coordinates": [
+        0,
+        77.81030068809044,
+        -36.22609804415268
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 107,
+      "description": "COL.FOOT",
+      "coordinates": [
+        0,
+        0.25,
+        6.1
+      ],
+      "restraints": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 108,
+      "description": "COL.TOP",
+      "coordinates": [
+        0,
+        90.75,
+        6.1
+      ],
+      "restraints": [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true
+      ]
+    }
+  ],
+  "members": [
+    {
+      "id": 201,
+      "description": "ARM.1.PositiveY",
+      "nodeI": 101,
+      "nodeJ": 102,
+      "section": "HSS_SQR 4X4X1_4",
+      "material": "A500 GrC rectangular",
+      "rotation": 0,
+      "l1": [
+        0,
+        0.036434127070177715,
+        -0.9993360567820188
+      ],
+      "l2": [
+        0,
+        0.9993360567820188,
+        0.036434127070177715
+      ],
+      "l3": [
+        1,
+        0,
+        0
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 202,
+      "description": "ARM.2.PositiveY",
+      "nodeI": 103,
+      "nodeJ": 104,
+      "section": "HSS_SQR 4X4X1_4",
+      "material": "A500 GrC rectangular",
+      "rotation": 0,
+      "l1": [
+        0,
+        0.0364341270701778,
+        -0.9993360567820188
+      ],
+      "l2": [
+        0,
+        0.9993360567820188,
+        0.0364341270701778
+      ],
+      "l3": [
+        1,
+        0,
+        0
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 203,
+      "description": "ARM.3.PositiveY",
+      "nodeI": 105,
+      "nodeJ": 106,
+      "section": "HSS_SQR 4X4X1_4",
+      "material": "A500 GrC rectangular",
+      "rotation": 0,
+      "l1": [
+        0,
+        0.03643412707017763,
+        -0.9993360567820188
+      ],
+      "l2": [
+        0,
+        0.9993360567820188,
+        0.03643412707017763
+      ],
+      "l3": [
+        1,
+        0,
+        0
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 204,
+      "description": "COL.1",
+      "nodeI": 107,
+      "nodeJ": 101,
+      "section": "W 12X26",
+      "material": "A992 Gr50",
+      "rotation": -90,
+      "l1": [
+        0,
+        1,
+        0
+      ],
+      "l2": [
+        -6.123233995736766E-17,
+        0,
+        -1
+      ],
+      "l3": [
+        -1,
+        0,
+        6.123233995736766E-17
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 205,
+      "description": "COL.2",
+      "nodeI": 101,
+      "nodeJ": 103,
+      "section": "W 12X26",
+      "material": "A992 Gr50",
+      "rotation": -90,
+      "l1": [
+        0,
+        1,
+        0
+      ],
+      "l2": [
+        -6.123233995736766E-17,
+        0,
+        -1
+      ],
+      "l3": [
+        -1,
+        0,
+        6.123233995736766E-17
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 206,
+      "description": "COL.3",
+      "nodeI": 103,
+      "nodeJ": 105,
+      "section": "W 12X26",
+      "material": "A992 Gr50",
+      "rotation": -90,
+      "l1": [
+        0,
+        1,
+        0
+      ],
+      "l2": [
+        -6.123233995736766E-17,
+        0,
+        -1
+      ],
+      "l3": [
+        -1,
+        0,
+        6.123233995736766E-17
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 207,
+      "description": "COL.4",
+      "nodeI": 105,
+      "nodeJ": 108,
+      "section": "W 12X26",
+      "material": "A992 Gr50",
+      "rotation": -90,
+      "l1": [
+        0,
+        1,
+        0
+      ],
+      "l2": [
+        -6.123233995736766E-17,
+        0,
+        -1
+      ],
+      "l3": [
+        -1,
+        0,
+        6.123233995736766E-17
+      ],
+      "cardinalPoint": 0,
+      "offsetI": [
+        0,
+        0,
+        0
+      ],
+      "offsetJ": [
+        0,
+        0,
+        0
+      ],
+      "stiffnessFactors": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "axialBehavior": 0,
+      "springI": 0,
+      "springJ": 0,
+      "releases": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  ],
+  "loadCases": [
+    {
+      "id": "CM",
+      "category": "DEAD",
+      "selfWeight": [
+        0,
+        0,
+        0
+      ],
+      "memberLoads": []
+    },
+    {
+      "id": "REF1",
+      "category": "OTHER",
+      "selfWeight": [
+        0,
+        0,
+        0
+      ],
+      "memberLoads": [
+        {
+          "member": 201,
+          "loads": [
+            {
+              "direction": "Y",
+              "value": -1000,
+              "distance": 57.50128206169154,
+              "isPercentage": true
+            }
+          ]
+        },
+        {
+          "member": 202,
+          "loads": [
+            {
+              "direction": "Y",
+              "value": -2000,
+              "distance": 36.251923092537304,
+              "isPercentage": true
+            }
+          ]
+        },
+        {
+          "member": 203,
+          "loads": [
+            {
+              "direction": "Y",
+              "value": -1102.311310924388,
+              "distance": 78.75064103084576,
+              "isPercentage": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "combinations": [],
+  "errors": []
+}

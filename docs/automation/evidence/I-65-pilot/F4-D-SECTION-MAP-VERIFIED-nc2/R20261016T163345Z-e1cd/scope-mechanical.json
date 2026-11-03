@@ -1,0 +1,8 @@
+{
+ "files": 2,
+ "pass": false,
+ "uncovered": [
+  "tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandProductTableTests.cs"
+ ],
+ "forbidden_hits": []
+}

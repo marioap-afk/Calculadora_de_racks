@@ -1,0 +1,15 @@
+custodia de solo lectura para el cierre de F5 (Coordinator); utc=2026-10-28T19:40:32Z
+81299b87eb14f41b61721e79c266d76a15345cdcaac23b193496d2d57f31fef5  D:/r65-smoke/bd1fcf8a/bin-Debug-net8.0-windows/RackCad.Plugin.dll
+21290785e13f2daee51b10b9d0b8911f86e73798e2cf49e668ce791a78e9ce7c  D:/r65-smoke/bd1fcf8a/ramtool/RackCad.StructuralAnalysis.RamTool.exe
+d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c  D:/r65-smoke/bd1fcf8a/inputs/ov-i65-02.loads.json
+f6cf8a91e2bbad814c8ffa60c3a9a4498f045443dd683d64fd2c7daba3b7ab85  D:/r65-smoke/bd1fcf8a/f5-R20261019T1750Z/pkg-OV02/manifest.json
+f7ed0b0623da43bd434c2905e3949c7d342ca4b3cd1d4d90395e0766cd8e00f9  D:/r65-smoke/bd1fcf8a/f5-R20261019T1750Z/pkg-OV02/rackcad-ram-build.py
+d675d9f6bb537083a63571f08fb9884c1ab085a0eca4ad1555ee98bea4f8ba4c  D:/r65-smoke/bd1fcf8a/f5-R20261019T1750Z/pkg-OV02/structural-loads.json
+e7481e040ea57f3a29ec7cb4478c90a7cc95bea51189857ea7f8b1dd5fee5319  D:/r65-smoke/bd1fcf8a/f5-R20261019T1750Z/pkg-OV02/ram-readback.json
+4a1be499495701d5cec3a109d1c6ce8deb81faeddbc29bbbe82a1b003e4dea60  D:/r65-smoke/bd1fcf8a/f5-R20261019T1750Z/dump-OV02-gen/rackcad-ram-dump.py
+bdd02eee483862e7cc10c670591942b697b270ee90da2deade1d12fa2eeafa7e  D:/r65-smoke/bd1fcf8a/f5-R20261019T1750Z/dump-OV02-man/rackcad-ram-dump.py
+e5cf0eadf282b64c1721d71ee8b4652f5d3370a197d787ba5f28bde57988bd65  D:/r65-smoke/bd1fcf8a/f5-R20261019T1750Z/dump-OV02-gen/ram-dump.json
+12c89479fa2bf54adde27a1d0c4affc18bbd0469e77cd72c1fb5d0335910aef2  D:/r65-smoke/bd1fcf8a/f5-R20261019T1750Z/dump-OV02-man/ram-dump.json
+pkg-OV02 = manifest.json, rackcad-ram-build.py, ram-readback.json, structural-loads.json
+RackCad.Plugin.dll ProductVersion = 1.0.0+bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109
+procesos: acad=1 (inicio 2026-10-28T19:35:34Z; proceso ajeno a I-65: I-65 no abrio AutoCAD ni opero el host en este cierre) RAMElements=0

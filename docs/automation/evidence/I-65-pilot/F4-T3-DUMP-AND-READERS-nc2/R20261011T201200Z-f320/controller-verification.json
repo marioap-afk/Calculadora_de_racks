@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T3-DUMP-AND-READERS",
+  "RunId": "R20261011T201200Z-f320",
+  "DelegationRunId": "R20261011T183102Z-7511",
+  "WorkRunId": "R20261011T183618Z-05a9",
+  "Attempt": 2,
+  "VerifiedSha": "76db7642d1bb9494c7f70155d3d3cabe45152bb3",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, Cession.SessionOperated=false; Outcome.OutputWrittenUtc=2026-10-11T19:17:56Z está entre Cession.StartUtc=18:36:27Z y EndUtc=19:18:40Z. Notes registra terminación confirmada."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente: Schema=rackcad-worker-handoff/v1; TaskId=F4-T3-DUMP-AND-READERS, Attempt=2, DelegationRunId=R20261011T183102Z-7511 y RunId=R20261011T183618Z-05a9 corresponden a la delegación y al relevo; BaseSha, RedSha y CurrentSha corresponden a Git. Outcome.OutputWrittenUtc es posterior a Cession.StartUtc. La entrega declara BLOCKED/STOP por C-08; la disposición original del Owner, cuyo SHA-256 comprobé como 66124E3CCC090F9D57F5C664D6DB7BF4424DC78DC2D824F78F94141220B51C00, acepta esa desviación solo para esta ejecución histórica y autoriza esta nueva verificación."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí las autoridades desde Git: UNIT_DOC y ADR-0050/UNIT_CHANGE en AuthorityRevision c73058f88368196309975616298523317ace2813; EXTERNAL en MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453. La Proposal V3.1 declara Frozen: yes; F4 implementation §4 y decisions/I-65.md §26 concuerdan con el alcance y CD-I65-F4-13. Verifiqué que las rutas EXTERNAL declaradas no difieren entre MainSha y AuthorityRevision. AUTOMATION_PLAN §16.3, §16.8–16.11 y agent-execution README §8 suministran las reglas aplicadas."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé delegation.json con gate-contract.json: Authorities, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions coinciden exactamente; las 8 entradas AllowedWriteScope de la delegación están cubiertas por las 3 entradas del contrato. TaskId, AuthorityRevision y MainSha coinciden. RequiredTests fija FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElementsDump, MinSelected=25 y ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Órdenes Git: rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural = 76db7642d1bb9494c7f70155d3d3cabe45152bb3; branch --show-current = architecture/interop-analisis-estructural; merge-base --is-ancestor BaseSha HEAD y RedSha CurrentSha devuelven 0. RedSha a283e0cc60e25bea2072379017fdd608128aa5fc tiene como padre BaseSha; CurrentSha tiene como padre RedSha. git log --format='%H %P %s' confirma ambos commits. El worktree coincide con ExpectedWorktree."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453 (=MainSha) y LsRemoteSha=76db7642d1bb9494c7f70155d3d3cabe45152bb3 (=CurrentSha). Las referencias remotas locales concuerdan. git ls-remote origin no pudo conectar desde este sandbox (GitHub inaccesible por el proxy); uso RemoteFacts, según lo permitido."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha da 15 rutas. Las siete bajo src/RackCad.Application/StructuralAnalysis/Providers/RamElements/ quedan cubiertas por ese prefijo permitido de delegation.json; src/RackCad.Application/StructuralAnalysis/StructuralReadback.cs coincide con la ruta exacta permitida. Las siete rutas de tests/RackCad.Tests/StructuralAnalysis/ (PayloadTests, ReaderTests, RoundTripTests, SourceTests, Support, TemplateTests y TransferReaderTests) quedan cubiertas por el prefijo permitido tests/RackCad.Tests/StructuralAnalysis/. Ninguna de las 15 coincide con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no muestra cambios. git check-ignore -v sobre inputs/gate-contract.json devuelve .gitignore:3:artifacts/; el paquete de esta verificación queda ignorado."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun=38166926118 es push de refs/heads/architecture/interop-analisis-estructural sobre CurrentSha, completed/success; los cuatro jobs requeridos están en success. Leí sus TRX: Core 13997 resultados, 13997 pasaron; UI 1654 resultados, 1637 pasaron, 0 fallaron y 17 NotExecuted (atributos Skip; el logger deja notExecuted=0). RedRun=38166596013 es push de la misma rama sobre RedSha; el job Core falló. Su TRX registra 13997 resultados, 282 fallidos y error=0."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "En los TRX leídos, el filtro selecciona 294 pruebas: RED 12 pasaron y 282 fallaron; GREEN 294 pasaron y 0 fallaron. El TRX RED tiene error=0; relay-record-work Notes clasifica los fallos como 268 NotImplementedException y 14 aserciones, sin fallo de compilación. Contraste: TestResults de la entrega concuerda y el Core GREEN completo pasa 13997/13997. Pruebas del diff observadoras, todas dentro de las 294 GREEN aprobadas: script fijo/imports/carga ASCII/puerta/carpeta/archivo exclusivo/estados—TemplateTests.LosImportsSonSoloElModuloDelProveedorSuGetCoreJsonYMath, LaPuertaDeCapacidadVaAntesDelModeloYDeLaAperturaDelArchivo, ElScriptAbreUnSoloArchivoEnModoExclusivoDentroDeLaCarpetaEmbebida, ElScriptDeUnaCarpetaFijaTieneUnSha256EstableQueSeRegistra; solo lectura/unidades/restauración y autoprueba contra add, setters, analyze, cambio incondicional, falta de finally y otro open—ElScriptNoEscribeEnElModeloNiAnalizaNiGuardaNiUsaOtroModulo, LaGuardaRechazaCadaVarianteSinteticaDelScript, LasUnidadesSoloCambianSiElParInicialNoEsLbInYSeRestauranEnFinally; contenido y funciones de P1—ElScriptVuelcaLosCamposContractualesDeCadaBloque, LasFuncionesDelNucleoQueExigeLaPuertaDelVolcadoEstanContenidasEnLas207DeP1; lector estricto, estado/par de unidades, puntos, vectores, banderas y cargas absolutas—ElLectorEstrictoRechazaCadaVarianteConSuPropioCodigoYNuncaDaUnModelo, UnVolcadoConEstadoDeFalloSeRechazaConSuPropioCodigo, UnVolcadoNoLeidoEnLbInEsInvalidoConUnCodigoQueNombraElParDeUnidades, LosPuntosVuelvenAlMarcoNeutralConXIgualXYIgualMenosZYZIgual, LosEjesLocalesVuelvenAlMarcoNeutralComoVectores, LasBanderasDeApoyoVuelvenAlOrdenNeutralTxTyTzRxRyRz, ElPorcentajeSeConvierteEnDistanciaAbsolutaPorLaLongitudDelMiembro; REF-CANT-01—LaIdaYVueltaDeRefCant01ReproduceNudosEjesBanderasYCargasAToleranciaDeUnNanoMetro; lectura de vuelta y manifiesto—UnEstadoDeFalloNuncaEsAprobadoYConservaLasDiferencias, LaLecturaDeVueltaConElEstadoReadbackOkYSinDiferenciasEsAprobada, ElLectorDelManifiestoEsEstrictoYNuncaDaProcedenciaDeUnaVariante; tipos neutrales—ElArchivoNeutralNoTieneIdentidadDeProveedorNiReferenciasASystemsOProvidersNiLiteralesDeConversion, ElArchivoNeutralNoHaceEntradaYSalidaDeArchivos, LosTiposNeutralesSonInmutablesSinSettersNiCamposPublicosEscribibles; INV-14/forma—NingunaPruebaNuevaNombraElModuloNiElInterpreteNiParteUnLiteral y LaExencionDeInv14SigueSiendoExactamenteLasCuatroRutasExactas. ChainRedFiles, obtenido con git diff --name-only ChainBaseSha RedSha -- tests/, son los siete archivos de pruebas *Dump* enumerados en Scope; git diff --name-only RedSha CurrentSha -- tests/ está vacío. No cambió ninguna prueba existente."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra en ambos commits el trailer literal declarado: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. Coincide con Worker.Trailer y el modelo efectivo del relevo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra modelo solicitado sonnet, efectivo claude-sonnet-5-5, effort solicitado high y efectivo high. El modelo efectivo coincide con delegation.json Model=claude-sonnet-5-5 y el effort efectivo con Provider=high; el registro atribuye el alias sonnet al mismo modelo."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Contrasté los campos de texto libre de worker-handoff.json con los términos de AUTOMATION_PLAN §16.10; coincidencias: 0."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones, 0 avisos de límite y 1 error de herramienta superado; no queda orden fallida pendiente ni denegación de permisos o credenciales. La única ejecución de intérprete se documenta aparte como C-08."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La entrega declara WorkerStatus=BLOCKED, Disposition=STOP por una invocación python --version posterior a ambos commits. relay-record-work.json Notes la sitúa a las 19:17:03.926Z, después del commit GREEN a las 19:10:44Z; la decisión CD-I65-F4-14 y la disposición original del Owner aceptan la desviación solo para esta ejecución. El diff y el estado limpio no muestran cambios de archivos; el TRX GREEN está en verde. C-08 permanece vigente para ejecuciones futuras.",
+    "La verificación anterior R20261011T192137Z-51fd se conserva sin cambios; previous-verification-coherence.txt confirma que STOP/StopCondition con 14 comprobaciones en pass no era una combinación coherente.",
+    "Limitación: la plantilla no se ejecutó en RAM Elements; los TRX verifican guardas, lectores y casos sintéticos, no una ejecución del adaptador en el programa."
+  ],
+  "RecommendedNextAction": "Registrar esta verificación y continuar la coordinación de F4 con C-08 vigente."
+}

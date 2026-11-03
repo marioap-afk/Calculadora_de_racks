@@ -1,0 +1,9 @@
+HEAD=1e7d8fc23e089619f61d40194969cecb09762336 dirty=0
+sdk=8.0.423
+start=2026-10-17T17:00:58Z
+--- Core Full
+Correctas! - Con error:     0, Superado: 14390, Omitido:     0, Total: 14390, Duración: 3 m - RackCad.Tests.dll (net8.0)
+core_exit=0 secs=291
+end=2026-10-17T17:05:50Z
+trx_sha256=bc3b28747893fde0512a30805ef44531b47bf86fb7457c7b1afd025ca818fc4c
+HEAD_after=1e7d8fc23e089619f61d40194969cecb09762336 dirty_after=0

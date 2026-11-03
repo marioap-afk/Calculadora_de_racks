@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T6-COMPARATOR-HARDENING",
+  "RunId": "R20261013T224014Z-cba7",
+  "DelegationRunId": "R20261013T213942Z-4bec",
+  "WorkRunId": "R20261013T214908Z-260e",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "inputs/relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession.SessionOperated=false. Notes informan 0 errores y 0 denegaciones."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "inputs/worker-handoff.json coincide con TaskId F4-T6-COMPARATOR-HARDENING, RunId R20261013T214908Z-260e, DelegationRunId R20261013T213942Z-4bec y Attempt 3. Su SHA-256 calculado es 1A0280A0B443BB62E2F2F6160724EB5AD341485BDC5705DCAA8619CC99C18C70, igual a Outcome.OutputSha256 del registro. OutputWrittenUtc 2026-10-13 22:27:31Z sucede a Cession.StartUtc 21:49:15Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Git: merge-base(MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453, AuthorityRevision ef3536156f6a69cdee42a687930877eefc4a585b) = MainSha; diff de las rutas EXTERNAL desde ese punto hasta AuthorityRevision vacío, y diff de AuthorityRevision a BaseSha para esas rutas y las UNIT_CHANGE vacío. git show confirmó Proposal V3.1 Frozen: yes, implementación F4 §§9–10, decisiones I-65 §41, ADR-0050 aceptado, AGENTS.md y Lifecycle §7; AUTOMATION_PLAN §16 y README §8 leídos desde Git."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación A3–A5 entre inputs/delegation.json y gate-contract.json: AllowedWriteScope de delegación es subconjunto del contrato (no lo amplía); ForbiddenWriteScope coincide exactamente; Invariants, Authorities, RequiredTests y StopConditions coinciden. La lista del contrato incluye además RamDumpReader.cs, cuya ausencia en la lista delegada no viola A3."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Git: rev-parse HEAD=6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1; rama architecture/interop-analisis-estructural; refs/remotes/origin/architecture/interop-analisis-estructural apunta al mismo SHA. merge-base --is-ancestor BaseSha ef3536156f6a69cdee42a687930877eefc4a585b CurrentSha y RedSha d655071b4d00b30526292df6b1d765477cb83446 CurrentSha terminaron con exit 0. Sin RebaseMap."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "inputs/relay-record-work.json RemoteFacts: LsRemoteSha=6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1 y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, igual a CurrentSha y MainSha de la delegación. La consulta git ls-remote ejecutada aquí no pudo conectar con GitHub por restricción de red; se usaron los RemoteFacts solicitados."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha produjo 20 rutas; se compararon archivo por archivo con AllowedWriteScope de inputs/delegation.json. Cubiertas por entradas exactas: src/RackCad.Application/StructuralAnalysis/StructuralReadbackComparison.cs, src/RackCad.Application/StructuralAnalysis/StructuralReadback.cs y src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamTransferReaders.cs. Cubiertas por tools/RackCad.StructuralAnalysis.RamTool/: RamToolCommands.cs y RamToolCompare.cs. Cubiertas por tests/RackCad.Tests/StructuralAnalysis/: Fixtures/rehearsal/generated.dump.json, generated.readback.json, manual-a.dump.json, manual-b.dump.json; StructuralAnalysisComparisonHardeningDumpReaderTests.cs, StructuralAnalysisComparisonHardeningIncompleteTests.cs, StructuralAnalysisComparisonHardeningMetricTests.cs, StructuralAnalysisComparisonHardeningReadbackTests.cs, StructuralAnalysisComparisonHardeningRehearsalTests.cs, StructuralAnalysisComparisonHardeningSupport.cs, StructuralAnalysisComparisonHardeningToolTests.cs, StructuralAnalysisComparisonRowTests.cs, StructuralAnalysisComparisonSupport.cs y StructuralAnalysisComparisonToolTests.cs. Sin intersección con ForbiddenWriteScope. No cubierta por ninguna entrada delegada: src/RackCad.Application/StructuralAnalysis/Providers/RamElements/RamDumpReader.cs. scope-mechanical.json afirma PASS para 20 rutas; el diff y la lista de la delegación contradicen esa afirmación."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain --untracked-files=all vacío; estado de rama limpio. git check-ignore -v para la entrada del paquete devolvió .gitignore:3 (artifacts/), cubriendo artifacts/orchestration/I-65/F4-T6-COMPARATOR-HARDENING-nc2/0/R20261013T224014Z-cba7/inputs/worker-handoff.json."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 38477281815: event=push, ref=refs/heads/architecture/interop-analisis-estructural, head_sha=6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1, completed/success; los cuatro jobs requeridos están success. Run 38476630564: push a la misma ref y RedSha d655071b4d00b30526292df6b1d765477cb83446; Core failure esperado, UI y Build UI success, Plugin skipped. TRX copiados: SHA-256 del Core actual D1577536D7BFC1803838E90FC692059B12666C95E0C8E5318D8B2D89942283BF, UI CB88FCA9B5446EF53ED62D6A7705F0E6249D4C5EA8B23CD3FCF069D8C26E6A5A y Core RED 607AE531FC804A60176B754192E4B629D6944C722A070C36A7B680290E24A567; coinciden con RemoteFacts.TestArtifacts."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RequiredTests: FullyQualifiedName~RackCad.Tests.StructuralAnalysisComparison, MinSelected=101, ExpectRed=true. TRX RED 38476630564: selección 272, 141 pass y 131 fail; error=0. Fallos inspeccionados son aserciones (p. ej. Assert.NotEqual/Assert.Equal), no compilación. TRX CurrentSha 38477281815 Core: filtro 272/272 pass y suite 14269/14269 pass. UI: 1654 total, 1637 pass, 0 fail; la diferencia 17 son los Skip registrados como NotExecuted, conforme a la convención indicada. TestResults coincide con los TRX. git diff RedSha CurrentSha -- tests/ vacío, por lo que no altera RT ni ChainRedFiles. RT = git diff --name-only ChainBaseSha ef3536156f6a69cdee42a687930877eefc4a585b RedSha: 14 rutas, resultado ChainRedFiles: tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/generated.dump.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/generated.readback.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/manual-a.dump.json; tests/RackCad.Tests/StructuralAnalysis/Fixtures/rehearsal/manual-b.dump.json; tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonHardeningDumpReaderTests.cs; StructuralAnalysisComparisonHardeningIncompleteTests.cs; StructuralAnalysisComparisonHardeningMetricTests.cs; StructuralAnalysisComparisonHardeningReadbackTests.cs; StructuralAnalysisComparisonHardeningRehearsalTests.cs; StructuralAnalysisComparisonHardeningSupport.cs; StructuralAnalysisComparisonHardeningToolTests.cs; StructuralAnalysisComparisonRowTests.cs; StructuralAnalysisComparisonSupport.cs; StructuralAnalysisComparisonToolTests.cs. git show CurrentSha de HardeningMetricTests confirma nudos euclídeos: diagonales (0.015,0.015,0) FAIL, (0.010,0.010,0) PASS y (0.0116,0.0116,0.0116) FAIL; la prueba existente Node_tolerance_edge_is_two_hundredths_of_an_inch cubre 0.019 PASS/0.021 FAIL. MetricTests cubre m=999/g=1000 FAIL, m=1000/g=1000.9 PASS, m=0/g=0 PASS y m=0/g=0.001 FAIL. HardeningIncompleteTests y ToolTests cubren combinaciones no leídas, resultado INCOMPLETE, NOT_EVALUATED, decisión obligatoria/registrada y código propio; fallo de otra fila conserva FAIL. HardeningReadbackTests cubre lectura estricta y ligadura de values; ToolTests cubre ausencia/desajuste REJECTED, misma ruta/mismos bytes REJECTED, inputs solo cuando se aportan e informe sin inputs sin cambio. ToolTests cubre inyección reconocida solo en tools y rechazo con lectura fallida o no fallida; la guarda existente cubre ausencia de la marca en el producto. HardeningDumpReaderTests cubre categoría ausente, null, espacios, vacía sin cargas y vacía con cargas, con diagnóstico y semántica NO MEDIDA. HardeningRehearsalTests cubre PASS con -90/270 y FAIL con +90, porcentaje de un decimal y miembro invertido. El filtro actual de 272 pruebas pasó entero; diff confirma archivos de prueba sin cambios entre RED y GREEN."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra ambos commits con el trailer literal declarado por Worker.Trailer: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. Relay-record-work identifica modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegación solicita claude-sonnet-5-5/high; relay-record-work Participant registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high. Worker.Provider=Anthropic y su trailer son coherentes con ese modelo."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json contra los términos de AUTOMATION_PLAN §16.10; no hubo coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes registra 0 denegaciones, 0 avisos de límite y 0 errores de herramienta; no registra una denegación de permisos o credenciales ni una orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El diff contiene RamDumpReader.cs, cubierto por el contrato, pero omitido del AllowedWriteScope de la delegación evaluada; la comprobación mecánica suministrada lo contó como cubierto.",
+    "D1 registra que los values de read_back no incluyen conectividad de miembros; la ligadura no la contrasta. La disposición del Coordinator clasifica esto como limitación registrada.",
+    "DEV-I65-F4-19 declara 30 llamadas con cd a ruta absoluta y nombres relativos dentro de la misma llamada; D2 lo evaluó con los registros K1-K5 sin efecto externo ni parada.",
+    "La entrega declara que una inyección con lectura de vuelta ilegible termina en InvalidUsage; la disposición D3 acepta los otros puntos declarados."
+  ],
+  "RecommendedNextAction": "Actualizar la delegación evaluada para cubrir RamDumpReader.cs y repetir la verificación contra el nuevo paquete de entrada."
+}

@@ -1,0 +1,233 @@
+"""I-65 F4 R-3: comprobaciones derivadas sobre la poblacion de la base oficial AISC Shapes Database v16.0.
+
+Solo lectura. Uso: python -I aisc_v16_convention_check.py <aisc-shapes-database-v16.0.xlsx>
+Lee la hoja "Database v16.0" (columnas imperiales) con la biblioteca estandar y comprueba:
+  C-1  tdes = 0.93 * tnom (redondeo a 3 decimales) en todos los HSS rectangulares y cuadrados.
+  C-2  h = Ht - 3*tdes y b = B - 3*tdes (ancho plano tabulado).
+  C-3  A e Ix de los HSS rectangulares y cuadrados con radio exterior Ro = 2*tdes frente a Ro = 1.5*tdes.
+  C-4  J de los perfiles W con la formula de El Darwish y Johnston en dos lecturas de la correccion de alas.
+  C-5  Densidad implicita por el peso nominal publicado (W) y el area (W: A; HSS: area con tnom y Ro = 2*tnom).
+  C-6  Filas del piloto (W12X26, HSS4X4X1/4).
+"""
+import hashlib
+import math
+import re
+import statistics
+import sys
+import zipfile
+import xml.etree.ElementTree as ET
+
+M = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+R = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
+P = "{http://schemas.openxmlformats.org/package/2006/relationships}"
+
+src = sys.argv[1]
+sha = hashlib.sha256(open(src, "rb").read()).hexdigest().upper()
+z = zipfile.ZipFile(src)
+shared = []
+root = ET.fromstring(z.read("xl/sharedStrings.xml"))
+for si in root.findall(M + "si"):
+    shared.append("".join(t.text or "" for t in si.iter(M + "t")))
+wbx = ET.fromstring(z.read("xl/workbook.xml"))
+rels = ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))
+relmap = {r.get("Id"): r.get("Target") for r in rels.iter(P + "Relationship")}
+target = None
+for s in wbx.find(M + "sheets"):
+    if s.get("name") == "Database v16.0":
+        target = relmap[s.get(R + "id")].lstrip("/")
+if not target.startswith("xl/"):
+    target = "xl/" + target
+
+
+def col(ref):
+    n = 0
+    for ch in re.match(r"[A-Z]+", ref).group(0):
+        n = n * 26 + ord(ch) - 64
+    return n - 1
+
+
+rows = []
+for row in ET.fromstring(z.read(target)).iter(M + "row"):
+    vals = {}
+    for c in row.findall(M + "c"):
+        v = c.find(M + "v")
+        if v is None:
+            continue
+        vals[col(c.get("r"))] = shared[int(v.text)] if c.get("t") == "s" else v.text
+    rows.append([vals.get(i) for i in range(max(vals) + 1)] if vals else [])
+header = rows[0]
+# Columnas imperiales: primera aparicion de cada nombre.
+idx = {}
+for i, h in enumerate(header):
+    idx.setdefault(h, i)
+
+
+def get(r, name):
+    i = idx[name]
+    if i >= len(r) or r[i] in (None, "", "–", "-"):
+        return None
+    try:
+        return float(r[i])
+    except ValueError:
+        return r[i]
+
+
+data = [r for r in rows[1:] if r]
+out = []
+out.append("source SHA-256 " + sha)
+out.append("rows " + str(len(data)))
+
+# ---------- C-0: filas del piloto tal como se publican (columnas imperiales) ----------
+imperial_end = header.index("EDI_Std_Nomenclature", 2)
+for r in data:
+    if r[2] in ("W12X26", "HSS4X4X1/4"):
+        cells = []
+        for i in range(min(imperial_end, len(r))):
+            if r[i] not in (None, "", "–", "-"):
+                cells.append("%s=%s" % (header[i], r[i]))
+        out.append("C-0 " + "; ".join(cells))
+
+
+def rel(a, b):
+    return (a - b) / b
+
+
+# ---------- HSS rectangulares y cuadrados ----------
+hss = [r for r in data if r[0] == "HSS" and get(r, "Ht") is not None and get(r, "B") is not None]
+out.append("")
+out.append("HSS rectangular/square rows: %d" % len(hss))
+
+c1_bad = []
+for r in hss:
+    tn, td = get(r, "tnom"), get(r, "tdes")
+    if abs(round(0.93 * tn + 1e-9, 3) - td) > 0.0005:
+        c1_bad.append((r[2], tn, td))
+out.append("C-1 tdes == round(0.93*tnom, 3): %d/%d match; mismatches: %s" % (len(hss) - len(c1_bad), len(hss), c1_bad[:10]))
+c1b_bad = []
+for r in hss:
+    tn, td = get(r, "tnom"), get(r, "tdes")
+    sixteenths = round(tn * 16)
+    exact = sixteenths / 16 if abs(tn * 16 - sixteenths) < 0.02 else tn
+    if abs(round(0.93 * exact + 1e-9, 3) - td) > 0.0005:
+        c1b_bad.append((r[2], tn, exact, td))
+out.append("C-1b same with tnom as exact fraction of 1/16 in. (0.188 -> 0.1875): %d/%d match; mismatches: %s"
+           % (len(hss) - len(c1b_bad), len(hss), c1b_bad[:10]))
+
+c2_bad = []
+for r in hss:
+    Ht, B, h, b, td = get(r, "Ht"), get(r, "B"), get(r, "h"), get(r, "b"), get(r, "tdes")
+    if h is None or b is None:
+        continue
+    if abs((Ht - 3 * td) - h) > 0.051 or abs((B - 3 * td) - b) > 0.051:
+        c2_bad.append((r[2], Ht, B, td, h, b))
+out.append("C-2 h = Ht-3*tdes and b = B-3*tdes within tabulated rounding (0.05 in): %d/%d match; mismatches: %s"
+           % (len(hss) - len(c2_bad), len(hss), c2_bad[:10]))
+
+
+def rounded_rect(Bw, H, Rc):
+    """Area e inercia (eje paralelo a Bw) de un rectangulo Bw x H con esquinas de radio Rc."""
+    k = 1 - math.pi / 4
+    a = k * Rc * Rc
+    q = Rc ** 3 / 6
+    ic = Rc ** 4 / 3 - math.pi * Rc ** 4 / 16
+    y0 = H / 2 - Rc
+    area = Bw * H - 4 * a
+    inertia = Bw * H ** 3 / 12 - 4 * (ic + 2 * y0 * q + y0 * y0 * a)
+    return area, inertia
+
+
+def tube(Bw, H, t, ro):
+    ao, io = rounded_rect(Bw, H, ro)
+    ai, ii = rounded_rect(Bw - 2 * t, H - 2 * t, max(ro - t, 0.0))
+    return ao - ai, io - ii
+
+
+for label, factor in (("Ro = 2.0*tdes", 2.0), ("Ro = 1.5*tdes", 1.5)):
+    dA, dI, worst = [], [], []
+    for r in hss:
+        Ht, B, td = get(r, "Ht"), get(r, "B"), get(r, "tdes")
+        A, Ix = get(r, "A"), get(r, "Ix")
+        a, ix = tube(B, Ht, td, factor * td)
+        dA.append(abs(rel(a, A)))
+        dI.append(abs(rel(ix, Ix)))
+        worst.append((round(100 * abs(rel(ix, Ix)), 3), r[2], Ix, round(ix, 4)))
+    worst.sort(reverse=True)
+    out.append("C-3 %s: worst |dIx| rows (pct, label, tab, derived): %s" % (label, worst[:3]))
+    out.append("C-3 %s: |dA| median %.3f %% max %.3f %%; |dIx| median %.3f %% max %.3f %%; rows with |dA|>0.5%%: %d; |dIx|>0.5%%: %d"
+               % (label, 100 * statistics.median(dA), 100 * max(dA), 100 * statistics.median(dI), 100 * max(dI),
+                  sum(1 for x in dA if x > 0.005), sum(1 for x in dI if x > 0.005)))
+
+# ---------- Perfiles W: J ----------
+w = [r for r in data if r[0] == "W"]
+out.append("")
+out.append("W rows: %d" % len(w))
+
+
+def j_darwish(d, bf, tw, tf, rr, flange_coef):
+    """J con filetes (El Darwish y Johnston, 1965); misma forma que section-props-analytic-check (alpha de regresion).
+    flange_coef: coeficiente de la correccion de extremo POR ALA (0.21 => total 0.42 tf^4; 0.42 => total 0.84 tf^4)."""
+    j_flanges = 2 * bf * tf ** 3 / 3 - 2 * flange_coef * tf ** 4
+    j_web = (d - 2 * tf) * tw ** 3 / 3
+    alpha = -0.042 + 0.2204 * (tw / tf) + 0.1355 * (rr / tf) - 0.0865 * (rr * tw / tf ** 2) - 0.0725 * (tw / tf) ** 2
+    D = ((tf + rr) ** 2 + tw * (rr + tw / 4)) / (2 * rr + tf)
+    return j_flanges + j_web + 2 * alpha * D ** 4
+
+
+def j_rect(d, bf, tw, tf):
+    return (2 * bf * tf ** 3 + (d - 2 * tf) * tw ** 3) / 3
+
+
+for label, fn in (("El Darwish-Johnston, 0.21 per flange", lambda r: j_darwish(*r, 0.21)),
+                  ("El Darwish-Johnston, 0.42 per flange", lambda r: j_darwish(*r, 0.42)),
+                  ("sum of rectangles (no fillets)", lambda r: j_rect(*r[:4]))):
+    devs = []
+    worst = []
+    for r in w:
+        d, bf, tw, tf, kd, J = (get(r, n) for n in ("d", "bf", "tw", "tf", "kdes", "J"))
+        rr = kd - tf
+        val = fn((d, bf, tw, tf, rr))
+        devs.append(rel(val, J))
+        worst.append((abs(rel(val, J)), r[2], J, round(val, 4)))
+    worst.sort(reverse=True)
+    out.append("C-4 %s: dJ median %.2f %% ; |dJ| median %.2f %% ; max %.2f %% ; rows |dJ|<=1%%: %d/%d ; worst: %s"
+               % (label, 100 * statistics.median(devs), 100 * statistics.median([abs(x) for x in devs]),
+                  100 * worst[0][0], sum(1 for x in devs if abs(x) <= 0.01), len(devs), worst[:3]))
+
+# ---------- Densidad implicita ----------
+out.append("")
+rho_w = [get(r, "W") * 144 / get(r, "A") for r in w]
+out.append("C-5 W shapes: W*144/A median %.1f pcf (min %.1f, max %.1f)" % (statistics.median(rho_w), min(rho_w), max(rho_w)))
+rho_h = []
+for r in hss:
+    Ht, B, tn, W = get(r, "Ht"), get(r, "B"), get(r, "tnom"), get(r, "W")
+    a, _ = tube(B, Ht, tn, 2 * tn)
+    rho_h.append(W * 144 / a)
+out.append("C-5 HSS rect/square: W*144/A(tnom, Ro=2*tnom) median %.2f pcf (min %.2f, max %.2f)"
+           % (statistics.median(rho_h), min(rho_h), max(rho_h)))
+
+# ---------- Filas del piloto ----------
+out.append("")
+for r in data:
+    if r[2] == "W12X26":
+        d, bf, tw, tf, kd, J, W, A = (get(r, n) for n in ("d", "bf", "tw", "tf", "kdes", "J", "W", "A"))
+        rr = kd - tf
+        out.append("C-6 W12X26: J tab %s; Darwish 0.21 %.5f; Darwish 0.42 %.5f; rect %.5f; W*144/A = %.2f pcf"
+                   % (J, j_darwish(d, bf, tw, tf, rr, 0.21), j_darwish(d, bf, tw, tf, rr, 0.42), j_rect(d, bf, tw, tf), W * 144 / A))
+    if r[2] == "HSS4X4X1/4":
+        Ht, B, tn, td, W, A, Ix = (get(r, n) for n in ("Ht", "B", "tnom", "tdes", "W", "A", "Ix"))
+        a2, i2 = tube(B, Ht, td, 2 * td)
+        a15, i15 = tube(B, Ht, td, 1.5 * td)
+        an, _ = tube(B, Ht, tn, 2 * tn)
+        out.append("C-6 HSS4X4X1/4: tdes %s = round(0.93*%s=%.4f); A tab %s, Ro2t %.4f, Ro1.5t %.4f; Ix tab %s, Ro2t %.4f, Ro1.5t %.4f; "
+                   "A(tnom) %.5f; W*144/A(tnom) = %.2f pcf" % (td, tn, 0.93 * tn, A, a2, a15, Ix, i2, i15, an, W * 144 / an))
+
+# ---------- Constantes del material ----------
+out.append("")
+E, G = 29000.0, 11200.0
+out.append("C-7 nu implied by E=29000 ksi and G=11200 ksi: E/(2G)-1 = %.5f; G from nu=0.30: %.2f ksi (%.2f %% vs 11200)"
+           % (E / (2 * G) - 1, E / 2.6, 100 * rel(E / 2.6, G)))
+ram = 0.28179435
+out.append("C-8 RAM unit weight 0.28179435 lb/in3 = %.2f pcf (%.2f %% vs 490) = %.1f kg/m3 (lb/in3 * 27679.9047)"
+           % (ram * 1728, 100 * rel(ram * 1728, 490), ram * 27679.9047))
+out.append("C-8 490 pcf = %.1f kg/m3" % (490 / 1728 * 27679.9047))
+print("\n".join(out))

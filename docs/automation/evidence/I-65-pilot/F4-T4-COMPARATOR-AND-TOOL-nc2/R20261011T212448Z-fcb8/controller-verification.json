@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4-COMPARATOR-AND-TOOL",
+  "RunId": "R20261011T212448Z-fcb8",
+  "DelegationRunId": "R20261011T210328Z-2ee6",
+  "WorkRunId": "R20261011T210642Z-ca39",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed y DeathConfirmed=true; LaunchedPid=null. Outcome.OutputWrittenUtc=2026-10-11T21:13:17Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json está presente y coincide con TaskId F4-T4-COMPARATOR-AND-TOOL, RunId R20261011T210642Z-ca39, DelegationRunId R20261011T210328Z-2ee6 y Attempt 3. OutputWrittenUtc 21:13:17Z es posterior a Cession.StartUtc 21:06:46Z; CurrentSha es 7efacd78a8ad411a639953fb21d587e66e8d5475."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git rev-parse confirmó AuthorityRevision 34831380a2f2fd7a2cf5bdd8de05c3281f9efc50 y MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453; la autoridad es ancestro de BaseSha. git diff --name-only MainSha..AuthorityRevision en las autoridades EXTERNAL no mostró cambios; ADR-0050 se trata como UNIT_CHANGE y las autoridades UNIT_DOC se consultaron en AuthorityRevision."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparé la delegación con gate-contract.json: alcances, invariantes, pruebas, autoridades y los IDs/orden de condiciones coinciden; los ámbitos permitidos de la delegación están contenidos en el contrato. La delegación abrevia C-07 y omite «o al revés» (DEV-I65-F4-11); lo registro aquí. A1-A8 del registro de planificación constan en pass y el prompt entregó al Worker el texto completo de C-07."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural dieron 7efacd78a8ad411a639953fb21d587e66e8d5475, igual a CurrentSha; la rama coincide. merge-base --is-ancestor confirmó BaseSha c8f3aa884abbc86c1c0cf4ff112dadda0c26fa68 y RedSha c4660703dd6cb38406dc296698138499076fddcf en la historia de CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "RemoteFacts registra LsRemoteSha=7efacd78a8ad411a639953fb21d587e66e8d5475 y OriginMainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, igual a MainSha; la corrida actual es push de refs/heads/architecture/interop-analisis-estructural sobre CurrentSha. git ls-remote no pudo conectar desde este sandbox; usé RemoteFacts, como permite la instrucción."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha produjo dos archivos. tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonToolTests.cs está cubierto por esa ruta exacta en delegation.json. tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisComparisonSupport.cs no está cubierto por ninguna entrada AllowedWriteScope: no hay coincidencia exacta ni prefijo terminado en «/». No aparece una ruta ForbiddenWriteScope. El archivo scope-mechanical.json dice pass, pero su resultado contradice la comparación archivo por archivo."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no mostró cambios; el árbol está limpio. git check-ignore -v confirmó que la ruta del paquete de entrada queda ignorada por .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 38175418046: evento push, ref y head_sha exactos; los cuatro jobs requeridos terminaron success. RedRun 38175189302 es push del RedSha y el job Tests (Domain + Application) terminó failure. Sus TRX selecciona 81 pruebas focales: 6 pasaron y 75 fallaron; no fue un fallo de compilación."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Los TRX de CurrentSha confirman filtro RackCad.Tests.StructuralAnalysisComparison: 81/81 pasaron; Core completo 14078/14078. El TRX RED selecciona 81: 6 pasaron, 75 fallaron; 74 fallos son NotImplementedException y uno Assert.Throws, sin errores de compilación. RedSha..CurrentSha modifica solo src/ y tools/, sin tocar RT ni ChainRedFiles; ChainRedFiles de ChainBaseSha..RedSha: RackCad.Tests.csproj, StructuralAnalysisComparisonRowTests.cs, StructuralAnalysisComparisonSupport.cs, StructuralAnalysisComparisonToolTests.cs y StructuralAnalysisComparisonVerdictTests.cs. Cobertura observada en pruebas leídas con git show CurrentSha:<ruta>: pureza/sin estado, The_comparator_does_no_input_output_and_keeps_no_clock_or_state; determinismo de bytes/cultura/LF, The_report_is_deterministic_in_value_and_in_bytes, The_report_does_not_depend_on_the_culture y The_serialized_report_uses_LF_and_carries_no_timestamp. Rechazos D-11/STALE, A_read_back_in_a_failed_state_rejects_and_approves_no_row, A_rejection_by_a_gate_is_a_rejection_too y Another_fingerprint_is_stale_and_approves_no_row. Emparejamiento y conectividad, Node_tolerance_edge_is_two_hundredths_of_an_inch, An_ambiguous_node_pairing_fails_and_is_never_resolved_in_silence, A_candidate_paired_twice_fails y A_member_with_its_nodes_inverted_fails_the_connectivity. Matriz y bordes: ejes 0.09/0.11 grados, cargas 0.09/0.11 por ciento y posiciones 0.019/0.021 in en las pruebas de borde correspondientes; también se prueban sección, material, defaults, soportes, liberaciones y dirección de carga. Categorías y filas informativas/no evaluadas: A_generated_category_other_than_OTHER_fails, A_manual_category_other_than_OTHER_is_only_informative, The_self_weight_of_the_loaded_cases_is_informative y The_section_and_material_properties_are_not_evaluated_and_say_who_evaluates_them. INV-13 incluye iguales PASS, nudo desplazado 1 mm, sección/eje invertidos/carga x1000 FAIL, casos positivos de carga en porcentaje/distancia y rechazos/ambigüedad. Herramienta: pruebas de subórdenes/códigos, no sobrescritura, inyección de una mutación y manifiesto, marcador ausente del producto, proyecto en solución y referencia única. Las guardas existentes de INV-14 y literales partidos pasaron en Core; RT confirma que no se modificaron pruebas previas. El TRX UI registra 1654 total, 1637 ejecutadas y 17 NotExecuted (Skip), 0 fallidas."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha muestra los commits RED c4660703 y GREEN 7efacd78; ambos contienen exactamente el trailer declarado: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. El modelo efectivo del Worker en relay-record-work.json es claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "La delegación solicita claude-sonnet-5-5/medium. relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=medium; coincide."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Busqué en los campos de texto libre enumerados en AUTOMATION_PLAN §16.10; no encontré ninguno de los términos restringidos."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Notes del registro de trabajo informan 0 denegaciones y 0 avisos de límite; el único error de herramienta fue superado. El git.exe creado tras la cesión se comprobó terminado por PID, sin señal pendiente de denegación."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "C-05"
+  ],
+  "Findings": [
+    "StructuralAnalysisComparisonSupport.cs cambió entre BaseSha y CurrentSha, pero no está cubierto por AllowedWriteScope de la delegación; por ello la comprobación mecánica de alcance que declaraba pass no concuerda con Git.",
+    "La delegación abrevia el texto de C-07 respecto del contrato y omite «o al revés»; el ID y el orden coinciden, y el prompt entregó al Worker el texto completo."
+  ],
+  "RecommendedNextAction": "Resolver la escritura fuera del alcance permitido y emitir una delegación que cubra expresamente los archivos autorizados antes de continuar."
+}

@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "RD11-AUTOLOADER-TABLE",
+  "RunId": "R20261029T011102Z-2d41",
+  "DelegationRunId": "R20261029T004516Z-bf20",
+  "WorkRunId": "R20261029T005052Z-2be3",
+  "Attempt": 7,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=subagent-completed, DeathConfirmed=true; Cession 2026-10-29T00:50:59Z–01:02:05Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json coincide en TaskId, RunId, DelegationRunId, Attempt, rama y worktree; la entrega se escribió a las 01:01:48Z, después del inicio de la cesión. WorkerStatus=IMPLEMENTATION_COMPLETE."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "AuthorityRevision 91f82d6d83731f48d445c7ad007a814b65c6caa6 es ancestro de BaseSha. La lectura de AUTOMATION_PLAN §16, README §8, contrato, decisión §105, disposición y respuesta literal del Owner, ADR-0050, ADR-0003 y AGENTS.md coincide con sus clases declaradas; merge-base(MainSha, AuthorityRevision)=bb0d5522 y git diff de las autoridades EXTERNAL desde ese merge-base no lista archivos."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparación de delegación y contrato: ForbiddenWriteScope (65), Invariants (10), RequiredTests, StopConditions (31) y Authorities (15) coinciden. Cada entrada del AllowedWriteScope de la delegación está cubierta por el del contrato; la delegación es más estrecha porque omite README.md."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural = 6a58c2b1891174bb5120f0e9e3fb8e13ed952832; rama y worktree coinciden. git merge-base --is-ancestor da exit 0 para BaseSha→CurrentSha y RedSha→CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "RemoteFacts registra LsRemoteSha=CurrentSha y OriginMainSha=MainSha=bb0d5522e8411f66a51fdfb3f1f0d0514b737453. git ls-remote origin se intentó, pero el sandbox no pudo conectar a GitHub; se usan esos RemoteFacts, como permite la instrucción."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lista README.md, deploy/test-verify-bundle.ps1, deploy/verify-bundle.ps1, docs/guias/despliegue.md, docs/guias/interoperabilidad-ram-elements.md, src/RackCad.Plugin/RackCad.Plugin.csproj y tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs. README.md no está en el AllowedWriteScope de delegation.json; los otros seis archivos sí. README.md está permitido por el contrato, pero Scope debe compararse con la delegación aceptada."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain está vacío. git check-ignore -v reconoce la ruta del bundle de trabajo bajo artifacts/ por .gitignore:3."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX: push 40797712877 acredita CurrentSha en la ref exacta y los cuatro jobs requeridos en success; Core 14392/14392, UI 1654 total, 1637 ejecutadas y 1637 aprobadas (17 Skip/NotExecuted). Push 40797120699 acredita RedSha; Core falla y las dos pruebas esperadas fallan por aserción, no compilación. El job Plugin fue skipped por needs, según disposición D2."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RequiredTests: filtro StructuralAnalysis selecciona 1797 (mínimo 1795). TRX RED: 1797 seleccionadas, 1795 aprobadas y fallan las dos pruebas nombradas en el contrato; TRX CurrentSha: 1797/1797 aprobadas. Core completo CurrentSha: 14392/14392. El diff RedSha→CurrentSha no toca RT ni ChainRedFiles; ChainRedFiles resultante: [tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs]. El diff BaseSha→RedSha solo cambia esa prueba y deploy/test-verify-bundle.ps1. RD-INV-01: ElTargetDelBundleCopiaLaTablaDesdeSuFuenteALaMismaRutaRelativaQueLaCompilacion lee el XML del proyecto; RD-INV-02: ElVerificadorDelBundleAdmiteSoloLaRutaDeLaTablaYExigeSuIdentidadConLaFuente y el harness del job Plugin; RD-INV-03: ElHarnessDelVerificadorCubreLaTablaConElValidoYCuatroNegativos y salida CI de 14 casos; RD-INV-04: diff RED solo sustituye la prueba de distribución; RD-INV-05: diff de siete rutas y blob de tabla d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2; RD-INV-06: diff documental de README y dos guías; RD-INV-07 y controles operativos: relay-record-work.json y disposiciones D1–D6."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "Worker.Trailer literal: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. git show --format=%B confirma ese trailer en ambos commits; coincide con el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita Claude Sonnet 5.5 con effort high; relay-record-work.json registra modelo efectivo claude-sonnet-5-5 y effort high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisión de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json: no se encontraron términos prohibidos de AUTOMATION_PLAN §16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra 0 denegaciones y 0 errores de herramienta; no hay aviso de límites de uso ni orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "P-03"
+  ],
+  "Findings": [
+    "README.md fue modificado aunque no figura en el AllowedWriteScope de la delegación aceptada. El informe mecánico de alcance dice pass para siete archivos, pero la comparación independiente por archivo contra la delegación deja README.md sin cobertura.",
+    "La disposición D1 registra una lectura no declarada del checkout principal; el Coordinator determinó que no hubo efectos y que C-12 no se materializa. D5 descarta el P-02 aparente; D6 explica el CRLF del bundle CI.",
+    "No se pudo consultar el remoto desde este sandbox; la comprobación Remote usa los hechos registrados en RemoteFacts."
+  ],
+  "RecommendedNextAction": "Resolver la discrepancia de alcance de README.md con el Coordinator antes de continuar la verificación."
+}

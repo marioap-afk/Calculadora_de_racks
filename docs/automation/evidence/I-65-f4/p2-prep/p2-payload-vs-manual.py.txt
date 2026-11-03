@@ -1,0 +1,106 @@
+"""I-65 P2 (preparacion): comparacion MECANICA de SOLO LECTURA entre la carga util del paquete seleccionado y la especificacion manual
+de REF-CANT-01 (paquete de validacion de ingenieria §2.2-§2.5), leyendo las tablas del documento (sin transcribir valores a mano).
+Uso: python -I p2_payload_vs_manual.py <rackcad-ram-build.py> <I-65-f4-engineering-validation-package.md> <salida.json>
+"""
+import ast
+import json
+import math
+import re
+import sys
+
+script_path, doc_path, out_path = sys.argv[1:4]
+tree = ast.parse(open(script_path, encoding="utf-8").read())
+literal = [n.value.value for n in tree.body if isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") == "PAYLOAD"][0]
+data = json.loads(literal)
+doc = open(doc_path, encoding="utf-8").read()
+
+
+def section(title_prefix):
+    start = doc.index(title_prefix)
+    end = doc.find("\n### ", start + 1)
+    return doc[start:end if end > 0 else len(doc)]
+
+
+def rows(text):
+    out = []
+    for line in text.splitlines():
+        if line.startswith("| `"):
+            out.append([c.strip() for c in line.strip().strip("|").split("|")])
+    return out
+
+
+def num(text):
+    return float(text.replace("−", "-").replace("**", "").replace("°", "").strip())
+
+
+def vec(text):
+    return [num(x) for x in text.strip("()").split(",")]
+
+
+findings, checks = [], 0
+
+
+def expect(label, ok):
+    global checks
+    checks += 1
+    if not ok:
+        findings.append(label)
+
+
+nodes = {n["id"]: n for n in data["nodes"]}
+for r in rows(section("### 2.2 Nudos")):
+    nid = r[0].strip("`")
+    n = nodes.get(nid)
+    expect("nudo %s presente" % nid, n is not None)
+    if n:
+        for axis, col in (("x", 1), ("y", 2), ("z", 3)):
+            expect("nudo %s %s doc=%s payload=%r" % (nid, axis, r[col], n[axis]), math.isclose(num(r[col]), n[axis], rel_tol=0, abs_tol=1e-12))
+expect("8 nudos en el payload", len(data["nodes"]) == 8)
+members = {m["id"]: m for m in data["members"]}
+sec = section("### 2.3 Miembros")
+for r in rows(sec):
+    if "→" not in r[1]:
+        continue
+    mid = r[0].strip("`")
+    m = members.get(mid)
+    expect("miembro %s presente" % mid, m is not None)
+    if m:
+        ni, nj = [x.strip().strip("`") for x in r[1].split("→")]
+        expect("miembro %s conectividad" % mid, (m["nodeI"], m["nodeJ"]) == (ni, nj))
+        expect("miembro %s seccion doc=%s payload=%s" % (mid, r[3], m["section"]), r[3].strip("`") == m["section"])
+        expect("miembro %s material doc=%s payload=%s" % (mid, r[4], m["material"]), r[4].strip("`") == m["material"])
+        expect("miembro %s giro doc=%s payload=%s" % (mid, r[5], m["rotation"]), num(r[5]) == m["rotation"])
+        a, b = nodes[ni], nodes[nj]
+        length = math.dist((a["x"], a["y"], a["z"]), (b["x"], b["y"], b["z"]))
+        expect("miembro %s longitud doc=%s calc=%r" % (mid, r[2], length), math.isclose(num(r[2]), length, rel_tol=0, abs_tol=1e-9))
+expect("7 miembros en el payload", len(data["members"]) == 7)
+axes = [r for r in rows(sec) if len(r) == 4 and r[1].startswith("(")]
+for r in axes:
+    group = [m for m in data["members"] if m["id"].startswith("COL.")] if r[0].startswith("`COL") else [m for m in data["members"] if m["id"].startswith("ARM.")]
+    for m in group:
+        for k, col in (("l1", 1), ("l2", 2), ("l3", 3)):
+            expect("miembro %s %s doc=%s payload=%r" % (m["id"], k, r[col], m.get(k)), m.get(k) is not None and all(math.isclose(p, q, rel_tol=0, abs_tol=1e-12) for p, q in zip(vec(r[col]), m[k])))
+loads = {l["id"]: l for l in data["loads"]}
+for r in rows(section("### 2.5 Cargas")):
+    lid = r[0].strip("`")
+    l = loads.get(lid)
+    expect("carga %s presente" % lid, l is not None)
+    if l:
+        expect("carga %s miembro" % lid, r[1].strip("`") == l["member"])
+        expect("carga %s valor doc=%s payload=%r" % (lid, r[2], l["value"]), math.isclose(num(r[2]), l["value"], rel_tol=1e-12, abs_tol=0))
+        expect("carga %s posicion %% doc=%s payload=%r" % (lid, r[3], l["percent"]), math.isclose(num(r[3]), l["percent"], rel_tol=0, abs_tol=1e-9))
+        expect("carga %s direccion" % lid, l["direction"] == "GLOBAL_Y")
+expect("3 cargas en el payload", len(data["loads"]) == 3)
+restr = {n["id"]: n["restraints"] for n in data["nodes"]}
+expect("COL.FOOT empotrado (6 banderas)", restr.get("COL.FOOT") == [True] * 6)
+expect("otros 7 nudos dx ry rz", all(v == [True, False, False, False, True, True] for k, v in restr.items() if k != "COL.FOOT"))
+expect("caso REF1 OTHER", data["loadCase"] == {"id": "REF1", "category": "OTHER"})
+expect("unidades LB_IN", data["units"] == "LB_IN")
+report = {"result": "IGUAL" if not findings else "DIFERENTE", "checks": checks, "findings": findings,
+          "analysisInputFingerprint": data["analysisInputFingerprint"], "packageFolder": data["packageFolder"],
+          "capabilities": {"version": data["capabilities"]["version"], "coreFunctions": len(data["capabilities"]["coreFunctions"])},
+          "tolerances": data["tolerances"]}
+open(out_path, "x", encoding="utf-8", newline="\n").write(json.dumps(report, ensure_ascii=False, indent=1) + "\n")
+print(report["result"], checks, "comprobaciones;", len(findings), "diferencias")
+for f in findings:
+    print(" -", f)

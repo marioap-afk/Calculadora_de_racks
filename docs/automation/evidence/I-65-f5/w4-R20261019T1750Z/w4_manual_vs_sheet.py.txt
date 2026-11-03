@@ -1,0 +1,77 @@
+"""W4 (I-65): revision de SOLO LECTURA del volcado del modelo manual frente a la hoja de entrada aprobada (no frente al generado).
+Uso: python -I w4_manual_vs_sheet.py <hoja.json> <ram-dump.json manual> <salida.txt>"""
+import json
+import sys
+
+sheet_path, dump_path, out_path = sys.argv[1:4]
+sheet = json.load(open(sheet_path, encoding="utf-8"))
+dump = json.load(open(dump_path, encoding="utf-8"))
+lines, fails = [], []
+
+
+def check(ok, msg):
+    lines.append(("OK   " if ok else "FAIL ") + msg)
+    if not ok:
+        fails.append(msg)
+
+
+check(dump.get("status") == "DUMP OK" and dump.get("errors") == [], "estado %s, errores %s" % (dump.get("status"), dump.get("errors")))
+check(dump.get("combinations") == [], "combinaciones %s" % dump.get("combinations"))
+nodes = {n["id"]: n for n in dump["nodes"]}
+check(len(nodes) == 8, "nudos %d" % len(nodes))
+maxd = 0.0
+for s in sheet["nodes"]:
+    n = nodes.get(s["n"])
+    if n is None:
+        check(False, "falta el nudo %d" % s["n"])
+        continue
+    exp = [s["x_in"], s["y_in"], s["z_in"]]
+    d = max(abs(a - b) for a, b in zip(n["coordinates"], exp))
+    maxd = max(maxd, d)
+    check(d <= 1e-6, "nudo %d coordenadas %s frente a %s (delta max %.2e in)" % (s["n"], n["coordinates"], exp, d))
+    want = [True] * 6 if s["desc"] == "COL.FOOT" else [True, False, False, False, True, True]
+    check(n["restraints"] == want, "nudo %d apoyos %s" % (s["n"], n["restraints"]))
+members = {m["id"]: m for m in dump["members"]}
+check(len(members) == 7, "miembros %d" % len(members))
+for s in sheet["members"]:
+    m = members.get(s["m"])
+    if m is None:
+        check(False, "falta el miembro %d" % s["m"])
+        continue
+    check((m["nodeI"], m["nodeJ"]) == (s["I"], s["J"]), "miembro %d I->J %d->%d" % (s["m"], m["nodeI"], m["nodeJ"]))
+    check(m["section"] == s["section"], "miembro %d seccion %s" % (s["m"], m["section"]))
+    check(m["material"] == s["material"], "miembro %d material %s" % (s["m"], m["material"]))
+    check(abs(m["rotation"] - s["rotation"]) < 1e-9, "miembro %d giro %s" % (s["m"], m["rotation"]))
+    defaults = (not any(m["releases"]) and m["offsetI"] == [0.0] * 3 and m["offsetJ"] == [0.0] * 3
+                and m["stiffnessFactors"] == [1.0] * 4 and m["cardinalPoint"] == 0 and m["axialBehavior"] == 0
+                and m["springI"] == 0.0 and m["springJ"] == 0.0)
+    check(defaults, "miembro %d sin liberaciones y con valores por omision" % s["m"])
+cases = {c["id"]: c for c in dump["loadCases"]}
+check(sorted(cases) == ["CM", "REF1"], "casos %s" % sorted(cases))
+check(cases.get("CM", {}).get("memberLoads") == [], "CM sin cargas")
+ref = cases.get("REF1", {})
+check(ref.get("selfWeight") == [0.0, 0.0, 0.0], "REF1 peso propio %s" % ref.get("selfWeight"))
+lines.append("INFO REF1 categoria %s (la interfaz no ofrece Other; informativa)" % ref.get("category"))
+got = []
+for ml in ref.get("memberLoads", []):
+    for i, l in enumerate(ml["loads"]):
+        got.append((ml["member"], i, l))
+check(len(got) == 6, "cargas en REF1 %d" % len(got))
+maxv = maxp = 0.0
+for s in sheet["loads"]:
+    cand = [g for g in got if g[0] == s["member"] and abs(g[2]["distance"] - float(s["percent"])) < 1e-3]
+    if len(cand) != 1:
+        check(False, "%s: %d coincidencias en el miembro %d" % (s["id"], len(cand), s["member"]))
+        continue
+    l = cand[0][2]
+    rv = abs(l["value"] - s["value_lbf"]) / abs(s["value_lbf"])
+    dp = abs(l["distance"] - float(s["percent"]))
+    maxv, maxp = max(maxv, rv), max(maxp, dp)
+    check(l["direction"] == "Y" and l["isPercentage"] and rv <= 1e-6 and dp <= 1e-6,
+          "%s miembro %d posicion %d: %s lbf (hoja %s, rel %.1e), %s %% (hoja %s), dir %s" % (
+              s["id"], s["member"], cand[0][1] + 1, l["value"], s["value_lbf"], rv, l["distance"], s["percent"], l["direction"]))
+lines.append("RESUMEN delta max coordenadas %.2e in; delta rel max valor %.1e; delta max posicion %.1e %%" % (maxd, maxv, maxp))
+lines.append("VEREDICTO " + ("SIN ERROR DE ENTRADA" if not fails else "ERRORES: %d" % len(fails)))
+open(out_path, "w", encoding="utf-8", newline="\n").write("\n".join(lines) + "\n")
+print("\n".join(lines[-3:]))
+sys.exit(0 if not fails else 1)

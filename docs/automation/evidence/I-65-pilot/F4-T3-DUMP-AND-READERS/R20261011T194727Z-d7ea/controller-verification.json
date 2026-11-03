@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T3-DUMP-AND-READERS",
+  "RunId": "R20261011T194727Z-d7ea",
+  "DelegationRunId": "R20261011T183102Z-7511",
+  "WorkRunId": "R20261011T183618Z-05a9",
+  "Attempt": 2,
+  "VerifiedSha": "76db7642d1bb9494c7f70155d3d3cabe45152bb3",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, TerminalEvent=subagent-completed; Cession.EndUtc=2026-10-11T19:18:40Z; salida de la entrega registrada a las 19:17:56Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json valida con worker-handoff.schema.json. TaskId, Attempt, DelegationRunId y RunId coinciden con la delegación y el relevo; Outcome.OutputWrittenUtc=19:17:56Z es posterior a Cession.StartUtc=18:36:27Z. Worker.Trailer literal: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leí con git show las autoridades UNIT_DOC/UNIT_CHANGE en c73058f y las EXTERNAL en bb0d5522. Frozen: yes; I-65 decisions §26 presente; ADR-0050 aceptado. git merge-base MainSha AuthorityRevision devuelve bb0d5522; diff de autoridades EXTERNAL MainSha..AuthorityRevision vacío; diff de AuthorityRevision..CurrentSha no modifica autoridades declaradas ni secciones UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json, delegation.json y relay-record-work.json validan sus esquemas. Comparación directa: AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions, Authorities y RequiredTests de delegación y contrato son iguales; A1-A8 del registro de planificación están en pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/interop-analisis-estructural devuelven 76db7642. git merge-base --is-ancestor devuelve éxito para BaseSha c73058f..CurrentSha y RedSha a283e0cc..CurrentSha. Rama y worktree coinciden con la delegación; ambos commits del rango tienen el trailer declarado, coherente con claude-sonnet-5-5."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.RemoteFacts registra LsRemoteSha=76db7642 y OriginMainSha=bb0d5522, que coincide con CurrentSha y MainSha. git ls-remote se intentó, pero la conexión a GitHub falló por el proxy; uso RemoteFacts según la instrucción. El registro confirma que origin/main no avanzó."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha produce 15 altas. Las siete rutas src/RackCad.Application/StructuralAnalysis/Providers/RamElements/{RamDumpDiagnosticCodes.cs,RamDumpPayload.cs,RamDumpReader.cs,RamDumpScriptFactory.cs,RamDumpScriptTemplate.cs,RamStrictJson.cs,RamTransferReaders.cs} están cubiertas por el prefijo permitido src/RackCad.Application/StructuralAnalysis/Providers/RamElements/; StructuralReadback.cs está cubierta por su ruta exacta permitida. Las siete rutas tests/RackCad.Tests/StructuralAnalysis/{StructuralAnalysisRamElementsDumpPayloadTests.cs,StructuralAnalysisRamElementsDumpReaderTests.cs,StructuralAnalysisRamElementsDumpRoundTripTests.cs,StructuralAnalysisRamElementsDumpSourceTests.cs,StructuralAnalysisRamElementsDumpSupport.cs,StructuralAnalysisRamElementsDumpTemplateTests.cs,StructuralAnalysisRamElementsDumpTransferReaderTests.cs} están cubiertas por tests/RackCad.Tests/StructuralAnalysis/. Ninguna intersecta ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain está vacío; relay Entry registra CleanTree=true. git check-ignore -v sobre worker-handoff.json devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: push, refs/heads/architecture/interop-analisis-estructural, head_sha exacto 76db7642, los cuatro jobs requeridos en success. RedRun: push de la misma rama y head_sha a283e0cc; job Core failure. TRX copiados coinciden con los SHA-256 de RemoteFacts: GREEN Core 1D9019DB…C43DA43; RED Core 30DA75B6…E79E0F; UI 825CBED5…42893."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RequiredTests: FullyQualifiedName~RackCad.Tests.StructuralAnalysisRamElementsDump, mínimo 25, ExpectRed=true. TRX RED: 294 seleccionadas, 282 fallidas y 12 superadas; 13,997 ejecutadas, 13,715 superadas, 282 fallidas, error=0. El TRX muestra System.NotImplementedException y fallos de aserción, con pruebas ejecutadas; no es un fallo de compilación. TRX GREEN: 294/294 focales superadas y Core 13,997/13,997 superadas; concuerda con TestResults. RT = diff tests entre ChainBaseSha c73058f y RedSha: las siete nuevas rutas StructuralAnalysisRamElementsDump* enumeradas en Scope. git diff RedSha CurrentSha -- tests/ está vacío; por tanto ChainRedFiles resultante contiene esas siete rutas. Cobertura del diff verificada con git show CurrentSha:ruta y TRX GREEN: script fijo/ASCII/imports/carga útil y guardas sintéticas, StructuralAnalysisRamElementsDumpTemplateTests (incluye LosImportsSonSoloElModuloDelProveedorSuGetCoreJsonYMath y ElScriptRenderizadoCumpleLaGuardaYSoloDifiereDeLaPlantillaEnLaLineaDeLaCargaUtil); solo lectura y puerta de capacidades, StructuralAnalysisRamElementsDumpTemplateTests y StructuralAnalysisRamElementsDumpPayloadTests (LasFuncionesDelNucleoQueExigeLaPuertaDelVolcadoEstanContenidasEnLas207DeP1); contrato de unidades y estados, StructuralAnalysisRamElementsDumpReaderTests (UnVolcadoNoLeidoEnLbInEsInvalidoConUnCodigoQueNombraElParDeUnidades, UnParInicialDistintoDeLbInRestauradoSeAceptaYSeRegistra, UnParInicialDistintoQueNoSeRestauroEsInvalido); datos del volcado y API, ElVolcadoValidoDaElModeloLeidoSinDiagnosticosYConLosDatosDelVolcado; lector estricto, variantes inválidas y estados fallidos, StructuralAnalysisRamElementsDumpReaderTests; marco neutral y carga absoluta/porcentual, LosPuntosVuelvenAlMarcoNeutralConXIgualXYIgualMenosZYZIgualY, LasBanderasDeApoyoVuelvenAlOrdenNeutralTxTyTzRxRyRz, LosEjesLocalesVuelvenAlMarcoNeutralComoVectores y ElPorcentajeSeConvierteEnDistanciaAbsolutaPorLaLongitudDelMiembro; ida y vuelta de REF-CANT-01 a 1e-9, StructuralAnalysisRamElementsDumpRoundTripTests (LaIdaYVueltaDeRefCant01ReproduceNudosEjesBanderasYCargasAToleranciaDeUnNanoMetro); lectura de vuelta y manifiesto estrictos, StructuralAnalysisRamElementsDumpTransferReaderTests (LaLecturaDeVueltaSoloEsAprobadaConLaFormaCompletaYElEstadoExacto, UnRechazoDeCualquierPuertaNuncaEsAprobado, ElManifiestoRealDelPaqueteDaLaHuellaDeEntradaYLaVersionDelAdaptador); tipos neutrales sin proveedor/Systems/Providers, conversiones ni E/S, StructuralAnalysisRamElementsDumpSourceTests (ElArchivoNeutralNoTieneIdentidadDeProveedorNiReferenciasASystemsOProvidersNiLiteralesDeConversion, ElArchivoNeutralNoHaceEntradaYSalidaDeArchivos); INV-14 y forma, las siete pruebas son altas nuevas, el diff no cambia pruebas existentes y el Core GREEN incluye las guardas de INV-14."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra dos commits; ambos llevan literalmente Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, coherente con el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.Participant registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high; coinciden con la celda/modelo y el effort elegibles de la delegación."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisé WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json contra la lista de AUTOMATION_PLAN §16.10; no hay coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes registra 0 denegaciones y 0 avisos de límite. El único error de herramienta figura como superado; no queda orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El Worker declaró BLOCKED/STOP por C-08 tras una sola invocación python --version posterior a ambos commits; el registro de trabajo y el análisis confirman la llamada, aunque la entrega indica que no puede confirmar si el alias lanzó un intérprete real. La disposición literal del Owner reconoce y acepta esta desviación únicamente para esta ejecución, con los hechos indicados, y preserva C-08 para futuras ejecuciones; la aplico al verificar el mismo CurrentSha, sin cambiar la autoridad.",
+    "La disposición CD-I65-F4-14 del Coordinator mantiene el trabajo y los intentos sin cambios. La verificación anterior R20261011T192137Z-51fd dejó una salida histórica EXECUTION_BLOCKED/STOP con las 14 comprobaciones en pass, combinación incoherente según README §8; el archivo anterior y su registro de coherencia permanecen sin modificar.",
+    "git ls-remote no pudo conectar al remoto en este entorno; la comprobación remota se apoya en RemoteFacts y en la referencia remota local, ambas con el SHA exacto registrado."
+  ],
+  "RecommendedNextAction": "Custodiar esta verificación junto con la disposición específica del Owner y continuar la secuencia autorizada de I-65 F4."
+}

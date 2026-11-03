@@ -1,0 +1,109 @@
+I-65 — OWNER AUTHORIZATION
+F4 Controlled Resumption — Final GO
+He revisado el preflight satisfactorio y los contratos propuestos de F4-T6-COMPARATOR-HARDENING y F4-T5-PLUGIN-COMMAND.
+1. Decisión del Owner
+F4 CONTROLLED RESUMPTION = GO.
+Autorizo continuar la implementación de las dos cadenas pendientes de F4 en el entorno original de RackCad, sin máquina virtual.
+Acepto expresamente el riesgo operativo residual de escrituras accidentales fuera del worktree, sin eliminar las condiciones de parada ni los controles existentes.
+La autorización se limita al alcance congelado de I-65.
+2. A65-F4-01 — Error relativo de cargas
+APPROVED: referencia = valor del modelo manual.
+Calcular la diferencia relativa respecto de la magnitud de la carga manual, no respecto del mayor valor entre manual y generado.
+Si el valor manual es cero, aplicar una comparación absoluta con tolerancia explícita y dimensionalmente correcta, sin división entre cero.
+No modificar otras tolerancias del Freeze.
+Mantener la prueba discriminatoria m = 999, g = 1000 conforme al contrato y las tolerancias existentes.
+3. Presupuesto e intentos
+Codex invocation cap = 46.
+Mantener las 28 invocaciones ya consumidas.
+max_attempts = 6.
+Mantener `attempts = 3`.
+No reiniciar contadores ni borrar desviaciones históricas.
+El presupuesto adicional solo puede utilizarse para completar las dos cadenas autorizadas de F4 y sus verificaciones.
+4. Primera cadena — Comparator Hardening
+Autorizo F4-T6-COMPARATOR-HARDENING conforme al contrato presentado, incluyendo:
+
+* A65-F4-01: distancia euclídea y error relativo de cargas.
+* A65-F4-02: ningún PASS global con combinaciones no evaluadas.
+* A65-F4-03: integridad y trazabilidad del volcado generado.
+* A65-F4-04: reconocimiento y rechazo de paquetes de inyección.
+* A65-F4-05: tratamiento controlado de categorías vacías.
+* A65-F4-06: ensayo general mediante fixtures sintéticos.
+
+Utiliza RED/GREEN, Controller, controles negativos, CI y revisión conforme a I-61.
+No introduzcas arquitectura nueva fuera del Freeze.
+5. Segunda cadena — Plugin Command
+Autorizo F4-T5-PLUGIN-COMMAND conforme al contrato de corrección reemitido.
+Incluye:
+
+* Comando RACKRAMPAQUETE.
+* Distribución de la tabla de mapeo.
+* Censos de comandos.
+* Listas G1.
+* Guardas y pruebas correspondientes.
+
+Antes de emitir el contrato definitivo de T5, vuelve a verificar el estado de I-64 y origin/main.
+Si I-64 no está integrada, aplica el censo de 37 a 38 exclusivamente con RACKRAMPAQUETE.
+Si I-64 está integrada, coordina el rebase y la reconciliación de los dos comandos conforme a las autoridades vigentes.
+No modifiques la rama de I-64.
+6. Controles operativos
+Mantén las comprobaciones propuestas:
+
+1. Estado Git y hashes de archivos protegidos antes y después de cada cesión.
+2. Comprobación del directorio efectivo del Worker.
+3. Uso de rutas absolutas para operaciones sobre archivos.
+4. Comprobación mecánica del alcance.
+5. Custodia y revisión de transcripciones.
+6. STOP ante modificaciones externas inesperadas.
+
+La aceptación del riesgo residual no modifica las condiciones de parada del protocolo.
+No introduzcas cambios administrativos, ACL, mecanismos de aislamiento o infraestructura de I-62.
+7. Registro de decisiones
+Autorizo el commit inicial de registro y evidencia, incluyendo:
+
+* Decisiones del Owner.
+* Sustitución operativa del Modelo S1 y sus excepciones, conservando el historial.
+* Contratos y concreciones de F4.
+* Estado y contadores.
+
+Verifica la identidad y los hashes de los textos custodiados antes de registrarlos.
+Conserva el Freeze y ADR-0050 sin cambios.
+8. Ejecución
+Procede autónomamente en el siguiente orden:
+
+1. Registrar y publicar las decisiones autorizadas.
+2. Emitir y validar el contrato definitivo de T6.
+3. Planificación y aceptación A1–A8.
+4. Worker de T6 con RED/GREEN.
+5. Verificación y controles negativos.
+6. Custodia de T6.
+7. Revalidar conflictos y emitir T5.
+8. Worker de T5 con RED/GREEN.
+9. Verificación y controles negativos.
+10. Revisión independiente del Architect.
+
+Si I-64 está ocupando el host con una ventana activa que pudiera entrar en conflicto, pospón las actividades conflictivas y conserva la prioridad de su ventana.
+9. Límites
+No ejecutar RAM Elements.
+No modificar código de I-52, I-62, I-64 ni ID30.
+No ampliar el Freeze.
+No iniciar F5, F6 o F7.
+No declarar GATE PASS de F4 hasta completar la validación real de ingeniería y los requisitos del ciclo de vida.
+Si aparece una condición STOP, aplica el protocolo vigente y solicita una decisión cuando corresponda.
+10. Entregable
+Al concluir las dos cadenas, presenta:
+
+1. SHA y CI.
+2. Estado de T6 y T5.
+3. Pruebas y controles negativos.
+4. Resultado de la revisión del Architect.
+5. Consumo final de Codex e intentos.
+6. Desviaciones e incidentes.
+7. Estado de los mapeos de materiales.
+8. Pendientes para la primera corrida real en RAM.
+9. Recomendación GO / NO-GO para la validación real.
+
+IMPLEMENTATION AUTHORIZATION = F4-T6 + F4-T5 ONLY.
+ORIGINAL ENVIRONMENT = APPROVED.
+RESIDUAL OPERATIONAL RISK = ACCEPTED.
+RAM EXECUTION = NOT AUTHORIZED.
+Continúa autónomamente dentro del alcance autorizado y detente antes de la primera corrida real en RAM Elements.

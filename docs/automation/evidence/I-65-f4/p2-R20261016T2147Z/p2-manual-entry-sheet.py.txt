@@ -1,0 +1,68 @@
+"""I-65 P2: hoja de entrada del modelo manual derivada SOLO de la especificacion congelada (procedimiento manual de REF-CANT-01).
+Convierte a las unidades de la interfaz sin cambiar la configuracion de RAM (Ingles: longitudes en ft, cargas puntuales en kip):
+pies = pulgadas / 12, kip = lbf / 1000; los porcentajes, giros y banderas no cambian. No lee el paquete ni el modelo generado.
+Uso: python -I p2_manual_entry_sheet.py <I-65-f4-ref-cant-01-manual-procedure.md> <salida.json>
+"""
+import json
+import sys
+
+doc_path, out_path = sys.argv[1:3]
+doc = open(doc_path, encoding="utf-8").read()
+
+
+def section(prefix):
+    start = doc.index(prefix)
+    end = doc.find("\n## ", start + 1)
+    return doc[start:end]
+
+
+def rows(text):
+    return [[c.strip() for c in line.strip().strip("|").split("|")] for line in text.splitlines() if line.startswith("| N") or line.startswith("| M") or line.startswith("| `P")]
+
+
+def num(t):
+    return float(t.replace("−", "-").replace("**", "").replace("°", "").split("(")[0].strip())
+
+
+nodes = []
+for r in rows(section("## 3. Nudos")):
+    if not r[0].startswith("N"):
+        continue
+    x, y, z = num(r[2]), num(r[5]), num(r[6])
+    nodes.append({"n": int(r[0][1:]), "desc": r[1].strip("`"), "x_in": x, "y_in": y, "z_in": z,
+                  "x_ft": "%.8f" % (x / 12.0), "y_ft": "%.8f" % (y / 12.0), "z_ft": "%.8f" % (z / 12.0)})
+index = {n["desc"]: n["n"] for n in nodes}
+members = []
+for r in rows(section("## 4. Miembros")):
+    if not r[0].startswith("M"):
+        continue
+    i, j = [p.strip().strip("`") for p in r[2].split("→")]
+    members.append({"m": int(r[0][1:]), "desc": r[1].strip("`"), "I": index[i], "J": index[j], "length_in": num(r[3])})
+secmat = {}
+for r in [[c.strip() for c in l.strip().strip("|").split("|")] for l in section("## 5. Secciones").splitlines() if l.startswith("| `")]:
+    secmat["COL" if r[0].startswith("`COL") else "ARM"] = {"section": r[1].split("(")[0].strip().strip("`"), "material": r[2].strip("`")}
+rot = {}
+for r in [[c.strip() for c in l.strip().strip("|").split("|")] for l in section("## 6. Ejes").splitlines() if l.startswith("| `")]:
+    rot["COL" if r[0].startswith("`COL") else "ARM"] = num(r[1])
+for m in members:
+    k = "COL" if m["desc"].startswith("COL") else "ARM"
+    m.update({"section": secmat[k]["section"], "material": secmat[k]["material"], "rotation": rot[k]})
+loads = []
+for r in rows(section("## 8. Cargas")):
+    if not r[0].startswith("`P"):
+        continue
+    mem = r[1].strip("`")
+    value = num(r[2])
+    loads.append({"id": r[0].strip("`"), "member_desc": mem, "member": [m["m"] for m in members if m["desc"] == mem][0],
+                  "value_lbf": value, "value_kip": "%.9f" % (value / 1000.0), "percent": "%.6f" % num(r[3])})
+sheet = {"source": doc_path, "units_interface": "Ingles (ft, kip) sin cambios de configuracion",
+         "restraints": {"COL.FOOT": "dx dy dz rx ry rz", "otros": "dx ry rz"}, "releases": "ninguna",
+         "loadCase": {"id": "REF1", "category": "DL (la interfaz no ofrece Other; informativa)", "selfWeight": "no", "combinations": 0},
+         "nodes": nodes, "members": members, "loads": loads}
+open(out_path, "x", encoding="utf-8", newline="\n").write(json.dumps(sheet, ensure_ascii=False, indent=1) + "\n")
+for n in nodes:
+    print("N%d %-22s x=%s y=%s z=%s" % (n["n"], n["desc"], n["x_ft"], n["y_ft"], n["z_ft"]))
+for m in members:
+    print("M%d %-16s %d->%d %s / %s rot=%g (L=%.6f in)" % (m["m"], m["desc"], m["I"], m["J"], m["section"], m["material"], m["rotation"], m["length_in"]))
+for l in loads:
+    print("%s M%d %s kip at %s %%" % (l["id"], l["member"], l["value_kip"], l["percent"]))

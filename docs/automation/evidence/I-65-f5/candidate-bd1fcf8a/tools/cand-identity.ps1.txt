@@ -1,0 +1,51 @@
+# Identidad de la salida del Candidato de hito de F5: manifiestos, versiones, tabla, archivo de cargas. Solo lectura de la salida;
+# escribe solo en <OutDir> (scratchpad) y crea D:\r65-smoke\<sha8>\inputs con la copia LF del archivo de cargas (desde el blob de git).
+# Uso: pwsh -NoProfile -File cand_identity.ps1 <worktree> <sha> <OutDir>
+param([string]$Wt, [string]$Sha, [string]$OutDir)
+$ErrorActionPreference = 'Stop'
+$s8 = $Sha.Substring(0, 8)
+$smk = "D:\r65-smoke\$s8"
+$bin = Join-Path $smk 'bin-Debug-net8.0-windows'
+$tool = Join-Path $smk 'ramtool'
+function Sha([string]$p) { (Get-FileHash -LiteralPath $p -Algorithm SHA256).Hash.ToLower() }
+function Manifest([string]$dir, [string]$out) {
+    $rows = Get-ChildItem -LiteralPath $dir -Recurse -File | Sort-Object { $_.FullName.Substring($dir.Length + 1).Replace('\', '/') } -Culture ([Globalization.CultureInfo]::InvariantCulture) | ForEach-Object {
+        $rel = $_.FullName.Substring($dir.Length + 1).Replace('\', '/')
+        "{0}  {1}  {2}" -f $rel, (Sha $_.FullName), $_.Length
+    }
+    [IO.File]::WriteAllText($out, (($rows -join "`n") + "`n"), (New-Object Text.UTF8Encoding($false)))
+    @($rows).Count
+}
+$n1 = Manifest $bin (Join-Path $OutDir 'output-manifest.txt')
+$n2 = Manifest $tool (Join-Path $OutDir 'ramtool-manifest.txt')
+$lines = @()
+$lines += "sha=$Sha"
+$lines += "output_dir=$bin files=$n1 manifest_sha256=" + (Sha (Join-Path $OutDir 'output-manifest.txt'))
+$lines += "ramtool_dir=$tool files=$n2 manifest_sha256=" + (Sha (Join-Path $OutDir 'ramtool-manifest.txt'))
+foreach ($f in 'RackCad.Plugin.dll', 'RackCad.Application.dll', 'RackCad.Domain.dll', 'RackCad.UI.dll') {
+    $p = Join-Path $bin $f
+    $lines += "{0} sha256={1} productVersion={2}" -f $f, (Sha $p), (Get-Item -LiteralPath $p).VersionInfo.ProductVersion
+}
+foreach ($f in 'RackCad.StructuralAnalysis.RamTool.dll', 'RackCad.StructuralAnalysis.RamTool.exe') {
+    $p = Join-Path $tool $f
+    $lines += "ramtool/{0} sha256={1} productVersion={2}" -f $f, (Sha $p), (Get-Item -LiteralPath $p).VersionInfo.ProductVersion
+}
+$table = Join-Path $bin 'structural-analysis\ram-elements\section-material-map.json'
+$tb = [IO.File]::ReadAllBytes($table)
+$blob = (& git -C $Wt hash-object --no-filters -- $table).Trim()
+$blobAtSha = (& git -C $Wt rev-parse "${Sha}:assets/structural-analysis/ram-elements/section-material-map.json").Trim()
+$lines += "table sha256=" + (Sha $table) + " bytes=$($tb.Length) hasCR=" + ([Array]::IndexOf($tb, [byte]13) -ge 0) + " git_blob_of_bytes=$blob blob_at_sha=$blobAtSha"
+# Copia LF del archivo de cargas de OV-I65-02 desde el blob del SHA exacto
+$inputs = Join-Path $smk 'inputs'
+if (-not (Test-Path -LiteralPath $inputs)) { [void](New-Item -ItemType Directory -Path $inputs) }
+$loads = Join-Path $inputs 'ov-i65-02.loads.json'
+if (Test-Path -LiteralPath $loads) { throw "ya existe: $loads" }
+$psi = New-Object Diagnostics.ProcessStartInfo 'git', "-C `"$Wt`" cat-file blob ${Sha}:docs/automation/evidence/I-65-f5-prep/ov-i65-02.loads.json"
+$psi.RedirectStandardOutput = $true; $psi.UseShellExecute = $false
+$pr = [Diagnostics.Process]::Start($psi); $ms = New-Object IO.MemoryStream; $pr.StandardOutput.BaseStream.CopyTo($ms); $pr.WaitForExit()
+if ($pr.ExitCode -ne 0) { throw "git cat-file fallo" }
+[IO.File]::WriteAllBytes($loads, $ms.ToArray())
+$lb = [IO.File]::ReadAllBytes($loads)
+$lines += "loads=$loads sha256=" + (Sha $loads) + " bytes=$($lb.Length) hasCR=" + ([Array]::IndexOf($lb, [byte]13) -ge 0)
+[IO.File]::WriteAllText((Join-Path $OutDir 'identity.txt'), (($lines -join "`n") + "`n"), (New-Object Text.UTF8Encoding($false)))
+$lines

@@ -1,0 +1,73 @@
+I-65 — OWNER DISPOSITION
+F5 Milestone Candidate Declaration
+He revisado la preparación de F5, con Candidato propuesto `bd1fcf8a8dc1339c0a7d4c1d9a379186dbb1b109`, CI 39187567306 en PASS 4/4 y veredicto independiente del Architect CONFORMANT WITH OBSERVATIONS, 0 REQUIRED.
+1. Autorización
+F5 MILESTONE CANDIDATE DECLARATION = AUTHORIZED, CONDITIONAL.
+Autorizo declarar el Candidato F5 sobre el SHA exacto indicado, siempre que las comprobaciones inmediatas de LIFECYCLE §8 y de la guía §7.1 permanezcan satisfactorias.
+Antes de declarar:
+
+* Fetch fresco y comprobación de `origin/main`.
+* SHA exacto y árbol limpio.
+* Freeze y ADR-0050 intactos.
+* DLL `81299b87…fef5`, tabla, archivo de cargas y biblioteca con los hashes aprobados.
+* Pruebas y CI válidos sobre ese SHA.
+* Cero REQUIRED abiertos.
+* Conformidad del Architect y Coordinator.
+* Ausencia de modificaciones funcionales posteriores.
+
+Si alguna condición falla, STOP.
+2. Disposición A65-F5C-01
+Acepto exclusivamente para el Candidato de hito F5 que los commits documentales posteriores puedan registrar:
+
+* Evidencia de pruebas y CI.
+* Conformidades.
+* Declaración del Candidato.
+* Autorizaciones operativas.
+* Informes de ejecución.
+
+Esto no permite modificar el contrato de aceptación ni corregir retroactivamente oráculos.
+Cualquier cambio de producto, Freeze, cargas, tabla, tolerancias, oráculos o matriz de aceptación exige nueva evaluación y, si corresponde, nuevo SHA y repetición de evidencia.
+La disposición no constituye precedente automático para FINAL_CANDIDATE_SHA de READY.
+3. Observaciones del Architect
+Registra:
+
+* A65-F5C-02 y 07: atendidas según la evidencia presentada.
+* A65-F5C-03: exigir las identidades exactas de herramientas en W3/W4.
+* A65-F5C-04: mantener una única inversión de signo conforme al contrato. No aplicar además una segunda inversión de dirección.
+* A65-F5C-05: reservar ventana W4 de hasta 2.5 horas, con STOP al límite.
+* A65-F5C-06: redactar las capturas antes de cualquier publicación, manteniendo información técnica legible.
+
+Para A65-F5C-08 y A65-F5C-09, recupera su texto íntegro y presenta una disposición específica. No las cierres por inferencia.
+Si una observación resulta material para el contrato o impide READY, STOP y eleva la decisión.
+4. Privacidad
+PRIVACY HOLD = ACTIVE.
+El repositorio continúa público conforme a la última comprobación informada.
+No publicar nuevas capturas, `.trx` íntegros ni datos identificables.
+No reescribir historial.
+No modificar la visibilidad por cuenta propia.
+Verificar en solo lectura la privacidad cuando el Owner comunique que ha cambiado la configuración.
+5. Declaración y custodia
+Si el procedimiento permite declarar el Candidato con las observaciones anteriores pendientes de disposición no bloqueante, registra la declaración formal de F5.
+Custodia la identidad del SHA, las pruebas, la CI, las conformidades y la decisión del Owner.
+Si LIFECYCLE exige resolver todas las observaciones antes de declarar, prepara el bloque y detente en lugar de omitirlas.
+6. Restricciones
+F5 CANDIDATE DECLARATION = CONDITIONAL GO.
+W3 AUTOCAD EXECUTION = NO.
+W4 RAM EXECUTION = NO.
+F5 GATE PASS = NO.
+READY FINAL = NO.
+No modificar código, tabla, tolerancias ni Freeze.
+No consumir Codex ni attempts adicionales.
+No iniciar F7 ni integrar la rama.
+7. Entregable
+Presenta:
+
+1. Resultado de las verificaciones inmediatas.
+2. Estado de A65-F5C-01..09.
+3. Declaración formal o bloqueo exacto.
+4. SHA y hashes custodiados.
+5. Estado actualizado de privacidad.
+6. Condiciones pendientes para W3.
+7. Presupuesto restante.
+
+Continúa dentro del alcance y detente antes de W3.

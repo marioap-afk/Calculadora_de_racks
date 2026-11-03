@@ -1,0 +1,14 @@
+{
+ "stop": false,
+ "findings": [
+  {
+   "class": "OWN",
+   "where": "c:\\users\\alejandra-mendoza\\.codex\\worktrees\\architecture-interop-analisis-estructural",
+   "head": [
+    "ef3536156f6a69cdee42a687930877eefc4a585b",
+    "6422e5b0cd7d5a6d82f5b921d0418b66a45c0ad1"
+   ],
+   "status": []
+  }
+ ]
+}

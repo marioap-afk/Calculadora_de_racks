@@ -1,0 +1,75 @@
+I-65 — OWNER DISPOSITION
+F4 Host Coordination and Combination Validation
+He revisado la preparación publicada en `da5f8cfe`, con CI 38495297376 en PASS 4/4.
+1. Decisión
+Autorizo avanzar exclusivamente con:
+
+1. Coordinación formal del host de AutoCAD.
+2. Preparación y coordinación de la medición M-05c.
+3. Revisión técnica de las propiedades estructurales del piloto.
+
+No autorizo todavía modificar las dos filas a `verified`, ejecutar NETLOAD ni realizar una corrida del adaptador en RAM Elements.
+2. Solicitud de host
+HOST RELEASE REQUEST = AUTHORIZED.
+Autoriza enviar la solicitud formal a los Coordinators de I-52 e I-64.
+La solicitud debe contener:
+
+* Ventana solicitada.
+* Identidad del DLL y su SHA-256 cuando esté disponible.
+* Perfil actual de AutoCAD y referencia de seguridad.
+* Método de captura preflight/POST.
+* Operaciones previstas y limitaciones.
+* Orden respecto a Smoke-1 de I-64.
+* Necesidad de cargar el DLL una sola vez.
+
+La solicitud no constituye RELEASE.
+No abras AutoCAD hasta recibir los ACK y la liberación formal de las autoridades correspondientes.
+3. Combinaciones — OD-F4-14
+M-05c = APPROVED FOR PLANNING.
+Acepto la estrategia de verificar la capacidad del volcado para identificar una combinación creada manualmente en un modelo desechable.
+La medición deberá demostrar que:
+
+* Una combinación existente es detectada.
+* El volcado distingue cero combinaciones de combinaciones no evaluadas.
+* El comparador no produce PASS global ante datos incompletos.
+* Las combinaciones que no puedan verificarse producen INCOMPLETE o STOP según el contrato.
+
+No ejecutes M-05c sin autorización específica para abrir RAM Elements.
+No modifiques el Freeze ni cambies artificialmente INCOMPLETE a PASS.
+4. Propiedades de ingeniería
+Mantén V-01 a V-09 pendientes de validación.
+Prepara una revisión breve y concreta de los valores y fuentes disponibles, priorizando:
+
+* HSS 4X4X1/4.
+* E y ν o G.
+* Edición del catálogo de RAM.
+* Correspondencia exacta de materiales.
+
+No declares propiedades verificadas basándote únicamente en la coincidencia entre los catálogos AISC y RAM.
+Mantén DIF-01 como diferencia informativa exclusiva del piloto sin peso propio.
+5. Actualización de mapeos
+La futura actualización a `verified` queda condicionada a la validación técnica.
+Acepto reservar provisionalmente:
+
+* Codex: tope 48.
+* `max_attempts`: 9.
+
+No habilites esas ampliaciones todavía.
+No emitas el contrato ni ejecutes Workers hasta la aprobación de las filas.
+6. Entregable
+Presenta:
+
+1. Respuestas de I-52 e I-64.
+2. Estado de la ventana de host.
+3. Procedimiento definitivo de preflight/POST.
+4. Plan M-05c.
+5. Tabla de propiedades pendientes de aprobación.
+6. Autorizaciones concretas para el siguiente paso.
+
+No repitas Discovery, Freeze, F1, F3 ni el trabajo verificado de F4.
+HOST COORDINATION = AUTHORIZED.
+M-05c PLANNING = AUTHORIZED.
+AUTOCAD EXECUTION = NO.
+RAM EXECUTION = NO.
+MAPPING UPDATE = NO.
+F4 GATE PASS = NO.

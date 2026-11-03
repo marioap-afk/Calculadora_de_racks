@@ -1,0 +1,36 @@
+21:44:34.790Z inicio
+21:44:52.389Z G1 acad_accoreconsole_ramelements=0 procesos_con_modulo_RackCad=0
+21:44:52.481Z G2 applications-rackcad reexportada_igual_al_respaldo=True sha256=627cfbef5f2c0f3ad1c7e5d5d09d6b83f929f605e9c1a7455b379e4f538881ba
+21:44:52.508Z G2 applications-rackcad subclaves_RackCad_en_el_padre=1 nombre_exacto=True
+21:44:52.561Z G2 loaded-rackcad-bundle reexportada_igual_al_respaldo=True sha256=8b98159f2bb1d880f07707ebefeb6c512090a7a1de2bc73b2a0cbfb83b0ad5ff
+21:44:52.562Z G2 loaded-rackcad-bundle subclaves_RackCad_en_el_padre=1 nombre_exacto=True
+21:44:52.581Z G3 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad last_write_utc=2026-10-30T01:56:55.9352452Z
+21:44:52.585Z G3 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad\Groups last_write_utc=2026-10-30T01:56:55.9352452Z
+21:44:52.585Z G3 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle last_write_utc=2026-10-30T01:56:55.9352452Z
+21:44:52.585Z G3 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\#AssemblyMappings last_write_utc=2026-10-30T01:56:55.9352452Z
+21:44:52.586Z G3 Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle\./Contents/RackCad.Plugin.dll last_write_utc=2026-10-30T01:56:55.9352452Z
+21:44:52.591Z G4 fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Applications\RackCad last_write_utc=2026-07-23T19:42:04.6695622Z
+21:44:52.593Z G4 fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle last_write_utc=2026-07-23T19:42:04.7468264Z
+21:44:52.593Z G4 fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\AssemblyMap last_write_utc=2026-07-23T19:42:04.6743231Z
+21:44:52.593Z G4 fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Applications\RackCad last_write_utc=2026-07-28T22:09:24.5219083Z
+21:44:52.593Z G4 fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle last_write_utc=2026-07-28T22:09:24.5941768Z
+21:44:52.593Z G4 fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\AssemblyMap last_write_utc=2026-07-28T22:09:24.5229235Z
+21:44:52.593Z G4 fuera_de_alcance Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths last_write_utc=2026-10-14T18:45:42.1107545Z
+21:44:52.621Z G5 AssemblyMap last_write_utc=2026-10-30T01:56:55.9352452Z estado_sha256=2267f02990a53a1cbbf7c2fda6129084ad7ff779b7c505c46be8537bd144cb83
+21:44:52.621Z G5 Applications subclaves=8 Loaded subclaves=4
+21:44:52.622Z PUERTA=PASS
+21:44:52.623Z D orden: reg.exe delete "HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Applications\RackCad" /f
+21:44:52.666Z D applications-rackcad rc=0 salida=La operación se completó correctamente. 
+21:44:52.685Z D applications-rackcad ausente=True padre_existe=True solo_falta_esa_subclave=True subclaves_padre=7
+21:44:52.686Z D orden: reg.exe delete "HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle" /f
+21:44:52.714Z D loaded-rackcad-bundle rc=0 salida=La operación se completó correctamente. 
+21:44:52.715Z D loaded-rackcad-bundle ausente=True padre_existe=True solo_falta_esa_subclave=True subclaves_padre=3
+21:44:52.715Z A AssemblyMap igual=True last_write_igual=True last_write_utc=2026-10-30T01:56:55.9352452Z
+21:44:52.716Z A fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Applications\RackCad last_write_igual=True
+21:44:52.717Z A fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle last_write_igual=True
+21:44:52.717Z A fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\15FCE767F24F74D1\AssemblyMap last_write_igual=True
+21:44:52.717Z A fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Applications\RackCad last_write_igual=True
+21:44:52.717Z A fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\Loaded\C:/Users/<usuario>/AppData/Roaming/Autodesk/ApplicationPlugins/RackCad.bundle last_write_igual=True
+21:44:52.718Z A fuera_de_alcance Software\appdatalow\software\Autodesk\AutoCAD\R25.0\CoreUser\BlockPreviewUser\AssemblyMap last_write_igual=True
+21:44:52.718Z A fuera_de_alcance Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths last_write_igual=True
+21:44:52.718Z fin
