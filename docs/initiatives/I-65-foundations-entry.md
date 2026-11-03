@@ -1,6 +1,6 @@
 # I-65 — Entradas de FOUNDATIONS redactadas (F7)
 
-- **Estado:** REDACTADAS, **no publicadas**. Se publican en `docs/FOUNDATIONS.md` en el commit de cierre de la integración, ya revisadas
+- **Estado:** **PUBLICADAS** el 2026-11-03 en `docs/FOUNDATIONS.md`, con `Status: STABLE`, en el commit de cierre de la integración, ya revisadas
   por la conformidad de READY-06 ([INITIATIVE_LIFECYCLE](../INITIATIVE_LIFECYCLE.md) §4.1; [WORKFLOW](../WORKFLOW.md) §11.4).
 - **Fuente:** Freeze [Proposal V3.1](I-65-proposal-v3.1.md) §7 («Introduces» y «Extends») y
   [ADR-0050](../adr/0050-interoperabilidad-analisis-estructural.md) (aceptado). Verificadas contra el código del Candidato de hito F5

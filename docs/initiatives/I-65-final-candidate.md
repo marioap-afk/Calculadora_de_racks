@@ -2,13 +2,16 @@
 
 Documento de la unidad (Coordinator, 2026-10-29), por la disposición del Owner «R-D11 Acceptance / READY Final Preparation and
 Validation Planning» ([texto literal](../automation/decisions/I-65-owner-disposition-rd11-acceptance-ready-final-preparation.original.txt);
-decisiones [§111-§112](../automation/decisions/I-65.md)).
+decisiones [§111-§117](../automation/decisions/I-65.md); cierre de la integración en §125).
 
 - **Sustituye para READY** a [I-65-ready-final-candidate-preparation.md](I-65-ready-final-candidate-preparation.md) (§110), que se conserva
   como preparación histórica.
 - **Procedimientos de las ventanas:** [I-65-ready-wr1-wr2-procedures.md](I-65-ready-wr1-wr2-procedures.md).
 
 > **Estado: PREPARADO. READY no se declara.**
+>
+> **Cierre (2026-11-03):** READY = PASS; Candidato declarado (§117); Owner Validation APROBADA e integración autorizada (§125). El
+> estado de arriba es histórico.
 >
 > - FINAL CANDIDATE DECLARATION = PENDING OWNER AUTHORIZATION.
 > - W-R1 / W-R2 EXECUTION = NO. INTEGRATION = NO.
@@ -59,7 +62,7 @@ decisiones [§111-§112](../automation/decisions/I-65.md)).
 | READY-01 | **CUMPLE** | Freeze `I-65-proposal-v3.1.md` completo y sin A-n (`amendment_refs: []`). Diferimientos decididos por el Owner: A65-F4R-07, DIF-01 y la edición del catálogo de RAM (UNKNOWN) como limitaciones (§105); RACKAYUDA diferida sin A-n (R-D8 = A); F6 fuera del alcance (Q-O5). La tabla fuera del Autoloader quedó resuelta por R-D11 B (GATE PASS `f2ed2a7e`, aceptado en §111). RD11-OBS-01 (fin de línea) queda resuelta por A65-RD11-01 = A |
 | READY-02 | **CUMPLE en el SHA propuesto** | Gates cerrados: F1 (`4514a99a`), F3 (`1d8c713e`), F4 (`1e7d8fc2`), F5 (`45aaad6e`), F7 (`e8e6893c`) y R-D11 (`f2ed2a7e`). Decisiones R-D1..R-D11 y §111 versionadas, más §113 (READY-05 del primer SHA propuesto) y §114 (A65-FC-01..13 dispuestos); sin A-n. Documentos de producto listos: README, guía de I-65 y guía de despliegue, con las cuatro correcciones de §2.2. Las entradas de FOUNDATIONS están redactadas en [I-65-foundations-entry.md](I-65-foundations-entry.md) y se publican al integrar (LIFECYCLE §4.1) |
 | READY-03 | **CUMPLE en el SHA propuesto** | 0 REQUIRED abiertos: A65-FC-01, el único de la conformidad sobre `507806bf`, queda corregido en este SHA; 0 discrepancias A; ninguna decisión material o del Owner pendiente sobre el contenido. A65-RD11-01 decidida (A, §111); C-5 decidida (A); R-D1..R-D11 decididas; HB-01..05 aprobada para READY (§111). Lo que queda del Owner son **actos posteriores** a READY (declaración, ventanas, Owner Validation e integración), no decisiones sobre el Candidato |
-| READY-04 | **CUMPLE** (preflight 2026-10-29T03:00:47Z; evidencia §114) | `git fetch origin` fresco: `origin/main` = `bb0d5522` = merge-base; 0 commits detrás; rama remota = HEAD local. No hace falta rebase. No hay cierre previo, así que la ruta R no aplica. R-D1: I-64 (`09f2f1c3`) sin integrar. Número de ADR libre: `main` llega a 0049, I-64 usa 0047, I-62 usa 0048 y solo I-65 usa 0050 (A65-FC-09; evidencia §116). **Se repite justo antes de declarar:** fetch fresco; `origin/main` = merge-base; rama remota = punta; `git diff --name-only <SHA>..<punta>` solo en `docs/`; I-64 sin integrar; ADR 0050 libre; mismo SDK resuelto. Si `main` avanzó: rebase, SHA nuevo y READY desde 02 |
+| READY-04 | **CUMPLE** (preflight 2026-10-29T03:00:47Z; evidencia §114) | `git fetch origin` fresco: `origin/main` = `bb0d5522` = merge-base; 0 commits detrás; rama remota = HEAD local. No hace falta rebase. No hay cierre previo, así que la ruta R no aplica. R-D1: I-64 (`09f2f1c3`) sin integrar. Número de ADR libre: `main` llega a 0049, I-64 usa 0047, I-62 usa 0048 y solo I-65 usa 0050 (A65-FC-09; evidencia §116). **Se repite justo antes de declarar:** fetch fresco; `origin/main` = merge-base; rama remota = punta; `git diff --name-only <SHA>..<punta>` solo en `docs/`; I-64 sin integrar; ADR 0050 libre; mismo SDK resuelto. Si `main` avanzó: rebase, SHA nuevo y READY desde 02 **Repetido** antes de declarar (2026-10-29T13:47:54Z, §117), en la preintegración (2026-11-03, §124) y en el preflight de la integración (2026-11-03, §125) |
 | READY-05 | **Se evalúa sobre el SHA propuesto** (evidencia posterior) | Core Full y UI Full locales; builds Debug de UI y Plugin; build de la herramienta; publicación del bundle; CI `push` exacta 4/4 (§4) |
 | READY-06 | **Se evalúa sobre el SHA propuesto** (evidencia posterior) | Conformidad completa de Architect y Coordinator (§7) |
 | READY-07 | **Se evalúa sobre el SHA propuesto** | Árbol limpio; ningún cambio ni commit pendiente de producto (R-D8 A, R-D11 hecho); HEAD identificado. Se lee como «Candidato = el SHA propuesto; la punta de la rama solo añade `docs/`» |
@@ -67,6 +70,10 @@ decisiones [§111-§112](../automation/decisions/I-65.md)).
 | READY-09 | **Se evalúa sobre el SHA propuesto** | Acuerdo exacto: blob `11062a91` (commit `3872fcc0`); commit de Freeze `a9d7080b` que cambia solo las tres líneas de cabecera enumeradas en el acuerdo, Estado, `Frozen` y Coordinator/Architect (blob `4e6e1feb`; A65-FC-07); Freeze único e inmutable desde entonces; diff permitido; compatibilidad de fuente V1; secuencia de A-n vacía. Comprobación preliminar en la preparación: sin hallazgos |
 
 `FINAL_CANDIDATE_SHA` se fija solo cuando READY-05..09 consten sobre el SHA propuesto **y** el Owner lo declare.
+
+**Errata (A65-FC-18, cierre documental).** La evidencia §116 dice, en los números de ADR, «rackmirror ninguno nuevo». Es inexacto:
+`feature/rackmirror-espejo-semantico` añade ADR-0036, que no está en `main` y no choca con 0050. La evidencia no se reescribe; la
+corrección consta aquí y en la evidencia §127.
 
 ### 2.2 Correcciones documentales (READY-02; autorizadas en §111) y su efecto
 

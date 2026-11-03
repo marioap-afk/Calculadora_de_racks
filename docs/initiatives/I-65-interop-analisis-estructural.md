@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-65
 title: Structural Analysis Interop Foundation + RAM Elements Adapter
 type: architecture
-status: f4-implementation
+status: integrated
 workflow: V2
 conceptual_initiative: I-65
 delivery_unit: I-65
@@ -133,6 +133,8 @@ sin RAM y sin GATE PASS de F4 antes de la validación real.
 - Asignación OV: [Proposal V3.1](I-65-proposal-v3.1.md) §5 (OV-I65-01..08). El hito temprano del mandato («OWNER / ENGINEERING
   VALIDATION») es OV-I65-01 en F4, antes de ampliar cobertura.
 - Requiere AutoCAD y Owner Validation: **sí** (Freeze). RAM Elements: solo en las OV de F4/F5 y READY, por el ingeniero.
+- Resultado: Owner Validation final **APROBADA** por el Owner sobre el Candidato final, con lo NOT_EVALUATED e INFORMATIVE declarado en
+  la [ficha](I-65-owner-validation-sheet.md) (decisiones §125).
 
 ## 10. Evidencia y entrega
 
@@ -157,4 +159,4 @@ escritura sobre archivos de ingeniería existentes del usuario.
 
 ## 13. Hallazgos fuera de alcance
 
-Ninguno todavía.
+Registrados sin corregir en [ideas-futuras](../ideas-futuras.md), sección de I-65.

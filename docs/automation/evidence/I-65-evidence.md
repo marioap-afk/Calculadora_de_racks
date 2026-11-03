@@ -3677,3 +3677,22 @@ I-62 → I-65: no. En las próximas 2.5 h no tengo ninguna operación de pantall
 | `docs/automation/evidence/I-65-ready/preintegration-20261103/overlap-I65-I-66.txt` | `2DBF447D1BA6A44FEEF6A01FF7C1F12CC25B5DFEAB8DB426A82691CE14126637` |
 | `docs/automation/evidence/I-65-ready/preintegration-20261103/preintegration-checks.md` | `942500FF1802ACE41F7405117FEA220E2C54CDCA4DF8918644DA0D11EF2B316F` |
 | `docs/automation/evidence/I-65-ready/preintegration-20261103/privacy-secrets-scan.txt` | `0F85E4DC52C85AD377DBCDDE693CDE27636D5864C38BCDD85CD81C12164BCE0A` |
+
+## 127. Owner Validation final aprobada; preflight de integración y cierre documental (2026-11-03T16:10:00Z)
+
+- **Decisión del Owner** registrada (decisiones §125): OWNER VALIDATION FINAL = **APPROVED** sobre `4a03b65b375d468c220dd68400d5dfd955bf043e`; INTEGRATION = AUTHORIZED, CONDITIONAL.
+- **Preflight de integración** (2026-11-03T16:06Z):
+  - `origin/main` = `bb0d5522` exacto; merge-base = `origin/main`; 0 commits detrás;
+  - el Candidato es ancestro de la punta; árbol limpio; 0 cambios fuera de `docs/` desde el Candidato;
+  - Freeze, ADR-0050 y tabla iguales;
+  - ADR 0050 libre; I-64 sin integrar;
+  - sin sesiones paralelas activas para acuse.
+- **Cierre documental:** HANDOFF, ROADMAP, tres entradas de FOUNDATIONS `STABLE`, A65-FC-18, contrato, estado e `ideas-futuras`; solo `docs/`.
+- **Errata de la evidencia §116 (A65-FC-18):** donde dice «rackmirror ninguno nuevo», `feature/rackmirror-espejo-semantico` añade ADR-0036. Ese ADR no está en `main` y no choca con 0050. La sección §116 no se reescribe.
+- **Hechos posteriores al merge** (`MERGE_SHA`, CI posterior, cobertura del merge y del Candidato, limpieza): en el tag anotado `integration/I-65` (WORKFLOW §11.4 y §11.6).
+- Custodia (SHA-256 de los blobs del índice):
+
+| Archivo | SHA-256 |
+|---|---|
+| `docs/automation/decisions/I-65-owner-decision-final-ov-integration.original.txt` | `C5EE997B4E04DC6818182A81FD44AF3DF5EF19058472C7CA9B09767014F15E90` |
+| `docs/automation/evidence/I-65-ready/integration-20261103/integration-preflight.txt` | `B6CF1205D469DFAB05DF3F742EA4A7AD2524126DD52D2133C8C0AAAF92CB3FC6` |
