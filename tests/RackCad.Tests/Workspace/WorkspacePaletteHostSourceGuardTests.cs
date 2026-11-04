@@ -405,10 +405,12 @@ public class WorkspacePaletteHostSourceGuardTests
         var code = Controller();
         var constructor = Src.BodyOf(code, @"private\s+WorkspaceController\s*\(\s*\)");
 
-        Assert.Equal(2, Src.Count(code, @"\+="));
+        // I-64 F1-T3-HOST-C2 (C2-A) adds exactly one subscription: the command-state notice of the bridge.
+        Assert.Equal(3, Src.Count(code, @"\+="));
         Assert.Equal(0, Src.Count(code, @"-="));
         Assert.Matches(@"_bridge\.Drained\s*\+=\s*OnDrained\s*;", constructor);
         Assert.Matches(@"_bridge\.ActiveSessionChanged\s*\+=\s*OnActiveSessionChanged\s*;", constructor);
+        Assert.Matches(@"_bridge\.CommandStateChanged\s*\+=\s*OnCommandStateChanged\s*;", constructor);
         Assert.DoesNotContain(".Start(", constructor);
         Assert.DoesNotContain("OpenPanel", constructor);
         Assert.DoesNotContain("RequestReconciliation", constructor);
@@ -612,9 +614,10 @@ public class WorkspacePaletteHostSourceGuardTests
         Assert.Matches(@"paletteHostForbidden\s*=\s*new\s+Regex\(@""Autodesk\\\.AutoCAD\\\.Internal\|\\bDispatcher\\b\|\\bTimer\\b""\)", code);
         // G2: whole identifiers, so the UI may name the port interface and still cannot name the controller.
         Assert.Contains(@"\bWorkspaceController\b|\bWorkspaceHostPort\b|\bWorkspaceSelectionReader\b|\bWorkspaceHostCore\b", code);
-        // G3: the two bridge notices and no unsubscription.
+        // G3: the bridge notices and no unsubscription; I-64 F1-T3-HOST-C2 (C2-A) adds exactly the command-state notice.
         Assert.Matches(@"_bridge\\\.ActiveSessionChanged\\s\*\\\+=", code);
-        Assert.Matches(@"Assert\.Equal\(2,\s*Src\.Count\(code,\s*@""\\\+=""\)\)", code);
+        Assert.Matches(@"_bridge\\\.CommandStateChanged\\s\*\\\+=", code);
+        Assert.Matches(@"Assert\.Equal\(3,\s*Src\.Count\(code,\s*@""\\\+=""\)\)", code);
         Assert.DoesNotMatch(new Regex(@"Skip\s*=|\[Fact\(Skip|\[Theory\(Skip"), text);
         Assert.Equal(43, Src.Count(code, @"\[(?:Fact|Theory)\]"));
     }

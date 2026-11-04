@@ -199,6 +199,8 @@ public class WorkspaceBridgeFacadeSourceGuardTests
         }
     }
 
+    // I-64 F1-T3-HOST-C2 widens this list by exactly two names, and only them: IsCommandActiveInActiveSession (C2-A) and
+    // OnNoActiveDocument (C2-B). The T2 names and the two of T3A stay exactly as they were.
     [Fact]
     public void TheCoreAddsExactlyTwoPublicMembersToWhatT2Left()
     {
@@ -216,7 +218,9 @@ public class WorkspaceBridgeFacadeSourceGuardTests
             "OnDocumentActivated", "OnDocumentCreated", "OnDocumentToBeDestroyed", "OnIdle", "OnSourceEvent", "ReportFault",
             "SetModalRackCadActive", "SetPanelVisible", "Start", "Stop", "TryGetSession",
         };
-        Assert.Equal(t2.Concat(new[] { "Authorize", "RequestReconciliation" }).OrderBy(n => n, StringComparer.Ordinal).ToArray(), names);
+        var t3a = new[] { "Authorize", "RequestReconciliation" };
+        var c2 = new[] { "IsCommandActiveInActiveSession", "OnNoActiveDocument" };
+        Assert.Equal(t2.Concat(t3a).Concat(c2).OrderBy(n => n, StringComparer.Ordinal).ToArray(), names);
     }
 
     [Fact]
