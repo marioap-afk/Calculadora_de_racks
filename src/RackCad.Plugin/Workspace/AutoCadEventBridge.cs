@@ -42,6 +42,18 @@ namespace RackCad.Plugin.Workspace
         /// </summary>
         internal event Action ActiveSessionChanged;
 
+        /// <summary>
+        /// In-memory notice that the command state of a session changed (I-64 F1-T3-HOST-C2): raised only from the two
+        /// existing handlers of <c>CommandWillStart</c> and <c>EnteringQuiescentState</c>, inside their containment, after the
+        /// core has been updated and only when the core reports a change. It carries no argument and no AutoCAD type, adds no
+        /// AutoCAD subscription and is internal. It queues no hint, attaches no idle source and drains nothing; the controller
+        /// relays it so that the visible panel pulls a fresh snapshot.
+        /// </summary>
+        internal event Action CommandStateChanged;
+
+        /// <summary>Whether the active session runs a command, as the core knows it in memory. It reads nothing of the drawing.</summary>
+        internal bool IsCommandActiveInActiveSession => _core.IsCommandActiveInActiveSession;
+
         /// <summary>First panel open: hooks the document-collection sources and the active document. Repeating it adds nothing.</summary>
         public void Start()
         {
@@ -120,7 +132,10 @@ namespace RackCad.Plugin.Workspace
                     var documents = AcApplication.DocumentManager;
                     DocumentCollectionEventHandler handler = (s, e) => Contain("DocumentActivated", () =>
                     {
-                        _core.OnDocumentActivated(NativeId(e.Document), e.Document.Editor.IsQuiescent);
+                        // The Start tab activates with no document: from now on there is no active document (I-64
+                        // F1-T3-HOST-C2). The sessions stay alive; the notice below tells the panel either way.
+                        if (e.Document == null) _core.OnNoActiveDocument();
+                        else _core.OnDocumentActivated(NativeId(e.Document), e.Document.Editor.IsQuiescent);
                         ActiveSessionChanged?.Invoke();
                     });
                     documents.DocumentActivated += handler;
@@ -155,7 +170,7 @@ namespace RackCad.Plugin.Workspace
                 case BridgeSource.CommandWillStart:
                 {
                     var document = FindDocument(a.NativeInstanceId);
-                    CommandEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    CommandEventHandler handler = (s, e) => ContainSession(a, () => { if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged(); });
                     document.CommandWillStart += handler;
                     return () => WithDocument(a.NativeInstanceId, d => d.CommandWillStart -= handler);
                 }
@@ -183,7 +198,7 @@ namespace RackCad.Plugin.Workspace
                 case BridgeSource.EnteringQuiescentState:
                 {
                     var document = FindDocument(a.NativeInstanceId);
-                    EventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    EventHandler handler = (s, e) => ContainSession(a, () => { if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged(); });
                     document.Editor.EnteringQuiescentState += handler;
                     return () => WithDocument(a.NativeInstanceId, d => d.Editor.EnteringQuiescentState -= handler);
                 }
@@ -245,6 +260,20 @@ namespace RackCad.Plugin.Workspace
                 {
                     LogFault("AutoCadEventBridge.Drained", ex);
                 }
+            }
+        }
+
+        // The command state of a session changed: the notice is raised and a failing subscriber is only logged. It never
+        // degrades the session and never reaches AutoCAD.
+        private void RaiseCommandStateChanged()
+        {
+            try
+            {
+                CommandStateChanged?.Invoke();
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("AutoCadEventBridge.CommandStateChanged", ex);
             }
         }
 

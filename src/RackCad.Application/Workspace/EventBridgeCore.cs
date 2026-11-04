@@ -70,8 +70,18 @@ namespace RackCad.Application.Workspace
         /// <summary>The session of the active document, or none when there is no open document.</summary>
         public SessionId? ActiveSession => _active;
 
-        /// <summary>RED skeleton of I-64 F1-T3-HOST-C2 (C2-A): not implemented yet.</summary>
-        public bool IsCommandActiveInActiveSession => false;
+        /// <summary>
+        /// Whether the active session is running an AutoCAD command, as this core last learned it in memory (I-64
+        /// F1-T3-HOST-C2): from CommandWillStart until EnteringQuiescentState, or since it was activated while not at rest.
+        /// It reads nothing of the host. It is false before <see cref="Start"/>, without an active document and for a
+        /// degraded session, whose synchronization sources are detached and whose last state may be stale.
+        /// </summary>
+        public bool IsCommandActiveInActiveSession =>
+            _started
+            && _active is { } id
+            && _states.TryGetValue(id, out var state)
+            && !state.Degraded
+            && !state.Quiescent;
 
         /// <summary>Snapshot of every attachment this core currently holds.</summary>
         public IReadOnlyCollection<SourceAttachment> AttachedSources
@@ -212,9 +222,16 @@ namespace RackCad.Application.Workspace
             }
         }
 
-        /// <summary>RED skeleton of I-64 F1-T3-HOST-C2 (C2-B): not implemented yet.</summary>
+        /// <summary>
+        /// The host activated something that is not a document, such as the Start tab: AutoCAD raises the activation with no
+        /// document (I-64 F1-T3-HOST-C2). From now on there is no active document. Every session stays alive with its hookups,
+        /// its hints and its context; nothing is attached, detached, queued, drained or read. A later activation of a document
+        /// makes that document's session active again.
+        /// </summary>
         public void OnNoActiveDocument()
         {
+            if (!_started) return;
+            _active = null;
         }
 
         /// <summary>
@@ -249,6 +266,9 @@ namespace RackCad.Application.Workspace
         /// Ordinary notification handler. It only enqueues a hint on the session named by <paramref name="session"/>
         /// (or flips the in-memory quiescence flag). It reads nothing, writes nothing and never throws.
         /// A notification for a retired or degraded session is dropped.
+        /// It returns true only when the notification changed the command state of a live, healthy session (CommandWillStart
+        /// at rest, EnteringQuiescentState during a command): the presentation of the panel has to be pulled again (I-64
+        /// F1-T3-HOST-C2). That answer is the whole change: those two sources still queue no hint and attach no idle source.
         /// </summary>
         public bool OnSourceEvent(SessionId session, BridgeSource source)
         {
@@ -261,11 +281,9 @@ namespace RackCad.Application.Workspace
                 switch (source)
                 {
                     case BridgeSource.CommandWillStart:
-                        state.Quiescent = false;
-                        return false;
+                        return SetQuiescent(state, false);
                     case BridgeSource.EnteringQuiescentState:
-                        state.Quiescent = true;
-                        return false;
+                        return SetQuiescent(state, true);
                     case BridgeSource.ImpliedSelectionChanged:
                         live.EnqueueHint(HintKind.ImpliedSelectionChanged);
                         break;
@@ -349,6 +367,14 @@ namespace RackCad.Application.Workspace
         /// A fault of the bridge in the host adapter. It is logged and degrades only the named session.
         /// </summary>
         public void ReportFault(SessionId session, string context, Exception exception) => Fault(session, context, exception);
+
+        // Flips the in-memory command state of a session and tells whether it changed. No hint, no idle, no host call.
+        private static bool SetQuiescent(SessionState state, bool quiescent)
+        {
+            if (state.Quiescent == quiescent) return false;
+            state.Quiescent = quiescent;
+            return true;
+        }
 
         private void AttachSessionSources(SessionId id, SessionState state)
         {
