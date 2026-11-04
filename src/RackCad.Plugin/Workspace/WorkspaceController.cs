@@ -13,9 +13,9 @@ namespace RackCad.Plugin.Workspace
     /// <see cref="WorkspaceHostCore"/> that holds every decision; this class only wires them to the host and forwards.
     ///
     /// Every access to the bridge goes through the bridge facades. The only subscriptions it makes are to the bridge's own
-    /// in-memory notices (I-64 F1-T3B): <c>Drained</c> (the drain is the only place where the selection is read) and
-    /// <c>ActiveSessionChanged</c>. It relays them to the visual host as one in-memory <see cref="StateChanged"/> notice
-    /// and never subscribes to AutoCAD. It never starts a thread, holds no host object, writes nothing to the drawing, the
+    /// in-memory notices (I-64 F1-T3B): <c>Drained</c> (the drain is the only place where the selection is read),
+    /// <c>ActiveSessionChanged</c> and, since I-64 F1-T3-HOST-C2, <c>CommandStateChanged</c>. It relays them to the visual
+    /// host as one in-memory <see cref="StateChanged"/> notice and never subscribes to AutoCAD. It never starts a thread, holds no host object, writes nothing to the drawing, the
     /// selection or the view and persists nothing.
     /// </summary>
     public sealed class WorkspaceController
@@ -32,13 +32,14 @@ namespace RackCad.Plugin.Workspace
             _bridge = new AutoCadEventBridge();
             _host = new WorkspaceHostCore(
                 new BridgeLink(_bridge),
-                new HostProbe(),
+                new HostProbe(_bridge),
                 new WorkspaceSelectionReader(),
                 new WorkspaceInstrumentation(),
                 LogFault);
             _port = new WorkspaceHostPort(_host);
             _bridge.Drained += OnDrained;
             _bridge.ActiveSessionChanged += OnActiveSessionChanged;
+            _bridge.CommandStateChanged += OnCommandStateChanged;
         }
 
         /// <summary>
@@ -100,6 +101,10 @@ namespace RackCad.Plugin.Workspace
 
             NotifyStateChanged();
         }
+
+        // A command started or the document came back to rest (I-64 F1-T3-HOST-C2): the visual host only pulls a fresh
+        // snapshot. Nothing is asked of the host core: no reconciliation, no hint, no idle source, no drain and no read.
+        private void OnCommandStateChanged() => NotifyStateChanged();
 
         private void OnDrained(DrainOutcome outcome)
         {
@@ -168,6 +173,13 @@ namespace RackCad.Plugin.Workspace
         // In-memory facts of the host: the active document and whether a command runs. They read nothing of the drawing.
         private sealed class HostProbe : IWorkspaceHostProbe
         {
+            private readonly AutoCadEventBridge _bridge;
+
+            public HostProbe(AutoCadEventBridge bridge)
+            {
+                _bridge = bridge;
+            }
+
             public long? ActiveDocumentNativeId
             {
                 get
@@ -177,12 +189,14 @@ namespace RackCad.Plugin.Workspace
                 }
             }
 
+            // A command runs when the editor says so or when the bridge saw it start and not yet come back to rest (I-64
+            // F1-T3-HOST-C2): the panel pulls its snapshot inside CommandWillStart, before the editor may report the command.
             public bool IsActiveDocumentQuiescent
             {
                 get
                 {
                     var document = AcApplication.DocumentManager.MdiActiveDocument;
-                    return document != null && document.Editor.IsQuiescent;
+                    return document != null && document.Editor.IsQuiescent && !_bridge.IsCommandActiveInActiveSession;
                 }
             }
         }
