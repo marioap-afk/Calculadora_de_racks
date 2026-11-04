@@ -181,10 +181,12 @@ public class WorkspaceHostSourceGuardTests
     {
         var code = Src.Code(ControllerPath);
 
-        // I-64 F1-T3B (G3): exactly the two bridge-internal notifications, and no unsubscription.
-        Assert.Equal(2, Src.Count(code, @"\+="));
+        // I-64 F1-T3B (G3): exactly the bridge-internal notifications, and no unsubscription. I-64 F1-T3-HOST-C2 (C2-A) adds
+        // exactly one: the command-state notice.
+        Assert.Equal(3, Src.Count(code, @"\+="));
         Assert.Matches(@"_bridge\.Drained\s*\+=", code);
         Assert.Matches(@"_bridge\.ActiveSessionChanged\s*\+=", code);
+        Assert.Matches(@"_bridge\.CommandStateChanged\s*\+=", code);
         Assert.DoesNotMatch(new Regex(@"-="), code);
     }
 

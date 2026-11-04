@@ -70,6 +70,9 @@ namespace RackCad.Application.Workspace
         /// <summary>The session of the active document, or none when there is no open document.</summary>
         public SessionId? ActiveSession => _active;
 
+        /// <summary>RED skeleton of I-64 F1-T3-HOST-C2 (C2-A): not implemented yet.</summary>
+        public bool IsCommandActiveInActiveSession => false;
+
         /// <summary>Snapshot of every attachment this core currently holds.</summary>
         public IReadOnlyCollection<SourceAttachment> AttachedSources
         {
@@ -209,6 +212,11 @@ namespace RackCad.Application.Workspace
             }
         }
 
+        /// <summary>RED skeleton of I-64 F1-T3-HOST-C2 (C2-B): not implemented yet.</summary>
+        public void OnNoActiveDocument()
+        {
+        }
+
         /// <summary>
         /// The document is about to be destroyed: its session is retired and every source of it is detached,
         /// BeginDocumentClose included. The retired id is never paired with a later document, even if the native
@@ -242,22 +250,22 @@ namespace RackCad.Application.Workspace
         /// (or flips the in-memory quiescence flag). It reads nothing, writes nothing and never throws.
         /// A notification for a retired or degraded session is dropped.
         /// </summary>
-        public void OnSourceEvent(SessionId session, BridgeSource source)
+        public bool OnSourceEvent(SessionId session, BridgeSource source)
         {
-            if (!_started) return;
+            if (!_started) return false;
             try
             {
-                if (!_states.TryGetValue(session, out var state) || state.Degraded) return;
-                if (!_registry.TryGet(session, out var live) || live == null) return;
+                if (!_states.TryGetValue(session, out var state) || state.Degraded) return false;
+                if (!_registry.TryGet(session, out var live) || live == null) return false;
 
                 switch (source)
                 {
                     case BridgeSource.CommandWillStart:
                         state.Quiescent = false;
-                        return;
+                        return false;
                     case BridgeSource.EnteringQuiescentState:
                         state.Quiescent = true;
-                        return;
+                        return false;
                     case BridgeSource.ImpliedSelectionChanged:
                         live.EnqueueHint(HintKind.ImpliedSelectionChanged);
                         break;
@@ -274,14 +282,16 @@ namespace RackCad.Application.Workspace
                         live.EnqueueHint(HintKind.DatabaseObjectChanged);
                         break;
                     default:
-                        return;
+                        return false;
                 }
 
                 SyncIdle();
+                return false;
             }
             catch (Exception ex)
             {
                 Fault(session, "OnSourceEvent." + source, ex);
+                return false;
             }
         }
 
