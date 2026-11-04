@@ -4107,3 +4107,118 @@ preparación queda en el directorio transitorio y se custodia después de la ocu
 **Relevos:**
 - Sin invocaciones de modelos.
 - HEAD = remoto = `ce2dffea` antes de este commit; `main` `bb0d5522`.
+
+## 68. Smoke-1 (reintento) — Ocurrencia `R20261103T175351Z-0a77`: NOT PASS (SM-13, SM-34, SM-39); C1 confirmada en el host; desviación de rol aceptada
+
+**Autoridad** (literales en `F1-SMOKE-1/R20261103T175351Z-0a77/authorization/`):
+- `coordinator-disposition-blocked-host.md`: BLOCKED_BEFORE_SMOKE1 solo por host, tras las ventanas de I-65. Escalado a I-52
+  (`i64-to-i52-escalation-sent.md`), sus respuestas (`i52-recheck-reply.txt`, `i52-lastwrite-reply.txt`) y el paquete de vuelta
+  (`return-package.md`).
+- `coordinator-smoke1-retry-authorization.md`: UNA ocurrencia, RunId `R20261103T175351Z-0a77`.
+  - AssemblyMap sin `RackCad.Plugin` (ABSENT) aceptado como estado de la BASELINE: origen UNKNOWN, no fue una limpieza gobernada.
+  - Entradas RackCad de CoreUser = estado histórico; actividad del 2-3 nov = UNKNOWN_HOST_ACTIVITY_PRE_BASELINE, sin atribuir.
+  - HOST-EXTRAS antes y después; inspección del proceso tras el NETLOAD; carga única del DLL `2923E7F2…AE26`;
+    PaletteKeyAcceptance = ACCEPTED.
+- `coordinator-smoke1-retry-review.md`: la revisión de la ocurrencia (abajo).
+- `R20261019T180407Z-1be6` = NOT_STARTED / SUPERSEDED (`disposition/closure-not-started-superseded.md`): sin BASELINE ni AutoCAD; no
+  es una ocurrencia.
+
+**Candidato** `09f2f1c3c4e64491018ef1489ce4dd3030d1e4a8` (producto C1 `b874705e`; CI 38409865067 y 38409861265, push 4/4):
+- Core Full local 13126/13126; UI Full local 1701/1718 con 17 Skip y 0 con error; Debug UI y Debug Plugin en PASS;
+- `RackCad.Plugin.dll` `2923E7F2DF4F62594810DBBC33003D36E6E4382EDECFB7E43C4A6C7C01F5AE26`;
+- dibujos A, B, C y D sin cambios (D = `03e5606c…f165`, con PR-12 y PR-13).
+
+**Desviación de rol (se conserva):** T3D §1 asigna al Owner la operación de AutoCAD.
+- Tras el preflight, el Owner decidió que la operara la sesión con computer use: «Mejor toma control de la computadora y hazlo tú» y,
+  ante la pregunta, «No, opera tú» (`disposition/owner-decision-session-operator.md`).
+- El Coordinator la ACEPTÓ COMO DESVIACIÓN DE PROCEDIMIENTO. T3D no se reescribe y esta ocurrencia no siguió el reparto normal de
+  roles.
+- Bitácora cronológica de la sesión: `operator/session-operator-log.md`.
+
+**Ocurrencia** (2026-11-03):
+- **Preflight y BASELINE** (Owner, 19:48Z):
+  - acad = 0; Candidato exacto; autoprueba T3C 26/26; SHA-256 de A, B, C, D y de la biblioteca; SECURELOAD 1;
+  - HOST-EXTRAS BEFORE `c858f955…`;
+  - BASELINE código 0, CanonicalSha256 `9fbf0c32af13b13ea832955b95da5f79a7f669e3243ddbe7a354b83790f2a116`, 4 comprobaciones MATCH
+    (verificación de la sesión en `preflight/baseline-verification-session.txt`).
+- **AutoCAD** (operó la sesión, de 20:00:36Z a 20:28:57Z):
+  - SM-00a..00e PASS. SM-00d1: tras el NETLOAD («Load Once»), VERDICT PASS; un solo `RackCad.Plugin.dll`, el del Candidato.
+  - **C1 confirmada en el host:** SM-03 PASS (paleta flotante dentro de la pantalla, visible y usable, sin rescate); SM-17 PASS
+    (acoplar a izquierda y a derecha, flotar, ocultación automática).
+  - PR-12 «Diagnóstico» y PR-13 «Sin identidad» observados en el host (SM-11 y SM-10b PASS).
+  - **FAIL SM-13 (S1-06f):** con `LINE` en curso, la paleta mantuvo «Leer el dibujo» y «Escribir en el dibujo» marcados y nunca
+    mostró «Hay un comando en curso.».
+  - **FAIL SM-34 (S1-07, OV-17):** con RACKEDITAR y su editor abiertos, lo mismo. La paleta no interfirió y DBMOD quedó en 0.
+  - **FAIL SM-39:** RackLog con 2 `NullReferenceException` contenidas en `AutoCadEventBridge.DocumentActivated`: 20:24:21.278Z en
+    SM-26 (cerrar el último dibujo) y 20:24:40.789Z en SM-27 (clic en la pestaña Start). Ninguna fuga de transacción ni excepción no
+    controlada.
+  - NOT_APPLICABLE: SM-19 (PICKFIRST = 1); S1-06a..e = NOT_APPLICABLE_BY_DESIGN (A-7). SM-29 PASS parcial: el encuadre con el botón
+    central no es ejecutable con la herramienta.
+  - Incidentes del operador (sesión), sin efecto en los dibujos: exploración fuera de orden en SM-06 (repetida en orden), casilla
+    conmutada por la barra espaciadora en SM-14a y un `_pasteclip` cancelado tras SM-14.
+- **Cierre:**
+  - QUIT sin guardar; acad = 0 (20:28:57Z). SM-41: dibujos y biblioteca sin cambios.
+  - **POST** código 0, CanonicalSha256 `0a230e7eb2cb5637749a5c00b9156c828d4aa236c6aa67007dcabd46fa6b7d16`.
+  - **DIFF** (`ACCEPTED`) = **CLEAN**, código 0: 23 ALLOWED (1 R-A-01, 22 R-A-03), 0 REPORT, 0 FORBIDDEN.
+  - **HOST-EXTRAS** = REPORT_REQUIRED, solo por estado de interfaz de AutoCAD: MRU del diálogo Abrir (`Select File`, añadido) y
+    `Recent File List`; `NetLoadDialog` INFORMATIVE. AssemblyMap y CoreUser idénticos; ningún cambio de RackCad.
+- **I-52:** aviso antes de AutoCAD (`64622bad…`) y devolución del host (`48ac2dd1…`). Recomprobó **SIN DERIVA**
+  (`disposition/i52-post-run-recheck.txt`, literal): libera su retención sobre H10 respecto de esta ventana, no concede ACK/RELEASE, y
+  P2 H10 sigue NOT_AUTHORIZED.
+- **Registro del operador:** firmado por el Owner («Firmo el registro.», 2026-11-04T15:06:53Z). La firma confirma el registro, no un
+  PASS. Antes de la firma se corrigieron solo notas, con fe de erratas visible (correlación de SM-39 con SM-26 y SM-27); ningún
+  resultado cambió.
+
+**Revisión del Coordinator** («I-64 — COORDINATOR SMOKE-1 RETRY REVIEW», literal):
+- Disposición **NOT PASS**, sin STOP; la ocurrencia queda ACEPTADA COMO EVIDENCIA VÁLIDA.
+- Desviación de rol ACCEPTED AS PROCEDURAL DEVIATION. No invalida las observaciones: Candidato gobernado, BASELINE y POST,
+  aislamiento del host, DLL exacto, registro del operador, recomprobación de I-52 y sin deriva.
+- **F1-T3B-HOST-UI-C1 sigue PASS** y queda confirmada en el host (SM-03 y SM-17). No se reabre.
+- SM-13, SM-34 y SM-39 = FAIL, sin colapsarlos en un solo hallazgo; los demás resultados quedan como se observaron.
+- Antes de autorizar una corrección de producto: un paquete de fallo por paso. Sin F2, sin merge ni rebase de main y sin cambios de
+  producto.
+
+**Análisis de fallos** (`disposition/failure-analysis.md`; lectura del código del Candidato, sin cambios):
+
+| Paso | Causa | Clasificación / recomendación |
+|---|---|---|
+| SM-13 | `EventBridgeCore.OnSourceEvent` ante `CommandWillStart` solo pone `Quiescent = false`; la vista solo se repinta con `WorkspaceController.NotifyStateChanged`, que no se dispara. El snapshot pedido sí da `CommandActive`. | PRODUCT_CORRECTION, con decisión de diseño: el contrato T2 fija que `CommandWillStart` no encola pistas ni engancha `Idle` |
+| SM-34 | la misma ruta que SM-13 | PRODUCT_CORRECTION (la misma corrección; verificar en el host con RACKEDITAR) |
+| SM-39 | `DocumentActivated` llega con `e.Document` nulo (pestaña Start) y `NativeId` no lo comprueba; en SM-27 el panel siguió mostrando «Sesión 7» sobre Start | PRODUCT_DEFECT → PRODUCT_CORRECTION |
+
+Relación causal: SM-13 y SM-34 comparten causa y se mantienen como dos hallazgos; SM-39 es independiente.
+
+**Custodia** (`docs/automation/evidence/I-64-pilot/F1-SMOKE-1/`, con `custody-manifest.json` por unidad):
+
+| Unidad | CUSTODIED | EXCLUDED |
+|---|---|---|
+| `R20261103T175351Z-0a77` | 37 | 167 |
+| `R20261019T180407Z-1be6` | 7 | 7 |
+
+- Excluidos, con SHA-256 y motivo:
+  - salidas sintéticas de la autoprueba;
+  - compañeros locales de las capturas;
+  - registros de dotnet con rutas locales;
+  - los JSON crudos de HOST-EXTRAS y su diff (valores del registro con rutas locales; sus `.sha256` sí se custodian);
+  - duplicados de archivos ya custodiados.
+- Redacciones registradas: la ubicación del worktree en los scripts del kit y una carpeta local de I-65 en una respuesta de I-52.
+- CRLF custodiado en LF con el SHA-256 original.
+- `F1-SMOKE-1-RETRY-PREP/` queda transitorio. Sus archivos de host, del Candidato y la respuesta de I-52 del 19-oct están custodiados
+  como copias idénticas en las dos unidades; los scripts usados son los de `R20261103T175351Z-0a77/kit/`. Los avisos de ventanas de I-65
+  no se custodian aquí.
+
+**Observación fuera de la ocurrencia:** al custodiar (2026-11-04T15:06Z) había un `acad.exe` iniciado el 2026-11-03T21:31:43Z desde
+el Explorador de Windows, posterior al fin de la ocurrencia y a la recomprobación de I-52. La sesión I-64 no lo inició ni lo tocó.
+
+**Estado** (`I-64.yml`):
+- `smoke1_status` = NOT PASS (revisión del Coordinator), con la desviación de rol conservada;
+- `f1_t3b_host_ui_c1_status` = PASS, confirmada en el host;
+- siguiente: COORDINATOR_SMOKE1_FAILURE_ANALYSIS_REQUIRED.
+
+**Límites:** sin cambios de producto. `src/` y `tests/` siguen siendo los de `b874705e` (iguales en `09f2f1c3`); este commit solo
+añade documentación y evidencia, y `09f2f1c3` sigue siendo el Candidato de la ocurrencia. Sin F2, sin merge ni rebase de main.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- Mensajes a la sesión «I - 52»: el escalado del recheck, el aviso antes de AutoCAD (`64622bad…`) y la devolución del host (`48ac2dd1…`).
+- HEAD = remoto = `09f2f1c3` antes de este commit; `main` `a140eb3a`.

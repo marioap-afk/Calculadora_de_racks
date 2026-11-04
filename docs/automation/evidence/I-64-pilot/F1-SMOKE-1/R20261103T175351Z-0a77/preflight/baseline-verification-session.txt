@@ -1,0 +1,28 @@
+I-64 Smoke-1 R20261103T175351Z-0a77 — verificacion de la sesion sobre el preflight del Owner (solo lectura)
+VerifiedUtc: 2026-11-03T19:51:26Z (acad.exe = 0, RAM Elements = 0)
+
+preflight-owner (inicio 2026-11-03T19:48:01.6371874Z): termina en OK
+  1 acad = 0
+  2 HEAD 09f2f1c3c4e64491018ef1489ce4dd3030d1e4a8, porcelain 0, productDiffLines 0, DLL 2923E7F2...AE26  = Candidato autorizado
+  3 herramientas T3C 750a9097 / de642515 / d0bb54be                                                     = aprobadas
+  4 autoprueba 26/26 (codigo 0)
+  5 D 03e5606c..., A 90750e8b..., B fb9b97f9..., C ede7cdb3...                                           = preflight-session 18:10Z
+    biblioteca B4CA2248...60E8                                                                          = la de R20261013T011654Z-184b
+  6 perfil <<Unnamed Profile>>; SECURELOAD_BASELINE_CURRENT = 1 (ReadUtc 2026-11-03T19:48:21.9949827Z)
+  6b HOST-EXTRAS BEFORE codigo 0; archivo c858f955ddf873fef1147884bff93b25aa3099477580af589af71616f66a1a6f = sidecar
+     AssemblyMap: existe, 2 valores, ninguno de RackCad; RackCad.Plugin = ABSENT (estado aceptado); LastWrite 2026-11-02T19:54:39.812Z
+     CoreUser 15FCE767F24F74D1: 555 claves, 28 entradas (25 ruta RackCad, 2 valor RackCad, 1 historial NETLOAD); LastWrite raiz 2026-11-02T22:51:29.730Z
+     CoreUser BlockPreviewUser: 555 claves, 28 entradas (mismo reparto); LastWrite raiz 2026-10-23T21:13:39.020Z
+     Clave de producto: 550 claves, 22 entradas (20 Dialogs\RackCad.UI.*, 1 Recent File List, 1 NetLoadDialog)
+       NetLoadDialog LastWrite 2026-10-29T13:55:47.290Z; Recent File List LastWrite 2026-11-03T17:34:20.848Z
+       (actividad anterior a la BASELINE = UNKNOWN_HOST_ACTIVITY_PRE_BASELINE; sin atribuir)
+  7 BASELINE codigo 0
+     archivo 69b553eb37e76c1bf652c3449058f4c05058d81b20246020acc30903e4694625 = sidecar
+     CanonicalSha256 9fbf0c32af13b13ea832955b95da5f79a7f669e3243ddbe7a354b83790f2a116; lineas 2235; claves 399; valores 1767;
+     archivos 20; plugins 3; env 0; ilegibles 0
+     PreSmokeChecks: TRUSTEDPATHS.ChainSha256 MATCH (a9ba0fd1...2498, 19 entradas, no cubre la carpeta del DLL);
+                     SECURELOAD MATCH (1 = SECURELOAD_BASELINE_CURRENT); CurrentProfile MATCH; AcadExeSha256 MATCH (2A75996F...6422)
+     ApplicationPlugins: AppManager, FeaturedApps, AcVBA2025; sin RackCad
+     Registro: ninguna clave RackCad fuera de Profiles\<PROFILE>\Dialogs; Applications y Loaded sin RackCad; env RackCad 0/0
+
+Resultado: BASELINE CONFIRMADA. Siguiente: aviso a I-52 (H10 retenido) y apertura de AutoCAD por el Owner (SM-00a).
