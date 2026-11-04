@@ -4276,3 +4276,75 @@ añade documentación y evidencia, y `09f2f1c3` sigue siendo el Candidato de la 
 **Relevos:**
 - Sin invocaciones de modelos.
 - HEAD = remoto = `0e0d536b` antes de este commit; `main` `a140eb3a`.
+
+## 70. F1-T3-HOST-C2 = PASS; preparación del Candidato del segundo reintento de Smoke-1
+
+**Orden (literal):** «I-64 — COORDINATOR F1-T3-HOST-C2 CLOSE», en
+`docs/automation/evidence/I-64-pilot/F1-T3-HOST-C2/coordinator-close-review.md`.
+- **F1-T3-HOST-C2 = PASS.**
+  - RED `57fea377`: CI 41866515249, EXPECTED FAILURE (28 fallos esperados).
+  - GREEN y producto `0e0d536b10350cc85e4a932a0d576b22fae22fa9`: CI 41867521852 push 4/4.
+  - Cierre delta `596ad29c`: CI 41870715720 push 4/4.
+- **C2-A ACEPTADA.** `CommandWillStart` y `EnteringQuiescentState` actualizan el estado de presentación sin cambiar el contrato de aviso y
+  drenaje de T2. Propiedades confirmadas:
+  - sin pista, sin `RequestReconciliation`, sin enganche de `Idle` y sin drenaje;
+  - sin leer la selección ni el DWG, y sin escribir el DWG;
+  - solo un aviso de presentación en memoria y sin argumentos, que el controlador releva solo como `StateChanged`.
+  - El oráculo de T2 `SourcesThatAreNotHintsQueueNothingAndNeverAttachIdle` no cambia y sigue en verde.
+- **C2-B ACEPTADA.** `DocumentActivated` con `Document` nulo significa NO ACTIVE DOCUMENT; no significa ignorar el evento ni destruir
+  sesiones. Comportamiento confirmado:
+  - sin `NativeId(null)` y sin `NullReferenceException`;
+  - la sesión activa pasa a ninguna y todas las sesiones existentes siguen vivas;
+  - hay aviso de presentación y el panel visible puede mostrar «Sin documento»;
+  - reactivar un documento real restaura su sesión y su contexto.
+- Las **cuatro ampliaciones de guardas existentes, ACEPTADAS.** Solo cubren la superficie nueva exacta de C2: `IsCommandActiveInActiveSession`,
+  `OnNoActiveDocument` y la suscripción del controlador a `CommandStateChanged`. No se retiró ningún requisito anterior.
+- `RackCad.Plugin.dll` de Debug del producto C2: `2C2433ABB82569D3E48271467186D8D5D1AA7C636E3937252328054897097B4E`.
+- **Históricos sin cambio:**
+  - SM-13, SM-34 y SM-39 siguen FAIL;
+  - `09f2f1c3c4e64491018ef1489ce4dd3030d1e4a8` = HISTORICAL_SMOKE1_NOT_PASS_CANDIDATE; no se reutiliza.
+- **Candidato nuevo** con las reglas existentes:
+  - commit exacto, sin más commits antes de la ocurrencia, árbol limpio;
+  - Core Full, UI Full, Debug UI y Debug Plugin en PASS (este último salvo las MSB3277 conocidas);
+  - CI del SHA exacto 4/4 y SHA-256 exacto de `RackCad.Plugin.dll`;
+  - PR-12 y PR-13 revalidados contra los bytes nuevos de `RackCad.Application`;
+  - recheck/RELEASE de host coordinado de nuevo.
+  - Ninguna autorización previa de carga del DLL se transfiere.
+- **El próximo Smoke-1** usa Candidato nuevo, RunId nuevo, BASELINE nueva, POST nueva y registro del operador nuevo.
+- **Comprobaciones de regresión críticas:**
+
+| Paso | Exigencia |
+|---|---|
+| SM-03 y SM-17 | C1 sigue en PASS |
+| SM-13 | el panel muestra de inmediato la orden en curso: «Leer el dibujo» y «Escribir en el dibujo» deshabilitados (en T3D, desmarcados) y «Hay un comando en curso.»; ninguna evidencia de instrumentación de drenaje o lectura durante la orden |
+| SM-34 | la misma presentación mientras corre `RACKEDITAR`; el editor no se ve afectado |
+| SM-26 (estado Start) | el panel muestra «Sin documento» sin error de RackLog |
+| SM-27 (pestaña Start) | lo mismo, sin sesión anterior obsoleta |
+| SM-39 | sin `NullReferenceException` en `AutoCadEventBridge.DocumentActivated` y sin diagnóstico de fuga de transacción |
+
+- **Secuencia conservada:**
+  1. Candidato de C2;
+  2. Smoke-1;
+  3. revisión del Smoke por el Coordinator;
+  4. solo entonces, sincronizar I-64 con main / I-65;
+  5. resolver los dos conflictos conocidos del censo de comandos;
+  6. revalidación completa;
+  7. solo entonces, considerar F2.
+- Todavía sin merge ni rebase de `origin/main`, que ya contiene I-65.
+- Parada, tras preparar el Candidato y la autorización de host nueva: **COORDINATOR_SMOKE1_RETRY_AUTHORIZATION_REQUIRED**. Sin AutoCAD
+  antes de esa autorización y sin F2.
+
+**Candidato propuesto:** este commit documental, cuyo producto (`src/` y `tests/`) es igual a `0e0d536b`.
+- Su evidencia local se ejecuta después del commit, sobre ese HEAD exacto (guía §7.1).
+- El SHA del commit se estampa en el ensamblado, así que el SHA-256 del DLL del Candidato no será `2C2433AB…7B4E`, que es el de `0e0d536b`.
+- Hasta la ocurrencia de Smoke-1 no habrá otro commit de I-64.
+- La preparación queda en `artifacts/orchestration/I-64/F1-SMOKE-1-RETRY-PREP/` (transitorio) y se custodia después de la ocurrencia.
+
+**Estado** (`I-64.yml`):
+- `f1_t3_host_c2_status` = PASS;
+- `smoke1_status` = NOT PASS de `0a77` sin cambio, con el segundo reintento en preparación y NO autorizado;
+- siguiente: COORDINATOR_SMOKE1_RETRY_AUTHORIZATION_REQUIRED.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- HEAD = remoto = `596ad29c` antes de este commit; `main` `a140eb3a`.
