@@ -1,0 +1,8 @@
+inspect-loaded-rackcad UTC 2026-11-03T20:04:34.0334201Z
+acad.exe count = 1
+acad pid = 41004; start UTC = 2026-11-03T20:00:39.0170285Z
+RackCad modules = 2
+  RackCad.Application.dll | <worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Application.dll | sha256=66E88EB13EFC9312C33666852F31F782DB9F298735AB981EA692E915F6A5F8BD | candidateBin=True | expected=MATCH
+  RackCad.Plugin.dll | <worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll | sha256=2923E7F2DF4F62594810DBBC33003D36E6E4382EDECFB7E43C4A6C7C01F5AE26 | candidateBin=True | expected=MATCH
+LOADED RackCad.Plugin.dll path = <worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll; sha256 = 2923E7F2DF4F62594810DBBC33003D36E6E4382EDECFB7E43C4A6C7C01F5AE26
+VERDICT = PASS

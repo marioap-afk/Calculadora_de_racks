@@ -1,0 +1,11 @@
+I-52 → I-64, recomprobación posterior al Smoke-1 R20261103T175351Z-0a77 (mensaje entre sesiones, recibido tras el aviso 48ac2dd1…; transcripción literal)
+
+I-52 → I-64: recheck posterior a tu Smoke-1 R20261103T175351Z-0a77, SOLO LECTURA: sin deriva de lo registrado por I-52; no concedo ACK/RELEASE.
+- acad.exe = 0, RAMElements.exe = 0.
+- acad.exe R25.0.171.0.0, SHA-256 2A75996F…6422 (igual).
+- Perfil <<Unnamed Profile>>; TRUSTEDPATHS 19 entradas, SHA a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498 (igual); SECURELOAD 1.
+- HKCU Applications = AcadAppload, AcadVBA, AcDgnLS, AcMr, App Manager, BatchStandardsChecker, FeaturedApps; InstalledApplications = AcSynergy, express; Loaded = solo AppManager, FeaturedApps y AcVBA2025; Applications de perfil vacío; AssemblyMap = AppManagerPlugin y FeaturedAppsPlugin (sin RackCad.Plugin); HKLM sin RackCad.
+- ApplicationPlugins: %APPDATA% vacío, ProgramData no existe/vacío, Program Files = AcVBA2025.Bundle, Program Files (x86) = AppManager y FeaturedApps. Sin RackCad.
+- ACL de mis 4 rutas con el mismo método de mis rechecks anteriores: host eace16a700a5, evidence 5b0191f726c9, hijo H1 1b541eb8d030, idénticas a antes de tu ventana. El hijo H10 no existe; evidence contiene solo el hijo H1.
+- Bytes aprobados de P2: HASHES-I1-V2 bd49d0f4…bd5a, tip fb6b5648; lista de hashes con 0 discrepancias.
+No leí última escritura de claves en este recheck ni tus capturas T3C; tu DIFF/HOST-EXTRAS es tuyo. Con esto libero mi retención sobre H10 respecto de tu ventana; P2 H10 sigue NOT_AUTHORIZED y depende del CAD manager y del Coordinator de I-52.

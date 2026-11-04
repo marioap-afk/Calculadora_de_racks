@@ -1,0 +1,104 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Subject": "RunId cerrado como NOT_STARTED / SUPERSEDED (sin BASELINE ni AutoCAD)",
+  "Unit": "R20261019T180407Z-1be6",
+  "SourceRoot": "artifacts/orchestration/I-64/F1-SMOKE-1/R20261019T180407Z-1be6",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; companeros locales y registros con rutas solo por SHA-256; duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 7,
+    "EXCLUDED": 7
+  },
+  "Files": [
+    {
+      "Path": "authorization/coordinator-retry-authorization.md",
+      "Bytes": 3102,
+      "Sha256": "0834bd598b4717c36922ef2c54a6fea98799804deb5d1441835e855defb4f8c5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "authorization/i52-fresh-refs-post-i65.txt",
+      "Bytes": 1191,
+      "Sha256": "1a455cf2a0e21e020249af03498799efd7aa131489c9c1f8b69d6409bc2f420c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "authorization/i52-retry-reply.txt",
+      "Bytes": 1466,
+      "Sha256": "71aca53ce7f928fda44081b9d669f40e80973d1396403cff5ff261d8435ea915",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "candidate/candidate.md",
+      "Bytes": 2908,
+      "Sha256": "e5fa84e3d5a4d3d18804185c04515985bf248f8b89ec66d87bbefe1f9accee9d",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a R20261103T175351Z-0a77/candidate/candidate.md, ya custodiado"
+    },
+    {
+      "Path": "candidate/core-test.txt",
+      "Bytes": 22564,
+      "Sha256": "dc8a3f91e63577b43b4a943d687428900f30828189bb55e58824b7f4adf82304",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate/fixtures-pr12-pr13.md",
+      "Bytes": 5886,
+      "Sha256": "9d7b8abfa0cdaa45d61e8bd79bfa3277fba24358f690d6154ca2eedf6cca0db8",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a R20261013T011654Z-184b/candidate/fixtures-pr12-pr13.md, ya custodiado"
+    },
+    {
+      "Path": "candidate/plugin-build.txt",
+      "Bytes": 39243,
+      "Sha256": "1adaec6c421e6aab6970dcf963864bbcb0d9a57e43f170d5b0d8b423d71186c2",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate/steps.txt",
+      "Bytes": 1096,
+      "Sha256": "9ff9e1f52cdfc9d172d84d683f18eda49a8f89e46e51b2ccb2aa3f552e0407d5",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a R20261103T175351Z-0a77/candidate/steps.txt, ya custodiado"
+    },
+    {
+      "Path": "candidate/ui-build.txt",
+      "Bytes": 720,
+      "Sha256": "c98a794ac43b1a9b1e451ced6f5ba3c87fd105fd71246bfef88bfa0d3eb8d2a2",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate/ui-test.txt",
+      "Bytes": 9600,
+      "Sha256": "41b1d86e2473812dae8538531a51b7b0636a63e1e9fa575369248bc63107c6b3",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "disposition/closure-not-started-superseded.md",
+      "Bytes": 1183,
+      "Sha256": "85f551e2212c98d4f468d9e7318c63c48c1cd251f60056f9a26e6f99c1c633a8",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "operator/operator-guide.md",
+      "Bytes": 7000,
+      "Sha256": "410074f0bcf9d198d6a106cbf300eed5edaafae5ab276dbdef82801633c67bfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "operator/operator-record.md",
+      "Bytes": 6525,
+      "Sha256": "9c9e9cbc363d711337577e0cf699f856e258405bfe1c8670bb6d0e44f3754c04",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "preflight/preflight-session.txt",
+      "Bytes": 1077,
+      "Sha256": "c920c04d7a6eafee6d2c033cd4c171780b1a8857811a2921c415441cda119acf",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}
