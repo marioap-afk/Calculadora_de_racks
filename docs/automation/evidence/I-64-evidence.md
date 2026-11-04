@@ -4222,3 +4222,57 @@ añade documentación y evidencia, y `09f2f1c3` sigue siendo el Candidato de la 
 - Sin invocaciones de modelos.
 - Mensajes a la sesión «I - 52»: el escalado del recheck, el aviso antes de AutoCAD (`64622bad…`) y la devolución del host (`48ac2dd1…`).
 - HEAD = remoto = `09f2f1c3` antes de este commit; `main` `a140eb3a`.
+
+## 69. Análisis de fallos ACEPTADO; F1-T3-HOST-C2: estado de orden en la paleta y activación sin documento (RED `57fea377`, GREEN `0e0d536b`)
+
+**Orden (literal):** «I-64 — COORDINATOR SMOKE-1 FAILURE ANALYSIS DISPOSITION», en
+`docs/automation/evidence/I-64-pilot/F1-T3-HOST-C2/coordinator-authorization.md`.
+- FAILURE ANALYSIS ACCEPTED. SM-13, SM-34 y SM-39 = PRODUCT_CORRECTION. SM-13 y SM-34 comparten una corrección; SM-39 es independiente.
+- Sin cambio de procedimiento y sin revisión del Architect: el comportamiento ya está congelado por D-03, D-04, S1-06f y S1-07.
+- **F1-T3-HOST-C2 autorizada**, con dos correcciones estrechas:
+  - C2-A, aviso de presentación del estado de orden, conservando la regla de T2 (sin pista ni `Idle`);
+  - C2-B, `DocumentActivated` sin documento = sin documento activo, nunca como `return` silencioso.
+- Históricos sin cambio: `R20261103T175351Z-0a77` = NOT PASS; SM-13, SM-34 y SM-39 = FAIL, sin reetiquetar.
+- `09f2f1c3` = **HISTORICAL_SMOKE1_NOT_PASS_CANDIDATE**; no se reutiliza.
+- Parada: **COORDINATOR_T3_C2_CLOSE_REQUIRED**. Sin AutoCAD, sin otro Smoke-1, sin merge ni rebase de main y sin F2.
+
+**Ejecución** (la sesión, sin invocaciones de modelos):
+- **RED `57fea377`** (CI 41866515249: exactamente 28 FAIL de 13172; Plugin skipped; UI success).
+  - Esqueleto compilable en `EventBridgeCore`, sin cambio de comportamiento.
+  - 3 archivos de pruebas nuevos (46 casos).
+  - 4 aserciones de forma exacta de T3A y T3B ampliadas solo con los nombres o la cuenta de C2:
+    - lista de miembros públicos del núcleo + 2;
+    - suscripciones del controlador 2 → 3, en T3A, en T3B y en G3.
+- **GREEN `0e0d536b`** (CI 41867521852 push **4/4**). Solo `EventBridgeCore.cs`, `AutoCadEventBridge.cs` y `WorkspaceController.cs`:
+  - `OnSourceEvent` devuelve si cambió el estado de orden;
+  - `IsCommandActiveInActiveSession` y `OnNoActiveDocument()` en el núcleo;
+  - aviso interno `CommandStateChanged` desde los dos manejadores existentes, contenido;
+  - relevo del controlador solo como `StateChanged`;
+  - la sonda cuenta como orden en curso la que el puente vio empezar;
+  - rama `e.Document == null` → `OnNoActiveDocument()` y, en las dos ramas, `ActiveSessionChanged`.
+- **Confirmaciones:**
+  - el oráculo `SourcesThatAreNotHintsQueueNothingAndNeverAttachIdle` no se tocó y pasa;
+  - ninguna lectura ni escritura nueva del DWG, la selección, el registro, el perfil o archivos;
+  - la activación sin documento conserva todas las sesiones (enganches, pistas, contexto) y deja la sesión activa en ninguna;
+  - el puente sigue con 16 enganches.
+- **Local sobre `0e0d536b`**, árbol limpio:
+  - Core enfocada 577/577; UI enfocada 66/66;
+  - Core Full 13172/13172; UI Full 1701/1718 (17 Skip);
+  - Debug UI 0 advertencias; Debug Plugin 0 errores (solo MSB3277);
+  - `RackCad.Plugin.dll` `2C2433AB…7B4E`.
+  - Había un `acad.exe` del usuario abierto, con 0 módulos RackCad; la sesión no lo usó.
+- Paquete: `F1-T3-HOST-C2/delta-close-package.md`; pasos en `F1-T3-HOST-C2/local-verification-steps.txt`.
+
+**Estado** (`I-64.yml`):
+- `f1_t3_host_c2_status` = GREEN, cierre pendiente;
+- `smoke1_status` = NOT PASS, con `09f2f1c3` histórico;
+- siguiente: COORDINATOR_T3_C2_CLOSE_REQUIRED.
+
+**Límites:**
+- Comportamiento en el host sin verificar.
+- Candidato nuevo solo tras el C2 PASS, con SHA exacto, DLL, evidencia local Full, CI exacta y autorización de host nueva.
+- La sincronización con main (censo 39) sigue pendiente.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- HEAD = remoto = `0e0d536b` antes de este commit; `main` `a140eb3a`.

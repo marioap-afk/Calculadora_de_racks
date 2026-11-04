@@ -1,0 +1,19 @@
+acad_before	1	rackcad_modules_in_acad	0
+head	0e0d536b10350cc85e4a932a0d576b22fae22fa9
+porcelain_lines	0
+changed_src_tests_files_since_88475713	9
+sdk	8.0.423
+core_focused	0	2026-11-04T16:28:52.5091661Z	2026-11-04T16:30:08.6247626Z	Correctas! - Con error:     0, Superado:   577, Omitido:     0, Total:   577, Duración: 18 s - RackCad.Tests.dll (net8.0)
+ui_focused	0	2026-11-04T16:30:08.6368568Z	2026-11-04T16:30:43.6436806Z	Correctas! - Con error:     0, Superado:    66, Omitido:     0, Total:    66, Duración: 1 s - RackCad.UI.Tests.dll (net8.0)
+core_test	0	2026-11-04T16:30:43.6478424Z	2026-11-04T16:35:33.7426335Z	Correctas! - Con error:     0, Superado: 13172, Omitido:     0, Total: 13172, Duración: 4 m 23 s - RackCad.Tests.dll (net8.0)
+ui_test	0	2026-11-04T16:35:33.7529509Z	2026-11-04T16:42:23.8571912Z	Correctas! - Con error:     0, Superado:  1701, Omitido:    17, Total:  1718, Duración: 6 m 31 s - RackCad.UI.Tests.dll (net8.0)
+ui_build	0	2026-11-04T16:42:23.8605122Z	2026-11-04T16:42:28.7275653Z	0 Advertencia(s) |     0 Errores
+plugin_build	0	2026-11-04T16:42:28.7330457Z	2026-11-04T16:42:37.1686566Z	2 Advertencia(s) |     0 Errores
+dll	RackCad.Application.dll	1A62440BD59279D5ED15EC6C29D23A6673C9420369D3E6A1E16FBC621409412C	2114048	2026-11-04T16:29:09.8307433Z
+dll	RackCad.Domain.dll	F176F4D3BA2451B3D4578915E7A5592D5096A223127C098EFC873F4BC604FED6	125952	2026-11-04T16:29:01.2799314Z
+dll	RackCad.UI.dll	821CD0A88F0A85F7BEC8BB620D9D169CBB7202B982C0AC079E60428F8288F432	1029632	2026-11-04T16:30:31.8721862Z
+dll	RackCad.Plugin.dll	2C2433ABB82569D3E48271467186D8D5D1AA7C636E3937252328054897097B4E	282112	2026-11-04T16:42:36.4683881Z
+porcelain_lines_after	0
+head_after	0e0d536b10350cc85e4a932a0d576b22fae22fa9
+acad_after	1	rackcad_modules_in_acad	0
+done
