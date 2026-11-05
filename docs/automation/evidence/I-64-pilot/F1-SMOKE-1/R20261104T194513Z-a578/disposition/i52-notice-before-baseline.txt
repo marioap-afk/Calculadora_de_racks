@@ -1,0 +1,4 @@
+I-64 -> I-52, aviso antes de la BASELINE (R20261104T194513Z-a578)
+SentUtc: 2026-11-04T22:07:53Z
+message_id: 040e0ac2-79d3-4806-90cf-bc405e290367 (delivered; lectura no confirmada)
+Contenido: autorizacion de una ocurrencia (Candidato cc7503e3, DLL 3C261B8F...B6A0); HOST_RELEASE por Owner/Coordinator solo para I-64; rol de I-52 = no tocar el host de la BASELINE al POST y recomprobar despues; P2 H10 no liberada; rutas desaparecidas = UNKNOWN_EXTERNAL_HOST_CHANGE sin atribucion; acad 0 / RAM 0 a las 22:06Z; opera el Owner.

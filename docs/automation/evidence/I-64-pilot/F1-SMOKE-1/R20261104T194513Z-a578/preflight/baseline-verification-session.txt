@@ -1,0 +1,39 @@
+I-64 Smoke-1 R20261104T194513Z-a578 — verificacion de la sesion sobre el preflight del Owner (solo lectura)
+VerifiedUtc: 2026-11-04T22:12:05Z (acad.exe = 0, RAMElements.exe = 0)
+Herramienta: scratchpad a578/verify_baseline.py (lee los archivos del RunId y, como referencia, la BASELINE y el HOST-EXTRAS AFTER de 0a77)
+
+preflight-owner (inicio 2026-11-04T22:10:29.2505350Z, ejecutado por el Owner): termina en OK
+  1 acad = 0 y RAM Elements = 0 (precondicion de la autorizacion; la sesion ya habia contado 0/0 a las 22:05:31Z y 22:06:37Z)
+  2 HEAD cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6, porcelain 0, productDiffLines 0 (frente a 0e0d536b), DLL 3C261B8F...B6A0 = Candidato autorizado
+  3 herramientas T3C 750a9097 / de642515 / d0bb54be                                                     = aprobadas
+  4 autoprueba 26/26 (codigo 0)
+  5 D 03e5606c...f165, A 90750e8b...4852, B fb9b97f9...682b, C ede7cdb3...a53c                         = candidate-cc7503e3
+    biblioteca B4CA2248...60E8                                                                          = sin cambios
+  6 perfil <<Unnamed Profile>>; SECURELOAD (REG_SZ) = 1 -> SECURELOAD_BASELINE_CURRENT = 1, leido por el Owner en solo lectura (reg query)
+  6b HOST-EXTRAS BEFORE codigo 0; archivo f15fa6498449fedc3931673062c3b9cdb56d9835c03b8eb740383176e36db34d = sidecar
+     AssemblyMap: existe, 2 valores (AppManagerPlugin, FeaturedAppsPlugin); RackCad.Plugin = ABSENT; LastWrite 2026-11-02T19:54:39.812Z
+       = 0a77 BEFORE y AFTER (sin cambio)
+     CoreUser BlockPreviewUser: 555 claves, 28 entradas = 0a77 AFTER (sin cambio; raiz LW 2026-10-23T21:13:39.020Z)
+     CoreUser 15FCE767F24F74D1: 555 claves, 29 entradas (0a77 AFTER: 28); raiz LW 2026-11-04T22:02:03.159Z. Diferencias frente a 0a77 AFTER:
+       Dialogs\NetLoadDialog VALUES_CHANGED (historial NETLOAD: la copia baja recibe el MRU que la clave de producto ya tenia tras 0a77);
+       Dialogs\Select File ADDED (MRU del dialogo Abrir; nombra el DXF D); Recent File List VALUES_CHANGED (el DXF D pasa de File36 a File9)
+     Clave de producto: 550 claves, 23 entradas = 0a77 AFTER salvo Recent File List VALUES_CHANGED (DXF D de File4 a File9);
+       raiz LW 2026-11-04T22:01:55.242Z
+     Lectura: solo estado de interfaz de AutoCAD (MRU e historial de dialogos), escrito entre 22:01:55Z y 22:02:03Z, al cerrarse el
+       AutoCAD que estaba abierto desde 2026-11-03T21:31:43Z (cierre pedido por la autorizacion). Ningun cambio de RackCad en AssemblyMap,
+       Applications ni Loaded; ninguna carga. Actividad anterior a la BASELINE; historial de NETLOAD = informativo (regla de 0a77).
+  7 BASELINE codigo 0
+     archivo 2ca0614ce16b112d241f260ec9cd07fb3f6e0edce4f5062b3bc51c0183f43a9f = sidecar; companero local dcf20710...2cd3 MATCH
+     CanonicalSha256 690d6926055faed403688ff204e8da429fb25d3b84060feecf48985eb82ef017; lineas 2241; claves 399; valores 1772;
+     archivos 21; plugins 3; env 0; ilegibles 0
+     PreSmokeChecks: TRUSTEDPATHS.ChainSha256 MATCH (a9ba0fd1...2498); SECURELOAD MATCH (1 = SECURELOAD_BASELINE_CURRENT);
+                     CurrentProfile MATCH; AcadExeSha256 MATCH (2A75996F...6422, R25.0.171.0.0)
+     Facts: CandidateDll.Sha256 3c261b8f...b6a0; PICKFIRST 1; ProfileCount 1; RackCadEnvMachine 0; RackCadEnvUser 0
+     Frente a la BASELINE de 0a77 (+25 / -19 lineas): DLL del Candidato; rackcad-20261103.log (de 0a77); MRU de NetLoadDialog,
+       Select File y OpenSaveAnavDialogs; Application Window Position; Variables *XCOMPARELASTCLEANTIME y VIEWBACKSTATUS. Ninguna en
+       TRUSTEDPATHS, SECURELOAD, perfiles, ApplicationPlugins, Applications/Loaded ni entorno.
+     Lineas que nombran RackCad fuera de Dialogs\RackCad.UI.*: solo archivos de %APPDATA%\RackCad y %LOCALAPPDATA%\RackCad (Designs,
+       logs, settings.json, layout del configurador) y hechos de la captura.
+
+Resultado: BASELINE CONFIRMADA. I-52 avisado antes de la BASELINE (msg 040e0ac2, 22:07:53Z). Siguiente: apertura de AutoCAD por el
+Owner (SM-00a, SM-00b, SM-00d) y parada en SM-00d1 para la inspeccion de la sesion.
