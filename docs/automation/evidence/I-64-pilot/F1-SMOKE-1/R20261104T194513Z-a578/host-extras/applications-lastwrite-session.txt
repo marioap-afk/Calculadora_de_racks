@@ -1,0 +1,25 @@
+Lectura de la sesion I-64, solo lectura (RegQueryInfoKey; scratchpad a578/read_key_lw.ps1), tras el dato de I-52 sobre HKCU Applications
+Raiz: HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409
+
+Applications LW 2026-11-04T22:36:25.592Z subkeys=7 values=0
+  AcadAppload LW 2026-07-09T16:53:41.061Z
+  AcadVBA LW 2025-11-26T23:39:34.699Z
+  AcDgnLS LW 2025-10-27T21:02:02.222Z
+  AcMr LW 2026-11-04T22:36:25.598Z
+  App Manager LW 2025-10-27T15:43:57.472Z
+  BatchStandardsChecker LW 2025-11-25T13:12:28.466Z
+  FeaturedApps LW 2025-10-27T15:43:57.496Z
+Loaded LW 2026-10-30T21:44:52.708Z subkeys=3 values=0
+  <ApplicationPlugins-de-Program-Files-x86>/Autodesk AppManager.bundle LW 2025-10-27T15:49:12.584Z
+  <ApplicationPlugins-de-Program-Files-x86>/Autodesk FeaturedApps.bundle LW 2025-10-27T15:49:13.291Z
+  <ApplicationPlugins-de-Program-Files>/AcVBA2025.Bundle LW 2025-11-26T23:40:10.592Z
+InstalledApplications LW 2025-10-27T15:44:06.180Z subkeys=2 values=0
+  AcSynergy LW 2025-10-27T15:44:05.925Z
+  express LW 2025-10-27T15:44:06.181Z
+AcMr values: DESCRIPTION=AutoCAD Action Commands; LOADCTRLS=12; LOADER=<carpeta-de-AutoCAD-2025>\AcMr.DLL; MANAGED=1
+  AcMr\Commands LW 2026-11-04T22:36:25.596Z values=2 subkeys=0
+  AcMr\Groups LW 2026-11-04T22:36:25.598Z values=1 subkeys=0
+  AcMr\MRU LW 2026-11-04T22:36:25.598Z values=0 subkeys=0
+now 2026-11-05T00:48:05.5043623Z
+
+Lectura: Applications (LW 22:36:25.592Z) y Applications\AcMr con Commands/Groups/MRU (22:36:25.596-.598Z) se reescribieron durante la salida de la pid 46292 (salio entre 22:36:22Z y 22:36:36Z). AcMr = «AutoCAD Action Commands», LOADER en la carpeta de instalacion de AutoCAD 2025: modulo propio de AutoCAD, no de RackCad. Contenido identico a la BASELINE: el libro T3C registra las claves y valores de Applications y el DIFF no tiene ninguna entrada ahi (R-F-05 no se dispara). Loaded e InstalledApplications sin cambio de LW (2026-10-30 y 2025-10-27). HOST-EXTRAS no captura Applications; T3C no registra LW. En 0a77 nadie midio la LW de Applications: sin comparacion historica.

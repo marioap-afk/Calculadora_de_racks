@@ -4348,3 +4348,109 @@ añade documentación y evidencia, y `09f2f1c3` sigue siendo el Candidato de la 
 **Relevos:**
 - Sin invocaciones de modelos.
 - HEAD = remoto = `596ad29c` antes de este commit; `main` `a140eb3a`.
+
+## 71. Smoke-1 (segundo reintento) — Ocurrencia `R20261104T194513Z-a578`: STOP CONFIRMED (dos `acad.exe`; operó la sesión); custodia
+
+**Autoridad** (literales en `F1-SMOKE-1/R20261104T194513Z-a578/authorization/`):
+- `coordinator-second-smoke1-retry-authorization.md`: UNA ocurrencia, RunId `R20261104T194513Z-a578`, con estas condiciones:
+  - Candidato `cc7503e3`, DLL `3C261B8F…B6A0`; NETLOAD única y no persistente solo para ese SHA;
+  - precondición acad = 0 y RAM = 0 antes de la BASELINE;
+  - HOST_RELEASE del Owner / Coordinator solo para I-64;
+  - el Owner opera AutoCAD: «If the session operates AutoCAD: STOP and return for Coordinator disposition».
+- `coordinator-second-smoke1-retry-review.md`: la revisión de la ocurrencia (abajo); aplicada sin cambiar el registro en
+  `disposition/stop-closure.md`.
+- Preparación usada por la autorización (Candidato y recheck de host de C2): unidad `R20261104T194513Z-a578/prep/`.
+
+**Ocurrencia** (2026-11-04 → 2026-11-05):
+- **Preflight y BASELINE** (Owner, ~22:10Z):
+  - acad = 0 y RAM = 0;
+  - HOST-EXTRAS BEFORE `f15fa649…`;
+  - BASELINE código 0, CanonicalSha256 `690d6926055faed403688ff204e8da429fb25d3b84060feecf48985eb82ef017`.
+- **AutoCAD:**
+  - El Owner abrió AutoCAD (pid 46292, 22:14:14.884Z) y operó SM-00a, SM-00b y SM-00d.
+  - SM-00d1 PASS (22:18:34Z): acad = 1 y un solo `RackCad.Plugin.dll`, el del Candidato.
+  - Después ordenó «De ahí continúa tú tomando el control, no cuestiones mi orden», y la sesión operó desde SM-00e. Es una desviación de
+    rol nueva (`disposition/owner-order-session-operator.md`).
+  - A las 22:20:52Z, la llamada de la sesión a `open_application` lanzó una segunda `acad.exe` (pid 9640), sin RackCad y nunca operada.
+    La sesión la detectó a las 22:34:52Z: SM-STOP-02.
+- **Observado hasta el STOP**, sin reetiquetar:
+  - C1: SM-03 y SM-17 PASS;
+  - C2: SM-13 y SM-26 PASS;
+  - SM-39 PASS hasta el STOP;
+  - SM-27 … SM-35 NOT_EXECUTED (incluidos SM-27 y SM-34, críticos).
+- **Cierre:**
+  - las dos instancias, sin guardar; acad = 0 a las 22:36:54Z. SM-41 PASS.
+  - **POST** (Owner, 00:38:54Z) código 0, CanonicalSha256 `d651ddf472ddbdcc65d7c45a34b2669fbb1e4698e7773b51586fe79a6a8ac7b2`.
+  - **DIFF** = CLEAN (2 ALLOWED R-A-03).
+  - **HOST-EXTRAS** AFTER `ccc8cd87…`: REPORT_REQUIRED, solo por dos LASTWRITE_ONLY del MRU.
+  - Limitación: la última en salir fue la 9640, que reescribió el MRU con sus valores de arranque.
+- **I-52:**
+  - avisos antes de la BASELINE (`040e0ac2…`) y tras la POST (`5112203c…`);
+  - recheck **SIN DERIVA** (00:43:29Z), sin ACK/RELEASE y sin P2 H10;
+  - dato aportado: HKCU `Applications` con última escritura a las 22:36:25Z (`AcMr`, módulo de AutoCAD, contenido idéntico).
+- Tras el STOP, el Owner escribió «si es necesario utiliza tú AutoCAD»; la sesión no lo abrió (`disposition/owner-message-after-stop.md`).
+- **Registro del operador:** firmado por el Owner («Firmo el registro.», 2026-11-05T04:47:56Z; `disposition/owner-signature.md`).
+
+**Revisión del Coordinator** («I-64 — COORDINATOR SMOKE-1 REVIEW», literal):
+- **STOP CONFIRMED**: HOST_ISOLATION_VIOLATION / MULTIPLE_AUTOCAD_INSTANCES.
+- **Desviación de rol** = PROCEDURAL_DEVIATION — PRESERVED.
+  - NO es precedente para otra ocurrencia.
+  - En la siguiente, el Owner opera AutoCAD y la sesión solo guía, captura y analiza. Si la sesión opera AutoCAD: STOP.
+- **Resultados:** se conservan como se registraron, sin reetiquetar los PASS.
+  - Las observaciones visuales ligadas a la ventana operada = OBSERVED / NON-AUTHORITATIVE FOR SMOKE PASS.
+  - La evidencia global de host no basta para el cierre: procesos, RackLog global, registro, ApplicationPlugins y AssemblyMap, POST y
+    módulos cargados no ligados a la PID prevista.
+  - La POST tiene LIMITED EVIDENTIARY VALUE.
+  - La ocurrencia nueva repite el procedimiento completo; ningún PASS anterior exime un paso.
+- **HKCU `Applications`:** SEMANTIC_DRIFT = NO, WRITE_ACTIVITY = YES, ATTRIBUTION = UNKNOWN → REPORT / NON-BLOCKING FINDING. La clave no se
+  limpia ni se modifica.
+- **Guarda de procesos para la ocurrencia nueva:**
+  - acad = 0 antes de la BASELINE, y exactamente 1 cuando el Owner abre AutoCAD;
+  - `AUTHORIZED_AUTOCAD_PID` registra PID, ruta, SHA-256 de `acad.exe` y hora de inicio, y toda comprobación sensible a procesos se liga
+    a esa PID;
+  - tras el NETLOAD, un solo `RackCad.Plugin.dll` en esa PID, con la ruta y el SHA-256 del Candidato;
+  - STOP si acad ≠ 1, si desaparece la PID o si aparece otra;
+  - antes de la POST, esa PID es la única; cierre normal; acad = 0 antes de capturar.
+- **Ocurrencia nueva:** autorización del Coordinator, RunId nuevo, recheck de host fresco, BASELINE, POST y registro del operador nuevos,
+  y NETLOAD única autorizada de nuevo.
+  - El mismo SHA de Candidato puede proponerse otra vez si no cambia el producto ni el commit del Candidato, con reautorización
+    explícita.
+- Las carpetas ausentes de I-52 e I-65 son un asunto aparte, no un defecto del producto de I-64.
+- Parada: COORDINATOR_SMOKE1_RETRY_AUTHORIZATION_REQUIRED. Sin merge ni rebase de main y sin F2.
+
+**Custodia** (`docs/automation/evidence/I-64-pilot/F1-SMOKE-1/R20261104T194513Z-a578/`, con `custody-manifest.json` por unidad):
+
+| Unidad | CUSTODIED | EXCLUDED |
+|---|---|---|
+| `R20261104T194513Z-a578` | 35 | 162 |
+| `R20261104T194513Z-a578/prep` (de `F1-SMOKE-1-RETRY-PREP/`: `candidate-cc7503e3/` y `host-recheck-c2/`) | 6 | 7 |
+
+- Excluidos, con SHA-256 y motivo, por las mismas reglas de `0a77`:
+  - salidas sintéticas de la autoprueba;
+  - compañeros locales de las capturas;
+  - registros de dotnet con rutas locales;
+  - JSON crudos de HOST-EXTRAS y su diff (sus `.sha256` sí se custodian);
+  - un duplicado ya custodiado (`selftest-result.txt`).
+- Redacciones registradas:
+  - la ubicación del worktree en los scripts del kit;
+  - las carpetas de I-52 y de I-65 en la autorización, los mensajes de I-52, los paquetes, el cierre y el registro;
+  - las carpetas de AutoCAD 2025 y de ApplicationPlugins en la lectura de últimas escrituras;
+  - la raíz de la unidad local.
+- CRLF custodiado en LF con el SHA-256 original.
+- Queda transitorio `F1-SMOKE-1-RETRY-PREP/host-recheck-after-a578/` (preparación de la ocurrencia nueva); se custodia después de ella.
+
+**Estado** (`I-64.yml`):
+- `smoke1_status` = STOP CONFIRMED de `a578`, con la desviación conservada y sin precedente;
+- `cc7503e3` no pasa a histórico: se puede proponer de nuevo con reautorización explícita;
+- siguiente: COORDINATOR_SMOKE1_RETRY_AUTHORIZATION_REQUIRED.
+
+**Límites:**
+- Sin cambios de producto: `src/` y `tests/` siguen siendo los de `0e0d536b`, iguales en `cc7503e3`.
+- Este commit solo añade documentación y evidencia, y no es un Candidato. El DLL de Debug no se recompila: sigue el de `cc7503e3`,
+  `3C261B8F…B6A0`, con el SHA de ese commit estampado.
+- Sin AutoCAD después del cierre de la ocurrencia, sin F2 y sin merge ni rebase de main.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- Mensajes a la sesión «I - 52»: `040e0ac2…`, `5112203c…`, la corrección `8d3ec29d…` y la petición del recheck nuevo `c051542a…`.
+- HEAD = remoto = `cc7503e3` antes de este commit; `main` `a140eb3a`.

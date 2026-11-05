@@ -1,0 +1,9 @@
+I-64 -> I-52, aviso tras el POST y peticion de la recomprobacion posterior (R20261104T194513Z-a578)
+SentUtc: 2026-11-05T00:43:04Z (tras el DIFF y la comparacion de HOST-EXTRAS)
+message_id: 5112203c-bc36-48d0-bdb2-cfdbebeb7276 (delivered; lectura no confirmada; suscripcion notify_when_idle)
+Contenido: STOP SM-STOP-02 a las 22:34:52Z (segunda acad.exe pid 9640, lanzada por la propia sesion I-64, sin RackCad); cierre normal
+sin guardar; acad 0 / RAM 0 desde 22:36:54Z; POST codigo 0 (d651ddf4...c7b2); DIFF T3C CLEAN codigo 0 (2 ALLOWED R-A-03); HOST-EXTRAS:
+AssemblyMap y CoreUser identicos, dos LASTWRITE_ONLY de MRU en la clave del producto; RackLog y dibujos sin cambios; rutas
+<carpeta-de-I-52> y <carpeta-local-de-I-65> no tocadas. Pide la misma recomprobacion que en 0a77 (acad/RAM, acad.exe, TRUSTEDPATHS, SECURELOAD,
+perfil, Applications/InstalledApplications/Loaded, Applications del perfil, HKLM, AssemblyMap, ApplicationPlugins, ACL de sus rutas,
+H10, bytes de P2) con respuesta «sin deriva» o la deriva concreta. Recuerda: I-52 no emite ACK/RELEASE; no autoriza P2 H10.

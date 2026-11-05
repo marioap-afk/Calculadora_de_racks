@@ -1,0 +1,21 @@
+fixture	I64-SMOKE1-FIXTURES-D.dxf	03e5606c1e311f700640125b892fe09bf408dd5642115ebcb433b57474ccf165	MATCH
+fixture	I64-SMOKE1-FIXTURES-D.dxf.pristine	03e5606c1e311f700640125b892fe09bf408dd5642115ebcb433b57474ccf165	MATCH
+source	envelope-pr13-sin-identidad.json	2de3c7bf49db4cc48be4ec3ce6035c0b7d5f8f7a166457a894269bbba163e502
+source	envelope-pr12-diagnostico.json	c182f722e0e77db66b97cd717244ce4f07c9f5c6797319714ec74570bb51f1f1
+source	check_smoke1_fixtures.py	210ac6fc814645686aea334e3b9f66add6940e46ea3d5bd9b6e6fceb5cd5388d
+source	make_smoke1_fixtures.py	df2a6659761ff878b38e4b2ee970791dd9105b7d018ac051bd778ba0b0fa9ff9
+source	harness/Program.cs	61ca402b013bf3f0f21b010f68e1e5d34ab0126f3d393ae5f4f1d3c415037606
+source	harness/FixtureHarness.csproj	a1ad68fea7ffa083db8995ae57cbe1ee40a463e4a547cd9890e5bd654acf8780
+readback	inserts in ENTITIES: ['I64_FX_PR13_SIN_IDENTIDAD', 'I64_FX_PR12_DIAGNOSTICO']
+readback	I64_FX_PR13_SIN_IDENTIDAD BLOCK_RECORD 2F XDICT 35 XRECORD 36 chunks 1 equal_to_envelope True
+readback	I64_FX_PR12_DIAGNOSTICO BLOCK_RECORD 39 XDICT 3F XRECORD 40 chunks 1 equal_to_envelope True
+readback	READBACK PASS
+candidate_application_dll	12B8E237F70596FA2F8030D66E51CC54F410A8906CB78B61A4056873058E27B3	2114048
+harness_build	0
+harness_application_dll	12B8E237F70596FA2F8030D66E51CC54F410A8906CB78B61A4056873058E27B3	MATCH
+harness_check_exit	0
+check	I64_FX_PR13_SIN_IDENTIDAD.json	Deserialized=True	IsInterpretable=True	EnvelopeId=[]	Kind=NoIdentity	RackId=[null]	RackCount=0	OtherCount=0
+expect	I64_FX_PR13_SIN_IDENTIDAD.json	PASS
+check	I64_FX_PR12_DIAGNOSTICO.json	Deserialized=False	IsInterpretable=False	EnvelopeId=[null]	Kind=Diagnostic	RackId=[null]	RackCount=0	OtherCount=0
+expect	I64_FX_PR12_DIAGNOSTICO.json	PASS
+RESULT	PASS
