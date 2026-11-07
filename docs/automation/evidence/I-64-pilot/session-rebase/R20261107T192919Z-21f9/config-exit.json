@@ -1,0 +1,44 @@
+{
+  "CheckedUtc": "2026-11-07T19:58:52Z",
+  "ConfigSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+  "Snapshot": null,
+  "ShaInAllowlist": false,
+  "NameCount": 104,
+  "NamesEqual": false,
+  "NamesComparedTo": "instantanea A (inventario de 105 nombres del RebaseMap anterior); misma lista de nombres que B y C",
+  "NamesDiff": [
+    {
+      "Op": "delete",
+      "InA": [
+        "followUpQueueMode"
+      ],
+      "Now": []
+    },
+    {
+      "Op": "insert",
+      "InA": [],
+      "Now": [
+        "migratedFollowUpQueueToSteer"
+      ]
+    },
+    {
+      "Op": "delete",
+      "InA": [
+        "enabled",
+        "[plugins.\"code-review@openai-bundled\"]"
+      ],
+      "Now": []
+    },
+    {
+      "Op": "insert",
+      "InA": [],
+      "Now": [
+        "NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE"
+      ]
+    }
+  ],
+  "LastWriteUtc": "2026-11-07T18:09:47Z",
+  "Accepted": false,
+  "Classification": "P-01 OBSERVADO: fuera del conjunto cerrado A/B/C; sin invocaciones de modelos en este checkpoint ni pendientes; el archivo no se toco; disposicion del Owner/Coordinator requerida antes de cualquier invocacion",
+  "ValuesRead": false
+}

@@ -1,0 +1,106 @@
+{
+  "Schema": "rackcad-relay-record/v1",
+  "TaskId": "SESSION",
+  "RunId": "R20261107T192919Z-21f9",
+  "Attempt": 3,
+  "Phase": "REBASE",
+  "Participant": null,
+  "Exit": {
+    "HeadSha": "3f5c7014351d1dc59de4eee86a7d1319fbeccc07",
+    "LsRemoteSha": "3f5c7014351d1dc59de4eee86a7d1319fbeccc07",
+    "OriginMainSha": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "CleanTree": false,
+    "GitOperationInProgress": false,
+    "SummaryCommitSha": "3f5c7014351d1dc59de4eee86a7d1319fbeccc07",
+    "ConfigTomlSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+    "ConfigTomlKeys": null,
+    "OpenDelegations": 0
+  },
+  "Cession": {
+    "StartUtc": "2026-11-07T19:29:23Z",
+    "EndUtc": "2026-11-07T19:38:57Z",
+    "SessionOperated": true
+  },
+  "Outcome": {
+    "Kind": "COMPLETED",
+    "LaunchedPid": null,
+    "ExitCode": 0,
+    "TerminalEvent": null,
+    "TreeKilled": false,
+    "DeathConfirmed": null,
+    "OutputPath": null,
+    "OutputSha256": null,
+    "OutputWrittenUtc": null,
+    "Acceptance": null
+  },
+  "Entry": null,
+  "RemoteFacts": {
+    "CurrentRun": {
+      "GhRunId": 42407236088,
+      "Event": "push",
+      "Ref": "architecture/workspace-persistente-rackcad",
+      "HeadSha": "3f5c7014351d1dc59de4eee86a7d1319fbeccc07",
+      "Status": "completed",
+      "Conclusion": "success",
+      "Jobs": [
+        {
+          "Name": "Build UI (WPF, valida API de Application)",
+          "Conclusion": "success"
+        },
+        {
+          "Name": "UI Tests (WPF controls, net8.0-windows)",
+          "Conclusion": "success"
+        },
+        {
+          "Name": "Tests (Domain + Application)",
+          "Conclusion": "success"
+        },
+        {
+          "Name": "Build Plugin without AutoCAD",
+          "Conclusion": "success"
+        }
+      ]
+    },
+    "RedRun": null,
+    "TestArtifacts": [],
+    "OriginMainSha": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "LsRemoteSha": "3f5c7014351d1dc59de4eee86a7d1319fbeccc07",
+    "Commands": [
+      "gh run view 42407236088 --json databaseId,event,headBranch,headSha,status,conclusion,jobs",
+      "git ls-remote origin refs/heads/architecture/workspace-persistente-rackcad"
+    ],
+    "ObtainedUtc": "2026-11-07T19:58:55Z",
+    "Diagnosis": null
+  },
+  "RebaseMap": {
+    "MainBeforeSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "MainAfterSha": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "G2CloseSha": null,
+    "G2CloseImageSha": null,
+    "AuthorityRevision": null,
+    "AuthorityRevisionImageSha": null,
+    "UnitDocBlobsEqual": null,
+    "UnitChangeSectionsEqual": null,
+    "BaseSha": null,
+    "BaseImageSha": null,
+    "ChainBaseSha": null,
+    "ChainBaseImageSha": null,
+    "CommitsIn": "rebase-proof.json (Commits: 87, cada uno con su imagen e igualdad de patch-id)",
+    "ConflictPaths": [
+      "tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs",
+      "tests/RackCad.Tests/SelectiveEditorOpenTests.cs"
+    ],
+    "CoordinatorDecision": "docs/automation/evidence/I-64-pilot/F1-SMOKE-1/R20261107T171052Z-6862/disposition/coordinator-smoke1-final-review.md: sincronizar con main y resolver los solapes conocidos del censo de comandos, conservando RACKPANEL y RACKRAMPAQUETE."
+  },
+  "Disposition": "NONE",
+  "Notes": [
+    "Rebase de sesion sin cadena en curso (16.7): F1 esta cerrada y no hay contrato vigente; G2, AuthorityRevision, BaseSha y ChainBaseSha = null por estar fuera de una tarea.",
+    "Desviacion a ratificar: 16.7 pide abortar ante un conflicto y parar. El rebase no se aborto porque la orden del Coordinator (CoordinatorDecision) mandaba resolver exactamente esos solapes; la prediccion previa de merge-tree mostraba solo estos dos archivos. La orden no es una A-n; la sesion vuelve al Coordinator antes de seguir.",
+    "PatchIdEqual = false en dos commits: f3c846e9 (bootstrap: contexto de docs/ROADMAP.md, sin conflicto) y de8e7673 (el conflicto del censo). Ver rebase-proof.json.",
+    "Archivo previo: etiqueta anotada refs/tags/archive/I-64-pre-rebase-05084ca7 publicada antes del rebase. Push con --force-with-lease=<rama>:05084ca7.",
+    "Cession: inicio = etiqueta de archivo (19:29:23Z); rebase 19:29:40Z-19:31:12Z; fin = alta de la CI del push (19:38:57Z). Sin participantes ni invocaciones de modelos.",
+    "config.toml fuera de A/B/C al medirlo despues de la revalidacion: config-exit.json. No se invoco ningun modelo.",
+    "Revalidacion sobre el SHA exacto: revalidation.json. CI exacta de push: CurrentRun.",
+    "CleanTree refleja el momento de generar este registro: lo unico sin versionar es esta carpeta de evidencia. La revalidacion termino con el arbol limpio en el mismo SHA."
+  ]
+}

@@ -4665,3 +4665,70 @@ añade documentación y evidencia, y `09f2f1c3` sigue siendo el Candidato de la 
 - Sin invocaciones de modelos.
 - Mensajes a «I - 52»: `245731d3…` (recheck previo), `bec2810a…` y `e31b8a44…`. A «I - 62»: `3f3f1df3…` y `b853e7ba…`.
 - HEAD = remoto = `1917bc19` antes de este commit; `main` `a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60`.
+
+## 74. Checkpoint de integración posterior a I-65: sincronización con `main` y revalidación
+
+**Orden:** revisión final de Smoke-1 (`F1-SMOKE-1/R20261107T171052Z-6862/disposition/coordinator-smoke1-final-review.md`, literal). **Run:** `R20261107T192919Z-21f9`. Registros en `I-64-pilot/session-rebase/R20261107T192919Z-21f9/`: `rebase-proof.json`, `revalidation.json`, `relay-record.json`, `config-exit.json` y `processes-exit.json`. Los TRX y los logs no se versionan; se conservan su SHA-256 y sus campos.
+
+**Sincronización:**
+- Punta `05084ca7` sobre `bb0d5522` → **`3f5c7014351d1dc59de4eee86a7d1319fbeccc07`** sobre `main` `a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60` (con I-65). `main` no se movió durante el checkpoint.
+- Etiqueta `archive/I-64-pre-rebase-05084ca7` publicada antes del rebase (objeto `5a58324e`): todos los SHA anteriores que cita esta evidencia siguen alcanzables. El mapa completo está en `rebase-proof.json`.
+- Push con `--force-with-lease=<rama>:05084ca7`.
+- 87 commits, sin cambios de asunto. **Patch-id igual en 85.** Distinto en dos:
+  - `f3c846e9` → `f8168166` (bootstrap): `docs/ROADMAP.md` se fusionó sin conflicto; cambia solo el contexto del parche por la fila de I-65.
+  - `de8e7673` → `517f2f68` (RED de F1-T3A): el conflicto del censo.
+- De las 1225 rutas del delta de I-64, solo 3 cambian de blob respecto a la punta anterior: `docs/ROADMAP.md` y los dos archivos del censo.
+- Rutas de producto (`src`, `deploy`, `assets`, archivos de proyecto): I-65 cambia 45 e I-64 cambia 29, **0 en común**.
+- El árbol final difiere de la predicción previa de `merge-tree` solo en esos dos archivos de pruebas.
+
+**Censo de comandos:**
+- `main` 38 → punta **39**, medido en bruto contra los dos SHA, con 39 nombres únicos.
+- Solo en la punta: `RACKPANEL`. Solo en `main`: ninguno. `RACKRAMPAQUETE` se conserva.
+- Resolución en `CustomPropertiesCommandGuardTests.cs` (`I65Commands` + `F1PanelCommands` en `Baseline`) y en `SelectiveEditorOpenTests.cs` (`Assert.Equal(39, total)` y los dos párrafos).
+
+**Revalidación sobre `3f5c7014`** (AutoCAD cerrado; mismo SHA y árbol limpio antes y después de cada fase):
+
+| Comprobación | Resultado |
+|---|---|
+| Core completo | 14969 / 14969 |
+| UI completo | 1701 aprobadas, 17 Skip, 0 fallos (total 1718) |
+| Guardas de Workspace, Core | 645 / 645 (577 de I-64 + 68 anteriores que coinciden por nombre) |
+| Guardas de Workspace, UI | 66 / 66 (64 de I-64 + 2 de `CustomPropertiesWindowTests`) |
+| Guardas de I-65 (`StructuralAnalysis`) | 1797 / 1797, igual a lo que I-65 añadió al Core |
+| Guardas del censo | 49 / 49 |
+| Build Debug de UI | código 0, sin avisos |
+| Build Debug de Plugin | código 0, 0 errores, 0 avisos CS |
+| Builds Release de las pruebas | código 0, 0 avisos CS |
+| Bundle canónico | 158 comprobaciones, 25 archivos, no instalado |
+| Arnés del verificador | 14 casos (1 válido + 13 negativos) |
+| **CI `42407236088`** (push, SHA exacto) | **4/4 success**, mismos conteos y mismas comprobaciones del bundle |
+
+- **Ninguna prueba perdida** (conteos de CI): Core 12595 + 1797 (I-65) + 577 (I-64) = 14969; UI 1654 + 0 + 64 = 1718. Los 17 Skip ya están en `main` y en la base; I-64 no añade ninguno.
+- **Tabla de secciones y materiales:** mismo blob que `main` (`d088e2a9`). Este worktree la extrae con CRLF, así que su SHA-256 es `B22F7D9D…2E7D`, el del bundle de la CI (RD11-OBS-01 de I-65). Con LF sigue siendo `FC3D9146…B619`.
+- **El Plugin del bundle** contiene los dos nombres de comando.
+- **DLL Debug de la punta** (`ProductVersion` con el sufijo `3f5c7014…`): Plugin `0C0F2FDE…6C0B`, Application `12A7C29A…7558`, Domain `24EA6643…9507`, UI `E49AC0A6…9826`.
+
+**Lo que este checkpoint no prueba:**
+- El PASS de Smoke-1 sigue valiendo solo para `cc7503e3` y su DLL `3C261B8F…B6A0`. La imagen de ese commit (`c0192f2e`) y la punta no se han ejecutado en AutoCAD; su DLL es otro.
+- Los archivos de producto de I-64 son los del Candidato, pero la combinación con I-65 solo está probada por pruebas, builds y CI.
+
+**Observaciones para la revisión:**
+1. **P-01: `config.toml` fuera de A/B/C** (`config-exit.json`). SHA-256 `377D0C3C…D1E8`, última escritura 2026-11-07T18:09:47Z, 104 nombres en lugar de 105. Frente a la instantánea A:
+   - sale `followUpQueueMode` y entra `migratedFollowUpQueueToSteer`;
+   - sale `[plugins."code-review@openai-bundled"]` con su `enabled`;
+   - entra `NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE`.
+   
+   Esta sesión no escribió el archivo. `ChatGPT.exe` arrancó a las 18:05:08Z y tiene dos procesos `codex.exe` hijos (`processes-exit.json`), lo que apunta a la aplicación, aunque el autor de la escritura no está medido. La última instantánea registrada en la evidencia era C (§63). El archivo no se tocó y no se leyeron valores. **Ninguna invocación de modelo debe hacerse hasta que el Owner o el Coordinator lo dispongan.** Este checkpoint no invocó ninguna.
+2. **Desviación de AUTOMATION_PLAN 16.7, a ratificar.** Ante un conflicto, 16.7 pide abortar y parar, y la igualdad de patch-id de `de8e7673` no se cumple. El rebase no se abortó porque la orden mandaba resolver exactamente esos solapes, y la predicción previa mostraba solo esos dos archivos. La orden no es una A-n.
+3. **Avisos de analizador xUnit en dos pruebas de I-64:** `WorkspaceBridgeSourceGuardTests.cs:158` (xUnit2031) y `WorkspacePanelInstrumentationTests.cs:163` (xUnit2030). No vienen de la sincronización: sus blobs son iguales a los de la punta anterior. No se corrigen aquí.
+4. **`README.md`** lista `RACKRAMPAQUETE` pero no `RACKPANEL`. I-64 no había añadido su fila; no se toca en este checkpoint.
+5. **MSB3277** (29 líneas, referencias de AutoCAD) en el build del Plugin; aparece también en builds anteriores de I-64.
+
+**Límites:**
+- Sin cambios de producto. En `tests/` solo cambia el censo ordenado.
+- Sin F2, sin Smoke, sin AutoCAD, sin RAM Elements y sin invocaciones de modelos.
+- Registro de HKCU, perfil, TRUSTEDPATHS, SECURELOAD, AssemblyMap y ACL sin tocar.
+- Las clasificaciones de Smoke-1 y de las ocurrencias históricas no cambian.
+- Este commit solo añade documentación y evidencia encima de `3f5c7014`.
+
+**Siguiente:** COORDINATOR_INTEGRATION_REVIEW_REQUIRED. F2 no empieza antes de esa revisión.
