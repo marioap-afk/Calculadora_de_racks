@@ -1,0 +1,5 @@
+python -I <run>\kit\compare_host_extras.py <run>\host-extras\host-extras-BEFORE.json <run>\host-extras\host-extras-AFTER.json <run>\host-extras\host-extras-compare.json
+HOST-EXTRAS DIFF Disposition = REPORT_REQUIRED
+  REPORT_REQUIRED ProductKey LASTWRITE_ONLY Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Dialogs\Select File 2026-11-04T22:33:00.077Z -> 2026-11-05T19:27:26.148Z
+  REPORT_REQUIRED ProductKey VALUES_CHANGED Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Recent File List 2026-11-05T16:57:17.899Z -> 2026-11-05T19:47:15.455Z
+exit=4

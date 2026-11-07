@@ -1,0 +1,47 @@
+I-64: actividad de host posterior al recheck fresco (lecturas de solo lectura de la sesion, 2026-11-05)
+- 15:42:26Z: acad.exe = 0 (ultima lectura con 0).
+- 16:48:14Z: acad.exe = 1, RAMElements = 0.
+  - PID 69576, inicio 2026-11-05T16:00:18.870Z, ejecutable <carpeta-de-AutoCAD-2025>\acad.exe.
+  - Proceso padre: explorer.exe (pid 13144), con 70 caracteres de argumentos; la sesion no los registra porque pueden nombrar un
+    dibujo local.
+  - Modulos RackCad en esa PID: 4, todos del bin del Candidato en el worktree de I-64, con los SHA-256 del Candidato:
+    RackCad.Plugin.dll 3C261B8F156E6919..., RackCad.Application.dll 12B8E237F70596FA..., RackCad.UI.dll 363AE9FE436AAE7A...,
+    RackCad.Domain.dll BFAA59433E5681A0....
+    Es decir, en esa instancia se hizo un NETLOAD del DLL del Candidato.
+- 16:48:56Z: sin cambios en el registro de seguridad ni de carga:
+  - SECURELOAD 1;
+  - TRUSTEDPATHS 19 entradas, a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498, sin la ruta del worktree;
+  - perfil <<Unnamed Profile>>;
+  - HKCU Applications, Loaded y AssemblyMap sin RackCad.
+  AutoCAD puede escribir estado de perfil e interfaz al salir: solo un recheck despues de su cierre lo dice.
+- La sesion I-64 no lanzo esta instancia y no la toca:
+  - en este tramo no hizo ninguna llamada de computer use;
+  - su ultima llamada a open_application fue la de a578, a las 22:20:52Z del 2026-11-04;
+  - el padre es explorer.exe.
+  No se atribuye: es actividad de host fuera de cualquier ocurrencia, sin autorizacion de carga de I-64, y la clasifica el
+  Coordinator.
+- Consecuencias para la ocurrencia nueva:
+  - el recheck fresco de 04:56Z / 04:58Z queda superado;
+  - antes de la BASELINE hacen falta acad = 0 y un recheck nuevo de la sesion y de I-52, con HOST-EXTRAS frente al AFTER de a578,
+    despues de que se cierre esta instancia;
+  - la sesion no la cierra.
+
+Atribucion por el Owner (literal, por el chat de la sesion, 2026-11-05 ~17:00Z):
+  «Sí, lo abrí yo; ya lo cerré»
+- 17:01:24Z: acad.exe = 0, RAMElements = 0. No hay RackLog nuevo: el ultimo sigue siendo rackcad-20261103.log.
+- Recheck 2 de la sesion, solo lectura (session-recheck-2.txt, 17:01:41Z):
+  - sin cambios frente al de las 04:56Z: HEAD = origin = b5ea02f5; DLL 3C261B8F...B6A0 (lastWrite 2026-11-04T19:44:16Z);
+  - acad.exe R25.0.171.0.0 2A75996F...; perfil <<Unnamed Profile>>; SECURELOAD 1; TRUSTEDPATHS 19 / a9ba0fd1...2498;
+  - sin RackCad en Applications, Loaded, InstalledApplications ni HKLM; AssemblyMap sin RackCad.Plugin; ApplicationPlugins sin RackCad;
+  - las dos carpetas siguen ausentes.
+- HOST-EXTRAS RECHECK2 (sha256 17C74B3B...1945) frente al AFTER de a578 (host-extras-diff-AFTER-vs-RECHECK2.json): REPORT_REQUIRED.
+  - Solo hay una diferencia: ProductKey\Recent File List VALUES_CHANGED (1 valor anadido y 1 quitado; ultima escritura
+    2026-11-05T16:57:17.899Z). Es el MRU del dibujo que abrio el Owner; los valores no se copian aqui porque nombran archivos locales.
+  - AssemblyMap, CoreUser y el historial de NETLOAD, identicos.
+- Ultimas escrituras (read_key_lw):
+  - HKCU Applications 16:57:18.875Z y AcMr con Commands/Groups/MRU 16:57:18.877Z: el mismo patron que en a578, una reescritura de
+    AutoCAD al salir;
+  - Loaded e InstalledApplications sin cambio.
+- Lectura de la sesion: la instancia del Owner (16:00:18Z → ~16:57:18Z) dejo solo estado de interfaz de AutoCAD (MRU y AcMr), sin
+  ninguna deriva de seguridad, de carga ni de RackCad. La BASELINE de la ocurrencia nueva capturara ese estado como punto de partida.
+  La clasificacion es del Coordinator.

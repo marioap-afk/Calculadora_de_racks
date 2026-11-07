@@ -1,0 +1,175 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Subject": "preparacion del tercer reintento de Smoke-1: recheck de host tras a578, disposicion del operador y guarda de procesos (transitorios de F1-SMOKE-1-RETRY-PREP usados por la autorizacion de R20261105T050250Z-785a)",
+  "Unit": "R20261105T050250Z-785a/prep",
+  "SourceRoot": "artifacts/orchestration/I-64/F1-SMOKE-1-RETRY-PREP",
+  "Included": [
+    "host-recheck-after-a578/"
+  ],
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; companeros locales y registros con rutas solo por SHA-256; duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original; imagenes byte a byte, revisadas una a una; las cuatro capturas tapadas por la ventana de la app solo por SHA-256 (Option A); operator/screens-tool/ = SUPPORTING / DERIVED, NOT ORIGINAL FULL-SCREEN T3D CAPTURE",
+  "Counts": {
+    "CUSTODIED": 13,
+    "EXCLUDED": 7
+  },
+  "Files": [
+    {
+      "Path": "host-recheck-after-a578/coordinator-operator-disposition.md",
+      "Bytes": 2827,
+      "Sha256": "62a18243358e6046a5664d16e1245adc89ba82a68ebfdbb665264c7ac29223d4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "host-recheck-after-a578/host-activity-after-recheck.txt",
+      "Bytes": 3584,
+      "Sha256": "3b7311607532a3c512b43c31232e9d7d14a8a96132d81081a5618da478fad509",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "host-recheck-after-a578/host-extras-RECHECK.json",
+      "Bytes": 55763,
+      "Sha256": "db1da4a7341e4a0cb55cf4718998b285ed2aac2d530956ef5315fcdddf6db862",
+      "Disposition": "EXCLUDED",
+      "Reason": "valores crudos del registro con rutas locales (HOST-EXTRAS); resumen en operator/operator-record.md, disposition/return-package.md y disposition/coordinator-classification-785a.md"
+    },
+    {
+      "Path": "host-recheck-after-a578/host-extras-RECHECK.json.sha256",
+      "Bytes": 66,
+      "Sha256": "92dc08c082c229041bc049d5cd5eea07c91df2c1122a2e775895d95230d59feb",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "fc78c51224f37b5d2335db19cfb02b27f99adf273b9556438dc55bb73985f3aa",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "host-recheck-after-a578/host-extras-RECHECK2.json",
+      "Bytes": 55764,
+      "Sha256": "17c74b3bf78e74f2d8cea957586fed8b065d9ec90118846fb38df5617f491945",
+      "Disposition": "EXCLUDED",
+      "Reason": "valores crudos del registro con rutas locales (HOST-EXTRAS); resumen en operator/operator-record.md, disposition/return-package.md y disposition/coordinator-classification-785a.md"
+    },
+    {
+      "Path": "host-recheck-after-a578/host-extras-RECHECK2.json.sha256",
+      "Bytes": 66,
+      "Sha256": "e2d864aec3750f993628753286e470bbf2cf30c9d3bd7355b0f038ef237e6ed9",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "1bc2b7f07ba3f19b1f1682a5c418c8d905b5cab688550c931a676fd4e97cef9f",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "host-recheck-after-a578/host-extras-diff-AFTER-vs-RECHECK.json",
+      "Bytes": 578,
+      "Sha256": "a711bbad026d5e34ae88969091e89b978321a0553d05c06ceac346f8eca7520a",
+      "Disposition": "EXCLUDED",
+      "Reason": "valores crudos del registro con rutas locales (HOST-EXTRAS); resumen en operator/operator-record.md, disposition/return-package.md y disposition/coordinator-classification-785a.md"
+    },
+    {
+      "Path": "host-recheck-after-a578/host-extras-diff-AFTER-vs-RECHECK2.json",
+      "Bytes": 1508,
+      "Sha256": "5183fa7e630bd0172d356e207a618f954932e803cc565aced207f8eedb2135ad",
+      "Disposition": "EXCLUDED",
+      "Reason": "valores crudos del registro con rutas locales (HOST-EXTRAS); resumen en operator/operator-record.md, disposition/return-package.md y disposition/coordinator-classification-785a.md"
+    },
+    {
+      "Path": "host-recheck-after-a578/i52-recheck-2-reply.txt",
+      "Bytes": 2346,
+      "Sha256": "6cb50d3cdfc43a4f115edc31a5bf58d8a7975387e2436daa42948596f1606415",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "fb7119e095f9bf785de84dba8ac8bdf62766493b7ced5ec7ab6f9db01ca60e2f",
+      "Redaction": [
+        "ubicacion local sustituida por: <carpeta-de-I-52>",
+        "ubicacion local sustituida por: <carpeta-local-de-I-65>"
+      ]
+    },
+    {
+      "Path": "host-recheck-after-a578/i52-recheck-reply.txt",
+      "Bytes": 2895,
+      "Sha256": "fc6f5b92fe858afaa0c2e1a5e53c3c627c97f9e72a10ac6d34d5e0c2ce843229",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "08cbcea2cbd5478f505994df6973bbedf2e372d450626c226c6cd3d76cc65b8d",
+      "Redaction": [
+        "ubicacion local sustituida por: <carpeta-de-I-52>",
+        "ubicacion local sustituida por: <carpeta-local-de-I-65>"
+      ]
+    },
+    {
+      "Path": "host-recheck-after-a578/i64-to-i52-recheck-request-sent.md",
+      "Bytes": 1552,
+      "Sha256": "6459b4f51666ec71854df3d4e732b256b08e63d47749795eece723de51465e94",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "host-recheck-after-a578/process-guard/Inspect-LoadedRackCad.ps1",
+      "Bytes": 4934,
+      "Sha256": "86985ec90f4591806391f70257de2b2ccbd0cfc096eb34b33117df63e413e5ab",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a R20261105T050250Z-785a/kit/Inspect-LoadedRackCad.ps1, ya custodiado"
+    },
+    {
+      "Path": "host-recheck-after-a578/process-guard/Save-ScreenRegion.ps1",
+      "Bytes": 1767,
+      "Sha256": "61983d32ce96dffe54bf26629e63511bec4a3c93e507b895ac9bb38aeb576cdf",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a R20261105T050250Z-785a/kit/Save-ScreenRegion.ps1, ya custodiado"
+    },
+    {
+      "Path": "host-recheck-after-a578/process-guard/Test-AcadProcessGuard.ps1",
+      "Bytes": 7119,
+      "Sha256": "736463bd3ef607a5c61530accbe385e9c799bd9a1fdf72107cef1b76cb76e3a4",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a R20261105T050250Z-785a/kit/Test-AcadProcessGuard.ps1, ya custodiado"
+    },
+    {
+      "Path": "host-recheck-after-a578/process-guard/process-guard-procedure.md",
+      "Bytes": 10440,
+      "Sha256": "a3187d717cf7b4b103895e5654be1284c580e70b56f4c39f321a6f9b42e29b3d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "host-recheck-after-a578/process-guard/selftest-inspect-result.txt",
+      "Bytes": 1620,
+      "Sha256": "cde4a35de51c72118e2a94a6a63549c15001ef88122967c99e4c3b2fa007381e",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "ae0cc290e2515cff783ea85377fbed4c5c6e08b34a657ebe9b13670c3d811946",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "host-recheck-after-a578/process-guard/selftest-result.txt",
+      "Bytes": 4224,
+      "Sha256": "f503b761c6fe7f47b9e81ddeb18af379d8efe40fe49c0b30625985dc9429b047",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "d39585e807066e3016d15953a10ad1827756bb5edb2502958c950dc11389e2d1",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "host-recheck-after-a578/return-package.md",
+      "Bytes": 11480,
+      "Sha256": "5ab3a290d62a8d8b18d5ba1b2164e49ce28b02add65e41d9f01c66c9ca705669",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "host-recheck-after-a578/session-recheck-2.txt",
+      "Bytes": 4344,
+      "Sha256": "dc343ee3ac58eca6f865588bd80fbb1457c5ef825001ddc098b18b879c1e7aac",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "22a3a9fc7e046c05fec625278ffe5a272fd5cda421c0f878b3f537de50995f71",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <carpeta-de-AutoCAD-2025>\\",
+        "ubicacion local sustituida por: <ApplicationPlugins-de-ProgramData>",
+        "ubicacion local sustituida por: <ApplicationPlugins-de-Program-Files>"
+      ]
+    },
+    {
+      "Path": "host-recheck-after-a578/session-recheck.txt",
+      "Bytes": 4344,
+      "Sha256": "8a38181b3bfb816b3ff1f586dc17b1a1ae8067eca087a69e36e94aae32d955bf",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4662547b74184aebd029dddc7d64f8cfb8552e2f0d9a91f1e2b4b0eaf2fc6690",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <carpeta-de-AutoCAD-2025>\\",
+        "ubicacion local sustituida por: <ApplicationPlugins-de-ProgramData>",
+        "ubicacion local sustituida por: <ApplicationPlugins-de-Program-Files>"
+      ]
+    }
+  ]
+}

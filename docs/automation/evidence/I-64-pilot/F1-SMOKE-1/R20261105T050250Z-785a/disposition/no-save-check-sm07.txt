@@ -1,0 +1,11 @@
+Comprobacion de no guardado (solo lectura) UTC 2026-11-05T18:48:55.3259940Z; inicio de la PID 78512 = 2026-11-05T17:25:16.8462970Z
+  A | LastWriteUtc 2026-10-13T01:13:38.0000000Z | anterior al inicio de la PID = True | size 117252 | sha256 ILEGIBLE (bloqueado por AutoCAD) | esperado 90750e8b... n/a
+  B | LastWriteUtc 2026-10-13T01:12:51.0000000Z | anterior al inicio de la PID = True | size 262840 | sha256 fb9b97f96a3a9e6bd2bb4baa06b33a20fe24b98d34babcc677eaea4c81c9682b | esperado fb9b97f9... MATCH
+  C | LastWriteUtc 2026-10-13T01:13:28.0000000Z | anterior al inicio de la PID = True | size 118033 | sha256 ILEGIBLE (bloqueado por AutoCAD) | esperado ede7cdb3... n/a
+  D | LastWriteUtc 2026-10-12T07:14:24.8992503Z | anterior al inicio de la PID = True | size 21375 | sha256 ILEGIBLE (bloqueado por AutoCAD) | esperado 03e5606c... n/a
+  Carpeta de dibujos: archivos escritos desde el inicio de la PID = 0 
+  Carpeta de D: archivos escritos desde el inicio de la PID = 0 
+  Observacion (sin accion de la sesion, durante la pausa): autoguardado SAVETIME de AutoCAD en la carpeta temporal, copia de recuperacion, no el archivo del dibujo:
+    Dibujo A .sv$ | LastWriteUtc 2026-11-05T17:46:36.0000000Z | size 140613
+    Dibujo C .sv$ | LastWriteUtc 2026-11-05T17:42:36.0000000Z | size 150308
+    Mismo comportamiento registrado en 0a77 (SM-26) y a578 (SM-26). Los archivos de los dibujos no se escribieron (arriba).
