@@ -4454,3 +4454,150 @@ añade documentación y evidencia, y `09f2f1c3` sigue siendo el Candidato de la 
 - Sin invocaciones de modelos.
 - Mensajes a la sesión «I - 52»: `040e0ac2…`, `5112203c…`, la corrección `8d3ec29d…` y la petición del recheck nuevo `c051542a…`.
 - HEAD = remoto = `cc7503e3` antes de este commit; `main` `a140eb3a`.
+
+## 72. Smoke-1 (tercer reintento) — Ocurrencia `R20261105T050250Z-785a`: NOT PASS / CLOSED (SM-14h NOT MET, SM-18 COMPROMISED); custodia
+
+**Autoridad** (literales en `F1-SMOKE-1/R20261105T050250Z-785a/`):
+- `authorization/coordinator-smoke1-retry-authorization-785a.md`: UNA ocurrencia, RunId `R20261105T050250Z-785a`.
+  - Candidato `cc7503e3` reutilizado sin recompilar; DLL `3C261B8F…B6A0`; NETLOAD única con «Load Once».
+  - HOST_RELEASE solo para I-64 y esta ocurrencia.
+  - Guarda de procesos ligada a AUTHORIZED_AUTOCAD_PID.
+- `prep/host-recheck-after-a578/coordinator-operator-disposition.md`: OPERATOR_EXCEPTION para una sola ocurrencia. Opera la sesión; no es una desviación de rol no planeada.
+- `disposition/coordinator-disposition-sm07.md` y `disposition/coordinator-disposition-sm14h.md`: las dos disposiciones durante la ocurrencia.
+- `disposition/coordinator-classification-785a.md`, `disposition/coordinator-smoke1-final-review.md` y `disposition/coordinator-capture-defect-disposition.md`: clasificación, revisión final y adenda.
+
+**Ocurrencia** (2026-11-05, diario contemporáneo en `operator/session-log.md`):
+- **Preflight y BASELINE** (la sesión, ~17:23Z):
+  - acad = 0 y RAM = 0;
+  - HOST-EXTRAS BEFORE `f9499f0f…`;
+  - BASELINE código 0, CanonicalSha256 `980ce80f208e87ebc2da5fce50249ce88391d5fd2823d97c17fe105d202123dd`.
+- **AutoCAD:**
+  - La sesión lo abrió una sola vez: PID 78512, inicio 17:25:16.846Z.
+  - NETLOAD con «Load Once»; inspección ligada a la PID PASS (17:28:21Z, 18:48:38Z y 19:17:00Z).
+  - Guarda: REGISTER, 20 CHECK, PRE-CLOSE y CLOSED en PASS. Vigilancia de 1 s sin STOP. Salida normal a las 19:47:20Z.
+- **Incidentes, los dos devueltos al Coordinator antes de seguir:**
+  - **SM-07, OPERATOR_SELECTION_INCIDENT:** SM-06 se ejecutó sobre el rack `54ef4061`, que no tiene copia. OPTION A: SM-06 repetido sobre `56ec2c3a` (RECOVERY REPEAT AUTHORIZED BY COORDINATOR). La primera ejecución se conserva.
+  - **SM-14h, OPERATOR_INPUT_INCIDENT:** un clic tras el foco de la paleta solo activó la ventana, y `Ctrl+V` lanzó PASTECLIP, cancelado con `Esc` sin insertar nada. DBMOD pasó de 16 a 17. OPTION A: se sigue, SM-14h = NOT MET, SM-18 = COMPROMISED, máximo NOT PASS y sin `Ctrl+V`.
+- **Cierre:**
+  - ningún dibujo guardado; SM-41 PASS con los 5 SHA iguales; SM-39 PASS con RackLog sin cambios;
+  - **POST** (19:48Z) código 0, CanonicalSha256 `310f6ac94bd2e1c7599f9b4526e8896b1c51b301226a2a30f7d063786ab08916`;
+  - **DIFF** = CLEAN, con 1 ALLOWED (R-A-03);
+  - **HOST-EXTRAS** AFTER `E8C8D14C…`, REPORT_REQUIRED mecánico;
+  - acad = 0.
+- **I-52:** aviso antes de la BASELINE (`5d5d3543…`) y tras la POST (`41693629…`). Recheck **SIN DERIVA** (19:51:33Z), sin ACK/RELEASE.
+- **Registro del operador:** firmado por el Owner («Firmo el registro.», 2026-11-05T20:41:06Z; `disposition/owner-signature.md`). No se reescribe.
+
+**Clasificación y revisión final del Coordinator:**
+- **Disposición: NOT PASS, ACCEPTED AS VALID EVIDENCE.** Tras esta custodia: NOT PASS / CLOSED.
+- SM-14h y SM-18 quedan como se registraron y **no establecen un defecto de producto**; no se implementa ninguna corrección a partir de ellos.
+- Pegado interno de la herramienta en SM-31: PROCEDURAL / TOOLING ARTIFACT, NON-BLOCKING; no se ejecutó en AutoCAD.
+- HOST-EXTRAS: INFORMATIVE / NON-BLOCKING. La única diferencia de valores es la posición en la lista de recientes de la ruta de D, de 12 a 4: EXPECTED MRU / UI-STATE REORDERING, SEMANTIC RACKCAD DRIFT = NO.
+- HKCU `Applications`: WRITE_ACTIVITY = YES, SEMANTIC_DRIFT = NO, SECURITY_DRIFT = NO, LOAD_DRIFT = NO; INFORMATIVE. No se limpia.
+- Autoguardados `.sv$`: EXPECTED AUTOCAD TEMPORARY HOST ARTIFACT, NON-BLOCKING; no se custodian.
+- Evidencia ligada a la PID, identidad del DLL y firma del Owner: aceptadas.
+
+**Adenda de capturas** (`disposition/capture-defect-addendum.md`; ADDENDUM ACCEPTED):
+- 4 de las 14 capturas (`SM-17-derecha`, `SM-26`, `SM-27b` y `SM-34`, de paleta) tienen la parte alta tapada por la ventana de la app de Claude. Save-ScreenRegion copia la pantalla real; las imágenes de la herramienta ocultan esa ventana.
+- **Corrección expresa:** la afirmación de que las capturas solo tenían paleta y línea de órdenes, sin datos ajenos, era incorrecta. La sesión no las había abierto.
+- Las 4 originales quedan **fuera de Git**: SHA-256 en el manifiesto, con el motivo PRIVACY / UNRELATED SESSION CONTENT / NON-ESSENTIAL EVIDENCE. Se conservan solo en el conjunto transitorio.
+- `operator/screens-tool/`: recortes y zooms de las imágenes de la herramienta. **SUPPORTING EVIDENCE; DERIVED / CROPPED FROM OPERATOR-VISIBLE CAPTURE; NOT ORIGINAL FULL-SCREEN T3D CAPTURE.** No son reemplazos autoritativos.
+- SM-17, SM-26, SM-27b y SM-34 conservan su observación, y sus capturas siguen en NEEDS CLEAN AUTHORITATIVE CAPTURE. Es una corrección de evidencia, no de resultado.
+
+**Custodia** (`docs/automation/evidence/I-64-pilot/F1-SMOKE-1/R20261105T050250Z-785a/`, con `custody-manifest.json` por unidad):
+
+| Unidad | CUSTODIED | EXCLUDED |
+|---|---|---|
+| `R20261105T050250Z-785a` | 85 | 166 |
+| `R20261105T050250Z-785a/prep` (de `F1-SMOKE-1-RETRY-PREP/host-recheck-after-a578/`) | 13 | 7 |
+
+- 85 = las 83 del ensayo aceptado, más la adenda y la disposición de la adenda, escritas después del ensayo.
+- Excluidos, con SHA-256 y motivo:
+  - las 4 capturas tapadas;
+  - salidas sintéticas de la autoprueba;
+  - compañeros locales de las capturas;
+  - JSON crudos de HOST-EXTRAS y sus comparaciones;
+  - duplicados ya custodiados.
+- Las 15 imágenes custodiadas se abrieron una a una: solo paleta, línea de órdenes o botones del editor de RackCad, sin contenido de sesión.
+- Redacciones registradas:
+  - la ubicación del worktree en los scripts del kit;
+  - la carpeta de AutoCAD 2025 en la identidad de la PID y en los rechecks;
+  - las carpetas de ApplicationPlugins;
+  - las carpetas de I-52 y de I-65.
+- CRLF custodiado en LF con el SHA-256 original.
+
+**Matriz de evidencia: RESULT STATUS y EVIDENCE AUTHORITY**
+
+**Ocurrencias aceptadas y su alcance:**
+- `0a77`: NOT PASS, evidencia válida, pero sobre otro producto (Candidato `09f2f1c3`, anterior a C2). Sus resultados no valen para `cc7503e3`.
+- `a578`: STOP CONFIRMED sobre `cc7503e3`. Sus observaciones son OBSERVED / NON-AUTHORITATIVE FOR SMOKE PASS, y la revisión exige repetir el procedimiento completo. Vio DBMOD 16 (bit 1 = 0) en SM-14h y SM-18, sin autoridad.
+- `785a`: NOT PASS, ACCEPTED AS VALID EVIDENCE, sobre `cc7503e3`. Es la única fuente de autoridad de esta matriz.
+
+| Requisito | Pasos | RESULT STATUS (785a) | EVIDENCE AUTHORITY | Nota |
+|---|---|---|---|---|
+| Arranque, NETLOAD única, identidad de PID y DLL | SM-00a..e, SM-00d1 | PASS | AUTHORITATIVE | guarda ligada a la PID 78512; 3 inspecciones PASS |
+| S1-10 / OV-22 (mediciones) | SM-01, SM-31, SM-32 | PASS (registro, sin umbrales) | AUTHORITATIVE | ms 297, 375 y 406 |
+| INV-02 / C1, aparición | SM-03, SM-04 | PASS | AUTHORITATIVE | capturas originales limpias |
+| S1-04, con Sin identidad y Diagnóstico | SM-06..SM-11 | PASS | AUTHORITATIVE | SM-06 con RECOVERY REPEAT autorizado |
+| S1-09 / INV-01 | SM-12 | PASS | AUTHORITATIVE | |
+| S1-06f / C2, `LINE` | SM-13 | PASS | AUTHORITATIVE | capturas originales limpias |
+| S1-06a..e | SM-14a..e | NOT_APPLICABLE_BY_DESIGN; SM-14a..e PASS | SUPPLEMENTARY (A-7) | la barra espaciadora no se envió como tecla |
+| **S1-06h** | SM-14h, SM-18 | **NOT MET / COMPROMISED** | **UNPROVEN** | OPERATOR_INPUT_INCIDENT |
+| S1-06g | SM-15 | PASS | AUTHORITATIVE | |
+| INV-33, ocultar y mostrar | SM-16 | PASS | AUTHORITATIVE | |
+| **C1, acoplar, flotar y ocultar** | SM-17 | PASS (como se registró) | **SUPPORTING / DERIVED** | flotante y plegada = capturas originales limpias; acoplada a la derecha = recorte |
+| **S1-08 / OV-20** | SM-02, SM-18 | **COMPROMISED / INCONCLUSIVE** | **UNPROVEN** | SM-02 = 0; SM-18 = 17, con el bit 1 activo desde SM-14h |
+| S1-12 | SM-19 | NOT_APPLICABLE | n/a | PICKFIRST = 1 |
+| S1-05, INV-07, INV-22, OV-15 | SM-20..SM-25 | PASS | AUTHORITATIVE | |
+| **C2, sin documento** | SM-26 | PASS (como se registró) | **SUPPORTING / DERIVED** | el RackLog del paso sí es autoritativo (SM-39) |
+| **C2, Start sin sesión anterior** | SM-27 | PASS (como se registró) | **SUPPORTING / DERIVED** (27b) | a, c y d registradas sin captura exigida |
+| S1-01, S1-03 | SM-28, SM-30 | PASS | AUTHORITATIVE | |
+| S1-02 | SM-29 | PASS salvo el arrastre central | AUTHORITATIVE; **arrastre central sin observar** | la herramienta no puede hacerlo; también se anotó en `0a77` |
+| INV-25, comandos clásicos | SM-33 | PASS | AUTHORITATIVE | |
+| **S1-07 / C2, `RACKEDITAR`** | SM-34 | PASS (como se registró) | **SUPPORTING / DERIVED** | línea de órdenes = captura original limpia; paleta = recorte |
+| S1-07, escritura en B | SM-35 | PASS | AUTHORITATIVE | DBMOD 0 antes y 0 después; B limpio |
+| INV-25, INV-14 | SM-36..SM-38 | PASS | AUTHORITATIVE | |
+| RackLog | SM-39 | PASS | AUTHORITATIVE | SHA de los 4 archivos sin cambio; ninguno nuevo |
+| Cierre y dibujos | SM-40, SM-41 | PASS | AUTHORITATIVE | 5 SHA iguales |
+| S1-11 / INV-21 | POST, DIFF | CLEAN | AUTHORITATIVE | |
+| Host | HOST-EXTRAS, Applications | INFORMATIVE | AUTHORITATIVE | clasificación del Coordinator |
+
+**Con evidencia autoritativa de PASS:** S1-01, S1-03, S1-04, S1-05, S1-06f, S1-06g, S1-09, S1-10, S1-11, INV-02 (SM-03), INV-33, INV-25, SM-35 en B, SM-36..SM-41.
+
+**Solo con evidencia de apoyo o derivada (NEEDS CLEAN AUTHORITATIVE CAPTURE):** SM-17, SM-26, SM-27b y SM-34. Sin ellos no quedan autoritativas la parte C1 de SM-17, la parte C2 de sin documento y Start, ni S1-07 en SM-34.
+
+**Sin probar por SM-14h y SM-18:** S1-06h y S1-08 / OV-20: que usar el panel en un dibujo recién abierto no cambie el bit 1 de DBMOD. SM-35 solo lo prueba para RACKEDITAR en B.
+
+**Queda además sin observar:** el arrastre con el botón central de S1-02, que la herramienta no puede hacer.
+
+**Recomendación de la sesión: FULL NEW SMOKE** (decide el Coordinator).
+1. **El procedimiento congelado no tiene ocurrencia parcial.** T3D §9 define el PASS sobre el conjunto de S1 y §11 pide decisión del Coordinator y RunId nuevo para repetir. La revisión de `a578` dice que la ocurrencia nueva repite el procedimiento completo y que ningún PASS anterior exime un paso. Una ocurrencia reducida necesitaría una enmienda A-n.
+2. **Lo pendiente cruza casi toda la secuencia.**
+   - S1-08 y S1-06h exigen A recién abierto y SM-02 → SM-18, sin saltos;
+   - SM-17 queda dentro de ese tramo;
+   - SM-26 y SM-27 exigen cerrar todos los dibujos;
+   - SM-34 exige B;
+   - además hacen falta SM-39..SM-41, BASELINE, POST y DIFF nuevos.
+   Solo se ahorrarían la fase D y parte de la C, unos 10 a 15 minutos de cerca de una hora, a cambio de mezclar evidencia de dos RunId.
+3. **Condiciones para esa ocurrencia, si se autoriza:**
+   - RunId nuevo, acad = 0 (ahora hay una instancia abierta, PID 16088) y recheck nuevo con I-52;
+   - reautorizar `cc7503e3` y el DLL `3C261B8F…B6A0`, sin recompilar;
+   - decidir quién opera, y si la sesión opera, cómo se cubre el arrastre central;
+   - con la sesión de operadora: órdenes escritas tecla a tecla y sin `Ctrl+V`, dos clics tras el foco de la paleta, y SM-06 sobre el rack de arriba a la izquierda;
+   - apartar la ventana de la app de Claude y abrir cada captura justo después de tomarla.
+
+**Observación posterior:** el 2026-11-07 a las 01:26Z hay una `acad.exe` abierta (PID 16088, iniciada 2026-11-06T16:21:08Z por `explorer.exe`). No la lanzó la sesión y no se toca. Está fuera de la ventana de la ocurrencia y no afecta a la POST.
+
+**Estado** (`I-64.yml`):
+- `smoke1_status` = NOT PASS / CLOSED de `785a`;
+- `cc7503e3` no pasa a histórico: se puede proponer de nuevo con reautorización explícita;
+- siguiente: COORDINATOR_POST_SMOKE1_NOT_PASS_DISPOSITION_REQUIRED.
+
+**Límites:**
+- Sin cambios de producto: `src/`, `tests/` y los archivos de proyecto son los de `cc7503e3`.
+- Este commit solo añade documentación y evidencia, y no es un Candidato. El DLL de Debug no se recompila.
+- Sin AutoCAD después del cierre de la ocurrencia, sin F2 y sin merge ni rebase de main.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- Mensajes a «I - 52»: `5d5d3543…` y `41693629…`. A «I - 62»: `10022466…` y `3e74c602…`.
+- HEAD = remoto = `b5ea02f5` antes de este commit; `main` `a140eb3a`.

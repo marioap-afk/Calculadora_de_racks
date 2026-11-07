@@ -1,0 +1,37 @@
+I-64 Smoke-1 R20261105T050250Z-785a — verificacion de la sesion sobre el preflight (solo lectura)
+VerifiedUtc: ~2026-11-05T17:25Z (acad.exe = 0, RAMElements.exe = 0)
+Herramienta: scratchpad a578/verify_baseline_785a.py. Lee los archivos del RunId y, como referencia, la BASELINE y el HOST-EXTRAS AFTER
+de a578. No imprime valores del registro, solo nombres y hashes.
+
+preflight (inicio 2026-11-05T17:23:33.1722062Z, ejecutado por la SESION bajo OPERATOR_EXCEPTION): termina en OK
+  1 acad = 0 y RAM Elements = 0
+  2 HEAD b5ea02f5d193d80e4b921b82bbeb7f87a0c8be0d = el esperado; porcelain 0; cc7503e3 es antepasado de HEAD
+    delta cc7503e3..HEAD: src 0, tests 0, archivos de proyecto 0, fuera de docs/automation 0
+    DLL 3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0 = SHA autorizado
+    ProductVersion 1.0.0+cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6 = identidad del Candidato estampada en el DLL
+  3 herramientas T3C 750a9097 / de642515 / d0bb54be = aprobadas
+  4 autoprueba 26/26 (codigo 0)
+  5 D 03e5606c...f165, A 90750e8b...4852, B fb9b97f9...682b, C ede7cdb3...a53c, biblioteca B4CA2248...60E8: iguales a a578
+  6 perfil <<Unnamed Profile>>; SECURELOAD (REG_SZ) = 1 -> SECURELOAD_BASELINE_CURRENT = 1 (reg query de solo lectura, sesion)
+  6b HOST-EXTRAS BEFORE codigo 0; archivo f9499f0fab9927d5f236086f7c9251b7b2453a7959f9566b16eacad5e2a50c79 = sidecar
+     AssemblyMap: existe, 2 valores (AppManagerPlugin, FeaturedAppsPlugin), RackCad.Plugin ABSENT, LW 2026-11-02T19:54:39.812Z
+       = a578 AFTER
+     CoreUser 15FCE767F24F74D1 (29 entradas) y BlockPreviewUser (28): iguales que en el AFTER de a578
+     Clave de producto: 23 entradas; solo cambia Recent File List (VALUES_CHANGED, LW 2026-11-05T16:57:17.899Z), el MRU de la sesion
+       del Owner, clasificada OWNER_AUTOCAD_ACTIVITY_PRE_BASELINE
+  7 BASELINE codigo 0
+     archivo 17e810154476838435dea131fb9100f6d299d018819b792c696c8b71f2ae1e92 = sidecar; companero local 315d6e78...8b3f MATCH
+     CanonicalSha256 980ce80f208e87ebc2da5fce50249ce88391d5fd2823d97c17fe105d202123dd; lineas 2241; claves 399; valores 1772;
+       archivos 21; plugins 3; env 0; ilegibles 0
+     PreSmokeChecks: TRUSTEDPATHS.ChainSha256 MATCH (a9ba0fd1...2498); SECURELOAD MATCH (1); CurrentProfile MATCH;
+       AcadExeSha256 MATCH (2A75996F...6422, R25.0.171.0.0)
+     Facts: CandidateDll.Sha256 3c261b8f...b6a0; PICKFIRST 1; ProfileCount 1; RackCadEnvMachine 0; RackCadEnvUser 0
+     Frente a la BASELINE de a578 (+14 / -14 lineas): FixedProfile\Application Window\Position; Dialogs\OpenSaveAnavDialogs\
+       InitialDirectory; Dialogs\Save Drawing As (InitialDirectory y el corrimiento de FileNameMRU0..10, con una entrada nueva en MRU0).
+       Todo es estado de interfaz de la sesion del Owner (16:00-16:57Z); los SHA de A, B, C y D no cambiaron.
+       Ninguna linea en TRUSTEDPATHS, SECURELOAD, perfiles, ApplicationPlugins, Applications/Loaded ni entorno.
+     Lineas que nombran RackCad fuera de Dialogs\RackCad.UI.*: solo archivos de %APPDATA%\RackCad y %LOCALAPPDATA%\RackCad y hechos de
+       la captura
+
+Resultado: BASELINE CONFIRMADA. PG-0b hecho (I-52 5d5d3543; I-62 10022466, I-62 confirmo: nada de host ni AutoCAD hasta el aviso de
+fin). Siguiente: PG-1a (acad = 0) y la apertura de AutoCAD por la sesion.

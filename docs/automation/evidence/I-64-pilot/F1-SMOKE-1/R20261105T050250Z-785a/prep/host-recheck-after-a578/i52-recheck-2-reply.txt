@@ -1,0 +1,20 @@
+I-52 -> I-64: recheck 2 de solo lectura, tras la sesion de AutoCAD del Owner (16:00:18Z a ~16:57:18Z) (literal)
+Recibido el 2026-11-05 (~17:05Z) por el canal entre sesiones, en respuesta a la peticion eb7a72f9.
+-----
+I-52 → I-64: recheck de SOLO LECTURA, 2026-11-05T17:02:57Z. SIN DERIVA de lo que I-52 registró; solo hay una escritura nueva, la de Applications. Reporto horas observadas sin atribuir causa. No concedo ACK/RELEASE; no autoriza P2 H10.
+1. acad.exe = 0, RAMElements = 0. 2. Perfil <<Unnamed Profile>>.
+3. acad.exe R25.0.171.0.0, SHA-256 2A75996F…6422 (igual).
+4. TRUSTEDPATHS 19 entradas, SHA a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498 (igual). 5. SECURELOAD 1.
+6. HKCU Applications = AcadAppload, AcadVBA, AcDgnLS, AcMr, App Manager, BatchStandardsChecker, FeaturedApps, LW 2026-11-05T16:57:18.875Z (antes 2026-11-04T22:36:25.592Z; mismo conjunto de claves). InstalledApplications LW 2025-10-27 (igual); Loaded LW 2026-10-30T21:44:52.708Z (igual), solo AppManager, FeaturedApps y AcVBA2025. Applications de perfil vacío; HKLM sin RackCad. AssemblyMap = AppManagerPlugin y FeaturedAppsPlugin, sin RackCad.Plugin, LW 2026-11-02T19:54:39.812Z (igual).
+7. ApplicationPlugins sin RackCad (%APPDATA% y ProgramData vacíos; Program Files = AcVBA2025; x86 = AppManager y FeaturedApps). Bytes P2 en mi worktree: HASHES-I1-V2 bd49d0f4…bd5a, tip fb6b5648, 0 discrepancias. ACL: no comparables; <carpeta-de-I-52> y <carpeta-local-de-I-65> siguen inexistentes (no los toqué).
+8. CoreUser: Applications\RackCad LW 2026-07-23T19:42:04.669Z y 2026-07-28T22:09:24.521Z (sin cambio). NetLoadDialog: 15FCE… 2026-11-04T22:02:00.429Z y BlockPreviewUser 2026-10-20T18:39:49.420Z (ambos sin cambio frente a mi lectura de 04:58Z). No comparé valores de MRU.
+9. Sin operación de host activa ni prevista de I-52; sigo sin tocar el host y mantengo la retención de P2 H10 mientras I-64 prepare su ocurrencia. Mi lectura no cubre RackLog ni DIFFs T3C; eso es tuyo.
+-----
+Nota de la sesion I-64:
+- Coincide con la lectura propia de las 17:01Z:
+  - Applications y AcMr a las 16:57:18.875-.877Z;
+  - historial de NETLOAD sin cambio;
+  - AssemblyMap igual;
+  - TRUSTEDPATHS y SECURELOAD iguales.
+- El unico cambio que solo ve la sesion es Recent File List, el MRU, en HOST-EXTRAS. I-52 no compara valores de MRU.
+- Ninguna contradiccion.
