@@ -1,0 +1,14 @@
+T3C Disposition CLEAN PaletteKeyAcceptance NOT_RECORDED
+T3C claves superiores ['Schema', 'Baseline', 'Post', 'PaletteKeyAcceptance', 'Preconditions', 'ChangeCounts', 'ClassCounts', 'Disposition', 'ExitCode', 'Entries']
+  ALLOWED R-A-03 CHANGED V|HKCU:PRODUCT\FixedProfile\Application Window|Position
+  ALLOWED R-A-03 CHANGED V|HKCU:PRODUCT\Profiles\<PROFILE>\Dialogs\OpenSaveAnavDialogs|InitialDirectory
+  ALLOWED R-A-03 ADDED V|HKCU:PRODUCT\Profiles\<PROFILE>\Variables|VIEWBACKSTATUS
+entradas T3C que nombran paleta, RackCad o Workspace: []
+REPORT en T3C: []
+HOST-EXTRAS Disposition REPORT_REQUIRED
+  ProductKey LASTWRITE_ONLY Select File nombres de valor []
+  ProductKey VALUES_CHANGED Recent File List nombres de valor ['File4', 'File11']
+hallazgos HOST-EXTRAS que nombran paleta en su ruta: []
+BASELINE lineas con palette 70 de ellas con rackcad 0
+POST lineas con palette 70 de ellas con rackcad 0
+lineas con palette que difieren entre BASELINE y POST: 0

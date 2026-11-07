@@ -1,0 +1,4 @@
+Identidad del Candidato medida por la sesion, solo lectura, UTC 2026-11-07T02:19:35.7145760Z
+HEAD = origin = 1917bc19e11e0fa09f4484956794825ba960098a (custodia de 785a, solo documentacion)
+cc7503e3..HEAD: src 0, tests 0, archivos de proyecto 0
+RackCad.Plugin.dll sha256 3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0; LW 2026-11-04T19:44:16.1309684Z; ProductVersion 1.0.0+cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6

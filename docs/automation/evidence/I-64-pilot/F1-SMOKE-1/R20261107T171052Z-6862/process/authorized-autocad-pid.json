@@ -1,0 +1,10 @@
+{
+  "Name": "AUTHORIZED_AUTOCAD_PID",
+  "ProcessName": "acad",
+  "Pid": 67260,
+  "ExecutablePath": "<carpeta-de-AutoCAD-2025>\\acad.exe",
+  "ExeSha256": "2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422",
+  "StartUtc": "2026-11-07T18:05:46.9023864Z",
+  "StartUtcTicks": 639296715469023864,
+  "RegisteredUtc": "2026-11-07T18:06:01.2120370Z"
+}
