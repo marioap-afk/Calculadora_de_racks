@@ -1,0 +1,42 @@
+I-64 Smoke-1 R20261107T171052Z-6862 — verificacion de la sesion sobre el preflight (solo lectura)
+VerifiedUtc: ~2026-11-07T17:25Z (acad.exe = 0, RAMElements.exe = 0)
+Herramienta: scratchpad s6862/verify_baseline.py. Lee los archivos del RunId y, como referencia, la BASELINE y el HOST-EXTRAS AFTER de 785a.
+No imprime valores del registro, solo nombres y hashes.
+
+preflight (inicio 2026-11-07T17:23:34.2319300Z, ejecutado por la SESION bajo la excepcion de 6862): termina en OK
+  1 acad = 0 y RAM Elements = 0
+  2 HEAD 1917bc19e11e0fa09f4484956794825ba960098a = el esperado; porcelain 0; cc7503e3 es antepasado de HEAD
+    delta cc7503e3..HEAD: src 0, tests 0, archivos de proyecto 0, fuera de docs/automation 0
+    DLL 3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0 = SHA autorizado
+    ProductVersion 1.0.0+cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6 = identidad del Candidato estampada en el DLL
+  3 herramientas T3C 750a9097 / de642515 / d0bb54be = aprobadas
+  4 autoprueba 26/26 (codigo 0)
+  5 D 03e5606c...f165, A 90750e8b...4852, B fb9b97f9...682b, C ede7cdb3...a53c, biblioteca B4CA2248...60E8: iguales a 785a
+  6 perfil <<Unnamed Profile>>; SECURELOAD (REG_SZ) = 1 -> SECURELOAD_BASELINE_CURRENT = 1 (reg query de solo lectura, ejecutado por la sesion en el
+    preflight; la lectura de datos de maquina la hace la sesion, y el Owner eligio «Ejecútalos tú»)
+  6b HOST-EXTRAS BEFORE codigo 0; archivo 9a0899e863b8d6b27bfd0de835f2483503fa69f06b36451be1d902dd71a1f049 = sidecar
+     AssemblyMap: existe, 2 valores (AppManagerPlugin, FeaturedAppsPlugin), RackCad.Plugin ABSENT, LW 2026-11-02T19:54:39.812Z
+     CoreUser 15FCE767F24F74D1 (29 entradas) y BlockPreviewUser (28): solo cambia Recent File List de 15FCE (LW 2026-11-07T02:26:01.962Z)
+     Clave de producto: 23 entradas; solo cambia Recent File List (LW 2026-11-07T17:04:43.601Z)
+     Ambos = EXPECTED MRU / UI-STATE REORDERING por la autorizacion de 6862
+  7 BASELINE codigo 0
+     archivo e5215177343307b14b14ce00fcd377e21bbc9c844ad10b28a0116d9305de7e51 = sidecar; companero local 50b92ee7...47c5 MATCH
+     CanonicalSha256 411b97fd76bcbd2a631895eb5fbd627ffddd042020b0fa866f82bd14199276c2; lineas 2242; claves 399; valores 1773;
+       archivos 21; plugins 3; env 0; ilegibles 0
+     PreSmokeChecks: TRUSTEDPATHS.ChainSha256 MATCH (a9ba0fd1...2498); SECURELOAD MATCH (1), lectura independiente de la BASELINE = la del preflight;
+       CurrentProfile MATCH; AcadExeSha256 MATCH (2A75996F...6422, R25.0.171.0.0)
+     Facts: CandidateDll.Sha256 3c261b8f...b6a0; PICKFIRST 1; ProfileCount 1; RackCadEnvMachine 0; RackCadEnvUser 0
+     Frente a la BASELINE de 785a (+18 / -17 lineas), todo estado de interfaz o de recuperacion anterior a esta BASELINE:
+       FixedProfile\Application Window\Position (la ventana movida al monitor principal);
+       Dialogs\OpenSaveAnavDialogs\InitialDirectory;
+       Dialogs\Save Drawing As (InitialDirectory y el corrimiento de FileNameMRU0..10, con una entrada nueva en MRU0);
+       Drawing Recovery\Unresolved (LoggedFile17, LoggedFile19 y LoggedFileCount);
+       Variables\*XCOMPARELASTCLEANTIME; Variables\VIEWBACKSTATUS (retirada).
+       Los SHA de A, B, C y D no cambiaron.
+       Ninguna linea en TRUSTEDPATHS, SECURELOAD, perfiles, ApplicationPlugins, Applications/Loaded ni entorno.
+     Lineas que nombran RackCad fuera de Dialogs\RackCad.UI.*: solo archivos de %APPDATA%\RackCad y %LOCALAPPDATA%\RackCad y hechos de la captura
+
+Nota sobre Drawing Recovery\Unresolved: AutoCAD podria mostrar su administrador de recuperacion al abrir. La sesion no abre ni usa ninguna recuperacion,
+y los .sv$ de TEMP no se usan, no se modifican ni son evidencia (autorizacion de 6862).
+
+Resultado: BASELINE CONFIRMADA. PG-0b hecho (I-52 bec2810a; I-62 3f3f1df3). Siguiente: Stage A, PG-1a (acad = 0) y la apertura de AutoCAD por la sesion.

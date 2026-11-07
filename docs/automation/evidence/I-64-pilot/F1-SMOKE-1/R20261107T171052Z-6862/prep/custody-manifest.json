@@ -1,0 +1,216 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Subject": "preparacion de la ocurrencia completa de Smoke-1: disposicion FULL NEW SMOKE, recheck de host, precheck de capturas y propuesta (transitorios de F1-SMOKE-1-RETRY-PREP/post-785a usados por la autorizacion de R20261107T171052Z-6862)",
+  "Unit": "R20261107T171052Z-6862/prep",
+  "SourceRoot": "artifacts/orchestration/I-64/F1-SMOKE-1-RETRY-PREP",
+  "Included": [
+    "post-785a/"
+  ],
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; companeros locales y registros con rutas solo por SHA-256; duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original; imagenes byte a byte, revisadas una a una; en las listas de ventanas solo se conservan los nombres acad, claude, explorer y ChatGPT",
+  "Counts": {
+    "CUSTODIED": 20,
+    "EXCLUDED": 5
+  },
+  "Files": [
+    {
+      "Path": "post-785a/Capture-HostExtras-recheck.ps1",
+      "Bytes": 7555,
+      "Sha256": "4698b8d2e62cef8a2271039b313b38750853b0ed159989fe8924abbad668d26e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "post-785a/Check-Identity-Fixtures.ps1",
+      "Bytes": 3736,
+      "Sha256": "766e7a42bf3f8cca5b9d3626644049bda747eef4a8d354f2abe3d6ea61b864b6",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "9cfff5e05d95c499416b0867eca033fe7ef047ce9099dc6f2f92aa0a50e2ae7e",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <unidad-local>\\"
+      ]
+    },
+    {
+      "Path": "post-785a/List-SvFiles.ps1",
+      "Bytes": 597,
+      "Sha256": "0c84795a4d4fb156a3cb569b552e81158e9d9b3bba036d3915afe5290349db31",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "post-785a/List-TopWindows.ps1",
+      "Bytes": 2848,
+      "Sha256": "5c709c4690b0ee485327519c95ad6258b66d5ce42a93a62048f96b2c7d3ea4e7",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a R20261107T171052Z-6862/kit/List-TopWindows.ps1, ya custodiado"
+    },
+    {
+      "Path": "post-785a/Read-AcadWindowPosition.ps1",
+      "Bytes": 1596,
+      "Sha256": "5cc96e9022a787158be2e04cfe55f5cb5ac143c64b3e89d475e5fa08a353008f",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a R20261107T171052Z-6862/kit/Read-AcadWindowPosition.ps1, ya custodiado"
+    },
+    {
+      "Path": "post-785a/Test-CapturePrecheck.ps1",
+      "Bytes": 7080,
+      "Sha256": "122d634f84cda509a8d968d4f6862346524ac2cef3c7a73a7c7d14731fd08380",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a R20261107T171052Z-6862/kit/Test-CapturePrecheck.ps1, ya custodiado"
+    },
+    {
+      "Path": "post-785a/Write-PrepHashes.ps1",
+      "Bytes": 1027,
+      "Sha256": "8659b92a238565e172c0b3498bea7a7bfd04b0e5b7ec6b626e06d84cbe7caeca",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "post-785a/candidate-identity-check.txt",
+      "Bytes": 435,
+      "Sha256": "ce2381a6ef5611f3494a610bd5099e9c4b048ff226738ab8a3a31ea36022812d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "df51dbe87b29e583ddd79adc8c546870cdd9d1fa065b44e73fa411a51dcc243e",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "post-785a/capture-precheck-recheck.txt",
+      "Bytes": 1192,
+      "Sha256": "3cbe349ad84027e2f5f8a57a5565106358a9cf8799254ac0548b6dc957a9f400",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "080c065da1b9e117d14861b77e50f05cda475e09e9b3bf6beb50b0b0e7b8a92c",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "post-785a/capture-precheck-selftest.txt",
+      "Bytes": 1192,
+      "Sha256": "13021104846b8d3dcdf620531bf54229c6b5543fe96cd42409377d10696f701f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5da8385b4348e912b3e5bd62a03d0c70c4c485c08bffd04ef8f1cb05b95a8e38",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "post-785a/compare_after_vs_recheck.py",
+      "Bytes": 1325,
+      "Sha256": "c8abebe64c0bd8b9be32cdd3f469791869512aa2fa16977e2c151be6b9655172",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "post-785a/coordinator-post-smoke1-not-pass-disposition.md",
+      "Bytes": 5525,
+      "Sha256": "8bfcd50489e245a75e9bfc346cb34c1efafd9b7a9ccfc3a3ef26e3307be90dbb",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "post-785a/evidence-hashes.txt",
+      "Bytes": 2412,
+      "Sha256": "72b2291548602adad9ca86cee2059968c766588118e579ba0cc65ce71b179c56",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "844925df7349752ad7afa6e7a9a8344c444ae83dadc90deef6d97966209601d4",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "post-785a/host-extras-RECHECK.json",
+      "Bytes": 55765,
+      "Sha256": "6b591c27f2863acaf10d0c845833fdac270c1ca67e3fecb7f8ee1c5dd70011a4",
+      "Disposition": "EXCLUDED",
+      "Reason": "valores crudos del registro con rutas locales (HOST-EXTRAS); resumen en operator/operator-record.md, disposition/return-package.md, disposition/final-disposition-6862.md y disposition/palette-key-check.txt"
+    },
+    {
+      "Path": "post-785a/host-extras-RECHECK.json.sha256",
+      "Bytes": 66,
+      "Sha256": "2edd56f321ac5c21f1ebb3a22337e99c86e31fd4caa6aa9f01596cda1ee9e3c2",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "bb6aebad61ef701046a90c9b1c030957f8b63a9c1089de6e87354c6c7d2f7af7",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "post-785a/host-extras-diff-AFTER785a-vs-RECHECK.json",
+      "Bytes": 2494,
+      "Sha256": "e3c324d9a4d8b6ab65f0f834675aa90b03a7b2cfccc4b7d4ba9028f889e8f9cb",
+      "Disposition": "EXCLUDED",
+      "Reason": "valores crudos del registro con rutas locales (HOST-EXTRAS); resumen en operator/operator-record.md, disposition/return-package.md, disposition/final-disposition-6862.md y disposition/palette-key-check.txt"
+    },
+    {
+      "Path": "post-785a/i52-recheck-reply.txt",
+      "Bytes": 2499,
+      "Sha256": "48afa419bd5891e59de5bdd9d7eb072dc8a0c8ecb6685a5f1f52b1f7161ed370",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "post-785a/i64-to-i52-recheck-request-sent.md",
+      "Bytes": 1319,
+      "Sha256": "9d9a007811d530cb04bef800a4958830f8898f4e2331ed6226494799c9350282",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "post-785a/identity-check.txt",
+      "Bytes": 1564,
+      "Sha256": "9a5920633b74793051ebe746546ae6dda5d945bb2307c3d67813e45117728466",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "f61abf1d61034484f7f24282a263e5297852bc13d3cbd4a36231004d041d301f",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "post-785a/return-package.md",
+      "Bytes": 14026,
+      "Sha256": "6f5cd62163148b7f8d9e66e56db44c60be4c3bd328a9cc8c3b2feb1b4ae1d299",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "post-785a/session-recheck.txt",
+      "Bytes": 4814,
+      "Sha256": "c9f5c829a5a44d619e9150fa043444d17def90b9fb6ec6c4ae0ec1077c34884c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "ca4236e814936abd29d7551cc0016db331aa90b416c07eb3944880a6cbd203ef",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "ubicacion local sustituida por: <ApplicationPlugins-de-Program-Files-x86>/",
+        "ubicacion local sustituida por: <ApplicationPlugins-de-Program-Files>/"
+      ]
+    },
+    {
+      "Path": "post-785a/session_recheck_post_785a.ps1",
+      "Bytes": 7648,
+      "Sha256": "2532621b3d8ef6f60ea3b5768d13205daad12a5f0f8b377bc6e6c9a21f4d8f9d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "8fd91d25c108b72c3b951e4b06661a7d63e2b9b8dfabf985099cca33f83980d3",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <carpeta-de-AutoCAD-2025>\\",
+        "ubicacion local sustituida por: <ApplicationPlugins-de-Program-Files>",
+        "ubicacion local sustituida por: <ProgramFiles-local>"
+      ]
+    },
+    {
+      "Path": "post-785a/window-layout-after-arrangement.txt",
+      "Bytes": 1143,
+      "Sha256": "d466cf211f9dbc058c70f993903c822ea554f708e25758b2fe915d1649c42675",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4fd2be3f3b546698e8c6ca453746ef6afdcf2d2041a4c185fd69900fb71ab5a0",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "nombres de otras aplicaciones sustituidos por: <otra-app>"
+      ]
+    },
+    {
+      "Path": "post-785a/window-layout-before-arrangement.txt",
+      "Bytes": 1144,
+      "Sha256": "2632bdc8438bebfd525cc99ba2a4084f8d9129f9f171f44bc00230274c28fda5",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "736f031e8db9d33a2e1e76f4a4f6e6f5d6e4dbc3d700bbf8999363d842be6917",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "nombres de otras aplicaciones sustituidos por: <otra-app>"
+      ]
+    },
+    {
+      "Path": "post-785a/window-layout-final.txt",
+      "Bytes": 971,
+      "Sha256": "10a01c03836e61608c2ab09bc3f30d0e59596e09a212ee084b0b9dfdb5a0bfbf",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a88237c3f1ce82c99da04f432100c377ec0a1f6365957927cdba57815142bf5c",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)",
+      "Redaction": [
+        "nombres de otras aplicaciones sustituidos por: <otra-app>"
+      ]
+    }
+  ]
+}

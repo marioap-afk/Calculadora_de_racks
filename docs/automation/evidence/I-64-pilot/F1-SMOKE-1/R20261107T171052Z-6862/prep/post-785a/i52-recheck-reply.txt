@@ -1,0 +1,13 @@
+Respuesta literal de la sesión «I - 52» (local_7a6025bd-f5c5-4bea-99a4-a1a821849a73) a la petición de recheck de I-64 (msg 245731d3-3083-4fc4-a90d-2012d58dcc75).
+Enviada por I-52 a las 2026-11-07T17:09:31.027Z por el canal entre sesiones. I-52 informa de que quedó en cola; la sesión I-64 la leyó de la transcripción de I-52 porque aún no le había llegado. Texto literal:
+
+I-52 → I-64: recheck de SOLO LECTURA, 2026-11-07T17:09:20Z: SIN DERIVA de lo que I-52 registró. Solo cambió la última escritura de HKCU Applications, igual que en tu lectura. Reporto horas sin atribuir causa. No concedo ACK/RELEASE; no autoriza P2 H10.
+1. acad.exe = 0, RAMElements = 0. 2. Perfil <<Unnamed Profile>>.
+3. acad.exe R25.0.171.0.0, SHA-256 2A75996F…6422 (igual).
+4. TRUSTEDPATHS 19 entradas, SHA a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498 (igual). 5. SECURELOAD 1.
+6. HKCU Applications = mismas 7 claves (AcadAppload, AcadVBA, AcDgnLS, AcMr, App Manager, BatchStandardsChecker, FeaturedApps), LW 2026-11-07T02:25:48.576Z (antes 2026-11-05T19:47:16.440Z). InstalledApplications LW 2025-10-27T15:44:06.180Z y Loaded LW 2026-10-30T21:44:52.708Z, sin cambio; Loaded solo AppManager, FeaturedApps y AcVBA2025. Applications de perfil vacío; HKLM sin RackCad. AssemblyMap = AppManagerPlugin y FeaturedAppsPlugin, sin RackCad.Plugin, LW 2026-11-02T19:54:39.812Z (igual).
+7. ApplicationPlugins sin RackCad (%APPDATA% y ProgramData vacíos; Program Files = AcVBA2025; x86 = AppManager y FeaturedApps). Bytes P2 en mi worktree: HASHES-I1-V2 bd49d0f4…bd5a, tip fb6b5648, 0 discrepancias. ACL de mis rutas: no comparables; <ruta-de-I-52> y <ruta-local-de-I-65> siguen inexistentes (no los toqué).
+8. CoreUser frente a mi lectura del 2026-11-05: sin cambio en lo que leo. Applications\RackCad LW 2026-07-23T19:42:04.669Z y 2026-07-28T22:09:24.521Z; NetLoadDialog 15FCE… 2026-11-04T22:02:00.429Z y BlockPreviewUser 2026-10-20T18:39:49.420Z. No leí Recent File List ni comparé valores de MRU; tu REPORT_REQUIRED por Recent File List queda en tus capturas.
+9. Sin operación de host de I-52 activa ni prevista. Me comprometo a no tocar el host desde la BASELINE nueva hasta su POST y mi recomprobación. P2 H10 sigue retenido y NOT_AUTHORIZED.
+
+Nota de la sesión I-64: en el punto 7, las dos rutas locales de unidad que I-52 nombra se sustituyen por <ruta-de-I-52> y <ruta-local-de-I-65>, como en la custodia de a578 y 785a (sin rutas locales en la evidencia). El resto es literal.

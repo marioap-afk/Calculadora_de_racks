@@ -1,0 +1,62 @@
+{
+  "Schema": "rackcad-i64-profile-diff/v1",
+  "Baseline": {
+    "File": "profile-capture-BASELINE.json",
+    "Sha256": "e5215177343307b14b14ce00fcd377e21bbc9c844ad10b28a0116d9305de7e51",
+    "Phase": "BASELINE",
+    "CanonicalSha256": "411b97fd76bcbd2a631895eb5fbd627ffddd042020b0fa866f82bd14199276c2",
+    "SidecarOk": true,
+    "CanonicalOk": true,
+    "SortedOk": true
+  },
+  "Post": {
+    "File": "profile-capture-POST.json",
+    "Sha256": "6485685b7ce37e8dd592760e1a326e6e78ac62897ab9c4bc7eb7f75f8363c8ac",
+    "Phase": "POST",
+    "CanonicalSha256": "353087a96591885d8abdca381db584c05aa9ce5e5b3044d931bd6f7658ffc523",
+    "SidecarOk": true,
+    "CanonicalOk": true,
+    "SortedOk": true
+  },
+  "PaletteKeyAcceptance": "NOT_RECORDED",
+  "Preconditions": [],
+  "ChangeCounts": {
+    "ADDED": 1,
+    "REMOVED": 0,
+    "CHANGED": 2
+  },
+  "ClassCounts": {
+    "INVALID": 0,
+    "FORBIDDEN": 0,
+    "REPORT": 0,
+    "ALLOWED": 3
+  },
+  "Disposition": "CLEAN",
+  "ExitCode": 0,
+  "Entries": [
+    {
+      "Id": "V|HKCU:PRODUCT\\FixedProfile\\Application Window|Position",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|15|163582778adecdb44b090eafd93f587c0a5d732aeef1817ee592644bca761b24",
+      "Post": "String|15|42ba3796355b9cb6df7d9b4a12b8b5bbcb134cc87033070378ea6acfa364cf42"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\OpenSaveAnavDialogs|InitialDirectory",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|91|f125aac46e37cad7afae642eefd6d93935b715aabb85e4a38b8f87efc2fcf42e",
+      "Post": "String|11|c2eaf58b87c4102b8ede0631648939e5717885bde3f0c80803645d0c92a967fe"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Variables|VIEWBACKSTATUS",
+      "Change": "ADDED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": null,
+      "Post": "String|1|6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+    }
+  ]
+}

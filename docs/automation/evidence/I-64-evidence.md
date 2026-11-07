@@ -4601,3 +4601,67 @@ añade documentación y evidencia, y `09f2f1c3` sigue siendo el Candidato de la 
 - Sin invocaciones de modelos.
 - Mensajes a «I - 52»: `5d5d3543…` y `41693629…`. A «I - 62»: `10022466…` y `3e74c602…`.
 - HEAD = remoto = `b5ea02f5` antes de este commit; `main` `a140eb3a`.
+
+## 73. Smoke-1 — Ocurrencia completa `R20261107T171052Z-6862`: PASS; custodia
+
+**Resultado, por revisión del Coordinator** (`F1-SMOKE-1/R20261107T171052Z-6862/disposition/coordinator-smoke1-final-review.md`, literal):
+- **Smoke-1 = PASS**, solo para esta ocurrencia completa. **F1 = PASS, C1 = PASS, C2 = PASS.**
+- Candidato `cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6` = **SMOKE1_VALIDATED_CANDIDATE**; DLL `3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0`.
+- Las ocurrencias históricas no cambian: 184b = STOP, 0a77 = NOT PASS, a578 = STOP, 785a = NOT PASS / CLOSED.
+- Ninguna corrección de producto autorizada a partir de Smoke-1.
+
+**Autoridad** (literales en la misma carpeta):
+- `prep/post-785a/coordinator-post-smoke1-not-pass-disposition.md`: FULL NEW SMOKE.
+- `authorization/coordinator-full-smoke1-authorization-6862.md`: Candidato reutilizado sin recompilar, NETLOAD única con «Load Once», HOST_RELEASE para I-64 / 6862, sesión como operadora, OWNER_MANUAL_GESTURE_EXCEPTION solo en SM-29.
+- `disposition/coordinator-smoke1-final-review.md`: revisión final y autorización de esta custodia.
+
+**Ocurrencia** (2026-11-07, diario en `operator/session-log.md`, registro firmado en `operator/operator-record.md`):
+- **Preflight y BASELINE:** acad = 0 y RAM = 0; SECURELOAD 1, leído en el preflight y por la BASELINE (MATCH); BASELINE código 0, CanonicalSha256 `411b97fd76bcbd2a631895eb5fbd627ffddd042020b0fa866f82bd14199276c2`.
+- **Stage A:** el primero encontró ChatGPT en el monitor principal y AutoCAD no se abrió hasta corregirlo. El segundo dio PASS (`preflight/stage-a2-*`), con obstrucción sintética detectada solo en su región.
+- **AutoCAD:** una sola apertura por la sesión, PID 67260, inicio 18:05:46.902Z. NETLOAD con «Load Once»; inspección ligada a la PID: VERDICT PASS a las 18:08:15Z y 18:47:08Z.
+- **Guarda:** REGISTER 1, CHECK 22 (incluido PRE-CLOSE) y CLOSED 1, todos PASS; vigilancia de 1 s sin STOP, código 0. Salida normal a las 19:05:02Z.
+- **Stage B en SM-03:** captura real de la paleta, abierta al momento: PASS.
+- **DBMOD en A:** 13 lecturas, bit 1 = 0 en todas (0 en SM-02; 16, solo vista, en las demás). **SM-14h y SM-18 = PASS.**
+- **SM-14c:** foco visible y capturado antes de enviar; `Ctrl+V` una vez, sin PASTECLIP.
+- **SM-35 en B:** DBMOD 0 antes y después.
+- **Mediciones S1-10:** 188, 234 y 234 ms, sin umbrales.
+- **Cierre:** ningún dibujo guardado; SM-41 PASS (A, B, C, D y biblioteca byte a byte iguales); SM-39 PASS (RackLog igual que BEFORE).
+- **POST** código 0, CanonicalSha256 `353087a96591885d8abdca381db584c05aa9ce5e5b3044d931bd6f7658ffc523`. **DIFF = CLEAN**, código 0, ALLOWED 3 por R-A-03.
+- **I-52:** recheck de 19:07:21Z sin deriva en lo que registra; ninguna operación de host en la ventana (`disposition/i52-post-run-recheck.txt`, con procedencia: leído de su transcripción, como permite la autorización).
+- **Firma del Owner:** «Firmo el registro.», 2026-11-07T19:16:29Z (`disposition/owner-signature.md`). Confirma el registro, no un PASS.
+
+**Incidente de SM-29** (`disposition/deviation-request-sm29.md`, `disposition/disposition-sm29-option-a.md`):
+- **FIRST ATTEMPT = OPERATOR / INPUT INCIDENT, HISTORICAL.** Además del arrastre hubo clics izquierdos, `Esc` y rueda. V0 (3344.54 1493.04) → V1 (3079.37 1205.26), mezclado con zoom. Se conserva tal cual.
+- Durante la pausa el Owner hizo otro arrastre sin petición (V1 → V2). Se conserva; no se usa como prueba.
+- **CLEAN REPEAT = AUTHORIZED RECOVERY / AUTHORITATIVE.** V2 (3596.49 1229.31), VIEWSIZE 1649.97 → V3 (4467.18 1450.59), VIEWSIZE 1649.97. **S1-02 = PASS.** OPTION A ACCEPTED por la revisión final; eso resuelve que el «A» del Owner llegara sin literal del Coordinator.
+
+**Clasificaciones de la revisión final:**
+- `Recent File List`: EXPECTED MRU / UI-STATE ACTIVITY; SEMANTIC RACKCAD DRIFT = NO; INFORMATIVE.
+- HKCU `Applications`: WRITE_ACTIVITY YES; VALUE_CHANGE, SEMANTIC_DRIFT, SECURITY_DRIFT y LOAD_DRIFT NO; INFORMATIVE. No se limpia.
+- `.sv$`: EXPECTED AUTOCAD TEMPORARY HOST ARTIFACT; NON-BLOCKING. Condiciones comprobadas (`logs/sm41.txt`).
+- **PaletteKeyAcceptance = NOT_RECORDED / NOT_NEEDED_FOR_DIFF_DISPOSITION.** Condición de anulación comprobada: ninguna diferencia de la clave de la paleta en T3C ni en HOST-EXTRAS, y 0 líneas con «palette» difieren entre BASELINE y POST (`disposition/palette-key-check.txt`). El registro firmado no se reescribe; `disposition/final-disposition-6862.md` lo recoge.
+
+**Pendientes de 785a, ya cubiertos:** S1-06h; S1-08 / OV-20; S1-02; capturas autoritativas de SM-17 (izquierda, derecha, flotante, plegada, desplegada), SM-26, SM-27b y SM-34; las cuatro abiertas y revisadas al tomarlas.
+
+**Custodia** (`docs/automation/evidence/I-64-pilot/F1-SMOKE-1/R20261107T171052Z-6862/`, con `custody-manifest.json` por unidad):
+
+| Unidad | CUSTODIED | EXCLUDED |
+|---|---|---|
+| `R20261107T171052Z-6862` | 138 | 165 |
+| `R20261107T171052Z-6862/prep` (de `F1-SMOKE-1-RETRY-PREP/post-785a/`) | 20 | 5 |
+
+- Excluidos, con SHA-256 y motivo: salidas sintéticas de la autoprueba; compañeros locales de las capturas; JSON crudos de HOST-EXTRAS y sus comparaciones; duplicados ya custodiados.
+- Las 41 imágenes custodiadas se abrieron una a una: paleta, línea de órdenes o editor de RackCad, sin contenido de sesión ni rutas. Tienen un leve tinte de la capa transparente de la app en los bordes, sin tapar texto. Las capturas de la línea de órdenes que mostrarían la ruta de un autoguardado se evitaron o se recortaron.
+- Redacciones registradas en los manifiestos: ubicación del worktree, carpeta de AutoCAD 2025, carpetas de ApplicationPlugins, unidad local, carpetas de I-52 y de I-65, y nombres de otras aplicaciones en las listas de ventanas (`<otra-app>`).
+- CRLF custodiado en LF con el SHA-256 original.
+
+**Límites:**
+- Este commit solo añade documentación y evidencia. `src/`, `tests/` y los archivos de proyecto son los de `cc7503e3`; el DLL de Debug no se recompiló. No es un Candidato.
+- Sin merge ni rebase de main en este commit; sin F2.
+
+**Siguiente** (revisión final): CI por SHA exacto de este commit → sincronizar con `origin/main` (I-65) → resolver el censo de comandos conservando `RACKPANEL` y `RACKRAMPAQUETE` (39 esperados, a verificar) → Core y UI completos, builds Debug y CI por SHA exacto → revalidar las guardas de Workspace de I-64 y las de análisis estructural y paquete de I-65 → **revisión de integración del Coordinator**. F2 no empieza antes de esa revisión.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- Mensajes a «I - 52»: `245731d3…` (recheck previo), `bec2810a…` y `e31b8a44…`. A «I - 62»: `3f3f1df3…` y `b853e7ba…`.
+- HEAD = remoto = `1917bc19` antes de este commit; `main` `a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60`.
