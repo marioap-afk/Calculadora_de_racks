@@ -1,0 +1,24 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "1/R20261108T181429Z-adae",
+  "SourceRoot": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T181429Z-adae",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 2,
+    "EXCLUDED": 0
+  },
+  "Files": [
+    {
+      "Path": "contract-equivalence.json",
+      "Bytes": 7305,
+      "Sha256": "17d6841a1bc89dae8bb4b34dd1306c54c5162e1f9f25c3cbfab97ae47f555cd3",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "gate-contract.json",
+      "Bytes": 11935,
+      "Sha256": "1667b2a2906164c6ec2ac4778fad7693c6ccb39a29c047092003600918339788",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

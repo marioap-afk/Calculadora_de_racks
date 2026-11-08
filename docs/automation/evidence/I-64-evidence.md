@@ -4864,3 +4864,76 @@ añade documentación y evidencia, y `09f2f1c3` sigue siendo el Candidato de la 
   - `29778a23…`, recheck previo. Su lectura dice 07:02:58Z, la hora que declara I-52, 6 s antes del registro de envío de la petición (07:03:03Z).
   - `dbc49249…`, aviso de cierre y recheck posterior.
 - HEAD = remoto = `53683249` antes de este commit; `main` `a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60`, sin cambios.
+
+## 76. F2 OPEN; contrato de F2-T1-NAVIGATION-CORE: STOP previo a la planificación, sonda del CLI nuevo PASS y reemisión ASCII
+
+**CI de la custodia de §75:** corrida `42504919895` (push, SHA exacto `90f5872e89660655a93606e16d50f4bc19aa3c9c`), 4/4 success.
+
+**Autoridad** (literales en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/`):
+- `coordinator-f2-gate-open.md` (`D99EF90D…`): **F2 = OPEN**, un solo gate con dos tareas.
+  - F2-T1-NAVIGATION-CORE: autoridad NavigationTargets, caché y políticas puras. Es la única autorizada.
+  - F2-T2-NAVIGATION-HOST-UI: necesita un contrato nuevo después de F2-T1 EXECUTION_VERIFIED.
+  - Los attempts 3/3 de F1 no pasan a F2.
+  - Parada final: COORDINATOR_F2_T1_CLOSE_REQUIRED.
+  - El bloque JSON del contrato está byte a byte en `gate-contract.json` (`A2EF2055…2E3A`).
+- `pre-planning-stop.json` (`75005D27…`): STOP de la sesión antes de la planificación, con C-F2T1-01..05.
+- `coordinator-f2t1-preplanning-stop-disposition.md` (`02950ABF…`): las cinco ACCEPTED.
+  - El contrato original queda SUPERSEDED_BEFORE_FIRST_DELEGATION.
+  - Autoriza una sonda de acreditación, la reemisión ASCII y el presupuesto de invocaciones de F2-T1.
+  - Hace obligatorios nc4 antes del Worker y nc1..nc3 tras un EXECUTION_VERIFIED real; A-4/A-6 solo bajo condición.
+
+**STOP previo (C-F2T1-01):**
+- El CLI con el que se midió la celda del Controller (`codex-cli 0.162.0-alpha.17.2`, `bin/2e5e00daee91c61d`, sondas `a198` y `515d`) ya no existe.
+- El único binario es `bin/f71a721e0e6193a9` = **`codex-cli 0.167.0-alpha.3.2`**, con `codex.exe` SHA-256 `4B3286E35D7FE866C6B0EB3F07D7A4CDB5E96489576170DFD6B3A15AA1C67382`. Se escribió el 2026-11-07T18:05:11Z, en el mismo momento en que `config.toml` pasó a D.
+- No se invocó ningún modelo hasta la disposición.
+
+**Sonda de acreditación `R20261108T181131Z-3b8b`: PASS** (`I-64-pilot/F2-T1-NAVIGATION-CORE/probe-R20261108T181131Z-3b8b/`):
+- Una sola invocación, sin reintento. Mismo prompt, esquema y oráculo mínimo que `515d`.
+- **Efectivos:** `gpt-6-luna` / `high` según el `turn_context` del registro de sesión; `cli_version` `0.167.0-alpha.3.2`.
+- **Entorno:** sandbox read-only; sistema de archivos solo lectura; red restringida.
+- **Salida:** válida contra el esquema. Oráculo exacto: HEAD `90f5872e`, `origin/main` `a140eb3a`, blob del estado `45e71140`, con 3 órdenes de código 0.
+- **Sin efectos colaterales:** ningún aviso de uso ni de créditos; HEAD = remoto y árbol limpio a la entrada.
+- **config.toml:** D exacta antes y después (`377D0C3C…`, 104 nombres, lista ordenada `EB8775C5…`).
+- **Procesos:** sin participantes al salir ni al entrar; lanzador muerto.
+- **Observación:** este CLI lanza sus órdenes con `pwsh -Command`, sin `-NoProfile`. alpha.17.2 sí lo usaba.
+- **Por la disposición: CONTROLLER CELL = ACCREDITED FOR F2-T1** para esta identidad de CLI. La sonda no consume attempts.
+- `events.jsonl` no se versiona: queda su SHA-256 `8D865D5F…`. En `probe-result.json` las rutas locales de las órdenes están redactadas.
+
+**REISSUE_GATE_CONTRACT_ASCII** (`I-64-pilot/F2-T1-NAVIGATION-CORE/1/R20261108T181429Z-adae/`):
+- **Contrato:** `gate-contract.json`, SHA-256 `1667B2A2906164C6EC2AC4778FAD7693C6CCB39A29C047092003600918339788`. ASCII puro y válido contra `rackcad-gate-contract/v1`.
+- **Equivalencia:** `contract-equivalence.json` (`17D6841A…`). Original `A2EF2055…2E3A`.
+- **Transliteración mecánica** (12 sustituciones en Objective, Authorities.Section e Invariants):
+  - 1 raya → `-`;
+  - 1 `ú` → `u` y 1 `í` → `i`;
+  - 4 `ñ` → `n`;
+  - 5 `§` → `section ` (con un espacio, porque les sigue un dígito).
+- **Campos dispuestos** (6):
+  - celda del Worker `anthropic/subagent/claude-sonnet-5-5`: `Transport` = `subagent`;
+  - celda del Controller: `openai/process/gpt-6-luna`, `Transport` `process`, `Source` con la sonda `3b8b` y la identidad exacta del CLI, `VerifiedOn` 2026-11-08;
+  - `IssuedUtc` de la reemisión.
+- **Comprobado mecánicamente:**
+  - cada cambio de texto es la regla aplicada a su original;
+  - fuera de esos 6 campos no cambia nada;
+  - siguen iguales los campos de identidad, el alcance, las pruebas, las paradas, `RoutingEnforcement`, `CorrectionsAuthorized`, `IssuedBy`, rutas y clases de autoridades, `ExpectedEvidence`, y el número y los prefijos de las invariantes.
+
+**Presupuesto de F2-T1** (de la disposición; detalle en `f2_t1_budget` del estado):
+- **Planificación:** 1 salida válida, más hasta 2 reejecuciones por BLOCKED, transporte o INVALID_OUTPUT.
+- **Worker:** 1 invocación por delegación aceptada.
+- **Verificación:** 1 salida válida por WorkRunId, más 2 reejecuciones.
+- **Correcciones:** cada una con su propia secuencia; consumen attempts según 16.8.
+- **Controles:** nc4 mecánico, una vez, antes del primer Worker; nc1, nc2 y nc3 con 1 salida válida cada uno, más 2 reejecuciones.
+- **Puentes:** A-4 / A-6 solo si nc2 / nc3 reproducen el defecto conocido del Controller.
+- Más allá de estos topes = STOP P-07.
+
+**Transición de estado:**
+- `current_phase` F2, `state` `implementing`, `gate` `none`.
+- **`attempts` = 1** (la disposición: los 3 de F1 no pasan a F2), `max_attempts` 3. La delegación inicial llevará Attempt 1, AttemptsRemaining 2, MaxReworkLoops 3, ChainRedSha null y ChainRedFiles [].
+- `relay_baseline` registra el CLI nuevo acreditado; las mediciones de alpha.17.2 quedan como históricas, sin transferirse.
+
+**Límites:** solo documentación y evidencia. Sin producto, sin Worker, sin planificación del Controller todavía; sin AutoCAD; sin merge ni rebase de `main`.
+
+**Siguiente:** salida de 16.4 → planificación del Controller sobre el contrato ASCII → A1-A8 → nc4 → Worker → CI → verificación → nc1..nc3 → custodia → COORDINATOR_F2_T1_CLOSE_REQUIRED.
+
+**Relevos:**
+- Una invocación de modelo: la sonda `3b8b`.
+- HEAD = remoto = `90f5872e` antes de este commit; `main` `a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60`, sin cambios.

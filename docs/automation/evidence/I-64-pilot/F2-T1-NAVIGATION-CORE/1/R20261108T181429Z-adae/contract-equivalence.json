@@ -1,0 +1,136 @@
+{
+  "Schema": "rackcad-i64-contract-equivalence/v1",
+  "Record": "REISSUE_GATE_CONTRACT_ASCII",
+  "TaskId": "F2-T1-NAVIGATION-CORE",
+  "Authority": "disposicion del Coordinator del STOP previo a la planificacion de F2-T1 (coordinator-f2t1-preplanning-stop-disposition.md)",
+  "OriginalContract": {
+    "Path": "coordinator/gate-contract.json",
+    "Sha256": "A2EF2055F749DCDBECEAC4EBB44D6105DED33964D3A0BEE9982F9051D8E12E3A",
+    "Status": "SUPERSEDED_BEFORE_FIRST_DELEGATION"
+  },
+  "AsciiReissue": {
+    "Path": "1/R20261108T181429Z-adae/gate-contract.json",
+    "Sha256": "1667B2A2906164C6EC2AC4778FAD7693C6CCB39A29C047092003600918339788",
+    "SchemaValid": true,
+    "NonAsciiBytes": 0
+  },
+  "TransliterationRules": {
+    "U+2014/U+2013": "-",
+    "vocales con tilde": "vocal sin tilde",
+    "U+00F1": "n",
+    "U+00A7": "\"section\" (seguido de un espacio cuando le sigue un digito)",
+    "comillas tipograficas": "comillas ASCII"
+  },
+  "TransliterationApplied": {
+    "U+2014 — -> \"-\"": 1,
+    "U+00FA ú -> \"u\"": 1,
+    "U+00ED í -> \"i\"": 1,
+    "U+00F1 ñ -> \"n\"": 4,
+    "§ -> \"section \"": 5
+  },
+  "TransliterationChanges": [
+    {
+      "Path": "Authorities[0].Section",
+      "Original": "D-03, D-05, D-06, D-07; invariantes INV-03, INV-22, INV-36, INV-38 e INV-40; §11 F2; §12.3 Smoke-NAV; §13 routing de F2",
+      "Reissue": "D-03, D-05, D-06, D-07; invariantes INV-03, INV-22, INV-36, INV-38 e INV-40; section 11 F2; section 12.3 Smoke-NAV; section 13 routing de F2"
+    },
+    {
+      "Path": "Authorities[3].Section",
+      "Original": "§16.1 a §16.8",
+      "Reissue": "section 16.1 a section 16.8"
+    },
+    {
+      "Path": "Invariants[10]",
+      "Original": "INV-38: el mismo rack debe producir el mismo conjunto NavigationTargets desde cualquier entrada futura; F2 no puede crear una derivacion exclusiva del contexto que luego compita con pestañas o navegador.",
+      "Reissue": "INV-38: el mismo rack debe producir el mismo conjunto NavigationTargets desde cualquier entrada futura; F2 no puede crear una derivacion exclusiva del contexto que luego compita con pestanas o navegador."
+    },
+    {
+      "Path": "Invariants[13]",
+      "Original": "No se introduce estado de borrador, dirty, pestañas, preview, edicion, Actualizar, inventario global F6 ni persistencia propia.",
+      "Reissue": "No se introduce estado de borrador, dirty, pestanas, preview, edicion, Actualizar, inventario global F6 ni persistencia propia."
+    },
+    {
+      "Path": "Objective",
+      "Original": "Implementar la primera tarea de F2 — Context Navigation: la autoridad única NavigationTargets y las políticas puras necesarias para navegar desde el rack del contexto, sin AutoCAD, sin UI host y sin inventario global. Para (sesion, RackId), NavigationTargets obtiene bajo demanda y cachea el conjunto determinista de objetivos navegables conforme a D-05: solo definiciones no-xref con sobre interpretable e Id no vacio igual por OrdinalIgnoreCase; nunca miembros atribuidos solo por sondeo; referencias top-level de Model Space; orden frontal, lateral, planta, resto por codec y luego handle. Debe existir una sola derivacion consumible posteriormente por contexto, pestañas y navegador. Debe modelarse la invalidacion de la cache y la politica pura de acciones/revalidacion necesaria para que F2-T2 pueda ejecutar Seleccionar, Ver, Centrar y Localizar sin introducir una segunda autoridad. Esta tarea NO implementa todavia llamadas reales a AutoCAD, cambios de seleccion/vista, controles WPF, pestañas F3, inventario global F6 ni Smoke-NAV.",
+      "Reissue": "Implementar la primera tarea de F2 - Context Navigation: la autoridad unica NavigationTargets y las politicas puras necesarias para navegar desde el rack del contexto, sin AutoCAD, sin UI host y sin inventario global. Para (sesion, RackId), NavigationTargets obtiene bajo demanda y cachea el conjunto determinista de objetivos navegables conforme a D-05: solo definiciones no-xref con sobre interpretable e Id no vacio igual por OrdinalIgnoreCase; nunca miembros atribuidos solo por sondeo; referencias top-level de Model Space; orden frontal, lateral, planta, resto por codec y luego handle. Debe existir una sola derivacion consumible posteriormente por contexto, pestanas y navegador. Debe modelarse la invalidacion de la cache y la politica pura de acciones/revalidacion necesaria para que F2-T2 pueda ejecutar Seleccionar, Ver, Centrar y Localizar sin introducir una segunda autoridad. Esta tarea NO implementa todavia llamadas reales a AutoCAD, cambios de seleccion/vista, controles WPF, pestanas F3, inventario global F6 ni Smoke-NAV."
+    }
+  ],
+  "DispositionChanges": [
+    {
+      "Path": "EligibleCells[0].Transport",
+      "AfterTransliteration": "subagente de la sesion de escritorio",
+      "Reissue": "subagent"
+    },
+    {
+      "Path": "EligibleCells[1].Cell",
+      "AfterTransliteration": "openai/codex-cli/gpt-6-luna",
+      "Reissue": "openai/process/gpt-6-luna"
+    },
+    {
+      "Path": "EligibleCells[1].Source",
+      "AfterTransliteration": "docs/automation/agent-execution/model-catalog.md: celda Controller medida en PR-1 y G3 de I-61",
+      "Reissue": "sonda de acreditacion de F2-T1 R20261108T181131Z-3b8b (PASS; gpt-6-luna/high efectivos; read-only; oraculo Git exacto; sin aviso de uso; config.toml SNAPSHOT D antes y despues) sobre codex-cli 0.167.0-alpha.3.2, bin f71a721e0e6193a9, codex.exe SHA-256 4B3286E35D7FE866C6B0EB3F07D7A4CDB5E96489576170DFD6B3A15AA1C67382; la medicion de 515d (alpha.17.2) no se transfiere"
+    },
+    {
+      "Path": "EligibleCells[1].Transport",
+      "AfterTransliteration": "Codex CLI, solo lectura",
+      "Reissue": "process"
+    },
+    {
+      "Path": "EligibleCells[1].VerifiedOn",
+      "AfterTransliteration": "2026-09-30",
+      "Reissue": "2026-11-08"
+    },
+    {
+      "Path": "IssuedUtc",
+      "AfterTransliteration": "2026-11-08T17:13:00Z",
+      "Reissue": "2026-11-08T18:14:51Z"
+    }
+  ],
+  "Checks": {
+    "EveryTransliterationChangeIsTheMechanicalRuleOfItsOriginal": true,
+    "OnlyDisposedPathsDifferAfterTransliteration": [
+      "EligibleCells[0].Transport",
+      "EligibleCells[1].Cell",
+      "EligibleCells[1].Source",
+      "EligibleCells[1].Transport",
+      "EligibleCells[1].VerifiedOn",
+      "IssuedUtc"
+    ],
+    "UnchangedExactly": {
+      "Schema": true,
+      "Unit": true,
+      "Gate": true,
+      "TaskId": true,
+      "AuthorityRevision": true,
+      "MainSha": true,
+      "AllowedWriteScope": true,
+      "ForbiddenWriteScope": true,
+      "RequiredTests": true,
+      "StopConditions": true,
+      "RoutingEnforcement": true,
+      "CorrectionsAuthorized": true,
+      "IssuedBy": true
+    },
+    "AuthorityPathsAndClassesUnchanged": true,
+    "InvariantCountUnchanged": true,
+    "EachInvariantIsTheTransliterationOfItsOriginal": true,
+    "InvariantIdPrefixesUnchanged": true,
+    "ExpectedEvidenceUnchanged": true,
+    "WorkerCellOtherFieldsUnchanged": {
+      "Cell": true,
+      "Provider": true,
+      "Model": true,
+      "Capabilities": true,
+      "TestedEfforts": true,
+      "Source": true,
+      "VerifiedOn": true
+    },
+    "ControllerCellOtherFieldsUnchanged": {
+      "Provider": true,
+      "Model": true,
+      "Capabilities": true,
+      "TestedEfforts": true
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "coordinator",
+  "SourceRoot": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 4,
+    "EXCLUDED": 0
+  },
+  "Files": [
+    {
+      "Path": "coordinator-f2-gate-open.md",
+      "Bytes": 3780,
+      "Sha256": "d99ef90dcbff51aad9e5849211a8cc919da1fae399e88fbbd6d0997377618b22",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t1-preplanning-stop-disposition.md",
+      "Bytes": 9733,
+      "Sha256": "02950abf298418fd23aa4310aaa003e89c41dd009432345c49f88b1c6e1ed5f1",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "gate-contract.json",
+      "Bytes": 11686,
+      "Sha256": "a2ef2055f749dcdbeceac4ebb44d6105ded33964d3a0bee9982f9051d8e12e3a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "pre-planning-stop.json",
+      "Bytes": 3190,
+      "Sha256": "75005d27cb82a08eb42bcfb6e40aca552d1fb0c73ec628e27210fb495f695362",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

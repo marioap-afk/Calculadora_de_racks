@@ -1,0 +1,43 @@
+{
+  "Schema": "rackcad-i64-pre-invocation-stop/v1",
+  "TaskId": "F2-T1-NAVIGATION-CORE",
+  "Gate": "F2",
+  "Attempt": 1,
+  "RecordedUtc": "2026-11-08T17:40:00Z",
+  "StepsDone": [
+    "1. gate-contract.json guardado literal (SHA-256 A2EF2055F749DCDBECEAC4EBB44D6105DED33964D3A0BEE9982F9051D8E12E3A), valido contra rackcad-gate-contract/v1",
+    "2. config.toml = SNAPSHOT D exacta (377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8)",
+    "HEAD = ls-remote = 90f5872e89660655a93606e16d50f4bc19aa3c9c; origin/main = a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60 (recien obtenido); arbol limpio",
+    "16.3: autoridades EXTERNAL iguales en el merge-base a140eb3a y en 90f5872e; las tres UNIT_DOC existen en 90f5872e"
+  ],
+  "StoppedBefore": "3. relevo 16.4 (commit de estado) y 4. planificacion del Controller; ninguna invocacion de modelo, ningun commit",
+  "Findings": [
+    {
+      "Id": "C-F2T1-01",
+      "Kind": "STOP",
+      "Text": "El CLI medido de la celda del Controller ya no existe: bin/2e5e00daee91c61d (codex-cli 0.162.0-alpha.17.2; sondas R20261011T030925Z-a198 y R20261011T035128Z-515d; relay_baseline del estado) desaparecio. El unico binario es bin/f71a721e0e6193a9, codex-cli 0.167.0-alpha.3.2, SHA-256 4B3286E35D7FE866C6B0EB3F07D7A4CDB5E96489576170DFD6B3A15AA1C67382, escrito el 2026-11-07T18:05:11Z (mismo momento que config.toml = D y el arranque de ChatGPT.exe). En I-64 cada cambio de CLI exigio una sonda autorizada antes de usar la celda (97f8 para alpha.2; a198 y 515d para alpha.17.2). Sin orden no se invoca: la sonda es una invocacion de modelo."
+    },
+    {
+      "Id": "C-F2T1-02",
+      "Kind": "MECHANICAL_CONFLICT",
+      "Text": "La celda del Worker del contrato tiene Transport 'subagente de la sesion de escritorio' y Cell 'anthropic/subagent/claude-sonnet-5-5'. A7 exige que la delegacion copie el Transport de la celda; A8 exige Owner.Kind coherente con Executor.Transport (el evaluador de F1 compara por igualdad) y el esquema rackcad-delegation/v1 solo admite Owner.Kind 'subagent' o 'process'. Los contratos de F1 usaban Cell 'claude-sonnet-5-5|subagent' y Transport 'subagent'."
+    },
+    {
+      "Id": "C-F2T1-03",
+      "Kind": "RISK",
+      "Text": "El contrato tiene 12 caracteres no ASCII (una raya, u y i con tilde, cuatro enes y cinco signos de seccion) en Objective, Authorities.Section e Invariants. En F1-T1 las planificaciones 5/5 y 6/6 fallaron A5 porque el Controller corrompio caracteres no ASCII; lo resolvio REISSUE_GATE_CONTRACT_ASCII (contrato transliterado con equivalencia registrada, R20261002T171954Z-754a), y los contratos de T2, T3A y T3B fueron ASCII."
+    },
+    {
+      "Id": "C-F2T1-04",
+      "Kind": "GAP",
+      "Text": "El contrato no fija el tope de invocaciones (16.8: lo fija el plan de gates de la unidad; P-07). La secuencia autorizada implica una planificacion, un Worker y una verificacion."
+    },
+    {
+      "Id": "C-F2T1-05",
+      "Kind": "SCOPE",
+      "Text": "La secuencia autorizada no incluye nc1..nc3 (invocaciones del Controller tras la verificacion) ni los puentes A-4/A-6. nc4 (16.4 paso 3) es mecanico, sin modelo."
+    }
+  ],
+  "Disposition": "STOP",
+  "ReturnTo": "Coordinator"
+}
