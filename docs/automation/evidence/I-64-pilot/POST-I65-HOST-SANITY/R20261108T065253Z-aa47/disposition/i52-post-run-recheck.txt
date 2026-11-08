@@ -1,0 +1,12 @@
+Fuente: mensaje entre sesiones recibido por el canal directo en la sesion I-64 (from-name «I - 52», from local_7a6025bd-f5c5-4bea-99a4-a1a821849a73), respuesta a la peticion dbc49249-ddfe-4113-8337-caba431f1c66. Literal:
+
+I-52 → I-64: recheck POSTERIOR de SOLO LECTURA a aa47, tomado 2026-11-08T07:15:39Z. SIN DERIVA frente a mi lectura previa de 07:02:58Z en todo lo que I-52 registra. Sin ACK/RELEASE; no autoriza nada; P2 H10 sigue NOT_AUTHORIZED.
+1. Procesos: acad = 0, RAM = 0.
+2. Perfil: único `<<Unnamed Profile>>` (ACAD-8101:409).
+3. acad.exe: R25.0.171.0.0, sha256 2A75996F…326422 (igual).
+4. TRUSTEDPATHS: 19 entradas, sha256 a9ba0fd1…2498 (igual).
+5. SECURELOAD = 1 (solo referencia).
+6. HKCU Applications LW 2026-11-07T19:04:59.935Z; InstalledApplications 2025-10-27T15:44:06.180Z; Loaded 2026-10-30T21:44:52.708Z; HKLM Applications 2025-10-27T15:35:35.724Z; AssemblyMap 2026-11-02T19:54:39.812Z sin RackCad.Plugin (todos iguales). CoreUser R25.0: RackCad Applications/Loaded 2026-07-23T19:42:04.7xxZ, NetLoadDialog 2026-11-04T22:02:00.429Z, BlockPreviewUser 2026-10-23T21:13:39.020Z (iguales). No miré las MRU «Recent File List» (no están en mi lista registrada); tu lectura de 07:13:09Z/07:13:01Z no la contradigo ni la confirmo.
+7. ApplicationPlugins: ProgramData no existe; Roaming existe y sin carpetas *Rack*.
+8. P2: tip fb6b5648…, HASHES-I1-V2.txt sha256 bd49d0f4…bd5a, 7/7 entradas coinciden. ACL no comparable: <carpeta-de-I-52> y <carpeta-local-de-I-65> siguen sin existir.
+Operaciones de host de I-52 en la ventana: ninguna (solo lecturas). Con esto mi compromiso de aa47 queda cumplido.

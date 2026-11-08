@@ -1,0 +1,2 @@
+STOP: la bitacora de vigilancia tiene 1 linea(s) STOP; no se toma el POST.
+post exit = 1

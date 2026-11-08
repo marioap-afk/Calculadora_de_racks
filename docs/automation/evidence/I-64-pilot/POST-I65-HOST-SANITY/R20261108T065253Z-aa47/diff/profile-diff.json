@@ -1,0 +1,54 @@
+{
+  "Schema": "rackcad-i64-profile-diff/v1",
+  "Baseline": {
+    "File": "profile-capture-BASELINE.json",
+    "Sha256": "5abe696d5d70ffeb105d283efd5a4f8864d89057db3070948269df297ab4798d",
+    "Phase": "BASELINE",
+    "CanonicalSha256": "0d8b9edd9727f08f86aac404068943862902e4ca08556b32cd3a2d86260fa237",
+    "SidecarOk": true,
+    "CanonicalOk": true,
+    "SortedOk": true
+  },
+  "Post": {
+    "File": "profile-capture-POST.json",
+    "Sha256": "cd7907cdc57a4279cd13f4eca3d7c02bba23a0548bc9eec900b33cc1e3ce4037",
+    "Phase": "POST",
+    "CanonicalSha256": "868314830540d23c51eea854405a3da7eb1611dbc619473283343e758919c1a8",
+    "SidecarOk": true,
+    "CanonicalOk": true,
+    "SortedOk": true
+  },
+  "PaletteKeyAcceptance": "NOT_RECORDED",
+  "Preconditions": [],
+  "ChangeCounts": {
+    "ADDED": 0,
+    "REMOVED": 1,
+    "CHANGED": 1
+  },
+  "ClassCounts": {
+    "INVALID": 0,
+    "FORBIDDEN": 0,
+    "REPORT": 0,
+    "ALLOWED": 2
+  },
+  "Disposition": "CLEAN",
+  "ExitCode": 0,
+  "Entries": [
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Variables|*XCOMPARELASTCLEANTIME",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|19|52dd517bec8e323f6f1f547d874815ce4842d748b3f798d8f98cdc2b1c1a2ace",
+      "Post": "String|19|7dc1e1d17ec7d42fc95fa06360e8f46147c4024e78fc54f4f13bd696e06358e7"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Variables|VIEWBACKSTATUS",
+      "Change": "REMOVED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|1|6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "Post": null
+    }
+  ]
+}

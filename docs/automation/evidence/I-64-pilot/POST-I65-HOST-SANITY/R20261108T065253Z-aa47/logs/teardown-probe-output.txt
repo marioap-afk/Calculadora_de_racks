@@ -1,0 +1,4 @@
+ejecuciones 25; muestras 2945; muestras con Id e inicio legibles pero ruta distinta de la inicial = 8
+pid 23164 start ticks 639297190363689639 path='' (esperada '<System32>\PING.EXE')
+pid 29476 start ticks 639297190389862283 path='' (esperada '<System32>\PING.EXE')
+pid 78400 start ticks 639297190473840018 path='' (esperada '<System32>\PING.EXE')

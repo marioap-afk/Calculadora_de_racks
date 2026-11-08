@@ -4732,3 +4732,135 @@ añade documentación y evidencia, y `09f2f1c3` sigue siendo el Candidato de la 
 - Este commit solo añade documentación y evidencia encima de `3f5c7014`.
 
 **Siguiente:** COORDINATOR_INTEGRATION_REVIEW_REQUIRED. F2 no empieza antes de esa revisión.
+
+## 75. Comprobación de host posterior a I-65 `R20261108T065253Z-aa47`: PASS; P-01 = SNAPSHOT D; gate de integración CERRADO; custodia
+
+**Autoridad** (literales en `I-64-pilot/POST-I65-HOST-SANITY/R20261108T065253Z-aa47/disposition/`):
+- `coordinator-integration-review.md`: revisión de §74 = INTEGRATION CHECKPOINT PASS WITH CONDITIONS sobre `3f5c7014` / `53683249`.
+  - La desviación de AUTOMATION_PLAN 16.7 queda ACCEPTED / RATIFIED solo para `R20261107T192919Z-21f9`: no es precedente, 16.7 no se reescribe y no se dice que se siguió literalmente.
+  - F2 quedaba bloqueada por dos condiciones: P-01 CLEARED y POST-I65 HOST SANITY CHECK = PASS.
+- `operator-exception-request.md`: petición de la sesión, después de que el Owner eligiera «Tú, con excepción».
+- `coordinator-disposition-aa47.md`:
+  - P-01 = CLEARED BY OWNER ACCEPTANCE / VIA B (SNAPSHOT D);
+  - aa47 AUTHORIZED, con la sesión como operadora solo para aa47;
+  - HOST_RELEASE;
+  - recheck de I-52 antes y después.
+- `coordinator-post-i65-host-sanity-review.md`: revisión final = **PASS** y autorización de esta custodia.
+
+**Resultado** (revisión final del Coordinator):
+- **POST-I65 HOST SANITY CHECK = PASS.**
+- **DLL `0C0F2FDE0987C489BABAF2ACB9A46936117D044EAF45C706A303E6B5B1C56C0B`, aceptado:**
+  - una sola carga «Load Once», no persistente;
+  - un solo `RackCad.Plugin.dll` en la PID autorizada;
+  - cargado del build del worktree sincronizado;
+  - SHA-256 MATCH.
+- **PID 39252**, de 07:06:56Z a 07:13:05Z.
+  - La línea `WATCH STOP: otra instancia 39252@…` = **FALSE_POSITIVE_PROCESS_TEARDOWN**; **HOST_ISOLATION_VIOLATION = NO**.
+  - Es un falso positivo de la herramienta, no un defecto de RackCad, y no pide corrección de producto en I-64.
+  - Mejora de la guarda, que puede registrarse aparte: distinguir «misma PID + mismo inicio + ruta que desaparece al salir» de una `acad.exe` nueva.
+- **RACKPANEL = PASS**, sin repetir C1 ni C2:
+  - registrado, y abre el Workspace;
+  - la sesión activa queda normal;
+  - al seleccionar el rack, «Un rack» con su RackId; `Esc` vuelve a «Ninguno»;
+  - sin ERROR de RackLog.
+- **RACKRAMPAQUETE = PASS** solo como coexistencia no destructiva, sin ser una validación funcional nueva de I-65:
+  - Unsupported (selective) antes de estación, cargas, carpeta y publicación;
+  - sin carpeta ni paquete;
+  - RAM Elements no se lanzó;
+  - DBMOD 0.
+- **Dibujos y RackLog = PASS:** DBMOD 0, `QUIT` sin preguntas, SHA-256 de los dibujos sin cambios, RackLog igual y sin ERROR.
+- **Host:**
+  - **T3C = CLEAN**: las dos variables cambiadas, aceptadas por las reglas existentes.
+  - **HOST-EXTRAS**: solo «Recent File List» = EXPECTED MRU / UI-STATE ACTIVITY, INFORMATIVE, NON-BLOCKING.
+  - AssemblyMap y registro de carga: UNCHANGED.
+- **I-52:** rechecks antes y después (07:15:39Z) SIN DERIVA, aceptados con sus límites de alcance tal como se registraron.
+- **POST = TOOLING DEVIATION ACCEPTED.** El helper normal se negó (PG-6) y se usó la variante.
+  - El POST y el DIFF CLEAN son evidencia válida.
+  - Se conservan la negativa, la variante, la diferencia registrada y la aceptación.
+  - No se escribe como si el helper normal hubiera funcionado.
+- **P-01 = CLEARED, SNAPSHOT D** (`377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8`, 104 nombres). Ninguna invocación de modelo en aa47.
+- **POST-I65 INTEGRATION GATE = CLOSED. F2 = MAY START**, bajo el workflow y las reglas de gate existentes de I-64, sin autorizar implementación arbitraria.
+  - Antes de cualquier invocación de modelo de F2: comprobar que `config.toml` coincide con una instantánea aceptada.
+  - Respetar los presupuestos y las reglas de propiedad.
+- No hace falta otro Smoke-1 ni otra comprobación en AutoCAD posterior a I-65, salvo que un cambio de producto futuro invalide esta evidencia.
+- **Estado global:** F1 = PASS; Smoke-1 = PASS; sincronización con I-65 = PASS; comprobación de host posterior a I-65 = PASS; P-01 = CLEARED; gate de integración = CLOSED.
+
+**Ocurrencia** (2026-11-08; diario `operator/session-log.md`, procedimiento HS-00..HS-13 en `operator/procedure.md`, paquete `disposition/return-package.md`):
+- AutoCAD lo operó la sesión con la excepción de la disposición, solo para aa47. Una sola llamada de apertura, con acad = 0.
+- **Preflight** 07:05:58Z, código 0. **BASELINE** código 0, CanonicalSha256 `0d8b9edd9727f08f86aac404068943862902e4ca08556b32cd3a2d86260fa237`.
+- **Guarda:**
+  - REGISTER 1; CHECK HS-04, HS-06, HS-08 y PRE-CLOSE en PASS; CLOSED PASS a las 07:13:12Z.
+  - La vigilancia tiene una sola línea de conjunto (`[39252@…]`) y la línea STOP de la salida (`process/acad-watch.log`, sin tocar).
+- **Inspección de la PID:** `process/inspect-after-netload.txt` y `process/inspect-after-rackpanel.txt`, PASS.
+- **POST** código 0, CanonicalSha256 `868314830540d23c51eea854405a3da7eb1611dbc619473283343e758919c1a8`.
+- **DIFF CLEAN**, código 0: removed 1, changed 1, allowed 2 (`XCOMPARELASTCLEANTIME` y `VIEWBACKSTATUS`, R-A-03).
+- **Registros:** sin paquete en `logs/no-package.txt`; dibujos en `logs/fixtures.txt`; RackLog en `logs/racklog-checks.txt`.
+
+**Desviación de herramientas del POST** (precisión de esta custodia; el paquete no se reescribe):
+- **Negativa:** `console/post-pg6-refusal.txt`. `kit/owner-post.ps1` (`20CB9832…6AF7`) salió con código 1 sin escribir nada.
+- **Variante:** `kit/owner-post-after-watch-stop.ps1` (`8753132E…C36F`). Frente al helper normal cambian **dos líneas, las dos de PG-6**:
+  - la que vetaba el POST con `exit 1` ahora lista las líneas STOP y sigue;
+  - el texto del mensaje de estado de PG-6.
+- **Recuento:**
+  - `kit/generation-record-post.txt` registra dos sustituciones contadas («1 x … comprobación PG-6 …; 1 x mensaje PG-6»).
+  - El paquete de vuelta y `logs/watch-stop-analysis.md` dicen «una sola sustitución» porque se refieren a la comprobación. La segunda solo cambia el texto impreso.
+- **Lo que no cambia:** alcance de captura, campos, valores, comparación T3C y host.
+  - Comprobable: la orden de captura de `console/post.txt` es igual a la de `console/baseline.txt` salvo `-Phase`.
+
+**Falso positivo de la guarda, reproducido:**
+- Análisis en `logs/watch-stop-analysis.md`.
+- Sonda `logs/teardown_probe.ps1` (`C7B0CF22…43E0`): copiada al run después de la ocurrencia desde el scratchpad, sin cambios.
+- Salida en `logs/teardown-probe-output.txt` (PING.EXE): con Id e inicio legibles y la ruta vacía en 8 de 3281 muestras y en 8 de 2945.
+- No se midió sobre la propia `acad.exe`.
+
+**P-01** (`I-64-pilot/P01-CONFIG/C20261108T065112Z/`):
+- **Inventario** en `config-inventory.json` y `config-inventory.txt`:
+  - solo nombres, 104;
+  - lista ordenada con SHA-256 `EB8775C5…F820`;
+  - los 12 `[projects.*]` redactados como `[projects.<redactado>]`, con un SHA-256 por nombre.
+- `owner-acceptance.md`: «Acepto 377D0C3C (vía B)», literal.
+- `config-at-acceptance.json`: medición de las 06:57:42Z.
+- `p01-cleared-report.md`: informe al Coordinator.
+- **Instantáneas aceptadas:** A `73890CA3…`, B `64BEEBC7…`, C `F909F480…` (105 nombres) y **D `377D0C3C…D1E8` (104 nombres)**. Cualquier otro hash = P-01 activo de nuevo.
+- `config.toml` se volvió a medir al preparar esta custodia: D, sin cambios (última escritura 2026-11-07T18:09:47Z).
+
+**Custodia** (con `custody-manifest.json` por unidad):
+
+| Unidad | CUSTODIED | EXCLUDED |
+|---|---|---|
+| `POST-I65-HOST-SANITY/R20261108T065253Z-aa47` | 66 | 171 |
+| `P01-CONFIG/C20261108T065112Z` | 5 | 0 |
+
+- **Excluidos** (con SHA-256 y motivo), 171 en total:
+  - 156 salidas sintéticas de la autoprueba de T3C;
+  - 2 compañeros locales de las capturas;
+  - 3 JSON crudos de HOST-EXTRAS;
+  - 8 duplicados ya custodiados: 5 herramientas del kit, `selftest-result.txt`, `watch-stop.flag` y `HS-08-palette.png`, que es igual a `HS-06-palette.png`;
+  - 2 capturas con ruta local.
+- **Capturas con ruta local** (`operator/screens-redacted/redaction-record.md`):
+  - `HS-03-aviso-seguridad-palette.png`: perfil de usuario y worktree en «Location:»;
+  - `HS-06-cmdline.png`: respuesta de `DWGPREFIX`.
+  - Las dos van solo por SHA-256. Se custodian copias derivadas con esa línea tapada: SUPPORTING / DERIVED, NOT ORIGINAL CAPTURE.
+- **Imágenes revisadas:** las 5 custodiadas (`HS-06-palette`, `HS-07-un-rack-palette`, `HS-08-cmdline` y las dos derivadas) se abrieron una a una. Muestran la paleta, la línea de órdenes o el aviso de seguridad, sin contenido de sesión ni rutas.
+- **Añadidos al run después de la ocurrencia:** la revisión literal del Coordinator, la sonda, las copias derivadas y su registro.
+- **Redacciones registradas en los manifiestos:**
+  - worktree, carpeta de AutoCAD 2025, unidad local, carpetas de I-52 y de I-65, y System32;
+  - nombres de otras aplicaciones en la lista de ventanas.
+- CRLF custodiado en LF, con el SHA-256 original.
+
+**Límites:**
+- Solo documentación y evidencia. `src/`, `tests/` y los archivos de proyecto son los de `3f5c7014`; el DLL no se recompiló.
+- Sin F2, sin AutoCAD después de aa47, sin invocaciones de modelos y sin merge ni rebase de `main`.
+- Perfil, registro, TRUSTEDPATHS, SECURELOAD, AssemblyMap y ACL sin tocar; `config.toml` sin modificar.
+
+**Siguiente:**
+1. CI por SHA exacto de este commit.
+2. Reanudar I-64 en F2 bajo el workflow existente. F2 = Context Navigation (Proposal V5 §11), con Smoke-NAV tras F2 PASS.
+3. El contrato de gate de F2 lo redacta el Coordinator (AUTOMATION_PLAN 16.5), antes de cualquier delegación o invocación de modelo.
+
+**Relevos:**
+- Sin invocaciones de modelos.
+- Mensajes a «I - 52»:
+  - `29778a23…`, recheck previo. Su lectura dice 07:02:58Z, la hora que declara I-52, 6 s antes del registro de envío de la petición (07:03:03Z).
+  - `dbc49249…`, aviso de cierre y recheck posterior.
+- HEAD = remoto = `53683249` antes de este commit; `main` `a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60`, sin cambios.

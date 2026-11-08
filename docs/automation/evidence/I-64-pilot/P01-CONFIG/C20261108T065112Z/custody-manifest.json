@@ -1,0 +1,43 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Subject": "P-01: inventario de config.toml aceptado como SNAPSHOT D (377D0C3C, 104 nombres; aceptacion del Owner via B y disposicion del Coordinator)",
+  "Unit": "C20261108T065112Z",
+  "SourceRoot": "artifacts/orchestration/I-64/P01-CONFIG/C20261108T065112Z",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; companeros locales y registros con rutas solo por SHA-256; duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original; imagenes byte a byte, revisadas una a una; capturas con una ruta local solo por SHA-256, con copia derivada redactada (operator/screens-redacted/ = SUPPORTING / DERIVED, NOT ORIGINAL CAPTURE)",
+  "Counts": {
+    "CUSTODIED": 5,
+    "EXCLUDED": 0
+  },
+  "Files": [
+    {
+      "Path": "config-at-acceptance.json",
+      "Bytes": 685,
+      "Sha256": "f0fc96e61235f22e0530d66b10362ca555f47631cf167040a62713b1c84540d0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-inventory.json",
+      "Bytes": 22628,
+      "Sha256": "595ce5e11362411fe6106946ff2368e7b43f09dc9a48f6af3d177206ff0bd7cb",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-inventory.txt",
+      "Bytes": 3263,
+      "Sha256": "84b9ce1f32c6d49484c341af23dbf1264f8392cb9519f3e3053b0970044bca5e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "owner-acceptance.md",
+      "Bytes": 1872,
+      "Sha256": "9d4503189022d0a068c985f816f7831a91bf6507dae182f6cadfac24856beb3d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "p01-cleared-report.md",
+      "Bytes": 6624,
+      "Sha256": "27679abd88a0c84e598c5a21f56e34b16e6181d5871c55cad79a9a2943f88e24",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

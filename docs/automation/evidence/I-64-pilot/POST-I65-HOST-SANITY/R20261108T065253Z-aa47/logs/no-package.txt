@@ -1,0 +1,8 @@
+no-package (solo lectura) UTC 2026-11-08T07:12:06.2213387Z; inicio de la PID 2026-11-08T07:06:56.3271404Z; acad=1; RAMElements=0
+  archivos de paquete o temporales *.tmp-* escritos desde el inicio de la PID: 0
+  carpetas nuevas en <unidad-local>\ y <unidad-local>\Dibujos desde el inicio de la PID: 0
+  RESULTADO: ningun paquete, ninguna carpeta nueva, sin RAM Elements
+no-package (solo lectura) UTC 2026-11-08T07:13:15.9673991Z; inicio de la PID 2026-11-08T07:06:56.3271404Z; acad=0; RAMElements=0
+  archivos de paquete o temporales *.tmp-* escritos desde el inicio de la PID: 0
+  carpetas nuevas en <unidad-local>\ y <unidad-local>\Dibujos desde el inicio de la PID: 0
+  RESULTADO: ningun paquete, ninguna carpeta nueva, sin RAM Elements

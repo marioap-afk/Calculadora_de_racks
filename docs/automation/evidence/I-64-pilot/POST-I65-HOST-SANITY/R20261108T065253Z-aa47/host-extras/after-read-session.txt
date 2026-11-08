@@ -1,0 +1,14 @@
+Lectura posterior UTC 2026-11-08T07:15:14.6810624Z; acad = 0; RAM = 0
+DIFF: Disposition=CLEAN PaletteKeyAcceptance=NOT_RECORDED
+  Entries: {"Id":"V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Variables|*XCOMPARELASTCLEANTIME","Change":"CHANGED","Class":"ALLOWED","Rule":"R-A-03","Baseline":"String|19|52dd517bec8e323f6f1f547d874815ce4842d748b3f798d8f98cdc2b1c1a2ace","Post":"String|19|7dc1e1d17ec7d42fc95fa06360e8f46147c4024e78fc54f4f13bd696e06358e7"}
+  Entries: {"Id":"V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Variables|VIEWBACKSTATUS","Change":"REMOVED","Class":"ALLOWED","Rule":"R-A-03","Baseline":"String|1|6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b","Post":null}
+--- vigilancia (ultimas lineas)
+2026-11-08T07:07:20.4330878Z WATCH inicio: AUTHORIZED_AUTOCAD_PID 39252 (ticks de inicio 639297184163271404); intervalo 1000 ms
+2026-11-08T07:07:20.5312647Z procesos acad = [39252@2026-11-08T07:06:56.3271404Z]
+2026-11-08T07:13:05.2044435Z WATCH STOP: otra instancia 39252@2026-11-08T07:06:56.3271404Z
+lineas STOP en la vigilancia = 1
+--- LastWrite de las claves de carga
+  Applications LW 2026-11-07T19:04:59.935Z; RackCad = 0
+  Loaded LW 2026-10-30T21:44:52.708Z; RackCad = 0
+  InstalledApplications LW 2025-10-27T15:44:06.180Z; RackCad = 0
+  AssemblyMap LW 2026-11-02T19:54:39.812Z; RackCad = 0

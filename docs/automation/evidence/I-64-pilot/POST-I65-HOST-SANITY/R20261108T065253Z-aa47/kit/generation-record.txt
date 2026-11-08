@@ -1,0 +1,33 @@
+generacion del kit de R20261108T065253Z-aa47 (POST-I65 HOST SANITY CHECK) UTC 2026-11-08T06:52:53.9622311Z desde el kit de R20261107T171052Z-6862
+  owner-preflight-baseline.ps1 : 1 x sustitucion [139 -> 148 caracteres] I-64 Smoke-1, RunId R20261107T171052Z-6862 (Candidato cc7503e3 reutilizado sin recompilar, producto C2 0e0d536b; HEAD = custodia 1917bc19):
+  owner-preflight-baseline.ps1 : 1 x sustitucion [89 -> 43 caracteres] ejecutado por la SESION (operador autorizado bajo OPERATOR_EXCEPTION) con AutoCAD cerrado
+  owner-preflight-baseline.ps1 : 1 x sustitucion [31 -> 31 caracteres] arbol limpio, HEAD = 1917bc19 y
+  owner-preflight-baseline.ps1 : 1 x sustitucion [136 -> 135 caracteres] Candidato probado (sin delta en src/, tests/ ni archivos de proyecto desde cc7503e3; identidad cc7503e3 estampada en el DLL; SHA exacto)
+  owner-preflight-baseline.ps1 : 1 x sustitucion [33 -> 33 caracteres] $RunId = 'R20261107T171052Z-6862'
+  owner-preflight-baseline.ps1 : 1 x sustitucion [55 -> 55 caracteres] $Candidate = 'cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6'
+  owner-preflight-baseline.ps1 : 1 x sustitucion [76 -> 76 caracteres] $DllSha = '3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0'
+  owner-preflight-baseline.ps1 : 1 x sustitucion [58 -> 58 caracteres] $HeadExpected = '1917bc19e11e0fa09f4484956794825ba960098a'
+  owner-preflight-baseline.ps1 : 1 x sustitucion [22 -> 32 caracteres] I-64\F1-SMOKE-1\$RunId
+  owner-preflight-baseline.ps1 : 1 x sustitucion [128 -> 143 caracteres] # 2. arbol limpio; HEAD = custodia 1917bc19 (NO se exige HEAD = Candidato); prueba del Candidato reutilizado (autorizacion 6862)
+owner-preflight-baseline.ps1 origen A26B3D2308CBD5675254EAA70E7043CF65F90A301C1AB63D33259499157E432F -> destino 095523C95CB7D7601F394210ABDC8508C451AF68F907F618529BC5B5DC640A5F
+  owner-post.ps1 : 1 x sustitucion [43 -> 62 caracteres] I-64 Smoke-1, RunId R20261107T171052Z-6862:
+  owner-post.ps1 : 1 x sustitucion [44 -> 23 caracteres] ejecutado por la SESION (OPERATOR_EXCEPTION)
+  owner-post.ps1 : 1 x sustitucion [33 -> 33 caracteres] $RunId = 'R20261107T171052Z-6862'
+  owner-post.ps1 : 1 x sustitucion [22 -> 32 caracteres] I-64\F1-SMOKE-1\$RunId
+owner-post.ps1 origen 31481683B5E3B3C6E103EFFEB1BA6F42FFFE025A1300A8ECB2DC52A8567DA94A -> destino 20CB9832863C670AAEF70B836334E570203E9F8392FFFF09B96A8308EF666AF7
+  Capture-HostExtras.ps1 : 1 x sustitucion [43 -> 62 caracteres] I-64 Smoke-1, RunId R20261107T171052Z-6862:
+  Capture-HostExtras.ps1 : 1 x sustitucion [46 -> 60 caracteres] (COORDINATOR FULL SMOKE-1 AUTHORIZATION, 6862)
+  Capture-HostExtras.ps1 : 1 x sustitucion [33 -> 33 caracteres] $RunId = 'R20261107T171052Z-6862'
+Capture-HostExtras.ps1 origen DDB3FF4D7D2AFA096BC900F9EB28268F47655C31135C9F28C5AA715F70F3D25D -> destino 30BC62616925CFE8D0C26B770DC447852FBCB4522CA839C1D10FA38EF56033E5
+  compare_host_extras.py : 1 x sustitucion [43 -> 62 caracteres] I-64 Smoke-1, RunId R20261107T171052Z-6862:
+compare_host_extras.py origen F0DC909D1513DCA9196342AD36534C9B5D1A219D46140753B626ADFF0737978C -> destino 27AB114F7CB839246CE79631D658A252A3410BDA23F44789EC3B35292D20B5D8
+  Inspect-LoadedRackCad.ps1 : 1 x sustitucion [64 -> 64 caracteres] 3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0
+  Inspect-LoadedRackCad.ps1 : 1 x sustitucion [64 -> 64 caracteres] 12B8E237F70596FA2F8030D66E51CC54F410A8906CB78B61A4056873058E27B3
+  Inspect-LoadedRackCad.ps1 : 1 x sustitucion [64 -> 64 caracteres] BFAA59433E5681A0F1453A765AE37B50ED2381993AFDE82628CCBDA7F8773959
+  Inspect-LoadedRackCad.ps1 : 1 x sustitucion [64 -> 64 caracteres] 363AE9FE436AAE7A1DAE7E5394D86D7EF0C6C6D137943BD594BC15340CBC76E1
+Inspect-LoadedRackCad.ps1 origen 86985EC90F4591806391F70257DE2B2CCBD0CFC096EB34B33117DF63E413E5AB -> destino 97EBA543A159CF82EC271DDD2D6FAD0A90027629B91E03CB9F43ACE3D53D0CFD
+Test-AcadProcessGuard.ps1 copia identica del kit de 6862 736463BD3EF607A5C61530ACCBE385E9C799BD9A1FDF72107CEF1B76CB76E3A4
+Save-ScreenRegion.ps1 copia identica del kit de 6862 61983D32CE96DFFE54BF26629E63511BEC4A3C93E507B895AC9BB38AEB576CDF
+Test-CapturePrecheck.ps1 copia identica del kit de 6862 122D634F84CDA509A8D968D4F6862346524AC2CEF3C7A73A7C7D14731FD08380
+Read-AcadWindowPosition.ps1 copia identica del kit de 6862 5CC96E9022A787158BE2E04CFE55F5CB5AC143C64B3E89D475E5FA08A353008F
+List-TopWindows.ps1 copia identica del kit de 6862 5C709C4690B0EE485327519C95AD6258B66D5CE42A93A62048F96B2C7D3EA4E7

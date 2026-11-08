@@ -1,0 +1,812 @@
+{
+ "Schema": "rackcad-i64-config-inventory/v1",
+ "Purpose": "P-01 via B: inventario completo para revision; NO es una instantanea aceptada (no hay instantanea D hasta la aceptacion explicita del Owner)",
+ "CapturedUtc": "2026-11-08T06:51:12Z",
+ "ConfigSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+ "Bytes": 4887,
+ "LastWriteUtc": "2026-11-07T18:09:47Z",
+ "Method": "mismo extractor de nombres que ConfigTomlKeys de las instantaneas A/B/C; sin valores",
+ "NameCount": 104,
+ "OrderedNamesSha256": "EB8775C5F9B3CC5C15031ED064391FFE000AB4A7220360C04F2F89D83D49F820",
+ "RedactedCount": 12,
+ "ComparedToA": {
+  "NameCountA": 105,
+  "SameTableCountAsA": false
+ },
+ "Entries": [
+  {
+   "Pos": 1,
+   "Kind": "key",
+   "Table": "(raiz)",
+   "Name": "model",
+   "Redacted": false,
+   "NameSha256": "9372C470EEADD5ECD9C3C74C2B3CB633F8E2F2FAD799250A0F70D652B6B825E4"
+  },
+  {
+   "Pos": 2,
+   "Kind": "key",
+   "Table": "(raiz)",
+   "Name": "model_reasoning_effort",
+   "Redacted": false,
+   "NameSha256": "8EE8881E53B6F1585AC4C15D23AC1C7EF902C68D875EFAC677F5B1704861EB68"
+  },
+  {
+   "Pos": 3,
+   "Kind": "key",
+   "Table": "(raiz)",
+   "Name": "service_tier",
+   "Redacted": false,
+   "NameSha256": "38D6C50E42E1C73E7ADE6B4E3D82D1F222176938BE42D8549CCF7F31B6F7DB4C"
+  },
+  {
+   "Pos": 4,
+   "Kind": "key",
+   "Table": "(raiz)",
+   "Name": "notify",
+   "Redacted": false,
+   "NameSha256": "6CD6F41455D78245F1295895838DD1EC14449565A9A8C1C8EA43CB35B592E3AB"
+  },
+  {
+   "Pos": 5,
+   "Kind": "table",
+   "Name": "[windows]",
+   "Redacted": false,
+   "NameSha256": "BA4A9496697904D8D81C55E0338BB0CEFDD3C00793D98C2F9850DD00C1293784"
+  },
+  {
+   "Pos": 6,
+   "Kind": "key",
+   "Table": "[windows]",
+   "Name": "sandbox",
+   "Redacted": false,
+   "NameSha256": "B7AD567477C83756AAB9A542B2BE04F77DBAE25115D85F22070D74D8CC4779DC"
+  },
+  {
+   "Pos": 7,
+   "Kind": "table",
+   "Name": "[desktop]",
+   "Redacted": false,
+   "NameSha256": "DE07E29F98CAA2027D4FDB27EB4436326107C6769684FC7657655AD97093908C"
+  },
+  {
+   "Pos": 8,
+   "Kind": "key",
+   "Table": "[desktop]",
+   "Name": "keepRemoteControlAwakeWhilePluggedIn",
+   "Redacted": false,
+   "NameSha256": "15264C30D1541C07277B284F28002C8C3A588CED15EA569FBED3F3368FEF284D"
+  },
+  {
+   "Pos": 9,
+   "Kind": "key",
+   "Table": "[desktop]",
+   "Name": "reviewDelivery",
+   "Redacted": false,
+   "NameSha256": "8BBC863E62C8CA985FBB2BBEFFF4573C93C0D933A9615A370F176E7C55DE6D37"
+  },
+  {
+   "Pos": 10,
+   "Kind": "key",
+   "Table": "[desktop]",
+   "Name": "conversationDetailMode",
+   "Redacted": false,
+   "NameSha256": "24A48F110284C441CB087A9BB901916DCF42E02AC5F8988A38ECB05B1B18F4B5"
+  },
+  {
+   "Pos": 11,
+   "Kind": "key",
+   "Table": "[desktop]",
+   "Name": "ambient-suggestions-enabled",
+   "Redacted": false,
+   "NameSha256": "91C2C0D1D0DD2A2F60C297349A5368B1A1CF0B0778D4339FF6412E02FCB4C765"
+  },
+  {
+   "Pos": 12,
+   "Kind": "key",
+   "Table": "[desktop]",
+   "Name": "migratedFollowUpQueueToSteer",
+   "Redacted": false,
+   "NameSha256": "EA426FEDC62A5CC812D7751111F8A43415A1F08494F7849860D9A4DE12C29E63"
+  },
+  {
+   "Pos": 13,
+   "Kind": "table",
+   "Name": "[desktop.open-in-target-preferences]",
+   "Redacted": false,
+   "NameSha256": "6F07205D2E3F4E889545458D44086D8749941173502B689F8030E3A33EB50B25"
+  },
+  {
+   "Pos": 14,
+   "Kind": "key",
+   "Table": "[desktop.open-in-target-preferences]",
+   "Name": "global",
+   "Redacted": false,
+   "NameSha256": "8001C27439650C5C5A6B4ED94163B5DDEB4476362C71380E613FA20DFFFCEF50"
+  },
+  {
+   "Pos": 15,
+   "Kind": "table",
+   "Name": "[desktop.open-in-target-preferences.perPath]",
+   "Redacted": false,
+   "NameSha256": "A020D4030B7793D19C3C49698F6144E52C3CBA756227B3B428A32CD911CEA45E"
+  },
+  {
+   "Pos": 16,
+   "Kind": "table",
+   "Name": "[marketplaces.openai-bundled]",
+   "Redacted": false,
+   "NameSha256": "04FF7C3468680085CF73AF5874BCD958798772D1A9709D39DA69C6DCDA30F694"
+  },
+  {
+   "Pos": 17,
+   "Kind": "key",
+   "Table": "[marketplaces.openai-bundled]",
+   "Name": "source_type",
+   "Redacted": false,
+   "NameSha256": "70369CACA4D85DF35385C66CBA1454932F082856963C08216497FF468DFB25BD"
+  },
+  {
+   "Pos": 18,
+   "Kind": "key",
+   "Table": "[marketplaces.openai-bundled]",
+   "Name": "source",
+   "Redacted": false,
+   "NameSha256": "41CF6794BA4200B839C53531555F0F3998DF4CBB01A4D5CB0B94E3CA5E23947D"
+  },
+  {
+   "Pos": 19,
+   "Kind": "table",
+   "Name": "[marketplaces.openai-primary-runtime]",
+   "Redacted": false,
+   "NameSha256": "841A38EFC1D0329459937585D554FD5821C9A2099A437843299DA29F1D4D5373"
+  },
+  {
+   "Pos": 20,
+   "Kind": "key",
+   "Table": "[marketplaces.openai-primary-runtime]",
+   "Name": "source_type",
+   "Redacted": false,
+   "NameSha256": "70369CACA4D85DF35385C66CBA1454932F082856963C08216497FF468DFB25BD"
+  },
+  {
+   "Pos": 21,
+   "Kind": "key",
+   "Table": "[marketplaces.openai-primary-runtime]",
+   "Name": "source",
+   "Redacted": false,
+   "NameSha256": "41CF6794BA4200B839C53531555F0F3998DF4CBB01A4D5CB0B94E3CA5E23947D"
+  },
+  {
+   "Pos": 22,
+   "Kind": "table",
+   "Name": "[plugins.\"documents@openai-primary-runtime\"]",
+   "Redacted": false,
+   "NameSha256": "23767CDFA5A595DC76B4A27AF6FF69C22C9F82B8090B0480AE5074774BC4E245"
+  },
+  {
+   "Pos": 23,
+   "Kind": "key",
+   "Table": "[plugins.\"documents@openai-primary-runtime\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 24,
+   "Kind": "table",
+   "Name": "[plugins.\"spreadsheets@openai-primary-runtime\"]",
+   "Redacted": false,
+   "NameSha256": "69122C8AF9C715AEFF890AC296661EF5248A382066F62010B7BF8C31CE87EFB0"
+  },
+  {
+   "Pos": 25,
+   "Kind": "key",
+   "Table": "[plugins.\"spreadsheets@openai-primary-runtime\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 26,
+   "Kind": "table",
+   "Name": "[plugins.\"presentations@openai-primary-runtime\"]",
+   "Redacted": false,
+   "NameSha256": "976591CCCB7F592C1BFD7EC4FF0B23FD819A6F8AB4DF384E393D90DD954AA4EC"
+  },
+  {
+   "Pos": 27,
+   "Kind": "key",
+   "Table": "[plugins.\"presentations@openai-primary-runtime\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 28,
+   "Kind": "table",
+   "Name": "[plugins.\"outlook-email@openai-curated\"]",
+   "Redacted": false,
+   "NameSha256": "DD3AB67F1329C81C6B83EC7DCE2F481839131DE31B23C50C9F4454756BBABFF2"
+  },
+  {
+   "Pos": 29,
+   "Kind": "key",
+   "Table": "[plugins.\"outlook-email@openai-curated\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 30,
+   "Kind": "table",
+   "Name": "[plugins.\"github@openai-curated\"]",
+   "Redacted": false,
+   "NameSha256": "25FE8A4637E7B0DAF21F07D3F360959A436B1E02E5AE2BEB563548FAA37A06C9"
+  },
+  {
+   "Pos": 31,
+   "Kind": "key",
+   "Table": "[plugins.\"github@openai-curated\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 32,
+   "Kind": "table",
+   "Name": "[plugins.\"pdf@openai-primary-runtime\"]",
+   "Redacted": false,
+   "NameSha256": "CEA378C38834EA0F1D9D0AA7AC0E94F489675991E1A637484FFC8403F25D00B9"
+  },
+  {
+   "Pos": 33,
+   "Kind": "key",
+   "Table": "[plugins.\"pdf@openai-primary-runtime\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 34,
+   "Kind": "table",
+   "Name": "[plugins.\"template-creator@openai-primary-runtime\"]",
+   "Redacted": false,
+   "NameSha256": "F0D7992E146D9238D00616973F515287AC476D1C65A91C7A8AB8B0A5F549A9C6"
+  },
+  {
+   "Pos": 35,
+   "Kind": "key",
+   "Table": "[plugins.\"template-creator@openai-primary-runtime\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 36,
+   "Kind": "table",
+   "Name": "[plugins.\"visualize@openai-bundled\"]",
+   "Redacted": false,
+   "NameSha256": "2F16B30720FCA2237F329BA0C62A9FDFBB16AFCD14BC723E6EF1625425B3AE0A"
+  },
+  {
+   "Pos": 37,
+   "Kind": "key",
+   "Table": "[plugins.\"visualize@openai-bundled\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 38,
+   "Kind": "table",
+   "Name": "[plugins.\"chrome@openai-bundled\"]",
+   "Redacted": false,
+   "NameSha256": "45CFC8D0CC630BCA62EA2D90E5D037602A0516F0315DDF4E93608F62B73EB2B3"
+  },
+  {
+   "Pos": 39,
+   "Kind": "key",
+   "Table": "[plugins.\"chrome@openai-bundled\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 40,
+   "Kind": "table",
+   "Name": "[plugins.\"browser@openai-bundled\"]",
+   "Redacted": false,
+   "NameSha256": "A48E8FFD1A07FE7724843D6FF7A73D5B404C7B7E5B1D3623BEE12D0F63B5D842"
+  },
+  {
+   "Pos": 41,
+   "Kind": "key",
+   "Table": "[plugins.\"browser@openai-bundled\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 42,
+   "Kind": "table",
+   "Name": "[plugins.\"outlook-calendar@openai-curated\"]",
+   "Redacted": false,
+   "NameSha256": "6E875A6ED55D743E82019C12755FEC17A412B8B4C15ADCD0D76739D8597CF765"
+  },
+  {
+   "Pos": 43,
+   "Kind": "key",
+   "Table": "[plugins.\"outlook-calendar@openai-curated\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 44,
+   "Kind": "table",
+   "Name": "[plugins.\"teams@openai-curated\"]",
+   "Redacted": false,
+   "NameSha256": "55DDDDE011D8A998F297FE4C47311ED08E41FC5A1B069A53AF22483B36CE57B8"
+  },
+  {
+   "Pos": 45,
+   "Kind": "key",
+   "Table": "[plugins.\"teams@openai-curated\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 46,
+   "Kind": "table",
+   "Name": "[plugins.\"codex-app-tools@openai-bundled\"]",
+   "Redacted": false,
+   "NameSha256": "58F40705DD7763BEECC9D4AC2AD213778BDEA6F74B3F257BF263F50B6134CDCF"
+  },
+  {
+   "Pos": 47,
+   "Kind": "key",
+   "Table": "[plugins.\"codex-app-tools@openai-bundled\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 48,
+   "Kind": "table",
+   "Name": "[plugins.\"unified-computer-use@openai-bundled\"]",
+   "Redacted": false,
+   "NameSha256": "D61B8CBFC33DA38CF6764DEE621B6B4B30D6D3AA469C0A8884B7329F9601B538"
+  },
+  {
+   "Pos": 49,
+   "Kind": "key",
+   "Table": "[plugins.\"unified-computer-use@openai-bundled\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 50,
+   "Kind": "table",
+   "Name": "[plugins.\"computer-use@openai-bundled\"]",
+   "Redacted": false,
+   "NameSha256": "D2A578E40E38688C47D101A8C30698268CFAEF7E5F71C4A1764EF415BFB5F477"
+  },
+  {
+   "Pos": 51,
+   "Kind": "key",
+   "Table": "[plugins.\"computer-use@openai-bundled\"]",
+   "Name": "enabled",
+   "Redacted": false,
+   "NameSha256": "FB9CF75606B4070DD6A9705810906BBA28D0E2EA74FF301B999A91DBB68C7D98"
+  },
+  {
+   "Pos": 52,
+   "Kind": "table",
+   "Name": "[features]",
+   "Redacted": false,
+   "NameSha256": "52A07599F56F2C5D021C4E84446BB2F7C62D14EDD05BAD7791F16939AF0E05E0"
+  },
+  {
+   "Pos": 53,
+   "Kind": "key",
+   "Table": "[features]",
+   "Name": "js_repl",
+   "Redacted": false,
+   "NameSha256": "E54DA8A4FC61FABB10FD839B1B81B84BBDF46BC9488FEE36D96B6996A22D5C05"
+  },
+  {
+   "Pos": 54,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "D066726F8B9BC87135F724550E53861C217D30CB06A6385B7219D2C378073209"
+  },
+  {
+   "Pos": 55,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 56,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "0CD6E455AA203425592691E42D8123534D0A5ECBCCB1617AAB9E6A327E4918F9"
+  },
+  {
+   "Pos": 57,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 58,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "402E72A74C7385CB63386D942A030F47A71B823E8169FAF62A5040A021BE56F9"
+  },
+  {
+   "Pos": 59,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 60,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "0D2C15800DAD65F13D4A2105301FE51E01591EE74B0D599546B96791B4196F51"
+  },
+  {
+   "Pos": 61,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 62,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "221C9282C10E8A7332DEEA2C53DC0EE1BEA04FB51BEE8DD82FD436343C05A753"
+  },
+  {
+   "Pos": 63,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 64,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "B8DCC9F850FCAADA569BA167FFE37C79B3424DB7EF8EC16D2221A0DDFE454CD3"
+  },
+  {
+   "Pos": 65,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 66,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "50DECD362D4CDE9A52BA37A640B0ACF56CEFA58C29369970445CA2CC937DA984"
+  },
+  {
+   "Pos": 67,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 68,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "751BAA5D1F7175DD3A2EF2EA881D25948335C1709B528A2ADAC529D3A5DB1DC0"
+  },
+  {
+   "Pos": 69,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 70,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "DDAC8E89571FDE23C0BEE1178168E70CAE4AAC252380885B895BE8350CEB14DE"
+  },
+  {
+   "Pos": 71,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 72,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "1A0FE74D6733B09EB9AD5625612440BE6F07C0068A7E63E672C6586347FDF855"
+  },
+  {
+   "Pos": 73,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 74,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "838BA3C1730CD684356F908E815D3745ADAD599F7CADE007C3FA816708200EFC"
+  },
+  {
+   "Pos": 75,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 76,
+   "Kind": "table",
+   "Name": "[projects.<redactado>]",
+   "Redacted": true,
+   "NameSha256": "FF53C5C5A19D1C7F975DAE4FA70145FC1AAC5C8171516E2F0F412EDCEA565509"
+  },
+  {
+   "Pos": 77,
+   "Kind": "key",
+   "Table": "[projects.<redactado>]",
+   "Name": "trust_level",
+   "Redacted": false,
+   "NameSha256": "748C3DEDBFCE3BF94B8926EDD4AE1ADF472306AD6EC830B9232C1D79966CFEB8"
+  },
+  {
+   "Pos": 78,
+   "Kind": "table",
+   "Name": "[mcp_servers.node_repl]",
+   "Redacted": false,
+   "NameSha256": "987315B2EA4DD327E93929F22BAAB7B815B333FB7F8AB2DEE184599E79452AE4"
+  },
+  {
+   "Pos": 79,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl]",
+   "Name": "args",
+   "Redacted": false,
+   "NameSha256": "090772CF4068973DAAD3F715EB788D39FE2C02BE42EFD86DE81F0E59198D6237"
+  },
+  {
+   "Pos": 80,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl]",
+   "Name": "command",
+   "Redacted": false,
+   "NameSha256": "5D347FD948B66308F502C3F65C8F7E12FF1C5CF8C760BCDFB188AE1EC7B8B618"
+  },
+  {
+   "Pos": 81,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl]",
+   "Name": "env_vars",
+   "Redacted": false,
+   "NameSha256": "2C5E6F869A070DAA21887A75B5EE381CABD10A3A324EC1A1CB5A19199796B141"
+  },
+  {
+   "Pos": 82,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl]",
+   "Name": "startup_timeout_sec",
+   "Redacted": false,
+   "NameSha256": "8C12E4659A1E081205FC81F186DE383E8C077EB728F17CFC3E56BBB40F16D1B0"
+  },
+  {
+   "Pos": 83,
+   "Kind": "table",
+   "Name": "[mcp_servers.node_repl.env]",
+   "Redacted": false,
+   "NameSha256": "3A8836CF58250BDDC5115F7D56CBA22FFA459595B7DFD1D6BF24EC87226FF057"
+  },
+  {
+   "Pos": 84,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+   "Redacted": false,
+   "NameSha256": "27CB004607FDABB84D7B35E594DB9FB0834448719B550809239245A917AB0DAB"
+  },
+  {
+   "Pos": 85,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "NODE_REPL_NODE_MODULE_DIRS",
+   "Redacted": false,
+   "NameSha256": "0867095196C1777ED7DD9A0FBF6BFA603ED96D307CD2B375BFF0AF41818BEF35"
+  },
+  {
+   "Pos": 86,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "NODE_REPL_NODE_PATH",
+   "Redacted": false,
+   "NameSha256": "2026BB87C0F8FF4850E31E36FF20BAB41FCBA69A021FF5039AC94F87EF536B18"
+  },
+  {
+   "Pos": 87,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "NODE_REPL_TRUSTED_CODE_PATHS",
+   "Redacted": false,
+   "NameSha256": "082708BC78169C0D6A6F295E43E5D36DC4C9ED30BC56DEE2710D32DC10AC5AFA"
+  },
+  {
+   "Pos": 88,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "CODEX_HOME",
+   "Redacted": false,
+   "NameSha256": "E42413E92F7299D99F407F7E6A53407E7A0F33EB03F637D536D2887846A7AEDD"
+  },
+  {
+   "Pos": 89,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "BROWSER_USE_AVAILABLE_BACKENDS",
+   "Redacted": false,
+   "NameSha256": "FB60B4F86D8473933E4863890244553624DB17AAAEFCA896604E463485C09857"
+  },
+  {
+   "Pos": 90,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "BROWSER_USE_TINYSKY_ENABLED",
+   "Redacted": false,
+   "NameSha256": "A1BC5C0B4314DB2A59A1BB50829428373C244C7FBB09958C83763FE6BBD8B8D4"
+  },
+  {
+   "Pos": 91,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+   "Redacted": false,
+   "NameSha256": "47FD5DB0131273E3A2C02F84EE8DB577100608D0D28E8FC52BDF2D3C9BBDF315"
+  },
+  {
+   "Pos": 92,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+   "Redacted": false,
+   "NameSha256": "211BD37146310E2B2274BC1965BBB3B0A7DBE9929213DB72E7CF32D256AC1E6D"
+  },
+  {
+   "Pos": 93,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+   "Redacted": false,
+   "NameSha256": "D4D9F0D78345667186A8834B595D7E8136141C30F964DDC92F3ABAFA6E41890E"
+  },
+  {
+   "Pos": 94,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "BROWSER_USE_CODEX_APP_VERSION",
+   "Redacted": false,
+   "NameSha256": "06C29155E14544DC5E258F3FE775043187C46F1554826346337CC8544C00A828"
+  },
+  {
+   "Pos": 95,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "NODE_REPL_TRUSTED_SERVICES",
+   "Redacted": false,
+   "NameSha256": "63A22A76A1F81547A67DBA6866F06927D8CF32BCA7FAF8D6A605F71FD4570441"
+  },
+  {
+   "Pos": 96,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "SKY_CUA_NATIVE_PIPE",
+   "Redacted": false,
+   "NameSha256": "8EC09B6EDE3D0873BAE768600D804DE790BC27FDF106964D56F5782D610494F6"
+  },
+  {
+   "Pos": 97,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "SKY_CUA_NATIVE_PIPE_DIRECTORY",
+   "Redacted": false,
+   "NameSha256": "EAEFA890FF8E9B6C1C1FAC9313BC14CFCF675D616BE6A408CDCB12868590450D"
+  },
+  {
+   "Pos": 98,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "CODEX_CLI_PATH",
+   "Redacted": false,
+   "NameSha256": "DD5B1CC9051834ABB9D196A0CF040185BDA7C07E7B9F29106B92EF4F7DCA0F05"
+  },
+  {
+   "Pos": 99,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+   "Redacted": false,
+   "NameSha256": "FA2F5B6D7F6728D262DF16AD93FBBE930D6F0B6527EC8BC46832DB7A48973564"
+  },
+  {
+   "Pos": 100,
+   "Kind": "key",
+   "Table": "[mcp_servers.node_repl.env]",
+   "Name": "NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE",
+   "Redacted": false,
+   "NameSha256": "AD8485BCED4E0E6DA97B04AAF581DBFBF6F47CA4DED9BB907B9ABB76259F1B85"
+  },
+  {
+   "Pos": 101,
+   "Kind": "table",
+   "Name": "[shell_environment_policy.set]",
+   "Redacted": false,
+   "NameSha256": "8E86ED9D5E547416EC721271DC58FC3CA7E5A7381F89660D4D26EF03D00649DF"
+  },
+  {
+   "Pos": 102,
+   "Kind": "key",
+   "Table": "[shell_environment_policy.set]",
+   "Name": "NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+   "Redacted": false,
+   "NameSha256": "E88EC81328885755CC66589F1DB90E30600EFEE3287B7A30D466DCB1B4E2721B"
+  },
+  {
+   "Pos": 103,
+   "Kind": "table",
+   "Name": "[tui]",
+   "Redacted": false,
+   "NameSha256": "91CDBDBD58A3B678218D586F2476D8A8B3198D2CAFBB002D26AA3429CD8ADBE4"
+  },
+  {
+   "Pos": 104,
+   "Kind": "key",
+   "Table": "[tui]",
+   "Name": "screen_reader_detection_done",
+   "Redacted": false,
+   "NameSha256": "F169257BA9D3120E1E798FB591BF02F77719870CCC0527AC5A00C97594B20B67"
+  }
+ ]
+}
