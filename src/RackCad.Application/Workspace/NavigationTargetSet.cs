@@ -50,8 +50,14 @@ namespace RackCad.Application.Workspace
         public bool IsEmpty => Targets.Count == 0;
 
         /// <summary>First target of the deterministic order, or null when there is none.</summary>
-        public NavigationTarget? Primary => null;
+        public NavigationTarget? Primary => Targets.Count == 0 ? null : Targets[0];
 
-        public IReadOnlyList<long> ReferenceHandles() => Array.Empty<long>();
+        /// <summary>Reference handles in the deterministic order of the targets.</summary>
+        public IReadOnlyList<long> ReferenceHandles()
+        {
+            var handles = new long[Targets.Count];
+            for (var i = 0; i < handles.Length; i++) handles[i] = Targets[i].ReferenceHandle;
+            return handles;
+        }
     }
 }
