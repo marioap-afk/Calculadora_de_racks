@@ -320,6 +320,21 @@ namespace RackCad.Tests
             }
         }
 
+        /// <summary>
+        /// Valor dorado medido sobre <c>a140eb3a</c>: un rack sin el defecto, con primer nivel fuera de troquel y una
+        /// pendiente cuyo redondeo cambia segun desde donde se mida. Si la entrada se tomara del troquel mas cercano a la
+        /// nominal, la superior daria 92.6053" y la cabecera 132".
+        /// </summary>
+        [Fact]
+        public void T16_ARackWithoutTheDefect_KeepsItsGoldenGeometry()
+        {
+            var system = new DynamicRackSystemResolver(Catalog).Resolve(H58Design(palletHeight: 60.0, levels: 2, first: 12.0)).System;
+
+            AssertElevations(new[] { 12.6053, 84.6053 }, Exits(system.LoadBeamLevels));
+            AssertElevations(new[] { 18.6053, 90.6053 }, Entrances(system.LoadBeamLevels));
+            Assert.Equal(120.0, system.Fronts[0].Height, 6);
+        }
+
         // ---- T14: limites ------------------------------------------------------------------------------------------
 
         [Theory]
@@ -680,6 +695,31 @@ namespace RackCad.Tests
             var grid = RealGrid(catalog, system);
             Assert.Equal(Nearest(stored, grid.Base, grid.Pitch), system.LoadBeamLevels[0].ExitElevation, 6);
             AssertEveryIntervalIsItsFirstPunch(system.Fronts[0], grid.Base, grid.Pitch);
+        }
+
+        /// <summary>
+        /// La excepcion declarada de D-LEG: abrir en el editor un Push Back sin marcador re-expresa su primer nivel sobre
+        /// el datum nuevo (I-42). El nivel 1 dibujado no se mueve, y los intervalos siguen la regla.
+        /// </summary>
+        [Fact]
+        public void T12_ALegacyPushBackLoadedInTheEditor_KeepsItsFirstLevelAndFollowsTheRule()
+        {
+            var catalog = Catalog;
+            var legacy = H58PushBackDesign();
+            Assert.Null(legacy.Structure.FirstLevelDatum);
+
+            var assembler = new PushBackEditorDesignAssembler(catalog);
+            var before = assembler.Resolver.Resolve(legacy).Structure.Fronts[0].LoadBeamLevels
+                .OrderBy(level => level.LevelNumber).First().ExitElevation;
+
+            var state = new PushBackEditorState();
+            var inputs = state.LoadFromDesign(legacy, assembler.Resolver);
+            var system = assembler.Build(state, inputs).System;
+            var front = system.Structure.Fronts[0];
+
+            Assert.Equal((int)RackFirstLevelDatumMode.LowestUsablePunch, inputs.FirstLevelDatum);
+            Assert.Equal(before, Exits(front.LoadBeamLevels)[0], 6);
+            Assert.Equal(new[] { 46.0, 46.0, 46.0 }, Spacings(Exits(front.LoadBeamLevels)));
         }
 
         // ---- T15: altura ----------------------------------------------------------------------------------------------
