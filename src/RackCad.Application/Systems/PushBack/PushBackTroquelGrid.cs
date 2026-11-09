@@ -48,8 +48,9 @@ namespace RackCad.Application.Systems.PushBack
 
         /// <summary>
         /// Ajusta <paramref name="value"/> al troquel válido más cercano de la retícula. Mismo redondeo que el
-        /// resolver compartido (<c>MidpointRounding.AwayFromZero</c>), para que un valor a mitad de camino entre dos
-        /// troqueles caiga siempre del mismo lado en todo el producto.
+        /// resolver compartido usa para el primer nivel (<c>MidpointRounding.AwayFromZero</c>), para que un valor a mitad
+        /// de camino entre dos troqueles caiga siempre del mismo lado. Los niveles superiores no se ajustan al más
+        /// cercano (I-67).
         /// </summary>
         public static double Snap(double value, double gridBase)
         {

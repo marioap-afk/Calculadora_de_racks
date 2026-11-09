@@ -79,27 +79,18 @@ namespace RackCad.Application.Systems.Dynamic
             double troquelPitch = 0.0,
             RackFirstLevelDatumMode datum = RackFirstLevelDatumMode.LegacyAbsolute)
         {
-            var result = new List<DynamicLoadBeamLevel>();
             if (pallet == null || loadLevels < 1 || beamDepth <= 0.0)
             {
-                return result;
+                return new List<DynamicLoadBeamLevel>();
             }
 
-            var first = RackFirstLevelDatum.RawElevation(
-                firstLevelHeight, datum, troquelGridBase, troquelPitch);
-            var step = beamDepth + pallet.Height + DynamicHeaderHeightCalculator.ClearAllowance;
-            for (var index = 0; index < loadLevels; index++)
-            {
-                var rawExit = first + index * step;
-                var exit = SnapToNearestTroquel(rawExit, troquelGridBase, troquelPitch);
-                var entrance = SnapToNearestTroquel(
-                    rawExit + Math.Max(0.0, slope),
-                    troquelGridBase,
-                    troquelPitch);
-                result.Add(new DynamicLoadBeamLevel(index + 1, exit, entrance));
-            }
-
-            return result;
+            var requirement = beamDepth + pallet.Height + DynamicHeaderHeightCalculator.ClearAllowance;
+            return ResolveElevations(
+                Enumerable.Range(1, loadLevels).Select(number => (number, requirement)).ToList(),
+                RackFirstLevelDatum.RawElevation(firstLevelHeight, datum, troquelGridBase, troquelPitch),
+                slope,
+                troquelGridBase,
+                troquelPitch);
         }
 
         /// <summary>Resolves elevations when pallet height, clear and beam depth vary by level.</summary>
@@ -115,33 +106,64 @@ namespace RackCad.Application.Systems.Dynamic
             double troquelPitch = 0.0,
             RackFirstLevelDatumMode datum = RackFirstLevelDatumMode.LegacyAbsolute)
         {
-            var result = new List<DynamicLoadBeamLevel>();
             if (configurations == null || configurations.Count == 0)
             {
-                return result;
+                return new List<DynamicLoadBeamLevel>();
             }
 
-            var rawExit = RackFirstLevelDatum.RawElevation(
-                firstLevelHeight, datum, troquelGridBase, troquelPitch);
-            foreach (var configuration in configurations.OrderBy(level => level.LevelNumber))
+            return ResolveElevations(
+                configurations
+                    .OrderBy(level => level.LevelNumber)
+                    .Select(level => (level.LevelNumber, level.InOutBeamDepth + level.Pallet.Height + level.ClearHeight))
+                    .ToList(),
+                RackFirstLevelDatum.RawElevation(firstLevelHeight, datum, troquelGridBase, troquelPitch),
+                slope,
+                troquelGridBase,
+                troquelPitch);
+        }
+
+        /// <summary>
+        /// I-67 (H58) — the one routine behind both overloads. Each interval climbs to the first real punch that meets its
+        /// own requirement, measured from the RESOLVED exit of the level below: no theoretical sum survives, so a rounding
+        /// can never eat into the clearance of the next interval. The first level is not an interval, so its exit and its
+        /// entrance keep their historical nearest-punch reading (ADR-0031). Every level keeps the rise the first level
+        /// resolved (Owner decision D-PEND), which keeps the beds parallel and the entrance side as clear as the exit side.
+        /// </summary>
+        private static IReadOnlyList<DynamicLoadBeamLevel> ResolveElevations(
+            IReadOnlyList<(int LevelNumber, double Requirement)> levels,
+            double rawFirst,
+            double slope,
+            double gridBase,
+            double pitch)
+        {
+            var result = new List<DynamicLoadBeamLevel>(levels.Count);
+            var exit = SnapToNearestTroquel(rawFirst, gridBase, pitch);
+            var rise = SnapToNearestTroquel(rawFirst + Math.Max(0.0, slope), gridBase, pitch) - exit;
+
+            foreach (var level in levels)
             {
-                var exit = SnapToNearestTroquel(rawExit, troquelGridBase, troquelPitch);
-                var entrance = SnapToNearestTroquel(
-                    rawExit + Math.Max(0.0, slope),
-                    troquelGridBase,
-                    troquelPitch);
-                result.Add(new DynamicLoadBeamLevel(configuration.LevelNumber, exit, entrance));
-                rawExit += configuration.InOutBeamDepth
-                           + configuration.Pallet.Height
-                           + configuration.ClearHeight;
+                result.Add(new DynamicLoadBeamLevel(
+                    level.LevelNumber,
+                    exit,
+                    SnapToNearestTroquel(exit + rise, gridBase, pitch)));
+                exit = NextExit(exit, level.Requirement, gridBase, pitch);
             }
 
             return result;
         }
 
+        private static double NextExit(double exit, double requirement, double gridBase, double pitch)
+            => HasMeasuredGrid(gridBase, pitch)
+                // Floored at one punch, like the selective separation: a degenerate requirement cannot make levels coincide.
+                ? FirstTroquelAtOrAbove(exit + Math.Max(pitch, requirement), gridBase, pitch)
+                : exit + requirement;
+
+        private static bool HasMeasuredGrid(double gridBase, double pitch)
+            => !double.IsNaN(gridBase) && !double.IsInfinity(gridBase) && pitch > 0.0;
+
         private static double SnapToNearestTroquel(double value, double gridBase, double pitch)
         {
-            if (double.IsNaN(gridBase) || double.IsInfinity(gridBase) || pitch <= 0.0)
+            if (!HasMeasuredGrid(gridBase, pitch))
             {
                 return value;
             }
@@ -149,6 +171,13 @@ namespace RackCad.Application.Systems.Dynamic
             var steps = Math.Round((value - gridBase) / pitch, MidpointRounding.AwayFromZero);
             return gridBase + steps * pitch;
         }
+
+        /// <summary>
+        /// The smallest punch at or above <paramref name="value"/>. The epsilon, in steps, is the one the selective rack
+        /// uses: a value already on a punch stays on it instead of climbing another step because of floating-point noise.
+        /// </summary>
+        private static double FirstTroquelAtOrAbove(double value, double gridBase, double pitch)
+            => gridBase + Math.Ceiling((value - gridBase) / pitch - 1e-9) * pitch;
 
         public static IReadOnlyList<DynamicLoadBeamPlacement> Placements(DynamicRackSystem system)
             => Placements(system, null);

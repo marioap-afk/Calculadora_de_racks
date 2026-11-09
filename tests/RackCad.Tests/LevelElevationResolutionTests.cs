@@ -650,8 +650,15 @@ namespace RackCad.Tests
             return result;
         }
 
+        /// <summary>
+        /// Las reticulas del catalogo: la base queda por debajo de medio paso. Solo fuera de ellas puede un primer nivel
+        /// positivo caer en un punto medio exacto bajo la base y redondearse hacia abajo (salvedad del Freeze, §4).
+        /// </summary>
+        public static IEnumerable<object[]> CatalogLikeMatrix()
+            => Matrix().Where(row => (double)row[0] < (double)row[1] / 2.0);
+
         [Theory]
-        [MemberData(nameof(Matrix))]
+        [MemberData(nameof(CatalogLikeMatrix))]
         public void T12_NothingDropsBelowThePreviousRule_AndTheFirstLevelDoesNotMove(
             double gridBase, double pitch, double first, double[] requirements)
         {
@@ -684,12 +691,13 @@ namespace RackCad.Tests
             var legacy = H58Design(first: stored);
             Assert.Null(legacy.FirstLevelDatum);
 
-            var json = JsonSerializer.Serialize(DynamicRackSystemDocument.From(legacy));
-            var reopened = JsonSerializer.Deserialize<DynamicRackSystemDocument>(json).ToDesign();
-            var system = resolver.Resolve(reopened).System;
+            var reopened = JsonSerializer.Deserialize<DynamicRackSystemDocument>(
+                JsonSerializer.Serialize(DynamicRackSystemDocument.From(legacy))).ToDesign();
 
-            // Resolver no reescribe lo authored, y nada se migra: el documento vuelve a serializarse igual.
-            Assert.Equal(json, JsonSerializer.Serialize(DynamicRackSystemDocument.From(reopened)));
+            // Resolver no reescribe lo authored, y nada se migra: el documento se serializa igual antes y despues.
+            var authored = JsonSerializer.Serialize(DynamicRackSystemDocument.From(reopened));
+            var system = resolver.Resolve(reopened).System;
+            Assert.Equal(authored, JsonSerializer.Serialize(DynamicRackSystemDocument.From(reopened)));
             Assert.Null(reopened.FirstLevelDatum);
 
             var grid = RealGrid(catalog, system);
@@ -720,6 +728,14 @@ namespace RackCad.Tests
             Assert.Equal((int)RackFirstLevelDatumMode.LowestUsablePunch, inputs.FirstLevelDatum);
             Assert.Equal(before, Exits(front.LoadBeamLevels)[0], 6);
             Assert.Equal(new[] { 46.0, 46.0, 46.0 }, Spacings(Exits(front.LoadBeamLevels)));
+
+            // La migracion re-expresa el primer nivel en troquel: su entrada ya se mide desde esa salida real.
+            var grid = RealGrid(catalog, system.Structure);
+            var nominal = DynamicHeaderHeightCalculator.CalculateSlope(4 * 48.0 + 2.0 * DynamicRackDefaults.HeaderEndAllowance);
+            var levels = front.LoadBeamLevels.OrderBy(level => level.LevelNumber).ToList();
+            Assert.Equal(Nearest(levels[0].ExitElevation + nominal, grid.Base, grid.Pitch), levels[0].EntranceElevation, 6);
+            var rise = levels[0].EntranceElevation - levels[0].ExitElevation;
+            Assert.All(levels, level => Assert.Equal(rise, level.EntranceElevation - level.ExitElevation, 6));
         }
 
         // ---- T15: altura ----------------------------------------------------------------------------------------------
