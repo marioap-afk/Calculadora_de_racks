@@ -5591,3 +5591,58 @@ excluidos):
 **Límites:**
 - Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
 - Sin invocación de modelos; sin AutoCAD; sin invocación del Worker; attempts 1/3.
+
+## 89. F2-T2-NAVIGATION-HOST-UI: paquete del contrato NO EMITIDO; STOP en COORDINATOR_F2_T2_CONTRACT_REVIEW_REQUIRED
+
+**CI de §88:** corrida `42657455511` (push, SHA exacto `bbc3a6547dcfb26c66a3ed6b5fd0e330e17f233d`), 4/4 success.
+
+**Paquete:** `docs/initiatives/I-64-f2-t2-gate-contract-package.md`, preparado por el cierre final de F2-T1 (§88). No es un
+`gate-contract.json`, no emite delegaciones y no autoriza trabajo.
+
+**Comprobaciones previas de la orden:**
+- `origin/main` = `a140eb3a`, sin movimiento.
+- Rama `bbc3a654` = remoto, limpia; un único CLI de Codex, el acreditado.
+- `config.toml` en SNAPSHOT D.
+- Ninguna rama remota activa toca las rutas de F2-T2.
+- Línea base en `bbc3a654` (Release, local, todas en verde):
+  - Core `FullyQualifiedName~RackCad.Tests.Workspace` = 656 (`~Workspace` = 724);
+  - UI `FullyQualifiedName~RackCad.UI.Tests.Workspace` = 64 (`~Workspace` = 66).
+
+**Hallazgos del código (H-01..H-14)** que condicionan el contrato:
+- **Puertos ya definidos:** F2-T1 define los puertos que F2-T2 implementa (`INavigationFactsPort`, `INavigationEffects`). Nada construye
+  todavía `NavigationTargets` ni `NavigationActionPolicy`.
+- **Escritura de selección y vista prohibida:** las guardas de F1 prohíben, en todo `Plugin/Workspace/`, `SetImpliedSelection`,
+  `SetCurrentView`, `Zoom*` y `GetObject`. Solo el lector es excepción, por archivo exacto.
+- **Sin vía al contexto de comando:** la carpeta está congelada en seis archivos y no existe ninguna vía al contexto de comando de D-07
+  (sin `async`/`await`, sin `SendStringToExecute` y sin otro `[CommandMethod]` que `RACKPANEL`).
+- **Política aislada:** la política no puede vivir en el controlador ni en el puente.
+- **Hechos sin handles:** ningún escaneo integrado da los handles de Model Space.
+- **Puerto de F1 de solo lectura:** el puerto de F1 es solo de lectura.
+- **Sin cierre de sesión:** ningún aviso nombra una sesión destruida.
+- **Sin eco ni foco:** no hay eco por contenido ni mecanismo de foco al dibujo.
+- **UI:** el constructor del view-model está fijado por regex.
+
+**Enrutamiento:**
+- F2-T2 monolítica da Horizonte High, es decir **Long-horizon**, sin ninguna celda Frontera con escritura medida. Según routing §4,
+  decide el Coordinator.
+- **Propuesta (precedente F1-T3):** dividirla en **F2-T2A-NAVIGATION-HOST** y **F2-T2B-NAVIGATION-UI**, cortas, Deep y secuenciales,
+  con las celdas de F2-T1 (Worker `claude-sonnet-5-5`/subagente/high; Controller `gpt-6-luna`/high, sonda `3b8b`).
+- **Filtros propuestos:** `FullyQualifiedName~RackCad.Tests.Workspace` y `FullyQualifiedName~RackCad.UI.Tests.Workspace`. Hacen idénticas
+  la selección por clase y por FQN, que fue la clase de defecto que agotó el nc3 ordinario de F2-T1.
+
+**No se ha invocado la planificación; por eso no se han ejecutado A1-A8 ni nc4:**
+- **Por qué no:** A1-A8 evalúan una delegación cuyo `RunId` es el de una planificación `COMPLETED`, y nc4 es una copia de esa delegación.
+  La planificación exige antes las decisiones C-F2T2-01..13: enrutamiento, contexto de comando, foco, hechos, puerto, eco, `EndSession`,
+  política de guardas, filtros, UI, presupuesto, Smoke-NAV y secuencia.
+- **Secuencia propuesta (C-F2T2-13):** contrato de T2A → relevo → planificación → A1-A8 → nc4 → STOP antes del Worker, salvo que el
+  Coordinator autorice seguir.
+
+**Estado:**
+- `next_action` = COORDINATOR_F2_T2_CONTRACT_REVIEW_REQUIRED.
+- `f2_t2_status` nuevo.
+- F2-T2 NO AUTORIZADA para implementar.
+
+**Límites:**
+- Solo documentación y evidencia; sin cambios en `src/` ni `tests/`; sin invocación de modelos; sin AutoCAD; sin Worker.
+- Las pruebas locales de la línea base solo se compilaron y ejecutaron, sin modificar archivos.
+- attempts 1/3.
