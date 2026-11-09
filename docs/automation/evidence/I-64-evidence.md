@@ -5016,3 +5016,69 @@ Durante F2-T1 no se modifica el prompt.
 de `main`.
 
 **Siguiente:** CI exacta de este commit → **COORDINATOR_F2_T1_CLOSE_REQUIRED**.
+
+## 78. F2-T1 nc3: vía ordinaria agotada; A-8 / I64-TESTFILTER-BRIDGE-01 PROPUESTA, NO ACTIVA; F2-T1 BLOCKED_PROTOCOL_DEPENDENCY
+
+**CI de las custodias anteriores:**
+- `82bbac8f` (§77): corrida `42564737431`, push, 4/4 success.
+- `7002678f` (analysis.md de 041d y custodia previa al cambio de prompt): corrida `42568842371`, push, 4/4 success.
+
+**Disposiciones del Coordinator posteriores a §77** (literales en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/`):
+- **Revisión del cierre / 46c1:** custodia `82bbac8f` ACEPTADA como intermedia.
+  - 46c1 = INVALID_OUTPUT FOR CONTROL ACCEPTANCE: el Controller citó literalmente el término de 16.10 en su propio texto libre.
+  - Deuda «AllowedWriteScope (2 entradas)» CONFIRMADA para I-62.
+- **Previa al reintento:** sin rebobinar referencias.
+  - POST_CUSTODY_CONTROL_IDENTITY_EXCEPTION y CONTROLLER OUTPUT HYGIENE RULE, por la entrada `coordinator-disposition.md`.
+  - La sesión paró antes de invocar porque la custodia había movido HEAD (`pre-invocation-stop/`).
+- **Reintento final:** las dos reglas genéricas pasan al prompt normativo.
+  - Antes, `analysis.md` versionado en `7002678f` (CONTROL / PROMPT TRANSPORT DEFECT).
+- **Orden de A-8:**
+  - 53af = SCHEMA_VALID_BUT_MATERIALLY_FALSE / INVALID_OUTPUT;
+  - vía ordinaria de nc3 agotada, sin cuarta ejecución del Controller;
+  - A-6 no aplica;
+  - se abre A-8.
+
+**Ejecuciones de nc3** (custodiadas en `I-64-pilot/F2-T1-NAVIGATION-CORE-nc3/1/`):
+
+| Run | Resultado del Controller | Clasificación del Coordinator |
+|---|---|---|
+| `R20261109T044704Z-46c1` | FreeText / REWORK; el término aparece citado en Findings y en FreeText | INVALID_OUTPUT FOR CONTROL ACCEPTANCE |
+| `R20261109T052418Z-041d` | Identity / STOP; no leyó `coordinator-disposition.md` | VALID OUTPUT / ORACLE NOT MET |
+| `R20261109T054710Z-53af` | Tests / STOP; seleccionó solo por clase (723 frente a 724) | SCHEMA_VALID_BUT_MATERIALLY_FALSE / INVALID_OUTPUT |
+
+- **053af, aceptado como evidencia útil:**
+  - el modo de Identity posterior a la custodia funcionó, con las dos identidades informadas por separado;
+  - Remote dio la punta actual;
+  - Tests citó los 6 ChainRedFiles;
+  - FreeText detectó la violación;
+  - la higiene de salida funcionó y el barrido 16.10 salió vacío.
+- **Recuento de referencia** sobre los mismos TRX (FQN clase.método, sin distinguir mayúsculas): GREEN 724/724/0 y RED 724/673/51, con
+  50 aserciones xUnit + 1 NullReferenceException.
+
+**A-8 / I64-TESTFILTER-BRIDGE-01** (`docs/initiatives/I-64-A-8.md`): PROPOSED / NOT ACTIVE.
+- **Materialidad:** M-04 = YES; autoridad Owner + Architect + Coordinator.
+- **Verificador** `verify_testfilter_bridge.py` (blob `1691003d`):
+  - `FullyQualifiedName~X` = contiene, sin distinguir mayúsculas, sobre `className + "." + name`;
+  - lectura de TRX que falla cerrada;
+  - ChainRedFiles derivados con Git endurecido;
+  - exactitud de la mutación con las primitivas de A-6 copiadas literalmente (sin ejecutar A-6).
+- **Autoprueba sintética:** 35/35, idéntica byte a byte en dos ejecuciones.
+- **Demostración de regresión:** los mutantes de nombre visible, solo clase, distinguiendo mayúsculas y solo método dan FAIL.
+- **Evidencia real:** no se usó. La aplicación a F2-T1 se vincula solo por SHA-256.
+
+**Hecho del entorno:** `Codex/bin` tiene 4 directorios. Solo `f71a721e0e6193a9` contiene `codex.exe` (0.167.0-alpha.3.2, SHA-256
+`4B3286E3…`, el mismo CLI acreditado). Sin cambio.
+
+**Siguiente:** las tres autoridades de A-8.
+- **Owner:** decisión con el texto exacto de la orden.
+- **Architect:** revisión formal de solo lectura del objeto exacto.
+  - La celda `gpt-6.1-sol`/`high` solo está medida sobre el CLI antiguo (sonda `a198`), que ya no existe.
+  - Sobre 0.167.0-alpha.3.2 solo se acreditó `gpt-6-luna` (Eficiente), así que hace falta una sonda autorizada de la celda Deep.
+  - Decide el Coordinator.
+- **Coordinator:** AGREED.
+- Después, una sola ejecución contra la evidencia real.
+
+**Límites:**
+- Solo documentación, evidencia y herramientas sintéticas; sin cambios en `src/` ni `tests/`.
+- Sin invocación de modelos en esta etapa; sin AutoCAD; F2-T2 no autorizada.
+- attempts 1/3.

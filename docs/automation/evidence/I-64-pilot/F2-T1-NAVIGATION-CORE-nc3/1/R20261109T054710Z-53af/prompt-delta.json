@@ -1,0 +1,30 @@
+{
+  "Schema": "rackcad-i64-prompt-delta/v1",
+  "TaskId": "F2-T1-NAVIGATION-CORE",
+  "RunId": "R20261109T054710Z-53af",
+  "Authority": "coordinator/coordinator-f2t1-nc3-final-retry-disposition.md",
+  "Analysis": {
+    "Path": "docs/automation/evidence/I-64-pilot/F2-T1-NAVIGATION-CORE-nc3/1/R20261109T052418Z-041d/analysis.md",
+    "Blob": "cdae79e6222a35ec15b86146a29b25a2613348d2",
+    "VersionedIn": "7002678f46b3816aa06df4cb77a945cbf250af54"
+  },
+  "BasePrompt": {
+    "From": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE-nc3/1/R20261109T044704Z-46c1/prompt.md",
+    "Sha256": "80BD3FFD672E3B3202B7DF79A4E5519483ECD54C5AB6189787D61296A86CF4AF",
+    "Changes": "RunId and input path of this run only",
+    "AfterRunIdSha256": "9B2BC4BA7C0897CF214E1655275FC2FF2FD136C1C8590CEE85C51B479177721D"
+  },
+  "Appended": {
+    "Sections": [
+      "POST-CUSTODY IDENTITY MODE (literal, from analysis.md)",
+      "POST_CUSTODY_VERIFIED_DELIVERY_DESCENDANT FACTS (Coordinator conditions 1-10 + session-measured values)",
+      "CONTROLLER OUTPUT HYGIENE (literal, from analysis.md)"
+    ],
+    "Sha256": "80AC7CF8858AE71EDB52063B530059544C1EF1B12B96208C3E9E6179CDAE3FD8",
+    "Lines": 60,
+    "DisclosureCheck": "none of (?i)\\bnc[1-4]\\b, (?i)negative[- ]control, (?i)\\bWorkCompleted\\b, (?i)\\bREWORK, (?i)expected to fail, (?i)FreeText\\s*=, (?i)\\bmutat, (?i)(?<![A-Za-z0-9_])GATE[ _]PASS(?![A-Za-z0-9_]), (?i)\\bCandidat"
+  },
+  "FinalPromptSha256": "784120BBE91756541AA945F86D6815EDF5C00A0BEDC52E1A38C281059B13D32E",
+  "Ascii": true,
+  "Inputs": "byte-identical to the inputs of R20261109T044704Z-46c1 (verified inputs of ebfc with the same nc3 handoff mutation); the 041d additions are not carried over"
+}

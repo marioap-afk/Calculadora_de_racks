@@ -1,0 +1,15 @@
+{
+  "RunId": "R20261109T054710Z-53af",
+  "Control": "nc3",
+  "CoordinatorClassification": {
+    "Outcome": "SCHEMA_VALID_BUT_MATERIALLY_FALSE / INVALID_OUTPUT",
+    "Reason": "the Controller reconstructed FullyQualifiedName~Workspace using class name only; the correct semantics (case-insensitive substring over the fully qualified class + method identity) give GREEN 724/724/0 and RED 724/673/51 on the same TRX; S-04 = NOT ESTABLISHED BY TEST DATA; 53af is NOT converted to CONTROL PASS because the Controller output did not satisfy the required nc3 relative oracle",
+    "AcceptedAsUsefulEvidence": ["post-custody Identity mode worked", "current HEAD and verified CurrentSha were reported separately", "Remote reported the current custody branch tip", "the six ChainRedFiles were present", "FreeText detected the injected prohibited term", "Controller output hygiene worked", "manual 16.10 scan of Controller-generated free text was empty", "all checks other than Tests and FreeText passed"],
+    "Nc3OrdinaryBudget": "EXHAUSTED (46c1 initial, 041d rerun 1, 53af rerun 2); P-04 applies to another ordinary nc3 Controller invocation; NO FOURTH CONTROLLER RUN IS AUTHORIZED",
+    "A6Applicable": false,
+    "Substitute": "I-64 Amendment A-8 / I64-TESTFILTER-BRIDGE-01, PROPOSED / NOT ACTIVE"
+  },
+  "NotRecordedAs": "nc3 = CONTROL PASS",
+  "OutputUnchanged": "output.json, controller-verification.json, oracle-result.json, evidence-validation.json, prescope-validation.json, manual-1610-scan.json, preinvocation-assertions.json, post-custody-identity-preconditions.json, prompt-delta.json and relay-record.json of this run are kept exactly as emitted",
+  "Source": "coordinator/coordinator-f2t1-nc3-53af-a8-order.md (literal received through the chat of the responsible session; I-64 F2-T1 nc3 FINAL RERUN DISPOSITION / A-8 ORDER)"
+}
