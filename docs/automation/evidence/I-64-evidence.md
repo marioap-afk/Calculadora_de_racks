@@ -5082,3 +5082,41 @@ de `main`.
 - Solo documentación, evidencia y herramientas sintéticas; sin cambios en `src/` ni `tests/`.
 - Sin invocación de modelos en esta etapa; sin AutoCAD; F2-T2 no autorizada.
 - attempts 1/3.
+
+## 79. A-8: sonda de la celda del Architect PASS; revisión formal = CHANGES REQUIRED (3 REQUIRED); A-8 NO ACTIVA
+
+**CI de §78:** corrida `42571951654` (push, SHA exacto `d4a97950c2757d09f971a66621e7262e385ad818`), 4/4 success.
+
+**Orden del Coordinator** (literal en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a8-architect-accreditation-review-order.md`):
+- El paquete `d4a97950` queda ACCEPTED FOR ARCHITECT REVIEW. Eso solo autoriza la revisión; no activa A-8.
+- Se autoriza una sonda de acreditación de `gpt-6.1-sol`/`high`/read-only en el CLI 0.167.0-alpha.3.2.
+- Si la sonda pasa, se autoriza una revisión formal de solo lectura del objeto exacto.
+- La decisión del Owner sigue siendo necesaria y no se infiere.
+
+**Sonda `R20261109T062522Z-e8be`: PASS** (`I-64-protocol-bridge/probe/R20261109T062522Z-e8be/`):
+- Una sola invocación, con el prompt mínimo, el esquema y el oráculo de 3b8b/a198.
+- Lanzador con `-c allow_login_shell=false`.
+- **Efectivos:** `gpt-6.1-sol` / `high` según el `turn_context`; `cli_version` `0.167.0-alpha.3.2`; read-only; red restringida.
+- **Oráculo Git exacto:** HEAD `d4a97950`, `origin/main` `a140eb3a`, blob del estado `0061dc21`. 3 órdenes con `-NoProfile` y código 0.
+- **Sin efectos:** sin avisos de límite; sin escrituras (HEAD = remoto y árbol limpio a la entrada); sin AutoCAD.
+- **Entorno:** config.toml en la instantánea D antes y después; sin participantes.
+
+**Revisión formal `R20261109T062937Z-e1d0`** (`I-64-protocol-bridge/architect-review/R20261109T062937Z-e1d0/`):
+- **Dictamen:** `gpt-6.1-sol`/`high`, SEPARATE SESSION, objeto exacto `d4a97950`. **CHANGES REQUIRED: 3 REQUIRED, 0 OPTIONAL.**
+- **Salida:** válida, coherente, con el objeto correcto y 34 órdenes con `-NoProfile`.
+- **Sin evidencia real:** no ejecutó el puente sobre evidencia real de F2-T1. Las pruebas adversariales fueron en memoria y con entradas sintéticas; no volvió a ejecutar la autoprueba por el sandbox de solo lectura.
+
+| Hallazgo | Pregunta | Defecto | Corrección pedida |
+|---|---|---|---|
+| I64-A8-ORDINAL-FILTER-MISMATCH | Q03 | `upper()` por carácter de Python no equivale a `OrdinalIgnoreCase` de .NET: U+017F (s larga) y U+0131 (i sin punto) producen coincidencias falsas, y los FQN no ASCII se admiten sin restricción | igualar la comparación de .NET o rechazar los FQN no ASCII de forma cerrada; regresiones sintéticas con s larga e i sin punto |
+| I64-A8-COUNTER-COHERENCE | Q04 | el lector ignora `executed` y los demás contadores: `executed=0` con nueve filas Passed se acepta | validar `executed` y los contadores de outcome admitidos contra las filas; rechazar contradicciones y categorías no admitidas distintas de cero |
+| I64-A8-DUPLICATE-RESULT-FAIL-OPEN | Q11 | no se valida ni se deduplica la identidad de ejecución (`executionId`): un resultado duplicado infla la selección y pasa | exigir identidades de ejecución inequívocas y rechazar duplicados antes de contar, conservando las ejecuciones distintas de una Theory |
+
+- **Alcance de los hallazgos:** ninguno exige cambiar I-61 ni una decisión del Owner. Todos se corrigen en la siguiente enmienda append-only.
+- **Q03:** la afirmación sobre .NET es el juicio del Architect. Su orden de comprobación con `OrdinalIgnoreCase` en PowerShell no pudo ejecutarse (ConstrainedLanguage).
+- **Estado:** A-8 sigue **NOT ACTIVE** y F2-T1 sigue BLOCKED_PROTOCOL_DEPENDENCY. La decisión del Owner sobre A-8 sigue pendiente.
+
+**Límites:**
+- Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
+- Invocaciones de modelo: la sonda y la revisión.
+- Sin AutoCAD; F2-T2 no autorizada; attempts 1/3.

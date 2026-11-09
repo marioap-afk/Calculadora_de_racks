@@ -1,0 +1,165 @@
+{
+  "RunId": "R20261109T062937Z-e1d0",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a1beff-b72a-73c1-8af5-a43a0b26e3a6",
+  "Usage": {
+    "input_tokens": 1256463,
+    "cached_input_tokens": 1126528,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 14336,
+    "reasoning_output_tokens": 5524
+  },
+  "CommandCount": 34,
+  "NoProfileCommands": 34,
+  "NonZeroCommands": [
+    {
+      "Command": "ongSOrdinalIgnoreCase=[StringComparer]::OrdinalIgnoreCase.Equals(\"'$longs,'\"'Workspace'); Runtime=[System.Runtime.InteropServices.RuntimeInformation]::FrameworkDescription} | ConvertTo-Json -Compress\"",
+      "Exit": 1,
+      "Error": "@{DotlessOrdinalIgnoreCase=[StringCompare . | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ | Cannot invoke method. Method invocation is supported only on core types in this language mode."
+    }
+  ],
+  "ExecutedBridgeTools": [
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show d4a97950c275:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py'",
+    "-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command '$p='\"'docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py'; \"'$lines=git show \"d4a97950c275:$p\"; for($i=389;$i -lt $lines.Count;$i++){ '\"'{0}: {1}' -f (\"'$i+1),$lines[$i] }'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show d4a97950c275:docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show d4a97950c275:docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_testfilter_bridge.py'",
+    "LL_CASES_OK',all(x['Ok'] for x in d['Cases'])) for s in ['git_env','git_paths']: for key in ['Verifier','A4Verifier']: tree=ast.parse(src[key]);fn=next((n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name==s),None) if fn:print(key,s,ast.get_source_segment(src[key],fn)) '@ | python -B -\"",
+    "Def,ast.ClassDef))]) for node in ast.parse(block).body: s=ast.get_source_segment(block,node) if s not in b:print('NONVERBATIM',getattr(node,'name',getattr(node,'lineno',None)),s) # print source around endpoints print('A6 header',b[:2800].encode('ascii','backslashreplace').decode()) '@ | python -B -\"",
+    "rows),'Counters':c})) except Exception as e:print(json.dumps({'Variant':k,'Parser':'REJECTED','Error':str(e)})) print('FOLD_DOTLESS_I',v.fqn_selected('Synth.Test','F'+chr(0x131)+'lter','Filter')) print('FOLD_LONG_S',v.fqn_selected('Synth.Test','Work'+chr(0x17f)+'pace','Workspace')) '@ | python -B -\"",
+    "r name in ('green.trx','red.trx'): data[name]=data[name].replace(b'Workspace',('Work'+chr(0x17f)+'pace').encode()).replace(b'WORKSPACE',('WORK'+chr(0x17f)+'PACE').encode()).replace(b'workspacelower',('work'+chr(0x17f)+'pacelower').encode()) run('all_Workspace_FQNs_use_long_s',data) '@ | python -B -\"",
+    "f l.startswith('#') or 'Counters' in l or 'ordinal' in l or 'simple' in l or 'identidades' in l or 'NOT ACTIVE' in l or 'term-set' in l: print(str(i)+': '+l.encode('ascii','backslashreplace').decode()) else: for i in range(start-1,min(stop,len(lines))):print(str(i+1)+': '+lines[i]) '@ | python -B -\"",
+    "AUTOMATION_PLAN.md','docs/automation/agent-execution/README.md']: print('AUTHORITY',p,subprocess.check_output(['git','rev-parse','a140eb3a:'+p]).decode().strip()) print('TERM_SET_BLOB',subprocess.check_output(['git','rev-parse','a140eb3a:docs/AUTOMATION_PLAN.md']).decode().strip()) '@ | python -B -\""
+  ],
+  "RealF2T1BridgeExecution": [],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OutputSha256": "7CB6A46968B11D39B5035F1A51834372F4CCFD2AE0B45AFFFD94E4A3DE58313A",
+  "NonAsciiBytes": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "RequiredCount": 3,
+  "OptionalCount": 0,
+  "RequiredFindings": [
+    {
+      "Id": "I64-A8-ORDINAL-FILTER-MISMATCH",
+      "Severity": "REQUIRED",
+      "Question": "Q03",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:327",
+      "Defect": "Python per-character upper() is not .NET OrdinalIgnoreCase. U+017F folds to ASCII S here, so Work + U+017F + pace is selected by Workspace although .NET ordinal case-insensitive IndexOf returns -1. U+0131 similarly produces a false match for Filter. Non-ASCII FQNs are currently admitted without restriction. A synthetic fixture using long-s FQNs still produced 59 passing verification checks.",
+      "Authority": "A-8 Sec.2 explicitly promises VSTest/.NET OrdinalIgnoreCase semantics; the Coordinator order requires faithful RequiredTests reconstruction. LIFECYCLE Sec.5 requires verifiable frozen guarantees.",
+      "Correction": "In the next append-only amendment, implement matching equivalent to the required .NET comparison or explicitly reject unsupported non-ASCII FQNs fail-closed. Add synthetic long-s and dotless-i regressions against the .NET oracle.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A8-COUNTER-COHERENCE",
+      "Severity": "REQUIRED",
+      "Question": "Q04",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:412",
+      "Defect": "The parser ignores supplied execution/outcome counters other than total, passed and failed. Changing only executed from 9 to 0 in the valid synthetic GREEN TRX leaves nine Passed rows, yet load_trx accepts it and all 59 verify() checks pass. Contradictory required source evidence is therefore silently accepted.",
+      "Authority": "The Coordinator order requires fail-closed parsing; AUTOMATION_PLAN Sec.16.9 Tests requires coherent TRX evidence, and Sec.16.11 S-04 treats contradictory evidence as STOP.",
+      "Correction": "In the next append-only amendment, validate supplied executed and supported outcome counters against the parsed rows, rejecting contradictions and unsupported nonzero outcome categories. Add a regression where executed=0 contradicts Passed rows.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A8-DUPLICATE-RESULT-FAIL-OPEN",
+      "Severity": "REQUIRED",
+      "Question": "Q11",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:393",
+      "Defect": "Result execution identity is never validated or deduplicated. Replacing selected result e3 with a second identical e2 result in both synthetic TRX files leaves counters, handoff totals, RED composition and GREEN/RED key comparison accepted. Six selected rows then represent only five distinct executions, while all 59 verification checks pass. Repeating records can falsely satisfy MinSelected.",
+      "Authority": "A-8 Sec.3 promises fail-closed TRX verification and meaningful RequiredTests counts. AUTOMATION_PLAN Sec.16.9 Tests requires coherent selection evidence; LIFECYCLE Sec.5 rejects unverifiable guarantees and open failure paths.",
+      "Correction": "In the next append-only amendment, require unambiguous result execution identities and reject duplicate execution records before tallying. Preserve legitimate distinct Theory executions. Add a synthetic duplicate-result regression with unchanged counters and matching GREEN/RED duplicates.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "OptionalFindings": [],
+  "Answers": {
+    "Q01": [
+      "YES",
+      true
+    ],
+    "Q02": [
+      "YES",
+      true
+    ],
+    "Q03": [
+      "NO",
+      false
+    ],
+    "Q04": [
+      "NO",
+      false
+    ],
+    "Q05": [
+      "YES",
+      true
+    ],
+    "Q06": [
+      "YES",
+      true
+    ],
+    "Q07": [
+      "YES",
+      true
+    ],
+    "Q08": [
+      "YES",
+      true
+    ],
+    "Q09": [
+      "YES",
+      true
+    ],
+    "Q10": [
+      "YES",
+      true
+    ],
+    "Q11": [
+      "YES",
+      false
+    ],
+    "Q12": [
+      "NO",
+      true
+    ]
+  },
+  "PolarityAsExpected": {
+    "Q01": true,
+    "Q02": true,
+    "Q03": false,
+    "Q04": false,
+    "Q05": true,
+    "Q06": true,
+    "Q07": true,
+    "Q08": true,
+    "Q09": true,
+    "Q10": true,
+    "Q11": false,
+    "Q12": true
+  },
+  "Coherent": true,
+  "SubjectMatches": true,
+  "SubjectMismatches": [],
+  "GateTerms1610": [],
+  "Limitations": [
+    "Independent read-only session; the reviewer did not author the object and used no author memory or transcript.",
+    "The tempfile-based CLI self-test and regression demonstration were not rerun under the read-only policy. Their pinned results and hashes were inspected. Additional adversarial probes exercised unmodified functions entirely in memory with synthetic read/Git I/O stubs; main() was not invoked.",
+    "Real F2-T1 TRX and handoffs were not processed by the bridge. Historical counts and input hashes were checked against versioned custody and Coordinator records, without independently recomputing the real selection."
+  ],
+  "CliVersion": "0.167.0-alpha.3.2",
+  "Sandbox": {
+    "type": "read-only"
+  },
+  "Effective": [
+    "gpt-6.1-sol",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-11-09T00-29-52-01a1beff-b72a-73c1-8af5-a43a0b26e3a6.jsonl",
+  "EffectiveSourceSha256": "6F7BD310FC9AA936763ADC052FC066F5EA03985D32A34EF66D3E0A36EC1F6452",
+  "LimitPatternContexts": {
+    "ion | frontera |\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 1
+  },
+  "EventsSha256": "655A411844F7D577C04EC3D9A947F1507AAA129A449A39550839A93C66F949CD"
+}

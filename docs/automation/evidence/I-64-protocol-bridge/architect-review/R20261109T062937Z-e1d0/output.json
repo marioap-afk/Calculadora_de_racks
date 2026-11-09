@@ -1,0 +1,154 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261109T062937Z-e1d0",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "d4a97950c2757d09f971a66621e7262e385ad818",
+    "AmendmentId": "A-8",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-8.md",
+      "Blob": "65da02628f8fc88e87b925b1604324a15a17bf90"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py",
+      "Blob": "1691003d2286a3c8f597a182597e6622da074bd3"
+    },
+    "SelfTest": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py",
+      "Blob": "7e8c85b9359949788675ef4095c25b009bf90ae9"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-testfilter-result-a8.json",
+      "Blob": "e8cef5200612ab203ec9163be7bbb85d57224e63"
+    },
+    "RegressionTool": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_testfilter_bridge.py",
+      "Blob": "e02a9f994231233b606f176fe5adbcb646940bee"
+    },
+    "RegressionDemo": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/regression-demo-a8-testfilter-mutants.json",
+      "Blob": "4e3eac2b6607a347a76d37b523dccd6e7137f595"
+    },
+    "A6Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py",
+      "Blob": "3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169"
+    },
+    "A4Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+      "Blob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1"
+    },
+    "CoordinatorOrder": {
+      "Path": "docs/automation/evidence/I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/coordinator-f2t1-nc3-53af-a8-order.md",
+      "Blob": "9ea916a14717baf0c0a27656d0be3a215e37eb73"
+    }
+  },
+  "Answers": {
+    "Q01": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-8 changes the unit-specific protocol failure/evidence path, activating LIFECYCLE Sec.3 M-04. It changes no product authority, persistence, shared contract, extension point or accepted ADR. Its classification matches the Coordinator order and the A-2/A-4/A-6 precedent."
+    },
+    "Q02": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-8 limits applicability to I-64, specifically the F2-T1 nc3 Tests-filter occurrence. It preserves global AUTOMATION_PLAN authority, product semantics, historical classifications and exhausted budgets."
+    },
+    "Q03": {
+      "Answer": "NO",
+      "Conforming": false,
+      "Evidence": "The selection key is correctly className + '.' + method name, but fold() at verifier:327-340 does not reproduce .NET OrdinalIgnoreCase. For a synthetic method containing Work + U+017F + pace, Python selects Workspace while .NET ordinal case-insensitive IndexOf returns -1. See I64-A8-ORDINAL-FILTER-MISMATCH."
+    },
+    "Q04": {
+      "Answer": "NO",
+      "Conforming": false,
+      "Evidence": "Verifier:412-419 validates only total, passed and failed. A synthetic TRX with nine Passed rows and executed=0 is accepted; the unmodified verify() produces 59 passing checks with synthetic I/O. Duplicate result executions are also accepted. See the counter-coherence and duplicate-result findings."
+    },
+    "Q05": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "At the policy/check layer, verifier:618-639 enforces positive MinSelected, all selected GREEN results passing, selected RED failures, failure composition and handoff count equality. The real 724/724/0 and 724/673/51 values are occurrence arguments in A-8 Sec.5; neither verifier nor synthetic self-test hardcodes 724, 673 or 645. Parsing defects are reported separately."
+    },
+    "Q06": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:454-475 and 580-606 independently derive the tests/ diff, require equality with the accredited list and reject RED-to-GREEN intersection. Git hardening matches A-4, including inherited GIT_* removal, disabled grafts/replacements and configuration-resistant diff flags. The six-file binding matches the accepted ebfc record."
+    },
+    "Q07": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:563-572 validates both handoffs against the embedded schema. Lines 641-672 require exact structural equality outside WorkCompleted, unchanged key order, the exact authorized append, a clean original, no disappearance and exactly one newly introduced prohibited occurrence in WorkCompleted."
+    },
+    "Q08": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "All 27 source units in the marked reuse block occur verbatim in A-6 blob 3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169. A-8 embeds these primitives without importing or invoking the A-6 verifier and defines a distinct bridge."
+    },
+    "Q09": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "The pinned self-test covers all requested categories through T01-T35, including the class-only one-fewer fixture, Theory argument exclusion, method-location inclusion, malformed XML/invalid UTF-8, ChainRedFiles failures and additional mutation. The pinned regression artifact records all four selection mutants failing. The newly identified gaps are outside that existing coverage."
+    },
+    "Q10": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-8, the Coordinator order, evidence Sec.78 and f2_a8_status consistently retain PROPOSED / NOT ACTIVE and require all three activation decisions. Versioned bridge results identify synthetic fixtures only. This review executed no bridge function with real F2-T1 inputs."
+    },
+    "Q11": {
+      "Answer": "YES",
+      "Conforming": false,
+      "Evidence": "An open path exists: replacing selected execution e3 with a duplicate of e2 in both synthetic TRX files preserves six selected rows while only five distinct selected executions remain. All 59 unmodified verify() checks pass with synthetic I/O; the final decision predicate would accept this. See I64-A8-DUPLICATE-RESULT-FAIL-OPEN."
+    },
+    "Q12": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "The identified corrections only restore the proposed bridge's existing selection and fail-closed guarantees. They require no global I-61 change and no I-62 authority. The explicit Owner activation decision already requested by A-8 remains necessary."
+    }
+  },
+  "Findings": [
+    {
+      "Id": "I64-A8-ORDINAL-FILTER-MISMATCH",
+      "Severity": "REQUIRED",
+      "Question": "Q03",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:327",
+      "Defect": "Python per-character upper() is not .NET OrdinalIgnoreCase. U+017F folds to ASCII S here, so Work + U+017F + pace is selected by Workspace although .NET ordinal case-insensitive IndexOf returns -1. U+0131 similarly produces a false match for Filter. Non-ASCII FQNs are currently admitted without restriction. A synthetic fixture using long-s FQNs still produced 59 passing verification checks.",
+      "Authority": "A-8 Sec.2 explicitly promises VSTest/.NET OrdinalIgnoreCase semantics; the Coordinator order requires faithful RequiredTests reconstruction. LIFECYCLE Sec.5 requires verifiable frozen guarantees.",
+      "Correction": "In the next append-only amendment, implement matching equivalent to the required .NET comparison or explicitly reject unsupported non-ASCII FQNs fail-closed. Add synthetic long-s and dotless-i regressions against the .NET oracle.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A8-COUNTER-COHERENCE",
+      "Severity": "REQUIRED",
+      "Question": "Q04",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:412",
+      "Defect": "The parser ignores supplied execution/outcome counters other than total, passed and failed. Changing only executed from 9 to 0 in the valid synthetic GREEN TRX leaves nine Passed rows, yet load_trx accepts it and all 59 verify() checks pass. Contradictory required source evidence is therefore silently accepted.",
+      "Authority": "The Coordinator order requires fail-closed parsing; AUTOMATION_PLAN Sec.16.9 Tests requires coherent TRX evidence, and Sec.16.11 S-04 treats contradictory evidence as STOP.",
+      "Correction": "In the next append-only amendment, validate supplied executed and supported outcome counters against the parsed rows, rejecting contradictions and unsupported nonzero outcome categories. Add a regression where executed=0 contradicts Passed rows.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A8-DUPLICATE-RESULT-FAIL-OPEN",
+      "Severity": "REQUIRED",
+      "Question": "Q11",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:393",
+      "Defect": "Result execution identity is never validated or deduplicated. Replacing selected result e3 with a second identical e2 result in both synthetic TRX files leaves counters, handoff totals, RED composition and GREEN/RED key comparison accepted. Six selected rows then represent only five distinct executions, while all 59 verification checks pass. Repeating records can falsely satisfy MinSelected.",
+      "Authority": "A-8 Sec.3 promises fail-closed TRX verification and meaningful RequiredTests counts. AUTOMATION_PLAN Sec.16.9 Tests requires coherent selection evidence; LIFECYCLE Sec.5 rejects unverifiable guarantees and open failure paths.",
+      "Correction": "In the next append-only amendment, require unambiguous result execution identities and reject duplicate execution records before tallying. Preserve legitimate distinct Theory executions. Add a synthetic duplicate-result regression with unchanged counters and matching GREEN/RED duplicates.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "RequiredCount": 3,
+  "OptionalCount": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "Limitations": [
+    "Independent read-only session; the reviewer did not author the object and used no author memory or transcript.",
+    "The tempfile-based CLI self-test and regression demonstration were not rerun under the read-only policy. Their pinned results and hashes were inspected. Additional adversarial probes exercised unmodified functions entirely in memory with synthetic read/Git I/O stubs; main() was not invoked.",
+    "Real F2-T1 TRX and handoffs were not processed by the bridge. Historical counts and input hashes were checked against versioned custody and Coordinator records, without independently recomputing the real selection."
+  ]
+}
