@@ -1,0 +1,192 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261109T141352Z-75ac",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "3175bcb9cf382b78aa751c762dcfaf7be4a2787c",
+    "AmendmentId": "A-10",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-10.md",
+      "Blob": "68ba54c480e2d266cdf48d2de4a748d7d19f704b"
+    },
+    "HistoricalAmendmentA9": {
+      "Path": "docs/initiatives/I-64-A-9.md",
+      "Blob": "40ec7a07a274c50f581a35965f9b06702f7f157c"
+    },
+    "HistoricalAmendmentA8": {
+      "Path": "docs/initiatives/I-64-A-8.md",
+      "Blob": "65da02628f8fc88e87b925b1604324a15a17bf90"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py",
+      "Blob": "b134ba653b6f47871c6fc3ae7e15357487c6c88a"
+    },
+    "SelfTest": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py",
+      "Blob": "fbdd9d442913c7b0b69d96ad1945bad335267958"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-testfilter-result-a10.json",
+      "Blob": "725e49016f5a45ecd3c6a0bc8a943f734562b017"
+    },
+    "RegressionTool": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_testfilter_bridge.py",
+      "Blob": "eb2299e5c5612524e02eba183fd5a53fc5e37a49"
+    },
+    "RegressionDemo": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/regression-demo-a10-testfilter.json",
+      "Blob": "76a2aaedd8866981085c8e44f1996aeddae861cd"
+    },
+    "A6Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py",
+      "Blob": "3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169"
+    },
+    "A4Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+      "Blob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1"
+    },
+    "CoordinatorOrder": {
+      "Path": "docs/automation/evidence/I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a10-correction-order.md",
+      "Blob": "25192f6d6190eac7209d2c8c78f860bd59d362a6"
+    },
+    "PriorReview": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/architect-review/R20261109T112612Z-04e8/output.json",
+      "Blob": "18036eb6dcd73f3210d34147ffa0f6e5eb1ff554"
+    }
+  },
+  "PriorFindings": {
+    "I64-A9-TESTID-GUID-ALIAS": {
+      "Status": "CLOSED",
+      "Evidence": "Verifier:429-439 validates required GUID-form ids and canonicalizes hexadecimal case. Lines 541-549 and 566-568 use that identity before duplicate detection and reference lookup. Independently exercised T63-T73 pass their oracles, including case-variant references and distinct executions sharing testId. Historical A-9 accepts T63/T64/T66; A-10 rejects them with the specific required codes."
+    },
+    "I64-A9-FAILURE-MESSAGE-AMBIGUITY": {
+      "Status": "CLOSED",
+      "Evidence": "Verifier:478-511 enumerates Output, ErrorInfo and Message, validates cardinality, namespace, placement and Message children before reading text; line 571 applies it to every parsed result. T74-T89 pass their independent synthetic oracles. Historical A-9 accepts the contradictory Message and Output signature fixtures; A-10 rejects them with TRX_FAILURE_MESSAGE_AMBIGUOUS. The separate nested-TestRun defect concerns which results reach this reader."
+    }
+  },
+  "ClosedA8Findings": {
+    "I64-A8-ORDINAL-FILTER-MISMATCH": {
+      "Status": "REMAINS CLOSED",
+      "Evidence": "Verifier:361-393 preserves UTF-16 windows, ASCII-only folding and known-match precedence; lines 722-729 reject unknown potential matches before tallying. T36-T38 and T56-T62 pass independently, and all five ordinal mutants fail their target cases."
+    },
+    "I64-A8-COUNTER-COHERENCE": {
+      "Status": "REMAINS CLOSED",
+      "Evidence": "Verifier:576-597 preserves the Counters allowlist, required derived values, zero-only unsupported categories and comparison against accepted top-level rows. T39-T48 pass independently. The new structural defect bypasses row discovery rather than changing these counter rules."
+    },
+    "I64-A8-DUPLICATE-RESULT-FAIL-OPEN": {
+      "Status": "REMAINS CLOSED",
+      "Evidence": "Verifier:558-565 retains required GUID executionIds and case-insensitive duplicate rejection before tallying. T49-T55 pass independently, including rejection of inflation through duplicate top-level executions and acceptance of distinct executions sharing testId."
+    }
+  },
+  "Answers": {
+    "Q01": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-10:298-311 declares only M-04. Its change concerns the I-64 substitute evidence failure path, matching LIFECYCLE Sec.3 and the Coordinator order:43-51. It changes no product authority, persisted meaning, shared contract, extension point or accepted ADR."
+    },
+    "Q02": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-10:13-48 and 283-296 restrict the amendment to the F2-T1 nc3 Tests-filter occurrence, retain global protocol authority and preserve product semantics, RequiredTests, historical classifications and exhausted budgets."
+    },
+    "Q03": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:371-393 implements the ordered conservative three-state procedure over UTF-16 units. An ASCII matching window establishes selection; otherwise a potentially compatible non-ASCII window fails closed, while an impossible set of windows proves non-selection. Independent synthetic cases and ordinal mutants confirm this behavior."
+    },
+    "Q04": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:429-439, 541-550 and 566-568 enforce required, validated and canonicalized test identities before duplicate detection and resolution. T63-T73 cover equivalent and distinct GUIDs, missing/malformed/unknown ids, case-variant references and legitimate repeated executions."
+    },
+    "Q05": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:478-511 proves the consumed failure-path cardinality before reading Message.text. Duplicate, misplaced, nested and foreign-namespace structures fail; Failed rows require a complete path. T74-T89 and the six message-related mutants confirm the correction without first-node-wins classification."
+    },
+    "Q06": {
+      "Answer": "NO",
+      "Conforming": false,
+      "Evidence": "Counters and executionId rules remain unchanged, but check_structure at verifier:466-475 accepts a nested TestRun because it compares immediate parent tags without anchoring them to the actual document root. The root-only readers at 532-534 then ignore that run's definitions, results and counters. See I64-A10-TESTRUN-ROOT-ANCHOR."
+    },
+    "Q07": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:684-688 and 807-828 enforce positive MinSelected, all selected GREEN rows passing, selected RED failures, composition, matching identities and handoff counts. A-10:248-270 binds 724/724/0, 724/673/51 and 50 assertions plus one NullReferenceException to the later real occurrence. Ordinary synthetic fixtures use six selected rows; T83 separately tests the requested 51-failure composition. The structural parser defect is reported under Q06/Q13."
+    },
+    "Q08": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:632-654 and 769-795 retain hardened Git execution, independent derivation, equality with the accredited list and RED-to-GREEN protection. Independent read-only Git diffs confirmed the six accredited WorkspaceNavigation test files and only three Application source paths changed between RED and GREEN."
+    },
+    "Q09": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:752-761 validates both handoffs against the embedded schema. Lines 838-861 require exact equality outside WorkCompleted, preserved key order, the exact authorized append, an initially clean governed text set, no disappearance and exactly one introduced prohibited occurrence."
+    },
+    "Q10": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "All 27 source units in verifier:65-331 match the pinned A-6 source verbatim; A-6 is neither imported nor executed. Git hardening retains A-4 semantics. A-10:15-27 is a distinct activation replacement. A-8 and A-9 blobs equal their historical reviewed blobs."
+    },
+    "Q11": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Compared all 62 earlier cases: fixture inputs are unchanged, with the documented specific-code updates for T16/T17. Independently exercised all 92 current oracles and all 16 mutants in memory, reproducing the recorded results. Historical A-9 reproduced 64/92 and accepted every ordered signature fixture; A-10 returned the specific GUID or message-cardinality rejection codes. Artifact hashes match A-10."
+    },
+    "Q12": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-10:47-48, 248 and 294-296, the Coordinator order and the specified state fields retain the three-authority activation boundary. Evidence Sec.82 records synthetic execution only. This review fed exclusively synthetic TRX and handoffs to bridge functions."
+    },
+    "Q13": {
+      "Answer": "YES",
+      "Conforming": false,
+      "Evidence": "An independent synthetic probe appended a complete second TestRun inside the T01 GREEN root, containing WorkspaceShadowTests.HiddenFailure with outcome Failed. The document contained ten result elements, but load_trx returned nine rows. Unmodified main returned PASS, exit 0, no reasons and all 61 checks in pass. See I64-A10-SHADOW-RUN-PASS."
+    },
+    "Q14": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "The correction requires local enforcement of the already declared unambiguous TRX boundary and a synthetic regression. It needs no global I-61 semantic change, I-62 authority or additional Owner policy decision. The explicitly requested activation decision remains pending."
+    }
+  },
+  "Findings": [
+    {
+      "Id": "I64-A10-TESTRUN-ROOT-ANCHOR",
+      "Severity": "REQUIRED",
+      "Question": "Q06",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:474",
+      "Defect": "check_structure validates only the immediate parent's qualified tag. TestRun itself is absent from STRUCTURE, so a nested TestRun containing TestDefinitions, Results and ResultSummary passes this guard. The subsequent root.findall calls ignore those containers. This contradicts A-10 Sec.3.1's guarantee that consumed copies cannot remain outside the counts.",
+      "Authority": "A-10 Sec.3.1, especially lines 145-149; Coordinator A-10 order:147 and 236-244; AUTOMATION_PLAN Sec.16.9 Tests and Sec.16.11 S-03/S-04; LIFECYCLE Sec.5.",
+      "Correction": "In the next authorized append-only amendment, require TestRun to be the unique actual root and anchor every consumed element's parent chain to it. Reject nested TestRun elements with a specific structural diagnostic before reading definitions or results. Preserve the existing counter and executionId rules.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A10-SHADOW-RUN-PASS",
+      "Severity": "REQUIRED",
+      "Question": "Q13",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py:482",
+      "Defect": "This is the demonstrated PASS consequence of I64-A10-TESTRUN-ROOT-ANCHOR, recorded separately to map Q13 explicitly. T90-T92 do not exercise an entire nested run whose immediate parent tags look valid. Appending a synthetic nested run with one selected Failed result to the otherwise unchanged T01 GREEN document leaves main at PASS, exit 0, with 61 passing checks and no reasons; ten result elements become nine parsed rows and GREEN still reports six selected, zero failed.",
+      "Authority": "A-10 Sec.3.1 promises that nested consumed copies cannot escape counting. The Coordinator order preserves fail-closed parsing and requires adversarial regressions; LIFECYCLE Sec.5 rejects open failure paths and unverifiable guarantees.",
+      "Correction": "Add a behavioral regression retaining T01's handoffs, expected counts and outer Counters while inserting the nested run and selected failure. Require structural FAIL with a specific code, demonstrate failure against the reviewed A-10 blob, and require the corrected parser plus all existing cases to satisfy their oracles. The parser correction is shared with I64-A10-TESTRUN-ROOT-ANCHOR.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "RequiredCount": 2,
+  "OptionalCount": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "Limitations": [
+    "Independent separate-session review; the reviewer did not author the reviewed object and used no author memory or transcript.",
+    "The Q06 and Q13 findings map one structural root cause and its demonstrated PASS consequence to the two required questions; they share a correction.",
+    "Filesystem-writing self-test and regression CLIs were not rerun under the read-only restriction. Pinned artifacts and hashes were inspected. All 92 case oracles, 16 mutants and historical A-9 behavior were independently exercised in memory with synthetic read/Git substitutes and temporary-directory/cleanup/output substitutes. This does not reproduce subprocess or filesystem integration.",
+    "The adversarial probe invoked the pinned main and parser without changing their source. Its TRX, handoffs, Git responses and expected values were synthetic.",
+    "No real F2-T1 evidence was processed by the bridge. Real occurrence bindings were checked against versioned records without recomputing real selection.",
+    "No files were written, no commit or push was performed, and the working tree remained clean. No product builds or dotnet test suites were run under the read-only restriction. This verdict does not activate A-10 or grant an Owner decision."
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "RunId": "R20261109T141352Z-75ac",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a1c0a8-beb2-77e3-bd13-e1c0fdf7503e",
+  "Usage": {
+    "input_tokens": 3341017,
+    "cached_input_tokens": 3143936,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 16964,
+    "reasoning_output_tokens": 6232
+  },
+  "CommandCount": 57,
+  "NoProfileCommands": 57,
+  "NonZeroCommands": [
+    {
+      "Command": " in ('Cases','Mutants','HistoricalA9')},'Mutants':{k:{x:y for x,y in v.items() if x in ('Passed','Result','MustFailOk')} for k,v in obj.get('Mutants',{}).items()},ensure_ascii=True)) '@ | python -B -\"",
+      "Exit": 1,
+      "Error": "r x,y in v.items() if x in ('Passed','Result','MustFailOk')} for k,v in obj.get('Mutants',{}).items()},ensure_ascii=True)) ^ SyntaxError: closing parenthesis ')' does not match opening parenthesis '{'"
+    }
+  ],
+  "ExecutedBridgeTools": [
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git rev-parse 3175bcb9cf382b78aa751c762dcfaf7be4a2787c:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git rev-parse 3175bcb9cf382b78aa751c762dcfaf7be4a2787c:docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git rev-parse 3175bcb9cf382b78aa751c762dcfaf7be4a2787c:docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_testfilter_bridge.py'",
+    "doza\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command '$i=0; git show 3175bcb9cf38:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py | ForEach-Object { $i++; if ($i -le 350) { '\"'{0,4}: {1}' -f \"'$i, $_ } }'",
+    "dex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command '$i=0; git show 3175bcb9cf38:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py | ForEach-Object { $i++; if ($i -gt 350 -and $i -le 650) { '\"'{0,4}: {1}' -f \"'$i, $_ } }'",
+    "doza\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command '$i=0; git show 3175bcb9cf38:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py | ForEach-Object { $i++; if ($i -gt 650) { '\"'{0,4}: {1}' -f \"'$i, $_ } }'",
+    "za\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command '$i=0; git show 3175bcb9cf38:docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py | ForEach-Object { $i++; if ($i -le 240) { '\"'{0,4}: {1}' -f \"'$i, $_ } }'",
+    "x-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command '$i=0; git show 3175bcb9cf38:docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py | ForEach-Object { $i++; if ($i -ge 234 -and $i -le 420) { '\"'{0,4}: {1}' -f \"'$i, $_ } }'",
+    "za\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command '$i=0; git show 3175bcb9cf38:docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py | ForEach-Object { $i++; if ($i -gt 419) { '\"'{0,4}: {1}' -f \"'$i, $_ } }'",
+    "),'Checks':len(doc['Checks']), 'TotalResultElements':len(list(root.iter(m['q']('UnitTestResult')))),'ParsedResultRows':len(m['load_trx'](nested)[1]), 'GreenSelected':doc['Green'].get('Selected'),'GreenFailed':doc['Green'].get('Failed'), 'NestedSelectedFailed':1},ensure_ascii=True)) '@ | python -B -\"",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show 3175bcb9cf38:docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_testfilter_bridge.py'",
+    "tifact':name,'Sha256':hashlib.sha256(raw).hexdigest(),'Summary':{k:v for k,v in obj.items() if k not in ('Cases','Mutants','HistoricalA9')},'Mutants':{k:{x:y for x,y in v.items() if x in ('Passed','Result','MustFailOk')} for k,v in obj.get('Mutants',{}).items()},ensure_ascii=True)) '@ | python -B -\"",
+    "s','Mutants','HistoricalA9')} mutants={k:{x:y for x,y in v.items() if x in ('Passed','Result','MustFailOk')} for k,v in obj.get('Mutants',{}).items()} print(json.dumps({'Artifact':name,'Sha256':hashlib.sha256(raw).hexdigest(),'Summary':summary,'Mutants':mutants},ensure_ascii=True)) '@ | python -B -\""
+  ],
+  "RealF2T1BridgeExecution": [],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OutputSha256": "43EE30D2463D138F9B6A28742CE55C3DAD52D918949C2DE08CAFBA94E0F84659",
+  "NonAsciiBytes": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "RequiredCount": 2,
+  "OptionalCount": 0,
+  "PriorFindings": {
+    "I64-A9-TESTID-GUID-ALIAS": "CLOSED",
+    "I64-A9-FAILURE-MESSAGE-AMBIGUITY": "CLOSED"
+  },
+  "ClosedA8Findings": {
+    "I64-A8-ORDINAL-FILTER-MISMATCH": "REMAINS CLOSED",
+    "I64-A8-COUNTER-COHERENCE": "REMAINS CLOSED",
+    "I64-A8-DUPLICATE-RESULT-FAIL-OPEN": "REMAINS CLOSED"
+  },
+  "RequiredFindings": [
+    {
+      "Id": "I64-A10-TESTRUN-ROOT-ANCHOR",
+      "Severity": "REQUIRED",
+      "Question": "Q06",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:474",
+      "Defect": "check_structure validates only the immediate parent's qualified tag. TestRun itself is absent from STRUCTURE, so a nested TestRun containing TestDefinitions, Results and ResultSummary passes this guard. The subsequent root.findall calls ignore those containers. This contradicts A-10 Sec.3.1's guarantee that consumed copies cannot remain outside the counts.",
+      "Authority": "A-10 Sec.3.1, especially lines 145-149; Coordinator A-10 order:147 and 236-244; AUTOMATION_PLAN Sec.16.9 Tests and Sec.16.11 S-03/S-04; LIFECYCLE Sec.5.",
+      "Correction": "In the next authorized append-only amendment, require TestRun to be the unique actual root and anchor every consumed element's parent chain to it. Reject nested TestRun elements with a specific structural diagnostic before reading definitions or results. Preserve the existing counter and executionId rules.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A10-SHADOW-RUN-PASS",
+      "Severity": "REQUIRED",
+      "Question": "Q13",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py:482",
+      "Defect": "This is the demonstrated PASS consequence of I64-A10-TESTRUN-ROOT-ANCHOR, recorded separately to map Q13 explicitly. T90-T92 do not exercise an entire nested run whose immediate parent tags look valid. Appending a synthetic nested run with one selected Failed result to the otherwise unchanged T01 GREEN document leaves main at PASS, exit 0, with 61 passing checks and no reasons; ten result elements become nine parsed rows and GREEN still reports six selected, zero failed.",
+      "Authority": "A-10 Sec.3.1 promises that nested consumed copies cannot escape counting. The Coordinator order preserves fail-closed parsing and requires adversarial regressions; LIFECYCLE Sec.5 rejects open failure paths and unverifiable guarantees.",
+      "Correction": "Add a behavioral regression retaining T01's handoffs, expected counts and outer Counters while inserting the nested run and selected failure. Require structural FAIL with a specific code, demonstrate failure against the reviewed A-10 blob, and require the corrected parser plus all existing cases to satisfy their oracles. The parser correction is shared with I64-A10-TESTRUN-ROOT-ANCHOR.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "OptionalFindings": [],
+  "Answers": {
+    "Q01": [
+      "YES",
+      true
+    ],
+    "Q02": [
+      "YES",
+      true
+    ],
+    "Q03": [
+      "YES",
+      true
+    ],
+    "Q04": [
+      "YES",
+      true
+    ],
+    "Q05": [
+      "YES",
+      true
+    ],
+    "Q06": [
+      "NO",
+      false
+    ],
+    "Q07": [
+      "YES",
+      true
+    ],
+    "Q08": [
+      "YES",
+      true
+    ],
+    "Q09": [
+      "YES",
+      true
+    ],
+    "Q10": [
+      "YES",
+      true
+    ],
+    "Q11": [
+      "YES",
+      true
+    ],
+    "Q12": [
+      "YES",
+      true
+    ],
+    "Q13": [
+      "YES",
+      false
+    ],
+    "Q14": [
+      "NO",
+      true
+    ]
+  },
+  "PolarityAsExpected": {
+    "Q01": true,
+    "Q02": true,
+    "Q03": true,
+    "Q04": true,
+    "Q05": true,
+    "Q06": false,
+    "Q07": true,
+    "Q08": true,
+    "Q09": true,
+    "Q10": true,
+    "Q11": true,
+    "Q12": true,
+    "Q13": false,
+    "Q14": true
+  },
+  "Coherent": true,
+  "SubjectMatches": true,
+  "SubjectMismatches": [],
+  "GateTerms1610": [],
+  "Limitations": [
+    "Independent separate-session review; the reviewer did not author the reviewed object and used no author memory or transcript.",
+    "The Q06 and Q13 findings map one structural root cause and its demonstrated PASS consequence to the two required questions; they share a correction.",
+    "Filesystem-writing self-test and regression CLIs were not rerun under the read-only restriction. Pinned artifacts and hashes were inspected. All 92 case oracles, 16 mutants and historical A-9 behavior were independently exercised in memory with synthetic read/Git substitutes and temporary-directory/cleanup/output substitutes. This does not reproduce subprocess or filesystem integration.",
+    "The adversarial probe invoked the pinned main and parser without changing their source. Its TRX, handoffs, Git responses and expected values were synthetic.",
+    "No real F2-T1 evidence was processed by the bridge. Real occurrence bindings were checked against versioned records without recomputing real selection.",
+    "No files were written, no commit or push was performed, and the working tree remained clean. No product builds or dotnet test suites were run under the read-only restriction. This verdict does not activate A-10 or grant an Owner decision."
+  ],
+  "CliVersion": "0.167.0-alpha.3.2",
+  "Sandbox": {
+    "type": "read-only"
+  },
+  "Effective": [
+    "gpt-6.1-sol",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-11-09T08-14-07-01a1c0a8-beb2-77e3-bd13-e1c0fdf7503e.jsonl",
+  "EffectiveSourceSha256": "928C7962CD5C569C0E5566320D6099B2E6C9EEE70D461D1115016F66BA59613B",
+  "LimitPatternContexts": {
+    " | frontera |\\r    675: | S-11 | repeated rework limit reached | STOP |\\": 1,
+    "on | frontera |\\r  675: | S-11 | repeated rework limit reached | STOP |\\": 1,
+    "tion | frontera |\\\\\\\\r   | S-11 | repeated rework limit reached | STOP |\\": 1,
+    " |\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 1
+  },
+  "EventsSha256": "4AC16B2E4977220715656C8657A994D00EEBD2973A4654D66D7A800EB9FB817D"
+}

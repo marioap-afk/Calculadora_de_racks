@@ -5300,3 +5300,44 @@ de `main`.
 - Solo documentación, evidencia y herramientas sintéticas; sin cambios en `src/` ni `tests/`.
 - Sin invocación de modelos en esta etapa; sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
 - **Siguiente:** la CI exacta de este commit y, si da 4/4, la revisión formal del Architect con la celda acreditada.
+
+## 83. A-10: revisión formal del Architect = CHANGES REQUIRED (2 REQUIRED, una causa); los 2 hallazgos de 04e8 = CLOSED; A-10 NO ACTIVA
+
+**CI de §82:** corrida `42631994957` (push, SHA exacto `3175bcb9cf382b78aa751c762dcfaf7be4a2787c`), 4/4 success.
+
+**Condiciones de la orden (sin sonda nueva):**
+- binario sin cambio: un único `codex.exe` (`bin/f71a721e0e6193a9`), SHA-256 `4B3286E3…` antes y después;
+- config.toml en la instantánea D antes y después;
+- relevo limpio: HEAD = remoto = `3175bcb9`, árboles limpios, sin operación de Git en curso y sin participantes;
+- sin avisos de uso ni de crédito.
+
+**Revisión `R20261109T141352Z-75ac`** (`I-64-protocol-bridge/architect-review/R20261109T141352Z-75ac/`):
+- **Ejecución:**
+  - efectivos `gpt-6.1-sol` / `high` según el `turn_context`; CLI `0.167.0-alpha.3.2`; read-only;
+  - cesión de 14:14:06Z a 14:20:30Z;
+  - 57 órdenes, todas con `-NoProfile`; una dio código 1 (`SyntaxError` del propio script de inspección del revisor) y se repitió
+    con éxito.
+- **Salida:** válida, coherente, con el objeto correcto y solo ASCII. Sin términos de 16.10. Los patrones de límite solo aparecen en la
+  fila S-11 del AUTOMATION_PLAN leída.
+- **Sin evidencia real:** las pruebas adversariales usaron `verify()` y `main()` en memoria con TRX, entregas y Git sintéticos
+  (`read_bytes` sustituido); ninguna orden de escritura.
+- **Hallazgos de 04e8:** `I64-A9-TESTID-GUID-ALIAS` = CLOSED; `I64-A9-FAILURE-MESSAGE-AMBIGUITY` = CLOSED.
+- **Hallazgos de e1d0:** los tres = REMAINS CLOSED.
+- **Respuestas:** conformes salvo Q06 (NO) y Q13 (YES: existe una ruta abierta).
+- **Dictamen: CHANGES REQUIRED, 2 REQUIRED, 0 OPTIONAL.** Según el propio revisor, son una causa raíz y su consecuencia demostrada,
+  con una corrección compartida.
+
+| Hallazgo | Pregunta | Ubicación | Defecto | Corrección pedida |
+|---|---|---|---|---|
+| I64-A10-TESTRUN-ROOT-ANCHOR | Q06 | `verify_testfilter_bridge.py:474` | `check_structure()` solo compara la etiqueta del padre inmediato y `TestRun` no está en `STRUCTURE`; un `TestRun` anidado con su `TestDefinitions`, `Results` y `ResultSummary` pasa la guarda, y las lecturas desde la raíz lo ignoran | exigir que `TestRun` sea la raíz única y anclar la cadena de padres de cada elemento consumido a ella; rechazar un `TestRun` anidado con un diagnóstico estructural específico antes de leer |
+| I64-A10-SHADOW-RUN-PASS | Q13 | `selftest_testfilter_bridge.py:482` | consecuencia PASS demostrada: con un `TestRun` anidado que contiene una fila Failed seleccionada añadido al GREEN de T01, `main()` da PASS con código 0 (10 elementos de resultado, 9 filas leídas, 6 seleccionadas y 0 fallidas) | regresión que conserve las entregas, los recuentos y los Counters de T01 con el `TestRun` anidado; FAIL estructural con código específico, demostrado contra el blob de A-10 |
+
+- **Alcance de los hallazgos:** ninguno exige cambiar I-61 ni una decisión del Owner.
+- **Estado:** A-10 sigue **NOT ACTIVE** y F2-T1 sigue BLOCKED_PROTOCOL_DEPENDENCY.
+- **Según la orden:** STOP; no se crea A-11 de forma automática y los hallazgos vuelven al Coordinator. No se solicita la decisión del
+  Owner sobre A-10.
+
+**Límites:**
+- Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
+- Invocaciones de modelo: la revisión.
+- Sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
