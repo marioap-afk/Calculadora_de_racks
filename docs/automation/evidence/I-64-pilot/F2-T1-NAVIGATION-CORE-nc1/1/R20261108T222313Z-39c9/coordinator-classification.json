@@ -1,0 +1,15 @@
+{
+  "RunId": "R20261108T222313Z-39c9",
+  "Control": "nc1",
+  "CoordinatorClassification": {
+    "Outcome": "INVALID_OUTPUT",
+    "Label": "SCHEMA_VALID_BUT_ORACLE_INVALID / INVALID_OUTPUT",
+    "ControlOracle": "NOT MET",
+    "ValidNc1OracleOutputsConsumed": 0,
+    "Reason": "the nc1 mutation changes only the handoff CurrentSha to a nonexistent SHA; under AUTOMATION_PLAN 16.9 and README 10 Handoff validates handoff identity fields and chronology, and the existence/ancestry/current-repository meaning of CurrentSha belongs to Identity; the Controller used the mutated CurrentSha while evaluating Handoff (FailureClass Handoff instead of Identity); later Ci/Tests failures are cascade effects; the display-name test counting in Tests is also incorrect but secondary.",
+    "RetryAuthorized": "one nc1 retry (CONTROL-phase INVALID_OUTPUT recovery; does not consume attempts)"
+  },
+  "NotRecordedAs": "nc1 = PASS",
+  "OutputUnchanged": "output.json, controller-verification.json, oracle-result.json and relay-record.json of this run are kept unchanged as historical evidence; the relay record Disposition STOP was the session relay disposition before the Coordinator decision",
+  "Source": "coordinator/coordinator-f2t1-nc1-39c9-disposition.md (literal received through the chat of the responsible session; I-64 F2-T1 NEGATIVE CONTROL nc1 DISPOSITION)"
+}

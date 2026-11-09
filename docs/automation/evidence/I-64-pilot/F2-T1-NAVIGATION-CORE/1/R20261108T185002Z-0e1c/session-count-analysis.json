@@ -1,0 +1,59 @@
+{
+  "Schema": "rackcad-i64-session-count-analysis/v1",
+  "VerifyRunId": "R20261108T185002Z-0e1c",
+  "WorkRunId": "R20261108T182756Z-ec7e",
+  "Filter": "FullyQualifiedName~Workspace (VSTest: contiene, sin distinguir mayusculas, sobre el nombre completo clase.metodo)",
+  "CurrentShaTrx": {
+    "Trx": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T185002Z-0e1c/inputs/ci-core/42511528392/core.trx",
+    "Sha256": "832AC146610E270AC38E72FC03747006E0379E384E9744E7FEE093200C5F2DE7",
+    "Total": 15048,
+    "FilterSemantics_FqnContainsWorkspaceIgnoreCase": {
+      "Selected": 724,
+      "Passed": 724,
+      "Failed": 0
+    },
+    "FqnContainsWorkspaceCaseSensitive": 723,
+    "DisplayNameContainsWorkspaceCaseSensitive": 726,
+    "OnlyByDisplayName": [
+      "RackCad.Tests.CustomPropertiesCommandGuardTests.TGrd08_LaGuardaDetectaUnComandoQueSeSaleDelContrato(caso: \"no usa la ventana\", original: \"new RackCustomPropertiesWindow(read.Workspace, dis\"···, replac",
+      "RackCad.Tests.CustomPropertiesEdgeGuardTests.TGrd05_LaGuardaDetectaUnCruce(path: \"src/RackCad.Plugin/RackVariablesCommands.cs\", violation: \"class X { CustomPropertiesWorkspace Workspace; }\")",
+      "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.LaGuardaDetectaUnaSentenciaProhibidaInsertadaEnLaMuestra(rule: \"C11\", statement: \"RackWorkspaceHost.Open();\")"
+    ],
+    "OnlyByIgnoreCase": [
+      "RackCad.Tests.G8PersistenceIntegrationContractTests.WORKSPACE_PROJECTS_THE_EVALUATED_EXPRESSION_VALUE"
+    ]
+  },
+  "RedShaTrx": {
+    "Trx": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T185002Z-0e1c/inputs/ci-core-red/42511103159/core.trx",
+    "Sha256": "39FD76E341C71CD06D98E0D88BC6314483D4E295928DD0AF10944D407A4E4A3C",
+    "Total": 15048,
+    "FilterSemantics_FqnContainsWorkspaceIgnoreCase": {
+      "Selected": 724,
+      "Passed": 673,
+      "Failed": 51
+    },
+    "FqnContainsWorkspaceCaseSensitive": 723,
+    "DisplayNameContainsWorkspaceCaseSensitive": 726,
+    "OnlyByDisplayName": [
+      "RackCad.Tests.CustomPropertiesCommandGuardTests.TGrd08_LaGuardaDetectaUnComandoQueSeSaleDelContrato(caso: \"no usa la ventana\", original: \"new RackCustomPropertiesWindow(read.Workspace, dis\"···, replac",
+      "RackCad.Tests.CustomPropertiesEdgeGuardTests.TGrd05_LaGuardaDetectaUnCruce(path: \"src/RackCad.Plugin/RackVariablesCommands.cs\", violation: \"class X { CustomPropertiesWorkspace Workspace; }\")",
+      "RackCad.Tests.StructuralAnalysisPluginCommandGuardTests.LaGuardaDetectaUnaSentenciaProhibidaInsertadaEnLaMuestra(rule: \"C11\", statement: \"RackWorkspaceHost.Open();\")"
+    ],
+    "OnlyByIgnoreCase": [
+      "RackCad.Tests.G8PersistenceIntegrationContractTests.WORKSPACE_PROJECTS_THE_EVALUATED_EXPRESSION_VALUE"
+    ]
+  },
+  "WorkerHandoff": {
+    "red-filter": [
+      724,
+      673,
+      51
+    ],
+    "green-filter": [
+      724,
+      724,
+      0
+    ]
+  },
+  "ControllerTestsEvidenceCount": 726
+}

@@ -1,0 +1,72 @@
+{
+  "Schema": "rackcad-i64-verification-rerun-inputs/v1",
+  "RunId": "R20261108T221347Z-ebfc",
+  "PreviousRunId": "R20261108T185002Z-0e1c",
+  "PromptSha256": "F330D96109D9AC7F7257899FD0334755A046B048B93C95F753BBAE875B06A69A",
+  "PreviousPromptSha256": "04135A739E7E097655423A810647DA25C2E6C3907FB333EE342FA5BEE16E8059",
+  "PromptEqualExceptRunIdAndInputsPath": true,
+  "CoordinatorDispositionInput": {
+    "Sha256": "A235277CAFA4789DECC13858103483B9C24F540CA0ED9F18AFBAACBAECB5E48F",
+    "Parts": [
+      {
+        "File": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator/coordinator-f2t1-preplanning-stop-disposition.md",
+        "Sha256": "02950ABF298418FD23AA4310AAA003E89C41DD009432345C49F88B1C6E1ED5F1",
+        "Offset": 0,
+        "Length": 9733
+      },
+      {
+        "Separator": "\\n=====\\n\\n",
+        "Offset": 9733,
+        "Length": 8
+      },
+      {
+        "File": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator/coordinator-f2t1-verification-0e1c-disposition.md",
+        "Sha256": "0E5C20B61CE67B2879CC8442B09F5A2C3AC2FD174AC971DB30BA5C8A4D96E773",
+        "Offset": 9741,
+        "Length": 7055
+      }
+    ]
+  },
+  "Inputs": {
+    "ci-core-red/42511103159/core.trx": {
+      "Sha256": "39FD76E341C71CD06D98E0D88BC6314483D4E295928DD0AF10944D407A4E4A3C",
+      "EqualTo0e1c": true
+    },
+    "ci-core/42511528392/core.trx": {
+      "Sha256": "832AC146610E270AC38E72FC03747006E0379E384E9744E7FEE093200C5F2DE7",
+      "EqualTo0e1c": true
+    },
+    "ci-ui/42511528392/ui.trx": {
+      "Sha256": "88B5B50E38286D101B1EF8D7812B695CCCD548EEF7F9F824A940263378329F5E",
+      "EqualTo0e1c": true
+    },
+    "contract-equivalence.json": {
+      "Sha256": "17D6841A1BC89DAE8BB4B34DD1306C54C5162E1F9F25C3CBFAB97AE47F555CD3",
+      "EqualTo0e1c": true
+    },
+    "coordinator-disposition.md": {
+      "Sha256": "A235277CAFA4789DECC13858103483B9C24F540CA0ED9F18AFBAACBAECB5E48F",
+      "EqualTo0e1c": false
+    },
+    "delegation.json": {
+      "Sha256": "3E2FF2BB55B442CBC59FCEA86430D2DE4B78AB43C82EE961A4B8762DFE11EAA6",
+      "EqualTo0e1c": true
+    },
+    "gate-contract.json": {
+      "Sha256": "1667B2A2906164C6EC2AC4778FAD7693C6CCB39A29C047092003600918339788",
+      "EqualTo0e1c": true
+    },
+    "relay-record-planning.json": {
+      "Sha256": "84DC59EBFAAEE861C7726B068376891B1EB07644F3E608C090C5C8BB42B1142A",
+      "EqualTo0e1c": true
+    },
+    "relay-record-work.json": {
+      "Sha256": "930AE082211053A38DBAD2404EFA06FA42C42CE6386C5B6FDB6399F8E0B33A2A",
+      "EqualTo0e1c": true
+    },
+    "worker-handoff.json": {
+      "Sha256": "7F9F7E7484F62C8B4561D03E654FAAC4D91D90957919C346ADD79B3333A7B5F7",
+      "EqualTo0e1c": true
+    }
+  }
+}

@@ -4937,3 +4937,82 @@ añade documentación y evidencia, y `09f2f1c3` sigue siendo el Candidato de la 
 **Relevos:**
 - Una invocación de modelo: la sonda `3b8b`.
 - HEAD = remoto = `90f5872e` antes de este commit; `main` `a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60`, sin cambios.
+
+## 77. F2-T1-NAVIGATION-CORE: cadena completa; EXECUTION_VERIFIED; nc1 PASS; nc2 bajo I64-SCOPE-BRIDGE-01; nc3; custodia; COORDINATOR_F2_T1_CLOSE_REQUIRED
+
+**CI del commit de estado de §76:** corrida `42509272295` (push, SHA exacto `9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb`), 4/4 success.
+
+**Paquete de cierre:** `I-64-pilot/F2-T1-NAVIGATION-CORE/task-close-package.md`. Las disposiciones del Coordinator están literales en
+`I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/`: preplanning-stop, 0e1c, nc1 39c9, nc2 fa85, nc2 5b90 y nc2 0706 / A-4.
+
+**Producto:**
+- Planificación `R20261108T181429Z-adae`: A1-A8 8/8; delegación `3E2FF2BB…EAA6`.
+- nc4 `R20261108T182446Z-ed72`: PASS.
+- Worker `R20261108T182756Z-ec7e` (`claude-sonnet-5-5`/`high`):
+  - RED `f2761979` (CI 42511103159): 724 / 673 / 51, con **50 fallos de aserción xUnit + 1 NullReferenceException**;
+  - GREEN `c726410f` (CI 42511528392 4/4; Core 15048/15048).
+- 10 archivos nuevos, solo en `src/RackCad.Application/Workspace/` y `tests/RackCad.Tests/Workspace/`.
+
+**Verificación:**
+- `R20261108T185002Z-0e1c`: INVALID_OUTPUT. Contó por nombre visible (726); queda con su `analysis.md`.
+- `R20261108T221347Z-ebfc`: **EXECUTION_VERIFIED / NONE, 14/14, ACEPTADA**.
+  - Mismo prompt que 0e1c; la regla del recuento llegó por `inputs/coordinator-disposition.md`.
+  - Lanzador con `-c allow_login_shell=false` (`pwsh -NoProfile`; sin cambiar `config.toml`, el perfil ni la política de ejecución).
+  - Recuento de referencia con semántica FQN sin distinguir mayúsculas: GREEN 724/724/0, RED 724/673/51.
+
+**Controles:**
+- **nc1:** `39c9` = INVALID_OUTPUT (evaluó el `CurrentSha` mutado en Handoff); el reintento `46b5` = **CONTROL PASS**, aceptado.
+- **nc2:** mutación aceptada por el Coordinator: se quita el prefijo, se enumeran los 3 archivos restantes y `NavigationActions.cs`
+  queda fuera.
+  - `fa85` = INVALID_OUTPUT: SHA de 34 caracteres en Identity y Remote.
+  - `5b90` = INVALID_OUTPUT: hora de la cesión de planificación atribuida al Worker en Termination.
+  - `0706` = **CONTROL FAIL**: el defecto histórico de Scope se reprodujo; evaluó contra el contrato. Presupuesto de nc2 agotado.
+  - **I64-SCOPE-BRIDGE-01 `R20261109T044628Z-34cd` = PASS** (A-4; verificador `cf381ab9`, una ejecución). REAL, con la delegación
+    aceptada, da PASS; ADVERSARIAL, con la delegación mutada de 0706, da FAIL, con `OUTSIDE_ALLOWED_WRITE_SCOPE` como única razón y
+    `NavigationActions.cs` como único archivo. Con esto **nc2 = SATISFIED_UNDER_I64_SCOPE_BRIDGE**, y 0706 sigue en CONTROL FAIL.
+  - **Herramientas de la sesión desde los reintentos:**
+    - aserciones previas a la invocación: `CurrentSha` de 40 caracteres y exacto, ningún token mal formado y SHA que resuelven;
+    - validación mecánica de la evidencia anterior a la comprobación mutada: hexadecimales frente a Git y atribución de horas al
+      registro correcto.
+- **nc3 `R20261109T044704Z-46c1`:** FreeText / REWORK_REQUIRED / REWORK, con las demás comprobaciones iguales a ebfc. La sesión da el
+  oráculo por cumplido; la clasificación queda pendiente del Coordinator. Hechos para la revisión en el paquete §6: la afirmación de
+  Tests sobre los fallos de aserción, idéntica al Finding de la ebfc aceptada, y la cita de «GATE PASS» en el texto libre. A-6 no aplica.
+
+**Deuda de protocolo** (orden del Coordinator, PROTOCOL / PROMPT DEBT): el prompt normativo de verificación fija
+«AllowedWriteScope (2 entradas)». Detalle en `protocol-debt-allowedwritescope-count.md`, que se entregará a I-62 al cerrar la cadena.
+Durante F2-T1 no se modifica el prompt.
+
+**Consumo:**
+- verificación: 1 válida + 1 reejecución;
+- nc1: 1 + 1; nc2: 1 + 2 (agotado); nc3: 1 + 0;
+- A-4: 1/1; A-6: no usado;
+- 1 Worker; attempts 1/3.
+
+**Custodia:** 13 unidades con su `custody-manifest.json`.
+- Redacción: las rutas del worktree, del perfil y del checkout principal se sustituyen por marcadores.
+- Solo por SHA-256: `events.jsonl`, los TRX, los logs y la copia del verificador.
+- Las 13 unidades:
+  - `coordinator/`;
+  - `1/` R..-adae, R..-ec7e, R..-0e1c y R..-ebfc;
+  - `-nc4/1/` R..-ed72;
+  - `-nc1/1/` R..-39c9 y R..-46b5;
+  - `-nc2/1/` R..-fa85, R..-5b90 y R..-0706;
+  - `-scope-bridge/` R..-34cd;
+  - `-nc3/1/` R..-46c1.
+
+**Relevos:**
+- **Invocaciones de modelo del Controller desde §76:**
+  - planificación;
+  - verificaciones 0e1c y ebfc;
+  - nc1: 39c9 y 46b5;
+  - nc2: fa85, 5b90 y 0706;
+  - nc3: 46c1.
+- **Worker:** 1 invocación.
+- **`config.toml`:** instantánea D exacta (`377D0C3C…`) a la salida, justo antes y a la entrada de cada invocación.
+- **Git:** HEAD = remoto = `c726410f` hasta este commit; sin commits de la sesión entre la verificación y los controles (16.4 paso 5);
+  `origin/main` `a140eb3a`, sin cambios.
+
+**Límites:** solo documentación y evidencia; sin cambios en `src/` ni `tests/`; sin AutoCAD; F2-T2 NO AUTORIZADA; sin merge ni rebase
+de `main`.
+
+**Siguiente:** CI exacta de este commit → **COORDINATOR_F2_T1_CLOSE_REQUIRED**.

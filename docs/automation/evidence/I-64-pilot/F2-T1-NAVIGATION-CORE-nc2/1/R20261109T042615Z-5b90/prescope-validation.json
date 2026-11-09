@@ -1,0 +1,86 @@
+{
+  "RunId": "R20261109T042615Z-5b90",
+  "MutatedCheck": "Scope",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Timestamps": [
+        {
+          "Quoted": "2026-11-08T12:45:41.225211-06:00",
+          "Utc": "2026-11-08T18:45:41+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        },
+        {
+          "Quoted": "18:24:25Z",
+          "UtcTimeOfDay": "18:24:25",
+          "Sources": [
+            "relay-record-planning.json"
+          ]
+        }
+      ],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true, OutputWrittenUtc=2026-11-08T12:45:41.225211-06:00; LaunchedPid=null. The session cession ended at 18:24:25Z and records no live Worker descendants or orphans."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [
+        {
+          "Quoted": "R20261108T181429Z-adae",
+          "Sources": [
+            "contract-equivalence.json",
+            "delegation.json",
+            "relay-record-planning.json",
+            "relay-record-work.json",
+            "worker-handoff.json"
+          ]
+        },
+        {
+          "Quoted": "R20261108T182756Z-ec7e",
+          "Sources": [
+            "relay-record-work.json",
+            "worker-handoff.json"
+          ]
+        }
+      ],
+      "Evidence": "worker-handoff.json is present and identifies TaskId F2-T1-NAVIGATION-CORE, Attempt 1, DelegationRunId R20261108T181429Z-adae, RunId R20261108T182756Z-ec7e, BaseSha 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb, and CurrentSha c726410f3ac764f4a80a08a2b810b5fdda276ecc. Its output hash matches relay-record-work.json; its output time is after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git diff --name-only AuthorityRevision BaseSha lists only I-64 unit documentation/evidence paths; the declared EXTERNAL authorities docs/AUTOMATION_PLAN.md, docs/automation/agent-execution/README.md, AGENTS.md, routing.md, model-catalog.md, and docs/WORKFLOW.md have no changes in that range. AUTOMATION_PLAN sections 16.3, 16.8, 16.9, 16.10 and README section 8 were read at MainSha a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60. The ASCII section labels match their Git headings under the stated transliteration rule."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "Delegation and contract match on Unit I-64, Gate F2, TaskId, AuthorityRevision, MainSha, invariants, stop conditions, RequiredTests, and forbidden scope. The delegation's AllowedWriteScope is covered by the contract's two directory prefixes. Contract-equivalence.json records the mechanical ASCII reissue and unchanged scopes, invariants, RequiredTests, stop conditions, and authority classes. Planning relay records A1-A8 all pass; nc4 produced its required rejection."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned c726410f3ac764f4a80a08a2b810b5fdda276ecc, on branch architecture/workspace-persistente-rackcad in the declared worktree. git merge-base --is-ancestor BaseSha CurrentSha returned 0. RedSha f2761979b89e784ed16220815e250d21bc476aa1 is between BaseSha and CurrentSha; git log shows RED parent BaseSha and GREEN parent RedSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "relay-record-work RemoteFacts records ls-remote as c726410f3ac764f4a80a08a2b810b5fdda276ecc and origin/main as a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60, matching CurrentSha and MainSha. A direct git ls-remote attempt was blocked by unavailable network access; the recorded remote facts identify the exact branch tip."
+    }
+  },
+  "Findings": [
+    {
+      "Check": "Termination",
+      "Kind": "timestamp-not-from-worker-record",
+      "Quoted": "18:24:25Z",
+      "Sources": [
+        "relay-record-planning.json"
+      ]
+    }
+  ],
+  "Pass": false
+}

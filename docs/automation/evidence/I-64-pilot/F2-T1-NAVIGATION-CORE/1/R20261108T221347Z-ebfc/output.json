@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F2-T1-NAVIGATION-CORE",
+  "RunId": "R20261108T221347Z-ebfc",
+  "DelegationRunId": "R20261108T181429Z-adae",
+  "WorkRunId": "R20261108T182756Z-ec7e",
+  "Attempt": 1,
+  "VerifiedSha": "c726410f3ac764f4a80a08a2b810b5fdda276ecc",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work: Outcome.Kind=COMPLETED, DeathConfirmed=true, TreeKilled=false; Cession.SessionOperated=false, StartUtc=2026-11-08T18:28:11Z y EndUtc=2026-11-08T18:46:05Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe en inputs y declara TaskId F2-T1-NAVIGATION-CORE, Attempt 1, DelegationRunId R20261108T181429Z-adae y RunId R20261108T182756Z-ec7e. relay-record-work registra el mismo OutputPath y OutputWrittenUtc 2026-11-08T18:45:41.225211Z, posterior al inicio de cesion."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leidos desde Git: documentos UNIT_DOC en 90f5872e y autoridades EXTERNAL en a140eb3a, incluida AUTOMATION_PLAN 16.3, 16.8-16.10, agent-execution README 8 y AGENTS.md. git merge-base --is-ancestor 90f5872e 9082bcbc devuelve 0; git diff --name-only 90f5872e 9082bcbc enumera solo docs/automation/evidence e I-64.yml, sin rutas EXTERNAL ni UNIT_CHANGE. git diff desde a140eb3a a 90f5872e para AUTOMATION_PLAN, WORKFLOW, AGENTS y agent-execution no muestra cambios."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparacion mecanica entre gate-contract.json y delegation.json: Objective, Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests y StopConditions coinciden; RequiredTests exige RackCad.Tests.csproj, FullyQualifiedName~Workspace, MinSelected=645 y ExpectRed=true. relay-record-planning Acceptance A1-A8: todas pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current devuelve architecture/workspace-persistente-rackcad. git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad devuelven c726410f. merge-base --is-ancestor BaseSha RedSha, RedSha CurrentSha y BaseSha CurrentSha devuelven 0. Worktree de la entrega coincide con el directorio actual."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work RemoteFacts reporta ls-remote CurrentSha=c726410f y OriginMainSha=a140eb3a; Entry HeadSha y LsRemoteSha son c726410f. git rev-parse de la rama remota local devuelve c726410f y de origin/main devuelve a140eb3a."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha enumera 10 rutas, todas dentro de los dos prefijos autorizados: src/RackCad.Application/Workspace/ (NavigationActions.cs, NavigationFacts.cs, NavigationTargetSet.cs, NavigationTargets.cs) y tests/RackCad.Tests/Workspace/ (WorkspaceNavigationActionPolicyTests.cs, WorkspaceNavigationAuthorityTests.cs, WorkspaceNavigationCacheTests.cs, WorkspaceNavigationPrivacyGuardTests.cs, WorkspaceNavigationTargetsTests.cs, WorkspaceNavigationTestSupport.cs). Ninguna coincide con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain esta vacio. git check-ignore -v sobre el worker-handoff.json de inputs devuelve .gitignore:3: artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun y TRX 42511528392 corresponden a push, refs/heads/architecture/workspace-persistente-rackcad, HEAD c726410f; los cuatro jobs requeridos terminaron success. RedPart: push 42511103159 apunta exactamente a f2761979 y el job Core termino failure, como requiere ExpectRed."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Core actual: 15048 Passed, 0 Failed. TRX de CI RED: 15048 seleccionadas, 14997 Passed y 51 Failed; primera falla por asercion de comportamiento: esperaba Act y obtuvo RejectedNoTargets. La entrega registra filtro RED 724 seleccionadas, 673 Passed y 51 Failed; GREEN 724/724, Core completo 15048/15048. git diff BaseSha RedSha -- tests/ produce ChainRedFiles: los seis archivos nuevos WorkspaceNavigation*.cs; git diff RedSha CurrentSha -- tests/ no incluye tests, por lo que GREEN preserva RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show -s --format=%B para ambos commits entre BaseSha y CurrentSha muestra Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, coincidente con Worker.Trailer en la entrega."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work declara ModelRequested=sonnet y ModelEffective=claude-sonnet-5-5, con EffortRequested=high y EffortEffective=high. El catalogo en MainSha registra sonnet como alias de claude-sonnet-5-5; el modelo efectivo coincide con la celda subagent autorizada del contrato y el effort probado."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Busqueda sin distinguir mayusculas de los terminos enumerados en 16.10 sobre WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de la entrega: cero coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes registra cero denegaciones, cero avisos de limite de uso y ninguna orden fallida pendiente. Una orden de shell fallo por comillas sin cerrar y fue superada en llamadas posteriores; la terminacion del Worker esta confirmada."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El TRX UI actual registra 1718 resultados: 1701 Passed, 0 Failed y 17 NotExecuted; el contrato no requiere pruebas UI para esta tarea.",
+    "El Worker declara como limitaciones que el orden de vistas no decodificadas usa View/Section/handle, que Select actua sobre el conjunto fresco revalidado y que los adaptadores de hechos y efectos quedan para F2-T2.",
+    "Los 51 fallos del TRX RED son aserciones de comportamiento de WorkspaceNavigation; el TRX no muestra fallos de compilacion."
+  ],
+  "RecommendedNextAction": "Registrar esta verificacion y seguir la secuencia de coordinacion autorizada para F2-T1."
+}

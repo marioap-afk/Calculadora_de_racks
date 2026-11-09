@@ -1,0 +1,16 @@
+{
+  "RunId": "R20261109T042615Z-5b90",
+  "Control": "nc2",
+  "CoordinatorClassification": {
+    "Outcome": "INVALID_OUTPUT",
+    "Label": "SCHEMA_VALID_BUT_MATERIALLY_FALSE / INVALID_OUTPUT",
+    "ControlOracle": "NOT ACCEPTED",
+    "ValidNc2OracleOutputsConsumed": 0,
+    "CorrectedVsFa85": "no malformed CurrentSha; no unresolved SHA token; Identity uses the real 40-character CurrentSha and its Git evidence is consistent; Remote does not invent a live ls-remote result and labels the relay RemoteFacts source; Tests uses FullyQualifiedName semantics (724/724/0; RED 724/673/51); Scope excludes only NavigationActions.cs; A-4 signature absent",
+    "Reason": "Termination (which precedes Scope) states 'the session cession ended at 18:24:25Z' as Worker termination evidence; that timestamp belongs to relay-record-planning.json (planning R20261108T181429Z-adae), not to the Worker cession (18:28:11Z-18:46:05Z), and predates the Worker invocation: false attribution in a check before Scope.",
+    "RetryAuthorized": "ONE FINAL nc2 retry (second and final permitted INVALID_OUTPUT / transport rerun for nc2)"
+  },
+  "NotRecordedAs": "nc2 = CONTROL PASS",
+  "OutputUnchanged": "output.json, controller-verification.json, oracle-result.json, evidence-validation.json, preinvocation-assertions.json and relay-record.json of this run are kept unchanged as historical evidence",
+  "Source": "coordinator/coordinator-f2t1-nc2-5b90-disposition.md (literal received through the chat of the responsible session; I-64 F2-T1 NEGATIVE CONTROL nc2 RETRY DISPOSITION)"
+}

@@ -1,0 +1,88 @@
+{
+  "RunId": "R20261109T044704Z-46c1",
+  "MutatedCheck": "FreeText",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Timestamps": [
+        {
+          "Quoted": "2026-11-08T18:46:05Z",
+          "Utc": "2026-11-08T18:46:05+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        }
+      ],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, Cession.EndUtc=2026-11-08T18:46:05Z; Notes report final subagent result and no live descendant or orphan at entry."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "inputs/worker-handoff.json has schema rackcad-worker-handoff/v1 and matches TaskId, RunId, DelegationRunId, BaseSha, CurrentSha and branch. The expected handoff path is ignored by Git: git check-ignore -v reports .gitignore:3:artifacts/."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha has no paths docs/AUTOMATION_PLAN.md or docs/automation/agent-execution/README.md. The authority sections were located in MainSha a140eb3a using normalized headings; the stated ASCII section labels match the source headings."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "delegation.json and gate-contract.json match on task, unit, gate, AuthorityRevision, MainSha, scope, required Core project/filter/minimum/red expectation, and invariants. relay-record-planning.json records A1-A8 as 8 pass and nc4 rejection before invocation as directed by coordinator-disposition.md."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git rev-parse HEAD and git rev-parse origin/architecture/workspace-persistente-rackcad both returned c726410f3ac764f4a80a08a2b810b5fdda276ecc, matching handoff CurrentSha. git log shows RED f2761979 is the parent of GREEN c726410f; BaseSha 9082bcbc is the declared parent."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json RemoteFacts reports ls-remote and CurrentRun head at c726410f3ac764f4a80a08a2b810b5fdda276ecc on refs/heads/architecture/workspace-persistente-rackcad; origin/main remains the declared MainSha a140eb3a. Entry differs from Exit as expected after the Worker push during cession."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists 10 new files, all under src/RackCad.Application/Workspace/ or tests/RackCad.Tests/Workspace/. No ForbiddenWriteScope path appears. git diff --name-only ChainBaseSha RedSha -- tests/ lists six Workspace test files; git diff --name-only RedSha CurrentSha lists only three product files, so GREEN leaves ChainRedFiles unchanged."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git status --short --branch returned only ## architecture/workspace-persistente-rackcad...origin/architecture/workspace-persistente-rackcad with no changed paths; relay-record-work.json Entry.CleanTree=true."
+    },
+    "Ci": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "RemoteFacts CurrentRun is push on the exact branch and SHA; all four required jobs are success. RedRun is push on the same branch at RedSha f2761979 and the Core test job failed as expected. The supplied current Core TRX has 15048 passed, 0 failed; the Red Core TRX has 15048 selected, 14997 passed, 51 failed."
+    },
+    "Tests": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "Supplied Core CurrentSha TRX: 15048 selected/executed, 15048 passed, 0 failed. RedSha Core TRX: 15048 selected, 14997 passed, 51 failed; failures are assertion failures in new WorkspaceNavigation behavior tests, not compilation failures. The handoff reports 724 Workspace selected in RED (673 pass, 51 fail) and GREEN (724 pass), and full Core 15048/15048. RT and ChainRedFiles are the six test paths from git diff ChainBaseSha..RedSha -- tests/. UI TRX is informational: 1718 total, 1701 passed, 0 failed, 17 NotExecuted."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows both RED and GREEN commits contain Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective Worker model in relay-record-work.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "delegation.json requests claude-sonnet-5-5 with high effort and required routing. relay-record-work.json records 78 assistant entries with model claude-sonnet-5-5 and effort high; no routing deviation is reported."
+    }
+  },
+  "Findings": [],
+  "Pass": true
+}

@@ -1,0 +1,49 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261109T043701Z-0706",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "MutatedCheck": {
+    "Scope": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": "c726410f3ac764f4a80a08a2b810b5fdda276ecc",
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": true,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha lists 10 new files: four under src/RackCad.Application/Workspace/ and six under tests/RackCad.Tests/Workspace/. All are within the contract's two allowed directory entries; none intersects its forbidden paths. git diff --name-only RedSha CurrentSha lists only NavigationActions.cs, NavigationTargetSet.cs and NavigationTargets.cs; no tests changed."
+  },
+  "OutputSha256": "60DF1990B6A454FDFA0820433C1F5A588D99AF21784CD59A1117B2E680B53BF2",
+  "ManualFreeText1610": []
+}

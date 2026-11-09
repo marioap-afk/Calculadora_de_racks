@@ -1,0 +1,34 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261109T044704Z-46c1",
+  "OutputUnresolvedHex": [],
+  "OutputUnresolvedHexByCheck": {},
+  "CommandUnresolvedHex": [],
+  "GitFatalLines": [
+    {
+      "Command": 2,
+      "Line": "fatal: ambiguous argument '/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T182756Z-ec7e/worker-handoff.json': unknown revision or path not in the working tree."
+    }
+  ],
+  "NonZeroExit": [
+    {
+      "Command": 0,
+      "Exit": 1
+    },
+    {
+      "Command": 2,
+      "Exit": 1
+    }
+  ],
+  "ConstrainedLanguageErrors": 0,
+  "DisplayNameSelectionCommands": [],
+  "TestsEvidenceNumbers": [
+    "14997",
+    "15048",
+    "51",
+    "673",
+    "724"
+  ],
+  "TestsEvidenceDisplayCount": false,
+  "MaterialHexDefect": false
+}

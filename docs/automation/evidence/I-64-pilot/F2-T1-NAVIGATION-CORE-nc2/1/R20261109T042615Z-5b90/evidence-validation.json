@@ -1,0 +1,33 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261109T042615Z-5b90",
+  "OutputUnresolvedHex": [],
+  "OutputUnresolvedHexByCheck": {},
+  "CommandUnresolvedHex": [],
+  "GitFatalLines": [
+    {
+      "Command": 6,
+      "Line": "fatal: ambiguous argument 'YwBvAG0AbQBpAHQA': unknown revision or path not in the working tree."
+    },
+    {
+      "Command": 7,
+      "Line": "fatal: unable to access 'https://github.com/marioap-afk/Calculadora_de_racks.git/': Failed to connect to github.com port 443 via 127.0.0.1 after 2047 ms: Could not connect to server"
+    }
+  ],
+  "NonZeroExit": [
+    {
+      "Command": 0,
+      "Exit": 1
+    }
+  ],
+  "ConstrainedLanguageErrors": 0,
+  "DisplayNameSelectionCommands": [],
+  "TestsEvidenceNumbers": [
+    "15048",
+    "51",
+    "673",
+    "724"
+  ],
+  "TestsEvidenceDisplayCount": false,
+  "MaterialHexDefect": false
+}

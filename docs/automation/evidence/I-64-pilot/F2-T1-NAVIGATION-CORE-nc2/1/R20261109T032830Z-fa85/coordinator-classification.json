@@ -1,0 +1,17 @@
+{
+  "RunId": "R20261109T032830Z-fa85",
+  "Control": "nc2",
+  "CoordinatorClassification": {
+    "Outcome": "INVALID_OUTPUT",
+    "Label": "SCHEMA_VALID_BUT_MATERIALLY_FALSE / INVALID_OUTPUT",
+    "ControlOracle": "NOT ACCEPTED",
+    "ValidNc2OracleOutputsConsumed": 0,
+    "MutationAccepted": true,
+    "A4Applicable": false,
+    "Reason": "the mechanical Scope condition behaves as intended, but Identity and Remote (which precede Scope) contain fabricated/incorrect command results: the Controller transcribed CurrentSha c726410f3ac764f4a80a08a2b810b5fdda276ecc as the malformed 34-character value c726410f3ac764f4a80a08b5fdda276ecc, used it in its Git commands, which failed, and reported it in Identity/Remote Evidence as though Git had returned it; the repeated display-name counting (727/676) is also incorrect and not authoritative.",
+    "RetryAuthorized": "one nc2 retry (CONTROL-phase INVALID_OUTPUT recovery; does not consume attempts; does not invoke A-4)"
+  },
+  "NotRecordedAs": "nc2 = CONTROL PASS",
+  "OutputUnchanged": "output.json, controller-verification.json, oracle-result.json and relay-record.json of this run are kept unchanged as historical evidence; oracle-result.json records the session's mechanical evaluation (CONTROL PASS) that the Coordinator did not accept",
+  "Source": "coordinator/coordinator-f2t1-nc2-fa85-disposition.md (literal received through the chat of the responsible session; I-64 F2-T1 NEGATIVE CONTROL nc2 DISPOSITION)"
+}

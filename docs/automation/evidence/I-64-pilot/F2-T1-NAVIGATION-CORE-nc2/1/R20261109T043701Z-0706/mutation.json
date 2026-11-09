@@ -1,0 +1,70 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261109T043701Z-0706",
+  "SourceVerification": "R20261108T221347Z-ebfc",
+  "SourceInputs": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T221347Z-ebfc/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/NavigationActions.cs",
+      "src/RackCad.Application/Workspace/NavigationFacts.cs",
+      "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+      "src/RackCad.Application/Workspace/NavigationTargets.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationActionPolicyTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationCacheTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationTargetsTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationTestSupport.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Workspace/NavigationActions.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Workspace/"
+    ],
+    "CoveredByPrefix": "src/RackCad.Application/Workspace/",
+    "Old": [
+      "src/RackCad.Application/Workspace/",
+      "tests/RackCad.Tests/Workspace/"
+    ],
+    "New": [
+      "src/RackCad.Application/Workspace/NavigationFacts.cs",
+      "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+      "src/RackCad.Application/Workspace/NavigationTargets.cs",
+      "tests/RackCad.Tests/Workspace/"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "3E2FF2BB55B442CBC59FCEA86430D2DE4B78AB43C82EE961A4B8762DFE11EAA6",
+    "New": "F1EAF1E6E703FE5A4A32B8261703306BB20BD0C2D4139C88C8615C572578D1C3",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "4B5AC17132FCE9D845A774ADD6B8DDB0FB73A161BD1235BCDA7A6F4F724DEF2B",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "contract-equivalence.json": "17D6841A1BC89DAE8BB4B34DD1306C54C5162E1F9F25C3CBFAB97AE47F555CD3",
+    "coordinator-disposition.md": "A235277CAFA4789DECC13858103483B9C24F540CA0ED9F18AFBAACBAECB5E48F",
+    "delegation.json": "F1EAF1E6E703FE5A4A32B8261703306BB20BD0C2D4139C88C8615C572578D1C3",
+    "gate-contract.json": "1667B2A2906164C6EC2AC4778FAD7693C6CCB39A29C047092003600918339788",
+    "relay-record-planning.json": "2F7441BC4367E2242D59EE811FA78D02DA00DAEFA86F44BFA73565F1DC6B4675",
+    "relay-record-work.json": "930AE082211053A38DBAD2404EFA06FA42C42CE6386C5B6FDB6399F8E0B33A2A",
+    "worker-handoff.json": "7F9F7E7484F62C8B4561D03E654FAAC4D91D90957919C346ADD79B3333A7B5F7",
+    "ci-core/42511528392/core.trx": "832AC146610E270AC38E72FC03747006E0379E384E9744E7FEE093200C5F2DE7",
+    "ci-core-red/42511103159/core.trx": "39FD76E341C71CD06D98E0D88BC6314483D4E295928DD0AF10944D407A4E4A3C",
+    "ci-ui/42511528392/ui.trx": "88B5B50E38286D101B1EF8D7812B695CCCD548EEF7F9F824A940263378329F5E"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

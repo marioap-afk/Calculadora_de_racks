@@ -1,10 +1,10 @@
 {
   "Schema": "rackcad-i64-custody-manifest/v1",
-  "Unit": "coordinator",
+  "Unit": "F2-T1-NAVIGATION-CORE/coordinator",
   "SourceRoot": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator",
   "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
   "Counts": {
-    "CUSTODIED": 4,
+    "CUSTODIED": 9,
     "EXCLUDED": 0
   },
   "Files": [
@@ -15,9 +15,39 @@
       "Disposition": "CUSTODIED"
     },
     {
+      "Path": "coordinator-f2t1-nc1-39c9-disposition.md",
+      "Bytes": 6332,
+      "Sha256": "7ce9ffc532746c7b5c7de5e437ff5835b46a15bd2b8679fa8e6b02339e370d03",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t1-nc2-0706-a4-disposition.md",
+      "Bytes": 5505,
+      "Sha256": "d13ca842d89dc998d3e3dfd207544b5cd8b2bba8037d061b81223fe2a33eeeac",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t1-nc2-5b90-disposition.md",
+      "Bytes": 5344,
+      "Sha256": "d6b58097a75f1ec4dc8af9cf2eefd32f5c5a9aadfd7661cb1b95dc946fcea636",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t1-nc2-fa85-disposition.md",
+      "Bytes": 6171,
+      "Sha256": "05d8cb1f3e9f0b75636262bcbddec0e9321635e04b5cce5f4cfcfc178716c4c4",
+      "Disposition": "CUSTODIED"
+    },
+    {
       "Path": "coordinator-f2t1-preplanning-stop-disposition.md",
       "Bytes": 9733,
       "Sha256": "02950abf298418fd23aa4310aaa003e89c41dd009432345c49f88b1c6e1ed5f1",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t1-verification-0e1c-disposition.md",
+      "Bytes": 7055,
+      "Sha256": "0e5c20b61ce67b2879cc8442b09f5a2c3ac2fd174ac971db30ba5c8a4d96e773",
       "Disposition": "CUSTODIED"
     },
     {

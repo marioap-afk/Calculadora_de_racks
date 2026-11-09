@@ -1,0 +1,20 @@
+{
+  "RunId": "R20261109T043701Z-0706",
+  "ExpectedCurrentSha": "c726410f3ac764f4a80a08a2b810b5fdda276ecc",
+  "Assertions": {
+    "InputsByteEqualToFa85": true,
+    "PromptEqualToFa85ExceptRunId": true,
+    "HandoffCurrentShaLength40": true,
+    "HandoffCurrentShaExact": true,
+    "CurrentShaTokensWellFormed": true,
+    "All40HexTokensResolve": true,
+    "LauncherHasNoGitCommandOrDeliverySha": true
+  },
+  "CurrentShaTokens": {
+    "Full40": 11,
+    "Abbreviations": 2,
+    "Malformed": []
+  },
+  "Unresolved40Hex": [],
+  "Pass": true
+}
