@@ -5468,3 +5468,64 @@ de `main`.
 **Límites:**
 - Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
 - Sin invocación de modelos; sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
+
+## 87. A-11 activa y aplicada: I64-TESTFILTER-BRIDGE-01 sobre la evidencia real de F2-T1 = PASS; nc3 = SATISFIED_UNDER_I64_TESTFILTER_BRIDGE
+
+**CI de §86:** corrida `42652882800` (push, SHA exacto `c2ef7ee564f269fc277a24a25f3eed516da19f66`), 4/4 success.
+
+**AGREED final del Coordinator y activación** (literal en
+`I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a11-final-agreed-activation.md`):
+- Owner SATISFIED, Architect AGREED (`R20261109T155930Z-5dd4`, 0 REQUIRED) y Coordinator AGREED. Por tanto, **I-64-A-11 = ACTIVE** para
+  la única ocurrencia autorizada de F2-T1. A-8, A-9 y A-10 siguen HISTORICAL / CHANGES REQUIRED / NOT ACTIVE.
+- Autoriza **exactamente una** ejecución de I64-TESTFILTER-BRIDGE-01 sobre la evidencia real, sin reintento. No autoriza ninguna
+  invocación del Controller ni del Worker, ni cambios de producto.
+
+**Aplicación real `R20261109T162731Z-7588`** (`I-64-pilot/F2-T1-NAVIGATION-CORE-testfilter-bridge/`; 6 archivos custodiados y 3
+excluidos):
+- **Precondiciones, todas comprobadas antes de ejecutar** (si alguna fallaba: STOP sin ejecutar):
+
+| Comprobación | Resultado |
+|---|---|
+| repositorio y rama | toplevel = worktree de I-64; `architecture/workspace-persistente-rackcad`; HEAD = remoto = `c2ef7ee5`; árbol limpio |
+| SHA de Git | BaseSha = ChainBaseSha `9082bcbc`, RedSha `f2761979` y CurrentSha `c726410f` son commits |
+| TRX GREEN (corrida 42511528392) | SHA-256 `832ac146…` = vinculado (entrada de ebfc) |
+| TRX RED (corrida 42511103159) | SHA-256 `39fd76e3…` = vinculado (entrada de ebfc) |
+| entrega real del Worker (`ec7e`) | SHA-256 `7f9f7e74…` = vinculado (original sin redactar) |
+| entrega mutada de nc3 | SHA-256 `4b281947…` = vinculado (entrada de 53af, idéntica a la de 46c1 y 041d) |
+| conjunto de términos 16.10 | bytes del blob `07b97bd3` = `a140eb3a:docs/AUTOMATION_PLAN.md` |
+| ChainRedFiles acreditados | los 6 de A-11 § 6, tomados del texto de la enmienda en HEAD (no del diff) |
+| verificador | bytes del blob `f9780f2f` extraídos de Git (SHA-256 `91a18eb0…`), no la copia del árbol de trabajo |
+| config.toml / procesos | SNAPSHOT D aceptada; 0 participantes |
+
+- **Ejecución única:**
+  - `python -I <blob f9780f2f> … --filter FullyQualifiedName~Workspace --min-selected 645 --expect-green 724/724/0 --expect-red 724/673/51
+    --expect-red-composition System.NullReferenceException=1,xunit-assertion=50 …`;
+  - código 0, stderr vacío; salida `bridge-output.json` (SHA-256 `1d003f8d…`).
+- **Resultado: PASS**, con las 61 comprobaciones en pass y ningún motivo:
+  - **GREEN:** 724 seleccionadas / 724 Passed / 0 Failed; coincide con la entrega. Counters coherentes: 15048 filas, todas Passed.
+  - **RED:** 724 / 673 / 51. La composición son 50 aserciones de xUnit y 1 `NullReferenceException`, sin fallos fuera de la selección.
+    Counters coherentes: 15048 filas, 14997 Passed y 51 Failed.
+  - **Selección:** la misma en GREEN y RED (SHA-256 de las claves `ac3db3fc…`); 724 ≥ MinSelected 645.
+  - **FQN no ASCII:** uno por TRX (`Create_AcuñaUnVariableIdNUEVO`), NOT_SELECTED; ningún UNKNOWN_POTENTIAL_MATCH.
+  - **Estructura, identidad y mensajes:** raíz única, ids GUID, `executionId`, cardinalidad del mensaje y estructura anclada, sin
+    ningún fallo cerrado.
+  - **ChainRedFiles:** derivados de `9082bcbc..f2761979 -- tests/` = los 6 acreditados; RED → GREEN no toca ninguno.
+  - **Mutación de nc3:** exacta. Las dos entregas son válidas según el esquema; solo cambia `WorkCompleted`, por el anexo autorizado,
+    con un único término de 16.10 introducido (`GATE PASS`, 1 vez) y sin cambio compensatorio.
+  - **Diagnóstico (no decide):** solo por la clase, 723; con mayúsculas, 723; por el nombre visible, 727; solo por el método, 21.
+
+**Registro:**
+- **A-11 REAL APPLICATION = PASS.**
+- **nc3 = SATISFIED_UNDER_I64_TESTFILTER_BRIDGE.**
+- **Clasificaciones históricas conservadas:** 46c1 = INVALID_OUTPUT, 041d = ORACLE NOT MET y 53af = INVALID_OUTPUT. La historia de P-04
+  no se reescribe.
+- **Presupuesto:** I64-TESTFILTER-BRIDGE-01 1 de 1, consumido.
+
+**Estado:**
+- F2-T1 = PENDING COORDINATOR CLOSE (**COORDINATOR_F2_T1_CLOSE_REQUIRED**).
+- F2-T2 NO AUTORIZADA; attempts 1/3 sin cambio.
+
+**Límites:**
+- Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
+- Sin invocación de modelos; sin AutoCAD.
+- Los TRX y las entregas reales se identifican solo por SHA-256 (16.12).
