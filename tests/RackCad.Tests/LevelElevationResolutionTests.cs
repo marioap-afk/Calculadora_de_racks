@@ -24,7 +24,8 @@ namespace RackCad.Tests
     /// </summary>
     public class LevelElevationResolutionTests
     {
-        private const double GridBase = 0.5;
+        /// <summary>La base real de <c>TROQUEL_LARGUERO</c> en FRONTAL del poste estandar.</summary>
+        private const double GridBase = 0.6053;
         private const double Pitch = 2.0;
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
@@ -60,6 +61,15 @@ namespace RackCad.Tests
 
         private static List<double> Spacings(IReadOnlyList<double> elevations)
             => elevations.Zip(elevations.Skip(1), (lower, upper) => Math.Round(upper - lower, 6)).ToList();
+
+        private static void AssertElevations(IReadOnlyList<double> expected, IReadOnlyList<double> actual)
+        {
+            Assert.Equal(expected.Count, actual.Count);
+            for (var index = 0; index < expected.Count; index++)
+            {
+                Assert.Equal(expected[index], actual[index], 4);
+            }
+        }
 
         private static double Nearest(double value, double gridBase, double pitch)
             => gridBase + Math.Round((value - gridBase) / pitch, MidpointRounding.AwayFromZero) * pitch;
@@ -130,18 +140,18 @@ namespace RackCad.Tests
         [Fact]
         public void T2_AnExactPunch_IsKeptWithoutClimbingAnotherStep()
         {
-            var exits = Exits(Levels(Cells(46.0, 46.0, 46.0, 46.0), 6.5));
+            var exits = Exits(Levels(Cells(46.0, 46.0, 46.0, 46.0), 6.6053));
 
-            Assert.Equal(new[] { 6.5, 52.5, 98.5, 144.5 }, exits);
+            AssertElevations(new[] { 6.6053, 52.6053, 98.6053, 144.6053 }, exits);
         }
 
         [Theory]
-        [InlineData(46.00000000001, 52.5)]    // ruido de coma flotante: sigue siendo el mismo troquel
-        [InlineData(45.99999999999, 52.5)]    // por debajo por ruido: mismo troquel
-        [InlineData(46.0001, 54.5)]           // un exceso real sube al siguiente
+        [InlineData(46.00000000001, 52.6053)]    // ruido de coma flotante: sigue siendo el mismo troquel
+        [InlineData(45.99999999999, 52.6053)]    // por debajo por ruido: mismo troquel
+        [InlineData(46.0001, 54.6053)]         // un exceso real sube al siguiente
         public void T2_TheToleranceOnlyAbsorbsFloatingPointNoise(double requirement, double expectedSecond)
         {
-            var exits = Exits(Levels(Cells(requirement, requirement), 6.5));
+            var exits = Exits(Levels(Cells(requirement, requirement), 6.6053));
 
             Assert.Equal(expectedSecond, exits[1], 6);
         }
@@ -151,14 +161,14 @@ namespace RackCad.Tests
         [Fact]
         public void T3_EachIntervalGoesToItsOwnFirstPunch_WithoutImposingUniformity()
         {
-            var exits = Exits(Levels(Cells(45.0, 38.0, 50.25, 44.0), 6.5));
+            var exits = Exits(Levels(Cells(45.0, 38.0, 50.25, 44.0), 6.6053));
 
-            Assert.Equal(new[] { 6.5, 52.5, 90.5, 142.5 }, exits);
+            AssertElevations(new[] { 6.6053, 52.6053, 90.6053, 142.6053 }, exits);
             Assert.Equal(new[] { 46.0, 38.0, 52.0 }, Spacings(exits));
         }
 
         [Theory]
-        [InlineData(6.5)]    // primer nivel en troquel
+        [InlineData(6.6053)]    // primer nivel en troquel
         [InlineData(6.0)]    // primer nivel que sube al troquel
         [InlineData(7.0)]    // primer nivel que baja al troquel
         public void T4_ManyIntervalsDoNotAlternate(double first)
@@ -172,12 +182,12 @@ namespace RackCad.Tests
 
         [Theory]
         [InlineData(0.0, 2.0, 46.0)]
-        [InlineData(0.5, 2.0, 46.0)]
+        [InlineData(0.6053, 2.0, 46.0)]
         [InlineData(1.25, 2.0, 46.0)]
         [InlineData(-0.75, 2.0, 46.0)]
         [InlineData(3.1, 2.0, 46.0)]
-        [InlineData(0.5, 1.5, 45.0)]
-        [InlineData(0.5, 4.0, 48.0)]
+        [InlineData(0.6053, 1.5, 45.0)]
+        [InlineData(0.6053, 4.0, 48.0)]
         public void T5_TheGridOriginAndPitchComeFromTheAuthority(double gridBase, double pitch, double expectedSpacing)
         {
             var exits = Exits(Levels(Cells(45.0, 45.0, 45.0, 45.0), 6.0, 0.0, gridBase, pitch));
@@ -199,7 +209,7 @@ namespace RackCad.Tests
                 new[] { 2.0, 0.75, 1.0, 12.5 }
             };
 
-            foreach (var gridBase in new[] { 0.0, 0.5, 1.25, -0.75, 3.1 })
+            foreach (var gridBase in new[] { 0.0, 0.6053, 1.25, -0.75, 3.1 })
             foreach (var pitch in new[] { 2.0, 1.5, 0.5 })
             foreach (var first in new[] { 0.0, 0.5, 1.0, 2.75, 3.0, 4.5, 6.0, 7.0, 9.25 })
             foreach (var requirements in requirementSets)
@@ -225,7 +235,7 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void T6_BothOverloadsFollowTheSameRule()
+        public void T17_BothOverloadsFollowTheSameRule_OnTheRealGrid()
         {
             var byPallet = DynamicLoadBeamGeometry.ResolveLevels(
                 new PalletSpecification(42.0, 48.0, 33.0, 1000.0, "kg"),
@@ -241,15 +251,15 @@ namespace RackCad.Tests
             Assert.Equal(Entrances(byCell), Entrances(byPallet));
         }
 
-        // ---- T13: la pendiente del Dinamico sigue a la salida real ---------------------------------------------------
+        // ---- T13 y T16: D-PEND, la subida del nivel 1 ---------------------------------------------------------------
 
         [Fact]
-        public void T13_TheEntranceFollowsTheRealExit_WithOneRiseOnEveryLevel()
+        public void T13_EveryLevelKeepsTheRiseOfTheFirstLevel()
         {
             var levels = Levels(Cells(45.0, 45.0, 45.0, 45.0), 6.0, 7.4375);
 
-            Assert.Equal(new[] { 6.5, 52.5, 98.5, 144.5 }, Exits(levels));
-            Assert.Equal(new[] { 14.5, 60.5, 106.5, 152.5 }, Entrances(levels));
+            AssertElevations(new[] { 6.6053, 52.6053, 98.6053, 144.6053 }, Exits(levels));
+            AssertElevations(new[] { 12.6053, 58.6053, 104.6053, 150.6053 }, Entrances(levels));
         }
 
         [Theory]
@@ -260,17 +270,18 @@ namespace RackCad.Tests
         [InlineData(7.0)]
         [InlineData(7.4375)]
         [InlineData(12.0)]
-        public void T13_TheEntranceIsTheNearestPunchToTheNominalRise_AndKeepsTheEntranceIntervals(double slope)
+        public void T13_TheFirstEntranceIsHistorical_TheRiseIsUniform_AndTheEntranceIntervalsHold(double slope)
         {
             var requirements = new[] { 45.0, 38.0, 50.25, 44.0 };
-            foreach (var first in new[] { 6.0, 7.0, 6.5 })
+            foreach (var first in new[] { 6.0, 7.0, 6.6053, 9.5 })
             {
                 var levels = Levels(Cells(requirements), first, slope).OrderBy(level => level.LevelNumber).ToList();
 
-                foreach (var level in levels)
-                {
-                    Assert.Equal(Nearest(level.ExitElevation + slope, GridBase, Pitch), level.EntranceElevation, 6);
-                }
+                Assert.Equal(Nearest(first, GridBase, Pitch), levels[0].ExitElevation, 6);
+                Assert.Equal(Nearest(first + slope, GridBase, Pitch), levels[0].EntranceElevation, 6);
+
+                var rise = levels[0].EntranceElevation - levels[0].ExitElevation;
+                Assert.All(levels, level => Assert.Equal(rise, level.EntranceElevation - level.ExitElevation, 6));
 
                 var entrances = Entrances(levels);
                 for (var index = 0; index + 1 < entrances.Count; index++)
@@ -283,9 +294,30 @@ namespace RackCad.Tests
         [Fact]
         public void T13_ANegativeSlopeIsNotApplied()
         {
-            var levels = Levels(Cells(45.0, 45.0), 6.5, -3.0);
+            var levels = Levels(Cells(45.0, 45.0), 6.6053, -3.0);
 
-            Assert.Equal(Exits(levels), Entrances(levels));
+            AssertElevations(Exits(levels), Entrances(levels));
+        }
+
+        /// <summary>
+        /// D-PEND: un rack sin el defecto no cambia. Si cada requisito es multiplo del paso, salidas Y entradas son las
+        /// de la regla anterior, sea cual sea la fase del primer nivel.
+        /// </summary>
+        [Theory]
+        [InlineData(46.0, 46.0, 46.0)]
+        [InlineData(48.0, 72.0, 50.0)]
+        [InlineData(72.0, 72.0, 72.0)]
+        public void T16_RequirementsOnThePitch_LeaveExitsAndEntrancesExactlyAsBefore(double a, double b, double c)
+        {
+            var requirements = new[] { a, b, c, 46.0 };
+            foreach (var first in new[] { 3.0, 4.0, 6.0, 7.5, 9.25, 12.0 })
+            foreach (var slope in new[] { 0.0, 3.2, 6.6, 7.4375, 12.0 })
+            {
+                var levels = Levels(Cells(requirements), first, slope);
+
+                AssertElevations(ExitsUnderThePreviousRule(first, requirements, GridBase, Pitch), Exits(levels));
+                AssertElevations(EntrancesUnderThePreviousRule(first, slope, requirements, GridBase, Pitch), Entrances(levels));
+            }
         }
 
         // ---- T14: limites ------------------------------------------------------------------------------------------
@@ -299,8 +331,8 @@ namespace RackCad.Tests
         {
             var levels = Levels(Cells(45.25, 33.75), 6.0, 12.0, gridBase, pitch);
 
-            Assert.Equal(new[] { 6.0, 51.25, 85.0 }.Take(levels.Count), Exits(levels));
-            Assert.Equal(new[] { 18.0, 63.25, 97.0 }.Take(levels.Count), Entrances(levels));
+            AssertElevations(new[] { 6.0, 51.25 }, Exits(levels));
+            AssertElevations(new[] { 18.0, 63.25 }, Entrances(levels));
         }
 
         [Theory]
@@ -310,9 +342,9 @@ namespace RackCad.Tests
         {
             var cells = new[] { Cell(1, 1.0, 0.0, requirement - 1.0), Cell(2, 1.0, 0.0, requirement - 1.0), Cell(3, 1.0, 0.0, 0.0) };
 
-            var exits = Exits(Levels(cells, 6.5));
+            var exits = Exits(Levels(cells, 6.6053));
 
-            Assert.Equal(new[] { 6.5, 8.5, 10.5 }, exits);
+            AssertElevations(new[] { 6.6053, 8.6053, 10.6053 }, exits);
         }
 
         [Theory]
@@ -322,10 +354,10 @@ namespace RackCad.Tests
         {
             var cells = new[] { Cell(1, 33.0, 6.0, requirement), Cell(2, 33.0), Cell(3, 33.0) };
 
-            var levels = Levels(cells, 6.5);
+            var levels = Levels(cells, 6.6053);
 
             Assert.Equal(3, levels.Count);
-            Assert.Equal(6.5, levels[0].ExitElevation, 6);
+            Assert.Equal(6.6053, levels[0].ExitElevation, 4);
             Assert.False(double.IsFinite(levels[1].ExitElevation));
             Assert.False(double.IsFinite(levels[2].ExitElevation));
         }
@@ -333,9 +365,9 @@ namespace RackCad.Tests
         [Fact]
         public void T14_VeryLargeElevationsStayDeterministic()
         {
-            var exits = Exits(Levels(Cells(45.0, 45.0), 1_000_000.5));
+            var exits = Exits(Levels(Cells(45.0, 45.0), 1_000_000.6053));
 
-            Assert.Equal(new[] { 1_000_000.5, 1_000_046.5, 1_000_092.5 }, exits);
+            AssertElevations(new[] { 1_000_000.6053, 1_000_046.6053 }, exits);
         }
 
         // ---- T7: vistas y cotas Dinamico ------------------------------------------------------------------------------
@@ -588,18 +620,39 @@ namespace RackCad.Tests
             return result;
         }
 
+        private static List<double> EntrancesUnderThePreviousRule(
+            double first, double slope, IReadOnlyList<double> requirements, double gridBase, double pitch)
+            => ExitsTheoretical(first, requirements).Select(value => Nearest(value + slope, gridBase, pitch)).ToList();
+
+        private static List<double> ExitsTheoretical(double first, IReadOnlyList<double> requirements)
+        {
+            var result = new List<double> { first };
+            foreach (var requirement in requirements.Take(requirements.Count - 1))
+            {
+                result.Add(result[result.Count - 1] + requirement);
+            }
+
+            return result;
+        }
+
         [Theory]
         [MemberData(nameof(Matrix))]
-        public void T12_NoExitDropsBelowThePreviousRule_AndTheFirstLevelDoesNotMove(
+        public void T12_NothingDropsBelowThePreviousRule_AndTheFirstLevelDoesNotMove(
             double gridBase, double pitch, double first, double[] requirements)
         {
-            var exits = Exits(Levels(Cells(requirements), first, 0.0, gridBase, pitch));
-            var previous = ExitsUnderThePreviousRule(first, requirements, gridBase, pitch);
+            const double slope = 7.4375;
+            var levels = Levels(Cells(requirements), first, slope, gridBase, pitch);
+            var exits = Exits(levels);
+            var entrances = Entrances(levels);
+            var previousExits = ExitsUnderThePreviousRule(first, requirements, gridBase, pitch);
+            var previousEntrances = EntrancesUnderThePreviousRule(first, slope, requirements, gridBase, pitch);
 
-            Assert.Equal(previous[0], exits[0], 6);
+            Assert.Equal(previousExits[0], exits[0], 6);
+            Assert.Equal(previousEntrances[0], entrances[0], 6);
             for (var index = 1; index < exits.Count; index++)
             {
-                Assert.True(exits[index] >= previous[index] - 1e-6, $"nivel {index + 1}: {exits[index]} < {previous[index]}");
+                Assert.True(exits[index] >= previousExits[index] - 1e-6, $"salida {index + 1}: {exits[index]} < {previousExits[index]}");
+                Assert.True(entrances[index] >= previousEntrances[index] - 1e-6, $"entrada {index + 1}: {entrances[index]} < {previousEntrances[index]}");
             }
         }
 
