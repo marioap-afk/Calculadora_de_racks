@@ -4,7 +4,7 @@
   "SourceRoot": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator",
   "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
   "Counts": {
-    "CUSTODIED": 15,
+    "CUSTODIED": 17,
     "EXCLUDED": 0
   },
   "Files": [
@@ -18,6 +18,18 @@
       "Path": "coordinator-a8-architect-accreditation-review-order.md",
       "Bytes": 5527,
       "Sha256": "97e4c691540243b68511f00e84971617d31e7adeb479a1729ec90d3f98cc4048",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-a9-correction-order.md",
+      "Bytes": 9192,
+      "Sha256": "8a486cd383a37d428269da120dac8fa99e8bc838bf4c8e20b69a268c8f321e23",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-a9-preversioning-disposition.md",
+      "Bytes": 8195,
+      "Sha256": "682aa9ed0c57dda44093c989a5b15ed9066a7fb65c0d18b726dbe42b6ca201fc",
       "Disposition": "CUSTODIED"
     },
     {

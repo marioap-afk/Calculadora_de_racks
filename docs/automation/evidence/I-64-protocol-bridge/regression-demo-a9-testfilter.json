@@ -1,0 +1,623 @@
+{
+  "Schema": "rackcad-i64-testfilter-bridge-regression/v2",
+  "VerifierSha256": "4f7d94e615abc08a9e33c9cf3771d296feb9c2be93804dad02731bd290c0a7b4",
+  "SelftestSha256": "d57f05c09ece479212c8aa54aa4b4c6c4ca0b97f167a24e984463e3bd27e8671",
+  "Verifier": {
+    "Result": "PASS",
+    "Passed": 62,
+    "Total": 62,
+    "ExitCode": 0,
+    "FailedCases": []
+  },
+  "Mutants": {
+    "DisplayName": {
+      "Result": "FAIL",
+      "Passed": 45,
+      "Total": 62,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T02",
+        "T03",
+        "T06",
+        "T07",
+        "T08",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if fold(substring) in fold(x[2])]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "ClassNameOnly": {
+      "Result": "FAIL",
+      "Passed": 47,
+      "Total": 62,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T06",
+        "T07",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if fold(substring) in fold(definitions[x[0]][0])]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "CaseSensitiveFqn": {
+      "Result": "FAIL",
+      "Passed": 46,
+      "Total": 62,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T04",
+        "T06",
+        "T07",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if substring in definitions[x[0]][0] + '.' + definitions[x[0]][1]]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "MethodNameOnly": {
+      "Result": "FAIL",
+      "Passed": 44,
+      "Total": 62,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T05",
+        "T06",
+        "T07",
+        "T09",
+        "T28",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if fold(substring) in fold(definitions[x[0]][1])]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "CodePointPositions": {
+      "Result": "FAIL",
+      "Passed": 60,
+      "Total": 62,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T61",
+        "T62"
+      ],
+      "Replaces": "fqn = utf16_units(class_name + '.' + method_name)",
+      "With": "fqn = [ord(ch) for ch in class_name + '.' + method_name]",
+      "MustFail": [
+        "T61",
+        "T62"
+      ],
+      "MustFailOk": true
+    },
+    "GlobalNonAsciiReject": {
+      "Result": "FAIL",
+      "Passed": 58,
+      "Total": 62,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T58",
+        "T59",
+        "T60",
+        "T62"
+      ],
+      "Replaces": "fqn = utf16_units(class_name + '.' + method_name)",
+      "With": "fqn = utf16_units(class_name + '.' + method_name)\n    if any(u > 0x7F for u in fqn):\n        return UNKNOWN",
+      "MustFail": [
+        "T58",
+        "T59",
+        "T60",
+        "T62"
+      ],
+      "MustFailOk": true
+    },
+    "NonAsciiAsMismatch": {
+      "Result": "FAIL",
+      "Passed": 59,
+      "Total": 62,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T36",
+        "T37",
+        "T61"
+      ],
+      "Replaces": "if u > 0x7F:\n                state = UNKNOWN",
+      "With": "if u > 0x7F:\n                state = NOT_SELECTED\n                break",
+      "MustFail": [
+        "T36",
+        "T37",
+        "T61"
+      ],
+      "MustFailOk": true
+    },
+    "UnknownOverridesAsciiMatch": {
+      "Result": "FAIL",
+      "Passed": 61,
+      "Total": 62,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T60"
+      ],
+      "Replaces": "if SELECTED in windows:\n        return SELECTED\n    return UNKNOWN if UNKNOWN in windows else NOT_SELECTED",
+      "With": "if UNKNOWN in windows:\n        return UNKNOWN\n    return SELECTED if SELECTED in windows else NOT_SELECTED",
+      "MustFail": [
+        "T60"
+      ],
+      "MustFailOk": true
+    },
+    "PythonCasefold": {
+      "Result": "FAIL",
+      "Passed": 59,
+      "Total": 62,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T36",
+        "T37",
+        "T61"
+      ],
+      "Replaces": "fqn = utf16_units(class_name + '.' + method_name)",
+      "With": "return SELECTED if substring.casefold() in (class_name + '.' + method_name).casefold() else NOT_SELECTED",
+      "MustFail": [
+        "T36",
+        "T37"
+      ],
+      "MustFailOk": true
+    }
+  },
+  "HistoricalA8": {
+    "Result": "FAIL",
+    "Passed": 38,
+    "Total": 62,
+    "ExitCode": 1,
+    "FailedCases": [
+      "T20",
+      "T36",
+      "T37",
+      "T39",
+      "T40",
+      "T41",
+      "T42",
+      "T43",
+      "T44",
+      "T45",
+      "T46",
+      "T47",
+      "T48",
+      "T49",
+      "T50",
+      "T53",
+      "T54",
+      "T55",
+      "T56",
+      "T58",
+      "T59",
+      "T60",
+      "T61",
+      "T62"
+    ],
+    "Blob": "1691003d2286a3c8f597a182597e6622da074bd3",
+    "ExtractedBlob": "1691003d2286a3c8f597a182597e6622da074bd3",
+    "ExtractedSha256": "4bccdc9f6739785c078f34a12c36c091184d9f4e018873b435d28c4a616ec946",
+    "SignatureCases": {
+      "I64-A8-ORDINAL-FILTER-MISMATCH": [
+        {
+          "Case": "T36",
+          "A8Got": "PASS",
+          "A8ExitCode": 0,
+          "A9Got": "FAIL",
+          "A9ReasonCodes": [
+            "UNSUPPORTED_NON_ASCII_FQN"
+          ],
+          "A8AcceptedBadFixture": true,
+          "A9Rejected": true
+        },
+        {
+          "Case": "T37",
+          "A8Got": "PASS",
+          "A8ExitCode": 0,
+          "A9Got": "FAIL",
+          "A9ReasonCodes": [
+            "UNSUPPORTED_NON_ASCII_FQN"
+          ],
+          "A8AcceptedBadFixture": true,
+          "A9Rejected": true
+        }
+      ],
+      "I64-A8-COUNTER-COHERENCE": [
+        {
+          "Case": "T39",
+          "A8Got": "PASS",
+          "A8ExitCode": 0,
+          "A9Got": "FAIL",
+          "A9ReasonCodes": [
+            "TRX_COUNTERS_INCOHERENT"
+          ],
+          "A8AcceptedBadFixture": true,
+          "A9Rejected": true
+        }
+      ],
+      "I64-A8-DUPLICATE-RESULT-FAIL-OPEN": [
+        {
+          "Case": "T49",
+          "A8Got": "PASS",
+          "A8ExitCode": 0,
+          "A9Got": "FAIL",
+          "A9ReasonCodes": [
+            "TRX_EXECUTION_ID_DUPLICATE"
+          ],
+          "A8AcceptedBadFixture": true,
+          "A9Rejected": true
+        },
+        {
+          "Case": "T50",
+          "A8Got": "PASS",
+          "A8ExitCode": 0,
+          "A9Got": "FAIL",
+          "A9ReasonCodes": [
+            "TRX_EXECUTION_ID_DUPLICATE"
+          ],
+          "A8AcceptedBadFixture": true,
+          "A9Rejected": true
+        }
+      ]
+    },
+    "FailedCaseDetails": [
+      {
+        "Case": "T20",
+        "Expected": "FAIL",
+        "A8Got": "FAIL",
+        "A8ExitCode": 1,
+        "A8ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_COUNTERS_INCOHERENT"
+        ]
+      },
+      {
+        "Case": "T36",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [
+          "ThreeUndecidable"
+        ],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "UNSUPPORTED_NON_ASCII_FQN"
+        ]
+      },
+      {
+        "Case": "T37",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [
+          "ThreeUndecidable"
+        ],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "UNSUPPORTED_NON_ASCII_FQN"
+        ]
+      },
+      {
+        "Case": "T39",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_COUNTERS_INCOHERENT"
+        ]
+      },
+      {
+        "Case": "T40",
+        "Expected": "FAIL",
+        "A8Got": "FAIL",
+        "A8ExitCode": 1,
+        "A8ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_COUNTERS_INCOHERENT"
+        ]
+      },
+      {
+        "Case": "T41",
+        "Expected": "FAIL",
+        "A8Got": "FAIL",
+        "A8ExitCode": 1,
+        "A8ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_COUNTERS_INCOHERENT"
+        ]
+      },
+      {
+        "Case": "T42",
+        "Expected": "FAIL",
+        "A8Got": "FAIL",
+        "A8ExitCode": 1,
+        "A8ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_COUNTERS_INCOHERENT"
+        ]
+      },
+      {
+        "Case": "T43",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_COUNTERS_INCOHERENT"
+        ]
+      },
+      {
+        "Case": "T44",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_COUNTER_UNSUPPORTED"
+        ]
+      },
+      {
+        "Case": "T45",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_COUNTER_UNSUPPORTED"
+        ]
+      },
+      {
+        "Case": "T46",
+        "Expected": "PASS",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [
+          "NotExecutedCoherent"
+        ],
+        "A9Got": "PASS",
+        "A9ReasonCodes": []
+      },
+      {
+        "Case": "T47",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_COUNTERS_INCOHERENT"
+        ]
+      },
+      {
+        "Case": "T48",
+        "Expected": "FAIL",
+        "A8Got": "FAIL",
+        "A8ExitCode": 1,
+        "A8ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_COUNTERS_INCOHERENT"
+        ]
+      },
+      {
+        "Case": "T49",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_EXECUTION_ID_DUPLICATE"
+        ]
+      },
+      {
+        "Case": "T50",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_EXECUTION_ID_DUPLICATE"
+        ]
+      },
+      {
+        "Case": "T53",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_EXECUTION_ID_MISSING"
+        ]
+      },
+      {
+        "Case": "T54",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_EXECUTION_ID_MALFORMED"
+        ]
+      },
+      {
+        "Case": "T55",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "TRX_EXECUTION_ID_DUPLICATE"
+        ]
+      },
+      {
+        "Case": "T56",
+        "Expected": "PASS",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [
+          "Selected7"
+        ],
+        "A9Got": "PASS",
+        "A9ReasonCodes": []
+      },
+      {
+        "Case": "T58",
+        "Expected": "PASS",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [
+          "NotSelected"
+        ],
+        "A9Got": "PASS",
+        "A9ReasonCodes": []
+      },
+      {
+        "Case": "T59",
+        "Expected": "PASS",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [
+          "Selected7"
+        ],
+        "A9Got": "PASS",
+        "A9ReasonCodes": []
+      },
+      {
+        "Case": "T60",
+        "Expected": "PASS",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [
+          "Selected7"
+        ],
+        "A9Got": "PASS",
+        "A9ReasonCodes": []
+      },
+      {
+        "Case": "T61",
+        "Expected": "FAIL",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [
+          "OneUndecidable"
+        ],
+        "A9Got": "FAIL",
+        "A9ReasonCodes": [
+          "UNSUPPORTED_NON_ASCII_FQN"
+        ]
+      },
+      {
+        "Case": "T62",
+        "Expected": "PASS",
+        "A8Got": "PASS",
+        "A8ExitCode": 0,
+        "A8ReasonCodes": [],
+        "A8FailedAsserts": [
+          "NotSelected"
+        ],
+        "A9Got": "PASS",
+        "A9ReasonCodes": []
+      }
+    ]
+  },
+  "Result": "PASS"
+}

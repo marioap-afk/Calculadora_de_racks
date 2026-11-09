@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
-"""I64-TESTFILTER-BRIDGE-01: deterministic substitute evidence for the Tests part of nc3 (I-64 Amendment A-8).
+"""I64-TESTFILTER-BRIDGE-01: deterministic substitute evidence for the Tests part of nc3 (I-64 Amendment A-9, which corrects
+A-8 for activation after the Architect review R20261109T062937Z-e1d0).
 
 For one I-64 occurrence, proves fail-closed, from source data only (no Controller prose):
-  1. RequiredTests selection with VSTest semantics for FullyQualifiedName~<substring>: case-insensitive (ordinal,
-     per-character simple upper-case fold) substring over TestMethod className + "." + name, counted over the top-level
-     UnitTestResult rows of the GREEN (CurrentSha) and RED (RedSha) Core TRX files;
+  1. RequiredTests selection with VSTest semantics for FullyQualifiedName~<substring>: case-insensitive substring over
+     TestMethod className + "." + name, decided over UTF-16 code units with ASCII-only case folding (A-Z <-> a-z) and no
+     Unicode case mapping. A non-ASCII code unit is UNKNOWN: a FullyQualifiedName with an all-ASCII matching window is
+     selected; one without it but with a window that could match through a non-ASCII unit fails closed
+     (UNSUPPORTED_NON_ASCII_FQN); one with no possible window is deterministically not selected. This is not an
+     implementation of .NET OrdinalIgnoreCase: the bridge refuses to decide wherever that behavior could change inclusion.
+     Counted over the top-level UnitTestResult rows of the GREEN (CurrentSha) and RED (RedSha) Core TRX files, each with a
+     unique, well-formed executionId, and with every Counters attribute in an explicit allowlist and coherent with the rows;
   2. GREEN: selection >= MinSelected and no failed selected test; RED: selection >= MinSelected, selected failures
      present, every failure inside the selection, and the failure composition recorded and compared to the expected one;
   3. counts equal to the delivery's TestResults and to the expected values bound to the occurrence;
@@ -41,6 +47,12 @@ COMPOSITION_RE = re.compile(r'[A-Za-z][A-Za-z0-9_.-]*=[0-9]+(,[A-Za-z][A-Za-z0-9
 ASSERT_RE = re.compile(r'Assert\.[A-Za-z]+\(\)')
 EXCEPTION_RE = re.compile(r'([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*Exception) : ')
 OUTCOMES = ('Passed', 'Failed', 'NotExecuted')
+EXECUTION_ID_RE = re.compile(r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}')
+# TRX ResultSummary/Counters attributes understood by this bridge. The first five are required and derived from the rows;
+# every other supported category is not represented by the accepted outcomes and must be zero. Any other attribute fails closed.
+COUNTERS_DERIVED = ('total', 'executed', 'passed', 'failed', 'notExecuted')
+COUNTERS_MUST_BE_ZERO = ('error', 'timeout', 'aborted', 'inconclusive', 'passedButRunAborted', 'notRunnable', 'disconnected',
+                         'warning', 'completed', 'inProgress', 'pending')
 GIT_TIMEOUT_SECONDS = 120
 EXIT_PASS, EXIT_FAIL, EXIT_USAGE = 0, 1, 2
 
@@ -324,20 +336,76 @@ class Parser(argparse.ArgumentParser):
         raise UsageError(message)
 
 
+class TrxInvalid(Invalid):
+    """A TRX that cannot be read unambiguously; code is the specific diagnostic reported in Reasons."""
+
+    def __init__(self, code, message):
+        Invalid.__init__(self, message)
+        self.code = code
+
+
 def fold(text):
-    """Ordinal ignore-case fold: per-character simple upper-case mapping (characters without a single-character
-    upper-case form are kept), the comparison used by .NET OrdinalIgnoreCase for the VSTest '~' (Contains) operator."""
-    out = []
-    for ch in text:
-        up = ch.upper()
-        out.append(up if len(up) == 1 else ch)
-    return ''.join(out)
+    """ASCII-only case fold (A-Z -> a-z); every other character is kept unchanged. str.upper/lower/casefold are not used,
+    so no Unicode case mapping is applied. Used for executionIds (hex only) and for the informational diagnostics."""
+    return ''.join(chr(ord(ch) + 32) if 'A' <= ch <= 'Z' else ch for ch in text)
 
 
-def fqn_selected(class_name, method_name, substring):
-    """VSTest FullyQualifiedName~substring for a TRX TestMethod: ordinal case-insensitive containment over
-    className + '.' + name. The only selection rule that decides the result."""
-    return fold(substring) in fold(class_name + '.' + method_name)
+SELECTED, NOT_SELECTED, UNKNOWN = 'SELECTED', 'NOT_SELECTED', 'UNKNOWN_POTENTIAL_MATCH'
+
+
+def utf16_units(text):
+    """UTF-16 code units of text, without normalization: a supplementary-plane character is two units (a surrogate pair)."""
+    b = text.encode('utf-16-le', errors='strict')
+    return [b[i] | (b[i + 1] << 8) for i in range(0, len(b), 2)]
+
+
+def fold_unit(u):
+    return u + 32 if 0x41 <= u <= 0x5A else u
+
+
+def fqn_decision(class_name, method_name, substring):
+    """VSTest FullyQualifiedName~substring for a TRX TestMethod (className + '.' + name); the only selection rule that decides
+    the result. Every window of len(substring) UTF-16 code units is compared position by position: an ASCII unit by ASCII-only
+    folding (a difference makes the window impossible); a non-ASCII unit is UNKNOWN (no Unicode case mapping is applied).
+    SELECTED: some window matches with ASCII units only, so no non-ASCII behavior can change inclusion. UNKNOWN: no such
+    window, but a window remains possible through UNKNOWN units (the caller fails closed). NOT_SELECTED: no possible window.
+    The substring is ASCII by the supported filter grammar."""
+    fqn = utf16_units(class_name + '.' + method_name)
+    pattern = [fold_unit(u) for u in utf16_units(substring)]
+    windows = set()
+    for start in range(len(fqn) - len(pattern) + 1):
+        state = SELECTED
+        for k, p in enumerate(pattern):
+            u = fqn[start + k]
+            if u > 0x7F:
+                state = UNKNOWN
+            elif fold_unit(u) != p:
+                state = NOT_SELECTED
+                break
+        windows.add(state)
+    if SELECTED in windows:
+        return SELECTED
+    return UNKNOWN if UNKNOWN in windows else NOT_SELECTED
+
+
+def fqn_of(definitions, row):
+    return definitions[row[0]][0] + '.' + definitions[row[0]][1]
+
+
+def non_ascii_report(definitions, rows, substring):
+    """Rows whose FullyQualifiedName has a non-ASCII code point, by decision; Undecidable lists the FQNs that fail closed."""
+    rep = {'Rows': 0, SELECTED: 0, NOT_SELECTED: 0, UNKNOWN: 0}
+    undecidable = set()
+    for x in rows:
+        if all(ord(ch) <= 0x7F for ch in fqn_of(definitions, x)):
+            continue
+        rep['Rows'] += 1
+        d = fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring)
+        rep[d] += 1
+        if d == UNKNOWN:
+            undecidable.add(fqn_of(definitions, x))
+    rep['Undecidable'] = sorted(undecidable)
+    return rep
 
 
 def classify_failure(message):
@@ -390,11 +458,20 @@ def load_trx(raw):
             raise Invalid('duplicate UnitTest id %s' % tid)
         definitions[tid] = (cls, name, ut.get('name') or '')
     rows = []
+    execution_ids = set()
     for r in results_nodes[0]:
         if r.tag != q('UnitTestResult'):
             raise Invalid('unexpected element in Results: %s' % r.tag)
         if r.find(q('InnerResults')) is not None:
             raise Invalid('InnerResults are not supported')
+        eid = r.get('executionId')
+        if eid is None:
+            raise TrxInvalid('TRX_EXECUTION_ID_MISSING', 'UnitTestResult without executionId')
+        if not EXECUTION_ID_RE.fullmatch(eid):
+            raise TrxInvalid('TRX_EXECUTION_ID_MALFORMED', 'executionId is not a TRX GUID')
+        if fold(eid) in execution_ids:
+            raise TrxInvalid('TRX_EXECUTION_ID_DUPLICATE', 'duplicate executionId among the top-level UnitTestResult rows')
+        execution_ids.add(fold(eid))
         tid, outcome = r.get('testId'), r.get('outcome')
         if tid not in definitions:
             raise Invalid('UnitTestResult references an undefined testId')
@@ -408,20 +485,33 @@ def load_trx(raw):
     counters_nodes = summary_nodes[0].findall(q('Counters'))
     if len(counters_nodes) != 1:
         raise Invalid('ResultSummary must have exactly one Counters')
+    attrs = dict(counters_nodes[0].attrib)
+    unknown = sorted(k for k in attrs if k not in COUNTERS_DERIVED + COUNTERS_MUST_BE_ZERO)
+    if unknown:
+        raise TrxInvalid('TRX_COUNTER_UNSUPPORTED', 'Counters attributes not understood: %s' % unknown)
     counters = {}
-    for key in ('total', 'passed', 'failed'):
-        val = counters_nodes[0].get(key)
-        if val is None or not re.fullmatch(r'[0-9]+', val):
-            raise Invalid('Counters.%s missing or not a non-negative integer' % key)
+    for key, val in attrs.items():
+        if not re.fullmatch(r'[0-9]+', val):
+            raise TrxInvalid('TRX_COUNTERS_INCOHERENT', 'Counters.%s is not a non-negative integer' % key)
         counters[key] = int(val)
-    actual = {'total': len(rows), 'passed': sum(1 for x in rows if x[1] == 'Passed'), 'failed': sum(1 for x in rows if x[1] == 'Failed')}
-    if counters != actual:
-        raise Invalid('Counters %s incoherent with the Results rows %s' % (counters, actual))
+    missing = [k for k in COUNTERS_DERIVED if k not in counters]
+    if missing:
+        raise TrxInvalid('TRX_COUNTERS_INCOHERENT', 'required Counters missing: %s' % missing)
+    nonzero = sorted(k for k in COUNTERS_MUST_BE_ZERO if counters.get(k, 0) != 0)
+    if nonzero:
+        raise TrxInvalid('TRX_COUNTER_UNSUPPORTED', 'Counters categories outside Passed/Failed/NotExecuted are nonzero: %s' % nonzero)
+    passed = sum(1 for x in rows if x[1] == 'Passed')
+    failed = sum(1 for x in rows if x[1] == 'Failed')
+    not_executed = sum(1 for x in rows if x[1] == 'NotExecuted')
+    actual = {'total': len(rows), 'executed': passed + failed, 'passed': passed, 'failed': failed, 'notExecuted': not_executed}
+    declared = {k: counters[k] for k in COUNTERS_DERIVED}
+    if declared != actual:
+        raise TrxInvalid('TRX_COUNTERS_INCOHERENT', 'Counters %s incoherent with the Results rows %s' % (declared, actual))
     return definitions, rows, counters
 
 
 def tally(definitions, rows, substring):
-    sel = [x for x in rows if fqn_selected(definitions[x[0]][0], definitions[x[0]][1], substring)]
+    sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]
     failed = [x for x in sel if x[1] == 'Failed']
     out = {'Selected': len(sel), 'Passed': sum(1 for x in sel if x[1] == 'Passed'), 'Failed': len(failed),
            'NotExecuted': sum(1 for x in sel if x[1] == 'NotExecuted')}
@@ -509,7 +599,9 @@ def verify(a, out, check):
     exp_green, exp_red = parse_counts(a.expect_green, '--expect-green'), parse_counts(a.expect_red, '--expect-red')
     exp_comp = parse_composition(a.expect_red_composition)
     out['Filter'] = {'Expression': a.filter, 'Substring': substring, 'MatchKey': 'TestMethod className + "." + name',
-                     'Matching': 'ordinal case-insensitive substring (per-character simple upper-case fold)', 'MinSelected': min_selected}
+                     'Matching': 'case-insensitive substring over UTF-16 code units with ASCII-only folding (A-Z <-> a-z); a non-ASCII unit is unknown: '
+                                 'an FQN without an all-ASCII matching window that could match through such a unit fails closed (UNSUPPORTED_NON_ASCII_FQN); '
+                                 'an FQN with no possible window is not selected', 'MinSelected': min_selected}
     out['TaskId'], out['BaseSha'], out['ChainBaseSha'], out['RedSha'], out['CurrentSha'] = a.task_id, a.base_sha, a.chain_base_sha, a.red_sha, a.current_sha
 
     # Expected ChainRedFiles (accredited list bound to the occurrence)
@@ -535,8 +627,17 @@ def verify(a, out, check):
             trx[role] = load_trx(raw)
             check('Trx.%sReadable' % role, True)
         except (OSError, Invalid) as e:
-            check('Trx.%sReadable' % role, False, 'TRX_UNREADABLE', '%s: %s' % (role, e))
+            check('Trx.%sReadable' % role, False, getattr(e, 'code', 'TRX_UNREADABLE'), '%s: %s' % (role, e))
     if len(trx) != 2:
+        return
+
+    # Selection decidability: a non-ASCII FullyQualifiedName that could match the filter fails closed
+    for role in ('Green', 'Red'):
+        rep = non_ascii_report(trx[role][0], trx[role][1], substring)
+        out[role]['NonAsciiFqn'] = rep
+        check('Trx.%sSelectionDecidable' % role, rep[UNKNOWN] == 0, 'UNSUPPORTED_NON_ASCII_FQN',
+              '%s: %d result row(s) whose non-ASCII FullyQualifiedName could match the filter: %s' % (role, rep[UNKNOWN], json.dumps(rep['Undecidable'])))
+    if any(r['Code'] == 'UNSUPPORTED_NON_ASCII_FQN' for r in out['Reasons']):
         return
 
     # Handoffs and term set

@@ -5120,3 +5120,78 @@ de `main`.
 - Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
 - Invocaciones de modelo: la sonda y la revisión.
 - Sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
+
+## 80. A-9 / I64-TESTFILTER-BRIDGE-01 corregido: STOP antes de versionar, disposición del Coordinator y paquete versionado; A-9 NO ACTIVA
+
+**CI de §79:** corrida `42574267416` (push, SHA exacto `f1984abaf327e2349bc6005d0883a649b3bc5ea6`), 4/4 success.
+
+**Orden A-9 del Coordinator** (literal en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a9-correction-order.md`):
+- Acepta los tres REQUIRED de `R20261109T062937Z-e1d0`. Ninguno exige cambio de producto, del Freeze ni de I-61, ni evidencia real.
+- A-9 corrige y sustituye a A-8 solo para la activación. A-8 queda histórica e inmutable.
+- M-04 = YES y el resto NO; autoridad Owner + Architect + Coordinator; PROPOSED / NOT ACTIVE.
+
+**STOP antes de versionar (sin invocación de modelos):**
+- Correcciones implementadas y autoprueba de 55 casos en PASS, sin commit.
+- **Descubrimiento de aplicabilidad**, leyendo el código fuente y sin ejecutar el puente:
+  - `tests/RackCad.Tests/ProjectVariableMutationPreflightTests.cs` en `c726410f` declara `[Fact] public void Create_AcuñaUnVariableIdNUEVO()` (U+00F1).
+  - Es el único identificador de clase o método no ASCII de los 613 `.cs` de `tests/RackCad.Tests`.
+  - Con la regla literal (todo FQN no ASCII falla cerrado), el TRX Core real fallaría siempre por una prueba ajena a `Workspace`.
+- La sesión paró antes de versionar y de gastar la re-revisión, y propuso una regla de cota superior.
+- **Corrección de la devolución:** atribuyó el método a I-48 (`feb32d06`), que solo es el último cambio del archivo. Lo introdujo I-47 G6
+  (`4302f266`). A-9.md registra el dato correcto.
+
+**Disposición del Coordinator** (literal en `coordinator-a9-preversioning-disposition.md`):
+- Propuesta aceptada con una regla más precisa: **coincidencia potencial con fallo cerrado** sobre unidades UTF-16, en lugar del
+  rechazo global de lo no ASCII.
+- Las correcciones de Counters y de identidad de ejecución se aceptan sin cambio.
+- **Autoriza:** completar, versionar, la CI exacta y la re-revisión formal ya autorizada. No hace falta otra sonda si:
+  - el binario no cambia;
+  - `gpt-6.1-sol`/`high` sigue disponible;
+  - config.toml está en A/B/C/D;
+  - el relevo está limpio.
+- La decisión del Owner se difiere hasta el Architect AGREED y se aplica a A-9, no a A-8.
+
+**Paquete A-9** (`docs/initiatives/I-64-A-9.md`):
+
+| Archivo | Blob | Resultado |
+|---|---|---|
+| `tools/verify_testfilter_bridge.py` | `39d30be3` | decisión de tres estados (§ 2.2 de A-9); Counters con lista cerrada; `executionId` GUID único |
+| `tools/selftest_testfilter_bridge.py` | `436c9234` | 62 casos sintéticos |
+| `tools/regression_demo_testfilter_bridge.py` | `c1c852a0` | 9 mutantes y el blob histórico de A-8 |
+| `selftest-testfilter-result-a9.json` | `75d20c51` | PASS 62/62, dos ejecuciones idénticas byte a byte |
+| `regression-demo-a9-testfilter.json` | `49102398` | PASS, dos ejecuciones idénticas byte a byte |
+
+- **Regla ordinal:**
+  - una ventana totalmente ASCII que coincide = SELECTED;
+  - sin ella, una ventana posible gracias a unidades no ASCII = `UNSUPPORTED_NON_ASCII_FQN` (fallo cerrado);
+  - ninguna ventana posible = no seleccionada;
+  - no implementa `OrdinalIgnoreCase` de .NET.
+- **Interpretación registrada para la revisión:** la coincidencia totalmente ASCII prevalece sobre una ventana potencial del mismo FQN.
+  Lo cubren T60 y el mutante `UnknownOverridesAsciiMatch`.
+- **Casos nuevos:**
+  - s larga y i sin punto: FAIL cerrado;
+  - U+00F1 ajeno (`Create_AcuñaUnVariableIdNUEVO`): no seleccionada, PASS;
+  - coincidencia ASCII dentro de un FQN no ASCII: seleccionada;
+  - par sustituto como dos unidades, en los dos sentidos: T61 y T62.
+- **Mutantes:** los 9 dan FAIL y cada uno de los cinco de la regla ordinal falla sus casos objetivo. Los cinco son:
+  - el par como una posición;
+  - el rechazo global;
+  - lo no ASCII como desigualdad;
+  - lo desconocido sobre lo ASCII;
+  - `casefold()`.
+- **Blob histórico de A-8 `1691003d`:** FAIL, 38/62.
+  - Acepta 13 fixtures malos: T36, T37 y T61 (decide con el pliegue Unicode de Python); T39, T43-T45 y T47; T49, T50 y T53-T55.
+  - Falla cerrado, pero con el código genérico, en 5 casos.
+  - Da el resultado esperado en 6 casos, en los que solo fallan aserciones sobre campos de salida nuevos de A-9.
+- **Sin evidencia real:** ninguna ejecución del puente sobre evidencia real de F2-T1.
+
+**Custodia:** las dos órdenes literales en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/` (17 archivos custodiados).
+
+**Estado:**
+- `f2_a9_status` nuevo; `f2_a8_status` marca A-8 como histórica y sustituida para la activación.
+- `f2_t1_status`, `next_action`, NEXT_ROLE, NEXT_ACTION y GATE apuntan a A-9.
+
+**Límites:**
+- Solo documentación, evidencia y herramientas sintéticas; sin cambios en `src/` ni `tests/`.
+- Sin invocación de modelos en esta etapa; sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
+- **Siguiente:** la CI exacta de este commit y, si da 4/4, la re-revisión formal del Architect con la celda acreditada.

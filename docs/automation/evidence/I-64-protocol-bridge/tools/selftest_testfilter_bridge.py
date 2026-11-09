@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Synthetic self-test of I64-TESTFILTER-BRIDGE-01 (I-64 A-8). Uses ONLY synthetic fixtures built in a temporary directory:
+"""Synthetic self-test of I64-TESTFILTER-BRIDGE-01 (I-64 A-9; T01-T35 from A-8, T36-T62 for the three REQUIRED findings of the
+Architect review R20261109T062937Z-e1d0: ordinal T36-T38 and T56-T62, counters T39-T48, execution identity T49-T55).
+Uses ONLY synthetic fixtures built in a temporary directory:
 a deterministic Git repository, VSTest TRX files, schema-valid handoffs and a synthetic 16.10 section. No real I-64 evidence.
 
 Fixture universe (Workspace substring): FQN 6, display name 7, class only 5 (the 53af failure class: one fewer than FQN),
@@ -94,29 +96,50 @@ def esc(text):
     return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
 
 
-def trx(rows, counters=None, prolog='', bom=False, inner=False, extra_result=None, duplicate_id=False):
-    """rows: list of (className, method, display, outcome, message)."""
-    defs, res = [], []
+COUNTER_ORDER = ('total', 'executed', 'passed', 'failed', 'error', 'timeout', 'aborted', 'inconclusive', 'passedButRunAborted', 'notRunnable',
+                 'notExecuted', 'disconnected', 'warning', 'completed', 'inProgress', 'pending')
+
+
+def eid(i):
+    return '%08x-1111-4111-8111-%012x' % (i + 1, i + 1)
+
+
+def trx(rows, counters=None, bom=False, inner=False, extra_result=None, duplicate_id=False, exec_ids=None, shared=None):
+    """rows: list of (className, method, display, outcome, message). shared: {row index: earlier row index} whose testId the row
+    reuses (another execution of the same test, e.g. a Theory case). exec_ids: {row index: executionId or None (omitted)}.
+    counters: {attribute: value or None (attribute omitted)} overriding the values derived from the rows."""
+    defs, res, tids = [], [], []
     for i, (cls, m, disp, outcome, msg) in enumerate(rows):
-        tid = '%08x-0000-4000-8000-000000000000' % (i + 1)
-        if duplicate_id and i == 1:
-            tid = '%08x-0000-4000-8000-000000000000' % 1
         name = disp or (cls + '.' + m)
-        defs.append('<UnitTest name="%s" id="%s"><TestMethod codeBase="Synth.Tests.dll" className="%s" name="%s" /></UnitTest>' % (esc(name), tid, esc(cls), esc(m)))
+        if i in (shared or {}):
+            tid = tids[shared[i]]
+        else:
+            tid = '%08x-0000-4000-8000-000000000000' % (i + 1)
+            if duplicate_id and i == 1:
+                tid = '%08x-0000-4000-8000-000000000000' % 1
+            defs.append('<UnitTest name="%s" id="%s"><TestMethod codeBase="Synth.Tests.dll" className="%s" name="%s" /></UnitTest>' % (esc(name), tid, esc(cls), esc(m)))
+        tids.append(tid)
         body = ''
         if msg:
             body = '<Output><ErrorInfo><Message>%s</Message></ErrorInfo></Output>' % esc(msg)
         if inner and i == 0:
             body += '<InnerResults></InnerResults>'
-        res.append('<UnitTestResult executionId="e%d" testId="%s" testName="%s" outcome="%s">%s</UnitTestResult>' % (i + 1, tid, esc(name), outcome, body))
+        e = (exec_ids or {}).get(i, eid(i))
+        ea = '' if e is None else ' executionId="%s"' % e
+        res.append('<UnitTestResult%s testId="%s" testName="%s" outcome="%s">%s</UnitTestResult>' % (ea, tid, esc(name), outcome, body))
     if extra_result:
         res.append(extra_result)
-    total = len(res) if counters is None else counters[0]
-    passed = sum(1 for r in rows if r[3] == 'Passed') if counters is None else counters[1]
-    failed = sum(1 for r in rows if r[3] == 'Failed') if counters is None else counters[2]
-    text = (prolog + '<?xml version="1.0" encoding="utf-8"?>' if not prolog.startswith('<?xml') else prolog) if prolog else '<?xml version="1.0" encoding="utf-8"?>'
+    passed = sum(1 for r in rows if r[3] == 'Passed')
+    failed = sum(1 for r in rows if r[3] == 'Failed')
+    values = {k: 0 for k in COUNTER_ORDER}
+    values.update({'total': len(res), 'executed': passed + failed, 'passed': passed, 'failed': failed,
+                   'notExecuted': sum(1 for r in rows if r[3] == 'NotExecuted')})
+    for k, v in (counters or {}).items():
+        values[k] = v
+    attrs = ' '.join('%s="%s"' % (k, v) for k, v in values.items() if v is not None)
+    text = '<?xml version="1.0" encoding="utf-8"?>'
     text += '<TestRun id="run" name="synthetic" xmlns="%s"><TestDefinitions>%s</TestDefinitions><Results>%s</Results>' % (NS, ''.join(defs), ''.join(res))
-    text += '<ResultSummary outcome="Completed"><Counters total="%d" executed="%d" passed="%d" failed="%d" /></ResultSummary></TestRun>' % (total, total, passed, failed)
+    text += '<ResultSummary outcome="Completed"><Counters %s /></ResultSummary></TestRun>' % attrs
     data = text.encode('utf-8')
     return (b'\xef\xbb\xbf' + data) if bom else data
 
@@ -213,6 +236,24 @@ def cases(s):
     red_swap = red_rows()[:2] + [('Synth.Tests.WorkspaceNewTests', 'Replaced', None, 'Passed', '')] + red_rows()[3:]
     green_failed = [(c, m, d, ('Failed' if m == 'InvalidatesOnDrain' else 'Passed'), (ASSERT_MSG if m == 'InvalidatesOnDrain' else '')) for c, m, d, _, _ in UNIVERSE]
     good = lambda d: d['Green']['Selected'] == 6 and d['Red']['Selected'] == 6
+    CACHE = 'Synth.Tests.WorkspaceCacheTests'
+    LONG_S = 'Synth.Tests.Work' + chr(0x17F) + 'paceCacheTests'
+    DOTLESS = 'Synth.Tests.F' + chr(0x131) + 'lterCacheTests'
+    rename = lambda rows, new: [((new if c == CACHE else c), m, d, o, msg) for c, m, d, o, msg in rows]
+    g_long, r_long = rename(g_rows, LONG_S), rename(red_ok, LONG_S)
+    g_dot = rename(g_rows, DOTLESS)
+    r_dot = [((DOTLESS if c == CACHE else c), m, d, ('Failed' if (c == CACHE and m == 'CachesPerSession') else 'Passed'),
+              (ASSERT_MSG if (c == CACHE and m == 'CachesPerSession') else '')) for c, m, d, _, _ in UNIVERSE]
+    g_ne = [(c, m, d, ('NotExecuted' if m == 'Subtracts' else o), msg) for c, m, d, o, msg in g_rows]
+    r_ne = [(c, m, d, ('NotExecuted' if m == 'Subtracts' else o), ('' if m == 'Subtracts' else msg)) for c, m, d, o, msg in red_ok]
+    n = len(UNIVERSE)
+    theory = lambda row: [(row[0], row[1], row[0] + '.' + row[1] + '(case: %d)' % k, row[3], row[4]) for k in (1, 2)]
+    # one extra Passed row (GREEN and RED) with the given className and method
+    plus = lambda cls, m: {'green_trx': trx(g_rows + [(cls, m, None, 'Passed', '')]), 'red_trx': trx(red_ok + [(cls, m, None, 'Passed', '')])}
+    seven = {'real': h(green=(7, 7, 0), red=(7, 4, 3)), 'expect_green': '7/7/0', 'expect_red': '7/4/3'}
+    UNK = 'UNKNOWN_POTENTIAL_MATCH'
+    nonascii = lambda d, role, **want: all(d[role]['NonAsciiFqn'][k] == v for k, v in want.items())
+    PAIR = chr(0x10400)  # DESERET CAPITAL LETTER LONG I: one code point, two UTF-16 code units (D801 DC00)
     return [
         {'Id': 'T01', 'desc': 'correct FQN selection, coherent counts, exact mutation', 'expect': 'PASS',
          'asserts': {'Fqn6': good, 'Composition': lambda d: d['Red']['FailureComposition'] == {'System.NullReferenceException': 1, 'xunit-assertion': 2}}},
@@ -244,14 +285,14 @@ def cases(s):
          'mutated': mut(Deviations=['extra change'])},
         {'Id': 'T15', 'desc': 'malformed TRX -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE', 'green_trx': trx(g_rows)[:-40]},
         {'Id': 'T16', 'desc': 'TRX result references an undefined testId -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE',
-         'green_trx': trx(g_rows, extra_result='<UnitTestResult executionId="x" testId="ffffffff-0000-4000-8000-000000000000" testName="x" outcome="Passed" />')},
+         'green_trx': trx(g_rows, extra_result='<UnitTestResult executionId="%s" testId="ffffffff-0000-4000-8000-000000000000" testName="x" outcome="Passed" />' % eid(999))},
         {'Id': 'T17', 'desc': 'duplicate UnitTest id -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE', 'green_trx': trx(g_rows, duplicate_id=True)},
         {'Id': 'T18', 'desc': 'DOCTYPE / ENTITY in TRX -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE',
          'green_trx': trx(g_rows).replace(b'<TestRun', b'<!DOCTYPE TestRun [<!ENTITY x "y">]><TestRun', 1)},
         {'Id': 'T19', 'desc': 'unsupported filter expression -> FAIL closed', 'expect': 'FAIL', 'code': 'UNSUPPORTED_FILTER',
          'filter': 'FullyQualifiedName~Workspace|Category=Slow'},
-        {'Id': 'T20', 'desc': 'Counters incoherent with the Results rows -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE',
-         'green_trx': trx(g_rows, counters=(len(g_rows), len(g_rows) - 1, 0))},
+        {'Id': 'T20', 'desc': 'Counters incoherent with the Results rows -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_COUNTERS_INCOHERENT',
+         'green_trx': trx(g_rows, counters={'passed': len(g_rows) - 1})},
         {'Id': 'T21', 'desc': 'InnerResults present -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE', 'green_trx': trx(g_rows, inner=True)},
         {'Id': 'T22', 'desc': 'RED failure composition differs from the expected one -> FAIL', 'expect': 'FAIL', 'code': 'RED_COMPOSITION_MISMATCH',
          'composition': 'xunit-assertion=3'},
@@ -274,6 +315,68 @@ def cases(s):
         {'Id': 'T34', 'desc': 'TRX with a UTF-8 byte order mark is read', 'expect': 'PASS', 'green_trx': trx(g_rows, bom=True), 'red_trx': trx(red_ok, bom=True)},
         {'Id': 'T35', 'desc': 'TRX that is not strict UTF-8 -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE',
          'green_trx': trx(g_rows).replace(b'synthetic', b'synth\xffetic', 1)},
+        # ---- A-9: I64-A8-ORDINAL-FILTER-MISMATCH ----
+        {'Id': 'T36', 'desc': 'Work + U+017F (long s) + pace under ~Workspace: the non-ASCII unit could decide the match -> UNSUPPORTED_NON_ASCII_FQN (FAIL closed)', 'expect': 'FAIL', 'code': 'UNSUPPORTED_NON_ASCII_FQN',
+         'green_trx': trx(g_long), 'red_trx': trx(r_long), 'asserts': {'ThreeUndecidable': lambda d: nonascii(d, 'Green', Rows=3, **{UNK: 3})}},
+        {'Id': 'T37', 'desc': 'F + U+0131 (dotless i) + lter under ~Filter: the non-ASCII unit could decide the match -> UNSUPPORTED_NON_ASCII_FQN (FAIL closed)', 'expect': 'FAIL', 'code': 'UNSUPPORTED_NON_ASCII_FQN',
+         'green_trx': trx(g_dot), 'red_trx': trx(r_dot), 'filter': 'FullyQualifiedName~Filter', 'min': '1',
+         'real': h(green=(3, 3, 0), red=(3, 2, 1)), 'expect_green': '3/3/0', 'expect_red': '3/2/1', 'composition': 'xunit-assertion=1',
+         'asserts': {'ThreeUndecidable': lambda d: nonascii(d, 'Red', Rows=3, **{UNK: 3})}},
+        {'Id': 'T38', 'desc': 'ASCII mixed-case filter substring selects the same rows -> PASS', 'expect': 'PASS', 'filter': 'FullyQualifiedName~wOrKsPaCe', 'asserts': {'Fqn6': good}},
+        # ---- A-9: I64-A8-COUNTER-COHERENCE ----
+        {'Id': 'T39', 'desc': 'executed = 0 with Passed rows -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_COUNTERS_INCOHERENT', 'green_trx': trx(g_rows, counters={'executed': 0})},
+        {'Id': 'T40', 'desc': 'total mismatch -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_COUNTERS_INCOHERENT', 'green_trx': trx(g_rows, counters={'total': len(g_rows) + 1})},
+        {'Id': 'T41', 'desc': 'passed mismatch (RED) -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_COUNTERS_INCOHERENT', 'red_trx': trx(red_ok, counters={'passed': 5})},
+        {'Id': 'T42', 'desc': 'failed mismatch (RED) -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_COUNTERS_INCOHERENT', 'red_trx': trx(red_ok, counters={'failed': 2})},
+        {'Id': 'T43', 'desc': 'notExecuted mismatch -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_COUNTERS_INCOHERENT', 'green_trx': trx(g_rows, counters={'notExecuted': 1})},
+        {'Id': 'T44', 'desc': 'non-neutral counter category nonzero (error) -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_COUNTER_UNSUPPORTED', 'green_trx': trx(g_rows, counters={'error': 1})},
+        {'Id': 'T45', 'desc': 'Counters attribute not understood by the bridge -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_COUNTER_UNSUPPORTED', 'green_trx': trx(g_rows, counters={'flaky': 0})},
+        {'Id': 'T46', 'desc': 'coherent Passed/Failed/NotExecuted counters (one NotExecuted row outside the selection) -> PASS', 'expect': 'PASS',
+         'green_trx': trx(g_ne), 'red_trx': trx(r_ne),
+         'asserts': {'NotExecutedCoherent': lambda d: d['Green']['Counters']['notExecuted'] == 1 and d['Green']['Counters']['executed'] == len(UNIVERSE) - 1 and good(d)}},
+        {'Id': 'T47', 'desc': 'required counter attribute missing (executed) -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_COUNTERS_INCOHERENT', 'green_trx': trx(g_rows, counters={'executed': None})},
+        {'Id': 'T48', 'desc': 'counter value not a non-negative integer -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_COUNTERS_INCOHERENT', 'green_trx': trx(g_rows, counters={'passed': '9x'})},
+        # ---- A-9: I64-A8-DUPLICATE-RESULT-FAIL-OPEN ----
+        {'Id': 'T49', 'desc': 'duplicate executionId (selected rows, both TRX) -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_EXECUTION_ID_DUPLICATE',
+         'green_trx': trx(g_rows, exec_ids={2: eid(1)}), 'red_trx': trx(red_ok, exec_ids={2: eid(1)})},
+        {'Id': 'T50', 'desc': 'duplicate execution record cannot inflate MinSelected (7 declared, min 7) -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_EXECUTION_ID_DUPLICATE',
+         'green_trx': trx(g_rows + [g_rows[0]], shared={n: 0}, exec_ids={n: eid(0)}), 'red_trx': trx(red_ok + [red_ok[0]], shared={n: 0}, exec_ids={n: eid(0)}),
+         'min': '7', 'real': h(green=(7, 7, 0), red=(7, 3, 4)), 'expect_green': '7/7/0', 'expect_red': '7/3/4', 'composition': 'System.NullReferenceException=1,xunit-assertion=3'},
+        {'Id': 'T51', 'desc': 'same testId with distinct executionIds is allowed and counted -> PASS', 'expect': 'PASS',
+         'green_trx': trx(g_rows + [g_rows[1]], shared={n: 1}), 'red_trx': trx(red_ok + [red_ok[1]], shared={n: 1}),
+         'real': h(green=(7, 7, 0), red=(7, 4, 3)), 'expect_green': '7/7/0', 'expect_red': '7/4/3',
+         'asserts': {'Counted7': lambda d: d['Green']['Selected'] == 7 and d['Red']['Selected'] == 7}},
+        {'Id': 'T52', 'desc': 'Theory-like executions of one selected method with distinct executionIds stay separate rows -> PASS', 'expect': 'PASS',
+         'green_trx': trx(g_rows + theory(g_rows[3]), shared={n: 3, n + 1: 3}), 'red_trx': trx(red_ok + theory(red_ok[3]), shared={n: 3, n + 1: 3}),
+         'real': h(green=(8, 8, 0), red=(8, 5, 3)), 'expect_green': '8/8/0', 'expect_red': '8/5/3',
+         'asserts': {'Counted8': lambda d: d['Green']['Selected'] == 8 and d['Red']['Selected'] == 8}},
+        {'Id': 'T53', 'desc': 'missing executionId -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_EXECUTION_ID_MISSING', 'green_trx': trx(g_rows, exec_ids={0: None})},
+        {'Id': 'T54', 'desc': 'malformed executionId -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_EXECUTION_ID_MALFORMED', 'green_trx': trx(g_rows, exec_ids={0: 'e1'})},
+        {'Id': 'T55', 'desc': 'executionIds equal except for hex letter case are duplicates -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_EXECUTION_ID_DUPLICATE',
+         'green_trx': trx(g_rows, exec_ids={1: 'abcdef01-aaaa-4bbb-8ccc-0000000000ab', 2: 'ABCDEF01-AAAA-4BBB-8CCC-0000000000AB'})},
+        # ---- A-9 (pre-versioning disposition): potential-match semantics for I64-A8-ORDINAL-FILTER-MISMATCH ----
+        dict({'Id': 'T56', 'desc': 'ASCII ordinary match RackCad.Tests.WorkspaceNavigationTests.SomeTest -> SELECTED (PASS)', 'expect': 'PASS',
+              'asserts': {'Selected7': lambda d: d['Green']['Selected'] == 7 and d['Red']['Selected'] == 7 and nonascii(d, 'Green', Rows=0)}},
+             **plus('RackCad.Tests.WorkspaceNavigationTests', 'SomeTest'), **seven),
+        dict({'Id': 'T57', 'desc': 'ASCII mixed-case match RackCad.Tests.wOrKsPaCeNavigationTests.SomeTest -> SELECTED (PASS)', 'expect': 'PASS',
+              'asserts': {'Selected7': lambda d: d['Green']['Selected'] == 7 and d['Diagnostics']['Green']['CaseSensitiveFqn'] == 4}},
+             **plus('RackCad.Tests.wOrKsPaCeNavigationTests', 'SomeTest'), **seven),
+        dict({'Id': 'T58', 'desc': 'unrelated U+00F1: Create_AcuñaUnVariableIdNUEVO under ~Workspace has no possible window -> NOT SELECTED, no failure (PASS)', 'expect': 'PASS',
+              'asserts': {'NotSelected': lambda d: d['Green']['Selected'] == 6 and d['Red']['Selected'] == 6 and nonascii(d, 'Green', Rows=1, NOT_SELECTED=1, **{UNK: 0})
+                          and nonascii(d, 'Red', Rows=1, NOT_SELECTED=1, **{UNK: 0})}},
+             **plus('RackCad.Tests.ProjectVariableMutationPreflightTests', 'Create_Acu' + chr(0xF1) + 'aUnVariableIdNUEVO')),
+        dict({'Id': 'T59', 'desc': 'unrelated non-ASCII text plus an actual ASCII Workspace substring -> SELECTED (PASS)', 'expect': 'PASS',
+              'asserts': {'Selected7': lambda d: d['Green']['Selected'] == 7 and nonascii(d, 'Green', Rows=1, SELECTED=1, **{UNK: 0})}},
+             **plus('RackCad.Tests.WorkspaceNavigationTests', 'Navega_A' + chr(0xF1) + 'adeDestino'), **seven),
+        dict({'Id': 'T60', 'desc': 'a potential long-s window and an all-ASCII Workspace window in the same FQN: inclusion cannot depend on Unicode -> SELECTED (PASS)', 'expect': 'PASS',
+              'asserts': {'Selected7': lambda d: d['Green']['Selected'] == 7 and nonascii(d, 'Green', Rows=1, SELECTED=1, **{UNK: 0})}},
+             **plus('Synth.Tests.Work' + chr(0x17F) + 'paceWorkspaceTests', 'Runs'), **seven),
+        dict({'Id': 'T61', 'desc': 'surrogate pair as TWO units: Wo + U+10400 + space fills r,k of Workspace -> UNSUPPORTED_NON_ASCII_FQN (collapsing the pair to one position would wrongly report not selected)',
+              'expect': 'FAIL', 'code': 'UNSUPPORTED_NON_ASCII_FQN', 'asserts': {'OneUndecidable': lambda d: nonascii(d, 'Green', Rows=1, **{UNK: 1})}},
+             **plus('Synth.Tests.Wo' + PAIR + 'spaceTests', 'Runs')),
+        dict({'Id': 'T62', 'desc': 'surrogate pair as TWO units: Work + U+10400 + pace has no possible window -> NOT SELECTED (collapsing the pair to one position would wrongly fail closed) (PASS)',
+              'expect': 'PASS', 'asserts': {'NotSelected': lambda d: d['Green']['Selected'] == 6 and nonascii(d, 'Green', Rows=1, NOT_SELECTED=1, **{UNK: 0})}},
+             **plus('Synth.Tests.Work' + PAIR + 'paceTests', 'Runs')),
     ]
 
 

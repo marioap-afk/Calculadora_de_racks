@@ -1,0 +1,834 @@
+{
+  "Schema": "rackcad-i64-testfilter-bridge-selftest/v1",
+  "VerifierSha256": "4f7d94e615abc08a9e33c9cf3771d296feb9c2be93804dad02731bd290c0a7b4",
+  "Result": "PASS",
+  "Passed": 62,
+  "Total": 62,
+  "FixtureOnly": "synthetic Git repository, TRX, handoffs and 16.10 section; no real I-64 evidence",
+  "Cases": [
+    {
+      "Id": "T01",
+      "Description": "correct FQN selection, coherent counts, exact mutation",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "Fqn6": true,
+        "Composition": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T02",
+      "Description": "declared counts computed by display name (7) -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "EXPECTED_COUNT_MISMATCH",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "EXPECTED_COUNT_MISMATCH",
+        "HANDOFF_COUNT_MISMATCH"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T03",
+      "Description": "declared counts computed by class name only (5, one fewer than FQN: the 53af class) -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "EXPECTED_COUNT_MISMATCH",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "EXPECTED_COUNT_MISMATCH",
+        "HANDOFF_COUNT_MISMATCH"
+      ],
+      "Asserts": {
+        "ClassOnlyIsOneFewer": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T04",
+      "Description": "declared counts computed case-sensitively (4) -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "EXPECTED_COUNT_MISMATCH",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "EXPECTED_COUNT_MISMATCH",
+        "HANDOFF_COUNT_MISMATCH",
+        "RED_COMPOSITION_MISMATCH"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T05",
+      "Description": "declared counts computed by method name only (1) -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "EXPECTED_COUNT_MISMATCH",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "EXPECTED_COUNT_MISMATCH",
+        "HANDOFF_COUNT_MISMATCH"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T06",
+      "Description": "Theory argument text contains the substring but the FQN does not: not selected",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "NotSelected": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T07",
+      "Description": "substring only in the method name (upper case): selected",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "Selected": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T08",
+      "Description": "selection below MinSelected -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "SELECTION_BELOW_MINIMUM",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "SELECTION_BELOW_MINIMUM"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T09",
+      "Description": "GREEN has a failed selected test -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "GREEN_NOT_ALL_PASSED",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "GREEN_NOT_ALL_PASSED"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T10",
+      "Description": "RED has no failed selected test -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "RED_WITHOUT_SELECTED_FAILURES",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "RED_COMPOSITION_MISMATCH",
+        "RED_WITHOUT_SELECTED_FAILURES"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T11",
+      "Description": "ChainRedFiles omitted (the RED commit changes no tests/ path) -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "CHAIN_RED_FILES_EMPTY",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "CHAIN_RED_FILES_EMPTY",
+        "CHAIN_RED_FILES_MISMATCH"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T12",
+      "Description": "GREEN modifies a ChainRedFile -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "GREEN_MODIFIES_CHAIN_RED_FILES",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "GREEN_MODIFIES_CHAIN_RED_FILES"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T13",
+      "Description": "nc3 handoff without the prohibited-term mutation -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "MUTATION_TERM_NOT_EXACTLY_ONE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "MUTATION_NOT_AUTHORIZED_APPEND",
+        "MUTATION_NOT_ONLY_WORKCOMPLETED",
+        "MUTATION_TERM_NOT_EXACTLY_ONE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T14",
+      "Description": "nc3 handoff changes an additional field -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "MUTATION_NOT_ONLY_WORKCOMPLETED",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "MUTATION_NOT_ONLY_WORKCOMPLETED"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T15",
+      "Description": "malformed TRX -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_UNREADABLE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_UNREADABLE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T16",
+      "Description": "TRX result references an undefined testId -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_UNREADABLE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_UNREADABLE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T17",
+      "Description": "duplicate UnitTest id -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_UNREADABLE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_UNREADABLE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T18",
+      "Description": "DOCTYPE / ENTITY in TRX -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_UNREADABLE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_UNREADABLE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T19",
+      "Description": "unsupported filter expression -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "UNSUPPORTED_FILTER",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "UNSUPPORTED_FILTER"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T20",
+      "Description": "Counters incoherent with the Results rows -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_COUNTERS_INCOHERENT",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_COUNTERS_INCOHERENT"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T21",
+      "Description": "InnerResults present -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_UNREADABLE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_UNREADABLE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T22",
+      "Description": "RED failure composition differs from the expected one -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "RED_COMPOSITION_MISMATCH",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "RED_COMPOSITION_MISMATCH"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T23",
+      "Description": "RED failure outside the selection -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "RED_FAILURE_OUTSIDE_SELECTION",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "RED_FAILURE_OUTSIDE_SELECTION"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T24",
+      "Description": "--repo is not the top level of the repository -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "GIT_REPOSITORY_INVALID",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "GIT_REPOSITORY_INVALID"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T25",
+      "Description": "mutation introduces the term in WorkCompleted and in another governed field -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "MUTATION_NOT_ONLY_WORKCOMPLETED",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "MUTATION_NOT_ONLY_WORKCOMPLETED",
+        "MUTATION_TERM_NOT_EXACTLY_ONE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T26",
+      "Description": "real handoff not schema-valid (Attempt as a string) -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "REAL_SCHEMA_INVALID",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "REAL_SCHEMA_INVALID"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T27",
+      "Description": "appended text is not the authorized append (other term) -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "MUTATION_NOT_AUTHORIZED_APPEND",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "MUTATION_NOT_AUTHORIZED_APPEND"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T28",
+      "Description": "selected test identities differ between GREEN and RED with equal counts -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "SELECTION_DIFFERS_GREEN_RED",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "SELECTION_DIFFERS_GREEN_RED"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T29",
+      "Description": "handoff not bound to the occurrence (CurrentSha) -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "BINDING_MISMATCH",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "BINDING_MISMATCH"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T30",
+      "Description": "-h is a usage error (exit 2), never PASS",
+      "Expected": "FAIL",
+      "ExpectedCode": "USAGE_ERROR",
+      "Got": "FAIL",
+      "ExitCode": 2,
+      "ReasonCodes": [
+        "USAGE_ERROR"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T31",
+      "Description": "unsupported TRX outcome -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_UNREADABLE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_UNREADABLE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T32",
+      "Description": "accredited ChainRedFiles list omits a derived file -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "CHAIN_RED_FILES_MISMATCH",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "CHAIN_RED_FILES_MISMATCH"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T33",
+      "Description": "real handoff already contains a prohibited term -> FAIL",
+      "Expected": "FAIL",
+      "ExpectedCode": "REAL_HAS_PROHIBITED_TERM",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "REAL_HAS_PROHIBITED_TERM"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T34",
+      "Description": "TRX with a UTF-8 byte order mark is read",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T35",
+      "Description": "TRX that is not strict UTF-8 -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_UNREADABLE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_UNREADABLE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T36",
+      "Description": "Work + U+017F (long s) + pace under ~Workspace: the non-ASCII unit could decide the match -> UNSUPPORTED_NON_ASCII_FQN (FAIL closed)",
+      "Expected": "FAIL",
+      "ExpectedCode": "UNSUPPORTED_NON_ASCII_FQN",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "UNSUPPORTED_NON_ASCII_FQN"
+      ],
+      "Asserts": {
+        "ThreeUndecidable": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T37",
+      "Description": "F + U+0131 (dotless i) + lter under ~Filter: the non-ASCII unit could decide the match -> UNSUPPORTED_NON_ASCII_FQN (FAIL closed)",
+      "Expected": "FAIL",
+      "ExpectedCode": "UNSUPPORTED_NON_ASCII_FQN",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "UNSUPPORTED_NON_ASCII_FQN"
+      ],
+      "Asserts": {
+        "ThreeUndecidable": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T38",
+      "Description": "ASCII mixed-case filter substring selects the same rows -> PASS",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "Fqn6": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T39",
+      "Description": "executed = 0 with Passed rows -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_COUNTERS_INCOHERENT",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_COUNTERS_INCOHERENT"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T40",
+      "Description": "total mismatch -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_COUNTERS_INCOHERENT",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_COUNTERS_INCOHERENT"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T41",
+      "Description": "passed mismatch (RED) -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_COUNTERS_INCOHERENT",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_COUNTERS_INCOHERENT"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T42",
+      "Description": "failed mismatch (RED) -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_COUNTERS_INCOHERENT",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_COUNTERS_INCOHERENT"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T43",
+      "Description": "notExecuted mismatch -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_COUNTERS_INCOHERENT",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_COUNTERS_INCOHERENT"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T44",
+      "Description": "non-neutral counter category nonzero (error) -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_COUNTER_UNSUPPORTED",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_COUNTER_UNSUPPORTED"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T45",
+      "Description": "Counters attribute not understood by the bridge -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_COUNTER_UNSUPPORTED",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_COUNTER_UNSUPPORTED"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T46",
+      "Description": "coherent Passed/Failed/NotExecuted counters (one NotExecuted row outside the selection) -> PASS",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "NotExecutedCoherent": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T47",
+      "Description": "required counter attribute missing (executed) -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_COUNTERS_INCOHERENT",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_COUNTERS_INCOHERENT"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T48",
+      "Description": "counter value not a non-negative integer -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_COUNTERS_INCOHERENT",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_COUNTERS_INCOHERENT"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T49",
+      "Description": "duplicate executionId (selected rows, both TRX) -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_EXECUTION_ID_DUPLICATE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_EXECUTION_ID_DUPLICATE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T50",
+      "Description": "duplicate execution record cannot inflate MinSelected (7 declared, min 7) -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_EXECUTION_ID_DUPLICATE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_EXECUTION_ID_DUPLICATE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T51",
+      "Description": "same testId with distinct executionIds is allowed and counted -> PASS",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "Counted7": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T52",
+      "Description": "Theory-like executions of one selected method with distinct executionIds stay separate rows -> PASS",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "Counted8": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T53",
+      "Description": "missing executionId -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_EXECUTION_ID_MISSING",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_EXECUTION_ID_MISSING"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T54",
+      "Description": "malformed executionId -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_EXECUTION_ID_MALFORMED",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_EXECUTION_ID_MALFORMED"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T55",
+      "Description": "executionIds equal except for hex letter case are duplicates -> FAIL closed",
+      "Expected": "FAIL",
+      "ExpectedCode": "TRX_EXECUTION_ID_DUPLICATE",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "TRX_EXECUTION_ID_DUPLICATE"
+      ],
+      "Asserts": {},
+      "Ok": true
+    },
+    {
+      "Id": "T56",
+      "Description": "ASCII ordinary match RackCad.Tests.WorkspaceNavigationTests.SomeTest -> SELECTED (PASS)",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "Selected7": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T57",
+      "Description": "ASCII mixed-case match RackCad.Tests.wOrKsPaCeNavigationTests.SomeTest -> SELECTED (PASS)",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "Selected7": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T58",
+      "Description": "unrelated U+00F1: Create_Acu\u00f1aUnVariableIdNUEVO under ~Workspace has no possible window -> NOT SELECTED, no failure (PASS)",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "NotSelected": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T59",
+      "Description": "unrelated non-ASCII text plus an actual ASCII Workspace substring -> SELECTED (PASS)",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "Selected7": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T60",
+      "Description": "a potential long-s window and an all-ASCII Workspace window in the same FQN: inclusion cannot depend on Unicode -> SELECTED (PASS)",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "Selected7": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T61",
+      "Description": "surrogate pair as TWO units: Wo + U+10400 + space fills r,k of Workspace -> UNSUPPORTED_NON_ASCII_FQN (collapsing the pair to one position would wrongly report not selected)",
+      "Expected": "FAIL",
+      "ExpectedCode": "UNSUPPORTED_NON_ASCII_FQN",
+      "Got": "FAIL",
+      "ExitCode": 1,
+      "ReasonCodes": [
+        "UNSUPPORTED_NON_ASCII_FQN"
+      ],
+      "Asserts": {
+        "OneUndecidable": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T62",
+      "Description": "surrogate pair as TWO units: Work + U+10400 + pace has no possible window -> NOT SELECTED (collapsing the pair to one position would wrongly fail closed) (PASS)",
+      "Expected": "PASS",
+      "ExpectedCode": null,
+      "Got": "PASS",
+      "ExitCode": 0,
+      "ReasonCodes": [],
+      "Asserts": {
+        "NotSelected": true
+      },
+      "Ok": true
+    }
+  ]
+}
