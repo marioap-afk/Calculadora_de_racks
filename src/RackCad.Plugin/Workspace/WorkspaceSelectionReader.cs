@@ -28,6 +28,12 @@ namespace RackCad.Plugin.Workspace
     public sealed class WorkspaceSelectionReader : IWorkspaceSelectionReader
     {
         private readonly WorkspaceDefinitionCache _cache = new WorkspaceDefinitionCache();
+        private readonly NavigationEcho _echo;
+
+        public WorkspaceSelectionReader(NavigationEcho echo = null)
+        {
+            _echo = echo;
+        }
 
         public WorkspaceSelectionRead Read(SessionId session, long nativeInstanceId)
         {
@@ -35,13 +41,30 @@ namespace RackCad.Plugin.Workspace
             if (document == null || document.UnmanagedObject.ToInt64() != nativeInstanceId) return WorkspaceSelectionRead.Failed;
 
             // PICKFIRST = 0: there is no implied selection. It is reflected as state; the variable is never changed.
-            if (!IsPickFirstOn()) return new WorkspaceSelectionRead(Array.Empty<DefinitionFact>(), 0, false);
+            if (!IsPickFirstOn())
+            {
+                _echo?.Observe(session, Array.Empty<long>());
+                return new WorkspaceSelectionRead(Array.Empty<DefinitionFact>(), 0, false);
+            }
 
             var selected = document.Editor.SelectImplied();
             if (selected.Status != PromptStatus.OK || selected.Value == null)
+            {
+                _echo?.Observe(session, Array.Empty<long>());
                 return new WorkspaceSelectionRead(Array.Empty<DefinitionFact>(), 0);
+            }
 
             var ids = selected.Value.GetObjectIds();
+
+            // The complete set of handles of the implicit selection goes to the shared echo memory: the host core asks it,
+            // after this read, whether the selection is the one RackCad itself wrote. Nothing is retained here.
+            if (_echo != null)
+            {
+                var handles = new List<long>(ids.Length);
+                foreach (var selectedId in ids) handles.Add(selectedId.Handle.Value);
+                _echo.Observe(session, handles);
+            }
+
             var facts = new List<DefinitionFact>();
             var notRack = 0;
 

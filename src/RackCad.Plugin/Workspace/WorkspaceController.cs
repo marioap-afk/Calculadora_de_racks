@@ -26,16 +26,20 @@ namespace RackCad.Plugin.Workspace
         private readonly AutoCadEventBridge _bridge;
         private readonly WorkspaceHostCore _host;
         private readonly IWorkspaceHostPort _port;
+        private readonly NavigationEcho _echo;
+        private WorkspaceNavigationHost _navigation;
 
         private WorkspaceController()
         {
             _bridge = new AutoCadEventBridge();
+            _echo = new NavigationEcho();
             _host = new WorkspaceHostCore(
                 new BridgeLink(_bridge),
                 new HostProbe(_bridge),
-                new WorkspaceSelectionReader(),
+                new WorkspaceSelectionReader(_echo),
                 new WorkspaceInstrumentation(),
-                LogFault);
+                LogFault,
+                _echo);
             _port = new WorkspaceHostPort(_host);
             _bridge.Drained += OnDrained;
             _bridge.ActiveSessionChanged += OnActiveSessionChanged;
@@ -57,6 +61,26 @@ namespace RackCad.Plugin.Workspace
 
         /// <summary>The read-only port the panel talks to.</summary>
         public IWorkspaceHostPort Port => _port;
+
+        /// <summary>
+        /// The navigation port of the panel (I-64 D-07, F2-T2A). It is created on the first access, never when the controller
+        /// is created, and it shares the echo memory of the selection reader. It subscribes to nothing in AutoCAD.
+        /// </summary>
+        public IWorkspaceNavigationPort Navigation
+        {
+            get
+            {
+                if (_navigation == null)
+                {
+                    _navigation = new WorkspaceNavigationHost(
+                        _echo,
+                        id => _bridge.TryGetSession(id, out var session) && !session.IsDestroyed ? session.NativeInstanceId : (long?)null,
+                        (request, nativeId) => _bridge.Authorize(request, nativeId));
+                }
+
+                return _navigation;
+            }
+        }
 
         public bool PanelVisible => _host.PanelVisible;
 
@@ -111,6 +135,7 @@ namespace RackCad.Plugin.Workspace
             try
             {
                 _host.OnDrained(outcome);
+                if (_navigation != null) _navigation.OnDrained(outcome);
                 AssertNoOpenTransaction();
             }
             catch (System.Exception ex)

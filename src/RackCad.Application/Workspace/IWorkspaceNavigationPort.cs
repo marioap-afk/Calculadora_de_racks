@@ -95,34 +95,137 @@ namespace RackCad.Application.Workspace
             NavigationActionKind locateWith = NavigationActionKind.View);
     }
 
-    /// <summary>Skeleton of the pure core of the navigation host (RED): signatures only, no behavior yet.</summary>
+    /// <summary>
+    /// The pure core of the navigation host: lazy purge of the state of the sessions that no longer live, the cache
+    /// invalidation of a drain and the single execution path that turns a request into a value. It touches the host only
+    /// through <see cref="INavigationEffects"/> and the liveness delegate, so it is simulated in tests.
+    /// </summary>
     public sealed class WorkspaceNavigationRunner
     {
+        private readonly NavigationTargets _targets;
+        private readonly NavigationActionPolicy _policy;
+        private readonly NavigationEcho _echo;
+        private readonly Func<SessionId, bool> _isSessionAlive;
+        private readonly HashSet<SessionId> _known = new();
+
         public WorkspaceNavigationRunner(
             NavigationTargets targets,
             NavigationActionPolicy policy,
             NavigationEcho echo,
             Func<SessionId, bool> isSessionAlive)
         {
-            if (targets == null) throw new ArgumentNullException(nameof(targets));
-            if (policy == null) throw new ArgumentNullException(nameof(policy));
-            if (echo == null) throw new ArgumentNullException(nameof(echo));
-            if (isSessionAlive == null) throw new ArgumentNullException(nameof(isSessionAlive));
+            _targets = targets ?? throw new ArgumentNullException(nameof(targets));
+            _policy = policy ?? throw new ArgumentNullException(nameof(policy));
+            _echo = echo ?? throw new ArgumentNullException(nameof(echo));
+            _isSessionAlive = isSessionAlive ?? throw new ArgumentNullException(nameof(isSessionAlive));
         }
 
-        public int KnownSessionCount => 0;
+        /// <summary>Sessions the navigation keeps state for.</summary>
+        public int KnownSessionCount => _known.Count;
 
-        public IReadOnlyList<SessionId> PurgeDeadSessions() => Array.Empty<SessionId>();
+        /// <summary>
+        /// Ends the navigation state (targets, echo, pending state) of every session the authority no longer finds alive. A
+        /// purged session is never revived. Returns the sessions it purged.
+        /// </summary>
+        public IReadOnlyList<SessionId> PurgeDeadSessions()
+        {
+            var dead = new HashSet<SessionId>();
+            foreach (var session in _known)
+                if (!_isSessionAlive(session)) dead.Add(session);
+            foreach (var session in _echo.TrackedSessions)
+                if (!_isSessionAlive(session)) dead.Add(session);
 
+            var purged = new List<SessionId>(dead);
+            foreach (var session in purged) End(session);
+            return purged;
+        }
+
+        /// <summary>A drain of the session: purges first, then applies the cache invalidation the drain ran.</summary>
         public void OnDrained(DrainOutcome outcome)
         {
+            PurgeDeadSessions();
+            if (_targets.IsSessionEnded(outcome.Session)) return;
+            _targets.ApplyDrain(outcome.Session, outcome.Result);
         }
 
+        /// <summary>
+        /// Runs one request. The session decision and the Model Space condition are taken by the host inside the command
+        /// context; everything else (targets, existence, attribution, verdict) is the policy. A verdict other than Act has no
+        /// effect. A failing effect is a Failed value.
+        /// </summary>
         public WorkspaceNavigationResult Run(
             RequestDecision sessionDecision,
             bool modelSpaceCurrent,
             WorkspaceNavigationRequest request,
-            INavigationEffects effects) =>
-            WorkspaceNavigationResult.Failed("The navigation is not implemented yet.");
+            INavigationEffects effects)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (effects == null) throw new ArgumentNullException(nameof(effects));
+
+            PurgeDeadSessions();
+
+            var session = request.Origin.Origin;
+            if (_targets.IsSessionEnded(session))
+                return WorkspaceNavigationResult.Stale("The document of the request is gone.", false, NavigationActionVerdict.RejectedSessionDestroyed);
+            if (sessionDecision == RequestDecision.RejectedSessionDestroyed)
+            {
+                End(session);
+                return WorkspaceNavigationResult.Stale("The document of the request is gone.", false, NavigationActionVerdict.RejectedSessionDestroyed);
+            }
+
+            if (sessionDecision != RequestDecision.Accepted)
+                return WorkspaceNavigationResult.Rejected("The request belongs to another document.", NavigationActionVerdict.RejectedSessionMismatch);
+
+            if (!_isSessionAlive(session))
+            {
+                End(session);
+                return WorkspaceNavigationResult.Stale("The document of the request is gone.", false, NavigationActionVerdict.RejectedSessionDestroyed);
+            }
+
+            _known.Add(session);
+            if (!modelSpaceCurrent)
+                return WorkspaceNavigationResult.Unavailable("Navigation needs the Model Space.");
+
+            try
+            {
+                var plan = _policy.Plan(request.Origin, request.RackId, request.Action, request.CopyIndex, request.View, request.LocateWith);
+                var decision = _policy.Execute(plan, session, new EchoRecordingEffects(effects, _echo));
+                return WorkspaceNavigationResult.From(decision);
+            }
+            catch (Exception ex)
+            {
+                return WorkspaceNavigationResult.Failed(ex.Message);
+            }
+        }
+
+        private void End(SessionId session)
+        {
+            _targets.EndSession(session);
+            _echo.End(session);
+            _known.Remove(session);
+        }
+
+        // Runs the effect and, only when a selection was really written, remembers its handles as the expected echo.
+        private sealed class EchoRecordingEffects : INavigationEffects
+        {
+            private readonly INavigationEffects _inner;
+            private readonly NavigationEcho _echo;
+
+            public EchoRecordingEffects(INavigationEffects inner, NavigationEcho echo)
+            {
+                _inner = inner;
+                _echo = echo;
+            }
+
+            public void SelectReferences(SessionId session, IReadOnlyList<long> handles)
+            {
+                _inner.SelectReferences(session, handles);
+                _echo.Expect(session, handles);
+            }
+
+            public void ViewReference(SessionId session, long handle) => _inner.ViewReference(session, handle);
+
+            public void CenterOnReference(SessionId session, long handle) => _inner.CenterOnReference(session, handle);
+        }
     }
 }

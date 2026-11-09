@@ -33,6 +33,7 @@ namespace RackCad.Application.Workspace
         private readonly IWorkspaceSelectionReader _reader;
         private readonly WorkspaceInstrumentation _instrumentation;
         private readonly Action<string, Exception>? _logFault;
+        private readonly NavigationEcho? _echo;
         private readonly HashSet<SessionId> _faulted = new();
         private readonly HashSet<SessionId> _pickFirstOff = new();
         private bool _started;
@@ -52,6 +53,7 @@ namespace RackCad.Application.Workspace
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
             _instrumentation = instrumentation ?? throw new ArgumentNullException(nameof(instrumentation));
             _logFault = logFault;
+            _echo = echo;
         }
 
         public bool IsStarted => _started;
@@ -132,6 +134,9 @@ namespace RackCad.Application.Workspace
             {
                 using (_instrumentation.Begin(WorkspaceMeasurementPoints.Drain, outcome.Result.Operations.Count))
                 {
+                    // The echo memory of a session that no longer lives goes away before anything is read (lazy purge).
+                    _echo?.PurgeDead(id => _bridge.TryGetSession(id, out _));
+
                     if (!_bridge.TryGetSession(outcome.Session, out var session) || session == null) return;
 
                     var conditions = ConditionsFor(outcome.Session);
@@ -157,6 +162,10 @@ namespace RackCad.Application.Workspace
 
                             if (read.PickFirstEnabled) _pickFirstOff.Remove(outcome.Session);
                             else _pickFirstOff.Add(outcome.Session);
+
+                            // The selection RackCad itself just wrote (same handles as a set) is an echo of the navigation: the
+                            // context, the rack and the tab do not advance. The first different selection resumes the sync.
+                            if (_echo != null && _echo.IsEcho(outcome.Session)) return;
 
                             session.ApplyContext(WorkspaceSelectionMapper.ToContext(read));
                         }
