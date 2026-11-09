@@ -1,0 +1,311 @@
+{
+  "Schema": "rackcad-i64-identity-bridge-regression/v1",
+  "VerifierSha256": "de215a5873b76778f1c7935f0f5ea87d758d67c25db5cc1cb10cb216e35e584c",
+  "SelftestSha256": "e215a9d41bd66584ba35f03811764673841e13aced4e9c017aaad5bb9da83fb0",
+  "Verifier": {
+    "Result": "PASS",
+    "Passed": 31,
+    "Total": 31,
+    "ExitCode": 0,
+    "FailedCases": []
+  },
+  "Mutants": {
+    "ControllerDefect": {
+      "Result": "FAIL",
+      "Passed": 22,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T02",
+        "T10",
+        "T11",
+        "T12",
+        "T15",
+        "T16",
+        "T17",
+        "T30",
+        "T31"
+      ],
+      "Replaces": "integrity('Real.CurrentSha', real['CurrentSha'] == a.current_sha, 'REAL_CURRENT_SHA_MISMATCH')",
+      "With": "integrity('Real.CurrentSha', real['CurrentSha'] == a.current_sha, 'REAL_CURRENT_SHA_MISMATCH')\n    integrity('Mutated.CurrentShaMatchesRepository', mut['CurrentSha'] == a.current_sha, 'HANDOFF_CONTRADICTS_REPOSITORY')",
+      "MustFail": [
+        "T02",
+        "T15"
+      ],
+      "MustFailOk": true,
+      "Signature": {
+        "Case": "T15",
+        "Got": {
+          "HandoffIntegrity": "FAIL",
+          "Identity": "NOT_EVALUATED",
+          "ControlResult": "FAIL",
+          "FailClosed": true,
+          "ExitCode": 1
+        },
+        "ReasonCodes": [
+          "HANDOFF_CONTRADICTS_REPOSITORY"
+        ]
+      }
+    },
+    "RealBindingUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T25"
+      ],
+      "Replaces": "real['CurrentSha'] == a.current_sha, 'REAL_CURRENT_SHA_MISMATCH'",
+      "With": "True, 'REAL_CURRENT_SHA_MISMATCH'",
+      "MustFail": [
+        "T25"
+      ],
+      "MustFailOk": true
+    },
+    "WorktreeUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T21"
+      ],
+      "Replaces": "same_path(obj['Worktree'], a.repo), 'HANDOFF_WORKTREE_MISMATCH'",
+      "With": "True, 'HANDOFF_WORKTREE_MISMATCH'",
+      "MustFail": [
+        "T21"
+      ],
+      "MustFailOk": true
+    },
+    "TopLevelDiffOnly": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T14"
+      ],
+      "Replaces": "changed = [k for k in HANDOFF_KEYS if not exact_equal(real[k], mut[k])]",
+      "With": "changed = [k for k in HANDOFF_KEYS if type(real[k]) not in (list, dict) and not exact_equal(real[k], mut[k])]",
+      "MustFail": [
+        "T14"
+      ],
+      "MustFailOk": true
+    },
+    "KeyOrderUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T19"
+      ],
+      "Replaces": "list(real.keys()) == list(mut.keys()), 'MUTATION_KEY_ORDER_CHANGED'",
+      "With": "True, 'MUTATION_KEY_ORDER_CHANGED'",
+      "MustFail": [
+        "T19"
+      ],
+      "MustFailOk": true
+    },
+    "BytesUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T18"
+      ],
+      "Replaces": "integrity('Mutation.BytesExact', exact_bytes,",
+      "With": "integrity('Mutation.BytesExact', True,",
+      "MustFail": [
+        "T18"
+      ],
+      "MustFailOk": true
+    },
+    "DuplicateKeysAllowed": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T22"
+      ],
+      "Replaces": "object_pairs_hook=reject_duplicates,",
+      "With": "",
+      "MustFail": [
+        "T22"
+      ],
+      "MustFailOk": true
+    },
+    "RelayHashUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T08"
+      ],
+      "Replaces": "type(declared) is str and HEX64_RE.fullmatch(declared) and declared.lower() == sha256(raws['Mutated'])",
+      "With": "True",
+      "MustFail": [
+        "T08"
+      ],
+      "MustFailOk": true
+    },
+    "RelayKindUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T27"
+      ],
+      "Replaces": "outcome.get('Kind') == 'COMPLETED', 'RELAY_NOT_COMPLETED'",
+      "With": "True, 'RELAY_NOT_COMPLETED'",
+      "MustFail": [
+        "T27"
+      ],
+      "MustFailOk": true
+    },
+    "OutputTimeUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T28"
+      ],
+      "Replaces": "start <= written <= end, 'RELAY_OUTPUT_TIME_INVALID'",
+      "With": "True, 'RELAY_OUTPUT_TIME_INVALID'",
+      "MustFail": [
+        "T28"
+      ],
+      "MustFailOk": true
+    },
+    "BranchUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T17"
+      ],
+      "Replaces": "rc == 0 and gout.decode('utf-8', errors='strict').strip() == a.branch, 'BRANCH_MISMATCH'",
+      "With": "True, 'BRANCH_MISMATCH'",
+      "MustFail": [
+        "T17"
+      ],
+      "MustFailOk": true
+    },
+    "HeadRemoteUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T10"
+      ],
+      "Replaces": "head == remote and head == tracking, 'HEAD_REMOTE_DISAGREE'",
+      "With": "True, 'HEAD_REMOTE_DISAGREE'",
+      "MustFail": [
+        "T10"
+      ],
+      "MustFailOk": true
+    },
+    "BaseAncestryUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T11"
+      ],
+      "Replaces": "a.base_sha != a.red_sha and is_ancestor(a.repo, a.base_sha, a.red_sha), 'BASE_NOT_ANCESTOR'",
+      "With": "True, 'BASE_NOT_ANCESTOR'",
+      "MustFail": [
+        "T11"
+      ],
+      "MustFailOk": true
+    },
+    "RedChainUnchecked": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T12"
+      ],
+      "Replaces": "a.red_sha != a.current_sha and is_ancestor(a.repo, a.red_sha, a.current_sha), 'RED_NOT_ON_CHAIN'",
+      "With": "True, 'RED_NOT_ON_CHAIN'",
+      "MustFail": [
+        "T12"
+      ],
+      "MustFailOk": true
+    },
+    "DescendantHeadAccepted": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T16"
+      ],
+      "Replaces": "head == a.current_sha, 'HEAD_NOT_VERIFIED_SHA'",
+      "With": "True, 'HEAD_NOT_VERIFIED_SHA'",
+      "MustFail": [
+        "T16"
+      ],
+      "MustFailOk": true
+    },
+    "IdentityAlwaysFails": {
+      "Result": "FAIL",
+      "Passed": 29,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T09"
+      ],
+      "Replaces": "out['Identity'] = 'PASS' if candidate == head else 'FAIL'",
+      "With": "out['Identity'] = 'FAIL'",
+      "MustFail": [
+        "T01",
+        "T09"
+      ],
+      "MustFailOk": true
+    },
+    "SyntheticNotRequired": {
+      "Result": "FAIL",
+      "Passed": 29,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T02",
+        "T30"
+      ],
+      "Replaces": "candidate == a.synthetic_sha, 'MUTATED_SHA_NOT_AUTHORIZED'",
+      "With": "True, 'MUTATED_SHA_NOT_AUTHORIZED'",
+      "MustFail": [
+        "T02",
+        "T30"
+      ],
+      "MustFailOk": true
+    },
+    "ExistingShaAllowed": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 31,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T31"
+      ],
+      "Replaces": "check('Control.CandidateNonexistent', rc != 0,",
+      "With": "check('Control.CandidateNonexistent', True,",
+      "MustFail": [
+        "T31"
+      ],
+      "MustFailOk": true
+    }
+  },
+  "Result": "PASS"
+}

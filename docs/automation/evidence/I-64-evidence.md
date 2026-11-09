@@ -5810,3 +5810,19 @@ revisar:
 **Criterio de este commit, fijado por el Coordinator:** no se exige 4/4; se comprueba que es solo documentación, evidencia y estado, que el conjunto de fallos de Core sigue siendo el del RED del intento 1, que no aparece ningún fallo nuevo de UI, y que HEAD = remoto con el árbol limpio.
 
 **Límites:** sin cambios en `src/` ni `tests/`; parche sin aplicar; sin Worker todavía; F2-T2B en espera; sin AutoCAD.
+
+## 93. F2-T2A intento 2 verificado; nc1 ordinario agotado; A-12 / I64-IDENTITY-BRIDGE-01 versionada en rama lateral (PROPOSED / NOT ACTIVE)
+
+**Solo en la rama lateral `architecture/workspace-persistente-rackcad-a12`.** La rama de producto permanece en `44a692a4`; la custodia de la planificación `bafe`, el Worker `31c0`, la verificación `89a6` y las corridas nc1 se añade después, antes del fast-forward final.
+
+**Intento 2:** RED `2da0e60d`, GREEN `44a692a4`, CI `42687835409` 4/4. Verificación `R20261109T201422Z-89a6`: `EXECUTION_VERIFIED / NONE`, 14 de 14.
+
+**nc1:** `3d86` y `16b6` = `INVALID_OUTPUT`; `bfc8` = `CONTROL NOT PASSED`, camino normal agotado, P-04 activa. Las tres: `Handoff` e `Identity` en fail, `FailureClass` Handoff. Se conservan tal como se emitieron.
+
+**A-12:** enmienda `docs/initiatives/I-64-A-12.md`, verificador (blob `13605f1a1c0e0f11c9d248f9def29559b6a4369b`), autoprueba 31/31 y regresión con 18 mutantes, cada una dos veces e idénticas byte a byte. Solo datos sintéticos; la ocurrencia real se vincula por SHA-256.
+
+**Decisión de versionado:** opción A del Coordinator (`coordinator-a12-versioning-disposition.md`). El modo post-custodia se retiró del verificador antes de versionar; las pruebas se repitieron completas.
+
+**Siguiente:** CI del commit exacto, revisión formal del Architect (gpt-6.1-sol/high, solo lectura); si AGREED, el texto exacto del Owner; la ejecución real solo tras Owner SATISFIED, Architect AGREED y Coordinator AGREED.
+
+**Límites:** sin cambios en `src/` ni `tests/`; sin ejecutar el puente contra evidencia real; nc2 y nc3 sin ejecutar; sin AutoCAD; attempts 2/3.
