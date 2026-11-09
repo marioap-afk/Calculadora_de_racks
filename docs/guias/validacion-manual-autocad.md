@@ -255,7 +255,7 @@ Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
   separador, estructura manual y las dos configuraciones vuelven idénticas; `RACKDUPLICAR` produce una
   copia independiente;
 - **legacy**: un rack Push Back dibujado antes de I-42 debe reabrirse como de un solo sentido, sin pedir
-  ninguna reconfiguración, y redibujarse EXACTAMENTE igual.
+  ninguna reconfiguración, y redibujarse igual, salvo la separación entre niveles que corrige I-67 al actualizar.
 
 ### 5.7 Duplicación con `RACKDUPLICAR`
 
@@ -299,7 +299,8 @@ Planta— en qué **tipos** de vista se dibujan las cotas
 - **Geometría y BOM**: no cambian con las casillas; compruébalo con `RACKBOMTOTAL`.
 - **`RACKLAYOUT`**: con las cotas de Planta ocultas, la huella de la rejilla puede reducirse, porque se mide por
   los *extents* del bloque. Es consecuencia aceptada: regístrala, no la reportes como defecto.
-- **Legacy**: un rack dibujado antes de I-50 abre con las tres casillas marcadas y se redibuja EXACTAMENTE igual;
+- **Legacy**: un rack dibujado antes de I-50 abre con las tres casillas marcadas y se redibuja igual, salvo la
+  separación entre niveles de dinámico y Push Back que corrige I-67;
   guardarlo sin tocarlas no cambia su dato.
 
 ### 5.9 Proyección con `RACKPROYECTAR`

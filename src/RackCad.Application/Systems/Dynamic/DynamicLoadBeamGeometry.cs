@@ -43,8 +43,9 @@ namespace RackCad.Application.Systems.Dynamic
 
     /// <summary>
     /// Single source of truth for pallet-flow entrance/exit beams. The catalog supplies the fixed beam depth; every
-    /// level has a low exit and an entrance raised by the full lane slope. Both mates use the block origin at the
-    /// front's resolved boundaries. Legacy/non-sectioned calls use exit X=0 and entrance X=TotalLength.
+    /// level has a low exit and an entrance raised by the rise the first level resolves from the lane slope (I-67).
+    /// Both mates use the block origin at the front's resolved boundaries. Legacy/non-sectioned calls use exit X=0 and
+    /// entrance X=TotalLength.
     /// </summary>
     public static class DynamicLoadBeamGeometry
     {

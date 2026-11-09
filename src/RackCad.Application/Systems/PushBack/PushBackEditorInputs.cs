@@ -25,7 +25,7 @@ namespace RackCad.Application.Systems.PushBack
         /// <summary>
         /// I-42 — desde donde se mide «Alto 1er nivel» en ESTE rack. Un rack NUEVO nace con el datum del producto
         /// —el troquel utilizable mas bajo—; uno CARGADO conserva el que traiga su documento, que para todo archivo
-        /// anterior es la lectura historica. Asi ninguna geometria existente se mueve y toda geometria nueva usa el
+        /// anterior es la lectura historica. Asi ningun primer nivel existente se mueve y todo rack nuevo usa el
         /// cero real.
         /// </summary>
         public int? FirstLevelDatum { get; set; } = (int)RackFirstLevelDatumMode.LowestUsablePunch;
