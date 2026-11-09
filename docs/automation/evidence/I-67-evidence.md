@@ -124,3 +124,32 @@ Con la opción elegida por el Owner («subida del nivel 1»), sobre 36,720 casos
 ## 7. Revisión del Architect, ronda 1
 
 Sobre `887141fc`, Proposal blob `fed80351`. Modo SAME-SESSION ROLE (subagente de lectura con contexto limpio, mismo modelo que el autor). Veredicto: **BLOCKED — OWNER DECISION**. Hallazgos REQUIRED R-01..R-06 en [decisiones](../decisions/I-67.md) §5. Sus afirmaciones de hecho se comprobaron contra el código: base 0.6053 (`connection-layout.csv:19`), caso 120"→132", `RACKPROYECTAR` sin redibujo de hermanas y UI Dinámica sin `FirstLevelDatum`.
+
+## 8. Identidad del Freeze
+
+Proposal V3, `docs/initiatives/I-67-proposal-v3.md`. Acuerdo: commit `34faf9037d3c32897e30a5e168067de9bb38e339`, blob `73758d78d40ca82fd8722339b81824c3d2ad6cde`. Freeze: commit `abc5da87ae0642d9c365dab8503d67c8ff5381bc`, blob `ba266476f80d71e9a291cd8614f2a0986b8553a6`, trailer `Freeze: I-67 docs/initiatives/I-67-proposal-v3.md`. A-n: ninguna.
+
+## 9. Ciclo RED → GREEN de G1
+
+MEASURED con el SDK 8.0.423 y `FullyQualifiedName~LevelElevationResolutionTests|FullyQualifiedName~LevelSpacingH58ReproductionTests` (TRX). Las corridas previas al commit de producto son diagnóstico sobre árbol sucio y no acreditan el SHA.
+
+| Corrida | Producto | Resultado |
+|---|---|---|
+| RED (V2) | sin arreglo | 1411 ejecutadas, 915 pasan, 496 fallan por aserción |
+| GREEN focal | con arreglo | 1098 de 1098 |
+| Core completo, árbol de trabajo | con arreglo | 15,490 de 15,490; ninguna prueba existente requirió cambio |
+
+La matriz de T12 se limita a las retículas con base menor que medio paso, las del catálogo (Proposal V3 §4). Fuera de ellas un punto medio exacto bajo la base puede redondearse hacia abajo; la medición lo encontró solo con base 1.25" y paso 0.5", la salvedad que ya había señalado el Architect en la ronda 2.
+
+Violaciones temporales del Freeze, cada una restaurada y verificada por SHA-256 del archivo:
+
+| Violación | Prueba | Fallan / ejecutadas |
+|---|---|---|
+| Quitar el épsilon | T2 ruido | 1 / 3 |
+| Subir un troquel el posterior en un nivel | T9 | 3 / 13 |
+| `Floor` en lugar de `Ceiling` | T12 cota inferior | 221 / 360 |
+| Quitar el piso de un paso | T14 degenerados | 2 / 2 |
+| Medir la cabecera con la entrada del primer nivel | T15 | 3 / 24 |
+| Entrada al troquel más cercano a la nominal | T16 | 4 / 98 |
+| Regla nueva en una sola sobrecarga | T17 | 1 / 1 |
+| Omitir la migración de datum | T12 por `LoadFromDesign` | 1 / 1 |
