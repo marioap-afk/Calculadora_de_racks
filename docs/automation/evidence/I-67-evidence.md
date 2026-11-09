@@ -153,3 +153,9 @@ Violaciones temporales del Freeze, cada una restaurada y verificada por SHA-256 
 | Entrada al troquel más cercano a la nominal | T16 | 4 / 98 |
 | Regla nueva en una sola sobrecarga | T17 | 1 / 1 |
 | Omitir la migración de datum | T12 por `LoadFromDesign` | 1 / 1 |
+
+## 10. Medición sobre `a2af5121` (ronda anterior, no Candidato)
+
+`a2af51215f5ccec106c38bdb887cb577b129bc3e`, árbol limpio, SDK 8.0.423. Core Full local 15,490 de 15,490. UI Full local 1,637 ejecutadas y 0 fallos de 1,654 (17 omitidas). Build Debug UI 0 errores y 0 avisos. Build Debug Plugin 0 errores y 2 MSB3277. CI run `42717816630`, push, 4 de 4 jobs en success. Conformidad: NON-CONFORMING por D-01 ([decisiones](../decisions/I-67.md) §9). No se declaró Candidato y su evidencia no se traslada al SHA siguiente.
+
+Marcador del Freeze: `abc5da87` lleva la línea `Freeze: I-67 docs/initiatives/I-67-proposal-v3.md`, en el mismo formato que I-60 y antes del párrafo final de `Co-Authored-By`. El commit `67cb1024` tiene una línea de prosa que empieza por «Freeze:» sin unidad ni ruta; no es un marcador.
