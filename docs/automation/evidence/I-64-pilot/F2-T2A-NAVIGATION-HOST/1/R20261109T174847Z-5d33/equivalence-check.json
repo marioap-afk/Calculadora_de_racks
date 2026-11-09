@@ -1,0 +1,74 @@
+{
+  "RunId": "R20261109T174847Z-5d33",
+  "Nc4RunId": "R20261109T175144Z-6a04",
+  "AllTrue": true,
+  "Conditions": {
+    "01_schema_valid": true,
+    "02_terminated_normally": true,
+    "03_effective_model_effort": true,
+    "04_routing_deep_not_long_horizon": true,
+    "05_A1_A8_pass": true,
+    "06_nc4_oracle": true,
+    "07_scope_exact_ordered_e137": true,
+    "08_no_C2": true,
+    "09_no_Facade": true,
+    "10_no_SelectionRead": true,
+    "11_no_removal": true,
+    "12_forbidden_identical": true,
+    "13_invariants_identical": true,
+    "14_requiredtests_identical": true,
+    "15_expectedevidence_identical": true,
+    "16_stopconditions_identical": true,
+    "17_objective_identical": true,
+    "18_basesha_head_remote": true,
+    "19_origin_main": true,
+    "20_config_accepted": true,
+    "21_tree_clean": true,
+    "22_head_equals_remote": true,
+    "23_no_participant_conflict": true,
+    "24_no_usage_credit_warning": true
+  },
+  "Facts": {
+    "Head": "d9d386e91aa6df5db64fbb6946b7edb3542baace",
+    "Remote": "d9d386e91aa6df5db64fbb6946b7edb3542baace",
+    "Tracking": "d9d386e91aa6df5db64fbb6946b7edb3542baace",
+    "OriginMainLive": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "ExitCode": "0",
+    "TerminalEvent": "turn.completed",
+    "EffectiveModel": "gpt-6-luna",
+    "EffectiveEffort": "high",
+    "Dimensions": {
+      "Ambiguity": "Medium",
+      "ArchitecturalSensitivity": "High",
+      "Breadth": "Medium",
+      "ToolUse": "High",
+      "FailureCost": "High",
+      "MechanicalRepetition": "Low",
+      "Horizon": "Low"
+    },
+    "Effort": {
+      "Semantic": "Deep",
+      "Provider": "high"
+    },
+    "Executor": {
+      "Provider": "Anthropic",
+      "Transport": "subagent",
+      "Role": "Worker",
+      "Cell": "anthropic/subagent/claude-sonnet-5-5"
+    },
+    "Model": "claude-sonnet-5-5",
+    "ConfigSnapshot": "D",
+    "ConfigSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+    "Processes": {
+      "Participants": 0,
+      "ParticipantsForeign": 0,
+      "UnattributablePersistent": 0,
+      "UnattributableCleared": 0
+    },
+    "WarningLinesStderr": [],
+    "WarningEvents": [],
+    "AnyErrorEvents": [],
+    "InfoCommandOutputsWithPattern": 3,
+    "StderrBytes": 39
+  }
+}

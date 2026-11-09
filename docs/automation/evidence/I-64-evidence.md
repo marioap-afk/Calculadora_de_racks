@@ -5737,3 +5737,56 @@ revisar:
 - Solo documentación y evidencia; sin cambios en `src/` ni `tests/`; sin AutoCAD.
 - Invocaciones de modelo: la planificación.
 - attempts 1/3; F2-T2B en espera.
+
+## 91. F2-T2A-NAVIGATION-HOST: recuperación de BaseSha, Worker a639 BLOCKED, restauración, CI repetida y verificación del intento 1 = REWORK; STOP en COORDINATOR_F2_T2A_REWORK_DECISION_REQUIRED
+
+**CI de §90:** corrida `42663763540` (push, SHA exacto `d9d386e9`), 4/4 success.
+
+**Literales del Coordinator y paradas** (`I-64-pilot/F2-T2A-NAVIGATION-HOST/coordinator/`):
+
+| Archivo | SHA-256 | Contenido |
+|---|---|---|
+| `coordinator-f2t2a-acceptance.md` | `01E48BC0…` | Aceptación de `e137`; Worker autorizado una vez; aclaraciones de lectura en `WorkspaceNavigationEffects.cs` |
+| `pre-invocation-stop-basesha.md` | `EE3E6B9B…` | STOP antes del Worker: `BaseSha` `35c3cd05` frente a HEAD `d9d386e9` |
+| `coordinator-f2t2a-basesha-recovery.md` | `63B6FDDE…` | REPLAN_ON_CURRENT_BASE; `e137` = SUPERSEDED_FOR_EXECUTION_BY_BASE_MOVEMENT; Worker preautorizado con 24 condiciones |
+| `post-worker-stop-blocked-dirty-tree.md` | `2D8C044F…` | STOP tras el Worker BLOCKED |
+| `coordinator-f2t2a-worker-authorization-e137-received-after-stop.md` | `7F08D60E…` | Autorización llegada fuera de orden: el Coordinator la declara VOID FOR EXECUTION |
+| `authorization-e137-not-executed-return.md` | `DEE6D61F…` | Devolución de esa autorización, no ejecutada |
+| `coordinator-f2t2a-worker-blocked-recovery.md` | `6F134F54…` | Opción A, parche como posible semilla, `F2T2A-KL-01` |
+
+**Causa de la recuperación de BaseSha (defecto de orden de la sesión):** el commit documental `d9d386e9` se hizo entre la planificación y el Worker, contra AUTOMATION_PLAN 16.4. No se cambió la semántica de verificación ni se reescribió historia.
+
+**Replanificación `R20261109T174847Z-5d33`** (gpt-6-luna/high, CLI `0.167.0-alpha.3.2`, solo lectura):
+- Mismo contrato (SHA-256 `42B00A24…`), `BaseSha` `d9d386e9`; delegación SHA-256 `43B0AA1A…`.
+- A1-A8 = pass en las ocho. nc4 `R20261109T175144Z-6a04`: A3 fail y el resto igual, oráculo relativo cumplido.
+- Comprobación mecánica de las 24 condiciones: todas true (`equivalence-check.json`) → ACCEPTED_BY_PREAUTHORIZED_MECHANICAL_EQUIVALENCE. Ningún commit de la sesión entre la planificación y el Worker.
+
+**Worker `R20261109T175557Z-a639`** (subagente `claude-sonnet-5-5`/high; 187 turnos; prompt `987467B0…` idéntico al generado; cesión 17:56:32Z a 18:30:51Z):
+- RED `4fcea652` con push: 13 rutas, todas dentro del alcance. **Sin commit GREEN**; `CurrentSha` = `RedSha`.
+- WorkerStatus BLOCKED. Causa, comprobada por la sesión: `WorkspaceNavigationEchoTests.NothingChangedInTheSelectionReadOrTheSessionToCarryTheHandles` exige que `WorkspaceSession.cs` no case `Echo|Navigation`, y ese archivo, fuera de alcance, contiene `DrainOperation.InvalidateNavigationCaches`. El Coordinator acepta la aserción como defecto del RED del intento 1.
+- La implementación quedó sin commit en 8 archivos, dentro del alcance. Parche `green-uncommitted-worktree.patch` (SHA-256 `32C19A57…`), idéntico byte a byte a `git diff HEAD` antes de restaurar.
+
+**Restauración autorizada (opción A), sin commit** (`restoration-record.json`): `git restore --worktree --source=HEAD` de las 8 rutas. Quedaron 5 rutas listadas por `git status` con `git diff HEAD` vacío (caché de tamaño del índice con LF frente a CRLF por `core.autocrlf`); un segundo `git restore --staged --worktree` las dejó limpias. Estado final: árbol limpio, HEAD = remoto = `4fcea652`, config SNAPSHOT D, 0 participantes. El parche sigue en `artifacts/`, sin versionar, identificado por su SHA-256.
+
+**CI del RED:** corrida push `42673031307`. Intento 1: `Internal server error` de GitHub (Correlation ID `2c9d27d3-c894-417f-b3f2-c37a70fe3f2a`), 0 jobs: fallo de plataforma. Intento 2, repetido por autorización sobre el mismo SHA: Tests (Domain + Application) failure, Build UI success, UI Tests success, Build Plugin without AutoCAD skipped. Filtro Core: 755 seleccionadas, 709 pasan, 46 fallan. Filtro UI: 64/64.
+
+**Verificación `R20261109T184844Z-3f3e`** (gpt-6-luna/high, salida válida y ASCII, SHA-256 `BFE3B6E5…`):
+- **`EXECUTION_REWORK_REQUIRED` / `REWORK`, `FailureClass` = `Ci`**; TriggeredStopConditions vacío; `VerifiedSha` nulo.
+- En pass: Termination, Handoff, Authority, Contract, Identity, Remote, Scope, CleanTree, Trailer, Routing, FreeText y Denials. En fail: Ci y Tests, ambos con `RedPart` = pass.
+- **RED acreditado (16.8):** `ChainRedSha` `4fcea652`; `ChainRedFiles` = las 7 rutas de `tests/` de `git diff d9d386e9 4fcea652 -- tests/`.
+- El literal WORKER BLOCKED RECOVERY DISPOSITION no fue entrada del Controller, para no anclar la clasificación; sus hechos llegaron por `restoration-record.json` y el registro del trabajo.
+- Barrido 16.10 de la sesión sobre la salida: sin coincidencias.
+
+**Decisiones del Coordinator registradas:**
+- El parche **puede** sembrar el intento 2, solo bajo una delegación de corrección nueva: la lee y la adapta el Worker; la sesión no lo aplica. No es GREEN aceptado ni producto verificado.
+- El RED nuevo puede acotar esa prueba, sin eliminar la garantía: `WorkspaceSelectionRead.cs` sin cambios, `WorkspaceSession.cs` sin transporte de eco, sin un segundo transporte, eco dentro de los archivos autorizados.
+- **F2T2A-KL-01 (limitación conocida, solo diagnóstica):** el escaneo integrado no expone identidad cruda suficiente para rellenar `NavigationDefinitionFact.ProbedId` sin cruzar la frontera de lectura aceptada. Un miembro ilegible puede dar un diagnóstico menos específico; la corrección de objetivos no se ve afectada y ningún miembro ilegible se vuelve navegable. Las pruebas deben demostrar que `ProbedId = null` no hace navegable a un miembro ilegible. Si resultara necesario para la atribución o para INV-40: STOP.
+
+**Otros hechos:** los 2 fallos Release de `PendingTextFieldTests.ShowOnADirtyField_*` declarados por el Worker son los ya registrados en el cierre de F1-T3B (`#if DEBUG` de I-43, `07ebcd33`); la CI corre en Debug y no los presenta.
+
+**STOP en COORDINATOR_F2_T2A_REWORK_DECISION_REQUIRED.** attempts 1/3; el intento 2 no está autorizado.
+
+**Límites:**
+- Sin nc1, nc2 ni nc3: README §10 los reserva a una verificación VERIFIED.
+- Sin segundo Worker, sin aplicar el parche, sin F2-T2B, sin AutoCAD.
+- Este commit documental queda sobre el RED: su CI tendrá el job Core en failure por las mismas pruebas RED.

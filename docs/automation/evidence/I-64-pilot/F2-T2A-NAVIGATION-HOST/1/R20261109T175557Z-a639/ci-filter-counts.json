@@ -1,0 +1,16 @@
+{
+  "Core": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+    "Selected": 755,
+    "Passed": 709,
+    "Failed": 46,
+    "Other": 0
+  },
+  "Ui": {
+    "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+    "Selected": 64,
+    "Passed": 64,
+    "Failed": 0,
+    "Other": 0
+  }
+}

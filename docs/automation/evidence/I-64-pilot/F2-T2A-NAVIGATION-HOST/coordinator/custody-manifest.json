@@ -4,10 +4,16 @@
   "SourceRoot": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/coordinator",
   "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
   "Counts": {
-    "CUSTODIED": 2,
+    "CUSTODIED": 9,
     "EXCLUDED": 0
   },
   "Files": [
+    {
+      "Path": "authorization-e137-not-executed-return.md",
+      "Bytes": 2165,
+      "Sha256": "dee6d61fa7d3d53b8f036f52e7dbca99b19a1ca565a925d8b6dfde2880c9a741",
+      "Disposition": "CUSTODIED"
+    },
     {
       "Path": "coordinator-f2t2-contract-review-decisions.md",
       "Bytes": 10739,
@@ -15,9 +21,45 @@
       "Disposition": "CUSTODIED"
     },
     {
+      "Path": "coordinator-f2t2a-acceptance.md",
+      "Bytes": 5388,
+      "Sha256": "01e48bc0b103de7f319dbdb92c1219e0ace78e5cf8a0a8de16674a0f362dcd24",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-basesha-recovery.md",
+      "Bytes": 6688,
+      "Sha256": "63b6fddecf583daa747583621a16d735372536b2eea11cacd72f54a8de10de2d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-worker-authorization-e137-received-after-stop.md",
+      "Bytes": 2934,
+      "Sha256": "7f08d60e135fd04ede8ff349db3bf2ccdd41556390f0ec61350b64aa7dda6fb5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-worker-blocked-recovery.md",
+      "Bytes": 6873,
+      "Sha256": "6f134f543101aad3d68a4b648e5533a56d92c3a0bfffaedb6c1805f23541ca34",
+      "Disposition": "CUSTODIED"
+    },
+    {
       "Path": "gate-contract.json",
       "Bytes": 24488,
       "Sha256": "42b00a247970fb7086f3d9250b1a46e904357f493225b59fddd1e66178c6d2f5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "post-worker-stop-blocked-dirty-tree.md",
+      "Bytes": 4458,
+      "Sha256": "2d8c044f432f5378502d3376b98272a9aef9e47d8aa24894d0a5319ad111a9ce",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "pre-invocation-stop-basesha.md",
+      "Bytes": 2825,
+      "Sha256": "ee3e6b9b17a55f4d144f955b0fe1fbbc72a5b9b0b8a52d623201c636c898ed2f",
       "Disposition": "CUSTODIED"
     }
   ]

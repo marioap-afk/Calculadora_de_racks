@@ -1,0 +1,65 @@
+{
+  "Schema": "i64-restoration-record/v1",
+  "AuthorizedBy": "coordinator-f2t2a-worker-blocked-recovery.md",
+  "RestoredUtc": "2026-11-09T18:41:49Z",
+  "HeadSha": "4fcea652d413414552d52f70998ce16f94f4c31b",
+  "Command": "git restore --worktree --source=HEAD -- <8 paths>",
+  "Paths": [
+    "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+    "src/RackCad.Application/Workspace/NavigationEcho.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs"
+  ],
+  "StatusBefore": [
+    " M src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+    " M src/RackCad.Application/Workspace/NavigationEcho.cs",
+    " M src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    " M src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    " M src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs",
+    " M src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+    " M src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+    " M src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs"
+  ],
+  "WorkingFileSha256Before": {
+    "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs": "192B6E02D519C7AF4A6416229133F5B742F9CD99D755B134248C7F0C0A1B913F",
+    "src/RackCad.Application/Workspace/NavigationEcho.cs": "F40D6E8092FFAAFF1ED802DDCA88741F40501132EFA02629312A30074EF5AAF2",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs": "F6EB229A9E60E4ABF2C148D0F984F390BA78105582D49E4F1AC184CCFC298437",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs": "790EDF29B4534EC63BA7E186410F26DF7552F31FA230F9156DCEEB6BC5691F12",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs": "EB92C7ABE596A6822041037BFE882459FC6EB79604029E5A1DD9DC6F99AAA0C4",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs": "8F5F3BFFF502934DE8CE9836763AA4D6D0F64B00F83D98574C0F38970C6EA6CF",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs": "8B4810693FFE69315C7F72ABE3D37674C68942E016AF902C41A6AF86B00FE3CE",
+    "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs": "93E891426A9A5B572CD2F4AF52C5931674A69AAAB466FFB53E5C10277782BF4B"
+  },
+  "PatchPath": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/1/R20261109T175557Z-a639/green-uncommitted-worktree.patch",
+  "PatchSha256": "32C19A574CCF85E513309EF62116A29876EBFCDF8796579043A0B1209E44C046",
+  "PatchEqualsGitDiffHeadBeforeRestore": true,
+  "StatusAfter": " M src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs\n M src/RackCad.Application/Workspace/NavigationEcho.cs\n M src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs\n M src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs\n M src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs\n",
+  "CommitCreated": false,
+  "SecondStep": {
+    "Reason": "After the first restore, git status still listed 5 paths although git diff HEAD was empty: the index stat cache held the LF size recorded when those files were added; working files are CRLF by core.autocrlf=true, blobs LF.",
+    "Command": "git restore --source=HEAD --staged --worktree -- <5 paths>",
+    "Paths": [
+      "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+      "src/RackCad.Application/Workspace/NavigationEcho.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs"
+    ],
+    "StagedChange": false
+  },
+  "FinalStatus": "",
+  "HeadAfter": "4fcea652d413414552d52f70998ce16f94f4c31b",
+  "RemoteAfter": "4fcea652d413414552d52f70998ce16f94f4c31b",
+  "ConfigSnapshotAfter": "D",
+  "ProcessesAfter": {
+    "Participants": 0,
+    "ParticipantsForeign": 0,
+    "UnattributablePersistent": 0,
+    "UnattributableCleared": 0
+  },
+  "FinalCheckedUtc": "2026-11-09T18:42:52Z"
+}
