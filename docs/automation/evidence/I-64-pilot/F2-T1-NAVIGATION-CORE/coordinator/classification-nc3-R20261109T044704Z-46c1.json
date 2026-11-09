@@ -1,0 +1,15 @@
+{
+  "RunId": "R20261109T044704Z-46c1",
+  "Control": "nc3",
+  "CoordinatorClassification": {
+    "Outcome": "INVALID_OUTPUT FOR CONTROL ACCEPTANCE",
+    "MechanicalOracle": "MET (FreeText = fail, FailureClass FreeText, EXECUTION_REWORK_REQUIRED / REWORK; checks before FreeText match the accepted real verification)",
+    "Reason": "the Controller verification output itself contains the literal restricted 16.10 phrase inside Findings and the FreeText Evidence; the Coordinator manual 16.10 scan of the verification free text therefore finds a restricted term in the verification artifact",
+    "A6Applicable": false,
+    "TestsImprecision": "NON-BLOCKING FOR nc3: measured RED split remains 50 xUnit assertion failures + 1 NullReferenceException inside the new RED test surface",
+    "RetryAuthorized": "ONE nc3 retry (CONTROL INVALID_OUTPUT recovery; not product REWORK, not Worker correction, not a new attempt)"
+  },
+  "NotRecordedAs": "nc3 = CONTROL PASS",
+  "OutputUnchanged": "output.json, controller-verification.json, oracle-result.json, evidence-validation.json, prescope-validation.json, preinvocation-assertions.json and relay-record.json of this run are kept exactly as emitted; the custody in commit 82bbac8f remains valid through 46c1",
+  "Source": "coordinator/coordinator-f2t1-close-review-nc3-46c1-disposition.md (literal received through the chat of the responsible session; I-64 F2-T1 CLOSE REVIEW / nc3 DISPOSITION)"
+}

@@ -4,14 +4,26 @@
   "SourceRoot": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator",
   "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
   "Counts": {
-    "CUSTODIED": 9,
+    "CUSTODIED": 13,
     "EXCLUDED": 0
   },
   "Files": [
     {
+      "Path": "classification-nc3-R20261109T044704Z-46c1.json",
+      "Bytes": 1440,
+      "Sha256": "71990dc88b8508d5ac508f27a9b063bca4d242f37b8e8052b30d9184b8fe70a8",
+      "Disposition": "CUSTODIED"
+    },
+    {
       "Path": "coordinator-f2-gate-open.md",
       "Bytes": 3780,
       "Sha256": "d99ef90dcbff51aad9e5849211a8cc919da1fae399e88fbbd6d0997377618b22",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t1-close-review-nc3-46c1-disposition.md",
+      "Bytes": 5053,
+      "Sha256": "23a608040fc5afa68b25a97e16ef0213e6a72390abc630067b2df4beb161e8ad",
       "Disposition": "CUSTODIED"
     },
     {
@@ -36,6 +48,18 @@
       "Path": "coordinator-f2t1-nc2-fa85-disposition.md",
       "Bytes": 6171,
       "Sha256": "05d8cb1f3e9f0b75636262bcbddec0e9321635e04b5cce5f4cfcfc178716c4c4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t1-nc3-final-retry-disposition.md",
+      "Bytes": 8801,
+      "Sha256": "cf0c643043c592f6652a8689506cf95525f8c135ef17a0aaa39a5cf172163f20",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t1-nc3-retry-preinvocation-disposition.md",
+      "Bytes": 6208,
+      "Sha256": "aee55efdc3e0ecc13390d2d64e16615a7d21f942339a414ad190ac5eb11823bf",
       "Disposition": "CUSTODIED"
     },
     {

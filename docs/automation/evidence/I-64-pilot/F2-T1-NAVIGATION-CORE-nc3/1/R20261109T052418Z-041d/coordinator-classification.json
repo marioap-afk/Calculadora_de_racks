@@ -1,0 +1,14 @@
+{
+  "RunId": "R20261109T052418Z-041d",
+  "Control": "nc3",
+  "CoordinatorClassification": {
+    "Outcome": "VALID OUTPUT / ORACLE NOT MET",
+    "Reason": "the Controller did not read inputs/coordinator-disposition.md and therefore did not apply POST_CUSTODY_CONTROL_IDENTITY_EXCEPTION; it applied normal AUTOMATION_PLAN 16.9 Identity and correctly observed HEAD / branch = 82bbac8f and CurrentSha = c726410f, failing Identity before the relative nc3 oracle could be satisfied; FreeText correctly failed; the neutral output hygiene happened to be correct but does not prove the transport of the rule",
+    "PreservedInaccuracies": ["Remote used historical c726410f remote evidence instead of current custody HEAD", "Tests used display-name selection", "ChainRedFiles was incorrectly stated empty"],
+    "DefectClass": "CONTROL / PROMPT TRANSPORT DEFECT (not product, Worker or architecture defect)",
+    "RetryAuthorized": "one SECOND AND FINAL nc3 rerun (AUTOMATION_PLAN 16.8 rerun #2), with the generic post-custody Identity rule and the generic 16.10 output-hygiene rule moved into the normative Controller prompt after versioning analysis.md"
+  },
+  "NotRecordedAs": "nc3 = CONTROL PASS",
+  "OutputUnchanged": "output.json, controller-verification.json, oracle-result.json, evidence-validation.json, prescope-validation.json, manual-1610-scan.json, preinvocation-assertions.json, post-custody-identity-preconditions.json and relay-record.json of this run are kept exactly as emitted",
+  "Source": "coordinator/coordinator-f2t1-nc3-final-retry-disposition.md (literal received through the chat of the responsible session; I-64 F2-T1 nc3 SECOND / FINAL RETRY DISPOSITION)"
+}

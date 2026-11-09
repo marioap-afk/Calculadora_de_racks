@@ -1,0 +1,19 @@
+{
+  "RunId": "R20261109T052418Z-041d",
+  "Assertions": {
+    "SameInputFileSet": true,
+    "OnlyCoordinatorDispositionChanged": true,
+    "DispositionIsPureAppend": true,
+    "AppendedTextDoesNotNameTheControl": true,
+    "AppendedTextHasNoGateTerm": true,
+    "HandoffSameAs46c1": true,
+    "HandoffCurrentShaExact": true,
+    "PromptEqualTo46c1ExceptRunId": true,
+    "CurrentShaTokensWellFormed": true,
+    "All40HexTokensResolve": true,
+    "LauncherHasNoGitCommandOrDeliverySha": true
+  },
+  "Malformed": [],
+  "Unresolved40Hex": [],
+  "Pass": true
+}
