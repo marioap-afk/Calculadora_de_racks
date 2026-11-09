@@ -532,6 +532,50 @@ public class WorkspaceNavigationHostTests
         Assert.Matches(@"using\s*\(\s*var\s+\w+\s*=\s*[\w.]+\.StartTransaction\s*\(\s*\)\s*\)", facts);
     }
 
+    // F2T2A-KL-01 (accepted, diagnostic-only): the integrated scan does not expose the raw probe identity, so the facts adapter
+    // leaves ProbedId null. That must not make an unreadable member navigable, and neither the attribution nor the revalidation
+    // of a target may depend on ProbedId.
+    [Fact]
+    public void AnUnreadableFactWithoutEnvelopeAndWithoutProbedIdIsNoTargetAndAttributionAndRevalidationDoNotDependOnProbedId()
+    {
+        var unreadableWithoutProbe = NavFact.Raw(30, false, false, null, null, null, null, -1, 0x301);
+        var unreadableWithProbe = NavFact.Raw(30, false, false, null, "R-1", null, null, -1, 0x301);
+
+        foreach (var unreadable in new[] { unreadableWithoutProbe, unreadableWithProbe })
+        {
+            var facts = new FakeNavigationFacts().With(S1, NavFact.Member(10, "R-1", "frontal", 0, 0x101), unreadable);
+            var targets = new NavigationTargets(facts);
+            var policy = new NavigationActionPolicy(targets);
+
+            // The unreadable member is no target, whether the probe identity is known or not.
+            Assert.Equal(new long[] { 0x101 }, NavFact.Handles(targets.Resolve(S1, "R-1")));
+            Assert.True(targets.Resolve(S1, "R-30").IsEmpty);
+            Assert.True(targets.Resolve(S1, "").IsEmpty);
+
+            // Its reference is attributed to nobody: revalidation reports it as not attributable, with or without the probe.
+            Assert.Equal(NavigationRevalidationVerdict.Valid, targets.Revalidate(S1, "R-1", new long[] { 0x101 }).Verdict);
+            Assert.Equal(NavigationRevalidationVerdict.NotAttributable, targets.Revalidate(S1, "R-1", new long[] { 0x301 }).Verdict);
+
+            // An action acts only on the readable member.
+            var effects = new RecordingNavigationEffects();
+            var decision = policy.Execute(policy.Plan(new WorkspaceRequest(S1), "R-1", NavigationActionKind.Select), S1, effects);
+            Assert.Equal(NavigationActionVerdict.Act, decision.Verdict);
+            Assert.Equal(new[] { "select:1:257" }, effects.Calls);
+        }
+
+        // The only difference the probe makes is a diagnostic, never a target.
+        var withProbe = new NavigationTargets(new FakeNavigationFacts().With(S1, unreadableWithProbe)).Resolve(S1, "R-1");
+        var withoutProbe = new NavigationTargets(new FakeNavigationFacts().With(S1, unreadableWithoutProbe)).Resolve(S1, "R-1");
+        Assert.True(withProbe.IsEmpty);
+        Assert.True(withoutProbe.IsEmpty);
+        Assert.Empty(withoutProbe.Diagnostics);
+
+        // The adapter states plainly that it leaves ProbedId null, and reads no authored data to fill it.
+        var adapter = Src.Code(FactsPath);
+        Assert.Matches(@"ProbedId:\s*null", adapter);
+        Assert.DoesNotMatch(new Regex(@"RackBlockData|RackEmbedStore|Xrecord|XData|ExtensionDictionary"), adapter);
+    }
+
     [Fact]
     public void TheIntegratedAuthoritiesOfF1AreNotMentionedByNavigationAndStayAsTheyWere()
     {

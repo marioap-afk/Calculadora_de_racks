@@ -327,8 +327,18 @@ public class WorkspaceNavigationEchoTests
         var read = Src.Code("src/RackCad.Application/Workspace/WorkspaceSelectionRead.cs");
         var session = Src.Code("src/RackCad.Application/Workspace/WorkspaceSession.cs");
 
+        // The selection read carries no echo and no handle transport.
         Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"Echo|Handles|Handle\b"), read);
-        Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"Echo|Navigation"), session);
+
+        // The session carries no echo state, property, field or transport of handles. The one existing symbol that names
+        // navigation, the DrainOperation of the cache invalidation (F2-T1), is not an echo transport and is the only allowed one.
+        var withoutTheCacheOperation = session.Replace("DrainOperation.InvalidateNavigationCaches", string.Empty);
+        Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"Echo|Observe\s*\(|Expect\s*\(|[Hh]andle|Navigation"), withoutTheCacheOperation);
+
+        // The approved mechanism is the shared NavigationEcho of the exact authorized reader and the host core, not the session.
+        Assert.DoesNotContain("NavigationEcho", session);
+        Assert.Contains("NavigationEcho", Src.Code("src/RackCad.Application/Workspace/WorkspaceHostCore.cs"));
+        Assert.Contains("NavigationEcho", Src.Code("src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs"));
     }
 
     [Fact]
