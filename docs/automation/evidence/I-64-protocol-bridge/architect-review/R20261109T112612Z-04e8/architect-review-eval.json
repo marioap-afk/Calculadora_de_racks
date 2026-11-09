@@ -1,0 +1,165 @@
+{
+  "RunId": "R20261109T112612Z-04e8",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a1c00f-6eaa-7b12-9878-8d8baa27b327",
+  "Usage": {
+    "input_tokens": 1920123,
+    "cached_input_tokens": 1768320,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 14317,
+    "reasoning_output_tokens": 4814
+  },
+  "CommandCount": 30,
+  "NoProfileCommands": 30,
+  "NonZeroCommands": [
+    {
+      "Command": " in enumerate(s) if l.startswith(head));end=next((i for i in range(start+1,len(s)) if s[i].startswith('## ')),len(s));print('\\\\n'.join('%d: %s'%(i+1,s[i]) for i in range(start,end))) '@ | python -B -\"",
+      "Exit": 1,
+      "Error": "lf.errors,encoding_table)[0] ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ UnicodeEncodeError: 'charmap' codec can't encode character '\\u2194' in position 1346: character maps to <undefined>"
+    }
+  ],
+  "ExecutedBridgeTools": [
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show 1a2fd4e92c38:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show 1a2fd4e92c38:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py | Select-Object -Skip 350 -First 260'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show 1a2fd4e92c38:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py | Select-Object -Skip 600 -First 130'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git diff d4a97950c2757d09f971a66621e7262e385ad818 1a2fd4e92c38 -- docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show 1a2fd4e92c38:docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py | Select-Object -First 245'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show 1a2fd4e92c38:docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py | Select-Object -Skip 245 -First 270'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show 1a2fd4e92c38:docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_testfilter_bridge.py'",
+    "les[key])); print(key,json.dumps({k:v for k,v in d.items() if k not in ('Cases','Mutants','HistoricalA8')},ensure_ascii=True)) if key=='RegressionDemo': print('Mutants',json.dumps(d['Mutants'],ensure_ascii=True)) print('HistoricalA8',json.dumps(d['HistoricalA8'],ensure_ascii=True)) '@ | python -B -\"",
+    ").replace(b'</Output>',b'</Output><Output><ErrorInfo><Message>System.InvalidOperationException : contradictory second failure</Message></ErrorInfo></Output>',1) r2,o2=exercise(dict(fixtures[0],Id='ADVERSARIAL_DUPLICATE_OUTPUT',red_trx=bad2)); print(json.dumps(r2,ensure_ascii=True)) '@ | python -B -\"",
+    "get','if tid in definitions','tid, outcome','node = r.find','if node is not None','def main(','COUNTERS_DERIVED =','def fqn_decision','execution_ids =','class TrxInvalid') for i,line in enumerate(lines,1): if any(n in line for n in needles): print(path+':'+str(i)+': '+line.strip()) '@ | python -B -\"",
+    "dra-mendoza\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git diff d4a97950c2757d09f971a66621e7262e385ad818 1a2fd4e92c38 -- docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py | Select-Object -First 145'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git diff d4a97950c2757d09f971a66621e7262e385ad818 1a2fd4e92c38 -- docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_testfilter_bridge.py'",
+    "-64-protocol-bridge/tools/verify_testfilter_bridge.py' s=subprocess.check_output(['git','show','1a2fd4e92c38:'+p]).decode('utf-8').splitlines() for start,end in ((417,460),(475,516),(725,775),(813,835)): print('\\\\n'.join('%d: %s'%(i+1,s[i]) for i in range(start-1,min(end,len(s))))) '@ | python -B -\""
+  ],
+  "RealF2T1BridgeExecution": [],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OutputSha256": "50E7DB81A92F8A4A93088736E480F3FBDB01ACE8B74D544EB7FC1DDE571D7428",
+  "NonAsciiBytes": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "RequiredCount": 2,
+  "OptionalCount": 0,
+  "PriorFindings": {
+    "I64-A8-ORDINAL-FILTER-MISMATCH": "CLOSED",
+    "I64-A8-COUNTER-COHERENCE": "CLOSED",
+    "I64-A8-DUPLICATE-RESULT-FAIL-OPEN": "CLOSED"
+  },
+  "RequiredFindings": [
+    {
+      "Id": "I64-A9-TESTID-GUID-ALIAS",
+      "Severity": "REQUIRED",
+      "Question": "Q04",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:450",
+      "Defect": "UnitTest@id uniqueness and UnitTestResult@testId resolution use case-sensitive strings rather than GUID identity. In the synthetic T01 universe, replacing the ids of one selected definition and one unselected definition with abcdef02-0000-4000-8000-000000000000 and ABCDEF02-0000-4000-8000-000000000000, respectively, preserves nine accepted definitions and all 61 passing verify() checks. Those ids represent the same GUID but bind conflicting TestMethod identities, so selection is not unambiguously reconstructed.",
+      "Authority": "A-8 Sec.3, retained by A-9 Sec.3, requires rejection of duplicate UnitTest ids. The reader explicitly promises rejection of anything ambiguous. AUTOMATION_PLAN Sec.16.9 Tests requires coherent TRX selection evidence; LIFECYCLE Sec.5 rejects unverifiable guarantees.",
+      "Correction": "In the next append-only amendment, validate and canonicalize definition and reference GUID identities before duplicate detection and lookup. Reject duplicate definitions under GUID equality while preserving legitimate distinct executionIds sharing one testId. Add a synthetic regression with conflicting definitions whose GUID ids differ only in hex capitalization.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A9-FAILURE-MESSAGE-AMBIGUITY",
+      "Severity": "REQUIRED",
+      "Question": "Q11",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:481",
+      "Defect": "Element.find() silently selects the first failure-message path without validating cardinality. Adding a second Message containing System.InvalidOperationException after the original assertion message in one synthetic RED row leaves all 61 verify() checks passing; the reported composition remains one NullReferenceException and two assertion failures. A second Output with contradictory ErrorInfo is likewise accepted. The required failure composition is therefore accepted from ambiguous evidence.",
+      "Authority": "The Coordinator's A-9 correction order preserves fail-closed TRX parsing. A-8 Sec.3, retained by A-9, requires verified RED failure composition. AUTOMATION_PLAN Sec.16.9 Tests requires coherent source evidence and Sec.16.11 S-04 requires stopping on contradictory evidence; LIFECYCLE Sec.5 rejects open failure paths.",
+      "Correction": "In the next append-only amendment, validate the cardinality of Output, ErrorInfo and Message along the consumed failure path and reject duplicate or contradictory structures before classifying failures. Add synthetic regressions for duplicate Message and duplicate Output structures with unchanged rows, Counters and expected composition.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "OptionalFindings": [],
+  "Answers": {
+    "Q01": [
+      "YES",
+      true
+    ],
+    "Q02": [
+      "YES",
+      true
+    ],
+    "Q03": [
+      "YES",
+      true
+    ],
+    "Q04": [
+      "NO",
+      false
+    ],
+    "Q05": [
+      "YES",
+      true
+    ],
+    "Q06": [
+      "YES",
+      true
+    ],
+    "Q07": [
+      "YES",
+      true
+    ],
+    "Q08": [
+      "YES",
+      true
+    ],
+    "Q09": [
+      "YES",
+      true
+    ],
+    "Q10": [
+      "YES",
+      true
+    ],
+    "Q11": [
+      "YES",
+      false
+    ],
+    "Q12": [
+      "NO",
+      true
+    ]
+  },
+  "PolarityAsExpected": {
+    "Q01": true,
+    "Q02": true,
+    "Q03": true,
+    "Q04": false,
+    "Q05": true,
+    "Q06": true,
+    "Q07": true,
+    "Q08": true,
+    "Q09": true,
+    "Q10": true,
+    "Q11": false,
+    "Q12": true
+  },
+  "Coherent": true,
+  "SubjectMatches": true,
+  "SubjectMismatches": [],
+  "GateTerms1610": [],
+  "Limitations": [
+    "Independent read-only review; the reviewer did not author the object and used no author memory or transcript.",
+    "The tempfile-based CLI self-test and regression demonstration were not rerun because they write files. Their pinned artifacts and hashes were inspected. All 62 case oracles were independently exercised through the pinned functions in memory with synthetic read/Git stubs; this does not reproduce subprocess or filesystem integration.",
+    "The new adversarial probes used unmodified verify() with synthetic input/Git stubs and evaluated the verifier's final PASS predicate. main() was not invoked.",
+    "Real F2-T1 TRX and handoffs were not processed by the bridge. Historical occurrence bindings were checked against versioned records without recomputing the real selection.",
+    "No files were written and no commit or push was performed; the working tree remained clean. This verdict does not activate A-9 or grant any Owner decision."
+  ],
+  "CliVersion": "0.167.0-alpha.3.2",
+  "Sandbox": {
+    "type": "read-only"
+  },
+  "Effective": [
+    "gpt-6.1-sol",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-11-09T05-26-39-01a1c00f-6eaa-7b12-9878-8d8baa27b327.jsonl",
+  "EffectiveSourceSha256": "31AD39B00F067519C2E71A1C1876ADE2849D1290836E04009D6078DC89BAF52F",
+  "LimitPatternContexts": {
+    "action | frontera |\\r   | S-11 | repeated rework limit reached | STOP |\\": 1,
+    "n | frontera |\\\\\\\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 1
+  },
+  "EventsSha256": "6B6D8DF3E66D161AF247BABB53FD96212CA619EF373DD9D6B0321EED890236B8"
+}

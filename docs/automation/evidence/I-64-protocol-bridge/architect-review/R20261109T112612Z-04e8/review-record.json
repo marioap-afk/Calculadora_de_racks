@@ -1,0 +1,143 @@
+{
+  "Schema": "rackcad-i64-architect-review-record/v1",
+  "RunId": "R20261109T112612Z-04e8",
+  "Amendment": "I-64-A-9",
+  "Phase": "ARCHITECT_REVIEW",
+  "Authority": "orden del Coordinator I-64 - COORDINATOR ORDER A-9 (literal en artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a9-correction-order.md, SHA-256 8A486CD383A37D428269DA120DAC8FA99E8BC838BF4C8E20B69A268C8F321E23) y disposicion I-64 - A-9 PRE-VERSIONING STOP DISPOSITION (literal en artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a9-preversioning-disposition.md, SHA-256 682AA9ED0C57DDA44093C989A5B15ED9066A7FB65C0D18B726DBE42B6CA201FC): una re-revision formal autorizada tras la CI exacta 4/4, sin nueva sonda (binario, config y relevo sin cambio)",
+  "ReviewedCommit": "1a2fd4e92c38a2b5bcc17b7f09b86342fa7ef2e2",
+  "PriorReview": "R20261109T062937Z-e1d0 (A-8, d4a97950, CHANGES REQUIRED, 3 REQUIRED)",
+  "PromptSha256": "B8F6ADAB2C785E960533799D7ED2EAC82376943BB7C983C2834019ECFD5A9190",
+  "Participant": {
+    "Kind": "codex-cli",
+    "Profile": "ARCHITECTURE_REVIEW",
+    "ModelRequested": "gpt-6.1-sol",
+    "EffortRequested": "high",
+    "Sandbox": "read-only",
+    "ModelEffective": "gpt-6.1-sol",
+    "EffortEffective": "high",
+    "CliVersion": "0.167.0-alpha.3.2",
+    "CliBinary": "Codex/bin/f71a721e0e6193a9/codex.exe (SHA-256 4B3286E35D7FE866C6B0EB3F07D7A4CDB5E96489576170DFD6B3A15AA1C67382)",
+    "Launcher": "-s read-only -m gpt-6.1-sol -c model_reasoning_effort=\"high\" -c allow_login_shell=false",
+    "EffectiveSource": "rollout-2026-11-09T05-26-39-01a1c00f-6eaa-7b12-9878-8d8baa27b327.jsonl",
+    "EffectiveSourceSha256": "31AD39B00F067519C2E71A1C1876ADE2849D1290836E04009D6078DC89BAF52F"
+  },
+  "Eligibility": "celda gpt-6.1-sol/high/read-only acreditada en este CLI por la sonda R20261109T062522Z-e8be; mismo binario (SHA-256 medido antes y despues); unico codex.exe en Codex/bin; config.toml = SNAPSHOT D",
+  "Cession": {
+    "StartUtc": "2026-11-09T11:26:38Z",
+    "EndUtc": "2026-11-09T11:31:32Z",
+    "SessionOperated": false
+  },
+  "Exit": {
+    "HeadSha": "1a2fd4e92c38a2b5bcc17b7f09b86342fa7ef2e2",
+    "LsRemoteSha": "1a2fd4e92c38a2b5bcc17b7f09b86342fa7ef2e2",
+    "OriginMainSha": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "CleanTree": true,
+    "GitOperationInProgress": false,
+    "ConfigSnapshot": "D",
+    "ConfigSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+    "Participants": 0,
+    "Unattributable": 0
+  },
+  "Entry": {
+    "HeadSha": "1a2fd4e92c38a2b5bcc17b7f09b86342fa7ef2e2",
+    "CleanTree": true,
+    "ConfigSnapshot": "D",
+    "ConfigChanged": false,
+    "Participants": 0,
+    "Unattributable": 0,
+    "LauncherDead": true,
+    "AcadProcesses": 0
+  },
+  "Outcome": {
+    "ExitCode": 0,
+    "TerminalEvent": "turn.completed",
+    "OutputSha256": "50E7DB81A92F8A4A93088736E480F3FBDB01ACE8B74D544EB7FC1DDE571D7428",
+    "SchemaValid": true,
+    "Coherent": true,
+    "SubjectMatches": true,
+    "NonAsciiBytes": 0,
+    "CommandCount": 30,
+    "NoProfileCommands": 30,
+    "NonZeroCommands": 1,
+    "RealF2T1BridgeExecution": [],
+    "GateTerms1610": [],
+    "LimitPatterns": {
+      "action | frontera |\\r   | S-11 | repeated rework limit reached | STOP |\\": 1,
+      "n | frontera |\\\\\\\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 1
+    }
+  },
+  "Result": {
+    "Verdict": "CHANGES REQUIRED",
+    "RequiredCount": 2,
+    "OptionalCount": 0,
+    "PriorFindings": {
+      "I64-A8-ORDINAL-FILTER-MISMATCH": "CLOSED",
+      "I64-A8-COUNTER-COHERENCE": "CLOSED",
+      "I64-A8-DUPLICATE-RESULT-FAIL-OPEN": "CLOSED"
+    },
+    "Answers": {
+      "Q01": [
+        "YES",
+        true
+      ],
+      "Q02": [
+        "YES",
+        true
+      ],
+      "Q03": [
+        "YES",
+        true
+      ],
+      "Q04": [
+        "NO",
+        false
+      ],
+      "Q05": [
+        "YES",
+        true
+      ],
+      "Q06": [
+        "YES",
+        true
+      ],
+      "Q07": [
+        "YES",
+        true
+      ],
+      "Q08": [
+        "YES",
+        true
+      ],
+      "Q09": [
+        "YES",
+        true
+      ],
+      "Q10": [
+        "YES",
+        true
+      ],
+      "Q11": [
+        "YES",
+        false
+      ],
+      "Q12": [
+        "NO",
+        true
+      ]
+    },
+    "RequiredFindings": [
+      "I64-A9-TESTID-GUID-ALIAS",
+      "I64-A9-FAILURE-MESSAGE-AMBIGUITY"
+    ],
+    "OptionalFindings": []
+  },
+  "Budget": "una re-revision formal autorizada (esta); sin reintento",
+  "Notes": [
+    "El dictamen no activa A-9 ni la deja activable: con CHANGES REQUIRED, A-9 sigue NOT ACTIVE (orden del Coordinator: STOP, sin A-10 automatica, devolver los hallazgos).",
+    "Los tres hallazgos de R20261109T062937Z-e1d0 quedan CLOSED (PriorFindings); hallazgos nuevos REQUIRED: I64-A9-TESTID-GUID-ALIAS (Q04) e I64-A9-FAILURE-MESSAGE-AMBIGUITY (Q11); ninguno exige cambio global de I-61 ni decision del Owner.",
+    "Ninguna ejecucion del puente sobre evidencia real de F2-T1: las pruebas adversariales usaron verify() en memoria con read_bytes y git sustituidos por datos sinteticos; las lecturas bajo I-64-pilot son evidencia custodiada citada en el prompt (ordenes del Coordinator, salidas de nc3, verificacion ebfc); RealF2T1BridgeExecution = [].",
+    "Una orden auxiliar con codigo 1 (UnicodeEncodeError de la consola charmap al imprimir U+2194 de A-9.md); no afecta al dictamen.",
+    "Las unicas coincidencias de patron de limite en events.jsonl son la fila S-11 de AUTOMATION_PLAN 16.11 leida por el Architect: sin P-06.",
+    "Sin escrituras Git de la sesion durante la revision; HEAD = remoto = 1a2fd4e9 y arbol limpio a la salida y a la entrada; codex.exe con el mismo SHA-256 antes y despues; config.toml = SNAPSHOT D antes y despues; sin participantes."
+  ]
+}
