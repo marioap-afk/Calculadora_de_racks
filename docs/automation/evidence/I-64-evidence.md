@@ -5341,3 +5341,67 @@ de `main`.
 - Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
 - Invocaciones de modelo: la revisión.
 - Sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
+
+## 84. A-11 / I64-TESTFILTER-BRIDGE-01 corregido: orden del Coordinator y paquete versionado; A-11 NO ACTIVA
+
+**CI de §83:** corrida `42634064365` (push, SHA exacto `50ed86fafd2bf8fc579341a02dbe2c0e9c8a0821`), 4/4 success.
+
+**Orden A-11 del Coordinator** (literal en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a11-correction-order.md`):
+- Acepta los dos REQUIRED de `R20261109T141352Z-75ac` como **una sola causa raíz**: la estructura consumida del TRX no está anclada
+  a una única raíz `TestRun` real.
+  - Ninguno exige un cambio de producto, del Freeze ni de I-61, una decisión de alcance del Owner ni evidencia real.
+  - Los hallazgos de 04e8 y e1d0 siguen cerrados.
+- A-11 corrige y sustituye a A-10 solo para la activación. A-8, A-9 y A-10 quedan históricas, inmutables e inactivas.
+- M-04 = YES y el resto NO; autoridad Owner + Architect + Coordinator; PROPOSED / NOT ACTIVE.
+- **Autoriza** una revisión formal del objeto exacto, sin otra ronda del Coordinator, tras versionar y con la CI exacta 4/4. No hace
+  falta otra sonda si el binario no cambia, config.toml está en A/B/C/D, no hay aviso de uso o crédito y el relevo está limpio.
+
+**Paquete A-11** (`docs/initiatives/I-64-A-11.md`):
+
+| Archivo | Blob | Resultado |
+|---|---|---|
+| `tools/verify_testfilter_bridge.py` | `f9780f2f` | una raíz `TestRun`; sin `TestRun` anidado; cadenas completas desde la raíz; cardinalidad de los contenedores antes de leer |
+| `tools/selftest_testfilter_bridge.py` | `5886ca89` | 109 casos sintéticos |
+| `tools/regression_demo_testfilter_bridge.py` | `6cbd29e1` | 18 mutantes y el blob histórico de A-10 |
+| `selftest-testfilter-result-a11.json` | `da805ce5` | PASS 109/109, dos ejecuciones idénticas byte a byte |
+| `regression-demo-a11-testfilter.json` | `f5acb435` | PASS, dos ejecuciones idénticas byte a byte |
+
+- **Corrección compartida** (`check_structure()`), antes de leer definiciones, resultados, Counters o mensajes:
+  - el elemento del documento debe ser el `TestRun` del espacio de nombres del TRX (`TRX_ROOT_INVALID`);
+  - ningún otro elemento puede llamarse `TestRun`, en ningún espacio de nombres (`TRX_NESTED_TESTRUN`);
+  - cada elemento con un nombre consumido se clasifica por su cadena completa de ascendientes desde la raíz. Fuera de las cadenas
+    autorizadas da `TRX_STRUCTURE_AMBIGUOUS`; un nodo de la ruta de fallo mal colocado dentro de un resultado conserva
+    `TRX_FAILURE_MESSAGE_AMBIGUOUS`;
+  - exactamente un `TestDefinitions`, `Results`, `ResultSummary` y `Counters` (`TRX_STRUCTURE_AMBIGUOUS` / `TRX_STRUCTURE_MISSING`);
+  - `load_trx` lee solo esos contenedores, sin `findall()`.
+- **Interpretación registrada:** `ResultSummary/Output` (salida de la corrida que escribe VSTest) es una ubicación autorizada no consumida;
+  un `ErrorInfo` o `Message` dentro de ella falla cerrado (T104).
+- **Casos:**
+  - T93-T109 cubren los 14 puntos de la orden, más la cardinalidad cero de `Counters`;
+  - T95 es la regresión exacta de 75ac: el GREEN de T01 con la entrega, los recuentos y los Counters exteriores sin cambio, más un
+    `TestRun` anidado con una fila Failed seleccionada, que falla con `TRX_NESTED_TESTRUN`;
+  - T01-T92 se conservan con los mismos fixtures y códigos.
+- **Mutantes:** los 18 dan FAIL y cada uno falla sus casos objetivo.
+  - Son los 4 de selección de A-8, los 5 de la regla ordinal de A-9, 4 de A-10 y 5 de A-11 (`NestedTestRunAllowed`, `RootUnchecked`,
+    `ImmediateParentOnly`, `UniqueContainersUnchecked` y `MisplacedFailureNodeAsStructure`).
+  - Tres mutantes de A-10 no se ejecutan, porque la pasada anclada a la raíz los vuelve equivalentes u obsoletos: `QualifiedNameCount`,
+    `StrayMessageIgnored` y `StructureUnchecked`.
+- **Blob histórico de A-10 `b134ba65`:** FAIL, 97/109.
+  - Acepta con código 0 el `TestRun` sombra (T94, T95, T96) y las estructuras consumidas sombra (T103, T104).
+  - En T95 (10 `UnitTestResult`, 9 filas exteriores idénticas a T01 y una fila Failed oculta seleccionada) informa PASS, con 6
+    seleccionadas y 0 fallidas: la fila oculta escapa del recuento.
+  - Falla cerrado, pero con un código genérico, en 7 casos.
+- **Sin cambio:** la coincidencia potencial UTF-16, los Counters, el `executionId`, la identidad GUID de las pruebas, la cardinalidad
+  del mensaje, ChainRedFiles, el Git de A-4, las primitivas de A-6 y la exactitud de la mutación.
+- **Sin evidencia real:** ninguna ejecución del puente sobre evidencia real de F2-T1.
+
+**Custodia:** la orden literal en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/` (19 archivos custodiados).
+
+**Estado:**
+- `f2_a11_status` nuevo; `f2_a10_status` marca A-10 como histórica y sustituida para la activación.
+- `f2_t1_status`, `next_action`, NEXT_ROLE, NEXT_ACTION y GATE apuntan a A-11.
+
+**Límites:**
+- Solo documentación, evidencia y herramientas sintéticas; sin cambios en `src/` ni `tests/`.
+- Sin invocación de modelos en esta etapa; sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
+- **Siguiente:** la CI exacta de este commit y, si da 4/4, la revisión formal del Architect con la celda acreditada.

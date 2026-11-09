@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""I64-TESTFILTER-BRIDGE-01: deterministic substitute evidence for the Tests part of nc3 (I-64 Amendment A-10, which corrects
-A-9 for activation after the Architect review R20261109T112612Z-04e8; A-9 corrected A-8 after R20261109T062937Z-e1d0).
+"""I64-TESTFILTER-BRIDGE-01: deterministic substitute evidence for the Tests part of nc3 (I-64 Amendment A-11, which corrects
+A-10 for activation after the Architect review R20261109T141352Z-75ac; A-10 corrected A-9 after R20261109T112612Z-04e8 and
+A-9 corrected A-8 after R20261109T062937Z-e1d0).
 
 For one I-64 occurrence, proves fail-closed, from source data only (no Controller prose):
   1. RequiredTests selection with VSTest semantics for FullyQualifiedName~<substring>: case-insensitive substring over
@@ -16,8 +17,9 @@ For one I-64 occurrence, proves fail-closed, from source data only (no Controlle
   2. GREEN: selection >= MinSelected and no failed selected test; RED: selection >= MinSelected, selected failures
      present, every failure inside the selection, and the failure composition recorded and compared to the expected one.
      A failure message is read only after the cardinality of UnitTestResult/Output/ErrorInfo/Message is proven (no
-     first-match lookup); a duplicate, misplaced, nested or missing element on that path fails closed, and so does any
-     consumed TRX element outside its place or outside the TRX namespace;
+     first-match lookup); a duplicate, misplaced, nested or missing element on that path fails closed. Before anything is
+     read, the document element must be the only TestRun and every consumed TRX element must have an authorized ancestry
+     ending at it, with exactly one TestDefinitions, Results, ResultSummary and Counters;
   3. counts equal to the delivery's TestResults and to the expected values bound to the occurrence;
   4. ChainRedFiles = git diff --name-only ChainBaseSha..RedSha -- tests/ equals the accredited list, and
      RedSha..CurrentSha does not modify any of them;
@@ -456,23 +458,69 @@ def on_path(node, name, parent):
     return node.tag == q(name) and any(c is node for c in parent)
 
 
-# Consumed TRX elements and the only parent each may have. Every element with one of these local names, anywhere in the
-# document and in any namespace, must be in the TRX namespace and a child of that parent, so that nothing the reader consumes
-# can have a parallel, nested or foreign-namespace copy that a namespace-qualified child lookup would silently ignore.
-STRUCTURE = {'TestDefinitions': 'TestRun', 'Results': 'TestRun', 'ResultSummary': 'TestRun', 'UnitTest': 'TestDefinitions',
-             'TestMethod': 'UnitTest', 'UnitTestResult': 'Results', 'Counters': 'ResultSummary'}
+# Every local name the reader consumes, with its authorized ancestries: the local names from the document element down to
+# the element, every one of them in the TRX namespace. ResultSummary/Output (run-level adapter output) and
+# UnitTestResult/Output/TextMessages/Message (additional text messages of a result) are supported locations that are never read.
+CONSUMED_CHAINS = {
+    'TestDefinitions': [('TestRun', 'TestDefinitions')],
+    'UnitTest': [('TestRun', 'TestDefinitions', 'UnitTest')],
+    'TestMethod': [('TestRun', 'TestDefinitions', 'UnitTest', 'TestMethod')],
+    'Results': [('TestRun', 'Results')],
+    'UnitTestResult': [('TestRun', 'Results', 'UnitTestResult')],
+    'ResultSummary': [('TestRun', 'ResultSummary')],
+    'Counters': [('TestRun', 'ResultSummary', 'Counters')],
+    'Output': [('TestRun', 'Results', 'UnitTestResult', 'Output'), ('TestRun', 'ResultSummary', 'Output')],
+    'ErrorInfo': [('TestRun', 'Results', 'UnitTestResult', 'Output', 'ErrorInfo')],
+    'Message': [('TestRun', 'Results', 'UnitTestResult', 'Output', 'ErrorInfo', 'Message'),
+                ('TestRun', 'Results', 'UnitTestResult', 'Output', 'TextMessages', 'Message')],
+}
+ALLOWED = {name: {tuple(q(n) for n in chain) for chain in chains} for name, chains in CONSUMED_CHAINS.items()}
+FAILURE_NAMES = ('Output', 'ErrorInfo', 'Message')
+RESULT_PREFIX = (q('TestRun'), q('Results'), q('UnitTestResult'))
+UNIQUE_CONTAINERS = ('TestDefinitions', 'Results', 'ResultSummary', 'Counters')
 
 
 def check_structure(root):
+    """Anchors everything the reader consumes to the document element before anything is read. The document element itself
+    must be the TRX-namespace TestRun (TRX_ROOT_INVALID), and no other element, in any namespace, may be named TestRun
+    (TRX_NESTED_TESTRUN): a usable TestRun is never searched for below the root. Then the whole document is traversed: every
+    element whose local name is consumed must have one of the authorized ancestries of CONSUMED_CHAINS, from the document
+    element down, all in the TRX namespace; its immediate parent alone never decides. A misplaced Output, ErrorInfo or Message
+    inside a UnitTestResult is TRX_FAILURE_MESSAGE_AMBIGUOUS (the A-10 code), every other misplaced element
+    TRX_STRUCTURE_AMBIGUOUS; InnerResults anywhere is unsupported. Finally the root must have exactly one TestDefinitions, one
+    Results and one ResultSummary, and that ResultSummary exactly one Counters (TRX_STRUCTURE_AMBIGUOUS when repeated,
+    TRX_STRUCTURE_MISSING when absent). Returns those four elements by name."""
+    if root.tag != q('TestRun'):
+        raise TrxInvalid('TRX_ROOT_INVALID', 'the document element is not the VSTest 2010 TestRun in the TRX namespace')
+    if any(local_name(e.tag) == 'TestRun' for e in root.iter() if e is not root):
+        raise TrxInvalid('TRX_NESTED_TESTRUN', 'a TestRun element below the document element; only the document element is read')
     parents = {c: p for p in root.iter() for c in p}
+
+    def chain(e):
+        path = []
+        while e is not None:
+            path.append(e)
+            e = parents.get(e)
+        return path[::-1]
+    located = {name: [] for name in CONSUMED_CHAINS}
     for e in root.iter():
         name = local_name(e.tag)
         if name == 'InnerResults':
             raise Invalid('InnerResults are not supported')
-        if name in STRUCTURE:
-            p = parents.get(e)
-            if e.tag != q(name) or p is None or p.tag != q(STRUCTURE[name]):
-                raise TrxInvalid('TRX_STRUCTURE_AMBIGUOUS', '%s element outside %s/%s in the TRX namespace' % (name, STRUCTURE[name], name))
+        if e is root or name not in CONSUMED_CHAINS:
+            continue
+        tags = tuple(x.tag for x in chain(e))
+        if tags in ALLOWED[name]:
+            located[name].append(e)
+            continue
+        inside_result = name in FAILURE_NAMES and tags[:3] == RESULT_PREFIX
+        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS' if inside_result else 'TRX_STRUCTURE_AMBIGUOUS',
+                         '%s element at %s, outside its authorized place' % (name, '/'.join(local_name(t) for t in tags)))
+    for name in UNIQUE_CONTAINERS:
+        n = len(located[name])
+        if n != 1:
+            raise TrxInvalid('TRX_STRUCTURE_MISSING' if n == 0 else 'TRX_STRUCTURE_AMBIGUOUS', '%d %s elements; exactly one is required' % (n, name))
+    return {name: located[name][0] for name in UNIQUE_CONTAINERS}
 
 
 def failure_message(r, failed):
@@ -526,16 +574,9 @@ def load_trx(raw):
         root = ET.fromstring(raw)
     except ET.ParseError as e:
         raise Invalid('malformed TRX XML: %s' % e)
-    if root.tag != q('TestRun'):
-        raise Invalid('root element is not a VSTest 2010 TestRun')
-    check_structure(root)
-    defs_nodes = root.findall(q('TestDefinitions'))
-    results_nodes = root.findall(q('Results'))
-    summary_nodes = root.findall(q('ResultSummary'))
-    if len(defs_nodes) != 1 or len(results_nodes) != 1 or len(summary_nodes) != 1:
-        raise Invalid('TRX must have exactly one TestDefinitions, one Results and one ResultSummary')
+    nodes = check_structure(root)
     definitions = {}
-    for ut in defs_nodes[0]:
+    for ut in nodes['TestDefinitions']:
         if ut.tag != q('UnitTest'):
             raise Invalid('unexpected element in TestDefinitions: %s' % ut.tag)
         tid = guid_identity(ut.get('id'), 'UnitTest@id')
@@ -550,7 +591,7 @@ def load_trx(raw):
         definitions[tid] = (cls, name, ut.get('name') or '')
     rows = []
     execution_ids = set()
-    for r in results_nodes[0]:
+    for r in nodes['Results']:
         if r.tag != q('UnitTestResult'):
             raise Invalid('unexpected element in Results: %s' % r.tag)
         if r.find(q('InnerResults')) is not None:
@@ -570,10 +611,7 @@ def load_trx(raw):
             raise Invalid('unsupported outcome %r' % outcome)
         msg = failure_message(r, outcome == 'Failed')
         rows.append((tid, outcome, r.get('testName') or '', msg))
-    counters_nodes = summary_nodes[0].findall(q('Counters'))
-    if len(counters_nodes) != 1:
-        raise Invalid('ResultSummary must have exactly one Counters')
-    attrs = dict(counters_nodes[0].attrib)
+    attrs = dict(nodes['Counters'].attrib)
     unknown = sorted(k for k in attrs if k not in COUNTERS_DERIVED + COUNTERS_MUST_BE_ZERO)
     if unknown:
         raise TrxInvalid('TRX_COUNTER_UNSUPPORTED', 'Counters attributes not understood: %s' % unknown)

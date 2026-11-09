@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Synthetic self-test of I64-TESTFILTER-BRIDGE-01 (I-64 A-10; T01-T35 from A-8; T36-T62 from A-9 for the three REQUIRED
+"""Synthetic self-test of I64-TESTFILTER-BRIDGE-01 (I-64 A-11; T01-T35 from A-8; T36-T62 from A-9 for the three REQUIRED
 findings of the Architect review R20261109T062937Z-e1d0: ordinal T36-T38 and T56-T62, counters T39-T48, execution identity
-T49-T55; T63-T92 for the two REQUIRED findings of R20261109T112612Z-04e8: test-id GUID identity T63-T73, failure-message
-cardinality T74-T89, consumed TRX elements only in their place and namespace T90-T92).
+T49-T55; T63-T92 from A-10 for the two REQUIRED findings of R20261109T112612Z-04e8: test-id GUID identity T63-T73,
+failure-message cardinality T74-T89, consumed TRX elements T90-T92; T93-T109 for the two REQUIRED findings of
+R20261109T141352Z-75ac: one root-anchored consumed structure, nested TestRun and shadow containers).
 Uses ONLY synthetic fixtures built in a temporary directory:
 a deterministic Git repository, VSTest TRX files, schema-valid handoffs and a synthetic 16.10 section. No real I-64 evidence.
 
@@ -227,8 +228,16 @@ def run_case(verifier, work, repo, s, case):
         except Exception:
             asserts[name] = False
     ok = ok and all(asserts.values())
-    return {'Id': case['Id'], 'Description': case['desc'], 'Expected': case['expect'], 'ExpectedCode': case.get('code'),
-            'Got': got, 'ExitCode': p.returncode, 'ReasonCodes': codes, 'Asserts': asserts, 'Ok': ok}
+    out = {'Id': case['Id'], 'Description': case['desc'], 'Expected': case['expect'], 'ExpectedCode': case.get('code'),
+           'Got': got, 'ExitCode': p.returncode, 'ReasonCodes': codes, 'Asserts': asserts, 'Ok': ok}
+    if 'observe' in case:  # what the verifier under test reported, whatever its result (used by the regression demonstration)
+        try:
+            out['Observed'] = case['observe'](doc)
+        except Exception:
+            out['Observed'] = None
+    if 'fixture' in case:  # facts of the synthetic fixture itself, computed when it is built
+        out['Fixture'] = case['fixture']
+    return out
 
 
 def cases(s):
@@ -289,6 +298,58 @@ def cases(s):
     bulk = ([('Synth.Tests.WorkspaceBulkTests', 'Case%02d' % k, None, 'Failed', ASSERT_MSG) for k in range(50)]
             + [('Synth.Tests.WorkspaceBulkTests', 'NullCase', None, 'Failed', NRE_MSG), ('Synth.Tests.MathTests', 'Adds', None, 'Passed', '')])
     bulk_green = [(c, m, d, 'Passed', '') for c, m, d, _, _ in bulk]
+    # ---- A-11 fixtures: edits of generated TRX documents around the document element ----
+    DECL = b'<?xml version="1.0" encoding="utf-8"?>'
+    enc = lambda xml: xml if isinstance(xml, bytes) else xml.encode('utf-8')
+
+    def body(data):  # the TestRun element without the XML declaration
+        assert data.startswith(DECL)
+        return data[len(DECL):]
+
+    def in_root(data, xml):  # xml becomes the last child of the document element
+        assert data.endswith(b'</TestRun>') and data.count(b'</TestRun>') == 1
+        return data[:-len(b'</TestRun>')] + enc(xml) + b'</TestRun>'
+
+    def at_start(data, xml):  # xml becomes a child of the document element before TestDefinitions
+        assert data.count(b'<TestDefinitions>') == 1
+        return data.replace(b'<TestDefinitions>', enc(xml) + b'<TestDefinitions>')
+
+    def in_summary(data, xml):  # xml becomes the last child of ResultSummary
+        assert data.count(b'</ResultSummary>') == 1
+        return data.replace(b'</ResultSummary>', enc(xml) + b'</ResultSummary>')
+
+    def drop_counters(data):
+        i = data.index(b'<Counters ')
+        return data[:i] + data[data.index(b'/>', i) + 2:]
+
+    def nested_run(outcome, method):  # a complete TRX-namespace TestRun with one Workspace row of its own
+        return body(trx([('Synth.Tests.WorkspaceShadowTests', method, None, outcome, ASSERT_MSG if outcome == 'Failed' else '')],
+                        test_ids={0: 'abcdef20-0000-4000-8000-000000000001'}, exec_ids={0: 'abcdef20-1111-4111-8111-000000000001'}))
+    # the non-consumed elements of a VSTest document: settings, times, entries, lists, run-level output and run infos
+    RUN_PREFIX = ('<TestSettings name="default" id="10000000-0000-4000-8000-000000000000"><Deployment runDeploymentRoot="synthetic" /></TestSettings>'
+                  '<Times creation="2026-01-01T00:00:00.0000000+00:00" start="2026-01-01T00:00:00.0000000+00:00" finish="2026-01-01T00:00:01.0000000+00:00" />')
+    RUN_SUFFIX = ('<TestEntries><TestEntry testId="00000001-0000-4000-8000-000000000000" executionId="%s" testListId="20000000-0000-4000-8000-000000000000" /></TestEntries>'
+                  '<TestLists><TestList name="Results Not in a List" id="20000000-0000-4000-8000-000000000000" /></TestLists>' % eid(0))
+    RUN_SUMMARY = ('<Output><StdOut>[xUnit.net 00:00:00.00]   Discovering: Synth.Tests</StdOut></Output>'
+                   '<RunInfos><RunInfo computerName="synthetic" outcome="Warning" timestamp="2026-01-01T00:00:01.0000000+00:00"><Text>synthetic run warning</Text></RunInfo></RunInfos>')
+    vs_doc = lambda data: in_summary(in_root(at_start(data, RUN_PREFIX), RUN_SUFFIX), RUN_SUMMARY)
+    t95_green = in_root(trx(g_rows), nested_run('Failed', 'HiddenFailure'))
+
+    def shadow_facts(data, reference):
+        root, ref = ET.fromstring(data), ET.fromstring(reference)
+        ns = '{%s}' % NS
+        every = [e for e in root.iter() if e.tag.rsplit('}', 1)[-1] == 'UnitTestResult']
+        outer = list(root.find(ns + 'Results'))
+        hidden = [e for e in every if not any(e is o for o in outer)]
+        counters = lambda r: sorted(r.find(ns + 'ResultSummary').find(ns + 'Counters').attrib.items())
+        return {'UnitTestResultElements': len(every), 'OuterResultRows': len(outer), 'HiddenFailedRows': sum(1 for e in hidden if e.get('outcome') == 'Failed'),
+                'HiddenFqn': 'Synth.Tests.WorkspaceShadowTests.HiddenFailure', 'OuterCountersAsT01': counters(root) == counters(ref),
+                'OuterRowsAsT01': [sorted(e.attrib.items()) for e in outer] == [sorted(e.attrib.items()) for e in ref.find(ns + 'Results')]}
+    t95_facts = shadow_facts(t95_green, trx(g_rows))
+    t95_as_ordered = (t95_facts['UnitTestResultElements'] == 10 and t95_facts['OuterResultRows'] == 9 and t95_facts['HiddenFailedRows'] == 1
+                      and t95_facts['OuterCountersAsT01'] and t95_facts['OuterRowsAsT01'])
+    a10_red_bodies = {**full(red_ok), 0: xo('<StdOut>synthetic output</StdOut>', '<TextMessages>%s</TextMessages>' % xm(IOE_MSG), xe(xm(ASSERT_MSG), STACK)),
+                      1: xo('<StdOut>passing output</StdOut>')}
     return [
         {'Id': 'T01', 'desc': 'correct FQN selection, coherent counts, exact mutation', 'expect': 'PASS',
          'asserts': {'Fqn6': good, 'Composition': lambda d: d['Red']['FailureComposition'] == {'System.NullReferenceException': 1, 'xunit-assertion': 2}}},
@@ -489,6 +550,50 @@ def cases(s):
         {'Id': 'T92', 'desc': 'a TestMethod in another XML namespace beside the TRX TestMethod of a definition -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
          'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS',
          'green_trx': trx(g_rows).replace(b'<TestMethod ', b'<TestMethod xmlns="urn:synthetic:other" className="Synth.Tests.WorkspaceShadowTests" name="Shadow" /><TestMethod ', 1)},
+        # ---- A-11: I64-A10-TESTRUN-ROOT-ANCHOR / I64-A10-SHADOW-RUN-PASS (one root-anchored consumed structure before counting) ----
+        dict({'Id': 'T93', 'desc': 'valid single root in the complete VSTest document shape (TestSettings, Times, TestEntries, TestLists, run-level ResultSummary/Output and RunInfos) -> PASS',
+              'expect': 'PASS', 'asserts': {'Fqn6': selected6}}, green_trx=vs_doc(trx(g_rows)), red_trx=vs_doc(trx(red_ok))),
+        {'Id': 'T94', 'desc': 'an empty TestRun nested under the document element -> TRX_NESTED_TESTRUN (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_NESTED_TESTRUN', 'green_trx': in_root(trx(g_rows), '<TestRun id="nested" name="shadow" />')},
+        {'Id': 'T95', 'desc': 'the 75ac regression: T01 GREEN (outer handoff, expected counts and Counters unchanged) plus a complete nested TestRun holding a selected Failed Workspace row -> TRX_NESTED_TESTRUN (FAIL closed); the hidden row never disappears silently',
+         'expect': 'FAIL', 'code': 'TRX_NESTED_TESTRUN', 'green_trx': t95_green, 'fixture': t95_facts,
+         'asserts': {'FixtureAsOrdered': lambda d: t95_as_ordered},
+         'observe': lambda d: {'Result': d['Result'], 'GreenSelected': d['Green'].get('Selected'), 'GreenFailed': d['Green'].get('Failed')}},
+        {'Id': 'T96', 'desc': 'a complete nested TestRun holding an apparently harmless Passed Workspace row -> TRX_NESTED_TESTRUN (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_NESTED_TESTRUN', 'green_trx': in_root(trx(g_rows), nested_run('Passed', 'HiddenPass'))},
+        {'Id': 'T97', 'desc': 'a second Results container under the root with a selected Failed row -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS',
+         'red_trx': in_root(trx(red_ok), '<Results><UnitTestResult executionId="%s" testId="00000001-0000-4000-8000-000000000000" testName="shadow" outcome="Failed">%s</UnitTestResult></Results>' % (eid(910), xo(xe(xm(IOE_MSG)))))},
+        {'Id': 'T98', 'desc': 'a second TestDefinitions under the root -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS',
+         'green_trx': in_root(trx(g_rows), '<TestDefinitions><UnitTest name="shadow" id="abcdef21-0000-4000-8000-000000000001"><TestMethod codeBase="Synth.Tests.dll" className="Synth.Tests.WorkspaceShadowTests" name="Shadow" /></UnitTest></TestDefinitions>')},
+        {'Id': 'T99', 'desc': 'a second ResultSummary with its own Counters under the root -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS',
+         'red_trx': in_root(trx(red_ok), '<ResultSummary outcome="Completed"><Counters total="0" executed="0" passed="0" failed="0" notExecuted="0" /></ResultSummary>')},
+        {'Id': 'T100', 'desc': 'a Counters element directly under the root, outside ResultSummary -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS', 'green_trx': in_root(trx(g_rows), '<Counters total="9" executed="9" passed="9" failed="0" notExecuted="0" />')},
+        {'Id': 'T101', 'desc': 'a Failed UnitTestResult outside TestRun/Results (under TestEntries) -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS',
+         'red_trx': in_root(trx(red_ok), '<TestEntries><UnitTestResult executionId="%s" testId="00000001-0000-4000-8000-000000000000" testName="shadow" outcome="Failed" /></TestEntries>' % eid(911))},
+        {'Id': 'T102', 'desc': 'a UnitTest outside TestRun/TestDefinitions (under TestLists) -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS',
+         'green_trx': in_root(trx(g_rows), '<TestLists><UnitTest name="shadow" id="abcdef22-0000-4000-8000-000000000001"><TestMethod codeBase="Synth.Tests.dll" className="Synth.Tests.WorkspaceShadowTests" name="Shadow" /></UnitTest></TestLists>')},
+        {'Id': 'T103', 'desc': 'Output/ErrorInfo/Message copied into an unrelated branch (TestSettings) -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS', 'red_trx': at_start(trx(red_ok), '<TestSettings name="default">%s</TestSettings>' % xo(xe(xm(IOE_MSG))))},
+        {'Id': 'T104', 'desc': 'ErrorInfo/Message under the run-level ResultSummary/Output, whose immediate parents look valid -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS', 'red_trx': in_summary(trx(red_ok), xo('<StdOut>run</StdOut>', xe(xm(IOE_MSG))))},
+        {'Id': 'T105', 'desc': 'a foreign-namespace shadow TestRun with its own Results and a Failed row -> TRX_NESTED_TESTRUN (FAIL closed; TestRun is matched by local name)',
+         'expect': 'FAIL', 'code': 'TRX_NESTED_TESTRUN',
+         'green_trx': in_root(trx(g_rows), '<TestRun xmlns="urn:synthetic:other"><Results><UnitTestResult executionId="%s" testId="00000001-0000-4000-8000-000000000000" outcome="Failed" /></Results></TestRun>' % eid(912))},
+        {'Id': 'T106', 'desc': 'the document element is not TestRun (a TRX-namespace envelope around a valid TestRun) -> TRX_ROOT_INVALID (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_ROOT_INVALID', 'green_trx': DECL + ('<Envelope xmlns="%s">' % NS).encode('ascii') + body(trx(g_rows)) + b'</Envelope>'},
+        {'Id': 'T107', 'desc': 'the document element is a TestRun outside the TRX namespace -> TRX_ROOT_INVALID (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_ROOT_INVALID', 'green_trx': trx(g_rows).replace((' xmlns="%s"' % NS).encode('ascii'), b'', 1)},
+        dict({'Id': 'T108', 'desc': 'one valid TestRun with all A-10 structures (complete failure shape, TextMessages, StdOut on rows, run-level Output) in the complete VSTest document -> PASS',
+              'expect': 'PASS', 'asserts': {'Composition': selected6}},
+             green_trx=vs_doc(trx(g_rows, bodies={1: xo('<StdOut>passing output</StdOut>')})), red_trx=vs_doc(trx(red_ok, bodies=a10_red_bodies))),
+        {'Id': 'T109', 'desc': 'no Counters element in ResultSummary -> TRX_STRUCTURE_MISSING (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_MISSING', 'red_trx': drop_counters(trx(red_ok))},
     ]
 
 
