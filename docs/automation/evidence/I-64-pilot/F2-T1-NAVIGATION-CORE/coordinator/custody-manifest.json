@@ -4,7 +4,7 @@
   "SourceRoot": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator",
   "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
   "Counts": {
-    "CUSTODIED": 19,
+    "CUSTODIED": 20,
     "EXCLUDED": 0
   },
   "Files": [
@@ -114,6 +114,12 @@
       "Path": "gate-contract.json",
       "Bytes": 11686,
       "Sha256": "a2ef2055f749dcdbeceac4ebb44d6105ded33964d3a0bee9982f9051d8e12e3a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "owner-a11-decision.md",
+      "Bytes": 266,
+      "Sha256": "c251b7751798b7ad0a77c13df4e0b9cacf17039b5946c15c3cd91240fd7195a7",
       "Disposition": "CUSTODIED"
     },
     {

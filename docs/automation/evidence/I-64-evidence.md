@@ -5439,3 +5439,32 @@ de `main`.
 - Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
 - Invocaciones de modelo: la revisión.
 - Sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
+
+## 86. A-11: decisión del Owner = SATISFIED; pendiente el AGREED final del Coordinator; A-11 NO ACTIVA
+
+**CI de §85:** corrida `42651347754` (push, SHA exacto `3d043737dcf0e1e0286c4cb109b8cd5d9d10efec`), 4/4 success.
+
+**Decisión del Owner** (literal en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/owner-a11-decision.md`, 266 bytes, SHA-256
+`c251b7751798b7ad0a77c13df4e0b9cacf17039b5946c15c3cd91240fd7195a7`):
+- es el texto exacto que pide la orden A-11 (comparación con el literal de la orden, normalizando solo los saltos de línea);
+- se recibió después del Architect AGREED (`R20261109T155930Z-5dd4`, §85) y de la advertencia de riesgo de la activación;
+- no se infirió de mensajes anteriores.
+
+**Estado de las tres autoridades de A-11:**
+
+| Autoridad | Estado |
+|---|---|
+| Owner | SATISFIED (este literal) |
+| Architect | AGREED (`R20261109T155930Z-5dd4`) |
+| Coordinator | AGREED final PENDIENTE |
+
+- A-11 sigue **PROPOSED / NOT ACTIVE** hasta el AGREED final del Coordinator.
+- I64-TESTFILTER-BRIDGE-01 no se ha ejecutado contra la evidencia real de F2-T1.
+- **Tras el AGREED del Coordinator:** una sola ejecución según A-11 § 6. Antes de ejecutar se comprueba el SHA-256 de cada entrada y
+  se hace STOP si alguna difiere.
+
+**Custodia:** el literal del Owner en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/` (20 archivos custodiados).
+
+**Límites:**
+- Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
+- Sin invocación de modelos; sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
