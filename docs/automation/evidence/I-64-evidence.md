@@ -5529,3 +5529,65 @@ excluidos):
 - Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
 - Sin invocación de modelos; sin AutoCAD.
 - Los TRX y las entregas reales se identifican solo por SHA-256 (16.12).
+
+## 88. F2-T1-NAVIGATION-CORE: cierre final del Coordinator = CLOSED / PASS; F2-T2 autorizada para preparar su contrato
+
+**CI de §87:** corrida `42655487294` (push, SHA exacto `8b649a788183e80618d650732c8174f1a431747a`), 4/4 success.
+
+**Cierre final del Coordinator** (literal en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/coordinator-f2t1-final-close.md`):
+- **F2-T1-NAVIGATION-CORE = CLOSED / PASS.**
+- **Producto:** COMPLETE; la verificación real `R20261108T221347Z-ebfc` = EXECUTION_VERIFIED / NONE, ACEPTADA.
+- **Cadena de controles negativos:**
+
+| Control | Resultado |
+|---|---|
+| nc4 | PASS |
+| nc1 | PASS |
+| nc2 | SATISFIED_UNDER_I64_SCOPE_BRIDGE |
+| nc3 | SATISFIED_UNDER_I64_TESTFILTER_BRIDGE (aplicación real de A-11 `R20261109T162731Z-7588`, PASS 61/61) |
+
+- **Presupuestos:** ejecución de A-11 1/1 consumida; attempts de producto 1/3.
+- **Clasificaciones preservadas sin cambio:**
+  - 46c1 = INVALID_OUTPUT;
+  - 041d = ORACLE NOT MET;
+  - 53af = INVALID_OUTPUT;
+  - 0706 = CONTROL FAIL / HISTORICAL CONTROLLER SCOPE DEFECT;
+  - la historia de P-04 no cambia y no se reescribe ninguna salida histórica de control.
+- **Producto verificado:** sigue siendo `c726410f3ac764f4a80a08a2b810b5fdda276ecc`. Los commits posteriores hasta `8b649a78` son documentación,
+  evidencia y custodia del protocolo, y no sustituyen la identidad del producto verificado.
+- **Sin pasos adicionales para F2-T1:** ni Controller, ni Worker, ni puente, ni AutoCAD, ni enmienda.
+
+**F2-T2-NAVIGATION-HOST-UI: AUTORIZADA PARA PREPARAR EL CONTRATO, NO PARA IMPLEMENTAR.**
+- **Qué hay que preparar:** un contrato nuevo (sin reutilizar el de F2-T1), con su delegación y su paquete de aceptación.
+- **Qué hace F2-T2:** conecta el Navigation Core ya verificado con:
+  - la UI del Workspace;
+  - las acciones del host AutoCAD: SELECT, VIEW, CENTER y LOCATE VIEW;
+  - el foco;
+  - la seguridad de documento y sesión;
+  - la supresión de eco.
+- **D-05 / D-07:**
+  - NavigationTargets sigue siendo la única autoridad de navegación;
+  - antes de cada acción se validan documento activo, sesión, existencia y atribución del objetivo; si algo falla, no hay ninguna
+    acción y se invalida el estado del objetivo;
+  - la navegación no escribe en el DWG ni cambia layouts, TILEMODE u otras vistas;
+  - CENTER conserva la escala;
+  - el foco vuelve al dibujo;
+  - el eco se suprime por contenido, sin atajo de token del siguiente evento.
+- **Dirección de producto:** el Workspace es no modal; puede estar anclado, flotante, redimensionado o en otro monitor. F2-T2 no debe
+  introducir supuestos que lo impidan.
+- **Fuera de alcance:** F3, F4 y el resto de trabajo posterior, sin ampliar F2-T2.
+- **Antes de invocar al Worker:**
+  - verificar main, la rama de I-64 y config.toml (A/B/C/D);
+  - fijar el alcance de escritura exacto, las pruebas requeridas y la expectativa RED;
+  - pasar la aceptación A1-A8 y nc4 si la cadena lo exige.
+- **Siguiente parada:** COORDINATOR_F2_T2_CONTRACT_REVIEW_REQUIRED.
+
+**Estado:**
+- `f2_t1_status` = CLOSED_PASS; `next_action` = F2_T2_CONTRACT_REQUIRED.
+- F2 OPEN / IN PROGRESS; Smoke-NAV pendiente tras F2; F3-F7 pendientes.
+
+**Custodia:** el literal del cierre en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/` (22 archivos custodiados).
+
+**Límites:**
+- Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
+- Sin invocación de modelos; sin AutoCAD; sin invocación del Worker; attempts 1/3.
