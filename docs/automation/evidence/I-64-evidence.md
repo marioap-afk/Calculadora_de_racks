@@ -5646,3 +5646,94 @@ excluidos):
 - Solo documentación y evidencia; sin cambios en `src/` ni `tests/`; sin invocación de modelos; sin AutoCAD; sin Worker.
 - Las pruebas locales de la línea base solo se compilaron y ejecutaron, sin modificar archivos.
 - attempts 1/3.
+
+## 90. F2-T2A-NAVIGATION-HOST: decisiones del Coordinator, contrato emitido, planificación, A1-A8 y nc4; STOP en COORDINATOR_F2_T2A_ACCEPTANCE_REQUIRED
+
+**CI de §89:** corrida `42659834369` (push, SHA exacto `09a1499a`), 4/4 success.
+
+**Decisiones del Coordinator C-F2T2-01..13** (literal en
+`I-64-pilot/F2-T2A-NAVIGATION-HOST/coordinator/coordinator-f2t2-contract-review-decisions.md`):
+
+| Tema | Decisión |
+|---|---|
+| División | ACEPTADA: F2-T2A-NAVIGATION-HOST y después F2-T2B-NAVIGATION-UI, secuenciales; T2B solo tras T2A EXECUTION_VERIFIED y cerrada |
+| Enrutamiento | Deep, Worker `claude-sonnet-5-5`/subagente/high, Controller `gpt-6-luna`/high; Long-horizon = STOP F2T2-C07 |
+| Contexto de comando | `ExecuteInCommandContextAsync` en `WorkspaceNavigationHost.cs`, con **async/await autorizados** solo allí. Prohibidos Wait, Result, GetResult, Task.Run, Task.Factory, Thread, Timer, Task no observada y `ConfigureAwait(false)`. Validación decisiva y efectos dentro del callback |
+| Foco | solo API pública; SN-07 lo demuestra; sin `Internal` |
+| Hechos | adaptador nuevo |
+| Puerto | nuevo; el puerto de F1 sin cambio |
+| Eco | por conjunto, por sesión |
+| Sesiones | purga perezosa con `TryGetSession` |
+| Guardas | excepciones solo por archivo exacto, en el RED |
+| Pruebas | filtros por espacio de nombres (656 / 64) |
+| UI de T2B | no modal y no dependiente de 320 px |
+| Presupuesto | Attempt 1, AttemptsRemaining 2, MaxReworkLoops 3; nc4 por cadena; A-11 no disponible |
+| Smoke-NAV | procedimiento como tarea documental aparte |
+| Secuencia | planificación autorizada solo hasta la aceptación del contrato |
+
+**Contrato de F2-T2A** (`I-64-pilot/F2-T2A-NAVIGATION-HOST/coordinator/gate-contract.json`, emitido por la sesión por esas decisiones;
+commit `35c3cd05`, CI `42662177765` 4/4):
+- ASCII puro y válido contra `rackcad-gate-contract/v1`; SHA-256 `42B00A24…`.
+- `AuthorityRevision` `09a1499a`; `MainSha` `a140eb3a`.
+- **AllowedWriteScope:** 7 archivos nuevos y 10 candidatos existentes exactos. **ForbiddenWriteScope:** 56 entradas.
+- 16 invariantes `INV-F2T2A-01..16` y 27 STOP, incluidos F2T2-C01..C07 y F2T2A-C08..C10.
+- **RequiredTests:**
+  - Core `FullyQualifiedName~RackCad.Tests.Workspace` ≥ 656, ExpectRed;
+  - UI `FullyQualifiedName~RackCad.UI.Tests.Workspace` ≥ 64, sin RED.
+
+**Relevo 16.4:** sin incidencias a la salida y a la entrada.
+- HEAD = remoto = `35c3cd05`, árbol limpio, último commit con el resumen.
+- Un único `codex.exe`, el acreditado.
+- config.toml SNAPSHOT D antes y después.
+- 0 participantes.
+
+**Planificación `R20261109T171357Z-e137`** (`I-64-pilot/F2-T2A-NAVIGATION-HOST/1/R20261109T171357Z-e137/`; 12 archivos custodiados y 7
+excluidos):
+- **Ejecución:**
+  - efectivos `gpt-6-luna`/`high`, CLI `0.167.0-alpha.3.2`; cesión de 17:14:11Z a 17:17:41Z; `turn.completed`;
+  - 8 órdenes, una con código 1 (`rg` no disponible; repetida con `Select-String`);
+  - el único patrón «credits» procede del catálogo de modelos leído, no de un aviso (sin P-06).
+- **Salida:**
+  - válida contra `rackcad-delegation/v1` y ASCII puro;
+  - colecciones opacas idénticas al contrato;
+  - TaskClass «Implementacion transversal a capas (corta)», Deep, Worker `anthropic/subagent/claude-sonnet-5-5`/high;
+  - **Horizonte Low**: no hay Long-horizon.
+- **AllowedWriteScope de la delegación:** los 7 archivos nuevos y 8 de los 10 candidatos.
+  - **Elegidos:** `WorkspaceController.cs`, `WorkspaceSelectionReader.cs`, `WorkspaceHostCore.cs` y las guardas `WorkspaceBridgeSourceGuardTests`,
+    `WorkspaceSourceGuardExceptionTests`, `WorkspaceHostSourceGuardTests`, `WorkspacePaletteHostSourceGuardTests` y
+    `WorkspaceNavigationAuthorityTests`.
+  - **No elegidos:** `WorkspaceHostC2SourceGuardTests` y `WorkspaceBridgeFacadeSourceGuardTests`.
+- **Contenido (19 criterios de aceptación):**
+  - **Puerto:** `Task<WorkspaceNavigationResult> ExecuteAsync(WorkspaceRequest origin, string rackId, NavigationActionKind action, int copyIndex = 0,
+    NavigationViewOrder? view = null, NavigationActionKind locateWith = View)`, con un resultado `readonly record struct` (Executed,
+    Unavailable, Rejected, Stale, Failed).
+  - **Eco:** instancia compartida de `NavigationEcho`; el lector la alimenta y `WorkspaceHostCore` la consulta antes de aplicar el contexto,
+    sin tocar `WorkspaceSelectionRead.cs` ni `WorkspaceSession.cs`.
+  - **Contexto de comando:** patrón asíncrono observado con las validaciones en orden dentro del callback.
+  - **Purga:** perezosa, con `TryGetSession`.
+  - **Controlador:** sin suscripciones nuevas.
+  - **Guardas:** deltas exactos en cinco archivos, con metarrecuentos actualizados.
+- **Posible ambigüedad para la aceptación:** el criterio 11 permite «escrituras solo en `WorkspaceNavigationEffects.cs` y lecturas solo en
+  los archivos exactos del lector y de los hechos». Pero VIEW y CENTER necesitan abrir la referencia objetivo (`GetObject`) para leer su
+  extensión desde el archivo de efectos. Se propone que la aceptación aclare que la excepción exacta de `WorkspaceNavigationEffects.cs`
+  incluye esa lectura.
+
+**A1-A8 de la delegación real:** pass en las ocho.
+
+**nc4 `R20261109T171828Z-fd2a`** (`I-64-pilot/F2-T2A-NAVIGATION-HOST-nc4/1/R20261109T171828Z-fd2a/`):
+- Es la copia que solo añade `src/RackCad.UI/` a `AllowedWriteScope`.
+- Da A3 = fail y el resto igual que la real: el oráculo relativo se cumple.
+- REJECTED_BEFORE_INVOCATION, STOP P-03 confinado al control.
+- Registros de relevo de la planificación y de nc4 válidos contra `rackcad-relay-record/v1`.
+
+**STOP en COORDINATOR_F2_T2A_ACCEPTANCE_REQUIRED** (C-F2T2-13). No se invoca al Worker. El Coordinator acepta o rechaza la delegación tras
+revisar:
+- la planificación, A1-A8 y nc4;
+- el AllowedWriteScope exacto;
+- las excepciones exactas de guardas;
+- el contrato asíncrono y de contexto de comando.
+
+**Límites:**
+- Solo documentación y evidencia; sin cambios en `src/` ni `tests/`; sin AutoCAD.
+- Invocaciones de modelo: la planificación.
+- attempts 1/3; F2-T2B en espera.
