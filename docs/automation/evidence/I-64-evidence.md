@@ -5405,3 +5405,37 @@ de `main`.
 - Solo documentación, evidencia y herramientas sintéticas; sin cambios en `src/` ni `tests/`.
 - Sin invocación de modelos en esta etapa; sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
 - **Siguiente:** la CI exacta de este commit y, si da 4/4, la revisión formal del Architect con la celda acreditada.
+
+## 85. A-11: revisión formal del Architect = AGREED; STOP en OWNER_A11_DECISION_REQUIRED; A-11 NO ACTIVA
+
+**CI de §84:** corrida `42649431481` (push, SHA exacto `f9e82be854c699ee615aaca510d4db6e962fe4df`), 4/4 success.
+
+**Condiciones de la orden (sin sonda nueva):**
+- binario sin cambio: un único `codex.exe` (`bin/f71a721e0e6193a9`), SHA-256 `4B3286E3…` antes y después;
+- config.toml en la instantánea D antes y después;
+- relevo limpio: HEAD = remoto = `f9e82be8`, árboles limpios, sin operación de Git en curso y sin participantes;
+- sin avisos de uso ni de crédito.
+
+**Revisión `R20261109T155930Z-5dd4`** (`I-64-protocol-bridge/architect-review/R20261109T155930Z-5dd4/`):
+- **Ejecución:**
+  - efectivos `gpt-6.1-sol` / `high` según el `turn_context`; CLI `0.167.0-alpha.3.2`; read-only;
+  - cesión de 15:59:47Z a 16:04:53Z;
+  - 48 órdenes, todas con `-NoProfile` y todas con código 0; ninguna de escritura.
+- **Salida:** válida, coherente, con el objeto correcto y solo ASCII. Sin términos de 16.10. Los patrones de límite solo aparecen en la
+  fila S-11 del AUTOMATION_PLAN y en su mención del registro de 75ac.
+- **Sin evidencia real:** las 109 aserciones, los 18 mutantes y el comportamiento histórico de A-10 se ejercitaron en memoria con
+  entradas y Git sintéticos; ninguna ejecución del puente sobre evidencia real de F2-T1.
+- **Hallazgos de 75ac:** `I64-A10-TESTRUN-ROOT-ANCHOR` = CLOSED; `I64-A10-SHADOW-RUN-PASS` = CLOSED.
+- **Hallazgos anteriores:** los dos de 04e8 y los tres de e1d0 = REMAINS CLOSED.
+- **Respuestas:** las 14 conformes (Q13 = NO: no hay ruta abierta; Q14 = NO: no hace falta autoridad nueva).
+- **Dictamen: AGREED, 0 REQUIRED, 0 OPTIONAL.**
+
+**Según la orden: STOP en OWNER_A11_DECISION_REQUIRED.**
+- **A-11:** sigue PROPOSED / NOT ACTIVE. El puente no se ejecuta contra la evidencia real de F2-T1.
+- **Decisión del Owner:** se solicita con el texto exacto de la orden y no se infiere de mensajes anteriores.
+- **Coordinator:** queda pendiente su AGREED final.
+
+**Límites:**
+- Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
+- Invocaciones de modelo: la revisión.
+- Sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
