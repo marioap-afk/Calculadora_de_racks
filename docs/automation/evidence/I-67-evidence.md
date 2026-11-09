@@ -23,8 +23,8 @@ Selección: 3 pruebas, 3 fallos por aserción. El Push Back comparte el defecto.
 
 **DC-01 Comportamiento.** MEASURED. `DynamicLoadBeamGeometry.ResolveLevels` (`src/RackCad.Application/Systems/Dynamic/`) acumula una elevación
 **teórica** (`rawExit += InOutBeamDepth + Pallet.Height + ClearHeight`) y ajusta cada nivel al troquel **más cercano**
-(`SnapToNearestTroquel`, `Math.Round … AwayFromZero`). La retícula de 2" con base `TROQUEL_LARGUERO` = 0.5" convierte un requisito impar en
-44/46 alternados: el redondeo cae hacia abajo y la siguiente suma no ve la elevación real. La entrada se calcula igual
+(`SnapToNearestTroquel`, `Math.Round … AwayFromZero`). La retícula de 2" convierte un requisito impar en
+44/46 alternados (la base `localY` de `TROQUEL_LARGUERO` en FRONTAL es 0.6053", corregido en la ronda 1 del Architect, R-04): el redondeo cae hacia abajo y la siguiente suma no ve la elevación real. La entrada se calcula igual
 (`rawExit + slope`), de modo que la subida también alterna (6"/8" con 4 fondos: la nominal es 7.4375").
 
 **DC-02 Dueños.** MEASURED.
@@ -75,7 +75,7 @@ Ningún archivo caliente de WORKFLOW §7 interviene.
 | M-04 | no activado | no cambia qué falla ni cómo |
 | **M-05** | **activado** | la salida de `ResolveLevels` la consumen Dinámico y Push Back |
 | M-06, M-07 | no activados | sin puntos de extensión ni mecanismo genérico |
-| M-08 | no activado | ADR-0031 limita «ningún archivo se mueve» a la introducción del datum, y el primer nivel no cambia |
+| M-08 | depende de la decisión sobre la entrada (§6) | ADR-0031 limita «ningún archivo se mueve» a la introducción del datum. Si la entrada del nivel 1 se mueve, la premisa «el primer nivel no cambia» es falsa (Architect R-03) y cuenta como UNKNOWN |
 
 **Arquetipo propuesto: FOUNDATION EVOLUTION** (M-03, M-05). Eleva el EXTENSION inicial y obliga a una revisión adversarial del Architect.
 **ADR: no requerido**: ninguno de los cuatro criterios de `docs/adr/README.md` aplica (regla local de una función, barata de revertir, sin formato ni contrato nuevos).
@@ -99,3 +99,26 @@ Ningún archivo caliente de WORKFLOW §7 interviene.
 SAME-SESSION ROLE. DC-01..09 completos. Pregunta expresa de LIFECYCLE §4 (qué expansión debió activarse): ninguna adicional. Agrupación: unidad única (un problema, una autoridad). Sin discrepancia clase A.
 
 Delegación de la implementación: **ninguna** (AUTOMATION_PLAN §16 exige orden expresa y no se adopta por estar escrito). El cambio cabe en una función y sus pruebas; no hay piezas independientes que paralelizar. Se delega solo la revisión del Architect, en un contexto limpio.
+
+## 5. RED ampliado
+
+MEASURED sobre `a59a6db7` (sin cambios en `src/`): T3, T4, T5, T6, T7, T8, T10, T11, T13 y T14 (degenerados y elevaciones altas) fallan por aserción. T2 exacto, T9, la cota inferior de T12, T14 sin retícula y T15 pasan: son caracterización o guarda y exigen una violación temporal tras el GREEN.
+
+## 6. Cuantificación de las opciones de entrada
+
+MEASURED por réplica aritmética de las fórmulas con la base real 0.6053" ([script](I-67-quantify-entrance-options.py)); no ejecuta producción. Matriz: primer nivel 4, 6, 7.5, 8 y 12"; tarima 30..72"; 2..6 niveles; 2..8 fondos de 48"; C6 y holgura 6".
+
+| Racks | Casos | Opción «más cercano a la nominal» cambia la cabecera | Opción «subida del nivel 1» cambia la cabecera | Entrada del nivel 1 se mueve (nominal / nivel 1) |
+|---|---|---|---|---|
+| Sin el defecto (requisito par) | 3,850 | 198 (5.1%) | 0 | 1,210 (31.4%) / 0 |
+| Con el defecto (requisito impar) | 3,675 | 984 (26.8%) | 887 (24.1%) | 1,155 (31.4%) / 0 |
+
+Error medio de la subida frente a la nominal, primer nivel 6": histórico 0.708" (máx. 1.438"), «más cercano» 0.545" (máx. 0.938"), «subida del nivel 1» 0.723" (máx. 1.438").
+
+Caso H58 (6", tarima 33", 4 niveles, 4 fondos, nominal 7.4375"): salidas 6.6053 / 52.6053 / 98.6053 / 144.6053 en ambas; subidas 8/8/8/8 («más cercano») o 6/6/6/6 («nivel 1»), frente a 6/8/6/8 hoy. La cabecera automática pasa de 168" a 180" en ambas.
+
+Caso sin defecto (12", tarima 60", 2 niveles, 4 fondos): salidas iguales; la cabecera pasa de 120" a 132" solo con «más cercano».
+
+## 7. Revisión del Architect, ronda 1
+
+Sobre `887141fc`, Proposal blob `fed80351`. Modo SAME-SESSION ROLE (subagente de lectura con contexto limpio, mismo modelo que el autor). Veredicto: **BLOCKED — OWNER DECISION**. Hallazgos REQUIRED R-01..R-06 en [decisiones](../decisions/I-67.md) §5. Sus afirmaciones de hecho se comprobaron contra el código: base 0.6053 (`connection-layout.csv:19`), caso 120"→132", `RACKPROYECTAR` sin redibujo de hermanas y UI Dinámica sin `FirstLevelDatum`.

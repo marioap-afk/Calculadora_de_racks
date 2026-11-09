@@ -32,7 +32,7 @@ automation_state_path:
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision: false
+requires_owner_decision: true
 requires_owner_validation: true
 automation:
   enabled: false
