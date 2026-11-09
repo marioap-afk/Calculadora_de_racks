@@ -5233,3 +5233,70 @@ de `main`.
 - Solo documentación y evidencia; sin cambios en `src/` ni `tests/`.
 - Invocaciones de modelo: la re-revisión.
 - Sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
+
+## 82. A-10 / I64-TESTFILTER-BRIDGE-01 corregido: orden del Coordinator y paquete versionado; A-10 NO ACTIVA
+
+**CI de §81:** corrida `42610063430` (push, SHA exacto `a78b6d5529f2b045ec24330e8252b49b0bf9bc5d`), 4/4 success.
+
+**Orden A-10 del Coordinator** (literal en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a10-correction-order.md`):
+- Acepta los dos REQUIRED de `R20261109T112612Z-04e8`, `I64-A9-TESTID-GUID-ALIAS` e `I64-A9-FAILURE-MESSAGE-AMBIGUITY`.
+  - Ninguno exige un cambio de producto, del Freeze ni de I-61, una decisión de alcance del Owner ni evidencia real.
+  - Los tres hallazgos de e1d0 siguen CLOSED.
+- A-10 corrige y sustituye a A-9 solo para la activación. A-8 y A-9 quedan históricas e inmutables.
+- M-04 = YES y el resto NO; autoridad Owner + Architect + Coordinator; PROPOSED / NOT ACTIVE.
+- **Autoriza** una revisión formal del objeto exacto, sin otra ronda del Coordinator, tras versionar y con la CI exacta 4/4. No hace
+  falta otra sonda si el binario no cambia, config.toml está en A/B/C/D, no hay aviso de uso o crédito y el relevo está limpio.
+
+**Paquete A-10** (`docs/initiatives/I-64-A-10.md`):
+
+| Archivo | Blob | Resultado |
+|---|---|---|
+| `tools/verify_testfilter_bridge.py` | `b134ba65` | identidad GUID de `UnitTest@id` y `UnitTestResult@testId`; ruta del mensaje de fallo con cardinalidad probada; estructura del TRX |
+| `tools/selftest_testfilter_bridge.py` | `fbdd9d44` | 92 casos sintéticos |
+| `tools/regression_demo_testfilter_bridge.py` | `eb2299e5` | 16 mutantes y el blob histórico de A-9 |
+| `selftest-testfilter-result-a10.json` | `725e4901` | PASS 92/92, dos ejecuciones idénticas byte a byte |
+| `regression-demo-a10-testfilter.json` | `76a2aaed` | PASS, dos ejecuciones idénticas byte a byte |
+
+- **I64-A9-TESTID-GUID-ALIAS:**
+  - `guid_identity()` exige el valor y lo valida como GUID en la forma 8-4-4-4-12 del TRX; otras formas de .NET fallan cerradas;
+  - devuelve una identidad canónica independiente de las mayúsculas hexadecimales, que se usa antes de detectar duplicados, buscar
+    y resolver;
+  - códigos `TRX_TEST_ID_MISSING`, `TRX_TEST_ID_MALFORMED`, `TRX_TEST_ID_DUPLICATE` y `TRX_TEST_ID_UNKNOWN`;
+  - casos T63-T73: los ids equivalentes como GUID fallan; una referencia con otras mayúsculas resuelve; los GUID distintos siguen
+    distintos; las ejecuciones que comparten `testId` siguen pasando.
+- **I64-A9-FAILURE-MESSAGE-AMBIGUITY:**
+  - `failure_message()` sustituye a `find()`: enumera `Output`, `ErrorInfo` y `Message` por nombre local en cualquier espacio de
+    nombres y prueba cardinalidad y posición antes de leer;
+  - otro `Message` solo puede estar en `Output/TextMessages`, que no se consume;
+  - códigos `TRX_FAILURE_MESSAGE_AMBIGUOUS` y `TRX_FAILURE_MESSAGE_MISSING`;
+  - casos T74-T89, entre ellos los dos fixtures de 04e8 (T75, T78), filas y Counters idénticos a T01 (T81) y la composición de
+    50 aserciones + 1 `NullReferenceException` sin ambigüedad (T83, PASS).
+- **El mismo principio para los elementos consumidos del TRX** (no es un hallazgo de 04e8):
+  - `check_structure()` exige que `TestDefinitions`, `Results`, `ResultSummary`, `UnitTest`, `TestMethod`, `UnitTestResult` y
+    `Counters` estén solo en su lugar y en el espacio de nombres del TRX (`TRX_STRUCTURE_AMBIGUOUS`);
+  - casos T90-T92.
+- **Casos de A-9:** T01-T62 se conservan con los mismos fixtures. T16 y T17 esperan ahora su código específico
+  (`TRX_TEST_ID_UNKNOWN`, `TRX_TEST_ID_DUPLICATE`); siguen siendo FAIL cerrado.
+- **Mutantes:** los 16 dan FAIL y cada uno falla sus casos objetivo: los 4 de selección de A-8, los 5 de la regla ordinal de A-9 y
+  7 de A-10 (`RawStringTestId`, `FirstMessageWins`, `QualifiedNameCount`, `MessageChildrenIgnored`, `FailedRowsOnly`,
+  `StrayMessageIgnored` y `StructureUnchecked`).
+- **Blob histórico de A-9 `39d30be3`:** FAIL, 64/92.
+  - Acepta 17 fixtures malos: T63, T64, T66 y T73 (identidad de prueba); T75-T78, T80-T82, T84, T86 y T89 (mensaje de fallo);
+    T90-T92 (estructura).
+  - Falla cerrado, pero con un código genérico, en 9 casos; rechaza dos fixtures legítimos (T65 y T70).
+  - Casos firma: T63, T64 y T66 (GUID-ALIAS); T75-T78, T80-T82, T84, T86 y T89 (FAILURE-MESSAGE). A-9 acepta cada uno con código 0;
+    A-10 los rechaza con su código específico.
+- **Sin cambio:** la coincidencia potencial UTF-16, los Counters, el `executionId`, ChainRedFiles, el Git de A-4, las primitivas de A-6
+  y la exactitud de la mutación.
+- **Sin evidencia real:** ninguna ejecución del puente sobre evidencia real de F2-T1.
+
+**Custodia:** la orden literal en `I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/` (18 archivos custodiados).
+
+**Estado:**
+- `f2_a10_status` nuevo; `f2_a9_status` marca A-9 como histórica y sustituida para la activación.
+- `f2_t1_status`, `next_action`, NEXT_ROLE, NEXT_ACTION y GATE apuntan a A-10.
+
+**Límites:**
+- Solo documentación, evidencia y herramientas sintéticas; sin cambios en `src/` ni `tests/`.
+- Sin invocación de modelos en esta etapa; sin AutoCAD; F2-T2 no autorizada; attempts 1/3.
+- **Siguiente:** la CI exacta de este commit y, si da 4/4, la revisión formal del Architect con la celda acreditada.

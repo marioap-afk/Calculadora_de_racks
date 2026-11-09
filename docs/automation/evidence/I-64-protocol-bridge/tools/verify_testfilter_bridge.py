@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""I64-TESTFILTER-BRIDGE-01: deterministic substitute evidence for the Tests part of nc3 (I-64 Amendment A-9, which corrects
-A-8 for activation after the Architect review R20261109T062937Z-e1d0).
+"""I64-TESTFILTER-BRIDGE-01: deterministic substitute evidence for the Tests part of nc3 (I-64 Amendment A-10, which corrects
+A-9 for activation after the Architect review R20261109T112612Z-04e8; A-9 corrected A-8 after R20261109T062937Z-e1d0).
 
 For one I-64 occurrence, proves fail-closed, from source data only (no Controller prose):
   1. RequiredTests selection with VSTest semantics for FullyQualifiedName~<substring>: case-insensitive substring over
@@ -10,9 +10,14 @@ For one I-64 occurrence, proves fail-closed, from source data only (no Controlle
      (UNSUPPORTED_NON_ASCII_FQN); one with no possible window is deterministically not selected. This is not an
      implementation of .NET OrdinalIgnoreCase: the bridge refuses to decide wherever that behavior could change inclusion.
      Counted over the top-level UnitTestResult rows of the GREEN (CurrentSha) and RED (RedSha) Core TRX files, each with a
-     unique, well-formed executionId, and with every Counters attribute in an explicit allowlist and coherent with the rows;
+     unique, well-formed executionId, and with every Counters attribute in an explicit allowlist and coherent with the rows.
+     UnitTest@id and UnitTestResult@testId are GUID identities (required, TRX GUID form, compared case-insensitively over
+     the hexadecimal digits), never raw strings: duplicate definitions under GUID equality and unresolved references fail;
   2. GREEN: selection >= MinSelected and no failed selected test; RED: selection >= MinSelected, selected failures
-     present, every failure inside the selection, and the failure composition recorded and compared to the expected one;
+     present, every failure inside the selection, and the failure composition recorded and compared to the expected one.
+     A failure message is read only after the cardinality of UnitTestResult/Output/ErrorInfo/Message is proven (no
+     first-match lookup); a duplicate, misplaced, nested or missing element on that path fails closed, and so does any
+     consumed TRX element outside its place or outside the TRX namespace;
   3. counts equal to the delivery's TestResults and to the expected values bound to the occurrence;
   4. ChainRedFiles = git diff --name-only ChainBaseSha..RedSha -- tests/ equals the accredited list, and
      RedSha..CurrentSha does not modify any of them;
@@ -346,7 +351,7 @@ class TrxInvalid(Invalid):
 
 def fold(text):
     """ASCII-only case fold (A-Z -> a-z); every other character is kept unchanged. str.upper/lower/casefold are not used,
-    so no Unicode case mapping is applied. Used for executionIds (hex only) and for the informational diagnostics."""
+    so no Unicode case mapping is applied. Used for executionIds and test ids (hex only) and for the informational diagnostics."""
     return ''.join(chr(ord(ch) + 32) if 'A' <= ch <= 'Z' else ch for ch in text)
 
 
@@ -421,9 +426,94 @@ def q(tag):
     return '{%s}%s' % (TRX_NS, tag)
 
 
+def guid_identity(value, what):
+    """Canonical identity of a TRX test id (UnitTest@id, UnitTestResult@testId). The value is required (TRX_TEST_ID_MISSING)
+    and must be a GUID in the TRX textual form, 8-4-4-4-12 hexadecimal digits (TRX_TEST_ID_MALFORMED; the other .NET forms,
+    with braces, parentheses, hexadecimal literals or without hyphens, are not accepted). That form fixes the position of all
+    32 digits, so two values are the same GUID exactly when their digits are equal with ASCII-only folding: the identity is
+    independent of hexadecimal letter case and is used for duplicate detection, lookup and reference resolution."""
+    if value is None:
+        raise TrxInvalid('TRX_TEST_ID_MISSING', '%s missing' % what)
+    if not EXECUTION_ID_RE.fullmatch(value):
+        raise TrxInvalid('TRX_TEST_ID_MALFORMED', '%s is not a GUID in the TRX form' % what)
+    return fold(value)
+
+
+FAILURE_PATH = 'UnitTestResult/Output/ErrorInfo/Message'
+
+
+def local_name(tag):
+    return tag.rsplit('}', 1)[-1] if isinstance(tag, str) else None
+
+
+def descendants_named(node, name):
+    """Every element below node whose local name is name, in any namespace (a namespace-qualified lookup would not see an
+    element in another namespace or in none)."""
+    return [e for e in node.iter() if e is not node and local_name(e.tag) == name]
+
+
+def on_path(node, name, parent):
+    return node.tag == q(name) and any(c is node for c in parent)
+
+
+# Consumed TRX elements and the only parent each may have. Every element with one of these local names, anywhere in the
+# document and in any namespace, must be in the TRX namespace and a child of that parent, so that nothing the reader consumes
+# can have a parallel, nested or foreign-namespace copy that a namespace-qualified child lookup would silently ignore.
+STRUCTURE = {'TestDefinitions': 'TestRun', 'Results': 'TestRun', 'ResultSummary': 'TestRun', 'UnitTest': 'TestDefinitions',
+             'TestMethod': 'UnitTest', 'UnitTestResult': 'Results', 'Counters': 'ResultSummary'}
+
+
+def check_structure(root):
+    parents = {c: p for p in root.iter() for c in p}
+    for e in root.iter():
+        name = local_name(e.tag)
+        if name == 'InnerResults':
+            raise Invalid('InnerResults are not supported')
+        if name in STRUCTURE:
+            p = parents.get(e)
+            if e.tag != q(name) or p is None or p.tag != q(STRUCTURE[name]):
+                raise TrxInvalid('TRX_STRUCTURE_AMBIGUOUS', '%s element outside %s/%s in the TRX namespace' % (name, STRUCTURE[name], name))
+
+
+def failure_message(r, failed):
+    """Message of the consumed path UnitTestResult/Output/ErrorInfo/Message, read only after its cardinality is proven; no
+    first-match lookup decides anything. In every result, Output and ErrorInfo occur at most once anywhere below the
+    UnitTestResult and Message at most once anywhere below that ErrorInfo (counted by local name, in any namespace); each
+    present one must be the TRX-namespace child of the previous element on the path, and the Message has no child elements.
+    Any other Message of the result may only be a TRX-namespace child of UnitTestResult/Output/TextMessages, where VSTest
+    writes additional text messages that are never consumed. Otherwise TRX_FAILURE_MESSAGE_AMBIGUOUS. A Failed result must
+    have the complete path (TRX_FAILURE_MESSAGE_MISSING); a result of another outcome may lack it, because its message is not
+    consumed."""
+    outputs, infos = descendants_named(r, 'Output'), descendants_named(r, 'ErrorInfo')
+    if len(outputs) > 1 or len(infos) > 1:
+        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS', '%d Output and %d ErrorInfo elements in one UnitTestResult' % (len(outputs), len(infos)))
+    if outputs and not on_path(outputs[0], 'Output', r):
+        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS', 'Output is not the TRX-namespace child of UnitTestResult')
+    if infos and not (outputs and on_path(infos[0], 'ErrorInfo', outputs[0])):
+        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS', 'ErrorInfo is not the TRX-namespace child of UnitTestResult/Output')
+    messages = descendants_named(infos[0], 'Message') if infos else []
+    if len(messages) > 1:
+        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS', '%d Message elements in one ErrorInfo' % len(messages))
+    if messages and not on_path(messages[0], 'Message', infos[0]):
+        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS', 'Message is not the TRX-namespace child of UnitTestResult/Output/ErrorInfo')
+    if messages and len(messages[0]):
+        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS', 'Message has child elements')
+    parents = {c: p for p in r.iter() for c in p}
+    text_message = lambda m: (m.tag == q('Message') and parents[m].tag == q('TextMessages')
+                              and bool(outputs) and parents.get(parents[m]) is outputs[0])
+    stray = [m for m in descendants_named(r, 'Message') if not (messages and m is messages[0]) and not text_message(m)]
+    if stray:
+        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS', '%d Message element(s) outside %s and UnitTestResult/Output/TextMessages' % (len(stray), FAILURE_PATH))
+    if not messages:
+        if failed:
+            raise TrxInvalid('TRX_FAILURE_MESSAGE_MISSING', 'Failed UnitTestResult without %s' % FAILURE_PATH)
+        return ''
+    return messages[0].text or ''
+
+
 def load_trx(raw):
-    """Strict VSTest TRX reader. Returns (definitions{id: (className, name, displayName)}, rows[(testId, outcome, testName,
-    message)], counters{...}). Raises Invalid on anything ambiguous."""
+    """Strict VSTest TRX reader. Returns (definitions{canonical id: (className, name, displayName)}, rows[(canonical testId,
+    outcome, testName, message)], counters{...}). Raises Invalid on anything ambiguous."""
     if raw.startswith(b'\xef\xbb\xbf'):
         raw = raw[3:]
     try:
@@ -438,6 +528,7 @@ def load_trx(raw):
         raise Invalid('malformed TRX XML: %s' % e)
     if root.tag != q('TestRun'):
         raise Invalid('root element is not a VSTest 2010 TestRun')
+    check_structure(root)
     defs_nodes = root.findall(q('TestDefinitions'))
     results_nodes = root.findall(q('Results'))
     summary_nodes = root.findall(q('ResultSummary'))
@@ -447,15 +538,15 @@ def load_trx(raw):
     for ut in defs_nodes[0]:
         if ut.tag != q('UnitTest'):
             raise Invalid('unexpected element in TestDefinitions: %s' % ut.tag)
-        tid = ut.get('id')
+        tid = guid_identity(ut.get('id'), 'UnitTest@id')
         methods = ut.findall(q('TestMethod'))
-        if not tid or len(methods) != 1:
-            raise Invalid('UnitTest without id or without exactly one TestMethod')
+        if len(methods) != 1:
+            raise Invalid('UnitTest without exactly one TestMethod')
         cls, name = methods[0].get('className'), methods[0].get('name')
         if not cls or not name:
             raise Invalid('TestMethod without className or name')
         if tid in definitions:
-            raise Invalid('duplicate UnitTest id %s' % tid)
+            raise TrxInvalid('TRX_TEST_ID_DUPLICATE', 'two UnitTest definitions with the same GUID id %s' % tid)
         definitions[tid] = (cls, name, ut.get('name') or '')
     rows = []
     execution_ids = set()
@@ -472,15 +563,12 @@ def load_trx(raw):
         if fold(eid) in execution_ids:
             raise TrxInvalid('TRX_EXECUTION_ID_DUPLICATE', 'duplicate executionId among the top-level UnitTestResult rows')
         execution_ids.add(fold(eid))
-        tid, outcome = r.get('testId'), r.get('outcome')
+        tid, outcome = guid_identity(r.get('testId'), 'UnitTestResult@testId'), r.get('outcome')
         if tid not in definitions:
-            raise Invalid('UnitTestResult references an undefined testId')
+            raise TrxInvalid('TRX_TEST_ID_UNKNOWN', 'UnitTestResult@testId %s has no UnitTest definition' % tid)
         if outcome not in OUTCOMES:
             raise Invalid('unsupported outcome %r' % outcome)
-        msg = ''
-        node = r.find('%s/%s/%s' % (q('Output'), q('ErrorInfo'), q('Message')))
-        if node is not None and node.text:
-            msg = node.text
+        msg = failure_message(r, outcome == 'Failed')
         rows.append((tid, outcome, r.get('testName') or '', msg))
     counters_nodes = summary_nodes[0].findall(q('Counters'))
     if len(counters_nodes) != 1:

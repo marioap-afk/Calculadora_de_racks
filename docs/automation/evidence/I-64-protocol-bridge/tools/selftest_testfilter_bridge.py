@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Synthetic self-test of I64-TESTFILTER-BRIDGE-01 (I-64 A-9; T01-T35 from A-8, T36-T62 for the three REQUIRED findings of the
-Architect review R20261109T062937Z-e1d0: ordinal T36-T38 and T56-T62, counters T39-T48, execution identity T49-T55).
+"""Synthetic self-test of I64-TESTFILTER-BRIDGE-01 (I-64 A-10; T01-T35 from A-8; T36-T62 from A-9 for the three REQUIRED
+findings of the Architect review R20261109T062937Z-e1d0: ordinal T36-T38 and T56-T62, counters T39-T48, execution identity
+T49-T55; T63-T92 for the two REQUIRED findings of R20261109T112612Z-04e8: test-id GUID identity T63-T73, failure-message
+cardinality T74-T89, consumed TRX elements only in their place and namespace T90-T92).
 Uses ONLY synthetic fixtures built in a temporary directory:
 a deterministic Git repository, VSTest TRX files, schema-valid handoffs and a synthetic 16.10 section. No real I-64 evidence.
 
@@ -16,6 +18,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import xml.etree.ElementTree as ET
 
 NS = 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'
 APPEND = ' GATE PASS.'
@@ -104,10 +107,14 @@ def eid(i):
     return '%08x-1111-4111-8111-%012x' % (i + 1, i + 1)
 
 
-def trx(rows, counters=None, bom=False, inner=False, extra_result=None, duplicate_id=False, exec_ids=None, shared=None):
+def trx(rows, counters=None, bom=False, inner=False, extra_result=None, duplicate_id=False, exec_ids=None, shared=None,
+        test_ids=None, result_ids=None, bodies=None):
     """rows: list of (className, method, display, outcome, message). shared: {row index: earlier row index} whose testId the row
     reuses (another execution of the same test, e.g. a Theory case). exec_ids: {row index: executionId or None (omitted)}.
-    counters: {attribute: value or None (attribute omitted)} overriding the values derived from the rows."""
+    counters: {attribute: value or None (attribute omitted)} overriding the values derived from the rows.
+    test_ids: {row index: UnitTest@id or None (omitted)} for a row with its own definition. result_ids: {row index:
+    UnitTestResult@testId or None (omitted)} overriding the reference to the row's definition. bodies: {row index: inner XML
+    of the UnitTestResult} replacing the Output/ErrorInfo/Message built from the message. Defaults give the A-9 fixtures."""
     defs, res, tids = [], [], []
     for i, (cls, m, disp, outcome, msg) in enumerate(rows):
         name = disp or (cls + '.' + m)
@@ -117,16 +124,22 @@ def trx(rows, counters=None, bom=False, inner=False, extra_result=None, duplicat
             tid = '%08x-0000-4000-8000-000000000000' % (i + 1)
             if duplicate_id and i == 1:
                 tid = '%08x-0000-4000-8000-000000000000' % 1
-            defs.append('<UnitTest name="%s" id="%s"><TestMethod codeBase="Synth.Tests.dll" className="%s" name="%s" /></UnitTest>' % (esc(name), tid, esc(cls), esc(m)))
+            tid = (test_ids or {}).get(i, tid)
+            ida = '' if tid is None else ' id="%s"' % esc(tid)
+            defs.append('<UnitTest name="%s"%s><TestMethod codeBase="Synth.Tests.dll" className="%s" name="%s" /></UnitTest>' % (esc(name), ida, esc(cls), esc(m)))
         tids.append(tid)
         body = ''
         if msg:
             body = '<Output><ErrorInfo><Message>%s</Message></ErrorInfo></Output>' % esc(msg)
+        if i in (bodies or {}):
+            body = bodies[i]
         if inner and i == 0:
             body += '<InnerResults></InnerResults>'
         e = (exec_ids or {}).get(i, eid(i))
         ea = '' if e is None else ' executionId="%s"' % e
-        res.append('<UnitTestResult%s testId="%s" testName="%s" outcome="%s">%s</UnitTestResult>' % (ea, tid, esc(name), outcome, body))
+        rid = (result_ids or {}).get(i, tid)
+        ta = '' if rid is None else ' testId="%s"' % esc(rid)
+        res.append('<UnitTestResult%s%s testName="%s" outcome="%s">%s</UnitTestResult>' % (ea, ta, esc(name), outcome, body))
     if extra_result:
         res.append(extra_result)
     passed = sum(1 for r in rows if r[3] == 'Passed')
@@ -254,6 +267,28 @@ def cases(s):
     UNK = 'UNKNOWN_POTENTIAL_MATCH'
     nonascii = lambda d, role, **want: all(d[role]['NonAsciiFqn'][k] == v for k, v in want.items())
     PAIR = chr(0x10400)  # DESERET CAPITAL LETTER LONG I: one code point, two UTF-16 code units (D801 DC00)
+    # ---- A-10 fixtures. RED rows 0 (WorkspaceCacheTests.CachesPerSession) and 5 (WorkspaceLayoutTests.Builds) fail with an
+    # assertion and row 6 (workspacelowerTests.Runs) with a NullReferenceException; row 7 (MathTests.Adds) is not selected.
+    both = lambda **kw: {'green_trx': trx(g_rows, **kw), 'red_trx': trx(red_ok, **kw)}
+    again = lambda **kw: {'green_trx': trx(g_rows + [g_rows[1]], **kw), 'red_trx': trx(red_ok + [red_ok[1]], **kw)}
+    selected6 = lambda d: good(d) and d['Red']['FailureComposition'] == {'System.NullReferenceException': 1, 'xunit-assertion': 2}
+    IOE_MSG = 'System.InvalidOperationException : contradictory failure'
+    STACK = '<StackTrace>   at Synth.Tests.Frame.Run()</StackTrace>'
+    xm = lambda text: '<Message>%s</Message>' % esc(text)
+    xe = lambda *parts: '<ErrorInfo>%s</ErrorInfo>' % ''.join(parts)
+    xo = lambda *parts: '<Output>%s</Output>' % ''.join(parts)
+    vstest = lambda text: xo('<StdOut>synthetic output</StdOut>', xe(xm(text), STACK))  # the complete VSTest failure shape
+    full = lambda rows: {i: vstest(r[4]) for i, r in enumerate(rows) if r[3] == 'Failed'}
+    red_body = lambda **b: {'red_trx': trx(red_ok, bodies={int(k[1:]): v for k, v in b.items()})}
+
+    def rows_and_counters(data):
+        root = ET.fromstring(data)
+        return [[sorted(e.attrib.items()) for e in root.iter('{%s}%s' % (NS, tag))] for tag in ('UnitTest', 'TestMethod', 'UnitTestResult', 'Counters')]
+    t81_red = trx(red_ok, bodies={6: xo(xe(xm(NRE_MSG), xm(ASSERT_MSG)))})
+    t81_same = rows_and_counters(t81_red) == rows_and_counters(trx(red_ok))
+    bulk = ([('Synth.Tests.WorkspaceBulkTests', 'Case%02d' % k, None, 'Failed', ASSERT_MSG) for k in range(50)]
+            + [('Synth.Tests.WorkspaceBulkTests', 'NullCase', None, 'Failed', NRE_MSG), ('Synth.Tests.MathTests', 'Adds', None, 'Passed', '')])
+    bulk_green = [(c, m, d, 'Passed', '') for c, m, d, _, _ in bulk]
     return [
         {'Id': 'T01', 'desc': 'correct FQN selection, coherent counts, exact mutation', 'expect': 'PASS',
          'asserts': {'Fqn6': good, 'Composition': lambda d: d['Red']['FailureComposition'] == {'System.NullReferenceException': 1, 'xunit-assertion': 2}}},
@@ -284,9 +319,9 @@ def cases(s):
         {'Id': 'T14', 'desc': 'nc3 handoff changes an additional field -> FAIL', 'expect': 'FAIL', 'code': 'MUTATION_NOT_ONLY_WORKCOMPLETED',
          'mutated': mut(Deviations=['extra change'])},
         {'Id': 'T15', 'desc': 'malformed TRX -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE', 'green_trx': trx(g_rows)[:-40]},
-        {'Id': 'T16', 'desc': 'TRX result references an undefined testId -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE',
+        {'Id': 'T16', 'desc': 'TRX result references an undefined testId -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_TEST_ID_UNKNOWN',
          'green_trx': trx(g_rows, extra_result='<UnitTestResult executionId="%s" testId="ffffffff-0000-4000-8000-000000000000" testName="x" outcome="Passed" />' % eid(999))},
-        {'Id': 'T17', 'desc': 'duplicate UnitTest id -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE', 'green_trx': trx(g_rows, duplicate_id=True)},
+        {'Id': 'T17', 'desc': 'duplicate UnitTest id -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_TEST_ID_DUPLICATE', 'green_trx': trx(g_rows, duplicate_id=True)},
         {'Id': 'T18', 'desc': 'DOCTYPE / ENTITY in TRX -> FAIL closed', 'expect': 'FAIL', 'code': 'TRX_UNREADABLE',
          'green_trx': trx(g_rows).replace(b'<TestRun', b'<!DOCTYPE TestRun [<!ENTITY x "y">]><TestRun', 1)},
         {'Id': 'T19', 'desc': 'unsupported filter expression -> FAIL closed', 'expect': 'FAIL', 'code': 'UNSUPPORTED_FILTER',
@@ -377,6 +412,83 @@ def cases(s):
         dict({'Id': 'T62', 'desc': 'surrogate pair as TWO units: Work + U+10400 + pace has no possible window -> NOT SELECTED (collapsing the pair to one position would wrongly fail closed) (PASS)',
               'expect': 'PASS', 'asserts': {'NotSelected': lambda d: d['Green']['Selected'] == 6 and nonascii(d, 'Green', Rows=1, NOT_SELECTED=1, **{UNK: 0})}},
              **plus('Synth.Tests.Work' + PAIR + 'paceTests', 'Runs')),
+        # ---- A-10: I64-A9-TESTID-GUID-ALIAS (UnitTest@id and UnitTestResult@testId are GUID identities) ----
+        dict({'Id': 'T63', 'desc': 'two UnitTest definitions of the same method whose ids differ only by hex capitalization (a second execution under each) -> TRX_TEST_ID_DUPLICATE (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_TEST_ID_DUPLICATE'},
+             **again(test_ids={1: 'abcdef02-aaaa-4bbb-8ccc-0000000000ab', 9: 'ABCDEF02-AAAA-4BBB-8CCC-0000000000AB'}), **seven),
+        dict({'Id': 'T64', 'desc': 'conflicting TestMethod definitions (one selected, one not) under GUID-equivalent ids abcdef03.../ABCDEF03... -> TRX_TEST_ID_DUPLICATE (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_TEST_ID_DUPLICATE'},
+             **both(test_ids={0: 'abcdef03-0000-4000-8000-0000000000cd', 7: 'ABCDEF03-0000-4000-8000-0000000000CD'})),
+        dict({'Id': 'T65', 'desc': 'UnitTestResult@testId written in the other hex casing of its definition (lower->UPPER, UPPER->lower) resolves to that definition -> PASS',
+              'expect': 'PASS', 'asserts': {'Resolved': selected6}},
+             **both(test_ids={0: 'abcdef04-0000-4000-8000-0000000000ef', 6: 'ABCDEF05-0000-4000-8000-0000000000EF'},
+                    result_ids={0: 'ABCDEF04-0000-4000-8000-0000000000EF', 6: 'abcdef05-0000-4000-8000-0000000000ef'})),
+        {'Id': 'T66', 'desc': 'malformed UnitTest@id (non-hexadecimal digits), referenced verbatim by its result -> TRX_TEST_ID_MALFORMED (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_TEST_ID_MALFORMED', 'green_trx': trx(g_rows, test_ids={2: 'zzzzzzzz-0000-4000-8000-000000000000'})},
+        {'Id': 'T67', 'desc': 'malformed UnitTestResult@testId -> TRX_TEST_ID_MALFORMED (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_TEST_ID_MALFORMED', 'green_trx': trx(g_rows, result_ids={2: 'not-a-guid'})},
+        {'Id': 'T68', 'desc': 'well-formed UnitTestResult@testId with no UnitTest definition (RED, rows and Counters unchanged) -> TRX_TEST_ID_UNKNOWN (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_TEST_ID_UNKNOWN', 'red_trx': trx(red_ok, result_ids={2: 'fedcba98-0000-4000-8000-000000000000'})},
+        dict({'Id': 'T69', 'desc': 'distinct GUIDs differing in one hex digit (abcdef06...0a / ABCDEF06...0B) stay two definitions, each resolving to its own -> PASS',
+              'expect': 'PASS', 'asserts': {'Distinct': selected6}},
+             **both(test_ids={0: 'abcdef06-0000-4000-8000-00000000000a', 7: 'ABCDEF06-0000-4000-8000-00000000000B'})),
+        dict({'Id': 'T70', 'desc': 'two executions of one test sharing its testId, the second written in the other hex casing, distinct executionIds -> PASS, counted 7',
+              'expect': 'PASS', 'asserts': {'Counted7': lambda d: d['Green']['Selected'] == 7 and d['Red']['Selected'] == 7}},
+             **again(shared={9: 1}, test_ids={1: 'abcdef07-0000-4000-8000-0000000000ab'}, result_ids={9: 'ABCDEF07-0000-4000-8000-0000000000AB'}), **seven),
+        {'Id': 'T71', 'desc': 'UnitTest without id -> TRX_TEST_ID_MISSING (FAIL closed)', 'expect': 'FAIL', 'code': 'TRX_TEST_ID_MISSING',
+         'green_trx': trx(g_rows, test_ids={3: None}, result_ids={3: '00000004-0000-4000-8000-000000000000'})},
+        {'Id': 'T72', 'desc': 'UnitTestResult without testId -> TRX_TEST_ID_MISSING (FAIL closed)', 'expect': 'FAIL', 'code': 'TRX_TEST_ID_MISSING',
+         'red_trx': trx(red_ok, result_ids={3: None})},
+        {'Id': 'T73', 'desc': 'GUID in a .NET form other than the TRX 8-4-4-4-12 form (braces), referenced verbatim -> TRX_TEST_ID_MALFORMED (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_TEST_ID_MALFORMED', 'green_trx': trx(g_rows, test_ids={2: '{00000003-0000-4000-8000-000000000000}'})},
+        # ---- A-10: I64-A9-FAILURE-MESSAGE-AMBIGUITY (cardinality of UnitTestResult/Output/ErrorInfo/Message before classifying) ----
+        dict({'Id': 'T74', 'desc': 'exactly one Output/ErrorInfo/Message on every failed row, in the complete VSTest shape (StdOut, Message, StackTrace) -> PASS',
+              'expect': 'PASS', 'asserts': {'Composition': selected6}}, red_trx=trx(red_ok, bodies=full(red_ok))),
+        dict({'Id': 'T75', 'desc': 'duplicate Message, the second contradictory (System.InvalidOperationException after the assertion message) -> TRX_FAILURE_MESSAGE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS'}, **red_body(r0=xo(xe(xm(ASSERT_MSG), xm(IOE_MSG), STACK)))),
+        dict({'Id': 'T76', 'desc': 'duplicate Message with the same text -> TRX_FAILURE_MESSAGE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS'}, **red_body(r0=xo(xe(xm(ASSERT_MSG), xm(ASSERT_MSG))))),
+        dict({'Id': 'T77', 'desc': 'duplicate ErrorInfo in the Output, the second contradictory -> TRX_FAILURE_MESSAGE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS'}, **red_body(r0=xo(xe(xm(ASSERT_MSG)), xe(xm(IOE_MSG))))),
+        dict({'Id': 'T78', 'desc': 'duplicate Output, the second with a contradictory ErrorInfo -> TRX_FAILURE_MESSAGE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS'}, **red_body(r0=xo(xe(xm(ASSERT_MSG))) + xo(xe(xm(IOE_MSG))))),
+        dict({'Id': 'T79', 'desc': 'Failed row with Output/ErrorInfo but no Message (StackTrace only) -> TRX_FAILURE_MESSAGE_MISSING (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_MISSING'}, **red_body(r5=xo(xe(STACK)))),
+        dict({'Id': 'T80', 'desc': 'second contradictory exception type in a parallel ErrorInfo directly under the NullReferenceException UnitTestResult -> TRX_FAILURE_MESSAGE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS'}, **red_body(r6=xo(xe(xm(NRE_MSG))) + xe(xm(IOE_MSG)))),
+        {'Id': 'T81', 'desc': 'rows, definitions and Counters identical to the T01 fixture; only the NullReferenceException row carries a second Message -> still FAIL closed',
+         'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS', 'red_trx': t81_red, 'asserts': {'RowsAndCountersAsT01': lambda d: t81_same}},
+        {'Id': 'T82', 'desc': 'Passed GREEN row with two Output elements: the structure is checked on every result although its message is not consumed -> FAIL closed',
+         'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS', 'green_trx': trx(g_rows, bodies={1: xo('<StdOut>a</StdOut>') + xo('<StdOut>b</StdOut>')})},
+        {'Id': 'T83', 'desc': 'expected 50 assertion + 1 NullReferenceException composition, unambiguous, in the complete VSTest shape -> PASS',
+         'expect': 'PASS', 'green_trx': trx(bulk_green), 'red_trx': trx(bulk, bodies=full(bulk)),
+         'real': h(green=(51, 51, 0), red=(51, 0, 51)), 'expect_green': '51/51/0', 'expect_red': '51/0/51', 'composition': 'System.NullReferenceException=1,xunit-assertion=50',
+         'asserts': {'Composition51': lambda d: d['Red']['FailureComposition'] == {'System.NullReferenceException': 1, 'xunit-assertion': 50} and d['Red']['Failed'] == 51}},
+        dict({'Id': 'T84', 'desc': 'Message with a child element (ambiguous nested structure) -> TRX_FAILURE_MESSAGE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS'},
+             **red_body(r0=xo(xe('<Message>Assert.Equal() Failure<Detail>System.InvalidOperationException : nested</Detail></Message>')))),
+        dict({'Id': 'T85', 'desc': 'the only Message of a failed row lies below ErrorInfo/StackTrace, not on the path -> TRX_FAILURE_MESSAGE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS'}, **red_body(r5=xo(xe('<StackTrace>%s</StackTrace>' % xm(ASSERT_MSG))))),
+        dict({'Id': 'T86', 'desc': 'a Message in another XML namespace beside the TRX Message (counted by local name) -> TRX_FAILURE_MESSAGE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS'},
+             **red_body(r0=xo(xe('<Message xmlns="urn:synthetic:other">%s</Message>' % esc(IOE_MSG), xm(ASSERT_MSG))))),
+        dict({'Id': 'T87', 'desc': 'the only ErrorInfo of a failed row is directly under UnitTestResult, outside Output -> TRX_FAILURE_MESSAGE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS'}, **red_body(r5=xe(xm(ASSERT_MSG)))),
+        dict({'Id': 'T88', 'desc': 'a Message outside ErrorInfo (Output/TextMessages) beside the single failure Message is not on the consumed path -> PASS, composition unchanged',
+              'expect': 'PASS', 'asserts': {'Composition': selected6}},
+             **red_body(r0=xo('<TextMessages>%s</TextMessages>' % xm(IOE_MSG), xe(xm(ASSERT_MSG))))),
+        dict({'Id': 'T89', 'desc': 'a contradictory Message directly under Output (neither in ErrorInfo nor in TextMessages) beside the failure Message -> TRX_FAILURE_MESSAGE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_FAILURE_MESSAGE_AMBIGUOUS'}, **red_body(r0=xo(xm(IOE_MSG), xe(xm(ASSERT_MSG))))),
+        # ---- A-10: consumed TRX elements only in their place and namespace (same principle: nothing parallel is ignored) ----
+        dict({'Id': 'T90', 'desc': 'a Failed UnitTestResult nested in another result (not through InnerResults), rows and Counters otherwise as T01 -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+              'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS'},
+             **red_body(r1=xo('<UnitTestResult executionId="%s" testId="00000002-0000-4000-8000-000000000000" testName="x" outcome="Failed" />' % eid(900)))),
+        {'Id': 'T91', 'desc': 'a second Results element in another XML namespace with a Failed row -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS',
+         'red_trx': trx(red_ok).replace(b'<ResultSummary', ('<Results xmlns="urn:synthetic:other"><UnitTestResult executionId="%s" testId="00000002-0000-4000-8000-000000000000" outcome="Failed" /></Results><ResultSummary' % eid(901)).encode('ascii'), 1)},
+        {'Id': 'T92', 'desc': 'a TestMethod in another XML namespace beside the TRX TestMethod of a definition -> TRX_STRUCTURE_AMBIGUOUS (FAIL closed)',
+         'expect': 'FAIL', 'code': 'TRX_STRUCTURE_AMBIGUOUS',
+         'green_trx': trx(g_rows).replace(b'<TestMethod ', b'<TestMethod xmlns="urn:synthetic:other" className="Synth.Tests.WorkspaceShadowTests" name="Shadow" /><TestMethod ', 1)},
     ]
 
 
