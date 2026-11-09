@@ -53,6 +53,16 @@ public class WorkspaceBridgeSourceGuardTests
     internal const string CommandAdapterPath = "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs";
     internal const string ReaderAdapterPath = "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs";
 
+    // I-64 F2-T2A-NAVIGATION-HOST (INV-F2T2A-10, C-F2T2-08): three more refinements, again each by EXACT FILE and never by
+    // folder, prefix or wildcard. READ, DISCOVERY and WRITE are different things:
+    //  - the facts adapter may READ the drawing (GetObject) to collect the neutral facts and the handles of the references;
+    //  - the effects adapter alone may WRITE, and only the implicit selection and the state of the view (SetImpliedSelection,
+    //    SetCurrentView); its READ is the read-only GetObject of the one already-selected target (never a discovery);
+    //  - the host holds the asynchronous command-context pattern (checked by the host guard) and no read or write at all.
+    internal const string FactsAdapterPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs";
+    internal const string EffectsAdapterPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs";
+    internal const string HostAdapterPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs";
+
     // ------------------------------------------------------------------ INV-F1-T2-02: hookups only in the bridge folder
 
     // The AutoCAD events the workspace governs plus the neighbours a second subscriber would reach for.
@@ -137,8 +147,20 @@ public class WorkspaceBridgeSourceGuardTests
     private static readonly Regex ReaderForbiddenCalls = new(
         @"\b(?:" + string.Join("|", ForbiddenCallNames.Split('|').Where(n => n != "SelectImplied" && n != "GetObject")) + @")\b");
 
+    private static Regex ForbiddenCallsWithout(params string[] allowed) => new(
+        @"\b(?:" + string.Join("|", ForbiddenCallNames.Split('|').Where(n => !allowed.Contains(n))) + @")\b");
+
+    // The facts adapter alone (besides the reader) may READ with GetObject; every other name stays forbidden there too.
+    private static readonly Regex FactsForbiddenCalls = ForbiddenCallsWithout("GetObject");
+
+    // The effects adapter alone may WRITE the implicit selection and the view, and READ the one already-selected target.
+    private static readonly Regex EffectsForbiddenCalls = ForbiddenCallsWithout("SetImpliedSelection", "SetCurrentView", "GetObject");
+
     internal static Regex HandlerForbiddenCallsFor(string path) =>
-        string.Equals(path, ReaderAdapterPath, StringComparison.Ordinal) ? ReaderForbiddenCalls : HandlerForbiddenCalls;
+        string.Equals(path, ReaderAdapterPath, StringComparison.Ordinal) ? ReaderForbiddenCalls
+        : string.Equals(path, FactsAdapterPath, StringComparison.Ordinal) ? FactsForbiddenCalls
+        : string.Equals(path, EffectsAdapterPath, StringComparison.Ordinal) ? EffectsForbiddenCalls
+        : HandlerForbiddenCalls;
 
     [Fact]
     public void TheBridgeNeverWritesSelectionOrViewNorReadsStoredDataNorAsksNorOpensDialogs()

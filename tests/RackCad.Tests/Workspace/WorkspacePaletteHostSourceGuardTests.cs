@@ -619,7 +619,8 @@ public class WorkspacePaletteHostSourceGuardTests
         Assert.Matches(@"_bridge\\\.CommandStateChanged\\s\*\\\+=", code);
         Assert.Matches(@"Assert\.Equal\(3,\s*Src\.Count\(code,\s*@""\\\+=""\)\)", code);
         Assert.DoesNotMatch(new Regex(@"Skip\s*=|\[Fact\(Skip|\[Theory\(Skip"), text);
-        Assert.Equal(43, Src.Count(code, @"\[(?:Fact|Theory)\]"));
+        // I-64 F2-T2A-NAVIGATION-HOST: the revised guard file holds exactly 45 tests (43 + the async exception and the effects write exception).
+        Assert.Equal(45, Src.Count(code, @"\[(?:Fact|Theory)\]"));
     }
 
     // ------------------------------------------------------------------ F1-T3B-HOST-UI-C1: deterministic first placement (D-01)
@@ -725,13 +726,16 @@ public class WorkspacePaletteHostSourceGuardTests
         Assert.Equal(2, Src.Count(code, @"\+="));
         Assert.DoesNotMatch(new Regex(@"PaletteSetMoved|PaletteSetHostMoved|PaletteSetEnterSizeMove|SizeChanged|PaletteSetDestroy"), code);
 
-        // No new file carries the placement: the plugin workspace folder keeps its six files.
+        // No new file carries the placement: the plugin workspace folder keeps its six files of F1 and holds, since I-64
+        // F2-T2A-NAVIGATION-HOST, exactly three more (the navigation effects, facts and host), nine in all.
         Assert.Equal(
             new[]
             {
                 "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs", "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
-                "src/RackCad.Plugin/Workspace/WorkspaceHostPort.cs", "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
-                "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs", "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs",
+                "src/RackCad.Plugin/Workspace/WorkspaceHostPort.cs", "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs",
+                "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs", "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+                "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs", "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+                "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs",
             },
             Src.PluginFiles().Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray());
     }

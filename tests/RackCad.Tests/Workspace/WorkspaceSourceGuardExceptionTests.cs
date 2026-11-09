@@ -116,6 +116,137 @@ public class WorkspaceSourceGuardExceptionTests
         }
     }
 
+    // ------------------------------------------------------------------ I-64 F2-T2A-NAVIGATION-HOST (INV-F2T2A-10, C-F2T2-08)
+    // Three more exceptions, each by EXACT FILE. READ, DISCOVERY and WRITE are distinguished: the facts adapter READS to collect
+    // facts; the effects adapter WRITES only the implicit selection and the view and READS only the already-selected target; no
+    // file DISCOVERS but the facts adapter; the host holds the asynchronous command-context pattern and nothing else.
+
+    private const string Facts = WorkspaceBridgeSourceGuardTests.FactsAdapterPath;
+    private const string Effects = WorkspaceBridgeSourceGuardTests.EffectsAdapterPath;
+    private const string NavigationHost = WorkspaceBridgeSourceGuardTests.HostAdapterPath;
+
+    [Fact]
+    public void TheThreeNavigationExceptionsAreNamedFilesOfThePluginWorkspaceFolder()
+    {
+        Assert.Equal("src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs", Facts);
+        Assert.Equal("src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs", Effects);
+        Assert.Equal("src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs", NavigationHost);
+        Assert.Equal(5, new[] { Facts, Effects, NavigationHost, Command, Reader }.Distinct().Count());
+        Assert.All(new[] { Facts, Effects, NavigationHost }, p => Assert.EndsWith(".cs", p, StringComparison.Ordinal));
+        Assert.All(new[] { Facts, Effects, NavigationHost }, p => Assert.DoesNotMatch(new Regex(@"[*?]"), p));
+        Assert.All(new[] { Facts, Effects, NavigationHost }, p => Assert.Equal(1, p.Substring("src/RackCad.Plugin/Workspace/".Length).Split('/').Length));
+    }
+
+    [Fact]
+    public void TheEffectsExceptionWritesOnlyTheSelectionAndTheViewAndReadsOnlyTheSelectedTarget()
+    {
+        var guard = WorkspaceBridgeSourceGuardTests.HandlerForbiddenCallsFor(Effects);
+
+        Assert.DoesNotMatch(guard, "ed.SetImpliedSelection(ids);");
+        Assert.DoesNotMatch(guard, "ed.SetCurrentView(view);");
+        Assert.DoesNotMatch(guard, "var o = tr.GetObject(id, OpenMode.ForRead);");
+    }
+
+    [Theory]
+    [InlineData("var result = ed.SelectImplied();")]
+    [InlineData("ed.SelectAll();")]
+    [InlineData("ed.SelectAtPoint(p);")]
+    [InlineData("var r = ed.GetSelection();")]
+    [InlineData("var r = ed.GetEntity(o);")]
+    [InlineData("using (var tr = new OpenCloseTransaction()) { }")]
+    [InlineData("ed.Regen();")]
+    [InlineData("ed.UpdateScreen();")]
+    [InlineData("doc.SendStringToExecute(\"X\", true, false, false);")]
+    [InlineData("entity.Highlight();")]
+    [InlineData("entity.Unhighlight();")]
+    [InlineData("Application.ShowModalDialog(w);")]
+    [InlineData("ed.ZoomExtents();")]
+    [InlineData("ed.ZoomWindow(a, b);")]
+    [InlineData("ed.PanTo(p);")]
+    [InlineData("ed.StartCommand(c);")]
+    public void TheEffectsAdapterStillCannotDiscoverZoomRegenerateHighlightOrAsk(string injected)
+    {
+        Assert.Matches(WorkspaceBridgeSourceGuardTests.HandlerForbiddenCallsFor(Effects), injected);
+    }
+
+    [Fact]
+    public void TheFactsExceptionAllowsTheReadOnlyAndNeverAWriteOfTheSelectionOrTheView()
+    {
+        var guard = WorkspaceBridgeSourceGuardTests.HandlerForbiddenCallsFor(Facts);
+
+        Assert.DoesNotMatch(guard, "var o = tr.GetObject(id, OpenMode.ForRead);");
+        Assert.Matches(guard, "ed.SetImpliedSelection(ids);");
+        Assert.Matches(guard, "ed.SetCurrentView(view);");
+        Assert.Matches(guard, "var result = ed.SelectImplied();");
+        Assert.Matches(guard, "ed.ZoomExtents();");
+    }
+
+    [Fact]
+    public void TheHostHasNoReadAndNoWriteExceptionAtAll()
+    {
+        var guard = WorkspaceBridgeSourceGuardTests.HandlerForbiddenCallsFor(NavigationHost);
+
+        Assert.Matches(guard, "ed.SetImpliedSelection(ids);");
+        Assert.Matches(guard, "ed.SetCurrentView(view);");
+        Assert.Matches(guard, "var o = tr.GetObject(id, OpenMode.ForRead);");
+        Assert.Matches(guard, "var result = ed.SelectImplied();");
+    }
+
+    [Theory]
+    [InlineData(Other)]
+    [InlineData(Command)]
+    [InlineData(Reader)]
+    [InlineData(Facts)]
+    [InlineData(NavigationHost)]
+    [InlineData("src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs")]
+    [InlineData("src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects2.cs")]
+    [InlineData("src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs.bak")]
+    [InlineData("src/RackCad.Plugin/Workspace/Sub/WorkspaceNavigationEffects.cs")]
+    [InlineData("src/RackCad.Plugin/Workspace/Workspace*.cs")]
+    [InlineData("src/RackCad.Plugin/Workspace/")]
+    public void TheWritesOfTheSelectionAndTheViewStayForbiddenInEveryFileButTheEffectsAdapter(string path)
+    {
+        var guard = WorkspaceBridgeSourceGuardTests.HandlerForbiddenCallsFor(path);
+
+        Assert.Matches(guard, "ed.SetImpliedSelection(ids);");
+        Assert.Matches(guard, "ed.SetCurrentView(view);");
+    }
+
+    [Theory]
+    [InlineData(Other)]
+    [InlineData(Command)]
+    [InlineData(NavigationHost)]
+    [InlineData(Effects + ".bak")]
+    [InlineData("src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts2.cs")]
+    [InlineData("src/RackCad.Plugin/Workspace/Sub/WorkspaceNavigationFacts.cs")]
+    [InlineData("src/RackCad.Plugin/Workspace/Workspace*.cs")]
+    public void TheReadOfTheDrawingStaysForbiddenInEveryFileButTheReaderTheFactsAndTheEffects(string path)
+    {
+        Assert.Matches(WorkspaceBridgeSourceGuardTests.HandlerForbiddenCallsFor(path), "var o = tr.GetObject(id, OpenMode.ForRead);");
+    }
+
+    [Fact]
+    public void TheNavigationExceptionsAreComparedByFullPathEqualityNeverByPrefixOrFolder()
+    {
+        var guard = Src.Code("tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs");
+
+        Assert.Equal(2, Src.Count(guard, @"string\.Equals\(path, (?:Facts|Effects)AdapterPath, StringComparison\.Ordinal\)"));
+        Assert.DoesNotMatch(new Regex(@"\.(?:StartsWith|EndsWith|Contains)\s*\([^)]*Adapter"), guard);
+        Assert.DoesNotMatch(new Regex(@"Skip\s*=|\[Fact\(Skip"), guard);
+    }
+
+    [Fact]
+    public void TheAsynchronousPatternIsAllowedOnlyInTheHostFileAndOnlyInTheCommandContextForm()
+    {
+        var hostCode = Src.Code(NavigationHost);
+
+        // The exception is the exact file: no other file of the two workspace folders may use async or await.
+        var users = Src.PluginFiles().Concat(Src.ApplicationFiles()).Where(f => Regex.IsMatch(f.Code, @"\basync\b|\bawait\b")).Select(f => f.Path).ToArray();
+        Assert.Equal(new[] { NavigationHost }, users);
+        Assert.Matches(@"await\s+[\w.]+\.ExecuteInCommandContextAsync\s*\(", hostCode);
+        Assert.DoesNotMatch(new Regex(@"\.Wait\s*\(|\.Result\b|GetAwaiter|GetResult|ConfigureAwait|Task\.Run|Task\.Factory|StartNew|ContinueWith|async\s+void"), hostCode);
+    }
+
     [Fact]
     public void NoFolderWideExclusionWasIntroducedInTheT2Guard()
     {

@@ -44,7 +44,8 @@ namespace RackCad.Application.Workspace
             IWorkspaceHostProbe probe,
             IWorkspaceSelectionReader reader,
             WorkspaceInstrumentation instrumentation,
-            Action<string, Exception>? logFault = null)
+            Action<string, Exception>? logFault = null,
+            NavigationEcho? echo = null)
         {
             _bridge = bridge ?? throw new ArgumentNullException(nameof(bridge));
             _probe = probe ?? throw new ArgumentNullException(nameof(probe));

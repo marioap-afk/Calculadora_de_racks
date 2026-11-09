@@ -23,6 +23,11 @@ public class WorkspaceHostSourceGuardTests
     private const string HostCorePath ="src/RackCad.Application/Workspace/WorkspaceHostCore.cs";
     private const string InstrumentationPath = "src/RackCad.Application/Workspace/WorkspaceInstrumentation.cs";
 
+    // I-64 F2-T2A-NAVIGATION-HOST: the exceptions of the navigation files, each by EXACT FILE and never by folder or prefix.
+    private const string NavigationHostPath = WorkspaceBridgeSourceGuardTests.HostAdapterPath;
+    private const string NavigationFactsPath = WorkspaceBridgeSourceGuardTests.FactsAdapterPath;
+    private const string NavigationEffectsPath = WorkspaceBridgeSourceGuardTests.EffectsAdapterPath;
+
     private static IEnumerable<(string Path, string Code)> PluginOutside(string path) =>
         Src.PluginFiles().Where(f => f.Path != path);
 
@@ -285,10 +290,40 @@ public class WorkspaceHostSourceGuardTests
     [Fact]
     public void TheReaderApisAreUsedInNoOtherFileOfThePluginWorkspace()
     {
+        var readerApis = new Regex(@"\bSelectImplied\b|\bGetObject\b|RackBlockData|RackEmbedStore|WorkspaceDefinitionCache");
+
+        // I-64 F2-T2A (INV-F2T2A-05, 06, 10): two more files, each by EXACT FILE, may READ with GetObject and nothing else of
+        // the reader APIs: the facts adapter (to collect the facts) and the effects adapter (the one already-selected target).
+        var readOnly = new Regex(@"\bSelectImplied\b|RackBlockData|RackEmbedStore|WorkspaceDefinitionCache");
+
         foreach (var (path, code) in PluginOutside(ReaderPath))
         {
-            Assert.DoesNotMatch(new Regex(@"\bSelectImplied\b|\bGetObject\b|RackBlockData|RackEmbedStore|WorkspaceDefinitionCache"), code);
+            var allowsRead = string.Equals(path, NavigationFactsPath, StringComparison.Ordinal)
+                             || string.Equals(path, NavigationEffectsPath, StringComparison.Ordinal);
+            var rule = allowsRead ? readOnly : readerApis;
+            Assert.True(!rule.IsMatch(code), path + " uses " + rule.Match(code).Value);
         }
+
+        // The READ of the effects adapter is not a discovery authority: one GetObject, read-only, on the one target the plan
+        // named; no enumeration of Model Space or of the block table, no sibling or alternative reference, no derivation of targets.
+        var effects = Src.Code(NavigationEffectsPath);
+        Assert.Equal(1, Src.Count(effects, @"\bGetObject\s*\("));
+        Assert.Matches(@"GetObject\s*\(\s*id\s*,\s*OpenMode\.ForRead\s*\)", effects);
+        Assert.DoesNotMatch(
+            new Regex(@"ScanEnvelopes|RackBlockFinder|RackEmbed\w*|\bBlockTable\b|BlockTableRecord|GetBlockReferenceIds|NavigationTargets|ModelSpaceReferenceHandles|ReadDefinitionFacts|\bforeach\s*\([^)]*\bin\s+(?:modelSpace|blockTable|space|btr)\b"),
+            effects);
+    }
+
+    [Fact]
+    public void TheEffectsWriteExceptionOpensNoOtherWriteNoSystemVariableNoLayoutAndNoAuthoredData()
+    {
+        var effects = Src.Code(NavigationEffectsPath);
+
+        Assert.Equal(1, Src.Count(effects, @"\bSetImpliedSelection\s*\("));
+        Assert.Equal(2, Src.Count(effects, @"\bSetCurrentView\s*\("));
+        Assert.DoesNotMatch(new Regex(@"TileMode|LayoutManager|CurrentLayout|OpenMode\.(?:ForWrite|ForNotify)|UpgradeOpen|AppendEntity|\.Erase\s*\(|\.Commit\s*\(|SetSystemVariable"), effects);
+        var writers = Src.PluginFiles().Where(f => Regex.IsMatch(f.Code, @"\bSetImpliedSelection\b|\bSetCurrentView\b")).Select(f => f.Path).ToArray();
+        Assert.Equal(new[] { NavigationEffectsPath }, writers);
     }
 
     [Fact]
@@ -343,8 +378,15 @@ public class WorkspaceHostSourceGuardTests
     {
         var forbidden = new Regex(@"\b(?:SetImpliedSelection|SetCurrentView|SetSystemVariable|Zoom\w*|Regen|UpdateScreen|Highlight|Unhighlight|SendStringToExecute|SetImpliedSelectionAsync|PanTo)\b");
 
+        // I-64 F2-T2A (INV-F2T2A-06, 10): the effects adapter, by EXACT FILE, is the only one that writes the implicit selection
+        // and the view; the system variables, every zoom, the regeneration, the highlight and the command strings stay forbidden there.
+        var effectsForbidden = new Regex(@"\b(?:SetSystemVariable|Zoom\w*|Regen|UpdateScreen|Highlight|Unhighlight|SendStringToExecute|SetImpliedSelectionAsync|PanTo)\b");
+
         foreach (var (path, code) in Src.PluginFiles().Concat(Src.ApplicationFiles()))
-            Assert.True(!forbidden.IsMatch(code), path + " uses " + forbidden.Match(code).Value);
+        {
+            var rule = string.Equals(path, NavigationEffectsPath, StringComparison.Ordinal) ? effectsForbidden : forbidden;
+            Assert.True(!rule.IsMatch(code), path + " uses " + rule.Match(code).Value);
+        }
     }
 
     [Fact]
@@ -369,8 +411,34 @@ public class WorkspaceHostSourceGuardTests
     {
         var forbidden = new Regex(@"Task\.Run|Task\.Factory|\bnew\s+Thread\b|ThreadPool|System\.Threading\.Timer|System\.Timers|\bTimer\b|\basync\b|\bawait\b|Parallel\.|BackgroundWorker|SynchronizationContext");
 
+        // I-64 F2-T2A (INV-F2T2A-02, 03, 10): the navigation host, by EXACT FILE, may use async and await, and only to await the
+        // public command-context call. Everything else that starts background work stays forbidden there, and so does every way
+        // of blocking on a task, detaching one or dropping the synchronization context.
+        var hostForbidden = new Regex(@"Task\.Run|Task\.Factory|\bnew\s+Thread\b|ThreadPool|System\.Threading\.Timer|System\.Timers|\bTimer\b|Parallel\.|BackgroundWorker|SynchronizationContext|\.Wait\s*\(|\.Result\b|GetAwaiter|GetResult|ConfigureAwait|StartNew|ContinueWith|Task\.Delay|async\s+void");
+        var blocking = new Regex(@"GetAwaiter|ConfigureAwait|\.Wait\s*\(");
+
         foreach (var (path, code) in Src.PluginFiles().Concat(Src.ApplicationFiles()))
-            Assert.True(!forbidden.IsMatch(code), path + " uses " + forbidden.Match(code).Value);
+        {
+            var rule = string.Equals(path, NavigationHostPath, StringComparison.Ordinal) ? hostForbidden : forbidden;
+            Assert.True(!rule.IsMatch(code), path + " uses " + rule.Match(code).Value);
+            Assert.True(!blocking.IsMatch(code), path + " blocks on or reconfigures a task: " + blocking.Match(code).Value);
+        }
+
+        foreach (var (path, code) in Src.PluginFiles())
+            Assert.DoesNotMatch(new Regex(@"\.Result\b"), code);
+    }
+
+    [Fact]
+    public void TheAsyncExceptionIsTheNavigationHostFileAndTheApprovedCommandContextPatternOnly()
+    {
+        var host = Src.Code(NavigationHostPath);
+
+        Assert.Equal(1, Src.Count(host, @"\basync\b"));
+        Assert.Equal(1, Src.Count(host, @"\bawait\b"));
+        Assert.Matches(@"await\s+[\w.]+\.ExecuteInCommandContextAsync\s*\(", host);
+        var holders = Src.PluginFiles().Concat(Src.ApplicationFiles()).Where(f => Regex.IsMatch(f.Code, @"\basync\b|\bawait\b")).Select(f => f.Path).ToArray();
+        Assert.Equal(new[] { NavigationHostPath }, holders);
+        Assert.DoesNotMatch(new Regex(@"SendStringToExecute|\[CommandMethod|Autodesk\.AutoCAD\.Internal|DllImport|HwndSource"), host);
     }
 
     [Fact]

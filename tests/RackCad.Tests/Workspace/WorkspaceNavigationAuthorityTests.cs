@@ -119,6 +119,10 @@ public class WorkspaceNavigationAuthorityTests
             {
                 "src/RackCad.Application/Workspace/NavigationFacts.cs",
                 "src/RackCad.Application/Workspace/NavigationTargets.cs",
+
+                // I-64 F2-T2A-NAVIGATION-HOST (INV-F2T2A-05, 10): the one adapter that fills the facts, by EXACT FILE. It only
+                // supplies the handles; it classifies nothing and traverses them for nothing.
+                "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
             },
             users);
     }
@@ -136,6 +140,32 @@ public class WorkspaceNavigationAuthorityTests
 
         Assert.Empty(offenders);
         Assert.Contains(Src.AllProduct(), f => f.Path.EndsWith("/NavigationActions.cs") && effectSide.IsMatch(f.Code));
+
+        // I-64 F2-T2A-NAVIGATION-HOST (INV-F2T2A-02, 12): the policy and the effects live in the host, the effects adapter and
+        // the pure runner; none of them names an event-side type, and no event-side file of the Plugin names them.
+        foreach (var path in new[]
+                 {
+                     "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+                     "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs",
+                     "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+                 })
+        {
+            var code = Src.Code(path);
+            Assert.True(effectSide.IsMatch(code), path + " must carry the policy or the effects");
+            Assert.DoesNotMatch(eventSide, code);
+        }
+
+        foreach (var path in new[]
+                 {
+                     "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+                     "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+                     "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs",
+                     "src/RackCad.Plugin/Workspace/WorkspaceHostPort.cs",
+                     "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+                     "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+                     "src/RackCad.Application/Workspace/NavigationEcho.cs",
+                 })
+            Assert.DoesNotMatch(effectSide, Src.Code(path));
         foreach (var name in new[] { "EventBridgeCore.cs", "WorkspaceHostCore.cs", "WorkspaceSession.cs", "Hints.cs", "BridgeSource.cs" })
         {
             Assert.DoesNotMatch(new Regex(@"\bNavigation(Targets|Action\w*|Effects)\b|\bINavigationEffects\b"), Src.Code("src/RackCad.Application/Workspace/" + name));
