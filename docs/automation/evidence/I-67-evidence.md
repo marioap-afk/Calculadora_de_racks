@@ -159,3 +159,48 @@ Violaciones temporales del Freeze, cada una restaurada y verificada por SHA-256 
 `a2af51215f5ccec106c38bdb887cb577b129bc3e`, árbol limpio, SDK 8.0.423. Core Full local 15,490 de 15,490. UI Full local 1,637 ejecutadas y 0 fallos de 1,654 (17 omitidas). Build Debug UI 0 errores y 0 avisos. Build Debug Plugin 0 errores y 2 MSB3277. CI run `42717816630`, push, 4 de 4 jobs en success. Conformidad: NON-CONFORMING por D-01 ([decisiones](../decisions/I-67.md) §9). No se declaró Candidato y su evidencia no se traslada al SHA siguiente.
 
 Marcador del Freeze: `abc5da87` lleva la línea `Freeze: I-67 docs/initiatives/I-67-proposal-v3.md`, en el mismo formato que I-60 y antes del párrafo final de `Co-Authored-By`. El commit `67cb1024` tiene una línea de prosa que empieza por «Freeze:» sin unidad ni ruta; no es un marcador.
+
+## 11. READY
+
+| ID | Resultado |
+|---|---|
+| READY-01 | Alcance congelado completo, sin diferimientos |
+| READY-02 | G1 cerrado; decisiones y documentos de producto versionados |
+| READY-03 | Sin REQUIRED abierto, discrepancia A ni decisión pendiente |
+| READY-04 | `origin/main` = `a140eb3a`, la base: sin rebase ni ruta R |
+| READY-05 | CI exacta verde (§12); las focales corren dentro de Core Full |
+| READY-06 | CONFORMING de Architect y Coordinator sobre `b6b988fb` |
+| READY-07 | Árbol limpio y HEAD identificado al medir |
+| READY-08 | Matriz OV completa en Proposal V3 §9; unidad única |
+| READY-09 | Acuerdo sobre `34faf903` (blob `73758d78`); Freeze `abc5da87` (blob `ba266476`) solo cambia `Frozen`; sin cambios posteriores del artefacto; sin A-n |
+
+## 12. Candidato
+
+```text
+Candidate SHA:        b6b988fb815b233d4e621b7f24d2e94b5800ed96
+Arbol limpio:         SI
+SDK resuelto:         8.0.423
+Core Full local:      PASS (15,490 de 15,490)
+UI Full local:        PASS (1,637 ejecutadas, 0 fallos; 1,654 en total, 17 omitidas)
+Debug UI build:       PASS (0 errores, 0 avisos)
+Debug Plugin build:   PASS (0 errores, 2 MSB3277 conocidos)
+CI exact SHA:         GREEN (run 42719873557, event=push, ref fix/elevaciones-niveles, 4 de 4 jobs success, ui-tests incluido)
+Owner validation:     pending
+Biblioteca de bloques: D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8
+```
+
+Versión de AutoCAD: R25.0.171.0.0. DLL: `src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`, 263,680 bytes, `ProductVersion` `1.0.0+b6b988fb815b233d4e621b7f24d2e94b5800ed96`, SHA-256 `2AEE670FE0D896D5756EADF900FC4015A76569D689BF2850CEAF92966B5A4E52`. Ficha: [I-67-owner-validation-sheet.md](../../initiatives/I-67-owner-validation-sheet.md). La cobertura del Candidato se mide tras el merge (WORKFLOW §4.5.7).
+
+## 13. Métricas
+
+| Métrica | Valor |
+|---|---|
+| Arquetipo inicial / final | EXTENSION / FOUNDATION EVOLUTION (M-03, M-05) |
+| Rondas Discovery / EXP | 1 / EXP-08 positivo acotado |
+| Rondas Architect / modo | 3 de diseño y 2 de conformidad / SAME-SESSION ROLE, subagente de lectura |
+| Gates | F0, G1, READY |
+| Full locales | 2 ejecuciones Core + UI (una por SHA medido) |
+| Intentos de Candidato | 1 declarado; `a2af5121` medido y no declarado |
+| Rojos CI no leídos | 0; los rojos fueron los RED por diseño |
+| Rondas Owner | 1 de decisión (D-LEG, D-PEND); OV pendiente |
+| Duración activa del Owner | UNKNOWN |
