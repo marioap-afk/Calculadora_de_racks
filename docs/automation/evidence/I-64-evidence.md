@@ -5790,3 +5790,23 @@ revisar:
 - Sin nc1, nc2 ni nc3: README §10 los reserva a una verificación VERIFIED.
 - Sin segundo Worker, sin aplicar el parche, sin F2-T2B, sin AutoCAD.
 - Este commit documental queda sobre el RED: su CI tendrá el job Core en failure por las mismas pruebas RED.
+
+## 92. F2-T2A-NAVIGATION-HOST: intento 1 cerrado como REWORK; paquete de corrección del intento 2 (attempts = 2)
+
+**CI de §91:** corrida `42678518215` (push, SHA exacto `d324e905`): Tests (Domain + Application) failure, Build UI success, UI Tests success, Build Plugin without AutoCAD skipped. Sus fallos de Core son exactamente los 46 del RED de `4fcea652` (mismo conjunto, 15 147 resultados). No es 4/4 porque el RED está en la rama: esperado.
+
+**Disposición del Coordinator** (`I-64-pilot/F2-T2A-NAVIGATION-HOST/coordinator/coordinator-f2t2a-attempt2-rework-authorization.md`, SHA-256 `ADEA41C2…`):
+- Intento 1 CERRADO COMO REWORK; el RED `4fcea652` es evidencia válida; sin nc1, nc2 ni nc3.
+- Intento 2 AUTORIZADO: `attempts` = 2 de 3; este commit es la nueva `BaseSha`.
+- Una planificación del Controller con `CorrectionOf` `R20261109T184844Z-3f3e` y `FailureClass` `Ci`, mismo contrato y aclaraciones.
+- A1-A8 sí; **nc4 no se repite** (README §10: solo en la primera delegación de la cadena; satisfecho por `R20261109T175144Z-6a04`).
+- Worker `claude-sonnet-5-5`/high **preautorizado** si se cumplen 20 condiciones; una sola invocación; sin commits de la sesión entre la planificación y el Worker.
+- Si la verificación es VERIFIED: controles negativos normales. Si es REWORK: vuelta al Coordinator, sin consumir el intento 3.
+
+**`analysis.md`** (`I-64-pilot/F2-T2A-NAVIGATION-HOST/1/R20261109T184844Z-3f3e/analysis.md`, SHA-256 `BC1F83B2…`): resultado del intento 1, `FailureClass` `Ci`, aserción RED imposible, corrección exacta, procedencia del parche y F2T2A-KL-01.
+
+**Hecho medido para F2T2A-KL-01:** ninguna prueba existente cubre `ProbedId = null` en un miembro ilegible (en `WorkspaceNavigationTargetsTests.cs` todos los ilegibles llevan un `ProbedId` no nulo). La disposición anterior exige que las pruebas lo demuestren; irá en el RED nuevo, en `WorkspaceNavigationHostTests.cs` (archivo permitido).
+
+**Criterio de este commit, fijado por el Coordinator:** no se exige 4/4; se comprueba que es solo documentación, evidencia y estado, que el conjunto de fallos de Core sigue siendo el del RED del intento 1, que no aparece ningún fallo nuevo de UI, y que HEAD = remoto con el árbol limpio.
+
+**Límites:** sin cambios en `src/` ni `tests/`; parche sin aplicar; sin Worker todavía; F2-T2B en espera; sin AutoCAD.

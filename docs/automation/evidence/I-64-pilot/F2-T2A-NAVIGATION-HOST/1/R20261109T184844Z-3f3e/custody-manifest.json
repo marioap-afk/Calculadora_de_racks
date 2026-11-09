@@ -4,10 +4,16 @@
   "SourceRoot": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/1/R20261109T184844Z-3f3e",
   "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
   "Counts": {
-    "CUSTODIED": 13,
+    "CUSTODIED": 14,
     "EXCLUDED": 13
   },
   "Files": [
+    {
+      "Path": "analysis.md",
+      "Bytes": 5854,
+      "Sha256": "bc1f83b261aa58f04e1d43b568c12ff6c2ba1a9d92c79ac44cab6187cdccec32",
+      "Disposition": "CUSTODIED"
+    },
     {
       "Path": "cession-end.txt",
       "Bytes": 21,

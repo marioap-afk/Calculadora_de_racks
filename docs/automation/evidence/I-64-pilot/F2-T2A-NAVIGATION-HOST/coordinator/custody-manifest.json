@@ -4,7 +4,7 @@
   "SourceRoot": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/coordinator",
   "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
   "Counts": {
-    "CUSTODIED": 9,
+    "CUSTODIED": 10,
     "EXCLUDED": 0
   },
   "Files": [
@@ -24,6 +24,12 @@
       "Path": "coordinator-f2t2a-acceptance.md",
       "Bytes": 5388,
       "Sha256": "01e48bc0b103de7f319dbdb92c1219e0ace78e5cf8a0a8de16674a0f362dcd24",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-attempt2-rework-authorization.md",
+      "Bytes": 6256,
+      "Sha256": "adea41c240ea3b0d3852d2172faa087c7e9443e92fad624de51a4097ce1fc49a",
       "Disposition": "CUSTODIED"
     },
     {
