@@ -7,8 +7,8 @@ status: claimed
 workflow: V2
 conceptual_initiative: I-67
 delivery_unit: I-67
-archetype: EXTENSION
-materiality: []
+archetype: FOUNDATION EVOLUTION
+materiality: [M-03, M-05]
 branch: fix/elevaciones-niveles
 base_branch: main
 priority: high
@@ -18,21 +18,21 @@ conflicts_with: []
 hot_files: []
 coordination_strategy: unidad unica; se comprueba la interseccion con las ramas activas en cada reentrada (DC-07)
 context_packs: [system-dynamic-flowbed, persistence]
-consumes: []
+consumes: [RackFirstLevelDatum, autoridad vertical de Push Back]
 extends: []
 introduces: []
 discovery_ref: docs/automation/evidence/I-67-evidence.md
-freeze_ref: docs/initiatives/I-67-freeze.md
+freeze_ref: docs/initiatives/I-67-proposal-v1.md
 freeze_delta_ref:
 amendment_refs: []
-ov_assignment_ref: docs/initiatives/I-67-freeze.md
+ov_assignment_ref: docs/initiatives/I-67-proposal-v1.md
 decision_refs: [docs/automation/decisions/I-67.md]
 evidence_ref: docs/automation/evidence/I-67-evidence.md
 automation_state_path:
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision: true
+requires_owner_decision: false
 requires_owner_validation: true
 automation:
   enabled: false
@@ -48,7 +48,7 @@ Unit: `I-67`. Rama: `fix/elevaciones-niveles`. Autorización: orden directa del 
 ## 1. Identidad y agrupación
 
 Iniciativa conceptual y unidad de entrega únicas: un defecto observable, un resultado verificable. Arquetipo inicial
-**EXTENSION**, fijado por el Owner como punto de partida; Discovery lo confirma o lo eleva (LIFECYCLE §3).
+**EXTENSION**, fijado por el Owner como punto de partida; Discovery lo eleva a **FOUNDATION EVOLUTION** por M-03 y M-05 (LIFECYCLE §3).
 
 ## 2. Objetivo
 
@@ -63,7 +63,7 @@ hasta que Discovery lo confirme contra `origin/main`.
 
 ## 4. Alcance y no-objetivos
 
-La autoridad de alcance, invariantes, no-objetivos y matriz OV es el [Freeze](I-67-freeze.md). No-objetivos fijados por
+La autoridad de alcance, invariantes, no-objetivos y matriz OV es el [Freeze](I-67-proposal-v1.md). No-objetivos fijados por
 el Owner: rediseño general de Dinámico o Push Back, representación de tarimas, opciones nuevas de UI, reglas nuevas de
 pendiente, Dynamic Rebuild Robustness, cambios estructurales/RAM, Workspace/ID30, migraciones de persistencia no
 justificadas y refactors oportunistas.
@@ -71,15 +71,15 @@ justificadas y refactors oportunistas.
 ## 5. Fundaciones y evolución
 
 ```text
-Consumes: se fija en Discovery (DC-08)
-Extends: se fija en Discovery (DC-08)
-Introduces: se fija en Discovery (DC-08)
+Consumes: RackFirstLevelDatum (ADR-0031); autoridad vertical de Push Back (ADR-0031 §9)
+Extends: ninguno
+Introduces: ninguno
 ```
 
 ## 6. Discovery, decisiones y Freeze
 
 - Discovery: [evidencia](../automation/evidence/I-67-evidence.md)
-- Freeze: [I-67-freeze.md](I-67-freeze.md)
+- Freeze: [I-67-proposal-v1.md](I-67-proposal-v1.md)
 - Freeze delta: no aplica
 - A-n: ninguna
 - Decisiones: [decisions/I-67.md](../automation/decisions/I-67.md)
@@ -96,7 +96,7 @@ demuestra que el cambio es menor.
 
 ## 9. Owner Validation
 
-- Asignación OV: [Freeze](I-67-freeze.md)
+- Asignación OV: [Freeze](I-67-proposal-v1.md)
 - Requiere AutoCAD: sí, cambia comportamiento de dibujo.
 - Requiere Owner Validation: sí, cambia comportamiento de dibujo.
 
