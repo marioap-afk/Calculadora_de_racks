@@ -1,6 +1,6 @@
 # I-67 — Proposal V3: elevaciones de niveles en Dinámico y Push Back (H58)
 
-Frozen: NO
+Frozen: YES
 
 Unit: `I-67`. Workflow: V2. Archetype: FOUNDATION EVOLUTION (M-03, M-05; eleva el EXTENSION inicial). Rama `fix/elevaciones-niveles`, base `a140eb3a`.
 Discovery: [evidencia](../automation/evidence/I-67-evidence.md). Contrato: [I-67-elevaciones-niveles.md](I-67-elevaciones-niveles.md). Decisiones del Owner: [decisions/I-67.md](../automation/decisions/I-67.md) §6.
