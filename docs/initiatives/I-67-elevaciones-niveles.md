@@ -22,10 +22,10 @@ consumes: [RackFirstLevelDatum, autoridad vertical de Push Back]
 extends: []
 introduces: []
 discovery_ref: docs/automation/evidence/I-67-evidence.md
-freeze_ref: docs/initiatives/I-67-proposal-v1.md
+freeze_ref: docs/initiatives/I-67-proposal-v2.md
 freeze_delta_ref:
 amendment_refs: []
-ov_assignment_ref: docs/initiatives/I-67-proposal-v1.md
+ov_assignment_ref: docs/initiatives/I-67-proposal-v2.md
 decision_refs: [docs/automation/decisions/I-67.md]
 evidence_ref: docs/automation/evidence/I-67-evidence.md
 automation_state_path:
@@ -63,7 +63,7 @@ hasta que Discovery lo confirme contra `origin/main`.
 
 ## 4. Alcance y no-objetivos
 
-La autoridad de alcance, invariantes, no-objetivos y matriz OV es el [Freeze](I-67-proposal-v1.md). No-objetivos fijados por
+La autoridad de alcance, invariantes, no-objetivos y matriz OV es el [Freeze](I-67-proposal-v2.md). No-objetivos fijados por
 el Owner: rediseño general de Dinámico o Push Back, representación de tarimas, opciones nuevas de UI, reglas nuevas de
 pendiente, Dynamic Rebuild Robustness, cambios estructurales/RAM, Workspace/ID30, migraciones de persistencia no
 justificadas y refactors oportunistas.
@@ -79,7 +79,7 @@ Introduces: ninguno
 ## 6. Discovery, decisiones y Freeze
 
 - Discovery: [evidencia](../automation/evidence/I-67-evidence.md)
-- Freeze: [I-67-proposal-v1.md](I-67-proposal-v1.md)
+- Freeze: [I-67-proposal-v2.md](I-67-proposal-v2.md)
 - Freeze delta: no aplica
 - A-n: ninguna
 - Decisiones: [decisions/I-67.md](../automation/decisions/I-67.md)
@@ -96,7 +96,7 @@ demuestra que el cambio es menor.
 
 ## 9. Owner Validation
 
-- Asignación OV: [Freeze](I-67-proposal-v1.md)
+- Asignación OV: [Freeze](I-67-proposal-v2.md)
 - Requiere AutoCAD: sí, cambia comportamiento de dibujo.
 - Requiere Owner Validation: sí, cambia comportamiento de dibujo.
 

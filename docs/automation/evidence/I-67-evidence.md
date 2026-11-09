@@ -75,7 +75,7 @@ Ningún archivo caliente de WORKFLOW §7 interviene.
 | M-04 | no activado | no cambia qué falla ni cómo |
 | **M-05** | **activado** | la salida de `ResolveLevels` la consumen Dinámico y Push Back |
 | M-06, M-07 | no activados | sin puntos de extensión ni mecanismo genérico |
-| M-08 | depende de la decisión sobre la entrada (§6) | ADR-0031 limita «ningún archivo se mueve» a la introducción del datum. Si la entrada del nivel 1 se mueve, la premisa «el primer nivel no cambia» es falsa (Architect R-03) y cuenta como UNKNOWN |
+| M-08 | no activado | ADR-0031 gobierna el primer nivel y, con la decisión D-PEND del Owner, ni su salida ni su entrada cambian (la premisa de V1 era falsa: Architect R-03) |
 
 **Arquetipo propuesto: FOUNDATION EVOLUTION** (M-03, M-05). Eleva el EXTENSION inicial y obliga a una revisión adversarial del Architect.
 **ADR: no requerido**: ninguno de los cuatro criterios de `docs/adr/README.md` aplica (regla local de una función, barata de revertir, sin formato ni contrato nuevos).
@@ -118,6 +118,8 @@ Error medio de la subida frente a la nominal, primer nivel 6": histórico 0.708"
 Caso H58 (6", tarima 33", 4 niveles, 4 fondos, nominal 7.4375"): salidas 6.6053 / 52.6053 / 98.6053 / 144.6053 en ambas; subidas 8/8/8/8 («más cercano») o 6/6/6/6 («nivel 1»), frente a 6/8/6/8 hoy. La cabecera automática pasa de 168" a 180" en ambas.
 
 Caso sin defecto (12", tarima 60", 2 niveles, 4 fondos): salidas iguales; la cabecera pasa de 120" a 132" solo con «más cercano».
+
+Con la opción elegida por el Owner («subida del nivel 1»), sobre 36,720 casos (primer nivel 3..12", tarima 30..72" en medias pulgadas, 2..7 niveles, 2..10 fondos): la cabecera sube en 7,910, no baja en ninguno y queda igual en 28,810; ninguna salida ni entrada baja; la mayor subida de una salida es 10".
 
 ## 7. Revisión del Architect, ronda 1
 
