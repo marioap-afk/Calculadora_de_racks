@@ -96,7 +96,10 @@ public class WorkspaceModelBoundaryTests
         var types = typeof(WorkspaceSession).Assembly.GetTypes()
             .Where(t => t.Namespace == "RackCad.Application.Workspace").ToList();
         Assert.Contains(types, t => t == typeof(WorkspaceSession));
-        Assert.DoesNotContain(types, t => Regex.IsMatch(t.Name, "Tab|Subscription|Editor|Draft", RegexOptions.IgnoreCase));
+        // I-64 F3-T1-BROWSER-CORE (INV-F3T1-15): only the exact names BrowserTabRecord and BrowserTabStatus are exempt from the Tab part.
+        // Subscription, Editor and Draft stay forbidden for every type, those two included.
+        Assert.DoesNotContain(types, t => Regex.IsMatch(t.Name, "Subscription|Editor|Draft", RegexOptions.IgnoreCase));
+        Assert.DoesNotContain(types, t => t.Name != "BrowserTabRecord" && t.Name != "BrowserTabStatus" && Regex.IsMatch(t.Name, "Tab", RegexOptions.IgnoreCase));
         foreach (var p in typeof(WorkspaceSession).GetProperties())
             Assert.DoesNotMatch(new Regex("Tab|Subscription|Draft|Handler", RegexOptions.IgnoreCase), p.Name);
     }
