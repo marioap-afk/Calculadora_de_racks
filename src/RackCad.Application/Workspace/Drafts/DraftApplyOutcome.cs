@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RackCad.Application.Workspace.Drafts
 {
@@ -68,7 +69,8 @@ namespace RackCad.Application.Workspace.Drafts
         public static DraftApplyOutcome<TState> NotAppliedConflict(IReadOnlyList<DraftDifference> differences)
         {
             if (differences == null) throw new ArgumentNullException(nameof(differences));
-            return new(DraftApplyOutcomeKind.NotAppliedConflict, null, differences, Array.Empty<string>(), null);
+            // A copy taken on receipt: changing the caller's list afterwards changes nothing here.
+            return new(DraftApplyOutcomeKind.NotAppliedConflict, null, differences.ToArray(), Array.Empty<string>(), null);
         }
 
         public static DraftApplyOutcome<TState> NotAppliedAdmission(string cause) => WithCause(DraftApplyOutcomeKind.NotAppliedAdmission, cause);
@@ -92,7 +94,8 @@ namespace RackCad.Application.Workspace.Drafts
         {
             if (postRead == null) throw new ArgumentNullException(nameof(postRead));
             if (warnings == null) throw new ArgumentNullException(nameof(warnings));
-            return new(DraftApplyOutcomeKind.AppliedWithWarnings, null, Array.Empty<DraftDifference>(), warnings, postRead);
+            // A copy taken on receipt: changing the caller's list afterwards changes nothing here.
+            return new(DraftApplyOutcomeKind.AppliedWithWarnings, null, Array.Empty<DraftDifference>(), warnings.ToArray(), postRead);
         }
 
         private static DraftApplyOutcome<TState> WithCause(DraftApplyOutcomeKind kind, string cause)
@@ -127,11 +130,18 @@ namespace RackCad.Application.Workspace.Drafts
         internal static DraftApplyStart Refused(DraftStatus previous, DraftApplyRefusal refusal) => new(false, previous, refusal);
     }
 
-    /// <summary>What CompleteApply did: the effective kind, the status afterwards and whether the draft was rebased.</summary>
-    public readonly record struct DraftApplyResult(bool Accepted, DraftApplyOutcomeKind Kind, DraftStatus Status, bool Rebased, bool DraftWasRegistered = true)
+    /// <summary>
+    /// What CompleteApply did: whether the outcome was accepted, the effective kind, the status afterwards, whether the
+    /// draft was rebased and whether the draft was still registered. An outcome is accepted (and frees the Applying slot)
+    /// even for a draft that was discarded or whose session was retired meanwhile: then <see cref="DraftWasRegistered"/>
+    /// is false and nothing else changed.
+    /// </summary>
+    public readonly record struct DraftApplyResult(bool Accepted, DraftApplyOutcomeKind Kind, DraftStatus Status, bool Rebased, bool DraftWasRegistered)
     {
-        internal static DraftApplyResult Closed(DraftApplyOutcomeKind kind, DraftStatus status, bool rebased) => new(true, kind, status, rebased);
+        internal static DraftApplyResult Closed(DraftApplyOutcomeKind kind, DraftStatus status, bool rebased) => new(true, kind, status, rebased, true);
 
-        internal static DraftApplyResult NotApplying(DraftStatus status, DraftApplyOutcomeKind kind) => new(false, kind, status, false);
+        internal static DraftApplyResult ClosedDetached(DraftApplyOutcomeKind kind, DraftStatus status) => new(true, kind, status, false, false);
+
+        internal static DraftApplyResult NotApplying(DraftStatus status, DraftApplyOutcomeKind kind) => new(false, kind, status, false, true);
     }
 }

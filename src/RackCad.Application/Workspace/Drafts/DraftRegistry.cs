@@ -85,12 +85,16 @@ namespace RackCad.Application.Workspace.Drafts
         /// The only way a draft is born (INV-F4T1-03): from the result of ONE read of the edit intention that brings the
         /// stale base, the admission and the initial state together. A read that is not admitted creates nothing.
         /// </summary>
-        // RED skeleton of the correction: the copier is accepted and not used yet.
+        /// <remarks>
+        /// <paramref name="copy"/> is injected next to the comparer: the current state of the draft is always a copy of the
+        /// initial one, so an in-place edit of the current state can never change the initial state (INV-F4T1-19).
+        /// </remarks>
         public DraftBeginResult<TState> Begin<TState>(SessionId session, string rackId, DraftIntentRead<TState> read, IEqualityComparer<TState> comparer, Func<TState, TState> copy)
         {
             if (string.IsNullOrEmpty(rackId)) throw new ArgumentException("A rack id is required.", nameof(rackId));
             if (read == null) throw new ArgumentNullException(nameof(read));
             if (comparer == null) throw new ArgumentNullException(nameof(comparer));
+            if (copy == null) throw new ArgumentNullException(nameof(copy));
 
             if (_retired.Contains(session))
                 return new DraftBeginResult<TState>(DraftBeginStatus.SessionRetired, null, read.Admission);
@@ -106,7 +110,7 @@ namespace RackCad.Application.Workspace.Drafts
                 _bySession[session] = racks;
             }
 
-            var draft = new DraftSession<TState>(this, session, rackId, read.StaleBase!, read.InitialState!, comparer);
+            var draft = new DraftSession<TState>(this, session, rackId, read.StaleBase!, read.InitialState!, comparer, copy);
             racks[rackId] = draft;
             return new DraftBeginResult<TState>(DraftBeginStatus.Created, draft, read.Admission);
         }
@@ -178,11 +182,16 @@ namespace RackCad.Application.Workspace.Drafts
         /// </summary>
         public DraftLossNotice RetireSession(SessionId session)
         {
-            _retired.Add(session);
             if (!_bySession.TryGetValue(session, out var racks))
+            {
+                _retired.Add(session);
                 return new DraftLossNotice(session, Array.Empty<string>());
+            }
 
+            // The loss list is computed first: if the injected comparer throws, nothing was changed and the session is not
+            // left half retired.
             var lost = racks.Values.Where(e => e.IsDirty || e.HasPendingText).Select(e => e.RackId).OrderBy(k => k, StringComparer.Ordinal).ToArray();
+            _retired.Add(session);
             _bySession.Remove(session);
             foreach (var entry in racks.Values) entry.Detach();
             return new DraftLossNotice(session, lost);
@@ -197,6 +206,7 @@ namespace RackCad.Application.Workspace.Drafts
             return true;
         }
 
+        // The slot belongs to the operation, not to the registration of the draft: discarding or retiring never frees it.
         internal void ReleaseApplySlot(IDraftEntry entry)
         {
             if (ReferenceEquals(_applying, entry)) _applying = null;

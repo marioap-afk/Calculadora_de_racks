@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace RackCad.Application.Workspace.Drafts
 {
@@ -222,21 +223,34 @@ namespace RackCad.Application.Workspace.Drafts
     /// </summary>
     public sealed class DraftSession<TState> : IDraftEntry
     {
+        private readonly DraftRegistry _registry;
         private readonly IEqualityComparer<TState> _comparer;
+        private readonly Func<TState, TState> _copy;
         private readonly SortedDictionary<string, string> _pending = new(StringComparer.Ordinal);
-        private DraftRegistry? _owner;
+        private bool _registered;
+        private bool _holdsApplySlot;
+        private string? _deferredErrorReason;
         private DraftStatus? _explicitStatus;
         private DraftStatus _statusBeforeAttempt;
 
-        internal DraftSession(DraftRegistry owner, SessionId session, string rackId, DraftStaleBase staleBase, TState initialState, IEqualityComparer<TState> comparer)
+        internal DraftSession(
+            DraftRegistry registry,
+            SessionId session,
+            string rackId,
+            DraftStaleBase staleBase,
+            TState initialState,
+            IEqualityComparer<TState> comparer,
+            Func<TState, TState> copy)
         {
-            _owner = owner;
+            _registry = registry;
+            _registered = true;
             Session = session;
             RackId = rackId;
             StaleBase = staleBase;
-            InitialDraftState = initialState;
-            CurrentDraftState = initialState;
             _comparer = comparer;
+            _copy = copy;
+            InitialDraftState = initialState;
+            CurrentDraftState = _copy(initialState);
         }
 
         public SessionId Session { get; }
@@ -249,8 +263,11 @@ namespace RackCad.Application.Workspace.Drafts
 
         public TState CurrentDraftState { get; private set; }
 
-        /// <summary>The pending text by field key, kept exactly as given. A snapshot ordered by key (ordinal).</summary>
-        public IReadOnlyDictionary<string, string> PendingText => new Dictionary<string, string>(_pending, StringComparer.Ordinal);
+        /// <summary>
+        /// The pending text by field key, kept exactly as given. A snapshot whose enumeration is ordered by key (ordinal):
+        /// the order is guaranteed by the sorted dictionary behind the read-only view that is exposed.
+        /// </summary>
+        public IReadOnlyDictionary<string, string> PendingText => PendingSnapshot();
 
         public bool HasPendingText => _pending.Count > 0;
 
@@ -263,11 +280,12 @@ namespace RackCad.Application.Workspace.Drafts
         public bool IsPossiblyStale { get; private set; }
 
         /// <summary>True only for a Clean, marked draft: it reloads lazily when it is activated (O-01).</summary>
-        public bool NeedsLazyReload => IsPossiblyStale && Status == DraftStatus.Clean;
+        public bool NeedsLazyReload => _registered && IsPossiblyStale && Status == DraftStatus.Clean;
 
         /// <summary>False once the draft was discarded or its session retired.</summary>
-        public bool IsRegistered => _owner != null;
+        public bool IsRegistered => _registered;
 
+        /// <summary>Not null if and only if the draft is Unknown.</summary>
         public DraftUnknownOrigin? UnknownOrigin { get; private set; }
 
         /// <summary>What changed, when the draft is in Conflict.</summary>
@@ -281,18 +299,29 @@ namespace RackCad.Application.Workspace.Drafts
 
         public string? ErrorReason { get; private set; }
 
-        // RED skeleton of the correction: nothing is recorded yet.
-        public string? DeferredErrorReason => null;
+        /// <summary>
+        /// The reason recorded by EnterError while an Update was in progress. It is applied when CompleteApply closes that
+        /// Update (after the D-13 classification); null otherwise.
+        /// </summary>
+        public string? DeferredErrorReason => _deferredErrorReason;
 
-        private bool CanEdit => _owner != null
+        private bool CanEdit => _registered
             && (_explicitStatus == null || _explicitStatus == DraftStatus.Conflict);
+
+        // ---------------------------------------------------------------- the two states never share an object
+
+        private TState SeparatedFromInitial(TState state) =>
+            ReferenceEquals(state, InitialDraftState) ? _copy(state) : state;
+
+        private IReadOnlyDictionary<string, string> PendingSnapshot() =>
+            new ReadOnlyDictionary<string, string>(new SortedDictionary<string, string>(_pending, StringComparer.Ordinal));
 
         // ---------------------------------------------------------------- edits
 
         public DraftEditResult SetCurrentDraftState(TState state)
         {
             if (!CanEdit) return new DraftEditResult(DraftEditStatus.NotEditable, IsDirty);
-            CurrentDraftState = state;
+            CurrentDraftState = SeparatedFromInitial(state);
             return new DraftEditResult(DraftEditStatus.Updated, IsDirty);
         }
 
@@ -332,7 +361,7 @@ namespace RackCad.Application.Workspace.Drafts
             if (!CanEdit)
                 return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Kept, false, none);
 
-            var snapshot = new Dictionary<string, string>(_pending, StringComparer.Ordinal);
+            var snapshot = PendingSnapshot();
             var invalid = new List<DraftInvalidField>();
             foreach (var pair in _pending)
             {
@@ -344,7 +373,7 @@ namespace RackCad.Application.Workspace.Drafts
                 return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Aborted, false, invalid.ToArray());
 
             var next = adapter.Apply(CurrentDraftState, snapshot);
-            CurrentDraftState = next;
+            CurrentDraftState = SeparatedFromInitial(next);
             _pending.Clear();
             return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Proceeded, true, none);
         }
@@ -353,7 +382,7 @@ namespace RackCad.Application.Workspace.Drafts
 
         public DraftMarkResult MarkPossiblyStale()
         {
-            if (_owner == null) return DraftMarkResult.NotRegistered;
+            if (!_registered) return DraftMarkResult.NotRegistered;
             if (IsPossiblyStale) return DraftMarkResult.AlreadyMarked;
             IsPossiblyStale = true;
             return DraftMarkResult.Marked;
@@ -368,13 +397,13 @@ namespace RackCad.Application.Workspace.Drafts
         public DraftReloadResult DiscardAndReload(DraftIntentRead<TState> read)
         {
             if (read == null) throw new ArgumentNullException(nameof(read));
-            if (_owner == null || _explicitStatus == DraftStatus.Applying)
+            if (!_registered || _explicitStatus == DraftStatus.Applying)
                 return new DraftReloadResult(DraftReloadStatus.NotAllowed, read.Admission);
             if (!read.IsAdmitted)
                 return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
 
             Rebase(read);
-            CurrentDraftState = InitialDraftState;
+            CurrentDraftState = _copy(InitialDraftState);
             _pending.Clear();
             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
         }
@@ -387,7 +416,7 @@ namespace RackCad.Application.Workspace.Drafts
         {
             if (read == null) throw new ArgumentNullException(nameof(read));
             var status = Status;
-            if (_owner == null || (status != DraftStatus.Dirty && status != DraftStatus.Conflict))
+            if (!_registered || (status != DraftStatus.Dirty && status != DraftStatus.Conflict))
                 return new DraftReloadResult(DraftReloadStatus.NotAllowed, read.Admission);
             if (!confirmed)
                 return new DraftReloadResult(DraftReloadStatus.NotConfirmed, read.Admission);
@@ -395,6 +424,7 @@ namespace RackCad.Application.Workspace.Drafts
                 return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
 
             Rebase(read);
+            CurrentDraftState = SeparatedFromInitial(CurrentDraftState);
             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
         }
 
@@ -411,39 +441,64 @@ namespace RackCad.Application.Workspace.Drafts
             ErrorReason = null;
         }
 
+
         // ---------------------------------------------------------------- Update as a state machine
 
         /// <summary>
         /// Starts an Update. Only from Clean, or from Dirty without pending text, and only when no other Update is in
-        /// progress in the whole registry. It reports the previous status.
+        /// progress in the whole registry. It reports the previous status. The single Applying slot of the registry is
+        /// taken here and belongs to this operation: only <see cref="CompleteApply"/> frees it.
         /// </summary>
         public DraftApplyStart TryBeginApply()
         {
             var previous = Status;
-            if (_owner == null) return DraftApplyStart.Refused(previous, DraftApplyRefusal.NotRegistered);
+            if (!_registered) return DraftApplyStart.Refused(previous, DraftApplyRefusal.NotRegistered);
             if (previous != DraftStatus.Clean && previous != DraftStatus.Dirty)
                 return DraftApplyStart.Refused(previous, DraftApplyRefusal.InvalidStatus);
             if (_pending.Count > 0) return DraftApplyStart.Refused(previous, DraftApplyRefusal.PendingText);
-            if (!_owner.TryAcquireApplySlot(this)) return DraftApplyStart.Refused(previous, DraftApplyRefusal.AnotherUpdateInProgress);
+            if (!_registry.TryAcquireApplySlot(this)) return DraftApplyStart.Refused(previous, DraftApplyRefusal.AnotherUpdateInProgress);
 
+            _holdsApplySlot = true;
+            _deferredErrorReason = null;
             _statusBeforeAttempt = previous;
             _explicitStatus = DraftStatus.Applying;
             LastApplyCause = null;
+            Warnings = Array.Empty<string>();
             return DraftApplyStart.Started(previous);
         }
 
         /// <summary>
         /// Closes the Update that is in progress with its outcome (D-13 table). Nothing is ever assumed applied: only the
-        /// re-read of POST rebases the draft and leaves it Clean.
+        /// re-read of POST rebases the draft and leaves it Clean. The outcome is accepted even if the draft was discarded or
+        /// its session retired in the meantime: the slot is freed, nothing else changes and the result says so.
         /// </summary>
         public DraftApplyResult CompleteApply(DraftApplyOutcome<TState> outcome)
         {
             if (outcome == null) throw new ArgumentNullException(nameof(outcome));
-            if (_owner == null || _explicitStatus != DraftStatus.Applying)
+            if (!_holdsApplySlot)
                 return DraftApplyResult.NotApplying(Status, outcome.Kind);
 
-            _owner.ReleaseApplySlot(this);
+            _holdsApplySlot = false;
+            _registry.ReleaseApplySlot(this);
+            if (!_registered)
+                return DraftApplyResult.ClosedDetached(outcome.Kind, Status);
+
             _explicitStatus = null;
+            var result = Classify(outcome);
+            var deferred = _deferredErrorReason;
+            if (deferred == null) return result;
+
+            // EnterError arrived while the Update was in flight: the D-13 classification came first, now the draft goes to Error
+            // keeping whatever resulted (current state, pending text and stale base).
+            _deferredErrorReason = null;
+            _explicitStatus = DraftStatus.Error;
+            ErrorReason = deferred;
+            UnknownOrigin = null;
+            return DraftApplyResult.Closed(result.Kind, Status, result.Rebased);
+        }
+
+        private DraftApplyResult Classify(DraftApplyOutcome<TState> outcome)
+        {
             switch (outcome.Kind)
             {
                 case DraftApplyOutcomeKind.NotAppliedConflict:
@@ -478,7 +533,7 @@ namespace RackCad.Application.Workspace.Drafts
                     }
 
                     Rebase(read);
-                    CurrentDraftState = InitialDraftState;
+                    CurrentDraftState = _copy(InitialDraftState);
                     _pending.Clear();
                     if (outcome.Kind == DraftApplyOutcomeKind.AppliedWithWarnings) Warnings = outcome.Warnings;
                     return DraftApplyResult.Closed(outcome.Kind, Status, true);
@@ -499,7 +554,7 @@ namespace RackCad.Application.Workspace.Drafts
         public DraftCheckResult CheckNow(DraftStaleBase reread)
         {
             if (reread == null) throw new ArgumentNullException(nameof(reread));
-            if (_owner == null || _explicitStatus != DraftStatus.Unknown || UnknownOrigin != DraftUnknownOrigin.CommitThrew)
+            if (!_registered || _explicitStatus != DraftStatus.Unknown || UnknownOrigin != DraftUnknownOrigin.CommitThrew)
                 return new DraftCheckResult(DraftCheckStatus.NotApplicable, Status, Array.Empty<DraftDifference>());
 
             var comparison = StaleBase.CompareWith(reread);
@@ -523,30 +578,35 @@ namespace RackCad.Application.Workspace.Drafts
 
         /// <summary>
         /// Puts the draft in Error keeping the current state, the pending text and the stale base. It leaves Error only
-        /// through DiscardAndReload or Discard.
+        /// through DiscardAndReload or Discard. While an Update is in progress it changes neither the status nor the slot: the
+        /// reason is recorded and applied when CompleteApply closes that Update.
         /// </summary>
         public DraftTransition EnterError(string reason)
         {
             if (string.IsNullOrEmpty(reason)) throw new ArgumentException("A reason is required.", nameof(reason));
             var from = Status;
-            if (_owner == null) return new DraftTransition(from, from);
-            if (_explicitStatus == DraftStatus.Applying) _owner.ReleaseApplySlot(this);
+            if (!_registered) return new DraftTransition(from, from);
+            if (_explicitStatus == DraftStatus.Applying)
+            {
+                _deferredErrorReason = reason;
+                return new DraftTransition(from, from);
+            }
+
             _explicitStatus = DraftStatus.Error;
             ErrorReason = reason;
+            UnknownOrigin = null;
             return new DraftTransition(from, DraftStatus.Error);
         }
 
         // ---------------------------------------------------------------- registry plumbing
 
+        /// <summary>
+        /// Unregisters the draft. It never frees the Applying slot: that belongs to the operation in flight and only
+        /// CompleteApply releases it.
+        /// </summary>
         void IDraftEntry.Detach()
         {
-            if (_owner != null && _explicitStatus == DraftStatus.Applying)
-            {
-                _owner.ReleaseApplySlot(this);
-                _explicitStatus = null;
-            }
-
-            _owner = null;
+            _registered = false;
         }
     }
 }

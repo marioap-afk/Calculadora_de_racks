@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RackCad.Application.Workspace.Drafts
 {
@@ -58,53 +59,84 @@ namespace RackCad.Application.Workspace.Drafts
         private static readonly DraftStaleBaseEntry NoEntry = new(string.Empty, DraftMembership.NotMember, null, null, null);
 
         private readonly Dictionary<string, DraftStaleBaseEntry> _entries;
+        private readonly HashSet<string> _ambiguous;
         private readonly ReadOnlyDictionary<string, DraftStaleBaseEntry> _view;
 
-        private DraftStaleBase(Dictionary<string, DraftStaleBaseEntry> entries, string? variableRegistryText)
+        private DraftStaleBase(Dictionary<string, DraftStaleBaseEntry> entries, HashSet<string> ambiguous, string? variableRegistryText)
         {
             _entries = entries;
+            _ambiguous = ambiguous;
             _view = new ReadOnlyDictionary<string, DraftStaleBaseEntry>(entries);
             VariableRegistryText = variableRegistryText;
         }
 
         /// <summary>
-        /// Builds a base. A NotMember entry is dropped (absent equals NotMember and its text is never kept); the envelope
-        /// text is kept exactly as given for the other memberships; a repeated key keeps the last entry.
+        /// Builds a base; the result never depends on the order of the entries. A NotMember entry is dropped (absent equals
+        /// NotMember) and its text is never kept; the envelope text is kept exactly as given only for Mutable and ReadOnly
+        /// (a Blocking envelope is not interpretable, so its text is not kept either). A key repeated with the same facts is
+        /// one entry; a key repeated with different facts (attribution, View, Section or envelope text) is AMBIGUOUS: it
+        /// never matches, in either direction of the comparison, and nothing throws.
         /// </summary>
         public static DraftStaleBase Create(IEnumerable<DraftStaleBaseEntry> entries, string? variableRegistryText = null)
         {
             if (entries == null) throw new ArgumentNullException(nameof(entries));
             var kept = new Dictionary<string, DraftStaleBaseEntry>(StringComparer.Ordinal);
-            foreach (var entry in entries)
+            var ambiguous = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var raw in entries)
             {
-                if (string.IsNullOrEmpty(entry.Key)) throw new ArgumentException("A definition key is required.", nameof(entries));
-                if (entry.Membership == DraftMembership.NotMember) kept.Remove(entry.Key);
-                else kept[entry.Key] = entry;
+                if (string.IsNullOrEmpty(raw.Key)) throw new ArgumentException("A definition key is required.", nameof(entries));
+                if (ambiguous.Contains(raw.Key)) continue;
+                var entry = Interpretable(raw);
+                if (!kept.TryGetValue(entry.Key, out var existing)) kept[entry.Key] = entry;
+                else if (existing != entry)
+                {
+                    kept.Remove(entry.Key);
+                    ambiguous.Add(entry.Key);
+                }
             }
 
-            return new DraftStaleBase(kept, variableRegistryText);
+            foreach (var key in kept.Where(p => p.Value.Membership == DraftMembership.NotMember).Select(p => p.Key).ToArray())
+                kept.Remove(key);
+
+            return new DraftStaleBase(kept, ambiguous, variableRegistryText);
         }
 
-        /// <summary>The recorded entries by definition key (ordinal). Keys of NotMember definitions are not present.</summary>
+        // The facts that count for an entry: nothing but the attribution for a NotMember, no text for a Blocking one.
+        private static DraftStaleBaseEntry Interpretable(DraftStaleBaseEntry entry) => entry.Membership switch
+        {
+            DraftMembership.NotMember => new DraftStaleBaseEntry(entry.Key, DraftMembership.NotMember, null, null, null),
+            DraftMembership.Blocking => entry with { EnvelopeText = null },
+            _ => entry,
+        };
+
+        /// <summary>The recorded entries by definition key (ordinal). Keys of NotMember or ambiguous definitions are not present.</summary>
         public IReadOnlyDictionary<string, DraftStaleBaseEntry> Entries => _view;
 
         /// <summary>The exact raw text of the variable registry when the adapter supplied it; otherwise null.</summary>
         public string? VariableRegistryText { get; }
 
-        /// <summary>The membership recorded for a key; a key that is not recorded is NotMember.</summary>
+        /// <summary>
+        /// The membership recorded for a key; a key that is not recorded is NotMember. An ambiguous key (see
+        /// <see cref="IsAmbiguous"/>) reads as NotMember here and never matches in a comparison.
+        /// </summary>
         public DraftMembership MembershipOf(string key)
         {
             if (string.IsNullOrEmpty(key)) throw new ArgumentException("A definition key is required.", nameof(key));
             return _entries.TryGetValue(key, out var entry) ? entry.Membership : DraftMembership.NotMember;
         }
 
-        // RED skeleton of the correction: no key is reported as ambiguous yet.
-        public bool IsAmbiguous(string key) => false;
+        /// <summary>True when the key was given with different facts: it can never match.</summary>
+        public bool IsAmbiguous(string key)
+        {
+            if (string.IsNullOrEmpty(key)) throw new ArgumentException("A definition key is required.", nameof(key));
+            return _ambiguous.Contains(key);
+        }
 
         /// <summary>
         /// Compares this base with a re-read over the UNION of their keys; an absent key is NotMember. Every comparison is
-        /// ordinal and exact, with no normalization. Differences come ordered by key (ordinal), then by kind; the registry
-        /// difference, which has no key, comes last.
+        /// ordinal and exact, with no normalization. An ambiguous key on either side is reported as a Membership difference
+        /// and never matches. Differences come ordered by key (ordinal), then by kind; the registry difference, which has no
+        /// key, comes last.
         /// </summary>
         public DraftStaleComparison CompareWith(DraftStaleBase reread)
         {
@@ -112,8 +144,16 @@ namespace RackCad.Application.Workspace.Drafts
             var differences = new List<DraftDifference>();
             var keys = new SortedSet<string>(_entries.Keys, StringComparer.Ordinal);
             keys.UnionWith(reread._entries.Keys);
+            keys.UnionWith(_ambiguous);
+            keys.UnionWith(reread._ambiguous);
             foreach (var key in keys)
             {
+                if (_ambiguous.Contains(key) || reread._ambiguous.Contains(key))
+                {
+                    differences.Add(new DraftDifference(key, DraftDifferenceKind.Membership));
+                    continue;
+                }
+
                 var before = _entries.TryGetValue(key, out var b) ? b : NoEntry;
                 var after = reread._entries.TryGetValue(key, out var a) ? a : NoEntry;
                 if (before.Membership != after.Membership) differences.Add(new DraftDifference(key, DraftDifferenceKind.Membership));
