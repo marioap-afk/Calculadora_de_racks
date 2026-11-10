@@ -51,11 +51,13 @@ namespace RackCad.UI.Workspace
         /// The navigation port (I-64 F2-T2B). Optional: without it the navigation section is present but unavailable. Building
         /// the panel never asks it for anything; it is asked only when the user clicks a navigation action.
         /// </param>
-        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null)
+        /// <param name="browserSummary">The read-only summary port of the browser (I-64 F3-T2). Optional.</param>
+        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null, IWorkspaceBrowserSummaryPort browserSummary = null)
         {
             _port = port ?? throw new ArgumentNullException(nameof(port));
             _setInstrumentationEnabled = setInstrumentationEnabled ?? throw new ArgumentNullException(nameof(setInstrumentationEnabled));
             Navigation = new WorkspaceNavigationViewModel(navigation, Refresh);
+            Browser = new WorkspaceBrowserViewModel(browserSummary);
             Present(InitialSnapshot(), null);
         }
 
@@ -116,6 +118,9 @@ namespace RackCad.UI.Workspace
 
         /// <summary>The navigation of the rack of the current context (Seleccionar, Ver, Centrar, Localizar vista).</summary>
         public WorkspaceNavigationViewModel Navigation { get; }
+
+        /// <summary>The browser of racks (I-64 F3-T2). Skeleton of the RED step: it presents nothing yet.</summary>
+        public WorkspaceBrowserViewModel Browser { get; }
 
         // ------------------------------------------------------------------ the only entries that ask the port
 

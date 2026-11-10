@@ -943,7 +943,8 @@ public class WorkspaceNavigationHostTests
         var host = Src.Code(PanelHostPath);
 
         Assert.Equal(1, Src.Count(host, @"_controller\.Navigation\b"));
-        Assert.Matches(@"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*\)", host);
+        // I-64 F3-T2 (INV-F3T2-16): the fourth argument is the summary port of the browser; the palette host still names no port type.
+        Assert.Matches(@"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*,\s*_controller\.BrowserSummary\s*\)", host);
         Assert.Equal(
             new[] { "Autodesk.AutoCAD.Windows", "RackCad.Application.Diagnostics", "RackCad.Application.Workspace", "RackCad.UI.Workspace" },
             Regex.Matches(host, @"^\s*using\s+([\w.]+)\s*;", RegexOptions.Multiline).Select(m => m.Groups[1].Value).ToArray());

@@ -24,6 +24,7 @@ public class WorkspacePaletteHostSourceGuardTests
     private const string ViewCodePath = "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs";
     private const string ViewModelPath = "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs";
     private const string NavigationViewModelPath = "src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs";
+    private const string BrowserViewModelPath = "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs";
 
     private static string Host() => Src.Code(HostPath);
 
@@ -186,8 +187,9 @@ public class WorkspacePaletteHostSourceGuardTests
     {
         var code = Host();
 
-        // I-64 F2-T2B (INV-F2T2B-12): the third argument is the navigation port of the controller, and only that.
-        Assert.Matches(@"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*\)", code);
+        // I-64 F2-T2B (INV-F2T2B-12): the third argument is the navigation port of the controller. I-64 F3-T2 (INV-F3T2-16) adds exactly
+        // one more: the fourth argument is the summary port of the browser, and nothing else.
+        Assert.Matches(@"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*,\s*_controller\.BrowserSummary\s*\)", code);
         Assert.DoesNotMatch(new Regex(@"_controller\.(?:ActiveSession|TryGetSession|Authorize|RequestReconciliation|RefreshPanel|OpenPanel)"), code);
         Assert.DoesNotMatch(new Regex(@"AutoCadEventBridge|WorkspaceHostCore|WorkspaceSelectionReader|WorkspaceSessionRegistry|EventBridgeCore"), code);
     }
@@ -533,7 +535,8 @@ public class WorkspacePaletteHostSourceGuardTests
         Assert.Matches(@"using\s+RackCad\.Application\.Workspace\s*;", model);
         Assert.Matches(@"sealed\s+class\s+WorkspacePanelViewModel\s*:\s*ObservableObject\b", model);
         // I-64 F2-T2B (INV-F2T2B-12): the navigation port is the third, optional parameter; the two-argument form stays valid.
-        Assert.Matches(@"public\s+WorkspacePanelViewModel\s*\(\s*IWorkspaceHostPort\s+\w+\s*,\s*Action<bool>\s+\w+\s*,\s*IWorkspaceNavigationPort\s+\w+\s*=\s*null\s*\)", model);
+        // I-64 F3-T2 (INV-F3T2-16): the summary port of the browser is the fourth, optional parameter, and nothing else is added.
+        Assert.Matches(@"public\s+WorkspacePanelViewModel\s*\(\s*IWorkspaceHostPort\s+\w+\s*,\s*Action<bool>\s+\w+\s*,\s*IWorkspaceNavigationPort\s+\w+\s*=\s*null\s*,\s*IWorkspaceBrowserSummaryPort\s+\w+\s*=\s*null\s*\)", model);
         Assert.Matches(@"\.GetSnapshot\s*\(\s*\)", model);
         Assert.Matches(@"\.GetMeasurementReport\s*\(\s*\)", model);
         Assert.DoesNotMatch(new Regex(@"\.Authorize\s*\(|\.GetSelectionContext\s*\("), model);
@@ -574,7 +577,17 @@ public class WorkspacePaletteHostSourceGuardTests
     {
         foreach (var (path, code) in UiSources())
         {
-            Assert.DoesNotMatch(new Regex(@"System\.IO|\bFile\.|\bDirectory\.|Registry|UserSettings|RackLog|XData|Xrecord"), code);
+            // I-64 F3-T2 (INV-F3T2-01): the one in-memory registry of browser sessions is named by the browser view-model, by EXACT FILE and
+            // EXACT identifier: that one file is scanned with that one identifier, once, removed. Any other use of "Registry" there, and
+            // every use of it in any other file, still fails exactly as before.
+            var scanned = code;
+            if (string.Equals(path, BrowserViewModelPath, StringComparison.Ordinal))
+            {
+                Assert.Equal(1, Src.Count(code, @"\bBrowserSessionRegistry\b"));
+                scanned = code.Replace("BrowserSessionRegistry", string.Empty);
+            }
+
+            Assert.DoesNotMatch(new Regex(@"System\.IO|\bFile\.|\bDirectory\.|Registry|UserSettings|RackLog|XData|Xrecord"), scanned);
             Assert.DoesNotMatch(new Regex(@"Metric|Provider|\bBom|ProjectSummary|TotalRacks|Aggregat|ComputedParameter", RegexOptions.IgnoreCase), code);
         }
     }
