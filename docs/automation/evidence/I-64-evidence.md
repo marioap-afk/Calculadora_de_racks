@@ -5900,3 +5900,17 @@ revisar:
 **Cierre:** F2-T2B = CLOSED / PASS (D-07). Paquete: `F2-T2B-NAVIGATION-UI/task-close-package.md`. No es F2 PASS.
 
 **Límites:** sin AutoCAD. Siguiente: procedimiento y ejecución de Smoke-NAV.
+
+## 99. Smoke-NAV `R20261110T064058Z-c883`: STOP en SN-01; diagnóstico y corrección F2-T2-HOST-C1
+
+**Candidato:** `7bdcbfd9` (producto `82bd49b6`), CI 42770662266 4/4, Core 16318/16318, UI 1791 más 17 omitidas, DLL `7B794B49…`. Queda como `HISTORICAL_SMOKENAV_STOP_CANDIDATE`.
+
+**Host:** una sola `acad.exe` en cada apertura, guarda de procesos en verde, carga con Load Once, BASELINE y POST con perfil CLEAN; HOST-EXTRAS solo con `Recent File List` y diálogos de archivo. Dibujos sin guardar y con el SHA-256 intacto. I-52 sin objeción.
+
+**Resultado en AutoCAD real:** panel y contexto correctos, pero Seleccionar y Ver no tienen efecto: dos `*Cancel*`, selección perdida, vista sin cambios, `DBMOD` sin el bit 1. Igual con clic de ratón y por UI Automation. SN-02..SN-10 no se ejecutaron sobre este candidato.
+
+**Diagnóstico** (cuatro builds instrumentados, sin commit): el callback corre en `EXECUTEFUNCTION` y devuelve `Executed`; los `*Cancel*` vacían la selección; `SetCurrentView` se revierte por una transacción sin `Commit`. El foco no influye. La variante en contexto de aplicación con el documento bloqueado y la vista fuera de la transacción funcionó en AutoCAD real: Seleccionar 4 referencias, Ver, Centrar y Localizar con los centros esperados y copia k/M.
+
+**Decisión:** D-08, corrección estrecha `F2-T2-HOST-C1`, con el precedente de `F1-T3B-HOST-UI-C1`. `attempts` sin cambio (3 de 3). Desviación de la redacción de D-07, INV-40 y O4-06 pendiente de ratificación del Owner.
+
+**Pendiente:** la custodia de los artefactos de `c883` se hace junto con la ocurrencia de Smoke-NAV sobre el candidato corregido.

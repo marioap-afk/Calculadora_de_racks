@@ -66,3 +66,18 @@ Registro de cada `OVERNIGHT_OWNER_COORDINATOR_DISPOSITION` tomada bajo la autori
 - **Decisión:** F2-T2B = CLOSED / PASS sobre `82bd49b6`.
 - **Fundamento:** verificación `6b2a` `EXECUTION_VERIFIED` 14/14; nc1 satisfecho bajo el puente (D-06); nc2 `07c1` y nc3 `4df8` CONTROL PASS; CI 42766532521 4/4; T2B-F1, F2 y F3 corregidos y cubiertos por pruebas.
 - **Alcance:** cierre de esta tarea; no es F2 PASS. El comportamiento en AutoCAD queda para Smoke-NAV.
+
+## D-08. Smoke-NAV detenido en SN-01 y corrección estrecha F2-T2-HOST-C1
+
+- **Problema:** en AutoCAD real, con el candidato `7bdcbfd9` (ocurrencia `R20261110T064058Z-c883`), Seleccionar y Ver no tienen efecto: dos `*Cancel*`, la selección se pierde y la vista no cambia. Las 1791 pruebas de UI y las 16318 de Core no podían verlo, porque ningún proyecto de prueba ejecuta el Plugin.
+- **Diagnóstico** (cuatro builds locales instrumentados, sin commit, con la guarda de procesos; `logs/` y `operator/session-log.md`):
+  1. `ExecuteInCommandContextAsync` ejecuta el callback en el comando interno `EXECUTEFUNCTION`, con dos `*Cancel*` que vacían la selección implícita. La selección escrita no sobrevive: es el `UNKNOWN` que el Freeze encargó a Smoke-NAV, y sale negativo.
+  2. `SetCurrentView` se llama dentro de una transacción que se cierra sin `Commit`, y la vista se revierte. `ZoomToRack`, que funciona en producción, confirma su transacción.
+  3. La devolución del foco no influye (variante sin ella: mismo resultado).
+- **Opciones:** (a) dejar F2 sin cerrar y esperar al Owner; (b) corrección estrecha; (c) un comando oculto con `UsePickSet`, prohibido por C-F2T2-02.
+- **Decisión:** (b). `F2-T2-HOST-C1`: en `WorkspaceNavigationHost.cs` y `WorkspaceNavigationEffects.cs`, ejecutar la acción en contexto de aplicación, sin comando interno, comprobando que no hay comando en curso y con el documento bloqueado; y aplicar la vista fuera de la transacción de lectura. La ejecuta la sesión con RED, GREEN, verificación local, CI exacta y paquete de cierre delta, con el mismo formato que `F1-T3B-HOST-UI-C1`.
+- **Fundamento:** la variante 4 demostró en AutoCAD real Seleccionar (`sslength` = 4, la selección sobrevive), Ver, Centrar, Localizar y la vuelta del foco, sin marcar el dibujo como modificado. La revalidación sigue ocurriendo justo antes de actuar, ahora en un único paso síncrono.
+- **Presupuesto:** `attempts` sigue en 3 de 3. Ni se reinicia ni se incrementa: como C1 de F1, no es una corrección delegada de un Worker, sino un hallazgo de hito.
+- **Desviación del Freeze que requiere ratificación:** D-07, INV-40 y O4-06 dicen «en contexto de comando». El mecanismo pasa a contexto de aplicación con bloqueo. La intención (documento, sesión, existencia y atribución comprobados justo antes de actuar) se conserva. El Owner debe ratificarlo en la Owner Validation.
+- **Alcance:** solo navegación de F2. El candidato `7bdcbfd9` queda como `HISTORICAL_SMOKENAV_STOP_CANDIDATE` y no se reutiliza. Sus evidencias no se reetiquetan.
+- **Riesgo:** la navegación deja de pasar por un comando, de modo que no entra en la pila de comandos de AutoCAD. Smoke-NAV sobre el candidato nuevo lo comprueba.
