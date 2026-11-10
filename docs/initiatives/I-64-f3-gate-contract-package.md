@@ -43,3 +43,20 @@ Fuera de F3: borradores, dirty real y edición (F4), migración de editores (F5)
 ## 5. Advertencia heredada de F2
 
 Cualquier acción de panel que escriba selección o vista debe probarse en AutoCAD real (D-08). Los arneses de F3 no sustituyen esa comprobación.
+
+## 6. Decisiones aceptadas por el Owner
+
+El Owner aceptó este paquete como base del contrato de F3 (orden literal en `docs/automation/evidence/I-64-pilot/F3-BROWSER/coordinator/owner-f2-close-ratification-f3-authorization.md`). Donde esta sección y las anteriores difieran, manda esta sección.
+
+| Id | Decisión |
+|---|---|
+| C-F3-01 | `attempts` = 1 de 3, presupuesto propio de F3. No es un contador global de I-64 |
+| C-F3-02 | Aceptada con aclaración. La preview puede nacer solo con RackId; nombre, Kind, vistas y resumen se resuelven de forma perezosa al materializar la superficie de la pestaña activa. `NavigationTargets` sigue siendo la única autoridad de **objetivos de navegación** y no se convierte en autoridad general de metadatos: el resumen sale de los hechos de captura ligeros de I-64 o de un adaptador de resumen. Sin inventario de F6 |
+| C-F3-03 | Con una pestaña activa, las acciones explícitas de navegación usan el RackId de esa pestaña. Cambiar de pestaña a mano no escribe la selección de AutoCAD |
+| C-F3-04 | Entrega por etapas: «Abrir en editor clásico» queda para F5, sin ningún lanzamiento temporal de comandos. La obligación de D-08 y D-15 sigue vigente (IC-03) |
+| C-F3-05 | Las pestañas pertenecen a la `SessionId` y viven solo en memoria. Destruir la sesión destruye su registro |
+| C-F3-06 | Solo un contexto Uno(R) crea, activa o reemplaza la preview por sincronización automática. Selección (N), Ninguno y los contextos de diagnóstico o sin rack no crean ni cambian pestañas. Las acciones explícitas de abrir un rack seguirán su propio contrato |
+
+**Orden:** F3-T1-BROWSER-CORE primero; F3-T2-BROWSER-UI solo con F3-T1 verificada y cerrada.
+
+**Coste a caracterizar, sin umbrales inventados:** crear o reemplazar la preview, activar una pestaña existente, cambiar entre 10 pestañas y materializar la superficie de resumen con K = 1. Los resultados se registran para Smoke-PERF y F7.

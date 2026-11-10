@@ -411,8 +411,8 @@ public class WorkspaceHostSourceGuardTests
     {
         var forbidden = new Regex(@"Task\.Run|Task\.Factory|\bnew\s+Thread\b|ThreadPool|System\.Threading\.Timer|System\.Timers|\bTimer\b|\basync\b|\bawait\b|Parallel\.|BackgroundWorker|SynchronizationContext");
 
-        // I-64 F2-T2A (INV-F2T2A-02, 03, 10): the navigation host, by EXACT FILE, may use async and await, and only to await the
-        // public command-context call. Everything else that starts background work stays forbidden there, and so does every way
+        // I-64 F2-T2A (INV-F2T2A-02, 03, 10): the navigation host, by EXACT FILE, was the only one allowed async and await; since F2-T2-HOST-C1 it runs
+        // synchronously in application context (IC-01) and uses neither. Everything else that starts background work stays forbidden there, and so does every way
         // of blocking on a task, detaching one or dropping the synchronization context.
         var hostForbidden = new Regex(@"Task\.Run|Task\.Factory|\bnew\s+Thread\b|ThreadPool|System\.Threading\.Timer|System\.Timers|\bTimer\b|Parallel\.|BackgroundWorker|SynchronizationContext|\.Wait\s*\(|\.Result\b|GetAwaiter|GetResult|ConfigureAwait|StartNew|ContinueWith|Task\.Delay|async\s+void");
         var blocking = new Regex(@"GetAwaiter|ConfigureAwait|\.Wait\s*\(");

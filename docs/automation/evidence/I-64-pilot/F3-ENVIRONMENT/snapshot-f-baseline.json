@@ -1,0 +1,45 @@
+{
+  "Schema": "rackcad-i64-config-baseline/v1",
+  "Designation": "SNAPSHOT F",
+  "ActiveBaseline": true,
+  "ConfigSha256": "AAEB58D87D007AB9ABF53EEAEDCF582FD02401495C1B66E68022C10946F26E09",
+  "OrderedNamesSha256": "EB8775C5F9B3CC5C15031ED064391FFE000AB4A7220360C04F2F89D83D49F820",
+  "NameCount": 104,
+  "ComparedAgainst": {
+    "Designation": "SNAPSHOT E",
+    "ConfigSha256": "2EEDDAAB28C1147A5D927B4EF1E4C69229197E04CB6B114161FFFF04A16588C8",
+    "SafeSemanticInventorySha256": "e8282ba2fedeb90f4cad918417bdbb1b5217cc5df6588ab3efdc605d2f6ec2d2",
+    "Method": "comparacion clave a clave del inventario semantico seguro de E con los valores actuales"
+  },
+  "AddedKeys": [],
+  "RemovedKeys": [],
+  "FlatValueCountE": 68,
+  "FlatValueCountF": 68,
+  "ChangedKeys": [
+    "notify",
+    "mcp_servers.node_repl.command",
+    "mcp_servers.node_repl.env.CODEX_CLI_PATH",
+    "mcp_servers.node_repl.env.NODE_REPL_NODE_MODULE_DIRS",
+    "mcp_servers.node_repl.env.NODE_REPL_NODE_PATH",
+    "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_CODE_PATHS"
+  ],
+  "ChangedKeysNature": "Los seis valores son rutas de instalacion gestionadas por la app de Codex (AppManagedByInstall en el inventario de E): pasan del directorio de runtime por usuario al directorio del paquete instalado de la app, version 26.1103.7773.0. Los valores no se versionan.",
+  "UnchangedByClass": "model, model_reasoning_effort, service_tier, windows.sandbox, trust_level de proyectos, plugins, features y shell_environment_policy sin cambios",
+  "SecretShapedValues": 0,
+  "ControllerBinary": {
+    "Path": "Codex/bin/5449c1f0f26f1f98/codex.exe",
+    "Sha256": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+    "Version": "codex-cli 0.167.0-alpha.3.2"
+  },
+  "ProbeEvidence": {
+    "RunId": "R20261110T134835Z-3082",
+    "OutputSha256": "ECED717C299CB672EA4962B1FD926C6D8C936157A53878FC680AC53A31114FE7",
+    "EventsSha256": "0546E20D6892480CFBB3292E9CA29385BE6420934B28569D5EC3F794B0C3C940",
+    "EffectiveSourceSha256": "589A6844D9808D13C8C9B636D01B7658F76A452C8DE14D826F8B4B0CD29C4EA0",
+    "Pass": true,
+    "TurnContextDifferencesFromProbe6a68": [
+      "root_turn_id"
+    ]
+  },
+  "Accreditation": "solo gpt-6-luna / high / read-only en la cadena del Controller (decision de la sesion F3-E02, no aceptacion del Owner)"
+}

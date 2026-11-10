@@ -1,0 +1,123 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F3-ENVIRONMENT/probe-R20261110T134835Z-3082",
+  "SourceRoot": "artifacts/orchestration/I-64/F3-ENVIRONMENT/probe-R20261110T134835Z-3082",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos solo por SHA-256 (16.12)",
+  "Counts": {
+    "CUSTODIED": 17,
+    "EXCLUDED": 1
+  },
+  "Files": [
+    {
+      "Path": "cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "065a567a6ccf9e15656e12c9016e779f46473f371b65c73d8d68eb1c0e28afc0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "76bd75f65e625cf7d47ebbd7c833656b7609339c1e28a1b5118edf3746aa1358",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-entry.json",
+      "Bytes": 3434,
+      "Sha256": "72a5141994e57ad99cd0ed51f0bc76f4ab4597474c3a672c39b262cec103a4d5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-exit.json",
+      "Bytes": 3434,
+      "Sha256": "83bfe59ccffb338601d0f56c79cc5a45ce151d38a235fc20e30f0e9cdee995bb",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "events.jsonl",
+      "Bytes": 3592,
+      "Sha256": "0546e20d6892480cfbb3292e9ca29385be6420934b28569d5ec3f794b0c3c940",
+      "Disposition": "EXCLUDED",
+      "Reason": "eventos JSONL del CLI de Codex: no se versionan (16.12); quedan su SHA-256 y los campos extraidos en el resultado y el registro de relevo"
+    },
+    {
+      "Path": "exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "launcher-pid.txt",
+      "Bytes": 6,
+      "Sha256": "e3fea02de1622761f0ecd257483747217869f694199ef92b6c4467439e059777",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "d9119a45df265956a06a9ee6fb50fb9b5f68d4c11c538229506e7b8fd3464fd5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "output.json",
+      "Bytes": 355,
+      "Sha256": "eced717c299cb672ea4962b1fd926c6d8c936157a53878fc680ac53a31114fe7",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "probe-result.json",
+      "Bytes": 3452,
+      "Sha256": "c762e426b0497e6f9f461c1aee96edc6a16f1a5544db73901d1a9d1d0915e884",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "probe.schema.json",
+      "Bytes": 863,
+      "Sha256": "b77c2024939ae6789393e3cd9ebd8b0985c8b9c66fcc1fa49b6aede6c7fe527b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "processes-entry.json",
+      "Bytes": 1287,
+      "Sha256": "cb6748ced639c84b8e71fb60554793b19827877a43da50669aebef7dabb43e93",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "ca238af1ba539b559b430c8809c37a352bf0d7818bfd5e163f216707d7db4f28"
+    },
+    {
+      "Path": "processes-exit.json",
+      "Bytes": 1285,
+      "Sha256": "b087271d20b49459de99a6993b4fed64aff6413539f16d0392f26d91ffab53a8",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "8922db8c5a0ee3455caad2f54667a269b94b8144828aef33d02c8ac945aed098"
+    },
+    {
+      "Path": "prompt.md",
+      "Bytes": 800,
+      "Sha256": "06233f4d93830254445f82c2d773d80c0eed7d2c93c1cc23b0e6f49ec8b0835f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "relay-record.json",
+      "Bytes": 11141,
+      "Sha256": "045dff88e6d0ebe2e51986df016bc296b18fa5ea3ca70105d533980f46e59b65",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "state-entry.json",
+      "Bytes": 476,
+      "Sha256": "c1c170fdfea70fa3b715d6930def09d64223aba5399604042ef91a4649589e1d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "state-exit.json",
+      "Bytes": 476,
+      "Sha256": "c1c170fdfea70fa3b715d6930def09d64223aba5399604042ef91a4649589e1d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

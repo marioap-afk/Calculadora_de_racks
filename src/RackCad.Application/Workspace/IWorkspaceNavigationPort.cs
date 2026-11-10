@@ -154,8 +154,8 @@ namespace RackCad.Application.Workspace
         }
 
         /// <summary>
-        /// Runs one request. The session decision and the Model Space condition are taken by the host inside the command
-        /// context; everything else (targets, existence, attribution, verdict) is the policy. A verdict other than Act has no
+        /// Runs one request. The session decision and the Model Space condition are taken by the host under the document
+        /// lock; everything else (targets, existence, attribution, verdict) is the policy. A verdict other than Act has no
         /// effect. A failing effect is a Failed value.
         /// </summary>
         public WorkspaceNavigationResult Run(

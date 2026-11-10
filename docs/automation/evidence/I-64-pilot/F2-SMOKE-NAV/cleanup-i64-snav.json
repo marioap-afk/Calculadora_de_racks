@@ -1,0 +1,27 @@
+{
+  "Schema": "rackcad-i64-cleanup-record/v1",
+  "Directory": "directorio temporal de diagnostico de Smoke-NAV",
+  "FileCount": 162,
+  "Extensions": [
+    ".csv",
+    ".json",
+    ".dll",
+    ".pdb",
+    ".dxf"
+  ],
+  "NoSourceOrEvidenceFiles": true,
+  "OpenByAnyProcess": false,
+  "DiagnosticPluginDlls": {
+    "diagbin/RackCad.Plugin.dll": "A0C5F99B67CBC40F23FAB0A874B253DCFD9E6443210079C0074551A52BD74ECF",
+    "diagbin2/RackCad.Plugin.dll": "9864178010BB06F888200ED33939D07B1A8CCACDE5C5001522F809439E294E88",
+    "diagbin3/RackCad.Plugin.dll": "501F883CFDB4C1F0C06394EA176D50EA055E6B9FE0D165D4EC8C6A232286E76F",
+    "diagbin4/RackCad.Plugin.dll": "5299006D49B674D3DA46CD828C9153CA199F999E34ED2F61C86D3C3263F5A317",
+    "releasecheck/RackCad.Plugin.dll": "C9265DC683D53304EE92EFD0B95AE236859A1F69941061DAC044EEF90BDA9A38"
+  },
+  "Fixtures": {
+    "I64-SNAV-N.dxf": "83A633ADAE534666849CDCE82A5904EF98E2EC59123384BBC072B8282A068063",
+    "I64-SNAV-N2.dxf": "D43F7E33E2AC3700B0D55A7AD5BA6E97E7C51304920B73ACFBFC6F008B5E0A40"
+  },
+  "FixturesCustodiedIn": "F2-SMOKE-NAV/R20261110T064058Z-c883/fixtures/",
+  "Disposition": "F3-E03"
+}

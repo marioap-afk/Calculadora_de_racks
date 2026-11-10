@@ -119,7 +119,7 @@ public class WorkspaceSourceGuardExceptionTests
     // ------------------------------------------------------------------ I-64 F2-T2A-NAVIGATION-HOST (INV-F2T2A-10, C-F2T2-08)
     // Three more exceptions, each by EXACT FILE. READ, DISCOVERY and WRITE are distinguished: the facts adapter READS to collect
     // facts; the effects adapter WRITES only the implicit selection and the view and READS only the already-selected target; no
-    // file DISCOVERS but the facts adapter; the host holds the asynchronous command-context pattern and nothing else.
+    // file DISCOVERS but the facts adapter; the host holds the synchronous application-context step under the document lock (IC-01) and nothing else.
 
     private const string Facts = WorkspaceBridgeSourceGuardTests.FactsAdapterPath;
     private const string Effects = WorkspaceBridgeSourceGuardTests.EffectsAdapterPath;

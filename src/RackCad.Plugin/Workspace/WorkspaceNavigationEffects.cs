@@ -8,8 +8,8 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace RackCad.Plugin.Workspace
 {
     /// <summary>
-    /// The only effects a navigation action may have (I-64 D-07, F2-T2A), executed by the navigation host inside the command
-    /// context and after the policy decided Act. It is the ONLY file of the workspace allowed to write: the implicit selection
+    /// The only effects a navigation action may have (I-64 D-07, F2-T2A), executed by the navigation host under the document
+    /// lock and after the policy decided Act. It is the ONLY file of the workspace allowed to write: the implicit selection
     /// (SELECT) and the state of the current view (VIEW, CENTER and, through the policy, LOCATE VIEW). It writes nothing
     /// authored: no entity, no Xrecord, no XData, no dictionary, no system variable, no file, no layout and no TILEMODE.
     ///

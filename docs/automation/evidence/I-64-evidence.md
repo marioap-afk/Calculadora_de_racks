@@ -5930,3 +5930,17 @@ revisar:
 **Decisión:** D-10. F3 necesita un presupuesto que el turno no puede concederse. Paquete no emitido en `docs/initiatives/I-64-f3-gate-contract-package.md`, con seis decisiones y una recomendación para cada una.
 
 **Estado:** F2 = PASS con limitación (§100). `attempts` 3 de 3. Sin integración en `main`.
+
+## 102. Ratificación de F2 y autorización de F3
+
+**Autoridad:** orden del Owner, literal en `I-64-pilot/F3-BROWSER/coordinator/owner-f2-close-ratification-f3-authorization.md`.
+
+**F2 = CLOSED / PASS WITH LIMITATIONS.** La sustitución de `ExecuteInCommandContextAsync` por contexto de aplicación con `DocumentLock` queda ratificada, solo para Seleccionar, Ver, Centrar y Localizar vista. Registrada como IC-01 en `docs/initiatives/I-64-implementation-clarifications.md`, sin editar la Proposal V5. Los comentarios de código y guardas que aún lo afirmaban se corrigen en este commit, sin cambio de comportamiento.
+
+**Smoke-NAV = PASS WITH LIMITATIONS.** SN-08 se conserva como `LIMITED / covered structurally but not directly provoked`. Las obligaciones posteriores, incluidas las de la Owner Validation final y el Deshacer `UNCHARACTERIZED`, están en IC-02.
+
+**F3 autorizada.** `attempts` = 1 de 3, presupuesto propio de F3 (F3-E01). C-F3-01..06 aceptadas (paquete de F3, §6). «Abrir en editor clásico» queda para F5 (IC-03).
+
+**Entorno:** `config.toml` pasó al Snapshot F (F3-E02): seis rutas gestionadas por la app; sonda `R20261110T134835Z-3082` PASS. Es una decisión de la sesión.
+
+**Limpieza:** registro de `F2-SMOKE-NAV/cleanup-i64-snav.json` (F3-E03).

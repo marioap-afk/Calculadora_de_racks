@@ -58,7 +58,7 @@ public class WorkspaceBridgeSourceGuardTests
     //  - the facts adapter may READ the drawing (GetObject) to collect the neutral facts and the handles of the references;
     //  - the effects adapter alone may WRITE, and only the implicit selection and the state of the view (SetImpliedSelection,
     //    SetCurrentView); its READ is the read-only GetObject of the one already-selected target (never a discovery);
-    //  - the host holds the asynchronous command-context pattern (checked by the host guard) and no read or write at all.
+    //  - the host holds the synchronous application-context step under the document lock (IC-01; checked by the host guard) and no read or write at all.
     internal const string FactsAdapterPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs";
     internal const string EffectsAdapterPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs";
     internal const string HostAdapterPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs";
