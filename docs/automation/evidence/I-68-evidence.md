@@ -185,8 +185,51 @@ Discovery DC-01..09 completo. EXP revisadas, incluidos negativos. Sin clase A ab
 
 | Campo | Valor |
 |---|---|
-| Arquetipo inicial / propuesto | EXTENSION / FOUNDATION EVOLUTION (M-04, M-06) |
+| Arquetipo inicial / final | EXTENSION / FOUNDATION EVOLUTION (M-04, M-06) |
 | Rondas Discovery | 1 |
 | EXP activadas | 04, 05, 06, 08, 09 |
-| Rondas Architect | 4, en decisiones §6; 0 REQUIRED abiertos sobre Proposal V4 |
-| Candidato | no existe |
+| Rondas Architect | 6 hasta AGREED sobre Proposal V6, en decisiones §6 |
+| Gates funcionales | 4 (G1..G4) |
+| CI rojos de gate | 1, leido antes de corregir (§8) |
+
+## 8. Gates
+
+Freeze `c7fb85da3750f840a9ab02a89818f886cd0a4f16`, Proposal V6. SDK 8.0.423. Core Full local despues del commit, con arbol limpio y sobre el SHA de cierre. CI con `event=push`, `ref=refs/heads/feature/bom-excel-analisis-nativo`, `head_sha` igual al SHA y los cuatro jobs requeridos en `success`. Humo en Excel real sobre libros generados por el exportador de ese SHA.
+
+| Gate | SHA de cierre | RED → GREEN | Core Full local | Humo Excel | CI |
+|---|---|---|---|---|---|
+| G1 | `97e6c00d9d8d2eaf8e24b6c0a6d6ab471714cac2` | CARACT `51afdf49`, 5 pasan. RED `954db2db`: 11 fallan por asercion, 2 guardas pasan (el cuerpo de ese commit dice 13 por error). GREEN `2d3ef736` | 15508 de 15508 | no aplica | run 42745886294 |
+| G2 | `4b5142f95a2f0f72385d5de136b4bbcad0643187` | RED `1c008ff1`: 11 fallan por asercion, 3 pasan. GREEN `98ad922b` | 15523 de 15523 | 60 PASS, 0 FAIL ([salida](I-68-smoke/results-g2-4b5142f9.txt)) | run 42747804043 |
+| G3 | `a67a2585f292ba031728b868757239dca67a3d37` | Regresion sin producto nuevo: pasan al escribirse. Oraculos comprobados con dos mutaciones temporales, revertidas: sin Copias y con doble Copias, 10 de 15 fallan | 15538 de 15538 | 75 PASS, 0 FAIL ([salida](I-68-smoke/results-g3-a67a2585.txt)) | run 42748820356 |
+
+Incidencias diagnosticadas antes de corregir:
+
+- `2d3ef736`: Core Full local con 1 fallo, `NamespaceFolderGuardTests`: las pruebas nuevas declaraban un namespace propio. Corregido en `97e6c00d`.
+- `98ad922b`: CI rojo, run 42747035716, job `Build Plugin without AutoCAD`: `eng/ci/verify-autocad-references.ps1` rechazo el aviso CS0028 por un auxiliar de prueba llamado `Main`. Corregido en `4b5142f9`.
+
+`OpenXmlValidator` (Office2016, `DocumentFormat.OpenXml` 3.1.1, solo pruebas) acepta el paquete completo: la excepcion prevista en I-18 no fue necesaria.
+
+**Rendimiento** (sin umbrales; [generacion](I-68-smoke/perf-generacion-a67a2585.txt), apertura en la salida del humo de G3):
+
+| Libro | Filas de detalle | Generar | Abrir y filtros con valores |
+|---|---|---|---|
+| Seis sistemas reales | 71 | 9 ms | 0,5 s |
+| Grande | 5000 | 234 ms | 1,3 s |
+| Muy grande | 20000 | 847 ms | 1,2 s |
+
+## 9. Entrada FOUNDATIONS redactada
+
+Se publica en `docs/FOUNDATIONS.md` en el commit de cierre, ya conformada (LIFECYCLE §4.1).
+
+```text
+Name: XLSX Native Table and PivotTable
+Status: STABLE
+Authority: `XlsxWriter.Build` es el unico escritor de los paquetes XLSX del producto; `XlsxPivotLayout` calcula las celdas previas de una tabla dinamica y `XlsxPivotParts` escribe su definicion.
+Persistence: ninguna; el XLSX se escribe y ningun codigo de producto lo relee.
+Mutation contract: puro y sin Excel. Una tabla sin datos conserva una fila en blanco; encabezados vacios o repetidos, una dinamica sobre una tabla inexistente o un campo inexistente lanzan `InvalidOperationException` y no se escribe archivo. La definicion de la dinamica no lista valores; Excel la reconstruye al abrir (`refreshOnLoad`). Misma entrada, mismos bytes.
+Extension point: `XlsxSheet(name, rows, XlsxTableDefinition)` y `XlsxSheet(name, XlsxPivotDefinition)`. Consumidor: `ConsolidatedBomXlsxExporter`.
+Decision source: [ADR-0051](adr/0051-exportacion-excel-nativa-sobre-la-plataforma.md); Freeze integrado de I-68 (Proposal V6).
+Protecting tests: `ConsolidatedBomXlsxDetailTests`, `BomExcelPivotTests`, `BomExcelSystemMatrixTests`, `BomExcelCharacterizationTests`, `XlsxWriterTests`; humo en Excel real `docs/automation/evidence/I-68-smoke/Invoke-I68Smoke.ps1`, fuera de CI.
+Known limitations: un campo de valor y disposicion compacta de dos columnas. Medido solo en Excel 16.0 build 20527. El refresco de apertura es asincrono: hasta que ocurre, los filtros no tienen valores. Validez real comprobable solo con Excel, fuera de CI.
+Last changed by: I-68
+```
