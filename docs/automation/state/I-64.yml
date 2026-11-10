@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4: preparar el paquete del contrato desde las autoridades reales y someterlo a revision independiente antes de emitir F4-T1"
+  next_action: "F4-T1-DRAFT-CORE: emitir el contrato y ejecutar la cadena; las decisiones C-F4-01 y C-F4-03 del Owner bloquean F4-T2"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual

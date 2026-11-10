@@ -6018,3 +6018,11 @@ revisar:
 **F4 autorizada.** `attempts` = 1 de 3, presupuesto propio. El paquete del contrato se prepara desde las autoridades reales y pasa por revisión independiente antes de emitirse.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 110. Paquete del contrato de F4
+
+**Decisión:** F4-E06. Paquete v2 en `docs/initiatives/I-64-f4-gate-contract-package.md`, tras una revisión adversarial independiente de la v1 (2 BLOQUEANTE y 11 IMPORTANTE, todos dispuestos en su §8).
+
+**Decisiones del Owner pendientes:** C-F4-01 y C-F4-03 antes de T2; C-F4-07 antes de T3; C-F4-06 antes de Smoke-2.
+
+**Límites:** solo documentación; sin AutoCAD.
