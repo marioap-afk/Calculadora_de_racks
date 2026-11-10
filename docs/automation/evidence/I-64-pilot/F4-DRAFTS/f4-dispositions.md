@@ -109,3 +109,25 @@ El Owner ratificó F3-E02. **Snapshot F** (`AAEB58D8…`) es la línea base acti
   - T4B prueba en AutoCAD real las obligaciones que enumera la orden.
 - **Eventos:** los callbacks no leen el DWG; solo encolan o agrupan pistas. Las relecturas ocurren después, por una ruta de lectura de contexto de aplicación autorizada. T2 y T4 lo preservan y lo prueban.
 - **Fe de erratas del intento 1:** nota anexa `erratum-relay-record.md` junto al registro original, sin reescribirlo.
+
+## F4-E10. Excepción acotada a 16.8 para el intento 3 de F4-T1 (N-1)
+
+- **Autoridad:** `F4-DRAFTS/coordinator/owner-f4t1-attempt3-exception.md`, texto literal. Es autoridad de la unidad.
+- **Alcance:** solo el intento 3 de 3 de F4-T1 y solo N-1. No relaja 16.8 en general ni crea un cuarto intento. N-2 queda fuera y sigue siendo obligación de F4-T2.
+- **Motivo:** las pruebas de regresión y la regla BOM viven en `WorkspaceDraftBoundaryTests.cs`, que ya está en `ChainRedFiles`. Con la regla ordinaria no se puede tener a la vez un RED que falle y un GREEN que corrija la guarda.
+- **RED:**
+  - solo la parte de pruebas que expone N-1: `BOM`, `Bom`, `bom`, prefijo, sufijo y posición de nombre de miembro;
+  - compila y falla por aserción solo en esa superficie;
+  - con push y CI exacta, y el job Core en failure por esas pruebas.
+- **GREEN:**
+  - en el mismo archivo, solo la implementación de la regla BOM;
+  - sin añadir, quitar, renombrar ni cambiar pruebas, aserciones ni datos;
+  - sin tocar otras familias de guarda, el núcleo ni el código de T2, T3 o T4.
+- **Prueba fina:** `F4-T1-DRAFT-CORE/coordinator/n1_hashes.py` calcula, con `git show` en bytes crudos:
+  - H1: el bloque de regresión entre marcadores, que debe ser igual en RED y GREEN;
+  - H2: el archivo con la región de la regla sustituida, igual en RED y GREEN, de modo que nada cambia fuera de la región;
+  - H3: el RED sin el bloque, que debe ser igual al archivo de la base, de modo que el RED solo inserta el bloque.
+  La región de la regla son las líneas de comentario contiguas encima de la declaración de `BomInAnyIdentifier` y la propia declaración.
+- **Verificación:** solo para `Tests` de este intento, la exclusión de `WorkspaceDraftBoundaryTests.cs` como archivo entero se sustituye por el oráculo estrecho de la orden. El resto de 16.8 y 16.9 no cambia.
+- **Regla reparada:** al menos tan fuerte como exige INV-F4T1-22 y como las reglas anteriores, sin tratar como caso especial una cadena literal.
+- **Cierre:** con PASS, F4-T1 queda CLOSED / PASS. Si el intento 3 falla por causas de producto, la sesión se detiene, sin ampliar T1 sin una decisión nueva del Owner.

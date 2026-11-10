@@ -6068,3 +6068,9 @@ revisar:
 **Decisión:** F4-E09. Presupuesto por tarea en F4. F4-T1 pasa al intento 3 de 3, solo para N-1. N-2 pasa al contrato de F4-T2. C-F4-01 (b) queda como F4-PILOT-PUSHBACK-01 (IC-06). Se aceptan C-F4-03 y C-F4-07, C-F4-06 queda sin dispensa y C-F4-02 queda ratificada. La fe de erratas del intento 1 queda anexa junto al registro original.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 116. Excepción acotada a 16.8 para N-1
+
+**Decisión:** F4-E10. Opción 1 del Owner. RED solo con el bloque de regresión; GREEN solo con la región de la regla BOM; prueba fina con `n1_hashes.py` (H1, H2 y H3). Solo para el intento 3 de F4-T1.
+
+**Límites:** solo documentación; sin AutoCAD.

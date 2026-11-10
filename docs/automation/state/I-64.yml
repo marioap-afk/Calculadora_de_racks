@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 3
-  next_action: "F4-T1: intento 3 de 3 autorizado solo para N-1 (F4-E09); antes de emitir su contrato se resuelve con el Owner como encaja el RED de una correccion que solo toca la guarda (16.8); despues cierre de F4-T1 y F4-T2 con attempts 1 de 3"
+  next_action: "F4-T1 intento 3 (solo N-1): excepcion acotada a 16.8 registrada (F4-E10); siguiente: contrato del intento 3"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
