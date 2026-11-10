@@ -1,0 +1,153 @@
+{
+  "Schema": "rackcad-i64-architect-review-record/v1",
+  "RunId": "R20261109T233319Z-e044",
+  "Amendment": "I-64-A-12",
+  "Phase": "ARCHITECT_REVIEW",
+  "Authority": "disposicion del Coordinator I-64 - VERSIONING DISPOSITION A-12, opcion A (literal en artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/coordinator/coordinator-f2t2a-a12-versioning-disposition.md, SHA-256 3BC1D56843189911AFBEC019EA64A1B043B772C6532BBD03376BFBF171718B6A): una revision formal autorizada sobre el commit exacto de la rama lateral tras la CI exacta",
+  "ReviewedCommit": "4206b2da3a9985f429b77480cd5b5d26377f3215",
+  "PromptSha256": "09011773A032922DAACDD739B5AEBA6C3A21A05E6EA76B1F819D8777BC347100",
+  "Participant": {
+    "Kind": "codex-cli",
+    "Profile": "ARCHITECTURE_REVIEW",
+    "ModelRequested": "gpt-6.1-sol",
+    "EffortRequested": "high",
+    "Sandbox": "read-only",
+    "ModelEffective": "gpt-6.1-sol",
+    "EffortEffective": "high",
+    "CliVersion": "0.167.0-alpha.3.2",
+    "CliBinary": "Codex/bin/f71a721e0e6193a9/codex.exe (SHA-256 4B3286E35D7FE866C6B0EB3F07D7A4CDB5E96489576170DFD6B3A15AA1C67382)",
+    "Launcher": "-s read-only -m gpt-6.1-sol -c model_reasoning_effort=\"high\" -c allow_login_shell=false",
+    "EffectiveSource": "rollout-2026-11-09T17-33-57-01a1c2a9-47d5-7572-9755-ed6b70eb6513.jsonl",
+    "EffectiveSourceSha256": "7AB4017204EEDD59C9CAB767515B11B1BF9D5F20C65A660388254C4DAE1EE861"
+  },
+  "Eligibility": "celda gpt-6.1-sol/high/read-only acreditada en este CLI por la sonda R20261109T062522Z-e8be; mismo binario (SHA-256 medido antes y despues); unico codex.exe en Codex/bin; config.toml = SNAPSHOT D",
+  "Cession": {
+    "StartUtc": "2026-11-09T23:33:54Z",
+    "EndUtc": "2026-11-09T23:38:53Z",
+    "SessionOperated": false
+  },
+  "Exit": {
+    "ProductHeadSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "ProductRemoteSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "SideBranchRemoteSha": "4206b2da3a9985f429b77480cd5b5d26377f3215",
+    "OriginMainSha": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "CleanTree": true,
+    "GitOperationsInProgress": [],
+    "ConfigSnapshot": "D",
+    "ConfigSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+    "Participants": 0,
+    "Unattributable": 0
+  },
+  "Entry": {
+    "ProductHeadSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "ProductRemoteSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "SideBranchRemoteSha": "4206b2da3a9985f429b77480cd5b5d26377f3215",
+    "CleanTree": true,
+    "ConfigSnapshot": "D",
+    "ConfigChanged": false,
+    "Participants": 0,
+    "Unattributable": 0,
+    "LauncherDead": true,
+    "AcadProcesses": 0
+  },
+  "Outcome": {
+    "ExitCode": 0,
+    "TerminalEvent": "turn.completed",
+    "OutputSha256": "815276716451F40EEA879899EFC3B8EF98F198963B8364E0F09B863422FDA4FA",
+    "SchemaValid": true,
+    "Coherent": true,
+    "SubjectMatches": true,
+    "NonAsciiBytes": 0,
+    "CommandCount": 29,
+    "NoProfileCommands": 29,
+    "NonZeroCommands": 2,
+    "RealF2T2ABridgeExecution": [],
+    "GitWriteCommands": [],
+    "GateTerms1610": [],
+    "LimitPatterns": {
+      "ion | frontera |\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 1
+    }
+  },
+  "Result": {
+    "Verdict": "CHANGES REQUIRED",
+    "RequiredCount": 5,
+    "OptionalCount": 0,
+    "Answers": {
+      "Q01": [
+        "YES",
+        true
+      ],
+      "Q02": [
+        "YES",
+        true
+      ],
+      "Q03": [
+        "NO",
+        false
+      ],
+      "Q04": [
+        "YES",
+        true
+      ],
+      "Q05": [
+        "NO",
+        false
+      ],
+      "Q06": [
+        "YES",
+        true
+      ],
+      "Q07": [
+        "NO",
+        false
+      ],
+      "Q08": [
+        "YES",
+        true
+      ],
+      "Q09": [
+        "YES",
+        true
+      ],
+      "Q10": [
+        "YES",
+        true
+      ],
+      "Q11": [
+        "YES",
+        true
+      ],
+      "Q12": [
+        "NO",
+        false
+      ],
+      "Q13": [
+        "YES",
+        true
+      ],
+      "Q14": [
+        "YES",
+        false
+      ],
+      "Q15": [
+        "NO",
+        true
+      ]
+    },
+    "RequiredFindings": [
+      "I64-A12-RELAY-SCHEMA",
+      "I64-A12-NONEXISTENCE-ERROR",
+      "I64-A12-FAIL-CLOSED-GUARANTEE",
+      "I64-A12-ADVERSARIAL-GAPS",
+      "I64-A12-UNVERIFIABLE-PASS"
+    ],
+    "OptionalFindings": []
+  },
+  "Budget": "una revision formal autorizada (esta); sin reintento",
+  "Notes": [
+    "Una sola revision formal sobre 4206b2da; CI exacta 42720753124 4/4 antes de lanzar",
+    "Auditoria de ordenes completas: 4 ejecuciones de herramientas del puente, todas sinteticas en memoria, ninguna referencia a artifacts/",
+    "Comprobado contra el codigo: verify_identity_bridge.py:304 valida con esquema solo las entregas; :398-399 toma cualquier rc != 0 como inexistencia; la fixture relay() del selftest carece de campos obligatorios del esquema oficial",
+    "Dos causas raiz; Q07 y Q14 son consecuencias declaradas por el propio Architect y Q12 es la brecha de pruebas"
+  ]
+}

@@ -5826,3 +5826,21 @@ revisar:
 **Siguiente:** CI del commit exacto, revisión formal del Architect (gpt-6.1-sol/high, solo lectura); si AGREED, el texto exacto del Owner; la ejecución real solo tras Owner SATISFIED, Architect AGREED y Coordinator AGREED.
 
 **Límites:** sin cambios en `src/` ni `tests/`; sin ejecutar el puente contra evidencia real; nc2 y nc3 sin ejecutar; sin AutoCAD; attempts 2/3.
+
+## 94. A-13 / I64-IDENTITY-BRIDGE-01 corregido sobre A-12 (AUTHORIZED TO PREPARE / NOT ACTIVE)
+
+**Solo en la rama lateral `architecture/workspace-persistente-rackcad-a12`.** La rama de producto permanece en `44a692a4`.
+
+**Revisión de A-12:** `R20261109T233319Z-e044` sobre `4206b2da` (CI `42720753124` 4/4): CHANGES REQUIRED, 5 REQUIRED, 2 causas raíz, ninguna exige cambio global ni decisión nueva del Owner. Registrada en `I-64-protocol-bridge/architect-review/`. A-12 queda histórica e inmutable.
+
+**Orden del Coordinator:** `coordinator-a13-correction-order.md`: A-13 corrige A-12 y la sustituye solo para la activación.
+
+**Correcciones:** (1) el relevo se valida contra su esquema oficial `rackcad-relay-record/v1`, fijado por el blob `2deba196` de `origin/main` `a140eb3a`; (2) la inexistencia solo se prueba con `git cat-file --batch-check` correcto y respuesta exacta `missing`; cualquier otra cosa falla cerrado.
+
+**Pre-chequeo de esquema del relevo real** (autorizado una vez): `SCHEMA_VALID`, sin diagnósticos, SHA-256 `b687bdd8` verificado primero. No cuenta como aplicación de A-13.
+
+**Pruebas:** autoprueba 73/73 y regresión con 38 mutantes, cada una dos veces e idénticas byte a byte; verificador blob `1c2510f71160804c6d42ae4da580641523c72a07`. El blob histórico de A-12 falla justo en los casos de las dos causas. Solo datos sintéticos.
+
+**Siguiente:** CI del commit exacto y revisión formal del Architect (gpt-6.1-sol/high, solo lectura); si AGREED, el texto exacto del Owner. La ejecución real solo tras Owner SATISFIED, Architect AGREED y Coordinator AGREED.
+
+**Límites:** sin cambios en `src/` ni `tests/`; sin ejecutar el puente contra evidencia real; nc2 y nc3 sin ejecutar; sin AutoCAD; attempts 2/3.

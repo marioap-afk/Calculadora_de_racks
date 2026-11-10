@@ -1,0 +1,8 @@
+{
+  "Schema": "rackcad-i64-relay-schema-precheck/v1",
+  "ExpectedSha256": "b687bdd82f286757ed90e50b0f01b977ec4fcad6eb0e00b7e017ba05e3a1852f",
+  "InputSha256": "b687bdd82f286757ed90e50b0f01b977ec4fcad6eb0e00b7e017ba05e3a1852f",
+  "OfficialSchemaBlob": "2deba19606d058fd82b389687934b0c3dfef8c06",
+  "Result": "SCHEMA_VALID",
+  "Diagnostics": []
+}
