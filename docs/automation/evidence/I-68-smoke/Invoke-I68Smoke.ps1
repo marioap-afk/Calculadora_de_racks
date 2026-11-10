@@ -218,6 +218,23 @@ if (Test-Path -LiteralPath (Join-Path $Dir 'smoke-sistemas.xlsx')) {
     }
 }
 
+foreach ($file in 'perf-tipico', 'perf-5000', 'perf-20000') {
+    if (Test-Path -LiteralPath (Join-Path $Dir "$file.xlsx")) {
+        Scenario "rendimiento $file" {
+            param($xl)
+            $sw = [Diagnostics.Stopwatch]::StartNew()
+            $wb = Retry { $xl.Workbooks.Open((Join-Path $Dir "$file.xlsx"), 0, $true) }
+            $open = [math]::Round($sw.Elapsed.TotalSeconds, 1)
+            $pt = PtOf $wb
+            $t = WaitRefreshed $pt 120
+            Say "PERF $file abrir_s=$open refresco_s=$t total_s=$([math]::Round($sw.Elapsed.TotalSeconds, 1))"
+            if ($t -lt 0) { throw 'la dinamica no refresco en 120 s' }
+            $d = Retry { $wb.Worksheets.Item('Por rack') }; $lo = Retry { $d.ListObjects.Item(1) }
+            Check 'S-07' "$file total = SUM de la columna" (Grand $pt) (Retry { $xl.WorksheetFunction.Sum($lo.ListColumns.Item('Cantidad total').DataBodyRange) })
+        }
+    }
+}
+
 Say "RESULT: PASS=$script:passed FAIL=$script:failed"
 [IO.File]::WriteAllText($LogPath, $log.ToString(), [Text.UTF8Encoding]::new($false))
 exit $script:failed

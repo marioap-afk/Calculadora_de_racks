@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using RackCad.Application.Bom;
 using Xunit;
 using static RackCad.Tests.BomExcelTestKit;
@@ -43,6 +44,46 @@ namespace RackCad.Tests
             {
                 Write("smoke-c" + i, SmokeDrawing(30 + i));
             }
+
+            var systems = BomExcelRealSystems.AllTogether(2);
+            Write("smoke-sistemas", systems);
+
+            // Caracterizacion de rendimiento: sin umbrales, solo se registra.
+            var report = new System.Text.StringBuilder();
+            void Measure(string name, ConsolidatedBom bom)
+            {
+                var clock = System.Diagnostics.Stopwatch.StartNew();
+                var bytes = ConsolidatedBomXlsxExporter.ToXlsx(bom);
+                clock.Stop();
+                File.WriteAllBytes(Path.Combine(target, name + ".xlsx"), bytes);
+                var rows = bom.Racks.Sum(r => r.Bom.IsComponentBased ? r.Bom.Components.Sum(c => 1 + c.Pieces.Count) : r.Bom.Lines.Count);
+                report.AppendLine(name + " filas_detalle=" + rows + " generar_ms=" + clock.ElapsedMilliseconds + " bytes=" + bytes.Length);
+            }
+
+            Measure("perf-tipico", systems);
+            Measure("perf-5000", LargeDrawing(50));
+            Measure("perf-20000", LargeDrawing(200));
+            File.WriteAllText(Path.Combine(target, "perf-generacion.txt"), report.ToString());
+        }
+
+        /// <summary>racks × 25 componentes × (1 + 3 piezas) filas, con 500 descripciones distintas como maximo.</summary>
+        private static ConsolidatedBom LargeDrawing(int racks)
+        {
+            var list = new System.Collections.Generic.List<ConsolidatedRackBom>();
+            var description = 0;
+            for (var r = 0; r < racks; r++)
+            {
+                var components = new BomComponent[25];
+                for (var c = 0; c < components.Length; c++)
+                {
+                    var text = "Componente " + (description++ % 500);
+                    components[c] = Comp("Cat", "C" + c, text, 10 + c, 2, Line("P1", "A", text + " a", 10 + c, 1), Line("P2", "B", text + " b", 20 + c, 2), Line("P3", "C", text + " c", 30 + c, 3));
+                }
+
+                list.Add(Tree("Rack " + r, "Selectivo", 1 + (r % 3), components));
+            }
+
+            return ConsolidatedBomBuilder.Build(list);
         }
     }
 }
