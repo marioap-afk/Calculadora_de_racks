@@ -93,9 +93,13 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="0,0,6,6" Padding="2" BorderThickness="1" BorderBrush="{DynamicResource ShellBorderBrush}">
+                        <Border Margin="0,0,6,6" Padding="2">
                             <Border.Style>
+                                <!-- The default border lives in setters of the style, never as attributes of the Border: a value set
+                                     directly on the element outranks the trigger and the active tab would look like the others. -->
                                 <Style TargetType="Border">
+                                    <Setter Property="BorderThickness" Value="1" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellBorderBrush}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsActive}" Value="True">
                                             <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
@@ -132,6 +136,12 @@
                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                     <TextBlock x:Name="BrowserSurfaceStatusText" Text="{Binding Browser.SurfaceStatusText}" Style="{StaticResource OptionalText}"
                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <!-- Explicit reread of the summary of the active tab, from any state of the surface. It is the surface's own button:
+                         there is still one surface and it is reused by every tab. -->
+                    <Button x:Name="BrowserSurfaceReloadButton" Content="Volver a leer" HorizontalAlignment="Left" Margin="0,6,0,0" Padding="10,3"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            AutomationProperties.Name="Volver a leer el resumen"
+                            Click="OnBrowserSurfaceReloadClick" />
                 </StackPanel>
             </Border>
 

@@ -26,19 +26,25 @@ namespace RackCad.Plugin.Workspace
         public IReadOnlyList<NavigationDefinitionFact> ReadDefinitionFacts(SessionId session) => Scan(session, includeReferences: true);
 
         /// <summary>
-        /// The neutral facts of the browser summary (I-64 F3-T2): name, Kind and view of every scanned definition, with no handle of
-        /// any reference. It is the same integrated scan of the same document, run once, and it lists no reference at all.
+        /// The neutral facts of the browser summary (I-64 F3-T2): name, Kind, view and section of every scanned definition that has a
+        /// direct reference in Model Space, with no handle of any reference. It is the same integrated scan of the same document, run
+        /// once. A definition with no such reference (an erased rack stays in the table until a PURGE) is not a rack that is present,
+        /// so it is omitted and its rack answers not found.
         /// </summary>
         public IReadOnlyList<BrowserRackFact> ReadBrowserFacts(SessionId session)
         {
-            var scanned = Scan(session, includeReferences: false);
+            var scanned = Scan(session, includeReferences: true);
             var facts = new List<BrowserRackFact>(scanned.Count);
             foreach (var fact in scanned)
-                facts.Add(new BrowserRackFact(fact.IsInterpretable, fact.EnvelopeId, fact.Kind, fact.View, fact.Name));
+            {
+                if (fact.ModelSpaceReferenceHandles.Count == 0) continue;
+                facts.Add(new BrowserRackFact(fact.IsInterpretable, fact.EnvelopeId, fact.Kind, fact.View, fact.Name, fact.Section));
+            }
+
             return facts;
         }
 
-        // The one place that runs the integrated scan. The references of each definition are listed only when the caller needs them.
+        // The one place that runs the integrated scan. Both reads list the direct Model Space references of each definition.
         private List<NavigationDefinitionFact> Scan(SessionId session, bool includeReferences)
         {
             var facts = new List<NavigationDefinitionFact>();

@@ -27,6 +27,10 @@ namespace RackCad.Plugin.Workspace
         private readonly Func<SessionId, bool> _isSessionAlive;
         private readonly Func<WorkspaceRequest, long, RequestDecision> _authorize;
 
+        // True only while the controller announces a drain (I-64 F3-T2, T2-F2): the one moment in which a presentation of the panel may
+        // ask for a summary. Outside it the notices of AutoCAD (a document switch, a command start or end) only present, never read.
+        private bool _drainNoticeOpen;
+
         public WorkspaceNavigationHost(
             NavigationEcho echo,
             Func<SessionId, long?> nativeInstanceOf,
@@ -59,13 +63,11 @@ namespace RackCad.Plugin.Workspace
             }
         }
 
-        public void OpenDrainNotice()
-        {
-        }
+        /// <summary>Opens the window in which a presentation of the panel may read a summary: the controller opens it around the notice of a drain.</summary>
+        public void OpenDrainNotice() => _drainNoticeOpen = true;
 
-        public void CloseDrainNotice()
-        {
-        }
+        /// <summary>Closes that window; the controller closes it in a finally, so it never stays open.</summary>
+        public void CloseDrainNotice() => _drainNoticeOpen = false;
 
         /// <summary>Whether the session still lives; the browser of the panel destroys the tabs of a session that does not.</summary>
         public bool IsSessionAlive(SessionId session) => _isSessionAlive(session);
@@ -73,12 +75,13 @@ namespace RackCad.Plugin.Workspace
         /// <summary>
         /// The lazy summary of one rack for the browser of the panel (I-64 F3-T2). It answers with a value and has no effect: it
         /// writes no selection, no view and nothing of the drawing, and it does not give the focus back. A failure is contained.
+        /// A read that no explicit action of the user asked for is answered only during the notice of a drain.
         /// </summary>
         public BrowserRackSummary ReadSummary(WorkspaceRequest origin, string rackId, bool userRequested)
         {
             try
             {
-                return ReadSummaryOnActiveDocument(origin, rackId);
+                return ReadSummaryOnActiveDocument(origin, rackId, userRequested);
             }
             catch (System.Exception ex)
             {
@@ -87,15 +90,18 @@ namespace RackCad.Plugin.Workspace
             }
         }
 
-        // In this order: the active document, no command in progress and the editor at rest, the session of the request authorized
-        // for that document, and only then the memory or the read of the summary.
-        private BrowserRackSummary ReadSummaryOnActiveDocument(WorkspaceRequest origin, string rackId)
+        // In this order: the active document, no command in progress and the editor at rest, a read that nobody asked for only while
+        // a drain is announced, the session of the request authorized for that document, and only then the memory or the read of the
+        // summary.
+        private BrowserRackSummary ReadSummaryOnActiveDocument(WorkspaceRequest origin, string rackId, bool userRequested)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
             if (document == null)
                 return BrowserRackSummary.Without(BrowserSummaryStatus.Rejected, "There is no active document.");
             if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
                 return BrowserRackSummary.Without(BrowserSummaryStatus.Busy, "A command is in progress.");
+            if (!userRequested && !_drainNoticeOpen)
+                return BrowserRackSummary.Without(BrowserSummaryStatus.Busy, "The drawing is not read inside a notice of AutoCAD; it is asked again at the next drain.");
 
             var decision = _authorize(origin, document.UnmanagedObject.ToInt64());
             if (decision != RequestDecision.Accepted)

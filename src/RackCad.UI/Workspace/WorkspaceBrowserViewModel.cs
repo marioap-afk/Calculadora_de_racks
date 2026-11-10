@@ -148,8 +148,30 @@ namespace RackCad.UI.Workspace
         /// <summary>Closes the tab without asking anything; if it was active the next one is. Memory only.</summary>
         public void CloseTab(string rackId) => Interact(session => session.Close(rackId));
 
+        /// <summary>
+        /// Asks again for the summary of the active tab, as a new materialization requested by the user, from any state of the surface
+        /// (ready, not found, rejected, failed, waiting). It respects the drawing availability and the action block exactly as a
+        /// presentation does: if the drawing cannot be read nothing is asked and the surface stays pending. Memory only: it never
+        /// reaches the navigation and changes no tab.
+        /// </summary>
         public void ReloadSummary()
         {
+            if (_port == null || _current == null) return;
+
+            try
+            {
+                var rack = _current.ActiveRackId;
+                if (rack == null) return;
+
+                StartSurface(rack);
+                Materialize(userRequested: true);
+                var tabsChanged = RebuildTabs();
+                RaiseAll(tabsChanged);
+            }
+            catch (Exception ex)
+            {
+                ContainFailure(ex);
+            }
         }
 
         // ------------------------------------------------------------------ internals
@@ -177,12 +199,13 @@ namespace RackCad.UI.Workspace
         }
 
         // Brings the live surface to the active tab and publishes what the panel shows. Only a presentation retries a summary that was
-        // waiting; a tab change asks only for the tab that just became the live surface.
+        // waiting; a tab change asks only for the tab that just became the live surface. A presentation asks on its own account
+        // (userRequested false); every explicit interaction of the user asks on his.
         private void Rebuild(bool retryPending, bool userRequested)
         {
             SyncSurface(retryPending, userRequested);
-            RebuildTabs();
-            RaiseAll();
+            var tabsChanged = RebuildTabs();
+            RaiseAll(tabsChanged);
         }
 
         private void SyncSurface(bool retryPending, bool userRequested)
@@ -196,18 +219,21 @@ namespace RackCad.UI.Workspace
 
             // A tab that becomes the live surface starts a new materialization; the same tab presented again does not.
             var started = _surfaceSession != _session || !string.Equals(_surfaceRack, rack, StringComparison.Ordinal);
-            if (started)
-            {
-                _surfaceSession = _session;
-                _surfaceRack = rack;
-                _surfaceState = SurfaceState.Pending;
-                _surfaceName = null;
-                _surfaceKind = null;
-                _surfaceViews = Array.Empty<string>();
-                _surfaceReason = string.Empty;
-            }
+            if (started) StartSurface(rack);
 
             if (started || (retryPending && (_surfaceState == SurfaceState.Pending || _surfaceState == SurfaceState.Busy))) Materialize(userRequested);
+        }
+
+        // The live surface starts waiting for the summary of the rack: nothing of a previous reading stays on it.
+        private void StartSurface(string rack)
+        {
+            _surfaceSession = _session;
+            _surfaceRack = rack;
+            _surfaceState = SurfaceState.Pending;
+            _surfaceName = null;
+            _surfaceKind = null;
+            _surfaceViews = Array.Empty<string>();
+            _surfaceReason = string.Empty;
         }
 
         private void ClearSurface()
@@ -285,8 +311,8 @@ namespace RackCad.UI.Workspace
                 _surfaceReason = ReasonOf(exception);
                 if (_current != null && _surfaceRack != null)
                     _current.ApplySummary(_surfaceRack, BrowserTabStatus.Error, null, null);
-                RebuildTabs();
-                RaiseAll();
+                var tabsChanged = RebuildTabs();
+                RaiseAll(tabsChanged);
             }
             catch (Exception)
             {
@@ -294,7 +320,10 @@ namespace RackCad.UI.Workspace
             }
         }
 
-        private void RebuildTabs()
+        // The strip keeps its instance when the new tabs are equal by value to the ones it shows (T2-F6): a presentation that changed
+        // nothing does not make the view rebuild every container of the strip, which would lose the keyboard focus and a click.
+        // Returns whether the strip changed.
+        private bool RebuildTabs()
         {
             var tabs = new List<WorkspaceBrowserTabItem>();
             if (_current != null)
@@ -308,7 +337,18 @@ namespace RackCad.UI.Workspace
                 }
             }
 
+            if (SameTabs(_tabs, tabs)) return false;
+
             _tabs = tabs;
+            return true;
+        }
+
+        private static bool SameTabs(IReadOnlyList<WorkspaceBrowserTabItem> current, IReadOnlyList<WorkspaceBrowserTabItem> next)
+        {
+            if (current.Count != next.Count) return false;
+            for (var i = 0; i < current.Count; i++)
+                if (!current[i].Equals(next[i])) return false;
+            return true;
         }
 
         private bool IsBlocked => !_canRead || _block != WorkspaceActionBlock.None;
@@ -347,10 +387,10 @@ namespace RackCad.UI.Workspace
         private static string ReasonOf(Exception exception) =>
             string.IsNullOrWhiteSpace(exception?.Message) ? exception?.GetType().Name : exception.Message;
 
-        private void RaiseAll()
+        private void RaiseAll(bool tabsChanged)
         {
             OnPropertyChanged(nameof(IsAvailable));
-            OnPropertyChanged(nameof(Tabs));
+            if (tabsChanged) OnPropertyChanged(nameof(Tabs));
             OnPropertyChanged(nameof(HasTabs));
             OnPropertyChanged(nameof(ActiveRackId));
             OnPropertyChanged(nameof(LiveSurfaceCount));

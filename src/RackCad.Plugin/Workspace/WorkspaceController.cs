@@ -149,7 +149,17 @@ namespace RackCad.Plugin.Workspace
                 LogFault("WorkspaceController.OnDrained", ex);
             }
 
-            NotifyStateChanged();
+            // A presentation may read a rack summary only here (I-64 F3-T2, T2-F2): the window of the navigation host is open just
+            // around this notice and is always closed, so the notices of a document switch or a command never read the drawing.
+            if (_navigation != null) _navigation.OpenDrainNotice();
+            try
+            {
+                NotifyStateChanged();
+            }
+            finally
+            {
+                if (_navigation != null) _navigation.CloseDrainNotice();
+            }
         }
 
         // The one place that raises the notice; a failing subscriber is logged and never reaches the bridge or AutoCAD.

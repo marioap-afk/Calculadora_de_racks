@@ -1,12 +1,15 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using RackCad.Application.Systems.Shared;
 
 namespace RackCad.Application.Workspace
 {
     /// <summary>
     /// Neutral facts of ONE block definition as the host captured them for the browser summary (I-64 F3-T2, D-05). They carry no
     /// handle of any reference: only what the summary projects. They are private to the panel and are not a reusable foundation.
+    /// <see cref="Section"/> is the persisted section of the view (-1 when there is none); with the Kind and the View it is what
+    /// the view codec needs to name the real view of the rack.
     /// </summary>
     public sealed record BrowserRackFact(bool IsInterpretable, string? EnvelopeId, string? Kind, string? View, string? Name, int Section = -1);
 
@@ -123,8 +126,9 @@ namespace RackCad.Application.Workspace
         private static BrowserRackSummary Gone() =>
             BrowserRackSummary.Without(BrowserSummaryStatus.Rejected, "The document of the request is gone.");
 
-        // The first non-blank name and Kind among the interpretable facts of the rack, in reading order; the distinct non-blank
-        // views, ordered; no interpretable fact of that rack means it is not in the drawing. The rack id is compared ignoring case.
+        // The first non-blank name and Kind among the interpretable facts of the rack, in reading order; the distinct views, each
+        // normalized by the view codec and ordered Frontal, Lateral, Planta and then the rest; no interpretable fact of that rack
+        // means it is not in the drawing. The rack id is compared ignoring case.
         private static BrowserRackSummary Project(IReadOnlyList<BrowserRackFact> facts, string rackId)
         {
             string? name = null;
@@ -140,14 +144,38 @@ namespace RackCad.Application.Workspace
                 found = true;
                 if (name == null && !string.IsNullOrWhiteSpace(fact.Name)) name = fact.Name;
                 if (kind == null && !string.IsNullOrWhiteSpace(fact.Kind)) kind = fact.Kind;
-                if (!string.IsNullOrWhiteSpace(fact.View) && !ContainsIgnoreCase(views, fact.View!)) views.Add(fact.View!);
+                var view = ViewOf(fact);
+                if (view != null && !ContainsIgnoreCase(views, view)) views.Add(view);
             }
 
             if (!found)
                 return BrowserRackSummary.Without(BrowserSummaryStatus.NotFound, "The rack is not in the drawing of the session.");
 
-            views.Sort(StringComparer.OrdinalIgnoreCase);
+            views.Sort(CompareViews);
             return BrowserRackSummary.Ready(name, kind, views.ToArray());
+        }
+
+        // The view the rack really has: the canonical view of the codec when the persisted syntax has an address (a Cama persists no
+        // view at all and still has its lateral one) and, when it has none, the raw non-blank text.
+        private static string? ViewOf(BrowserRackFact fact)
+        {
+            var decoded = RackViewCodec.Decode(fact.Kind ?? string.Empty, fact.View!, fact.Section);
+            if (decoded.HasAddress) return decoded.Address.Kind.ToString().ToLowerInvariant();
+            return string.IsNullOrWhiteSpace(fact.View) ? null : fact.View;
+        }
+
+        private static int CompareViews(string left, string right)
+        {
+            var byRank = RankOf(left).CompareTo(RankOf(right));
+            return byRank != 0 ? byRank : StringComparer.OrdinalIgnoreCase.Compare(left, right);
+        }
+
+        private static int RankOf(string view)
+        {
+            if (string.Equals(view, "frontal", StringComparison.OrdinalIgnoreCase)) return 0;
+            if (string.Equals(view, "lateral", StringComparison.OrdinalIgnoreCase)) return 1;
+            if (string.Equals(view, "planta", StringComparison.OrdinalIgnoreCase)) return 2;
+            return 3;
         }
 
         private static bool ContainsIgnoreCase(List<string> values, string value)

@@ -70,6 +70,9 @@ namespace RackCad.UI.Workspace
 
         private void OnBrowserTabCloseClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.CloseTab(RackOf(sender)));
 
+        // The reload of the surface (I-64 F3-T2, T2-F4): one explicit interaction that asks again for the summary of the active tab.
+        private void OnBrowserSurfaceReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadSummary());
+
         private static string RackOf(object sender) => ((sender as FrameworkElement)?.DataContext as WorkspaceBrowserTabItem)?.RackId;
 
         private void Contained(Action interaction)
