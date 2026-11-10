@@ -512,6 +512,18 @@ namespace RackCad.UI.Tests
                 port.Calls.Select(c => c.View).ToArray());
         }
 
+        [Fact]
+        public async Task ACommandInProgressIsExplainedAndDoesNotSayThatTheDrawingChanged()
+        {
+            var port = new WorkspaceNavigationPortDouble { Result = WorkspaceNavigationResult.Stale("A command is in progress.", true) };
+            var model = Ready(port);
+
+            await Act(model, NavigationActionKind.View);
+
+            Assert.Contains("comando en curso", model.ResultText);
+            Assert.DoesNotContain("cambi", model.ResultText);
+        }
+
         // ------------------------------------------------------------------ INV-F2T2B-06: results as values, in Spanish
 
         [Fact]

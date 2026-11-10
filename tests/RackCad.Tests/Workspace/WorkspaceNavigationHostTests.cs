@@ -480,6 +480,7 @@ public class WorkspaceNavigationHostTests
         var run = Src.BodyOf(Host(), @"private\s+WorkspaceNavigationResult\s+RunOnActiveDocument\s*\(");
 
         Assert.Matches(@"string\.IsNullOrEmpty\(\s*\w+\.CommandInProgress\s*\)", run);
+        Assert.Matches(@"\.Editor\.IsQuiescent", run);
         Assert.Contains("WorkspaceNavigationResult.Stale(", run);
     }
 
