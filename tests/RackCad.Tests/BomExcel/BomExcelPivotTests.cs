@@ -130,7 +130,7 @@ namespace RackCad.Tests
             var lengths = body.Skip(start + 1).TakeWhile(r => Col(r, "A").IsNumber).Select(r => (Col(r, "A").Number, Col(r, "B").Number)).ToList();
 
             Assert.Equal(new[] { 9d, 10d, 100d, 144d }, lengths.Select(l => l.Item1));
-            Assert.Equal(new[] { 6d, 2d, 2d, 24d + 10d }, lengths.Select(l => l.Item2));
+            Assert.Equal(new[] { 6d, 2d, 2d, 12d + 10d }, lengths.Select(l => l.Item2));
         }
 
         [Fact]

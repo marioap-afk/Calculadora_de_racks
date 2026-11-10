@@ -5,18 +5,42 @@ namespace RackCad.Application.Bom
     /// <summary>Renders a <see cref="ConsolidatedBom"/> as a real <c>.xlsx</c>: "Por rack" (each rack's componentes + piezas,
     /// a native Excel table) and "Total del dibujo" (the drawing-wide grand total, by component).
     /// <para>"Por rack" quantities are for ONE copy of the rack, so "Cantidad total" = Cantidad × Copias, computed here and
-    /// nowhere else. "Total del dibujo" gets no such column: <see cref="ConsolidatedBomBuilder"/> already multiplied it.</para></summary>
+    /// nowhere else. "Total del dibujo" gets no such column: <see cref="ConsolidatedBomBuilder"/> already multiplied it.</para>
+    /// <para>"Resumen" is a native PivotTable over that table. It opens with no filter selected, so a row can add a component
+    /// and its own pieces when they share description and length; the sheet warns about it and nothing is hidden or merged.</para></summary>
     public static class ConsolidatedBomXlsxExporter
     {
         /// <summary>Stable name of the detail table in every exported workbook.</summary>
         public const string DetailTableName = "RackCadBOM";
 
+        /// <summary>Stable name of the summary PivotTable.</summary>
+        public const string SummaryPivotName = "ResumenBOM";
+
         public static byte[] ToXlsx(ConsolidatedBom consolidated)
             => XlsxWriter.Build(new[]
             {
                 new XlsxSheet("Por rack", PerRackRows(consolidated), new XlsxTableDefinition(DetailTableName)),
-                new XlsxSheet("Total del dibujo", GrandTotalRows(consolidated))
+                new XlsxSheet("Total del dibujo", GrandTotalRows(consolidated)),
+                new XlsxSheet("Resumen", SummaryPivot())
             });
+
+        private static XlsxPivotDefinition SummaryPivot()
+            => new XlsxPivotDefinition(
+                SummaryPivotName,
+                DetailTableName,
+                new[] { "Rack", "Nivel" },
+                new[] { "Descripcion", "Longitud (in)" },
+                "Cantidad total",
+                "Suma de Cantidad total",
+                "Descripcion / Longitud",
+                "Total general",
+                "(Todas)",
+                new[]
+                {
+                    XlsxCell.Str("Atención: con Nivel en (Todas) la suma no representa necesariamente un total físico.", bold: true),
+                    XlsxCell.Str("Pueden coexistir componentes y piezas relacionadas; usa el filtro Nivel para verlos por separado."),
+                    XlsxCell.Str("Las camas de Dinámico y Push Back solo aparecen como Componente. Si los filtros salen vacíos, usa Datos > Actualizar todo.")
+                });
 
         private static List<IReadOnlyList<XlsxCell>> PerRackRows(ConsolidatedBom consolidated)
         {

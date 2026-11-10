@@ -24,6 +24,11 @@ namespace RackCad.Application.Bom
 
         public static XlsxCell Str(string text, bool bold = false) => new XlsxCell(text ?? string.Empty, null, bold);
         public static XlsxCell Num(double value, bool bold = false) => new XlsxCell(null, value, bold);
+
+        /// <summary>A position left empty: nothing is written for it.</summary>
+        public static XlsxCell Blank => new XlsxCell(null, null, false);
+
+        public bool IsBlank => Text == null && !Number.HasValue;
     }
 
     /// <summary>Declares a sheet's rows as a native Excel table: the first row is its header, the rest its data.</summary>
@@ -79,13 +84,17 @@ namespace RackCad.Application.Bom
     /// <summary>
     /// Writes a minimal, valid <c>.xlsx</c> (OOXML SpreadsheetML) as a byte array with NO external dependency — just a
     /// ZIP (<see cref="System.IO.Compression"/>) of hand-written XML parts. Cells are inline strings or numbers; a bold
-    /// cell style is available for headers. Excel opens the result without a repair prompt. Pure/testable (no AutoCAD).
+    /// cell style is available for headers; a sheet can be a native table, and another a native PivotTable over it (see
+    /// <see cref="XlsxPivotParts"/>). Excel opens the result without a repair prompt. Pure/testable (no AutoCAD).
     /// </summary>
     public static class XlsxWriter
     {
         private const string Ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
         private const string RelNs = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
         private const string PackageRelNs = "http://schemas.openxmlformats.org/package/2006/relationships";
+
+        /// <summary>Every ZIP entry carries this date, so the same input always yields the same bytes.</summary>
+        private static readonly DateTimeOffset EntryTimestamp = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
         public static byte[] Build(IReadOnlyList<XlsxSheet> sheets)
         {
@@ -102,21 +111,30 @@ namespace RackCad.Application.Bom
                 using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
                 {
                     var tableCount = sheets.Count(sheet => sheet.Table != null);
-                    Write(zip, "[Content_Types].xml", ContentTypes(sheets.Count, tableCount));
+                    var pivotCount = sheets.Count(sheet => sheet.Pivot != null);
+                    Write(zip, "[Content_Types].xml", ContentTypes(sheets.Count, tableCount, pivotCount));
                     Write(zip, "_rels/.rels", RootRels());
-                    Write(zip, "xl/workbook.xml", Workbook(names));
-                    Write(zip, "xl/_rels/workbook.xml.rels", WorkbookRels(sheets.Count));
+                    Write(zip, "xl/workbook.xml", Workbook(names, pivotCount));
+                    Write(zip, "xl/_rels/workbook.xml.rels", WorkbookRels(sheets.Count, pivotCount));
                     Write(zip, "xl/styles.xml", Styles());
                     var tableId = 0;
+                    var pivotId = 0;
                     for (var i = 0; i < sheets.Count; i++)
                     {
                         var sheetNumber = (i + 1).ToString(CultureInfo.InvariantCulture);
-                        Write(zip, "xl/worksheets/sheet" + sheetNumber + ".xml", Sheet(sheets[i]));
+                        if (sheets[i].Pivot != null)
+                        {
+                            pivotId++;
+                            WritePivot(zip, sheets, sheets[i].Pivot, sheetNumber, pivotId);
+                            continue;
+                        }
+
+                        Write(zip, "xl/worksheets/sheet" + sheetNumber + ".xml", Sheet(sheets[i].Rows, sheets[i].Table != null));
                         if (sheets[i].Table != null)
                         {
                             tableId++;
                             var tableNumber = tableId.ToString(CultureInfo.InvariantCulture);
-                            Write(zip, "xl/worksheets/_rels/sheet" + sheetNumber + ".xml.rels", SheetRels("../tables/table" + tableNumber + ".xml"));
+                            Write(zip, "xl/worksheets/_rels/sheet" + sheetNumber + ".xml.rels", SheetRels("table", "../tables/table" + tableNumber + ".xml"));
                             Write(zip, "xl/tables/table" + tableNumber + ".xml", Table(sheets[i], tableId));
                         }
                     }
@@ -126,16 +144,35 @@ namespace RackCad.Application.Bom
             }
         }
 
+        private static void WritePivot(ZipArchive zip, IReadOnlyList<XlsxSheet> sheets, XlsxPivotDefinition pivot, string sheetNumber, int pivotId)
+        {
+            var source = sheets.FirstOrDefault(sheet => sheet.Table != null && string.Equals(sheet.Table.Name, pivot.SourceTable, StringComparison.Ordinal));
+            if (source == null)
+            {
+                throw new InvalidOperationException("La tabla dinamica '" + pivot.Name + "' apunta a la tabla inexistente '" + pivot.SourceTable + "'.");
+            }
+
+            var number = pivotId.ToString(CultureInfo.InvariantCulture);
+            var columns = XlsxPivotParts.ColumnsOf(source);
+            var layout = XlsxPivotLayout.Compute(source, pivot);
+            Write(zip, "xl/worksheets/sheet" + sheetNumber + ".xml", Sheet(layout.Rows, hasTable: false));
+            Write(zip, "xl/worksheets/_rels/sheet" + sheetNumber + ".xml.rels", SheetRels("pivotTable", "../pivotTables/pivotTable" + number + ".xml"));
+            Write(zip, "xl/pivotTables/pivotTable" + number + ".xml", XlsxPivotParts.TableDefinition(pivot, columns, layout, pivotId));
+            Write(zip, "xl/pivotTables/_rels/pivotTable" + number + ".xml.rels", SheetRels("pivotCacheDefinition", "../pivotCache/pivotCacheDefinition" + number + ".xml"));
+            Write(zip, "xl/pivotCache/pivotCacheDefinition" + number + ".xml", XlsxPivotParts.CacheDefinition(pivot, columns));
+        }
+
         private static void Write(ZipArchive zip, string path, string content)
         {
             var entry = zip.CreateEntry(path, CompressionLevel.Optimal);
+            entry.LastWriteTime = EntryTimestamp;
             using (var writer = new StreamWriter(entry.Open(), new UTF8Encoding(false)))
             {
                 writer.Write(content);
             }
         }
 
-        private static string ContentTypes(int sheetCount, int tableCount)
+        private static string ContentTypes(int sheetCount, int tableCount, int pivotCount)
         {
             var builder = new StringBuilder();
             builder.Append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
@@ -156,6 +193,15 @@ namespace RackCad.Application.Bom
                     .Append(".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml\"/>");
             }
 
+            for (var i = 0; i < pivotCount; i++)
+            {
+                var number = (i + 1).ToString(CultureInfo.InvariantCulture);
+                builder.Append("<Override PartName=\"/xl/pivotTables/pivotTable").Append(number)
+                    .Append(".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml\"/>");
+                builder.Append("<Override PartName=\"/xl/pivotCache/pivotCacheDefinition").Append(number)
+                    .Append(".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheDefinition+xml\"/>");
+            }
+
             builder.Append("</Types>");
             return builder.ToString();
         }
@@ -166,7 +212,7 @@ namespace RackCad.Application.Bom
                + "<Relationship Id=\"rId1\" Type=\"" + RelNs + "/officeDocument\" Target=\"xl/workbook.xml\"/>"
                + "</Relationships>";
 
-        private static string Workbook(IReadOnlyList<string> names)
+        private static string Workbook(IReadOnlyList<string> names, int pivotCount)
         {
             var builder = new StringBuilder();
             builder.Append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
@@ -178,11 +224,24 @@ namespace RackCad.Application.Bom
                     .Append("\" r:id=\"rId").Append((i + 1).ToString(CultureInfo.InvariantCulture)).Append("\"/>");
             }
 
-            builder.Append("</sheets></workbook>");
+            builder.Append("</sheets>");
+            if (pivotCount > 0)
+            {
+                builder.Append("<pivotCaches>");
+                for (var i = 0; i < pivotCount; i++)
+                {
+                    builder.Append("<pivotCache cacheId=\"").Append((i + 1).ToString(CultureInfo.InvariantCulture))
+                        .Append("\" r:id=\"rId").Append((names.Count + 2 + i).ToString(CultureInfo.InvariantCulture)).Append("\"/>");
+                }
+
+                builder.Append("</pivotCaches>");
+            }
+
+            builder.Append("</workbook>");
             return builder.ToString();
         }
 
-        private static string WorkbookRels(int sheetCount)
+        private static string WorkbookRels(int sheetCount, int pivotCount)
         {
             var builder = new StringBuilder();
             builder.Append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
@@ -197,6 +256,13 @@ namespace RackCad.Application.Bom
             // Styles get an id AFTER the sheets so it can't collide with a sheet rId.
             builder.Append("<Relationship Id=\"rId").Append((sheetCount + 1).ToString(CultureInfo.InvariantCulture))
                 .Append("\" Type=\"").Append(RelNs).Append("/styles\" Target=\"styles.xml\"/>");
+            for (var i = 0; i < pivotCount; i++)
+            {
+                builder.Append("<Relationship Id=\"rId").Append((sheetCount + 2 + i).ToString(CultureInfo.InvariantCulture))
+                    .Append("\" Type=\"").Append(RelNs).Append("/pivotCacheDefinition\" Target=\"pivotCache/pivotCacheDefinition")
+                    .Append((i + 1).ToString(CultureInfo.InvariantCulture)).Append(".xml\"/>");
+            }
+
             builder.Append("</Relationships>");
             return builder.ToString();
         }
@@ -213,26 +279,36 @@ namespace RackCad.Application.Bom
                + "<xf numFmtId=\"0\" fontId=\"1\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"1\"/></cellXfs>"
                + "</styleSheet>";
 
-        private static string Sheet(XlsxSheet sheet)
+        private static string Sheet(IReadOnlyList<IReadOnlyList<XlsxCell>> rows, bool hasTable)
         {
             var builder = new StringBuilder();
             builder.Append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
             builder.Append("<worksheet xmlns=\"").Append(Ns).Append('"');
-            if (sheet.Table != null)
+            if (hasTable)
             {
                 builder.Append(" xmlns:r=\"").Append(RelNs).Append('"');
             }
 
             builder.Append("><sheetData>");
 
-            for (var r = 0; r < sheet.Rows.Count; r++)
+            for (var r = 0; r < rows.Count; r++)
             {
-                var row = sheet.Rows[r];
+                var row = rows[r];
+                if (row.All(cell => cell.IsBlank))
+                {
+                    continue;
+                }
+
                 var rowNumber = (r + 1).ToString(CultureInfo.InvariantCulture);
                 builder.Append("<row r=\"").Append(rowNumber).Append("\">");
                 for (var c = 0; c < row.Count; c++)
                 {
                     var cell = row[c];
+                    if (cell.IsBlank)
+                    {
+                        continue;
+                    }
+
                     var reference = ColumnName(c) + rowNumber;
                     var style = cell.Bold ? " s=\"1\"" : string.Empty;
                     if (cell.Number.HasValue)
@@ -251,7 +327,7 @@ namespace RackCad.Application.Bom
             }
 
             builder.Append("</sheetData>");
-            if (sheet.Table != null)
+            if (hasTable)
             {
                 builder.Append("<tableParts count=\"1\"><tablePart r:id=\"rId1\"/></tableParts>");
             }
@@ -260,10 +336,10 @@ namespace RackCad.Application.Bom
             return builder.ToString();
         }
 
-        private static string SheetRels(string tableTarget)
+        private static string SheetRels(string relationType, string target)
             => "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
                + "<Relationships xmlns=\"" + PackageRelNs + "\">"
-               + "<Relationship Id=\"rId1\" Type=\"" + RelNs + "/table\" Target=\"" + tableTarget + "\"/>"
+               + "<Relationship Id=\"rId1\" Type=\"" + RelNs + "/" + relationType + "\" Target=\"" + target + "\"/>"
                + "</Relationships>";
 
         /// <summary>
@@ -402,7 +478,7 @@ namespace RackCad.Application.Bom
             return builder.ToString();
         }
 
-        private static string EscapeAttr(string value)
+        internal static string EscapeAttr(string value)
             => EscapeText(value).Replace("\"", "&quot;");
     }
 }
