@@ -1,0 +1,61 @@
+===== S1_apertura_filtros_edicion
+CAPTION = m1.xlsx
+TABLE = RackCadBOM A1:J10 autofiltro=True estilo=TableStyleMedium2 rayas=True
+PIVOT = ResumenBOM fuente=RackCadBOM rango=A1:B16
+FILTROS = Rack=(All) ; Nivel=(All)
+FILAS = Descripcion -> Longitud (in)
+VALOR = Suma de Cantidad total funcion=-4157 (-4157=SUM) origen=Cantidad total
+PASS AC-07 SUM(columna)=total pivote real=120 esperado=120
+PASS grand real=120 esperado=120
+   4 | Descripcion / Longitud | Suma de Cantidad total
+   5 |  | 10
+   6 | 12 | 10
+   7 | Larguero 96 | 48
+   8 | 96 | 48
+   9 | Poste C3 | 32
+   10 | 9 | 6
+   11 | 10 | 2
+   12 | 100 | 2
+   13 | 144 | 22
+   14 | Rodillo | 30
+   15 | 40.5 | 30
+   16 | Total general | 120
+PASS AC-03/AC-08 orden numerico Poste real=9,10,100,144 esperado=9,10,100,144
+PASS AC-02 Poste C3/144 suma real=22 esperado=22
+ITEMS_RACK = R-A, R-B, R-C, R-D ; ITEMS_NIVEL = Componente, Pieza
+PASS AC-04 Rack=R-A real=66 esperado=66
+PASS AC-06 Rack=R-A y Nivel=Pieza real=42 esperado=42
+PASS AC-05 Nivel=Pieza real=96 esperado=96
+PASS AC-05 Nivel=Componente real=24 esperado=24
+PASS AC-04 varios racks (sin R-C) real=90 esperado=90
+PASS sin filtros real=120 esperado=120
+PASS AC-15 editar Cantidad total y actualizar real=190 esperado=190
+PASS R-01 Cantidad total NO cambia al editar Copias/Cantidad real=100 esperado=100
+PASS R-01 pivote igual tras editar solo Copias/Cantidad real=190 esperado=190
+PASS R-01 fila nueva: Cantidad total queda vacia real= esperado=
+TABLA_AMPLIADA = A1:J11
+PASS AC-15 fila nueva y actualizar real=193 esperado=193
+FUENTE_TRAS_AMPLIAR = RackCadBOM rango=A1:B18 items_rack=R-A, R-B, R-C, R-D, R-E
+REPAIR_LOGS_NUEVOS = 0
+===== S2_vista_protegida_y_habilitar_edicion
+PV used=A1:B16 A5='' B5=10
+PASS R-02 tras habilitar edicion real=120 esperado=120
+TRAS_EDIT RefreshDate=11/09/2026 19:51:56 items_rack=R-A, R-B, R-C, R-D
+   5 |  | 10
+   6 | 12 | 10
+   7 | Larguero 96 | 48
+   8 | 96 | 48
+REPAIR_LOGS_NUEVOS = 0
+===== S3_excel_ya_abierto_encadenado_con_objetos_vivos
+LIBRO1 grand=120
+LIBRO2 sin_tocar grand=120 items_rack=[R-A, R-B, R-C, R-D] RefreshDate=11/09/2026 19:52:13
+PASS R-03 Actualizar manual recupera real=120 esperado=120
+LIBRO2 tras_actualizar items_rack=R-A, R-B, R-C, R-D
+REPAIR_LOGS_NUEVOS = 0
+===== S4_sin_refresco_al_abrir_y_Actualizar_manual
+CAPTION = m5_sin_refresh.xlsx
+ESTADO_SIN_REFRESCO celdas: A5='' B5=10 B16=120
+ESTADO_SIN_REFRESCO items_rack=error: No se puede obtener la propiedad Item de la clase PivotItems.
+PASS R-03 Actualizar manual recupera desde sin refresco real=120 esperado=120
+TRAS_ACTUALIZAR items_rack=R-A, R-B, R-C, R-D
+REPAIR_LOGS_NUEVOS = 0

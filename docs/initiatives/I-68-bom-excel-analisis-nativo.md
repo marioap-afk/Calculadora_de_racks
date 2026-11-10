@@ -8,7 +8,7 @@ workflow: V2
 conceptual_initiative: I-68
 delivery_unit: I-68
 archetype: EXTENSION
-materiality: [M-06]
+materiality: [M-04, M-06]
 branch: feature/bom-excel-analisis-nativo
 base_branch: main
 priority: high
@@ -19,13 +19,13 @@ hot_files: []
 coordination_strategy: unidad unica; se comprueba la interseccion con las ramas activas en cada reentrada (DC-07)
 context_packs: []
 consumes: [BillOfMaterials, ConsolidatedBom, ConsolidatedBomBuilder, XlsxWriter]
-extends: [XlsxWriter]
-introduces: []
+extends: []
+introduces: [capacidad de Table y PivotTable nativas en XlsxWriter]
 discovery_ref: docs/automation/evidence/I-68-evidence.md
-freeze_ref: docs/initiatives/I-68-proposal-v1.md
+freeze_ref: docs/initiatives/I-68-proposal-v2.md
 freeze_delta_ref:
 amendment_refs: []
-ov_assignment_ref: docs/initiatives/I-68-proposal-v1.md
+ov_assignment_ref: docs/initiatives/I-68-proposal-v2.md
 decision_refs: [docs/automation/decisions/I-68.md]
 evidence_ref: docs/automation/evidence/I-68-evidence.md
 automation_state_path:
@@ -50,7 +50,7 @@ Unit: `I-68`. Rama: `feature/bom-excel-analisis-nativo`. Autorización: orden di
 ## 1. Identidad y agrupación
 
 Iniciativa conceptual y unidad de entrega únicas. Arquetipo inicial **EXTENSION**, fijado por el Owner como punto de partida;
-Discovery propone elevarlo a **FOUNDATION EVOLUTION** por M-06 (LIFECYCLE §3); `archetype` cambia cuando el Coordinator lo confirme tras la decisión D-0 del Owner.
+Discovery propone elevarlo a **FOUNDATION EVOLUTION** por M-04 y M-06 (LIFECYCLE §3); `archetype` cambia cuando el Coordinator lo confirme tras la decisión D-0 del Owner.
 
 ## 2. Objetivo
 
@@ -67,14 +67,15 @@ fórmulas BOM, Expression Engine, RAM Elements, reglas nuevas de BOM, consolidac
 
 ```text
 Consumes: BillOfMaterials, ConsolidatedBom, ConsolidatedBomBuilder, XlsxWriter
-Extends: XlsxWriter (Table y PivotTable)
-Introduces: ninguna fundación nueva
+Extends: ninguno
+Introduces: capacidad de Table y PivotTable nativas en XlsxWriter (punto de extensión, M-06)
 ```
 
 ## 5. Discovery, decisiones y Freeze
 
 - Discovery: [evidencia](../automation/evidence/I-68-evidence.md)
-- Freeze: [Proposal V1](I-68-proposal-v1.md), sin congelar
+- Freeze: [Proposal V2](I-68-proposal-v2.md), sin congelar
+- ADR: [0051](../adr/0051-exportacion-excel-nativa-sobre-la-plataforma.md), propuesto
 - Decisiones: [decisions/I-68.md](../automation/decisions/I-68.md)
 
 ## 6. Dependencias, archivos calientes y coordinación
@@ -84,7 +85,7 @@ Sin dependencias previas. Se comprueba en cada reentrada que ninguna rama activa
 ## 7. Owner Validation
 
 - Requiere Owner Validation: sí, la salida es directamente visible para el usuario.
-- Se valida en Excel real con un XLSX generado por RACKBOMTOTAL; asignación en la [propuesta](I-68-proposal-v1.md) §12.
+- Se valida en Excel real con un XLSX generado por RACKBOMTOTAL; asignación en la [propuesta](I-68-proposal-v2.md) §12.
 
 ## 8. Evidencia y entrega
 
