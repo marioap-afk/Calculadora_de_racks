@@ -136,7 +136,7 @@ Excel 16.0 build 20527, interfaz es-ES, COM, instancia oculta propia, solo lectu
 | P-09 | ¿Es fragil listar valores en la definicion? | **Si. `Workbooks.Open` falla, con alertas desactivadas,** si Longitud es toda entera y falta `containsInteger`, si una fila tiene una variante de mayusculas listada aparte (t3) y si Rack la tiene (t5) |
 | P-10 | Definicion minima sin listas de valores | Evita las tres formas de P-09: abre, Excel reconstruye, ordena segun su idioma y funde mayusculas (Poste 9). Celdas sobrantes desaparecen. Longitudes decimales separadas. Vista protegida muestra las celdas previas |
 | P-11 | ¿Refresca en cada forma de abrir? | Si en 5 escenarios de instancia limpia: nueva, con libro en blanco, tras cerrar otro, con otra dinamica abierta, lectura-escritura |
-| P-12 | Limitacion observada al principio | En los dos primeros bucles encadenados, t2, t7 y t8 no refrescaron y t4 se vio inconsistente; solo t1 y t6, los primeros de cada corrida, refrescaron. Explicado por P-17 |
+| P-12 | Limitacion observada al principio | En los dos primeros bucles encadenados, t2, t7 y t8 no refrescaron y t4 se vio inconsistente; solo t1 y t6, los primeros de cada corrida, refrescaron. Compatible con P-17; la representacion inconsistente de t4 no queda cubierta |
 | **P-13** | **Diseño recomendado** (minima + valor), longitudes 9, 10, 100, 144 y 40.5 | Sin reparacion. Campos y xlSum. Total 120 = SUM de la columna. R-A 66; Pieza 96; Componente 24; R-A + Pieza 42; varios racks 90. Misma Descripcion y Longitud suman 22; orden 9, 10, 100, 144. Editar Cantidad total: 120 → 190. Editar solo Copias o Cantidad: no cambia. Fila nueva: Cantidad total vacia; con valor, 193; Table A1:J11; fuente sigue siendo la tabla |
 | **P-14** | Vista protegida, habilitar edicion y falta de refresco | Vista protegida muestra las celdas. Tras habilitar edicion: refresca, 120. Con `refreshOnLoad=0` (simulacion): celdas visibles, los valores del filtro no se pueden leer; Actualizar recupera 120 |
 | **P-15** | Estado inicial de Nivel y nota | «(Todas)»: Larguero 48, total 90. Pieza inicial (solo Nivel lista sus literales): Larguero 24, total 66, abre sin reparacion; con BOM vacio tambien. La nota en D1 se conserva al actualizar |
@@ -188,5 +188,5 @@ Discovery DC-01..09 completo. EXP revisadas, incluidos negativos. Sin clase A ab
 | Arquetipo inicial / propuesto | EXTENSION / FOUNDATION EVOLUTION (M-04, M-06) |
 | Rondas Discovery | 1 |
 | EXP activadas | 04, 05, 06, 08, 09 |
-| Rondas Architect | 2, en decisiones §6 |
+| Rondas Architect | 4, en decisiones §6; 0 REQUIRED abiertos sobre Proposal V4 |
 | Candidato | no existe |
