@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F3-T2-BROWSER-UI: emitir el contrato con BaseSha y MainSha medidos; planificacion del Controller, A1-A8, nc4, Worker, CI, verificacion y controles"
+  next_action: "F3-T2-BROWSER-UI: contrato emitido (AuthorityRevision f6923a28); siguiente: planificacion del Controller, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual

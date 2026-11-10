@@ -5964,3 +5964,11 @@ revisar:
 **Pruebas:** Core 16393/16393; UI 1792 y 17 omitidas. Núcleo puro: sin AutoCAD.
 
 **Siguiente:** F3-T2-BROWSER-UI.
+
+## 105. Contrato de F3-T2-BROWSER-UI
+
+**Autoridad:** orden del Owner (§102). `AuthorityRevision` `f6923a288c6d65deb096cd3b3c00399d158c136c`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`, medidas al emitir.
+
+**Contrato:** `I-64-pilot/F3-T2-BROWSER-UI/coordinator/gate-contract.json`. Nueve archivos nuevos y doce candidatos en Application, UI, Plugin y pruebas. Attempt 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
