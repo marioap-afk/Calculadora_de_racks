@@ -12,12 +12,12 @@ namespace RackCad.Plugin.Workspace
     /// (<c>NavigationTargets</c>, <c>NavigationActionPolicy</c>) with AutoCAD. It instantiates exactly one of each and nothing
     /// derives a target anywhere else.
     ///
-    /// Every action runs in command context, through the public <c>DocumentCollection.ExecuteInCommandContextAsync</c> and
-    /// nothing else: the asynchronous part is only a way of getting the right execution context, never background work, and
-    /// every task is awaited. Inside the callback, in this order: the active document, the session of the request, the
-    /// existence and the attribution of the targets, the decision of the policy, the effects, the capture of the result and
-    /// the return of the focus to the drawing. Any read of the drawing and any effect of the action happens inside that
-    /// callback, so a session that went stale, another active document or a target that vanished means zero effects.
+    /// Every action runs synchronously on the application context, with the document locked and only when no command is in
+    /// progress (D-08: the internal command of <c>ExecuteInCommandContextAsync</c> cancels the implicit selection and the view
+    /// does not survive it, as Smoke-NAV showed). In this order, in one step: the active document, no command running, the lock,
+    /// the session of the request, the existence and the attribution of the targets, the decision of the policy, the effects,
+    /// the capture of the result and the return of the focus to the drawing. A session that went stale, another active
+    /// document or a target that vanished means zero effects.
     /// </summary>
     public sealed class WorkspaceNavigationHost : IWorkspaceNavigationPort
     {
@@ -53,7 +53,7 @@ namespace RackCad.Plugin.Workspace
             }
         }
 
-        public async Task<WorkspaceNavigationResult> ExecuteAsync(
+        public Task<WorkspaceNavigationResult> ExecuteAsync(
             WorkspaceRequest origin,
             string rackId,
             NavigationActionKind action,
@@ -62,17 +62,11 @@ namespace RackCad.Plugin.Workspace
             NavigationActionKind locateWith = NavigationActionKind.View)
         {
             var request = new WorkspaceNavigationRequest(origin, rackId, action, copyIndex, view, locateWith);
-            var result = WorkspaceNavigationResult.Failed("The navigation did not run.");
+            WorkspaceNavigationResult result;
 
             try
             {
-                await AcApplication.DocumentManager.ExecuteInCommandContextAsync(
-                    state =>
-                    {
-                        result = RunInCommandContext(request);
-                        return Task.CompletedTask;
-                    },
-                    null);
+                result = RunOnActiveDocument(request);
             }
             catch (System.Exception ex)
             {
@@ -80,29 +74,25 @@ namespace RackCad.Plugin.Workspace
                 result = WorkspaceNavigationResult.Failed(ex.Message);
             }
 
-            return result;
+            return Task.FromResult(result);
         }
 
-        // Runs inside the command context. A failure is contained and becomes a Failed value; the result is captured before
-        // the focus goes back to the drawing.
-        private WorkspaceNavigationResult RunInCommandContext(WorkspaceNavigationRequest request)
+        // Runs in one synchronous step on the application context, with the document locked. A running command means the panel
+        // acted on old information, so nothing happens and the panel refreshes. The result is captured before the focus goes
+        // back to the drawing.
+        private WorkspaceNavigationResult RunOnActiveDocument(WorkspaceNavigationRequest request)
         {
-            var result = WorkspaceNavigationResult.Failed("The navigation did not run.");
-            Autodesk.AutoCAD.ApplicationServices.Document document = null;
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+            if (document == null)
+                return WorkspaceNavigationResult.Rejected("There is no active document.", NavigationActionVerdict.RejectedSessionMismatch);
+            if (!string.IsNullOrEmpty(document.CommandInProgress))
+                return WorkspaceNavigationResult.Stale("A command is in progress.", true);
 
-            try
+            WorkspaceNavigationResult result;
+            using (document.LockDocument())
             {
-                document = AcApplication.DocumentManager.MdiActiveDocument;
-                if (document == null)
-                    return WorkspaceNavigationResult.Rejected("There is no active document.", NavigationActionVerdict.RejectedSessionMismatch);
-
                 var decision = _authorize(request.Origin, document.UnmanagedObject.ToInt64());
                 result = _runner.Run(decision, document.Database.TileMode, request, _effects);
-            }
-            catch (System.Exception ex)
-            {
-                LogFault("WorkspaceNavigationHost.RunInCommandContext", ex);
-                result = WorkspaceNavigationResult.Failed(ex.Message);
             }
 
             if (result.IsExecuted) ReturnFocusToDrawing(document);

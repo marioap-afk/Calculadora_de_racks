@@ -52,9 +52,14 @@ namespace RackCad.Plugin.Workspace
         {
             var document = ActiveDocumentOf(session);
             using (document.LockDocument())
-            using (var transaction = document.Database.TransactionManager.StartTransaction())
             {
-                var extents = ExtentsOfTarget(document, transaction, handle);
+                // The transaction only reads: closing it without Commit would roll a view written inside it back (D-08).
+                Extents3d extents;
+                using (var transaction = document.Database.TransactionManager.StartTransaction())
+                {
+                    extents = ExtentsOfTarget(document, transaction, handle);
+                }
+
                 var editor = document.Editor;
                 using (var view = editor.GetCurrentView())
                 {
@@ -89,9 +94,14 @@ namespace RackCad.Plugin.Workspace
         {
             var document = ActiveDocumentOf(session);
             using (document.LockDocument())
-            using (var transaction = document.Database.TransactionManager.StartTransaction())
             {
-                var extents = ExtentsOfTarget(document, transaction, handle);
+                // The transaction only reads: closing it without Commit would roll a view written inside it back (D-08).
+                Extents3d extents;
+                using (var transaction = document.Database.TransactionManager.StartTransaction())
+                {
+                    extents = ExtentsOfTarget(document, transaction, handle);
+                }
+
                 var editor = document.Editor;
                 using (var view = editor.GetCurrentView())
                 {
