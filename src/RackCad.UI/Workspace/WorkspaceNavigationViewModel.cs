@@ -292,6 +292,8 @@ namespace RackCad.UI.Workspace
                         : "La navegación necesita el Espacio Modelo; el panel no cambia de espacio. Vuelve a Modelo y repite la acción.";
                 case WorkspaceNavigationStatus.Rejected:
                     return "La petición pertenece a otro documento; no se hizo nada.";
+                case WorkspaceNavigationStatus.Stale when !result.Verdict.HasValue && result.RefreshRequired:
+                    return "Hay un comando en curso; no se hizo nada. Termínalo y repite la acción.";
                 case WorkspaceNavigationStatus.Stale:
                     return result.RefreshRequired
                         ? "El dibujo cambió desde que se mostró el panel; no se hizo nada. El panel se actualiza."

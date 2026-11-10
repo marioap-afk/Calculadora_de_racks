@@ -87,7 +87,7 @@ namespace RackCad.Application.Workspace
 
     /// <summary>
     /// The port through which the panel navigates the drawing (I-64 D-07). No host type crosses it. Every request carries the
-    /// session that originated it; the host revalidates inside the command context and answers with an immutable value.
+    /// session that originated it; the host revalidates with the document locked and answers with an immutable value.
     /// </summary>
     public interface IWorkspaceNavigationPort
     {

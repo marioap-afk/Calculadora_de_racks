@@ -12,7 +12,7 @@ namespace RackCad.Plugin.Workspace
     /// (<c>RackBlockFinder.ScanEnvelopes</c>, unchanged) and, per scanned definition, lists only its DIRECT references whose
     /// owner is Model Space. It does not classify (<c>NavigationTargets</c> does), builds no inventory, persists no handle and
     /// keeps no AutoCAD object: the transaction and the document lock live in a <c>using</c> and nothing leaves them.
-    /// It runs only inside the command context of the navigation host, on the document of the session.
+    /// It runs only under the document lock taken by the navigation host, on the document of the session.
     /// </summary>
     public sealed class WorkspaceNavigationFacts : INavigationFactsPort
     {

@@ -85,7 +85,7 @@ namespace RackCad.Plugin.Workspace
             var document = AcApplication.DocumentManager.MdiActiveDocument;
             if (document == null)
                 return WorkspaceNavigationResult.Rejected("There is no active document.", NavigationActionVerdict.RejectedSessionMismatch);
-            if (!string.IsNullOrEmpty(document.CommandInProgress))
+            if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
                 return WorkspaceNavigationResult.Stale("A command is in progress.", true);
 
             WorkspaceNavigationResult result;
