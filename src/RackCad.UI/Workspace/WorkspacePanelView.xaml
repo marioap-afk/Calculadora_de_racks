@@ -78,6 +78,47 @@
             <TextBlock x:Name="ContextTextBlock" Text="{Binding ContextText}" Style="{StaticResource OptionalText}"
                        Foreground="{DynamicResource ShellTextSecondaryBrush}" />
 
+            <!-- Navigation of the rack of the context (I-64 F2-T2B). Explicit actions only. No control here has a fixed width:
+                 the WrapPanels reflow with the width of the surface, from a narrow bar to a wide window. -->
+            <TextBlock Text="Navegación" Style="{StaticResource SectionTitle}" />
+            <TextBlock x:Name="NavigationBlockedText" Text="{Binding Navigation.BlockedReason}" Style="{StaticResource OptionalText}"
+                       Foreground="{DynamicResource ShellStatusWarningBrush}" />
+            <WrapPanel x:Name="NavigationActionsPanel" Margin="0,6,0,0">
+                <Button x:Name="NavigationSelectButton" Content="Seleccionar" Margin="0,0,6,6" Padding="10,3"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        IsEnabled="{Binding Navigation.CanNavigate}" Click="OnNavigationSelectClick" />
+                <Button x:Name="NavigationViewButton" Content="Ver" Margin="0,0,6,6" Padding="10,3"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        IsEnabled="{Binding Navigation.CanNavigate}" Click="OnNavigationViewClick" />
+                <Button x:Name="NavigationCenterButton" Content="Centrar" Margin="0,0,6,6" Padding="10,3"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        IsEnabled="{Binding Navigation.CanNavigate}" Click="OnNavigationCenterClick" />
+            </WrapPanel>
+            <WrapPanel x:Name="NavigationCopyPanel">
+                <Button x:Name="NavigationNextCopyButton" Content="Siguiente copia" Margin="0,0,6,6" Padding="10,3"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        IsEnabled="{Binding Navigation.CanNextCopy}" Click="OnNavigationNextCopyClick" />
+                <TextBlock x:Name="NavigationCopyText" Text="{Binding Navigation.CopyText}" VerticalAlignment="Center"
+                           Margin="0,0,6,6" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+            </WrapPanel>
+            <WrapPanel x:Name="NavigationLocatePanel">
+                <TextBlock Text="Localizar vista" VerticalAlignment="Center" Margin="0,0,6,6"
+                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                <ComboBox x:Name="NavigationViewSelector" Margin="0,0,6,6" VerticalAlignment="Center"
+                          AutomationProperties.Name="Vista a localizar"
+                          ItemsSource="{Binding Navigation.ViewChoices}" DisplayMemberPath="Label" SelectedValuePath="Order"
+                          SelectedValue="{Binding Navigation.SelectedView, Mode=TwoWay}" />
+                <CheckBox x:Name="NavigationLocateCenteredCheck" VerticalAlignment="Center"
+                          Margin="0,0,6,6" IsChecked="{Binding Navigation.LocateCentered, Mode=TwoWay}">
+                    <TextBlock Text="Centrar en vez de ajustar" TextWrapping="Wrap" />
+                </CheckBox>
+                <Button x:Name="NavigationLocateButton" Content="Localizar" Margin="0,0,6,6" Padding="10,3"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        IsEnabled="{Binding Navigation.CanNavigate}" Click="OnNavigationLocateClick" />
+            </WrapPanel>
+            <TextBlock x:Name="NavigationResultText" Text="{Binding Navigation.ResultText}" Style="{StaticResource OptionalText}"
+                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+
             <!-- In-memory instrumentation: read-only presentation of the report and its switch. -->
             <TextBlock Text="Instrumentación" Style="{StaticResource SectionTitle}" />
             <CheckBox x:Name="InstrumentationToggle" Content="Medir en memoria (no escribe en el registro)"

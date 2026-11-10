@@ -45,6 +45,12 @@ namespace RackCad.UI.Workspace
         private string _processMemoryText = string.Empty;
         private IReadOnlyList<WorkspaceMeasurementRow> _measurements = Array.Empty<WorkspaceMeasurementRow>();
 
+        /// <param name="port">The read-only host port.</param>
+        /// <param name="setInstrumentationEnabled">The neutral delegate of the instrumentation switch.</param>
+        /// <param name="navigation">
+        /// The navigation port (I-64 F2-T2B). Optional: without it the navigation section is present but unavailable. Building
+        /// the panel never asks it for anything; it is asked only when the user clicks a navigation action.
+        /// </param>
         public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null)
         {
             _port = port ?? throw new ArgumentNullException(nameof(port));
@@ -108,7 +114,7 @@ namespace RackCad.UI.Workspace
         /// <summary>The measurement points of the report, read-only.</summary>
         public IReadOnlyList<WorkspaceMeasurementRow> Measurements => _measurements;
 
-        /// <summary>The navigation of the rack of the current context.</summary>
+        /// <summary>The navigation of the rack of the current context (Seleccionar, Ver, Centrar, Localizar vista).</summary>
         public WorkspaceNavigationViewModel Navigation { get; }
 
         // ------------------------------------------------------------------ the only entries that ask the port
@@ -196,6 +202,9 @@ namespace RackCad.UI.Workspace
             Set(ref _contextText, ContextTextOf(context), nameof(ContextText));
             Set(ref _rackId, context.Kind == SelectionContextKind.One ? context.RackId : null, nameof(RackId));
 
+            // The navigation receives what this very snapshot says, in one piece; it asks nothing of its port for it.
+            Navigation.Present(snapshot.ActiveSession, context.Kind, _rackId, snapshot.Actions.CanReadDrawing, snapshot.Actions.Block, _actionBlockText);
+
             PresentInstrumentation(snapshot.InstrumentationEnabled, report);
         }
 
@@ -236,6 +245,9 @@ namespace RackCad.UI.Workspace
             OnPropertyChanged(nameof(IsEmptyState));
             OnPropertyChanged(nameof(HasError));
             OnPropertyChanged(nameof(InstrumentationEnabled));
+
+            // While the panel shows an error nothing is known about the drawing: the navigation is not offered.
+            Navigation.Present(null, SelectionContextKind.None, null, false, WorkspaceActionBlock.None, "El panel tuvo un fallo contenido; reintenta antes de navegar.");
         }
 
         private void Set<T>(ref T field, T value, string name) => SetProperty(ref field, value, name);

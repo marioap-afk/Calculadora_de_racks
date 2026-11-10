@@ -191,16 +191,34 @@ namespace RackCad.Application.Workspace
             if (!modelSpaceCurrent)
                 return WorkspaceNavigationResult.Unavailable("Navigation needs the Model Space.");
 
+            int? targetCount = null;
             try
             {
                 var plan = _policy.Plan(request.Origin, request.RackId, request.Action, request.CopyIndex, request.View, request.LocateWith);
+
+                // Counted from the same cached set the plan used, before the revalidation, so it never costs a second read.
+                targetCount = CountTargets(request);
                 var decision = _policy.Execute(plan, session, new EchoRecordingEffects(effects, _echo));
-                return WorkspaceNavigationResult.From(decision);
+                return WorkspaceNavigationResult.From(decision) with { TargetCount = targetCount };
             }
             catch (Exception ex)
             {
-                return WorkspaceNavigationResult.Failed(ex.Message);
+                return WorkspaceNavigationResult.Failed(ex.Message) with { TargetCount = targetCount };
             }
+        }
+
+        // The number of targets of the set of the requested action: every target for Select, View and Center; for LocateView
+        // only those of the requested view (none when no view was requested). NavigationTargets stays the only authority.
+        private int CountTargets(WorkspaceNavigationRequest request)
+        {
+            var count = 0;
+            foreach (var target in _targets.Resolve(request.Origin.Origin, request.RackId).Targets)
+            {
+                if (request.Action == NavigationActionKind.LocateView && (request.View == null || target.ViewOrder != request.View.Value)) continue;
+                count++;
+            }
+
+            return count;
         }
 
         private void End(SessionId session)

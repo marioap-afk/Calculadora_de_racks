@@ -8,9 +8,10 @@ namespace RackCad.UI.Workspace
     /// <summary>
     /// Root control of the workspace panel (I-64 F1-T3B): the one visual the palette host adds, labelled "Workspace".
     /// Its data context is the view-model. The control never asks the host for anything by itself: it has no timer and does
-    /// not react to being shown or resized. Only two explicit user interactions reach the view-model (the retry and the
-    /// instrumentation switch), and both are contained here as well: a failure becomes the Error state of the panel and
-    /// never reaches the message loop of the host. It installs no global exception handler.
+    /// not react to being shown or resized. Only explicit user interactions reach the view-model (the retry, the
+    /// instrumentation switch and, since I-64 F2-T2B, the clicks of the navigation actions), and all are contained here as
+    /// well: a failure becomes the Error state of the panel and never reaches the message loop of the host. It installs no
+    /// global exception handler.
     /// </summary>
     public partial class WorkspacePanelView : UserControl
     {
@@ -48,6 +49,18 @@ namespace RackCad.UI.Workspace
 
         private void OnInstrumentationClick(object sender, RoutedEventArgs e) =>
             Contained(() => _viewModel.SetInstrumentation(((CheckBox)sender).IsChecked == true));
+
+        // The navigation clicks (I-64 F2-T2B): each one is one explicit interaction. The view-model's entry contains every
+        // failure and presents it, so the task it returns never faults and needs no observer here.
+        private void OnNavigationSelectClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.SelectAsync());
+
+        private void OnNavigationViewClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.ViewAsync());
+
+        private void OnNavigationCenterClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.CenterAsync());
+
+        private void OnNavigationLocateClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.LocateAsync());
+
+        private void OnNavigationNextCopyClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Navigation.NextCopy());
 
         private void Contained(Action interaction)
         {
