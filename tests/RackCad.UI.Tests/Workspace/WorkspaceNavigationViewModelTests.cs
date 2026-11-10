@@ -102,6 +102,22 @@ namespace RackCad.UI.Tests
             Assert.Equal("Hay un cuadro de diálogo de RackCad abierto.", model.BlockedReason);
         }
 
+        // T2B-F3: one object that is not a rack is not "several objects".
+        [Theory]
+        [InlineData(0, 1)]
+        [InlineData(2, 0)]
+        [InlineData(1, 1)]
+        public void ASelectionThatIsNotOneRackGetsANeutralReasonThatIsTrueForOneOrSeveralObjects(int racks, int others)
+        {
+            var model = new WorkspaceNavigationViewModel(new WorkspaceNavigationPortDouble());
+            Assert.Equal(SelectionContextKind.Selection, SelectionContext.Selection(racks, others).Kind);
+
+            model.Present(new SessionId(1), SelectionContextKind.Selection, null!, true, WorkspaceActionBlock.None, string.Empty);
+
+            Assert.Equal("Lo seleccionado no es un rack individual; selecciona un solo rack para navegar.", model.BlockedReason);
+            Assert.DoesNotContain("varios", model.BlockedReason, StringComparison.Ordinal);
+        }
+
         [Fact]
         public async Task WithoutANavigationPortTheActionsAreUnavailableAndSayIt()
         {
@@ -414,6 +430,88 @@ namespace RackCad.UI.Tests
             Assert.Equal("Copia 1 de 2", model.CopyText);
         }
 
+        // T2B-F1: the copy of Localizar vista advances, and View or Center after Localizar restart it.
+
+        [Fact]
+        public async Task LocateOnTheSameViewAdvancesTheCopyAndAfterTheLastOneReturnsToTheFirst()
+        {
+            var port = new WorkspaceNavigationPortDouble { Result = WorkspaceNavigationPortDouble.Executed(3) };
+            var model = Ready(port);
+            model.SelectedView = NavigationViewOrder.Frontal;
+
+            await Act(model, NavigationActionKind.LocateView);
+            model.NextCopy();
+            await Act(model, NavigationActionKind.LocateView);
+            model.NextCopy();
+            await Act(model, NavigationActionKind.LocateView);
+            model.NextCopy();
+            Assert.Equal("Copia 1 de 3", model.CopyText);
+            await Act(model, NavigationActionKind.LocateView);
+
+            Assert.Equal(new[] { 0, 1, 2, 0 }, port.Calls.Select(c => c.CopyIndex).ToArray());
+            Assert.All(port.Calls, c => Assert.Equal(NavigationViewOrder.Frontal, c.View));
+        }
+
+        [Theory]
+        [InlineData(NavigationActionKind.View)]
+        [InlineData(NavigationActionKind.Center)]
+        public async Task ViewOrCenterAfterLocateRestartTheCopyAndMIsUnknownUntilThePortAnswers(NavigationActionKind action)
+        {
+            WorkspaceNavigationViewModel? model = null;
+            var observed = new List<(string Text, int? Count)>();
+            var port = new WorkspaceNavigationPortDouble();
+            port.Responder = call =>
+            {
+                if (call.Action == action) observed.Add((model!.CopyText, model.TargetCount));
+                return WorkspaceNavigationPortDouble.Executed(3);
+            };
+            model = Ready(port);
+
+            await Act(model, NavigationActionKind.LocateView);
+            model.NextCopy();
+            model.NextCopy();
+            Assert.Equal(2, model.CopyIndex);
+            await Act(model, action);
+
+            Assert.Equal(0, Assert.Single(port.Calls, c => c.Action == action).CopyIndex);
+            var during = Assert.Single(observed);
+            Assert.Equal("Copia 1 de ?", during.Text);
+            Assert.Null(during.Count);
+        }
+
+        [Fact]
+        public async Task ViewAndCenterShareTheCopyAndALaterLocateStartsItsOwn()
+        {
+            var port = new WorkspaceNavigationPortDouble { Result = WorkspaceNavigationPortDouble.Executed(3) };
+            var model = Ready(port);
+
+            await Act(model, NavigationActionKind.View);
+            model.NextCopy();
+            await Act(model, NavigationActionKind.View);
+            await Act(model, NavigationActionKind.Center);
+            await Act(model, NavigationActionKind.LocateView);
+
+            Assert.Equal(new[] { 0, 1, 1, 0 }, port.Calls.Select(c => c.CopyIndex).ToArray());
+        }
+
+        [Fact]
+        public async Task AChangeOfTheRequestedViewRestartsTheCopyOfLocate()
+        {
+            var port = new WorkspaceNavigationPortDouble { Result = WorkspaceNavigationPortDouble.Executed(3) };
+            var model = Ready(port);
+            model.SelectedView = NavigationViewOrder.Frontal;
+
+            await Act(model, NavigationActionKind.LocateView);
+            model.NextCopy();
+            model.SelectedView = NavigationViewOrder.Lateral;
+            await Act(model, NavigationActionKind.LocateView);
+
+            Assert.Equal(new[] { 0, 0 }, port.Calls.Select(c => c.CopyIndex).ToArray());
+            Assert.Equal(
+                new NavigationViewOrder?[] { NavigationViewOrder.Frontal, NavigationViewOrder.Lateral },
+                port.Calls.Select(c => c.View).ToArray());
+        }
+
         // ------------------------------------------------------------------ INV-F2T2B-06: results as values, in Spanish
 
         [Fact]
@@ -485,6 +583,44 @@ namespace RackCad.UI.Tests
             Assert.Contains("Espacio Modelo", model.ResultText, StringComparison.Ordinal);
             Assert.Contains("no cambia de espacio", model.ResultText, StringComparison.Ordinal);
             Assert.Single(port.Calls);
+        }
+
+        // T2B-F2: a copy beyond the targets is not presented as a rack without targets.
+
+        [Fact]
+        public async Task ACopyThatNoLongerExistsIsExplainedAndGoesBackToTheFirstOne()
+        {
+            var port = new WorkspaceNavigationPortDouble { Result = WorkspaceNavigationPortDouble.Executed(3) };
+            var model = Ready(port);
+            await Act(model, NavigationActionKind.View);
+            model.NextCopy();
+            model.NextCopy();
+            Assert.Equal(2, model.CopyIndex);
+
+            port.Result = WorkspaceNavigationResult.Unavailable("The rack has no target for that action.", NavigationActionVerdict.RejectedNoTargets) with { TargetCount = 2 };
+            await Act(model, NavigationActionKind.View);
+
+            Assert.Equal("La copia pedida ya no existe; no se hizo nada. Se vuelve a la primera copia.", model.ResultText);
+            Assert.DoesNotContain("no tiene objetivos", model.ResultText, StringComparison.Ordinal);
+            Assert.Equal(0, model.CopyIndex);
+            Assert.Equal("Copia 1 de 2", model.CopyText);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(null)]
+        public async Task ARackWithoutTargetsKeepsItsTextWhenTheCountIsZeroOrUnknown(int? count)
+        {
+            var port = new WorkspaceNavigationPortDouble
+            {
+                Result = WorkspaceNavigationResult.Unavailable("The rack has no target for that action.", NavigationActionVerdict.RejectedNoTargets) with { TargetCount = count },
+            };
+            var model = Ready(port);
+
+            await Act(model, NavigationActionKind.View);
+
+            Assert.Contains("no tiene objetivos", model.ResultText, StringComparison.Ordinal);
+            Assert.DoesNotContain("ya no existe", model.ResultText, StringComparison.Ordinal);
         }
 
         public static IEnumerable<object[]> PortFailures()
