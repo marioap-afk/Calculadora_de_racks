@@ -3,7 +3,7 @@
 - **Estado:** propuesto
 - **Fecha:** 2026-11-09
 - **Decisores:** Owner del proyecto (pendiente de aceptación, decisión D-0). Coordinator de I-68 (redacción).
-- **Iniciativa relacionada:** I-68 — `feature/bom-excel-analisis-nativo` ([contrato](../initiatives/I-68-bom-excel-analisis-nativo.md), [Proposal V3](../initiatives/I-68-proposal-v3.md), [evidencia](../automation/evidence/I-68-evidence.md)).
+- **Iniciativa relacionada:** I-68 — `feature/bom-excel-analisis-nativo` ([contrato](../initiatives/I-68-bom-excel-analisis-nativo.md), [Proposal V4](../initiatives/I-68-proposal-v4.md), [evidencia](../automation/evidence/I-68-evidence.md)).
 - **Consume sin reabrir:** [ADR-0012](0012-producto-sin-dependencias-nuget.md).
 
 ## Contexto
@@ -30,7 +30,7 @@ Generar el archivo no requiere Excel ni automatización.
 ## Consecuencias
 
 - Positivas: sin dependencias ni riesgo de versiones en el proceso de AutoCAD; salida determinista; no replica las reglas de agrupación de Excel en el XML.
-- Negativas / costos aceptados: RackCad posee el XML de la tabla dinámica. Su validez real solo se comprueba del todo con una prueba local en Excel, fuera de CI; medido solo en Excel 16.0 build 20527. El refresco de apertura es asíncrono: mientras no ocurre, la tabla dinámica no tiene valores en sus filtros, y Actualizar la recupera.
+- Negativas / costos aceptados: RackCad posee el XML de la tabla dinámica. Su validez real solo se comprueba del todo con una prueba local en Excel, fuera de CI; medido solo en Excel 16.0 build 20527. El refresco de apertura es asíncrono (medido con Excel oculto): mientras no ocurre, la tabla dinámica no tiene valores en sus filtros, y Actualizar la recupera.
 - Revisar esta decisión si aparecen más consumidores o una versión de Excel rechaza la definición mínima.
 
 ## Referencias

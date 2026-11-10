@@ -22,10 +22,10 @@ consumes: [BillOfMaterials, ConsolidatedBom, ConsolidatedBomBuilder, XlsxWriter]
 extends: []
 introduces: [capacidad de Table y PivotTable nativas en XlsxWriter]
 discovery_ref: docs/automation/evidence/I-68-evidence.md
-freeze_ref: docs/initiatives/I-68-proposal-v3.md
+freeze_ref: docs/initiatives/I-68-proposal-v4.md
 freeze_delta_ref:
 amendment_refs: []
-ov_assignment_ref: docs/initiatives/I-68-proposal-v3.md
+ov_assignment_ref: docs/initiatives/I-68-proposal-v4.md
 decision_refs: [docs/automation/decisions/I-68.md]
 evidence_ref: docs/automation/evidence/I-68-evidence.md
 automation_state_path:
@@ -74,7 +74,7 @@ Introduces: capacidad de Table y PivotTable nativas en XlsxWriter (punto de exte
 ## 5. Discovery, decisiones y Freeze
 
 - Discovery: [evidencia](../automation/evidence/I-68-evidence.md)
-- Freeze: [Proposal V3](I-68-proposal-v3.md), sin congelar
+- Freeze: [Proposal V4](I-68-proposal-v4.md), sin congelar
 - ADR: [0051](../adr/0051-exportacion-excel-nativa-sobre-la-plataforma.md), propuesto
 - Decisiones: [decisions/I-68.md](../automation/decisions/I-68.md)
 
@@ -85,7 +85,7 @@ Sin dependencias previas. Se comprueba en cada reentrada que ninguna rama activa
 ## 7. Owner Validation
 
 - Requiere Owner Validation: sí, la salida es directamente visible para el usuario.
-- Se valida en Excel real con un XLSX generado por RACKBOMTOTAL; asignación en la [propuesta](I-68-proposal-v3.md) §12.
+- Se valida en Excel real con un XLSX generado por RACKBOMTOTAL; asignación en la [propuesta](I-68-proposal-v4.md) §12.
 
 ## 8. Evidencia y entrega
 
