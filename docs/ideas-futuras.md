@@ -1695,3 +1695,10 @@ Limitación documentada (decisiones CD-I65-F4-168). `RackRamElementsCommands` mo
 Los procedimientos de READY (§1.2) citan los árboles de las bases de RAM con el método de Python, pero dicen medirlos con
 `w2_hostsnap.ps1`, que usa otro formato (A65-F5F-03). W-R2 midió con los dos (decisiones CD-I65-FC-69 (a)). Conviene unificar el texto si
 se reutilizan.
+
+### I-67 — alturas fijadas a mano frente al último larguero
+
+Hallazgo fuera de alcance de I-67 (EXP-08). Ninguna altura fijada a mano se valida contra el último larguero en Dinámico y Push Back:
+la altura manual (`ManualHeaderHeightOverride`), las cabeceras personalizadas por módulo (`UseCalculatedHeaderConfiguration = false`),
+`HeaderLineOverrides` y las alturas de poste derivado. La corrección de H58 sube los niveles superiores, así que un valor ajustado puede
+quedar por debajo del último larguero sin aviso. También queda sin aviso el estado mixto tras `RACKPROYECTAR` sobre un rack sin actualizar.

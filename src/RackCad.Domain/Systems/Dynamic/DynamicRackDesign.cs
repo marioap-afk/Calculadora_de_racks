@@ -18,8 +18,8 @@ namespace RackCad.Domain.Systems.Dynamic
         /// <summary>
         /// I-42 — desde DONDE se mide <see cref="FirstLevelHeight"/>. Null = la lectura HISTORICA (elevacion
         /// absoluta ajustada al troquel mas cercano), que es lo que guarda todo documento anterior; por eso ninguno
-        /// cambia de geometria al abrirse. Un documento nuevo declara el datum del PRODUCTO: el troquel utilizable
-        /// mas bajo del poste.
+        /// cambia la elevacion de su primer nivel al abrirse. Un documento nuevo declara el datum del PRODUCTO: el
+        /// troquel utilizable mas bajo del poste.
         /// </summary>
         public int? FirstLevelDatum { get; set; }
 
