@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-68
 title: BOM Excel Native Analysis (ID72) — Cantidad total, tabla y tabla dinámica
 type: feature
-status: claimed
+status: in-progress
 workflow: V2
 conceptual_initiative: I-68
 delivery_unit: I-68
@@ -42,7 +42,7 @@ automation:
 
 # I-68 — BOM Excel Native Analysis (ID72)
 
-Status: **DECISIONES DEL OWNER RESUELTAS; Freeze en preparacion**. El estado vivo se deriva de la existencia de `origin/feature/bom-excel-analisis-nativo`.
+Status: **FREEZE REGISTRADO; en implementacion**. El estado vivo se deriva de la existencia de `origin/feature/bom-excel-analisis-nativo`.
 
 Workflow: V2 (reclamo posterior a `WORKFLOW_V2_EFFECTIVE_SHA`, base que lo contiene, sin pausa activa: T4).
 Unit: `I-68`. Rama: `feature/bom-excel-analisis-nativo`. Autorización: orden directa del Owner (WORKFLOW §2, caso d).
@@ -74,7 +74,7 @@ Introduces: capacidad de Table y PivotTable nativas en XlsxWriter (punto de exte
 ## 5. Discovery, decisiones y Freeze
 
 - Discovery: [evidencia](../automation/evidence/I-68-evidence.md)
-- Freeze: [Proposal V6](I-68-proposal-v6.md), sin congelar
+- Freeze: [Proposal V6](I-68-proposal-v6.md), congelada
 - ADR: [0051](../adr/0051-exportacion-excel-nativa-sobre-la-plataforma.md), aceptado
 - Decisiones: [decisions/I-68.md](../automation/decisions/I-68.md)
 
