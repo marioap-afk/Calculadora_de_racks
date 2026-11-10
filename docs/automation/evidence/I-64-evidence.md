@@ -5944,3 +5944,11 @@ revisar:
 **Entorno:** `config.toml` pasó al Snapshot F (F3-E02): seis rutas gestionadas por la app; sonda `R20261110T134835Z-3082` PASS. Es una decisión de la sesión.
 
 **Limpieza:** registro de `F2-SMOKE-NAV/cleanup-i64-snav.json` (F3-E03).
+
+## 103. Contrato de F3-T1-BROWSER-CORE
+
+**Autoridad:** orden del Owner (§102). `AuthorityRevision` `84dd689f810b42b4f4ccaecb26a6f4642d150963`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`, medidas al emitir.
+
+**Contrato:** `I-64-pilot/F3-T1-BROWSER-CORE/coordinator/gate-contract.json`. Cinco archivos nuevos en Application y pruebas, y un delta exacto de guarda. Attempt 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
