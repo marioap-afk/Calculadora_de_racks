@@ -198,8 +198,8 @@ Freeze `c7fb85da3750f840a9ab02a89818f886cd0a4f16`, Proposal V6. SDK 8.0.423. Cor
 
 | Gate | SHA de cierre | RED → GREEN | Core Full local | Humo Excel | CI |
 |---|---|---|---|---|---|
-| G1 | `97e6c00d9d8d2eaf8e24b6c0a6d6ab471714cac2` | CARACT `51afdf49`, 5 pasan. RED `954db2db`: 11 fallan por asercion, 2 guardas pasan (el cuerpo de ese commit dice 13 por error). GREEN `2d3ef736` | 15508 de 15508 | no aplica | run 42745886294 |
-| G2 | `4b5142f95a2f0f72385d5de136b4bbcad0643187` | RED `1c008ff1`: 11 fallan por asercion, 3 pasan. GREEN `98ad922b` | 15523 de 15523 | 60 PASS, 0 FAIL ([salida](I-68-smoke/results-g2-4b5142f9.txt)) | run 42747804043 |
+| G1 | `97e6c00d9d8d2eaf8e24b6c0a6d6ab471714cac2` | CARACT `51afdf49`, 5 pasan. RED `954db2db`: 11 fallan, 2 guardas pasan (el cuerpo de ese commit dice 13 por error); I-12 falla por la parte ausente. GREEN `2d3ef736` | 15508 de 15508 | no aplica | run 42745886294 |
+| G2 | `4b5142f95a2f0f72385d5de136b4bbcad0643187` | RED `1c008ff1`: 11 fallan, 3 pasan; 7 de ellas fallan al no existir la parte de la dinamica, el resto por asercion. GREEN `98ad922b` | 15523 de 15523 | 60 PASS, 0 FAIL ([salida](I-68-smoke/results-g2-4b5142f9.txt)) | run 42747804043 |
 | G3 | `a67a2585f292ba031728b868757239dca67a3d37` | Regresion sin producto nuevo: pasan al escribirse. Oraculos comprobados con dos mutaciones temporales, revertidas: sin Copias y con doble Copias, 10 de 15 fallan | 15538 de 15538 | 75 PASS, 0 FAIL ([salida](I-68-smoke/results-g3-a67a2585.txt)) | run 42748820356 |
 
 Incidencias diagnosticadas antes de corregir:
@@ -230,6 +230,6 @@ Mutation contract: puro y sin Excel. Una tabla sin datos conserva una fila en bl
 Extension point: `XlsxSheet(name, rows, XlsxTableDefinition)` y `XlsxSheet(name, XlsxPivotDefinition)`. Consumidor: `ConsolidatedBomXlsxExporter`.
 Decision source: [ADR-0051](adr/0051-exportacion-excel-nativa-sobre-la-plataforma.md); Freeze integrado de I-68 (Proposal V6).
 Protecting tests: `ConsolidatedBomXlsxDetailTests`, `BomExcelPivotTests`, `BomExcelSystemMatrixTests`, `BomExcelCharacterizationTests`, `XlsxWriterTests`; humo en Excel real `docs/automation/evidence/I-68-smoke/Invoke-I68Smoke.ps1`, fuera de CI.
-Known limitations: un campo de valor y disposicion compacta de dos columnas. Medido solo en Excel 16.0 build 20527. El refresco de apertura es asincrono: hasta que ocurre, los filtros no tienen valores. Validez real comprobable solo con Excel, fuera de CI.
+Known limitations: un campo de valor y disposicion compacta de dos columnas. Medido solo en Excel 16.0 build 20527. El refresco de apertura es asincrono, medido con Excel oculto: hasta que ocurre, los filtros no tienen valores. Validez real comprobable solo con Excel, fuera de CI.
 Last changed by: I-68
 ```
