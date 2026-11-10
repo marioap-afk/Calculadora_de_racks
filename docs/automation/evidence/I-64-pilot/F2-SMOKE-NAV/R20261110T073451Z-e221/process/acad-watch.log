@@ -1,0 +1,4 @@
+2026-11-10T08:00:01.3274992Z WATCH inicio: AUTHORIZED_AUTOCAD_PID 63192 (ticks de inicio 639298943470140492); intervalo 1000 ms
+2026-11-10T08:00:01.4502913Z procesos acad = [63192@2026-11-10T07:59:07.0140492Z]
+2026-11-10T08:10:19.3379706Z procesos acad = []
+2026-11-10T08:10:19.3424372Z WATCH: la PID autorizada salio tras PRE-CLOSE (cierre normal); sigue la vigilancia hasta la POST

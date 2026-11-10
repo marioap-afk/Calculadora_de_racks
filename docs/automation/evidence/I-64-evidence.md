@@ -5914,3 +5914,13 @@ revisar:
 **Decisión:** D-08, corrección estrecha `F2-T2-HOST-C1`, con el precedente de `F1-T3B-HOST-UI-C1`. `attempts` sin cambio (3 de 3). Desviación de la redacción de D-07, INV-40 y O4-06 pendiente de ratificación del Owner.
 
 **Pendiente:** la custodia de los artefactos de `c883` se hace junto con la ocurrencia de Smoke-NAV sobre el candidato corregido.
+
+## 100. F2-T2-HOST-C1 cerrada; Smoke-NAV PASS; F2 PASS con limitación
+
+**F2-T2-HOST-C1:** RED `ce48067e`, `85affa68` y `8050f512`; GREEN `cdef2d44` y `003be859`. CI 42777768225 4/4. Core 16320/16320; UI 1792 más 17 omitidas; builds Debug sin errores. Paquete delta en `F2-T2-HOST-C1/delta-close-package.md`.
+
+**Smoke-NAV** `R20261110T073451Z-e221`, candidato `003be859`, DLL `63A6ABAA…`: SN-01..SN-07 y SN-10 PASS; SN-08 LIMITADA; SN-09 medido (primera acción ≤ 798 ms; siguientes 139-270 ms); SN-06c y la vía de pestañas de SN-10 `NOT_APPLICABLE_UNTIL_F3`. Una sola `acad.exe`, perfil `CLEAN`, dibujos sin guardar. Tabla en `operator/operator-record.md`.
+
+**Decisión:** D-09. F2 = PASS con la limitación de SN-08 y la desviación de D-08 pendiente de ratificación del Owner. No es Owner Validation.
+
+**Custodia:** `F2-SMOKE-NAV/` con las ocurrencias `c883` y `e221`.
