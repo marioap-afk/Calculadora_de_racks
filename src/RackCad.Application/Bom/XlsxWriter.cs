@@ -59,11 +59,21 @@ namespace RackCad.Application.Bom
             Table = table;
         }
 
+        /// <summary>A sheet holding only a native PivotTable.</summary>
+        public XlsxSheet(string name, XlsxPivotDefinition pivot)
+            : this(name, null, null)
+        {
+            Pivot = pivot ?? throw new ArgumentNullException(nameof(pivot));
+        }
+
         public string Name { get; }
         public IReadOnlyList<IReadOnlyList<XlsxCell>> Rows { get; }
 
         /// <summary>When set, the sheet's rows are written as a native Excel table.</summary>
         public XlsxTableDefinition Table { get; }
+
+        /// <summary>When set, the sheet is a native PivotTable; <see cref="Rows"/> is empty.</summary>
+        public XlsxPivotDefinition Pivot { get; }
     }
 
     /// <summary>
