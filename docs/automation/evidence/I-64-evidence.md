@@ -6032,3 +6032,15 @@ revisar:
 **Contrato:** `I-64-pilot/F4-T1-DRAFT-CORE/coordinator/gate-contract.json`, con diez archivos nuevos en `Workspace/Drafts/` y sus pruebas, 18 invariantes y ningún archivo existente. `AuthorityRevision` `80e139859e0455ceb5a906a799a20b796e0cb8db`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`. Attempt 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 112. Intento 1 de F4-T1: verificación, revisiones y custodia
+
+**Entrega:** RED `a362744c`, GREEN `aefc34a5`; CI `42877329473` con los cuatro jobs en success; filtro 1165/1165.
+
+**Verificación:** `R20261110T184730Z-e455`, `EXECUTION_VERIFIED`. nc1, nc2 y nc3 dan CONTROL PASS, sin puentes.
+
+**Revisiones (F4-E02):** directa de la sesión y adversarial independiente. Resultado: 0 bloqueantes, 4 importantes y 10 menores (`analysis.md` e `independent-review.md` junto a la verificación).
+
+**Decisión:** F4-E07. Corrección delegada; `attempts` pasa a 2 de 3.
+
+**Límites:** sin AutoCAD; solo custodia y documentación en este paso.

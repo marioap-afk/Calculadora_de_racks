@@ -1,0 +1,51 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261110T185322Z-af9d",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha contains ten paths, including src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs. That path is absent from delegation AllowedWriteScope (nine entries), although present in the contract's ten-entry scope; the actual diff therefore exceeds delegated scope."
+  },
+  "OutputSha256": "78F15D006A854C42CADB33BC0D1E226E85087E003B210AC8C023CD8608D9FC3A",
+  "ManualFreeText1610": []
+}

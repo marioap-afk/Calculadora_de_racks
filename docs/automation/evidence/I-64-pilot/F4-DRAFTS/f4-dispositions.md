@@ -40,3 +40,23 @@ El Owner ratificó F3-E02. **Snapshot F** (`AAEB58D8…`) es la línea base acti
 - **Revisión independiente de la v1:** adversarial, sobre `442e49c3`: 2 BLOQUEANTE, 11 IMPORTANTE y varias MENOR. Todas dispuestas en la v2 (§8 del paquete). Las principales: caracterización del piloto antes de T2 (F4-T1B), reglas explícitas de la StaleBase, proyección única con texto crudo en T2, y la superficie compacta planteada como desviación del Freeze.
 - **Decisiones que corresponden al Owner:** C-F4-01 (superficie del piloto) y C-F4-03 (nombre del comando de descarte) antes de T2; C-F4-07 (editor clásico ofrecido frente a IC-03) antes de T3; C-F4-06 (dibujos y operador de Smoke-2) antes de Smoke-2. C-F4-02 reintroduce `ExecuteInCommandContextAsync` en T4B y se avisa al Owner.
 - **Decisión:** emitir F4-T1, que no depende de ellas, y devolver las decisiones al Owner antes de T2.
+
+## F4-E07. Corrección de F4-T1 pese a una verificación `EXECUTION_VERIFIED`
+
+- **Problema:** la verificación `R20261110T184730Z-e455` da `EXECUTION_VERIFIED`, 14/14, sobre `aefc34a5`, y nc1..nc3 dan CONTROL PASS. Aun así, la revisión directa de la sesión y la revisión adversarial independiente (régimen de F4-E02) hallan 4 defectos importantes y 10 menores. El detalle está en `F4-T1-DRAFT-CORE/1/R20261110T184730Z-e455/analysis.md`.
+  - **I-1:** inicial y actual son el mismo objeto. Incumple D-10 y anula el veto de cierre con el estado mutable del piloto (D-17, INV-20).
+  - **I-2:** la ranura de Aplicando se libera con una operación en vuelo. Incumple D-13.
+  - **I-3:** una clave repetida en la StaleBase permite una aceptación falsa. Incumple D-12.
+- **Opciones:**
+  - (a) cerrar y arrastrar los defectos a T2;
+  - (b) corrección delegada, consumiendo un intento;
+  - (c) corrección de la sesión fuera de la cadena.
+- **Decisión:** (b), por la regla de uso de intentos de F4-E02. `attempts` pasa a 2 de 3. La verificación y los controles del intento 1 se conservan y no se reinterpretan.
+- **Alcance de la corrección:**
+  - I-1 a I-4;
+  - los menores contractuales de coste bajo;
+  - invariantes nuevos INV-F4T1-19 a INV-F4T1-24, en el contrato del intento 2.
+- **Arrastres:**
+  - a T2: la inclinación a Veto ante una excepción en la decisión (M-6) y la guarda sobre el uso de la StaleBase (M-9);
+  - a T4B: `CompleteApply` en `finally` y el error diferido durante Aplicando.
+- **Riesgo:** queda un único intento para T2, T3, T4A, T4B y Smoke-2. Agotarlo es condición de devolución al Owner.

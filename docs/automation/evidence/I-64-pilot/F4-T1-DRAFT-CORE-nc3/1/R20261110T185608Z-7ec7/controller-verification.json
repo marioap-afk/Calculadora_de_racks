@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T1-DRAFT-CORE",
+  "RunId": "R20261110T185608Z-7ec7",
+  "DelegationRunId": "R20261110T180937Z-9a29",
+  "WorkRunId": "R20261110T181603Z-3442",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-10T18:16:09Z. OutputWrittenUtc=2026-11-10T12:43:59.754379-06:00, later than start."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F4-T1-DRAFT-CORE, Attempt 1, DelegationRunId R20261110T180937Z-9a29 and RunId R20261110T181603Z-3442; output path and SHA-256 match relay-record-work.json."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha lists docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T1-DRAFT-CORE/coordinator/gate-contract.json and docs/automation/state/I-64.yml; all are UNIT_DOC Authorities. External authorities were read at MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "A3-A5 match: AllowedWriteScope 10/10, ForbiddenWriteScope 66/66, all 18 invariants, stop-condition IDs, 16 Authorities, Objective and RequiredTests. RequiredTests is tests/RackCad.Tests/RackCad.Tests.csproj, FullyQualifiedName~RackCad.Tests.Workspace, MinSelected 902, ExpectRed true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Current branch is architecture/workspace-persistente-rackcad; handoff worktree matches this directory. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both equal aefc34a53ff5c00ff1e3663044df067c41ee53cb. BaseSha and RedSha are ancestors of CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha equals CurrentSha aefc34a53ff5c00ff1e3663044df067c41ee53cb; OriginMainSha equals MainSha 812baf879612320653094a8aaf46aca0bac81383."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists exactly the five Drafts product files and five WorkspaceDraft test files in AllowedWriteScope; no ForbiddenWriteScope intersection."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v on the input package matched .gitignore:3 for artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha, completed success; all four required jobs are success. RedRun is push on the same ref at RedSha, completed failure with Tests (Domain + Application)=failure. CI Core TRX confirms CurrentSha 16703 passed, 0 failed; RedSha 181 failed."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current Core TRX: 16703/16703 passed; 1165 match FullyQualifiedName~RackCad.Tests.Workspace. Red Core TRX: 1165 matches, 984 passed and 181 failed. Counts match the handoff and its RequiredTests. git diff RedSha..CurrentSha -- tests/ is empty. RED RT and ChainRedFiles are the five test paths added between BaseSha and RedSha: WorkspaceDraftApplyTests.cs, WorkspaceDraftBoundaryTests.cs, WorkspaceDraftRegistryTests.cs, WorkspaceDraftSessionTests.cs and WorkspaceDraftStaleBaseTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both commits carry the declared Co-Authored-By trailer: Claude Sonnet 5.5 <noreply@anthropic.com>. Relay effective model is claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. Work relay records launch alias sonnet, effective model claude-sonnet-5-5, and effective effort high; routing enforcement is required."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "The 16.10 scan of WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction found one prohibited phrase at the end of the INV-F4T1-18 summary in WorkCompleted."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes record 0 denials, 1 tool error with none pending, and no usage warning. The initial apparent process count was resolved by reread; 0 persistent participants or unattributable processes are recorded."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "FreeText is the only failed check. The other 13 checks pass.",
+    "No listed STOP condition is supported by the delegation, relay records, Git range or CI evidence."
+  ],
+  "RecommendedNextAction": "Edit WorkCompleted to remove the prohibited phrase and submit a corrected handoff for re-verification."
+}
