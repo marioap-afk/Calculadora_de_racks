@@ -42,7 +42,8 @@ Además, el checklist aplicable de la guía manual §5 sobre `RACKBOMTOTAL`.
 ## Veredicto
 
 ```text
-Owner Validation:
-Fallos y severidad:
-Observaciones:
+Owner Validation: PASS (2026-11-09)
+Fallos y severidad: ninguno declarado
+Observaciones: resultado global declarado por el Owner; no se dictaron resultados por escenario
+AutoCAD: R25.0.171.0.0 (instalacion del equipo)
 ```

@@ -42,7 +42,7 @@ automation:
 
 # I-68 — BOM Excel Native Analysis (ID72)
 
-Status: **CANDIDATO DECLARADO; Owner Validation pendiente**. El estado vivo se deriva de la existencia de `origin/feature/bom-excel-analisis-nativo`.
+Status: **OWNER VALIDATION PASS; integracion en curso**. El estado vivo se deriva de la existencia de `origin/feature/bom-excel-analisis-nativo`.
 
 Workflow: V2 (reclamo posterior a `WORKFLOW_V2_EFFECTIVE_SHA`, base que lo contiene, sin pausa activa: T4).
 Unit: `I-68`. Rama: `feature/bom-excel-analisis-nativo`. Autorización: orden directa del Owner (WORKFLOW §2, caso d).

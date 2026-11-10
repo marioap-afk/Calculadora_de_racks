@@ -193,7 +193,7 @@ Discovery DC-01..09 completo. EXP revisadas, incluidos negativos. Sin clase A ab
 | CI rojos de gate | 1, leido antes de corregir (§8) |
 | Rondas de conformidad | 2 (`7f76aba1`, `68d9fb9a`) |
 | Candidatos | 1, `68d9fb9a` |
-| Owner Validation | pendiente |
+| Owner Validation | PASS, 1 ronda, resultado global |
 
 ## 8. Gates
 
@@ -253,7 +253,7 @@ G4 cierra con el humo y la conformidad de ese SHA.
 | READY-08 | Matriz OV completa en Proposal V6 §12; unidad unica |
 | READY-09 | Acuerdo sobre `03a54dce` (blob `326a6f37`); Freeze `c7fb85da` (blob `c4acc752`) solo cambia `Frozen`; sin cambios posteriores del artefacto; sin A-n |
 
-Owner Validation: **pendiente** ([ficha](../../initiatives/I-68-owner-validation-sheet.md)). Cobertura del Candidato: se mide despues del merge (WORKFLOW 4.5.7).
+Owner Validation: **PASS** (2026-11-09), resultado global declarado por el Owner sobre ese SHA; no se dictaron resultados por escenario ([ficha](../../initiatives/I-68-owner-validation-sheet.md)). DLL del candidato: ProductVersion y SHA-256 de la tabla, comprobados de nuevo al recibir el veredicto. Cobertura del Candidato: se mide despues del merge (WORKFLOW 4.5.7).
 
 ## 10. Entrada FOUNDATIONS redactada
 
