@@ -1,9 +1,9 @@
 # I-68 — Evidencia de la unidad (BOM Excel Native Analysis, ID72)
 
 Unit / Initiative / Workflow: `I-68` / I-68 / V2. Claim-Id `cfd9f7bb-7388-42ba-9c7c-0285ea0f3893` (reclamo `3180201d`, base `origin/main` `04a7041492d760170ce3f3ba5fceeb29146107cc`; clasificacion T4).
-Especificacion: [I-68-especificacion-id72.md](../../initiatives/I-68-especificacion-id72.md). Propuesta vigente: [I-68-proposal-v4.md](../../initiatives/I-68-proposal-v4.md). Decisiones: [decisions/I-68.md](../decisions/I-68.md).
+Especificacion: [I-68-especificacion-id72.md](../../initiatives/I-68-especificacion-id72.md). Propuesta vigente: [I-68-proposal-v5.md](../../initiatives/I-68-proposal-v5.md). Decisiones: [decisions/I-68.md](../decisions/I-68.md).
 
-Estado: Discovery completo. Freeze NO aceptado. **IMPLEMENTATION AUTHORIZATION = NO.**
+Estado: Discovery completo; decisiones del Owner resueltas el 2026-11-09.
 Clases de afirmacion (LIFECYCLE §4): MEASURED, RECONSTRUCTED, INFERENCE, UNKNOWN. Sin marca = MEASURED en el codigo de la base.
 
 ## 1. Preflight

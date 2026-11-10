@@ -1,9 +1,9 @@
 # ADR-0051: Exportación Excel nativa (Table y PivotTable) sobre la plataforma, sin biblioteca externa
 
-- **Estado:** propuesto
+- **Estado:** aceptado
 - **Fecha:** 2026-11-09
-- **Decisores:** Owner del proyecto (pendiente de aceptación, decisión D-0). Coordinator de I-68 (redacción).
-- **Iniciativa relacionada:** I-68 — `feature/bom-excel-analisis-nativo` ([contrato](../initiatives/I-68-bom-excel-analisis-nativo.md), [Proposal V4](../initiatives/I-68-proposal-v4.md), [evidencia](../automation/evidence/I-68-evidence.md)).
+- **Decisores:** Owner del proyecto (**acepta**, 2026-11-09, decisión D-0). Coordinator de I-68 (redacción).
+- **Iniciativa relacionada:** I-68 — `feature/bom-excel-analisis-nativo` ([contrato](../initiatives/I-68-bom-excel-analisis-nativo.md), [Proposal V5](../initiatives/I-68-proposal-v5.md), [evidencia](../automation/evidence/I-68-evidence.md)).
 - **Consume sin reabrir:** [ADR-0012](0012-producto-sin-dependencias-nuget.md).
 
 ## Contexto

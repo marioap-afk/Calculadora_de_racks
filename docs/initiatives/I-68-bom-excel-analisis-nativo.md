@@ -7,7 +7,7 @@ status: claimed
 workflow: V2
 conceptual_initiative: I-68
 delivery_unit: I-68
-archetype: EXTENSION
+archetype: FOUNDATION EVOLUTION
 materiality: [M-04, M-06]
 branch: feature/bom-excel-analisis-nativo
 base_branch: main
@@ -22,10 +22,10 @@ consumes: [BillOfMaterials, ConsolidatedBom, ConsolidatedBomBuilder, XlsxWriter]
 extends: []
 introduces: [capacidad de Table y PivotTable nativas en XlsxWriter]
 discovery_ref: docs/automation/evidence/I-68-evidence.md
-freeze_ref: docs/initiatives/I-68-proposal-v4.md
+freeze_ref: docs/initiatives/I-68-proposal-v5.md
 freeze_delta_ref:
 amendment_refs: []
-ov_assignment_ref: docs/initiatives/I-68-proposal-v4.md
+ov_assignment_ref: docs/initiatives/I-68-proposal-v5.md
 decision_refs: [docs/automation/decisions/I-68.md]
 evidence_ref: docs/automation/evidence/I-68-evidence.md
 automation_state_path:
@@ -42,7 +42,7 @@ automation:
 
 # I-68 — BOM Excel Native Analysis (ID72)
 
-Status: **DISCOVERY COMPLETO; Freeze no aceptado; IMPLEMENTATION AUTHORIZATION = NO**. El estado vivo se deriva de la existencia de `origin/feature/bom-excel-analisis-nativo`.
+Status: **DECISIONES DEL OWNER RESUELTAS; Freeze en preparacion**. El estado vivo se deriva de la existencia de `origin/feature/bom-excel-analisis-nativo`.
 
 Workflow: V2 (reclamo posterior a `WORKFLOW_V2_EFFECTIVE_SHA`, base que lo contiene, sin pausa activa: T4).
 Unit: `I-68`. Rama: `feature/bom-excel-analisis-nativo`. Autorización: orden directa del Owner (WORKFLOW §2, caso d).
@@ -50,7 +50,7 @@ Unit: `I-68`. Rama: `feature/bom-excel-analisis-nativo`. Autorización: orden di
 ## 1. Identidad y agrupación
 
 Iniciativa conceptual y unidad de entrega únicas. Arquetipo inicial **EXTENSION**, fijado por el Owner como punto de partida;
-Discovery propone elevarlo a **FOUNDATION EVOLUTION** por M-04 y M-06 (LIFECYCLE §3); `archetype` cambia cuando el Coordinator lo confirme tras la decisión D-0 del Owner.
+Discovery lo eleva a **FOUNDATION EVOLUTION** por M-04 y M-06 (LIFECYCLE §3), aceptado por el Owner en D-0.
 
 ## 2. Objetivo
 
@@ -59,7 +59,7 @@ construir una tabla dinámica a mano.
 
 ## 3. Alcance y no-objetivos
 
-La autoridad funcional es la [especificación literal del Owner](I-68-especificacion-id72.md). El alcance congelado, los invariantes
+La autoridad funcional es la [especificación literal del Owner](I-68-especificacion-id72.md). Limitada a RACKBOMTOTAL: la exportación individual queda fuera del alcance (D-2). El alcance congelado, los invariantes
 y la matriz OV se fijarán en el Freeze. No-objetivos fijados por el Owner: ID23 Calculated BOM Items, costos, precios, proveedores,
 fórmulas BOM, Expression Engine, RAM Elements, reglas nuevas de BOM, consolidación física nueva y partidas nuevas.
 
@@ -74,8 +74,8 @@ Introduces: capacidad de Table y PivotTable nativas en XlsxWriter (punto de exte
 ## 5. Discovery, decisiones y Freeze
 
 - Discovery: [evidencia](../automation/evidence/I-68-evidence.md)
-- Freeze: [Proposal V4](I-68-proposal-v4.md), sin congelar
-- ADR: [0051](../adr/0051-exportacion-excel-nativa-sobre-la-plataforma.md), propuesto
+- Freeze: [Proposal V5](I-68-proposal-v5.md), sin congelar
+- ADR: [0051](../adr/0051-exportacion-excel-nativa-sobre-la-plataforma.md), aceptado
 - Decisiones: [decisions/I-68.md](../automation/decisions/I-68.md)
 
 ## 6. Dependencias, archivos calientes y coordinación
@@ -85,7 +85,7 @@ Sin dependencias previas. Se comprueba en cada reentrada que ninguna rama activa
 ## 7. Owner Validation
 
 - Requiere Owner Validation: sí, la salida es directamente visible para el usuario.
-- Se valida en Excel real con un XLSX generado por RACKBOMTOTAL; asignación en la [propuesta](I-68-proposal-v4.md) §12.
+- Se valida en Excel real con un XLSX generado por RACKBOMTOTAL; asignación en la [propuesta](I-68-proposal-v5.md) §12.
 
 ## 8. Evidencia y entrega
 
