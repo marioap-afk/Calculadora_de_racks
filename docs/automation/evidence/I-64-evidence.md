@@ -5972,3 +5972,15 @@ revisar:
 **Contrato:** `I-64-pilot/F3-T2-BROWSER-UI/coordinator/gate-contract.json`. Nueve archivos nuevos y doce candidatos en Application, UI, Plugin y pruebas. Attempt 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 106. F3-T2: verificación de `2c36b36b`, revisión de producto y corrección del intento 2
+
+**Entrega del intento 1:** RED `1c379a23` (CI 42843728174, falla por las pruebas nuevas) y GREEN `2c36b36b` (CI 42847080959 4/4). UI 203/203 y Core 891/891 en los filtros; suites completas Core 16429 y UI 1840 (17 omitidas).
+
+**Verificación:** `R20261110T154803Z-fc18`, `EXECUTION_VERIFIED`, 14 comprobaciones en pass. Se conserva.
+
+**Revisión de producto:** la sesión y una revisión independiente hallaron T2-F1 a T2-F6 (`F3-T2-BROWSER-UI/1/R20261110T154803Z-fc18/analysis.md`). Ninguna prueba los ejercía. T2-F2 incumple P-03 y P-04.
+
+**Decisión:** F3-E09, corrección delegada. Sin nc1..nc3 sobre `2c36b36b`.
+
+**Límites:** sin cambios de producto en este paso; sin AutoCAD.

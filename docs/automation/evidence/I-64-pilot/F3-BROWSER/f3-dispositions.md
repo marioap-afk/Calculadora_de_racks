@@ -52,3 +52,17 @@ La comprobación de seguridad integrada de la herramienta rechazó el borrado, t
 - **Fundamento:** verificación `057f` 14/14; nc1 `1839` y nc3 `8cf6` CONTROL PASS; nc2 bajo el puente (F3-E06); nc4 `8f7e`; CI 42833048949 4/4; revisión del código de la sesión sin defectos.
 - **`attempts`:** sigue en 1 de 3: ninguna de las paradas cambió el trabajo.
 - **Alcance:** esta tarea. No es F3 PASS.
+
+## F3-E08. Aclaración del criterio 23 de la delegación de F3-T2
+
+- **Problema:** la delegación `R20261110T145323Z-22d9` dice que nueve candidatos solo cambian si una guarda lo exige, y los invariantes obligan a cambiar seis de ellos.
+- **Decisión:** al aceptar la delegación, sin editarla, la sesión aclara que manda el contrato y que la condición se aplica a los tres archivos de guardas. El Worker y la verificación recibieron esa disposición.
+
+## F3-E09. Corrección de F3-T2 pese a una verificación `EXECUTION_VERIFIED`
+
+- **Problema:** la verificación `R20261110T154803Z-fc18` dio `EXECUTION_VERIFIED`, 14/14, sobre `2c36b36b`, pero la revisión del código de la sesión y una revisión independiente hallaron seis defectos que ninguna prueba ejerce: T2-F1 a T2-F6, descritos en `analysis.md` junto a esa verificación. Uno incumple P-03 y P-04.
+- **Opciones:** (a) cerrar y dejar que lo descubra un Smoke; (b) corrección delegada, consumiendo un intento; (c) corregirlo la sesión fuera de la cadena.
+- **Decisión:** (b), con el precedente de D-04. `attempts` pasa a 2 de 3. Los controles nc1..nc3 se reservan para la entrega corregida. La verificación se conserva y no se reinterpreta.
+- **Contrato del intento 2:** `F3-T2-BROWSER-UI/coordinator/gate-contract-attempt2.json`, con rutas exactas y los invariantes INV-F3T2-21 a 26 añadidos.
+- **Límite:** T2-F4 se resuelve con una acción explícita del usuario y no con relectura automática tras cada drenaje.
+- **Limitación conocida, sin corregir:** el caso de `PICKADD=0` descrito en `analysis.md`.

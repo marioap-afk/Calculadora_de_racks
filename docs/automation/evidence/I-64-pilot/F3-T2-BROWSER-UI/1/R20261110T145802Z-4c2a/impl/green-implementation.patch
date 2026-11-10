@@ -1,0 +1,936 @@
+diff --git a/src/RackCad.Application/Workspace/BrowserRackSummaries.cs b/src/RackCad.Application/Workspace/BrowserRackSummaries.cs
+new file mode 100644
+index 00000000..0af81437
+--- /dev/null
++++ b/src/RackCad.Application/Workspace/BrowserRackSummaries.cs
+@@ -0,0 +1,171 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++
++namespace RackCad.Application.Workspace
++{
++    /// <summary>
++    /// Neutral facts of ONE block definition as the host captured them for the browser summary (I-64 F3-T2, D-05). They carry no
++    /// handle of any reference: only what the summary projects. They are private to the panel and are not a reusable foundation.
++    /// </summary>
++    public sealed record BrowserRackFact(bool IsInterpretable, string? EnvelopeId, string? Kind, string? View, string? Name);
++
++    /// <summary>
++    /// Pure projector and memory of the lazy rack summary (I-64 F3-T2, INV-38). It is NOT a second navigation authority and does
++    /// not derive targets: from the facts of a session it projects name, Kind and views of one rack, and remembers only the
++    /// summary of the racks that were asked for, keyed by (session, rack). There is no global inventory: facts are read only when
++    /// no summary is remembered for that key, and nothing of the scan is kept. A session that ended is never resurrected.
++    /// </summary>
++    public sealed class BrowserRackSummaries
++    {
++        private readonly Func<SessionId, IReadOnlyList<BrowserRackFact>> _readFacts;
++        private readonly Func<SessionId, bool> _isSessionAlive;
++        private readonly Dictionary<RackKey, BrowserRackSummary> _cache = new(RackKeyIgnoreCase.Instance);
++        private readonly HashSet<SessionId> _known = new();
++        private readonly HashSet<SessionId> _ended = new();
++
++        public BrowserRackSummaries(Func<SessionId, IReadOnlyList<BrowserRackFact>> readFacts, Func<SessionId, bool> isSessionAlive)
++        {
++            _readFacts = readFacts ?? throw new ArgumentNullException(nameof(readFacts));
++            _isSessionAlive = isSessionAlive ?? throw new ArgumentNullException(nameof(isSessionAlive));
++        }
++
++        /// <summary>Sessions this memory keeps state for.</summary>
++        public int KnownSessionCount => _known.Count;
++
++        public bool IsCached(SessionId session, string rackId) =>
++            !string.IsNullOrWhiteSpace(rackId) && _cache.ContainsKey(new RackKey(session, rackId));
++
++        public int CachedRackCount(SessionId session)
++        {
++            var count = 0;
++            foreach (var key in _cache.Keys)
++                if (key.Session == session) count++;
++            return count;
++        }
++
++        public bool IsSessionEnded(SessionId session) => _ended.Contains(session);
++
++        /// <summary>
++        /// The summary of the rack in the session. The facts are read only when nothing is remembered for (session, rack); a read
++        /// that fails remembers nothing. A session that ended, or that is found dead now, is ended and answers Rejected without
++        /// reading.
++        /// </summary>
++        public BrowserRackSummary Read(SessionId session, string rackId)
++        {
++            if (_ended.Contains(session)) return Gone();
++
++            PurgeDeadSessions();
++            if (_ended.Contains(session)) return Gone();
++            if (!_isSessionAlive(session))
++            {
++                End(session);
++                return Gone();
++            }
++
++            if (string.IsNullOrWhiteSpace(rackId))
++                return BrowserRackSummary.Without(BrowserSummaryStatus.NotFound, "There is no rack id to summarize.");
++
++            _known.Add(session);
++            var key = new RackKey(session, rackId);
++            if (_cache.TryGetValue(key, out var cached)) return cached;
++
++            var summary = Project(_readFacts(session), rackId);
++            _cache[key] = summary;
++            return summary;
++        }
++
++        /// <summary>
++        /// A drain of the session: purges the sessions that no longer live and, under the same condition as the navigation authority
++        /// (the drain ran and invalidated the navigation caches), drops the remembered summaries of that session.
++        /// </summary>
++        public void OnDrained(DrainOutcome outcome)
++        {
++            PurgeDeadSessions();
++            if (_ended.Contains(outcome.Session)) return;
++
++            var drain = outcome.Result;
++            if (!drain.Drained) return;
++            foreach (var operation in drain.Operations)
++            {
++                if (operation != DrainOperation.InvalidateNavigationCaches) continue;
++                InvalidateSession(outcome.Session);
++                return;
++            }
++        }
++
++        /// <summary>The session was destroyed: its summaries go away and it never answers again.</summary>
++        public void EndSession(SessionId session) => End(session);
++
++        private void PurgeDeadSessions()
++        {
++            var dead = new List<SessionId>();
++            foreach (var session in _known)
++                if (!_isSessionAlive(session)) dead.Add(session);
++            foreach (var session in dead) End(session);
++        }
++
++        private void End(SessionId session)
++        {
++            InvalidateSession(session);
++            _known.Remove(session);
++            _ended.Add(session);
++        }
++
++        private void InvalidateSession(SessionId session)
++        {
++            var doomed = new List<RackKey>();
++            foreach (var key in _cache.Keys)
++                if (key.Session == session) doomed.Add(key);
++            foreach (var key in doomed) _cache.Remove(key);
++        }
++
++        private static BrowserRackSummary Gone() =>
++            BrowserRackSummary.Without(BrowserSummaryStatus.Rejected, "The document of the request is gone.");
++
++        // The first non-blank name and Kind among the interpretable facts of the rack, in reading order; the distinct non-blank
++        // views, ordered; no interpretable fact of that rack means it is not in the drawing. The rack id is compared ignoring case.
++        private static BrowserRackSummary Project(IReadOnlyList<BrowserRackFact> facts, string rackId)
++        {
++            string? name = null;
++            string? kind = null;
++            var found = false;
++            var views = new List<string>();
++
++            foreach (var fact in facts)
++            {
++                if (!fact.IsInterpretable || string.IsNullOrWhiteSpace(fact.EnvelopeId)) continue;
++                if (!string.Equals(fact.EnvelopeId, rackId, StringComparison.OrdinalIgnoreCase)) continue;
++
++                found = true;
++                if (name == null && !string.IsNullOrWhiteSpace(fact.Name)) name = fact.Name;
++                if (kind == null && !string.IsNullOrWhiteSpace(fact.Kind)) kind = fact.Kind;
++                if (!string.IsNullOrWhiteSpace(fact.View) && !ContainsIgnoreCase(views, fact.View!)) views.Add(fact.View!);
++            }
++
++            if (!found)
++                return BrowserRackSummary.Without(BrowserSummaryStatus.NotFound, "The rack is not in the drawing of the session.");
++
++            views.Sort(StringComparer.OrdinalIgnoreCase);
++            return BrowserRackSummary.Ready(name, kind, views.ToArray());
++        }
++
++        private static bool ContainsIgnoreCase(List<string> values, string value)
++        {
++            foreach (var existing in values)
++                if (string.Equals(existing, value, StringComparison.OrdinalIgnoreCase)) return true;
++            return false;
++        }
++
++        private sealed class RackKeyIgnoreCase : IEqualityComparer<RackKey>
++        {
++            public static readonly RackKeyIgnoreCase Instance = new();
++
++            public bool Equals(RackKey x, RackKey y) =>
++                x.Session == y.Session && string.Equals(x.RackId, y.RackId, StringComparison.OrdinalIgnoreCase);
++
++            public int GetHashCode(RackKey key) =>
++                HashCode.Combine(key.Session.Value, StringComparer.OrdinalIgnoreCase.GetHashCode(key.RackId ?? string.Empty));
++        }
++    }
++}
+diff --git a/src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs b/src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs
+new file mode 100644
+index 00000000..05fd15a4
+--- /dev/null
++++ b/src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs
+@@ -0,0 +1,58 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++
++namespace RackCad.Application.Workspace
++{
++    /// <summary>How a summary request ended. A normal rejection or failure is a value, never a thrown exception.</summary>
++    public enum BrowserSummaryStatus
++    {
++        /// <summary>The summary was read (or served from memory).</summary>
++        Ready,
++
++        /// <summary>The rack is not in the drawing of the session. Nothing changed.</summary>
++        NotFound,
++
++        /// <summary>The host is not at rest (a command is in progress), so nothing was read; the caller asks again later.</summary>
++        Busy,
++
++        /// <summary>The request does not belong to the document that would read it, or its session is gone. Nothing was read.</summary>
++        Rejected,
++
++        /// <summary>The host failed while reading. The failure is contained and reported as a value.</summary>
++        Failed,
++    }
++
++    /// <summary>
++    /// The lazy summary of ONE rack: name, Kind and the views it has. A plain value projected from the neutral capture facts; it
++    /// holds no host object, no handle and no reference to the drawing. <see cref="Reason"/> says why it is not ready.
++    /// </summary>
++    public sealed record BrowserRackSummary(
++        BrowserSummaryStatus Status,
++        string? Name,
++        string? Kind,
++        IReadOnlyList<string> Views,
++        string? Reason)
++    {
++        public bool IsReady => Status == BrowserSummaryStatus.Ready;
++
++        public static BrowserRackSummary Ready(string? name, string? kind, IReadOnlyList<string> views) =>
++            new(BrowserSummaryStatus.Ready, name, kind, views ?? Array.Empty<string>(), null);
++
++        public static BrowserRackSummary Without(BrowserSummaryStatus status, string reason) =>
++            new(status, null, null, Array.Empty<string>(), reason);
++    }
++
++    /// <summary>
++    /// The read-only port through which the browser of the panel asks for the summary of the rack of its live surface (I-64 F3-T2).
++    /// No host type crosses it. Every request carries the session of the presented snapshot; the host authorizes it against the
++    /// document that would read it and answers with an immutable value. It writes nothing: no selection, no view, no drawing.
++    /// </summary>
++    public interface IWorkspaceBrowserSummaryPort
++    {
++        BrowserRackSummary ReadSummary(WorkspaceRequest origin, string rackId);
++
++        /// <summary>Whether the session still lives; the browser destroys the tabs of a session that does not.</summary>
++        bool IsSessionAlive(SessionId session);
++    }
++}
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceController.cs b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+index 4171543d..e68e4b6a 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceController.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@ -82,6 +82,12 @@ namespace RackCad.Plugin.Workspace
+             }
+         }
+ 
++        /// <summary>
++        /// The read-only summary port of the browser of the panel (I-64 F3-T2): the same lazy navigation host, so it creates nothing
++        /// new and subscribes to nothing. It writes no selection, no view and nothing of the drawing.
++        /// </summary>
++        public IWorkspaceBrowserSummaryPort BrowserSummary => (IWorkspaceBrowserSummaryPort)Navigation;
++
+         public bool PanelVisible => _host.PanelVisible;
+ 
+         /// <summary>First call: starts the bridge once. Always: shows the panel state and asks for a reconciliation at the next rest.</summary>
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs b/src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs
+index c6c49f3a..2e0dd679 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs
+@@ -23,7 +23,23 @@ namespace RackCad.Plugin.Workspace
+             _nativeInstanceOf = nativeInstanceOf ?? throw new ArgumentNullException(nameof(nativeInstanceOf));
+         }
+ 
+-        public IReadOnlyList<NavigationDefinitionFact> ReadDefinitionFacts(SessionId session)
++        public IReadOnlyList<NavigationDefinitionFact> ReadDefinitionFacts(SessionId session) => Scan(session, includeReferences: true);
++
++        /// <summary>
++        /// The neutral facts of the browser summary (I-64 F3-T2): name, Kind and view of every scanned definition, with no handle of
++        /// any reference. It is the same integrated scan of the same document, run once, and it lists no reference at all.
++        /// </summary>
++        public IReadOnlyList<BrowserRackFact> ReadBrowserFacts(SessionId session)
++        {
++            var scanned = Scan(session, includeReferences: false);
++            var facts = new List<BrowserRackFact>(scanned.Count);
++            foreach (var fact in scanned)
++                facts.Add(new BrowserRackFact(fact.IsInterpretable, fact.EnvelopeId, fact.Kind, fact.View, fact.Name));
++            return facts;
++        }
++
++        // The one place that runs the integrated scan. The references of each definition are listed only when the caller needs them.
++        private List<NavigationDefinitionFact> Scan(SessionId session, bool includeReferences)
+         {
+             var facts = new List<NavigationDefinitionFact>();
+ 
+@@ -39,7 +55,7 @@ namespace RackCad.Plugin.Workspace
+                 foreach (var scan in RackBlockFinder.ScanEnvelopes(transaction, document.Database, includeReferenceCount: false))
+                 {
+                     var handles = new List<long>();
+-                    var record = transaction.GetObject(scan.DefinitionId, OpenMode.ForRead) as BlockTableRecord;
++                    var record = includeReferences ? transaction.GetObject(scan.DefinitionId, OpenMode.ForRead) as BlockTableRecord : null;
+                     if (record != null)
+                     {
+                         foreach (ObjectId referenceId in record.GetBlockReferenceIds(directOnly: true, forceValidity: false))
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs b/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
+index 7b3d156e..9810c1fa 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
+@@ -19,10 +19,12 @@ namespace RackCad.Plugin.Workspace
+     /// the capture of the result and the return of the focus to the drawing. A session that went stale, another active
+     /// document or a target that vanished means zero effects.
+     /// </summary>
+-    public sealed class WorkspaceNavigationHost : IWorkspaceNavigationPort
++    public sealed class WorkspaceNavigationHost : IWorkspaceNavigationPort, IWorkspaceBrowserSummaryPort
+     {
+         private readonly WorkspaceNavigationRunner _runner;
+         private readonly WorkspaceNavigationEffects _effects;
++        private readonly BrowserRackSummaries _summaries;
++        private readonly Func<SessionId, bool> _isSessionAlive;
+         private readonly Func<WorkspaceRequest, long, RequestDecision> _authorize;
+ 
+         public WorkspaceNavigationHost(
+@@ -33,11 +35,14 @@ namespace RackCad.Plugin.Workspace
+             if (echo == null) throw new ArgumentNullException(nameof(echo));
+             if (nativeInstanceOf == null) throw new ArgumentNullException(nameof(nativeInstanceOf));
+             _authorize = authorize ?? throw new ArgumentNullException(nameof(authorize));
++            _isSessionAlive = id => nativeInstanceOf(id).HasValue;
+ 
+-            var targets = new NavigationTargets(new WorkspaceNavigationFacts(nativeInstanceOf));
++            var facts = new WorkspaceNavigationFacts(nativeInstanceOf);
++            var targets = new NavigationTargets(facts);
+             var policy = new NavigationActionPolicy(targets);
+-            _runner = new WorkspaceNavigationRunner(targets, policy, echo, id => nativeInstanceOf(id).HasValue);
++            _runner = new WorkspaceNavigationRunner(targets, policy, echo, _isSessionAlive);
+             _effects = new WorkspaceNavigationEffects(nativeInstanceOf);
++            _summaries = new BrowserRackSummaries(facts.ReadBrowserFacts, _isSessionAlive);
+         }
+ 
+         /// <summary>A drain of the session: purges the state of the sessions that no longer live and applies the cache invalidation.</summary>
+@@ -46,6 +51,7 @@ namespace RackCad.Plugin.Workspace
+             try
+             {
+                 _runner.OnDrained(outcome);
++                _summaries.OnDrained(outcome);
+             }
+             catch (System.Exception ex)
+             {
+@@ -53,6 +59,43 @@ namespace RackCad.Plugin.Workspace
+             }
+         }
+ 
++        /// <summary>Whether the session still lives; the browser of the panel destroys the tabs of a session that does not.</summary>
++        public bool IsSessionAlive(SessionId session) => _isSessionAlive(session);
++
++        /// <summary>
++        /// The lazy summary of one rack for the browser of the panel (I-64 F3-T2). It answers with a value and has no effect: it
++        /// writes no selection, no view and nothing of the drawing, and it does not give the focus back. A failure is contained.
++        /// </summary>
++        public BrowserRackSummary ReadSummary(WorkspaceRequest origin, string rackId)
++        {
++            try
++            {
++                return ReadSummaryOnActiveDocument(origin, rackId);
++            }
++            catch (System.Exception ex)
++            {
++                LogFault("WorkspaceNavigationHost.ReadSummary", ex);
++                return BrowserRackSummary.Without(BrowserSummaryStatus.Failed, ex.Message);
++            }
++        }
++
++        // In this order: the active document, no command in progress and the editor at rest, the session of the request authorized
++        // for that document, and only then the memory or the read of the summary.
++        private BrowserRackSummary ReadSummaryOnActiveDocument(WorkspaceRequest origin, string rackId)
++        {
++            var document = AcApplication.DocumentManager.MdiActiveDocument;
++            if (document == null)
++                return BrowserRackSummary.Without(BrowserSummaryStatus.Rejected, "There is no active document.");
++            if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
++                return BrowserRackSummary.Without(BrowserSummaryStatus.Busy, "A command is in progress.");
++
++            var decision = _authorize(origin, document.UnmanagedObject.ToInt64());
++            if (decision != RequestDecision.Accepted)
++                return BrowserRackSummary.Without(BrowserSummaryStatus.Rejected, "The request does not belong to the active document.");
++
++            return _summaries.Read(origin.Origin, rackId);
++        }
++
+         public Task<WorkspaceNavigationResult> ExecuteAsync(
+             WorkspaceRequest origin,
+             string rackId,
+diff --git a/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs b/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs
+index 0e58bbc2..22e357a7 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs
+@@ -43,7 +43,7 @@ namespace RackCad.Plugin.Workspace
+         private WorkspacePaletteHost()
+         {
+             _controller = WorkspaceController.GetOrCreate();
+-            _viewModel = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation);
++            _viewModel = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation, _controller.BrowserSummary);
+             _root = new WorkspacePanelView(_viewModel);
+ 
+             _palette = new PaletteSet("RackCad");
+diff --git a/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs b/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
+new file mode 100644
+index 00000000..46044276
+--- /dev/null
++++ b/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
+@@ -0,0 +1,361 @@
++using System;
++using System.Collections.Generic;
++using System.Globalization;
++using RackCad.Application.Workspace;
++
++namespace RackCad.UI.Workspace
++{
++    /// <summary>
++    /// One tab of the strip as the panel shows it: a plain value (I-64 F3-T2, P-07, INV-02). It carries no event, no delegate, no
++    /// object of AutoCAD and no reference to a visual element, so a tab adds no subscription of any kind.
++    /// </summary>
++    public sealed record WorkspaceBrowserTabItem(string RackId, string Title, bool IsActive, bool IsPreview);
++
++    /// <summary>
++    /// Browser of the workspace panel (I-64 F3-T2, D-03, D-06, D-08): a strip of light rack tabs and ONE live surface (K = 1) that
++    /// shows the lazy summary of the active tab. It holds the single <see cref="BrowserSessionRegistry"/> of the panel and shows
++    /// only the tabs of the session of the presented snapshot.
++    ///
++    /// The only automatic synchronization is the selection context of the presented snapshot (<see cref="BrowserSession"/>). Changing,
++    /// pinning or closing a tab changes memory only: it never writes the selection, the view or the drawing and asks nothing of
++    /// the navigation. The summary (name, Kind, views) is asked of the read-only port only for the tab that becomes the live
++    /// surface, once per materialization, and only while the drawing can be read and no action is blocked; otherwise it is retried
++    /// at the next presentation of that same tab. The views live only in the surface, never in the tab record.
++    ///
++    /// It is synchronous: no timer, no thread, no task and no dispatcher. Without a port it is inert: no tabs, no surface.
++    /// </summary>
++    public sealed class WorkspaceBrowserViewModel : ObservableObject
++    {
++        private enum SurfaceState
++        {
++            None,
++            Pending,
++            Busy,
++            Ready,
++            NotFound,
++            Rejected,
++            Error,
++        }
++
++        private readonly IWorkspaceBrowserSummaryPort _port;
++        private readonly Action _tabChanged;
++        private readonly BrowserSessionRegistry _registry = new();
++
++        // What the presented snapshot says (set only by Present).
++        private SessionId? _session;
++        private BrowserSession _current;
++        private bool _canRead;
++        private WorkspaceActionBlock _block = WorkspaceActionBlock.NotStarted;
++        private string _blockText = string.Empty;
++
++        // The one live surface: the tab that is active in the presented session, and what was read for it.
++        private SessionId? _surfaceSession;
++        private string _surfaceRack;
++        private SurfaceState _surfaceState = SurfaceState.None;
++        private string _surfaceName;
++        private string _surfaceKind;
++        private IReadOnlyList<string> _surfaceViews = Array.Empty<string>();
++        private string _surfaceReason = string.Empty;
++
++        private IReadOnlyList<WorkspaceBrowserTabItem> _tabs = Array.Empty<WorkspaceBrowserTabItem>();
++
++        /// <param name="port">The read-only summary port; null leaves the browser inert.</param>
++        /// <param name="tabChanged">Called after a manual change of tabs, so the panel presents the navigation again with its last snapshot.</param>
++        public WorkspaceBrowserViewModel(IWorkspaceBrowserSummaryPort port, Action tabChanged = null)
++        {
++            _port = port;
++            _tabChanged = tabChanged;
++        }
++
++        // ------------------------------------------------------------------ what the panel shows
++
++        /// <summary>False when the panel was built without a summary port: the browser is inert.</summary>
++        public bool IsAvailable => _port != null;
++
++        /// <summary>The tabs of the session of the presented snapshot, in presentation order; empty without a session.</summary>
++        public IReadOnlyList<WorkspaceBrowserTabItem> Tabs => _tabs;
++
++        public bool HasTabs => _tabs.Count > 0;
++
++        /// <summary>The rack of the active tab; null if and only if there is no tab to show.</summary>
++        public string ActiveRackId => _current?.ActiveRackId;
++
++        /// <summary>The live surfaces: 0 without tabs and exactly 1 with some (K = 1).</summary>
++        public int LiveSurfaceCount => HasSurface ? BrowserSession.MaxLiveSurfaces : 0;
++
++        public bool HasSurface => _current != null && _current.ActiveRackId != null;
++
++        /// <summary>Why there are no tabs; empty while there are.</summary>
++        public string EmptyText => HasTabs ? string.Empty : EmptyReason();
++
++        public string SurfaceTitle
++        {
++            get
++            {
++                if (!HasSurface) return string.Empty;
++                return string.IsNullOrWhiteSpace(_surfaceName) ? _surfaceRack : _surfaceName;
++            }
++        }
++
++        public string SurfaceKindText =>
++            _surfaceState == SurfaceState.Ready
++                ? "Tipo: " + (string.IsNullOrWhiteSpace(_surfaceKind) ? "sin dato" : _surfaceKind)
++                : string.Empty;
++
++        public string SurfaceViewsText
++        {
++            get
++            {
++                if (_surfaceState != SurfaceState.Ready) return string.Empty;
++                return _surfaceViews.Count == 0 ? "Vistas: ninguna" : "Vistas: " + string.Join(", ", _surfaceViews);
++            }
++        }
++
++        /// <summary>The state of the summary in Spanish with its reason: pending or blocked, ready, unavailable or failed.</summary>
++        public string SurfaceStatusText => StatusText();
++
++        // ------------------------------------------------------------------ what the panel tells it
++
++        /// <summary>
++        /// The panel presented a snapshot. It synchronizes the browser session of that snapshot with its selection context (the only
++        /// automatic synchronization), destroys the sessions that no longer live and, when the active tab is not yet the live
++        /// surface, asks the port for its summary. It never touches the navigation.
++        /// </summary>
++        public void Present(SessionId? session, SelectionContext context, bool canReadDrawing, WorkspaceActionBlock block, string blockText)
++        {
++            if (_port == null) return;
++
++            _canRead = canReadDrawing;
++            _block = block;
++            _blockText = blockText ?? string.Empty;
++            PurgeDeadSessions();
++
++            _session = session;
++            _current = session.HasValue ? _registry.GetOrCreate(session.Value) : null;
++            if (_current != null && context != null) _current.ApplySelectionContext(context);
++
++            Rebuild(retryPending: true);
++        }
++
++        // ------------------------------------------------------------------ the explicit user interactions
++
++        /// <summary>Makes the tab the active one. Memory only; the tab becomes the live surface and the navigation is presented again.</summary>
++        public void ActivateTab(string rackId) => Interact(session => session.Activate(rackId));
++
++        /// <summary>Pins the preview tab so the automatic synchronization never replaces it. Memory only.</summary>
++        public void PinTab(string rackId) => Interact(session => session.Pin(rackId));
++
++        /// <summary>Closes the tab without asking anything; if it was active the next one is. Memory only.</summary>
++        public void CloseTab(string rackId) => Interact(session => session.Close(rackId));
++
++        // ------------------------------------------------------------------ internals
++
++        private void Interact(Func<BrowserSession, BrowserChange> operation)
++        {
++            if (_port == null || _current == null) return;
++
++            try
++            {
++                if (operation(_current) == BrowserChange.None) return;
++                Rebuild(retryPending: false);
++                _tabChanged?.Invoke();
++            }
++            catch (Exception ex)
++            {
++                ContainFailure(ex);
++            }
++        }
++
++        private void PurgeDeadSessions()
++        {
++            foreach (var known in _registry.KnownSessions)
++                if (!_port.IsSessionAlive(known)) _registry.Destroy(known);
++        }
++
++        // Brings the live surface to the active tab and publishes what the panel shows. Only a presentation retries a summary that was
++        // waiting; a tab change asks only for the tab that just became the live surface.
++        private void Rebuild(bool retryPending)
++        {
++            SyncSurface(retryPending);
++            RebuildTabs();
++            RaiseAll();
++        }
++
++        private void SyncSurface(bool retryPending)
++        {
++            var rack = _current?.ActiveRackId;
++            if (rack == null)
++            {
++                ClearSurface();
++                return;
++            }
++
++            // A tab that becomes the live surface starts a new materialization; the same tab presented again does not.
++            var started = _surfaceSession != _session || !string.Equals(_surfaceRack, rack, StringComparison.Ordinal);
++            if (started)
++            {
++                _surfaceSession = _session;
++                _surfaceRack = rack;
++                _surfaceState = SurfaceState.Pending;
++                _surfaceName = null;
++                _surfaceKind = null;
++                _surfaceViews = Array.Empty<string>();
++                _surfaceReason = string.Empty;
++            }
++
++            if (started || (retryPending && (_surfaceState == SurfaceState.Pending || _surfaceState == SurfaceState.Busy))) Materialize();
++        }
++
++        private void ClearSurface()
++        {
++            _surfaceSession = null;
++            _surfaceRack = null;
++            _surfaceState = SurfaceState.None;
++            _surfaceName = null;
++            _surfaceKind = null;
++            _surfaceViews = Array.Empty<string>();
++            _surfaceReason = string.Empty;
++        }
++
++        // One query of the port for the rack of the live surface. A blocked drawing is not read at all; the surface stays pending and
++        // the next presentation of the same tab tries again.
++        private void Materialize()
++        {
++            if (!_canRead || _block != WorkspaceActionBlock.None)
++            {
++                _surfaceState = SurfaceState.Pending;
++                return;
++            }
++
++            BrowserRackSummary summary;
++            try
++            {
++                summary = _port.ReadSummary(new WorkspaceRequest(_session.Value), _surfaceRack)
++                    ?? BrowserRackSummary.Without(BrowserSummaryStatus.Failed, "El puerto no devolvió un resumen.");
++            }
++            catch (Exception ex)
++            {
++                summary = BrowserRackSummary.Without(BrowserSummaryStatus.Failed, ReasonOf(ex));
++            }
++
++            Absorb(summary);
++        }
++
++        // The result enters the tab only through ApplySummary; the views stay here, in the surface.
++        private void Absorb(BrowserRackSummary summary)
++        {
++            _surfaceReason = summary.Reason ?? string.Empty;
++            switch (summary.Status)
++            {
++                case BrowserSummaryStatus.Ready:
++                    _surfaceState = SurfaceState.Ready;
++                    _surfaceName = summary.Name;
++                    _surfaceKind = summary.Kind;
++                    _surfaceViews = summary.Views ?? Array.Empty<string>();
++                    _current.ApplySummary(_surfaceRack, BrowserTabStatus.Ready, summary.Name, summary.Kind);
++                    break;
++                case BrowserSummaryStatus.Busy:
++                    _surfaceState = SurfaceState.Busy;
++                    break;
++                case BrowserSummaryStatus.NotFound:
++                    _surfaceState = SurfaceState.NotFound;
++                    _current.ApplySummary(_surfaceRack, BrowserTabStatus.Unavailable, null, null);
++                    break;
++                case BrowserSummaryStatus.Rejected:
++                    _surfaceState = SurfaceState.Rejected;
++                    _current.ApplySummary(_surfaceRack, BrowserTabStatus.Unavailable, null, null);
++                    break;
++                default:
++                    _surfaceState = SurfaceState.Error;
++                    _current.ApplySummary(_surfaceRack, BrowserTabStatus.Error, null, null);
++                    break;
++            }
++        }
++
++        // The last defence of an interaction: the live tab shows the failure and nothing escapes.
++        private void ContainFailure(Exception exception)
++        {
++            try
++            {
++                _surfaceState = SurfaceState.Error;
++                _surfaceReason = ReasonOf(exception);
++                if (_current != null && _surfaceRack != null)
++                    _current.ApplySummary(_surfaceRack, BrowserTabStatus.Error, null, null);
++                RebuildTabs();
++                RaiseAll();
++            }
++            catch (Exception)
++            {
++                // Nothing else can be done here without risking the message loop of the host.
++            }
++        }
++
++        private void RebuildTabs()
++        {
++            var tabs = new List<WorkspaceBrowserTabItem>();
++            if (_current != null)
++            {
++                var active = _current.ActiveRackId;
++                foreach (var tab in _current.Tabs)
++                {
++                    var title = string.IsNullOrWhiteSpace(tab.Name) ? tab.RackId : tab.Name;
++                    tabs.Add(new WorkspaceBrowserTabItem(
++                        tab.RackId, title, string.Equals(tab.RackId, active, StringComparison.Ordinal), tab.IsPreview));
++                }
++            }
++
++            _tabs = tabs;
++        }
++
++        private bool IsBlocked => !_canRead || _block != WorkspaceActionBlock.None;
++
++        private string StatusText()
++        {
++            switch (_surfaceState)
++            {
++                case SurfaceState.None:
++                    return string.Empty;
++                case SurfaceState.Pending:
++                    return IsBlocked
++                        ? "Resumen en espera, no se leyó el dibujo: "
++                            + (string.IsNullOrWhiteSpace(_blockText) ? "el dibujo no se puede leer ahora." : _blockText)
++                        : "Resumen pendiente de leer.";
++                case SurfaceState.Busy:
++                    return "Resumen en espera: hay un comando en curso; se reintenta en la siguiente actualización.";
++                case SurfaceState.Ready:
++                    return "Resumen cargado.";
++                case SurfaceState.NotFound:
++                    return "Resumen no disponible: el rack ya no está en el dibujo activo.";
++                case SurfaceState.Rejected:
++                    return "Resumen no disponible: la petición pertenece a otro documento o el documento ya no existe.";
++                default:
++                    return "No se pudo leer el resumen: " + (string.IsNullOrWhiteSpace(_surfaceReason) ? "fallo sin detalle." : _surfaceReason);
++            }
++        }
++
++        private string EmptyReason()
++        {
++            if (_port == null) return "El navegador no está disponible en este panel.";
++            if (!_session.HasValue) return "No hay un documento activo: no hay pestañas.";
++            return "Selecciona un solo rack en el dibujo para abrir su pestaña.";
++        }
++
++        private static string ReasonOf(Exception exception) =>
++            string.IsNullOrWhiteSpace(exception?.Message) ? exception?.GetType().Name : exception.Message;
++
++        private void RaiseAll()
++        {
++            OnPropertyChanged(nameof(IsAvailable));
++            OnPropertyChanged(nameof(Tabs));
++            OnPropertyChanged(nameof(HasTabs));
++            OnPropertyChanged(nameof(ActiveRackId));
++            OnPropertyChanged(nameof(LiveSurfaceCount));
++            OnPropertyChanged(nameof(HasSurface));
++            OnPropertyChanged(nameof(EmptyText));
++            OnPropertyChanged(nameof(SurfaceTitle));
++            OnPropertyChanged(nameof(SurfaceKindText));
++            OnPropertyChanged(nameof(SurfaceViewsText));
++            OnPropertyChanged(nameof(SurfaceStatusText));
++        }
++    }
++}
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+index 0a275cda..acc3f8cd 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
++++ b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+@@ -78,6 +78,63 @@
+             <TextBlock x:Name="ContextTextBlock" Text="{Binding ContextText}" Style="{StaticResource OptionalText}"
+                        Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+ 
++            <!-- Browser of racks (I-64 F3-T2): the tab strip and ONE live surface (K = 1), before the navigation. Memory only: no control
++                 here writes the drawing. No control has a fixed size: the strip wraps with the width of the surface, from a narrow bar to
++                 a wide window, and the one surface is reused by every tab. -->
++            <TextBlock Text="Navegador de racks" Style="{StaticResource SectionTitle}" />
++            <TextBlock x:Name="BrowserEmptyText" Text="{Binding Browser.EmptyText}" Style="{StaticResource OptionalText}"
++                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
++            <ItemsControl x:Name="BrowserTabStrip" ItemsSource="{Binding Browser.Tabs}" Margin="0,6,0,0"
++                          AutomationProperties.Name="Pestañas de racks">
++                <ItemsControl.ItemsPanel>
++                    <ItemsPanelTemplate>
++                        <WrapPanel />
++                    </ItemsPanelTemplate>
++                </ItemsControl.ItemsPanel>
++                <ItemsControl.ItemTemplate>
++                    <DataTemplate>
++                        <Border Margin="0,0,6,6" Padding="2" BorderThickness="1" BorderBrush="{DynamicResource ShellBorderBrush}">
++                            <Border.Style>
++                                <Style TargetType="Border">
++                                    <Style.Triggers>
++                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
++                                            <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
++                                            <Setter Property="BorderThickness" Value="2" />
++                                        </DataTrigger>
++                                    </Style.Triggers>
++                                </Style>
++                            </Border.Style>
++                            <WrapPanel>
++                                <Button Margin="0,0,4,0" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
++                                        AutomationProperties.Name="Activar pestaña" Click="OnBrowserTabActivateClick">
++                                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
++                                </Button>
++                                <Button Content="Fijar" Margin="0,0,4,0" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
++                                        AutomationProperties.Name="Fijar pestaña"
++                                        Visibility="{Binding IsPreview, Converter={StaticResource FlagToVisibility}}"
++                                        Click="OnBrowserTabPinClick" />
++                                <Button Content="Cerrar" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
++                                        AutomationProperties.Name="Cerrar pestaña" Click="OnBrowserTabCloseClick" />
++                            </WrapPanel>
++                        </Border>
++                    </DataTemplate>
++                </ItemsControl.ItemTemplate>
++            </ItemsControl>
++            <Border x:Name="BrowserSurface" Padding="10" BorderThickness="1" Margin="0,2,0,0"
++                    Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}"
++                    Visibility="{Binding Browser.HasSurface, Converter={StaticResource FlagToVisibility}}">
++                <StackPanel>
++                    <TextBlock x:Name="BrowserSurfaceTitleText" Text="{Binding Browser.SurfaceTitle}" FontWeight="SemiBold"
++                               Foreground="{DynamicResource ShellTextPrimaryBrush}" TextWrapping="Wrap" />
++                    <TextBlock x:Name="BrowserSurfaceKindText" Text="{Binding Browser.SurfaceKindText}" Style="{StaticResource OptionalText}"
++                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
++                    <TextBlock x:Name="BrowserSurfaceViewsText" Text="{Binding Browser.SurfaceViewsText}" Style="{StaticResource OptionalText}"
++                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
++                    <TextBlock x:Name="BrowserSurfaceStatusText" Text="{Binding Browser.SurfaceStatusText}" Style="{StaticResource OptionalText}"
++                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
++                </StackPanel>
++            </Border>
++
+             <!-- Navigation of the rack of the context (I-64 F2-T2B). Explicit actions only. No control here has a fixed width:
+                  the WrapPanels reflow with the width of the surface, from a narrow bar to a wide window. -->
+             <TextBlock Text="Navegación" Style="{StaticResource SectionTitle}" />
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+index db88c6e5..a8fdc785 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+@@ -62,6 +62,16 @@ namespace RackCad.UI.Workspace
+ 
+         private void OnNavigationNextCopyClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Navigation.NextCopy());
+ 
++        // The tab clicks (I-64 F3-T2): each one is one explicit interaction that only changes memory. The tab is the data context of its
++        // own button, so the handler needs no lookup in the visual tree.
++        private void OnBrowserTabActivateClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ActivateTab(RackOf(sender)));
++
++        private void OnBrowserTabPinClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.PinTab(RackOf(sender)));
++
++        private void OnBrowserTabCloseClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.CloseTab(RackOf(sender)));
++
++        private static string RackOf(object sender) => ((sender as FrameworkElement)?.DataContext as WorkspaceBrowserTabItem)?.RackId;
++
+         private void Contained(Action interaction)
+         {
+             try
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs b/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs
+index 7c5fe5a3..e90acd98 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs
+@@ -39,6 +39,10 @@ namespace RackCad.UI.Workspace
+         private string _contextTitle = string.Empty;
+         private string _contextText = string.Empty;
+         private string _rackId;
++        private SessionId? _presentedSession;
++        private SelectionContextKind _presentedKind = SelectionContextKind.None;
++        private bool _presentedCanRead;
++        private WorkspaceActionBlock _presentedBlock = WorkspaceActionBlock.NotStarted;
+         private string _errorMessage = string.Empty;
+         private bool _instrumentationEnabled;
+         private string _instrumentationSummary = string.Empty;
+@@ -51,11 +55,16 @@ namespace RackCad.UI.Workspace
+         /// The navigation port (I-64 F2-T2B). Optional: without it the navigation section is present but unavailable. Building
+         /// the panel never asks it for anything; it is asked only when the user clicks a navigation action.
+         /// </param>
+-        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null)
++        /// <param name="browserSummary">
++        /// The read-only summary port of the browser (I-64 F3-T2). Optional: without it the browser is inert and the panel behaves
++        /// exactly as before. It is asked only for the rack of the live surface, never when the panel is built.
++        /// </param>
++        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null, IWorkspaceBrowserSummaryPort browserSummary = null)
+         {
+             _port = port ?? throw new ArgumentNullException(nameof(port));
+             _setInstrumentationEnabled = setInstrumentationEnabled ?? throw new ArgumentNullException(nameof(setInstrumentationEnabled));
+             Navigation = new WorkspaceNavigationViewModel(navigation, Refresh);
++            Browser = new WorkspaceBrowserViewModel(browserSummary, RepresentNavigation);
+             Present(InitialSnapshot(), null);
+         }
+ 
+@@ -117,6 +126,9 @@ namespace RackCad.UI.Workspace
+         /// <summary>The navigation of the rack of the current context (Seleccionar, Ver, Centrar, Localizar vista).</summary>
+         public WorkspaceNavigationViewModel Navigation { get; }
+ 
++        /// <summary>The browser of racks: the tab strip and its one live surface (I-64 F3-T2). Inert without a summary port.</summary>
++        public WorkspaceBrowserViewModel Browser { get; }
++
+         // ------------------------------------------------------------------ the only entries that ask the port
+ 
+         /// <summary>
+@@ -202,12 +214,38 @@ namespace RackCad.UI.Workspace
+             Set(ref _contextText, ContextTextOf(context), nameof(ContextText));
+             Set(ref _rackId, context.Kind == SelectionContextKind.One ? context.RackId : null, nameof(RackId));
+ 
+-            // The navigation receives what this very snapshot says, in one piece; it asks nothing of its port for it.
+-            Navigation.Present(snapshot.ActiveSession, context.Kind, _rackId, snapshot.Actions.CanReadDrawing, snapshot.Actions.Block, _actionBlockText);
++            // The browser takes the session and the context of this very snapshot first (the one automatic synchronization); then the
++            // navigation receives what the snapshot says, in one piece. The values are kept so a manual change of tab can present the
++            // navigation again without asking the host for another snapshot.
++            _presentedSession = snapshot.ActiveSession;
++            _presentedKind = context.Kind;
++            _presentedCanRead = snapshot.Actions.CanReadDrawing;
++            _presentedBlock = snapshot.Actions.Block;
++            Browser.Present(_presentedSession, context, _presentedCanRead, _presentedBlock, _actionBlockText);
++            PresentNavigation();
+ 
+             PresentInstrumentation(snapshot.InstrumentationEnabled, report);
+         }
+ 
++        // With an active tab the navigation follows that rack (a one-rack context); without one it follows the context of the snapshot.
++        // It asks nothing of its port: it only stores what it is given.
++        private void PresentNavigation()
++        {
++            var active = Browser.ActiveRackId;
++            if (active != null)
++                Navigation.Present(_presentedSession, SelectionContextKind.One, active, _presentedCanRead, _presentedBlock, _actionBlockText);
++            else
++                Navigation.Present(_presentedSession, _presentedKind, _rackId, _presentedCanRead, _presentedBlock, _actionBlockText);
++        }
++
++        // A manual change of tab: the navigation is presented again with the data of the last snapshot. While the panel shows an
++        // error nothing is known about the drawing, so the navigation stays as the error left it.
++        private void RepresentNavigation()
++        {
++            if (_state == WorkspacePanelState.Error) return;
++            PresentNavigation();
++        }
++
+         private void PresentInstrumentation(bool enabled, WorkspaceMeasurementReport report)
+         {
+             Set(ref _instrumentationEnabled, enabled, nameof(InstrumentationEnabled));

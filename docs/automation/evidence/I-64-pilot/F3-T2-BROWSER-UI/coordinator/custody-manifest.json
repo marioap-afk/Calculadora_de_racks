@@ -1,0 +1,18 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F3-T2-BROWSER-UI/coordinator",
+  "SourceRoot": "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/coordinator",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 1,
+    "EXCLUDED": 0
+  },
+  "Files": [
+    {
+      "Path": "gate-contract.json",
+      "Bytes": 23321,
+      "Sha256": "1946dd30fd10e1acaefe3c9af2b754522e8a6fab3d4541f0d8f96df7e8000ba8",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}
