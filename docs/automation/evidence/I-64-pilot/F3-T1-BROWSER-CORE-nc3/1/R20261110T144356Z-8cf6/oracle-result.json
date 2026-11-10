@@ -1,0 +1,51 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261110T144356Z-8cf6",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "FreeText": "Scanned worker-handoff WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions, and RecommendedNextAction against AUTOMATION_PLAN 16.10. WorkCompleted contains a literal prohibited term, so this check fails."
+  },
+  "OutputSha256": "955F1B1E61EA7ECC37744D0C8B1022DE47A922BAE0B7126BDA7431277CDE35E9",
+  "ManualFreeText1610": []
+}

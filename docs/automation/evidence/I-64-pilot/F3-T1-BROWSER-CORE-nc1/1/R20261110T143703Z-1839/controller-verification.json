@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F3-T1-BROWSER-CORE",
+  "RunId": "R20261110T143703Z-1839",
+  "DelegationRunId": "R20261110T140050Z-8317",
+  "WorkRunId": "R20261110T140432Z-0e2b",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Outcome.Kind=COMPLETED; DeathConfirmed=true; Cession.StartUtc=2026-11-10T14:04:53Z; Outcome.OutputWrittenUtc=2026-11-10T08:20:58-06:00, later than start."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present; TaskId, RunId, DelegationRunId, Attempt and branch match the delegation and requested invocation. OutputWrittenUtc from relay-record-work is later than Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN.md and agent-execution/README.md at MainSha 812baf879612320653094a8aaf46aca0bac81383, plus AGENTS.md. git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha returned three UNIT_DOC paths listed in Authorities; no EXTERNAL or UNIT_CHANGE path. External authority diff from merge-base(MainSha, AuthorityRevision) to AuthorityRevision was empty."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation to gate-contract.json: 17 invariants, 6 exact AllowedWriteScope entries, 62 ForbiddenWriteScope entries, RequiredTests and the applicable conditions match the contract; A3-A5 within scope."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return a92039bbbdc85c38c380a8a319e577d625d3910c. BaseSha is an ancestor of HEAD and RedSha is an ancestor of HEAD, but declared CurrentSha is not the checked out commit."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work RemoteFacts.CurrentRun and Entry.LsRemoteSha identify a92039bbbdc85c38c380a8a319e577d625d3910c, while the handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. origin/main matches MainSha 812baf879612320653094a8aaf46aca0bac81383."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef fails with 'bad object'; the declared CurrentSha cannot define the required diff. For checked out HEAD a92039bbbdc85c38c380a8a319e577d625d3910c, the diff contains the six allowed paths and no forbidden path."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore on artifacts/orchestration/I-64/F3-T1-BROWSER-CORE-nc1/1/R20261110T143703Z-1839/inputs/config.toml returned the path with exit 0."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 42833048949 is push on the exact branch, has HEAD a92039bbbdc85c38c380a8a319e577d625d3910c, and all four required jobs succeeded. It does not match handoff CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. RedRun 42832249016 is push for RedSha 2bbece51f35bf1854419d08aeda4aa7c1b1cd02c; Core job failed as required for RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Read both supplied TRX files. Filter RackCad.Tests.Workspace selected 855 in each. Current TRX: 855 passed, 0 failed; Red TRX: 816 passed, 39 failed, including WorkspaceBrowserSession and WorkspaceBrowserSessionRegistry tests. Worker TestResults agree. git diff --name-only ChainBaseSha RedSha -- tests/ is the four WorkspaceBrowser test paths; git diff --name-only RedSha HEAD contains only BrowserSession.cs and BrowserSessionRegistry.cs, so GREEN leaves RT unchanged. ChainRedFiles=tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs; tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs; tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs; tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B for RED 2bbece51f35bf1854419d08aeda4aa7c1b1cd02c and GREEN a92039bbbdc85c38c380a8a319e577d625d3910c shows Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> in both. This matches Worker.Trailer and effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation Model=claude-sonnet-5-5 and effort high. Relay records subagent launch alias ModelRequested=sonnet; Participant.ModelEffective=claude-sonnet-5-5 and EffortEffective=high, matching the delegated model and effort."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json against the AUTOMATION_PLAN 16.10 term list; no match."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report zero denials and zero tool errors, none pending. Process reread reports zero persistent participants and zero persistent unattributable processes; SessionOperated=false."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "The handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, but Git HEAD, branch remote, relay entry and CurrentRun CI identify a92039bbbdc85c38c380a8a319e577d625d3910c.",
+    "The declared CurrentSha is not a Git object, so its required BaseSha-to-CurrentSha diff cannot be evaluated. The six-path diff at checked out HEAD is within AllowedWriteScope.",
+    "The supplied TRX files independently show 855 selected Workspace tests, with 855 passing on the checked out commit and 39 expected failures on RedSha."
+  ],
+  "RecommendedNextAction": "Reconcile the handoff CurrentSha with the verified commit and rerun this verification using the corrected delivery record."
+}

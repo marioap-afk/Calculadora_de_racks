@@ -1,0 +1,69 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261110T144043Z-0464",
+  "SourceVerification": "R20261110T143422Z-057f",
+  "SourceInputs": "artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T143422Z-057f/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/BrowserSession.cs",
+      "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Workspace/BrowserSession.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Workspace/BrowserSession.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Workspace/BrowserSession.cs",
+      "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+    ],
+    "New": [
+      "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "6B317A3E52B82CC4791AE4A692B11AC23FDD68A25BC3C098A08CD9DFA49C457F",
+    "New": "BB960D8F0B637842BD1D1BB026BEDB560059647E95F755B5EB32F4F67B750727",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "71CE4D0920C9A08E5983D83005CDB346138EB71F2696868111D08187C257B121",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "coordinator-disposition.md": "846B714C422EAD39D192475AC237A08789B99EEC2C933A7C8E1DC675A969CC78",
+    "delegation.json": "BB960D8F0B637842BD1D1BB026BEDB560059647E95F755B5EB32F4F67B750727",
+    "gate-contract.json": "A12C1376683A04B692EE3661A1D19E919007E23865F696878A34FD89B5B77B55",
+    "relay-record-planning.json": "A70EF7F0AF492930C23A729B661389F65CCAD6B01AB3AA3311ECF6E48EF027B5",
+    "relay-record-work.json": "5584B85290E94425D297C8E2814C436DDF4A54E37F2D63C691872AB62FE3759E",
+    "worker-handoff.json": "9724D48A8F6296C59B3D315B5C8722496F5FFF5BA90F3E660FA283A6041BC8DE",
+    "ci-core/42833048949/core.trx": "8AA80F01F5E14FE8B7B6BAA2302E7D39A77DF98219E2CC497052D9FD732953CC",
+    "ci-core-red/42832249016/core.trx": "E415605394C5BD341606C5B6EDB9EBCAB3028AB5C39905940A9903C871B1B6E0"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

@@ -5952,3 +5952,15 @@ revisar:
 **Contrato:** `I-64-pilot/F3-T1-BROWSER-CORE/coordinator/gate-contract.json`. Cinco archivos nuevos en Application y pruebas, y un delta exacto de guarda. Attempt 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 104. F3-T1-BROWSER-CORE cerrada
+
+**Decisión:** F3-E07. Producto `EXECUTION_VERIFIED` sobre `a92039bb` (verificación `057f`, 14/14), CI 42833048949 4/4; `task-close-package.md` en `I-64-pilot/F3-T1-BROWSER-CORE/`.
+
+**Paradas conservadas:** `224d` (S-03, F3-E04) y `9cbf` (`Routing`, F3-E05). Ninguna cambió el trabajo; `attempts` sigue en 1 de 3.
+
+**Controles:** nc1 `1839` y nc3 `8cf6` CONTROL PASS; nc2 `0464` CONTROL NOT PASSED y `SATISFIED_UNDER_I64_SCOPE_BRIDGE` (F3-E06).
+
+**Pruebas:** Core 16393/16393; UI 1792 y 17 omitidas. Núcleo puro: sin AutoCAD.
+
+**Siguiente:** F3-T2-BROWSER-UI.

@@ -21,3 +21,34 @@ Registro append-only de las decisiones tomadas por la sesión durante F3, bajo l
 - **Comprobación de seguridad:** es el directorio de diagnóstico esperado (`diagbin`..`diagbin4`, `releasecheck` y dos DXF), 162 archivos sin fuentes ni evidencia (solo `.dll`, `.pdb`, `.csv` y `.json` de build); ningún proceso los tiene abiertos (apertura exclusiva correcta en los 162; el `acad.exe` activo no carga ningún módulo de allí).
 - **Representación:** los dos DXF están custodiados con su SHA-256 en `I-64-pilot/F2-SMOKE-NAV/`. Los cinco `RackCad.Plugin.dll` de diagnóstico se registran en `I-64-pilot/F2-SMOKE-NAV/cleanup-i64-snav.json`, porque tres no figuraban aún por hash.
 - **Decisión:** borrar el directorio después de versionar ese registro. La limpieza no bloquea F3.
+
+## F3-E03, resultado. `D:\i64-snav` sigue en disco
+
+La comprobación de seguridad integrada de la herramienta rechazó el borrado, también tras la autorización del Owner, porque exige la aprobación de una persona. No se intentó por otra vía. La condición de la orden se cumple y el registro está versionado; el borrado queda como limpieza manual. No bloquea F3.
+
+## F3-E04. Parada S-03 en la verificación de F3-T1
+
+- **Problema:** la verificación `R20261110T142544Z-224d` dio `EXECUTION_BLOCKED / STOP`, `Contract`, S-03, porque la entrega dejó una pregunta abierta: si `Destroy` de una `SessionId` sin sesión de navegador debe bloquear un `GetOrCreate` posterior.
+- **Decisión:** como emisora del contrato, la sesión la cierra sin cambiar nada: INV-F3T1-13 dice que una `SessionId` destruida no se resucita, sin distinguir si tuvo sesión de navegador. La implementación ya hace eso.
+- **Reejecución:** 1 de 2 por BLOCKED (16.8), sin coste de `attempts`, con la disposición como entrada. `224d` se conserva tal cual.
+
+## F3-E05. `BLOCKED` de `Routing` en la reejecución
+
+- **Problema:** la verificación `R20261110T143036Z-9cbf` dio `EXECUTION_BLOCKED / BLOCKED`, `Routing`, porque comparó `sonnet` con `claude-sonnet-5-5`. `Participant.ModelRequested` guarda el parámetro literal del lanzamiento, que el transporte `subagent` solo admite como alias de familia.
+- **Fundamento:** el modelo solicitado por la delegación es `claude-sonnet-5-5` y los 57 turnos de la transcripción del Worker lo usan. La misma forma de registro pasó en F2-T2B, así que el Controller varía en esta lectura.
+- **Decisión:** la reejecución 2 de 2 añade solo esa semántica del campo al prompt, sin tocar el registro. Resultado: `R20261110T143422Z-057f`, `EXECUTION_VERIFIED`, 14/14. `9cbf` se conserva.
+- **Riesgo:** el presupuesto de reejecuciones de esta entrega queda agotado. El prompt de F3-T2 lleva ambas aclaraciones desde el inicio.
+
+## F3-E06. nc2 de F3-T1 reproduce el defecto conocido de `Scope`
+
+- **Problema:** nc2 `R20261110T144043Z-0464` da `CONTROL NOT PASSED`: `EXECUTION_VERIFIED`, `Scope` en pass con la delegación mutada, sin ninguna otra diferencia frente a la real. Es la firma del defecto registrado en `protocol_debt`.
+- **Decisión:** aplicar una vez `I64-SCOPE-BRIDGE-01` (A-4), con el verificador autorizado sin cambios. La salida `0464` conserva su clasificación.
+- **Resultado:** `R20261110T144636Z-0548`, REAL PASS y ADVERSARIAL FAIL solo por `OUTSIDE_ALLOWED_WRITE_SCOPE`. `nc2 = SATISFIED_UNDER_I64_SCOPE_BRIDGE`.
+- **Alcance:** nc2 de F3-T1. Sin cambio del protocolo global.
+
+## F3-E07. Cierre de F3-T1-BROWSER-CORE
+
+- **Decisión:** F3-T1 = CLOSED / PASS sobre `a92039bb`.
+- **Fundamento:** verificación `057f` 14/14; nc1 `1839` y nc3 `8cf6` CONTROL PASS; nc2 bajo el puente (F3-E06); nc4 `8f7e`; CI 42833048949 4/4; revisión del código de la sesión sin defectos.
+- **`attempts`:** sigue en 1 de 3: ninguna de las paradas cambió el trabajo.
+- **Alcance:** esta tarea. No es F3 PASS.

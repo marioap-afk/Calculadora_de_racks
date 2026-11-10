@@ -1,0 +1,187 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F3-T1-BROWSER-CORE",
+  "RunId": "R20261110T140432Z-0e2b",
+  "DelegationRunId": "R20261110T140050Z-8317",
+  "Initiative": "I-64",
+  "Gate": "F3",
+  "Attempt": 1,
+  "BaseSha": "b1911aa01719cb9d0121ca5f14c1166d97d7ee1b",
+  "RedSha": "2bbece51f35bf1854419d08aeda4aa7c1b1cd02c",
+  "CurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Workspace/BrowserSession.cs",
+    "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+  ],
+  "WorkCompleted": "Tipos creados en src/RackCad.Application/Workspace: BrowserTabStatus, BrowserChange, BrowserTabRecord (sealed record, 5 propiedades, RackId no vacio) y BrowserSession en BrowserSession.cs; BrowserSessionRegistry en BrowserSessionRegistry.cs. Delta de guarda (INV-F3T1-15): en WorkspaceModelBoundaryTests.ThereIsNoPerTabStateOrPerTabSubscriptions la parte Tab exime solo los nombres exactos BrowserTabRecord y BrowserTabStatus; Subscription, Editor y Draft siguen prohibidos para todos los tipos y la guarda de propiedades de WorkspaceSession no cambia. RED en 2bbece51 (esqueleto compilable; 39 de 855 pruebas fallan por asercion; antes del commit se comprobo que la implementacion completa hacia pasar las 855 y el parche quedo guardado en full-impl/). GREEN en a92039bb reaplica la implementacion sin tocar archivos de prueba. Sin AutoCAD, WPF, Plugin, UI ni comandos nuevos.",
+  "TestsExecuted": [
+    {
+      "RunRef": "RED-WORKSPACE-FILTER",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=red.trx\" --results-directory artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T140432Z-0e2b/tests/RED",
+      "Phase": "RED",
+      "TreeSha": "2bbece51f35bf1854419d08aeda4aa7c1b1cd02c",
+      "ResultsFile": "artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T140432Z-0e2b/tests/RED/red.trx"
+    },
+    {
+      "RunRef": "PRE-RED-FULL-IMPL-WORKSPACE-FILTER",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=pre-green.trx\" --results-directory artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T140432Z-0e2b/tests/PRE-GREEN-FULL",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T140432Z-0e2b/tests/PRE-GREEN-FULL/pre-green.trx"
+    },
+    {
+      "RunRef": "GREEN-WORKSPACE-FILTER",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=green.trx\" --results-directory artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T140432Z-0e2b/tests/GREEN",
+      "Phase": "GREEN",
+      "TreeSha": "a92039bbbdc85c38c380a8a319e577d625d3910c",
+      "ResultsFile": "artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T140432Z-0e2b/tests/GREEN/green.trx"
+    },
+    {
+      "RunRef": "GREEN-FULL-SUITE",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --logger \"trx;LogFileName=green-full.trx\" --results-directory artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T140432Z-0e2b/tests/GREEN-FULL",
+      "Phase": "RELEVANT",
+      "TreeSha": "a92039bbbdc85c38c380a8a319e577d625d3910c",
+      "ResultsFile": "artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T140432Z-0e2b/tests/GREEN-FULL/green-full.trx"
+    },
+    {
+      "RunRef": "GREEN-RELEASE-BUILD",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental (log: artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T140432Z-0e2b/tests/BUILD/build.log)",
+      "Phase": "RELEVANT",
+      "TreeSha": "a92039bbbdc85c38c380a8a319e577d625d3910c",
+      "ResultsFile": null
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "RED-WORKSPACE-FILTER",
+      "Selected": 855,
+      "Passed": 816,
+      "Failed": 39,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceBrowserSessionRegistryTests.DestroyingOneSessionLeavesTheOthersAlive",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ASummaryUpdatesOnlyStatusNameAndKindOfThatRecord",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ThePreviewReplacementStartsFromAnEmptySummaryEvenIfTheOldOneHadOne",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ClosingANonActiveTabKeepsTheActiveOneAndClosingAPreviewWorks",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.AnEqualContextToTheLastAppliedOneChangesNothingEvenAfterManualActions",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ClosingUnknownNullOrBlankChangesNothing",
+        "RackCad.Tests.WorkspaceBrowserSessionRegistryTests.EachSessionIdGetsItsOwnInstanceAndTheRegistryEnumeratesTheLiveOnesInCreationOrder",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ANullContextIsAProgrammingErrorAndNothingElseThrows",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ALongDeterministicSequenceKeepsTheInvariantsAtEveryStep",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.SelectingThePreviewRackAgainAfterAnotherTabWasActivatedKeepsItAPreview",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.APinnedTabIsNeverReplacedAndTheNextRackCreatesANewPreviewAtTheEnd",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.SelectingARackThatAlreadyHasATabActivatesTheExistingOneWithoutChangingModeOrOrder",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ReplacingThePreviewKeepsItsPositionAndNeverTouchesPinnedTabs",
+        "RackCad.Tests.WorkspaceBrowserSessionRegistryTests.TheSameRackIdInTwoSessionsHasIndependentState",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ASummaryDoesNotChangeOrderOrTheActiveTab",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ASummaryNeverChangesTheRememberedContextAndKeepsTheModeWhenPinned",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ClosingTheActiveTabActivatesTheNextPositionElseThePreviousElseNone",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ActivateChangesNeitherModesNorOrderNorTheRememberedContext",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.TabsIsAReadOnlyStableSnapshotInPresentationOrder",
+        "RackCad.Tests.WorkspaceBrowserSessionRegistryTests.DestroyingAnIdThatHadNoSessionStillBlocksItAndDestroyingTwiceIsHarmless",
+        "RackCad.Tests.WorkspaceBrowserSessionRegistryTests.ASessionCreatedAfterADestructionStartsEmptyAndNoTabSurvives",
+        "RackCad.Tests.WorkspaceBrowserSessionRegistryTests.KnownSessionsIsAStableSnapshot",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ActiveRackIdIsNullExactlyWithoutTabsAndAlwaysNamesOneExistingTab",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ClosingTheFirstActiveTabActivatesTheOneThatTakesItsPosition",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ThereIsAtMostOnePreviewAndANewRackReplacesTheOldPreview",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ARealTransitionAppliesAgainAfterNoneAndAfterAnotherRack",
+        "RackCad.Tests.WorkspaceBrowserSessionRegistryTests.ADestroyedSessionIdIsNeverResurrected",
+        "RackCad.Tests.WorkspaceBrowserSessionRegistryTests.DestroyRetiresTheSessionEmptiesItsTabsAndLeavesTheInstanceInert",
+        "RackCad.Tests.WorkspaceBrowserSessionRegistryTests.EveryOperationOnADestroyedSessionReturnsNoneAndChangesNothing",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.PinIsIdempotentKeepsTheActiveTabAndIgnoresUnknownRacks",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.TheLastContextRememberedIsOfAnyKind",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.EveryChangeValueIsReturnedForItsOperationAndNoneMeansNothingChanged",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.SelectionNoneNoIdentityAndDiagnosticNeverCreateReplaceActivateOrClose",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ALateSummaryOfAReplacedPreviewIsIgnoredWithoutThrowing",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ActivateIgnoresUnknownNullBlankAndTheAlreadyActiveTabWithoutThrowing",
+        "RackCad.Tests.WorkspaceBrowserSessionRegistryTests.GetOrCreateReturnsTheSameInstanceWhileTheSessionLivesAndCarriesItsId",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.SelectingARackWithNoTabCreatesAPreviewBornWithOnlyItsRackId",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.ClosingACleanTabAsksNothingAndOnlyChangesMemory",
+        "RackCad.Tests.WorkspaceBrowserSessionTests.TheLiveSurfaceIsExactlyTheActiveTabAndNothingIsMaterialized"
+      ]
+    },
+    {
+      "RunRef": "PRE-RED-FULL-IMPL-WORKSPACE-FILTER",
+      "Selected": 855,
+      "Passed": 855,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-WORKSPACE-FILTER",
+      "Selected": 855,
+      "Passed": 855,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-FULL-SUITE",
+      "Selected": 16393,
+      "Passed": 16393,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-RELEASE-BUILD",
+      "Selected": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "INV-F3T1-01: WorkspaceBrowserBoundaryTests.TheTabRecordHasExactlyTheFivePropertiesOfTheContractAndNoOtherState; WorkspaceBrowserSessionTests.ATabRecordIsAValueThatNeedsARackId",
+    "INV-F3T1-02: WorkspaceBrowserSessionTests.ThereIsAtMostOnePreviewAndANewRackReplacesTheOldPreview; ALongDeterministicSequenceKeepsTheInvariantsAtEveryStep (3000 pasos, maximo de preview en cada paso)",
+    "INV-F3T1-03: SelectingARackWithNoTabCreatesAPreview...; SelectingARackThatAlreadyHasATabActivates...; ReplacingThePreviewKeepsItsPosition...; SelectionNoneNoIdentityAndDiagnosticNeverCreateReplaceActivateOrClose; NonSingleContextsOnAnEmptySessionCreateNothing",
+    "INV-F3T1-04: AnEqualContextToTheLastAppliedOneChangesNothingEvenAfterManualActions; ARepeatedContextDoesNotRecreateATabTheUserClosed; ARealTransitionAppliesAgainAfterNoneAndAfterAnotherRack; TheLastContextRememberedIsOfAnyKind",
+    "INV-F3T1-05: ActivateChangesNeitherModesNorOrderNorTheRememberedContext; ActivateIgnoresUnknownNullBlankAndTheAlreadyActiveTabWithoutThrowing",
+    "INV-F3T1-06: APinnedTabIsNeverReplacedAndTheNextRackCreatesANewPreviewAtTheEnd; PinIsIdempotentKeepsTheActiveTabAndIgnoresUnknownRacks",
+    "INV-F3T1-07: ClosingTheActiveTabActivatesTheNextPositionElseThePreviousElseNone; ClosingTheFirstActiveTab...; ClosingANonActiveTab...; ClosingUnknownNullOrBlankChangesNothing; ClosingACleanTabAsksNothingAndOnlyChangesMemory",
+    "INV-F3T1-08: ActiveRackIdIsNullExactlyWithoutTabsAndAlwaysNamesOneExistingTab; TabsIsAReadOnlyStableSnapshotInPresentationOrder; secuencia larga",
+    "INV-F3T1-09: TheLiveSurfaceIsExactlyTheActiveTabAndNothingIsMaterialized; ANewSessionIsEmptyAndTheLiveSurfacePolicyIsOne",
+    "INV-F3T1-10: ASummaryUpdatesOnlyStatusNameAndKindOfThatRecord; ALateSummaryOfAReplacedPreviewIsIgnoredWithoutThrowing; ASummaryDoesNotChangeOrderOrTheActiveTab; ASummaryNeverChangesTheRememberedContext...",
+    "INV-F3T1-11: EveryChangeValueIsReturnedForItsOperationAndNoneMeansNothingChanged; ANullContextIsAProgrammingErrorAndNothingElseThrows; secuencia larga (None si y solo si el estado no cambia)",
+    "INV-F3T1-12: WorkspaceBrowserSessionRegistryTests.GetOrCreateReturnsTheSameInstance...; EachSessionIdGetsItsOwnInstance...; TheSameRackIdInTwoSessionsHasIndependentState; TwoRegistriesDoNotShareState",
+    "INV-F3T1-13: DestroyRetiresTheSessionEmptiesItsTabsAndLeavesTheInstanceInert; EveryOperationOnADestroyedSessionReturnsNoneAndChangesNothing; ADestroyedSessionIdIsNeverResurrected; DestroyingAnIdThatHadNoSessionStillBlocksIt...; KnownSessionsIsAStableSnapshot",
+    "INV-F3T1-14: WorkspaceBrowserBoundaryTests (guardas de fuente sobre BrowserSession.cs y BrowserSessionRegistry.cs, forma por reflexion sin eventos, delegados, tareas ni dependencias de host; API publica exacta; detector con texto inyectado)",
+    "INV-F3T1-15: delta exacto en WorkspaceModelBoundaryTests.ThereIsNoPerTabStateOrPerTabSubscriptions; WorkspaceBrowserBoundaryTests.TheExistingModelGuardExemptsExactlyTheTwoNamesAndKeepsTheOtherFamiliesForEveryType",
+    "INV-F3T1-16: git diff --name-only BaseSha..CurrentSha = las 6 rutas del alcance; WorkspaceSession.cs y WorkspaceSessionRegistry.cs sin cambios",
+    "INV-F3T1-17: RED 2bbece51 con 39 fallos por asercion sobre 855 seleccionadas; GREEN a92039bb con 855 de 855; suite completa 16393 de 16393; build Release --no-incremental con 0 avisos MSB/CS/NU/NETSDK (57 avisos xUnit preexistentes, ninguno en archivos nuevos)",
+    "Alcance: git diff --name-only BaseSha..HEAD = 6 rutas exactas; RED y GREEN con trailer Co-Authored-By: Claude Sonnet 5.5; un commit RED y un commit GREEN, cada uno con push; remoto = HEAD = a92039bb"
+  ],
+  "UnexpectedFindings": [
+    "La suite completa en Release dio 0 fallidas: los dos PendingTextFieldTests.ShowOnADirtyField_* no fallaron en esta corrida, contra lo anunciado en la delegacion."
+  ],
+  "KnownLimitations": [
+    "La CI de push del SHA GREEN exacto no la ejecuto ni la consulto el Worker: queda para la sesion.",
+    "La verificacion del Controller y los controles nc1..nc3 quedan fuera del Worker.",
+    "Las corridas GREEN se hicieron sobre el arbol de trabajo identico al commit GREEN antes de crearlo; la corrida PRE-RED con la implementacion completa no tiene TreeSha (arbol sin commit).",
+    "Destroy de un SessionId desconocido lo marca como destruido (decision del Worker para que un llamador atrasado no lo resucite); el contrato no lo precisa.",
+    "Sin AutoCAD: nucleo puro; ninguna validacion manual."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [
+    "Destroy de un SessionId nunca creado: confirmar que debe bloquear su GetOrCreate posterior (implementado asi)."
+  ],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Ejecutar la CI de push sobre el SHA GREEN exacto, la verificacion del Controller y nc1..nc3.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

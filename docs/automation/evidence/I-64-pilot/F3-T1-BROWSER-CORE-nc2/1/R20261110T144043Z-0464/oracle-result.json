@@ -1,0 +1,49 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261110T144043Z-0464",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "MutatedCheck": {
+    "Scope": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": "a92039bbbdc85c38c380a8a319e577d625d3910c",
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": true,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha lista exactamente las 6 rutas de AllowedWriteScope y ninguna de ForbiddenWriteScope. git diff --name-only RedSha CurrentSha lista solo BrowserSession.cs y BrowserSessionRegistry.cs."
+  },
+  "OutputSha256": "FD70D874B04D184CA0E49E5668929E9C99B7A1B6AC5559B456F12365BC4D717F",
+  "ManualFreeText1610": []
+}

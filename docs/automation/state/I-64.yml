@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F3-T1-BROWSER-CORE: contrato emitido (AuthorityRevision 84dd689f); siguiente: planificacion del Controller, A1-A8, nc4 y Worker"
+  next_action: "F3-T2-BROWSER-UI: emitir el contrato con BaseSha y MainSha medidos; planificacion del Controller, A1-A8, nc4, Worker, CI, verificacion y controles"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
@@ -52,7 +52,7 @@ execution_context:
   f2_t2b_status: "CLOSED / PASS (D-07, overnight-dispositions.md): producto EXECUTION_VERIFIED sobre 82bd49b6 (6b2a, 14/14; 92b5 BLOCKED conservada, D-05); nc1 2376 CONTROL NOT PASSED y SATISFIED_UNDER_I64_IDENTITY_BRIDGE (D-06); nc2 07c1 y nc3 4df8 CONTROL PASS; CI 42766532521 4/4 (evidencia §98)"
   f2_smoke_nav_status: "PASS WITH LIMITATIONS sobre 003be859 (R20261110T073451Z-e221): SN-01..SN-07 y SN-10 PASS; SN-09 medido y aceptable; SN-08 LIMITED / covered structurally but not directly provoked; dibujos sinteticos; SN-06c y parte de pestanas de SN-10 dependen de F3; obligaciones posteriores en IC-02. Historico: c883 STOP en SN-01 sobre 7bdcbfd9"
   f2_t2_host_c1_status: "CLOSED / PASS (D-09): GREEN 003be859, CI 42777768225 4/4; sustitucion del mecanismo RATIFICADA por el Owner (IC-01)"
-  f3_status: "AUTHORIZED por el Owner (evidencia §102); attempts 1 de 3, presupuesto propio de F3 (F3-E01); C-F3-01..06 aceptadas; primera tarea F3-T1-BROWSER-CORE; despues F3-T2-BROWSER-UI"
+  f3_status: "EN CURSO, attempts 1 de 3 (F3-E01); F3-T1-BROWSER-CORE CLOSED / PASS sobre a92039bb (F3-E07, evidencia §104); siguiente F3-T2-BROWSER-UI"
   codex_environment: "Snapshot F AAEB58D8... = linea base activa junto con E (F3-E02: mismos 104 nombres, seis valores de rutas gestionadas por la app; sonda R20261110T134835Z-3082 PASS; decision de la sesion, no aceptacion del Owner); binario 5449c1f0 acreditado solo para gpt-6-luna / high / read-only; gpt-6.1-sol no acreditado para este binario (evidencia §§95 y 102)"
   f1_blocking_dependency: "resuelta para I-64 por I64-SCOPE-BRIDGE-01 (A-4 AGREED y puente verificado); la deuda del Controller sigue registrada en protocol_debt para I-62"
   f1_resume_condition: "CUMPLIDA: F1 se reanudo bajo la alternativa (B), con enmiendas autoritativas y controles sustitutos aplicables a I-64: A-4 (I64-SCOPE-BRIDGE-01, Scope / nc2) y A-6 (I64-FREETEXT-BRIDGE-01, FreeText / nc3); T1 aceptada como COMPLETE_UNDER_I64_SCOPE_BRIDGE (§40), T2, T3A y T3B cerradas con PASS (§§47, 52 y 57); no queda condicion de reanudacion pendiente; la deuda del Controller sigue en protocol_debt para I-62. Texto anterior (anterior a A-4) en b35548fd y en commits previos"
@@ -67,10 +67,10 @@ execution_context:
   max_attempts: 3
   persistent_next_action:
     NEXT_ROLE: "Sesion principal: relevo de F3-T1-BROWSER-CORE"
-    NEXT_ACTION: "F3-T1-BROWSER-CORE: contrato, planificacion del Controller, A1-A8 y nc4, Worker, CI, verificacion, nc1..nc3 y custodia; despues F3-T2-BROWSER-UI"
+    NEXT_ACTION: "F3-T2-BROWSER-UI: contrato, planificacion del Controller, A1-A8 y nc4, Worker, CI, verificacion, nc1..nc3, custodia y arneses de los escenarios 4, 5 y 6"
     TARGET_SHA: "Producto sincronizado y validado en el host: 3f5c7014351d1dc59de4eee86a7d1319fbeccc07 sobre main a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60 (CI 42407236088 push 4/4; DLL Plugin Debug 0C0F2FDE0987C489BABAF2ACB9A46936117D044EAF45C706A303E6B5B1C56C0B, POST-I65 HOST SANITY CHECK aa47 = PASS). La punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo es un commit documental encima, sin cambios en src/, tests/ ni archivos de proyecto. Candidato validado por Smoke-1, sin cambios: cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6 (SMOKE1_VALIDATED_CANDIDATE; DLL 3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0; alcanzable por archive/I-64-pre-rebase-05084ca7)"
     GATE: "F3 - Browser Session: AUTORIZADO, attempts 1 de 3; F2 CLOSED / PASS WITH LIMITATIONS; F4-F7 pendientes; gate de integracion CLOSED"
-    TASK: "F3-T1-BROWSER-CORE (Application, puro: BrowserSession, registro por SessionId, registros de pestana, preview, fijar, activar, cerrar limpio, destruccion de sesion, K=1); despues F3-T2-BROWSER-UI"
+    TASK: "F3-T2-BROWSER-UI (WPF y adaptador de resumen: tira de pestanas responsiva, superficie unica K=1, navegacion ligada a la pestana activa, resumen perezoso); F3-T1-BROWSER-CORE cerrada"
     INPUTS_REQUIRED: "F3-BROWSER/coordinator/owner-f2-close-ratification-f3-authorization.md; docs/initiatives/I-64-f3-gate-contract-package.md; docs/initiatives/I-64-proposal-v5.md (Freeze); docs/initiatives/I-64-implementation-clarifications.md; AUTOMATION_PLAN §16 y docs/automation/agent-execution/README.md §4 y §10"
     EXPECTED_RESULT: "F3-T1 y F3-T2 verificadas y cerradas; arneses de los escenarios 4, 5 y 6; F3 cerrada si la evidencia basta"
     REMAINING_BUDGET: "attempts 1 de 3 de F3 (AttemptsRemaining 2); antes de cada invocacion de modelo, config.toml debe ser SNAPSHOT E o F y el binario de Codex el acreditado (bin/5449c1f0f26f1f98)"
