@@ -5874,3 +5874,15 @@ revisar:
 **F2-T2B:** contrato emitido (`F2-T2B-NAVIGATION-UI/coordinator/gate-contract.json`), 4 archivos nuevos y 7 candidatos. Attempt 2 de 3.
 
 **Límites:** sin cambios de producto en este paso; sin AutoCAD.
+
+## 97. F2-T2B: verificación de `6c01f644`, revisión de producto y corrección del intento 3
+
+**Entrega del intento 2:** RED `f64a13b3` (CI 42760370609, falla por las pruebas nuevas) y GREEN `6c01f644` (CI 42761455131 4/4). UI 143/143 y Core 780/780 en los filtros; suites completas Core 16318 y UI 1780 (17 omitidas).
+
+**Verificación:** `R20261110T053114Z-ffd2`, `EXECUTION_VERIFIED`, 14 comprobaciones en pass. Se conserva.
+
+**Revisión de producto:** la sesión y una revisión independiente hallaron T2B-F1 (Localizar vista no avanza de copia y Ver o Centrar tras Localizar no reinician), T2B-F2 (copia fuera de rango presentada como rack sin objetivos) y T2B-F3 (motivo de bloqueo falso para un único objeto que no es rack). Detalle en `F2-T2B-NAVIGATION-UI/2/R20261110T053114Z-ffd2/analysis.md`. Ninguna prueba los ejercía.
+
+**Decisión:** D-04, corrección delegada. `attempts` pasa a 3 de 3. Sin nc1..nc3 sobre `6c01f644`. Contrato del intento 3 en `F2-T2B-NAVIGATION-UI/coordinator/gate-contract-attempt3.json`, con dos rutas exactas.
+
+**Límites:** sin cambios de producto en este paso; sin AutoCAD.
