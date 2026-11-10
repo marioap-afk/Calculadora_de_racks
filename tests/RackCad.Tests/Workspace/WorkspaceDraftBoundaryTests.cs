@@ -105,7 +105,7 @@ public class WorkspaceDraftBoundaryTests
 
     // The same families as WorkspaceModelBoundaryTests.ModelDoesNotPersistNorWriteAuthoredData plus the registry of settings.
     private static readonly Regex PersistenceOrWriteAuthorities = new(
-        @"System\.IO|\bFile\.|\bDirectory\.|\bStreamWriter\b|Microsoft\.Win32|\bRegistry\.|\bUserSettings\b|\bAtomicFile\b|Transaction|LockDocument|\bDatabase\b|\bCommit\(|\bAutodesk\.|RackLog|Environment\.");
+        @"System\.IO|\bFile\.|\bDirectory\.|\bStreamWriter\b|Microsoft\.Win32|\bRegistry\.|\bUserSettings\b|\bAtomicFile\b|Transaction|LockDocument|Database|\bCommit\s*\(|\bAutodesk\.|RackLog|Environment\.|\b(?:Console|Trace|Debug)\.");
 
     [Fact]
     public void NoFileOfTheCorePersistsOrWritesAuthoredData()
@@ -126,7 +126,14 @@ public class WorkspaceDraftBoundaryTests
     [InlineData("using var tr = db.TransactionManager;")]
     [InlineData("var l = doc.LockDocument();")]
     [InlineData("Database db = null;")]
+    [InlineData("HostDatabase db = null;")]
+    [InlineData("var d = WorkingDatabaseFor(doc);")]
     [InlineData("tr.Commit();")]
+    [InlineData("tr.Commit ();")]
+    [InlineData("tr.Commit   (  );")]
+    [InlineData("Console.WriteLine(text);")]
+    [InlineData("Trace.WriteLine(text);")]
+    [InlineData("Debug.WriteLine(text);")]
     [InlineData("using Autodesk.AutoCAD.DatabaseServices;")]
     [InlineData("RackLog.Exception(ex);")]
     [InlineData("Environment.SetEnvironmentVariable(a, b);")]
@@ -148,8 +155,11 @@ public class WorkspaceDraftBoundaryTests
 
     // ------------------------------------------------------------------ nothing of I-63
 
+    // Bom as part of ANY identifier (DraftBomLines, BomBuilder, _bomCount), case sensitive on purpose: Bomb or Combo are not Bom.
+    private const string BomInAnyIdentifier = @"(?-i:Bom(?![a-z])|\bbom(?![a-z])|_bom(?![a-z]))";
+
     private static readonly Regex I63Concepts = new(
-        @"ComputedParameter|Metric|ProjectSummary|TotalRacks|Aggregat|Provider|\bBom", RegexOptions.IgnoreCase);
+        @"ComputedParameter|Metric|ProjectSummary|TotalRacks|Aggregat|Provider|" + BomInAnyIdentifier, RegexOptions.IgnoreCase);
 
     [Fact]
     public void NoFileOfTheCoreCarriesAMetricsProviderProjectSummaryOrAggregationConcept()
@@ -165,6 +175,8 @@ public class WorkspaceDraftBoundaryTests
     [InlineData("int TotalRacks;")]
     [InlineData("Aggregate(items);")]
     [InlineData("BomBuilder.Build();")]
+    [InlineData("var DraftBomLines = new object();")]
+    [InlineData("int _bomCount;")]
     [InlineData("class DraftStateProvider {}")]
     public void TheI63GuardDetectsEachConceptInRealCoreText(string injected)
     {
@@ -188,7 +200,7 @@ public class WorkspaceDraftBoundaryTests
     // ------------------------------------------------------------------ names (the subnamespace equivalent of WorkspaceModelBoundaryTests)
 
     private static readonly Regex ForbiddenTypeNames = new("Subscription|Editor|Tab|Handler", RegexOptions.IgnoreCase);
-    private static readonly Regex ForbiddenMemberNames = new("Subscription|Handler|ProjectSummary|Metric|Provider|TotalRacks|Aggregat|Bom\\b", RegexOptions.IgnoreCase);
+    private static readonly Regex ForbiddenMemberNames = new("Subscription|Handler|ProjectSummary|Metric|Provider|TotalRacks|Aggregat|" + BomInAnyIdentifier, RegexOptions.IgnoreCase);
 
     [Fact]
     public void NoTypeOfTheCoreIsCalledSubscriptionEditorTabOrHandler()
@@ -230,6 +242,7 @@ public class WorkspaceDraftBoundaryTests
     [InlineData("ProjectSummary")]
     [InlineData("AggregateAll")]
     [InlineData("DraftBom")]
+    [InlineData("DraftBomLines")]
     [InlineData("StateProvider")]
     [InlineData("Subscribe_Subscription")]
     [InlineData("OnChangedHandler")]
@@ -241,9 +254,45 @@ public class WorkspaceDraftBoundaryTests
     // ------------------------------------------------------------------ pureza: no tasks, events, threads or static mutable state
 
     private static readonly Regex BackgroundWork = new(
-        @"\basync\b|\bawait\b|\bTask\b|Task\.|\bThread\b|ThreadPool|\bTimer\b|System\.Timers|\bevent\b|\bDispatcher\b|SynchronizationContext|Parallel\.|BackgroundWorker|\bRegen\b|ConfigureAwait|GetAwaiter|\bLazy<");
+        @"\basync\b|\bawait\b|\bTask\b|Task\.|\bThread\b|ThreadPool|\bTimer\b|System\.Timers|\bevent\b|\bDispatcher\b|SynchronizationContext|Parallel\.|BackgroundWorker|\bRegen\b|ConfigureAwait|GetAwaiter|\bLazy<|ValueTask|\block\s*\(|\bMonitor\b|\bInterlocked\b|PeriodicTimer");
 
-    private static readonly Regex MutableStaticField = new(@"\bstatic\s+(?!readonly\b)(?!class\b)(?!extern\b)[\w<>,\.\[\]\? ]+?\s+\w+\s*(?:=(?!>)|;)");
+    // Every static field declaration: its optional readonly and its type text.
+    private static readonly Regex StaticField = new(@"\bstatic\s+(?<readonly>readonly\s+)?(?!class\b)(?!extern\b)(?<type>[\w<>,\.\[\]\? ]+?)\s+\w+\s*(?:=(?!>)|;)");
+
+    private static readonly string[] PrimitiveTypeNames =
+    {
+        "bool", "byte", "sbyte", "short", "ushort", "int", "uint", "long", "ulong", "char", "float", "double", "decimal", "string", "nint", "nuint",
+    };
+
+    private static bool IsImmutableFieldType(Type type) =>
+        type.IsPrimitive
+        || type == typeof(string)
+        || type == typeof(decimal)
+        || type.IsEnum
+        || (type.IsValueType && type.CustomAttributes.Any(a => a.AttributeType.FullName == "System.Runtime.CompilerServices.IsReadOnlyAttribute"));
+
+    // The names a static readonly field may have as its type: primitives, string, and the enums and read-only structs of the core.
+    private static HashSet<string> ImmutableTypeNames() =>
+        DraftTypes().Where(IsImmutableFieldType).Select(t => t.Name).Concat(PrimitiveTypeNames).ToHashSet(StringComparer.Ordinal);
+
+    /// <summary>The static fields of a text that are not a const nor a readonly field of a primitive, string, enum or read-only struct.</summary>
+    private static IReadOnlyList<string> MutableStaticFields(string code)
+    {
+        var allowed = ImmutableTypeNames();
+        var offenders = new List<string>();
+        foreach (Match match in StaticField.Matches(code))
+        {
+            var type = match.Groups["type"].Value.Trim();
+            if (match.Groups["readonly"].Success && allowed.Contains(type)) continue;
+            offenders.Add(match.Value);
+        }
+
+        return offenders;
+    }
+
+    /// <summary>The static fields of the given types (backing fields of static properties included) that are not immutable.</summary>
+    private static IReadOnlyList<string> MutableStaticFieldsOf(IEnumerable<Type> types) =>
+        types.SelectMany(t => t.GetFields(AllMembers).Where(f => f.IsStatic && !f.IsLiteral && !(f.IsInitOnly && IsImmutableFieldType(f.FieldType))).Select(f => t.Name + "." + f.Name)).ToList();
 
     [Fact]
     public void NoFileOfTheCoreUsesAsyncTasksThreadsTimersEventsOrMutableStaticFields()
@@ -251,7 +300,7 @@ public class WorkspaceDraftBoundaryTests
         foreach (var (path, code) in DraftFiles())
         {
             Assert.True(!BackgroundWork.IsMatch(code), path + " uses " + BackgroundWork.Match(code).Value);
-            Assert.True(!MutableStaticField.IsMatch(code), path + " has a mutable static field: " + MutableStaticField.Match(code).Value);
+            Assert.Empty(MutableStaticFields(code));
         }
     }
 
@@ -263,6 +312,12 @@ public class WorkspaceDraftBoundaryTests
     [InlineData("public event Action Changed;", "event")]
     [InlineData("Dispatcher.Invoke(a);", "Dispatcher")]
     [InlineData("doc.Editor.Regen();", "Regen")]
+    [InlineData("public ValueTask<int> Load() => default;", "ValueTask")]
+    [InlineData("lock (_gate) { _count++; }", "lock")]
+    [InlineData("lock(_gate) { _count++; }", "lock")]
+    [InlineData("Monitor.Enter(_gate);", "Monitor")]
+    [InlineData("Interlocked.Increment(ref _count);", "Interlocked")]
+    [InlineData("using var t = new PeriodicTimer(period);", "PeriodicTimer")]
     public void TheBackgroundWorkGuardDetectsEachFamilyInRealCoreText(string injected, string expected)
     {
         var real = DraftFiles()[0].Code;
@@ -271,26 +326,90 @@ public class WorkspaceDraftBoundaryTests
     }
 
     [Theory]
-    [InlineData("private static int _counter;", true)]
-    [InlineData("internal static List<string> Log = new();", true)]
-    [InlineData("static string _name = \"x\";", true)]
-    [InlineData("private static readonly int One = 1;", false)]
-    [InlineData("public static DraftAdmission Admitted => new(true, null);", false)]
-    [InlineData("public static bool IsBlocking(DraftBoundary boundary) => true;", false)]
-    [InlineData("public static class DraftBoundaries", false)]
-    public void TheStaticStateGuardDetectsOnlyMutableStaticFields(string injected, bool mutable)
+    [InlineData("private static int _counter;")]
+    [InlineData("internal static List<string> Log = new();")]
+    [InlineData("static string _name = \"x\";")]
+    [InlineData("private static readonly List<string> Log = new();")]
+    [InlineData("private static readonly Dictionary<string, int> Map = new();")]
+    [InlineData("internal static readonly string[] Names = { \"a\", \"b\" };")]
+    [InlineData("internal static readonly int[] Sizes = new int[4];")]
+    [InlineData("private static readonly HashSet<string> Seen = new();")]
+    [InlineData("private static readonly object Gate = new();")]
+    [InlineData("static readonly Random Rng = new();")]
+    [InlineData("private static readonly DraftRegistry Shared = new();")]
+    public void TheStaticStateGuardDetectsEveryMutableStaticFieldEvenWhenItIsReadonlyInRealCoreText(string injected)
     {
-        Assert.Equal(mutable, MutableStaticField.IsMatch(injected));
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+        Assert.Empty(MutableStaticFields(real));
+        Assert.NotEmpty(MutableStaticFields(real + "\n" + injected));
+    }
+
+    [Theory]
+    [InlineData("private static readonly int One = 1;")]
+    [InlineData("private static readonly string Name = \"x\";")]
+    [InlineData("private static readonly bool Flag = true;")]
+    [InlineData("private static readonly DraftMembership Default = DraftMembership.Mutable;")]
+    [InlineData("private static readonly DraftStaleBaseEntry NoEntry = new(string.Empty, DraftMembership.NotMember, null, null, null);")]
+    [InlineData("private static readonly DraftDifference First = new(\"k\", DraftDifferenceKind.View);")]
+    [InlineData("public static DraftAdmission Admitted => new(true, null);")]
+    [InlineData("public static bool IsBlocking(DraftBoundary boundary) => true;")]
+    [InlineData("public static class DraftBoundaries")]
+    [InlineData("internal static DraftApplyStart Started(DraftStatus previous) => new(true, previous, DraftApplyRefusal.None);")]
+    public void TheStaticStateGuardAcceptsConstantsAndReadonlyPrimitivesStringsEnumsAndReadOnlyStructs(string injected)
+    {
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+        Assert.Empty(MutableStaticFields(real + "\n" + injected));
+    }
+
+    private static class StaticSampleImmutable
+    {
+        internal const int Constant = 1;
+        internal static readonly int One = 1;
+        internal static readonly string Text = "x";
+        internal static readonly DraftMembership Kind = DraftMembership.Mutable;
+        internal static readonly DraftDifference Difference = new("k", DraftDifferenceKind.View);
+    }
+
+    private static class StaticSampleList { internal static readonly List<string> Items = new(); }
+
+    private static class StaticSampleDictionary { internal static readonly Dictionary<string, int> Map = new(); }
+
+    private static class StaticSampleArray { internal static readonly string[] Names = { "a" }; }
+
+    private static class StaticSampleObject { internal static readonly object Gate = new(); }
+
+    private static class StaticSampleNotReadonly { internal static int Counter = 1; }
+
+    private static class StaticSampleMutableClass { internal static readonly DraftFormAdapter Shared = new(); }
+
+    private static class StaticSampleAutoProperty { internal static List<string> Items { get; } = new(); }
+
+    [Theory]
+    [InlineData(typeof(StaticSampleList))]
+    [InlineData(typeof(StaticSampleDictionary))]
+    [InlineData(typeof(StaticSampleArray))]
+    [InlineData(typeof(StaticSampleObject))]
+    [InlineData(typeof(StaticSampleNotReadonly))]
+    [InlineData(typeof(StaticSampleMutableClass))]
+    [InlineData(typeof(StaticSampleAutoProperty))]
+    public void TheStaticFieldReflectionGuardDetectsEveryMutableStaticFieldEvenWhenReadonly(Type sample)
+    {
+        Assert.NotEmpty(MutableStaticFieldsOf(new[] { sample }));
+    }
+
+    [Fact]
+    public void TheStaticFieldReflectionGuardAcceptsConstantsAndReadonlyPrimitivesStringsEnumsAndReadOnlyStructs()
+    {
+        Assert.Empty(MutableStaticFieldsOf(new[] { typeof(StaticSampleImmutable) }));
     }
 
     [Fact]
     public void TheCoreHasNoEventsAndItsStaticStateIsImmutable()
     {
+        Assert.Empty(MutableStaticFieldsOf(DraftTypes()));
         foreach (var type in DraftTypes())
         {
             Assert.Empty(type.GetEvents(AllMembers));
-            foreach (var field in type.GetFields(AllMembers).Where(f => f.IsStatic))
-                Assert.True(field.IsInitOnly || field.IsLiteral, type.Name + "." + field.Name);
             foreach (var property in type.GetProperties(AllMembers).Where(p => p.GetAccessors(true).Any(m => m.IsStatic)))
                 Assert.True(!property.CanWrite, type.Name + "." + property.Name);
         }
@@ -298,27 +417,72 @@ public class WorkspaceDraftBoundaryTests
 
     // ------------------------------------------------------------------ only SessionId of the parent namespace
 
-    [Fact]
-    public void TheCoreUsesNoTypeOfTheParentNamespaceExceptSessionId()
-    {
-        var parentTypes = typeof(SessionId).Assembly.GetTypes()
+    private static IReadOnlyList<string> ParentTypesOtherThanSessionId() =>
+        typeof(SessionId).Assembly.GetTypes()
             .Where(t => t.Namespace == "RackCad.Application.Workspace" && !t.IsDefined(typeof(CompilerGeneratedAttribute), false))
             .Select(t => Regex.Replace(t.Name, @"`\d+$", string.Empty))
             .Where(n => n != nameof(SessionId))
             .Distinct()
             .ToList();
-        Assert.Contains("WorkspaceSession", parentTypes);
+
+    /// <summary>The types of the parent namespace other than SessionId that a text names, plus any qualified name that is not the drafts namespace.</summary>
+    private static IReadOnlyList<string> ParentNamespaceViolations(string code)
+    {
+        var violations = ParentTypesOtherThanSessionId()
+            .Where(name => Regex.IsMatch(code, @"\b" + Regex.Escape(name) + @"\b"))
+            .ToList();
+        violations.AddRange(Regex.Matches(code, @"\bRackCad\.[\w\.]+").Select(m => m.Value).Where(q => q != DraftsNamespace));
+        return violations;
+    }
+
+    [Fact]
+    public void TheCoreUsesNoTypeOfTheParentNamespaceExceptSessionId()
+    {
+        Assert.Contains("WorkspaceSession", ParentTypesOtherThanSessionId());
 
         foreach (var (path, code) in DraftFiles())
         {
-            foreach (var name in parentTypes)
-                Assert.True(!Regex.IsMatch(code, @"\b" + Regex.Escape(name) + @"\b"), path + " uses " + name);
-
-            var qualified = Regex.Matches(code, @"\bRackCad\.[\w\.]+").Select(m => m.Value).ToList();
-            Assert.Equal(new[] { DraftsNamespace }, qualified.ToArray());
+            Assert.Empty(ParentNamespaceViolations(code));
+            Assert.Equal(new[] { DraftsNamespace }, Regex.Matches(code, @"\bRackCad\.[\w\.]+").Select(m => m.Value).ToArray());
         }
 
         Assert.Contains(DraftFiles(), f => Regex.IsMatch(f.Code, @"\bSessionId\b"));
+    }
+
+    [Theory]
+    [InlineData("WorkspaceSession")]
+    [InlineData("BrowserSession")]
+    [InlineData("NavigationTargets")]
+    [InlineData("EventBridgeCore")]
+    [InlineData("WorkspaceHostCore")]
+    [InlineData("SelectionContext")]
+    public void TheParentNamespaceGuardDetectsEachTypeOfTheParentNamespaceOtherThanSessionIdInRealCoreText(string parentType)
+    {
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+        Assert.Contains(parentType, ParentTypesOtherThanSessionId());
+        Assert.Empty(ParentNamespaceViolations(real));
+
+        Assert.Contains(parentType, ParentNamespaceViolations(real + "\n" + "private " + parentType + " _other;"));
+        Assert.Contains(parentType, ParentNamespaceViolations(real + "\n" + "var x = new " + parentType + "(1);"));
+    }
+
+    [Theory]
+    [InlineData("using RackCad.Application.Workspace;")]
+    [InlineData("var s = new RackCad.Application.Workspace.WorkspaceSession();")]
+    [InlineData("using RackCad.Application.Bom;")]
+    public void TheParentNamespaceGuardDetectsAQualifiedNameThatIsNotTheDraftsNamespace(string injected)
+    {
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+        Assert.Empty(ParentNamespaceViolations(real));
+        Assert.NotEmpty(ParentNamespaceViolations(real + "\n" + injected));
+    }
+
+    [Fact]
+    public void TheParentNamespaceGuardAcceptsSessionIdAndTheDraftsNamespaceItself()
+    {
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+
+        Assert.Empty(ParentNamespaceViolations(real + "\nprivate SessionId _session;\nusing RackCad.Application.Workspace.Drafts;"));
     }
 
     [Fact]
@@ -373,17 +537,51 @@ public class WorkspaceDraftBoundaryTests
         Assert.Contains(operations, m => m.Name == "RetireSession");
     }
 
-    // ------------------------------------------------------------------ the product scope of the contract (INV-F4T1-17)
+    // ------------------------------------------------------------------ a preview has no way to a draft (INV-F4T1-03, INV-F4T1-24)
+
+    // A navigation preview (the browser of the workspace) must never create a draft nor a stale base: the files that serve it do
+    // not name the types that carry a read of the edit intention, a base or a draft. This replaces the T1-only guard that forbade
+    // every consumer of the core, which T2 would have had to weaken.
+    private static readonly string[] PreviewFiles =
+    {
+        "src/RackCad.Application/Workspace/BrowserSession.cs",
+        "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+        "src/RackCad.Application/Workspace/BrowserRackSummaries.cs",
+        "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+    };
+
+    private static readonly Regex DraftTypesNamedByAPreview = new(@"\b(?:DraftIntentRead|DraftStaleBase|DraftRegistry|DraftSession)\b");
 
     [Fact]
-    public void TheCoreFilesAreTheOnlyDraftFilesAndNoExistingWorkspaceFileMentionsThem()
+    public void NoFileThatServesAPreviewNamesTheTypesOfAReadOfTheIntentionAStaleBaseOrADraft()
     {
-        var elsewhere = Src.AllProduct()
-            .Where(f => !f.Path.StartsWith(DraftsFolder, StringComparison.Ordinal))
-            .Where(f => Regex.IsMatch(f.Code, @"RackCad\.Application\.Workspace\.Drafts|\bDraftRegistry\b|\bDraftSession\b|\bDraftClosePolicy\b|\bDraftStaleBase\b"))
-            .Select(f => f.Path)
-            .ToArray();
+        Assert.Equal(4, PreviewFiles.Length);
+        foreach (var path in PreviewFiles)
+        {
+            var code = Src.Code(path);
+            Assert.NotEmpty(code);
+            Assert.True(!DraftTypesNamedByAPreview.IsMatch(code), path + " names " + DraftTypesNamedByAPreview.Match(code).Value);
+        }
+    }
 
-        Assert.Empty(elsewhere);
+    [Theory]
+    [InlineData("DraftIntentRead<object> read = null;")]
+    [InlineData("var b = DraftStaleBase.Create(entries);")]
+    [InlineData("private readonly DraftRegistry _drafts = new();")]
+    [InlineData("DraftSession<object> draft = null;")]
+    public void ThePreviewGuardDetectsEachTypeInTheRealTextOfEachPreviewFile(string injected)
+    {
+        foreach (var path in PreviewFiles)
+        {
+            var real = Src.Code(path);
+            Assert.DoesNotMatch(DraftTypesNamedByAPreview, real);
+            Assert.Matches(DraftTypesNamedByAPreview, real + "\n" + injected);
+        }
+    }
+
+    [Fact]
+    public void ThePreviewGuardDoesNotRejectOtherNamesThatOnlyStartLikeThoseOfTheCore()
+    {
+        Assert.DoesNotMatch(DraftTypesNamedByAPreview, "var x = DraftRegistryEntry; var y = DraftSessionless;");
     }
 }

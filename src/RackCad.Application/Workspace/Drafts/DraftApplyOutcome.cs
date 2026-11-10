@@ -128,7 +128,7 @@ namespace RackCad.Application.Workspace.Drafts
     }
 
     /// <summary>What CompleteApply did: the effective kind, the status afterwards and whether the draft was rebased.</summary>
-    public readonly record struct DraftApplyResult(bool Accepted, DraftApplyOutcomeKind Kind, DraftStatus Status, bool Rebased)
+    public readonly record struct DraftApplyResult(bool Accepted, DraftApplyOutcomeKind Kind, DraftStatus Status, bool Rebased, bool DraftWasRegistered = true)
     {
         internal static DraftApplyResult Closed(DraftApplyOutcomeKind kind, DraftStatus status, bool rebased) => new(true, kind, status, rebased);
 

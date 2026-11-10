@@ -90,16 +90,193 @@ public class WorkspaceDraftStaleBaseTests
     }
 
     [Fact]
-    public void ARepeatedKeyKeepsTheLastEntryAndANullOrEmptyKeyIsAProgrammingError()
+    public void ANullOrEmptyKeyIsAProgrammingError()
     {
-        var staleBase = DraftKit.Base(DraftKit.Mutable("D1", "Front"), DraftKit.Mutable("D1", "Back"));
+        var staleBase = DraftKit.Base(DraftKit.Mutable("D1"));
 
-        Assert.Single(staleBase.Entries);
-        Assert.Equal("Back", staleBase.Entries["D1"].View);
         Assert.Throws<ArgumentException>(() => DraftKit.Base(DraftKit.Mutable("")));
         Assert.Throws<ArgumentNullException>(() => DraftStaleBase.Create(null!));
         Assert.Throws<ArgumentException>(() => staleBase.MembershipOf(""));
+        Assert.Throws<ArgumentException>(() => staleBase.IsAmbiguous(""));
         Assert.Throws<ArgumentNullException>(() => staleBase.CompareWith(null!));
+    }
+
+    // ------------------------------------------------------------------ a repeated key (INV-F4T1-21, I-3)
+
+    [Fact]
+    public void ARepeatedKeyWithTheSameFactsIsOneEntryInEitherOrder()
+    {
+        var once = DraftKit.Base(DraftKit.Mutable("D1", "Front", "S1", "{a}"));
+        var twice = DraftKit.Base(DraftKit.Mutable("D1", "Front", "S1", "{a}"), DraftKit.Mutable("D1", "Front", "S1", "{a}"));
+
+        Assert.Single(twice.Entries);
+        Assert.False(twice.IsAmbiguous("D1"));
+        Assert.True(once.CompareWith(twice).IsMatch);
+        Assert.True(twice.CompareWith(once).IsMatch);
+        Assert.True(twice.CompareWith(twice).IsMatch);
+    }
+
+    [Fact]
+    public void ARepeatedNotMemberKeyWithDifferentTextIsStillJustNotMember()
+    {
+        var repeated = DraftKit.Base(DraftKit.Mutable("D1"), DraftKit.NotMember("O1", "{one}"), DraftKit.NotMember("O1", "{two}"));
+        var plain = DraftKit.Base(DraftKit.Mutable("D1"));
+
+        Assert.False(repeated.IsAmbiguous("O1"));
+        Assert.Equal(DraftMembership.NotMember, repeated.MembershipOf("O1"));
+        Assert.True(repeated.CompareWith(plain).IsMatch);
+        Assert.True(plain.CompareWith(repeated).IsMatch);
+    }
+
+    [Fact]
+    public void AKeyRepeatedWithDifferentTextNeverMatchesInEitherDirectionAndInEitherOrder()
+    {
+        var baseline = DraftKit.Base(DraftKit.Mutable("D1", "Front", "S1", "{a}"));
+        var externalFirst = DraftKit.Base(DraftKit.Mutable("D1", "Front", "S1", "{b external}"), DraftKit.Mutable("D1", "Front", "S1", "{a}"));
+        var externalLast = DraftKit.Base(DraftKit.Mutable("D1", "Front", "S1", "{a}"), DraftKit.Mutable("D1", "Front", "S1", "{b external}"));
+
+        Assert.False(baseline.CompareWith(externalFirst).IsMatch);
+        Assert.False(baseline.CompareWith(externalLast).IsMatch);
+        Assert.False(externalFirst.CompareWith(baseline).IsMatch);
+        Assert.False(externalLast.CompareWith(baseline).IsMatch);
+        Assert.Contains(D("D1", DraftDifferenceKind.Membership), baseline.CompareWith(externalFirst).Differences);
+        Assert.True(externalFirst.IsAmbiguous("D1"));
+        Assert.True(externalLast.IsAmbiguous("D1"));
+        Assert.False(externalFirst.Entries.ContainsKey("D1"));
+    }
+
+    [Theory]
+    [InlineData("view")]
+    [InlineData("section")]
+    [InlineData("attribution")]
+    public void AKeyRepeatedWithADifferentViewSectionOrAttributionIsAmbiguousAndNeverMatches(string fact)
+    {
+        var first = DraftKit.Mutable("D1", "Front", "S1", "{a}");
+        var second = fact switch
+        {
+            "view" => DraftKit.Mutable("D1", "Back", "S1", "{a}"),
+            "section" => DraftKit.Mutable("D1", "Front", "S2", "{a}"),
+            _ => DraftKit.ReadOnly("D1", "Front", "S1", "{a}"),
+        };
+        var ambiguous = DraftKit.Base(first, second);
+
+        Assert.True(ambiguous.IsAmbiguous("D1"));
+        Assert.False(ambiguous.CompareWith(DraftKit.Base(first)).IsMatch);
+        Assert.False(ambiguous.CompareWith(DraftKit.Base(second)).IsMatch);
+        Assert.False(DraftKit.Base(first).CompareWith(ambiguous).IsMatch);
+        Assert.False(DraftKit.Base(second).CompareWith(ambiguous).IsMatch);
+    }
+
+    [Fact]
+    public void AMemberRepeatedAsNotMemberGivesTheSameResultInEitherOrderAndNeverMatches()
+    {
+        var memberFirst = DraftKit.Base(DraftKit.Mutable("D1"), DraftKit.NotMember("D1"));
+        var notMemberFirst = DraftKit.Base(DraftKit.NotMember("D1"), DraftKit.Mutable("D1"));
+        var plain = DraftKit.Base(DraftKit.Mutable("D1"));
+        var empty = DraftKit.Base();
+
+        Assert.Equal(memberFirst.IsAmbiguous("D1"), notMemberFirst.IsAmbiguous("D1"));
+        Assert.True(memberFirst.IsAmbiguous("D1"));
+        Assert.Equal(memberFirst.Entries.Keys.ToArray(), notMemberFirst.Entries.Keys.ToArray());
+        Assert.Equal(memberFirst.CompareWith(plain).Differences.ToArray(), notMemberFirst.CompareWith(plain).Differences.ToArray());
+        Assert.Equal(memberFirst.CompareWith(empty).Differences.ToArray(), notMemberFirst.CompareWith(empty).Differences.ToArray());
+        Assert.Equal(plain.CompareWith(memberFirst).Differences.ToArray(), plain.CompareWith(notMemberFirst).Differences.ToArray());
+        Assert.False(memberFirst.CompareWith(plain).IsMatch);
+        Assert.False(memberFirst.CompareWith(empty).IsMatch);
+        Assert.False(plain.CompareWith(memberFirst).IsMatch);
+        Assert.False(empty.CompareWith(notMemberFirst).IsMatch);
+    }
+
+    [Fact]
+    public void AnAmbiguousKeyDoesNotMatchEvenAgainstTheSameAmbiguousRead()
+    {
+        var one = DraftKit.Base(DraftKit.Mutable("D1", text: "{a}"), DraftKit.Mutable("D1", text: "{b}"));
+        var two = DraftKit.Base(DraftKit.Mutable("D1", text: "{b}"), DraftKit.Mutable("D1", text: "{a}"));
+
+        Assert.False(one.CompareWith(two).IsMatch);
+        Assert.False(one.CompareWith(one).IsMatch);
+        Assert.Equal(one.CompareWith(two).Differences.ToArray(), two.CompareWith(one).Differences.ToArray());
+    }
+
+    [Fact]
+    public void BuildingABaseWithRepeatedKeysNeverThrowsWhateverTheOrderOrTheFacts()
+    {
+        var entries = new[]
+        {
+            DraftKit.Mutable("D1", "Front", "S1", "{a}"), DraftKit.ReadOnly("D1"), DraftKit.Blocking("D1"), DraftKit.NotMember("D1"),
+            DraftKit.Mutable("D2"), DraftKit.Mutable("D2"), DraftKit.NotMember("D2"), DraftKit.Blocking("D3"), DraftKit.Blocking("D3"),
+        };
+
+        var exception = Record.Exception(() =>
+        {
+            DraftStaleBase.Create(entries);
+            DraftStaleBase.Create(entries.Reverse());
+        });
+
+        Assert.Null(exception);
+        var forward = DraftStaleBase.Create(entries);
+        var backward = DraftStaleBase.Create(entries.Reverse());
+        Assert.True(forward.IsAmbiguous("D1"));
+        Assert.True(backward.IsAmbiguous("D1"));
+        Assert.True(forward.IsAmbiguous("D2"));
+        Assert.True(backward.IsAmbiguous("D2"));
+        Assert.False(forward.IsAmbiguous("D3"));
+        Assert.Equal(DraftMembership.Blocking, backward.MembershipOf("D3"));
+        Assert.Equal(forward.CompareWith(backward).Differences.ToArray(), backward.CompareWith(forward).Differences.ToArray());
+    }
+
+    // ------------------------------------------------------------------ only the text of interpretable members (INV-F4T1-21, M-2)
+
+    [Fact]
+    public void ABlockingEntryKeepsNoEnvelopeTextAndTwoReadsThatOnlyDifferInThatTextMatch()
+    {
+        var one = DraftKit.Base(new DraftStaleBaseEntry("B1", DraftMembership.Blocking, "Front", "S1", "{garbage1}"));
+        var two = DraftKit.Base(new DraftStaleBaseEntry("B1", DraftMembership.Blocking, "Front", "S1", "{garbage2}"));
+
+        Assert.Null(one.Entries["B1"].EnvelopeText);
+        Assert.Null(two.Entries["B1"].EnvelopeText);
+        Assert.True(one.CompareWith(two).IsMatch);
+        Assert.True(two.CompareWith(one).IsMatch);
+    }
+
+    [Fact]
+    public void ABlockingEntryStillComparesItsViewAndSection()
+    {
+        var one = DraftKit.Base(new DraftStaleBaseEntry("B1", DraftMembership.Blocking, "Front", "S1", null));
+        var two = DraftKit.Base(new DraftStaleBaseEntry("B1", DraftMembership.Blocking, "Back", "S2", null));
+
+        Assert.Equal(
+            new[] { D("B1", DraftDifferenceKind.View), D("B1", DraftDifferenceKind.Section) },
+            one.CompareWith(two).Differences.ToArray());
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void AChangeBetweenBlockingAndMutableIsADifference(bool blockingFirst)
+    {
+        var blocking = DraftKit.Base(DraftKit.Blocking("D1"));
+        var mutable = DraftKit.Base(DraftKit.Mutable("D1"));
+
+        var comparison = blockingFirst ? blocking.CompareWith(mutable) : mutable.CompareWith(blocking);
+
+        Assert.False(comparison.IsMatch);
+        Assert.Contains(D("D1", DraftDifferenceKind.Membership), comparison.Differences);
+    }
+
+    [Fact]
+    public void OnlyMutableAndReadOnlyEntriesKeepTheEnvelopeText()
+    {
+        var staleBase = DraftKit.Base(
+            DraftKit.Mutable("M1", text: "{m}"),
+            DraftKit.ReadOnly("R1", text: "{r}"),
+            new DraftStaleBaseEntry("B1", DraftMembership.Blocking, null, null, "{b}"),
+            DraftKit.NotMember("N1", "{n}"));
+
+        Assert.Equal("{m}", staleBase.Entries["M1"].EnvelopeText);
+        Assert.Equal("{r}", staleBase.Entries["R1"].EnvelopeText);
+        Assert.Null(staleBase.Entries["B1"].EnvelopeText);
+        Assert.False(staleBase.Entries.ContainsKey("N1"));
     }
 
     // ------------------------------------------------------------------ union of keys, absent is NotMember
@@ -181,17 +358,25 @@ public class WorkspaceDraftStaleBaseTests
     [Fact]
     public void RemovingAFondoOutsideTheDraftIsReportedByItsKeyAndTheDraftEditsNeverMoveTheBase()
     {
-        var baseline = DraftKit.Base(DraftKit.Mutable("D1"), DraftKit.Mutable("D2", "Back", "S2", "{two}"));
+        var baseline = DraftKit.Base(
+            DraftKit.Mutable("D1"),
+            DraftKit.Mutable("D2", "Back", "S2", "{two}"),
+            DraftKit.NotMember("O1", "{other rack}"),
+            DraftKit.NotMember("O2", "{another rack}"));
         var draft = DraftKit.Born(staleBase: baseline);
         // The user removes a fondo in the draft: only the current state moves, never the base.
         draft.SetCurrentDraftState(draft.CurrentDraftState with { Name = "one fondo less" });
-
-        Assert.True(baseline.CompareWith(draft.StaleBase).IsMatch);
         Assert.Same(baseline, draft.StaleBase);
 
-        var rereadAfterExternalRemoval = DraftKit.Base(DraftKit.Mutable("D1"));
-        var differences = baseline.CompareWith(rereadAfterExternalRemoval).Differences;
+        // The re-read comes from a DIFFERENT set of entries: the fondo D2 was removed outside the draft, and the keys of
+        // other racks changed (O1 gone, O2 rewritten, O3 inserted).
+        var rereadAfterExternalRemoval = DraftKit.Base(
+            DraftKit.Mutable("D1"),
+            DraftKit.NotMember("O2", "{another rack, rewritten}"),
+            DraftKit.NotMember("O3", "{a new rack}"));
+        var differences = draft.StaleBase.CompareWith(rereadAfterExternalRemoval).Differences;
 
+        Assert.NotEmpty(differences);
         Assert.All(differences, d => Assert.Equal("D2", d.Key));
         Assert.Contains(D("D2", DraftDifferenceKind.Membership), differences);
         Assert.Contains(D("D2", DraftDifferenceKind.EnvelopeText), differences);
@@ -207,10 +392,21 @@ public class WorkspaceDraftStaleBaseTests
         var publicNames = typeof(DraftStaleBase).GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).Select(m => m.Name).ToArray();
         Assert.DoesNotContain(publicNames, n => n.Contains("Count", StringComparison.OrdinalIgnoreCase) || n.Contains("Reference", StringComparison.OrdinalIgnoreCase));
 
-        // Two reads of the same facts that would differ only in how many references the drawing holds are identical for the base.
-        var first = DraftKit.Base(DraftKit.Mutable("D1"), DraftKit.Mutable("D2", "Back", "S2", "{two}"));
-        var second = DraftKit.Base(DraftKit.Mutable("D1"), DraftKit.Mutable("D2", "Back", "S2", "{two}"));
+        // The counts of references live in the keys of the OTHER racks (NotMember), which come and go and change with each read:
+        // the two reads are built from different sets of entries and still match, because no count is part of the base.
+        var first = DraftKit.Base(
+            DraftKit.Mutable("D1"),
+            DraftKit.Mutable("D2", "Back", "S2", "{two}"),
+            DraftKit.NotMember("U1", "{used by 3 racks}"),
+            DraftKit.NotMember("U2", "{used by 1 rack}"));
+        var second = DraftKit.Base(
+            DraftKit.Mutable("D1"),
+            DraftKit.Mutable("D2", "Back", "S2", "{two}"),
+            DraftKit.NotMember("U2", "{used by 2 racks}"),
+            DraftKit.NotMember("U3", "{used by 1 rack}"));
+
         Assert.True(first.CompareWith(second).IsMatch);
+        Assert.True(second.CompareWith(first).IsMatch);
     }
 
     // ------------------------------------------------------------------ each fact that counts
@@ -236,14 +432,25 @@ public class WorkspaceDraftStaleBaseTests
     [Theory]
     [InlineData(DraftMembership.Mutable, DraftMembership.ReadOnly)]
     [InlineData(DraftMembership.ReadOnly, DraftMembership.Mutable)]
-    [InlineData(DraftMembership.Mutable, DraftMembership.Blocking)]
-    [InlineData(DraftMembership.Blocking, DraftMembership.ReadOnly)]
-    public void AChangeOfTheAttributionOfAMemberIsReportedAsAMembershipDifference(DraftMembership before, DraftMembership after)
+    public void AChangeOfTheAttributionBetweenInterpretableMembersIsReportedAsAMembershipDifferenceOnly(DraftMembership before, DraftMembership after)
     {
         var baseline = DraftKit.Base(new DraftStaleBaseEntry("D1", before, "Front", "S1", "{a}"));
         var reread = DraftKit.Base(new DraftStaleBaseEntry("D1", after, "Front", "S1", "{a}"));
 
         Assert.Equal(new[] { D("D1", DraftDifferenceKind.Membership) }, baseline.CompareWith(reread).Differences.ToArray());
+    }
+
+    [Theory]
+    [InlineData(DraftMembership.Mutable, DraftMembership.Blocking)]
+    [InlineData(DraftMembership.Blocking, DraftMembership.ReadOnly)]
+    public void AChangeOfTheAttributionToOrFromBlockingAlsoLosesOrGainsTheEnvelopeText(DraftMembership before, DraftMembership after)
+    {
+        var baseline = DraftKit.Base(new DraftStaleBaseEntry("D1", before, "Front", "S1", "{a}"));
+        var reread = DraftKit.Base(new DraftStaleBaseEntry("D1", after, "Front", "S1", "{a}"));
+
+        Assert.Equal(
+            new[] { D("D1", DraftDifferenceKind.Membership), D("D1", DraftDifferenceKind.EnvelopeText) },
+            baseline.CompareWith(reread).Differences.ToArray());
     }
 
     [Fact]

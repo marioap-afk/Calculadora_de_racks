@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RackCad.Application.Workspace;
@@ -21,14 +22,15 @@ public class WorkspaceDraftRegistryTests
         var staleBase = DraftKit.DefaultBase();
         var read = DraftKit.Read(DraftKit.Form("Rack", 30), staleBase);
 
-        var result = registry.Begin(DraftKit.S1, "R1", read, DraftKit.Comparer);
+        var result = registry.Begin(DraftKit.S1, "R1", read, DraftKit.Comparer, DraftKit.CopyForm);
 
         Assert.Equal(DraftBeginStatus.Created, result.Status);
         Assert.NotNull(result.Draft);
         Assert.True(result.Admission.IsAdmitted);
         Assert.Same(staleBase, result.Draft!.StaleBase);
         Assert.Same(read.InitialState, result.Draft.InitialDraftState);
-        Assert.Same(read.InitialState, result.Draft.CurrentDraftState);
+        Assert.NotSame(result.Draft.InitialDraftState, result.Draft.CurrentDraftState);
+        Assert.True(DraftKit.Comparer.Equals(read.InitialState, result.Draft.CurrentDraftState));
         Assert.True(registry.Contains(DraftKit.S1, "R1"));
         Assert.Same(result.Draft, registry.Find<DraftForm>(DraftKit.S1, "R1"));
         Assert.Equal(1, registry.CountOf(DraftKit.S1));
@@ -39,7 +41,7 @@ public class WorkspaceDraftRegistryTests
     {
         var registry = new DraftRegistry();
 
-        var rejected = registry.Begin(DraftKit.S1, "R1", DraftIntentRead<DraftForm>.NotAdmitted("divergent members"), DraftKit.Comparer);
+        var rejected = registry.Begin(DraftKit.S1, "R1", DraftIntentRead<DraftForm>.NotAdmitted("divergent members"), DraftKit.Comparer, DraftKit.CopyForm);
 
         Assert.Equal(DraftBeginStatus.NotAdmitted, rejected.Status);
         Assert.Null(rejected.Draft);
@@ -49,7 +51,7 @@ public class WorkspaceDraftRegistryTests
         Assert.Equal(0, registry.CountOf(DraftKit.S1));
 
         // The same registry still admits a later read that is admitted.
-        var created = registry.Begin(DraftKit.S1, "R1", DraftKit.Read(), DraftKit.Comparer);
+        var created = registry.Begin(DraftKit.S1, "R1", DraftKit.Read(), DraftKit.Comparer, DraftKit.CopyForm);
         Assert.Equal(DraftBeginStatus.Created, created.Status);
         Assert.Equal(1, registry.CountOf(DraftKit.S1));
     }
@@ -61,7 +63,7 @@ public class WorkspaceDraftRegistryTests
         var draft = DraftKit.Dirty(registry);
         var current = draft.CurrentDraftState;
 
-        var again = registry.Begin(DraftKit.S1, "R1", DraftKit.Read(DraftKit.Form("Replacement", 1)), DraftKit.Comparer);
+        var again = registry.Begin(DraftKit.S1, "R1", DraftKit.Read(DraftKit.Form("Replacement", 1)), DraftKit.Comparer, DraftKit.CopyForm);
 
         Assert.Equal(DraftBeginStatus.AlreadyExists, again.Status);
         Assert.Same(draft, again.Draft);
@@ -93,7 +95,29 @@ public class WorkspaceDraftRegistryTests
     }
 
     [Fact]
-    public void ThereIsNoPublicPathFromAPreviewOrFromABaseAloneToADraft()
+    public void BeginTakesTheCopierNextToTheComparerAndTheCurrentStateIsACopyOfTheInitialOne()
+    {
+        var begin = typeof(DraftRegistry).GetMethod("Begin")!;
+        var parameters = begin.GetParameters();
+
+        Assert.Equal(5, parameters.Length);
+        Assert.Equal(typeof(DraftIntentRead<>), parameters[2].ParameterType.GetGenericTypeDefinition());
+        Assert.Equal(typeof(IEqualityComparer<>), parameters[3].ParameterType.GetGenericTypeDefinition());
+        Assert.Equal(typeof(Func<,>), parameters[4].ParameterType.GetGenericTypeDefinition());
+
+        var copies = 0;
+        var registry = new DraftRegistry();
+        var read = DraftKit.Read(DraftKit.Form("Rack", 30));
+
+        var born = registry.Begin(DraftKit.S1, "R1", read, DraftKit.Comparer, form => { copies++; return form with { }; });
+
+        Assert.Equal(DraftBeginStatus.Created, born.Status);
+        Assert.True(copies >= 1);
+        Assert.NotSame(born.Draft!.InitialDraftState, born.Draft.CurrentDraftState);
+    }
+
+    [Fact]
+    public void NoOperationOfTheCoreButTheReadFactoryAndCheckNowTakesAStaleBaseAlone()
     {
         var types = typeof(DraftRegistry).Assembly.GetTypes().Where(t => t.Namespace == "RackCad.Application.Workspace.Drafts" && t.IsPublic).ToArray();
 
@@ -118,10 +142,11 @@ public class WorkspaceDraftRegistryTests
     {
         var registry = new DraftRegistry();
 
-        Assert.Throws<ArgumentException>(() => registry.Begin(DraftKit.S1, "", DraftKit.Read(), DraftKit.Comparer));
-        Assert.Throws<ArgumentException>(() => registry.Begin(DraftKit.S1, null!, DraftKit.Read(), DraftKit.Comparer));
-        Assert.Throws<ArgumentNullException>(() => registry.Begin(DraftKit.S1, "R1", null!, DraftKit.Comparer));
-        Assert.Throws<ArgumentNullException>(() => registry.Begin(DraftKit.S1, "R1", DraftKit.Read(), null!));
+        Assert.Throws<ArgumentException>(() => registry.Begin(DraftKit.S1, "", DraftKit.Read(), DraftKit.Comparer, DraftKit.CopyForm));
+        Assert.Throws<ArgumentException>(() => registry.Begin(DraftKit.S1, null!, DraftKit.Read(), DraftKit.Comparer, DraftKit.CopyForm));
+        Assert.Throws<ArgumentNullException>(() => registry.Begin(DraftKit.S1, "R1", null!, DraftKit.Comparer, DraftKit.CopyForm));
+        Assert.Throws<ArgumentNullException>(() => registry.Begin(DraftKit.S1, "R1", DraftKit.Read(), null!, DraftKit.CopyForm));
+        Assert.Throws<ArgumentNullException>(() => registry.Begin(DraftKit.S1, "R1", DraftKit.Read(), DraftKit.Comparer, null!));
         Assert.Throws<ArgumentException>(() => registry.Find<DraftForm>(DraftKit.S1, ""));
         Assert.Throws<ArgumentException>(() => registry.Contains(DraftKit.S1, ""));
         Assert.Throws<ArgumentException>(() => registry.Discard(DraftKit.S1, ""));
@@ -272,7 +297,7 @@ public class WorkspaceDraftRegistryTests
         Assert.Equal(0, registry.CountOf(DraftKit.S1));
         Assert.Equal(1, registry.CountOf(DraftKit.S2));
         Assert.False(registry.IsRetired(DraftKit.S1));
-        Assert.Equal(DraftBeginStatus.Created, registry.Begin(DraftKit.S1, "A", DraftKit.Read(), DraftKit.Comparer).Status);
+        Assert.Equal(DraftBeginStatus.Created, registry.Begin(DraftKit.S1, "A", DraftKit.Read(), DraftKit.Comparer, DraftKit.CopyForm).Status);
         Assert.Empty(registry.DiscardAll(new SessionId(99)).RemovedRackIds);
     }
 
@@ -335,13 +360,41 @@ public class WorkspaceDraftRegistryTests
     }
 
     [Fact]
+    public void IfTheComparerThrowsWhileRetiringTheSessionIsNotLeftMarkedAsRetiredAndItsDraftsStayRegistered()
+    {
+        var registry = new DraftRegistry();
+        var comparer = new DraftThrowingComparer();
+        var risky = DraftKit.Born(registry, DraftKit.S1, "R1", comparer: comparer);
+        var other = DraftKit.Born(registry, DraftKit.S1, "R2");
+        risky.SetCurrentDraftState(DraftKit.Form("Edited", 1));
+        comparer.Throw = true;
+
+        Assert.Throws<InvalidOperationException>(() => registry.RetireSession(DraftKit.S1));
+        comparer.Throw = false;
+
+        Assert.False(registry.IsRetired(DraftKit.S1));
+        Assert.Equal(2, registry.CountOf(DraftKit.S1));
+        Assert.True(risky.IsRegistered);
+        Assert.True(other.IsRegistered);
+        Assert.Same(risky, registry.Find<DraftForm>(DraftKit.S1, "R1"));
+        Assert.Equal(DraftBeginStatus.AlreadyExists, registry.Begin(DraftKit.S1, "R1", DraftKit.Read(), DraftKit.Comparer, DraftKit.CopyForm).Status);
+
+        var notice = registry.RetireSession(DraftKit.S1);
+
+        Assert.True(registry.IsRetired(DraftKit.S1));
+        Assert.Equal(new[] { "R1" }, notice.LostRackIds.ToArray());
+        Assert.Equal(0, registry.CountOf(DraftKit.S1));
+        Assert.False(risky.IsRegistered);
+    }
+
+    [Fact]
     public void ARetiredSessionIsNeverResurrected()
     {
         var registry = new DraftRegistry();
         var draft = DraftKit.Dirty(registry);
         registry.RetireSession(DraftKit.S1);
 
-        var again = registry.Begin(DraftKit.S1, "R1", DraftKit.Read(), DraftKit.Comparer);
+        var again = registry.Begin(DraftKit.S1, "R1", DraftKit.Read(), DraftKit.Comparer, DraftKit.CopyForm);
 
         Assert.Equal(DraftBeginStatus.SessionRetired, again.Status);
         Assert.Null(again.Draft);
@@ -350,7 +403,7 @@ public class WorkspaceDraftRegistryTests
         Assert.True(registry.IsRetired(DraftKit.S1));
         var second = registry.RetireSession(DraftKit.S1);
         Assert.False(second.HasLoss);
-        Assert.Equal(DraftBeginStatus.Created, registry.Begin(DraftKit.S2, "R1", DraftKit.Read(), DraftKit.Comparer).Status);
+        Assert.Equal(DraftBeginStatus.Created, registry.Begin(DraftKit.S2, "R1", DraftKit.Read(), DraftKit.Comparer, DraftKit.CopyForm).Status);
     }
 
     [Fact]

@@ -281,6 +281,9 @@ namespace RackCad.Application.Workspace.Drafts
 
         public string? ErrorReason { get; private set; }
 
+        // RED skeleton of the correction: nothing is recorded yet.
+        public string? DeferredErrorReason => null;
+
         private bool CanEdit => _owner != null
             && (_explicitStatus == null || _explicitStatus == DraftStatus.Conflict);
 

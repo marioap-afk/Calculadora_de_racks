@@ -85,7 +85,8 @@ namespace RackCad.Application.Workspace.Drafts
         /// The only way a draft is born (INV-F4T1-03): from the result of ONE read of the edit intention that brings the
         /// stale base, the admission and the initial state together. A read that is not admitted creates nothing.
         /// </summary>
-        public DraftBeginResult<TState> Begin<TState>(SessionId session, string rackId, DraftIntentRead<TState> read, IEqualityComparer<TState> comparer)
+        // RED skeleton of the correction: the copier is accepted and not used yet.
+        public DraftBeginResult<TState> Begin<TState>(SessionId session, string rackId, DraftIntentRead<TState> read, IEqualityComparer<TState> comparer, Func<TState, TState> copy)
         {
             if (string.IsNullOrEmpty(rackId)) throw new ArgumentException("A rack id is required.", nameof(rackId));
             if (read == null) throw new ArgumentNullException(nameof(read));

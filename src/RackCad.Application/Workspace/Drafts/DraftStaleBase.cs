@@ -98,6 +98,9 @@ namespace RackCad.Application.Workspace.Drafts
             return _entries.TryGetValue(key, out var entry) ? entry.Membership : DraftMembership.NotMember;
         }
 
+        // RED skeleton of the correction: no key is reported as ambiguous yet.
+        public bool IsAmbiguous(string key) => false;
+
         /// <summary>
         /// Compares this base with a re-read over the UNION of their keys; an absent key is NotMember. Every comparison is
         /// ordinal and exact, with no normalization. Differences come ordered by key (ordinal), then by kind; the registry

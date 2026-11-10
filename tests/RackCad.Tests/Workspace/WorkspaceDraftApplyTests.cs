@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Workspace;
 using RackCad.Application.Workspace.Drafts;
@@ -117,26 +118,248 @@ public class WorkspaceDraftApplyTests
         Assert.True(second.TryBeginApply().IsStarted);
     }
 
-    [Fact]
-    public void TheApplyingSlotIsFreedWhenTheApplyingDraftIsDiscardedRetiredOrFailsIntoError()
+    // ------------------------------------------------------------------ the slot belongs to the operation (INV-F4T1-20, I-2)
+
+    [Theory]
+    [InlineData("error")]
+    [InlineData("discard")]
+    [InlineData("discard-all")]
+    [InlineData("retire")]
+    public void TheApplyingSlotIsNotFreedByErrorDiscardDiscardAllOrRetireWhileTheOperationIsInFlight(string operation)
     {
         var registry = new DraftRegistry();
+        var a = DraftKit.ToApplying(DraftKit.Born(registry, DraftKit.S1, "A"));
+        var b = DraftKit.Born(registry, DraftKit.S2, "B");
 
-        var discarded = DraftKit.ToApplying(DraftKit.Born(registry, DraftKit.S1, "R1"));
+        switch (operation)
+        {
+            case "error": a.EnterError("surface threw"); break;
+            case "discard": registry.Discard(DraftKit.S1, "A"); break;
+            case "discard-all": registry.DiscardAll(DraftKit.S1); break;
+            default: registry.RetireSession(DraftKit.S1); break;
+        }
+
+        Assert.True(registry.HasUpdateInProgress);
+        var refused = b.TryBeginApply();
+        Assert.False(refused.IsStarted);
+        Assert.Equal(DraftApplyRefusal.AnotherUpdateInProgress, refused.Refusal);
+        Assert.Equal(DraftStatus.Clean, b.Status);
+
+        var done = a.CompleteApply(DraftApplyOutcome<DraftForm>.NotAppliedFailure("nothing written"));
+
+        Assert.True(done.Accepted);
+        Assert.False(registry.HasUpdateInProgress);
+        Assert.True(b.TryBeginApply().IsStarted);
+    }
+
+    [Theory]
+    [InlineData("discard")]
+    [InlineData("discard-all")]
+    [InlineData("retire")]
+    public void CompletingTheUpdateOfAnUnregisteredDraftIsAcceptedFreesTheSlotAndChangesNothingElse(string operation)
+    {
+        var registry = new DraftRegistry();
+        var a = DraftKit.ToApplying(DraftKit.Dirty(registry, DraftKit.S1, "A"));
+        var content = (a.CurrentDraftState, a.InitialDraftState, a.StaleBase);
+        switch (operation)
+        {
+            case "discard": registry.Discard(DraftKit.S1, "A"); break;
+            case "discard-all": registry.DiscardAll(DraftKit.S1); break;
+            default: registry.RetireSession(DraftKit.S1); break;
+        }
+
+        var post = DraftKit.Read(DraftKit.Form("AsWritten", 5));
+        var done = a.CompleteApply(DraftApplyOutcome<DraftForm>.Applied(post));
+
+        Assert.True(done.Accepted);
+        Assert.False(done.DraftWasRegistered);
+        Assert.False(done.Rebased);
+        Assert.Equal(DraftApplyOutcomeKind.Applied, done.Kind);
+        Assert.False(a.IsRegistered);
+        Assert.False(registry.HasUpdateInProgress);
+        Assert.Same(content.CurrentDraftState, a.CurrentDraftState);
+        Assert.Same(content.InitialDraftState, a.InitialDraftState);
+        Assert.Same(content.StaleBase, a.StaleBase);
+        Assert.Empty(a.Warnings);
+        Assert.False(registry.Contains(DraftKit.S1, "A"));
+
+        // The slot was freed by that one result: a second result for the same Update is refused.
+        var again = a.CompleteApply(DraftApplyOutcome<DraftForm>.NotAppliedFailure("late"));
+        Assert.False(again.Accepted);
+    }
+
+    [Fact]
+    public void ARegisteredDraftThatCompletesReportsThatItWasRegistered()
+    {
+        var draft = DraftKit.ToApplying(DraftKit.Born());
+
+        var done = draft.CompleteApply(DraftApplyOutcome<DraftForm>.NotAppliedFailure("nothing written"));
+
+        Assert.True(done.Accepted);
+        Assert.True(done.DraftWasRegistered);
+    }
+
+    [Fact]
+    public void AnUpdateOfADiscardedDraftKeepsTheSlotOfItsOwnEvenWhenANewDraftIsBornForTheSameRack()
+    {
+        var registry = new DraftRegistry();
+        var old = DraftKit.ToApplying(DraftKit.Born(registry, DraftKit.S1, "R1"));
         registry.Discard(DraftKit.S1, "R1");
-        Assert.False(registry.HasUpdateInProgress);
+        var fresh = DraftKit.Born(registry, DraftKit.S1, "R1");
 
-        var retired = DraftKit.ToApplying(DraftKit.Born(registry, DraftKit.S2, "R1"));
-        registry.RetireSession(DraftKit.S2);
-        Assert.False(registry.HasUpdateInProgress);
+        Assert.Equal(DraftApplyRefusal.AnotherUpdateInProgress, fresh.TryBeginApply().Refusal);
 
-        var failing = DraftKit.ToApplying(DraftKit.Born(registry, new SessionId(3), "R1"));
-        failing.EnterError("surface threw");
-        Assert.False(registry.HasUpdateInProgress);
+        old.CompleteApply(DraftApplyOutcome<DraftForm>.CommitThrew("commit threw"));
 
-        Assert.True(DraftKit.Born(registry, new SessionId(4), "R1").TryBeginApply().IsStarted);
-        Assert.False(discarded.IsRegistered);
-        Assert.False(retired.IsRegistered);
+        Assert.True(fresh.TryBeginApply().IsStarted);
+    }
+
+    [Fact]
+    public void EnteringErrorWhileApplyingChangesNeitherTheStatusNorTheSlotAndRecordsTheReason()
+    {
+        var registry = new DraftRegistry();
+        var draft = DraftKit.ToApplying(DraftKit.Dirty(registry));
+
+        var transition = draft.EnterError("surface threw");
+
+        Assert.False(transition.Changed);
+        Assert.Equal(DraftStatus.Applying, transition.From);
+        Assert.Equal(DraftStatus.Applying, transition.To);
+        Assert.Equal(DraftStatus.Applying, draft.Status);
+        Assert.True(registry.HasUpdateInProgress);
+        Assert.Equal("surface threw", draft.DeferredErrorReason);
+        Assert.Null(draft.ErrorReason);
+    }
+
+    [Fact]
+    public void ACommitThatThrewAfterEnterErrorWhileApplyingLeavesErrorAndKeepsTheContent()
+    {
+        var draft = DraftKit.Dirty();
+        var content = (draft.CurrentDraftState, draft.InitialDraftState, draft.StaleBase);
+        DraftKit.ToApplying(draft);
+        draft.EnterError("surface threw");
+
+        var done = draft.CompleteApply(DraftApplyOutcome<DraftForm>.CommitThrew("commit threw"));
+
+        Assert.True(done.Accepted);
+        Assert.Equal(DraftApplyOutcomeKind.CommitThrew, done.Kind);
+        Assert.Equal(DraftStatus.Error, done.Status);
+        Assert.Equal(DraftStatus.Error, draft.Status);
+        Assert.Equal("surface threw", draft.ErrorReason);
+        Assert.Null(draft.DeferredErrorReason);
+        Assert.Null(draft.UnknownOrigin);
+        Assert.Equal("commit threw", draft.LastApplyCause);
+        Assert.Same(content.CurrentDraftState, draft.CurrentDraftState);
+        Assert.Same(content.InitialDraftState, draft.InitialDraftState);
+        Assert.Same(content.StaleBase, draft.StaleBase);
+        Assert.True(draft.IsDirty);
+    }
+
+    [Fact]
+    public void AnAppliedUpdateAfterEnterErrorWhileApplyingLeavesTheBaseAndTheInitialOfThePostReadAndThenError()
+    {
+        var registry = new DraftRegistry();
+        var draft = DraftKit.ToApplying(DraftKit.Dirty(registry));
+        draft.EnterError("surface threw");
+        var postBase = DraftKit.Base(DraftKit.Mutable("D1", "Front", "S1", "{rewritten}"));
+        var post = DraftKit.Read(DraftKit.Form("AsWritten", 55), postBase);
+
+        var done = draft.CompleteApply(DraftApplyOutcome<DraftForm>.Applied(post));
+
+        Assert.True(done.Accepted);
+        Assert.True(done.Rebased);
+        Assert.Equal(DraftStatus.Error, done.Status);
+        Assert.Equal(DraftStatus.Error, draft.Status);
+        Assert.Equal("surface threw", draft.ErrorReason);
+        Assert.Same(postBase, draft.StaleBase);
+        Assert.Same(post.InitialState, draft.InitialDraftState);
+        Assert.NotSame(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.True(DraftKit.Comparer.Equals(draft.InitialDraftState, draft.CurrentDraftState));
+        Assert.Empty(draft.PendingText);
+        Assert.False(registry.HasUpdateInProgress);
+    }
+
+    [Fact]
+    public void ADraftLeftInErrorByADeferredErrorLeavesOnlyThroughDiscardAndReload()
+    {
+        var draft = DraftKit.ToApplying(DraftKit.Dirty());
+        draft.EnterError("surface threw");
+        draft.CompleteApply(DraftApplyOutcome<DraftForm>.NotAppliedFailure("builder failed"));
+        Assert.Equal(DraftStatus.Error, draft.Status);
+        Assert.False(draft.TryBeginApply().IsStarted);
+
+        var reload = draft.DiscardAndReload(DraftKit.Read());
+
+        Assert.Equal(DraftReloadStatus.Reloaded, reload.Status);
+        Assert.Equal(DraftStatus.Clean, draft.Status);
+        Assert.Null(draft.ErrorReason);
+        Assert.Null(draft.DeferredErrorReason);
+    }
+
+    // ------------------------------------------------------------------ values taken on receipt (INV-F4T1-23)
+
+    [Fact]
+    public void ChangingTheCallersDifferencesAfterNotAppliedConflictChangesNothing()
+    {
+        var draft = DraftKit.ToApplying(DraftKit.Dirty());
+        var differences = new List<DraftDifference> { new("D2", DraftDifferenceKind.Membership), new(null, DraftDifferenceKind.VariableRegistry) };
+        var outcome = DraftApplyOutcome<DraftForm>.NotAppliedConflict(differences);
+
+        draft.CompleteApply(outcome);
+        differences.Clear();
+
+        Assert.Equal(DraftStatus.Conflict, draft.Status);
+        Assert.Equal(2, draft.ConflictDifferences.Count);
+        Assert.Equal(2, outcome.Differences.Count);
+    }
+
+    [Fact]
+    public void ChangingTheCallersWarningsAfterAppliedWithWarningsChangesNothing()
+    {
+        var draft = DraftKit.ToApplying(DraftKit.Dirty());
+        var warnings = new List<string> { "purge failed", "2 pieces missing" };
+        var outcome = DraftApplyOutcome<DraftForm>.AppliedWithWarnings(DraftKit.Read(), warnings);
+
+        draft.CompleteApply(outcome);
+        warnings.Clear();
+
+        Assert.Equal(new[] { "purge failed", "2 pieces missing" }, draft.Warnings.ToArray());
+        Assert.Equal(new[] { "purge failed", "2 pieces missing" }, outcome.Warnings.ToArray());
+    }
+
+    [Fact]
+    public void ChangingTheCallersListsBeforeCompletingStillChangesNothing()
+    {
+        var differences = new List<DraftDifference> { new("D2", DraftDifferenceKind.Membership) };
+        var warnings = new List<string> { "w" };
+        var conflict = DraftApplyOutcome<DraftForm>.NotAppliedConflict(differences);
+        var warned = DraftApplyOutcome<DraftForm>.AppliedWithWarnings(DraftKit.Read(), warnings);
+
+        differences.Add(new DraftDifference("D3", DraftDifferenceKind.View));
+        warnings.Add("another");
+
+        Assert.Single(conflict.Differences);
+        Assert.Single(warned.Warnings);
+    }
+
+    [Fact]
+    public void WarningsOfAnEarlierUpdateAreEmptiedWhenANewAttemptBeginsAndDoNotSurviveAFailedOne()
+    {
+        var draft = DraftKit.ToApplying(DraftKit.Dirty());
+        draft.CompleteApply(DraftApplyOutcome<DraftForm>.AppliedWithWarnings(DraftKit.Read(), new[] { "old warning" }));
+        Assert.Single(draft.Warnings);
+        draft.SetCurrentDraftState(draft.CurrentDraftState with { Name = "Edited again" });
+
+        var start = draft.TryBeginApply();
+
+        Assert.True(start.IsStarted);
+        Assert.Empty(draft.Warnings);
+
+        draft.CompleteApply(DraftApplyOutcome<DraftForm>.NotAppliedFailure("builder failed"));
+
+        Assert.Equal(DraftStatus.Dirty, draft.Status);
+        Assert.Equal("builder failed", draft.LastApplyCause);
+        Assert.Empty(draft.Warnings);
     }
 
     [Fact]
@@ -269,7 +492,8 @@ public class WorkspaceDraftApplyTests
         Assert.Equal(DraftStatus.Clean, draft.Status);
         Assert.Same(postBase, draft.StaleBase);
         Assert.Same(post.InitialState, draft.InitialDraftState);
-        Assert.Same(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.NotSame(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.True(DraftKit.Comparer.Equals(draft.InitialDraftState, draft.CurrentDraftState));
         Assert.Empty(draft.PendingText);
         Assert.False(draft.IsDirty);
         Assert.False(draft.IsPossiblyStale);
@@ -291,7 +515,8 @@ public class WorkspaceDraftApplyTests
         Assert.Equal(DraftStatus.Clean, draft.Status);
         Assert.Same(post.StaleBase, draft.StaleBase);
         Assert.Same(post.InitialState, draft.InitialDraftState);
-        Assert.Same(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.NotSame(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.True(DraftKit.Comparer.Equals(draft.InitialDraftState, draft.CurrentDraftState));
         Assert.Equal(new[] { "purge failed", "2 pieces missing" }, draft.Warnings.ToArray());
     }
 

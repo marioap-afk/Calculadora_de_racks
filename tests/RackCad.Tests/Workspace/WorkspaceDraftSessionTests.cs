@@ -14,6 +14,60 @@ namespace RackCad.Tests;
 /// </summary>
 internal sealed record DraftForm(string Name, int Width, string Source = "");
 
+/// <summary>
+/// I-64 F4-T1-DRAFT-CORE (INV-F4T1-19): a MUTABLE editable state, edited in place like the editors that already exist in
+/// Application. The core must keep its initial and current states as two different objects.
+/// </summary>
+internal sealed class DraftBox
+{
+    public string Name { get; set; } = string.Empty;
+
+    public int Width { get; set; }
+
+    public string Source { get; set; } = string.Empty;
+}
+
+internal sealed class DraftBoxComparer : IEqualityComparer<DraftBox>
+{
+    public bool Equals(DraftBox? x, DraftBox? y)
+    {
+        if (ReferenceEquals(x, y)) return true;
+        if (x == null || y == null) return false;
+        return string.Equals(x.Name, y.Name, StringComparison.Ordinal) && x.Width == y.Width;
+    }
+
+    public int GetHashCode(DraftBox obj) => HashCode.Combine(obj.Name, obj.Width);
+}
+
+/// <summary>A comparer that can be told to throw, to prove that an operation computes before it changes anything.</summary>
+internal sealed class DraftThrowingComparer : IEqualityComparer<DraftForm>
+{
+    public bool Throw { get; set; }
+
+    public bool Equals(DraftForm? x, DraftForm? y)
+    {
+        if (Throw) throw new InvalidOperationException("the comparer threw");
+        return DraftKit.Comparer.Equals(x, y);
+    }
+
+    public int GetHashCode(DraftForm obj) => DraftKit.Comparer.GetHashCode(obj);
+}
+
+/// <summary>An adapter whose Apply hands back a state chosen by the test (it may be the initial object itself).</summary>
+internal sealed class DraftReturningAdapter : IDraftPendingTextAdapter<DraftForm>
+{
+    private readonly DraftForm _result;
+
+    public DraftReturningAdapter(DraftForm result)
+    {
+        _result = result;
+    }
+
+    public DraftFieldValidation Validate(string fieldKey, string text) => DraftFieldValidation.Valid;
+
+    public DraftForm Apply(DraftForm current, IReadOnlyDictionary<string, string> pendingText) => _result;
+}
+
 /// <summary>Equality of the materialized state: the origin text never counts (INV-26).</summary>
 internal sealed class DraftFormComparer : IEqualityComparer<DraftForm>
 {
@@ -51,6 +105,12 @@ internal sealed class DraftFormAdapter : IDraftPendingTextAdapter<DraftForm>
 
     public int ApplyCalls { get; private set; }
 
+    /// <summary>The keys, in enumeration order, of the pending text received by the last Apply (INV-F4T1-23).</summary>
+    public string[] AppliedKeys { get; private set; } = Array.Empty<string>();
+
+    /// <summary>The runtime type of the pending text received by the last Apply.</summary>
+    public Type? AppliedType { get; private set; }
+
     public DraftFieldValidation Validate(string fieldKey, string text)
     {
         Validated.Add(fieldKey);
@@ -62,6 +122,8 @@ internal sealed class DraftFormAdapter : IDraftPendingTextAdapter<DraftForm>
     public DraftForm Apply(DraftForm current, IReadOnlyDictionary<string, string> pendingText)
     {
         ApplyCalls++;
+        AppliedKeys = pendingText.Keys.ToArray();
+        AppliedType = pendingText.GetType();
         var name = pendingText.TryGetValue("name", out var n) ? n : current.Name;
         var width = pendingText.TryGetValue("width", out var w) ? int.Parse(w) : current.Width;
         return current with { Name = name, Width = width };
@@ -93,13 +155,33 @@ internal static class DraftKit
 
     public static DraftForm Form(string name = "Rack", int width = 30, string source = "{a}") => new(name, width, source);
 
+    /// <summary>The copier injected next to the comparer: a new instance each time, equal for the comparer.</summary>
+    public static readonly Func<DraftForm, DraftForm> CopyForm = form => form with { };
+
+    public static readonly DraftBoxComparer BoxComparer = new();
+
+    public static readonly Func<DraftBox, DraftBox> CopyBox = box => new DraftBox { Name = box.Name, Width = box.Width, Source = box.Source };
+
+    public static DraftBox Box(string name = "Rack", int width = 30) => new() { Name = name, Width = width, Source = "{a}" };
+
+    public static DraftIntentRead<DraftBox> BoxRead(DraftBox? box = null, DraftStaleBase? staleBase = null) =>
+        DraftIntentRead<DraftBox>.Admitted(staleBase ?? DefaultBase(), box ?? Box());
+
+    public static DraftSession<DraftBox> BornBox(DraftRegistry? registry = null, SessionId? session = null, string rack = "R1", DraftBox? initial = null)
+    {
+        registry ??= new DraftRegistry();
+        var result = registry.Begin(session ?? S1, rack, BoxRead(initial), BoxComparer, CopyBox);
+        Assert.Equal(DraftBeginStatus.Created, result.Status);
+        return result.Draft!;
+    }
+
     public static DraftIntentRead<DraftForm> Read(DraftForm? form = null, DraftStaleBase? staleBase = null) =>
         DraftIntentRead<DraftForm>.Admitted(staleBase ?? DefaultBase(), form ?? Form());
 
     public static DraftSession<DraftForm> Born(DraftRegistry? registry = null, SessionId? session = null, string rack = "R1", DraftForm? initial = null, DraftStaleBase? staleBase = null, IEqualityComparer<DraftForm>? comparer = null)
     {
         registry ??= new DraftRegistry();
-        var result = registry.Begin(session ?? S1, rack, Read(initial, staleBase), comparer ?? Comparer);
+        var result = registry.Begin(session ?? S1, rack, Read(initial, staleBase), comparer ?? Comparer, CopyForm);
         Assert.Equal(DraftBeginStatus.Created, result.Status);
         Assert.NotNull(result.Draft);
         return result.Draft!;
@@ -170,7 +252,9 @@ public class WorkspaceDraftSessionTests
 
         Assert.Equal(DraftStatus.Clean, draft.Status);
         Assert.False(draft.IsDirty);
-        Assert.Same(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.NotSame(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.Equal(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.True(DraftKit.Comparer.Equals(draft.InitialDraftState, draft.CurrentDraftState));
         Assert.Empty(draft.PendingText);
         Assert.False(draft.HasPendingText);
         Assert.False(draft.IsPossiblyStale);
@@ -636,7 +720,8 @@ public class WorkspaceDraftSessionTests
         Assert.Equal(DraftReloadStatus.Reloaded, result.Status);
         Assert.Same(newBase, draft.StaleBase);
         Assert.Same(read.InitialState, draft.InitialDraftState);
-        Assert.Same(read.InitialState, draft.CurrentDraftState);
+        Assert.NotSame(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.True(DraftKit.Comparer.Equals(read.InitialState, draft.CurrentDraftState));
         Assert.Empty(draft.PendingText);
         Assert.Equal(DraftStatus.Clean, draft.Status);
         Assert.False(draft.IsDirty);
@@ -907,6 +992,249 @@ public class WorkspaceDraftSessionTests
         Assert.Throws<ArgumentException>(() => DraftIntentRead<DraftForm>.NotAdmitted(""));
         Assert.Throws<ArgumentNullException>(() => DraftIntentRead<DraftForm>.Admitted(null!, DraftKit.Form()));
         Assert.Equal(0, adapter.ApplyCalls);
+    }
+
+    // ------------------------------------------------------------------ the two states never share an object (INV-F4T1-19, I-1)
+
+    [Fact]
+    public void AnInPlaceEditAfterBeginNeverChangesTheInitialStateAndTheDraftIsDirtyAndVetoesTheClose()
+    {
+        var registry = new DraftRegistry();
+        var draft = DraftKit.BornBox(registry, initial: DraftKit.Box("Rack", 30));
+        Assert.False(draft.IsDirty);
+
+        draft.CurrentDraftState.Width = 45;
+
+        Assert.Equal(30, draft.InitialDraftState.Width);
+        Assert.True(draft.IsDirty);
+        Assert.Equal(DraftStatus.Dirty, draft.Status);
+        Assert.True(new DraftClosePolicy(registry).EvaluateClose(DraftKit.S1).IsVeto);
+    }
+
+    [Fact]
+    public void AnInPlaceEditAfterDiscardAndReloadNeverChangesTheInitialStateAndTheDraftIsDirtyAndVetoesTheClose()
+    {
+        var registry = new DraftRegistry();
+        var draft = DraftKit.BornBox(registry);
+        var read = DraftKit.BoxRead(DraftKit.Box("Fresh", 77));
+
+        Assert.Equal(DraftReloadStatus.Reloaded, draft.DiscardAndReload(read).Status);
+        Assert.False(draft.IsDirty);
+        draft.CurrentDraftState.Name = "Edited in place";
+
+        Assert.Same(read.InitialState, draft.InitialDraftState);
+        Assert.Equal("Fresh", draft.InitialDraftState.Name);
+        Assert.True(draft.IsDirty);
+        Assert.True(new DraftClosePolicy(registry).EvaluateClose(DraftKit.S1).IsVeto);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void AnInPlaceEditAfterAnAppliedUpdateNeverChangesTheInitialStateAndTheDraftIsDirtyAndVetoesTheClose(bool withWarnings)
+    {
+        var registry = new DraftRegistry();
+        var draft = DraftKit.BornBox(registry);
+        draft.CurrentDraftState.Width = 12;
+        Assert.True(draft.TryBeginApply().IsStarted);
+        var post = DraftKit.BoxRead(DraftKit.Box("AsWritten", 12));
+
+        var result = draft.CompleteApply(withWarnings
+            ? DraftApplyOutcome<DraftBox>.AppliedWithWarnings(post, new[] { "w" })
+            : DraftApplyOutcome<DraftBox>.Applied(post));
+
+        Assert.True(result.Rebased);
+        Assert.False(draft.IsDirty);
+        draft.CurrentDraftState.Width = 99;
+
+        Assert.Same(post.InitialState, draft.InitialDraftState);
+        Assert.Equal(12, draft.InitialDraftState.Width);
+        Assert.True(draft.IsDirty);
+        Assert.True(new DraftClosePolicy(registry).EvaluateClose(DraftKit.S1).IsVeto);
+    }
+
+    [Fact]
+    public void ABornDraftOfAReferenceStateNeverSharesTheObjectAndStartsEqualForTheComparer()
+    {
+        var draft = DraftKit.Born(initial: DraftKit.Form("Rack", 30));
+
+        Assert.False(ReferenceEquals(draft.InitialDraftState, draft.CurrentDraftState));
+        Assert.True(DraftKit.Comparer.Equals(draft.InitialDraftState, draft.CurrentDraftState));
+        Assert.False(draft.IsDirty);
+    }
+
+    [Fact]
+    public void DiscardAndReloadAndAppliedNeverLeaveTheCurrentStateAsTheInitialObject()
+    {
+        var draft = DraftKit.Dirty();
+        draft.DiscardAndReload(DraftKit.Read(DraftKit.Form("Fresh", 10)));
+        Assert.False(ReferenceEquals(draft.InitialDraftState, draft.CurrentDraftState));
+        Assert.False(draft.IsDirty);
+
+        var applied = DraftKit.ToApplying(DraftKit.Dirty(rack: "A"));
+        applied.CompleteApply(DraftApplyOutcome<DraftForm>.Applied(DraftKit.Read(DraftKit.Form("AsWritten", 5))));
+        Assert.False(ReferenceEquals(applied.InitialDraftState, applied.CurrentDraftState));
+        Assert.False(applied.IsDirty);
+
+        var warned = DraftKit.ToApplying(DraftKit.Dirty(rack: "B"));
+        warned.CompleteApply(DraftApplyOutcome<DraftForm>.AppliedWithWarnings(DraftKit.Read(DraftKit.Form("AsWritten", 5)), new[] { "w" }));
+        Assert.False(ReferenceEquals(warned.InitialDraftState, warned.CurrentDraftState));
+        Assert.False(warned.IsDirty);
+    }
+
+    [Fact]
+    public void SettingTheInitialObjectItselfAsTheCurrentStateStoresACopy()
+    {
+        var draft = DraftKit.Dirty();
+
+        var edit = draft.SetCurrentDraftState(draft.InitialDraftState);
+
+        Assert.Equal(DraftEditStatus.Updated, edit.Status);
+        Assert.False(ReferenceEquals(draft.InitialDraftState, draft.CurrentDraftState));
+        Assert.True(DraftKit.Comparer.Equals(draft.InitialDraftState, draft.CurrentDraftState));
+        Assert.False(draft.IsDirty);
+    }
+
+    [Fact]
+    public void CrossingABlockingBoundaryWhoseApplicationReturnsTheInitialObjectStoresACopy()
+    {
+        var draft = DraftKit.Dirty();
+        draft.SetPendingText("width", "30");
+        var adapter = new DraftReturningAdapter(draft.InitialDraftState);
+
+        var result = draft.CrossBoundary(DraftBoundary.TabChange, adapter);
+
+        Assert.Equal(DraftBoundaryDecision.Proceeded, result.Decision);
+        Assert.True(result.CurrentStateChanged);
+        Assert.False(ReferenceEquals(draft.InitialDraftState, draft.CurrentDraftState));
+        Assert.True(DraftKit.Comparer.Equals(draft.InitialDraftState, draft.CurrentDraftState));
+    }
+
+    [Fact]
+    public void KeepMineWhoseReadHandsBackTheCurrentObjectAsTheNewInitialStateStoresACopyOfTheCurrentState()
+    {
+        var draft = DraftKit.Dirty();
+        var mine = draft.CurrentDraftState;
+        var read = DraftIntentRead<DraftForm>.Admitted(DraftKit.DefaultBase(), mine);
+
+        var result = draft.KeepMineOnCurrentVersion(read, confirmed: true);
+
+        Assert.Equal(DraftReloadStatus.Reloaded, result.Status);
+        Assert.Same(mine, draft.InitialDraftState);
+        Assert.False(ReferenceEquals(draft.InitialDraftState, draft.CurrentDraftState));
+        Assert.True(DraftKit.Comparer.Equals(mine, draft.CurrentDraftState));
+    }
+
+    [Fact]
+    public void AnInPlaceEditThenKeepMineStillKeepsTheTwoStatesApart()
+    {
+        var draft = DraftKit.BornBox();
+        draft.CurrentDraftState.Name = "Mine";
+        var read = DraftKit.BoxRead(DraftKit.Box("Theirs", 80));
+
+        draft.KeepMineOnCurrentVersion(read, confirmed: true);
+        draft.CurrentDraftState.Width = 5;
+
+        Assert.Equal(80, draft.InitialDraftState.Width);
+        Assert.Equal("Mine", draft.CurrentDraftState.Name);
+        Assert.True(draft.IsDirty);
+    }
+
+    // ------------------------------------------------------------------ one origin for Unknown, ordered text (INV-F4T1-23)
+
+    [Theory]
+    [InlineData("clean")]
+    [InlineData("dirty")]
+    [InlineData("conflict")]
+    [InlineData("applying")]
+    [InlineData("unknown-commit")]
+    [InlineData("unknown-post")]
+    [InlineData("error")]
+    [InlineData("error-from-unknown-commit")]
+    [InlineData("error-from-unknown-post")]
+    public void UnknownOriginIsNotNullIfAndOnlyIfTheDraftIsUnknown(string status)
+    {
+        var draft = DraftKit.Dirty();
+        switch (status)
+        {
+            case "clean": draft.DiscardAndReload(DraftKit.Read()); break;
+            case "conflict": DraftKit.ToConflict(draft); break;
+            case "applying": DraftKit.ToApplying(draft); break;
+            case "unknown-commit": DraftKit.ToUnknownCommit(draft); break;
+            case "unknown-post": DraftKit.ToUnknownPost(draft); break;
+            case "error": DraftKit.ToError(draft); break;
+            case "error-from-unknown-commit": DraftKit.ToError(DraftKit.ToUnknownCommit(draft)); break;
+            case "error-from-unknown-post": DraftKit.ToError(DraftKit.ToUnknownPost(draft)); break;
+        }
+
+        Assert.Equal(draft.Status == DraftStatus.Unknown, draft.UnknownOrigin != null);
+    }
+
+    [Fact]
+    public void AnErrorReachedFromAnUnknownDraftKeepsItsContentAndLosesTheOrigin()
+    {
+        var draft = DraftKit.ToUnknownCommit(DraftKit.Dirty());
+        var current = draft.CurrentDraftState;
+        var staleBase = draft.StaleBase;
+
+        draft.EnterError("surface threw");
+
+        Assert.Equal(DraftStatus.Error, draft.Status);
+        Assert.Null(draft.UnknownOrigin);
+        Assert.Same(current, draft.CurrentDraftState);
+        Assert.Same(staleBase, draft.StaleBase);
+    }
+
+    [Fact]
+    public void NeedsLazyReloadIsFalseForADraftThatIsNoLongerRegistered()
+    {
+        var registry = new DraftRegistry();
+        var draft = DraftKit.Born(registry);
+        draft.MarkPossiblyStale();
+        Assert.True(draft.NeedsLazyReload);
+
+        registry.Discard(DraftKit.S1, "R1");
+
+        Assert.False(draft.IsRegistered);
+        Assert.True(draft.IsPossiblyStale);
+        Assert.Equal(DraftStatus.Clean, draft.Status);
+        Assert.False(draft.NeedsLazyReload);
+
+        var retired = DraftKit.Born(registry, DraftKit.S2, "R1");
+        retired.MarkPossiblyStale();
+        registry.RetireSession(DraftKit.S2);
+        Assert.False(retired.NeedsLazyReload);
+    }
+
+    [Fact]
+    public void ThePendingTextEnumeratesInOrdinalKeyOrderThroughATypeThatGuaranteesIt()
+    {
+        var draft = DraftKit.Born();
+        draft.SetPendingText("z", "3");
+        draft.SetPendingText("a", "1");
+        draft.SetPendingText("m", "2");
+
+        Assert.Equal(new[] { "a", "m", "z" }, draft.PendingText.Keys.ToArray());
+        Assert.Equal(new[] { "a", "m", "z" }, draft.PendingText.Select(pair => pair.Key).ToArray());
+        Assert.Equal(new[] { "1", "2", "3" }, draft.PendingText.Values.ToArray());
+        Assert.IsType<System.Collections.ObjectModel.ReadOnlyDictionary<string, string>>(draft.PendingText);
+    }
+
+    [Fact]
+    public void TheApplicationOfThePendingTextReceivesItInOrdinalKeyOrder()
+    {
+        var draft = DraftKit.Born();
+        draft.SetPendingText("z", "9");
+        draft.SetPendingText("width", "40");
+        draft.SetPendingText("a", "x");
+        draft.SetPendingText("m", "y");
+        var adapter = new DraftFormAdapter();
+
+        var result = draft.CrossBoundary(DraftBoundary.TabChange, adapter);
+
+        Assert.Equal(DraftBoundaryDecision.Proceeded, result.Decision);
+        Assert.Equal(new[] { "a", "m", "width", "z" }, adapter.AppliedKeys);
+        Assert.Equal(typeof(System.Collections.ObjectModel.ReadOnlyDictionary<string, string>), adapter.AppliedType);
     }
 
     [Fact]
