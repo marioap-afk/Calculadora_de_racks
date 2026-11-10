@@ -6002,3 +6002,19 @@ revisar:
 **Gate:** F3 = CLOSED / PASS WITH LIMITATIONS (F3-E13, `F3-BROWSER/gate-close.md`). `attempts` 2 de 3. Sin AutoCAD: F3 no tiene hito de host. Lectura de resumen tras el drenaje aclarada en IC-04.
 
 **Siguiente:** F4 necesita contrato y presupuesto propios.
+
+## 109. Ratificación de F3 y autorización de F4
+
+**Autoridad:** orden del Owner, literal en `I-64-pilot/F4-DRAFTS/coordinator/owner-f3-ratification-f4-authorization.md`.
+
+**F3 = CLOSED / PASS WITH LIMITATIONS.** Identidades de producto: F3-T1 `a92039bb` y F3-T2 `206e0f7a`; la punta `67ee8e4a` es custodia y no las sustituye. `attempts` 2 de 3, cerrado. Limitaciones R-1 a R-4 dispuestas (F4-E04).
+
+**Entorno:** Snapshot F ratificado como línea base (F4-E03).
+
+**IC-04:** redacción aceptada registrada. La lectura de resumen de `206e0f7a` queda dentro de la llamada a `Application.Idle`, y su conformidad pasa a F4-T2 (F4-E05).
+
+**Deuda de proceso:** la verificación del Controller es necesaria, no suficiente (F4-E02).
+
+**F4 autorizada.** `attempts` = 1 de 3, presupuesto propio. El paquete del contrato se prepara desde las autoridades reales y pasa por revisión independiente antes de emitirse.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.

@@ -69,3 +69,21 @@ D-08 y D-15 piden que un sistema aún no integrado ofrezca una pestaña de resum
 **Aclaración:** el drenaje conserva exactamente sus operaciones de D-04. El resumen del rack de la pestaña que se materializa se lee después, en el aviso que el controlador emite cuando el drenaje ya terminó, con el documento en reposo y una sola vez por materialización. Una lectura en un aviso de cambio de documento o de comando responde `Busy` sin bloquear el documento y se reintenta en el drenaje siguiente. Un clic del usuario lee directamente, con las mismas comprobaciones de documento, comando y sesión.
 
 **Alcance:** solo el resumen de F3. No autoriza otras lecturas del DWG en avisos o manejadores.
+
+## IC-04, redacción aceptada por el Owner
+
+**Autoridad:** orden `I-64-pilot/F4-DRAFTS/coordinator/owner-f3-ratification-f4-authorization.md`. **Esta redacción sustituye a la de arriba.** IC-04 no es un permiso para leer desde eventos de AutoCAD.
+
+Los manejadores de notificación de eventos de AutoCAD **no pueden** leer el DWG: solo encolan o agrupan pistas.
+
+Una lectura ligera de resumen puede ocurrir **después** de procesar la notificación, como operación separada, programada o visible para el usuario, y solo con las condiciones normales de contexto de aplicación: SessionId y documento correctos, documento activo cuando se requiera, reposo, sin modal RackCad, `DocumentLock`, operación acotada y sin que sobreviva ningún `DBObject` ni `Transaction`.
+
+La lectura **no puede** ocurrir sincrónicamente dentro de `ObjectModified`, `ObjectErased`, `ImpliedSelectionChanged`, `CommandEnded` ni de un callback de Idle o de evento simplemente porque se disparó.
+
+Si el drenaje termina y después programa o materializa la superficie activa por la ruta normal de lectura, es aceptable. «Después del drenaje» es aceptable; «dentro del manejador de la notificación» no lo es.
+
+**Conformidad del producto:** la disposición F4-E05 registra que la lectura de `206e0f7a` ocurre aún dentro de la llamada a `Application.Idle`, y encarga a F4-T2 resolverlo.
+
+## IC-05. Obligaciones que F3 traslada a validaciones posteriores
+
+**Autoridad:** la misma orden. SN-06c; la parte de pestañas de SN-10; validación en host de que el manejo de avisos no lee el DWG; validación en host de que los racks borrados desaparecen correctamente; Owner Validation con racks reales representativos. F3 es PASS WITH LIMITATIONS, no un navegador validado en host.
