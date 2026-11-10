@@ -1,0 +1,56 @@
+===== t6_min_casos_rotos.xlsx
+CAPTION = t6_min_casos_rotos.xlsx
+PIVOT fuente=RackCadBOM rango=A1:B19 grand=36
+  1 | Rack | (Todas)
+  2 | Nivel | (Todas)
+  4 | Descripcion / Longitud | Suma de Cantidad total
+  5 | _guion | 7
+  6 | 10 | 7
+  7 | 10 perfil | 5
+  8 | 10 | 5
+  9 | 9 perfil | 6
+  10 | 10 | 6
+  11 | Nube | 4
+  12 | 10 | 4
+  13 | Ñandú | 3
+  14 | 10 | 3
+  15 | Poste | 9
+  16 | 10 | 9
+  17 | Zeta | 2
+  18 | 10 | 2
+  19 | Total general | 36
+===== t7_min_celdas_sobrantes.xlsx
+CAPTION = t7_min_celdas_sobrantes.xlsx
+PIVOT fuente=RackCadBOM rango=A1:B21 grand=5
+  1 | Rack | (Todas)
+  2 | Nivel | (Todas)
+  4 | Descripcion / Longitud | Suma de Cantidad total
+  5 | 10 perfil | 5
+  6 | 10 | 5
+  7 | 9 perfil | 6
+  8 | 10 | 6
+  9 | _guion | 7
+  10 | 10 | 7
+  11 | Nube | 4
+  12 | 10 | 4
+  13 | Poste | 1
+  14 | 10 | 1
+  15 | POSTE | 8
+  16 | 10 | 8
+  17 | Zeta | 2
+  18 | 10 | 2
+  19 | Ñandú | 3
+  20 | 10 | 3
+  21 | Total general | 36
+===== t8_min_longitudes.xlsx
+CAPTION = t8_min_longitudes.xlsx
+PIVOT fuente=RackCadBOM rango=A1:B10 grand=3
+  1 | Rack | (Todas)
+  2 | Nivel | (Todas)
+  4 | Descripcion / Longitud | Suma de Cantidad total
+  5 | A | 3
+  6 | 40.5 | 1
+  7 | 48 | 2
+  8 | B | 3
+  9 | 40.5 | 3
+  10 | Total general | 6

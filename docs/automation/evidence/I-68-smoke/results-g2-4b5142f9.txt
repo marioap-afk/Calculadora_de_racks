@@ -1,0 +1,73 @@
+===== principal
+PASS S-01 titulo sin reparacion: real=[smoke-main.xlsx] esperado=[smoke-main.xlsx]
+PASS S-02 tabla nativa: real=[RackCadBOM] esperado=[RackCadBOM]
+PASS S-02 autofiltro y rayas: real=[True/True] esperado=[True/True]
+PASS S-02 dinamica nativa: real=[ResumenBOM] esperado=[ResumenBOM]
+PASS S-02 fuente = tabla: real=[RackCadBOM] esperado=[RackCadBOM]
+PASS S-02 D1 conservada: real=[Atención: con Nivel en (Todas) la suma no representa necesariamente un total físico.] esperado=[Atención: con Nivel en (Todas) la suma no representa necesariamente un total físico.]
+PASS S-02 D2 conservada: real=[Pueden coexistir componentes y piezas relacionadas; usa el filtro Nivel para verlos por separado.] esperado=[Pueden coexistir componentes y piezas relacionadas; usa el filtro Nivel para verlos por separado.]
+PASS S-02 D3 conservada: real=[Las camas de Dinámico y Push Back solo aparecen como Componente. Si los filtros salen vacíos, usa Datos > Actualizar todo.] esperado=[Las camas de Dinámico y Push Back solo aparecen como Componente. Si los filtros salen vacíos, usa Datos > Actualizar todo.]
+PASS S-02 campos de fila: real=[Descripcion -> Longitud (in)] esperado=[Descripcion -> Longitud (in)]
+PASS S-02 filtros: real=[Rack + Nivel] esperado=[Rack + Nivel]
+PASS S-08 agregacion suma: real=[-4157] esperado=[-4157]
+PASS S-08 origen del valor: real=[Cantidad total] esperado=[Cantidad total]
+PASS S-07 total = SUM de la columna: real=[174] esperado=[174]
+PASS S-04 Nivel abre en (All): real=[(All)] esperado=[(All)]
+PASS S-04 Rack abre en (All): real=[(All)] esperado=[(All)]
+PASS S-03 Rack R-A: real=[120] esperado=[120]
+PASS S-05 R-A + Pieza: real=[90] esperado=[90]
+PASS S-04 Nivel Pieza: real=[130] esperado=[130]
+PASS S-04 Nivel Componente: real=[44] esperado=[44]
+PASS S-03 varios racks, sin R-C: real=[144] esperado=[144]
+PASS S-06 suma Cabecera 144|144: real=[6] esperado=[6]
+PASS S-06 suma Larguero 96|96: real=[48] esperado=[48]
+PASS S-06 suma Ménsula|0: real=[48] esperado=[48]
+PASS S-06 suma Poste C3|10: real=[2] esperado=[2]
+PASS S-06 suma Poste C3|100: real=[2] esperado=[2]
+PASS S-06 suma Poste C3|144: real=[22] esperado=[22]
+PASS S-06 suma Poste C3|9: real=[6] esperado=[6]
+PASS S-06 suma Rodillo|40.5: real=[30] esperado=[30]
+PASS S-06 orden numerico de Poste C3: real=[9,10,100,144] esperado=[9,10,100,144]
+PASS S-09 editar Cantidad total y actualizar: real=[244] esperado=[244]
+PASS S-09 editar Copias y Cantidad no recalcula: real=[100] esperado=[100]
+PASS S-09 resumen igual tras editar solo Copias y Cantidad: real=[244] esperado=[244]
+PASS S-09 fila nueva sin formula: real=[] esperado=[]
+PASS S-09 fila nueva con valor y actualizar: real=[247] esperado=[247]
+PASS S-09 fuente sigue siendo la tabla: real=[RackCadBOM] esperado=[RackCadBOM]
+PASS S-09 filtro Rack incluye la fila nueva: real=[True] esperado=[True]
+PASS S-01 principal sin registros de reparacion: real=[0] esperado=[0]
+===== vista protegida
+PASS S-10 B1 visible en Vista protegida: real=[(Todas)] esperado=[(Todas)]
+PASS S-10 resumen visible = SUM del detalle: real=[174] esperado=[174]
+PASS S-10 al habilitar edicion refresca: real=[174] esperado=[174]
+PASS S-01 vista protegida sin registros de reparacion: real=[0] esperado=[0]
+===== libros encadenados
+   smoke-c1 refresco en 0 s
+PASS S-11 smoke-c1 con valores en el filtro antes de 15 s: real=[True] esperado=[True]
+   smoke-c2 refresco en 0 s
+PASS S-11 smoke-c2 con valores en el filtro antes de 15 s: real=[True] esperado=[True]
+   smoke-c3 refresco en 0.5 s
+PASS S-11 smoke-c3 con valores en el filtro antes de 15 s: real=[True] esperado=[True]
+   smoke-c4 refresco en 0 s
+PASS S-11 smoke-c4 con valores en el filtro antes de 15 s: real=[True] esperado=[True]
+   smoke-c5 refresco en 1.1 s
+PASS S-11 smoke-c5 con valores en el filtro antes de 15 s: real=[True] esperado=[True]
+   smoke-c6 refresco en 0.5 s
+PASS S-11 smoke-c6 con valores en el filtro antes de 15 s: real=[True] esperado=[True]
+PASS S-01 libros encadenados sin registros de reparacion: real=[0] esperado=[0]
+===== simulacion sin refresco
+PASS S-11 simulacion: filtro Rack sin valores: real=[0] esperado=[0]
+PASS S-11 simulacion: celdas visibles: real=[Suma de Cantidad total] esperado=[Suma de Cantidad total]
+PASS S-11 simulacion: RefreshAll recupera: real=[174] esperado=[174]
+PASS S-01 simulacion sin refresco sin registros de reparacion: real=[0] esperado=[0]
+===== BOM vacio smoke-empty
+PASS S-12 smoke-empty sin reparacion: real=[smoke-empty.xlsx] esperado=[smoke-empty.xlsx]
+PASS S-12 smoke-empty tabla con una fila en blanco: real=[A1:J2] esperado=[A1:J2]
+PASS S-12 smoke-empty dinamica presente: real=[ResumenBOM] esperado=[ResumenBOM]
+PASS S-01 BOM vacio smoke-empty sin registros de reparacion: real=[0] esperado=[0]
+===== BOM vacio smoke-rack-vacio
+PASS S-12 smoke-rack-vacio sin reparacion: real=[smoke-rack-vacio.xlsx] esperado=[smoke-rack-vacio.xlsx]
+PASS S-12 smoke-rack-vacio tabla con una fila en blanco: real=[A1:J2] esperado=[A1:J2]
+PASS S-12 smoke-rack-vacio dinamica presente: real=[ResumenBOM] esperado=[ResumenBOM]
+PASS S-01 BOM vacio smoke-rack-vacio sin registros de reparacion: real=[0] esperado=[0]
+RESULT: PASS=60 FAIL=0

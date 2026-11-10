@@ -1,0 +1,39 @@
+===== t0_control_sin_containsInteger.xlsx
+ERROR_ABRIR = No se puede obtener la propiedad Open de la clase Workbooks.
+===== t1_base.xlsx
+CAPTION = t1_base.xlsx
+  5 | _guion | 7
+  7 | 10 perfil | 5
+  9 | 9 perfil | 6
+  11 | Nube | 4
+  13 | Ñandú | 3
+  15 | Poste | 1
+  17 | Zeta | 2
+  19 | Total general | 28
+===== t2_acentos.xlsx
+CAPTION = t2_acentos.xlsx
+  5 | 10 perfil | 5
+  7 | 9 perfil | 6
+  9 | _guion | 7
+  11 | Nube | 4
+  13 | Poste | 1
+  15 | Póste | 8
+  17 | Zeta | 2
+  19 | Ñandú | 3
+  21 | Total general | 36
+===== t3_mayus_listada.xlsx
+ERROR_ABRIR = No se puede obtener la propiedad Open de la clase Workbooks.
+===== t4_mayus_unificada.xlsx
+CAPTION = t4_mayus_unificada.xlsx
+  5 | 10 perfil | 5
+  7 | 9 perfil | 6
+  9 | _guion | 7
+  11 | Nube | 4
+  13 | Poste | 9
+  15 | Zeta | 
+  17 | Zeta | 2
+  19 | Total general | 36
+===== t5_rack_mayus_listada.xlsx
+ERROR_ABRIR = No se puede obtener la propiedad Open de la clase Workbooks.
+===== t9_header_only.xlsx
+ERROR_ABRIR = No se puede obtener la propiedad Open de la clase Workbooks.

@@ -1,0 +1,40 @@
+##### leer y cerrar, corrida 1
+  [1 c1] open=0.9s primera_lectura t=6s items=3 refrescado
+  [2 c2] open=0.3s primera_lectura t=2.8s items=3 refrescado
+  [3 c3] open=0.2s primera_lectura t=2.8s items=0 ; SIN Actualizar paso a items=3 en t=3.8s
+  [4 c4] open=0.2s primera_lectura t=2.8s items=0 ; SIN Actualizar paso a items=3 en t=4.9s
+  [5 c5] open=0.2s primera_lectura t=2.8s items=0 ; SIN Actualizar paso a items=3 en t=4.8s
+  [6 c6] open=0.3s primera_lectura t=2.9s items=0 ; SIN Actualizar paso a items=3 en t=4.9s
+  RESUMEN primera_lectura=2 tardio_sin_actualizar=4 sigue_en_0=0
+##### leer y cerrar, corrida 2
+  [1 c1] open=0.8s primera_lectura t=3.4s items=3 refrescado
+  [2 c2] open=0.2s primera_lectura t=2.8s items=3 refrescado
+  [3 c3] open=0.3s primera_lectura t=2.9s items=3 refrescado
+  [4 c4] open=0.3s primera_lectura t=2.9s items=0 ; SIN Actualizar paso a items=3 en t=4.9s
+  [5 c5] open=0.2s primera_lectura t=2.8s items=0 ; SIN Actualizar paso a items=3 en t=4.9s
+  [6 c6] open=0.2s primera_lectura t=2.9s items=0 ; SIN Actualizar paso a items=3 en t=4.9s
+  RESUMEN primera_lectura=3 tardio_sin_actualizar=3 sigue_en_0=0
+##### leer y cerrar, corrida 3
+  [1 c1] open=0.9s primera_lectura t=3.6s items=3 refrescado
+  [2 c2] open=0.3s primera_lectura t=3s items=3 refrescado
+  [3 c3] open=0.5s primera_lectura t=3.1s items=3 refrescado
+  [4 c4] open=0.3s primera_lectura t=2.9s items=0 ; SIN Actualizar paso a items=3 en t=3.9s
+  [5 c5] open=0.3s primera_lectura t=2.9s items=0 ; SIN Actualizar paso a items=3 en t=5s
+  [6 c6] open=0.2s primera_lectura t=2.8s items=0 ; SIN Actualizar paso a items=3 en t=4.9s
+  RESUMEN primera_lectura=3 tardio_sin_actualizar=3 sigue_en_0=0
+##### sin cerrar, corrida 1
+  [1 c1] open=1.7s primera_lectura t=4.3s items=3 refrescado
+  [2 c2] open=0.7s primera_lectura t=3.2s items=3 refrescado
+  [3 c3] open=0.8s primera_lectura t=3.4s items=3 refrescado
+  [4 c4] open=0.7s primera_lectura t=3.4s items=3 refrescado
+  [5 c5] open=0.8s primera_lectura t=3.4s items=0 ; SIN Actualizar paso a items=3 en t=4.4s
+  [6 c6] open=0.7s primera_lectura t=3.2s items=0 ; SIN Actualizar paso a items=3 en t=5.3s
+  RESUMEN primera_lectura=4 tardio_sin_actualizar=2 sigue_en_0=0
+##### sin cerrar, corrida 2
+  [1 c1] open=1s primera_lectura t=3.6s items=3 refrescado
+  [2 c2] open=0.8s primera_lectura t=3.4s items=3 refrescado
+  [3 c3] open=0.7s primera_lectura t=3.2s items=3 refrescado
+  [4 c4] open=0.6s primera_lectura t=3.2s items=0 ; SIN Actualizar paso a items=3 en t=4.2s
+  [5 c5] open=0.8s primera_lectura t=3.4s items=0 ; SIN Actualizar paso a items=3 en t=4.5s
+  [6 c6] open=0.8s primera_lectura t=3.4s items=0 ; SIN Actualizar paso a items=3 en t=5.4s
+  RESUMEN primera_lectura=3 tardio_sin_actualizar=3 sigue_en_0=0
