@@ -1,0 +1,71 @@
+{
+  "AllowedExact": true,
+  "AcceptanceCriteriaExact": true,
+  "ExactCopy.Authorities": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "NonAsciiBytes": 0,
+  "BackslashU": 0,
+  "ControlCharsInStrings": 0,
+  "CorrectionOf": {
+    "RunId": "R20261110T184730Z-e455",
+    "FailureClass": "StopCondition",
+    "AnalysisSha256": "da6ea61a85772f943bae3fc5047cf5e7f0111cb7007dca572f6e69171c006681"
+  },
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "TaskClassExact": true,
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "PromptProfileExact": true,
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "EffortExact": true,
+  "ModelEscalationReason": null,
+  "Dimensions": {
+    "Ambiguity": "Medium",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Medium",
+    "Horizon": "Medium"
+  },
+  "BaseSha": "90a811045adf8af876f65e3b98e3c224646c033f",
+  "AuthorityRevision": "bf429590170c6b7e4c1f17ec55616f5767f201d9",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "ChainFields": {
+    "ChainBaseSha": "13775d8fb89f3ac983fbeeb6bdcf749e7fd746fc",
+    "ChainRedSha": "a362744ceaf4c6a86315cd1fcac688f63cd1de93",
+    "ChainRedFiles": [
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftStaleBaseTests.cs"
+    ]
+  },
+  "AttemptFields": {
+    "Attempt": 2,
+    "AttemptsRemaining": 1,
+    "MaxReworkLoops": 3
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/2/{WorkRunId}/worker-handoff.json",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261110T191243Z-5b17"
+  },
+  "AcceptanceCriteriaCount": 12,
+  "IssuedBy": "Controller Codex (planificacion de la correccion del intento 2 de F4-T1-DRAFT-CORE, CONTROLLER_PLANNING)"
+}

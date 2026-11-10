@@ -6050,3 +6050,15 @@ revisar:
 **Decisión:** F4-E07. `attempts` pasa a 2 de 3. Contrato en `F4-T1-DRAFT-CORE/coordinator/gate-contract-attempt2.json`: las mismas diez rutas, INV-F4T1-19 a 24 y mínimo 1165. `AuthorityRevision` `bf429590170c6b7e4c1f17ec55616f5767f201d9`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 114. Intento 2 de F4-T1: verificación, revisiones y decisión pendiente
+
+**Entrega:** RED `500a336d`, GREEN `09955667`; CI `42886956643` con los cuatro jobs en success; filtro 1273/1273; Core 16811/16811.
+
+**Verificación:** `R20261110T194129Z-0d3b`, `EXECUTION_VERIFIED`. nc1, nc2 y nc3 dan CONTROL PASS, sin puentes.
+
+**Revisiones (F4-E02):** directa de la sesión y adversarial independiente. Los 13 hallazgos del intento 1 quedan corregidos (I-4 parcial). La revisión halla 1 bloqueante en la guarda de pruebas (N-1), 1 importante (N-2) y 8 menores (`analysis.md` e `independent-review.md` junto a la verificación).
+
+**Decisión:** F4-E08. El uso del último intento queda pendiente del Owner.
+
+**Límites:** sin AutoCAD; solo custodia y documentación en este paso.

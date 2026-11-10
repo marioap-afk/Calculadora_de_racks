@@ -60,3 +60,26 @@ El Owner ratificó F3-E02. **Snapshot F** (`AAEB58D8…`) es la línea base acti
   - a T2: la inclinación a Veto ante una excepción en la decisión (M-6) y la guarda sobre el uso de la StaleBase (M-9);
   - a T4B: `CompleteApply` en `finally` y el error diferido durante Aplicando.
 - **Riesgo:** queda un único intento para T2, T3, T4A, T4B y Smoke-2. Agotarlo es condición de devolución al Owner.
+
+## F4-E08. F4-T1, intento 2: verificado, con un hallazgo de la revisión que pide decisión del Owner
+
+- **Hechos:**
+  - la entrega `09955667` da `EXECUTION_VERIFIED` (`R20261110T194129Z-0d3b`), 14/14, con la CI exacta 4/4, y nc1..nc3 dan CONTROL PASS;
+  - la revisión adversarial independiente confirma corregidos los 13 hallazgos del intento 1 (I-4 queda parcial);
+  - la misma revisión halla N-1, BLOQUEANTE: la regla de «Bom» de la guarda nueva distingue mayúsculas y ya no detecta `BOM`, contra INV-F4T1-22 («Ninguna regla existente de la guarda se debilita»). El producto cumple, y la guarda recursiva del padre sigue cubriendo una palabra que empiece por BOM;
+  - halla también N-2, IMPORTANTE: el estado inicial toma por referencia el objeto de la lectura;
+  - y 8 menores. El detalle está en `F4-T1-DRAFT-CORE/2/R20261110T194129Z-0d3b/analysis.md`.
+- **Por qué no decide la sesión:**
+  - la regla de F4-E02 manda corregir, gastando un intento, un hallazgo que incumple el contrato;
+  - el intento disponible es el último de F4 (3 de 3), y gastarlo deja T2, T3, T4A, T4B y Smoke-2 sin margen de corrección;
+  - la sesión ya devuelve al Owner antes de T2 (C-F4-01 y C-F4-03).
+- **Opciones:**
+  - (A) corrección del intento 3 en F4-T1, con N-1 a N-10;
+  - (B) cerrar F4-T1 con limitaciones y llevar N-1 y N-2 como correcciones obligatorias al contrato de F4-T2, y N-3 a N-10 como obligaciones de T2, T3 y T4, conservando el intento 3;
+  - en cualquiera de las dos, el Owner puede además ampliar el presupuesto de F4.
+- **Recomendación de la sesión:** (B). La razón es el presupuesto: el comportamiento del núcleo está verificado; N-1 es un hueco de una guarda de pruebas, cubierto en parte por la guarda del padre; y N-2 es un riesgo latente que crea el lector de T2, donde se corrige y se prueba junto a él. La regla de F4-E02, en su letra, apunta a (A).
+- **Estado:** F4-T1 no se cierra hasta la decisión. La entrega `09955667` y toda su evidencia se conservan.
+- **Fe de erratas del intento 1:**
+  - la nota de procesos del registro del trabajo `R20261110T181603Z-3442` dice que el primer recuento de salida dio 2 participantes y que se repitió; es una frase heredada de la plantilla de F3-T1;
+  - en esa cesión el primer recuento dio 0 y no se repitió, como acredita su `processes-exit.json` custodiado;
+  - el registro custodiado no se edita.

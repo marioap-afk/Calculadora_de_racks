@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T1-DRAFT-CORE",
+  "RunId": "R20261110T200114Z-b5e5",
+  "DelegationRunId": "R20261110T191243Z-5b17",
+  "WorkRunId": "R20261110T191701Z-1eac",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true. Cession.StartUtc=2026-11-10T19:17:08Z; OutputWrittenUtc=2026-11-10T13:37:31.304346-06:00, equivalente a 19:37:31Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json valida contra worker-handoff.schema.json (Test-Json=True). TaskId, RunId, DelegationRunId y Attempt coinciden con la delegacion y este relevo; CurrentSha=09955667481f5d5be9521ade7628310a87a189a4 y OutputWrittenUtc es posterior a Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor bf429590170c6b7e4c1f17ec55616f5767f201d9 90a811045adf8af876f65e3b98e3c224646c033f devolvio 0. git diff --name-only AuthorityRevision BaseSha mostro solo docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T1-DRAFT-CORE/coordinator/gate-contract-attempt2.json y docs/automation/state/I-64.yml; las tres estan declaradas UNIT_DOC. No hay rutas EXTERNAL ni UNIT_CHANGE. Las autoridades EXTERNAL se leyeron en MainSha 812baf879612320653094a8aaf46aca0bac81383."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparacion contrato-delegacion: las 9 rutas permitidas por la delegacion son subconjunto de las 10 del contrato; las 66 rutas prohibidas, las 24 invariantes, las 23 condiciones STOP y RequiredTests coinciden. RequiredTests: tests/RackCad.Tests/RackCad.Tests.csproj, FullyQualifiedName~RackCad.Tests.Workspace, MinSelected=1165, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=09955667481f5d5be9521ade7628310a87a189a4; rama architecture/workspace-persistente-rackcad; refs/remotes/origin/architecture/workspace-persistente-rackcad coincide con CurrentSha. BaseSha es ancestro de RedSha y RedSha de CurrentSha (git merge-base --is-ancestor devolvio 0 en ambos casos). El worktree de la entrega coincide con el directorio actual."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=09955667481f5d5be9521ade7628310a87a189a4 y OriginMainSha=812baf879612320653094a8aaf46aca0bac81383. git rev-parse refs/remotes/origin/main coincide con MainSha. CurrentRun es push de la rama exacta y del CurrentSha."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha muestra 9 rutas, todas dentro del alcance del contrato y ninguna en ForbiddenWriteScope. Sin embargo, src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs no esta en las 9 rutas de AllowedWriteScope de la delegacion. Es una escritura fuera del alcance delegado y activa P-03."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no produjo salida. git check-ignore -v para artifacts/orchestration/I-64/F4-T1-DRAFT-CORE-nc2/2/R20261110T200114Z-b5e5/output.json lo marco ignorado por .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: push, ref refs/heads/architecture/workspace-persistente-rackcad, head_sha=09955667481f5d5be9521ade7628310a87a189a4; los cuatro jobs requeridos terminaron success. El push 42886164382 del RedSha=500a336dbb690faef463c6effc52b402feade87e tuvo Tests (Domain + Application)=failure; la corrida esta completed, por lo que RedPart=pass."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX del CurrentSha: el filtro por nombre completo FullyQualifiedName~RackCad.Tests.Workspace selecciona 1273, 1273 Passed, 0 Failed. TRX del RedSha: selecciona 1273, 1221 Passed y 52 Failed; coincide con TestResults de la entrega (RED 1273/52, GREEN 1273/0). RT=git diff --name-only ChainBaseSha RedSha -- tests/ contiene los cinco archivos WorkspaceDraft*Tests.cs de ChainRedFiles; git diff --name-only RedSha CurrentSha contiene solo cuatro archivos src, sin rutas de tests. La union conserva los cinco ChainRedFiles."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha y git show de ambos commits muestran Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al trailer declarado y coherente con ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "La delegacion solicita claude-sonnet-5-5 y effort high. relay-record-work.json registra ModelRequested=sonnet (alias de lanzamiento subagent), ModelEffective=claude-sonnet-5-5 y EffortEffective=high; el modelo efectivo y el effort coinciden con lo solicitado."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Busqueda sin distinguir mayusculas de los terminos de AUTOMATION_PLAN section 16.10 en WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json: sin coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Notes de relay-record-work.json: cero denegaciones, un resultado de herramienta con error y ninguno pendiente, sin aviso de limite. Procesos: cero participantes y cero no atribuibles persistentes. Config.toml sin cambio; la huella AAEB58D87D007AB9ABF53EEAEDCF582FD02401495C1B66E68022C10946F26E09 corresponde a Snapshot F."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "P-03"
+  ],
+  "Findings": [
+    "DraftApplyOutcome.cs fue modificado pero no figura en AllowedWriteScope de esta delegacion.",
+    "El resto de las comprobaciones pasa, incluidas la CI, los conteos TRX y la evidencia RED."
+  ],
+  "RecommendedNextAction": "Registrar una delegacion autorizada cuyo AllowedWriteScope incluya DraftApplyOutcome.cs y volver a verificar la entrega correspondiente."
+}

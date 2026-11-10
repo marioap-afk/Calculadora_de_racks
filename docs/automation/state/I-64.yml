@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 2
-  next_action: "F4-T1-DRAFT-CORE: correccion del intento 2 (F4-E07; CorrectionOf e455): planificacion del Controller, A1-A8, Worker, CI, revisiones directa e independiente, verificacion, nc1..nc3 y custodia; las decisiones C-F4-01 y C-F4-03 del Owner bloquean F4-T2"
+  next_action: "DEVUELTO AL OWNER: decision sobre el ultimo intento de F4 para F4-T1 (F4-E08) y decisiones C-F4-01 y C-F4-03 antes de F4-T2; C-F4-07 antes de T3 y C-F4-06 antes de Smoke-2"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
@@ -53,7 +53,7 @@ execution_context:
   f2_smoke_nav_status: "PASS WITH LIMITATIONS sobre 003be859 (R20261110T073451Z-e221): SN-01..SN-07 y SN-10 PASS; SN-09 medido y aceptable; SN-08 LIMITED / covered structurally but not directly provoked; dibujos sinteticos; SN-06c y parte de pestanas de SN-10 dependen de F3; obligaciones posteriores en IC-02. Historico: c883 STOP en SN-01 sobre 7bdcbfd9"
   f2_t2_host_c1_status: "CLOSED / PASS (D-09): GREEN 003be859, CI 42777768225 4/4; sustitucion del mecanismo RATIFICADA por el Owner (IC-01)"
   f3_status: "CLOSED / PASS WITH LIMITATIONS, ratificado por el Owner (evidencia §109): F3-T1 a92039bb y F3-T2 206e0f7a; attempts 2 de 3, cerrado; R-1 a R-4 dispuestas (F4-E04); no es un navegador validado en host"
-  f4_status: "EN CURSO, attempts 2 de 3 (F4-E01, F4-E07); paquete del contrato v2 (F4-E06); F4-T1 en correccion: entrega aefc34a5 EXECUTION_VERIFIED (e455) y nc1..nc3 CONTROL PASS, conservados; las revisiones hallan I-1 a I-4; F4-T2..T4 y Smoke-2 pendientes"
+  f4_status: "EN CURSO, attempts 2 de 3 (F4-E01, F4-E07); F4-T1 intento 2: 09955667 EXECUTION_VERIFIED (0d3b), nc1..nc3 CONTROL PASS; la revision independiente halla N-1 (guarda de pruebas, contra INV-F4T1-22) y N-2; decision del Owner pendiente (F4-E08); F4-T2..T4 y Smoke-2 pendientes"
   codex_environment: "Snapshot F AAEB58D8... = linea base activa, ratificada por el Owner (F4-E03); otro hash se vuelve a medir contra F y no se acepta por inferencia; binario 5449c1f0 acreditado solo para gpt-6-luna / high / read-only; gpt-6.1-sol no acreditado para este binario"
   f1_blocking_dependency: "resuelta para I-64 por I64-SCOPE-BRIDGE-01 (A-4 AGREED y puente verificado); la deuda del Controller sigue registrada en protocol_debt para I-62"
   f1_resume_condition: "CUMPLIDA: F1 se reanudo bajo la alternativa (B), con enmiendas autoritativas y controles sustitutos aplicables a I-64: A-4 (I64-SCOPE-BRIDGE-01, Scope / nc2) y A-6 (I64-FREETEXT-BRIDGE-01, FreeText / nc3); T1 aceptada como COMPLETE_UNDER_I64_SCOPE_BRIDGE (§40), T2, T3A y T3B cerradas con PASS (§§47, 52 y 57); no queda condicion de reanudacion pendiente; la deuda del Controller sigue en protocol_debt para I-62. Texto anterior (anterior a A-4) en b35548fd y en commits previos"
