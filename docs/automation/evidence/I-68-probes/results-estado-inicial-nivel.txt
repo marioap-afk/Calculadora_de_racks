@@ -1,0 +1,41 @@
+===== n1_todas_con_nota.xlsx
+CAPTION = n1_todas_con_nota.xlsx
+FILTRO_NIVEL = (All) rango=A1:B11 RefreshDate=11/09/2026 19:54:33
+NOTA_D1 = Con Nivel en (Todas) se suman componentes y sus piezas.
+   1 | Rack | (Todas)
+   2 | Nivel | (Todas)
+   4 | Descripcion / Longitud | Suma de Cantidad total
+   5 | Larguero 96 | 48
+   6 | 96 | 48
+   7 | Poste C3 | 12
+   8 | 144 | 12
+   9 | Rodillo | 30
+   10 | 40.5 | 30
+   11 | Total general | 90
+REPAIR_LOGS_NUEVOS = 0
+===== n2_pieza_inicial.xlsx
+CAPTION = n2_pieza_inicial.xlsx
+FILTRO_NIVEL = Pieza rango=A1:B11 RefreshDate=11/09/2026 19:54:51
+NOTA_D1 = Con Nivel en (Todas) se suman componentes y sus piezas.
+   1 | Rack | (Todas)
+   2 | Nivel | Pieza
+   4 | Descripcion / Longitud | Suma de Cantidad total
+   5 | Larguero 96 | 24
+   6 | 96 | 24
+   7 | Poste C3 | 12
+   8 | 144 | 12
+   9 | Rodillo | 30
+   10 | 40.5 | 30
+   11 | Total general | 66
+REPAIR_LOGS_NUEVOS = 0
+===== n3_pieza_inicial_vacio.xlsx
+CAPTION = n3_pieza_inicial_vacio.xlsx
+FILTRO_NIVEL = (blank) rango=A1:B7 RefreshDate=11/09/2026 19:55:04
+NOTA_D1 = Con Nivel en (Todas) se suman componentes y sus piezas.
+   1 | Rack | (Todas)
+   2 | Nivel | (en blanco)
+   4 | Descripcion / Longitud | Suma de Cantidad total
+   5 | (en blanco) | 
+   6 | (en blanco) | 
+   7 | Total general | 
+REPAIR_LOGS_NUEVOS = 0

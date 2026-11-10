@@ -24,8 +24,8 @@ namespace RackCad.Application.Persistence
 
         /// <summary>
         /// I-42 — desde donde se mide <see cref="FirstLevelHeight"/>. ADITIVO y ANULABLE: ausente significa la
-        /// lectura HISTORICA, que es lo que trae todo documento anterior, asi que ninguno cambia de geometria. Solo
-        /// un documento guardado con la semantica nueva lo escribe.
+        /// lectura HISTORICA, que es lo que trae todo documento anterior, asi que ninguno cambia la elevacion de su
+        /// primer nivel. Solo un documento guardado con la semantica nueva lo escribe.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public int? FirstLevelDatum { get; set; }

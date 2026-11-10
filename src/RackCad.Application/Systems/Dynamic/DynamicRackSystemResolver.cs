@@ -76,8 +76,8 @@ namespace RackCad.Application.Systems.Dynamic
                     [SelectiveRackDefaults.PeralteParam] = postPeralte
                 }).Y;
             // I-42 — desde donde se mide «Alto 1er nivel». Es del DOCUMENTO: ausente = lectura historica, y por eso
-            // ningun archivo anterior cambia de geometria. Lo consumen por igual el Dinamico y el Push Back, que es
-            // el unico sitio donde esto se decide.
+            // ningun archivo anterior cambia la elevacion de su primer nivel. Lo consumen por igual el Dinamico y el
+            // Push Back, que es el unico sitio donde esto se decide.
             var datum = design.FirstLevelDatum == (int)RackFirstLevelDatumMode.LowestUsablePunch
                 ? RackFirstLevelDatumMode.LowestUsablePunch
                 : RackFirstLevelDatumMode.LegacyAbsolute;

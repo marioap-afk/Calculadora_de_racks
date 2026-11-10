@@ -1695,3 +1695,26 @@ Limitación documentada (decisiones CD-I65-F4-168). `RackRamElementsCommands` mo
 Los procedimientos de READY (§1.2) citan los árboles de las bases de RAM con el método de Python, pero dicen medirlos con
 `w2_hostsnap.ps1`, que usa otro formato (A65-F5F-03). W-R2 midió con los dos (decisiones CD-I65-FC-69 (a)). Conviene unificar el texto si
 se reutilizan.
+
+### I-67 — alturas fijadas a mano frente al último larguero
+
+Hallazgo fuera de alcance de I-67 (EXP-08). Ninguna altura fijada a mano se valida contra el último larguero en Dinámico y Push Back:
+la altura manual (`ManualHeaderHeightOverride`), las cabeceras personalizadas por módulo (`UseCalculatedHeaderConfiguration = false`),
+`HeaderLineOverrides` y las alturas de poste derivado. La corrección de H58 sube los niveles superiores, así que un valor ajustado puede
+quedar por debajo del último larguero sin aviso. También queda sin aviso el estado mixto tras `RACKPROYECTAR` sobre un rack sin actualizar.
+
+## I-68 — hallazgos fuera de alcance (2026-11-09, registrados sin corregir)
+
+### `Total del dibujo` une partidas con distinta descripción
+
+Hallazgo de I-68 (EXP-08). `ConsolidatedBomBuilder` une componentes por categoría, longitud y receta, sin mirar Perfil ni Descripción: camas de distinto BFR, o
+de Dinámico y Push Back con igual longitud, colapsan bajo la primera descripción, y lo mismo ocurre con largueros de distinto peralte. `Por rack` y `Resumen` los mantienen separados.
+
+### Un total físico consolidado en el BOM
+
+Con Nivel en (Todas), `Resumen` suma componentes y sus piezas relacionadas, y ningún estado del filtro da el BOM físico completo: Pieza omite las Camas de Dinámico y Push Back, y
+Componente omite los racks planos. El Owner lo aceptó con advertencia visible y excluyó cambiar la semántica del BOM en I-68. Tampoco existe nivel físico en las filas del BOM.
+
+### La exportación de un solo rack no tiene Table ni tabla dinámica
+
+Decisión D-2 de I-68: las ocho entradas a `RackBomWindow` conservan el XLSX simple, que no tiene Rack ni Copias.

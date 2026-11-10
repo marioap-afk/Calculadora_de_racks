@@ -144,6 +144,8 @@ total si solo se ejecutó un smoke test.
 - Repite guardar/cerrar/abrir y `RACKEDITAR` después de modificar campos nuevos.
 - Comprueba que un documento legacy representativo abre con los fallbacks documentados.
 - Guarda el legacy actualizado y vuelve a abrirlo para comprobar el segundo round-trip.
+- En dinámico y Push Back, abrir y guardar no cambian el dibujo. `RACKEDITAR` + **Actualizar** adopta la separación
+  corregida por I-67, y el BOM y `RACKPROYECTAR` ya la usan antes de actualizar.
 - Rechaza versiones futuras incompatibles de manera visible; no aceptes pérdida silenciosa.
 - En seguridad selectiva, comprueba selección, `DeepCopy`, redibujo y persistencia de cada campo
   afectado.
@@ -155,6 +157,11 @@ restauración estándar. Para selectivo, cubre al menos troquel, piso, fondos, m
 cotas y tarimas. Para dinámico, cubre fondos/niveles variables, IN/OUT, intermedios, camas, seguridad
 y sus cuatro clases de vista. Para cama standalone, comprueba riel, rodillos, frenos, tope y el tipo
 seleccionado.
+
+En **dinámico y Push Back** (I-67), cada intervalo entre niveles queda en el primer troquel real que cumple o supera su
+separación requerida (peralte + tarima + holgura), medido desde la elevación real del nivel anterior: un requisito de
+45" sobre troqueles de 2" da 46" en todos los intervalos, nunca 44". En dinámico, todos los niveles conservan la subida
+de cama del nivel 1.
 
 Para **Push Back**, además de lo del dinámico, cubre la configuración por celda (I-41):
 
@@ -169,8 +176,8 @@ Para **Push Back**, además de lo del dinámico, cubre la configuración por cel
   seccionado no las dibuja: es una envolvente, no una celda;
 - **regresión de I-40**: con un rack que tenga cabeceras personalizadas por línea, cambiar un fondo
   INTERNO (sin mover el más profundo) no debe perder ninguna de esas cabeceras;
-- **legacy**: un rack Push Back dibujado antes de I-41 debe reabrirse y redibujarse EXACTAMENTE igual —
-  todos sus niveles al mismo fondo y sin ninguna tarima.
+- **legacy**: un rack Push Back dibujado antes de I-41 debe reabrirse y redibujarse igual —todos sus niveles al
+  mismo fondo y sin ninguna tarima—, salvo la separación entre niveles que corrige I-67 al actualizar.
 
 Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
 
@@ -248,7 +255,7 @@ Y, desde I-42, el **Push Back compuesto (lado A / lado B)**:
   separador, estructura manual y las dos configuraciones vuelven idénticas; `RACKDUPLICAR` produce una
   copia independiente;
 - **legacy**: un rack Push Back dibujado antes de I-42 debe reabrirse como de un solo sentido, sin pedir
-  ninguna reconfiguración, y redibujarse EXACTAMENTE igual.
+  ninguna reconfiguración, y redibujarse igual, salvo la separación entre niveles que corrige I-67 al actualizar.
 
 ### 5.7 Duplicación con `RACKDUPLICAR`
 
@@ -292,7 +299,8 @@ Planta— en qué **tipos** de vista se dibujan las cotas
 - **Geometría y BOM**: no cambian con las casillas; compruébalo con `RACKBOMTOTAL`.
 - **`RACKLAYOUT`**: con las cotas de Planta ocultas, la huella de la rejilla puede reducirse, porque se mide por
   los *extents* del bloque. Es consecuencia aceptada: regístrala, no la reportes como defecto.
-- **Legacy**: un rack dibujado antes de I-50 abre con las tres casillas marcadas y se redibuja EXACTAMENTE igual;
+- **Legacy**: un rack dibujado antes de I-50 abre con las tres casillas marcadas y se redibuja igual, salvo la
+  separación entre niveles de dinámico y Push Back que corrige I-67;
   guardarlo sin tocarlas no cambia su dato.
 
 ### 5.9 Proyección con `RACKPROYECTAR`

@@ -8,7 +8,7 @@ namespace RackCad.Application.Systems.Shared
     /// <para>
     /// Es un dato del DOCUMENTO, no del sistema: dice como hay que leer el numero que el documento guarda. Por eso
     /// es aditivo y anulable — ausente significa <see cref="LegacyAbsolute"/>, que es como se guardo siempre— y por
-    /// eso ningun archivo existente cambia de geometria al abrirse.
+    /// eso ningun archivo existente cambia la elevacion de su primer nivel al abrirse.
     /// </para>
     /// </summary>
     public enum RackFirstLevelDatumMode
