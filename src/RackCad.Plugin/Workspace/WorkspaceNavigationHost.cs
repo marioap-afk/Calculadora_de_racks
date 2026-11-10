@@ -59,6 +59,14 @@ namespace RackCad.Plugin.Workspace
             }
         }
 
+        public void OpenDrainNotice()
+        {
+        }
+
+        public void CloseDrainNotice()
+        {
+        }
+
         /// <summary>Whether the session still lives; the browser of the panel destroys the tabs of a session that does not.</summary>
         public bool IsSessionAlive(SessionId session) => _isSessionAlive(session);
 
@@ -66,7 +74,7 @@ namespace RackCad.Plugin.Workspace
         /// The lazy summary of one rack for the browser of the panel (I-64 F3-T2). It answers with a value and has no effect: it
         /// writes no selection, no view and nothing of the drawing, and it does not give the focus back. A failure is contained.
         /// </summary>
-        public BrowserRackSummary ReadSummary(WorkspaceRequest origin, string rackId)
+        public BrowserRackSummary ReadSummary(WorkspaceRequest origin, string rackId, bool userRequested)
         {
             try
             {

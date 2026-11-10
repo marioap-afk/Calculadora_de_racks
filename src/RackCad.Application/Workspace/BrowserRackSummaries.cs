@@ -8,7 +8,7 @@ namespace RackCad.Application.Workspace
     /// Neutral facts of ONE block definition as the host captured them for the browser summary (I-64 F3-T2, D-05). They carry no
     /// handle of any reference: only what the summary projects. They are private to the panel and are not a reusable foundation.
     /// </summary>
-    public sealed record BrowserRackFact(bool IsInterpretable, string? EnvelopeId, string? Kind, string? View, string? Name);
+    public sealed record BrowserRackFact(bool IsInterpretable, string? EnvelopeId, string? Kind, string? View, string? Name, int Section = -1);
 
     /// <summary>
     /// Pure projector and memory of the lazy rack summary (I-64 F3-T2, INV-38). It is NOT a second navigation authority and does

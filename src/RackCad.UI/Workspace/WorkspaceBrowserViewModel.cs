@@ -134,7 +134,7 @@ namespace RackCad.UI.Workspace
             _current = session.HasValue ? _registry.GetOrCreate(session.Value) : null;
             if (_current != null && context != null) _current.ApplySelectionContext(context);
 
-            Rebuild(retryPending: true);
+            Rebuild(retryPending: true, userRequested: false);
         }
 
         // ------------------------------------------------------------------ the explicit user interactions
@@ -148,6 +148,10 @@ namespace RackCad.UI.Workspace
         /// <summary>Closes the tab without asking anything; if it was active the next one is. Memory only.</summary>
         public void CloseTab(string rackId) => Interact(session => session.Close(rackId));
 
+        public void ReloadSummary()
+        {
+        }
+
         // ------------------------------------------------------------------ internals
 
         private void Interact(Func<BrowserSession, BrowserChange> operation)
@@ -157,7 +161,7 @@ namespace RackCad.UI.Workspace
             try
             {
                 if (operation(_current) == BrowserChange.None) return;
-                Rebuild(retryPending: false);
+                Rebuild(retryPending: false, userRequested: true);
                 _tabChanged?.Invoke();
             }
             catch (Exception ex)
@@ -174,14 +178,14 @@ namespace RackCad.UI.Workspace
 
         // Brings the live surface to the active tab and publishes what the panel shows. Only a presentation retries a summary that was
         // waiting; a tab change asks only for the tab that just became the live surface.
-        private void Rebuild(bool retryPending)
+        private void Rebuild(bool retryPending, bool userRequested)
         {
-            SyncSurface(retryPending);
+            SyncSurface(retryPending, userRequested);
             RebuildTabs();
             RaiseAll();
         }
 
-        private void SyncSurface(bool retryPending)
+        private void SyncSurface(bool retryPending, bool userRequested)
         {
             var rack = _current?.ActiveRackId;
             if (rack == null)
@@ -203,7 +207,7 @@ namespace RackCad.UI.Workspace
                 _surfaceReason = string.Empty;
             }
 
-            if (started || (retryPending && (_surfaceState == SurfaceState.Pending || _surfaceState == SurfaceState.Busy))) Materialize();
+            if (started || (retryPending && (_surfaceState == SurfaceState.Pending || _surfaceState == SurfaceState.Busy))) Materialize(userRequested);
         }
 
         private void ClearSurface()
@@ -219,7 +223,7 @@ namespace RackCad.UI.Workspace
 
         // One query of the port for the rack of the live surface. A blocked drawing is not read at all; the surface stays pending and
         // the next presentation of the same tab tries again.
-        private void Materialize()
+        private void Materialize(bool userRequested)
         {
             if (!_canRead || _block != WorkspaceActionBlock.None)
             {
@@ -230,7 +234,7 @@ namespace RackCad.UI.Workspace
             BrowserRackSummary summary;
             try
             {
-                summary = _port.ReadSummary(new WorkspaceRequest(_session.Value), _surfaceRack)
+                summary = _port.ReadSummary(new WorkspaceRequest(_session.Value), _surfaceRack, userRequested)
                     ?? BrowserRackSummary.Without(BrowserSummaryStatus.Failed, "El puerto no devolvió un resumen.");
             }
             catch (Exception ex)

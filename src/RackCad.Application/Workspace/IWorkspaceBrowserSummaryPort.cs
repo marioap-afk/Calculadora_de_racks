@@ -50,7 +50,13 @@ namespace RackCad.Application.Workspace
     /// </summary>
     public interface IWorkspaceBrowserSummaryPort
     {
-        BrowserRackSummary ReadSummary(WorkspaceRequest origin, string rackId);
+        /// <summary>
+        /// The summary of one rack. <paramref name="userRequested"/> says whether an explicit action of the user asked for it (a tab
+        /// click or the reload of the surface) or a presentation of the panel did: a presentation arrives inside a notice of the
+        /// host, where the drawing must not be read, so the host answers it only while it is draining; an explicit action does not
+        /// depend on that and keeps every other check.
+        /// </summary>
+        BrowserRackSummary ReadSummary(WorkspaceRequest origin, string rackId, bool userRequested);
 
         /// <summary>Whether the session still lives; the browser destroys the tabs of a session that does not.</summary>
         bool IsSessionAlive(SessionId session);

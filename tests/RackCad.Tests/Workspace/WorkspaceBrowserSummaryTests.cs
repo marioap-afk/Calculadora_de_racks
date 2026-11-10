@@ -120,6 +120,91 @@ public class WorkspaceBrowserSummaryTests
         Assert.Empty(rig.Reads);
     }
 
+    // ------------------------------------------------------------------ INV-F3T2-25 (T2-F5): the views are the ones the rack really has
+
+    private static BrowserRackFact ViewFact(string? kind, string? view, int section) => new(true, "R-1", kind, view, "Rack", section);
+
+    private static string[] ViewsOf(params BrowserRackFact[] facts)
+    {
+        var summaries = new BrowserRackSummaries(_ => facts, _ => true);
+        var summary = summaries.Read(S1, "R-1");
+        Assert.Equal(BrowserSummaryStatus.Ready, summary.Status);
+        return summary.Views.ToArray();
+    }
+
+    [Theory]
+    [InlineData("cama")]
+    [InlineData("Cama")]
+    [InlineData("CAMA")]
+    public void ACamaThatPersistsNoViewShowsItsRealLateralView(string kind)
+    {
+        // Cama persists View = null and Section = -1 as its canonical form; it still has its lateral view.
+        Assert.Equal(new[] { "lateral" }, ViewsOf(ViewFact(kind, null, -1)));
+        Assert.Equal(new[] { "lateral" }, ViewsOf(ViewFact(kind, "lateral", -1)));
+        // The descriptor of any other syntax is ignored by the codec, and the rack still has the one view.
+        Assert.Equal(new[] { "lateral" }, ViewsOf(ViewFact(kind, "frontal", 3)));
+    }
+
+    [Fact]
+    public void EveryKindShowsTheCanonicalViewsOfItsPersistedSyntaxAndNeverMoreThanTheCodecSays()
+    {
+        Assert.Equal(
+            new[] { "frontal", "lateral", "planta" },
+            ViewsOf(ViewFact("selective", "frontal", 0), ViewFact("selective", "frontal", 1), ViewFact("selective", "lateral", 2), ViewFact("selective", "planta", -1)));
+        Assert.Equal(
+            new[] { "frontal", "lateral", "planta" },
+            ViewsOf(ViewFact("dynamic", "frontal", 1), ViewFact("dynamic", "frontal", 0), ViewFact("dynamic", "lateral", 0), ViewFact("dynamic", "planta", -1)));
+        Assert.Equal(
+            new[] { "frontal", "lateral", "planta" },
+            ViewsOf(ViewFact("pushback", "frontal", 0), ViewFact("pushback", "frontal", 3), ViewFact("pushback", "lateral", 1), ViewFact("pushback", "planta", -1)));
+        Assert.Equal(
+            new[] { "frontal", "lateral", "planta" },
+            ViewsOf(ViewFact("cantilever", "frontal", -1), ViewFact("cantilever", "lateral", 2), ViewFact("cantilever", "planta", -1)));
+        Assert.Equal(new[] { "lateral", "planta" }, ViewsOf(ViewFact("cabecera", null, -1), ViewFact("cabecera", "planta", -1)));
+    }
+
+    [Fact]
+    public void ANonCanonicalViewIsShownByItsCanonicalFormAndOneThatHasNoAddressByItsRawNonBlankText()
+    {
+        // Another casing of the same view, and the same view at two sections, are one view.
+        Assert.Equal(
+            new[] { "frontal", "lateral" },
+            ViewsOf(ViewFact("SELECTIVE", "FRONTAL", 0), ViewFact("Selective", "Frontal", 2), ViewFact("selective", "frontal", 1), ViewFact("selective", "LATERAL", 0)));
+
+        // No address (an unknown Kind, or a section the kind cannot have): the raw text, when it is not blank.
+        Assert.Equal(
+            new[] { "alfa", "Zeta" },
+            ViewsOf(ViewFact("mystery", "Zeta", 0), ViewFact("mystery", "alfa", -1), ViewFact("mystery", " ", -1), ViewFact(null, null, -1), ViewFact("mystery", "", 4)));
+        Assert.Equal(new[] { "frontal" }, ViewsOf(ViewFact("pushback", "frontal", 9)));
+    }
+
+    [Fact]
+    public void TheViewsAreOrderedFrontalLateralPlantaAndThenTheRestOrdinallyIgnoringCase()
+    {
+        var views = ViewsOf(
+            ViewFact("mystery", "Zeta", 0),
+            ViewFact("selective", "planta", -1),
+            ViewFact("mystery", "alfa", 0),
+            ViewFact("selective", "lateral", 2),
+            ViewFact("mystery", "Beta", 0),
+            ViewFact("selective", "frontal", 0),
+            ViewFact("mystery", "beta2", 0));
+
+        Assert.Equal(new[] { "frontal", "lateral", "planta", "alfa", "Beta", "beta2", "Zeta" }, views);
+    }
+
+    [Fact]
+    public void ACamaOfTheDrawingIsRememberedWithItsRealViewAndServedFromMemoryTheSecondTime()
+    {
+        var rig = new Rig();
+        rig.Facts[S1].Add(new BrowserRackFact(true, "R-7", "cama", null, "Cama siete", -1));
+
+        var summary = rig.Summaries.Read(S1, "R-7");
+
+        Assert.Equal(new[] { "lateral" }, summary.Views);
+        Assert.Same(summary, rig.Summaries.Read(S1, "R-7"));
+    }
+
     // ------------------------------------------------------------------ INV-F3T2-05 and 06: memory by (session, rack), no inventory
 
     [Fact]
@@ -356,7 +441,7 @@ public class WorkspaceBrowserSummaryTests
             .OrderBy(n => n, StringComparer.Ordinal)
             .ToArray();
 
-        Assert.Equal(new[] { "EnvelopeId:String", "IsInterpretable:Boolean", "Kind:String", "Name:String", "View:String" }, properties);
+        Assert.Equal(new[] { "EnvelopeId:String", "IsInterpretable:Boolean", "Kind:String", "Name:String", "Section:Int32", "View:String" }, properties);
         Assert.True(typeof(BrowserRackFact).IsSealed);
         foreach (var type in new[] { typeof(BrowserRackFact), typeof(BrowserRackSummary) })
             foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
@@ -371,8 +456,9 @@ public class WorkspaceBrowserSummaryTests
         Assert.Equal(new[] { "IsSessionAlive", "ReadSummary" }, methods.Select(m => m.Name).ToArray());
         var read = methods.Single(m => m.Name == "ReadSummary");
         Assert.Equal(typeof(BrowserRackSummary), read.ReturnType);
-        Assert.Equal(new[] { "origin", "rackId" }, read.GetParameters().Select(p => p.Name).ToArray());
-        Assert.Equal(new[] { typeof(WorkspaceRequest), typeof(string) }, read.GetParameters().Select(p => p.ParameterType).ToArray());
+        // INV-F3T2-21: the request says whether an explicit action of the user asked for it.
+        Assert.Equal(new[] { "origin", "rackId", "userRequested" }, read.GetParameters().Select(p => p.Name).ToArray());
+        Assert.Equal(new[] { typeof(WorkspaceRequest), typeof(string), typeof(bool) }, read.GetParameters().Select(p => p.ParameterType).ToArray());
         var alive = methods.Single(m => m.Name == "IsSessionAlive");
         Assert.Equal(typeof(bool), alive.ReturnType);
         Assert.Equal(new[] { typeof(SessionId) }, alive.GetParameters().Select(p => p.ParameterType).ToArray());

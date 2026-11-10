@@ -48,15 +48,22 @@ public class WorkspaceBrowserHostGuardTests
         var document = read.IndexOf("MdiActiveDocument", StringComparison.Ordinal);
         var command = read.IndexOf("CommandInProgress", StringComparison.Ordinal);
         var quiescent = read.IndexOf("IsQuiescent", StringComparison.Ordinal);
+        var window = read.IndexOf("_drainNoticeOpen", StringComparison.Ordinal);
         var authorize = read.IndexOf("_authorize(", StringComparison.Ordinal);
         var memory = read.IndexOf("_summaries.Read(", StringComparison.Ordinal);
-        Assert.True(document >= 0 && command > document && quiescent > document && authorize > command && authorize > quiescent && memory > authorize,
-            "order: active document, no command and the editor at rest, session authorized, and only then the memory or the read");
+        Assert.True(document >= 0 && command > document && quiescent > document && window > command && window > quiescent && authorize > window && memory > authorize,
+            "order: active document, no command and the editor at rest, a read nobody asked for only in the drain window, session authorized, and only then the memory or the read");
         Assert.Matches(@"string\.IsNullOrEmpty\(\s*\w+\.CommandInProgress\s*\)", read);
         Assert.Matches(@"\.Editor\.IsQuiescent", read);
         Assert.Contains("BrowserSummaryStatus.Rejected", read);
         Assert.Contains("BrowserSummaryStatus.Busy", read);
         Assert.Equal(1, Src.Count(read, @"_summaries\.Read\s*\("));
+
+        // INV-F3T2-21: a read that no explicit action asked for, with the window closed, answers Busy before the authorization.
+        Assert.Matches(
+            @"if\s*\(\s*!userRequested\s*&&\s*!_drainNoticeOpen\s*\)\s*return\s+BrowserRackSummary\.Without\s*\(\s*BrowserSummaryStatus\.Busy\b",
+            read);
+        Assert.Matches(@"private\s+BrowserRackSummary\s+ReadSummaryOnActiveDocument\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*,\s*bool\s+userRequested\s*\)", host);
 
         // No effect: it writes no selection, no view and nothing of the drawing, takes no lock of its own and returns no focus.
         Assert.DoesNotMatch(
@@ -70,9 +77,10 @@ public class WorkspaceBrowserHostGuardTests
     public void AFailureOfTheSummaryIsContainedLoggedOnceAndReturnedAsTheFailedState()
     {
         var host = Host();
-        var read = Src.BodyOf(host, @"public\s+BrowserRackSummary\s+ReadSummary\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)");
+        var read = Src.BodyOf(host, @"public\s+BrowserRackSummary\s+ReadSummary\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*,\s*bool\s+userRequested\s*\)");
 
         Assert.Contains("ReadSummaryOnActiveDocument(", read);
+        Assert.Matches(@"ReadSummaryOnActiveDocument\s*\(\s*\w+\s*,\s*\w+\s*,\s*userRequested\s*\)", read);
         Assert.Contains("catch (System.Exception", read);
         Assert.Contains("LogFault(\"WorkspaceNavigationHost.ReadSummary\"", read);
         Assert.Contains("BrowserSummaryStatus.Failed", read);
@@ -109,9 +117,16 @@ public class WorkspaceBrowserHostGuardTests
         Assert.Matches(@"using\s*\(\s*\w+\.LockDocument\s*\(\s*\)\s*\)", facts);
         Assert.Matches(@"using\s*\(\s*var\s+\w+\s*=\s*[\w.]+\.StartTransaction\s*\(\s*\)\s*\)", facts);
         Assert.Matches(@"public\s+IReadOnlyList<NavigationDefinitionFact>\s+ReadDefinitionFacts\s*\(\s*SessionId\s+\w+\s*\)\s*=>\s*Scan\s*\(", definitionFacts);
-        Assert.Contains("includeReferences: false", browserFacts);
+        // INV-F3T2-23 (T2-F3): it uses the same scan, with the references of Model Space, and omits a definition that has none, so an erased
+        // rack (its definition stays until a PURGE) is not a present rack. The handles themselves never leave the adapter.
+        Assert.Contains("Scan(session, includeReferences: true)", browserFacts);
+        Assert.DoesNotContain("includeReferences: false", facts);
+        Assert.Matches(@"if\s*\(\s*\w+\.ModelSpaceReferenceHandles\.Count\s*==\s*0\s*\)\s*continue\s*;", browserFacts);
+        Assert.Equal(1, Src.Count(browserFacts, @"ModelSpaceReferenceHandles"));
         Assert.Contains("new BrowserRackFact(", browserFacts);
-        Assert.DoesNotMatch(new Regex(@"ScanEnvelopes|LockDocument|StartTransaction|ModelSpaceReferenceHandles|GetBlockReferenceIds|OpenMode"), browserFacts);
+        Assert.Matches(@"new\s+BrowserRackFact\s*\([^;]*\.Section\s*\)", browserFacts);
+        Assert.DoesNotMatch(new Regex(@"new\s+BrowserRackFact\s*\([^;]*ModelSpaceReferenceHandles"), browserFacts);
+        Assert.DoesNotMatch(new Regex(@"ScanEnvelopes|LockDocument|StartTransaction|GetBlockReferenceIds|OpenMode"), browserFacts);
 
         // Nothing public of the adapter names an AutoCAD type.
         foreach (Match member in Regex.Matches(facts, @"\bpublic\s+[^{;=]*\("))
@@ -133,6 +148,59 @@ public class WorkspaceBrowserHostGuardTests
         Assert.Equal(3, Src.Count(controller, @"\+="));
         Assert.Equal(0, Src.Count(controller, @"-="));
         Assert.Matches(@"public\s+IWorkspaceNavigationPort\s+Navigation\b", controller);
+    }
+
+    // ------------------------------------------------------------------ INV-F3T2-21 (T2-F2): the drain window
+
+    [Fact]
+    public void TheHostHasOneBooleanDrainWindowThatOnlyTheTwoNoticeMethodsChange()
+    {
+        var host = Host();
+
+        Assert.Matches(@"private\s+bool\s+_drainNoticeOpen\s*;", host);
+        Assert.Matches(@"public\s+void\s+OpenDrainNotice\s*\(\s*\)\s*=>\s*_drainNoticeOpen\s*=\s*true\s*;", host);
+        Assert.Matches(@"public\s+void\s+CloseDrainNotice\s*\(\s*\)\s*=>\s*_drainNoticeOpen\s*=\s*false\s*;", host);
+        Assert.Equal(2, Src.Count(host, @"\b_drainNoticeOpen\s*="));
+        // Besides the declaration, the one place that reads it is the answer of the summary.
+        Assert.Equal(2, Src.Count(host, @"\b_drainNoticeOpen\b(?!\s*=)"));
+        Assert.Equal(1, Src.Count(Src.BodyOf(host, @"private\s+BrowserRackSummary\s+ReadSummaryOnActiveDocument\s*\("), @"\b_drainNoticeOpen\b"));
+        Assert.Equal(1, Src.Count(host, @"\bpublic\s+void\s+OpenDrainNotice\b"));
+        Assert.Equal(1, Src.Count(host, @"\bpublic\s+void\s+CloseDrainNotice\b"));
+
+        // The window is not a general permission: nothing else of the host reads it, and the actions of navigation do not depend on it.
+        Assert.DoesNotContain("_drainNoticeOpen", Src.BodyOf(host, @"private\s+WorkspaceNavigationResult\s+RunOnActiveDocument\s*\("));
+    }
+
+    [Fact]
+    public void TheControllerOpensTheWindowOnlyAroundTheNoticeOfADrainWithTryAndFinallyAndOnlyWhenTheHostExists()
+    {
+        var controller = Src.Code(ControllerPath);
+        var body = Src.BodyOf(controller, @"private\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
+
+        var hostCall = body.IndexOf("_host.OnDrained(outcome)", StringComparison.Ordinal);
+        var open = body.IndexOf("_navigation.OpenDrainNotice()", StringComparison.Ordinal);
+        var announce = body.IndexOf("NotifyStateChanged()", StringComparison.Ordinal);
+        var close = body.IndexOf("_navigation.CloseDrainNotice()", StringComparison.Ordinal);
+        Assert.True(hostCall >= 0 && open > hostCall && announce > open && close > announce, "order: the drain, the window, the notice, the window closed");
+        Assert.Matches(@"if\s*\(\s*_navigation\s*!=\s*null\s*\)\s*_navigation\.OpenDrainNotice\s*\(\s*\)\s*;", body);
+        Assert.Matches(
+            @"try\s*\{\s*NotifyStateChanged\s*\(\s*\)\s*;\s*\}\s*finally\s*\{\s*if\s*\(\s*_navigation\s*!=\s*null\s*\)\s*_navigation\.CloseDrainNotice\s*\(\s*\)\s*;\s*\}",
+            body);
+        Assert.Equal(1, Src.Count(body, @"NotifyStateChanged\s*\("));
+
+        // Only here and nowhere else of the controller, and nobody else of the product opens or closes the window.
+        Assert.Equal(1, Src.Count(controller, @"\.OpenDrainNotice\s*\("));
+        Assert.Equal(1, Src.Count(controller, @"\.CloseDrainNotice\s*\("));
+        Assert.Equal(
+            new[] { ControllerPath },
+            Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"\.(?:Open|Close)DrainNotice\s*\(")).Select(f => f.Path).ToArray());
+
+        // The relays of the other notices are untouched: a command state change only announces, and the document switch does not open it.
+        Assert.Matches(@"private\s+void\s+OnCommandStateChanged\s*\(\s*\)\s*=>\s*NotifyStateChanged\s*\(\s*\)\s*;", controller);
+        var session = Src.BodyOf(controller, @"private\s+void\s+OnActiveSessionChanged\s*\(\s*\)");
+        Assert.DoesNotContain("DrainNotice", session);
+        Assert.DoesNotContain("DrainNotice", Src.BodyOf(controller, @"private\s+void\s+OnCommandStateChanged\s*\(\s*\)"));
+        Assert.DoesNotContain("DrainNotice", Src.BodyOf(controller, @"private\s+void\s+NotifyStateChanged\s*\(\s*\)"));
     }
 
     [Fact]
@@ -205,6 +273,42 @@ public class WorkspaceBrowserHostGuardTests
         Assert.DoesNotMatch(new Regex(@"Autodesk|RackCad\.Plugin|IWorkspaceNavigationPort|IWorkspaceHostPort|ExecuteAsync|NavigateAsync"), code);
         Assert.Matches(@"public\s+sealed\s+record\s+WorkspaceBrowserTabItem\s*\(\s*string\s+RackId\s*,\s*string\s+Title\s*,\s*bool\s+IsActive\s*,\s*bool\s+IsPreview\s*\)\s*;", code);
         Assert.Matches(@"sealed\s+class\s+WorkspaceBrowserViewModel\s*:\s*ObservableObject\b", code);
+    }
+
+    [Fact]
+    public void TheDefaultBorderOfATabIsSetByTheStyleAndNotByAttributesSoTheTriggerOfTheActiveTabHasEffect()
+    {
+        // INV-F3T2-22 (T2-F1): a value set as an attribute of the Border outranks a trigger of its style, so the active tab would look like the
+        // others. The defaults live in setters of the style; the trigger of IsActive overrides them.
+        var xaml = Regex.Replace(Src.Text(XamlPath), @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
+        var strip = xaml.Substring(xaml.IndexOf("x:Name=\"BrowserTabStrip\"", StringComparison.Ordinal));
+        var border = Regex.Match(strip, @"<Border\b[^>]*>").Value;
+
+        Assert.False(string.IsNullOrEmpty(border), "the template of the tab has no Border");
+        Assert.DoesNotMatch(new Regex(@"\bBorderThickness\s*=|\bBorderBrush\s*="), border);
+
+        var style = Regex.Match(strip, @"<Style\s+TargetType=""Border"">(?<defaults>.*?)<Style\.Triggers>(?<triggers>.*?)</Style\.Triggers>", RegexOptions.Singleline);
+        Assert.True(style.Success, "the Border has no style with triggers");
+        Assert.Matches(@"<Setter\s+Property=""BorderThickness""\s+Value=""1""\s*/>", style.Groups["defaults"].Value);
+        Assert.Matches(@"<Setter\s+Property=""BorderBrush""\s+Value=""\{DynamicResource\s+ShellBorderBrush\}""\s*/>", style.Groups["defaults"].Value);
+        Assert.Matches(@"<DataTrigger\s+Binding=""\{Binding\s+IsActive\}""\s+Value=""True"">", style.Groups["triggers"].Value);
+        Assert.Matches(@"<Setter\s+Property=""BorderThickness""\s+Value=""2""\s*/>", style.Groups["triggers"].Value);
+        Assert.Matches(@"<Setter\s+Property=""BorderBrush""\s+Value=""\{DynamicResource\s+ShellSelectionPrimaryBrush\}""\s*/>", style.Groups["triggers"].Value);
+    }
+
+    [Fact]
+    public void TheSurfaceHasTheReloadButtonHandledInTheCodeBehindInsideContained()
+    {
+        var xaml = Regex.Replace(Src.Text(XamlPath), @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
+        var surface = xaml.Substring(xaml.IndexOf("x:Name=\"BrowserSurface\"", StringComparison.Ordinal));
+        surface = surface.Substring(0, surface.IndexOf("</Border>", StringComparison.Ordinal));
+        var code = Src.Code(UiFolder + "WorkspacePanelView.xaml.cs");
+
+        Assert.Equal(1, Src.Count(surface, @"<Button\b"));
+        Assert.Contains("Content=\"Volver a leer\"", surface);
+        Assert.Contains("Click=\"OnBrowserSurfaceReloadClick\"", surface);
+        Assert.Matches(@"private\s+void\s+OnBrowserSurfaceReloadClick\s*\(\s*object\s+sender\s*,\s*RoutedEventArgs\s+e\s*\)\s*=>\s*Contained\s*\(\s*\(\s*\)\s*=>\s*_viewModel\.Browser\.ReloadSummary\s*\(\s*\)\s*\)\s*;", code);
+        Assert.Equal(1, Src.Count(Src.Code(BrowserModelPath), @"\bpublic\s+void\s+ReloadSummary\s*\(\s*\)"));
     }
 
     [Fact]

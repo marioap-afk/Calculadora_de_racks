@@ -189,6 +189,137 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // ------------------------------------------------------------------ INV-F3T2-22 (T2-F1): the active tab is visibly distinct
+
+        // The Border that the template of the strip generates for each tab (the buttons' own template borders have a content presenter).
+        private static List<Border> TabBorders(WorkspacePanelView view) =>
+            Descendants<Border>(Named<ItemsControl>(view, "BrowserTabStrip"))
+                .Where(b => b.DataContext is WorkspaceBrowserTabItem && b.Child is WrapPanel)
+                .ToList();
+
+        [Fact]
+        public void TheActiveTabIsDistinguishedFromTheOthersOnTheGeneratedBorder()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, host, _, _) = Build();
+                PinTabs(view, host, 2);
+                Lay(view, 400);
+                var primary = (Brush)view.FindResource("ShellSelectionPrimaryBrush");
+                var plain = (Brush)view.FindResource("ShellBorderBrush");
+
+                var borders = TabBorders(view);
+                Assert.Equal(2, borders.Count);
+                var active = borders.Single(b => ((WorkspaceBrowserTabItem)b.DataContext).IsActive);
+                var other = borders.Single(b => !((WorkspaceBrowserTabItem)b.DataContext).IsActive);
+                Assert.Equal("R-2", ((WorkspaceBrowserTabItem)active.DataContext).RackId);
+                Assert.Equal(new Thickness(2), active.BorderThickness);
+                Assert.Same(primary, active.BorderBrush);
+                Assert.Equal(new Thickness(1), other.BorderThickness);
+                Assert.Same(plain, other.BorderBrush);
+
+                // The distinction follows the active tab when it changes.
+                Click(TabButton(view, "R-1", "Activar pestaña"));
+                Lay(view, 400);
+                borders = TabBorders(view);
+                var nowActive = borders.Single(b => ((WorkspaceBrowserTabItem)b.DataContext).IsActive);
+                Assert.Equal("R-1", ((WorkspaceBrowserTabItem)nowActive.DataContext).RackId);
+                Assert.Equal(new Thickness(2), nowActive.BorderThickness);
+                Assert.Same(primary, nowActive.BorderBrush);
+                var nowOther = borders.Single(b => !((WorkspaceBrowserTabItem)b.DataContext).IsActive);
+                Assert.Equal(new Thickness(1), nowOther.BorderThickness);
+                Assert.Same(plain, nowOther.BorderBrush);
+            });
+        }
+
+        // ------------------------------------------------------------------ INV-F3T2-24 (T2-F4): the reload button of the one surface
+
+        [Fact]
+        public void TheSurfaceHasOneReloadButtonThatAsksAgainForTheSummaryOfTheActiveTabAsAUserAction()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, host, navigation, summary) = Build();
+                PinTabs(view, host, 3);
+                Lay(view, 400);
+                var surface = Named<Border>(view, "BrowserSurface");
+                var reload = Named<Button>(view, "BrowserSurfaceReloadButton");
+
+                Assert.True(reload.IsDescendantOf(surface));
+                Assert.Single(Descendants<Button>(view).Where(b => b.Name == "BrowserSurfaceReloadButton"));
+                Assert.Equal("Volver a leer", Assert.IsType<string>(reload.Content));
+                Assert.DoesNotContain(Descendants<Button>(Named<ItemsControl>(view, "BrowserTabStrip")), b => b.Name == "BrowserSurfaceReloadButton");
+
+                var reads = summary.Received.Count;
+                summary.Responder = _ => WorkspaceBrowserSummaryPortDouble.Ready("Releído", "Selective", "planta");
+                Click(reload);
+                Lay(view, 400);
+
+                Assert.Equal(reads + 1, summary.Received.Count);
+                var call = summary.Received.Last();
+                Assert.Equal(("R-3", true, new SessionId(7)), (call.RackId, call.UserRequested, call.Origin.Origin));
+                Assert.Equal("Releído", Named<TextBlock>(view, "BrowserSurfaceTitleText").Text);
+                Assert.Equal("Vistas: planta", Named<TextBlock>(view, "BrowserSurfaceViewsText").Text);
+                Assert.Same(surface, Named<Border>(view, "BrowserSurface"));
+                Assert.Empty(navigation.Calls);
+            });
+        }
+
+        [Fact]
+        public void TheReloadButtonRecoversASurfaceThatFailedAndContainsAFailingReload()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, _, _, summary) = Build();
+                summary.ThrowOnRead = new InvalidOperationException("boom-primero");
+                view.ViewModel.Refresh();
+                view.ViewModel.Browser.ReloadSummary();
+                Lay(view, 400);
+                Assert.Contains("boom-primero", Named<TextBlock>(view, "BrowserSurfaceStatusText").Text, StringComparison.Ordinal);
+
+                summary.ThrowOnRead = null;
+                Click(Named<Button>(view, "BrowserSurfaceReloadButton"));
+                Lay(view, 400);
+                Assert.Equal("Resumen cargado.", Named<TextBlock>(view, "BrowserSurfaceStatusText").Text);
+
+                summary.ThrowOnRead = new InvalidOperationException("boom-segundo");
+                var thrown = Record.Exception(() => Click(Named<Button>(view, "BrowserSurfaceReloadButton")));
+                Lay(view, 400);
+                Assert.Null(thrown);
+                Assert.Contains("boom-segundo", Named<TextBlock>(view, "BrowserSurfaceStatusText").Text, StringComparison.Ordinal);
+                Assert.NotEqual(WorkspacePanelState.Error, view.ViewModel.State);
+            });
+        }
+
+        // ------------------------------------------------------------------ INV-F3T2-26 (T2-F6): the containers of the strip survive a presentation
+
+        [Fact]
+        public void APresentationWithNoChangeDoesNotRegenerateTheContainersOfTheStrip()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, host, _, _) = Build();
+                PinTabs(view, host, 3);
+                Lay(view, 400);
+                var buttons = Descendants<Button>(Named<ItemsControl>(view, "BrowserTabStrip")).ToList();
+                var borders = TabBorders(view);
+                Assert.True(buttons.Count >= 6 && borders.Count == 3, "the strip did not render its three tabs");
+
+                view.ViewModel.Refresh();
+                view.ViewModel.Refresh();
+                Lay(view, 400);
+
+                Assert.Equal(buttons.Count, Descendants<Button>(Named<ItemsControl>(view, "BrowserTabStrip")).Count());
+                Assert.All(Descendants<Button>(Named<ItemsControl>(view, "BrowserTabStrip")), b => Assert.Contains(b, buttons));
+                Assert.All(TabBorders(view), b => Assert.Contains(b, borders));
+
+                // A real change does regenerate them.
+                view.ViewModel.Browser.ActivateTab("R-1");
+                Lay(view, 400);
+                Assert.Contains(TabBorders(view), b => !borders.Contains(b));
+            });
+        }
+
         [Fact]
         public void TheNavigationButtonsFollowTheTabThatWasActivatedByClick()
         {

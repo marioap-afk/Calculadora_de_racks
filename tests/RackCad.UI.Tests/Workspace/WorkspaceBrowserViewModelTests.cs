@@ -453,6 +453,289 @@ namespace RackCad.UI.Tests
             Assert.Equal("Resumen cargado.", browser.SurfaceStatusText);
         }
 
+        // ------------------------------------------------------------------ INV-F3T2-21 (T2-F2): a presentation is not a user action
+
+        [Fact]
+        public void APresentationAsksOnItsOwnAccountAndEveryExplicitInteractionAsksOnTheUsers()
+        {
+            var port = new WorkspaceBrowserSummaryPortDouble();
+            var browser = Browser(port);
+
+            Present(browser, A, SelectionContext.One("R-1"));
+            Assert.Equal(new[] { false }, port.Calls.Select(c => c.UserRequested).ToArray());
+
+            browser.PinTab("R-1");
+            Present(browser, A, SelectionContext.One("R-2"));
+            Assert.Equal(new[] { false, false }, port.Calls.Select(c => c.UserRequested).ToArray());
+
+            browser.ActivateTab("R-1");
+            Assert.Equal(("R-1", true), (port.Calls.Last().RackId, port.Calls.Last().UserRequested));
+
+            browser.PinTab("R-2");
+            browser.ActivateTab("R-2");
+            browser.CloseTab("R-2");
+            Assert.Equal(("R-1", true), (port.Calls.Last().RackId, port.Calls.Last().UserRequested));
+
+            browser.ReloadSummary();
+            Assert.Equal(("R-1", true), (port.Calls.Last().RackId, port.Calls.Last().UserRequested));
+
+            // Every presentation afterwards is again on its own account.
+            Present(browser, A, SelectionContext.None);
+            Assert.All(port.Calls.Take(2), c => Assert.False(c.UserRequested));
+            Assert.All(port.Calls.Skip(2), c => Assert.True(c.UserRequested));
+        }
+
+        [Fact]
+        public void ABusyPresentationInsideANoticeIsRetriedAtTheNextOneWhileAUserActionReadsAnyway()
+        {
+            var port = new WorkspaceBrowserSummaryPortDouble { RefuseUnrequested = true };
+            var browser = Browser(port);
+
+            Present(browser, A, SelectionContext.One("R-1"));
+            Assert.Single(port.Received);
+            Assert.Empty(port.Calls);
+            Assert.Contains("comando en curso", browser.SurfaceStatusText, StringComparison.Ordinal);
+
+            // The next presentation tries again; still refused, it asks once more and still reads nothing.
+            Present(browser, A, SelectionContext.One("R-1"));
+            Assert.Equal(2, port.Received.Count);
+            Assert.Empty(port.Calls);
+
+            // The window is open at that presentation: it is answered, and a ready surface is never asked for again.
+            port.RefuseUnrequested = false;
+            Present(browser, A, SelectionContext.One("R-1"));
+            Assert.Equal(("R-1", false), (Assert.Single(port.Calls).RackId, port.Calls[0].UserRequested));
+            Assert.Equal("Resumen cargado.", browser.SurfaceStatusText);
+            Present(browser, A, SelectionContext.One("R-1"));
+            Assert.Equal(3, port.Received.Count);
+
+            // A click of the user does not depend on that window.
+            port.RefuseUnrequested = true;
+            browser.PinTab("R-1");
+            Present(browser, A, SelectionContext.One("R-2"));
+            Assert.Equal(4, port.Received.Count);
+            browser.ActivateTab("R-1");
+            Assert.Equal(("R-1", true), (port.Calls.Last().RackId, port.Calls.Last().UserRequested));
+            Assert.Equal("Resumen cargado.", browser.SurfaceStatusText);
+        }
+
+        // ------------------------------------------------------------------ INV-F3T2-24 (T2-F4): the explicit reread
+
+        [Theory]
+        [InlineData(BrowserSummaryStatus.Ready)]
+        [InlineData(BrowserSummaryStatus.NotFound)]
+        [InlineData(BrowserSummaryStatus.Rejected)]
+        [InlineData(BrowserSummaryStatus.Failed)]
+        [InlineData(BrowserSummaryStatus.Busy)]
+        public void ReloadingFromAnyStateOfTheSurfaceAsksThePortAgainAsAUserActionAndPresentsTheNewResult(BrowserSummaryStatus first)
+        {
+            var port = new WorkspaceBrowserSummaryPortDouble
+            {
+                Responder = _ => first == BrowserSummaryStatus.Ready
+                    ? WorkspaceBrowserSummaryPortDouble.Ready("Viejo", "Selective", "frontal")
+                    : BrowserRackSummary.Without(first, "motivo-viejo"),
+            };
+            var changes = 0;
+            var browser = Browser(port, () => changes++);
+            Present(browser, A, SelectionContext.One("R-1"));
+            Assert.Single(port.Received);
+            Assert.NotEqual("Nuevo", browser.SurfaceTitle);
+
+            port.Responder = _ => WorkspaceBrowserSummaryPortDouble.Ready("Nuevo", "Cantilever", "lateral", "planta");
+            browser.ReloadSummary();
+
+            Assert.Equal(2, port.Received.Count);
+            Assert.Equal(("R-1", true), (port.Received[1].RackId, port.Received[1].UserRequested));
+            Assert.Equal(A, port.Received[1].Origin.Origin);
+            Assert.Equal("Nuevo", browser.SurfaceTitle);
+            Assert.Equal("Tipo: Cantilever", browser.SurfaceKindText);
+            Assert.Equal("Vistas: lateral, planta", browser.SurfaceViewsText);
+            Assert.Equal("Resumen cargado.", browser.SurfaceStatusText);
+            Assert.Equal("Nuevo", Assert.Single(browser.Tabs).Title);
+            Assert.Equal("R-1", browser.ActiveRackId);
+            Assert.Equal(0, changes);
+        }
+
+        [Fact]
+        public void ReloadingAFailedSurfaceThatFailsAgainShowsTheNewReasonAndNothingEscapes()
+        {
+            var port = new WorkspaceBrowserSummaryPortDouble { Responder = _ => BrowserRackSummary.Without(BrowserSummaryStatus.Failed, "primero") };
+            var browser = Browser(port);
+            Present(browser, A, SelectionContext.One("R-1"));
+            Assert.Equal("No se pudo leer el resumen: primero", browser.SurfaceStatusText);
+
+            port.Responder = null;
+            port.ThrowOnRead = new InvalidOperationException("segundo");
+            var thrown = Record.Exception(() => browser.ReloadSummary());
+
+            Assert.Null(thrown);
+            Assert.Equal("No se pudo leer el resumen: segundo", browser.SurfaceStatusText);
+            Assert.Equal(2, port.Received.Count);
+        }
+
+        [Fact]
+        public void ReloadingWhileTheDrawingIsBlockedAsksNothingAndLeavesTheSurfacePendingUntilTheNextPresentation()
+        {
+            var port = new WorkspaceBrowserSummaryPortDouble();
+            var browser = Browser(port);
+            Present(browser, A, SelectionContext.One("R-1"));
+            Assert.Single(port.Received);
+
+            Present(browser, A, SelectionContext.One("R-1"), canRead: false, block: WorkspaceActionBlock.Degraded, blockText: "La sesión está degradada y no se lee.");
+            browser.ReloadSummary();
+
+            Assert.Single(port.Received);
+            Assert.Contains("no se leyó el dibujo", browser.SurfaceStatusText, StringComparison.Ordinal);
+            Assert.Contains("degradada", browser.SurfaceStatusText, StringComparison.Ordinal);
+            Assert.Equal(string.Empty, browser.SurfaceKindText);
+
+            Present(browser, A, SelectionContext.One("R-1"), canRead: true, block: WorkspaceActionBlock.CommandActive, blockText: "Hay un comando en curso.");
+            browser.ReloadSummary();
+            Assert.Single(port.Received);
+
+            // The same pending surface is asked once when the drawing can be read again, on the account of the presentation.
+            Present(browser, A, SelectionContext.One("R-1"));
+            Assert.Equal(2, port.Received.Count);
+            Assert.False(port.Received[1].UserRequested);
+            Assert.Equal("Resumen cargado.", browser.SurfaceStatusText);
+        }
+
+        [Fact]
+        public void ReloadingNeverChangesTheTabsAndNeverReachesTheNavigationNorTheHost()
+        {
+            var (panel, host, navigation, summary) = Panel();
+            panel.Refresh();
+            panel.Browser.PinTab("R-1");
+            host.Snapshot = WorkspacePanelFixtures.Ready(session: 7, selection: SelectionContext.One("R-2"));
+            panel.Refresh();
+            panel.Browser.ActivateTab("R-1");
+            var snapshots = host.SnapshotCalls;
+            var tabs = panel.Browser.Tabs.ToArray();
+            var reads = summary.Received.Count;
+
+            panel.Browser.ReloadSummary();
+
+            Assert.Equal(reads + 1, summary.Received.Count);
+            Assert.Equal(tabs.Select(t => (t.RackId, t.IsActive, t.IsPreview)), panel.Browser.Tabs.Select(t => (t.RackId, t.IsActive, t.IsPreview)));
+            Assert.Equal("R-1", panel.Browser.ActiveRackId);
+            Assert.Empty(navigation.Calls);
+            Assert.Equal(snapshots, host.SnapshotCalls);
+            Assert.Equal(0, host.AuthorizeCalls);
+            Assert.Equal(0, host.SelectionCalls);
+        }
+
+        [Fact]
+        public void APresentationNeverReadsAgainASurfaceThatIsReadyEvenAfterAReload()
+        {
+            var port = new WorkspaceBrowserSummaryPortDouble();
+            var browser = Browser(port);
+            Present(browser, A, SelectionContext.One("R-1"));
+            browser.ReloadSummary();
+            Assert.Equal(2, port.Received.Count);
+
+            Present(browser, A, SelectionContext.One("R-1"));
+            Present(browser, A, SelectionContext.None);
+            Present(browser, A, SelectionContext.One("R-1"));
+
+            Assert.Equal(2, port.Received.Count);
+        }
+
+        [Fact]
+        public void ReloadingWithoutATabOrWithoutAPortIsInert()
+        {
+            var port = new WorkspaceBrowserSummaryPortDouble();
+            var browser = Browser(port);
+            browser.ReloadSummary();
+            Present(browser, null, SelectionContext.None, canRead: false, block: WorkspaceActionBlock.NoDocument);
+            browser.ReloadSummary();
+            Assert.Empty(port.Received);
+
+            var inert = new WorkspaceBrowserViewModel(null);
+            var thrown = Record.Exception(() => inert.ReloadSummary());
+            Assert.Null(thrown);
+            Assert.Empty(inert.Tabs);
+        }
+
+        // ------------------------------------------------------------------ INV-F3T2-26 (T2-F6): the strip keeps its instance
+
+        [Fact]
+        public void APresentationWithNoChangeKeepsTheInstanceOfTheTabsAndDoesNotNotifyThem()
+        {
+            var browser = Browser();
+            var raised = new List<string?>();
+            browser.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
+            Present(browser, A, SelectionContext.One("R-1"));
+            var strip = browser.Tabs;
+            Assert.Contains(nameof(WorkspaceBrowserViewModel.Tabs), raised);
+
+            raised.Clear();
+            Present(browser, A, SelectionContext.One("R-1"));
+            Present(browser, A, SelectionContext.None);
+            Present(browser, A, SelectionContext.Selection(2, 0));
+            browser.ReloadSummary();
+
+            Assert.Same(strip, browser.Tabs);
+            Assert.DoesNotContain(nameof(WorkspaceBrowserViewModel.Tabs), raised);
+            Assert.Contains(nameof(WorkspaceBrowserViewModel.SurfaceStatusText), raised);
+        }
+
+        [Fact]
+        public void ARealChangeOfNameOrOfTheActiveTabReplacesTheTabsAndNotifiesThem()
+        {
+            var port = new WorkspaceBrowserSummaryPortDouble();
+            var browser = Browser(port);
+            var raised = new List<string?>();
+            browser.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
+
+            // Waiting: the tab is titled by its rack id. When the summary arrives its name is the title: a real change.
+            Present(browser, A, SelectionContext.One("R-1"), canRead: false, block: WorkspaceActionBlock.Degraded);
+            var waiting = browser.Tabs;
+            Assert.Equal("R-1", Assert.Single(waiting).Title);
+            raised.Clear();
+            Present(browser, A, SelectionContext.One("R-1"));
+            Assert.NotSame(waiting, browser.Tabs);
+            Assert.Equal("Nombre R-1", Assert.Single(browser.Tabs).Title);
+            Assert.Contains(nameof(WorkspaceBrowserViewModel.Tabs), raised);
+
+            // A rename of the same rack on a reload is a real change too.
+            var named = browser.Tabs;
+            raised.Clear();
+            port.Responder = _ => WorkspaceBrowserSummaryPortDouble.Ready("Otro nombre", "Selective", "frontal");
+            browser.ReloadSummary();
+            Assert.NotSame(named, browser.Tabs);
+            Assert.Equal("Otro nombre", Assert.Single(browser.Tabs).Title);
+            Assert.Contains(nameof(WorkspaceBrowserViewModel.Tabs), raised);
+
+            // Pinning and changing the active tab are real changes.
+            var before = browser.Tabs;
+            raised.Clear();
+            browser.PinTab("R-1");
+            Assert.NotSame(before, browser.Tabs);
+            Assert.False(Assert.Single(browser.Tabs).IsPreview);
+            Assert.Contains(nameof(WorkspaceBrowserViewModel.Tabs), raised);
+
+            Present(browser, A, SelectionContext.One("R-2"));
+            var two = browser.Tabs;
+            raised.Clear();
+            browser.ActivateTab("R-1");
+            Assert.NotSame(two, browser.Tabs);
+            Assert.Equal(new[] { true, false }, browser.Tabs.Select(t => t.IsActive).ToArray());
+            Assert.Contains(nameof(WorkspaceBrowserViewModel.Tabs), raised);
+        }
+
+        [Fact]
+        public void ARefreshOfThePanelWithTheSameSnapshotKeepsTheInstanceOfTheTabs()
+        {
+            var (panel, _, _, _) = Panel();
+            panel.Refresh();
+            var strip = panel.Browser.Tabs;
+
+            panel.Refresh();
+            panel.Refresh();
+
+            Assert.Same(strip, panel.Browser.Tabs);
+        }
+
         // ------------------------------------------------------------------ INV-F3T2-07, 08, 09: one surface, values, memory only
 
         [Fact]
