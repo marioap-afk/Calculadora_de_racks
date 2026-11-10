@@ -66,3 +66,37 @@ La comprobación de seguridad integrada de la herramienta rechazó el borrado, t
 - **Contrato del intento 2:** `F3-T2-BROWSER-UI/coordinator/gate-contract-attempt2.json`, con rutas exactas y los invariantes INV-F3T2-21 a 26 añadidos.
 - **Límite:** T2-F4 se resuelve con una acción explícita del usuario y no con relectura automática tras cada drenaje.
 - **Limitación conocida, sin corregir:** el caso de `PICKADD=0` descrito en `analysis.md`.
+
+## F3-E10. nc1 de F3-T2 reproduce el defecto conocido de `Handoff` e `Identity`
+
+- **Problema:** nc1 `R20261110T171202Z-09b5` da `CONTROL NOT PASSED`: `Identity` en fail, y también `Handoff`, con `FailureClass` Handoff. Es el modo de fallo de nc1 en F2-T2A y F2-T2B.
+- **Decisión:** aplicar una vez el verificador de A-13 sin cambios, con el precedente de D-06. Reintentar sería buscar un resultado favorable sobre una salida válida.
+- **Evidencia:** `F3-T2-BROWSER-UI-nc1-bridge/2/`: autoprueba 73/73, `HandoffIntegrity` PASS, `Identity` FAIL, `ControlResult` PASS, objeto candidato `MISSING`.
+- **Resultado:** `nc1 = SATISFIED_UNDER_I64_IDENTITY_BRIDGE`. La salida `09b5` conserva `CONTROL NOT PASSED`.
+- **Alcance:** nc1 de F3-T2. Sin cambio del protocolo global.
+
+## F3-E11. Cierre de F3-T2-BROWSER-UI
+
+- **Decisión:** F3-T2 = CLOSED / PASS sobre `206e0f7a`.
+- **Fundamento:** verificación `R20261110T170317Z-c324`, 14/14; nc1 bajo el puente; nc2 `dc56` y nc3 `f4c4` CONTROL PASS; CI 42860103890 4/4; T2-F1 a T2-F6 corregidos y comprobados por una segunda revisión independiente, que no halló defectos bloqueantes ni regresiones.
+- **`attempts`:** 2 de 3.
+
+## F3-E12. Hallazgos residuales de la segunda revisión independiente
+
+Ninguno incumple el contrato de modo que justifique gastar el último intento. Quedan como limitaciones conocidas:
+
+| Id | Limitación | Dónde se resuelve |
+|---|---|---|
+| R-1 | Una superficie ya cargada no se relee sola: tras un ERASE o un renombrado sigue mostrando el resumen anterior hasta «Volver a leer» o un cambio de pestaña. El caso inverso, tras un Deshacer, tampoco se relee solo | F4, con la obsolescencia de borradores |
+| R-2 | Durante un cambio de documento sin comandos, una presentación puede mostrar «hay un comando en curso» hasta el siguiente Idle: transitorio y texto impreciso | Ajuste de texto en una unidad posterior |
+| R-3 | Al activar o fijar una pestaña con el teclado se recrean los contenedores y se pierde el foco. Con ratón no afecta | UX de F5 o F7 |
+| R-4 | Con `PICKADD=0`, el caso descrito en `analysis.md` | Decidir si se ajusta el eco |
+
+**Sin verificación en ejecución:** el bloqueo de lecturas en notificaciones y la omisión de racks borrados solo están cubiertos por pruebas sin host y guardas de fuente. F3 no tiene hito de host.
+
+## F3-E13. Cierre del gate F3
+
+- **Decisión:** F3 = **CLOSED / PASS WITH LIMITATIONS**. No es Owner Validation ni integra en `main`.
+- **Fundamento:** F3-T1 y F3-T2 cerradas; escenarios 4, 5 y 6 automatizados y en verde en la CI exacta; coste caracterizado sin umbrales; INV-02, la regla de preview de INV-04, INV-09, INV-15 e INV-38 cubiertos; K = 1 comprobado sobre el árbol visual.
+- **Limitaciones:** las de F3-E12. SN-06c y la parte de pestañas de SN-10 quedan para el siguiente Candidato con host (IC-02).
+- **`attempts`:** F3 cierra en 2 de 3. F4 necesita su propio contrato y su presupuesto; el de F3 no pasa a F4.

@@ -1,0 +1,187 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F3-T2-BROWSER-UI",
+  "RunId": "R20261110T160921Z-4b73",
+  "DelegationRunId": "R20261110T160525Z-e2f9",
+  "Initiative": "I-64",
+  "Gate": "F3",
+  "Attempt": 2,
+  "BaseSha": "29cf0d3e9c538a2bf613ac91afebbe2350cecb18",
+  "RedSha": "94f35bb97ebb541a36c27ca72e7849b52fe98b0b",
+  "CurrentSha": "206e0f7a3fe32fde2bba70ac663a74f60ee6a4f4",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Workspace/BrowserRackSummaries.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+    "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserSummaryTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserSummaryPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewTests.cs"
+  ],
+  "WorkCompleted": "Intento 2 de F3-T2-BROWSER-UI: corrige T2-F1 a T2-F6 con un commit RED (94f35bb9) y un commit GREEN (206e0f7a), cada uno con su push; el GREEN no toca archivos bajo tests/. 13 rutas cambiadas, todas dentro de las 16 del AllowedWriteScope.\nMapa por defecto. T2-F1 (INV-F3T2-22): WorkspacePanelView.xaml mueve BorderThickness 1 y BorderBrush ShellBorderBrush a setters del Style del Border de la pestana y los quita como atributos; el DataTrigger no cambia. Pruebas: WorkspaceBrowserViewTests.TheActiveTabIsDistinguishedFromTheOthersOnTheGeneratedBorder (2 pestanas renderizadas: activa 2 y ShellSelectionPrimaryBrush, la otra 1 y ShellBorderBrush, y sigue a la pestana activa) y la guarda de fuente WorkspaceBrowserHostGuardTests.TheDefaultBorderOfATabIsSetByTheStyleAndNotByAttributes....\nT2-F2 (INV-F3T2-21): IWorkspaceBrowserSummaryPort.ReadSummary(origin, rackId, bool userRequested); WorkspaceBrowserViewModel pasa false desde Present y true desde ActivateTab, PinTab, CloseTab y ReloadSummary; WorkspaceNavigationHost gana el campo bool _drainNoticeOpen, OpenDrainNotice y CloseDrainNotice, y ReadSummaryOnActiveDocument responde Busy sin LockDocument ni lectura cuando userRequested es false y la ventana esta cerrada (orden: documento, sin comando y Editor.IsQuiescent, ventana, autorizacion, cache o lectura); WorkspaceController.OnDrained abre la ventana si _navigation no es null, llama NotifyStateChanged en un try y la cierra en el finally. OnCommandStateChanged sigue siendo => NotifyStateChanged(); y OnActiveSessionChanged no cambia. Pruebas: WorkspaceBrowserViewModelTests.APresentationAsksOnItsOwnAccountAndEveryExplicitInteractionAsksOnTheUsers y ABusyPresentationInsideANoticeIsRetriedAtTheNextOneWhileAUserActionReadsAnyway; guardas WorkspaceBrowserHostGuardTests.ReadSummaryAnswersInTheApprovedOrderWithAValueAndWithoutEffects, TheHostHasOneBooleanDrainWindowThatOnlyTheTwoNoticeMethodsChange y TheControllerOpensTheWindowOnlyAroundTheNoticeOfADrainWithTryAndFinallyAndOnlyWhenTheHostExists.\nT2-F3 (INV-F3T2-23): WorkspaceNavigationFacts.ReadBrowserFacts usa Scan(session, includeReferences: true) y omite los hechos con ModelSpaceReferenceHandles.Count == 0, sin pasar los handles a BrowserRackFact; un rack sin hechos responde NotFound por la ruta existente de BrowserRackSummaries. La guarda que exigia includeReferences: false se sustituyo por la que exige la omision (WorkspaceBrowserHostGuardTests.TheFactsAdapterKeepsOneIntegratedScanForBothReadsAndLeaksNoAutoCadObject).\nT2-F4 (INV-F3T2-24): WorkspaceBrowserViewModel.ReloadSummary() (misma ruta contenida, marca la superficie pendiente y materializa con userRequested true, respeta CanReadDrawing y ActionBlock, no llama a la navegacion ni cambia pestanas) y el boton Volver a leer (x:Name BrowserSurfaceReloadButton) dentro de BrowserSurface, con OnBrowserSurfaceReloadClick en el code-behind dentro de Contained. Pruebas VM: ReloadingFromAnyStateOfTheSurface... (Ready, NotFound, Rejected, Failed, Busy), ReloadingAFailedSurface..., ReloadingWhileTheDrawingIsBlocked..., ReloadingNeverChangesTheTabs..., APresentationNeverReadsAgainASurfaceThatIsReady..., ReloadingWithoutATabOrWithoutAPortIsInert; pruebas de vista TheSurfaceHasOneReloadButton... y TheReloadButtonRecoversASurfaceThatFailed...; guarda TheSurfaceHasTheReloadButtonHandledInTheCodeBehindInsideContained.\nT2-F5 (INV-F3T2-25): BrowserRackFact gana Section (int, por defecto -1); BrowserRackSummaries normaliza cada vista con RackViewCodec.Decode(kind, view, section) (vista canonica en minusculas cuando HasAddress, o el texto crudo no vacio) y ordena Frontal, Lateral, Planta y luego el resto en orden ordinal sin distinguir mayusculas; el adaptador pasa fact.Section. Pruebas en WorkspaceBrowserSummaryTests: ACamaThatPersistsNoViewShowsItsRealLateralView (Cama View null), EveryKindShowsTheCanonicalViews..., ANonCanonicalViewIsShownByItsCanonicalForm..., TheViewsAreOrderedFrontalLateralPlanta... y ACamaOfTheDrawingIsRemembered....\nT2-F6 (INV-F3T2-26): RebuildTabs compara por valor con la lista anterior (los items son record) y, si es igual, conserva la instancia y no notifica Tabs; un cambio real de nombre, de pinning o de pestana activa si la cambia. Pruebas VM: APresentationWithNoChangeKeepsTheInstanceOfTheTabsAndDoesNotNotifyThem, ARealChangeOfNameOrOfTheActiveTabReplacesTheTabsAndNotifiesThem, ARefreshOfThePanelWithTheSameSnapshotKeepsTheInstanceOfTheTabs; prueba de vista APresentationWithNoChangeDoesNotRegenerateTheContainersOfTheStrip.\nDecisiones menores: BrowserRackFact.Section lleva valor por defecto -1 para que las construcciones existentes sigan compilando; ReloadSummary no invoca el callback de cambio de pestana porque no cambia la pestana activa; el RED incluye el paso real de userRequested desde el view-model (el host lo ignora) segun el delta de la delegacion; una prueba de vista basada en ReadLocalValue no discriminaba (los valores de plantilla no son locales) y se sustituyo antes del commit RED por la guarda de fuente sobre el XAML. El parche de la implementacion completa verificada antes del RED esta en full-implementation-verified-before-red.patch.\nVerificacion previa al RED sin commit: con la implementacion completa los dos filtros dieron UI 222/222 y Core 902/902 en verde; despues se devolvio el producto a los esqueletos. RED: UI 222 con 16 fallidas y Core 902 con 14 fallidas, todas por asercion (revisadas una a una; ninguna por motivo ajeno). GREEN (arbol limpio salvo el propio commit): UI 222/222, Core 902/902 (minimos 203 y 891 superados); suites completas en Release: Core 16440 en verde; UI 1859 ejecutadas con 2 fallidas, solo PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers y ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne, que fallan solo en Release por #if DEBUG (declaradas), y 17 omitidas ya existentes. Builds Release --no-incremental de ambos proyectos de pruebas: 0 errores y ningun aviso CS/NU/NETSDK/MSB. Build del Plugin con -o a un directorio temporal bajo artifacts: 0 errores y 2 avisos, ambos MSB3277 (igual que la linea base).\nMapa por invariante: INV-F3T2-21 = T2-F2; INV-F3T2-22 = T2-F1; INV-F3T2-23 = T2-F3; INV-F3T2-24 = T2-F4; INV-F3T2-25 = T2-F5; INV-F3T2-26 = T2-F6. INV-F3T2-01 a 20 siguen cubiertas por las pruebas de la entrega anterior, que pasan sin cambios salvo la firma de ReadSummary, la forma de BrowserRackFact y las guardas citadas. Medidas SCENARIO-COST: no cambian de forma observable (la prueba de caracterizacion sigue escribiendo por ITestOutputHelper sin asercion de tiempo). GATE PASS.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-ui",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\"",
+      "Phase": "RED",
+      "TreeSha": "94f35bb97ebb541a36c27ca72e7849b52fe98b0b",
+      "ResultsFile": "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/tests/red-ui/red-ui.trx"
+    },
+    {
+      "RunRef": "red-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\"",
+      "Phase": "RED",
+      "TreeSha": "94f35bb97ebb541a36c27ca72e7849b52fe98b0b",
+      "ResultsFile": "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/tests/red-core/red-core.trx"
+    },
+    {
+      "RunRef": "green-ui",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\"",
+      "Phase": "GREEN",
+      "TreeSha": "206e0f7a3fe32fde2bba70ac663a74f60ee6a4f4",
+      "ResultsFile": "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/tests/green-ui/green-ui.trx"
+    },
+    {
+      "RunRef": "green-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\"",
+      "Phase": "GREEN",
+      "TreeSha": "206e0f7a3fe32fde2bba70ac663a74f60ee6a4f4",
+      "ResultsFile": "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/tests/green-core/green-core.trx"
+    },
+    {
+      "RunRef": "green-full-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build (tras dotnet build -c Release --no-incremental)",
+      "Phase": "RELEVANT",
+      "TreeSha": "206e0f7a3fe32fde2bba70ac663a74f60ee6a4f4",
+      "ResultsFile": "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/tests/green-full-core/green-full-core.trx"
+    },
+    {
+      "RunRef": "green-full-ui",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-build (tras dotnet build -c Release --no-incremental)",
+      "Phase": "RELEVANT",
+      "TreeSha": "206e0f7a3fe32fde2bba70ac663a74f60ee6a4f4",
+      "ResultsFile": "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/tests/green-full-ui/green-full-ui.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-ui",
+      "Selected": 222,
+      "Passed": 206,
+      "Failed": 16,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.APresentationNeverReadsAgainASurfaceThatIsReadyEvenAfterAReload",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.APresentationWithNoChangeKeepsTheInstanceOfTheTabsAndDoesNotNotifyThem",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.ARealChangeOfNameOrOfTheActiveTabReplacesTheTabsAndNotifiesThem",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.ARefreshOfThePanelWithTheSameSnapshotKeepsTheInstanceOfTheTabs",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.ReloadingAFailedSurfaceThatFailsAgainShowsTheNewReasonAndNothingEscapes",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.ReloadingFromAnyStateOfTheSurfaceAsksThePortAgainAsAUserActionAndPresentsTheNewResult(first: Busy)",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.ReloadingFromAnyStateOfTheSurfaceAsksThePortAgainAsAUserActionAndPresentsTheNewResult(first: Failed)",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.ReloadingFromAnyStateOfTheSurfaceAsksThePortAgainAsAUserActionAndPresentsTheNewResult(first: NotFound)",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.ReloadingFromAnyStateOfTheSurfaceAsksThePortAgainAsAUserActionAndPresentsTheNewResult(first: Ready)",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.ReloadingFromAnyStateOfTheSurfaceAsksThePortAgainAsAUserActionAndPresentsTheNewResult(first: Rejected)",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.ReloadingNeverChangesTheTabsAndNeverReachesTheNavigationNorTheHost",
+        "RackCad.UI.Tests.WorkspaceBrowserViewModelTests.ReloadingWhileTheDrawingIsBlockedAsksNothingAndLeavesTheSurfacePendingUntilTheNextPresentation",
+        "RackCad.UI.Tests.WorkspaceBrowserViewTests.APresentationWithNoChangeDoesNotRegenerateTheContainersOfTheStrip",
+        "RackCad.UI.Tests.WorkspaceBrowserViewTests.TheActiveTabIsDistinguishedFromTheOthersOnTheGeneratedBorder",
+        "RackCad.UI.Tests.WorkspaceBrowserViewTests.TheReloadButtonRecoversASurfaceThatFailedAndContainsAFailingReload",
+        "RackCad.UI.Tests.WorkspaceBrowserViewTests.TheSurfaceHasOneReloadButtonThatAsksAgainForTheSummaryOfTheActiveTabAsAUserAction"
+      ]
+    },
+    {
+      "RunRef": "red-core",
+      "Selected": 902,
+      "Passed": 888,
+      "Failed": 14,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceBrowserHostGuardTests.AFailureOfTheSummaryIsContainedLoggedOnceAndReturnedAsTheFailedState",
+        "RackCad.Tests.WorkspaceBrowserHostGuardTests.ReadSummaryAnswersInTheApprovedOrderWithAValueAndWithoutEffects",
+        "RackCad.Tests.WorkspaceBrowserHostGuardTests.TheControllerOpensTheWindowOnlyAroundTheNoticeOfADrainWithTryAndFinallyAndOnlyWhenTheHostExists",
+        "RackCad.Tests.WorkspaceBrowserHostGuardTests.TheDefaultBorderOfATabIsSetByTheStyleAndNotByAttributesSoTheTriggerOfTheActiveTabHasEffect",
+        "RackCad.Tests.WorkspaceBrowserHostGuardTests.TheFactsAdapterKeepsOneIntegratedScanForBothReadsAndLeaksNoAutoCadObject",
+        "RackCad.Tests.WorkspaceBrowserHostGuardTests.TheHostHasOneBooleanDrainWindowThatOnlyTheTwoNoticeMethodsChange",
+        "RackCad.Tests.WorkspaceBrowserHostGuardTests.TheSurfaceHasTheReloadButtonHandledInTheCodeBehindInsideContained",
+        "RackCad.Tests.WorkspaceBrowserSummaryTests.ACamaOfTheDrawingIsRememberedWithItsRealViewAndServedFromMemoryTheSecondTime",
+        "RackCad.Tests.WorkspaceBrowserSummaryTests.ACamaThatPersistsNoViewShowsItsRealLateralView(kind: \"Cama\")",
+        "RackCad.Tests.WorkspaceBrowserSummaryTests.ANonCanonicalViewIsShownByItsCanonicalFormAndOneThatHasNoAddressByItsRawNonBlankText",
+        "RackCad.Tests.WorkspaceBrowserSummaryTests.EveryKindShowsTheCanonicalViewsOfItsPersistedSyntaxAndNeverMoreThanTheCodecSays",
+        "RackCad.Tests.WorkspaceBrowserSummaryTests.TheViewsAreOrderedFrontalLateralPlantaAndThenTheRestOrdinallyIgnoringCase"
+      ]
+    },
+    {
+      "RunRef": "green-ui",
+      "Selected": 222,
+      "Passed": 222,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-core",
+      "Selected": 902,
+      "Passed": 902,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-full-core",
+      "Selected": 16440,
+      "Passed": 16440,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-full-ui",
+      "Selected": 1876,
+      "Passed": 1857,
+      "Failed": 2,
+      "Skipped": 17,
+      "FailedTests": [
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne",
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers"
+      ]
+    }
+  ],
+  "Evidence": [
+    "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/tests/red-ui, red-core, green-ui, green-core, green-full-core y green-full-ui: archivos trx y console.txt de cada corrida",
+    "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/tests/green-build-core/build.txt y green-build-ui/build.txt: builds Release --no-incremental de las dos suites",
+    "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/tests/green-plugin/build.txt y red-plugin/build.txt: build Release del Plugin a un directorio temporal",
+    "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/full-implementation-verified-before-red.patch: parche de la implementacion completa verificada antes del RED",
+    "RED y GREEN: el arbol de la corrida coincide con el contenido del commit (RED corrido sobre el arbol limpio del commit; GREEN corrido sobre el mismo contenido justo antes del commit)"
+  ],
+  "UnexpectedFindings": [
+    "Copy-Item conserva la fecha de modificacion del origen y el build incremental no recompila: al intercambiar esqueleto e implementacion se actualizo la fecha de cada archivo y las corridas se confirmaron por sus resultados (RED fallido, GREEN en verde)."
+  ],
+  "KnownLimitations": [
+    "Sin AutoCAD: no se demostro en el host que un rack borrado (ERASE sin PURGE) responda NotFound, ni que la ventana del drenaje cubra los avisos reales de DocumentActivated y EnteringQuiescentState; solo estan demostrados por pruebas sin host y guardas de fuente.",
+    "La prueba de vista de T2-F1 comprueba el Border generado con 2 pestanas, pero no la apariencia pintada en pantalla.",
+    "La compilacion de pruebas de UI suma un aviso xUnit2031 en WorkspaceBrowserViewTests.cs linea 249 (mismo patron que otros ya existentes en el proyecto); no es CS/NU/NETSDK/MSB y no se pudo corregir sin tocar tests/ tras el RED.",
+    "Observacion no corregida aqui (analysis.md): con PICKADD=0, partiendo de Uno(B), activar a mano la pestana A y pulsar Seleccionar no avanza el eco, y al picar B la pestana no sigue a B; exige tocar el nucleo o el eco.",
+    "CI del SHA exacto, verificacion del Controller, nc1..nc3 y los cuatro jobs en success quedan a cargo de la sesion."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "La sesion ejecuta la CI del SHA exacto GREEN y la verificacion del Controller.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

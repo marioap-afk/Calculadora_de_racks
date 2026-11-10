@@ -5990,3 +5990,15 @@ revisar:
 **Decisión:** F3-E09. `attempts` pasa a 2 de 3. Contrato en `F3-T2-BROWSER-UI/coordinator/gate-contract-attempt2.json`: 16 rutas exactas, INV-F3T2-21 a 26 y mínimos 203 y 891. `AuthorityRevision` `33869690cef828dbf011afb9a2fe05af9250b375`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 108. F3-T2 cerrada y gate F3 cerrado con limitaciones
+
+**F3-T2:** producto `EXECUTION_VERIFIED` sobre `206e0f7a` (verificación `c324`, 14/14), CI 42860103890 4/4. nc1 `09b5` CONTROL NOT PASSED y `SATISFIED_UNDER_I64_IDENTITY_BRIDGE` (F3-E10); nc2 `dc56` y nc3 `f4c4` CONTROL PASS. Paquete: `F3-T2-BROWSER-UI/task-close-package.md`.
+
+**Pruebas:** Core 16440/16440; UI 1859 y 17 omitidas.
+
+**Escenarios 4, 5 y 6:** automatizados y en verde; coste caracterizado sin umbrales (`F3-BROWSER/scenario-harness.json`).
+
+**Gate:** F3 = CLOSED / PASS WITH LIMITATIONS (F3-E13, `F3-BROWSER/gate-close.md`). `attempts` 2 de 3. Sin AutoCAD: F3 no tiene hito de host. Lectura de resumen tras el drenaje aclarada en IC-04.
+
+**Siguiente:** F4 necesita contrato y presupuesto propios.

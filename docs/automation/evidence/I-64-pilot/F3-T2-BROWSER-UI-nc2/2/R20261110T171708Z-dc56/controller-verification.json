@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F3-T2-BROWSER-UI",
+  "RunId": "R20261110T171708Z-dc56",
+  "DelegationRunId": "R20261110T160525Z-e2f9",
+  "WorkRunId": "R20261110T160921Z-4b73",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false; OutputWrittenUtc 2026-11-10T16:59:41Z is after StartUtc 2026-11-10T16:09:33Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F3-T2-BROWSER-UI, RunId R20261110T160921Z-4b73, DelegationRunId R20261110T160525Z-e2f9, Attempt 2, expected BaseSha and worktree; OutputWrittenUtc is after cession start."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git diff --name-only AuthorityRevision BaseSha lists only docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F3-T2-BROWSER-UI/coordinator/gate-contract-attempt2.json, and docs/automation/state/I-64.yml; all are declared UNIT_DOC, with no EXTERNAL or UNIT_CHANGE paths. origin/main is 812baf879612320653094a8aaf46aca0bac81383; EXTERNAL authorities were read there."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json agree on all 26 invariants, 28 stop conditions, authorities, forbidden scope (89 entries), and both RequiredTests. Delegation AllowedWriteScope has 15 entries and is a subset of the contract's 16 entries."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current is architecture/workspace-persistente-rackcad; git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 206e0f7a3fe32fde2bba70ac663a74f60ee6a4f4. BaseSha and RedSha are ancestors of CurrentSha; handoff worktree matches the current root."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work RemoteFacts records ls-remote=CurrentSha and origin/main=MainSha=812baf879612320653094a8aaf46aca0bac81383; local git rev-parse origin/main matches MainSha. No main movement is recorded."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists 13 paths. src/RackCad.Application/Workspace/BrowserRackSummaries.cs is outside the delegation's 15 AllowedWriteScope entries, although present in the contract's 16 entries. The other 12 changed paths are in the delegation scope. This triggers P-03."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v on the input gate-contract.json reports .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 42860103890 is a completed push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; all four required jobs are success. RedRun 42855947104 is a completed push on the same ref at RedSha; Tests (Domain + Application) failed as required for RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX FQN className.name counts: Current UI 222 passed and Core 902 passed, meeting minima 203/891 and matching handoff green-ui/core 222/222 and 902/902. Red UI has 222 selected, 206 passed, 16 failed; Red Core has 902 selected, 888 passed, 14 failed; these counts match handoff red-ui/core and required tests fail in RED. RT from git diff BaseSha RedSha -- tests/ is 5 paths; git diff RedSha CurrentSha -- tests/ is empty. RT is contained in prior ChainRedFiles, so the union remains the same 8 paths: tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs, tests/RackCad.Tests/Workspace/WorkspaceBrowserSummaryTests.cs, tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs, tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs, tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserScenarioHarnessTests.cs, tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserSummaryPortDouble.cs, tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewModelTests.cs, tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows both commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, consistent with effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 and effort high. Work relay records launch alias sonnet, effective model claude-sonnet-5-5, and effective effort high from 214 assistant turns."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions, and RecommendedNextAction against the AUTOMATION_PLAN 16.10 term list; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report 0 permission denials, 6 tool errors with none pending, and no usage-limit warning."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "P-03"
+  ],
+  "Findings": [
+    "The actual diff changes src/RackCad.Application/Workspace/BrowserRackSummaries.cs, which the gate contract permits but the accepted delegation AllowedWriteScope omits."
+  ],
+  "RecommendedNextAction": "Update the delegation scope to include BrowserRackSummaries.cs, then rerun the affected verification."
+}

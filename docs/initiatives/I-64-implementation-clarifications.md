@@ -59,3 +59,13 @@ Cambió el mecanismo. El contrato observable y de seguridad no cambió.
 **Autoridad:** la misma ratificación, decisión C-F3-04.
 
 D-08 y D-15 piden que un sistema aún no integrado ofrezca una pestaña de resumen con «Abrir en editor clásico». La entrega es por etapas: F3 da la superficie ligera de resumen y navegación, y la acción de abrir el editor clásico queda para **F5**. F3 no incluye ningún lanzamiento temporal de comandos. **La obligación de producto de D-08 y D-15 sigue vigente hasta su entrega en F5.**
+
+## IC-04. La lectura de resumen de F3 no es una operación del drenaje
+
+**Autoridad:** decisión C-F3-02 del Owner («resolved lazily when the active tab surface is materialized») y disposición F3-E09 de la sesión. Se comunica al Owner.
+
+**Texto afectado de la Proposal V5:** P-03, P-04 y D-04.
+
+**Aclaración:** el drenaje conserva exactamente sus operaciones de D-04. El resumen del rack de la pestaña que se materializa se lee después, en el aviso que el controlador emite cuando el drenaje ya terminó, con el documento en reposo y una sola vez por materialización. Una lectura en un aviso de cambio de documento o de comando responde `Busy` sin bloquear el documento y se reintenta en el drenaje siguiente. Un clic del usuario lee directamente, con las mismas comprobaciones de documento, comando y sesión.
+
+**Alcance:** solo el resumen de F3. No autoriza otras lecturas del DWG en avisos o manejadores.
