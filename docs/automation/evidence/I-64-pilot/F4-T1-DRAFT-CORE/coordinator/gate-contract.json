@@ -1,0 +1,339 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-64",
+  "Gate": "F4",
+  "TaskId": "F4-T1-DRAFT-CORE",
+  "Objective": "Implementar el nucleo puro de los borradores de F4 en RackCad.Application.Workspace.Drafts: DraftSession generica sobre el estado editable existente, con StaleBase, InitialDraftState, CurrentDraftState, texto pendiente y estado; dirty por comparador y por texto pendiente; fronteras bloqueables y no bloqueables con compromiso en dos fases; comparacion de StaleBase con las reglas de D-12; reconciliacion sin fusion; maquina de estados de Actualizar con la clasificacion de D-13; registro por (SessionId, RackId) con retirada y aviso de perdida; y politica de veto de cierre desde memoria. Sin AutoCAD, sin WPF, sin escrituras y sin suscripciones.",
+  "AuthorityRevision": "80e139859e0455ceb5a906a799a20b796e0cb8db",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Section": "D-04, D-10, D-12, D-13, D-14 y D-17; invariantes INV-06, INV-07, INV-11, INV-18, INV-20, INV-21, INV-25, INV-26, INV-28, INV-29 e INV-30; section 11 F4",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "estado vigente completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "section 109 y siguientes",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4-gate-contract-package.md",
+      "Section": "archivo completo; su seccion 6 fija esta tarea",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-implementation-clarifications.md",
+      "Section": "IC-01 a IC-05",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f3-ratification-f4-authorization.md",
+      "Section": "archivo completo: orden del Owner",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/f4-dispositions.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T1-DRAFT-CORE/coordinator/gate-contract.json",
+      "Section": "este contrato",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/SessionId.cs",
+      "Section": "identidad de sesion; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/adr/0032-selectivo-pendiente-comprometido-y-autoridades-por-fondo.md",
+      "Section": "D5 y D6",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0029-contrato-funcional-comun-de-ventanas-wpf.md",
+      "Section": "D11 y D13",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "section 16.1 a section 16.8",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "section 4 (A1-A8) y section 10 (nc1..nc4)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Section": "celdas medidas y vigentes para Controller y Worker",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "relevo, Git e integracion",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftClosePolicy.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftStaleBaseTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+    "src/RackCad.Application/Workspace/BridgeSource.cs",
+    "src/RackCad.Application/Workspace/BrowserRackSummaries.cs",
+    "src/RackCad.Application/Workspace/BrowserSession.cs",
+    "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+    "src/RackCad.Application/Workspace/Hints.cs",
+    "src/RackCad.Application/Workspace/IHostEventSource.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceBridgeLink.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+    "src/RackCad.Application/Workspace/NavigationActions.cs",
+    "src/RackCad.Application/Workspace/NavigationEcho.cs",
+    "src/RackCad.Application/Workspace/NavigationFacts.cs",
+    "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+    "src/RackCad.Application/Workspace/NavigationTargets.cs",
+    "src/RackCad.Application/Workspace/SelectionContext.cs",
+    "src/RackCad.Application/Workspace/SessionId.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostPolicy.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostSnapshot.cs",
+    "src/RackCad.Application/Workspace/WorkspaceInstrumentation.cs",
+    "src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSelectionRead.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/CustomProperties/",
+    "src/RackCad.Application/Diagnostics/",
+    "src/RackCad.Application/Drawing/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Formatting/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Layout/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/RackFrames/",
+    "src/RackCad.Application/Settings/",
+    "src/RackCad.Application/StructuralAnalysis/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/Views/",
+    "src/RackCad.Application/BlockNaming.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/StructuralAnalysis/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "docs/",
+    ".github/",
+    "eng/",
+    "tools/",
+    "assets/",
+    "deploy/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md"
+  ],
+  "Invariants": [
+    "INV-F4T1-01 (D-10, ADR-0029 D11): DraftSession<TState> es generico sobre el estado editable que ya existe en Application; T1 no define ningun estado de sistema ni un modelo paralelo. Dirty usa un IEqualityComparer<TState> inyectado sobre estados materializados, nunca JSON crudo ni texto de sobres.",
+    "INV-F4T1-02 (D-10, INV-26): IsDirty es verdadero si y solo si el comparador dice que CurrentDraftState es distinto de InitialDraftState o hay texto pendiente. Dos estados iguales para el comparador cuyo JSON de origen difiere dan Limpio.",
+    "INV-F4T1-03 (D-10): una DraftSession solo nace mediante DraftRegistry.Begin(session, rackId, read) con el resultado de UNA lectura de intencion que trae a la vez StaleBase, admision e InitialDraftState; CurrentDraftState empieza igual a InitialDraftState. Sin constructor publico. Una lectura no admitida no crea borrador y devuelve el diagnostico de admision como valor. Una preview no tiene ninguna via para crear borrador ni StaleBase.",
+    "INV-F4T1-04 (D-10, D-12): toda recarga sustituye StaleBase e InitialDraftState a la vez, desde un unico resultado de lectura. DiscardAndReload(read) sustituye tambien CurrentDraftState y vacia el texto pendiente. KeepMineOnCurrentVersion(read, confirmed) sustituye base e inicial y conserva CurrentDraftState y el texto pendiente solo con confirmed verdadero; sin confirmacion no cambia nada. Sin fusion automatica.",
+    "INV-F4T1-05 (D-10, ADR-0032 D6, INV-18): texto pendiente por clave de campo, guardado tal cual. Frontera bloqueable (TabChange, RackChange, Actualizar): compromiso en dos fases, primero validar todo el texto pendiente con el validador del adaptador sin mutar nada; si alguno es invalido se aborta, no se aplica nada y todo el texto pendiente queda igual; si todo es valido se aplica todo en un solo paso al CurrentDraftState y se vacia el pendiente. Frontera no bloqueable (DocumentChange, HidePanel, Dematerialize, DocumentClose): no compromete, no repara y conserva el texto pendiente tal cual.",
+    "INV-F4T1-06 (D-12, INV-28, INV-29): la StaleBase guarda, por clave de definicion, una atribucion de cuatro valores (Mutable, ReadOnly, Blocking, NotMember) con View y Section, sin la division Redraw/Erase; el texto crudo exacto SOLO de cada sobre miembro interpretable; el texto crudo del registro de variables cuando el adaptador lo aporte; y NUNCA recuentos de referencias. La comparacion recorre la UNION de claves de la base y de la relectura, y una clave ausente equivale a NotMember. MATCH solo si todo es identico por comparacion ordinal exacta, sin normalizacion; si no, devuelve la lista de diferencias por clave y tipo (atribucion, View, Section, texto del sobre, registro).",
+    "INV-F4T1-07 (D-12): la StaleBase solo sirve para detectar cambios externos: ningun miembro publico construye estado editable, borrador ni datos de escritura a partir de ella.",
+    "INV-F4T1-08 (D-10, O-01, D-04): MarkPossiblyStale es una marca ortogonal: no cambia el estado editable, el dirty ni el texto pendiente. NeedsLazyReload es verdadero solo para un borrador Limpio, marcado y sin operacion en curso, Conflicto, Desconocido ni Error. Un borrador Dirty marcado sigue Dirty y marcado. Toda recarga borra la marca.",
+    "INV-F4T1-09 (D-13): Actualizar como maquina de estados. Como maximo una operacion Aplicando en todo el registro. TryBeginApply solo procede desde Limpio o Dirty sin texto pendiente y devuelve el estado previo. Clasificacion por frontera: NotAppliedConflict, NotAppliedAdmission, NotAppliedPreflight y NotAppliedFailure conservan el borrador con su causa (Conflicto en el primero, el estado previo en los demas); CommitThrew deja Desconocido con origen CommitThrew; Applied y AppliedWithWarnings exigen el resultado de la relectura de POST y dejan base e inicial de esa relectura, CurrentDraftState igual a InitialDraftState, sin pendiente, Limpio, y en el segundo conservan los avisos; AppliedPostRereadFailed deja Desconocido con origen PostReread. Nunca se supone aplicado: sin relectura no hay Limpio.",
+    "INV-F4T1-10 (D-13, O3-06): CheckNow(relectura) solo aplica a Desconocido con origen CommitThrew: si la relectura da MATCH con la StaleBase anterior al intento, el borrador recupera exactamente el estado previo (Limpio o Dirty) y su contenido; si no, pasa a Conflicto. Desconocido con origen PostReread no ofrece CheckNow: se resuelve con DiscardAndReload.",
+    "INV-F4T1-11 (D-12): Conflicto conserva el borrador y solo se sale con DiscardAndReload o con KeepMineOnCurrentVersion confirmado. No hay fusion automatica.",
+    "INV-F4T1-12 (D-10 vida, D-03, INV-07, D-17): DraftRegistry por (SessionId, RackId) con comparacion ordinal del RackId, solo en memoria: el mismo RackId en dos sesiones da borradores independientes; Discard quita el borrador sin escribir nada; RetireSession quita todos los de la sesion, no se resucita la sesion y devuelve un aviso de perdida con la lista de racks si alguno estaba dirty o con texto pendiente. Los borradores no dependen de ninguna superficie: sobreviven a la desmaterializacion.",
+    "INV-F4T1-13 (D-17, INV-20): EvaluateClose(session) decide solo desde memoria: Veto con la lista de racks mientras algun borrador de la sesion este dirty o tenga texto pendiente; cada intento se evalua de nuevo y repetirlo no es consentimiento; tras DiscardAll(session) el siguiente cierre es Allow. La decision no depende del modo degradado de la sesion.",
+    "INV-F4T1-14 (D-17, INV-25): EnterError(motivo) deja el borrador en Error conservando CurrentDraftState, texto pendiente y StaleBase; se sale con DiscardAndReload o Discard.",
+    "INV-F4T1-15: cada operacion devuelve un valor que dice que cambio; el flujo normal no lanza excepciones; solo un argumento null o vacio es error de programacion.",
+    "INV-F4T1-16 (pureza, INV-21): los tipos nuevos viven en RackCad.Application.Workspace.Drafts, sin tipos de AutoCAD, WPF, Plugin ni UI, sin E/S, registro ni ajustes, sin eventos, tareas, async, hilos, temporizadores ni estado estatico mutable. En su codigo no aparecen Transaction, LockDocument, Database, Commit( ni ComputedParameter, Metric, ProjectSummary, TotalRacks, Aggregat, Provider o Bom. Solo usan SessionId del namespace padre. La guarda nueva WorkspaceDraftBoundaryTests aplica al subnamespace lo mismo que WorkspaceModelBoundaryTests aplica al namespace padre: sin tipos llamados Subscription, Editor, Tab ni Handler, sin miembros de metricas, sin AutoCAD ni persistencia.",
+    "INV-F4T1-17 (alcance): solo cambian las rutas del AllowedWriteScope; ningun archivo existente cambia. Fuera de alcance: lectura del host, admision real, veto real y aviso en AutoCAD (T2), interfaz (T3) y mutacion (T4).",
+    "INV-F4T1-18 (cobertura RED/GREEN): RED de comportamiento real que compila y falla por asercion, sin pruebas artificiales, que cubre como minimo: dirty por comparador y por texto pendiente; JSON de origen distinto con estado igual da Limpio; nacimiento solo desde una lectura admitida; recargas que sustituyen base e inicial a la vez; las dos fronteras con texto invalido; cada regla de la StaleBase (union de claves, ausente igual a NotMember, otro rack actualizado, otro rack insertado, quitar un fondo, recuentos de referencias que cambian, texto de un no miembro que cambia, View o Section que cambian); la tabla completa de D-13 y los dos origenes de Desconocido; CheckNow en ambos sentidos; una sola operacion Aplicando; aislamiento entre sesiones; retirada con aviso de perdida; veto repetido y descarte; Error; y la guarda nueva con su deteccion de cada familia prohibida."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+      "MinSelected": 902,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "gate-contract valido; delegacion del Controller valida, aceptacion A1-A8 y nc4 (primera delegacion de la cadena F4-T1) antes del Worker.",
+    "AllowedWriteScope de la delegacion = exactamente los diez archivos nuevos del contrato.",
+    "Commit RED y push propios antes del GREEN: pruebas que compilan y fallan por asercion; ChainRedSha y ChainRedFiles acreditados.",
+    "Commit GREEN y push con cambios solo dentro del AllowedWriteScope; ningun archivo del RED se debilita o elimina.",
+    "Filtro FullyQualifiedName~RackCad.Tests.Workspace en verde sobre el GREEN; suite Core completa en verde; build Release sin avisos nuevos.",
+    "CI push del SHA exacto GREEN con los cuatro jobs en success.",
+    "worker-handoff.json conforme al esquema con RED, GREEN, alcance real, trailer, conteo del filtro, mapa evidencia-por-invariante y OpenQuestions vacia salvo ambiguedad material real.",
+    "Controller verification valida; nc1..nc4 segun README section 10; A-4, A-6 y A-13 solo con sus condiciones aceptadas; revision directa de la sesion y revision adversarial independiente del diff (F4-E02).",
+    "Sin AutoCAD: nucleo puro."
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive or irreversible action not authorized"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch or worktree ownership conflict"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify AuthorityRevision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "origin/main movement invalidates exact-SHA assumptions; apply AUTOMATION_PLAN 16.7"
+    },
+    {
+      "Id": "S-14",
+      "Text": "I-64 Freeze or contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "config.toml no longer matches accepted Snapshot A, B, C or D"
+    },
+    {
+      "Id": "P-02",
+      "Text": "foreign live participant, unattributable process or more than one open delegation"
+    },
+    {
+      "Id": "P-03",
+      "Text": "delegation outside gate contract"
+    },
+    {
+      "Id": "P-04",
+      "Text": "BLOCKED cap reached"
+    },
+    {
+      "Id": "P-05",
+      "Text": "invocation differs from accepted delegation package"
+    },
+    {
+      "Id": "P-06",
+      "Text": "usage or credit-limit warning"
+    },
+    {
+      "Id": "P-07",
+      "Text": "another invocation would exceed the invocation budget"
+    },
+    {
+      "Id": "P-08",
+      "Text": "responsible session operates the worktree during cession"
+    },
+    {
+      "Id": "F4T1-C01",
+      "Text": "a type of AutoCAD or WPF, a host port, persistence or a system-specific editable state would be required in the core"
+    },
+    {
+      "Id": "F4T1-C02",
+      "Text": "host reading, real admission, UI, a command or any mutation (F4-T2, F4-T3, F4-T4) would be required"
+    },
+    {
+      "Id": "F4T1-C03",
+      "Text": "an existing file would have to change, or an existing guard would have to be weakened"
+    },
+    {
+      "Id": "F4T1-C04",
+      "Text": "the frozen semantics of D-10, D-12, D-13 or D-17 would have to change"
+    },
+    {
+      "Id": "F4T1-C05",
+      "Text": "the task evaluates Long-horizon"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md: celda write-commit-push medida por U-04; effort high medido y usada como Worker real",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/process/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "process",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "sonda neutra de F3 R20261110T134835Z-3082 (PASS; gpt-6-luna/high efectivos; read-only; oraculo Git exacto; sin aviso de uso; config.toml SNAPSHOT F antes y despues) sobre codex-cli 0.167.0-alpha.3.2, bin 5449c1f0f26f1f98, codex.exe SHA-256 4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17; acreditacion del binario: sonda R20261110T034758Z-6a68",
+      "VerifiedOn": "2026-11-10"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Sesion principal de I-64 (Claude) por orden del Owner I-64 F3 RATIFICATION / F4 AUTHORIZATION (docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f3-ratification-f4-authorization.md)",
+  "IssuedUtc": "2026-11-10T18:07:52Z"
+}

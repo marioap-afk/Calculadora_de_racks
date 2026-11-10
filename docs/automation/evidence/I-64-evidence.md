@@ -6026,3 +6026,9 @@ revisar:
 **Decisiones del Owner pendientes:** C-F4-01 y C-F4-03 antes de T2; C-F4-07 antes de T3; C-F4-06 antes de Smoke-2.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 111. Contrato de F4-T1-DRAFT-CORE
+
+**Contrato:** `I-64-pilot/F4-T1-DRAFT-CORE/coordinator/gate-contract.json`, con diez archivos nuevos en `Workspace/Drafts/` y sus pruebas, 18 invariantes y ningún archivo existente. `AuthorityRevision` `80e139859e0455ceb5a906a799a20b796e0cb8db`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`. Attempt 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
