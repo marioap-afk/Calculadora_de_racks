@@ -9,12 +9,17 @@ namespace RackCad.Application.Workspace.Drafts
     {
         public static DraftAdmission Admitted => new(true, null);
 
-        public static DraftAdmission Rejected(string diagnostic) => new(false, diagnostic);
+        public static DraftAdmission Rejected(string diagnostic)
+        {
+            if (string.IsNullOrEmpty(diagnostic)) throw new ArgumentException("An admission diagnostic is required.", nameof(diagnostic));
+            return new DraftAdmission(false, diagnostic);
+        }
     }
 
     /// <summary>
     /// The result of ONE logical read of the edit intention (D-10): the stale base, the admission and the initial draft
-    /// state all come from the same read. It can only be built through <see cref="Admitted"/> or <see cref="NotAdmitted"/>.
+    /// state all come from the same read. It can only be built through <see cref="Admitted"/> or <see cref="NotAdmitted"/>;
+    /// a navigation preview has no way to produce one.
     /// </summary>
     public sealed class DraftIntentRead<TState>
     {
@@ -29,18 +34,26 @@ namespace RackCad.Application.Workspace.Drafts
 
         public bool IsAdmitted => Admission.IsAdmitted;
 
+        /// <summary>The base of the read; null when the read was not admitted.</summary>
         public DraftStaleBase? StaleBase { get; }
 
+        /// <summary>The editable state materialized from the same read; default when the read was not admitted.</summary>
         public TState? InitialState { get; }
 
-        public static DraftIntentRead<TState> Admitted(DraftStaleBase staleBase, TState initialState) =>
-            new(DraftAdmission.Admitted, staleBase, initialState);
+        public static DraftIntentRead<TState> Admitted(DraftStaleBase staleBase, TState initialState)
+        {
+            if (staleBase == null) throw new ArgumentNullException(nameof(staleBase));
+            return new DraftIntentRead<TState>(DraftAdmission.Admitted, staleBase, initialState);
+        }
 
         public static DraftIntentRead<TState> NotAdmitted(string diagnostic) =>
             new(DraftAdmission.Rejected(diagnostic), null, default);
     }
 
-    /// <summary>Status of a draft (D-10). Clean and Dirty are derived; the other four are explicit.</summary>
+    /// <summary>
+    /// Status of a draft (D-10). Clean and Dirty are derived; the other four are explicit. "Possibly stale" is NOT a
+    /// status: it is an orthogonal mark (<see cref="DraftSession{TState}.IsPossiblyStale"/>).
+    /// </summary>
     public enum DraftStatus
     {
         Clean,
@@ -73,7 +86,8 @@ namespace RackCad.Application.Workspace.Drafts
     public static class DraftBoundaries
     {
         /// <summary>True for the user-initiated boundaries that run the two-phase commit of the pending text (ADR-0032 D6).</summary>
-        public static bool IsBlocking(DraftBoundary boundary) => false;
+        public static bool IsBlocking(DraftBoundary boundary) =>
+            boundary == DraftBoundary.TabChange || boundary == DraftBoundary.RackChange || boundary == DraftBoundary.Update;
     }
 
     /// <summary>Verdict of the adapter's validator for one pending field.</summary>
@@ -87,7 +101,9 @@ namespace RackCad.Application.Workspace.Drafts
     /// <summary>A pending field that failed validation at a blocking boundary.</summary>
     public readonly record struct DraftInvalidField(string FieldKey, string? Message);
 
-    /// <summary>What the adapter of a system contributes to the two-phase commit (ADR-0032 D6).</summary>
+    /// <summary>
+    /// What the adapter of a system contributes to the two-phase commit (ADR-0032 D6). The core never interprets the text.
+    /// </summary>
     public interface IDraftPendingTextAdapter<TState>
     {
         /// <summary>Phase one: validates one pending text without mutating anything.</summary>
@@ -99,8 +115,13 @@ namespace RackCad.Application.Workspace.Drafts
 
     public enum DraftBoundaryDecision
     {
+        /// <summary>A blocking boundary: nothing was pending, or all the pending text was valid and was applied in one step.</summary>
         Proceeded,
+
+        /// <summary>A blocking boundary with an invalid field: nothing was applied and all the pending text is untouched.</summary>
         Aborted,
+
+        /// <summary>The pending text was kept as is: a non-blocking boundary (never commits, never repairs), or a draft that cannot commit now.</summary>
         Kept,
     }
 
@@ -119,6 +140,7 @@ namespace RackCad.Application.Workspace.Drafts
 
         public DraftBoundaryDecision Decision { get; }
 
+        /// <summary>True when the pending text was applied to the current draft state.</summary>
         public bool CurrentStateChanged { get; }
 
         public IReadOnlyList<DraftInvalidField> InvalidFields { get; }
@@ -127,6 +149,8 @@ namespace RackCad.Application.Workspace.Drafts
     public enum DraftEditStatus
     {
         Updated,
+
+        /// <summary>The draft is Applying, Unknown, in Error or no longer registered, so nothing changed.</summary>
         NotEditable,
     }
 
@@ -136,8 +160,14 @@ namespace RackCad.Application.Workspace.Drafts
     public enum DraftReloadStatus
     {
         Reloaded,
+
+        /// <summary>The read was not admitted: nothing changed and the admission carries the diagnostic.</summary>
         NotAdmitted,
+
+        /// <summary>KeepMineOnCurrentVersion without confirmation: nothing changed.</summary>
         NotConfirmed,
+
+        /// <summary>The draft is Applying, no longer registered or in a status this operation does not serve: nothing changed.</summary>
         NotAllowed,
     }
 
@@ -158,83 +188,362 @@ namespace RackCad.Application.Workspace.Drafts
 
     public enum DraftCheckStatus
     {
+        /// <summary>The draft is not Unknown with origin CommitThrew: nothing changed.</summary>
         NotApplicable,
+
+        /// <summary>The re-read matches the base before the attempt: the draft recovered its previous status and content.</summary>
         Recovered,
+
+        /// <summary>The re-read differs: the draft is now in Conflict.</summary>
         Conflict,
     }
 
     public readonly record struct DraftCheckResult(DraftCheckStatus Status, DraftStatus DraftStatus, IReadOnlyList<DraftDifference> Differences);
 
-    /// <summary>RED skeleton of the generic draft: it holds the first state and every operation is inert.</summary>
-    public sealed class DraftSession<TState>
+    internal interface IDraftEntry
     {
+        SessionId Session { get; }
+
+        string RackId { get; }
+
+        bool IsDirty { get; }
+
+        bool HasPendingText { get; }
+
+        DraftStatus Status { get; }
+
+        void Detach();
+    }
+
+    /// <summary>
+    /// The draft of one rack in one session (D-10): stale base, initial and current draft state, pending text and status,
+    /// all in memory. It is generic over the editable state that already exists in Application; the core defines no
+    /// state of any system. It can only be born through <c>DraftRegistry.Begin</c>.
+    /// </summary>
+    public sealed class DraftSession<TState> : IDraftEntry
+    {
+        private readonly IEqualityComparer<TState> _comparer;
+        private readonly SortedDictionary<string, string> _pending = new(StringComparer.Ordinal);
+        private DraftRegistry? _owner;
+        private DraftStatus? _explicitStatus;
+        private DraftStatus _statusBeforeAttempt;
+
         internal DraftSession(DraftRegistry owner, SessionId session, string rackId, DraftStaleBase staleBase, TState initialState, IEqualityComparer<TState> comparer)
         {
+            _owner = owner;
             Session = session;
             RackId = rackId;
             StaleBase = staleBase;
             InitialDraftState = initialState;
             CurrentDraftState = initialState;
+            _comparer = comparer;
         }
 
         public SessionId Session { get; }
 
         public string RackId { get; }
 
-        public DraftStaleBase StaleBase { get; }
+        public DraftStaleBase StaleBase { get; private set; }
 
-        public TState InitialDraftState { get; }
+        public TState InitialDraftState { get; private set; }
 
-        public TState CurrentDraftState { get; }
+        public TState CurrentDraftState { get; private set; }
 
-        public IReadOnlyDictionary<string, string> PendingText => new Dictionary<string, string>();
+        /// <summary>The pending text by field key, kept exactly as given. A snapshot ordered by key (ordinal).</summary>
+        public IReadOnlyDictionary<string, string> PendingText => new Dictionary<string, string>(_pending, StringComparer.Ordinal);
 
-        public bool HasPendingText => false;
+        public bool HasPendingText => _pending.Count > 0;
 
-        public bool IsDirty => false;
+        /// <summary>True when the comparator says the current state differs from the initial one, or there is pending text (INV-26).</summary>
+        public bool IsDirty => _pending.Count > 0 || !_comparer.Equals(CurrentDraftState, InitialDraftState);
 
-        public DraftStatus Status => DraftStatus.Clean;
+        public DraftStatus Status => _explicitStatus ?? (IsDirty ? DraftStatus.Dirty : DraftStatus.Clean);
 
-        public bool IsPossiblyStale => false;
+        /// <summary>The orthogonal "possibly stale" mark. It changes neither the editable state, nor dirty, nor the pending text.</summary>
+        public bool IsPossiblyStale { get; private set; }
 
-        public bool NeedsLazyReload => false;
+        /// <summary>True only for a Clean, marked draft: it reloads lazily when it is activated (O-01).</summary>
+        public bool NeedsLazyReload => IsPossiblyStale && Status == DraftStatus.Clean;
 
-        public bool IsRegistered => false;
+        /// <summary>False once the draft was discarded or its session retired.</summary>
+        public bool IsRegistered => _owner != null;
 
-        public DraftUnknownOrigin? UnknownOrigin => null;
+        public DraftUnknownOrigin? UnknownOrigin { get; private set; }
 
-        public IReadOnlyList<DraftDifference> ConflictDifferences => Array.Empty<DraftDifference>();
+        /// <summary>What changed, when the draft is in Conflict.</summary>
+        public IReadOnlyList<DraftDifference> ConflictDifferences { get; private set; } = Array.Empty<DraftDifference>();
 
-        public string? LastApplyCause => null;
+        /// <summary>The cause of the last attempt that did not apply, or of an Unknown outcome.</summary>
+        public string? LastApplyCause { get; private set; }
 
-        public IReadOnlyList<string> Warnings => Array.Empty<string>();
+        /// <summary>The warnings of the last AppliedWithWarnings outcome.</summary>
+        public IReadOnlyList<string> Warnings { get; private set; } = Array.Empty<string>();
 
-        public string? ErrorReason => null;
+        public string? ErrorReason { get; private set; }
 
-        public DraftStatus StatusBeforeAttempt => DraftStatus.Clean;
+        private bool CanEdit => _owner != null
+            && (_explicitStatus == null || _explicitStatus == DraftStatus.Conflict);
 
-        public DraftEditResult SetCurrentDraftState(TState state) => new(DraftEditStatus.NotEditable, false);
+        // ---------------------------------------------------------------- edits
 
-        public DraftEditResult SetPendingText(string fieldKey, string text) => new(DraftEditStatus.NotEditable, false);
+        public DraftEditResult SetCurrentDraftState(TState state)
+        {
+            if (!CanEdit) return new DraftEditResult(DraftEditStatus.NotEditable, IsDirty);
+            CurrentDraftState = state;
+            return new DraftEditResult(DraftEditStatus.Updated, IsDirty);
+        }
 
-        public DraftEditResult RemovePendingText(string fieldKey) => new(DraftEditStatus.NotEditable, false);
+        /// <summary>Keeps the text of one field exactly as given (D-10). Empty text is a legitimate pending text.</summary>
+        public DraftEditResult SetPendingText(string fieldKey, string text)
+        {
+            if (string.IsNullOrEmpty(fieldKey)) throw new ArgumentException("A field key is required.", nameof(fieldKey));
+            if (text == null) throw new ArgumentNullException(nameof(text));
+            if (!CanEdit) return new DraftEditResult(DraftEditStatus.NotEditable, IsDirty);
+            _pending[fieldKey] = text;
+            return new DraftEditResult(DraftEditStatus.Updated, IsDirty);
+        }
 
-        public DraftBoundaryResult CrossBoundary(DraftBoundary boundary, IDraftPendingTextAdapter<TState> adapter) =>
-            new(boundary, DraftBoundaryDecision.Kept, false, Array.Empty<DraftInvalidField>());
+        public DraftEditResult RemovePendingText(string fieldKey)
+        {
+            if (string.IsNullOrEmpty(fieldKey)) throw new ArgumentException("A field key is required.", nameof(fieldKey));
+            if (!CanEdit) return new DraftEditResult(DraftEditStatus.NotEditable, IsDirty);
+            _pending.Remove(fieldKey);
+            return new DraftEditResult(DraftEditStatus.Updated, IsDirty);
+        }
 
-        public DraftMarkResult MarkPossiblyStale() => DraftMarkResult.NotRegistered;
+        // ---------------------------------------------------------------- boundaries
 
-        public DraftReloadResult DiscardAndReload(DraftIntentRead<TState> read) => new(DraftReloadStatus.NotAllowed, read.Admission);
+        /// <summary>
+        /// Crosses a boundary (D-10, ADR-0032 D6). Blocking: validate ALL the pending text without mutating; if any field is
+        /// invalid, abort and leave everything as it was; otherwise apply all of it in one step to the current state and
+        /// clear the pending text. Non-blocking: keep the pending text as is, neither committing nor repairing.
+        /// </summary>
+        public DraftBoundaryResult CrossBoundary(DraftBoundary boundary, IDraftPendingTextAdapter<TState> adapter)
+        {
+            if (adapter == null) throw new ArgumentNullException(nameof(adapter));
+            var none = Array.Empty<DraftInvalidField>();
+            if (!DraftBoundaries.IsBlocking(boundary))
+                return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Kept, false, none);
+            if (_pending.Count == 0)
+                return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Proceeded, false, none);
+            if (!CanEdit)
+                return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Kept, false, none);
 
-        public DraftReloadResult KeepMineOnCurrentVersion(DraftIntentRead<TState> read, bool confirmed) => new(DraftReloadStatus.NotAllowed, read.Admission);
+            var snapshot = new Dictionary<string, string>(_pending, StringComparer.Ordinal);
+            var invalid = new List<DraftInvalidField>();
+            foreach (var pair in _pending)
+            {
+                var verdict = adapter.Validate(pair.Key, pair.Value);
+                if (!verdict.IsValid) invalid.Add(new DraftInvalidField(pair.Key, verdict.Message));
+            }
 
-        public DraftApplyStart TryBeginApply() => new(false, DraftStatus.Clean, DraftApplyRefusal.NotRegistered);
+            if (invalid.Count > 0)
+                return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Aborted, false, invalid.ToArray());
 
-        public DraftApplyResult CompleteApply(DraftApplyOutcome<TState> outcome) => new(false, outcome.Kind, DraftStatus.Clean, false);
+            var next = adapter.Apply(CurrentDraftState, snapshot);
+            CurrentDraftState = next;
+            _pending.Clear();
+            return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Proceeded, true, none);
+        }
 
-        public DraftCheckResult CheckNow(DraftStaleBase reread) =>
-            new(DraftCheckStatus.NotApplicable, DraftStatus.Clean, Array.Empty<DraftDifference>());
+        // ---------------------------------------------------------------- possibly stale
 
-        public DraftTransition EnterError(string reason) => new(DraftStatus.Clean, DraftStatus.Clean);
+        public DraftMarkResult MarkPossiblyStale()
+        {
+            if (_owner == null) return DraftMarkResult.NotRegistered;
+            if (IsPossiblyStale) return DraftMarkResult.AlreadyMarked;
+            IsPossiblyStale = true;
+            return DraftMarkResult.Marked;
+        }
+
+        // ---------------------------------------------------------------- reloads and reconciliation
+
+        /// <summary>
+        /// Replaces the stale base, the initial state AND the current state from one read, and empties the pending text.
+        /// Allowed from every status except Applying.
+        /// </summary>
+        public DraftReloadResult DiscardAndReload(DraftIntentRead<TState> read)
+        {
+            if (read == null) throw new ArgumentNullException(nameof(read));
+            if (_owner == null || _explicitStatus == DraftStatus.Applying)
+                return new DraftReloadResult(DraftReloadStatus.NotAllowed, read.Admission);
+            if (!read.IsAdmitted)
+                return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
+
+            Rebase(read);
+            CurrentDraftState = InitialDraftState;
+            _pending.Clear();
+            return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
+        }
+
+        /// <summary>
+        /// Replaces the stale base and the initial state from one read and KEEPS the current state and the pending text,
+        /// only with an explicit confirmation. Served in Dirty and Conflict. There is no automatic merge.
+        /// </summary>
+        public DraftReloadResult KeepMineOnCurrentVersion(DraftIntentRead<TState> read, bool confirmed)
+        {
+            if (read == null) throw new ArgumentNullException(nameof(read));
+            var status = Status;
+            if (_owner == null || (status != DraftStatus.Dirty && status != DraftStatus.Conflict))
+                return new DraftReloadResult(DraftReloadStatus.NotAllowed, read.Admission);
+            if (!confirmed)
+                return new DraftReloadResult(DraftReloadStatus.NotConfirmed, read.Admission);
+            if (!read.IsAdmitted)
+                return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
+
+            Rebase(read);
+            return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
+        }
+
+        private void Rebase(DraftIntentRead<TState> read)
+        {
+            StaleBase = read.StaleBase!;
+            InitialDraftState = read.InitialState!;
+            IsPossiblyStale = false;
+            _explicitStatus = null;
+            UnknownOrigin = null;
+            ConflictDifferences = Array.Empty<DraftDifference>();
+            LastApplyCause = null;
+            Warnings = Array.Empty<string>();
+            ErrorReason = null;
+        }
+
+        // ---------------------------------------------------------------- Update as a state machine
+
+        /// <summary>
+        /// Starts an Update. Only from Clean, or from Dirty without pending text, and only when no other Update is in
+        /// progress in the whole registry. It reports the previous status.
+        /// </summary>
+        public DraftApplyStart TryBeginApply()
+        {
+            var previous = Status;
+            if (_owner == null) return DraftApplyStart.Refused(previous, DraftApplyRefusal.NotRegistered);
+            if (previous != DraftStatus.Clean && previous != DraftStatus.Dirty)
+                return DraftApplyStart.Refused(previous, DraftApplyRefusal.InvalidStatus);
+            if (_pending.Count > 0) return DraftApplyStart.Refused(previous, DraftApplyRefusal.PendingText);
+            if (!_owner.TryAcquireApplySlot(this)) return DraftApplyStart.Refused(previous, DraftApplyRefusal.AnotherUpdateInProgress);
+
+            _statusBeforeAttempt = previous;
+            _explicitStatus = DraftStatus.Applying;
+            LastApplyCause = null;
+            return DraftApplyStart.Started(previous);
+        }
+
+        /// <summary>
+        /// Closes the Update that is in progress with its outcome (D-13 table). Nothing is ever assumed applied: only the
+        /// re-read of POST rebases the draft and leaves it Clean.
+        /// </summary>
+        public DraftApplyResult CompleteApply(DraftApplyOutcome<TState> outcome)
+        {
+            if (outcome == null) throw new ArgumentNullException(nameof(outcome));
+            if (_owner == null || _explicitStatus != DraftStatus.Applying)
+                return DraftApplyResult.NotApplying(Status, outcome.Kind);
+
+            _owner.ReleaseApplySlot(this);
+            _explicitStatus = null;
+            switch (outcome.Kind)
+            {
+                case DraftApplyOutcomeKind.NotAppliedConflict:
+                    _explicitStatus = DraftStatus.Conflict;
+                    ConflictDifferences = outcome.Differences;
+                    LastApplyCause = outcome.Cause;
+                    return DraftApplyResult.Closed(outcome.Kind, Status, false);
+
+                case DraftApplyOutcomeKind.NotAppliedAdmission:
+                case DraftApplyOutcomeKind.NotAppliedPreflight:
+                case DraftApplyOutcomeKind.NotAppliedFailure:
+                    LastApplyCause = outcome.Cause;
+                    return DraftApplyResult.Closed(outcome.Kind, Status, false);
+
+                case DraftApplyOutcomeKind.CommitThrew:
+                    _explicitStatus = DraftStatus.Unknown;
+                    UnknownOrigin = DraftUnknownOrigin.CommitThrew;
+                    LastApplyCause = outcome.Cause;
+                    return DraftApplyResult.Closed(outcome.Kind, Status, false);
+
+                case DraftApplyOutcomeKind.Applied:
+                case DraftApplyOutcomeKind.AppliedWithWarnings:
+                {
+                    var read = outcome.PostRead;
+                    if (read == null || !read.IsAdmitted)
+                    {
+                        // The write happened but its re-read cannot rebase the draft: never assume it is clean.
+                        _explicitStatus = DraftStatus.Unknown;
+                        UnknownOrigin = DraftUnknownOrigin.PostReread;
+                        LastApplyCause = read?.Admission.Diagnostic;
+                        return DraftApplyResult.Closed(DraftApplyOutcomeKind.AppliedPostRereadFailed, Status, false);
+                    }
+
+                    Rebase(read);
+                    CurrentDraftState = InitialDraftState;
+                    _pending.Clear();
+                    if (outcome.Kind == DraftApplyOutcomeKind.AppliedWithWarnings) Warnings = outcome.Warnings;
+                    return DraftApplyResult.Closed(outcome.Kind, Status, true);
+                }
+
+                default:
+                    _explicitStatus = DraftStatus.Unknown;
+                    UnknownOrigin = DraftUnknownOrigin.PostReread;
+                    LastApplyCause = outcome.Cause;
+                    return DraftApplyResult.Closed(DraftApplyOutcomeKind.AppliedPostRereadFailed, Status, false);
+            }
+        }
+
+        /// <summary>
+        /// "Check now" (D-13, O3-06), only for Unknown with origin CommitThrew. If the re-read matches the base from before
+        /// the attempt, the draft recovers exactly its previous status and content; otherwise it goes to Conflict.
+        /// </summary>
+        public DraftCheckResult CheckNow(DraftStaleBase reread)
+        {
+            if (reread == null) throw new ArgumentNullException(nameof(reread));
+            if (_owner == null || _explicitStatus != DraftStatus.Unknown || UnknownOrigin != DraftUnknownOrigin.CommitThrew)
+                return new DraftCheckResult(DraftCheckStatus.NotApplicable, Status, Array.Empty<DraftDifference>());
+
+            var comparison = StaleBase.CompareWith(reread);
+            UnknownOrigin = null;
+            if (comparison.IsMatch)
+            {
+                _explicitStatus = null;
+                LastApplyCause = null;
+                return new DraftCheckResult(DraftCheckStatus.Recovered, Status, Array.Empty<DraftDifference>());
+            }
+
+            _explicitStatus = DraftStatus.Conflict;
+            ConflictDifferences = comparison.Differences;
+            return new DraftCheckResult(DraftCheckStatus.Conflict, Status, comparison.Differences);
+        }
+
+        /// <summary>The status the draft had when the current or last attempt began.</summary>
+        public DraftStatus StatusBeforeAttempt => _statusBeforeAttempt;
+
+        // ---------------------------------------------------------------- error
+
+        /// <summary>
+        /// Puts the draft in Error keeping the current state, the pending text and the stale base. It leaves Error only
+        /// through DiscardAndReload or Discard.
+        /// </summary>
+        public DraftTransition EnterError(string reason)
+        {
+            if (string.IsNullOrEmpty(reason)) throw new ArgumentException("A reason is required.", nameof(reason));
+            var from = Status;
+            if (_owner == null) return new DraftTransition(from, from);
+            if (_explicitStatus == DraftStatus.Applying) _owner.ReleaseApplySlot(this);
+            _explicitStatus = DraftStatus.Error;
+            ErrorReason = reason;
+            return new DraftTransition(from, DraftStatus.Error);
+        }
+
+        // ---------------------------------------------------------------- registry plumbing
+
+        void IDraftEntry.Detach()
+        {
+            if (_owner != null && _explicitStatus == DraftStatus.Applying)
+            {
+                _owner.ReleaseApplySlot(this);
+                _explicitStatus = null;
+            }
+
+            _owner = null;
+        }
     }
 }
