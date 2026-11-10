@@ -1,0 +1,3 @@
+perf-tipico filas_detalle=71 generar_ms=23 bytes=15359
+perf-5000 filas_detalle=5000 generar_ms=823 bytes=255119
+perf-20000 filas_detalle=20000 generar_ms=2656 bytes=857157

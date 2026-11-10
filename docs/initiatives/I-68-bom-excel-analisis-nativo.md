@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-68
 title: BOM Excel Native Analysis (ID72) — Cantidad total, tabla y tabla dinámica
 type: feature
-status: in-progress
+status: implemented
 workflow: V2
 conceptual_initiative: I-68
 delivery_unit: I-68
@@ -42,7 +42,7 @@ automation:
 
 # I-68 — BOM Excel Native Analysis (ID72)
 
-Status: **FREEZE REGISTRADO; en implementacion**. El estado vivo se deriva de la existencia de `origin/feature/bom-excel-analisis-nativo`.
+Status: **CANDIDATO DECLARADO; Owner Validation pendiente**. El estado vivo se deriva de la existencia de `origin/feature/bom-excel-analisis-nativo`.
 
 Workflow: V2 (reclamo posterior a `WORKFLOW_V2_EFFECTIVE_SHA`, base que lo contiene, sin pausa activa: T4).
 Unit: `I-68`. Rama: `feature/bom-excel-analisis-nativo`. Autorización: orden directa del Owner (WORKFLOW §2, caso d).
@@ -85,7 +85,7 @@ Sin dependencias previas. Se comprueba en cada reentrada que ninguna rama activa
 ## 7. Owner Validation
 
 - Requiere Owner Validation: sí, la salida es directamente visible para el usuario.
-- Se valida en Excel real con un XLSX generado por RACKBOMTOTAL; asignación en la [propuesta](I-68-proposal-v6.md) §12.
+- Se valida en Excel real con un XLSX generado por RACKBOMTOTAL; asignación en la [propuesta](I-68-proposal-v6.md) §12; [ficha](I-68-owner-validation-sheet.md).
 
 ## 8. Evidencia y entrega
 

@@ -191,6 +191,9 @@ Discovery DC-01..09 completo. EXP revisadas, incluidos negativos. Sin clase A ab
 | Rondas Architect | 6 hasta AGREED sobre Proposal V6, en decisiones §6 |
 | Gates funcionales | 4 (G1..G4) |
 | CI rojos de gate | 1, leido antes de corregir (§8) |
+| Rondas de conformidad | 2 (`7f76aba1`, `68d9fb9a`) |
+| Candidatos | 1, `68d9fb9a` |
+| Owner Validation | pendiente |
 
 ## 8. Gates
 
@@ -217,7 +220,42 @@ Incidencias diagnosticadas antes de corregir:
 | Grande | 5000 | 234 ms | 1,3 s |
 | Muy grande | 20000 | 847 ms | 1,2 s |
 
-## 9. Entrada FOUNDATIONS redactada
+## 9. Candidato
+
+```text
+FINAL_CANDIDATE_SHA: 68d9fb9a24151871cee1a7a22c0a2835882465fb
+Base: 04a7041492d760170ce3f3ba5fceeb29146107cc, sin rebase ni ruta R
+SDK: 8.0.423. Arbol limpio antes y despues. AutoCAD cerrado al compilar.
+```
+
+| Evidencia | Resultado sobre ese SHA |
+|---|---|
+| Core Full local | 15538 de 15538, 0 fallos, 0 omitidas |
+| UI Full local | 1637 superadas, 0 fallos, 17 omitidas; esta iniciativa no toca `tests/RackCad.UI.Tests` |
+| Build Debug UI | 0 errores, 0 advertencias |
+| Build Debug Plugin | 0 errores, 2 advertencias |
+| Humo en Excel real | 75 PASS, 0 FAIL ([salida](I-68-smoke/results-candidato-68d9fb9a.txt)) |
+| CI de push | run 42750615790: `Tests (Domain + Application)`, `UI Tests (WPF controls, net8.0-windows)`, `Build UI (WPF, valida API de Application)` y `Build Plugin without AutoCAD` en `success` |
+| Conformidad | CONFORMING de Architect y Coordinator; D-01..D-05 aceptadas |
+| DLL Debug | ProductVersion `1.0.0+68d9fb9a24151871cee1a7a22c0a2835882465fb`, SHA-256 `85EF5D7535A8CDAD766C52E4ADF223E0F1B7DDA2F7246FC47891E3C4D745DC4C` |
+
+G4 cierra con el humo y la conformidad de ese SHA.
+
+| ID | Estado |
+|---|---|
+| READY-01 | Alcance congelado completo, sin diferimientos |
+| READY-02 | G1..G4 cerrados; decisiones y guia versionadas |
+| READY-03 | Sin REQUIRED abierto, discrepancia A ni decision pendiente |
+| READY-04 | `origin/main` = `04a70414`, la base; DC-07 sin interseccion |
+| READY-05 | CI exacta verde; las focales corren dentro de Core Full |
+| READY-06 | CONFORMING sobre `68d9fb9a` |
+| READY-07 | Arbol limpio y HEAD identificado al medir |
+| READY-08 | Matriz OV completa en Proposal V6 §12; unidad unica |
+| READY-09 | Acuerdo sobre `03a54dce` (blob `326a6f37`); Freeze `c7fb85da` (blob `c4acc752`) solo cambia `Frozen`; sin cambios posteriores del artefacto; sin A-n |
+
+Owner Validation: **pendiente** ([ficha](../../initiatives/I-68-owner-validation-sheet.md)). Cobertura del Candidato: se mide despues del merge (WORKFLOW 4.5.7).
+
+## 10. Entrada FOUNDATIONS redactada
 
 Se publica en `docs/FOUNDATIONS.md` en el commit de cierre, ya conformada (LIFECYCLE §4.1).
 
