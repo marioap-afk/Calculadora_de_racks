@@ -92,3 +92,12 @@ Registro de cada `OVERNIGHT_OWNER_COORDINATOR_DISPOSITION` tomada bajo la autori
 - **Fundamento:** evidencia real en AutoCAD con el candidato exacto, guarda de procesos sin STOP y perfil `CLEAN`.
 - **Riesgo:** el piloto usó dibujos sintéticos con la geometría controlada; la Owner Validation debe repetirlo con racks reales.
 - **Alcance:** F2. No integra en `main`.
+
+## D-10. F3 no se inicia: un único bloqueo
+
+- **Problema:** la instrucción pide seguir fase a fase, pero `attempts` está en 3 de 3 y F3 es un gate nuevo.
+- **Opciones:** (a) arrancar F3 sin margen, de modo que cualquier corrección sea S-11 con código sin verificar en la rama; (b) concederme un presupuesto nuevo; (c) preparar todo lo automatizable y dejar el bloqueo documentado.
+- **Decisión:** (c). Se deja `docs/initiatives/I-64-f3-gate-contract-package.md`, no emitido.
+- **Fundamento:** la instrucción dice «No reinicies presupuestos silenciosamente. Mantén attempts y budgets reales», y su §18 admite como parada el agotamiento real sin camino legítimo de corrección. El presupuesto de un gate nuevo lo fijó siempre una disposición expresa del Coordinator. Además, F3 tiene decisiones de producto sin cerrar (C-F3-02 y C-F3-04).
+- **Bloqueo único:** decidir C-F3-01 (presupuesto de F3).
+- **Alcance:** ninguna regla cambia. F4 a F7 quedan pendientes tras F3; F4 además necesita Smoke-2.

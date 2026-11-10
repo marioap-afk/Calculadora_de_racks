@@ -5924,3 +5924,9 @@ revisar:
 **Decisión:** D-09. F2 = PASS con la limitación de SN-08 y la desviación de D-08 pendiente de ratificación del Owner. No es Owner Validation.
 
 **Custodia:** `F2-SMOKE-NAV/` con las ocurrencias `c883` y `e221`.
+
+## 101. Fin del turno nocturno: F3 preparada, no iniciada
+
+**Decisión:** D-10. F3 necesita un presupuesto que el turno no puede concederse. Paquete no emitido en `docs/initiatives/I-64-f3-gate-contract-package.md`, con seis decisiones y una recomendación para cada una.
+
+**Estado:** F2 = PASS con limitación (§100). `attempts` 3 de 3. Sin integración en `main`.
