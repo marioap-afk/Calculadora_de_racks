@@ -1,0 +1,330 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-64",
+  "Gate": "F2",
+  "TaskId": "F2-T2B-NAVIGATION-UI",
+  "Objective": "Implementar la segunda tarea de F2-T2: la capa WPF de navegacion del panel Workspace sobre el host verificado de F2-T2A (producto 44a692a4): un view-model de navegacion que, para el rack del contexto actual, ofrece Seleccionar, Ver, Centrar y Localizar vista con copia k/M y vista explicita, consumiendo solo IWorkspaceNavigationPort y presentando el resultado como valor; los controles dentro de WorkspacePanelView sin anchos fijos, para que la experiencia pueda evolucionar de una vista estrecha a una superficie amplia; el cableado exacto en WorkspacePaletteHost; un campo aditivo TargetCount en WorkspaceNavigationResult; y los deltas exactos de guardas. El comportamiento real en AutoCAD lo comprueba Smoke-NAV.",
+  "AuthorityRevision": "e67944220d76a760615f5fc816d44d36fff743b6",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Section": "D-01, D-02, D-03, D-05, D-07; invariantes INV-03, INV-14, INV-22, INV-36, INV-38 e INV-40; section 11 F2; section 12.3 Smoke-NAV",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "estado vigente completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f2-t2-gate-contract-package.md",
+      "Section": "H-14, seccion 6 (F2-T2B), invariante 14, seccion 8 (RED de T2B), C-F2T2-10 y C-F2T2-12",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-overnight/overnight-dispositions.md",
+      "Section": "archivo completo: decisiones autonomas vigentes de esta unidad",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+      "Section": "producto de F2-T2A (44a692a4): puerto, resultado y runner",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs",
+      "Section": "puerto de solo lectura del panel; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "section 16.1 a section 16.8",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "section 4 (A1-A8) y section 10 (nc1..nc4)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Section": "celdas medidas y vigentes para Controller y Worker",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "relevo, Git e integracion",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationPortDouble.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/Workspace/NavigationFacts.cs",
+    "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+    "src/RackCad.Application/Workspace/NavigationTargets.cs",
+    "src/RackCad.Application/Workspace/NavigationActions.cs",
+    "src/RackCad.Application/Workspace/NavigationEcho.cs",
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceHostPort.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs",
+    "src/RackCad.Plugin/RackBlockFinder.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.cs",
+    "src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs",
+    "src/RackCad.Plugin/PluginInitializer.cs",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "src/RackCad.Plugin/Drawing/",
+    "src/RackCad.Plugin/KindHandlers/",
+    "src/RackCad.Plugin/Systems/",
+    "src/RackCad.Plugin/Views/",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/CustomProperties/",
+    "src/RackCad.Application/Diagnostics/",
+    "src/RackCad.Application/Drawing/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Formatting/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Layout/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/RackFrames/",
+    "src/RackCad.Application/Settings/",
+    "src/RackCad.Application/StructuralAnalysis/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/Views/",
+    "src/RackCad.Application/BlockNaming.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Domain/",
+    "src/RackCad.UI/RackCad.UI.csproj",
+    "src/RackCad.UI/Themes/",
+    "tests/RackCad.Tests/StructuralAnalysis/",
+    "docs/",
+    ".github/",
+    "eng/",
+    "tools/",
+    "assets/",
+    "deploy/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md"
+  ],
+  "Invariants": [
+    "INV-F2T2B-01 (D-05, INV-38): la UI nunca deriva objetivos de navegacion, no ordena referencias, no decide la atribucion y no mantiene inventario: toda accion pasa por IWorkspaceNavigationPort y NavigationTargets sigue siendo la unica autoridad. src/RackCad.UI/Workspace/ no nombra NavigationTargets, NavigationTargetSet, NavigationTarget, NavigationDefinitionFact, INavigationFactsPort, NavigationActionPolicy, NavigationActionPlan, NavigationActionDecision ni INavigationEffects; solo puede nombrar IWorkspaceNavigationPort, WorkspaceNavigationResult, WorkspaceNavigationStatus, WorkspaceRequest, NavigationActionKind y NavigationViewOrder.",
+    "INV-F2T2B-02 (D-07): las acciones Seleccionar, Ver, Centrar y Localizar vista solo estan habilitadas con exactamente un rack en el contexto (SelectionContextKind.One), CanReadDrawing verdadero, ActionBlock None y ninguna accion en curso. En cualquier otro caso el comando no llama al puerto y la UI explica por que. Un miembro no atribuible nunca es navegable: la UI no tiene forma de convertirlo en navegable y solo muestra lo que devuelve la autoridad.",
+    "INV-F2T2B-03 (D-03, INV-22): cada peticion lleva la SessionId del snapshot presentado y el RackId exacto de ese mismo snapshot, capturados juntos en el momento del click; la UI no vuelve a leer ni mezcla sesion y rack de snapshots distintos. Un snapshot nuevo no redirige una accion en curso.",
+    "INV-F2T2B-04 (D-07, SN-03): la copia k/M de Ver, Centrar y Localizar la lleva el view-model como CopyIndex sobre el puerto; k se reinicia al cambiar de rack, de sesion o de vista pedida. M procede solo del resultado del puerto (WorkspaceNavigationResult.TargetCount, campo aditivo de este contrato); hasta conocerlo la UI no inventa M y lo muestra como desconocido. Pasar de la ultima copia vuelve a la primera. Seleccionar no usa copia.",
+    "INV-F2T2B-05 (D-07): Localizar vista usa la vista explicita elegida (NavigationViewOrder) y LocateWith View por defecto; la UI no cambia de layout ni de TILEMODE y no ofrece ninguna accion que escriba authored, Xrecord, XData, diccionarios o variables de sistema.",
+    "INV-F2T2B-06: los resultados se presentan como valores: Executed, Unavailable, Rejected, Stale y Failed tienen texto propio en espanol, y el flujo normal no depende de excepciones. RefreshRequired provoca exactamente una consulta del snapshot; ningun otro resultado consulta nada. Unavailable por espacio modelo se explica como tal, sin cambiar de espacio. Un fallo del puerto se contiene y no llega al bucle de mensajes del host.",
+    "INV-F2T2B-07 (cambio aditivo de T2A): src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs solo gana WorkspaceNavigationResult.TargetCount (int?, null por defecto) con el numero de objetivos del conjunto de la accion pedida, calculado en WorkspaceNavigationRunner.Run desde NavigationTargets.Resolve, sin cambiar los estados, los veredictos, el orden de validacion ni los efectos, y sin tipos de AutoCAD. Los tipos de F2-T1 no cambian. WorkspaceNavigationHost.cs no cambia.",
+    "INV-F2T2B-08 (excepcion exacta de la guarda de la UI): TheUiFolderHasNoTimerNoPollingNoThreadNoAsyncAndNoGlobalExceptionHandler admite Task, async y await SOLO en el archivo exacto src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs, y alli con recuentos exactos: un unico async, un unico await sobre IWorkspaceNavigationPort.ExecuteAsync en el hilo de la UI, cero ConfigureAwait, cero Task.Run, cero Task.Factory, cero ContinueWith, cero .Wait(, cero .Result, cero GetAwaiter, cero Dispatcher, cero Thread, cero Timer. Ninguna Task queda sin observar: la unica entrada asincrona contiene todo fallo y lo presenta. El resto de la carpeta conserva la prohibicion completa.",
+    "INV-F2T2B-09 (D-01, INV-14; producto): la UI sigue no modal y sin supuestos de barra estrecha: los controles de navegacion no usan Width, MaxWidth ni MinWidth fijos, se reorganizan con WrapPanel o equivalente y funcionan tanto estrechos como en una superficie amplia. Las constantes de tamano y acoplamiento de WorkspacePaletteHost.cs no cambian. Sin Window nuevas, sin ShowDialog, sin MessageBox.",
+    "INV-F2T2B-10 (D-01): el foco vuelve al dibujo por el host de navegacion ya verificado; la UI no toca el foco, no usa Keyboard, FocusManager, SetFocus ni tipos de AutoCAD.",
+    "INV-F2T2B-11 (INV-36): WorkspaceNavigationPrivacyGuardTests.cs sigue en verde y sin cambios; ningun archivo fuera de las carpetas del panel consume navegacion.",
+    "INV-F2T2B-12 (cableado): WorkspacePaletteHost.cs solo cambia para construir el view-model con _controller.Navigation; no gana suscripciones, temporizadores, Dispatcher ni tipos nuevos. El view-model del panel admite el puerto de navegacion en su constructor; la guarda H-14 se actualiza de forma exacta en el RED, y la regex del constructor sigue fijando los parametros exactos. Los 64 tests existentes de UI siguen en verde sin debilitarse.",
+    "INV-F2T2B-13 (sin trabajo por tiempo): la navegacion solo se ejecuta por interaccion explicita del usuario. Ningun refresco, evento ni cambio de contexto llama al puerto de navegacion; el view-model no crea temporizadores y no consulta nada al construirse.",
+    "INV-F2T2B-14 (alcance): solo cambian las rutas del AllowedWriteScope. Fuera de alcance: pestanas, Browser Session (F3), borradores y edicion (F4), inventario global (F6), migracion de editores, rediseno visual general, comandos nuevos y los censos de comandos y ventanas.",
+    "INV-F2T2B-15 (cobertura RED/GREEN): RED de comportamiento real que compila y falla por asercion, sin pruebas artificiales: habilitacion solo con Uno(R), CanReadDrawing y sin bloqueo; peticion con la sesion y el RackId del mismo snapshot; copia k/M con vuelta al inicio y reinicio; vista explicita para LOCATE; textos por estado; un unico refresco con RefreshRequired; ningun anclaje de ancho en la vista; TargetCount del runner con puertos simulados; y los deltas exactos de guardas. Las pruebas existentes siguen en verde salvo los deltas autorizados del RED; el GREEN no toca los archivos de prueba del RED."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+      "MinSelected": 64,
+      "ExpectRed": true
+    },
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+      "MinSelected": 756,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "gate-contract valido; delegacion del Controller valida, aceptacion A1-A8 y nc4 (primera delegacion de la cadena F2-T2B) antes del Worker.",
+    "AllowedWriteScope de la delegacion = los cuatro archivos nuevos del contrato + la lista explicita de archivos existentes que cambian (subconjunto exacto de los candidatos).",
+    "Commit RED y push propios antes del GREEN: pruebas que compilan y fallan por asercion, y deltas exactos de guardas; ChainRedSha y ChainRedFiles acreditados.",
+    "Commit GREEN y push con cambios solo dentro del AllowedWriteScope; ningun archivo del RED se debilita o elimina.",
+    "Filtros FullyQualifiedName~RackCad.UI.Tests.Workspace y FullyQualifiedName~RackCad.Tests.Workspace en verde sobre el GREEN; suites Core y UI completas en verde; builds Release sin avisos nuevos.",
+    "CI push del SHA exacto GREEN con los cuatro jobs en success, incluido Build Plugin without AutoCAD.",
+    "worker-handoff.json conforme al esquema con RED, GREEN, alcance real, trailer, conteos de los dos filtros y mapa evidencia-por-invariante.",
+    "Controller verification valida; nc1..nc4 segun README section 10; A-4 y A-6 solo con sus condiciones aceptadas.",
+    "El comportamiento real en AutoCAD se comprueba solo en Smoke-NAV SN-01..SN-10; el Worker no usa AutoCAD."
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive or irreversible action not authorized"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch or worktree ownership conflict"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify AuthorityRevision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "origin/main movement invalidates exact-SHA assumptions; apply AUTOMATION_PLAN 16.7"
+    },
+    {
+      "Id": "S-14",
+      "Text": "I-64 Freeze or contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "config.toml no longer matches accepted Snapshot A, B, C or D"
+    },
+    {
+      "Id": "P-02",
+      "Text": "foreign live participant, unattributable process or more than one open delegation"
+    },
+    {
+      "Id": "P-03",
+      "Text": "delegation outside gate contract"
+    },
+    {
+      "Id": "P-04",
+      "Text": "BLOCKED cap reached"
+    },
+    {
+      "Id": "P-05",
+      "Text": "invocation differs from accepted delegation package"
+    },
+    {
+      "Id": "P-06",
+      "Text": "usage or credit-limit warning"
+    },
+    {
+      "Id": "P-07",
+      "Text": "another invocation would exceed the invocation budget"
+    },
+    {
+      "Id": "P-08",
+      "Text": "responsible session operates the worktree during cession"
+    },
+    {
+      "Id": "F2T2-C01",
+      "Text": "a second navigation-target authority or own navigation discovery in Plugin or UI would be required"
+    },
+    {
+      "Id": "F2T2-C02",
+      "Text": "an action would write authored data, layouts, TILEMODE or system variables, or perform an unrelated view mutation"
+    },
+    {
+      "Id": "F2T2-C03",
+      "Text": "a guard exception by folder, path prefix or wildcard, or outside the exact authorized files, would be required"
+    },
+    {
+      "Id": "F2T2-C05",
+      "Text": "global inventory or F3/F4/F6 behavior (tabs, drafts, editing, document-wide navigator) would be required"
+    },
+    {
+      "Id": "F2T2-C06",
+      "Text": "the F2-T1 navigation types, the verified T2A host, facts or effects, or the forbidden F1 files would have to change"
+    },
+    {
+      "Id": "F2T2-C07",
+      "Text": "the split task still evaluates Long-horizon"
+    },
+    {
+      "Id": "F2T2B-C08",
+      "Text": "an existing file outside the candidate list of this contract would have to change (P-03)"
+    },
+    {
+      "Id": "F2T2B-C09",
+      "Text": "a blocking wait on a Task, an unobserved Task, background work or ConfigureAwait(false) would be required in the UI"
+    },
+    {
+      "Id": "F2T2B-C10",
+      "Text": "existing F1, C1, C2, F2-T1 or F2-T2A behavior regresses, or WorkspaceNavigationPrivacyGuardTests would need a change"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md: celda write-commit-push medida por U-04; effort high medido y usada como Worker real",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/process/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "process",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "sonda de acreditacion de F2-T1 R20261108T181131Z-3b8b (PASS; gpt-6-luna/high efectivos; read-only; oraculo Git exacto; sin aviso de uso; config.toml SNAPSHOT D antes y despues) sobre codex-cli 0.167.0-alpha.3.2, bin f71a721e0e6193a9, codex.exe SHA-256 4B3286E35D7FE866C6B0EB3F07D7A4CDB5E96489576170DFD6B3A15AA1C67382; la medicion de 515d (alpha.17.2) no se transfiere",
+      "VerifiedOn": "2026-11-08"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Sesion principal de I-64 (Claude) bajo OVERNIGHT_OWNER_COORDINATOR_DISPOSITION (docs/automation/evidence/I-64-overnight/overnight-dispositions.md)",
+  "IssuedUtc": "2026-11-10T05:10:00Z"
+}

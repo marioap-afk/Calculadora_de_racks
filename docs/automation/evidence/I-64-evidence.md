@@ -5862,3 +5862,15 @@ revisar:
 **Límites:** no declara F2 PASS, GATE PASS ni Candidato; F2-T2B no iniciada; sin AutoCAD; attempts 2/3.
 
 **Siguiente:** COORDINATOR_F2_T2A_CLOSE_REQUIRED.
+
+## 96. Turno nocturno: sincronización con `main` y contrato de F2-T2B
+
+**Autoridad:** instrucción permanente del Owner (literal en `F2-T2A-NAVIGATION-HOST/coordinator/coordinator-f2t2a-overnight-autonomy-directive.md`); decisiones en `I-64-overnight/overnight-dispositions.md`.
+
+**F2-T2A:** CLOSED / PASS (D-02). Custodia `a991ae04`, CI 42755429888 4/4.
+
+**`main`:** fusión hacia adelante de `812baf87` (I-67 e I-68), merge `b7e4dc1b`, sin conflictos, CI 42757272905 4/4 (D-01). No se reescribió historia ni se usó force-push.
+
+**F2-T2B:** contrato emitido (`F2-T2B-NAVIGATION-UI/coordinator/gate-contract.json`), 4 archivos nuevos y 7 candidatos. Attempt 2 de 3.
+
+**Límites:** sin cambios de producto en este paso; sin AutoCAD.
