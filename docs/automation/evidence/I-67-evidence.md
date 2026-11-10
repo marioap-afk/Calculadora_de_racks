@@ -204,3 +204,25 @@ Versión de AutoCAD: R25.0.171.0.0. DLL: `src\RackCad.Plugin\bin\Debug\net8.0-wi
 | Rojos CI no leídos | 0; los rojos fueron los RED por diseño |
 | Rondas Owner | 1 de decisión (D-LEG, D-PEND); OV pendiente |
 | Duración activa del Owner | UNKNOWN |
+
+## 14. Owner Validation
+
+```text
+Fecha y zona:            2026-11-09, fecha de la sesión
+Validador:               Owner
+Iniciativa / rama:       I-67, fix/elevaciones-niveles
+Commit:                  b6b988fb815b233d4e621b7f24d2e94b5800ed96
+Worktree:                C:\Users\alejandra-mendoza\.codex\worktrees\fix-elevaciones-niveles
+Ruta del DLL Debug:      src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll
+SHA-256 del DLL:         2AEE670FE0D896D5756EADF900FC4015A76569D689BF2850CEAF92966B5A4E52
+Versión de AutoCAD:      R25.0.171.0.0
+Biblioteca de bloques:   D:\Base_de_datos_AutoCAD_V.0.dwg  SHA-256 B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8
+Resultado por punto:     no dictado; el Owner declaró el resultado global
+Fallos y severidad:      ninguno declarado
+Resultado global:        aprobado
+Confirmación explícita:  «Aprobada»
+```
+
+La sesión midió el DLL, la biblioteca y la versión de AutoCAD después de la respuesta y coinciden con los del Candidato. No observó la ejecución de los escenarios en AutoCAD; el resultado es el que el Owner declaró.
+
+Con esto, los nueve criterios de cierre de H58 tienen evidencia sobre el Candidato. H58 pasa a CLOSED cuando la corrección esté integrada y verificada en `main`.

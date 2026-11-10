@@ -42,7 +42,8 @@ Además, el checklist aplicable de la guía manual §5 (dibujo, actualización e
 ## Veredicto
 
 ```text
-Fallos y severidad:
-Resultado global: aprobado | rechazado | parcial
-Confirmación explícita del Owner:
+Fallos y severidad: ninguno declarado
+Resultado global: aprobado
+Confirmación explícita del Owner: «Aprobada» (chat, 2026-11-09), sobre FINAL_CANDIDATE_SHA b6b988fb815b233d4e621b7f24d2e94b5800ed96
+Resultado por escenario: el Owner declaró el resultado global; no dictó resultados individuales
 ```
