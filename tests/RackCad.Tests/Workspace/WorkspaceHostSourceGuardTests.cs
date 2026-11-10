@@ -429,16 +429,15 @@ public class WorkspaceHostSourceGuardTests
     }
 
     [Fact]
-    public void TheAsyncExceptionIsTheNavigationHostFileAndTheApprovedCommandContextPatternOnly()
+    public void TheNavigationHostHasNoAsynchronousExecutionAndNoInternalCommand()
     {
         var host = Src.Code(NavigationHostPath);
 
-        Assert.Equal(1, Src.Count(host, @"\basync\b"));
-        Assert.Equal(1, Src.Count(host, @"\bawait\b"));
-        Assert.Matches(@"await\s+[\w.]+\.ExecuteInCommandContextAsync\s*\(", host);
+        Assert.Equal(0, Src.Count(host, @"\basync\b"));
+        Assert.Equal(0, Src.Count(host, @"\bawait\b"));
         var holders = Src.PluginFiles().Concat(Src.ApplicationFiles()).Where(f => Regex.IsMatch(f.Code, @"\basync\b|\bawait\b")).Select(f => f.Path).ToArray();
-        Assert.Equal(new[] { NavigationHostPath }, holders);
-        Assert.DoesNotMatch(new Regex(@"SendStringToExecute|\[CommandMethod|Autodesk\.AutoCAD\.Internal|DllImport|HwndSource"), host);
+        Assert.Empty(holders);
+        Assert.DoesNotMatch(new Regex(@"ExecuteInCommandContextAsync|SendStringToExecute|\[CommandMethod|Autodesk\.AutoCAD\.Internal|DllImport|HwndSource"), host);
     }
 
     [Fact]

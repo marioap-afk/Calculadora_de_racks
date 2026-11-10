@@ -424,17 +424,16 @@ public class WorkspaceNavigationHostTests
     }
 
     [Fact]
-    public void TheOnlyAsynchronousExecutionIsTheCommandContextOfTheHostAwaitedOnce()
+    public void TheNavigationRunsSynchronouslyAndNoProductFileUsesTheInternalCommand()
     {
         var host = Host();
 
-        Assert.Equal(1, Src.Count(host, @"\basync\b"));
-        Assert.Equal(1, Src.Count(host, @"\bawait\b"));
-        Assert.Matches(@"await\s+[\w.]+\.ExecuteInCommandContextAsync\s*\(", host);
-        Assert.Equal(1, Src.Count(host, @"\.ExecuteInCommandContextAsync\s*\("));
-        var withAsync = Src.PluginFiles().Concat(Src.ApplicationFiles()).Where(f => Regex.IsMatch(f.Code, @"\basync\b|\bawait\b")).Select(f => f.Path).ToArray();
-        Assert.Equal(new[] { HostPath }, withAsync);
-        Assert.Equal(new[] { HostPath }, Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"ExecuteInCommandContextAsync")).Select(f => f.Path).ToArray());
+        Assert.Equal(0, Src.Count(host, @"\basync\b"));
+        Assert.Equal(0, Src.Count(host, @"\bawait\b"));
+        Assert.Matches(@"public\s+Task<WorkspaceNavigationResult>\s+ExecuteAsync\s*\(", host);
+        Assert.Contains("Task.FromResult(", host);
+        Assert.Empty(Src.PluginFiles().Concat(Src.ApplicationFiles()).Where(f => Regex.IsMatch(f.Code, @"\basync\b|\bawait\b")).Select(f => f.Path));
+        Assert.Empty(Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"ExecuteInCommandContextAsync")).Select(f => f.Path));
     }
 
     [Fact]
@@ -454,23 +453,53 @@ public class WorkspaceNavigationHostTests
     }
 
     [Fact]
-    public void EveryReadAndEveryEffectOfTheActionHappensInsideTheCommandContextCallbackInTheApprovedOrder()
+    public void EveryReadAndEveryEffectOfTheActionHappensUnderTheDocumentLockInTheApprovedOrder()
     {
         var host = Host();
-        var execute = Src.BodyOf(host, @"public\s+async\s+Task<WorkspaceNavigationResult>\s+ExecuteAsync\s*\(");
-        var callback = Src.BodyOf(host, @"private\s+WorkspaceNavigationResult\s+RunInCommandContext\s*\(");
+        var execute = Src.BodyOf(host, @"public\s+Task<WorkspaceNavigationResult>\s+ExecuteAsync\s*\(");
+        var run = Src.BodyOf(host, @"private\s+WorkspaceNavigationResult\s+RunOnActiveDocument\s*\(");
 
-        Assert.DoesNotMatch(new Regex(@"MdiActiveDocument|TileMode|_authorize|_runner\.Run|_effects|LockDocument|StartTransaction"), execute);
-        Assert.Contains("RunInCommandContext(request)", execute);
-        var document = callback.IndexOf("MdiActiveDocument", StringComparison.Ordinal);
-        var session = callback.IndexOf("_authorize(", StringComparison.Ordinal);
-        var run = callback.IndexOf("_runner.Run(", StringComparison.Ordinal);
-        var focus = callback.IndexOf("ReturnFocusToDrawing(", StringComparison.Ordinal);
-        Assert.True(document >= 0 && session > document && run > session && focus > run,
-            "order: active document, session, policy and effects, then the focus");
-        Assert.Contains("_effects", callback);
-        Assert.Contains("TileMode", callback);
-        Assert.Contains("catch (System.Exception", callback);
+        Assert.DoesNotMatch(new Regex(@"TileMode|_authorize|_runner\.Run|_effects|LockDocument|StartTransaction"), execute);
+        Assert.Contains("RunOnActiveDocument(request)", execute);
+        var document = run.IndexOf("MdiActiveDocument", StringComparison.Ordinal);
+        var command = run.IndexOf("CommandInProgress", StringComparison.Ordinal);
+        var locking = run.IndexOf("LockDocument()", StringComparison.Ordinal);
+        var session = run.IndexOf("_authorize(", StringComparison.Ordinal);
+        var action = run.IndexOf("_runner.Run(", StringComparison.Ordinal);
+        var focus = run.IndexOf("ReturnFocusToDrawing(", StringComparison.Ordinal);
+        Assert.True(document >= 0 && command > document && locking > command && session > locking && action > session && focus > action,
+            "order: active document, no command running, lock, session, policy and effects, then the focus");
+        Assert.Contains("_effects", run);
+        Assert.Contains("TileMode", run);
+        Assert.Contains("catch (System.Exception", execute);
+    }
+
+    [Fact]
+    public void AnActionNeverRunsWhileACommandIsInProgress()
+    {
+        var run = Src.BodyOf(Host(), @"private\s+WorkspaceNavigationResult\s+RunOnActiveDocument\s*\(");
+
+        Assert.Matches(@"string\.IsNullOrEmpty\(\s*\w+\.CommandInProgress\s*\)", run);
+        Assert.Contains("WorkspaceNavigationResult.Stale(", run);
+    }
+
+    [Fact]
+    public void TheViewIsAppliedAfterTheReadTransactionClosesSoItIsNotRolledBack()
+    {
+        var effects = Src.Code(EffectsPath);
+        var view = Src.BodyOf(effects, @"public\s+void\s+ViewReference\s*\(");
+        var center = Src.BodyOf(effects, @"public\s+void\s+CenterOnReference\s*\(");
+        var readBlock = new Regex(@"using\s*\(\s*var\s+\w+\s*=\s*[\w.]+\.StartTransaction\s*\(\s*\)\s*\)\s*\{\s*extents\s*=\s*ExtentsOfTarget\s*\([^;]*;\s*\}");
+
+        foreach (var body in new[] { view, center })
+        {
+            var match = readBlock.Match(body);
+            Assert.True(match.Success, "the transaction only reads the extents");
+            Assert.True(body.IndexOf("SetCurrentView(", StringComparison.Ordinal) > match.Index + match.Length, "the view is written after the transaction is closed");
+            Assert.True(body.IndexOf("GetCurrentView(", StringComparison.Ordinal) > match.Index + match.Length, "the view is read after the transaction is closed");
+        }
+
+        Assert.DoesNotMatch(new Regex(@"\.Commit\s*\("), effects);
     }
 
     [Fact]
