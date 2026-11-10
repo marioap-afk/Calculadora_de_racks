@@ -1,6 +1,6 @@
 # I-68 — Proposal V6: BOM Excel Native Analysis (ID72)
 
-Frozen: NO
+Frozen: YES
 
 Unit: `I-68`. Workflow: V2. Arquetipo: FOUNDATION EVOLUTION (M-04, M-06). Rama `feature/bom-excel-analisis-nativo`, base `04a70414`.
 Autoridad funcional: [especificacion literal](I-68-especificacion-id72.md). Discovery: [evidencia](../automation/evidence/I-68-evidence.md). Decisiones y disposicion de las rondas 1 a 5: [decisions/I-68.md](../automation/decisions/I-68.md). ADR: [0051](../adr/0051-exportacion-excel-nativa-sobre-la-plataforma.md), aceptado.
