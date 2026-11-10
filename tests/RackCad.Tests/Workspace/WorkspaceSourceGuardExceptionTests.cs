@@ -236,14 +236,14 @@ public class WorkspaceSourceGuardExceptionTests
     }
 
     [Fact]
-    public void TheAsynchronousPatternIsAllowedOnlyInTheHostFileAndOnlyInTheCommandContextForm()
+    public void NoFileOfTheTwoWorkspaceFoldersUsesAsyncAndTheHostDoesNotUseTheInternalCommand()
     {
         var hostCode = Src.Code(NavigationHost);
 
-        // The exception is the exact file: no other file of the two workspace folders may use async or await.
+        // D-08: the navigation runs synchronously, so no file of the two workspace folders may use async or await.
         var users = Src.PluginFiles().Concat(Src.ApplicationFiles()).Where(f => Regex.IsMatch(f.Code, @"\basync\b|\bawait\b")).Select(f => f.Path).ToArray();
-        Assert.Equal(new[] { NavigationHost }, users);
-        Assert.Matches(@"await\s+[\w.]+\.ExecuteInCommandContextAsync\s*\(", hostCode);
+        Assert.Empty(users);
+        Assert.DoesNotContain("ExecuteInCommandContextAsync", hostCode);
         Assert.DoesNotMatch(new Regex(@"\.Wait\s*\(|\.Result\b|GetAwaiter|GetResult|ConfigureAwait|Task\.Run|Task\.Factory|StartNew|ContinueWith|async\s+void"), hostCode);
     }
 
