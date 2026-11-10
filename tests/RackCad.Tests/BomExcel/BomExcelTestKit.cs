@@ -9,7 +9,7 @@ using System.Xml.Linq;
 using RackCad.Application.Bom;
 using Xunit;
 
-namespace RackCad.Tests.BomExcel
+namespace RackCad.Tests
 {
     /// <summary>One written cell, read back from the raw SpreadsheetML, independently of the writer's own model.</summary>
     internal sealed class SheetCell

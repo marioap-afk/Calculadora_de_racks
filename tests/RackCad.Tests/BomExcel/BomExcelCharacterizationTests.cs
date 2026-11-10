@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Bom;
 using Xunit;
-using static RackCad.Tests.BomExcel.BomExcelTestKit;
+using static RackCad.Tests.BomExcelTestKit;
 
-namespace RackCad.Tests.BomExcel
+namespace RackCad.Tests
 {
     /// <summary>
     /// I-68, I-05 e I-17: lo que la iniciativa NO debe cambiar. Fijado antes del primer cambio del escritor; pasa antes y despues.

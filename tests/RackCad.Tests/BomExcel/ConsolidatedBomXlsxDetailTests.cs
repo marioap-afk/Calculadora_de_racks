@@ -6,9 +6,9 @@ using System.Linq;
 using System.Xml.Linq;
 using RackCad.Application.Bom;
 using Xunit;
-using static RackCad.Tests.BomExcel.BomExcelTestKit;
+using static RackCad.Tests.BomExcelTestKit;
 
-namespace RackCad.Tests.BomExcel
+namespace RackCad.Tests
 {
     /// <summary>I-68 G1: la columna Cantidad total y la tabla nativa de «Por rack».</summary>
     public class ConsolidatedBomXlsxDetailTests
