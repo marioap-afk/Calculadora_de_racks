@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 3
-  next_action: "F4-T1 intento 3 (solo N-1): excepcion acotada a 16.8 registrada (F4-E10); siguiente: contrato del intento 3"
+  next_action: "F4-T1 intento 3 (solo N-1, F4-E10): contrato emitido (AuthorityRevision c31854f8); siguiente: planificacion del Controller con CorrectionOf 0d3b, A1-A8, Worker, CI, revisiones, verificacion con el oraculo estrecho de Tests y nc1..nc3"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual

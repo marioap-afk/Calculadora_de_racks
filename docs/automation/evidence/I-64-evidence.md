@@ -6074,3 +6074,9 @@ revisar:
 **Decisión:** F4-E10. Opción 1 del Owner. RED solo con el bloque de regresión; GREEN solo con la región de la regla BOM; prueba fina con `n1_hashes.py` (H1, H2 y H3). Solo para el intento 3 de F4-T1.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 117. Contrato del intento 3 de F4-T1
+
+**Decisión:** F4-E09 y F4-E10. Contrato en `F4-T1-DRAFT-CORE/coordinator/gate-contract-attempt3.json`: una sola ruta (`WorkspaceDraftBoundaryTests.cs`), INV-F4T1-25 a 27 y mínimo 1273. `AuthorityRevision` `c31854f81c3c301eba53e35cd99c66bcaf97e587`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`. `attempts` 3 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
