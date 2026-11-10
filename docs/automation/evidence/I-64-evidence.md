@@ -6044,3 +6044,9 @@ revisar:
 **Decisión:** F4-E07. Corrección delegada; `attempts` pasa a 2 de 3.
 
 **Límites:** sin AutoCAD; solo custodia y documentación en este paso.
+
+## 113. Contrato del intento 2 de F4-T1
+
+**Decisión:** F4-E07. `attempts` pasa a 2 de 3. Contrato en `F4-T1-DRAFT-CORE/coordinator/gate-contract-attempt2.json`: las mismas diez rutas, INV-F4T1-19 a 24 y mínimo 1165. `AuthorityRevision` `bf429590170c6b7e4c1f17ec55616f5767f201d9`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
