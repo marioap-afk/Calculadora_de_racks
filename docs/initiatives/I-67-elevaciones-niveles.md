@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-67
 title: Elevaciones de niveles en Dinamico y Push Back (H58)
 type: fix
-status: claimed
+status: integrated
 workflow: V2
 conceptual_initiative: I-67
 delivery_unit: I-67
@@ -41,6 +41,8 @@ automation:
 ---
 
 # I-67 — Elevaciones de niveles en Dinámico y Push Back (H58)
+
+Status: **INTEGRADA** (2026-11-09). Identidades de cierre, merge, CI posterior, cobertura y limpieza en el tag `integration/I-67`.
 
 Workflow: V2 (reclamo posterior a `WORKFLOW_V2_EFFECTIVE_SHA`, base que lo contiene, sin pausa activa: T4).
 Unit: `I-67`. Rama: `fix/elevaciones-niveles`. Autorización: orden directa del Owner (WORKFLOW §2, caso d).

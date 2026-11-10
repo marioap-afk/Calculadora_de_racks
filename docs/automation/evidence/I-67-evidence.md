@@ -226,3 +226,11 @@ Confirmación explícita:  «Aprobada»
 La sesión midió el DLL, la biblioteca y la versión de AutoCAD después de la respuesta y coinciden con los del Candidato. No observó la ejecución de los escenarios en AutoCAD; el resultado es el que el Owner declaró.
 
 Con esto, los nueve criterios de cierre de H58 tienen evidencia sobre el Candidato. H58 pasa a CLOSED cuando la corrección esté integrada y verificada en `main`.
+
+## 15. Cobertura del Candidato y preflight de integración
+
+Cobertura del Candidato (WORKFLOW §4.5 paso 2.bis): run `42728614328`, `workflow_dispatch`, `candidate_sha` = `b6b988fb815b233d4e621b7f24d2e94b5800ed96` = SHA medido en el checkout, artifact `rackcad-coverage-cobertura` id `13723208678`, digest `sha256:656e141048b38b2ce31dd4f111e48605ee33afcf26e2c52fc4eb2719abd41615`.
+
+Preflight: `origin/main` = `a140eb3a`, la base de la rama: 0 commits por detrás, sin rebase ni ruta R. Desde el Candidato solo cambian archivos bajo `docs/`. Los hechos posteriores a este commit (SHA de cierre, CI de cierre, merge, CI posterior y limpieza) se registran en el tag `integration/I-67`.
+
+H58: CLOSED al verificarse la integración en `main`; los nueve criterios tienen evidencia sobre el Candidato.

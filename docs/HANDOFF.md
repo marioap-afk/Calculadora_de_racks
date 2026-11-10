@@ -12,6 +12,14 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
+**I-67 — Elevaciones de niveles en Dinámico y Push Back (H58) — INTEGRADA** el **2026-11-09** (`fix/elevaciones-niveles`, Workflow V2, FOUNDATION
+EVOLUTION por M-03 y M-05). Cada intervalo entre niveles sube al primer troquel real que cumple su separación requerida, medido desde la salida real del nivel
+anterior: con requisito 45" y retícula de 2" resulta 46/46/46 en lugar de 44/46/44. La regla sigue en una sola autoridad, `DynamicLoadBeamGeometry.ResolveLevels`, y
+Push Back la hereda; su larguero posterior se sigue derivando del bajo. Decisiones del Owner: los racks existentes adoptan la regla al re-resolverse, sin marcador
+ni migración, y todos los niveles conservan la subida del nivel 1. Abrir y guardar no cambian el dibujo; `RACKEDITAR` + Actualizar lo corrige. Sin cambios de
+esquema. [Evidencia](automation/evidence/I-67-evidence.md), [decisiones](automation/decisions/I-67.md), [Freeze](initiatives/I-67-proposal-v3.md) y tag
+`integration/I-67` (SHAs de cierre y merge, CI posterior, cobertura y limpieza).
+
 **I-65 — Structural Analysis Interop Foundation + RAM Elements Adapter — INTEGRADA** el **2026-11-03**
 (`architecture/interop-analisis-estructural`, Workflow V2). Fundación **neutral de análisis estructural** en Application pura: el
 `StructuralModel` derivado de un rack (nodos, miembros, secciones, materiales, apoyos, liberaciones y supuestos explícitos), con cargas
@@ -1516,6 +1524,9 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-67 (2026-11-09) — OWNER VALIDATION APROBADA.** Candidato `b6b988fb`: el Owner declaró el resultado global «Aprobada» en AutoCAD 2025, sin resultados por
+escenario dictados. Core Full, UI Full, builds Debug y CI exacta en la [evidencia](automation/evidence/I-67-evidence.md) §12 y §14.
+
 **I-65 (2026-11-03) — OWNER VALIDATION APROBADA.** Candidato final validado por el Owner en AutoCAD 2025 y RAM Elements 2026:
 OV-I65-01..08 y HB-01..05 PASS en W-R1a, W-R1b y W-R2, con evidencia local Full, builds y CI exacta. Siguen NOT_EVALUATED el legado de
 OV-08 y las propiedades de sección y material (respaldo D-09); INFORMATIVE DIF-01 y la categoría del caso manual; peso propio excluido.
@@ -2077,6 +2088,12 @@ veredicto.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### Sin trabajo activo de I-67 (integrada el 2026-11-09)
+
+H58 queda resuelto. Las ramas activas se rebasan sobre el nuevo `main` antes de su propia integración; I-67 no toca archivos que ellas cambien en `src/`. Sigue abierto,
+fuera de I-67 y registrado en [ideas-futuras](ideas-futuras.md): las alturas fijadas a mano no se validan contra el último larguero, y un rack sin actualizar puede
+mezclar vistas tras `RACKPROYECTAR`, sin aviso. Un rack Push Back legado puede cambiar de cabecera en su primera edición por la migración de datum de I-42.
 
 ### Sin trabajo activo de I-65 (integrada el 2026-11-03)
 
@@ -3950,6 +3967,10 @@ visualmente** y no debe presentarse como tal.
 la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
+
+**Cierre de I-67 — 2026-11-09:** Candidato `b6b988fb` con READY PASS (Architect y Coordinator CONFORMING), evidencia local Full, builds, CI exacta y cobertura,
+y Owner Validation APROBADA. El commit de cierre (solo documental) lleva su propia evidencia. El merge `--no-ff`, la CI posterior con cobertura y la limpieza se registran en
+`integration/I-67`.
 
 **Cierre de I-65 — 2026-11-03:** Candidato final con READY PASS (Architect y Coordinator CONFORMING), evidencia local Full, builds y
 CI exacta, y Owner Validation APROBADA (W-R1a, W-R1b y W-R2). El commit de cierre (solo documental) lleva su propio CI. El merge
