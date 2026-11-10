@@ -1,0 +1,54 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261110T061935Z-2376",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "StopCondition",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git branch --show-current dio architecture/workspace-persistente-rackcad; git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dieron 82bd49b6d472ddb6ab13c1716d7a995c4d571fab. git merge-base --is-ancestor BaseSha HEAD dio 0 y RedSha es ancestro de HEAD. La identidad declarada CurrentSha en el handoff no coincide."
+  },
+  "OutputSha256": "9100C42BA2FFB506C6E22D4A9FDC016496BAD718B074500E01EBF91494FA7CE7",
+  "ManualFreeText1610": []
+}

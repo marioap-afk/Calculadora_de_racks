@@ -1,0 +1,116 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F2-T2B-NAVIGATION-UI",
+  "RunId": "R20261110T055410Z-f863",
+  "DelegationRunId": "R20261110T055138Z-d695",
+  "Initiative": "I-64",
+  "Gate": "F2",
+  "Attempt": 3,
+  "BaseSha": "346edb66310da06e4b7296463ffd583d461f0235",
+  "RedSha": "25bdd0d9491b006fa1b82209489f9a9e3357d178",
+  "CurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewModelTests.cs"
+  ],
+  "WorkCompleted": "RED 25bdd0d9 (solo WorkspaceNavigationViewModelTests.cs, 11 pruebas nuevas, 7 fallan por asercion contra el producto de BaseSha) y GREEN 82bd49b6 (solo WorkspaceNavigationViewModel.cs: EnterScope reinicia la copia y despues asigna _scopeView; TextOf da 'La copia pedida ya no existe; no se hizo nada. Se vuelve a la primera copia.' en Unavailable con Verdict y TargetCount > 0; ReasonOfBlock da 'Lo seleccionado no es un rack individual; selecciona un solo rack para navegar.' para Selection). Mapa: T2B-F1 -> LocateOnTheSameViewAdvancesTheCopyAndAfterTheLastOneReturnsToTheFirst (criterio a), ViewOrCenterAfterLocateRestartTheCopyAndMIsUnknownUntilThePortAnswers(View) (b), ViewOrCenterAfterLocateRestartTheCopyAndMIsUnknownUntilThePortAnswers(Center) (c), ViewAndCenterShareTheCopyAndALaterLocateStartsItsOwn (d), AChangeOfTheRequestedViewRestartsTheCopyOfLocate (e). T2B-F2 -> ACopyThatNoLongerExistsIsExplainedAndGoesBackToTheFirstOne y ARackWithoutTargetsKeepsItsTextWhenTheCountIsZeroOrUnknown (0 y null). T2B-F3 -> ASelectionThatIsNotOneRackGetsANeutralReasonThatIsTrueForOneOrSeveralObjects (tres casos de Selection). Las pruebas (d), (e), el caso TargetCount 0/null y la identidad del texto ya correcto pasan tambien en RED por describir comportamiento ya correcto. WorkspaceNavigationPortDouble no se modifico; el GREEN no toca tests/.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-ui",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/red",
+      "Phase": "RED",
+      "TreeSha": "25bdd0d9491b006fa1b82209489f9a9e3357d178",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/red/<usuario>_<maquina>_2026-11-09_23_56_30.trx"
+    },
+    {
+      "RunRef": "red-core",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/red-core",
+      "Phase": "RED",
+      "TreeSha": "25bdd0d9491b006fa1b82209489f9a9e3357d178",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/red-core/<usuario>_<maquina>_2026-11-09_23_57_02.trx"
+    },
+    {
+      "RunRef": "green-ui",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/green-ui",
+      "Phase": "GREEN",
+      "TreeSha": "82bd49b6d472ddb6ab13c1716d7a995c4d571fab",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/green-ui/<usuario>_<maquina>_2026-11-09_23_57_46.trx"
+    },
+    {
+      "RunRef": "green-core",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/green-core",
+      "Phase": "GREEN",
+      "TreeSha": "82bd49b6d472ddb6ab13c1716d7a995c4d571fab",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/green-core/<usuario>_<maquina>_2026-11-09_23_58_09.trx"
+    },
+    {
+      "RunRef": "full-ui",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --logger trx --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/full-ui",
+      "Phase": "RELEVANT",
+      "TreeSha": "82bd49b6d472ddb6ab13c1716d7a995c4d571fab",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/full-ui/<usuario>_<maquina>_2026-11-09_23_58_32.trx"
+    },
+    {
+      "RunRef": "full-core",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --logger trx --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/full-core",
+      "Phase": "RELEVANT",
+      "TreeSha": "82bd49b6d472ddb6ab13c1716d7a995c4d571fab",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/tests/full-core/<usuario>_<maquina>_2026-11-10_00_05_13.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-ui",
+      "Selected": 154,
+      "Passed": 147,
+      "Failed": 7,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.LocateOnTheSameViewAdvancesTheCopyAndAfterTheLastOneReturnsToTheFirst",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ViewOrCenterAfterLocateRestartTheCopyAndMIsUnknownUntilThePortAnswers(action: View)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ViewOrCenterAfterLocateRestartTheCopyAndMIsUnknownUntilThePortAnswers(action: Center)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ACopyThatNoLongerExistsIsExplainedAndGoesBackToTheFirstOne",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ASelectionThatIsNotOneRackGetsANeutralReasonThatIsTrueForOneOrSeveralObjects(racks: 0, others: 1)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ASelectionThatIsNotOneRackGetsANeutralReasonThatIsTrueForOneOrSeveralObjects(racks: 2, others: 0)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ASelectionThatIsNotOneRackGetsANeutralReasonThatIsTrueForOneOrSeveralObjects(racks: 1, others: 1)"
+      ]
+    },
+    { "RunRef": "red-core", "Selected": 780, "Passed": 780, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "green-ui", "Selected": 154, "Passed": 154, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "green-core", "Selected": 780, "Passed": 780, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "full-ui", "Selected": 1808, "Passed": 1791, "Failed": 0, "Skipped": 17, "FailedTests": [] },
+    { "RunRef": "full-core", "Selected": 16318, "Passed": 16318, "Failed": 0, "Skipped": 0, "FailedTests": [] }
+  ],
+  "Evidence": [
+    "Precondiciones medidas antes de editar: arbol limpio, HEAD = BaseSha, remoto = BaseSha, origin/main = MainSha 812baf87.",
+    "Comprobacion previa sin commit: pruebas nuevas + correccion dieron el filtro UI 154/154 en verde; la correccion se guardo en artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/3/R20261110T055410Z-f863/green-attempt3.patch y el view-model se devolvio a HEAD antes del RED.",
+    "RED 25bdd0d9: filtro UI 154 seleccionadas, 143 existentes en verde, 7 fallan por asercion (los casos (a), (b), (c) de T2B-F1, el caso TargetCount 2 de T2B-F2 y los tres casos de T2B-F3); filtro Core 780 en verde sin cambios.",
+    "GREEN 82bd49b6 (arbol limpio tras el commit, diff BaseSha..CurrentSha = exactamente las dos rutas): filtro UI 154/154, filtro Core 780/780, suite UI completa 1791 correctas 0 fallidas 17 omitidas (Debug), suite Core completa 16318/16318 (Debug).",
+    "Builds Release --no-incremental: tests/RackCad.Tests 0 errores; tests/RackCad.UI.Tests 0 errores; Plugin con -o bajo artifacts/.../tests/build/plugin-out 0 errores y 2 avisos, ambos MSB3277 (linea base declarada). Ningun aviso CS/NU/NETSDK nuevo en los tres logs de artifacts/.../tests/build/.",
+    "T2B-F1 -> LocateOnTheSameViewAdvancesTheCopyAndAfterTheLastOneReturnsToTheFirst (a: CopyIndex 0,1,2,0 y 'Copia 1 de 3' antes de la cuarta llamada); ViewOrCenterAfterLocateRestartTheCopyAndMIsUnknownUntilThePortAnswers View/Center (b, c: CopyIndex 0 y, desde el Responder, CopyText 'Copia 1 de ?' y TargetCount null); ViewAndCenterShareTheCopyAndALaterLocateStartsItsOwn (d: 1, 1 y luego 0 -> secuencia 0,1,1,0); AChangeOfTheRequestedViewRestartsTheCopyOfLocate (e).",
+    "T2B-F2 -> ACopyThatNoLongerExistsIsExplainedAndGoesBackToTheFirstOne (texto exacto, sin 'no tiene objetivos', CopyIndex 0, 'Copia 1 de 2'); ARackWithoutTargetsKeepsItsTextWhenTheCountIsZeroOrUnknown (TargetCount 0 y null conservan 'no tiene objetivos'); el caso Unavailable sin Verdict lo cubren ModelSpaceUnavailabilityIsExplainedAsSuchWithoutChangingSpace y EveryStatusHasItsOwnSpanishText, sin cambios.",
+    "T2B-F3 -> ASelectionThatIsNotOneRackGetsANeutralReasonThatIsTrueForOneOrSeveralObjects (Selection(0,1), (2,0), (1,1): texto exacto y sin 'varios')."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "El comportamiento real en AutoCAD (Smoke-NAV SN-01..SN-10) no se ejercio ni se afirma nada sobre el: el Worker no usa AutoCAD.",
+    "La CI exacta del SHA GREEN, la verificacion del Controller y nc1..nc3 quedan pendientes de la sesion.",
+    "Failed sigue mostrando el detalle del host sin traducir tras un prefijo en espanol (limitacion conocida del analisis, no corregida por alcance).",
+    "Los tests fijan el texto exacto de T2B-F2 y T2B-F3 pero no ejercen un puerto real que devuelva TargetCount positivo con RejectedNoTargets; esa respuesta se simula con el doble."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "La sesion ejecuta la CI exacta de 82bd49b6 y la verificacion del Controller con nc1..nc3.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

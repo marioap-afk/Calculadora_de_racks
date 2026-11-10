@@ -1,0 +1,55 @@
+{
+  "Schema": "rackcad-i64-a13-reuse/v1",
+  "Decision": "overnight-dispositions.md D-06",
+  "Bridge": "I64-IDENTITY-BRIDGE-01",
+  "VerifierBlob": "1c2510f71160804c6d42ae4da580641523c72a07",
+  "ProductSha": "82bd49b6d472ddb6ab13c1716d7a995c4d571fab",
+  "ConfigSnapshot": "E",
+  "NcRun": "R20261110T061935Z-2376",
+  "Conditions": {
+    "1.ProductHead": true,
+    "2.ProductRemote": true,
+    "3.ProductTreeClean": true,
+    "4.ConfigAccepted": true,
+    "5.NoConflictingProcesses": true,
+    "6.Blob.verify_identity_bridge.py": true,
+    "6.Blob.precheck_relay_schema.py": true,
+    "6.Blob.selftest_identity_bridge.py": true,
+    "7.InputExists.real-handoff": true,
+    "7.InputExists.mutated-handoff": true,
+    "7.InputExists.relay-record": true
+  },
+  "InputSha256": {
+    "real-handoff": "1f1282fdd97b843a8312e51d5bbc1388da7298dbb51aeb843521d896d8c5b2c2",
+    "mutated-handoff": "11c67e894b755af64f84ee38d6265a4fc5b53066ffaebb617a02fa5bc64f02fc",
+    "relay-record": "430de1667a9ca7036f287830ed1c4cacc63c685641629295c0d070fadcd5f07b"
+  },
+  "Selftest": {
+    "ExitCode": 0,
+    "Result": "PASS",
+    "Passed": 73,
+    "Total": 73,
+    "Sha256": "79c77dd576043206425ff90a50fefa20d6a1ce83b677ad896c06d53044cf9ee1"
+  },
+  "ExitCode": 0,
+  "HandoffIntegrity": "PASS",
+  "Identity": "FAIL",
+  "ControlResult": "PASS",
+  "FailClosed": false,
+  "Reasons": [],
+  "ChangedFields": [
+    "CurrentSha"
+  ],
+  "CandidateObject": "MISSING",
+  "Oracle": {
+    "ExitZero": true,
+    "HandoffIntegrityPass": true,
+    "IdentityFail": true,
+    "ControlResultPass": true,
+    "NoReasons": true,
+    "StderrEmpty": true
+  },
+  "BridgeOutputSha256": "7fa63420e9423f6372dd15aacc786ce1628c994b6a5413b6c03b65fe28555443",
+  "Result": "PASS",
+  "nc1": "SATISFIED_UNDER_I64_IDENTITY_BRIDGE"
+}

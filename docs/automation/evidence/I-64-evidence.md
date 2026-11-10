@@ -5886,3 +5886,17 @@ revisar:
 **Decisión:** D-04, corrección delegada. `attempts` pasa a 3 de 3. Sin nc1..nc3 sobre `6c01f644`. Contrato del intento 3 en `F2-T2B-NAVIGATION-UI/coordinator/gate-contract-attempt3.json`, con dos rutas exactas.
 
 **Límites:** sin cambios de producto en este paso; sin AutoCAD.
+
+## 98. F2-T2B-NAVIGATION-UI: corrección del intento 3, controles y cierre
+
+**Resultado:** producto `EXECUTION_VERIFIED` sobre `82bd49b6` (verificación `6b2a`, 14/14). CI 42766532521 4/4. Filtros UI 154/154 y Core 780/780; Core completa 16318; UI completa 1791 más 17 omitidas.
+
+**Corrección:** RED `25bdd0d9` (CI 42765320649, solo UI en failure, 7 fallos por aserción) y GREEN `82bd49b6`. Dos archivos. T2B-F1, T2B-F2 y T2B-F3 corregidos.
+
+**Verificación:** `92b5` = `EXECUTION_BLOCKED / STOP` (Authority), conservada; reejecución `6b2a` con el mismo prompt = `EXECUTION_VERIFIED` (D-05).
+
+**Controles:** nc1 `2376` = CONTROL NOT PASSED, conservado, y `SATISFIED_UNDER_I64_IDENTITY_BRIDGE` por una aplicación única del verificador de A-13 sin cambios (D-06; `HandoffIntegrity = PASS`, `Identity = FAIL`, autoprueba 73/73). nc2 `07c1` y nc3 `4df8` = CONTROL PASS. A-4 y A-6 no se aplicaron.
+
+**Cierre:** F2-T2B = CLOSED / PASS (D-07). Paquete: `F2-T2B-NAVIGATION-UI/task-close-package.md`. No es F2 PASS.
+
+**Límites:** sin AutoCAD. Siguiente: procedimiento y ejecución de Smoke-NAV.

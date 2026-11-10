@@ -37,3 +37,32 @@ Registro de cada `OVERNIGHT_OWNER_COORDINATOR_DISPOSITION` tomada bajo la autori
 - **Contrato del intento 3:** `F2-T2B-NAVIGATION-UI/coordinator/gate-contract-attempt3.json`. Se estrecha a dos rutas exactas; los mínimos de pruebas suben a los valores vigentes (143 y 780); el filtro Core pasa a `ExpectRed` false porque la corrección no toca Core; invariantes y prohibiciones sin cambio.
 - **Riesgo:** queda agotado el presupuesto de `attempts` de la unidad; otro REWORK sería S-11 y se documentaría como bloqueo real.
 - **Alcance:** solo F2-T2B. La verificación `ffd2` se conserva como evidencia y no se reinterpreta.
+
+## D-05. Parada de Authority en la verificación de la corrección
+
+- **Problema:** la verificación `R20261110T061255Z-92b5` de `82bd49b6` dio `EXECUTION_BLOCKED / STOP`, `FailureClass` Authority, porque `docs/automation/evidence/I-64-evidence.md` no figura en `Authorities`, aunque aparece en `git diff --name-only AuthorityRevision BaseSha`.
+- **Opciones:** (a) aceptar el bloqueo y emitir otro contrato con esa ruta declarada; (b) reejecutar sin tocar el prompt, sin coste de `attempts` (16.8); (c) aclarar el prompt.
+- **Decisión:** (b), una reejecución con el prompt idéntico salvo el `RunId`. La salida `92b5` se conserva tal como se emitió.
+- **Fundamento:** 16.3 prohíbe en ese diff solo rutas `EXTERNAL` o con secciones `UNIT_CHANGE`, y define como `UNIT_DOC` la evidencia de la unidad. Las tres rutas del diff lo cumplen. La verificación `ffd2` aceptó un diff de la misma forma como `UNIT_DOC`. No se orientó al Controller para no contaminar la repetición.
+- **Evidencia:** `92b5` y `R20261110T061640Z-6b2a` (`EXECUTION_VERIFIED`, 14/14), con la misma entrega, las mismas entradas y el mismo prompt.
+- **Riesgo:** el Controller no es determinista en esta lectura; podría repetirse en otra unidad. Queda consumida 1 de las 2 reejecuciones de esta fase.
+- **Alcance:** esta verificación. 16.3 no cambia.
+- **Incidencia de la sesión:** con `92b5` ya bloqueada se preparó por error el control `b287`. Nunca se lanzó, no produjo salida y se eliminó.
+
+## D-06. nc1 de F2-T2B: el modo de fallo Handoff/Identity reaparece
+
+- **Problema:** nc1 `R20261110T061935Z-2376` da `CONTROL NOT PASSED`. El Controller detecta el `CurrentSha` inexistente y bloquea, con `Identity` en fail, pero también marca `Handoff`, con `FailureClass` StopCondition y S-04. Es el modo de fallo de nc1 en F2-T2A, con otra `FailureClass` (allí, Handoff).
+- **Opciones:** (a) reintentar nc1 hasta que coincida; (b) rebajar el oráculo; (c) aplicar el verificador determinista de A-13, sin cambios, a esta ocurrencia; (d) detener F2-T2B.
+- **Decisión:** (c), una sola aplicación, con autoprueba previa desde los mismos blobs. A-13 no se modifica ni se amplía: esta decisión es una ocurrencia nueva y solo de I-64. Autoridad: la instrucción nocturna del Owner, §8.
+- **Fundamento:** reintentar sería buscar un resultado favorable, porque la salida `2376` es válida. El verificador recibe la ocurrencia por argumentos, ya tuvo revisión del Architect (`bc2b`) y separa la integridad de la entrega de la identidad frente a Git. No hay código nuevo, así que no procede una revisión nueva.
+- **Evidencia:** `F2-T2B-NAVIGATION-UI-nc1-bridge/3/`: blob `1c2510f7`, autoprueba 73/73 con el mismo SHA-256 que `selftest-identity-result-a13.json`, `HandoffIntegrity = PASS`, `Identity = FAIL`, `ControlResult = PASS`, objeto candidato `MISSING`, salida `7fa63420…`.
+- **Resultado:** `nc1 = SATISFIED_UNDER_I64_IDENTITY_BRIDGE`. La corrida `2376` conserva `CONTROL NOT PASSED`.
+- **Riesgo:** el defecto del Controller sigue abierto; ver `task-close-package.md`.
+- **Alcance:** nc1 de F2-T2B. Sin cambio del protocolo global ni de la semántica de `Handoff`.
+
+## D-07. Cierre de F2-T2B-NAVIGATION-UI
+
+- **Problema:** el cierre de la tarea correspondía al Coordinator.
+- **Decisión:** F2-T2B = CLOSED / PASS sobre `82bd49b6`.
+- **Fundamento:** verificación `6b2a` `EXECUTION_VERIFIED` 14/14; nc1 satisfecho bajo el puente (D-06); nc2 `07c1` y nc3 `4df8` CONTROL PASS; CI 42766532521 4/4; T2B-F1, F2 y F3 corregidos y cubiertos por pruebas.
+- **Alcance:** cierre de esta tarea; no es F2 PASS. El comportamiento en AutoCAD queda para Smoke-NAV.

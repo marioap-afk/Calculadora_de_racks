@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F2-T2B-NAVIGATION-UI",
+  "RunId": "R20261110T063100Z-4df8",
+  "DelegationRunId": "R20261110T055138Z-d695",
+  "WorkRunId": "R20261110T055410Z-f863",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-10T05:54:17Z y EndUtc=2026-11-10T06:09:42Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente y con campos requeridos; TaskId, Attempt, DelegationRunId, RunId y SHA coinciden con la delegacion y Git. relay-record-work.json: OutputWrittenUtc=2026-11-10T00:09:19.531147-06:00, posterior al inicio de cesion."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha: exit 0; merge-base(MainSha, AuthorityRevision)=MainSha. git diff --name-only MainSha AuthorityRevision en autoridades EXTERNAL: vacio. git diff --name-only AuthorityRevision BaseSha lista solo docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F2-T2B-NAVIGATION-UI/coordinator/gate-contract-attempt3.json y docs/automation/state/I-64.yml; son registros de I-64, sin rutas EXTERNAL ni UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json: AllowedWriteScope identico, 2 rutas; ForbiddenWriteScope, Invariants, RequiredTests y los 27 StopConditions coinciden. RequiredTests conserva los filtros, minimos 143/780 y ExpectRed true/false."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=82bd49b6d472ddb6ab13c1716d7a995c4d571fab y refs/remotes/origin/architecture/workspace-persistente-rackcad coincide con CurrentSha; git merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha: exit 0. Branch y Worktree del handoff coinciden con la rama y ruta actuales."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: LsRemoteSha=CurrentSha y OriginMainSha=MainSha; RemoteFacts registra la misma rama remota para CurrentSha y MainSha=812baf879612320653094a8aaf46aca0bac81383. git rev-parse de refs remotas coincide."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha devuelve solo src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs y tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewModelTests.cs, exactamente las 2 rutas permitidas; ninguna prohibida. git diff --name-only RedSha CurrentSha devuelve solo el view-model."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1: vacio. git check-ignore -v sobre el paquete de entrada devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX de push 42766532521: event=push, ref exacta, head_sha=CurrentSha, cuatro jobs requeridos en success. Push RED 42765320649 terminado: UI Tests fallo con 7 fallas de Workspace; Tests (Domain + Application) success, conforme a ExpectRed UI=true y Core=false."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Current: ci-ui/42766532521/ui.trx tiene 154 resultados Workspace UI y 0 fallidos; ci-core/42766532521/core.trx tiene 780 Workspace Core y 0 fallidos. TRX RED: ci-ui-red/42765320649/ui.trx tiene 154 Workspace UI y 7 fallidos; ci-core-red/42765320649/core.trx tiene 780 Workspace Core y 0 fallidos. Coincide con TestResults del handoff y minimos 143/780. RT=git diff --name-only 2deb0454e4c41c15e02382437176ecbb9bbb4eda 25bdd0d9491b006fa1b82209489f9a9e3357d178 -- tests/: tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs; tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs; tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationPortDouble.cs; tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewModelTests.cs; tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewTests.cs. La union ChainRedFiles+RT mantiene esas 5 rutas; GREEN no toca ninguna."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> en RED y GREEN, igual al Worker.Trailer y coherente con el modelo efectivo claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high; coinciden con el modelo y effort de la delegacion."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json: WorkCompleted contiene el literal prohibido por AUTOMATION_PLAN section 16.10; el control nc3 muta ese campo."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes: 0 denegaciones; 2 resultados de herramienta con error, ninguno pendiente. El registro confirma cesion y terminacion del Worker."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La copia de nc3 contiene en WorkCompleted un literal prohibido por section 16.10. Las comprobaciones anteriores pasan; no se activa una condicion STOP."
+  ],
+  "RecommendedNextAction": "Retirar el literal prohibido de WorkCompleted y solicitar una nueva verificacion."
+}

@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F2-T2B-NAVIGATION-UI",
+  "RunId": "R20261110T061255Z-92b5",
+  "DelegationRunId": "R20261110T055138Z-d695",
+  "WorkRunId": "R20261110T055410Z-f863",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, ExitCode=null (subagent final result); Cession.StartUtc=2026-11-10T05:54:17Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists and matches TaskId F2-T2B-NAVIGATION-UI, Attempt 3, DelegationRunId R20261110T055138Z-d695, RunId R20261110T055410Z-f863; OutputWrittenUtc from relay-record-work.json is 2026-11-10T00:09:19.531147-06:00, after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "fail",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git diff --name-only AuthorityRevision BaseSha returned docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F2-T2B-NAVIGATION-UI/coordinator/gate-contract-attempt3.json, docs/automation/state/I-64.yml. The latter two are declared UNIT_DOC authorities; docs/automation/evidence/I-64-evidence.md is not listed in delegation.json Authorities, so the required check against declared authority paths cannot establish it as UNIT_DOC and the diff includes an undeclared authority route."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json agree on TaskId, the two AllowedWriteScope paths in order, required tests (UI 143 ExpectRed=true; Core 780 ExpectRed=false), and the acceptance criteria. relay-record-planning.json records A1-A8 as pass; nc4 was already satisfied in the chain per its Notes."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and git rev-parse <CurrentSha> both returned 82bd49b6d472ddb6ab13c1716d7a995c4d571fab; git branch --show-current returned architecture/workspace-persistente-rackcad; git rev-parse --abbrev-ref HEAD matched. merge-base --is-ancestor BaseSha RedSha and RedSha CurrentSha both returned 0. Expected worktree matches Get-Location."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: CurrentRun event=push, ref=refs/heads/architecture/workspace-persistente-rackcad, HeadSha=82bd49b6d472ddb6ab13c1716d7a995c4d571fab; LsRemoteSha matches CurrentSha and OriginMainSha matches MainSha 812baf879612320653094a8aaf46aca0bac81383."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha returned exactly src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs and tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewModelTests.cs, in AllowedWriteScope; neither path intersects ForbiddenWriteScope. git diff --name-only RedSha..CurrentSha returned only the view-model path."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v for the input config.toml returned .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 42766532521 is a completed push on the exact branch and SHA; all four required jobs are success. RedRun 42765320649 is a completed push on the exact branch and RedSha. Its UI job failed as expected for the red behavior tests and Core succeeded. TRX files ci-core/42766532521/core.trx, ci-ui/42766532521/ui.trx, ci-core-red/42765320649/core.trx and ci-ui-red/42765320649/ui.trx were read."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current TRX: Core 16318 passed/0 failed, Workspace filter 780; UI 1808 total, 1791 passed/0 failed/17 NotExecuted, Workspace filter 154. Red TRX: Core Workspace 780 with 0 failed; UI Workspace 154 with 7 failed, matching the seven named in worker-handoff.json. RED commit 25bdd0d9 changes only WorkspaceNavigationViewModelTests.cs and has no product change; GREEN changes no tests. git diff --name-only ChainBaseSha RedSha -- tests/ returned the five ChainRedFiles: tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs, tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs, tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationPortDouble.cs, tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewModelTests.cs, tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewTests.cs. GREEN does not touch RT union ChainRedFiles."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha showed both RED and GREEN commits include Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective Worker model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records requested/effective model claude-sonnet-5-5 and requested/effective effort high. These match the Worker routing declaration and required enforcement."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked worker-handoff.json free-text fields named by AUTOMATION_PLAN 16.10; none contains a listed prohibited gate term."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes record 0 permission denials and 2 tool errors, neither pending. Process records and reread report 0 participants and 0 persistent unattributable processes; no open delegation is reported."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Authority",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "Authority verification fails: the AuthorityRevision-to-BaseSha diff includes docs/automation/evidence/I-64-evidence.md, which is absent from the delegation Authorities list and cannot be verified as a declared UNIT_DOC route under section 16.3.",
+    "The handoff, commit identity, exact write scope, current CI, and supplied TRX counts otherwise match the recorded requirements."
+  ],
+  "RecommendedNextAction": "Have the Coordinator resolve the undeclared authority route, then rerun Controller verification against the resulting authorized inputs."
+}

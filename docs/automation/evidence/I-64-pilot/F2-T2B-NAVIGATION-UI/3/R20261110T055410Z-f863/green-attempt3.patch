@@ -1,0 +1,32 @@
+diff --git a/src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs b/src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs
+index 7e96a42a..348a37e7 100644
+--- a/src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs
+@@ -251,8 +251,8 @@ namespace RackCad.UI.Workspace
+         private void EnterScope(NavigationViewOrder? view)
+         {
+             if (_scopeView == view) return;
+-            _scopeView = view;
+             ResetCopy();
++            _scopeView = view;
+         }
+ 
+         private void ResetCopy()
+@@ -285,6 +285,8 @@ namespace RackCad.UI.Workspace
+                 case WorkspaceNavigationStatus.Executed:
+                     return ExecutedText(action, view, copyIndex, result.TargetCount);
+                 case WorkspaceNavigationStatus.Unavailable:
++                    if (result.Verdict.HasValue && result.TargetCount.HasValue && result.TargetCount.Value > 0)
++                        return "La copia pedida ya no existe; no se hizo nada. Se vuelve a la primera copia.";
+                     return result.Verdict.HasValue
+                         ? "El rack no tiene objetivos para esa acción; no se hizo nada."
+                         : "La navegación necesita el Espacio Modelo; el panel no cambia de espacio. Vuelve a Modelo y repite la acción.";
+@@ -333,7 +335,7 @@ namespace RackCad.UI.Workspace
+ 
+             switch (_kind)
+             {
+-                case SelectionContextKind.Selection: return "Hay varios objetos seleccionados; selecciona un solo rack para navegar.";
++                case SelectionContextKind.Selection: return "Lo seleccionado no es un rack individual; selecciona un solo rack para navegar.";
+                 case SelectionContextKind.NoIdentity: return "El objeto seleccionado no tiene identidad de rack.";
+                 case SelectionContextKind.Diagnostic: return "No se pudo interpretar el objeto seleccionado.";
+                 default: return "Selecciona un rack en el dibujo para navegar.";
