@@ -1,7 +1,7 @@
 # I-68 — Evidencia de la unidad (BOM Excel Native Analysis, ID72)
 
 Unit / Initiative / Workflow: `I-68` / I-68 / V2. Claim-Id `cfd9f7bb-7388-42ba-9c7c-0285ea0f3893` (reclamo `3180201d`, base `origin/main` `04a7041492d760170ce3f3ba5fceeb29146107cc`; clasificacion T4).
-Especificacion: [I-68-especificacion-id72.md](../../initiatives/I-68-especificacion-id72.md). Propuesta vigente: [I-68-proposal-v2.md](../../initiatives/I-68-proposal-v2.md). Decisiones: [decisions/I-68.md](../decisions/I-68.md).
+Especificacion: [I-68-especificacion-id72.md](../../initiatives/I-68-especificacion-id72.md). Propuesta vigente: [I-68-proposal-v3.md](../../initiatives/I-68-proposal-v3.md). Decisiones: [decisions/I-68.md](../decisions/I-68.md).
 
 Estado: Discovery completo. Freeze NO aceptado. **IMPLEMENTATION AUTHORIZATION = NO.**
 Clases de afirmacion (LIFECYCLE §4): MEASURED, RECONSTRUCTED, INFERENCE, UNKNOWN. Sin marca = MEASURED en el codigo de la base.
@@ -95,7 +95,7 @@ Ninguna rama remota activa toca `Application/Bom`, las dos ventanas BOM, `RackIn
 | M-01 | no activado | Cantidad total se deriva en un solo sitio con el mismo valor de Copias que se muestra; invariante I-04 lo enlaza con `ConsolidatedBomBuilder` |
 | M-02 | no activado | sin persistencia |
 | M-03 | no activado | todo cambio observable es lo pedido; CSV y exportacion de un rack intactos (D-2) |
-| **M-04** | **activado** | el escritor puede generar sin error un archivo que Excel no abre (P-07, P-09), y sin refresco la hoja parece completa con filtros vacios (P-12, P-14). Proposal §6 lo congela |
+| **M-04** | **activado** | el escritor puede generar sin error un archivo que Excel no abre (P-07, P-09), y antes del refresco la hoja parece completa con filtros vacios (P-16). Proposal §6 lo congela |
 | M-05 | no activado | `XlsxWriter.Build` conserva su contrato; los seis sistemas consumen la misma salida y se regresionan |
 | **M-06** | **activado** | añade al escritor una capacidad reutilizable de Table y PivotTable; la especificacion la nombra como «new reusable Excel infrastructure» |
 | M-07 | no activado | sin registro ni mecanismo transversal; una capa, un consumidor |
@@ -131,17 +131,18 @@ Excel 16.0 build 20527, interfaz es-ES, COM, instancia oculta propia, solo lectu
 | P-04 | ¿Visible en Vista protegida? | Con celdas precalculadas, si (A1:B16 = esperado). Sin ellas, vacia |
 | P-05 | ¿Enlazada a la Table? | Medido con columna **calculada** y definicion con listas: fila nueva amplia la Table; tras RefreshAll 142 → 276. No es el diseño recomendado; lo sustituye P-13 |
 | P-06 | Cantidad total como valor | Editar el valor y RefreshAll: 64 → 134 |
-| P-07 | BOM vacio | Tabla con solo encabezado: **Excel no abre el archivo**. Tabla con una fila en blanco: abre, con y sin dinamica |
+| P-07 | BOM vacio | Tabla con solo encabezado: `Workbooks.Open` falla con alertas desactivadas. Tabla con una fila en blanco: abre, con y sin dinamica |
 | P-08 | Partida sin Nivel ni Descripcion | Aparece como item vacio, se cuenta (10) y entra al total (74) |
-| P-09 | ¿Es fragil listar valores en la definicion? | **Si. Excel no abre el archivo** si Longitud es toda entera y falta `containsInteger`, si una fila tiene una variante de mayusculas listada aparte (t3) y si Rack la tiene (t5) |
+| P-09 | ¿Es fragil listar valores en la definicion? | **Si. `Workbooks.Open` falla, con alertas desactivadas,** si Longitud es toda entera y falta `containsInteger`, si una fila tiene una variante de mayusculas listada aparte (t3) y si Rack la tiene (t5) |
 | P-10 | Definicion minima sin listas de valores | Evita las tres formas de P-09: abre, Excel reconstruye, ordena segun su idioma y funde mayusculas (Poste 9). Celdas sobrantes desaparecen. Longitudes decimales separadas. Vista protegida muestra las celdas previas |
 | P-11 | ¿Refresca en cada forma de abrir? | Si en 5 escenarios de instancia limpia: nueva, con libro en blanco, tras cerrar otro, con otra dinamica abierta, lectura-escritura |
-| P-12 | Limitacion observada | En un bucle encadenado de automatizacion dos libros no refrescaron; en instancia limpia si. Causa UNKNOWN; no se reprodujo al intentarlo (P-14) |
+| P-12 | Limitacion observada al principio | En los dos primeros bucles encadenados, t2, t7 y t8 no refrescaron y t4 se vio inconsistente; solo t1 y t6, los primeros de cada corrida, refrescaron. Explicado por P-16 |
 | **P-13** | **Diseño recomendado** (minima + valor), longitudes 9, 10, 100, 144 y 40.5 | Sin reparacion. Campos y xlSum. Total 120 = SUM de la columna. R-A 66; Pieza 96; Componente 24; R-A + Pieza 42; varios racks 90. Misma Descripcion y Longitud suman 22; orden 9, 10, 100, 144. Editar Cantidad total: 120 → 190. Editar solo Copias o Cantidad: no cambia. Fila nueva: Cantidad total vacia; con valor, 193; Table A1:J11; fuente sigue siendo la tabla |
-| **P-14** | Vista protegida, habilitar edicion y falta de refresco | Vista protegida muestra las celdas. Tras habilitar edicion: refresca, 120. Excel ya abierto y otro libro con objetos COM vivos: refresco. Con `refreshOnLoad=0`: celdas visibles, filtros sin valores; Actualizar recupera 120 |
+| **P-14** | Vista protegida, habilitar edicion y falta de refresco | Vista protegida muestra las celdas. Tras habilitar edicion: refresca, 120. Con `refreshOnLoad=0` (simulacion): celdas visibles, los valores del filtro no se pueden leer; Actualizar recupera 120 |
 | **P-15** | Estado inicial de Nivel y nota | «(Todas)»: Larguero 48, total 90. Pieza inicial (solo Nivel lista sus literales): Larguero 24, total 66, abre sin reparacion; con BOM vacio tambien. La nota en D1 se conserva al actualizar |
+| **P-16** | Refresco de apertura e instancia limpia | **11 archivos, una instancia cada uno:** 4 no abren (t0, t3, t5, t9) y 7 abren y refrescan; acentos separados y mayusculas fundidas (a1: Poste 5, Póste 2). **22 libros encadenados, lectura a unos 3 s:** 8 seguian sin refrescar (2023, 0 items), sin patron fijo entre corridas. **Espera de 6 s mas, 6 libros:** todos refrescados y correctos tras 12 s adicionales. **Actualizar desde el estado real sin refrescar:** recupera en 5 de 5 |
 
-Salidas crudas de P-09..P-15 en `I-68-probes/results-*.txt`. P-01..P-08 anteriores solo tienen el resultado aqui registrado.
+Salidas crudas en `I-68-probes/`: `results-instancia-limpia-y-cadenas.txt` (P-09, P-10, P-16), `results-diseno-recomendado.txt` (P-13, P-14), `results-estado-inicial-nivel.txt` (P-15), `results-escenarios-apertura.txt` (P-11), `results-celdas-sobrantes-y-vista-protegida.txt` (P-10). `results-historico-cadena-1.txt` y `-2.txt` son los bucles de P-12; el primero se genero con una revision anterior de `validate4.ps1` que omitia etiquetas numericas. P-01..P-08 solo tienen el resultado aqui registrado.
 
 Limites: una sola version de Excel, una maquina, datos sinteticos; CI no tiene Excel. No se midio Excel 2016/2019 ni otras interfaces. La deteccion de reparacion usa titulo y registros `error*.xml`, con alertas desactivadas.
 
@@ -156,7 +157,7 @@ Rendimiento: sin medir, se caracteriza en G3 (BOM tipico y grande, generacion y 
 | Excel Table | **no** | si (P-01) |
 | PivotTable nativa, cache | **no** | si (P-01, P-02, P-10) |
 | Filtros, datos numericos | **no** | si (P-02) |
-| Refresh | **no** | si (P-03, P-05, P-11) |
+| Refresh | **no** | si (P-03, P-13, P-14, P-16) |
 
 La especificacion ordena detenerse antes de «editar OOXML manualmente» y presentar opciones.
 

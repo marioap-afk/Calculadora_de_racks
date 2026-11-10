@@ -1,0 +1,57 @@
+##### PARTE 1: un archivo por instancia limpia
+[t0_control_sin_containsInteger] NO_ABRE = No se puede obtener la propiedad Open de la clase Workbooks.
+[t1_base] ABRE titulo=t1_base.xlsx refresco_anio=2026 items_rack=1 :: _guion=7 ; 10=7 ; 10 perfil=5 ; 10=5 ; 9 perfil=6 ; 10=6 ; Nube=4 ; 10=4 ; Ñandú=3 ; 10=3 ; Poste=1 ; 10=1 ; Zeta=2 ; 10=2 ; Total general=28
+[t2_acentos] ABRE titulo=t2_acentos.xlsx refresco_anio=2026 items_rack=1 :: _guion=7 ; 10=7 ; 10 perfil=5 ; 10=5 ; 9 perfil=6 ; 10=6 ; Nube=4 ; 10=4 ; Ñandú=3 ; 10=3 ; Poste=1 ; 10=1 ; Póste=8 ; 10=8 ; Zeta=2 ; 10=2 ; Total general=36
+[t3_mayus_listada] NO_ABRE = No se puede obtener la propiedad Open de la clase Workbooks.
+[t4_mayus_unificada] ABRE titulo=t4_mayus_unificada.xlsx refresco_anio=2026 items_rack=1 :: _guion=7 ; 10=7 ; 10 perfil=5 ; 10=5 ; 9 perfil=6 ; 10=6 ; Nube=4 ; 10=4 ; Ñandú=3 ; 10=3 ; Poste=9 ; 10=9 ; Zeta=2 ; 10=2 ; Total general=36
+[t5_rack_mayus_listada] NO_ABRE = No se puede obtener la propiedad Open de la clase Workbooks.
+[t9_header_only] NO_ABRE = No se puede obtener la propiedad Open de la clase Workbooks.
+[t6_min_casos_rotos] ABRE titulo=t6_min_casos_rotos.xlsx refresco_anio=2026 items_rack=1 :: _guion=7 ; 10=7 ; 10 perfil=5 ; 10=5 ; 9 perfil=6 ; 10=6 ; Nube=4 ; 10=4 ; Ñandú=3 ; 10=3 ; Poste=9 ; 10=9 ; Zeta=2 ; 10=2 ; Total general=36
+[t7_min_celdas_sobrantes] ABRE titulo=t7_min_celdas_sobrantes.xlsx refresco_anio=2026 items_rack=1 :: _guion=7 ; 10=7 ; 10 perfil=5 ; 10=5 ; 9 perfil=6 ; 10=6 ; Nube=4 ; 10=4 ; Ñandú=3 ; 10=3 ; Poste=9 ; 10=9 ; Zeta=2 ; 10=2 ; Total general=36
+[t8_min_longitudes] ABRE titulo=t8_min_longitudes.xlsx refresco_anio=2026 items_rack=1 :: A=3 ; 40.5=1 ; 48=2 ; B=3 ; 40.5=3 ; Total general=6
+[a1_acentos] ABRE titulo=a1_acentos.xlsx refresco_anio=2026 items_rack=1 :: Poste=5 ; 10=5 ; Póste=2 ; 10=2 ; Zeta=8 ; 10=8 ; Total general=15
+##### CADENA: leer y cerrar, objetos COM vivos
+  [1 c1] refresco_anio=2026 items_rack=3
+  [2 c2] refresco_anio=2023 items_rack=0
+     tras Actualizar: refresco_anio=2026 items_rack=3 :: Larguero 96=48 ; 96=48 ; Poste C3=10 ; 144=10 ; Rodillo=32 ; 40.5=32 ; Total general=90
+  [3 c3] refresco_anio=2026 items_rack=3
+  [4 c4] refresco_anio=2023 items_rack=0
+     tras Actualizar: refresco_anio=2026 items_rack=3 :: Larguero 96=48 ; 96=48 ; Poste C3=10 ; 144=10 ; Rodillo=34 ; 40.5=34 ; Total general=92
+  [5 c5] refresco_anio=2026 items_rack=3
+  [6 c6] refresco_anio=2023 items_rack=0
+     tras Actualizar: refresco_anio=2026 items_rack=3 :: Larguero 96=48 ; 96=48 ; Poste C3=10 ; 144=10 ; Rodillo=36 ; 40.5=36 ; Total general=94
+##### CADENA: leer y cerrar, liberando COM
+  [1 c1] refresco_anio=2026 items_rack=3
+  [2 c2] refresco_anio=2023 items_rack=0
+  [3 c3] refresco_anio=2026 items_rack=3
+  [4 c4] refresco_anio=2023 items_rack=0
+  [5 c5] refresco_anio=2026 items_rack=3
+  [6 c6] refresco_anio=2026 items_rack=3
+##### CADENA: sin cerrar, todos abiertos a la vez
+  [1 c1] refresco_anio=2026 items_rack=3
+  [2 c2] refresco_anio=2026 items_rack=3
+  [3 c3] refresco_anio=2026 items_rack=3
+  [4 c4] refresco_anio=2023 items_rack=0
+  [5 c5] refresco_anio=2026 items_rack=3
+  [6 c6] refresco_anio=2026 items_rack=3
+##### CADENA: patron exacto del fallo: t6 t7 t8 a1, objetos vivos
+  [1 t6_min_casos_rotos] refresco_anio=2026 items_rack=1
+  [2 t7_min_celdas_sobrantes] refresco_anio=2023 items_rack=0
+     tras Actualizar: refresco_anio=2026 items_rack=1 :: _guion=7 ; 10=7 ; 10 perfil=5 ; 10=5 ; 9 perfil=6 ; 10=6 ; Nube=4 ; 10=4 ; Ñandú=3 ; 10=3 ; Poste=9 ; 10=9 ; Zeta=2 ; 10=2 ; Total general=36
+  [3 t8_min_longitudes] refresco_anio=2026 items_rack=1
+  [4 a1_acentos] refresco_anio=2023 items_rack=0
+     tras Actualizar: refresco_anio=2026 items_rack=1 :: Poste=5 ; 10=5 ; Póste=2 ; 10=2 ; Zeta=8 ; 10=8 ; Total general=15
+##### CADENA: sin cerrar, espera larga y relectura final
+  [1 c1] refresco_anio=2026 items_rack=3
+  [2 c2] refresco_anio=2026 items_rack=3
+  [3 c3] refresco_anio=2026 items_rack=3
+  [4 c4] refresco_anio=2026 items_rack=3
+  [5 c5] refresco_anio=2026 items_rack=3
+  [6 c6] refresco_anio=2026 items_rack=3
+  -- relectura tras 12 s --
+  [c1] refresco_anio=2026 items_rack=3 celdas=Larguero 96=48 ; 96=48 ; Poste C3=10 ; 144=10 ; Rodillo=31 ; 40.5=31 ; Total general=89
+  [c2] refresco_anio=2026 items_rack=3 celdas=Larguero 96=48 ; 96=48 ; Poste C3=10 ; 144=10 ; Rodillo=32 ; 40.5=32 ; Total general=90
+  [c3] refresco_anio=2026 items_rack=3 celdas=Larguero 96=48 ; 96=48 ; Poste C3=10 ; 144=10 ; Rodillo=33 ; 40.5=33 ; Total general=91
+  [c4] refresco_anio=2026 items_rack=3 celdas=Larguero 96=48 ; 96=48 ; Poste C3=10 ; 144=10 ; Rodillo=34 ; 40.5=34 ; Total general=92
+  [c5] refresco_anio=2026 items_rack=3 celdas=Larguero 96=48 ; 96=48 ; Poste C3=10 ; 144=10 ; Rodillo=35 ; 40.5=35 ; Total general=93
+  [c6] refresco_anio=2026 items_rack=3 celdas=Larguero 96=48 ; 96=48 ; Poste C3=10 ; 144=10 ; Rodillo=36 ; 40.5=36 ; Total general=94

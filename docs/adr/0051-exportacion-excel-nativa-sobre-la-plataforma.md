@@ -3,7 +3,7 @@
 - **Estado:** propuesto
 - **Fecha:** 2026-11-09
 - **Decisores:** Owner del proyecto (pendiente de aceptación, decisión D-0). Coordinator de I-68 (redacción).
-- **Iniciativa relacionada:** I-68 — `feature/bom-excel-analisis-nativo` ([contrato](../initiatives/I-68-bom-excel-analisis-nativo.md), [Proposal V2](../initiatives/I-68-proposal-v2.md), [evidencia](../automation/evidence/I-68-evidence.md)).
+- **Iniciativa relacionada:** I-68 — `feature/bom-excel-analisis-nativo` ([contrato](../initiatives/I-68-bom-excel-analisis-nativo.md), [Proposal V3](../initiatives/I-68-proposal-v3.md), [evidencia](../automation/evidence/I-68-evidence.md)).
 - **Consume sin reabrir:** [ADR-0012](0012-producto-sin-dependencias-nuget.md).
 
 ## Contexto
@@ -16,7 +16,7 @@ Extender `XlsxWriter` para declarar una tabla en una hoja y una tabla dinámica 
 
 La tabla dinámica se escribe con **definición mínima**: la caché y los campos no listan valores, Excel los reconstruye al abrir (`refreshOnLoad`), y la hoja lleva las celdas ya calculadas para que el resumen se vea sin refrescar.
 
-Se fijan los nombres públicos `RackCadBOM` (tabla) y `Resumen` (hoja).
+Se fijan los nombres públicos `RackCadBOM` (tabla), `ResumenBOM` (tabla dinámica) y `Resumen` (hoja).
 
 Generar el archivo no requiere Excel ni automatización.
 
@@ -30,7 +30,7 @@ Generar el archivo no requiere Excel ni automatización.
 ## Consecuencias
 
 - Positivas: sin dependencias ni riesgo de versiones en el proceso de AutoCAD; salida determinista; no replica las reglas de agrupación de Excel en el XML.
-- Negativas / costos aceptados: RackCad posee el XML de la tabla dinámica. Su validez real solo se comprueba del todo con una prueba local en Excel, fuera de CI; medido solo en Excel 16.0 build 20527. Sin refresco, la tabla dinámica no tiene valores en sus filtros hasta pulsar Actualizar.
+- Negativas / costos aceptados: RackCad posee el XML de la tabla dinámica. Su validez real solo se comprueba del todo con una prueba local en Excel, fuera de CI; medido solo en Excel 16.0 build 20527. El refresco de apertura es asíncrono: mientras no ocurre, la tabla dinámica no tiene valores en sus filtros, y Actualizar la recupera.
 - Revisar esta decisión si aparecen más consumidores o una versión de Excel rechaza la definición mínima.
 
 ## Referencias
