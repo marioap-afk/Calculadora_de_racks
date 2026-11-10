@@ -255,9 +255,17 @@ G4 cierra con el humo y la conformidad de ese SHA.
 
 Owner Validation: **PASS** (2026-11-09), resultado global declarado por el Owner sobre ese SHA; no se dictaron resultados por escenario ([ficha](../../initiatives/I-68-owner-validation-sheet.md)). DLL del candidato: ProductVersion y SHA-256 de la tabla, comprobados de nuevo al recibir el veredicto. Cobertura del Candidato: se mide despues del merge (WORKFLOW 4.5.7).
 
-## 10. Entrada FOUNDATIONS redactada
+## 10. Cobertura del Candidato y preflight de integración
 
-Se publica en `docs/FOUNDATIONS.md` en el commit de cierre, ya conformada (LIFECYCLE §4.1).
+Cobertura del Candidato (WORKFLOW §4.5 paso 2.bis): run `42753946317`, `workflow_dispatch`, `candidate_sha` = `68d9fb9a24151871cee1a7a22c0a2835882465fb` = SHA medido en el checkout (`measured-sha.txt`), artifact `rackcad-coverage-cobertura` id `13734512958`, digest `sha256:ac36562f7354e4d9bc806468b3ae3ef96dad08586e56da1a947f655736d01381`. Es señal de salud, no evidencia de CI del Candidato.
+
+Preflight: `origin/main` = `04a70414`, la base de la rama: 0 commits por detrás, sin rebase ni ruta R. Desde el Candidato solo cambian archivos bajo `docs/`. Los hechos posteriores a este commit (SHA de cierre, CI de cierre, merge, CI posterior y limpieza) van en el tag `integration/I-68`.
+
+ID72: CLOSED al verificarse la integración en `main`; todos los criterios tienen evidencia sobre el Candidato y Owner Validation PASS.
+
+## 11. Entrada FOUNDATIONS
+
+Publicada en `docs/FOUNDATIONS.md` en el commit de cierre, ya conformada (LIFECYCLE §4.1).
 
 ```text
 Name: XLSX Native Table and PivotTable

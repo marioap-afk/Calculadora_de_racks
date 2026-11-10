@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-68
 title: BOM Excel Native Analysis (ID72) — Cantidad total, tabla y tabla dinámica
 type: feature
-status: implemented
+status: integrated
 workflow: V2
 conceptual_initiative: I-68
 delivery_unit: I-68
@@ -20,7 +20,7 @@ coordination_strategy: unidad unica; se comprueba la interseccion con las ramas 
 context_packs: []
 consumes: [BillOfMaterials, ConsolidatedBom, ConsolidatedBomBuilder, XlsxWriter]
 extends: []
-introduces: [capacidad de Table y PivotTable nativas en XlsxWriter]
+introduces: [XLSX Native Table and PivotTable]
 discovery_ref: docs/automation/evidence/I-68-evidence.md
 freeze_ref: docs/initiatives/I-68-proposal-v6.md
 freeze_delta_ref:
@@ -42,7 +42,7 @@ automation:
 
 # I-68 — BOM Excel Native Analysis (ID72)
 
-Status: **OWNER VALIDATION PASS; integracion en curso**. El estado vivo se deriva de la existencia de `origin/feature/bom-excel-analisis-nativo`.
+Status: **INTEGRADA** (2026-11-09). Identidades de cierre, merge, CI posterior, cobertura y limpieza en el tag `integration/I-68`.
 
 Workflow: V2 (reclamo posterior a `WORKFLOW_V2_EFFECTIVE_SHA`, base que lo contiene, sin pausa activa: T4).
 Unit: `I-68`. Rama: `feature/bom-excel-analisis-nativo`. Autorización: orden directa del Owner (WORKFLOW §2, caso d).
