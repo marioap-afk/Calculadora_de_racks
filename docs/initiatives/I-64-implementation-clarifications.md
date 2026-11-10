@@ -87,3 +87,25 @@ Si el drenaje termina y después programa o materializa la superficie activa por
 ## IC-05. Obligaciones que F3 traslada a validaciones posteriores
 
 **Autoridad:** la misma orden. SN-06c; la parte de pestañas de SN-10; validación en host de que el manejo de avisos no lee el DWG; validación en host de que los racks borrados desaparecen correctamente; Owner Validation con racks reales representativos. F3 es PASS WITH LIMITATIONS, no un navegador validado en host.
+
+## IC-06. Piloto acotado de Push Back en F4 (F4-PILOT-PUSHBACK-01)
+
+**Autoridad:** disposición del Owner `F4-DRAFTS/coordinator/owner-f4-disposition-2.md` (F4-E09), que acepta la opción (b) de C-F4-01. Es una aclaración escalonada de D-15 y de F5; no cambia el Freeze.
+
+**Propósito:** F4 implementa una superficie de edición compacta de Push Back sobre el **mismo** estado editable de Push Back, para probar la arquitectura de `DraftSession`, dirty, obsolescencia y Actualizar. No es la migración completa del editor de Push Back.
+
+**Requisitos:**
+
+1. un único estado editable subyacente;
+2. ningún modelo de producto paralelo;
+3. ninguna segunda autoridad persistida;
+4. un conjunto de campos cerrado y enumerado de forma explícita;
+5. los campos y funciones no soportados quedan como residual de F5;
+6. F4 no intenta reproducir el editor heredado completo;
+7. la misma semántica de `DraftSession` tiene que poder soportar después la superficie completa de F5.
+
+**Campos:** el contrato enumera los campos exactos del piloto antes de implementar T2 y T3, y el Worker no los elige. Se prefiere el grupo coherente más pequeño que ejerza la edición escalar, la validación, dirty, el texto pendiente, la comparación de obsolescencia y la escritura con relectura.
+
+**F5:** las capacidades del editor heredado de Push Back que el piloto compacto no representa siguen siendo trabajo de migración de F5.
+
+**Redacción del cierre:** un PASS de F4 **no** se describe como «editor de Push Back migrado». Significa que Push Back aporta el piloto de edición acotado con el que se prueban la semántica de `DraftSession` y la de Actualizar.

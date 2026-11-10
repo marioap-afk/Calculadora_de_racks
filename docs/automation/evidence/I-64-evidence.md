@@ -6062,3 +6062,9 @@ revisar:
 **Decisión:** F4-E08. El uso del último intento queda pendiente del Owner.
 
 **Límites:** sin AutoCAD; solo custodia y documentación en este paso.
+
+## 115. Disposición del Owner sobre F4
+
+**Decisión:** F4-E09. Presupuesto por tarea en F4. F4-T1 pasa al intento 3 de 3, solo para N-1. N-2 pasa al contrato de F4-T2. C-F4-01 (b) queda como F4-PILOT-PUSHBACK-01 (IC-06). Se aceptan C-F4-03 y C-F4-07, C-F4-06 queda sin dispensa y C-F4-02 queda ratificada. La fe de erratas del intento 1 queda anexa junto al registro original.
+
+**Límites:** solo documentación; sin AutoCAD.

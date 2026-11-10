@@ -83,3 +83,29 @@ El Owner ratificó F3-E02. **Snapshot F** (`AAEB58D8…`) es la línea base acti
   - la nota de procesos del registro del trabajo `R20261110T181603Z-3442` dice que el primer recuento de salida dio 2 participantes y que se repitió; es una frase heredada de la plantilla de F3-T1;
   - en esa cesión el primer recuento dio 0 y no se repitió, como acredita su `processes-exit.json` custodiado;
   - el registro custodiado no se edita.
+
+## F4-E09. Disposición del Owner sobre F4-T1 y las decisiones de F4
+
+- **Autoridad:** `F4-DRAFTS/coordinator/owner-f4-disposition-2.md`, texto literal.
+- **Presupuesto:** sustituye a F4-E01 para la F4 descompuesta. Cada tarea de F4 contratada por separado empieza con `attempts` 1 de 3 y lleva su propia historia; la historia de F4-T1 no se reescribe. Solo rige en F4 y no cambia AUTOMATION_PLAN. En el estado, `attempts` es el de la tarea de F4 en curso.
+- **F4-T1:**
+  - el intento 1 queda como REWORK;
+  - los tres defectos graves del intento 1 quedan CERRADOS: alias entre inicial y actual, ranura liberada con la operación activa y clave repetida con un «sin cambios» falso;
+  - el intento 2 está verificado;
+  - el intento 3 de 3 se autoriza solo para N-1, como corrección mínima: restaurar en `WorkspaceDraftBoundaryTests` la detección de BOM que exige INV-F4T1-22, sin distinguir mayúsculas o de forma equivalente, con pruebas de regresión exactas para `BOM`, `Bom`, `bom` y los casos de prefijo, sufijo y nombre de miembro;
+  - no entra ningún rediseño de `DraftSession` ni trabajo de T2, T3 o T4;
+  - se exigen RED, GREEN, CI exacta, revisión directa, revisión independiente, verificación del Controller y controles normales. Tras PASS se cierra F4-T1, y no se cierra sin corregir N-1.
+- **N-2:** es obligación del contrato de F4-T2. Debe establecer una frontera de propiedad: tras la admisión o la materialización, mutar o reutilizar un objeto del host no puede cambiar `InitialDraftState` ni alterar en silencio el cálculo de dirty. Valen como mecanismo un estado inmutable, una copia defensiva en el puerto o al crear la `DraftSession`, u otro con prueba equivalente. Se exige una prueba adversarial que mute o reutilice el objeto de origen tras crear el borrador, que falle antes de la protección y pase después. N-2 no bloquea el cierre de F4-T1.
+- **C-F4-01:** se acepta la opción (b) con un límite estrecho, como F4-PILOT-PUSHBACK-01 (IC-06). El contrato de T2 y T3 enumera los campos exactos del piloto antes de implementar; no los elige el Worker.
+- **C-F4-03:** se acepta `RACKPANELDESCARTAR`, solo si la ruta contratada de cierre o recuperación necesita un comando. Actúa sobre la sesión y el borrador activos de la Workspace, descarta solo estado en memoria, no escribe nada authored y no afecta a otro documento ni sesión. Ante un destino ambiguo falla con un mensaje claro y sin efecto. No es una API general de comandos del editor.
+- **C-F4-07:** se acepta. Para «No editable aquí», F4 muestra el diagnóstico, el motivo si existe y la indicación de usar RACKEDITAR, sin lanzarlo. «Abrir en editor clásico» sigue en F5 (IC-03).
+- **C-F4-06:** sin dispensa.
+  - Smoke-2 usa dibujos reales y representativos de RackCad, con participación del Owner u operador.
+  - La sesión prepara la build exacta, la DLL o el paquete exacto, el procedimiento, los resultados esperados, los formularios de evidencia y las instrucciones de recuperación.
+  - F4 no se cierra sin esas observaciones en host.
+  - Escenarios mínimos: los 22 de la orden, y además repetir SN-06c, la parte de pestañas de SN-10, Seleccionar, Ver y Localizar sobre racks representativos y la seguridad al cambiar de documento.
+- **C-F4-02:** ratificada.
+  - T4B puede usar `ExecuteInCommandContextAsync` solo para la mutación explícita de Actualizar, con la excepción limitada a los archivos de mutación que autorice su contrato; nunca para la navegación.
+  - T4B prueba en AutoCAD real las obligaciones que enumera la orden.
+- **Eventos:** los callbacks no leen el DWG; solo encolan o agrupan pistas. Las relecturas ocurren después, por una ruta de lectura de contexto de aplicación autorizada. T2 y T4 lo preservan y lo prueban.
+- **Fe de erratas del intento 1:** nota anexa `erratum-relay-record.md` junto al registro original, sin reescribirlo.
