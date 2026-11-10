@@ -23,6 +23,7 @@ public class WorkspacePaletteHostSourceGuardTests
     private const string ViewXamlPath = "src/RackCad.UI/Workspace/WorkspacePanelView.xaml";
     private const string ViewCodePath = "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs";
     private const string ViewModelPath = "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs";
+    private const string NavigationViewModelPath = "src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs";
 
     private static string Host() => Src.Code(HostPath);
 
@@ -185,7 +186,8 @@ public class WorkspacePaletteHostSourceGuardTests
     {
         var code = Host();
 
-        Assert.Matches(@"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*\)", code);
+        // I-64 F2-T2B (INV-F2T2B-12): the third argument is the navigation port of the controller, and only that.
+        Assert.Matches(@"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*\)", code);
         Assert.DoesNotMatch(new Regex(@"_controller\.(?:ActiveSession|TryGetSession|Authorize|RequestReconciliation|RefreshPanel|OpenPanel)"), code);
         Assert.DoesNotMatch(new Regex(@"AutoCadEventBridge|WorkspaceHostCore|WorkspaceSelectionReader|WorkspaceSessionRegistry|EventBridgeCore"), code);
     }
@@ -530,7 +532,8 @@ public class WorkspacePaletteHostSourceGuardTests
 
         Assert.Matches(@"using\s+RackCad\.Application\.Workspace\s*;", model);
         Assert.Matches(@"sealed\s+class\s+WorkspacePanelViewModel\s*:\s*ObservableObject\b", model);
-        Assert.Matches(@"public\s+WorkspacePanelViewModel\s*\(\s*IWorkspaceHostPort\s+\w+\s*,\s*Action<bool>\s+\w+\s*\)", model);
+        // I-64 F2-T2B (INV-F2T2B-12): the navigation port is the third, optional parameter; the two-argument form stays valid.
+        Assert.Matches(@"public\s+WorkspacePanelViewModel\s*\(\s*IWorkspaceHostPort\s+\w+\s*,\s*Action<bool>\s+\w+\s*,\s*IWorkspaceNavigationPort\s+\w+\s*=\s*null\s*\)", model);
         Assert.Matches(@"\.GetSnapshot\s*\(\s*\)", model);
         Assert.Matches(@"\.GetMeasurementReport\s*\(\s*\)", model);
         Assert.DoesNotMatch(new Regex(@"\.Authorize\s*\(|\.GetSelectionContext\s*\("), model);
@@ -540,11 +543,29 @@ public class WorkspacePaletteHostSourceGuardTests
     [Fact]
     public void TheUiFolderHasNoTimerNoPollingNoThreadNoAsyncAndNoGlobalExceptionHandler()
     {
-        foreach (var (path, code) in UiSources())
+        var forbidden = new Regex(@"DispatcherTimer|\bDispatcher\b|\w*Timer\b|System\.Timers|\bTask\b|\basync\b|\bawait\b|\bThread\b|ThreadPool|BackgroundWorker|SynchronizationContext|Parallel\.|Sleep\s*\(|UnhandledException|AppDomain");
+
+        // I-64 F2-T2B (INV-F2T2B-08): ONE exception, by EXACT FILE and never by folder, prefix or wildcard. In that file Task, async
+        // and await are admitted with exact counts (one async entry, one await on the navigation port); every other way of
+        // waiting, scheduling or running in the background stays forbidden there as in the rest of the folder.
+        var exceptionForbidden = new Regex(@"DispatcherTimer|\bDispatcher\b|\w*Timer\b|System\.Timers|\bThread\b|ThreadPool|BackgroundWorker|SynchronizationContext|Parallel\.|Sleep\s*\(|UnhandledException|AppDomain|ConfigureAwait|Task\.Run|Task\.Factory|StartNew|ContinueWith|\.Wait\s*\(|\.Result\b|GetAwaiter|GetResult|async\s+void");
+        var sources = UiSources();
+
+        Assert.Contains(sources, f => string.Equals(f.Path, NavigationViewModelPath, StringComparison.Ordinal));
+        foreach (var (path, code) in sources)
         {
-            Assert.DoesNotMatch(
-                new Regex(@"DispatcherTimer|\bDispatcher\b|\w*Timer\b|System\.Timers|\bTask\b|\basync\b|\bawait\b|\bThread\b|ThreadPool|BackgroundWorker|SynchronizationContext|Parallel\.|Sleep\s*\(|UnhandledException|AppDomain"),
-                code);
+            if (!string.Equals(path, NavigationViewModelPath, StringComparison.Ordinal))
+            {
+                Assert.DoesNotMatch(forbidden, code);
+                continue;
+            }
+
+            Assert.DoesNotMatch(exceptionForbidden, code);
+            Assert.Equal(1, Src.Count(code, @"\basync\b"));
+            Assert.Equal(1, Src.Count(code, @"\bawait\b"));
+            Assert.Equal(1, Src.Count(code, @"\bawait\s+_port\.ExecuteAsync\s*\("));
+            Assert.Equal(1, Src.Count(code, @"\bExecuteAsync\s*\("));
+            Assert.Matches(@"public\s+async\s+Task\s+NavigateAsync\s*\(", code);
         }
     }
 

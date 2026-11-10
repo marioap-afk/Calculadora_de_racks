@@ -45,10 +45,11 @@ namespace RackCad.UI.Workspace
         private string _processMemoryText = string.Empty;
         private IReadOnlyList<WorkspaceMeasurementRow> _measurements = Array.Empty<WorkspaceMeasurementRow>();
 
-        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled)
+        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null)
         {
             _port = port ?? throw new ArgumentNullException(nameof(port));
             _setInstrumentationEnabled = setInstrumentationEnabled ?? throw new ArgumentNullException(nameof(setInstrumentationEnabled));
+            Navigation = new WorkspaceNavigationViewModel(navigation, Refresh);
             Present(InitialSnapshot(), null);
         }
 
@@ -106,6 +107,9 @@ namespace RackCad.UI.Workspace
 
         /// <summary>The measurement points of the report, read-only.</summary>
         public IReadOnlyList<WorkspaceMeasurementRow> Measurements => _measurements;
+
+        /// <summary>The navigation of the rack of the current context.</summary>
+        public WorkspaceNavigationViewModel Navigation { get; }
 
         // ------------------------------------------------------------------ the only entries that ask the port
 

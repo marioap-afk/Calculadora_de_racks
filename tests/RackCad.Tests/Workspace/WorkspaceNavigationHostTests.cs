@@ -659,4 +659,268 @@ public class WorkspaceNavigationHostTests
         Assert.Contains(EffectsPath, files);
         Assert.Empty(files.Where(f => f.Substring(Src.PluginWorkspace.Length).Contains('/')));
     }
+
+    // ------------------------------------------------------------------ I-64 F2-T2B (INV-F2T2B-07): TargetCount, the additive field
+    // The panel presents a copy "k of M" without counting targets itself: M is the number of targets of the set of the requested
+    // action, calculated by the runner from NavigationTargets.Resolve. In the rig, S1 / R-1 has two Frontal references (0x101,
+    // 0x102) and one Lateral (0x103).
+
+    [Fact]
+    public void TargetCountIsAnAdditiveNullableFieldThatDefaultsToNullInEveryFactory()
+    {
+        var property = typeof(WorkspaceNavigationResult).GetProperty("TargetCount");
+
+        Assert.NotNull(property);
+        Assert.Equal(typeof(int?), property!.PropertyType);
+        Assert.Null(WorkspaceNavigationResult.Executed().TargetCount);
+        Assert.Null(WorkspaceNavigationResult.Unavailable("x").TargetCount);
+        Assert.Null(WorkspaceNavigationResult.Rejected("x").TargetCount);
+        Assert.Null(WorkspaceNavigationResult.Stale("x", true).TargetCount);
+        Assert.Null(WorkspaceNavigationResult.Failed("x").TargetCount);
+        Assert.Null(new WorkspaceNavigationResult(WorkspaceNavigationStatus.Executed, NavigationActionVerdict.Act, false, null).TargetCount);
+        Assert.Equal(4, (WorkspaceNavigationResult.Executed() with { TargetCount = 4 }).TargetCount);
+    }
+
+    [Theory]
+    [InlineData(NavigationActionKind.Select, 3)]
+    [InlineData(NavigationActionKind.View, 3)]
+    [InlineData(NavigationActionKind.Center, 3)]
+    public void TheRunnerAnswersWithTheNumberOfAllTheTargetsOfTheRackForSelectViewAndCenter(NavigationActionKind action, int expected)
+    {
+        var rig = new Rig();
+
+        var result = rig.Run(action);
+
+        Assert.Equal(WorkspaceNavigationStatus.Executed, result.Status);
+        Assert.Equal(expected, result.TargetCount);
+    }
+
+    [Theory]
+    [InlineData(NavigationViewOrder.Frontal, 2)]
+    [InlineData(NavigationViewOrder.Lateral, 1)]
+    [InlineData(NavigationViewOrder.Planta, 0)]
+    [InlineData(NavigationViewOrder.Other, 0)]
+    public void ForLocateViewTheCountIsOnlyThatOfTheRequestedView(NavigationViewOrder view, int expected)
+    {
+        var rig = new Rig();
+
+        var result = rig.Run(NavigationActionKind.LocateView, 0, view);
+
+        Assert.Equal(expected, result.TargetCount);
+        Assert.Equal(expected > 0 ? WorkspaceNavigationStatus.Executed : WorkspaceNavigationStatus.Unavailable, result.Status);
+    }
+
+    [Fact]
+    public void ALocateViewWithoutARequestedViewCountsNoTargetAndActsOnNothing()
+    {
+        var rig = new Rig();
+
+        var result = rig.Run(NavigationActionKind.LocateView, 0, null);
+
+        Assert.Equal(0, result.TargetCount);
+        Assert.Equal(WorkspaceNavigationStatus.Unavailable, result.Status);
+        Assert.Empty(rig.Effects.Calls);
+    }
+
+    [Fact]
+    public void ARackWithoutTargetsAnswersZeroTargetsAndAnotherRackOfTheSessionDoesNotCount()
+    {
+        var rig = new Rig();
+
+        Assert.Equal(0, rig.Run(NavigationActionKind.View, rackId: "R-NOPE").TargetCount);
+        Assert.Equal(1, rig.Run(NavigationActionKind.View, rackId: "R-9").TargetCount);
+        Assert.Equal(1, rig.Run(NavigationActionKind.View, session: S2).TargetCount);
+    }
+
+    [Fact]
+    public void TheCountDoesNotDependOnTheCopyAskedFor()
+    {
+        var rig = new Rig();
+
+        Assert.Equal(3, rig.Run(NavigationActionKind.View, 0).TargetCount);
+        Assert.Equal(3, rig.Run(NavigationActionKind.View, 2).TargetCount);
+        Assert.Equal(3, rig.Run(NavigationActionKind.Center, 7).TargetCount);
+    }
+
+    [Fact]
+    public void ARequestThatEndsBeforeTheTargetsWereAskedForHasNoCountAndReadsNothing()
+    {
+        var rig = new Rig();
+
+        Assert.Null(rig.Run(NavigationActionKind.View, decision: RequestDecision.RejectedSessionMismatch).TargetCount);
+        Assert.Null(rig.Run(NavigationActionKind.View, decision: RequestDecision.RejectedSessionDestroyed).TargetCount);
+        Assert.Null(new Rig().Run(NavigationActionKind.View, modelSpace: false).TargetCount);
+        Assert.Equal(0, rig.Facts.Reads);
+    }
+
+    [Fact]
+    public void ATargetThatVanishedKeepsTheCountOfTheSetTheActionWasPlannedFrom()
+    {
+        var port = new ShiftingFacts(read => read == 1
+            ? new[] { NavFact.Member(10, "R-1", "frontal", 0, 0x101, 0x102) }
+            : new[] { NavFact.Member(10, "R-1", "frontal", 0, 0x101) });
+        var rig = new Rig(port);
+
+        var result = rig.Run(NavigationActionKind.Select);
+
+        Assert.Equal(WorkspaceNavigationStatus.Stale, result.Status);
+        Assert.Equal(2, result.TargetCount);
+        Assert.False(rig.Targets.IsCached(S1, "R-1"));
+    }
+
+    [Fact]
+    public void AFailingEffectIsStillAFailedValueAndCarriesTheCount()
+    {
+        var rig = new Rig();
+
+        var result = rig.Run(NavigationActionKind.Select, effects: new ThrowingEffects());
+
+        Assert.Equal(WorkspaceNavigationStatus.Failed, result.Status);
+        Assert.Equal("boom", result.Reason);
+        Assert.Equal(3, result.TargetCount);
+    }
+
+    [Fact]
+    public void CountingTheTargetsCostsNoReadBeyondThePlanAndTheRevalidation()
+    {
+        var rig = new Rig();
+
+        rig.Run(NavigationActionKind.LocateView, 0, NavigationViewOrder.Frontal);
+
+        // One read to plan from the authority, one to revalidate right before acting; the count adds none.
+        Assert.Equal(2, rig.Facts.Reads);
+    }
+
+    [Fact]
+    public void TheCountChangesNeitherTheStatusesNorTheVerdictsNorTheEffects()
+    {
+        var rig = new Rig();
+
+        var executed = rig.Run(NavigationActionKind.View, 1);
+        var unavailable = rig.Run(NavigationActionKind.View, rackId: "R-NOPE");
+
+        Assert.Equal(WorkspaceNavigationStatus.Executed, executed.Status);
+        Assert.Equal(NavigationActionVerdict.Act, executed.Verdict);
+        Assert.Equal(WorkspaceNavigationStatus.Unavailable, unavailable.Status);
+        Assert.Equal(NavigationActionVerdict.RejectedNoTargets, unavailable.Verdict);
+        Assert.Equal(new[] { "view:1:258" }, rig.Effects.Calls);
+    }
+
+    [Fact]
+    public void TheCountIsCalculatedInTheRunnerFromTheAuthorityAndTheHostDoesNotChange()
+    {
+        var port = Src.Code(PortPath);
+        var run = Src.BodyOf(port, @"public\s+WorkspaceNavigationResult\s+Run\s*\(");
+
+        Assert.Matches(@"int\?\s+TargetCount\s*=\s*null", port);
+        Assert.Contains("TargetCount", run);
+        Assert.Matches(@"_targets\.Resolve\s*\(", Src.BodyOf(port, @"private\s+int\s+CountTargets\s*\("));
+        Assert.DoesNotMatch(new Regex(@"\bAutodesk\b|\bDocument\b|\bEditor\b|\bDatabase\b|\bObjectId\b|System\.Windows"), port);
+        Assert.DoesNotContain("TargetCount", Src.Code(HostPath));
+        Assert.DoesNotContain("TargetCount", Src.Code(EffectsPath));
+        Assert.DoesNotContain("TargetCount", Src.Code(FactsPath));
+    }
+
+    // ------------------------------------------------------------------ I-64 F2-T2B: the panel side of the navigation (source guards)
+    // The Core test project cannot load WPF, so the files of the UI folder and the palette host are read as text.
+
+    private const string UiFolder = "src/RackCad.UI/Workspace/";
+    private const string PanelHostPath = "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs";
+
+    private static string NavigationViewModel() => Src.Code(UiFolder + "WorkspaceNavigationViewModel.cs");
+
+    [Fact]
+    public void TheUiNamesOnlyTheNavigationTypesItIsAllowedToAndNeverTheAuthority()
+    {
+        var forbidden = new Regex(
+            @"\b(?:NavigationTargets|NavigationTargetSet|NavigationTarget|NavigationDefinitionFact|INavigationFactsPort|NavigationActionPolicy|NavigationActionPlan|NavigationActionDecision|INavigationEffects|NavigationActionVerdict|NavigationEcho|WorkspaceNavigationRunner|WorkspaceNavigationHost|WorkspaceNavigationRequest)\b");
+        var allowed = new[] { "IWorkspaceNavigationPort", "WorkspaceNavigationResult", "WorkspaceNavigationStatus", "WorkspaceRequest", "NavigationActionKind", "NavigationViewOrder" };
+
+        var files = Src.Files(UiFolder);
+        Assert.Contains(files, f => f.Path == UiFolder + "WorkspaceNavigationViewModel.cs");
+        foreach (var (path, code) in files)
+            Assert.DoesNotMatch(forbidden, code);
+
+        var model = NavigationViewModel();
+        foreach (var name in allowed)
+            Assert.Matches(@"\b" + name + @"\b", model);
+    }
+
+    [Fact]
+    public void TheNavigationViewModelDerivesNoTargetNeverOrdersReferencesAndHoldsNoInventory()
+    {
+        var model = NavigationViewModel();
+
+        Assert.DoesNotMatch(new Regex(@"\.Sort\s*\(|OrderBy|\.Resolve\s*\(|ReferenceHandle|ModelSpaceReferenceHandles|DefinitionHandle|\.Targets\b|Handles\b"), model);
+        Assert.Matches(@"await\s+_port\.ExecuteAsync\s*\(", model);
+        Assert.DoesNotMatch(new Regex(@"Dictionary<|HashSet<|List<(?!WorkspaceViewChoice)"), model);
+    }
+
+    [Fact]
+    public void ThePanelViewModelNeverCallsTheNavigationPortWhenItRefreshesPresentsOrChangesContext()
+    {
+        var panel = Src.Code(UiFolder + "WorkspacePanelViewModel.cs");
+
+        Assert.DoesNotMatch(new Regex(@"ExecuteAsync|NavigateAsync|SelectAsync|ViewAsync|CenterAsync|LocateAsync"), panel);
+        Assert.Equal(1, Src.Count(panel, @"\bnew\s+WorkspaceNavigationViewModel\s*\("));
+        Assert.Matches(@"new\s+WorkspaceNavigationViewModel\s*\(\s*navigation\s*,\s*Refresh\s*\)", panel);
+    }
+
+    [Fact]
+    public void OnlyTheNavigationViewModelCallsTheNavigationPortAndTheViewReachesItOnlyThroughExplicitClicks()
+    {
+        foreach (var (path, code) in Src.Files(UiFolder))
+        {
+            var calls = Src.Count(code, @"\.ExecuteAsync\s*\(");
+            Assert.Equal(path == UiFolder + "WorkspaceNavigationViewModel.cs" ? 1 : 0, calls);
+        }
+
+        var view = Src.Code(UiFolder + "WorkspacePanelView.xaml.cs");
+        foreach (var handler in new[] { "OnNavigationSelectClick", "OnNavigationViewClick", "OnNavigationCenterClick", "OnNavigationLocateClick", "OnNavigationNextCopyClick" })
+            Assert.Contains(handler, view);
+        Assert.DoesNotMatch(new Regex(@"\bLoaded\b|\bIsVisibleChanged\b|\bSizeChanged\b|\bCompositionTarget\b|Navigation\.Present\s*\("), view);
+    }
+
+    [Fact]
+    public void TheUiOffersNoActionThatWritesAndNeverTouchesFocusLayoutOrSystemVariables()
+    {
+        foreach (var (path, code) in Src.Files(UiFolder))
+        {
+            Assert.DoesNotMatch(new Regex(@"Keyboard|FocusManager|SetFocus|\.Focus\s*\(|InputManager"), code);
+            Assert.DoesNotMatch(new Regex(@"TileMode|TILEMODE|LayoutManager|SetSystemVariable|DBDictionary|NamedObjectsDictionary|Xrecord|XData|AppendEntity|\.Commit\s*\("), code);
+        }
+    }
+
+    [Fact]
+    public void TheNavigationControlsOfTheViewHaveNoFixedWidthNoMinimumAndNoMaximumAndReflowInWrapPanels()
+    {
+        var xaml = Regex.Replace(Src.Text(UiFolder + "WorkspacePanelView.xaml"), @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
+        var start = xaml.IndexOf("Text=\"Navegación\"", StringComparison.Ordinal);
+        var end = xaml.IndexOf("Text=\"Instrumentación\"", StringComparison.Ordinal);
+
+        Assert.True(start >= 0 && end > start, "the navigation section of the view is missing");
+        var section = xaml.Substring(start, end - start);
+        Assert.DoesNotMatch(new Regex(@"\b(?:Min|Max)?Width\s*=|\b(?:Min|Max)?Height\s*="), section);
+        Assert.True(Src.Count(section, @"<WrapPanel\b") >= 3, "the navigation controls do not reflow in WrapPanels");
+        Assert.DoesNotMatch(new Regex(@"<Window\b|ShowDialog|MessageBox"), section);
+        foreach (var name in new[] { "NavigationSelectButton", "NavigationViewButton", "NavigationCenterButton", "NavigationNextCopyButton", "NavigationViewSelector", "NavigationLocateButton" })
+            Assert.Contains("x:Name=\"" + name + "\"", section);
+    }
+
+    [Fact]
+    public void ThePaletteHostOnlyGainsTheNavigationPortAsTheThirdArgumentAndNothingElse()
+    {
+        var host = Src.Code(PanelHostPath);
+
+        Assert.Equal(1, Src.Count(host, @"_controller\.Navigation\b"));
+        Assert.Matches(@"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*\)", host);
+        Assert.Equal(
+            new[] { "Autodesk.AutoCAD.Windows", "RackCad.Application.Diagnostics", "RackCad.Application.Workspace", "RackCad.UI.Workspace" },
+            Regex.Matches(host, @"^\s*using\s+([\w.]+)\s*;", RegexOptions.Multiline).Select(m => m.Groups[1].Value).ToArray());
+        Assert.Equal(2, Src.Count(host, @"\+="));
+        Assert.DoesNotMatch(new Regex(@"IWorkspaceNavigationPort|WorkspaceNavigation|NavigationEcho|NavigationTargets|NavigationAction"), host);
+        Assert.Matches(@"private\s+const\s+double\s+InitialWidth\s*=\s*320\s*;", host);
+        Assert.Matches(@"private\s+const\s+int\s+MinimumWidth\s*=\s*240\s*;", host);
+        Assert.Matches(@"_palette\.DockEnabled\s*=\s*DockSides\.Left\s*\|\s*DockSides\.Right\s*;", host);
+    }
 }

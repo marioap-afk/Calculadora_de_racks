@@ -24,12 +24,17 @@ namespace RackCad.Application.Workspace
         Failed,
     }
 
-    /// <summary>Immutable outcome of one navigation request.</summary>
+    /// <summary>
+    /// Immutable outcome of one navigation request. <paramref name="TargetCount"/> is the number of targets of the set of the
+    /// requested action (the references the policy chose from), so the panel can present a copy "k of M" without counting
+    /// targets itself. It is null whenever the request ended before the targets were asked for.
+    /// </summary>
     public readonly record struct WorkspaceNavigationResult(
         WorkspaceNavigationStatus Status,
         NavigationActionVerdict? Verdict,
         bool RefreshRequired,
-        string? Reason)
+        string? Reason,
+        int? TargetCount = null)
     {
         public bool IsExecuted => Status == WorkspaceNavigationStatus.Executed;
 
