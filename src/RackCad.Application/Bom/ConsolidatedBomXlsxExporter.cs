@@ -2,15 +2,19 @@ using System.Collections.Generic;
 
 namespace RackCad.Application.Bom
 {
-    /// <summary>Renders a <see cref="ConsolidatedBom"/> as a real <c>.xlsx</c> with TWO sheets: "Por rack" (each rack's
-    /// componentes + piezas) and "Total del dibujo" (the drawing-wide grand total, by component). Same data as
-    /// <see cref="ConsolidatedBomCsvExporter"/>, laid out across sheets Excel can navigate.</summary>
+    /// <summary>Renders a <see cref="ConsolidatedBom"/> as a real <c>.xlsx</c>: "Por rack" (each rack's componentes + piezas,
+    /// a native Excel table) and "Total del dibujo" (the drawing-wide grand total, by component).
+    /// <para>"Por rack" quantities are for ONE copy of the rack, so "Cantidad total" = Cantidad × Copias, computed here and
+    /// nowhere else. "Total del dibujo" gets no such column: <see cref="ConsolidatedBomBuilder"/> already multiplied it.</para></summary>
     public static class ConsolidatedBomXlsxExporter
     {
+        /// <summary>Stable name of the detail table in every exported workbook.</summary>
+        public const string DetailTableName = "RackCadBOM";
+
         public static byte[] ToXlsx(ConsolidatedBom consolidated)
             => XlsxWriter.Build(new[]
             {
-                new XlsxSheet("Por rack", PerRackRows(consolidated)),
+                new XlsxSheet("Por rack", PerRackRows(consolidated), new XlsxTableDefinition(DetailTableName)),
                 new XlsxSheet("Total del dibujo", GrandTotalRows(consolidated))
             });
 
@@ -18,7 +22,7 @@ namespace RackCad.Application.Bom
         {
             var rows = new List<IReadOnlyList<XlsxCell>>
             {
-                BomXlsxExporter.Header("Rack", "Tipo", "Copias", "Nivel", "Categoria", "Perfil", "Descripcion", "Longitud (in)", "Cantidad")
+                BomXlsxExporter.Header("Rack", "Tipo", "Copias", "Nivel", "Categoria", "Perfil", "Descripcion", "Longitud (in)", "Cantidad", "Cantidad total")
             };
 
             if (consolidated == null)
@@ -100,7 +104,8 @@ namespace RackCad.Application.Bom
                 XlsxCell.Str(profileId),
                 XlsxCell.Str(description),
                 XlsxCell.Num(length),
-                XlsxCell.Num(quantity)
+                XlsxCell.Num(quantity),
+                XlsxCell.Num((long)quantity * copies)
             };
     }
 }

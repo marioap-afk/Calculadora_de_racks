@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 
 namespace RackCad.Application.Bom
@@ -25,17 +26,44 @@ namespace RackCad.Application.Bom
         public static XlsxCell Num(double value, bool bold = false) => new XlsxCell(null, value, bold);
     }
 
+    /// <summary>Declares a sheet's rows as a native Excel table: the first row is its header, the rest its data.</summary>
+    public sealed class XlsxTableDefinition
+    {
+        public XlsxTableDefinition(string name, string styleName = "TableStyleMedium2")
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Una tabla de Excel necesita nombre.", nameof(name));
+            }
+
+            Name = name;
+            StyleName = styleName;
+        }
+
+        public string Name { get; }
+        public string StyleName { get; }
+    }
+
     /// <summary>One worksheet: a name and its rows (each a list of cells). The first row is typically a bold header.</summary>
     public sealed class XlsxSheet
     {
         public XlsxSheet(string name, IReadOnlyList<IReadOnlyList<XlsxCell>> rows)
+            : this(name, rows, null)
+        {
+        }
+
+        public XlsxSheet(string name, IReadOnlyList<IReadOnlyList<XlsxCell>> rows, XlsxTableDefinition table)
         {
             Name = name ?? "Hoja";
             Rows = rows ?? Array.Empty<IReadOnlyList<XlsxCell>>();
+            Table = table;
         }
 
         public string Name { get; }
         public IReadOnlyList<IReadOnlyList<XlsxCell>> Rows { get; }
+
+        /// <summary>When set, the sheet's rows are written as a native Excel table.</summary>
+        public XlsxTableDefinition Table { get; }
     }
 
     /// <summary>
@@ -47,6 +75,7 @@ namespace RackCad.Application.Bom
     {
         private const string Ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
         private const string RelNs = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+        private const string PackageRelNs = "http://schemas.openxmlformats.org/package/2006/relationships";
 
         public static byte[] Build(IReadOnlyList<XlsxSheet> sheets)
         {
@@ -62,14 +91,24 @@ namespace RackCad.Application.Bom
             {
                 using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
                 {
-                    Write(zip, "[Content_Types].xml", ContentTypes(sheets.Count));
+                    var tableCount = sheets.Count(sheet => sheet.Table != null);
+                    Write(zip, "[Content_Types].xml", ContentTypes(sheets.Count, tableCount));
                     Write(zip, "_rels/.rels", RootRels());
                     Write(zip, "xl/workbook.xml", Workbook(names));
                     Write(zip, "xl/_rels/workbook.xml.rels", WorkbookRels(sheets.Count));
                     Write(zip, "xl/styles.xml", Styles());
+                    var tableId = 0;
                     for (var i = 0; i < sheets.Count; i++)
                     {
-                        Write(zip, "xl/worksheets/sheet" + (i + 1).ToString(CultureInfo.InvariantCulture) + ".xml", Sheet(sheets[i]));
+                        var sheetNumber = (i + 1).ToString(CultureInfo.InvariantCulture);
+                        Write(zip, "xl/worksheets/sheet" + sheetNumber + ".xml", Sheet(sheets[i]));
+                        if (sheets[i].Table != null)
+                        {
+                            tableId++;
+                            var tableNumber = tableId.ToString(CultureInfo.InvariantCulture);
+                            Write(zip, "xl/worksheets/_rels/sheet" + sheetNumber + ".xml.rels", SheetRels("../tables/table" + tableNumber + ".xml"));
+                            Write(zip, "xl/tables/table" + tableNumber + ".xml", Table(sheets[i], tableId));
+                        }
                     }
                 }
 
@@ -86,7 +125,7 @@ namespace RackCad.Application.Bom
             }
         }
 
-        private static string ContentTypes(int sheetCount)
+        private static string ContentTypes(int sheetCount, int tableCount)
         {
             var builder = new StringBuilder();
             builder.Append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
@@ -99,6 +138,12 @@ namespace RackCad.Application.Bom
             {
                 builder.Append("<Override PartName=\"/xl/worksheets/sheet").Append((i + 1).ToString(CultureInfo.InvariantCulture))
                     .Append(".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>");
+            }
+
+            for (var i = 0; i < tableCount; i++)
+            {
+                builder.Append("<Override PartName=\"/xl/tables/table").Append((i + 1).ToString(CultureInfo.InvariantCulture))
+                    .Append(".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml\"/>");
             }
 
             builder.Append("</Types>");
@@ -162,7 +207,13 @@ namespace RackCad.Application.Bom
         {
             var builder = new StringBuilder();
             builder.Append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-            builder.Append("<worksheet xmlns=\"").Append(Ns).Append("\"><sheetData>");
+            builder.Append("<worksheet xmlns=\"").Append(Ns).Append('"');
+            if (sheet.Table != null)
+            {
+                builder.Append(" xmlns:r=\"").Append(RelNs).Append('"');
+            }
+
+            builder.Append("><sheetData>");
 
             for (var r = 0; r < sheet.Rows.Count; r++)
             {
@@ -189,8 +240,72 @@ namespace RackCad.Application.Bom
                 builder.Append("</row>");
             }
 
-            builder.Append("</sheetData></worksheet>");
+            builder.Append("</sheetData>");
+            if (sheet.Table != null)
+            {
+                builder.Append("<tableParts count=\"1\"><tablePart r:id=\"rId1\"/></tableParts>");
+            }
+
+            builder.Append("</worksheet>");
             return builder.ToString();
+        }
+
+        private static string SheetRels(string tableTarget)
+            => "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+               + "<Relationships xmlns=\"" + PackageRelNs + "\">"
+               + "<Relationship Id=\"rId1\" Type=\"" + RelNs + "/table\" Target=\"" + tableTarget + "\"/>"
+               + "</Relationships>";
+
+        /// <summary>
+        /// The table part. Excel refuses to open a table whose range is its header alone, so a table with no data keeps
+        /// one blank row, which is also what Excel itself leaves when every row of a table is deleted.
+        /// </summary>
+        private static string Table(XlsxSheet sheet, int tableId)
+        {
+            var header = TableHeader(sheet);
+            var lastRow = Math.Max(sheet.Rows.Count, 2).ToString(CultureInfo.InvariantCulture);
+            var range = "A1:" + ColumnName(header.Count - 1) + lastRow;
+            var name = EscapeAttr(sheet.Table.Name);
+
+            var builder = new StringBuilder();
+            builder.Append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+            builder.Append("<table xmlns=\"").Append(Ns).Append("\" id=\"").Append(tableId.ToString(CultureInfo.InvariantCulture))
+                .Append("\" name=\"").Append(name).Append("\" displayName=\"").Append(name)
+                .Append("\" ref=\"").Append(range).Append("\" totalsRowShown=\"0\">");
+            builder.Append("<autoFilter ref=\"").Append(range).Append("\"/>");
+            builder.Append("<tableColumns count=\"").Append(header.Count.ToString(CultureInfo.InvariantCulture)).Append("\">");
+            for (var i = 0; i < header.Count; i++)
+            {
+                builder.Append("<tableColumn id=\"").Append((i + 1).ToString(CultureInfo.InvariantCulture))
+                    .Append("\" name=\"").Append(EscapeAttr(header[i])).Append("\"/>");
+            }
+
+            builder.Append("</tableColumns><tableStyleInfo name=\"").Append(EscapeAttr(sheet.Table.StyleName))
+                .Append("\" showFirstColumn=\"0\" showLastColumn=\"0\" showRowStripes=\"1\" showColumnStripes=\"0\"/></table>");
+            return builder.ToString();
+        }
+
+        /// <summary>A table's header must be present, textual, non-empty and unique; otherwise Excel would repair or reject the file.</summary>
+        private static IReadOnlyList<string> TableHeader(XlsxSheet sheet)
+        {
+            if (sheet.Rows.Count == 0 || sheet.Rows[0].Count == 0)
+            {
+                throw new InvalidOperationException("La tabla '" + sheet.Table.Name + "' no tiene encabezado.");
+            }
+
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var header = new List<string>(sheet.Rows[0].Count);
+            foreach (var cell in sheet.Rows[0])
+            {
+                if (string.IsNullOrEmpty(cell.Text) || !seen.Add(cell.Text))
+                {
+                    throw new InvalidOperationException("La tabla '" + sheet.Table.Name + "' necesita encabezados de texto, no vacios y sin repetir.");
+                }
+
+                header.Add(cell.Text);
+            }
+
+            return header;
         }
 
         /// <summary>Zero-based column index to its Excel letter(s): 0→A, 25→Z, 26→AA, …</summary>
