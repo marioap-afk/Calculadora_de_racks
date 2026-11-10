@@ -5984,3 +5984,9 @@ revisar:
 **Decisión:** F3-E09, corrección delegada. Sin nc1..nc3 sobre `2c36b36b`.
 
 **Límites:** sin cambios de producto en este paso; sin AutoCAD.
+
+## 107. Contrato del intento 2 de F3-T2
+
+**Decisión:** F3-E09. `attempts` pasa a 2 de 3. Contrato en `F3-T2-BROWSER-UI/coordinator/gate-contract-attempt2.json`: 16 rutas exactas, INV-F3T2-21 a 26 y mínimos 203 y 891. `AuthorityRevision` `33869690cef828dbf011afb9a2fe05af9250b375`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
