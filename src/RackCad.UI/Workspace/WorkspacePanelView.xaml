@@ -78,6 +78,63 @@
             <TextBlock x:Name="ContextTextBlock" Text="{Binding ContextText}" Style="{StaticResource OptionalText}"
                        Foreground="{DynamicResource ShellTextSecondaryBrush}" />
 
+            <!-- Browser of racks (I-64 F3-T2): the tab strip and ONE live surface (K = 1), before the navigation. Memory only: no control
+                 here writes the drawing. No control has a fixed size: the strip wraps with the width of the surface, from a narrow bar to
+                 a wide window, and the one surface is reused by every tab. -->
+            <TextBlock Text="Navegador de racks" Style="{StaticResource SectionTitle}" />
+            <TextBlock x:Name="BrowserEmptyText" Text="{Binding Browser.EmptyText}" Style="{StaticResource OptionalText}"
+                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+            <ItemsControl x:Name="BrowserTabStrip" ItemsSource="{Binding Browser.Tabs}" Margin="0,6,0,0"
+                          AutomationProperties.Name="Pestañas de racks">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,6,6" Padding="2" BorderThickness="1" BorderBrush="{DynamicResource ShellBorderBrush}">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                            <Setter Property="BorderThickness" Value="2" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <WrapPanel>
+                                <Button Margin="0,0,4,0" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
+                                        AutomationProperties.Name="Activar pestaña" Click="OnBrowserTabActivateClick">
+                                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
+                                </Button>
+                                <Button Content="Fijar" Margin="0,0,4,0" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
+                                        AutomationProperties.Name="Fijar pestaña"
+                                        Visibility="{Binding IsPreview, Converter={StaticResource FlagToVisibility}}"
+                                        Click="OnBrowserTabPinClick" />
+                                <Button Content="Cerrar" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
+                                        AutomationProperties.Name="Cerrar pestaña" Click="OnBrowserTabCloseClick" />
+                            </WrapPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Border x:Name="BrowserSurface" Padding="10" BorderThickness="1" Margin="0,2,0,0"
+                    Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}"
+                    Visibility="{Binding Browser.HasSurface, Converter={StaticResource FlagToVisibility}}">
+                <StackPanel>
+                    <TextBlock x:Name="BrowserSurfaceTitleText" Text="{Binding Browser.SurfaceTitle}" FontWeight="SemiBold"
+                               Foreground="{DynamicResource ShellTextPrimaryBrush}" TextWrapping="Wrap" />
+                    <TextBlock x:Name="BrowserSurfaceKindText" Text="{Binding Browser.SurfaceKindText}" Style="{StaticResource OptionalText}"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <TextBlock x:Name="BrowserSurfaceViewsText" Text="{Binding Browser.SurfaceViewsText}" Style="{StaticResource OptionalText}"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <TextBlock x:Name="BrowserSurfaceStatusText" Text="{Binding Browser.SurfaceStatusText}" Style="{StaticResource OptionalText}"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                </StackPanel>
+            </Border>
+
             <!-- Navigation of the rack of the context (I-64 F2-T2B). Explicit actions only. No control here has a fixed width:
                  the WrapPanels reflow with the width of the surface, from a narrow bar to a wide window. -->
             <TextBlock Text="Navegación" Style="{StaticResource SectionTitle}" />

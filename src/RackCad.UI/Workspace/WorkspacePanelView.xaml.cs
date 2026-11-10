@@ -62,6 +62,16 @@ namespace RackCad.UI.Workspace
 
         private void OnNavigationNextCopyClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Navigation.NextCopy());
 
+        // The tab clicks (I-64 F3-T2): each one is one explicit interaction that only changes memory. The tab is the data context of its
+        // own button, so the handler needs no lookup in the visual tree.
+        private void OnBrowserTabActivateClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ActivateTab(RackOf(sender)));
+
+        private void OnBrowserTabPinClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.PinTab(RackOf(sender)));
+
+        private void OnBrowserTabCloseClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.CloseTab(RackOf(sender)));
+
+        private static string RackOf(object sender) => ((sender as FrameworkElement)?.DataContext as WorkspaceBrowserTabItem)?.RackId;
+
         private void Contained(Action interaction)
         {
             try

@@ -43,7 +43,7 @@ namespace RackCad.Plugin.Workspace
         private WorkspacePaletteHost()
         {
             _controller = WorkspaceController.GetOrCreate();
-            _viewModel = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation);
+            _viewModel = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation, _controller.BrowserSummary);
             _root = new WorkspacePanelView(_viewModel);
 
             _palette = new PaletteSet("RackCad");

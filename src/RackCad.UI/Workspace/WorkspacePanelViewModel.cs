@@ -39,6 +39,10 @@ namespace RackCad.UI.Workspace
         private string _contextTitle = string.Empty;
         private string _contextText = string.Empty;
         private string _rackId;
+        private SessionId? _presentedSession;
+        private SelectionContextKind _presentedKind = SelectionContextKind.None;
+        private bool _presentedCanRead;
+        private WorkspaceActionBlock _presentedBlock = WorkspaceActionBlock.NotStarted;
         private string _errorMessage = string.Empty;
         private bool _instrumentationEnabled;
         private string _instrumentationSummary = string.Empty;
@@ -51,13 +55,16 @@ namespace RackCad.UI.Workspace
         /// The navigation port (I-64 F2-T2B). Optional: without it the navigation section is present but unavailable. Building
         /// the panel never asks it for anything; it is asked only when the user clicks a navigation action.
         /// </param>
-        /// <param name="browserSummary">The read-only summary port of the browser (I-64 F3-T2). Optional.</param>
+        /// <param name="browserSummary">
+        /// The read-only summary port of the browser (I-64 F3-T2). Optional: without it the browser is inert and the panel behaves
+        /// exactly as before. It is asked only for the rack of the live surface, never when the panel is built.
+        /// </param>
         public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null, IWorkspaceBrowserSummaryPort browserSummary = null)
         {
             _port = port ?? throw new ArgumentNullException(nameof(port));
             _setInstrumentationEnabled = setInstrumentationEnabled ?? throw new ArgumentNullException(nameof(setInstrumentationEnabled));
             Navigation = new WorkspaceNavigationViewModel(navigation, Refresh);
-            Browser = new WorkspaceBrowserViewModel(browserSummary);
+            Browser = new WorkspaceBrowserViewModel(browserSummary, RepresentNavigation);
             Present(InitialSnapshot(), null);
         }
 
@@ -119,7 +126,7 @@ namespace RackCad.UI.Workspace
         /// <summary>The navigation of the rack of the current context (Seleccionar, Ver, Centrar, Localizar vista).</summary>
         public WorkspaceNavigationViewModel Navigation { get; }
 
-        /// <summary>The browser of racks (I-64 F3-T2). Skeleton of the RED step: it presents nothing yet.</summary>
+        /// <summary>The browser of racks: the tab strip and its one live surface (I-64 F3-T2). Inert without a summary port.</summary>
         public WorkspaceBrowserViewModel Browser { get; }
 
         // ------------------------------------------------------------------ the only entries that ask the port
@@ -207,10 +214,36 @@ namespace RackCad.UI.Workspace
             Set(ref _contextText, ContextTextOf(context), nameof(ContextText));
             Set(ref _rackId, context.Kind == SelectionContextKind.One ? context.RackId : null, nameof(RackId));
 
-            // The navigation receives what this very snapshot says, in one piece; it asks nothing of its port for it.
-            Navigation.Present(snapshot.ActiveSession, context.Kind, _rackId, snapshot.Actions.CanReadDrawing, snapshot.Actions.Block, _actionBlockText);
+            // The browser takes the session and the context of this very snapshot first (the one automatic synchronization); then the
+            // navigation receives what the snapshot says, in one piece. The values are kept so a manual change of tab can present the
+            // navigation again without asking the host for another snapshot.
+            _presentedSession = snapshot.ActiveSession;
+            _presentedKind = context.Kind;
+            _presentedCanRead = snapshot.Actions.CanReadDrawing;
+            _presentedBlock = snapshot.Actions.Block;
+            Browser.Present(_presentedSession, context, _presentedCanRead, _presentedBlock, _actionBlockText);
+            PresentNavigation();
 
             PresentInstrumentation(snapshot.InstrumentationEnabled, report);
+        }
+
+        // With an active tab the navigation follows that rack (a one-rack context); without one it follows the context of the snapshot.
+        // It asks nothing of its port: it only stores what it is given.
+        private void PresentNavigation()
+        {
+            var active = Browser.ActiveRackId;
+            if (active != null)
+                Navigation.Present(_presentedSession, SelectionContextKind.One, active, _presentedCanRead, _presentedBlock, _actionBlockText);
+            else
+                Navigation.Present(_presentedSession, _presentedKind, _rackId, _presentedCanRead, _presentedBlock, _actionBlockText);
+        }
+
+        // A manual change of tab: the navigation is presented again with the data of the last snapshot. While the panel shows an
+        // error nothing is known about the drawing, so the navigation stays as the error left it.
+        private void RepresentNavigation()
+        {
+            if (_state == WorkspacePanelState.Error) return;
+            PresentNavigation();
         }
 
         private void PresentInstrumentation(bool enabled, WorkspaceMeasurementReport report)

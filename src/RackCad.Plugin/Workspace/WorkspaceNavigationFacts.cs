@@ -23,7 +23,23 @@ namespace RackCad.Plugin.Workspace
             _nativeInstanceOf = nativeInstanceOf ?? throw new ArgumentNullException(nameof(nativeInstanceOf));
         }
 
-        public IReadOnlyList<NavigationDefinitionFact> ReadDefinitionFacts(SessionId session)
+        public IReadOnlyList<NavigationDefinitionFact> ReadDefinitionFacts(SessionId session) => Scan(session, includeReferences: true);
+
+        /// <summary>
+        /// The neutral facts of the browser summary (I-64 F3-T2): name, Kind and view of every scanned definition, with no handle of
+        /// any reference. It is the same integrated scan of the same document, run once, and it lists no reference at all.
+        /// </summary>
+        public IReadOnlyList<BrowserRackFact> ReadBrowserFacts(SessionId session)
+        {
+            var scanned = Scan(session, includeReferences: false);
+            var facts = new List<BrowserRackFact>(scanned.Count);
+            foreach (var fact in scanned)
+                facts.Add(new BrowserRackFact(fact.IsInterpretable, fact.EnvelopeId, fact.Kind, fact.View, fact.Name));
+            return facts;
+        }
+
+        // The one place that runs the integrated scan. The references of each definition are listed only when the caller needs them.
+        private List<NavigationDefinitionFact> Scan(SessionId session, bool includeReferences)
         {
             var facts = new List<NavigationDefinitionFact>();
 
@@ -39,7 +55,7 @@ namespace RackCad.Plugin.Workspace
                 foreach (var scan in RackBlockFinder.ScanEnvelopes(transaction, document.Database, includeReferenceCount: false))
                 {
                     var handles = new List<long>();
-                    var record = transaction.GetObject(scan.DefinitionId, OpenMode.ForRead) as BlockTableRecord;
+                    var record = includeReferences ? transaction.GetObject(scan.DefinitionId, OpenMode.ForRead) as BlockTableRecord : null;
                     if (record != null)
                     {
                         foreach (ObjectId referenceId in record.GetBlockReferenceIds(directOnly: true, forceValidity: false))

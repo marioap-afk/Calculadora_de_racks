@@ -82,6 +82,12 @@ namespace RackCad.Plugin.Workspace
             }
         }
 
+        /// <summary>
+        /// The read-only summary port of the browser of the panel (I-64 F3-T2): the same lazy navigation host, so it creates nothing
+        /// new and subscribes to nothing. It writes no selection, no view and nothing of the drawing.
+        /// </summary>
+        public IWorkspaceBrowserSummaryPort BrowserSummary => (IWorkspaceBrowserSummaryPort)Navigation;
+
         public bool PanelVisible => _host.PanelVisible;
 
         /// <summary>First call: starts the bridge once. Always: shows the panel state and asks for a reconciliation at the next rest.</summary>

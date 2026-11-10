@@ -19,10 +19,12 @@ namespace RackCad.Plugin.Workspace
     /// the capture of the result and the return of the focus to the drawing. A session that went stale, another active
     /// document or a target that vanished means zero effects.
     /// </summary>
-    public sealed class WorkspaceNavigationHost : IWorkspaceNavigationPort
+    public sealed class WorkspaceNavigationHost : IWorkspaceNavigationPort, IWorkspaceBrowserSummaryPort
     {
         private readonly WorkspaceNavigationRunner _runner;
         private readonly WorkspaceNavigationEffects _effects;
+        private readonly BrowserRackSummaries _summaries;
+        private readonly Func<SessionId, bool> _isSessionAlive;
         private readonly Func<WorkspaceRequest, long, RequestDecision> _authorize;
 
         public WorkspaceNavigationHost(
@@ -33,11 +35,14 @@ namespace RackCad.Plugin.Workspace
             if (echo == null) throw new ArgumentNullException(nameof(echo));
             if (nativeInstanceOf == null) throw new ArgumentNullException(nameof(nativeInstanceOf));
             _authorize = authorize ?? throw new ArgumentNullException(nameof(authorize));
+            _isSessionAlive = id => nativeInstanceOf(id).HasValue;
 
-            var targets = new NavigationTargets(new WorkspaceNavigationFacts(nativeInstanceOf));
+            var facts = new WorkspaceNavigationFacts(nativeInstanceOf);
+            var targets = new NavigationTargets(facts);
             var policy = new NavigationActionPolicy(targets);
-            _runner = new WorkspaceNavigationRunner(targets, policy, echo, id => nativeInstanceOf(id).HasValue);
+            _runner = new WorkspaceNavigationRunner(targets, policy, echo, _isSessionAlive);
             _effects = new WorkspaceNavigationEffects(nativeInstanceOf);
+            _summaries = new BrowserRackSummaries(facts.ReadBrowserFacts, _isSessionAlive);
         }
 
         /// <summary>A drain of the session: purges the state of the sessions that no longer live and applies the cache invalidation.</summary>
@@ -46,11 +51,49 @@ namespace RackCad.Plugin.Workspace
             try
             {
                 _runner.OnDrained(outcome);
+                _summaries.OnDrained(outcome);
             }
             catch (System.Exception ex)
             {
                 LogFault("WorkspaceNavigationHost.OnDrained", ex);
             }
+        }
+
+        /// <summary>Whether the session still lives; the browser of the panel destroys the tabs of a session that does not.</summary>
+        public bool IsSessionAlive(SessionId session) => _isSessionAlive(session);
+
+        /// <summary>
+        /// The lazy summary of one rack for the browser of the panel (I-64 F3-T2). It answers with a value and has no effect: it
+        /// writes no selection, no view and nothing of the drawing, and it does not give the focus back. A failure is contained.
+        /// </summary>
+        public BrowserRackSummary ReadSummary(WorkspaceRequest origin, string rackId)
+        {
+            try
+            {
+                return ReadSummaryOnActiveDocument(origin, rackId);
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("WorkspaceNavigationHost.ReadSummary", ex);
+                return BrowserRackSummary.Without(BrowserSummaryStatus.Failed, ex.Message);
+            }
+        }
+
+        // In this order: the active document, no command in progress and the editor at rest, the session of the request authorized
+        // for that document, and only then the memory or the read of the summary.
+        private BrowserRackSummary ReadSummaryOnActiveDocument(WorkspaceRequest origin, string rackId)
+        {
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+            if (document == null)
+                return BrowserRackSummary.Without(BrowserSummaryStatus.Rejected, "There is no active document.");
+            if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
+                return BrowserRackSummary.Without(BrowserSummaryStatus.Busy, "A command is in progress.");
+
+            var decision = _authorize(origin, document.UnmanagedObject.ToInt64());
+            if (decision != RequestDecision.Accepted)
+                return BrowserRackSummary.Without(BrowserSummaryStatus.Rejected, "The request does not belong to the active document.");
+
+            return _summaries.Read(origin.Origin, rackId);
         }
 
         public Task<WorkspaceNavigationResult> ExecuteAsync(
