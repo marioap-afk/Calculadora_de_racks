@@ -13,7 +13,7 @@ namespace RackCad.Tests
     /// </summary>
     public class BomExcelSmokeFixtures
     {
-        private static ConsolidatedBom Main(int rollers = 30) => Drawing(
+        private static ConsolidatedBom SmokeDrawing(int rollers = 30) => Drawing(
             Tree("R-A", "Selectivo", 3,
                 Comp("Larguero", "L1", "Larguero 96", 96, 8, Line("Perfil", "L1", "Larguero 96", 96, 1), Line("Ménsula", "M", "Ménsula", 0, 2)),
                 Comp("Cabecera", "C", "Cabecera 144", 144, 2, Line("Poste", "C3", "Poste C3", 144, 2), Line("Poste", "C3", "Poste C3", 9, 1))),
@@ -36,12 +36,12 @@ namespace RackCad.Tests
             Directory.CreateDirectory(target);
             void Write(string name, ConsolidatedBom bom) => File.WriteAllBytes(Path.Combine(target, name + ".xlsx"), ConsolidatedBomXlsxExporter.ToXlsx(bom));
 
-            Write("smoke-main", Main());
+            Write("smoke-main", SmokeDrawing());
             Write("smoke-empty", Drawing());
             Write("smoke-rack-vacio", Drawing(Tree("V", "Selectivo", 2)));
             for (var i = 1; i <= 6; i++)
             {
-                Write("smoke-c" + i, Main(30 + i));
+                Write("smoke-c" + i, SmokeDrawing(30 + i));
             }
         }
     }
