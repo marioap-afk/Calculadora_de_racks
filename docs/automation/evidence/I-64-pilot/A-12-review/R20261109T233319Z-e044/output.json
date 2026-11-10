@@ -1,0 +1,193 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261109T233319Z-e044",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "4206b2da3a9985f429b77480cd5b5d26377f3215",
+    "AmendmentId": "A-12",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-12.md",
+      "Blob": "54810d4f62b2ea4e1a2f274667b434ce3cc362e1"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_identity_bridge.py",
+      "Blob": "13605f1a1c0e0f11c9d248f9def29559b6a4369b"
+    },
+    "SelfTest": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_identity_bridge.py",
+      "Blob": "d4d00c74ed6bba03ff315421c80d969523175bdb"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-identity-result-a12.json",
+      "Blob": "6e6b6f05aa78c910c5ec3ed00f444d759aacf0cc"
+    },
+    "RegressionTool": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_identity_bridge.py",
+      "Blob": "1e8cff985e4303407c956c4901d5c072dd549955"
+    },
+    "RegressionDemo": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/regression-demo-a12-identity.json",
+      "Blob": "cc6079172ac4bd81ccd0f6f66b32bd97c93f7714"
+    },
+    "A11Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py",
+      "Blob": "f9780f2f30c067243c93b6ab7175cc4b3179ca39"
+    },
+    "CoordinatorOrder": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/coordinator-a12-substitute-order.md",
+      "Blob": "50f642bcfafb8025245a94ca68fb59449e09d02d"
+    },
+    "VersioningDisposition": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/coordinator-a12-versioning-disposition.md",
+      "Blob": "ed4468dff2dbee21d1f35271e3fb72c00fb99656"
+    }
+  },
+  "Answers": {
+    "Q01": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-12 cambia la via sustituta de evidencia y su semantica de fallo: M-04. No cambia autoridades globales, esquemas oficiales, producto, consumidores ni puntos de extension. Coincide con LIFECYCLE Sec.3 y la orden literal del Coordinator."
+    },
+    "Q02": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "La cabecera y las Sec.8-9 limitan la aplicacion a I-64, F2-T2A-NAVIGATION-HOST, nc1, intento 2 y la firma de 3d86/16b6/bfc8. Se excluyen cambios globales de protocolo y de producto."
+    },
+    "Q03": {
+      "Answer": "NO",
+      "Conforming": false,
+      "Evidence": "La separacion respecto de Git existe, pero no todo defecto del artefacto falla: el relevo solo recibe comprobaciones parciales en verify_identity_bridge.py:338-354. Un relevo sin numerosos campos obligatorios del esquema oficial produjo HandoffIntegrity PASS y exit 0 en una prueba sintetica en memoria. Hallazgo I64-A12-RELAY-SCHEMA."
+    },
+    "Q04": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "verify_identity_bridge.py:355-390 exige HandoffIntegrity PASS y despues comprueba rama, commits, HEAD/remoto/tracking, cadena BaseSha-RedSha y HEAD exactamente igual al SHA verificado antes de comparar Identity. A-12 Sec.4 rechaza expresamente descendientes documentales; no implementa excepciones post-custodia."
+    },
+    "Q05": {
+      "Answer": "NO",
+      "Conforming": false,
+      "Evidence": "La igualdad con el sintetico vinculado se comprueba, pero la inexistencia se infiere de cualquier retorno distinto de cero de cat-file. Con relevo sintetico valido contra el esquema oficial y cat-file simulado fallando con codigo 128 o 129, main devolvio exit 0 y ControlResult PASS. Hallazgo I64-A12-NONEXISTENCE-ERROR."
+    },
+    "Q06": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "exact_equal conserva tipos, lexemas numericos y orden anidado. verify_identity_bridge.py:327-336 comprueba campos, orden superior y reconstruccion exacta de bytes sustituyendo un unico valor CurrentSha. Una segunda mutacion o reformateo no satisface esa igualdad."
+    },
+    "Q07": {
+      "Answer": "NO",
+      "Conforming": false,
+      "Evidence": "Hay rutas abiertas para un relevo invalido contra su esquema y para un error de Git en la consulta de inexistencia. Ambas alcanzaron exit 0 en pruebas exclusivamente sinteticas. Las excepciones y los demas retornos comprobados no subsanan esas rutas. Hallazgo I64-A12-FAIL-CLOSED-GUARANTEE."
+    },
+    "Q08": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Los tres SHA-256 de A-12 Sec.8 coinciden con los archivos reales leidos como datos, y sus identificadores corresponden al intento 2. HEAD, rama de producto y tracking local son 44a692a4; el log prueba 53302b85 -> 2da0e60d -> 44a692a4. Los Controller registran el remoto en ese mismo SHA. Sec.8 exige STOP ante hashes o estado distintos; el verificador exige igualdad remota viva antes de Identity. No pude refrescar el remoto desde este sandbox."
+    },
+    "Q09": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "4206b2da es hijo directo de 44a692a4 y modifica solo 12 rutas docs/ permitidas por la disposicion. HEAD sigue en la rama de producto en 44a692a4, con arbol limpio. A-12 exige extraer el verificador del blob identificado y establece incorporacion posterior por fast-forward, sin merge commit, rebase ni cherry-pick, seguida de push/CI y borrado posterior."
+    },
+    "Q10": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "La comparacion de segmentos fuente confirma copia literal de las primitivas declaradas y de HANDOFF_KEYS, BOM y SCHEMA_V1 desde f9780f2f. El esquema embebido coincide con worker-handoff.schema.json en a140eb3a. No se ejecuta A-11. El diff no modifica A-4/A-6/A-11 ni las clasificaciones historicas; A-12 y Sec.93 conservan P-04 y los resultados de 3d86/16b6/bfc8."
+    },
+    "Q11": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-12 Sec.8 y sus exclusiones mantienen nc2 y nc3 ordinarios, secuenciales y sobre el producto en 44a692a4. El unico resultado sustituto autorizado es nc1 = SATISFIED_UNDER_I64_IDENTITY_BRIDGE."
+    },
+    "Q12": {
+      "Answer": "NO",
+      "Conforming": false,
+      "Evidence": "Los artefactos registran T01-T31 conformes y los 18 mutantes fallando sus casos objetivo, incluido ControllerDefect. Sin embargo, relay() genera un relevo invalido contra el esquema oficial y faltan casos que detecten esa aceptacion y los errores de la consulta Git final. La cobertura adversarial no protege esas garantias. Hallazgo I64-A12-ADVERSARIAL-GAPS."
+    },
+    "Q13": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-12 permanece PROPOSED / NOT ACTIVE y exige Owner SATISFIED, Architect AGREED y Coordinator AGREED antes de una aplicacion real. Las herramientas de prueba construyen datos sinteticos; Sec.93 declara ausencia de aplicacion real. Esta revision solo leyo y calculo hashes de los datos reales; las ejecuciones del verificador usaron entradas y Git sinteticos en memoria."
+    },
+    "Q14": {
+      "Answer": "YES",
+      "Conforming": false,
+      "Evidence": "Existe una ruta demostrada: tras las comprobaciones previas satisfactorias, un error de cat-file deja la inexistencia sin verificar pero alcanza ControlResult PASS y exit 0. Tambien se acepta un relevo invalido contra su esquema. Hallazgo I64-A12-UNVERIFIABLE-PASS."
+    },
+    "Q15": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "Las correcciones necesarias implementan las garantias locales ya ordenadas. No requieren cambiar I-61 globalmente ni autoridad nueva de I-62 o del Owner; permanece pendiente la decision explicita del Owner que A-12 ya solicita."
+    }
+  },
+  "Findings": [
+    {
+      "Id": "I64-A12-RELAY-SCHEMA",
+      "Severity": "REQUIRED",
+      "Question": "Q03",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_identity_bridge.py:300; docs/automation/evidence/I-64-protocol-bridge/tools/verify_identity_bridge.py:338",
+      "Defect": "Solo se validan contra esquema las dos entregas. Relay.Schema compara una etiqueta y las comprobaciones posteriores consumen un subconjunto del relevo. Se aceptan campos obligatorios ausentes y propiedades adicionales prohibidas. El relevo producido por la propia autoprueba carece de Participant, Exit, Entry, RemoteFacts, RebaseMap, Disposition, Notes y siete campos obligatorios de Outcome; aun asi produjo HandoffIntegrity PASS, ControlResult PASS y exit 0 en la prueba sintetica.",
+      "Authority": "relay-record.schema.json en a140eb3a: required y additionalProperties=false; orden del Coordinator, pregunta A HANDOFF INTEGRITY; LIFECYCLE Sec.5-6, garantia verificable de fallo cerrado.",
+      "Correction": "En la siguiente A-n append-only, validar el relevo completo contra el esquema oficial fijado antes de declarar HandoffIntegrity PASS, manteniendo separada la coherencia con Git. Rechazar campos ausentes, tipos incorrectos y propiedades adicionales; corregir las fixtures y registrar RED->GREEN sintetico.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A12-NONEXISTENCE-ERROR",
+      "Severity": "REQUIRED",
+      "Question": "Q05",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_identity_bridge.py:398",
+      "Defect": "rc != 0 convierte cualquier fallo de git cat-file en prueba de inexistencia. Un fallo de permisos, configuracion o acceso al almacen de objetos puede ocultar un objeto existente. Con todas las demas entradas sinteticas validas, retornos simulados 128 y 129 alcanzaron exit 0 y ControlResult PASS.",
+      "Authority": "A-12 Sec.5 exige que el SHA no nombre ningun objeto; orden del Coordinator exige el SHA sintetico inexistente; LIFECYCLE Sec.5-6 exige una garantia verificable.",
+      "Correction": "En la siguiente A-n, distinguir una respuesta positiva y no ambigua de objeto ausente de un error operativo. Por ejemplo, usar una consulta batch de Git cuyo exito y respuesta missing exacta se validen; cualquier error, salida inesperada o consulta incompleta debe producir FAIL y salida distinta de cero.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A12-FAIL-CLOSED-GUARANTEE",
+      "Severity": "REQUIRED",
+      "Question": "Q07",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_identity_bridge.py:434",
+      "Defect": "La condicion final de exito acepta como suficientes comprobaciones que omiten la validez completa del relevo y convierten errores de Git en inexistencia. Por ello la garantia general de fallo cerrado es falsa. Este hallazgo expresa la consecuencia contractual conjunta de I64-A12-RELAY-SCHEMA e I64-A12-NONEXISTENCE-ERROR, no una tercera causa independiente.",
+      "Authority": "LIFECYCLE Sec.5-6; orden del Coordinator sobre pruebas de fallo cerrado; A-12 Sec.2, Sec.4 y Sec.5.",
+      "Correction": "Resolver las dos causas citadas y demostrar que todo relevo invalido o error operativo de la consulta de objetos termina con ControlResult FAIL y salida distinta de cero antes de volver a afirmar la garantia general.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A12-ADVERSARIAL-GAPS",
+      "Severity": "REQUIRED",
+      "Question": "Q12",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_identity_bridge.py:95; docs/automation/evidence/I-64-protocol-bridge/tools/selftest_identity_bridge.py:223",
+      "Defect": "La fixture de relevo es invalida contra el esquema oficial, por lo que el caso positivo legitima inadvertidamente una entrada que debe rechazarse. T16-T31 y los mutantes no detectan la omision de ese esquema ni la aceptacion de errores de cat-file. Los resultados publicados son coherentes con el codigo de pruebas, pero no verifican esas garantias.",
+      "Authority": "Orden del Coordinator: pruebas sinteticas de fallo cerrado antes de activacion; LIFECYCLE Sec.5-6: obligaciones invariante->prueba y rechazo de oraculos ciegos.",
+      "Correction": "Construir y comprobar primero un relevo sintetico completo y valido. Anadir casos de campos obligatorios ausentes, propiedades adicionales y tipos invalidos, y errores de Git en la comprobacion final. Anadir mutantes que desactiven las nuevas protecciones y repetir autoprueba y regresion dos veces con resultados identicos, conforme a la disposicion.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A12-UNVERIFIABLE-PASS",
+      "Severity": "REQUIRED",
+      "Question": "Q14",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_identity_bridge.py:399; docs/automation/evidence/I-64-protocol-bridge/tools/verify_identity_bridge.py:439",
+      "Defect": "Hay una ruta observable de PASS con una entrada requerida sin verificar: una consulta de objetos fallida se marca como CandidateNonexistent satisfactoria y main devuelve cero. Tambien hay PASS con un relevo invalido. Es la consecuencia observable de las causas ya identificadas, registrada separadamente para Q14.",
+      "Authority": "A-12 Sec.5; orden del Coordinator sobre SHA inexistente y fallo cerrado; LIFECYCLE Sec.5.",
+      "Correction": "Cerrar las rutas de los hallazgos Q03 y Q05 y conservar como regresion las reproducciones sinteticas que actualmente devuelven cero, exigiendo despues FAIL y salida distinta de cero.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "RequiredCount": 5,
+  "OptionalCount": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "Limitations": [
+    "No se reejecutaron las suites completas de autoprueba y regresion: crean repositorios y archivos temporales, incompatibles con esta revision sin escrituras. Se inspeccionaron sus fuentes, hashes y resultados versionados.",
+    "Las reproducciones independientes ejecutaron el blob revisado exclusivamente con datos sinteticos en memoria y sustitutos de Git, lectura y directorios temporales. No son una ejecucion completa con Git real.",
+    "git ls-remote no pudo conectar con GitHub por la restriccion de red. La igualdad remota historica consta en los Controller especificados; HEAD y tracking local se comprobaron directamente. La igualdad remota viva debe verificarse antes de cualquier aplicacion autorizada.",
+    "No se verifico el CI remoto del commit lateral con los insumos disponibles.",
+    "No se ejecuto el puente contra evidencia real, ni se escribieron archivos, ni se cambio HEAD o de rama."
+  ]
+}

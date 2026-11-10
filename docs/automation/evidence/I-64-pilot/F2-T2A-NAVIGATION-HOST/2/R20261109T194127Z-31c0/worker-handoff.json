@@ -1,0 +1,272 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F2-T2A-NAVIGATION-HOST",
+  "RunId": "R20261109T194127Z-31c0",
+  "DelegationRunId": "R20261109T193332Z-bafe",
+  "Initiative": "I-64",
+  "Gate": "F2",
+  "Attempt": 2,
+  "BaseSha": "53302b85518a8d0eaaa07cf1af5affc97581aa95",
+  "RedSha": "2da0e60d0bd250791d8eb8751e05c3f274756de2",
+  "CurrentSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+    "src/RackCad.Application/Workspace/NavigationEcho.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationEchoTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs"
+  ],
+  "WorkCompleted": "Attempt 2 (CorrectionOf R20261109T184844Z-3f3e). New RED 2da0e60d (tests only, 2 files) and GREEN 44a692a4 (8 product files). Created/implemented: Application/NavigationEcho (pure per-session echo memory, set equality via SetEquals, End/PurgeDead, no token/flag/time); Application/IWorkspaceNavigationPort.cs (port ExecuteAsync with the exact signature, WorkspaceNavigationResult readonly record struct with statuses Executed/Unavailable/Rejected/Stale/Failed, WorkspaceNavigationRequest, and WorkspaceNavigationRunner: pure core with lazy PurgeDeadSessions before every drain and every action, session decision, Model Space condition, NavigationActionPolicy.Plan/Execute, echo recording only when a SELECT was written, failing effect = Failed value); Plugin WorkspaceNavigationHost (exactly one NavigationTargets and one NavigationActionPolicy; single awaited DocumentCollection.ExecuteInCommandContextAsync; callback = active document, authorize/session, runner (existence, attribution, Decide, effects), result capture, then ReturnFocusToDrawing via document.Window.Focus() in one isolated method); WorkspaceNavigationFacts (INavigationFactsPort over RackBlockFinder.ScanEnvelopes unchanged, direct top-level Model Space reference handles, ProbedId: null explicit per F2T2A-KL-01); WorkspaceNavigationEffects (SELECT via SetImpliedSelection of all copies; VIEW = extents with 1.10 margin in view plane then SetCurrentView; CENTER moves the view center keeping scale; read-only GetObject only on the already-selected target; no write of authored data, sysvars, layout or TILEMODE); WorkspaceController (lazy Navigation property, shared NavigationEcho, _navigation.OnDrained, still 3 +=); WorkspaceSelectionReader (feeds the complete implied-selection handle set to the echo during the normal read; WorkspaceSelectionRead.cs and WorkspaceSession.cs unchanged); WorkspaceHostCore (lazy PurgeDead on drain; IsEcho asked after the reader and before ApplyContext). Test corrections in the RED: WorkspaceNavigationEchoTests.NothingChangedInTheSelectionReadOrTheSessionToCarryTheHandles now strips the unrelated DrainOperation.InvalidateNavigationCaches and still rejects Echo/Observe/Expect/handle/Navigation transport in WorkspaceSession.cs and handle/echo in WorkspaceSelectionRead.cs, and requires NavigationEcho in the reader and host core; new WorkspaceNavigationHostTests.AnUnreadableFactWithoutEnvelopeAndWithoutProbedIdIsNoTargetAndAttributionAndRevalidationDoNotDependOnProbedId (F2T2A-KL-01). Seed patch (SHA-256 32c19a57...) reused: all 8 product portions kept after inspection; one correction (ProbedId: null named with KL-01 comment in WorkspaceNavigationFacts.cs); nothing discarded. Guard deltas (already in the Attempt 1 RED 4fcea652, unchanged by this RED): WorkspaceBridgeSourceGuardTests writes only in WorkspaceNavigationEffects.cs and reads only in the exact reader/facts/effects files; WorkspaceSourceGuardExceptionTests exact-path exceptions for Host/Facts/Effects (async only in Host, READ vs DISCOVERY vs WRITE); WorkspaceHostSourceGuardTests exact-file exceptions and approved async-pattern prohibitions with the deliberate metacount; WorkspacePaletteHostSourceGuardTests nine exact Plugin/Workspace files and revised metacount with the 3 += invariant; WorkspaceNavigationAuthorityTests exact Facts reader exception and event-side isolation. No test file was changed in GREEN.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter FullyQualifiedName~RackCad.Tests.Workspace --logger trx (product at BaseSha skeleton, new tests only)",
+      "Phase": "RED",
+      "TreeSha": "2da0e60d0bd250791d8eb8751e05c3f274756de2",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/tests/red-core/<usuario>_<maquina>_2026-11-09_13_49_37.trx"
+    },
+    {
+      "RunRef": "red-ui",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --filter FullyQualifiedName~RackCad.UI.Tests.Workspace --logger trx",
+      "Phase": "RED",
+      "TreeSha": "2da0e60d0bd250791d8eb8751e05c3f274756de2",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/tests/red-ui/<usuario>_<maquina>_2026-11-09_13_50_14.trx"
+    },
+    {
+      "RunRef": "green-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter FullyQualifiedName~RackCad.Tests.Workspace --logger trx",
+      "Phase": "GREEN",
+      "TreeSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/tests/green-core/<usuario>_<maquina>_2026-11-09_13_55_10.trx"
+    },
+    {
+      "RunRef": "green-ui",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --filter FullyQualifiedName~RackCad.UI.Tests.Workspace --logger trx",
+      "Phase": "GREEN",
+      "TreeSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/tests/green-ui/<usuario>_<maquina>_2026-11-09_13_55_42.trx"
+    },
+    {
+      "RunRef": "green-full-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --logger trx",
+      "Phase": "RELEVANT",
+      "TreeSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/tests/green-full-core/<usuario>_<maquina>_2026-11-09_14_03_18.trx"
+    },
+    {
+      "RunRef": "green-full-ui-debug",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --logger trx (the configuration CI uses)",
+      "Phase": "RELEVANT",
+      "TreeSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/tests/green-full-ui-debug/<usuario>_<maquina>_2026-11-09_14_06_27.trx"
+    },
+    {
+      "RunRef": "green-full-ui",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --logger trx (2 PendingTextFieldTests fail only in Release: their expected InvalidOperationException is compiled under #if DEBUG in src/RackCad.UI; unrelated to this delivery)",
+      "Phase": "RELEVANT",
+      "TreeSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/tests/green-full-ui/<usuario>_<maquina>_2026-11-09_13_55_49.trx"
+    },
+    {
+      "RunRef": "green-build-core",
+      "Command": "dotnet build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental",
+      "Phase": "RELEVANT",
+      "TreeSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/tests/green-build-core/build.log"
+    },
+    {
+      "RunRef": "green-build-ui",
+      "Command": "dotnet build tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-incremental",
+      "Phase": "RELEVANT",
+      "TreeSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/tests/green-build-ui/build.log"
+    },
+    {
+      "RunRef": "green-plugin",
+      "Command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release --no-incremental -v:minimal -o <temp dir under tests/green-plugin/out>",
+      "Phase": "RELEVANT",
+      "TreeSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/tests/green-plugin/build.log"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-core",
+      "Selected": 756,
+      "Passed": 709,
+      "Failed": 47,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceHostSourceGuardTests.TheAsyncExceptionIsTheNavigationHostFileAndTheApprovedCommandContextPatternOnly",
+        "RackCad.Tests.WorkspaceHostSourceGuardTests.TheEffectsWriteExceptionOpensNoOtherWriteNoSystemVariableNoLayoutAndNoAuthoredData",
+        "RackCad.Tests.WorkspaceHostSourceGuardTests.TheReaderApisAreUsedInNoOtherFileOfThePluginWorkspace",
+        "RackCad.Tests.WorkspaceNavigationAuthorityTests.NoEventSideFileCanReachTheNavigationEffectsOrThePolicy",
+        "RackCad.Tests.WorkspaceNavigationAuthorityTests.OnlyTheAuthorityTraversesTheReferenceHandlesOfTheFacts",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.ADifferentSetIsNotAnEchoAndTheFirstDifferentSelectionResumesTheNormalFlow",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.ADrainPurgesTheEchoStateOfASessionThatNoLongerLives",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.ASubsetOrASupersetOfWhatRackCadWroteIsNeverTheEcho",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.AnEndedSessionLosesItsStateAndIsNeverRevivedByALateWriteOrRead",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.AnEqualSetOfHandlesIsTheEchoWhateverTheOrderOrTheDuplicates",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.AnObservationIsConsumedByTheQuestionAndAnEmptyExpectationExpectsNothing",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.EachSessionKeepsItsOwnExpectationAndItsOwnObservation",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.NothingChangedInTheSelectionReadOrTheSessionToCarryTheHandles",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.TheCountOfTrackedSessionsGrowsOnlyWithObservationsAndExpectations",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.TheEchoIsPureAndCarriesNoTokenFlagWindowOrTimer",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.TheEchoIsSharedByTheReaderAndTheHostCoreAndFlowsThroughTheControllerOnly",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.TheEchoOfASelectWithAPreviousDifferentContextAdvancesNothingAndCallsNoEffect",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.TheFirstDifferentSelectionAfterAnEchoResumesTheNormalSynchronization",
+        "RackCad.Tests.WorkspaceNavigationEchoTests.ThePurgeEndsOnlyTheSessionsTheAuthorityNoLongerFindsAlive",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ADrainPurgesFirstAndThenAppliesTheCacheInvalidationOfItsSessionOnly",
+        "RackCad.Tests.WorkspaceNavigationHostTests.AFailingEffectIsAFailedValueNotAnExceptionAndLeavesNoEcho",
+        "RackCad.Tests.WorkspaceNavigationHostTests.APurgedSessionIsNeverRevivedFromStaleState",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ARackWithoutTargetsIsUnavailableAndActsOnNothing",
+        "RackCad.Tests.WorkspaceNavigationHostTests.AReferenceThatLeftTheRackRightBeforeActingIsStaleWithZeroEffects",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ARequestOfADestroyedSessionEndsItsNavigationStateForGood",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ARequestRejectedByTheSessionHasZeroEffectsAndReadsNothingOfTheDrawing(decision: RejectedSessionDestroyed, status: Stale)",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ARequestRejectedByTheSessionHasZeroEffectsAndReadsNothingOfTheDrawing(decision: RejectedSessionMismatch, status: Rejected)",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ATargetThatVanishedRightBeforeActingIsStaleWithZeroEffectsAndTheCacheOfTheRackDropped",
+        "RackCad.Tests.WorkspaceNavigationHostTests.AnAcceptedSelectActsOnceOnEveryReferenceAndRemembersTheirHandlesAsTheEcho",
+        "RackCad.Tests.WorkspaceNavigationHostTests.AnUnreadableFactWithoutEnvelopeAndWithoutProbedIdIsNoTargetAndAttributionAndRevalidationDoNotDependOnProbedId",
+        "RackCad.Tests.WorkspaceNavigationHostTests.EveryReadAndEveryEffectOfTheActionHappensInsideTheCommandContextCallbackInTheApprovedOrder",
+        "RackCad.Tests.WorkspaceNavigationHostTests.LocateViewAppliesTheChosenEffectToTheCopyOfThatView",
+        "RackCad.Tests.WorkspaceNavigationHostTests.OutsideModelSpaceTheActionIsUnavailableWithZeroEffectsAndNoRead",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheControllerCreatesTheNavigationHostLazilySharesTheEchoAndSubscribesToNothingNew",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheEffectsAdapterImplementsTheEffectsPortAndIsTheOnlyWriterOfTheSelectionAndTheView",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheEffectsAdapterReadsOnlyTheAlreadySelectedTargetAndDiscoversNothing",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheEffectsAdapterWritesNothingAuthoredNoSystemVariableNoLayoutAndNoTileMode",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheFactsAdapterConsumesTheIntegratedScanAndReadsOnlyTheDirectModelSpaceReferenceHandles",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheFocusReturnsToTheDrawingInOneIsolatedMethodWithThePublicWindowApiAndFailsSafely",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheHostInstantiatesExactlyOneTargetsAuthorityAndOnePolicyAndNothingElseDoes",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheHostNamesNoEventSideTypeAndTheLoggingIsOnlyInsideTheFaultMethod",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheHostReconcilesWithTheSessionAuthorityOnEveryDrainAndOnEveryAction",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheLazyPurgeRunsRightBeforeEveryAction",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheOnlyAsynchronousExecutionIsTheCommandContextOfTheHostAwaitedOnce",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ThePurgeEndsTheTargetsTheEchoAndTheStateOfEverySessionThatNoLongerLivesAndOnlyThose",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ViewAndCenterTakeTheCopyOfTheRequestAndLeaveNoEchoBecauseTheySelectNothing",
+        "RackCad.Tests.WorkspaceSourceGuardExceptionTests.TheAsynchronousPatternIsAllowedOnlyInTheHostFileAndOnlyInTheCommandContextForm"
+      ]
+    },
+    {
+      "RunRef": "red-ui",
+      "Selected": 64,
+      "Passed": 64,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-core",
+      "Selected": 756,
+      "Passed": 756,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-ui",
+      "Selected": 64,
+      "Passed": 64,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-full-core",
+      "Selected": 15148,
+      "Passed": 15148,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-full-ui-debug",
+      "Selected": 1718,
+      "Passed": 1701,
+      "Failed": 0,
+      "Skipped": 17,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-full-ui",
+      "Selected": 1718,
+      "Passed": 1699,
+      "Failed": 2,
+      "Skipped": 17,
+      "FailedTests": [
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers",
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne"
+      ]
+    },
+    {
+      "RunRef": "green-build-core",
+      "Selected": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-build-ui",
+      "Selected": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "green-plugin",
+      "Selected": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "Branch architecture/workspace-persistente-rackcad; RED 2da0e60d pushed; GREEN 44a692a4 pushed (fast-forward); HEAD = remote = 44a692a4; tree clean.",
+    "RED (product at the BaseSha skeleton + corrected tests): Core filter 756 selected, 709 passed, 47 failed by assertion (compiled; no CS errors); UI filter 64/64.",
+    "GREEN: Core filter 756/756 (>= 656), UI filter 64/64 (>= 64); full Core 15148/15148 (Release); full UI 1701 passed + 17 skipped, 0 failed (Debug, as CI); Release builds of RackCad.Tests (57 warnings) and RackCad.UI.Tests (8 warnings) have 0 errors and 0 lines matching warning (MSB|CS|NU|NETSDK); Plugin local build 0 errors, 2 Advertencia(s), both MSB3277 (AutoCAD DLL version conflict of this workstation, same as the baseline).",
+    "Own implementation patch saved: artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/2/R20261109T194127Z-31c0/green-attempt2.patch (SHA-256 fcfae1a6121a31e3f3ba6620e25e4408291a192a6723d00e1c46c31802fccf05).",
+    "FilesChanged BaseSha..CurrentSha = 10 paths: 8 product files + 2 test files, all inside AllowedWriteScope; no F2-T1 file, no forbidden path touched; WorkspaceSelectionRead.cs, WorkspaceSession.cs, WorkspaceHostC2SourceGuardTests.cs, WorkspaceBridgeFacadeSourceGuardTests.cs unchanged.",
+    "INV-F2T2A-01: WorkspaceNavigationHostTests.TheHostInstantiatesExactlyOneTargetsAuthorityAndOnePolicyAndNothingElseDoes; WorkspaceNavigationAuthorityTests (OnlyTheAuthorityTraversesTheReferenceHandlesOfTheFacts, NoEventSideFileCanReachTheNavigationEffectsOrThePolicy).",
+    "INV-F2T2A-02/03: TheOnlyAsynchronousExecutionIsTheCommandContextOfTheHostAwaitedOnce; TheHostNeverBlocksDetachesOrSchedulesAndUsesNoOtherWayToRunACommand; EveryReadAndEveryEffectOfTheActionHappensInsideTheCommandContextCallbackInTheApprovedOrder; runner tests (rejection by session, target gone, not attributable => zero effects, cache dropped, Failed value); WorkspaceHostSourceGuardTests.TheAsyncExceptionIsTheNavigationHostFileAndTheApprovedCommandContextPatternOnly; WorkspaceSourceGuardExceptionTests.TheAsynchronousPatternIsAllowedOnlyInTheHostFileAndOnlyInTheCommandContextForm.",
+    "INV-F2T2A-04: TheFocusReturnsToTheDrawingInOneIsolatedMethodWithThePublicWindowApiAndFailsSafely (document.Window.Focus(), no Internal/DllImport/HwndSource).",
+    "INV-F2T2A-05: TheFactsAdapterConsumesTheIntegratedScanAndReadsOnlyTheDirectModelSpaceReferenceHandles; KL-01 test; TheIntegratedAuthoritiesOfF1AreNotMentionedByNavigationAndStayAsTheyWere.",
+    "INV-F2T2A-06: TheEffectsAdapterImplementsTheEffectsPortAndIsTheOnlyWriterOfTheSelectionAndTheView; TheEffectsAdapterReadsOnlyTheAlreadySelectedTargetAndDiscoversNothing; TheEffectsAdapterWritesNothingAuthoredNoSystemVariableNoLayoutAndNoTileMode; WorkspaceHostSourceGuardTests.TheEffectsWriteExceptionOpensNoOtherWriteNoSystemVariableNoLayoutAndNoAuthoredData.",
+    "INV-F2T2A-07: TheResultIsAnImmutableReadonlyRecordStructWithTheFiveStatuses; ThePortHasTheExactSignatureAndNamesNoAutoCadType; TheHostPortOfF1IsUntouchedAndStillKnowsNothingOfNavigation.",
+    "INV-F2T2A-08: WorkspaceNavigationEchoTests (set equality, first different selection resumes, per-session, End, host-core echo with a previous different context => context unchanged and zero effect calls, shared echo wiring, NothingChanged... corrected test).",
+    "INV-F2T2A-09: ThePurgeEnds..., APurgedSessionIsNeverRevivedFromStaleState, TheLazyPurgeRunsRightBeforeEveryAction, ADrainPurges..., TheHostReconcilesWithTheSessionAuthorityOnEveryDrainAndOnEveryAction, ADrainPurgesTheEchoStateOfASessionThatNoLongerLives.",
+    "INV-F2T2A-10/11/12/13/15: WorkspaceSourceGuardExceptionTests, WorkspaceBridgeSourceGuardTests, WorkspaceHostSourceGuardTests, WorkspacePaletteHostSourceGuardTests (nine files, 3 += invariant), TheControllerCreatesTheNavigationHostLazilySharesTheEchoAndSubscribesToNothingNew; WorkspaceNavigationPrivacyGuardTests unchanged and green.",
+    "INV-F2T2A-14: git diff --name-only BaseSha..CurrentSha lists only in-scope paths. INV-F2T2A-16: RED 47 assertion failures, GREEN all green; GREEN touches no test file."
+  ],
+  "UnexpectedFindings": [
+    "The Release configuration of the complete UI suite fails 2 PendingTextFieldTests because the expected exception exists only under #if DEBUG; pre-existing and unrelated, CI runs Debug."
+  ],
+  "KnownLimitations": [
+    "F2T2A-KL-01 (accepted, diagnostic only): WorkspaceNavigationFacts leaves ProbedId null because the integrated scan does not expose the raw probe identity; unreadable members are never navigable and attribution/revalidation do not depend on it (proved by the KL-01 test). ProbedId was not needed for correctness or INV-40 safety.",
+    "Nothing about real AutoCAD behavior is demonstrated here (selection surviving the internal command, view framing, centering, locate, focus return, echo and document isolation): only CI/compile of the Plugin, source and unit/guard tests; this is Smoke-NAV SN-01..SN-10. Focus return efficacy (SN-07) is unproven.",
+    "The Plugin is compiled locally only against the installed AutoCAD DLLs (0 errors); the exact-SHA CI job Build Plugin without AutoCAD (AutoCAD.NET 25.0.1) is not yet run.",
+    "Full UI suite in Release shows 2 failures (PendingTextFieldTests, DEBUG-only exception in src/RackCad.UI); the same suite passes in Debug, the configuration CI uses. Not caused by this delivery.",
+    "The facts adapter opens every direct reference of every scanned rack definition to check its owner (cost grows with large drawings); acceptable per contract, not measured."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Run the exact-SHA push CI for CurrentSha, the Controller verification and nc1..nc3; Smoke-NAV after F2 PASS. F2-T2B is not authorized.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

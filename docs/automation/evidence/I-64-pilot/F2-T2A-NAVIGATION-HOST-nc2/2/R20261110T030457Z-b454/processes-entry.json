@@ -1,0 +1,40 @@
+{
+  "CheckedUtc": "2026-11-10T03:08:49.4926978Z",
+  "CheckerPid": 82288,
+  "Rows": [
+    {
+      "Pid": 37092,
+      "ParentPid": 102268,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-10T03:08:47.3339370Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 65784,
+      "ParentPid": 37092,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-10T03:08:48.4578510Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 82288,
+      "ParentPid": 65784,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-11-10T03:08:48.5682450Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    }
+  ],
+  "ReadableNonParticipants": 23,
+  "Participants": 0,
+  "ParticipantsSessionOwned": 0,
+  "ParticipantsForeign": 0,
+  "SessionPid": 99012,
+  "UnattributablePersistent": 0,
+  "UnattributableCleared": 0
+}

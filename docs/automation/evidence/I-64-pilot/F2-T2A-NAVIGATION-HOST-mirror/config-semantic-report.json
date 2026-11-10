@@ -1,0 +1,582 @@
+{
+  "Schema": "rackcad-i64-config-semantic-report/v1",
+  "SnapshotDSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+  "CurrentSha256": "2EEDDAAB28C1147A5D927B4EF1E4C69229197E04CB6B114161FFFF04A16588C8",
+  "CurrentLastWriteUtc": "2026-11-10T03:14:05.728439Z",
+  "SnapshotDValuesAvailable": false,
+  "Limitation": "Snapshot D was recorded only as a SHA-256 and an ordered list of key names, deliberately without values. Its values no longer exist on this machine. Hash-verified reconstruction was attempted over 12 combinations of locally available prior values and did not reproduce the SHA-256. A per-key value diff against D therefore cannot be proven.",
+  "Counts": {
+    "1.TotalKeysInD_NameExtractor": 104,
+    "2.TotalKeysInCurrent_NameExtractor": 104,
+    "3.AddedKeys": [],
+    "4.RemovedKeys": [],
+    "OrderedNamesSha256EqualsD": true,
+    "5.ChangedValueKeys": "NOT DETERMINABLE",
+    "6.UnchangedValueKeys": "NOT DETERMINABLE",
+    "CurrentValueKeysFlattened": 68,
+    "ByClass": {
+      "A": 9,
+      "C": 3,
+      "D": 14,
+      "E": 40,
+      "F": 2
+    }
+  },
+  "InferredNotProven": [
+    "mcp_servers.node_repl.env.CODEX_CLI_PATH must differ from D if D pointed at the replaced binary directory f71a721e0e6193a9"
+  ],
+  "Inventory": [
+    {
+      "Key": "desktop.ambient-suggestions-enabled",
+      "Class": "A",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "desktop.conversationDetailMode",
+      "Class": "A",
+      "AppManagedByInstall": false,
+      "Type": "str[11]",
+      "Value": "STEPS_PROSE",
+      "Redacted": false
+    },
+    {
+      "Key": "desktop.keepRemoteControlAwakeWhilePluggedIn",
+      "Class": "A",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "desktop.migratedFollowUpQueueToSteer",
+      "Class": "A",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "desktop.open-in-target-preferences.global",
+      "Class": "A",
+      "AppManagedByInstall": false,
+      "Type": "str[6]",
+      "Value": "vscode",
+      "Redacted": false
+    },
+    {
+      "Key": "desktop.open-in-target-preferences.perPath.<project-path>",
+      "Class": "A",
+      "AppManagedByInstall": false,
+      "Type": "str[6]",
+      "Value": "vscode",
+      "Redacted": false
+    },
+    {
+      "Key": "desktop.open-in-target-preferences.perPath.<project-path>",
+      "Class": "A",
+      "AppManagedByInstall": false,
+      "Type": "str[6]",
+      "Value": "vscode",
+      "Redacted": false
+    },
+    {
+      "Key": "desktop.reviewDelivery",
+      "Class": "A",
+      "AppManagedByInstall": false,
+      "Type": "str[6]",
+      "Value": "inline",
+      "Redacted": false
+    },
+    {
+      "Key": "features.js_repl",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": false,
+      "Redacted": false
+    },
+    {
+      "Key": "marketplaces.openai-bundled.source",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[78]",
+      "Value": "\\\\?\\<USERPROFILE>\\.codex\\.tmp\\bundled-marketplaces\\openai-bundled",
+      "Redacted": false
+    },
+    {
+      "Key": "marketplaces.openai-bundled.source_type",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[5]",
+      "Value": "local",
+      "Redacted": false
+    },
+    {
+      "Key": "marketplaces.openai-primary-runtime.source",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[105]",
+      "Value": "\\\\?\\<USERPROFILE>\\.cache\\codex-runtimes\\codex-primary-runtime\\plugins\\openai-primary-runtime",
+      "Redacted": false
+    },
+    {
+      "Key": "marketplaces.openai-primary-runtime.source_type",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[5]",
+      "Value": "local",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.args",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "list[0]",
+      "Value": [],
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.command",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[106]",
+      "Value": "<USERPROFILE>\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\76f5b5935a63c7ba\\bin\\node_repl.exe",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_AVAILABLE_BACKENDS",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "str[18]",
+      "Value": "chrome,iab,mcpapps",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_BUILD_FLAVOR",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "str[4]",
+      "Value": "prod",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[13]",
+      "Value": "26.1103.60933",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.BROWSER_USE_TINYSKY_ENABLED",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "str[1]",
+      "Value": "1",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.CODEX_CLI_PATH",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[84]",
+      "Value": "<USERPROFILE>\\AppData\\Local\\OpenAI\\Codex\\bin\\5449c1f0f26f1f98\\codex.exe",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.CODEX_HOME",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "str[33]",
+      "Value": "<USERPROFILE>\\.codex",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[0]",
+      "Value": "",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[0]",
+      "Value": "",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[0]",
+      "Value": "",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS",
+      "Class": "F",
+      "AppManagedByInstall": true,
+      "Type": "str[4]",
+      "Value": "1000",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_NODE_MODULE_DIRS",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[105]",
+      "Value": "<USERPROFILE>\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\76f5b5935a63c7ba\\bin\\node_modules",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_NODE_PATH",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[101]",
+      "Value": "<USERPROFILE>\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\76f5b5935a63c7ba\\bin\\node.exe",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_CODE_PATHS",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[139]",
+      "Value": "<USERPROFILE>\\.codex;<USERPROFILE>\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\76f5b5935a63c7ba\\bin\\node_modules",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[151]",
+      "Value": "{\"browser\":\"<USERPROFILE>/.codex/plugins/cache/openai-bundled/browser/26.1103.60933/scripts/browser-service.mjs\",\"sky\":\"@oai/sky/service\"}",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.NODE_REPL_UNTRUSTED_ENV_ALLOWLIST",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[29]",
+      "Value": "CODEX_WINDOWS_REGISTERED_CORE",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[1]",
+      "Value": "1",
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "str[64]",
+      "Value": "<REDACTED: opaque id>",
+      "Redacted": true
+    },
+    {
+      "Key": "mcp_servers.node_repl.env_vars",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "list[4]",
+      "Value": [
+        "BROWSER_USE_ACCESS_EXECUTOR_ID",
+        "BROWSER_USE_ACCESS_PIPE_PATH",
+        "BROWSER_USE_ACCESS_VERIFYING_IDENTITY",
+        "CODEX_WINDOWS_REGISTERED_CORE"
+      ],
+      "Redacted": false
+    },
+    {
+      "Key": "mcp_servers.node_repl.startup_timeout_sec",
+      "Class": "F",
+      "AppManagedByInstall": false,
+      "Type": "int",
+      "Value": 120,
+      "Redacted": false
+    },
+    {
+      "Key": "model",
+      "Class": "C",
+      "AppManagedByInstall": false,
+      "Type": "str[11]",
+      "Value": "gpt-5.6-sol",
+      "Redacted": false
+    },
+    {
+      "Key": "model_reasoning_effort",
+      "Class": "C",
+      "AppManagedByInstall": false,
+      "Type": "str[6]",
+      "Value": "medium",
+      "Redacted": false
+    },
+    {
+      "Key": "notify",
+      "Class": "E",
+      "AppManagedByInstall": true,
+      "Type": "list[2]",
+      "Value": [
+        "<codex-local>\\Codex\\runtimes\\cua_node\\76f5b5935a63c7ba\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe",
+        "turn-ended"
+      ],
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.browser@openai-bundled.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.chrome@openai-bundled.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.codex-app-tools@openai-bundled.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.computer-use@openai-bundled.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.documents@openai-primary-runtime.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.github@openai-curated.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.outlook-calendar@openai-curated.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.outlook-email@openai-curated.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.pdf@openai-primary-runtime.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.presentations@openai-primary-runtime.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.spreadsheets@openai-primary-runtime.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.teams@openai-curated.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.template-creator@openai-primary-runtime.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.unified-computer-use@openai-bundled.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "plugins.visualize@openai-bundled.enabled",
+      "Class": "E",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "projects.<project-path>.trust_level",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[7]",
+      "Value": "trusted",
+      "Redacted": false
+    },
+    {
+      "Key": "service_tier",
+      "Class": "C",
+      "AppManagedByInstall": false,
+      "Type": "str[8]",
+      "Value": "priority",
+      "Redacted": false
+    },
+    {
+      "Key": "shell_environment_policy.set.NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S",
+      "Class": "D",
+      "AppManagedByInstall": true,
+      "Type": "str[64]",
+      "Value": "8e172ec9f458f2e636fc69a1b8c68c217f6bb8d10c41f70a05a0878b73863701",
+      "Redacted": false
+    },
+    {
+      "Key": "tui.screen_reader_detection_done",
+      "Class": "A",
+      "AppManagedByInstall": false,
+      "Type": "bool",
+      "Value": true,
+      "Redacted": false
+    },
+    {
+      "Key": "windows.sandbox",
+      "Class": "D",
+      "AppManagedByInstall": false,
+      "Type": "str[10]",
+      "Value": "unelevated",
+      "Redacted": false
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "A-13-application",
+  "SourceRoot": "artifacts/orchestration/I-64/A-13-application",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 4,
+    "EXCLUDED": 4
+  },
+  "Files": [
+    {
+      "Path": "application-record.json",
+      "Bytes": 1346,
+      "Sha256": "dca866bbc679d0b288030226b9ca61aced954766797204eb60ab4224c8a35df5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "authority-blobs.json",
+      "Bytes": 2339,
+      "Sha256": "194b49dbe221c2546ea059fd3aef45e0a60fc5ab096e9a22a303bd209a8c0df4",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a A-13-preactivation/authority-blobs.json, ya custodiado"
+    },
+    {
+      "Path": "bridge-output.json",
+      "Bytes": 5548,
+      "Sha256": "f8624114b06d754f20e7fe31bffb20ae76d417171c571b11cbf6039560486111",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "bridge-stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F1-SMOKE-1/R20261107T171052Z-6862/process/watch-stop.flag, ya custodiado"
+    },
+    {
+      "Path": "config-before.json",
+      "Bytes": 3434,
+      "Sha256": "4ef2a9dd5cb8e66e70cd9a85d1cd7032201ae81d7a77d8403e92db58e6b34b0f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "git-after.json",
+      "Bytes": 605,
+      "Sha256": "bfe398ed7ae7390551070b723f74cf7e2695823b965fa327216f101c56be6349",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a A-13-review/R20261110T022847Z-bc2b/git-entry.json, ya custodiado"
+    },
+    {
+      "Path": "git-before.json",
+      "Bytes": 605,
+      "Sha256": "bfe398ed7ae7390551070b723f74cf7e2695823b965fa327216f101c56be6349",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a A-13-review/R20261110T022847Z-bc2b/git-entry.json, ya custodiado"
+    },
+    {
+      "Path": "processes-before.json",
+      "Bytes": 1282,
+      "Sha256": "bd24910de24a18563ffc9cd803733e56624e417c22706efae4ea8380f75403c8",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "377b96204c92cad79e01cca18668b6f0e029c8f9299fe1bef545e2061da6f976",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    }
+  ]
+}

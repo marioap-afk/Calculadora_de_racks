@@ -1,0 +1,16 @@
+{
+  "Schema": "rackcad-i64-historical-control-child-proof/v1",
+  "Mechanism": "timeout + env -C <product-worktree> + runtime pwsh -NoProfile; neutral read-only child, not a Controller invocation",
+  "Facts": {
+    "HEAD": true,
+    "origin/main": true,
+    "origin/product-branch": true,
+    "branch": true,
+    "show-toplevel": true,
+    "GIT_DIR inherited": true,
+    "GIT_WORK_TREE inherited": true,
+    "cwd": true
+  },
+  "StderrBytes": 0,
+  "Pass": true
+}

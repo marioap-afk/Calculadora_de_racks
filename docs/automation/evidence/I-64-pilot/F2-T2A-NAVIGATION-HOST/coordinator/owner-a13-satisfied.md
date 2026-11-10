@@ -1,0 +1,1 @@
+SATISFIED — authorize I-64-A-13 / I64-IDENTITY-BRIDGE-01 as the corrected I-64-only substitute evidence path for the exhausted F2-T2A nc1 Handoff/Identity Controller defect, superseding A-12 for activation, without changing product semantics or global protocol.

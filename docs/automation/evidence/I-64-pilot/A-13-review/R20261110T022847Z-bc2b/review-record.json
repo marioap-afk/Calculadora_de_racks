@@ -1,0 +1,169 @@
+{
+  "Schema": "rackcad-i64-architect-review-record/v1",
+  "RunId": "R20261110T022847Z-bc2b",
+  "Amendment": "I-64-A-13",
+  "Phase": "ARCHITECT_REVIEW",
+  "Authority": "orden del Coordinator I-64 - A-13 CORRECTION ORDER (literal en artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/coordinator/coordinator-f2t2a-a13-correction-order.md, SHA-256 25949420A2E4AD5AEF599AFEB50B06A25E25DB2A08F1D2838495EA20B6A68481): una revision formal autorizada sobre el commit exacto de la rama lateral tras la CI exacta",
+  "ReviewedCommit": "31a1c837a3c63f2e8886ef38c63b68bd52354078",
+  "PriorReview": "R20261109T233319Z-e044 (A-12, 4206b2da, CHANGES REQUIRED, 5 REQUIRED de dos causas raiz)",
+  "PromptSha256": "8C16934A1EC3D85EDDBCD52A3BFC66927F2FDD1B1927A92E54ED0E9DE59BEACC",
+  "Participant": {
+    "Kind": "codex-cli",
+    "Profile": "ARCHITECTURE_REVIEW",
+    "ModelRequested": "gpt-6.1-sol",
+    "EffortRequested": "high",
+    "Sandbox": "read-only",
+    "ModelEffective": "gpt-6.1-sol",
+    "EffortEffective": "high",
+    "CliVersion": "0.167.0-alpha.3.2",
+    "CliBinary": "Codex/bin/f71a721e0e6193a9/codex.exe (SHA-256 4B3286E35D7FE866C6B0EB3F07D7A4CDB5E96489576170DFD6B3A15AA1C67382)",
+    "Launcher": "-s read-only -m gpt-6.1-sol -c model_reasoning_effort=\"high\" -c allow_login_shell=false",
+    "EffectiveSource": "rollout-2026-11-09T20-29-24-01a1c349-eb87-7623-b2e3-314969bea593.jsonl",
+    "EffectiveSourceSha256": "0635AAF5C1F2A420C2ECBE1536E606D5336974222DD50848B2C6DF917C2C3771"
+  },
+  "Eligibility": "celda gpt-6.1-sol/high/read-only acreditada en este CLI por la sonda R20261109T062522Z-e8be; mismo binario (SHA-256 medido antes y despues); unico codex.exe en Codex/bin; config.toml = SNAPSHOT D",
+  "Cession": {
+    "StartUtc": "2026-11-10T02:29:22Z",
+    "EndUtc": "2026-11-10T02:34:24Z",
+    "SessionOperated": false
+  },
+  "Exit": {
+    "ProductHeadSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "ProductRemoteSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "SideBranchRemoteSha": "31a1c837a3c63f2e8886ef38c63b68bd52354078",
+    "OriginMainSha": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+    "CleanTree": true,
+    "GitOperationsInProgress": [],
+    "ConfigSnapshot": "D",
+    "ConfigSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+    "Participants": 0,
+    "Unattributable": 0
+  },
+  "Entry": {
+    "ProductHeadSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "ProductRemoteSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "SideBranchRemoteSha": "31a1c837a3c63f2e8886ef38c63b68bd52354078",
+    "CleanTree": true,
+    "ConfigSnapshot": "D",
+    "ConfigChanged": false,
+    "Participants": 0,
+    "Unattributable": 0,
+    "LauncherDead": true,
+    "AcadProcesses": 0
+  },
+  "Outcome": {
+    "ExitCode": 0,
+    "TerminalEvent": "turn.completed",
+    "OutputSha256": "8B8D6D25DCF3E3206EA22386A69C821508633D2D4191E58C99BDEA7BD72A264D",
+    "SchemaValid": true,
+    "Coherent": true,
+    "SubjectMatches": true,
+    "NonAsciiBytes": 0,
+    "CommandCount": 28,
+    "NoProfileCommands": 28,
+    "NonZeroCommands": 1,
+    "RealF2T2ABridgeExecution": [
+      "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command \"@' import subprocess,json,hashlib c='31a1c837a3c6' prefix='docs/automation/evidence/I-64-protocol-bridge/' paths=['docs/initiatives/I-64-A-13.md','docs/initiatives/I-64-A-12.md']+[prefix+p for p in ['tools/verify_identity_bridge.py','tools/precheck_relay_schema.py','tools/selftest_identity_bridge.py','tools/regression_demo_identity_bridge.py','selftest-identity-result-a13.json','regression-demo-a13-identity.json','relay-schema-precheck-a13.json','relay-schema-differential-a13.json','tools/verify_testfilter_bridge.py','coordinator-a13-correction-order.md','architect-review/R20261109T233319Z-e044/output.json','architect-review/R20261109T233319Z-e044/review-record.json']] for p in paths: b=subprocess.check_output(['git','show',c+':'+p]); h=subprocess.check_output(['git','rev-parse',c+':'+p]).decode().strip(); print(h,hashlib.sha256(b).hexdigest(),p) for r,p in [('9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311','docs/initiatives/I-64-proposal-v5.md'),('a140eb3a','docs/automation/agent-execution/schemas/relay-record.schema.json')]: print(subprocess.check_output(['git','rev-parse',r+':'+p]).decode().strip(),p) '@ | python -B -\"",
+      "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command \"@' import subprocess,ast,base64,json,hashlib,sys sys.stdout.reconfigure(encoding='ascii',errors='replace') pfx='docs/automation/evidence/I-64-protocol-bridge/tools/' def read(p,c='31a1c837a3c6'):return subprocess.check_output(['git','show',c+':'+p]).decode() v=read(pfx+'verify_identity_bridge.py'); a=read(pfx+'verify_testfilter_bridge.py'); pc=read(pfx+'precheck_relay_schema.py') def segments(s): t=ast.parse(s); lines=s.splitlines(True); return {n.name:''.join(lines[n.lineno-1:n.end_lineno]) for n in t.body if isinstance(n,(ast.FunctionDef,ast.ClassDef))} vs,ass,ps=segments(v),segments(a),segments(pc) names=['Invalid','JsonInt','JsonDecimal','parse_json_int','parse_json_decimal','exact_equal','type_ok','validate','sha256','reject_duplicates','reject_constant','has_lone_surrogate','read_bytes','load_handoff','schema_problems','UsageError','Parser','git_env','git'] print('A11 verbatim:',{n:vs[n]==ass[n] for n in names}) names2=['Invalid','JsonInt','JsonDecimal','parse_json_int','parse_json_decimal','type_ok','validate','sha256','reject_duplicates','reject_constant','has_lone_surrogate','read_bytes','load_handoff','git_blob_id','relay_record_schema','relay_schema_problems'] print('Precheck copies:',{n:vs[n]==ps[n] for n in names2}) def vals(s):return {n.targets[0].id:ast.literal_eval(n.value) for n in ast.parse(s).body if isinstance(n,ast.Assign) and isinstance(n.targets[0],ast.Name) and n.targets[0].id in ('HANDOFF_KEYS','BOM','SCHEMA_V1','RELAY_RECORD_SCHEMA_B64','RELAY_RECORD_SCHEMA_BLOB') and n.targets[0].id\"'!='\"'BOM'} x,y,z=vals(v),vals(a),vals(pc) print('Constants verbatim',all(x[k]==y[k] for k in ['HANDOFF_KEYS','SCHEMA_V1'])) raw=subprocess.check_output(['git','show','a140eb3a:docs/automation/agent-execution/schemas/relay-record.schema.json']) print('Official relay bytes match verifier and precheck',raw==base64.b64decode(x['RELAY_RECORD_SCHEMA_B64'])==base64.b64decode(z['RELAY_RECORD_SCHEMA_B64'])) print('Worker schema matches official',x['SCHEMA_V1']==json.loads(subprocess.check_output(['git','show','a140eb3a:docs/automation/agent-execution/schemas/worker-handoff.schema.json']))) print('Precheck imports',[n.names[0].name for n in ast.parse(pc).body if isinstance(n,ast.Import)]) reg=read(pfx+'regression_demo_identity_bridge.py'); r={}; exec(compile(reg,'synthetic-regression','exec'),{'__name__':'synthetic_definition',**r} if False else r) print('Mutation anchors all unique',all(v.count(old)==1 for old,new,targets in r['MUTANTS'].values()),'count',len(r['MUTANTS'])) for p in ['docs/initiatives/I-64-A-12.md',pfx+'verify_testfilter_bridge.py']: print('Historical unchanged',p,read(p)==read(p,'4206b2da')) print('Historical A12 blob',subprocess.check_output(['git','rev-parse','4206b2da:'+pfx+'verify_identity_bridge.py']).decode().strip()) '@ | python -B -\"",
+      "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command \"@' import subprocess,types,io,json,copy,hashlib p='docs/automation/evidence/I-64-protocol-bridge/tools/' def src(n):return subprocess.check_output(['git','show','31a1c837a3c6:'+p+n]).decode() vsrc,tsrc=src('verify_identity_bridge.py'),src('selftest_identity_bridge.py') t={'__name__':'synthetic_fixture_definitions'};exec(compile(tsrc,'synthetic-fixture','exec'),t) s={'repo':'<ruta-sintetica>/repo','base':'1'*40,'red':'2'*40,'verified':'3'*40,'side':'4'*40} sha=t['SYNTHETIC']; rows=[] def run(name,relay_fn=None,relay_raw=None,query=(0,None,b''),mut_fn=None,unread=None,repo_error=False,expect='PASS',code=None): n={'__name__':'synthetic_bridge'};exec(compile(vsrc,'reviewed-git-blob','exec'),n) real=t['handoff'](s);mut=t['handoff'](s,CurrentSha=sha) if mut_fn:mut_fn(mut) rb,mb=t['dumps'](real),t['dumps'](mut) relay=t['relay'](hashlib.sha256(mb).hexdigest()) if relay_fn:relay=relay_fn(relay) lb=t['dumps'](relay) if relay_raw:lb=relay_raw(lb) files={'real':rb,'mutated':mb,'relay':lb} def read(path): if path==unread:raise PermissionError('synthetic unreadable') return files[path] def git(repo,*args): if repo_error:return 128,b'',b'fatal synthetic repository unavailable' if args[:2]==('rev-parse','--show-toplevel'):return 0,s['repo'].encode()+b'\\\\n',b'' if args[0]=='symbolic-ref':return 0,t['BRANCH'].encode()+b'\\\\n',b'' if args[0]=='merge-base':return 0,b'',b'' if args[0]=='ls-remote':return 0,(s['verified']+'\\\\trefs/heads/'+t['BRANCH']+'\\\\n').encode(),b'' spec=args[-1];val=s['verified'] if spec.startswith(('HEAD','refs/remotes/')) else spec[:40] return 0,(val+'\\\\n').encode(),b'' def qrun(cmd,**kw): assert '--no-replace-objects' in cmd and '--batch-check' in cmd and kw['shell'] is False assert kw['input']==(sha+'\\\\n').encode() if isinstance(query,Exception):raise query rc,out,err=query return types.SimpleNamespace(returncode=rc,stdout=(sha+' missing\\\\n').encode() if out is None else out,stderr=err) b=io.BytesIO();n.update(read_bytes=read,git=git,sys=types.SimpleNamespace(stdout=types.SimpleNamespace(buffer=b)),tempfile=types.SimpleNamespace(mkdtemp=lambda **kw:'<ruta-sintetica>/no-grafts'),shutil=types.SimpleNamespace(rmtree=lambda *a,**kw:None),subprocess=types.SimpleNamespace(run=qrun,SubprocessError=subprocess.SubprocessError,TimeoutExpired=subprocess.TimeoutExpired)) args={'repo':s['repo'],'task-id':t['TASK'],'attempt':'2','delegation-run-id':t['DELEG'],'work-run-id':t['WORK'],'branch':t['BRANCH'],'base-sha':s['base'],'red-sha':s['red'],'current-sha':s['verified'],'synthetic-sha':sha,'real-handoff':'real','mutated-handoff':'mutated','relay-record':'relay'} argv=[x for k,val in args.items() for x in ['--'+k,val]] rc=n['main'](argv);d=json.loads(b.getvalue());codes=[x['Code'] for x in d['Reasons']] ok=d['ControlResult']==expect and ((rc==0)==(expect=='PASS')) and (code is None or code in codes) rows.append({'Case':name,'Ok':ok,'Exit':rc,'Control':d['ControlResult'],'Handoff':d['HandoffIntegrity'],'Identity':d['Identity'],'Codes':codes}) run('baseline') run('all nullable sections',relay_fn=lambda r:t['populate'](r)) for path,val in [(['Attempt'],'2'),(['Notes'],'x'),(['Cession','SessionOperated'],'no'),(['Phase'],'NOPE'),(['RunId'],'bad'),(['Exit','HeadSha'],'xyz'),(['Exit','Processes',0,'Classification'],'bad'),(['Notes'],[1]),(['Cession'],None),(['Outcome','Extra'],1),(['Extra'],1)]: run('schema '+str(path),relay_fn=t['put'](path,val),expect='FAIL',code='RELAY_SCHEMA_INVALID') for path in [['Participant'],['Outcome','TreeKilled']]:run('required '+str(path),relay_fn=t['drop'](path),expect='FAIL',code='RELAY_SCHEMA_INVALID') for label,fn in [('malformed',lambda b:b'{'),('constant',lambda b:b.replace(b'\\\"ExitCode\\\": 0',b'\\\"ExitCode\\\": NaN')),('duplicate',lambda b:b.replace(b'\\\"Phase\\\":',b'\\\"Phase\\\":\\\"WORK\\\",\\\"Phase\\\":')),('BOM',lambda b:b'\\\\xef\\\\xbb\\\\xbf'+b)]:run(label,relay_raw=fn,expect='FAIL',code='RELAY_UNREADABLE') for label,q in [('128',(128,b'',b'fatal')),('129',(129,b'',b'usage')),('128 plausible',(128,(sha+' missing\\\\n').encode(),b'')),('stderr',(0,None,b'warning')),('empty',(0,b'',b'')),('garbage',(0,b'garbage\\\\n',b'')),('partial',(0,(sha+' miss').encode(),b'')),('no newline',(0,(sha+' missing').encode(),b'')),('extra',(0,(sha+' missing\\\\nextra\\\\n').encode(),b'')),('other object',(0,('1'*40+' missing\\\\n').encode(),b'')),('ambiguous',(0,(sha+' ambiguous\\\\n').encode(),b'')),('not found',FileNotFoundError()),('permission',PermissionError()),('timeout',subprocess.TimeoutExpired('synthetic',120))]:run(label,query=q,expect='FAIL',code='GIT_OBJECT_QUERY_FAILED') run('exists',query=(0,(sha+' commit 123\\\\n').encode(),b''),expect='FAIL',code='MUTATED_SHA_EXISTS') for name in ['real','mutated','relay']:run('unreadable '+name,unread=name,expect='FAIL',code={'real':'REAL_UNREADABLE','mutated':'MUTATED_UNREADABLE','relay':'RELAY_UNREADABLE'}[name]) run('second mutation',mut_fn=lambda m:m['TestResults'][0].update(Passed=2),expect='FAIL',code='MUTATION_NOT_ONLY_CURRENT_SHA') run('repo unavailable',repo_error=True,expect='FAIL',code='GIT_REPOSITORY_INVALID') print(json.dumps({'SyntheticInMemoryCases':len(rows),'Passed':sum(r['Ok'] for r in rows),'Failed':[r for r in rows if not r['Ok']],'Baseline':rows[0]},indent=2)) '@ | python -B -\""
+    ],
+    "GitWriteCommands": [
+      "REPOSITORY_INVALID') print(json.dumps({'SyntheticInMemoryCases':len(rows),'Passed':sum(r['Ok'] for r in rows),'Failed':[r for r in rows if not r['Ok']],'Baseline':rows[0]},indent=2)) '@ | python -B -\""
+    ],
+    "GateTerms1610": [
+      "Candidato"
+    ],
+    "LimitPatterns": {
+      "ion | frontera |\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 1,
+      "n | frontera |\\\\\\\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 1
+    }
+  },
+  "Result": {
+    "Verdict": "AGREED",
+    "RequiredCount": 0,
+    "OptionalCount": 0,
+    "PriorFindings": {
+      "I64-A12-RELAY-SCHEMA": "CLOSED",
+      "I64-A12-NONEXISTENCE-ERROR": "CLOSED",
+      "I64-A12-FAIL-CLOSED-GUARANTEE": "CLOSED",
+      "I64-A12-ADVERSARIAL-GAPS": "CLOSED",
+      "I64-A12-UNVERIFIABLE-PASS": "CLOSED"
+    },
+    "Answers": {
+      "Q01": [
+        "YES",
+        true
+      ],
+      "Q02": [
+        "YES",
+        true
+      ],
+      "Q03": [
+        "YES",
+        true
+      ],
+      "Q04": [
+        "YES",
+        true
+      ],
+      "Q05": [
+        "YES",
+        true
+      ],
+      "Q06": [
+        "YES",
+        true
+      ],
+      "Q07": [
+        "YES",
+        true
+      ],
+      "Q08": [
+        "YES",
+        true
+      ],
+      "Q09": [
+        "YES",
+        true
+      ],
+      "Q10": [
+        "YES",
+        true
+      ],
+      "Q11": [
+        "YES",
+        true
+      ],
+      "Q12": [
+        "YES",
+        true
+      ],
+      "Q13": [
+        "YES",
+        true
+      ],
+      "Q14": [
+        "YES",
+        true
+      ],
+      "Q15": [
+        "NO",
+        true
+      ],
+      "Q16": [
+        "NO",
+        true
+      ]
+    },
+    "RequiredFindings": [],
+    "OptionalFindings": []
+  },
+  "Budget": "una revision formal autorizada (esta); sin reintento",
+  "Notes": [
+    "Una sola revision formal sobre 31a1c837; CI exacta 42742528452 4/4 antes de lanzar",
+    "Auditoria de texto completo de las marcas automaticas: RealF2T2ABridgeExecution marca 2 ordenes por nombres de ruta (relay-record.schema.json); las 2 ejecuciones de herramientas son sinteticas en memoria, sin worker-handoff.json, relay-record-work.json ni artifacts",
+    "GitWriteCommands marca 1 orden por el texto de un script sintetico en memoria; 0 invocaciones reales de escritura Git; estado del repositorio igual antes y despues",
+    "GateTerms1610 marca Candidato: 2 apariciones (Q06 y evidencia de I64-A12-NONEXISTENCE-ERROR), ambas con el sentido de objeto consultado, no una declaracion de gate",
+    "origin/main avanzo de a140eb3a a 04a70414 (integracion de I-67) antes del lanzamiento; ninguna autoridad cambia y el blob del esquema del relevo es el mismo"
+  ]
+}

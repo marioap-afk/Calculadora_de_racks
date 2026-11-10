@@ -1,0 +1,248 @@
+{
+  "Schema": "rackcad-i64-identity-bridge/v1",
+  "Result": "PASS",
+  "ControlResult": "PASS",
+  "HandoffIntegrity": "PASS",
+  "Identity": "FAIL",
+  "FailClosed": false,
+  "Reasons": [],
+  "Binding": {
+    "TaskId": "F2-T2A-NAVIGATION-HOST",
+    "Attempt": "2",
+    "DelegationRunId": "R20261109T193332Z-bafe",
+    "WorkRunId": "R20261109T194127Z-31c0",
+    "Branch": "architecture/workspace-persistente-rackcad",
+    "BaseSha": "53302b85518a8d0eaaa07cf1af5affc97581aa95",
+    "RedSha": "2da0e60d0bd250791d8eb8751e05c3f274756de2",
+    "VerifiedSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "SyntheticSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+  },
+  "Inputs": {
+    "RealSha256": "80fb4cf60b20ea60282bd9a35493e550d4c073f59fcf240be39219d37f87aef0",
+    "MutatedSha256": "b3f6beedc03fbf36f99b3c996b6c9d9526de755e862acae83f559491eaf9961b",
+    "RelaySha256": "b687bdd82f286757ed90e50b0f01b977ec4fcad6eb0e00b7e017ba05e3a1852f"
+  },
+  "Repository": {
+    "Head": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "Remote": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "Tracking": "44a692a4ec386e559cc6d330b3d78b87dbad6581"
+  },
+  "Mutation": {
+    "ChangedFields": [
+      "CurrentSha"
+    ],
+    "CandidateCurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "IdentityTarget": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "CandidateObject": "MISSING"
+  },
+  "Checks": [
+    {
+      "Id": "Args.base_sha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Args.red_sha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Args.current_sha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Args.synthetic_sha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.RealReadable",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.MutatedReadable",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.RelayReadable",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.RealHandoffSchema",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.MutatedHandoffSchema",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.RelayRecordSchema",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Real.TaskId",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Real.Attempt",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Real.DelegationRunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Real.WorkRunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Real.Branch",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Real.Worktree",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Real.BaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Real.RedSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutated.TaskId",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutated.Attempt",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutated.DelegationRunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutated.WorkRunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutated.Branch",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutated.Worktree",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutated.BaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutated.RedSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Real.CurrentSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutation.KeyOrder",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutation.OnlyCurrentSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Mutation.BytesExact",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Relay.Schema",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Relay.TaskId",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Relay.RunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Relay.Attempt",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Relay.Phase",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Relay.Completed",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Relay.OutputSha256",
+      "Result": "pass"
+    },
+    {
+      "Id": "HandoffIntegrity.Relay.OutputTime",
+      "Result": "pass"
+    },
+    {
+      "Id": "Repository.TopLevel",
+      "Result": "pass"
+    },
+    {
+      "Id": "Repository.Branch",
+      "Result": "pass"
+    },
+    {
+      "Id": "Repository.BaseSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Repository.RedSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Repository.VerifiedSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Repository.RemoteReadable",
+      "Result": "pass"
+    },
+    {
+      "Id": "Repository.HeadEqualsRemote",
+      "Result": "pass"
+    },
+    {
+      "Id": "Repository.BaseShaAncestry",
+      "Result": "pass"
+    },
+    {
+      "Id": "Repository.RedShaChain",
+      "Result": "pass"
+    },
+    {
+      "Id": "Repository.HeadIsVerifiedSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Control.IdentityRejectsCandidate",
+      "Result": "pass"
+    },
+    {
+      "Id": "Control.CandidateIsAuthorizedSynthetic",
+      "Result": "pass"
+    },
+    {
+      "Id": "Control.CandidateObjectQuery",
+      "Result": "pass"
+    },
+    {
+      "Id": "Control.CandidateNonexistent",
+      "Result": "pass"
+    }
+  ]
+}

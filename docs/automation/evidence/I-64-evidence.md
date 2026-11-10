@@ -5844,3 +5844,21 @@ revisar:
 **Siguiente:** CI del commit exacto y revisión formal del Architect (gpt-6.1-sol/high, solo lectura); si AGREED, el texto exacto del Owner. La ejecución real solo tras Owner SATISFIED, Architect AGREED y Coordinator AGREED.
 
 **Límites:** sin cambios en `src/` ni `tests/`; sin ejecutar el puente contra evidencia real; nc2 y nc3 sin ejecutar; sin AutoCAD; attempts 2/3.
+
+## 95. F2-T2A-NAVIGATION-HOST: A-13 aplicada, controles nc1, nc2 y nc3 cerrados en el marco histórico; custodia final
+
+**Resultado:** producto EXECUTION_VERIFIED sobre `44a692a4` (verificación `89a6`). `nc1 = SATISFIED_UNDER_I64_IDENTITY_BRIDGE` (A-13 REAL APPLICATION = PASS). nc2 `03d2` y nc3 `42a7` = CONTROL PASS. Se conservan sin reetiquetar `3d86`, `16b6`, `bfc8` y `b454`.
+
+**A-13:** Architect AGREED (`bc2b`), Owner SATISFIED, Coordinator AGREED. Una sola aplicación real: `HandoffIntegrity = PASS`, `Identity = FAIL`, `ControlResult = PASS`, salida `f8624114…`.
+
+**Pre-empción de nc2:** `b454` falló en `Remote` por S-13, porque el Controller consultó `origin/main` vivo (`04a70414`, integración de I-67). No probatorio de Scope; A-4 no aplicado.
+
+**Marco histórico** (disposiciones `coordinator-f2t2a-nc2-remote-preemption-disposition.md` y `coordinator-f2t2a-mirror-worktree-binding-disposition.md`): directorio de trabajo y `GIT_WORK_TREE` en el worktree real, `GIT_DIR` en un directorio Git histórico aislado. LiveRemoteFacts: `origin/main = 04a70414`. HistoricalControlRemoteFacts: `origin/main = a140eb3a`. El entorno histórico existe solo para evaluar un control negativo relativo a la verificación 89a6; no afirma que `a140eb3a` sea el main actual. El directorio se borró tras registrar la evidencia.
+
+**Entorno de Codex:** Snapshot E (`2EEDDAAB…`) aceptado; delta por clave desde D DESCONOCIDO (renuncia acotada). Binario `5449c1f0` acreditado solo para la celda del Controller. Registro en `F2-T2A-NAVIGATION-HOST-mirror/snapshot-e-baseline.json`.
+
+**Custodia:** `docs/automation/evidence/I-64-pilot/` con manifiestos por unidad; paquete `F2-T2A-NAVIGATION-HOST/task-close-package.md`. Se incorpora a la rama de producto por fast-forward desde la rama lateral temporal.
+
+**Límites:** no declara F2 PASS, GATE PASS ni Candidato; F2-T2B no iniciada; sin AutoCAD; attempts 2/3.
+
+**Siguiente:** COORDINATOR_F2_T2A_CLOSE_REQUIRED.

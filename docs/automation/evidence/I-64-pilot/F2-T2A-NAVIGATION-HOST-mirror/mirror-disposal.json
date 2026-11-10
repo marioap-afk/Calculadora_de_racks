@@ -1,0 +1,19 @@
+{
+  "Schema": "rackcad-i64-historical-control-mirror-disposal/v1",
+  "HistoricalDirectoryFinalFacts": {
+    "Head": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "origin/main": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "origin/product-branch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "RefsSha256": "12b825305c23a880d0fdcaebb2ffdebd41a93da2071c6e2c89726e62c50cd16c",
+    "ObjectCount": "count: 0; size: 0; in-pack: 26647; packs: 1; size-pack: 41928; prune-packable: 0; garbage: 0; size-garbage: 0"
+  },
+  "Deleted": true,
+  "RealRepositoryHeadTrackingStatusIndexUnchanged": true,
+  "LiveRemoteFactsAfterDeletion": {
+    "origin/main": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+    "origin/product-branch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "origin/temporary-branch": "31a1c837a3c63f2e8886ef38c63b68bd52354078",
+    "Source": "git ls-remote after the historical directory was deleted"
+  },
+  "Note": "Other refs in the shared repository may move through unrelated sessions; only the I-64 facts are compared here."
+}

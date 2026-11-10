@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F2-T2A-NAVIGATION-HOST",
+  "RunId": "R20261109T201422Z-89a6",
+  "DelegationRunId": "R20261109T193332Z-bafe",
+  "WorkRunId": "R20261109T194127Z-31c0",
+  "Attempt": 2,
+  "VerifiedSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession StartUtc=2026-11-09T19:41:51Z, EndUtc=2026-11-09T20:12:32Z, SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json valida y coincide en TaskId, Attempt=2, DelegationRunId=R20261109T193332Z-bafe y RunId=R20261109T194127Z-31c0. OutputWrittenUtc=2026-11-09T14:12:06.132341-06:00 equivale a 20:12:06Z, posterior al inicio de cesion."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 09a1499a46d16c8251ac4575d370b551603b6372 53302b85518a8d0eaaa07cf1af5affc97581aa95 devolvio 0. git diff --name-only entre esos SHAs muestra solo estado/evidencia de I-64; no enumera rutas EXTERNAL ni rutas UNIT_CHANGE. Leidos AUTOMATION_PLAN §16, agent-execution README §8 y AGENTS.md en MainSha; autoridades de unidad en AuthorityRevision."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparacion JSON contrato/delegacion: AllowedWriteScope de 15 rutas es subconjunto de las 17 rutas contractuales; ForbiddenWriteScope de 56 rutas cubre las 56 del contrato; invariantes (16), autoridades (12), stop IDs y RequiredTests coinciden o cubren al contrato. A3-A5 pasan."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current = architecture/workspace-persistente-rackcad; git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad = 44a692a4ec386e559cc6d330b3d78b87dbad6581. merge-base --is-ancestor BaseSha..HEAD y RedSha..HEAD devolvieron 0. La entrega declara los mismos SHAs."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra LsRemoteSha=44a692a4ec386e559cc6d330b3d78b87dbad6581 y OriginMainSha=a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60. Coinciden con HEAD, ref remota local y MainSha. RemoteFacts.CurrentRun 42687835409 es push de la rama exacta y del SHA actual."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..HEAD enumera 10 rutas; todas pertenecen al AllowedWriteScope de 15 y ninguna intersecta ForbiddenWriteScope. Rutas: IWorkspaceNavigationPort.cs, NavigationEcho.cs, WorkspaceHostCore.cs, WorkspaceController.cs, WorkspaceNavigationEffects.cs, WorkspaceNavigationFacts.cs, WorkspaceNavigationHost.cs, WorkspaceSelectionReader.cs, WorkspaceNavigationEchoTests.cs y WorkspaceNavigationHostTests.cs."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no devolvio entradas. git check-ignore -v para el directorio de entradas indica .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 42687835409: push, ref refs/heads/architecture/workspace-persistente-rackcad, HeadSha actual, completed/success; los cuatro jobs requeridos constan success. RedPart: run 42687231210 es push del RedSha 2da0e60d0bd250791d8eb8751e05c3f274756de2; Tests (Domain + Application)=failure; Build UI y UI Tests=success, Build Plugin=skipped por dependencia."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX CurrentSha: filtro Core RackCad.Tests.Workspace selecciona 756, los 756 Passed; filtro UI RackCad.UI.Tests.Workspace selecciona 64, los 64 Passed. TRX RedSha Core: 756 seleccionadas, 709 Passed y 47 Failed. Son fallos de asercion esperados antes del GREEN: 27 WorkspaceNavigationHostTests (estados/efectos y orden de ejecucion ausentes), 14 WorkspaceNavigationEchoTests (eco y ciclo de vida ausentes), 3 WorkspaceHostSourceGuardTests, 2 WorkspaceNavigationAuthorityTests y 1 WorkspaceSourceGuardExceptionTests (patrones de host y guardas aun ausentes). TestResults de la entrega coincide. RT = git diff --name-only ChainBaseSha RedSha -- tests/: siete rutas, exactamente ChainRedFiles: WorkspaceBridgeSourceGuardTests.cs, WorkspaceHostSourceGuardTests.cs, WorkspaceNavigationAuthorityTests.cs, WorkspaceNavigationEchoTests.cs, WorkspaceNavigationHostTests.cs, WorkspacePaletteHostSourceGuardTests.cs y WorkspaceSourceGuardExceptionTests.cs. git diff --name-only RedSha HEAD no devuelve rutas."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..HEAD muestra los commits RED 2da0e60d0bd250791d8eb8751e05c3f274756de2 y GREEN 44a692a4ec386e559cc6d330b3d78b87dbad6581. Ambos llevan Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegacion y entrega solicitan claude-sonnet-5-5 con effort high; relay-record-work registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high. Coinciden con la celda autorizada y el effort probado."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados los campos de texto libre enumerados en AUTOMATION_PLAN §16.10 de worker-handoff.json; el escaneo no encontro terminos prohibidos."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones y ningun aviso de limite. Menciona dos errores de herramienta ya resueltos: listado de procesos con codigo 1 y argumento PowerShell mal formado; ninguno fue de permisos o credenciales ni quedo pendiente."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El relevo confirma que config.toml permanecio en SNAPSHOT D, sin cambio; la entrada y la salida coinciden.",
+    "La entrega reporta ProbedId nulo en WorkspaceNavigationFacts porque el scan integrado no expone la identidad de prueba. El TRX y las pruebas citadas cubren atribucion y revalidacion sin depender de ProbedId.",
+    "La entrega limita expresamente la evidencia a CI, compilacion y pruebas automatizadas. No acredita comportamiento real en AutoCAD; Smoke-NAV SN-01..SN-10 permanece como frontera.",
+    "El registro informa dos fallos de PendingTextFieldTests en UI Release por una excepcion condicionada a DEBUG. El TRX UI de la corrida actual no tiene fallos; en el filtro requerido pasan las 64 pruebas. La consulta live de git ls-remote no pudo conectar con GitHub; las señales remotas requeridas constan en relay-record-work y coinciden con las referencias locales."
+  ],
+  "RecommendedNextAction": "Registrar esta verificacion y devolver la frontera de AutoCAD a la coordinacion para su tratamiento cuando corresponda."
+}

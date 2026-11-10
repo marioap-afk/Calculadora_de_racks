@@ -1,0 +1,185 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261110T022847Z-bc2b",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "31a1c837a3c63f2e8886ef38c63b68bd52354078",
+    "AmendmentId": "A-13",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-13.md",
+      "Blob": "c38560d10b67776628c60004e0b58b60506adddc"
+    },
+    "HistoricalAmendmentA12": {
+      "Path": "docs/initiatives/I-64-A-12.md",
+      "Blob": "54810d4f62b2ea4e1a2f274667b434ce3cc362e1"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_identity_bridge.py",
+      "Blob": "1c2510f71160804c6d42ae4da580641523c72a07"
+    },
+    "Precheck": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/precheck_relay_schema.py",
+      "Blob": "cad02513754546d199281eeb98e0a0dcb6b3e2fa"
+    },
+    "SelfTest": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_identity_bridge.py",
+      "Blob": "517a6b99564325dfbb1411fb725f15046d816754"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-identity-result-a13.json",
+      "Blob": "1f2a28884b5110d7aaef378764c79f5bd5ab94af"
+    },
+    "RegressionTool": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_identity_bridge.py",
+      "Blob": "79f397dc50a1247b1d965891043205758b43f0e3"
+    },
+    "RegressionDemo": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/regression-demo-a13-identity.json",
+      "Blob": "239637e40da8ea38752602320a1ebc47c803acb6"
+    },
+    "PrecheckResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/relay-schema-precheck-a13.json",
+      "Blob": "3d9fa0effbff83c0c6ab3ebd2280626b3ea4bdde"
+    },
+    "Differential": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/relay-schema-differential-a13.json",
+      "Blob": "e72310de52dccf99102ee69144de4461e597bd4b"
+    },
+    "A11Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py",
+      "Blob": "f9780f2f30c067243c93b6ab7175cc4b3179ca39"
+    },
+    "OfficialRelaySchema": {
+      "Path": "docs/automation/agent-execution/schemas/relay-record.schema.json",
+      "Blob": "2deba19606d058fd82b389687934b0c3dfef8c06"
+    },
+    "CoordinatorOrder": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/coordinator-a13-correction-order.md",
+      "Blob": "ce4b697e10981bcd0d9a69c4cabb5eae7d5a2d16"
+    },
+    "PriorReview": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/architect-review/R20261109T233319Z-e044/output.json",
+      "Blob": "8a4af8f5382bf4e0e122bfd5b928324a3ac473dd"
+    }
+  },
+  "PriorFindings": {
+    "I64-A12-RELAY-SCHEMA": {
+      "Status": "CLOSED",
+      "Evidence": "verify_identity_bridge.py:396-413 recupera y comprueba el blob oficial; :507-510 valida el relevo completo antes de HandoffIntegrity. Los bytes embebidos coinciden exactamente con el esquema de a140eb3a. T33-T53 y los mutantes correspondientes protegen la correccion."
+    },
+    "I64-A12-NONEXISTENCE-ERROR": {
+      "Status": "CLOSED",
+      "Evidence": "verify_identity_bridge.py:421-441 distingue MISSING, EXISTS y ERROR. Solo codigo 0, stderr vacio y respuesta completa del candidato con missing permiten MISSING. T54-T69 cubren respuestas y errores; las reproducciones sinteticas independientes rechazaron los retornos 128 y 129."
+    },
+    "I64-A12-FAIL-CLOSED-GUARANTEE": {
+      "Status": "CLOSED",
+      "Evidence": "Las dos causas estan corregidas. verify_identity_bridge.py:598-603 registra los errores de consulta y :638-645 exige todas las comprobaciones satisfactorias y ninguna razon de fallo para devolver cero. Las 39 comprobaciones sinteticas independientes en memoria dieron sus resultados esperados."
+    },
+    "I64-A12-ADVERSARIAL-GAPS": {
+      "Status": "CLOSED",
+      "Evidence": "selftest_identity_bridge.py:102-128 construye relevos completos; la base y la variante poblada son validas. El resultado versionado contiene 73/73 casos satisfactorios. La regresion contiene 38 mutantes, todos fallando sus casos objetivo, y el blob historico de A-12 falla exactamente T33-T48, T53 y T55-T69."
+    },
+    "I64-A12-UNVERIFIABLE-PASS": {
+      "Status": "CLOSED",
+      "Evidence": "Un relevo invalido retorna antes de HandoffIntegrity; una consulta ambigua o fallida registra GIT_OBJECT_QUERY_FAILED e impide PASS. Las comprobaciones independientes del main real, con recursos sinteticos en memoria, confirmaron salida distinta de cero para ambas causas, entradas ilegibles y segunda mutacion."
+    }
+  },
+  "Answers": {
+    "Q01": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-13 declara M-04 YES y los otros siete NO. Conforme a LIFECYCLE Sec.3, cambia la semantica de fallo de una via sustituta local; no cambia autoridades, esquemas oficiales, contratos de producto, persistencia, extensiones ni ADR."
+    },
+    "Q02": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "La cabecera, Sec.8 y exclusiones de A-13 limitan la autorizacion a I-64, F2-T2A-NAVIGATION-HOST, intento 2, nc1 y la firma de 3d86/16b6/bfc8. No modifican AUTOMATION_PLAN ni la semantica normal de Handoff. El delta solo contiene docs/."
+    },
+    "Q03": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "verify_identity_bridge.py:489-559 analiza y valida los tres artefactos y comprueba sus valores vinculados, tiempos, hash y mutacion antes de consultar Git. La consulta del repositorio empieza en :562. La base sintetica con CurrentSha falso obtuvo HandoffIntegrity PASS e Identity FAIL."
+    },
+    "Q04": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "verify_identity_bridge.py:562-591 exige primero HandoffIntegrity PASS, rama y commits validos, HEAD = remoto = tracking, cadena BaseSha-RedSha y HEAD exactamente igual al SHA verificado. Solo entonces evalua Identity contra HEAD. A-13 y T16 rechazan excepciones por descendientes documentales."
+    },
+    "Q05": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Los bytes embebidos coinciden exactamente con el blob 2deba196 de a140eb3a y su identidad se recalcula antes de usarlos. validate(), copiado literalmente de A-11, implementa todas las palabras clave del esquema oficial: tipos, required, enum, pattern, objetos, items y additionalProperties. El analizador rechaza BOM, claves duplicadas, UTF-8 invalido, constantes no JSON y sustitutos aislados. Las comprobaciones semanticas vienen despues de la validacion completa."
+    },
+    "Q06": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "verify_identity_bridge.py:421-441 exige codigo 0, stderr vacio y salida exactamente igual al candidato seguido de missing y LF. Retornos distintos, errores de ejecucion, timeout y respuestas vacias, parciales, adicionales, ambiguas o sobre otro objeto producen ERROR. Se conservan literalmente git_env() y el endurecimiento de A-11/A-4, tambien en la nueva consulta batch."
+    },
+    "Q07": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "La validacion del relevo es obligatoria; las entradas ilegibles y segundas mutaciones registran fallos; la consulta de objetos tiene una comprobacion explicita de exito. main:638-645 permite PASS y salida 0 solo sin razones y con todas las comprobaciones en pass, HandoffIntegrity PASS e Identity FAIL. Se comprobaron independientemente estas rutas con datos sinteticos."
+    },
+    "Q08": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "verify_identity_bridge.py:98-108 conserva tipos, lexemas numericos y orden anidado. :529-539 compara todos los campos, el orden superior y la reconstruccion exacta de bytes reemplazando un unico valor CurrentSha. Reformateo, reordenacion o una segunda mutacion impiden PASS; T14 y T18-T22 protegen estas condiciones."
+    },
+    "Q09": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Los tres archivos reales, leidos solo como datos, coinciden con Sec.8: real 80fb4cf60b20ea60282bd9a35493e550d4c073f59fcf240be39219d37f87aef0; mutado b3f6beedc03fbf36f99b3c996b6c9d9526de755e862acae83f559491eaf9961b; relevo b687bdd82f286757ed90e50b0f01b977ec4fcad6eb0e00b7e017ba05e3a1852f. Sus identificadores y SHAs corresponden al intento 2. HEAD y tracking local siguen en 44a692a4, con arbol limpio; los Controller registran el remoto coincidente. Sec.8 exige STOP previo ante discrepancias y el verificador exige igualdad remota viva antes de Identity."
+    },
+    "Q10": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "31a1c837 tiene como unico padre 4206b2da y es la punta local de la misma rama lateral temporal. Sus 21 rutas diferentes respecto de 44a692a4 estan bajo docs/ y corresponden a autoridad, herramientas, evidencia y estado permitidos. La rama de producto y HEAD permanecen en 44a692a4. A-13 exige extraer el verificador del blob identificado y establece incorporacion posterior exclusivamente por fast-forward, sin merge commit, rebase ni cherry-pick."
+    },
+    "Q11": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-13 sustituye A-12 solo para activacion y conserva su estado historico inactivo. A-12 mantiene exactamente su blob; el verificador historico 13605f1a sigue alcanzable en 4206b2da. La comparacion de segmentos confirma copia literal de las primitivas declaradas desde f9780f2f; A-11 no se ejecuta. El delta no modifica A-4/A-6/A-11 y preserva las clasificaciones de las tres corridas y P-04."
+    },
+    "Q12": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-13 Sec.8-9 mantiene nc2 y nc3 ordinarios, secuenciales y con la rama de producto en 44a692a4. No cambia sus precondiciones, oraculos ni clasificacion. El unico resultado sustituto autorizado es nc1 = SATISFIED_UNDER_I64_IDENTITY_BRIDGE."
+    },
+    "Q13": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "La fixture base es completa y valida, y T32 ejercita las secciones anulables pobladas. T01-T69 y P01-P04 cubren los casos ordenados. Los 38 reemplazos de mutacion tienen anclas unicas y el resultado registra que todos fallan sus objetivos. El A-12 historico fijado por hash falla exactamente los casos de las dos causas raiz: 41/73 satisfactorios. La comparacion diferencial registra acuerdo en 18 variantes. Sec.94 declara dos ejecuciones identicas de cada suite."
+    },
+    "Q14": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-13 permanece AUTHORIZED TO PREPARE / NOT ACTIVE y exige las tres decisiones antes de una unica aplicacion real. Sec.94 registra ausencia de ejecucion real. precheck_relay_schema.py:351-364 verifica primero SHA-256 y despues solo analiza y valida contra el esquema exacto; no importa subprocess ni ejecuta Git, HandoffIntegrity, Identity u otro puente. El resultado vinculado es SCHEMA_VALID sin diagnosticos y no cuenta como aplicacion real. Esta revision no repitio ese pre-chequeo."
+    },
+    "Q15": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "No se encontro una ruta abierta hacia PASS para entradas requeridas ambiguas o no verificables. Se inspeccionaron las condiciones de retorno y se ejercito el main con 39 casos sinteticos en memoria, incluidos errores de esquema, lectura, repositorio, consulta de objetos y segunda mutacion; todos produjeron el resultado esperado."
+    },
+    "Q16": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "La correccion implementa las garantias locales ya ordenadas y no requiere autoridad global de I-61 ni nueva autoridad de I-62. Permanece pendiente exclusivamente la decision explicita del Owner prevista por A-13, seguida del acuerdo final del Coordinator para activar."
+    }
+  },
+  "Findings": [],
+  "RequiredCount": 0,
+  "OptionalCount": 0,
+  "Verdict": "AGREED",
+  "Limitations": [
+    "No se reejecutaron las suites completas de autoprueba y regresion: crean archivos y repositorios temporales, incompatibles con esta revision sin escrituras. Se inspeccionaron sus fuentes, resultados y hashes versionados; las dos ejecuciones identicas constan en A-13 y Sec.94.",
+    "Las 39 comprobaciones independientes ejecutaron el blob revisado exclusivamente con datos sinteticos en memoria y sustitutos de lectura, Git, directorios temporales y salida. No equivalen a repetir las suites completas con Git real.",
+    "No se consulto el remoto vivo ni el CI remoto exacto de 31a1c837 con los insumos permitidos. Se comprobaron HEAD, ramas y tracking locales; la igualdad remota historica consta en los Controller. Las precondiciones remotas deben verificarse antes de la aplicacion autorizada.",
+    "La ausencia de ejecucion real previa se evaluo contra las fuentes, resultados y registros suministrados; no se dispuso de una transcripcion completa de la sesion autora.",
+    "Una lectura auxiliar fallo por codificacion de stdout y se repitio satisfactoriamente con salida ASCII.",
+    "No se ejecutaron herramientas del puente sobre entradas reales, no se repitio el pre-chequeo real y no se escribieron archivos ni se movio HEAD. Este dictamen no activa A-13 ni concede la decision pendiente del Owner."
+  ]
+}

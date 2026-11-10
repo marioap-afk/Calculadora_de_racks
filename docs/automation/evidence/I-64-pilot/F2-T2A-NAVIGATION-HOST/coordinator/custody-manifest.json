@@ -4,10 +4,86 @@
   "SourceRoot": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/coordinator",
   "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
   "Counts": {
-    "CUSTODIED": 10,
+    "CUSTODIED": 35,
     "EXCLUDED": 0
   },
   "Files": [
+    {
+      "Path": "a12-architect-e044-changes-required-stop.md",
+      "Bytes": 6214,
+      "Sha256": "08f23bd17f91e94ef8c77db9475a68dbd9710c3f8cdead0a378642e55b581ce9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "a12-prepared-stop-head-conflict.md",
+      "Bytes": 4191,
+      "Sha256": "cd0429a148fd638d8de4622566b4d737e998bfbcb2b4331014109197fff896d4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "a13-applied-nc2-b454-stop.md",
+      "Bytes": 4811,
+      "Sha256": "20e591e4d3f12127918822f6798f06584e18bbc65dd5c42b22b6e0e395a37416",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "a13-architect-bc2b-agreed-owner-request.md",
+      "Bytes": 6629,
+      "Sha256": "11d728f66f88dc2d163dd0099ccb1b95263832869b919b387111484f7750122a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "a13-codex-environment-report-stop.md",
+      "Bytes": 6323,
+      "Sha256": "111dff017ddbe8664feb11aed9f6c7ce889fa954c6b92d4030fea026d51be8d0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "a13-mirror-preflight-p01-stop.md",
+      "Bytes": 4374,
+      "Sha256": "5640cbb15484eb544c689115f4dc944c50f2a0476399791abb9d992059a285f4",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "0fccd3379998d9d653fe3276068c26bb1f7e4dfe6ceb637a9476ded8d9e19728",
+      "Redaction": [
+        "ubicacion local sustituida por: <directorio-historico>"
+      ]
+    },
+    {
+      "Path": "a13-mirror-worktree-binding-stop.md",
+      "Bytes": 3459,
+      "Sha256": "54faf797c35fe1b83c518a5da48a7bfd8202bbe1b44de1efb5c2902119390a40",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "a13-preactivation-complete-stop.md",
+      "Bytes": 3225,
+      "Sha256": "1ad5097d6beba02856a94e7f592254234beaffc48da9e2135c45fe422759197b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "attempt2-nc1-16b6-stop.md",
+      "Bytes": 3256,
+      "Sha256": "b03d9162fc1a61e13e58c4df2366392615db2fabce5a28ffdf69adfa2c1ea33c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "attempt2-nc1-3d86-stop.md",
+      "Bytes": 3499,
+      "Sha256": "5feaa990bf92fa74c03162b5f750a741788e793ff27fbefb1e7e97cf77208b5a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "attempt2-nc1-exhausted-stop.md",
+      "Bytes": 3754,
+      "Sha256": "97b92024d822e0e55c7f3d3812c74f9c9577430ae695f6a809323e8cb96edcec",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "attempt2-preauthorization-stop-condition16.md",
+      "Bytes": 2702,
+      "Sha256": "5d8c04bfa38c1d0083bba0e11cec1b7ae354303c44bdad726e02a9cb2a132162",
+      "Disposition": "CUSTODIED"
+    },
     {
       "Path": "authorization-e137-not-executed-return.md",
       "Bytes": 2165,
@@ -21,9 +97,45 @@
       "Disposition": "CUSTODIED"
     },
     {
+      "Path": "coordinator-f2t2a-a12-substitute-order.md",
+      "Bytes": 6683,
+      "Sha256": "fba82e4557f0d3be54dc07d09f638e63da4e00afb6754ba067b01e73873603a3",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-a12-versioning-disposition.md",
+      "Bytes": 6665,
+      "Sha256": "3bc1d56843189911afbec019ea64a1b043b772c6532bbd03376bfbf171718b6a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-a13-correction-order.md",
+      "Bytes": 6828,
+      "Sha256": "25949420a2e4ad5aef599afeb50b06a25e25db2a08f1d2838495ea20b6a68481",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-a13-final-agreed-activation.md",
+      "Bytes": 5002,
+      "Sha256": "3ae8b6f6ca92a932451aa9b12b635a21d09d525dd09d3120b26ede837c662ed1",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-a13-preactivation-disposition.md",
+      "Bytes": 3372,
+      "Sha256": "7dde8887785b608ef84aab1ae7b3166dd14be7e9551c1ba40fe59e5bbba7888c",
+      "Disposition": "CUSTODIED"
+    },
+    {
       "Path": "coordinator-f2t2a-acceptance.md",
       "Bytes": 5388,
       "Sha256": "01e48bc0b103de7f319dbdb92c1219e0ace78e5cf8a0a8de16674a0f362dcd24",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-attempt2-delegation-acceptance.md",
+      "Bytes": 3729,
+      "Sha256": "081e664ad285d044a2a870f38beae2b4b22d3c41a00122c18869ef79c0cbd833",
       "Disposition": "CUSTODIED"
     },
     {
@@ -36,6 +148,42 @@
       "Path": "coordinator-f2t2a-basesha-recovery.md",
       "Bytes": 6688,
       "Sha256": "63b6fddecf583daa747583621a16d735372536b2eea11cacd72f54a8de10de2d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-codex-environment-acceptance.md",
+      "Bytes": 6019,
+      "Sha256": "f7cd8e9bd8665ff04d4b26134a47ef1f65c8a929fcfaaf8a932dc6a235a4b537",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-codex-environment-disposition.md",
+      "Bytes": 5081,
+      "Sha256": "388492ed7fc7a47066e4f52d6a99336e1c9b92dc1229a62453ea419148a901db",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-mirror-worktree-binding-disposition.md",
+      "Bytes": 5964,
+      "Sha256": "263cdba152bef237581d650af90f50248f780bb46e6c2d7420288c5be0a3cba8",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-nc1-3d86-disposition.md",
+      "Bytes": 3104,
+      "Sha256": "d018539236b7116e66f971a30375d40f926ac9fe7758392718af7c9e12fef393",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-nc1-final-retry-disposition.md",
+      "Bytes": 3544,
+      "Sha256": "0230ea41fe4b3fd1e3f308d8e98c2fe94fec22efd7419a010632ce7dee19279a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-f2t2a-nc2-remote-preemption-disposition.md",
+      "Bytes": 5930,
+      "Sha256": "7b229f2ad65cbf459e93f18caae8343ba60dca6032a050750f9548663ec4be3e",
       "Disposition": "CUSTODIED"
     },
     {
@@ -54,6 +202,12 @@
       "Path": "gate-contract.json",
       "Bytes": 24488,
       "Sha256": "42b00a247970fb7086f3d9250b1a46e904357f493225b59fddd1e66178c6d2f5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "owner-a13-satisfied.md",
+      "Bytes": 264,
+      "Sha256": "7e53f297a2399cc058ebd13b29b8c73c5a0dc44dee8290c202dc79ec5a6f9a61",
       "Disposition": "CUSTODIED"
     },
     {

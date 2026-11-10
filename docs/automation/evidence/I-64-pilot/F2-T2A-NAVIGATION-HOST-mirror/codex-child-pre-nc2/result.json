@@ -1,0 +1,28 @@
+{
+  "Schema": "rackcad-i64-codex-mediated-git-env-proof/v1",
+  "Mechanism": "timeout + env -C <product-worktree> + codex sandbox -c sandbox_mode=\"read-only\" -- pwsh -NoProfile -Command <five git commands>; no model",
+  "Binary": "Codex/bin/5449c1f0f26f1f98/codex.exe",
+  "BinarySha256": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+  "Conditions": {
+    "ExactlyFiveLines": true,
+    "HEAD": true,
+    "origin/main": true,
+    "origin/product-branch": true,
+    "branch": true,
+    "show-toplevel": true,
+    "ExitZero": true,
+    "StderrEmpty": true,
+    "LiveMainNotSubstituted": true,
+    "RealRepositoryUnchanged": true,
+    "MirrorUnchanged": true,
+    "BinaryUnchanged": true,
+    "ConfigUnchanged": true,
+    "NoParticipantsExit": true,
+    "NoParticipantsEntry": true
+  },
+  "Result": "PASS",
+  "StderrBytes": 0,
+  "StdoutSha256": "7c7d3219ae305cc2f772f194e37ebfabb6781a99e721c6e02d5a983a1b2d9772",
+  "Start": "2026-11-10T04:02:44Z",
+  "End": "2026-11-10T04:02:45Z"
+}

@@ -1,0 +1,54 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261109T202056Z-3d86",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git branch --show-current is architecture/workspace-persistente-rackcad; git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 44a692a4ec386e559cc6d330b3d78b87dbad6581. merge-base --is-ancestor BaseSha HEAD and RedSha HEAD both exited 0. The handoff instead claims CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, so its delivery identity does not match Git."
+  },
+  "OutputSha256": "BEDE765850C5AAA098B5BC98968A9417B4C552E0F096791EDAC2AAD0583920BF",
+  "ManualFreeText1610": []
+}

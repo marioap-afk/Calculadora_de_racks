@@ -1,0 +1,101 @@
+{
+  "RunId": "R20261110T034758Z-6a68",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a1c392-00be-7351-9908-4f38a3106c07",
+  "Usage": {
+    "input_tokens": 48012,
+    "cached_input_tokens": 23680,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 427,
+    "reasoning_output_tokens": 155
+  },
+  "Commands": [
+    {
+      "Command": "\" -NoProfile -Command 'git rev-parse HEAD; git rev-parse origin/main; git rev-parse HEAD:docs/automation/state/I-64.yml'",
+      "Exit": 0,
+      "Output": "3ba5fceeb29146107cc 703e9478ca747e4839627f6f34999ca9beb1a52f"
+    }
+  ],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OracleMatch": {
+    "HeadSha": true,
+    "OriginMainSha": true,
+    "StateBlob": true
+  },
+  "OutputSha256": "3C2C09BD07F6425581E9BF59DFF16515BBABA72E8095B88D208638643DDF2E96",
+  "Oracle": {
+    "HeadSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "OriginMainSha": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+    "StateBlob": "703e9478ca747e4839627f6f34999ca9beb1a52f"
+  },
+  "CliVersion": "0.167.0-alpha.3.2",
+  "Effective": [
+    "gpt-6-luna",
+    "high"
+  ],
+  "Sandbox": {
+    "type": "read-only"
+  },
+  "PermissionProfile": {
+    "type": "managed",
+    "file_system": {
+      "type": "restricted",
+      "entries": [
+        {
+          "path": {
+            "type": "special",
+            "value": {
+              "kind": "root"
+            }
+          },
+          "access": "read"
+        }
+      ]
+    },
+    "network": "restricted"
+  },
+  "ApprovalPolicy": "never",
+  "EffectiveSource": "rollout-2026-11-09T21-48-08-01a1c392-00be-7351-9908-4f38a3106c07.jsonl",
+  "EffectiveSourceSha256": "434B967755456093C21FB20050F344BC1624FEC89AE6525842BDE2C3B3C1CFFD",
+  "TurnContextVsB454": {
+    "FieldsCompared": [
+      "approval_policy",
+      "approvals_reviewer",
+      "collaboration_mode",
+      "comp_hash",
+      "cyber_access_program",
+      "disabled_plugin_ids",
+      "effort",
+      "model",
+      "permission_profile",
+      "realtime_active",
+      "root_turn_id",
+      "sandbox_policy",
+      "summary"
+    ],
+    "Differences": {
+      "root_turn_id": {
+        "B454": "01a1c36b-17d9-7d51-8dfe-94f14aaa074a",
+        "Probe": "01a1c392-0270-7950-8b5f-aea98ac5d1a4"
+      }
+    }
+  },
+  "SessionMetaKeysDiffer": [],
+  "LimitPatternContexts": {},
+  "EventsSha256": "969A157AAD64DD421848C4974C833F6E01D313FF03B366069B7A41382F2D12F9",
+  "StderrBytes": 39,
+  "StderrText": "Reading additional input from stdin...\n",
+  "BinaryAndState": {
+    "BinarySha256Exit": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+    "BinarySha256Entry": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+    "IsNewBinary": true,
+    "SingleCodexExe": true,
+    "RealUnchanged": true,
+    "MirrorUnchanged": true,
+    "ConfigUnchanged": true,
+    "ConfigSha256": "2EEDDAAB28C1147A5D927B4EF1E4C69229197E04CB6B114161FFFF04A16588C8"
+  },
+  "Pass": true
+}

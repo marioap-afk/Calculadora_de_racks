@@ -1,0 +1,45 @@
+{
+  "Schema": "rackcad-i64-a13-application/v1",
+  "Amendment": "I-64-A-13",
+  "Bridge": "I64-IDENTITY-BRIDGE-01",
+  "VerifierBlob": "1c2510f71160804c6d42ae4da580641523c72a07",
+  "A13Commit": "31a1c837a3c63f2e8886ef38c63b68bd52354078",
+  "ProductSha": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+  "CurrentMain": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+  "ConfigSnapshot": "D",
+  "Conditions": {
+    "1.ProductHead": true,
+    "2.ProductRemote": true,
+    "3.ProductTreeClean": true,
+    "4.TemporaryBranch": true,
+    "5.VerifierBlob": true,
+    "6.ConfigAccepted": true,
+    "7.NoConflictingProcesses": true,
+    "8.AuthorityBlobsUnchanged": true,
+    "9.Input.real-handoff": true,
+    "9.Input.mutated-handoff": true,
+    "9.Input.relay-record": true
+  },
+  "ExitCode": 0,
+  "HandoffIntegrity": "PASS",
+  "Identity": "FAIL",
+  "ControlResult": "PASS",
+  "FailClosed": false,
+  "Reasons": [],
+  "ChangedFields": [
+    "CurrentSha"
+  ],
+  "CandidateObject": "MISSING",
+  "Oracle": {
+    "ExitZero": true,
+    "HandoffIntegrityPass": true,
+    "IdentityFail": true,
+    "ControlResultPass": true,
+    "NoReasons": true,
+    "StderrEmpty": true
+  },
+  "BridgeOutputSha256": "f8624114b06d754f20e7fe31bffb20ae76d417171c571b11cbf6039560486111",
+  "Result": "PASS",
+  "A13_REAL_APPLICATION": "PASS",
+  "nc1": "SATISFIED_UNDER_I64_IDENTITY_BRIDGE"
+}

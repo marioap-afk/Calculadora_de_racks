@@ -1,0 +1,54 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261109T203840Z-16b6",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD returned 44a692a4ec386e559cc6d330b3d78b87dbad6581; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad returned the same SHA. Branch and worktree match the delegation, BaseSha 53302b85518a8d0eaaa07cf1af5affc97581aa95 is an ancestor, and RedSha 2da0e60d0bd250791d8eb8751e05c3f274756de2 is in range. Identity fails because handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, not HEAD."
+  },
+  "OutputSha256": "9D65DA9E9EDBF062678D6DFBE97428EEDD830A3CC795D826140E1FBF5CD19984",
+  "ManualFreeText1610": []
+}
