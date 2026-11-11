@@ -6167,3 +6167,17 @@ Todo queda dispuesto en sus §9 y §10.
 - `attempts` 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 127. Planificación de F4-T2A rechazada por A5 y replanificación autorizada
+
+**Decisión:** F4-E19.
+
+**Planificación `13b0`:** A5 FAIL por fidelidad de copia («lo leen» pasó a «los leen» en INV-F4T2A-08). Es STOP (P-03) y REJECTED_BEFORE_INVOCATION. El Worker no se invocó y `attempts` sigue en 1 de 3.
+
+**nc4 `2056`:** oráculo relativo cumplido sobre esa delegación. Una delegación nueva exige su propio nc4.
+
+**Custodia:** en `I-64-pilot/F4-T2A-PILOT-STATE/1/R20261111T204805Z-13b0/` y `F4-T2A-PILOT-STATE-nc4/1/R20261111T205057Z-2056/`, con `analysis.md`. La orden del Coordinator está en `F4-DRAFTS/coordinator/owner-f4t2a-a5-recovery.md`.
+
+**Siguiente paso:** una sola replanificación sobre este commit, con comparación byte a byte antes de aceptar.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.

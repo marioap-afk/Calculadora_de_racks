@@ -283,3 +283,23 @@ La mutación sigue solo en T4B.
 - **Capa no editable:** lo authored que el piloto no edita sale de la base vigente (IC-07, punto 2).
 
 **Decisión:** emitir el contrato de F4-T2A, con `attempts` = 1 de 3, nc4 en su primera delegación y el régimen de cierre de F4 (F4-E02).
+
+## F4-E19. Planificación `13b0` de F4-T2A rechazada (A5) y replanificación única
+
+**Hechos de la planificación `R20261111T204805Z-13b0`:**
+- Terminó con normalidad. La salida es válida contra el esquema y está en ASCII puro.
+- A1-A4 y A6-A8 en pass; **A5 FAIL**.
+- En INV-F4T2A-08, el Controller cambió «lo leen» por «los leen» (un carácter insertado en la posición 841), pese a la orden de copiar byte a byte. Todas las demás colecciones son idénticas al contrato.
+- nc4 `R20261111T205057Z-2056` cumplió su oráculo relativo sobre esa delegación.
+
+**Clasificación (orden del Coordinator `owner-f4t2a-a5-recovery.md`):**
+- Es un defecto de fidelidad de la salida de planificación del Controller, no del contrato, del alcance ni del producto.
+- STOP (P-03), REJECTED_BEFORE_INVOCATION. El Worker no se invocó y `attempts` sigue en 1 de 3.
+- El análisis está en `F4-T2A-PILOT-STATE/1/R20261111T204805Z-13b0/analysis.md`.
+
+**Decisión: una sola replanificación** con un `RunId` nuevo sobre este commit de custodia, sin cambiar el contrato.
+- Se mantienen el `TaskId`, la `AuthorityRevision` `4dc111b5`, las colecciones del contrato y los 18 `AcceptanceCriteria` de `13b0`, copiados byte a byte.
+- El prompt prohíbe expresamente corregir la gramática, el número, la puntuación o las tildes, reflujar el texto y parafrasear.
+- Antes de aceptar, la sesión compara byte a byte la delegación con sus fuentes. Luego exige A1-A8 con 8 pass, sin excepción en A5, y un nc4 nuevo.
+- Si todo pasa, el Worker queda autorizado una vez.
+- Si A5 vuelve a fallar por fidelidad: STOP, sin tercera planificación, sin reescribir el contrato y sin Worker.
