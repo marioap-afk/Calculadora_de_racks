@@ -249,3 +249,37 @@ El Owner ratificó F3-E02. **Snapshot F** (`AAEB58D8…`) es la línea base acti
   8. el piloto acotado es F4-PILOT-PUSHBACK-01;
   9. el contrato enumera los campos exactos del piloto antes de implementar.
 - **También T2:** la conformidad con IC-04 de F4-E05, M-6, M-9, el copiador profundo y una entrada por clave.
+
+## F4-E18. Paquete del contrato de F4-T2, descomposición y emisión de F4-T2A
+
+**Paquete:** `docs/initiatives/I-64-f4-t2-gate-contract-package.md` (v4), preparado desde las autoridades reales.
+
+**Revisiones:** pasó por una revisión adversarial independiente en dos rondas.
+- **v2:** NO EMITIBLE, con 1 BLOQUEANTE (B-1: los getters con copia invertían INV-F4T1-19), 8 IMPORTANTE y 10 MENOR.
+- **v3:** EMITIBLE TRAS CORRECCIONES, con 3 IMPORTANTE y 6 MENOR.
+- Todo queda dispuesto en los §9 y §10 del paquete.
+
+**Descomposición:** con la autoridad de `owner-f3-ratification-f4-authorization.md` (`:337-338`), F4-T2 se divide en tres tareas contratadas por separado:
+- F4-T2A-PILOT-STATE, en Application pura;
+- F4-T2B-DRAFT-READ-HOST, en el host y la lectura;
+- F4-T2C-IC04-READ-SCHEDULING, para IC-04.
+
+La mutación sigue solo en T4B.
+
+**Presupuesto:**
+- Por F4-E09, cada subtarea empieza en 1 de 3, y T2A recibe el arranque de F4-E17.
+- **La división triplica la capacidad de intentos de T2.** Se registra aquí y se avisa al Owner.
+- El agotamiento de cualquier subtarea es S-11 y STOP de F4-T2.
+
+**Reubicación de F4-T1B:**
+- B1, en la revisión del paquete de F4 v1, pedía la caracterización «antes de tocar el estado del piloto».
+- Con IC-06 (b), ninguna tarea anterior a T4A modifica la ventana clásica, los tipos de estado de Push Back ni la clausura de dependencias de la ventana. Sus contratos lo prohíben, y la clausura está listada por rutas en el §3 del paquete.
+- **Decisión:** T1B pasa a ejecutarse antes de la primera tarea que modifique un archivo de esa clausura, y como muy tarde antes de T4A.
+- Es una reinterpretación del cumplimiento de B1 y queda registrada aquí.
+
+**Piloto (IC-06):**
+- **Campo exacto:** `AnnotationScale`, con la validación idéntica a la de la ventana clásica (D-T2-01).
+- **Alcance:** solo Push Back de un solo lado (IC-07, punto 1).
+- **Capa no editable:** lo authored que el piloto no edita sale de la base vigente (IC-07, punto 2).
+
+**Decisión:** emitir el contrato de F4-T2A, con `attempts` = 1 de 3, nc4 en su primera delegación y el régimen de cierre de F4 (F4-E02).

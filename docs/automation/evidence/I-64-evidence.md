@@ -6139,3 +6139,21 @@ Los controles ordinarios que no pasaron (`c4f7`, `50da`, `2f8e`) se conservan si
 **Decisión:** F4-E17. F4-T2-DRAFT-READ-HOST empieza con `attempts` 1 de 3, con N-2 obligatorio y los requisitos heredados.
 
 **Límites:** solo documentación en este paso.
+
+## 125. Paquete del contrato de F4-T2 y descomposición
+
+**Decisión:** F4-E18.
+
+**Paquete:** `docs/initiatives/I-64-f4-t2-gate-contract-package.md` (v4). Pasó dos rondas de revisión adversarial independiente:
+- v2: NO EMITIBLE (1 BLOQUEANTE y 8 IMPORTANTE);
+- v3: EMITIBLE TRAS CORRECCIONES (3 IMPORTANTE).
+
+Todo queda dispuesto en sus §9 y §10.
+
+**Descomposición:** F4-T2 se divide en T2A (estado del piloto y N-2), T2B (lectura y host) y T2C (IC-04).
+- Cada tarea tiene un presupuesto de 1 de 3. La división triplica la capacidad de intentos de T2, y se avisa al Owner.
+- T1B se reubica antes de la primera tarea que modifique la clausura de dependencias de la ventana clásica, y como muy tarde antes de T4A.
+
+**Piloto:** `AnnotationScale`, solo Push Back de un solo lado. La capa no editable sale de la base vigente (IC-07).
+
+**Límites:** solo documentación; sin AutoCAD.

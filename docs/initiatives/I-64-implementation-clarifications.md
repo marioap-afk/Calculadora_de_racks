@@ -109,3 +109,21 @@ Si el drenaje termina y después programa o materializa la superficie activa por
 **F5:** las capacidades del editor heredado de Push Back que el piloto compacto no representa siguen siendo trabajo de migración de F5.
 
 **Redacción del cierre:** un PASS de F4 **no** se describe como «editor de Push Back migrado». Significa que Push Back aporta el piloto de edición acotado con el que se prueban la semántica de `DraftSession` y la de Actualizar.
+
+## IC-07. Alcance y capa no editable del piloto de Push Back (F4-T2)
+
+**Autoridad:** IC-06 (requisito 5: los campos y funciones no soportados son residual de F5) y la disposición F4-E18. Es una aclaración escalonada de D-11 y de D-12 para el piloto, no cambia el Freeze y se comunica al Owner.
+
+**Punto 1, alcance (D-11):**
+- El piloto admite solo diseños Push Back de un solo lado (`!IsComposite`) cuya cola dormida quede vacía al materializarse.
+- Un rack A/B, o uno que aparque cola, se muestra como «No editable aquí: fuera del piloto (F5)», con la indicación de usar RACKEDITAR y sin lanzarlo (C-F4-07).
+- La edición de racks A/B en el panel es residual de F5.
+- **Smoke-2:** los dibujos deben incluir al menos un rack Push Back de un solo lado, admisible y con anotaciones activas.
+
+**Punto 2, capa no editable (D-12):**
+- Lo que el piloto edita sale del borrador.
+- Todo lo authored que el piloto no edita sale de la base vigente (`InitialDraftState`). Esto incluye la autoridad de módulos y la metadata de origen del proyecto.
+- Es análogo a la reconciliación de I-48 que cita D-12 («sobre la versión actual»).
+- Después de «Conservar mi borrador», la capa no editable es la de la versión nueva. Un borrador Limpio compone exactamente la base y nunca escribe un cambio authored que la superficie no muestre.
+
+**Residual de F5:** cuando los módulos sean editables, el comparador y el copiador del borrador incorporarán la autoridad de módulos.
