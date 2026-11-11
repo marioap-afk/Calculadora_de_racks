@@ -155,8 +155,10 @@ public class WorkspaceDraftBoundaryTests
 
     // ------------------------------------------------------------------ nothing of I-63
 
-    // Bom as part of ANY identifier (DraftBomLines, BomBuilder, _bomCount), case sensitive on purpose: Bomb or Combo are not Bom.
-    private const string BomInAnyIdentifier = @"(?-i:Bom(?![a-z])|\bbom(?![a-z])|_bom(?![a-z]))";
+    // Bom as part of ANY identifier, whatever its case: at the start of a word (BOM.Build, BOMLines, bomCount), at its end (DraftBOM, GetBom,
+    // draftbom) or inside it before an uppercase letter, a digit or an underscore (DraftBomLines, BomBuilder, _bomCount). Words that merely
+    // contain the letters in lowercase (Combo) are not Bom.
+    private const string BomInAnyIdentifier = @"(?:(?i:\bbom|bom\b)|(?-i:Bom(?![a-z])|BOM(?![a-z])|_bom(?![a-z])))";
 
     private static readonly Regex I63Concepts = new(
         @"ComputedParameter|Metric|ProjectSummary|TotalRacks|Aggregat|Provider|" + BomInAnyIdentifier, RegexOptions.IgnoreCase);
