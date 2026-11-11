@@ -6157,3 +6157,13 @@ Todo queda dispuesto en sus §9 y §10.
 **Piloto:** `AnnotationScale`, solo Push Back de un solo lado. La capa no editable sale de la base vigente (IC-07).
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 126. Contrato de F4-T2A-PILOT-STATE
+
+**Contrato:** `I-64-pilot/F4-T2A-PILOT-STATE/coordinator/gate-contract.json`.
+- Alcance: cuatro archivos nuevos en `Systems/PushBack/Pilot/`, `DraftSession.cs` y `DraftRegistry.cs`, cinco archivos de prueba nuevos, las aserciones de identidad de tres archivos de prueba existentes y los fixtures de `Fixtures/I64/`.
+- 15 invariantes.
+- `AuthorityRevision` `4dc111b54ffe72dc400373df16dc2530f81c0c1b`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- `attempts` 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
