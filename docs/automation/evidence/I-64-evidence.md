@@ -6193,3 +6193,17 @@ Todo queda dispuesto en sus §9 y §10.
 **Custodia:** `I-64-pilot/F4-T2A-PILOT-STATE/1/R20261111T211626Z-61f3/`, `F4-T2A-PILOT-STATE-nc4/1/R20261111T211955Z-e9cb/` y `F4-T2A-PILOT-STATE/coordinator/forbidden-compaction-report.json`. La orden está en `F4-DRAFTS/coordinator/owner-f4t2a-contract-compaction.md`.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 129. Reducción de `ForbiddenWriteScope` de F4-T2A
+
+**Decisión:** F4-E21, por la orden `F4-DRAFTS/coordinator/owner-f4t2a-forbidden-simplification.md`.
+
+**Resultado:** de 139 entradas se pasa a 57. Se retiran 82 archivos sueltos de los directorios mixtos `Systems/PushBack/` (52) y `Workspace/` (30).
+
+**Pruebas** (`I-64-pilot/F4-T2A-PILOT-STATE/coordinator/reduced-scope-report.json` y `removed-path-proof.json`): todas en PASS.
+- 82 de 82 rutas retiradas siguen sin poder escribirse por estar fuera de la lista blanca.
+- 15 de 15 entradas permitidas no se rechazan.
+- La frontera efectiva de escritura no cambia en ninguna de las 7315 rutas.
+- La ruta omitida por `61f3` queda protegida por la lista blanca (mecanismo b).
+
+**Límites:** solo documentación; sin AutoCAD.

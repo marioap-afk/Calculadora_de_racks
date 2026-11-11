@@ -1,0 +1,2212 @@
+{
+  "Schema": "rackcad-i64-removed-path-proof/v1",
+  "TaskId": "F4-T2A-PILOT-STATE",
+  "SourceRevision": "26c80eb4a13e9fdbc8a93074500de2606fde3800",
+  "Authority": "owner-f4t2a-forbidden-simplification.md",
+  "ScopeRule": "Scope = every changed path covered by AllowedWriteScope AND no changed path covered by ForbiddenWriteScope (AUTOMATION_PLAN 16.9 check 7)",
+  "RemovedPathProofs": [
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackAdvancedRackParameters.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackAdvancedRackParameters.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackAdvancedRackParameters.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackAdvancedRackParameters.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackBedRotation.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBedRotation.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBedRotation.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBedRotation.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackBedSlope.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBedSlope.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBedSlope.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBedSlope.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackBedSpan.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBedSpan.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBedSpan.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBedSpan.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackBomBuilder.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBomBuilder.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBomBuilder.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBomBuilder.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackBootPlan.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBootPlan.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBootPlan.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackBootPlan.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCellDepth.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCellDepth.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCellDepth.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCellDepth.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositeContent.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeContent.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeContent.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeContent.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositeDiagnostics.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeDiagnostics.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeDiagnostics.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeDiagnostics.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorAssembler.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorAssembler.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorAssembler.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorAssembler.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositeFrontal.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeFrontal.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeFrontal.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeFrontal.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositePlanta.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositePlanta.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositePlanta.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositePlanta.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositeResolver.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeResolver.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeResolver.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeResolver.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositeStructure.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeStructure.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeStructure.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackCompositeStructure.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackDefensePlan.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackDefensePlan.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackDefensePlan.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackDefensePlan.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackDefenseSides.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackDefenseSides.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackDefenseSides.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackDefenseSides.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackDiverterPlan.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackDiverterPlan.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackDiverterPlan.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackDiverterPlan.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorCell.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorCell.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorCell.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorCell.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorComputation.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorComputation.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorComputation.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorComputation.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorFront.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorFront.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorFront.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorFront.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorInputs.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorInputs.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorInputs.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorInputs.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorState.Load.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorState.Load.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorState.Load.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorState.Load.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorValues.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorValues.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorValues.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackEditorValues.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackElevations.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackElevations.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackElevations.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackElevations.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackFlowBedGeometry.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackFlowBedGeometry.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackFlowBedGeometry.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackFlowBedGeometry.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackFlowBedLateralBuilder.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackFlowBedLateralBuilder.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackFlowBedLateralBuilder.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackFlowBedLateralBuilder.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackFunctionalSides.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackFunctionalSides.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackFunctionalSides.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackFunctionalSides.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackHeaderHeight.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackHeaderHeight.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackHeaderHeight.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackHeaderHeight.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackIntermediateBeamLateralBuilder.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackIntermediateBeamLateralBuilder.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackIntermediateBeamLateralBuilder.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackIntermediateBeamLateralBuilder.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackLoadBeamGeometry.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackLoadBeamGeometry.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackLoadBeamGeometry.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackLoadBeamGeometry.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackMirror.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackMirror.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackMirror.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackMirror.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackPalletProjection.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackPalletProjection.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackPalletProjection.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackPalletProjection.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackPlacements.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackPlacements.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackPlacements.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackPlacements.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackPlanComposer.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackPlanComposer.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackPlanComposer.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackPlanComposer.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackResolver.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackResolver.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackResolver.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackResolver.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackRunGeometry.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRunGeometry.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRunGeometry.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRunGeometry.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackRunSupports.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRunSupports.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRunSupports.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRunSupports.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackRuns.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRuns.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRuns.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackRuns.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackSafetyAuthority.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSafetyAuthority.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSafetyAuthority.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSafetyAuthority.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackSideAnnotations.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSideAnnotations.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSideAnnotations.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSideAnnotations.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackSideConfiguration.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSideConfiguration.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSideConfiguration.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSideConfiguration.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackSystemFrontalBuilder.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSystemFrontalBuilder.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSystemFrontalBuilder.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSystemFrontalBuilder.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackSystemPlantaBuilder.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSystemPlantaBuilder.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSystemPlantaBuilder.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackSystemPlantaBuilder.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackTarimaPlacement.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackTarimaPlacement.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackTarimaPlacement.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackTarimaPlacement.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackTopeSurface.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackTopeSurface.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackTopeSurface.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackTopeSurface.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackTroquelGrid.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackTroquelGrid.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Systems/PushBack/PushBackTroquelGrid.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Systems/PushBack/PushBackTroquelGrid.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/BridgeOutcomes.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/BridgeOutcomes.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/BridgeOutcomes.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/BridgeSource.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/BridgeSource.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/BridgeSource.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/BridgeSource.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/BrowserRackSummaries.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/BrowserRackSummaries.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/BrowserRackSummaries.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/BrowserRackSummaries.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/BrowserSession.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/BrowserSession.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/BrowserSession.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/BrowserSession.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/EventBridgeCore.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/EventBridgeCore.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/EventBridgeCore.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Hints.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/Hints.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/Hints.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/Hints.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/IHostEventSource.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/IHostEventSource.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/IHostEventSource.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/IHostEventSource.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/IWorkspaceBridgeLink.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/IWorkspaceBridgeLink.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/IWorkspaceBridgeLink.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/IWorkspaceBridgeLink.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/NavigationActions.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/NavigationActions.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/NavigationActions.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/NavigationActions.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/NavigationEcho.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/NavigationEcho.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/NavigationEcho.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/NavigationEcho.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/NavigationFacts.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/NavigationFacts.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/NavigationFacts.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/NavigationFacts.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/NavigationTargetSet.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/NavigationTargetSet.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/NavigationTargetSet.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/NavigationTargets.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/NavigationTargets.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/NavigationTargets.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/NavigationTargets.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/SelectionContext.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/SelectionContext.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/SelectionContext.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/SelectionContext.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/SessionId.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/SessionId.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/SessionId.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/SessionId.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceHostCore.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/WorkspaceHostCore.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceHostCore.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceHostPolicy.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceHostPolicy.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/WorkspaceHostPolicy.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceHostPolicy.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceHostSnapshot.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceHostSnapshot.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/WorkspaceHostSnapshot.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceHostSnapshot.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceInstrumentation.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceInstrumentation.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/WorkspaceInstrumentation.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceInstrumentation.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceSelectionRead.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceSelectionRead.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/WorkspaceSelectionRead.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceSelectionRead.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceSession.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/WorkspaceSession.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceSession.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftClosePolicy.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/Drafts/DraftClosePolicy.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/Drafts/DraftClosePolicy.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/Drafts/DraftClosePolicy.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs",
+      "1_in_original_forbidden": true,
+      "2_not_in_allowed": true,
+      "3_not_covered_by_allowed_prefix": true,
+      "4_scope_fails_outside_allowed": true,
+      "ScopeBefore": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs"
+        ],
+        "IntersectsForbidden": [
+          "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs"
+        ]
+      },
+      "ScopeAfter": {
+        "Result": "fail",
+        "OutsideAllowed": [
+          "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs"
+        ],
+        "IntersectsForbidden": []
+      },
+      "TrackedInRevision": true,
+      "Pass": true
+    }
+  ],
+  "AllowedPathSimulations": [
+    {
+      "Allowed": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs",
+      "Probe": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs",
+      "Probe": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs",
+      "Probe": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+      "Probe": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "Probe": "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+      "Probe": "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs",
+      "Probe": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs",
+      "Probe": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs",
+      "Probe": "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs",
+      "Probe": "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs",
+      "Probe": "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+      "Probe": "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+      "Probe": "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+      "Probe": "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    },
+    {
+      "Allowed": "tests/RackCad.Tests/Fixtures/I64/",
+      "Probe": "tests/RackCad.Tests/Fixtures/I64/pilot-sample.json",
+      "Scope": {
+        "Result": "pass",
+        "OutsideAllowed": [],
+        "IntersectsForbidden": []
+      },
+      "Pass": true
+    }
+  ],
+  "Result": "PASS"
+}

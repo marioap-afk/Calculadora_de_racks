@@ -327,3 +327,39 @@ La mutación sigue solo en T4B.
 - La estimación de «unas 40 entradas» que la sesión dio al proponer la opción 1 suponía quitar las enumeraciones de archivos y confiar en la comprobación Scope (diff ⊆ `AllowedWriteScope`). La propiedad 1 de la orden lo excluye.
 
 **Decisión:** la reemisión y la planificación quedan en espera del Coordinator, que debe decidir con este hecho medido. Ningún cambio de `src/` ni de `tests/`.
+
+## F4-E21. Revisión 2 del contrato de F4-T2A: `ForbiddenWriteScope` reducido de 139 a 57
+
+**Orden del Coordinator:** `owner-f4t2a-forbidden-simplification.md`.
+- Para esta revisión se sustituye la exigencia de que toda ruta prohibida antes siga prohibida de forma explícita.
+- Toda ruta retirada debe seguir sin poder escribirse por estar fuera de la lista blanca exacta `AllowedWriteScope`. Esa lista es la barrera primaria, y `ForbiddenWriteScope` queda como barrera secundaria.
+
+**Reducción determinista** (`F4-T2A-PILOT-STATE/coordinator/reduced-scope-report.json`, desde `forbidden-compaction-report.json` y el contrato de la revisión 1 en `26c80eb4`):
+- **Se retiran las 82 entradas** que son archivos sueltos sin prefijo seguro y están dentro de los directorios mixtos `src/RackCad.Application/Systems/PushBack/` (52) y `src/RackCad.Application/Workspace/` (30).
+- **Se conservan las otras 57 en su orden.** Ninguna se retira solo por acortar la lista: las guardas de `tests/RackCad.Tests/Workspace/` y los archivos de la raíz siguen.
+
+**Pruebas mecánicas** (`removed-path-proof.json`): todas en PASS.
+- **Por cada una de las 82 rutas retiradas:** estaba en el original; no está en `AllowedWriteScope` ni la cubre un prefijo permitido; con el conjunto de cambios {P}, Scope falla por estar fuera de la lista blanca.
+- **Por cada una de las 15 entradas permitidas:** Scope no la rechaza.
+- **Conjunto retenido:** ningún prefijo retenido contiene una ruta permitida, y ninguna ruta permitida corta el conjunto retenido.
+- **Frontera efectiva de escritura:** idéntica en las 7315 rutas del universo.
+- **Ruta omitida por `61f3`** (`PushBackHighEndBeamGeometry.cs`): queda protegida por el mecanismo b), estar fuera de la lista blanca exacta.
+
+**Registro explícito:**
+- Semántica del producto: SIN CAMBIO.
+- `AllowedWriteScope`: SIN CAMBIO.
+- `ForbiddenWriteScope`: REDUCIDO de 139 a 57.
+- Efecto de seguridad: se retira la denegación explícita redundante de 82 rutas, y la lista blanca exacta sigue siendo la autoridad.
+- Motivo: reducir la fragilidad de copia de la planificación tras dos delegaciones rechazadas, sin mover la frontera efectiva.
+
+**Decisión:**
+- La revisión 2 se emite en `F4-T2A-PILOT-STATE/coordinator/gate-contract-rev2.json`, con una `AuthorityRevision` nueva (este commit).
+- Respecto a la revisión 1 solo cambian:
+  - `ForbiddenWriteScope`;
+  - `AuthorityRevision`;
+  - `IssuedUtc`;
+  - en `Authorities`, la autorreferencia más esta orden y el informe.
+- No se declara identidad byte a byte con la revisión 1.
+- Después, una sola planificación nueva con el prompt reforzado, la comparación byte a byte previa a la aceptación (con `AllowedWriteScope` elemento a elemento en orden), A1-A8 con 8 pass y nc4.
+- Si todo pasa, el Worker queda autorizado una vez. Si la copia vuelve a fallar: STOP y vuelta al Coordinator.
+- `attempts` sigue en 1 de 3.
