@@ -6207,3 +6207,12 @@ Todo queda dispuesto en sus §9 y §10.
 - La ruta omitida por `61f3` queda protegida por la lista blanca (mecanismo b).
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 130. Revisión 2 del contrato de F4-T2A
+
+**Contrato:** `I-64-pilot/F4-T2A-PILOT-STATE/coordinator/gate-contract-rev2.json`.
+- Respecto a la revisión 1 solo cambian `ForbiddenWriteScope` (57), `AuthorityRevision` `b43d8685c8453c5a5c0e8bd349789910112a1515`, `IssuedUtc` y la autorreferencia más la orden y el informe en `Authorities`.
+- La comprobación está en `contract-rev2-check.json` (PASS). No se declara identidad byte a byte con la revisión 1.
+- `MainSha` `812baf879612320653094a8aaf46aca0bac81383`; `attempts` 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.

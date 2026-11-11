@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4-T2A-PILOT-STATE: emitir la revision 2 del contrato (ForbiddenWriteScope 139 -> 57, F4-E21) y una sola planificacion nueva con comparacion byte a byte previa, A1-A8 8/8 y nc4; Worker autorizado una vez si todo pasa; attempts 1 de 3"
+  next_action: "F4-T2A-PILOT-STATE: revision 2 del contrato emitida (AuthorityRevision b43d8685, ForbiddenWriteScope 57); siguiente: una sola planificacion, comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
