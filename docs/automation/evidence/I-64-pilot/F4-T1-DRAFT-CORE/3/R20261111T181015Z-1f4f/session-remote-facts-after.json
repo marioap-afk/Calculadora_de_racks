@@ -1,0 +1,13 @@
+{
+  "Fact": "session -> Controller: remoto real de la rama",
+  "Moment": "tras el resultado del Controller",
+  "MeasuredUtc": "2026-11-11T18:13:21Z",
+  "Command": "git ls-remote origin refs/heads/architecture/workspace-persistente-rackcad",
+  "ExitCode": 0,
+  "RemoteSha": "61d83788e7fa8decd861626b7e3ca89c8f23b9b4",
+  "LocalHead": "61d83788e7fa8decd861626b7e3ca89c8f23b9b4",
+  "CustodyTip": "61d83788e7fa8decd861626b7e3ca89c8f23b9b4",
+  "EqualsCustodyTip": true,
+  "LocalHeadEqualsRemote": true,
+  "ProductCurrentSha": "ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649"
+}

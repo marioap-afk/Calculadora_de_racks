@@ -167,3 +167,85 @@ El Owner ratificó F3-E02. **Snapshot F** (`AAEB58D8…`) es la línea base acti
   - si da VERIFIED, se ejecutan nc1..nc3 y se cierra F4-T1;
   - si FreeText vuelve a fallar, o falla otra comprobación, STOP sin reemitir otra vez.
 - **Prompts del Worker:** los términos de 16.10 quedan prohibidos también dentro de nombres de archivo, rutas, nombres de artefactos y archivos temporales. Los artefactos históricos no se renombran.
+
+## F4-E13. Snapshot G de `config.toml`
+
+- **Autoridad:** `F4-DRAFTS/coordinator/owner-f4t1-config-change.md`, texto literal. Opción 1.
+- **Hecho:** el 2026-11-11 a las 16:31Z `config.toml` pasó de `AAEB58D8…` (F) a `7C1516A9…`.
+  - Se mantienen los mismos 104 nombres en el mismo orden (`EB8775C5…`), sin claves añadidas ni retiradas.
+  - Cambian 8 valores gestionados por la app de Codex, que pasó de 26.1103.60933 a 26.1106.51428: `notify`, y en `mcp_servers.node_repl` el comando, la versión de la app, `CODEX_CLI_PATH`, el directorio de módulos, la ruta de node, las rutas de código de confianza y los servicios de confianza.
+  - Modelo, effort, `service_tier` y sandbox no cambian. El binario acreditado del relevo sigue presente con `4F91AE86…`.
+- **Sonda neutra `R20261111T180028Z-32f7`:** PASS.
+  - Efectivos `gpt-6-luna` / `high`, solo lectura, aprobación `never`, perfil de permisos con lectura restringida y red restringida, y el mismo CLI.
+  - Oráculo Git exacto, salida conforme al esquema y sin escrituras Git.
+  - Sin participantes y sin avisos de límite; la config no cambió durante la sonda.
+  - `turn_context` idéntico al de la sonda de F (`3082`) salvo `root_turn_id`.
+  - El aviso del perfil de PowerShell ya aparecía igual en `3082`.
+- **Decisión:** G queda aceptada y sustituye a F como línea base activa del Controller en I-64. Registro en `F4-ENVIRONMENT/snapshot-G/snapshot-g.json`, con el inventario semántico sin rutas de usuario ni secretos. Un cambio nuevo es STOP y no crea una H automática.
+
+## F4-E14. Reverificaciones del intento 3 de F4-T1 tras la reemisión
+
+- **Autoridades:** `owner-f4t1-post-custody-identity.md` (sustitución acotada de Identity, condiciones A a I) y `owner-f4t1-second-reverification.md` (corrige solo la parte de red de la condición A), las dos en `F4-DRAFTS/coordinator/`.
+- **`R20261111T175635Z-4bb6`:** `EXECUTION_BLOCKED` / STOP por Identity. Defecto de entrada de la sesión: el prompt pedía al Controller `git ls-remote`, y su sandbox no tiene red. Las otras 13 comprobaciones pasan. Se conserva.
+- **`R20261111T181015Z-1f4f`:** `EXECUTION_VERIFIED` / NONE, 14/14, sobre el producto `ce73ceb7`.
+  - La punta de custodia es `61d83788`, y entre ambos solo hay rutas de `docs/`.
+  - El remoto lo midió la sesión antes y después de la cesión, y fue igual a la punta.
+  - Config en G, oráculo estrecho de Tests de F4-E10 y entrega reemitida F4T1-HANDOFF-REISSUE-01.
+
+## F4-E15. Controles negativos de la verificación `1f4f`
+
+- **Autoridad:** `F4-DRAFTS/coordinator/owner-f4t1-control-closure.md` y `owner-f4t1-nc3-substitute.md`.
+- **nc1:**
+  - `c4f7` da CONTROL NOT PASSED. La receta no recalculó `ReissuedSha256`, Handoff falló antes que Identity, y A-13 no aplica tras la custodia. Se conserva.
+  - `bc22`, una sola ejecución con la receta corregida, da **CONTROL PASS**: Identity en fail, `EXECUTION_BLOCKED` / STOP.
+- **nc2:**
+  - `50da` da CONTROL NOT PASSED: Contract y Scope en fail, porque con una sola ruta la mutación vacía el alcance. Se conserva.
+  - El sustituto F4T1-NC2-SINGLE-PATH-SCOPE-01 (`5ed5`) da PASS, con la autoprueba A–H y tres extra correcta y las propiedades 1–10 cumplidas.
+  - Resultado: **nc2 = SATISFIED_UNDER_F4T1_SINGLE_PATH_SCOPE_SUBSTITUTE**. No es A-4.
+- **nc3:**
+  - `2f8e` da CONTROL NOT PASSED. El vector de comprobaciones es el del oráculo, con solo FreeText en fail, pero la clasificación escala a STOP (S-04) por dos entradas de la sesión. Se conserva, sin reescribirlo.
+  - Esas dos entradas son la afirmación de `reissue-record.json` sobre la entrega real y la cláusula de STOP de la reverificación real.
+  - El sustituto F4T1-NC3-FREETEXT-SUBSTITUTE-01 (`b8f7`) da PASS, con la autoprueba A–L determinista y las propiedades 1–14 cumplidas. Sin esas dos contradicciones, el vector clasifica `EXECUTION_REWORK_REQUIRED` / REWORK por FreeText.
+  - Resultado: **nc3 = SATISFIED_UNDER_F4T1_FREETEXT_SUBSTITUTE**.
+- **Participantes:** en `c4f7` se contaron dos `bash` de la propia orden de la sesión, que llevaba la ruta del worktree. Es el falso participante conocido.
+
+## F4-E16. Cierre de F4-T1-DRAFT-CORE
+
+- **Decisión:** F4-T1 = **CLOSED / PASS** sobre `ce73ceb7`, por la disposición `owner-f4t1-nc3-substitute.md`.
+- **Fundamento:**
+  - verificación `1f4f`, 14/14;
+  - CI `43029959059` 4/4;
+  - nc1 `bc22` CONTROL PASS, y nc2 y nc3 satisfechos con sus sustitutos;
+  - revisiones directa e independiente de los tres intentos;
+  - N-1 corregido con la excepción acotada de F4-E10 y `n1_hashes.py` en Pass.
+- **Historia:**
+  - intento 1 REWORK (`aefc34a5`);
+  - intento 2 REWORK (`09955667`), con N-1 y N-2;
+  - intento 3, corrección de producto completa (`ce73ceb7`);
+  - `attempts` 3 de 3. No existe intento 4: la reemisión fue solo de transporte y evidencia.
+- **Obligaciones que pasan a tareas posteriores:**
+  - N-2 a F4-T2, obligatoria;
+  - M-6 y M-9 a T2;
+  - el copiador profundo del piloto y una entrada por clave, a T2;
+  - la UI no usa borradores desligados, a T3;
+  - `CompleteApply` en `finally` y los avisos de POST visibles aunque falle su relectura, a T4B;
+  - m-1 y m-2 de la revisión del intento 3, a la próxima tarea que toque la guarda.
+- **Lecciones de proceso:**
+  - los prompts del Worker prohíben también los términos de 16.10 en nombres de archivo, rutas y nombres de artefactos;
+  - un Controller sin red no ejecuta órdenes de red: los hechos del remoto los aporta la sesión;
+  - las entradas de los controles no deben llevar afirmaciones de la sesión que la mutación vaya a contradecir.
+
+## F4-E17. Inicio de F4-T2-DRAFT-READ-HOST
+
+- **Presupuesto:** `attempts` = 1 de 3, propio de la tarea (F4-E09).
+- **Requisitos heredados obligatorios:**
+  1. N-2: anti-alias;
+  2. el estado del host no puede mutar `InitialDraftState` después de crear el borrador;
+  3. una prueba adversarial que muta o reutiliza el objeto de origen;
+  4. una sola lectura lógica produce la StaleBase, la admisión y el `InitialDraftState`;
+  5. admisión con `RackSiblingMembership`;
+  6. sin escritura en el DWG;
+  7. IC-04 vinculante: los manejadores de eventos solo encolan;
+  8. el piloto acotado es F4-PILOT-PUSHBACK-01;
+  9. el contrato enumera los campos exactos del piloto antes de implementar.
+- **También T2:** la conformidad con IC-04 de F4-E05, M-6, M-9, el copiador profundo y una entrada por clave.

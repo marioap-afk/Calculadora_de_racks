@@ -6102,3 +6102,40 @@ revisar:
 **Decisión:** F4-E12. Una sola reemisión de transporte y evidencia (F4T1-HANDOFF-REISSUE-01), sin intento 4 ni excepción a FreeText. La verificación `ce94` se conserva.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 120. Snapshot G de `config.toml`
+
+**Decisión:** F4-E13. Sonda neutra `32f7` PASS; G (`7C1516A9…`) sustituye a F.
+
+**Límites:** sin AutoCAD.
+
+## 121. Reverificaciones del intento 3 de F4-T1
+
+**Resultado:** F4-E14.
+- `4bb6`: STOP por un defecto del prompt de la sesión.
+- `1f4f`: `EXECUTION_VERIFIED`, 14/14, sobre `ce73ceb7`, con la sustitución de Identity tras la custodia y el remoto medido por la sesión.
+
+**Límites:** sin AutoCAD.
+
+## 122. Controles negativos de F4-T1
+
+**Resultado:** F4-E15.
+- nc1 `bc22` CONTROL PASS;
+- nc2 satisfecho con el sustituto de una sola ruta (`5ed5`);
+- nc3 satisfecho con el sustituto de FreeText (`b8f7`).
+
+Los controles ordinarios que no pasaron (`c4f7`, `50da`, `2f8e`) se conservan sin cambios.
+
+**Límites:** sin AutoCAD.
+
+## 123. Cierre de F4-T1-DRAFT-CORE
+
+**Decisión:** F4-E16. F4-T1 = **CLOSED / PASS** sobre `ce73ceb7`, con `attempts` 3 de 3. El paquete de cierre está en `I-64-pilot/F4-T1-DRAFT-CORE/task-close-package.md`.
+
+**Límites:** sin AutoCAD. Es un núcleo puro: la lectura del host, la interfaz y la mutación son de F4-T2 a F4-T4.
+
+## 124. Inicio de F4-T2
+
+**Decisión:** F4-E17. F4-T2-DRAFT-READ-HOST empieza con `attempts` 1 de 3, con N-2 obligatorio y los requisitos heredados.
+
+**Límites:** solo documentación en este paso.

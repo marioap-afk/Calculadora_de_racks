@@ -1,0 +1,53 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261111T190035Z-bc22",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dieron 61d83788e7fa8decd861626b7e3ca89c8f23b9b4; session-remote-facts.json confirma ls-remote igual a esa punta. Pero worker-handoff.json declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, mientras relay-record-work.json, reissue-record.json, CI y la instruccion de entrega identifican ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649. El SHA declarado por el handoff no coincide con el SHA de producto verificado; por ello no se acredita la identidad de entrega, pese a que BaseSha y RedSha son ancestros de ce73ceb7 y el diff ce73ceb7..HEAD solo contiene docs/."
+  },
+  "OutputSha256": "D34C2A533DA8F79C757C51037FD2A187AAF0F710DB8F7151FACDB2999D462B6A",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,75 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T1-DRAFT-CORE",
+  "RunId": "R20261111T181015Z-1f4f",
+  "DelegationRunId": "R20261110T224523Z-d088",
+  "WorkRunId": "R20261111T132115Z-6453",
+  "Attempt": 3,
+  "VerifiedSha": "ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-11T13:21:29Z; OutputWrittenUtc=2026-11-11T07:41:02.138753-06:00, after cession start."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json: schema rackcad-worker-handoff/v1, TaskId F4-T1-DRAFT-CORE, Attempt 3, DelegationRunId R20261110T224523Z-d088, RunId R20261111T132115Z-6453; BaseSha d737b4853b204d6b8cc6adcf2abe97d96d7ce88e, RedSha 5a27ac8b172efe29aab4f9c15de0ba64dfa9adf3, CurrentSha ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649. Reissue record matches the reissued output hash 29679148D5D55DF7DB911D73FA26A02DD168B62ADE03B6FCDAA4A77D459BEF86 and records only the authorized WorkCompleted text change."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only c31854f81c3c301eba53e35cd99c66bcaf97e587 d737b4853b204d6b8cc6adcf2abe97d96d7ce88e lists docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T1-DRAFT-CORE/coordinator/gate-contract-attempt3.json, and docs/automation/state/I-64.yml. All three are UNIT_DOC authorities in delegation.json; no EXTERNAL or UNIT_CHANGE path appears. git merge-base --is-ancestor AuthorityRevision BaseSha exits 0."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json and gate-contract.json for AUTOMATION_PLAN 16.5 A3-A5: allowed scope is the exact WorkspaceDraftBoundaryTests.cs path; forbidden scope, the 27 invariants, stop-condition IDs, authorities, and RequiredTests agree. RequiredTests is RackCad.Tests.csproj, filter FullyQualifiedName~RackCad.Tests.Workspace, MinSelected 1273, ExpectRed true."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 61d83788e7fa8decd861626b7e3ca89c8f23b9b4. session-remote-facts.json records session git ls-remote result 61d83788 at 2026-11-11T18:10:48Z, equal to the custody tip. git merge-base --is-ancestor CurrentSha HEAD and BaseSha CurrentSha and RedSha CurrentSha each exit 0. git diff --name-only CurrentSha..HEAD lists docs/ paths only, with no src/ or tests/ paths. Branch and worktree match the delegation; git status --porcelain is empty."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry records LsRemoteSha=ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, matching the product CurrentSha and MainSha. The separate session remote fact for post-custody Identity matches the custody tip."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists only tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs, the single AllowedWriteScope entry. No other path intersects the 66 ForbiddenWriteScope entries."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain --untracked-files=all is empty. git check-ignore -v artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T181015Z-1f4f/outputs/verification.json reports .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts.CurrentRun: push 43029959059, exact ref refs/heads/architecture/workspace-persistente-rackcad and head ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649; all four required jobs success. RedRun: push 43029071176, same ref and head 5a27ac8b172efe29aab4f9c15de0ba64dfa9adf3; Core job failure as required for RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "The supplied Core TRX files were parsed. Current run 43029959059: 16,838 passed, 0 failed; filter FullyQualifiedName~RackCad.Tests.Workspace selects 1,300, all passed, above MinSelected 1273. Red run 43029071176: 16,825 passed and 13 failed; all 13 failures are the two N-1 regression theories in the marked block, with no failures outside it. Delivery TestResults agree. git diff --name-only BaseSha RedSha -- tests/ is only WorkspaceDraftBoundaryTests.cs; prior ChainRedFiles union RT is WorkspaceDraftApplyTests.cs, WorkspaceDraftBoundaryTests.cs, WorkspaceDraftRegistryTests.cs, WorkspaceDraftSessionTests.cs, and WorkspaceDraftStaleBaseTests.cs. For the authorized F4-E10 exception, git diff RedSha CurrentSha changes only that file's BOM rule region; n1_hashes.py exits 0 with Pass=true: H1 Red/Current equal 96A696F1D4AFD2C652EC81864CFC3C64399EB1181C34B57ACC81859508942E62, H2 equal 9BA25558762E4650CB400AB43F8F7DD67045F73F962F66F9FEB4E9794CAADF67, H3 RedWithoutBlock/Base equal 843DD9F13FD31450371F88F77FD195689A8813CDFC131E81B4D51FA74B4E88C5. Current TRX filter and regression block are green."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both RED and GREEN commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and effective model claude-sonnet-5-5 in relay-record-work.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests model claude-sonnet-5-5 with provider effort high and RoutingEnforcement required. relay-record-work.json records launch alias sonnet, effective model claude-sonnet-5-5, effective effort high, and 47 assistant turns with that effective model."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned reissued handoff WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions, and RecommendedNextAction against AUTOMATION_PLAN 16.10 terms; no matches. Reissue record documents the single authorized sanitation, and its scan of the reissued handoff has no hits."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes record 0 permission denials and 1 tool error with none pending. Process notes report 0 persistent participants and 0 persistent unattributable processes at output and entry; Outcome.DeathConfirmed=true. No pending denial or failed order is recorded."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [],
+  "RecommendedNextAction": "Registrar esta verificacion y continuar con nc1..nc3 segun la disposicion del Owner."
+}

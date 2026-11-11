@@ -1,0 +1,116 @@
+{
+  "Id": "F4T1-NC2-SINGLE-PATH-SCOPE-01",
+  "NotA4": true,
+  "SelfTest": [
+    {
+      "Case": "A",
+      "Description": "una ruta real; se quita la ruta cambiada",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "B",
+      "Description": "el alcance mutado sigue cubriendo la ruta cambiada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C",
+      "Description": "la ruta cambiada es distinta de la quitada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "D",
+      "Description": "cambia un segundo campo de la delegacion",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "E",
+      "Description": "cambia ForbiddenWriteScope",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "F",
+      "Description": "la delegacion real tiene mas de una ruta (no aplica)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "G",
+      "Description": "BaseSha..CurrentSha no toca la ruta quitada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "H",
+      "Description": "el Controller no informo Scope = fail",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "X1",
+      "Description": "el alcance mutado anade otra ruta",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "X2",
+      "Description": "cambian otras entradas ademas de las derivadas",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "X3",
+      "Description": "el contrato no exige la ruta exacta",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    }
+  ],
+  "SelfTestPass": true,
+  "RealVerification": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T181015Z-1f4f",
+  "Nc2Run": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE-nc2/3/R20261111T181855Z-50da",
+  "BaseSha": "d737b4853b204d6b8cc6adcf2abe97d96d7ce88e",
+  "CurrentSha": "ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649",
+  "ChangedPaths": [
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs"
+  ],
+  "RealAllowedWriteScope": [
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs"
+  ],
+  "MutatedAllowedWriteScope": [],
+  "Nc2ControllerClassification": "EXECUTION_BLOCKED",
+  "Nc2ControllerFailureClass": "Contract",
+  "Nc2ControllerScope": "fail",
+  "Properties": {
+    "1_RealDelegationHasExactlyOneAllowedPath": true,
+    "2_ThatPathIsTheContractedPath": true,
+    "3_BaseToCurrentTouchesThatPath": true,
+    "4_MutationRemovesExactlyThatPath": true,
+    "5_ChangedPathOutsideMutatedScope": true,
+    "6_ScopePredicateOnMutatedScopeIsFail": true,
+    "6b_ScopePredicateOnRealScopeIsPass": true,
+    "7_ForbiddenWriteScopeUnchanged": true,
+    "8_OnlyDelegationMutationIsAllowedWriteScope": true,
+    "9_ContractFailureIsUnavoidableConsequence": true,
+    "10_ControllerReportedScopeFail": true
+  },
+  "SubstituteResult": "PASS",
+  "Record": {
+    "Nc2Run": "CONTROL NOT PASSED (se conserva tal cual)",
+    "nc2": "SATISFIED_UNDER_F4T1_SINGLE_PATH_SCOPE_SUBSTITUTE"
+  }
+}

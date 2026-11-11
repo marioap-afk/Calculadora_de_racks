@@ -1,0 +1,133 @@
+{
+  "Id": "F4T1-NC3-FREETEXT-SUBSTITUTE-01",
+  "SelfTest": [
+    {
+      "Case": "A",
+      "Description": "solo la mutacion de FreeText y vector correcto",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "B",
+      "Description": "FreeText no falla",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C",
+      "Description": "otra comprobacion anterior difiere de la real",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "D",
+      "Description": "otra comprobacion posterior difiere",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "E",
+      "Description": "segundo campo semantico de la entrega cambiado",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "F",
+      "Description": "SHA de producto cambiado",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "G",
+      "Description": "la entrega real ya contiene el termino prohibido",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "H",
+      "Description": "el hash derivado no coincide con los bytes de la entrega",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "I",
+      "Description": "sin la contradiccion de reissue-record y STOP por otra causa",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "J",
+      "Description": "FailureClass distinto de FreeText",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "K",
+      "Description": "el termino inyectado no es de 16.10",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "L",
+      "Description": "la verificacion real no es 14/14 VERIFIED",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    }
+  ],
+  "SelfTestPass": true,
+  "SelfTestDeterministic": true,
+  "RealVerification": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T181015Z-1f4f",
+  "Nc3Run": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE-nc3/3/R20261111T190501Z-2f8e",
+  "Injected": " GATE PASS.",
+  "Properties": {
+    "1_RealVerified14of14": true,
+    "2_SameInputsPlusMutationAndDerived": true,
+    "3_InjectedTermIsA1610TermAndPresent": true,
+    "4_RealHandoffHasNo1610Term": true,
+    "5_FreeTextFailInControl": true,
+    "6_EarlierChecksEqualReal": true,
+    "7_LaterChecksEqualReal": true,
+    "8_ProductShaUnchanged": true,
+    "9_RedGreenTestCiFactsUnchanged": true,
+    "10_OnlySemanticMutationIsWorkCompleted": true,
+    "11_HashChangesAreMechanical": true,
+    "12_ReissueClaimIsAboutRealHandoffAndTrue": true,
+    "13_StopClauseBelongsToRealReverification": true,
+    "14_VectorWithoutAuxiliaryContradictionsIsRework": true
+  },
+  "SubstituteResult": "PASS",
+  "Nc3ObservedClassification": [
+    "EXECUTION_BLOCKED",
+    "STOP",
+    "FreeText",
+    [
+      "S-04"
+    ]
+  ],
+  "Nc3VectorWithoutAuxiliaryContradictions": [
+    "EXECUTION_REWORK_REQUIRED",
+    "REWORK",
+    "FreeText"
+  ],
+  "Distinctions": {
+    "RealHandoffClaim": "reissue-record.json afirma que la entrega reemitida REAL no contiene terminos de 16.10; sigue siendo cierto (propiedad 4)",
+    "NegativeControlMutation": "nc3 crea a proposito una entrega sintetica que viola esa propiedad; la contradiccion es construccion esperada del control, no se borra",
+    "StopClause": "la clausula de STOP se escribio para el fallo de la reverificacion REAL; 1f4f no fallo; aplicarla al control negativo cambia su clasificacion final sin cambiar la senal bajo prueba"
+  },
+  "Record": {
+    "Nc3Run": "CONTROL NOT PASSED (se conserva tal cual, con su S-04)",
+    "nc3": "SATISFIED_UNDER_F4T1_FREETEXT_SUBSTITUTE"
+  }
+}
