@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 3
-  next_action: "DEVUELTO AL OWNER (F4-E11, S-11): F4-T1 intento 3 corrige N-1 (ce73ceb7) pero la verificacion ce94 da REWORK por FreeText; decidir intento 4 acotado a la entrega (recomendado), excepcion a FreeText o aclaracion de 16.10"
+  next_action: "F4-T1: reemision de la entrega del intento 3 autorizada (F4-E12, F4T1-HANDOFF-REISSUE-01); siguiente: entrega corregida, pruebas de las diez condiciones, una reverificacion del Controller y nc1..nc3"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual

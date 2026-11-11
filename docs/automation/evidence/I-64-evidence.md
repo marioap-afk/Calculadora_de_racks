@@ -6096,3 +6096,9 @@ revisar:
 **Decisión:** F4-E11. STOP (S-11) con `attempts` 3 de 3 y devolución al Owner. La sesión recomienda un intento 4 acotado a reescribir la entrega.
 
 **Límites:** sin AutoCAD; solo custodia y documentación en este paso.
+
+## 119. Reemisión autorizada de la entrega del intento 3 de F4-T1
+
+**Decisión:** F4-E12. Una sola reemisión de transporte y evidencia (F4T1-HANDOFF-REISSUE-01), sin intento 4 ni excepción a FreeText. La verificación `ce94` se conserva.
+
+**Límites:** solo documentación; sin AutoCAD.

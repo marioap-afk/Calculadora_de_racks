@@ -154,3 +154,16 @@ El Owner ratificó F3-E02. **Snapshot F** (`AAEB58D8…`) es la línea base acti
   - m-1 y m-2 a la próxima tarea que toque la guarda.
   - Los prompts siguientes del Worker dirán que los términos de 16.10 también cuentan dentro de los nombres de archivo citados.
   - nc1..nc3 no se ejecutan sobre una verificación REWORK.
+
+## F4-E12. Reemisión de la entrega del intento 3 de F4-T1 (F4T1-HANDOFF-REISSUE-01)
+
+- **Autoridad:** `F4-DRAFTS/coordinator/owner-f4t1-handoff-reissue.md`, texto literal.
+- **Decisión del Owner:** no hay intento 4, ni excepción a FreeText, ni cambio de 16.10. Se autoriza una sola reemisión de transporte y evidencia de la entrega del intento 3, que sigue siendo el intento de producto 3 de 3.
+- **Alcance de la reemisión:** solo se reescribe la referencia textual al nombre del archivo auxiliar que contenía el término de 16.10. Siguen idénticos los SHA, el alcance, la CI, los conteos de pruebas, el resultado del Worker, las limitaciones y el resto de hechos. No hay commits de producto, ni invocación del Worker, ni RED, ni GREEN, ni pruebas.
+- **Evidencia histórica:** la verificación `ce94` se conserva tal cual, como `EXECUTION_REWORK_REQUIRED` por FreeText.
+- **Antes de la reverificación:** se prueban las diez condiciones de la orden y se registra un diff estructurado de la entrega antigua y la nueva, con sus SHA-256.
+- **Reverificación:**
+  - es una sola, del mismo intento 3, con la misma delegación, las mismas autoridades y el mismo oráculo estrecho de `Tests`;
+  - si da VERIFIED, se ejecutan nc1..nc3 y se cierra F4-T1;
+  - si FreeText vuelve a fallar, o falla otra comprobación, STOP sin reemitir otra vez.
+- **Prompts del Worker:** los términos de 16.10 quedan prohibidos también dentro de nombres de archivo, rutas, nombres de artefactos y archivos temporales. Los artefactos históricos no se renombran.
