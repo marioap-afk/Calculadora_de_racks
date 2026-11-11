@@ -584,4 +584,50 @@ public class WorkspaceDraftBoundaryTests
     {
         Assert.DoesNotMatch(DraftTypesNamedByAPreview, "var x = DraftRegistryEntry; var y = DraftSessionless;");
     }
+    // BEGIN N-1 regression (F4-T1 attempt 3)
+
+    // INV-F4T1-22 and INV-F4T1-25: the BOM rule detects the word whatever its case, at the start, at the end and inside
+    // an identifier, and it is never weaker than the rules of 90a81104 and of 09955667.
+
+    [Theory]
+    [InlineData("BOM.Build();")]
+    [InlineData("var BOMLines = 1;")]
+    [InlineData("var bomCount = 1;")]
+    [InlineData("Bom.Build();")]
+    [InlineData("var x = DraftBOM;")]
+    [InlineData("var y = GetBom();")]
+    [InlineData("var z = GetBOM();")]
+    [InlineData("var w = draftbom;")]
+    [InlineData("var v = DRAFTBOM;")]
+    [InlineData("BOM")]
+    [InlineData("Bom")]
+    [InlineData("bom")]
+    [InlineData("BomBuilder.Build();")]
+    [InlineData("var DraftBomLines = new object();")]
+    [InlineData("int _bomCount;")]
+    public void TheBomGuardDetectsTheWordInAnyCaseInRealCoreText(string injected)
+    {
+        var real = DraftFiles()[0].Code;
+        Assert.DoesNotMatch(I63Concepts, real);
+        Assert.Matches(I63Concepts, real + "\n" + injected);
+    }
+
+    [Theory]
+    [InlineData("BOM")]
+    [InlineData("Bom")]
+    [InlineData("bom")]
+    [InlineData("BOMLines")]
+    [InlineData("DraftBOM")]
+    [InlineData("GetBOM")]
+    [InlineData("DRAFTBOM")]
+    [InlineData("draftbom")]
+    [InlineData("GetBom")]
+    [InlineData("DraftBomLines")]
+    [InlineData("BomBuilder")]
+    [InlineData("_bomCount")]
+    public void TheMemberNameGuardDetectsTheBomWordInAnyCaseAtTheStartTheEndAndInsideAName(string injected)
+    {
+        Assert.Matches(ForbiddenMemberNames, injected);
+    }
+    // END N-1 regression (F4-T1 attempt 3)
 }
