@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T1-DRAFT-CORE",
+  "RunId": "R20261111T140248Z-5556",
+  "DelegationRunId": "R20261110T224523Z-d088",
+  "WorkRunId": "R20261111T132115Z-6453",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, OutputWrittenUtc=2026-11-11T13:41:02.138753+00:00; Cession.StartUtc=2026-11-11T13:21:29Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId=F4-T1-DRAFT-CORE, Attempt=3, DelegationRunId=R20261110T224523Z-d088, RunId=R20261111T132115Z-6453; OutputWrittenUtc follows Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "fail",
+      "Evidence": "The verification identity specifies AuthorityRevision bf429590170c6b7e4c1f17ec55616f5767f201d9; delegation.json and gate-contract.json specify c31854f81c3c301eba53e35cd99c66bcaf97e587. git merge-base --is-ancestor bf429590... d737b485... succeeds and git diff --name-only bf429590... d737b485... lists three UNIT_DOC paths, but the conflicting revision claims remain."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json agree on TaskId, AuthorityRevision c31854f81c3c301eba53e35cd99c66bcaf97e587, MainSha, Authorities, AllowedWriteScope, and RequiredTests; planning relay records A1-A8 as pass and nc4 satisfied in the prior chain."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD returns ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649; branch is architecture/workspace-persistente-rackcad; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad returns the same SHA. git merge-base --is-ancestor BaseSha CurrentSha and RedSha CurrentSha succeed."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records Entry.LsRemoteSha=ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, matching CurrentSha and MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only d737b4853b204d6b8cc6adcf2abe97d96d7ce88e..ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 lists only tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs, the sole AllowedWriteScope path."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v for the input package reports .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; all four required jobs succeeded. RedRun is push at RedSha and its Core job failed as expected. The CurrentSha and RedSha core.trx files were read."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX filter FullyQualifiedName~RackCad.Tests.Workspace selects 1300 results in each file, above MinSelected=1273. Red TRX: 13 failures, all in the marked regression block, zero failures outside it; Current TRX: 1300 passed, zero failed. Handoff counts agree. n1_hashes.py reports Pass=true: H1 and H2 match between RedSha and CurrentSha, H3 matches RedWithoutBlock and Base. git diff BaseSha..RedSha -- tests/ yields WorkspaceDraftBoundaryTests.cs; git diff RedSha..CurrentSha changes only that path, with the rule region only. ChainRedFiles remains the prior five paths after union with RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B for both commits in BaseSha..CurrentSha shows Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, consistent with the effective Worker model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with effort high and required routing; relay-record-work records the launch alias sonnet, effective model claude-sonnet-5-5, and effective effort high."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "A complete forbidden term occurs in the Worker handoff free-text fields, within a filename cited in WorkCompleted."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report zero permission denials and one tool error with none pending."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Authority",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "The supplied verification identity and the delegation/contract give different AuthorityRevision values.",
+    "The Worker handoff free text contains a forbidden complete term in a cited filename."
+  ],
+  "RecommendedNextAction": "Resolve the AuthorityRevision discrepancy against the controlling records, then rerun verification with corrected inputs."
+}

@@ -6080,3 +6080,19 @@ revisar:
 **Decisión:** F4-E09 y F4-E10. Contrato en `F4-T1-DRAFT-CORE/coordinator/gate-contract-attempt3.json`: una sola ruta (`WorkspaceDraftBoundaryTests.cs`), INV-F4T1-25 a 27 y mínimo 1273. `AuthorityRevision` `c31854f81c3c301eba53e35cd99c66bcaf97e587`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`. `attempts` 3 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 118. Intento 3 de F4-T1: N-1 corregido, verificación REWORK por FreeText
+
+**Entrega:** RED `5a27ac8b`, GREEN `ce73ceb7`; CI `43029959059` 4/4; filtro 1300/1300; `n1_hashes.py` con `Pass` true.
+
+**Revisiones:**
+- directa: sin defectos;
+- independiente: 0 bloqueantes, 0 importantes, 2 menores.
+
+**Verificaciones:**
+- `5556`: STOP por un error de entrada de la sesión (AuthorityRevision), que se conserva;
+- `ce94`: `EXECUTION_REWORK_REQUIRED` por FreeText, porque el Worker citó un archivo auxiliar cuyo nombre contiene un término de 16.10. Las otras 13 comprobaciones pasan.
+
+**Decisión:** F4-E11. STOP (S-11) con `attempts` 3 de 3 y devolución al Owner. La sesión recomienda un intento 4 acotado a reescribir la entrega.
+
+**Límites:** sin AutoCAD; solo custodia y documentación en este paso.

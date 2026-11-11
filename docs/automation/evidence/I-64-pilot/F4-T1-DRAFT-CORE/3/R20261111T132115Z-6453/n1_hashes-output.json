@@ -1,0 +1,20 @@
+{
+  "Path": "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs",
+  "BaseSha": "d737b4853b204d6b8cc6adcf2abe97d96d7ce88e",
+  "RedSha": "5a27ac8b172efe29aab4f9c15de0ba64dfa9adf3",
+  "CurrentSha": "ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649",
+  "BlockFoundInRed": true,
+  "BlockFoundInCurrent": true,
+  "RuleFoundInRed": true,
+  "RuleFoundInCurrent": true,
+  "BlockOverlapsRuleInRed": false,
+  "H1Red": "96A696F1D4AFD2C652EC81864CFC3C64399EB1181C34B57ACC81859508942E62",
+  "H1Current": "96A696F1D4AFD2C652EC81864CFC3C64399EB1181C34B57ACC81859508942E62",
+  "H2Red": "9BA25558762E4650CB400AB43F8F7DD67045F73F962F66F9FEB4E9794CAADF67",
+  "H2Current": "9BA25558762E4650CB400AB43F8F7DD67045F73F962F66F9FEB4E9794CAADF67",
+  "H3RedWithoutBlock": "843DD9F13FD31450371F88F77FD195689A8813CDFC131E81B4D51FA74B4E88C5",
+  "H3Base": "843DD9F13FD31450371F88F77FD195689A8813CDFC131E81B4D51FA74B4E88C5",
+  "RuleRegionRed": "    // Bom as part of ANY identifier (DraftBomLines, BomBuilder, _bomCount), case sensitive on purpose: Bomb or Combo are not Bom.\n    private const string BomInAnyIdentifier = @\"(?-i:Bom(?![a-z])|\\bbom(?![a-z])|_bom(?![a-z]))\";\n",
+  "RuleRegionCurrent": "    // Bom as part of ANY identifier, whatever its case: at the start of a word (BOM.Build, BOMLines, bomCount), at its end (DraftBOM, GetBom,\n    // draftbom) or inside it before an uppercase letter, a digit or an underscore (DraftBomLines, BomBuilder, _bomCount). Words that merely\n    // contain the letters in lowercase (Combo) are not Bom.\n    private const string BomInAnyIdentifier = @\"(?:(?i:\\bbom|bom\\b)|(?-i:Bom(?![a-z])|BOM(?![a-z])|_bom(?![a-z])))\";\n",
+  "Pass": true
+}

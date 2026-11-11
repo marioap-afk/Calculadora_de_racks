@@ -1,0 +1,12 @@
+[
+  "1. git diff --name-only BaseSha..CurrentSha contiene unicamente tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs. Ningun archivo de src ni ningun otro archivo de tests cambia.",
+  "2. RED nuevo (INV-F4T1-26, F4-E10): un solo commit que solo inserta en tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs, como lineas completas y en una unica posicion fuera de la region de la regla, el bloque entre las lineas \"// BEGIN N-1 regression (F4-T1 attempt 3)\" y \"// END N-1 regression (F4-T1 attempt 3)\". Compila; en Core fallan por asercion solo pruebas del bloque; push del RED antes del GREEN.",
+  "3. El bloque comprueba I63Concepts y ForbiddenMemberNames contra, como minimo: en texto de codigo \"BOM.Build();\", \"var BOMLines = 1;\", \"var bomCount = 1;\", \"Bom.Build();\", \"var x = DraftBOM;\" y \"var y = GetBom();\"; en nombres de miembro \"BOM\", \"Bom\", \"bom\", \"BOMLines\", \"DraftBOM\", \"GetBOM\", \"DRAFTBOM\", \"draftbom\" y \"GetBom\"; y conserva como casos que deben seguir detectandose \"DraftBomLines\", \"BomBuilder\" y \"_bomCount\".",
+  "4. GREEN (INV-F4T1-27, F4-E10): un solo commit que en tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs solo cambia la region de la regla (las lineas de comentario contiguas encima de la declaracion de BomInAnyIdentifier y esa declaracion). No anade, quita, renombra ni cambia pruebas, aserciones, datos de prueba ni otras familias de guarda.",
+  "5. La regla reparada cumple INV-F4T1-25: sin distinguir mayusculas, superconjunto de las reglas de 90a81104 y de 09955667, sin casos especiales de cadenas literales; el codigo del nucleo pasa todas las guardas.",
+  "6. python docs/automation/evidence/I-64-pilot/F4-T1-DRAFT-CORE/coordinator/n1_hashes.py BaseSha RedSha CurrentSha, ejecutado desde el worktree, imprime Pass true (H1, H2 y H3 iguales); la entrega copia esa salida en Evidence.",
+  "7. INV-F4T1-01 a 24 siguen vigentes, con INV-F4T1-17 y F4T1-C03 en su texto del intento 3. N-2 no se toca en este intento.",
+  "8. En el GREEN: FullyQualifiedName~RackCad.Tests.Workspace selecciona al menos 1273 pruebas, todas en verde; la suite Core completa en verde; build Release de tests/RackCad.Tests sin avisos nuevos; CI del SHA exacto con los cuatro jobs en success.",
+  "9. worker-handoff.json conforme al esquema en ExpectedHandoffPath, con mapa evidencia-por-invariante de INV-F4T1-25 a 27 y la salida de n1_hashes.py; OpenQuestions vacia salvo ambiguedad material real.",
+  "10. Sin AutoCAD y sin comportamiento de F4-T2, F4-T3 ni F4-T4."
+]

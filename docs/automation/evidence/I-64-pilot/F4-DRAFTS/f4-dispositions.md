@@ -131,3 +131,26 @@ El Owner ratificó F3-E02. **Snapshot F** (`AAEB58D8…`) es la línea base acti
 - **Verificación:** solo para `Tests` de este intento, la exclusión de `WorkspaceDraftBoundaryTests.cs` como archivo entero se sustituye por el oráculo estrecho de la orden. El resto de 16.8 y 16.9 no cambia.
 - **Regla reparada:** al menos tan fuerte como exige INV-F4T1-22 y como las reglas anteriores, sin tratar como caso especial una cadena literal.
 - **Cierre:** con PASS, F4-T1 queda CLOSED / PASS. Si el intento 3 falla por causas de producto, la sesión se detiene, sin ampliar T1 sin una decisión nueva del Owner.
+
+## F4-E11. F4-T1, intento 3: N-1 corregido; la verificación da REWORK por FreeText; STOP (S-11)
+
+- **Producto:** RED `5a27ac8b` y GREEN `ce73ceb7`, solo `WorkspaceDraftBoundaryTests.cs`.
+  - CI `43029959059` 4/4; filtro 1300/1300; Core 16838/16838.
+  - El RED (`43029071176`) falla con 13 pruebas, todas del bloque y por aserción.
+  - `n1_hashes.py` da `Pass` true (H1, H2 y H3).
+  - Revisión directa sin defectos.
+  - Revisión independiente: 0 bloqueantes, 0 importantes, 2 menores (m-1 cobertura de la regla ante cambios futuros, m-2 precisión del comentario).
+- **Verificación `R20261111T140248Z-5556`:** `EXECUTION_BLOCKED` / STOP por `Authority`. La identidad del prompt de la sesión llevaba la AuthorityRevision del intento 2. Fue un error de entrada de la sesión, corregido sin cambiar la entrega. Se conserva.
+- **Verificación `R20261111T140847Z-ce94`:** `EXECUTION_REWORK_REQUIRED`, `FailureClass` FreeText.
+  - `WorkCompleted` cita un archivo auxiliar del Worker cuyo nombre contiene como palabra completa un término de 16.10.
+  - Las otras 13 comprobaciones pasan, incluidas `Tests`, con el oráculo estrecho de F4-E10, y `Ci`.
+- **Consecuencia:** corregir la entrega sería el intento 4, con `attempts` en 3 de 3: STOP (S-11). No es un fallo de producto. Se devuelve al Owner, que pidió una decisión nueva para pasar de 3 de 3.
+- **Opciones:**
+  - (A) **intento 4 acotado a la entrega:** el Worker reescribe `worker-handoff.json` para los mismos commits RED y GREEN, sin commits ni cambios de código ni de pruebas. Después vienen la verificación normal, nc1..nc3 y el cierre;
+  - (B) **excepción del Owner a FreeText para esta entrega:** el término solo aparece dentro del nombre citado de un archivo auxiliar, no como declaración de estado. Se cierra sobre `ce94`, con nc1..nc3;
+  - (C) **aclaración de la unidad para 16.10 en I-64:** un término dentro de una ruta o un nombre de archivo citados no cuenta. Después, reejecución de la verificación.
+- **Recomendación de la sesión:** (A). Conserva intacta la regla de 16.9 (VERIFIED solo con las 14 en pass) y no cambia código.
+- **Seguimiento:**
+  - m-1 y m-2 a la próxima tarea que toque la guarda.
+  - Los prompts siguientes del Worker dirán que los términos de 16.10 también cuentan dentro de los nombres de archivo citados.
+  - nc1..nc3 no se ejecutan sobre una verificación REWORK.
