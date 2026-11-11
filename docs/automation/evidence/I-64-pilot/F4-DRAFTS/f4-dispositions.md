@@ -303,3 +303,27 @@ La mutación sigue solo en T4B.
 - Antes de aceptar, la sesión compara byte a byte la delegación con sus fuentes. Luego exige A1-A8 con 8 pass, sin excepción en A5, y un nc4 nuevo.
 - Si todo pasa, el Worker queda autorizado una vez.
 - Si A5 vuelve a fallar por fidelidad: STOP, sin tercera planificación, sin reescribir el contrato y sin Worker.
+
+## F4-E20. Replanificación `61f3` de F4-T2A rechazada (A4) y compactación de `ForbiddenWriteScope` sin reducción posible
+
+**Hechos de `R20261111T211626Z-61f3`** (replanificación única de F4-E19, sobre `0a563cfb`):
+- El refuerzo funcionó en lo que atacaba. Los invariantes, los 18 `AcceptanceCriteria` de `13b0`, `RequiredTests`, `StopConditions`, `Authorities`, `ExpectedEvidence`, `Objective` y `AllowedWriteScope` salieron idénticos byte a byte.
+- La comparación determinista previa a la aceptación dio **REJECTED**. `ForbiddenWriteScope` tiene 138 entradas en lugar de 139: falta la 55, `src/RackCad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs`.
+- A1-A8: A4 FAIL; las otras siete en pass.
+- Es STOP (P-03) y REJECTED_BEFORE_INVOCATION. El Worker no se invocó y `attempts` sigue en 1 de 3.
+- nc4 `e9cb` cumplió su oráculo relativo y no habilita nada.
+- `delegation.json` se conserva tal como salió. El análisis está en `F4-T2A-PILOT-STATE/1/R20261111T211626Z-61f3/analysis.md`.
+
+**Orden del Coordinator** (`owner-f4t2a-contract-compaction.md`):
+- reemitir el contrato con la misma semántica y un `ForbiddenWriteScope` compacto;
+- solo valen prefijos que no cubran ninguna ruta permitida, y archivos sueltos solo donde haga falta;
+- hay que probar mecánicamente la equivalencia (propiedades 1-6);
+- después, una sola planificación nueva.
+
+**Resultado de la compactación** (`F4-T2A-PILOT-STATE/coordinator/forbidden-compaction-report.json`, sobre `0a563cfb`):
+- Las 139 entradas no tienen ninguna redundante: 35 son prefijos y 104 son archivos.
+- Ninguno de los 104 archivos tiene un directorio ancestro cuyo subárbol esté prohibido entero sin contener una ruta permitida. El alcance permitido vive dentro de `Systems/PushBack/` (en `Pilot/`), de `Workspace/` (en `Drafts/`) y de `tests/RackCad.Tests/Workspace/`.
+- **El conjunto mínimo es idéntico al original: 139 entradas, reducción 0.** La equivalencia se demuestra (propiedades 1-6 en true), pero la representación no cambia y no reduce la presión de copia que motivó la orden.
+- La estimación de «unas 40 entradas» que la sesión dio al proponer la opción 1 suponía quitar las enumeraciones de archivos y confiar en la comprobación Scope (diff ⊆ `AllowedWriteScope`). La propiedad 1 de la orden lo excluye.
+
+**Decisión:** la reemisión y la planificación quedan en espera del Coordinator, que debe decidir con este hecho medido. Ningún cambio de `src/` ni de `tests/`.

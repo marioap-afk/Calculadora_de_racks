@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4-T2A-PILOT-STATE: planificacion 13b0 rechazada por A5 (F4-E19); una sola replanificacion autorizada sobre la custodia, con comparacion byte a byte antes de aceptar, A1-A8 8/8 y nc4 nuevo; Worker autorizado una vez si todo pasa; attempts 1 de 3"
+  next_action: "F4-T2A-PILOT-STATE: replanificacion 61f3 rechazada por A4 (F4-E20); la compactacion ordenada de ForbiddenWriteScope da reduccion 0 (139 = 139); reemision y planificacion en espera del Coordinator; attempts 1 de 3"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
@@ -68,7 +68,7 @@ execution_context:
   max_attempts: 3
   persistent_next_action:
     NEXT_ROLE: "Sesion principal: emision y cadena de F4-T2A"
-    NEXT_ACTION: "Replanificacion unica de F4-T2A (F4-E19); si pasa, Worker, CI, revisiones, verificacion y nc1..nc3; despues T2B, T2C, T3, T1B, T4A/T4B y Smoke-2"
+    NEXT_ACTION: "Decision del Coordinator sobre la reemision de F4-T2A (F4-E20: la compactacion no reduce la lista); despues planificacion, Worker, CI, revisiones, verificacion y nc1..nc3"
     TARGET_SHA: "Producto sincronizado y validado en el host: 3f5c7014351d1dc59de4eee86a7d1319fbeccc07 sobre main a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60 (CI 42407236088 push 4/4; DLL Plugin Debug 0C0F2FDE0987C489BABAF2ACB9A46936117D044EAF45C706A303E6B5B1C56C0B, POST-I65 HOST SANITY CHECK aa47 = PASS). La punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo es un commit documental encima, sin cambios en src/, tests/ ni archivos de proyecto. Candidato validado por Smoke-1, sin cambios: cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6 (SMOKE1_VALIDATED_CANDIDATE; DLL 3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0; alcanzable por archive/I-64-pre-rebase-05084ca7)"
     GATE: "F4 - Borradores y Actualizar: EN CURSO, presupuesto por tarea; F4-T1 CLOSED / PASS; F4-T2A attempts 1 de 3 (F4-E18); F3 CLOSED / PASS WITH LIMITATIONS; F5-F7 pendientes; gate de integracion CLOSED"
     TASK: "F4-T2A-PILOT-STATE: estado del piloto de Push Back (AnnotationScale, un lado) y frontera de propiedad N-2 en el nucleo; Application pura, sin AutoCAD"

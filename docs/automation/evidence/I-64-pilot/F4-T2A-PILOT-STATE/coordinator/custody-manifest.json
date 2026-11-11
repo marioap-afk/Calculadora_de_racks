@@ -4,10 +4,16 @@
   "SourceRoot": "artifacts/orchestration/I-64/F4-T2A-PILOT-STATE/coordinator",
   "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
   "Counts": {
-    "CUSTODIED": 1,
+    "CUSTODIED": 2,
     "EXCLUDED": 0
   },
   "Files": [
+    {
+      "Path": "forbidden-compaction-report.json",
+      "Bytes": 9493,
+      "Sha256": "96d80d0d411948ae63d0ffe417c8b4ec1ea5a29f77a58ba8da727f7f4e80c946",
+      "Disposition": "CUSTODIED"
+    },
     {
       "Path": "gate-contract.json",
       "Bytes": 31577,

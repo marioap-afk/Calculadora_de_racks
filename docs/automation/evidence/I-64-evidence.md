@@ -6181,3 +6181,15 @@ Todo queda dispuesto en sus §9 y §10.
 **Siguiente paso:** una sola replanificación sobre este commit, con comparación byte a byte antes de aceptar.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 128. Replanificación de F4-T2A rechazada por A4 y compactación sin reducción
+
+**Decisión:** F4-E20.
+
+**`61f3`:** la comparación byte a byte dio REJECTED y A4 FAIL. En `ForbiddenWriteScope` falta `src/RackCad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs`. Es STOP (P-03) y REJECTED_BEFORE_INVOCATION. El Worker no se invocó y `attempts` sigue en 1 de 3. nc4 `e9cb` cumplió su oráculo.
+
+**Compactación ordenada:** el informe determinista da un conjunto mínimo idéntico al original (139 = 139). La equivalencia se demuestra, pero no hay reducción, así que la reemisión queda en espera del Coordinator.
+
+**Custodia:** `I-64-pilot/F4-T2A-PILOT-STATE/1/R20261111T211626Z-61f3/`, `F4-T2A-PILOT-STATE-nc4/1/R20261111T211955Z-e9cb/` y `F4-T2A-PILOT-STATE/coordinator/forbidden-compaction-report.json`. La orden está en `F4-DRAFTS/coordinator/owner-f4t2a-contract-compaction.md`.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.
