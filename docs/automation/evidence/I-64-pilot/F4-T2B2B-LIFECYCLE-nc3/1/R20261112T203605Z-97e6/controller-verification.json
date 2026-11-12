@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2B2B-LIFECYCLE",
+  "RunId": "R20261112T203605Z-97e6",
+  "DelegationRunId": "R20261112T183448Z-7813",
+  "WorkRunId": "R20261112T183825Z-36c7",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, OutputWrittenUtc=2026-11-12T13:51:48.582245-06:00, posterior a Cession.StartUtc=2026-11-12T18:39:17Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json coincide en TaskId, RunId, DelegationRunId y Attempt. Outcome.OutputPath termina en artifacts/orchestration/I-64/F4-T2B2B-LIFECYCLE/1/R20261112T183825Z-36c7/worker-handoff.json; escritura posterior al inicio de cesion."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leidos AUTOMATION_PLAN.md, agent-execution/README.md y AGENTS.md de MainSha 812baf879612320653094a8aaf46aca0bac81383. git merge-base --is-ancestor AuthorityRevision BaseSha tuvo exit 0. git diff --name-only AuthorityRevision BaseSha muestra solo docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T2B2B-LIFECYCLE/coordinator/gate-contract.json y docs/automation/state/I-64.yml; son UNIT_DOC, sin rutas EXTERNAL ni UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "relay-record-planning.json registra A1-A8=pass. byte-fidelity-check.json: PASS, las ocho colecciones decodificadas y sus bytes UTF-8 coinciden con el contrato; AllowedWriteScopeElementwiseInOrder=true y ForbiddenWriteScopeCount=77 en ambos."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dan 8f249e3a9d886348a18ca8eef35f7ab014a8b167, igual a CurrentSha. BaseSha es ancestro; RedSha a2e0ec13c17dd5152498971ec42e3163e3acee13 queda entre BaseSha y CurrentSha en git log."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry: HeadSha y LsRemoteSha=8f249e3a9d886348a18ca8eef35f7ab014a8b167. RemoteFacts.OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, igual a MainSha. Usados los hechos remotos del registro; sin consulta de red."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha devuelve exactamente las 12 rutas de AllowedWriteScope, todas coinciden literalmente; ninguna ruta adicional. La lista contiene solo seis archivos src/ y seis archivos tests/."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no devuelve cambios. git check-ignore -v sobre el gate-contract.json de inputs identifica .gitignore:3, artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: push, ref refs/heads/architecture/workspace-persistente-rackcad, HeadSha=CurrentSha; los cuatro jobs requeridos constan en success. RemoteFacts.RedRun es push del RedSha; el job Tests (Domain + Application) termino en failure."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Current: Core filtro Workspace 1919 seleccionadas, 1919 passed; UI filtro Workspace 248, 248 passed. Ambos superan sus minimos 1754 y 248 y coinciden con TestResults de la entrega. TRX Red: Core Workspace 1919 seleccionadas, 1791 passed y 128 failed; UI Workspace 248 passed. RT=git diff --name-only BaseSha RedSha -- tests/: cinco rutas Workspace declaradas; git diff --name-only RedSha CurrentSha -- tests/ no devuelve rutas. ChainRedFiles=RT: WorkspaceBridgeFacadeSourceGuardTests.cs, WorkspaceDraftRegistryContainmentTests.cs, WorkspaceEditIntentHostTests.cs, WorkspaceLifecycleGuardTests.cs, WorkspaceLifecycleHostTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> en ambos commits. Coincide con Worker.Trailer y Worker.ModelRequested=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant: ModelRequested=sonnet (alias de transporte), EffortRequested=high, ModelEffective=claude-sonnet-5-5, EffortEffective=high. El modelo y effort efectivos coinciden con la delegacion; no hay discrepancia."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Inspeccion de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction conforme a AUTOMATION_PLAN 16.10: una coincidencia en WorkCompleted y ninguna en los otros seis campos."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones de permisos y dos resultados de herramienta con error, ninguno pendiente. Sin aviso de limite."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "WorkCompleted contiene una coincidencia prohibida por AUTOMATION_PLAN 16.10; no aparecen otras coincidencias en los otros seis campos inspeccionados."
+  ],
+  "RecommendedNextAction": "Corregir WorkCompleted para retirar la coincidencia detectada y remitir la entrega corregida para verificacion."
+}

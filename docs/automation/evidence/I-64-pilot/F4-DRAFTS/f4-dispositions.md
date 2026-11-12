@@ -808,3 +808,76 @@ La mutación sigue solo en T4B.
 **Controles:** nc4 en la primera delegación de la cadena; nc1..nc3 con su oráculo ordinario. Si nc2 o nc3 repiten el modo de fallo de T2B1 o T2B2A, la sesión los devuelve al Owner antes de cualquier sustituto (F4-E29 y F4-E33).
 
 T2B2B requiere revisión directa e independiente (orden del Owner). Su comportamiento real se mide después en Smoke-2.
+
+## F4-E35. F4-T2B2B-LIFECYCLE: intento 1 verificado, revisiones, órdenes del Owner, controles y cierre
+
+**Hechos del intento 1:**
+- **Planificación** `R20261112T183448Z-7813` (primera delegación de la cadena): fidelidad PASS en las ocho colecciones a la primera, A1-A8 8/8, Horizonte Medium. nc4 `R20261112T183801Z-fc9a`: solo A3 en fail, con su oráculo cumplido. Aceptada tal como se emitió.
+- **Worker** `R20261112T183825Z-36c7`:
+  - subagente con `claude-sonnet-5-5`/high, 306 turnos, 0 denegaciones;
+  - RED `a2e0ec13`: pruebas y esqueleto inerte; 128 fallos por aserción, todos dentro de `RackCad.Tests.Workspace`;
+  - GREEN `8f249e3a`: solo producto; 12 rutas en total, exactamente el `AllowedWriteScope`.
+  - El relevo de salida se midió tres veces: las dos primeras lecturas contaron dos `bash.exe` de la propia sesión, un falso P-02 por la ruta del worktree en la orden. La tercera, custodiada, da 0 participantes. En la entrada, 0 participantes.
+- **CI:** `43294223849` 4/4. Core: filtro 1919/1919, suite 17457/17457. UI: filtro 248/248. El RED `43287541049` tiene Core en rojo.
+- **Verificación** `R20261112T201718Z-060d`: `EXECUTION_VERIFIED`, 14/14, `VerifiedSha` `8f249e3a`. El barrido 16.10 de la sesión no encuentra nada.
+- **Revisión directa de la sesión** (`direct-review.md`, junto a la verificación): producto conforme a INV-F4T2B2B-01..09 y a la tabla de veto del Owner (F4-E29). Dos menores en las guardas (D-1 y D-2).
+- **Revisión adversarial independiente** (`independent-review.md`): ACEPTABLE CON MENORES (0/0/5). Sin defectos de producto y con la tabla del Owner cumplida en sus cinco filas.
+  - **M-1:** una guarda impide envolver el asesor, lo que contradice la letra de INV-F4T2B2B-11.
+  - **M-2:** conteos y conjuntos exactos de archivo entero.
+  - **M-3:** una prueba fija como «silent» el residual declarado.
+  - **M-4:** la documentación de `Waiting` y `NotAdmitted` es falsa para la recarga.
+  - **M-5:** dos huecos de cobertura.
+
+  El análisis conjunto está en `analysis.md`.
+
+**Orden del Owner 1** (`F4-DRAFTS/coordinator/owner-f4t2b2b-close-decision.md`, pregunta y respuesta literales): «Cerrar y arrastrar a T3».
+- La sesión devolvió al Owner el modo de fallo repetido de la regla I-1 antes de clasificarlo.
+- No se gasta el intento 2.
+- La contradicción de M-1 con INV-F4T2B2B-11 queda registrada como desviación.
+- Los menores pasan a cambios declarados del contrato de F4-T3.
+
+**Controles** (sobre las entradas de `060d`):
+- **nc1** `R20261112T202615Z-e92e`: **oráculo ordinario NO cumplido / señal demostrada.**
+  - El Controller detectó la mutación: el CurrentSha `deadbeef…` no resuelve y contradice el HEAD, el remoto y la CI.
+  - Dio `EXECUTION_BLOCKED`/STOP con S-04, pero la primera comprobación en fail es Handoff (AUTOMATION_PLAN 16.9: «Salida conforme pero vacía o falsa»), no Identity como fija README §10. Remote, Ci y Tests fallan en cascada.
+  - Es un modo de fallo nuevo para nc1. No se reejecuta (README §10) y se devolvió al Owner antes de cualquier sustituto (F4-E29).
+- **nc2** `R20261112T203204Z-c514`: CONTROL PASS por el motivo correcto. Solo Scope en fail, nombrando `DraftRegistry.cs`; `EXECUTION_BLOCKED`/STOP.
+- **nc3** `R20261112T203605Z-97e6`: CONTROL PASS por el motivo correcto. Solo FreeText en fail, en `WorkCompleted`; `EXECUTION_REWORK_REQUIRED`/REWORK.
+
+**Orden del Owner 2** (`F4-DRAFTS/coordinator/owner-f4t2b2b-nc1-decision.md`): «Sustituto + cerrar».
+- nc1 ordinario = **ORÁCULO NO CUMPLIDO / SEÑAL DEMOSTRADA** (se conserva tal cual).
+- **Sustituto F4T2B2B-NC1-IDENTITY-SIGNAL-01** (`F4-T2B2B-LIFECYCLE-nc1-substitute/1/R20261112T204312Z-f577`): **PASS**.
+  - Autoprueba de 12 casos sintéticos, dos veces, determinista.
+  - Se cumplen las 7 propiedades:
+    - la mutación es exactamente `CurrentSha`, cambiado por un SHA que no existe en el repositorio;
+    - los hashes derivados son coherentes;
+    - Identity tenía que fallar;
+    - el Controller dio Identity = fail con `EXECUTION_BLOCKED`/STOP;
+    - su evidencia de Identity nombra el SHA falso y el HEAD real;
+    - solo difieren de la verificación real las comprobaciones que consumen CurrentSha;
+    - FailureClass es la primera en fail y es Handoff o Identity.
+- **Registro:** nc1 = SATISFIED_UNDER_F4T2B2B_NC1_IDENTITY_SIGNAL_SUBSTITUTE.
+- **Deuda de protocolo PD-F4-04:** README §10 (nc1 → Identity) y AUTOMATION_PLAN 16.9 (salida falsa → Handoff) admiten dos primeras comprobaciones para un CurrentSha inexistente. No se resuelve de forma global dentro de I-64.
+
+**Resultado:** **F4-T2B2B-LIFECYCLE = CLOSED / PASS WITH LIMITATIONS** sobre `8f249e3a`, con `attempts` 1 de 3 (paquete de cierre `F4-T2B2B-LIFECYCLE/task-close-package.md`).
+
+**Arrastres:**
+- **A F4-T3** (cambios declarados de su contrato):
+  - M-1: fijar solo el orden `_host = new WorkspaceHostCore(` → `_bridge.SetLifecycleAdvisor(` y su conteo, y que el reenvío llame a `_core.SetLifecycleAdvisor(`;
+  - M-2 (1 a 4) y D-1: pasar a cota, orden o cuerpo propio;
+  - M-3: afirmar solo la vía tomada;
+  - M-4: documentar `Waiting` y `NotAdmitted` para la recarga;
+  - M-5: `Detail` y `Witness` del NotAdmitted de la recarga, y la no degradación del descarte;
+  - la obligación de llamar a `NotePilotEdit` (también para F4-T4);
+  - los RackIds del veto para el mensaje de D-17;
+  - el acceso a la cola de avisos;
+  - el descarte de un solo borrador por el host;
+  - la reentrada durante la lectura de la recarga.
+- **A Smoke-2:**
+  - el orden real entre cierre y destrucción en CLOSE, CLOSEALL, QUIT, la pestaña y la API, con la regla de devolución al Owner de D-T2B2-10 si la secuencia nunca queda intacta o hay falsos inciertos;
+  - el cierre cancelado;
+  - un `e.Veto()` que lanza o se ignora;
+  - el documento vetado no activo;
+  - `Stop()` y el fallo al enganchar `BeginDocumentClose`;
+  - el coste;
+  - la vía de retirada sin rastro.

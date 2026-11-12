@@ -1,0 +1,57 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261112T202615Z-e92e",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Remote",
+    "Ci",
+    "Tests"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse confirms BaseSha 32369c7b24d393931c26daab33f53ca450bdcf2e, RedSha a2e0ec13c17dd5152498971ec42e3163e3acee13 and actual HEAD 8f249e3a9d886348a18ca8eef35f7ab014a8b167. Branch is architecture/workspace-persistente-rackcad; remote branch ref and HEAD both resolve to 8f249e3a9d886348a18ca8eef35f7ab014a8b167. Both BaseSha and RedSha pass merge-base --is-ancestor against actual HEAD. Handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, so HEAD != handoff CurrentSha."
+  },
+  "OutputSha256": "1BBF007D002BAF11B71DFC8D763E425389C2297C9754D0DB523E40F9B0E7F046",
+  "ManualFreeText1610": []
+}

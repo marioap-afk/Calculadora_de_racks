@@ -1,0 +1,850 @@
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs b/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
+index af68d2fc..c2989e18 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
+@@ -1,6 +1,7 @@
+ #nullable enable
+ using System;
+ using System.Collections.Generic;
++using System.Collections.ObjectModel;
+ using System.Linq;
+ 
+ namespace RackCad.Application.Workspace.Drafts
+@@ -54,20 +55,67 @@ namespace RackCad.Application.Workspace.Drafts
+         public IReadOnlyList<string> DirtyRackIds { get; }
+     }
+ 
+-    /// <summary>The visible notice of loss (D-17, INV-20): the racks whose Dirty or pending drafts disappeared with the session.</summary>
++    /// <summary>
++    /// What the explicit discard of ONE draft did (I-64 F4-T2B2B): whether it was removed and whether it had pending text. Both facts are
++    /// known without the comparer. For a rack without draft both are false.
++    /// </summary>
++    public readonly record struct DraftUserDiscardResult(bool Removed, bool HadPendingText);
++
++    /// <summary>
++    /// What the explicit discard of EVERY draft of a session did (I-64 F4-T2B2B): the racks removed and, among them, those that had
++    /// pending text, each list ordered by rack id (ordinal) and never null.
++    /// </summary>
++    public sealed class DraftUserDiscardAllResult
++    {
++        internal DraftUserDiscardAllResult(IReadOnlyList<string> removedRackIds, IReadOnlyList<string> pendingTextRackIds)
++        {
++            RemovedRackIds = removedRackIds;
++            PendingTextRackIds = pendingTextRackIds;
++        }
++
++        public IReadOnlyList<string> RemovedRackIds { get; }
++
++        public IReadOnlyList<string> PendingTextRackIds { get; }
++    }
++
++    /// <summary>
++    /// The visible notice of loss (D-17, INV-20): the racks whose Dirty or pending drafts disappeared with the session. Since I-64
++    /// F4-T2B2B it also says which of them are UNCERTAIN (the comparer failed while deciding, so they may or may not have been dirty)
++    /// and why; only the conservative retirement fills those two members, and both are contained in the notice, never null.
++    /// </summary>
+     public sealed class DraftLossNotice
+     {
+         internal DraftLossNotice(SessionId session, IReadOnlyList<string> lostRackIds)
++            : this(session, lostRackIds, Array.Empty<string>(), NoReasons())
++        {
++        }
++
++        internal DraftLossNotice(
++            SessionId session,
++            IReadOnlyList<string> lostRackIds,
++            IReadOnlyList<string> uncertainRackIds,
++            IReadOnlyDictionary<string, string> uncertainReasons)
+         {
+             Session = session;
+             LostRackIds = lostRackIds;
++            UncertainRackIds = uncertainRackIds;
++            UncertainReasons = uncertainReasons;
+         }
+ 
+         public SessionId Session { get; }
+ 
+         public IReadOnlyList<string> LostRackIds { get; }
+ 
++        /// <summary>The racks of <see cref="LostRackIds"/> whose dirty state could not be decided; ordered (ordinal) and never null.</summary>
++        public IReadOnlyList<string> UncertainRackIds { get; }
++
++        /// <summary>The message of the exception of the comparer by uncertain rack id; read-only, ordinal and never null.</summary>
++        public IReadOnlyDictionary<string, string> UncertainReasons { get; }
++
+         public bool HasLoss => LostRackIds.Count > 0;
++
++        private static IReadOnlyDictionary<string, string> NoReasons() =>
++            new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(StringComparer.Ordinal));
+     }
+ 
+     /// <summary>
+@@ -200,6 +248,109 @@ namespace RackCad.Application.Workspace.Drafts
+             return new DraftLossNotice(session, lost);
+         }
+ 
++        // ---------------------------------------------------------------- explicit operations that never depend on the comparer (I-64 F4-T2B2B)
++        //
++        // The ordinary operations above decide from the comparer BEFORE they remove anything, so a comparer that always throws would
++        // make a draft impossible to remove. The four operations below are additive and keep those semantics untouched: they remove
++        // and detach what they touch whatever the comparer says, none of them ever throws because of it, none writes anything and
++        // none frees the Applying slot. Their lists are ordered (ordinal) and never null.
++
++        /// <summary>
++        /// The explicit discard of ONE draft by the user: the user chose to lose it, so no comparison is needed and none is made. Only
++        /// the pending text is known without the comparer, and it is what the result says. The session stays alive.
++        /// </summary>
++        public DraftUserDiscardResult DiscardByUser(SessionId session, string rackId)
++        {
++            if (string.IsNullOrEmpty(rackId)) throw new ArgumentException("A rack id is required.", nameof(rackId));
++            if (!_bySession.TryGetValue(session, out var racks) || !racks.TryGetValue(rackId, out var entry))
++                return new DraftUserDiscardResult(false, false);
++
++            var hadPendingText = entry.HasPendingText;
++            racks.Remove(rackId);
++            if (racks.Count == 0) _bySession.Remove(session);
++            entry.Detach();
++            return new DraftUserDiscardResult(true, hadPendingText);
++        }
++
++        /// <summary>The explicit discard of EVERY draft of the session by the user; no comparison is made. The session stays alive.</summary>
++        public DraftUserDiscardAllResult DiscardAllByUser(SessionId session)
++        {
++            if (!_bySession.TryGetValue(session, out var racks))
++                return new DraftUserDiscardAllResult(Array.Empty<string>(), Array.Empty<string>());
++
++            var removed = racks.Keys.OrderBy(k => k, StringComparer.Ordinal).ToArray();
++            var pending = racks.Values.Where(e => e.HasPendingText).Select(e => e.RackId).OrderBy(k => k, StringComparer.Ordinal).ToArray();
++            _bySession.Remove(session);
++            foreach (var entry in racks.Values) entry.Detach();
++            return new DraftUserDiscardAllResult(removed, pending);
++        }
++
++        /// <summary>
++        /// Retires a session whose drafts are KNOWN to be clean: it removes them all without calling the comparer and marks the session
++        /// as retired. Only the drafts with pending text are lost.
++        /// </summary>
++        public DraftLossNotice RetireKnownSafe(SessionId session)
++        {
++            if (!_bySession.TryGetValue(session, out var racks))
++            {
++                _retired.Add(session);
++                return new DraftLossNotice(session, Array.Empty<string>());
++            }
++
++            var lost = racks.Values.Where(e => e.HasPendingText).Select(e => e.RackId).OrderBy(k => k, StringComparer.Ordinal).ToArray();
++            _retired.Add(session);
++            _bySession.Remove(session);
++            foreach (var entry in racks.Values) entry.Detach();
++            return new DraftLossNotice(session, lost);
++        }
++
++        /// <summary>
++        /// Retires a session whose drafts are NOT known to be clean: it removes them all and marks the session as retired, and it never
++        /// infers "clean". Draft by draft, pending text comes first (a draft with pending text is lost and never uncertain); then the
++        /// comparer decides, and a comparer that throws makes THAT draft lost and uncertain, with the message of its exception, without
++        /// stopping the retirement of the others.
++        /// </summary>
++        public DraftLossNotice RetireConservative(SessionId session)
++        {
++            if (!_bySession.TryGetValue(session, out var racks))
++            {
++                _retired.Add(session);
++                return new DraftLossNotice(session, Array.Empty<string>());
++            }
++
++            var lost = new List<string>();
++            var uncertain = new List<string>();
++            var reasons = new SortedDictionary<string, string>(StringComparer.Ordinal);
++            foreach (var entry in racks.Values)
++            {
++                if (entry.HasPendingText)
++                {
++                    lost.Add(entry.RackId);
++                    continue;
++                }
++
++                try
++                {
++                    if (entry.IsDirty) lost.Add(entry.RackId);
++                }
++                catch (Exception ex)
++                {
++                    lost.Add(entry.RackId);
++                    uncertain.Add(entry.RackId);
++                    reasons[entry.RackId] = ex.Message ?? string.Empty;
++                }
++            }
++
++            _retired.Add(session);
++            _bySession.Remove(session);
++            foreach (var entry in racks.Values) entry.Detach();
++            return new DraftLossNotice(
++                session,
++                lost.OrderBy(k => k, StringComparer.Ordinal).ToArray(),
++                uncertain.OrderBy(k => k, StringComparer.Ordinal).ToArray(),
++                new ReadOnlyDictionary<string, string>(reasons));
++        }
++
+         // ---------------------------------------------------------------- the single Applying slot
+ 
+         internal bool TryAcquireApplySlot(IDraftEntry entry)
+diff --git a/src/RackCad.Application/Workspace/EventBridgeCore.cs b/src/RackCad.Application/Workspace/EventBridgeCore.cs
+index 066aae4c..f9d2e205 100644
+--- a/src/RackCad.Application/Workspace/EventBridgeCore.cs
++++ b/src/RackCad.Application/Workspace/EventBridgeCore.cs
+@@ -54,6 +54,11 @@ namespace RackCad.Application.Workspace
+         private SessionId? _active;
+         private bool _panelVisible;
+         private bool _modalRackCadActive;
++        private IWorkspaceLifecycleAdvisor? _advisor;
++
++        // The close sequence as the core observed it (I-64 F4-T2B2B, D-T2B2-10): the session whose close the advisor just allowed,
++        // and nothing else. It is forgotten (assigned null) by every other input that changes the state of the core.
++        private SessionId? _lastAllowedClose;
+ 
+         public EventBridgeCore(IHostEventSource source, Action<string, Exception>? logFault = null)
+         {
+@@ -120,6 +125,7 @@ namespace RackCad.Application.Workspace
+         public void RequestReconciliation()
+         {
+             if (!_started) return;
++            _lastAllowedClose = null;
+             try
+             {
+                 if (_active is not { } id) return;
+@@ -138,16 +144,32 @@ namespace RackCad.Application.Workspace
+         public bool IsDegraded(SessionId id) => _states.TryGetValue(id, out var state) && state.Degraded;
+ 
+         /// <summary>Panel visibility as the host reports it. Only the drain conditions use it; it never changes an attachment.</summary>
+-        public void SetPanelVisible(bool visible) => _panelVisible = visible;
++        public void SetPanelVisible(bool visible)
++        {
++            _lastAllowedClose = null;
++            _panelVisible = visible;
++        }
+ 
+         /// <summary>Whether a RackCad modal is open, as the host reports it. While true, nothing drains.</summary>
+-        public void SetModalRackCadActive(bool active) => _modalRackCadActive = active;
++        public void SetModalRackCadActive(bool active)
++        {
++            _lastAllowedClose = null;
++            _modalRackCadActive = active;
++        }
++
++        /// <summary>
++        /// Assigns the advisor of the lifecycle (I-64 F4-T2B2B, D-T2B2-09). It is wired by assignment and never by constructor; a second
++        /// call replaces the advisor. It is a query-like setup call: it does not forget the close sequence.
++        /// </summary>
++        public void SetLifecycleAdvisor(IWorkspaceLifecycleAdvisor advisor) =>
++            _advisor = advisor ?? throw new ArgumentNullException(nameof(advisor));
+ 
+         /// <summary>
+         /// First panel open: attaches the document-collection sources once each. Repeating it changes nothing.
+         /// </summary>
+         public void Start()
+         {
++            _lastAllowedClose = null;
+             _started = true;
+             _panelVisible = true;
+             foreach (var source in BridgeSources.DocumentCollection)
+@@ -169,6 +191,7 @@ namespace RackCad.Application.Workspace
+         /// <summary>Releases every attachment and every session. After it the core is back to its initial, subscription-free state.</summary>
+         public void Stop()
+         {
++            _lastAllowedClose = null;
+             foreach (var pair in _states.ToList())
+             {
+                 foreach (var attachment in pair.Value.Attached.ToList()) DetachSafe(attachment);
+@@ -189,7 +212,8 @@ namespace RackCad.Application.Workspace
+         /// <summary>A created document gets no session until it is activated (D-03: sessions are lazy). Nothing is attached.</summary>
+         public void OnDocumentCreated(long nativeInstanceId)
+         {
+-            // Intentionally empty: the lazy session policy needs no work here, and nothing may fail.
++            // The lazy session policy needs no work here and nothing may fail; the input only ends the observed close sequence.
++            _lastAllowedClose = null;
+         }
+ 
+         /// <summary>
+@@ -199,6 +223,7 @@ namespace RackCad.Application.Workspace
+         public void OnDocumentActivated(long nativeInstanceId, bool isQuiescent)
+         {
+             if (!_started) return;
++            _lastAllowedClose = null;
+             SessionId? known = null;
+             try
+             {
+@@ -231,6 +256,7 @@ namespace RackCad.Application.Workspace
+         public void OnNoActiveDocument()
+         {
+             if (!_started) return;
++            _lastAllowedClose = null;
+             _active = null;
+         }
+ 
+@@ -242,10 +268,16 @@ namespace RackCad.Application.Workspace
+         public void OnDocumentToBeDestroyed(long nativeInstanceId)
+         {
+             if (!_started) return;
++            var allowedBefore = _lastAllowedClose;
++            _lastAllowedClose = null;
+             try
+             {
+                 if (!_byNative.TryGetValue(nativeInstanceId, out var id)) return;
+                 _byNative.Remove(nativeInstanceId);
++
++                // The close sequence is intact only for the session whose close was just allowed and that is not degraded; the
++                // degradation is read BEFORE the state of the session goes away.
++                var sequenceIntact = allowedBefore == id && !IsDegraded(id);
+                 if (_states.TryGetValue(id, out var state))
+                 {
+                     foreach (var attachment in state.Attached.ToList()) DetachSafe(attachment);
+@@ -254,6 +286,7 @@ namespace RackCad.Application.Workspace
+ 
+                 _registry.Destroy(id);
+                 if (_active == id) _active = null;
++                TellAdvisorTheSessionEnded(id, sequenceIntact);
+                 TrySyncIdle();
+             }
+             catch (Exception ex)
+@@ -273,6 +306,7 @@ namespace RackCad.Application.Workspace
+         public bool OnSourceEvent(SessionId session, BridgeSource source)
+         {
+             if (!_started) return false;
++            _lastAllowedClose = null;
+             try
+             {
+                 if (!_states.TryGetValue(session, out var state) || state.Degraded) return false;
+@@ -315,21 +349,29 @@ namespace RackCad.Application.Workspace
+ 
+         /// <summary>
+         /// Close-begin handler. It lives as long as the session, degraded or not, and decides only from in-memory
+-        /// state: it reads no stored data, resolves nothing, writes nothing and opens no dialog. There is no unsaved
+-        /// work state yet, so it always allows; the veto rule arrives with the draft state of F4.
++        /// state: it reads no stored data, resolves nothing, writes nothing and opens no dialog. Without an advisor it allows. With
++        /// one, the decision is the one of the advisor, and any exception of the advisor is a Veto: it is logged, never degrades the
++        /// session and never reaches the host. An allowed close is remembered (one session only) so that the destruction can tell
++        /// whether anything happened in between; the input itself first forgets whatever was remembered.
+         /// </summary>
+         public CloseDecision OnBeginDocumentClose(SessionId session)
+         {
++            _lastAllowedClose = null;
++            var advisor = _advisor;
++            if (advisor == null) return CloseDecision.Allow;
++
++            var decision = CloseDecision.Veto;
+             try
+             {
+-                _ = _states.TryGetValue(session, out _);
++                decision = advisor.AdviseClose(session) == CloseDecision.Allow ? CloseDecision.Allow : CloseDecision.Veto;
+             }
+             catch (Exception ex)
+             {
+                 Log("OnBeginDocumentClose", ex);
+             }
+ 
+-            return CloseDecision.Allow;
++            if (decision == CloseDecision.Allow) _lastAllowedClose = session;
++            return decision;
+         }
+ 
+         /// <summary>
+@@ -341,6 +383,7 @@ namespace RackCad.Application.Workspace
+         {
+             var outcomes = new List<DrainOutcome>();
+             if (!_started) return outcomes;
++            _lastAllowedClose = null;
+             try
+             {
+                 if (_active is { } id
+@@ -366,7 +409,11 @@ namespace RackCad.Application.Workspace
+         /// <summary>
+         /// A fault of the bridge in the host adapter. It is logged and degrades only the named session.
+         /// </summary>
+-        public void ReportFault(SessionId session, string context, Exception exception) => Fault(session, context, exception);
++        public void ReportFault(SessionId session, string context, Exception exception)
++        {
++            _lastAllowedClose = null;
++            Fault(session, context, exception);
++        }
+ 
+         // Flips the in-memory command state of a session and tells whether it changed. No hint, no idle, no host call.
+         private static bool SetQuiescent(SessionState state, bool quiescent)
+@@ -376,6 +423,22 @@ namespace RackCad.Application.Workspace
+             return true;
+         }
+ 
++        // The advisor learns, synchronously and in memory, that a session is gone. It runs after the session left the registry and
++        // the active slot; its own failure is logged and never stops the rest of the destruction.
++        private void TellAdvisorTheSessionEnded(SessionId id, bool closeSequenceIntact)
++        {
++            var advisor = _advisor;
++            if (advisor == null) return;
++            try
++            {
++                advisor.SessionDestroyed(id, closeSequenceIntact);
++            }
++            catch (Exception ex)
++            {
++                Log("OnDocumentToBeDestroyed.Advisor", ex);
++            }
++        }
++
+         private void AttachSessionSources(SessionId id, SessionState state)
+         {
+             foreach (var source in BridgeSources.PerSession)
+diff --git a/src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs b/src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs
+new file mode 100644
+index 00000000..32fa1c14
+--- /dev/null
++++ b/src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs
+@@ -0,0 +1,23 @@
++#nullable enable
++namespace RackCad.Application.Workspace
++{
++    /// <summary>
++    /// I-64 F4-T2B2B (D-T2B2-09): the one seam through which the pure bridge core asks the host what to do with the close and the
++    /// destruction of a document. The core owns no state of drafts: it asks, and it keeps only what it can observe itself. Both calls
++    /// are synchronous and in memory: they read nothing of the drawing, write nothing and open no dialog.
++    /// </summary>
++    public interface IWorkspaceLifecycleAdvisor
++    {
++        /// <summary>
++        /// The advice for one attempt to close the document of the session: Allow, or Veto while some work could be lost. Every
++        /// attempt is evaluated anew; repeating it is never consent. The core turns an exception of the advisor into a Veto.
++        /// </summary>
++        CloseDecision AdviseClose(SessionId session);
++
++        /// <summary>
++        /// The session was destroyed (active or not). <paramref name="closeSequenceIntact"/> says that the core saw the close of this
++        /// very session allowed and, since then, no other input and no fault of the session. The advisor must not call the bridge back.
++        /// </summary>
++        void SessionDestroyed(SessionId session, bool closeSequenceIntact);
++    }
++}
+diff --git a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+index a23a6101..9f7bf44f 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@ -83,10 +83,11 @@ namespace RackCad.Application.Workspace
+         Waiting,
+ 
+         /// <summary>
+-        /// The request is refused and no draft is created. The session of the request is not the one of the active document
+-        /// (INV-22), which is decided before anything about the drafts and before any read of the drawing. The other way to this
+-        /// state, a session that was retired when the draft was begun (the SessionRetired answer of step 8), is reached AFTER the
+-        /// read, so a Rejected outcome does not by itself mean that nothing was read.
++        /// The request is refused and no draft is created. Three ways lead here. First, INV-22: the session of the request is not the
++        /// one of the active document, which is decided before anything about the drafts and before any read of the drawing. Second,
++        /// the reader answers Rejected, which happens after the gate and after the read was attempted. Third, the SessionRetired answer
++        /// of step 8 (a session that was retired when the draft was begun), also after the gate and the read. The last two are
++        /// reached AFTER the read, so a Rejected outcome does not by itself mean that nothing was read.
+         /// </summary>
+         Rejected,
+ 
+@@ -101,6 +102,18 @@ namespace RackCad.Application.Workspace
+ 
+         /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
+         Failed,
++
++        // The three states below belong to the reload (I-64 F4-T2B2B, D-T2B2-12). They come AFTER the seven of the intention, which
++        // stay as an ordered prefix, and the default value of this enum is still Unavailable.
++
++        /// <summary>The reload found no draft for (session, rack): nothing was read.</summary>
++        NotFound,
++
++        /// <summary>The draft is not marked as possibly stale and clean, so it does not need to be reloaded: nothing was read.</summary>
++        NotNeeded,
++
++        /// <summary>The draft was replaced from the one read: its stale base, initial state and current state are the new ones.</summary>
++        Reloaded,
+     }
+ 
+     /// <summary>
+@@ -160,6 +173,13 @@ namespace RackCad.Application.Workspace
+ 
+         public static EditIntentOutcome Failed(string reason) => Without(EditIntentStatus.Failed, reason);
+ 
++        public static EditIntentOutcome NotFound(string reason) => Without(EditIntentStatus.NotFound, reason);
++
++        public static EditIntentOutcome NotNeeded(string reason) => Without(EditIntentStatus.NotNeeded, reason);
++
++        public static EditIntentOutcome Reloaded(EditWitnessStatus witness) =>
++            new(EditIntentStatus.Reloaded, witness, null, null, null, null);
++
+         private static EditIntentOutcome Without(EditIntentStatus status, string? reason) =>
+             new(status, EditWitnessStatus.NotEvaluated, reason, null, null, null);
+     }
+@@ -234,6 +254,64 @@ namespace RackCad.Application.Workspace
+             new(status, reason, Array.Empty<string>());
+     }
+ 
++    /// <summary>
++    /// How the explicit discard of the drafts of a session ended (I-64 F4-T2B2B, D-T2B2-15). The order is fixed and the default value
++    /// is Rejected: it is inert, it means that nothing was done.
++    /// </summary>
++    public enum EditDiscardStatus
++    {
++        /// <summary>The request does not belong to the active document (INV-22): nothing was done. It is also the default value.</summary>
++        Rejected,
++
++        /// <summary>Every draft of the session was removed (possibly none): nothing was read and nothing was written.</summary>
++        Discarded,
++
++        /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
++        Failed,
++    }
++
++    /// <summary>
++    /// I-64 F4-T2B2B (D-T2B2-15) — the answer of the host to the explicit discard of every draft of a session. A value: the racks are
++    /// text, so it names no draft type. Both lists are never null, also for a default value of this struct.
++    /// </summary>
++    public readonly struct EditDiscardOutcome
++    {
++        private readonly IReadOnlyList<string>? _removedRackIds;
++        private readonly IReadOnlyList<string>? _pendingTextRackIds;
++
++        private EditDiscardOutcome(EditDiscardStatus status, string? reason, IReadOnlyList<string> removed, IReadOnlyList<string> pendingText)
++        {
++            Status = status;
++            Reason = reason;
++            _removedRackIds = removed;
++            _pendingTextRackIds = pendingText;
++        }
++
++        public EditDiscardStatus Status { get; }
++
++        /// <summary>Why nothing was discarded; null for Discarded.</summary>
++        public string? Reason { get; }
++
++        /// <summary>The racks whose draft was removed, ordered (ordinal); empty unless the status is Discarded.</summary>
++        public IReadOnlyList<string> RemovedRackIds => _removedRackIds ?? Array.Empty<string>();
++
++        /// <summary>The removed racks that had pending text, ordered (ordinal); empty unless the status is Discarded.</summary>
++        public IReadOnlyList<string> PendingTextRackIds => _pendingTextRackIds ?? Array.Empty<string>();
++
++        public static EditDiscardOutcome Rejected(string reason) =>
++            new(EditDiscardStatus.Rejected, reason, Array.Empty<string>(), Array.Empty<string>());
++
++        public static EditDiscardOutcome Discarded(IReadOnlyList<string> removedRackIds, IReadOnlyList<string> pendingTextRackIds)
++        {
++            if (removedRackIds == null) throw new ArgumentNullException(nameof(removedRackIds));
++            if (pendingTextRackIds == null) throw new ArgumentNullException(nameof(pendingTextRackIds));
++            return new EditDiscardOutcome(EditDiscardStatus.Discarded, null, removedRackIds, pendingTextRackIds);
++        }
++
++        public static EditDiscardOutcome Failed(string reason) =>
++            new(EditDiscardStatus.Failed, reason, Array.Empty<string>(), Array.Empty<string>());
++    }
++
+     /// <summary>The pure decisions of the edit intention that do not depend on the host (I-64 F4-T2B2A).</summary>
+     public static class WorkspaceEditIntent
+     {
+diff --git a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+index 39c4da2c..9d108dd3 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@ -30,8 +30,12 @@ namespace RackCad.Application.Workspace
+     /// Back pilot) and <see cref="TryCheckPilotEdit"/> ("check now"). Each is ONE user action with at most ONE logical read, made
+     /// through <see cref="IWorkspaceEditIntentReader"/>; neither runs from the drain or from the idle pass, and until the panel
+     /// exposes them (F4-T3) nothing calls them.
++    ///
++    /// Since I-64 F4-T2B2B it also implements, explicitly, <see cref="IWorkspaceLifecycleAdvisor"/>: the veto of the close of a document
++    /// that may hold unsaved drafts, and the retirement of the drafts of a destroyed session, with a notice when work was lost. It adds
++    /// the stale hint of the drain, the lazy reload, the explicit discard and the in-memory "known clean" mark of a session.
+     /// </summary>
+-    public sealed class WorkspaceHostCore
++    public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor
+     {
+         /// <summary>Native identity used when no document is open: it matches no session.</summary>
+         private const long NoDocumentNativeId = -1;
+@@ -46,6 +50,11 @@ namespace RackCad.Application.Workspace
+         private readonly HashSet<SessionId> _pickFirstOff = new();
+         private readonly DraftRegistry _drafts = new();
+         private readonly DraftClosePolicy _closePolicy;
++
++        // I-64 F4-T2B2B (D-T2B2-10, D-T2B2-13): the sessions whose drafts the last evaluation of the close found clean (the "known
++        // clean" mark, in memory only), and the notices of loss that nobody consumed yet.
++        private readonly HashSet<SessionId> _knownClean = new();
++        private readonly Queue<DraftLossNotice> _lossNotices = new();
+         private IWorkspaceEditIntentReader? _editIntentReader;
+         private bool _started;
+         private bool _panelVisible;
+@@ -144,6 +153,12 @@ namespace RackCad.Application.Workspace
+             if (!_started || !outcome.Result.Drained) return;
+             try
+             {
++                // I-64 F4-T2B2B (D-T2B2-10, D-T2B2-11), before any early return: every drain of the session ends the "known clean"
++                // mark, and a drain that carries the stale hint marks every draft of the pilot of that session. Only a hint: it reads
++                // nothing and raises no conflict.
++                _knownClean.Remove(outcome.Session);
++                if (outcome.Result.Operations.Contains(DrainOperation.MarkDraftsPossiblyStale)) MarkPilotDraftsPossiblyStale(outcome.Session);
++
+                 using (_instrumentation.Begin(WorkspaceMeasurementPoints.Drain, outcome.Result.Operations.Count))
+                 {
+                     // The echo memory of a session that no longer lives goes away before anything is read (lazy purge).
+@@ -183,7 +198,6 @@ namespace RackCad.Application.Workspace
+                         }
+                     }
+ 
+-                    // Drafts do not exist in F1: MarkDraftsPossiblyStale has nothing to mark.
+                 }
+             }
+             catch (Exception ex)
+@@ -309,6 +323,7 @@ namespace RackCad.Application.Workspace
+                 switch (begun.Status)
+                 {
+                     case DraftBeginStatus.Created:
++                        _knownClean.Remove(request.Session);
+                         return EditIntentOutcome.Admitted(witness);
+                     case DraftBeginStatus.AlreadyExists:
+                         return EditIntentOutcome.AlreadyOpen();
+@@ -383,8 +398,10 @@ namespace RackCad.Application.Workspace
+                 switch (check.Status)
+                 {
+                     case DraftCheckStatus.Recovered:
++                        _knownClean.Remove(request.Session);
+                         return EditCheckOutcome.Recovered();
+                     case DraftCheckStatus.Conflict:
++                        _knownClean.Remove(request.Session);
+                         return EditCheckOutcome.Conflict(DescribeDifferences(check.Differences));
+                     default:
+                         return EditCheckOutcome.NotApplicable("The draft is not unknown after a commit that threw.");
+@@ -397,6 +414,195 @@ namespace RackCad.Application.Workspace
+             }
+         }
+ 
++        // ---------------------------------------------------------------- the lifecycle of the drafts (I-64 F4-T2B2B)
++
++        /// <summary>
++        /// The lazy reload of one rack of the pilot (D-T2B2-12), by action of the user and never from the drain. It follows steps 1 to 8
++        /// of the table of the package: a missing draft is NotFound and a draft that is not marked as possibly stale and clean is
++        /// NotNeeded, both without any read; otherwise it makes the one read and replaces the draft from it. Every exception is contained
++        /// as Failed and the session is not degraded.
++        /// </summary>
++        public EditIntentOutcome TryReloadPilotEdit(EditIntentRequest request)
++        {
++            try
++            {
++                if (request == null) throw new ArgumentNullException(nameof(request));
++
++                // 1: a blank RackId has no identity, and the registry would throw on it.
++                if (string.IsNullOrWhiteSpace(request.RackId))
++                {
++                    return EditIntentOutcome.NotAdmitted(
++                        PushBackPilotIntentReader.NoIdentityDiagnostic,
++                        null,
++                        PushBackPilotIntentReader.ClassicEditorHint,
++                        EditWitnessStatus.NotEvaluated);
++                }
++
++                // 1, continued: the same request error as the intention, before the reader, the gate and the draft are touched.
++                if (HasWitnessWithoutKey(request))
++                    return EditIntentOutcome.Failed("The preview witness has no key.");
++
++                // 2 to 5: the same gate as the intention; nothing is read.
++                var gate = PassGate(request.Session, out var reason);
++                if (gate == EditGate.Unavailable) return EditIntentOutcome.Unavailable(reason);
++                if (gate == EditGate.Waiting) return EditIntentOutcome.Waiting(reason);
++                if (gate == EditGate.Rejected) return EditIntentOutcome.Rejected(reason);
++
++                // 6: only a clean draft marked as possibly stale is reloaded; nothing is read for any other.
++                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
++                if (draft == null) return EditIntentOutcome.NotFound("There is no draft for the rack.");
++                if (!draft.NeedsLazyReload) return EditIntentOutcome.NotNeeded("The draft does not need to be reloaded.");
++
++                // 7: the one read.
++                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
++                switch (read.Status)
++                {
++                    case EditIntentReadStatus.Read:
++                        break;
++                    case EditIntentReadStatus.NoActiveDocument:
++                    case EditIntentReadStatus.Busy:
++                        return EditIntentOutcome.Waiting(read.Reason ?? "The drawing is not ready to be read.");
++                    case EditIntentReadStatus.Rejected:
++                        return EditIntentOutcome.Rejected(read.Reason ?? "The request does not belong to the active document.");
++                    default:
++                        return EditIntentOutcome.Failed(read.Reason ?? "The read for the reload failed.");
++                }
++
++                var pilot = read.PilotRead;
++                if (pilot == null) return EditIntentOutcome.Failed("The read for the reload carries no result.");
++                var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
++
++                // 8: the read only goes to DiscardAndReload.
++                var reloaded = draft.DiscardAndReload(pilot.Read);
++                switch (reloaded.Status)
++                {
++                    case DraftReloadStatus.Reloaded:
++                        _knownClean.Remove(request.Session);
++                        return EditIntentOutcome.Reloaded(witness);
++                    case DraftReloadStatus.NotAdmitted:
++                        return EditIntentOutcome.NotAdmitted(
++                            reloaded.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
++                            pilot.Detail,
++                            pilot.ClassicEditorHint,
++                            witness);
++                    case DraftReloadStatus.NotAllowed:
++                        return EditIntentOutcome.Waiting("The draft is being applied or is no longer registered.");
++                    default:
++                        return EditIntentOutcome.Failed("The draft was not reloaded.");
++                }
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.TryReloadPilotEdit", ex);
++                return EditIntentOutcome.Failed(ex.Message);
++            }
++        }
++
++        /// <summary>
++        /// The explicit discard of every draft of a session (D-T2B2-15), for the command that F4-T3 will expose. The only gate is the
++        /// authorization of the session against the active document (INV-22): it needs no reader, no rest, no absence of command and no
++        /// absence of modal. It reads nothing, never calls the comparer, and ends the "known clean" mark of the session. Every exception
++        /// is contained as Failed and the session is not degraded.
++        /// </summary>
++        public EditDiscardOutcome DiscardPilotEdits(SessionId session)
++        {
++            try
++            {
++                if (Authorize(new WorkspaceRequest(session)) != RequestDecision.Accepted)
++                    return EditDiscardOutcome.Rejected("The request does not belong to the active document.");
++
++                var discarded = _drafts.DiscardAllByUser(session);
++                _knownClean.Remove(session);
++                return EditDiscardOutcome.Discarded(discarded.RemovedRackIds, discarded.PendingTextRackIds);
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.DiscardPilotEdits", ex);
++                return EditDiscardOutcome.Failed(ex.Message);
++            }
++        }
++
++        /// <summary>
++        /// Tells the host that something changed a draft of the session in place (edit, pending text, update): the "known clean" mark of
++        /// the session no longer holds. It has no gate, reads nothing and never throws. Until the panel edits drafts (F4-T3, F4-T4)
++        /// nothing calls it.
++        /// </summary>
++        public void NotePilotEdit(SessionId session) => _knownClean.Remove(session);
++
++        // The advice for one attempt to close the document of the session (D-T2B2-09, D-T2B2-10): the verdict of the close policy,
++        // and nothing else. It reads nothing, authorizes nothing, discards nothing and retires nothing. A Veto or a failure leaves the
++        // session without the mark; an Allow puts it as the very last action, only when the evaluation worked.
++        CloseDecision IWorkspaceLifecycleAdvisor.AdviseClose(SessionId session)
++        {
++            _knownClean.Remove(session);
++            try
++            {
++                if (_closePolicy.EvaluateClose(session).IsVeto) return CloseDecision.Veto;
++                _knownClean.Add(session);
++                return CloseDecision.Allow;
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.AdviseClose", ex);
++                return CloseDecision.Veto;
++            }
++        }
++
++        // The session was destroyed (D-T2B2-10, D-T2B2-13). It always retires the drafts: without the comparer only when the mark of the
++        // host and the intact close sequence of the bridge both hold, conservatively in any other case. Afterwards, and only when work
++        // was lost, the notice is queued and logged on the spot. The retirement and the notice are contained apart.
++        void IWorkspaceLifecycleAdvisor.SessionDestroyed(SessionId session, bool closeSequenceIntact)
++        {
++            var marked = _knownClean.Remove(session);
++            DraftLossNotice? notice = null;
++            try
++            {
++                notice = marked && closeSequenceIntact ? _drafts.RetireKnownSafe(session) : _drafts.RetireConservative(session);
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.SessionDestroyed", ex);
++            }
++
++            try
++            {
++                if (notice == null || !notice.HasLoss) return;
++                _lossNotices.Enqueue(notice);
++                Report("WorkspaceHostCore.DraftLoss", new InvalidOperationException(DescribeLoss(notice)));
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.SessionDestroyed", ex);
++            }
++        }
++
++        /// <summary>The notices of lost work that nobody consumed yet, oldest first. F4-T3 consumes them; until then nothing does.</summary>
++        internal IReadOnlyCollection<DraftLossNotice> LossNotices => _lossNotices;
++
++        // The text of the record: the racks lost and, apart, the uncertain ones with the reason that the comparer gave.
++        private static string DescribeLoss(DraftLossNotice notice)
++        {
++            var text = "Panel drafts were lost when the document closed. Session " + notice.Session.Value
++                       + ". Lost racks: " + string.Join(", ", notice.LostRackIds) + ".";
++            if (notice.UncertainRackIds.Count > 0)
++            {
++                text += " Uncertain racks (the comparison failed, so they may not have been modified): "
++                        + string.Join("; ", notice.UncertainRackIds.Select(id => id + " (" + ReasonOf(notice, id) + ")")) + ".";
++            }
++
++            return text;
++        }
++
++        private static string ReasonOf(DraftLossNotice notice, string rackId) =>
++            notice.UncertainReasons.TryGetValue(rackId, out var reason) ? reason : string.Empty;
++
++        // The stale hint of a drain: every draft of the pilot of the session is marked. Nothing is read and no conflict is raised.
++        private void MarkPilotDraftsPossiblyStale(SessionId session)
++        {
++            foreach (var rackId in _drafts.RackIdsOf(session))
++                _drafts.Find<PushBackPilotDraftState>(session, rackId)?.MarkPossiblyStale();
++        }
++
+         // A witness that is present (not null) with a null, empty or blank key cannot be compared with anything (INV-27).
+         private static bool HasWitnessWithoutKey(EditIntentRequest request) =>
+             request.Witness != null && string.IsNullOrWhiteSpace(request.Witness.Key);
+diff --git a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+index 5e4858c9..b2681c8e 100644
+--- a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
++++ b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+@@ -54,6 +54,13 @@ namespace RackCad.Plugin.Workspace
+         /// <summary>Whether the active session runs a command, as the core knows it in memory. It reads nothing of the drawing.</summary>
+         internal bool IsCommandActiveInActiveSession => _core.IsCommandActiveInActiveSession;
+ 
++        /// <summary>
++        /// Assigns the advisor of the lifecycle to the core (I-64 F4-T2B2B): the controller calls it once with the host when it creates
++        /// the bridge. It forwards and nothing else: it adds no AutoCAD subscription, keeps no state and is internal, so the public
++        /// surface of the bridge does not grow.
++        /// </summary>
++        internal void SetLifecycleAdvisor(IWorkspaceLifecycleAdvisor advisor) => _core.SetLifecycleAdvisor(advisor);
++
+         /// <summary>First panel open: hooks the document-collection sources and the active document. Repeating it adds nothing.</summary>
+         public void Start()
+         {
+@@ -156,7 +163,7 @@ namespace RackCad.Plugin.Workspace
+                 case BridgeSource.BeginDocumentClose:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    DocumentBeginCloseEventHandler handler = (s, e) => ContainSession(a, () => _core.OnBeginDocumentClose(a.Session));
++                    DocumentBeginCloseEventHandler handler = (s, e) => ContainSession(a, () => { if (_core.OnBeginDocumentClose(a.Session) == CloseDecision.Veto) e.Veto(); });
+                     document.BeginDocumentClose += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.BeginDocumentClose -= handler);
+                 }
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceController.cs b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+index ebd0c8a5..d4fc30d0 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceController.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@ -41,6 +41,10 @@ namespace RackCad.Plugin.Workspace
+                 LogFault,
+                 _echo);
+             _port = new WorkspaceHostPort(_host);
++
++            // The lifecycle of the drafts (I-64 F4-T2B2B): the bridge asks the host, as its advisor, about the close and the destruction of a
++            // document. It is wired by assignment, so the constructor of the core and the subscriptions of the bridge do not change.
++            _bridge.SetLifecycleAdvisor(_host);
+             _bridge.Drained += OnDrained;
+             _bridge.ActiveSessionChanged += OnActiveSessionChanged;
+             _bridge.CommandStateChanged += OnCommandStateChanged;

@@ -6519,3 +6519,34 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 157. Intento 1 de F4-T2B2B-LIFECYCLE: verificado
+
+**Decisión:** F4-E35.
+
+- **Planificación** `7813`: fidelidad PASS, A1-A8 8/8 y nc4 `fc9a`.
+- **Worker** `36c7`: RED `a2e0ec13` y GREEN `8f249e3a`.
+- **CI:** `43294223849` 4/4.
+- **Verificación** `060d`: `EXECUTION_VERIFIED`, 14/14.
+- **Revisiones:**
+  - la directa, con el producto conforme y 2 menores en las guardas;
+  - la independiente, ACEPTABLE CON MENORES (0/0/5), con M-1 contrario a la letra de INV-F4T2B2B-11.
+- **Orden del Owner:** cerrar sin gastar el intento 2, con los menores como cambios declarados del contrato de F4-T3.
+
+**Límites:** sin AutoCAD.
+
+## 158. Controles negativos y cierre de F4-T2B2B
+
+| Control | Corrida | Resultado | Registro |
+|---|---|---|---|
+| nc1 | `R20261112T202615Z-e92e` | Oráculo no cumplido, señal demostrada: Handoff primera en fail (16.9 «salida falsa»), Identity también en fail con la evidencia correcta; `EXECUTION_BLOCKED` / STOP (S-04) | ORÁCULO NO CUMPLIDO / SEÑAL DEMOSTRADA; sustituto F4T2B2B-NC1-IDENTITY-SIGNAL-01 (`R20261112T204312Z-f577`): PASS → SATISFIED_UNDER_F4T2B2B_NC1_IDENTITY_SIGNAL_SUBSTITUTE |
+| nc2 | `R20261112T203204Z-c514` | CONTROL PASS (Scope, nombrando `DraftRegistry.cs`; `EXECUTION_BLOCKED` / STOP) | CONTROL PASS |
+| nc3 | `R20261112T203605Z-97e6` | CONTROL PASS (FreeText, `EXECUTION_REWORK_REQUIRED`) | CONTROL PASS |
+
+- **F4-T2B2B-LIFECYCLE = CLOSED / PASS WITH LIMITATIONS** sobre `8f249e3a`, con `attempts` 1 de 3 (`F4-T2B2B-LIFECYCLE/task-close-package.md`).
+- **Deuda de protocolo PD-F4-04:** ambigüedad Handoff/Identity entre README §10 y 16.9.
+- **Arrastres:**
+  - a F4-T3, M-1 a M-5 y D-1 como cambios declarados;
+  - a Smoke-2, el orden real de los eventos de cierre.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.
