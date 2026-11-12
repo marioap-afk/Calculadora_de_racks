@@ -6415,3 +6415,15 @@ Todo queda dispuesto en sus §9 y §10.
 - Los hechos medidos en `51163211` siguen valiendo: hasta `f124b741` solo cambió documentación.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 149. Contrato de F4-T2B2A-INTENT-WIRING
+
+**Contrato:** `I-64-pilot/F4-T2B2A-INTENT-WIRING/coordinator/gate-contract.json` (F4-E30).
+- Alcance: lista blanca exacta de 13 rutas. Nueve son de la tarea: cuatro archivos existentes, tres de producto nuevos y dos de prueba nuevos. Las cuatro restantes son de los arrastres de T2B1.
+- `ForbiddenWriteScope`: 70 entradas, entre ellas prefijos seguros (F4-E21), guardas, csproj y los dos archivos de T2B2B.
+- 12 invariantes y 7 paradas propias.
+- Líneas base: `RackCad.Tests.Workspace` 1592 (`ExpectRed` true) y `RackCad.UI.Tests.Workspace` 248 (`ExpectRed` false).
+- `AuthorityRevision` `b6130ef1176ef06c679e31535252d50822abeedb`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- `attempts` 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
