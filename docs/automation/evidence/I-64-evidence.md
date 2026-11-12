@@ -6301,3 +6301,14 @@ Todo queda dispuesto en sus §9 y §10.
 - **Líneas base** de la CI de `5c9cc24e` (corrida `43171988530`): `RackCad.Tests.Workspace` 1468 y `RackCad.UI.Tests.Workspace` 248, todas Passed.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 139. Contrato de F4-T2B1-INTENT-READ
+
+**Contrato:** `I-64-pilot/F4-T2B1-INTENT-READ/coordinator/gate-contract.json`.
+- Alcance: tres archivos nuevos en `Systems/PushBack/Pilot/`, tres archivos de prueba nuevos en `tests/RackCad.Tests/Workspace/` y el prefijo nuevo `Fixtures/I64/intent/`.
+- `ForbiddenWriteScope` solo con prefijos seguros (F4-E21), 58 entradas.
+- 14 invariantes.
+- `AuthorityRevision` `d6587a06803ab618698cbd342f38e2cf31f87af7`, `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- `attempts` 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
