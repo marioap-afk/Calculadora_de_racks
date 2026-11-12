@@ -1,0 +1,266 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T2C-IC04-READ-SCHEDULING",
+  "RunId": "R20261112T214822Z-2c89",
+  "DelegationRunId": "R20261112T214224Z-027e",
+  "Initiative": "I-64",
+  "Gate": "F4",
+  "Attempt": 1,
+  "BaseSha": "d5d94a765ea62f9fa583fff81860452fdc6bb471",
+  "RedSha": "703bda9d65fc869d0ea2cde5283778b3f65a8fcf",
+  "CurrentSha": "33e43f9f4246d63c0b1fdcdddb58f62b5c963c53",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+    "src/RackCad.Application/Workspace/WorkspaceIdleScheduler.cs",
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulerTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs"
+  ],
+  "WorkCompleted": "RED (703bda9d): skeleton of WorkspaceIdleScheduler (inert: schedules nothing, counters 0, never throws) and EventBridgeCore.CanDrainNow (returns false), the bridge unchanged, the two new test files and the two declared changes (1) and (2). Before the RED commit the full implementation was checked against all the new tests (Core Workspace filter 2071/2071 green) and saved as ONE patch, implementation-full.patch under the artifacts folder of this run; the product was then returned to the skeleton. RED run: Core Workspace filter selected 2071 (> 1919): 83 failed, all by assertion (Xunit.Sdk assertion messages; zero exceptions of the skeleton), 1988 passed; UI Workspace filter 248/248 green (ExpectRed false). The Plugin built in Release with 0 errors and the 2 baseline MSB3277 warnings. GREEN (33e43f9f), only the three product files, no file under tests/ touched. PLANNER: WorkspaceIdleScheduler (Application/Workspace) is pure: ctor (Func<bool> canRunNow, Action continuation, Action<string,Exception>? logFault=null) with ArgumentNullException for the first two; SetPost(Action<Action>) with ArgumentNullException; OnIdleTick() does, in order, nothing if already scheduled, nothing if there is no post, nothing if canRunNow() is false, otherwise marks scheduled and calls post(Run) ONCE and never runs anything itself; private Run() un-marks, asks canRunNow() AGAIN, runs the continuation only if true (counters ContinuationsRun / ContinuationsSkipped), never reschedules; every fault of canRunNow, post, continuation and of logFault is contained and leaves nothing scheduled; queries IsScheduled, ContinuationsRun, ContinuationsSkipped. CanDrainNow: EventBridgeCore gains the single public member CanDrainNow(), a query that never throws (contains with Log, returns false) and assigns no field. A private method TryGetDrainable(out id, out state, out session) holds the shared eligibility (started, active session in the registry and not degraded, PendingHintCount > 0, at rest, no RackCad modal, panel visible); OnIdle uses it (and still calls TryDrain and forgets _lastAllowedClose right after the not-started return: the 13 forgettings are unchanged) and CanDrainNow adds one condition of its own in its own statement: false while _lastAllowedClose.HasValue (any pending allowed close, of the active or of another document). BRIDGE WIRING: the Idle handler is (s, e) => Contain(\"Idle\", OnIdleTick); OnIdleTick only calls _idleScheduler.OnIdleTick(); private void OnIdle() is kept as is (it holds _core.OnIdle() and Drained?.Invoke()) and only the continuation RunIdleContinuation references it by method group inside Contain(\"IdleContinuation\", OnIdle), followed by the Debug-only CheckNoOpenTransactionAfterTheDrain() ([Conditional(\"DEBUG\")], reads MdiActiveDocument?.TransactionManager.TopTransaction, logs with LogFault, no Debug.Assert, no counter). The scheduler is created once in the constructor with _core.CanDrainNow, the continuation and LogFault; the post is _dispatcher.BeginInvoke(DispatcherPriority.Background, action) over Dispatcher.CurrentDispatcher captured in the constructor, assigned by one SetPost call. Still 16 += , 16 -= and 16 contained handlers; no new subscription; controller, navigation host, readers, WorkspaceHostCore and UI untouched. OWNER POINTS 1-13 and TESTS A-J with stack timing: every simulated AutoCAD callback of the harness (hints, command start/end, Idle tick, close allow, activation, destruction) runs inside a depth scope; the doubles of the selection reader and of the summary facts record the depth at each read and every test asserts that no read happened at depth > 0 besides the counts. 1: A and G-1; 2: B and C and G-2, G-10; 3: C and the Idle detach test; 4: D; 5: F (both variants); 6: E (destroyed and Start tab); 7: G (two variants); 8: H (modal and command, with the continuation already scheduled) and the pending-close tests; 9: J and no-post-while-not-eligible; 10: C, D, I; 11: G-6; 12: G-8; 13: G-9 and the Debug check G-7. J variant 1: the reader throws, the host contains it as today (HostFaults has WorkspaceHostCore.OnDrained), EventBridgeCore.IsDegraded(session) is false, no reschedule and no more reads; variant 2: the facts reader throws and the substitute presentation contains it as Failed with no more reads. EVIDENCE BY INVARIANT: INV-F4T2C-01 -> tests A, B, C, G-1, G-2 (guard on the Idle handler line and on OnIdleTick body); INV-F4T2C-02 -> the scheduler unit tests (null arguments, coalescence, no post, false check, Run re-check, contained faults, counters) and G-4; INV-F4T2C-03 -> CanDrainNowAgreesWithTheDrainForEveryCondition (9 conditions), CanDrainNowIsAQuery, the 5 pending-close tests, G-5 and the changed reflection guard TheCoreAddsExactlyTwoPublicMembersToWhatT2Left; INV-F4T2C-04 -> E, F, G, H and the pending-close tests; INV-F4T2C-05 -> D, I, J and the scheduler tests TheRunNeverSchedulesItselfAgain and WhileTheCheckIsFalse; INV-F4T2C-06 -> G-3 (BeginInvoke at Background only), G-6, G-7, G-8, G-10; INV-F4T2C-07 -> WorkspaceIdleSchedulerTests (depth harness with its own self-test TheHarnessTellsAReadInsideTheIdleCallbackFromAReadAfterIt); INV-F4T2C-08 -> WorkspaceIdleSchedulingGuardTests (G-1..G-10, each with self-tests); INV-F4T2C-09 -> only the two declared changes, both in the RED, the 45 tests of WorkspaceHostSourceGuardTests and the palette exception untouched; INV-F4T2C-10 -> RED 83 assertion failures over the inert skeleton, GREEN touches no tests/ file; INV-F4T2C-11 -> no DWG write, no AutoCAD, WorkspaceHostCore and the controller unchanged, no new file in Plugin/Workspace, no csproj/UI/CI change. BUILDS: Plugin Release (--no-incremental, output under this run's tests folder) 0 errors and the 2 baseline MSB3277 warnings, no CS/NU/NETSDK; Plugin Debug the same (the Debug-only check compiles); test projects Release --no-incremental 0 errors with no CS/MSB/NU/NETSDK warnings (only the existing xUnit analyzer warnings, none in the new files).",
+  "TestsExecuted": [
+    {
+      "RunRef": "RED-CORE-WS",
+      "Command": "<perfil-de-usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=red-core.trx\" --results-directory artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/red-core",
+      "Phase": "RED",
+      "TreeSha": "703bda9d65fc869d0ea2cde5283778b3f65a8fcf",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/red-core/red-core.trx"
+    },
+    {
+      "RunRef": "RED-UI-WS",
+      "Command": "<perfil-de-usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=red-ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/red-ui",
+      "Phase": "RED",
+      "TreeSha": "703bda9d65fc869d0ea2cde5283778b3f65a8fcf",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/red-ui/red-ui.trx"
+    },
+    {
+      "RunRef": "GREEN-CORE-WS",
+      "Command": "<perfil-de-usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=green-core-ws.trx\" --results-directory artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-core-ws",
+      "Phase": "GREEN",
+      "TreeSha": "33e43f9f4246d63c0b1fdcdddb58f62b5c963c53",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-core-ws/green-core-ws.trx"
+    },
+    {
+      "RunRef": "GREEN-UI-WS",
+      "Command": "<perfil-de-usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=green-ui-ws.trx\" --results-directory artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-ui-ws",
+      "Phase": "GREEN",
+      "TreeSha": "33e43f9f4246d63c0b1fdcdddb58f62b5c963c53",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-ui-ws/green-ui-ws.trx"
+    },
+    {
+      "RunRef": "RELEVANT-CORE-FULL",
+      "Command": "<perfil-de-usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --logger \"trx;LogFileName=green-core-full.trx\" --results-directory artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-core-full",
+      "Phase": "RELEVANT",
+      "TreeSha": "33e43f9f4246d63c0b1fdcdddb58f62b5c963c53",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-core-full/green-core-full.trx"
+    },
+    {
+      "RunRef": "RELEVANT-UI-FULL-RELEASE",
+      "Command": "<perfil-de-usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --logger \"trx;LogFileName=green-ui-full-rel.trx\" --results-directory artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-ui-full-rel",
+      "Phase": "RELEVANT",
+      "TreeSha": "33e43f9f4246d63c0b1fdcdddb58f62b5c963c53",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-ui-full-rel/green-ui-full-rel.trx"
+    },
+    {
+      "RunRef": "RELEVANT-UI-FULL-DEBUG",
+      "Command": "<perfil-de-usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --logger \"trx;LogFileName=green-ui-full-dbg.trx\" --results-directory artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-ui-full-dbg",
+      "Phase": "RELEVANT",
+      "TreeSha": "33e43f9f4246d63c0b1fdcdddb58f62b5c963c53",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-ui-full-dbg/green-ui-full-dbg.trx"
+    },
+    {
+      "RunRef": "PRECHECK-CORE-WS-FULL-IMPLEMENTATION",
+      "Command": "<perfil-de-usuario>/AppData/Local/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=dev-core.trx\" --results-directory artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/dev-core",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/dev-core/dev-core.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "RED-CORE-WS",
+      "Selected": 2071,
+      "Passed": 1988,
+      "Failed": 83,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.AContinuationScheduledBeforeAnAllowedCloseDoesNotCallThePassAndTheCloseSequenceStaysIntact",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.ADestroyedSessionEndsThePendingCloseAndNeverBlocksTheNextDocument",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.AFailingCheckAtTheTickIsContainedAndLeavesNothingScheduled",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.AFailingCheckInTheRunIsContainedAndTheContinuationDoesNotRun",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.AFailingContinuationIsContainedAndTheSchedulerIsFreeAgain",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.AFailingLoggerIsContainedToo",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.AFailingPostIsContainedAndLeavesNothingScheduled",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.ATickNeverRunsTheContinuationNorTheRunByItself",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.A_TheNotificationsOfTheDrawingOnlyMarkAndNothingIsReadInsideTheirCallbackOrAfterIt",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.AnAllowedCloseOfADocumentThatIsNotActiveAlsoMakesCanDrainNowFalse",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.AnAllowedCloseOfTheActiveSessionMakesCanDrainNowFalseUntilTheNextEntryOfTheCore",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.B_AnEligibleIdleTickOnlySchedulesOneContinuationAndReadsNothing",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.C_TheQueuedContinuationReadsTheSelectionAndThenTheSummaryOutsideEveryCallback",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.CanDrainNowAgreesWithTheDrainForEveryCondition(scenario: \"eligible\", expected: True)",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.CanDrainNowDoesNotEndThePendingCloseSequence",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.CanDrainNowIsAQueryItChangesNothingAndNeverThrows",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.D_ManyHintsAndManyTicksBeforeTheQueueRunsGiveOneContinuationOneDrainAndOneSummaryRead",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.E_ASessionDestroyedAfterSchedulingAndBeforeTheContinuationReadsNothingAndTheRunDoesNotCallThePass",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.E_AnInactiveSessionOfAStartTabReadsNothingEither",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.F_ContinuationAlreadyScheduledWhenThePanelIsHiddenDoesNotCallThePassAndReadsNothing",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.G_ASwitchOfDocumentBeforeTheContinuationNeverReadsTheOldDocumentAgainstTheNewOne",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.G_WhenTheNewActiveDocumentIsEligibleOnlyItsOwnSessionIsRead",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.H_ACommandOrAModalThatStartsAfterSchedulingDelaysTheReadEvenWithTheContinuationAlreadyScheduled(what: \"command\")",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.H_ACommandOrAModalThatStartsAfterSchedulingDelaysTheReadEvenWithTheContinuationAlreadyScheduled(what: \"modal\")",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.I_WhenTheCommandOrTheModalEndsTheNextTickSchedulesOnceAndTheQueueReadsOnce(what: \"command\")",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.I_WhenTheCommandOrTheModalEndsTheNextTickSchedulesOnceAndTheQueueReadsOnce(what: \"modal\")",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.J_AFailingSelectionReaderIsContainedTheCoreIsNotDegradedAndNothingIsScheduledAgain",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.J_AFailingSummaryReaderIsContainedAsFailedAndThereAreNoMoreReads",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.ManyTicksScheduleOneContinuationAndTheSecondTickDoesNotEvenAskTheCheck",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.TheCountersAreInMemoryAndTheQueriesHaveNoEffects",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.TheHarnessTellsAReadInsideTheIdleCallbackFromAReadAfterIt",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.TheIdleSourceIsDetachedByThePassOfTheContinuationOnceNoHintsAreLeft",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.TheRunNeverSchedulesItselfAgain",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.TheRunUnmarksAsksTheCheckAgainAndRunsTheContinuationOnlyIfItStillHolds",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.TheSchedulerRejectsNullArgumentsExceptTheLogger",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.WhileTheCheckIsFalseATickPostsNothingNoMatterHowManyTimes",
+        "RackCad.Tests.WorkspaceIdleSchedulerTests.WithoutAPostATickDoesNothingAndDoesNotAskTheCheck",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G10_ItTripsWhenTheWiringOfTheConstructorIsNotTheOneOfThePackage(from: \"Contain(\\\"IdleContinuation\\\", OnIdle);\", to: \"OnIdle();\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G10_ItTripsWhenTheWiringOfTheConstructorIsNotTheOneOfThePackage(from: \"_core.CanDrainNow, RunIdleContinuation,\", to: \"_core.CanDrainNow, OnIdle,\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G10_ItTripsWhenTheWiringOfTheConstructorIsNotTheOneOfThePackage(from: \"_dispatcher = Dispatcher.CurrentDispatcher;\", to: \"_dispatcher = null;\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G10_ItTripsWhenTheWiringOfTheConstructorIsNotTheOneOfThePackage(from: \"_dispatcher.BeginInvoke(DispatcherPriority.Backgro\"···, to: \"_dispatcher.BeginInvoke(DispatcherPriority.Normal,\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G10_ItTripsWhenTheWiringOfTheConstructorIsNotTheOneOfThePackage(from: \"_dispatcher.BeginInvoke(DispatcherPriority.Backgro\"···, to: \"action()\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G10_ItTripsWhenTheWiringOfTheConstructorIsNotTheOneOfThePackage(from: \"new WorkspaceIdleScheduler(_core.CanDrainNow,\", to: \"new WorkspaceIdleScheduler(() => true,\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G10_TheContinuationMayBeALambdaOrASingleIntermediateMethodThatRunsTheIdlePassContained",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G10_TheSchedulerIsBuiltOnceAndThePostIsAssignedOnceBothInTheConstructorOfTheBridge",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G1_ItTripsOnAHandlerThatRunsTheIdlePassNotifiesTheDrainPostsOrReads(from: \"Contain(\\\"Idle\\\", OnIdleTick)\", to: \"Contain(\\\"Idle\\\", () => { OnIdleTick(); Drained?.I\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G1_ItTripsOnAHandlerThatRunsTheIdlePassNotifiesTheDrainPostsOrReads(from: \"Contain(\\\"Idle\\\", OnIdleTick)\", to: \"Contain(\\\"Idle\\\", OnIdle)\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G1_NoCaseBlockNorHandlerLineOfTheBridgeRunsTheIdlePassNotifiesTheDrainPostsOrReads",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G2_ItTripsWhenAnotherMemberNamesTheIdlePassOrAnnouncesTheDrain(appended: \"\\nprivate void Extra() { Drained?.Invoke(default);\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G2_ItTripsWhenAnotherMemberNamesTheIdlePassOrAnnouncesTheDrain(appended: \"\\nprivate void Extra() { OnIdle(); }\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G2_ItTripsWhenAnotherMemberNamesTheIdlePassOrAnnouncesTheDrain(appended: \"\\nprivate void Extra() { _core.OnIdle(); }\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G2_ItTripsWhenTheTickDoesMoreThanScheduleOrNothing(from: \"_idleScheduler.OnIdleTick();\", to: \"\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G2_ItTripsWhenTheTickDoesMoreThanScheduleOrNothing(from: \"_idleScheduler.OnIdleTick();\", to: \"_core.OnIdle();\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G2_ItTripsWhenTheTickDoesMoreThanScheduleOrNothing(from: \"_idleScheduler.OnIdleTick();\", to: \"_idleScheduler.OnIdleTick(); Drained?.Invoke(defau\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G2_ItTripsWhenTheTickDoesMoreThanScheduleOrNothing(from: \"_idleScheduler.OnIdleTick();\", to: \"_idleScheduler.OnIdleTick(); OnIdle();\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G2_ItTripsWhenTheTickDoesMoreThanScheduleOrNothing(from: \"_idleScheduler.OnIdleTick();\", to: \"_idleScheduler.OnIdleTick(); _dispatcher.BeginInvo\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G2_OnIdleTickOnlySchedulesAndTheIdlePassIsNamedOnlyByItsDeclarationAndTheContinuation",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G3_ItTripsOnAPostThatIsNotBeginInvokeAtBackgroundPriority(from: \"BeginInvoke(DispatcherPriority.Background, action)\", to: \"BeginInvoke(DispatcherPriority.Background, action)\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G3_ItTripsOnAPostThatIsNotBeginInvokeAtBackgroundPriority(from: \"BeginInvoke(DispatcherPriority.Background, action)\", to: \"BeginInvoke(DispatcherPriority.Normal, action)\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G3_ItTripsOnAPostThatIsNotBeginInvokeAtBackgroundPriority(from: \"BeginInvoke(DispatcherPriority.Background, action)\", to: \"BeginInvoke(action)\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G3_ItTripsOnAPostThatIsNotBeginInvokeAtBackgroundPriority(from: \"BeginInvoke(DispatcherPriority.Background, action)\", to: \"Invoke(DispatcherPriority.Background, action)\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G3_ThePostIsExactlyBeginInvokeWithDispatcherPriorityBackground",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G3_TheRealBridgePassesTheExceptionAndOnlyTheExceptionLetsItNameTheDispatcher",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G4_TheSchedulerIsPureAndTheSchedulingOrderIsKept",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G5_CanDrainNowAndTheIdlePassShareTheEligibilityAndTheQueryMutatesNothing",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G5_ItTripsOnAQueryThatMutatesDrainsOrStopsSharingTheEligibility(from: \"if (!TryGetDrainable(out _, out _, out _)) return \"···, to: \"if (!_started) return false;\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G5_ItTripsOnAQueryThatMutatesDrainsOrStopsSharingTheEligibility(from: \"if (TryGetDrainable(out var id, out var state, out\"···, to: \"if (_active is { } id && _states.TryGetValue(id, o\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G5_ItTripsOnAQueryThatMutatesDrainsOrStopsSharingTheEligibility(from: \"return !_lastAllowedClose.HasValue;\", to: \"SyncIdle(); return !_lastAllowedClose.HasValue;\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G5_ItTripsOnAQueryThatMutatesDrainsOrStopsSharingTheEligibility(from: \"return !_lastAllowedClose.HasValue;\", to: \"_lastAllowedClose = null; return true;\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G5_ItTripsOnAQueryThatMutatesDrainsOrStopsSharingTheEligibility(from: \"return !_lastAllowedClose.HasValue;\", to: \"_panelVisible = true; return !_lastAllowedClose.Ha\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G5_ItTripsOnAQueryThatMutatesDrainsOrStopsSharingTheEligibility(from: \"return !_lastAllowedClose.HasValue;\", to: \"return !_lastAllowedClose.HasValue && !_states.Con\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G5_ItTripsOnAQueryThatMutatesDrainsOrStopsSharingTheEligibility(from: \"return !_lastAllowedClose.HasValue;\", to: \"return true;\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G7_ItTripsOnADebugCheckThatIsNotConditional",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G7_ItTripsOnADebugCheckThatReachesTheDatabaseOrAsserts(from: \"LogFault(\\\"AutoCadEventBridge.IdleContinuation\\\", \"···, to: \"Debug.Assert(open == null, \\\"x\\\"); LogFault(\\\"Auto\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G7_ItTripsOnADebugCheckThatReachesTheDatabaseOrAsserts(from: \"document?.TransactionManager.TopTransaction\", to: \"document?.Database.TransactionManager.TopTransacti\"···)",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G7_ItTripsOnADebugCheckThatReachesTheDatabaseOrAsserts(from: \"document?.TransactionManager.TopTransaction\", to: \"document?.TransactionManager.GetObject()\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G7_ItTripsOnADebugCheckThatReachesTheDatabaseOrAsserts(from: \"if (open != null)\", to: \"Debug.Fail(\\\"x\\\"); if (open != null)\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G7_ItTripsOnADebugCheckThatReachesTheDatabaseOrAsserts(from: \"if (open != null)\", to: \"RackLog.Warning(\\\"x\\\"); if (open != null)\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G7_TheDebugCheckIsConditionalReadsTheTopTransactionOfTheDocumentAndOnlyLogs",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G9_ItTripsWhenACheckIsMissing(where: \"bridge\", from: \"CheckNoOpenTransactionAfterTheDrain();\", to: \"\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G9_ItTripsWhenACheckIsMissing(where: \"bridge\", from: \"Contain(\\\"IdleContinuation\\\", OnIdle);\", to: \"\")",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G9_ItTripsWhenTheDebugCheckComesBeforeTheIdlePass",
+        "RackCad.Tests.WorkspaceIdleSchedulingGuardTests.G9_TheControllerKeepsItsCheckAndTheContinuationRunsTheDebugCheckAfterTheIdlePass"
+      ]
+    },
+    {
+      "RunRef": "RED-UI-WS",
+      "Selected": 248,
+      "Passed": 248,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-CORE-WS",
+      "Selected": 2071,
+      "Passed": 2071,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-UI-WS",
+      "Selected": 248,
+      "Passed": 248,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "RELEVANT-CORE-FULL",
+      "Selected": 17609,
+      "Passed": 17609,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "RELEVANT-UI-FULL-RELEASE",
+      "Selected": 1902,
+      "Passed": 1883,
+      "Failed": 2,
+      "Skipped": 17,
+      "FailedTests": [
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne",
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers"
+      ]
+    },
+    {
+      "RunRef": "RELEVANT-UI-FULL-DEBUG",
+      "Selected": 1902,
+      "Passed": 1885,
+      "Failed": 0,
+      "Skipped": 17,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "PRECHECK-CORE-WS-FULL-IMPLEMENTATION",
+      "Selected": 2071,
+      "Passed": 2071,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "Implementation-full patch (HEAD d5d94a76 to the full implementation of the three product files): artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/implementation-full.patch",
+    "RED: 703bda9d65fc869d0ea2cde5283778b3f65a8fcf pushed; GREEN: 33e43f9f4246d63c0b1fdcdddb58f62b5c963c53 pushed; remote ref architecture/workspace-persistente-rackcad = GREEN; git diff --name-only BaseSha..CurrentSha lists exactly the 7 files of the AllowedWriteScope.",
+    "Selection: Core Workspace filter 2071 (baseline 1919, +152 new tests); UI Workspace filter 248 (baseline 248).",
+    "Builds (logs): artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/base-plugin-rel/build.log (baseline at BaseSha: 0 errors, 2 warnings MSB3277), artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/red-plugin-rel/build.log, artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-plugin-rel/build.log, artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-plugin-dbg/build.log, artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-build-core-rel/build.log, artifacts/orchestration/I-64/F4-T2C-IC04-READ-SCHEDULING/1/R20261112T214822Z-2c89/tests/green-build-ui-rel/build.log",
+    "Full suites on GREEN: Core Release 17609 passed, 0 failed; UI Debug 1885 passed, 0 failed, 17 skipped; UI Release 1883 passed, 17 skipped, 2 failed (PendingTextFieldTests.ShowOnADirtyField_*; known precondition, depends on #if DEBUG)."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "The stack timing in the real AutoCAD host is NOT demonstrated: Core proves it with the depth harness and a queueing post double, the Plugin only with text guards (G-2, G-3, G-7, G-10) and the Release build; the real BeginInvoke at Background priority, its latency and order, and that the continuation always arrives (if it were lost IsScheduled would stay true and no further drain would run) remain for the optional directed smoke or Smoke-2.",
+    "Not measured without AutoCAD: a continuation pumped inside a nested modal loop (CLOSE save question, tab or API close, QUIT or CLOSEALL with several modified drawings, ShowModalWindow of RackCad, jigs and command prompts, loops of other add-ins), LockDocument from the continuation during a document change or close, whether closing by the tab emits CLOSE as a command, and the existing AssertNoOpenTransaction assertions (WorkspaceController, WorkspaceSelectionReader) now reachable where the continuation runs; the new Debug check only logs and may report a transaction of another add-in in a nested loop.",
+    "R-T2C-01 (a Ready surface is not refreshed after an event that invalidates its summary) and R-T2C-02 (after a cancelled close without a command the pending hints are not drained until the next entry of the core) are as the contract states and untouched.",
+    "The summary presentation of the harness is a declared substitute for the UI and the navigation host (it imitates the order of ReadSummaryOnActiveDocument); the real K = 1 machine is accredited by RackCad.UI.Tests, unchanged and green.",
+    "The CI push run of the exact GREEN SHA (four required jobs), the Controller verification, the direct and independent reviews and nc1..nc3 are done by the session, not by this Worker."
+  ],
+  "Deviations": [
+    "UI full suite in Release: 2 known failures (PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers and ..._ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne) that depend on #if DEBUG; the same suite in Debug (what the CI runs) is 1885 passed, 0 failed, 17 skipped. This task does not touch the UI.",
+    "The check of the full implementation before the RED commit ran on the uncommitted working tree (PRECHECK-CORE-WS-FULL-IMPLEMENTATION, TreeSha null); its product is preserved in the single patch file."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Run the CI push of the exact CurrentSha on the expected branch (four required jobs), then the Controller verification, the direct review, the independent adversarial review of the diff and nc1..nc3; keep the directed Owner smoke optional and the stack timing in the real host for Smoke-2.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

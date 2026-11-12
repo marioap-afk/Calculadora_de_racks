@@ -1,0 +1,285 @@
+diff --git a/src/RackCad.Application/Workspace/EventBridgeCore.cs b/src/RackCad.Application/Workspace/EventBridgeCore.cs
+index f9d2e205..d228017c 100644
+--- a/src/RackCad.Application/Workspace/EventBridgeCore.cs
++++ b/src/RackCad.Application/Workspace/EventBridgeCore.cs
+@@ -386,13 +386,9 @@ namespace RackCad.Application.Workspace
+             _lastAllowedClose = null;
+             try
+             {
+-                if (_active is { } id
+-                    && _states.TryGetValue(id, out var state)
+-                    && !state.Degraded
+-                    && _registry.TryGet(id, out var session)
+-                    && session != null)
++                if (TryGetDrainable(out var id, out var state, out var session))
+                 {
+-                    var result = session.TryDrain(new DrainConditions(state.Quiescent, _modalRackCadActive, _panelVisible));
++                    var result = session!.TryDrain(new DrainConditions(state!.Quiescent, _modalRackCadActive, _panelVisible));
+                     if (result.Drained) outcomes.Add(new DrainOutcome(id, result));
+                 }
+ 
+@@ -406,6 +402,28 @@ namespace RackCad.Application.Workspace
+             return outcomes;
+         }
+ 
++        /// <summary>
++        /// Whether the idle pass could drain right now, answered in memory (I-64 F4-T2C, IC-04): the scheduler of the host adapter asks
++        /// it before it schedules a continuation and again when the continuation is about to run. It is the same eligibility the pass
++        /// uses (started, active session alive and healthy, pending hints, at rest, no RackCad modal, panel visible) and one more
++        /// condition of its own: it is false while ANY allowed close is pending, of the active document or of another one, so that
++        /// a continuation pumped inside the question of the close never reads the document that is closing and never ends the close
++        /// sequence (F4-T2B2B). It is a query: it changes nothing, forgets nothing and never throws.
++        /// </summary>
++        public bool CanDrainNow()
++        {
++            try
++            {
++                if (!TryGetDrainable(out _, out _, out _)) return false;
++                return !_lastAllowedClose.HasValue;
++            }
++            catch (Exception ex)
++            {
++                Log("CanDrainNow", ex);
++                return false;
++            }
++        }
++
+         /// <summary>
+         /// A fault of the bridge in the host adapter. It is logged and degrades only the named session.
+         /// </summary>
+@@ -476,6 +494,26 @@ namespace RackCad.Application.Workspace
+             if (session is { } id) Degrade(id);
+         }
+ 
++        // The eligibility of the idle pass, shared by OnIdle and CanDrainNow: a started core whose active session lives in the registry
++        // and is not degraded, with pending hints, at rest, no RackCad modal and a visible panel. It only reads.
++        private bool TryGetDrainable(out SessionId id, out SessionState? state, out WorkspaceSession? session)
++        {
++            id = default;
++            state = null;
++            session = null;
++            if (!_started) return false;
++            if (_active is not { } active) return false;
++            if (!_states.TryGetValue(active, out var found) || found.Degraded) return false;
++            if (!_registry.TryGet(active, out var live) || live == null) return false;
++            if (live.PendingHintCount == 0) return false;
++            if (!found.Quiescent || _modalRackCadActive || !_panelVisible) return false;
++
++            id = active;
++            state = found;
++            session = live;
++            return true;
++        }
++
+         private bool IdleNeeded() =>
+             _states.Any(pair => !pair.Value.Degraded
+                                 && _registry.TryGet(pair.Key, out var session)
+diff --git a/src/RackCad.Application/Workspace/WorkspaceIdleScheduler.cs b/src/RackCad.Application/Workspace/WorkspaceIdleScheduler.cs
+new file mode 100644
+index 00000000..5cf5846d
+--- /dev/null
++++ b/src/RackCad.Application/Workspace/WorkspaceIdleScheduler.cs
+@@ -0,0 +1,123 @@
++#nullable enable
++using System;
++
++namespace RackCad.Application.Workspace
++{
++    /// <summary>
++    /// Pure scheduler of the idle pass of the panel (I-64 F4-T2C, IC-04). The callback of the idle notification of the host only
++    /// calls <see cref="OnIdleTick"/>, which schedules at most ONE continuation through the post that the host adapter assigned;
++    /// the continuation runs later, when the stack of that callback has already returned, and is where the drain (and with it every
++    /// read of the drawing) happens.
++    ///
++    /// Rules it enforces:
++    /// - <see cref="OnIdleTick"/> never runs the continuation and never reads: it schedules only when nothing is scheduled yet, a post
++    ///   exists and the eligibility check in memory says a drain could run now (so there is no loop of posts while it is not eligible);
++    /// - the scheduled run un-marks itself, asks the eligibility check AGAIN and runs the continuation only if it still holds; it never
++    ///   schedules itself;
++    /// - every fault of the check, of the post, of the continuation and of the fault logger is contained and leaves nothing scheduled.
++    /// It holds no host type, starts no work of its own and keeps nothing but in-memory counters for tests and diagnostics.
++    /// </summary>
++    public sealed class WorkspaceIdleScheduler
++    {
++        private readonly Func<bool> _canRunNow;
++        private readonly Action _continuation;
++        private readonly Action<string, Exception>? _logFault;
++        private Action<Action>? _post;
++        private bool _scheduled;
++        private int _continuationsRun;
++        private int _continuationsSkipped;
++
++        public WorkspaceIdleScheduler(Func<bool> canRunNow, Action continuation, Action<string, Exception>? logFault = null)
++        {
++            _canRunNow = canRunNow ?? throw new ArgumentNullException(nameof(canRunNow));
++            _continuation = continuation ?? throw new ArgumentNullException(nameof(continuation));
++            _logFault = logFault;
++        }
++
++        /// <summary>Whether a continuation is scheduled and has not run yet.</summary>
++        public bool IsScheduled => _scheduled;
++
++        /// <summary>How many scheduled runs executed the continuation. A counter in memory; it is not logged.</summary>
++        public int ContinuationsRun => _continuationsRun;
++
++        /// <summary>How many scheduled runs found the check false (or failing) and did nothing. A counter in memory; it is not logged.</summary>
++        public int ContinuationsSkipped => _continuationsSkipped;
++
++        /// <summary>
++        /// Assigns the post, the only way this scheduler hands a run to the host. By assignment, never by constructor; a second call
++        /// replaces the post. Without one the scheduler never schedules and never runs anything.
++        /// </summary>
++        public void SetPost(Action<Action> post)
++        {
++            _post = post ?? throw new ArgumentNullException(nameof(post));
++        }
++
++        /// <summary>
++        /// Called inside the idle callback. In this order it does nothing when a continuation is already scheduled, when there is no
++        /// post, or when the check is false; otherwise it marks the continuation as scheduled and calls the post ONCE. It never runs the
++        /// continuation by itself and nothing it does can reach the caller.
++        /// </summary>
++        public void OnIdleTick()
++        {
++            if (_scheduled) return;
++            var post = _post;
++            if (post == null) return;
++            try
++            {
++                if (!_canRunNow()) return;
++                _scheduled = true;
++                post(Run);
++            }
++            catch (Exception ex)
++            {
++                _scheduled = false;
++                Report("WorkspaceIdleScheduler.OnIdleTick", ex);
++            }
++        }
++
++        // Handed to the post and only there. It un-marks, asks the check again and runs the continuation only if it still holds.
++        private void Run()
++        {
++            _scheduled = false;
++
++            var eligible = false;
++            try
++            {
++                eligible = _canRunNow();
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceIdleScheduler.Run.Check", ex);
++            }
++
++            if (!eligible)
++            {
++                _continuationsSkipped++;
++                return;
++            }
++
++            try
++            {
++                _continuationsRun++;
++                _continuation();
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceIdleScheduler.Run", ex);
++            }
++        }
++
++        // A failing logger is never a second fault.
++        private void Report(string context, Exception exception)
++        {
++            try
++            {
++                _logFault?.Invoke(context, exception);
++            }
++            catch
++            {
++                // Reporting must never become a second fault.
++            }
++        }
++    }
++}
+diff --git a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+index b2681c8e..7b782235 100644
+--- a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
++++ b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+@@ -1,5 +1,7 @@
+ using System;
+ using System.Collections.Generic;
++using System.Diagnostics;
++using System.Windows.Threading;
+ using Autodesk.AutoCAD.ApplicationServices;
+ using Autodesk.AutoCAD.DatabaseServices;
+ using RackCad.Application.Diagnostics;
+@@ -24,10 +26,19 @@ namespace RackCad.Plugin.Workspace
+     {
+         private readonly EventBridgeCore _core;
+         private readonly Dictionary<SourceAttachment, Action> _detachers = new();
++        private readonly Dispatcher _dispatcher;
++        private readonly WorkspaceIdleScheduler _idleScheduler;
+ 
+         public AutoCadEventBridge()
+         {
+             _core = new EventBridgeCore(this, LogFault);
++
++            // I-64 F4-T2C (IC-04): the callback of Idle only schedules. The continuation (the idle pass, with every read of the
++            // drawing) is posted ONCE to the dispatcher of the main thread, at background priority, and runs after the callback has
++            // returned. The dispatcher is the one of the thread that creates the bridge (the controller, during RACKPANEL).
++            _dispatcher = Dispatcher.CurrentDispatcher;
++            _idleScheduler = new WorkspaceIdleScheduler(_core.CanDrainNow, RunIdleContinuation, LogFault);
++            _idleScheduler.SetPost(action => _dispatcher.BeginInvoke(DispatcherPriority.Background, action));
+         }
+ 
+         /// <summary>Raised from the idle pass with the pure result of one drain. The drain performs no read in this bridge.</summary>
+@@ -246,7 +257,7 @@ namespace RackCad.Plugin.Workspace
+                 }
+                 case BridgeSource.Idle:
+                 {
+-                    EventHandler handler = (s, e) => Contain("Idle", OnIdle);
++                    EventHandler handler = (s, e) => Contain("Idle", OnIdleTick);
+                     AcApplication.Idle += handler;
+                     return () => AcApplication.Idle -= handler;
+                 }
+@@ -255,6 +266,38 @@ namespace RackCad.Plugin.Workspace
+             }
+         }
+ 
++        // Inside the callback of Idle: it only asks the scheduler to schedule the continuation. Nothing is drained, announced or read here.
++        private void OnIdleTick()
++        {
++            _idleScheduler.OnIdleTick();
++        }
++
++        // The continuation the scheduler runs after the callback of Idle returned: the idle pass, contained, and then the check of
++        // INV-14 (Debug only), once every subscriber of the drain, the summary read of the panel included, has finished.
++        private void RunIdleContinuation()
++        {
++            Contain("IdleContinuation", OnIdle);
++            CheckNoOpenTransactionAfterTheDrain();
++        }
++
++        // Debug only (I-64 D-02, INV-14, F4-T2C D-T2C-05): a drain leaves no transaction open. It only logs: the transaction may belong
++        // to another add-in running a nested loop, and a failed assertion would end AutoCAD.
++        [Conditional("DEBUG")]
++        private static void CheckNoOpenTransactionAfterTheDrain()
++        {
++            try
++            {
++                var document = AcApplication.DocumentManager.MdiActiveDocument;
++                var open = document?.TransactionManager.TopTransaction;
++                if (open != null)
++                    LogFault("AutoCadEventBridge.IdleContinuation", new InvalidOperationException("A transaction was still open when the drain of the panel ended; it may belong to another add-in running a nested loop."));
++            }
++            catch (System.Exception ex)
++            {
++                LogFault("AutoCadEventBridge.IdleContinuation.Check", ex);
++            }
++        }
++
+         private void OnIdle()
+         {
+             foreach (var outcome in _core.OnIdle())

@@ -1,0 +1,85 @@
+{
+  "CheckedUtc": "2026-11-12T23:27:22.7336168Z",
+  "CheckerPid": 14396,
+  "Rows": [
+    {
+      "Pid": 12492,
+      "ParentPid": 1272,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-11-11T16:12:46.3111470Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 20144,
+      "ParentPid": 5888,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-12T23:27:13.0443050Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 9380,
+      "ParentPid": 20144,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-12T23:27:16.0477870Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 14396,
+      "ParentPid": 9380,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-11-12T23:27:16.4196320Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 20448,
+      "ParentPid": 19952,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-11-12T23:27:18.1008670Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    },
+    {
+      "Pid": 3548,
+      "ParentPid": 19952,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-11-12T23:27:18.1345880Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    },
+    {
+      "Pid": 24784,
+      "ParentPid": 20448,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-11-12T23:27:18.4044180Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    },
+    {
+      "Pid": 3704,
+      "ParentPid": 3548,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-11-12T23:27:18.4347200Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    }
+  ],
+  "ReadableNonParticipants": 29,
+  "Participants": 0,
+  "ParticipantsSessionOwned": 0,
+  "ParticipantsForeign": 0,
+  "SessionPid": 99012,
+  "UnattributablePersistent": 0,
+  "UnattributableCleared": 4
+}

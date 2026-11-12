@@ -924,3 +924,60 @@ El D-T2-06 ratificado solo sacaba la primera.
 - a Smoke-2: la continuación en bucles modales y de cierre, la latencia de Background, `LockDocument` durante un cambio o cierre, y las aserciones existentes en bucles anidados.
 
 **Decisión:** emitir el contrato de F4-T2C con `attempts` 1 de 3. AuthorityRevision = el commit del paquete.
+
+## F4-E37. F4-T2C-IC04-READ-SCHEDULING: intento 1 verificado, revisiones, órdenes del Owner, controles y cierre
+
+**Hechos del intento 1:**
+- **Planificación** `R20261112T214224Z-027e` (primera delegación de la cadena): fidelidad PASS a la primera en las ocho colecciones, A1-A8 8/8, Horizonte Medium. nc4 `R20261112T214516Z-1123`: solo A3 en fail. La replanificación única de F4-E31 no se usa.
+- **Worker** `R20261112T214822Z-2c89`:
+  - subagente con `claude-sonnet-5-5`/high, 147 turnos, 0 denegaciones;
+  - RED `703bda9d`: pruebas y esqueleto inerte, 83 fallos por aserción, todos dentro de `RackCad.Tests.Workspace`;
+  - GREEN `33e43f9f`: solo producto; 7 rutas en total, exactamente el `AllowedWriteScope`.
+  - Relevo de salida y de entrada sin participantes.
+  - El keep-awake se reactivó por orden del Owner antes de la cesión.
+- **CI:** `43319785427` 4/4. Core: filtro 2071/2071, suite 17609/17609. UI: filtro 248/248. El RED `43316625609` tiene Core en rojo.
+- **Verificación** `R20261112T231128Z-7f67`: `EXECUTION_VERIFIED`, 14/14, `VerifiedSha` `33e43f9f`. El barrido 16.10 de la sesión no encuentra nada.
+- **Revisión directa de la sesión** (`direct-review.md`, junto a la verificación): producto conforme a INV-F4T2C-01..11 y a los puntos 1-13 del Owner.
+- **Revisión adversarial independiente** (`independent-review.md`): ACEPTABLE CON MENORES (0/0/4), con el producto correcto. Su ejecución se cortó una vez al suspenderse el equipo y se reanudó con el mismo contexto. Los menores:
+  - **1:** G-1 y G-2 no cubren el método intermedio de la continuación;
+  - **2:** G-3 y G-10 no fijan la forma exacta del post;
+  - **3:** tres pruebas del cierre pendiente sin aserción de profundidad;
+  - **4:** documentación y contexto de registro del puente.
+
+  El análisis conjunto está en `analysis.md`.
+
+**Orden del Owner 1** (`F4-DRAFTS/coordinator/owner-f4t2c-close-decision.md`, pregunta y respuesta literales): «Cerrar y arrastrar a T3». No se gasta el intento 2, y los 4 menores pasan a cambios declarados del contrato de F4-T3.
+
+**Controles** (sobre las entradas de `7f67`):
+- **nc1** `R20261112T231801Z-f749`: **oráculo ordinario NO cumplido / señal demostrada**, con el **mismo modo de fallo** que nc1 de F4-T2B2B (PD-F4-04).
+  - Da Handoff como primera comprobación en fail; Identity también falla, con la evidencia correcta, y Remote y Ci fallan en cascada.
+  - Resultado `EXECUTION_BLOCKED`/STOP con S-04.
+  - Se devolvió al Owner antes de cualquier sustituto (F4-E29; la orden de F4-T2C prohíbe reutilizar sustitutos de forma automática).
+- **nc2** `R20261112T232117Z-1dbe`: CONTROL PASS por el motivo correcto. Solo Scope en fail, nombrando `EventBridgeCore.cs`, y se dispara F4T2C-C01.
+- **nc3** `R20261112T232753Z-93d5`: CONTROL PASS por el motivo correcto. Solo FreeText en fail, en `WorkCompleted`; `EXECUTION_REWORK_REQUIRED`/REWORK.
+
+**Orden del Owner 2** (`F4-DRAFTS/coordinator/owner-f4t2c-nc1-decision.md`): «Sustituto T2C + cerrar».
+- nc1 ordinario = **ORÁCULO NO CUMPLIDO / SEÑAL DEMOSTRADA** (se conserva tal cual).
+- **Sustituto F4T2C-NC1-IDENTITY-SIGNAL-01** (`F4-T2C-IC04-READ-SCHEDULING-nc1-substitute/1/R20261112T234036Z-5559`): **PASS**. Es una copia del de F4-T2B2B con solo el identificador y el ámbito cambiados. Autoprueba de 12 casos, dos veces, determinista, y se cumplen las 7 propiedades.
+- **Registro:** nc1 = SATISFIED_UNDER_F4T2C_NC1_IDENTITY_SIGNAL_SUBSTITUTE.
+- **PD-F4-04:** se registra la recurrencia (segunda tarea seguida). Sigue sin resolverse de forma global dentro de I-64.
+
+**Resultado:** **F4-T2C-IC04-READ-SCHEDULING = CLOSED / PASS WITH LIMITATIONS** sobre `33e43f9f`, con `attempts` 1 de 3 (paquete de cierre `F4-T2C-IC04-READ-SCHEDULING/task-close-package.md`). Por la orden del Owner de F4-T2C, **F4-T2 queda completa en sus subtareas** (T2A, T2B1, T2B2A, T2B2B y T2C).
+
+**Arrastres:**
+- **A F4-T3** (cambios declarados de su contrato), además de los de F4-T2B2B (M-1 a M-5 y D-1):
+  - reforzar G-1, G-2, G-3 y G-10 sobre el método intermedio y la forma exacta del post;
+  - prohibir `.Wait(`, `ExecuteInApplicationContext` y `Dispatcher.Run` en el puente;
+  - las tres pruebas del cierre pendiente;
+  - la documentación y los contextos de registro del puente;
+  - los subdiálogos activan `SetModalRackCadActive(true)` antes de `ShowModalWindow`;
+  - R-T2C-01, el refresco de una superficie Ready, para que el Owner decida.
+- **A Smoke-2:**
+  - el bombeo del dispatcher en bucles anidados y modales;
+  - el cierre y R-T2C-02;
+  - la ventana del cambio de documento;
+  - la latencia de Background;
+  - la continuación perdida;
+  - las aserciones Debug existentes;
+  - la reentrada de continuaciones;
+  - la temporización de pila en el host (D-T2C-05).

@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2C-IC04-READ-SCHEDULING",
+  "RunId": "R20261112T231128Z-7f67",
+  "DelegationRunId": "R20261112T214224Z-027e",
+  "WorkRunId": "R20261112T214822Z-2c89",
+  "Attempt": 1,
+  "VerifiedSha": "33e43f9f4246d63c0b1fdcdddb58f62b5c963c53",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false; Entry records 0 participants and 0 unattributable processes."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists at the WorkRunId path; TaskId, Attempt=1, DelegationRunId and RunId match. OutputWrittenUtc=2026-11-12T16:26:40.195285-06:00 is after Cession.StartUtc=2026-11-12T21:48:28Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base MainSha AuthorityRevision returned 812baf879612320653094a8aaf46aca0bac81383; AuthorityRevision is an ancestor of BaseSha. The six EXTERNAL authority paths (AGENTS.md, AUTOMATION_PLAN.md, agent-execution README, routing, model-catalog and WORKFLOW) have no diff from MainSha to AuthorityRevision. git diff --name-only AuthorityRevision BaseSha lists only docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T2C-IC04-READ-SCHEDULING/coordinator/gate-contract.json and docs/automation/state/I-64.yml; each is declared UNIT_DOC."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json and delegation.json agree on task, authority revision, MainSha, AllowedWriteScope, RequiredTests, invariants and stop conditions. byte-fidelity-check.json reports PASS and byte equality for all 8 checked collections; relay-record-planning.json records A1-A8 pass and nc4."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned 33e43f9f4246d63c0b1fdcdddb58f62b5c963c53. Branch and worktree match delegation. git merge-base --is-ancestor returned 0 for BaseSha..CurrentSha, RedSha..CurrentSha and AuthorityRevision..BaseSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records ls-remote=CurrentSha, origin/main=812baf879612320653094a8aaf46aca0bac81383, equal to MainSha. RemoteFacts.CurrentRun is completed push to refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; no network Git command was run."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha returned exactly the 7 AllowedWriteScope files: EventBridgeCore.cs, WorkspaceIdleScheduler.cs, AutoCadEventBridge.cs, WorkspaceBridgeFacadeSourceGuardTests.cs, WorkspaceHostSourceGuardTests.cs, WorkspaceIdleSchedulerTests.cs and WorkspaceIdleSchedulingGuardTests.cs. No other paths changed."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v on the verification input path matched .gitignore:3, artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts and run 43319785427 show push, exact branch ref and CurrentSha; all four required jobs succeeded: Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application), Build Plugin without AutoCAD. Red run 43316625609 is a push at RedSha on the same branch; its Core job failed as required. Both runs are completed."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed TRX results using TestMethod className+'.'+name and case-insensitive contains filters. Current Core Workspace: 2071 selected, 2071 passed, 0 failed; UI Workspace: 248 selected, 248 passed, 0 failed. Red Core Workspace: 2071 selected, 1988 passed, 83 failed; UI Workspace: 248 selected, 248 passed, 0 failed. Counts match worker-handoff.json and exceed minima 1919 and 248. git diff --name-only BaseSha RedSha -- tests/ gives ChainRedFiles: WorkspaceBridgeFacadeSourceGuardTests.cs, WorkspaceHostSourceGuardTests.cs, WorkspaceIdleSchedulerTests.cs, WorkspaceIdleSchedulingGuardTests.cs. git diff --name-only RedSha CurrentSha -- tests/ is empty."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows both commits, RedSha and CurrentSha; each has Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective Worker model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 and high effort. relay-record-work.json records launch alias sonnet, ModelEffective=claude-sonnet-5-5 and EffortEffective=high; alias launch is the stated subagent transport behavior."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked the 16.10 term list against WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json; no whole-word or whole-phrase matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials, one tool error with none pending, and no usage-limit warning."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The CurrentSha diff is exactly the 7-file whitelist.",
+    "The CurrentSha and RedSha push records, job results and filtered TRX counts agree with the handoff."
+  ],
+  "RecommendedNextAction": "Continue the coordinator's review sequence using this verification record."
+}

@@ -6574,3 +6574,34 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 161. Intento 1 de F4-T2C-IC04-READ-SCHEDULING: verificado
+
+**Decisión:** F4-E37.
+- **Planificación** `027e`: fidelidad PASS, A1-A8 8/8 y nc4 `1123`.
+- **Worker** `2c89`: RED `703bda9d` y GREEN `33e43f9f`.
+- **CI:** `43319785427` 4/4.
+- **Verificación** `7f67`: `EXECUTION_VERIFIED`, 14/14.
+- **Revisiones:**
+  - la directa, con el producto conforme;
+  - la independiente, ACEPTABLE CON MENORES (0/0/4), con los cuatro menores en precisión de guardas y pruebas.
+- **Orden del Owner:** cerrar sin gastar el intento 2, con los menores como cambios declarados del contrato de F4-T3.
+
+**Límites:** sin AutoCAD; la temporización de pila en el host queda para Smoke-2.
+
+## 162. Controles negativos y cierre de F4-T2C
+
+| Control | Corrida | Resultado | Registro |
+|---|---|---|---|
+| nc1 | `R20261112T231801Z-f749` | Oráculo no cumplido, señal demostrada: Handoff primera en fail (el mismo modo que en F4-T2B2B), Identity en fail con la evidencia correcta; `EXECUTION_BLOCKED` / STOP (S-04) | ORÁCULO NO CUMPLIDO / SEÑAL DEMOSTRADA; sustituto F4T2C-NC1-IDENTITY-SIGNAL-01 (`R20261112T234036Z-5559`): PASS → SATISFIED_UNDER_F4T2C_NC1_IDENTITY_SIGNAL_SUBSTITUTE |
+| nc2 | `R20261112T232117Z-1dbe` | CONTROL PASS (Scope, nombrando `EventBridgeCore.cs`; `EXECUTION_BLOCKED` / STOP) | CONTROL PASS |
+| nc3 | `R20261112T232753Z-93d5` | CONTROL PASS (FreeText, `EXECUTION_REWORK_REQUIRED`) | CONTROL PASS |
+
+- **F4-T2C-IC04-READ-SCHEDULING = CLOSED / PASS WITH LIMITATIONS** sobre `33e43f9f`, con `attempts` 1 de 3 (`F4-T2C-IC04-READ-SCHEDULING/task-close-package.md`).
+- **F4-T2:** completa en sus subtareas.
+- **Deuda de protocolo PD-F4-04:** se repite por segunda vez.
+- **Arrastres:**
+  - a F4-T3, los menores de F4-T2C y de F4-T2B2B como cambios declarados;
+  - a Smoke-2, el comportamiento real de la continuación.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.
