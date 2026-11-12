@@ -1,0 +1,53 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261112T171355Z-447b",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "worker-handoff.json declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. Git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 56b0d4977c6c9dae1eef78d1bcff5842ca45dcc5. BaseSha 36b497ad is an ancestor of HEAD and RedSha 568f845d is between BaseSha and HEAD; branch and worktree match. The declared CurrentSha does not match Git."
+  },
+  "OutputSha256": "0F1D435E2990C0AC25C55D0938D96475609BB2ABD0742A842712C0EE7494CA57",
+  "ManualFreeText1610": []
+}

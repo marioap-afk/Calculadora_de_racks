@@ -6465,3 +6465,35 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - `attempts` 2 de 3.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 153. Intento 2 de F4-T2B2A: corrección verificada
+
+**Decisión:** F4-E33.
+
+- **Planificación** `519b`: fidelidad PASS y A1-A8 8/8.
+- **Worker** `3d42`: RED `568f845d` y GREEN `56b0d497`.
+- **CI:** `43259514731` 4/4.
+- **Verificación** `ed09`: `EXECUTION_VERIFIED`, 14/14.
+- **Revisiones:**
+  - la directa, sin defectos de producto;
+  - la re-revisión independiente, NO ACEPTABLE: 1 importante (N-1, solo pruebas: el conjunto exacto de `EditIntentStatus`) y 4 menores.
+- **Orden del Owner:** cerrar sin gastar el intento 3, con N-1 como cambio declarado en el contrato de F4-T2B2B.
+
+**Límites:** sin AutoCAD.
+
+## 154. Controles negativos y cierre de F4-T2B2A
+
+| Control | Corrida | Resultado | Registro |
+|---|---|---|---|
+| nc1 | `R20261112T171355Z-447b` | CONTROL PASS (Identity, `EXECUTION_BLOCKED` / STOP) | CONTROL PASS |
+| nc2 | `R20261112T171913Z-7a93` | Oráculo mecánico cumplido, pero el Controller no detectó la ruta quitada: atribuyó el fallo a C02 | ORÁCULO MECÁNICO CUMPLIDO / SEÑAL NO DEMOSTRADA; sustituto F4T2B2A-NC2-SCOPE-SIGNAL-01 (`R20261112T173209Z-c91c`): PASS → SATISFIED_UNDER_F4T2B2A_SCOPE_SIGNAL_SUBSTITUTE |
+| nc3 | `R20261112T172443Z-06a8` | CONTROL PASS (FreeText, `EXECUTION_REWORK_REQUIRED`) | CONTROL PASS |
+
+- **F4-T2B2A-INTENT-WIRING = CLOSED / PASS WITH LIMITATIONS** sobre `56b0d497`, con `attempts` 2 de 3 (`F4-T2B2A-INTENT-WIRING/task-close-package.md`).
+- **Deuda de protocolo PD-F4-03:** el Controller puede fallar Scope por un motivo ajeno a la mutación.
+- **Arrastres:**
+  - a F4-T2B2B, N-1 y N-4;
+  - a F4-T3, N-2 y N-5;
+  - a Smoke-2, los riesgos de la lectura real.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.

@@ -1,0 +1,76 @@
+{
+  "CheckedUtc": "2026-11-12T17:08:38.5965628Z",
+  "CheckerPid": 6080,
+  "Rows": [
+    {
+      "Pid": 12492,
+      "ParentPid": 1272,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-11-11T16:12:46.3111470Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 10980,
+      "ParentPid": 28164,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-11-11T17:18:18.6747600Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 2580,
+      "ParentPid": 10980,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-11-11T17:18:39.2221620Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 15996,
+      "ParentPid": 2580,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-12T17:08:35.8917210Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 23576,
+      "ParentPid": 15996,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-12T17:08:35.9519450Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 34684,
+      "ParentPid": 23576,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-12T17:08:36.7457450Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 6080,
+      "ParentPid": 34684,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-11-12T17:08:36.8689780Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    }
+  ],
+  "ReadableNonParticipants": 22,
+  "Participants": 0,
+  "ParticipantsSessionOwned": 0,
+  "ParticipantsForeign": 0,
+  "SessionPid": 99012,
+  "UnattributablePersistent": 0,
+  "UnattributableCleared": 0
+}

@@ -1,0 +1,268 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4-T2B2A-INTENT-WIRING/2/R20261112T161257Z-3d42",
+  "SourceRoot": "artifacts/orchestration/I-64/F4-T2B2A-INTENT-WIRING/2/R20261112T161257Z-3d42",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 11,
+    "EXCLUDED": 25
+  },
+  "Files": [
+    {
+      "Path": "cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "1eb7fbce60d193a91fa4bbe6a8fc4810885c148996cced7e84593bb3bf12f5e1",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "d24e479a82f64d2b35fda37be7eefa587590f5adcb03d71f1a87ea20587c1964",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "ci-core/core.trx",
+      "Bytes": 23715742,
+      "Sha256": "5524f5dbc36887371f40d75af5699614534519f09411dcac3ddccd414c5d3b04",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "ci-filter-counts.json",
+      "Bytes": 621,
+      "Sha256": "c1fc5f924269bacfeb9b8fcb95d74bbfa723516cba5484a137516ba352e41861",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "ci-ui/ui.trx",
+      "Bytes": 2753035,
+      "Sha256": "664246b9e94db066f4a115f84706cfa74dbd125027574faac9211ac2a0e83365",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "config-entry.json",
+      "Bytes": 3434,
+      "Sha256": "8e442558e2a2ae6b74a4efe5107daa0bb4fcd07f8c8ebb55bf072aae8ff22300",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-exit.json",
+      "Bytes": 3434,
+      "Sha256": "6ba33b2ec6f30bd775c7adbe6cb1150edbd4457001df165a75afdcbb621b09b5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "processes-entry.json",
+      "Bytes": 1282,
+      "Sha256": "4cce384c633ae2dc622a1104f7693f39df6555e456a9b74cdd3df819b6d00a14",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a534d482c1760133e4bd9da755e1b13c4800c3f51f42364bf4869a7beba9ff36",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "processes-exit.json",
+      "Bytes": 1284,
+      "Sha256": "c41ad6fcd23c18dcb839937b81a0a4ce3b944429c5d8b295fe045491d9a02f6d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "cf99f9422b92875a2f89f9ca11c322edde5d65fc25f43be892d7e463d60b2a85",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "product-correction.patch",
+      "Bytes": 10018,
+      "Sha256": "b75a596b7d3ff93457ff67b07e832b0052191063959978774148ba438ace3da7",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "prompt.md",
+      "Bytes": 46958,
+      "Sha256": "16023953246fbce12d38f35459c0206ec31fc60312fc37bc77d0b5207968fcda",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "150b0b5b4a28c01afe227b360caeaae8e2e6277126926bba85ed449ab8001960",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <checkout-principal>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "red-ci-core/core.trx",
+      "Bytes": 23744674,
+      "Sha256": "2e4920baec7c9233c05fde9954519ea19af780d177a7f7dcae33346caed47c72",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "red-ci-ui/ui.trx",
+      "Bytes": 2753035,
+      "Sha256": "fc31046049e0ae0b4f93bd202f5f02233d23547e11b3394f2eedaeb17f02982f",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "relay-record.json",
+      "Bytes": 17547,
+      "Sha256": "dfb398531b103413f85fd3c9430c2d6718a50eac75824ecddf3f55f31780564e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "tests/green-build/RackCad.Tests.log",
+      "Bytes": 64731,
+      "Sha256": "9ddc9b2da78fff6cedbf9bb10a9ee70a8d421526744024e426b91e5df53f0abd",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/green-build/RackCad.UI.Tests.log",
+      "Bytes": 14640,
+      "Sha256": "54f29713e03cfb77bd66b85eef5fe11268fbdca7d383ec50ced8bb27f64e8f0b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/green-core/green-core.trx",
+      "Bytes": 2675648,
+      "Sha256": "7a4490ebbf0dee1b490e001a69e7c8dfbe3fb3897f1af7924281f8a642cc5d01",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/green-core/run.log",
+      "Bytes": 696,
+      "Sha256": "4fb368e0d91c5f77508837e65056f1e5723dcdc500950748de8e412f7c359bb9",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/green-plugin/build.log",
+      "Bytes": 39510,
+      "Sha256": "d2b2f0660f0e59278d5170577fe3593ffb6fdfd2a92900bc7e7ac9bcd0daecb9",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/green-ui/green-ui.trx",
+      "Bytes": 386473,
+      "Sha256": "08b7c8cba95b9610d60d87bbccb3864a7bffd3c7d969a55b10288c30bd8532cb",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/green-ui/run.log",
+      "Bytes": 708,
+      "Sha256": "72c1e0daa403f27d030449749449707f9ad4aee39fdf474ba06ba3f5831f26d5",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/prechk/core.log",
+      "Bytes": 33549,
+      "Sha256": "7284ab3d1bdae4dfffa57e4577e3dd12a7a8c8f0cb6a406d68919a46e8866ff0",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/prechk/prechk-core.trx",
+      "Bytes": 2675648,
+      "Sha256": "8987cbba2564c7374d8b2212a0adc856d4436e3dff7ed0ec923eae1457e8b9d2",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/red-core/red-core.trx",
+      "Bytes": 2701568,
+      "Sha256": "1121f5ab243a5c1ef79f0f5833f4dd56c3072fd73a346e185eb687cfda73c8b4",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/red-core/run.log",
+      "Bytes": 46975,
+      "Sha256": "40d631bb2fc728e9865ccc5072c747b7560eeff53887004959b187102079418d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/red-pre/core.log",
+      "Bytes": 46982,
+      "Sha256": "7fe3ae900c666cd58545087aa48ffc84f0b863b11605519465131a06ed937e3a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/red-pre/red-pre-core.trx",
+      "Bytes": 2701568,
+      "Sha256": "ce7e871a35bbd3d5dc5e007dc0a20b17fefe102b484aa8fd2f923fdfdf7d313e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/red-ui/red-ui.trx",
+      "Bytes": 386473,
+      "Sha256": "5eb6e00e590f85b8cd8f8a80f9d181b1c499a01d50253b2d7c4fac23c718d4eb",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/red-ui/run.log",
+      "Bytes": 8379,
+      "Sha256": "ee1414620abcd06bade1ed6415913b8e463e781eb986587f3f2a3cccc8f9ac9a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/relevant-core/relevant-core.trx",
+      "Bytes": 24541051,
+      "Sha256": "d23b285996d60c0b73ffb6a558b1e5968d7c1905a7ebffe7952cfe9d6d000233",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/relevant-core/run.log",
+      "Bytes": 706,
+      "Sha256": "01e2fe3ccb340ac064d9a5e8de089d43e578a71a0cea69be938879383ad8540a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/relevant-ui-debug/relevant-ui-debug.trx",
+      "Bytes": 2893289,
+      "Sha256": "3bdf6975fdff5ae5943ba8483d9371d1e843ceabe540b274ea1e97e91fdb130d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/relevant-ui-debug/run.log",
+      "Bytes": 12811,
+      "Sha256": "4b628be121a2ad77015ee6f6e76f6ad5f4879edb5122877e49671173aef0ce05",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/relevant-ui/relevant-ui.trx",
+      "Bytes": 2904154,
+      "Sha256": "d8cacedfc17daf2377089025e9952501103b4e0ff4f66d97a0439cb52d8046b6",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/relevant-ui/run.log",
+      "Bytes": 6761,
+      "Sha256": "e257900780de88768cdffc7821a5472db3b409f8a4310ca1884a4685f3b6118f",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "worker-handoff.json",
+      "Bytes": 20449,
+      "Sha256": "36d9b21880d6ee7845755393f5b4d46eb28dc3553d9752c7b56163a483a858df",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "0eea1883dbe8e748b41940fe8b50fdca3955b1fbe8ee0b18f1efbb91eeee3f23",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    }
+  ]
+}

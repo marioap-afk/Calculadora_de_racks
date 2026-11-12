@@ -689,3 +689,77 @@ La mutación sigue solo en T4B.
 - **Regla de I-1:** ninguna prueba ni guarda nueva prohíbe de forma permanente lo que el paquete asigna a F4-T2B2B o a la exposición de F4-T3. La ausencia del ciclo de vida se acredita por el diff y la revisión.
 - **Los riesgos para el smoke** (bloqueos anidados, DBMOD/UNDO, coste, catálogo, RackLog, compuerta de `ReadPreviewWitness`, defensa del drenaje y referencias de Model Space) pasan a Smoke-2 y a F4-T3.
 - **CorrectionOf** = la verificación `46e1`, con la clase `Tests`.
+
+## F4-E33. Intento 2 de F4-T2B2A: verificado, re-revisión NO ACEPTABLE por N-1, órdenes del Owner, controles y cierre
+
+**Hechos del intento 2:**
+- **Planificación** `R20261112T160848Z-519b`: fidelidad PASS en las ocho colecciones, A1-A8 8/8, Horizonte Medium. Aceptada tal como se emitió.
+- **Worker** `R20261112T161257Z-3d42`:
+  - RED `568f845d`: solo pruebas; 12 fallos por aserción, los de M-3, M-4, M-5 y M-7.
+  - GREEN `56b0d497`: solo producto; 8 rutas en total.
+  - Sin participantes ni procesos vivos en la entrada.
+- **CI:** `43259514731` 4/4. El RED `43258759021` tiene Core en rojo.
+- **Verificación** `R20261112T170518Z-ed09`: `EXECUTION_VERIFIED`, 14/14, `VerifiedSha` `56b0d497`. El barrido 16.10 de la sesión no encuentra nada.
+- **Revisión directa de la sesión:** el producto de la corrección es correcto y mínimo. La re-acotación de I-1 deja sin prohibición permanente lo que corresponde a F4-T2B2B y a F4-T3, salvo lo que encontró la re-revisión.
+- **Re-revisión adversarial independiente** (`independent-rereview.md`, junto a la verificación): NO ACEPTABLE, con 0 bloqueantes, 1 importante y 4 menores.
+  - Cierra M-2 a M-7 y M-9. Los seis puntos de I-1 quedan cerrados, pero queda **N-1** (IMPORTANTE, solo pruebas): `WorkspaceEditIntentHostTests.cs:1018` exige el conjunto exacto de `EditIntentStatus`, y F4-T2B2B tiene que añadir `NotFound`, `NotNeeded` y `Reloaded` (D-T2B2-12).
+  - Menores:
+    - **N-2:** en Debug, el `finally` de `TopTransaction` puede lanzar con un documento nulo o inválido. Hoy es latente.
+    - **N-3:** la guarda de la obligación 10 reconoce los consumidores solo por el nombre del método.
+    - **N-4:** el comentario de `Rejected` omite la tercera vía, el lector.
+    - **N-5:** varias guardas deciden de antemano cómo expone F4-T3.
+
+**Orden del Owner 1** (`F4-DRAFTS/coordinator/owner-f4t2b2a-close-decision.md`, pregunta y respuesta literales): «Cerrar y N-1 a T2B2B».
+- No se gasta el intento 3.
+- Se corren nc1..nc3 sobre `56b0d497` y, si pasan, se cierra como CLOSED / PASS WITH LIMITATIONS.
+- El contrato de F4-T2B2B declara el cambio de esa prueba: el enum pasa a fijarse como prefijo ordenado. Es una enmienda del §3 y el §6 del paquete para el alcance de T2B2B.
+- Los menores se arrastran a T2B2B y T3.
+
+**Controles** (sobre las entradas de `ed09`):
+- **nc1** `R20261112T171355Z-447b`: CONTROL PASS (Identity, `EXECUTION_BLOCKED` / STOP).
+- **nc2** `R20261112T171913Z-7a93`: cumple el oráculo mecánico (Scope fail, FailureClass Scope, `EXECUTION_BLOCKED` / STOP), pero por el motivo equivocado. El Controller **no detectó** la ruta quitada.
+  - Su evidencia de Scope afirma que las 8 rutas están en `AllowedWriteScope`, lo que es falso: a la delegación mutada le falta `WorkspaceEditIntent.cs`.
+  - Atribuye el fallo a la parada F4T2B2A-C02 por dos archivos de prueba propios de la tarea, que la corrección debía cambiar. La verificación real no la aplicó con el mismo diff.
+  - Contract dio pass fiándose de la atestación de fidelidad de la delegación real.
+  - El relevo de salida se midió dos veces: la primera lectura contó dos `bash.exe` de la propia sesión, un falso P-02 por la ruta en la orden.
+- **nc3** `R20261112T172443Z-06a8`: CONTROL PASS por el motivo correcto (FreeText, `EXECUTION_REWORK_REQUIRED`).
+
+**Orden del Owner 2** (`F4-DRAFTS/coordinator/owner-f4t2b2a-nc2-decision.md`): «Sustituto + cerrar».
+- nc2 ordinario = **ORÁCULO MECÁNICO CUMPLIDO / SEÑAL NO DEMOSTRADA** (se conserva tal cual).
+- **Sustituto F4T2B2A-NC2-SCOPE-SIGNAL-01** (`F4-T2B2A-INTENT-WIRING-nc2-substitute/2/R20261112T173209Z-c91c`): **PASS**.
+  - Autoprueba de 10 casos, dos veces.
+  - Se cumplen las 8 propiedades:
+    - la delegación real coincide con el contrato;
+    - `WorkspaceEditIntent.cs` está en el diff y dentro del alcance real;
+    - nc2 quita exactamente esa ruta y nada más;
+    - los hashes derivados son coherentes;
+    - la ruta queda fuera del alcance mutado;
+    - Scope tenía que fallar;
+    - el Controller dio Scope = fail, con FailureClass Scope y STOP.
+  - Medido: la evidencia del Controller no nombra la ruta quitada.
+- **Registro:** nc2 = SATISFIED_UNDER_F4T2B2A_SCOPE_SIGNAL_SUBSTITUTE.
+- **Deuda de protocolo PD-F4-03:** el Controller puede fallar Scope por un motivo ajeno a la mutación y no detectar la ruta quitada. No se resuelve de forma global dentro de I-64.
+
+**Resultado:** **F4-T2B2A-INTENT-WIRING = CLOSED / PASS WITH LIMITATIONS** sobre `56b0d497`, con `attempts` 2 de 3; el intento 3 no se gasta (paquete de cierre `F4-T2B2A-INTENT-WIRING/task-close-package.md`).
+
+**Arrastres:**
+- **A F4-T2B2B:**
+  - **N-1:** cambio declarado de la prueba de los nombres de `EditIntentStatus` en `WorkspaceEditIntentHostTests.cs`, que pasa a un prefijo ordenado con `default` igual a `Unavailable`. Exige enmendar el §3 y el §6 del paquete al emitir T2B2B.
+  - **N-4:** el comentario de `Rejected`, en `WorkspaceEditIntent.cs`, que está en el alcance de T2B2B.
+  - **Redacción de la parada C02 en sus contratos de corrección:** los archivos propios de la tarea, creados en un intento anterior, no son «guardas existentes».
+- **A F4-T3:**
+  - N-2, cuando `ReadPreviewWitness` tenga llamador;
+  - N-5, con sus propios cambios de guarda declarados (H-03);
+  - los riesgos de la revisión del intento 1 que son de la UI: la compuerta de `ReadPreviewWitness` y la defensa frente al drenaje.
+- **A Smoke-2:**
+  - bloqueos anidados;
+  - DBMOD y UNDO tras el `Commit` de lectura del barrido;
+  - coste de dos recorridos de la BlockTable;
+  - dependencia del catálogo en «Comprobar ahora»;
+  - fallos del adaptador fuera de RackLog;
+  - origen solo con referencias de Model Space.
+- **Limitación aceptada:** N-3 (la guarda reconoce los consumidores por nombre) y los residuos que señaló la re-revisión:
+  - en el adaptador, la diferencia entre clave nula y en blanco, inalcanzable desde el core;
+  - la documentación de `Failed`;
+  - el nombre «…OfAnyFile»;
+  - el cero de `EditIntentReadStatus`, que el host defiende.

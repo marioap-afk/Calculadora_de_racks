@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2B2A-INTENT-WIRING",
+  "RunId": "R20261112T171355Z-447b",
+  "DelegationRunId": "R20261112T160848Z-519b",
+  "WorkRunId": "R20261112T161257Z-3d42",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, OutputWrittenUtc=2026-11-12T10:50:36.560246-06:00, after Cession.StartUtc=2026-11-12T16:13:08Z. Exit and Entry record no persistent participants."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "Test-Json against worker-handoff.schema.json returned True. worker-handoff.json TaskId, Attempt, DelegationRunId, RunId and Worktree match the delegation and invocation; OutputWrittenUtc is after Cession.StartUtc. The CurrentSha discrepancy is assessed under Identity."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha succeeded. git diff --name-only AuthorityRevision BaseSha lists only the attempt-2 contract, I-64 state and I-64 evidence; all are UNIT_DOC authorities. No EXTERNAL or UNIT_CHANGE path is in that diff. The external authority paths are unchanged between MainSha and AuthorityRevision; section 16, README section 8 and AGENTS.md were read from MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Contract and delegation match on 13 invariants, stop conditions, authorities, required tests and exact scopes. byte-fidelity-check.json reports PASS with byte equality in all eight collections; planning relay records A1-A8 all pass. Contract and delegation schema checks returned True."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. Git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 56b0d4977c6c9dae1eef78d1bcff5842ca45dcc5. BaseSha 36b497ad is an ancestor of HEAD and RedSha 568f845d is between BaseSha and HEAD; branch and worktree match. The declared CurrentSha does not match Git."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha and CurrentRun.HeadSha are 56b0d4977c6c9dae1eef78d1bcff5842ca45dcc5; OriginMainSha is 812baf879612320653094a8aaf46aca0bac81383, matching MainSha and refs/remotes/origin/main. CurrentRun is a completed push to refs/heads/architecture/workspace-persistente-rackcad."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha HEAD lists eight paths: WorkspaceEditIntent.cs, WorkspaceHostCore.cs, RackPilotIntentAdapter.cs, RackSiblingScan.cs and four Workspace test files. Every changed path is an exact AllowedWriteScope entry; none intersects the 70 ForbiddenWriteScope entries."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore confirms the copied worker-handoff.json path under artifacts/orchestration is ignored."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 43259514731 is a completed push for the Git HEAD and exact branch ref; all four required jobs are success. RedRun 43258759021 is a completed push for RedSha; its Core job is failure and UI job is success. The CurrentSha Core and UI TRX files are present."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX filter counts: Current Core 1754 selected/1754 passed (minimum 1592); Current UI 248/248 passed (minimum 248). Red Core 1754 selected, 1742 passed and 12 failed; Red UI 248/248 passed, consistent with ExpectRed true for Core and false for UI. The full Current TRX counts are Core 17292/17292 and UI 1902 selected, 1885 passed, 0 failed, 17 skipped, matching relay counts. RT contains five test paths; it equals the five existing ChainRedFiles. git diff RedSha CurrentSha contains only four source paths and no tests/, so the resulting ChainRedFiles remains those five paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD shows both RED and GREEN commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching the declared trailer and effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high provider effort; work relay records effective model claude-sonnet-5-5 and effort high. The literal subagent launch alias is sonnet, as allowed by the transport."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against the section 16.10 term list; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Work relay Notes record zero permission denials and one tool error with none pending. The recorded process check has no persistent participants or unattributable processes."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "The handoff CurrentSha conflicts with Git HEAD, the branch remote and the work relay CurrentRun. This is contradictory evidence and fails Identity.",
+    "The actual Git diff, CI facts, TRX counts, test scope and commit trailers were evaluated against the checked-out HEAD."
+  ],
+  "RecommendedNextAction": "Resolve the S-04 discrepancy and provide a corrected handoff for verification."
+}

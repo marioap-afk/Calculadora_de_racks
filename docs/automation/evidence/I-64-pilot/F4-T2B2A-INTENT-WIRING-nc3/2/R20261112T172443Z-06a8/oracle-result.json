@@ -1,0 +1,51 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261112T172443Z-06a8",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "FreeText": "worker-handoff.json WorkCompleted contiene un termino reservado por AUTOMATION_PLAN 16.10. La comprobacion de texto libre no pasa."
+  },
+  "OutputSha256": "6EF871E16C4B66956F9692455D8D00E82CA9B4D20459A82E2782ED5AAD6A37F8",
+  "ManualFreeText1610": []
+}
