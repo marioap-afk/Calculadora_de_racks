@@ -739,8 +739,18 @@ public class WorkspaceDraftPilotIntentReadTests
     {
         // This test shows the pair (9, 11) only: a lone Selective origin is also unreadable for AUTH-13 (the Push Back port only
         // reads Push Back), and the rule 9 verdict wins. The pair (9, 10) is shown by the next test.
+        // The premise is checked with the comparator of AUTH-13, as the test of the pair (9, 10) does.
+        var selective = IntentKit.Variant("pb-01-base", Rack, kind: "selective");
+        var embed = new RackEmbedStore().Deserialize(selective)!;
+        var comparison = RackAuthoredComparatorPorts.PushBack().Compare(new RackAuthoredInput(
+            Rack,
+            new[] { new RackAuthoredSibling("A1", embed.Kind!, selective, embed.Design) },
+            true,
+            IntentKit.Evidence));
+        Assert.Equal(RackAuthoredComparisonOutcome.Unreadable, comparison.Outcome);
+
         Refuses(
-            IntentKit.Scan(Rack, "A1", IntentKit.Member("A1", IntentKit.Variant("pb-01-base", Rack, kind: "selective"))),
+            IntentKit.Scan(Rack, "A1", IntentKit.Member("A1", selective)),
             PushBackPilotIntentReader.OutOfPilotDiagnostic,
             detail: "selective");
     }

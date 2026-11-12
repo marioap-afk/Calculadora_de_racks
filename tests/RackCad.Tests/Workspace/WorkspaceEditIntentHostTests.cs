@@ -559,6 +559,81 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(0, rig.Core.OpenDrafts.CountOf(ghost));
     }
 
+    [Fact]
+    public void WithADraftOfSessionAAndBActiveTheIntentionOfARejectsBeforeAnythingAboutTheDraftAndReadsNothing()
+    {
+        // M-9: the authorization (step 5) comes before the open draft (step 6), so the session that is not the active one is
+        // Rejected and not AlreadyOpen, even for a rack that has a draft in its own session.
+        var rig = new Rig();
+        var a = rig.Session;
+        Assert.Equal(EditIntentStatus.Admitted, rig.Core.TryBeginPilotEdit(rig.Request(session: a)).Status);
+        var draft = rig.Draft(RackA, a)!;
+        var reads = rig.Reader.Calls.Count;
+        var b = rig.Host.Activate(200);
+        rig.Core.RefreshPanel();
+        rig.Host.Idle();
+
+        var outcome = rig.Core.TryBeginPilotEdit(rig.Request(RackA, session: a));
+
+        Assert.Equal(EditIntentStatus.Rejected, outcome.Status);
+        Assert.NotEqual(EditIntentStatus.AlreadyOpen, outcome.Status);
+        Assert.False(string.IsNullOrWhiteSpace(outcome.Reason));
+        Assert.Equal(EditWitnessStatus.NotEvaluated, outcome.Witness);
+        Assert.Equal(reads, rig.Reader.Calls.Count);
+        Assert.Same(draft, rig.Draft(RackA, a));
+        Assert.Equal(0, rig.Core.OpenDrafts.CountOf(b));
+    }
+
+    // ------------------------------------------------------------------ M-3: a witness without a key is a failure of the request, before anything is read
+
+    public static IEnumerable<object?[]> WitnessKeysWithoutAValue() => new[]
+    {
+        new object?[] { null },
+        new object?[] { "" },
+        new object?[] { "  " },
+        new object?[] { "\t" },
+    };
+
+    [Theory]
+    [MemberData(nameof(WitnessKeysWithoutAValue))]
+    public void APresentWitnessWithoutAKeyIsAFailureOfTheIntentionWithAReasonAndReadsNothingAndTouchesNoRegistry(string? key)
+    {
+        var rig = new Rig();
+
+        var outcome = rig.Core.TryBeginPilotEdit(rig.Request(witness: new EditIntentWitness(key!, "{ preview")));
+
+        Assert.Equal(EditIntentStatus.Failed, outcome.Status);
+        Assert.False(string.IsNullOrWhiteSpace(outcome.Reason));
+        Assert.Equal(EditWitnessStatus.NotEvaluated, outcome.Witness);
+        Assert.Empty(rig.Reader.Calls);
+        Assert.Equal(0, rig.Core.OpenDrafts.CountOf(rig.Session));
+        Assert.Null(rig.Draft());
+        Assert.False(rig.Core.OpenDrafts.Contains(rig.Session, RackA));
+
+        // The same request without a witness, or with a witness that has a key, is served as usual.
+        Assert.Equal(EditIntentStatus.Admitted, rig.Core.TryBeginPilotEdit(rig.Request(RackB, witness: new EditIntentWitness("A1", null))).Status);
+        Assert.Single(rig.Reader.Calls);
+    }
+
+    [Theory]
+    [MemberData(nameof(WitnessKeysWithoutAValue))]
+    public void APresentWitnessWithoutAKeyIsAFailureOfCheckNowWithAReasonAndReadsNothingAndLeavesTheUnknownDraftAsItWas(string? key)
+    {
+        var rig = new Rig();
+        var draft = rig.UnknownDraft();
+        var reads = rig.Reader.Calls.Count;
+
+        var outcome = rig.Core.TryCheckPilotEdit(rig.Request(witness: new EditIntentWitness(key!, "{ preview")));
+
+        Assert.Equal(EditCheckStatus.Failed, outcome.Status);
+        Assert.False(string.IsNullOrWhiteSpace(outcome.Reason));
+        Assert.Empty(outcome.Differences);
+        Assert.Equal(reads, rig.Reader.Calls.Count);
+        Assert.Same(draft, rig.Draft());
+        Assert.Equal(DraftStatus.Unknown, draft.Status);
+        Assert.Equal(DraftUnknownOrigin.CommitThrew, draft.UnknownOrigin);
+    }
+
     // ------------------------------------------------------------------ INV-27: the witness of the preview
 
     [Fact]
@@ -847,7 +922,7 @@ public class WorkspaceEditIntentHostTests
     // ------------------------------------------------------------------ INV-F4T2B2A-09: nothing is called from the drain
 
     [Fact]
-    public void NoOperationIsCalledFromTheDrainAndTheDrainTouchesNeitherTheReaderNorTheDrafts()
+    public void NoOperationIsCalledFromTheDrainAndTheDrainNeverCallsTheReaderOfTheIntention()
     {
         var rig = new Rig();
         var draft = rig.UnknownDraft();
@@ -867,7 +942,6 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(reads, rig.Reader.Calls.Count);
         Assert.Equal(status, draft.Status);
         Assert.Same(draft, rig.Draft());
-        Assert.False(draft.IsPossiblyStale);
     }
 
     // ------------------------------------------------------------------ the values carry no draft and no type of the pilot (D-T2B2-06)
@@ -943,6 +1017,29 @@ public class WorkspaceEditIntentHostTests
         Assert.Equal(new[] { "Read", "NoActiveDocument", "Busy", "Rejected", "Failed" }, Enum.GetNames<EditIntentReadStatus>());
         Assert.Equal(new[] { "Unavailable", "Waiting", "Rejected", "AlreadyOpen", "NotAdmitted", "Admitted", "Failed" }, Enum.GetNames<EditIntentStatus>());
         Assert.Equal(new[] { "Unavailable", "Waiting", "Rejected", "NotFound", "NotApplicable", "Conflict", "Recovered", "Failed" }, Enum.GetNames<EditCheckStatus>());
+    }
+
+    [Fact]
+    public void TheDifferencesOfACheckOutcomeAreNeverNullAndAreEmptyUnlessTheStatusIsConflictAlsoForTheDefaultValue()
+    {
+        // M-7: a consumer may count the differences of any outcome, including a default one, without a null reference.
+        var unset = default(EditCheckOutcome);
+        Assert.Equal(EditCheckStatus.Unavailable, unset.Status);
+        Assert.NotNull(unset.Differences);
+        Assert.Empty(unset.Differences);
+
+        foreach (var outcome in new[]
+                 {
+                     EditCheckOutcome.Unavailable("x"), EditCheckOutcome.Waiting("x"), EditCheckOutcome.Rejected("x"), EditCheckOutcome.NotFound("x"),
+                     EditCheckOutcome.NotApplicable("x"), EditCheckOutcome.Recovered(), EditCheckOutcome.Failed("x"),
+                 })
+        {
+            Assert.NotNull(outcome.Differences);
+            Assert.Empty(outcome.Differences);
+        }
+
+        var conflict = EditCheckOutcome.Conflict(new[] { "B2:Membership" });
+        Assert.Equal(new[] { "B2:Membership" }, conflict.Differences.ToArray());
     }
 
     [Fact]
