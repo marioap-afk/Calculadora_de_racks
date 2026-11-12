@@ -178,7 +178,8 @@ public class WorkspaceDraftApplyTests
         Assert.False(a.IsRegistered);
         Assert.False(registry.HasUpdateInProgress);
         Assert.Same(content.CurrentDraftState, a.CurrentDraftState);
-        Assert.Same(content.InitialDraftState, a.InitialDraftState);
+        Assert.NotSame(content.InitialDraftState, a.InitialDraftState);
+        Assert.Equal(content.InitialDraftState, a.InitialDraftState);
         Assert.Same(content.StaleBase, a.StaleBase);
         Assert.Empty(a.Warnings);
         Assert.False(registry.Contains(DraftKit.S1, "A"));
@@ -250,7 +251,8 @@ public class WorkspaceDraftApplyTests
         Assert.Null(draft.UnknownOrigin);
         Assert.Equal("commit threw", draft.LastApplyCause);
         Assert.Same(content.CurrentDraftState, draft.CurrentDraftState);
-        Assert.Same(content.InitialDraftState, draft.InitialDraftState);
+        Assert.NotSame(content.InitialDraftState, draft.InitialDraftState);
+        Assert.Equal(content.InitialDraftState, draft.InitialDraftState);
         Assert.Same(content.StaleBase, draft.StaleBase);
         Assert.True(draft.IsDirty);
     }
@@ -272,7 +274,8 @@ public class WorkspaceDraftApplyTests
         Assert.Equal(DraftStatus.Error, draft.Status);
         Assert.Equal("surface threw", draft.ErrorReason);
         Assert.Same(postBase, draft.StaleBase);
-        Assert.Same(post.InitialState, draft.InitialDraftState);
+        Assert.NotSame(post.InitialState, draft.InitialDraftState);
+        Assert.Equal(post.InitialState, draft.InitialDraftState);
         Assert.NotSame(draft.InitialDraftState, draft.CurrentDraftState);
         Assert.True(DraftKit.Comparer.Equals(draft.InitialDraftState, draft.CurrentDraftState));
         Assert.Empty(draft.PendingText);
@@ -412,7 +415,8 @@ public class WorkspaceDraftApplyTests
         Assert.Equal(DraftStatus.Conflict, draft.Status);
         Assert.Equal(differences, draft.ConflictDifferences.ToArray());
         Assert.Same(content.CurrentDraftState, draft.CurrentDraftState);
-        Assert.Same(content.InitialDraftState, draft.InitialDraftState);
+        Assert.NotSame(content.InitialDraftState, draft.InitialDraftState);
+        Assert.Equal(content.InitialDraftState, draft.InitialDraftState);
         Assert.Same(content.StaleBase, draft.StaleBase);
     }
 
@@ -445,7 +449,8 @@ public class WorkspaceDraftApplyTests
         Assert.False(string.IsNullOrEmpty(draft.LastApplyCause));
         Assert.Equal(outcome.Cause, draft.LastApplyCause);
         Assert.Same(content.CurrentDraftState, draft.CurrentDraftState);
-        Assert.Same(content.InitialDraftState, draft.InitialDraftState);
+        Assert.NotSame(content.InitialDraftState, draft.InitialDraftState);
+        Assert.Equal(content.InitialDraftState, draft.InitialDraftState);
         Assert.Same(content.StaleBase, draft.StaleBase);
         Assert.Empty(draft.ConflictDifferences);
     }
@@ -468,7 +473,8 @@ public class WorkspaceDraftApplyTests
         Assert.False(result.Rebased);
         Assert.Equal("commit threw", draft.LastApplyCause);
         Assert.Same(content.CurrentDraftState, draft.CurrentDraftState);
-        Assert.Same(content.InitialDraftState, draft.InitialDraftState);
+        Assert.NotSame(content.InitialDraftState, draft.InitialDraftState);
+        Assert.Equal(content.InitialDraftState, draft.InitialDraftState);
         Assert.Same(content.StaleBase, draft.StaleBase);
     }
 
@@ -491,7 +497,8 @@ public class WorkspaceDraftApplyTests
         Assert.Equal(DraftStatus.Clean, result.Status);
         Assert.Equal(DraftStatus.Clean, draft.Status);
         Assert.Same(postBase, draft.StaleBase);
-        Assert.Same(post.InitialState, draft.InitialDraftState);
+        Assert.NotSame(post.InitialState, draft.InitialDraftState);
+        Assert.Equal(post.InitialState, draft.InitialDraftState);
         Assert.NotSame(draft.InitialDraftState, draft.CurrentDraftState);
         Assert.True(DraftKit.Comparer.Equals(draft.InitialDraftState, draft.CurrentDraftState));
         Assert.Empty(draft.PendingText);
@@ -514,7 +521,8 @@ public class WorkspaceDraftApplyTests
         Assert.True(result.Rebased);
         Assert.Equal(DraftStatus.Clean, draft.Status);
         Assert.Same(post.StaleBase, draft.StaleBase);
-        Assert.Same(post.InitialState, draft.InitialDraftState);
+        Assert.NotSame(post.InitialState, draft.InitialDraftState);
+        Assert.Equal(post.InitialState, draft.InitialDraftState);
         Assert.NotSame(draft.InitialDraftState, draft.CurrentDraftState);
         Assert.True(DraftKit.Comparer.Equals(draft.InitialDraftState, draft.CurrentDraftState));
         Assert.Equal(new[] { "purge failed", "2 pieces missing" }, draft.Warnings.ToArray());
@@ -548,7 +556,8 @@ public class WorkspaceDraftApplyTests
         Assert.Equal(DraftUnknownOrigin.PostReread, draft.UnknownOrigin);
         Assert.True(draft.IsDirty);
         Assert.Same(content.CurrentDraftState, draft.CurrentDraftState);
-        Assert.Same(content.InitialDraftState, draft.InitialDraftState);
+        Assert.NotSame(content.InitialDraftState, draft.InitialDraftState);
+        Assert.Equal(content.InitialDraftState, draft.InitialDraftState);
         Assert.Same(content.StaleBase, draft.StaleBase);
     }
 
@@ -617,7 +626,8 @@ public class WorkspaceDraftApplyTests
         Assert.Null(draft.UnknownOrigin);
         Assert.Empty(check.Differences);
         Assert.Same(content.CurrentDraftState, draft.CurrentDraftState);
-        Assert.Same(content.InitialDraftState, draft.InitialDraftState);
+        Assert.NotSame(content.InitialDraftState, draft.InitialDraftState);
+        Assert.Equal(content.InitialDraftState, draft.InitialDraftState);
         Assert.Same(content.StaleBase, draft.StaleBase);
     }
 

@@ -621,7 +621,8 @@ public class WorkspaceDraftSessionTests
 
         Assert.Equal(DraftMarkResult.Marked, mark);
         Assert.True(draft.IsPossiblyStale);
-        Assert.Same(initial, draft.InitialDraftState);
+        Assert.NotSame(initial, draft.InitialDraftState);
+        Assert.Equal(initial, draft.InitialDraftState);
         Assert.Same(current, draft.CurrentDraftState);
         Assert.Same(staleBase, draft.StaleBase);
         Assert.Equal("9x", draft.PendingText["width"]);
@@ -719,7 +720,8 @@ public class WorkspaceDraftSessionTests
 
         Assert.Equal(DraftReloadStatus.Reloaded, result.Status);
         Assert.Same(newBase, draft.StaleBase);
-        Assert.Same(read.InitialState, draft.InitialDraftState);
+        Assert.NotSame(read.InitialState, draft.InitialDraftState);
+        Assert.Equal(read.InitialState, draft.InitialDraftState);
         Assert.NotSame(draft.InitialDraftState, draft.CurrentDraftState);
         Assert.True(DraftKit.Comparer.Equals(read.InitialState, draft.CurrentDraftState));
         Assert.Empty(draft.PendingText);
@@ -786,7 +788,8 @@ public class WorkspaceDraftSessionTests
         Assert.Equal(DraftReloadStatus.NotAdmitted, keep.Status);
         Assert.Equal("divergent members", keep.Admission.Diagnostic);
         Assert.Same(staleBase, draft.StaleBase);
-        Assert.Same(initial, draft.InitialDraftState);
+        Assert.NotSame(initial, draft.InitialDraftState);
+        Assert.Equal(initial, draft.InitialDraftState);
         Assert.Same(current, draft.CurrentDraftState);
         Assert.Equal("9x", draft.PendingText["width"]);
     }
@@ -804,7 +807,8 @@ public class WorkspaceDraftSessionTests
 
         Assert.Equal(DraftReloadStatus.NotConfirmed, result.Status);
         Assert.Same(staleBase, draft.StaleBase);
-        Assert.Same(initial, draft.InitialDraftState);
+        Assert.NotSame(initial, draft.InitialDraftState);
+        Assert.Equal(initial, draft.InitialDraftState);
         Assert.Same(current, draft.CurrentDraftState);
         Assert.Equal("9x", draft.PendingText["width"]);
     }
@@ -822,7 +826,8 @@ public class WorkspaceDraftSessionTests
 
         Assert.Equal(DraftReloadStatus.Reloaded, result.Status);
         Assert.Same(newBase, draft.StaleBase);
-        Assert.Same(read.InitialState, draft.InitialDraftState);
+        Assert.NotSame(read.InitialState, draft.InitialDraftState);
+        Assert.Equal(read.InitialState, draft.InitialDraftState);
         Assert.Same(current, draft.CurrentDraftState);
         Assert.Equal("9x", draft.PendingText["width"]);
         Assert.Equal(DraftStatus.Dirty, draft.Status);
@@ -921,7 +926,8 @@ public class WorkspaceDraftSessionTests
         Assert.Equal(DraftStatus.Error, draft.Status);
         Assert.Equal("surface threw", draft.ErrorReason);
         Assert.Same(staleBase, draft.StaleBase);
-        Assert.Same(initial, draft.InitialDraftState);
+        Assert.NotSame(initial, draft.InitialDraftState);
+        Assert.Equal(initial, draft.InitialDraftState);
         Assert.Same(current, draft.CurrentDraftState);
         Assert.Equal("9x", draft.PendingText["width"]);
         Assert.True(draft.IsDirty);
@@ -1022,7 +1028,10 @@ public class WorkspaceDraftSessionTests
         Assert.False(draft.IsDirty);
         draft.CurrentDraftState.Name = "Edited in place";
 
-        Assert.Same(read.InitialState, draft.InitialDraftState);
+        Assert.NotSame(read.InitialState, draft.InitialDraftState);
+        Assert.Equal(read.InitialState!.Name, draft.InitialDraftState.Name);
+        Assert.Equal(read.InitialState!.Width, draft.InitialDraftState.Width);
+        Assert.Equal(read.InitialState.Source, draft.InitialDraftState.Source);
         Assert.Equal("Fresh", draft.InitialDraftState.Name);
         Assert.True(draft.IsDirty);
         Assert.True(new DraftClosePolicy(registry).EvaluateClose(DraftKit.S1).IsVeto);
@@ -1047,7 +1056,10 @@ public class WorkspaceDraftSessionTests
         Assert.False(draft.IsDirty);
         draft.CurrentDraftState.Width = 99;
 
-        Assert.Same(post.InitialState, draft.InitialDraftState);
+        Assert.NotSame(post.InitialState, draft.InitialDraftState);
+        Assert.Equal(post.InitialState!.Name, draft.InitialDraftState.Name);
+        Assert.Equal(post.InitialState!.Width, draft.InitialDraftState.Width);
+        Assert.Equal(post.InitialState.Source, draft.InitialDraftState.Source);
         Assert.Equal(12, draft.InitialDraftState.Width);
         Assert.True(draft.IsDirty);
         Assert.True(new DraftClosePolicy(registry).EvaluateClose(DraftKit.S1).IsVeto);
@@ -1120,7 +1132,8 @@ public class WorkspaceDraftSessionTests
         var result = draft.KeepMineOnCurrentVersion(read, confirmed: true);
 
         Assert.Equal(DraftReloadStatus.Reloaded, result.Status);
-        Assert.Same(mine, draft.InitialDraftState);
+        Assert.NotSame(mine, draft.InitialDraftState);
+        Assert.Equal(mine, draft.InitialDraftState);
         Assert.False(ReferenceEquals(draft.InitialDraftState, draft.CurrentDraftState));
         Assert.True(DraftKit.Comparer.Equals(mine, draft.CurrentDraftState));
     }

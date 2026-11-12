@@ -28,7 +28,8 @@ public class WorkspaceDraftRegistryTests
         Assert.NotNull(result.Draft);
         Assert.True(result.Admission.IsAdmitted);
         Assert.Same(staleBase, result.Draft!.StaleBase);
-        Assert.Same(read.InitialState, result.Draft.InitialDraftState);
+        Assert.NotSame(read.InitialState, result.Draft.InitialDraftState);
+        Assert.Equal(read.InitialState, result.Draft.InitialDraftState);
         Assert.NotSame(result.Draft.InitialDraftState, result.Draft.CurrentDraftState);
         Assert.True(DraftKit.Comparer.Equals(read.InitialState, result.Draft.CurrentDraftState));
         Assert.True(registry.Contains(DraftKit.S1, "R1"));
