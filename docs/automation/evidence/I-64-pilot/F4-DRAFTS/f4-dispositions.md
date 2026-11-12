@@ -615,3 +615,33 @@ La mutación sigue solo en T4B.
 | F4-T2B2B | en espera; 1 de 3 al emitirse |
 | F4-T3 y F4-T4 | en espera |
 | Smoke-2 | pendiente |
+
+## F4-E30. Paquete de F4-T2B2 v5 y emisión de F4-T2B2A-INTENT-WIRING
+
+**Paquete v5** (`docs/initiatives/I-64-f4-t2b2-gate-contract-package.md`): aplica la orden del Owner (F4-E29) sin reabrir la semántica acordada. Los cambios están en su §10:
+- D-T2B2-10 se reescribe con la distinción A/B/C y la tabla de veto del Owner.
+  - Se conservan la semántica ordinaria de `DraftRegistry`, INV-F4T1-12, INV-F4T1-23 y su prueba de atomicidad.
+  - F4-T2B2B añadirá operaciones explícitas y aditivas. Su forma exacta la fija y la revisa su contrato.
+- No hay presupuesto único de T2B.
+- Los arrastres T2B1/N-1 a T2B1/N-4 quedan confirmados en T2B2A.
+- Líneas base de T2B2A: 1592 y 248 (CI `43190415649` de `fe7f136b`).
+
+**Hechos:** entre `51163211`, donde se midió el paquete, y `f124b741` solo cambió documentación; `src/`, `tests/` y `.github/` no cambian.
+
+**Reasignación:** el paquete de T2B daba a T2B2 «el punto de entrada para T3». Pasa a T2B2A como dos operaciones de valor con firma fija, `TryBeginPilotEdit` y `TryCheckPilotEdit`. Son código oscuro hasta que T3 las exponga a la UI con su propio puerto y sus propios cambios de guarda.
+
+**Emisión de F4-T2B2A-INTENT-WIRING:** `attempts` 1 de 3 (F4-E09). La sesión redacta el contrato desde el §2, el §4, el §6 y el §10 del paquete v5:
+- **`AllowedWriteScope`:** lista blanca exacta de 13 rutas, nueve de la tarea y cuatro de los arrastres de T2B1.
+- **`ForbiddenWriteScope`** (70 entradas):
+  - prefijos seguros (F4-E21);
+  - los archivos de guarda y de pruebas que no cambian;
+  - los csproj;
+  - los dos archivos que pertenecen a T2B2B: `EventBridgeCore.cs` y `AutoCadEventBridge.cs`.
+- **Invariantes:** 12, uno por decisión de D-T2B2-01 a D-T2B2-08, más estos:
+  - sin ciclo de vida;
+  - sin cambios en guardas ni pruebas existentes;
+  - lectura sin escritura;
+  - cobertura RED/GREEN.
+- **Paradas:** 7 propias de la tarea.
+
+**Controles:** nc4 en la primera delegación de la cadena; nc1..nc3 con su oráculo ordinario. Si nc2 o nc3 repiten el modo de fallo de T2B1, la sesión los devuelve al Owner antes de cualquier sustituto (F4-E29).

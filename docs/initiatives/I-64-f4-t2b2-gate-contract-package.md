@@ -1,8 +1,8 @@
 # I-64 — Paquete del contrato de F4-T2B2 (cableado de la intención y ciclo de vida en el host)
 
-**Estado:** v4, EMITIBLE en cuanto se cumplan sus dos precondiciones (abajo). Lo prepara la sesión principal bajo la delegación nocturna del Owner. La v1 y la v2 dieron NO EMITIBLE y la v3, EMITIBLE TRAS CORRECCIONES; el §7 y el §9 disponen cada hallazgo.
-**Base:** rama `architecture/workspace-persistente-rackcad`, en `51163211`. Todos los hechos se midieron ahí.
-**Precondiciones de emisión:** (1) el cierre de F4-T2B1 tras la disposición del Owner sobre nc2 y nc3 (F4-E28); (2) la ratificación del Owner del cambio de D-T2B2-10 sobre el núcleo cerrado de F4-T1. Hasta entonces, este paquete solo se prepara y se revisa.
+**Estado:** v5, EMITIBLE. Lo prepara la sesión principal. La v1 y la v2 dieron NO EMITIBLE y la v3, EMITIBLE TRAS CORRECCIONES; el §7 y el §9 disponen cada hallazgo. La v4 aplicó esas correcciones y la v5 aplica la orden del Owner (F4-E29, §10).
+**Base:** rama `architecture/workspace-persistente-rackcad`, en `51163211`. Todos los hechos se midieron ahí. Entre `51163211` y `f124b741` solo cambió documentación: `src/`, `tests/` y `.github/` no cambian (comprobado al preparar la v5).
+**Precondiciones de emisión:** cumplidas (F4-E29). (1) F4-T2B1 está CLOSED / PASS WITH LIMITATIONS (custodia `f124b741`). (2) El Owner ratificó D-T2B2-10 con una distinción que conserva el núcleo cerrado de F4-T1 (§5).
 
 ## 1. Autoridades
 
@@ -15,7 +15,9 @@
   - INV-14, INV-20, INV-28 e INV-31.
 - **Paquete de F4 v2:** obligaciones 3, 4, 10, 11, 13, 14, 15 y 18; C-F4-04.
 - **Paquete de F4-T2B** (`docs/initiatives/I-64-f4-t2b-gate-contract-package.md`): §6 (esbozo) y §7.
-- **Disposiciones:** F4-E09, F4-E16 (M-6), F4-E26, F4-E28 (arrastres N-1 a N-4, si el Owner cierra T2B1 así).
+- **Disposiciones:**
+  - F4-E09, F4-E16 (M-6), F4-E26 y F4-E28;
+  - F4-E29 (cierre de T2B1, arrastres T2B1/N-1 a N-4, D-T2B2-10 con distinción y presupuesto por tarea), con la orden `I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2b1-t2b2-disposition.md`.
 - **Aclaraciones:** IC-04 (redacción aceptada, `I-64-implementation-clarifications.md:73-85`).
 - **Producto cerrado:** núcleo de borradores, piloto y lectura pura de la intención (`PushBackPilotIntent{Scan,Reader,Result}`).
 
@@ -43,11 +45,11 @@
 | Tarea | Alcance | Cambios de guarda o de pruebas existentes |
 |---|---|---|
 | **F4-T2B2A-INTENT-WIRING** (primero) | Proyección aditiva; adaptador de lectura y lector del testigo en `Plugin/Views`; costura Core–Plugin por asignación; elección del origen (función pura); registro de borradores del host; entrada de la intención y «Comprobar ahora», por acción del usuario; arrastres T2B1/N-1 a T2B1/N-4 | Ninguna guarda existente cambia (las nuevas van en archivos nuevos). Solo por los arrastres de D-T2B2-07, cambian pruebas existentes de `WorkspaceDraftPilotIntentReadTests.cs`, `WorkspaceDraftPilotIntentStaleBaseTests.cs` y `WorkspaceDraftPilotIntentGuardTests.cs` |
-| **F4-T2B2B-LIFECYCLE** (después) | Asesor de ciclo de vida (veto y retirada síncrona); descarte y retirada contenidos en `DraftRegistry` (M-6); marcado de obsolescencia (IC-08); recarga perezosa por acción del usuario; registro técnico del aviso de pérdida | (1) un nombre exacto más en la lista de miembros públicos de `EventBridgeCore` (`WorkspaceBridgeFacadeSourceGuardTests.cs:204-224`); (2) la prueba de atomicidad de `RetireSession` (`WorkspaceDraftRegistryTests.cs:363-389`) pasa a la semántica nueva de D-T2B2-10 |
+| **F4-T2B2B-LIFECYCLE** (después) | Asesor de ciclo de vida (veto y retirada síncrona); descarte explícito y retiradas que no dependen del comparador en `DraftRegistry` (D-T2B2-10, F4-E29); marcado de obsolescencia (IC-08); recarga perezosa por acción del usuario; registro técnico del aviso de pérdida | (1) un nombre exacto más en la lista de miembros públicos de `EventBridgeCore` (`WorkspaceBridgeFacadeSourceGuardTests.cs:204-224`); (2) ninguna prueba ni invariante de F4-T1 cambia: la semántica ordinaria de `DraftRegistry` se conserva y las operaciones explícitas nuevas se prueban en archivos nuevos (D-T2B2-10, F4-E29) |
 
 - **Por qué se divide:** cada parte toca superficies congeladas distintas, y así cada revisión aísla sus cambios.
-- **Presupuesto:** cada subtarea empieza en 1 de 3 (F4-E09). La capacidad de T2B queda en 9 intentos (T2B1, T2B2A y T2B2B); se avisa al Owner. El agotamiento de cualquiera de las tres es S-11 y STOP de F4-T2.
-- **Registro:** la división y las reasignaciones se registran en F4-E29 al emitir.
+- **Presupuesto:** cada tarea contratada por separado tiene su propio presupuesto de corrección y empieza en 1 de 3 (F4-E09, F4-E29). No hay un presupuesto único de T2B. Agotar el de cualquiera de ellas es S-11 y STOP de F4-T2.
+- **Registro:** el Owner aceptó la división en F4-E29: T2B2A se emite primero y T2B2B cuando T2B2A cierre. La reasignación de la entrada de T3 (D-T2B2-06) se registra en F4-E30 al emitir T2B2A.
 
 ## 4. Decisiones de T2B2A
 
@@ -133,10 +135,10 @@
 - **«Comprobar ahora»** relee y llama a `CheckNow(result.StaleBase)`.
   - Solo actúa en Desconocido por `CommitThrew`, que no se alcanza en el producto hasta T4B.
   - Se prueba con un accesor `internal` del registro **en `WorkspaceHostCore`** (hay `InternalsVisibleTo` hacia las pruebas, `RackCad.Application.csproj:11`; `DraftRegistry.cs` no se toca en T2B2A). La prueba lleva el borrador a Desconocido con la API pública del núcleo (`TryBeginApply` y `CompleteApply(DraftApplyOutcome<…>.CommitThrew(…))`), y así se ven Conflict y Recovered a través del host. Sin Desconocido, la prueba espera NotApplicable.
-- **Reasignación (F4-E29):** el paquete de T2B daba a T2B2 «el punto de entrada para T3». T2B2A entrega estas operaciones con firma fija, y **T3** las expone a la UI con su propio puerto y sus propios cambios de guarda (H-03). Hasta T3 son código oscuro, declarado.
+- **Reasignación (F4-E30):** el paquete de T2B daba a T2B2 «el punto de entrada para T3». T2B2A entrega estas operaciones con firma fija, y **T3** las expone a la UI con su propio puerto y sus propios cambios de guarda (H-03). Hasta T3 son código oscuro, declarado.
 - **Arrastre a T3:** su entrada asegura que el lector está asignado (acceder a `Navigation` antes de la intención; hoy lo garantiza la paleta, `WorkspaceBrowserHostGuardTests.cs:211-215`), para no quedar en `Unavailable`.
 
-### D-T2B2-07. Arrastres de T2B1 (condicionados a la disposición del Owner; N-17). Se citan como T2B1/N-1 a T2B1/N-4 para no confundirlos con los hallazgos N-1..N-17 de la re-revisión de la v2
+### D-T2B2-07. Arrastres de T2B1 (confirmados por F4-E29; N-17). Se citan como T2B1/N-1 a T2B1/N-4 para no confundirlos con los hallazgos N-1..N-17 de la re-revisión de la v2
 | Arrastre | Archivo |
 |---|---|
 | N-1 (comentario o aserción de la prueba de los estados del dibujo) | `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs` |
@@ -144,7 +146,7 @@
 | N-3 (`Detail` null con un Kind vacío o en blanco) | `src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs` y su prueba en `WorkspaceDraftPilotIntentReadTests.cs` |
 | N-4 (nombres y comentarios) | `WorkspaceDraftPilotIntentReadTests.cs` y `tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs` (comentario de la guarda de hilos) |
 
-Si el Owner dispone otra cosa para T2B1, se retiran del alcance antes de emitir.
+F4-E29 los confirma. Los cuatro son de la lectura de la intención, de la que T2B2A es dueña; ninguno es del ciclo de vida. No se gasta el intento 3 de T2B1 en ellos.
 
 ### D-T2B2-08. Pruebas y guardas de T2B2A
 - **Core, con un doble de la interfaz y el rig existente** (sin cambiar `WorkspaceHostTestSupport.cs`):
@@ -200,19 +202,53 @@ Si el Owner dispone otra cosa para T2B1, se retiran del alcance antes de emitir.
 - **Residual declarado:** `Stop()` destruye sesiones sin llamar al asesor. Hoy `Dispose` no tiene llamador; queda para T3 o F7.
 - **`WorkspaceHostCore` implementa el asesor:**
   - `AdviseClose` = `DraftClosePolicy.EvaluateClose`;
-  - `SessionDestroyed` = `RetireSession` y encolar el `DraftLossNotice`.
+  - `SessionDestroyed` = la retirada que corresponda según D-T2B2-10 (conocida segura o sin certeza) y encolar el `DraftLossNotice`.
 - **Cableado:**
   - `AutoCadEventBridge.cs` gana un método `internal` que reenvía al core (los `internal` no cuentan en `:91-104`); el controlador lo llama con el host al crearlo, sin `+=` nuevos;
   - el manejador de cierre conserva, en la misma línea, `handler = (`, `ContainSession(` y el literal `_core.OnBeginDocumentClose(a.Session)`, y llama a `e.Veto()` cuando la decisión es Veto. Se mantienen los 16 `+=`, 16 `-=` y 16 manejadores.
 
-### D-T2B2-10. Descarte y retirada contenidos (I-4, N-3; reabre el núcleo)
-- **Problema:** si el comparador lanza siempre, `EvaluateClose` → Veto. Además, `Discard`, `DiscardAll` y `RetireSession` evalúan `IsDirty` antes de quitar nada y lanzan, así que el usuario no podría cerrar AutoCAD.
-- **Cambio mínimo en `DraftRegistry.cs`:** en `Discard`, `DiscardAll` y `RetireSession`, una excepción al evaluar un borrador lo cuenta como en riesgo (Dirty), y la operación continúa y nunca lanza.
-- **Cambia una garantía cerrada de F4-T1:** la atomicidad de `RetireSession` ante un comparador que lanza. Viene de INV-F4T1-23 («calcula la lista de pérdida antes de marcar», `gate-contract-attempt3.json`, Invariants[22]) y de M-6 de la revisión independiente de F4-T1 (`F4-T1-DRAFT-CORE/1/R20261110T184730Z-e455/independent-review.md:93-96`); su prueba está en la sección de INV-F4T1-12 (`WorkspaceDraftRegistryTests.cs:325`, prueba `:363-389`). Esa prueba pasa en el RED a la semántica nueva, escrita con `Record.Exception` para que falle por aserción: el borrador cuenta como perdido y la sesión queda retirada. Es el cambio (2) del §3.
-  - **Alcance exacto:** «nunca lanza **por el comparador**»; la validación de argumentos sigue igual (`WorkspaceDraftRegistryTests.cs:153`).
-  - **Razón:** en una destrucción el documento ya no existe; conservar sus borradores no protege nada y los deja huérfanos.
-- **Requiere la ratificación del Owner** al emitir, porque cambia una garantía de un producto cerrado; la ratificación cita INV-F4T1-23, INV-F4T1-12 y M-6.
-- Pruebas nuevas, con `Record.Exception`, para que fallen por aserción en el RED: comparador que lanza → Veto → descarte → Allow; y retirada con un comparador que lanza.
+### D-T2B2-10. Descarte explícito y retirada sin depender del comparador, con la distinción del Owner (I-4, N-3; F4-E29)
+- **Problema:** si el comparador lanza siempre, `EvaluateClose` lanza y el host veta (M-6). Además, `Discard`, `DiscardAll` y `RetireSession` evalúan `IsDirty` antes de quitar nada y lanzan (`DraftRegistry.cs:156-201`). Así, un descarte explícito no podría completarse y el usuario no podría cerrar AutoCAD.
+- **Distinción del Owner (F4-E29), vinculante.** Una excepción del comparador no puede crear un borrador imposible de borrar, ni permitir perder en silencio un estado que puede estar sucio:
+  - **A. Evaluación de sucio:** si el comparador lanza mientras se decide si un borrador está limpio, su estado es DESCONOCIDO / ERROR y se trata de forma conservadora para la protección del cierre. Nada automático, ni el cierre ni una retirada, infiere «limpio».
+  - **B. Descarte explícito** (`RACKPANELDESCARTAR`): quitar ese borrador en memoria no requiere el comparador. El usuario eligió perderlo, así que un fallo del comparador no puede impedir el descarte.
+  - **C. Destrucción de la sesión o del documento:**
+    - tras un descarte explícito, o con el borrador ya conocido como limpio, la retirada es incondicional y no llama al comparador;
+    - si el borrador puede tener trabajo sin guardar o pendiente y no hubo descarte explícito, el fallo del comparador sigue siendo conservador y participa en el veto de cierre.
+  - **Comportamiento exigido** (D-17 e INV-20 siguen vinculantes):
+
+    | Estado del borrador | Cierre |
+    |---|---|
+    | sucio conocido | VETO |
+    | texto pendiente | VETO |
+    | sucio desconocido por fallo del comparador | VETO |
+    | limpio conocido | se permite el cierre normal |
+    | descartado explícitamente | se permite quitarlo y cerrar |
+
+  - D-T2B2-10 **no** significa «si el comparador lanza, se permite cerrar». Significa que el fallo del comparador no puede impedir que se complete un descarte explícito o una retirada.
+- **Lo que se conserva** (no se debilita `DraftRegistry` en general):
+  - `Discard`, `DiscardAll`, `RetireSession` y `DraftClosePolicy.EvaluateClose` conservan su semántica de F4-T1;
+  - INV-F4T1-12 e INV-F4T1-23 siguen vigentes, y su prueba de atomicidad (`WorkspaceDraftRegistryTests.cs:363-389`) no cambia;
+  - la retirada normal no descarta trabajo en silencio (regla cerrada de F4-T1).
+- **Lo que añade T2B2B:** operaciones semánticas explícitas, estrechas y aditivas en `DraftRegistry`. Sus nombres se fijan en el contrato de T2B2B y no reutilizan los de las operaciones ordinarias:
+  - **Descarte explícito (B):** quita uno o todos los borradores de la sesión sin que quitarlos dependa del comparador.
+    - Si informa de qué estaba sucio, la evaluación va contenida y lo que no se pudo evaluar se informa como desconocido, nunca como limpio.
+    - La entrada del usuario es la de T3 o T4.
+  - **Retirada conocida segura (C, primer caso):** retira la sesión sin llamar al comparador. Solo vale cuando no queda ningún borrador o cuando el host sabe que todos estaban limpios.
+    - El contrato de T2B2B fija cómo lo sabe el host; por ejemplo, la decisión Allow de `AdviseClose` en la misma secuencia de cierre, invalidada por cualquier cambio posterior.
+    - Se somete a revisión independiente.
+  - **Retirada sin certeza (C, segundo caso):** una sesión destruida con borradores que pueden tener trabajo, sin descarte explícito ni certeza de limpieza, no infiere «limpio».
+    - Si el comparador lanza, el host contiene la excepción y la registra.
+    - Los RackIds afectados se informan como posible pérdida.
+    - La destrucción se completa (D-T2B2-09).
+- **Veto (A):** `AdviseClose` = `EvaluateClose`. Una excepción del comparador o del asesor da Veto (M-6, D-T2B2-09): sucio desconocido = VETO.
+- **Pruebas**, en archivos nuevos y con `Record.Exception` para que fallen por aserción en el RED:
+  - comparador que lanza → Veto → descarte explícito → Allow;
+  - el descarte explícito se completa aunque el comparador lance;
+  - la retirada conocida segura no llama al comparador;
+  - la destrucción sin certeza con un comparador que lanza queda contenida y registrada, sin inferir «limpio»;
+  - la prueba `:363-389` y las demás de F4-T1 siguen sin cambios.
+- **Revisión:** la forma exacta de las operaciones nuevas y del conocimiento «seguro» del host se fija en el contrato de T2B2B, con revisión directa e independiente. El comportamiento real del host se mide después en un smoke con AutoCAD.
 
 ### D-T2B2-11. Marcado de obsolescencia (IC-08 nueva; N-10)
 - Cuando el drenaje de una sesión produce `MarkDraftsPossiblyStale`, el host marca todos los borradores del piloto de esa sesión.
@@ -247,7 +283,7 @@ Si el Owner dispone otra cosa para T2B1, se retiran del alcance antes de emitir.
   - asesor que lanza en la destrucción → la sesión queda destruida, un id reciclado da una sesión nueva sin borradores y `Authorize` del id viejo da `RejectedSessionDestroyed`.
 - **Marcado:** todos los borradores de la sesión y ninguno de otra; también con un eco y un cambio de base de datos en el mismo drenaje.
 - **Recarga:** solo con `NeedsLazyReload`.
-- **Descarte y retirada contenidos** con un comparador que lanza.
+- **Descarte explícito y retiradas de D-T2B2-10:** el descarte explícito y la retirada conocida segura no dependen del comparador; la retirada sin certeza es conservadora. Ninguna prueba de F4-T1 cambia.
 - **Obligaciones:** 5 (cero escrituras), 14, 15 y 18.
 
 ## 6. Contratos propuestos
@@ -259,10 +295,10 @@ Si el Owner dispone otra cosa para T2B1, se retiran del alcance antes de emitir.
 - verificación del Controller;
 - revisión directa de la sesión y revisión independiente;
 - nc4 en la primera delegación de cada cadena;
-- nc1..nc3 tras la verificación, con el oráculo de nc2 y nc3 que disponga el Owner (F4-E28).
+- nc1..nc3 tras la verificación, con su oráculo ordinario. Si nc2 o nc3 repite el modo de fallo de T2B1 (PD-F4-01, PD-F4-02), la sesión lo devuelve al Owner antes de aplicar un sustituto por analogía (F4-E29).
 
 **Líneas base:**
-- **T2B2A:** las de la CI del SHA con el que cierre T2B1. Si cierra sobre `fe7f136b` (corrida `43190415649`), son `RackCad.Tests.Workspace` 1592 y `RackCad.UI.Tests.Workspace` 248, medidas por la sesión en sus TRX; si no, se miden al emitir.
+- **T2B2A:** las de la CI del SHA con el que cerró T2B1, `fe7f136b` (corrida `43190415649`): `RackCad.Tests.Workspace` 1592 y `RackCad.UI.Tests.Workspace` 248, medidas por la sesión en sus TRX.
 - **T2B2B:** las de la CI del GREEN de T2B2A, medidas al emitir.
 - En las dos: Core `ExpectRed` true; UI `ExpectRed` false.
 
@@ -287,11 +323,10 @@ Si el Owner dispone otra cosa para T2B1, se retiran del alcance antes de emitir.
 - `src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs` (nuevo)
 - `src/RackCad.Application/Workspace/WorkspaceHostCore.cs`
 - `src/RackCad.Application/Workspace/WorkspaceEditIntent.cs`
-- `src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs` (solo D-T2B2-10, con ratificación)
+- `src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs` (solo las operaciones explícitas y aditivas de D-T2B2-10; F4-E29)
 - `src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs`
 - `src/RackCad.Plugin/Workspace/WorkspaceController.cs`
 - `tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs` (solo el nombre exacto nuevo)
-- `tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs` (solo la prueba de `:363-389`, D-T2B2-10)
 - `tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs` (nuevo)
 - `tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs` (nuevo)
 - `tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryContainmentTests.cs` (nuevo)
@@ -303,7 +338,7 @@ Si el Owner dispone otra cosa para T2B1, se retiran del alcance antes de emitir.
 **Paradas**, además de las generales:
 - hace falta un archivo nuevo en `Plugin/Workspace`;
 - `WorkspaceHostCore` necesitaría nombrar `NavigationTargets`;
-- hace falta tocar `Drafts/` fuera de D-T2B2-10;
+- hace falta tocar `Drafts/` fuera de D-T2B2-10, cambiar la semántica de una operación ordinaria de `DraftRegistry` o cambiar una prueba de F4-T1;
 - el veto exigiría cambiar el constructor de `EventBridgeCore`;
 - una lectura tendría que ocurrir dentro del drenaje o del Idle;
 - una guarda o prueba existente tendría que cambiar fuera de las declaradas.
@@ -374,3 +409,25 @@ Si el Owner dispone otra cosa para T2B1, se retiran del alcance antes de emitir.
 | N-6, N-14 y N-17 (parciales) | D-T2B2-06 (accesor en el host), §6 (línea base atada al cierre de T2B1) y D-T2B2-07 (prefijo T2B1/) |
 
 No se pide otra ronda: los menores no cambian la semántica y la re-revisión los declaró suficientes para emitir. Lo decide la sesión bajo la delegación nocturna.
+
+## 10. Orden del Owner y cambios de la v5
+
+La orden `owner-f4t2b1-t2b2-disposition.md` (F4-E29) dispone:
+- F4-T2B1 cerrada como CLOSED / PASS WITH LIMITATIONS, con sus menores T2B1/N-1 a N-4 en T2B2A;
+- la división en T2B2A y T2B2B, emitidas por separado y en ese orden;
+- un presupuesto propio por tarea;
+- D-T2B2-10 ratificada con distinción.
+
+| Cambio | Dónde |
+|---|---|
+| Precondiciones cumplidas; base con solo cambios de documentación hasta `f124b741` | cabecera |
+| Disposiciones F4-E29 y la orden | §1 |
+| Sin presupuesto único de T2B; T2B2B ya no cambia pruebas de F4-T1 | §3 |
+| Reasignación de la entrada de T3 registrada en F4-E30 | §3 y D-T2B2-06 |
+| Arrastres de T2B1 confirmados | D-T2B2-07 |
+| D-T2B2-10 reescrita: semántica ordinaria de `DraftRegistry` conservada (INV-F4T1-12, INV-F4T1-23 y la prueba `:363-389`), operaciones explícitas y aditivas, y la tabla de veto del Owner | D-T2B2-09, D-T2B2-10 y D-T2B2-14 |
+| Alcance de T2B2B sin `WorkspaceDraftRegistryTests.cs`; parada nueva | §6 |
+| Oráculo ordinario de nc2 y nc3, con devolución al Owner si se repite el modo de fallo | §6 |
+| Líneas base de T2B2A fijadas en 1592 y 248 | §6 |
+
+Las decisiones de T2B2A (§4) no cambian de semántica. Las filas históricas del §7 y del §9 se conservan tal cual; donde contradicen la v5 (N-3 y NV-5 sobre la prueba de INV-F4T1-12), manda la v5. La forma exacta de las operaciones nuevas de D-T2B2-10 se fija y se revisa al contratar T2B2B.

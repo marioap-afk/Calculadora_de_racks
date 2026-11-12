@@ -6407,3 +6407,11 @@ Todo queda dispuesto en sus §9 y §10.
 - **Presupuesto:** cada tarea empieza en 1 de 3 (F4-E09). No hay un presupuesto único de T2B.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 148. Paquete de F4-T2B2 v5
+
+**Decisión:** F4-E30, por la orden del Owner (F4-E29).
+- `docs/initiatives/I-64-f4-t2b2-gate-contract-package.md` pasa a la v5: D-T2B2-10 con la distinción del Owner, sin presupuesto único de T2B, arrastres de T2B1 confirmados y líneas base de T2B2A (1592 y 248). Los cambios están en su §10.
+- Los hechos medidos en `51163211` siguen valiendo: hasta `f124b741` solo cambió documentación.
+
+**Límites:** solo documentación; sin AutoCAD.
