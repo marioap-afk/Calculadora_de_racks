@@ -527,3 +527,91 @@ La mutación sigue solo en T4B.
   - (b) para nc3, un sustituto determinista (el barrido 16.10 de la sesión sobre la entrada mutada) y una mejora del protocolo: el barrido determinista de la sesión pasa a ser la autoridad de FreeText y el Controller lo contrasta;
   - (c) cerrar F4-T2B1 como CLOSED / PASS WITH LIMITATIONS con los arrastres N-1 a N-4 a F4-T2B2.
 - **Mientras tanto:** la sesión prepara y somete a revisión el paquete de F4-T2B2, sin emitir su contrato hasta la disposición.
+
+## F4-E29. Disposición del Owner sobre F4-T2B1 y F4-T2B2: sustitutos de nc2 y nc3, cierre de F4-T2B1 y D-T2B2-10 ratificada con distinción
+
+**Orden:** `F4-DRAFTS/coordinator/owner-f4t2b1-t2b2-disposition.md`, custodiada tal como llegó. El bloque pegado quedó dentro de la frase del propio Owner: «Acepto tu propuesta p[…]ara nc2, nc3 y D-T2B2-10; emite T2B2A».
+
+**F4-T2B1-INTENT-READ:**
+- **nc1** `R20261112T094531Z-d11b`: CONTROL PASS, sin más acción.
+- **nc2 ordinario** `R20261112T094935Z-bd5b`: se conserva como **CONTROL NOT PASSED**. Su oráculo ordinario es estructuralmente incompatible con la lista blanca exacta (F4-E21): quitar una ruta del `AllowedWriteScope` exacto viola a la vez Contract y Scope. No se usa A-4, porque Scope falló correctamente.
+- **Sustituto F4T2B1-NC2-EXACT-WHITELIST-01** (`F4-T2B1-INTENT-READ-nc2-substitute/2/R20261112T133004Z-59c6`): **PASS**.
+  - Autoprueba de 14 casos, dos veces y determinista.
+  - Se cumplen las 10 propiedades de la orden. Medido:
+    - la ruta quitada es `PushBackPilotIntentReader.cs`, y solo cambia el campo `AllowedWriteScope`;
+    - las entradas cambiadas son `delegation.json` y el hash derivado de `relay-record-planning.json`;
+    - Scope da pass con el alcance real y fail con el mutado;
+    - A3-A5, sin la cláusula de exactitud, dan pass sobre la delegación mutada, así que Contract falla solo por esa cláusula;
+    - el Controller informó Scope = fail;
+    - las 192 listas alternativas que excluyen la ruta son todas distintas de la del contrato.
+  - **Registro:** nc2 ordinario = CONTROL NOT PASSED; **nc2 = SATISFIED_UNDER_F4T2B1_EXACT_WHITELIST_SUBSTITUTE**.
+- **nc3 ordinario** `R20261112T095410Z-4eb8`: se conserva tal cual, como **CONTROL NOT PASSED / FALSE PASS BY CONTROLLER**. No se repite.
+- **Sustituto F4T2B1-NC3-FREETEXT-DETECTOR-01** (`F4-T2B1-INTENT-READ-nc3-substitute/2/R20261112T133005Z-fb15`): **PASS**.
+  - Es local a esta tarea: no reemplaza al Controller ni es autoridad global del protocolo.
+  - Lee los siete campos y los 16 términos del propio §16.10 de `AUTOMATION_PLAN.md` en la `AuthorityRevision` `e20a294c` y comprueba que usa exactamente esos.
+  - 49 pruebas deterministas: frase exacta, mayúsculas, prosa, casi coincidencias, cada uno de los siete campos, campos estructurados fuera de 16.10 (`Gate` incluido), varias violaciones, una entrega limpia y cada uno de los 16 términos.
+  - Entrega real: CLEAN. Entrega mutada: VIOLATION, con una sola coincidencia («GATE PASS» en `WorkCompleted`). Con la frontera de palabra ASCII el resultado es el mismo.
+  - Se cumplen las 10 propiedades de la orden. El Controller devolvió FreeText `pass`: es un falso negativo de la señal del control.
+  - **Registro:** nc3 ordinario = CONTROL NOT PASSED / FALSE PASS BY CONTROLLER; **nc3 = SATISFIED_UNDER_F4T2B1_FREETEXT_DETECTOR**.
+  - **Interpretación declarada de «palabra o frase completa»:** frontera de palabra Unicode (letra, dígito o «_», como en los identificadores; la lista de 16.10 trata `GATE_PASS` y `FINAL_CANDIDATE_SHA` como palabras), frase literal y sin distinguir mayúsculas. Solo difiere de la frontera ASCII cuando hay un «_» o una letra no ASCII junto al término (`InterpretationCases` del resultado); no cambia el resultado de esta tarea.
+- **Resultado:** **F4-T2B1-INTENT-READ = CLOSED / PASS WITH LIMITATIONS** sobre `fe7f136b` (paquete de cierre `F4-T2B1-INTENT-READ/task-close-package.md`).
+  - Limitaciones: los cuatro menores T2B1/N-1 a N-4, que pasan a F4-T2B2A porque es la dueña de la lectura de la intención; M-8; y los dos sustitutos.
+  - El intento 3 no se gasta en los menores.
+
+**Deudas de protocolo** (no se resuelven de forma global dentro de I-64, salvo que una tarea posterior vuelva a bloquearse):
+- **PD-F4-01:** con la lista blanca exacta, un control nc2 puede hacer fallar Contract antes que Scope.
+- **PD-F4-02:** el Controller dio un falso PASS ante una violación literal de FreeText de 16.10 (nc3).
+- No se adopta la propuesta (b) de F4-E28: el barrido de la sesión **no** pasa a ser autoridad global de FreeText.
+- **Regla de relevo:** si nc2 o nc3 de una tarea posterior repite su modo de fallo, la sesión lo devuelve al Owner antes de aplicar un sustituto por analogía.
+
+**F4-T2B2:**
+- **División ACEPTADA:**
+  - F4-T2B2A: cableado de la intención y del host.
+  - F4-T2B2B: ciclo de vida, veto de cierre, retirada de la sesión y marcado de obsolescencia.
+  - Se emiten por separado: T2B2A primero; T2B2B, cuando T2B2A cierre.
+- **Presupuesto:** cada tarea contratada por separado tiene su propio presupuesto de corrección, que empieza en 1 de 3 (F4-E09). Se retira la redacción «la capacidad de T2B queda en 9 intentos» de F4-E26, F4-E28 y del paquete v4: no hay un presupuesto único de T2B.
+- **D-T2B2-10: RATIFICADA CON DISTINCIÓN.** Una excepción del comparador no puede dejar un borrador imposible de borrar, ni permitir perder en silencio un estado que puede estar sucio.
+  - **A. Evaluación de sucio:** si el comparador lanza mientras se decide si un borrador está limpio, el estado es DESCONOCIDO / ERROR y se trata de forma conservadora para la protección del cierre. Nada automático infiere «limpio».
+  - **B. Descarte explícito** (`RACKPANELDESCARTAR`): quitar ese borrador en memoria no requiere el comparador. El fallo del comparador no puede hacer imposible el descarte.
+  - **C. Destrucción de la sesión o del documento:**
+    - tras un descarte explícito, o con el borrador ya conocido como limpio, la retirada es incondicional y no llama al comparador;
+    - si el borrador puede tener trabajo sin guardar o pendiente y no hubo descarte explícito, el fallo del comparador sigue siendo conservador y participa en el veto de cierre.
+  - **Comportamiento exigido** (D-17 e INV-20 siguen vinculantes):
+
+    | Estado del borrador | Cierre |
+    |---|---|
+    | sucio conocido | VETO |
+    | texto pendiente | VETO |
+    | sucio desconocido por fallo del comparador | VETO |
+    | limpio conocido | se permite el cierre normal |
+    | descartado explícitamente | se permite quitarlo y cerrar |
+
+  - D-T2B2-10 **no** significa «si el comparador lanza, se permite cerrar». Significa «el fallo del comparador no puede impedir que se complete un descarte explícito o una retirada».
+  - **No se debilita `DraftRegistry` en general.** Se conservan:
+    - la semántica ordinaria de `Discard`, `DiscardAll` y `RetireSession`, con INV-F4T1-12, INV-F4T1-23 y su prueba de atomicidad;
+    - la regla cerrada de F4-T1: la retirada normal no descarta trabajo en silencio.
+  - Si T2B2B necesita quitar un borrador descartado explícitamente o retirado con la sesión sin evaluar si está sucio, añade una operación semántica explícita y estrecha (del tipo `Discard(...)` o `RetireKnownSafe(...)`). No cambia la semántica de las operaciones ordinarias.
+  - El paquete se actualiza a la v5 con esta distinción antes de emitir. No se reabre ninguna semántica ya acordada.
+- **T2B2A:** no recibe ninguna responsabilidad del ciclo de vida. Los menores de T2B1 entran en su contrato solo donde son de su propiedad.
+- **T2B2B:** es la dueña de la semántica de alto riesgo:
+  - `BeginDocumentClose`;
+  - el veto por sucio o texto pendiente;
+  - el descarte explícito;
+  - la destrucción de la sesión y la retirada de borradores;
+  - el marcado de obsolescencia;
+  - la contención del fallo del comparador.
+
+  Exige revisión directa e independiente. El comportamiento real del host se mide después en un smoke con AutoCAD.
+
+**Estado tras la orden:**
+
+| Tarea | Estado |
+|---|---|
+| F4-T1 | CLOSED / PASS |
+| F4-T2A | CLOSED / PASS |
+| F4-T2B1 | CLOSED / PASS WITH LIMITATIONS |
+| Paquete de F4-T2B2 | v4 preparado; autorizado tras el cierre de T2B1 y la v5 |
+| F4-T2B2A | 1 de 3 al emitirse |
+| F4-T2B2B | en espera; 1 de 3 al emitirse |
+| F4-T3 y F4-T4 | en espera |
+| Smoke-2 | pendiente |

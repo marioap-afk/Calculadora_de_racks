@@ -6387,3 +6387,23 @@ Todo queda dispuesto en sus §9 y §10.
 - **Sin emitir:** espera el cierre de F4-T2B1 (disposición del Owner sobre nc2 y nc3, F4-E28) y la ratificación del Owner del cambio de D-T2B2-10 sobre el núcleo de F4-T1.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 147. Disposición del Owner, sustitutos de nc2 y nc3 y cierre de F4-T2B1
+
+**Decisión:** F4-E29 (orden en `F4-DRAFTS/coordinator/owner-f4t2b1-t2b2-disposition.md`).
+
+| Control | Corrida ordinaria | Resultado ordinario | Sustituto | Registro |
+|---|---|---|---|---|
+| nc1 | `R20261112T094531Z-d11b` | CONTROL PASS | — | CONTROL PASS |
+| nc2 | `R20261112T094935Z-bd5b` | CONTROL NOT PASSED (se conserva) | F4T2B1-NC2-EXACT-WHITELIST-01, `R20261112T133004Z-59c6`: PASS (14 casos de autoprueba; propiedades 1-10) | SATISFIED_UNDER_F4T2B1_EXACT_WHITELIST_SUBSTITUTE |
+| nc3 | `R20261112T095410Z-4eb8` | CONTROL NOT PASSED / FALSE PASS BY CONTROLLER (se conserva) | F4T2B1-NC3-FREETEXT-DETECTOR-01, `R20261112T133005Z-fb15`: PASS (49 pruebas; real CLEAN, mutada VIOLATION; propiedades 1-10) | SATISFIED_UNDER_F4T2B1_FREETEXT_DETECTOR |
+
+- Los dos sustitutos son deterministas, solo usan la biblioteca estándar de Python y se custodian con su resultado. Leen las entradas de las corridas ordinarias sin cambiarlas. El detector de nc3 es local a F4-T2B1 y no es autoridad global del protocolo.
+- **F4-T2B1-INTENT-READ = CLOSED / PASS WITH LIMITATIONS** sobre `fe7f136b` (`F4-T2B1-INTENT-READ/task-close-package.md`). Sus menores T2B1/N-1 a N-4 pasan a F4-T2B2A.
+- **Deudas de protocolo:**
+  - PD-F4-01: con la lista blanca exacta, nc2 puede hacer fallar Contract antes que Scope;
+  - PD-F4-02: el Controller puede no detectar una violación literal de FreeText de 16.10.
+- **D-T2B2-10** queda ratificada con distinción (F4-E29). La semántica ordinaria de `DraftRegistry` y la regla de F4-T1 se conservan.
+- **Presupuesto:** cada tarea empieza en 1 de 3 (F4-E09). No hay un presupuesto único de T2B.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.
