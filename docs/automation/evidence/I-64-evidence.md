@@ -6455,3 +6455,13 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Disposición:** corrección delegada, intento 2 de 3.
 
 **Límites:** sin AutoCAD.
+
+## 152. Contrato del intento 2 de F4-T2B2A
+
+**Contrato:** `I-64-pilot/F4-T2B2A-INTENT-WIRING/coordinator/gate-contract-attempt2.json` (F4-E32).
+- Parte del contrato del intento 1. Añade texto a INV-F4T2B2A-01, 02, 06, 07, 08 y 09, y añade INV-F4T2B2A-13 (el RED de la corrección) y la parada F4T2B2A-C08 (la regla de F4-E31).
+- `AuthorityRevision` `32a01d0dbc113626c491d5e428c5535844c78696` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- Mismos `AllowedWriteScope` (13) y `ForbiddenWriteScope` (70).
+- `attempts` 2 de 3.
+
+**Límites:** solo documentación; sin AutoCAD.

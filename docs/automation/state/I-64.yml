@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 2
-  next_action: "F4-T2B2A-INTENT-WIRING: correccion del intento 2 (F4-E32); emitir el contrato del intento 2 y ejecutar la cadena: planificacion, comparacion byte a byte, A1-A8, Worker RED/GREEN de la correccion, CI, revisiones, verificacion y nc1..nc3"
+  next_action: "F4-T2B2A-INTENT-WIRING: contrato del intento 2 emitido (AuthorityRevision 32a01d0d); siguiente: planificacion, A1-A8 con comparacion byte a byte, Worker, CI, revisiones, verificacion y nc1..nc3"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
