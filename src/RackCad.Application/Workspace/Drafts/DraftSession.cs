@@ -323,6 +323,10 @@ namespace RackCad.Application.Workspace.Drafts
 
         // ---------------------------------------------------------------- edits
 
+        /// <summary>
+        /// Replaces the current state. The draft keeps a COPY of the argument made with the injected copier, never the object
+        /// itself: whatever the caller does to <paramref name="state"/> afterwards does not change the draft (N-2).
+        /// </summary>
         public DraftEditResult SetCurrentDraftState(TState state)
         {
             if (!CanEdit) return new DraftEditResult(DraftEditStatus.NotEditable, IsDirty);
@@ -408,8 +412,11 @@ namespace RackCad.Application.Workspace.Drafts
             if (!read.IsAdmitted)
                 return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
 
-            Rebase(read);
-            _current = _copy(read.InitialState!);
+            // Both copies are made BEFORE anything is assigned: a copier that throws leaves the draft exactly as it was.
+            var initial = _copy(read.InitialState!);
+            var current = _copy(read.InitialState!);
+            Rebase(read, initial);
+            _current = current;
             _pending.Clear();
             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
         }
@@ -429,14 +436,17 @@ namespace RackCad.Application.Workspace.Drafts
             if (!read.IsAdmitted)
                 return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
 
-            Rebase(read);
+            // The copy is made BEFORE anything is assigned: a copier that throws leaves the draft exactly as it was.
+            var initial = _copy(read.InitialState!);
+            Rebase(read, initial);
             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
         }
 
-        private void Rebase(DraftIntentRead<TState> read)
+        /// <summary>Assigns the stale base and the already copied initial state together; nothing here can throw.</summary>
+        private void Rebase(DraftIntentRead<TState> read, TState initial)
         {
             StaleBase = read.StaleBase!;
-            _initial = _copy(read.InitialState!);
+            _initial = initial;
             IsPossiblyStale = false;
             _explicitStatus = null;
             UnknownOrigin = null;
@@ -537,8 +547,10 @@ namespace RackCad.Application.Workspace.Drafts
                         return DraftApplyResult.Closed(DraftApplyOutcomeKind.AppliedPostRereadFailed, Status, false);
                     }
 
-                    Rebase(read);
-                    _current = _copy(read.InitialState!);
+                    var initial = _copy(read.InitialState!);
+                    var current = _copy(read.InitialState!);
+                    Rebase(read, initial);
+                    _current = current;
                     _pending.Clear();
                     if (outcome.Kind == DraftApplyOutcomeKind.AppliedWithWarnings) Warnings = outcome.Warnings;
                     return DraftApplyResult.Closed(outcome.Kind, Status, true);

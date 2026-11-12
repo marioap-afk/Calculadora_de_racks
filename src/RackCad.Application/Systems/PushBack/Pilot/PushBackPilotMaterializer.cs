@@ -132,8 +132,10 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 if (!string.Equals(embed.Kind, RackEmbedDocument.KindPushBack, StringComparison.Ordinal))
                     return PushBackPilotMaterialization.Failed(KindDivergentDiagnostic);
 
-                if (!new RackProjectStore().TryDeserialize(embed.Design, out var project, out var incompatibleMajor))
-                    return PushBackPilotMaterialization.Failed(incompatibleMajor ? UnreadableOrFutureDiagnostic : NoDesignDiagnostic);
+                // INV-17: a major version that is too new AND an inner design that cannot be read are ONE diagnostic. The
+                // "no design" diagnostic is only for a readable project that carries no Push Back design.
+                if (!new RackProjectStore().TryDeserialize(embed.Design, out var project, out _))
+                    return PushBackPilotMaterialization.Failed(UnreadableOrFutureDiagnostic);
 
                 var design = project?.PushBackDesign;
                 if (design == null) return PushBackPilotMaterialization.Failed(NoDesignDiagnostic);
@@ -175,11 +177,14 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         }
 
         /// <summary>
-        /// The composition to write (IC-07 point 2): it materializes AGAIN from <c>initial.Origin</c> — the current base, which
-        /// gives a fresh module authority — and transfers to it the editable content of <paramref name="current"/>. It returns
-        /// the pair <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes. Pure and total: it mutates neither
-        /// state, it ignores <c>current.Origin</c> and it never throws; a base that no longer materializes gives a typed
-        /// rejection.
+        /// The composition to write (IC-07 point 2, D-12): what the pilot does not edit comes from the CURRENT base, never from
+        /// the draft. (1) If the editable content of <paramref name="current"/> differs from the one of
+        /// <paramref name="initial"/> in anything other than <c>Inputs.Annotations.AnnotationScale</c> (the pilot comparator
+        /// with that one field neutralized), it is a typed rejection: nothing that the pilot does not edit is ever reverted or
+        /// written in silence. (2) Otherwise it materializes AGAIN from <c>initial.Origin</c> — the current base, which gives
+        /// a fresh module authority — and applies to it ONLY the scale of <paramref name="current"/>. It returns the pair
+        /// <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes. Pure and total: it mutates neither state, it
+        /// ignores <c>current.Origin</c> and it never throws; a base that no longer materializes gives a typed rejection.
         /// </summary>
         public static PushBackPilotComposition ComposeForWrite(
             PushBackPilotDraftState initial, PushBackPilotDraftState current, RackCatalog catalog)
@@ -187,16 +192,21 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             try
             {
                 if (initial == null || current == null) return PushBackPilotComposition.Rejected("Falta el estado inicial o el actual.");
+                if (initial.Inputs.Annotations == null || current.Inputs.Annotations == null)
+                    return PushBackPilotComposition.Rejected(NonPilotContentReason);
+
+                var neutral = PushBackPilotStateComparer.Copy(current);
+                neutral.Inputs.Annotations.AnnotationScale = initial.Inputs.Annotations.AnnotationScale;
+                if (!PushBackPilotStateComparer.Instance.Equals(initial, neutral))
+                    return PushBackPilotComposition.Rejected(NonPilotContentReason);
 
                 var fresh = Materialize(initial.Origin, catalog);
                 if (!fresh.IsAdmitted || fresh.State == null)
                     return PushBackPilotComposition.Rejected(fresh.Reason ?? UnreadableOrFutureDiagnostic);
 
-                // Restore() carries the editable content and leaves the authority of the fresh state (baseline, modules,
-                // tail) untouched: what the pilot does not edit stays what the current base says.
-                fresh.State.Editor.Restore(current.Editor.Snapshot());
-                var inputs = PushBackPilotStateComparer.Copy(current).Inputs;
-                return PushBackPilotComposition.Composed(fresh.State.Editor, inputs);
+                if (fresh.State.Inputs.Annotations == null) return PushBackPilotComposition.Rejected(NonPilotContentReason);
+                fresh.State.Inputs.Annotations.AnnotationScale = current.Inputs.Annotations.AnnotationScale;
+                return PushBackPilotComposition.Composed(fresh.State.Editor, fresh.State.Inputs);
             }
             catch (Exception ex)
             {
@@ -205,11 +215,20 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         }
 
         /// <summary>
-        /// Skeleton: the new base with the scale of the draft, for the surface to set as the current state after KeepMine.
+        /// After the user keeps the draft on a newer version (KeepMineOnCurrentVersion) the surface needs a current state that
+        /// is the NEW base plus the one thing the pilot edits: a copy of <paramref name="newInitial"/> carrying the
+        /// <c>AnnotationScale</c> of <paramref name="current"/>. Pure: it mutates neither argument and shares no mutable
+        /// object with them; the surface sets the result as the current state of the draft.
         /// </summary>
         public static PushBackPilotDraftState KeepPilotEditsOn(PushBackPilotDraftState newInitial, PushBackPilotDraftState current)
         {
-            return PushBackPilotStateComparer.Copy(newInitial);
+            if (newInitial == null) throw new ArgumentNullException(nameof(newInitial));
+            if (current == null) throw new ArgumentNullException(nameof(current));
+
+            var kept = PushBackPilotStateComparer.Copy(newInitial);
+            if (kept.Inputs.Annotations != null && current.Inputs.Annotations != null)
+                kept.Inputs.Annotations.AnnotationScale = current.Inputs.Annotations.AnnotationScale;
+            return kept;
         }
     }
 }
