@@ -6507,3 +6507,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **IC-08:** marcado de obsolescencia grueso por sesión, con la obligación vinculante para F4-T4B.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 156. Contrato de F4-T2B2B-LIFECYCLE
+
+**Contrato:** `I-64-pilot/F4-T2B2B-LIFECYCLE/coordinator/gate-contract.json` (F4-E34).
+- **Alcance:** lista blanca exacta de 12 rutas, con los cambios declarados (1) y (3).
+- **`ForbiddenWriteScope`:** 77 entradas.
+- **Invariantes y paradas:** 13 invariantes y 8 paradas propias, entre ellas C08.
+- **Líneas base:** `RackCad.Tests.Workspace` 1754 (`ExpectRed` true) y `RackCad.UI.Tests.Workspace` 248 (`ExpectRed` false).
+- **Revisiones:** `AuthorityRevision` `06ef19150ea4401d622d135ebc439e112d75eadf` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
