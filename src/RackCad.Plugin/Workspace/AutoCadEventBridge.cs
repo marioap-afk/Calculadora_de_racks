@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Threading;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Diagnostics;
@@ -24,10 +26,19 @@ namespace RackCad.Plugin.Workspace
     {
         private readonly EventBridgeCore _core;
         private readonly Dictionary<SourceAttachment, Action> _detachers = new();
+        private readonly Dispatcher _dispatcher;
+        private readonly WorkspaceIdleScheduler _idleScheduler;
 
         public AutoCadEventBridge()
         {
             _core = new EventBridgeCore(this, LogFault);
+
+            // I-64 F4-T2C (IC-04): the callback of Idle only schedules. The continuation (the idle pass, with every read of the
+            // drawing) is posted ONCE to the dispatcher of the main thread, at background priority, and runs after the callback has
+            // returned. The dispatcher is the one of the thread that creates the bridge (the controller, during RACKPANEL).
+            _dispatcher = Dispatcher.CurrentDispatcher;
+            _idleScheduler = new WorkspaceIdleScheduler(_core.CanDrainNow, RunIdleContinuation, LogFault);
+            _idleScheduler.SetPost(action => _dispatcher.BeginInvoke(DispatcherPriority.Background, action));
         }
 
         /// <summary>Raised from the idle pass with the pure result of one drain. The drain performs no read in this bridge.</summary>
@@ -246,12 +257,44 @@ namespace RackCad.Plugin.Workspace
                 }
                 case BridgeSource.Idle:
                 {
-                    EventHandler handler = (s, e) => Contain("Idle", OnIdle);
+                    EventHandler handler = (s, e) => Contain("Idle", OnIdleTick);
                     AcApplication.Idle += handler;
                     return () => AcApplication.Idle -= handler;
                 }
                 default:
                     throw new InvalidOperationException("Unknown bridge source: " + a.Source);
+            }
+        }
+
+        // Inside the callback of Idle: it only asks the scheduler to schedule the continuation. Nothing is drained, announced or read here.
+        private void OnIdleTick()
+        {
+            _idleScheduler.OnIdleTick();
+        }
+
+        // The continuation the scheduler runs after the callback of Idle returned: the idle pass, contained, and then the check of
+        // INV-14 (Debug only), once every subscriber of the drain, the summary read of the panel included, has finished.
+        private void RunIdleContinuation()
+        {
+            Contain("IdleContinuation", OnIdle);
+            CheckNoOpenTransactionAfterTheDrain();
+        }
+
+        // Debug only (I-64 D-02, INV-14, F4-T2C D-T2C-05): a drain leaves no transaction open. It only logs: the transaction may belong
+        // to another add-in running a nested loop, and a failed assertion would end AutoCAD.
+        [Conditional("DEBUG")]
+        private static void CheckNoOpenTransactionAfterTheDrain()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                var open = document?.TransactionManager.TopTransaction;
+                if (open != null)
+                    LogFault("AutoCadEventBridge.IdleContinuation", new InvalidOperationException("A transaction was still open when the drain of the panel ended; it may belong to another add-in running a nested loop."));
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("AutoCadEventBridge.IdleContinuation.Check", ex);
             }
         }
 

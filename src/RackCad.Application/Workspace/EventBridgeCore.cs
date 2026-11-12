@@ -386,13 +386,9 @@ namespace RackCad.Application.Workspace
             _lastAllowedClose = null;
             try
             {
-                if (_active is { } id
-                    && _states.TryGetValue(id, out var state)
-                    && !state.Degraded
-                    && _registry.TryGet(id, out var session)
-                    && session != null)
+                if (TryGetDrainable(out var id, out var state, out var session))
                 {
-                    var result = session.TryDrain(new DrainConditions(state.Quiescent, _modalRackCadActive, _panelVisible));
+                    var result = session!.TryDrain(new DrainConditions(state!.Quiescent, _modalRackCadActive, _panelVisible));
                     if (result.Drained) outcomes.Add(new DrainOutcome(id, result));
                 }
 
@@ -406,8 +402,27 @@ namespace RackCad.Application.Workspace
             return outcomes;
         }
 
-        /// <summary>Whether the idle pass could drain right now (I-64 F4-T2C). Skeleton of the red step: inert.</summary>
-        public bool CanDrainNow() => false;
+        /// <summary>
+        /// Whether the idle pass could drain right now, answered in memory (I-64 F4-T2C, IC-04): the scheduler of the host adapter asks
+        /// it before it schedules a continuation and again when the continuation is about to run. It is the same eligibility the pass
+        /// uses (started, active session alive and healthy, pending hints, at rest, no RackCad modal, panel visible) and one more
+        /// condition of its own: it is false while ANY allowed close is pending, of the active document or of another one, so that
+        /// a continuation pumped inside the question of the close never reads the document that is closing and never ends the close
+        /// sequence (F4-T2B2B). It is a query: it changes nothing, forgets nothing and never throws.
+        /// </summary>
+        public bool CanDrainNow()
+        {
+            try
+            {
+                if (!TryGetDrainable(out _, out _, out _)) return false;
+                return !_lastAllowedClose.HasValue;
+            }
+            catch (Exception ex)
+            {
+                Log("CanDrainNow", ex);
+                return false;
+            }
+        }
 
         /// <summary>
         /// A fault of the bridge in the host adapter. It is logged and degrades only the named session.
@@ -477,6 +492,26 @@ namespace RackCad.Application.Workspace
         {
             Log(context, exception);
             if (session is { } id) Degrade(id);
+        }
+
+        // The eligibility of the idle pass, shared by OnIdle and CanDrainNow: a started core whose active session lives in the registry
+        // and is not degraded, with pending hints, at rest, no RackCad modal and a visible panel. It only reads.
+        private bool TryGetDrainable(out SessionId id, out SessionState? state, out WorkspaceSession? session)
+        {
+            id = default;
+            state = null;
+            session = null;
+            if (!_started) return false;
+            if (_active is not { } active) return false;
+            if (!_states.TryGetValue(active, out var found) || found.Degraded) return false;
+            if (!_registry.TryGet(active, out var live) || live == null) return false;
+            if (live.PendingHintCount == 0) return false;
+            if (!found.Quiescent || _modalRackCadActive || !_panelVisible) return false;
+
+            id = active;
+            state = found;
+            session = live;
+            return true;
         }
 
         private bool IdleNeeded() =>
