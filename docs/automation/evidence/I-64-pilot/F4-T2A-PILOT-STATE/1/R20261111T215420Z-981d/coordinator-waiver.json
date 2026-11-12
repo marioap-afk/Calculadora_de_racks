@@ -1,0 +1,27 @@
+{
+  "Schema": "rackcad-i64-coordinator-waiver/v1",
+  "TaskId": "F4-T2A-PILOT-STATE",
+  "PlanningRunId": "R20261111T215420Z-981d",
+  "Nc4RunId": "R20261111T215859Z-6aea",
+  "Authority": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2a-planning-acceptance.md",
+  "StrictComparison": {
+    "File": "byte-fidelity-check.json",
+    "Result": "REJECTED",
+    "Status": "DIFFERENCE DETECTED (preserved; not rewritten as byte-identical)"
+  },
+  "Waiver": {
+    "Field": "AcceptanceCriteria",
+    "Index": 17,
+    "CriterionNumber": 18,
+    "SourceText": "conforme a su esquema",
+    "OutputText": "conforme al esquema",
+    "Classification": "GRAMMATICAL_NORMALIZATION_ONLY",
+    "SourceStringSha256": "1d5ae2a7d82bf7bdcc6329a410e1b3160fe792be20db5e9f416d344fa081481a",
+    "OutputStringSha256": "178a3e44b8584dfa5f4fbb433533dcd1469dfff7d60a24259f50c6ed3584d0e5",
+    "OnlyDifferenceVerified": true
+  },
+  "Scope": "only F4-T2A, planning 981d, AcceptanceCriterion 18 and this exact text pair; does not authorize normalization of invariants, omitted entries, reordering, scope changes, paraphrase or future differences; not a semantic-equivalence rule",
+  "Outcome": "ACCEPTED_BY_COORDINATOR_WITH_ONE_TEXTUAL_WAIVER",
+  "DelegationSha256": "2010e4acf7eb23289e8bac2f55fa876a8d675e8c052d935a01149acb5b44a920",
+  "WorkerAuthorization": "once; delegation used exactly as emitted (not edited)"
+}

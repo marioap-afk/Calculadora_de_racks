@@ -4,10 +4,16 @@
   "SourceRoot": "artifacts/orchestration/I-64/F4-T2A-PILOT-STATE/coordinator",
   "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
   "Counts": {
-    "CUSTODIED": 2,
+    "CUSTODIED": 6,
     "EXCLUDED": 0
   },
   "Files": [
+    {
+      "Path": "contract-rev2-check.json",
+      "Bytes": 1628,
+      "Sha256": "398e524bd9ae7993a7bfa378242e741057014b698411a58b23f99365b91cb229",
+      "Disposition": "CUSTODIED"
+    },
     {
       "Path": "forbidden-compaction-report.json",
       "Bytes": 9493,
@@ -15,9 +21,27 @@
       "Disposition": "CUSTODIED"
     },
     {
+      "Path": "gate-contract-rev2.json",
+      "Bytes": 26505,
+      "Sha256": "263d3b969c41b44734ff42ed1308097227177eafb7134d35fdf15a7a9abd8c47",
+      "Disposition": "CUSTODIED"
+    },
+    {
       "Path": "gate-contract.json",
       "Bytes": 31577,
       "Sha256": "279fe03aa473d4bba964cf132e6d0371d12cab215920fd5cfa4e28163fcf809b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "reduced-scope-report.json",
+      "Bytes": 10396,
+      "Sha256": "c51e965fae7f002a7b9934a1502b7b2c1f21f8727f470ed43c43c5dc246171d2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "removed-path-proof.json",
+      "Bytes": 71164,
+      "Sha256": "99227593dcc79c5f6901eeef7ac29c7d1f373876c7041d0dce3f2a21820962eb",
       "Disposition": "CUSTODIED"
     }
   ]

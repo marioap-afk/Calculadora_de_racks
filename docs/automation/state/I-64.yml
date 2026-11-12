@@ -6,8 +6,8 @@ automation_state:
   current_phase: F4
   state: implementing
   gate: none
-  attempts: 1
-  next_action: "F4-T2A-PILOT-STATE: revision 2 del contrato emitida (AuthorityRevision b43d8685, ForbiddenWriteScope 57); siguiente: una sola planificacion, comparacion byte a byte, A1-A8, nc4 y Worker"
+  attempts: 2
+  next_action: "F4-T2A-PILOT-STATE: correccion del intento 2 de 3 (F4-E24): emitir gate-contract-attempt2.json y ejecutar planificacion, A1-A8 con comparacion byte a byte de las colecciones del contrato, Worker RED/GREEN, CI, revisiones, verificacion y nc1..nc3"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
@@ -68,13 +68,13 @@ execution_context:
   max_attempts: 3
   persistent_next_action:
     NEXT_ROLE: "Sesion principal: emision y cadena de F4-T2A"
-    NEXT_ACTION: "Revision 2 del contrato de F4-T2A y su planificacion unica (F4-E21); despues Worker, CI, revisiones, verificacion y nc1..nc3; luego T2B, T2C, T3, T1B, T4A/T4B y Smoke-2"
+    NEXT_ACTION: "Correccion del intento 2 de F4-T2A (F4-E24); despues T2B, T2C, T3, T1B, T4A/T4B y Smoke-2"
     TARGET_SHA: "Producto sincronizado y validado en el host: 3f5c7014351d1dc59de4eee86a7d1319fbeccc07 sobre main a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60 (CI 42407236088 push 4/4; DLL Plugin Debug 0C0F2FDE0987C489BABAF2ACB9A46936117D044EAF45C706A303E6B5B1C56C0B, POST-I65 HOST SANITY CHECK aa47 = PASS). La punta de origin/architecture/workspace-persistente-rackcad que contiene este archivo es un commit documental encima, sin cambios en src/, tests/ ni archivos de proyecto. Candidato validado por Smoke-1, sin cambios: cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6 (SMOKE1_VALIDATED_CANDIDATE; DLL 3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0; alcanzable por archive/I-64-pre-rebase-05084ca7)"
     GATE: "F4 - Borradores y Actualizar: EN CURSO, presupuesto por tarea; F4-T1 CLOSED / PASS; F4-T2A attempts 1 de 3 (F4-E18); F3 CLOSED / PASS WITH LIMITATIONS; F5-F7 pendientes; gate de integracion CLOSED"
     TASK: "F4-T2A-PILOT-STATE: estado del piloto de Push Back (AnnotationScale, un lado) y frontera de propiedad N-2 en el nucleo; Application pura, sin AutoCAD"
     INPUTS_REQUIRED: "F4-DRAFTS/coordinator/owner-f3-ratification-f4-authorization.md; Proposal V5 D-10..D-14, D-17 y sus invariantes y OV; autoridades de mutacion de I-55; ADR-0029; ADR-0032; contratos vigentes de Workspace; IC-01..IC-05"
     EXPECTED_RESULT: "F4 cerrada solo con todas sus obligaciones evidenciadas, incluido Smoke en AutoCAD real"
-    REMAINING_BUDGET: "presupuesto POR TAREA en F4 (F4-E09): F4-T2A attempts 1 de 3 (AttemptsRemaining 2); T2B y T2C empiezan en 1 de 3 al emitirse (F4-E18); antes de cada invocacion de modelo, config.toml debe ser SNAPSHOT G y el binario de Codex el acreditado (bin/5449c1f0f26f1f98)"
+    REMAINING_BUDGET: "presupuesto POR TAREA en F4 (F4-E09): F4-T2A attempts 2 de 3 (AttemptsRemaining 1); T2B y T2C empiezan en 1 de 3 al emitirse (F4-E18); antes de cada invocacion de modelo, config.toml debe ser SNAPSHOT G y el binario de Codex el acreditado (bin/5449c1f0f26f1f98)"
     STOP_CONDITION: "F4 exige cambiar la semantica authored congelada; una capacidad de editor no se puede representar sin arrastrar F5 (fuera de F4-PILOT-PUSHBACK-01); agotar attempts de la tarea de F4 en curso; falla un invariante real de seguridad en AutoCAD; la deteccion de cambios externos no se puede hacer fiable; la proteccion de BeginDocumentClose choca con el host real; aparece una decision material nueva de arquitectura"
     OWNER_REQUIRED_IF: "OWNER-RESERVED (alcance, diferir sistemas, retirar OV); aceptacion del ADR 0047; Owner Validation y smokes; RELEASE de host y carga unica (Owner/CAD manager); cambio de config.toml fuera de A/B/C (P-01); credenciales, compras o sondas con consumo no cubierto; AutoCAD manual o cambios de seguridad; reescritura destructiva de historia"
   protocol_debt:

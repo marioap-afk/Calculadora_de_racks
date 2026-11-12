@@ -6216,3 +6216,32 @@ Todo queda dispuesto en sus §9 y §10.
 - `MainSha` `812baf879612320653094a8aaf46aca0bac81383`; `attempts` 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 131. Planificación de F4-T2A aceptada con una dispensa textual
+
+**Decisión:** F4-E22. Planificación `981d`: A1-A8 8/8, nc4 `6aea` y colecciones del contrato exactas. La única diferencia es la del criterio 18, aceptada por el Coordinator (`coordinator-waiver.json`); la comparación estricta se conserva como DIFFERENCE DETECTED.
+
+**Límites:** sin AutoCAD.
+
+## 132. Interrupción de transporte del Worker de F4-T2A
+
+**Decisión:** F4-E23, tomada por la sesión bajo la delegación nocturna del Owner (`F4-DRAFTS/coordinator/owner-night-delegation.md`).
+
+**Hechos:** una suspensión del equipo cortó una vez la única invocación del Worker, antes de cualquier commit. Se reanudó el mismo subagente, sin Worker ni delegación nuevos.
+
+**Límites:** sin AutoCAD.
+
+## 133. Intento 1 de F4-T2A y corrección
+
+**Decisión:** F4-E24.
+
+**Resultado del intento 1:**
+- Verificación `8bc4`: `EXECUTION_BLOCKED` / STOP por Ci (F4T2A-C02), con el RED `19123dfe` acreditado.
+- Causa de la CI: comparación textual de documentos con finales de línea de Windows en una CI de Linux.
+- Revisiones: un IMPORTANTE (`ComposeForWrite` frente a IC-07 punto 2) y seis MENORES.
+
+**Corrección:** delegada, con `attempts` 2 de 3.
+
+**Custodia:** `I-64-pilot/F4-T2A-PILOT-STATE/1/` (`981d`, `9353` y `8bc4`) y `F4-T2A-PILOT-STATE-nc4/1/R20261111T215859Z-6aea/`.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.

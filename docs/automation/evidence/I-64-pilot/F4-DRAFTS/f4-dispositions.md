@@ -363,3 +363,74 @@ La mutación sigue solo en T4B.
 - Después, una sola planificación nueva con el prompt reforzado, la comparación byte a byte previa a la aceptación (con `AllowedWriteScope` elemento a elemento en orden), A1-A8 con 8 pass y nc4.
 - Si todo pasa, el Worker queda autorizado una vez. Si la copia vuelve a fallar: STOP y vuelta al Coordinator.
 - `attempts` sigue en 1 de 3.
+
+## F4-E22. Planificación `981d` de F4-T2A aceptada con una dispensa textual
+
+**Orden del Coordinator:** `owner-f4t2a-planning-acceptance.md`.
+
+**Hechos de la planificación `R20261111T215420Z-981d`** (contra la revisión 2 del contrato):
+- A1-A8 8/8 y nc4 `6aea` con su oráculo relativo cumplido.
+- Todas las colecciones del contrato idénticas byte a byte, y `AllowedWriteScope` elemento a elemento.
+- La comparación estricta dio DIFFERENCE DETECTED en un solo punto, `AcceptanceCriteria[17]`: «conforme a su esquema» pasó a «conforme al esquema».
+
+**Decisión del Coordinator:**
+- Se acepta la delegación con UNA dispensa textual, clasificada GRAMMATICAL_NORMALIZATION_ONLY y registrada en `coordinator-waiver.json`.
+- La comparación estricta se conserva tal como dio (`byte-fidelity-check.json`), igual que el registro previo con STOP (`relay-record-pre-waiver.json`).
+- La dispensa no se generaliza: no autoriza normalizar invariantes, omitir entradas, reordenar, cambiar el alcance, parafrasear ni aceptar diferencias en planificaciones futuras.
+- El Worker queda autorizado una vez, con la delegación tal como se emitió.
+
+## F4-E23. Interrupción de transporte del Worker de F4-T2A y reanudación del mismo subagente
+
+**Delegación del Owner** (`owner-night-delegation.md`, texto literal): «Es de noche, por lo que debes avanzar lo máximo posible todos los gates sin mi intervención, toma tú las decisiones». A partir de aquí, las decisiones de la noche las toma la sesión y se registran como tales.
+
+**Hecho** (`F4-T2A-PILOT-STATE/1/R20261111T221932Z-9353/transport-interruption.json`):
+- La única invocación del Worker se cortó una vez: FAILED_TURN, sin progreso durante 600 s.
+- Causa: el equipo se suspendió por inactividad. La retención keep-awake de la sesión se libera tras unos minutos de sesión inactiva mientras el Worker corre en segundo plano.
+- No había ningún commit todavía: HEAD = remoto = BaseSha, con cambios sin commit del Worker.
+- La sesión solo consultó metadatos Git y fechas de modificación, sin abrir ningún archivo del Worker.
+
+**Decisión de la sesión:**
+- Se reanudó el MISMO subagente, con su transcripción y su prompt. No hubo una delegación ni un Worker nuevos.
+- Se recordó que los temporales del Worker estaban fuera del alcance.
+- **Mitigación:** un proceso `SetThreadExecutionState` (sin cambiar ajustes) mantiene el equipo despierto durante la cadena nocturna.
+- La entrega final de esa misma invocación es IMPLEMENTATION_COMPLETE, con RED `19123dfe` y GREEN `77658968`.
+- **Lección:** para cadenas con Workers largos en segundo plano, la retención de keep-awake de la sesión no basta.
+
+## F4-E24. Intento 1 de F4-T2A: verificación STOP por Ci, revisiones y corrección delegada
+
+**Hechos:**
+- La entrega `R20261111T221932Z-9353` tiene RED `19123dfe` y GREEN `77658968`.
+- La verificación `R20261112T052453Z-8bc4` da `EXECUTION_BLOCKED` / STOP, FailureClass Ci, con F4T2A-C02 activada.
+  - 12 comprobaciones en pass; Ci y Tests en fail.
+  - RED acreditado: `ChainRedSha` `19123dfe`, `ChainRedFiles` = RT (24 rutas).
+- La CI `43160527925` falla en 9 pruebas de Core.
+- El análisis está en `F4-T2A-PILOT-STATE/1/R20261112T052453Z-8bc4/analysis.md`.
+
+**Causa raíz de la CI** (decisión de la sesión por la delegación nocturna):
+- Es portabilidad de las pruebas, no identidad del producto.
+- Las aserciones comparan texto de documentos persistidos generados en Windows (CRLF) con documentos serializados de nuevo en Linux (LF).
+- Las comparaciones estructurales del mismo contenido pasan en esa misma CI, y la suite completa pasa en Windows.
+
+**Revisiones:** la directa de la sesión y la adversarial independiente encuentran:
+- **IMPORTANTE:** `ComposeForWrite` restaura todo el snapshot editable y todos los inputs de `current`. Tras «Conservar mi borrador» revierte en silencio contenido que el piloto no edita. Choca con IC-07 punto 2 y con D-12, aunque cumple la letra ambigua de INV-F4T2A-07. Es un defecto del contrato.
+- **Seis MENORES:**
+  - el rebase no es atómico;
+  - las pruebas de excepción aceptan Admitido;
+  - los deltas antiguos van resumidos;
+  - las clases (a), (c) y (d) no tienen evidencia;
+  - hay un diagnóstico doble para lo ilegible;
+  - `SetCurrentDraftState` no está documentado.
+
+**Opciones:**
+- (a) cerrar y arrastrar los defectos;
+- (b) corrección delegada que consume un intento;
+- (c) corrección de la sesión fuera de la cadena.
+
+**Decisión: (b)**, la misma regla de F4-E07.
+- `attempts` pasa a 2 de 3.
+- El contrato de la corrección, `gate-contract-attempt2.json`, parte de la revisión 2:
+  - reescribe INV-F4T2A-07: composición solo del campo del piloto desde la base vigente, rechazo tipado de las diferencias ocultas fuera del piloto, y el auxiliar `KeepPilotEditsOn` para la superficie;
+  - amplía INV-F4T2A-06, 08, 09 y 10;
+  - añade INV-F4T2A-16 para el RED de la corrección.
+- Mismos `AllowedWriteScope` y `ForbiddenWriteScope` (57).
+- Se conservan sin cambios la verificación `8bc4`, la entrega y las revisiones.

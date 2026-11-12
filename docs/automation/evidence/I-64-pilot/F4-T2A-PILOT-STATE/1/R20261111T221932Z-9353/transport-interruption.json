@@ -1,0 +1,20 @@
+{
+  "Schema": "rackcad-i64-transport-interruption/v1",
+  "TaskId": "F4-T2A-PILOT-STATE",
+  "WorkRunId": "R20261111T221932Z-9353",
+  "Event": "FAILED_TURN (sin progreso durante 600 s; el vigilante del flujo de la herramienta Agent detuvo el turno)",
+  "ProbableCause": "suspension del equipo por inactividad: la retencion keep-awake de la sesion se libera tras unos 5 minutos de sesion inactiva mientras el Worker corria en segundo plano",
+  "LastWorkerFileActivityUtc": "2026-11-11T22:44:00Z",
+  "NotificationReceivedUtc": "2026-11-12T04:51:00Z",
+  "StateAtInterruption": {
+    "HeadEqualsBaseSha": true,
+    "RemoteEqualsBaseSha": true,
+    "Commits": 0,
+    "UncommittedChanges": "M DraftRegistry.cs, M DraftSession.cs; sin versionar: Systems/PushBack/Pilot/ (4), Fixtures/I64/ (16), WorkspaceDraftPilotStateTests.cs, ZzTmpExplore.cs y ZzTmpExplore2.cs (temporales del Worker)",
+    "LiveProcesses": "solo el servidor de compilacion compartido de Roslyn (VBCSCompiler), sin la ruta del worktree en su linea de ordenes",
+    "SessionInspection": "solo metadatos Git (rev-parse, ls-remote, log, status --porcelain) y fechas de modificacion; ningun archivo del Worker se abrio"
+  },
+  "Decision": "reanudar el MISMO subagente con su transcripcion y su prompt (SendMessage), sin delegacion ni Worker nuevos; decision de la sesion por la delegacion nocturna del Owner",
+  "Mitigation": "proceso keep_awake.ps1 (SetThreadExecutionState ES_SYSTEM_REQUIRED, sin cambio de ajustes) durante 10 horas",
+  "ResumedUtc": "2026-11-12T04:58:00Z"
+}
