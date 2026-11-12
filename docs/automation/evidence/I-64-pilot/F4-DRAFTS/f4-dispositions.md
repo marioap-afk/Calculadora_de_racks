@@ -485,3 +485,20 @@ La mutación sigue solo en T4B.
 - **A F5:** Cama con un solo miembro mutable (D-11) y el registro de variables con el estado de su payload para Selectivo.
 
 **Contrato:** F4-T2B1-INTENT-READ, `attempts` 1 de 3; F4-T2B2 se contrata tras cerrar T2B1.
+
+## F4-E27. Intento 1 de F4-T2B1: verificado, revisión independiente NO ACEPTABLE y corrección delegada
+
+**Hechos del intento 1:**
+- **Planificación** `R20261112T081014Z-84ff`: comparación byte a byte PASS en las ocho colecciones del contrato, A1-A8 8/8; nc4 `R20261112T081234Z-1552` con su oráculo (solo A3 falla). Aceptada tal como se emitió.
+- **Worker** `R20261112T081315Z-4a75`: RED `04717913` (94 pruebas en rojo, todas dentro del filtro de Core) y GREEN `23792b2d`.
+- **CI:** `43184046954` 4/4 sobre el GREEN; `43183114141` sobre el RED, con el job de pruebas de Core en rojo, como se espera.
+- **Verificación** `R20261112T084307Z-16bc`: `EXECUTION_VERIFIED`, 14/14, sin hallazgos.
+- **Revisión directa de la sesión:** sin defectos importantes; una observación sobre la letra de la regla 5.
+- **Revisión adversarial independiente:** NO ACEPTABLE, solo por cobertura de pruebas: la regla 13 no tiene prueba y es alcanzable (I-1), y ninguna prueba ejercita el `catch` de `Read` ante una excepción del comparador (I-2). Además, 10 menores; tres de producto (M-3, M-5 y M-7). Detalle en `F4-T2B1-INTENT-READ/1/R20261112T084307Z-16bc/analysis.md`.
+
+**Decisión** (delegación nocturna): la verificación 14/14 es necesaria pero no suficiente (F4-E02), así que F4-T2B1 no se cierra sobre `23792b2d`.
+- **Intento de corrección 2**, `attempts` 2 de 3, con un contrato del intento 2 que parte del de intento 1 y solo cambia y añade invariantes.
+- **RED de la corrección** sobre `23792b2d`: las pruebas que faltan (I-1, I-2, M-1, M-2, M-4, M-9 y M-10) y las que fijan los menores de producto (M-3, M-5 y M-7), que fallan por aserción. **GREEN:** solo producto.
+- `CorrectionOf` = la verificación `16bc`, con la clase `Tests`: el esquema no tiene una clase para un hallazgo de revisión, y este es de cobertura de las pruebas exigidas.
+- **Aclaración de la regla 5 de D-T2B-03 (M-6):** la regla 5 rechaza un origen cuyo Id no es el `RackId` o cuya clasificación es NotMember o Blocking; un origen ReadOnly con el Id correcto pasa a la regla 6. Las comprobaciones que la semántica de `Classify` hace inalcanzables se conservan como defensivas y se marcan así en el código.
+- **Limitación aceptada (M-8):** la prueba «`Design` crudo distinto» de D-T2B-08 no es alcanzable vía `Read`, porque el `RawDesign` de cada hermano sale del mismo texto; no se exige.

@@ -6312,3 +6312,26 @@ Todo queda dispuesto en sus §9 y §10.
 - `attempts` 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 140. Intento 1 de F4-T2B1-INTENT-READ
+
+**Decisión:** F4-E27.
+
+- **Planificación** `84ff`: comparación byte a byte PASS, A1-A8 8/8; nc4 `1552` con su oráculo.
+- **Worker** `4a75`: RED `04717913` y GREEN `23792b2d`.
+- **CI:** `43184046954` 4/4.
+- **Verificación** `16bc`: `EXECUTION_VERIFIED`, 14/14.
+- **Revisiones:**
+  - la directa, sin importantes;
+  - la independiente, NO ACEPTABLE por cobertura de pruebas (2 importantes y 10 menores).
+
+**Límites:** sin AutoCAD.
+
+## 141. Corrección de F4-T2B1 (intento 2)
+
+**Decisión:** F4-E27.
+- `attempts` = 2 de 3.
+- RED de la corrección sobre `23792b2d` con las pruebas que faltan y las de los menores de producto; GREEN solo de producto.
+- `CorrectionOf` = la verificación `16bc` (clase `Tests`), con su `analysis.md`.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.

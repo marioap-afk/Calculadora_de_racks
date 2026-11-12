@@ -1,0 +1,75 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2B1-INTENT-READ",
+  "RunId": "R20261112T084307Z-16bc",
+  "DelegationRunId": "R20261112T081014Z-84ff",
+  "WorkRunId": "R20261112T081315Z-4a75",
+  "Attempt": 1,
+  "VerifiedSha": "23792b2d21f4a3e906d8335bfabb7998886c3a22",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent records final subagent completion, DeathConfirmed=true; cession ended 2026-11-12T08:42:24Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json has schema rackcad-worker-handoff/v1 and matching TaskId, Attempt=1, DelegationRunId and WorkRunId. relay-record-work.json Outcome.OutputPath names that handoff; OutputWrittenUtc=2026-11-12T08:42:08.003837Z, after Cession.StartUtc=2026-11-12T08:13:20Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor d6587a06803ab618698cbd342f38e2cf31f87af7 445c46cefe587a6ba3274143bbbee86cc4ff279b returned 0. git diff --name-only AuthorityRevision BaseSha lists only docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T2B1-INTENT-READ/coordinator/gate-contract.json, and docs/automation/state/I-64.yml; all are declared UNIT_DOC. External authority paths are unchanged from MainSha to AuthorityRevision."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json and delegation.json agree on allowed and forbidden scopes, invariants, stop conditions, authorities and RequiredTests. byte-fidelity-check.json reports PASS and byte equality for all 8 collections; relay-record-planning.json records A1-A8 pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad both returned 23792b2d21f4a3e906d8335bfabb7998886c3a22. Branch and worktree match the handoff. merge-base --is-ancestor returned 0 for BaseSha to CurrentSha, RedSha to CurrentSha, and AuthorityRevision to BaseSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records LsRemoteSha=23792b2d21f4a3e906d8335bfabb7998886c3a22 and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, matching CurrentSha and MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists exactly six allowed files: PushBackPilotIntentReader.cs, PushBackPilotIntentResult.cs, PushBackPilotIntentScan.cs, WorkspaceDraftPilotIntentGuardTests.cs, WorkspaceDraftPilotIntentReadTests.cs, and WorkspaceDraftPilotIntentStaleBaseTests.cs. No path is outside AllowedWriteScope or inside ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v on the handoff input matched .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is push 43184046954 for the exact branch and CurrentSha, completed success; all four required jobs are success. RedPart: push 43183114141 is for the exact branch and RedSha, completed with Tests (Domain + Application)=failure. The corresponding Core RED TRX has 94 failures."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed TRX counts: Current Core workspace filter 1584 passed, 0 failed; Current UI workspace filter 248 passed, 0 failed. RED Core workspace filter 1584 selected, 1490 passed, 94 failed; RED UI workspace filter 248 passed, 0 failed. Core and UI meet minima 1468 and 248. git diff ChainBaseSha..RedSha -- tests/ (RT/ChainRedFiles) lists WorkspaceDraftPilotIntentGuardTests.cs, WorkspaceDraftPilotIntentReadTests.cs and WorkspaceDraftPilotIntentStaleBaseTests.cs. git diff RedSha..CurrentSha lists only PushBackPilotIntentReader.cs and PushBackPilotIntentScan.cs, so GREEN does not touch RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show --format=%B for both commits in BaseSha..CurrentSha shows Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with effort high. relay-record-work.json records launch alias sonnet, ModelEffective=claude-sonnet-5-5 and EffortEffective=high; the effective values match the request."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json against all AUTOMATION_PLAN 16.10 terms; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json has Denials=null; its Notes record 0 permission denials, 0 tool errors, and none pending."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [],
+  "RecommendedNextAction": "La sesion puede seguir con su revision directa, la revision adversarial y nc1-nc3."
+}
