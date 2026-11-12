@@ -6335,3 +6335,13 @@ Todo queda dispuesto en sus §9 y §10.
 - `CorrectionOf` = la verificación `16bc` (clase `Tests`), con su `analysis.md`.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 142. Contrato del intento 2 de F4-T2B1
+
+**Contrato:** `I-64-pilot/F4-T2B1-INTENT-READ/coordinator/gate-contract-attempt2.json`.
+- Parte del contrato del intento 1 y cambia solo los invariantes INV-F4T2B1-02, 05, 07, 10 y 13, más INV-F4T2B1-15 para el RED de la corrección (F4-E27).
+- `AuthorityRevision` `e20a294c5e9f7160581e5674e08f8156accf876a` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- Mismos `AllowedWriteScope` y `ForbiddenWriteScope` (58).
+- `attempts` 2 de 3.
+
+**Límites:** solo documentación; sin AutoCAD.
