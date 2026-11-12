@@ -401,35 +401,36 @@ public class WorkspaceDraftPilotIntentStaleBaseTests
     }
 
     [Fact]
-    public void NoStateOfTheDrawingMakesTheInputOrTheReadThrow()
+    public void NoStateOfTheDrawingMakesTheInputOrTheReadThrowAndEachOneHasItsOwnVerdict()
     {
-        var states = new List<PushBackPilotIntentScan>
+        // The absence of an exception and the non-null results of the loop pass against any inert implementation that never
+        // throws; what makes this test discriminate is the verdict that each state must give (the rule that decides it).
+        var states = new List<(PushBackPilotIntentScan Scan, string Diagnostic)>
         {
-            IntentKit.Scan(null, null),
-            IntentKit.Scan(string.Empty, string.Empty),
-            IntentKit.Scan(" ", "A1", IntentKit.Member("A1", IntentKit.BaseText())),
-            IntentKit.Scan(IntentKit.Rack, null, IntentKit.Member("A1", IntentKit.BaseText())),
-            IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", string.Empty, "frontal", IntentKit.BaseText())),
-            IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", "   ", "frontal", IntentKit.BaseText())),
-            IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", null, null, null)),
-            IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Unreadable("A1", IntentKit.Rack, null)),
-            IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Unreadable("A1", string.Empty, string.Empty)),
+            (IntentKit.Scan(null, null), PushBackPilotIntentReader.NoIdentityDiagnostic),
+            (IntentKit.Scan(string.Empty, string.Empty), PushBackPilotIntentReader.NoIdentityDiagnostic),
+            (IntentKit.Scan(" ", "A1", IntentKit.Member("A1", IntentKit.BaseText())), PushBackPilotIntentReader.NoIdentityDiagnostic),
+            (IntentKit.Scan(IntentKit.Rack, null, IntentKit.Member("A1", IntentKit.BaseText())), PushBackPilotIntentReader.OriginMissingDiagnostic),
+            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", string.Empty, "frontal", IntentKit.BaseText())), PushBackPilotIntentReader.NoIdentityDiagnostic),
+            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", "   ", "frontal", IntentKit.BaseText())), PushBackPilotIntentReader.NoIdentityDiagnostic),
+            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", null, null, null)), PushBackPilotIntentReader.UnreadableDiagnostic),
+            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Unreadable("A1", IntentKit.Rack, null)), PushBackPilotIntentReader.UnreadableDiagnostic),
+            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Unreadable("A1", string.Empty, string.Empty)), PushBackPilotIntentReader.UnreadableDiagnostic),
         };
 
-        foreach (var scan in states)
+        foreach (var (scan, diagnostic) in states)
         {
             var thrown = Record.Exception(() =>
             {
                 var result = IntentKit.Read(scan);
                 Assert.NotNull(result.StaleBase);
                 Assert.NotNull(result.Read);
+                Assert.False(result.Read.IsAdmitted);
+                Assert.Equal(diagnostic, result.Read.Admission.Diagnostic);
                 _ = PushBackPilotIntentReader.BuildStaleBase(scan);
             });
             Assert.Null(thrown);
         }
-
-        // Those assertions only mean something if the reads are real: a state without any fact and without identity is refused.
-        Assert.Equal(PushBackPilotIntentReader.NoIdentityDiagnostic, IntentKit.Read(IntentKit.Scan(null, null)).Read.Admission.Diagnostic);
     }
 
     [Fact]
@@ -441,6 +442,39 @@ public class WorkspaceDraftPilotIntentStaleBaseTests
         Assert.True(scan.RawEnvelopes.ContainsKey("A1"));
         Assert.False(scan.RawEnvelopes.ContainsKey("B2"));
         Assert.Equal(1, scan.RawEnvelopes.Count);
+    }
+
+    [Fact]
+    public void TheRawEnvelopesOfTheInputAreAReadOnlyViewThatCannotBeConvertedToAMutableDictionaryNorChangeTheInput()
+    {
+        // M-5: the property type says read-only, and the object behind it must say it too.
+        var scan = IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Member("A1", IntentKit.BaseText()));
+        var view = scan.RawEnvelopes;
+        var original = view["A1"];
+
+        Assert.False(view is Dictionary<string, string>);
+        if (view is IDictionary<string, string> generic)
+        {
+            Assert.True(generic.IsReadOnly);
+            Assert.ThrowsAny<NotSupportedException>(() => generic["A1"] = "{ changed");
+            Assert.ThrowsAny<NotSupportedException>(() => generic["B2"] = "{ added");
+            Assert.ThrowsAny<NotSupportedException>(() => generic.Remove("A1"));
+            Assert.ThrowsAny<NotSupportedException>(() => generic.Clear());
+        }
+
+        if (view is System.Collections.IDictionary legacy)
+        {
+            Assert.True(legacy.IsReadOnly);
+            Assert.ThrowsAny<NotSupportedException>(() => legacy["A1"] = "{ changed");
+        }
+
+        if (view is ICollection<KeyValuePair<string, string>> pairs)
+            Assert.ThrowsAny<NotSupportedException>(() => pairs.Add(new KeyValuePair<string, string>("B2", "{ added")));
+
+        Assert.Equal(1, scan.RawEnvelopes.Count);
+        Assert.Equal(original, scan.RawEnvelopes["A1"]);
+        Assert.False(scan.RawEnvelopes.ContainsKey("B2"));
+        Assert.True(IntentKit.Read(scan).Read.IsAdmitted);
     }
 
     [Fact]

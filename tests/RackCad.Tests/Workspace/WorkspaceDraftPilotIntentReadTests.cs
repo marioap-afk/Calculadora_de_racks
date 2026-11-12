@@ -7,6 +7,8 @@ using System.Text.Json.Nodes;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.PushBack.Pilot;
+using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Redraw;
 using RackCad.Application.Workspace.Drafts;
 using Xunit;
 
@@ -424,6 +426,157 @@ public class WorkspaceDraftPilotIntentReadTests
         Assert.DoesNotContain("unknown member", details[0]);
     }
 
+    // ------------------------------------------------------------------ the correction of attempt 2 (INV-F4T2B1-15)
+
+    [Fact]
+    public void Rule3AFactThatIsNotInterpretableIsUnreadableEvenWithAValidTextAndNeverReadsTheText()
+    {
+        // M-2: the text is a valid envelope of this rack, but the scan could not interpret it. The rule reads the fact.
+        Assert.NotNull(new RackEmbedStore().Deserialize(BaseText()));
+
+        var result = Refuses(
+            IntentKit.Scan(Rack, "A1", IntentKit.Custom("A1", Rack, "frontal", BaseText(), interpretable: false, probe: Rack)),
+            PushBackPilotIntentReader.UnreadableDiagnostic);
+
+        Assert.Equal(DraftMembership.Blocking, IntentKit.Entry(result.StaleBase, "A1").Membership);
+    }
+
+    [Fact]
+    public void Rule5AFactAttributedToTheRackWithAnEnvelopeOfAnotherIdIsUnreadableWithTheDetailOfTheComparator()
+    {
+        // M-1 (the inverse of Rule5ReadsTheFactAndNotTheDeserializedEnvelope): the fact says "this rack", the text says another one.
+        // A rule that read the envelope would answer OriginNotMemberDiagnostic; the rule reads the fact, the member is Mutable,
+        // and it is the comparator of AUTH-13 that finds the text of another Id.
+        var result = Refuses(
+            IntentKit.Scan(Rack, "A1", IntentKit.Custom("A1", Rack, "frontal", IntentKit.Variant("pb-01-base", OtherRack))),
+            PushBackPilotIntentReader.UnreadableDiagnostic,
+            detailContains: "membership or kind mismatch");
+
+        Assert.Equal(DraftMembership.Mutable, IntentKit.Entry(result.StaleBase, "A1").Membership);
+        Assert.NotEqual(PushBackPilotIntentReader.OriginNotMemberDiagnostic, result.Read.Admission.Diagnostic);
+    }
+
+    [Fact]
+    public void Rule9AnInterpretableOriginWithANullKindIsOutOfPilotWithoutDetail()
+    {
+        // M-7: there is no kind to give as the detail, so the detail is null and never an empty string.
+        var noKind = IntentKit.Rewrite(BaseText(), e => e.Kind = null);
+        Assert.Null(new RackEmbedStore().Deserialize(noKind)!.Kind);
+
+        var result = Refuses(
+            IntentKit.Scan(Rack, "A1", IntentKit.Custom("A1", Rack, "frontal", noKind)),
+            PushBackPilotIntentReader.OutOfPilotDiagnostic);
+
+        Assert.Null(result.Detail);
+    }
+
+    [Fact]
+    public void Rule9ComesBeforeRule11AlsoForAnOriginWithANullKind()
+    {
+        // The pair (9, 11) again, with a null kind: AUTH-13 would call it unreadable, the verdict of the rule 9 wins.
+        var noKind = IntentKit.Rewrite(BaseText(), e => e.Kind = null);
+
+        var result = IntentKit.Read(IntentKit.Scan(Rack, "A1", IntentKit.Custom("A1", Rack, "frontal", noKind)));
+
+        Assert.Equal(PushBackPilotIntentReader.OutOfPilotDiagnostic, result.Read.Admission.Diagnostic);
+    }
+
+    private static string ZeroEveryPalletHeight(string envelopeText) =>
+        IntentKit.Rewrite(envelopeText, e =>
+        {
+            var design = JsonNode.Parse(e.Design)!;
+            var changed = ZeroPalletHeights(design);
+            Assert.True(changed > 0, "the design has a pallet height to change");
+            e.Design = design.ToJsonString();
+        });
+
+    private static int ZeroPalletHeights(JsonNode? node)
+    {
+        var changed = 0;
+        if (node is JsonObject obj)
+        {
+            foreach (var key in obj.Select(p => p.Key).ToList())
+            {
+                if (string.Equals(key, "PalletHeight", StringComparison.Ordinal))
+                {
+                    obj[key] = 0;
+                    changed++;
+                }
+                else changed += ZeroPalletHeights(obj[key]);
+            }
+        }
+        else if (node is JsonArray array)
+        {
+            foreach (var item in array) changed += ZeroPalletHeights(item);
+        }
+
+        return changed;
+    }
+
+    [Fact]
+    public void Rule13ADesignThatAuth13AcceptsAndTheProjectStoreRejectsIsUnreadableWithoutDetail()
+    {
+        // I-1: the canonical form of AUTH-13 does not validate what the project store does (a pallet height of 0).
+        var text = ZeroEveryPalletHeight(BaseText());
+        var embed = new RackEmbedStore().Deserialize(text)!;
+
+        // It really gets to the rule 13: AUTH-13 credits it (rules 10 and 11 pass) and the materializer fails with its unreadable reason.
+        var comparison = RackAuthoredComparatorPorts.PushBack()
+            .Compare(new RackAuthoredInput(Rack, new[] { new RackAuthoredSibling("A1", embed.Kind!, text, embed.Design) }, true, IntentKit.Evidence));
+        Assert.Equal(RackAuthoredComparisonOutcome.Single, comparison.Outcome);
+        Assert.False(new RackProjectStore().TryDeserialize(embed.Design, out _, out _));
+        var materialized = PushBackPilotMaterializer.Materialize(text, PilotKit.Catalog);
+        Assert.Equal(PushBackPilotMaterializationKind.Failed, materialized.Kind);
+        Assert.Equal(PushBackPilotMaterializer.UnreadableOrFutureDiagnostic, materialized.Reason);
+
+        // The unreadable text of the panel, with no detail (the reason of the materializer stays internal) and the hint.
+        var result = Refuses(IntentKit.Scan(Rack, "A1", IntentKit.Custom("A1", Rack, "frontal", text)), PushBackPilotIntentReader.UnreadableDiagnostic);
+
+        Assert.Null(result.Detail);
+        Assert.NotEmpty(result.StaleBase.Entries);
+    }
+
+    /// <summary>The envelope of pb-01-base whose inner design carries a member name with an escaped lone surrogate.</summary>
+    private static string TextWithAnEscapedLoneSurrogateInTheDesign()
+    {
+        // The JSON escape of a lone surrogate, built without writing the escape sequence in the source.
+        var escaped = new string((char)92, 1) + "ud800";
+        return IntentKit.Rewrite(BaseText(), e =>
+        {
+            const string anchor = "\"Header\": null,";
+            Assert.Contains(anchor, e.Design, StringComparison.Ordinal);
+            e.Design = e.Design.Replace(anchor, "\"H" + escaped + "\": 1, " + anchor, StringComparison.Ordinal);
+        });
+    }
+
+    [Fact]
+    public void Rule11AnExceptionThatIsNotAJsonExceptionOfTheComparatorIsAMaterializeFailureWithADetailAndNeverAnAdmission()
+    {
+        // I-2: the tolerant deserialization of the envelope accepts it (Design is an opaque string) and the raw reader of AUTH-13
+        // fails with an InvalidOperationException, which the comparator does not catch (it only catches JsonException).
+        var text = TextWithAnEscapedLoneSurrogateInTheDesign();
+        var embed = new RackEmbedStore().Deserialize(text)!;
+        Assert.NotNull(embed);
+        var thrown = Record.Exception(() => RackAuthoredComparatorPorts.PushBack()
+            .Compare(new RackAuthoredInput(Rack, new[] { new RackAuthoredSibling("A1", embed.Kind!, text, embed.Design) }, true, IntentKit.Evidence)));
+        Assert.NotNull(thrown);
+        Assert.IsNotType<System.Text.Json.JsonException>(thrown);
+        Assert.False(thrown is System.Text.Json.JsonException);
+
+        PushBackPilotIntentResult? result = null;
+        var fromRead = Record.Exception(() => result = IntentKit.Read(IntentKit.Scan(Rack, "A1", IntentKit.Custom("A1", Rack, "frontal", text))));
+
+        Assert.Null(fromRead);
+        Assert.NotNull(result);
+        Assert.False(result!.Read.IsAdmitted);
+        Assert.Null(result.Read.InitialState);
+        Assert.Equal(PushBackPilotIntentReader.MaterializeDiagnostic, result.Read.Admission.Diagnostic);
+        Assert.False(string.IsNullOrEmpty(result.Detail));
+        Assert.Equal(thrown!.Message, result.Detail);
+        Assert.Equal(PushBackPilotIntentReader.ClassicEditorHint, result.ClassicEditorHint);
+        Assert.NotEmpty(result.StaleBase.Entries);
+    }
+
     [Fact]
     public void Rule12AnABRackIsOutOfPilotWithTheReasonOfTheMaterializer()
     {
@@ -564,9 +717,11 @@ public class WorkspaceDraftPilotIntentReadTests
     }
 
     [Fact]
-    public void Rule9ComesBeforeRule10()
+    public void Rule9ComesBeforeTheAuth13ComparisonSoThePair9And11()
     {
-        // A lone Selective origin is also unreadable for AUTH-13 (it only reads Push Back); the rule 9 verdict wins.
+        // What this fixes is the pair (9, 11): a lone Selective origin is also unreadable for AUTH-13 (the Push Back port only
+        // reads Push Back), and the rule 9 verdict wins. The pair (9, 10) cannot be shown: a single member never diverges and
+        // the Push Back port rejects every other kind before it compares values.
         Refuses(
             IntentKit.Scan(Rack, "A1", IntentKit.Member("A1", IntentKit.Variant("pb-01-base", Rack, kind: "selective"))),
             PushBackPilotIntentReader.OutOfPilotDiagnostic,
@@ -689,6 +844,31 @@ public class WorkspaceDraftPilotIntentReadTests
         Assert.Equal(PushBackPilotPreviewWitnessStatus.Changed, IntentKit.Read(noText).PreviewWitness);
         var bothNull = IntentKit.Scan(Rack, "A1", new PushBackPilotPreviewWitness("A1", null), IntentKit.Custom("A1", Rack, "frontal", null));
         Assert.Equal(PushBackPilotPreviewWitnessStatus.Changed, IntentKit.Read(bothNull).PreviewWitness);
+    }
+
+    [Fact]
+    public void AnOriginThatHasNoFactIsChangedEvenIfItsTextIsInTheRawEnvelopesAndTheWitnessHasThatKeyAndText()
+    {
+        // M-3: the text of the origin is there and equal to the witness, but the scan has no fact for the origin key.
+        var text = BaseText();
+        var other = new RackSiblingScanFact("B2", "lateral", false, false, true, Rack, Rack, 1, 0, false);
+        var raw = new Dictionary<string, string?>(StringComparer.Ordinal) { ["A1"] = text, ["B2"] = text };
+        var scan = new PushBackPilotIntentScan(Rack, "A1", new[] { other }, raw, IntentKit.Evidence, new PushBackPilotPreviewWitness("A1", text));
+
+        var result = IntentKit.Read(scan);
+
+        Assert.Equal(PushBackPilotPreviewWitnessStatus.Changed, result.PreviewWitness);
+        Assert.Equal(PushBackPilotIntentReader.OriginMissingDiagnostic, result.Read.Admission.Diagnostic);
+
+        // With the fact of the origin in the scan, the very same witness is Unchanged: the fact is what the status adds.
+        var withFact = new PushBackPilotIntentScan(
+            Rack,
+            "A1",
+            new[] { other, new RackSiblingScanFact("A1", "frontal", false, false, true, Rack, Rack, 1, 0, false) },
+            raw,
+            IntentKit.Evidence,
+            new PushBackPilotPreviewWitness("A1", text));
+        Assert.Equal(PushBackPilotPreviewWitnessStatus.Unchanged, IntentKit.Read(withFact).PreviewWitness);
     }
 
     [Fact]

@@ -36,6 +36,10 @@ public class WorkspaceDraftPilotIntentGuardTests
         ("LockDocument", new Regex(@"LockDocument"), "using (doc.LockDocument()) { }"),
         ("Dispatcher", new Regex(@"Dispatcher"), "Dispatcher.CurrentDispatcher.Invoke(() => { });"),
         ("Task", new Regex(@"\bTask\b"), "Task.Run(() => { });"),
+        // The threading prohibition is aligned with WorkspaceDraftBoundaryTests (Task., ValueTask and System.Threading.Tasks).
+        ("Task.", new Regex(@"Task\."), "var done = Task.CompletedTask;"),
+        ("ValueTask", new Regex(@"ValueTask"), "ValueTask<int> pending = default;"),
+        ("System.Threading.Tasks", new Regex(@"System\.Threading\.Tasks"), "using System.Threading.Tasks;"),
         ("async", new Regex(@"\basync\b"), "public async void Go() { }"),
         ("await", new Regex(@"\bawait\b"), "var x = await Work();"),
     };
