@@ -1718,3 +1718,19 @@ Componente omite los racks planos. El Owner lo aceptó con advertencia visible y
 ### La exportación de un solo rack no tiene Table ni tabla dinámica
 
 Decisión D-2 de I-68: las ocho entradas a `RackBomWindow` conservan el XLSX simple, que no tiene Rack ni Copias.
+
+## I-64 F4-T2A — pérdidas de la ruta de carga de la ventana clásica de Push Back (2026-11-12, registradas sin corregir)
+
+La caracterización ventana frente a piloto de F4-T2A (`WorkspaceDraftPilotWindowLoadCharacterizationTests`) compara `RackPushBackSystemWindow.LoadExisting` con la materialización del piloto, que sigue solo la parte de Application. Al cargar un rack, la ventana pasa los valores por sus controles y luego recalcula, y el siguiente Actualizar escribe lo que quedó. El piloto conserva el valor authored. Ninguna de estas pérdidas se corrige en I-64 F4.
+
+### (a) Redondeo al formato «0.###» de los controles
+
+Un valor authored con más de tres decimales (por ejemplo, una escala de anotación de 1.23456 o una altura de tarima de 61.23456) vuelve como 1.235 y 61.235, y un RACKEDITAR seguido de Actualizar lo escribe redondeado. El fixture `pb-08-redondeo` lo mide.
+
+### (b) `ReadInputs` pierde `DimensionStyle`
+
+`ReadInputs` (`RackPushBackSystemWindow.xaml.cs:840-848`) reconstruye `Annotations` sin `DimensionStyle`, mientras que `RecoverInputs` lo recupera y el ensamblador lo escribe. Un rack con estilo de cota propio lo pierde en el siguiente Actualizar clásico.
+
+### (c) y (d) Ajustes de `LoadFromModel` y celda vuelta a comprometer
+
+`LoadFromModel` (`:382-419`) sustituye y ajusta valores al poblar los controles, y `CommitCurrentCell` vuelve a escribir la celda desde ellos. Con el corpus de F4-T2A no hay ningún diseño que provoque un delta de estas clases. La caracterización de F4-T1B o la migración de F5 pueden medirlas.

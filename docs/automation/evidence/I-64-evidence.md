@@ -6255,3 +6255,37 @@ Todo queda dispuesto en sus §9 y §10.
 - `attempts` 2 de 3.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 135. Intento 2 de F4-T2A: corrección verificada
+
+**Decisión:** F4-E25.
+
+- **Planificación:** `a765` dio STOP S-04, un error de entrada de la sesión. Se repitió como `3ff0`, con A1-A8 8/8 y fidelidad PASS.
+- **Worker** `dd72`: RED `a7ced417` y GREEN `cf9f9441`.
+- **CI:** `43167736802` 4/4, con Core en Linux.
+- **Verificación** `00f6`: `EXECUTION_VERIFIED`, 14/14.
+- **Revisiones:**
+  - la directa, sin importantes;
+  - la independiente, ACEPTABLE CON MENORES (6 menores arrastrados a T4A y T4B).
+
+**Límites:** sin AutoCAD.
+
+## 136. Controles negativos de F4-T2A
+
+| Control | Corrida | Resultado | Clasificación |
+|---|---|---|---|
+| nc1 | `R20261112T064509Z-ef74` | CONTROL PASS | Identity, `EXECUTION_BLOCKED` |
+| nc2 | `R20261112T065046Z-3387` | CONTROL PASS | Scope, `EXECUTION_BLOCKED` |
+| nc3 | `R20261112T065454Z-88f1` | CONTROL PASS | FreeText, `EXECUTION_REWORK_REQUIRED` |
+
+**Límites:** sin AutoCAD.
+
+## 137. Cierre de F4-T2A-PILOT-STATE e inicio de F4-T2B
+
+**Decisión:** F4-E25.
+- F4-T2A = **CLOSED / PASS** sobre `cf9f9441`, con `attempts` 2 de 3.
+- El paquete de cierre está en `I-64-pilot/F4-T2A-PILOT-STATE/task-close-package.md`.
+- Las pérdidas de la ruta de carga clásica quedan en `docs/ideas-futuras.md`.
+- F4-T2B-DRAFT-READ-HOST empieza con `attempts` 1 de 3.
+
+**Límites:** sin AutoCAD.

@@ -434,3 +434,30 @@ La mutación sigue solo en T4B.
   - añade INV-F4T2A-16 para el RED de la corrección.
 - Mismos `AllowedWriteScope` y `ForbiddenWriteScope` (57).
 - Se conservan sin cambios la verificación `8bc4`, la entrega y las revisiones.
+
+## F4-E25. Intento 2 de F4-T2A: verificación, revisiones, controles y cierre
+
+**Hechos del intento 2:**
+- **Planificación:** `R20261112T054738Z-a765` dio STOP S-04 por un error de entrada de la sesión: el prompt tenía hechos del intento 1 que ya no eran ciertos. Se repitió como `R20261112T055051Z-3ff0`, con comparación byte a byte PASS y A1-A8 8/8.
+- **Worker** `R20261112T055438Z-dd72`: RED `a7ced417` y GREEN `cf9f9441`.
+  - Dejó dos temporizadores propios en segundo plano. La sesión detuvo su tarea y comprobó que desaparecieron antes de medir la entrada; es una desviación menor, registrada.
+- **CI:** `43167736802` 4/4, con Core en Linux.
+- **Verificación** `R20261112T062828Z-00f6`: `EXECUTION_VERIFIED`, 14/14, `VerifiedSha` `cf9f9441`.
+- **Revisión directa de la sesión:** sin defectos importantes.
+- **Revisión adversarial independiente:** ACEPTABLE CON MENORES, con 0 bloqueantes, 0 importantes y 6 menores.
+
+**Arrastres** (decisión de la sesión por la delegación nocturna; F4-T2A no consume el intento 3):
+- **A T4A**, dueña de la composición para escribir y de la entrada caller-owned:
+  - (1) el rechazo de `ComposeForWrite` debe comparar `current` sin normalizar contra una copia de `initial` con la escala neutralizada;
+  - (3) comprobar que la base rematerializada coincide con `initial` antes de componer, por si cambia el catálogo;
+  - (6) rechazar una escala no válida (NaN, 0 o negativa) que haya llegado por edición en sitio;
+  - (2) separar en variantes distintas el escenario (b) de «Conservar»;
+  - (5) añadir una aserción sin normalizar del corpus canónico en `RackCad.UI.Tests` (Windows).
+- **A T4B**, dueña de `CompleteApply`:
+  - (4) un copiador que lanza en el rebase de Applied deja el estado calculado sobre la base anterior y un `EnterError` diferido sin aplicar;
+  - va junto al arrastre ya registrado de `CompleteApply` en `finally` (F4-E16). Cambiarlo toca D-13 y no corresponde a T2A.
+- **A F5 / T1B:** las clases (c) y (d) de la caracterización ventana frente a piloto siguen sin datos que las provoquen. Las divergencias (a)-(d) de la ruta clásica se registran en `docs/ideas-futuras.md`.
+
+**Decisión:** F4-T2A-PILOT-STATE = **CLOSED / PASS** sobre `cf9f9441`, si nc1..nc3 cumplen su oráculo.
+- El intento 1 (`77658968`, verificación `8bc4` STOP) y las planificaciones `13b0`, `61f3` y `a765` se conservan como historia.
+- F4-T2B-DRAFT-READ-HOST empieza con `attempts` 1 de 3 (F4-E18).

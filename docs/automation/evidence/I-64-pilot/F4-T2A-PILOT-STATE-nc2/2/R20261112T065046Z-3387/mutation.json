@@ -1,0 +1,90 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261112T065046Z-3387",
+  "SourceVerification": "R20261112T062828Z-00f6",
+  "SourceInputs": "artifacts/orchestration/I-64/F4-T2A-PILOT-STATE/2/R20261112T062828Z-00f6/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "tests/RackCad.Tests/Fixtures/I64/pb-08-redondeo.json",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+      "tests/RackCad.Tests/Fixtures/I64/"
+    ],
+    "New": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+      "tests/RackCad.Tests/Fixtures/I64/"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "6BAACC51FC2B8715EAFEC0CAC0FA8D30E9DF2F3B51D79E59BB26B7DA369A9A86",
+    "New": "D05B2977A7BD0B20B437C2339695E1C42EEC06AE837A856FAD2858C7496F3F4B",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "80BB6BC1F464884DF4D3B377BE438E2CCBE53A2CAC483732A34754E104D4ADE5",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "1BD7E5B505C8363A51CE022F005D467BCCC2B940533EEF01CE6814008998248B",
+    "delegation.json": "D05B2977A7BD0B20B437C2339695E1C42EEC06AE837A856FAD2858C7496F3F4B",
+    "gate-contract.json": "F40D3372950311C426032E38918E11FF746521276C16852884DCAF0D92818891",
+    "relay-record-planning.json": "14AB94F91044077BC27D93D2BB25B0ADA2C1B43C0E03A418F810C43C032E0912",
+    "relay-record-work.json": "0AA4FC709A8D1B74DBD4814ED8A96681F9330FFF5FB996F0CFE457BE4DDA3277",
+    "worker-handoff.json": "B595048D3F5110CE645B8C94B9A98DD2D848D5D964391667EC043F0D3B326B5F",
+    "ci-core/43167736802/core.trx": "B4D88121CA574E8C34FF1B640CDDCDC1134232A42B72122D9365CD1357CC725E",
+    "ci-core-red/43166328986/core.trx": "6E0B3EB8B8B4398F104AA599A3C67CE78A533E3DE8D78D17685D3B390F2089FE",
+    "ci-ui/43167736802/ui.trx": "DBEA8B9804E152B1CFD8E9328A03C721102945445E0E5D2DD78687A5924D0D21",
+    "ci-ui-red/43166328986/ui.trx": "7CAE955DB8C081A2F2568DECC32F75DCB9283E258C0F48E3FC562E6A53FDEE3F"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

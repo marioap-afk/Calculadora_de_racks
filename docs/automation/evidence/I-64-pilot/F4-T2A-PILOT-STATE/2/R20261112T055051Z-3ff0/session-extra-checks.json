@@ -1,0 +1,89 @@
+{
+  "AllowedExact": true,
+  "ExactCopy.Authorities": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "NonAsciiBytes": 0,
+  "BackslashU": 0,
+  "ControlCharsInStrings": 0,
+  "CorrectionOf": {
+    "RunId": "R20261112T052453Z-8bc4",
+    "FailureClass": "Ci",
+    "AnalysisSha256": "4f1635760902cf97f3f55f12c208dea8987296a80d5c30563139743876447eb7"
+  },
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "TaskClassExact": true,
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "PromptProfileExact": true,
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "EffortExact": true,
+  "ModelEscalationReason": null,
+  "Dimensions": {
+    "Ambiguity": "Medium",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "High",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Medium"
+  },
+  "BaseSha": "539614aed17b0880a98cab201cd9cba33e968112",
+  "AuthorityRevision": "6e5879a1c3b56fad7668fbcb9d3b5bcc446a829e",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "ChainFields": {
+    "ChainBaseSha": "ed680e1f2eb780b6ead4a4c8a0c06ba17444f0cb",
+    "ChainRedSha": "19123dfe5d54c81f96d8aabcf1d1d25af64112b6",
+    "ChainRedFiles": [
+      "tests/RackCad.Tests/Fixtures/I64/pb-01-base.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-02-modulos.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-03-fondos.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-04-blanco.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-05-topes.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-06-seguridad.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-07-combinado.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-10-sin-datum.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-11-sin-i41.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-12-poste-nulo.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-13-sideb-no-presente.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-14-peralte-heredado.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-15-sin-composite.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-20-ab.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-21-cola.json",
+      "tests/RackCad.Tests/Fixtures/I64/pb-31-v2-modulos.json",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs"
+    ]
+  },
+  "AttemptFields": {
+    "Attempt": 2,
+    "AttemptsRemaining": 1,
+    "MaxReworkLoops": 3
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F4-T2A-PILOT-STATE/2/{WorkRunId}/worker-handoff.json",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261112T055051Z-3ff0"
+  },
+  "AcceptanceCriteriaCount": 21,
+  "IssuedBy": "Controller Codex (planificacion de la correccion F4-T2A-PILOT-STATE, intento 2, F4-E24, CONTROLLER_PLANNING)"
+}
