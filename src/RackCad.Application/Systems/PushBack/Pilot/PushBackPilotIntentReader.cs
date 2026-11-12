@@ -197,10 +197,10 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             if (mutable.Select(m => m.Embed?.Kind ?? string.Empty).Distinct(StringComparer.OrdinalIgnoreCase).Count() > 1)
                 return Verdict.Refused(KindDivergentDiagnostic);
 
-            // 9 (a null kind has no detail to give: the detail stays null)
+            // 9 (a null, empty or blank kind has no detail to give: the detail stays null)
             var originKind = origin.Embed.Kind;
             if (!string.Equals(originKind, RackEmbedDocument.KindPushBack, StringComparison.Ordinal))
-                return Verdict.Refused(OutOfPilotDiagnostic, originKind);
+                return Verdict.Refused(OutOfPilotDiagnostic, string.IsNullOrWhiteSpace(originKind) ? null : originKind);
 
             // 10 and 11: AUTH-13 over the editable members by key, with the real raw text. A member whose envelope or text is
             // missing (rule 7 already refused it) would simply not be handed over, and the sibling count below says so.

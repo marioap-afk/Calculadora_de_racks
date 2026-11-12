@@ -224,13 +224,37 @@ namespace RackCad.Application.Workspace
             new(status, reason, Array.Empty<string>());
     }
 
-    /// <summary>The pure decisions of the edit intention that do not depend on the host (I-64 F4-T2B2A). Inert skeleton of the RED.</summary>
+    /// <summary>The pure decisions of the edit intention that do not depend on the host (I-64 F4-T2B2A).</summary>
     public static class WorkspaceEditIntent
     {
-        /// <summary>Inert skeleton: it chooses nothing and never throws.</summary>
-        public static long ChooseOriginDefinition(NavigationTargetSet set, long? chosenReference) => 0;
+        /// <summary>
+        /// The definition of origin of the read (D-11, D-T2B2-04), from the targets of the SAME operation:
+        /// the definition of the chosen reference when it is still among the targets; 0 when it is not (the read then says that
+        /// the origin is no longer there, and it does not say that it belongs to another rack); without a chosen reference, the
+        /// definition of the first target of the deterministic order, or 0 when there are no targets.
+        /// </summary>
+        public static long ChooseOriginDefinition(NavigationTargetSet set, long? chosenReference)
+        {
+            if (set == null) throw new ArgumentNullException(nameof(set));
 
-        /// <summary>Inert skeleton: it translates nothing and never throws.</summary>
-        public static EditWitnessStatus WitnessStatusOf(PushBackPilotPreviewWitnessStatus status) => EditWitnessStatus.NotEvaluated;
+            if (!chosenReference.HasValue) return set.Primary?.DefinitionHandle ?? 0;
+
+            foreach (var target in set.Targets)
+                if (target.ReferenceHandle == chosenReference.Value) return target.DefinitionHandle;
+
+            return 0;
+        }
+
+        /// <summary>Translates the status of the witness of the pilot into the one of the host: the same three, plus the one for no read.</summary>
+        public static EditWitnessStatus WitnessStatusOf(PushBackPilotPreviewWitnessStatus status)
+        {
+            switch (status)
+            {
+                case PushBackPilotPreviewWitnessStatus.Unchanged: return EditWitnessStatus.Unchanged;
+                case PushBackPilotPreviewWitnessStatus.Changed: return EditWitnessStatus.Changed;
+                case PushBackPilotPreviewWitnessStatus.NotSupplied: return EditWitnessStatus.NotSupplied;
+                default: return EditWitnessStatus.Changed;
+            }
+        }
     }
 }

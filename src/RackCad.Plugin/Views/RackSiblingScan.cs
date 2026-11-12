@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.CustomProperties;
@@ -44,13 +45,15 @@ namespace RackCad.Plugin.Views
             IReadOnlyDictionary<string, ObjectId> definitions,
             IReadOnlyDictionary<string, RackEmbedDocument> envelopes,
             IReadOnlyDictionary<string, CustomPropertiesReadResult> properties,
-            IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> layers)
+            IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> layers,
+            IReadOnlyDictionary<string, string> rawEnvelopes = null)
         {
             Facts = facts;
             Definitions = definitions;
             Envelopes = envelopes;
             Properties = properties;
             Layers = layers;
+            RawEnvelopes = rawEnvelopes ?? new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(StringComparer.Ordinal));
         }
 
         internal IReadOnlyList<RackSiblingScanFact> Facts { get; }
@@ -58,6 +61,12 @@ namespace RackCad.Plugin.Views
         internal IReadOnlyDictionary<string, RackEmbedDocument> Envelopes { get; }
         internal IReadOnlyDictionary<string, CustomPropertiesReadResult> Properties { get; }
         internal IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> Layers { get; }
+
+        /// <summary>
+        /// The raw text of the envelope of each scanned definition that has text, by key (ordinal): the same text that
+        /// <c>Traverse</c> deserializes. It is a read-only view; the scan still writes nothing.
+        /// </summary>
+        internal IReadOnlyDictionary<string, string> RawEnvelopes { get; }
 
         /// <summary>The members of one rack among the scanned definitions; no source is selected, so none is erased by kind.</summary>
         internal RackSiblingMembershipSnapshot MembershipFor(string rackId)
@@ -96,6 +105,7 @@ namespace RackCad.Plugin.Views
             var envelopes = new Dictionary<string, RackEmbedDocument>(StringComparer.Ordinal);
             var properties = new Dictionary<string, CustomPropertiesReadResult>(StringComparer.Ordinal);
             var layers = new Dictionary<string, IReadOnlyList<RackSiblingLayerRequirement>>(StringComparer.Ordinal);
+            var rawEnvelopes = new Dictionary<string, string>(StringComparer.Ordinal);
             var embedStore = new RackEmbedStore();
             var propertyStore = new CustomPropertiesStore();
 
@@ -141,6 +151,7 @@ namespace RackCad.Plugin.Views
                         nestedReferences,
                         envelope != null && eraseByKind != null && eraseByKind(envelope)));
                     definitions.Add(key, definitionId);
+                    rawEnvelopes.Add(key, json);
                     layers.Add(key, layerFacts);
                     if (envelope != null)
                     {
@@ -152,7 +163,8 @@ namespace RackCad.Plugin.Views
                 transaction.Commit();
             }
 
-            return new RackSiblingDrawingScan(facts, definitions, envelopes, properties, layers);
+            return new RackSiblingDrawingScan(
+                facts, definitions, envelopes, properties, layers, new ReadOnlyDictionary<string, string>(rawEnvelopes));
         }
 
         private static void AddLayer(Transaction transaction, ObjectId layerId, RackSiblingLayerUse use,

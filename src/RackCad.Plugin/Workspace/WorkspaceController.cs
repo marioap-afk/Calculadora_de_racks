@@ -76,6 +76,10 @@ namespace RackCad.Plugin.Workspace
                         _echo,
                         id => _bridge.TryGetSession(id, out var session) && !session.IsDestroyed ? session.NativeInstanceId : (long?)null,
                         (request, nativeId) => _bridge.Authorize(request, nativeId));
+
+                    // The reader of the edit intention (I-64 F4-T2B2A) is wired by assignment, right after the host exists, so the
+                    // constructor of this controller and the arguments of the host do not change. Nothing calls it until F4-T3.
+                    _host.SetEditIntentReader(_navigation.EditIntentReader);
                 }
 
                 return _navigation;

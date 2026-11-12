@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Workspace;
+using RackCad.Plugin.Views;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin.Workspace
@@ -18,12 +19,18 @@ namespace RackCad.Plugin.Workspace
     /// the session of the request, the existence and the attribution of the targets, the decision of the policy, the effects,
     /// the capture of the result and the return of the focus to the drawing. A session that went stale, another active
     /// document or a target that vanished means zero effects.
+    ///
+    /// It also hosts, as a nested class, the reader of the edit intention (I-64 F4-T2B2A, D-T2B2-03). That reader is the one
+    /// place where the intention reaches the drawing: it handles the result of the pilot that the adapter of the Views folder
+    /// returns, as a value, and it reuses the targets of this host. It reads only; it writes no selection, no view and no data.
     /// </summary>
     public sealed class WorkspaceNavigationHost : IWorkspaceNavigationPort, IWorkspaceBrowserSummaryPort
     {
         private readonly WorkspaceNavigationRunner _runner;
         private readonly WorkspaceNavigationEffects _effects;
         private readonly BrowserRackSummaries _summaries;
+        private readonly NavigationTargets _targets;
+        private readonly IWorkspaceEditIntentReader _editIntentReader;
         private readonly Func<SessionId, bool> _isSessionAlive;
         private readonly Func<WorkspaceRequest, long, RequestDecision> _authorize;
 
@@ -42,12 +49,19 @@ namespace RackCad.Plugin.Workspace
             _isSessionAlive = id => nativeInstanceOf(id).HasValue;
 
             var facts = new WorkspaceNavigationFacts(nativeInstanceOf);
-            var targets = new NavigationTargets(facts);
-            var policy = new NavigationActionPolicy(targets);
-            _runner = new WorkspaceNavigationRunner(targets, policy, echo, _isSessionAlive);
+            _targets = new NavigationTargets(facts);
+            var policy = new NavigationActionPolicy(_targets);
+            _runner = new WorkspaceNavigationRunner(_targets, policy, echo, _isSessionAlive);
             _effects = new WorkspaceNavigationEffects(nativeInstanceOf);
             _summaries = new BrowserRackSummaries(facts.ReadBrowserFacts, _isSessionAlive);
+            _editIntentReader = new PilotIntentReader(_targets, _authorize);
         }
+
+        /// <summary>
+        /// The reader of the edit intention of this host (I-64 F4-T2B2A). The controller hands it to the host core by assignment,
+        /// right after it creates this host. Nothing in this class calls it: it is called only by an action of the user.
+        /// </summary>
+        internal IWorkspaceEditIntentReader EditIntentReader => _editIntentReader;
 
         /// <summary>A drain of the session: purges the state of the sessions that no longer live and applies the cache invalidation.</summary>
         public void OnDrained(DrainOutcome outcome)
@@ -171,5 +185,72 @@ namespace RackCad.Plugin.Workspace
         }
 
         private static void LogFault(string context, System.Exception exception) => RackLog.Exception(context, exception);
+
+        /// <summary>
+        /// The reader of the edit intention (I-64 F4-T2B2A, D-T2B2-03, INV-22). ONE logical read of the drawing for one action of the
+        /// user, synchronous, on the application context. In this order, in one step: the active document, no command running and
+        /// the editor at rest, the catalog (outside the lock), the document lock, the authorization of the session against the
+        /// document that executes it, the revalidation of the targets with the choice of the origin, and the read of the adapter.
+        /// A failure is contained as a value. It writes no selection, no view and nothing of the drawing, and it gives no focus back.
+        /// </summary>
+        private sealed class PilotIntentReader : IWorkspaceEditIntentReader
+        {
+            private readonly NavigationTargets _targets;
+            private readonly Func<WorkspaceRequest, long, RequestDecision> _authorize;
+
+            public PilotIntentReader(NavigationTargets targets, Func<WorkspaceRequest, long, RequestDecision> authorize)
+            {
+                _targets = targets;
+                _authorize = authorize;
+            }
+
+            public EditIntentReadResult ReadIntent(SessionId session, string rackId, long? chosenReference, EditIntentWitness witness)
+            {
+                try
+                {
+                    return ReadOnActiveDocument(session, rackId, chosenReference, witness);
+                }
+                catch (System.Exception ex)
+                {
+                    LogFault("WorkspaceNavigationHost.ReadEditIntent", ex);
+                    return EditIntentReadResult.Failed(ex.Message);
+                }
+            }
+
+            private EditIntentReadResult ReadOnActiveDocument(SessionId session, string rackId, long? chosenReference, EditIntentWitness witness)
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null)
+                    return EditIntentReadResult.NoActiveDocument("There is no active document.");
+                if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
+                    return EditIntentReadResult.Busy("A command is in progress.");
+
+                var catalog = RackPilotIntentAdapter.LoadCatalog();
+                if (!catalog.Succeeded)
+                    return EditIntentReadResult.Failed(catalog.FailureReason);
+
+                using (document.LockDocument())
+                {
+                    var decision = _authorize(new WorkspaceRequest(session), document.UnmanagedObject.ToInt64());
+                    if (decision != RequestDecision.Accepted)
+                        return EditIntentReadResult.Rejected("The request does not belong to the active document.");
+
+                    var expected = chosenReference.HasValue ? new[] { chosenReference.Value } : Array.Empty<long>();
+                    var revalidation = _targets.Revalidate(session, rackId, expected);
+                    var origin = WorkspaceEditIntent.ChooseOriginDefinition(revalidation.Fresh, chosenReference);
+
+                    var read = RackPilotIntentAdapter.Read(
+                        document,
+                        rackId,
+                        origin,
+                        witness?.Key,
+                        witness?.Text,
+                        catalog.Catalog);
+                    return read.Succeeded
+                        ? EditIntentReadResult.FromPilot(read.Pilot)
+                        : EditIntentReadResult.Failed(read.FailureReason);
+                }
+            }
+        }
     }
 }

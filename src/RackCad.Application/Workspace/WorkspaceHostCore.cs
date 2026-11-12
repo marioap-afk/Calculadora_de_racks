@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Systems.PushBack.Pilot;
 using RackCad.Application.Workspace.Drafts;
 
 namespace RackCad.Application.Workspace
@@ -23,6 +24,12 @@ namespace RackCad.Application.Workspace
     /// - every request carries its session and is authorized against the document that would execute it;
     /// - a read that fails degrades only that session of the host and never reaches the host loop.
     /// It writes nothing: no authored data, no selection, no view, no persistence.
+    ///
+    /// Since I-64 F4-T2B2A it also owns the one registry of drafts of the process and its close policy (keys: session and rack),
+    /// and offers two operations of value for the user: <see cref="TryBeginPilotEdit"/> (the edit intention of the bounded Push
+    /// Back pilot) and <see cref="TryCheckPilotEdit"/> ("check now"). Each is ONE user action with at most ONE logical read, made
+    /// through <see cref="IWorkspaceEditIntentReader"/>; neither runs from the drain or from the idle pass, and until the panel
+    /// exposes them (F4-T3) nothing calls them.
     /// </summary>
     public sealed class WorkspaceHostCore
     {
@@ -39,6 +46,7 @@ namespace RackCad.Application.Workspace
         private readonly HashSet<SessionId> _pickFirstOff = new();
         private readonly DraftRegistry _drafts = new();
         private readonly DraftClosePolicy _closePolicy;
+        private IWorkspaceEditIntentReader? _editIntentReader;
         private bool _started;
         private bool _panelVisible;
         private bool _modalRackCadActive;
@@ -222,22 +230,224 @@ namespace RackCad.Application.Workspace
 
         public WorkspaceMeasurementReport GetMeasurementReport() => _instrumentation.Report();
 
-        // ---------------------------------------------------------------- the edit intention of the pilot (I-64 F4-T2B2A): inert skeleton of the RED
+        // ---------------------------------------------------------------- the edit intention of the pilot (I-64 F4-T2B2A)
 
+        /// <summary>The registry of drafts of the process, for the tests of this assembly. Nothing of the product reads it from outside.</summary>
         internal DraftRegistry OpenDrafts => _drafts;
 
+        /// <summary>The close policy over <see cref="OpenDrafts"/>. Until the lifecycle is wired nothing consults it.</summary>
         internal DraftClosePolicy ClosePolicy => _closePolicy;
 
-        /// <summary>Inert skeleton: it assigns nothing and never throws.</summary>
-        public void SetEditIntentReader(IWorkspaceEditIntentReader reader)
+        /// <summary>
+        /// Assigns the reader of the edit intention. It is wired by assignment and never by constructor, so the constructor of the
+        /// controller and the arguments of the navigation host do not change. Without a reader the operations answer Unavailable.
+        /// </summary>
+        public void SetEditIntentReader(IWorkspaceEditIntentReader reader) =>
+            _editIntentReader = reader ?? throw new ArgumentNullException(nameof(reader));
+
+        /// <summary>
+        /// The edit intention of the user for one rack of the bounded Push Back pilot (D-T2B2-06): at most ONE logical read, and a
+        /// draft only when the read is admitted. Steps 1 to 5 read nothing; the order is the one of the table of the package.
+        /// Every exception is contained as Failed and the session is not degraded: it is an action of the user, not the drain.
+        /// </summary>
+        public EditIntentOutcome TryBeginPilotEdit(EditIntentRequest request)
         {
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
+
+                // 1: a blank RackId has no identity, and the registry would throw on it.
+                if (string.IsNullOrWhiteSpace(request.RackId))
+                {
+                    return EditIntentOutcome.NotAdmitted(
+                        PushBackPilotIntentReader.NoIdentityDiagnostic,
+                        null,
+                        PushBackPilotIntentReader.ClassicEditorHint,
+                        EditWitnessStatus.NotEvaluated);
+                }
+
+                // 2 to 5: the reader, the probe of the active document, the modal or the command, the authorization.
+                var gate = PassGate(request.Session, out var reason);
+                if (gate == EditGate.Unavailable) return EditIntentOutcome.Unavailable(reason);
+                if (gate == EditGate.Waiting) return EditIntentOutcome.Waiting(reason);
+                if (gate == EditGate.Rejected) return EditIntentOutcome.Rejected(reason);
+
+                // 6: an open draft is never read again.
+                if (_drafts.Contains(request.Session, request.RackId)) return EditIntentOutcome.AlreadyOpen();
+
+                // 7: the one read.
+                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                switch (read.Status)
+                {
+                    case EditIntentReadStatus.Read:
+                        break;
+                    case EditIntentReadStatus.NoActiveDocument:
+                    case EditIntentReadStatus.Busy:
+                        return EditIntentOutcome.Waiting(read.Reason ?? "The drawing is not ready to be read.");
+                    case EditIntentReadStatus.Rejected:
+                        return EditIntentOutcome.Rejected(read.Reason ?? "The request does not belong to the active document.");
+                    default:
+                        return EditIntentOutcome.Failed(read.Reason ?? "The read of the edit intention failed.");
+                }
+
+                var pilot = read.PilotRead;
+                if (pilot == null) return EditIntentOutcome.Failed("The read of the edit intention carries no result.");
+                var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+
+                // 8: the base of the read only goes to Begin, with the comparer and the copier of the pilot.
+                var begun = _drafts.Begin(
+                    request.Session,
+                    request.RackId,
+                    pilot.Read,
+                    PushBackPilotStateComparer.Instance,
+                    PushBackPilotStateComparer.Copy);
+                switch (begun.Status)
+                {
+                    case DraftBeginStatus.Created:
+                        return EditIntentOutcome.Admitted(witness);
+                    case DraftBeginStatus.AlreadyExists:
+                        return EditIntentOutcome.AlreadyOpen();
+                    case DraftBeginStatus.NotAdmitted:
+                        return EditIntentOutcome.NotAdmitted(
+                            begun.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
+                            pilot.Detail,
+                            pilot.ClassicEditorHint,
+                            witness);
+                    default:
+                        return EditIntentOutcome.Rejected("The session was retired.", witness);
+                }
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryBeginPilotEdit", ex);
+                return EditIntentOutcome.Failed(ex.Message);
+            }
         }
 
-        /// <summary>Inert skeleton: it reads nothing, creates nothing and never throws.</summary>
-        public EditIntentOutcome TryBeginPilotEdit(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented.");
+        /// <summary>
+        /// "Check now" for one rack of the pilot (D-T2B2-06, D-12): it acts only on a draft that is Unknown after a commit that
+        /// threw, rereads once and compares the new base with the one from before the attempt. Anything else reads nothing.
+        /// Every exception is contained as Failed and the session is not degraded.
+        /// </summary>
+        public EditCheckOutcome TryCheckPilotEdit(EditIntentRequest request)
+        {
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
 
-        /// <summary>Inert skeleton: it reads nothing, checks nothing and never throws.</summary>
-        public EditCheckOutcome TryCheckPilotEdit(EditIntentRequest request) => EditCheckOutcome.Unavailable("Not implemented.");
+                // 1: a blank RackId has no draft, and the registry would throw on it.
+                if (string.IsNullOrWhiteSpace(request.RackId))
+                    return EditCheckOutcome.NotFound("A blank rack has no draft.");
+
+                // 2 to 5: the same gate as the intention; nothing is read.
+                var gate = PassGate(request.Session, out var reason);
+                if (gate == EditGate.Unavailable) return EditCheckOutcome.Unavailable(reason);
+                if (gate == EditGate.Waiting) return EditCheckOutcome.Waiting(reason);
+                if (gate == EditGate.Rejected) return EditCheckOutcome.Rejected(reason);
+
+                // 6: only an Unknown draft after a commit that threw is checked; nothing is read for any other.
+                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                if (draft == null) return EditCheckOutcome.NotFound("There is no draft for the rack.");
+                if (draft.Status != DraftStatus.Unknown || draft.UnknownOrigin != DraftUnknownOrigin.CommitThrew)
+                    return EditCheckOutcome.NotApplicable("The draft is not unknown after a commit that threw.");
+
+                // 7: the one reread.
+                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                switch (read.Status)
+                {
+                    case EditIntentReadStatus.Read:
+                        break;
+                    case EditIntentReadStatus.NoActiveDocument:
+                    case EditIntentReadStatus.Busy:
+                        return EditCheckOutcome.Waiting(read.Reason ?? "The drawing is not ready to be read.");
+                    case EditIntentReadStatus.Rejected:
+                        return EditCheckOutcome.Rejected(read.Reason ?? "The request does not belong to the active document.");
+                    default:
+                        return EditCheckOutcome.Failed(read.Reason ?? "The reread failed.");
+                }
+
+                var pilot = read.PilotRead;
+                if (pilot == null) return EditCheckOutcome.Failed("The reread carries no result.");
+
+                // 8: the base of the reread only goes to CheckNow.
+                var check = draft.CheckNow(pilot.StaleBase);
+                switch (check.Status)
+                {
+                    case DraftCheckStatus.Recovered:
+                        return EditCheckOutcome.Recovered();
+                    case DraftCheckStatus.Conflict:
+                        return EditCheckOutcome.Conflict(DescribeDifferences(check.Differences));
+                    default:
+                        return EditCheckOutcome.NotApplicable("The draft is not unknown after a commit that threw.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryCheckPilotEdit", ex);
+                return EditCheckOutcome.Failed(ex.Message);
+            }
+        }
+
+        private enum EditGate
+        {
+            Open,
+            Unavailable,
+            Waiting,
+            Rejected,
+        }
+
+        // Steps 2 to 5 of both operations: nothing of the drawing is read here.
+        private EditGate PassGate(SessionId session, out string reason)
+        {
+            reason = string.Empty;
+            if (_editIntentReader == null)
+            {
+                reason = "No reader of the edit intention is assigned.";
+                return EditGate.Unavailable;
+            }
+
+            if (!_probe.ActiveDocumentNativeId.HasValue)
+            {
+                reason = "There is no active document.";
+                return EditGate.Waiting;
+            }
+
+            if (_modalRackCadActive)
+            {
+                reason = "A RackCad window is open.";
+                return EditGate.Waiting;
+            }
+
+            if (!_probe.IsActiveDocumentQuiescent)
+            {
+                reason = "A command is in progress.";
+                return EditGate.Waiting;
+            }
+
+            if (Authorize(new WorkspaceRequest(session)) != RequestDecision.Accepted)
+            {
+                reason = "The request does not belong to the active document.";
+                return EditGate.Rejected;
+            }
+
+            return EditGate.Open;
+        }
+
+        private static IReadOnlyList<string> DescribeDifferences(IReadOnlyList<DraftDifference> differences) =>
+            differences.Select(d => (d.Key ?? "(variable registry)") + ":" + d.Kind).ToArray();
+
+        // A failed operation of the user is logged and returned as a value; unlike the drain it never degrades the session.
+        private void Report(string context, Exception exception)
+        {
+            try
+            {
+                _logFault?.Invoke(context, exception);
+            }
+            catch
+            {
+                // Logging must never become a second fault.
+            }
+        }
 
         private WorkspaceHostConditions ConditionsFor(SessionId session)
         {
