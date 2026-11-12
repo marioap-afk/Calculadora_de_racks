@@ -390,6 +390,86 @@ public class WorkspaceDraftPilotOwnershipTests
         Assert.DoesNotContain(copies, copy => ReferenceEquals(copy, reloaded));
     }
 
+    // ------------------------------------------------------------------ INV-F4T2A-10: a reload is atomic
+
+    /// <summary>A copier that throws on the Nth call after it is armed, so a reload can fail halfway.</summary>
+    private sealed class ArmedCopier
+    {
+        private int _calls;
+        private int _throwOnCall = -1;
+
+        public void Arm(int callNumber)
+        {
+            _calls = 0;
+            _throwOnCall = callNumber;
+        }
+
+        public void Disarm() => _throwOnCall = -1;
+
+        public DraftBox Copy(DraftBox box)
+        {
+            _calls++;
+            if (_calls == _throwOnCall) throw new InvalidOperationException("copier-boom");
+            return DraftKit.CopyBox(box);
+        }
+    }
+
+    [Theory]
+    [InlineData("discard", 1)]
+    [InlineData("discard", 2)]
+    [InlineData("keep", 1)]
+    [InlineData("applied", 1)]
+    [InlineData("applied", 2)]
+    [InlineData("warnings", 1)]
+    [InlineData("warnings", 2)]
+    public void AReloadWhoseCopierThrowsLeavesTheStaleBaseTheInitialStateAndTheCurrentStateExactlyAsTheyWere(string reload, int failingCopy)
+    {
+        var copier = new ArmedCopier();
+        var kit = new OwnershipKit<DraftBox>(
+            make: OwnershipKits.Box().Make,
+            mutate: OwnershipKits.Box().Mutate,
+            fingerprint: OwnershipKits.Box().Fingerprint,
+            comparer: DraftKit.BoxComparer,
+            copy: copier.Copy);
+        var draft = kit.Born(new DraftRegistry(), kit.Make(1));
+        draft.SetCurrentDraftState(kit.Make(5));
+        var staleBefore = draft.StaleBase;
+        var initialBefore = kit.Fingerprint(draft.InitialDraftState);
+        var currentBefore = kit.Fingerprint(draft.CurrentDraftState);
+        var statusBefore = draft.Status;
+        var read = DraftIntentRead<DraftBox>.Admitted(DraftKit.Base(DraftKit.Mutable("D9")), kit.Make(3));
+        Assert.NotSame(staleBefore, read.StaleBase);
+        if (reload is "applied" or "warnings") Assert.True(draft.TryBeginApply().IsStarted);
+
+        copier.Arm(failingCopy);
+        var thrown = Assert.Throws<InvalidOperationException>(() =>
+        {
+            if (reload == "discard") draft.DiscardAndReload(read);
+            else if (reload == "keep") draft.KeepMineOnCurrentVersion(read, confirmed: true);
+            else if (reload == "applied") draft.CompleteApply(DraftApplyOutcome<DraftBox>.Applied(read));
+            else draft.CompleteApply(DraftApplyOutcome<DraftBox>.AppliedWithWarnings(read, new[] { "w" }));
+        });
+        copier.Disarm();
+
+        Assert.Equal("copier-boom", thrown.Message);
+        Assert.Same(staleBefore, draft.StaleBase);
+        Assert.Equal(initialBefore, kit.Fingerprint(draft.InitialDraftState));
+        Assert.Equal(currentBefore, kit.Fingerprint(draft.CurrentDraftState));
+        if (reload is "discard" or "keep") Assert.Equal(statusBefore, draft.Status);
+    }
+
+    [Fact]
+    public void SetCurrentDraftStateDocumentsThatItKeepsACopyOfItsArgument()
+    {
+        var xml = System.IO.File.ReadAllText(System.IO.Path.Combine(
+            PilotKit.RepoRoot().FullName, "src", "RackCad.Application", "Workspace", "Drafts", "DraftSession.cs"));
+        var at = xml.IndexOf("public DraftEditResult SetCurrentDraftState", StringComparison.Ordinal);
+        Assert.True(at > 0);
+        var documentation = xml.Substring(Math.Max(0, at - 700), Math.Min(700, at));
+
+        Assert.Contains("COPY of the argument", documentation, StringComparison.Ordinal);
+    }
+
     private sealed class BoxReturningAdapter : IDraftPendingTextAdapter<DraftBox>
     {
         private readonly DraftBox _result;

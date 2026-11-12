@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
@@ -35,6 +36,51 @@ public class WorkspaceDraftPilotMaterializationTests
 
     private static string WriteFrom(PushBackPilotDraftState initial, PushBackPilotDraftState current) =>
         PilotKit.Persist(Assemble(PushBackPilotMaterializer.ComposeForWrite(initial, current, PilotKit.Catalog)));
+
+    /// <summary>
+    /// A canonical variant of a fixture: the state it materializes to, edited through the editor API, assembled by the product
+    /// and put back in the same envelope. Its text is what the product itself would write for that content.
+    /// </summary>
+    private static string Variant(string fixture, Action<PushBackPilotDraftState> edit)
+    {
+        var state = PilotKit.State(fixture);
+        edit(state);
+        var design = new PushBackCompositeEditorAssembler(PilotKit.Catalog).BuildDesign(state.Editor, state.Inputs);
+        return Rewrite(PilotKit.Text(fixture), embed => embed.Design = new RackProjectStore().Serialize(RackProject.ForPushBack(design)));
+    }
+
+    /// <summary>A list that throws as soon as anyone looks at it: a catalog that fails in the middle of a load.</summary>
+    private sealed class ThrowingList<T> : IReadOnlyList<T>
+    {
+        public int Count => throw new InvalidOperationException("catalog-boom");
+
+        public T this[int index] => throw new InvalidOperationException("catalog-boom");
+
+        public IEnumerator<T> GetEnumerator() => throw new InvalidOperationException("catalog-boom");
+
+        IEnumerator IEnumerable.GetEnumerator() => throw new InvalidOperationException("catalog-boom");
+    }
+
+    private static RackCatalog ThrowingCatalog()
+    {
+        var real = PilotKit.Catalog;
+        return new RackCatalog
+        {
+            PostProfiles = new ThrowingList<ProfileCatalogEntry>(),
+            BeamProfiles = new ThrowingList<BeamProfileCatalogEntry>(),
+            SafetyElements = new ThrowingList<SafetyElementCatalogEntry>(),
+            TrussProfiles = real.TrussProfiles,
+            BasePlates = real.BasePlates,
+            FlowBedProfiles = real.FlowBedProfiles,
+            Mensulas = real.Mensulas,
+            SpacerProfiles = real.SpacerProfiles,
+            ConnectionPoints = real.ConnectionPoints,
+            ConnectionLayout = real.ConnectionLayout,
+            Views = real.Views,
+            Blocks = real.Blocks,
+            Defaults = real.Defaults,
+        };
+    }
 
     // ------------------------------------------------------------------ INV-F4T2A-06: the typed materialization
 
@@ -140,23 +186,48 @@ public class WorkspaceDraftPilotMaterializationTests
     }
 
     [Fact]
-    public void AnInnerDesignThatCannotBeReadOrHasNoPushBackFails()
+    public void AnInnerDesignThatCannotBeReadFailsWithTheSingleUnreadableOrFutureDiagnostic()
     {
         var broken = Rewrite(PilotKit.Text("pb-01-base"), embed => embed.Design = "{ this is not json");
         var empty = Rewrite(PilotKit.Text("pb-01-base"), embed => embed.Design = string.Empty);
+        var scalar = Rewrite(PilotKit.Text("pb-01-base"), embed => embed.Design = "42");
+
+        foreach (var text in new[] { broken, empty, scalar })
+        {
+            var result = PushBackPilotMaterializer.Materialize(text, PilotKit.Catalog);
+            Assert.Equal(PushBackPilotMaterializationKind.Failed, result.Kind);
+            Assert.Equal(PushBackPilotMaterializer.UnreadableOrFutureDiagnostic, result.Reason);
+        }
+    }
+
+    [Fact]
+    public void AReadableProjectWithoutAPushBackDesignFailsWithTheNoDesignDiagnostic()
+    {
+        // A readable project of another system under a Push Back envelope: TryDeserialize succeeds and there is no Push Back design.
         var noDesign = Rewrite(PilotKit.Text("pb-01-base"), embed =>
+            embed.Design = new RackProjectStore().Serialize(RackProject.ForDynamic(DimensionViewScenarios.DynamicPersistedDesign(RackCad.Domain.Systems.Shared.DimensionDetail.Standard, PilotKit.Catalog))));
+        Assert.Null(new RackProjectStore().Deserialize(new RackEmbedStore().Deserialize(noDesign)!.Design).PushBackDesign);
+
+        var result = PushBackPilotMaterializer.Materialize(noDesign, PilotKit.Catalog);
+
+        Assert.Equal(PushBackPilotMaterializationKind.Failed, result.Kind);
+        Assert.Equal(PushBackPilotMaterializer.NoDesignDiagnostic, result.Reason);
+    }
+
+    [Fact]
+    public void AnInnerDesignWithANullPushBackBlockIsUnreadableForTheStoreAndGetsTheSingleDiagnostic()
+    {
+        var nullBlock = Rewrite(PilotKit.Text("pb-01-base"), embed =>
         {
             var inner = JsonNode.Parse(embed.Design)!.AsObject();
             inner["PushBack"] = null;
             embed.Design = inner.ToJsonString();
         });
 
-        foreach (var text in new[] { broken, empty, noDesign })
-        {
-            var result = PushBackPilotMaterializer.Materialize(text, PilotKit.Catalog);
-            Assert.Equal(PushBackPilotMaterializationKind.Failed, result.Kind);
-            Assert.False(string.IsNullOrEmpty(result.Reason));
-        }
+        var result = PushBackPilotMaterializer.Materialize(nullBlock, PilotKit.Catalog);
+
+        Assert.Equal(PushBackPilotMaterializationKind.Failed, result.Kind);
+        Assert.Equal(PushBackPilotMaterializer.UnreadableOrFutureDiagnostic, result.Reason);
     }
 
     [Fact]
@@ -169,34 +240,61 @@ public class WorkspaceDraftPilotMaterializationTests
     }
 
     [Fact]
-    public void AFailureOfTheResolverBecomesAFailedResultAndNeverAnException()
+    public void AnExceptionInsideMaterializeBecomesAFailedResultWithItsPrefixAndNeverAdmitted()
     {
-        var corrupt = Rewrite(PilotKit.Text("pb-01-base"), embed =>
-        {
-            var inner = JsonNode.Parse(embed.Design)!.AsObject();
-            inner["PushBack"]!["Structure"]!["Fronts"] = new JsonArray();
-            embed.Design = inner.ToJsonString();
-        });
-
         PushBackPilotMaterialization? result = null;
-        var exception = Record.Exception(() => result = PushBackPilotMaterializer.Materialize(corrupt, PilotKit.Catalog));
+
+        var exception = Record.Exception(() => result = PushBackPilotMaterializer.Materialize(PilotKit.Text("pb-01-base"), ThrowingCatalog()));
 
         Assert.Null(exception);
         Assert.NotNull(result);
-        Assert.True(
-            result!.Kind == PushBackPilotMaterializationKind.Failed || result.Kind == PushBackPilotMaterializationKind.Admitted,
-            "the result is always typed");
+        Assert.Equal(PushBackPilotMaterializationKind.Failed, result!.Kind);
+        Assert.Null(result.State);
+        Assert.StartsWith(PushBackPilotMaterializer.MaterializeFailurePrefix, result.Reason, StringComparison.Ordinal);
+        Assert.Contains("catalog-boom", result.Reason, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void MaterializeReproducesTheApplicationPartOfTheWindowLoadInTheSameOrder()
+    public void AnExceptionInsideTheBaseOfComposeForWriteIsARejectionWithTheExceptionPrefix()
     {
-        var text = PilotKit.Text("pb-02-modulos");
+        var initial = PilotKit.State("pb-01-base");
+        var current = PilotKit.State("pb-01-base");
+        PushBackPilotComposition? composition = null;
+
+        var exception = Record.Exception(() => composition = PushBackPilotMaterializer.ComposeForWrite(initial, current, ThrowingCatalog()));
+
+        Assert.Null(exception);
+        Assert.NotNull(composition);
+        Assert.False(composition!.IsComposed);
+        Assert.Null(composition.Editor);
+        Assert.Null(composition.Inputs);
+        Assert.StartsWith(PushBackPilotMaterializer.MaterializeFailurePrefix, composition.Reason, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AnExceptionInsideComposeForWriteItselfIsARejectionWithTheComposePrefix()
+    {
+        var initial = PilotKit.State("pb-01-base");
+        var current = PilotKit.State("pb-01-base");
+        current.Editor.SideA.Structure.Fronts[0].Cells[0] = null!;
+        PushBackPilotComposition? composition = null;
+
+        var exception = Record.Exception(() => composition = PushBackPilotMaterializer.ComposeForWrite(initial, current, PilotKit.Catalog));
+
+        Assert.Null(exception);
+        Assert.NotNull(composition);
+        Assert.False(composition!.IsComposed);
+        Assert.StartsWith(PushBackPilotMaterializer.ComposeFailurePrefix, composition.Reason, StringComparison.Ordinal);
+    }
+
+    /// <summary>The Application part of RackPushBackSystemWindow.LoadExisting, by hand and in its order, tail parking included.</summary>
+    private static PushBackPilotDraftState LoadByHand(string text, bool parkTheTail)
+    {
         var design = new RackProjectStore().Deserialize(PilotKit.DesignOf(text)).PushBackDesign;
         var resolver = new PushBackResolver(PilotKit.Catalog);
 
-        // The window, by hand: SetActiveSide(A), SetSideBPresent(false), LoadFromDesign, SetSideBPresent(false),
-        // LoadComposite, ClearDormantTail, park the tail ids, AlignSlotGrid.
+        // SetActiveSide(A), SetSideBPresent(false), LoadFromDesign, SetSideBPresent(false), LoadComposite, ClearDormantTail,
+        // ParkDormantTail with the ids of the tail, AlignSlotGrid.
         var editor = new PushBackCompositeEditorState();
         editor.SetActiveSide(PushBackSide.A);
         editor.SetSideBPresent(false);
@@ -204,16 +302,50 @@ public class WorkspaceDraftPilotMaterializationTests
         editor.SetSideBPresent(false);
         editor.LoadComposite(design.Composite);
         editor.ClearDormantTail();
+        var structure = design.Structure;
+        if (parkTheTail && structure != null)
+        {
+            editor.ParkDormantTail(
+                structure.Modules.Where(module => module != null && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId)),
+                structure.HeaderLineOverrides.Where(line => line != null && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId)));
+        }
+
         editor.AlignSlotGrid();
-        var byHand = new PushBackPilotDraftState(editor, inputs, text);
+        return new PushBackPilotDraftState(editor, inputs, text);
+    }
+
+    [Fact]
+    public void MaterializeReproducesTheApplicationPartOfTheWindowLoadInTheSameOrder()
+    {
+        var text = PilotKit.Text("pb-02-modulos");
+        var byHand = LoadByHand(text, parkTheTail: true);
 
         var materialized = PilotKit.Admitted(text);
 
+        Assert.Empty(byHand.Editor.DormantCompositeTail);
+        Assert.Empty(byHand.Editor.DormantTailLineOverrides);
         Assert.True(Comparer.Equals(byHand, materialized));
         Assert.Equal(byHand.Editor.SideA.Structure.SelectedFrontIndex, materialized.Editor.SideA.Structure.SelectedFrontIndex);
         Assert.Equal(byHand.Editor.SideA.Structure.SelectedLevelIndex, materialized.Editor.SideA.Structure.SelectedLevelIndex);
         Assert.NotNull(materialized.Editor.SideA.WorkingBaseline);
         Assert.Equal(byHand.Editor.SideA.WorkingBaseline!.Structure.Modules.Count, materialized.Editor.SideA.WorkingBaseline!.Structure.Modules.Count);
+    }
+
+    [Fact]
+    public void TheParkingOfTheDormantTailIsAStepOfTheLoadThatDecidesWhetherTheDesignIsInThePilot()
+    {
+        var text = PilotKit.Text("pb-21-cola");
+
+        var parked = LoadByHand(text, parkTheTail: true);
+        var skipped = LoadByHand(text, parkTheTail: false);
+        var result = PushBackPilotMaterializer.Materialize(text, PilotKit.Catalog);
+
+        // Without the parking step the window would hold no tail; with it the tail is parked, and that is what takes the design out of the pilot.
+        Assert.Empty(skipped.Editor.DormantCompositeTail);
+        Assert.Empty(skipped.Editor.DormantTailLineOverrides);
+        Assert.True(parked.Editor.DormantCompositeTail.Count > 0 || parked.Editor.DormantTailLineOverrides.Count > 0);
+        Assert.Equal(PushBackPilotMaterializationKind.OutOfPilot, result.Kind);
+        Assert.Equal(PushBackPilotMaterializer.DormantTailOutOfPilotReason, result.Reason);
     }
 
     [Fact]
@@ -342,15 +474,102 @@ public class WorkspaceDraftPilotMaterializationTests
         }
     }
 
+    private static DraftSession<PushBackPilotDraftState> BeginOn(string text) =>
+        new DraftRegistry().Begin(
+            DraftKit.S1, "R1", DraftIntentRead<PushBackPilotDraftState>.Admitted(DraftKit.DefaultBase(), PilotKit.Admitted(text)),
+            Comparer, PushBackPilotStateComparer.Copy).Draft!;
+
+    [Fact]
+    public void ComposeForWriteRejectsAnyDifferenceOtherThanTheScaleAndNeverRevertsOrWritesItInSilence()
+    {
+        var initial = PilotKit.State("pb-01-base");
+        var edits = new Dictionary<string, Action<PushBackPilotDraftState>>
+        {
+            ["PalletTolerance"] = state => state.Inputs.PalletTolerance += 1.0,
+            ["DimensionStyle"] = state => state.Inputs.Annotations.DimensionStyle = "SIMPLEX",
+            ["PalletHeightOfACell"] = state => state.Editor.SideA.Structure.Fronts[0].Cells[0].PalletHeight += 2.0,
+            ["FrontCount"] = state => state.Editor.SideA.SetFrontCount(2),
+            ["RearTopeSaque"] = state => state.Editor.SideA.RearTopeSaque += 1.5,
+            ["PostCatalogId"] = state => state.Inputs.PostCatalogId = "POSTE-OTRO",
+        };
+
+        foreach (var (name, edit) in edits)
+        {
+            var current = PilotKit.State("pb-01-base");
+            edit(current);
+            Assert.False(Comparer.Equals(initial, current), name);
+
+            var composition = PushBackPilotMaterializer.ComposeForWrite(initial, current, PilotKit.Catalog);
+
+            Assert.False(composition.IsComposed, name);
+            Assert.Null(composition.Editor);
+            Assert.Null(composition.Inputs);
+            Assert.Equal(PushBackPilotMaterializer.NonPilotContentReason, composition.Reason);
+        }
+
+        // The scale together with something else is still a rejection; the scale alone is not.
+        var both = PilotKit.State("pb-01-base");
+        both.Inputs.Annotations.AnnotationScale = 3.0;
+        both.Inputs.PalletTolerance += 1.0;
+        Assert.False(PushBackPilotMaterializer.ComposeForWrite(initial, both, PilotKit.Catalog).IsComposed);
+        var onlyScale = PilotKit.State("pb-01-base");
+        onlyScale.Inputs.Annotations.AnnotationScale = 3.0;
+        Assert.True(PushBackPilotMaterializer.ComposeForWrite(initial, onlyScale, PilotKit.Catalog).IsComposed);
+    }
+
+    [Fact]
+    public void AnInPlaceEditOfTheCurrentEditorOutsideThePilotMakesComposeForWriteReject()
+    {
+        var draft = BeginOn(PilotKit.Text("pb-01-base"));
+        Assert.True(PushBackPilotMaterializer.ComposeForWrite(draft.InitialDraftState, draft.CurrentDraftState, PilotKit.Catalog).IsComposed);
+
+        draft.CurrentDraftState.Editor.SideA.SetFrontCount(draft.CurrentDraftState.Editor.SideA.Structure.Count + 1);
+
+        Assert.True(draft.IsDirty);
+        var composition = PushBackPilotMaterializer.ComposeForWrite(draft.InitialDraftState, draft.CurrentDraftState, PilotKit.Catalog);
+        Assert.False(composition.IsComposed);
+        Assert.Equal(PushBackPilotMaterializer.NonPilotContentReason, composition.Reason);
+    }
+
+    [Fact]
+    public void KeepPilotEditsOnIsPureAndGivesTheNewBaseWithTheScaleOfTheDraft()
+    {
+        var newInitial = PilotKit.State("pb-02-modulos");
+        newInitial.Inputs.PalletTolerance = 7.25;
+        var current = PilotKit.State("pb-01-base");
+        current.Inputs.Annotations.AnnotationScale = 2.25;
+        current.Inputs.PalletTolerance = 9.0;
+        var newInitialBefore = PushBackPilotStateComparer.Copy(newInitial);
+        var currentBefore = PushBackPilotStateComparer.Copy(current);
+
+        var kept = PushBackPilotMaterializer.KeepPilotEditsOn(newInitial, current);
+
+        Assert.NotSame(newInitial, kept);
+        Assert.NotSame(current, kept);
+        Assert.NotSame(newInitial.Editor, kept.Editor);
+        Assert.NotSame(newInitial.Inputs, kept.Inputs);
+        Assert.NotSame(current.Inputs, kept.Inputs);
+        Assert.Equal(newInitial.Origin, kept.Origin);
+        Assert.Equal(2.25, kept.Inputs.Annotations.AnnotationScale);
+        Assert.Equal(7.25, kept.Inputs.PalletTolerance);
+        Assert.Equal(2.0, newInitial.Inputs.Annotations.AnnotationScale);
+        Assert.True(Comparer.Equals(newInitialBefore, newInitial));
+        Assert.True(Comparer.Equals(currentBefore, current));
+        Assert.Equal(2.25, current.Inputs.Annotations.AnnotationScale);
+
+        var withTheBaseScale = PushBackPilotStateComparer.Copy(newInitial);
+        withTheBaseScale.Inputs.Annotations.AnnotationScale = 2.25;
+        Assert.True(Comparer.Equals(withTheBaseScale, kept));
+        Assert.Throws<ArgumentNullException>(() => PushBackPilotMaterializer.KeepPilotEditsOn(null!, current));
+        Assert.Throws<ArgumentNullException>(() => PushBackPilotMaterializer.KeepPilotEditsOn(newInitial, null!));
+    }
+
     [Fact]
     public void KeepMineAfterAnExternalModuleChangeWritesTheNewModulesAndTheScaleOfTheDraftAndReturnsToCleanWhenTheScaleIsRestored()
     {
         var v1 = PilotKit.Text("pb-01-base");
         var v2 = PilotKit.Text("pb-31-v2-modulos");
-        var registry = new DraftRegistry();
-        var draft = registry.Begin(
-            DraftKit.S1, "R1", DraftIntentRead<PushBackPilotDraftState>.Admitted(DraftKit.DefaultBase(), PilotKit.Admitted(v1)),
-            Comparer, PushBackPilotStateComparer.Copy).Draft!;
+        var draft = BeginOn(v1);
 
         // 1. V1 is open and the scale is edited.
         draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = 2.25;
@@ -362,12 +581,16 @@ public class WorkspaceDraftPilotMaterializationTests
         Assert.True(Comparer.Equals(PilotKit.Admitted(v1), second));
         Assert.NotEqual(PilotKit.DesignOf(v1), PilotKit.DesignOf(v2));
 
-        // 3. The user keeps the draft on the current version: the initial state moves to V2.
+        // 3. The user keeps the draft on the current version: the initial state moves to V2, and the surface sets as the
+        // current state the new base with the scale of the draft.
         var keep = draft.KeepMineOnCurrentVersion(
             DraftIntentRead<PushBackPilotDraftState>.Admitted(DraftKit.DefaultBase(), second), confirmed: true);
         Assert.Equal(DraftReloadStatus.Reloaded, keep.Status);
         Assert.Equal(v2, draft.InitialDraftState.Origin);
         Assert.True(draft.IsDirty);
+        Assert.Equal(DraftEditStatus.Updated, draft.SetCurrentDraftState(PushBackPilotMaterializer.KeepPilotEditsOn(second, draft.CurrentDraftState)).Status);
+        Assert.True(draft.IsDirty);
+        Assert.Equal(2.25, draft.CurrentDraftState.Inputs.Annotations.AnnotationScale);
 
         // 4. The composition carries the header of V2 and the scale of the draft.
         var composed = WriteFrom(draft.InitialDraftState, draft.CurrentDraftState);
@@ -375,6 +598,51 @@ public class WorkspaceDraftPilotMaterializationTests
         Assert.Contains(PilotKit.JsonDiff(PilotKit.DesignOf(v1), composed), difference => difference.StartsWith("$.PushBack.Structure.Modules[2]", StringComparison.Ordinal));
 
         // 5. Giving the scale back its original value leaves the draft Clean and the composition identical to V2.
+        draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = 1.5;
+        Assert.False(draft.IsDirty);
+        Assert.Equal(DraftStatus.Clean, draft.Status);
+        Assert.Equal(PilotKit.DesignOf(v2), WriteFrom(draft.InitialDraftState, draft.CurrentDraftState));
+    }
+
+    [Fact]
+    public void KeepMineAfterAnExternalChangeOfContentThePilotDoesNotEditNeverRevertsItAndComposesTheNewContentPlusTheScaleOfTheDraft()
+    {
+        var v1 = PilotKit.Text("pb-01-base");
+        var v2 = Variant("pb-01-base", state =>
+        {
+            state.Inputs.PalletTolerance += 2.0;
+            state.Editor.SideA.Structure.Fronts[0].Cells[0].PalletHeight += 3.0;
+            state.Inputs.Annotations.DimensionStyle = "SIMPLEX";
+        });
+
+        // V2 is a design of its own and changes EDITABLE content the pilot does not edit.
+        var changed = PilotKit.JsonDiff(PilotKit.DesignOf(v1), PilotKit.DesignOf(v2));
+        Assert.Contains("$.PushBack.Structure.PalletTolerance: 4 -> 6", changed);
+        Assert.Contains("$.PushBack.Structure.DimensionStyle: null -> \"SIMPLEX\"", changed);
+        Assert.Contains(changed, difference => difference.StartsWith("$.PushBack.Structure.Fronts[0].Levels[0].PalletHeight: ", StringComparison.Ordinal));
+        var second = PilotKit.Admitted(v2);
+        Assert.False(Comparer.Equals(PilotKit.Admitted(v1), second));
+        Assert.Equal(PilotKit.DesignOf(v2), WriteFrom(second, second));
+
+        // 1. V1 is open and the scale is edited; 2. the user keeps the draft on V2, with no rebase of the current state.
+        var draft = BeginOn(v1);
+        draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = 2.25;
+        var keep = draft.KeepMineOnCurrentVersion(
+            DraftIntentRead<PushBackPilotDraftState>.Admitted(DraftKit.DefaultBase(), second), confirmed: true);
+        Assert.Equal(DraftReloadStatus.Reloaded, keep.Status);
+
+        // 3. Composing now would silently revert V2 to V1: it is a typed rejection.
+        var rejected = PushBackPilotMaterializer.ComposeForWrite(draft.InitialDraftState, draft.CurrentDraftState, PilotKit.Catalog);
+        Assert.False(rejected.IsComposed);
+        Assert.Equal(PushBackPilotMaterializer.NonPilotContentReason, rejected.Reason);
+
+        // 4. The surface rebases the current state with KeepPilotEditsOn: V2 plus the scale of the draft.
+        draft.SetCurrentDraftState(PushBackPilotMaterializer.KeepPilotEditsOn(second, draft.CurrentDraftState));
+        Assert.True(draft.IsDirty);
+        var composed = WriteFrom(draft.InitialDraftState, draft.CurrentDraftState);
+        Assert.Equal(new[] { ScalePath + ": 1.5 -> 2.25" }, PilotKit.JsonDiff(PilotKit.DesignOf(v2), composed));
+
+        // 5. Giving the scale back leaves the draft Clean and the composition identical to V2.
         draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = 1.5;
         Assert.False(draft.IsDirty);
         Assert.Equal(DraftStatus.Clean, draft.Status);
@@ -445,13 +713,20 @@ public class WorkspaceDraftPilotMaterializationTests
             "$.PushBack.Fronts[2].DefaultPalletsDeep: <absent> -> 8", "$.PushBack.Fronts[2].DrawPallets: <absent> -> null", "$.PushBack.Fronts[2].PalletsDeepOverrides: <absent> -> null",
         },
         ["pb-12-poste-nulo"] = new[] { "$.PushBack.Structure.HeaderPostCatalogId: null -> \"POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA\"" },
-        ["pb-13-sideb-no-presente"] = new[] { "$.PushBack.SideB: {object} -> <absent>" },
+        ["pb-13-sideb-no-presente"] = new[] { "$.PushBack.SideB.IsPresent: false -> <absent>" },
         ["pb-14-peralte-heredado"] = new[]
         {
-            "$.PushBack.Fronts[0].HighEndBeamPeraltes: null -> [3 items]", "$.PushBack.Fronts[1].HighEndBeamPeraltes: null -> [3 items]",
-            "$.PushBack.Fronts[2].HighEndBeamPeraltes: null -> [3 items]", "$.PushBack.LegacyHighEndBeamPeralte: 5 -> 3.5",
+            "$.PushBack.Fronts[0].HighEndBeamPeraltes[0]: null -> 5", "$.PushBack.Fronts[0].HighEndBeamPeraltes[1]: null -> 5", "$.PushBack.Fronts[0].HighEndBeamPeraltes[2]: null -> 5",
+            "$.PushBack.Fronts[1].HighEndBeamPeraltes[0]: null -> 5", "$.PushBack.Fronts[1].HighEndBeamPeraltes[1]: null -> 5", "$.PushBack.Fronts[1].HighEndBeamPeraltes[2]: null -> 5",
+            "$.PushBack.Fronts[2].HighEndBeamPeraltes[0]: null -> 5", "$.PushBack.Fronts[2].HighEndBeamPeraltes[1]: null -> 5", "$.PushBack.Fronts[2].HighEndBeamPeraltes[2]: null -> 5",
+            "$.PushBack.LegacyHighEndBeamPeralte: 5 -> 3.5",
         },
-        ["pb-15-sin-composite"] = new[] { "$.PushBack.Composite: <absent> -> {object}" },
+        ["pb-15-sin-composite"] = new[]
+        {
+            "$.PushBack.Composite.AbsentSlotsA: <absent> -> null", "$.PushBack.Composite.AbsentSlotsB[0]: <absent> -> 0", "$.PushBack.Composite.CentralSeparator: <absent> -> null",
+            "$.PushBack.Composite.DefaultDirection: <absent> -> \"AToB\"", "$.PushBack.Composite.DefaultTopology: <absent> -> \"SoloA\"", "$.PushBack.Composite.Gap: <absent> -> null",
+            "$.PushBack.Composite.StructureOverrideA: <absent> -> null", "$.PushBack.Composite.StructureOverrideB: <absent> -> null", "$.PushBack.Composite.Topologies: <absent> -> null",
+        },
     };
 
     public static IEnumerable<object[]> LegacyCorpus() => PilotKit.Legacy.Select(name => new object[] { name });

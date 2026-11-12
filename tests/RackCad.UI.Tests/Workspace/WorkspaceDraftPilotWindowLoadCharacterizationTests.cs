@@ -8,6 +8,8 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Application.Systems.PushBack.Pilot;
+using RackCad.Application.Workspace;
+using RackCad.Application.Workspace.Drafts;
 using RackCad.UI.Systems.PushBack;
 using Xunit;
 
@@ -26,7 +28,7 @@ namespace RackCad.UI.Tests
     {
         private static readonly string[] Canonical =
         {
-            "pb-01-base", "pb-02-modulos", "pb-03-fondos", "pb-04-blanco", "pb-05-topes", "pb-06-seguridad", "pb-07-combinado",
+            "pb-01-base", "pb-02-modulos", "pb-03-fondos", "pb-04-blanco", "pb-05-topes", "pb-06-seguridad", "pb-07-combinado", "pb-08-redondeo",
         };
 
         private static readonly string[] Legacy =
@@ -52,7 +54,7 @@ namespace RackCad.UI.Tests
         }
 
         private static string Persist(RackCad.Domain.Systems.PushBack.PushBackDesign design) =>
-            new RackProjectStore().Serialize(RackProject.ForPushBack(design));
+            new RackProjectStore().Serialize(RackProject.ForPushBack(design)).Replace("\r\n", "\n");
 
         /// <summary>What the classic window ends up with after LoadExisting; Design is null when it rejects the values.</summary>
         private sealed class WindowResult
@@ -102,6 +104,9 @@ namespace RackCad.UI.Tests
             return into;
         }
 
+        private static bool IsContainer(JsonElement element) =>
+            element.ValueKind == JsonValueKind.Object || element.ValueKind == JsonValueKind.Array;
+
         private static void Walk(JsonElement a, JsonElement b, string path, List<string> into)
         {
             if (a.ValueKind == JsonValueKind.Object && b.ValueKind == JsonValueKind.Object)
@@ -112,22 +117,29 @@ namespace RackCad.UI.Tests
                     var hasA = a.TryGetProperty(name, out var left);
                     var hasB = b.TryGetProperty(name, out var right);
                     if (hasA && hasB) Walk(left, right, path + "." + name, into);
-                    else into.Add(path + "." + name + ": " + (hasA ? Short(left) : "<absent>") + " -> " + (hasB ? Short(right) : "<absent>"));
+                    else if (hasA) Leaves(left, path + "." + name, "<absent>", true, into);
+                    else Leaves(right, path + "." + name, "<absent>", false, into);
                 }
 
                 return;
             }
 
-            if (a.ValueKind == JsonValueKind.Array && b.ValueKind == JsonValueKind.Array && a.GetArrayLength() == b.GetArrayLength())
+            if (a.ValueKind == JsonValueKind.Array && b.ValueKind == JsonValueKind.Array)
             {
-                var index = 0;
-                foreach (var pair in a.EnumerateArray().Zip(b.EnumerateArray(), (x, y) => (First: x, Second: y)))
+                var count = Math.Max(a.GetArrayLength(), b.GetArrayLength());
+                for (var index = 0; index < count; index++)
                 {
-                    Walk(pair.First, pair.Second, path + "[" + index++ + "]", into);
+                    var itemPath = path + "[" + index + "]";
+                    if (index < a.GetArrayLength() && index < b.GetArrayLength()) Walk(a[index], b[index], itemPath, into);
+                    else if (index < a.GetArrayLength()) Leaves(a[index], itemPath, "<absent>", true, into);
+                    else Leaves(b[index], itemPath, "<absent>", false, into);
                 }
 
                 return;
             }
+
+            if (IsContainer(a) && !IsContainer(b)) { Leaves(a, path, Short(b), true, into); return; }
+            if (!IsContainer(a) && IsContainer(b)) { Leaves(b, path, Short(a), false, into); return; }
 
             if (a.ValueKind == JsonValueKind.Number && b.ValueKind == JsonValueKind.Number)
             {
@@ -141,15 +153,31 @@ namespace RackCad.UI.Tests
             }
         }
 
+        /// <summary>Every leaf of a container that is on ONE side of the difference; "other" is the text of the other side.</summary>
+        private static void Leaves(JsonElement element, string path, string other, bool before, List<string> into)
+        {
+            if (element.ValueKind == JsonValueKind.Object && element.EnumerateObject().Any())
+            {
+                foreach (var property in element.EnumerateObject()) Leaves(property.Value, path + "." + property.Name, other, before, into);
+                return;
+            }
+
+            if (element.ValueKind == JsonValueKind.Array && element.GetArrayLength() > 0)
+            {
+                var index = 0;
+                foreach (var item in element.EnumerateArray()) Leaves(item, path + "[" + index++ + "]", other, before, into);
+                return;
+            }
+
+            var text = element.ValueKind == JsonValueKind.Object ? "{}" : element.ValueKind == JsonValueKind.Array ? "[]" : Short(element);
+            into.Add(path + ": " + (before ? text + " -> " + other : other + " -> " + text));
+        }
+
         private static string Short(JsonElement element)
         {
-            switch (element.ValueKind)
-            {
-                case JsonValueKind.Object: return "{object}";
-                case JsonValueKind.Array: return "[" + element.GetArrayLength() + " items]";
-                case JsonValueKind.Number: return element.GetDouble().ToString("R", CultureInfo.InvariantCulture);
-                default: return element.GetRawText();
-            }
+            return element.ValueKind == JsonValueKind.Number
+                ? element.GetDouble().ToString("R", CultureInfo.InvariantCulture)
+                : element.GetRawText();
         }
 
         /// <summary>The pinned delta of each design: "path: window -> pilot", sorted. Filled from the measured run.</summary>
@@ -162,6 +190,11 @@ namespace RackCad.UI.Tests
             ["pb-05-topes"] = new string[0],
             ["pb-06-seguridad"] = new[] { "$.PushBack.Structure.DimensionStyle: null -> \"STANDARD-ISO\"" },
             ["pb-07-combinado"] = new[] { "$.PushBack.Structure.DimensionStyle: null -> \"SIMPLEX\"" },
+            ["pb-08-redondeo"] = new[]
+            {
+                "$.PushBack.Structure.AnnotationScale: 1.235 -> 1.23456",
+                "$.PushBack.Structure.Fronts[0].Levels[0].PalletHeight: 61.235 -> 61.23456",
+            },
             ["pb-10-sin-datum"] = new string[0],
             ["pb-11-sin-i41"] = new string[0],
             ["pb-12-poste-nulo"] = new string[0],
@@ -171,14 +204,27 @@ namespace RackCad.UI.Tests
         };
 
         /// <summary>
-        /// The class of a delta line, or "OUTSIDE" when it belongs to none of the four known classes. Only class (b) shows in
-        /// this corpus: ReadInputs rebuilds Annotations without DimensionStyle, so the window loses it and the pilot keeps it. The
-        /// corpus uses values the "0.###" controls display exactly, so class (a) does not show, and the substitutions and the cell
-        /// commit of classes (c) and (d) leave these designs unchanged.
+        /// The class of a delta line ("path: window -> pilot"), or "OUTSIDE" when it belongs to none of the four known classes.
+        /// (a) the window shows the value rounded to the "0.###" format of its controls and the pilot keeps the authored one;
+        /// (b) ReadInputs rebuilds Annotations without DimensionStyle, so the window loses it and the pilot keeps it. Classes (c)
+        /// (substitution or adjustment of LoadFromModel) and (d) (a cell committed again from the controls) do not show in this
+        /// corpus, and the delivery says so in its KnownLimitations.
         /// </summary>
         private static string ClassOf(string line)
         {
             if (line.StartsWith("$.PushBack.Structure.DimensionStyle: ", StringComparison.Ordinal)) return "b";
+
+            var colon = line.IndexOf(": ", StringComparison.Ordinal);
+            var arrow = line.IndexOf(" -> ", StringComparison.Ordinal);
+            if (colon > 0 && arrow > colon
+                && double.TryParse(line.Substring(colon + 2, arrow - colon - 2), NumberStyles.Float, CultureInfo.InvariantCulture, out var window)
+                && double.TryParse(line.Substring(arrow + 4), NumberStyles.Float, CultureInfo.InvariantCulture, out var pilot)
+                && window != pilot
+                && window == double.Parse(pilot.ToString("0.###", CultureInfo.InvariantCulture), CultureInfo.InvariantCulture))
+            {
+                return "a";
+            }
+
             return "OUTSIDE";
         }
 
@@ -203,6 +249,75 @@ namespace RackCad.UI.Tests
             Assert.True(
                 Expected.TryGetValue(fixture, out var pinned) && pinned.SequenceEqual(delta),
                 fixture + " delta (window -> pilot):" + Environment.NewLine + string.Join(Environment.NewLine, delta));
+        }
+
+        [Fact]
+        public void ClassAIsEvidencedWithDataTheScaleAndACellValueWithMoreThanThreeDecimalsAreRoundedByTheControls()
+        {
+            var delta = Expected["pb-08-redondeo"];
+
+            Assert.Equal(2, delta.Length);
+            Assert.All(delta, line => Assert.Equal("a", ClassOf(line)));
+            Assert.Contains(delta, line => line.StartsWith("$.PushBack.Structure.AnnotationScale: ", StringComparison.Ordinal));
+            Assert.Contains(delta, line => line.StartsWith("$.PushBack.Structure.Fronts[0].Levels[0].PalletHeight: ", StringComparison.Ordinal));
+            Assert.Contains(Expected.Values.SelectMany(lines => lines), line => ClassOf(line) == "b");
+        }
+
+        /// <summary>
+        /// What the pilot writes after Keep-mine (V2 changed content the pilot does not edit; the draft changed the scale) opens in
+        /// the classic window with the content of V2 and the scale of the draft: nothing of V2 is reverted on the way.
+        /// </summary>
+        [Fact]
+        public void TheDocumentThePilotWritesAfterKeepMineOpensInTheClassicWindowWithTheNewBaseAndTheScaleOfTheDraft()
+        {
+            var v1 = Fixture("pb-01-base");
+            var catalog = LoadInWindow(v1).Catalog;
+
+            // V2: the same rack with another pallet tolerance, assembled by the product itself.
+            var changed = PushBackPilotMaterializer.Materialize(v1, catalog).State;
+            changed.Inputs.PalletTolerance += 2.0;
+            var store = new RackEmbedStore();
+            var embed = store.Deserialize(v1);
+            embed.Design = new RackProjectStore().Serialize(RackProject.ForPushBack(
+                new PushBackCompositeEditorAssembler(catalog).BuildDesign(changed.Editor, changed.Inputs)));
+            var v2 = store.Serialize(embed);
+            var v1Tolerance = DesignNumber(LoadInWindow(v1).Design, "PalletTolerance");
+            var v2Tolerance = DesignNumber(LoadInWindow(v2).Design, "PalletTolerance");
+            Assert.NotEqual(v1Tolerance, v2Tolerance);
+
+            // The draft opens V1, edits the scale and keeps its edits on V2.
+            var draft = new DraftRegistry().Begin(
+                new SessionId(1), "R1",
+                DraftIntentRead<PushBackPilotDraftState>.Admitted(
+                    DraftStaleBase.Create(new[] { new DraftStaleBaseEntry("D1", DraftMembership.Mutable, "frontal", "-1", v1) }),
+                    PushBackPilotMaterializer.Materialize(v1, catalog).State),
+                PushBackPilotStateComparer.Instance, PushBackPilotStateComparer.Copy).Draft;
+            draft.CurrentDraftState.Inputs.Annotations.AnnotationScale = 2.25;
+            var second = PushBackPilotMaterializer.Materialize(v2, catalog).State;
+            var keep = draft.KeepMineOnCurrentVersion(
+                DraftIntentRead<PushBackPilotDraftState>.Admitted(
+                    DraftStaleBase.Create(new[] { new DraftStaleBaseEntry("D1", DraftMembership.Mutable, "frontal", "-1", v2) }), second),
+                confirmed: true);
+            Assert.Equal(DraftReloadStatus.Reloaded, keep.Status);
+            draft.SetCurrentDraftState(PushBackPilotMaterializer.KeepPilotEditsOn(second, draft.CurrentDraftState));
+
+            var composition = PushBackPilotMaterializer.ComposeForWrite(draft.InitialDraftState, draft.CurrentDraftState, catalog);
+            Assert.True(composition.IsComposed, composition.Reason);
+            embed.Design = new RackProjectStore().Serialize(RackProject.ForPushBack(
+                new PushBackCompositeEditorAssembler(catalog).BuildDesign(composition.Editor, composition.Inputs)));
+            var opened = LoadInWindow(store.Serialize(embed));
+
+            Assert.NotNull(opened.Design);
+            Assert.Equal(2.25, DesignNumber(opened.Design, "AnnotationScale"));
+            Assert.Equal(v2Tolerance, DesignNumber(opened.Design, "PalletTolerance"));
+        }
+
+        private static double DesignNumber(string design, string structureProperty)
+        {
+            using (var document = JsonDocument.Parse(design))
+            {
+                return document.RootElement.GetProperty("PushBack").GetProperty("Structure").GetProperty(structureProperty).GetDouble();
+            }
         }
 
         [Fact]

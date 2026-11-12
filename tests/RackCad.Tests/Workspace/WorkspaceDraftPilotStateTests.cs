@@ -36,7 +36,7 @@ internal static class PilotKit
     /// <summary>The canonical single-sided designs: assembled by the product, so a round trip must give identity.</summary>
     public static readonly string[] Canonical =
     {
-        "pb-01-base", "pb-02-modulos", "pb-03-fondos", "pb-04-blanco", "pb-05-topes", "pb-06-seguridad", "pb-07-combinado",
+        "pb-01-base", "pb-02-modulos", "pb-03-fondos", "pb-04-blanco", "pb-05-topes", "pb-06-seguridad", "pb-07-combinado", "pb-08-redondeo",
     };
 
     /// <summary>Older drawings, derived from pb-01-base by removing or changing what an older build did not write.</summary>
@@ -84,15 +84,24 @@ internal static class PilotKit
         }
     }
 
-    /// <summary>The inner design JSON of an envelope text.</summary>
-    public static string DesignOf(string envelopeText) => new RackEmbedStore().Deserialize(envelopeText)!.Design;
+    /// <summary>
+    /// A persisted document with its line endings normalized (CRLF to LF). The fixtures were generated on Windows, where the
+    /// indented JSON of the inner design carries CRLF, and the Core job of the CI runs on Linux, where the same serializer
+    /// writes LF: every comparison of persisted documents goes through this method so none depends on the platform.
+    /// </summary>
+    public static string Normalize(string document) => document.Replace("\r\n", "\n");
 
-    /// <summary>The persisted document a design becomes, through the same store the product uses.</summary>
-    public static string Persist(PushBackDesign design) => new RackProjectStore().Serialize(RackProject.ForPushBack(design));
+    /// <summary>The inner design JSON of an envelope text, with its line endings normalized.</summary>
+    public static string DesignOf(string envelopeText) => Normalize(new RackEmbedStore().Deserialize(envelopeText)!.Design);
+
+    /// <summary>The persisted document a design becomes, through the same store the product uses, with its line endings normalized.</summary>
+    public static string Persist(PushBackDesign design) => Normalize(new RackProjectStore().Serialize(RackProject.ForPushBack(design)));
 
     /// <summary>
-    /// The paths where two JSON documents differ, as "path: before -> after". A path that is on one side only is "&lt;absent&gt;",
-    /// and a null against an array (or any other change of kind) is ONE difference at that path.
+    /// The leaves where two JSON documents differ, as "path: before -> after", one line per LEAF. A path that is on one side
+    /// only reads "&lt;absent&gt;"; a container (object or array) that is new, removed or replaced by a scalar is expanded
+    /// to every one of its leaves, each with the text of what stood there before (or "&lt;absent&gt;"), so no new container
+    /// is ever summarized as "[3 items]" or "{object}". An empty container is the leaf "[]" or "{}".
     /// </summary>
     public static List<string> JsonDiff(string before, string after)
     {
@@ -102,6 +111,9 @@ internal static class PilotKit
         Diff(a.RootElement, b.RootElement, "$", result);
         return result;
     }
+
+    private static bool IsContainer(JsonElement element) =>
+        element.ValueKind == JsonValueKind.Object || element.ValueKind == JsonValueKind.Array;
 
     private static void Diff(JsonElement a, JsonElement b, string path, List<string> into)
     {
@@ -113,22 +125,29 @@ internal static class PilotKit
                 var hasA = a.TryGetProperty(name, out var left);
                 var hasB = b.TryGetProperty(name, out var right);
                 if (hasA && hasB) Diff(left, right, path + "." + name, into);
-                else into.Add(path + "." + name + ": " + (hasA ? Short(left) : "<absent>") + " -> " + (hasB ? Short(right) : "<absent>"));
+                else if (hasA) Leaves(left, path + "." + name, "<absent>", before: true, into);
+                else Leaves(right, path + "." + name, "<absent>", before: false, into);
             }
 
             return;
         }
 
-        if (a.ValueKind == JsonValueKind.Array && b.ValueKind == JsonValueKind.Array && a.GetArrayLength() == b.GetArrayLength())
+        if (a.ValueKind == JsonValueKind.Array && b.ValueKind == JsonValueKind.Array)
         {
-            var index = 0;
-            foreach (var pair in a.EnumerateArray().Zip(b.EnumerateArray()))
+            var count = Math.Max(a.GetArrayLength(), b.GetArrayLength());
+            for (var index = 0; index < count; index++)
             {
-                Diff(pair.First, pair.Second, path + "[" + index++ + "]", into);
+                var itemPath = path + "[" + index + "]";
+                if (index < a.GetArrayLength() && index < b.GetArrayLength()) Diff(a[index], b[index], itemPath, into);
+                else if (index < a.GetArrayLength()) Leaves(a[index], itemPath, "<absent>", before: true, into);
+                else Leaves(b[index], itemPath, "<absent>", before: false, into);
             }
 
             return;
         }
+
+        if (IsContainer(a) && !IsContainer(b)) { Leaves(a, path, Short(b), before: true, into); return; }
+        if (!IsContainer(a) && IsContainer(b)) { Leaves(b, path, Short(a), before: false, into); return; }
 
         if (a.ValueKind == JsonValueKind.Number && b.ValueKind == JsonValueKind.Number)
         {
@@ -142,10 +161,28 @@ internal static class PilotKit
         }
     }
 
+    /// <summary>Every leaf of a container on ONE side of a difference; <paramref name="other"/> is the text of the other side.</summary>
+    private static void Leaves(JsonElement element, string path, string other, bool before, List<string> into)
+    {
+        if (element.ValueKind == JsonValueKind.Object && element.EnumerateObject().Any())
+        {
+            foreach (var property in element.EnumerateObject()) Leaves(property.Value, path + "." + property.Name, other, before, into);
+            return;
+        }
+
+        if (element.ValueKind == JsonValueKind.Array && element.GetArrayLength() > 0)
+        {
+            var index = 0;
+            foreach (var item in element.EnumerateArray()) Leaves(item, path + "[" + index++ + "]", other, before, into);
+            return;
+        }
+
+        var text = element.ValueKind == JsonValueKind.Object ? "{}" : element.ValueKind == JsonValueKind.Array ? "[]" : Short(element);
+        into.Add(path + ": " + (before ? text + " -> " + other : other + " -> " + text));
+    }
+
     private static string Short(JsonElement element) => element.ValueKind switch
     {
-        JsonValueKind.Object => "{object}",
-        JsonValueKind.Array => "[" + element.GetArrayLength() + " items]",
         JsonValueKind.Number => element.GetDouble().ToString("R", CultureInfo.InvariantCulture),
         _ => element.GetRawText(),
     };
