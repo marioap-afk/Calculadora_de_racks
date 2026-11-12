@@ -399,9 +399,17 @@ public class WorkspaceHostSourceGuardTests
         // Timer forbidden (the guards of background work and of DWG access keep applying to it as to every other file).
         var paletteHostForbidden = new Regex(@"Autodesk\.AutoCAD\.Internal|\bDispatcher\b|\bTimer\b");
 
+        // I-64 F4-T2C (D-T2C-04, IC-04): the event bridge, by EXACT FILE and never by folder, may name the Dispatcher and
+        // System.Windows.Threading, only to post its idle continuation with BeginInvoke at background priority. Everything else
+        // stays forbidden there, and so do the other ways of running or waiting on the dispatcher: any name ending in Timer,
+        // DispatcherFrame, PushFrame, Yield, InvokeAsync and the Invoke call on the dispatcher.
+        var bridgeForbidden = new Regex(@"Autodesk\.AutoCAD\.Internal|PaletteSet|AddVisual|RackCad\.UI|Autodesk\.AutoCAD\.Windows|\bUserControl\b|System\.Windows(?!\.Threading\b)|\w*Timer\b|DispatcherFrame|PushFrame|\bYield\b|InvokeAsync|(?:_dispatcher|CurrentDispatcher)\s*\.\s*Invoke\b");
+
         foreach (var (path, code) in Src.PluginFiles().Concat(Src.ApplicationFiles()))
         {
-            var rule = string.Equals(path, PaletteHostPath, StringComparison.Ordinal) ? paletteHostForbidden : forbidden;
+            var rule = string.Equals(path, PaletteHostPath, StringComparison.Ordinal) ? paletteHostForbidden
+                : string.Equals(path, BridgePath, StringComparison.Ordinal) ? bridgeForbidden
+                : forbidden;
             Assert.True(!rule.IsMatch(code), path + " uses " + rule.Match(code).Value);
         }
     }

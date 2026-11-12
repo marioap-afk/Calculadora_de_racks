@@ -406,6 +406,9 @@ namespace RackCad.Application.Workspace
             return outcomes;
         }
 
+        /// <summary>Whether the idle pass could drain right now (I-64 F4-T2C). Skeleton of the red step: inert.</summary>
+        public bool CanDrainNow() => false;
+
         /// <summary>
         /// A fault of the bridge in the host adapter. It is logged and degrades only the named session.
         /// </summary>
