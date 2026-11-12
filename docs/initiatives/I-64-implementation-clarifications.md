@@ -127,3 +127,27 @@ Si el drenaje termina y después programa o materializa la superficie activa por
 - Después de «Conservar mi borrador», la capa no editable es la de la versión nueva. Un borrador Limpio compone exactamente la base y nunca escribe un cambio authored que la superficie no muestre.
 
 **Residual de F5:** cuando los módulos sean editables, el comparador y el copiador del borrador incorporarán la autoridad de módulos.
+
+## IC-08. Marcado de obsolescencia grueso por sesión en F4-T2B2B
+
+**Autoridad:** D-12 y D-13 del Freeze, el paquete de F4-T2B2 (D-T2B2-11) y la disposición F4-E34. Es una aclaración escalonada del marcado de los borradores en F4. No cambia el Freeze y se comunica al Owner.
+
+**Cuándo se marca:**
+- Cuando el drenaje de una sesión produce `MarkDraftsPossiblyStale`, el host marca **todos** los borradores del piloto de esa sesión.
+- El marcado es grueso por sesión porque las pistas no llevan rack.
+
+**Qué es el marcado:**
+- Es solo una pista: no crea Conflicto y no lee el dibujo.
+- La comprobación real la hacen «Comprobar ahora» y la recarga perezosa, siempre por acción del usuario.
+
+**De dónde nace la pista:** `MarkDraftsPossiblyStale` nace de cualquier cambio de base de datos y de cualquier `CommandEnded`, también de comandos que no modifican nada (`WorkspaceSession.cs:52-56`).
+
+**Obligación vinculante para F4-T4B:**
+- Las pistas que produce la mutación propia de Actualizar no marcan los borradores. El mecanismo lo fija T4B.
+- Ese mecanismo debe respetar dos hechos:
+  - las pistas se agrupan por sesión y por tipo (`WorkspaceSession.cs:26` y `:46-57`);
+  - se drenan después del ámbito.
+- Además, no puede suprimir `InvalidateNavigationCaches`.
+- **Oráculo:** «tras Actualizar A, el borrador B no queda marcado» (INV-28).
+
+**Smoke-2 y Smoke-PERF:** miden la frecuencia del marcado y el coste de las recargas que provoca.

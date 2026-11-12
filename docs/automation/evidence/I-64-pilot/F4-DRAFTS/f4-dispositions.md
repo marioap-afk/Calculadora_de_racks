@@ -763,3 +763,48 @@ La mutación sigue solo en T4B.
   - la documentación de `Failed`;
   - el nombre «…OfAnyFile»;
   - el cero de `EditIntentReadStatus`, que el host defiende.
+
+## F4-E34. Paquete de F4-T2B2 v8, IC-08 y emisión de F4-T2B2B-LIFECYCLE
+
+**Paquete** (`docs/initiatives/I-64-f4-t2b2-gate-contract-package.md`, v6 a v8, cambios en su §11). Prepara F4-T2B2B tras el cierre de F4-T2B2A (F4-E33) y la orden del Owner de emitirla después (F4-E29):
+- **v6:**
+  - fija la forma exacta de D-T2B2-10;
+  - añade el descarte del host para `RACKPANELDESCARTAR` (D-T2B2-15);
+  - pone los estados de la recarga al final de `EditIntentStatus`;
+  - incorpora el cambio declarado (3) por N-1 y N-4;
+  - fija las líneas base de T2B2B en 1754 y 248, a partir de la CI `43259514731` de `56b0d497`.
+- **Revisión independiente de la v6:** EMITIBLE TRAS CORRECCIONES (0/3/7).
+  - V6-1: la marca «seguro» podía quedar caducada.
+  - V6-2: la compuerta de `DiscardPilotEdits` era ambigua.
+  - V6-3: faltaba la regla de I-1 para las guardas de T2B2B.
+- **v7:**
+  - el «limpio conocido» exige dos condiciones a la vez: la marca del host y la secuencia de cierre intacta, observada por el puente;
+  - `NotePilotEdit` como obligación comprobable de T3 y T4;
+  - el asesor se implementa de forma explícita;
+  - el descarte del usuario no llama al comparador;
+  - `DiscardPilotEdits` solo exige `Authorize`;
+  - regla de I-1, trampas, residuales y arrastres a T3.
+- **Re-revisión independiente de la v7:** EMITIBLE TRAS CORRECCIONES (0/0/8).
+- **v8:** aplica los ocho menores.
+  - Lectura declarada de «limpio conocido»: establecido por una evaluación que funcionó **y** todavía vigente en la destrucción. Su consecuencia son posibles falsos inciertos, nunca una pérdida silenciosa.
+  - **Regla de devolución:** si Smoke-2 mide que la secuencia nunca queda intacta en CLOSE o CLOSEALL, o que hay falsos inciertos, la sesión lo devuelve al Owner antes de cambiar el mecanismo.
+  - El olvido de la secuencia es exhaustivo.
+  - El cambio (1) tiene una sola forma: la lista y el comentario cambian y el nombre de la prueba se conserva.
+- **No se pide otra ronda:** la re-revisión de la v7 lo declaró emitible tras los menores (precedente de la v3 y la v4).
+- **Semántica:** la distinción del Owner de D-T2B2-10 (F4-E29) se conserva literal. La semántica ordinaria de `DraftRegistry` y las pruebas de F4-T1 no cambian.
+
+**IC-08** (`docs/initiatives/I-64-implementation-clarifications.md`): marcado de obsolescencia grueso por sesión, con la obligación vinculante para F4-T4B. La escribe la sesión al emitir, como fija D-T2B2-11.
+
+**Emisión de F4-T2B2B-LIFECYCLE:** `attempts` 1 de 3 (F4-E09, F4-E29). La sesión redacta el contrato desde el §3, el §5, el §6 y el §11 del paquete v8:
+- **`AllowedWriteScope`:** lista blanca exacta de 12 rutas, con los cambios declarados (1) y (3).
+- **`ForbiddenWriteScope`** (77 entradas):
+  - prefijos seguros;
+  - los demás archivos de `Drafts/`;
+  - las guardas y pruebas que no cambian, incluidas las de F4-T1 y las de T2B2A;
+  - los archivos de producto fijos.
+- **Invariantes:** 13, de D-T2B2-09 a D-T2B2-15, más N-4, la regla de I-1, las guardas existentes y la cobertura RED/GREEN.
+- **Paradas:** 8 propias, entre ellas C02 para las correcciones y C08, la regla de replanificación de F4-E31.
+
+**Controles:** nc4 en la primera delegación de la cadena; nc1..nc3 con su oráculo ordinario. Si nc2 o nc3 repiten el modo de fallo de T2B1 o T2B2A, la sesión los devuelve al Owner antes de cualquier sustituto (F4-E29 y F4-E33).
+
+T2B2B requiere revisión directa e independiente (orden del Owner). Su comportamiento real se mide después en Smoke-2.

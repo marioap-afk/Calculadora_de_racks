@@ -6497,3 +6497,13 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
   - a Smoke-2, los riesgos de la lectura real.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 155. Paquete de F4-T2B2 v8 e IC-08
+
+**Decisión:** F4-E34.
+- **Paquete:** `docs/initiatives/I-64-f4-t2b2-gate-contract-package.md` pasa a la v8, con la parte de F4-T2B2B fijada.
+  - La revisión de la v6 dio EMITIBLE TRAS CORRECCIONES (0/3/7) y la re-revisión de la v7, EMITIBLE TRAS CORRECCIONES (0/0/8).
+  - La distinción del Owner de D-T2B2-10 se conserva literal, y la semántica ordinaria de `DraftRegistry`, también.
+- **IC-08:** marcado de obsolescencia grueso por sesión, con la obligación vinculante para F4-T4B.
+
+**Límites:** solo documentación; sin AutoCAD.

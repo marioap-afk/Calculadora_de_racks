@@ -1,8 +1,8 @@
 # I-64 — Paquete del contrato de F4-T2B2 (cableado de la intención y ciclo de vida en el host)
 
-**Estado:** v5, EMITIBLE. Lo prepara la sesión principal. La v1 y la v2 dieron NO EMITIBLE y la v3, EMITIBLE TRAS CORRECCIONES; el §7 y el §9 disponen cada hallazgo. La v4 aplicó esas correcciones y la v5 aplica la orden del Owner (F4-E29, §10).
-**Base:** rama `architecture/workspace-persistente-rackcad`, en `51163211`. Todos los hechos se midieron ahí. Entre `51163211` y `f124b741` solo cambió documentación: `src/`, `tests/` y `.github/` no cambian (comprobado al preparar la v5).
-**Precondiciones de emisión:** cumplidas (F4-E29). (1) F4-T2B1 está CLOSED / PASS WITH LIMITATIONS (custodia `f124b741`). (2) El Owner ratificó D-T2B2-10 con una distinción que conserva el núcleo cerrado de F4-T1 (§5).
+**Estado:** v8. La parte de T2B2A (§4) está cerrada: F4-T2B2A es CLOSED / PASS WITH LIMITATIONS (F4-E33). La v6 preparó la emisión de F4-T2B2B; la v7 aplicó su revisión independiente; la v8 aplica los menores de la re-revisión de la v7 (EMITIBLE TRAS CORRECCIONES, §11) y es la base del contrato de T2B2B.
+**Base:** rama `architecture/workspace-persistente-rackcad`. Los hechos de T2B2A se midieron en `51163211` (§2, histórico); los de T2B2B, en `6234c94b`, con `src/`, `tests/` y `.github/` iguales a `56b0d497`, el GREEN con el que cerró T2B2A.
+**Precondiciones de emisión de T2B2B:** cumplidas (F4-E33). F4-T2B2A está CLOSED / PASS WITH LIMITATIONS (custodia `6234c94b`). El Owner ordenó emitir T2B2B tras el cierre de T2B2A (F4-E29) y llevarle N-1 como cambio declarado (F4-E33).
 
 ## 1. Autoridades
 
@@ -17,7 +17,8 @@
 - **Paquete de F4-T2B** (`docs/initiatives/I-64-f4-t2b-gate-contract-package.md`): §6 (esbozo) y §7.
 - **Disposiciones:**
   - F4-E09, F4-E16 (M-6), F4-E26 y F4-E28;
-  - F4-E29 (cierre de T2B1, arrastres T2B1/N-1 a N-4, D-T2B2-10 con distinción y presupuesto por tarea), con la orden `I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2b1-t2b2-disposition.md`.
+  - F4-E29 (cierre de T2B1, arrastres T2B1/N-1 a N-4, D-T2B2-10 con distinción y presupuesto por tarea), con la orden `I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2b1-t2b2-disposition.md`;
+  - F4-E30 a F4-E33 (emisión, replanificación con la regla de F4, corrección y cierre de T2B2A), con las órdenes `owner-f4t2b2a-replanning.md`, `owner-f4t2b2a-close-decision.md` y `owner-f4t2b2a-nc2-decision.md` en la misma carpeta.
 - **Aclaraciones:** IC-04 (redacción aceptada, `I-64-implementation-clarifications.md:73-85`).
 - **Producto cerrado:** núcleo de borradores, piloto y lectura pura de la intención (`PushBackPilotIntent{Scan,Reader,Result}`).
 
@@ -45,7 +46,7 @@
 | Tarea | Alcance | Cambios de guarda o de pruebas existentes |
 |---|---|---|
 | **F4-T2B2A-INTENT-WIRING** (primero) | Proyección aditiva; adaptador de lectura y lector del testigo en `Plugin/Views`; costura Core–Plugin por asignación; elección del origen (función pura); registro de borradores del host; entrada de la intención y «Comprobar ahora», por acción del usuario; arrastres T2B1/N-1 a T2B1/N-4 | Ninguna guarda existente cambia (las nuevas van en archivos nuevos). Solo por los arrastres de D-T2B2-07, cambian pruebas existentes de `WorkspaceDraftPilotIntentReadTests.cs`, `WorkspaceDraftPilotIntentStaleBaseTests.cs` y `WorkspaceDraftPilotIntentGuardTests.cs` |
-| **F4-T2B2B-LIFECYCLE** (después) | Asesor de ciclo de vida (veto y retirada síncrona); descarte explícito y retiradas que no dependen del comparador en `DraftRegistry` (D-T2B2-10, F4-E29); marcado de obsolescencia (IC-08); recarga perezosa por acción del usuario; registro técnico del aviso de pérdida | (1) un nombre exacto más en la lista de miembros públicos de `EventBridgeCore` (`WorkspaceBridgeFacadeSourceGuardTests.cs:204-224`); (2) ninguna prueba ni invariante de F4-T1 cambia: la semántica ordinaria de `DraftRegistry` se conserva y las operaciones explícitas nuevas se prueban en archivos nuevos (D-T2B2-10, F4-E29) |
+| **F4-T2B2B-LIFECYCLE** (después) | Asesor de ciclo de vida (veto y retirada síncrona); descarte explícito y retiradas que no dependen del comparador en `DraftRegistry` (D-T2B2-10, F4-E29); marcado de obsolescencia (IC-08); recarga perezosa por acción del usuario; registro técnico del aviso de pérdida | (1) un nombre exacto más en la lista de miembros públicos de `EventBridgeCore` (`WorkspaceBridgeFacadeSourceGuardTests.cs:204-224`) y el comentario de esa prueba ajustado a la cuenta nueva; el nombre de la prueba se conserva (precedente de C2); (2) ninguna prueba ni invariante de F4-T1 cambia: la semántica ordinaria de `DraftRegistry` se conserva y las operaciones explícitas nuevas se prueban en archivos nuevos (D-T2B2-10, F4-E29); (3) por N-1 de F4-T2B2A (orden del Owner, F4-E33), la prueba de los nombres de `EditIntentStatus` de `WorkspaceEditIntentHostTests.cs` pasa a fijar los siete estados como prefijo ordenado y `default` = `Unavailable`, para admitir los estados de la recarga |
 
 - **Por qué se divide:** cada parte toca superficies congeladas distintas, y así cada revisión aísla sus cambios.
 - **Presupuesto:** cada tarea contratada por separado tiene su propio presupuesto de corrección y empieza en 1 de 3 (F4-E09, F4-E29). No hay un presupuesto único de T2B. Agotar el de cualquiera de ellas es S-11 y STOP de F4-T2.
@@ -99,7 +100,7 @@
 - `WorkspaceHostCore` posee **un** `DraftRegistry` y su `DraftClosePolicy` para todas las sesiones (un único hueco de Aplicando, global). El «por sesión» del paquete de T2B (`:255`) se lee como claves (sesión, RackId).
 - **Acoplamiento declarado:** en `Application/Workspace`, **como máximo** `WorkspaceHostCore.cs`, `IWorkspaceEditIntentReader.cs` y `WorkspaceEditIntent.cs` nombran el piloto, entendido como el texto `RackCad.Application.Systems.PushBack.Pilot` o cualquier identificador `PushBackPilot\w*`. Lo fija una guarda con esa lista (máximo, no conjunto exacto). En el Plugin, `WorkspaceNavigationHost.cs` maneja el resultado del piloto que devuelve el adaptador, y también se declara. Generalizarlo es residual de F5.
 - `WorkspaceEditIntent.cs` define su propio estado del testigo, con `NotEvaluated` para los resultados sin lectura (nunca `Unchanged`), y lo traduce desde el del piloto.
-- **Marcar y retirar** usan `RackIdsOf(session)` y `Find<PushBackPilotDraftState>`; no hay estado duplicado.
+- **Marcar** usa `RackIdsOf(session)` y `Find<PushBackPilotDraftState>`, y **retirar** usa las operaciones explícitas de D-T2B2-10; no hay estado duplicado.
 - **R2:** ningún campo del host es de los tipos del piloto ni del resultado de la lectura.
 - El campo del lector nuevo no se llama `_reader` (`WorkspaceHostSourceGuardTests.cs:337`).
 
@@ -188,27 +189,29 @@ F4-E29 los confirma. Los cuatro son de la lectura de la intención, de la que T2
 ### D-T2B2-09. Asesor de ciclo de vida (B-1, I-3, N-5, N-11)
 - **Interfaz** `src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs` (nueva), con dos métodos:
   - `CloseDecision AdviseClose(SessionId)`;
-  - `void SessionDestroyed(SessionId)`.
-- **`EventBridgeCore` gana UN miembro público:** `SetLifecycleAdvisor(IWorkspaceLifecycleAdvisor)`. Es el cambio (1) del §3; el constructor no cambia.
+  - `void SessionDestroyed(SessionId session, bool closeSequenceIntact)` (la secuencia de cierre la observa el puente, D-T2B2-10).
+- **`EventBridgeCore` gana UN miembro público:** `SetLifecycleAdvisor(IWorkspaceLifecycleAdvisor)`. Es el cambio (1) del §3; el constructor no cambia. Con null lanza `ArgumentNullException`, y una segunda llamada sustituye al asesor. El cambio (1) actualiza la lista y el comentario de la prueba que cuenta los miembros públicos; su nombre (`TheCoreAddsExactlyTwoPublicMembersToWhatT2Left`) se conserva, como en el precedente de C2.
 - **`OnBeginDocumentClose`:**
   - sin asesor, Allow (las pruebas actuales siguen valiendo);
   - con asesor, su decisión;
-  - cualquier excepción del asesor da Veto (M-6), contenida en el core.
-- **`OnDocumentToBeDestroyed`:** llama a `SessionDestroyed(id)` de forma síncrona y solo en memoria, para toda sesión destruida (activa o no, T2H-09). Reglas:
+  - cualquier excepción del asesor da Veto (M-6), contenida en el core y registrada con `Log`, sin `Fault` y sin degradar la sesión;
+  - recuerda u olvida la secuencia de cierre según D-T2B2-10.
+- **`OnDocumentToBeDestroyed`:** llama a `SessionDestroyed(id, closeSequenceIntact)` de forma síncrona y solo en memoria, para toda sesión destruida (activa o no, T2H-09). Reglas:
   - va **después** de `_registry.Destroy(id)` y de limpiar `_active`, y en su **propio** `try/catch`, que registra con `logFault`;
   - una excepción del asesor no impide la destrucción, ni la limpieza de la sesión activa, ni la sincronización siguiente;
   - el asesor no vuelve a llamar al puente.
 - **Excepción acotada a D-04:** retirar en memoria dentro de `DocumentToBeDestroyed` va más allá de «solo encolan», igual que la decisión síncrona del veto. Se declara como tal.
 - **Residual declarado:** `Stop()` destruye sesiones sin llamar al asesor. Hoy `Dispose` no tiene llamador; queda para T3 o F7.
 - **`WorkspaceHostCore` implementa el asesor:**
-  - `AdviseClose` = `DraftClosePolicy.EvaluateClose`;
-  - `SessionDestroyed` = la retirada que corresponda según D-T2B2-10 (conocida segura o sin certeza) y encolar el `DraftLossNotice`.
+  - `AdviseClose` = `DraftClosePolicy.EvaluateClose`, con la excepción del comparador contenida como Veto y la marca «seguro» de D-T2B2-10;
+  - `SessionDestroyed` = `RetireKnownSafe` solo con la marca del host **y** `closeSequenceIntact`, y `RetireConservative` en cualquier otro caso (D-T2B2-10); después, si hay pérdida, encolar y registrar el `DraftLossNotice` (D-T2B2-13).
 - **Cableado:**
   - `AutoCadEventBridge.cs` gana un método `internal` que reenvía al core (los `internal` no cuentan en `:91-104`); el controlador lo llama con el host al crearlo, sin `+=` nuevos;
   - el manejador de cierre conserva, en la misma línea, `handler = (`, `ContainSession(` y el literal `_core.OnBeginDocumentClose(a.Session)`, y llama a `e.Veto()` cuando la decisión es Veto. Se mantienen los 16 `+=`, 16 `-=` y 16 manejadores.
 
-### D-T2B2-10. Descarte explícito y retirada sin depender del comparador, con la distinción del Owner (I-4, N-3; F4-E29)
+### D-T2B2-10. Descarte explícito y retirada sin depender del comparador, con la distinción del Owner (I-4, N-3; F4-E29; forma exacta fijada en la v7)
 - **Problema:** si el comparador lanza siempre, `EvaluateClose` lanza y el host veta (M-6). Además, `Discard`, `DiscardAll` y `RetireSession` evalúan `IsDirty` antes de quitar nada y lanzan (`DraftRegistry.cs:156-201`). Así, un descarte explícito no podría completarse y el usuario no podría cerrar AutoCAD.
+  - `IsDirty` llama al comparador salvo que haya texto pendiente (`DraftSession.cs:283`), y `CurrentDraftState` se entrega por referencia (INV-F4T1-19). Por eso «limpio» **no** se puede saber sin el comparador: el conocimiento «limpio» solo puede salir de una evaluación anterior que haya funcionado, y solo vale mientras nada pueda haberlo cambiado.
 - **Distinción del Owner (F4-E29), vinculante.** Una excepción del comparador no puede crear un borrador imposible de borrar, ni permitir perder en silencio un estado que puede estar sucio:
   - **A. Evaluación de sucio:** si el comparador lanza mientras se decide si un borrador está limpio, su estado es DESCONOCIDO / ERROR y se trata de forma conservadora para la protección del cierre. Nada automático, ni el cierre ni una retirada, infiere «limpio».
   - **B. Descarte explícito** (`RACKPANELDESCARTAR`): quitar ese borrador en memoria no requiere el comparador. El usuario eligió perderlo, así que un fallo del comparador no puede impedir el descarte.
@@ -230,29 +233,78 @@ F4-E29 los confirma. Los cuatro son de la lectura de la intención, de la que T2
   - `Discard`, `DiscardAll`, `RetireSession` y `DraftClosePolicy.EvaluateClose` conservan su semántica de F4-T1;
   - INV-F4T1-12 e INV-F4T1-23 siguen vigentes, y su prueba de atomicidad (`WorkspaceDraftRegistryTests.cs:363-389`) no cambia;
   - la retirada normal no descarta trabajo en silencio (regla cerrada de F4-T1).
-- **Lo que añade T2B2B:** operaciones semánticas explícitas, estrechas y aditivas en `DraftRegistry`. Sus nombres se fijan en el contrato de T2B2B y no reutilizan los de las operaciones ordinarias:
-  - **Descarte explícito (B):** quita uno o todos los borradores de la sesión sin que quitarlos dependa del comparador.
-    - Si informa de qué estaba sucio, la evaluación va contenida y lo que no se pudo evaluar se informa como desconocido, nunca como limpio.
-    - La entrada del usuario es la de T3 o T4.
-  - **Retirada conocida segura (C, primer caso):** retira la sesión sin llamar al comparador. Solo vale cuando no queda ningún borrador o cuando el host sabe que todos estaban limpios.
-    - El contrato de T2B2B fija cómo lo sabe el host; por ejemplo, la decisión Allow de `AdviseClose` en la misma secuencia de cierre, invalidada por cualquier cambio posterior.
-    - Se somete a revisión independiente.
-  - **Retirada sin certeza (C, segundo caso):** una sesión destruida con borradores que pueden tener trabajo, sin descarte explícito ni certeza de limpieza, no infiere «limpio».
-    - Si el comparador lanza, el host contiene la excepción y la registra.
-    - Los RackIds afectados se informan como posible pérdida.
-    - La destrucción se completa (D-T2B2-09).
-- **Veto (A):** `AdviseClose` = `EvaluateClose`. Una excepción del comparador o del asesor da Veto (M-6, D-T2B2-09): sucio desconocido = VETO.
+  - Ninguna prueba de F4-T1 cambia.
+- **Operaciones explícitas nuevas en `DraftRegistry`** (aditivas; nombres fijados; ninguna reutiliza el nombre de una operación ordinaria; ninguna escribe nada):
+
+  | Operación | Para | Comparador | Resultado |
+  |---|---|---|---|
+  | `DraftUserDiscardResult DiscardByUser(SessionId, string rackId)` | B: un borrador | **no lo llama** | `Removed` y `HadPendingText` (los dos se saben sin el comparador). Sobre un borrador inexistente, `Removed` = false y `HadPendingText` = false |
+  | `DraftUserDiscardAllResult DiscardAllByUser(SessionId)` | B: todos los de la sesión | **no lo llama** | `RemovedRackIds` y `PendingTextRackIds`, ordenados (ordinal) |
+  | `DraftLossNotice RetireKnownSafe(SessionId)` | C, primer caso | **no lo llama** | `LostRackIds` = los que tienen texto pendiente; `UncertainRackIds` vacío |
+  | `DraftLossNotice RetireConservative(SessionId)` | C, segundo caso | sí, contenido **borrador a borrador** | `LostRackIds` = con texto pendiente, sucios conocidos y desconocidos; `UncertainRackIds` = los desconocidos; `UncertainReasons` = diccionario de solo lectura, ordinal, de RackId desconocido al mensaje de su excepción |
+
+  - **Orden de evaluación en `RetireConservative`:** primero `HasPendingText`. Un borrador con texto pendiente es perdido y nunca desconocido. Después, el comparador.
+  - **Listas:** perdidos y desconocidos se dan en orden ordinal. `UncertainRackIds` está contenido en `LostRackIds`. Ninguna lista es nula.
+  - **Ninguna lanza por el comparador.** La validación de argumentos es la de las ordinarias (un RackId en blanco lanza `ArgumentException`).
+  - **Quitar:** las cuatro quitan y desacoplan (`Detach`) siempre lo que tocan.
+  - **Retirar:** las dos retiradas marcan la sesión como retirada, igual que `RetireSession`.
+  - **El hueco de Aplicando:** ninguna lo libera.
+  - **Dónde viven los tipos nuevos:** los tipos de resultado nuevos y el cambio de `DraftLossNotice` van en `DraftRegistry.cs`. `Drafts/` mantiene sus cinco archivos.
+  - **`DraftLossNotice`:** gana `UncertainRackIds` (lista) y `UncertainReasons` (diccionario de solo lectura, ordinal, por RackId; nunca nulo), que solo `RetireConservative` llena. El cambio es aditivo: el constructor actual se conserva.
+- **Lectura declarada de «limpio conocido» (C):** limpio establecido por una evaluación que funcionó **y** todavía vigente en la destrucción. La vigencia solo se garantiza con las dos condiciones de abajo. Sin vigencia, se aplica la segunda cláusula de C.
+  - **Consecuencia declarada:** en una secuencia rota, `RetireConservative` llama al comparador sobre borradores que estaban limpios. Si en ese momento falla, el registro los informa como inciertos (falsos inciertos), nunca como limpios.
+  - **Regla de devolución:** si Smoke-2 mide que la secuencia nunca queda intacta en CLOSE o CLOSEALL, o que hay falsos inciertos, la sesión lo devuelve al Owner antes de cambiar el mecanismo.
+- **El conocimiento «limpio conocido»: dos condiciones a la vez.** Una sesión se retira con `RetireKnownSafe` solo si se cumplen las dos. En cualquier otro caso se usa `RetireConservative`, que nunca infiere «limpio».
+  1. **Marca del host** (`WorkspaceHostCore`, por sesión y solo en memoria):
+     - `AdviseClose` la quita al entrar y la pone como **última** acción antes de devolver Allow, y solo si `EvaluateClose` funcionó.
+     - La quitan:
+       - un Veto o una excepción de `AdviseClose`;
+       - `TryBeginPilotEdit` con Admitted, `TryCheckPilotEdit` con Conflict o Recovered, `TryReloadPilotEdit` con Reloaded y `DiscardPilotEdits`;
+       - todo drenaje de esa sesión en `OnDrained`: dentro del `try`, antes de `PurgeDead` (después de `if (!_started || !outcome.Result.Drained) return;`), para que una excepción se contenga como hoy;
+       - la operación pública **`void NotePilotEdit(SessionId)`**: sin compuerta (solo borra una marca en memoria), nunca lanza y no lee nada.
+     - `SessionDestroyed` consume la marca de la sesión destruida.
+  2. **Secuencia de cierre intacta, observada por el puente** (`EventBridgeCore`):
+     - **Recuerda** la sesión cuyo cierre acaba de permitir: con asesor, `OnBeginDocumentClose` con decisión Allow.
+     - **La olvida** en toda entrada pública que muta estado del core: todas salvo las consultas (`Authorize`, `TryGetSession`, `IsDegraded` y las propiedades) y `SetLifecycleAdvisor`. Es decir: `OnSourceEvent`, `OnIdle`, `OnDocumentCreated`, `OnDocumentActivated`, `OnNoActiveDocument`, `RequestReconciliation`, `ReportFault`, `SetPanelVisible`, `SetModalRackCadActive`, `Start`, `Stop`, `OnDocumentToBeDestroyed` (también con un id nativo desconocido) y `OnBeginDocumentClose`, que primero olvida y después recuerda si la decisión es Allow.
+     - **Dónde:** al entrar, justo después de `if (!_started) return;` donde exista y antes de cualquier otro retorno temprano, `switch` o `case`.
+     - **Forma:** la memoria es un único campo `SessionId?` del core; olvidar es asignarle `null`. No se guarda en `SessionState` ni se recorre `_states.` para olvidar.
+     - **En `OnDocumentToBeDestroyed`,** `closeSequenceIntact` es cierto solo si la sesión destruida es la recordada y **no está degradada**. La degradación se lee **antes** de `_states.Remove(id)`. Después olvida y llama a `SessionDestroyed(id, closeSequenceIntact)`.
+     - No añade suscripciones.
+- **Cómo cubre los casos:**
+  - **Cierre cancelado** (por otro manejador de cierre, por el aviso de guardar o por QUIT con el veto de otro documento): la siguiente entrada del puente (un `Idle`, un `CommandEnded`…) olvida la secuencia. Que esa entrada llegue no está medido (INFERENCE para Smoke-2).
+  - **Destrucción sin su `BeginDocumentClose`:** nunca está intacta.
+  - **Edición en el sitio por T3** después de un Allow: `NotePilotEdit` quita la marca.
+  - Si entre el cierre y la destrucción ocurre alguna entrada del puente, cae en `RetireConservative`: eso solo cuesta una evaluación, nunca una pérdida silenciosa.
+  - **Residual exacto declarado:** un cierre cancelado **sin ninguna entrada posterior del puente**, seguido de una mutación **sin** `NotePilotEdit` y de una destrucción **sin** `BeginDocumentClose`. Lo cubren la obligación de `NotePilotEdit` para T3 y T4 y el oráculo de Smoke-2.
+  - Que un CLOSE normal llegue de `BeginDocumentClose` a `DocumentToBeDestroyed` sin otra entrada del puente es una INFERENCE para Smoke-2 (oráculo abajo).
+- **Obligación vinculante para F4-T3 y F4-T4,** comprobable: todo camino que mute un borrador, incluida la edición en el sitio de `CurrentDraftState`, el texto pendiente y Actualizar, llama a `NotePilotEdit(session)` de su sesión. T2B2B entrega `NotePilotEdit` como código oscuro.
+- **El asesor:** `WorkspaceHostCore` lo implementa de forma **explícita** (`IWorkspaceLifecycleAdvisor.AdviseClose` y `.SessionDestroyed`), así que no forma parte de su superficie pública. Ninguna guarda fija quién lo llama; F4-T3 podrá envolverlo para vaciar el texto vivo antes del consejo (obligación 15).
+- **Veto (A):** `AdviseClose` = `EvaluateClose`. La excepción del comparador se contiene en el host como Veto y se registra con `Report("WorkspaceHostCore.AdviseClose", ex)`. Además, `EventBridgeCore` convierte en Veto cualquier excepción del asesor y la registra con `Log`, sin `Fault` y sin degradar la sesión (M-6, D-T2B2-09).
+- **Riesgos para Smoke-2:** el orden real de los eventos de AutoCAD se mide en Smoke-2, con este oráculo:
+  - ¿llega todo `DocumentToBeDestroyed` precedido de su `BeginDocumentClose` en la misma secuencia? Hay que comprobarlo en CLOSE, CLOSEALL, QUIT, la pestaña del documento y la API;
+  - ¿qué entradas del puente ocurren entre los dos?
+  - tras un cierre **cancelado** (aviso de guardar, otro manejador, QUIT con el veto de otro documento, pestaña o ventana): ¿qué entrada del puente llega después?
+  - CLOSEALL o QUIT con un documento vetado que no es el activo;
+  - ¿qué vía de retirada se usa en un cierre normal? Sin pérdida no queda rastro, así que observarla es un arrastre al procedimiento de Smoke-2 o a F4-T3 (por ejemplo, una inyección Debug), sin ampliar el alcance de T2B2B.
 - **Pruebas**, en archivos nuevos y con `Record.Exception` para que fallen por aserción en el RED:
-  - comparador que lanza → Veto → descarte explícito → Allow;
-  - el descarte explícito se completa aunque el comparador lance;
-  - la retirada conocida segura no llama al comparador;
-  - la destrucción sin certeza con un comparador que lanza queda contenida y registrada, sin inferir «limpio»;
-  - la prueba `:363-389` y las demás de F4-T1 siguen sin cambios.
-- **Revisión:** la forma exacta de las operaciones nuevas y del conocimiento «seguro» del host se fija en el contrato de T2B2B, con revisión directa e independiente. El comportamiento real del host se mide después en un smoke con AutoCAD.
+  - **Veto:** la tabla de veto completa del Owner (cinco filas).
+  - **Descarte del usuario:**
+    - comparador que lanza → Veto → `DiscardAllByUser` (o `DiscardPilotEdits`) → Allow;
+    - `DiscardByUser` y `DiscardAllByUser` se completan sin llamar al comparador (un comparador que lanza o que cuenta llamadas).
+  - **Retiradas:**
+    - `RetireKnownSafe` no llama al comparador;
+    - `RetireConservative`, con un comparador que lanza en un borrador y no en otro, completa la retirada, informa el desconocido con su motivo y el sucio conocido, y nunca infiere «limpio».
+  - **La marca y la secuencia:**
+    - Allow seguido directamente de la destrucción → `RetireKnownSafe`;
+    - Allow seguido de una entrada del puente, de un drenaje, de `NotePilotEdit`, de una operación del host o de un Veto → `RetireConservative`;
+    - una destrucción sin cierre previo → `RetireConservative`;
+    - una sesión degradada **antes** del Allow, sin ninguna entrada entre el Allow y la destrucción → `RetireConservative` (prueba la lectura de la degradación antes de `_states.Remove`).
+  - La prueba `:363-389` y las demás de F4-T1 siguen sin cambios.
+- **Revisión:** la v7 aplica la revisión independiente de la v6 (§11). El comportamiento real del host se mide después en un smoke con AutoCAD.
 
 ### D-T2B2-11. Marcado de obsolescencia (IC-08 nueva; N-10)
 - Cuando el drenaje de una sesión produce `MarkDraftsPossiblyStale`, el host marca todos los borradores del piloto de esa sesión.
-- **Dónde:** antes de los retornos tempranos de `OnDrained` (`WorkspaceHostCore.cs:140`, `:143`, `:161`, `:168`), con su prueba.
+- **Dónde:** antes de los retornos tempranos de `OnDrained`, con su prueba. En `6234c94b` son `WorkspaceHostCore.cs:152`, `:155`, `:173` y `:180`. El marcado (y el borrado de la marca «seguro» de D-T2B2-10) va justo después de `if (!_started || !outcome.Result.Drained) return;` y antes de `TryGetSession`. Hoy, el comentario «Drafts do not exist in F1» está en `:186` (H-07). El marcado y el borrado de la marca van dentro del `try`, antes de `PurgeDead`.
 - **Texto de la IC-08** (lo escribe la sesión al emitir):
   - el marcado es grueso por sesión, porque las pistas no llevan rack;
   - es solo una pista: sin Conflicto y sin lectura;
@@ -261,11 +313,11 @@ F4-E29 los confirma. Los cuatro son de la lectura de la intención, de la que T2
   - Smoke-2 y Smoke-PERF miden la frecuencia del marcado y el coste de las recargas que provoca.
 
 ### D-T2B2-12. Recarga perezosa
-`EditIntentOutcome TryReloadPilotEdit(EditIntentRequest)` sigue el mismo camino que la intención. Si `NeedsLazyReload`, llama a `DiscardAndReload(result.Read)`. Solo por acción del usuario y nunca desde el drenaje.
+`EditIntentOutcome TryReloadPilotEdit(EditIntentRequest)` sigue el mismo camino que la intención. Si `NeedsLazyReload`, llama a `DiscardAndReload(result.Read)`. Solo por acción del usuario y nunca desde el drenaje. Es un método propio con `PassGate` (pasos 1 a 8 de la tabla de D-T2B2-06), no una extracción del cuerpo de `TryBeginPilotEdit`. Traducción de `DraftReloadResult`: `Reloaded` → `Reloaded`, con el estado del testigo; `NotAdmitted` → `NotAdmitted`, con el diagnóstico de `DraftReloadResult.Admission` y el detalle y la indicación de la lectura; `NotAllowed` (el borrador está en Aplicando o ya no está registrado) → `Waiting` en los dos casos; `NotConfirmed`, inalcanzable aquí → `Failed`. `EditIntentStatus` gana `NotFound`, `NotNeeded` y `Reloaded` **al final**, después de `Failed`: los siete estados de T2B2A quedan como prefijo ordenado y `default` sigue siendo `Unavailable` (N-1 de F4-T2B2A, F4-E33). Un `Reloaded` quita la marca «seguro» de la sesión (D-T2B2-10).
 
 ### D-T2B2-13. Visibilidad de la pérdida (B-1, N-4, N-12)
 - Hasta T3 no hay superficie de edición: ningún usuario puede crear un borrador, así que **no puede haber pérdidas reales antes de T3**.
-- **Registro técnico, sin cambiar guardas:** `WorkspaceHostCore.SessionDestroyed` solo actúa si `HasLoss`: encola el `DraftLossNotice` y lo registra en el acto con su `logFault` inyectado, con el contexto `"WorkspaceHostCore.DraftLoss"` y una `InvalidOperationException` cuyo mensaje lista los RackIds perdidos (en el Plugin es el `LogFault` del controlador, que ya usa `RackLog`; `WorkspaceHostSourceGuardTests.cs:494-506`). Se declara que la pérdida queda registrada con nivel de excepción. El disparador es la propia llamada síncrona del asesor. Sin pérdida no se encola nada, para que la cola, sin consumidor hasta T3, no crezca con cada documento cerrado.
+- **Registro técnico, sin cambiar guardas:** `WorkspaceHostCore.SessionDestroyed` siempre retira (D-T2B2-10); la cola y el registro solo actúan si `HasLoss`: encola el `DraftLossNotice` y lo registra en el acto con su `logFault` inyectado, con el contexto `"WorkspaceHostCore.DraftLoss"` y una `InvalidOperationException` cuyo mensaje lista los RackIds perdidos (en el Plugin es el `LogFault` del controlador, que ya usa `RackLog`; `WorkspaceHostSourceGuardTests.cs:494-506`). Se declara que la pérdida queda registrada con nivel de excepción. El disparador es la propia llamada síncrona del asesor. Sin pérdida no se encola nada, para que la cola, sin consumidor hasta T3, no crezca con cada documento cerrado. La cola es `internal` (para las pruebas); F4-T3 la consume. El mensaje del registro distingue los racks perdidos de los inciertos (`UncertainRackIds`) y lleva el motivo de cada incierto. Orden interno de `SessionDestroyed` en el host: primero la retirada, y después la cola y el registro, cada paso contenido por separado.
 - **T3** lleva el aviso al panel y a la línea de comandos, con sus textos y su cambio de guarda para `WriteMessage` (`:84-89`).
 - **QUIT** es una INFERENCE: que `DocumentToBeDestroyed` llegue en QUIT y que el registro sobreviva no está medido. Va al oráculo de Smoke-2 (S2-06).
 
@@ -276,15 +328,29 @@ F4-E29 los confirma. Los cuatro son de la lectura de la intención, de la que T2
   - Allow sin borradores;
   - asesor que lanza → Veto;
   - tras descartar, el cierre siguiente procede;
-  - el asesor no llama a ningún lector.
-- **Degradación:** la secuencia «limpia → degradada → edición → dirty → cierre → veto»; el cierre sobrevive a la degradación (`BridgeSource.cs:86-87`).
+  - el cuerpo explícito de `AdviseClose` del host no lee, no autoriza, no descarta y no retira: solo `EvaluateClose`, la contención, `Report` y la marca. La guarda se aplica al cuerpo del host y no prohíbe un envoltorio de T3 (regla de I-1).
+- **Degradación:** la secuencia «limpia → degradada → edición → dirty → cierre → veto»; el cierre sobrevive a la degradación (`BridgeSource.cs:72-74`; `EventBridgeCore.cs:22-23` y `:316-320`).
 - **Destrucción:**
   - retirada y aviso (en cola y en el registro) de una sesión destruida activa y de una no activa;
   - asesor que lanza en la destrucción → la sesión queda destruida, un id reciclado da una sesión nueva sin borradores y `Authorize` del id viejo da `RejectedSessionDestroyed`.
 - **Marcado:** todos los borradores de la sesión y ninguno de otra; también con un eco y un cambio de base de datos en el mismo drenaje.
 - **Recarga:** solo con `NeedsLazyReload`.
-- **Descarte explícito y retiradas de D-T2B2-10:** el descarte explícito y la retirada conocida segura no dependen del comparador; la retirada sin certeza es conservadora. Ninguna prueba de F4-T1 cambia.
+- **Descarte explícito, retiradas y marca de D-T2B2-10, y descarte del host de D-T2B2-15:** las pruebas que fija D-T2B2-10, más `DiscardPilotEdits`: Rejected con otra sesión activa, Discarded con un comparador que lanza y el cierre siguiente en Allow. Ninguna prueba de F4-T1 cambia.
 - **Obligaciones:** 5 (cero escrituras), 14, 15 y 18.
+
+### D-T2B2-15. Descarte explícito por el host, para `RACKPANELDESCARTAR` de F4-T3 (v7)
+- `WorkspaceHostCore` expone `EditDiscardOutcome DiscardPilotEdits(SessionId session)`: el descarte explícito de todos los borradores de la sesión (B), por acción del usuario y sin lectura del dibujo.
+- **Compuerta (literal):** solo exige `Authorize(new WorkspaceRequest(session)) == RequestDecision.Accepted` (INV-22). **No** exige lector, reposo, ausencia de comando ni de modal, y **no** usa `PassGate`. Así funciona dentro del propio comando `RACKPANELDESCARTAR` y con un modal de RackCad abierto. Si la autorización falla (otra sesión activa, sin documento activo o sesión destruida), da Rejected sin efectos. Sin borradores, da `Discarded` con las listas vacías.
+- **Implementación:** `DiscardAllByUser` (sin comparador) y después quita la marca «seguro» de la sesión.
+- **`EditDiscardOutcome`** es un valor de `WorkspaceEditIntent.cs`:
+  - su enum de estado tiene, en este orden, `Rejected`, `Discarded` y `Failed`; `default` = `Rejected`, que es inerte (no hizo nada), y se declara;
+  - `RemovedRackIds` y `PendingTextRackIds` nunca son nulas, tampoco en `default`.
+- **Contención:** toda excepción da Failed sin degradar la sesión (`Report`).
+- **Límites:** nada la llama desde el drenaje. **F4-T3** la expone como `RACKPANELDESCARTAR`, con su texto, su lista de racks y su confirmación (D-T2-07).
+- **Pruebas:**
+  - Discarded con la sonda fuera de reposo, con un modal de RackCad abierto y sin lector asignado;
+  - Rejected con otra sesión activa y sin documento activo;
+  - Discarded con un comparador que lanza, y el cierre siguiente en Allow.
 
 ## 6. Contratos propuestos
 
@@ -299,7 +365,7 @@ F4-E29 los confirma. Los cuatro son de la lectura de la intención, de la que T2
 
 **Líneas base:**
 - **T2B2A:** las de la CI del SHA con el que cerró T2B1, `fe7f136b` (corrida `43190415649`): `RackCad.Tests.Workspace` 1592 y `RackCad.UI.Tests.Workspace` 248, medidas por la sesión en sus TRX.
-- **T2B2B:** las de la CI del GREEN de T2B2A, medidas al emitir.
+- **T2B2B:** las de la CI del GREEN con el que cerró T2B2A, `56b0d497` (corrida `43259514731`): `RackCad.Tests.Workspace` 1754 y `RackCad.UI.Tests.Workspace` 248.
 - En las dos: Core `ExpectRed` true; UI `ExpectRed` false.
 
 **`AllowedWriteScope` de T2B2A** (lista blanca exacta):
@@ -326,14 +392,56 @@ F4-E29 los confirma. Los cuatro son de la lectura de la intención, de la que T2
 - `src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs` (solo las operaciones explícitas y aditivas de D-T2B2-10; F4-E29)
 - `src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs`
 - `src/RackCad.Plugin/Workspace/WorkspaceController.cs`
-- `tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs` (solo el nombre exacto nuevo)
+- `tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs` (solo el nombre exacto nuevo en la lista y el comentario de esa prueba; su nombre se conserva)
 - `tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs` (nuevo)
 - `tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs` (nuevo)
 - `tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryContainmentTests.cs` (nuevo)
+- `tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs` (solo la prueba de los nombres de `EditIntentStatus`: prefijo ordenado de siete y `default` = `Unavailable`; N-1, F4-E33)
 
 **`ForbiddenWriteScope`:** solo prefijos seguros (F4-E21), generados desde el árbol.
 
-**Invariantes:** se redactan al emitir, uno por decisión (D-T2B2-01 a 08 para T2B2A; 09 a 14 para T2B2B), más el de cobertura RED/GREEN y el de «ninguna guarda ni prueba existente cambia, salvo las declaradas en el §3».
+**Invariantes:** se redactan al emitir, uno por decisión (D-T2B2-01 a 08 para T2B2A; **09 a 15** para T2B2B, más uno para N-4 de T2B2A, que es el comentario de `Rejected` con la vía del lector), más el de cobertura RED/GREEN y el de «ninguna guarda ni prueba existente cambia, salvo las declaradas en el §3».
+
+**Regla de I-1 para las guardas y pruebas nuevas de T2B2B (F4-E32 y F4-E33):**
+- **Ninguna prohíbe de forma permanente lo que corresponde a F4-T3 o F4-T4:**
+  - el gancho o el vaciado del texto vivo antes del consejo de cierre (que puede envolver el asesor);
+  - la exposición de `TryReloadPilotEdit`, `DiscardPilotEdits` y `NotePilotEdit` por el puerto o la UI;
+  - el consumo de la cola de avisos;
+  - el descarte de un solo borrador por el host;
+  - las llamadas a `NotePilotEdit` en Actualizar;
+  - estados nuevos.
+- **Enums nuevos o ampliados:** se fijan como prefijo ordenado.
+- **Las guardas fijan solo lo que T2B2B necesita.** Por ejemplo: «se llama a `Veto()` si y solo si el core decide Veto», y no «el manejador no hace nada más».
+
+**Trampas que atan a T2B2B** (guardas existentes y de T2B2A):
+- **En `WorkspaceHostCore.cs` y `WorkspaceEditIntent.cs`** (`WorkspaceEditIntentGuardTests.cs:821-836`):
+  - el texto, comentarios incluidos, no puede contener `Transaction`, `\bDatabase\b`, `\bCommit\s*\(` ni `Metric|Provider|Aggregat…` (sin distinguir mayúsculas);
+  - el código tampoco puede contener `\bRegistry\b`, `RackLog`, `\bTask\b`, `\bThread\b` ni `\bTimer\b`.
+- **Cuerpos de `TryBeginPilotEdit` y `TryCheckPilotEdit`:** conservan su orden y sus conteos (`:554-587`) y no llaman a operaciones del ciclo de vida (`:775-800`). El borrado de la marca en esos cuerpos es una operación simple sobre el campo.
+- **Obligación 10 (`:631-662`):** en la recarga, `pilot.Read` solo aparece como argumento de `draft.DiscardAndReload(...);`.
+- **Campos del core** (`WorkspaceEditIntentHostTests.cs:990-1009`): exactamente un `DraftRegistry`, un `DraftClosePolicy` y un `IWorkspaceEditIntentReader`, y ningún tipo de `Systems`.
+- **`OnDrained`** no nombra `TryBeginPilotEdit`, `TryCheckPilotEdit`, `_editIntentReader`, `ReadIntent` ni `PassGate` (`:591-616`).
+- **Nombres de tipos en `RackCad.Application.Workspace`:** ninguno contiene `Draft`, `Editor`, `Subscription` ni `Tab`, incluidos los anidados y los que genera el compilador (`WorkspaceModelBoundaryTests.cs:96-107`). Por eso no hay `yield` ni `async` en métodos del host con «Draft» en el nombre.
+- **Tipos con «Log» en el nombre:** ninguno (`WorkspaceHostSourceGuardTests.cs:516-521`).
+- **En `Drafts/`:**
+  - sin arrays `static readonly`;
+  - tipos sin `Tab|Editor|Subscription|Handler`;
+  - miembros sin `Handler|Provider|Metric…` (`WorkspaceDraftBoundaryTests.cs:204-305`);
+  - la carpeta mantiene sus cinco archivos.
+
+**Residuales declarados de T2B2B:**
+- **Sesión degradada:** sus fuentes de sincronización se desenganchan (`EventBridgeCore.cs:397-408`), así que sus borradores no se marcan y un Limpio no llega a `NeedsLazyReload`. La base obsoleta lo detecta en T4. Su retirada siempre es conservadora.
+- **Fallo al enganchar `BeginDocumentClose`:** es la primera fuente (`BridgeSource.cs:49-53`). La sesión queda degradada sin manejador de cierre, y el cierre de ese documento no tiene veto posible. Se declara para F4-T3 y Smoke-2.
+- **`Stop()`:** destruye sesiones sin llamar al asesor; ya declarado.
+
+**Arrastres de T2B2B a F4-T3** (su capa incluirá `WorkspaceHostCore.cs` e `IWorkspaceHostPort.cs`):
+- los RackIds del veto para el mensaje de D-17 (`CloseDecision` es Allow/Veto);
+- el acceso público a la cola de avisos;
+- el descarte de un solo borrador por el host;
+- la exposición de `TryReloadPilotEdit`, `DiscardPilotEdits` y `NotePilotEdit`;
+- las llamadas a `NotePilotEdit` en todo camino de mutación;
+- el mensaje del veto y el de `RACKPANELDESCARTAR` nombran el documento, y el comando opera solo sobre el documento activo (D-17 frente a INV-22: un veto de CLOSEALL o QUIT puede ser de un documento que no es el activo);
+- la observación de la vía de retirada para Smoke-2.
 
 **Paradas**, además de las generales:
 - hace falta un archivo nuevo en `Plugin/Workspace`;
@@ -341,7 +449,8 @@ F4-E29 los confirma. Los cuatro son de la lectura de la intención, de la que T2
 - hace falta tocar `Drafts/` fuera de D-T2B2-10, cambiar la semántica de una operación ordinaria de `DraftRegistry` o cambiar una prueba de F4-T1;
 - el veto exigiría cambiar el constructor de `EventBridgeCore`;
 - una lectura tendría que ocurrir dentro del drenaje o del Idle;
-- una guarda o prueba existente tendría que cambiar fuera de las declaradas.
+- una guarda o prueba existente tendría que cambiar fuera de las declaradas (en un intento de corrección, los archivos creados por la propia tarea en un intento anterior no cuentan como guardas o pruebas existentes; F4-E33);
+- (regla de F4-E31) una planificación rechazada por la comparación byte a byte antes del Worker admite UNA replanificación con el prompt reforzado; un segundo rechazo vuelve al Owner.
 
 ## 7. Disposición de las revisiones
 
@@ -431,3 +540,51 @@ La orden `owner-f4t2b1-t2b2-disposition.md` (F4-E29) dispone:
 | Líneas base de T2B2A fijadas en 1592 y 248 | §6 |
 
 Las decisiones de T2B2A (§4) no cambian de semántica. Las filas históricas del §7 y del §9 se conservan tal cual; donde contradicen la v5 (N-3 y NV-5 sobre la prueba de INV-F4T1-12), manda la v5. La forma exacta de las operaciones nuevas de D-T2B2-10 se fija y se revisa al contratar T2B2B.
+
+## 11. Órdenes del Owner de F4-E33, cambios de la v6 y revisión de la v6
+
+F4-T2B2A cerró como CLOSED / PASS WITH LIMITATIONS sobre `56b0d497` (F4-E33). El Owner dispuso:
+- no gastar su intento 3;
+- llevar a F4-T2B2B el hallazgo N-1 de la re-revisión como cambio declarado;
+- repartir los menores: N-4 a T2B2B, y N-2 y N-5 a T3.
+
+**Cambios de la v6** (D-T2B2-09, 10, 12, 14 y 15; §3 y §6):
+- la forma de D-T2B2-10;
+- el descarte del host para `RACKPANELDESCARTAR`;
+- los estados de la recarga al final de `EditIntentStatus`;
+- el cambio declarado (3), por N-1;
+- N-4;
+- las líneas base 1754 y 248;
+- las paradas: C02 en las correcciones y la regla de replanificación de F4-E31.
+
+**Revisión independiente de la v6:** EMITIBLE TRAS CORRECCIONES, con 0 bloqueantes, 3 importantes y 7 menores. Disposición en la v7:
+
+| Hallazgo | Disposición |
+|---|---|
+| V6-1 la marca «seguro» puede quedar caducada | D-T2B2-10: dos condiciones a la vez (la marca del host y la secuencia de cierre intacta, observada por el puente; opción (a) de la revisión, con la lectura de «limpio conocido» declarada en la v8 y su regla de devolución al Owner); `NotePilotEdit` como obligación comprobable para T3 y T4; asesor explícito; oráculo de Smoke-2 |
+| V6-2 compuerta y alcance de `DiscardPilotEdits` | D-T2B2-15: solo `Authorize`, sin `PassGate`; `default` declarado; listas nunca nulas; pruebas; invariantes 09 a 15 más N-4 (§6) |
+| V6-3 regla de I-1 para T2B2B | §6: lista de lo que es de T3 y T4, prefijos ordenados y guardas mínimas |
+| V6-4 ambigüedades de forma | D-T2B2-10 (contención por borrador, el texto pendiente primero, inciertos contenidos en perdidos y listas ordenadas, inexistente → false, tipos en `DraftRegistry.cs`); D-T2B2-09 (`Log`, null y segunda llamada); D-T2B2-11 (punto exacto); D-T2B2-12 (método propio y traducción); D-T2B2-13 (cola `internal` y orden interno) |
+| V6-5 la causa del fallo del comparador | `UncertainReasons`; `Report` en `AdviseClose`; registro que distingue los perdidos de los inciertos |
+| V6-6 trampas | §6, «Trampas que atan a T2B2B» |
+| V6-7 superficie para T3 | §6, «Arrastres de T2B2B a F4-T3» |
+| V6-8 residuales | §6, «Residuales declarados» |
+| V6-9 datos desfasados | cabecera, §1, D-T2B2-05, D-T2B2-09 (cambio (1) y nombre de su prueba), D-T2B2-11 y D-T2B2-14 |
+| V6-10 descarte del usuario sin comparador | D-T2B2-10: `DiscardByUser` y `DiscardAllByUser` no lo llaman (B literal) |
+
+La semántica ratificada no cambia: la distinción del Owner de D-T2B2-10 (F4-E29) se conserva literal; la v7 solo fija la forma y cierra los huecos de la revisión.
+
+**Re-revisión independiente de la v7:** EMITIBLE TRAS CORRECCIONES, con 0 bloqueantes, 0 importantes y 8 menores. Cierra V6-1 a V6-8 y V6-10; V6-9 queda parcial por V7-5. Disposición en la v8:
+
+| Hallazgo | Disposición |
+|---|---|
+| V7-1 «no reinterpreta C» | D-T2B2-10: lectura declarada de «limpio conocido», su consecuencia (falsos inciertos) y la regla de devolución al Owner tras Smoke-2 |
+| V7-2 afirmación absoluta y oráculo | D-T2B2-10: residual exacto, cierre cancelado y documento vetado no activo en el oráculo; la vía de retirada se observa como arrastre |
+| V7-3 lista de olvido | D-T2B2-10: regla exhaustiva (toda entrada que muta estado), su punto exacto y el id nativo desconocido |
+| V7-4 trampas del olvido | D-T2B2-10: un solo campo `SessionId?`, sin `SessionState` ni recorrido de `_states.`, olvido antes de `switch` o `case`, y degradación leída antes de `_states.Remove` |
+| V7-5 cambio (1) en dos formas | §3, §6 y D-T2B2-09: lista y comentario; el nombre de la prueba se conserva (precedente de C2) |
+| V7-6 contradicciones de redacción | D-T2B2-09, D-T2B2-13 y §11 alineados con D-T2B2-10 |
+| V7-7 huecos de forma | `UncertainReasons` como diccionario; `NotePilotEdit` sin compuerta y sin lanzar; la marca consumida en la destrucción; el marcado dentro del `try`; la prueba de degradación; `Discarded` vacío; `NotAllowed` → `Waiting`; el cuerpo de `AdviseClose` (D-T2B2-14) |
+| V7-8 documento vetado no activo | arrastre a F4-T3 y oráculo de Smoke-2 |
+
+No se pide otra ronda: los menores no cambian la semántica y la re-revisión declaró el paquete emitible tras ellos (precedente de la v3 y la v4).
