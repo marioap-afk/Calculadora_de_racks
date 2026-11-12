@@ -83,10 +83,11 @@ namespace RackCad.Application.Workspace
         Waiting,
 
         /// <summary>
-        /// The request is refused and no draft is created. The session of the request is not the one of the active document
-        /// (INV-22), which is decided before anything about the drafts and before any read of the drawing. The other way to this
-        /// state, a session that was retired when the draft was begun (the SessionRetired answer of step 8), is reached AFTER the
-        /// read, so a Rejected outcome does not by itself mean that nothing was read.
+        /// The request is refused and no draft is created. Three ways lead here. First, INV-22: the session of the request is not the
+        /// one of the active document, which is decided before anything about the drafts and before any read of the drawing. Second,
+        /// the reader answers Rejected, which happens after the gate and after the read was attempted. Third, the SessionRetired answer
+        /// of step 8 (a session that was retired when the draft was begun), also after the gate and the read. The last two are
+        /// reached AFTER the read, so a Rejected outcome does not by itself mean that nothing was read.
         /// </summary>
         Rejected,
 

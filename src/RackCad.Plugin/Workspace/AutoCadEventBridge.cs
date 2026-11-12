@@ -54,6 +54,13 @@ namespace RackCad.Plugin.Workspace
         /// <summary>Whether the active session runs a command, as the core knows it in memory. It reads nothing of the drawing.</summary>
         internal bool IsCommandActiveInActiveSession => _core.IsCommandActiveInActiveSession;
 
+        /// <summary>
+        /// Assigns the advisor of the lifecycle to the core (I-64 F4-T2B2B): the controller calls it once with the host when it creates
+        /// the bridge. It forwards and nothing else: it adds no AutoCAD subscription, keeps no state and is internal, so the public
+        /// surface of the bridge does not grow.
+        /// </summary>
+        internal void SetLifecycleAdvisor(IWorkspaceLifecycleAdvisor advisor) => _core.SetLifecycleAdvisor(advisor);
+
         /// <summary>First panel open: hooks the document-collection sources and the active document. Repeating it adds nothing.</summary>
         public void Start()
         {
@@ -156,7 +163,7 @@ namespace RackCad.Plugin.Workspace
                 case BridgeSource.BeginDocumentClose:
                 {
                     var document = FindDocument(a.NativeInstanceId);
-                    DocumentBeginCloseEventHandler handler = (s, e) => ContainSession(a, () => _core.OnBeginDocumentClose(a.Session));
+                    DocumentBeginCloseEventHandler handler = (s, e) => ContainSession(a, () => { if (_core.OnBeginDocumentClose(a.Session) == CloseDecision.Veto) e.Veto(); });
                     document.BeginDocumentClose += handler;
                     return () => WithDocument(a.NativeInstanceId, d => d.BeginDocumentClose -= handler);
                 }

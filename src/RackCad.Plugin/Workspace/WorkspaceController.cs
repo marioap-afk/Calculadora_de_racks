@@ -41,6 +41,10 @@ namespace RackCad.Plugin.Workspace
                 LogFault,
                 _echo);
             _port = new WorkspaceHostPort(_host);
+
+            // The lifecycle of the drafts (I-64 F4-T2B2B): the bridge asks the host, as its advisor, about the close and the destruction of a
+            // document. It is wired by assignment, so the constructor of the core and the subscriptions of the bridge do not change.
+            _bridge.SetLifecycleAdvisor(_host);
             _bridge.Drained += OnDrained;
             _bridge.ActiveSessionChanged += OnActiveSessionChanged;
             _bridge.CommandStateChanged += OnCommandStateChanged;

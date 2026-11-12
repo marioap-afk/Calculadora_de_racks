@@ -30,6 +30,10 @@ namespace RackCad.Application.Workspace
     /// Back pilot) and <see cref="TryCheckPilotEdit"/> ("check now"). Each is ONE user action with at most ONE logical read, made
     /// through <see cref="IWorkspaceEditIntentReader"/>; neither runs from the drain or from the idle pass, and until the panel
     /// exposes them (F4-T3) nothing calls them.
+    ///
+    /// Since I-64 F4-T2B2B it also implements, explicitly, <see cref="IWorkspaceLifecycleAdvisor"/>: the veto of the close of a document
+    /// that may hold unsaved drafts, and the retirement of the drafts of a destroyed session, with a notice when work was lost. It adds
+    /// the stale hint of the drain, the lazy reload, the explicit discard and the in-memory "known clean" mark of a session.
     /// </summary>
     public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor
     {
@@ -46,6 +50,11 @@ namespace RackCad.Application.Workspace
         private readonly HashSet<SessionId> _pickFirstOff = new();
         private readonly DraftRegistry _drafts = new();
         private readonly DraftClosePolicy _closePolicy;
+
+        // I-64 F4-T2B2B (D-T2B2-10, D-T2B2-13): the sessions whose drafts the last evaluation of the close found clean (the "known
+        // clean" mark, in memory only), and the notices of loss that nobody consumed yet.
+        private readonly HashSet<SessionId> _knownClean = new();
+        private readonly Queue<DraftLossNotice> _lossNotices = new();
         private IWorkspaceEditIntentReader? _editIntentReader;
         private bool _started;
         private bool _panelVisible;
@@ -144,6 +153,12 @@ namespace RackCad.Application.Workspace
             if (!_started || !outcome.Result.Drained) return;
             try
             {
+                // I-64 F4-T2B2B (D-T2B2-10, D-T2B2-11), before any early return: every drain of the session ends the "known clean"
+                // mark, and a drain that carries the stale hint marks every draft of the pilot of that session. Only a hint: it reads
+                // nothing and raises no conflict.
+                _knownClean.Remove(outcome.Session);
+                if (outcome.Result.Operations.Contains(DrainOperation.MarkDraftsPossiblyStale)) MarkPilotDraftsPossiblyStale(outcome.Session);
+
                 using (_instrumentation.Begin(WorkspaceMeasurementPoints.Drain, outcome.Result.Operations.Count))
                 {
                     // The echo memory of a session that no longer lives goes away before anything is read (lazy purge).
@@ -183,7 +198,6 @@ namespace RackCad.Application.Workspace
                         }
                     }
 
-                    // Drafts do not exist in F1: MarkDraftsPossiblyStale has nothing to mark.
                 }
             }
             catch (Exception ex)
@@ -309,6 +323,7 @@ namespace RackCad.Application.Workspace
                 switch (begun.Status)
                 {
                     case DraftBeginStatus.Created:
+                        _knownClean.Remove(request.Session);
                         return EditIntentOutcome.Admitted(witness);
                     case DraftBeginStatus.AlreadyExists:
                         return EditIntentOutcome.AlreadyOpen();
@@ -383,8 +398,10 @@ namespace RackCad.Application.Workspace
                 switch (check.Status)
                 {
                     case DraftCheckStatus.Recovered:
+                        _knownClean.Remove(request.Session);
                         return EditCheckOutcome.Recovered();
                     case DraftCheckStatus.Conflict:
+                        _knownClean.Remove(request.Session);
                         return EditCheckOutcome.Conflict(DescribeDifferences(check.Differences));
                     default:
                         return EditCheckOutcome.NotApplicable("The draft is not unknown after a commit that threw.");
@@ -397,27 +414,194 @@ namespace RackCad.Application.Workspace
             }
         }
 
-        // ---------------------------------------------------------------- skeleton of the lifecycle of the drafts (I-64 F4-T2B2B, RED)
-        //
-        // Inert: nothing below throws, nothing is read, removed or queued, and every value is a valid, non-null value.
+        // ---------------------------------------------------------------- the lifecycle of the drafts (I-64 F4-T2B2B)
 
-        private readonly Queue<DraftLossNotice> _lossNotices = new();
-
-        public EditIntentOutcome TryReloadPilotEdit(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented yet.");
-
-        public EditDiscardOutcome DiscardPilotEdits(SessionId session) => EditDiscardOutcome.Rejected("Not implemented yet.");
-
-        public void NotePilotEdit(SessionId session)
+        /// <summary>
+        /// The lazy reload of one rack of the pilot (D-T2B2-12), by action of the user and never from the drain. It follows steps 1 to 8
+        /// of the table of the package: a missing draft is NotFound and a draft that is not marked as possibly stale and clean is
+        /// NotNeeded, both without any read; otherwise it makes the one read and replaces the draft from it. Every exception is contained
+        /// as Failed and the session is not degraded.
+        /// </summary>
+        public EditIntentOutcome TryReloadPilotEdit(EditIntentRequest request)
         {
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
+
+                // 1: a blank RackId has no identity, and the registry would throw on it.
+                if (string.IsNullOrWhiteSpace(request.RackId))
+                {
+                    return EditIntentOutcome.NotAdmitted(
+                        PushBackPilotIntentReader.NoIdentityDiagnostic,
+                        null,
+                        PushBackPilotIntentReader.ClassicEditorHint,
+                        EditWitnessStatus.NotEvaluated);
+                }
+
+                // 1, continued: the same request error as the intention, before the reader, the gate and the draft are touched.
+                if (HasWitnessWithoutKey(request))
+                    return EditIntentOutcome.Failed("The preview witness has no key.");
+
+                // 2 to 5: the same gate as the intention; nothing is read.
+                var gate = PassGate(request.Session, out var reason);
+                if (gate == EditGate.Unavailable) return EditIntentOutcome.Unavailable(reason);
+                if (gate == EditGate.Waiting) return EditIntentOutcome.Waiting(reason);
+                if (gate == EditGate.Rejected) return EditIntentOutcome.Rejected(reason);
+
+                // 6: only a clean draft marked as possibly stale is reloaded; nothing is read for any other.
+                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
+                if (draft == null) return EditIntentOutcome.NotFound("There is no draft for the rack.");
+                if (!draft.NeedsLazyReload) return EditIntentOutcome.NotNeeded("The draft does not need to be reloaded.");
+
+                // 7: the one read.
+                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+                switch (read.Status)
+                {
+                    case EditIntentReadStatus.Read:
+                        break;
+                    case EditIntentReadStatus.NoActiveDocument:
+                    case EditIntentReadStatus.Busy:
+                        return EditIntentOutcome.Waiting(read.Reason ?? "The drawing is not ready to be read.");
+                    case EditIntentReadStatus.Rejected:
+                        return EditIntentOutcome.Rejected(read.Reason ?? "The request does not belong to the active document.");
+                    default:
+                        return EditIntentOutcome.Failed(read.Reason ?? "The read for the reload failed.");
+                }
+
+                var pilot = read.PilotRead;
+                if (pilot == null) return EditIntentOutcome.Failed("The read for the reload carries no result.");
+                var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+
+                // 8: the read only goes to DiscardAndReload.
+                var reloaded = draft.DiscardAndReload(pilot.Read);
+                switch (reloaded.Status)
+                {
+                    case DraftReloadStatus.Reloaded:
+                        _knownClean.Remove(request.Session);
+                        return EditIntentOutcome.Reloaded(witness);
+                    case DraftReloadStatus.NotAdmitted:
+                        return EditIntentOutcome.NotAdmitted(
+                            reloaded.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
+                            pilot.Detail,
+                            pilot.ClassicEditorHint,
+                            witness);
+                    case DraftReloadStatus.NotAllowed:
+                        return EditIntentOutcome.Waiting("The draft is being applied or is no longer registered.");
+                    default:
+                        return EditIntentOutcome.Failed("The draft was not reloaded.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryReloadPilotEdit", ex);
+                return EditIntentOutcome.Failed(ex.Message);
+            }
         }
 
-        CloseDecision IWorkspaceLifecycleAdvisor.AdviseClose(SessionId session) => CloseDecision.Allow;
+        /// <summary>
+        /// The explicit discard of every draft of a session (D-T2B2-15), for the command that F4-T3 will expose. The only gate is the
+        /// authorization of the session against the active document (INV-22): it needs no reader, no rest, no absence of command and no
+        /// absence of modal. It reads nothing, never calls the comparer, and ends the "known clean" mark of the session. Every exception
+        /// is contained as Failed and the session is not degraded.
+        /// </summary>
+        public EditDiscardOutcome DiscardPilotEdits(SessionId session)
+        {
+            try
+            {
+                if (Authorize(new WorkspaceRequest(session)) != RequestDecision.Accepted)
+                    return EditDiscardOutcome.Rejected("The request does not belong to the active document.");
 
+                var discarded = _drafts.DiscardAllByUser(session);
+                _knownClean.Remove(session);
+                return EditDiscardOutcome.Discarded(discarded.RemovedRackIds, discarded.PendingTextRackIds);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.DiscardPilotEdits", ex);
+                return EditDiscardOutcome.Failed(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Tells the host that something changed a draft of the session in place (edit, pending text, update): the "known clean" mark of
+        /// the session no longer holds. It has no gate, reads nothing and never throws. Until the panel edits drafts (F4-T3, F4-T4)
+        /// nothing calls it.
+        /// </summary>
+        public void NotePilotEdit(SessionId session) => _knownClean.Remove(session);
+
+        // The advice for one attempt to close the document of the session (D-T2B2-09, D-T2B2-10): the verdict of the close policy,
+        // and nothing else. It reads nothing, authorizes nothing, discards nothing and retires nothing. A Veto or a failure leaves the
+        // session without the mark; an Allow puts it as the very last action, only when the evaluation worked.
+        CloseDecision IWorkspaceLifecycleAdvisor.AdviseClose(SessionId session)
+        {
+            _knownClean.Remove(session);
+            try
+            {
+                if (_closePolicy.EvaluateClose(session).IsVeto) return CloseDecision.Veto;
+                _knownClean.Add(session);
+                return CloseDecision.Allow;
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.AdviseClose", ex);
+                return CloseDecision.Veto;
+            }
+        }
+
+        // The session was destroyed (D-T2B2-10, D-T2B2-13). It always retires the drafts: without the comparer only when the mark of the
+        // host and the intact close sequence of the bridge both hold, conservatively in any other case. Afterwards, and only when work
+        // was lost, the notice is queued and logged on the spot. The retirement and the notice are contained apart.
         void IWorkspaceLifecycleAdvisor.SessionDestroyed(SessionId session, bool closeSequenceIntact)
         {
+            var marked = _knownClean.Remove(session);
+            DraftLossNotice? notice = null;
+            try
+            {
+                notice = marked && closeSequenceIntact ? _drafts.RetireKnownSafe(session) : _drafts.RetireConservative(session);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.SessionDestroyed", ex);
+            }
+
+            try
+            {
+                if (notice == null || !notice.HasLoss) return;
+                _lossNotices.Enqueue(notice);
+                Report("WorkspaceHostCore.DraftLoss", new InvalidOperationException(DescribeLoss(notice)));
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.SessionDestroyed", ex);
+            }
         }
 
+        /// <summary>The notices of lost work that nobody consumed yet, oldest first. F4-T3 consumes them; until then nothing does.</summary>
         internal IReadOnlyCollection<DraftLossNotice> LossNotices => _lossNotices;
+
+        // The text of the record: the racks lost and, apart, the uncertain ones with the reason that the comparer gave.
+        private static string DescribeLoss(DraftLossNotice notice)
+        {
+            var text = "Panel drafts were lost when the document closed. Session " + notice.Session.Value
+                       + ". Lost racks: " + string.Join(", ", notice.LostRackIds) + ".";
+            if (notice.UncertainRackIds.Count > 0)
+            {
+                text += " Uncertain racks (the comparison failed, so they may not have been modified): "
+                        + string.Join("; ", notice.UncertainRackIds.Select(id => id + " (" + ReasonOf(notice, id) + ")")) + ".";
+            }
+
+            return text;
+        }
+
+        private static string ReasonOf(DraftLossNotice notice, string rackId) =>
+            notice.UncertainReasons.TryGetValue(rackId, out var reason) ? reason : string.Empty;
+
+        // The stale hint of a drain: every draft of the pilot of the session is marked. Nothing is read and no conflict is raised.
+        private void MarkPilotDraftsPossiblyStale(SessionId session)
+        {
+            foreach (var rackId in _drafts.RackIdsOf(session))
+                _drafts.Find<PushBackPilotDraftState>(session, rackId)?.MarkPossiblyStale();
+        }
 
         // A witness that is present (not null) with a null, empty or blank key cannot be compared with anything (INV-27).
         private static bool HasWitnessWithoutKey(EditIntentRequest request) =>

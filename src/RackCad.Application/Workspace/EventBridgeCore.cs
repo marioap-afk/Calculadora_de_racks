@@ -54,6 +54,11 @@ namespace RackCad.Application.Workspace
         private SessionId? _active;
         private bool _panelVisible;
         private bool _modalRackCadActive;
+        private IWorkspaceLifecycleAdvisor? _advisor;
+
+        // The close sequence as the core observed it (I-64 F4-T2B2B, D-T2B2-10): the session whose close the advisor just allowed,
+        // and nothing else. It is forgotten (assigned null) by every other input that changes the state of the core.
+        private SessionId? _lastAllowedClose;
 
         public EventBridgeCore(IHostEventSource source, Action<string, Exception>? logFault = null)
         {
@@ -120,6 +125,7 @@ namespace RackCad.Application.Workspace
         public void RequestReconciliation()
         {
             if (!_started) return;
+            _lastAllowedClose = null;
             try
             {
                 if (_active is not { } id) return;
@@ -137,22 +143,33 @@ namespace RackCad.Application.Workspace
 
         public bool IsDegraded(SessionId id) => _states.TryGetValue(id, out var state) && state.Degraded;
 
-        /// <summary>Skeleton of I-64 F4-T2B2B (RED): inert, it keeps nothing and never throws.</summary>
-        public void SetLifecycleAdvisor(IWorkspaceLifecycleAdvisor advisor)
+        /// <summary>Panel visibility as the host reports it. Only the drain conditions use it; it never changes an attachment.</summary>
+        public void SetPanelVisible(bool visible)
         {
+            _lastAllowedClose = null;
+            _panelVisible = visible;
         }
 
-        /// <summary>Panel visibility as the host reports it. Only the drain conditions use it; it never changes an attachment.</summary>
-        public void SetPanelVisible(bool visible) => _panelVisible = visible;
-
         /// <summary>Whether a RackCad modal is open, as the host reports it. While true, nothing drains.</summary>
-        public void SetModalRackCadActive(bool active) => _modalRackCadActive = active;
+        public void SetModalRackCadActive(bool active)
+        {
+            _lastAllowedClose = null;
+            _modalRackCadActive = active;
+        }
+
+        /// <summary>
+        /// Assigns the advisor of the lifecycle (I-64 F4-T2B2B, D-T2B2-09). It is wired by assignment and never by constructor; a second
+        /// call replaces the advisor. It is a query-like setup call: it does not forget the close sequence.
+        /// </summary>
+        public void SetLifecycleAdvisor(IWorkspaceLifecycleAdvisor advisor) =>
+            _advisor = advisor ?? throw new ArgumentNullException(nameof(advisor));
 
         /// <summary>
         /// First panel open: attaches the document-collection sources once each. Repeating it changes nothing.
         /// </summary>
         public void Start()
         {
+            _lastAllowedClose = null;
             _started = true;
             _panelVisible = true;
             foreach (var source in BridgeSources.DocumentCollection)
@@ -174,6 +191,7 @@ namespace RackCad.Application.Workspace
         /// <summary>Releases every attachment and every session. After it the core is back to its initial, subscription-free state.</summary>
         public void Stop()
         {
+            _lastAllowedClose = null;
             foreach (var pair in _states.ToList())
             {
                 foreach (var attachment in pair.Value.Attached.ToList()) DetachSafe(attachment);
@@ -194,7 +212,8 @@ namespace RackCad.Application.Workspace
         /// <summary>A created document gets no session until it is activated (D-03: sessions are lazy). Nothing is attached.</summary>
         public void OnDocumentCreated(long nativeInstanceId)
         {
-            // Intentionally empty: the lazy session policy needs no work here, and nothing may fail.
+            // The lazy session policy needs no work here and nothing may fail; the input only ends the observed close sequence.
+            _lastAllowedClose = null;
         }
 
         /// <summary>
@@ -204,6 +223,7 @@ namespace RackCad.Application.Workspace
         public void OnDocumentActivated(long nativeInstanceId, bool isQuiescent)
         {
             if (!_started) return;
+            _lastAllowedClose = null;
             SessionId? known = null;
             try
             {
@@ -236,6 +256,7 @@ namespace RackCad.Application.Workspace
         public void OnNoActiveDocument()
         {
             if (!_started) return;
+            _lastAllowedClose = null;
             _active = null;
         }
 
@@ -247,10 +268,16 @@ namespace RackCad.Application.Workspace
         public void OnDocumentToBeDestroyed(long nativeInstanceId)
         {
             if (!_started) return;
+            var allowedBefore = _lastAllowedClose;
+            _lastAllowedClose = null;
             try
             {
                 if (!_byNative.TryGetValue(nativeInstanceId, out var id)) return;
                 _byNative.Remove(nativeInstanceId);
+
+                // The close sequence is intact only for the session whose close was just allowed and that is not degraded; the
+                // degradation is read BEFORE the state of the session goes away.
+                var sequenceIntact = allowedBefore == id && !IsDegraded(id);
                 if (_states.TryGetValue(id, out var state))
                 {
                     foreach (var attachment in state.Attached.ToList()) DetachSafe(attachment);
@@ -259,6 +286,7 @@ namespace RackCad.Application.Workspace
 
                 _registry.Destroy(id);
                 if (_active == id) _active = null;
+                TellAdvisorTheSessionEnded(id, sequenceIntact);
                 TrySyncIdle();
             }
             catch (Exception ex)
@@ -278,6 +306,7 @@ namespace RackCad.Application.Workspace
         public bool OnSourceEvent(SessionId session, BridgeSource source)
         {
             if (!_started) return false;
+            _lastAllowedClose = null;
             try
             {
                 if (!_states.TryGetValue(session, out var state) || state.Degraded) return false;
@@ -320,21 +349,29 @@ namespace RackCad.Application.Workspace
 
         /// <summary>
         /// Close-begin handler. It lives as long as the session, degraded or not, and decides only from in-memory
-        /// state: it reads no stored data, resolves nothing, writes nothing and opens no dialog. There is no unsaved
-        /// work state yet, so it always allows; the veto rule arrives with the draft state of F4.
+        /// state: it reads no stored data, resolves nothing, writes nothing and opens no dialog. Without an advisor it allows. With
+        /// one, the decision is the one of the advisor, and any exception of the advisor is a Veto: it is logged, never degrades the
+        /// session and never reaches the host. An allowed close is remembered (one session only) so that the destruction can tell
+        /// whether anything happened in between; the input itself first forgets whatever was remembered.
         /// </summary>
         public CloseDecision OnBeginDocumentClose(SessionId session)
         {
+            _lastAllowedClose = null;
+            var advisor = _advisor;
+            if (advisor == null) return CloseDecision.Allow;
+
+            var decision = CloseDecision.Veto;
             try
             {
-                _ = _states.TryGetValue(session, out _);
+                decision = advisor.AdviseClose(session) == CloseDecision.Allow ? CloseDecision.Allow : CloseDecision.Veto;
             }
             catch (Exception ex)
             {
                 Log("OnBeginDocumentClose", ex);
             }
 
-            return CloseDecision.Allow;
+            if (decision == CloseDecision.Allow) _lastAllowedClose = session;
+            return decision;
         }
 
         /// <summary>
@@ -346,6 +383,7 @@ namespace RackCad.Application.Workspace
         {
             var outcomes = new List<DrainOutcome>();
             if (!_started) return outcomes;
+            _lastAllowedClose = null;
             try
             {
                 if (_active is { } id
@@ -371,7 +409,11 @@ namespace RackCad.Application.Workspace
         /// <summary>
         /// A fault of the bridge in the host adapter. It is logged and degrades only the named session.
         /// </summary>
-        public void ReportFault(SessionId session, string context, Exception exception) => Fault(session, context, exception);
+        public void ReportFault(SessionId session, string context, Exception exception)
+        {
+            _lastAllowedClose = null;
+            Fault(session, context, exception);
+        }
 
         // Flips the in-memory command state of a session and tells whether it changed. No hint, no idle, no host call.
         private static bool SetQuiescent(SessionState state, bool quiescent)
@@ -379,6 +421,22 @@ namespace RackCad.Application.Workspace
             if (state.Quiescent == quiescent) return false;
             state.Quiescent = quiescent;
             return true;
+        }
+
+        // The advisor learns, synchronously and in memory, that a session is gone. It runs after the session left the registry and
+        // the active slot; its own failure is logged and never stops the rest of the destruction.
+        private void TellAdvisorTheSessionEnded(SessionId id, bool closeSequenceIntact)
+        {
+            var advisor = _advisor;
+            if (advisor == null) return;
+            try
+            {
+                advisor.SessionDestroyed(id, closeSequenceIntact);
+            }
+            catch (Exception ex)
+            {
+                Log("OnDocumentToBeDestroyed.Advisor", ex);
+            }
         }
 
         private void AttachSessionSources(SessionId id, SessionState state)
