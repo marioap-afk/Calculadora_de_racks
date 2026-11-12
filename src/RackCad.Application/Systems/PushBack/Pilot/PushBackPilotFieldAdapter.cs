@@ -1,6 +1,8 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using RackCad.Application.Formatting;
+using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Workspace.Drafts;
 
 namespace RackCad.Application.Systems.PushBack.Pilot
@@ -30,9 +32,42 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public const string UnknownFieldMessage = "Campo desconocido para el piloto.";
 
-        // RED skeleton: inert. It accepts everything and changes nothing.
-        public DraftFieldValidation Validate(string fieldKey, string text) => DraftFieldValidation.Valid;
+        public DraftFieldValidation Validate(string fieldKey, string text)
+        {
+            if (!string.Equals(fieldKey, AnnotationScaleKey, StringComparison.Ordinal))
+            {
+                return DraftFieldValidation.Invalid(UnknownFieldMessage);
+            }
 
-        public PushBackPilotDraftState Apply(PushBackPilotDraftState current, IReadOnlyDictionary<string, string> pendingText) => current;
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return DraftFieldValidation.Invalid(EmptyMessage);
+            }
+
+            if (!LocalizedNumberParser.TryDouble(text, out var value))
+            {
+                return DraftFieldValidation.Invalid(NotANumberMessage);
+            }
+
+            return value <= 0.0 ? DraftFieldValidation.Invalid(NotPositiveMessage) : DraftFieldValidation.Valid;
+        }
+
+        public PushBackPilotDraftState Apply(PushBackPilotDraftState current, IReadOnlyDictionary<string, string> pendingText)
+        {
+            if (current == null) throw new ArgumentNullException(nameof(current));
+            if (pendingText == null) throw new ArgumentNullException(nameof(pendingText));
+
+            // The core only calls Apply with text that already passed Validate; a value that does not, or a key that is not
+            // the one field of the pilot, is left alone instead of being half applied.
+            if (pendingText.TryGetValue(AnnotationScaleKey, out var text)
+                && Validate(AnnotationScaleKey, text).IsValid
+                && LocalizedNumberParser.TryDouble(text, out var scale))
+            {
+                current.Inputs.Annotations ??= new DynamicAnnotationOptions();
+                current.Inputs.Annotations.AnnotationScale = scale;
+            }
+
+            return current;
+        }
     }
 }

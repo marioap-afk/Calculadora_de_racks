@@ -86,8 +86,11 @@ namespace RackCad.Application.Workspace.Drafts
         /// stale base, the admission and the initial state together. A read that is not admitted creates nothing.
         /// </summary>
         /// <remarks>
-        /// <paramref name="copy"/> is injected next to the comparer: the current state of the draft is always a copy of the
-        /// initial one, so an in-place edit of the current state can never change the initial state (INV-F4T1-19).
+        /// <paramref name="copy"/> is injected next to the comparer. The draft copies every state that enters it, the initial
+        /// state of this read included, so the object the read carries is never shared with the draft: mutating it after
+        /// <c>Begin</c> changes neither the initial state nor dirty, and two drafts born from the same object are
+        /// independent (N-2). The current state is a copy of the initial one, so an in-place edit of the current state can
+        /// never change the initial state (INV-F4T1-19).
         /// </remarks>
         public DraftBeginResult<TState> Begin<TState>(SessionId session, string rackId, DraftIntentRead<TState> read, IEqualityComparer<TState> comparer, Func<TState, TState> copy)
         {

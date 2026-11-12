@@ -1,6 +1,9 @@
 #nullable enable
 using System;
+using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Persistence;
+using RackCad.Domain.Systems.PushBack;
 
 namespace RackCad.Application.Systems.PushBack.Pilot
 {
@@ -106,12 +109,93 @@ namespace RackCad.Application.Systems.PushBack.Pilot
 
         public const string CatalogRequiredDiagnostic = "Se necesita el catálogo para materializar el diseño.";
 
-        // RED skeleton: inert. It always answers Failed / Rejected.
+        /// <summary>
+        /// Materializes the state of the pilot from the raw authored envelope text. It never throws: the outcome is a typed
+        /// result, and a failure of the existing reader or of the resolver becomes Failed with its message.
+        /// </summary>
         public static PushBackPilotMaterialization Materialize(string originText, RackCatalog catalog)
-            => PushBackPilotMaterialization.Failed("skeleton");
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(originText)) return PushBackPilotMaterialization.Failed(UnreadableOrFutureDiagnostic);
+                if (catalog == null) return PushBackPilotMaterialization.Failed(CatalogRequiredDiagnostic);
 
+                // 1. The existing reading path of RACKEDITAR, without a parser of its own.
+                var embed = new RackEmbedStore().Deserialize(originText);
+                if (embed == null) return PushBackPilotMaterialization.Failed(UnreadableOrFutureDiagnostic);
+                if (!string.Equals(embed.Kind, RackEmbedDocument.KindPushBack, StringComparison.Ordinal))
+                    return PushBackPilotMaterialization.Failed(KindDivergentDiagnostic);
+
+                if (!new RackProjectStore().TryDeserialize(embed.Design, out var project, out var incompatibleMajor))
+                    return PushBackPilotMaterialization.Failed(incompatibleMajor ? UnreadableOrFutureDiagnostic : NoDesignDiagnostic);
+
+                var design = project?.PushBackDesign;
+                if (design == null) return PushBackPilotMaterialization.Failed(NoDesignDiagnostic);
+
+                // A single-sided design is `!IsComposite` (the composite assembler always writes a Composite block).
+                if (design.IsComposite) return PushBackPilotMaterialization.OutOfPilot(CompositeOutOfPilotReason);
+
+                // 2. The Application part of RackPushBackSystemWindow.LoadExisting, in the same order.
+                var resolver = new PushBackResolver(catalog);
+                var editor = new PushBackCompositeEditorState();
+                editor.SetActiveSide(PushBackSide.A);
+                editor.SetSideBPresent(false);
+                var inputs = editor.SideA.LoadFromDesign(design, resolver);
+
+                editor.SetSideBPresent(false);
+                editor.LoadComposite(design.Composite);
+
+                editor.ClearDormantTail();
+                var structure = design.Structure;
+                if (structure != null)
+                {
+                    editor.ParkDormantTail(
+                        structure.Modules.Where(module => module != null && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId)),
+                        structure.HeaderLineOverrides.Where(line => line != null && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId)));
+                }
+
+                if (editor.DormantCompositeTail.Count > 0 || editor.DormantTailLineOverrides.Count > 0)
+                    return PushBackPilotMaterialization.OutOfPilot(DormantTailOutOfPilotReason);
+
+                editor.AlignSlotGrid();
+
+                // 3. LoadFromModel and the first Recompute are NOT reproduced: they belong to the controls.
+                return PushBackPilotMaterialization.Admitted(new PushBackPilotDraftState(editor, inputs, originText));
+            }
+            catch (Exception ex)
+            {
+                return PushBackPilotMaterialization.Failed("No se pudo materializar el diseño: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// The composition to write (IC-07 point 2): it materializes AGAIN from <c>initial.Origin</c> — the current base, which
+        /// gives a fresh module authority — and transfers to it the editable content of <paramref name="current"/>. It returns
+        /// the pair <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes. Pure and total: it mutates neither
+        /// state, it ignores <c>current.Origin</c> and it never throws; a base that no longer materializes gives a typed
+        /// rejection.
+        /// </summary>
         public static PushBackPilotComposition ComposeForWrite(
             PushBackPilotDraftState initial, PushBackPilotDraftState current, RackCatalog catalog)
-            => PushBackPilotComposition.Rejected("skeleton");
+        {
+            try
+            {
+                if (initial == null || current == null) return PushBackPilotComposition.Rejected("Falta el estado inicial o el actual.");
+
+                var fresh = Materialize(initial.Origin, catalog);
+                if (!fresh.IsAdmitted || fresh.State == null)
+                    return PushBackPilotComposition.Rejected(fresh.Reason ?? UnreadableOrFutureDiagnostic);
+
+                // Restore() carries the editable content and leaves the authority of the fresh state (baseline, modules,
+                // tail) untouched: what the pilot does not edit stays what the current base says.
+                fresh.State.Editor.Restore(current.Editor.Snapshot());
+                var inputs = PushBackPilotStateComparer.Copy(current).Inputs;
+                return PushBackPilotComposition.Composed(fresh.State.Editor, inputs);
+            }
+            catch (Exception ex)
+            {
+                return PushBackPilotComposition.Rejected("No se pudo componer el diseño: " + ex.Message);
+            }
+        }
     }
 }
