@@ -645,3 +645,47 @@ La mutación sigue solo en T4B.
 - **Paradas:** 7 propias de la tarea.
 
 **Controles:** nc4 en la primera delegación de la cadena; nc1..nc3 con su oráculo ordinario. Si nc2 o nc3 repiten el modo de fallo de T2B1, la sesión los devuelve al Owner antes de cualquier sustituto (F4-E29).
+
+## F4-E31. Planificación de F4-T2B2A: rechazo por copia, devolución al Owner, replanificación única y regla para F4
+
+**Hechos:**
+- **Planificación** `R20261112T134333Z-a409`: la comparación byte a byte la RECHAZÓ. En `ForbiddenWriteScope[43]` copió `tests/RackCad.Tests/Workspace/WorkspacePaletteHostGuardTests.cs` (sin la palabra «Source») en vez de `tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs`.
+  - A1-A8: A4 fail; las demás, pass. Horizonte Medium.
+  - Resultado: STOP P-03 antes de invocar al Worker, sin consumir intentos.
+- **Devolución al Owner:** es el mismo modo de fallo de copia de F4-T2A (`13b0`, `61f3`) y de F4-T2B1 (`58d4`). Una decisión previa solo vincula a la unidad que nombra, así que la sesión **no** aplicó la replanificación de T2B1 por analogía: se lo preguntó al Owner (`F4-DRAFTS/coordinator/owner-f4t2b2a-replanning.md`, pregunta y respuesta literales).
+
+**Orden del Owner:** «Replanificar + regla F4».
+- **UNA replanificación** de F4-T2B2A, con el prompt reforzado (cita el rechazo y pide comprobar `ForbiddenWriteScope` y `AllowedWriteScope` índice por índice), sin consumir intentos. Un segundo rechazo vuelve al Owner.
+- **Regla para las siguientes tareas de F4:** se fija en sus contratos. Un rechazo por copia antes del Worker permite una replanificación única; un segundo rechazo vuelve al Owner.
+
+**Replanificación** `R20261112T142947Z-4456`:
+- comparación byte a byte PASS en las ocho colecciones;
+- A1-A8 8/8; Horizonte Medium; 7 criterios de aceptación;
+- nc4 `R20261112T143242Z-7099`: solo A3 fail, con el oráculo relativo cumplido.
+- Aceptada tal como se emitió. Base `e277dd42`, la misma de `a409`.
+
+## F4-E32. Intento 1 de F4-T2B2A: verificado, revisión independiente NO ACEPTABLE y corrección delegada
+
+**Hechos del intento 1:**
+- **Worker** `R20261112T143337Z-4331` (subagente sonnet/high, prompt por archivo con SHA-256 previo):
+  - RED `db37e30d`: Core filtrado 1727, 80 fallos por aserción y ninguno por excepción del esqueleto;
+  - GREEN `2d743e46`: 13 rutas, exactamente el alcance.
+  - Sin participantes ni procesos vivos en la entrada.
+- **CI:** `43247864348` 4/4. El RED `43243624408` tiene Core en rojo, UI en verde y el build del Plugin omitido.
+- **Verificación** `R20261112T155354Z-46e1`: `EXECUTION_VERIFIED`, 14/14, `VerifiedSha` `2d743e46`. El barrido 16.10 de la sesión no encuentra nada.
+- **Condición previa conocida:** la suite completa de UI en Release da 2 fallos de `PendingTextFieldTests`, que dependen de `#if DEBUG`. Ya los midió F4-T2A (`dd72`), y en Debug, que es lo que corre la CI, son 0. La tarea no toca la UI.
+- **Revisión directa de la sesión:** el producto no tiene defectos de corrección (`F4-T2B2A-INTENT-WIRING/1/R20261112T155354Z-46e1/analysis.md`).
+- **Revisión adversarial independiente:** NO ACEPTABLE, con 0 bloqueantes, 1 importante y 8 menores (`independent-review.md`, en la misma carpeta). El producto no tiene defectos de corrección. El importante, I-1, es que varias pruebas y guardas nuevas prohíben para siempre lo que el paquete v5 asigna a F4-T2B2B (y a F4-T3); T2B2B no podría cambiarlas sin salirse de su alcance.
+
+**Decisión:** la sesión aplica la autorización de correcciones del contrato (`CorrectionsAuthorized`). No enmienda el alcance de T2B2B, porque eso reabriría el paquete v5 ratificado (F4-E29).
+- **Intento de corrección 2** de F4-T2B2A (`attempts` 2 de 3), con un contrato del intento 2 (`gate-contract-attempt2.json`). Respecto del contrato del intento 1:
+  - añade texto a INV-01, 02, 06, 07, 08 y 09;
+  - añade INV-13 para la corrección;
+  - añade la parada F4T2B2A-C08 con la regla de replanificación de F4-E31.
+- **RED de la corrección**, sobre `2d743e46`:
+  - pruebas y guardas re-acotadas o nuevas para I-1, M-2, M-6 y M-9;
+  - pruebas que fallan por aserción para M-3, M-4, M-5 y M-7.
+- **GREEN de la corrección:** solo producto; ningún archivo de `tests/`.
+- **Regla de I-1:** ninguna prueba ni guarda nueva prohíbe de forma permanente lo que el paquete asigna a F4-T2B2B o a la exposición de F4-T3. La ausencia del ciclo de vida se acredita por el diff y la revisión.
+- **Los riesgos para el smoke** (bloqueos anidados, DBMOD/UNDO, coste, catálogo, RackLog, compuerta de `ReadPreviewWitness`, defensa del drenaje y referencias de Model Space) pasan a Smoke-2 y a F4-T3.
+- **CorrectionOf** = la verificación `46e1`, con la clase `Tests`.

@@ -6427,3 +6427,31 @@ Todo queda dispuesto en sus §9 y §10.
 - `attempts` 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 150. Planificación de F4-T2B2A: rechazo, devolución al Owner y replanificación
+
+**Decisión:** F4-E31 (orden en `F4-DRAFTS/coordinator/owner-f4t2b2a-replanning.md`).
+
+| Corrida | Resultado |
+|---|---|
+| `R20261112T134333Z-a409` | REJECTED_BEFORE_INVOCATION: `ForbiddenWriteScope[43]` sin «Source» (A4); STOP P-03; devuelta al Owner |
+| `R20261112T142947Z-4456` | aceptada: fidelidad PASS en las ocho colecciones, A1-A8 8/8, Horizonte Medium |
+| nc4 `R20261112T143242Z-7099` | REJECTED_BEFORE_INVOCATION con su oráculo: solo A3 fail |
+
+Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker permite una replanificación única; un segundo rechazo vuelve al Owner.
+
+**Límites:** sin AutoCAD.
+
+## 151. Intento 1 de F4-T2B2A: verificado; revisión independiente NO ACEPTABLE
+
+**Decisión:** F4-E32.
+
+- **Worker** `4331`: RED `db37e30d` y GREEN `2d743e46`, con las 13 rutas del alcance.
+- **CI:** `43247864348` 4/4; el RED `43243624408` tiene Core en rojo.
+- **Verificación** `46e1`: `EXECUTION_VERIFIED`, 14/14.
+- **Revisiones:**
+  - la directa, sin defectos de producto;
+  - la independiente, NO ACEPTABLE: 1 importante (I-1: pruebas y guardas que prohíben para siempre lo que corresponde a F4-T2B2B) y 8 menores.
+- **Disposición:** corrección delegada, intento 2 de 3.
+
+**Límites:** sin AutoCAD.
