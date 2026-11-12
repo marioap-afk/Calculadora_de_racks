@@ -6562,3 +6562,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Revisiones:** v1 EMITIBLE TRAS CORRECCIONES (2/7/10); re-revisión de la v2 EMITIBLE (0/0/7). Sus menores quedan aplicados.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 160. Contrato de F4-T2C-IC04-READ-SCHEDULING
+
+**Contrato:** `I-64-pilot/F4-T2C-IC04-READ-SCHEDULING/coordinator/gate-contract.json` (F4-E36).
+- **Alcance:** lista blanca exacta de 7 rutas, con los cambios declarados (1) y (2).
+- **`ForbiddenWriteScope`:** 87 entradas.
+- **Invariantes y paradas:** 11 invariantes y 8 paradas propias, entre ellas C08.
+- **Líneas base:** `RackCad.Tests.Workspace` 1919 (`ExpectRed` true) y `RackCad.UI.Tests.Workspace` 248 (`ExpectRed` false).
+- **Revisiones:** `AuthorityRevision` `05c7b501fc5833527876bb23b87ec2fca77f9d54` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
