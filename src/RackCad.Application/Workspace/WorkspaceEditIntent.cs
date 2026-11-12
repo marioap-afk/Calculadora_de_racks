@@ -82,7 +82,12 @@ namespace RackCad.Application.Workspace
         /// <summary>No active document, a RackCad modal, a command or no rest: the intention waits. Nothing was read.</summary>
         Waiting,
 
-        /// <summary>The session of the request is not the one of the active document (INV-22): no effect and no read of the drawing.</summary>
+        /// <summary>
+        /// The request is refused and no draft is created. The session of the request is not the one of the active document
+        /// (INV-22), which is decided before anything about the drafts and before any read of the drawing. The other way to this
+        /// state, a session that was retired when the draft was begun (the SessionRetired answer of step 8), is reached AFTER the
+        /// read, so a Rejected outcome does not by itself mean that nothing was read.
+        /// </summary>
         Rejected,
 
         /// <summary>There is already a draft for (session, rack): nothing was read.</summary>
@@ -186,19 +191,24 @@ namespace RackCad.Application.Workspace
     /// </summary>
     public readonly struct EditCheckOutcome
     {
+        private readonly IReadOnlyList<string>? _differences;
+
         private EditCheckOutcome(EditCheckStatus status, string? reason, IReadOnlyList<string> differences)
         {
             Status = status;
             Reason = reason;
-            Differences = differences;
+            _differences = differences;
         }
 
         public EditCheckStatus Status { get; }
 
         public string? Reason { get; }
 
-        /// <summary>What differs, as "key:kind" lines (the variable registry has no key); empty unless the status is Conflict.</summary>
-        public IReadOnlyList<string> Differences { get; }
+        /// <summary>
+        /// What differs, as "key:kind" lines (the variable registry has no key); empty unless the status is Conflict. Never null,
+        /// also for a default value of this struct.
+        /// </summary>
+        public IReadOnlyList<string> Differences => _differences ?? Array.Empty<string>();
 
         public static EditCheckOutcome Unavailable(string reason) => Without(EditCheckStatus.Unavailable, reason);
 

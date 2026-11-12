@@ -45,15 +45,13 @@ namespace RackCad.Plugin.Views
             IReadOnlyDictionary<string, ObjectId> definitions,
             IReadOnlyDictionary<string, RackEmbedDocument> envelopes,
             IReadOnlyDictionary<string, CustomPropertiesReadResult> properties,
-            IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> layers,
-            IReadOnlyDictionary<string, string> rawEnvelopes = null)
+            IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> layers)
         {
             Facts = facts;
             Definitions = definitions;
             Envelopes = envelopes;
             Properties = properties;
             Layers = layers;
-            RawEnvelopes = rawEnvelopes ?? new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(StringComparer.Ordinal));
         }
 
         internal IReadOnlyList<RackSiblingScanFact> Facts { get; }
@@ -64,9 +62,11 @@ namespace RackCad.Plugin.Views
 
         /// <summary>
         /// The raw text of the envelope of each scanned definition that has text, by key (ordinal): the same text that
-        /// <c>Traverse</c> deserializes. It is a read-only view; the scan still writes nothing.
+        /// <c>Traverse</c> deserializes. It is a read-only view; the scan still writes nothing. It is assigned at the one point
+        /// where a scan is built (<c>Traverse</c>); a scan without it carries null, and the read of the intention then fails
+        /// with a typed failure instead of receiving an empty dictionary in silence.
         /// </summary>
-        internal IReadOnlyDictionary<string, string> RawEnvelopes { get; }
+        internal IReadOnlyDictionary<string, string> RawEnvelopes { get; init; }
 
         /// <summary>The members of one rack among the scanned definitions; no source is selected, so none is erased by kind.</summary>
         internal RackSiblingMembershipSnapshot MembershipFor(string rackId)
@@ -163,8 +163,10 @@ namespace RackCad.Plugin.Views
                 transaction.Commit();
             }
 
-            return new RackSiblingDrawingScan(
-                facts, definitions, envelopes, properties, layers, new ReadOnlyDictionary<string, string>(rawEnvelopes));
+            return new RackSiblingDrawingScan(facts, definitions, envelopes, properties, layers)
+            {
+                RawEnvelopes = new ReadOnlyDictionary<string, string>(rawEnvelopes)
+            };
         }
 
         private static void AddLayer(Transaction transaction, ObjectId layerId, RackSiblingLayerUse use,

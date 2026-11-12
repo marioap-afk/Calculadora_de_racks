@@ -266,6 +266,11 @@ namespace RackCad.Application.Workspace
                         EditWitnessStatus.NotEvaluated);
                 }
 
+                // 1, continued: a witness that is present must carry a key; one without it is a failure of the request, before the
+                // reader, the gate and the registry are touched, and the witness is not evaluated.
+                if (HasWitnessWithoutKey(request))
+                    return EditIntentOutcome.Failed("The preview witness has no key.");
+
                 // 2 to 5: the reader, the probe of the active document, the modal or the command, the authorization.
                 var gate = PassGate(request.Session, out var reason);
                 if (gate == EditGate.Unavailable) return EditIntentOutcome.Unavailable(reason);
@@ -339,6 +344,10 @@ namespace RackCad.Application.Workspace
                 if (string.IsNullOrWhiteSpace(request.RackId))
                     return EditCheckOutcome.NotFound("A blank rack has no draft.");
 
+                // 1, continued: the same request error as the intention; nothing is read and the draft is not touched.
+                if (HasWitnessWithoutKey(request))
+                    return EditCheckOutcome.Failed("The preview witness has no key.");
+
                 // 2 to 5: the same gate as the intention; nothing is read.
                 var gate = PassGate(request.Session, out var reason);
                 if (gate == EditGate.Unavailable) return EditCheckOutcome.Unavailable(reason);
@@ -387,6 +396,10 @@ namespace RackCad.Application.Workspace
                 return EditCheckOutcome.Failed(ex.Message);
             }
         }
+
+        // A witness that is present (not null) with a null, empty or blank key cannot be compared with anything (INV-27).
+        private static bool HasWitnessWithoutKey(EditIntentRequest request) =>
+            request.Witness != null && string.IsNullOrWhiteSpace(request.Witness.Key);
 
         private enum EditGate
         {

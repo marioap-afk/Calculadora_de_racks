@@ -114,10 +114,12 @@ namespace RackCad.Plugin.Views
                 }
 
                 var scan = RackSiblingScan.CaptureDrawing(document);
+                if (scan.RawEnvelopes == null)
+                    return new RackPilotIntentReadResult(null, "The scan of the drawing carries no raw envelopes.");
+
                 var input = new PushBackPilotIntentScan(rackId, originKey, scan.Facts, scan.RawEnvelopes, CompletenessEvidence, witness);
                 var read = PushBackPilotIntentReader.Read(input, catalog);
 
-                AssertNoOpenTransaction(document, "after");
                 return new RackPilotIntentReadResult(read, null);
             }
             catch (Autodesk.AutoCAD.Runtime.Exception ex) when (ex.ErrorStatus == ErrorStatus.LockViolation)
@@ -132,6 +134,11 @@ namespace RackCad.Plugin.Views
             {
                 return new RackPilotIntentReadResult(null, "The edit intention could not be read: " + ex.Message);
             }
+            finally
+            {
+                // INV-14: every path of the read (the success, the early return and the catches) leaves no transaction open.
+                AssertNoOpenTransaction(document, "after");
+            }
         }
 
         /// <summary>
@@ -143,6 +150,9 @@ namespace RackCad.Plugin.Views
         {
             try
             {
+                // INV-14: no transaction is open before the lock and the transaction of this read, and none after both are closed.
+                AssertNoOpenTransaction(document, "before");
+
                 if (definitionHandle <= 0)
                     return new RackPilotWitnessResult(null, "The definition has no handle.");
 
@@ -170,6 +180,11 @@ namespace RackCad.Plugin.Views
             catch (System.Exception ex)
             {
                 return new RackPilotWitnessResult(null, "The preview witness could not be read: " + ex.Message);
+            }
+            finally
+            {
+                // The lock and the transaction are closed by now (both using blocks are inside the try).
+                AssertNoOpenTransaction(document, "after");
             }
         }
 
