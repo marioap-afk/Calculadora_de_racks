@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using RackCad.Application.Views.Redraw;
 
 namespace RackCad.Application.Systems.PushBack.Pilot
@@ -23,7 +24,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
     public sealed class PushBackPilotIntentScan
     {
         private readonly IReadOnlyList<RackSiblingScanFact> _facts;
-        private readonly Dictionary<string, string> _rawEnvelopes;
+        private readonly IReadOnlyDictionary<string, string> _rawEnvelopes;
 
         public PushBackPilotIntentScan(
             string? rackId,
@@ -72,7 +73,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             RackId = rackId ?? string.Empty;
             OriginKey = originKey ?? string.Empty;
             _facts = copiedFacts.AsReadOnly();
-            _rawEnvelopes = copiedText;
+            // A read-only view over the private copy: nobody can turn it back into a mutable dictionary and change the input.
+            _rawEnvelopes = new ReadOnlyDictionary<string, string>(copiedText);
             CompletenessEvidence = completenessEvidence;
             PreviewWitness = previewWitness;
         }
@@ -86,7 +88,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
         /// <summary>The facts as the scan gives them: unclassified.</summary>
         public IReadOnlyList<RackSiblingScanFact> Facts => _facts;
 
-        /// <summary>The exact raw text of each definition by key (ordinal). A key without text is simply absent.</summary>
+        /// <summary>The exact raw text of each definition by key (ordinal), as a read-only view. A key without text is simply absent.</summary>
         public IReadOnlyDictionary<string, string> RawEnvelopes => _rawEnvelopes;
 
         /// <summary>The evidence of completeness that is handed to the authored comparator.</summary>

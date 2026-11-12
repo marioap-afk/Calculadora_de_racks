@@ -171,13 +171,20 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             // 4
             if (string.IsNullOrWhiteSpace(origin.Fact.RackId)) return Verdict.Refused(NoIdentityDiagnostic);
 
-            // 5 (an external reference with the right identity is rule 6, not this one)
+            // 5: the origin belongs to another rack (its Id is not the RackId) or it is not classified as a member (NotMember or
+            // Blocking). An external reference (ReadOnly) with the right identity is NOT this rule: it goes on to rule 6.
+            // Defensive: with the semantics of Classify the second condition cannot hold here (an interpretable fact with the
+            // RackId, ignoring case, is Redraw, Erase or ReadOnly, and an uninterpretable one was refused by rule 3); it is kept
+            // so that a change of Classify can never let a non-member origin through.
             if (!string.Equals(origin.Fact.RackId, scan.RackId, StringComparison.OrdinalIgnoreCase) ||
                 !(IsMutable(origin.Kind) || origin.Kind == RackSiblingMembershipKind.ReadOnly))
                 return Verdict.Refused(OriginNotMemberDiagnostic);
 
             // 6
             if (origin.Fact.IsXrefDependent) return Verdict.Refused(OriginReadOnlyDiagnostic);
+            // Defensive: after rule 5 the origin is Redraw, Erase or ReadOnly, and ReadOnly is exactly the external reference
+            // that the line above refused, so this can never hold today; it keeps the origin from ever being edited unless it is
+            // Redraw or Erase.
             if (!IsMutable(origin.Kind)) return Verdict.Refused(OriginNotMemberDiagnostic);
 
             // 7
@@ -187,19 +194,24 @@ namespace RackCad.Application.Systems.PushBack.Pilot
                 return Verdict.Refused(UnreadableDiagnostic);
 
             // 8
-            if (mutable.Select(m => m.Embed!.Kind ?? string.Empty).Distinct(StringComparer.OrdinalIgnoreCase).Count() > 1)
+            if (mutable.Select(m => m.Embed?.Kind ?? string.Empty).Distinct(StringComparer.OrdinalIgnoreCase).Count() > 1)
                 return Verdict.Refused(KindDivergentDiagnostic);
 
-            // 9
+            // 9 (a null kind has no detail to give: the detail stays null)
             var originKind = origin.Embed.Kind;
             if (!string.Equals(originKind, RackEmbedDocument.KindPushBack, StringComparison.Ordinal))
-                return Verdict.Refused(OutOfPilotDiagnostic, originKind ?? string.Empty);
+                return Verdict.Refused(OutOfPilotDiagnostic, originKind);
 
-            // 10 and 11: AUTH-13 over the editable members by key, with the real raw text.
-            var siblings = mutable
-                .OrderBy(m => m.Fact.DefinitionKey, StringComparer.Ordinal)
-                .Select(m => new RackAuthoredSibling(m.Fact.DefinitionKey, m.Embed!.Kind!, m.Text!, m.Embed!.Design!))
-                .ToList();
+            // 10 and 11: AUTH-13 over the editable members by key, with the real raw text. A member whose envelope or text is
+            // missing (rule 7 already refused it) would simply not be handed over, and the sibling count below says so.
+            var siblings = new List<RackAuthoredSibling>(mutable.Count);
+            foreach (var m in mutable.OrderBy(m => m.Fact.DefinitionKey, StringComparer.Ordinal))
+            {
+                var embed = m.Embed;
+                if (embed == null || m.Text == null) continue;
+                siblings.Add(new RackAuthoredSibling(m.Fact.DefinitionKey, embed.Kind ?? string.Empty, m.Text, embed.Design));
+            }
+
             var isComplete = !analysis.Members.Any(m => m.Kind == RackSiblingMembershipKind.BlockingUnreadable) &&
                              siblings.Count == mutable.Count;
             var comparison = RackAuthoredComparatorPorts.PushBack()
@@ -230,7 +242,9 @@ namespace RackCad.Application.Systems.PushBack.Pilot
             var witness = scan.PreviewWitness;
             if (witness == null) return PushBackPilotPreviewWitnessStatus.NotSupplied;
 
+            // Unchanged needs the origin to be in the scan: without its fact, even an equal text is only a leftover (Changed).
             return string.Equals(witness.Key, scan.OriginKey, StringComparison.Ordinal) &&
+                   scan.Facts.Any(f => string.Equals(f.DefinitionKey, scan.OriginKey, StringComparison.Ordinal)) &&
                    witness.RawEnvelopeText != null &&
                    scan.RawEnvelopes.TryGetValue(scan.OriginKey, out var current) &&
                    string.Equals(witness.RawEnvelopeText, current, StringComparison.Ordinal)
