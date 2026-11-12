@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 2
-  next_action: "Owner: disponer los controles nc2 y nc3 de F4-T2B1 (F4-E28: nc2 da Contract en vez de Scope bajo F4-E21; nc3 es un falso PASS del Controller en FreeText) y el cierre de F4-T2B1; mientras, la sesion prepara y revisa el paquete de F4-T2B2 sin emitir su contrato"
+  next_action: "Owner: (1) disponer nc2 y nc3 de F4-T2B1 y su cierre (F4-E28); (2) ratificar o no el cambio de D-T2B2-10 sobre el nucleo de F4-T1; despues la sesion emite F4-T2B2A con el paquete v4 de F4-T2B2, ya revisado y preparado"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual

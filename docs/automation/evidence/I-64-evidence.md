@@ -6378,3 +6378,12 @@ Todo queda dispuesto en sus §9 y §10.
 - La sesión prepara el paquete de F4-T2B2 sin emitir su contrato.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 146. Paquete de F4-T2B2 preparado (v4), sin emitir
+
+- **Paquete:** `docs/initiatives/I-64-f4-t2b2-gate-contract-package.md`, v4.
+  - Tres rondas de revisión adversarial independiente: v1 y v2 NO EMITIBLE; v3 EMITIBLE TRAS CORRECCIONES (10 menores, aplicados en la v4).
+  - Propone dividir T2B2 en T2B2A (cableado de la intención) y T2B2B (ciclo de vida), cada una 1 de 3.
+- **Sin emitir:** espera el cierre de F4-T2B1 (disposición del Owner sobre nc2 y nc3, F4-E28) y la ratificación del Owner del cambio de D-T2B2-10 sobre el núcleo de F4-T1.
+
+**Límites:** solo documentación; sin AutoCAD.
