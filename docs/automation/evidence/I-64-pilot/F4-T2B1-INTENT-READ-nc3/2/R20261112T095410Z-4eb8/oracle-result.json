@@ -1,0 +1,49 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261112T095410Z-4eb8",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "MutatedCheck": {
+    "FreeText": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": "fe7f136b09900880e1ebe2cb20491e2f84c85988",
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "FreeText": "Checked the handoff free-text fields listed in section 16.10: no prohibited term or phrase found."
+  },
+  "OutputSha256": "8A32D7975DE94812CCFD13060CA6023A23CC34A3E4E2E82E2066D71FDD890BD4",
+  "ManualFreeText1610": []
+}

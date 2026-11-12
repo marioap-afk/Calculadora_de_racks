@@ -1,0 +1,55 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261112T094935Z-bd5b",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "fail",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Contract",
+    "Scope"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04",
+    "P-03"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha lists PushBackPilotIntentReader.cs, PushBackPilotIntentScan.cs and the three WorkspaceDraftPilotIntent test files. PushBackPilotIntentReader.cs is absent from the delegation AllowedWriteScope, so the changed paths are not all covered by its exact whitelist."
+  },
+  "OutputSha256": "B6390630DE225990BB0FD7F1C4A3E686E532E08EE0603A297DB39E2FDB6C6B9A",
+  "ManualFreeText1610": []
+}

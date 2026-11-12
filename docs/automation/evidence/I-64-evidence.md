@@ -6345,3 +6345,36 @@ Todo queda dispuesto en sus §9 y §10.
 - `attempts` 2 de 3.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 143. Intento 2 de F4-T2B1: corrección verificada
+
+**Decisión:** F4-E28.
+
+- **Planificación:** `58d4` rechazada por copia inexacta (A4); replanificación única `614a`, con fidelidad PASS y A1-A8 8/8.
+- **Worker** `96a8`: RED `a044bb4b` y GREEN `fe7f136b`.
+- **CI:** `43190415649` 4/4.
+- **Verificación** `6d39`: `EXECUTION_VERIFIED`, 14/14.
+- **Revisiones:**
+  - la directa, sin defectos;
+  - la independiente, ACEPTABLE CON MENORES (N-1 a N-4).
+
+**Límites:** sin AutoCAD.
+
+## 144. Controles negativos de F4-T2B1
+
+| Control | Corrida | Resultado | Clasificación |
+|---|---|---|---|
+| nc1 | `R20261112T094531Z-d11b` | CONTROL PASS | Identity, `EXECUTION_BLOCKED` / STOP |
+| nc2 | `R20261112T094935Z-bd5b` | CONTROL NOT PASSED | Contract en vez de Scope; `EXECUTION_BLOCKED` / STOP con Scope en fail sobre la ruta retirada |
+| nc3 | `R20261112T095410Z-4eb8` | CONTROL NOT PASSED | falso PASS del Controller: FreeText `pass` y `EXECUTION_VERIFIED` con «GATE PASS» en `WorkCompleted` |
+
+**Límites:** sin AutoCAD.
+
+## 145. Estado de F4-T2B1
+
+**Decisión:** F4-E28.
+- F4-T2B1 = **VERIFICADA** sobre `fe7f136b`, con `attempts` 2 de 3.
+- El cierre queda pendiente de la disposición del Owner sobre nc2 y nc3, que no cumplieron su oráculo. nc3 muestra un falso PASS del Controller en FreeText.
+- La sesión prepara el paquete de F4-T2B2 sin emitir su contrato.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.

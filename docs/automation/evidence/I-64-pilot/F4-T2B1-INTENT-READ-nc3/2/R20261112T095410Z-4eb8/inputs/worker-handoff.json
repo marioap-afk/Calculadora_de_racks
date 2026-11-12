@@ -1,0 +1,160 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T2B1-INTENT-READ",
+  "RunId": "R20261112T091237Z-96a8",
+  "DelegationRunId": "R20261112T090925Z-614a",
+  "Initiative": "I-64",
+  "Gate": "F4",
+  "Attempt": 2,
+  "BaseSha": "b9707bc638e04f8351790485c2e6bfbd23276c55",
+  "RedSha": "a044bb4b3346b239555c87f6ddf28e1d528b6791",
+  "CurrentSha": "fe7f136b09900880e1ebe2cb20491e2f84c85988",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentScan.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentReadTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs"
+  ],
+  "WorkCompleted": "Correccion del intento 2 de F4-T2B1-INTENT-READ, un commit RED (a044bb4b, solo tests/, sobre el producto del GREEN 23792b2d sin tocar src/) y un commit GREEN (fe7f136b, solo dos archivos de producto, ningun archivo de tests/), cada uno con su push; el remoto coincide con HEAD. Antes del RED se comprobo, sin commit, que el parche de producto hace pasar los 124 tests WorkspaceDraftPilotIntent; el parche quedo guardado en artifacts/.../product-fix-precheck.patch y src/ volvio a 23792b2d. HALLAZGOS. I-1: prueba Rule13ADesignThatAuth13AcceptsAndTheProjectStoreRejectsIsUnreadableWithoutDetail; pone PalletHeight en 0 en todo el diseno interior; comprueba antes que AUTH-13 da Single, que RackProjectStore.TryDeserialize da false y que Materialize da Failed con UnreadableOrFutureDiagnostic (la regla 13 es alcanzable; no hubo parada C03); exige UnreadableDiagnostic, Detail null y ClassicEditorHint. I-2: prueba Rule11AnExceptionThatIsNotAJsonException...; el estado es un nombre de miembro del Design interior con un surrogate escapado suelto (secuencia de escape construida con (char)92 + \"ud800\", insertada antes de \"Header\": null); la prueba comprueba que el comparador AUTH-13 lanza una excepcion que no es JsonException (la deserializacion tolerante del sobre lo acepta), y que Read no lanza, no admite, da MaterializeDiagnostic con Detail igual al mensaje de la excepcion y la pista del editor clasico. M-1: Rule5AFactAttributedToTheRackWithAnEnvelopeOfAnotherId...: hecho del RackId con sobre de otro Id da UnreadableDiagnostic con detalle 'membership or kind mismatch' (no OriginNotMemberDiagnostic). M-2: Rule3AFactThatIsNotInterpretable...: hecho no interpretable con texto valido da UnreadableDiagnostic y entrada Blocking. M-3: AnOriginThatHasNoFactIsChanged...: Facts sin el origen, RawEnvelopes con su texto y testigo con esa clave y texto da Changed (falla contra 23792b2d); producto: WitnessStatus exige que OriginKey tenga hecho en Facts. M-4: guarda de hilos de WorkspaceDraftPilotIntentGuardTests ampliada con Task., ValueTask y System.Threading.Tasks, cada una con su linea inyectada en el texto real de los tres archivos; ninguna guarda existente se modifico. M-5: TheRawEnvelopesOfTheInputAreAReadOnlyView...: no es Dictionary, y si es IDictionary generico, IDictionary no generico o ICollection de pares, es de solo lectura y sus mutaciones lanzan NotSupportedException (falla contra 23792b2d); producto: RawEnvelopes es un ReadOnlyDictionary sobre la copia interna. M-6: sin prueba (es registro): comentarios en el producto que marcan como defensivas la condicion de clasificacion de la regla 5 y la segunda linea de la regla 6, y la lectura de la regla 5 (Id distinto o NotMember/Blocking; un ReadOnly con el Id correcto pasa a la regla 6). M-7: Rule9AnInterpretableOriginWithANullKind...: Kind null da OutOfPilotDiagnostic con Detail null (falla contra 23792b2d); producto: Verdict.Refused(OutOfPilotDiagnostic, originKind) sin ?? string.Empty; se anadio ademas Rule9ComesBeforeRule11AlsoForAnOriginWithANullKind. M-8: sin prueba, aceptado como limitacion (inalcanzable via Read). M-9: Rule9ComesBeforeRule10 renombrada a Rule9ComesBeforeTheAuth13ComparisonSoThePair9And11 con comentario del par imposible (9,10). M-10: NoStateOfTheDrawingMakesTheInputOrTheReadThrow renombrada a ...AndEachOneHasItsOwnVerdict y cada estado fija su diagnostico (discrimina contra un esqueleto inerte) con comentario honesto; en el producto se elimino el ! sobre m.Embed/Design/Kind/Text: los hermanos de AUTH-13 se construyen en un bucle que omite un miembro sin sobre o sin texto (inalcanzable tras la regla 7) y Design se pasa sin afirmar no nulo. RED medido: el filtro de Core selecciono 1592, fallaron por asercion exactamente 3 (M-3, M-5, M-7), el resto paso; el filtro de UI 248 en verde. GREEN medido: filtro Core 1592/1592, filtro UI 248/248, suite completa de Core 17130/17130, suite completa de UI en Release 1883 pasadas, 17 omitidas y 2 fallos por #if DEBUG (PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers y ..._ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne, ajenas), y en Debug 1885 pasadas, 17 omitidas, 0 fallos. Build Release --no-incremental de los dos proyectos de prueba: 0 errores y 0 avisos CS/MSB/NU/NETSDK (solo analizadores xUnit, ya presentes en el repositorio). GATE PASS.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=red-core.trx\" --results-directory artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/red-core",
+      "Phase": "RED",
+      "TreeSha": "a044bb4b3346b239555c87f6ddf28e1d528b6791",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/red-core/red-core.trx"
+    },
+    {
+      "RunRef": "red-ui",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=red-ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/red-ui",
+      "Phase": "RED",
+      "TreeSha": "a044bb4b3346b239555c87f6ddf28e1d528b6791",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/red-ui/red-ui.trx"
+    },
+    {
+      "RunRef": "green-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=green-core.trx\" --results-directory artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/green-core",
+      "Phase": "GREEN",
+      "TreeSha": "fe7f136b09900880e1ebe2cb20491e2f84c85988",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/green-core/green-core.trx"
+    },
+    {
+      "RunRef": "green-ui",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=green-ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/green-ui",
+      "Phase": "GREEN",
+      "TreeSha": "fe7f136b09900880e1ebe2cb20491e2f84c85988",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/green-ui/green-ui.trx"
+    },
+    {
+      "RunRef": "relevant-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --logger \"trx;LogFileName=relevant-core.trx\" --results-directory artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/relevant-core",
+      "Phase": "RELEVANT",
+      "TreeSha": "fe7f136b09900880e1ebe2cb20491e2f84c85988",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/relevant-core/relevant-core.trx"
+    },
+    {
+      "RunRef": "relevant-ui-release",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-build --logger \"trx;LogFileName=relevant-ui-release.trx\" --results-directory artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/relevant-ui-release",
+      "Phase": "RELEVANT",
+      "TreeSha": "fe7f136b09900880e1ebe2cb20491e2f84c85988",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/relevant-ui-release/relevant-ui-release.trx"
+    },
+    {
+      "RunRef": "relevant-ui-debug",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --logger \"trx;LogFileName=relevant-ui-debug.trx\" --results-directory artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/relevant-ui-debug",
+      "Phase": "RELEVANT",
+      "TreeSha": "fe7f136b09900880e1ebe2cb20491e2f84c85988",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/relevant-ui-debug/relevant-ui-debug.trx"
+    },
+    {
+      "RunRef": "build-core",
+      "Command": "dotnet build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental",
+      "Phase": "RELEVANT",
+      "TreeSha": "fe7f136b09900880e1ebe2cb20491e2f84c85988",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/build/build-core.log"
+    },
+    {
+      "RunRef": "build-ui",
+      "Command": "dotnet build tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-incremental",
+      "Phase": "RELEVANT",
+      "TreeSha": "fe7f136b09900880e1ebe2cb20491e2f84c85988",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/tests/build/build-ui.log"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-core",
+      "Selected": 1592,
+      "Passed": 1589,
+      "Failed": 3,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceDraftPilotIntentReadTests.AnOriginThatHasNoFactIsChangedEvenIfItsTextIsInTheRawEnvelopesAndTheWitnessHasThatKeyAndText",
+        "RackCad.Tests.WorkspaceDraftPilotIntentReadTests.Rule9AnInterpretableOriginWithANullKindIsOutOfPilotWithoutDetail",
+        "RackCad.Tests.WorkspaceDraftPilotIntentStaleBaseTests.TheRawEnvelopesOfTheInputAreAReadOnlyViewThatCannotBeConvertedToAMutableDictionaryNorChangeTheInput"
+      ]
+    },
+    { "RunRef": "red-ui", "Selected": 248, "Passed": 248, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "green-core", "Selected": 1592, "Passed": 1592, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "green-ui", "Selected": 248, "Passed": 248, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "relevant-core", "Selected": 17130, "Passed": 17130, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    {
+      "RunRef": "relevant-ui-release",
+      "Selected": 1902,
+      "Passed": 1883,
+      "Failed": 2,
+      "Skipped": 17,
+      "FailedTests": [
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers",
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne"
+      ]
+    },
+    { "RunRef": "relevant-ui-debug", "Selected": 1902, "Passed": 1885, "Failed": 0, "Skipped": 17, "FailedTests": [] }
+  ],
+  "Evidence": [
+    "Hallazgos: I-1 -> Rule13ADesignThatAuth13AcceptsAndTheProjectStoreRejectsIsUnreadableWithoutDetail; I-2 -> Rule11AnExceptionThatIsNotAJsonExceptionOfTheComparator...; M-1 -> Rule5AFactAttributedToTheRackWithAnEnvelopeOfAnotherId...; M-2 -> Rule3AFactThatIsNotInterpretableIsUnreadable...; M-3 -> AnOriginThatHasNoFactIsChanged... + WitnessStatus; M-4 -> Prohibited con Task., ValueTask, System.Threading.Tasks e inyeccion; M-5 -> TheRawEnvelopesOfTheInputAreAReadOnlyView... + ReadOnlyDictionary; M-6 -> comentarios defensivos en reglas 5 y 6; M-7 -> Rule9AnInterpretableOriginWithANullKind... + Detail null; M-8 -> limitacion aceptada; M-9 -> Rule9ComesBeforeTheAuth13ComparisonSoThePair9And11; M-10 -> estados con veredicto y sin ! sobre Design.",
+    "INV-F4T2B1-01 pureza: sin cambios de namespace ni referencias; TheThreeProductFilesName... y su deteccion por inyeccion en verde (green-core).",
+    "INV-F4T2B1-02 entrada: StaleBaseTests (violaciones estructurales, copia de colecciones, texto UTF-16 invalido) y la prueba de vista de solo lectura de M-5 (falla en RED, verde en GREEN).",
+    "INV-F4T2B1-03 StaleBase total: StaleBaseTests de tabla de pertenencia, RackId en blanco, independencia del orden y de la admision.",
+    "INV-F4T2B1-04 resultado: TheBaseOfTheResultIsTheOneOfBuildStaleBase..., TheAdmittedReadCarriesTheSameBaseInstance..., TheClassicEditorHintIsPresentIfAndOnlyIfThereIsNoAdmission.",
+    "INV-F4T2B1-05 admision: ReadTests reglas 1 a 14 y su orden; correcciones M-1, M-2, M-7, I-2 en ReadTests.",
+    "INV-F4T2B1-06 (INV-16): Rule1 y Rule4 (RackId y Id de origen en blanco) en verde.",
+    "INV-F4T2B1-07 (INV-17): reglas 3, 7, 11 y 13; I-1 alcanza la regla 13 con Detail null y pista del editor clasico.",
+    "INV-F4T2B1-08 una lectura: TheTextThatIsMaterializedIsTheSameString... y guardas de llamada unica a Classify, PushBack() y Materialize.",
+    "INV-F4T2B1-09 AUTH-13: Rule10 y Rule11 (texto crudo real, detalle independiente del orden).",
+    "INV-F4T2B1-10 testigo: pruebas de NotSupplied, Unchanged, Changed y la de M-3 (falla en RED, verde en GREEN).",
+    "INV-F4T2B1-11 Comprobar ahora: pruebas con el nucleo real (Conflict con diferencias, Recovered).",
+    "INV-F4T2B1-12 catalogo: Rule14ANullCatalog... en verde.",
+    "INV-F4T2B1-13 guardas: WorkspaceDraftPilotIntentGuardTests con la prohibicion de hilos alineada y su inyeccion; ninguna guarda existente modificada.",
+    "INV-F4T2B1-14 RED/GREEN del intento 1: se conserva; los tres archivos de prueba del intento 1 se corrigen solo en el RED de esta correccion.",
+    "INV-F4T2B1-15 correccion: RED a044bb4b fallo por asercion solo en M-3, M-5 y M-7; GREEN fe7f136b cambia solo dos archivos de producto y ningun archivo de tests/ (git diff --name-only a044bb4b..HEAD lista solo PushBackPilotIntentReader.cs y PushBackPilotIntentScan.cs).",
+    "Parche de comprobacion previa al RED: artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T091237Z-96a8/product-fix-precheck.patch"
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "M-8 (prueba de Design crudo distinto de D-T2B-08) no se exige y no existe: es inalcanzable via Read porque RawDesign sale del mismo texto (F4-E27).",
+    "Las comprobaciones defensivas de las reglas 5 y 6 y el bucle que omite un hermano sin sobre o texto son inalcanzables con la semantica actual de Classify y de la regla 7; solo se marcan, no se ejercitan.",
+    "La CI del push del SHA exacto del GREEN (cuatro jobs) no la ejecuto el Worker.",
+    "Las dos pruebas PendingTextFieldTests.ShowOnADirtyField_* fallan en Release por #if DEBUG (ajenas); pasan en Debug.",
+    "Los avisos de analizadores xUnit (xUnit2010, xUnit2013 y otros) ya existen en el repositorio y tambien aparecen en pruebas de esta tarea; no hay avisos CS, MSB, NU ni NETSDK."
+  ],
+  "Deviations": [
+    "La suite completa de UI se ejecuto tambien en Debug por las 2 fallas de Release por #if DEBUG, como indica el prompt.",
+    "El filtro de Core selecciona 1592 pruebas (minimo 1468) y el de UI 248 (minimo 248)."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "La sesion ejecuta la CI del SHA exacto fe7f136b09900880e1ebe2cb20491e2f84c85988, la verificacion del Controller, las revisiones directa e independiente y los controles nc1..nc3.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

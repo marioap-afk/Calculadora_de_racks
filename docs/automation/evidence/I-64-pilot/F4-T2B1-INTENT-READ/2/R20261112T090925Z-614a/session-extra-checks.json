@@ -1,0 +1,68 @@
+{
+  "AllowedExact": true,
+  "ExactCopy.Authorities": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "NonAsciiBytes": 0,
+  "BackslashU": 0,
+  "ControlCharsInStrings": 0,
+  "CorrectionOf": {
+    "RunId": "R20261112T084307Z-16bc",
+    "FailureClass": "Tests",
+    "AnalysisSha256": "90d2db6cf55c1d695c4d326a7d33e3c22f3054d68e0abd559cf0802882f2ac34"
+  },
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "TaskClassExact": true,
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "PromptProfileExact": true,
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "EffortExact": true,
+  "ModelEscalationReason": null,
+  "Dimensions": {
+    "Ambiguity": "Medium",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "Medium",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Medium"
+  },
+  "BaseSha": "b9707bc638e04f8351790485c2e6bfbd23276c55",
+  "AuthorityRevision": "e20a294c5e9f7160581e5674e08f8156accf876a",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "ChainFields": {
+    "ChainBaseSha": "445c46cefe587a6ba3274143bbbee86cc4ff279b",
+    "ChainRedSha": "04717913786d80f28149180fa2ce42b6051d0a5d",
+    "ChainRedFiles": [
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentReadTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs"
+    ]
+  },
+  "AttemptFields": {
+    "Attempt": 2,
+    "AttemptsRemaining": 1,
+    "MaxReworkLoops": 3
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/{WorkRunId}/worker-handoff.json",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261112T090925Z-614a"
+  },
+  "AcceptanceCriteriaCount": 8,
+  "IssuedBy": "Controller Codex (planificacion de la correccion F4-T2B1-INTENT-READ, intento 2, F4-E27, CONTROLLER_PLANNING)"
+}

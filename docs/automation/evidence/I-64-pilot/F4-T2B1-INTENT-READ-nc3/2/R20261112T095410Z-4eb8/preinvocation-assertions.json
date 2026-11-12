@@ -1,0 +1,20 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261112T095410Z-4eb8",
+  "Assertions": {
+    "SameInputFileSet": true,
+    "OnlyMutatedAndDerivedChanged": true,
+    "RelayDiffersOnlyInOutputSha256": true,
+    "HandoffDiffersOnlyInWorkCompleted": true,
+    "HandoffCurrentShaExact": true,
+    "PromptEqualToVerifiedExceptPathAndRunId": true,
+    "All40HexTokensResolve": true,
+    "LauncherHasNoGitCommandOrDeliverySha": true
+  },
+  "Unresolved40Hex": [],
+  "ChangedVsVerifiedInputs": [
+    "relay-record-work.json",
+    "worker-handoff.json"
+  ],
+  "Pass": true
+}

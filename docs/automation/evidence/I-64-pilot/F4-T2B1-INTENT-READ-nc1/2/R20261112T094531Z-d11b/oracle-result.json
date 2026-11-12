@@ -1,0 +1,53 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261112T094531Z-d11b",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dan fe7f136b09900880e1ebe2cb20491e2f84c85988; BaseSha y RedSha son ancestros (merge-base --is-ancestor devuelve 0 para ambos). Pero worker-handoff.json declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, distinto de HEAD y del remoto."
+  },
+  "OutputSha256": "492A6352A6C199F49EC4F76924A570FB9F05C1DF30262F7E47C0DAFE9F0DE0B5",
+  "ManualFreeText1610": []
+}

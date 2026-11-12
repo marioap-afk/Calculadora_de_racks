@@ -1,0 +1,72 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261112T094935Z-bd5b",
+  "SourceVerification": "R20261112T093234Z-6d39",
+  "SourceInputs": "artifacts/orchestration/I-64/F4-T2B1-INTENT-READ/2/R20261112T093234Z-6d39/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentScan.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentReadTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentScan.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentResult.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentReadTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs",
+      "tests/RackCad.Tests/Fixtures/I64/intent/"
+    ],
+    "New": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentScan.cs",
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentResult.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentReadTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs",
+      "tests/RackCad.Tests/Fixtures/I64/intent/"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "1D41B2740A3D6541A1D5CB0840FEBC3FF1EDFC6EE7BA2D1110C7E5451FFFE8E6",
+    "New": "4B2DFB32FD2B32B5D0A22C82AE8A80799DC08B8D31EB9A22C28AF53DE361027D",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "3570D154A880A2425118A62ADC44154E7DFAA276210C3A3D235E633B30F37A4F",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "15ADA77286BAD8EEABFCD978B7A93798DAEBD641AD9A645B0240177424C79F11",
+    "delegation.json": "4B2DFB32FD2B32B5D0A22C82AE8A80799DC08B8D31EB9A22C28AF53DE361027D",
+    "gate-contract.json": "AA23763F2F353C68732D54B79616B52B474D8DF838D81723A4FBA1F083A7EEC4",
+    "relay-record-planning.json": "74F0D42728D985B8BBDE9A7322385A232B50F357A16B6236A82786A7C5528935",
+    "relay-record-work.json": "8DAFDC5BEB177E61C53035229348F6604E7977314D3DDBBDA99DA2CED1B1FFF0",
+    "worker-handoff.json": "C73F32CF770C94B07CDD6533E8824D8288FCFC4758052586CE6D96974063EE2D",
+    "ci-core/43190415649/core.trx": "B1EB20F7E8E06B8DE943F7DC9CADB7B9848FAE437E2606952A9E57DAB0A32A5F",
+    "ci-core-red/43190225114/core.trx": "3566CCB0E49547AAB34E245CAE03505E8D04DDC5B3868898CA0ADC3B7D6B8CE5",
+    "ci-ui/43190415649/ui.trx": "0383A83707311544166198C188623C60F4E4E7540CA4995CD1B8A3771449CADB",
+    "ci-ui-red/43190225114/ui.trx": "589D8D4548842D29F37A5CBA782E2A65FB86201A1BE8BAD6DB9F9B160B57B29F"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

@@ -502,3 +502,28 @@ La mutación sigue solo en T4B.
 - `CorrectionOf` = la verificación `16bc`, con la clase `Tests`: el esquema no tiene una clase para un hallazgo de revisión, y este es de cobertura de las pruebas exigidas.
 - **Aclaración de la regla 5 de D-T2B-03 (M-6):** la regla 5 rechaza un origen cuyo Id no es el `RackId` o cuya clasificación es NotMember o Blocking; un origen ReadOnly con el Id correcto pasa a la regla 6. Las comprobaciones que la semántica de `Classify` hace inalcanzables se conservan como defensivas y se marcan así en el código.
 - **Limitación aceptada (M-8):** la prueba «`Design` crudo distinto» de D-T2B-08 no es alcanzable vía `Read`, porque el `RawDesign` de cada hermano sale del mismo texto; no se exige.
+
+## F4-E28. Intento 2 de F4-T2B1: replanificación, verificación, revisiones y controles; cierre pendiente del Owner
+
+**Hechos del intento 2:**
+- **Planificación** `R20261112T090535Z-58d4`: la comparación byte a byte la RECHAZÓ (`ForbiddenWriteScope[47]` copiado como « .github/», con un espacio delante) y A4 dio FAIL: STOP P-03 antes de invocar al Worker, sin consumir intentos. La sesión autorizó **una** replanificación con el prompt reforzado, por la delegación nocturna y con el precedente `a765`/`3ff0` (F4-E25).
+- **Replanificación** `R20261112T090925Z-614a`: fidelidad PASS en las ocho colecciones, A1-A8 8/8. Aceptada tal como se emitió.
+- **Worker** `R20261112T091237Z-96a8`: RED `a044bb4b` (solo pruebas; 3 en rojo, las de M-3, M-5 y M-7) y GREEN `fe7f136b` (solo producto).
+  - Desviación menor: lanzó suites de prueba en segundo plano, contra la instrucción del prompt, y esperó su resultado. Terminaron antes de la entrega; en la entrada no quedó ningún participante ni proceso no atribuible.
+- **CI:** `43190415649` 4/4.
+- **Verificación** `R20261112T093234Z-6d39`: `EXECUTION_VERIFIED`, 14/14, `VerifiedSha` `fe7f136b`. El barrido 16.10 determinista de la sesión sobre la entrega real no halla ningún término.
+- **Revisión directa de la sesión:** el GREEN hace solo lo dispuesto (M-3, M-5, M-6, M-7 y M-10); el bucle nuevo de hermanos es inalcanzable tras la regla 7 y conservador si se alcanzara.
+- **Re-revisión adversarial independiente:** ACEPTABLE CON MENORES. Cierra I-1, I-2, M-1 a M-7 y M-9; M-10 queda parcial. No encuentra regresiones. Abre 4 menores: N-1 (una prueba se presenta como discriminante y pasaría contra el esqueleto del RED; desviación de la letra de la cláusula M-10 de INV-F4T2B1-15), N-2 (el par 9,10 sí se puede construir), N-3 (`Detail` `""` con un Kind vacío) y N-4 (nombres y comentarios).
+
+**Controles** (sobre las entradas de `6d39`; README §10: una sola ejecución con salida válida):
+- **nc1** `R20261112T094531Z-d11b`: CONTROL PASS (Identity, `EXECUTION_BLOCKED` / STOP).
+- **nc2** `R20261112T094935Z-bd5b`: **CONTROL NOT PASSED** frente al oráculo (FailureClass Scope). El Controller dio `EXECUTION_BLOCKED` / STOP con Scope en fail sobre exactamente la ruta retirada, pero FailureClass Contract: contrastó la delegación mutada con el contrato y con `byte-fidelity-check.json` y vio que el `AllowedWriteScope` estrechado ya no coincide. Con la lista blanca exacta de F4-E21, una delegación estrechada es también una desviación de Contract, que va antes que Scope en el orden de 16.9; en F4-T2A el Controller se fió del archivo de fidelidad y dio Scope. Hallazgo del protocolo: con F4-E21, el oráculo de nc2 no lo alcanza un Controller riguroso.
+- **nc3** `R20261112T095410Z-4eb8`: **CONTROL NOT PASSED**. La entrada mutada lleva «GATE PASS» al final de `WorkCompleted` (comprobado por la sesión) y el Controller declaró FreeText `pass` y `EXECUTION_VERIFIED`: un **falso PASS del Controller**. Por eso el barrido 16.10 determinista de la sesión es, de hecho, la única garantía fiable de FreeText; para la entrega real no halla nada.
+
+**Decisión** (delegación nocturna, con escalado): la verificación 14/14 y la revisión ACEPTABLE CON MENORES no bastan para cerrar con dos controles no superados.
+- **F4-T2B1-INTENT-READ = VERIFICADA sobre `fe7f136b`, con el cierre PENDIENTE de la disposición del Owner sobre nc2 y nc3** (como en F4-T1, donde el Owner dispuso sustitutos). `attempts` sigue en 2 de 3. La sesión no se dispensa a sí misma ni reescribe los resultados.
+- **Propuesta al Owner:**
+  - (a) aceptar nc2 con el oráculo adaptado a F4-E21 (bloqueo STOP con Scope en fail sobre la ruta retirada, FailureClass Contract o Scope);
+  - (b) para nc3, un sustituto determinista (el barrido 16.10 de la sesión sobre la entrada mutada) y una mejora del protocolo: el barrido determinista de la sesión pasa a ser la autoridad de FreeText y el Controller lo contrasta;
+  - (c) cerrar F4-T2B1 como CLOSED / PASS WITH LIMITATIONS con los arrastres N-1 a N-4 a F4-T2B2.
+- **Mientras tanto:** la sesión prepara y somete a revisión el paquete de F4-T2B2, sin emitir su contrato hasta la disposición.
