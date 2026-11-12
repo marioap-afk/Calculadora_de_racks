@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 2
-  next_action: "F4-T2A-PILOT-STATE: correccion del intento 2 de 3 (F4-E24): emitir gate-contract-attempt2.json y ejecutar planificacion, A1-A8 con comparacion byte a byte de las colecciones del contrato, Worker RED/GREEN, CI, revisiones, verificacion y nc1..nc3"
+  next_action: "F4-T2A-PILOT-STATE: contrato del intento 2 emitido (AuthorityRevision 6e5879a1); siguiente: planificacion, A1-A8 con comparacion byte a byte, Worker, CI, revisiones, verificacion y nc1..nc3"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual

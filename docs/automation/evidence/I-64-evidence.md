@@ -6245,3 +6245,13 @@ Todo queda dispuesto en sus §9 y §10.
 **Custodia:** `I-64-pilot/F4-T2A-PILOT-STATE/1/` (`981d`, `9353` y `8bc4`) y `F4-T2A-PILOT-STATE-nc4/1/R20261111T215859Z-6aea/`.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 134. Contrato del intento 2 de F4-T2A
+
+**Contrato:** `I-64-pilot/F4-T2A-PILOT-STATE/coordinator/gate-contract-attempt2.json`.
+- Parte de la revisión 2 y cambia solo los invariantes INV-F4T2A-06 a 10, más INV-F4T2A-16 para el RED de la corrección (F4-E24).
+- `AuthorityRevision` `6e5879a1c3b56fad7668fbcb9d3b5bcc446a829e` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- Mismos `AllowedWriteScope` y `ForbiddenWriteScope` (57).
+- `attempts` 2 de 3.
+
+**Límites:** solo documentación; sin AutoCAD.
