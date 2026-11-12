@@ -31,7 +31,7 @@ namespace RackCad.Application.Workspace
     /// through <see cref="IWorkspaceEditIntentReader"/>; neither runs from the drain or from the idle pass, and until the panel
     /// exposes them (F4-T3) nothing calls them.
     /// </summary>
-    public sealed class WorkspaceHostCore
+    public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor
     {
         /// <summary>Native identity used when no document is open: it matches no session.</summary>
         private const long NoDocumentNativeId = -1;
@@ -396,6 +396,28 @@ namespace RackCad.Application.Workspace
                 return EditCheckOutcome.Failed(ex.Message);
             }
         }
+
+        // ---------------------------------------------------------------- skeleton of the lifecycle of the drafts (I-64 F4-T2B2B, RED)
+        //
+        // Inert: nothing below throws, nothing is read, removed or queued, and every value is a valid, non-null value.
+
+        private readonly Queue<DraftLossNotice> _lossNotices = new();
+
+        public EditIntentOutcome TryReloadPilotEdit(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented yet.");
+
+        public EditDiscardOutcome DiscardPilotEdits(SessionId session) => EditDiscardOutcome.Rejected("Not implemented yet.");
+
+        public void NotePilotEdit(SessionId session)
+        {
+        }
+
+        CloseDecision IWorkspaceLifecycleAdvisor.AdviseClose(SessionId session) => CloseDecision.Allow;
+
+        void IWorkspaceLifecycleAdvisor.SessionDestroyed(SessionId session, bool closeSequenceIntact)
+        {
+        }
+
+        internal IReadOnlyCollection<DraftLossNotice> LossNotices => _lossNotices;
 
         // A witness that is present (not null) with a null, empty or blank key cannot be compared with anything (INV-27).
         private static bool HasWitnessWithoutKey(EditIntentRequest request) =>

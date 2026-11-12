@@ -200,7 +200,8 @@ public class WorkspaceBridgeFacadeSourceGuardTests
     }
 
     // I-64 F1-T3-HOST-C2 widens this list by exactly two names, and only them: IsCommandActiveInActiveSession (C2-A) and
-    // OnNoActiveDocument (C2-B). The T2 names and the two of T3A stay exactly as they were.
+    // OnNoActiveDocument (C2-B). I-64 F4-T2B2B (D-T2B2-09) widens it by exactly one more name, SetLifecycleAdvisor, the assignment of the
+    // advisor of the lifecycle (the constructor does not change). The T2 names and the two of T3A stay exactly as they were.
     [Fact]
     public void TheCoreAddsExactlyTwoPublicMembersToWhatT2Left()
     {
@@ -220,7 +221,8 @@ public class WorkspaceBridgeFacadeSourceGuardTests
         };
         var t3a = new[] { "Authorize", "RequestReconciliation" };
         var c2 = new[] { "IsCommandActiveInActiveSession", "OnNoActiveDocument" };
-        Assert.Equal(t2.Concat(t3a).Concat(c2).OrderBy(n => n, StringComparer.Ordinal).ToArray(), names);
+        var t2b2b = new[] { "SetLifecycleAdvisor" };
+        Assert.Equal(t2.Concat(t3a).Concat(c2).Concat(t2b2b).OrderBy(n => n, StringComparer.Ordinal).ToArray(), names);
     }
 
     [Fact]

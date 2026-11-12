@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace RackCad.Application.Workspace.Drafts
@@ -54,20 +55,55 @@ namespace RackCad.Application.Workspace.Drafts
         public IReadOnlyList<string> DirtyRackIds { get; }
     }
 
+    /// <summary>Skeleton of I-64 F4-T2B2B (RED): the explicit discard of one draft by the user.</summary>
+    public readonly record struct DraftUserDiscardResult(bool Removed, bool HadPendingText);
+
+    /// <summary>Skeleton of I-64 F4-T2B2B (RED): the explicit discard of every draft of a session by the user.</summary>
+    public sealed class DraftUserDiscardAllResult
+    {
+        internal DraftUserDiscardAllResult(IReadOnlyList<string> removedRackIds, IReadOnlyList<string> pendingTextRackIds)
+        {
+            RemovedRackIds = removedRackIds;
+            PendingTextRackIds = pendingTextRackIds;
+        }
+
+        public IReadOnlyList<string> RemovedRackIds { get; }
+
+        public IReadOnlyList<string> PendingTextRackIds { get; }
+    }
+
     /// <summary>The visible notice of loss (D-17, INV-20): the racks whose Dirty or pending drafts disappeared with the session.</summary>
     public sealed class DraftLossNotice
     {
         internal DraftLossNotice(SessionId session, IReadOnlyList<string> lostRackIds)
+            : this(session, lostRackIds, Array.Empty<string>(), NoReasons())
+        {
+        }
+
+        internal DraftLossNotice(
+            SessionId session,
+            IReadOnlyList<string> lostRackIds,
+            IReadOnlyList<string> uncertainRackIds,
+            IReadOnlyDictionary<string, string> uncertainReasons)
         {
             Session = session;
             LostRackIds = lostRackIds;
+            UncertainRackIds = uncertainRackIds;
+            UncertainReasons = uncertainReasons;
         }
 
         public SessionId Session { get; }
 
         public IReadOnlyList<string> LostRackIds { get; }
 
+        public IReadOnlyList<string> UncertainRackIds { get; }
+
+        public IReadOnlyDictionary<string, string> UncertainReasons { get; }
+
         public bool HasLoss => LostRackIds.Count > 0;
+
+        private static IReadOnlyDictionary<string, string> NoReasons() =>
+            new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(StringComparer.Ordinal));
     }
 
     /// <summary>
@@ -199,6 +235,17 @@ namespace RackCad.Application.Workspace.Drafts
             foreach (var entry in racks.Values) entry.Detach();
             return new DraftLossNotice(session, lost);
         }
+
+        // Skeleton of I-64 F4-T2B2B (RED): the four explicit operations are inert. They remove nothing, never throw and return empty values.
+
+        public DraftUserDiscardResult DiscardByUser(SessionId session, string rackId) => new(false, false);
+
+        public DraftUserDiscardAllResult DiscardAllByUser(SessionId session) =>
+            new(Array.Empty<string>(), Array.Empty<string>());
+
+        public DraftLossNotice RetireKnownSafe(SessionId session) => new(session, Array.Empty<string>());
+
+        public DraftLossNotice RetireConservative(SessionId session) => new(session, Array.Empty<string>());
 
         // ---------------------------------------------------------------- the single Applying slot
 

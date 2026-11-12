@@ -101,6 +101,18 @@ namespace RackCad.Application.Workspace
 
         /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
         Failed,
+
+        // The three states below belong to the reload (I-64 F4-T2B2B, D-T2B2-12). They come AFTER the seven of the intention, which
+        // stay as an ordered prefix, and the default value of this enum is still Unavailable.
+
+        /// <summary>The reload found no draft for (session, rack): nothing was read.</summary>
+        NotFound,
+
+        /// <summary>The draft is not marked as possibly stale and clean, so it does not need to be reloaded: nothing was read.</summary>
+        NotNeeded,
+
+        /// <summary>The draft was replaced from the one read: its stale base, initial state and current state are the new ones.</summary>
+        Reloaded,
     }
 
     /// <summary>
@@ -159,6 +171,13 @@ namespace RackCad.Application.Workspace
             new(EditIntentStatus.Admitted, witness, null, null, null, null);
 
         public static EditIntentOutcome Failed(string reason) => Without(EditIntentStatus.Failed, reason);
+
+        public static EditIntentOutcome NotFound(string reason) => Without(EditIntentStatus.NotFound, reason);
+
+        public static EditIntentOutcome NotNeeded(string reason) => Without(EditIntentStatus.NotNeeded, reason);
+
+        public static EditIntentOutcome Reloaded(EditWitnessStatus witness) =>
+            new(EditIntentStatus.Reloaded, witness, null, null, null, null);
 
         private static EditIntentOutcome Without(EditIntentStatus status, string? reason) =>
             new(status, EditWitnessStatus.NotEvaluated, reason, null, null, null);
@@ -232,6 +251,64 @@ namespace RackCad.Application.Workspace
 
         private static EditCheckOutcome Without(EditCheckStatus status, string? reason) =>
             new(status, reason, Array.Empty<string>());
+    }
+
+    /// <summary>
+    /// How the explicit discard of the drafts of a session ended (I-64 F4-T2B2B, D-T2B2-15). The order is fixed and the default value
+    /// is Rejected: it is inert, it means that nothing was done.
+    /// </summary>
+    public enum EditDiscardStatus
+    {
+        /// <summary>The request does not belong to the active document (INV-22): nothing was done. It is also the default value.</summary>
+        Rejected,
+
+        /// <summary>Every draft of the session was removed (possibly none): nothing was read and nothing was written.</summary>
+        Discarded,
+
+        /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
+        Failed,
+    }
+
+    /// <summary>
+    /// I-64 F4-T2B2B (D-T2B2-15) — the answer of the host to the explicit discard of every draft of a session. A value: the racks are
+    /// text, so it names no draft type. Both lists are never null, also for a default value of this struct.
+    /// </summary>
+    public readonly struct EditDiscardOutcome
+    {
+        private readonly IReadOnlyList<string>? _removedRackIds;
+        private readonly IReadOnlyList<string>? _pendingTextRackIds;
+
+        private EditDiscardOutcome(EditDiscardStatus status, string? reason, IReadOnlyList<string> removed, IReadOnlyList<string> pendingText)
+        {
+            Status = status;
+            Reason = reason;
+            _removedRackIds = removed;
+            _pendingTextRackIds = pendingText;
+        }
+
+        public EditDiscardStatus Status { get; }
+
+        /// <summary>Why nothing was discarded; null for Discarded.</summary>
+        public string? Reason { get; }
+
+        /// <summary>The racks whose draft was removed, ordered (ordinal); empty unless the status is Discarded.</summary>
+        public IReadOnlyList<string> RemovedRackIds => _removedRackIds ?? Array.Empty<string>();
+
+        /// <summary>The removed racks that had pending text, ordered (ordinal); empty unless the status is Discarded.</summary>
+        public IReadOnlyList<string> PendingTextRackIds => _pendingTextRackIds ?? Array.Empty<string>();
+
+        public static EditDiscardOutcome Rejected(string reason) =>
+            new(EditDiscardStatus.Rejected, reason, Array.Empty<string>(), Array.Empty<string>());
+
+        public static EditDiscardOutcome Discarded(IReadOnlyList<string> removedRackIds, IReadOnlyList<string> pendingTextRackIds)
+        {
+            if (removedRackIds == null) throw new ArgumentNullException(nameof(removedRackIds));
+            if (pendingTextRackIds == null) throw new ArgumentNullException(nameof(pendingTextRackIds));
+            return new EditDiscardOutcome(EditDiscardStatus.Discarded, null, removedRackIds, pendingTextRackIds);
+        }
+
+        public static EditDiscardOutcome Failed(string reason) =>
+            new(EditDiscardStatus.Failed, reason, Array.Empty<string>(), Array.Empty<string>());
     }
 
     /// <summary>The pure decisions of the edit intention that do not depend on the host (I-64 F4-T2B2A).</summary>

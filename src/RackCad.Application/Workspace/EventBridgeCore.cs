@@ -137,6 +137,11 @@ namespace RackCad.Application.Workspace
 
         public bool IsDegraded(SessionId id) => _states.TryGetValue(id, out var state) && state.Degraded;
 
+        /// <summary>Skeleton of I-64 F4-T2B2B (RED): inert, it keeps nothing and never throws.</summary>
+        public void SetLifecycleAdvisor(IWorkspaceLifecycleAdvisor advisor)
+        {
+        }
+
         /// <summary>Panel visibility as the host reports it. Only the drain conditions use it; it never changes an attachment.</summary>
         public void SetPanelVisible(bool visible) => _panelVisible = visible;
 

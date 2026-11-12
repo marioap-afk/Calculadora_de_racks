@@ -1015,7 +1015,10 @@ public class WorkspaceEditIntentHostTests
         Assert.True(typeof(EditCheckOutcome).IsValueType);
         Assert.True(typeof(EditIntentReadResult).IsValueType);
         Assert.Equal(new[] { "Read", "NoActiveDocument", "Busy", "Rejected", "Failed" }, Enum.GetNames<EditIntentReadStatus>());
-        Assert.Equal(new[] { "Unavailable", "Waiting", "Rejected", "AlreadyOpen", "NotAdmitted", "Admitted", "Failed" }, Enum.GetNames<EditIntentStatus>());
+        // F4-T2B2B (N-1 of F4-T2B2A, F4-E33): the seven states of F4-T2B2A are an ORDERED PREFIX; later states (the reload adds NotFound,
+        // NotNeeded and Reloaded) come after them, and the default value stays Unavailable.
+        Assert.Equal(new[] { "Unavailable", "Waiting", "Rejected", "AlreadyOpen", "NotAdmitted", "Admitted", "Failed" }, Enum.GetNames<EditIntentStatus>().Take(7).ToArray());
+        Assert.Equal(EditIntentStatus.Unavailable, default(EditIntentStatus));
         Assert.Equal(new[] { "Unavailable", "Waiting", "Rejected", "NotFound", "NotApplicable", "Conflict", "Recovered", "Failed" }, Enum.GetNames<EditCheckStatus>());
     }
 
