@@ -6289,3 +6289,15 @@ Todo queda dispuesto en sus §9 y §10.
 - F4-T2B-DRAFT-READ-HOST empieza con `attempts` 1 de 3.
 
 **Límites:** sin AutoCAD.
+
+## 138. Paquete de F4-T2B y división en T2B1 y T2B2
+
+**Decisión:** F4-E26 (delegación nocturna del Owner).
+
+- **Paquete:** `docs/initiatives/I-64-f4-t2b-gate-contract-package.md`, v3.
+  - v1: NO EMITIBLE en la revisión adversarial independiente (1 bloqueante, 8 importantes y 8 menores).
+  - v2: EMITIBLE TRAS CORRECCIONES en la re-revisión (12 menores, todos aplicados en la v3).
+- **División:** F4-T2B1-INTENT-READ (lectura de la intención en Application pura) y F4-T2B2-HOST-LIFECYCLE (proyección, adaptador y host), cada una 1 de 3. La duplicación del presupuesto de T2B se avisa al Owner.
+- **Líneas base** de la CI de `5c9cc24e` (corrida `43171988530`): `RackCad.Tests.Workspace` 1468 y `RackCad.UI.Tests.Workspace` 248, todas Passed.
+
+**Límites:** solo documentación; sin AutoCAD.

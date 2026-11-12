@@ -461,3 +461,27 @@ La mutación sigue solo en T4B.
 **Decisión:** F4-T2A-PILOT-STATE = **CLOSED / PASS** sobre `cf9f9441`, si nc1..nc3 cumplen su oráculo.
 - El intento 1 (`77658968`, verificación `8bc4` STOP) y las planificaciones `13b0`, `61f3` y `a765` se conservan como historia.
 - F4-T2B-DRAFT-READ-HOST empieza con `attempts` 1 de 3 (F4-E18).
+
+## F4-E26. Paquete de F4-T2B, división en T2B1 y T2B2 y contrato de F4-T2B1
+
+**Autoridad:** delegación nocturna del Owner (`F4-DRAFTS/coordinator/owner-night-delegation.md`): la sesión decide y registra.
+
+**Paquete** (`docs/initiatives/I-64-f4-t2b-gate-contract-package.md`, v3):
+- La v1 dio NO EMITIBLE en la revisión adversarial independiente: 1 bloqueante («Comprobar ahora» sin base, porque NotAdmitted no lleva StaleBase), 8 importantes y 8 menores (§9 del paquete).
+- La re-revisión de la v2 dio EMITIBLE TRAS CORRECCIONES: cerró el bloqueante y los importantes y abrió 12 menores sin cambio de semántica (§11 del paquete). La v3 los aplica todos. No se pide una tercera ronda.
+
+**Decisiones:**
+- **División** de F4-T2B-DRAFT-READ-HOST en dos tareas contratadas por separado:
+  - **F4-T2B1-INTENT-READ:** Application pura. Entrada con los hechos sin clasificar del barrido y el texto crudo por clave; StaleBase total, independiente de la admisión; admisión en 14 reglas ordenadas, sin lanzar, con diagnósticos unificados; resultado que lleva siempre la base; guardas nuevas.
+  - **F4-T2B2-HOST-LIFECYCLE:** la proyección aditiva del barrido, el adaptador del Plugin y el lector del testigo, el origen desde `NavigationTargets` revalidados y todo el ciclo de vida en el host, con la parte de marcado de C-F4-04 (§6 del paquete).
+- **Presupuesto:** cada subtarea empieza en 1 de 3 (F4-E09); T2B1 recibe el arranque de F4-E25. La división duplica la capacidad de intentos de T2B (de 3 a 6): se registra aquí y se avisa al Owner en el informe. El agotamiento de cualquiera de las dos es S-11 y STOP de F4-T2.
+- **Sin registro de variables en el piloto:** Push Back no lo usa (D-10 y D-12 lo limitan a Selectivo).
+- **Admisión más estricta que Insertar y RACKPROYECTAR:** el piloto pasa a AUTH-13 el texto crudo real. Solo puede dar rechazos falsos, nunca admisiones falsas; Smoke-2 mide la distribución (O-09). Los residuales conservadores se listan en el §7 del paquete.
+- **Proyección con solo el texto crudo:** F4 v2 (`:45`) y el paquete de F4-T2 (`:53`) piden «texto crudo y `Section`». T2B2 proyecta solo el texto y `BuildStaleBase` deriva `Section` del mismo texto. Es equivalente y se registra como desviación de la letra; T4A parte de la misma proyección y de la misma función.
+
+**Arrastres:**
+- **A T4A:** reutilizar `BuildStaleBase` en la relectura caller-owned y en la comprobación previa O-04.
+- **A T3:** capturar el testigo de la preview con el lector de T2B2 (clave y texto crudo); mostrar la indicación de RACKEDITAR y el detalle como información secundaria (INV-31).
+- **A F5:** Cama con un solo miembro mutable (D-11) y el registro de variables con el estado de su payload para Selectivo.
+
+**Contrato:** F4-T2B1-INTENT-READ, `attempts` 1 de 3; F4-T2B2 se contrata tras cerrar T2B1.
