@@ -429,9 +429,10 @@ public class WorkspaceDraftPilotIntentReadTests
     // ------------------------------------------------------------------ the correction of attempt 2 (INV-F4T2B1-15)
 
     [Fact]
-    public void Rule3AFactThatIsNotInterpretableIsUnreadableEvenWithAValidTextAndNeverReadsTheText()
+    public void Rule3AFactThatIsNotInterpretableIsUnreadableEvenWithAValidText()
     {
-        // M-2: the text is a valid envelope of this rack, but the scan could not interpret it. The rule reads the fact.
+        // M-2: the text is a valid envelope of this rack, but the scan could not interpret it, and the verdict is "unreadable" with
+        // the member blocking. This checks the verdict and the base; it cannot tell whether the reader looked at the text.
         Assert.NotNull(new RackEmbedStore().Deserialize(BaseText()));
 
         var result = Refuses(
@@ -465,6 +466,23 @@ public class WorkspaceDraftPilotIntentReadTests
 
         var result = Refuses(
             IntentKit.Scan(Rack, "A1", IntentKit.Custom("A1", Rack, "frontal", noKind)),
+            PushBackPilotIntentReader.OutOfPilotDiagnostic);
+
+        Assert.Null(result.Detail);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("\t")]
+    public void Rule9AnInterpretableOriginWithAnEmptyOrBlankKindIsOutOfPilotWithoutDetail(string kind)
+    {
+        // T2B1/N-3: a blank kind has no kind to give as the detail either, so the detail is null and never "" or the blanks.
+        var blankKind = IntentKit.Rewrite(BaseText(), e => e.Kind = kind);
+        Assert.True(string.IsNullOrWhiteSpace(new RackEmbedStore().Deserialize(blankKind)!.Kind));
+
+        var result = Refuses(
+            IntentKit.Scan(Rack, "A1", IntentKit.Custom("A1", Rack, "frontal", blankKind)),
             PushBackPilotIntentReader.OutOfPilotDiagnostic);
 
         Assert.Null(result.Detail);
@@ -717,15 +735,41 @@ public class WorkspaceDraftPilotIntentReadTests
     }
 
     [Fact]
-    public void Rule9ComesBeforeTheAuth13ComparisonSoThePair9And11()
+    public void Rule9ComesBeforeTheAuth13ComparisonForThePair9And11WithALoneSelectiveOrigin()
     {
-        // What this fixes is the pair (9, 11): a lone Selective origin is also unreadable for AUTH-13 (the Push Back port only
-        // reads Push Back), and the rule 9 verdict wins. The pair (9, 10) cannot be shown: a single member never diverges and
-        // the Push Back port rejects every other kind before it compares values.
+        // This test shows the pair (9, 11) only: a lone Selective origin is also unreadable for AUTH-13 (the Push Back port only
+        // reads Push Back), and the rule 9 verdict wins. The pair (9, 10) is shown by the next test.
         Refuses(
             IntentKit.Scan(Rack, "A1", IntentKit.Member("A1", IntentKit.Variant("pb-01-base", Rack, kind: "selective"))),
             PushBackPilotIntentReader.OutOfPilotDiagnostic,
             detail: "selective");
+    }
+
+    [Fact]
+    public void Rule9ComesBeforeRule10ForAKindThatIsPushBackWithOtherCapitalsAndTwoDifferentDesigns()
+    {
+        // T2B1/N-2: the pair (9, 10) CAN be built. A Kind "PushBack" is the same kind as "pushback" for the comparator of AUTH-13
+        // (and for the rule 8), but not for the exact kind of the pilot (rule 9). Two such members with a different design diverge
+        // for AUTH-13 on its own; the verdict of the read is the rule 9 one, with the kind as the detail.
+        var first = IntentKit.Variant("pb-01-base", Rack, kind: "PushBack");
+        var second = IntentKit.Variant("pb-02-modulos", Rack, view: "lateral", section: 3, kind: "PushBack");
+        var firstEmbed = new RackEmbedStore().Deserialize(first)!;
+        var secondEmbed = new RackEmbedStore().Deserialize(second)!;
+        var comparison = RackAuthoredComparatorPorts.PushBack().Compare(new RackAuthoredInput(
+            Rack,
+            new[]
+            {
+                new RackAuthoredSibling("A1", firstEmbed.Kind!, first, firstEmbed.Design),
+                new RackAuthoredSibling("B2", secondEmbed.Kind!, second, secondEmbed.Design),
+            },
+            true,
+            IntentKit.Evidence));
+        Assert.Equal(RackAuthoredComparisonOutcome.Divergent, comparison.Outcome);
+
+        Refuses(
+            IntentKit.Scan(Rack, "A1", IntentKit.Member("A1", first), IntentKit.Member("B2", second)),
+            PushBackPilotIntentReader.OutOfPilotDiagnostic,
+            detail: "PushBack");
     }
 
     [Fact]

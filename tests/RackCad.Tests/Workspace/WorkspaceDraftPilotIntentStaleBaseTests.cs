@@ -403,19 +403,24 @@ public class WorkspaceDraftPilotIntentStaleBaseTests
     [Fact]
     public void NoStateOfTheDrawingMakesTheInputOrTheReadThrowAndEachOneHasItsOwnVerdict()
     {
-        // The absence of an exception and the non-null results of the loop pass against any inert implementation that never
-        // throws; what makes this test discriminate is the verdict that each state must give (the rule that decides it).
+        // The absence of an exception, the non-null results and "not admitted" would pass against an inert implementation that
+        // never throws and answers a provisional text. What discriminates is the EXACT text of the verdict of each state: it is
+        // written here as a literal and not through the constants of the reader, so a stub that returns the same placeholder for
+        // the constants and for the result (as the skeleton of the RED did) cannot satisfy it.
+        const string noIdentity = "No editable aquí: el sobre no tiene identidad";
+        const string originMissing = "No editable aquí: el origen ya no está en el dibujo";
+        const string unreadable = "No editable aquí: ilegible o de versión futura";
         var states = new List<(PushBackPilotIntentScan Scan, string Diagnostic)>
         {
-            (IntentKit.Scan(null, null), PushBackPilotIntentReader.NoIdentityDiagnostic),
-            (IntentKit.Scan(string.Empty, string.Empty), PushBackPilotIntentReader.NoIdentityDiagnostic),
-            (IntentKit.Scan(" ", "A1", IntentKit.Member("A1", IntentKit.BaseText())), PushBackPilotIntentReader.NoIdentityDiagnostic),
-            (IntentKit.Scan(IntentKit.Rack, null, IntentKit.Member("A1", IntentKit.BaseText())), PushBackPilotIntentReader.OriginMissingDiagnostic),
-            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", string.Empty, "frontal", IntentKit.BaseText())), PushBackPilotIntentReader.NoIdentityDiagnostic),
-            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", "   ", "frontal", IntentKit.BaseText())), PushBackPilotIntentReader.NoIdentityDiagnostic),
-            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", null, null, null)), PushBackPilotIntentReader.UnreadableDiagnostic),
-            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Unreadable("A1", IntentKit.Rack, null)), PushBackPilotIntentReader.UnreadableDiagnostic),
-            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Unreadable("A1", string.Empty, string.Empty)), PushBackPilotIntentReader.UnreadableDiagnostic),
+            (IntentKit.Scan(null, null), noIdentity),
+            (IntentKit.Scan(string.Empty, string.Empty), noIdentity),
+            (IntentKit.Scan(" ", "A1", IntentKit.Member("A1", IntentKit.BaseText())), noIdentity),
+            (IntentKit.Scan(IntentKit.Rack, null, IntentKit.Member("A1", IntentKit.BaseText())), originMissing),
+            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", string.Empty, "frontal", IntentKit.BaseText())), noIdentity),
+            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", "   ", "frontal", IntentKit.BaseText())), noIdentity),
+            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Custom("A1", null, null, null)), unreadable),
+            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Unreadable("A1", IntentKit.Rack, null)), unreadable),
+            (IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Unreadable("A1", string.Empty, string.Empty)), unreadable),
         };
 
         foreach (var (scan, diagnostic) in states)

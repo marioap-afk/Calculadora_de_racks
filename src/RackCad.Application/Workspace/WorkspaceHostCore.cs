@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Workspace.Drafts;
 
 namespace RackCad.Application.Workspace
 {
@@ -36,6 +37,8 @@ namespace RackCad.Application.Workspace
         private readonly NavigationEcho? _echo;
         private readonly HashSet<SessionId> _faulted = new();
         private readonly HashSet<SessionId> _pickFirstOff = new();
+        private readonly DraftRegistry _drafts = new();
+        private readonly DraftClosePolicy _closePolicy;
         private bool _started;
         private bool _panelVisible;
         private bool _modalRackCadActive;
@@ -54,6 +57,7 @@ namespace RackCad.Application.Workspace
             _instrumentation = instrumentation ?? throw new ArgumentNullException(nameof(instrumentation));
             _logFault = logFault;
             _echo = echo;
+            _closePolicy = new DraftClosePolicy(_drafts);
         }
 
         public bool IsStarted => _started;
@@ -217,6 +221,23 @@ namespace RackCad.Application.Workspace
         }
 
         public WorkspaceMeasurementReport GetMeasurementReport() => _instrumentation.Report();
+
+        // ---------------------------------------------------------------- the edit intention of the pilot (I-64 F4-T2B2A): inert skeleton of the RED
+
+        internal DraftRegistry OpenDrafts => _drafts;
+
+        internal DraftClosePolicy ClosePolicy => _closePolicy;
+
+        /// <summary>Inert skeleton: it assigns nothing and never throws.</summary>
+        public void SetEditIntentReader(IWorkspaceEditIntentReader reader)
+        {
+        }
+
+        /// <summary>Inert skeleton: it reads nothing, creates nothing and never throws.</summary>
+        public EditIntentOutcome TryBeginPilotEdit(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented.");
+
+        /// <summary>Inert skeleton: it reads nothing, checks nothing and never throws.</summary>
+        public EditCheckOutcome TryCheckPilotEdit(EditIntentRequest request) => EditCheckOutcome.Unavailable("Not implemented.");
 
         private WorkspaceHostConditions ConditionsFor(SessionId session)
         {

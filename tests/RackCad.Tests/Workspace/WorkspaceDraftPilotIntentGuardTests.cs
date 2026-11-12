@@ -36,7 +36,9 @@ public class WorkspaceDraftPilotIntentGuardTests
         ("LockDocument", new Regex(@"LockDocument"), "using (doc.LockDocument()) { }"),
         ("Dispatcher", new Regex(@"Dispatcher"), "Dispatcher.CurrentDispatcher.Invoke(() => { });"),
         ("Task", new Regex(@"\bTask\b"), "Task.Run(() => { });"),
-        // The threading prohibition is aligned with WorkspaceDraftBoundaryTests (Task., ValueTask and System.Threading.Tasks).
+        // The tasks and asynchrony part of the prohibition: Dispatcher, Task, Task., ValueTask, System.Threading.Tasks, async and
+        // await. It is a SUBSET of what WorkspaceDraftBoundaryTests forbids in the drafts core (that one also forbids Thread,
+        // ThreadPool, Timer, SynchronizationContext, Parallel, events and locks): this guard does not claim to cover those.
         ("Task.", new Regex(@"Task\."), "var done = Task.CompletedTask;"),
         ("ValueTask", new Regex(@"ValueTask"), "ValueTask<int> pending = default;"),
         ("System.Threading.Tasks", new Regex(@"System\.Threading\.Tasks"), "using System.Threading.Tasks;"),
