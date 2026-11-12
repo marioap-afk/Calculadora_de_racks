@@ -1,0 +1,9 @@
+Pregunta de la sesión al Owner (AskUserQuestion, 2026-11-12), tras mapear el código del host antes de preparar el paquete de F4-T2C:
+
+F4-T2C, alcance. Hoy hay dos lecturas del DWG dentro de la pila de Application.Idle: (1) la lectura del RESUMEN: el drenaje termina, el controlador abre la ventana de aviso y la vista lee el resumen (F4-E05); (2) la lectura de la SELECCIÓN del propio drenaje, operación 1 de D-04, que abre referencias, definiciones y sobres con DocumentLock. Tu orden prohíbe «Idle callback -> synchronous summary/DWG read». El D-T2-06 ratificado del paquete de F4-T2 solo sacaba el resumen. El mecanismo sería el mismo en los dos casos: el Idle solo programa una continuación única y agrupada (un post al Dispatcher del hilo principal, desde un único archivo con excepción de guarda, como prevé D-T2-06), y la continuación revalida sesión, documento, reposo y modal antes de leer, con un planificador puro en Application para probar la temporización de pila. ¿Qué alcance tiene T2C?
+
+Opciones ofrecidas:
+- Todo fuera del Idle (Recomendado): El Idle solo programa. El drenaje, con su lectura de selección, y después la lectura del resumen corren en la continuación, cuando la pila del Idle ya volvió. No queda ninguna lectura del DWG en ningún callback de AutoCAD; es la lectura literal de tu orden. Cuesta más cambios declarados: la ruta Idle del bridge y las guardas que fijan `_core.OnIdle()` en el manejador. D-04 se respeta, porque sigue siendo un drenaje diferido, en contexto de aplicación y con bloqueo.
+- Solo el resumen (D-T2-06): Solo la lectura del resumen sale del Idle. La lectura de selección del drenaje se queda en la pila del Idle como operación 1 de D-04 del Freeze, y se registra como residual aceptado o como tarea posterior. Hay menos cambios, pero queda una lectura del DWG dentro del callback de Idle.
+
+Respuesta del Owner: Todo fuera del Idle (Recomendado)

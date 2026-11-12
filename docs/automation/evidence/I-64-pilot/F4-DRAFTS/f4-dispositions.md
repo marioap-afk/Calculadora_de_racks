@@ -881,3 +881,46 @@ T2B2B requiere revisión directa e independiente (orden del Owner). Su comportam
   - `Stop()` y el fallo al enganchar `BeginDocumentClose`;
   - el coste;
   - la vía de retirada sin rastro.
+
+## F4-E36. Autorización de F4-T2C, decisión de alcance del Owner, paquete v2 y emisión
+
+**Orden del Owner** (`F4-DRAFTS/coordinator/owner-f4t2c-authorization.md`, texto literal): autoriza **F4-T2C-IC04-READ-SCHEDULING**, con presupuesto propio (`attempts` 1 de 3, sin heredar nada de F4-T2B2B). Fija:
+- el objetivo: ninguna lectura del DWG en manejadores de eventos ni en el callback de `Application.Idle`; solo marcar o programar, y leer después por la ruta normal, autorizada y en contexto de aplicación;
+- el alcance mínimo 1 a 13 y las pruebas adversariales A a J, que deben distinguir la temporización de la pila;
+- un smoke dirigido si es practicable; si la instrumentación del host no prueba la temporización de forma fiable, se registra como limitación para Smoke-2;
+- el proceso:
+  - mapear, preparar el paquete, revisarlo de forma independiente, incorporar los hallazgos y solo entonces emitir;
+  - una replanificación reforzada única (F4-E31);
+  - la cadena completa tras el Worker;
+  - las deudas PD-F4-01 a PD-F4-04 visibles;
+  - ningún sustituto reutilizado de forma automática;
+- lo siguiente: si T2C cierra, F4-T2 queda completa en sus subtareas y se prepara F4-T3, con los arrastres de F4-T2B2B. F4-T4 no empieza antes del cierre de F4-T3.
+
+**Mapa del código** (paquete §2, medido en `92ad237c`): hay dos lecturas del DWG dentro de la pila de `Application.Idle`:
+- la del resumen (F4-E05): el drenaje, la ventana de aviso del controlador, la presentación y `ReadSummary`;
+- la de la selección del propio drenaje (operación 1 de D-04).
+
+El D-T2-06 ratificado solo sacaba la primera.
+
+**Decisión de alcance del Owner** (`owner-f4t2c-scope-decision.md`, pregunta y respuesta literales): **«Todo fuera del Idle»**. El drenaje, con su lectura de selección, y después la lectura del resumen corren en una continuación, cuando la pila del Idle ya volvió.
+
+**Paquete** `docs/initiatives/I-64-f4-t2c-gate-contract-package.md` (v2):
+- **Mecanismo:**
+  - el callback de Idle solo programa;
+  - un planificador puro y agrupado en Application (`WorkspaceIdleScheduler`) con elegibilidad en memoria (`EventBridgeCore.CanDrainNow`, que también es falso con un cierre permitido pendiente);
+  - una continuación única en el Dispatcher del hilo principal (`BeginInvoke`, prioridad Background), que vuelve a comprobar la elegibilidad y hace la pasada de drenaje existente;
+  - solo cambian `AutoCadEventBridge.cs` y `EventBridgeCore.cs`, más el planificador nuevo.
+- **Diagnóstico:** sin instrumentación nueva, salvo la comprobación Debug de INV-14 después de la pasada, que registra y no termina el proceso. La temporización en el host real queda como limitación para Smoke-2.
+- **Revisión independiente de la v1** (`F4-T2C-IC04-READ-SCHEDULING/coordinator/package-review-v1.md`): EMITIBLE TRAS CORRECCIONES, con 2 BLOQUEANTE (instrumentación: `RackLog.Warning` prohibido, y un `Debug.Assert` que saltaba siempre y termina AutoCAD), 7 IMPORTANTE y 10 MENOR. Todos aplicados en la v2 (§9).
+- **Re-revisión de la v2** (`package-rereview-v2.md`): EMITIBLE (0/0/7). Sus menores, aplicados antes de emitir (§10).
+- **Sustituye** (D-T2C-07) dos frases de D-T2-06 («Drenaje: marca y no lee», «La programa la UI») y las capas de la fila de T2C. Conserva la prohibición de tocar la clausura de la ventana.
+
+**Residuales al Owner:**
+- **R-T2C-01:** una superficie Ready no se refresca tras un evento que invalida su resumen. Es un hueco preexistente de F3 y un cambio de UI fuera de T2C.
+- **R-T2C-02:** latencia tras un cierre cancelado sin comando.
+
+**Arrastres:**
+- a F4-T3: los subdiálogos activan el modal RackCad antes de abrirse;
+- a Smoke-2: la continuación en bucles modales y de cierre, la latencia de Background, `LockDocument` durante un cambio o cierre, y las aserciones existentes en bucles anidados.
+
+**Decisión:** emitir el contrato de F4-T2C con `attempts` 1 de 3. AuthorityRevision = el commit del paquete.

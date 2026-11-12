@@ -6550,3 +6550,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
   - a Smoke-2, el orden real de los eventos de cierre.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 159. Autorización y paquete de F4-T2C
+
+**Decisión:** F4-E36.
+- **Orden del Owner:** F4-T2C autorizada con `attempts` 1 de 3 propio (`owner-f4t2c-authorization.md`). El alcance es «todo fuera del Idle» (`owner-f4t2c-scope-decision.md`).
+- **Mapa:** la lectura de selección del drenaje y la del resumen ocurren hoy dentro de la pila de `Application.Idle`.
+- **Paquete:** `docs/initiatives/I-64-f4-t2c-gate-contract-package.md` v2:
+  - el Idle solo programa;
+  - un planificador puro, `CanDrainNow`, y una continuación única por `Dispatcher.BeginInvoke` a prioridad Background, que vuelve a comprobar la elegibilidad.
+- **Revisiones:** v1 EMITIBLE TRAS CORRECCIONES (2/7/10); re-revisión de la v2 EMITIBLE (0/0/7). Sus menores quedan aplicados.
+
+**Límites:** solo documentación; sin AutoCAD.
