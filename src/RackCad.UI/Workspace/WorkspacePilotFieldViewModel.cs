@@ -33,6 +33,7 @@ namespace RackCad.UI.Workspace
         private bool _editable;
         private bool _showEdit;
         private bool _showReload;
+        private bool _showDiscard;
         private string _stateText = string.Empty;
         private string _messageText = string.Empty;
 
@@ -114,8 +115,8 @@ namespace RackCad.UI.Workspace
         /// <summary>The Reload button of the Error state: it shows the draft again, with no read of the drawing.</summary>
         public bool ShowReloadButton => _showReload;
 
-        /// <summary>The Discard button of the Error state (I-64 F4-T3B2): not offered yet.</summary>
-        public bool ShowDiscardButton => false;
+        /// <summary>The Discard button of the Error state (I-64 F4-T3B2): the Reload button, with a draft shown for the surface.</summary>
+        public bool ShowDiscardButton => _showDiscard;
 
         /// <summary>The state in Spanish, with the mark of a possibly stale value and the reason when there is no committed text.</summary>
         public string StateText => _stateText;
@@ -355,6 +356,7 @@ namespace RackCad.UI.Workspace
             var openable = view.Exists && view.CanEdit && !_editable && _failure == null;
             _showEdit = _failure == null && _session.HasValue && (!view.Exists || openable);
             _showReload = _failure != null || (view.Exists && view.State == PilotFieldState.Error);
+            _showDiscard = _showReload && view.Exists;
 
             _text = view.Exists ? view.PendingText ?? view.CommittedText ?? string.Empty : NoDraftMarker;
             _messageText = view.Exists ? view.PendingMessage ?? string.Empty : string.Empty;
@@ -414,6 +416,7 @@ namespace RackCad.UI.Workspace
             OnPropertyChanged(nameof(IsReadOnly));
             OnPropertyChanged(nameof(ShowEditButton));
             OnPropertyChanged(nameof(ShowReloadButton));
+            OnPropertyChanged(nameof(ShowDiscardButton));
             OnPropertyChanged(nameof(StateText));
             OnPropertyChanged(nameof(MessageText));
             OnPropertyChanged(nameof(NoticeText));

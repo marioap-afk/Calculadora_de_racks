@@ -73,7 +73,9 @@ namespace RackCad.Application.Workspace
 
         /// <summary>
         /// The only automatic synchronization (D-06). Only a single-rack context syncs; an equal context to the last
-        /// applied one (of any kind) changes nothing, so only a real transition applies again.
+        /// applied one (of any kind) changes nothing, so only a real transition applies again. With <paramref name="keepActive"/> and an
+        /// active tab, the context is consumed as usual but the active tab is retained: a rack that already has a tab is not activated,
+        /// and a rack without one is added, or replaces a preview that is not the active tab, always behind the active one.
         /// </summary>
         public BrowserChange ApplySelectionContext(SelectionContext context, bool keepActive = false)
         {
@@ -87,8 +89,11 @@ namespace RackCad.Application.Workspace
             var rackId = context.RackId;
             if (string.IsNullOrWhiteSpace(rackId)) return BrowserChange.None;
 
+            var retain = keepActive && _activeRackId is not null;
+
             if (IndexOf(rackId) >= 0)
             {
+                if (retain) return BrowserChange.None;
                 if (string.Equals(_activeRackId, rackId, StringComparison.Ordinal)) return BrowserChange.None;
                 _activeRackId = rackId;
                 return BrowserChange.Activated;
@@ -96,6 +101,20 @@ namespace RackCad.Application.Workspace
 
             var fresh = new BrowserTabRecord(rackId, null, null, true, BrowserTabStatus.NotLoaded);
             var preview = PreviewIndex();
+            if (retain)
+            {
+                // The active tab is never replaced; a new tab goes behind it and the active tab stays.
+                if (preview >= 0 && string.Equals(_tabs[preview].RackId, _activeRackId, StringComparison.Ordinal)) return BrowserChange.None;
+                if (preview >= 0)
+                {
+                    _tabs[preview] = fresh;
+                    return BrowserChange.Replaced;
+                }
+
+                _tabs.Add(fresh);
+                return BrowserChange.Created;
+            }
+
             BrowserChange change;
             if (preview >= 0)
             {

@@ -61,7 +61,8 @@ namespace RackCad.UI.Workspace
         /// </param>
         /// <param name="pilotEdit">
         /// The edit port of the bounded pilot (I-64 F4-T3B1). Optional: without it the browser has no field of the pilot and no mark of
-        /// a protected tab, and the panel behaves exactly as before. Building the panel never calls it.
+        /// a protected tab, and the panel behaves exactly as before. Building the panel presents its first snapshot, and every presentation
+        /// consumes the queues of notices of the port (memory only, never a read of the drawing); nothing else in it calls the port until a gesture.
         /// </param>
         public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null, IWorkspaceBrowserSummaryPort browserSummary = null, IWorkspacePilotEditPort pilotEdit = null)
         {

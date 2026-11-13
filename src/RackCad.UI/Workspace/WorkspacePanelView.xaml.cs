@@ -105,11 +105,23 @@ namespace RackCad.UI.Workspace
             Contained(() => _viewModel.Browser.BeginFieldEditFromBox());
         }
 
+        // The key that launched the first gesture from the read-only box (I-64 F4-T3B2, N-3). Held down, it keeps repeating after the box turns
+        // editable; those repetitions are marked so they are not typed into it. The first press that is not a repetition forgets it.
+        private Key? _launchKey;
+
         private void OnBrowserFieldBoxPreviewKeyDown(object sender, KeyEventArgs e)
         {
             var field = _viewModel.Browser.Field;
             if (field.IsEditable)
             {
+                var launch = _launchKey;
+                if (!e.IsRepeat) _launchKey = null;
+                if (e.IsRepeat && launch.HasValue && e.Key == launch.Value)
+                {
+                    e.Handled = true;
+                    return;
+                }
+
                 // Enter commits and Esc does nothing: both stay in the panel. Esc never reverts the text. Every other key goes to the
                 // editor untouched (no handler of the bubble event marks it), so a character key produces its text input.
                 if (e.Key == Key.Enter)
@@ -138,6 +150,7 @@ namespace RackCad.UI.Workspace
 
             e.Handled = true;
             if (e.IsRepeat) return;
+            _launchKey = e.Key;
             Contained(() => _viewModel.Browser.BeginFieldEditFromBox());
         }
 
