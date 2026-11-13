@@ -1360,3 +1360,33 @@ Medido: T3B tocaría unos 22 archivos, frente a los 12 de T3A, con cambios decla
 - La firma exacta de PD-F4-04 (nc1) o de PD-F4-01 (nc2) reutiliza el sustituto de la subtarea sin volver al Owner (órdenes de F4-T3 y de nc2 de F4-T3A).
 - Las firmas de PD-F4-05 y PD-F4-06 no tienen una regla general: si se repiten, la sesión vuelve al Owner antes de aplicar un sustituto.
 - PD-F4-06 nunca debilita Ci ni Trailer en la verificación real.
+
+## F4-E45. F4-T3B2-EDIT-CLOSE-SYNC: dos fallos de la planificación y STOP al Coordinator
+
+**Planificación** `R20261113T112617Z-af63` (primera delegación de la cadena, contrato de F4-E44): **RECHAZADA** antes del Worker.
+- La comparación byte a byte dio REJECTED solo en Authorities: en `Authorities[1].Path`, `docs/initiatives/I-64-f4-t3b-gate-contract-package.md` se copió como `docs/initiatives/I-64-f4-t3-gate-contract-package.md` (una letra omitida). Las otras siete colecciones pasaron.
+- A1-A8 sin cortocircuito: A5 fail, por esa autoridad ausente; las demás pass.
+- Es el supuesto exacto de la regla de F4 (F4-E31, F4-E43; parada F4T3B2-C08): un fallo solo por fidelidad literal de colecciones permite una replanificación reforzada única, sin consumir un intento de producto.
+
+**Replanificación reforzada única** `R20261113T113012Z-e025`: el prompt describió el rechazo y fijó los tres paquetes de nombre casi igual (`t3b2`, `t3b` y `t3`), cada uno en su índice.
+- El Controller **paró con S-03 a los 41 segundos**, tras dos órdenes (la identidad de git y `ls-files`) y **sin cargar el contrato**.
+- Alegó dos cosas: que TaskClass debía llevar una tilde, y que las colecciones del contrato contienen texto no ASCII que no se puede copiar sin escapar. Emitió las colecciones vacías.
+- **Hechos medidos por la sesión:**
+  - el contrato y el prompt tienen 0 bytes no ASCII;
+  - el prompt fija TaskClass en ASCII, sin tilde;
+  - el esquema de la delegación solo exige una cadena;
+  - `af63` y la planificación aceptada de F4-T3B1 usaron ese mismo valor ASCII.
+  - El único texto con tilde de ese nombre está en la tabla de `routing.md`, que el prompt no manda copiar.
+  - **El conflicto alegado no existe.**
+- La comparación byte a byte dio REJECTED en las ocho colecciones (vacías). A1-A8: A4 y A5 fail.
+
+**Disposición (regla, no decisión de la sesión):** es el segundo fallo de la planificación. Por la regla de F4 y la parada F4T3B2-C08: **STOP al Coordinator**.
+- Sin tercera planificación y sin Worker.
+- Los dos fallos no consumen intentos de producto: F4-T3B2 sigue en `attempts` 1 de 3.
+- Los relevos de las dos corridas registran `Disposition` STOP.
+
+**Propuesta de la sesión al Coordinator:**
+- **(a) Recomendada:** una planificación más, con el prompt reforzado de `e025` más una refutación explícita del falso conflicto. El prompt diría que el contrato es ASCII puro (0 bytes no ASCII), que TaskClass se escribe sin tilde y que la tabla de `routing.md` no se copia, y exigiría cargar el contrato antes de juzgar cualquier conflicto. Ante otro fallo de fidelidad: STOP sin más planificaciones.
+- **(b):** aceptar `af63` con una dispensa textual de `Authorities[1]` (precedente F4-E21). La sesión **no** la recomienda: la dispensa dejaría al Worker sin la autoridad del paquete de F4-T3B (§6, R-B2-1 a R-B2-6), porque su prompt se construye desde las Authorities de la delegación.
+
+**Hecho de proceso:** antes de lanzar `e025`, la comprobación de procesos de salida dio 2 participantes. Eran los `bash.exe` de la propia sesión, con la ruta del worktree en su línea de orden (el falso P-02 conocido). Se repitió solo esa comprobación, desde un script, y dio 0.

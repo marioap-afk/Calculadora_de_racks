@@ -6790,3 +6790,17 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 176. Planificación de F4-T3B2: dos fallos y STOP al Coordinator
+
+**Decisión:** F4-E45 (regla de F4 y parada F4T3B2-C08).
+
+| Corrida | Resultado | Causa |
+|---|---|---|
+| `R20261113T112617Z-af63` | REJECTED (comparación byte a byte), A5 fail | `Authorities[1].Path` con `t3` en vez de `t3b`: una letra omitida; las otras siete colecciones pasaron |
+| `R20261113T113012Z-e025` (replanificación reforzada única) | STOP S-03 del Controller; REJECTED en las ocho colecciones (vacías), A4 y A5 fail | conflicto alegado inexistente (una tilde en TaskClass y texto no ASCII en el contrato); el contrato y el prompt tienen 0 bytes no ASCII |
+
+- **F4-T3B2:** emitida y en STOP al Coordinator. Sin tercera planificación y sin Worker. `attempts` 1 de 3 sin consumir.
+- **Propuesta de la sesión:** una planificación más, con la refutación explícita del falso conflicto.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.
