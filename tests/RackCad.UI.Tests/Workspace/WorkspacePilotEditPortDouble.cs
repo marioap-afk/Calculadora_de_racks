@@ -14,7 +14,8 @@ namespace RackCad.UI.Tests
     ///
     /// Without a responder it behaves as a minimal draft: the intention creates a clean draft, the reload clears the stale mark, the
     /// text is kept as pending (the draft turns dirty and protected), the commit applies a text that <see cref="Validate"/> accepts and
-    /// answers Invalid for one it rejects, and a blocking boundary aborts on an invalid pending text. A hook can run an action inside a
+    /// answers Invalid for one it rejects, and a blocking boundary aborts on an invalid pending text and, on a valid one, proceeds having
+    /// applied it and cleared the pending text, as the host does. A hook can run an action inside a
     /// read, to model a read that pumps messages.
     /// </summary>
     internal sealed class WorkspacePilotEditPortDouble : IWorkspacePilotEditPort
@@ -184,7 +185,12 @@ namespace RackCad.UI.Tests
             if (!view.Exists || view.PendingText == null) return new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, false, none, null);
 
             var message = Validate(view.PendingText);
-            if (message == null) return new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, true, none, null);
+            if (message == null)
+            {
+                // As the host does (D-T3-02): a valid pending text proceeds, is applied and leaves the draft with no pending text.
+                _fields[(origin.Origin, rackId)] = View(PilotFieldState.Dirty, view.PendingText, null, null, view.IsPossiblyStale, true, view.CanEdit);
+                return new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, true, none, null);
+            }
 
             var problems = new[] { new PilotFieldProblem("AnnotationScale", message) };
             return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, problems, null);

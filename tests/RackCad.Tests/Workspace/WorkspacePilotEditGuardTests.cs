@@ -867,16 +867,46 @@ public class WorkspacePilotEditGuardTests
         Assert.Contains("in the reload the draft", notAdmittedDoc);
     }
 
+    // I-64 F4-T3B1 (minor 2 of F4-T3A, corrected in attempt 2): the two folders are bounded from below, by NAME, with the model of MissingDraftFiles of
+    // WorkspaceLifecycleGuardTests: each file that T3A left in them must still be there. The guard fixes no number of files and no ceiling, and it
+    // does not bind any later task: a file that a later task legitimately adds to the folders does not touch it. The exact counts of the
+    // subscriptions of the bridge (+=, -= and the handlers) were duplicates of what other guards already fix, and they are not repeated here.
+    private static readonly string[] DraftFileNames =
+    {
+        "DraftApplyOutcome.cs", "DraftClosePolicy.cs", "DraftRegistry.cs", "DraftSession.cs", "DraftStaleBase.cs",
+    };
+
+    private static readonly string[] PluginWorkspaceFileNames =
+    {
+        "AutoCadEventBridge.cs", "WorkspaceController.cs", "WorkspaceHostPort.cs", "WorkspaceNavigationEffects.cs", "WorkspaceNavigationFacts.cs",
+        "WorkspaceNavigationHost.cs", "WorkspacePaletteHost.cs", "WorkspacePanelCommand.cs", "WorkspaceSelectionReader.cs",
+    };
+
+    private static IReadOnlyList<string> MissingFiles(string[] named, IEnumerable<string> paths)
+    {
+        var present = paths.Select(p => p.Substring(p.LastIndexOf('/') + 1)).ToHashSet(StringComparer.Ordinal);
+        return named.Where(n => !present.Contains(n)).ToArray();
+    }
+
     [Fact]
     public void ThisTaskAddsNoFileToThePluginWorkspaceFolderNorToTheDraftsAndNoCommandNorSubscription()
     {
-        // I-64 F4-T3B1 (minor 2 of F4-T3A): the folders are bounded, not fixed by an exact count of their own: the 9 files of Plugin/Workspace and
-        // the 5 of Drafts/ are the ceiling that this task and the next ones must not pass. The exact counts of the subscriptions of the bridge
-        // (+=, -= and the handlers) were duplicates of what other guards already fix, and they are not repeated here.
-        Assert.True(Src.PluginFiles().Count <= 9, "a new file in Plugin/Workspace");
-        Assert.True(Src.Files(DraftsFolder).Count <= 5, "a new file in Drafts");
+        Assert.Empty(MissingFiles(DraftFileNames, Src.Files(DraftsFolder).Select(f => f.Path)));
+        Assert.Empty(MissingFiles(PluginWorkspaceFileNames, Src.PluginFiles().Select(f => f.Path)));
         Assert.Equal(1, Src.Count(Src.Code(BridgePath), @"private\s+void\s+OnIdle\s*\(\s*\)"));
         Assert.DoesNotMatch(new Regex(@"Debug\.Assert"), Src.Code(BridgePath));
         Assert.DoesNotMatch(new Regex(@"\[CommandMethod"), Controller() + Support() + Port());
+    }
+
+    [Fact]
+    public void TheBoundOfTheTwoFoldersNamesEachFileAndFixesNeitherTheirNumberNorACeiling()
+    {
+        var drafts = Src.Files(DraftsFolder).Select(f => f.Path).ToArray();
+        var plugin = Src.PluginFiles().Select(f => f.Path).ToArray();
+
+        Assert.Equal(new[] { "DraftSession.cs" }, MissingFiles(DraftFileNames, drafts.Where(p => !p.EndsWith("/DraftSession.cs", StringComparison.Ordinal))));
+        Assert.Equal(new[] { "WorkspacePaletteHost.cs" }, MissingFiles(PluginWorkspaceFileNames, plugin.Where(p => !p.EndsWith("/WorkspacePaletteHost.cs", StringComparison.Ordinal))));
+        Assert.Empty(MissingFiles(DraftFileNames, drafts.Concat(new[] { DraftsFolder + "DraftExtra.cs" })));
+        Assert.Empty(MissingFiles(PluginWorkspaceFileNames, plugin.Concat(new[] { "src/RackCad.Plugin/Workspace/WorkspaceExtra.cs" })));
     }
 }

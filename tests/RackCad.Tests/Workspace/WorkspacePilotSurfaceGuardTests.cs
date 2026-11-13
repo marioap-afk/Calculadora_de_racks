@@ -25,6 +25,7 @@ public class WorkspacePilotSurfaceGuardTests
     private const string PaletteHostPath = "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs";
 
     private static readonly Regex TheThreeReads = new(@"\b(?:TryBeginEdit|TryReload|TryCheckNow)\b");
+    private static readonly Regex TheTwoGestureReads = new(@"\b(?:TryBeginEdit|TryReload)\b");
 
     // ------------------------------------------------------------------ helpers: the body of a member, by its name
 
@@ -50,6 +51,15 @@ public class WorkspacePilotSurfaceGuardTests
         return code.Substring(open);
     }
 
+    // The gesture methods of this task (the browser and the field): the three reads are not used in their bodies either. Comprobar ahora
+    // (TryCheckNow) belongs to F4-T4, so a member of that later task is not in this list and is not bound by it.
+    private static IEnumerable<(string Name, string Body)> T3B1GestureMembers(string code)
+    {
+        var names = @"BeginEdit|CommitPending|Rematerialize|BeginFieldEdit|BeginFieldEditFromBox|BeginFieldEditFromTab|ReloadField";
+        foreach (Match m in Regex.Matches(code, @"\bvoid\s+(?<name>" + names + @")\s*\("))
+            yield return (m.Groups["name"].Value, BodyFrom(code, m.Index + m.Length));
+    }
+
     // Every body of a method with one of the names ('void' or 'bool' members), of a constructor of one of the classes and of every property setter.
     private static IEnumerable<(string Name, string Body)> NonGestureMembers(string code)
     {
@@ -66,8 +76,9 @@ public class WorkspacePilotSurfaceGuardTests
 
     // ------------------------------------------------------------------ INV-F4T3B1-09: only a gesture reads
 
-    // The three reads of the port are named only by the gesture methods of the field view-model; the presentation, the rebuilds, the
-    // constructors and the setters never name them, and the check of the draft is not used at all in this task.
+    // The reads of the port (TryBeginEdit and TryReload) are named only by the gesture methods of the field view-model; the presentation, the
+    // rebuilds, the constructors and the setters never name any of the three, and the bodies of the gestures of this task do not use the check
+    // of the draft (TryCheckNow is of F4-T4: no other member and no other file of the UI is bound by this guard on it).
     private static IEnumerable<string> ReadViolations(IEnumerable<(string Path, string Code)> files)
     {
         foreach (var (path, code) in files)
@@ -76,10 +87,12 @@ public class WorkspacePilotSurfaceGuardTests
                 if (TheThreeReads.IsMatch(body))
                     yield return path + ": " + name + " names " + TheThreeReads.Match(body).Value;
 
-            if (!path.EndsWith("WorkspacePilotFieldViewModel.cs", StringComparison.Ordinal) && TheThreeReads.IsMatch(code))
+            foreach (var (name, body) in T3B1GestureMembers(code))
+                if (Regex.IsMatch(body, @"\bTryCheckNow\b"))
+                    yield return path + ": " + name + " names TryCheckNow";
+
+            if (!path.EndsWith("WorkspacePilotFieldViewModel.cs", StringComparison.Ordinal) && TheTwoGestureReads.IsMatch(code))
                 yield return path + " names a read of the port outside the field view-model";
-            if (Regex.IsMatch(code, @"\bTryCheckNow\b"))
-                yield return path + " names TryCheckNow";
         }
     }
 
@@ -109,11 +122,22 @@ public class WorkspacePilotSurfaceGuardTests
     }
 
     [Fact]
-    public void TheGuardOfTheReadsLeavesAGestureAloneAndSeesAReadOutsideTheFieldAndTheCheckAnywhere()
+    public void TheGuardOfTheReadsLeavesAGestureAloneAndSeesAReadOutsideTheFieldAndTheCheckInTheBodiesOfThisTask()
     {
         Assert.Empty(ReadViolations(new[] { (FieldModelPath, "class C { public void BeginEdit() { var o = _port.TryBeginEdit(r); var p = _port.TryReload(r); } public void Show(int a) { x = 1; } }") }));
         Assert.NotEmpty(ReadViolations(new[] { (BrowserModelPath, "class C { public void BeginFieldEdit() { _port.TryBeginEdit(r); } }") }));
         Assert.NotEmpty(ReadViolations(new[] { (FieldModelPath, "class C { public void BeginEdit() { _port.TryCheckNow(r); } }") }));
+        Assert.NotEmpty(ReadViolations(new[] { (BrowserModelPath, "class C { public void BeginFieldEditFromTab(string r) { _port.TryCheckNow(r); } }") }));
+        Assert.NotEmpty(ReadViolations(new[] { (FieldModelPath, "class C { public void Show(int a) { _port.TryCheckNow(r); } }") }));
+    }
+
+    [Fact]
+    public void TheGuardOfTheReadsDoesNotBindTheCheckOfTheDraftThatBelongsToTheNextTask()
+    {
+        // Comprobar ahora (F4-T4) is a new gesture of the field or of the browser and a use of TryCheckNow elsewhere in the UI is not forbidden here.
+        Assert.Empty(ReadViolations(new[] { (FieldModelPath, "class C { public void CheckNow() { var o = _port.TryCheckNow(r); } }") }));
+        Assert.Empty(ReadViolations(new[] { (BrowserModelPath, "class C { public void CheckField() { _port.TryCheckNow(r); } }") }));
+        Assert.Empty(ReadViolations(new[] { ("src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs", "class C { public void Check() { _port.TryCheckNow(r); } }") }));
     }
 
     // ------------------------------------------------------------------ INV-F4T3B1-04: SetPendingText only in the setter of the text
@@ -209,12 +233,13 @@ public class WorkspacePilotSurfaceGuardTests
     public void TheBoxIsBoundTwoWayToTheTextOfTheFieldAndItsGesturesAreDeclaredInTheXaml()
     {
         var xaml = Regex.Replace(Src.Text(XamlPath), @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
-        var box = Regex.Match(xaml, @"<TextBox\b[^>]*>", RegexOptions.Singleline).Value;
+        // The box of the field is found by its name; the guard says nothing about how many other boxes the panel may have.
+        var box = Regex.Matches(xaml, @"<TextBox\b[^>]*>", RegexOptions.Singleline).Select(m => m.Value)
+            .Single(t => t.Contains("x:Name=\"BrowserFieldBox\"", StringComparison.Ordinal));
 
-        Assert.Equal(1, Src.Count(xaml, @"<TextBox\b"));
         Assert.Contains("x:Name=\"BrowserFieldBox\"", box);
         Assert.Matches(@"Text=""\{Binding\s+Browser\.Field\.Text\s*,\s*Mode=TwoWay\s*,\s*UpdateSourceTrigger=PropertyChanged\}""", box);
-        foreach (var handler in new[] { "PreviewMouseLeftButtonDown", "PreviewKeyDown", "KeyDown", "LostFocus" })
+        foreach (var handler in new[] { "PreviewMouseLeftButtonDown", "PreviewKeyDown", "LostFocus" })
             Assert.Matches(@"\b" + handler + @"=""OnBrowserFieldBox\w+""", box);
     }
 
@@ -225,30 +250,23 @@ public class WorkspacePilotSurfaceGuardTests
         if (Src.Count(host, @"_controller\.PilotEdit\b") != 1) yield return "the palette does not pass _controller.PilotEdit exactly once";
         if (Regex.IsMatch(host, @"IWorkspacePilotEditPort|PilotField|PilotBoundary|EditIntent|WorkspaceBrowser"))
             yield return "the palette names a type of the port";
-
-        var allowed = new HashSet<string>(StringComparer.Ordinal)
-        {
-            "Port", "SetInstrumentationEnabled", "Navigation", "BrowserSummary", "PilotEdit", "StateChanged", "ShowPanel", "HidePanel", "PanelVisible",
-        };
-        foreach (Match used in Regex.Matches(host, @"_controller\.(?<member>\w+)"))
-            if (!allowed.Contains(used.Groups["member"].Value))
-                yield return "the palette uses _controller." + used.Groups["member"].Value;
     }
 
     [Fact]
-    public void ThePaletteHostPassesTheEditPortOfTheControllerAndNothingNewAndNamesNoTypeOfIt()
+    public void ThePaletteHostPassesTheEditPortOfTheControllerExactlyOnceAndNamesNoTypeOfIt()
     {
         Assert.Empty(PaletteViolations(Src.Code(PaletteHostPath)));
     }
 
     [Fact]
-    public void TheGuardOfThePaletteSeesAnotherMemberAMissingPortAndATypeName()
+    public void TheGuardOfThePaletteSeesAMissingPortASecondUseAndATypeNameAndLeavesTheOtherMembersOfTheControllerAlone()
     {
         const string good = "var vm = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation, _controller.BrowserSummary, _controller.PilotEdit); _controller.StateChanged += OnX;";
 
         Assert.Empty(PaletteViolations(good));
         Assert.NotEmpty(PaletteViolations(good.Replace(", _controller.PilotEdit", string.Empty)));
-        Assert.NotEmpty(PaletteViolations(good + " var x = _controller.TryGetSession;"));
+        // The guard is written in the negative: it does not enumerate the members of the controller that the palette may use.
+        Assert.Empty(PaletteViolations(good + " var x = _controller.TryGetSession; _controller.OtherMember();"));
         Assert.NotEmpty(PaletteViolations(good + " IWorkspacePilotEditPort p;"));
         Assert.NotEmpty(PaletteViolations(good + " var y = _controller.PilotEdit;"));
     }

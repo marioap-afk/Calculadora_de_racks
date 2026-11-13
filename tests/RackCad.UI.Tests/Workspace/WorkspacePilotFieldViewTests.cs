@@ -17,7 +17,8 @@ namespace RackCad.UI.Tests
     /// <summary>
     /// I-64 F4-T3B1-EDIT-SURFACE (INV-F4T3B1-02 to 04, 08): the field of the pilot in the real view, with a real TextBox on the STA thread of
     /// the suite and the double of the edit port. The gestures are raised as the input system raises them: the tunnel event for the
-    /// previews (RaiseEvent does not chain the tunnel with the bubble) and the bubble event for the keys the editor did not consume.
+    /// previews (RaiseEvent does not chain the tunnel with the bubble) and the bubble event for the keys. The box has no handler of the
+    /// bubble KeyDown: a character key reaches the editor without Handled and produces its text input (correction of attempt 2).
     /// Nothing reads a drawing and nothing is written.
     /// </summary>
     public class WorkspacePilotFieldViewTests
@@ -83,15 +84,25 @@ namespace RackCad.UI.Tests
 
         private static void Click(Button button) => button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
 
-        private static KeyEventArgs RaiseKey(UIElement element, RoutedEvent routed, Key key)
+        private static KeyEventArgs RaiseKey(UIElement element, RoutedEvent routed, Key key, bool repeat = false)
         {
             using var source = new HwndSource(0, 0, 0, 0, 0, "t", IntPtr.Zero);
             var args = new KeyEventArgs(Keyboard.PrimaryDevice, source, 0, key) { RoutedEvent = routed };
+            if (repeat) MarkRepeat(args);
             element.RaiseEvent(args);
             return args;
         }
 
-        private static KeyEventArgs Preview(UIElement element, Key key) => RaiseKey(element, Keyboard.PreviewKeyDownEvent, key);
+        // The auto-repeat of a held key: WPF marks it with an internal method of the arguments, which the system raises and a test cannot.
+        private static void MarkRepeat(KeyEventArgs args)
+        {
+            var setter = typeof(KeyEventArgs).GetMethod("SetRepeat", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            Assert.NotNull(setter);
+            setter!.Invoke(args, new object[] { true });
+            Assert.True(args.IsRepeat);
+        }
+
+        private static KeyEventArgs Preview(UIElement element, Key key, bool repeat = false) => RaiseKey(element, Keyboard.PreviewKeyDownEvent, key, repeat);
 
         private static KeyEventArgs Bubble(UIElement element, Key key) => RaiseKey(element, Keyboard.KeyDownEvent, key);
 
@@ -150,9 +161,14 @@ namespace RackCad.UI.Tests
             {
                 var (view, pilot, _) = Build();
                 var box = Named<TextBox>(view, "BrowserFieldBox");
+                bool? previewInsideTheRead = null;
+                pilot.ReadHook = _ => previewInsideTheRead = view.ViewModel.Browser.Tabs.Single().IsPreview;
+                Assert.True(view.ViewModel.Browser.Tabs.Single().IsPreview);
 
                 RaiseMouse(box, UIElement.PreviewMouseLeftButtonDownEvent);
 
+                // The tab is pinned inside the read, before it, and not after it.
+                Assert.False(previewInsideTheRead);
                 Assert.Single(pilot.Of(WorkspacePilotEditPortDouble.BeginOp));
                 Assert.False(box.IsReadOnly);
 
@@ -170,9 +186,14 @@ namespace RackCad.UI.Tests
                 var box = Named<TextBox>(view, "BrowserFieldBox");
                 Assert.True(box.IsReadOnly);
                 var before = box.Text;
+                bool? previewInsideTheRead = null;
+                pilot.ReadHook = _ => previewInsideTheRead = view.ViewModel.Browser.Tabs.Single().IsPreview;
+                Assert.True(view.ViewModel.Browser.Tabs.Single().IsPreview);
 
                 var args = Preview(box, Key.D5);
 
+                // The tab is pinned inside the read, before it, and not after it.
+                Assert.False(previewInsideTheRead);
                 Assert.True(args.Handled);
                 Assert.Single(pilot.Of(WorkspacePilotEditPortDouble.BeginOp));
                 Assert.False(box.IsReadOnly);
@@ -227,23 +248,133 @@ namespace RackCad.UI.Tests
                 var view = new WorkspacePanelView(new WorkspacePanelViewModel(host, _ => { }, new WorkspaceNavigationPortDouble(), new WorkspaceBrowserSummaryPortDouble(), pilot));
                 view.ViewModel.Refresh();
                 view.ViewModel.Browser.PinTab("R-1");
+                view.ViewModel.Browser.BeginFieldEdit();
+                // R-2 is a preview that is not the active tab: the selection opened it and the user went back to R-1, which has the draft.
                 host.Snapshot = WorkspacePanelFixtures.Ready(session: 7, selection: SelectionContext.One("R-2"));
                 view.ViewModel.Refresh();
-                view.ViewModel.Browser.PinTab("R-2");
                 view.ViewModel.Browser.ActivateTab("R-1");
-                view.ViewModel.Browser.BeginFieldEdit();
+                Assert.True(view.ViewModel.Browser.Tabs.Single(t => t.RackId == "R-2").IsPreview);
                 view.ViewModel.Browser.Field.Text = "bad";
                 Lay(view);
                 pilot.Calls.Clear();
 
-                // The click of the double click aborts the activation (the text is not valid); the second part must do nothing.
+                // The click of the double click aborts the activation (the text is not valid); the second part must do nothing, and in
+                // particular it must not pin the preview.
                 var tab = TabButton(view, "R-2");
                 Click(tab);
                 RaiseMouse(tab, Control.MouseDoubleClickEvent);
 
                 Assert.Equal("R-1", view.ViewModel.Browser.ActiveRackId);
                 Assert.Empty(pilot.Reads());
-                Assert.False(view.ViewModel.Browser.Tabs.Single(t => t.RackId == "R-2").IsPreview);
+                Assert.True(view.ViewModel.Browser.Tabs.Single(t => t.RackId == "R-2").IsPreview);
+            });
+        }
+
+        [Fact]
+        public void AKeyThatIsARepetitionOfAHeldKeyIsConsumedAndLaunchesNothing()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, pilot, _) = Build();
+                var box = Named<TextBox>(view, "BrowserFieldBox");
+                Assert.True(box.IsReadOnly);
+                Assert.Equal(Visibility.Visible, Named<Button>(view, "BrowserFieldEditButton").Visibility);
+
+                var repeated = Preview(box, Key.Left, repeat: true);
+
+                Assert.True(repeated.Handled);
+                Assert.Empty(pilot.Reads());
+                Assert.True(box.IsReadOnly);
+
+                // The first press of the same key is the gesture.
+                Assert.True(Preview(box, Key.Left).Handled);
+                Assert.Single(pilot.Of(WorkspacePilotEditPortDouble.BeginOp));
+                Assert.False(box.IsReadOnly);
+            });
+        }
+
+        [Fact]
+        public void WithANotAdmittedDiagnosticOfTheSameSurfaceAClickAndAKeyAndTheDoubleClickDoNotReadAndOnlyTheEditButtonReadsAgain()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, pilot, _) = Build();
+                var box = Named<TextBox>(view, "BrowserFieldBox");
+                var button = Named<Button>(view, "BrowserFieldEditButton");
+                pilot.BeginResponder = _ => EditIntentOutcome.NotAdmitted(
+                    "No editable aquí: el rack tiene una definición propia.", "detalle", "Usa RACKEDITAR para editarlo.", EditWitnessStatus.NotSupplied);
+                Click(button);
+                Lay(view);
+                Assert.Single(pilot.Reads());
+                Assert.Equal("No editable aquí", Named<TextBlock>(view, "BrowserFieldStateText").Text);
+                Assert.Equal(Visibility.Visible, button.Visibility);
+
+                RaiseMouse(box, UIElement.PreviewMouseLeftButtonDownEvent);
+                Assert.True(Preview(box, Key.D5).Handled);
+                RaiseMouse(TabButton(view, "R-1"), Control.MouseDoubleClickEvent);
+                Lay(view);
+
+                Assert.Single(pilot.Reads());
+                Assert.Equal("No editable aquí: el rack tiene una definición propia.", Named<TextBlock>(view, "BrowserFieldNotEditableText").Text);
+                Assert.Equal("Usa RACKEDITAR para editarlo.", Named<TextBlock>(view, "BrowserFieldHintText").Text);
+
+                Click(button);
+                Lay(view);
+
+                Assert.Equal(2, pilot.Reads().Count());
+            });
+        }
+
+        [Fact]
+        public void WithAnErrorOfTheFieldNoClickNorKeyNorDoubleClickReadsAndOnlyReloadActs()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, pilot, box) = Editable();
+                pilot.Throws[WorkspacePilotEditPortDouble.SetPendingOp] = new InvalidOperationException("falló el puerto");
+                box.Text = "1:75";
+                Lay(view);
+                Assert.True(box.IsReadOnly);
+                var reload = Named<Button>(view, "BrowserFieldReloadButton");
+                Assert.Equal(Visibility.Visible, reload.Visibility);
+                pilot.Throws.Clear();
+                pilot.Calls.Clear();
+
+                RaiseMouse(box, UIElement.PreviewMouseLeftButtonDownEvent);
+                Assert.True(Preview(box, Key.D5).Handled);
+                RaiseMouse(TabButton(view, "R-1"), Control.MouseDoubleClickEvent);
+
+                Assert.Empty(pilot.Reads());
+                Assert.True(box.IsReadOnly);
+                Assert.Contains("falló el puerto", Named<TextBlock>(view, "BrowserFieldStateText").Text);
+
+                Click(reload);
+                Lay(view);
+
+                Assert.Empty(pilot.Reads());
+                Assert.False(box.IsReadOnly);
+            });
+        }
+
+        [Fact]
+        public void TheDoubleClickOnTheActiveTabWithAnEditableBoxDoesNothingAndKeepsTheNoticeOfTheSurface()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, pilot, box) = Editable();
+                pilot.SetPendingResponder = (_, _, _) => PilotFieldResult.Busy("Hay una lectura en curso.");
+                box.Text = "1:75";
+                Lay(view);
+                var notice = Named<TextBlock>(view, "BrowserFieldNoticeText").Text;
+                Assert.Contains("Hay una lectura en curso.", notice);
+                pilot.Calls.Clear();
+
+                RaiseMouse(TabButton(view, "R-1"), Control.MouseDoubleClickEvent);
+                Lay(view);
+
+                Assert.Empty(pilot.Reads());
+                Assert.Equal(notice, Named<TextBlock>(view, "BrowserFieldNoticeText").Text);
+                Assert.False(box.IsReadOnly);
             });
         }
 
@@ -302,17 +433,75 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
-        public void KeysThatTheEditorDidNotConsumeStayInThePanelWithAnEditableBoxExceptTab()
+        // The keys that produce a character reach the editor untouched: the KeyDown of the bubble is not marked by the panel, so the text input is
+        // generated (a KeyDown marked Handled suppresses it, as the experiment of the session showed). Only Enter and Esc are consumed, in the tunnel.
+        [Theory]
+        [InlineData(Key.A)]
+        [InlineData(Key.D5)]
+        [InlineData(Key.OemComma)]
+        [InlineData(Key.OemPeriod)]
+        public void ACharacterKeyOnAnEditableBoxIsNotHandledInTheTunnelNorInTheBubbleSoItProducesItsTextInput(Key key)
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (_, pilot, box) = Editable();
+
+                Assert.False(Preview(box, key).Handled, "PreviewKeyDown " + key);
+                Assert.False(Bubble(box, key).Handled, "KeyDown " + key);
+                Assert.Empty(pilot.Of(WorkspacePilotEditPortDouble.CommitOp));
+            });
+        }
+
+        // The editor itself consumes some keys in its own class handler (Space and Delete among them), and that is not the panel's business: the
+        // editable box must answer every key exactly as a plain TextBox does, so nothing of the panel marks a key that the editor did not.
+        [Theory]
+        [InlineData(Key.Space)]
+        [InlineData(Key.Delete)]
+        [InlineData(Key.Back)]
+        [InlineData(Key.Left)]
+        [InlineData(Key.Tab)]
+        [InlineData(Key.Z)]
+        [InlineData(Key.A)]
+        [InlineData(Key.D5)]
+        [InlineData(Key.OemComma)]
+        [InlineData(Key.OemPeriod)]
+        public void AnEditableBoxAnswersEveryKeyExactlyAsAPlainTextBoxDoesInTheTunnelAndInTheBubble(Key key)
         {
             StaTestRunner.Run(() =>
             {
                 var (_, _, box) = Editable();
+                var plain = new TextBox();
 
-                Assert.True(Bubble(box, Key.Delete).Handled);
-                Assert.True(Bubble(box, Key.Z).Handled);
-                Assert.False(Bubble(box, Key.Tab).Handled);
+                Assert.Equal(Preview(plain, key).Handled, Preview(box, key).Handled);
+                Assert.Equal(Bubble(plain, key).Handled, Bubble(box, key).Handled);
             });
+        }
+
+        [Fact]
+        public void TheBoxHasNoHandlerOfTheBubbleKeyDownAttachedToIt()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var (view, _, box) = Editable();
+
+                Assert.Equal(0, InstanceHandlersOf(box, Keyboard.KeyDownEvent));
+                Assert.Equal(0, InstanceHandlersOf(box, Keyboard.KeyUpEvent));
+                Assert.True(InstanceHandlersOf(box, Keyboard.PreviewKeyDownEvent) > 0);
+                Assert.Equal(0, InstanceHandlersOf(Named<StackPanel>(view, "BrowserFieldPanel"), Keyboard.KeyDownEvent));
+            });
+        }
+
+        // The handlers that the XAML (or any code) attached to this very element for a routed event; the class handlers of TextBox are not counted.
+        private static int InstanceHandlersOf(UIElement element, RoutedEvent routed)
+        {
+            var property = typeof(UIElement).GetProperty("EventHandlersStore", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            Assert.NotNull(property);
+            var store = property!.GetValue(element);
+            if (store == null) return 0;
+            var method = store.GetType().GetMethod("GetRoutedEventHandlers", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            Assert.NotNull(method);
+            var handlers = (RoutedEventHandlerInfo[]?)method!.Invoke(store, new object[] { routed });
+            return handlers?.Length ?? 0;
         }
 
         // ------------------------------------------------------------------ the binding and the setter
@@ -488,7 +677,8 @@ namespace RackCad.UI.Tests
                 var (view, _, _) = Build();
                 var surface = Named<Border>(view, "BrowserSurface");
 
-                Assert.Single(Descendants<TextBox>(view));
+                // The box of the field is one and is inside the surface; the view says nothing about how many other boxes it may have.
+                Assert.Single(Descendants<TextBox>(view), b => b.Name == "BrowserFieldBox");
                 Assert.True(Named<TextBox>(view, "BrowserFieldBox").IsDescendantOf(surface));
                 Assert.Equal(Visibility.Visible, surface.Visibility);
             });

@@ -95,12 +95,27 @@ namespace RackCad.UI.Tests
             var (panel, _, _, pilot) = PanelWithPilot(refresh: false);
 
             Assert.True(panel.Browser.Field.IsAvailable);
-            Assert.Empty(pilot.Calls);
+            AssertNoReadAndNoMutation(pilot);
 
             panel.Refresh();
             panel.Refresh();
 
+            AssertNoReadAndNoMutation(pilot);
+        }
+
+        // The presentation and the construction read nothing and mutate nothing. They say nothing about the queues of notices:
+        // F4-T3B2 may consume them from the presentation.
+        private static void AssertNoReadAndNoMutation(WorkspacePilotEditPortDouble pilot)
+        {
             Assert.Empty(pilot.Reads());
+            foreach (var mutation in new[]
+            {
+                WorkspacePilotEditPortDouble.SetPendingOp,
+                WorkspacePilotEditPortDouble.CommitOp,
+                WorkspacePilotEditPortDouble.DiscardRackOp,
+                WorkspacePilotEditPortDouble.DiscardDocumentOp,
+            })
+                Assert.Equal(0, pilot.Count(mutation));
         }
 
         // ------------------------------------------------------------------ 1, 2, 3: the text and the commit
@@ -286,20 +301,45 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void T06_ComingBackToTheTabShowsTheExactPendingTextOfTheDraft()
+        public void T06_ComingBackToTheTabShowsTheExactTextOfTheDraftAfterAProceededCrossingAndAfterAKeptOne()
         {
+            // A valid pending text proceeds: the host applies it and clears the pending text, so the tab shows the committed one again.
             var rig = new Rig();
             rig.Pilot.Set(A, "R-2", WorkspacePilotEditPortDouble.View());
             rig.Pinned(A, "R-2");
-            rig.Pinned(A, "R-1");
-            rig.Pilot.Set(A, "R-1", WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, pending: " 1:7 ", isProtected: true));
+            rig.Opened(A, "R-1");
+            rig.Field.Text = " 1:7 ";
+            Assert.Equal(" 1:7 ", rig.Pilot.Current(A, "R-1").PendingText);
+
             rig.Browser.ActivateTab("R-2");
+
+            Assert.Equal("R-2", rig.Browser.ActiveRackId);
             Assert.Equal("1:50", rig.Field.Text);
+            Assert.Null(rig.Pilot.Current(A, "R-1").PendingText);
+            Assert.Equal(" 1:7 ", rig.Pilot.Current(A, "R-1").CommittedText);
 
             rig.Browser.ActivateTab("R-1");
 
             Assert.Equal(" 1:7 ", rig.Field.Text);
-            Assert.Empty(rig.Pilot.Of(WorkspacePilotEditPortDouble.SetPendingOp));
+            Assert.True(rig.Field.IsEditable);
+            Assert.Equal("Nombre R-1 *", rig.Tab("R-1").Title);
+            Assert.Single(rig.Pilot.Of(WorkspacePilotEditPortDouble.SetPendingOp));
+
+            // A draft that cannot be edited keeps its pending text through a Kept crossing, and the tab shows it exactly when it comes back.
+            var kept = new Rig();
+            kept.Pilot.Set(A, "R-2", WorkspacePilotEditPortDouble.View());
+            kept.Pinned(A, "R-2");
+            kept.Pinned(A, "R-1");
+            kept.Pilot.Set(A, "R-1", WorkspacePilotEditPortDouble.View(PilotFieldState.Unknown, pending: " 1:7 ", isProtected: true, canEdit: false));
+            kept.Present(A, SelectionContext.One("R-1"));
+            kept.Browser.ActivateTab("R-2");
+            Assert.Equal("R-2", kept.Browser.ActiveRackId);
+            Assert.Equal("1:50", kept.Field.Text);
+
+            kept.Browser.ActivateTab("R-1");
+
+            Assert.Equal(" 1:7 ", kept.Field.Text);
+            Assert.Empty(kept.Pilot.Of(WorkspacePilotEditPortDouble.SetPendingOp));
         }
 
         [Fact]
@@ -657,6 +697,27 @@ namespace RackCad.UI.Tests
             Assert.NotEqual(string.Empty, rig.Field.NoticeText);
         }
 
+        [Fact]
+        public void AReadThatOnlyChangesTheTabInsideTheSameSessionDoesNotRenderItsResultOnTheOtherRack()
+        {
+            // The session is the same before and after the read: only the rack tells the surface apart, so a check of identity that
+            // looked at the session alone would render the result of R-1 on R-2.
+            var rig = new Rig();
+            rig.Pinned(A, "R-2");
+            rig.Pinned(A, "R-1");
+            rig.Pilot.ReadHook = _ => rig.Browser.ActivateTab("R-2");
+
+            rig.Browser.BeginFieldEdit();
+
+            Assert.Equal("R-2", rig.Browser.ActiveRackId);
+            Assert.NotNull(rig.Pilot.Current(A, "R-1").CommittedText);
+            Assert.False(rig.Pilot.Current(A, "R-2").Exists);
+            Assert.Equal(WorkspacePilotFieldViewModel.NoDraftMarker, rig.Field.Text);
+            Assert.False(rig.Field.IsEditable);
+            Assert.DoesNotContain("Listo para editar", rig.Field.StateText);
+            Assert.NotEqual(string.Empty, rig.Field.NoticeText);
+        }
+
         // ------------------------------------------------------------------ TabChange
 
         [Fact]
@@ -710,8 +771,12 @@ namespace RackCad.UI.Tests
         {
             var rig = new Rig();
             rig.Pilot.Validate = t => t == "bad" ? "La escala no es válida." : null;
-            rig.Pinned(A, "R-2");
             rig.Opened(A, "R-1");
+
+            // R-2 is a preview tab that is not the active one: the selection opened it and the user went back to R-1.
+            rig.Present(A, SelectionContext.One("R-2"));
+            rig.Browser.ActivateTab("R-1");
+            Assert.True(rig.Tab("R-2").IsPreview);
             rig.Field.Text = "bad";
             rig.Pilot.Calls.Clear();
 
@@ -720,7 +785,7 @@ namespace RackCad.UI.Tests
 
             Assert.Empty(rig.Pilot.Reads());
             Assert.Equal("R-1", rig.Browser.ActiveRackId);
-            Assert.False(rig.Tab("R-2").IsPreview);
+            Assert.True(rig.Tab("R-2").IsPreview);
         }
 
         // ------------------------------------------------------------------ Dematerialize, only in the presentation
@@ -728,8 +793,13 @@ namespace RackCad.UI.Tests
         [Fact]
         public void ASelectionThatActivatesAnotherRackCrossesDematerializeOnThePreviousTabWhenItHadADraftWithNoPending()
         {
+            // The previous tab is only dirty, with no pending text: the case that F4-T3B2 keeps (R-B6) and that T3B1 crosses as an observed boundary.
             var rig = new Rig();
             rig.Opened(A, "R-1");
+            rig.Pilot.Set(A, "R-1", WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, committed: "1:75", isProtected: true));
+            rig.Present(A, SelectionContext.One("R-1"));
+            Assert.Null(rig.Pilot.Current(A, "R-1").PendingText);
+            Assert.Equal("Nombre R-1 *", rig.Tab("R-1").Title);
             rig.Pilot.Calls.Clear();
 
             rig.Present(A, SelectionContext.One("R-2"));
@@ -1036,7 +1106,7 @@ namespace RackCad.UI.Tests
         // ------------------------------------------------------------------ 15, 16, 17: the oracle, K = 1 and isolation
 
         [Fact]
-        public void T15_ChangingTabsCallsNoNavigationAndOnlyTheSixOperationsOfT3B1AreUsed()
+        public void T15_ChangingTabsCallsNoNavigationAndNeverDiscardsNorChecksNorReadsTheRisks()
         {
             var (panel, host, navigation, pilot) = PanelWithPilot();
             var browser = panel.Browser;
@@ -1057,7 +1127,10 @@ namespace RackCad.UI.Tests
             panel.Refresh();
 
             Assert.Empty(navigation.Calls);
-            var allowed = new HashSet<string>(StringComparer.Ordinal)
+            // F4-T3B1 reads and mutates only through the six operations below; it never discards, never checks and never asks for the
+            // racks at risk. Nothing is said about the queues of notices (TakeLossNotices, TakeCloseNotices): F4-T3B2 may consume them
+            // from the presentation.
+            var allowedOrNotices = new HashSet<string>(StringComparer.Ordinal)
             {
                 WorkspacePilotEditPortDouble.GetFieldOp,
                 WorkspacePilotEditPortDouble.SetPendingOp,
@@ -1065,15 +1138,15 @@ namespace RackCad.UI.Tests
                 WorkspacePilotEditPortDouble.BoundaryOp,
                 WorkspacePilotEditPortDouble.BeginOp,
                 WorkspacePilotEditPortDouble.ReloadOp,
+                WorkspacePilotEditPortDouble.LossOp,
+                WorkspacePilotEditPortDouble.CloseOp,
             };
-            Assert.True(pilot.Operations().IsSubsetOf(allowed), string.Join(",", pilot.Operations().Except(allowed)));
+            Assert.True(pilot.Operations().IsSubsetOf(allowedOrNotices), string.Join(",", pilot.Operations().Except(allowedOrNotices)));
             foreach (var never in new[]
             {
                 WorkspacePilotEditPortDouble.DiscardRackOp,
                 WorkspacePilotEditPortDouble.DiscardDocumentOp,
                 WorkspacePilotEditPortDouble.RisksOp,
-                WorkspacePilotEditPortDouble.LossOp,
-                WorkspacePilotEditPortDouble.CloseOp,
                 WorkspacePilotEditPortDouble.CheckOp,
             })
                 Assert.Equal(0, pilot.Count(never));
@@ -1097,6 +1170,142 @@ namespace RackCad.UI.Tests
             Assert.Same(field, rig.Browser.Field);
             Assert.Equal(1, rig.Browser.LiveSurfaceCount);
             Assert.Equal("1:50", field.Text);
+
+            // K = 1 while the user edits: the typing goes to the draft of the live tab and the surface is still the one.
+            field.Text = "1:60";
+            Assert.Equal(1, rig.Browser.LiveSurfaceCount);
+            Assert.Same(field, rig.Browser.Field);
+            Assert.Equal("1:60", rig.Pilot.Current(A, "R-1").PendingText);
+            Assert.Equal("1:75", rig.Pilot.Current(A, "R-2").CommittedText);
+
+            rig.Browser.ActivateTab("R-2");
+
+            Assert.Equal(1, rig.Browser.LiveSurfaceCount);
+            Assert.Same(field, rig.Browser.Field);
+            Assert.Equal("1:75", field.Text);
+
+            rig.Browser.ActivateTab("R-1");
+
+            Assert.Equal(1, rig.Browser.LiveSurfaceCount);
+            Assert.Equal("1:60", field.Text);
+        }
+
+        // ------------------------------------------------------------------ the gestures depend on the state (minor 4 of the independent review)
+
+        [Fact]
+        public void TheDoubleClickOnTheActiveTabWithAnEditableBoxDoesNothingAndKeepsTheNoticeOfTheSurface()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.SetPendingResponder = (_, _, _) => PilotFieldResult.Busy("Hay una lectura en curso.");
+            rig.Field.Text = "1:75";
+            var notice = rig.Field.NoticeText;
+            Assert.Contains("Hay una lectura en curso.", notice);
+            Assert.True(rig.Field.IsEditable);
+            rig.Pilot.Calls.Clear();
+
+            rig.Browser.BeginFieldEditFromTab("R-1");
+
+            Assert.Empty(rig.Pilot.Reads());
+            Assert.Equal(notice, rig.Field.NoticeText);
+        }
+
+        [Fact]
+        public void WithANotAdmittedDiagnosticOfTheSameSurfaceTheDoubleClickDoesNotReadAndOnlyTheEditButtonReadsAgain()
+        {
+            var rig = new Rig();
+            rig.Pilot.BeginResponder = _ => EditIntentOutcome.NotAdmitted(
+                "No editable aquí: el rack tiene una definición propia.", "detalle técnico", "Usa RACKEDITAR para editarlo.", EditWitnessStatus.NotSupplied);
+            rig.Pinned(A, "R-1");
+            rig.Browser.BeginFieldEdit();
+            Assert.Equal("No editable aquí", rig.Field.StateText);
+            Assert.True(rig.Field.ShowEditButton);
+            Assert.Single(rig.Pilot.Reads());
+
+            rig.Browser.BeginFieldEditFromTab("R-1");
+
+            Assert.Single(rig.Pilot.Reads());
+            Assert.Equal("No editable aquí: el rack tiene una definición propia.", rig.Field.NotEditableText);
+            Assert.Equal("Usa RACKEDITAR para editarlo.", rig.Field.ClassicEditorHintText);
+
+            rig.Browser.BeginFieldEdit();
+
+            Assert.Equal(2, rig.Pilot.Reads().Count());
+        }
+
+        [Fact]
+        public void WithAnErrorOfTheFieldNoGestureReadsAndOnlyReloadActs()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.Throws[WorkspacePilotEditPortDouble.SetPendingOp] = new InvalidOperationException("falló el puerto");
+            rig.Field.Text = "1:75";
+            Assert.False(rig.Field.IsEditable);
+            Assert.True(rig.Field.ShowReloadButton);
+            Assert.False(rig.Field.ShowEditButton);
+            rig.Pilot.Throws.Clear();
+            rig.Pilot.Calls.Clear();
+
+            rig.Browser.BeginFieldEditFromTab("R-1");
+
+            Assert.Empty(rig.Pilot.Reads());
+            Assert.Contains("falló el puerto", rig.Field.StateText);
+
+            rig.Browser.ReloadField();
+
+            Assert.Empty(rig.Pilot.Reads());
+            Assert.True(rig.Field.IsEditable);
+        }
+
+        // ------------------------------------------------------------------ a failure of the previous surface and the conservative mark
+
+        [Fact]
+        public void AFailureCrossingTheDocumentChangeOfThePreviousSurfaceIsContainedAndDoesNotPutTheNewFieldInError()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.BoundaryResponder = (_, _, kind) => kind == PilotBoundaryKind.DocumentChange
+                ? throw new InvalidOperationException("falló la frontera de A")
+                : new PilotBoundaryResult(kind, PilotBoundaryDecision.Kept, false, Array.Empty<PilotFieldProblem>(), null);
+
+            rig.Present(B, SelectionContext.One("R-9"));
+
+            Assert.Equal("R-9", rig.Browser.ActiveRackId);
+            Assert.Equal(WorkspacePilotFieldViewModel.NoDraftMarker, rig.Field.Text);
+            Assert.Equal("Sin borrador.", rig.Field.StateText);
+            Assert.DoesNotContain("falló la frontera de A", rig.Field.StateText);
+            Assert.False(rig.Field.ShowReloadButton);
+            Assert.True(rig.Field.ShowEditButton);
+        }
+
+        [Fact]
+        public void AFailureCrossingDematerializeOfThePreviousTabIsContainedAndDoesNotPutTheNewFieldInError()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.BoundaryResponder = (_, _, kind) => kind == PilotBoundaryKind.Dematerialize
+                ? throw new InvalidOperationException("falló la frontera de R-1")
+                : new PilotBoundaryResult(kind, PilotBoundaryDecision.Kept, false, Array.Empty<PilotFieldProblem>(), null);
+
+            rig.Present(A, SelectionContext.One("R-2"));
+
+            Assert.Equal("R-2", rig.Browser.ActiveRackId);
+            Assert.Equal("Sin borrador.", rig.Field.StateText);
+            Assert.False(rig.Field.ShowReloadButton);
+            Assert.True(rig.Field.ShowEditButton);
+        }
+
+        [Fact]
+        public void WhenThePortCannotSayTheTabIsTreatedAsProtectedWithTheMarkAndAPreviewIsPinned()
+        {
+            var rig = new Rig();
+            rig.Pilot.Throws[WorkspacePilotEditPortDouble.GetFieldOp] = new InvalidOperationException("falló la lectura de memoria");
+
+            rig.Present(A, SelectionContext.One("R-1"));
+
+            Assert.Equal("Nombre R-1 *", rig.Tab("R-1").Title);
+            Assert.False(rig.Tab("R-1").IsPreview);
+            Assert.Empty(rig.Pilot.Reads());
         }
 
         [Fact]
