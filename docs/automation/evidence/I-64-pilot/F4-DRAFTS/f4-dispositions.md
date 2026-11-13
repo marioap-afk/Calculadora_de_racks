@@ -1320,3 +1320,43 @@ Medido: T3B tocaría unos 22 archivos, frente a los 12 de T3A, con cambios decla
 | F4-T3B2 | paquete v3 preparado; autorizada tras el cierre de F4-T3B1 |
 | F4-T3C y F4-T4 | WAITING |
 | Smoke-2 y F5-F7 | PENDING |
+
+## F4-E44. Paquete de F4-T3B2 con la disposición F4-E43 y emisión de F4-T3B2-EDIT-CLOSE-SYNC
+
+**Origen:** la disposición del Owner y del Coordinator (F4-E43) autoriza F4-T3B2 tras el cierre de F4-T3B1. No hace falta otra decisión del Owner para emitirlo.
+
+**Paquete** (`docs/initiatives/I-64-f4-t3b2-gate-contract-package.md`, v3). Lo preparó la sesión la noche del 2026-11-13, sobre el código de F4-T3B1 en `1708e764`, bajo la orden de autonomía y sin emitirlo hasta este cierre.
+- **v1:** revisión adversarial independiente EMITIBLE TRAS CORRECCIONES (0/5/12). Los importantes:
+  - el cierre de una limpia que fallaba;
+  - las dos vías de D-17;
+  - la forma de la UI sin fijar;
+  - la regla RED y los filtros;
+  - una prueba existente que se rompía sin declararse (P-01).
+- **v2:** su re-revisión dio EMITIBLE TRAS CORRECCIONES (0/1/6). El importante: la extensión de `keepActive` a una vista ilegible contradecía «solo el texto pendiente retiene».
+- **v3:** todo aceptado. Las dos revisiones están en `F4-T3B2-EDIT-CLOSE-SYNC/coordinator/`.
+- **Disposición incorporada (§9 del paquete):**
+  - N-1 y N-3 vinculados (D-T3B2-06, INV-F4T3B2-13);
+  - N-2 declarada en F4-T3B1;
+  - el tratamiento aceptado 1-3 en D-T3B2-01, D-T3B2-03 y D-T3B2-04, con las obligaciones de F4-T3C;
+  - la regla de replanificación en C08.
+- **Validación determinista final** (`package-validation.json`): PASS en sus siete comprobaciones, idéntica en dos corridas.
+  1. el código no cambió desde `1708e764`;
+  2. las 27 referencias `archivo:línea` resuelven;
+  3. los archivos citados existen, salvo los tres nuevos;
+  4. el paquete y el contrato coinciden en el alcance, las invariantes y las líneas base;
+  5. la disposición está incorporada;
+  6. no hay rutas locales;
+  7. las autoridades existen.
+
+**Emisión de F4-T3B2-EDIT-CLOSE-SYNC:**
+- el contrato `I-64-pilot/F4-T3B2-EDIT-CLOSE-SYNC/coordinator/gate-contract.json`;
+- 13 rutas exactas, tres de ellas archivos de prueba nuevos;
+- 15 invariantes y 8 paradas propias;
+- líneas base `RackCad.Tests.Workspace` 2300 y `RackCad.UI.Tests.Workspace` 352, las dos con `ExpectRed` true: en el RED fallan solo las pruebas nuevas, por aserción;
+- `attempts` 1 de 3.
+
+**Controles:**
+- nc4 en la primera delegación de la cadena, y nc1..nc3 con su oráculo ordinario.
+- La firma exacta de PD-F4-04 (nc1) o de PD-F4-01 (nc2) reutiliza el sustituto de la subtarea sin volver al Owner (órdenes de F4-T3 y de nc2 de F4-T3A).
+- Las firmas de PD-F4-05 y PD-F4-06 no tienen una regla general: si se repiten, la sesión vuelve al Owner antes de aplicar un sustituto.
+- PD-F4-06 nunca debilita Ci ni Trailer en la verificación real.

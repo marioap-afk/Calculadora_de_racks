@@ -6763,3 +6763,18 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **F4-T3C:** en espera. Es dueña del comando `RACKPANELDESCARTAR`, del aviso con la vía del comando y del endurecimiento de `GetRacksAtRisk`.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 174. Paquete de F4-T3B2
+
+**Decisión:** F4-E44.
+- **Paquete** `docs/initiatives/I-64-f4-t3b2-gate-contract-package.md` v3, con la disposición F4-E43 incorporada:
+  - revisión de la v1: EMITIBLE TRAS CORRECCIONES (0/5/12);
+  - re-revisión de la v2: EMITIBLE TRAS CORRECCIONES (0/1/6);
+  - todo aceptado.
+- **Validación determinista final:** PASS en sus siete comprobaciones, idéntica en dos corridas (`F4-T3B2-EDIT-CLOSE-SYNC/coordinator/package-validation.json`).
+- **Vinculado por el Owner:** N-1 y N-3 de F4-T3B1. Tratamiento aceptado:
+  - sin borrador, la pestaña se cierra sin `DiscardRack`;
+  - el veto nombra solo la vía del panel hasta F4-T3C;
+  - el fallo de `GetRacksAtRisk` no se acepta como comportamiento final: F4-T3C lo endurece.
+
+**Límites:** solo documentación; sin AutoCAD.
