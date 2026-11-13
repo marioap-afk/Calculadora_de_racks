@@ -163,7 +163,8 @@ namespace RackCad.Application.Workspace
             string? committedText,
             string? committedTextReason,
             string? pendingText,
-            string? pendingMessage)
+            string? pendingMessage,
+            string? errorReason = null)
         {
             Exists = exists;
             State = state;
@@ -197,6 +198,9 @@ namespace RackCad.Application.Workspace
 
         /// <summary>The message of the validation of <see cref="PendingText"/>; null when there is none or it is valid.</summary>
         public string? PendingMessage { get; }
+
+        /// <summary>The reason of the Error of the work. Null for now.</summary>
+        public string? ErrorReason => null;
     }
 
     /// <summary>The answer to an operation on the field. The view is set for Applied and Invalid; the reason for the other statuses.</summary>
@@ -280,6 +284,9 @@ namespace RackCad.Application.Workspace
             _rackIds = (rackIds ?? throw new ArgumentNullException(nameof(rackIds))).ToArray();
             _uncertainRackIds = (uncertainRackIds ?? throw new ArgumentNullException(nameof(uncertainRackIds))).ToArray();
         }
+
+        /// <summary>Constant for now.</summary>
+        public bool IsKnown => true;
 
         /// <summary>The racks whose work is known to be at risk.</summary>
         public IReadOnlyList<string> RackIds => _rackIds ?? Array.Empty<string>();

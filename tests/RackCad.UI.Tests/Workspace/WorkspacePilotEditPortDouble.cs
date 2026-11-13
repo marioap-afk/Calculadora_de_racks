@@ -101,8 +101,12 @@ namespace RackCad.UI.Tests
             bool stale = false,
             bool isProtected = false,
             bool canEdit = true,
-            string? committedReason = null) =>
-            new PilotFieldView(true, state, stale, isProtected, canEdit, committed, committedReason, pending, message);
+            string? committedReason = null,
+            string? errorReason = null) =>
+            new PilotFieldView(true, state, stale, isProtected, canEdit, committed, committedReason, pending, message, errorReason);
+
+        /// <summary>F4-T3C1: the unknown answer of GetRacksAtRisk (it could not be decided), the default value of the port.</summary>
+        public static PilotRiskView UnknownRisk() => default;
 
         public static PilotFieldView NoDraft() =>
             new PilotFieldView(false, PilotFieldState.NotOpen, false, false, false, null, null, null, null);

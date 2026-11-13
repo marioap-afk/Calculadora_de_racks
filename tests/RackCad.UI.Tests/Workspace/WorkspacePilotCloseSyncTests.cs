@@ -1378,5 +1378,271 @@ namespace RackCad.UI.Tests
             Assert.Equal(1, pilot.Count(WorkspacePilotEditPortDouble.DiscardDocumentOp));
             Assert.False(panel.HasError);
         }
+
+        // ------------------------------------------------------------------ I-64 F4-T3C1: the unknown risk, M-1, M-2, M-3 and M-7
+
+        private const string UnknownRisk = "No se pudo decidir qué borradores están en riesgo en este documento; no se descartó nada.";
+        private const string UnknownRiskAgain = "No se pudieron volver a comprobar los borradores en riesgo; no se descartó nada.";
+
+        [Fact]
+        public void AnUnknownRiskIsNeverNothingAtRiskAndAsksNothingAndDiscardsNothing()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.RisksResponder = _ => WorkspacePilotEditPortDouble.UnknownRisk();
+            rig.Pilot.Calls.Clear();
+
+            rig.Browser.RequestDocumentDiscard();
+
+            Assert.Equal(UnknownRisk, rig.Browser.NoticeText);
+            Assert.NotEqual(NoRisk, rig.Browser.NoticeText);
+            Assert.False(rig.Browser.HasConfirmation);
+            Assert.Equal(1, rig.Pilot.Count(WorkspacePilotEditPortDouble.RisksOp));
+            Assert.Empty(rig.Pilot.Of(WorkspacePilotEditPortDouble.DiscardDocumentOp));
+            Assert.Empty(rig.Pilot.Of(WorkspacePilotEditPortDouble.DiscardRackOp));
+            Assert.True(rig.Pilot.Current(A, "R-1").Exists);
+        }
+
+        [Fact]
+        public void AnUnknownRiskRemovesAPendingConfirmationOfTheDocumentAndKeepsTheOneOfATab()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.RisksResponder = _ => Risk(new[] { "R-1" });
+            rig.Browser.RequestDocumentDiscard();
+            Assert.True(rig.Browser.HasConfirmation);
+
+            rig.Pilot.RisksResponder = _ => WorkspacePilotEditPortDouble.UnknownRisk();
+            rig.Browser.RequestDocumentDiscard();
+
+            Assert.False(rig.Browser.HasConfirmation);
+            Assert.Equal(string.Empty, rig.Browser.ConfirmationText);
+            Assert.Equal(UnknownRisk, rig.Browser.NoticeText);
+
+            // The confirmation of a tab is not the one of the document: it stays.
+            rig.Protected(A, "R-2");
+            rig.Browser.CloseTab("R-2");
+            Assert.True(rig.Browser.HasConfirmation);
+            rig.Browser.RequestDocumentDiscard();
+            Assert.True(rig.Browser.HasConfirmation);
+            Assert.Contains("R-2", rig.Browser.ConfirmationText);
+            Assert.Equal(UnknownRisk, rig.Browser.NoticeText);
+        }
+
+        [Fact]
+        public void AnUnknownSecondLookDoesNotDiscardRemovesTheConfirmationAndSaysSo()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.DiscardAsTheHostDoes();
+            rig.Pilot.RisksResponder = _ => Risk(new[] { "R-1" });
+            rig.Browser.RequestDocumentDiscard();
+            Assert.True(rig.Browser.HasConfirmation);
+            rig.Pilot.Calls.Clear();
+
+            rig.Pilot.RisksResponder = _ => WorkspacePilotEditPortDouble.UnknownRisk();
+            rig.Browser.ConfirmDiscard();
+
+            Assert.Equal(UnknownRiskAgain, rig.Browser.NoticeText);
+            Assert.False(rig.Browser.HasConfirmation);
+            Assert.Equal(1, rig.Pilot.Count(WorkspacePilotEditPortDouble.RisksOp));
+            Assert.Empty(rig.Pilot.Of(WorkspacePilotEditPortDouble.DiscardDocumentOp));
+            Assert.True(rig.Pilot.Current(A, "R-1").Exists);
+            Assert.True(rig.IsOpen("R-1"));
+        }
+
+        [Fact]
+        public void AKnownEmptySecondLookStillSaysThereIsNothingAtRisk()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.RisksResponder = _ => Risk(new[] { "R-1" });
+            rig.Browser.RequestDocumentDiscard();
+            rig.Pilot.RisksResponder = _ => Risk(Array.Empty<string>());
+
+            rig.Browser.ConfirmDiscard();
+
+            Assert.Equal(NoRisk, rig.Browser.NoticeText);
+            Assert.False(rig.Browser.HasConfirmation);
+            Assert.Empty(rig.Pilot.Of(WorkspacePilotEditPortDouble.DiscardDocumentOp));
+        }
+
+        [Fact]
+        public void WithOnlyUncertainRacksTheConfirmationSaysItCouldNotBeDecidedAndWithBothItKeepsTheCurrentText()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.RisksResponder = _ => Risk(Array.Empty<string>(), new[] { "R-4" });
+
+            rig.Browser.RequestDocumentDiscard();
+
+            Assert.True(rig.Browser.HasConfirmation);
+            Assert.Equal("¿Descartar los borradores de este documento? No se pudo decidir si tienen trabajo sin aplicar: R-4.", rig.Browser.ConfirmationText);
+            rig.Browser.CancelDiscard();
+
+            rig.Pilot.RisksResponder = _ => Risk(new[] { "R-1" }, new[] { "R-4" });
+            rig.Browser.RequestDocumentDiscard();
+            Assert.Equal(
+                "¿Descartar los borradores de este documento? Se perderá el trabajo sin aplicar de: Nombre R-1. No se pudo decidir: R-4.",
+                rig.Browser.ConfirmationText);
+        }
+
+        [Fact]
+        public void AFieldThatThrowsRetainsTheActiveTabAndTheNoticeSaysItCouldNotBeChecked()
+        {
+            var rig = new Rig();
+            rig.Pinned(A, "R-1");
+            rig.Pilot.Throws[WorkspacePilotEditPortDouble.GetFieldOp] = new InvalidOperationException("no se pudo leer");
+
+            rig.Present(A, SelectionContext.One("R-2"));
+
+            Assert.Equal("R-1", rig.Browser.ActiveRackId);
+            Assert.True(rig.IsOpen("R-2"));
+            Assert.Equal(
+                "La selección abrió R-2 en segundo plano; no se pudo comprobar si la pestaña activa tiene texto pendiente, así que se conserva.",
+                rig.Browser.NoticeText);
+        }
+
+        [Fact]
+        public void AFieldThatThrowsWithTheRackAlreadyOpenKeepsTheActiveTabAndSaysItCouldNotBeChecked()
+        {
+            var rig = new Rig();
+            rig.Pinned(A, "R-2");
+            rig.Pinned(A, "R-1");
+            rig.Pilot.Throws[WorkspacePilotEditPortDouble.GetFieldOp] = new InvalidOperationException("no se pudo leer");
+
+            rig.Present(A, SelectionContext.One("R-2"));
+
+            Assert.Equal("R-1", rig.Browser.ActiveRackId);
+            Assert.Equal("La selección de R-2 no cambió la pestaña activa: no se pudo comprobar si tiene texto pendiente.", rig.Browser.NoticeText);
+        }
+
+        [Fact]
+        public void TheClosingConfirmationOfATabThatCouldNotBeReadIsNeutralAndAnyOtherRequestRemovesTheMemoryOfIt()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.Throws[WorkspacePilotEditPortDouble.GetFieldOp] = new InvalidOperationException("no se pudo leer");
+
+            rig.Browser.CloseTab("R-1");
+
+            Assert.True(rig.Browser.HasConfirmation);
+            Assert.Equal("No se pudo comprobar la pestaña Nombre R-1; puede tener trabajo sin aplicar. ¿Descartar lo que tenga y cerrarla?", rig.Browser.ConfirmationText);
+            Assert.True(rig.IsOpen("R-1"));
+            Assert.Empty(rig.Pilot.Of(WorkspacePilotEditPortDouble.DiscardRackOp));
+
+            // Another request asks again: with a protected tab that can be read, the text is the usual one.
+            rig.Browser.CancelDiscard();
+            Assert.Equal(string.Empty, rig.Browser.ConfirmationText);
+            rig.Pilot.Throws.Clear();
+            rig.Pilot.Set(A, "R-1", WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, pending: "1:75", isProtected: true));
+            rig.Browser.CloseTab("R-1");
+            Assert.Equal("La pestaña Nombre R-1 tiene un borrador con trabajo sin aplicar. ¿Descartarlo y cerrar la pestaña?", rig.Browser.ConfirmationText);
+        }
+
+        [Fact]
+        public void ACleanTabThatCannotBeDiscardedRemovesTheConfirmationOfAnotherTabBeforeItCloses()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-2");
+            rig.Protected(A, "R-1");
+            rig.Browser.CloseTab("R-1");
+            Assert.True(rig.Browser.HasConfirmation);
+            Assert.Contains("R-1", rig.Browser.ConfirmationText);
+            rig.Pilot.Throws[WorkspacePilotEditPortDouble.DiscardRackOp] = new InvalidOperationException("se cayó el puerto");
+
+            rig.Browser.CloseTab("R-2");
+
+            Assert.False(rig.Browser.HasConfirmation);
+            Assert.Equal(string.Empty, rig.Browser.ConfirmationText);
+            Assert.False(rig.IsOpen("R-2"));
+            Assert.True(rig.IsOpen("R-1"));
+            Assert.Contains("Se cerró la pestaña; su borrador limpio quedó en memoria:", rig.Browser.NoticeText);
+            Assert.Contains("se cayó el puerto", rig.Browser.NoticeText);
+        }
+
+        [Fact]
+        public void ABuildOfThePanelWithAVetoInTheQueueAndALivenessCheckThatThrowsDoesNotThrowAndLeavesThePanelInError()
+        {
+            var host = new WorkspacePortDouble { Snapshot = WorkspacePanelFixtures.Ready(session: 7, selection: SelectionContext.One("R-1")) };
+            var pilot = new WorkspacePilotEditPortDouble();
+            pilot.CloseQueue.Enqueue(new PilotCloseView(A, new[] { "R-1" }, false));
+            var summary = new WorkspaceBrowserSummaryPortDouble { ThrowOnAlive = new InvalidOperationException("boom-vida") };
+            WorkspacePanelViewModel? panel = null;
+
+            var thrown = Record.Exception(() => panel = new WorkspacePanelViewModel(host, _ => { }, new WorkspaceNavigationPortDouble(), summary, pilot));
+
+            Assert.Null(thrown);
+            Assert.NotNull(panel);
+            Assert.Equal(WorkspacePanelState.Error, panel!.State);
+            Assert.True(panel.HasError);
+            Assert.Contains("boom-vida", panel.ErrorMessage, StringComparison.Ordinal);
+
+            // The retry recovers the normal presentation once the check works again.
+            summary.ThrowOnAlive = null;
+            panel.Retry();
+            Assert.Equal(WorkspacePanelState.Ready, panel.State);
+        }
+
+        [Fact]
+        public void ABuildOfThePanelWithoutAVetoInTheQueueAsksNothingAboutTheLivenessAndStaysInItsInitialState()
+        {
+            var host = new WorkspacePortDouble { Snapshot = WorkspacePanelFixtures.Ready(session: 7, selection: SelectionContext.One("R-1")) };
+            var summary = new WorkspaceBrowserSummaryPortDouble { ThrowOnAlive = new InvalidOperationException("boom-vida") };
+
+            var panel = new WorkspacePanelViewModel(host, _ => { }, new WorkspaceNavigationPortDouble(), summary, new WorkspacePilotEditPortDouble());
+
+            Assert.False(panel.HasError);
+            Assert.Equal(WorkspacePanelState.NotStarted, panel.State);
+        }
+
+        // M-7: a failure of the port in a gesture of the closing never puts the surface in the Error of ContainFailure.
+        [Fact]
+        public void AFailureOfThePortInAGestureOfTheClosingNeverPutsTheSurfaceInTheErrorOfTheBrowser()
+        {
+            const string message = "se cayó el puerto-M7";
+
+            // CloseTab, clean branch: the tab closes (the surface changes legitimately) and the failure is a notice.
+            var close = new Rig();
+            close.Opened(A, "R-1");
+            close.Pilot.Throws[WorkspacePilotEditPortDouble.DiscardRackOp] = new InvalidOperationException(message);
+            close.Browser.CloseTab("R-1");
+            Assert.DoesNotContain(message, close.Browser.SurfaceStatusText);
+            Assert.Contains(message, close.Browser.NoticeText);
+
+            // DiscardField: a draft that is not protected is discarded at once and the port throws.
+            var field = new Rig();
+            field.Opened(A, "R-1");
+            field.Pilot.Throws[WorkspacePilotEditPortDouble.DiscardRackOp] = new InvalidOperationException(message);
+            var fieldBefore = field.Browser.SurfaceStatusText;
+            field.Browser.DiscardField();
+            Assert.DoesNotContain(message, field.Browser.SurfaceStatusText);
+            Assert.Equal(fieldBefore, field.Browser.SurfaceStatusText);
+            Assert.Contains(message, field.Browser.NoticeText);
+
+            // RequestDocumentDiscard: the read of the racks at risk throws.
+            var request = new Rig();
+            request.Opened(A, "R-1");
+            request.Pilot.Throws[WorkspacePilotEditPortDouble.RisksOp] = new InvalidOperationException(message);
+            var requestBefore = request.Browser.SurfaceStatusText;
+            request.Browser.RequestDocumentDiscard();
+            Assert.DoesNotContain(message, request.Browser.SurfaceStatusText);
+            Assert.Equal(requestBefore, request.Browser.SurfaceStatusText);
+            Assert.Contains(message, request.Browser.NoticeText);
+
+            // ConfirmDiscard: the second look throws.
+            var confirm = new Rig();
+            confirm.Opened(A, "R-1");
+            confirm.Pilot.RisksResponder = _ => Risk(new[] { "R-1" });
+            confirm.Browser.RequestDocumentDiscard();
+            Assert.True(confirm.Browser.HasConfirmation);
+            confirm.Pilot.Throws[WorkspacePilotEditPortDouble.RisksOp] = new InvalidOperationException(message);
+            var confirmBefore = confirm.Browser.SurfaceStatusText;
+            confirm.Browser.ConfirmDiscard();
+            Assert.DoesNotContain(message, confirm.Browser.SurfaceStatusText);
+            Assert.Equal(confirmBefore, confirm.Browser.SurfaceStatusText);
+            Assert.Contains(message, confirm.Browser.NoticeText);
+            Assert.False(confirm.Browser.HasConfirmation);
+        }
     }
 }

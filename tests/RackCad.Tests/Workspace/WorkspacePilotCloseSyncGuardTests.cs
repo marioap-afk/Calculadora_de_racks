@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Xunit;
+using Xunit.Sdk;
 using Src = RackCad.Tests.WorkspaceHostSource;
 
 namespace RackCad.Tests;
@@ -39,12 +40,32 @@ public class WorkspacePilotCloseSyncGuardTests
         return qualified + unqualified;
     }
 
-    // A declaration has a type (a word) right before the name; a call has an operator, a bracket, a semicolon or a statement keyword.
+    // A declaration has a type right before the name: a word, with generic arguments closed by '>', array brackets or a nullable mark. A call has
+    // an operator, a bracket, a semicolon or a statement keyword. The token must carry at least one character of a word: the '>' of "=>" or of
+    // "a > Name(" is none (I-64 F4-T3C1, M-4).
     private static bool IsDeclaration(string code, int index)
     {
         var before = code.Substring(0, index).TrimEnd();
-        var match = Regex.Match(before, @"([\w>\]\?]+)$");
-        return match.Success && !NotATypeBeforeAName.Contains(match.Groups[1].Value);
+        var match = Regex.Match(before, @"([\w>]+(?:\[\])*\??)$");
+        return match.Success && Regex.IsMatch(match.Groups[1].Value, @"\w") && !NotATypeBeforeAName.Contains(match.Groups[1].Value);
+    }
+
+    // The seven cases of M-4: four declarations that carry a type of every shape, and the three calls that an operator precedes.
+    [Fact]
+    public void TheGuardOfTheCallsTellsADeclarationFromACallInTheSevenCasesOfTheTypesAndTheOperators()
+    {
+        Assert.Equal(0, CallCount("class C { string[] Name(int a) { } }", "Name"));
+        Assert.Equal(0, CallCount("class C { List<int> Name(int a) { } }", "Name"));
+        Assert.Equal(0, CallCount("class C { int? Name(int a) { } }", "Name"));
+        Assert.Equal(0, CallCount("class C { private void Name(int a) { } }", "Name"));
+        Assert.Equal(1, CallCount("class C { void M() { var f = x => Name(x); } }", "Name"));
+        Assert.Equal(1, CallCount("class C { void M() { var v = c ? Name(1) : 2; } }", "Name"));
+        Assert.Equal(1, CallCount("class C { void M() { var v = a > Name(1); } }", "Name"));
+
+        // The keywords and the brackets of a statement keep being calls, and a qualified call is one whatever precedes the dot.
+        Assert.Equal(1, CallCount("class C { void M() { return Name(1); } }", "Name"));
+        Assert.Equal(1, CallCount("class C { void M() { if (a) Name(1); } }", "Name"));
+        Assert.Equal(1, CallCount("class C { void M() { x.Name(1); } }", "Name"));
     }
 
     private static string? BodyOfMember(string code, string name)
@@ -193,79 +214,275 @@ public class WorkspacePilotCloseSyncGuardTests
 
     // ------------------------------------------------------------------ the retention: the view-model passes keepActive; the session has the exact signature
 
-    [Fact]
-    public void TheBrowserViewModelPassesKeepActiveToApplySelectionContext()
-    {
-        var code = Browser();
+    // Each guard of this section is a function of a text that asserts, run on the real source and, with its self-test, on a synthetic text that
+    // it accepts and on the mutations that it must reject (the Assert of xUnit throws a XunitException).
+    private static void Rejects(Action check) => Assert.ThrowsAny<XunitException>(check);
 
+    private static void CheckKeepActivePassed(string code)
+    {
         Assert.Matches(@"\.ApplySelectionContext\s*\(\s*\w+\s*,\s*keepActive\s*\)", code);
         Assert.Equal(1, CallCount(code, "ApplySelectionContext"));
     }
 
     [Fact]
-    public void ApplySelectionContextHasTheExactSignatureWithTheOneOptionalParameterAndNoOverload()
+    public void TheBrowserViewModelPassesKeepActiveToApplySelectionContext()
     {
-        var code = Src.Code(SessionPath);
+        CheckKeepActivePassed(Browser());
+    }
 
+    [Fact]
+    public void TheGuardOfKeepActiveSeesAMissingArgumentAnotherArgumentAndASecondCallOrNone()
+    {
+        const string good = "class C { void M() { var change = _current.ApplySelectionContext(context, keepActive); } }";
+
+        CheckKeepActivePassed(good);
+        Rejects(() => CheckKeepActivePassed("class C { void M() { var change = _current.ApplySelectionContext(context); } }"));
+        Rejects(() => CheckKeepActivePassed("class C { void M() { var change = _current.ApplySelectionContext(context, false); } }"));
+        Rejects(() => CheckKeepActivePassed("class C { void M() { var change = _current.ApplySelectionContext(context, keepActive); _current.ApplySelectionContext(context, keepActive); } }"));
+        Rejects(() => CheckKeepActivePassed("class C { void M() { } }"));
+    }
+
+    private static void CheckSessionSignature(string code)
+    {
         Assert.Matches(@"public\s+BrowserChange\s+ApplySelectionContext\s*\(\s*SelectionContext\s+context\s*,\s*bool\s+keepActive\s*=\s*false\s*\)", code);
         Assert.Equal(1, Src.Count(code, @"\bApplySelectionContext\s*\("));
         Assert.DoesNotMatch(new Regex(@"\bApplySelectionContext\s*\(\s*SelectionContext\s+context\s*\)"), code);
     }
 
     [Fact]
-    public void BrowserSessionKeepsTheVocabularyOfItsGuardsAndAddsNoTypeNorValue()
+    public void ApplySelectionContextHasTheExactSignatureWithTheOneOptionalParameterAndNoOverload()
     {
-        var code = Src.Code(SessionPath);
+        CheckSessionSignature(Src.Code(SessionPath));
+    }
 
-        // The words that the guards of the session forbid in its code; the text of this task uses neutral words only.
-        Assert.DoesNotMatch(new Regex(@"Draft|\bDirty\b|\bEditor\b|Subscription|Commit\(|Transaction|Provider|Metric", RegexOptions.IgnoreCase), code);        Assert.DoesNotMatch(new Regex(@"\bstatic\b|\block\b|\bAction\b|\bFunc<|\bDateTime\b"), code);
-        Assert.Equal(new[] { "None", "Activated", "Created", "Replaced", "Pinned", "Closed", "SummaryApplied" }, Enum.GetNames<RackCad.Application.Workspace.BrowserChange>());
+    [Fact]
+    public void TheGuardOfTheSignatureSeesTheMissingDefaultTheOverloadAndAnotherReturnType()
+    {
+        const string good = "public sealed class S { public BrowserChange ApplySelectionContext(SelectionContext context, bool keepActive = false) { return BrowserChange.None; } }";
+
+        CheckSessionSignature(good);
+        Rejects(() => CheckSessionSignature(good.Replace("bool keepActive = false", "bool keepActive", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionSignature(good.Replace("bool keepActive = false", "bool keepActive = true", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionSignature(good.Replace("public BrowserChange", "public void", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionSignature(good.Replace("} }", "} public BrowserChange ApplySelectionContext(SelectionContext context) { return BrowserChange.None; } }", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionSignature("public sealed class S { }"));
+    }
+
+    // The words that the guards of the session forbid in its code; the text of this task uses neutral words only.
+    private static readonly Regex SessionVocabulary = new(@"Draft|\bDirty\b|\bEditor\b|Subscription|Commit\(|Transaction|Provider|Metric", RegexOptions.IgnoreCase);
+
+    private static readonly Regex SessionStatic = new(@"\bstatic\b|\block\b|\bAction\b|\bFunc<|\bDateTime\b");
+
+    private static void CheckSessionVocabulary(string code)
+    {
+        Assert.DoesNotMatch(SessionVocabulary, code);
+        Assert.DoesNotMatch(SessionStatic, code);
         // No type is added: the file declares the same four types as before (two enums, one record and the session).
         Assert.Equal(4, Src.Count(code, @"\b(?:enum|record|class)\s+\w+"));
     }
 
-    // ------------------------------------------------------------------ the shape of the UI: the view-model and the record
+    [Fact]
+    public void BrowserSessionKeepsTheVocabularyOfItsGuardsAndAddsNoTypeNorValue()
+    {
+        CheckSessionVocabulary(Src.Code(SessionPath));
+        Assert.Equal(new[] { "None", "Activated", "Created", "Replaced", "Pinned", "Closed", "SummaryApplied" }, Enum.GetNames<RackCad.Application.Workspace.BrowserChange>());
+    }
 
     [Fact]
-    public void TheBrowserViewModelGainsExactlyThePublicMembersOfTheContractAndTheNoticeRecord()
+    public void TheGuardOfTheVocabularySeesAForbiddenWordAStaticMemberAndAFifthType()
     {
-        var code = Browser();
+        const string good = "enum A { } enum B { } record C(int X); class D { }";
 
+        CheckSessionVocabulary(good);
+        Rejects(() => CheckSessionVocabulary(good.Replace("class D { }", "class D { int DraftCount; }", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionVocabulary(good.Replace("class D { }", "class D { int Dirty; }", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionVocabulary(good.Replace("class D { }", "class D { Commit(); }", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionVocabulary(good.Replace("class D { }", "class D { static int x; }", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionVocabulary(good.Replace("class D { }", "class D { object gate; void M() { lock (gate) { } } }", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionVocabulary(good.Replace("class D { }", "class D { Action a; }", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionVocabulary(good.Replace("class D { }", "class D { DateTime t; }", StringComparison.Ordinal)));
+        Rejects(() => CheckSessionVocabulary(good + " class E { }"));
+    }
+
+    // ------------------------------------------------------------------ the shape of the UI: the view-model and the record
+
+    private static readonly string[] PublicSignatures =
+    {
+        @"public\s+void\s+CloseTab\s*\(\s*string\s+rackId\s*\)",
+        @"public\s+void\s+DiscardField\s*\(\s*\)",
+        @"public\s+void\s+RequestDocumentDiscard\s*\(\s*\)",
+        @"public\s+void\s+ConfirmDiscard\s*\(\s*\)",
+        @"public\s+void\s+CancelDiscard\s*\(\s*\)",
+        @"public\s+void\s+DismissNotice\s*\(\s*string\s+key\s*\)",
+        @"public\s+bool\s+CanDiscardDocument\s*=>",
+        @"public\s+bool\s+HasConfirmation\s*=>",
+        @"public\s+string\s+ConfirmationText\s*=>",
+        @"public\s+string\s+NoticeText\s*=>",
+        @"public\s+IReadOnlyList<WorkspaceBrowserNoticeItem>\s+Notices\s*=>",
+        @"public\s+bool\s+HasNotices\s*=>",
+    };
+
+    private static void CheckPublicMembers(string code, string fieldCode)
+    {
         Assert.Matches(@"public\s+sealed\s+record\s+WorkspaceBrowserNoticeItem\s*\(\s*string\s+Key\s*,\s*string\s+Text\s*,\s*bool\s+CanDiscardDocument\s*\)\s*;", code);
-        foreach (var signature in new[]
-                 {
-                     @"public\s+void\s+CloseTab\s*\(\s*string\s+rackId\s*\)",
-                     @"public\s+void\s+DiscardField\s*\(\s*\)",
-                     @"public\s+void\s+RequestDocumentDiscard\s*\(\s*\)",
-                     @"public\s+void\s+ConfirmDiscard\s*\(\s*\)",
-                     @"public\s+void\s+CancelDiscard\s*\(\s*\)",
-                     @"public\s+void\s+DismissNotice\s*\(\s*string\s+key\s*\)",
-                     @"public\s+bool\s+CanDiscardDocument\s*=>",
-                     @"public\s+bool\s+HasConfirmation\s*=>",
-                     @"public\s+string\s+ConfirmationText\s*=>",
-                     @"public\s+string\s+NoticeText\s*=>",
-                     @"public\s+IReadOnlyList<WorkspaceBrowserNoticeItem>\s+Notices\s*=>",
-                     @"public\s+bool\s+HasNotices\s*=>",
-                 })
+        foreach (var signature in PublicSignatures)
             Assert.Equal(1, Src.Count(code, signature));
 
         // The record of the tab is the one of F3 and the field gains only the discard button.
         Assert.Matches(@"public\s+sealed\s+record\s+WorkspaceBrowserTabItem\s*\(\s*string\s+RackId\s*,\s*string\s+Title\s*,\s*bool\s+IsActive\s*,\s*bool\s+IsPreview\s*\)\s*;", code);
-        Assert.Equal(1, Src.Count(Src.Code(UiWorkspace + "WorkspacePilotFieldViewModel.cs"), @"public\s+bool\s+ShowDiscardButton\s*=>"));
+        Assert.Equal(1, Src.Count(fieldCode, @"public\s+bool\s+ShowDiscardButton\s*=>"));
+    }
+
+    private const string GoodMembers =
+        "public sealed record WorkspaceBrowserNoticeItem(string Key, string Text, bool CanDiscardDocument); "
+        + "public sealed record WorkspaceBrowserTabItem(string RackId, string Title, bool IsActive, bool IsPreview); "
+        + "public sealed class WorkspaceBrowserViewModel { public void CloseTab(string rackId) { } public void DiscardField() { } public void RequestDocumentDiscard() { } "
+        + "public void ConfirmDiscard() { } public void CancelDiscard() { } public void DismissNotice(string key) { } public bool CanDiscardDocument => true; "
+        + "public bool HasConfirmation => true; public string ConfirmationText => \"\"; public string NoticeText => \"\"; "
+        + "public IReadOnlyList<WorkspaceBrowserNoticeItem> Notices => null; public bool HasNotices => true; }";
+
+    private const string GoodFieldMembers = "public sealed class WorkspacePilotFieldViewModel { public bool ShowDiscardButton => true; }";
+
+    [Fact]
+    public void TheBrowserViewModelGainsExactlyThePublicMembersOfTheContractAndTheNoticeRecord()
+    {
+        CheckPublicMembers(Browser(), Src.Code(UiWorkspace + "WorkspacePilotFieldViewModel.cs"));
     }
 
     [Fact]
-    public void TheBrowserAndTheFieldViewModelsAddNoSubscriptionNoEventAndNoStaticState()
+    public void TheGuardOfThePublicMembersSeesAMissingMemberAChangedSignatureARepeatedOneAndAChangedRecord()
     {
-        foreach (var code in new[] { Browser(), Src.Code(UiWorkspace + "WorkspacePilotFieldViewModel.cs") })
+        CheckPublicMembers(GoodMembers, GoodFieldMembers);
+
+        foreach (var (before, after) in new[]
+                 {
+                     ("public void CancelDiscard() { }", "internal void CancelDiscard() { }"),
+                     ("public void DismissNotice(string key) { }", "public void DismissNotice(int key) { }"),
+                     ("public void CloseTab(string rackId) { }", "public void CloseTab(string rackId) { } public void CloseTab(string rackId) { }"),
+                     ("public bool HasNotices => true;", "public int HasNotices => 1;"),
+                     ("public string NoticeText => \"\";", "public string NoticeText { get; } = \"\";"),
+                     ("bool CanDiscardDocument); ", "bool CanDiscard); "),
+                     ("string Title, bool IsActive", "string Title, bool IsOn"),
+                 })
         {
-            // Texts are composed with a = a + b: no += and no -= anywhere, and nothing that schedules.
-            Assert.DoesNotMatch(new Regex(@"\+=|-=|\bevent\b|\bdelegate\b|\bstatic\s+(?!readonly\s+string\b)\w+\s+\w+\s*;"), code);
-            Assert.DoesNotMatch(new Regex(@"\bTask\b|\basync\b|\bawait\b|\bDispatcher\b|\w*Timer\b|\bThread\b|\.Result\b|\.Wait\s*\("), code);
+            Assert.Contains(before, GoodMembers);
+            Rejects(() => CheckPublicMembers(GoodMembers.Replace(before, after, StringComparison.Ordinal), GoodFieldMembers));
         }
 
-        // The browser still asks the port for the liveness of a session and for a summary exactly once, and holds one registry.
-        var browser = Browser();
+        Rejects(() => CheckPublicMembers(GoodMembers, "public sealed class WorkspacePilotFieldViewModel { }"));
+        Rejects(() => CheckPublicMembers(GoodMembers, GoodFieldMembers + " " + GoodFieldMembers));
+    }
+
+    // The public shape of the browser view-model, fixed by the rule of extraction of the package (I-64 F4-T3C1, M-5): the lines that start with
+    // public in the body of the class, without the body of StoredNotice and without the class line (the two records are outside the class),
+    // each one cut at the first => or {, with the spaces collapsed in one and trimmed. A later change of this surface will be declared.
+    private static readonly string[] PublicShape =
+    {
+        "public WorkspaceBrowserViewModel(IWorkspaceBrowserSummaryPort port, Action tabChanged = null, IWorkspacePilotEditPort pilotEdit = null)",
+        "public WorkspacePilotFieldViewModel Field",
+        "public bool IsAvailable",
+        "public IReadOnlyList<WorkspaceBrowserTabItem> Tabs",
+        "public bool HasTabs",
+        "public string ActiveRackId",
+        "public int LiveSurfaceCount",
+        "public bool HasSurface",
+        "public string EmptyText",
+        "public string SurfaceTitle",
+        "public string SurfaceKindText",
+        "public string SurfaceViewsText",
+        "public string SurfaceStatusText",
+        "public bool CanDiscardDocument",
+        "public bool HasConfirmation",
+        "public string ConfirmationText",
+        "public string NoticeText",
+        "public IReadOnlyList<WorkspaceBrowserNoticeItem> Notices",
+        "public bool HasNotices",
+        "public void Present(SessionId? session, SelectionContext context, bool canReadDrawing, WorkspaceActionBlock block, string blockText)",
+        "public void ActivateTab(string rackId)",
+        "public void PinTab(string rackId)",
+        "public void CloseTab(string rackId)",
+        "public void DiscardField()",
+        "public void RequestDocumentDiscard()",
+        "public void ConfirmDiscard()",
+        "public void CancelDiscard()",
+        "public void DismissNotice(string key)",
+        "public void BeginFieldEdit()",
+        "public void BeginFieldEditFromBox()",
+        "public void BeginFieldEditFromTab(string rackId)",
+        "public void ReloadField()",
+        "public void ReloadSummary()",
+    };
+
+    private static IReadOnlyList<string> ExtractPublicShape(string code)
+    {
+        var classSignature = @"public\s+sealed\s+class\s+WorkspaceBrowserViewModel\b";
+        Assert.Matches(classSignature, code);
+        var body = Src.BodyOf(code, classSignature);
+
+        var stored = @"private\s+sealed\s+class\s+StoredNotice\b";
+        if (Regex.IsMatch(body, stored)) body = body.Replace(Src.BodyOf(body, stored), string.Empty, StringComparison.Ordinal);
+
+        var shape = new List<string>();
+        foreach (var line in body.Split('\n'))
+        {
+            if (!Regex.IsMatch(line, @"^\s*public\b") || Regex.IsMatch(line, @"^\s*public\s+sealed\s+class\s+WorkspaceBrowserViewModel\b")) continue;
+
+            var cut = Regex.Match(line, @"=>|\{");
+            var text = cut.Success ? line.Substring(0, cut.Index) : line;
+            shape.Add(Regex.Replace(text, @"\s+", " ").Trim());
+        }
+
+        return shape;
+    }
+
+    private static void CheckPublicShape(string code)
+    {
+        var shape = ExtractPublicShape(code);
+
+        Assert.Equal(33, PublicShape.Length);
+        Assert.Equal(33, PublicShape.Distinct().Count());
+        Assert.Equal(33, shape.Count);
+        Assert.True(new HashSet<string>(shape, StringComparer.Ordinal).SetEquals(PublicShape), string.Join(" | ", shape.Except(PublicShape).Concat(PublicShape.Except(shape))));
+    }
+
+    [Fact]
+    public void ThePublicShapeOfTheBrowserViewModelIsExactlyTheOneOf33Signatures()
+    {
+        CheckPublicShape(Browser());
+    }
+
+    [Fact]
+    public void TheGuardOfThePublicShapeSeesAnAddedAChangedAndARemovedMemberAndIgnoresTheStoredNotice()
+    {
+        var shape = string.Join("\n", PublicShape.Select(s => "    " + s + (s.Contains('(') ? " { }" : " { get; }")));
+        var good = "public sealed record R(int X);\npublic sealed class WorkspaceBrowserViewModel : ObservableObject\n{\n"
+            + "    private sealed class StoredNotice\n    {\n        public StoredNotice(string key) { }\n        public string Key { get; }\n    }\n"
+            + shape + "\n}\n";
+
+        CheckPublicShape(good);
+        Rejects(() => CheckPublicShape(good.Replace("    public void ReloadField() { }", "    public void ReloadField() { }\n    public void Extra() { }", StringComparison.Ordinal)));
+        Rejects(() => CheckPublicShape(good.Replace("    public void ReloadField() { }", "    internal void ReloadField() { }", StringComparison.Ordinal)));
+        Rejects(() => CheckPublicShape(good.Replace("    public void PinTab(string rackId) { }", "    public void PinTab(int rackId) { }", StringComparison.Ordinal)));
+        Rejects(() => CheckPublicShape(good.Replace("    public string NoticeText { get; }", "    public string NoticeText { get; }\n    public string Another { get; }", StringComparison.Ordinal)));
+        Rejects(() => CheckPublicShape(good.Replace("    public bool HasNotices { get; }\n", string.Empty, StringComparison.Ordinal)));
+        Rejects(() => CheckPublicShape(good.Replace("public string Key { get; }", "public string Key { get; }\n        public string Other { get; }", StringComparison.Ordinal).Replace("private sealed class StoredNotice", "public sealed class StoredNotice", StringComparison.Ordinal)));
+        Rejects(() => CheckPublicShape("public sealed class Another { }"));
+    }
+
+    // Texts are composed with a = a + b: no += and no -= anywhere, and nothing that schedules.
+    private static readonly Regex Subscriptions = new(@"\+=|-=|\bevent\b|\bdelegate\b|\bstatic\s+(?!readonly\s+string\b)\w+\s+\w+\s*;");
+
+    private static readonly Regex Scheduling = new(@"\bTask\b|\basync\b|\bawait\b|\bDispatcher\b|\w*Timer\b|\bThread\b|\.Result\b|\.Wait\s*\(");
+
+    private static void CheckNoSubscriptions(string code)
+    {
+        Assert.DoesNotMatch(Subscriptions, code);
+        Assert.DoesNotMatch(Scheduling, code);
+    }
+
+    // The browser still asks the port for the liveness of a session and for a summary exactly once, and holds one registry.
+    private static void CheckSingleQueries(string browser)
+    {
         Assert.Equal(1, Src.Count(browser, @"\.IsSessionAlive\s*\("));
         Assert.Equal(1, Src.Count(browser, @"\.ReadSummary\s*\("));
         Assert.Equal(1, Src.Count(browser, @"\bBrowserSessionRegistry\b"));
@@ -276,26 +493,94 @@ public class WorkspacePilotCloseSyncGuardTests
     }
 
     [Fact]
-    public void TheGuardOfTheSubscriptionsSeesTheComposedTextWithPlusEquals()
+    public void TheBrowserAndTheFieldViewModelsAddNoSubscriptionNoEventAndNoStaticState()
     {
-        var forbidden = new Regex(@"\+=|-=|\bevent\b|\bdelegate\b");
+        foreach (var code in new[] { Browser(), Src.Code(UiWorkspace + "WorkspacePilotFieldViewModel.cs") })
+            CheckNoSubscriptions(code);
 
-        Assert.Matches(forbidden, "var a = x; a += y;");
-        Assert.Matches(forbidden, "text -= y;");
-        Assert.DoesNotMatch(forbidden, "var a = x; a = a + y;");
+        CheckSingleQueries(Browser());
+    }
+
+    private const string GoodQueries =
+        "class C { private BrowserSessionRegistry _registry; void PurgeDeadSessions() { if (_port.IsSessionAlive(s)) continue; _stored.RemoveAll(n => n.IsLoss); } "
+        + "void Materialize() { _port.ReadSummary(r, k, u); } }";
+
+    [Fact]
+    public void TheGuardOfTheQueriesSeesASecondLivenessCheckASecondSummaryAndAPurgeWithoutItsLoop()
+    {
+        CheckSingleQueries(GoodQueries);
+        Rejects(() => CheckSingleQueries(GoodQueries.Replace("void Materialize() {", "void Materialize() { _port.IsSessionAlive(s);", StringComparison.Ordinal)));
+        Rejects(() => CheckSingleQueries(GoodQueries.Replace("void Materialize() {", "void Materialize() { _port.ReadSummary(r, k, u);", StringComparison.Ordinal)));
+        Rejects(() => CheckSingleQueries(GoodQueries + " class D { private BrowserSessionRegistry _other; }"));
+        Rejects(() => CheckSingleQueries(GoodQueries.Replace("if (_port.IsSessionAlive(s)) continue; ", string.Empty, StringComparison.Ordinal)));
+        Rejects(() => CheckSingleQueries(GoodQueries.Replace("_stored.RemoveAll(n => n.IsLoss);", string.Empty, StringComparison.Ordinal)));
+    }
+
+    [Theory]
+    [InlineData("var a = x; a += y;")]
+    [InlineData("text -= y;")]
+    [InlineData("public event Action Changed;")]
+    [InlineData("Action a = delegate { };")]
+    [InlineData("private static int _count;")]
+    [InlineData("public static string Name;")]
+    [InlineData("Task.Run(() => 1);")]
+    [InlineData("public async void Go() { }")]
+    [InlineData("await Go();")]
+    [InlineData("Dispatcher.Invoke(a);")]
+    [InlineData("var t = new DispatcherTimer();")]
+    [InlineData("var t = new System.Threading.Timer(a);")]
+    [InlineData("var t = new Thread(a);")]
+    [InlineData("var v = task.Result;")]
+    [InlineData("task.Wait();")]
+    public void TheGuardOfTheSubscriptionsSeesTheComposedTextTheEventsTheStaticStateAndWhateverSchedules(string code)
+    {
+        Rejects(() => CheckNoSubscriptions(code));
+    }
+
+    [Theory]
+    [InlineData("var a = x; a = a + y;")]
+    [InlineData("private static readonly string Key = \"k\";")]
+    [InlineData("var done = Completed(a);")]
+    [InlineData("var results = list.ToArray();")]
+    public void TheGuardOfTheSubscriptionsAcceptsTheComposedTextWithAPlusAndAConstantText(string code)
+    {
+        CheckNoSubscriptions(code);
+    }
+
+    private const string PanelSignature =
+        @"public\s+WorkspacePanelViewModel\s*\(\s*IWorkspaceHostPort\s+\w+\s*,\s*Action<bool>\s+\w+\s*,\s*IWorkspaceNavigationPort\s+\w+\s*=\s*null\s*,\s*IWorkspaceBrowserSummaryPort\s+browserSummary\s*=\s*null\s*,\s*IWorkspacePilotEditPort\s+pilotEdit\s*=\s*null\s*\)";
+
+    private static void CheckPanelViewModel(string code, string text)
+    {
+        Assert.Matches(PanelSignature, code);
+        Assert.Matches(@"new\s+WorkspaceBrowserViewModel\s*\(\s*browserSummary\s*,\s*RepresentNavigation\s*,\s*pilotEdit\s*\)", code);
+        Assert.DoesNotMatch(new Regex(@"\.TakeCloseNotices|\.TakeLossNotices|\.DiscardRack|\.DiscardDocument|\.GetRacksAtRisk"), code);
+        Assert.DoesNotContain("Building the panel never calls it", text);
     }
 
     [Fact]
     public void ThePanelViewModelOnlyChangesTheDocumentationOfPilotEdit()
     {
-        var code = Src.Code(UiWorkspace + "WorkspacePanelViewModel.cs");
+        CheckPanelViewModel(Src.Code(UiWorkspace + "WorkspacePanelViewModel.cs"), Src.Text(UiWorkspace + "WorkspacePanelViewModel.cs"));
+    }
 
-        Assert.Matches(
-            @"public\s+WorkspacePanelViewModel\s*\(\s*IWorkspaceHostPort\s+\w+\s*,\s*Action<bool>\s+\w+\s*,\s*IWorkspaceNavigationPort\s+\w+\s*=\s*null\s*,\s*IWorkspaceBrowserSummaryPort\s+browserSummary\s*=\s*null\s*,\s*IWorkspacePilotEditPort\s+pilotEdit\s*=\s*null\s*\)",
-            code);
-        Assert.Matches(@"new\s+WorkspaceBrowserViewModel\s*\(\s*browserSummary\s*,\s*RepresentNavigation\s*,\s*pilotEdit\s*\)", code);
-        Assert.DoesNotMatch(new Regex(@"\.TakeCloseNotices|\.TakeLossNotices|\.DiscardRack|\.DiscardDocument|\.GetRacksAtRisk"), code);
-        Assert.DoesNotContain("Building the panel never calls it", Src.Text(UiWorkspace + "WorkspacePanelViewModel.cs"));
+    private const string GoodPanelCode =
+        "public sealed class P { public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> set, IWorkspaceNavigationPort navigation = null, "
+        + "IWorkspaceBrowserSummaryPort browserSummary = null, IWorkspacePilotEditPort pilotEdit = null) { Browser = new WorkspaceBrowserViewModel(browserSummary, RepresentNavigation, pilotEdit); } }";
+
+    [Fact]
+    public void TheGuardOfThePanelViewModelSeesAChangedSignatureAChangedConstructionACallOfTheQueuesAndTheOldPhrase()
+    {
+        CheckPanelViewModel(GoodPanelCode, "/// it is asked only when the user clicks");
+        Rejects(() => CheckPanelViewModel(GoodPanelCode.Replace("IWorkspacePilotEditPort pilotEdit = null", "IWorkspacePilotEditPort pilotEdit", StringComparison.Ordinal), string.Empty));
+        Rejects(() => CheckPanelViewModel(GoodPanelCode.Replace("Action<bool> set", "Action<int> set", StringComparison.Ordinal), string.Empty));
+        Rejects(() => CheckPanelViewModel(GoodPanelCode.Replace("RepresentNavigation, pilotEdit", "null, pilotEdit", StringComparison.Ordinal), string.Empty));
+        Rejects(() => CheckPanelViewModel(GoodPanelCode.Replace("{ Browser =", "{ pilotEdit.TakeCloseNotices(); Browser =", StringComparison.Ordinal), string.Empty));
+        Rejects(() => CheckPanelViewModel(GoodPanelCode.Replace("{ Browser =", "{ pilotEdit.TakeLossNotices(); Browser =", StringComparison.Ordinal), string.Empty));
+        Rejects(() => CheckPanelViewModel(GoodPanelCode.Replace("{ Browser =", "{ pilotEdit.DiscardRack(o, r); Browser =", StringComparison.Ordinal), string.Empty));
+        Rejects(() => CheckPanelViewModel(GoodPanelCode.Replace("{ Browser =", "{ pilotEdit.DiscardDocument(o); Browser =", StringComparison.Ordinal), string.Empty));
+        Rejects(() => CheckPanelViewModel(GoodPanelCode.Replace("{ Browser =", "{ pilotEdit.GetRacksAtRisk(o); Browser =", StringComparison.Ordinal), string.Empty));
+        Rejects(() => CheckPanelViewModel(GoodPanelCode, "/// Building the panel never calls it; the user does."));
     }
 
     // ------------------------------------------------------------------ the XAML: names, placement, no default or cancel button, no fixed size
@@ -323,7 +608,11 @@ public class WorkspacePilotCloseSyncGuardTests
     [Fact]
     public void TheXamlHasTheNewElementsWithTheirNamesAutomationNamesAndHandlersBetweenTheStripAndTheSurface()
     {
-        var xaml = Xaml();
+        CheckNewXamlElements(Xaml());
+    }
+
+    private static void CheckNewXamlElements(string xaml)
+    {
         var section = BrowserSection(xaml);
         var strip = section.IndexOf("x:Name=\"BrowserTabStrip\"", StringComparison.Ordinal);
         var stripEnd = section.IndexOf("</ItemsControl>", strip, StringComparison.Ordinal);
@@ -373,6 +662,35 @@ public class WorkspacePilotCloseSyncGuardTests
         Assert.Contains("{Binding Browser.Field.ShowDiscardButton", field);
     }
 
+    // The mutations of the real XAML that the guard must see: a handler, an automation name, a content, a binding, a name and a placement.
+    [Theory]
+    [InlineData("Click=\"OnBrowserConfirmDiscardClick\"", "Click=\"OnSomethingElseClick\"")]
+    [InlineData("Click=\"OnBrowserCancelDiscardClick\"", "Click=\"OnSomethingElseClick\"")]
+    [InlineData("Click=\"OnBrowserDiscardDocumentClick\"", "Click=\"OnSomethingElseClick\"")]
+    [InlineData("Click=\"OnBrowserNoticeDismissClick\"", "Click=\"OnSomethingElseClick\"")]
+    [InlineData("Click=\"OnBrowserNoticeDiscardDocumentClick\"", "Click=\"OnSomethingElseClick\"")]
+    [InlineData("Click=\"OnBrowserFieldDiscardClick\"", "Click=\"OnSomethingElseClick\"")]
+    [InlineData("AutomationProperties.Name=\"Cancelar el descarte\"", "AutomationProperties.Name=\"Cancelar\"")]
+    [InlineData("AutomationProperties.Name=\"Confirmar el descarte\"", "AutomationProperties.Name=\"Confirmar\"")]
+    [InlineData("AutomationProperties.Name=\"Quitar el aviso\"", "AutomationProperties.Name=\"Quitar\"")]
+    [InlineData("AutomationProperties.Name=\"Descartar el borrador\"", "AutomationProperties.Name=\"Descartar\"")]
+    [InlineData("Content=\"Cancelar\"", "Content=\"Salir\"")]
+    [InlineData("Content=\"Entendido\"", "Content=\"Vale\"")]
+    [InlineData("{Binding Browser.CanDiscardDocument", "{Binding Browser.Another")]
+    [InlineData("{Binding Browser.HasConfirmation", "{Binding Browser.Another")]
+    [InlineData("{Binding Browser.ConfirmationText}", "{Binding Browser.Another}")]
+    [InlineData("{Binding Browser.Field.ShowDiscardButton", "{Binding Browser.Field.Another")]
+    [InlineData("x:Name=\"BrowserNoticeList\"", "x:Name=\"BrowserNoticeList2\"")]
+    [InlineData("x:Name=\"BrowserConfirmationPanel\"", "x:Name=\"BrowserConfirmationPanel2\"")]
+    [InlineData("x:Name=\"BrowserFieldDiscardButton\"", "x:Name=\"BrowserFieldDiscardButton2\"")]
+    public void TheGuardOfTheNewXamlElementsSeesAChangedHandlerAutomationNameContentBindingOrName(string from, string to)
+    {
+        var xaml = Xaml();
+        Assert.Contains(from, xaml);
+
+        Rejects(() => CheckNewXamlElements(xaml.Replace(from, to, StringComparison.Ordinal)));
+    }
+
     [Fact]
     public void TheNewElementsAreOutsideTheStripHaveNoFixedSizeNoContentControlNoDefaultNorCancelButtonAndNoWindow()
     {
@@ -404,10 +722,16 @@ public class WorkspacePilotCloseSyncGuardTests
     [Fact]
     public void TheSurfaceKeepsOneEditOneReloadAndOneReadAgainAndTheDiscardButtonIsNotARepeat()
     {
-        var xaml = Xaml();
+        CheckSurfaceButtons(Xaml());
+    }
+
+    private static void CheckSurfaceButtons(string xaml)
+    {
         var name = xaml.IndexOf("x:Name=\"BrowserSurface\"", StringComparison.Ordinal);
+        Assert.True(name >= 0, "the XAML has no surface");
         var start = xaml.LastIndexOf("<Border", name, StringComparison.Ordinal);
         var end = xaml.IndexOf("Text=\"Navegación\"", name, StringComparison.Ordinal);
+        Assert.True(start >= 0 && end > start, "the surface is not where it should be");
         var surface = xaml.Substring(start, end - start);
 
         Assert.Equal(1, Src.Count(surface, "Content=\"Editar\""));
@@ -416,13 +740,46 @@ public class WorkspacePilotCloseSyncGuardTests
         Assert.Equal(1, Src.Count(surface, "Content=\"Descartar\""));
     }
 
+    [Theory]
+    [InlineData("Content=\"Editar\"", "Content=\"Editar\" /><Button Content=\"Editar\"")]
+    [InlineData("Content=\"Recargar\"", "Content=\"Recargar2\"")]
+    [InlineData("Content=\"Volver a leer\"", "Content=\"Descartar\"")]
+    [InlineData("Content=\"Volver a leer\"", "Content=\"Recargar\"")]
+    [InlineData("Content=\"Descartar\"", "Content=\"Borrar\"")]
+    [InlineData("x:Name=\"BrowserSurface\"", "x:Name=\"BrowserSurface2\"")]
+    public void TheGuardOfTheButtonsOfTheSurfaceSeesARepeatedAMissingAndARenamedButton(string from, string to)
+    {
+        var xaml = Xaml();
+        Assert.Contains(from, xaml);
+
+        Rejects(() => CheckSurfaceButtons(xaml.Replace(from, to, StringComparison.Ordinal)));
+    }
+
     // ------------------------------------------------------------------ the code-behind: handlers inside Contained, N-3 with Key and IsRepeat only
 
     [Fact]
     public void EveryNewHandlerDelegatesInsideContainedToItsMemberOfTheBrowser()
     {
-        var code = Src.Code(CodeBehindPath);
+        CheckHandlers(Src.Code(CodeBehindPath));
+    }
 
+    [Theory]
+    [InlineData("Contained(() => _viewModel.Browser.CancelDiscard())", "_viewModel.Browser.CancelDiscard()")]
+    [InlineData("_viewModel.Browser.ConfirmDiscard()", "_viewModel.Browser.ConfirmDiscard(1)")]
+    [InlineData("_viewModel.Browser.DiscardField()", "_viewModel.Browser.ReloadField()")]
+    [InlineData("_viewModel.Browser.DismissNotice(NoticeKeyOf(sender))", "_viewModel.Browser.DismissNotice(null)")]
+    [InlineData("private void OnBrowserDiscardDocumentClick(object sender, RoutedEventArgs e)", "private void OnBrowserDiscardDocumentClick(object sender, EventArgs e)")]
+    [InlineData("private void OnBrowserNoticeDiscardDocumentClick(", "private void OnBrowserNoticeDiscardDocumentClick2(")]
+    public void TheGuardOfTheHandlersSeesACallOutsideContainedAnotherMemberAndAChangedSignature(string from, string to)
+    {
+        var code = Src.Code(CodeBehindPath);
+        Assert.Contains(from, code);
+
+        Rejects(() => CheckHandlers(code.Replace(from, to, StringComparison.Ordinal)));
+    }
+
+    private static void CheckHandlers(string code)
+    {
         foreach (var (handler, call) in new[]
                  {
                      ("OnBrowserFieldDiscardClick", @"_viewModel\.Browser\.DiscardField\s*\(\s*\)"),
@@ -447,20 +804,38 @@ public class WorkspacePilotCloseSyncGuardTests
         Assert.Matches(@"\bKey\?\s+_launchKey\b", code);
         Assert.Contains("e.IsRepeat", body);
         Assert.Contains("e.Key", body);
-        Assert.DoesNotMatch(new Regex(@"e\.KeyboardDevice|\bKeyboard\b|\bKeyUp\b|\.Focus\s*\(|FocusManager|e\.SystemKey|e\.ImeProcessedKey|e\.IsDown|e\.IsToggled"), code);
+        Assert.DoesNotMatch(KeyHandlerBad, code);
         Assert.DoesNotMatch(new Regex(@"\bKeyUp\b"), xaml);
         Assert.Equal(1, Src.Count(xaml, @"\bPreviewKeyDown\s*="));
     }
 
-    [Fact]
-    public void TheGuardOfTheKeyHandlerSeesTheKeyboardDeviceAndKeyUp()
-    {
-        var bad = new Regex(@"e\.KeyboardDevice|\bKeyboard\b|\bKeyUp\b|\.Focus\s*\(|FocusManager");
+    // What the code-behind of the box must never use: the keyboard device, the key up, the focus and the keys of the system, the method of
+    // input and the state of the key. The self-test below sees each alternative of the expression, so none can be lost without notice.
+    private static readonly Regex KeyHandlerBad = new(@"e\.KeyboardDevice|\bKeyboard\b|\bKeyUp\b|\.Focus\s*\(|FocusManager|e\.SystemKey|e\.ImeProcessedKey|e\.IsDown|e\.IsToggled");
 
-        Assert.Matches(bad, "if (e.KeyboardDevice.IsKeyDown(Key.A)) { }");
-        Assert.Matches(bad, "Keyboard.Focus(box);");
-        Assert.Matches(bad, "box.KeyUp += OnUp;");
-        Assert.DoesNotMatch(bad, "if (e.IsRepeat && e.Key == _launchKey.Value) { e.Handled = true; }");
+    [Theory]
+    [InlineData("if (e.KeyboardDevice.IsKeyDown(Key.A)) { }")]
+    [InlineData("Keyboard.Focus(box);")]
+    [InlineData("box.KeyUp += OnUp;")]
+    [InlineData("box.Focus();")]
+    [InlineData("box.Focus ();")]
+    [InlineData("FocusManager.SetFocusedElement(scope, box);")]
+    [InlineData("if (e.Key == Key.System) { var k = e.SystemKey; }")]
+    [InlineData("var k = e.ImeProcessedKey;")]
+    [InlineData("if (e.IsDown) { }")]
+    [InlineData("if (e.IsToggled) { }")]
+    public void TheGuardOfTheKeyHandlerSeesEveryAlternativeOfItsExpression(string code)
+    {
+        Assert.Matches(KeyHandlerBad, code);
+    }
+
+    [Theory]
+    [InlineData("if (e.IsRepeat && e.Key == _launchKey.Value) { e.Handled = true; }")]
+    [InlineData("private Key? _launchKey;")]
+    [InlineData("var focused = FocusedText(); var down = e.IsRepeat;")]
+    public void TheGuardOfTheKeyHandlerAcceptsTheKeyAndTheRepeatFlag(string code)
+    {
+        Assert.DoesNotMatch(KeyHandlerBad, code);
     }
 
     // ------------------------------------------------------------------ the limits of the task: nothing of the host, the port, the palette or a command changes
@@ -468,20 +843,122 @@ public class WorkspacePilotCloseSyncGuardTests
     [Fact]
     public void TheUiOfTheTaskReachesNeitherTheIntentionNorTheDrawingNorTheFocusNorADialog()
     {
-        var reads = new Regex(@"\b(?:TryBeginEdit|TryReload|TryCheckNow)\b");
-        var drawing = new Regex(@"\bTransaction|\bDatabase\b|\.Commit\s*\(|SendStringToExecute|CommandMethod|ExecuteInCommandContextAsync|Autodesk");
-        var focus = new Regex(@"\bKeyboard|FocusManager|SetFocus|\.Focus\s*\(|InputManager");
-        var dialogs = new Regex(@"EnterPanelModal|ShowModalWindow|ShowDialog|MessageBox|\bRegistry\b|\bRackLog\b");
+        CheckUiReach(Browser(), new[] { Browser(), Src.Code(CodeBehindPath) });
+    }
 
+    private static readonly Regex IntentionReads = new(@"\b(?:TryBeginEdit|TryReload|TryCheckNow)\b");
+
+    private static readonly Regex DrawingReach = new(@"\bTransaction|\bDatabase\b|\.Commit\s*\(|SendStringToExecute|CommandMethod|ExecuteInCommandContextAsync|Autodesk");
+
+    private static readonly Regex FocusReach = new(@"\bKeyboard|FocusManager|SetFocus|\.Focus\s*\(|InputManager");
+
+    private static readonly Regex DialogReach = new(@"EnterPanelModal|ShowModalWindow|ShowDialog|MessageBox|\bRegistry\b|\bRackLog\b");
+
+    private static void CheckUiReach(string browser, IEnumerable<string> codes)
+    {
         // The browser view-model names none of the three reads; the one that gestures of the field own stays in the field.
-        Assert.DoesNotMatch(reads, Browser());
-        foreach (var path in new[] { BrowserModelPath, CodeBehindPath })
+        Assert.DoesNotMatch(IntentionReads, browser);
+        foreach (var code in codes)
         {
-            var code = Src.Code(path);
-            Assert.DoesNotMatch(drawing, code);
-            Assert.DoesNotMatch(focus, code);
-            Assert.DoesNotMatch(dialogs, code);
+            Assert.DoesNotMatch(DrawingReach, code);
+            Assert.DoesNotMatch(FocusReach, code);
+            Assert.DoesNotMatch(DialogReach, code);
         }
+    }
+
+    [Theory]
+    [InlineData("_p.TryBeginEdit(r);", "intention")]
+    [InlineData("_p.TryReload(r);", "intention")]
+    [InlineData("_p.TryCheckNow(r);", "intention")]
+    [InlineData("var t = new Transaction();", "drawing")]
+    [InlineData("var d = HostApplicationServices.WorkingDatabase; Database db;", "drawing")]
+    [InlineData("tr.Commit();", "drawing")]
+    [InlineData("doc.SendStringToExecute(\"X\", true, false, false);", "drawing")]
+    [InlineData("[CommandMethod(\"X\")]", "drawing")]
+    [InlineData("using Autodesk.AutoCAD.Runtime;", "drawing")]
+    [InlineData("Keyboard.Focus(box);", "focus")]
+    [InlineData("FocusManager.SetFocusedElement(a, b);", "focus")]
+    [InlineData("InputManager.Current.ProcessInput(a);", "focus")]
+    [InlineData("box.Focus();", "focus")]
+    [InlineData("EnterPanelModal();", "dialog")]
+    [InlineData("window.ShowDialog();", "dialog")]
+    [InlineData("MessageBox.Show(\"x\");", "dialog")]
+    [InlineData("var r = new Registry();", "dialog")]
+    [InlineData("RackLog.Write(\"x\");", "dialog")]
+    public void TheGuardOfTheReachOfTheUiSeesTheReadsTheDrawingTheFocusAndTheDialogs(string added, string kind)
+    {
+        const string good = "class C { void M() { var x = 1; } }";
+        CheckUiReach(good, new[] { good, good });
+
+        if (kind == "intention")
+        {
+            Rejects(() => CheckUiReach(good + added, new[] { good }));
+            return;
+        }
+
+        // In the browser view-model and, apart, in the code-behind: both are looked at.
+        Rejects(() => CheckUiReach(good, new[] { good + added, good }));
+        Rejects(() => CheckUiReach(good, new[] { good, good + added }));
+    }
+
+    // ------------------------------------------------------------------ M-7: the six gestures never call ContainFailure
+
+    private static readonly string[] SixGestures =
+    {
+        "CloseTab", "DiscardField", "RequestDocumentDiscard", "ConfirmDiscard", "CancelDiscard", "DismissNotice",
+    };
+
+    private static IEnumerable<string> GestureViolations(string code)
+    {
+        // Not vacuous: the helper that the gestures must not call exists and something calls it (Interact and ReloadSummary do).
+        if (CallCount(code, "ContainFailure") == 0) yield return "nothing calls ContainFailure, so the guard would be empty";
+
+        foreach (var gesture in SixGestures)
+        {
+            var body = BodyOfMember(code, gesture);
+            if (body == null)
+            {
+                yield return "the gesture " + gesture + " does not exist";
+                continue;
+            }
+
+            var calls = CallCount(body, "ContainFailure");
+            if (calls != 0) yield return "the gesture " + gesture + " calls ContainFailure " + calls + " times";
+        }
+    }
+
+    private const string GoodGestures =
+        "class C { public void CloseTab(string r) { try { Ask(); } catch (Exception ex) { FailGesture(ex, \"a\"); } } public void DiscardField() { FailGesture(e, \"b\"); } "
+        + "public void RequestDocumentDiscard() { FailGesture(e, \"c\"); } public void ConfirmDiscard() { FailGesture(e, \"d\"); } public void CancelDiscard() { RemoveConfirmation(); } "
+        + "public void DismissNotice(string key) { Publish(); } private void Interact() { try { } catch (Exception ex) { ContainFailure(ex); } } private void ContainFailure(Exception e) { } }";
+
+    [Fact]
+    public void NoneOfTheSixGesturesOfTheClosingCallsContainFailure()
+    {
+        Assert.Empty(GestureViolations(Browser()));
+        Assert.Empty(GestureViolations(GoodGestures));
+    }
+
+    [Theory]
+    [InlineData("FailGesture(ex, \"a\");", "ContainFailure(ex);")]
+    [InlineData("FailGesture(e, \"b\");", "this.ContainFailure(e);")]
+    [InlineData("FailGesture(e, \"c\");", "if (x) ContainFailure(e);")]
+    [InlineData("FailGesture(e, \"d\");", "var v = x ? ContainFailure(e) : 0;")]
+    [InlineData("RemoveConfirmation();", "return ContainFailure(e);")]
+    [InlineData("Publish();", "ContainFailure(e); Publish();")]
+    public void TheGuardOfTheSixGesturesSeesACallToContainFailureInAnyOfThem(string from, string to)
+    {
+        Assert.Contains(from, GoodGestures);
+
+        Assert.NotEmpty(GestureViolations(GoodGestures.Replace(from, to, StringComparison.Ordinal)));
+    }
+
+    [Fact]
+    public void TheGuardOfTheSixGesturesIsNotVacuousAndNeedsEveryGesture()
+    {
+        Assert.NotEmpty(GestureViolations(GoodGestures.Replace("ContainFailure(ex);", "Nothing();", StringComparison.Ordinal).Replace("private void ContainFailure(Exception e) { }", string.Empty, StringComparison.Ordinal)));
+        Assert.NotEmpty(GestureViolations(GoodGestures.Replace("public void DismissNotice(string key)", "public void Dismiss(string key)", StringComparison.Ordinal)));
+        Assert.NotEmpty(GestureViolations("class C { }"));
     }
 
     // ------------------------------------------------------------------ the test filters: the new test classes start with Workspace

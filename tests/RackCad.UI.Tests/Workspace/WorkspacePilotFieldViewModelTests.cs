@@ -1339,5 +1339,82 @@ namespace RackCad.UI.Tests
             Assert.Contains(rig.Pilot.Calls, c => c.RackId == "R-9" && c.Origin == B);
             Assert.Contains(rig.Pilot.Calls, c => c.RackId == "R-2" && c.Origin == A);
         }
+
+        // ------------------------------------------------------------------ I-64 F4-T3C1 (D-T3C1-05, D-T3C1-06)
+
+        [Fact]
+        public void TheErrorOfTheFieldShowsTheReasonOfTheErrorThatCrossedThePort()
+        {
+            var rig = new Rig();
+            rig.Pinned(A, "R-1");
+            rig.Pilot.Set(A, "R-1", WorkspacePilotEditPortDouble.View(
+                PilotFieldState.Error, isProtected: true, canEdit: false, committedReason: "El rack no tiene escala de anotación.", errorReason: "la causa del error"));
+
+            rig.Present(A, SelectionContext.One("R-1"));
+
+            Assert.Equal("Error: la causa del error", rig.Field.StateText);
+            Assert.True(rig.Field.ShowReloadButton);
+            Assert.True(rig.Field.ShowDiscardButton);
+        }
+
+        [Theory]
+        [InlineData(null, null, "Error: sin detalle.")]
+        [InlineData("   ", "", "Error: sin detalle.")]
+        [InlineData(null, "No se pudo leer el estado del campo.", "Error: No se pudo leer el estado del campo.")]
+        [InlineData(" ", "El rack no tiene escala de anotación.", "Error: El rack no tiene escala de anotación.")]
+        public void TheErrorOfTheFieldFallsBackToTheCurrentReasonAndThenToNoDetail(string? errorReason, string? committedReason, string expected)
+        {
+            var rig = new Rig();
+            rig.Pinned(A, "R-1");
+            rig.Pilot.Set(A, "R-1", WorkspacePilotEditPortDouble.View(
+                PilotFieldState.Error, isProtected: true, canEdit: false, committedReason: committedReason, errorReason: errorReason));
+
+            rig.Present(A, SelectionContext.One("R-1"));
+
+            Assert.Equal(expected, rig.Field.StateText);
+        }
+
+        [Fact]
+        public void TheReasonOfTheErrorOnlyAppearsInTheStateError()
+        {
+            var rig = new Rig();
+            rig.Pinned(A, "R-1");
+            rig.Pilot.Set(A, "R-1", WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, pending: "1:75", isProtected: true, errorReason: "no debe verse"));
+
+            rig.Present(A, SelectionContext.One("R-1"));
+
+            Assert.DoesNotContain("no debe verse", rig.Field.StateText);
+            Assert.DoesNotContain("Error", rig.Field.StateText);
+        }
+
+        [Theory]
+        [InlineData("Busy", "Hay una lectura del piloto en curso.", "El texto no se aplicó: Hay una lectura del piloto en curso.")]
+        [InlineData("NotEditable", "El campo no se puede editar ahora.", "El texto no se aplicó: El campo no se puede editar ahora.")]
+        [InlineData("Busy", null, "El texto no se aplicó: hay una lectura en curso.")]
+        [InlineData("NotEditable", " ", "El texto no se aplicó: el campo no se puede editar ahora.")]
+        public void ABusyOrNotEditableRefusalShowsTheReasonOfThePortOnceAndTheGenericTextOnlyWithoutOne(string status, string? reason, string expected)
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.SetPendingResponder = (_, _, _) => status == "Busy"
+                ? PilotFieldResult.Busy(reason!)
+                : PilotFieldResult.NotEditable(reason!, WorkspacePilotEditPortDouble.NoDraft());
+
+            rig.Field.Text = "1:75";
+
+            Assert.Equal(expected, rig.Field.NoticeText);
+        }
+
+        [Fact]
+        public void ARejectedRefusalKeepsItsText()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.SetPendingResponder = (_, _, _) => PilotFieldResult.Rejected("La petición no es del documento activo.");
+
+            rig.Field.Text = "1:75";
+
+            Assert.Equal("El texto no se aplicó: La petición no es del documento activo.", rig.Field.NoticeText);
+        }
     }
 }

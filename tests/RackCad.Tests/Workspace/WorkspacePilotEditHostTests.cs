@@ -1483,6 +1483,210 @@ public class WorkspacePilotEditHostTests
         Assert.False(string.IsNullOrWhiteSpace(view.CommittedTextReason));
         Assert.Contains(env.Hr.Faults, fault => fault.Context == "WorkspaceHostCore.GetField");
     }
+
+    // ------------------------------------------------------------------ I-64 F4-T3C1 (D-T3C1-01, 03, 04, 05, 06): the host hardened
+
+    // The default value of the risk is the unknown (it could not be decided); only the constructor builds a known one.
+    [Fact]
+    public void TheDefaultRiskViewIsTheUnknownAndEveryValueBuiltWithTheConstructorIsKnown()
+    {
+        var unknown = default(PilotRiskView);
+
+        Assert.False(unknown.IsKnown);
+        Assert.Empty(unknown.RackIds);
+        Assert.Empty(unknown.UncertainRackIds);
+        Assert.True(new PilotRiskView(Array.Empty<string>(), Array.Empty<string>()).IsKnown);
+        Assert.True(new PilotRiskView(new[] { RackA }, new[] { "R9" }).IsKnown);
+        Assert.Throws<ArgumentNullException>(() => new PilotRiskView(null!, Array.Empty<string>()));
+        Assert.Throws<ArgumentNullException>(() => new PilotRiskView(Array.Empty<string>(), null!));
+    }
+
+    [Fact]
+    public void TheFallbackByDraftIsKnownAndKeepsTheUncertainOnesApart()
+    {
+        var env = new Env();
+        env.Open(RackB);
+        env.Type("1x", RackB);
+        env.OpenUndecidable("R9");
+
+        var risk = env.Port.GetRacksAtRisk(env.Origin());
+
+        Assert.True(risk.IsKnown);
+        Assert.Equal(new[] { RackB }, risk.RackIds.ToArray());
+        Assert.Equal(new[] { "R9" }, risk.UncertainRackIds.ToArray());
+        Assert.Empty(env.Hr.Faults);
+    }
+
+    [Fact]
+    public void ASessionWithoutDraftsAnswersKnownAndEmptyAndNeverTheUnknown()
+    {
+        var env = new Env();
+
+        var active = env.Port.GetRacksAtRisk(env.Origin());
+        var nobody = env.Port.GetRacksAtRisk(env.Origin(new SessionId(777)));
+
+        foreach (var risk in new[] { active, nobody })
+        {
+            Assert.True(risk.IsKnown);
+            Assert.Empty(risk.RackIds);
+            Assert.Empty(risk.UncertainRackIds);
+        }
+
+        Assert.Empty(env.Hr.Faults);
+    }
+
+    [Fact]
+    public void AKnownRiskWithRacksInRiskStaysKnown()
+    {
+        var env = new Env();
+        env.Open();
+        env.Type("zz");
+
+        var risk = env.Port.GetRacksAtRisk(env.Origin());
+
+        Assert.True(risk.IsKnown);
+        Assert.Equal(new[] { RackA }, risk.RackIds.ToArray());
+        Assert.Empty(risk.UncertainRackIds);
+    }
+
+    [Fact]
+    public void TheReasonsOfTheFieldAreInSpanishExactlyAsTheTableOfThePackageSays()
+    {
+        var env = new Env();
+        env.Open();
+        var error = env.Open(RackB);
+        error.EnterError("boom");
+
+        // 2: a request of a document that is not the active one.
+        var stranger = new SessionId(env.Session.Value + 1000);
+        var rejected = env.Type("2", RackA, stranger);
+        var crossRejected = env.Cross(PilotBoundaryKind.TabChange, RackA, stranger);
+        Assert.Equal(PilotFieldStatus.Rejected, rejected.Status);
+        Assert.Equal("La petición no es del documento activo.", rejected.Reason);
+        Assert.Equal(PilotBoundaryDecision.Aborted, crossRejected.Decision);
+        Assert.Equal("La petición no es del documento activo.", crossRejected.Reason);
+        Assert.Equal("La petición no es del documento activo.", env.Port.DiscardRack(env.Origin(stranger), RackA).Reason);
+
+        // 3: no draft for the rack; 19: no text; 20: the field cannot be edited now.
+        var noDraft = env.Type("2", "R7");
+        var noText = env.Port.SetPendingText(env.Origin(), RackA, null!);
+        var notEditable = env.Type("2", RackB);
+        var notEditableCommit = env.Commit(RackB);
+        Assert.Equal("No hay borrador para el rack.", noDraft.Reason);
+        Assert.Equal("El texto es obligatorio.", noText.Reason);
+        Assert.Equal("El campo no se puede editar ahora.", notEditable.Reason);
+        Assert.Equal("El campo no se puede editar ahora.", notEditableCommit.Reason);
+
+        // 21: a boundary that the host does not know.
+        var unknownBoundary = env.Cross((PilotBoundaryKind)99);
+        Assert.Equal(PilotBoundaryDecision.Aborted, unknownBoundary.Decision);
+        Assert.Equal("La frontera no se conoce.", unknownBoundary.Reason);
+
+        // 1: a read of the pilot is in progress.
+        string? busy = null;
+        string? busyDiscard = null;
+        env.Fake.Answer = EditIntentKit.OriginMissing;
+        env.Audited.InsideRead = _ =>
+        {
+            busy = env.Type("2.5").Reason;
+            busyDiscard = env.Port.DiscardDocument(env.Origin()).Reason;
+        };
+        Assert.Equal(EditIntentStatus.NotAdmitted, env.Port.TryBeginEdit(env.Request("R5")).Status);
+        Assert.Equal("Hay una lectura del piloto en curso.", busy);
+        Assert.Equal("Hay una lectura del piloto en curso.", busyDiscard);
+    }
+
+    [Fact]
+    public void TheReasonOfAFieldThatCannotBeReadIsInSpanish()
+    {
+        var env = new Env();
+        var read = EditIntentKit.Admitted("R9").PilotRead!.Read;
+        var begun = env.Core.OpenDrafts.Begin(env.Session, "R9", read, new PilotEditThrowingComparer(), _ => null!);
+        Assert.Equal(DraftBeginStatus.Created, begun.Status);
+
+        var view = env.Field("R9");
+
+        Assert.Equal(PilotFieldState.Error, view.State);
+        Assert.Equal("No se pudo leer el estado del campo.", view.CommittedTextReason);
+        Assert.Null(view.ErrorReason);
+    }
+
+    [Fact]
+    public void TheReasonsOfTheGateAndOfTheIntentionReadsAreInSpanish()
+    {
+        var env = new Env();
+
+        // 25: a window of RackCad is open; 26: a command is in progress.
+        env.Core.SetModalRackCadActive(true);
+        Assert.Equal("Hay una ventana de RackCad abierta.", env.Port.TryBeginEdit(env.Request()).Reason);
+        env.Core.SetModalRackCadActive(false);
+        env.Hr.Probe.IsActiveDocumentQuiescent = false;
+        Assert.Equal("Hay un comando en curso.", env.Port.TryBeginEdit(env.Request()).Reason);
+        env.Hr.Probe.IsActiveDocumentQuiescent = true;
+        Assert.Equal(0, env.Audited.Reads);
+
+        // 9: a blank rack in a check.
+        var blankCheck = env.Port.TryCheckNow(env.Request(" "));
+        Assert.Equal("Un rack sin identificador no tiene borrador.", blankCheck.Reason);
+
+        // 3 and 13: no draft for the rack in a check and in a reload.
+        Assert.Equal("No hay borrador para el rack.", env.Port.TryCheckNow(env.Request("R7")).Reason);
+        Assert.Equal("No hay borrador para el rack.", env.Port.TryReload(env.Request("R7")).Reason);
+
+        env.Open();
+        Assert.Equal("El borrador no quedó desconocido tras una aplicación fallida.", env.Port.TryCheckNow(env.Request()).Reason);
+        Assert.Equal("El borrador no necesita recargarse.", env.Port.TryReload(env.Request()).Reason);
+        Assert.Equal(1, env.Audited.Reads);
+    }
+
+    // D-T3C1-06: the reason of the Error crosses the port, only in the state Error and exactly as the draft holds it.
+    [Fact]
+    public void TheReasonOfTheErrorOfADraftCrossesThePortOnlyInTheStateError()
+    {
+        var env = new Env();
+        var clean = env.Open();
+        env.Type("abc");
+        var error = env.Open(RackB);
+        error.EnterError("la razón del error");
+
+        var dirty = env.Field();
+        var errored = env.Field(RackB);
+
+        Assert.Equal(PilotFieldState.Dirty, dirty.State);
+        Assert.Null(dirty.ErrorReason);
+        Assert.Equal(PilotFieldState.Error, errored.State);
+        Assert.Equal("la razón del error", errored.ErrorReason);
+        Assert.Null(default(PilotFieldView).ErrorReason);
+        Assert.Null(new PilotFieldView(true, PilotFieldState.Clean, false, false, true, "1", null, null, null).ErrorReason);
+        Assert.Equal("x", new PilotFieldView(true, PilotFieldState.Error, false, true, false, null, null, null, null, "x").ErrorReason);
+        Assert.True(clean.IsRegistered);
+        Assert.Empty(env.Hr.Faults);
+    }
+
+    // D-T3C1-04: the notice of a vetoed close of a destroyed session goes away after the retirement, and only that one.
+    [Fact]
+    public void DestroyingASessionDropsOnlyItsOwnNoticeOfVetoAndQueuesItsLoss()
+    {
+        var env = new Env();
+        var a = env.Session;
+        env.Open();
+        env.Type("abc");
+        var b = env.Hr.Activate(200);
+        env.Open(RackA, b);
+        env.Type("def", RackA, b);
+        Assert.Equal(CloseDecision.Veto, env.Close(a));
+        Assert.Equal(CloseDecision.Veto, env.Close(b));
+
+        env.Destroy(100);
+
+        var closes = env.Port.TakeCloseNotices();
+        var losses = env.Port.TakeLossNotices();
+        Assert.Equal(new[] { b }, closes.Select(n => n.Session).ToArray());
+        Assert.Equal(new[] { a }, losses.Select(n => n.Session).ToArray());
+        Assert.Empty(env.Port.TakeCloseNotices());
+        Assert.Empty(env.Port.TakeLossNotices());
+        Assert.DoesNotContain(env.Hr.Faults, f => f.Context != "WorkspaceHostCore.DraftLoss");
+    }
 }
 
 /// <summary>A tiny helper that runs an operation and gives its value and the exception that escaped, if any.</summary>
