@@ -6712,3 +6712,30 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 2 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 171. Intento 2 de F4-T3B1-EDIT-SURFACE: verificado
+
+**Decisión:** F4-E42.
+- **Planificación** `4b5e`: fidelidad PASS a la primera y A1-A8 8/8.
+- **Worker** `a807`: RED `40f5727c` y GREEN `1708e764`.
+- **CI:** `43380342743` 4/4.
+- **Verificación** `c3a6`: `EXECUTION_VERIFIED`, 14/14.
+- **Revisiones:**
+  - la directa: producto conforme, con el bloqueante de teclado resuelto;
+  - la re-revisión independiente: ACEPTABLE CON MENORES (0/0/3).
+
+**Límites:** sin AutoCAD; las teclas de D-01 en el host quedan para Smoke-2.
+
+## 172. Controles negativos de F4-T3B1 y cierre pendiente
+
+| Control | Corrida | Resultado | Registro |
+|---|---|---|---|
+| nc1 | `R20261113T070324Z-e470` | Identity en **pass** ante el CurrentSha falso; la entrega mutada no se verificó (REWORK, Handoff primera en fail) | CONTROL NOT PASSED (modo nuevo, PD-F4-05) |
+| nc2 | `R20261113T070654Z-5b85` | firma de PD-F4-01 (Contract primera en fail, Scope en fail sobre la ruta quitada, BLOCKED/STOP), con Ci y Trailer en fail además | CONTROL NOT PASSED; sustituto F4T3B1-NC2-EXACT-WHITELIST-01 (`8c85`): PASS → SATISFIED |
+| nc3 | `R20261113T071151Z-ad7c` | FreeText en fail y REWORK, pero Ci primera en fail por variación | CONTROL NOT PASSED (PD-F4-06) |
+
+- **F4-T3B1 = VERIFICADA sobre `1708e764`, con el cierre pendiente de la disposición del Owner sobre nc1 y nc3.** `attempts` sigue en 2 de 3.
+- **Deudas nuevas:** PD-F4-05 y PD-F4-06.
+- **F4-T3B2:** su paquete se prepara y se revisa, sin emitirlo antes del cierre de F4-T3B1.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.

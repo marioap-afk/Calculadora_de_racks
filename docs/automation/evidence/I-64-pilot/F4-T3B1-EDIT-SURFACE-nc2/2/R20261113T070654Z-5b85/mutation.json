@@ -1,0 +1,100 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261113T070654Z-5b85",
+  "SourceVerification": "R20261113T070017Z-c3a6",
+  "SourceInputs": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T070017Z-c3a6/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+    "CoveringEntries": [
+      "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+      "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+      "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs"
+    ],
+    "New": [
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+      "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "B6D77E9520837EA15B08AE9CF797971729A82736FDD4CB495D5AAA8FBE0352D5",
+    "New": "78BC7DF68C39542F6D38BDA437C8F38BF6597D3567B96BCAF3580DA58F8368D6",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "4A745882655D9A231AB97ACEC9EFA7E58322F789E8310CFAFD5E326F944F212A",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "C3BBE69AC9859CA95EB6AE8BD18A0E9654A6DBBE628929E0E03DBBA5B7808FEF",
+    "delegation.json": "78BC7DF68C39542F6D38BDA437C8F38BF6597D3567B96BCAF3580DA58F8368D6",
+    "gate-contract.json": "FCE7587EAC404A6E98FDBE991764B9C776C4202F621D76D0E2417672E27217AD",
+    "relay-record-planning.json": "3B9A045C0F9E02BFE20347B989D33596201B03EE7D23C84F66C27E9FAE978FDE",
+    "relay-record-work.json": "63507406839C053D0181A57836B4A3915F73638A083EC29B91A452E2F2524328",
+    "worker-handoff.json": "C1DF9AC5483AD67CAD2862FF9B63D8EEB67B697E295C57440601C81E0B741A4E",
+    "ci-core/43380342743/core.trx": "554BCED0592D6BF39A266C77B423E28A997E36C77FCC50DF1FD9A9AC98460EE0",
+    "ci-core-red/43380164657/core.trx": "E48901062918089348B14143BE12D19C236DB6E15E3B8B9A1FD09EBCED411B45",
+    "ci-ui/43380342743/ui.trx": "3E2A3932D5425B562FDD791814141833BC52570C8734F40A0BC76C65EE49C64F",
+    "ci-ui-red/43380164657/ui.trx": "1C57C775248FE502CE453A2FDB84C52D0B3EC0ED395C27C988C537ABF0F9C5C8"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

@@ -1197,3 +1197,49 @@ Medido: T3B tocaría unos 22 archivos, frente a los 12 de T3A, con cambios decla
 - La lista completa de teclas de D-01 en el host sigue siendo de Smoke-2: D-01 no congela la mecánica.
 
 **Lección del paquete:** una regla de teclado de WPF escrita sin probarla en el camino real de mensajes pasó dos revisiones del paquete. Antes de fijar una mecánica de entrada en un contrato, la sesión la prueba con un experimento mínimo.
+
+## F4-E42. F4-T3B1-EDIT-SURFACE: intento 2 verificado, revisiones, controles y cierre pendiente
+
+**Hechos del intento 2 (corrección, contrato `gate-contract-attempt2.json`):**
+- **Planificación** `R20261113T062027Z-4b5e`: fidelidad PASS a la primera en las ocho colecciones y A1-A8 8/8, con Horizonte Medium. Sin nc4.
+- **Worker** `R20261113T062519Z-a807`:
+  - subagente con `claude-sonnet-5-5`/high, 196 turnos y 0 denegaciones;
+  - RED `40f5727c`: UI en rojo por aserción (20 de 352), Core en verde (2300/2300);
+  - GREEN `1708e764`: 9 rutas del alcance.
+  - El Worker lanzó las suites completas en segundo plano pese al prompt; esperó su resultado antes de entregar.
+- **CI:** `43380342743` 4/4; el RED `43380164657` con UI en rojo.
+- **Verificación** `R20261113T070017Z-c3a6`: `EXECUTION_VERIFIED`, 14/14, `VerifiedSha` `1708e764`.
+
+**Revisiones:**
+- **La directa** (`direct-review.md`): producto conforme. El bloqueante de teclado queda resuelto: sin `KeyDown` de burbuja en la caja, y en la caja editable solo Enter y Esc quedan marcados.
+- **La re-revisión independiente** (`independent-review.md`, junto a la verificación): ACEPTABLE CON MENORES (0/0/3). Los menores:
+  - N-1: el doble no reproduce el `Kept` de un borrador no editable;
+  - N-2: Space, una desviación de letra correcta en sustancia;
+  - N-3: las repeticiones de una tecla mantenida se escriben una vez abierta la caja.
+
+  El análisis está en `analysis.md`.
+
+**Controles** (sobre las entradas de `c3a6`):
+- **nc1** `R20261113T070324Z-e470`: **CONTROL NOT PASSED, con un modo nuevo**.
+  - El Controller no verificó la entrega mutada (`EXECUTION_REWORK_REQUIRED`/REWORK, `VerifiedSha` nulo): Handoff es la primera en fail y Ci también falla, **pero Identity quedó en pass** ante el CurrentSha falso.
+  - No es la firma exacta de PD-F4-04, así que la regla de nc1 de la orden de F4-T3 no aplica.
+  - El sustituto de identidad establecido rechaza este caso por diseño (sus autopruebas F y G).
+- **nc2** `R20261113T070654Z-5b85`: la firma de PD-F4-01 (Scope en fail sobre `WorkspaceBrowserViewModel.cs` con F4T3B1-C01; Contract en fail por la exactitud; `EXECUTION_BLOCKED`/STOP), con Ci y Trailer en fail además.
+  - Por la regla de nc2 de la orden de cierre de F4-T3A: **sustituto F4T3B1-NC2-EXACT-WHITELIST-01** (`F4-T3B1-EDIT-SURFACE-nc2-substitute/2/R20261113T071219Z-8c85`): **PASS**, con autoprueba determinista y las 10 propiedades.
+  - Registro: nc2 = SATISFIED_UNDER_F4T3B1_EXACT_WHITELIST_SUBSTITUTE. Es el primer uso de la regla.
+- **nc3** `R20261113T071151Z-ad7c`: **CONTROL NOT PASSED**. FreeText en fail y REWORK (la señal esperada), pero Ci y Trailer también fallan y Ci queda como primera en fail.
+
+**Variación del Controller (PD-F4-06):** en los tres controles, con las mismas entradas que la verificación real dio en pass:
+- falla Ci, porque exige que el job de Core falle en el RED, contra `ExpectRed` false del contrato;
+- falla Trailer, porque busca un Trailer de nivel superior en la entrega, que está en `Worker.Trailer`.
+
+**Decisión de la sesión** (`F4-DRAFTS/coordinator/delegated-f4t3b1-close-decision.md`): la sesión no se dispensa a sí misma dos controles no superados sin una regla del Owner que los cubra (F4-E28).
+- **F4-T3B1-EDIT-SURFACE = VERIFICADA sobre `1708e764`, con el cierre PENDIENTE de la disposición del Owner sobre nc1 y nc3.** `attempts` sigue en 2 de 3.
+- **Propuesta al Owner:**
+  - nc1, con un sustituto de identidad adaptado;
+  - nc3, con el detector determinista de FreeText (patrón F4T2B1);
+  - el cierre como PASS WITH LIMITATIONS, con N-1 y N-3 a F4-T3B2 y N-2 declarada.
+- **Deudas nuevas:**
+  - PD-F4-05: Identity en pass en nc1;
+  - PD-F4-06: la variación de Ci y Trailer.
+- **Mientras tanto:** la sesión prepara y somete a revisión el paquete de F4-T3B2, sin emitirlo antes del cierre de F4-T3B1.

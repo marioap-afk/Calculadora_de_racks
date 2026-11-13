@@ -1,0 +1,160 @@
+diff --git a/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs b/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
+index 2a4ee948..6de12bd4 100644
+--- a/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
+@@ -192,11 +192,25 @@ namespace RackCad.UI.Workspace
+             }
+         }
+ 
+-        /// <summary>The double click on a tab button: it is a gesture of the field only when, after the clicks, that tab is the active one.</summary>
++        /// <summary>
++        /// A click or a key on the read-only box: it is the first gesture only while the field offers the Edit button (no diagnostic of
++        /// a read that was not admitted for this surface and no Error). Otherwise it does nothing: only the button reads again.
++        /// </summary>
++        public void BeginFieldEditFromBox()
++        {
++            if (_pilotEdit == null || !Field.CanOpenByGesture) return;
++            BeginFieldEdit();
++        }
++
++        /// <summary>
++        /// The double click on a tab button: it is a gesture of the field only when, after the clicks, that tab is the active one and the
++        /// field offers the Edit button. With an editable box, a diagnostic or an Error it does nothing and keeps the notice.
++        /// </summary>
+         public void BeginFieldEditFromTab(string rackId)
+         {
+-            if (_current == null || rackId == null) return;
++            if (_pilotEdit == null || _current == null || rackId == null) return;
+             if (!string.Equals(_current.ActiveRackId, rackId, StringComparison.Ordinal)) return;
++            if (!Field.CanOpenByGesture) return;
+             BeginFieldEdit();
+         }
+ 
+@@ -349,9 +363,10 @@ namespace RackCad.UI.Workspace
+                 else if (_pilotEdit.GetField(origin, priorRack).Exists)
+                     _pilotEdit.CrossBoundary(origin, priorRack, PilotBoundaryKind.Dematerialize);
+             }
+-            catch (Exception ex)
++            catch (Exception)
+             {
+-                Field.Fail(ex);
++                // The boundary of the previous surface is not the new one's business: a failure here is contained and does not put the
++                // field of the surface that is now live in Error.
+             }
+         }
+ 
+@@ -517,8 +532,8 @@ namespace RackCad.UI.Workspace
+             }
+             catch (Exception)
+             {
+-                // The mark is only information: when the port cannot say, the tab has none.
+-                return false;
++                // The conservative answer: when the port cannot say, the tab is treated as protected (it carries the mark and a preview is pinned).
++                return true;
+             }
+         }
+ 
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+index 3239d5dc..9660c164 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
++++ b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+@@ -138,8 +138,8 @@
+                     <TextBlock x:Name="BrowserSurfaceStatusText" Text="{Binding Browser.SurfaceStatusText}" Style="{StaticResource OptionalText}"
+                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                     <!-- The field of the bounded pilot (I-64 F4-T3B1): ONE box on the ONE surface, shown only with the edit port. The text
+-                         is edited only through the setter of the bound property; the gestures that open it and the keys that never
+-                         leave the panel are handled in the code-behind. Nothing here writes the drawing. -->
++                         is edited only through the setter of the bound property; the gestures that open it and the keys Enter and
++                         Esc of the editable box are handled in the code-behind; no handler of the bubble KeyDown is attached to the box. Nothing here writes the drawing. -->
+                     <StackPanel x:Name="BrowserFieldPanel" Margin="0,8,0,0"
+                                 Visibility="{Binding Browser.Field.IsAvailable, Converter={StaticResource FlagToVisibility}}">
+                         <TextBlock Text="Escala de anotación" FontWeight="SemiBold"
+@@ -150,7 +150,6 @@
+                                  IsReadOnly="{Binding Browser.Field.IsReadOnly, Mode=OneWay}"
+                                  PreviewMouseLeftButtonDown="OnBrowserFieldBoxPreviewMouseLeftButtonDown"
+                                  PreviewKeyDown="OnBrowserFieldBoxPreviewKeyDown"
+-                                 KeyDown="OnBrowserFieldBoxKeyDown"
+                                  LostFocus="OnBrowserFieldBoxLostFocus" />
+                         <TextBlock x:Name="BrowserFieldStateText" Text="{Binding Browser.Field.StateText}" Style="{StaticResource OptionalText}"
+                                    Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+index 9d945d60..71d76573 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+@@ -79,16 +79,16 @@ namespace RackCad.UI.Workspace
+             Contained(() => _viewModel.Browser.BeginFieldEditFromTab(RackOf(sender)));
+ 
+         // The field of the pilot (I-64 F4-T3B1). The text typed by the user reaches the view-model only through the setter of the bound
+-        // property; here live the buttons, the gestures that open a read-only box and the keys that must never leave the panel.
++        // property; here live the buttons, the gestures that open a read-only box and the keys Enter and Esc of an editable one.
+         private void OnBrowserFieldEditClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.BeginFieldEdit());
+ 
+         private void OnBrowserFieldReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadField());
+ 
+-        // A click on a read-only box is the first gesture; the click itself is not consumed.
++        // A click on a read-only box is the first gesture only while the field offers the Edit button; the click itself is not consumed.
+         private void OnBrowserFieldBoxPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+         {
+             if (_viewModel.Browser.Field.IsEditable) return;
+-            Contained(() => _viewModel.Browser.BeginFieldEdit());
++            Contained(() => _viewModel.Browser.BeginFieldEditFromBox());
+         }
+ 
+         private void OnBrowserFieldBoxPreviewKeyDown(object sender, KeyEventArgs e)
+@@ -96,7 +96,8 @@ namespace RackCad.UI.Workspace
+             var field = _viewModel.Browser.Field;
+             if (field.IsEditable)
+             {
+-                // Enter commits and Esc does nothing: both stay in the panel. Esc never reverts the text.
++                // Enter commits and Esc does nothing: both stay in the panel. Esc never reverts the text. Every other key goes to the
++                // editor untouched (no handler of the bubble event marks it), so a character key produces its text input.
+                 if (e.Key == Key.Enter)
+                 {
+                     e.Handled = true;
+@@ -110,8 +111,9 @@ namespace RackCad.UI.Workspace
+                 return;
+             }
+ 
+-            // A read-only box: a key that is not a modifier, Tab or Esc is the first gesture. It is consumed, so it is not typed into a
+-            // box that may be editable a moment later and does not leave the panel. Esc is consumed with no gesture.
++            // A read-only box: a key that is not a modifier, Tab or Esc is consumed, so it is not typed into a box that may be editable a
++            // moment later and does not leave the panel. It is the first gesture only while the field offers the Edit button and never
++            // when it is a repetition of a held key. Esc is consumed with no gesture.
+             if (e.Key == Key.Escape)
+             {
+                 e.Handled = true;
+@@ -121,14 +123,8 @@ namespace RackCad.UI.Workspace
+             if (IsModifierOrNavigation(e.Key)) return;
+ 
+             e.Handled = true;
+-            Contained(() => _viewModel.Browser.BeginFieldEdit());
+-        }
+-
+-        // With an editable box, whatever the editor did not consume stays in the panel (Delete, Ctrl+Z, Ctrl+V and the like must not
+-        // reach the drawing); only Tab is left to the navigation of the panel.
+-        private void OnBrowserFieldBoxKeyDown(object sender, KeyEventArgs e)
+-        {
+-            if (_viewModel.Browser.Field.IsEditable && e.Key != Key.Tab) e.Handled = true;
++            if (e.IsRepeat) return;
++            Contained(() => _viewModel.Browser.BeginFieldEditFromBox());
+         }
+ 
+         // Leaving the box commits the pending text; the view-model does nothing without pending text or with a box that is not editable.
+diff --git a/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs b/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+index e709c25c..a05dc616 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@ -104,6 +104,13 @@ namespace RackCad.UI.Workspace
+         /// <summary>The Edit button: the box is read-only and a gesture can open it.</summary>
+         public bool ShowEditButton => _showEdit;
+ 
++        /// <summary>
++        /// Whether a click or a key on the box, or the double click on the tab, may start the first gesture: only while the Edit button is
++        /// offered, with no diagnostic of a read that was not admitted for this surface and with no Error. Only the Edit button reads again
++        /// in the other cases, and in the Error state only Reload acts.
++        /// </summary>
++        public bool CanOpenByGesture => _showEdit && !_showReload && _failure == null && _diagnostic == null;
++
+         /// <summary>The Reload button of the Error state: it shows the draft again, with no read of the drawing.</summary>
+         public bool ShowReloadButton => _showReload;
+ 

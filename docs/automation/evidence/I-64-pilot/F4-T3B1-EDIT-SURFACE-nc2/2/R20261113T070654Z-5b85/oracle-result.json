@@ -1,0 +1,57 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261113T070654Z-5b85",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "fail",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "fail",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Contract",
+    "Scope",
+    "Ci",
+    "Trailer"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04",
+    "F4T3B1-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha devuelve 9 rutas. Una, src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs, no esta en el AllowedWriteScope de delegation.json (18 rutas exactas). La lista contractual de 19 si la incluye; ForbiddenWriteScope no cambia el fallo de lista blanca. Activa F4T3B1-C01."
+  },
+  "OutputSha256": "D56D7824325152CA712E0FACC47C20611B13BFEA8FA967C1CF45CF3F01A49434",
+  "ManualFreeText1610": []
+}

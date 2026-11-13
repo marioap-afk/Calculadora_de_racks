@@ -1,0 +1,751 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807",
+  "SourceRoot": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 11,
+    "EXCLUDED": 94
+  },
+  "Files": [
+    {
+      "Path": "cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "d76d94643552f8b7878b3617f706675361ff5cff042fd9961494c53f77700913",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "d89dec44de8d7ba9eab0b8ff1df49606d739016cdaf0bd68e8b9e261f1e4adce",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "ci-core/core.trx",
+      "Bytes": 24554245,
+      "Sha256": "554bced0592d6bf39a266c77b423e28a997e36c77fcc50df1fd9a9ac98460ee0",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "ci-filter-counts.json",
+      "Bytes": 621,
+      "Sha256": "b623f7a6af1c6ae8bc42b0ad9df5b27a30a7761dc504e5f15ddeabc8fa616b45",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "ci-ui/ui.trx",
+      "Bytes": 2908676,
+      "Sha256": "3e2a3932d5425b562fdd791814141833bc52570c8734f40a0bc76c65ee49c64f",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "config-entry.json",
+      "Bytes": 3434,
+      "Sha256": "797e66492228aef7eb73913d523e983c244be7189be2cd199cbb43463b1e7408",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-exit.json",
+      "Bytes": 3434,
+      "Sha256": "f93e5e810fca72b313ece811a05aa7f74969c0dabb39d8fdf1c6e575e911625b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "processes-entry.json",
+      "Bytes": 1280,
+      "Sha256": "c7b49374ccdb11e52416f662f5a4771d78a23ad66f7ad26a1665b521ce9dec52",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "05df39e2d430749bd2d80b43dc68b28fb458493f4f3733573f1479f573e21059",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "processes-exit.json",
+      "Bytes": 1284,
+      "Sha256": "4fab33927f684e97e59edd74ff6d1d114da1b5efd2fe28d637184d27d62a5b77",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "6d35843991132d44dd96896cb2298f5eaa61b525073bbc2326b6e06adbff1088",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "product-correction.patch",
+      "Bytes": 10153,
+      "Sha256": "76b9fbf7dcb380e4c10b7d7abb72ea8f76e2812af6fe494efd2de5121e500fe8",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "prompt.md",
+      "Bytes": 49520,
+      "Sha256": "d9a4d1f4772154bb7b647c1baf4005a4141c4740c8be37f2e1af4470e58c12ab",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "45c7bcf6cc762f87ba90e16ad5d44aa02e7dc63fcb2495a4f1fcca75d9cbf606",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <checkout-principal>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "red-ci-core/core.trx",
+      "Bytes": 24554248,
+      "Sha256": "e48901062918089348b14143be12d19c236db6e15e3b8b9a1fd09ebced411b45",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "red-ci-ui/ui.trx",
+      "Bytes": 2975530,
+      "Sha256": "1c57c775248fe502ce453a2fdb84c52d0b3ec0ed395c27c988c537abf0f9c5c8",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "relay-record.json",
+      "Bytes": 18196,
+      "Sha256": "63507406839c053d0181a57836b4a3915f73638a083ec29b91a452e2f2524328",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.Application.deps.json",
+      "Bytes": 842,
+      "Sha256": "5f85684e60ed85ae12ca4a3e4293beec4a203369dedbc98ad7dd851a1b6866e3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.Application.dll",
+      "Bytes": 2604032,
+      "Sha256": "a105875904231c239479a48cc5e6a144cd89fc793d6227e70124388c740aec46",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.Application.pdb",
+      "Bytes": 913324,
+      "Sha256": "b01047f62c98078761d7d6c2e7f59e5c318097435a5ace3d9edf496a55df1f5b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.Domain.deps.json",
+      "Bytes": 434,
+      "Sha256": "95c7e257c0fb8924d4acb0720918682bbc6a663a298b0f6a84f13b44d18acd78",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.Domain.dll",
+      "Bytes": 125952,
+      "Sha256": "7613a9c31a2a7ceb5ed423a2a55e2a5d98a0ee9a8c1fae767c32c80302c6769d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.Domain.pdb",
+      "Bytes": 59632,
+      "Sha256": "31a859173e2e2303580003b66401001aa11db27b106ccfdd1ac4e7f0e5572898",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.Plugin.deps.json",
+      "Bytes": 1736,
+      "Sha256": "7d9a01a0ef81a064fb5a24fb40b5c6fdcf9a83ae99fc177d0cace0e452c4e953",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.Plugin.dll",
+      "Bytes": 308224,
+      "Sha256": "1d97d8e903a8d9cdbba7ff433d9e33a36881a465f2d77c34bda4683e3a861800",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.Plugin.pdb",
+      "Bytes": 140252,
+      "Sha256": "fcbcde8dfc80d345a0dceedfea636554fb73787406fb5207c4fde5ae4ee25cd2",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.UI.deps.json",
+      "Bytes": 1266,
+      "Sha256": "589ab4a6abd9ffd778f93d92f1927cbdcc410c4d913fe20c5104fb23497941cd",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.UI.dll",
+      "Bytes": 1073152,
+      "Sha256": "273347e8d1a727c682a67653c7a9f2244149f77b670e5d9b2fa78beaaa171c0c",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/RackCad.UI.pdb",
+      "Bytes": 411572,
+      "Sha256": "c7924007ffff226258f0574801c588001f4f83e4ad73b295297b48780fdc1500",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/base-plates.csv",
+      "Bytes": 353,
+      "Sha256": "23536e17ecfe2304b0ce5f07cb328afd0c1a8373d4ca59c40fcda9d80b37ab62",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/blocks.csv",
+      "Bytes": 6979,
+      "Sha256": "7b4b7677a8f307499892c97d74619590877c865617ebcca313204b2fda762874",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/connection-layout.csv",
+      "Bytes": 2850,
+      "Sha256": "c9a27a10f87ca6bb5a615a39fed070bb75949150f43b9dcfbc44c19e6d847929",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/connection-points.csv",
+      "Bytes": 1352,
+      "Sha256": "cd4df19aff84fb5f71be7ba83f71764e5ab2418e072a504a4681bd4a48bfe473",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/defaults.json",
+      "Bytes": 495,
+      "Sha256": "eeb44e182b13808bff376649211a9408e3fee7ed91eef102ef4ede2a9d40d189",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/flow-bed-profiles.csv",
+      "Bytes": 599,
+      "Sha256": "57ca9be5816960a5d9f4a180e89a5889e9be7a1b4aa56a5ca4d42cab8e92ed8e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/header-templates.json",
+      "Bytes": 2813,
+      "Sha256": "945931d2cab5a7df322e3b329ce4cf7f55586535d8a3a4824a4efa6bed44715e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/mensulas.csv",
+      "Bytes": 365,
+      "Sha256": "903e12147ccdda4ae45e1cca27db6f93597d78fa101bba0a8bd33626919c2081",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/secciones.csv",
+      "Bytes": 1282,
+      "Sha256": "8e5f2e9c22eeb54210ce49c8ba145ec5a102de430a533244e37d5d0da65f5ee1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/seguridad.csv",
+      "Bytes": 1505,
+      "Sha256": "474c67e1623786809cb28d10a1242a96b00463bb3a186656daed019d05a08eac",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/structural-section-sources.csv",
+      "Bytes": 301,
+      "Sha256": "ad2ac2302fc92d5c956ff1fd2f94c2ac91338609166a3fa74abfaee03298b385",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/structural-section-status.csv",
+      "Bytes": 26,
+      "Sha256": "7b4cb158af88769bd90ab9ce2ce3d21010edb7f7fb334e591917b6f5342e6d7d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/structural-sections-c.csv",
+      "Bytes": 9052,
+      "Sha256": "e42871a455ad2f78e9c9550e6b9d65431b678bb6cc867c841ec4e6bbef66f63e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/structural-sections-hss-rect.csv",
+      "Bytes": 93588,
+      "Sha256": "fdc8e3e436dfa33421d0ed8a06f8cac7b82c232f997802b6a95cc25498443f0d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/structural-sections-l.csv",
+      "Bytes": 38455,
+      "Sha256": "6b5077003388735502febac99281266b37c3688faeea2d2ab1bdb399e44bf2fc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/structural-sections-manifest.json",
+      "Bytes": 1541,
+      "Sha256": "1d632563abe50d3f85856078e1524b294ae91cd03ba1df1824e992af346dd86b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/structural-sections-s.csv",
+      "Bytes": 6732,
+      "Sha256": "c081cd93f95a1bbd5f701c6975d18803aa6cc2e798d94b5038544383e8cf3707",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/structural-sections-w.csv",
+      "Bytes": 71118,
+      "Sha256": "9259f672cddc6855e321e0483f819f5875967145c6f218571f3d8e1fdce78f1e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/catalogs/views.csv",
+      "Bytes": 244,
+      "Sha256": "bad65d2ffc652dbb23f003406de7125814dff85fcd1a85bc3787b15d51041075",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-dbg/structural-analysis/ram-elements/section-material-map.json",
+      "Bytes": 3336,
+      "Sha256": "b22f7d9dc45c6f59a37d29477e5d9a21fa0b61062d780b57805d93366dbb2e7d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-debug.log",
+      "Bytes": 39462,
+      "Sha256": "3084d52c57835a8e1019e044f506ffb90fd4ac17c3f1fb99b7c04e2727d2c7f4",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.Application.deps.json",
+      "Bytes": 842,
+      "Sha256": "5f85684e60ed85ae12ca4a3e4293beec4a203369dedbc98ad7dd851a1b6866e3",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.Application.dll",
+      "Bytes": 2453504,
+      "Sha256": "6e3138a35b638ba94c4eb03e78709e2fb64095cd817d27fb25e9ede8cd9738b9",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.Application.pdb",
+      "Bytes": 724488,
+      "Sha256": "3b4bfab40122e1cc740b5cc48d9da1b129185ef6440a8fc9922dbc0a84267a6d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.Domain.deps.json",
+      "Bytes": 434,
+      "Sha256": "95c7e257c0fb8924d4acb0720918682bbc6a663a298b0f6a84f13b44d18acd78",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.Domain.dll",
+      "Bytes": 120320,
+      "Sha256": "37bbdafbb60473a0fac6f16930713442337cc0aab2908ea1780c7390d6602c85",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.Domain.pdb",
+      "Bytes": 56492,
+      "Sha256": "7a1cfd476711097d68ff90ee66b35d3c27dffbd6f1eded7ac962bffa2a617140",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.Plugin.deps.json",
+      "Bytes": 1736,
+      "Sha256": "7d9a01a0ef81a064fb5a24fb40b5c6fdcf9a83ae99fc177d0cace0e452c4e953",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.Plugin.dll",
+      "Bytes": 292352,
+      "Sha256": "cee4ccb0001e2af4ec8fd4bb6cc4bd2150a609fa07d59095a4c8cd6fc6594034",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.Plugin.pdb",
+      "Bytes": 107220,
+      "Sha256": "b6a80559d9e56fb3878c04a8e51ca0843b1b2ba62922c029dfccb56214f4bfe8",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.UI.deps.json",
+      "Bytes": 1266,
+      "Sha256": "589ab4a6abd9ffd778f93d92f1927cbdcc410c4d913fe20c5104fb23497941cd",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.UI.dll",
+      "Bytes": 954880,
+      "Sha256": "7e19b4f53b80bc700614a784043f832b8fa8039fc3767d478aba30e1ca6a7706",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/RackCad.UI.pdb",
+      "Bytes": 352632,
+      "Sha256": "90da15e50bc1d00873b55690c135fb293571f49b9af6ab45ba20cf56045b3f0a",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/base-plates.csv",
+      "Bytes": 353,
+      "Sha256": "23536e17ecfe2304b0ce5f07cb328afd0c1a8373d4ca59c40fcda9d80b37ab62",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/blocks.csv",
+      "Bytes": 6979,
+      "Sha256": "7b4b7677a8f307499892c97d74619590877c865617ebcca313204b2fda762874",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/connection-layout.csv",
+      "Bytes": 2850,
+      "Sha256": "c9a27a10f87ca6bb5a615a39fed070bb75949150f43b9dcfbc44c19e6d847929",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/connection-points.csv",
+      "Bytes": 1352,
+      "Sha256": "cd4df19aff84fb5f71be7ba83f71764e5ab2418e072a504a4681bd4a48bfe473",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/defaults.json",
+      "Bytes": 495,
+      "Sha256": "eeb44e182b13808bff376649211a9408e3fee7ed91eef102ef4ede2a9d40d189",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/flow-bed-profiles.csv",
+      "Bytes": 599,
+      "Sha256": "57ca9be5816960a5d9f4a180e89a5889e9be7a1b4aa56a5ca4d42cab8e92ed8e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/header-templates.json",
+      "Bytes": 2813,
+      "Sha256": "945931d2cab5a7df322e3b329ce4cf7f55586535d8a3a4824a4efa6bed44715e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/mensulas.csv",
+      "Bytes": 365,
+      "Sha256": "903e12147ccdda4ae45e1cca27db6f93597d78fa101bba0a8bd33626919c2081",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/secciones.csv",
+      "Bytes": 1282,
+      "Sha256": "8e5f2e9c22eeb54210ce49c8ba145ec5a102de430a533244e37d5d0da65f5ee1",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/seguridad.csv",
+      "Bytes": 1505,
+      "Sha256": "474c67e1623786809cb28d10a1242a96b00463bb3a186656daed019d05a08eac",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/structural-section-sources.csv",
+      "Bytes": 301,
+      "Sha256": "ad2ac2302fc92d5c956ff1fd2f94c2ac91338609166a3fa74abfaee03298b385",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/structural-section-status.csv",
+      "Bytes": 26,
+      "Sha256": "7b4cb158af88769bd90ab9ce2ce3d21010edb7f7fb334e591917b6f5342e6d7d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/structural-sections-c.csv",
+      "Bytes": 9052,
+      "Sha256": "e42871a455ad2f78e9c9550e6b9d65431b678bb6cc867c841ec4e6bbef66f63e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/structural-sections-hss-rect.csv",
+      "Bytes": 93588,
+      "Sha256": "fdc8e3e436dfa33421d0ed8a06f8cac7b82c232f997802b6a95cc25498443f0d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/structural-sections-l.csv",
+      "Bytes": 38455,
+      "Sha256": "6b5077003388735502febac99281266b37c3688faeea2d2ab1bdb399e44bf2fc",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/structural-sections-manifest.json",
+      "Bytes": 1541,
+      "Sha256": "1d632563abe50d3f85856078e1524b294ae91cd03ba1df1824e992af346dd86b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/structural-sections-s.csv",
+      "Bytes": 6732,
+      "Sha256": "c081cd93f95a1bbd5f701c6975d18803aa6cc2e798d94b5038544383e8cf3707",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/structural-sections-w.csv",
+      "Bytes": 71118,
+      "Sha256": "9259f672cddc6855e321e0483f819f5875967145c6f218571f3d8e1fdce78f1e",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/catalogs/views.csv",
+      "Bytes": 244,
+      "Sha256": "bad65d2ffc652dbb23f003406de7125814dff85fcd1a85bc3787b15d51041075",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-rel/structural-analysis/ram-elements/section-material-map.json",
+      "Bytes": 3336,
+      "Sha256": "b22f7d9dc45c6f59a37d29477e5d9a21fa0b61062d780b57805d93366dbb2e7d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/b1/plugin-release.log",
+      "Bytes": 39462,
+      "Sha256": "be0cb16b35790937440b4bc7049ebc60b6f3417e64de8d44ccbaebd375237b0b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g1/core.log",
+      "Bytes": 33524,
+      "Sha256": "49d2974d9c0bf01f7cc9aaee1b09a68b20665945a4f28771682a555b8e54a655",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g1/core.trx",
+      "Bytes": 3536662,
+      "Sha256": "8ecbb54cfe87694e465ad80f267ebe782d2c118df2abb3313e22bc9d0f8d7165",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g1/ui.log",
+      "Bytes": 8358,
+      "Sha256": "931ff600116fc4b2237401a9b2f8b9048bdbbb9859d770d9aa76fb893c168322",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g1/ui.trx",
+      "Bytes": 548838,
+      "Sha256": "89fd0787c8f7347557d96c121e35486226aa4e48c3b10e43a2ab7a40915cc05b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g2/core.log",
+      "Bytes": 682,
+      "Sha256": "1a7436df1d4389b93a4672fec93092ce415cd9fc406ec6e56314a69a613c191b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g2/core.trx",
+      "Bytes": 25351754,
+      "Sha256": "6b5fd922f0334233a548ddf142d56cc9e0513757f3b198538685eb888ff86576",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g2/ui.log",
+      "Bytes": 5118,
+      "Sha256": "95505a28bedaa7274445526acc68e6871da10de0865268cddebae9203c8e15f2",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g2/ui.trx",
+      "Bytes": 3056626,
+      "Sha256": "e0eb0f91c774d3541eb9710444497fb7f305044b4cf51523d03f63b15bafd72d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g3/build-Core.log",
+      "Bytes": 64731,
+      "Sha256": "753696a1075be56ff24ebd67d54b858771b6f581889f186473d5c178ab569788",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g3/build-UI.Tests.log",
+      "Bytes": 14640,
+      "Sha256": "3d275c167ea615f0fa6cfc01b41b7182d959fcad911e99c5cf4f54ccd17298df",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g3/core.log",
+      "Bytes": 680,
+      "Sha256": "affbe55b108961d0ddb15a27dc8b28a2cbe7bec84a1fef9dfe4bccffd106a222",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g3/core.trx",
+      "Bytes": 3545806,
+      "Sha256": "f14ee8acefd3b5f2a794bf3b8d99cb9219bc48f15ce49e202b6b395694c5f1a2",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g3/ui.log",
+      "Bytes": 694,
+      "Sha256": "0a7a603d58723d1358c0e7315edf3a739a17e548df8db710f6b4ddf37abe0bd6",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/g3/ui.trx",
+      "Bytes": 550226,
+      "Sha256": "86fafa202a3b4192914c084553e10020aa6d93a4f80002938c1e8a462b0f587f",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/r1/core.log",
+      "Bytes": 1750,
+      "Sha256": "3080427b481ab702d9fb6b01f1f165a0bb23cc796a9913a027fc5921946fd1b9",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/r1/core.trx",
+      "Bytes": 3536662,
+      "Sha256": "9622ba540e627f743ec1843100219fbc0afae604a205452268332750915e52a9",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/r1/ui.log",
+      "Bytes": 40660,
+      "Sha256": "36e5d24f1539db45c850efd3fed5dc96eb065841804111b193b9c97d2ff09857",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/r1/ui.trx",
+      "Bytes": 615319,
+      "Sha256": "c918fcfe8bed29a313e04e91df63b4c83a041323787101a77a539a10398ff52b",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/v1/ui.log",
+      "Bytes": 15431,
+      "Sha256": "0c6f7343702cd6d0e32760c69094382ab3918d7d7951ddd00cbb74a248836a25",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/v1/ui.trx",
+      "Bytes": 552383,
+      "Sha256": "9389d738b09ca282a61448e4926df7e4ea8d37cbf27f7e8faaf659761748d137",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/v2/core.log",
+      "Bytes": 33524,
+      "Sha256": "fac712b0abcc656686b17a65b9186b9d7aaa52a82c0a5239457c4b7401acaa8d",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/v2/core.trx",
+      "Bytes": 3536662,
+      "Sha256": "7cfb93c0ac4e2eb2f99da3c64cf2d48e4f35e75706043c982a39f6d9d41c7d28",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/v2/ui.log",
+      "Bytes": 8358,
+      "Sha256": "5c2e8bd02eec60dcd87d396f011705c8475d51791a94ab498c2ccb82fb8e1af9",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "tests/v2/ui.trx",
+      "Bytes": 548838,
+      "Sha256": "a91d64fca88b2562d025b45336afe0542c9cbdf3221f975fd9bf32f713d64a96",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida cruda de compilacion o pruebas: solo por SHA-256; los resultados constan en worker-handoff, relay-record y la CI exacta"
+    },
+    {
+      "Path": "worker-handoff.json",
+      "Bytes": 21601,
+      "Sha256": "c1df9ac5483ad67cad2862ff9b63d8eeb67b697e295c57440601c81e0b741a4e",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "26341a130f2023ff800b344e240c8f25a7e983c14709c646e25a16324fa1ffb3",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    }
+  ]
+}
