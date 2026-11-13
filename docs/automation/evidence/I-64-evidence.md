@@ -6662,3 +6662,16 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
   - a Smoke-2, el comportamiento real del foco, del modal, del cierre y de la cultura.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 167. División de F4-T3B y paquete de F4-T3B1
+
+**Decisión:** F4-E40.
+- **Mapa** del código real de la UI en `eb55606c`: T3B tocaría unos 22 archivos y exige cambios declarados de guardas exactas.
+- **Orden del Owner:** dos subtareas, T3B1-EDIT-SURFACE y T3B2-EDIT-CLOSE-SYNC, en orden B1, B2, C, cada una con 1 de 3.
+- **Paquete** `docs/initiatives/I-64-f4-t3b-gate-contract-package.md` v3:
+  - revisión de la v1: EMITIBLE TRAS CORRECCIONES (0/10/11);
+  - re-revisión de la v2: EMITIBLE TRAS CORRECCIONES (0/2/6);
+  - todo aplicado.
+- **Informe al Owner:** T3B2 consume `GetRacksAtRisk` y las colas antes del endurecimiento de T3C (menor 4); queda como limitación declarada de T3B2.
+
+**Límites:** solo documentación; sin AutoCAD.

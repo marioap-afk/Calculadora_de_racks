@@ -1130,3 +1130,46 @@ Todas se aplicaron antes de emitir (§10).
   - la edición con un comando activo o en modo degradado;
   - el orden de la marca modal frente a la ventana;
   - la cultura con ajustes de usuario.
+
+## F4-E40. División de F4-T3B en dos subtareas, paquete v3 y emisión de F4-T3B1
+
+**Mapa previo** (paso 1-4 de la orden de T3): cuatro exploraciones de solo lectura en `eb55606c`:
+- el VM del navegador y la superficie K = 1;
+- `BrowserSession` y sus guardas;
+- la paleta y el controlador;
+- el banco de pruebas de UI.
+
+Medido: T3B tocaría unos 22 archivos, frente a los 12 de T3A, con cambios declarados de guardas exactas (la construcción del VM en la paleta, la firma del VM del panel, el constructor del navegador y un solo botón en la superficie).
+
+**Orden del Owner** (`F4-DRAFTS/coordinator/owner-f4t3b-decomposition-decision.md`, pregunta y respuesta literales): «Dos subtareas».
+- **F4-T3B1-EDIT-SURFACE:** el cableado, el campo, el primer gesto, la edición y el compromiso, la rematerialización, «Nombre *», `TabChange`, las no bloqueantes, los estados y los menores 1, 2, 3, 5 y 7 de F4-T3A. Cobertura 1-10 y 15-18.
+- **F4-T3B2-EDIT-CLOSE-SYNC:** cierre con Descartar o Cancelar en línea, descarte del documento con TOCTOU, avisos de veto y de pérdida en el panel y retención por selección (`BrowserSession`). Cobertura 11-14.
+- Orden B1, B2, C; cada una empieza en 1 de 3 (F4-E09). La división duplica la capacidad de T3B; no se describe como «6 intentos».
+
+**Paquete** (`docs/initiatives/I-64-f4-t3b-gate-contract-package.md`):
+- **v1:** revisión adversarial independiente EMITIBLE TRAS CORRECCIONES (0/10/11). Los importantes:
+  - una preview con borrador limpio quedaba editable;
+  - O-01 no se cumplía;
+  - «Recargar» del Error estaba mal resuelto;
+  - la mecánica WPF de la caja estaba sin fijar;
+  - faltaban las precondiciones de `TabChange`;
+  - faltaba la reentrada tras una lectura;
+  - faltaba la regla RED del esqueleto;
+  - faltaba la forma de G-04;
+  - dos pruebas fijaban un comportamiento interino;
+  - faltaba la pulsación como primer gesto.
+- **v2:** aplica todos los hallazgos. Su re-revisión dio EMITIBLE TRAS CORRECCIONES (0/2/6): N-1, la tecla del primer gesto y la contención del teclado de D-01; N-2, la promesa de R-B2-5 sobre `GetRacksAtRisk`.
+- **v3:** aplica la re-revisión. Las dos revisiones están en `F4-T3B1-EDIT-SURFACE/coordinator/`.
+
+**Informe al Owner:** la premisa de la orden de cierre de F4-T3A según la cual el menor 4 lo consume T3C no se sostiene con el orden B1, B2, C. T3B2 es el primer consumidor de `GetRacksAtRisk` y de las colas. Su VM contiene las llamadas, y el fallo de `GetRacksAtRisk`, hoy inalcanzable y en la dirección segura para la TOCTOU, queda como limitación declarada de T3B2 hasta el endurecimiento de T3C (R-B2-5).
+
+**Emisión de F4-T3B1-EDIT-SURFACE:**
+- el contrato `I-64-pilot/F4-T3B1-EDIT-SURFACE/coordinator/gate-contract.json`;
+- 19 rutas exactas;
+- los cambios declarados G-01 a G-04 con su texto exacto nuevo;
+- 14 invariantes;
+- 8 paradas propias, con C07 (Long-horizon) y C08 (replanificación, F4-E31);
+- líneas base `RackCad.Tests.Workspace` 2251 (`ExpectRed` false: el esqueleto del RED lleva el cableado y la vista, así que Core pasa en el RED) y `RackCad.UI.Tests.Workspace` 248 (`ExpectRed` true);
+- `attempts` 1 de 3.
+
+**Controles:** nc4 en la primera delegación de la cadena y nc1..nc3 con su oráculo ordinario. Con la firma exacta de PD-F4-04 o de PD-F4-01 se reutiliza el sustituto de la subtarea sin volver al Owner (órdenes de F4-T3 y de nc2 de F4-T3A).
