@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using RackCad.Application.Workspace;
 
 namespace RackCad.UI.Workspace
@@ -22,6 +23,10 @@ namespace RackCad.UI.Workspace
     /// surface, once per materialization, and only while the drawing can be read and no action is blocked; otherwise it is retried
     /// at the next presentation of that same tab. The views live only in the surface, never in the tab record.
     ///
+    /// With the edit port of the pilot (I-64 F4-T3B1) the one surface also holds the field of the pilot (<see cref="Field"/>): the browser
+    /// pins the tab and passes the gestures of the user to it, shows the mark of a protected tab, crosses the boundaries of the panel and
+    /// shows the field again at the end of every rebuild. Without that port the browser is exactly as before.
+    ///
     /// It is synchronous: no timer, no thread, no task and no dispatcher. Without a port it is inert: no tabs, no surface.
     /// </summary>
     public sealed class WorkspaceBrowserViewModel : ObservableObject
@@ -39,6 +44,7 @@ namespace RackCad.UI.Workspace
 
         private readonly IWorkspaceBrowserSummaryPort _port;
         private readonly Action _tabChanged;
+        private readonly IWorkspacePilotEditPort _pilotEdit;
         private readonly BrowserSessionRegistry _registry = new();
 
         // What the presented snapshot says (set only by Present).
@@ -66,6 +72,7 @@ namespace RackCad.UI.Workspace
         {
             _port = port;
             _tabChanged = tabChanged;
+            _pilotEdit = pilotEdit;
             Field = new WorkspacePilotFieldViewModel(pilotEdit, OnFieldChanged);
         }
 
@@ -130,6 +137,8 @@ namespace RackCad.UI.Workspace
         {
             if (_port == null) return;
 
+            var priorSession = _surfaceSession;
+            var priorRack = _surfaceRack;
             _canRead = canReadDrawing;
             _block = block;
             _blockText = blockText ?? string.Empty;
@@ -140,26 +149,19 @@ namespace RackCad.UI.Workspace
             if (_current != null && context != null) _current.ApplySelectionContext(context);
 
             Rebuild(retryPending: true, userRequested: false);
+            CrossObservedBoundaries(priorSession, priorRack);
         }
 
         // ------------------------------------------------------------------ the explicit user interactions
 
-        /// <summary>Makes the tab the active one. Memory only; the tab becomes the live surface and the navigation is presented again.</summary>
-        public void ActivateTab(string rackId) => Interact(session => session.Activate(rackId));
-
-        /// <summary>The first gesture on the field of the pilot. Inert in the skeleton of the red commit.</summary>
-        public void BeginFieldEdit()
+        /// <summary>
+        /// Makes the tab the active one. Memory only; the tab becomes the live surface and the navigation is presented again. With
+        /// pending text in the live tab the change crosses the blocking boundary first: if it does not proceed, nothing changes.
+        /// </summary>
+        public void ActivateTab(string rackId)
         {
-        }
-
-        /// <summary>The double click on a tab button. Inert in the skeleton of the red commit.</summary>
-        public void BeginFieldEditFromTab(string rackId)
-        {
-        }
-
-        /// <summary>The Reload button of the field. Inert in the skeleton of the red commit.</summary>
-        public void ReloadField()
-        {
+            if (!AllowTabChange(rackId)) return;
+            Interact(session => session.Activate(rackId));
         }
 
         /// <summary>Pins the preview tab so the automatic synchronization never replaces it. Memory only.</summary>
@@ -167,6 +169,39 @@ namespace RackCad.UI.Workspace
 
         /// <summary>Closes the tab without asking anything; if it was active the next one is. Memory only.</summary>
         public void CloseTab(string rackId) => Interact(session => session.Close(rackId));
+
+        /// <summary>
+        /// The first gesture on the field of the pilot (the Edit button, a click, a key on the read-only box): pins the tab if it is a
+        /// preview and then asks the field to open the edition. Contained in the field; it never reaches the navigation.
+        /// </summary>
+        public void BeginFieldEdit()
+        {
+            if (_pilotEdit == null || _current == null) return;
+
+            try
+            {
+                var rack = _current.ActiveRackId;
+                if (rack == null) return;
+
+                if (IsPreviewTab(rack)) PinTab(rack);
+                Field.BeginEdit();
+            }
+            catch (Exception ex)
+            {
+                Field.Fail(ex);
+            }
+        }
+
+        /// <summary>The double click on a tab button: it is a gesture of the field only when, after the clicks, that tab is the active one.</summary>
+        public void BeginFieldEditFromTab(string rackId)
+        {
+            if (_current == null || rackId == null) return;
+            if (!string.Equals(_current.ActiveRackId, rackId, StringComparison.Ordinal)) return;
+            BeginFieldEdit();
+        }
+
+        /// <summary>The Reload button of the Error state of the field: shows the draft again from memory. It never reads the drawing.</summary>
+        public void ReloadField() => Field.Rematerialize();
 
         /// <summary>
         /// Asks again for the summary of the active tab, as a new materialization requested by the user, from any state of the surface
@@ -187,6 +222,7 @@ namespace RackCad.UI.Workspace
                 Materialize(userRequested: true);
                 var tabsChanged = RebuildTabs();
                 RaiseAll(tabsChanged);
+                RenderField();
             }
             catch (Exception ex)
             {
@@ -212,11 +248,6 @@ namespace RackCad.UI.Workspace
             }
         }
 
-        // The field asks for the strip again after it changed its draft. Inert in the skeleton of the red commit.
-        private void OnFieldChanged()
-        {
-        }
-
         private void PurgeDeadSessions()
         {
             foreach (var known in _registry.KnownSessions)
@@ -231,6 +262,97 @@ namespace RackCad.UI.Workspace
             SyncSurface(retryPending, userRequested);
             var tabsChanged = RebuildTabs();
             RaiseAll(tabsChanged);
+            RenderField();
+        }
+
+        // The field follows the live surface: it is shown again from the memory of the port after the strip, with the tab as it is now
+        // (a tab that was just pinned is no longer a preview). It reads no drawing and writes nothing.
+        private void RenderField()
+        {
+            if (_pilotEdit == null) return;
+
+            try
+            {
+                if (_surfaceSession.HasValue && _surfaceRack != null) Field.Show(_surfaceSession.Value, _surfaceRack, IsPreviewTab(_surfaceRack));
+                else Field.Clear();
+            }
+            catch (Exception ex)
+            {
+                Field.Fail(ex);
+            }
+        }
+
+        // The field asked for the strip again after it changed its draft: the mark of a protected tab and the pin may have changed.
+        private void OnFieldChanged()
+        {
+            if (_port == null || _current == null) return;
+            Rebuild(retryPending: false, userRequested: false);
+        }
+
+        private bool IsPreviewTab(string rackId)
+        {
+            var tab = _current?.Tabs.FirstOrDefault(t => string.Equals(t.RackId, rackId, StringComparison.Ordinal));
+            return tab != null && tab.IsPreview;
+        }
+
+        // The blocking boundary of a change of tab in the panel (D-T3B1-06): only to an existing tab other than the live one and only with
+        // pending text in the live tab. It proceeds when the host proceeds or keeps; otherwise the tab does not change and the field says why.
+        private bool AllowTabChange(string destination)
+        {
+            if (_pilotEdit == null || _current == null || !_session.HasValue) return true;
+
+            var live = _current.ActiveRackId;
+            if (live == null || string.Equals(destination, live, StringComparison.Ordinal)) return true;
+            if (!_current.Tabs.Any(t => string.Equals(t.RackId, destination, StringComparison.Ordinal))) return true;
+
+            try
+            {
+                var origin = new WorkspaceRequest(_session.Value);
+                if (_pilotEdit.GetField(origin, live).PendingText == null) return true;
+
+                var crossed = _pilotEdit.CrossBoundary(origin, live, PilotBoundaryKind.TabChange);
+                if (crossed.Decision == PilotBoundaryDecision.Proceeded || crossed.Decision == PilotBoundaryDecision.Kept) return true;
+
+                Field.ShowNotice(AbortText(crossed));
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Field.Fail(ex);
+                return false;
+            }
+        }
+
+        private static string AbortText(PilotBoundaryResult crossed)
+        {
+            string reason;
+            if (crossed.InvalidFields.Count > 0)
+                reason = string.Join(" ", crossed.InvalidFields.Select(f => string.IsNullOrWhiteSpace(f.Message) ? f.FieldKey : f.Message));
+            else
+                reason = string.IsNullOrWhiteSpace(crossed.Reason) ? "sin detalle." : crossed.Reason;
+            return "No se cambió de pestaña: " + reason;
+        }
+
+        // The boundaries the panel observes when a presentation changed the live surface (D-T3B1-06). A change of the presented session
+        // crosses DocumentChange on the previous tab; a change of the active tab by the selection crosses Dematerialize on the previous
+        // one when it had a draft. Neither blocks, neither reads the drawing and neither changes the pending text.
+        private void CrossObservedBoundaries(SessionId? priorSession, string priorRack)
+        {
+            if (_pilotEdit == null || !priorSession.HasValue || priorRack == null) return;
+            if (priorSession == _surfaceSession && string.Equals(priorRack, _surfaceRack, StringComparison.Ordinal)) return;
+
+            try
+            {
+                var origin = new WorkspaceRequest(priorSession.Value);
+                if (priorSession != _surfaceSession)
+                    _pilotEdit.CrossBoundary(origin, priorRack, PilotBoundaryKind.DocumentChange);
+                else if (_pilotEdit.GetField(origin, priorRack).Exists)
+                    _pilotEdit.CrossBoundary(origin, priorRack, PilotBoundaryKind.Dematerialize);
+            }
+            catch (Exception ex)
+            {
+                Field.Fail(ex);
+            }
         }
 
         private void SyncSurface(bool retryPending, bool userRequested)
@@ -259,6 +381,7 @@ namespace RackCad.UI.Workspace
             _surfaceKind = null;
             _surfaceViews = Array.Empty<string>();
             _surfaceReason = string.Empty;
+            if (_pilotEdit != null && _session.HasValue) Field.Show(_session.Value, rack, IsPreviewTab(rack));
         }
 
         private void ClearSurface()
@@ -270,6 +393,7 @@ namespace RackCad.UI.Workspace
             _surfaceKind = null;
             _surfaceViews = Array.Empty<string>();
             _surfaceReason = string.Empty;
+            Field.Clear();
         }
 
         // One query of the port for the rack of the live surface. A blocked drawing is not read at all; the surface stays pending and
@@ -357,8 +481,22 @@ namespace RackCad.UI.Workspace
                 foreach (var tab in _current.Tabs)
                 {
                     var title = string.IsNullOrWhiteSpace(tab.Name) ? tab.RackId : tab.Name;
+                    var isPreview = tab.IsPreview;
+
+                    // A tab whose draft would lose something when the document closes carries the mark; a preview with such a draft is
+                    // pinned so the selection never replaces it. Both read the memory of the port only.
+                    if (IsProtected(tab.RackId))
+                    {
+                        title = title + " *";
+                        if (isPreview)
+                        {
+                            _current.Pin(tab.RackId);
+                            isPreview = false;
+                        }
+                    }
+
                     tabs.Add(new WorkspaceBrowserTabItem(
-                        tab.RackId, title, string.Equals(tab.RackId, active, StringComparison.Ordinal), tab.IsPreview));
+                        tab.RackId, title, string.Equals(tab.RackId, active, StringComparison.Ordinal), isPreview));
                 }
             }
 
@@ -366,6 +504,22 @@ namespace RackCad.UI.Workspace
 
             _tabs = tabs;
             return true;
+        }
+
+        private bool IsProtected(string rackId)
+        {
+            if (_pilotEdit == null || _current == null) return false;
+
+            try
+            {
+                var view = _pilotEdit.GetField(new WorkspaceRequest(_current.Id), rackId);
+                return view.Exists && view.IsProtected;
+            }
+            catch (Exception)
+            {
+                // The mark is only information: when the port cannot say, the tab has none.
+                return false;
+            }
         }
 
         private static bool SameTabs(IReadOnlyList<WorkspaceBrowserTabItem> current, IReadOnlyList<WorkspaceBrowserTabItem> next)
