@@ -6628,3 +6628,37 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 165. Intento 1 de F4-T3A-EDIT-PORT: verificado
+
+**Decisión:** F4-E39.
+- **Planificación:**
+  - `4a5e`, rechazada antes del Worker: la copia normalizó el modo verbal de Invariants[6]; parada P-03, sin consumir intentos;
+  - `cad1`, la replanificación reforzada única: fidelidad PASS, A1-A8 8/8 y nc4 `5eab`.
+- **Worker** `f0c9`: RED `2522e894` y GREEN `18471988`.
+- **CI:** `43355611879` 4/4.
+- **Verificación** `d960`: `EXECUTION_VERIFIED`, 14/14.
+- **Revisiones:**
+  - la directa, con el producto conforme;
+  - la independiente, ACEPTABLE CON MENORES (0/0/7), con los siete menores en evidencia de pruebas, guardas, contención teórica y documentación.
+- **Orden del Owner:** cerrar sin gastar el intento 2. Los menores pasan como cambios declarados a F4-T3B y F4-T3C.
+
+**Límites:** sin AutoCAD. El escritor simulado de D-T3-10 es nominal: el oráculo crítico de T3A lo sostienen la guarda por cuerpo de las API de escritura y la ausencia de dependencia de escritura de Application.
+
+## 166. Controles negativos y cierre de F4-T3A
+
+| Control | Corrida | Resultado | Registro |
+|---|---|---|---|
+| nc1 | `R20261113T032839Z-c072` | CONTROL PASS (Identity, `EXECUTION_BLOCKED` / STOP); la firma de PD-F4-04 no se reproduce | CONTROL PASS |
+| nc2 | `R20261113T033215Z-65d0` | Oráculo no cumplido: Contract primera en fail (el mismo modo que en F4-T2B1, PD-F4-01), con Scope en fail sobre `IWorkspacePilotEditPort.cs` y F4T3A-C01; `EXECUTION_BLOCKED` / STOP | CONTROL NOT PASSED; sustituto F4T3A-NC2-EXACT-WHITELIST-01 (`R20261113T034349Z-8f61`): PASS → SATISFIED_UNDER_F4T3A_EXACT_WHITELIST_SUBSTITUTE |
+| nc3 | `R20261113T033645Z-2c64` | CONTROL PASS (FreeText, `EXECUTION_REWORK_REQUIRED`) | CONTROL PASS |
+
+- **F4-T3A-EDIT-PORT = CLOSED / PASS WITH LIMITATIONS** sobre `18471988`, con `attempts` 1 de 3 (`F4-T3A-EDIT-PORT/task-close-package.md`).
+- **F4-T3:** sigue con F4-T3B-EDIT-UI y después F4-T3C-CLOSE-DISCARD. F4-T4 no empieza antes del cierre de F4-T3C.
+- **Deuda de protocolo PD-F4-01:** se repite por segunda vez. Por orden del Owner, en T3B y T3C la firma exacta reutiliza el patrón del sustituto sin volver a él.
+- **Arrastres:**
+  - a F4-T3B, los menores 1, 2, 3, 5 y 7;
+  - a F4-T3C, los menores 4 y 6;
+  - a Smoke-2, el comportamiento real del foco, del modal, del cierre y de la cultura.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.

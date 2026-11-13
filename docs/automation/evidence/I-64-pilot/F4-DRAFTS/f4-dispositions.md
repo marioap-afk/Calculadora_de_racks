@@ -1051,3 +1051,82 @@ Todas se aplicaron antes de emitir (§10).
 - el enganche fallido de `BeginDocumentClose`, a Smoke-2.
 
 **Decisión:** emitir el contrato de F4-T3A-EDIT-PORT con `attempts` 1 de 3 (AttemptsRemaining 2). La AuthorityRevision es el commit del paquete.
+
+## F4-E39. F4-T3A-EDIT-PORT: intento 1 verificado, revisiones, órdenes del Owner, controles y cierre
+
+**Hechos del intento 1:**
+- **Planificación** (primera delegación de la cadena):
+  - `R20261113T012340Z-4a5e`: **rechazada antes del Worker**. La comparación byte a byte dio REJECTED en Invariants[6] (INV-F4T3A-07): «mientras la profundidad es mayor que 0» se copió como «sea», una normalización gramatical de indicativo a subjuntivo. Las otras siete colecciones PASS. A1-A8 sin cortocircuito: solo A5 fail. Es la parada P-03, no consume intentos y no lleva nc4.
+  - `R20261113T013120Z-cad1`: la **replanificación reforzada única** (F4-E31, parada F4T3A-C08). El prompt cita el rechazo y enumera las frases en indicativo del contrato. Fidelidad PASS en las ocho colecciones, A1-A8 8/8, Horizonte Low. nc4 `R20261113T013522Z-5eab`: solo A3 en fail. La replanificación queda consumida.
+- **Worker** `R20261113T013630Z-f0c9`:
+  - subagente con `claude-sonnet-5-5`/high, 308 turnos, 0 denegaciones;
+  - prompt por archivo con comprobación previa de SHA-256;
+  - RED `2522e894`: pruebas y esqueleto inerte, 110 fallos por aserción, todos dentro de `RackCad.Tests.Workspace`;
+  - GREEN `18471988`: solo producto; 12 rutas en total, exactamente el `AllowedWriteScope`.
+  - Relevo de salida y de entrada sin participantes.
+- **CI:** `43355611879` 4/4. Core: filtro 2251/2251, suite 17789/17789. UI: filtro 248/248, suite 1885 aprobadas y 0 fallos. El RED `43351822533` tiene Core en rojo y UI en verde.
+- **Verificación** `R20261113T032218Z-d960`: `EXECUTION_VERIFIED`, 14/14, `VerifiedSha` `18471988`, sin hallazgos. El barrido 16.10 de la sesión no encuentra nada.
+- **Revisión directa de la sesión** (`direct-review.md`, junto a la verificación): producto conforme a INV-F4T3A-01..14 y al oráculo crítico. Da dos menores, que coinciden con los hallazgos 1 y 2 de la independiente.
+- **Revisión adversarial independiente** (`independent-review.md`): ACEPTABLE CON MENORES (0/0/7), con el producto correcto. Los menores:
+  - **1:** el escritor simulado del oráculo crítico es nominal;
+  - **2:** una guarda nueva vuelve a fijar conteos exactos (5 archivos en `Drafts/`, contra D-1);
+  - **3:** huecos de discriminación de pruebas;
+  - **4:** la contención de las colas y el valor de fallo de `GetRacksAtRisk`;
+  - **5:** `Undecidable` sobre un estado explícito;
+  - **6:** `DropCloseNotice` fuera de la contención de `SessionDestroyed`;
+  - **7:** documentación del puerto.
+
+  El análisis conjunto está en `analysis.md`.
+
+**Orden del Owner 1** (`F4-DRAFTS/coordinator/owner-f4t3a-close-decision.md`, pregunta y respuesta literales): «Cerrar y arrastrar». No se gasta el intento 2. Los menores 4 y 6 pasan a cambios declarados de F4-T3C y los demás a F4-T3B.
+
+**Controles** (sobre las entradas de `d960`):
+- **nc1** `R20261113T032839Z-c072`: CONTROL PASS por el motivo correcto. Solo Identity en fail, `EXECUTION_BLOCKED`/STOP. La firma de PD-F4-04 **no** se reproduce, así que la regla de nc1 de la orden de F4-T3 no se usa.
+- **nc2** `R20261113T033215Z-65d0`: **CONTROL NOT PASSED**, con el **mismo modo de fallo** que nc2 de F4-T2B1 (PD-F4-01).
+  - Scope en fail, nombrando `IWorkspacePilotEditPort.cs`, y F4T3A-C01; `EXECUTION_BLOCKED`/STOP.
+  - También Contract en fail: con la lista blanca exacta (F4-E21), la delegación estrechada ya no coincide con el contrato, y Contract va antes en 16.9. FailureClass Contract.
+  - Se conserva tal cual (disposición de relevo STOP) y se devolvió al Owner antes de cualquier sustituto (regla de relevo de F4-E29).
+- **nc3** `R20261113T033645Z-2c64`: CONTROL PASS por el motivo correcto. Solo FreeText en fail, en `WorkCompleted`; `EXECUTION_REWORK_REQUIRED`/REWORK.
+
+**Orden del Owner 2** (`F4-DRAFTS/coordinator/owner-f4t3a-nc2-decision.md`): «Sustituto + regla T3».
+- nc2 ordinario = **CONTROL NOT PASSED** (se conserva tal cual).
+- **Sustituto F4T3A-NC2-EXACT-WHITELIST-01** (`F4-T3A-EDIT-PORT-nc2-substitute/1/R20261113T034349Z-8f61`): **PASS**.
+  - Es una copia del de F4-T2B1 con solo el identificador y el ámbito cambiados.
+  - Autoprueba de 14 casos, dos veces y determinista. Se cumplen las 10 propiedades. Medido:
+    - la ruta quitada es `IWorkspacePilotEditPort.cs`, y solo cambia el campo `AllowedWriteScope`;
+    - las entradas cambiadas son `delegation.json` y el hash derivado de `relay-record-planning.json`;
+    - Scope da pass con el alcance real y fail con el mutado;
+    - A3-A5, sin la cláusula de exactitud, dan pass sobre la delegación mutada;
+    - el Controller informó Scope = fail y Contract = fail;
+    - las 6144 listas alternativas que excluyen la ruta son todas distintas de la del contrato.
+  - **Registro:** nc2 = SATISFIED_UNDER_F4T3A_EXACT_WHITELIST_SUBSTITUTE.
+- **Regla nueva de I-64/F4 para F4-T3B y F4-T3C:** si se reproduce **exactamente** la firma de PD-F4-01, se reutiliza el patrón del sustituto de lista blanca exacta, local a la subtarea, sin volver al Owner. La firma es:
+  - Scope en fail sobre la ruta quitada;
+  - Contract en fail solo por la cláusula de exactitud;
+  - `EXECUTION_BLOCKED`/STOP.
+
+  Se registra cada uso y se conserva la salida ordinaria. No cambia AUTOMATION_PLAN.
+- **PD-F4-01:** se registra su recurrencia (F4-T2B1 y F4-T3A). Sigue sin resolverse de forma global dentro de I-64.
+
+**Resultado:** **F4-T3A-EDIT-PORT = CLOSED / PASS WITH LIMITATIONS** sobre `18471988`, con `attempts` 1 de 3 (paquete de cierre `F4-T3A-EDIT-PORT/task-close-package.md`). La siguiente es F4-T3B-EDIT-UI, cuyo paquete se fija sobre el código real de T3A (§7 del paquete de F4-T3).
+
+**Arrastres:**
+- **A F4-T3B** (cambios declarados de su contrato):
+  - el espía de escritura real, o retirar el nominal y citar la guarda por cuerpo (menor 1);
+  - cotas en lugar de los conteos exactos duplicados de `ThisTaskAddsNoFile...` (menor 2);
+  - las pruebas que faltan: la frontera bloqueante con un borrador no editable, la marca conservada por las operaciones que no mutan, los `catch` externos y la aserción entre literales (menor 3);
+  - documentar o extender `Undecidable` (menor 5);
+  - la documentación del puerto: `Kept` procede en una bloqueante; el `default` de `PilotBoundaryDecision` nunca es un permiso; `EditCheckStatus.Waiting` (menor 7);
+  - la cabecera de `WorkspaceEditIntentGuardTests.cs:16-17` (N-5) y la vía del constructor de la paleta fuera de la compuerta de avisos (D-T3-06).
+- **A F4-T3C:**
+  - `TakeLossNotices` y `TakeCloseNotices` contenidos, y el fallo de `GetRacksAtRisk` devuelto como incierto y no como «nada en riesgo» (menor 4; T3C lo consume en R-C2);
+  - `DropCloseNotice` dentro de la contención de `SessionDestroyed` (menor 6);
+  - además de M-1, el envoltorio del asesor.
+- **A Smoke-2:**
+  - `Authorize` a cada pulsación en CLOSE, CLOSEALL o QUIT y en un cambio de documento;
+  - drenajes o retiradas durante una lectura;
+  - el trabajo diferido de T3B fuera de la compuerta de avisos;
+  - los avisos de veto sin `StateChanged`;
+  - la edición con un comando activo o en modo degradado;
+  - el orden de la marca modal frente a la ventana;
+  - la cultura con ajustes de usuario.
