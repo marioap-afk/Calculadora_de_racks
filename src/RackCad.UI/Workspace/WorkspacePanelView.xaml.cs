@@ -84,6 +84,20 @@ namespace RackCad.UI.Workspace
 
         private void OnBrowserFieldReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadField());
 
+        // Closing and discarding (I-64 F4-T3B2): each click is one explicit interaction that only changes memory. The inline confirmation has
+        // exactly these two buttons; the buttons of a row of notice find their row in their own data context.
+        private void OnBrowserFieldDiscardClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.DiscardField());
+
+        private void OnBrowserDiscardDocumentClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.RequestDocumentDiscard());
+
+        private void OnBrowserConfirmDiscardClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ConfirmDiscard());
+
+        private void OnBrowserCancelDiscardClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.CancelDiscard());
+
+        private void OnBrowserNoticeDiscardDocumentClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.RequestDocumentDiscard());
+
+        private void OnBrowserNoticeDismissClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.DismissNotice(NoticeKeyOf(sender)));
+
         // A click on a read-only box is the first gesture only while the field offers the Edit button; the click itself is not consumed.
         private void OnBrowserFieldBoxPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -152,6 +166,8 @@ namespace RackCad.UI.Workspace
         }
 
         private static string RackOf(object sender) => ((sender as FrameworkElement)?.DataContext as WorkspaceBrowserTabItem)?.RackId;
+
+        private static string NoticeKeyOf(object sender) => ((sender as FrameworkElement)?.DataContext as WorkspaceBrowserNoticeItem)?.Key;
 
         private void Contained(Action interaction)
         {

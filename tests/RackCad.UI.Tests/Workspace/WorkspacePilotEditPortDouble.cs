@@ -15,8 +15,12 @@ namespace RackCad.UI.Tests
     /// Without a responder it behaves as a minimal draft: the intention creates a clean draft, the reload clears the stale mark, the
     /// text is kept as pending (the draft turns dirty and protected), the commit applies a text that <see cref="Validate"/> accepts and
     /// answers Invalid for one it rejects, and a blocking boundary aborts on an invalid pending text and, on a valid one, proceeds having
-    /// applied it and cleared the pending text, as the host does. A hook can run an action inside a
-    /// read, to model a read that pumps messages.
+    /// applied it and cleared the pending text, as the host does; with pending text in a draft that cannot be edited it answers Kept and mutates
+    /// nothing (F4-T3B2, N-1). A hook can run an action inside a read, to model a read that pumps messages.
+    ///
+    /// I-64 F4-T3B2: the discards, the racks at risk and the two queues of notices have optional responders and test queues (their default
+    /// answers are the ones of F4-T3B1: Rejected, empty and empty), <see cref="DiscardAsTheHostDoes"/> makes the discards imitate the host,
+    /// and every operation of the port can be made to throw through <see cref="Throws"/>.
     /// </summary>
     internal sealed class WorkspacePilotEditPortDouble : IWorkspacePilotEditPort
     {
@@ -69,6 +73,21 @@ namespace RackCad.UI.Tests
 
         public Func<WorkspaceRequest, string, PilotBoundaryKind, PilotBoundaryResult>? BoundaryResponder { get; set; }
 
+        /// <summary>F4-T3B2: what DiscardRack answers. Without it the double answers Rejected and changes nothing, as in F4-T3B1.</summary>
+        public Func<WorkspaceRequest, string, EditDiscardOutcome>? DiscardRackResponder { get; set; }
+
+        /// <summary>F4-T3B2: what DiscardDocument answers. Without it the double answers Rejected and changes nothing, as in F4-T3B1.</summary>
+        public Func<WorkspaceRequest, EditDiscardOutcome>? DiscardDocumentResponder { get; set; }
+
+        /// <summary>F4-T3B2: what GetRacksAtRisk answers. Without it both lists are empty, as in F4-T3B1.</summary>
+        public Func<WorkspaceRequest, PilotRiskView>? RisksResponder { get; set; }
+
+        /// <summary>F4-T3B2: the notices of lost work that TakeLossNotices hands over, oldest first; taking them empties the queue.</summary>
+        public Queue<PilotLossView> LossQueue { get; } = new();
+
+        /// <summary>F4-T3B2: the notices of vetoed close that TakeCloseNotices hands over, oldest first; taking them empties the queue.</summary>
+        public Queue<PilotCloseView> CloseQueue { get; } = new();
+
         /// <summary>The operations that throw: the exception is thrown after the call is recorded.</summary>
         public Dictionary<string, Exception> Throws { get; } = new(StringComparer.Ordinal);
 
@@ -94,6 +113,31 @@ namespace RackCad.UI.Tests
 
         public PilotFieldView Current(SessionId session, string rack) =>
             _fields.TryGetValue((session, rack), out var view) ? view : NoDraft();
+
+        /// <summary>
+        /// F4-T3B2: makes the discards imitate the host. DiscardRack removes the field of the rack and answers Discarded with the rack
+        /// (and, with pending text, in the second list); DiscardDocument removes the fields of the session and answers Discarded with
+        /// every removed rack, ordered by ordinal text, and the ones that had pending text. A rack with no field is not listed.
+        /// </summary>
+        public void DiscardAsTheHostDoes()
+        {
+            DiscardRackResponder = (origin, rack) =>
+            {
+                var key = (origin.Origin, rack);
+                if (!_fields.TryGetValue(key, out var view)) return EditDiscardOutcome.Discarded(Array.Empty<string>(), Array.Empty<string>());
+
+                _fields.Remove(key);
+                return EditDiscardOutcome.Discarded(new[] { rack }, view.PendingText != null ? new[] { rack } : Array.Empty<string>());
+            };
+
+            DiscardDocumentResponder = origin =>
+            {
+                var keys = _fields.Keys.Where(k => k.Item1 == origin.Origin).OrderBy(k => k.Item2, StringComparer.Ordinal).ToList();
+                var pending = keys.Where(k => _fields[k].PendingText != null).Select(k => k.Item2).ToArray();
+                foreach (var key in keys) _fields.Remove(key);
+                return EditDiscardOutcome.Discarded(keys.Select(k => k.Item2).ToArray(), pending);
+            };
+        }
 
         // ------------------------------------------------------------------ the port
 
@@ -184,6 +228,9 @@ namespace RackCad.UI.Tests
             var view = Current(origin.Origin, rackId);
             if (!view.Exists || view.PendingText == null) return new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, false, none, null);
 
+            // As the host does (F4-T3B2, N-1): a draft that cannot be edited now keeps its pending text, mutates nothing and the transition goes on.
+            if (!view.CanEdit) return new PilotBoundaryResult(kind, PilotBoundaryDecision.Kept, false, none, null);
+
             var message = Validate(view.PendingText);
             if (message == null)
             {
@@ -199,31 +246,43 @@ namespace RackCad.UI.Tests
         public EditDiscardOutcome DiscardRack(WorkspaceRequest origin, string rackId)
         {
             Record(DiscardRackOp, origin.Origin, rackId);
+            ThrowIfAsked(DiscardRackOp);
+            if (DiscardRackResponder != null) return DiscardRackResponder(origin, rackId);
             return EditDiscardOutcome.Rejected("The double does not discard.");
         }
 
         public EditDiscardOutcome DiscardDocument(WorkspaceRequest origin)
         {
             Record(DiscardDocumentOp, origin.Origin, null);
+            ThrowIfAsked(DiscardDocumentOp);
+            if (DiscardDocumentResponder != null) return DiscardDocumentResponder(origin);
             return EditDiscardOutcome.Rejected("The double does not discard.");
         }
 
         public PilotRiskView GetRacksAtRisk(WorkspaceRequest origin)
         {
             Record(RisksOp, origin.Origin, null);
+            ThrowIfAsked(RisksOp);
+            if (RisksResponder != null) return RisksResponder(origin);
             return new PilotRiskView(Array.Empty<string>(), Array.Empty<string>());
         }
 
         public IReadOnlyList<PilotLossView> TakeLossNotices()
         {
             Record(LossOp, default, null);
-            return Array.Empty<PilotLossView>();
+            ThrowIfAsked(LossOp);
+            var taken = LossQueue.ToArray();
+            LossQueue.Clear();
+            return taken;
         }
 
         public IReadOnlyList<PilotCloseView> TakeCloseNotices()
         {
             Record(CloseOp, default, null);
-            return Array.Empty<PilotCloseView>();
+            ThrowIfAsked(CloseOp);
+            var taken = CloseQueue.ToArray();
+            CloseQueue.Clear();
+            return taken;
         }
 
         private Call Record(string operation, SessionId origin, string? rackId)

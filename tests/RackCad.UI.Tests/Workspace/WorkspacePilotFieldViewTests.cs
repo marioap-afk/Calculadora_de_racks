@@ -215,7 +215,12 @@ namespace RackCad.UI.Tests
                 foreach (var key in new[] { Key.Tab, Key.LeftCtrl, Key.RightShift, Key.LeftAlt, Key.LWin })
                     Assert.False(Preview(box, key).Handled, key.ToString());
 
-                Assert.DoesNotContain(pilot.Calls, c => c.Operation != WorkspacePilotEditPortDouble.GetFieldOp);
+                // The presentation of the panel consumes the queues of notices (F4-T3B2, P-01): they are the only other calls allowed.
+                Assert.DoesNotContain(
+                    pilot.Calls,
+                    c => c.Operation != WorkspacePilotEditPortDouble.GetFieldOp
+                         && c.Operation != WorkspacePilotEditPortDouble.LossOp
+                         && c.Operation != WorkspacePilotEditPortDouble.CloseOp);
                 Assert.True(box.IsReadOnly);
             });
         }

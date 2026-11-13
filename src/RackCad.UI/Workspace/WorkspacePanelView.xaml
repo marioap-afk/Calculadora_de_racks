@@ -125,6 +125,56 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+            <!-- Closing and discarding (I-64 F4-T3B2): between the strip and the surface, outside the strip. The confirmation is inline, with
+                 exactly Descartar and Cancelar, no subdialog and no default or cancel button; the notices are rows with their own buttons.
+                 Memory only: no control here writes the drawing. No control has a fixed size. -->
+            <Button x:Name="BrowserDiscardDocumentButton" Content="Descartar borradores de este documento" HorizontalAlignment="Left"
+                    Margin="0,6,0,0" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}"
+                    AutomationProperties.Name="Descartar borradores de este documento"
+                    Visibility="{Binding Browser.CanDiscardDocument, Converter={StaticResource FlagToVisibility}}"
+                    Click="OnBrowserDiscardDocumentClick" />
+            <Border x:Name="BrowserConfirmationPanel" Margin="0,6,0,0" Padding="8" BorderThickness="1"
+                    BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                    Visibility="{Binding Browser.HasConfirmation, Converter={StaticResource FlagToVisibility}}">
+                <StackPanel>
+                    <TextBlock x:Name="BrowserConfirmationText" Text="{Binding Browser.ConfirmationText}" TextWrapping="Wrap"
+                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    <WrapPanel Margin="0,6,0,0">
+                        <Button x:Name="BrowserConfirmDiscardButton" Content="Descartar" Margin="0,0,6,0" Padding="10,3"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                AutomationProperties.Name="Confirmar el descarte"
+                                Click="OnBrowserConfirmDiscardClick" />
+                        <Button x:Name="BrowserCancelDiscardButton" Content="Cancelar" Padding="10,3"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                AutomationProperties.Name="Cancelar el descarte"
+                                Click="OnBrowserCancelDiscardClick" />
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+            <TextBlock x:Name="BrowserNoticeText" Text="{Binding Browser.NoticeText}" Style="{StaticResource OptionalText}"
+                       Margin="0,6,0,0" Foreground="{DynamicResource ShellStatusWarningBrush}" />
+            <ItemsControl x:Name="BrowserNoticeList" ItemsSource="{Binding Browser.Notices}" Margin="0,4,0,0"
+                          AutomationProperties.Name="Avisos del navegador">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,0,0,6">
+                            <TextBlock Text="{Binding Text}" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource ShellStatusWarningBrush}" />
+                            <WrapPanel Margin="0,4,0,0">
+                                <Button Content="Descartar borradores de este documento" Margin="0,0,6,0" Padding="10,3"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        AutomationProperties.Name="Descartar los borradores del documento del aviso"
+                                        Visibility="{Binding CanDiscardDocument, Converter={StaticResource FlagToVisibility}}"
+                                        Click="OnBrowserNoticeDiscardDocumentClick" />
+                                <Button Content="Entendido" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}"
+                                        AutomationProperties.Name="Quitar el aviso"
+                                        Click="OnBrowserNoticeDismissClick" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             <Border x:Name="BrowserSurface" Padding="10" BorderThickness="1" Margin="0,2,0,0"
                     Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}"
                     Visibility="{Binding Browser.HasSurface, Converter={StaticResource FlagToVisibility}}">
@@ -172,6 +222,11 @@
                                     AutomationProperties.Name="Recargar el campo"
                                     Visibility="{Binding Browser.Field.ShowReloadButton, Converter={StaticResource FlagToVisibility}}"
                                     Click="OnBrowserFieldReloadClick" />
+                            <Button x:Name="BrowserFieldDiscardButton" Content="Descartar" Margin="0,2,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Descartar el borrador"
+                                    Visibility="{Binding Browser.Field.ShowDiscardButton, Converter={StaticResource FlagToVisibility}}"
+                                    Click="OnBrowserFieldDiscardClick" />
                         </WrapPanel>
                     </StackPanel>
                     <!-- Explicit reread of the summary of the active tab, from any state of the surface. It is the surface's own button:

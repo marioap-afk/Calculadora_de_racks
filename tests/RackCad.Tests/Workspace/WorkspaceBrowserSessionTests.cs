@@ -670,4 +670,129 @@ public class WorkspaceBrowserSessionTests
     {
         Assert.Equal(RunLongSequence(), RunLongSequence());
     }
+
+    // ------------------------------------------------------------------ I-64 F4-T3B2 (INV-F4T3B2-09): retaining the active tab
+
+    private static BrowserSession WithPinnedActive(string rack)
+    {
+        var s = New();
+        s.ApplySelectionContext(One(rack));
+        s.Pin(rack);
+        return s;
+    }
+
+    [Fact]
+    public void KeepActiveWithAnOpenRackChangesNothingAndDoesNotActivateIt()
+    {
+        var s = WithPinnedActive("A");
+        s.ApplySelectionContext(One("B"));
+        s.Pin("B");
+        s.Activate("A");
+        Assert.Equal("A+,B+|A", Shape(s));
+
+        Assert.Equal(BrowserChange.None, s.ApplySelectionContext(One("B"), keepActive: true));
+
+        Assert.Equal("A+,B+|A", Shape(s));
+    }
+
+    [Fact]
+    public void KeepActiveWithARackWithoutATabReplacesThePreviewThatIsNotActiveInPlaceAndKeepsTheActiveTab()
+    {
+        var s = WithPinnedActive("A");
+        s.ApplySelectionContext(One("B"));
+        s.Activate("A");
+        Assert.Equal("A+,B~|A", Shape(s));
+
+        Assert.Equal(BrowserChange.Replaced, s.ApplySelectionContext(One("C"), keepActive: true));
+
+        Assert.Equal("A+,C~|A", Shape(s));
+    }
+
+    [Fact]
+    public void KeepActiveNeverReplacesTheActivePreview()
+    {
+        var s = New();
+        s.ApplySelectionContext(One("A"));
+        Assert.Equal("A~|A", Shape(s));
+
+        Assert.Equal(BrowserChange.None, s.ApplySelectionContext(One("B"), keepActive: true));
+
+        Assert.Equal("A~|A", Shape(s));
+    }
+
+    [Fact]
+    public void KeepActiveWithARackWithoutATabAndNoPreviewAddsAPreviewAtTheEndAndKeepsTheActiveTab()
+    {
+        var s = WithPinnedActive("A");
+        Assert.Equal("A+|A", Shape(s));
+
+        Assert.Equal(BrowserChange.Created, s.ApplySelectionContext(One("B"), keepActive: true));
+
+        Assert.Equal("A+,B~|A", Shape(s));
+    }
+
+    [Fact]
+    public void KeepActiveWithoutAnActiveTabCreatesAndActivatesAsBefore()
+    {
+        var s = New();
+
+        Assert.Equal(BrowserChange.Created, s.ApplySelectionContext(One("A"), keepActive: true));
+
+        Assert.Equal("A~|A", Shape(s));
+    }
+
+    [Fact]
+    public void WithoutKeepActiveTheSelectionStillActivatesAndCreatesAsBefore()
+    {
+        var s = WithPinnedActive("A");
+        s.ApplySelectionContext(One("B"));
+        s.Pin("B");
+        s.Activate("A");
+        // The context of B was consumed when its tab was created: another context in between makes the next one a real transition.
+        s.ApplySelectionContext(SelectionContext.None);
+
+        Assert.Equal(BrowserChange.Activated, s.ApplySelectionContext(One("B")));
+        Assert.Equal("A+,B+|B", Shape(s));
+        Assert.Equal(BrowserChange.Created, s.ApplySelectionContext(One("C"), keepActive: false));
+        Assert.Equal("A+,B+,C~|C", Shape(s));
+    }
+
+    [Fact]
+    public void TheContextThatWasRetainedIsConsumedAndPresentingItAgainDoesNotOpenIt()
+    {
+        var s = WithPinnedActive("A");
+        Assert.Equal(BrowserChange.Created, s.ApplySelectionContext(One("B"), keepActive: true));
+
+        Assert.Equal(BrowserChange.None, s.ApplySelectionContext(One("B")));
+        Assert.Equal(BrowserChange.None, s.ApplySelectionContext(One("B"), keepActive: true));
+        Assert.Equal("A+,B~|A", Shape(s));
+
+        // A real transition (another context in between) applies again.
+        Assert.Equal(BrowserChange.None, s.ApplySelectionContext(SelectionContext.None));
+        Assert.Equal(BrowserChange.Activated, s.ApplySelectionContext(One("B")));
+        Assert.Equal("A+,B~|B", Shape(s));
+    }
+
+    [Fact]
+    public void KeepActiveWithAContextThatIsNotOneRackChangesNothing()
+    {
+        var s = WithPinnedActive("A");
+
+        foreach (var context in new[] { SelectionContext.None, SelectionContext.Selection(2, 0), SelectionContext.NoIdentity, SelectionContext.Diagnostic })
+            Assert.Equal(BrowserChange.None, s.ApplySelectionContext(context, keepActive: true));
+
+        Assert.Equal("A+|A", Shape(s));
+    }
+
+    [Fact]
+    public void KeepActiveOnARetiredSessionDoesNothing()
+    {
+        var registry = new BrowserSessionRegistry();
+        var s = registry.GetOrCreate(new SessionId(5))!;
+        s.ApplySelectionContext(One("A"));
+        registry.Destroy(new SessionId(5));
+
+        Assert.Equal(BrowserChange.None, s.ApplySelectionContext(One("B"), keepActive: true));
+        Assert.Equal("|-", Shape(s));
+    }
 }

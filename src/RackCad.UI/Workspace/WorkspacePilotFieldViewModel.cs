@@ -114,6 +114,9 @@ namespace RackCad.UI.Workspace
         /// <summary>The Reload button of the Error state: it shows the draft again, with no read of the drawing.</summary>
         public bool ShowReloadButton => _showReload;
 
+        /// <summary>The Discard button of the Error state (I-64 F4-T3B2): not offered yet.</summary>
+        public bool ShowDiscardButton => false;
+
         /// <summary>The state in Spanish, with the mark of a possibly stale value and the reason when there is no committed text.</summary>
         public string StateText => _stateText;
 

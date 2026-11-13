@@ -75,7 +75,7 @@ namespace RackCad.Application.Workspace
         /// The only automatic synchronization (D-06). Only a single-rack context syncs; an equal context to the last
         /// applied one (of any kind) changes nothing, so only a real transition applies again.
         /// </summary>
-        public BrowserChange ApplySelectionContext(SelectionContext context)
+        public BrowserChange ApplySelectionContext(SelectionContext context, bool keepActive = false)
         {
             if (context is null) throw new ArgumentNullException(nameof(context));
             if (IsDestroyed) return BrowserChange.None;

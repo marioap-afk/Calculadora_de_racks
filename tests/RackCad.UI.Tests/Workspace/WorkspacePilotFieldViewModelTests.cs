@@ -335,11 +335,17 @@ namespace RackCad.UI.Tests
             kept.Browser.ActivateTab("R-2");
             Assert.Equal("R-2", kept.Browser.ActiveRackId);
             Assert.Equal("1:50", kept.Field.Text);
+            // F4-T3B2 (N-1, P-05): the double answers Kept as the host does, so the crossing mutates nothing and the pending text stays in the draft.
+            var keptCrossing = Assert.Single(kept.Pilot.Of(WorkspacePilotEditPortDouble.BoundaryOp), c => c.Kind == PilotBoundaryKind.TabChange);
+            Is(keptCrossing, A, "R-1");
+            Assert.Equal(" 1:7 ", kept.Pilot.Current(A, "R-1").PendingText);
+            Assert.Equal("1:50", kept.Pilot.Current(A, "R-1").CommittedText);
 
             kept.Browser.ActivateTab("R-1");
 
             Assert.Equal(" 1:7 ", kept.Field.Text);
             Assert.Empty(kept.Pilot.Of(WorkspacePilotEditPortDouble.SetPendingOp));
+            Assert.Equal(" 1:7 ", kept.Pilot.Current(A, "R-1").PendingText);
         }
 
         [Fact]

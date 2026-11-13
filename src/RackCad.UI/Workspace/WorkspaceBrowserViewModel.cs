@@ -13,6 +13,12 @@ namespace RackCad.UI.Workspace
     public sealed record WorkspaceBrowserTabItem(string RackId, string Title, bool IsActive, bool IsPreview);
 
     /// <summary>
+    /// One row of notice of the browser (I-64 F4-T3B2): a plain value with a stable key, the text and whether the row offers the discard of
+    /// the drafts of the document. It carries no event, no delegate and no reference to a visual element.
+    /// </summary>
+    public sealed record WorkspaceBrowserNoticeItem(string Key, string Text, bool CanDiscardDocument);
+
+    /// <summary>
     /// Browser of the workspace panel (I-64 F3-T2, D-03, D-06, D-08): a strip of light rack tabs and ONE live surface (K = 1) that
     /// shows the lazy summary of the active tab. It holds the single <see cref="BrowserSessionRegistry"/> of the panel and shows
     /// only the tabs of the session of the presented snapshot.
@@ -125,6 +131,50 @@ namespace RackCad.UI.Workspace
 
         /// <summary>The state of the summary in Spanish with its reason: pending or blocked, ready, unavailable or failed.</summary>
         public string SurfaceStatusText => StatusText();
+
+        // The members of I-64 F4-T3B2 are inert until the task is implemented: they ask nothing of any port and show nothing.
+
+        /// <summary>The discard of the drafts of the document is offered.</summary>
+        public bool CanDiscardDocument => false;
+
+        /// <summary>One inline confirmation is pending.</summary>
+        public bool HasConfirmation => false;
+
+        /// <summary>What the confirmation asks; empty without a confirmation.</summary>
+        public string ConfirmationText => string.Empty;
+
+        /// <summary>The notice of the last gesture or presentation of the browser; empty without one.</summary>
+        public string NoticeText => string.Empty;
+
+        /// <summary>The rows of notice.</summary>
+        public IReadOnlyList<WorkspaceBrowserNoticeItem> Notices => Array.Empty<WorkspaceBrowserNoticeItem>();
+
+        public bool HasNotices => false;
+
+        /// <summary>The Discard button of the field in Error. Inert.</summary>
+        public void DiscardField()
+        {
+        }
+
+        /// <summary>The Discard button of the drafts of the document. Inert.</summary>
+        public void RequestDocumentDiscard()
+        {
+        }
+
+        /// <summary>The Discard button of the inline confirmation. Inert.</summary>
+        public void ConfirmDiscard()
+        {
+        }
+
+        /// <summary>The Cancel button of the inline confirmation. Inert.</summary>
+        public void CancelDiscard()
+        {
+        }
+
+        /// <summary>The Understood button of a row of notice. Inert.</summary>
+        public void DismissNotice(string key)
+        {
+        }
 
         // ------------------------------------------------------------------ what the panel tells it
 
