@@ -714,9 +714,9 @@ public class WorkspaceIdleSchedulingGuardTests
 
         Assert.Equal(1, Src.Count(bridge, @"Contain\s*\(\s*""IdleContinuation\.Pass""\s*,\s*OnIdle\s*\)"));
         Assert.Equal(1, Src.Count(bridge, @"LogFault\s*\(\s*""AutoCadEventBridge\.IdleContinuation\.OpenTransaction"""));
-        // The context that the two of them used to share is gone, and the contexts are not the same text.
+        // The context that the two of them used to share is gone. (I-64 F4-T3B1, minor 3(d) of F4-T3A: the assertion between two literals that
+        // came after this one discriminated nothing, because it compared two constants of the test itself, and it was removed.)
         Assert.Equal(0, Src.Count(bridge, @"""(?:AutoCadEventBridge\.)?IdleContinuation"""));
-        Assert.NotEqual("AutoCadEventBridge.IdleContinuation.Pass", "AutoCadEventBridge.IdleContinuation.OpenTransaction");
     }
 
     // ================================================================== G-10: the wiring, once, in the constructor of the bridge

@@ -61,13 +61,18 @@ namespace RackCad.UI.Workspace
 
         /// <param name="port">The read-only summary port; null leaves the browser inert.</param>
         /// <param name="tabChanged">Called after a manual change of tabs, so the panel presents the navigation again with its last snapshot.</param>
-        public WorkspaceBrowserViewModel(IWorkspaceBrowserSummaryPort port, Action tabChanged = null)
+        /// <param name="pilotEdit">The edit port of the pilot (I-64 F4-T3B1). Optional: without it the browser has no field and no protected mark.</param>
+        public WorkspaceBrowserViewModel(IWorkspaceBrowserSummaryPort port, Action tabChanged = null, IWorkspacePilotEditPort pilotEdit = null)
         {
             _port = port;
             _tabChanged = tabChanged;
+            Field = new WorkspacePilotFieldViewModel(pilotEdit, OnFieldChanged);
         }
 
         // ------------------------------------------------------------------ what the panel shows
+
+        /// <summary>The field of the pilot on the one surface (I-64 F4-T3B1). Never null; not available without the edit port.</summary>
+        public WorkspacePilotFieldViewModel Field { get; }
 
         /// <summary>False when the panel was built without a summary port: the browser is inert.</summary>
         public bool IsAvailable => _port != null;
@@ -142,6 +147,21 @@ namespace RackCad.UI.Workspace
         /// <summary>Makes the tab the active one. Memory only; the tab becomes the live surface and the navigation is presented again.</summary>
         public void ActivateTab(string rackId) => Interact(session => session.Activate(rackId));
 
+        /// <summary>The first gesture on the field of the pilot. Inert in the skeleton of the red commit.</summary>
+        public void BeginFieldEdit()
+        {
+        }
+
+        /// <summary>The double click on a tab button. Inert in the skeleton of the red commit.</summary>
+        public void BeginFieldEditFromTab(string rackId)
+        {
+        }
+
+        /// <summary>The Reload button of the field. Inert in the skeleton of the red commit.</summary>
+        public void ReloadField()
+        {
+        }
+
         /// <summary>Pins the preview tab so the automatic synchronization never replaces it. Memory only.</summary>
         public void PinTab(string rackId) => Interact(session => session.Pin(rackId));
 
@@ -190,6 +210,11 @@ namespace RackCad.UI.Workspace
             {
                 ContainFailure(ex);
             }
+        }
+
+        // The field asks for the strip again after it changed its draft. Inert in the skeleton of the red commit.
+        private void OnFieldChanged()
+        {
         }
 
         private void PurgeDeadSessions()

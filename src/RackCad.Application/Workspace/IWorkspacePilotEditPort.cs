@@ -88,7 +88,11 @@ namespace RackCad.Application.Workspace
 
         Error,
 
-        /// <summary>It cannot be decided whether the field is changed: the comparison failed. It counts as protected.</summary>
+        /// <summary>
+        /// It cannot be decided whether the field is changed: the comparison failed. It counts as protected. It is reported only when the
+        /// ordinary state, Clean or Dirty, cannot be decided. When the draft has an explicit state (Conflict, Applying, Unknown or Error)
+        /// that state is kept, whatever the comparison says, and the field is protected all the same.
+        /// </summary>
         Undecidable,
     }
 
@@ -119,7 +123,11 @@ namespace RackCad.Application.Workspace
         /// <summary>The transition must not go on: the pending text is invalid, the request is not authorized or the operation failed. Nothing changed.</summary>
         Aborted,
 
-        /// <summary>The pending text was kept as it is.</summary>
+        /// <summary>
+        /// The pending text was kept as it is. For a non-blocking boundary it is the only answer. For a blocking one it means that the
+        /// draft cannot be edited now (for example it is in error, unknown or being applied): nothing was validated or applied, the
+        /// pending text is intact and the transition goes on, exactly as for <see cref="Proceeded"/>.
+        /// </summary>
         Kept,
 
         /// <summary>A read of the pilot is in progress: nothing changed and the transition must not go on.</summary>
@@ -223,7 +231,12 @@ namespace RackCad.Application.Workspace
         public static PilotFieldResult Invalid(PilotFieldView view, string? message) => new(PilotFieldStatus.Invalid, view, null, message);
     }
 
-    /// <summary>The answer to the crossing of a boundary. <see cref="InvalidFields"/> is never null, also for a default value.</summary>
+    /// <summary>
+    /// The answer to the crossing of a boundary. <see cref="InvalidFields"/> is never null, also for a default value.
+    /// The default value of this struct is a real answer, TabChange with Proceeded, and nothing tells it from a genuine one: so no
+    /// producer of this port and no double of it may ever return a default <see cref="PilotBoundaryResult"/>; every answer is built
+    /// with the constructor, with its kind and its decision.
+    /// </summary>
     public readonly struct PilotBoundaryResult
     {
         private readonly IReadOnlyList<PilotFieldProblem>? _invalidFields;

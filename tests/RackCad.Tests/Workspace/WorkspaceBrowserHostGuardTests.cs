@@ -210,8 +210,9 @@ public class WorkspaceBrowserHostGuardTests
 
         Assert.Equal(1, Src.Count(host, @"_controller\.BrowserSummary\b"));
         Assert.Equal(1, Src.Count(host, @"_controller\.Navigation\b"));
+        // I-64 F4-T3B1 (INV-F4T3B1-01, G-01): the fifth argument is the edit port of the pilot of the controller; the palette host names no type of it.
         Assert.Matches(
-            @"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*,\s*_controller\.BrowserSummary\s*\)",
+            @"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*,\s*_controller\.BrowserSummary\s*,\s*_controller\.PilotEdit\s*\)",
             host);
         Assert.DoesNotMatch(new Regex(@"IWorkspaceBrowserSummaryPort|BrowserRackSummar|WorkspaceBrowser"), host);
         Assert.Equal(2, Src.Count(host, @"\+="));
@@ -222,11 +223,12 @@ public class WorkspaceBrowserHostGuardTests
     {
         var panel = Src.Code(PanelModelPath);
 
+        // I-64 F4-T3B1 (INV-F4T3B1-01, G-02 and G-03): the edit port of the pilot is the fifth, optional parameter, and the browser receives it as its third.
         Assert.Matches(
-            @"public\s+WorkspacePanelViewModel\s*\(\s*IWorkspaceHostPort\s+\w+\s*,\s*Action<bool>\s+\w+\s*,\s*IWorkspaceNavigationPort\s+\w+\s*=\s*null\s*,\s*IWorkspaceBrowserSummaryPort\s+browserSummary\s*=\s*null\s*\)",
+            @"public\s+WorkspacePanelViewModel\s*\(\s*IWorkspaceHostPort\s+\w+\s*,\s*Action<bool>\s+\w+\s*,\s*IWorkspaceNavigationPort\s+\w+\s*=\s*null\s*,\s*IWorkspaceBrowserSummaryPort\s+browserSummary\s*=\s*null\s*,\s*IWorkspacePilotEditPort\s+pilotEdit\s*=\s*null\s*\)",
             panel);
         Assert.Equal(1, Src.Count(panel, @"\bpublic\s+WorkspacePanelViewModel\s*\("));
-        Assert.Matches(@"new\s+WorkspaceBrowserViewModel\s*\(\s*browserSummary\s*,\s*RepresentNavigation\s*\)", panel);
+        Assert.Matches(@"new\s+WorkspaceBrowserViewModel\s*\(\s*browserSummary\s*,\s*RepresentNavigation\s*,\s*pilotEdit\s*\)", panel);
         Assert.Equal(1, Src.Count(panel, @"\bnew\s+WorkspaceBrowserViewModel\s*\("));
         Assert.Equal(1, Src.Count(panel, @"\.GetSnapshot\s*\("));
         Assert.DoesNotMatch(new Regex(@"\.Authorize\s*\(|\.GetSelectionContext\s*\(|\.ReadSummary\s*\(|\.IsSessionAlive\s*\("), panel);
@@ -296,19 +298,83 @@ public class WorkspaceBrowserHostGuardTests
         Assert.Matches(@"<Setter\s+Property=""BorderBrush""\s+Value=""\{DynamicResource\s+ShellSelectionPrimaryBrush\}""\s*/>", style.Groups["triggers"].Value);
     }
 
+    // I-64 F4-T3B1 (G-04): the surface is the COMPLETE element BrowserSurface, from its opening Border to the Border that balances it.
+    // The openings counted are `<Border` followed by a space or `>` that are not closed by themselves (`/>`); `<Border.Style>` does not
+    // count, and each `</Border>` closes one. Cutting at the first `</Border>` would end the surface at the first Border nested inside it.
+    private static string SurfaceElement(string xaml)
+    {
+        var name = xaml.IndexOf("x:Name=\"BrowserSurface\"", StringComparison.Ordinal);
+        Assert.True(name >= 0, "the XAML has no element BrowserSurface");
+        var start = xaml.LastIndexOf("<Border", name, StringComparison.Ordinal);
+        Assert.True(start >= 0, "BrowserSurface is not a Border");
+
+        var depth = 0;
+        foreach (Match tag in Regex.Matches(xaml, @"<Border(?=[\s>])[^>]*>|</Border>"))
+        {
+            if (tag.Index < start) continue;
+            if (tag.Value == "</Border>") depth--;
+            else if (!tag.Value.EndsWith("/>", StringComparison.Ordinal)) depth++;
+            if (depth == 0) return xaml.Substring(start, tag.Index + tag.Length - start);
+        }
+
+        throw new InvalidOperationException("the Borders of BrowserSurface do not balance");
+    }
+
     [Fact]
     public void TheSurfaceHasTheReloadButtonHandledInTheCodeBehindInsideContained()
     {
         var xaml = Regex.Replace(Src.Text(XamlPath), @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
-        var surface = xaml.Substring(xaml.IndexOf("x:Name=\"BrowserSurface\"", StringComparison.Ordinal));
-        surface = surface.Substring(0, surface.IndexOf("</Border>", StringComparison.Ordinal));
+        var surface = SurfaceElement(xaml);
         var code = Src.Code(UiFolder + "WorkspacePanelView.xaml.cs");
 
-        Assert.Equal(1, Src.Count(surface, @"<Button\b"));
-        Assert.Contains("Content=\"Volver a leer\"", surface);
-        Assert.Contains("Click=\"OnBrowserSurfaceReloadClick\"", surface);
+        // A lower bound, not an exact count: the later tasks add their buttons to the surface without touching this guard.
+        Assert.True(Src.Count(surface, @"<Button\b") >= 3, "the surface has fewer buttons than F4-T3B1 declares");
+        foreach (var (content, handler) in new[]
+                 {
+                     ("Volver a leer", "OnBrowserSurfaceReloadClick"),
+                     ("Editar", "OnBrowserFieldEditClick"),
+                     ("Recargar", "OnBrowserFieldReloadClick"),
+                 })
+        {
+            Assert.Equal(1, Src.Count(surface, "Content=\"" + content + "\""));
+            Assert.Equal(1, Src.Count(surface, "Click=\"" + handler + "\""));
+            Assert.Matches(@"private\s+void\s+" + handler + @"\s*\(\s*object\s+sender\s*,\s*RoutedEventArgs\s+e\s*\)\s*=>\s*Contained\s*\(", code);
+        }
+
         Assert.Matches(@"private\s+void\s+OnBrowserSurfaceReloadClick\s*\(\s*object\s+sender\s*,\s*RoutedEventArgs\s+e\s*\)\s*=>\s*Contained\s*\(\s*\(\s*\)\s*=>\s*_viewModel\.Browser\.ReloadSummary\s*\(\s*\)\s*\)\s*;", code);
         Assert.Equal(1, Src.Count(Src.Code(BrowserModelPath), @"\bpublic\s+void\s+ReloadSummary\s*\(\s*\)"));
+        Assert.Equal(1, Src.Count(code, @"\.ReloadSummary\s*\("));
+    }
+
+    [Fact]
+    public void TheSurfaceTramoIsTheCompleteElementWithABorderNestedInsideIt()
+    {
+        var surface = SurfaceElement(
+            "<Border x:Name=\"BrowserSurface\"><StackPanel><Border><TextBlock /></Border><Button Content=\"inside\" /></StackPanel></Border><Button Content=\"outside\" />");
+
+        Assert.Contains("Content=\"inside\"", surface);
+        Assert.DoesNotContain("outside", surface);
+        Assert.EndsWith("</Border>", surface);
+    }
+
+    [Fact]
+    public void TheSurfaceTramoDoesNotCountABorderThatClosesItself()
+    {
+        var surface = SurfaceElement(
+            "<Border x:Name=\"BrowserSurface\"><Border Margin=\"1\" /><Button Content=\"inside\" /></Border><Button Content=\"outside\" />");
+
+        Assert.Contains("Content=\"inside\"", surface);
+        Assert.DoesNotContain("outside", surface);
+    }
+
+    [Fact]
+    public void TheSurfaceTramoDoesNotCountTheBorderStyleElement()
+    {
+        var surface = SurfaceElement(
+            "<Border x:Name=\"BrowserSurface\"><Border.Style><Style TargetType=\"Border\" /></Border.Style><Button Content=\"inside\" /></Border><Button Content=\"outside\" />");
+
+        Assert.Contains("Content=\"inside\"", surface);
+        Assert.DoesNotContain("outside", surface);
     }
 
     [Fact]

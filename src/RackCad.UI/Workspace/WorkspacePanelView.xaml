@@ -110,7 +110,8 @@
                             </Border.Style>
                             <WrapPanel>
                                 <Button Margin="0,0,4,0" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
-                                        AutomationProperties.Name="Activar pestaña" Click="OnBrowserTabActivateClick">
+                                        AutomationProperties.Name="Activar pestaña" Click="OnBrowserTabActivateClick"
+                                        MouseDoubleClick="OnBrowserTabActivateDoubleClick">
                                     <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
                                 </Button>
                                 <Button Content="Fijar" Margin="0,0,4,0" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
@@ -136,6 +137,44 @@
                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                     <TextBlock x:Name="BrowserSurfaceStatusText" Text="{Binding Browser.SurfaceStatusText}" Style="{StaticResource OptionalText}"
                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <!-- The field of the bounded pilot (I-64 F4-T3B1): ONE box on the ONE surface, shown only with the edit port. The text
+                         is edited only through the setter of the bound property; the gestures that open it and the keys that never
+                         leave the panel are handled in the code-behind. Nothing here writes the drawing. -->
+                    <StackPanel x:Name="BrowserFieldPanel" Margin="0,8,0,0"
+                                Visibility="{Binding Browser.Field.IsAvailable, Converter={StaticResource FlagToVisibility}}">
+                        <TextBlock Text="Escala de anotación" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <TextBox x:Name="BrowserFieldBox" Margin="0,2,0,0" TextWrapping="Wrap"
+                                 AutomationProperties.Name="Escala de anotación"
+                                 Text="{Binding Browser.Field.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 IsReadOnly="{Binding Browser.Field.IsReadOnly, Mode=OneWay}"
+                                 PreviewMouseLeftButtonDown="OnBrowserFieldBoxPreviewMouseLeftButtonDown"
+                                 PreviewKeyDown="OnBrowserFieldBoxPreviewKeyDown"
+                                 KeyDown="OnBrowserFieldBoxKeyDown"
+                                 LostFocus="OnBrowserFieldBoxLostFocus" />
+                        <TextBlock x:Name="BrowserFieldStateText" Text="{Binding Browser.Field.StateText}" Style="{StaticResource OptionalText}"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBlock x:Name="BrowserFieldMessageText" Text="{Binding Browser.Field.MessageText}" Style="{StaticResource OptionalText}"
+                                   Foreground="{DynamicResource ShellStatusErrorBrush}" />
+                        <TextBlock x:Name="BrowserFieldNoticeText" Text="{Binding Browser.Field.NoticeText}" Style="{StaticResource OptionalText}"
+                                   Foreground="{DynamicResource ShellStatusWarningBrush}" />
+                        <TextBlock x:Name="BrowserFieldNotEditableText" Text="{Binding Browser.Field.NotEditableText}" Style="{StaticResource OptionalText}"
+                                   Foreground="{DynamicResource ShellStatusWarningBrush}" />
+                        <TextBlock x:Name="BrowserFieldHintText" Text="{Binding Browser.Field.ClassicEditorHintText}" Style="{StaticResource OptionalText}"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <WrapPanel Margin="0,4,0,0">
+                            <Button x:Name="BrowserFieldEditButton" Content="Editar" Margin="0,2,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Editar el campo"
+                                    Visibility="{Binding Browser.Field.ShowEditButton, Converter={StaticResource FlagToVisibility}}"
+                                    Click="OnBrowserFieldEditClick" />
+                            <Button x:Name="BrowserFieldReloadButton" Content="Recargar" Margin="0,2,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Recargar el campo"
+                                    Visibility="{Binding Browser.Field.ShowReloadButton, Converter={StaticResource FlagToVisibility}}"
+                                    Click="OnBrowserFieldReloadClick" />
+                        </WrapPanel>
+                    </StackPanel>
                     <!-- Explicit reread of the summary of the active tab, from any state of the surface. It is the surface's own button:
                          there is still one surface and it is reused by every tab. -->
                     <Button x:Name="BrowserSurfaceReloadButton" Content="Volver a leer" HorizontalAlignment="Left" Margin="0,6,0,0" Padding="10,3"

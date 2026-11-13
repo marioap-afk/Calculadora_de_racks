@@ -188,8 +188,9 @@ public class WorkspacePaletteHostSourceGuardTests
         var code = Host();
 
         // I-64 F2-T2B (INV-F2T2B-12): the third argument is the navigation port of the controller. I-64 F3-T2 (INV-F3T2-16) adds exactly
-        // one more: the fourth argument is the summary port of the browser, and nothing else.
-        Assert.Matches(@"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*,\s*_controller\.BrowserSummary\s*\)", code);
+        // one more: the fourth argument is the summary port of the browser. I-64 F4-T3B1 (INV-F4T3B1-01, G-01) adds exactly one more: the fifth
+        // argument is the edit port of the pilot of the controller, and nothing else.
+        Assert.Matches(@"new\s+WorkspacePanelViewModel\s*\(\s*_controller\.Port\s*,\s*_controller\.SetInstrumentationEnabled\s*,\s*_controller\.Navigation\s*,\s*_controller\.BrowserSummary\s*,\s*_controller\.PilotEdit\s*\)", code);
         Assert.DoesNotMatch(new Regex(@"_controller\.(?:ActiveSession|TryGetSession|Authorize|RequestReconciliation|RefreshPanel|OpenPanel)"), code);
         Assert.DoesNotMatch(new Regex(@"AutoCadEventBridge|WorkspaceHostCore|WorkspaceSelectionReader|WorkspaceSessionRegistry|EventBridgeCore"), code);
     }
@@ -535,8 +536,9 @@ public class WorkspacePaletteHostSourceGuardTests
         Assert.Matches(@"using\s+RackCad\.Application\.Workspace\s*;", model);
         Assert.Matches(@"sealed\s+class\s+WorkspacePanelViewModel\s*:\s*ObservableObject\b", model);
         // I-64 F2-T2B (INV-F2T2B-12): the navigation port is the third, optional parameter; the two-argument form stays valid.
-        // I-64 F3-T2 (INV-F3T2-16): the summary port of the browser is the fourth, optional parameter, and nothing else is added.
-        Assert.Matches(@"public\s+WorkspacePanelViewModel\s*\(\s*IWorkspaceHostPort\s+\w+\s*,\s*Action<bool>\s+\w+\s*,\s*IWorkspaceNavigationPort\s+\w+\s*=\s*null\s*,\s*IWorkspaceBrowserSummaryPort\s+\w+\s*=\s*null\s*\)", model);
+        // I-64 F3-T2 (INV-F3T2-16): the summary port of the browser is the fourth, optional parameter. I-64 F4-T3B1 (INV-F4T3B1-01, G-02): the edit
+        // port of the pilot is the fifth, optional parameter, and nothing else is added.
+        Assert.Matches(@"public\s+WorkspacePanelViewModel\s*\(\s*IWorkspaceHostPort\s+\w+\s*,\s*Action<bool>\s+\w+\s*,\s*IWorkspaceNavigationPort\s+\w+\s*=\s*null\s*,\s*IWorkspaceBrowserSummaryPort\s+\w+\s*=\s*null\s*,\s*IWorkspacePilotEditPort\s+\w+\s*=\s*null\s*\)", model);
         Assert.Matches(@"\.GetSnapshot\s*\(\s*\)", model);
         Assert.Matches(@"\.GetMeasurementReport\s*\(\s*\)", model);
         Assert.DoesNotMatch(new Regex(@"\.Authorize\s*\(|\.GetSelectionContext\s*\("), model);

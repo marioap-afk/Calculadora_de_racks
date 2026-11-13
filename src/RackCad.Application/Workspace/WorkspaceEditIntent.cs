@@ -195,6 +195,12 @@ namespace RackCad.Application.Workspace
     public enum EditCheckStatus
     {
         Unavailable,
+
+        /// <summary>
+        /// The check waits and nothing was read. Besides the reasons of the intention (no active document, a RackCad modal, a command or
+        /// no rest), through the edit port of the panel there are two more: a read of the pilot is already in progress, or a notice of
+        /// the panel is being delivered.
+        /// </summary>
         Waiting,
         Rejected,
 

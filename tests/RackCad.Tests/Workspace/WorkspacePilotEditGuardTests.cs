@@ -870,11 +870,11 @@ public class WorkspacePilotEditGuardTests
     [Fact]
     public void ThisTaskAddsNoFileToThePluginWorkspaceFolderNorToTheDraftsAndNoCommandNorSubscription()
     {
-        Assert.Equal(9, Src.PluginFiles().Count);
-        Assert.Equal(5, Src.Files(DraftsFolder).Count);
-        Assert.Equal(16, Src.Count(Src.Code(BridgePath), @"\+="));
-        Assert.Equal(16, Src.Count(Src.Code(BridgePath), @"-="));
-        Assert.Equal(16, Src.Count(Src.Code(BridgePath), @"\bhandler\s*=\s*\("));
+        // I-64 F4-T3B1 (minor 2 of F4-T3A): the folders are bounded, not fixed by an exact count of their own: the 9 files of Plugin/Workspace and
+        // the 5 of Drafts/ are the ceiling that this task and the next ones must not pass. The exact counts of the subscriptions of the bridge
+        // (+=, -= and the handlers) were duplicates of what other guards already fix, and they are not repeated here.
+        Assert.True(Src.PluginFiles().Count <= 9, "a new file in Plugin/Workspace");
+        Assert.True(Src.Files(DraftsFolder).Count <= 5, "a new file in Drafts");
         Assert.Equal(1, Src.Count(Src.Code(BridgePath), @"private\s+void\s+OnIdle\s*\(\s*\)"));
         Assert.DoesNotMatch(new Regex(@"Debug\.Assert"), Src.Code(BridgePath));
         Assert.DoesNotMatch(new Regex(@"\[CommandMethod"), Controller() + Support() + Port());

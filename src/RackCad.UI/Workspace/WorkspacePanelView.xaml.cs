@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace RackCad.UI.Workspace
 {
@@ -72,6 +73,87 @@ namespace RackCad.UI.Workspace
 
         // The reload of the surface (I-64 F3-T2, T2-F4): one explicit interaction that asks again for the summary of the active tab.
         private void OnBrowserSurfaceReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadSummary());
+
+        // The double click on the button of a tab (I-64 F4-T3B1): a gesture of the field only when, after the clicks, that tab is the active one.
+        private void OnBrowserTabActivateDoubleClick(object sender, MouseButtonEventArgs e) =>
+            Contained(() => _viewModel.Browser.BeginFieldEditFromTab(RackOf(sender)));
+
+        // The field of the pilot (I-64 F4-T3B1). The text typed by the user reaches the view-model only through the setter of the bound
+        // property; here live the buttons, the gestures that open a read-only box and the keys that must never leave the panel.
+        private void OnBrowserFieldEditClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.BeginFieldEdit());
+
+        private void OnBrowserFieldReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadField());
+
+        // A click on a read-only box is the first gesture; the click itself is not consumed.
+        private void OnBrowserFieldBoxPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_viewModel.Browser.Field.IsEditable) return;
+            Contained(() => _viewModel.Browser.BeginFieldEdit());
+        }
+
+        private void OnBrowserFieldBoxPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var field = _viewModel.Browser.Field;
+            if (field.IsEditable)
+            {
+                // Enter commits and Esc does nothing: both stay in the panel. Esc never reverts the text.
+                if (e.Key == Key.Enter)
+                {
+                    e.Handled = true;
+                    Contained(() => field.CommitPending());
+                }
+                else if (e.Key == Key.Escape)
+                {
+                    e.Handled = true;
+                }
+
+                return;
+            }
+
+            // A read-only box: a key that is not a modifier, Tab or Esc is the first gesture. It is consumed, so it is not typed into a
+            // box that may be editable a moment later and does not leave the panel. Esc is consumed with no gesture.
+            if (e.Key == Key.Escape)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (IsModifierOrNavigation(e.Key)) return;
+
+            e.Handled = true;
+            Contained(() => _viewModel.Browser.BeginFieldEdit());
+        }
+
+        // With an editable box, whatever the editor did not consume stays in the panel (Delete, Ctrl+Z, Ctrl+V and the like must not
+        // reach the drawing); only Tab is left to the navigation of the panel.
+        private void OnBrowserFieldBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            if (_viewModel.Browser.Field.IsEditable && e.Key != Key.Tab) e.Handled = true;
+        }
+
+        // Leaving the box commits the pending text; the view-model does nothing without pending text or with a box that is not editable.
+        private void OnBrowserFieldBoxLostFocus(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.CommitPending());
+
+        private static bool IsModifierOrNavigation(Key key)
+        {
+            switch (key)
+            {
+                case Key.Tab:
+                case Key.LeftCtrl:
+                case Key.RightCtrl:
+                case Key.LeftShift:
+                case Key.RightShift:
+                case Key.LeftAlt:
+                case Key.RightAlt:
+                case Key.LWin:
+                case Key.RWin:
+                case Key.System:
+                case Key.None:
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
         private static string RackOf(object sender) => ((sender as FrameworkElement)?.DataContext as WorkspaceBrowserTabItem)?.RackId;
 

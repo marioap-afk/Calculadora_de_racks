@@ -59,12 +59,16 @@ namespace RackCad.UI.Workspace
         /// The read-only summary port of the browser (I-64 F3-T2). Optional: without it the browser is inert and the panel behaves
         /// exactly as before. It is asked only for the rack of the live surface, never when the panel is built.
         /// </param>
-        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null, IWorkspaceBrowserSummaryPort browserSummary = null)
+        /// <param name="pilotEdit">
+        /// The edit port of the bounded pilot (I-64 F4-T3B1). Optional: without it the browser has no field of the pilot and no mark of
+        /// a protected tab, and the panel behaves exactly as before. Building the panel never calls it.
+        /// </param>
+        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null, IWorkspaceBrowserSummaryPort browserSummary = null, IWorkspacePilotEditPort pilotEdit = null)
         {
             _port = port ?? throw new ArgumentNullException(nameof(port));
             _setInstrumentationEnabled = setInstrumentationEnabled ?? throw new ArgumentNullException(nameof(setInstrumentationEnabled));
             Navigation = new WorkspaceNavigationViewModel(navigation, Refresh);
-            Browser = new WorkspaceBrowserViewModel(browserSummary, RepresentNavigation);
+            Browser = new WorkspaceBrowserViewModel(browserSummary, RepresentNavigation, pilotEdit);
             Present(InitialSnapshot(), null);
         }
 

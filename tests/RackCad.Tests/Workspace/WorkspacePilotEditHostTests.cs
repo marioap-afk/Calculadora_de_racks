@@ -33,26 +33,14 @@ internal sealed class PilotEditThrowingProbe : IWorkspaceHostProbe
     public bool IsActiveDocumentQuiescent => true;
 }
 
-/// <summary>
-/// I-64 F4-T3A (D-T3-11, the critical oracle of the Owner): the simulated writer of authored data. Nothing of the host core, of the port or
-/// of the doubles that the tests hand to them is wired to it, and every double that could ever carry a write reports it here; the tests
-/// assert that after every operation of the port its list is empty.
-/// </summary>
-internal sealed class PilotEditAuthoredWriterSpy
-{
-    public List<string> Writes { get; } = new();
-}
-
-/// <summary>The reader of the edit intention of these tests: the real double, with the simulated writer next to it.</summary>
+/// <summary>The reader of the edit intention of these tests: the real double, which counts the reads and can act inside one.</summary>
 internal sealed class PilotEditAuditedReader : IWorkspaceEditIntentReader
 {
     private readonly EditIntentFakeReader _inner;
-    private readonly PilotEditAuthoredWriterSpy _writer;
 
-    public PilotEditAuditedReader(EditIntentFakeReader inner, PilotEditAuthoredWriterSpy writer)
+    public PilotEditAuditedReader(EditIntentFakeReader inner)
     {
         _inner = inner;
-        _writer = writer;
     }
 
     public Action<string>? InsideRead { get; set; }
@@ -87,7 +75,7 @@ public class WorkspacePilotEditHostTests
             Hr.Reader.Reads.Clear();
             Hr.Reader.Invalidations.Clear();
             Fake = new EditIntentFakeReader();
-            Audited = new PilotEditAuditedReader(Fake, Writer);
+            Audited = new PilotEditAuditedReader(Fake);
             Core.SetEditIntentReader(Audited);
             if (wire) Bridge.SetLifecycleAdvisor(Core);
         }
@@ -103,8 +91,6 @@ public class WorkspacePilotEditHostTests
         public EditIntentFakeReader Fake { get; }
 
         public PilotEditAuditedReader Audited { get; }
-
-        public PilotEditAuthoredWriterSpy Writer { get; } = new();
 
         public SessionId Session { get; }
 
@@ -262,7 +248,6 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(text, draft.PendingText[Key]);
         Assert.Equal(Env.InitialScale, Env.ScaleOf(draft));
         Assert.Equal(PilotFieldState.Dirty, env.Field().State);
-        Assert.Empty(env.Writer.Writes);
     }
 
     [Fact]
@@ -399,7 +384,6 @@ public class WorkspacePilotEditHostTests
         Assert.Equal("6", env.Field(RackB).PendingText);
         Assert.True(b.IsRegistered);
         Assert.Equal("7", env.Field(RackA, other).PendingText);
-        Assert.Empty(env.Writer.Writes);
         Assert.Empty(env.Hr.Faults);
     }
 
@@ -418,7 +402,6 @@ public class WorkspacePilotEditHostTests
         Assert.Empty(outcome.PendingTextRackIds);
         Assert.False(draft.IsRegistered);
         Assert.Empty(env.Hr.Faults);
-        Assert.Empty(env.Writer.Writes);
     }
 
     [Fact]
@@ -457,7 +440,6 @@ public class WorkspacePilotEditHostTests
         Assert.Equal(new[] { RackB }, all.RemovedRackIds.ToArray());
         Assert.False(env.Field(RackB).Exists);
         Assert.Equal(CloseDecision.Allow, env.Close());
-        Assert.Empty(env.Writer.Writes);
     }
 
     [Fact]
@@ -811,7 +793,6 @@ public class WorkspacePilotEditHostTests
         Assert.True(draft.IsRegistered);
         Assert.False(draft.HasPendingText);
         Assert.Equal(PilotFieldState.Clean, env.Field().State);
-        Assert.Empty(env.Writer.Writes);
     }
 
     [Fact]
@@ -1378,14 +1359,129 @@ public class WorkspacePilotEditHostTests
         port.DiscardDocument(env.Origin());
         env.Destroy();
 
-        // The reader of the intention reads (three times) and nothing else carries a write: the simulated writer has none, the bridge was
-        // asked only what it is asked in the ordinary life of the panel, and no fault was logged.
-        Assert.Empty(env.Writer.Writes);
+        // I-64 F4-T3B1 (minor 1 of F4-T3A): this test asserts what discriminates in memory, and no more: the reader of the intention reads (and
+        // only the three operations of the intention do), the bridge was asked only what it is asked in the ordinary life of the panel,
+        // no RackCad modal was opened and no fault was logged. That no operation of the port writes the drawing is held by the guard by body
+        // TheOperationsOfThePortAndTheDecoratorNameNoApiOfWritingTheDrawing (WorkspacePilotEditGuardTests) and by the fact that the
+        // Application project has no dependency of writing: no double here can carry a write, so an assertion on one would be empty.
         Assert.Equal(env.Audited.Reads, env.Fake.Calls.Count);
         Assert.Equal(0, env.Hr.Reader.ReadCalls);
         Assert.Empty(env.Hr.Link.ModalHistory);
         Assert.Empty(env.Hr.Faults);
         Assert.Empty(env.Hr.Bridge.Faults);
+    }
+
+    // ------------------------------------------------------------------ I-64 F4-T3B1 (minor 3 of F4-T3A): what the review of T3A asked to cover
+
+    // (a) A blocking boundary on a draft that cannot be edited (in error, unknown or being applied) with pending text does not validate and
+    // does not apply: it answers Kept, the transition is allowed to go on and the pending text is exactly where it was (D-T3B1-11, minor 3).
+    [Fact]
+    public void ABlockingBoundaryOnADraftThatCannotBeEditedKeepsItsPendingTextAndNeverValidatesOrApplies()
+    {
+        var env = new Env();
+
+        var error = env.Open("R8");
+        Assert.Equal(DraftEditStatus.Updated, error.SetPendingText(Key, "abc").Status);
+        error.EnterError("boom");
+
+        // A draft is never applied with pending text (TryBeginApply refuses it) and a draft that cannot be edited takes none, so an unknown
+        // or applying draft has no pending text and its crossing proceeds with nothing to validate; only a draft that went into error with
+        // pending text can be blocked-and-not-editable at once, and for that one the crossing keeps.
+        var unknown = env.Open("R7");
+        Assert.True(unknown.TryBeginApply().IsStarted);
+        unknown.CompleteApply(DraftApplyOutcome<PushBackPilotDraftState>.CommitThrew("the write threw"));
+
+        var applying = env.Open(RackB);
+        Assert.True(applying.TryBeginApply().IsStarted);
+
+        foreach (var (rack, state, pending, decision) in new[]
+                 {
+                     ("R8", PilotFieldState.Error, "abc", PilotBoundaryDecision.Kept),
+                     ("R7", PilotFieldState.Unknown, (string?)null, PilotBoundaryDecision.Proceeded),
+                     (RackB, PilotFieldState.Applying, (string?)null, PilotBoundaryDecision.Proceeded),
+                 })
+        {
+            Assert.False(env.Field(rack).CanEdit);
+            Assert.Equal(state, env.Field(rack).State);
+
+            foreach (var kind in new[] { PilotBoundaryKind.TabChange, PilotBoundaryKind.RackChange })
+            {
+                var crossed = env.Cross(kind, rack);
+
+                Assert.Equal(decision, crossed.Decision);
+                Assert.False(crossed.StateChanged);
+                Assert.Empty(crossed.InvalidFields);
+                Assert.Null(crossed.Reason);
+                Assert.Equal(pending, env.Field(rack).PendingText);
+            }
+        }
+
+        Assert.Empty(env.Hr.Faults);
+    }
+
+    // (b) The operations that change nothing keep the mark of "known clean" that the Allow of the close put: the session is retired as known
+    // safe, not conservatively, after each of them.
+    [Fact]
+    public void TheOperationsThatChangeNothingKeepTheMarkOfKnownClean()
+    {
+        Assert.Equal("known-safe", new Env().PathAfter(env => env.Field()));
+        Assert.Equal("known-safe", new Env().PathAfter(env => env.Port.GetRacksAtRisk(env.Origin())));
+        Assert.Equal("known-safe", new Env().PathAfter(env =>
+        {
+            foreach (var kind in new[] { PilotBoundaryKind.DocumentChange, PilotBoundaryKind.PanelHide, PilotBoundaryKind.Dematerialize, PilotBoundaryKind.DocumentClose })
+                Assert.Equal(PilotBoundaryDecision.Kept, env.Cross(kind).Decision);
+        }));
+        Assert.Equal("known-safe", new Env().PathAfter(env =>
+        {
+            Assert.Equal(PilotFieldStatus.Applied, env.Commit().Status);
+            Assert.Equal(PilotFieldStatus.Applied, env.Commit(RackA).Status);
+        }));
+    }
+
+    [Fact]
+    public void ARejectedOrBusyTextKeepsTheMarkOfKnownClean()
+    {
+        Assert.Equal("known-safe", new Env().PathAfter(env =>
+        {
+            // Rejected: no text, a request of another session and a rack without a draft.
+            Assert.Equal(PilotFieldStatus.Rejected, env.Port.SetPendingText(env.Origin(), RackA, null!).Status);
+            Assert.Equal(PilotFieldStatus.Rejected, env.Type("2.5", RackA, new SessionId(env.Session.Value + 1000)).Status);
+            Assert.Equal(PilotFieldStatus.NotEditable, env.Type("2.5", RackB).Status);
+        }));
+
+        PilotFieldStatus? busy = null;
+        Assert.Equal("known-safe", new Env().PathAfter(env =>
+        {
+            // A read that does not admit anything is in progress when the text arrives: Busy, with no effect.
+            env.Fake.Answer = EditIntentKit.OriginMissing;
+            env.Audited.InsideRead = _ => busy = env.Type("2.5").Status;
+            Assert.Equal(EditIntentStatus.NotAdmitted, env.Port.TryBeginEdit(env.Request(RackB)).Status);
+        }));
+        Assert.Equal(PilotFieldStatus.Busy, busy);
+    }
+
+    // (c) The outer catch of GetField, reached through OpenDrafts with a copier of the state that answers null: the state of the draft is null,
+    // the view cannot be built, and the answer is the view in Error, protected and not editable, with the fault logged and nothing thrown.
+    [Fact]
+    public void TheOuterCatchOfGetFieldAnswersTheViewInErrorWhenTheCopierOfTheStateAnswersNull()
+    {
+        var env = new Env();
+        var read = EditIntentKit.Admitted("R9").PilotRead!.Read;
+        var begun = env.Core.OpenDrafts.Begin(env.Session, "R9", read, new PilotEditThrowingComparer(), _ => null!);
+        Assert.Equal(DraftBeginStatus.Created, begun.Status);
+        env.Hr.Faults.Clear();
+
+        PilotFieldView view = default;
+        var thrown = Record.Exception(() => view = env.Field("R9"));
+
+        Assert.Null(thrown);
+        Assert.True(view.Exists);
+        Assert.Equal(PilotFieldState.Error, view.State);
+        Assert.True(view.IsProtected);
+        Assert.False(view.CanEdit);
+        Assert.Null(view.CommittedText);
+        Assert.False(string.IsNullOrWhiteSpace(view.CommittedTextReason));
+        Assert.Contains(env.Hr.Faults, fault => fault.Context == "WorkspaceHostCore.GetField");
     }
 }
 

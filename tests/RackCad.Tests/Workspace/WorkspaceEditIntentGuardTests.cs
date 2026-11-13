@@ -14,7 +14,8 @@ namespace RackCad.Tests;
 // ASSERTION when the text it expects is missing (a missing file or member is an assertion too). Only the guards that are followed by a
 // test named "...Detects..." (or by a theory that injects a line into the real text) have such a detection test; the others read the
 // real text and nothing more. They are limited to the names of this task and to the bodies of its two operations: what the package
-// assigns to F4-T2B2B (the lifecycle) or to F4-T3 (the exposure to the UI) is not prohibited here.
+// assigns to F4-T2B2B (the lifecycle) is not prohibited here, and the exposure to the UI exists since F4-T3A and F4-T3B1 (the edit port
+// of the pilot and the panel that calls it).
 //
 // Evidence named by the package: R6 (no write to the drawing: the adapter, the scan, the host and the core), obligation 3 (the
 // preview never reaches the intention), obligation 10 (the base of a read only reaches Begin, CheckNow or DiscardAndReload) and
@@ -609,7 +610,7 @@ public class WorkspaceEditIntentGuardTests
         Assert.DoesNotMatch(new Regex(@"EditIntent|ReadIntent|SetEditIntentReader|TryBeginPilotEdit|TryCheckPilotEdit"), controllerDrain);
 
         // The callers of the nested reader are in the host core. Who calls the two operations is not fixed here: the drain and the idle
-        // do not (above), and F4-T3 will expose them to the UI.
+        // do not (above); since F4-T3A the edit port of the pilot exposes them to the UI, and since F4-T3B1 the panel calls that port.
         Assert.Equal(
             new[] { CorePath },
             Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"\.ReadIntent\s*\(")).Select(f => f.Path).ToArray());
