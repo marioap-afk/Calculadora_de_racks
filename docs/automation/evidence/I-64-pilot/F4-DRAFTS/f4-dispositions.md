@@ -1243,3 +1243,80 @@ Medido: T3B tocaría unos 22 archivos, frente a los 12 de T3A, con cambios decla
   - PD-F4-05: Identity en pass en nc1;
   - PD-F4-06: la variación de Ci y Trailer.
 - **Mientras tanto:** la sesión prepara y somete a revisión el paquete de F4-T3B2, sin emitirlo antes del cierre de F4-T3B1.
+
+## F4-E43. Disposición del Owner y del Coordinator: sustitutos de nc1 y nc3, cierre de F4-T3B1 y autorización de F4-T3B2
+
+**Orden:** `F4-DRAFTS/coordinator/owner-f4t3b1-close-disposition.md` (texto literal). Autoriza las propuestas (a), (b) y (c) de la sesión (F4-E42).
+
+**nc1 — propuesta (a):**
+- Sustituto NUEVO y local **F4T3B1-NC1-IDENTITY-SIGNAL-01** (`F4-T3B1-EDIT-SURFACE-nc1-substitute/2/R20261113T111727Z-3c75`): **PASS**.
+- No es la firma de PD-F4-04 ni los sustitutos de nc1 aceptados antes. El modo es distinto: el CurrentSha mutado es falso y el Controller rechaza la entrega mutada, pero informa Identity en PASS. La orden autoriza una señal de identidad independiente y más fuerte para esta ocurrencia.
+- **Propiedades:** las 12 mínimas de la orden, todas en PASS. La identidad la decide la sesión contra el repositorio:
+  - el SHA falso no es el CurrentSha real, ni HEAD (actual ni durante el control), ni la rama remota del producto, y no existe en la base de objetos;
+  - BaseSha y RedSha son ancestros del CurrentSha real, que es ancestro del HEAD y del remoto actuales;
+  - el predicado determinista de identidad da PASS con el SHA real y FAIL con el falso.
+- **Dos propiedades más de la sesión**, también en PASS:
+  - las comprobaciones que difieren de la verificación real son consumidoras del CurrentSha. Handoff nombra el SHA falso; la de Ci es la variación de PD-F4-06;
+  - FailureClass es la primera en fail y su evidencia nombra los dos SHA.
+- **Autoprueba:** 26 casos sintéticos, deterministas. Fallan, como deben, si el SHA falso existe, si es HEAD, si es la rama remota, si hay una segunda mutación semántica, si el Controller verificó la entrega mutada y si la identidad del repositorio no se puede establecer.
+- **Registro:** la corrida ordinaria `R20261113T070324Z-e470` se conserva como **CONTROL NOT PASSED**; aparte, **nc1 = SATISFIED_UNDER_F4T3B1_IDENTITY_SIGNAL**.
+- **Deuda PD-F4-05:** el Controller puede informar Identity en PASS ante un CurrentSha deliberadamente falso mientras rechaza la entrega por otra comprobación. El AUTOMATION_PLAN no cambia.
+
+**nc3 — propuesta (b):**
+- Detector **F4T3B1-NC3-FREETEXT-DETECTOR-01** (`F4-T3B1-EDIT-SURFACE-nc3-substitute/2/R20261113T111731Z-8a67`): **PASS**.
+- **Especificación:** los siete campos y los 16 términos de 16.10, leídos de la AuthorityRevision `9a552361`. 49 pruebas deterministas.
+- **Propiedades 1-11 en PASS:**
+  - la entrega real está limpia;
+  - la mutación inyecta exactamente «GATE PASS» en `WorkCompleted`, sin segunda mutación semántica;
+  - el escáner da VIOLATION;
+  - la señal FreeText del Controller también la detecta (su evidencia nombra `WorkCompleted` y 16.10);
+  - la variación de Ci y Trailer no la causa la mutación: su evidencia no la nombra, sus entradas no cambian y las mismas fallas aparecen en nc1 y nc2, que no tocan FreeText.
+- **Registro:** la corrida ordinaria `R20261113T071151Z-ad7c` se conserva como **CONTROL NOT PASSED**; aparte, **nc3 = SATISFIED_UNDER_F4T3B1_FREETEXT_DETECTOR**.
+- **Deuda PD-F4-06:** los controles negativos del Controller pueden variar Ci y Trailer, sin relación con la mutación, respecto de la misma verificación real. **No se usa para debilitar Ci ni Trailer en la verificación real del producto.** Es solo deuda de protocolo.
+
+**nc2:** sigue SATISFIED UNDER THE ALREADY PREPARED DETERMINISTIC SCOPE SUBSTITUTE (`8c85`, F4-E42). La corrida ordinaria se conserva y no se reinterpreta como CONTROL PASS.
+
+**Cierre — propuesta (c):** **F4-T3B1-EDIT-SURFACE = CLOSED / PASS WITH LIMITATIONS** sobre `1708e764`, en el intento 2 de 3 (`F4-T3B1-EDIT-SURFACE/task-close-package.md`).
+- **Estado final de los controles:**
+  - nc1: SATISFIED_UNDER_F4T3B1_IDENTITY_SIGNAL;
+  - nc2: SATISFIED_UNDER_DETERMINISTIC_SCOPE_SUBSTITUTE;
+  - nc3: SATISFIED_UNDER_F4T3B1_FREETEXT_DETECTOR.
+- **Arrastres a F4-T3B2:** N-1 y N-3.
+- **N-2** (la tecla Space): LIMITACIÓN DECLARADA.
+- El intento 3 no se gasta en estos menores.
+
+**F4-T3B2-EDIT-CLOSE-SYNC: AUTORIZADA tras este cierre**, con `attempts` 1 de 3.
+- El paquete v3 preparado puede seguir. Antes de emitirlo, la sesión incorpora esta disposición y vincula N-1 y N-3 de forma explícita. Emitirlo no requiere otra decisión del Owner.
+- **Alcance aceptado:**
+  - cerrar en línea una pestaña con trabajo sin aplicar, con Descartar o Cancelar;
+  - cerrar sin preguntar una pestaña limpia;
+  - Descartar en un campo en Error;
+  - descartar los borradores del documento, con la comprobación TOCTOU;
+  - los avisos de veto y de pérdida;
+  - mantener la pestaña activa si cambia la selección con texto sin aplicar;
+  - los menores heredados de F4-T3B1 que le correspondan.
+- **Tratamiento aceptado en el contrato:**
+  1. Una pestaña sin borrador puede cerrarse sin llamar a `DiscardRack`, si no hay borrador ni pendiente en memoria que descartar y no hay ninguna escritura authored.
+  2. El aviso de veto nombra por ahora solo la vía del panel. **F4-T3C DEBE añadir la vía del comando** cuando exista `RACKPANELDESCARTAR`.
+  3. Que un fallo de `GetRacksAtRisk` sea indistinguible de «nada en riesgo» **NO se acepta como comportamiento final**. **F4-T3C debe endurecerlo** para que un fallo o un desconocido no pasen por un resultado limpio.
+
+**Regla F4 que se mantiene:** si la primera planificación falla solo por fidelidad literal de colecciones, se permite una replanificación reforzada, sin consumir un intento de producto. Un segundo fallo de fidelidad de planificación es STOP al Coordinator.
+
+**F4-T3C, después del cierre de F4-T3B2** (en espera). Es dueña, como mínimo, de:
+- la exposición del comando `RACKPANELDESCARTAR`;
+- el texto de los avisos con la vía del comando;
+- el endurecimiento del fallo o desconocido de `GetRacksAtRisk`;
+- la integración modal y de foco que quede de F4-T3;
+- los menores arrastrados a F4-T3C.
+
+**F4-T4 no empieza antes del cierre de F4-T3.**
+
+**Estado:**
+
+| Tarea | Estado |
+|---|---|
+| F4-T3A | CLOSED / PASS WITH LIMITATIONS |
+| F4-T3B1 | CLOSED / PASS WITH LIMITATIONS (este cierre) |
+| F4-T3B2 | paquete v3 preparado; autorizada tras el cierre de F4-T3B1 |
+| F4-T3C y F4-T4 | WAITING |
+| Smoke-2 y F5-F7 | PENDING |

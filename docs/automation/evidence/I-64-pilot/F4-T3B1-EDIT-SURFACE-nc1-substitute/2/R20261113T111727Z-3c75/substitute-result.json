@@ -1,0 +1,392 @@
+{
+  "Id": "F4T3B1-NC1-IDENTITY-SIGNAL-01",
+  "NotA4": true,
+  "NewTaskLocalSubstitute": true,
+  "NotTheSameSignatureAs": [
+    "PD-F4-04 (F4T2B2B-NC1-IDENTITY-SIGNAL-01, F4T2C-NC1-IDENTITY-SIGNAL-01 y la regla de nc1 de la orden de F4-T3)"
+  ],
+  "Authority": "disposicion del Owner y del Coordinator sobre el cierre de F4-T3B1 (propuesta (a)); F4-E43",
+  "Scope": "solo F4-T3B1-EDIT-SURFACE, intento 2; no reemplaza al Controller ni a nc1 en otras tareas; no cambia el AUTOMATION_PLAN",
+  "SelfTest": [
+    {
+      "Case": "A",
+      "Description": "el caso real de F4-T3B1: REWORK, Handoff primera en fail nombrando el SHA falso y HEAD, Ci en fail por la variacion, Identity en pass; HEAD actual = custodia posterior",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true,
+      "FailedProperties": []
+    },
+    {
+      "Case": "A2",
+      "Description": "la firma de PD-F4-04: Handoff, Identity y consumidores en fail, BLOCKED/STOP",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true,
+      "FailedProperties": []
+    },
+    {
+      "Case": "A3",
+      "Description": "el oraculo ordinario: solo Identity en fail, BLOCKED/STOP, su evidencia nombra ambos SHA",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true,
+      "FailedProperties": []
+    },
+    {
+      "Case": "A4",
+      "Description": "como A, con HEAD actual = CurrentSha real (antes de la custodia)",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true,
+      "FailedProperties": []
+    },
+    {
+      "Case": "B",
+      "Description": "segunda mutacion semantica en la entrega (WorkCompleted)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "3_NoSecondSemanticMutation"
+      ]
+    },
+    {
+      "Case": "B2",
+      "Description": "segunda mutacion semantica: BaseSha",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "3_NoSecondSemanticMutation",
+        "8_BaseRedCurrentRelationshipsValid"
+      ]
+    },
+    {
+      "Case": "C",
+      "Description": "el SHA falso existe en la base de objetos",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "7_MutatedCurrentShaNotInObjectDatabase"
+      ]
+    },
+    {
+      "Case": "C2",
+      "Description": "el SHA falso es HEAD",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "5_MutatedCurrentShaIsNotHead",
+        "7_MutatedCurrentShaNotInObjectDatabase"
+      ]
+    },
+    {
+      "Case": "C3",
+      "Description": "el SHA falso es la rama remota del producto",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "12_IdentityPredicateFailsForTheMutatedSha",
+        "6_MutatedCurrentShaIsNotTheRemoteProductBranch",
+        "8_BaseRedCurrentRelationshipsValid"
+      ]
+    },
+    {
+      "Case": "C4",
+      "Description": "el SHA falso era HEAD durante el control",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "12_IdentityPredicateFailsForTheMutatedSha",
+        "5_MutatedCurrentShaIsNotHead",
+        "8_BaseRedCurrentRelationshipsValid"
+      ]
+    },
+    {
+      "Case": "D",
+      "Description": "hash derivado incoherente",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "3_NoSecondSemanticMutation"
+      ]
+    },
+    {
+      "Case": "E",
+      "Description": "cambia otra entrada ademas de las derivadas",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "3_NoSecondSemanticMutation"
+      ]
+    },
+    {
+      "Case": "F",
+      "Description": "el Controller verifico la entrega mutada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "11_MutatedOccurrenceEndsNonVerified",
+        "13_DifferingChecksAreCurrentShaConsumersOrDeclaredVariance",
+        "14_FailureClassIsFirstNotPassAndNamesBothShas",
+        "9_ControllerDidNotVerifyTheMutatedOccurrence"
+      ]
+    },
+    {
+      "Case": "G",
+      "Description": "REWORK pero con VerifiedSha",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "9_ControllerDidNotVerifyTheMutatedOccurrence"
+      ]
+    },
+    {
+      "Case": "H",
+      "Description": "falla tambien una comprobacion ajena al CurrentSha (Scope)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "13_DifferingChecksAreCurrentShaConsumersOrDeclaredVariance"
+      ]
+    },
+    {
+      "Case": "I",
+      "Description": "ninguna evidencia nombra el SHA falso",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "10_ControllerEvidenceNamesFakeShaAndRealIdentity",
+        "13_DifferingChecksAreCurrentShaConsumersOrDeclaredVariance",
+        "14_FailureClassIsFirstNotPassAndNamesBothShas"
+      ]
+    },
+    {
+      "Case": "I2",
+      "Description": "la evidencia nombra el SHA falso pero no la identidad real",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "10_ControllerEvidenceNamesFakeShaAndRealIdentity",
+        "14_FailureClassIsFirstNotPassAndNamesBothShas"
+      ]
+    },
+    {
+      "Case": "J",
+      "Description": "FailureClass que no es la primera en fail",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "14_FailureClassIsFirstNotPassAndNamesBothShas"
+      ]
+    },
+    {
+      "Case": "K",
+      "Description": "la verificacion real no es 14/14 VERIFIED",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "1_RealVerification14of14Verified"
+      ]
+    },
+    {
+      "Case": "L",
+      "Description": "la mutacion usa un SHA distinto del fijado",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "10_ControllerEvidenceNamesFakeShaAndRealIdentity",
+        "13_DifferingChecksAreCurrentShaConsumersOrDeclaredVariance",
+        "14_FailureClassIsFirstNotPassAndNamesBothShas",
+        "2_MutationChangesCurrentShaToTheBoundNonexistentSha"
+      ]
+    },
+    {
+      "Case": "M",
+      "Description": "la identidad no se puede establecer: el CurrentSha real no es ancestro del HEAD actual",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "12_IdentityPredicateFailsForTheMutatedSha",
+        "8_BaseRedCurrentRelationshipsValid"
+      ]
+    },
+    {
+      "Case": "N",
+      "Description": "la identidad no se puede establecer: la rama remota no se resuelve",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "12_IdentityPredicateFailsForTheMutatedSha",
+        "5_MutatedCurrentShaIsNotHead",
+        "6_MutatedCurrentShaIsNotTheRemoteProductBranch",
+        "8_BaseRedCurrentRelationshipsValid"
+      ]
+    },
+    {
+      "Case": "O",
+      "Description": "RedSha no es ancestro del CurrentSha real",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "12_IdentityPredicateFailsForTheMutatedSha",
+        "8_BaseRedCurrentRelationshipsValid"
+      ]
+    },
+    {
+      "Case": "P",
+      "Description": "Disposition NONE con Classification no verificada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "11_MutatedOccurrenceEndsNonVerified"
+      ]
+    },
+    {
+      "Case": "Q",
+      "Description": "difiere Tests sin nombrar el SHA falso (consumidor sin atribuir)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "13_DifferingChecksAreCurrentShaConsumersOrDeclaredVariance"
+      ]
+    },
+    {
+      "Case": "R",
+      "Description": "el Controller no detecto nada (todo en pass) pero no verifico",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true,
+      "FailedProperties": [
+        "11_MutatedOccurrenceEndsNonVerified",
+        "13_DifferingChecksAreCurrentShaConsumersOrDeclaredVariance",
+        "14_FailureClassIsFirstNotPassAndNamesBothShas"
+      ]
+    }
+  ],
+  "SelfTestPass": true,
+  "SelfTestDeterministic": true,
+  "RealVerification": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T070017Z-c3a6",
+  "Nc1Run": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE-nc1/2/R20261113T070324Z-e470",
+  "Nc1ControllerEvidence": {
+    "Handoff": "worker-handoff.json is present and has matching TaskId, Attempt, DelegationRunId, RunId, branch, worktree and BaseSha; its CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, while git rev-parse HEAD and relay-record-work Entry HeadSha are 1708e76428ba81012596b0c643074449a1db41f3. OutputWrittenUtc follows Cession.StartUtc. The delivery identity is inconsistent.",
+    "Identity": "git rev-parse HEAD=1708e76428ba81012596b0c643074449a1db41f3; branch=architecture/workspace-persistente-rackcad; worktree matches ExpectedWorktree. BaseSha 1c69fbc4ef7e63e68cd371445f5fd603104c62bf and RedSha 40f5727c8d3800f123c71d60fa2fb33d39aafcca are ancestors of CurrentSha. refs/remotes/origin/architecture/workspace-persistente-rackcad equals CurrentSha.",
+    "Ci": "RemoteFacts and TRX provenance identify CurrentRun 43380342743 as completed push on the exact branch and SHA, all four required jobs success. RedRun 43380164657 is the exact RedSha push, but its required Core job concluded success, not failure as required by AUTOMATION_PLAN 16.9 Ci RedPart."
+  },
+  "Measured": {
+    "RealCurrentSha": "1708e76428ba81012596b0c643074449a1db41f3",
+    "MutatedCurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "BoundFakeSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "BaseSha": "1c69fbc4ef7e63e68cd371445f5fd603104c62bf",
+    "RedSha": "40f5727c8d3800f123c71d60fa2fb33d39aafcca",
+    "HeadNow": "1a9445bdc08019f64acc0e256906e9d327310c6a",
+    "BranchNow": "architecture/workspace-persistente-rackcad",
+    "RemoteBranchNow": "1a9445bdc08019f64acc0e256906e9d327310c6a",
+    "RemoteTrackingNow": "1a9445bdc08019f64acc0e256906e9d327310c6a",
+    "HeadAtControl": "1708e76428ba81012596b0c643074449a1db41f3",
+    "LsRemoteAtControl": "1708e76428ba81012596b0c643074449a1db41f3",
+    "RepoErrors": [],
+    "RepositoryIdentityEstablished": true,
+    "ChangedInputs": [
+      "relay-record-work.json",
+      "worker-handoff.json"
+    ],
+    "HandoffFieldsChanged": [
+      ".CurrentSha"
+    ],
+    "RelayRecordWorkFieldsChanged": [
+      ".Outcome.OutputSha256"
+    ],
+    "MutatedShaExistsInObjectDatabase": false,
+    "Relationships": {
+      "BaseAndRedUnchangedInMutation": true,
+      "BaseRedCurrentAreCommits": true,
+      "BaseAncestorOfRed": true,
+      "RedAncestorOfCurrent": true,
+      "CurrentAncestorOfHeadNow": true,
+      "CurrentAncestorOfRemoteNow": true,
+      "HeadAndRemoteAtControlWereCurrent": true
+    },
+    "Controller": {
+      "Classification": "EXECUTION_REWORK_REQUIRED",
+      "Disposition": "REWORK",
+      "FailureClass": "Handoff",
+      "VerifiedSha": null,
+      "Results": {
+        "Termination": "pass",
+        "Handoff": "fail",
+        "Authority": "pass",
+        "Contract": "pass",
+        "Identity": "pass",
+        "Remote": "pass",
+        "Scope": "pass",
+        "CleanTree": "pass",
+        "Ci": "fail",
+        "Tests": "pass",
+        "Trailer": "pass",
+        "Routing": "pass",
+        "FreeText": "pass",
+        "Denials": "pass"
+      }
+    },
+    "ChecksWhoseEvidenceNamesFakeAndRealIdentity": [
+      "Handoff"
+    ],
+    "IdentityPredicate": {
+      "Definition": "el SHA es un commit del repositorio, es el HEAD que la sesion midio durante el control, desciende de BaseSha y de RedSha, y es ancestro del HEAD y de la rama remota actuales",
+      "RealCurrentSha": "PASS",
+      "MutatedCurrentSha": "FAIL"
+    },
+    "DiffersFromReal": [
+      "Handoff",
+      "Ci"
+    ],
+    "DiffAttribution": {
+      "Handoff": "nombra el CurrentSha falso",
+      "Ci": "variacion PD-F4-06 (no nombra el SHA falso)"
+    },
+    "FirstNotPass": "Handoff",
+    "BranchMatchesHandoff": true
+  },
+  "Properties": {
+    "1_RealVerification14of14Verified": true,
+    "2_MutationChangesCurrentShaToTheBoundNonexistentSha": true,
+    "3_NoSecondSemanticMutation": true,
+    "4_MutatedCurrentShaDiffersFromRealVerifiedCurrentSha": true,
+    "5_MutatedCurrentShaIsNotHead": true,
+    "6_MutatedCurrentShaIsNotTheRemoteProductBranch": true,
+    "7_MutatedCurrentShaNotInObjectDatabase": true,
+    "8_BaseRedCurrentRelationshipsValid": true,
+    "9_ControllerDidNotVerifyTheMutatedOccurrence": true,
+    "10_ControllerEvidenceNamesFakeShaAndRealIdentity": true,
+    "11_MutatedOccurrenceEndsNonVerified": true,
+    "12_IdentityPredicateFailsForTheMutatedSha": true,
+    "13_DifferingChecksAreCurrentShaConsumersOrDeclaredVariance": true,
+    "14_FailureClassIsFirstNotPassAndNamesBothShas": true
+  },
+  "SubstituteResult": "PASS",
+  "Record": {
+    "Nc1OrdinaryRun": "CONTROL NOT PASSED (se conserva tal cual; no es CONTROL PASS)",
+    "nc1": "SATISFIED_UNDER_F4T3B1_IDENTITY_SIGNAL",
+    "ProtocolDebt": "PD-F4-05: el Controller puede informar Identity en PASS ante un CurrentSha deliberadamente falso mientras rechaza la entrega por otra comprobacion"
+  }
+}

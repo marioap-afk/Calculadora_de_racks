@@ -6739,3 +6739,27 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **F4-T3B2:** su paquete se prepara y se revisa, sin emitirlo antes del cierre de F4-T3B1.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 173. Disposición del Owner, sustitutos de nc1 y nc3 y cierre de F4-T3B1
+
+**Decisión:** F4-E43 (orden en `F4-DRAFTS/coordinator/owner-f4t3b1-close-disposition.md`).
+
+| Control | Corrida ordinaria | Resultado ordinario | Sustituto | Registro |
+|---|---|---|---|---|
+| nc1 | `R20261113T070324Z-e470` | CONTROL NOT PASSED (se conserva) | F4T3B1-NC1-IDENTITY-SIGNAL-01, `R20261113T111727Z-3c75`: PASS (26 casos de autoprueba; propiedades 1-12 de la orden y 13-14 de la sesión) | SATISFIED_UNDER_F4T3B1_IDENTITY_SIGNAL |
+| nc2 | `R20261113T070654Z-5b85` | CONTROL NOT PASSED (se conserva) | F4T3B1-NC2-EXACT-WHITELIST-01, `R20261113T071219Z-8c85`: PASS (F4-E42) | SATISFIED_UNDER_DETERMINISTIC_SCOPE_SUBSTITUTE |
+| nc3 | `R20261113T071151Z-ad7c` | CONTROL NOT PASSED (se conserva) | F4T3B1-NC3-FREETEXT-DETECTOR-01, `R20261113T111731Z-8a67`: PASS (49 pruebas; real CLEAN, mutada VIOLATION; propiedades 1-11) | SATISFIED_UNDER_F4T3B1_FREETEXT_DETECTOR |
+
+- Los sustitutos son deterministas, solo usan la biblioteca estándar de Python y se custodian con su resultado. Leen las entradas de las corridas ordinarias sin cambiarlas.
+  - El de nc1 mide además el repositorio: HEAD, la rama, `ls-remote`, la base de objetos y la ascendencia.
+  - Los dos son locales a F4-T3B1 y no son autoridad global del protocolo.
+- **F4-T3B1-EDIT-SURFACE = CLOSED / PASS WITH LIMITATIONS** sobre `1708e764`, en el intento 2 de 3 (`F4-T3B1-EDIT-SURFACE/task-close-package.md`).
+  - N-1 y N-3 pasan a F4-T3B2.
+  - N-2 queda como limitación declarada.
+- **Deudas de protocolo:**
+  - PD-F4-05: Identity en PASS ante un CurrentSha deliberadamente falso;
+  - PD-F4-06: variación de Ci y Trailer en los controles negativos. No se usa para debilitar Ci ni Trailer en la verificación real.
+- **F4-T3B2:** autorizada, 1 de 3 al emitirse.
+- **F4-T3C:** en espera. Es dueña del comando `RACKPANELDESCARTAR`, del aviso con la vía del comando y del endurecimiento de `GetRacksAtRisk`.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.
