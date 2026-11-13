@@ -6616,3 +6616,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Revisiones:** la v1 dio EMITIBLE TRAS CORRECCIONES (0/9/12) y la re-revisión de la v2 también (0/2/9). Todo quedó aplicado.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 164. Contrato de F4-T3A-EDIT-PORT
+
+**Contrato:** `I-64-pilot/F4-T3A-EDIT-PORT/coordinator/gate-contract.json` (F4-E38).
+- **Alcance:** lista blanca exacta de 12 rutas, con los cambios declarados de INV-F4T3A-11.
+- **`ForbiddenWriteScope`:** 97 entradas.
+- **Invariantes y paradas:** 14 invariantes y 8 paradas propias, entre ellas C08.
+- **Líneas base:** `RackCad.Tests.Workspace` 2071 (`ExpectRed` true) y `RackCad.UI.Tests.Workspace` 248 (`ExpectRed` false).
+- **Revisiones:** `AuthorityRevision` `7aea8cec7532f0ec1495a6bcce84f8ee7f4e3143` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
