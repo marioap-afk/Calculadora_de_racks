@@ -6888,3 +6888,19 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Siguiente:** el paquete de F4-T3C2.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 183. Autorización de F4-T3C2 y su paquete
+
+**Decisión:** F4-E49.
+- **Autorización del Owner y del Coordinator:**
+  - ratifica el cierre de F4-T3C1;
+  - autoriza F4-T3C2 con 1 de 3 y la cadena hasta el cierre;
+  - las reglas de los controles solo con firma exacta.
+- **Mapa** del código real (`7bd275e4`) con tres exploraciones de solo lectura.
+- **Paquete** `docs/initiatives/I-64-f4-t3c2-gate-contract-package.md` v3:
+  - revisión de la v1: EMITIBLE TRAS CORRECCIONES (0/2/11);
+  - re-revisión de la v2: EMITIBLE TRAS CORRECCIONES (0/0/11);
+  - todo aceptado.
+- **Validación determinista final:** PASS en sus siete comprobaciones, idéntica en dos corridas.
+
+**Límites:** solo documentación; sin AutoCAD.

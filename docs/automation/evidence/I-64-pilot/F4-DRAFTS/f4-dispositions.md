@@ -1559,3 +1559,73 @@ F4-T4 no empieza antes del cierre de F4-T3.
 - R-1, R-2 y R-4.
 
 F4-T4 no empieza antes del cierre de F4-T3.
+
+## F4-E49. Autorización de F4-T3C2-COMMAND-ADVISOR, paquete v3 y emisión
+
+**Origen:** la autorización del Owner y del Coordinator (`F4-DRAFTS/coordinator/owner-f4t3c2-authorization.md`, texto pegado literal).
+- **Ratifica el cierre de F4-T3C1,** con lo aceptado:
+  - la verificación 14/14;
+  - nc1 y nc3 CONTROL PASS;
+  - la salida ordinaria de nc2, conservada como CONTROL NOT PASSED, y nc2 satisfecho con el sustituto de lista blanca exacta por la firma de PD-F4-01;
+  - la CI exacta en verde;
+  - las revisiones.
+- No reabre F4-T3C1 por sus menores arrastrados.
+- **Autoriza F4-T3C2** con `attempts` 1 de 3, y fija la cadena del paquete al cierre sin más aprobación del Owner para la ejecución ordinaria.
+- **Requisitos:**
+  - el comando sin crear el controlador, con destino inequívoco y solo descarte explícito;
+  - cero escrituras authored;
+  - un comparador que falla no impide el descarte explícito;
+  - el aviso del panel con las dos vías;
+  - el envoltorio, sin tragarse un veto ni convertir el desconocido en limpio;
+  - guardas de invariante en lugar de expresiones exactas;
+  - los motivos del Plugin que llegan al campo, en español;
+  - los menores arrastrados de F4-T3C1;
+  - nada de F4-T4.
+- **Reglas de los controles:** solo con firma exacta (PD-F4-01, PD-F4-04/05 y PD-F4-06), y conservar cada salida ordinaria.
+- **Si F4-T3C2 cierra,** F4-T3 queda completa en el nivel de subtareas y se prepara F4-T4.
+
+**Mapa previo:** tres exploraciones de solo lectura sobre el código de `7bd275e4`, con los mapas en `F4-T3C2-COMMAND-ADVISOR/coordinator/`.
+- **Medido:**
+  - 8 guardas de censo de comandos cambian;
+  - un archivo nuevo del Plugin rompería 5 censos;
+  - `default(CloseDecision)` es Allow;
+  - los motivos del Plugin que llegan al campo son 10 literales, ninguno fijado en inglés por una prueba;
+  - el aviso de veto del panel lo fija una sola prueba que hoy prohíbe nombrar el comando.
+
+**Paquete** (`docs/initiatives/I-64-f4-t3c2-gate-contract-package.md`):
+- **Diseño:**
+  - el núcleo del comando (`WorkspaceDocumentDiscardCommand`) y el envoltorio del asesor (`WorkspaceCloseAdvisorRelay`), en Application y probados en Core con dobles y con el puente y el host reales;
+  - el Plugin como adaptador fino en `WorkspacePanelCommand.cs` y `WorkspaceController.cs`, sin archivo nuevo, cubierto por guardas de texto por cuerpo;
+  - tablas cerradas de textos: T-1 (15 del comando), T-2 (5 del envoltorio) y T-3 (10 motivos del Plugin);
+  - los censos por nombre;
+  - M-1 de F4-T2B2B, en sus dos mitades, como guardas de invariante;
+  - R-1, R-2 y R-4 de F4-T3C1.
+- **v1:** la revisión adversarial independiente dio EMITIBLE TRAS CORRECCIONES (0/2/11).
+  - Los dos importantes:
+    - el destino ambiguo no estaba definido (C-F4-03); se resuelve con `isTarget` sobre `Port.Authorize` y el texto C-15;
+    - faltaban las reglas de los controles de la autorización.
+- **v2:** la re-revisión dio EMITIBLE TRAS CORRECCIONES (0/0/11), con los 13 hallazgos de la v1 resueltos.
+- **v3:** aplica los 11 menores. Entre ellos:
+  - el texto neutral de C-02;
+  - `_pilotEdit` antes del relevo en el orden de la instalación;
+  - las agujas tolerantes a espacios;
+  - la mitad del puente de M-1 ejecutada;
+  - la cláusula de los intentos de corrección en C02;
+  - la nulabilidad de los archivos nuevos;
+  - la guarda de «solo documentación» del asesor;
+  - las autopruebas de la excepción de `GetKeywords`.
+- Las dos revisiones están en `F4-T3C2-COMMAND-ADVISOR/coordinator/`.
+- **Validación determinista final** (`package-validation.json`): PASS en sus siete comprobaciones, idéntica en dos corridas.
+
+**Emisión de F4-T3C2-COMMAND-ADVISOR:**
+- el contrato `I-64-pilot/F4-T3C2-COMMAND-ADVISOR/coordinator/gate-contract.json`;
+- 20 rutas exactas, cuatro nuevas;
+- 14 invariantes y 8 paradas propias;
+- líneas base `RackCad.Tests.Workspace` 2517 y `RackCad.UI.Tests.Workspace` 454, medidas en la CI de `7bd275e4`, las dos con `ExpectRed` true;
+- `attempts` 1 de 3.
+
+**Controles:**
+- nc4 en la primera delegación de la cadena;
+- nc1..nc3 con su oráculo ordinario, conservando cada salida;
+- una regla local solo con la firma exacta de PD-F4-01, PD-F4-04/05 o PD-F4-06;
+- una firma nueva vuelve al Owner.
