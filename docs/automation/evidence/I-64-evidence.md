@@ -6845,3 +6845,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Validación determinista final:** PASS en sus siete comprobaciones, idéntica en dos corridas.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 180. Contrato de F4-T3C1-HOST-HARDENING
+
+**Contrato:** `I-64-pilot/F4-T3C1-HOST-HARDENING/coordinator/gate-contract.json` (F4-E47).
+- **Alcance:** lista blanca exacta de 12 rutas, una de ellas un archivo de guarda nuevo; cambios declarados de pruebas existentes: solo las guardas de M-4 y M-5.
+- **`ForbiddenWriteScope`:** 103 entradas.
+- **Invariantes y paradas:** 12 invariantes y 8 paradas propias, entre ellas C08 (replanificación reforzada única; el segundo fallo de fidelidad es STOP al Coordinator).
+- **Líneas base:** `RackCad.Tests.Workspace` 2331 y `RackCad.UI.Tests.Workspace` 431, las dos con `ExpectRed` true (medidas en la CI de `23f67f56`).
+- **Revisiones:** `AuthorityRevision` `3a53ee2dc673a114b6f8dcd9ca68f7f3f5331a82` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
