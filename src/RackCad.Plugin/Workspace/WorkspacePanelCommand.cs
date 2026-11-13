@@ -26,5 +26,17 @@ namespace RackCad.Plugin.Workspace
                 RackCommandSupport.Report(ex);
             }
         }
+
+        [CommandMethod("RACKPANELDESCARTAR")]
+        public void RackPanelDiscard()
+        {
+            try
+            {
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+            }
+        }
     }
 }

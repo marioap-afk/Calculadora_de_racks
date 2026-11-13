@@ -322,7 +322,13 @@ public class WorkspacePaletteHostSourceGuardTests
     {
         var code = Command();
 
-        Assert.Equal(1, Src.Count(code, @"\[\s*CommandMethod\b"));
+        // I-64 F4-T3C2 (D-T3C2-09): the same invariant, by name: exactly the pair RACKPANEL and RACKPANELDESCARTAR, each once.
+        var names = Regex.Matches(code, @"\[\s*CommandMethod\s*\(\s*""(?<name>[^""]*)""\s*\)\s*\]")
+            .Select(m => m.Groups["name"].Value)
+            .OrderBy(n => n, StringComparer.Ordinal)
+            .ToArray();
+        Assert.Equal(new[] { "RACKPANEL", "RACKPANELDESCARTAR" }, names);
+        Assert.Equal(2, Src.Count(code, @"\[\s*CommandMethod\b"));
         Assert.Equal(1, Src.Count(code, @"\[CommandMethod\(""RACKPANEL""\)\]"));
         Assert.Contains("catch (System.Exception ex)", code);
         Assert.Contains("RackCommandSupport.Report(ex)", code);

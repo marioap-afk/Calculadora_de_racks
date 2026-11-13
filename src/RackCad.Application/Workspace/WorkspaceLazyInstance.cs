@@ -36,6 +36,9 @@ namespace RackCad.Application.Workspace
             }
         }
 
+        /// <summary>The instance if it was already created, or null. It never creates one. (Skeleton of I-64 F4-T3C2.)</summary>
+        public T? Existing => null;
+
         public T GetOrCreate()
         {
             lock (_gate)

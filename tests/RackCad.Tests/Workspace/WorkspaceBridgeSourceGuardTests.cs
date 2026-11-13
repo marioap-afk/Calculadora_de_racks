@@ -156,10 +156,15 @@ public class WorkspaceBridgeSourceGuardTests
     // The effects adapter alone may WRITE the implicit selection and the view, and READ the one already-selected target.
     private static readonly Regex EffectsForbiddenCalls = ForbiddenCallsWithout("SetImpliedSelection", "SetCurrentView", "GetObject");
 
+    // I-64 F4-T3C2 (D-T3C2-09): the command adapter alone may ask the yes or no of RACKPANELDESCARTAR on the command line with
+    // GetKeywords, by exact file; every other name stays forbidden there too.
+    private static readonly Regex CommandForbiddenCalls = ForbiddenCallsWithout("GetKeywords");
+
     internal static Regex HandlerForbiddenCallsFor(string path) =>
         string.Equals(path, ReaderAdapterPath, StringComparison.Ordinal) ? ReaderForbiddenCalls
         : string.Equals(path, FactsAdapterPath, StringComparison.Ordinal) ? FactsForbiddenCalls
         : string.Equals(path, EffectsAdapterPath, StringComparison.Ordinal) ? EffectsForbiddenCalls
+        : string.Equals(path, CommandAdapterPath, StringComparison.Ordinal) ? CommandForbiddenCalls
         : HandlerForbiddenCalls;
 
     [Fact]
@@ -334,8 +339,9 @@ public class WorkspaceBridgeSourceGuardTests
         new(@"IExtensionApplication|ExtensionApplication|\[CommandMethod|\[assembly\s*:|ModuleInitializer|static\s+AutoCadEventBridge\s*\(");
 
     /// <summary>
-    /// A load-time entry point or a command. The command adapter, by exact file, may hold ONE <c>[CommandMethod("RACKPANEL")]</c>
-    /// and nothing else of this kind: no alias, no second command, no other name.
+    /// A load-time entry point or a command. The command adapter, by exact file, holds exactly ONE <c>[CommandMethod("RACKPANEL")]</c>
+    /// and at most ONE <c>[CommandMethod("RACKPANELDESCARTAR")]</c> (I-64 F4-T3C2) and nothing else of this kind: no alias, no flags,
+    /// no other command, no other name. That the second one exists is fixed by the guards of the command adapter.
     /// </summary>
     internal static bool DeclaresEntryPoint(string path, string code)
     {
@@ -343,8 +349,10 @@ public class WorkspaceBridgeSourceGuardTests
         {
             var attributes = Regex.Matches(code, @"\[\s*CommandMethod\b").Count;
             var allowed = Regex.Matches(code, @"\[CommandMethod\(""RACKPANEL""\)\]").Count;
-            if (attributes != 1 || allowed != 1) return true;
+            var discard = Regex.Matches(code, @"\[CommandMethod\(""RACKPANELDESCARTAR""\)\]").Count;
+            if (allowed != 1 || discard > 1 || attributes != allowed + discard) return true;
             code = Regex.Replace(code, @"\[CommandMethod\(""RACKPANEL""\)\]", "");
+            code = Regex.Replace(code, @"\[CommandMethod\(""RACKPANELDESCARTAR""\)\]", "");
         }
 
         return EntryPoints.IsMatch(code);

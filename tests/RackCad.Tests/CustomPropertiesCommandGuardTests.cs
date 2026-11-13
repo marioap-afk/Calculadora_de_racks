@@ -54,8 +54,14 @@ namespace RackCad.Tests
         /// <summary>Lo que I-64 F1-T3A anade, EXACTAMENTE: el comando del panel de trabajo, sin alias.</summary>
         internal static readonly string[] F1PanelCommands = { "RACKPANEL" };
 
-        /// <summary>El censo vigente: apertura, G7, G15, I-65 y el panel de F1, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).ToArray();
+        /// <summary>
+        /// Lo que I-64 F4-T3C2 anade, EXACTAMENTE: el comando de descarte explicito de los borradores del panel del documento activo
+        /// (D-T3C2-09), sin alias, en <c>src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs</c>.
+        /// </summary>
+        internal static readonly string[] F4PanelDiscardCommands = { "RACKPANELDESCARTAR" };
+
+        /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).ToArray();
 
         // ================================================================ censo
 

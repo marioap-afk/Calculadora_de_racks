@@ -51,7 +51,13 @@ public class WorkspaceHostSourceGuardTests
     {
         var code = Src.Code(CommandPath);
 
-        Assert.Equal(1, Src.Count(code, @"\[\s*CommandMethod\b"));
+        // I-64 F4-T3C2 (D-T3C2-09): the file declares exactly the pair RACKPANEL and RACKPANELDESCARTAR, each once and by name.
+        var names = Regex.Matches(code, @"\[\s*CommandMethod\s*\(\s*""(?<name>[^""]*)""\s*\)\s*\]")
+            .Select(m => m.Groups["name"].Value)
+            .OrderBy(n => n, StringComparer.Ordinal)
+            .ToArray();
+        Assert.Equal(new[] { "RACKPANEL", "RACKPANELDESCARTAR" }, names);
+        Assert.Equal(2, Src.Count(code, @"\[\s*CommandMethod\b"));
         Assert.DoesNotMatch(new Regex(@"CommandFlags|\[assembly|CommandClass|LispFunction|IExtensionApplication"), code);
     }
 

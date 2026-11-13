@@ -16,6 +16,7 @@ public class WorkspaceSourceGuardExceptionTests
     private const string Other = "src/RackCad.Plugin/Workspace/WorkspaceController.cs";
 
     private const string RackPanel = "[CommandMethod(\"RACKPANEL\")]";
+    private const string RackPanelDiscard = "[CommandMethod(\"RACKPANELDESCARTAR\")]";
 
     [Fact]
     public void TheTwoExceptionsAreNamedFilesOfThePluginWorkspaceFolder()
@@ -31,6 +32,28 @@ public class WorkspaceSourceGuardExceptionTests
     public void TheCommandExceptionAllowsTheSingleRackPanelAttributeInTheCommandAdapter()
     {
         Assert.False(WorkspaceBridgeSourceGuardTests.DeclaresEntryPoint(Command, "class C { " + RackPanel + " public void M() {} }"));
+    }
+
+    [Fact]
+    public void TheCommandExceptionAllowsTheExactPairRackPanelAndRackPanelDiscardInTheCommandAdapter()
+    {
+        Assert.False(WorkspaceBridgeSourceGuardTests.DeclaresEntryPoint(
+            Command, "class C { " + RackPanel + " public void M() {} " + RackPanelDiscard + " public void D() {} }"));
+        Assert.False(WorkspaceBridgeSourceGuardTests.DeclaresEntryPoint(
+            Command, "class C { " + RackPanelDiscard + " public void D() {} " + RackPanel + " public void M() {} }"));
+    }
+
+    [Theory]
+    [InlineData("[CommandMethod(\"RACKPANELDESCARTAR\")] void A() {}")]
+    [InlineData("[CommandMethod(\"RACKPANEL\")] void A() {} [CommandMethod(\"RACKPANELDESCARTAR\")] [CommandMethod(\"RACKPANELDESCARTAR\")] void B() {}")]
+    [InlineData("[CommandMethod(\"RACKPANEL\")] void A() {} [CommandMethod(\"RACKPANELDESCARTAR\", CommandFlags.Modal)] void B() {}")]
+    [InlineData("[CommandMethod(\"RACKPANEL\")] void A() {} [CommandMethod(\"RACKPANELDESCARTARX\")] void B() {}")]
+    [InlineData("[CommandMethod(\"RACKPANEL\")] void A() {} [CommandMethod(\"RACKPANELDESCARTE\")] void B() {}")]
+    [InlineData("[CommandMethod(\"RACKPANEL\")] void A() {} [CommandMethod(\"RACKPANELDESCARTAR\")] void B() {} [CommandMethod(\"RPN\")] void C() {}")]
+    [InlineData("[CommandMethod(\"RACKPANEL\")] void A() {} [CommandMethod(\"rackpaneldescartar\")] void B() {}")]
+    public void TheCommandExceptionAllowsNoDuplicateFlaggedOrSimilarlyNamedDiscardCommand(string text)
+    {
+        Assert.True(WorkspaceBridgeSourceGuardTests.DeclaresEntryPoint(Command, text));
     }
 
     [Theory]
@@ -254,7 +277,8 @@ public class WorkspaceSourceGuardExceptionTests
 
         Assert.DoesNotMatch(new Regex(@"Skip\s*=|\[Fact\(Skip"), guard);
         // The two exceptions are compared by full path equality.
-        Assert.Equal(2, Src.Count(guard, @"string\.Equals\(path, (?:Reader|Command)AdapterPath, StringComparison\.Ordinal\)"));
+        // I-64 F4-T3C2: three, the one of the entry points and the two of the handler guard (reader and command), all by full path.
+        Assert.Equal(3, Src.Count(guard, @"string\.Equals\(path, (?:Reader|Command)AdapterPath, StringComparison\.Ordinal\)"));
     }
 
     [Fact]

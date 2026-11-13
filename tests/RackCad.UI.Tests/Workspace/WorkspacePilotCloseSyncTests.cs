@@ -778,12 +778,108 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Browser.HasNotices);
             Assert.True(row.CanDiscardDocument);
             Assert.Equal(
-                "No se cerró el documento: hay borradores sin aplicar en Nombre R-1, R-3. Descártalos con \"Descartar borradores de este documento\"; cada pestaña también se descarta con su \"Cerrar\".",
+                "No se cerró el documento: hay borradores sin aplicar en Nombre R-1, R-3. Descártalos con \"Descartar borradores de este documento\" o con el comando RACKPANELDESCARTAR; cada pestaña también se descarta con su \"Cerrar\".",
                 row.Text);
             Assert.DoesNotContain("Actualizar", row.Text);
             Assert.DoesNotContain("Aplicar", row.Text);
-            Assert.DoesNotContain("RACKPANELDESCARTAR", row.Text);
+            // I-64 F4-T3C2 (D-T3C2-06): the notice names the two ways to discard, the panel and the command.
+            Assert.Contains("RACKPANELDESCARTAR", row.Text);
             Assert.False(string.IsNullOrWhiteSpace(row.Key));
+        }
+
+        // I-64 F4-T3C2 (D-T3C2-06): the declared deviation of D-T3B2-04. A discard of the document by the COMMAND goes through the port and
+        // not through the panel, so the row of veto stays until "Entendido", a new veto or the death of the session; its button then says that
+        // nothing is at risk. This is the cheap evidence of that behavior: it is a declared limitation, not a defect to fix here.
+        [Fact]
+        public void AVetoRowStaysAfterTheDocumentWasDiscardedOutsideThePanelAndItsButtonThenSaysThatNothingIsAtRisk()
+        {
+            var rig = new Rig();
+            rig.Protected(A, "R-1");
+            rig.Pilot.DiscardAsTheHostDoes();
+            rig.Pilot.CloseQueue.Enqueue(new PilotCloseView(A, new[] { "R-1" }, false));
+            rig.Present(A, SelectionContext.One("R-1"));
+            var row = Assert.Single(rig.Browser.Notices);
+            Assert.True(row.CanDiscardDocument);
+
+            var outcome = rig.Pilot.DiscardDocument(new WorkspaceRequest(A));
+            Assert.Equal(EditDiscardStatus.Discarded, outcome.Status);
+            rig.Present(A, SelectionContext.One("R-1"));
+
+            Assert.False(rig.Pilot.Current(A, "R-1").Exists);
+            Assert.Null(rig.Pilot.Current(A, "R-1").PendingText);
+            Assert.Equal(WorkspacePilotFieldViewModel.NoDraftMarker, rig.Field.Text);
+            var stays = Assert.Single(rig.Browser.Notices);
+            Assert.Equal(row.Key, stays.Key);
+            Assert.Contains("RACKPANELDESCARTAR", stays.Text);
+
+            rig.Pilot.RisksResponder = _ => Risk(Array.Empty<string>());
+            rig.Browser.RequestDocumentDiscard();
+
+            Assert.Equal(NoRisk, rig.Browser.NoticeText);
+            Assert.False(rig.Browser.HasConfirmation);
+        }
+
+        // ------------------------------------------------------------------ I-64 F4-T3C2 (D-T3C2-11): the minor findings of F4-T3C1
+
+        [Fact]
+        public void R1_ACleanTabClosedWhileTheDiscardIsBusyWithAReasonSaysExactlyThatReason()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pinned(A, "R-2");
+            rig.Present(A, SelectionContext.One("R-1"));
+            rig.Pilot.DiscardRackResponder = (_, _) => EditDiscardOutcome.Busy("Hay una lectura del piloto en curso.");
+
+            rig.Browser.CloseTab("R-1");
+
+            Assert.False(rig.IsOpen("R-1"));
+            Assert.Equal(
+                "Se cerró la pestaña; su borrador limpio quedó en memoria: Hay una lectura del piloto en curso.",
+                rig.Browser.NoticeText);
+        }
+
+        [Fact]
+        public void R1_ACleanTabClosedWhileTheDiscardIsBusyWithoutAReasonSaysThatAReadIsInProgress()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pinned(A, "R-2");
+            rig.Present(A, SelectionContext.One("R-1"));
+            // A blank reason stands for "no reason": the generic text of the panel takes its place.
+            rig.Pilot.DiscardRackResponder = (_, _) => EditDiscardOutcome.Busy(" ");
+
+            rig.Browser.CloseTab("R-1");
+
+            Assert.False(rig.IsOpen("R-1"));
+            Assert.Equal(
+                "Se cerró la pestaña; su borrador limpio quedó en memoria: hay una lectura en curso.",
+                rig.Browser.NoticeText);
+        }
+
+        [Fact]
+        public void R2_TwoClosesOfTheSameTabInARowWithoutCancellingAskTheUsualTextTheSecondTime()
+        {
+            var rig = new Rig();
+            rig.Opened(A, "R-1");
+            rig.Pilot.Throws[WorkspacePilotEditPortDouble.GetFieldOp] = new InvalidOperationException("no se pudo leer");
+
+            rig.Browser.CloseTab("R-1");
+
+            Assert.True(rig.Browser.HasConfirmation);
+            Assert.Equal(
+                "No se pudo comprobar la pestaña Nombre R-1; puede tener trabajo sin aplicar. ¿Descartar lo que tenga y cerrarla?",
+                rig.Browser.ConfirmationText);
+
+            // No CancelDiscard in between: the second request replaces the question and the memory of the first one.
+            rig.Pilot.Throws.Clear();
+            rig.Pilot.Set(A, "R-1", WorkspacePilotEditPortDouble.View(PilotFieldState.Dirty, pending: "1:75", isProtected: true));
+            rig.Browser.CloseTab("R-1");
+
+            Assert.True(rig.Browser.HasConfirmation);
+            Assert.Equal(
+                "La pestaña Nombre R-1 tiene un borrador con trabajo sin aplicar. ¿Descartarlo y cerrar la pestaña?",
+                rig.Browser.ConfirmationText);
+            Assert.True(rig.IsOpen("R-1"));
         }
 
         [Fact]
@@ -802,7 +898,7 @@ namespace RackCad.UI.Tests
             rig.Pilot.CloseQueue.Enqueue(new PilotCloseView(B, new[] { "R-9" }, false));
             rig.Present(A, SelectionContext.One("R-1"));
             var other = Assert.Single(rig.Browser.Notices);
-            Assert.Equal("No se cerró otro documento con borradores sin aplicar; actívalo para descartarlos.", other.Text);
+            Assert.Equal("No se cerró otro documento con borradores sin aplicar; actívalo para descartarlos con el panel o con el comando RACKPANELDESCARTAR.", other.Text);
             Assert.False(other.CanDiscardDocument);
 
             rig.Present(B, SelectionContext.One("R-9"));

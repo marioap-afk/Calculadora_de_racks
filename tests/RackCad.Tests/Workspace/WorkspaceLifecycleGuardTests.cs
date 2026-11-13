@@ -41,6 +41,19 @@ public class WorkspaceLifecycleGuardTests
 
     private static string Squash(string text) => Regex.Replace(text, @"\s+", string.Empty);
 
+    // Each pattern must match, and the first match of each one must come after the first match of the previous one.
+    private static void AssertMatchesInOrder(string text, params string[] patterns)
+    {
+        var previous = -1;
+        foreach (var pattern in patterns)
+        {
+            var match = Regex.Match(text, pattern);
+            Assert.True(match.Success, "missing: " + pattern);
+            Assert.True(match.Index > previous, "out of order: " + pattern);
+            previous = match.Index;
+        }
+    }
+
     private static int IndexOf(string text, string needle) => text.IndexOf(needle, StringComparison.Ordinal);
 
     private static void AssertInOrder(string text, params string[] needles)
@@ -235,9 +248,13 @@ public class WorkspaceLifecycleGuardTests
     {
         var code = Bridge();
 
-        Assert.Equal(
-            "internalvoidSetLifecycleAdvisor(IWorkspaceLifecycleAdvisoradvisor)=>_core.SetLifecycleAdvisor(advisor);",
-            Squash(Src.BodyOf(code, @"internal\s+void\s+SetLifecycleAdvisor\s*\(\s*IWorkspaceLifecycleAdvisor\s+advisor\s*\)")));
+        // I-64 F4-T3C2 (D-T3C2-08, F4-E35): the invariant, not the exact flattened text: the body of the internal method holds exactly one
+        // call, _core.SetLifecycleAdvisor(advisor), and no other statement; the method stays internal and none is public.
+        var body = Src.BodyOf(code, @"internal\s+void\s+SetLifecycleAdvisor\s*\(\s*IWorkspaceLifecycleAdvisor\s+advisor\s*\)");
+        Assert.Equal(1, Src.Count(body, @"\b_core\.SetLifecycleAdvisor\s*\(\s*advisor\s*\)"));
+        Assert.Equal(1, Src.Count(body, @";"));
+        // After the parameter list there is exactly one call: the forwarding itself.
+        Assert.Equal(1, Src.Count(body.Substring(body.IndexOf(')') + 1), @"\w+\s*\("));
         Assert.DoesNotMatch(new Regex(@"public\s+void\s+SetLifecycleAdvisor"), code);
         Assert.Equal(1, Src.Count(code, @"\bIWorkspaceLifecycleAdvisor\b"));
         Assert.Equal(16, Src.Count(code, @"\+="));
@@ -280,8 +297,18 @@ public class WorkspaceLifecycleGuardTests
         var code = Controller();
         var constructor = Src.BodyOf(code, @"private\s+WorkspaceController\s*\(\s*\)");
 
+        // I-64 F4-T3C2 (D-T3C2-08, INV-F4T3C2-07): the single advisor installed is the wrapper over the host, in this order and with
+        // expressions that tolerate spaces and line breaks. This proves "no second independent lifecycle authority": the host first, the
+        // edit port before the wrapper (which receives it and throws with null), the wrapper built over THAT host, and installed.
         Assert.Equal(1, Src.Count(code, @"\.SetLifecycleAdvisor\s*\("));
-        AssertInOrder(constructor, "_host = new WorkspaceHostCore(", "_bridge.SetLifecycleAdvisor(_host);");
+        Assert.Equal(1, Src.Count(code, @"\bnew\s+WorkspaceHostCore\s*\("));
+        Assert.Equal(1, Src.Count(code, @"\bnew\s+WorkspaceCloseAdvisorRelay\s*\("));
+        AssertMatchesInOrder(
+            constructor,
+            @"_host\s*=\s*new\s+WorkspaceHostCore\s*\(",
+            @"_pilotEdit\s*=\s*new\s+PilotEditAdapter\s*\(",
+            @"_closeAdvisor\s*=\s*new\s+WorkspaceCloseAdvisorRelay\s*\(\s*_host\s*,",
+            @"_bridge\.SetLifecycleAdvisor\s*\(\s*_closeAdvisor\s*\)\s*;");
         Assert.Equal(3, Src.Count(code, @"\+="));
         Assert.Equal(0, Src.Count(code, @"-="));
         Assert.DoesNotContain(".Start(", constructor);
