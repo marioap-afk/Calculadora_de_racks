@@ -7,7 +7,7 @@ automation_state:
   state: implementing
   gate: none
   attempts: 1
-  next_action: "F4-T3C2-COMMAND-ADVISOR: emitir el contrato (attempts 1 de 3, F4-E49) y ejecutar la cadena: planificacion del Controller, comparacion byte a byte, A1-A8, nc4, Worker RED/GREEN, CI, revisiones directa e independiente, verificacion y nc1..nc3; despues la custodia y el cierre, y entonces F4-T4"
+  next_action: "F4-T3C2-COMMAND-ADVISOR: contrato emitido (AuthorityRevision 5ef3cbec); siguiente: planificacion del Controller, comparacion byte a byte, A1-A8, nc4 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual
