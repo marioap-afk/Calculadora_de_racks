@@ -1173,3 +1173,27 @@ Medido: T3B tocaría unos 22 archivos, frente a los 12 de T3A, con cambios decla
 - `attempts` 1 de 3.
 
 **Controles:** nc4 en la primera delegación de la cadena y nc1..nc3 con su oráculo ordinario. Con la firma exacta de PD-F4-04 o de PD-F4-01 se reutiliza el sustituto de la subtarea sin volver al Owner (órdenes de F4-T3 y de nc2 de F4-T3A).
+
+## F4-E41. F4-T3B1-EDIT-SURFACE: intento 1, revisiones, orden de autonomía del Owner y corrección
+
+**Hechos del intento 1:**
+- **Planificación** `R20261113T045322Z-54f9` (primera delegación de la cadena): fidelidad PASS a la primera en las ocho colecciones, A1-A8 8/8, Horizonte Medium. nc4 `R20261113T045629Z-fca8`: solo A3 en fail.
+- **Worker** `R20261113T045722Z-8515`:
+  - subagente con `claude-sonnet-5-5`/high, 245 turnos, 0 denegaciones;
+  - RED `f0637250`: con el esqueleto completo, Core pasa entero (2298/2298) y UI falla por aserción (67 de 327);
+  - GREEN `5de2fab3`: 19 rutas en total, exactamente el `AllowedWriteScope`.
+- **CI:** `43373240897` 4/4; el RED `43371973228` con UI en rojo.
+- **Verificación** `R20261113T061247Z-2130` (ver su resultado en la custodia).
+
+**Revisiones:**
+- **La directa** (`direct-review.md`, junto a la verificación): BLOQUEANTE de teclado. Con la caja editable, el `KeyDown` de burbuja marca `Handled` toda tecla salvo Tab; eso suprime el `WM_CHAR` y el `TextInput`, y no se puede teclear un valor. Lo confirma un experimento de WPF de la sesión con mensajes reales (`keyboard-experiment/`): con la regla, una «a» no llega a la caja; sin ella, sí. La regla es la letra de INV-F4T3B1-04 (D-T3B1-04 v3, corrección N-1 de la re-revisión del paquete): **el defecto es del contrato, no del Worker**.
+- **La independiente** (`independent-review.md`): NO ACEPTABLE (1/0/7), con el mismo bloqueante y 7 menores. El análisis conjunto está en `analysis.md`.
+
+**Orden del Owner** (`F4-DRAFTS/coordinator/owner-overnight-autonomy-2026-11-13.md`, texto literal): la sesión toma las decisiones y avanza durante 5 horas. Las decisiones que antes se preguntaban se toman con la opción recomendada y coherente con los precedentes, y se registran como delegadas. Los límites permanentes no cambian.
+
+**Decisión delegada** (`F4-DRAFTS/coordinator/delegated-f4t3b1-correction-decision.md`): **corrección, intento 2 de 3** (precedentes F4-E27 y F4-E32), con el mismo alcance de 19 rutas.
+- Corrige el bloqueante (sin el `KeyDown` de burbuja; Enter y Esc en el `PreviewKeyDown` de la caja editable) y los menores 2, 3, 4, 5, 7 y 8, más `IsProtected` conservador.
+- El menor 6 (motivos del host en inglés y Error sin motivo) pasa a F4-T3C.
+- La lista completa de teclas de D-01 en el host sigue siendo de Smoke-2: D-01 no congela la mecánica.
+
+**Lección del paquete:** una regla de teclado de WPF escrita sin probarla en el camino real de mensajes pasó dos revisiones del paquete. Antes de fijar una mecánica de entrada en un contrato, la sesión la prueba con un experimento mínimo.

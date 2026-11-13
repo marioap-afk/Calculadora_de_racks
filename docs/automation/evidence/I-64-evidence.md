@@ -6687,3 +6687,18 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 169. Intento 1 de F4-T3B1-EDIT-SURFACE: bloqueante de teclado y corrección
+
+**Decisión:** F4-E41.
+- **Planificación** `54f9`: fidelidad PASS a la primera, A1-A8 8/8 y nc4 `fca8`.
+- **Worker** `8515`: RED `f0637250` y GREEN `5de2fab3`.
+- **CI:** `43373240897` 4/4.
+- **Revisiones:**
+  - la directa: BLOQUEANTE de teclado, porque la caja editable no admite texto escrito; lo confirma el experimento de WPF de la sesión;
+  - la independiente: NO ACEPTABLE (1/0/7).
+- **El defecto es del contrato** (INV-F4T3B1-04), no del Worker.
+- **Orden del Owner:** autonomía de la sesión durante 5 horas.
+- **Decisión delegada:** corrección, intento 2 de 3, con el mismo alcance. El menor 6 pasa a F4-T3C.
+
+**Límites:** sin AutoCAD; las teclas de D-01 en el host quedan para Smoke-2.
