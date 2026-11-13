@@ -1043,6 +1043,8 @@ public class WorkspaceIdleSchedulerTests
         // The next entry of the core (here the panel is shown) ends the pending close and the hint is still there to drain.
         h.Core.SetPanelVisible(true);
         Assert.True(h.Core.CanDrainNow());
+        Assert.Equal(0, h.TotalReads);
+        AssertNoReadInsideACallback(h);
     }
 
     [Fact]
@@ -1064,6 +1066,8 @@ public class WorkspaceIdleSchedulerTests
 
         h.Core.SetPanelVisible(true);
         Assert.True(h.Core.CanDrainNow());
+        Assert.Equal(0, h.TotalReads);
+        AssertNoReadInsideACallback(h);
     }
 
     [Fact]
@@ -1102,6 +1106,8 @@ public class WorkspaceIdleSchedulerTests
         h.Destroy(WorkspaceIdleHarness.DocumentA);
 
         Assert.Equal(new[] { (id, true) }, advisor.Ended);
+        Assert.Equal(0, h.TotalReads);
+        AssertNoReadInsideACallback(h);
     }
 
     [Fact]

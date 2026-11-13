@@ -798,10 +798,10 @@ public class WorkspaceLifecycleHostTests
 
             env.Destroy();
 
-            return env.Core.LossNotices.Count == 0 ? "silent" : "reported:" + string.Join(",", Assert.Single(env.Core.LossNotices).LostRackIds);
+            return env.Core.LossNotices.Count == 0 ? "known-safe" : "reported:" + string.Join(",", Assert.Single(env.Core.LossNotices).LostRackIds);
         }
 
-        Assert.Equal("silent", Run(noted: false));
+        Assert.Equal("known-safe", Run(noted: false));
         Assert.Equal("reported:" + RackA, Run(noted: true));
     }
 
@@ -1206,6 +1206,9 @@ public class WorkspaceLifecycleHostTests
         Assert.Equal(EditIntentStatus.NotAdmitted, outcome.Status);
         Assert.Equal(PushBackPilotIntentReader.OriginMissingDiagnostic, outcome.Diagnostic);
         Assert.Equal(PushBackPilotIntentReader.ClassicEditorHint, outcome.ClassicEditorHint);
+        // M-5 (F4-T3A): the outcome of the reload also carries the technical detail of the read and the status of the witness (none was supplied).
+        Assert.Equal(EditIntentKit.OriginMissing(RackA).PilotRead!.Detail, outcome.Detail);
+        Assert.Equal(EditWitnessStatus.NotSupplied, outcome.Witness);
         Assert.True(draft.IsPossiblyStale);
         Assert.True(draft.NeedsLazyReload);
     }
@@ -1427,6 +1430,8 @@ public class WorkspaceLifecycleHostTests
         var session = hr.ActiveSession;
         var faults = new List<(string Context, Exception Error)>();
         var core = new WorkspaceHostCore(hr.Link, new ThrowingProbe(), hr.Reader, new WorkspaceInstrumentation(), (c, e) => faults.Add((c, e)));
+        core.OpenPanel();
+        Assert.Equal(WorkspaceHostStatus.Ready, core.GetSnapshot().Status);
 
         EditDiscardOutcome outcome = default;
         var thrown = Record.Exception(() => outcome = core.DiscardPilotEdits(session));
@@ -1438,6 +1443,9 @@ public class WorkspaceLifecycleHostTests
         Assert.Empty(outcome.PendingTextRackIds);
         var fault = Assert.Single(faults);
         Assert.Equal("WorkspaceHostCore.DiscardPilotEdits", fault.Context);
+        // M-5 (F4-T3A): with the core started, a failure of the discard does not degrade the session, neither in the host nor in the bridge.
+        Assert.Equal(WorkspaceHostStatus.Ready, core.GetSnapshot().Status);
+        Assert.False(hr.Bridge.Core.IsDegraded(session));
     }
 
     [Fact]

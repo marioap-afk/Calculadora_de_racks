@@ -96,6 +96,12 @@ namespace RackCad.Plugin.Workspace
         /// </summary>
         public IWorkspaceBrowserSummaryPort BrowserSummary => (IWorkspaceBrowserSummaryPort)Navigation;
 
+        /// <summary>The edit port of the bounded Push Back pilot (I-64 F4-T3A). In this first step it is an inert adapter.</summary>
+        public IWorkspacePilotEditPort PilotEdit => new InertPilotEdit();
+
+        /// <summary>The scope of a modal window of RackCad opened by the panel (I-64 F4-T3A). In this first step it does nothing.</summary>
+        public IDisposable EnterPanelModal() => new WorkspacePanelModalScope(active => { }).Enter();
+
         public bool PanelVisible => _host.PanelVisible;
 
         /// <summary>First call: starts the bridge once. Always: shows the panel state and asks for a reconciliation at the next rest.</summary>
@@ -192,6 +198,36 @@ namespace RackCad.Plugin.Workspace
         }
 
         private static void LogFault(string context, System.Exception exception) => RackLog.Exception(context, exception);
+
+        // The first step of F4-T3A: the edit port of the panel is inert. It answers neutral values and never throws.
+        private sealed class InertPilotEdit : IWorkspacePilotEditPort
+        {
+            public EditIntentOutcome TryBeginEdit(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented yet.");
+
+            public EditCheckOutcome TryCheckNow(EditIntentRequest request) => EditCheckOutcome.Unavailable("Not implemented yet.");
+
+            public EditIntentOutcome TryReload(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented yet.");
+
+            public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => default;
+
+            public PilotFieldResult SetPendingText(WorkspaceRequest origin, string rackId, string text) =>
+                PilotFieldResult.Rejected("Not implemented yet.");
+
+            public PilotFieldResult CommitField(WorkspaceRequest origin, string rackId) => PilotFieldResult.Rejected("Not implemented yet.");
+
+            public PilotBoundaryResult CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind) =>
+                new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, Array.Empty<PilotFieldProblem>(), "Not implemented yet.");
+
+            public EditDiscardOutcome DiscardRack(WorkspaceRequest origin, string rackId) => EditDiscardOutcome.Rejected("Not implemented yet.");
+
+            public EditDiscardOutcome DiscardDocument(WorkspaceRequest origin) => EditDiscardOutcome.Rejected("Not implemented yet.");
+
+            public PilotRiskView GetRacksAtRisk(WorkspaceRequest origin) => default;
+
+            public System.Collections.Generic.IReadOnlyList<PilotLossView> TakeLossNotices() => Array.Empty<PilotLossView>();
+
+            public System.Collections.Generic.IReadOnlyList<PilotCloseView> TakeCloseNotices() => Array.Empty<PilotCloseView>();
+        }
 
         // The link of the pure host core to the single bridge: forwards to its facades and nothing else.
         private sealed class BridgeLink : IWorkspaceBridgeLink

@@ -68,7 +68,8 @@ public class WorkspaceLifecycleGuardTests
         Assert.Matches(@"\bpublic\s+interface\s+IWorkspaceLifecycleAdvisor\b", code);
         Assert.Equal(1, Src.Count(code, @"\bCloseDecision\s+AdviseClose\s*\(\s*SessionId\s+\w+\s*\)\s*;"));
         Assert.Equal(1, Src.Count(code, @"\bvoid\s+SessionDestroyed\s*\(\s*SessionId\s+\w+\s*,\s*bool\s+closeSequenceIntact\s*\)\s*;"));
-        Assert.Equal(2, Src.Count(code, @"\)\s*;"));
+        // F4-T3A (M-2): the interface is fixed by its two signatures; the count of statements ends with the file, so a later member does not
+        // trip a guard that is about these two.
     }
 
     // ------------------------------------------------------------------ INV-F4T2B2B-01: the pure core of the bridge
@@ -316,11 +317,17 @@ public class WorkspaceLifecycleGuardTests
     {
         var body = AdviseCloseBody();
 
-        AssertInOrder(body, "_knownClean.Remove(", "_closePolicy.EvaluateClose(", "_knownClean.Add(", "return CloseDecision.Allow;");
+        // F4-T3A (D-T3-07): the order of the mark and the prohibitions stay; the only addition is the notice of the veto of the panel, queued in
+        // every way that ends in a Veto and dropped before the mark is put by an Allow.
+        AssertInOrder(body, "_knownClean.Remove(", "_closePolicy.EvaluateClose(", "DropCloseNotice(", "_knownClean.Add(", "return CloseDecision.Allow;");
         Assert.Matches(@"_knownClean\.Add\s*\(\s*\w+\s*\)\s*;\s*return\s+CloseDecision\.Allow\s*;", body);
-        Assert.Matches(@"\.IsVeto\s*\)\s*return\s+CloseDecision\.Veto\s*;", body);
+        Assert.Matches(@"\.IsVeto\s*\)\s*\{\s*QueueCloseNotice\s*\([^;]*\)\s*;\s*return\s+CloseDecision\.Veto\s*;\s*\}", body);
         Assert.Contains("Report(\"WorkspaceHostCore.AdviseClose\", ex);", body);
-        Assert.Matches(@"catch\s*\(\s*Exception\s+ex\s*\)\s*\{\s*Report\s*\([^;]*\)\s*;\s*return\s+CloseDecision\.Veto\s*;", body);
+        Assert.Matches(@"catch\s*\(\s*Exception\s+ex\s*\)\s*\{\s*Report\s*\([^;]*\)\s*;\s*QueueCloseNotice\s*\([^;]*,\s*true\s*\)\s*;\s*return\s+CloseDecision\.Veto\s*;", body);
+        Assert.Equal(2, Src.Count(body, @"\bQueueCloseNotice\s*\("));
+        Assert.Equal(1, Src.Count(body, @"\bDropCloseNotice\s*\("));
+        // Every return of a Veto is preceded by the queueing of its notice.
+        Assert.Equal(Src.Count(body, @"return\s+CloseDecision\.Veto\s*;"), Src.Count(body, @"\bQueueCloseNotice\s*\("));
         Assert.Equal(1, Src.Count(body, @"_knownClean\.Add\s*\("));
         Assert.Equal(1, Src.Count(Host(), @"_knownClean\.Add\s*\("));
         Assert.DoesNotMatch(AdviseCloseForbidden, body);
@@ -340,6 +347,27 @@ public class WorkspaceLifecycleGuardTests
 
         Assert.DoesNotMatch(AdviseCloseForbidden, real);
         Assert.Matches(AdviseCloseForbidden, real + "\n" + injected);
+    }
+
+    private static bool VetoNoticeHolds(string body) =>
+        Src.Count(body, @"return\s+CloseDecision\.Veto\s*;") == Src.Count(body, @"\bQueueCloseNotice\s*\(")
+        && Src.Count(body, @"\bDropCloseNotice\s*\(") == 1
+        && Regex.IsMatch(body, @"\.IsVeto\s*\)\s*\{\s*QueueCloseNotice");
+
+    [Fact]
+    public void TheNoticeOfTheVetoGuardDetectsAVetoWithoutItsNoticeAnAllowThatDoesNotDropItAndAnExtraVeto()
+    {
+        var real = AdviseCloseBody();
+        var noNotice = Regex.Replace(real, @"QueueCloseNotice\s*\(\s*session\s*,\s*decision\.RackIds\s*,\s*false\s*\)\s*;", string.Empty);
+        var noDrop = Regex.Replace(real, @"DropCloseNotice\s*\(\s*session\s*\)\s*;", string.Empty);
+        var extraVeto = real.Replace("return CloseDecision.Allow;", "return CloseDecision.Veto;", StringComparison.Ordinal);
+
+        Assert.True(VetoNoticeHolds(real));
+        foreach (var mutated in new[] { noNotice, noDrop, extraVeto })
+        {
+            Assert.NotEqual(real, mutated);
+            Assert.False(VetoNoticeHolds(mutated));
+        }
     }
 
     // ------------------------------------------------------------------ INV-F4T2B2B-04 and 07: the way a session is retired and its notice
@@ -368,6 +396,12 @@ public class WorkspaceLifecycleGuardTests
         Assert.Matches(@"private\s+readonly\s+Queue<DraftLossNotice>\s+_lossNotices\s*=\s*new\s*\(\s*\)\s*;", code);
         Assert.Matches(@"internal\s+IReadOnlyCollection<DraftLossNotice>\s+LossNotices\s*=>\s*_lossNotices\s*;", code);
         Assert.DoesNotMatch(new Regex(@"public\s+[\w<>]+\s+(?:LossNotices|_lossNotices)"), code);
+        // F4-T3A (M-2): the queue stays internal; the one other way to take from it is the explicit TakeLossNotices of the edit port, which
+        // is not public on the host either.
+        var take = Src.BodyOf(code, @"IReadOnlyList<PilotLossView>\s+IWorkspacePilotEditPort\.TakeLossNotices\s*\(\s*\)");
+        Assert.Contains("_lossNotices.Dequeue()", take);
+        Assert.Equal(1, Src.Count(code, @"_lossNotices\.Dequeue\s*\("));
+        Assert.DoesNotMatch(new Regex(@"public\s+[\w<>]+\s+TakeLossNotices"), code);
         var describe = Src.BodyOf(code, @"private\s+static\s+string\s+DescribeLoss\s*\(\s*DraftLossNotice\s+\w+\s*\)");
         Assert.Contains("LostRackIds", describe);
         Assert.Contains("UncertainRackIds", describe);
@@ -382,8 +416,9 @@ public class WorkspaceLifecycleGuardTests
         var host = Host();
 
         Assert.Matches(@"private\s+readonly\s+HashSet<SessionId>\s+_knownClean\s*=\s*new\s*\(\s*\)\s*;", host);
-        // Advice (1), destruction (1), intention (1), check (2), reload (1), discard (1), note (1), drain (1).
-        Assert.Equal(9, Src.Count(host, @"_knownClean\.Remove\s*\("));
+        // Advice (1), destruction (1), intention (1), check (2), reload (1), discard (1), note (1), drain (1): nine is a LOWER bound since
+        // F4-T3A (M-2). A new operation that changes a draft must call NotePilotEdit or remove the mark itself (guard below).
+        Assert.True(Src.Count(host, @"_knownClean\.Remove\s*\(") >= 9);
 
         var intent = Src.BodyOf(host, @"public\s+EditIntentOutcome\s+TryBeginPilotEdit\s*\(");
         Assert.Equal(1, Src.Count(intent, @"_knownClean"));
@@ -393,6 +428,59 @@ public class WorkspaceLifecycleGuardTests
         Assert.Equal(2, Src.Count(check, @"_knownClean"));
         Assert.Matches(@"case\s+DraftCheckStatus\.Recovered\s*:\s*_knownClean\.Remove\s*\(\s*request\.Session\s*\)\s*;\s*return\s+EditCheckOutcome\.Recovered\s*\(", check);
         Assert.Matches(@"case\s+DraftCheckStatus\.Conflict\s*:\s*_knownClean\.Remove\s*\(\s*request\.Session\s*\)\s*;\s*return\s+EditCheckOutcome\.Conflict\s*\(", check);
+    }
+
+    // The explicit operations of the edit port of the host (F4-T3A) that change a draft: each one calls an API that changes it, and then
+    // it has to end the mark of "known clean" (through NotePilotEdit, through the discard of the session or by removing the mark itself).
+    private static readonly string[] PortMutatingOperations =
+    {
+        @"PilotFieldResult\s+IWorkspacePilotEditPort\.SetPendingText\s*\(",
+        @"PilotFieldResult\s+IWorkspacePilotEditPort\.CommitField\s*\(",
+        @"PilotBoundaryResult\s+IWorkspacePilotEditPort\.CrossBoundary\s*\(",
+        @"EditDiscardOutcome\s+IWorkspacePilotEditPort\.DiscardRack\s*\(",
+        @"EditDiscardOutcome\s+IWorkspacePilotEditPort\.DiscardDocument\s*\(",
+    };
+
+    private static readonly Regex ChangesADraft = new(@"\.SetPendingText\s*\(|\.RemovePendingText\s*\(|\.CrossBoundary\s*\(|\.SetCurrentDraftState\s*\(|\.Discard\w*\s*\(|DiscardPilotEdits\s*\(");
+
+    private static readonly Regex EndsTheMark = new(@"NotePilotEdit\s*\(|_knownClean\.Remove\s*\(|DiscardPilotEdits\s*\(");
+
+    private static bool MutationEndsTheMark(string body) => !ChangesADraft.IsMatch(body) || EndsTheMark.IsMatch(body);
+
+    [Fact]
+    public void EveryOperationOfTheEditPortThatChangesADraftEndsTheMarkOfKnownClean()
+    {
+        var host = Host();
+
+        foreach (var signature in PortMutatingOperations)
+        {
+            var body = Src.BodyOf(host, signature);
+            Assert.True(ChangesADraft.IsMatch(body), signature + " no longer changes a draft: the guard would be empty");
+            Assert.True(MutationEndsTheMark(body), signature + " changes a draft and does not end the mark of known clean");
+        }
+    }
+
+    [Fact]
+    public void TheMarkGuardDetectsAnOperationThatChangesADraftWithoutEndingTheMark()
+    {
+        Assert.False(MutationEndsTheMark("{ var e = draft.SetPendingText(key, text); return e; }"));
+        Assert.False(MutationEndsTheMark("{ var d = _drafts.DiscardByUser(session, rack); return d; }"));
+        Assert.True(MutationEndsTheMark("{ var e = draft.SetPendingText(key, text); NotePilotEdit(session); return e; }"));
+        Assert.True(MutationEndsTheMark("{ var d = _drafts.DiscardByUser(session, rack); _knownClean.Remove(session); return d; }"));
+        Assert.True(MutationEndsTheMark("{ return Describe(session); }"));
+
+        // In the real bodies: without the call that ends the mark, only the operation that delegates to the discard of the session is still fine.
+        var host = Host();
+        var withoutNote = 0;
+        foreach (var signature in PortMutatingOperations)
+        {
+            var body = Src.BodyOf(host, signature);
+            var mutated = Regex.Replace(body, @"NotePilotEdit\s*\(|_knownClean\.Remove\s*\(", "Skip(");
+            if (mutated != body) withoutNote++;
+            Assert.Equal(body.Contains("DiscardPilotEdits(", StringComparison.Ordinal), MutationEndsTheMark(mutated));
+        }
+
+        Assert.True(withoutNote >= 4);
     }
 
     [Fact]
@@ -456,7 +544,9 @@ public class WorkspaceLifecycleGuardTests
         Assert.Equal(1, Src.Count(body, @"_editIntentReader\s*[.!]"));
         Assert.Equal(1, Src.Count(body, @"\bpilot\.Read\b"));
         Assert.Matches(@"\.DiscardAndReload\s*\(\s*pilot\.Read\s*\)\s*;", body);
-        Assert.Equal(1, Src.Count(Host(), @"\.DiscardAndReload\s*\("));
+        // F4-T3A (M-2): the call is fixed in the body of the reload, not in the whole file, so a later operation of the host that reloads
+        // does not trip a guard that is about this one.
+        Assert.Equal(1, Src.Count(body, @"\.DiscardAndReload\s*\("));
         Assert.Equal(0, Src.Count(body, @"\.StaleBase\b|\.CheckNow\s*\(|\.Begin\s*\("));
         Assert.DoesNotMatch(new Regex(@"\.(?:RetireSession|DiscardAll|EvaluateClose|MarkPossiblyStale|KeepMineOnCurrentVersion)\s*\("), body);
     }
@@ -565,7 +655,32 @@ public class WorkspaceLifecycleGuardTests
             Assert.DoesNotMatch(new Regex(WriteApis), body);
         }
 
-        Assert.Equal(5, Src.Files("src/RackCad.Application/Workspace/Drafts/").Count);
+        Assert.Empty(MissingDraftFiles(Src.Files(DraftsFolder).Select(f => f.Path)));
+    }
+
+    // F4-T3A (D-1): the folder of the drafts holds the five files of the task as a LOWER bound that names each one. The exact set of the
+    // folder is fixed by WorkspaceDraftBoundaryTests, which does not change.
+    private const string DraftsFolder = "src/RackCad.Application/Workspace/Drafts/";
+
+    private static readonly string[] DraftFileNames =
+    {
+        "DraftApplyOutcome.cs", "DraftClosePolicy.cs", "DraftRegistry.cs", "DraftSession.cs", "DraftStaleBase.cs",
+    };
+
+    private static IReadOnlyList<string> MissingDraftFiles(IEnumerable<string> paths)
+    {
+        var present = paths.Select(p => p.Substring(p.LastIndexOf('/') + 1)).ToHashSet(StringComparer.Ordinal);
+        return DraftFileNames.Where(n => !present.Contains(n)).ToArray();
+    }
+
+    [Fact]
+    public void TheDraftsFolderBoundNamesEachOfTheFiveFilesAndDoesNotFixTheirNumber()
+    {
+        var real = Src.Files(DraftsFolder).Select(f => f.Path).ToArray();
+
+        Assert.Empty(MissingDraftFiles(real));
+        Assert.Equal(new[] { "DraftApplyOutcome.cs" }, MissingDraftFiles(real.Where(p => !p.EndsWith("/DraftApplyOutcome.cs", StringComparison.Ordinal))));
+        Assert.Empty(MissingDraftFiles(real.Concat(new[] { DraftsFolder + "DraftExtra.cs" })));
     }
 
     [Fact]
@@ -677,7 +792,7 @@ public class WorkspaceLifecycleGuardTests
     public void TheFoldersAndTheGuardsOfTheOlderTasksKeepTheirShape()
     {
         Assert.Equal(9, Src.PluginFiles().Count);
-        Assert.Equal(5, Src.Files("src/RackCad.Application/Workspace/Drafts/").Count);
+        Assert.Empty(MissingDraftFiles(Src.Files(DraftsFolder).Select(f => f.Path)));
         Assert.True(Src.Exists(AdvisorPath));
         Assert.Equal(45, Src.Count(Src.Text("tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs"), @"\[(?:Fact|Theory)\b"));
     }

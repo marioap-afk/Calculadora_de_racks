@@ -268,6 +268,9 @@ namespace RackCad.Application.Workspace
 
         /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
         Failed,
+
+        /// <summary>A read of the pilot is in progress.</summary>
+        Busy,
     }
 
     /// <summary>
@@ -310,6 +313,9 @@ namespace RackCad.Application.Workspace
 
         public static EditDiscardOutcome Failed(string reason) =>
             new(EditDiscardStatus.Failed, reason, Array.Empty<string>(), Array.Empty<string>());
+
+        public static EditDiscardOutcome Busy(string reason) =>
+            new(EditDiscardStatus.Busy, reason, Array.Empty<string>(), Array.Empty<string>());
     }
 
     /// <summary>The pure decisions of the edit intention that do not depend on the host (I-64 F4-T2B2A).</summary>

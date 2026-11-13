@@ -44,6 +44,19 @@ public class WorkspaceIdleSchedulingGuardTests
 
     private static readonly Regex OnIdleWithoutTick = new(@"(?<![\w.])OnIdle\b");
 
+    // I-64 F4-T3A (T2C 1): the name of the intermediate method that the constructor of the bridge hands to the scheduler (the one that G-10
+    // extracts), or null when the continuation is a lambda. G-1 and G-2 forbid it in the handlers and in OnIdleTick too.
+    private static string? IntermediateName(string bridge)
+    {
+        var constructor = Src.BodyOf(bridge, @"public\s+AutoCadEventBridge\s*\(\s*\)");
+        var build = Regex.Match(constructor, @"new\s+WorkspaceIdleScheduler\s*\(\s*_core\.CanDrainNow\s*,\s*(.+?)\s*,\s*LogFault\s*\)");
+        return build.Success && Regex.IsMatch(build.Groups[1].Value, @"^\w+$") ? build.Groups[1].Value : null;
+    }
+
+    private static Regex Named(string name) => new(@"(?<![\w.])" + Regex.Escape(name) + @"\b");
+
+    private static string Squash(string text) => Regex.Replace(text, @"\s+", string.Empty);
+
     // ================================================================== G-1: the handlers of the notifications only mark
 
     // What no case block and no handler line of the bridge may contain: the idle pass, the drain notice, the dispatcher, the scheduler
@@ -76,6 +89,17 @@ public class WorkspaceIdleSchedulingGuardTests
             foreach (Match match in HandlerForbidden.Matches(line))
                 yield return "handler line contains " + match.Value + ": " + line.Trim();
 
+        // T2C 1: the intermediate method of the continuation is not named by any case block or handler line either.
+        var intermediate = IntermediateName(bridge);
+        if (intermediate != null)
+        {
+            var named = Named(intermediate);
+            foreach (var (source, block) in blocks)
+                if (named.IsMatch(block)) yield return source + " block names " + intermediate;
+            foreach (var line in bridge.Split('\n').Where(l => Regex.IsMatch(l, @"\bhandler\s*=\s*\(")))
+                if (named.IsMatch(line)) yield return "handler line names " + intermediate + ": " + line.Trim();
+        }
+
         var idle = blocks.FirstOrDefault(b => b.Source == "Idle").Block ?? string.Empty;
         if (!Regex.IsMatch(idle, @"EventHandler\s+handler\s*=\s*\(\s*s\s*,\s*e\s*\)\s*=>\s*Contain\s*\(\s*""Idle""\s*,\s*OnIdleTick\s*\)\s*;"))
             yield return "the Idle handler is not (s, e) => Contain(\"Idle\", OnIdleTick)";
@@ -99,6 +123,17 @@ public class WorkspaceIdleSchedulingGuardTests
         Assert.NotEmpty(HandlerViolations(Mutate(Bridge(), from, to)));
     }
 
+    [Theory]
+    [InlineData("_core.OnDocumentCreated(NativeId(e.Document))", "_core.OnDocumentCreated(NativeId(e.Document)); RunIdleContinuation()")]
+    [InlineData("ActiveSessionChanged?.Invoke();", "ActiveSessionChanged?.Invoke(); RunIdleContinuation();")]
+    [InlineData("ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));", "ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); RunIdleContinuation();")]
+    public void G1_ItTripsOnAHandlerOrACaseBlockThatNamesTheIntermediateMethodOfTheContinuation(string from, string to)
+    {
+        Assert.Equal("RunIdleContinuation", IntermediateName(Bridge()));
+        Assert.Empty(HandlerViolations(Bridge()));
+        Assert.NotEmpty(HandlerViolations(Mutate(Bridge(), from, to)));
+    }
+
     // ================================================================== G-2: OnIdleTick only schedules; OnIdle is the pass and only the continuation names it
 
     private static IEnumerable<string> TickAndPassViolations(string bridge)
@@ -108,13 +143,27 @@ public class WorkspaceIdleSchedulingGuardTests
         foreach (Match match in Regex.Matches(tick, @"_core\.OnIdle|Drained|OnIdle\s*\(|LockDocument|StartTransaction|BeginInvoke"))
             yield return "OnIdleTick contains " + match.Value;
 
+        // T2C 1: the intermediate method is named exactly twice (its declaration and the argument of the scheduler), never in the tick.
+        var intermediate = IntermediateName(bridge);
+        if (intermediate != null)
+        {
+            if (Named(intermediate).IsMatch(tick)) yield return "OnIdleTick names " + intermediate;
+            var intermediateNamed = Named(intermediate).Matches(bridge).Count;
+            if (intermediateNamed != 2) yield return intermediate + " is named " + intermediateNamed + " times, expected 2 (declaration and the scheduler)";
+        }
+
+        // T2C 1: the only members of the scheduler that the bridge calls are OnIdleTick and SetPost.
+        var members = Regex.Matches(bridge, @"_idleScheduler\s*\.\s*(\w+)").Cast<Match>().Select(m => m.Groups[1].Value).Distinct().OrderBy(n => n, StringComparer.Ordinal).ToArray();
+        if (!members.SequenceEqual(new[] { "OnIdleTick", "SetPost" })) yield return "the bridge calls the scheduler members: " + string.Join(", ", members);
+
         // OnIdle without Tick is named exactly twice: its declaration and the continuation.
         var named = OnIdleWithoutTick.Matches(bridge).Count;
         if (named != 2) yield return "OnIdle is named " + named + " times, expected 2 (declaration and continuation)";
 
         var pass = OnIdleBody(bridge);
-        var coreCalls = Regex.Matches(bridge, @"_core\.OnIdle\s*\(").Count;
-        if (coreCalls != 1) yield return "_core.OnIdle( appears " + coreCalls + " times, expected 1";
+        // T2C 1: ".OnIdle(" with ANY receiver appears once (an alias of the core does not escape the count).
+        var coreCalls = Regex.Matches(bridge, @"\.OnIdle\s*\(").Count;
+        if (coreCalls != 1) yield return ".OnIdle( appears " + coreCalls + " times, expected 1";
         if (!Regex.IsMatch(pass, @"_core\.OnIdle\s*\(")) yield return "_core.OnIdle( is not inside OnIdle";
 
         var announced = Regex.Matches(bridge, @"Drained\?\.Invoke\(").Count;
@@ -148,6 +197,23 @@ public class WorkspaceIdleSchedulingGuardTests
         Assert.NotEmpty(TickAndPassViolations(Bridge() + appended));
     }
 
+    [Theory]
+    [InlineData("\nprivate void Extra() { RunIdleContinuation(); }")]
+    [InlineData("\nprivate void Extra() { var core = _core; core.OnIdle(); }")]
+    [InlineData("\nprivate void Extra() { _idleScheduler.Reset(); }")]
+    [InlineData("\nprivate void Extra() { _idleScheduler.Run(); }")]
+    public void G2_ItTripsOnAnAliasOfTheCoreAnExtraNameOfTheIntermediateMethodOrAnExtraMemberOfTheScheduler(string appended)
+    {
+        Assert.Empty(TickAndPassViolations(Bridge()));
+        Assert.NotEmpty(TickAndPassViolations(Bridge() + appended));
+    }
+
+    [Fact]
+    public void G2_ItTripsWhenTheTickNamesTheIntermediateMethod()
+    {
+        Assert.NotEmpty(TickAndPassViolations(Mutate(Bridge(), "_idleScheduler.OnIdleTick();", "_idleScheduler.OnIdleTick(); RunIdleContinuation();")));
+    }
+
     // ================================================================== G-3: the post is BeginInvoke at background priority, and the exception of the file is exact
 
     // The expression of the exception by exact file of NoHostFileUsesTheInternalAutoCadNamespaceOrAnyUiType for the bridge (D-T2C-04):
@@ -159,12 +225,32 @@ public class WorkspaceIdleSchedulingGuardTests
     private static readonly Regex BackgroundBeginInvoke = new(
         @"BeginInvoke\s*\(\s*(?:DispatcherPriority\.Background\s*,\s*[^,()]+|[^,()]+\s*,\s*DispatcherPriority\.Background)\s*\)");
 
+    // I-64 F4-T3A (T2C 2): the argument of SetPost, flattened, is exactly this lambda, in one of the two orders of the overload.
+    private static readonly string[] ExactPostArguments =
+    {
+        "action=>_dispatcher.BeginInvoke(DispatcherPriority.Background,action)",
+        "action=>_dispatcher.BeginInvoke(action,DispatcherPriority.Background)",
+    };
+
+    private static string? PostArgument(string bridge)
+    {
+        var match = Regex.Match(bridge, @"\.SetPost\s*\((?<arg>[^;]*)\)\s*;");
+        return match.Success ? Squash(match.Groups["arg"].Value) : null;
+    }
+
     private static IEnumerable<string> PostViolations(string bridge)
     {
         var begins = Regex.Matches(bridge, @"\bBeginInvoke\b").Count;
         if (begins != 1) yield return "BeginInvoke appears " + begins + " times, expected 1";
         if (!BackgroundBeginInvoke.IsMatch(bridge)) yield return "the post is not BeginInvoke with DispatcherPriority.Background";
         if (Regex.IsMatch(bridge, @"DispatcherPriority\.(?!Background\b)")) yield return "another priority is named";
+
+        var argument = PostArgument(bridge);
+        if (argument == null || !ExactPostArguments.Contains(argument, StringComparer.Ordinal)) yield return "the argument of SetPost is not the exact post: " + argument;
+
+        // T2C 2: no other way to run the continuation in the application context or to run the dispatcher.
+        foreach (Match match in Regex.Matches(bridge, @"ExecuteInApplicationContext|Dispatcher\.Run\s*\("))
+            yield return "the bridge names " + match.Value;
     }
 
     [Fact]
@@ -181,6 +267,35 @@ public class WorkspaceIdleSchedulingGuardTests
     public void G3_ItTripsOnAPostThatIsNotBeginInvokeAtBackgroundPriority(string from, string to)
     {
         Assert.NotEmpty(PostViolations(Mutate(Bridge(), from, to)));
+    }
+
+    [Theory]
+    [InlineData("_idleScheduler.SetPost(action => _dispatcher.BeginInvoke(DispatcherPriority.Background, action));", "_idleScheduler.SetPost(a => _dispatcher.BeginInvoke(DispatcherPriority.Background, a));")]
+    [InlineData("_idleScheduler.SetPost(action => _dispatcher.BeginInvoke(DispatcherPriority.Background, action));", "_idleScheduler.SetPost(action => { _dispatcher.BeginInvoke(DispatcherPriority.Background, action); });")]
+    [InlineData("_idleScheduler.SetPost(action => _dispatcher.BeginInvoke(DispatcherPriority.Background, action));", "_idleScheduler.SetPost(action => Post(action));")]
+    public void G3_ItTripsWhenTheArgumentOfSetPostIsNotTheExactPost(string from, string to)
+    {
+        Assert.Empty(PostViolations(Bridge()));
+        Assert.NotEmpty(PostViolations(Mutate(Bridge(), from, to)));
+    }
+
+    [Fact]
+    public void G3_TheOtherOrderOfTheOverloadIsAnExactPostToo()
+    {
+        var swapped = Mutate(Bridge(), "BeginInvoke(DispatcherPriority.Background, action)", "BeginInvoke(action, DispatcherPriority.Background)");
+
+        Assert.Empty(PostViolations(swapped));
+    }
+
+    [Theory]
+    [InlineData("ExecuteInApplicationContext(() => { }, null);")]
+    [InlineData("Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.ExecuteInApplicationContext(x, null);")]
+    [InlineData("Dispatcher.Run();")]
+    [InlineData("Dispatcher.CurrentDispatcher.Run ();")]
+    public void G3_ItTripsOnAnotherWayToRunTheContinuationInTheApplicationContextOrToRunTheDispatcher(string injected)
+    {
+        Assert.Empty(PostViolations(Bridge()));
+        Assert.NotEmpty(PostViolations(Bridge() + "\n" + injected));
     }
 
     [Fact]
@@ -453,7 +568,7 @@ public class WorkspaceIdleSchedulingGuardTests
     [Theory]
     [InlineData("document?.TransactionManager.TopTransaction", "document?.Database.TransactionManager.TopTransaction")]
     [InlineData("document?.TransactionManager.TopTransaction", "document?.TransactionManager.GetObject()")]
-    [InlineData("LogFault(\"AutoCadEventBridge.IdleContinuation\", new InvalidOperationException(", "Debug.Assert(open == null, \"x\"); LogFault(\"AutoCadEventBridge.IdleContinuation\", new InvalidOperationException(")]
+    [InlineData("LogFault(\"AutoCadEventBridge.IdleContinuation.OpenTransaction\", new InvalidOperationException(", "Debug.Assert(open == null, \"x\"); LogFault(\"AutoCadEventBridge.IdleContinuation.OpenTransaction\", new InvalidOperationException(")]
     [InlineData("if (open != null)", "Debug.Fail(\"x\"); if (open != null)")]
     [InlineData("if (open != null)", "RackLog.Warning(\"x\"); if (open != null)")]
     public void G7_ItTripsOnADebugCheckThatReachesTheDatabaseOrAsserts(string from, string to)
@@ -546,7 +661,7 @@ public class WorkspaceIdleSchedulingGuardTests
     [Theory]
     [InlineData("controller", "AssertNoOpenTransaction();", "")]
     [InlineData("bridge", "CheckNoOpenTransactionAfterTheDrain();", "")]
-    [InlineData("bridge", "Contain(\"IdleContinuation\", OnIdle);", "")]
+    [InlineData("bridge", "Contain(\"IdleContinuation.Pass\", OnIdle);", "")]
     public void G9_ItTripsWhenACheckIsMissing(string where, string from, string to)
     {
         var controller = Controller();
@@ -568,12 +683,40 @@ public class WorkspaceIdleSchedulingGuardTests
         var bridge = Bridge();
         var continuation = ContinuationBody(bridge);
         var reversed = continuation
-            .Replace("Contain(\"IdleContinuation\", OnIdle);", "@@PASS@@")
-            .Replace("CheckNoOpenTransactionAfterTheDrain();", "Contain(\"IdleContinuation\", OnIdle);")
+            .Replace("Contain(\"IdleContinuation.Pass\", OnIdle);", "@@PASS@@")
+            .Replace("CheckNoOpenTransactionAfterTheDrain();", "Contain(\"IdleContinuation.Pass\", OnIdle);")
             .Replace("@@PASS@@", "CheckNoOpenTransactionAfterTheDrain();");
 
         Assert.NotEqual(continuation, reversed);
         Assert.NotEmpty(TransactionCheckViolations(Controller(), bridge.Replace(continuation, reversed)));
+    }
+
+    // ================================================================== T2C 4: the documentation and the logging contexts of the bridge
+
+    [Fact]
+    public void T2C4_TheDocumentationOfTheClassNamesTheSchedulerAndThePost()
+    {
+        var text = Src.Text(BridgePath);
+        var classAt = text.IndexOf("public sealed class AutoCadEventBridge", StringComparison.Ordinal);
+        Assert.True(classAt > 0);
+        var summaryAt = text.LastIndexOf("<summary>", classAt, StringComparison.Ordinal);
+        var doc = text.Substring(summaryAt, classAt - summaryAt);
+
+        Assert.Contains("WorkspaceIdleScheduler", doc);
+        Assert.Contains("BeginInvoke", doc);
+        Assert.Contains("background priority", doc);
+    }
+
+    [Fact]
+    public void T2C4_TheFailureOfThePassAndTheDebugNoticeUseDifferentLoggingContexts()
+    {
+        var bridge = Bridge();
+
+        Assert.Equal(1, Src.Count(bridge, @"Contain\s*\(\s*""IdleContinuation\.Pass""\s*,\s*OnIdle\s*\)"));
+        Assert.Equal(1, Src.Count(bridge, @"LogFault\s*\(\s*""AutoCadEventBridge\.IdleContinuation\.OpenTransaction"""));
+        // The context that the two of them used to share is gone, and the contexts are not the same text.
+        Assert.Equal(0, Src.Count(bridge, @"""(?:AutoCadEventBridge\.)?IdleContinuation"""));
+        Assert.NotEqual("AutoCadEventBridge.IdleContinuation.Pass", "AutoCadEventBridge.IdleContinuation.OpenTransaction");
     }
 
     // ================================================================== G-10: the wiring, once, in the constructor of the bridge
@@ -616,6 +759,10 @@ public class WorkspaceIdleSchedulingGuardTests
         {
             if (!post.Value.Contains("BeginInvoke", StringComparison.Ordinal)) yield return "the post is not BeginInvoke";
             if (!post.Value.Contains("DispatcherPriority.Background", StringComparison.Ordinal)) yield return "the post is not at background priority";
+
+            // T2C 2: and the argument is exactly the lambda of the package, in one of the two orders.
+            var argument = PostArgument(constructor);
+            if (argument == null || !ExactPostArguments.Contains(argument, StringComparer.Ordinal)) yield return "the argument of SetPost is not the exact post: " + argument;
         }
 
         if (!Regex.IsMatch(constructor, @"_dispatcher\s*=\s*Dispatcher\.CurrentDispatcher\s*;")) yield return "the dispatcher is not captured from Dispatcher.CurrentDispatcher in the constructor";
@@ -647,7 +794,7 @@ public class WorkspaceIdleSchedulingGuardTests
     [InlineData("_dispatcher.BeginInvoke(DispatcherPriority.Background, action)", "action()")]
     [InlineData("_dispatcher.BeginInvoke(DispatcherPriority.Background, action)", "_dispatcher.BeginInvoke(DispatcherPriority.Normal, action)")]
     [InlineData("_dispatcher = Dispatcher.CurrentDispatcher;", "_dispatcher = null;")]
-    [InlineData("Contain(\"IdleContinuation\", OnIdle);", "OnIdle();")]
+    [InlineData("Contain(\"IdleContinuation.Pass\", OnIdle);", "OnIdle();")]
     [InlineData("_core.CanDrainNow, RunIdleContinuation,", "_core.CanDrainNow, OnIdle,")]
     public void G10_ItTripsWhenTheWiringOfTheConstructorIsNotTheOneOfThePackage(string from, string to)
     {
@@ -659,12 +806,25 @@ public class WorkspaceIdleSchedulingGuardTests
         Assert.NotEmpty(WiringViolations(product));
     }
 
+    [Theory]
+    [InlineData("_idleScheduler.SetPost(action => _dispatcher.BeginInvoke(DispatcherPriority.Background, action));", "_idleScheduler.SetPost(a => _dispatcher.BeginInvoke(DispatcherPriority.Background, a));")]
+    [InlineData("_idleScheduler.SetPost(action => _dispatcher.BeginInvoke(DispatcherPriority.Background, action));", "_idleScheduler.SetPost(action => _dispatcher.BeginInvoke(DispatcherPriority.Background, () => action()));")]
+    public void G10_ItTripsWhenTheArgumentOfSetPostIsNotTheExactLambda(string from, string to)
+    {
+        var product = RealProduct().ToList();
+        var index = product.FindIndex(f => f.Path == BridgePath);
+        Assert.Empty(WiringViolations(product));
+        product[index] = (BridgePath, Mutate(product[index].Code, from, to));
+
+        Assert.NotEmpty(WiringViolations(product));
+    }
+
     [Fact]
     public void G10_TheContinuationMayBeALambdaOrASingleIntermediateMethodThatRunsTheIdlePassContained()
     {
         var product = RealProduct().ToList();
         var index = product.FindIndex(f => f.Path == BridgePath);
-        var lambda = Mutate(product[index].Code, "_core.CanDrainNow, RunIdleContinuation,", "_core.CanDrainNow, () => Contain(\"IdleContinuation\", OnIdle),");
+        var lambda = Mutate(product[index].Code, "_core.CanDrainNow, RunIdleContinuation,", "_core.CanDrainNow, () => Contain(\"IdleContinuation.Pass\", OnIdle),");
         product[index] = (BridgePath, lambda);
 
         Assert.Empty(WiringViolations(product));

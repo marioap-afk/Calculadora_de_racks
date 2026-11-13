@@ -35,7 +35,7 @@ namespace RackCad.Application.Workspace
     /// that may hold unsaved drafts, and the retirement of the drafts of a destroyed session, with a notice when work was lost. It adds
     /// the stale hint of the drain, the lazy reload, the explicit discard and the in-memory "known clean" mark of a session.
     /// </summary>
-    public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor
+    public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort
     {
         /// <summary>Native identity used when no document is open: it matches no session.</summary>
         private const long NoDocumentNativeId = -1;
@@ -528,6 +528,38 @@ namespace RackCad.Application.Workspace
         /// nothing calls it.
         /// </summary>
         public void NotePilotEdit(SessionId session) => _knownClean.Remove(session);
+
+        // ---------------------------------------------------------------- the edit port of the pilot (I-64 F4-T3A, D-T3-02)
+        // The first step of the task: every operation is inert. It changes nothing, reads nothing and never throws.
+
+        EditIntentOutcome IWorkspacePilotEditPort.TryBeginEdit(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented yet.");
+
+        EditCheckOutcome IWorkspacePilotEditPort.TryCheckNow(EditIntentRequest request) => EditCheckOutcome.Unavailable("Not implemented yet.");
+
+        EditIntentOutcome IWorkspacePilotEditPort.TryReload(EditIntentRequest request) => EditIntentOutcome.Unavailable("Not implemented yet.");
+
+        PilotFieldView IWorkspacePilotEditPort.GetField(WorkspaceRequest origin, string rackId) => default;
+
+        PilotFieldResult IWorkspacePilotEditPort.SetPendingText(WorkspaceRequest origin, string rackId, string text) =>
+            PilotFieldResult.Rejected("Not implemented yet.");
+
+        PilotFieldResult IWorkspacePilotEditPort.CommitField(WorkspaceRequest origin, string rackId) =>
+            PilotFieldResult.Rejected("Not implemented yet.");
+
+        PilotBoundaryResult IWorkspacePilotEditPort.CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind) =>
+            new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, Array.Empty<PilotFieldProblem>(), "Not implemented yet.");
+
+        EditDiscardOutcome IWorkspacePilotEditPort.DiscardRack(WorkspaceRequest origin, string rackId) =>
+            EditDiscardOutcome.Rejected("Not implemented yet.");
+
+        EditDiscardOutcome IWorkspacePilotEditPort.DiscardDocument(WorkspaceRequest origin) =>
+            EditDiscardOutcome.Rejected("Not implemented yet.");
+
+        PilotRiskView IWorkspacePilotEditPort.GetRacksAtRisk(WorkspaceRequest origin) => default;
+
+        IReadOnlyList<PilotLossView> IWorkspacePilotEditPort.TakeLossNotices() => Array.Empty<PilotLossView>();
+
+        IReadOnlyList<PilotCloseView> IWorkspacePilotEditPort.TakeCloseNotices() => Array.Empty<PilotCloseView>();
 
         // The advice for one attempt to close the document of the session (D-T2B2-09, D-T2B2-10): the verdict of the close policy,
         // and nothing else. It reads nothing, authorizes nothing, discards nothing and retires nothing. A Veto or a failure leaves the
