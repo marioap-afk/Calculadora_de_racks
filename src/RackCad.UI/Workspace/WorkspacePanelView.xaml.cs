@@ -79,16 +79,16 @@ namespace RackCad.UI.Workspace
             Contained(() => _viewModel.Browser.BeginFieldEditFromTab(RackOf(sender)));
 
         // The field of the pilot (I-64 F4-T3B1). The text typed by the user reaches the view-model only through the setter of the bound
-        // property; here live the buttons, the gestures that open a read-only box and the keys that must never leave the panel.
+        // property; here live the buttons, the gestures that open a read-only box and the keys Enter and Esc of an editable one.
         private void OnBrowserFieldEditClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.BeginFieldEdit());
 
         private void OnBrowserFieldReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadField());
 
-        // A click on a read-only box is the first gesture; the click itself is not consumed.
+        // A click on a read-only box is the first gesture only while the field offers the Edit button; the click itself is not consumed.
         private void OnBrowserFieldBoxPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (_viewModel.Browser.Field.IsEditable) return;
-            Contained(() => _viewModel.Browser.BeginFieldEdit());
+            Contained(() => _viewModel.Browser.BeginFieldEditFromBox());
         }
 
         private void OnBrowserFieldBoxPreviewKeyDown(object sender, KeyEventArgs e)
@@ -96,7 +96,8 @@ namespace RackCad.UI.Workspace
             var field = _viewModel.Browser.Field;
             if (field.IsEditable)
             {
-                // Enter commits and Esc does nothing: both stay in the panel. Esc never reverts the text.
+                // Enter commits and Esc does nothing: both stay in the panel. Esc never reverts the text. Every other key goes to the
+                // editor untouched (no handler of the bubble event marks it), so a character key produces its text input.
                 if (e.Key == Key.Enter)
                 {
                     e.Handled = true;
@@ -110,8 +111,9 @@ namespace RackCad.UI.Workspace
                 return;
             }
 
-            // A read-only box: a key that is not a modifier, Tab or Esc is the first gesture. It is consumed, so it is not typed into a
-            // box that may be editable a moment later and does not leave the panel. Esc is consumed with no gesture.
+            // A read-only box: a key that is not a modifier, Tab or Esc is consumed, so it is not typed into a box that may be editable a
+            // moment later and does not leave the panel. It is the first gesture only while the field offers the Edit button and never
+            // when it is a repetition of a held key. Esc is consumed with no gesture.
             if (e.Key == Key.Escape)
             {
                 e.Handled = true;
@@ -121,14 +123,8 @@ namespace RackCad.UI.Workspace
             if (IsModifierOrNavigation(e.Key)) return;
 
             e.Handled = true;
-            Contained(() => _viewModel.Browser.BeginFieldEdit());
-        }
-
-        // With an editable box, whatever the editor did not consume stays in the panel (Delete, Ctrl+Z, Ctrl+V and the like must not
-        // reach the drawing); only Tab is left to the navigation of the panel.
-        private void OnBrowserFieldBoxKeyDown(object sender, KeyEventArgs e)
-        {
-            if (_viewModel.Browser.Field.IsEditable && e.Key != Key.Tab) e.Handled = true;
+            if (e.IsRepeat) return;
+            Contained(() => _viewModel.Browser.BeginFieldEditFromBox());
         }
 
         // Leaving the box commits the pending text; the view-model does nothing without pending text or with a box that is not editable.

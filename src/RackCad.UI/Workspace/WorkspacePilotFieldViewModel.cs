@@ -104,6 +104,13 @@ namespace RackCad.UI.Workspace
         /// <summary>The Edit button: the box is read-only and a gesture can open it.</summary>
         public bool ShowEditButton => _showEdit;
 
+        /// <summary>
+        /// Whether a click or a key on the box, or the double click on the tab, may start the first gesture: only while the Edit button is
+        /// offered, with no diagnostic of a read that was not admitted for this surface and with no Error. Only the Edit button reads again
+        /// in the other cases, and in the Error state only Reload acts.
+        /// </summary>
+        public bool CanOpenByGesture => _showEdit && !_showReload && _failure == null && _diagnostic == null;
+
         /// <summary>The Reload button of the Error state: it shows the draft again, with no read of the drawing.</summary>
         public bool ShowReloadButton => _showReload;
 

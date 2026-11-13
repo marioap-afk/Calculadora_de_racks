@@ -138,8 +138,8 @@
                     <TextBlock x:Name="BrowserSurfaceStatusText" Text="{Binding Browser.SurfaceStatusText}" Style="{StaticResource OptionalText}"
                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                     <!-- The field of the bounded pilot (I-64 F4-T3B1): ONE box on the ONE surface, shown only with the edit port. The text
-                         is edited only through the setter of the bound property; the gestures that open it and the keys that never
-                         leave the panel are handled in the code-behind. Nothing here writes the drawing. -->
+                         is edited only through the setter of the bound property; the gestures that open it and the keys Enter and
+                         Esc of the editable box are handled in the code-behind; no handler of the bubble KeyDown is attached to the box. Nothing here writes the drawing. -->
                     <StackPanel x:Name="BrowserFieldPanel" Margin="0,8,0,0"
                                 Visibility="{Binding Browser.Field.IsAvailable, Converter={StaticResource FlagToVisibility}}">
                         <TextBlock Text="Escala de anotación" FontWeight="SemiBold"
@@ -150,7 +150,6 @@
                                  IsReadOnly="{Binding Browser.Field.IsReadOnly, Mode=OneWay}"
                                  PreviewMouseLeftButtonDown="OnBrowserFieldBoxPreviewMouseLeftButtonDown"
                                  PreviewKeyDown="OnBrowserFieldBoxPreviewKeyDown"
-                                 KeyDown="OnBrowserFieldBoxKeyDown"
                                  LostFocus="OnBrowserFieldBoxLostFocus" />
                         <TextBlock x:Name="BrowserFieldStateText" Text="{Binding Browser.Field.StateText}" Style="{StaticResource OptionalText}"
                                    Foreground="{DynamicResource ShellTextSecondaryBrush}" />

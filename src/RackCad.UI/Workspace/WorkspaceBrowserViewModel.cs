@@ -192,11 +192,25 @@ namespace RackCad.UI.Workspace
             }
         }
 
-        /// <summary>The double click on a tab button: it is a gesture of the field only when, after the clicks, that tab is the active one.</summary>
+        /// <summary>
+        /// A click or a key on the read-only box: it is the first gesture only while the field offers the Edit button (no diagnostic of
+        /// a read that was not admitted for this surface and no Error). Otherwise it does nothing: only the button reads again.
+        /// </summary>
+        public void BeginFieldEditFromBox()
+        {
+            if (_pilotEdit == null || !Field.CanOpenByGesture) return;
+            BeginFieldEdit();
+        }
+
+        /// <summary>
+        /// The double click on a tab button: it is a gesture of the field only when, after the clicks, that tab is the active one and the
+        /// field offers the Edit button. With an editable box, a diagnostic or an Error it does nothing and keeps the notice.
+        /// </summary>
         public void BeginFieldEditFromTab(string rackId)
         {
-            if (_current == null || rackId == null) return;
+            if (_pilotEdit == null || _current == null || rackId == null) return;
             if (!string.Equals(_current.ActiveRackId, rackId, StringComparison.Ordinal)) return;
+            if (!Field.CanOpenByGesture) return;
             BeginFieldEdit();
         }
 
@@ -349,9 +363,10 @@ namespace RackCad.UI.Workspace
                 else if (_pilotEdit.GetField(origin, priorRack).Exists)
                     _pilotEdit.CrossBoundary(origin, priorRack, PilotBoundaryKind.Dematerialize);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Field.Fail(ex);
+                // The boundary of the previous surface is not the new one's business: a failure here is contained and does not put the
+                // field of the surface that is now live in Error.
             }
         }
 
@@ -517,8 +532,8 @@ namespace RackCad.UI.Workspace
             }
             catch (Exception)
             {
-                // The mark is only information: when the port cannot say, the tab has none.
-                return false;
+                // The conservative answer: when the port cannot say, the tab is treated as protected (it carries the mark and a preview is pinned).
+                return true;
             }
         }
 
