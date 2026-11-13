@@ -981,3 +981,73 @@ El D-T2-06 ratificado solo sacaba la primera.
   - las aserciones Debug existentes;
   - la reentrada de continuaciones;
   - la temporización de pila en el host (D-T2C-05).
+
+## F4-E38. Ratificación del cierre de F4-T2, autorización de F4-T3, división en tres subtareas, paquete v2 y emisión de F4-T3A
+
+**Orden del Owner** (`F4-DRAFTS/coordinator/owner-f4t3-authorization.md`, texto literal):
+- **Ratifica** que F4-T2 queda completa en sus subtareas (F4-E37).
+- **R-T2C-01 queda DIFERIDO** a F6 o F7. Antes de la Owner Validation final hay que probar una de dos cosas:
+  - A: el refresco automático de una superficie Ready tras un evento que invalida su resumen;
+  - B: una UX explícita de «obsoleto» aceptada por el Owner.
+
+  No puede desaparecer.
+- **Autoriza F4-T3** con `attempts` 1 de 3. La preparación ordinaria del paquete, su revisión, la emisión del contrato, la planificación y la ejecución del Worker no necesitan otra autorización del Owner.
+- **Alcance:** UI de edición, texto del campo, texto pendiente, presentación de la validación, marca dirty, transiciones bloqueables y no bloqueables, rematerialización de pestañas, UX de descarte explícito y estado modal de la UI de RackCad.
+- **Prohibiciones:** ninguna mutación authored; ningún Actualizar; solo el campo piloto `AnnotationScale`.
+- **Reglas de contenido:**
+  - **Estado:** `CurrentDraftState` es distinto del texto pendiente, y el pendiente cuenta como dirty.
+  - **Transiciones:**
+    - las bloqueables con texto inválido abortan y conservan el texto, sin reparación automática, descarte silencioso ni commit inválido;
+    - las no bloqueables conservan exactamente y restauran al volver.
+  - **Preview:** el primer gesto fija la preview; una pestaña dirty o con pendiente nunca es una preview reemplazable.
+  - **Marca dirty:** Current ≠ Initial o hay pendiente, sin JSON crudo.
+  - **Descarte:** con cero escrituras y específico de sesión y de rack. Cerrar una pestaña dirty pregunta Descartar o Cancelar, y cerrar nunca hace Actualizar.
+  - **Modal:** los subdiálogos lo activan antes de estar activos y lo limpian en toda salida.
+- **Arrastres:** M-1..M-5 y D-1 de F4-T2B2B, en particular la guarda exacta `_bridge.SetLifecycleAdvisor(_host);`, y los 4 menores de F4-T2C.
+- **Cobertura y oráculo:** cobertura mínima 1-18. El oráculo crítico es cero escrituras authored en el DWG; si falla, STOP.
+- **Regla de nc1 para F4:** si se repite **exactamente** la firma de PD-F4-04, se reutiliza el sustituto de la señal Identity de la propia tarea sin volver al Owner. Cada uso se registra y la salida ordinaria se conserva. La regla vale solo para I-64/F4.
+- **Proceso:** mapear, preparar el paquete, revisarlo de forma independiente, corregir y emitir. Hay una replanificación reforzada única; una segunda falla va con STOP al Coordinator (F4-E31). Si T3 cierra, se prepara F4-T4, que no empieza antes de ese cierre.
+
+**Mapa del código** (paquete §2, medido en `94b4d468`):
+- el núcleo del pendiente y de las fronteras ya existe en `Drafts/`, desde F4-T1;
+- no hay ninguna API fuera de Application para leer o cambiar un borrador, e `IWorkspaceHostPort` es de solo lectura por guarda;
+- `StateChanged` se emite siempre desde `NotifyStateChanged`, a veces dentro de un callback de AutoCAD;
+- en K = 1, la superficie viva es la pestaña activa, y la sincronización por selección puede crear o reemplazar la preview;
+- `SetModalRackCadActive` no tiene llamador en producción;
+- las trampas de nombres y de texto quedan fijadas en H-10 y los arrastres en H-13 y H-14.
+
+**Revisión independiente de la v1** (`F4-T3A-EDIT-PORT/coordinator/package-review-v1.md`): EMITIBLE TRAS CORRECCIONES, con 0 BLOQUEANTE, 9 IMPORTANTE y 12 MENOR. Todos se aplicaron en la v2 (§9). Advirtió de que una T3 única podía evaluarse como Long-horizon.
+
+**Decisión de división del Owner** (`owner-f4t3-decomposition-decision.md`, pregunta y respuesta literales): **«Tres subtareas»**, en orden:
+1. F4-T3A-EDIT-PORT: el puerto de edición del piloto en el host;
+2. F4-T3B-EDIT-UI: la UI del panel;
+3. F4-T3C-CLOSE-DISCARD: `RACKPANELDESCARTAR`, los mensajes en la línea de comandos y el envoltorio del asesor.
+
+Cada subtarea empieza en `attempts` 1 de 3 (F4-E09). El Owner aceptó que la división triplica la capacidad de intentos de T3; no se describe como «9 intentos de T3». Los paquetes de T3B y T3C se fijan tras cerrar la subtarea anterior. Este paquete ya fija sus reglas vinculantes (R-B1..R-B12 y R-C1..R-C4).
+
+**Paquete** `docs/initiatives/I-64-f4-t3-gate-contract-package.md` (v2). F4-T3A crea:
+- `IWorkspacePilotEditPort`, implementado de forma explícita por `WorkspaceHostCore`;
+- el texto mostrado del valor comprometido, de ida y vuelta y sin exponente;
+- una compuerta de reentrada en las lecturas de la intención:
+  - las mutaciones responden `Busy`;
+  - las lecturas anidadas responden `Waiting`;
+- una compuerta de avisos: ninguna lectura dentro de `StateChanged`;
+- una cola de avisos de veto en `AdviseClose`;
+- el ámbito del modal del panel;
+- los arrastres de F4-T2B2B y F4-T2C.
+
+No hay UI, ni comando, ni escritura, ni `+=` nuevos. El alcance son 12 archivos exactos. MinSelected es 2071.
+
+**Re-revisión de la v2** (`package-rereview-v2.md`): EMITIBLE TRAS CORRECCIONES, con 0 BLOQUEANTE, 2 IMPORTANTE y 9 MENOR, todas de texto:
+- **N-1:** el enganche fallido de `BeginDocumentClose` queda como residual de Smoke-2, y `PassGate` no cambia;
+- **N-2:** solo el texto pendiente retiene la pestaña activa (`P5:335-336`).
+
+Todas se aplicaron antes de emitir (§10).
+
+**Residuales y destinos:**
+- R-T2C-01, DIFERIDO a F6 o F7 por orden del Owner;
+- N-2 de F4-E33 y `ReadPreviewWitness`, a F5;
+- `Stop()`, a F7;
+- el enganche fallido de `BeginDocumentClose`, a Smoke-2.
+
+**Decisión:** emitir el contrato de F4-T3A-EDIT-PORT con `attempts` 1 de 3 (AttemptsRemaining 2). La AuthorityRevision es el commit del paquete.

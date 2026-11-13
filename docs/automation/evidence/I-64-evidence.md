@@ -6605,3 +6605,14 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
   - a Smoke-2, el comportamiento real de la continuación.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 163. Ratificación de F4-T2, autorización y paquete de F4-T3
+
+**Decisión:** F4-E38.
+- **Orden del Owner:** F4-T2 ratificada como completa; R-T2C-01 DIFERIDO a F6 o F7, con la prueba A o B antes de la Owner Validation final; F4-T3 autorizada con `attempts` 1 de 3 (`owner-f4t3-authorization.md`).
+- **División:** tres subtareas en orden A, B, C, cada una con 1 de 3 intentos (`owner-f4t3-decomposition-decision.md`).
+- **Mapa:** no hay API fuera de Application para editar un borrador; `StateChanged` puede emitirse dentro de un callback de AutoCAD; K = 1 con la superficie viva en la pestaña activa.
+- **Paquete:** `docs/initiatives/I-64-f4-t3-gate-contract-package.md` v2. F4-T3A crea el puerto de edición del piloto, las compuertas de reentrada y de avisos, la cola de avisos de veto y el ámbito del modal, y aplica los arrastres de F4-T2B2B y F4-T2C. El alcance son 12 archivos.
+- **Revisiones:** la v1 dio EMITIBLE TRAS CORRECCIONES (0/9/12) y la re-revisión de la v2 también (0/2/9). Todo quedó aplicado.
+
+**Límites:** solo documentación; sin AutoCAD.
