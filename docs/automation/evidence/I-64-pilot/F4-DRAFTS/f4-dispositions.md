@@ -1390,3 +1390,55 @@ Medido: T3B tocaría unos 22 archivos, frente a los 12 de T3A, con cambios decla
 - **(b):** aceptar `af63` con una dispensa textual de `Authorities[1]` (precedente F4-E21). La sesión **no** la recomienda: la dispensa dejaría al Worker sin la autoridad del paquete de F4-T3B (§6, R-B2-1 a R-B2-6), porque su prompt se construye desde las Authorities de la delegación.
 
 **Hecho de proceso:** antes de lanzar `e025`, la comprobación de procesos de salida dio 2 participantes. Eran los `bash.exe` de la propia sesión, con la ruta del worktree en su línea de orden (el falso P-02 conocido). Se repitió solo esa comprobación, desde un script, y dio 0.
+
+## F4-E46. F4-T3B2-EDIT-CLOSE-SYNC: planificación adicional, entrega, reinicio y Snapshot H, verificación, controles y cierre
+
+**Planificación** (tras el STOP de F4-E45). El Owner decidió «Una planificación más» (`owner-f4t3b2-planning-decision.md`).
+- La planificación `R20261113T124237Z-05fc`, sobre la BaseSha `b5ae014d`, usó el prompt reforzado con la refutación del falso conflicto.
+- Resultado: fidelidad PASS en las ocho colecciones, A1-A8 8/8, Horizonte Medium; nc4 `R20261113T124616Z-5b28` con su oráculo (solo A3 fail).
+
+**Worker** `R20261113T124709Z-b033`: subagente `claude-sonnet-5-5`/high, 254 turnos y 0 denegaciones.
+- **RED** `c3de6116`: fallan 11 pruebas en Core y 64 en UI. Las 75 son métodos nuevos del RED; ninguna existente falla.
+- **GREEN** `23f67f56`: exactamente las 13 rutas del contrato; el GREEN no toca `tests/`.
+- **CI:** `43440641847` 4/4. El RED `43436204184` tiene Core y UI en failure, como piden los dos `ExpectRed` true.
+
+**Revisiones:**
+- **La directa** (`direct-review.md`): producto conforme, con D-1 (la guarda de las colas en el host) y D-2 (menor de N-3).
+- **La adversarial independiente** (`independent-review.md`): ACEPTABLE CON MENORES (0/0/7), M-1 a M-7.
+
+**Reinicio del equipo** (2026-11-13, 14:38Z):
+- La verificación `R20261113T143518Z-c983` murió sin salida (`interruption.md`).
+- La app de escritorio de Codex se abrió al arrancar y reescribió `config.toml`: las mismas 104 claves en el mismo orden, con algún valor distinto.
+- **Decisión del Owner: «Acepto como Snapshot H»** (`owner-f4-snapshot-h-decision.md`): SHA-256 `A859B66C…`.
+- La sesión no forzó el cierre de la app: no se cerró de forma ordenada. Sus reescrituras posteriores conservaron el hash H.
+
+**Primera ronda:**
+- La verificación `R20261113T145340Z-f5e9` dio `EXECUTION_VERIFIED` 14/14.
+- Controles: nc1 `R20261113T145756Z-d0ef` CONTROL PASS; nc2 `R20261113T150335Z-8ff6` y nc3 `R20261113T150919Z-f6db` CONTROL NOT PASSED. Se conservan tal cual.
+- **Causa, un error de la sesión:**
+  - el prompt de verificación, que los controles copian, decía que la BaseSha era hija directa de la AuthorityRevision con tres rutas de diff; desde la custodia del STOP son 34, todas de `docs/` de la unidad;
+  - el Controller dio Authority como primera en fail en los dos controles;
+  - en nc2, además, la línea de Scope fijaba en 13 las entradas de la delegación, y el Controller dio Scope en pass sin ver la ruta quitada.
+- **Decisión del Owner: «Corregir y repetir»** (`owner-f4t3b2-controls-decision.md`).
+  - La sesión corrigió el hecho.
+  - Además, de forma declarada, quitó el conteo de la línea de Scope.
+
+**Segunda ronda:**
+- La verificación `R20261113T151548Z-4f9b` dio `EXECUTION_VERIFIED` 14/14 sobre `23f67f56`, con el RED acreditado (7 rutas de `tests/`).
+- **Controles, los tres con su oráculo ordinario:**
+  - nc1 `R20261113T151929Z-e076`: CONTROL PASS (Identity, BLOCKED/STOP);
+  - nc2 `R20261113T152336Z-01c3`: CONTROL PASS (Scope primera y única distinta, BLOCKED/STOP);
+  - nc3 `R20261113T152956Z-c886`: CONTROL PASS (FreeText primera y única distinta, REWORK).
+- **Procesos:** la comprobación de entrada de nc2 de la primera ronda dio dos `bash.exe` de la sesión como participantes, por la ruta del worktree en su línea de orden (el falso P-02 conocido); se repitió solo esa comprobación (0). En la segunda ronda, 0 participantes en todas las comprobaciones.
+
+**Cierre** (paso 15 de la disposición de F4-E43): **F4-T3B2-EDIT-CLOSE-SYNC = CLOSED / PASS WITH LIMITATIONS** sobre `23f67f56`, en el intento 1 de 3 (`F4-T3B2-EDIT-CLOSE-SYNC/task-close-package.md`).
+- M-1 a M-7 y D-1 pasan a F4-T3C, que F4-E43 hace dueña de los menores que se le asignen. Ninguno cambia el comportamiento exigido.
+- Smoke-2 recibe los riesgos de foco, de vista y de teclado de la revisión independiente.
+
+**Siguiente:** el paquete de F4-T3C, con revisión independiente. Sus obligaciones:
+- `RACKPANELDESCARTAR` y el aviso con la vía del comando;
+- el endurecimiento de `GetRacksAtRisk`;
+- la integración modal y de foco que quede;
+- los menores arrastrados.
+
+F4-T4 no empieza antes del cierre de F4-T3.

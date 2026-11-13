@@ -1,0 +1,54 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261113T152336Z-01c3",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04",
+    "F4T3B2-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha lists 13 paths. Comparing with delegation.json AllowedWriteScope (12 exact paths) leaves src/RackCad.Application/Workspace/BrowserSession.cs outside the whitelist. It is not in ForbiddenWriteScope; the whitelist is primary."
+  },
+  "OutputSha256": "009B0129AA780BAEC17BA2024BB705B6E6269F7221E6D76FDDEDE5622DE73E98",
+  "ManualFreeText1610": []
+}

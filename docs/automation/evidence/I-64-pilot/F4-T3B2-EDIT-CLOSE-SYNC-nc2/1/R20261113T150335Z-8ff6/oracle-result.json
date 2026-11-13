@@ -1,0 +1,53 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261113T150335Z-8ff6",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Authority",
+  "MutatedCheck": {
+    "Scope": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "fail",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Authority"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha returned 13 paths; all 13 match exact AllowedWriteScope entries and none intersect ForbiddenWriteScope. No path outside the allowlist."
+  },
+  "OutputSha256": "A7B30D2094F8C0F229903EBE20991957AFCA5A78A465AAD763B1D6C614E9B970",
+  "ManualFreeText1610": []
+}

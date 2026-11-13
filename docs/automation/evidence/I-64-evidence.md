@@ -6804,3 +6804,29 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Propuesta de la sesión:** una planificación más, con la refutación explícita del falso conflicto.
 
 **Límites:** solo custodia y documentación; sin AutoCAD.
+
+## 177. F4-T3B2-EDIT-CLOSE-SYNC: planificación, entrega y verificación
+
+**Decisión:** F4-E46.
+- **Planificación** `05fc`, la adicional autorizada por el Owner: fidelidad PASS, A1-A8 8/8 y nc4 `5b28`.
+- **Worker** `b033`: RED `c3de6116` (75 pruebas nuevas fallan, ninguna existente) y GREEN `23f67f56` (13 rutas).
+- **CI:** `43440641847` 4/4.
+- **Reinicio del equipo:** la verificación `c983` se interrumpió sin salida. Snapshot H aceptada por el Owner.
+- **Verificación** `4f9b`: `EXECUTION_VERIFIED`, 14/14, con el prompt corregido. La verificación `f5e9` también dio 14/14, con el hecho viejo.
+- **Revisiones:** la directa, producto conforme; la independiente, ACEPTABLE CON MENORES (0/0/7).
+
+**Límites:** sin AutoCAD; el foco, el modal y el teclado en el host quedan para Smoke-2.
+
+## 178. Controles de F4-T3B2 y cierre
+
+| Control | Ronda 1 (sobre `f5e9`) | Ronda 2 (sobre `4f9b`) |
+|---|---|---|
+| nc1 | `d0ef` CONTROL PASS | `e076` CONTROL PASS (Identity) |
+| nc2 | `8ff6` CONTROL NOT PASSED (Authority por un hecho viejo del prompt; Scope en pass) | `01c3` CONTROL PASS (Scope) |
+| nc3 | `f6db` CONTROL NOT PASSED (Authority por un hecho viejo del prompt; FreeText en fail) | `c886` CONTROL PASS (FreeText) |
+
+- **Ronda 1:** se conserva tal cual. La repetición la decidió el Owner («Corregir y repetir»).
+- **F4-T3B2-EDIT-CLOSE-SYNC = CLOSED / PASS WITH LIMITATIONS** sobre `23f67f56`, en el intento 1 de 3. M-1 a M-7 y D-1 pasan a F4-T3C.
+- **Siguiente:** el paquete de F4-T3C.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.
