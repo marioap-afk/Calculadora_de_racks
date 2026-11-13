@@ -1629,3 +1629,54 @@ F4-T4 no empieza antes del cierre de F4-T3.
 - nc1..nc3 con su oráculo ordinario, conservando cada salida;
 - una regla local solo con la firma exacta de PD-F4-01, PD-F4-04/05 o PD-F4-06;
 - una firma nueva vuelve al Owner.
+
+## F4-E50. F4-T3C2-COMMAND-ADVISOR: entrega, verificación, controles y cierre; F4-T3 completa
+
+**Planificación** `R20261113T203336Z-1d52`, sobre la BaseSha `3b1ee950`:
+- se aceptó a la primera: fidelidad PASS en las ocho colecciones, A1-A8 8/8 y Horizonte Medium;
+- los cuatro paquetes de nombre casi igual (t3c2, t3c, t3 y t3b2) iban fijados por índice;
+- nc4 `R20261113T203654Z-f47e` cumplió su oráculo, con solo A3 en fail.
+
+**Worker** `R20261113T203722Z-54b1`: subagente `claude-sonnet-5-5`/high, 264 turnos y 0 denegaciones.
+- **RED** `730dd7da`: fallan 79 pruebas, 76 de Core y 3 de UI, todas métodos nuevos o cambiados del RED. Ninguna existente falla, y los censos de fuera del filtro pasan.
+- **GREEN** `4e34bb56`: exactamente las 20 rutas del contrato. El GREEN no toca `tests/`.
+- **CI:**
+  - el GREEN `43510803096` tiene los cuatro jobs en success: 2668/2668 en Core y 458/458 en UI en los filtros, y 18206/18206 en la suite completa de Core;
+  - el RED `43508172794` tiene Core y UI en failure, como piden los dos `ExpectRed` true.
+
+**Revisiones:**
+- **La directa** (`direct-review.md`): producto conforme, sin hallazgos. Las tablas T-1, T-2 y T-3 son exactas, y cada guarda cambiada corresponde a un cambio declarado.
+- **La adversarial independiente** (`independent-review.md`): ACEPTABLE CON MENORES (0/0/8), C2-M-1 a C2-M-8, sin ningún escenario de producto que falle.
+  - Los dos principales son guardas de texto que pasarían un mapeo Sí/No invertido (C2-M-1) o un `Authorize` ignorado (C2-M-2).
+  - El código actual es correcto en los dos.
+
+**Verificación** `R20261113T215110Z-28eb`: `EXECUTION_VERIFIED` 14/14 sobre `4e34bb56`.
+
+**Controles** sobre las entradas de `28eb`, con su oráculo ordinario y conservando cada salida:
+- **nc1** `R20261113T215510Z-e8d4`: CONTROL NOT PASSED con la firma exacta de PD-F4-04 que fijó el Owner (`owner-f4t3-authorization.md`):
+  - el CurrentSha falso se detecta, e Identity está en fail con una evidencia que nombra el SHA falso y el HEAD;
+  - Handoff falla primero solo porque la entrega contiene el SHA falso;
+  - `EXECUTION_BLOCKED` / STOP con S-04;
+  - solo difieren consumidores del CurrentSha: Handoff, Identity y Ci, con Remote en pass, un subconjunto de la cascada de F4-T2C.
+  - Se conserva tal cual.
+  - **Por la regla de nc1 de I-64/F4,** vigente según la autorización de F4-T3C2: **sustituto F4T3C2-NC1-IDENTITY-SIGNAL-01** (`F4-T3C2-COMMAND-ADVISOR-nc1-substitute/1/R20261113T215949Z-935f`), **PASS**, con las 7 propiedades y la autoprueba determinista. Es una copia del de F4-T2C con solo el identificador y el ámbito cambiados.
+  - Registro: nc1 = SATISFIED_UNDER_F4T3C2_NC1_IDENTITY_SIGNAL_SUBSTITUTE. PD-F4-04 registra su recurrencia.
+- **nc2** `R20261113T215958Z-9fe0`: CONTROL PASS, con Scope como única comprobación en fail, sobre `IWorkspaceLifecycleAdvisor.cs` y con F4T3C2-C01. Esta vez PD-F4-01 no se reproduce.
+- **nc3** `R20261113T220343Z-6a16`: CONTROL PASS, con FreeText como única comprobación en fail y REWORK.
+
+**Procesos:** 0 participantes en todas las comprobaciones de la cadena. Los «limit reached» de los contadores de los registros de los controles son el texto de la parada S-11 que lee el Controller, no límites de uso.
+
+**Cierre:** **F4-T3C2-COMMAND-ADVISOR = CLOSED / PASS WITH LIMITATIONS** sobre `4e34bb56`, en el intento 1 de 3 (`F4-T3C2-COMMAND-ADVISOR/task-close-package.md`).
+- La autorización del Owner y del Coordinator incluye la custodia y el cierre sin más aprobación para la ejecución ordinaria.
+- C2-M-1 a C2-M-8 pasan a F4-T4 como cambios declarados de su paquete. C2-M-1 y C2-M-2 van primero.
+- **F4-T3 queda completa en el nivel de subtareas:** T3A, T3B1, T3B2, T3C1 y T3C2 están CLOSED / PASS WITH LIMITATIONS.
+
+**Siguiente:** el paquete de F4-T4 sobre el código de `4e34bb56`, con revisión independiente. Sus obligaciones, según la autorización de F4-T3C2:
+- el conflicto o la caducidad externa;
+- Actualizar explícito;
+- PREPARE/MUTATE/POST y la autoridad de escritura authored;
+- la mutación en el contexto de comando y la relectura tras la mutación;
+- la contención de las pistas propias, un único paso de Undo y la atomicidad;
+- además, R-3 de F4-T3C1 y C2-M-1 a C2-M-8.
+
+La mutación authored no empieza sin su contrato. Smoke-2 sigue pendiente de AutoCAD real.

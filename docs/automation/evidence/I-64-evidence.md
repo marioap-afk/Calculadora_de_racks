@@ -6916,3 +6916,34 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **`attempts`:** 1 de 3.
 
 **Límites:** solo documentación en este paso; sin AutoCAD.
+
+## 185. F4-T3C2-COMMAND-ADVISOR: planificación, entrega y verificación
+
+**Decisión:** F4-E50.
+- **Planificación** `1d52`: aceptada a la primera, con fidelidad PASS, A1-A8 8/8 y nc4 `f47e`.
+- **Worker** `54b1`:
+  - RED `730dd7da`: fallan 79 pruebas nuevas o cambiadas, ninguna existente;
+  - GREEN `4e34bb56`: 20 rutas.
+- **CI:** `43510803096` 4/4, con 2668/2668 en Core y 458/458 en UI en los filtros.
+- **Verificación** `28eb`: `EXECUTION_VERIFIED`, 14/14.
+- **Revisiones:**
+  - la directa: producto conforme, sin hallazgos;
+  - la independiente: ACEPTABLE CON MENORES (0/0/8).
+
+**Límites:** sin AutoCAD. Quedan para Smoke-2 `GetKeywords`, el foco, la escritura en la línea de comandos con el host real y el panel tras el comando.
+
+## 186. Controles de F4-T3C2, cierre y F4-T3 completa
+
+| Control | Corrida | Resultado |
+|---|---|---|
+| nc1 | `e8d4` | CONTROL NOT PASSED (firma exacta de PD-F4-04); se conserva tal cual |
+| sustituto de nc1 | `935f` | PASS (F4T3C2-NC1-IDENTITY-SIGNAL-01); nc1 = SATISFIED_UNDER_F4T3C2_NC1_IDENTITY_SIGNAL_SUBSTITUTE |
+| nc2 | `9fe0` | CONTROL PASS (Scope) |
+| nc3 | `6a16` | CONTROL PASS (FreeText) |
+
+- **F4-T3C2-COMMAND-ADVISOR = CLOSED / PASS WITH LIMITATIONS** sobre `4e34bb56`, en el intento 1 de 3.
+- **Menores:** C2-M-1 a C2-M-8 pasan a F4-T4.
+- **F4-T3 queda completa** en el nivel de subtareas.
+- **Siguiente:** el paquete de F4-T4.
+
+**Límites:** solo custodia y documentación; sin AutoCAD.

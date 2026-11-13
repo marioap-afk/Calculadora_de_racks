@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T3C2-COMMAND-ADVISOR",
+  "RunId": "R20261113T220343Z-6a16",
+  "DelegationRunId": "R20261113T203336Z-1d52",
+  "WorkRunId": "R20261113T203722Z-54b1",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true. Cession.StartUtc=2026-11-13T20:37:28Z; OutputWrittenUtc=2026-11-13T15:30:48.929199-06:00 (21:30:48Z), before Cession.EndUtc."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists and matches TaskId, Attempt=1, DelegationRunId, WorkRunId, branch, worktree, and BaseSha. RunId is R20261113T203722Z-54b1; its output timestamp follows cession start."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Using AUTOMATION_PLAN, agent-execution README, and AGENTS.md from MainSha 812baf87; required sections are present. git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha returned 3 paths: evidence, state, and contract docs, each declared UNIT_DOC in the delegation; no EXTERNAL or UNIT_CHANGE path."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json and delegation.json match TaskId, unit, gate, AuthorityRevision, MainSha and scope. byte-fidelity-check.json reports PASS for all 8 compared collections; planning relay records A1-A8 as pass. RequiredTests, invariants and StopConditions agree."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current is architecture/workspace-persistente-rackcad; git rev-parse --show-toplevel matches the handoff worktree. HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad are both 4e34bb56740ea7bd4a53f9a11a143d0af588f2b0. BaseSha and RedSha are ancestors of CurrentSha; git rev-parse confirms the handoff SHAs."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: CurrentRun is completed push to refs/heads/architecture/workspace-persistente-rackcad at exact CurrentSha, success; OriginMainSha=812baf879612320653094a8aaf46aca0bac81383. Entry LsRemoteSha equals CurrentSha. Local refs/remotes/origin/main also resolves to MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha returns 20 paths, exactly the 20 exact-file entries in delegation.AllowedWriteScope; no path is outside that whitelist or within ForbiddenWriteScope. git diff --name-only RedSha CurrentSha -- tests/ is empty. Contract and delegation both declare the checked scope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v for the RunId output path matched .gitignore rule artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 43510803096 is push, exact branch ref and CurrentSha, completed success. All required jobs succeeded: Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application), Build Plugin without AutoCAD. Current TRX: Core 18206/18206 passed; UI 2095 passed, 17 skipped, 0 failed. RedRun 43508172794 is push on the same ref at RedSha; Core and UI jobs failed as expected."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Required filtered tests in TRX: Core selected 2668 (minimum 2517), Current 2668 passed/0 failed; RED 2592 passed/76 failed by assertion. UI selected 458 (minimum 454), Current 458 passed/0 failed; RED 455 passed/3 failed by assertion. Counts agree with worker-handoff TestResults. git diff --name-only ChainBaseSha RedSha -- tests/ (RT/ChainRedFiles) is: tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs; tests/RackCad.Tests/SelectiveEditorOpenTests.cs; tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs; tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs; tests/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncTests.cs. git diff --name-only RedSha CurrentSha -- tests/ is empty, so GREEN preserves RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows two commits, RED and GREEN; each has the declared Co-Authored-By trailer for Claude Sonnet 5.5. Work record effective model is claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. Work record reports launch alias sonnet, effective model claude-sonnet-5-5 and effective effort high; alias is the subagent transport parameter. No routing deviation is declared."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json WorkCompleted contains a literal phrase prohibited by AUTOMATION_PLAN 16.10. This field is included in the required free-text scan."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials, 1 tool error with none pending, and no usage-limit warning. Entry reports ConfigChanged=false and config hash A859B66CC9A4631FEC01AA2E798AAC4F7E07F911352735A6A35D8169D9639864, the accepted Snapshot H hash."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "FreeText fails: WorkCompleted contains a prohibited phrase under AUTOMATION_PLAN 16.10."
+  ],
+  "RecommendedNextAction": "Remove the prohibited phrase from WorkCompleted and submit a corrected handoff for re-verification."
+}
