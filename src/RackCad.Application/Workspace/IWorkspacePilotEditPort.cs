@@ -18,7 +18,8 @@ namespace RackCad.Application.Workspace
     ///   <see cref="TakeLossNotices"/>, whose notices belong to sessions that no longer exist;
     /// - only the three operations of the edit intention read the drawing, each in one action of the user; none of the operations
     ///   writes anything;
-    /// - every exception is contained as a value with a reason and the session is not degraded;
+    /// - every exception is contained as a value with a reason and the session is not degraded; the one of <see cref="GetRacksAtRisk"/>
+    ///   is contained as the unknown value (<see cref="PilotRiskView.IsKnown"/> false) and its reason goes to the log;
     /// - while one of the three reads is in progress, every operation that changes something answers Busy and a second read answers
     ///   Waiting, all without effect, so a key pressed during a read is never lost in silence.
     /// </summary>
@@ -62,7 +63,10 @@ namespace RackCad.Application.Workspace
         /// <summary>The explicit discard of the work of every rack of the session, with the same contract as the host operation.</summary>
         EditDiscardOutcome DiscardDocument(WorkspaceRequest origin);
 
-        /// <summary>The racks of the session whose work would be lost. Memory only: it authorizes nothing and never throws.</summary>
+        /// <summary>
+        /// The racks of the session whose work would be lost. Memory only: it authorizes nothing and never throws. When it could not
+        /// be decided it answers the default value, whose <see cref="PilotRiskView.IsKnown"/> is false: never "nothing at risk".
+        /// </summary>
         PilotRiskView GetRacksAtRisk(WorkspaceRequest origin);
 
         /// <summary>Takes, oldest first, every notice of lost work that nobody consumed, and leaves the queue empty.</summary>
@@ -175,6 +179,7 @@ namespace RackCad.Application.Workspace
             CommittedTextReason = committedTextReason;
             PendingText = pendingText;
             PendingMessage = pendingMessage;
+            ErrorReason = errorReason;
         }
 
         /// <summary>True when there is work for the rack.</summary>
@@ -199,8 +204,11 @@ namespace RackCad.Application.Workspace
         /// <summary>The message of the validation of <see cref="PendingText"/>; null when there is none or it is valid.</summary>
         public string? PendingMessage { get; }
 
-        /// <summary>The reason of the Error of the work. Null for now.</summary>
-        public string? ErrorReason => null;
+        /// <summary>
+        /// The reason of the Error of the work, exactly as whoever produced the Error gave it; null in every other state and when none was
+        /// given.
+        /// </summary>
+        public string? ErrorReason { get; }
     }
 
     /// <summary>The answer to an operation on the field. The view is set for Applied and Invalid; the reason for the other statuses.</summary>
@@ -273,20 +281,28 @@ namespace RackCad.Application.Workspace
         public string? Reason { get; }
     }
 
-    /// <summary>The racks of a session whose work would be lost. Both lists are ordered (ordinal) and never null.</summary>
+    /// <summary>
+    /// The racks of a session whose work would be lost. Both lists are ordered (ordinal) and never null.
+    /// The value built with the constructor is known (<see cref="IsKnown"/> is true). The default value is the unknown: it means that
+    /// it could not be decided which racks are at risk, and then both lists are empty and say nothing. It is never "nothing at risk".
+    /// </summary>
     public readonly struct PilotRiskView
     {
+        private readonly bool _known;
         private readonly IReadOnlyList<string>? _rackIds;
         private readonly IReadOnlyList<string>? _uncertainRackIds;
 
         public PilotRiskView(IReadOnlyList<string> rackIds, IReadOnlyList<string> uncertainRackIds)
         {
+            _known = true;
             _rackIds = (rackIds ?? throw new ArgumentNullException(nameof(rackIds))).ToArray();
             _uncertainRackIds = (uncertainRackIds ?? throw new ArgumentNullException(nameof(uncertainRackIds))).ToArray();
         }
 
-        /// <summary>Constant for now.</summary>
-        public bool IsKnown => true;
+        /// <summary>
+        /// True when the lists say what is at risk. False for the default value: it could not be decided, and the lists mean nothing.
+        /// </summary>
+        public bool IsKnown => _known;
 
         /// <summary>The racks whose work is known to be at risk.</summary>
         public IReadOnlyList<string> RackIds => _rackIds ?? Array.Empty<string>();

@@ -57,7 +57,9 @@ namespace RackCad.UI.Workspace
         /// </param>
         /// <param name="browserSummary">
         /// The read-only summary port of the browser (I-64 F3-T2). Optional: without it the browser is inert and the panel behaves
-        /// exactly as before. It is asked only for the rack of the live surface, never when the panel is built.
+        /// exactly as before. It is asked for the summary only of the rack of the live surface. Building the panel with the edit port
+        /// of the pilot may ask it whether a session lives (a query of memory, to purge a notice of veto in the queue); a failure of that
+        /// query is the contained Error of the panel.
         /// </param>
         /// <param name="pilotEdit">
         /// The edit port of the bounded pilot (I-64 F4-T3B1). Optional: without it the browser has no field of the pilot and no mark of
@@ -70,7 +72,16 @@ namespace RackCad.UI.Workspace
             _setInstrumentationEnabled = setInstrumentationEnabled ?? throw new ArgumentNullException(nameof(setInstrumentationEnabled));
             Navigation = new WorkspaceNavigationViewModel(navigation, Refresh);
             Browser = new WorkspaceBrowserViewModel(browserSummary, RepresentNavigation, pilotEdit);
-            Present(InitialSnapshot(), null);
+            try
+            {
+                Present(InitialSnapshot(), null);
+            }
+            catch (Exception ex)
+            {
+                // The first presentation consumes the queues of notices and may ask whether a session lives: a failure there is the
+                // contained Error of the panel, and the retry recovers it. Building the panel never throws because of it.
+                EnterError(ex);
+            }
         }
 
         // ------------------------------------------------------------------ what the panel shows

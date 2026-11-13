@@ -41,9 +41,9 @@ namespace RackCad.Application.Workspace
         // instance field of the host.
         private static readonly PushBackPilotFieldAdapter PilotFieldAdapter = new();
 
-        private const string PilotReadInProgressReason = "A read of the pilot is in progress.";
-        private const string NotThisDocumentReason = "The request does not belong to the active document.";
-        private const string NoDraftReason = "There is no draft for the rack.";
+        private const string PilotReadInProgressReason = "Hay una lectura del piloto en curso.";
+        private const string NotThisDocumentReason = "La petición no es del documento activo.";
+        private const string NoDraftReason = "No hay borrador para el rack.";
 
         /// <summary>Native identity used when no document is open: it matches no session.</summary>
         private const long NoDocumentNativeId = -1;
@@ -296,7 +296,7 @@ namespace RackCad.Application.Workspace
                 // 1, continued: a witness that is present must carry a key; one without it is a failure of the request, before the
                 // reader, the gate and the registry are touched, and the witness is not evaluated.
                 if (HasWitnessWithoutKey(request))
-                    return EditIntentOutcome.Failed("The preview witness has no key.");
+                    return EditIntentOutcome.Failed("El testigo de la vista previa no tiene clave.");
 
                 // 2 to 5: the reader, the probe of the active document, the modal or the command, the authorization.
                 var gate = PassGate(request.Session, out var reason);
@@ -315,15 +315,15 @@ namespace RackCad.Application.Workspace
                         break;
                     case EditIntentReadStatus.NoActiveDocument:
                     case EditIntentReadStatus.Busy:
-                        return EditIntentOutcome.Waiting(read.Reason ?? "The drawing is not ready to be read.");
+                        return EditIntentOutcome.Waiting(read.Reason ?? "El dibujo no está listo para leerse.");
                     case EditIntentReadStatus.Rejected:
-                        return EditIntentOutcome.Rejected(read.Reason ?? "The request does not belong to the active document.");
+                        return EditIntentOutcome.Rejected(read.Reason ?? "La petición no es del documento activo.");
                     default:
-                        return EditIntentOutcome.Failed(read.Reason ?? "The read of the edit intention failed.");
+                        return EditIntentOutcome.Failed(read.Reason ?? "Falló la lectura de la intención de edición.");
                 }
 
                 var pilot = read.PilotRead;
-                if (pilot == null) return EditIntentOutcome.Failed("The read of the edit intention carries no result.");
+                if (pilot == null) return EditIntentOutcome.Failed("La lectura de la intención de edición no trajo resultado.");
                 var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
 
                 // 8: the base of the read only goes to Begin, with the comparer and the copier of the pilot.
@@ -347,7 +347,7 @@ namespace RackCad.Application.Workspace
                             pilot.ClassicEditorHint,
                             witness);
                     default:
-                        return EditIntentOutcome.Rejected("The session was retired.", witness);
+                        return EditIntentOutcome.Rejected("La sesión se retiró.", witness);
                 }
             }
             catch (Exception ex)
@@ -370,11 +370,11 @@ namespace RackCad.Application.Workspace
 
                 // 1: a blank RackId has no draft, and the registry would throw on it.
                 if (string.IsNullOrWhiteSpace(request.RackId))
-                    return EditCheckOutcome.NotFound("A blank rack has no draft.");
+                    return EditCheckOutcome.NotFound("Un rack sin identificador no tiene borrador.");
 
                 // 1, continued: the same request error as the intention; nothing is read and the draft is not touched.
                 if (HasWitnessWithoutKey(request))
-                    return EditCheckOutcome.Failed("The preview witness has no key.");
+                    return EditCheckOutcome.Failed("El testigo de la vista previa no tiene clave.");
 
                 // 2 to 5: the same gate as the intention; nothing is read.
                 var gate = PassGate(request.Session, out var reason);
@@ -384,9 +384,9 @@ namespace RackCad.Application.Workspace
 
                 // 6: only an Unknown draft after a commit that threw is checked; nothing is read for any other.
                 var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
-                if (draft == null) return EditCheckOutcome.NotFound("There is no draft for the rack.");
+                if (draft == null) return EditCheckOutcome.NotFound("No hay borrador para el rack.");
                 if (draft.Status != DraftStatus.Unknown || draft.UnknownOrigin != DraftUnknownOrigin.CommitThrew)
-                    return EditCheckOutcome.NotApplicable("The draft is not unknown after a commit that threw.");
+                    return EditCheckOutcome.NotApplicable("El borrador no quedó desconocido tras una aplicación fallida.");
 
                 // 7: the one reread.
                 var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
@@ -396,15 +396,15 @@ namespace RackCad.Application.Workspace
                         break;
                     case EditIntentReadStatus.NoActiveDocument:
                     case EditIntentReadStatus.Busy:
-                        return EditCheckOutcome.Waiting(read.Reason ?? "The drawing is not ready to be read.");
+                        return EditCheckOutcome.Waiting(read.Reason ?? "El dibujo no está listo para leerse.");
                     case EditIntentReadStatus.Rejected:
-                        return EditCheckOutcome.Rejected(read.Reason ?? "The request does not belong to the active document.");
+                        return EditCheckOutcome.Rejected(read.Reason ?? "La petición no es del documento activo.");
                     default:
-                        return EditCheckOutcome.Failed(read.Reason ?? "The reread failed.");
+                        return EditCheckOutcome.Failed(read.Reason ?? "Falló la relectura.");
                 }
 
                 var pilot = read.PilotRead;
-                if (pilot == null) return EditCheckOutcome.Failed("The reread carries no result.");
+                if (pilot == null) return EditCheckOutcome.Failed("La relectura no trajo resultado.");
 
                 // 8: the base of the reread only goes to CheckNow.
                 var check = draft.CheckNow(pilot.StaleBase);
@@ -417,7 +417,7 @@ namespace RackCad.Application.Workspace
                         _knownClean.Remove(request.Session);
                         return EditCheckOutcome.Conflict(DescribeDifferences(check.Differences));
                     default:
-                        return EditCheckOutcome.NotApplicable("The draft is not unknown after a commit that threw.");
+                        return EditCheckOutcome.NotApplicable("El borrador no quedó desconocido tras una aplicación fallida.");
                 }
             }
             catch (Exception ex)
@@ -453,7 +453,7 @@ namespace RackCad.Application.Workspace
 
                 // 1, continued: the same request error as the intention, before the reader, the gate and the draft are touched.
                 if (HasWitnessWithoutKey(request))
-                    return EditIntentOutcome.Failed("The preview witness has no key.");
+                    return EditIntentOutcome.Failed("El testigo de la vista previa no tiene clave.");
 
                 // 2 to 5: the same gate as the intention; nothing is read.
                 var gate = PassGate(request.Session, out var reason);
@@ -463,8 +463,8 @@ namespace RackCad.Application.Workspace
 
                 // 6: only a clean draft marked as possibly stale is reloaded; nothing is read for any other.
                 var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
-                if (draft == null) return EditIntentOutcome.NotFound("There is no draft for the rack.");
-                if (!draft.NeedsLazyReload) return EditIntentOutcome.NotNeeded("The draft does not need to be reloaded.");
+                if (draft == null) return EditIntentOutcome.NotFound("No hay borrador para el rack.");
+                if (!draft.NeedsLazyReload) return EditIntentOutcome.NotNeeded("El borrador no necesita recargarse.");
 
                 // 7: the one read.
                 var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
@@ -474,15 +474,15 @@ namespace RackCad.Application.Workspace
                         break;
                     case EditIntentReadStatus.NoActiveDocument:
                     case EditIntentReadStatus.Busy:
-                        return EditIntentOutcome.Waiting(read.Reason ?? "The drawing is not ready to be read.");
+                        return EditIntentOutcome.Waiting(read.Reason ?? "El dibujo no está listo para leerse.");
                     case EditIntentReadStatus.Rejected:
-                        return EditIntentOutcome.Rejected(read.Reason ?? "The request does not belong to the active document.");
+                        return EditIntentOutcome.Rejected(read.Reason ?? "La petición no es del documento activo.");
                     default:
-                        return EditIntentOutcome.Failed(read.Reason ?? "The read for the reload failed.");
+                        return EditIntentOutcome.Failed(read.Reason ?? "Falló la lectura para la recarga.");
                 }
 
                 var pilot = read.PilotRead;
-                if (pilot == null) return EditIntentOutcome.Failed("The read for the reload carries no result.");
+                if (pilot == null) return EditIntentOutcome.Failed("La lectura para la recarga no trajo resultado.");
                 var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
 
                 // 8: the read only goes to DiscardAndReload.
@@ -499,9 +499,9 @@ namespace RackCad.Application.Workspace
                             pilot.ClassicEditorHint,
                             witness);
                     case DraftReloadStatus.NotAllowed:
-                        return EditIntentOutcome.Waiting("The draft is being applied or is no longer registered.");
+                        return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
                     default:
-                        return EditIntentOutcome.Failed("The draft was not reloaded.");
+                        return EditIntentOutcome.Failed("El borrador no se recargó.");
                 }
             }
             catch (Exception ex)
@@ -522,7 +522,7 @@ namespace RackCad.Application.Workspace
             try
             {
                 if (Authorize(new WorkspaceRequest(session)) != RequestDecision.Accepted)
-                    return EditDiscardOutcome.Rejected("The request does not belong to the active document.");
+                    return EditDiscardOutcome.Rejected("La petición no es del documento activo.");
 
                 var discarded = _drafts.DiscardAllByUser(session);
                 _knownClean.Remove(session);
@@ -603,7 +603,7 @@ namespace RackCad.Application.Workspace
             catch (Exception ex)
             {
                 Report("WorkspaceHostCore.GetField", ex);
-                return new PilotFieldView(true, PilotFieldState.Error, false, true, false, null, "The state of the field could not be read.", null, null);
+                return new PilotFieldView(true, PilotFieldState.Error, false, true, false, null, "No se pudo leer el estado del campo.", null, null);
             }
         }
 
@@ -614,15 +614,15 @@ namespace RackCad.Application.Workspace
             {
                 if (Authorize(origin) != RequestDecision.Accepted) return PilotFieldResult.Rejected(NotThisDocumentReason);
                 if (_pilotReadInProgress) return PilotFieldResult.Busy(PilotReadInProgressReason);
-                if (text == null) return PilotFieldResult.Rejected("The text is required.");
+                if (text == null) return PilotFieldResult.Rejected("El texto es obligatorio.");
 
                 var draft = FindPilotDraft(origin.Origin, rackId);
                 if (draft == null) return PilotFieldResult.NotEditable(NoDraftReason, default);
                 var before = ViewOfPilotDraft(draft);
-                if (!before.CanEdit) return PilotFieldResult.NotEditable("The field cannot be edited now.", before);
+                if (!before.CanEdit) return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", before);
 
                 var edit = draft.SetPendingText(PushBackPilotFieldAdapter.AnnotationScaleKey, text);
-                if (edit.Status != DraftEditStatus.Updated) return PilotFieldResult.NotEditable("The field cannot be edited now.", before);
+                if (edit.Status != DraftEditStatus.Updated) return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", before);
 
                 NotePilotEdit(origin.Origin);
                 return PilotFieldResult.Applied(ViewOfPilotDraft(draft));
@@ -645,7 +645,7 @@ namespace RackCad.Application.Workspace
                 var draft = FindPilotDraft(origin.Origin, rackId);
                 if (draft == null) return PilotFieldResult.NotEditable(NoDraftReason, default);
                 var before = ViewOfPilotDraft(draft);
-                if (!before.CanEdit) return PilotFieldResult.NotEditable("The field cannot be edited now.", before);
+                if (!before.CanEdit) return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", before);
 
                 var crossed = draft.CrossBoundary(DraftBoundary.TabChange, PilotFieldAdapter);
                 switch (crossed.Decision)
@@ -658,7 +658,7 @@ namespace RackCad.Application.Workspace
                         var message = crossed.InvalidFields.Count > 0 ? crossed.InvalidFields[0].Message : view.PendingMessage;
                         return PilotFieldResult.Invalid(view, message);
                     default:
-                        return PilotFieldResult.NotEditable("The field cannot be edited now.", ViewOfPilotDraft(draft));
+                        return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", ViewOfPilotDraft(draft));
                 }
             }
             catch (Exception ex)
@@ -686,7 +686,7 @@ namespace RackCad.Application.Workspace
                         // The pending text of the draft stays exactly as it is.
                         return new PilotBoundaryResult(kind, PilotBoundaryDecision.Kept, false, none, null);
                     default:
-                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, none, "The boundary is not known.");
+                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, none, "La frontera no se conoce.");
                 }
 
                 if (Authorize(origin) != RequestDecision.Accepted)
@@ -812,7 +812,15 @@ namespace RackCad.Application.Workspace
             while (_lossNotices.Count > 0)
             {
                 var notice = _lossNotices.Dequeue();
-                taken.Add(new PilotLossView(notice.Session, notice.LostRackIds, notice.UncertainRackIds, notice.UncertainReasons));
+                try
+                {
+                    taken.Add(new PilotLossView(notice.Session, notice.LostRackIds, notice.UncertainRackIds, notice.UncertainReasons));
+                }
+                catch (Exception ex)
+                {
+                    // The conversion of one notice failed: that notice is lost and stays only in the log; the next one is still taken.
+                    Report("WorkspaceHostCore.TakeLossNotices", ex);
+                }
             }
 
             return taken;
@@ -820,9 +828,18 @@ namespace RackCad.Application.Workspace
 
         IReadOnlyList<PilotCloseView> IWorkspacePilotEditPort.TakeCloseNotices()
         {
-            var taken = _closeNotices.ToArray();
-            _closeNotices.Clear();
-            return taken;
+            try
+            {
+                var taken = _closeNotices.ToArray();
+                _closeNotices.Clear();
+                return taken;
+            }
+            catch (Exception ex)
+            {
+                // The queue is not emptied: it is taken again at the next presentation.
+                Report("WorkspaceHostCore.TakeCloseNotices", ex);
+                return Array.Empty<PilotCloseView>();
+            }
         }
 
         private DraftSession<PushBackPilotDraftState>? FindPilotDraft(SessionId session, string rackId) =>
@@ -876,7 +893,7 @@ namespace RackCad.Application.Workspace
             string? committed = null;
             string? reason;
             var annotations = draft.CurrentDraftState.Inputs.Annotations;
-            if (annotations == null) reason = "The rack has no annotation scale.";
+            if (annotations == null) reason = "El rack no tiene escala de anotación.";
             else committed = WorkspacePilotValueText.Show(annotations.AnnotationScale, out reason);
 
             string? pending = null;
@@ -888,7 +905,9 @@ namespace RackCad.Application.Workspace
                 message = verdict.IsValid ? null : verdict.Message;
             }
 
-            return new PilotFieldView(true, state, draft.IsPossiblyStale, isProtected, canEdit, committed, reason, pending, message);
+            // The reason of the Error travels only in the state Error, exactly as the draft holds it.
+            var errorReason = state == PilotFieldState.Error ? draft.ErrorReason : null;
+            return new PilotFieldView(true, state, draft.IsPossiblyStale, isProtected, canEdit, committed, reason, pending, message, errorReason);
         }
 
         private static PilotFieldState StateOfDraft(DraftStatus status)
@@ -943,15 +962,17 @@ namespace RackCad.Application.Workspace
 
         // The session was destroyed (D-T2B2-10, D-T2B2-13). It always retires the drafts: without the comparer only when the mark of the
         // host and the intact close sequence of the bridge both hold, conservatively in any other case. Afterwards, and only when work
-        // was lost, the notice is queued and logged on the spot. The retirement and the notice are contained apart.
+        // was lost, the notice is queued and logged on the spot. The retirement and the notice are contained apart. The notice of a vetoed
+        // close of the session is dropped inside the first try, after the retirement: if the retirement threw, the veto notice stays and
+        // the panel purges it when its session no longer lives.
         void IWorkspaceLifecycleAdvisor.SessionDestroyed(SessionId session, bool closeSequenceIntact)
         {
             var marked = _knownClean.Remove(session);
-            DropCloseNotice(session);
             DraftLossNotice? notice = null;
             try
             {
                 notice = marked && closeSequenceIntact ? _drafts.RetireKnownSafe(session) : _drafts.RetireConservative(session);
+                DropCloseNotice(session);
             }
             catch (Exception ex)
             {
@@ -1015,31 +1036,31 @@ namespace RackCad.Application.Workspace
             reason = string.Empty;
             if (_editIntentReader == null)
             {
-                reason = "No reader of the edit intention is assigned.";
+                reason = "No hay un lector de la intención de edición asignado.";
                 return EditGate.Unavailable;
             }
 
             if (!_probe.ActiveDocumentNativeId.HasValue)
             {
-                reason = "There is no active document.";
+                reason = "No hay documento activo.";
                 return EditGate.Waiting;
             }
 
             if (_modalRackCadActive)
             {
-                reason = "A RackCad window is open.";
+                reason = "Hay una ventana de RackCad abierta.";
                 return EditGate.Waiting;
             }
 
             if (!_probe.IsActiveDocumentQuiescent)
             {
-                reason = "A command is in progress.";
+                reason = "Hay un comando en curso.";
                 return EditGate.Waiting;
             }
 
             if (Authorize(new WorkspaceRequest(session)) != RequestDecision.Accepted)
             {
-                reason = "The request does not belong to the active document.";
+                reason = "La petición no es del documento activo.";
                 return EditGate.Rejected;
             }
 

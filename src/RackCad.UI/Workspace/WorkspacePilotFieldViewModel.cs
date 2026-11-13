@@ -368,8 +368,7 @@ namespace RackCad.UI.Workspace
         {
             if (_failure != null) return "Error: " + _failure;
             if (!view.Exists) return _diagnostic != null ? "No editable aquí" : "Sin borrador.";
-            if (view.State == PilotFieldState.Error)
-                return "Error: " + (string.IsNullOrWhiteSpace(view.CommittedTextReason) ? "sin detalle." : view.CommittedTextReason);
+            if (view.State == PilotFieldState.Error) return "Error: " + ErrorDetailOf(view);
 
             string state;
             if (_readyNote && _editable && view.State == PilotFieldState.Clean && view.PendingText == null) state = "Listo para editar";
@@ -378,6 +377,13 @@ namespace RackCad.UI.Workspace
             if (view.IsPossiblyStale) state = state + " (posiblemente obsoleto)";
             if (view.CommittedText == null && !string.IsNullOrWhiteSpace(view.CommittedTextReason)) state = state + ": " + view.CommittedTextReason;
             return state;
+        }
+
+        // The reason of the Error of the draft when the port carries it; otherwise the reason of the committed text, and then no detail.
+        private static string ErrorDetailOf(PilotFieldView view)
+        {
+            if (!string.IsNullOrWhiteSpace(view.ErrorReason)) return view.ErrorReason;
+            return string.IsNullOrWhiteSpace(view.CommittedTextReason) ? "sin detalle." : view.CommittedTextReason;
         }
 
         private static string NameOf(PilotFieldState state)
@@ -426,11 +432,13 @@ namespace RackCad.UI.Workspace
 
         private static string RefusalOf(PilotFieldResult result)
         {
-            var reason = string.IsNullOrWhiteSpace(result.Reason) ? "sin detalle." : result.Reason;
+            var noReason = string.IsNullOrWhiteSpace(result.Reason);
+            var reason = noReason ? "sin detalle." : result.Reason;
             switch (result.Status)
             {
-                case PilotFieldStatus.Busy: return "El texto no se aplicó: hay una lectura en curso. " + reason;
-                case PilotFieldStatus.NotEditable: return "El texto no se aplicó: el campo no se puede editar ahora. " + reason;
+                // The reason of the port already says it in Spanish: it is shown alone, and the generic text only stands in for a missing one.
+                case PilotFieldStatus.Busy: return "El texto no se aplicó: " + (noReason ? "hay una lectura en curso." : result.Reason);
+                case PilotFieldStatus.NotEditable: return "El texto no se aplicó: " + (noReason ? "el campo no se puede editar ahora." : result.Reason);
                 case PilotFieldStatus.Invalid: return "El texto no es válido: " + (result.Message ?? reason);
                 default: return "El texto no se aplicó: " + reason;
             }

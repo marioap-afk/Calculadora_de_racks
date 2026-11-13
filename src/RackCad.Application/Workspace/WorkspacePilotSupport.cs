@@ -23,7 +23,7 @@ namespace RackCad.Application.Workspace
             reason = null;
             if (double.IsNaN(value) || double.IsInfinity(value) || value <= 0.0)
             {
-                reason = "The value is not a finite number greater than zero.";
+                reason = "El valor no es un número finito mayor que cero.";
                 return null;
             }
 
@@ -153,7 +153,7 @@ namespace RackCad.Application.Workspace
     public sealed class WorkspacePilotEditGate : IWorkspacePilotEditPort
     {
         /// <summary>The reason of the Waiting answers of the gate.</summary>
-        public const string InsideNoticeReason = "A notice of the panel is being delivered.";
+        public const string InsideNoticeReason = "Se está entregando un aviso del panel.";
 
         private readonly IWorkspacePilotEditPort _inner;
         private readonly WorkspaceNoticeDepth _depth;

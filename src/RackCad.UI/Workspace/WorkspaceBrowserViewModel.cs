@@ -84,6 +84,8 @@ namespace RackCad.UI.Workspace
         }
 
         private const string NoRiskText = "No hay borradores en riesgo en este documento; no se descartó nada.";
+        private const string UnknownRiskText = "No se pudo decidir qué borradores están en riesgo en este documento; no se descartó nada.";
+        private const string UnknownRiskAgainText = "No se pudieron volver a comprobar los borradores en riesgo; no se descartó nada.";
 
         private readonly IWorkspaceBrowserSummaryPort _port;
         private readonly Action _tabChanged;
@@ -116,6 +118,7 @@ namespace RackCad.UI.Workspace
         private string _confirmRack;
         private IReadOnlyList<string> _confirmRacks = Array.Empty<string>();
         private IReadOnlyList<string> _confirmUncertain = Array.Empty<string>();
+        private bool _confirmUnread;
         private readonly List<StoredNotice> _stored = new();
         private IReadOnlyList<WorkspaceBrowserNoticeItem> _notices = Array.Empty<WorkspaceBrowserNoticeItem>();
         private long _lossSerial;
@@ -276,7 +279,7 @@ namespace RackCad.UI.Workspace
 
                 if (!view.HasValue || view.Value.IsProtected)
                 {
-                    Ask(ConfirmationKind.CloseTab, session, rackId);
+                    Ask(ConfirmationKind.CloseTab, session, rackId, !view.HasValue);
                     return;
                 }
 
@@ -290,6 +293,7 @@ namespace RackCad.UI.Workspace
                 }
                 catch (Exception ex)
                 {
+                    RemoveConfirmation();
                     notice = CleanDraftKeptText(ReasonOf(ex));
                 }
 
@@ -369,6 +373,14 @@ namespace RackCad.UI.Workspace
                     return;
                 }
 
+                // The unknown is never "nothing at risk": nothing is asked and nothing is discarded.
+                if (!risks.IsKnown)
+                {
+                    if (_confirmKind == ConfirmationKind.DiscardDocument) RemoveConfirmation();
+                    PostNotice(UnknownRiskText);
+                    return;
+                }
+
                 if (risks.RackIds.Count == 0 && risks.UncertainRackIds.Count == 0)
                 {
                     if (_confirmKind == ConfirmationKind.DiscardDocument) RemoveConfirmation();
@@ -421,6 +433,13 @@ namespace RackCad.UI.Workspace
                     catch (Exception ex)
                     {
                         FailGesture(ex, "No se pudieron leer los borradores en riesgo: ");
+                        return;
+                    }
+
+                    if (!again.IsKnown)
+                    {
+                        RemoveConfirmation();
+                        PostNotice(UnknownRiskAgainText);
                         return;
                     }
 
@@ -513,7 +532,10 @@ namespace RackCad.UI.Workspace
             RemoveConfirmation();
         }
 
-        /// <summary>The Understood button of a row of notice: it removes that row. It asks nothing of the port.</summary>
+        /// <summary>
+        /// The Understood button of a row of notice: it removes that row and shows the marks of the tabs again from the memory of the
+        /// port (the same queries of memory as a presentation). It never reads the drawing nor the intention of the pilot.
+        /// </summary>
         public void DismissNotice(string key)
         {
             BeginGesture();
@@ -651,18 +673,28 @@ namespace RackCad.UI.Workspace
 
             var rack = context.RackId;
             var active = _current.ActiveRackId;
-            var keepActive = isNew && !string.IsNullOrWhiteSpace(rack) && KeepsActive(id, active);
+            // Assigned before the chain: KeepsActive is only reached when the chain gets to it, and the notice reads the flag afterwards.
+            var couldNotCheck = false;
+            var keepActive = isNew && !string.IsNullOrWhiteSpace(rack) && KeepsActive(id, active, out couldNotCheck);
             var change = _current.ApplySelectionContext(context, keepActive);
 
             if (!keepActive || string.Equals(active, rack, StringComparison.Ordinal)) return null;
             if (change == BrowserChange.Created || change == BrowserChange.Replaced)
-                return "La selección abrió " + rack + " en segundo plano; la pestaña activa conserva su texto pendiente.";
-            return "La selección de " + rack + " no cambió la pestaña activa, que conserva su texto pendiente.";
+            {
+                return couldNotCheck
+                    ? "La selección abrió " + rack + " en segundo plano; no se pudo comprobar si la pestaña activa tiene texto pendiente, así que se conserva."
+                    : "La selección abrió " + rack + " en segundo plano; la pestaña activa conserva su texto pendiente.";
+            }
+
+            return couldNotCheck
+                ? "La selección de " + rack + " no cambió la pestaña activa: no se pudo comprobar si tiene texto pendiente."
+                : "La selección de " + rack + " no cambió la pestaña activa, que conserva su texto pendiente.";
         }
 
-        // Only pending text holds the active tab; so does a port that cannot say. A tab that is only dirty does not.
-        private bool KeepsActive(SessionId session, string active)
+        // Only pending text holds the active tab; so does a port that cannot say (couldNotCheck tells that case apart). A tab that is only dirty does not.
+        private bool KeepsActive(SessionId session, string active, out bool couldNotCheck)
         {
+            couldNotCheck = false;
             if (_pilotEdit == null || active == null) return false;
 
             try
@@ -671,6 +703,7 @@ namespace RackCad.UI.Workspace
             }
             catch (Exception)
             {
+                couldNotCheck = true;
                 return true;
             }
         }
@@ -906,7 +939,8 @@ namespace RackCad.UI.Workspace
             var reason = string.IsNullOrWhiteSpace(outcome.Reason) ? "sin detalle." : outcome.Reason;
             switch (outcome.Status)
             {
-                case EditDiscardStatus.Busy: return "hay una lectura en curso. " + reason;
+                // The reason of the port already says it in Spanish: it is shown alone, and the generic text only stands in for a missing one.
+                case EditDiscardStatus.Busy: return string.IsNullOrWhiteSpace(outcome.Reason) ? "hay una lectura en curso." : outcome.Reason;
                 case EditDiscardStatus.Failed: return "falló. " + reason;
                 case EditDiscardStatus.Rejected: return "se rechazó. " + reason;
                 default: return reason;
@@ -953,11 +987,13 @@ namespace RackCad.UI.Workspace
 
         // ------------------------------------------------------------------ the inline confirmation
 
-        private void Ask(ConfirmationKind kind, SessionId session, string rack)
+        // couldNotRead: the port could not say anything about the tab that is asked to close; the question says so.
+        private void Ask(ConfirmationKind kind, SessionId session, string rack, bool couldNotRead = false)
         {
             _confirmKind = kind;
             _confirmSession = session;
             _confirmRack = rack;
+            _confirmUnread = couldNotRead;
             _confirmRacks = Array.Empty<string>();
             _confirmUncertain = Array.Empty<string>();
             RaiseConfirmation();
@@ -968,6 +1004,7 @@ namespace RackCad.UI.Workspace
             if (_confirmKind == ConfirmationKind.None) return;
             _confirmKind = ConfirmationKind.None;
             _confirmRack = null;
+            _confirmUnread = false;
             _confirmRacks = Array.Empty<string>();
             _confirmUncertain = Array.Empty<string>();
             RaiseConfirmation();
@@ -997,10 +1034,15 @@ namespace RackCad.UI.Workspace
             switch (_confirmKind)
             {
                 case ConfirmationKind.CloseTab:
+                    if (_confirmUnread)
+                        return "No se pudo comprobar la pestaña " + TitleOf(_confirmRack) + "; puede tener trabajo sin aplicar. ¿Descartar lo que tenga y cerrarla?";
                     return "La pestaña " + TitleOf(_confirmRack) + " tiene un borrador con trabajo sin aplicar. ¿Descartarlo y cerrar la pestaña?";
                 case ConfirmationKind.DiscardField:
                     return "¿Descartar el borrador de " + TitleOf(_confirmRack) + "? La pestaña se queda abierta.";
                 default:
+                    if (_confirmRacks.Count == 0)
+                        return "¿Descartar los borradores de este documento? No se pudo decidir si tienen trabajo sin aplicar: " + TitlesOf(_confirmUncertain) + ".";
+
                     var text = "¿Descartar los borradores de este documento? Se perderá el trabajo sin aplicar de: " + TitlesOf(_confirmRacks) + ".";
                     if (_confirmUncertain.Count > 0) text = text + " No se pudo decidir: " + TitlesOf(_confirmUncertain) + ".";
                     return text;
