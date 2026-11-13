@@ -6,8 +6,8 @@ automation_state:
   current_phase: F4
   state: implementing
   gate: none
-  attempts: 1
-  next_action: "F4-T3B1-EDIT-SURFACE: CORRECCION (intento 2 de 3, F4-E41) por el defecto de teclado de la caja editable y los hallazgos de la revision independiente; emitir gate-contract-attempt2.json y ejecutar su cadena"
+  attempts: 2
+  next_action: "F4-T3B1-EDIT-SURFACE: contrato del intento 2 emitido (correccion, AuthorityRevision 9a552361); siguiente: planificacion del Controller, comparacion byte a byte, A1-A8 y Worker"
   last_evidence_commit: 0f49f69160cdffc1d2933d6165d5f472b5793d84
 execution_context:
   mode: manual

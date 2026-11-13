@@ -6702,3 +6702,13 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Decisión delegada:** corrección, intento 2 de 3, con el mismo alcance. El menor 6 pasa a F4-T3C.
 
 **Límites:** sin AutoCAD; las teclas de D-01 en el host quedan para Smoke-2.
+
+## 170. Contrato del intento 2 de F4-T3B1-EDIT-SURFACE
+
+**Contrato:** `I-64-pilot/F4-T3B1-EDIT-SURFACE/coordinator/gate-contract-attempt2.json` (F4-E41), que parte del contrato del intento 1.
+- **Cambios:** los invariantes INV-F4T3B1-03, 04, 06, 07, 09, 11 y 14 ganan su corrección y se añade INV-F4T3B1-15 (el RED de la corrección). El alcance (19 rutas), el `ForbiddenWriteScope`, las paradas y `RequiredTests` no cambian.
+- **Autoridades nuevas:** el análisis, las dos revisiones y el experimento de teclado del intento 1, la decisión delegada y la orden de autonomía del Owner.
+- **Revisiones:** `AuthorityRevision` `9a55236163b687251c8d98ea4fe8d742d96f226c` (custodia del intento 1) y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 2 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
