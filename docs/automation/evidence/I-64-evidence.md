@@ -6675,3 +6675,15 @@ Regla para las siguientes tareas de F4: un rechazo por copia antes del Worker pe
 - **Informe al Owner:** T3B2 consume `GetRacksAtRisk` y las colas antes del endurecimiento de T3C (menor 4); queda como limitación declarada de T3B2.
 
 **Límites:** solo documentación; sin AutoCAD.
+
+## 168. Contrato de F4-T3B1-EDIT-SURFACE
+
+**Contrato:** `I-64-pilot/F4-T3B1-EDIT-SURFACE/coordinator/gate-contract.json` (F4-E40).
+- **Alcance:** lista blanca exacta de 19 rutas, con los cambios declarados de INV-F4T3B1-12 (G-01 a G-04 con su texto exacto nuevo).
+- **`ForbiddenWriteScope`:** 95 entradas.
+- **Invariantes y paradas:** 14 invariantes y 8 paradas propias, entre ellas C08.
+- **Líneas base:** `RackCad.Tests.Workspace` 2251 (`ExpectRed` false) y `RackCad.UI.Tests.Workspace` 248 (`ExpectRed` true).
+- **Revisiones:** `AuthorityRevision` `495f10e60d7bc80ac8ea6f5affad127980290451` y `MainSha` `812baf879612320653094a8aaf46aca0bac81383`.
+- **`attempts`:** 1 de 3.
+
+**Límites:** solo documentación en este paso; sin AutoCAD.
